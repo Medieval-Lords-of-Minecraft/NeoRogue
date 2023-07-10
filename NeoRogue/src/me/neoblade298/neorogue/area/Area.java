@@ -1,6 +1,8 @@
 package me.neoblade298.neorogue.area;
 
+import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.UUID;
 
 import me.neoblade298.neocore.bukkit.NeoCore;
 
@@ -163,5 +165,9 @@ public class Area {
 	
 	public Node[][] getNodes() {
 		return nodes;
+	}
+	
+	public void save(UUID uuid, int saveSlot, Statement stmt, Statement delete) {
+		
 	}
 }
