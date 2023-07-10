@@ -1,0 +1,48 @@
+package me.neoblade298.neorogue.area;
+
+import java.util.ArrayList;
+
+public class Node {
+	private static int MAX_DESTS = 3;
+	
+	private ArrayList<Node> dests = new ArrayList<Node>(MAX_DESTS);
+	private ArrayList<Node> srcs = new ArrayList<Node>(MAX_DESTS);
+	private NodeType type;
+	private int pos, lane;
+	
+	public Node(NodeType type, int pos, int lane) {
+		this.type = type;
+		this.pos = pos;
+		this.lane = lane;
+	}
+	
+	public void addDestination(Node node) {
+		dests.add(node);
+		node.addSource(this);
+	}
+	
+	public void addSource(Node node) {
+		srcs.add(node);
+	}
+	
+	public ArrayList<Node> getDestinations() {
+		return dests;
+	}
+	
+	public ArrayList<Node> getSources() {
+		return srcs;
+	}
+	
+	public int getPosition() {
+		return pos;
+	}
+	
+	public int getLane() {
+		return lane;
+	}
+	
+	@Override
+	public String toString() {
+		return type.toString().substring(0, 3);
+	}
+}

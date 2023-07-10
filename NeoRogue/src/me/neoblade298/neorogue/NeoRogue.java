@@ -1,10 +1,42 @@
 package me.neoblade298.neorogue;
 
+import java.util.Scanner;
+
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import me.neoblade298.neorogue.area.Area;
+import me.neoblade298.neorogue.area.AreaType;
+import me.neoblade298.neorogue.area.Node;
+
 public class NeoRogue extends JavaPlugin {
 	private static NeoRogue inst;
+	
+	public static void main(String[] args) {
+		Area area = new Area(AreaType.ARGENT_PLAZA);
+		
+		Scanner scan = new Scanner(System.in);
+		while (true) {
+			area.print();
+			System.out.println("Choose pos, lane");
+			int pos = scan.nextInt();
+			int lane = scan.nextInt();
+			if (pos < 0 || lane < 0) break;
+			
+			Node node = area.getNodes()[pos][lane];
+			if (node == null) {
+				System.out.println("Null node. Try again.");
+				continue;
+			}
+			
+			System.out.println("Destinations: ");
+			for (Node dest : node.getDestinations()) {
+				System.out.println(dest.getPosition() + "," + dest.getLane());
+			}
+		}
+		System.out.println("Closed.");
+		scan.close();
+	}
 	
 	public void onEnable() {
 		Bukkit.getServer().getLogger().info("NeoPPRs Enabled");
