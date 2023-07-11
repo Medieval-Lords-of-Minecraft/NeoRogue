@@ -1,5 +1,6 @@
 package me.neoblade298.neorogue;
 
+import java.io.File;
 import java.util.Scanner;
 
 import org.bukkit.Bukkit;
@@ -11,6 +12,8 @@ import me.neoblade298.neorogue.area.Node;
 
 public class NeoRogue extends JavaPlugin {
 	private static NeoRogue inst;
+	
+	public static File SCHEMATIC_FOLDER = new File(inst.getDataFolder().getAbsolutePath() + "/schematics");
 	
 	public static void main(String[] args) {
 		Area area = new Area(AreaType.ARGENT_PLAZA);

@@ -45,4 +45,20 @@ public class Node {
 	public String toString() {
 		return type.toString().substring(0, 3);
 	}
+	
+	public String serializePosition() {
+		return pos + "," + lane;
+	}
+	
+	public String serializeDestinations() {
+		String str = dests.get(0).serializePosition();
+		for (int i = 1; i < dests.size(); i++) {
+			str += " " + dests.get(i).serializePosition();
+		}
+		return str;
+	}
+	
+	public NodeType getType() {
+		return type;
+	}
 }
