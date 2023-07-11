@@ -33,6 +33,10 @@ public class Node {
 		return srcs;
 	}
 	
+	public void removeSource(Node node) {
+		srcs.remove(node);
+	}
+	
 	public int getPosition() {
 		return pos;
 	}
@@ -60,5 +64,13 @@ public class Node {
 	
 	public NodeType getType() {
 		return type;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Node) {
+			Node n = (Node) obj;
+			return lane == n.lane && pos == n.pos;
+		}
+		return false;
 	}
 }

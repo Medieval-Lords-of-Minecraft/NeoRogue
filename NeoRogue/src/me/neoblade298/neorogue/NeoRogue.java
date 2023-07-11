@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.area.AreaType;
@@ -13,10 +14,10 @@ import me.neoblade298.neorogue.area.Node;
 public class NeoRogue extends JavaPlugin {
 	private static NeoRogue inst;
 	
-	public static File SCHEMATIC_FOLDER = new File(inst.getDataFolder().getAbsolutePath() + "/schematics");
+	public static File SCHEMATIC_FOLDER;
 	
 	public static void main(String[] args) {
-		Area area = new Area(AreaType.ARGENT_PLAZA);
+		Area area = new Area(AreaType.ARGENT_PLAZA, 0, 0);
 		
 		Scanner scan = new Scanner(System.in);
 		while (true) {
@@ -47,6 +48,17 @@ public class NeoRogue extends JavaPlugin {
 		initCommands();
 		
 		inst = this;
+		
+		SCHEMATIC_FOLDER = new File("/home/MLMC/ServerRPG/plugins/WorldEdit/schematics");
+		Area area = new Area(AreaType.HARVEST_FIELDS, 0, 0);
+		area.generate();
+		area.setButtons(area.getNodes()[1][2]);
+		
+		new BukkitRunnable() {
+			public void run() {
+				area.tickParticles(Bukkit.getPlayer("Ascheladd"), area.getNodes()[1][2]);
+			}
+		}.runTaskTimer(this, 0L, 20L);
 	}
 	
 	public void onDisable() {

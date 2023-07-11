@@ -4,7 +4,7 @@ import org.bukkit.Material;
 
 public enum NodeType {
 	FIGHT(Material.REDSTONE_BLOCK),
-	EVENT(Material.MAGENTA_GLAZED_TERRACOTTA),
+	EVENT(Material.NOTE_BLOCK),
 	SHOP(Material.EMERALD_BLOCK),
 	MINIBOSS(Material.OBSIDIAN),
 	BOSS(Material.DIAMOND_BLOCK),

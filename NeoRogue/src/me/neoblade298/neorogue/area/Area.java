@@ -11,15 +11,22 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.Particle.DustOptions;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Directional;
+import org.bukkit.block.data.FaceAttachable;
+import org.bukkit.block.data.FaceAttachable.AttachedFace;
+import org.bukkit.entity.Player;
 
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.WorldEditException;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
@@ -31,6 +38,7 @@ import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldedit.world.World;
 
 import me.neoblade298.neocore.bukkit.NeoCore;
+import me.neoblade298.neocore.bukkit.particles.ParticleUtil;
 import me.neoblade298.neorogue.NeoRogue;
 
 public class Area {
@@ -46,14 +54,19 @@ public class Area {
 
 	// Constants for path generation
 	private static final double STRAIGHT_PATH_CHANCE = 0.7;
-	private static final double DOUBLE_PATH_CHANCE = 0.4;
+	private static final double DOUBLE_PATH_CHANCE = 0.6;
 	
 	// schematics
 	private static String NODE_SELECT = "nodeselect.schem";
+	
+	// Offsets
+	private int xOff, zOff;
 
 	// Deserialize
-	public Area(AreaType type, UUID uuid, int saveSlot, Statement stmt) throws SQLException {
+	public Area(AreaType type, int xOff, int zOff, UUID uuid, int saveSlot, Statement stmt) throws SQLException {
 		this.type = type;
+		this.xOff = xOff;
+		this.zOff = zOff;
 
 		ResultSet rs = stmt
 				.executeQuery("SELECT * FROM neorogue_nodes WHERE uuid = '" + uuid + "' AND slot = " + saveSlot + ";");
@@ -85,8 +98,10 @@ public class Area {
 	}
 
 	// Generate new
-	public Area(AreaType type) {
+	public Area(AreaType type, int xOff, int zOff) {
 		this.type = type;
+		this.xOff = xOff;
+		this.zOff = zOff;
 
 		// Static nodes
 		nodes[0][CENTER_LANE] = new Node(NodeType.START, 0, CENTER_LANE);
@@ -133,10 +148,20 @@ public class Area {
 		// Delete all nodes that don't have sources
 		for (int pos = 1; pos < MAX_POSITIONS - 2; pos++) {
 			for (int lane = 0; lane < MAX_LANES; lane++) {
-				if (nodes[pos][lane] == null) continue;
-				if (nodes[pos][lane].getSources().size() == 0) {
-					nodes[pos][lane] = null;
-				}
+				Node curr = nodes[pos][lane];
+				if (curr == null) continue;
+				
+				deleteNodeWithoutSource(curr);
+			}
+		}
+	}
+	
+	private void deleteNodeWithoutSource(Node node) {
+		if (node.getSources().size() == 0) {
+			nodes[node.getPosition()][node.getLane()] = null;
+			for (Node dest : node.getDestinations()) {
+				dest.removeSource(node);
+				deleteNodeWithoutSource(dest);
 			}
 		}
 	}
@@ -182,12 +207,12 @@ public class Area {
 
 	private Node generateNode(boolean guaranteeNode, int pos, int lane) {
 		/*
-		 * Base chances: Fight 25%, Rest 5%, Miniboss 10%, Shop 5%, Event 25%, Nothing
-		 * 30% Minimum Minibosses 2, Shops 3,
+		 * Base chances: Fight 35%, Rest 5%, Miniboss 10%, Shop 5%, Event 25%, Nothing
+		 * 20% Minimum Minibosses 2, Shops 3,
 		 */
 		double rand = NeoCore.gen.nextDouble();
 
-		rand -= 0.25;
+		rand -= 0.35;
 		if (rand < 0) return new Node(NodeType.FIGHT, pos, lane);
 		rand -= 0.05;
 		if (rand < 0) return new Node(NodeType.REST, pos, lane);
@@ -249,7 +274,7 @@ public class Area {
 		}
 	}
 
-	public void generate(int xOff, int zOff) {
+	public void generate() {
 		// Paste the schematic
 		Clipboard clipboard = null;
 
@@ -263,7 +288,7 @@ public class Area {
 			e.printStackTrace();
 		}
 		
-		if (world == null) Bukkit.getWorld("Artoria");
+		if (world == null) world = BukkitAdapter.adapt(Bukkit.getWorld("Artoria"));
 		try (EditSession editSession = WorldEdit.getInstance().newEditSession(world)) {
 		    Operation operation = new ClipboardHolder(clipboard)
 		            .createPaste(editSession)
@@ -281,14 +306,55 @@ public class Area {
 
 		for (int lane = 0; lane < MAX_LANES; lane++) {
 			for (int pos = 0; pos < MAX_POSITIONS; pos++) {
-				Location loc = new Location(w, xOff + 6 + (pos * 3), 65, zOff + 6 + (lane * 3));
-				loc.getBlock().setType(nodes[pos][lane].getType().getBlock());
+				Node node = nodes[pos][lane];
+				if (node == null) continue;
 				
-				loc.add(0, 1, 0);
-				loc.getBlock().setType(Material.OAK_BUTTON);
-				Directional dir = (Directional) loc.getBlock().getBlockData();
-				dir.setFacing(BlockFace.UP);
+				Location loc = new Location(w, xOff + 6 + (pos * 4), 65, zOff + 6 + (lane * 4));
+				loc.getBlock().setType(node.getType().getBlock());
 			}
 		}
+	}
+	
+	public void setButtons(Node node) {
+		// Add button to new paths
+		for (Node dest : node.getDestinations()) {
+			Location loc = nodeToLocation(dest, 1);
+			loc.getBlock().setType(Material.OAK_BUTTON);
+			FaceAttachable face = (FaceAttachable) loc.getBlock().getBlockData();
+			face.setAttachedFace(AttachedFace.FLOOR);
+			loc.getBlock().setBlockData(face);
+		}
+		
+		// Remove buttons from old paths
+		for (Node src : node.getSources()) {
+			Location loc = nodeToLocation(src, 1);
+			loc.getBlock().setType(Material.AIR);
+		}
+	}
+	
+	public void tickParticles(Player p, Node curr) {
+		// Draw red lines for any locations that can immediately be visited
+		for (Node dest : curr.getDestinations()) {
+			ParticleUtil.drawLine(p, nodeToLocation(curr, 1), nodeToLocation(dest, 1),
+					Particle.REDSTONE, true, 3, 0, 0, 0.3, new DustOptions(Color.RED, 1F));
+		}
+		
+		// Draw black lines for locations past the immediate nodes
+		for (int pos = curr.getPosition() + 1; pos < MAX_POSITIONS; pos++) {
+			for (int lane = 0; lane < MAX_LANES; lane++) {
+				Node node = nodes[pos][lane];
+				if (node == null) continue;
+				
+				for (Node dest : node.getDestinations()) {
+					ParticleUtil.drawLine(p, nodeToLocation(node, 1), nodeToLocation(dest, 1),
+							Particle.REDSTONE, true, 3, 0, 0, 0.3, new DustOptions(Color.BLACK, 1F));
+				}
+			}
+		}
+	}
+	
+	private Location nodeToLocation(Node node, int yOff) {
+		org.bukkit.World w = Bukkit.getWorld("Artoria");
+		return new Location(w, xOff + 6.5 + (node.getPosition() * 4), 65 + yOff, zOff + 6.5 + (node.getLane() * 4));
 	}
 }
