@@ -21,6 +21,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.FaceAttachable;
 import org.bukkit.block.data.FaceAttachable.AttachedFace;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 
 import com.sk89q.worldedit.EditSession;
@@ -37,6 +38,9 @@ import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldedit.world.World;
 
+import me.filoghost.holographicdisplays.api.hologram.Hologram;
+import me.filoghost.holographicdisplays.api.internal.HolographicDisplaysAPIProvider;
+import me.filoghost.holographicdisplays.plugin.HolographicDisplays;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.particles.ParticleUtil;
 import me.neoblade298.neorogue.NeoRogue;
@@ -51,16 +55,18 @@ public class Area {
 	private static final int MAX_LANES = 5;
 	private static final int MAX_POSITIONS = 12;
 	private static final int CENTER_LANE = MAX_LANES / 2;
-
-	// Constants for path generation
 	private static final double STRAIGHT_PATH_CHANCE = 0.7;
 	private static final double DOUBLE_PATH_CHANCE = 0.6;
+	
+	private static final int NODE_Y = 66;
 	
 	// schematics
 	private static String NODE_SELECT = "nodeselect.schem";
 	
 	// Offsets
 	private int xOff, zOff;
+	
+	private ArrayList<Hologram> holograms = new ArrayList<Hologram>();
 
 	// Deserialize
 	public Area(AreaType type, int xOff, int zOff, UUID uuid, int saveSlot, Statement stmt) throws SQLException {
@@ -97,7 +103,7 @@ public class Area {
 		}
 	}
 
-	// Generate new
+	// Create from scratch
 	public Area(AreaType type, int xOff, int zOff) {
 		this.type = type;
 		this.xOff = xOff;
@@ -301,21 +307,43 @@ public class Area {
 			}
 		}
 		
-		// Create area within schematic
+		// Create nodes
 		org.bukkit.World w = Bukkit.getWorld("Artoria");
-
 		for (int lane = 0; lane < MAX_LANES; lane++) {
 			for (int pos = 0; pos < MAX_POSITIONS; pos++) {
 				Node node = nodes[pos][lane];
 				if (node == null) continue;
 				
-				Location loc = new Location(w, xOff + 6 + (pos * 4), 65, zOff + 6 + (lane * 4));
+				Location loc = new Location(w, xOff + 6 + (pos * 4), NODE_Y, zOff + 6 + (lane * 4));
 				loc.getBlock().setType(node.getType().getBlock());
+				loc.add(-1, 0, 0);
+				loc.getBlock().setType(Material.OAK_WALL_SIGN);
+				Block b = loc.getBlock();
+				Directional dir = (Directional) b.getBlockData();
+				dir.setFacing(BlockFace.WEST);
+				b.setBlockData(dir);
+				
+				Sign sign = (Sign) b.getState();
+				sign.setLine(1, "§l" + node.getType().toString());
+				sign.setGlowingText(true);
+				sign.update();
 			}
 		}
 	}
 	
-	public void setButtons(Node node) {
+	// Called whenever a player advances to a new node
+	public void update(Node node) {
+		// Remove buttons from old paths
+		for (Node src : node.getSources()) {
+			Location loc = nodeToLocation(src, 1);
+			loc.getBlock().setType(Material.AIR);
+		}
+		
+		// Delete holograms
+		for (Hologram holo : holograms) {
+			holo.delete();
+		}
+		
 		// Add button to new paths
 		for (Node dest : node.getDestinations()) {
 			Location loc = nodeToLocation(dest, 1);
@@ -323,19 +351,25 @@ public class Area {
 			FaceAttachable face = (FaceAttachable) loc.getBlock().getBlockData();
 			face.setAttachedFace(AttachedFace.FLOOR);
 			loc.getBlock().setBlockData(face);
+
+			// Add holograms to active nodes
+			loc.add(0, 2, 0);
+			Hologram holo = NeoRogue.holo.createHologram(loc);
+			holo.getLines().appendText("§f§l" + node.getType() + " Node");
+			holograms.add(holo);
+			
+			// Add lecterns to fight nodes
+			if (dest.getType() == NodeType.FIGHT) {
+				loc.add(-1, -3, 0);
+			}
 		}
 		
-		// Remove buttons from old paths
-		for (Node src : node.getSources()) {
-			Location loc = nodeToLocation(src, 1);
-			loc.getBlock().setType(Material.AIR);
-		}
 	}
 	
 	public void tickParticles(Player p, Node curr) {
 		// Draw red lines for any locations that can immediately be visited
 		for (Node dest : curr.getDestinations()) {
-			ParticleUtil.drawLine(p, nodeToLocation(curr, 1), nodeToLocation(dest, 1),
+			ParticleUtil.drawLine(p, nodeToLocation(curr, 0.5), nodeToLocation(dest, 0.5),
 					Particle.REDSTONE, true, 3, 0, 0, 0.3, new DustOptions(Color.RED, 1F));
 		}
 		
@@ -346,15 +380,15 @@ public class Area {
 				if (node == null) continue;
 				
 				for (Node dest : node.getDestinations()) {
-					ParticleUtil.drawLine(p, nodeToLocation(node, 1), nodeToLocation(dest, 1),
+					ParticleUtil.drawLine(p, nodeToLocation(node, 0.5), nodeToLocation(dest, 0.5),
 							Particle.REDSTONE, true, 3, 0, 0, 0.3, new DustOptions(Color.BLACK, 1F));
 				}
 			}
 		}
 	}
 	
-	private Location nodeToLocation(Node node, int yOff) {
+	private Location nodeToLocation(Node node, double yOff) {
 		org.bukkit.World w = Bukkit.getWorld("Artoria");
-		return new Location(w, xOff + 6.5 + (node.getPosition() * 4), 65 + yOff, zOff + 6.5 + (node.getLane() * 4));
+		return new Location(w, xOff + 6.5 + (node.getPosition() * 4), NODE_Y + yOff, zOff + 6.5 + (node.getLane() * 4));
 	}
 }

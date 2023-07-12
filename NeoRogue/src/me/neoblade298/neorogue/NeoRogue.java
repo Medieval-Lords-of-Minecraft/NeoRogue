@@ -7,6 +7,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import me.filoghost.holographicdisplays.api.HolographicDisplaysAPI;
+import me.filoghost.holographicdisplays.api.internal.HolographicDisplaysAPIProvider;
 import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.area.Node;
@@ -15,6 +17,7 @@ public class NeoRogue extends JavaPlugin {
 	private static NeoRogue inst;
 	
 	public static File SCHEMATIC_FOLDER;
+	public static HolographicDisplaysAPI holo;
 	
 	public static void main(String[] args) {
 		Area area = new Area(AreaType.ARGENT_PLAZA, 0, 0);
@@ -43,26 +46,33 @@ public class NeoRogue extends JavaPlugin {
 	}
 	
 	public void onEnable() {
-		Bukkit.getServer().getLogger().info("NeoPPRs Enabled");
+		Bukkit.getServer().getLogger().info("NeoRogue Enabled");
 		// Bukkit.getPluginManager().registerEvents(this, this);
 		initCommands();
 		
 		inst = this;
 		
+		holo = HolographicDisplaysAPIProvider.getImplementation().getHolographicDisplaysAPI(this);
 		SCHEMATIC_FOLDER = new File("/home/MLMC/ServerRPG/plugins/WorldEdit/schematics");
 		Area area = new Area(AreaType.HARVEST_FIELDS, 0, 0);
 		area.generate();
-		area.setButtons(area.getNodes()[1][2]);
+		area.update(area.getNodes()[1][2]);
 		
 		new BukkitRunnable() {
+			int count = 0; // Strictly for debug usage
 			public void run() {
 				area.tickParticles(Bukkit.getPlayer("Ascheladd"), area.getNodes()[1][2]);
+				count++;
+				if (count > 20) {
+					this.cancel();
+				}
 			}
 		}.runTaskTimer(this, 0L, 20L);
 	}
 	
 	public void onDisable() {
-	    org.bukkit.Bukkit.getServer().getLogger().info("NeoPPRs Disabled");
+		holo.deleteHolograms();
+	    org.bukkit.Bukkit.getServer().getLogger().info("NeoRogue Disabled");
 	    super.onDisable();
 	}
 	
