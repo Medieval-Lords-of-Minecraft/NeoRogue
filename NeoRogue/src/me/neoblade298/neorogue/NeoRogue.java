@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Scanner;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -61,7 +62,9 @@ public class NeoRogue extends JavaPlugin {
 		new BukkitRunnable() {
 			int count = 0; // Strictly for debug usage
 			public void run() {
-				area.tickParticles(Bukkit.getPlayer("Ascheladd"), area.getNodes()[1][2]);
+				Player p = Bukkit.getPlayer("Ascheladd");
+				area.tickParticles(p, area.getNodes()[1][2]);
+				p.setCooldown(p.getInventory().getItemInMainHand().getType(), 100);
 				count++;
 				if (count > 20) {
 					this.cancel();
