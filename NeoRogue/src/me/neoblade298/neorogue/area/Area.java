@@ -21,8 +21,11 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.FaceAttachable;
 import org.bukkit.block.data.FaceAttachable.AttachedFace;
+import org.bukkit.block.data.type.Lectern;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
 
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
@@ -355,12 +358,27 @@ public class Area {
 			// Add holograms to active nodes
 			loc.add(0, 2, 0);
 			Hologram holo = NeoRogue.holo.createHologram(loc);
-			holo.getLines().appendText("§f§l" + node.getType() + " Node");
+			holo.getLines().appendText("§f§l" + dest.getType() + " Node");
 			holograms.add(holo);
 			
 			// Add lecterns to fight nodes
 			if (dest.getType() == NodeType.FIGHT) {
-				loc.add(-1, -3, 0);
+				loc.add(-1, -4, 0);
+				Block b = loc.getBlock();
+				b.setType(Material.LECTERN);
+				Lectern lec = (Lectern) b.getBlockData();
+				lec.setFacing(BlockFace.WEST);
+				b.setBlockData(lec);
+				
+				ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
+				BookMeta meta = (BookMeta) book.getItemMeta();
+				meta.setAuthor("MLMC");
+				meta.setTitle("Fight Info");
+				// TODO: Setup books
+				meta.addPage("Test page with test stuff\n Hello");
+				book.setItemMeta(meta);
+				org.bukkit.block.Lectern lc = (org.bukkit.block.Lectern) b.getState();
+				lc.getInventory().addItem(book);
 			}
 		}
 		
