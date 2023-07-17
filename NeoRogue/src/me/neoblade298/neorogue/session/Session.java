@@ -1,6 +1,7 @@
 package me.neoblade298.neorogue.session;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.UUID;
 
 import com.sk89q.worldedit.entity.Player;
@@ -15,7 +16,7 @@ public class Session {
 	private AreaType areaType;
 	private Area area;
 	private UUID host;
-	private ArrayList<PlayerSessionData> party = new ArrayList<PlayerSessionData>();
+	private HashMap<UUID, PlayerSessionData> party = new HashMap<UUID, PlayerSessionData>();
 	private Instance inst;
 	private Node curr;
 	private SessionStatistics stats;
@@ -23,6 +24,14 @@ public class Session {
 	
 	public Session(Player p) {
 		host = p.getUniqueId();
-		party.add(new PlayerSessionData(p.getUniqueId()));
+		party.put(p.getUniqueId(), new PlayerSessionData(p.getUniqueId()));
+	}
+	
+	public Instance getInstance() {
+		return inst;
+	}
+	
+	public PlayerSessionData getData(UUID uuid) {
+		return party.get(uuid);
 	}
 }

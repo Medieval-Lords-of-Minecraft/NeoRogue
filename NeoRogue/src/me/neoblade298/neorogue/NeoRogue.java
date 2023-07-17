@@ -10,9 +10,12 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import me.filoghost.holographicdisplays.api.HolographicDisplaysAPI;
 import me.filoghost.holographicdisplays.api.internal.HolographicDisplaysAPIProvider;
+import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.area.Node;
+import me.neoblade298.neorogue.player.PlayerManager;
+import me.neoblade298.neorogue.session.SessionManager;
 
 public class NeoRogue extends JavaPlugin {
 	private static NeoRogue inst;
@@ -48,7 +51,8 @@ public class NeoRogue extends JavaPlugin {
 	
 	public void onEnable() {
 		Bukkit.getServer().getLogger().info("NeoRogue Enabled");
-		// Bukkit.getPluginManager().registerEvents(this, this);
+		NeoCore.registerIOComponent(this, new PlayerManager(), "NeoRogue-PlayerManager");
+		Bukkit.getPluginManager().registerEvents(new SessionManager(), this);
 		initCommands();
 		
 		inst = this;
@@ -62,13 +66,14 @@ public class NeoRogue extends JavaPlugin {
 		new BukkitRunnable() {
 			int count = 0; // Strictly for debug usage
 			public void run() {
-				Player p = Bukkit.getPlayer("Ascheladd");
-				area.tickParticles(p, area.getNodes()[1][2]);
-				p.setCooldown(p.getInventory().getItemInMainHand().getType(), 100);
 				count++;
 				if (count > 20) {
 					this.cancel();
 				}
+				Player p = Bukkit.getPlayer("Ascheladd");
+				if (p == null) return;
+				
+				area.tickParticles(p, area.getNodes()[1][2]);
 			}
 		}.runTaskTimer(this, 0L, 20L);
 	}

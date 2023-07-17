@@ -11,7 +11,10 @@ import me.neoblade298.neocore.bukkit.io.IOComponent;
 
 public class PlayerManager implements IOComponent {
 	private static HashMap<UUID, PlayerData> data = new HashMap<UUID, PlayerData>();
-	 
+	
+	public static void initialize() {
+		
+	}
 
 	public static PlayerData getPlayerData(UUID uuid) {
 		return data.get(uuid);
