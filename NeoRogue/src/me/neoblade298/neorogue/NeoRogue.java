@@ -15,6 +15,8 @@ import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.area.Node;
 import me.neoblade298.neorogue.player.PlayerManager;
+import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.player.PlayerSessionInventory;
 import me.neoblade298.neorogue.session.SessionManager;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -65,6 +67,7 @@ public class NeoRogue extends JavaPlugin {
 		Area area = new Area(AreaType.HARVEST_FIELDS, 0, 0);
 		area.generate();
 		area.update(area.getNodes()[1][2]);
+		Player p = Bukkit.getPlayer("Ascheladd");
 		
 		new BukkitRunnable() {
 			int count = 0; // Strictly for debug usage
@@ -73,7 +76,6 @@ public class NeoRogue extends JavaPlugin {
 				if (count > 20) {
 					this.cancel();
 				}
-				Player p = Bukkit.getPlayer("Ascheladd");
 				if (p == null) return;
 				
 				area.tickParticles(p, area.getNodes()[1][2]);

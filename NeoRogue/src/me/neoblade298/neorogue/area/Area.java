@@ -60,6 +60,7 @@ public class Area {
 	private static final int CENTER_LANE = MAX_LANES / 2;
 	private static final double STRAIGHT_PATH_CHANCE = 0.7;
 	private static final double DOUBLE_PATH_CHANCE = 0.6;
+	private static final String WORLD_NAME = "Cyprus";
 	
 	private static final int NODE_Y = 66;
 	
@@ -297,7 +298,7 @@ public class Area {
 			e.printStackTrace();
 		}
 		
-		if (world == null) world = BukkitAdapter.adapt(Bukkit.getWorld("Artoria"));
+		if (world == null) world = BukkitAdapter.adapt(Bukkit.getWorld(WORLD_NAME));
 		try (EditSession editSession = WorldEdit.getInstance().newEditSession(world)) {
 		    Operation operation = new ClipboardHolder(clipboard)
 		            .createPaste(editSession)
@@ -311,7 +312,7 @@ public class Area {
 		}
 		
 		// Create nodes
-		org.bukkit.World w = Bukkit.getWorld("Artoria");
+		org.bukkit.World w = Bukkit.getWorld(WORLD_NAME);
 		for (int lane = 0; lane < MAX_LANES; lane++) {
 			for (int pos = 0; pos < MAX_POSITIONS; pos++) {
 				Node node = nodes[pos][lane];
@@ -406,7 +407,7 @@ public class Area {
 	}
 	
 	private Location nodeToLocation(Node node, double yOff) {
-		org.bukkit.World w = Bukkit.getWorld("Artoria");
+		org.bukkit.World w = Bukkit.getWorld(WORLD_NAME);
 		return new Location(w, xOff + 6.5 + (node.getPosition() * 4), NODE_Y + yOff, zOff + 6.5 + (node.getLane() * 4));
 	}
 }

@@ -4,6 +4,7 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
@@ -12,8 +13,11 @@ import me.neoblade298.neocore.bukkit.io.IOComponent;
 public class PlayerManager implements IOComponent {
 	private static HashMap<UUID, PlayerData> data = new HashMap<UUID, PlayerData>();
 	
-	public static void initialize() {
-		
+	public PlayerManager() {
+		// Strictly for debug
+		for (Player p : Bukkit.getOnlinePlayers()) {
+			data.put(p.getUniqueId(), new PlayerData(p));
+		}
 	}
 
 	public static PlayerData getPlayerData(UUID uuid) {

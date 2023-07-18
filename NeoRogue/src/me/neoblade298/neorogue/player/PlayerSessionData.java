@@ -16,7 +16,7 @@ public class PlayerSessionData {
 	private Accessory[] accessories = new Accessory[6];
 	private ArrayList<Artifact> artifacts = new ArrayList<Artifact>();
 	private ArrayList<Equipment> storage = new ArrayList<Equipment>(9);
-	private Usable[] otherBinds = new Usable[6];
+	private Usable[] otherBinds = new Usable[8];
 	
 	
 	public PlayerSessionData(UUID uuid) {
