@@ -9,7 +9,6 @@ import org.bukkit.inventory.ItemStack;
 
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neorogue.equipment.*;
-import me.neoblade298.neorogue.equipment.abilities.Ability;
 
 public class PlayerSessionInventory extends CoreInventory {
 	private static final int[] ARMOR = new int[] {0, 1, 2};
@@ -47,7 +46,7 @@ public class PlayerSessionInventory extends CoreInventory {
 			CoreInventory.createButton(Material.WHITE_STAINED_GLASS_PANE, "&fOffhand Slot", "&7Drag an offhand here to equip it!");
 		
 		for (int i : HOTBAR) {
-			Equipment eq = data.getHotbar()[i - 18]
+			Equipment eq = data.getHotbar()[i - 18];
 			contents[i] = eq != null ? eq.getItem() :
 				CoreInventory.createButton(Material.RED_STAINED_GLASS_PANE, "&cHotbar Slot", "&7Drag a weapon or consumable here to", "&7equip it!");
 		}

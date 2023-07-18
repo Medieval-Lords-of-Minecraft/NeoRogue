@@ -16,6 +16,9 @@ import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.area.Node;
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.session.SessionManager;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
 
 public class NeoRogue extends JavaPlugin {
 	private static NeoRogue inst;

@@ -6,18 +6,17 @@ import java.util.UUID;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.equipment.*;
-import me.neoblade298.neorogue.equipment.abilities.Ability;
 
 public class PlayerSessionData {
 	private PlayerData data;
 	private double maxHealth, maxMana, maxStamina, health;
-	private Equipment[] hotbar = new Equipment[9];
+	private Usable[] hotbar = new Usable[9];
 	private Armor[] armors = new Armor[3];
 	private Offhand offhand;
 	private Accessory[] accessories = new Accessory[6];
 	private ArrayList<Artifact> artifacts = new ArrayList<Artifact>();
 	private ArrayList<Equipment> storage = new ArrayList<Equipment>(9);
-	private Ability[] abilities = new Ability[6];
+	private Usable[] otherBinds = new Usable[6];
 	
 	
 	public PlayerSessionData(UUID uuid) {
@@ -38,7 +37,7 @@ public class PlayerSessionData {
 		return armors;
 	}
 	
-	public Equipment[] getHotbar() {
+	public Usable[] getHotbar() {
 		return hotbar;
 	}
 	
@@ -54,11 +53,11 @@ public class PlayerSessionData {
 		return offhand;
 	}
 	
-	public Ability[] getAbilities() {
-		return abilities;
+	public Usable[] getOtherBinds() {
+		return otherBinds;
 	}
 	
-	public Ability getAbility(KeyBind bind) {
-		return abilities[bind.getDataSlot()];
+	public Usable getOtherBind(KeyBind bind) {
+		return otherBinds[bind.getDataSlot()];
 	}
 }

@@ -1,5 +1,5 @@
 package me.neoblade298.neorogue.equipment;
 
-public class Weapon extends Equipment {
+public abstract class Weapon extends Usable {
 
 }
