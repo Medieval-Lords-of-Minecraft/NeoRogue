@@ -53,6 +53,10 @@ public class PlayerSessionData {
 		return offhand;
 	}
 	
+	public void setOffhand(Offhand offhand) {
+		this.offhand = offhand;
+	}
+	
 	public Usable[] getOtherBinds() {
 		return otherBinds;
 	}
