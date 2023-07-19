@@ -1,16 +1,19 @@
 package me.neoblade298.neorogue.equipment;
 
-import org.bukkit.inventory.ItemStack;
-
 public abstract class Usable extends Equipment {
 	private long lastUsed = 0L;
-	private int cooldown = 0;
+	protected int cooldown = 0;
 
-	public Usable(String id, ItemStack item) {
-		super(id, item);
+	public Usable(String id, boolean isUpgraded, Rarity rarity) {
+		super(id, isUpgraded, rarity);
 	}
 	
 	public int getCooldown() {
 		return cooldown;
+	}
+	
+	public boolean isOnCooldown() {
+		long timeElapsed = System.currentTimeMillis() - lastUsed;
+		return (timeElapsed/1000) > cooldown;
 	}
 }

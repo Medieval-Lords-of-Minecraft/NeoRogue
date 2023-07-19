@@ -1,10 +1,9 @@
 package me.neoblade298.neorogue.session;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
-import com.sk89q.worldedit.entity.Player;
+import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.area.AreaType;
@@ -29,6 +28,10 @@ public class Session {
 	
 	public Instance getInstance() {
 		return inst;
+	}
+	
+	public void setInstance(Instance inst) {
+		this.inst = inst;
 	}
 	
 	public PlayerSessionData getData(UUID uuid) {

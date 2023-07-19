@@ -27,7 +27,7 @@ public class PlayerSessionInventory extends CoreInventory {
 	private PlayerSessionData data;
 	
 	public PlayerSessionInventory(PlayerSessionData data) {
-		super(data.getPlayer(), Bukkit.createInventory(data.getPlayer(), 36, "&9Your Inventory"));
+		super(data.getPlayer(), Bukkit.createInventory(data.getPlayer(), 36, "§9Your Inventory"));
 		this.data = data;
 		ItemStack[] contents = inv.getContents();
 		
@@ -83,7 +83,7 @@ public class PlayerSessionInventory extends CoreInventory {
 		// First do not allow 
 		ItemStack cursor = e.getCursor();
 		ItemStack clicked = e.getCurrentItem();
-		if (cursor == null && clicked == null) return;
+		if (cursor.getType().isAir() && clicked == null) return;
 		
 		int slot = e.getSlot();
 		// First check for specific cases: Sell and Artifact view
@@ -94,11 +94,11 @@ public class PlayerSessionInventory extends CoreInventory {
 			// TODO: Create artifact inventory
 		}
 
-		NBTItem ncursor = cursor != null ? new NBTItem(cursor) : null;
+		NBTItem ncursor = !cursor.getType().isAir() ? new NBTItem(cursor) : null;
 		NBTItem nclicked = clicked != null ? new NBTItem(clicked) : null;
 		boolean onChest = e.getClickedInventory().getType() == InventoryType.CHEST;
 		
-		if (cursor == null && clicked != null) {
+		if (cursor.getType().isAir() && clicked != null) {
 			// Only allow picking up equipment
 			if (!nclicked.hasTag("equipId")) {
 				e.setCancelled(true);
@@ -111,13 +111,19 @@ public class PlayerSessionInventory extends CoreInventory {
 		}
 		
 		// Most important, only way to equip an item
-		else if (cursor != null && clicked != null) {
-			if (!nclicked.hasTag("equipId")) {
+		else if (!cursor.getType().isAir() && clicked != null) {
+			// Don't allow swapping with filler panes
+			if (!nclicked.hasTag("type")) {
 				e.setCancelled(true);
 			}
-			else if (onChest) {
-				setEquipment(ncursor.getString("type"), ncursor.getInteger("dataSlot"), ncursor.getString("equipId"), ncursor.getBoolean("isUpgraded"));
-				p.playSound(p, Sound.ITEM_ARMOR_EQUIP_DIAMOND, 1F, 1F);
+			if (onChest) {
+				boolean canSet = setEquipment(nclicked.getString("type"), ncursor.getInteger("dataSlot"), ncursor.getString("equipId"), ncursor.getBoolean("isUpgraded"));
+				System.out.println("Can set: " + canSet);
+				e.setCancelled(!canSet);
+				if (canSet) {
+					p.playSound(p, Sound.ITEM_ARMOR_EQUIP_DIAMOND, 1F, 1F);
+					p.setItemOnCursor(null);
+				}
 			}
 		}
 	}
@@ -129,7 +135,7 @@ public class PlayerSessionInventory extends CoreInventory {
 
 	@Override
 	public void handleInventoryDrag(InventoryDragEvent e) {
-		e.setCancelled(true);
+		
 	}
 	
 	private ItemStack addNbt(ItemStack item, String type, int dataSlot) {
@@ -168,27 +174,30 @@ public class PlayerSessionInventory extends CoreInventory {
 		}
 	}
 	
-	private boolean setEquipment(String type, int dataSlot, String equipId, boolean isUpgraded) {
+	private boolean setEquipment(String replacedType, int dataSlot, String equipId, boolean isUpgraded) {
 		Equipment eq = Equipment.getEquipment(equipId, isUpgraded);
+		System.out.println("Equip: " + eq.getId() + " " + eq.getClass().getName() + " " + (eq instanceof Accessory) + " " + type);
 		switch (type) {
 		case "ARMOR":
-			if (!(eq instanceof Armor) && eq != null) return false;
+			if (!(eq instanceof Armor)) return false;
 			data.getArmor()[dataSlot] = (Armor) eq;
 			break;
 		case "ACCESSORY":
-			if (!(eq instanceof Accessory) && eq != null) return false;
+			System.out.println("0");
+			if (!(eq instanceof Accessory)) return false;
+			System.out.println("1");
 			data.getAccessories()[dataSlot] = (Accessory) eq;
 			break;
 		case "OTHERBINDS":
-			if (!(eq instanceof Usable) && eq != null) return false;
+			if (!(eq instanceof Usable)) return false;
 			data.getOtherBinds()[dataSlot] = (Usable) eq;
 			break;
 		case "OFFHAND":
-			if (!(eq instanceof Offhand) && eq != null) return false;
+			if (!(eq instanceof Offhand)) return false;
 			data.setOffhand((Offhand) eq);
 			break;
 		case "HOTBAR":
-			if (!(eq instanceof Usable) && eq != null) return false;
+			if (!(eq instanceof Usable)) return false;
 			data.getHotbar()[dataSlot] = (Usable) eq;
 			break;
 		}

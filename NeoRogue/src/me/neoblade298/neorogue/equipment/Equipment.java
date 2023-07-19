@@ -5,18 +5,30 @@ import java.util.HashMap;
 
 import org.bukkit.inventory.ItemStack;
 
+import me.neoblade298.neorogue.equipment.abilities.builtin.*;
+
 public abstract class Equipment {
 	private static HashMap<String, Equipment> equipment = new HashMap<String, Equipment>();
 	private static HashMap<String, Equipment> upgraded = new HashMap<String, Equipment>();
-	private String id;
-	private boolean isUpgraded;
-	private ItemStack item;
-	private Rarity rarity;
+	protected String id;
+	protected boolean isUpgraded;
+	protected ItemStack item;
+	protected Rarity rarity;
 	
-	public Equipment(String id, ItemStack item, Rarity rarity) {
+	static {
+		for (boolean b : new boolean[] {false, true}) {
+			new BattleCry(b);
+			new EmpoweredEdge(b);
+		}
+	}
+	
+	public Equipment(String id, boolean isUpgraded, Rarity rarity) {
 		this.id = id;
-		this.item = item;
 		this.rarity = rarity;
+		this.isUpgraded = isUpgraded;
+		
+		if (isUpgraded) upgraded.put(id, this);
+		else equipment.put(id, this);
 	}
 	
 	public String getId() {
@@ -29,6 +41,10 @@ public abstract class Equipment {
 	
 	public boolean isUpgraded() {
 		return isUpgraded;
+	}
+	
+	public Rarity getRarity() {
+		return rarity;
 	}
 	
 	public static Equipment getEquipment(String id, boolean upgrade) {

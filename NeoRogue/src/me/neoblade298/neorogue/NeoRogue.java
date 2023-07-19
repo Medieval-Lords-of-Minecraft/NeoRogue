@@ -17,7 +17,9 @@ import me.neoblade298.neorogue.area.Node;
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.PlayerSessionInventory;
+import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
+import me.neoblade298.neorogue.session.instance.NodeSelectInstance;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -64,23 +66,9 @@ public class NeoRogue extends JavaPlugin {
 		
 		holo = HolographicDisplaysAPIProvider.getImplementation().getHolographicDisplaysAPI(this);
 		SCHEMATIC_FOLDER = new File("/home/MLMC/ServerRPG/plugins/WorldEdit/schematics");
-		Area area = new Area(AreaType.HARVEST_FIELDS, 0, 0);
-		area.generate();
-		area.update(area.getNodes()[1][2]);
-		Player p = Bukkit.getPlayer("Ascheladd");
 		
-		new BukkitRunnable() {
-			int count = 0; // Strictly for debug usage
-			public void run() {
-				count++;
-				if (count > 20) {
-					this.cancel();
-				}
-				if (p == null) return;
-				
-				area.tickParticles(p, area.getNodes()[1][2]);
-			}
-		}.runTaskTimer(this, 0L, 20L);
+		// Strictly for debug usage
+		debugInitialize();
 	}
 	
 	public void onDisable() {
@@ -96,5 +84,26 @@ public class NeoRogue extends JavaPlugin {
 	
 	public static NeoRogue inst() {
 		return inst;
+	}
+	
+	private void debugInitialize() {
+		Area area = new Area(AreaType.HARVEST_FIELDS, 0, 0);
+		area.generate();
+		area.update(area.getNodes()[1][2]);
+		Player p = Bukkit.getPlayer("Ascheladd");
+		Session s = SessionManager.createSession(p);
+		s.setInstance(new NodeSelectInstance());
+		new BukkitRunnable() {
+			int count = 0; 
+			public void run() {
+				count++;
+				if (count > 20) {
+					this.cancel();
+				}
+				if (p == null) return;
+				
+				area.tickParticles(p, area.getNodes()[1][2]);
+			}
+		}.runTaskTimer(this, 0L, 20L);
 	}
 }

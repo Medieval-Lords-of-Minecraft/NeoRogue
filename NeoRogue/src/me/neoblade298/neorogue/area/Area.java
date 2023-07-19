@@ -42,8 +42,6 @@ import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldedit.world.World;
 
 import me.filoghost.holographicdisplays.api.hologram.Hologram;
-import me.filoghost.holographicdisplays.api.internal.HolographicDisplaysAPIProvider;
-import me.filoghost.holographicdisplays.plugin.HolographicDisplays;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.particles.ParticleUtil;
 import me.neoblade298.neorogue.NeoRogue;

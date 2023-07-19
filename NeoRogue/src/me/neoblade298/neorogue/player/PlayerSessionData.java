@@ -3,9 +3,13 @@ package me.neoblade298.neorogue.player;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.PlayerInventory;
 
+import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neorogue.equipment.*;
+import net.md_5.bungee.api.ChatColor;
 
 public class PlayerSessionData {
 	private PlayerData data;
@@ -27,7 +31,26 @@ public class PlayerSessionData {
 		health = maxHealth;
 		
 		// Need to give player a weapon at the start
+		
+		// Strictly debug purposes
+		storage.add(Equipment.getEquipment("empoweredEdge", true));
+		storage.add(Equipment.getEquipment("battleCry", false));
+		setupInventory();
 	}
+	
+	public void setupInventory() {
+		Player p = data.getPlayer();
+		PlayerInventory inv = p.getInventory();
+		inv.clear();
+		inv.setItemInOffHand(CoreInventory.createButton(Material.ENCHANTED_BOOK, "&eStorage Book",
+				"Swap hands or click anywhere in your inventory to open your storage.", 200, ChatColor.GRAY));
+		
+		for (int i = 0; i < storage.size(); i++) {
+			Equipment eq = storage.get(i);
+			if (eq == null) continue;
+			inv.setItem(i, eq.getItem());
+		}
+ 	}
 	
 	public Player getPlayer() {
 		return data.getPlayer();

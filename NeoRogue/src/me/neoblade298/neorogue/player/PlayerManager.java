@@ -25,19 +25,17 @@ public class PlayerManager implements IOComponent {
 	}
 
 	@Override
-	public void cleanup(Statement arg0, Statement arg1) {
-		// TODO Auto-generated method stub
+	public void cleanup(Statement p, Statement stmt) {
 		
 	}
 
 	@Override
-	public void loadPlayer(Player arg0, Statement arg1) {
-		// TODO Auto-generated method stub
-		
+	public void loadPlayer(Player p, Statement stmt) {
+		data.putIfAbsent(p.getUniqueId(), new PlayerData(p));
 	}
 
 	@Override
-	public void preloadPlayer(OfflinePlayer arg0, Statement arg1) {
+	public void preloadPlayer(OfflinePlayer p, Statement stmt) {
 		// TODO Auto-generated method stub
 		
 	}
