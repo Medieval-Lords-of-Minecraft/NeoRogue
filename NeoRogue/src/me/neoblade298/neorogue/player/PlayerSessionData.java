@@ -21,7 +21,7 @@ public class PlayerSessionData {
 	private ArrayList<Artifact> artifacts = new ArrayList<Artifact>();
 	private ArrayList<Equipment> storage = new ArrayList<Equipment>(9);
 	private Usable[] otherBinds = new Usable[8];
-	
+	private int abilitiesEquipped = 0;
 	
 	public PlayerSessionData(UUID uuid) {
 		data = PlayerManager.getPlayerData(uuid);
@@ -86,5 +86,9 @@ public class PlayerSessionData {
 	
 	public Usable getOtherBind(KeyBind bind) {
 		return otherBinds[bind.getDataSlot()];
+	}
+	
+	public void addAbilityEquipped(int num) {
+		abilitiesEquipped += num;
 	}
 }

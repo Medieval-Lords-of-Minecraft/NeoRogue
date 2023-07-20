@@ -42,4 +42,18 @@ public enum KeyBind {
 	public int getDataSlot() {
 		return dataSlot;
 	}
+	
+	public static KeyBind getBindFromSlot(int slot) {
+		switch (slot) {
+		case 9: return SHIFT_LCLICK;
+		case 10: return SHIFT_RCLICK;
+		case 11: return SHIFT_DROP;
+		case 12: return SHIFT_SWAP;
+		case 13: return DROP;
+		case 14: return SWAP;
+		case 15: return UP_RCLICK;
+		case 16: return DOWN_RCLICK;
+		default: return SHIFT_LCLICK;
+		}
+	}
 }

@@ -30,32 +30,6 @@ public class NeoRogue extends JavaPlugin {
 	public static File SCHEMATIC_FOLDER;
 	public static HolographicDisplaysAPI holo;
 	
-	public static void main(String[] args) {
-		Area area = new Area(AreaType.ARGENT_PLAZA, 0, 0);
-		
-		Scanner scan = new Scanner(System.in);
-		while (true) {
-			area.print();
-			System.out.println("Choose pos, lane");
-			int pos = scan.nextInt();
-			int lane = scan.nextInt();
-			if (pos < 0 || lane < 0) break;
-			
-			Node node = area.getNodes()[pos][lane];
-			if (node == null) {
-				System.out.println("Null node. Try again.");
-				continue;
-			}
-			
-			System.out.println("Destinations: ");
-			for (Node dest : node.getDestinations()) {
-				System.out.println(dest.getPosition() + "," + dest.getLane());
-			}
-		}
-		System.out.println("Closed.");
-		scan.close();
-	}
-	
 	public void onEnable() {
 		Bukkit.getServer().getLogger().info("NeoRogue Enabled");
 		NeoCore.registerIOComponent(this, new PlayerManager(), "NeoRogue-PlayerManager");

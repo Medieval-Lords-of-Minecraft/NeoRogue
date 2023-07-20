@@ -5,10 +5,12 @@ import java.util.HashMap;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
@@ -38,41 +40,36 @@ public class PlayerSessionInventory extends CoreInventory {
 		int iter = 0;
 		for (int i : ARMOR) {
 			Armor a = data.getArmor()[iter];
-			contents[i] = a != null ? addNbt(a.getItem(), "ARMOR", a.getId(), a.isUpgraded(), iter)
-					: addNbt(CoreInventory.createButton(Material.YELLOW_STAINED_GLASS_PANE, "&eArmor Slot",
-							"&7Drag an armor here to equip it!"), iter++);
+			contents[i] = a != null ? addNbt(a.getItem(), a.getId(), a.isUpgraded(), iter)
+					: createArmorIcon(iter++);
 			slotTypes.put(i, "ARMOR");
 		}
 
 		iter = 0;
 		for (int i : ACCESSORIES) {
 			Accessory a = data.getAccessories()[iter];
-			contents[i] = a != null ? addNbt(a.getItem(), "ACCESSORY", a.getId(), a.isUpgraded(), iter)
-					: addNbt(CoreInventory.createButton(Material.LIME_STAINED_GLASS_PANE, "&aAccessory Slot",
-							"&7Drag an accessory here to equip it!"), iter++);
+			contents[i] = a != null ? addNbt(a.getItem(), a.getId(), a.isUpgraded(), iter)
+					: createAccessoryIcon(iter++);
 			slotTypes.put(i, "ACCESSORY");
 		}
 
 		for (KeyBind bind : KeyBind.values()) {
 			Usable a = data.getOtherBinds()[bind.getDataSlot()];
 			contents[bind.getInventorySlot()] = a != null
-					? addNbt(a.getItem(), "OTHERBINDS", a.getId(), a.isUpgraded(), bind.getDataSlot())
+					? addNbt(a.getItem(), a.getId(), a.isUpgraded(), bind.getDataSlot())
 					: addNbt(bind.getItem(), bind.getDataSlot());
 			slotTypes.put(bind.getInventorySlot(), "OTHERBINDS");
 		}
 
 		Offhand o = data.getOffhand();
-		contents[OFFHAND] = o != null ? addNbt(o.getItem(), "OFFHAND", o.getId(), o.isUpgraded(), 0)
-				: addNbt(CoreInventory.createButton(Material.WHITE_STAINED_GLASS_PANE, "&fOffhand Slot",
-						"&7Drag an offhand here to equip it!"), 0);
+		contents[OFFHAND] = o != null ? addNbt(o.getItem(), o.getId(), o.isUpgraded(), 0)
+				: createOffhandIcon();
 		slotTypes.put(OFFHAND, "OFFHAND");
 
 		for (int i : HOTBAR) {
 			Usable eq = data.getHotbar()[i - 18];
-			contents[i] = eq != null ? addNbt(eq.getItem(), "HOTBAR", eq.getId(), eq.isUpgraded(), i - 18)
-					: addNbt(CoreInventory.createButton(Material.RED_STAINED_GLASS_PANE, "&cHotbar Slot",
-							"&eBound to Hotbar #" + (i - 17), "&7Drag a weapon, skill, or consumable",
-							"&7here to bind it!"), i - 18);
+			contents[i] = eq != null ? addNbt(eq.getItem(), eq.getId(), eq.isUpgraded(), i - 18)
+					: createHotbarIcon(i - 18);
 			slotTypes.put(i, "HOTBAR");
 		}
 
@@ -86,6 +83,27 @@ public class PlayerSessionInventory extends CoreInventory {
 		contents[ARTIFACTS] = addNbt(CoreInventory.createButton(Material.NETHER_STAR, "&6Artifacts",
 				"&7Click here to view all your artifacts!"), 0);
 		inv.setContents(contents);
+	}
+	
+	private static ItemStack createArmorIcon(int dataSlot) {
+		return addNbt(CoreInventory.createButton(Material.YELLOW_STAINED_GLASS_PANE, "&eArmor Slot",
+			"&7Drag an armor here to equip it!"), dataSlot);
+	}
+	
+	public static ItemStack createAccessoryIcon(int dataSlot) {
+		return addNbt(CoreInventory.createButton(Material.LIME_STAINED_GLASS_PANE, "&aAccessory Slot",
+				"&7Drag an accessory here to equip it!"), dataSlot);
+	}
+	
+	public static ItemStack createOffhandIcon() {
+		return addNbt(CoreInventory.createButton(Material.WHITE_STAINED_GLASS_PANE, "&fOffhand Slot",
+				"&7Drag an offhand here to equip it!"), 0);
+	}
+	
+	private static ItemStack createHotbarIcon(int dataSlot) {
+		return addNbt(CoreInventory.createButton(Material.RED_STAINED_GLASS_PANE, "&cHotbar Slot",
+				"&eBound to Hotbar #" + (dataSlot + 1), "&7Drag a weapon, skill, or consumable",
+				"&7here to bind it!"), dataSlot);
 	}
 
 	@Override
@@ -117,7 +135,7 @@ public class PlayerSessionInventory extends CoreInventory {
 			}
 			// Update player session data if removing equipped gear
 			else if (onChest) {
-				removeEquipment(slotTypes.get(slot), nclicked.getInteger("dataSlot"));
+				removeEquipment(slotTypes.get(slot), nclicked.getInteger("dataSlot"), slot, e);
 				p.playSound(p, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1F);
 			}
 		}
@@ -125,17 +143,16 @@ public class PlayerSessionInventory extends CoreInventory {
 		// Most important, only way to equip an item
 		else if (!cursor.getType().isAir() && clicked != null) {
 			// Don't allow swapping with filler panes
-			if (!nclicked.hasTag("type")) {
+			if (!nclicked.hasTag("dataSlot")) {
 				e.setCancelled(true);
 			}
 			if (onChest) {
-				boolean canSet = setEquipment(slotTypes.get(slot), ncursor.getInteger("dataSlot"),
+				boolean canSet = setEquipment(slotTypes.get(slot), nclicked.getInteger("dataSlot"),
 						ncursor.getString("equipId"), ncursor.getBoolean("isUpgraded"));
-				System.out.println("Can set: " + canSet);
 				e.setCancelled(!canSet);
 				if (canSet) {
 					p.playSound(p, Sound.ITEM_ARMOR_EQUIP_DIAMOND, 1F, 1F);
-					p.setItemOnCursor(null);
+					if (!nclicked.hasTag("equipId")) e.setCurrentItem(null);
 				}
 			}
 		}
@@ -151,37 +168,43 @@ public class PlayerSessionInventory extends CoreInventory {
 
 	}
 
-	private ItemStack addNbt(ItemStack item, int dataSlot) {
+	private static ItemStack addNbt(ItemStack item, int dataSlot) {
 		NBTItem nbti = new NBTItem(item);
 		nbti.setInteger("dataSlot", dataSlot);
 		return nbti.getItem();
 	}
 
-	private ItemStack addNbt(ItemStack item, String type, String equipId, boolean isUpgraded, int dataSlot) {
+	private static ItemStack addNbt(ItemStack item, String equipId, boolean isUpgraded, int dataSlot) {
 		NBTItem nbti = new NBTItem(item);
 		nbti.setString("equipId", equipId);
-		nbti.setString("type", type);
 		nbti.setInteger("dataSlot", dataSlot);
 		nbti.setBoolean("isUpgraded", isUpgraded);
 		return nbti.getItem();
 	}
 
-	private void removeEquipment(String type, int dataSlot) {
+	private void removeEquipment(String type, int dataSlot, int invSlot, InventoryClickEvent e) {
 		switch (type) {
 		case "ARMOR":
 			data.getArmor()[dataSlot] = null;
+			p.setItemOnCursor(createArmorIcon(dataSlot));
 			break;
 		case "ACCESSORY":
 			data.getAccessories()[dataSlot] = null;
+			p.setItemOnCursor(createAccessoryIcon(dataSlot));
 			break;
 		case "OTHERBINDS":
+			if (data.getOtherBinds()[dataSlot] != null) data.addAbilityEquipped(-1);
 			data.getOtherBinds()[dataSlot] = null;
+			p.setItemOnCursor(KeyBind.getBindFromSlot(dataSlot).getItem());
 			break;
 		case "OFFHAND":
 			data.setOffhand(null);
+			p.setItemOnCursor(createOffhandIcon());
 			break;
 		case "HOTBAR":
+			if (data.getHotbar()[dataSlot] != null) data.addAbilityEquipped(-1);
 			data.getHotbar()[dataSlot] = null;
+			p.setItemOnCursor(createHotbarIcon(dataSlot));
 			break;
 		}
 	}
@@ -194,13 +217,12 @@ public class PlayerSessionInventory extends CoreInventory {
 			data.getArmor()[dataSlot] = (Armor) eq;
 			break;
 		case "ACCESSORY":
-			System.out.println("0");
 			if (!(eq instanceof Accessory)) return false;
-			System.out.println("1");
 			data.getAccessories()[dataSlot] = (Accessory) eq;
 			break;
 		case "OTHERBINDS":
 			if (!(eq instanceof Usable)) return false;
+			if (eq instanceof Ability && data.getOtherBinds()[dataSlot] == null) data.addAbilityEquipped(1);
 			data.getOtherBinds()[dataSlot] = (Usable) eq;
 			break;
 		case "OFFHAND":
@@ -209,6 +231,7 @@ public class PlayerSessionInventory extends CoreInventory {
 			break;
 		case "HOTBAR":
 			if (!(eq instanceof Usable)) return false;
+			if (eq instanceof Ability && data.getHotbar()[dataSlot] == null) data.addAbilityEquipped(1);
 			data.getHotbar()[dataSlot] = (Usable) eq;
 			break;
 		default:

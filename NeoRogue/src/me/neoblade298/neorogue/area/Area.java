@@ -250,22 +250,6 @@ public class Area {
 		return type;
 	}
 
-	public void print() {
-		for (int lane = 0; lane < MAX_LANES; lane++) {
-			for (int pos = 0; pos < MAX_POSITIONS; pos++) {
-				Node node = nodes[pos][lane];
-				if (node == null) {
-					System.out.print("N/A ");
-				}
-				else {
-					System.out.print(nodes[pos][lane] + " ");
-				}
-			}
-			System.out.println();
-			System.out.println();
-		}
-	}
-
 	public Node[][] getNodes() {
 		return nodes;
 	}
