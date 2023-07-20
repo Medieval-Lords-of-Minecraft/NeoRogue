@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.session;
 import java.util.HashMap;
 import java.util.UUID;
 
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
@@ -68,8 +69,17 @@ public class SessionManager implements Listener {
 		}
 	}
 	
+	
+	
 	@EventHandler
 	public void onDamage(EntityDamageByEntityEvent e) {
+		if (e.getEntityType() != EntityType.PLAYER && e.getDamager().getType() != EntityType.PLAYER) return;
 		
+		boolean playerDamager = e.getEntityType() != EntityType.PLAYER;
+		if (!sessions.containsKey(p.getUniqueId())) return;
+		Session s = sessions.get(p.getUniqueId());
+		
+		if (!(s.getInstance() instanceof FightInstance)) return;
+		((FightInstance) s.getInstance()).handleOnDamage(e, playerDamager);
 	}
 }

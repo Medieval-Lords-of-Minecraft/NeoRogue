@@ -18,7 +18,10 @@ public enum Trigger {
 	HOTBAR_7,
 	HOTBAR_8,
 	HOTBAR_9,
-	BASIC_ATTACK,
+	BASIC_ATTACK, // Only runs off the in-house basic attack event
+	LEFT_CLICK_NO_HIT,
+	LEFT_CLICK_HIT,
+	RIGHT_CLICK,
 	DEALT_DAMAGE,
 	RECEIVED_DAMAGE;
 }

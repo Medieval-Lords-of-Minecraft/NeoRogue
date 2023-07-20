@@ -6,6 +6,7 @@ import java.util.HashMap;
 import org.bukkit.inventory.ItemStack;
 
 import me.neoblade298.neorogue.equipment.abilities.builtin.*;
+import me.neoblade298.neorogue.session.instance.FightData;
 
 public abstract class Equipment {
 	private static HashMap<String, Equipment> equipment = new HashMap<String, Equipment>();
@@ -32,7 +33,7 @@ public abstract class Equipment {
 	}
 	
 	// Run at the start of a fight to initialize Fight Data
-	public abstract void initialize();
+	public abstract void initialize(FightData data);
 	
 	public String getId() {
 		return id;
