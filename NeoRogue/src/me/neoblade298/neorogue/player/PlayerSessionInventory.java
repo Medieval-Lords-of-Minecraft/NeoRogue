@@ -6,7 +6,6 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -14,15 +13,10 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.scheduler.BukkitRunnable;
-
 import de.tr7zw.nbtapi.NBTItem;
-import de.tr7zw.nbtapi.plugin.NBTAPI;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.util.Util;
-import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.*;
 
 public class PlayerSessionInventory extends CoreInventory {
@@ -269,7 +263,7 @@ public class PlayerSessionInventory extends CoreInventory {
 		else {
 			e.setCancelled(true);
 			String type = slotTypes.get(slot);
-			if (isBindable(type)) clicked = removeBindLore(clicked.clone());
+			if (isBindable(type)) clicked = removeBindLore(clicked);
 			p.getWorld().dropItem(p.getLocation(), clicked).setPickupDelay(40);
 			removeEquipment(type, nclicked.getInteger("dataSlot"), slot, e.getClickedInventory(), true);
 			p.playSound(p, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1F);
