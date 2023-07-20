@@ -1,0 +1,24 @@
+package me.neoblade298.neorogue.player;
+
+public enum Trigger {
+	SHIFT_LCLICK,
+	SHIFT_RCLICK,
+	SHIFT_DROP,
+	SHIFT_SWAP,
+	DROP,
+	SWAP,
+	UP_RCLICK,
+	DOWN_RCLICK,
+	HOTBAR_1,
+	HOTBAR_2,
+	HOTBAR_3,
+	HOTBAR_4,
+	HOTBAR_5,
+	HOTBAR_6,
+	HOTBAR_7,
+	HOTBAR_8,
+	HOTBAR_9,
+	BASIC_ATTACK,
+	DEALT_DAMAGE,
+	RECEIVED_DAMAGE;
+}

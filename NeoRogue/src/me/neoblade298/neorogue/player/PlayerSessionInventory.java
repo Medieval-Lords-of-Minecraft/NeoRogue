@@ -1,5 +1,6 @@
 package me.neoblade298.neorogue.player;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -386,5 +387,38 @@ public class PlayerSessionInventory extends CoreInventory {
 	
 	private boolean isBindable(String type) {
 		return type.equals("OTHERBINDS") || type.equals("HOTBAR");
+	}
+	
+	public void saveStorage() {
+		int max = data.getMaxStorage();
+		ArrayList<ItemStack> toSave = new ArrayList<ItemStack>(max);
+		for (ItemStack item : p.getInventory().getContents()) {
+			if (item == null) continue;
+			
+			toSave.add(item);
+		}
+		
+		if (toSave.size() > max) {
+			displayError("You have too many items in storage! Drop or sell some!", false);
+			return;
+		}
+		
+		ArrayList<Equipment> storage = data.getStorage();
+		storage.clear();
+		
+		for (ItemStack item : toSave) {
+			NBTItem nbti = new NBTItem(item);
+			String id = nbti.getString("equipId");
+			boolean isUpgraded = nbti.getBoolean("isUpgraded");
+			Equipment eq = Equipment.getEquipment(id, isUpgraded);
+			if (eq == null) {
+				String display = item.hasItemMeta() && item.getItemMeta().hasDisplayName() ? item.getItemMeta().getDisplayName() : item.getType().name();
+				Bukkit.getLogger().warning("[NeoRogue] " + p.getName() + " could not save " + display + " to their storage");
+				continue;
+			}
+			else {
+				storage.add(eq);
+			}
+		}
 	}
 }

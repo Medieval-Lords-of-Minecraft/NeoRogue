@@ -31,6 +31,9 @@ public abstract class Equipment {
 		else equipment.put(id, this);
 	}
 	
+	// Run at the start of a fight to initialize Fight Data
+	public abstract void initialize();
+	
 	public String getId() {
 		return id;
 	}

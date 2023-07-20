@@ -21,14 +21,13 @@ public class PlayerSessionData {
 	private ArrayList<Artifact> artifacts = new ArrayList<Artifact>();
 	private ArrayList<Equipment> storage = new ArrayList<Equipment>(9);
 	private Usable[] otherBinds = new Usable[8];
-	private int abilitiesEquipped = 0, maxAbilities;
+	private int abilitiesEquipped = 0, maxAbilities = 2, maxStorage = 9;
 	
 	public PlayerSessionData(UUID uuid) {
 		data = PlayerManager.getPlayerData(uuid);
 		maxHealth = 100;
 		maxMana = 100;
 		maxStamina = 100;
-		maxAbilities = 1;
 		health = maxHealth;
 		
 		// Need to give player a weapon at the start
@@ -127,5 +126,9 @@ public class PlayerSessionData {
 
 	public ArrayList<Artifact> getArtifacts() {
 		return artifacts;
+	}
+	
+	public int getMaxStorage() {
+		return maxStorage;
 	}
 }
