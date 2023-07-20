@@ -36,12 +36,13 @@ public abstract class Ability extends Usable {
 				lore.add(SharedUtil.translateColors(l));
 			}
 		}
-		lore.addAll(SharedUtil.addLineBreaks(SharedUtil.translateColors(loreLine), 250, ChatColor.GRAY));
+		lore.addAll(SharedUtil.addLineBreaks(SharedUtil.translateColors(loreLine), 200, ChatColor.GRAY));
 		meta.setLore(lore);
 		item.setItemMeta(meta);
 		NBTItem nbti = new NBTItem(item);
 		nbti.setString("equipId", a.id);
 		nbti.setString("type", "ABILITY");
+		nbti.setBoolean("isUpgraded", a.isUpgraded);
 		return nbti.getItem();
 	}
 	
