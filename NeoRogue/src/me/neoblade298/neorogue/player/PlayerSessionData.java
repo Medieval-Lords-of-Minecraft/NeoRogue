@@ -100,4 +100,32 @@ public class PlayerSessionData {
 	public void addAbilityEquipped(int num) {
 		abilitiesEquipped += num;
 	}
+
+	public PlayerData getData() {
+		return data;
+	}
+
+	public double getMaxHealth() {
+		return maxHealth;
+	}
+
+	public double getMaxMana() {
+		return maxMana;
+	}
+
+	public double getMaxStamina() {
+		return maxStamina;
+	}
+
+	public double getHealth() {
+		return health;
+	}
+
+	public Armor[] getArmors() {
+		return armors;
+	}
+
+	public ArrayList<Artifact> getArtifacts() {
+		return artifacts;
+	}
 }
