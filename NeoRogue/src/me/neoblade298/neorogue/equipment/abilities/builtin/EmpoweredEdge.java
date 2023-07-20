@@ -19,13 +19,22 @@ public class EmpoweredEdge extends Ability {
 
 	@Override
 	public void initialize(FightData data) {
-		data.addTrigger(Trigger.LEFT_CLICK_HIT, new EmpoweredEdgeAction());
+		data.addTrigger(Trigger.LEFT_CLICK_HIT, () -> {
+			(inputs) -> ((Entity) inputs[1]).damage(upgraded ? 100 : 75);
+		});
 	}
 	
 	private class EmpoweredEdgeAction implements TriggerAction {
+
 		int count = 0;
+		boolean upgraded;
+		public EmpoweredEdgeAction(boolean upgraded) {
+			this.upgraded = upgraded;
+		}
+		
 		public boolean run(Object[] inputs) {
-			((Entity) inputs[1]).damage(5);
+			((Entity) inputs[1]).damage(upgraded ? 100 : 75);
+			return false;
 		}
 	}
 }
