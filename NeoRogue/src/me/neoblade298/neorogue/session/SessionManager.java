@@ -13,9 +13,11 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerChangedMainHandEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+
 import me.neoblade298.neorogue.player.PlayerSessionInventory;
-import me.neoblade298.neorogue.session.instance.*;
+import me.neoblade298.neorogue.session.fights.*;
 
 public class SessionManager implements Listener {
 	private static HashMap<UUID, Session> sessions = new HashMap<UUID, Session>();
@@ -69,17 +71,25 @@ public class SessionManager implements Listener {
 		}
 	}
 	
-	
-	
 	@EventHandler
 	public void onDamage(EntityDamageByEntityEvent e) {
 		if (e.getEntityType() != EntityType.PLAYER && e.getDamager().getType() != EntityType.PLAYER) return;
 		
 		boolean playerDamager = e.getEntityType() != EntityType.PLAYER;
-		if (!sessions.containsKey(p.getUniqueId())) return;
-		Session s = sessions.get(p.getUniqueId());
+		UUID uuid = playerDamager ? e.getDamager().getUniqueId() : e.getEntity().getUniqueId();
+		if (!sessions.containsKey(uuid)) return;
+		Session s = sessions.get(uuid);
 		
 		if (!(s.getInstance() instanceof FightInstance)) return;
-		((FightInstance) s.getInstance()).handleOnDamage(e, playerDamager);
+		((FightInstance) s.getInstance()).handleDamage(e, playerDamager);
+	}
+	
+	@EventHandler
+	public void onHotbarSwap(PlayerChangedMainHandEvent e) {
+		UUID uuid = e.getPlayer().getUniqueId();
+		if (!sessions.containsKey(uuid)) return;
+		Session s = sessions.get(uuid);
+		
+		if (!(s.getInstance() instanceof FightInstance)) return;
 	}
 }

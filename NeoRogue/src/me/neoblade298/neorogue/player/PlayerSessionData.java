@@ -35,6 +35,7 @@ public class PlayerSessionData {
 		// Strictly debug purposes
 		storage.add(Equipment.getEquipment("empoweredEdge", true));
 		storage.add(Equipment.getEquipment("battleCry", false));
+		storage.add(Equipment.getEquipment("woodenSword", true));
 		setupInventory();
 	}
 	

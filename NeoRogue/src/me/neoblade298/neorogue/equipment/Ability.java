@@ -18,10 +18,10 @@ public abstract class Ability extends Usable {
 		super(id, isUpgraded, rarity);
 	}
 	
-	public static ItemStack createItem(Ability a, Material mat, String displayName, String[] preLoreLine, String loreLine) {
+	public static ItemStack createItem(Ability a, Material mat, String[] preLoreLine, String loreLine) {
 		ItemStack item = new ItemStack(mat);
 		ItemMeta meta = item.getItemMeta();
-		meta.setDisplayName(ChatColor.RED + displayName + (a.isUpgraded ? "+" : ""));
+		meta.setDisplayName(ChatColor.RED + a.display + (a.isUpgraded ? "+" : ""));
 		ArrayList<String> lore = new ArrayList<String>();
 		lore.add("§4Ability");
 		
