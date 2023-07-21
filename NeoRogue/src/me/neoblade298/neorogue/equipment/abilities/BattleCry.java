@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neocore.bukkit.particles.ParticleUtil;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Ability;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.Trigger;
 import me.neoblade298.neorogue.session.fights.BuffType;
@@ -30,11 +31,25 @@ public class BattleCry extends Ability {
 
 	@Override
 	public void initialize(Player p, FightData data, FightInstance inst, Trigger bind) {
-		Util.playSound(p, Sound.ENTITY_BLAZE_DEATH, 1F, 1F, false);
-		ParticleUtil.spawnParticle(p, false, p.getLocation(), Particle.REDSTONE, 50, 0.5, 0.5, 0.5, 0, new DustOptions(Color.RED, 1F));
-		data.addTrigger(id, bind, (inputs) -> {
+		data.addTrigger(id, bind, new BattleCryInstance(this, p, data));
+	}
+	
+	private class BattleCryInstance extends EquipmentInstance {
+		private Player p;
+		private FightData data;
+		public BattleCryInstance(Ability a, Player p, FightData data) {
+			super(a);
+			this.p = p;
+			this.cooldown = a.getCooldown();
+			this.data = data;
+		}
+		
+		@Override
+		public boolean trigger(Object[] inputs) {
+			Util.playSound(p, Sound.ENTITY_BLAZE_DEATH, 1F, 1F, false);
+			ParticleUtil.spawnParticle(p, false, p.getLocation(), Particle.REDSTONE, 50, 0.5, 0.5, 0.5, 0, new DustOptions(Color.RED, 1F));
 			data.addBuff(id, true, false, BuffType.PHYSICAL, isUpgraded ? 20 : 14, 10);
 			return true;
-		});
+		}
 	}
 }

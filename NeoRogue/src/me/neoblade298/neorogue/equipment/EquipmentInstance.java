@@ -3,11 +3,16 @@ package me.neoblade298.neorogue.equipment;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.player.TriggerAction;
 
-public abstract class EquipmentInstance {
+public abstract class EquipmentInstance implements TriggerAction {
 	private Equipment eq;
 	private long lastUsed = 0L;
-	private int cooldown = 0;
+	protected int cooldown = 0;
+	
+	public EquipmentInstance(Equipment eq) {
+		this.eq = eq;
+	}
 	
 	public abstract boolean trigger(Object[] inputs);
 	public boolean canTrigger() {
@@ -22,5 +27,9 @@ public abstract class EquipmentInstance {
 		int cooldownOver = (int) ((lastUsed / 1000) + cooldown);
 		int now = (int) (System.currentTimeMillis() / 1000);
 		Util.msg(p, "&e" + eq.display + " &ccooldown: &e" + (cooldownOver - now) + "s");
+	}
+	
+	public Equipment getEquipment() {
+		return eq;
 	}
 }
