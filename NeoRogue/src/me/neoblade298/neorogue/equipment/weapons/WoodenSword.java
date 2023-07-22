@@ -25,6 +25,7 @@ public class WoodenSword extends Weapon {
 	public void initialize(Player p, FightData data, FightInstance inst, Trigger bind) {
 		data.addTrigger(id, Trigger.LEFT_CLICK_HIT, (inputs) -> {
 			inst.dealDamage(p, DamageType.SLASHING, damage, ((Damageable) inputs[1]));
+			data.runActions(Trigger.BASIC_ATTACK, inputs);
 			return true;
 		});
 	}

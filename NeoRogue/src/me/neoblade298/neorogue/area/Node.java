@@ -2,12 +2,20 @@ package me.neoblade298.neorogue.area;
 
 import java.util.ArrayList;
 
+import org.bukkit.entity.Player;
+
+import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.session.Instance;
+import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.fights.FightInstance;
+
 public class Node {
 	private static int MAX_DESTS = 3;
 	
 	private ArrayList<Node> dests = new ArrayList<Node>(MAX_DESTS);
 	private ArrayList<Node> srcs = new ArrayList<Node>(MAX_DESTS);
 	private NodeType type;
+	private Instance inst;
 	private int pos, lane;
 	
 	public Node(NodeType type, int pos, int lane) {
@@ -72,5 +80,19 @@ public class Node {
 			return lane == n.lane && pos == n.pos;
 		}
 		return false;
+	}
+	
+	public void generateInstance() {
+		switch (type) {
+		case FIGHT: inst = new FightInstance();
+		break;
+		default:
+			break;
+		}
+	}
+	
+	public void startInstance(Session s) {
+		inst.start(s);
+		
 	}
 }

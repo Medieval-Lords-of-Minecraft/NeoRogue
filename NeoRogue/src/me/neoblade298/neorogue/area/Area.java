@@ -58,7 +58,8 @@ public class Area {
 	private static final int CENTER_LANE = MAX_LANES / 2;
 	private static final double STRAIGHT_PATH_CHANCE = 0.7;
 	private static final double DOUBLE_PATH_CHANCE = 0.6;
-	private static final String WORLD_NAME = "Cyprus";
+	private static final String WORLD_NAME = "Dev";
+	private static final int EDGE_PADDING = 6, NODE_DIST_BETWEEN = 4;
 	
 	private static final int NODE_Y = 66;
 	
@@ -220,7 +221,7 @@ public class Area {
 		 */
 		double rand = NeoCore.gen.nextDouble();
 
-		rand -= 0.35;
+		rand -= 1.35; // Set to 0.35 after debug
 		if (rand < 0) return new Node(NodeType.FIGHT, pos, lane);
 		rand -= 0.05;
 		if (rand < 0) return new Node(NodeType.REST, pos, lane);
@@ -300,7 +301,7 @@ public class Area {
 				Node node = nodes[pos][lane];
 				if (node == null) continue;
 				
-				Location loc = new Location(w, xOff + 6 + (pos * 4), NODE_Y, zOff + 6 + (lane * 4));
+				Location loc = new Location(w, xOff + EDGE_PADDING + (pos * NODE_DIST_BETWEEN), NODE_Y, zOff + EDGE_PADDING + (lane * NODE_DIST_BETWEEN));
 				loc.getBlock().setType(node.getType().getBlock());
 				loc.add(-1, 0, 0);
 				loc.getBlock().setType(Material.OAK_WALL_SIGN);
@@ -317,6 +318,15 @@ public class Area {
 		}
 	}
 	
+	public Node getNodeFromLocation(Location loc) {
+		int pos = loc.getBlockX(), lane = loc.getBlockZ();
+		pos -= xOff + EDGE_PADDING;
+		pos /= NODE_DIST_BETWEEN;
+		lane -= zOff + EDGE_PADDING;
+		lane /= NODE_DIST_BETWEEN;
+		return nodes[pos][lane];
+	}
+	
 	// Called whenever a player advances to a new node
 	public void update(Node node) {
 		// Remove buttons from old paths
@@ -330,8 +340,10 @@ public class Area {
 			holo.delete();
 		}
 		
-		// Add button to new paths
+		// Add button to new paths and generate them
 		for (Node dest : node.getDestinations()) {
+			dest.generateInstance();
+			
 			Location loc = nodeToLocation(dest, 1);
 			loc.getBlock().setType(Material.OAK_BUTTON);
 			FaceAttachable face = (FaceAttachable) loc.getBlock().getBlockData();
@@ -364,7 +376,6 @@ public class Area {
 				lc.getInventory().addItem(book);
 			}
 		}
-		
 	}
 	
 	public void tickParticles(Player p, Node curr) {

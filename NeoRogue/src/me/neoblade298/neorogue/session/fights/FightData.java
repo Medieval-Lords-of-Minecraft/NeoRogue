@@ -53,10 +53,10 @@ public class FightData {
 			armor.initialize(data.getPlayer(), this, inst, null);
 		}
 		for (int i = 0; i < data.getHotbar().length; i++) {
-			Usable hotbar = data.getHotbar()[i];
+			HotbarCompatible hotbar = data.getHotbar()[i];
 			if (hotbar == null) continue;
 
-			Trigger t = null;
+			Trigger t = Trigger.getFromHotbarSlot(i);
 			hotbar.initialize(data.getPlayer(), this, inst, t);
 		}
 		for (int i = 0; i < data.getOtherBinds().length; i++) {
@@ -68,7 +68,10 @@ public class FightData {
 			if (art == null) continue;
 			art.initialize(data.getPlayer(), this, inst, null);
 		}
-		data.getOffhand().initialize(data.getPlayer(), this, inst, null);
+		
+		if (data.getOffhand() != null) {
+			data.getOffhand().initialize(data.getPlayer(), this, inst, null);
+		}
 	}
 
 	public void cleanup() {

@@ -16,7 +16,7 @@ import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import net.md_5.bungee.api.ChatColor;
 
-public abstract class Weapon extends Usable {
+public abstract class Weapon extends HotbarCompatible {
 	protected double damage, attackSpeed;
 
 	public Weapon(String id, boolean isUpgraded, Rarity rarity) {

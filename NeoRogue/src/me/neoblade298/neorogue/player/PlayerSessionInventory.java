@@ -41,38 +41,38 @@ public class PlayerSessionInventory extends CoreInventory {
 		// Import data from session data
 		int iter = 0;
 		for (int i : ARMOR) {
+			slotTypes.put(i, "ARMOR");
 			Armor a = data.getArmor()[iter];
 			contents[i] = a != null ? addNbt(a.getItem(), a.getId(), a.isUpgraded(), iter)
 					: createArmorIcon(iter++);
-			slotTypes.put(i, "ARMOR");
 		}
 
 		iter = 0;
 		for (int i : ACCESSORIES) {
+			slotTypes.put(i, "ACCESSORY");
 			Accessory a = data.getAccessories()[iter];
 			contents[i] = a != null ? addNbt(a.getItem(), a.getId(), a.isUpgraded(), iter)
 					: createAccessoryIcon(iter++);
-			slotTypes.put(i, "ACCESSORY");
 		}
 
 		for (KeyBind bind : KeyBind.values()) {
+			slotTypes.put(bind.getInventorySlot(), "OTHERBINDS");
 			Usable a = data.getOtherBinds()[bind.getDataSlot()];
 			contents[bind.getInventorySlot()] = a != null
 					? addNbt(addBindLore(a.getItem(), bind.getInventorySlot(), bind.getDataSlot()), a.getId(), a.isUpgraded(), bind.getDataSlot())
 					: addNbt(bind.getItem(), bind.getDataSlot());
-			slotTypes.put(bind.getInventorySlot(), "OTHERBINDS");
 		}
 
+		slotTypes.put(OFFHAND, "OFFHAND");
 		Offhand o = data.getOffhand();
 		contents[OFFHAND] = o != null ? addNbt(o.getItem(), o.getId(), o.isUpgraded(), 0)
 				: createOffhandIcon();
-		slotTypes.put(OFFHAND, "OFFHAND");
 
 		for (int i : HOTBAR) {
-			Usable eq = data.getHotbar()[i - 18];
+			slotTypes.put(i, "HOTBAR");
+			HotbarCompatible eq = data.getHotbar()[i - 18];
 			contents[i] = eq != null ? addNbt(addBindLore(eq.getItem(), i, i - 18), eq.getId(), eq.isUpgraded(), i - 18)
 					: createHotbarIcon(i - 18);
-			slotTypes.put(i, "HOTBAR");
 		}
 
 		for (int i : FILLER) {
@@ -345,9 +345,9 @@ public class PlayerSessionInventory extends CoreInventory {
 			data.setOffhand((Offhand) eq);
 			break;
 		case "HOTBAR":
-			if (!(eq instanceof Usable)) return false;
+			if (!(eq instanceof HotbarCompatible)) return false;
 			if (eq instanceof Ability && data.getHotbar()[dataSlot] == null) data.addAbilityEquipped(1);
-			data.getHotbar()[dataSlot] = (Usable) eq;
+			data.getHotbar()[dataSlot] = (HotbarCompatible) eq;
 			break;
 		default:
 			return false; // Just in case null pointer
@@ -387,38 +387,5 @@ public class PlayerSessionInventory extends CoreInventory {
 	
 	private boolean isBindable(String type) {
 		return type.equals("OTHERBINDS") || type.equals("HOTBAR");
-	}
-	
-	public void saveStorage() {
-		int max = data.getMaxStorage();
-		ArrayList<ItemStack> toSave = new ArrayList<ItemStack>(max);
-		for (ItemStack item : p.getInventory().getContents()) {
-			if (item == null) continue;
-			
-			toSave.add(item);
-		}
-		
-		if (toSave.size() > max) {
-			displayError("You have too many items in storage! Drop or sell some!", false);
-			return;
-		}
-		
-		ArrayList<Equipment> storage = data.getStorage();
-		storage.clear();
-		
-		for (ItemStack item : toSave) {
-			NBTItem nbti = new NBTItem(item);
-			String id = nbti.getString("equipId");
-			boolean isUpgraded = nbti.getBoolean("isUpgraded");
-			Equipment eq = Equipment.getEquipment(id, isUpgraded);
-			if (eq == null) {
-				String display = item.hasItemMeta() && item.getItemMeta().hasDisplayName() ? item.getItemMeta().getDisplayName() : item.getType().name();
-				Bukkit.getLogger().warning("[NeoRogue] " + p.getName() + " could not save " + display + " to their storage");
-				continue;
-			}
-			else {
-				storage.add(eq);
-			}
-		}
 	}
 }

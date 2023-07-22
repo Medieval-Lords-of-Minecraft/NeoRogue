@@ -1,8 +1,10 @@
 package me.neoblade298.neorogue.session;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.area.Area;
@@ -18,11 +20,22 @@ public class Session {
 	private Instance inst;
 	private Node curr;
 	private SessionStatistics stats;
+	private int xOff, yOff;
 	
-	
-	public Session(Player p) {
+	public Session(Player p, int xOff, int yOff) {
+		this.xOff = xOff;
+		this.yOff = yOff;
 		host = p.getUniqueId();
 		party.put(p.getUniqueId(), new PlayerSessionData(p.getUniqueId()));
+		
+		area = new Area(AreaType.LOW_DISTRICT, xOff, yOff);
+		area.generate();
+		// Strictly Debug
+		area.update(area.getNodes()[1][2]);
+	}
+	
+	public HashMap<UUID, PlayerSessionData> getParty() {
+		return party;
 	}
 	
 	public Instance getInstance() {
@@ -35,5 +48,18 @@ public class Session {
 	
 	public PlayerSessionData getData(UUID uuid) {
 		return party.get(uuid);
+	}
+	
+	public Area getArea() {
+		return area;
+	}
+	
+	public ArrayList<Player> getOnlinePlayers() {
+		ArrayList<Player> players = new ArrayList<Player>();
+		for (UUID uuid : party.keySet()) {
+			Player p = Bukkit.getPlayer(uuid);
+			if (p != null) players.add(p);
+		}
+		return players;
 	}
 }

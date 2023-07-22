@@ -1,21 +1,29 @@
 package me.neoblade298.neorogue.session;
 
 import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Tag;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerChangedMainHandEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 
+import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.PlayerSessionInventory;
 import me.neoblade298.neorogue.session.fights.*;
 
@@ -23,7 +31,7 @@ public class SessionManager implements Listener {
 	private static HashMap<UUID, Session> sessions = new HashMap<UUID, Session>();
 	
 	public static Session createSession(Player p) {
-		Session s = new Session(p);
+		Session s = new Session(p, 0, 0); // TODO: Add session playing field creation and search
 		sessions.put(p.getUniqueId(), s);
 		return s;
 	}
@@ -85,11 +93,44 @@ public class SessionManager implements Listener {
 	}
 	
 	@EventHandler
-	public void onHotbarSwap(PlayerChangedMainHandEvent e) {
+	public void onHotbarSwap(PlayerItemHeldEvent e) {
 		UUID uuid = e.getPlayer().getUniqueId();
 		if (!sessions.containsKey(uuid)) return;
 		Session s = sessions.get(uuid);
 		
 		if (!(s.getInstance() instanceof FightInstance)) return;
+		((FightInstance) s.getInstance()).handleHotbarSwap(e);
+	}
+	
+	@EventHandler
+	public void onInteract(PlayerInteractEvent e) {
+		UUID uuid = e.getPlayer().getUniqueId();
+		Action a = e.getAction();
+		if (!sessions.containsKey(uuid)) return;
+		Session s = sessions.get(uuid);
+		
+		if (a == Action.RIGHT_CLICK_BLOCK && Tag.BUTTONS.isTagged(e.getClickedBlock().getType())) {
+			if (!(s.getInstance() instanceof NodeSelectInstance)) return;
+			
+			// Validation
+			for (Entry<UUID, PlayerSessionData> ent : s.getParty().entrySet()) {
+				Player member = ent.getValue().getPlayer();
+				if (member == null) {
+					for (Player online : s.getOnlinePlayers()) {
+						Util.displayError(online, "&cAt least one party member (&4" + ent.getValue().getData().getDisplay() + "&c) is not online!");
+					}
+					return;
+				}
+				
+				if (!ent.getValue().saveStorage()) {
+					for (Player online : s.getOnlinePlayers()) {
+						Util.displayError(online, "&&4" + ent.getValue().getData().getDisplay() + "&c has too many items in their inventory! They must drop some "
+								+ "to satisfy their storage limit of &e" + ent.getValue().getMaxStorage() + "&c!");
+					}
+					return;
+				}
+			}
+			s.getArea().getNodeFromLocation(e.getClickedBlock().getLocation()).startInstance(s);
+		}
 	}
 }

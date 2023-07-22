@@ -45,7 +45,7 @@ public class BattleCry extends Ability {
 		}
 		
 		@Override
-		public boolean trigger(Object[] inputs) {
+		public boolean run(Object[] inputs) {
 			Util.playSound(p, Sound.ENTITY_BLAZE_DEATH, 1F, 1F, false);
 			ParticleUtil.spawnParticle(p, false, p.getLocation(), Particle.REDSTONE, 50, 0.5, 0.5, 0.5, 0, new DustOptions(Color.RED, 1F));
 			data.addBuff(id, true, false, BuffType.PHYSICAL, isUpgraded ? 20 : 14, 10);

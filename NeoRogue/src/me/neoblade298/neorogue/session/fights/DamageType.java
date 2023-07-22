@@ -17,6 +17,7 @@ public enum DamageType {
 	private BuffType[] buffTypes;
 	private DamageType(DamageCategory category, BuffType[] buffTypes) {
 		this.category = category;
+		this.buffTypes = buffTypes;
 	}
 	
 	public DamageCategory getCategory() {

@@ -65,12 +65,10 @@ public class NeoRogue extends JavaPlugin {
 	}
 	
 	private void debugInitialize() {
-		Area area = new Area(AreaType.HARVEST_FIELDS, 0, 0);
-		area.generate();
-		area.update(area.getNodes()[1][2]);
 		Player p = Bukkit.getPlayer("Ascheladd");
 		Session s = SessionManager.createSession(p);
 		s.setInstance(new NodeSelectInstance());
+		Area area = s.getArea();
 		new BukkitRunnable() {
 			int count = 0; 
 			public void run() {

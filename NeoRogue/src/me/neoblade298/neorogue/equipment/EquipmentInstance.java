@@ -14,9 +14,13 @@ public abstract class EquipmentInstance implements TriggerAction {
 		this.eq = eq;
 	}
 	
-	public abstract boolean trigger(Object[] inputs);
+	public boolean trigger(Object[] inputs) {
+		lastUsed = System.currentTimeMillis();
+		return run(inputs);
+	}
+	public abstract boolean run(Object[] inputs);
 	public boolean canTrigger() {
-		return lastUsed + (cooldown * 1000) > System.currentTimeMillis();
+		return lastUsed + (cooldown * 1000) < System.currentTimeMillis();
 	}
 	
 	public String getDisplay() {
@@ -26,7 +30,7 @@ public abstract class EquipmentInstance implements TriggerAction {
 	public void sendCooldownMessage(Player p) {
 		int cooldownOver = (int) ((lastUsed / 1000) + cooldown);
 		int now = (int) (System.currentTimeMillis() / 1000);
-		Util.msg(p, "&e" + eq.display + " &ccooldown: &e" + (cooldownOver - now) + "s");
+		Util.msgRaw(p, "&e" + eq.display + " &ccooldown: &e" + (cooldownOver - now) + "s");
 	}
 	
 	public Equipment getEquipment() {

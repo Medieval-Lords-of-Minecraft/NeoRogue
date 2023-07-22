@@ -3,18 +3,22 @@ package me.neoblade298.neorogue.player;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
+import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.*;
 import net.md_5.bungee.api.ChatColor;
 
 public class PlayerSessionData {
 	private PlayerData data;
 	private double maxHealth, maxMana, maxStamina, health;
-	private Usable[] hotbar = new Usable[9];
+	private HotbarCompatible[] hotbar = new HotbarCompatible[9];
 	private Armor[] armors = new Armor[3];
 	private Offhand offhand;
 	private Accessory[] accessories = new Accessory[6];
@@ -33,9 +37,9 @@ public class PlayerSessionData {
 		// Need to give player a weapon at the start
 		
 		// Strictly debug purposes
-		storage.add(Equipment.getEquipment("empoweredEdge", true));
-		storage.add(Equipment.getEquipment("battleCry", false));
-		storage.add(Equipment.getEquipment("woodenSword", true));
+		hotbar[0] = (HotbarCompatible) Equipment.getEquipment("woodenSword", true);
+		hotbar[1] = (HotbarCompatible) Equipment.getEquipment("empoweredEdge", true);
+		hotbar[2] = (HotbarCompatible) Equipment.getEquipment("battleCry", false);
 		setupInventory();
 	}
 	
@@ -61,7 +65,7 @@ public class PlayerSessionData {
 		return armors;
 	}
 	
-	public Usable[] getHotbar() {
+	public HotbarCompatible[] getHotbar() {
 		return hotbar;
 	}
 	
@@ -131,5 +135,40 @@ public class PlayerSessionData {
 	
 	public int getMaxStorage() {
 		return maxStorage;
+	}
+	
+	public boolean saveStorage() {
+		Player p = data.getPlayer();
+		int max = maxStorage;
+		ArrayList<ItemStack> toSave = new ArrayList<ItemStack>(max);
+		p.getInventory().setItemInOffHand(null);
+		for (ItemStack item : p.getInventory().getContents()) {
+			if (item == null) continue;
+			
+			toSave.add(item);
+		}
+		
+		if (toSave.size() > max) {
+			Util.msg(p, "You have too many items in storage! Drop or sell some!");
+			return false;
+		}
+		
+		storage.clear();
+		
+		for (ItemStack item : toSave) {
+			NBTItem nbti = new NBTItem(item);
+			String id = nbti.getString("equipId");
+			boolean isUpgraded = nbti.getBoolean("isUpgraded");
+			Equipment eq = Equipment.getEquipment(id, isUpgraded);
+			if (eq == null) {
+				String display = item.hasItemMeta() && item.getItemMeta().hasDisplayName() ? item.getItemMeta().getDisplayName() : item.getType().name();
+				Bukkit.getLogger().warning("[NeoRogue] " + p.getName() + " could not save " + display + " to their storage");
+				continue;
+			}
+			else {
+				storage.add(eq);
+			}
+		}
+		return true;
 	}
 }
