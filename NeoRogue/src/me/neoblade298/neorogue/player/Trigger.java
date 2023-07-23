@@ -22,6 +22,10 @@ public enum Trigger {
 	LEFT_CLICK_NO_HIT(false),
 	LEFT_CLICK_HIT(false),
 	RIGHT_CLICK(false),
+	RAISE_SHIELD(false),
+	SHIELD_TICK(false), // Ticks while you have your shield up
+	LOWER_SHIELD(false),
+	RECEIVED_DAMAGE_SHIELD(false),
 	DEALT_DAMAGE(false),
 	RECEIVED_DAMAGE(false);
 	

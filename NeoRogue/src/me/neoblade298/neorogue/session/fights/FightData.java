@@ -16,6 +16,7 @@ import me.neoblade298.neorogue.player.Trigger;
 import me.neoblade298.neorogue.player.TriggerAction;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.*;
+import me.neoblade298.neorogue.equipment.offhands.Barrier;
 
 public class FightData {
 	private FightInstance inst;
@@ -27,6 +28,8 @@ public class FightData {
 	private HashMap<String, BukkitTask> tasks = new HashMap<String, BukkitTask>();
 
 	private double health, stamina = 0, mana = 0;
+	
+	private Barrier barrier = null;
 
 	// Buffs
 	private HashMap<BuffType, Buff> damageBuffs = new HashMap<BuffType, Buff>();
@@ -151,5 +154,13 @@ public class FightData {
 
 	public void removeTask(String id) {
 		tasks.remove(id);
+	}
+	
+	public void setBarrier(Barrier barrier) {
+		this.barrier = barrier;
+	}
+	
+	public Barrier getBarrier() {
+		return barrier;
 	}
 }

@@ -20,15 +20,15 @@ public class Session {
 	private Instance inst;
 	private Node curr;
 	private SessionStatistics stats;
-	private int xOff, yOff;
+	private int xOff, zOff;
 	
-	public Session(Player p, int xOff, int yOff) {
-		this.xOff = xOff;
-		this.yOff = yOff;
+	public Session(Player p, Plot plot) {
+		this.xOff = plot.getXOffset();
+		this.zOff = plot.getZOffset();
 		host = p.getUniqueId();
 		party.put(p.getUniqueId(), new PlayerSessionData(p.getUniqueId()));
 		
-		area = new Area(AreaType.LOW_DISTRICT, xOff, yOff);
+		area = new Area(AreaType.LOW_DISTRICT, xOff, zOff);
 		area.generate();
 		// Strictly Debug
 		area.update(area.getNodes()[1][2]);

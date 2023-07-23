@@ -8,10 +8,16 @@ import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerChangedMainHandEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
+import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.equipment.offhands.Barrier;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.Trigger;
 import me.neoblade298.neorogue.session.Instance;
@@ -19,6 +25,7 @@ import me.neoblade298.neorogue.session.Session;
 
 public class FightInstance implements Instance {
 	private HashMap<UUID, FightData> fightData = new HashMap<UUID, FightData>();
+	private HashMap<UUID, BukkitTask> blockTasks = new HashMap<UUID, BukkitTask>();
 	
 	// This will only ever handle basic left click
 	public void handleDamage(EntityDamageByEntityEvent e, boolean playerDamager) {
@@ -40,6 +47,45 @@ public class FightInstance implements Instance {
 		e.setCancelled(trigger(e.getPlayer().getUniqueId(), Trigger.getFromHotbarSlot(e.getNewSlot()), null));
 	}
 	
+	public void handleRightClick(PlayerInteractEvent e) {
+		Player p = e.getPlayer();
+		UUID uuid = p.getUniqueId();
+		// Look for non-offhand triggers
+		if (e.getHand() == EquipmentSlot.HAND) {
+			
+		}
+		// Look for specifically offhand triggers
+		else {
+			if (p.isHandRaised()) {
+				trigger(uuid, Trigger.RAISE_SHIELD, null);
+				
+				if (blockTasks.containsKey(uuid)) {
+					blockTasks.get(uuid).cancel();
+				}
+				
+				blockTasks.put(uuid, new BukkitRunnable() {
+					public void run() {
+						if (p == null || !p.isBlocking()) {
+							this.cancel();
+							trigger(uuid, Trigger.LOWER_SHIELD, null);
+							blockTasks.remove(uuid);
+						}
+						else {
+							trigger(uuid, Trigger.SHIELD_TICK, null);
+						}
+					}
+				}.runTaskTimer(NeoRogue.inst(), 10L, 10L));
+			}
+			else {
+				trigger(uuid, Trigger.RIGHT_CLICK, null);
+			}
+		}
+	}
+	
+	public void handleLeftClick(PlayerInteractEvent e) {
+		trigger(e.getPlayer().getUniqueId(), Trigger.LEFT_CLICK_NO_HIT, null);
+	}
+	
 	private boolean trigger(UUID uuid, Trigger trigger, Object[] obj) {
 		return fightData.get(uuid).runActions(trigger, obj);
 	}
@@ -57,7 +103,6 @@ public class FightInstance implements Instance {
 		else {
 			FightData data = fightData.get(uuid);
 			double multiplier = 1;
-			System.out.println(type);
 			for (BuffType buffType : type.getBuffTypes()) {
 				Buff b = data.getBuff(true, buffType);
 				amount += b.getIncrease();

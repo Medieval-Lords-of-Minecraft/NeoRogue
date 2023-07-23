@@ -21,6 +21,7 @@ import org.bukkit.event.player.PlayerChangedMainHandEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import org.bukkit.inventory.EquipmentSlot;
 
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.player.PlayerSessionData;
@@ -29,11 +30,28 @@ import me.neoblade298.neorogue.session.fights.*;
 
 public class SessionManager implements Listener {
 	private static HashMap<UUID, Session> sessions = new HashMap<UUID, Session>();
+	private static HashMap<Plot, Session> sessionPlots = new HashMap<Plot, Session>();
 	
 	public static Session createSession(Player p) {
-		Session s = new Session(p, 0, 0); // TODO: Add session playing field creation and search
+		// Find an available plot
+		Plot plot = null;
+		for (int x = 0; x < 6; x++) {
+			int z = 0;
+			do {
+				plot = new Plot(x,z++);
+			}
+			while (sessionPlots.containsKey(plot));
+		}
+		
+		// Create session on plot
+		Session s = new Session(p, plot);
 		sessions.put(p.getUniqueId(), s);
+		sessionPlots.put(plot, s);
 		return s;
+	}
+	
+	public static Session getSession(Plot p) {
+		return sessionPlots.get(p);
 	}
 	
 	public static Session getSession(Player p) {
@@ -102,13 +120,15 @@ public class SessionManager implements Listener {
 		((FightInstance) s.getInstance()).handleHotbarSwap(e);
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	public void onInteract(PlayerInteractEvent e) {
 		UUID uuid = e.getPlayer().getUniqueId();
 		Action a = e.getAction();
 		if (!sessions.containsKey(uuid)) return;
 		Session s = sessions.get(uuid);
+		Player p = e.getPlayer();
 		
+		// Interact button
 		if (a == Action.RIGHT_CLICK_BLOCK && Tag.BUTTONS.isTagged(e.getClickedBlock().getType())) {
 			if (!(s.getInstance() instanceof NodeSelectInstance)) return;
 			
@@ -131,6 +151,18 @@ public class SessionManager implements Listener {
 				}
 			}
 			s.getArea().getNodeFromLocation(e.getClickedBlock().getLocation()).startInstance(s);
+			return;
+		}
+
+		// Check fight instance
+		if (!(s.getInstance() instanceof FightInstance)) return;
+		
+		if (a == Action.LEFT_CLICK_AIR || a == Action.LEFT_CLICK_BLOCK) {
+			((FightInstance) s.getInstance()).handleLeftClick(e);
+		}
+		// Right click
+		else if (a == Action.RIGHT_CLICK_AIR || a == Action.RIGHT_CLICK_BLOCK) {
+			((FightInstance) s.getInstance()).handleRightClick(e);
 		}
 	}
 }
