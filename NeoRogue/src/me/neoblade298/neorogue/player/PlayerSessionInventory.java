@@ -24,7 +24,7 @@ public class PlayerSessionInventory extends CoreInventory {
 	private static final int[] ARMOR = new int[] { 0, 1, 2 };
 	private static final int[] ACCESSORIES = new int[] { 3, 4, 5, 6, 7, 8 };
 	private static final int[] HOTBAR = new int[] { 18, 19, 20, 21, 22, 23, 24, 25, 26 };
-	private static final int[] FILLER = new int[] { 28, 29, 30, 32, 33, 34 };
+	private static final int[] FILLER = new int[] { 16, 28, 29, 30, 32, 33, 34 };
 	private static final int STATS = 27;
 	private static final int SELL = 35;
 	private static final int OFFHAND = 17;

@@ -8,8 +8,10 @@ import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerChangedMainHandEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -47,15 +49,23 @@ public class FightInstance implements Instance {
 		e.setCancelled(trigger(e.getPlayer().getUniqueId(), Trigger.getFromHotbarSlot(e.getNewSlot()), null));
 	}
 	
+	public void handleOffhandSwap(PlayerSwapHandItemsEvent e) {
+		e.setCancelled(true);
+		Player p = e.getPlayer();
+		trigger(p.getUniqueId(), p.isSneaking() ? Trigger.SHIFT_SWAP : Trigger.SWAP, null);
+	}
+	
+	public void handleDropItem(PlayerDropItemEvent e) {
+		e.setCancelled(true);
+		Player p = e.getPlayer();
+		trigger(p.getUniqueId(), p.isSneaking() ? Trigger.SHIFT_DROP : Trigger.DROP, null);
+	}
+	
 	public void handleRightClick(PlayerInteractEvent e) {
 		Player p = e.getPlayer();
 		UUID uuid = p.getUniqueId();
 		// Look for non-offhand triggers
-		if (e.getHand() == EquipmentSlot.HAND) {
-			
-		}
-		// Look for specifically offhand triggers
-		else {
+		if (e.getHand() == EquipmentSlot.OFF_HAND) {
 			if (p.isHandRaised()) {
 				trigger(uuid, Trigger.RAISE_SHIELD, null);
 				
@@ -80,9 +90,22 @@ public class FightInstance implements Instance {
 				trigger(uuid, Trigger.RIGHT_CLICK, null);
 			}
 		}
+		else {
+			double y = p.getEyeLocation().getDirection().normalize().getY();
+			if (y > 0.9) {
+				trigger(uuid, Trigger.UP_RCLICK, null);
+			}
+			else if (y < 0.1) {
+				trigger(uuid, Trigger.DOWN_RCLICK, null);
+			}
+			else if (p.isSneaking()) {
+				trigger(uuid, Trigger.SHIFT_RCLICK, null);
+			}
+		}
 	}
 	
 	public void handleLeftClick(PlayerInteractEvent e) {
+		if (e.getHand() != EquipmentSlot.HAND) return;
 		trigger(e.getPlayer().getUniqueId(), Trigger.LEFT_CLICK_NO_HIT, null);
 	}
 	

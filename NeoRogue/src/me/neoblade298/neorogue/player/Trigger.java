@@ -1,7 +1,6 @@
 package me.neoblade298.neorogue.player;
 
 public enum Trigger {
-	SHIFT_LCLICK(true),
 	SHIFT_RCLICK(true),
 	SHIFT_DROP(true),
 	SHIFT_SWAP(true),
