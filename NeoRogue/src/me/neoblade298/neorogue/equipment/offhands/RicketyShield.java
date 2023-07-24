@@ -25,7 +25,17 @@ public class RicketyShield extends Offhand {
 	@Override
 	public void initialize(Player p, FightData data, FightInstance inst, Trigger bind) {
 		data.addTrigger(id, Trigger.RAISE_SHIELD, (inputs) -> {
-			data.setBarrier(new Barrier(p, 0, 0, 0));
+			data.setBarrier(new Barrier(p, 3, 8, 6));
+			return true;
+		});
+
+		data.addTrigger(id, Trigger.SHIELD_TICK, (inputs) -> {
+			data.getBarrier().tick();
+			return true;
+		});
+		
+		data.addTrigger(id, Trigger.LOWER_SHIELD, (inputs) -> {
+			data.setBarrier(null);
 			return true;
 		});
 	}

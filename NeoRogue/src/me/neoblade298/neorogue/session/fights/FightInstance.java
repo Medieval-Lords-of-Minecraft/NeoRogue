@@ -26,6 +26,7 @@ import me.neoblade298.neorogue.session.Instance;
 import me.neoblade298.neorogue.session.Session;
 
 public class FightInstance implements Instance {
+	private HashMap<UUID, FightData> userData = new HashMap<UUID, FightData>();
 	private HashMap<UUID, FightData> fightData = new HashMap<UUID, FightData>();
 	private HashMap<UUID, BukkitTask> blockTasks = new HashMap<UUID, BukkitTask>();
 	
@@ -66,29 +67,25 @@ public class FightInstance implements Instance {
 		UUID uuid = p.getUniqueId();
 		// Look for non-offhand triggers
 		if (e.getHand() == EquipmentSlot.OFF_HAND) {
-			if (p.isHandRaised()) {
-				trigger(uuid, Trigger.RAISE_SHIELD, null);
-				
-				if (blockTasks.containsKey(uuid)) {
-					blockTasks.get(uuid).cancel();
-				}
-				
-				blockTasks.put(uuid, new BukkitRunnable() {
-					public void run() {
-						if (p == null || !p.isBlocking()) {
-							this.cancel();
-							trigger(uuid, Trigger.LOWER_SHIELD, null);
-							blockTasks.remove(uuid);
-						}
-						else {
-							trigger(uuid, Trigger.SHIELD_TICK, null);
-						}
+			trigger(uuid, Trigger.RAISE_SHIELD, null);
+			trigger(uuid, Trigger.RIGHT_CLICK, null);
+			
+			if (blockTasks.containsKey(uuid)) {
+				blockTasks.get(uuid).cancel();
+			}
+			
+			blockTasks.put(uuid, new BukkitRunnable() {
+				public void run() {
+					if (p == null || !p.isBlocking()) {
+						this.cancel();
+						trigger(uuid, Trigger.LOWER_SHIELD, null);
+						blockTasks.remove(uuid);
 					}
-				}.runTaskTimer(NeoRogue.inst(), 10L, 10L));
-			}
-			else {
-				trigger(uuid, Trigger.RIGHT_CLICK, null);
-			}
+					else {
+						trigger(uuid, Trigger.SHIELD_TICK, null);
+					}
+				}
+			}.runTaskTimer(NeoRogue.inst(), 10L, 10L));
 		}
 		else {
 			double y = p.getEyeLocation().getDirection().normalize().getY();
@@ -115,6 +112,10 @@ public class FightInstance implements Instance {
 	
 	public FightData getFightData(UUID uuid) {
 		return fightData.get(uuid);
+	}
+	
+	public HashMap<UUID, FightData> getUserData() {
+		return userData;
 	}
 	
 	public void dealDamage(Damageable damager, DamageType type, double amount, Damageable... targets) {
@@ -168,7 +169,9 @@ public class FightInstance implements Instance {
 	
 	private void setup(Player p, PlayerSessionData data) {
 		UUID uuid = p.getUniqueId();
-		fightData.put(uuid, new FightData(this, data));
+		FightData fd = new FightData(this, data);
+		fightData.put(uuid, fd);
+		userData.put(uuid, fd);
 		
 		// Setup inventory
 		PlayerInventory inv = p.getInventory();
@@ -180,5 +183,7 @@ public class FightInstance implements Instance {
 			contents[i] = data.getHotbar()[i].getItem();
 		}
 		inv.setContents(contents);
+		
+		if (data.getOffhand() != null) inv.setItemInOffHand(data.getOffhand().getItem());
 	}
 }

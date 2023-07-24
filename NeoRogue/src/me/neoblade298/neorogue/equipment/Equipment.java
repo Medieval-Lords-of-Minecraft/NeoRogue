@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import me.neoblade298.neorogue.equipment.abilities.*;
+import me.neoblade298.neorogue.equipment.offhands.*;
 import me.neoblade298.neorogue.equipment.weapons.*;
 import me.neoblade298.neorogue.player.Trigger;
 import me.neoblade298.neorogue.session.fights.FightData;
@@ -24,6 +25,9 @@ public abstract class Equipment {
 		for (boolean b : new boolean[] {false, true}) {
 			// Weapons
 			new WoodenSword(b);
+			
+			// Offhands
+			new RicketyShield(b);
 			
 			new BattleCry(b);
 			new EmpoweredEdge(b);

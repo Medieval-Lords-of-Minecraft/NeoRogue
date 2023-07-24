@@ -40,6 +40,7 @@ public class PlayerSessionData {
 		hotbar[0] = (HotbarCompatible) Equipment.getEquipment("woodenSword", true);
 		hotbar[1] = (HotbarCompatible) Equipment.getEquipment("empoweredEdge", true);
 		hotbar[2] = (HotbarCompatible) Equipment.getEquipment("battleCry", false);
+		offhand = (Offhand) Equipment.getEquipment("ricketyShield", false);
 		setupInventory();
 	}
 	

@@ -32,4 +32,9 @@ public class Plot {
 	public int getZOffset() {
 		return z;
 	}
+	
+	@Override
+	public String toString() {
+		return x + "," + z;
+	}
 }

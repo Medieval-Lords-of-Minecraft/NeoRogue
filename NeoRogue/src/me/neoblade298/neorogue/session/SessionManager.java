@@ -30,28 +30,35 @@ import me.neoblade298.neorogue.session.fights.*;
 
 public class SessionManager implements Listener {
 	private static HashMap<UUID, Session> sessions = new HashMap<UUID, Session>();
-	private static HashMap<Plot, Session> sessionPlots = new HashMap<Plot, Session>();
+	private static HashMap<String, Session> sessionPlots = new HashMap<String, Session>();
 	
 	public static Session createSession(Player p) {
 		// Find an available plot
 		Plot plot = null;
+		boolean found = false;
+		
 		for (int x = 0; x < 6; x++) {
-			int z = 0;
-			do {
-				plot = new Plot(x,z++);
+			for (int z = 0; z < 100; z++) {
+				plot = new Plot(x,z);
+				if (!sessionPlots.containsKey(plot)) {
+					found = true;
+					break;
+				}
 			}
-			while (sessionPlots.containsKey(plot));
+			if (found) {
+				break;
+			}
 		}
 		
 		// Create session on plot
 		Session s = new Session(p, plot);
 		sessions.put(p.getUniqueId(), s);
-		sessionPlots.put(plot, s);
+		sessionPlots.put(plot.toString(), s);
 		return s;
 	}
 	
 	public static Session getSession(Plot p) {
-		return sessionPlots.get(p);
+		return sessionPlots.get(p.toString());
 	}
 	
 	public static Session getSession(Player p) {
@@ -120,7 +127,7 @@ public class SessionManager implements Listener {
 		((FightInstance) s.getInstance()).handleHotbarSwap(e);
 	}
 	
-	@EventHandler(ignoreCancelled = true)
+	@EventHandler(ignoreCancelled = false)
 	public void onInteract(PlayerInteractEvent e) {
 		UUID uuid = e.getPlayer().getUniqueId();
 		Action a = e.getAction();
