@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Tag;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -17,12 +16,11 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.player.PlayerChangedMainHandEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
-import org.bukkit.inventory.EquipmentSlot;
-
+import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
+import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.PlayerSessionInventory;
@@ -40,7 +38,7 @@ public class SessionManager implements Listener {
 		for (int x = 0; x < 6; x++) {
 			for (int z = 0; z < 100; z++) {
 				plot = new Plot(x,z);
-				if (!sessionPlots.containsKey(plot)) {
+				if (!sessionPlots.containsKey(plot.toString())) {
 					found = true;
 					break;
 				}
@@ -59,6 +57,10 @@ public class SessionManager implements Listener {
 	
 	public static Session getSession(Plot p) {
 		return sessionPlots.get(p.toString());
+	}
+	
+	public static Session getSession(UUID uuid) {
+		return sessions.get(uuid);
 	}
 	
 	public static Session getSession(Player p) {
@@ -114,7 +116,7 @@ public class SessionManager implements Listener {
 		Session s = sessions.get(uuid);
 		
 		if (!(s.getInstance() instanceof FightInstance)) return;
-		((FightInstance) s.getInstance()).handleDamage(e, playerDamager);
+		FightInstance.handleDamage(e, playerDamager);
 	}
 	
 	@EventHandler
@@ -124,7 +126,7 @@ public class SessionManager implements Listener {
 		Session s = sessions.get(uuid);
 		
 		if (!(s.getInstance() instanceof FightInstance)) return;
-		((FightInstance) s.getInstance()).handleHotbarSwap(e);
+		FightInstance.handleHotbarSwap(e);
 	}
 	
 	@EventHandler(ignoreCancelled = false)
@@ -133,7 +135,6 @@ public class SessionManager implements Listener {
 		Action a = e.getAction();
 		if (!sessions.containsKey(uuid)) return;
 		Session s = sessions.get(uuid);
-		Player p = e.getPlayer();
 		
 		// Interact button
 		if (a == Action.RIGHT_CLICK_BLOCK && Tag.BUTTONS.isTagged(e.getClickedBlock().getType())) {
@@ -165,11 +166,19 @@ public class SessionManager implements Listener {
 		if (!(s.getInstance() instanceof FightInstance)) return;
 		
 		if (a == Action.LEFT_CLICK_AIR || a == Action.LEFT_CLICK_BLOCK) {
-			((FightInstance) s.getInstance()).handleLeftClick(e);
+			FightInstance.handleLeftClick(e);
 		}
 		// Right click
 		else if (a == Action.RIGHT_CLICK_AIR || a == Action.RIGHT_CLICK_BLOCK) {
-			((FightInstance) s.getInstance()).handleRightClick(e);
+			FightInstance.handleRightClick(e);
 		}
+	}
+	
+	public void onMythicDespawn(MythicMobDespawnEvent e) {
+		FightInstance.handleMythicDespawn(e);
+	}
+	
+	public void onMythicDeath(MythicMobDeathEvent e) {
+		FightInstance.handleMythicDeath(e);
 	}
 }

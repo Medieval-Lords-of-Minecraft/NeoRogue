@@ -18,20 +18,29 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
+import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.offhands.Barrier;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.Trigger;
 import me.neoblade298.neorogue.session.Instance;
 import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.SessionManager;
 
 public class FightInstance implements Instance {
-	private HashMap<UUID, FightData> userData = new HashMap<UUID, FightData>();
-	private HashMap<UUID, FightData> fightData = new HashMap<UUID, FightData>();
-	private HashMap<UUID, BukkitTask> blockTasks = new HashMap<UUID, BukkitTask>();
+	private static HashMap<UUID, FightData> userData = new HashMap<UUID, FightData>();
+	private static HashMap<UUID, FightData> fightData = new HashMap<UUID, FightData>();
+	private static HashMap<UUID, BukkitTask> blockTasks = new HashMap<UUID, BukkitTask>();
+	
+	private UUID host;
+	
+	public FightInstance(UUID host) {
+		this.host = host; // Ref to host instead of session to avoid cleanup issues
+	}
 	
 	// This will only ever handle basic left click
-	public void handleDamage(EntityDamageByEntityEvent e, boolean playerDamager) {
+	public static void handleDamage(EntityDamageByEntityEvent e, boolean playerDamager) {
 		Player p = playerDamager ? (Player) e.getDamager() : (Player) e.getEntity();
 		UUID uuid = p.getUniqueId();
 		e.setCancelled(true);
@@ -45,24 +54,24 @@ public class FightInstance implements Instance {
 		}
 	}
 	
-	public void handleHotbarSwap(PlayerItemHeldEvent e) {
+	public static void handleHotbarSwap(PlayerItemHeldEvent e) {
 		// Only cancel swap if something is bound to the trigger
 		e.setCancelled(trigger(e.getPlayer().getUniqueId(), Trigger.getFromHotbarSlot(e.getNewSlot()), null));
 	}
 	
-	public void handleOffhandSwap(PlayerSwapHandItemsEvent e) {
+	public static void handleOffhandSwap(PlayerSwapHandItemsEvent e) {
 		e.setCancelled(true);
 		Player p = e.getPlayer();
 		trigger(p.getUniqueId(), p.isSneaking() ? Trigger.SHIFT_SWAP : Trigger.SWAP, null);
 	}
 	
-	public void handleDropItem(PlayerDropItemEvent e) {
+	public static void handleDropItem(PlayerDropItemEvent e) {
 		e.setCancelled(true);
 		Player p = e.getPlayer();
 		trigger(p.getUniqueId(), p.isSneaking() ? Trigger.SHIFT_DROP : Trigger.DROP, null);
 	}
 	
-	public void handleRightClick(PlayerInteractEvent e) {
+	public static void handleRightClick(PlayerInteractEvent e) {
 		Player p = e.getPlayer();
 		UUID uuid = p.getUniqueId();
 		// Look for non-offhand triggers
@@ -101,24 +110,32 @@ public class FightInstance implements Instance {
 		}
 	}
 	
-	public void handleLeftClick(PlayerInteractEvent e) {
+	public static void handleLeftClick(PlayerInteractEvent e) {
 		if (e.getHand() != EquipmentSlot.HAND) return;
 		trigger(e.getPlayer().getUniqueId(), Trigger.LEFT_CLICK_NO_HIT, null);
 	}
 	
-	private boolean trigger(UUID uuid, Trigger trigger, Object[] obj) {
+	public static void handleMythicDespawn(MythicMobDespawnEvent e) {
+		fightData.remove(e.getEntity().getUniqueId());
+	}
+	
+	public static void handleMythicDeath(MythicMobDeathEvent e) {
+		fightData.remove(e.getEntity().getUniqueId());
+	}
+	
+	private static boolean trigger(UUID uuid, Trigger trigger, Object[] obj) {
 		return fightData.get(uuid).runActions(trigger, obj);
 	}
 	
-	public FightData getFightData(UUID uuid) {
+	public static FightData getFightData(UUID uuid) {
 		return fightData.get(uuid);
 	}
 	
-	public HashMap<UUID, FightData> getUserData() {
+	public static HashMap<UUID, FightData> getUserData() {
 		return userData;
 	}
 	
-	public void dealDamage(Damageable damager, DamageType type, double amount, Damageable... targets) {
+	public static void dealDamage(Damageable damager, DamageType type, double amount, Damageable... targets) {
 		UUID uuid = damager.getUniqueId();
 		if (!fightData.containsKey(uuid)) {
 			// If no data found, just do the regular base damage
@@ -140,7 +157,7 @@ public class FightInstance implements Instance {
 		}
 	}
 	
-	public void receiveDamage(Damageable damager, DamageType type, double amount, Damageable target) {
+	public static void receiveDamage(Damageable damager, DamageType type, double amount, Damageable target) {
 		UUID uuid = damager.getUniqueId();
 		if (fightData.containsKey(uuid)) {
 			// If no data found, just do the regular base damage
@@ -185,5 +202,13 @@ public class FightInstance implements Instance {
 		inv.setContents(contents);
 		
 		if (data.getOffhand() != null) inv.setItemInOffHand(data.getOffhand().getItem());
+	}
+	
+	public void cleanup() {
+		Session s = SessionManager.getSession(host);
+		for (UUID uuid : s.getParty().keySet()) {
+			userData.remove(uuid);
+			fightData.remove(uuid);
+		}
 	}
 }
