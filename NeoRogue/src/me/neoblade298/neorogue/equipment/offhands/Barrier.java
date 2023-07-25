@@ -17,6 +17,7 @@ public class Barrier {
 	private Player p;
 	private double height, width, distanceFromPlayer;
 	private Location bottomLeft, topRight, midpoint;
+	private boolean needsUpdate = false;
 	private Vector cubeAxis, localX, localZ, localY = new Vector(0, height, 0);
 	
 	private HashMap<BuffType, Buff> buffs = new HashMap<BuffType, Buff>();
@@ -31,8 +32,13 @@ public class Barrier {
 	
 	public void tick() {
 		new Rectangle(p, width, height, distanceFromPlayer, 1).draw(p, true, Particle.END_ROD, null);
-		localZ = p.getEyeLocation().getDirection().setY(0).normalize();
-		localX = localZ.clone().rotateAroundY(Math.PI / 2);
+		needsUpdate = true;
+	}
+	
+	private void update() {
+		// localZ is calculated in collides
+		localX = localZ.clone().setY(0).rotateAroundY(Math.PI / 2);
+		localZ.rotateAroundAxis(cubeAxis, distanceFromPlayer);
 		
 		Vector left = localX.clone().multiply(-width / 2);
 		Vector forward = localZ.clone().multiply(distanceFromPlayer + 2);
@@ -50,10 +56,12 @@ public class Barrier {
 	}
 	
 	public boolean collides(Location loc) {
-		if (midpoint == null) return false; // Shield has not ticked yet
-		Vector v = loc.clone().subtract(midpoint).toVector();
-		if (v.lengthSquared() > 400) return false; // Optimization, too far from shield to possibly collide
+		localZ = p.getEyeLocation().getDirection().normalize();
+		Location approx = p.getEyeLocation().add(localZ.clone().multiply(distanceFromPlayer));
+		if (approx.distanceSquared(loc) > 200) return false; // Optimization, too far from shield to possibly collide
 
+		if (needsUpdate) update();
+		Vector v = loc.clone().subtract(midpoint).toVector();
 		double vx = Math.abs(v.dot(localX));
 		if (vx >= width * 2) return false;
 		double vy = Math.abs(v.dot(localY));
