@@ -41,6 +41,7 @@ public class PlayerSessionData {
 		hotbar[1] = (HotbarCompatible) Equipment.getEquipment("empoweredEdge", true);
 		hotbar[2] = (HotbarCompatible) Equipment.getEquipment("battleCry", false);
 		offhand = (Offhand) Equipment.getEquipment("ricketyShield", false);
+		armors[0] = (Armor) Equipment.getEquipment("leatherHelmet", true);
 		setupInventory();
 	}
 	

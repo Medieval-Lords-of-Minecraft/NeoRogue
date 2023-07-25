@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import me.neoblade298.neorogue.equipment.abilities.*;
+import me.neoblade298.neorogue.equipment.armor.*;
 import me.neoblade298.neorogue.equipment.offhands.*;
 import me.neoblade298.neorogue.equipment.weapons.*;
 import me.neoblade298.neorogue.player.Trigger;
@@ -23,6 +24,9 @@ public abstract class Equipment {
 	
 	static {
 		for (boolean b : new boolean[] {false, true}) {
+			// Armor
+			new LeatherHelmet(b);
+			
 			// Weapons
 			new WoodenSword(b);
 			

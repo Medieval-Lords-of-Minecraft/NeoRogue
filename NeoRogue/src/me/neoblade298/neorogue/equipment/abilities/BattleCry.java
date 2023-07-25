@@ -15,7 +15,6 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.Trigger;
 import me.neoblade298.neorogue.session.fights.BuffType;
 import me.neoblade298.neorogue.session.fights.FightData;
-import me.neoblade298.neorogue.session.fights.FightInstance;
 
 public class BattleCry extends Ability {
 	

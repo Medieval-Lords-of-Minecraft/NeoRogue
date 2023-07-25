@@ -1,10 +1,8 @@
 package me.neoblade298.neorogue.session.fights;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.UUID;
-
+import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -30,12 +28,16 @@ public class FightData {
 	private double health, stamina = 0, mana = 0;
 	
 	private Barrier barrier = null;
+	private ShieldHolder shields = null;
+	private Damageable entity = null;
 
 	// Buffs
 	private HashMap<BuffType, Buff> damageBuffs = new HashMap<BuffType, Buff>();
 	private HashMap<BuffType, Buff> defenseBuffs = new HashMap<BuffType, Buff>();
 
 	public FightData(FightInstance inst, PlayerSessionData data) {
+		this(data.getPlayer());
+		
 		this.inst = inst;
 		this.sessdata = data;
 		this.health = data.getHealth();
@@ -75,8 +77,10 @@ public class FightData {
 		}
 	}
 
-	public FightData(UUID uuid) {
-		// Used to initialize mobs
+	public FightData(Damageable e) {
+		// Only use this for mobs
+		this.entity = e;
+		this.shields = new ShieldHolder(this);
 	}
 
 	public boolean runActions(Trigger trigger, Object[] inputs) {
@@ -118,9 +122,12 @@ public class FightData {
 	public Player getPlayer() {
 		return sessdata.getData().getPlayer();
 	}
+	
+	public Damageable getEntity() {
+		return entity;
+	}
 
 	public void addBuff(boolean damageBuff, boolean multiplier, BuffType type, double amount) {
-		System.out.println("Adding buff " + type + " " + amount);
 		Buff b = damageBuff ? damageBuffs.getOrDefault(type, new Buff()) : defenseBuffs.getOrDefault(type, new Buff());
 		if (multiplier)
 			b.addMultiplier(amount);
@@ -162,5 +169,9 @@ public class FightData {
 	
 	public Barrier getBarrier() {
 		return barrier;
+	}
+	
+	public ShieldHolder getShields() {
+		return shields;
 	}
 }

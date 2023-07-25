@@ -17,6 +17,7 @@ import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.session.NodeSelectInstance;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
+import me.neoblade298.neorogue.session.fights.FightInstance;
 
 public class NeoRogue extends JavaPlugin {
 	private static NeoRogue inst;
@@ -57,7 +58,9 @@ public class NeoRogue extends JavaPlugin {
 	private void debugInitialize() {
 		Player p = Bukkit.getPlayer("Ascheladd");
 		Session s = SessionManager.createSession(p);
-		s.setInstance(new NodeSelectInstance());
+		s.setInstance(new FightInstance(s));
+		s.getInstance().start(s);
+		/*
 		Area area = s.getArea();
 		new BukkitRunnable() {
 			int count = 0; 
@@ -71,5 +74,6 @@ public class NeoRogue extends JavaPlugin {
 				area.tickParticles(p, area.getNodes()[1][2]);
 			}
 		}.runTaskTimer(this, 0L, 20L);
+		*/
 	}
 }

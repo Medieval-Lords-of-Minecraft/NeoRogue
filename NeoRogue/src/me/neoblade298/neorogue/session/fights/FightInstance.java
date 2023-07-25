@@ -136,28 +136,14 @@ public class FightInstance implements Instance {
 	}
 	
 	public static void dealBarrieredDamage(Damageable damager, DamageType type, double amount, Damageable... targets) {
-		UUID uuid = damager.getUniqueId();
-		if (!fightData.containsKey(uuid)) {
-			// If no data found, just do the regular base damage
-			Bukkit.getLogger().warning("[NeoRogue] Failed to find fight data for " + damager.getName());
-		}
-		else {
-			FightData data = fightData.get(uuid);
-			double multiplier = 1;
-			for (BuffType buffType : type.getBuffTypes()) {
-				Buff b = data.getBuff(true, buffType);
-				amount += b.getIncrease();
-				multiplier += b.getMultiplier();
-			}
-			amount *= multiplier;
-		}
-
-		for (Damageable target : targets) {
-			receiveDamage(damager, type, amount, true, target);
-		}
+		dealDamage(damager, type, amount, true, targets);
 	}
 	
 	public static void dealDamage(Damageable damager, DamageType type, double amount, Damageable... targets) {
+		dealDamage(damager, type, amount, false, targets);
+	}
+	
+	public static void dealDamage(Damageable damager, DamageType type, double amount, boolean hitBarrier, Damageable... targets) {
 		UUID uuid = damager.getUniqueId();
 		if (!fightData.containsKey(uuid)) {
 			// If no data found, just do the regular base damage
@@ -177,7 +163,7 @@ public class FightInstance implements Instance {
 		}
 
 		for (Damageable target : targets) {
-			receiveDamage(damager, type, amount, false, target);
+			receiveDamage(damager, type, amount, true, target);
 		}
 	}
 	
@@ -191,10 +177,27 @@ public class FightInstance implements Instance {
 		else {
 			FightData data = fightData.get(uuid);
 			
-			if (hitBarrier) {
+			// First reduce damage from barriers
+			if (hitBarrier && data.getBarrier() != null) {
 				amount = data.getBarrier().applyDefenseBuffs(amount, type);
 			}
+
+			// Next calculate damage to shields
+			if (!data.getShields().isEmpty()) {
+				ShieldHolder shields = data.getShields();
+				amount = Math.max(0, shields.useShields(amount));
+				new BukkitRunnable() {
+					public void run() {
+						shields.update();
+					}
+				}.runTask(NeoRogue.inst());
+			}
+			if (amount <= 0) {
+				target.damage(0.1);
+				return;
+			}
 			
+			// Finally calculate hp damage
 			double multiplier = 1;
 			for (BuffType buffType : type.getBuffTypes()) {
 				Buff b = data.getBuff(false, buffType);

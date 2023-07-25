@@ -35,12 +35,10 @@ public class EmpoweredEdge extends Ability {
 	
 	private class EmpoweredEdgeInstance extends EquipmentInstance {
 		private Player p;
-		private FightInstance inst;
 		private FightData data;
 		private int damage;
 		public EmpoweredEdgeInstance(Ability a, Player p, int damage, FightData data, Trigger bind) {
 			super(a);
-			this.inst = inst;
 			this.p = p;
 			this.cooldown = a.getCooldown();
 			this.damage = damage;
