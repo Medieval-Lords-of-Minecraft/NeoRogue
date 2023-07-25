@@ -20,7 +20,7 @@ public class Session {
 	private Instance inst;
 	private Node curr;
 	private SessionStatistics stats;
-	private int xOff, zOff;
+	private int xOff, zOff, nodesVisited;
 	
 	public Session(Player p, Plot plot) {
 		this.xOff = plot.getXOffset();
@@ -28,7 +28,7 @@ public class Session {
 		host = p.getUniqueId();
 		party.put(p.getUniqueId(), new PlayerSessionData(p.getUniqueId()));
 		
-		area = new Area(AreaType.LOW_DISTRICT, xOff, zOff);
+		area = new Area(AreaType.LOW_DISTRICT, xOff, zOff, this);
 		area.generate();
 		// Strictly Debug
 		area.update(area.getNodes()[1][2]);
@@ -61,5 +61,9 @@ public class Session {
 			if (p != null) players.add(p);
 		}
 		return players;
+	}
+	
+	public int getNodesVisited() {
+		return nodesVisited;
 	}
 }

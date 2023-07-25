@@ -33,10 +33,10 @@ public class FightInstance implements Instance {
 	private static HashMap<UUID, FightData> fightData = new HashMap<UUID, FightData>();
 	private static HashMap<UUID, BukkitTask> blockTasks = new HashMap<UUID, BukkitTask>();
 	
-	private UUID host;
+	private Session s;
 	
-	public FightInstance(UUID host) {
-		this.host = host; // Ref to host instead of session to avoid cleanup issues
+	public FightInstance(Session s) {
+		this.s = s;
 	}
 	
 	// This will only ever handle basic left click
@@ -135,7 +135,7 @@ public class FightInstance implements Instance {
 		return userData;
 	}
 	
-	public static void dealDamage(Damageable damager, DamageType type, double amount, Damageable... targets) {
+	public static void dealBarrieredDamage(Damageable damager, DamageType type, double amount, Damageable... targets) {
 		UUID uuid = damager.getUniqueId();
 		if (!fightData.containsKey(uuid)) {
 			// If no data found, just do the regular base damage
@@ -153,25 +153,58 @@ public class FightInstance implements Instance {
 		}
 
 		for (Damageable target : targets) {
-			receiveDamage(damager, type, amount, target);
+			receiveDamage(damager, type, amount, true, target);
 		}
 	}
 	
-	public static void receiveDamage(Damageable damager, DamageType type, double amount, Damageable target) {
+	public static void dealDamage(Damageable damager, DamageType type, double amount, Damageable... targets) {
 		UUID uuid = damager.getUniqueId();
-		if (fightData.containsKey(uuid)) {
+		if (!fightData.containsKey(uuid)) {
 			// If no data found, just do the regular base damage
-			target.damage(amount);
+			Bukkit.getLogger().warning("[NeoRogue] Failed to find fight data for (attacker) " + damager.getName());
 		}
 		else {
 			FightData data = fightData.get(uuid);
 			double multiplier = 1;
 			for (BuffType buffType : type.getBuffTypes()) {
 				Buff b = data.getBuff(true, buffType);
+				if (b == null) continue;
+				
+				amount += b.getIncrease();
+				multiplier += b.getMultiplier();
+			}
+			amount *= multiplier;
+		}
+
+		for (Damageable target : targets) {
+			receiveDamage(damager, type, amount, false, target);
+		}
+	}
+	
+	public static void receiveDamage(Damageable damager, DamageType type, double amount, boolean hitBarrier, Damageable target) {
+		UUID uuid = target.getUniqueId();
+		if (!fightData.containsKey(uuid)) {
+			// If no data found, just do the regular base damage
+			Bukkit.getLogger().warning("[NeoRogue] Failed to find fight data for (defender) " + target.getName());
+			target.damage(amount);
+		}
+		else {
+			FightData data = fightData.get(uuid);
+			
+			if (hitBarrier) {
+				amount = data.getBarrier().applyDefenseBuffs(amount, type);
+			}
+			
+			double multiplier = 1;
+			for (BuffType buffType : type.getBuffTypes()) {
+				Buff b = data.getBuff(false, buffType);
+				if (b == null) continue; 
+				
 				amount -= b.getIncrease();
 				multiplier -= b.getMultiplier();
 			}
 			amount *= multiplier;
+			target.damage(amount);
 		}
 	}
 
@@ -182,6 +215,10 @@ public class FightInstance implements Instance {
 		for (Player p : s.getOnlinePlayers()) {
 			setup(p, s.getData(p.getUniqueId()));
 		}
+	}
+	
+	public static void putFightData(UUID uuid, FightData data) {
+		fightData.put(uuid, data);
 	}
 	
 	private void setup(Player p, PlayerSessionData data) {
@@ -205,10 +242,9 @@ public class FightInstance implements Instance {
 	}
 	
 	public void cleanup() {
-		Session s = SessionManager.getSession(host);
 		for (UUID uuid : s.getParty().keySet()) {
-			userData.remove(uuid);
-			fightData.remove(uuid);
+			userData.remove(uuid).cleanup();
+			fightData.remove(uuid).cleanup();
 		}
 	}
 }

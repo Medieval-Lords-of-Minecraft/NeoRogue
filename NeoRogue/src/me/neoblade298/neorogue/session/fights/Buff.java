@@ -1,7 +1,5 @@
 package me.neoblade298.neorogue.session.fights;
 
-import org.bukkit.scheduler.BukkitTask;
-
 public class Buff {
 	private double increase, multiplier;
 	

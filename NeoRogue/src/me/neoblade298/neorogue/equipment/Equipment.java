@@ -44,7 +44,7 @@ public abstract class Equipment {
 	}
 	
 	// Run at the start of a fight to initialize Fight Data
-	public abstract void initialize(Player p, FightData data, FightInstance inst, Trigger bind);
+	public abstract void initialize(Player p, FightData data, Trigger bind);
 	
 	public String getId() {
 		return id;

@@ -29,8 +29,8 @@ public class EmpoweredEdge extends Ability {
 	}
 
 	@Override
-	public void initialize(Player p, FightData data, FightInstance inst, Trigger bind) {
-		data.addTrigger(id, bind, new EmpoweredEdgeInstance(this, p, damage, data, inst, bind));
+	public void initialize(Player p, FightData data, Trigger bind) {
+		data.addTrigger(id, bind, new EmpoweredEdgeInstance(this, p, damage, data, bind));
 	}
 	
 	private class EmpoweredEdgeInstance extends EquipmentInstance {
@@ -38,7 +38,7 @@ public class EmpoweredEdge extends Ability {
 		private FightInstance inst;
 		private FightData data;
 		private int damage;
-		public EmpoweredEdgeInstance(Ability a, Player p, int damage, FightData data, FightInstance inst, Trigger bind) {
+		public EmpoweredEdgeInstance(Ability a, Player p, int damage, FightData data, Trigger bind) {
 			super(a);
 			this.inst = inst;
 			this.p = p;
@@ -52,7 +52,7 @@ public class EmpoweredEdge extends Ability {
 			Util.playSound(p, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1F, 1F, false);
 			ParticleUtil.spawnParticle(p, false, p.getLocation(), Particle.CLOUD, 50, 0.5, 0.5, 0.5, 0.2);
 			data.addTrigger(id, Trigger.BASIC_ATTACK, (in) -> {
-				inst.dealDamage(p, DamageType.SLASHING, damage, (Damageable) in[1]);
+				FightInstance.dealDamage(p, DamageType.SLASHING, damage, (Damageable) in[1]);
 				return false;
 			});
 			return true;

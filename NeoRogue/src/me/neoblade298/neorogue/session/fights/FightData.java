@@ -40,40 +40,32 @@ public class FightData {
 		this.sessdata = data;
 		this.health = data.getHealth();
 
-		// Initialize buffs
-		for (BuffType type : BuffType.values()) {
-			damageBuffs.put(type, new Buff());
-			defenseBuffs.put(type, new Buff());
-		}
-
 		// Initialize fight data
 		for (Accessory acc : data.getAccessories()) {
 			if (acc == null) continue;
-			acc.initialize(data.getPlayer(), this, inst, null);
+			acc.initialize(data.getPlayer(), this, null);
 		}
 		for (Armor armor : data.getArmor()) {
 			if (armor == null) continue;
-			armor.initialize(data.getPlayer(), this, inst, null);
+			armor.initialize(data.getPlayer(), this, null);
 		}
 		for (int i = 0; i < data.getHotbar().length; i++) {
 			HotbarCompatible hotbar = data.getHotbar()[i];
 			if (hotbar == null) continue;
-
-			Trigger t = Trigger.getFromHotbarSlot(i);
-			hotbar.initialize(data.getPlayer(), this, inst, t);
+			hotbar.initialize(data.getPlayer(), this, Trigger.getFromHotbarSlot(i));
 		}
 		for (int i = 0; i < data.getOtherBinds().length; i++) {
 			Usable other = data.getOtherBinds()[i];
 			if (other == null) continue;
-			other.initialize(data.getPlayer(), this, inst, KeyBind.getBindFromData(i).getTrigger());
+			other.initialize(data.getPlayer(), this, KeyBind.getBindFromData(i).getTrigger());
 		}
 		for (Artifact art : data.getArtifacts()) {
 			if (art == null) continue;
-			art.initialize(data.getPlayer(), this, inst, null);
+			art.initialize(data.getPlayer(), this, null);
 		}
 		
 		if (data.getOffhand() != null) {
-			data.getOffhand().initialize(data.getPlayer(), this, inst, null);
+			data.getOffhand().initialize(data.getPlayer(), this, null);
 		}
 	}
 
@@ -127,12 +119,20 @@ public class FightData {
 		return sessdata.getData().getPlayer();
 	}
 
-	public void addBuff(String id, boolean damageBuff, boolean multiplier, BuffType type, double amount, int seconds) {
-		Buff b = damageBuff ? damageBuffs.get(type) : defenseBuffs.get(type);
+	public void addBuff(boolean damageBuff, boolean multiplier, BuffType type, double amount) {
+		System.out.println("Adding buff " + type + " " + amount);
+		Buff b = damageBuff ? damageBuffs.getOrDefault(type, new Buff()) : defenseBuffs.getOrDefault(type, new Buff());
 		if (multiplier)
 			b.addMultiplier(amount);
 		else
 			b.addIncrease(amount);
+		
+		if (damageBuff) damageBuffs.put(type, b);
+		else defenseBuffs.put(type, b);
+	}
+
+	public void addBuff(String id, boolean damageBuff, boolean multiplier, BuffType type, double amount, int seconds) {
+		addBuff(damageBuff, multiplier, type, amount);
 
 		if (seconds > 0) {
 			addTask(id, new BukkitRunnable() {

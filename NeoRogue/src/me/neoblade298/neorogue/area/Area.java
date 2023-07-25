@@ -45,10 +45,12 @@ import me.filoghost.holographicdisplays.api.hologram.Hologram;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.particles.ParticleUtil;
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.session.Session;
 
 public class Area {
 	private AreaType type;
 	private Node[][] nodes = new Node[MAX_POSITIONS][MAX_LANES];
+	private Session s;
 	private static World world;
 
 	private static final int MIN_MINIBOSSES = 2;
@@ -72,7 +74,7 @@ public class Area {
 	private ArrayList<Hologram> holograms = new ArrayList<Hologram>();
 
 	// Deserialize
-	public Area(AreaType type, int xOff, int zOff, UUID uuid, int saveSlot, Statement stmt) throws SQLException {
+	public Area(AreaType type, int xOff, int zOff, UUID uuid, int saveSlot, Session s, Statement stmt) throws SQLException {
 		this.type = type;
 		this.xOff = xOff;
 		this.zOff = zOff;
@@ -107,7 +109,7 @@ public class Area {
 	}
 
 	// Create from scratch
-	public Area(AreaType type, int xOff, int zOff) {
+	public Area(AreaType type, int xOff, int zOff, Session s) {
 		this.type = type;
 		this.xOff = xOff;
 		this.zOff = zOff;
@@ -342,7 +344,7 @@ public class Area {
 		
 		// Add button to new paths and generate them
 		for (Node dest : node.getDestinations()) {
-			dest.generateInstance();
+			dest.generateInstance(s);
 			
 			Location loc = nodeToLocation(dest, 1);
 			loc.getBlock().setType(Material.OAK_BUTTON);

@@ -1,10 +1,8 @@
 package me.neoblade298.neorogue.area;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
-import org.bukkit.entity.Player;
-
-import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Instance;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.fights.FightInstance;
@@ -82,9 +80,9 @@ public class Node {
 		return false;
 	}
 	
-	public void generateInstance() {
+	public void generateInstance(Session s) {
 		switch (type) {
-		case FIGHT: inst = new FightInstance();
+		case FIGHT: inst = new FightInstance(s);
 		break;
 		default:
 			break;
