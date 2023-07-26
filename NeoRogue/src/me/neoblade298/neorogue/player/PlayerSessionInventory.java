@@ -34,7 +34,7 @@ public class PlayerSessionInventory extends CoreInventory {
 	private PlayerSessionData data;
 
 	public PlayerSessionInventory(PlayerSessionData data) {
-		super(data.getPlayer(), Bukkit.createInventory(data.getPlayer(), 36, "§9Your Inventory"));
+		super(data.getPlayer(), Bukkit.createInventory(data.getPlayer(), 36, "§9Equipment"));
 		this.data = data;
 		ItemStack[] contents = inv.getContents();
 
@@ -170,10 +170,16 @@ public class PlayerSessionInventory extends CoreInventory {
 		else if (!cursor.getType().isAir() && clicked != null) {
 			e.setCancelled(true);
 			
+			// First check if both items are the same and can be reforged
+			Equipment eq = Equipment.getEquipment(ncursor.getString("equipId"), false);
+			Equipment equippedEq = Equipment.getEquipment(nclicked.getString("equipId"), false);
+			if (eq.isSimilar(equippedEq)) {
+				new ReforgeOptionsInventory(this, slot, onChest, equippedEq);
+				return;
+			}
+			
 			if (onChest) {
 				if (!nclicked.hasTag("dataSlot")) return;
-				Equipment eq = Equipment.getEquipment(ncursor.getString("equipId"), false);
-				Equipment equippedEq = Equipment.getEquipment(nclicked.getString("equipId"), false);
 				if (eq instanceof Ability && (equippedEq == null || !(equippedEq instanceof Ability)) && !data.canEquipAbility()) {
 					displayError("&cYou can only equip &e" + data.getMaxAbilities() + " &cabilities!", true);
 					return;

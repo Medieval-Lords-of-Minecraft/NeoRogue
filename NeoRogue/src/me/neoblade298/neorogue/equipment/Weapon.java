@@ -14,10 +14,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.shared.util.SharedUtil;
+import me.neoblade298.neorogue.session.fights.DamageType;
 import net.md_5.bungee.api.ChatColor;
 
 public abstract class Weapon extends HotbarCompatible {
 	protected double damage, attackSpeed;
+	protected DamageType type;
 
 	public Weapon(String id, boolean isUpgraded, Rarity rarity) {
 		super(id, isUpgraded, rarity);
@@ -25,40 +27,28 @@ public abstract class Weapon extends HotbarCompatible {
 	}
 
 	public static ItemStack createItem(Weapon w, Material mat, String[] preLoreLine, String loreLine) {
-		ItemStack item = new ItemStack(mat);
-		ItemMeta meta = item.getItemMeta();
-		meta.setDisplayName(ChatColor.RED + w.display + (w.isUpgraded ? "+" : ""));
-		ArrayList<String> lore = new ArrayList<String>();
-		lore.add("§4Weapon");
+		ArrayList<String> preLore = new ArrayList<String>();
 		
 		// Add stats
-		if (w.damage > 0) lore.add("§6Damage: §e" + w.damage);
-		if (w.attackSpeed > 0) lore.add("§6Attack Speed: §e" + w.attackSpeed);
-		
+		if (w.damage > 0) {
+			preLore.add("§6Damage: §e" + w.damage);
+			preLore.add("§6Damage Type: §e" + w.type.getDisplay());
+		}
+		if (w.attackSpeed > 0) preLore.add("§6Attack Speed: §e" + w.attackSpeed);
 		if (preLoreLine != null) {
 			for (String l : preLoreLine) {
-				lore.add(SharedUtil.translateColors(l));
+				preLore.add(SharedUtil.translateColors(l));
 			}
 		}
-		
-		if (loreLine != null) {
-			lore.addAll(SharedUtil.addLineBreaks(SharedUtil.translateColors(loreLine), 200, ChatColor.GRAY));
-		}
-		meta.setLore(lore);
+		ItemStack item = Equipment.createItem(w, mat, "Weapon", preLore, loreLine, null);
+		ItemMeta meta = item.getItemMeta();
 		
 		// Set attack speed if weapon is melee
 		String name = item.getType().name();
 		if (name.endsWith("SWORD") || name.endsWith("AXE")) {
 			meta.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED, new AttributeModifier(UUID.randomUUID(), w.id, w.attackSpeed - 4, Operation.ADD_NUMBER, EquipmentSlot.HAND));
 		}
-		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-		meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-		meta.setUnbreakable(true);
 		item.setItemMeta(meta);
-		NBTItem nbti = new NBTItem(item);
-		nbti.setString("equipId", w.id);
-		nbti.setString("type", "WEAPON");
-		nbti.setBoolean("isUpgraded", w.isUpgraded);
-		return nbti.getItem();
+		return item;
 	}
 }

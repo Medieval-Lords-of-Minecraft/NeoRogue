@@ -1,6 +1,7 @@
 package me.neoblade298.neorogue.equipment;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Material;
@@ -25,33 +26,14 @@ public abstract class Armor extends Equipment {
 
 
 	public static ItemStack createItem(Armor a, Material mat, String[] preLoreLine, String loreLine) {
-		ItemStack item = new ItemStack(mat);
-		ItemMeta meta = item.getItemMeta();
-		meta.setDisplayName(ChatColor.RED + a.display + (a.isUpgraded ? "+" : ""));
-		ArrayList<String> lore = new ArrayList<String>();
-		lore.add("§4Armor");
-		
+		ArrayList<String> preLore = new ArrayList<String>();
 		// Add stats
-		
 		if (preLoreLine != null) {
 			for (String l : preLoreLine) {
-				lore.add(SharedUtil.translateColors(l));
+				preLore.add(SharedUtil.translateColors(l));
 			}
 		}
 		
-		if (loreLine != null) {
-			lore.addAll(SharedUtil.addLineBreaks(SharedUtil.translateColors(loreLine), 200, ChatColor.GRAY));
-		}
-		meta.setLore(lore);
-		
-		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-		meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-		meta.setUnbreakable(true);
-		item.setItemMeta(meta);
-		NBTItem nbti = new NBTItem(item);
-		nbti.setString("equipId", a.id);
-		nbti.setString("type", "ARMOR");
-		nbti.setBoolean("isUpgraded", a.isUpgraded);
-		return nbti.getItem();
+		return Equipment.createItem(a, mat, "Armor", preLore, loreLine, null);
 	}
 }

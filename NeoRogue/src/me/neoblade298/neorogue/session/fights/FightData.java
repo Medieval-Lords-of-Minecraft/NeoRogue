@@ -23,7 +23,7 @@ public class FightData {
 	private FightInstance inst;
 	private PlayerSessionData sessdata;
 	private HashMap<Trigger, HashMap<String, TriggerAction>> triggers = new HashMap<Trigger, HashMap<String, TriggerAction>>();
-	private HashMap<String, HashMap<UUID, Status>> statuses = new HashMap<String, HashMap<UUID, Status>>();
+	private HashMap<String, Status> statuses = new HashMap<String, Status>();
 	private HashMap<String, EquipmentInstance> equips = new HashMap<String, EquipmentInstance>();
 
 	private HashMap<String, BukkitTask> tasks = new HashMap<String, BukkitTask>();
@@ -195,10 +195,15 @@ public class FightData {
 	}
 	
 	public void removeStatus(String id) {
-		statuses.remove(id);
+		Status s = statuses.remove(id);
+		if (s != null) s.cleanup();
 	}
 	
 	public FightStatistics getStats() {
 		return stats;
+	}
+	
+	public void addStatus(String id, Status status) {
+		statuses.put(id, status);
 	}
 }

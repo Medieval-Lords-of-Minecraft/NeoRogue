@@ -1,6 +1,7 @@
 package me.neoblade298.neorogue.equipment;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -19,31 +20,18 @@ public abstract class Ability extends Usable {
 	}
 	
 	public static ItemStack createItem(Ability a, Material mat, String[] preLoreLine, String loreLine) {
-		ItemStack item = new ItemStack(mat);
-		ItemMeta meta = item.getItemMeta();
-		meta.setDisplayName(ChatColor.RED + a.display + (a.isUpgraded ? "+" : ""));
-		ArrayList<String> lore = new ArrayList<String>();
-		lore.add("§4Ability");
-		
-		// Add stats
-		if (a.manaCost > 0) lore.add("§6Mana Cost: §e" + a.manaCost);
-		if (a.staminaCost > 0) lore.add("§6Stamina Cost: §e" + a.staminaCost);
-		if (a.range > 0) lore.add("§6Range: §e" + a.range);
-		if (a.cooldown > 0) lore.add("§6Cooldown: §e" + a.cooldown);
-		
+		ArrayList<String> preLore = new ArrayList<String>();
+		if (a.manaCost > 0) preLore.add("§6Mana Cost: §e" + a.manaCost);
+		if (a.staminaCost > 0) preLore.add("§6Stamina Cost: §e" + a.staminaCost);
+		if (a.range > 0) preLore.add("§6Range: §e" + a.range);
+		if (a.cooldown > 0) preLore.add("§6Cooldown: §e" + a.cooldown);
 		if (preLoreLine != null) {
 			for (String l : preLoreLine) {
-				lore.add(SharedUtil.translateColors(l));
+				preLore.add(SharedUtil.translateColors(l));
 			}
 		}
-		lore.addAll(SharedUtil.addLineBreaks(SharedUtil.translateColors(loreLine), 200, ChatColor.GRAY));
-		meta.setLore(lore);
-		item.setItemMeta(meta);
-		NBTItem nbti = new NBTItem(item);
-		nbti.setString("equipId", a.id);
-		nbti.setString("type", "ABILITY");
-		nbti.setBoolean("isUpgraded", a.isUpgraded);
-		return nbti.getItem();
+		
+		return Equipment.createItem(a, mat, "Armor", preLore, loreLine, null);
 	}
 	
 	public int getManaCost() {

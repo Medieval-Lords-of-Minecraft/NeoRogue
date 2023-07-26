@@ -16,15 +16,14 @@ public class BleedStatus extends Status {
 	private HashMap<UUID, Integer> sliceOwners = new HashMap<UUID, Integer>();
 
 	public BleedStatus(FightData data, UUID applier, int stacks) {
-		super(id, stacks, data);
-		action = new BleedTickAction();
-		data.addTickAction(action);
-		slices.add(new StatusSlice(applier, stacks));
+		super(id, data);
 	}
 
-	private class BleedTickAction implements TickAction {
+	private class BleedTickAction extends TickAction {
 		@Override
 		public boolean run() {
+			if (action.isCancelled()) return true;
+			
 			FightInstance.receiveDamage(null, DamageType.BLEED, stacks, true, false, data.getEntity());
 			for (Entry<UUID, Integer> ent : sliceOwners.entrySet()) {
 				FightInstance.getFightData(ent.getKey()).getStats().addDamageDealt(DamageType.BLEED, ent.getValue());
@@ -52,8 +51,16 @@ public class BleedStatus extends Status {
 		}
 	}
 	
+	// Always gets called after a status is created
 	public void apply(UUID applier, int stacks, int seconds) {
 		this.stacks += stacks;
+		
+		if (this.stacks > 0) {
+			if (action == null) {
+				action = new BleedTickAction();
+				data.addTickAction(action);
+			}
+		}
 		
 		StatusSlice last = slices.peekLast();
 		if (last != null && last.getUniqueId().equals(applier)) {
