@@ -11,7 +11,7 @@ import me.neoblade298.neorogue.session.fights.FightInstance;
 import me.neoblade298.neorogue.session.fights.TickAction;
 
 public class PoisonStatus extends Status {
-	private static String id;
+	private static String id = "POISON";
 	private int seconds;
 	private HashMap<UUID, Integer> slices = new HashMap<UUID, Integer>();
 

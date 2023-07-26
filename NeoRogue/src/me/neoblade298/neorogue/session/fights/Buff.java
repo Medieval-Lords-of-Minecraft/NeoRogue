@@ -7,19 +7,12 @@ public class Buff {
 	private double increase, multiplier;
 	private HashMap<UUID, BuffSlice> slices = new HashMap<UUID, BuffSlice>();
 	
-	public Buff(UUID applier) {
-		this.increase = 0;
-		this.multiplier = 0;
-	}
+	public Buff() {}
 	
-	public Buff(double increase) {
-		this.increase = increase;
-		this.multiplier = 0;
-	}
-	
-	public Buff(double increase, double multiplier) {
+	public Buff(UUID applier, double increase, double multiplier) {
 		this.increase = increase;
 		this.multiplier = multiplier;
+		slices.put(applier, new BuffSlice(increase, multiplier));
 	}
 	
 	public void addIncrease(UUID applier, double increase) {

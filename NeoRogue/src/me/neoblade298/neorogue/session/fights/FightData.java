@@ -135,9 +135,9 @@ public class FightData {
 	public void addBuff(UUID applier, boolean damageBuff, boolean multiplier, BuffType type, double amount) {
 		Buff b = damageBuff ? damageBuffs.getOrDefault(type, new Buff()) : defenseBuffs.getOrDefault(type, new Buff());
 		if (multiplier)
-			b.addMultiplier(amount);
+			b.addMultiplier(applier, amount);
 		else
-			b.addIncrease(amount);
+			b.addIncrease(applier, amount);
 		
 		if (damageBuff) damageBuffs.put(type, b);
 		else defenseBuffs.put(type, b);
@@ -145,12 +145,13 @@ public class FightData {
 
 	public void addBuff(UUID applier, String id, boolean damageBuff, boolean multiplier, BuffType type, double amount, int seconds) {
 		addBuff(applier, damageBuff, multiplier, type, amount);
+		String uid = applier.toString().substring(0,10) + id;
 
 		if (seconds > 0) {
-			addTask(applier + id, new BukkitRunnable() {
+			addTask(uid, new BukkitRunnable() {
 				public void run() {
 					addBuff(applier, id, damageBuff, multiplier, type, -amount, -1);
-					tasks.remove(applier + id);
+					tasks.remove(uid);
 				}
 			}.runTaskLater(NeoRogue.inst(), seconds * 20));
 		}

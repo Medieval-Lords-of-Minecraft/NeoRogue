@@ -4,6 +4,12 @@ import java.util.UUID;
 
 public class BuffSlice {
 	private double increase, multiplier;
+	
+	public BuffSlice() {}
+	public BuffSlice(double increase, double multiplier) {
+		this.increase = increase;
+		this.multiplier = multiplier;
+	}
 	public double getIncrease() {
 		return increase;
 	}
