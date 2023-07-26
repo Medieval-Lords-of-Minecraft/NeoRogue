@@ -1,7 +1,8 @@
 name: NeoRogue
 main: me.neoblade298.neorogue.NeoRogue
 author: [Neoblade298]
-depend: [NeoCore, WorldEdit, HolographicDisplays, MythicMobs]
+depend: [NeoCore, WorldEdit, HolographicDisplays]
+softdepend: [MythicMobs]
 version: 1.0
 api-version: 1.16
 commands:

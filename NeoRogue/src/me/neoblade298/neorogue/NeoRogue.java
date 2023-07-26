@@ -60,8 +60,8 @@ public class NeoRogue extends JavaPlugin {
 		Session s = SessionManager.createSession(p);
 		s.setInstance(new FightInstance(s));
 		s.getInstance().start(s);
+		
 		/*
-		Area area = s.getArea();
 		new BukkitRunnable() {
 			int count = 0; 
 			public void run() {
@@ -70,8 +70,8 @@ public class NeoRogue extends JavaPlugin {
 					this.cancel();
 				}
 				if (p == null) return;
-				
-				area.tickParticles(p, area.getNodes()[1][2]);
+
+				// area.tickParticles(p, area.getNodes()[1][2]);
 			}
 		}.runTaskTimer(this, 0L, 20L);
 		*/

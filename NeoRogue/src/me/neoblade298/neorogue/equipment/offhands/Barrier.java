@@ -18,7 +18,7 @@ public class Barrier {
 	private double height, width, distanceFromPlayer;
 	private Location bottomLeft, topRight, midpoint;
 	private boolean needsUpdate = false;
-	private Vector cubeAxis, localX, localZ, localY = new Vector(0, height, 0);
+	private Vector cubeAxis, localX, localZ, localY;
 	
 	private HashMap<BuffType, Buff> buffs = new HashMap<BuffType, Buff>();
 	
@@ -38,7 +38,7 @@ public class Barrier {
 	private void update() {
 		// localZ is calculated in collides
 		localX = localZ.clone().setY(0).rotateAroundY(Math.PI / 2);
-		localZ.rotateAroundAxis(cubeAxis, distanceFromPlayer);
+		localY = localZ.clone().rotateAroundAxis(localZ, -Math.PI / 2);
 		
 		Vector left = localX.clone().multiply(-width / 2);
 		Vector forward = localZ.clone().multiply(distanceFromPlayer + 2);
