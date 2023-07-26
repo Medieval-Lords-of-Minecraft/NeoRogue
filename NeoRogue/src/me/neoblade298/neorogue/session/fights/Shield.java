@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.session.fights;
 
+import java.util.UUID;
+
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neorogue.NeoRogue;
@@ -8,9 +10,11 @@ public class Shield {
 	private double amount;
 	private double total;
 	private ShieldHolder shieldHolder;
-	public Shield(FightData data, double amt, boolean decayPercent, double decayDelay, double decayAmount, double decayPeriod, int decayRepetitions) {
+	private UUID applier;
+	public Shield(FightData data, UUID applier, double amt, boolean decayPercent, double decayDelay, double decayAmount, double decayPeriod, int decayRepetitions) {
 		this.total = amt;
 		this.amount = amt;
+		this.applier = applier;
 		this.shieldHolder = data.getShields();
 		new BukkitRunnable() {
 			int reps = decayRepetitions;
@@ -42,6 +46,7 @@ public class Shield {
 		double original = this.amount;
 		this.amount = Math.max(0, this.amount - damage);
 		shieldHolder.subtractShields(original - amount);
+		FightInstance.getFightData(applier).getStats().addDamageShielded(original - amount);
 		return this.amount > 0 ? 0 : damage - original;
 	}
 	

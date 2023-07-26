@@ -2,6 +2,9 @@ package me.neoblade298.neorogue.session.fights;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.UUID;
+
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -20,7 +23,7 @@ public class FightData {
 	private FightInstance inst;
 	private PlayerSessionData sessdata;
 	private HashMap<Trigger, HashMap<String, TriggerAction>> triggers = new HashMap<Trigger, HashMap<String, TriggerAction>>();
-	private HashMap<String, Status> statuses = new HashMap<String, Status>();
+	private HashMap<String, HashMap<UUID, Status>> statuses = new HashMap<String, HashMap<UUID, Status>>();
 	private HashMap<String, EquipmentInstance> equips = new HashMap<String, EquipmentInstance>();
 
 	private HashMap<String, BukkitTask> tasks = new HashMap<String, BukkitTask>();
@@ -30,6 +33,8 @@ public class FightData {
 	private Barrier barrier = null;
 	private ShieldHolder shields = null;
 	private Damageable entity = null;
+	private LinkedList<TickAction> tickActions = new LinkedList<TickAction>();
+	private FightStatistics stats = new FightStatistics();
 
 	// Buffs
 	private HashMap<BuffType, Buff> damageBuffs = new HashMap<BuffType, Buff>();
@@ -127,7 +132,7 @@ public class FightData {
 		return entity;
 	}
 
-	public void addBuff(boolean damageBuff, boolean multiplier, BuffType type, double amount) {
+	public void addBuff(UUID applier, boolean damageBuff, boolean multiplier, BuffType type, double amount) {
 		Buff b = damageBuff ? damageBuffs.getOrDefault(type, new Buff()) : defenseBuffs.getOrDefault(type, new Buff());
 		if (multiplier)
 			b.addMultiplier(amount);
@@ -138,14 +143,14 @@ public class FightData {
 		else defenseBuffs.put(type, b);
 	}
 
-	public void addBuff(String id, boolean damageBuff, boolean multiplier, BuffType type, double amount, int seconds) {
-		addBuff(damageBuff, multiplier, type, amount);
+	public void addBuff(UUID applier, String id, boolean damageBuff, boolean multiplier, BuffType type, double amount, int seconds) {
+		addBuff(applier, damageBuff, multiplier, type, amount);
 
 		if (seconds > 0) {
-			addTask(id, new BukkitRunnable() {
+			addTask(applier + id, new BukkitRunnable() {
 				public void run() {
-					addBuff(id, damageBuff, multiplier, type, -amount, -1);
-					tasks.remove(id);
+					addBuff(applier, id, damageBuff, multiplier, type, -amount, -1);
+					tasks.remove(applier + id);
 				}
 			}.runTaskLater(NeoRogue.inst(), seconds * 20));
 		}
@@ -173,5 +178,26 @@ public class FightData {
 	
 	public ShieldHolder getShields() {
 		return shields;
+	}
+	
+	public void addTickAction(TickAction action) {
+		FightInstance.addToTickList(entity.getUniqueId());
+		tickActions.add(action);
+	}
+	
+	public boolean runTickActions() {
+		Iterator<TickAction> iter = tickActions.iterator();
+		while (iter.hasNext()) {
+			if (!iter.next().run()) iter.remove();
+		}
+		return tickActions.isEmpty();
+	}
+	
+	public void removeStatus(String id) {
+		statuses.remove(id);
+	}
+	
+	public FightStatistics getStats() {
+		return stats;
 	}
 }

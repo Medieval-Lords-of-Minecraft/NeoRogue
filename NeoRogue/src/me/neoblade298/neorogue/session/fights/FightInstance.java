@@ -1,13 +1,15 @@
 package me.neoblade298.neorogue.session.fights;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.player.PlayerChangedMainHandEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
@@ -21,19 +23,31 @@ import org.bukkit.scheduler.BukkitTask;
 import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
 import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
 import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.equipment.offhands.Barrier;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.Trigger;
 import me.neoblade298.neorogue.session.Instance;
 import me.neoblade298.neorogue.session.Session;
-import me.neoblade298.neorogue.session.SessionManager;
 
 public class FightInstance implements Instance {
 	private static HashMap<UUID, FightData> userData = new HashMap<UUID, FightData>();
 	private static HashMap<UUID, FightData> fightData = new HashMap<UUID, FightData>();
 	private static HashMap<UUID, BukkitTask> blockTasks = new HashMap<UUID, BukkitTask>();
+	private static HashSet<UUID> toTick = new HashSet<UUID>();
 	
 	private Session s;
+	
+	static {
+		new BukkitRunnable() {
+			public void run() {
+				if (toTick.isEmpty()) return;
+				
+				Iterator<UUID> iter = toTick.iterator();
+				while (iter.hasNext()) {
+					if (fightData.get(iter.next()).runTickActions()) iter.remove();
+				}
+			}
+		}.runTaskTimer(NeoRogue.inst(), 20L, 20L);
+	}
 	
 	public FightInstance(Session s) {
 		this.s = s;
@@ -116,11 +130,11 @@ public class FightInstance implements Instance {
 	}
 	
 	public static void handleMythicDespawn(MythicMobDespawnEvent e) {
-		fightData.remove(e.getEntity().getUniqueId());
+		removeFightData(e.getEntity().getUniqueId());
 	}
 	
 	public static void handleMythicDeath(MythicMobDeathEvent e) {
-		fightData.remove(e.getEntity().getUniqueId());
+		removeFightData(e.getEntity().getUniqueId());
 	}
 	
 	private static boolean trigger(UUID uuid, Trigger trigger, Object[] obj) {
@@ -151,6 +165,7 @@ public class FightInstance implements Instance {
 		}
 		else {
 			FightData data = fightData.get(uuid);
+			double original = amount;
 			double multiplier = 1;
 			for (BuffType buffType : type.getBuffTypes()) {
 				Buff b = data.getBuff(true, buffType);
@@ -158,16 +173,21 @@ public class FightInstance implements Instance {
 				
 				amount += b.getIncrease();
 				multiplier += b.getMultiplier();
+				for (Entry<UUID, BuffSlice> ent : b.getSlices().entrySet()) {
+					BuffSlice slice = ent.getValue();
+					fightData.get(ent.getKey()).getStats().addDefenseBuffed(slice.getIncrease() + (slice.getMultiplier() * original));
+				}
 			}
 			amount *= multiplier;
+			data.getStats().addDamageDealt(type, amount * targets.length);
 		}
 
 		for (Damageable target : targets) {
-			receiveDamage(damager, type, amount, true, target);
+			receiveDamage(damager, type, amount, false, true, target);
 		}
 	}
 	
-	public static void receiveDamage(Damageable damager, DamageType type, double amount, boolean hitBarrier, Damageable target) {
+	public static void receiveDamage(Damageable damager, DamageType type, double amount, boolean bypassShields, boolean hitBarrier, Damageable target) {
 		UUID uuid = target.getUniqueId();
 		if (!fightData.containsKey(uuid)) {
 			// If no data found, just do the regular base damage
@@ -178,12 +198,14 @@ public class FightInstance implements Instance {
 			FightData data = fightData.get(uuid);
 			
 			// First reduce damage from barriers
+			double original = amount;
 			if (hitBarrier && data.getBarrier() != null) {
+				data.getStats().addDamageBarriered(amount);
 				amount = data.getBarrier().applyDefenseBuffs(amount, type);
 			}
 
 			// Next calculate damage to shields
-			if (!data.getShields().isEmpty()) {
+			if (!data.getShields().isEmpty() && !bypassShields) {
 				ShieldHolder shields = data.getShields();
 				amount = Math.max(0, shields.useShields(amount));
 				new BukkitRunnable() {
@@ -191,10 +213,21 @@ public class FightInstance implements Instance {
 						shields.update();
 					}
 				}.runTask(NeoRogue.inst());
+				
+				if (amount <= 0) {
+					target.setHealth(target.getHealth() + 0.1);
+					target.damage(0.1);
+					return;
+				}
 			}
-			if (amount <= 0) {
-				target.damage(0.1);
-				return;
+			
+			if (bypassShields) {
+				amount += target.getAbsorptionAmount();
+				new BukkitRunnable() {
+					public void run() {
+						data.getShields().update();
+					}
+				}.runTask(NeoRogue.inst());
 			}
 			
 			// Finally calculate hp damage
@@ -205,6 +238,10 @@ public class FightInstance implements Instance {
 				
 				amount -= b.getIncrease();
 				multiplier -= b.getMultiplier();
+				for (Entry<UUID, BuffSlice> ent : b.getSlices().entrySet()) {
+					BuffSlice slice = ent.getValue();
+					fightData.get(ent.getKey()).getStats().addDefenseBuffed(slice.getIncrease() + (slice.getMultiplier() * original));
+				}
 			}
 			amount *= multiplier;
 			target.damage(amount);
@@ -249,5 +286,14 @@ public class FightInstance implements Instance {
 			userData.remove(uuid).cleanup();
 			fightData.remove(uuid).cleanup();
 		}
+	}
+	
+	public static void removeFightData(UUID uuid) {
+		toTick.remove(uuid);
+		fightData.remove(uuid);
+	}
+	
+	public static void addToTickList(UUID uuid) {
+		toTick.add(uuid);
 	}
 }

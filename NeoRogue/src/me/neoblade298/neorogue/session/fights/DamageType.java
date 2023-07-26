@@ -10,7 +10,8 @@ public enum DamageType {
 	EARTH(DamageCategory.MAGICAL, new BuffType[]  { BuffType.EARTH, BuffType.MAGICAL, BuffType.GENERAL }),
 	DARK(DamageCategory.MAGICAL, new BuffType[]  { BuffType.DARK, BuffType.MAGICAL, BuffType.GENERAL }),
 	LIGHT(DamageCategory.MAGICAL, new BuffType[]  { BuffType.LIGHT, BuffType.MAGICAL, BuffType.GENERAL }),
-	STATUS(DamageCategory.STATUS, new BuffType[]  { BuffType.STATUS, BuffType.GENERAL }),
+	BLEED(DamageCategory.STATUS, new BuffType[]  { BuffType.STATUS, BuffType.GENERAL }),
+	POISON(DamageCategory.STATUS, new BuffType[]  { BuffType.STATUS, BuffType.GENERAL }),
 	OTHER(DamageCategory.OTHER, new BuffType[]  { BuffType.OTHER, BuffType.GENERAL });
 	
 	private DamageCategory category;
