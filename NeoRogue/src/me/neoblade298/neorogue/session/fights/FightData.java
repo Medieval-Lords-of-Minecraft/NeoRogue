@@ -189,7 +189,7 @@ public class FightData {
 	public boolean runTickActions() {
 		Iterator<TickAction> iter = tickActions.iterator();
 		while (iter.hasNext()) {
-			if (!iter.next().run()) iter.remove();
+			if (iter.next().run()) iter.remove();
 		}
 		return tickActions.isEmpty();
 	}
@@ -203,7 +203,9 @@ public class FightData {
 		return stats;
 	}
 	
-	public void addStatus(String id, Status status) {
-		statuses.put(id, status);
+	public void applyStatus(String id, UUID applier, int stacks, int seconds) {
+		Status s = statuses.getOrDefault(id, Status.createFromId(id, applier, this, stacks, seconds));
+		s.apply(applier, stacks, seconds);
+		statuses.put(id, s);
 	}
 }

@@ -44,7 +44,8 @@ public class PlayerSessionInventory extends CoreInventory {
 			slotTypes.put(i, "ARMOR");
 			Armor a = data.getArmor()[iter];
 			contents[i] = a != null ? addNbt(a.getItem(), a.getId(), a.isUpgraded(), iter)
-					: createArmorIcon(iter++);
+					: createArmorIcon(iter);
+			iter++;
 		}
 
 		iter = 0;
@@ -52,7 +53,8 @@ public class PlayerSessionInventory extends CoreInventory {
 			slotTypes.put(i, "ACCESSORY");
 			Accessory a = data.getAccessories()[iter];
 			contents[i] = a != null ? addNbt(a.getItem(), a.getId(), a.isUpgraded(), iter)
-					: createAccessoryIcon(iter++);
+					: createAccessoryIcon(iter);
+			iter++;
 		}
 
 		for (KeyBind bind : KeyBind.values()) {
@@ -171,14 +173,19 @@ public class PlayerSessionInventory extends CoreInventory {
 			e.setCancelled(true);
 			
 			// First check if both items are the same and can be reforged
-			Equipment eq = Equipment.getEquipment(ncursor.getString("equipId"), false);
-			Equipment equippedEq = Equipment.getEquipment(nclicked.getString("equipId"), false);
-			if (eq.isSimilar(equippedEq)) {
-				new ReforgeOptionsInventory(this, slot, onChest, equippedEq);
+			String eqId = ncursor.getString("equipId");
+			String eqedId = nclicked.getString("equipId");
+			if (eqId.equals(eqedId)) {
+				p.setItemOnCursor(null);
+				boolean isUpgraded = nclicked.getBoolean("isUpgraded") || ncursor.getBoolean("isUpgraded");
+				new ReforgeOptionsInventory(this, e.getSlot(), onChest, onChest ? slotTypes.get(e.getSlot()) : null, nclicked.getInteger("dataSlot"),
+						Equipment.getEquipment(eqId, isUpgraded), cursor);
 				return;
 			}
 			
 			if (onChest) {
+				Equipment eq = Equipment.getEquipment(eqId, false);
+				Equipment equippedEq = Equipment.getEquipment(eqedId, false);
 				if (!nclicked.hasTag("dataSlot")) return;
 				if (eq instanceof Ability && (equippedEq == null || !(equippedEq instanceof Ability)) && !data.canEquipAbility()) {
 					displayError("&cYou can only equip &e" + data.getMaxAbilities() + " &cabilities!", true);
@@ -330,7 +337,7 @@ public class PlayerSessionInventory extends CoreInventory {
 		if (setItem) inv.setItem(invSlot, icon);
 	}
 
-	private boolean setEquipment(String slotType, int dataSlot, String equipId, boolean isUpgraded) {
+	public boolean setEquipment(String slotType, int dataSlot, String equipId, boolean isUpgraded) {
 		Equipment eq = Equipment.getEquipment(equipId, isUpgraded);
 		switch (slotType) {
 		case "ARMOR":
@@ -393,5 +400,9 @@ public class PlayerSessionInventory extends CoreInventory {
 	
 	private boolean isBindable(String type) {
 		return type.equals("OTHERBINDS") || type.equals("HOTBAR");
+	}
+	
+	public PlayerSessionData getData() {
+		return data;
 	}
 }

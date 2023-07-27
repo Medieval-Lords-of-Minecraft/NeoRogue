@@ -215,7 +215,8 @@ public class FightInstance implements Instance {
 				}.runTask(NeoRogue.inst());
 				
 				if (amount <= 0) {
-					target.setHealth(target.getHealth() + 0.1);
+					// Make sure player never dies from chip damage from shields
+					if (target.getHealth() < 10) target.setHealth(target.getHealth() + 0.1);
 					target.damage(0.1);
 					return;
 				}
@@ -272,7 +273,7 @@ public class FightInstance implements Instance {
 		inv.clear();
 		ItemStack[] contents = inv.getContents();
 		
-		for (int i = 0; i < 8; i++) {
+		for (int i = 0; i < 9; i++) {
 			if (data.getHotbar()[i] == null) continue;
 			contents[i] = data.getHotbar()[i].getItem();
 		}

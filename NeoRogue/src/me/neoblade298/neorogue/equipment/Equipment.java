@@ -37,6 +37,9 @@ public abstract class Equipment {
 			
 			// Weapons
 			new WoodenSword(b);
+			new FencingSword(b);
+			new Rapier(b);
+			new SerratedFencingSword(b);
 			
 			// Offhands
 			new RicketyShield(b);
@@ -63,7 +66,7 @@ public abstract class Equipment {
 	}
 	
 	public ItemStack getItem() {
-		return item;
+		return item.clone();
 	}
 	
 	public boolean isUpgraded() {

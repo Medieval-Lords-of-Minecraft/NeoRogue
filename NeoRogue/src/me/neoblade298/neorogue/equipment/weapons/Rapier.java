@@ -10,15 +10,18 @@ import me.neoblade298.neorogue.player.Trigger;
 import me.neoblade298.neorogue.session.fights.DamageType;
 import me.neoblade298.neorogue.session.fights.FightData;
 import me.neoblade298.neorogue.session.fights.FightInstance;
+import me.neoblade298.neorogue.session.fights.Shield;
 
 public class Rapier extends Weapon {
 	
+	private int shields;
 	public Rapier(boolean isUpgraded) {
 		super("rapier", isUpgraded, Rarity.UNCOMMON);
 		display = "Rapier";
 		damage = isUpgraded ? 12 : 9;
+		type = DamageType.PIERCING;
 		attackSpeed = 1;
-		int shields = isUpgraded ? 15 : 15;
+		shields = isUpgraded ? 20 : 15;
 		item = Weapon.createItem(this, Material.STONE_SWORD, null, "&7On hit, grant yourself &e" + shields + "&7 shields");
 	}
 
@@ -26,6 +29,7 @@ public class Rapier extends Weapon {
 	public void initialize(Player p, FightData data, Trigger bind) {
 		data.addTrigger(id, Trigger.LEFT_CLICK_HIT, (inputs) -> {
 			FightInstance.dealDamage(p, type, damage, ((Damageable) inputs[1]));
+			data.getShields().addShield(new Shield(data, p.getUniqueId(), shields, true, 1, 100, 1, 1));
 			data.runActions(Trigger.BASIC_ATTACK, inputs);
 			return true;
 		});

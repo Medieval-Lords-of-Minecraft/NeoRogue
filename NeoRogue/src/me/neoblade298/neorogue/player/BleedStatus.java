@@ -15,7 +15,7 @@ public class BleedStatus extends Status {
 	private LinkedList<StatusSlice> slices = new LinkedList<StatusSlice>();
 	private HashMap<UUID, Integer> sliceOwners = new HashMap<UUID, Integer>();
 
-	public BleedStatus(FightData data, UUID applier, int stacks) {
+	public BleedStatus(FightData data) {
 		super(id, data);
 	}
 
@@ -61,6 +61,10 @@ public class BleedStatus extends Status {
 				data.addTickAction(action);
 			}
 		}
+		else {
+			data.removeStatus(id);
+			return;
+		}
 		
 		StatusSlice last = slices.peekLast();
 		if (last != null && last.getUniqueId().equals(applier)) {
@@ -69,7 +73,6 @@ public class BleedStatus extends Status {
 		else {
 			slices.push(new StatusSlice(applier, stacks));
 		}
-		
 		sliceOwners.put(applier, sliceOwners.getOrDefault(applier, 0) + stacks);
 	}
 }

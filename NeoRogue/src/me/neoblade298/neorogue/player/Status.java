@@ -16,21 +16,15 @@ public abstract class Status {
 		this.data = data;
 	}
 	
+	// Setting stacks or status to 0 means they will be untouched
 	public abstract void apply(UUID applier, int stacks, int seconds);
 	
 	public static Status createFromId(String id, UUID applier, FightData target, int stacks, int seconds) {
-		Status status;
 		switch (id) {
-		case "POISON": status = new PoisonStatus(target, applier, stacks, seconds);
-		break;
-		case "BLEED": status = new BleedStatus(target, applier, stacks);
-		break;
-		default: status = new GenericStatus(id, target, applier, stacks, seconds);
-		break;
+		case "POISON": return new PoisonStatus(target, seconds);
+		case "BLEED": return new BleedStatus(target);
+		default: return new GenericStatus(id, target, seconds);
 		}
-		
-		status.apply(applier, stacks, seconds);
-		return status;
 	}
 	
 	public void cleanup() {

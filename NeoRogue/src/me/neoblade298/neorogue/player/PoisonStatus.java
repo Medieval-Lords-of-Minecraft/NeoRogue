@@ -14,8 +14,9 @@ public class PoisonStatus extends Status {
 	private static String id = "POISON";
 	private int seconds;
 	private HashMap<UUID, Integer> slices = new HashMap<UUID, Integer>();
+	private LinkedList<StatusSlice> sliceOwners = new LinkedList<StatusSlice>();
 
-	public PoisonStatus(FightData data, UUID applier, int stacks, int seconds) {
+	public PoisonStatus(FightData data, int seconds) {
 		super(id, data);
 		this.seconds = seconds;
 	}
@@ -39,7 +40,7 @@ public class PoisonStatus extends Status {
 	}
 	
 	public void apply(UUID applier, int stacks, int seconds) {
-		if (seconds >= 0) {
+		if (seconds > 0) {
 			this.seconds = Math.max(this.seconds, seconds);
 			if (action == null) {
 				action = new PoisonTickAction();
@@ -47,13 +48,47 @@ public class PoisonStatus extends Status {
 			}
 		}
 		else {
-			this.seconds -= seconds;
+			this.seconds += seconds;
 			if (this.seconds <= 0) {
 				data.removeStatus(id);
+				return;
 			}
 		}
-		slices.put(applier, slices.getOrDefault(applier, 0));
-		this.stacks += stacks;
-		slices.put(applier, stacks);
+		
+		if (stacks > 0) {
+			this.stacks += stacks;
+			if (action == null) {
+				action = new PoisonTickAction();
+				data.addTickAction(action);
+			}
+			slices.put(applier, slices.getOrDefault(applier, 0));
+
+			StatusSlice last = sliceOwners.peekLast();
+			if (last != null && last.getUniqueId().equals(applier)) {
+				last.addStacks(stacks);
+			}
+			else {
+				sliceOwners.push(new StatusSlice(applier, stacks));
+			}
+		}
+		else {
+			this.stacks -= stacks;
+			if (this.stacks <= 0) {
+				data.removeStatus(id);
+				return;
+			}
+			while (stacks > 0 || !sliceOwners.isEmpty()) {
+				StatusSlice slice = sliceOwners.peek();
+				if (slice.getStacks() > stacks) {
+					slice.addStacks(-stacks);
+					stacks = 0;
+				}
+				else {
+					stacks -= slice.getStacks();
+					sliceOwners.poll();
+				}
+			}
+		}
+		
 	}
 }
