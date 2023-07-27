@@ -17,7 +17,7 @@ import me.neoblade298.neorogue.player.Trigger;
 import me.neoblade298.neorogue.player.TriggerAction;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.*;
-import me.neoblade298.neorogue.equipment.offhands.Barrier;
+import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 
 public class FightData {
 	private FightInstance inst;

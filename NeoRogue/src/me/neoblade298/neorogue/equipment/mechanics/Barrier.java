@@ -1,4 +1,4 @@
-package me.neoblade298.neorogue.equipment.offhands;
+package me.neoblade298.neorogue.equipment.mechanics;
 
 
 import java.util.HashMap;
@@ -31,7 +31,7 @@ public class Barrier {
 	}
 	
 	public void tick() {
-		new Rectangle(p, width, height, distanceFromPlayer, 1).draw(p, true, Particle.END_ROD, null);
+		new Rectangle(p, width, height, distanceFromPlayer, 0.2).drawEdges(p, true, Particle.END_ROD, null);
 		needsUpdate = true;
 	}
 	

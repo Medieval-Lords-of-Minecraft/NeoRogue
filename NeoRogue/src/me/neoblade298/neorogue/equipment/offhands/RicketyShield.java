@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.equipment.Offhand;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.player.Trigger;
 import me.neoblade298.neorogue.session.fights.Buff;
 import me.neoblade298.neorogue.session.fights.BuffType;
