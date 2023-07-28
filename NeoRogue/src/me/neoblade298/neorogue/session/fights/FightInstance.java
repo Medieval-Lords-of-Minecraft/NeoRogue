@@ -1,6 +1,5 @@
 package me.neoblade298.neorogue.session.fights;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -59,33 +58,32 @@ public class FightInstance implements Instance {
 	// This will only ever handle basic left click
 	public static void handleDamage(EntityDamageByEntityEvent e, boolean playerDamager) {
 		Player p = playerDamager ? (Player) e.getDamager() : (Player) e.getEntity();
-		UUID uuid = p.getUniqueId();
 		e.setCancelled(true);
 		if (p.getAttackCooldown() < 0.9F) return;
 		
 		if (playerDamager) {
-			trigger(uuid, Trigger.LEFT_CLICK_HIT, new Object[] {p, e.getEntity()});
+			trigger(p, Trigger.LEFT_CLICK_HIT, new Object[] {p, e.getEntity()});
 		}
 		else {
-			trigger(uuid, Trigger.RECEIVED_DAMAGE, new Object[] {p, e.getDamager()});
+			trigger(p, Trigger.RECEIVED_DAMAGE, new Object[] {p, e.getDamager()});
 		}
 	}
 	
 	public static void handleHotbarSwap(PlayerItemHeldEvent e) {
 		// Only cancel swap if something is bound to the trigger
-		e.setCancelled(trigger(e.getPlayer().getUniqueId(), Trigger.getFromHotbarSlot(e.getNewSlot()), null));
+		e.setCancelled(trigger(e.getPlayer(), Trigger.getFromHotbarSlot(e.getNewSlot()), null));
 	}
 	
 	public static void handleOffhandSwap(PlayerSwapHandItemsEvent e) {
 		e.setCancelled(true);
 		Player p = e.getPlayer();
-		trigger(p.getUniqueId(), p.isSneaking() ? Trigger.SHIFT_SWAP : Trigger.SWAP, null);
+		trigger(p, p.isSneaking() ? Trigger.SHIFT_SWAP : Trigger.SWAP, null);
 	}
 	
 	public static void handleDropItem(PlayerDropItemEvent e) {
 		e.setCancelled(true);
 		Player p = e.getPlayer();
-		trigger(p.getUniqueId(), p.isSneaking() ? Trigger.SHIFT_DROP : Trigger.DROP, null);
+		trigger(p, p.isSneaking() ? Trigger.SHIFT_DROP : Trigger.DROP, null);
 	}
 	
 	public static void handleRightClick(PlayerInteractEvent e) {
@@ -93,8 +91,8 @@ public class FightInstance implements Instance {
 		UUID uuid = p.getUniqueId();
 		// Look for non-offhand triggers
 		if (e.getHand() == EquipmentSlot.OFF_HAND) {
-			trigger(uuid, Trigger.RAISE_SHIELD, null);
-			trigger(uuid, Trigger.RIGHT_CLICK, null);
+			trigger(p, Trigger.RAISE_SHIELD, null);
+			trigger(p, Trigger.RIGHT_CLICK, null);
 			
 			if (blockTasks.containsKey(uuid)) {
 				blockTasks.get(uuid).cancel();
@@ -104,11 +102,11 @@ public class FightInstance implements Instance {
 				public void run() {
 					if (p == null || !p.isBlocking()) {
 						this.cancel();
-						trigger(uuid, Trigger.LOWER_SHIELD, null);
+						trigger(p, Trigger.LOWER_SHIELD, null);
 						blockTasks.remove(uuid);
 					}
 					else {
-						trigger(uuid, Trigger.SHIELD_TICK, null);
+						trigger(p, Trigger.SHIELD_TICK, null);
 					}
 				}
 			}.runTaskTimer(NeoRogue.inst(), 10L, 10L));
@@ -116,20 +114,22 @@ public class FightInstance implements Instance {
 		else {
 			double y = p.getEyeLocation().getDirection().normalize().getY();
 			if (y > 0.9) {
-				trigger(uuid, Trigger.UP_RCLICK, null);
+				trigger(p, Trigger.UP_RCLICK, null);
 			}
 			else if (y < 0.1) {
-				trigger(uuid, Trigger.DOWN_RCLICK, null);
+				trigger(p, Trigger.DOWN_RCLICK, null);
 			}
 			else if (p.isSneaking()) {
-				trigger(uuid, Trigger.SHIFT_RCLICK, null);
+				trigger(p, Trigger.SHIFT_RCLICK, null);
 			}
 		}
 	}
 	
 	public static void handleLeftClick(PlayerInteractEvent e) {
 		if (e.getHand() != EquipmentSlot.HAND) return;
-		trigger(e.getPlayer().getUniqueId(), Trigger.LEFT_CLICK_NO_HIT, null);
+		if (e.getPlayer().getAttackCooldown() < 0.9F) return;
+		
+		trigger(e.getPlayer(), Trigger.LEFT_CLICK_NO_HIT, null);
 	}
 	
 	public static void handleMythicDespawn(MythicMobDespawnEvent e) {
@@ -140,8 +140,14 @@ public class FightInstance implements Instance {
 		removeFightData(e.getEntity().getUniqueId());
 	}
 	
-	private static boolean trigger(UUID uuid, Trigger trigger, Object[] obj) {
-		return fightData.get(uuid).runActions(trigger, obj);
+	// Returns true if the event should be cancelled (basically only on hotbar swap)
+	private static boolean trigger(Player p, Trigger trigger, Object[] obj) {
+		System.out.println("Trigger: " + trigger + " " + trigger.isSlotDependent());
+		FightData data = fightData.get(p.getUniqueId());
+		if (trigger.isSlotDependent()) {
+			data.runSlotBasedTriggers(trigger, p.getInventory().getHeldItemSlot(), obj);
+		}
+		return data.runActions(trigger, obj);
 	}
 	
 	public static FightData getFightData(UUID uuid) {
@@ -301,18 +307,24 @@ public class FightInstance implements Instance {
 		toTick.add(uuid);
 	}
 	
-	public void addBarrier(FightData caster, String id, Barrier b, int duration) {
+	public void addBarrier(FightData owner, String id, Barrier b, int duration) {
 		if (id == null) {
 			id = UUID.randomUUID().toString().substring(0, 10);
 		}
 		enemyBarriers.put(id, b);
+		final String fid = id;
 		
-		caster.addTask(id, new BukkitRunnable() {
+		owner.addTask(id, new BukkitRunnable() {
 			public void run() {
-				enemyBarriers.remove(id);
-				caster.removeTask(id);
+				enemyBarriers.remove(fid);
+				owner.removeTask(fid);
 			}
 		}.runTaskLater(NeoRogue.inst(), (long) duration * 20));
+	}
+	
+	public void removeBarrier(FightData owner, String id) {
+		enemyBarriers.remove(id);
+		owner.removeTask(id);
 	}
 	
 	public HashMap<String, Barrier> getBarriers() {

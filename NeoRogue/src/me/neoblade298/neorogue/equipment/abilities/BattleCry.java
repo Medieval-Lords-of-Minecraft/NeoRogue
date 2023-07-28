@@ -29,7 +29,7 @@ public class BattleCry extends Ability {
 	}
 
 	@Override
-	public void initialize(Player p, FightData data, Trigger bind) {
+	public void initialize(Player p, FightData data, Trigger bind, int hotbar) {
 		data.addTrigger(id, bind, new BattleCryInstance(this, p, data));
 	}
 	

@@ -5,6 +5,7 @@ import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Tag;
+import org.bukkit.entity.Damageable;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -21,6 +22,7 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
 import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
+import io.lumine.mythic.bukkit.events.MythicMobSpawnEvent;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.PlayerSessionInventory;
@@ -133,6 +135,7 @@ public class SessionManager implements Listener {
 	public void onInteract(PlayerInteractEvent e) {
 		UUID uuid = e.getPlayer().getUniqueId();
 		Action a = e.getAction();
+		System.out.println(a);
 		if (!sessions.containsKey(uuid)) return;
 		Session s = sessions.get(uuid);
 		
@@ -174,11 +177,19 @@ public class SessionManager implements Listener {
 		}
 	}
 	
+	@EventHandler
 	public void onMythicDespawn(MythicMobDespawnEvent e) {
 		FightInstance.handleMythicDespawn(e);
 	}
-	
+
+	@EventHandler
 	public void onMythicDeath(MythicMobDeathEvent e) {
 		FightInstance.handleMythicDeath(e);
+	}
+
+	@EventHandler
+	public void onMythicSpawn(MythicMobSpawnEvent e) {
+		UUID uuid = e.getEntity().getUniqueId();
+		FightInstance.putFightData(uuid, new FightData((Damageable) e.getEntity()));
 	}
 }

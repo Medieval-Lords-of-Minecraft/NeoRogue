@@ -1,40 +1,46 @@
 package me.neoblade298.neorogue.player;
 
 public enum Trigger {
-	SHIFT_RCLICK(true),
-	SHIFT_DROP(true),
-	SHIFT_SWAP(true),
-	DROP(true),
-	SWAP(true),
-	UP_RCLICK(true),
-	DOWN_RCLICK(true),
-	HOTBAR_1(true),
-	HOTBAR_2(true),
-	HOTBAR_3(true),
-	HOTBAR_4(true),
-	HOTBAR_5(true),
-	HOTBAR_6(true),
-	HOTBAR_7(true),
-	HOTBAR_8(true),
-	HOTBAR_9(true),
-	BASIC_ATTACK(false), // Only runs off the in-house basic attack event
-	LEFT_CLICK_NO_HIT(false),
-	LEFT_CLICK_HIT(false),
-	RIGHT_CLICK(false),
-	RAISE_SHIELD(false),
-	SHIELD_TICK(false), // Ticks while you have your shield up
-	LOWER_SHIELD(false),
-	RECEIVED_DAMAGE_SHIELD(false),
-	DEALT_DAMAGE(false),
-	RECEIVED_DAMAGE(false);
+	SHIFT_RCLICK(true, false),
+	SHIFT_DROP(true, false),
+	SHIFT_SWAP(true, false),
+	DROP(true, false),
+	SWAP(true, false),
+	UP_RCLICK(true, false),
+	DOWN_RCLICK(true, false),
+	HOTBAR_1(true, false),
+	HOTBAR_2(true, false),
+	HOTBAR_3(true, false),
+	HOTBAR_4(true, false),
+	HOTBAR_5(true, false),
+	HOTBAR_6(true, false),
+	HOTBAR_7(true, false),
+	HOTBAR_8(true, false),
+	HOTBAR_9(true, false),
+	BASIC_ATTACK(false, false), // Only runs off the in-house basic attack event
+	LEFT_CLICK_NO_HIT(false, true),
+	LEFT_CLICK_HIT(false, true),
+	RIGHT_CLICK(false, true),
+	RAISE_SHIELD(false, false),
+	SHIELD_TICK(false, false), // Ticks while you have your shield up
+	LOWER_SHIELD(false, false),
+	RECEIVED_DAMAGE_SHIELD(false, false),
+	DEALT_DAMAGE(false, false),
+	RECEIVED_DAMAGE(false, false);
 	
 	private boolean hasCooldownMsg;
-	private Trigger(boolean hasCooldownMsg) {
+	private boolean isSlotDependent;
+	private Trigger(boolean hasCooldownMsg, boolean isSlotDependent) {
 		this.hasCooldownMsg = hasCooldownMsg;
+		this.isSlotDependent = isSlotDependent;
 	}
 	
 	public boolean hasCooldownMessage() {
 		return hasCooldownMsg;
+	}
+	
+	public boolean isSlotDependent() {
+		return isSlotDependent;
 	}
 	
 	public static Trigger getFromHotbarSlot(int hotbar) {

@@ -23,11 +23,11 @@ public class RicketyShield extends Offhand {
 	}
 
 	@Override
-	public void initialize(Player p, FightData data, Trigger bind) {
+	public void initialize(Player p, FightData data, Trigger bind, int hotbar) {
 		data.addTrigger(id, Trigger.RAISE_SHIELD, (inputs) -> {
 			HashMap<BuffType, Buff> buffs = new HashMap<BuffType, Buff>();
 			buffs.put(BuffType.GENERAL, new Buff(p.getUniqueId(), 5, 0));
-			data.setBarrier(new Barrier(p, 2, 3, 3, buffs));
+			data.setBarrier(new Barrier(p, 2, 3, 3, 0, buffs, false));
 			return true;
 		});
 

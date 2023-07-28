@@ -40,6 +40,7 @@ public abstract class Equipment {
 			new FencingSword(b);
 			new Rapier(b);
 			new SerratedFencingSword(b);
+			new WoodenWand(b);
 			
 			// Offhands
 			new RicketyShield(b);
@@ -59,7 +60,7 @@ public abstract class Equipment {
 	}
 	
 	// Run at the start of a fight to initialize Fight Data
-	public abstract void initialize(Player p, FightData data, Trigger bind);
+	public abstract void initialize(Player p, FightData data, Trigger bind, int hotbar);
 	
 	public String getId() {
 		return id;

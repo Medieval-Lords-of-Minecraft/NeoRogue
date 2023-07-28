@@ -23,8 +23,8 @@ public class WoodenSword extends Weapon {
 	}
 
 	@Override
-	public void initialize(Player p, FightData data, Trigger bind) {
-		data.addTrigger(id, Trigger.LEFT_CLICK_HIT, (inputs) -> {
+	public void initialize(Player p, FightData data, Trigger bind, int hotbar) {
+		data.addHotbarTrigger(id, hotbar, Trigger.LEFT_CLICK_HIT, (inputs) -> {
 			FightInstance.dealDamage(p, type, damage, ((Damageable) inputs[1]));
 			data.runActions(Trigger.BASIC_ATTACK, inputs);
 			return true;

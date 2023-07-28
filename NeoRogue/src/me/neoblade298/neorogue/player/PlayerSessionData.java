@@ -37,9 +37,10 @@ public class PlayerSessionData {
 		// Need to give player a weapon at the start
 		
 		// Strictly debug purposes
-		hotbar[0] = (HotbarCompatible) Equipment.getEquipment("serratedFencingSword", true);
+		hotbar[0] = (HotbarCompatible) Equipment.getEquipment("woodenWand", true);
 		hotbar[1] = (HotbarCompatible) Equipment.getEquipment("empoweredEdge", true);
 		hotbar[2] = (HotbarCompatible) Equipment.getEquipment("battleCry", false);
+		hotbar[3] = (HotbarCompatible) Equipment.getEquipment("serratedFencingSword", true);
 		offhand = (Offhand) Equipment.getEquipment("ricketyShield", false);
 		armors[0] = (Armor) Equipment.getEquipment("leatherHelmet", true);
 		setupInventory();

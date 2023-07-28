@@ -24,7 +24,7 @@ public class LeatherHelmet extends Armor {
 	}
 
 	@Override
-	public void initialize(Player p, FightData data, Trigger bind) {
+	public void initialize(Player p, FightData data, Trigger bind, int hotbar) {
 		data.getShields().addShield(new Shield(data, p.getUniqueId(), shields, false, 0, 0, 0, 0));
 	}
 }

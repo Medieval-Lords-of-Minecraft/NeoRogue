@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fights.DamageType;
 
 public class Barrier {
 	private LivingEntity owner;
-	private double height, width, distanceFromPlayer;
+	private double height, width, forward, forwardOffset;
 	private Location bottomLeft, topRight, midpoint;
 	private boolean needsUpdate = false, isStatic;
 	private Vector cubeAxis, localX, localZ, localY;
@@ -24,17 +24,18 @@ public class Barrier {
 	private Rectangle rect;
 	private HashMap<BuffType, Buff> buffs = new HashMap<BuffType, Buff>();
 	
-	public Barrier(LivingEntity owner, double width, double distanceFromPlayer, double height, HashMap<BuffType, Buff> buffs,
-			boolean isStatic) {
+	public Barrier(LivingEntity owner, double width, double forward, double height, double forwardOffset,
+			HashMap<BuffType, Buff> buffs, boolean isStatic) {
 		this.owner = owner;
 		this.height = height;
 		this.width = width;
-		this.distanceFromPlayer = distanceFromPlayer;
+		this.forward = forward;
 		this.buffs = buffs;
 		this.isStatic = isStatic;
+		this.forwardOffset = forwardOffset;
 		
 		if (isStatic) {
-			rect = new Rectangle(owner, width, height, distanceFromPlayer, 0.2);
+			rect = new Rectangle(owner, width, height, forward, forwardOffset, 0.2);
 			update(true);
 		}
 	}
@@ -44,7 +45,7 @@ public class Barrier {
 			rect.drawEdges(null, true, Particle.END_ROD, null);
 		}
 		else {
-			new Rectangle(owner, width, height, distanceFromPlayer, 0.2).drawEdges(owner, true, Particle.END_ROD, null);
+			new Rectangle(owner, width, height, forward, forwardOffset, 0.2).drawEdges(null, true, Particle.END_ROD, null);
 			needsUpdate = true;
 		}
 	}
@@ -59,7 +60,7 @@ public class Barrier {
 		localY = localZ.clone().rotateAroundAxis(localZ, -Math.PI / 2);
 		
 		Vector left = localX.clone().multiply(-width / 2);
-		Vector forward = localZ.clone().multiply(distanceFromPlayer + 2);
+		Vector forward = localZ.clone().multiply(this.forward + 2);
 		
 		bottomLeft = owner.getLocation().clone().add(left);
 		topRight = bottomLeft.clone().add(left.multiply(-2));
@@ -69,14 +70,14 @@ public class Barrier {
 		cubeAxis = topRight.clone().subtract(bottomLeft).toVector();
 		
 		localX.multiply(width);
-		localZ.multiply(distanceFromPlayer);
+		localZ.multiply(forward);
 		midpoint = bottomLeft.clone().add(cubeAxis.clone().multiply(0.5));
 	}
 	
 	public boolean collides(Location loc) {
 		if (!isStatic) {
 			localZ = owner.getEyeLocation().getDirection().normalize();
-			Location approx = owner.getEyeLocation().add(localZ.clone().multiply(distanceFromPlayer));
+			Location approx = owner.getEyeLocation().add(localZ.clone().multiply(forward));
 			if (approx.distanceSquared(loc) > 200) return false; // Optimization, too far from shield to possibly collide
 		}
 		else {
@@ -90,7 +91,7 @@ public class Barrier {
 		double vy = Math.abs(v.dot(localY));
 		if (vy >= height * 2) return false;
 		double vz = Math.abs(v.dot(localZ));
-		return vz < distanceFromPlayer * 2;
+		return vz < forward * 2;
 	}
 	
 	public double applyDefenseBuffs(double amount, DamageType type) {

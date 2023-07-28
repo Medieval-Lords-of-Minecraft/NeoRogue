@@ -34,7 +34,7 @@ public abstract class Weapon extends HotbarCompatible {
 			preLore.add("§6Damage: §e" + w.damage);
 			preLore.add("§6Damage Type: §e" + w.type.getDisplay());
 		}
-		if (w.attackSpeed > 0) preLore.add("§6Attack Speed: §e" + w.attackSpeed);
+		if (w.attackSpeed > 0) preLore.add("§6Attack Speed: §e" + w.attackSpeed + "/s");
 		if (preLoreLine != null) {
 			for (String l : preLoreLine) {
 				preLore.add(SharedUtil.translateColors(l));
@@ -45,7 +45,7 @@ public abstract class Weapon extends HotbarCompatible {
 		
 		// Set attack speed if weapon is melee
 		String name = item.getType().name();
-		if (name.endsWith("SWORD") || name.endsWith("AXE")) {
+		if (name.endsWith("SWORD") || name.endsWith("AXE") || name.endsWith("HOE")) {
 			meta.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED, new AttributeModifier(UUID.randomUUID(), w.id, w.attackSpeed - 4, Operation.ADD_NUMBER, EquipmentSlot.HAND));
 		}
 		item.setItemMeta(meta);
