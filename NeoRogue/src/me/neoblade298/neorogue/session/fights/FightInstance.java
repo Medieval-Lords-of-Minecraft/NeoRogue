@@ -1,5 +1,6 @@
 package me.neoblade298.neorogue.session.fights;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -23,6 +24,7 @@ import org.bukkit.scheduler.BukkitTask;
 import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
 import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.Trigger;
 import me.neoblade298.neorogue.session.Instance;
@@ -35,6 +37,7 @@ public class FightInstance implements Instance {
 	private static HashSet<UUID> toTick = new HashSet<UUID>();
 	
 	private Session s;
+	private HashMap<String, Barrier> enemyBarriers = new HashMap<String, Barrier>();
 	
 	static {
 		new BukkitRunnable() {
@@ -296,5 +299,23 @@ public class FightInstance implements Instance {
 	
 	public static void addToTickList(UUID uuid) {
 		toTick.add(uuid);
+	}
+	
+	public void addBarrier(FightData caster, String id, Barrier b, int duration) {
+		if (id == null) {
+			id = UUID.randomUUID().toString().substring(0, 10);
+		}
+		enemyBarriers.put(id, b);
+		
+		caster.addTask(id, new BukkitRunnable() {
+			public void run() {
+				enemyBarriers.remove(id);
+				caster.removeTask(id);
+			}
+		}.runTaskLater(NeoRogue.inst(), (long) duration * 20));
+	}
+	
+	public HashMap<String, Barrier> getBarriers() {
+		return enemyBarriers;
 	}
 }
