@@ -151,6 +151,10 @@ public class FightInstance implements Instance {
 	}
 	
 	public static FightData getFightData(UUID uuid) {
+		if (!fightData.containsKey(uuid)) {
+			FightData fd = new FightData((Damageable) Bukkit.getEntity(uuid));
+			fightData.put(uuid, fd);
+		}
 		return fightData.get(uuid);
 	}
 	
