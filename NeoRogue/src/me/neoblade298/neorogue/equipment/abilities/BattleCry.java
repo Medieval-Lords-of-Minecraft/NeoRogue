@@ -15,6 +15,7 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.Trigger;
 import me.neoblade298.neorogue.session.fights.BuffType;
 import me.neoblade298.neorogue.session.fights.FightData;
+import me.neoblade298.neorogue.session.fights.PlayerFightData;
 
 public class BattleCry extends Ability {
 	
@@ -29,7 +30,7 @@ public class BattleCry extends Ability {
 	}
 
 	@Override
-	public void initialize(Player p, FightData data, Trigger bind, int hotbar) {
+	public void initialize(Player p, PlayerFightData data, Trigger bind, int hotbar) {
 		data.addTrigger(id, bind, new BattleCryInstance(this, p, data));
 	}
 	

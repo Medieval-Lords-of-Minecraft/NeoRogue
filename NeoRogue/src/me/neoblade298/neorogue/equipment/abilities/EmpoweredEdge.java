@@ -13,8 +13,8 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.Trigger;
 import me.neoblade298.neorogue.session.fights.DamageType;
-import me.neoblade298.neorogue.session.fights.FightData;
 import me.neoblade298.neorogue.session.fights.FightInstance;
+import me.neoblade298.neorogue.session.fights.PlayerFightData;
 
 public class EmpoweredEdge extends Ability {
 	private int damage;
@@ -29,19 +29,17 @@ public class EmpoweredEdge extends Ability {
 	}
 
 	@Override
-	public void initialize(Player p, FightData data, Trigger bind, int hotbar) {
+	public void initialize(Player p, PlayerFightData data, Trigger bind, int hotbar) {
 		data.addTrigger(id, bind, new EmpoweredEdgeInstance(this, p, damage, data, bind));
 	}
 	
 	private class EmpoweredEdgeInstance extends EquipmentInstance {
 		private Player p;
-		private FightData data;
-		private int damage;
-		public EmpoweredEdgeInstance(Ability a, Player p, int damage, FightData data, Trigger bind) {
+		private PlayerFightData data;
+		public EmpoweredEdgeInstance(Ability a, Player p, int damage, PlayerFightData data, Trigger bind) {
 			super(a);
 			this.p = p;
 			this.cooldown = a.getCooldown();
-			this.damage = damage;
 			this.data = data;
 		}
 		

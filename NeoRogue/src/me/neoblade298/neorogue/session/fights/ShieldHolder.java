@@ -2,13 +2,8 @@ package me.neoblade298.neorogue.session.fights;
 
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.UUID;
-
 import org.bukkit.attribute.Attributable;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.entity.Damageable;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 
 public class ShieldHolder {
 	private Queue<Shield> shields = new LinkedList<Shield>();

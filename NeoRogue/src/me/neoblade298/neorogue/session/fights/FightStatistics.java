@@ -44,4 +44,40 @@ public class FightStatistics {
 	public void addHealingReceived(double amount) {
 		this.healingReceived += amount;
 	}
+
+	public HashMap<DamageType, Double> getDamageDealt() {
+		return damageDealt;
+	}
+
+	public HashMap<DamageType, Double> getDamageTaken() {
+		return damageTaken;
+	}
+
+	public double getHealingGiven() {
+		return healingGiven;
+	}
+
+	public double getHealingReceived() {
+		return healingReceived;
+	}
+
+	public double getDamageMitigated() {
+		return damageMitigated;
+	}
+
+	public double getDamageBuffed() {
+		return damageBuffed;
+	}
+
+	public double getDamageBarriered() {
+		return damageBarriered;
+	}
+
+	public double getDamageShielded() {
+		return damageShielded;
+	}
+
+	public double getDefenseBuffed() {
+		return defenseBuffed;
+	}
 }

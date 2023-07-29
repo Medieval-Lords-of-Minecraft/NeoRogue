@@ -26,7 +26,7 @@ public abstract class Status {
 		case "POISON": return new PoisonStatus(target);
 		case "BLEED": return new BleedStatus(target);
 		case "BURN": return new DecrementStackStatus(id, target);
-		case "FROST": return new DurationStatus(id, target);
+		case "FROST": return new DecrementStackStatus(id, target);
 		case "ELECTRIFIED": return new DecrementStackStatus(id, target);
 		case "CONCUSSED": return new DecrementStackStatus(id, target);
 		case "INSANITY": return new DecrementStackStatus(id, target);

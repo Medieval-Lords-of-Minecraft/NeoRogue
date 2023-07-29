@@ -6,84 +6,42 @@ import java.util.LinkedList;
 import java.util.UUID;
 
 import org.bukkit.entity.Damageable;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import me.neoblade298.neorogue.player.KeyBind;
-import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.Status;
-import me.neoblade298.neorogue.player.Trigger;
-import me.neoblade298.neorogue.player.TriggerAction;
 import me.neoblade298.neorogue.session.Plot;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
 import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.equipment.*;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 
 public class FightData {
-	private FightInstance inst;
-	private PlayerSessionData sessdata;
-	private HashMap<Trigger, HashMap<String, TriggerAction>> triggers = new HashMap<Trigger, HashMap<String, TriggerAction>>();
-	private HashMap<String, Status> statuses = new HashMap<String, Status>();
-	private HashMap<String, EquipmentInstance> equips = new HashMap<String, EquipmentInstance>();
-	private HashMap<Integer, HashMap<Trigger, HashMap<String, TriggerAction>>> slotBasedTriggers = new HashMap<Integer, HashMap<Trigger, HashMap<String, TriggerAction>>>();
+	protected FightInstance inst;
+	protected HashMap<String, Status> statuses = new HashMap<String, Status>();
 
-	private HashMap<String, BukkitTask> tasks = new HashMap<String, BukkitTask>();
-
-	private double health, stamina = 0, mana = 0;
+	protected HashMap<String, BukkitTask> tasks = new HashMap<String, BukkitTask>();
 	
-	private Barrier barrier = null;
-	private ShieldHolder shields = null;
-	private Damageable entity = null;
-	private LinkedList<TickAction> tickActions = new LinkedList<TickAction>();
-	private FightStatistics stats = new FightStatistics();
+	protected Barrier barrier = null;
+	protected ShieldHolder shields = null;
+	protected Damageable entity = null;
+	protected LinkedList<TickAction> tickActions = new LinkedList<TickAction>();
 
 	// Buffs
-	private HashMap<BuffType, Buff> damageBuffs = new HashMap<BuffType, Buff>();
-	private HashMap<BuffType, Buff> defenseBuffs = new HashMap<BuffType, Buff>();
-
-	public FightData(FightInstance inst, PlayerSessionData data) {
-		this(data.getPlayer());
-		
-		this.inst = inst;
-		this.sessdata = data;
-		this.health = data.getHealth();
-
-		// Initialize fight data
-		for (Accessory acc : data.getAccessories()) {
-			if (acc == null) continue;
-			acc.initialize(data.getPlayer(), this, null, -1);
-		}
-		for (Armor armor : data.getArmor()) {
-			if (armor == null) continue;
-			armor.initialize(data.getPlayer(), this, null, -1);
-		}
-		for (int i = 0; i < data.getHotbar().length; i++) {
-			HotbarCompatible hotbar = data.getHotbar()[i];
-			if (hotbar == null) continue;
-			hotbar.initialize(data.getPlayer(), this, Trigger.getFromHotbarSlot(i), i);
-		}
-		for (int i = 0; i < data.getOtherBinds().length; i++) {
-			Usable other = data.getOtherBinds()[i];
-			if (other == null) continue;
-			other.initialize(data.getPlayer(), this, KeyBind.getBindFromData(i).getTrigger(), -1);
-		}
-		for (Artifact art : data.getArtifacts()) {
-			if (art == null) continue;
-			art.initialize(data.getPlayer(), this, null, -1);
-		}
-		
-		if (data.getOffhand() != null) {
-			data.getOffhand().initialize(data.getPlayer(), this, null, -1);
-		}
-	}
+	protected HashMap<BuffType, Buff> damageBuffs = new HashMap<BuffType, Buff>();
+	protected HashMap<BuffType, Buff> defenseBuffs = new HashMap<BuffType, Buff>();
 
 	public void cleanup() {
 		for (BukkitTask task : tasks.values()) {
 			task.cancel();
 		}
+	}
+
+	public FightData(Damageable p, FightInstance inst) {
+		// Only use this for players
+		this.inst = inst;
+		this.entity = p;
+		this.shields = new ShieldHolder(this);
 	}
 
 	public FightData(Damageable e) {
@@ -95,82 +53,8 @@ public class FightData {
 		inst = (FightInstance) s.getInstance();
 	}
 
-	public boolean runActions(Trigger trigger, Object[] inputs) {
-		if (triggers.containsKey(trigger)) {
-			Iterator<TriggerAction> iter = triggers.get(trigger).values().iterator();
-			while (iter.hasNext()) {
-				TriggerAction inst = iter.next();
-
-				if (inst instanceof EquipmentInstance) {
-					EquipmentInstance ei = (EquipmentInstance) inst;
-					if (!ei.canTrigger()) {
-						ei.sendCooldownMessage(sessdata.getPlayer());
-						continue;
-					}
-				}
-				if (!inst.trigger(inputs)) iter.remove();
-			}
-			return true;
-		}
-		return false;
-	}
-
-	public boolean runSlotBasedTriggers(Trigger trigger, int hotbar, Object[] inputs) {
-		if (!slotBasedTriggers.containsKey(hotbar)) return false;
-		HashMap<Trigger, HashMap<String, TriggerAction>> triggers = slotBasedTriggers.get(hotbar);
-
-		if (triggers.containsKey(trigger)) {
-			Iterator<TriggerAction> iter = triggers.get(trigger).values().iterator();
-			while (iter.hasNext()) {
-				TriggerAction inst = iter.next();
-
-				if (inst instanceof EquipmentInstance) {
-					EquipmentInstance ei = (EquipmentInstance) inst;
-					if (!ei.canTrigger()) {
-						ei.sendCooldownMessage(sessdata.getPlayer());
-						continue;
-					}
-				}
-				if (!inst.trigger(inputs)) iter.remove();
-			}
-			return true;
-		}
-		return false;
-	}
-	
-	public void addHotbarTrigger(String id, int hotbar, Trigger trigger, TriggerAction action) {
-		HashMap<Trigger, HashMap<String, TriggerAction>> triggers = slotBasedTriggers.getOrDefault(hotbar, 
-				new HashMap<Trigger, HashMap<String, TriggerAction>>());
-		
-		HashMap<String, TriggerAction> actions = triggers.containsKey(trigger) ? triggers.get(trigger)
-				: new HashMap<String, TriggerAction>();
-		addTrigger(id, actions, action);
-		triggers.put(trigger, actions);
-		slotBasedTriggers.put(hotbar, triggers);
-	}
-
-	public void addTrigger(String id, Trigger trigger, TriggerAction action) {
-		HashMap<String, TriggerAction> actions = triggers.containsKey(trigger) ? triggers.get(trigger)
-				: new HashMap<String, TriggerAction>();
-		addTrigger(id, actions, action);
-		triggers.put(trigger, actions);
-	}
-	
-	private void addTrigger(String id, HashMap<String, TriggerAction> actions, TriggerAction action) {
-		actions.put(id, action);
-
-		if (action instanceof EquipmentInstance) {
-			EquipmentInstance inst = (EquipmentInstance) action;
-			equips.put(id, inst);
-		}
-	}
-
 	public FightInstance getInstance() {
 		return inst;
-	}
-
-	public Player getPlayer() {
-		return sessdata.getData().getPlayer();
 	}
 	
 	public Damageable getEntity() {
@@ -242,10 +126,6 @@ public class FightData {
 	public void removeStatus(String id) {
 		Status s = statuses.remove(id);
 		if (s != null) s.cleanup();
-	}
-	
-	public FightStatistics getStats() {
-		return stats;
 	}
 	
 	public boolean hasStatus(String id) {

@@ -3,7 +3,6 @@ package me.neoblade298.neorogue.equipment.weapons;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.entity.Damageable;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -17,6 +16,7 @@ import me.neoblade298.neorogue.player.Trigger;
 import me.neoblade298.neorogue.session.fights.DamageType;
 import me.neoblade298.neorogue.session.fights.FightData;
 import me.neoblade298.neorogue.session.fights.FightInstance;
+import me.neoblade298.neorogue.session.fights.PlayerFightData;
 
 public class WoodenWand extends Weapon {
 	public WoodenWand(boolean isUpgraded) {
@@ -29,7 +29,7 @@ public class WoodenWand extends Weapon {
 	}
 
 	@Override
-	public void initialize(Player p, FightData data, Trigger bind, int hotbar) {
+	public void initialize(Player p, PlayerFightData data, Trigger bind, int hotbar) {
 		data.addHotbarTrigger(id, hotbar, Trigger.LEFT_CLICK_HIT, (inputs) -> {
 			new WoodenWandProjectile(p, 0.5, 10, 3, false, false, false, false, 0, 0, data.getInstance(), data, 0.2, 0.2, 0.2);
 			return true;
@@ -42,11 +42,11 @@ public class WoodenWand extends Weapon {
 	}
 	
 	private class WoodenWandProjectile extends Projectile {
-		FightData data;
+		PlayerFightData data;
 		Player p;
 		public WoodenWandProjectile(LivingEntity origin, double blocksPerTick, double maxRange, int tickSpeed,
 				boolean pierce, boolean ignoreBarriers, boolean ignoreBlocks, boolean ignoreEntities, double yRotate, double gravity,
-				FightInstance inst, FightData owner, double x, double y, double z) {
+				FightInstance inst, PlayerFightData owner, double x, double y, double z) {
 			super(origin, blocksPerTick, maxRange, tickSpeed, pierce, ignoreBarriers, ignoreBlocks, ignoreEntities, yRotate, gravity, inst, owner,
 					x, y, z);
 			this.data = owner;

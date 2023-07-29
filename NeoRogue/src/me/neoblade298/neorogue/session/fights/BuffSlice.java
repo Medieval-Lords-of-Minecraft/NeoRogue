@@ -1,7 +1,5 @@
 package me.neoblade298.neorogue.session.fights;
 
-import java.util.UUID;
-
 public class BuffSlice {
 	private double increase, multiplier;
 	

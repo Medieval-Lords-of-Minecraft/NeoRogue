@@ -1,16 +1,12 @@
 package me.neoblade298.neorogue.equipment.armor;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.equipment.Armor;
 import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.equipment.Weapon;
 import me.neoblade298.neorogue.player.Trigger;
-import me.neoblade298.neorogue.session.fights.DamageType;
-import me.neoblade298.neorogue.session.fights.FightData;
-import me.neoblade298.neorogue.session.fights.FightInstance;
+import me.neoblade298.neorogue.session.fights.PlayerFightData;
 import me.neoblade298.neorogue.session.fights.Shield;
 
 public class LeatherHelmet extends Armor {
@@ -24,7 +20,7 @@ public class LeatherHelmet extends Armor {
 	}
 
 	@Override
-	public void initialize(Player p, FightData data, Trigger bind, int hotbar) {
+	public void initialize(Player p, PlayerFightData data, Trigger bind, int hotbar) {
 		data.getShields().addShield(new Shield(data, p.getUniqueId(), shields, false, 0, 0, 0, 0));
 	}
 }

@@ -1,7 +1,6 @@
 package me.neoblade298.neorogue.area;
 
 import java.util.ArrayList;
-import java.util.UUID;
 
 import me.neoblade298.neorogue.session.Instance;
 import me.neoblade298.neorogue.session.Session;

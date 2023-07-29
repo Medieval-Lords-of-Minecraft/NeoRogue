@@ -66,7 +66,8 @@ public abstract class Projectile {
 			for (Barrier b : inst.getBarriers().values()) {
 				if (b.collides(loc)) {
 					onHit(FightInstance.getFightData(b.getOwner().getUniqueId()), b);
-					Util.playSound(owner.getPlayer(), Sound.ITEM_SHIELD_BLOCK, 1F, 1F, true);
+					Player p = owner.getEntity() instanceof Player ? (Player) owner.getEntity() : null;
+					Util.playSound(p, Sound.ITEM_SHIELD_BLOCK, 1F, 1F, true);
 					return true;
 				}
 			}

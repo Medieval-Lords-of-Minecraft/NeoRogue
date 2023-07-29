@@ -1,6 +1,5 @@
 package me.neoblade298.neorogue.player;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 

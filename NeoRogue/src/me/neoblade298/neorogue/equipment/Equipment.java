@@ -16,8 +16,7 @@ import me.neoblade298.neorogue.equipment.armor.*;
 import me.neoblade298.neorogue.equipment.offhands.*;
 import me.neoblade298.neorogue.equipment.weapons.*;
 import me.neoblade298.neorogue.player.Trigger;
-import me.neoblade298.neorogue.session.fights.FightData;
-import me.neoblade298.neorogue.session.fights.FightInstance;
+import me.neoblade298.neorogue.session.fights.PlayerFightData;
 import net.md_5.bungee.api.ChatColor;
 
 public abstract class Equipment {
@@ -60,7 +59,7 @@ public abstract class Equipment {
 	}
 	
 	// Run at the start of a fight to initialize Fight Data
-	public abstract void initialize(Player p, FightData data, Trigger bind, int hotbar);
+	public abstract void initialize(Player p, PlayerFightData data, Trigger bind, int hotbar);
 	
 	public String getId() {
 		return id;

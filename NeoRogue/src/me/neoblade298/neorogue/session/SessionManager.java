@@ -103,10 +103,10 @@ public class SessionManager implements Listener {
 		UUID uuid = p.getUniqueId();
 		if (sessions.containsKey(uuid)) {
 			Session s = sessions.get(uuid);
+			e.setCancelled(true);
 			
 			if (s.getInstance() instanceof NodeSelectInstance ||
 					s.getInstance() instanceof RestInstance) {
-				e.setCancelled(true);
 				p.setItemOnCursor(null);
 				new PlayerSessionInventory(s.getData(uuid));
 			}

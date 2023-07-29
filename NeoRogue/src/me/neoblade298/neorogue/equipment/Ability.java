@@ -1,15 +1,9 @@
 package me.neoblade298.neorogue.equipment;
 
 import java.util.ArrayList;
-import java.util.List;
-
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-
-import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.shared.util.SharedUtil;
-import net.md_5.bungee.api.ChatColor;
 
 public abstract class Ability extends Usable {
 	protected int manaCost = 0;

@@ -8,8 +8,8 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.Weapon;
 import me.neoblade298.neorogue.player.Trigger;
 import me.neoblade298.neorogue.session.fights.DamageType;
-import me.neoblade298.neorogue.session.fights.FightData;
 import me.neoblade298.neorogue.session.fights.FightInstance;
+import me.neoblade298.neorogue.session.fights.PlayerFightData;
 
 public class WoodenSword extends Weapon {
 	
@@ -23,7 +23,7 @@ public class WoodenSword extends Weapon {
 	}
 
 	@Override
-	public void initialize(Player p, FightData data, Trigger bind, int hotbar) {
+	public void initialize(Player p, PlayerFightData data, Trigger bind, int hotbar) {
 		data.addHotbarTrigger(id, hotbar, Trigger.LEFT_CLICK_HIT, (inputs) -> {
 			FightInstance.dealDamage(p, type, damage, ((Damageable) inputs[1]));
 			data.runActions(Trigger.BASIC_ATTACK, inputs);

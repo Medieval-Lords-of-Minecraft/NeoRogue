@@ -20,7 +20,6 @@ import me.neoblade298.neorogue.equipment.Equipment;
 public class ReforgeOptionsInventory extends CoreInventory {
 	private int slot, dataSlot;
 	private boolean isEquipSlot;
-	private Equipment toReforge;
 	private PlayerSessionInventory prev;
 	private ItemStack hostage;
 	private String type;
@@ -30,7 +29,6 @@ public class ReforgeOptionsInventory extends CoreInventory {
 		
 		this.slot = slot;
 		this.isEquipSlot = isEquipSlot;
-		this.toReforge = toReforge;
 		this.hostage = hostage;
 		this.prev = prev;
 		this.type = type;
@@ -93,7 +91,6 @@ public class ReforgeOptionsInventory extends CoreInventory {
 	
 	@Override
 	public void handleInventoryDrag(InventoryDragEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 	

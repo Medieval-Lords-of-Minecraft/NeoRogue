@@ -11,7 +11,7 @@ import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.player.Trigger;
 import me.neoblade298.neorogue.session.fights.Buff;
 import me.neoblade298.neorogue.session.fights.BuffType;
-import me.neoblade298.neorogue.session.fights.FightData;
+import me.neoblade298.neorogue.session.fights.PlayerFightData;
 
 public class RicketyShield extends Offhand {
 	
@@ -23,7 +23,7 @@ public class RicketyShield extends Offhand {
 	}
 
 	@Override
-	public void initialize(Player p, FightData data, Trigger bind, int hotbar) {
+	public void initialize(Player p, PlayerFightData data, Trigger bind, int hotbar) {
 		data.addTrigger(id, Trigger.RAISE_SHIELD, (inputs) -> {
 			HashMap<BuffType, Buff> buffs = new HashMap<BuffType, Buff>();
 			buffs.put(BuffType.GENERAL, new Buff(p.getUniqueId(), 5, 0));

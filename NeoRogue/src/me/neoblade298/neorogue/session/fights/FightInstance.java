@@ -7,6 +7,8 @@ import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.attribute.Attributable;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -33,7 +35,7 @@ import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
 
 public class FightInstance implements Instance {
-	private static HashMap<UUID, FightData> userData = new HashMap<UUID, FightData>();
+	private static HashMap<UUID, PlayerFightData> userData = new HashMap<UUID, PlayerFightData>();
 	private static HashMap<UUID, FightData> fightData = new HashMap<UUID, FightData>();
 	private static HashMap<UUID, BukkitTask> blockTasks = new HashMap<UUID, BukkitTask>();
 	private static HashSet<UUID> toTick = new HashSet<UUID>();
@@ -157,7 +159,7 @@ public class FightInstance implements Instance {
 	
 	// Returns true if the event should be cancelled (basically only on hotbar swap)
 	private static boolean trigger(Player p, Trigger trigger, Object[] obj) {
-		FightData data = fightData.get(p.getUniqueId());
+		PlayerFightData data = userData.get(p.getUniqueId());
 		if (trigger.isSlotDependent()) {
 			data.runSlotBasedTriggers(trigger, p.getInventory().getHeldItemSlot(), obj);
 		}
@@ -172,12 +174,20 @@ public class FightInstance implements Instance {
 		return fightData.get(uuid);
 	}
 	
-	public static HashMap<UUID, FightData> getUserData() {
+	public static HashMap<UUID, PlayerFightData> getUserData() {
 		return userData;
 	}
 	
+	public static PlayerFightData getUserData(UUID uuid) {
+		return userData.get(uuid);
+	}
+	
 	public static void giveHeal(Damageable caster, double amount, Damageable... targets) {
-		
+		for (Damageable target : targets) {
+			if (!(target instanceof Attributable)) continue;
+			double toSet = Math.min(caster.getHealth() + amount, ((Attributable) caster).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+			caster.setHealth(toSet);
+		}
 	}
 	
 	public static void dealDamage(Damageable damager, DamageType type, double amount, Damageable... targets) {
@@ -199,11 +209,25 @@ public class FightInstance implements Instance {
 			multiplier += b.getMultiplier();
 			for (Entry<UUID, BuffSlice> ent : b.getSlices().entrySet()) {
 				BuffSlice slice = ent.getValue();
-				fightData.get(ent.getKey()).getStats().addDefenseBuffed(slice.getIncrease() + (slice.getMultiplier() * original));
+				userData.get(ent.getKey()).getStats().addDefenseBuffed(slice.getIncrease() + (slice.getMultiplier() * original));
 			}
 		}
+		
+		if (data.hasStatus("FROST") && type.containsBuffType(BuffType.PHYSICAL)) {
+			Status status = data.getStatus("FROST");
+			int stacks = status.getStacks();
+			for (Entry<UUID, Integer> ent : status.getSlices().getSliceOwners().entrySet()) {
+				userData.get(ent.getKey()).getStats().addDamageMitigated(amount * Math.max(100, ent.getValue()) * 0.01);
+			}
+			amount *= 1 - (stacks * 0.01);
+			status.apply(uuid, (int) (-stacks * 0.1), 0);
+		}
 		amount *= multiplier;
-		data.getStats().addDamageDealt(type, amount * targets.length);
+		
+		if (amount <= 0) amount = 0.1;
+		if (data instanceof PlayerFightData) {
+			((PlayerFightData) data).getStats().addDamageDealt(type, amount * targets.length);
+		}
 
 		for (Damageable target : targets) {
 			receiveDamage(damager, meta, target);
@@ -219,7 +243,9 @@ public class FightInstance implements Instance {
 		
 		// Reduce damage from barriers
 		if (meta.hitBarrier() && data.getBarrier() != null) {
-			data.getStats().addDamageBarriered(amount);
+			if (data instanceof PlayerFightData) {
+				((PlayerFightData) data).getStats().addDamageBarriered(amount);
+			}
 			amount = data.getBarrier().applyDefenseBuffs(amount, type);
 		}
 		
@@ -293,7 +319,7 @@ public class FightInstance implements Instance {
 			multiplier -= b.getMultiplier();
 			for (Entry<UUID, BuffSlice> ent : b.getSlices().entrySet()) {
 				BuffSlice slice = ent.getValue();
-				fightData.get(ent.getKey()).getStats().addDefenseBuffed(slice.getIncrease() + (slice.getMultiplier() * original));
+				userData.get(ent.getKey()).getStats().addDefenseBuffed(slice.getIncrease() + (slice.getMultiplier() * original));
 			}
 		}
 		amount *= multiplier;
@@ -315,7 +341,7 @@ public class FightInstance implements Instance {
 	
 	private void setup(Player p, PlayerSessionData data) {
 		UUID uuid = p.getUniqueId();
-		FightData fd = new FightData(this, data);
+		PlayerFightData fd = new PlayerFightData(this, data);
 		fightData.put(uuid, fd);
 		userData.put(uuid, fd);
 		

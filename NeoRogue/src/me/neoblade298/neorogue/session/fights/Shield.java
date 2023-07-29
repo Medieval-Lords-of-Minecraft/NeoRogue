@@ -46,7 +46,10 @@ public class Shield {
 		double original = this.amount;
 		this.amount = Math.max(0, this.amount - damage);
 		shieldHolder.subtractShields(original - amount);
-		FightInstance.getFightData(applier).getStats().addDamageShielded(original - amount);
+		FightData fd = FightInstance.getFightData(applier);
+		if (fd instanceof PlayerFightData) {
+			((PlayerFightData) fd).getStats().addDamageShielded(original - amount);
+		}
 		return this.amount > 0 ? 0 : damage - original;
 	}
 	

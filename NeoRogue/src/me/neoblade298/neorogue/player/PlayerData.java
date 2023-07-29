@@ -29,4 +29,12 @@ public class PlayerData {
 	public String getDisplay() {
 		return display;
 	}
+	
+	public int getLevel() {
+		return level;
+	}
+	
+	public int getExp() {
+		return exp;
+	}
 }

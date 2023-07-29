@@ -7,7 +7,6 @@ import me.neoblade298.neorogue.session.fights.DamageMeta;
 import me.neoblade298.neorogue.session.fights.DamageType;
 import me.neoblade298.neorogue.session.fights.FightData;
 import me.neoblade298.neorogue.session.fights.FightInstance;
-import me.neoblade298.neorogue.session.fights.TickAction;
 
 public class PoisonStatus extends DurationStatus {
 	private static String id = "POISON";
@@ -20,7 +19,7 @@ public class PoisonStatus extends DurationStatus {
 	public void onTickAction() {
 		FightInstance.receiveDamage(null, new DamageMeta(stacks, DamageType.POISON, true), data.getEntity());
 		for (Entry<UUID, Integer> ent : slices.getSliceOwners().entrySet()) {
-			FightInstance.getFightData(ent.getKey()).getStats().addDamageDealt(DamageType.POISON, ent.getValue());
+			FightInstance.getUserData(ent.getKey()).getStats().addDamageDealt(DamageType.POISON, ent.getValue());
 		}
 	}
 }
