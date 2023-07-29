@@ -15,6 +15,9 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.Status;
 import me.neoblade298.neorogue.player.Trigger;
 import me.neoblade298.neorogue.player.TriggerAction;
+import me.neoblade298.neorogue.session.Plot;
+import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.SessionManager;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.*;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
@@ -87,6 +90,9 @@ public class FightData {
 		// Only use this for mobs
 		this.entity = e;
 		this.shields = new ShieldHolder(this);
+		Plot p = Plot.locationToPlot(e.getLocation());
+		Session s = SessionManager.getSession(p);
+		inst = (FightInstance) s.getInstance();
 	}
 
 	public boolean runActions(Trigger trigger, Object[] inputs) {

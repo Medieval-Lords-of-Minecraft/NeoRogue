@@ -1,5 +1,6 @@
 package me.neoblade298.neorogue.session;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.UUID;
@@ -68,6 +69,10 @@ public class SessionManager implements Listener {
 	public static Session getSession(Player p) {
 		return sessions.get(p.getUniqueId());
 	}
+	
+	public static Collection<Session> getSessions() {
+		return sessionPlots.values();
+	}
 
 	@EventHandler
 	public void onInventoryDrag(InventoryDragEvent e) {
@@ -135,7 +140,6 @@ public class SessionManager implements Listener {
 	public void onInteract(PlayerInteractEvent e) {
 		UUID uuid = e.getPlayer().getUniqueId();
 		Action a = e.getAction();
-		System.out.println(a);
 		if (!sessions.containsKey(uuid)) return;
 		Session s = sessions.get(uuid);
 		

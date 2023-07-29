@@ -45,4 +45,16 @@ public class DamageMeta {
 	public boolean bypassShields() {
 		return bypassShields;
 	}
+	
+	public void setHitBarrier(boolean hitBarrier) {
+		this.hitBarrier = hitBarrier;
+	}
+	
+	public void setBypassShields(boolean bypassShields) {
+		this.bypassShields = bypassShields;
+	}
+	
+	public void setIsSecondary(boolean isSecondary) {
+		this.isSecondary = isSecondary;
+	}
 }

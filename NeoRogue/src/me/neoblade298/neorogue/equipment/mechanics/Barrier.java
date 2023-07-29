@@ -70,7 +70,7 @@ public class Barrier {
 		cubeAxis = topRight.clone().subtract(bottomLeft).toVector();
 		
 		localX.multiply(width);
-		localZ.multiply(forward);
+		localZ.multiply(this.forward);
 		midpoint = bottomLeft.clone().add(cubeAxis.clone().multiply(0.5));
 	}
 	

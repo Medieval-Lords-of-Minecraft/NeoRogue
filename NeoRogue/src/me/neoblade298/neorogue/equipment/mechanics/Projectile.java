@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.UUID;
 
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -13,6 +14,7 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.session.fights.FightData;
 import me.neoblade298.neorogue.session.fights.FightInstance;
@@ -58,13 +60,13 @@ public abstract class Projectile {
 	private boolean tick() {
 		loc.add(v);
 		bounds.shift(v);
-		onTick();
 		
 		// Check for collision with shields
 		if (!ignoreBarriers) {
 			for (Barrier b : inst.getBarriers().values()) {
 				if (b.collides(loc)) {
 					onHit(FightInstance.getFightData(b.getOwner().getUniqueId()), b);
+					Util.playSound(owner.getPlayer(), Sound.ITEM_SHIELD_BLOCK, 1F, 1F, true);
 					return true;
 				}
 			}
@@ -102,6 +104,9 @@ public abstract class Projectile {
 				}
 			}
 		}
+		
+		// Tick after making sure there's no collisions
+		onTick();
 		
 		// Gravity
 		if (gravity != 0) {

@@ -30,6 +30,7 @@ import me.neoblade298.neorogue.player.Status;
 import me.neoblade298.neorogue.player.Trigger;
 import me.neoblade298.neorogue.session.Instance;
 import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.SessionManager;
 
 public class FightInstance implements Instance {
 	private static HashMap<UUID, FightData> userData = new HashMap<UUID, FightData>();
@@ -42,15 +43,27 @@ public class FightInstance implements Instance {
 	
 	static {
 		new BukkitRunnable() {
+			boolean alternate = false;
 			public void run() {
-				if (toTick.isEmpty()) return;
+				alternate = !alternate;
 				
-				Iterator<UUID> iter = toTick.iterator();
-				while (iter.hasNext()) {
-					if (fightData.get(iter.next()).runTickActions()) iter.remove();
+				// Every 20 ticks
+				if (alternate && !toTick.isEmpty()) {
+					Iterator<UUID> iter = toTick.iterator();
+					while (iter.hasNext()) {
+						if (fightData.get(iter.next()).runTickActions()) iter.remove();
+					}
+				}
+				
+				// Every 10 ticks
+				for (Session s : SessionManager.getSessions()) {
+					if (!(s.getInstance() instanceof FightInstance)) continue;
+					for (Barrier b : ((FightInstance) s.getInstance()).getBarriers().values()) {
+						b.tick();
+					}
 				}
 			}
-		}.runTaskTimer(NeoRogue.inst(), 20L, 20L);
+		}.runTaskTimer(NeoRogue.inst(), 0L, 10L);
 	}
 	
 	public FightInstance(Session s) {
@@ -338,7 +351,7 @@ public class FightInstance implements Instance {
 	
 	public void addBarrier(FightData owner, String id, Barrier b, int duration) {
 		if (id == null) {
-			id = UUID.randomUUID().toString().substring(0, 10);
+			id = UUID.randomUUID().toString().substring(0, 8);
 		}
 		enemyBarriers.put(id, b);
 		final String fid = id;
@@ -348,7 +361,7 @@ public class FightInstance implements Instance {
 				enemyBarriers.remove(fid);
 				owner.removeTask(fid);
 			}
-		}.runTaskLater(NeoRogue.inst(), (long) duration * 20));
+		}.runTaskLater(NeoRogue.inst(), duration));
 	}
 	
 	public void removeBarrier(FightData owner, String id) {
