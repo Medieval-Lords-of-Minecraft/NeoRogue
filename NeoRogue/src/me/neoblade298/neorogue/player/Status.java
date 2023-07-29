@@ -10,6 +10,8 @@ public abstract class Status {
 	protected int stacks;
 	protected TickAction action;
 	protected FightData data;
+	protected StatusSliceHolder slices;
+	protected int seconds;
 	
 	public Status(String id, FightData data) {
 		this.id = id;
@@ -19,15 +21,25 @@ public abstract class Status {
 	// Setting stacks or status to 0 means they will be untouched
 	public abstract void apply(UUID applier, int stacks, int seconds);
 	
-	public static Status createFromId(String id, UUID applier, FightData target, int stacks, int seconds) {
+	public static Status createFromId(String id, UUID applier, FightData target) {
 		switch (id) {
-		case "POISON": return new PoisonStatus(target, seconds);
+		case "POISON": return new PoisonStatus(target);
 		case "BLEED": return new BleedStatus(target);
-		default: return new GenericStatus(id, target, seconds);
+		case "BURN": return new DecrementStackStatus(id, target);
+		case "FROST": return new DurationStatus(id, target);
+		case "ELECTRIFIED": return new DecrementStackStatus(id, target);
+		case "CONCUSSED": return new DecrementStackStatus(id, target);
+		case "INSANITY": return new DecrementStackStatus(id, target);
+		case "SANCTIFIED": return new DecrementStackStatus(id, target);
+		default: return new DurationStatus(id, target);
 		}
 	}
 	
 	public void cleanup() {
 		if (action != null) action.setCancelled(true);
+	}
+	
+	public StatusSliceHolder getSlices() {
+		return slices;
 	}
 }
