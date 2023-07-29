@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Damageable;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -25,6 +26,7 @@ import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.player.Status;
 import me.neoblade298.neorogue.player.Trigger;
 import me.neoblade298.neorogue.session.Instance;
 import me.neoblade298.neorogue.session.Session;
@@ -142,7 +144,6 @@ public class FightInstance implements Instance {
 	
 	// Returns true if the event should be cancelled (basically only on hotbar swap)
 	private static boolean trigger(Player p, Trigger trigger, Object[] obj) {
-		System.out.println("Trigger: " + trigger + " " + trigger.isSlotDependent());
 		FightData data = fightData.get(p.getUniqueId());
 		if (trigger.isSlotDependent()) {
 			data.runSlotBasedTriggers(trigger, p.getInventory().getHeldItemSlot(), obj);
@@ -162,104 +163,128 @@ public class FightInstance implements Instance {
 		return userData;
 	}
 	
-	public static void dealBarrieredDamage(Damageable damager, DamageType type, double amount, Damageable... targets) {
-		dealDamage(damager, type, amount, true, targets);
+	public static void giveHeal(Damageable caster, double amount, Damageable... targets) {
+		
 	}
 	
 	public static void dealDamage(Damageable damager, DamageType type, double amount, Damageable... targets) {
-		dealDamage(damager, type, amount, false, targets);
+		dealDamage(damager, new DamageMeta(amount, type), targets);
 	}
 	
-	public static void dealDamage(Damageable damager, DamageType type, double amount, boolean hitBarrier, Damageable... targets) {
+	public static void dealDamage(Damageable damager, DamageMeta meta, Damageable... targets) {
 		UUID uuid = damager.getUniqueId();
-		if (!fightData.containsKey(uuid)) {
-			// If no data found, just do the regular base damage
-			Bukkit.getLogger().warning("[NeoRogue] Failed to find fight data for (attacker) " + damager.getName());
-		}
-		else {
-			FightData data = fightData.get(uuid);
-			double original = amount;
-			double multiplier = 1;
-			for (BuffType buffType : type.getBuffTypes()) {
-				Buff b = data.getBuff(true, buffType);
-				if (b == null) continue;
-				
-				amount += b.getIncrease();
-				multiplier += b.getMultiplier();
-				for (Entry<UUID, BuffSlice> ent : b.getSlices().entrySet()) {
-					BuffSlice slice = ent.getValue();
-					fightData.get(ent.getKey()).getStats().addDefenseBuffed(slice.getIncrease() + (slice.getMultiplier() * original));
-				}
+		FightData data = getFightData(uuid);
+		double amount = meta.getDamage();
+		DamageType type = meta.getType();
+		double original = amount;
+		double multiplier = 1;
+		for (BuffType buffType : type.getBuffTypes()) {
+			Buff b = data.getBuff(true, buffType);
+			if (b == null) continue;
+			
+			amount += b.getIncrease();
+			multiplier += b.getMultiplier();
+			for (Entry<UUID, BuffSlice> ent : b.getSlices().entrySet()) {
+				BuffSlice slice = ent.getValue();
+				fightData.get(ent.getKey()).getStats().addDefenseBuffed(slice.getIncrease() + (slice.getMultiplier() * original));
 			}
-			amount *= multiplier;
-			data.getStats().addDamageDealt(type, amount * targets.length);
 		}
+		amount *= multiplier;
+		data.getStats().addDamageDealt(type, amount * targets.length);
 
 		for (Damageable target : targets) {
-			receiveDamage(damager, type, amount, false, true, target);
+			receiveDamage(damager, meta, target);
 		}
 	}
 	
-	public static void receiveDamage(Damageable damager, DamageType type, double amount, boolean bypassShields, boolean hitBarrier, Damageable target) {
+	public static void receiveDamage(Damageable damager, DamageMeta meta, Damageable target) {
 		UUID uuid = target.getUniqueId();
-		if (!fightData.containsKey(uuid)) {
-			// If no data found, just do the regular base damage
-			Bukkit.getLogger().warning("[NeoRogue] Failed to find fight data for (defender) " + target.getName());
-			target.damage(amount);
+		FightData data = getFightData(uuid);
+		double amount = meta.getDamage();
+		double original = amount;
+		DamageType type = meta.getType();
+		
+		// Reduce damage from barriers
+		if (meta.hitBarrier() && data.getBarrier() != null) {
+			data.getStats().addDamageBarriered(amount);
+			amount = data.getBarrier().applyDefenseBuffs(amount, type);
 		}
-		else {
-			FightData data = fightData.get(uuid);
-			
-			// First reduce damage from barriers
-			double original = amount;
-			if (hitBarrier && data.getBarrier() != null) {
-				data.getStats().addDamageBarriered(amount);
-				amount = data.getBarrier().applyDefenseBuffs(amount, type);
+		
+		// Status effects
+		if (!meta.isSecondary()) {
+			if (data.hasStatus("BURN")) {
+				dealDamage(damager, DamageType.FIRE, amount * 0.1, target);
 			}
+			
+			if (data.hasStatus("ELECTRIFIED")) {
+				for (Entity e : target.getNearbyEntities(5, 5, 5)) {
+					if (e == target) continue;
+					if (e instanceof Player) continue;
+					if (!(e instanceof Damageable)) continue;
+					Damageable dmg = (Damageable) e;
+					int stacks = data.getStatus("ELECTRIFIED").getStacks();
+					dealDamage(damager, DamageType.LIGHTNING, amount * stacks * 0.1, dmg);
+				}
+			}
+			
+			if (data.hasStatus("CONCUSSED") && type.containsBuffType(BuffType.PHYSICAL)) {
+				int stacks = data.getStatus("CONCUSSED").getStacks();
+				dealDamage(damager, DamageType.EARTH, amount * stacks * 0.1, target);
+			}
+			
+			if (data.hasStatus("INSANITY") && type.containsBuffType(BuffType.MAGICAL)) {
+				int stacks = data.getStatus("CONCUSSED").getStacks();
+				dealDamage(damager, DamageType.DARK, amount * stacks * 0.1, target);
+			}
+			
+			if (data.hasStatus("SANCTIFIED")) {
+				int stacks = data.getStatus("SANCTIFIED").getStacks();
+				giveHeal(damager, amount * stacks * 0.1, target);
+			}
+		}
 
-			// Next calculate damage to shields
-			if (!data.getShields().isEmpty() && !bypassShields) {
-				ShieldHolder shields = data.getShields();
-				amount = Math.max(0, shields.useShields(amount));
-				new BukkitRunnable() {
-					public void run() {
-						shields.update();
-					}
-				}.runTask(NeoRogue.inst());
-				
-				if (amount <= 0) {
-					// Make sure player never dies from chip damage from shields
-					if (target.getHealth() < 10) target.setHealth(target.getHealth() + 0.1);
-					target.damage(0.1);
-					return;
+		// Calculate damage to shields
+		if (!data.getShields().isEmpty() && !meta.bypassShields()) {
+			ShieldHolder shields = data.getShields();
+			amount = Math.max(0, shields.useShields(amount));
+			new BukkitRunnable() {
+				public void run() {
+					shields.update();
 				}
-			}
+			}.runTask(NeoRogue.inst());
 			
-			if (bypassShields) {
-				amount += target.getAbsorptionAmount();
-				new BukkitRunnable() {
-					public void run() {
-						data.getShields().update();
-					}
-				}.runTask(NeoRogue.inst());
+			if (amount <= 0) {
+				// Make sure player never dies from chip damage from shields
+				if (target.getHealth() < 10) target.setHealth(target.getHealth() + 0.1);
+				target.damage(0.1);
+				return;
 			}
-			
-			// Finally calculate hp damage
-			double multiplier = 1;
-			for (BuffType buffType : type.getBuffTypes()) {
-				Buff b = data.getBuff(false, buffType);
-				if (b == null) continue; 
-				
-				amount -= b.getIncrease();
-				multiplier -= b.getMultiplier();
-				for (Entry<UUID, BuffSlice> ent : b.getSlices().entrySet()) {
-					BuffSlice slice = ent.getValue();
-					fightData.get(ent.getKey()).getStats().addDefenseBuffed(slice.getIncrease() + (slice.getMultiplier() * original));
-				}
-			}
-			amount *= multiplier;
-			target.damage(amount);
 		}
+		
+		if (meta.bypassShields()) {
+			amount += target.getAbsorptionAmount();
+			new BukkitRunnable() {
+				public void run() {
+					data.getShields().update();
+				}
+			}.runTask(NeoRogue.inst());
+		}
+		
+		// Finally calculate hp damage
+		double multiplier = 1;
+		for (BuffType buffType : type.getBuffTypes()) {
+			Buff b = data.getBuff(false, buffType);
+			if (b == null) continue; 
+			
+			amount -= b.getIncrease();
+			multiplier -= b.getMultiplier();
+			for (Entry<UUID, BuffSlice> ent : b.getSlices().entrySet()) {
+				BuffSlice slice = ent.getValue();
+				fightData.get(ent.getKey()).getStats().addDefenseBuffed(slice.getIncrease() + (slice.getMultiplier() * original));
+			}
+		}
+		amount *= multiplier;
+		target.damage(amount);
 	}
 
 	@Override

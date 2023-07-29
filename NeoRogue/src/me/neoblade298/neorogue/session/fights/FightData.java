@@ -242,8 +242,16 @@ public class FightData {
 		return stats;
 	}
 	
+	public boolean hasStatus(String id) {
+		return statuses.containsKey(id);
+	}
+	
+	public Status getStatus(String id) {
+		return statuses.get(id);
+	}
+	
 	public void applyStatus(String id, UUID applier, int stacks, int seconds) {
-		Status s = statuses.getOrDefault(id, Status.createFromId(id, applier, this, stacks, seconds));
+		Status s = statuses.getOrDefault(id, Status.createFromId(id, applier, this));
 		s.apply(applier, stacks, seconds);
 		statuses.put(id, s);
 	}

@@ -34,4 +34,11 @@ public enum DamageType {
 	public String getDisplay() {
 		return display;
 	}
+	
+	public boolean containsBuffType(BuffType type) {
+		for (BuffType bt : buffTypes) {
+			if (type == bt) return true;
+		}
+		return false;
+	}
 }

@@ -42,4 +42,8 @@ public abstract class Status {
 	public StatusSliceHolder getSlices() {
 		return slices;
 	}
+	
+	public int getStacks() {
+		return stacks;
+	}
 }
