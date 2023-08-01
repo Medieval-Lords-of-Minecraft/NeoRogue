@@ -12,7 +12,7 @@ public abstract class Offhand extends Equipment {
 		// TODO Auto-generated constructor stub
 	}
 
-	public static ItemStack createItem(Offhand o, Material mat, String[] preLoreLine, String loreLine) {
+	public ItemStack createItem(Offhand o, Material mat, String[] preLoreLine, String loreLine) {
 		ArrayList<String> preLore = new ArrayList<String>();
 		// Add stats
 		if (preLoreLine != null) {
@@ -21,7 +21,7 @@ public abstract class Offhand extends Equipment {
 			}
 		}
 		
-		ItemStack item = Equipment.createItem(o, mat, "Offhand", preLore, loreLine, null);
+		ItemStack item = createItem(mat, "Offhand", preLore, loreLine, null);
 		return item;
 	}
 }

@@ -22,7 +22,7 @@ public class FencingSword extends Weapon {
 		type = DamageType.PIERCING;
 		attackSpeed = 1;
 		shields = isUpgraded ? 6 : 4;
-		item = Weapon.createItem(this, Material.STONE_SWORD, null, "&7On hit, grant yourself &e" + shields + "&7 shields");
+		item = createItem(Material.STONE_SWORD, null, "&7On hit, grant yourself &e" + shields + "&7 shields");
 		reforgeOptions.add("rapier");
 		reforgeOptions.add("serratedFencingSword");
 	}

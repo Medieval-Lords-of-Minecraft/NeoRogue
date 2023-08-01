@@ -13,7 +13,7 @@ public abstract class Ability extends Usable {
 		super(id, isUpgraded, rarity);
 	}
 	
-	public static ItemStack createItem(Ability a, Material mat, String[] preLoreLine, String loreLine) {
+	public ItemStack createItem(Ability a, Material mat, String[] preLoreLine, String loreLine) {
 		ArrayList<String> preLore = new ArrayList<String>();
 		if (a.manaCost > 0) preLore.add("§6Mana Cost: §e" + a.manaCost);
 		if (a.staminaCost > 0) preLore.add("§6Stamina Cost: §e" + a.staminaCost);
@@ -25,7 +25,7 @@ public abstract class Ability extends Usable {
 			}
 		}
 		
-		return Equipment.createItem(a, mat, "Armor", preLore, loreLine, null);
+		return createItem(mat, "Armor", preLore, loreLine, null);
 	}
 	
 	public int getManaCost() {

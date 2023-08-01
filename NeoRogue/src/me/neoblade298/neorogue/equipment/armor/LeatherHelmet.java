@@ -16,7 +16,7 @@ public class LeatherHelmet extends Armor {
 		super("leatherHelmet", isUpgraded, Rarity.COMMON);
 		display = "Leather Helmet";
 		shields = isUpgraded ? 30 : 20;
-		item = Armor.createItem(this, Material.LEATHER_HELMET, null, "&7Start every fight with &e" + shields + " &7permanent shields.");
+		item = createItem(this, Material.LEATHER_HELMET, null, "&7Start every fight with &e" + shields + " &7permanent shields.");
 	}
 
 	@Override

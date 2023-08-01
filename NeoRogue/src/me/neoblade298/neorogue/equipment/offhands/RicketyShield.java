@@ -18,7 +18,7 @@ public class RicketyShield extends Offhand {
 	public RicketyShield(boolean isUpgraded) {
 		super("ricketyShield", isUpgraded, Rarity.COMMON);
 		display = "Rickety Shield";
-		item = Offhand.createItem(this, Material.SHIELD, null, "When raised, creates a barrier in front of you of size &e3x3 &7"
+		item = createItem(this, Material.SHIELD, null, "When raised, creates a barrier in front of you of size &e3x3 &7"
 				+ "that intercepts projectiles. Projectiles that hit the barrier hit you but have their damage reduced by &e5&7.");
 	}
 

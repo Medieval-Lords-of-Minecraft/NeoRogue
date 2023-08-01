@@ -220,7 +220,7 @@ public class PlayerFightData extends FightData {
 		@Override
 		public boolean run() {
 			addMana(manaRegen);
-			addStamina(p.isSprinting() ? -3 : staminaRegen);
+			addStamina(p.isSprinting() ? -4 : staminaRegen);
 			return false;
 		}
 	}

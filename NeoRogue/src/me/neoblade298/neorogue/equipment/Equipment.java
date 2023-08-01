@@ -103,20 +103,20 @@ public abstract class Equipment {
 		return arr;
 	}
 	
-	public static ItemStack createItem(Equipment eq, Material mat, String type, ArrayList<String> preLoreLine, String loreLine, String nameOverride) {
+	public ItemStack createItem(Material mat, String type, ArrayList<String> preLoreLine, String loreLine, String nameOverride) {
 		ItemStack item = new ItemStack(mat);
 		ItemMeta meta = item.getItemMeta();
 		
 		if (nameOverride == null) {
-			meta.setDisplayName(eq.rarity.getColor() + eq.display + (eq.isUpgraded ? "+" : ""));
+			meta.setDisplayName(rarity.getColor() + display + (isUpgraded ? "+" : ""));
 		}
 		else {
 			meta.setDisplayName(nameOverride);
 		}
 		
 		ArrayList<String> lore = new ArrayList<String>();
-		lore.add(eq.rarity.getDisplay(true) + " " + type);
-		if (!eq.reforgeOptions.isEmpty()) lore.add("§eReforgeable (Combine 2 of this item)");
+		lore.add(rarity.getDisplay(true) + " " + type);
+		if (!reforgeOptions.isEmpty()) lore.add("§eReforgeable (Combine 2 of this item)");
 		if (preLoreLine != null) {
 			for (String l : preLoreLine) {
 				lore.add(SharedUtil.translateColors(l));
@@ -133,9 +133,9 @@ public abstract class Equipment {
 		item.setItemMeta(meta);
 		
 		NBTItem nbti = new NBTItem(item);
-		nbti.setString("equipId", eq.id);
+		nbti.setString("equipId", id);
 		nbti.setString("type", type.toUpperCase());
-		nbti.setBoolean("isUpgraded", eq.isUpgraded);
+		nbti.setBoolean("isUpgraded", isUpgraded);
 		return nbti.getItem();
 	}
 	

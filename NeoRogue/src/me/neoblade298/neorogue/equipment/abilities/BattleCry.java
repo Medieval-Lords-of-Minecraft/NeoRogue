@@ -25,7 +25,7 @@ public class BattleCry extends Ability {
 		cooldown = 30;
 		staminaCost = 25;
 		int strength = isUpgraded ? 20 : 14;
-		item = Ability.createItem(this, Material.REDSTONE, null,
+		item = createItem(this, Material.REDSTONE, null,
 				"&7On cast, give yourself &e" + strength + " &7bonus physical damage for &e10&7 seconds.");
 	}
 

@@ -19,7 +19,7 @@ public class WoodenSword extends Weapon {
 		damage = isUpgraded ? 3.5 : 4;
 		type = DamageType.SLASHING;
 		attackSpeed = 1;
-		item = Weapon.createItem(this, Material.WOODEN_SWORD, null, null);
+		item = createItem(Material.WOODEN_SWORD, null, null);
 	}
 
 	@Override

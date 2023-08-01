@@ -26,7 +26,7 @@ public class WoodenWand extends Weapon {
 		manaCost = 5;
 		type = DamageType.FIRE;
 		attackSpeed = 0.5;
-		item = Weapon.createItem(this, Material.WOODEN_HOE, null, null);
+		item = createItem(Material.WOODEN_HOE, null, null);
 	}
 
 	@Override

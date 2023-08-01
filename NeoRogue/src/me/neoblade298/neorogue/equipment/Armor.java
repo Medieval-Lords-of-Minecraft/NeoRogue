@@ -13,7 +13,7 @@ public abstract class Armor extends Equipment {
 	}
 
 
-	public static ItemStack createItem(Armor a, Material mat, String[] preLoreLine, String loreLine) {
+	public ItemStack createItem(Armor a, Material mat, String[] preLoreLine, String loreLine) {
 		ArrayList<String> preLore = new ArrayList<String>();
 		// Add stats
 		if (preLoreLine != null) {
@@ -22,6 +22,6 @@ public abstract class Armor extends Equipment {
 			}
 		}
 		
-		return Equipment.createItem(a, mat, "Armor", preLore, loreLine, null);
+		return createItem(mat, "Armor", preLore, loreLine, null);
 	}
 }
