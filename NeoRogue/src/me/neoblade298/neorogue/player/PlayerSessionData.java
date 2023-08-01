@@ -17,7 +17,7 @@ import net.md_5.bungee.api.ChatColor;
 
 public class PlayerSessionData {
 	private PlayerData data;
-	private double maxHealth, maxMana, maxStamina, health;
+	private double maxHealth, maxMana, maxStamina, health, manaRegen, staminaRegen;
 	private HotbarCompatible[] hotbar = new HotbarCompatible[9];
 	private Armor[] armors = new Armor[3];
 	private Offhand offhand;
@@ -32,6 +32,8 @@ public class PlayerSessionData {
 		maxHealth = 100;
 		maxMana = 100;
 		maxStamina = 100;
+		manaRegen = 2;
+		staminaRegen = 2;
 		health = maxHealth;
 		
 		// Need to give player a weapon at the start
@@ -138,6 +140,14 @@ public class PlayerSessionData {
 	
 	public int getMaxStorage() {
 		return maxStorage;
+	}
+	
+	public double getManaRegen() {
+		return manaRegen;
+	}
+	
+	public double getStaminaRegen() {
+		return staminaRegen;
 	}
 	
 	public boolean saveStorage() {

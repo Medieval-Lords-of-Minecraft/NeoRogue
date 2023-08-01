@@ -25,7 +25,7 @@ public class FightData {
 	protected Barrier barrier = null;
 	protected ShieldHolder shields = null;
 	protected Damageable entity = null;
-	protected LinkedList<TickAction> tickActions = new LinkedList<TickAction>();
+	protected LinkedList<TickAction> tickActions = new LinkedList<TickAction>(); // Every 20 ticks
 
 	// Buffs
 	protected HashMap<BuffType, Buff> damageBuffs = new HashMap<BuffType, Buff>();

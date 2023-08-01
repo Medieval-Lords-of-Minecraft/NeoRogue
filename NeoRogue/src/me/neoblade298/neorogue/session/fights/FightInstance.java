@@ -344,19 +344,6 @@ public class FightInstance implements Instance {
 		PlayerFightData fd = new PlayerFightData(this, data);
 		fightData.put(uuid, fd);
 		userData.put(uuid, fd);
-		
-		// Setup inventory
-		PlayerInventory inv = p.getInventory();
-		inv.clear();
-		ItemStack[] contents = inv.getContents();
-		
-		for (int i = 0; i < 9; i++) {
-			if (data.getHotbar()[i] == null) continue;
-			contents[i] = data.getHotbar()[i].getItem();
-		}
-		inv.setContents(contents);
-		
-		if (data.getOffhand() != null) inv.setItemInOffHand(data.getOffhand().getItem());
 	}
 	
 	public void cleanup() {
