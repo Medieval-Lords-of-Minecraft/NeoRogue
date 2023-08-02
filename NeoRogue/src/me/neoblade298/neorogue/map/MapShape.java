@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.map;
 
+import org.bukkit.Bukkit;
+
 public class MapShape {
 	private boolean[][] shape;
 	private int numRotations = 0;
@@ -12,18 +14,18 @@ public class MapShape {
 		this.shape = shape;
 		xlen = shape.length - 1;
 		ylen = shape[0].length - 1;
+		System.out.println("xlen: " + xlen + ", " + "ylen: " + ylen);
 	}
 	
 	public boolean get(int x, int y) {
-		int newX = reverseX ? xlen - x : x;
-		int newY = reverseY ? ylen - y : y;
+		int newX = reverseX ? (!swapAxes ? ylen : xlen) - x : x;
+		int newY = reverseY ? (!swapAxes ? xlen : ylen) - y : y;
 		
 		try {
 			return swapAxes ? shape[newX][newY] : shape[newY][newX];
 		}
 		catch (Exception e) {
-			System.out.println("Failed: " + x + ", " + y);
-			System.out.println("Attempted to return: " + newX + "," + newY + (swapAxes ? " swapped" : ""));
+			Bukkit.getLogger().warning("[NeoRogue] Failed to retrieve coordinates " + x + "," + y + " from MapShape");
 		}
 		return false;
 	}
@@ -60,12 +62,12 @@ public class MapShape {
 	}
 	
 	public void display() {
-		System.out.println("1: " + shape.length + " " + shape[0].length);
-		System.out.println("2: " + getLength() + " " + getHeight());
 		for (int i = getHeight() - 1; i >= 0; i--) {
 			System.out.print("[");
 			for (int j = 0; j < getLength(); j++) {
 				System.out.print(get(i, j) + " ");
+				//System.out.print("Get " + i + ", " + j + ": ");
+				//get(i,j);
 			}
 			System.out.println("]");
 		}

@@ -20,7 +20,7 @@ public class NeoRogue extends JavaPlugin {
 	public static HolographicDisplaysAPI holo;
 	
 	public static void main(String[] args) {
-		boolean[][] shape = { {true, false}, {false, false}, {true, false} };
+		boolean[][] shape = { {true, false}, {false, true}, {true, false} };
 		MapShape ms = new MapShape(shape);
 		ms.display();
 		ms.rotate(1);
@@ -29,7 +29,7 @@ public class NeoRogue extends JavaPlugin {
 		ms.display();
 		ms.rotate(1);
 		ms.display();
-		ms.flip(false);
+		ms.flip(true);
 		ms.display();
 	}
 	
