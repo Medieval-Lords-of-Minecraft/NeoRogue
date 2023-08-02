@@ -1,0 +1,27 @@
+package me.neoblade298.neorogue.map;
+
+public enum Direction {
+	NORTH(0),
+	EAST(1),
+	SOUTH(2),
+	WEST(3);
+	
+	private int value;
+	private Direction(int value) {
+		this.value = value;
+	}
+	
+	public Direction rotate(int times) {
+		int newVal = (this.value + times) % 4;
+		return getFromValue(newVal);
+	}
+	
+	private Direction getFromValue(int value) {
+		switch (value) {
+		case 0: return NORTH;
+		case 1: return EAST;
+		case 2: return SOUTH;
+		default: return WEST;
+		}
+	}
+}

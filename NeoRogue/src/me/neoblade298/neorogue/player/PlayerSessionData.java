@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -46,6 +47,8 @@ public class PlayerSessionData {
 		offhand = (Offhand) Equipment.getEquipment("ricketyShield", false);
 		armors[0] = (Armor) Equipment.getEquipment("leatherHelmet", true);
 		setupInventory();
+		
+		data.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHealth);
 	}
 	
 	public void setupInventory() {

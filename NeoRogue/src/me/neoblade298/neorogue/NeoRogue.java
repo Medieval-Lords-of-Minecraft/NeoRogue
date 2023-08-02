@@ -7,6 +7,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import me.filoghost.holographicdisplays.api.HolographicDisplaysAPI;
 import me.filoghost.holographicdisplays.api.internal.HolographicDisplaysAPIProvider;
 import me.neoblade298.neocore.bukkit.NeoCore;
+import me.neoblade298.neorogue.map.MapShape;
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
@@ -17,6 +18,20 @@ public class NeoRogue extends JavaPlugin {
 	
 	public static File SCHEMATIC_FOLDER;
 	public static HolographicDisplaysAPI holo;
+	
+	public static void main(String[] args) {
+		boolean[][] shape = { {true, false}, {false, false}, {true, false} };
+		MapShape ms = new MapShape(shape);
+		ms.display();
+		ms.rotate(1);
+		ms.display();
+		ms.rotate(1);
+		ms.display();
+		ms.rotate(1);
+		ms.display();
+		ms.flip(false);
+		ms.display();
+	}
 	
 	public void onEnable() {
 		Bukkit.getServer().getLogger().info("NeoRogue Enabled");

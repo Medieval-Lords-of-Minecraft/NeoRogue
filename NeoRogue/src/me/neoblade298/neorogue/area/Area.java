@@ -35,11 +35,19 @@ import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
+import com.sk89q.worldedit.function.mask.ExistingBlockMask;
+import com.sk89q.worldedit.function.mask.Mask;
 import com.sk89q.worldedit.function.operation.Operation;
 import com.sk89q.worldedit.function.operation.Operations;
+import com.sk89q.worldedit.function.pattern.Pattern;
 import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldedit.world.World;
+import com.sk89q.worldedit.world.block.BaseBlock;
+import com.sk89q.worldedit.world.block.BlockState;
+import com.sk89q.worldedit.world.block.BlockType;
+import com.sk89q.worldedit.world.block.BlockTypes;
 
 import me.filoghost.holographicdisplays.api.hologram.Hologram;
 import me.neoblade298.neocore.bukkit.NeoCore;
@@ -288,9 +296,13 @@ public class Area {
 		    Operation operation = new ClipboardHolder(clipboard)
 		            .createPaste(editSession)
 		            .to(BlockVector3.at(xOff, 64, zOff))
+		            .ignoreAirBlocks(true)
 		            .build();
+		    // CuboidRegion o = new CuboidRegion(null, null);
+		    // Mask mask = new ExistingBlockMask(editSession);
 		    try {
 				Operations.complete(operation);
+			    // editSession.replaceBlocks(o, mask, BukkitAdapter.adapt(Material.AIR.createBlockData()));
 			} catch (WorldEditException e) {
 				e.printStackTrace();
 			}
