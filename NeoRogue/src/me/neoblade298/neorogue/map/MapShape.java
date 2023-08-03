@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.map;
 
+import java.util.List;
+
 import org.bukkit.Bukkit;
 
 public class MapShape {
@@ -10,11 +12,23 @@ public class MapShape {
 	private int xlen, ylen;
 	private boolean reverseX, reverseY, swapAxes;
 	
+	public MapShape(List<String> lines) {
+		this.shape = new boolean[lines.size()][lines.get(0).length()];
+		for (int i = 0; i < lines.size(); i++) {
+			String line = lines.get(i);
+			int j = 0;
+			for (char c : line.toCharArray()) {
+				shape[lines.size() - i - 1][j++] = c == 'X';
+			}
+		}
+		xlen = shape.length - 1;
+		ylen = shape[0].length - 1;
+	}
+	
 	public MapShape(boolean[][] shape) {
 		this.shape = shape;
 		xlen = shape.length - 1;
 		ylen = shape[0].length - 1;
-		System.out.println("xlen: " + xlen + ", " + "ylen: " + ylen);
 	}
 	
 	public boolean get(int x, int y) {

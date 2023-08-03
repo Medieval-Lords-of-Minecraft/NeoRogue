@@ -24,4 +24,13 @@ public enum Direction {
 		default: return WEST;
 		}
 	}
+	
+	public static Direction getFromCharacter(char c) {
+		switch (c) {
+		case 'N': return NORTH;
+		case 'E': return EAST;
+		case 'S': return SOUTH;
+		default: return WEST;
+		}
+	}
 }
