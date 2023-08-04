@@ -21,7 +21,7 @@ public class Map {
 			usedPieces = new HashMap<AreaType, LinkedList<MapPiece>>();
 	
 	private ArrayList<MapEntrance> entrances = new ArrayList<MapEntrance>();
-	private ArrayList<MapPiece> pieces = new ArrayList<MapPiece>();
+	private ArrayList<MapPieceInstance> pieces = new ArrayList<MapPieceInstance>();
 	private HashSet<MapEntrance> availableEntrances = new HashSet<MapEntrance>();
 	private static final int MAP_SIZE = 12;
 	private boolean[][] shape = new boolean[MAP_SIZE][MAP_SIZE];
@@ -41,24 +41,23 @@ public class Map {
 				}
 			});
 		} catch (NeoIOException e) {
-			// TODO Auto-generated catch block
 			Bukkit.getLogger().warning("[NeoRogue] Failed to load MapPiece");
 			e.printStackTrace();
 		}
 	}
 	
-	public static Map generate(AreaType type, int size) {
+	public static Map generate(AreaType type, int numPieces) {
 		Map map = new Map();
 		LinkedList<MapPiece> pieces = allPieces.get(type);
 		
-		for (int i = 0; i < size; i++) {
+		for (int i = 0; i < numPieces; i++) {
 			MapPiece piece = null;
 			do {
 				if (pieces.size() == 0) shufflePieces(type);
 				piece = pieces.poll();
 			}
 			// Make sure there are enough entrances to continue expanding while we still need size
-			while (map.availableEntrances.size() < 2 && piece.getNumEntrances() < 2 && i < size - 1);
+			while (map.availableEntrances.size() < 2 && piece.getNumEntrances() < 2 && i < numPieces - 1);
 			
 			map.place(piece);
 		}
@@ -85,10 +84,10 @@ public class Map {
 		}
 		// Standard case, find an existing entrance and try to put the piece on
 		else {
-			HashMap<MapPieceSettings, Integer> potentialPlacements = new HashMap<MapPieceSettings, Integer>();
+			HashMap<MapPieceInstance, Integer> potentialPlacements = new HashMap<MapPieceInstance, Integer>();
 			for (MapEntrance available : availableEntrances) {
 				for (MapEntrance potential : piece.getEntrances()) {
-					for (MapPieceSettings pSettings : piece.getRotationOptions(available, potential)) {
+					for (MapPieceInstance pSettings : piece.getRotationOptions(available, potential)) {
 						piece.applySettings(pSettings);
 						int[] offset = getOffset(available, potential, piece);
 						if (canPlace(piece.getShape(), offset[0], offset[1])) {
@@ -102,10 +101,8 @@ public class Map {
 			
 			if (potentialPlacements.size() == 0) return false;
 			
-			MapPieceSettings settings = selectBestSettings(potentialPlacements);
-			piece.applySettings(settings);
-			int[] offset = getOffset(settings.getAvailableEntrance(), settings.getEntranceToAttach(), piece);
-			place(piece, offset[0], offset[1]);
+			MapPieceInstance inst = selectBestSettings(potentialPlacements);
+			place(inst, inst.getX(), inst.getY());
 		}
 		return true;
 	}
@@ -119,16 +116,10 @@ public class Map {
 		return true;
 	}
 	
-	private int[] getOffset(MapEntrance available, MapEntrance potential, MapPiece piece) {
-		int[] availCoords = available.getCoordinates();
-		int[] potentialCoords = potential.getChunkCoordinates();
-		return new int[] { availCoords[0] - potentialCoords[0], availCoords[1] - potentialCoords[1] };
-	}
-	
-	private MapPieceSettings selectBestSettings(HashMap<MapPieceSettings, Integer> placements) {
+	private MapPieceInstance selectBestSettings(HashMap<MapPieceInstance, Integer> placements) {
 		int best = 999;
-		MapPieceSettings s = null;
-		for (Entry<MapPieceSettings, Integer> e : placements.entrySet()) {
+		MapPieceInstance s = null;
+		for (Entry<MapPieceInstance, Integer> e : placements.entrySet()) {
 			if (e.getValue() < best) {
 				best = e.getValue();
 				s = e.getKey();
@@ -137,20 +128,20 @@ public class Map {
 		return s;
 	}
 	
-	private void place(MapPiece piece, int x, int y) {
-		MapShape shape = piece.getShape();
+	private void place(MapPieceInstance inst, int x, int y) {
+		MapShape shape = inst.getPiece().getShape();
 		for (int i = 0; i < shape.getLength(); i++) {
 			for (int j = 0; j < shape.getHeight(); j++) {
 				this.shape[y + j][x + i] = shape.get(j, i);
 			}
 		}
 		
-		for (MapEntrance entrance : piece.getEntrances()) {
+		for (MapEntrance entrance : inst.getPiece().getEntrances()) {
 			entrances.add(entrance);
 			availableEntrances.add(entrance);
 		}
 		
-		pieces.add(piece);
+		pieces.add(inst);
 	}
 	
 	private static void shufflePieces(AreaType type) {

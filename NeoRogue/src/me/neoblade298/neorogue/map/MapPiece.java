@@ -110,20 +110,26 @@ public class MapPiece {
 				spawner.rotate(amount);
 			}
 		}
+		System.out.println("Height before: " + shape.getHeight());
+		shape.rotate(amount);
+		System.out.println("Height after: " + shape.getHeight());
+		
+		int lenOff= shape.getLength() * 16 - 1;
+		int heightOff = shape.getHeight() * 16 - 1;
 
-		for (int i = origRotations; i < origRotations + amount; i++) {
-			int j = (i + 1) % 4;
-			int len = shape.getLength();
-			// +1 because the rotation is a bit off if using bottom left corner
-			switch (j) {
-			case 1: rotateOffset[1] += len * 16 + len;
-			break;
-			case 2: rotateOffset[0] -= len * 16 + len;
-			break;
-			case 3: rotateOffset[1] -= len * 16 + len;
-			break;
-			default: rotateOffset[0] += len * 16 + len;
-			}
+		switch (numRotations) {
+		case 0: rotateOffset[0] = 0;
+		rotateOffset[1] = 0;
+		break;
+		case 1: rotateOffset[1] = heightOff;
+		rotateOffset[0] = 0;
+		break;
+		case 2: rotateOffset[0] = -lenOff;
+		rotateOffset[1] = heightOff;
+		break;
+		case 3: rotateOffset[0] = -lenOff;
+		rotateOffset[1] = 0;
+		break;
 		}
 		updateSchematic();
 	}
@@ -137,6 +143,7 @@ public class MapPiece {
 				spawner.flip(xAxis);
 			}
 		}
+		shape.flip(xAxis);
 		if ((flipY && !flipX && xAxis) || (flipX && !flipY && !xAxis)) {
 			flipX = false;
 			flipY = false;
@@ -158,8 +165,8 @@ public class MapPiece {
 		transform = new AffineTransform();
 		// It is only possible for one of these to be true at a time
 		if (flipX || flipY) {
-			flipOffset[0] = flipX ? -shape.getLength() * 16 - 1 - rotateOffset[0] : 0;
-			flipOffset[1] = flipY ? shape.getLength() * 16 + 1 - rotateOffset[1] : 0;
+			flipOffset[0] = flipX ? -shape.getLength() * 16 + 1 - rotateOffset[0] : 0;
+			flipOffset[1] = flipY ? shape.getLength() * 16 - 1 - rotateOffset[1] : 0;
 			BlockVector3 direction = BukkitAdapter.asBlockVector(new Location(Bukkit.getWorld(Area.WORLD_NAME), flipX ? 1 : 0, 0, flipY ? 1 : 0));
 			transform = transform.scale(direction.abs().multiply(-2).add(1, 1, 1).toVector3());
 			schematic.setTransform(transform);
@@ -176,12 +183,12 @@ public class MapPiece {
 		return schematic;
 	}
 	
-	public MapPieceSettings[] getRotationOptions(MapEntrance existing, MapEntrance toAttach) {
-		MapPieceSettings[] settings = new MapPieceSettings[2];
+	public MapPieceInstance[] getRotationOptions(MapEntrance existing, MapEntrance toAttach) {
+		MapPieceInstance[] settings = new MapPieceInstance[2];
 		rotateToFace(existing, toAttach);
-		settings[0] = getSettings(existing, toAttach);
+		settings[0] = getInstance(existing, toAttach);
 		flipOppositeAxis(toAttach.getFace());
-		settings[1] = getSettings(existing, toAttach);
+		settings[1] = getInstance(existing, toAttach);
 		return settings;
 	}
 	
@@ -195,11 +202,11 @@ public class MapPiece {
 		flip(dir == Direction.NORTH || dir == Direction.SOUTH);
 	}
 	
-	public MapPieceSettings getSettings(MapEntrance available, MapEntrance toAttach) {
-		return new MapPieceSettings(numRotations, flipX, flipY, available, toAttach);
+	public MapPieceInstance getInstance(MapEntrance available, MapEntrance toAttach) {
+		return new MapPieceInstance(this, numRotations, flipX, flipY, available, toAttach);
 	}
 	
-	public void applySettings(MapPieceSettings settings) {
+	public void applySettings(MapPieceInstance settings) {
 		while (numRotations != settings.getNumRotations()) {
 			rotate(1);
 		}
@@ -210,9 +217,8 @@ public class MapPiece {
 	
 	public void paste(int x, int y) {
 		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Area.world)) {
-			int len = shape.getLength();
 		    Operation operation = schematic.createPaste(editSession)
-		            .to(BlockVector3.at(x + rotateOffset[0] + flipOffset[0] - len * 16 - len, 64, y + rotateOffset[1] + flipOffset[1])) // Paste by default goes top left, need top right
+		            .to(BlockVector3.at(x + rotateOffset[0] + flipOffset[0], 64, y + rotateOffset[1] + flipOffset[1])) // Paste by default goes top left, need top right
 		            .ignoreAirBlocks(true)
 		            .build();
 		    System.out.println("===");

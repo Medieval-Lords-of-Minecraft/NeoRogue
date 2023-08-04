@@ -72,13 +72,8 @@ public class NeoRogue extends JavaPlugin {
 		Session s = SessionManager.createSession(p);
 		s.setInstance(new FightInstance(s));
 		s.getInstance().start(s);
-		
-		MapPiece piece = Map.getPieces(AreaType.LOW_DISTRICT).getFirst();
-		piece.paste(-70, -40);
-		piece.rotate(1);
-		piece.paste(-110, -40);
-		piece.flip(true);
-		piece.paste(-150, -40);
+
+		Map.generate(AreaType.LOW_DISTRICT, 2);
 		
 		/*
 		new BukkitRunnable() {

@@ -97,11 +97,11 @@ public class MapShape {
 	}
 	
 	public int getHeight() {
-		return swapAxes ? shape.length : shape[0].length;
+		return !swapAxes ? shape.length : shape[0].length;
 	}
 	
 	public int getLength() {
-		return swapAxes ? shape[0].length : shape.length;
+		return !swapAxes ? shape[0].length : shape.length;
 	}
 	
 	public boolean[][] getBaseShape() {

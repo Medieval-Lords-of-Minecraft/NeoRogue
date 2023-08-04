@@ -48,6 +48,7 @@ public class PlayerSessionData {
 		armors[0] = (Armor) Equipment.getEquipment("leatherHelmet", true);
 		setupInventory();
 		
+		data.getPlayer().setHealthScaled(true);
 		data.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHealth);
 	}
 	
