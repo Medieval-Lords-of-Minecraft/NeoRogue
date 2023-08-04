@@ -1,19 +1,16 @@
 package me.neoblade298.neorogue.map;
 
-public class MapPieceInstance {
-	private MapPiece piece;
+public class MapPieceInstance extends MapPiece {
 	private int numRotations;
 	private int x, y; // In chunk offset
 	private boolean flipX, flipY;
-	private MapEntrance available, toAttach;
-	public MapPieceInstance(MapPiece piece, int numRotations, boolean flipX, boolean flipY, MapEntrance available, MapEntrance toAttach) {
-		this.piece = piece;
-		this.numRotations = numRotations;
-		this.flipX = flipX;
-		this.flipY = flipY;
-		this.available = available;
-		this.toAttach = toAttach;
-
+	
+	public MapPieceInstance(int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
+	
+	public MapPieceInstance(MapEntrance available, MapEntrance toAttach) {
 		int[] availCoords = available.getCoordinates();
 		int[] potentialCoords = toAttach.getChunkCoordinates();
 		this.x = availCoords[0] - potentialCoords[0];
@@ -27,18 +24,6 @@ public class MapPieceInstance {
 	}
 	public boolean isFlipY() {
 		return flipY;
-	}
-	
-	public MapEntrance getAvailableEntrance() {
-		return available;
-	}
-	
-	public MapEntrance getEntranceToAttach() {
-		return toAttach;
-	}
-	
-	public MapPiece getPiece() {
-		return piece;
 	}
 	
 	@Override
