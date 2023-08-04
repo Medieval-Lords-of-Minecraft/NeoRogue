@@ -1,27 +1,27 @@
 package me.neoblade298.neorogue.map;
 
 public class MapEntrance {
-	private MapPiece piece;
 	private Direction face;
-	private int x, y;
+	private int x, y, z, origX, origZ; // x and z are chunk coordinates, y is just coordinates
 	
 	public MapEntrance(MapPiece piece, String line) {
-		this.piece = piece;
 		String[] parsed = line.split(",");
 		this.x = Integer.parseInt(parsed[0]);
-		this.y = Integer.parseInt(parsed[1]);
+		this.z = Integer.parseInt(parsed[1]);
 		this.face = Direction.getFromCharacter(parsed[2].charAt(0));
 	}
-	public MapEntrance(Direction face, int x, int y) {
+	public MapEntrance(Direction face, int x, int y, int z) {
 		this.face = face;
 		this.x = x;
 		this.y = y;
+		this.z = z;
 	}
 	public Direction getFace() {
 		return face;
 	}
-	public int[] getCoordinates() {
-		int[] coords = piece.getShape().getCoordinates(x, y);
+	// Chunk coordinates using settings
+	public int[] getCoordinates(MapPieceInstance inst) {
+		int[] coords = inst.getPiece().getShape().getCoordinates(x, z);
 		switch (face) {
 		case NORTH: coords[1] += 1;
 		case EAST: coords[0] += 1;
@@ -30,8 +30,8 @@ public class MapEntrance {
 		}
 		return coords;
 	}
-	public int[] getChunkCoordinates() {
-		return piece.getShape().getCoordinates(x, y);
+	public int[] getChunkCoordinates(MapPieceInstance inst) {
+		return piece.getShape().getCoordinates(x, z);
 	}
 	public void rotate(int amount) {
 		this.face = this.face.rotate(amount);
@@ -46,7 +46,7 @@ public class MapEntrance {
 		int result = 1;
 		result = prime * result + ((face == null) ? 0 : face.hashCode());
 		result = prime * result + x;
-		result = prime * result + y;
+		result = prime * result + z;
 		return result;
 	}
         
@@ -58,7 +58,11 @@ public class MapEntrance {
 		MapEntrance other = (MapEntrance) obj;
 		if (face != other.face) return false;
 		if (x != other.x) return false;
-		if (y != other.y) return false;
+		if (z != other.z) return false;
 		return true;
 	}
+    
+    public int getY() {
+    	return y;
+    }
 }

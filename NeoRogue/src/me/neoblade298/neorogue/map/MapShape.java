@@ -7,10 +7,10 @@ import org.bukkit.Bukkit;
 public class MapShape {
 	private boolean[][] shape;
 	private int numRotations = 0;
-	private boolean flipX, flipY;
+	private boolean flipX, flipZ;
 	
-	private int xlen, ylen;
-	private boolean reverseX, reverseY, swapAxes;
+	private int xlen, zlen;
+	private boolean reverseX, reverseZ, swapAxes;
 	
 	public MapShape(List<String> lines) {
 		this.shape = new boolean[lines.size()][lines.get(0).length()];
@@ -22,18 +22,18 @@ public class MapShape {
 			}
 		}
 		xlen = shape.length - 1;
-		ylen = shape[0].length - 1;
+		zlen = shape[0].length - 1;
 	}
 	
 	public MapShape(boolean[][] shape) {
 		this.shape = shape;
 		xlen = shape.length - 1;
-		ylen = shape[0].length - 1;
+		zlen = shape[0].length - 1;
 	}
 	
 	public boolean get(int x, int y) {
-		int newX = reverseX ? (!swapAxes ? ylen : xlen) - x : x;
-		int newY = reverseY ? (!swapAxes ? xlen : ylen) - y : y;
+		int newX = reverseX ? (!swapAxes ? zlen : xlen) - x : x;
+		int newY = reverseZ ? (!swapAxes ? xlen : zlen) - y : y;
 		
 		try {
 			return swapAxes ? shape[newX][newY] : shape[newY][newX]; // X is swapped with y because of how arrays are
@@ -45,41 +45,30 @@ public class MapShape {
 	}
 	
 	// returns in x, y form
-	public int[] getCoordinates(int x, int y) {
-		int newX = reverseX ? (!swapAxes ? ylen : xlen) - x : x;
-		int newY = reverseY ? (!swapAxes ? xlen : ylen) - y : y;
+	public int[] getCoordinates(int x, int z) {
+		int newX = reverseX ? (!swapAxes ? zlen : xlen) - x : x;
+		int newZ = reverseZ ? (!swapAxes ? xlen : zlen) - z : z;
 		
-		return swapAxes ? new int[] {newY, newX} : new int[] {newX, newY};
-	}
-	
-	public void rotate(int times) {
-		numRotations += times;
-		numRotations %= 4;
-		update();
-	}
-	
-	public void flip(boolean xAxis) {
-		if (xAxis) flipX = !flipX;
-		else flipY = !flipY;
-		update();
+		return swapAxes ? new int[] {newZ, newX} : new int[] {newX, newZ};
 	}
 	
 	private void update() {
-		reverseY = numRotations % 3 != 0;
+		reverseZ = numRotations % 3 != 0;
 		reverseX = numRotations >= 2;
 		
-		if (flipX && flipY) {
+		if (flipX && flipZ) {
 			flipX = false;
-			flipY = false;
-			rotate(2);
+			flipZ = false;
+			numRotations = (numRotations + 2) % 4;
+			update();
 			return;
 		}
 		if (flipX) reverseX = !reverseX;
-		if (flipY) reverseY = !reverseY;
+		if (flipZ) reverseZ = !reverseZ;
 		swapAxes = numRotations % 2 == 1;
 		if (swapAxes) {
 			reverseX = !reverseX;
-			reverseY = !reverseY;
+			reverseZ = !reverseZ;
 		}
 	}
 	
@@ -114,5 +103,12 @@ public class MapShape {
 			}
 		}
 		return baseShape;
+	}
+	
+	public void applySettings(MapPieceInstance settings) {
+		this.numRotations = settings.numRotations;
+		this.flipX = settings.flipX;
+		this.flipZ = settings.flipY;
+		update();
 	}
 }

@@ -15,7 +15,8 @@ public class MapSpawner {
 		amount = cfg.getInt("amount", 1);
 		radius = cfg.getInt("radius", 0);
 		String[] parsed = cfg.getString("coords").split(",");
-		coords = new RotatableCoordinates(Integer.parseInt(parsed[0]), Integer.parseInt(parsed[1]), piece);
+		coords = new RotatableCoordinates(Integer.parseInt(parsed[0]), Integer.parseInt(parsed[1]),
+				Integer.parseInt(parsed[2]), piece);
 	}
 
 	public MythicMob getMob() {

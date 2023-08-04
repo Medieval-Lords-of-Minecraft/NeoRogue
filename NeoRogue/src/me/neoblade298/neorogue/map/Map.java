@@ -68,19 +68,24 @@ public class Map {
 	}
 	
 	public boolean place(MapPiece piece) {
-		MapShape shape = piece.getShape();
+		MapPieceInstance inst = piece.getInstance();
 		// Special case, first piece being placed
 		if (entrances.size() == 0) {
+			// Randomly rotate the piece
+			inst.rotate(NeoCore.gen.nextInt(4));
+			int rand = NeoCore.gen.nextInt(3);
+			if (rand == 1) inst.flip(true);
+			else if (rand == 2) inst.flip(false);
+			MapShape shape = inst.getPiece().getShape();
+			shape.applySettings(inst);
+			
 			// Place the piece in the middle of the board
 			int x = (MAP_SIZE / 2) - (shape.getHeight() / 2);
-			int y = (MAP_SIZE / 2) - (shape.getLength() / 2);
+			int z = (MAP_SIZE / 2) - (shape.getLength() / 2);
 			
-			// Randomly rotate the piece
-			piece.rotate(NeoCore.gen.nextInt(4));
-			int rand = NeoCore.gen.nextInt(3);
-			if (rand == 1) piece.flip(true);
-			else if (rand == 2) piece.flip(false);
-			place(piece, x, y);
+			inst.setX(x);
+			inst.setZ(z);
+			place(inst);
 		}
 		// Standard case, find an existing entrance and try to put the piece on
 		else {
@@ -88,7 +93,6 @@ public class Map {
 			for (MapEntrance available : availableEntrances) {
 				for (MapEntrance potential : piece.getEntrances()) {
 					for (MapPieceInstance pSettings : piece.getRotationOptions(available, potential)) {
-						piece.applySettings(pSettings);
 						int[] offset = getOffset(available, potential, piece);
 						if (canPlace(piece.getShape(), offset[0], offset[1])) {
 							if (offset[0] < 0) offset[0] += shape.getLength() * 16;
@@ -128,7 +132,7 @@ public class Map {
 		return s;
 	}
 	
-	private void place(MapPieceInstance inst, int x, int y) {
+	private void place(MapPieceInstance inst) {
 		MapShape shape = inst.getPiece().getShape();
 		for (int i = 0; i < shape.getLength(); i++) {
 			for (int j = 0; j < shape.getHeight(); j++) {
