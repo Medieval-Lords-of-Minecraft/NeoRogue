@@ -12,8 +12,8 @@ public class RotatableCoordinates {
 	public RotatableCoordinates(int x, int y, MapPiece piece) {
 		this.origX = x;
 		this.origY = y;
-		this.length = piece.getShape().getLength() * 16;
-		this.height = piece.getShape().getHeight() * 16;
+		this.length = piece.getShape().getBaseShape()[0].length * 16;
+		this.height = piece.getShape().getBaseShape().length * 16;
 	}
 	
 	public void rotate(int times) {
@@ -47,6 +47,6 @@ public class RotatableCoordinates {
 	}
 	
 	public int getY() {
-		return flipY ? length - origY : origY;
+		return flipY ? height - origY : origY;
 	}
 }

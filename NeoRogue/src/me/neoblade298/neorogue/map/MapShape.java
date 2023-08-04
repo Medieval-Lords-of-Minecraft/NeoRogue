@@ -36,12 +36,20 @@ public class MapShape {
 		int newY = reverseY ? (!swapAxes ? xlen : ylen) - y : y;
 		
 		try {
-			return swapAxes ? shape[newX][newY] : shape[newY][newX];
+			return swapAxes ? shape[newX][newY] : shape[newY][newX]; // X is swapped with y because of how arrays are
 		}
 		catch (Exception e) {
 			Bukkit.getLogger().warning("[NeoRogue] Failed to retrieve coordinates " + x + "," + y + " from MapShape");
 		}
 		return false;
+	}
+	
+	// returns in x, y form
+	public int[] getCoordinates(int x, int y) {
+		int newX = reverseX ? (!swapAxes ? ylen : xlen) - x : x;
+		int newY = reverseY ? (!swapAxes ? xlen : ylen) - y : y;
+		
+		return swapAxes ? new int[] {newY, newX} : new int[] {newX, newY};
 	}
 	
 	public void rotate(int times) {

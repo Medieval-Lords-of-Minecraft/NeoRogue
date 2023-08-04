@@ -16,6 +16,17 @@ public enum Direction {
 		return getFromValue(newVal);
 	}
 	
+	public Direction flip(boolean xAxis) {
+		if ((value % 2 == 0 && xAxis) || (value % 2 == 1 && !xAxis)) {
+			return getFromValue((value + 2) % 4);
+		}
+		return this;
+	}
+	
+	public int getValue() {
+		return value;
+	}
+	
 	private Direction getFromValue(int value) {
 		switch (value) {
 		case 0: return NORTH;

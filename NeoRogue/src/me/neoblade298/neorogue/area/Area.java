@@ -59,7 +59,7 @@ public class Area {
 	private AreaType type;
 	private Node[][] nodes = new Node[MAX_POSITIONS][MAX_LANES];
 	private Session s;
-	private static World world;
+	public static World world;
 
 	private static final int MIN_MINIBOSSES = 2;
 	private static final int MIN_SHOPS = 3;
@@ -68,7 +68,7 @@ public class Area {
 	private static final int CENTER_LANE = MAX_LANES / 2;
 	private static final double STRAIGHT_PATH_CHANCE = 0.7;
 	private static final double DOUBLE_PATH_CHANCE = 0.6;
-	private static final String WORLD_NAME = "Dev";
+	public static final String WORLD_NAME = "Dev";
 	private static final int EDGE_PADDING = 6, NODE_DIST_BETWEEN = 4;
 	
 	private static final int NODE_Y = 66;

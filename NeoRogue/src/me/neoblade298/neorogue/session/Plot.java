@@ -5,7 +5,7 @@ import org.bukkit.Location;
 public class Plot {
 	private int x, z;
 	
-	private static int PLOT_X_SIZE = 256, PLOT_Z_SIZE = 256;
+	private static int PLOT_X_SIZE = 320, PLOT_Z_SIZE = 320;
 	
 	public Plot(int x, int z) {
 		this.x = x;

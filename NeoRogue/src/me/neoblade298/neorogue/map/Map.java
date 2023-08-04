@@ -1,50 +1,164 @@
 package me.neoblade298.neorogue.map;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Map.Entry;
+
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 
 import me.neoblade298.neocore.bukkit.NeoCore;
+import me.neoblade298.neocore.shared.exceptions.NeoIOException;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.AreaType;
 
 public class Map {
-	private static HashMap<AreaType, LinkedList<MapPiece>> allPieces = new HashMap<AreaType, LinkedList<MapPiece>>();
-	private static HashMap<AreaType, Integer> piecesUsed = new HashMap<AreaType, Integer>();
+	private static HashMap<AreaType, LinkedList<MapPiece>> allPieces = new HashMap<AreaType, LinkedList<MapPiece>>(),
+			usedPieces = new HashMap<AreaType, LinkedList<MapPiece>>();
 	
 	private ArrayList<MapEntrance> entrances = new ArrayList<MapEntrance>();
 	private ArrayList<MapPiece> pieces = new ArrayList<MapPiece>();
-	private boolean[][] shape = new boolean[8][8];
-	private int size;
+	private HashSet<MapEntrance> availableEntrances = new HashSet<MapEntrance>();
+	private static final int MAP_SIZE = 12;
+	private boolean[][] shape = new boolean[MAP_SIZE][MAP_SIZE];
+	
+	public static void load() {
+		for (AreaType type : AreaType.values()) {
+			allPieces.put(type, new LinkedList<MapPiece>());
+			usedPieces.put(type, new LinkedList<MapPiece>());
+		}
+		
+		try {
+			NeoCore.loadFiles(new File(NeoRogue.inst().getDataFolder(), "mappieces"), (yml, file) -> {
+				for (String key : yml.getKeys(false)) {
+					ConfigurationSection sec = yml.getConfigurationSection(key);
+					MapPiece piece = new MapPiece(sec);
+					allPieces.get(AreaType.valueOf(sec.getString("type"))).add(piece);
+				}
+			});
+		} catch (NeoIOException e) {
+			// TODO Auto-generated catch block
+			Bukkit.getLogger().warning("[NeoRogue] Failed to load MapPiece");
+			e.printStackTrace();
+		}
+	}
 	
 	public static Map generate(AreaType type, int size) {
 		Map map = new Map();
 		LinkedList<MapPiece> pieces = allPieces.get(type);
+		
 		for (int i = 0; i < size; i++) {
-			MapPiece piece = pieces.poll();
-			while (map.entrances.size() < 2 && piece.getNumEntrances() < 2 && i < size - 1) { // Make sure there are enough entrances to expand
-				pieces.addLast(piece);
+			MapPiece piece = null;
+			do {
+				if (pieces.size() == 0) shufflePieces(type);
 				piece = pieces.poll();
 			}
+			// Make sure there are enough entrances to continue expanding while we still need size
+			while (map.availableEntrances.size() < 2 && piece.getNumEntrances() < 2 && i < size - 1);
+			
+			map.place(piece);
 		}
 		
-		int used = piecesUsed.getOrDefault(type, 0) + size;
-		if (used > 20) {
-			used = 0;
-			Collections.shuffle(pieces);
-		}
-		piecesUsed.put(type, used);
+		
 		
 		return map;
 	}
 	
-	public void place(MapPiece piece) {
+	public boolean place(MapPiece piece) {
 		MapShape shape = piece.getShape();
 		// Special case, first piece being placed
 		if (entrances.size() == 0) {
-			int x = 4 - (shape.getHeight() / 2);
-			int y = 4 - (shape.getLength() / 2);
+			// Place the piece in the middle of the board
+			int x = (MAP_SIZE / 2) - (shape.getHeight() / 2);
+			int y = (MAP_SIZE / 2) - (shape.getLength() / 2);
 			
+			// Randomly rotate the piece
+			piece.rotate(NeoCore.gen.nextInt(4));
+			int rand = NeoCore.gen.nextInt(3);
+			if (rand == 1) piece.flip(true);
+			else if (rand == 2) piece.flip(false);
+			place(piece, x, y);
 		}
+		// Standard case, find an existing entrance and try to put the piece on
+		else {
+			HashMap<MapPieceSettings, Integer> potentialPlacements = new HashMap<MapPieceSettings, Integer>();
+			for (MapEntrance available : availableEntrances) {
+				for (MapEntrance potential : piece.getEntrances()) {
+					for (MapPieceSettings pSettings : piece.getRotationOptions(available, potential)) {
+						piece.applySettings(pSettings);
+						int[] offset = getOffset(available, potential, piece);
+						if (canPlace(piece.getShape(), offset[0], offset[1])) {
+							if (offset[0] < 0) offset[0] += shape.getLength() * 16;
+							if (offset[1] < 0) offset[1] += shape.getHeight() * 16;
+							potentialPlacements.put(piece.getSettings(available, potential), offset[0] + offset[1]);
+						}
+					}
+				}
+			}
+			
+			if (potentialPlacements.size() == 0) return false;
+			
+			MapPieceSettings settings = selectBestSettings(potentialPlacements);
+			piece.applySettings(settings);
+			int[] offset = getOffset(settings.getAvailableEntrance(), settings.getEntranceToAttach(), piece);
+			place(piece, offset[0], offset[1]);
+		}
+		return true;
+	}
+	
+	private boolean canPlace(MapShape shape, int x, int y) {
+		for (int i = 0; i < shape.getLength(); i++) {
+			for (int j = 0; j < shape.getHeight(); j++) {
+				if (this.shape[y + j][x + i]) return false;
+			}
+		}
+		return true;
+	}
+	
+	private int[] getOffset(MapEntrance available, MapEntrance potential, MapPiece piece) {
+		int[] availCoords = available.getCoordinates();
+		int[] potentialCoords = potential.getChunkCoordinates();
+		return new int[] { availCoords[0] - potentialCoords[0], availCoords[1] - potentialCoords[1] };
+	}
+	
+	private MapPieceSettings selectBestSettings(HashMap<MapPieceSettings, Integer> placements) {
+		int best = 999;
+		MapPieceSettings s = null;
+		for (Entry<MapPieceSettings, Integer> e : placements.entrySet()) {
+			if (e.getValue() < best) {
+				best = e.getValue();
+				s = e.getKey();
+			}
+		}
+		return s;
+	}
+	
+	private void place(MapPiece piece, int x, int y) {
+		MapShape shape = piece.getShape();
+		for (int i = 0; i < shape.getLength(); i++) {
+			for (int j = 0; j < shape.getHeight(); j++) {
+				this.shape[y + j][x + i] = shape.get(j, i);
+			}
+		}
+		
+		for (MapEntrance entrance : piece.getEntrances()) {
+			entrances.add(entrance);
+			availableEntrances.add(entrance);
+		}
+		
+		pieces.add(piece);
+	}
+	
+	private static void shufflePieces(AreaType type) {
+		Collections.shuffle(usedPieces.get(type));
+		allPieces.get(type).addAll(usedPieces.get(type));
+	}
+	
+	public static LinkedList<MapPiece> getPieces(AreaType type) {
+		return allPieces.get(type);
 	}
 }

@@ -7,6 +7,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import me.filoghost.holographicdisplays.api.HolographicDisplaysAPI;
 import me.filoghost.holographicdisplays.api.internal.HolographicDisplaysAPIProvider;
 import me.neoblade298.neocore.bukkit.NeoCore;
+import me.neoblade298.neorogue.area.AreaType;
+import me.neoblade298.neorogue.map.Map;
+import me.neoblade298.neorogue.map.MapPiece;
 import me.neoblade298.neorogue.map.MapShape;
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.session.Session;
@@ -16,7 +19,7 @@ import me.neoblade298.neorogue.session.fights.FightInstance;
 public class NeoRogue extends JavaPlugin {
 	private static NeoRogue inst;
 	
-	public static File SCHEMATIC_FOLDER;
+	public static File SCHEMATIC_FOLDER = new File("/home/MLMC/DevServers/ServerDev/plugins/WorldEdit/schematics");
 	public static HolographicDisplaysAPI holo;
 	
 	public static void main(String[] args) {
@@ -40,9 +43,10 @@ public class NeoRogue extends JavaPlugin {
 		initCommands();
 		
 		inst = this;
+
+		Map.load(); // Load in map pieces
 		
 		holo = HolographicDisplaysAPIProvider.getImplementation().getHolographicDisplaysAPI(this);
-		SCHEMATIC_FOLDER = new File("/home/MLMC/ServerRPG/plugins/WorldEdit/schematics");
 		
 		// Strictly for debug usage
 		debugInitialize();
@@ -68,6 +72,13 @@ public class NeoRogue extends JavaPlugin {
 		Session s = SessionManager.createSession(p);
 		s.setInstance(new FightInstance(s));
 		s.getInstance().start(s);
+		
+		MapPiece piece = Map.getPieces(AreaType.LOW_DISTRICT).getFirst();
+		piece.paste(-70, -40);
+		piece.rotate(2);
+		piece.paste(-90, -40);
+		piece.flip(false);
+		piece.paste(-110, -40);
 		
 		/*
 		new BukkitRunnable() {

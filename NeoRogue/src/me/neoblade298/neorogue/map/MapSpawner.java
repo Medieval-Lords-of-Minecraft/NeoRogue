@@ -2,18 +2,20 @@ package me.neoblade298.neorogue.map;
 
 import org.bukkit.configuration.ConfigurationSection;
 
-import me.neoblade298.neocore.shared.io.LineConfig;
-import me.neoblade298.neocore.shared.io.LineConfigParser;
+import io.lumine.mythic.api.mobs.MythicMob;
+import io.lumine.mythic.bukkit.MythicBukkit;
 
-public class MapSpawner implements LineConfigParser<MapSpawner> {
+public class MapSpawner {
 	private MythicMob mob;
 	private int amount, radius;
 	private RotatableCoordinates coords;
 	
-	public MapSpawner(ConfigurationSection cfg) {
-		this.mob = mob;
-		this.amount = amount;
-		this.radius = radius;
+	public MapSpawner(ConfigurationSection cfg, MapPiece piece) {
+		mob = MythicBukkit.inst().getMobManager().getMythicMob(cfg.getString("mob")).get();
+		amount = cfg.getInt("amount", 1);
+		radius = cfg.getInt("radius", 0);
+		String[] parsed = cfg.getString("coords").split(",");
+		coords = new RotatableCoordinates(Integer.parseInt(parsed[0]), Integer.parseInt(parsed[1]), piece);
 	}
 
 	public MythicMob getMob() {
@@ -27,16 +29,15 @@ public class MapSpawner implements LineConfigParser<MapSpawner> {
 	public int getRadius() {
 		return radius;
 	}
-
-	@Override
-	public MapSpawner create(LineConfig arg0) {
-		// TODO Auto-generated method stub
-		return null;
+	
+	public RotatableCoordinates getCoordinates() {
+		return coords;
 	}
-
-	@Override
-	public String getKey() {
-		// TODO Auto-generated method stub
-		return null;
+	
+	public void rotate(int amount) {
+		coords.rotate(amount);
+	}
+	public void flip(boolean xAxis) {
+		coords.flip(xAxis);
 	}
 }
