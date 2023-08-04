@@ -110,21 +110,22 @@ public class MapPiece {
 				spawner.rotate(amount);
 			}
 		}
-		schematic.setTransform(transform.rotateY(90 * numRotations));
 
 		for (int i = origRotations; i < origRotations + amount; i++) {
 			int j = (i + 1) % 4;
+			int len = shape.getLength();
 			// +1 because the rotation is a bit off if using bottom left corner
 			switch (j) {
-			case 1: rotateOffset[0] -= shape.getLength() * 16 + 1;
+			case 1: rotateOffset[1] += len * 16 + len;
 			break;
-			case 2: rotateOffset[1] += shape.getLength() * 16 + 1;
+			case 2: rotateOffset[0] -= len * 16 + len;
 			break;
-			case 3: rotateOffset[0] += shape.getLength() * 16 + 1;
+			case 3: rotateOffset[1] -= len * 16 + len;
 			break;
-			default: rotateOffset[1] -= shape.getLength() * 16 + 1;
+			default: rotateOffset[0] += len * 16 + len;
 			}
 		}
+		updateSchematic();
 	}
 	
 	public void flip(boolean xAxis) {
@@ -139,23 +140,36 @@ public class MapPiece {
 		if ((flipY && !flipX && xAxis) || (flipX && !flipY && !xAxis)) {
 			flipX = false;
 			flipY = false;
-			rotateOffset[0] = 0;
-			rotateOffset[1] = 0;
-			schematic.setTransform(transform.scale(BukkitAdapter.asVector(new Location(Bukkit.getWorld(Area.WORLD_NAME), 1, 1, 1))));
 			rotate(2); // A double flip is just a 180 rotation
 			return;
 		}
-		BlockVector3 direction = BukkitAdapter.asBlockVector(new Location(Bukkit.getWorld(Area.WORLD_NAME), xAxis ? 1 : 0, 0, xAxis ? 0 : 1));
-		schematic.setTransform(transform.scale(direction.abs().multiply(-2).add(1, 1, 1).toVector3()));
 		
 		if (xAxis) {
 			flipX = !flipX;
-			flipOffset[0] = flipX ? -shape.getLength() * 16 - 1 : 0;
 		}
 		else {
 			flipY = !flipY;
-			flipOffset[1] = flipY ? shape.getLength() * 16 + 1 : 0;
 		}
+		updateSchematic();
+	}
+	
+	private void updateSchematic() {
+		
+		transform = new AffineTransform();
+		// It is only possible for one of these to be true at a time
+		if (flipX || flipY) {
+			flipOffset[0] = flipX ? -shape.getLength() * 16 - 1 - rotateOffset[0] : 0;
+			flipOffset[1] = flipY ? shape.getLength() * 16 + 1 - rotateOffset[1] : 0;
+			BlockVector3 direction = BukkitAdapter.asBlockVector(new Location(Bukkit.getWorld(Area.WORLD_NAME), flipX ? 1 : 0, 0, flipY ? 1 : 0));
+			transform = transform.scale(direction.abs().multiply(-2).add(1, 1, 1).toVector3());
+			schematic.setTransform(transform);
+		}
+		else {
+			flipOffset[0] = 0;
+			flipOffset[1] = 0;
+		}
+		transform = transform.rotateY(numRotations * -90);
+		schematic.setTransform(transform);
 	}
 	
 	public ClipboardHolder getClipboard() {
@@ -196,10 +210,14 @@ public class MapPiece {
 	
 	public void paste(int x, int y) {
 		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Area.world)) {
+			int len = shape.getLength();
 		    Operation operation = schematic.createPaste(editSession)
-		            .to(BlockVector3.at(x + rotateOffset[0] + flipOffset[0] + 16, 64, y + rotateOffset[1] + flipOffset[1])) // Paste by default goes top left, need top right
+		            .to(BlockVector3.at(x + rotateOffset[0] + flipOffset[0] - len * 16 - len, 64, y + rotateOffset[1] + flipOffset[1])) // Paste by default goes top left, need top right
 		            .ignoreAirBlocks(true)
 		            .build();
+		    System.out.println("===");
+		    System.out.println(rotateOffset[0] + " " + rotateOffset[1]);
+		    System.out.println(flipOffset[0] + " " + flipOffset[1]);
 		    // CuboidRegion o = new CuboidRegion(null, null);
 		    // Mask mask = new ExistingBlockMask(editSession);
 		    try {

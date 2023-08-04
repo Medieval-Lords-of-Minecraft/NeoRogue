@@ -75,10 +75,10 @@ public class NeoRogue extends JavaPlugin {
 		
 		MapPiece piece = Map.getPieces(AreaType.LOW_DISTRICT).getFirst();
 		piece.paste(-70, -40);
-		piece.rotate(2);
-		piece.paste(-90, -40);
-		piece.flip(false);
+		piece.rotate(1);
 		piece.paste(-110, -40);
+		piece.flip(true);
+		piece.paste(-150, -40);
 		
 		/*
 		new BukkitRunnable() {
