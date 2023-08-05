@@ -7,9 +7,11 @@ import me.neoblade298.neorogue.area.Area;
 
 /* Assumed to always be rotating around 0,0 origin
  * After rotating, the coordinates translate themselves to be above 0,0
+ * Used for MapEntrances and MapSpawners, MapEntrance uses direction too
  */
 public class RotatableCoordinates {
 	private int x, y, z, numRotations = 0, xlen, zlen;
+	private int xOff, yOff, zOff;
 	private Direction dir = Direction.NORTH;
 	
 	private boolean reverseX, reverseY, flipX, flipY;
@@ -21,7 +23,7 @@ public class RotatableCoordinates {
 		this.z = Integer.parseInt(parsed[2]);
 		this.xlen = piece.getShape().getLength() - 1;
 		this.zlen = piece.getShape().getHeight() - 1;
-		this.dir = Direction.getFromCharacter(parsed[2].charAt(0));
+		this.dir = Direction.getFromCharacter(parsed[3].charAt(0));
 	}
 	
 	public RotatableCoordinates(int x, int y, int z, int xlen, int zlen) {
@@ -38,48 +40,32 @@ public class RotatableCoordinates {
 	}
 	
 	public RotatableCoordinates clone() {
-		return new RotatableCoordinates(x, y, z, xlen, zlen);
+		return new RotatableCoordinates(x, y, z, xlen, zlen, dir);
 	}
 	
 	public Direction getDirection() {
 		return dir;
 	}
 	
-	public void rotate(int times) {
-		numRotations += times;
-		numRotations %= 4;
-		if (dir != null) dir = dir.rotate(times);
-		update();
-	}
-	
-	public void flip(boolean xAxis) {
-		if (xAxis) {
-			flipX = !flipX;
-			dir = dir.flip(true);
-		}
-		else {
-			flipY = !flipY;
-			dir = dir.flip(false);
-		}
-		update();
-	}
-	
 	private void update() {
+		dir = dir.rotate(numRotations);
 		reverseY = numRotations % 3 != 0;
 		reverseX = numRotations >= 2;
 		
 		if (flipX && flipY) {
 			flipX = false;
 			flipY = false;
-			rotate(2);
+			numRotations = (numRotations + 2) % 4;
+			update();
 			return;
 		}
+		
 		if (flipX) reverseX = !reverseX;
 		if (flipY) reverseY = !reverseY;
 	}
 	
 	public int getX() {
-		return flipX ? xlen - x : x;
+		return (flipX ? xlen - x : x) + xOff;
 	}
 	
 	public int getY() {
@@ -87,10 +73,27 @@ public class RotatableCoordinates {
 	}
 	
 	public int getZ() {
-		return flipY ? zlen - z : z;
+		return (flipY ? zlen - z : z) + zOff;
+	}
+	
+	public int getXFacing() {
+		int offset = 0;
+		if (dir == Direction.EAST) offset = -1;
+		else if (dir == Direction.WEST) offset = 1;
+		return getX() + offset;
+	}
+	
+	public int getZFacing() {
+		int offset = 0;
+		if (dir == Direction.NORTH) offset = 1;
+		else if (dir == Direction.SOUTH) offset = -1;
+		return getZ() + offset;
 	}
 	
 	public RotatableCoordinates applySettings(MapPieceInstance settings) {
+		this.xOff = settings.getX();
+		this.yOff = settings.getY();
+		this.zOff = settings.getZ();
 		this.numRotations = settings.numRotations;
 		this.flipX = settings.flipX;
 		this.flipY = settings.flipY;
@@ -100,5 +103,14 @@ public class RotatableCoordinates {
 	
 	public Location toLocation() {
 		return new Location(Bukkit.getWorld(Area.WORLD_NAME), getX(), getY(), getZ());
+	}
+	
+	@Override
+	public String toString() {
+		return getX() + "," + getY() + "," + getZ() + "," + dir.getCharacter();
+	}
+	
+	public String toStringFacing() {
+		return getXFacing() + "," + getY() + "," + getZFacing() + "," + dir.getCharacter();
 	}
 }

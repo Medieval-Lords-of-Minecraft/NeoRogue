@@ -59,10 +59,10 @@ public class NeoRogue extends JavaPlugin {
 	}
 	
 	private void debugInitialize() {
-		Player p = Bukkit.getPlayer("Ascheladd");
-		Session s = SessionManager.createSession(p);
-		s.setInstance(new FightInstance(s));
-		s.getInstance().start(s);
+		//Player p = Bukkit.getPlayer("Ascheladd");
+		//Session s = SessionManager.createSession(p);
+		//s.setInstance(new FightInstance(s));
+		//s.getInstance().start(s);
 
 		Map.generate(AreaType.LOW_DISTRICT, 2);
 		

@@ -1,33 +1,33 @@
 package me.neoblade298.neorogue.map;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.WorldEditException;
-import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.function.operation.Operation;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.math.transform.AffineTransform;
 import com.sk89q.worldedit.session.ClipboardHolder;
 
+import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.session.fights.FightInstance;
 
-public class MapPieceInstance {
+public class MapPieceInstance implements Comparable<MapPieceInstance> {
 	private MapPiece piece;
 	private RotatableCoordinates entrance;
 	protected int numRotations;
-	private int x, z; // In chunk offset
+	private int x, y, z; // In chunk offset
 	protected boolean flipX, flipY;
 	private ClipboardHolder schematic;
-	
+	private static final int Y_OFFSET = 64;
+	private static final int Z_FIGHT_OFFSET = 36;
+	private int potential = 100;
 	private int[] rotateOffset = new int[] {0, 0},
 			flipOffset = new int[] {0, 0};
 	
 	protected MapPieceInstance(MapPiece piece) {
+		this.piece = piece;
 		schematic = new ClipboardHolder(piece.clipboard);
 	}
 	
@@ -70,6 +70,10 @@ public class MapPieceInstance {
 	
 	public int getX() {
 		return x;
+	}
+	
+	public int getY() {
+		return y;
 	}
 	
 	public int getZ() {
@@ -122,7 +126,7 @@ public class MapPieceInstance {
 		if (flipX || flipY) {
 			flipOffset[0] = flipX ? -len - rotateOffset[0] : 0;
 			flipOffset[1] = flipY ? len - rotateOffset[1] : 0;
-			BlockVector3 direction = BukkitAdapter.asBlockVector(new Location(Bukkit.getWorld(Area.WORLD_NAME), flipX ? 1 : 0, 0, flipY ? 1 : 0));
+			BlockVector3 direction = BlockVector3.at(flipX ? 1 : 0, 0, flipY ? 1 : 0);
 			transform = transform.scale(direction.abs().multiply(-2).add(1, 1, 1).toVector3());
 			schematic.setTransform(transform);
 		}
@@ -136,6 +140,10 @@ public class MapPieceInstance {
 	
 	public void setX(int x) {
 		this.x = x;
+	}
+	
+	public void setY(int y) {
+		this.y = y;
 	}
 	
 	public void setZ(int z) {
@@ -158,16 +166,32 @@ public class MapPieceInstance {
 	
 	public int[] calculateOffset(RotatableCoordinates available) {
 		entrance.applySettings(this);
-		return new int[] { available.getX() - entrance.getX(), available.getZ() - entrance.getZ() };
+		System.out.println("Calculating offset: " + available.toStringFacing() + " -> " + entrance);
+		return new int[] { available.getXFacing() - entrance.getX(), available.getY() - entrance.getY(), available.getZFacing() - entrance.getZ() };
+	}
+	
+	public int getPotential() {
+		return potential;
+	}
+	
+	public void setPotential(int potential) {
+		this.potential = potential;
 	}
 	
 	// Pastes the map piece and sets up its spawners
-	public void instantiate(FightInstance inst) {
+	public void instantiate(FightInstance inst, int xOff, int zOff) {
 		updateSchematic();
+		/*
+		 * this.x is the chunk coordinates within the fighting area
+		 * xOff is the offset of the plot
+		 * Z_FIGHT_OFFSET is the offset of where the fighting area is in the plot
+		 * x is negative because south is +z and right of south is -x
+		 */
+		int x = (this.x * 16) + rotateOffset[0] + flipOffset[0] + xOff;
+		int z = (this.z * 16) + rotateOffset[1] + flipOffset[1] + zOff + Z_FIGHT_OFFSET;
 		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Area.world)) {
 		    Operation operation = schematic.createPaste(editSession)
-		            .to(BlockVector3.at((x * 16) + rotateOffset[0] + flipOffset[0], 64,
-		            		(z * 16) + rotateOffset[1] + flipOffset[1])) // Paste by default goes top left, need top right
+		            .to(BlockVector3.at(-x, Y_OFFSET + this.y, z))
 		            .ignoreAirBlocks(true)
 		            .build();
 		    System.out.println("===");
@@ -182,5 +206,14 @@ public class MapPieceInstance {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	@Override
+	public int compareTo(MapPieceInstance o) {
+		int comp = this.potential - o.potential;
+		if (comp == 0) {
+			return NeoCore.gen.nextBoolean() ? 1 : -1; // Tiebreakers are random
+		}
+		return comp;
 	}
 }

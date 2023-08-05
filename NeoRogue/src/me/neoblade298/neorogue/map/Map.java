@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map.Entry;
+import java.util.TreeSet;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
@@ -15,13 +16,14 @@ import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.shared.exceptions.NeoIOException;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.AreaType;
+import me.neoblade298.neorogue.session.fights.FightInstance;
 
 public class Map {
 	private static HashMap<AreaType, LinkedList<MapPiece>> allPieces = new HashMap<AreaType, LinkedList<MapPiece>>(),
 			usedPieces = new HashMap<AreaType, LinkedList<MapPiece>>();
 	
 	private ArrayList<MapPieceInstance> pieces = new ArrayList<MapPieceInstance>();
-	private HashSet<RotatableCoordinates> entrances = new HashSet<RotatableCoordinates>();
+	private LinkedList<RotatableCoordinates> entrances = new LinkedList<RotatableCoordinates>();
 	private static final int MAP_SIZE = 12;
 	private boolean[][] shape = new boolean[MAP_SIZE][MAP_SIZE];
 	
@@ -43,6 +45,10 @@ public class Map {
 			Bukkit.getLogger().warning("[NeoRogue] Failed to load MapPiece");
 			e.printStackTrace();
 		}
+		
+		for (AreaType type : AreaType.values()) {
+			// TODO Collections.shuffle(allPieces.get(type));
+		}
 	}
 	
 	public static Map generate(AreaType type, int numPieces) {
@@ -61,8 +67,6 @@ public class Map {
 			map.place(piece);
 		}
 		
-		
-		
 		return map;
 	}
 	
@@ -70,7 +74,7 @@ public class Map {
 		// Special case, first piece being placed
 		if (pieces.size() == 0) {
 			MapPieceInstance inst = piece.getInstance();
-			// Randomly rotate the piece
+			// Randomly rotate the piece TODO
 			inst.rotate(NeoCore.gen.nextInt(4));
 			int rand = NeoCore.gen.nextInt(3);
 			if (rand == 1) inst.flip(true);
@@ -83,28 +87,41 @@ public class Map {
 			int z = (MAP_SIZE / 2) - (shape.getLength() / 2);
 			
 			inst.setX(x);
+			inst.setY(0);
 			inst.setZ(z);
+			System.out.println("Placing 1: " + piece.getId() + " with settings: " + inst.getNumRotations() + " " + inst.flipX + " " + inst.flipY);
 			place(inst);
 		}
 		// Standard case, find an existing entrance and try to put the piece on
 		else {
-			HashMap<MapPieceInstance, Integer> potentialPlacements = new HashMap<MapPieceInstance, Integer>();
+			TreeSet<MapPieceInstance> potentialPlacements = new TreeSet<MapPieceInstance>();
 			for (RotatableCoordinates available : entrances) {
 				for (RotatableCoordinates potential : piece.getEntrances()) {
 					for (MapPieceInstance pSettings : piece.getRotationOptions(available, potential)) {
 						int[] offset = pSettings.calculateOffset(available);
-						if (canPlace(piece.getShape(), offset[0], offset[1])) {
-							potentialPlacements.put(pSettings, offset[0] + offset[1]);
+						if (canPlace(piece.getShape(), offset[0], offset[2])) {
+							int value = Math.abs(offset[0] - (MAP_SIZE / 2)) + Math.abs(offset[2] - (MAP_SIZE / 2));
+							pSettings.setPotential(value);
+							potentialPlacements.add(pSettings);
+							pSettings.setX(offset[0]);
+							pSettings.setY(offset[1]);
+							pSettings.setZ(offset[2]);
+							System.out.println("Placeable," + value + ", settings " + pSettings.numRotations + " " + pSettings.flipX + " " + pSettings.flipY);
 						}
 					}
 				}
+				
+				// If there are already plenty of options, don't try more
+				if (potentialPlacements.size() > 10) break;
 			}
 			
 			if (potentialPlacements.size() == 0) return false;
-			
-			MapPieceInstance best = selectBestSettings(potentialPlacements);
+
+			MapPieceInstance best = potentialPlacements.first();
+			System.out.println("Placing 2: " + piece.getId() + " with settings: " + best.numRotations + " " + best.flipX + " " + best.flipY);
 			place(best);
 		}
+		display();
 		return true;
 	}
 	
@@ -120,10 +137,19 @@ public class Map {
 	private MapPieceInstance selectBestSettings(HashMap<MapPieceInstance, Integer> placements) {
 		int best = 999;
 		MapPieceInstance s = null;
+		boolean randomizer = NeoCore.gen.nextBoolean();
 		for (Entry<MapPieceInstance, Integer> e : placements.entrySet()) {
-			if (e.getValue() < best) {
-				best = e.getValue();
-				s = e.getKey();
+			if (randomizer) {
+				if (e.getValue() < best) {
+					best = e.getValue();
+					s = e.getKey();
+				}
+			}
+			else {
+				if (e.getValue() <= best) {
+					best = e.getValue();
+					s = e.getKey();
+				}
 			}
 		}
 		return s;
@@ -146,6 +172,12 @@ public class Map {
 		pieces.add(inst);
 	}
 	
+	public void instantiate(FightInstance fi, int xOff, int zOff) {
+		for (MapPieceInstance inst : pieces) {
+			inst.instantiate(fi, xOff, zOff);
+		}
+	}
+	
 	private static void shufflePieces(AreaType type) {
 		Collections.shuffle(usedPieces.get(type));
 		allPieces.get(type).addAll(usedPieces.get(type));
@@ -153,5 +185,16 @@ public class Map {
 	
 	public static LinkedList<MapPiece> getPieces(AreaType type) {
 		return allPieces.get(type);
+	}
+	
+	public void display() {
+		System.out.println("   0123456789AB");
+		for (int i = shape.length - 1; i >= 0; i--) {
+			System.out.print(i + ": ");
+			for (int j = 0; j < shape[0].length; j++) {
+				System.out.print(shape[i][j] ? "X" : "_");
+			}
+			System.out.println();
+		}
 	}
 }
