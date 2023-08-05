@@ -2,6 +2,8 @@ package me.neoblade298.neorogue.map;
 
 import org.bukkit.Location;
 
+import io.lumine.mythic.api.mobs.MythicMob;
+
 public class MapSpawnerInstance {
 	private MythicMob mob;
 	private int amount, radius;

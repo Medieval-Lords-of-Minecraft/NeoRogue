@@ -35,7 +35,7 @@ import me.neoblade298.neorogue.area.Area;
 public class MapPiece {
 	private String id;
 	private MapShape shape;
-	private MapEntrance[] entrances;
+	private RotatableCoordinates[] entrances;
 	private MapSpawner[] spawners;
 	protected Clipboard clipboard;
 	
@@ -56,10 +56,10 @@ public class MapPiece {
 		shape = new MapShape(cfg.getStringList("shape"));
 		
 		List<String> entrances = cfg.getStringList("entrances");
-		this.entrances = new MapEntrance[entrances.size()];
+		this.entrances = new RotatableCoordinates[entrances.size()];
 		int i = 0;
 		for (String line : entrances) {
-			this.entrances[i++] = new MapEntrance(this, line);
+			this.entrances[i++] = new RotatableCoordinates(this, line);
 		}
 		
 		ConfigurationSection sec = cfg.getConfigurationSection("spawners");
@@ -82,7 +82,7 @@ public class MapPiece {
 		return id;
 	}
 	
-	public MapEntrance[] getEntrances() {
+	public RotatableCoordinates[] getEntrances() {
 		return entrances;
 	}
 	
@@ -90,7 +90,7 @@ public class MapPiece {
 		return spawners;
 	}
 	
-	public MapPieceInstance[] getRotationOptions(MapEntrance existing, MapEntrance toAttach) {
+	public MapPieceInstance[] getRotationOptions(RotatableCoordinates existing, RotatableCoordinates toAttach) {
 		MapPieceInstance[] settings = new MapPieceInstance[] {
 				getInstance(existing, toAttach),
 				getInstance(existing, toAttach)
@@ -101,7 +101,7 @@ public class MapPiece {
 		return settings;
 	}
 	
-	public MapPieceInstance getInstance(MapEntrance available, MapEntrance toAttach) {
+	public MapPieceInstance getInstance(RotatableCoordinates available, RotatableCoordinates toAttach) {
 		return new MapPieceInstance(this, available, toAttach);
 	}
 	

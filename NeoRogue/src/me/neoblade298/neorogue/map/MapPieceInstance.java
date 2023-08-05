@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fights.FightInstance;
 
 public class MapPieceInstance {
 	private MapPiece piece;
-	private Direction entranceDirection;
+	private RotatableCoordinates entrance;
 	protected int numRotations;
 	private int x, z; // In chunk offset
 	protected boolean flipX, flipY;
@@ -31,13 +31,9 @@ public class MapPieceInstance {
 		schematic = new ClipboardHolder(piece.clipboard);
 	}
 	
-	protected MapPieceInstance(MapPiece piece, MapEntrance available, MapEntrance toAttach) {
+	protected MapPieceInstance(MapPiece piece, RotatableCoordinates available, RotatableCoordinates toAttach) {
 		this(piece);
-		int[] availCoords = available.getCoordinates();
-		int[] potentialCoords = toAttach.getChunkCoordinates();
-		this.entranceDirection = toAttach.getFace();
-		this.x = availCoords[0] - potentialCoords[0];
-		this.z = availCoords[1] - potentialCoords[1];
+		this.entrance = toAttach.clone();
 	}
 	
 	public int getNumRotations() {
@@ -79,11 +75,9 @@ public class MapPieceInstance {
 	public int getZ() {
 		return z;
 	}
-
 	
 	public void rotate(int amount) {
 		numRotations = (numRotations + amount) % 4;
-		entranceDirection = entranceDirection.rotate(amount);
 		MapShape shape = piece.getShape();
 		
 		int lenOff = (numRotations % 2 == 0 ? shape.getLength() : shape.getHeight()) * 16 - 1;
@@ -106,7 +100,6 @@ public class MapPieceInstance {
 	}
 	
 	public void flip(boolean xAxis) {
-		entranceDirection = entranceDirection.flip(xAxis);
 		if ((flipY && !flipX && xAxis) || (flipX && !flipY && !xAxis)) {
 			flipX = false;
 			flipY = false;
@@ -153,14 +146,19 @@ public class MapPieceInstance {
 		return piece;
 	}
 	
-	public void rotateToFace(MapEntrance existing, MapEntrance toAttach) {
-		int amount = (existing.getFace().getValue() - toAttach.getFace().getValue()) % 4;
+	public void rotateToFace(RotatableCoordinates existing, RotatableCoordinates toAttach) {
+		int amount = (existing.getDirection().getValue() - toAttach.getDirection().getValue()) % 4;
 		if (amount < 0) amount += 4;
 		rotate(amount);
 	}
 	
 	public void flipOppositeAxis() {
-		flip(entranceDirection == Direction.NORTH || entranceDirection == Direction.SOUTH);
+		flip(entrance.getDirection() == Direction.NORTH || entrance.getDirection() == Direction.SOUTH);
+	}
+	
+	public int[] calculateOffset(RotatableCoordinates available) {
+		entrance.applySettings(this);
+		return new int[] { available.getX() - entrance.getX(), available.getZ() - entrance.getZ() };
 	}
 	
 	// Pastes the map piece and sets up its spawners

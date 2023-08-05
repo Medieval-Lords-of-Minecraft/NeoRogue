@@ -20,9 +20,8 @@ public class Map {
 	private static HashMap<AreaType, LinkedList<MapPiece>> allPieces = new HashMap<AreaType, LinkedList<MapPiece>>(),
 			usedPieces = new HashMap<AreaType, LinkedList<MapPiece>>();
 	
-	private ArrayList<MapEntrance> entrances = new ArrayList<MapEntrance>();
 	private ArrayList<MapPieceInstance> pieces = new ArrayList<MapPieceInstance>();
-	private HashSet<MapEntrance> availableEntrances = new HashSet<MapEntrance>();
+	private HashSet<RotatableCoordinates> entrances = new HashSet<RotatableCoordinates>();
 	private static final int MAP_SIZE = 12;
 	private boolean[][] shape = new boolean[MAP_SIZE][MAP_SIZE];
 	
@@ -57,7 +56,7 @@ public class Map {
 				piece = pieces.poll();
 			}
 			// Make sure there are enough entrances to continue expanding while we still need size
-			while (map.availableEntrances.size() < 2 && piece.getNumEntrances() < 2 && i < numPieces - 1);
+			while (map.entrances.size() < 2 && piece.getNumEntrances() < 2 && i < numPieces - 1);
 			
 			map.place(piece);
 		}
@@ -68,9 +67,9 @@ public class Map {
 	}
 	
 	public boolean place(MapPiece piece) {
-		MapPieceInstance inst = piece.getInstance();
 		// Special case, first piece being placed
-		if (entrances.size() == 0) {
+		if (pieces.size() == 0) {
+			MapPieceInstance inst = piece.getInstance();
 			// Randomly rotate the piece
 			inst.rotate(NeoCore.gen.nextInt(4));
 			int rand = NeoCore.gen.nextInt(3);
@@ -90,14 +89,12 @@ public class Map {
 		// Standard case, find an existing entrance and try to put the piece on
 		else {
 			HashMap<MapPieceInstance, Integer> potentialPlacements = new HashMap<MapPieceInstance, Integer>();
-			for (MapEntrance available : availableEntrances) {
-				for (MapEntrance potential : piece.getEntrances()) {
+			for (RotatableCoordinates available : entrances) {
+				for (RotatableCoordinates potential : piece.getEntrances()) {
 					for (MapPieceInstance pSettings : piece.getRotationOptions(available, potential)) {
-						int[] offset = getOffset(available, potential, piece);
+						int[] offset = pSettings.calculateOffset(available);
 						if (canPlace(piece.getShape(), offset[0], offset[1])) {
-							if (offset[0] < 0) offset[0] += shape.getLength() * 16;
-							if (offset[1] < 0) offset[1] += shape.getHeight() * 16;
-							potentialPlacements.put(piece.getSettings(available, potential), offset[0] + offset[1]);
+							potentialPlacements.put(pSettings, offset[0] + offset[1]);
 						}
 					}
 				}
@@ -105,16 +102,16 @@ public class Map {
 			
 			if (potentialPlacements.size() == 0) return false;
 			
-			MapPieceInstance inst = selectBestSettings(potentialPlacements);
-			place(inst, inst.getX(), inst.getY());
+			MapPieceInstance best = selectBestSettings(potentialPlacements);
+			place(best);
 		}
 		return true;
 	}
 	
-	private boolean canPlace(MapShape shape, int x, int y) {
+	private boolean canPlace(MapShape shape, int x, int z) {
 		for (int i = 0; i < shape.getLength(); i++) {
 			for (int j = 0; j < shape.getHeight(); j++) {
-				if (this.shape[y + j][x + i]) return false;
+				if (this.shape[z + j][x + i]) return false;
 			}
 		}
 		return true;
@@ -136,13 +133,14 @@ public class Map {
 		MapShape shape = inst.getPiece().getShape();
 		for (int i = 0; i < shape.getLength(); i++) {
 			for (int j = 0; j < shape.getHeight(); j++) {
-				this.shape[y + j][x + i] = shape.get(j, i);
+				this.shape[inst.getX() + j][inst.getZ() + i] = shape.get(j, i);
 			}
 		}
 		
-		for (MapEntrance entrance : inst.getPiece().getEntrances()) {
-			entrances.add(entrance);
-			availableEntrances.add(entrance);
+		for (RotatableCoordinates entrance : inst.getPiece().getEntrances()) {
+			RotatableCoordinates coords = entrance.clone();
+			coords.applySettings(inst);
+			entrances.add(coords);
 		}
 		
 		pieces.add(inst);

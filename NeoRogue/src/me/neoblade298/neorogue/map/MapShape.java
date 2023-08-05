@@ -44,7 +44,7 @@ public class MapShape {
 		return false;
 	}
 	
-	// returns in x, y form
+	// returns in x, z form
 	public int[] getCoordinates(int x, int z) {
 		int newX = reverseX ? (!swapAxes ? zlen : xlen) - x : x;
 		int newZ = reverseZ ? (!swapAxes ? xlen : zlen) - z : z;
@@ -89,8 +89,16 @@ public class MapShape {
 		return !swapAxes ? shape.length : shape[0].length;
 	}
 	
+	public int getBaseHeight() {
+		return shape.length;
+	}
+	
 	public int getLength() {
 		return !swapAxes ? shape[0].length : shape.length;
+	}
+	
+	public int getBaseLength() {
+		return shape[0].length;
 	}
 	
 	public boolean[][] getBaseShape() {

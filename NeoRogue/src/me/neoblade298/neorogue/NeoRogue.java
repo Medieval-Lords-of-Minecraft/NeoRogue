@@ -25,15 +25,6 @@ public class NeoRogue extends JavaPlugin {
 	public static void main(String[] args) {
 		boolean[][] shape = { {true, false}, {false, true}, {true, false} };
 		MapShape ms = new MapShape(shape);
-		ms.display();
-		ms.rotate(1);
-		ms.display();
-		ms.rotate(1);
-		ms.display();
-		ms.rotate(1);
-		ms.display();
-		ms.flip(true);
-		ms.display();
 	}
 	
 	public void onEnable() {
