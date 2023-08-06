@@ -34,11 +34,4 @@ public class MapSpawner {
 	public RotatableCoordinates getCoordinates() {
 		return coords;
 	}
-	
-	public void rotate(int amount) {
-		coords.rotate(amount);
-	}
-	public void flip(boolean xAxis) {
-		coords.flip(xAxis);
-	}
 }

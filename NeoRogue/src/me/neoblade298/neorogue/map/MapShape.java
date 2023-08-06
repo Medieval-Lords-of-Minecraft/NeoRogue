@@ -31,15 +31,15 @@ public class MapShape {
 		zlen = shape[0].length - 1;
 	}
 	
-	public boolean get(int x, int y) {
+	public boolean get(int x, int z) {
 		int newX = reverseX ? (!swapAxes ? zlen : xlen) - x : x;
-		int newY = reverseZ ? (!swapAxes ? xlen : zlen) - y : y;
+		int newZ = reverseZ ? (!swapAxes ? xlen : zlen) - z : z;
 		
 		try {
-			return swapAxes ? shape[newX][newY] : shape[newY][newX]; // X is swapped with y because of how arrays are
+			return swapAxes ? shape[newX][newZ] : shape[newZ][newX]; // X is swapped with y because of how arrays are
 		}
 		catch (Exception e) {
-			Bukkit.getLogger().warning("[NeoRogue] Failed to retrieve coordinates " + x + "," + y + " from MapShape");
+			Bukkit.getLogger().warning("[NeoRogue] Failed to retrieve coordinates " + x + "," + z + " from MapShape");
 		}
 		return false;
 	}
@@ -63,7 +63,7 @@ public class MapShape {
 			update();
 			return;
 		}
-		if (flipX) reverseX = !reverseX;
+		if (flipX) reverseX = !reverseX; // Intentionally different from rotatable coordinates
 		if (flipZ) reverseZ = !reverseZ;
 		swapAxes = numRotations % 2 == 1;
 		if (swapAxes) {
@@ -116,7 +116,18 @@ public class MapShape {
 	public void applySettings(MapPieceInstance settings) {
 		this.numRotations = settings.numRotations;
 		this.flipX = settings.flipX;
-		this.flipZ = settings.flipY;
+		this.flipZ = settings.flipZ;
+		update();
+	}
+	
+	public void setRotations(int amount) {
+		this.numRotations = amount;
+		update();
+	}
+	
+	public void setFlip(boolean flipX, boolean flipZ) {
+		this.flipX = flipX;
+		this.flipZ = flipZ;
 		update();
 	}
 }

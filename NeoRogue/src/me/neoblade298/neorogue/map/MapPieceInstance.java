@@ -18,7 +18,7 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 	private RotatableCoordinates entrance;
 	protected int numRotations;
 	private int x, y, z; // In chunk offset
-	protected boolean flipX, flipY;
+	protected boolean flipX, flipZ;
 	private ClipboardHolder schematic;
 	private static final int Y_OFFSET = 64;
 	private static final int Z_FIGHT_OFFSET = 36;
@@ -42,8 +42,8 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 	public boolean isFlipX() {
 		return flipX;
 	}
-	public boolean isFlipY() {
-		return flipY;
+	public boolean isFlipZ() {
+		return flipZ;
 	}
 	
 	@Override
@@ -51,7 +51,7 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + (flipX ? 1231 : 1237);
-		result = prime * result + (flipY ? 1231 : 1237);
+		result = prime * result + (flipZ ? 1231 : 1237);
 		result = prime * result + numRotations;
 		return result;
 	}
@@ -63,7 +63,7 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		if (getClass() != obj.getClass()) return false;
 		MapPieceInstance other = (MapPieceInstance) obj;
 		if (flipX != other.flipX) return false;
-		if (flipY != other.flipY) return false;
+		if (flipZ != other.flipZ) return false;
 		if (numRotations != other.numRotations) return false;
 		return true;
 	}
@@ -80,13 +80,14 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		return z;
 	}
 	
-	public void rotate(int amount) {
-		numRotations = (numRotations + amount) % 4;
+	public void setRotations(int amount) {
+		numRotations = amount % 4;
 		MapShape shape = piece.getShape();
 		
 		int lenOff = (numRotations % 2 == 0 ? shape.getLength() : shape.getHeight()) * 16 - 1;
 		int heightOff = (numRotations % 2 == 0 ? shape.getHeight() : shape.getLength()) * 16 - 1;
 
+		if (entrance != null) entrance.setRotations(numRotations);
 		switch (numRotations) {
 		case 0: rotateOffset[0] = 0;
 		rotateOffset[1] = 0;
@@ -104,10 +105,10 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 	}
 	
 	public void flip(boolean xAxis) {
-		if ((flipY && !flipX && xAxis) || (flipX && !flipY && !xAxis)) {
+		if ((flipZ && !flipX && xAxis) || (flipX && !flipZ && !xAxis)) {
 			flipX = false;
-			flipY = false;
-			rotate(2); // A double flip is just a 180 rotation
+			flipZ = false;
+			setRotations((numRotations + 2) % 4); // A double flip is just a 180 rotation
 			return;
 		}
 		
@@ -115,7 +116,11 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 			flipX = !flipX;
 		}
 		else {
-			flipY = !flipY;
+			flipZ = !flipZ;
+		}
+		if (entrance != null) {
+			entrance.setFlipX(flipX);
+			entrance.setFlipZ(flipZ);
 		}
 	}
 	
@@ -123,10 +128,10 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		AffineTransform transform = new AffineTransform();
 		// It is only possible for one of these to be true at a time
 		int len = piece.getShape().getLength() * 16 -1;
-		if (flipX || flipY) {
+		if (flipX || flipZ) {
 			flipOffset[0] = flipX ? -len - rotateOffset[0] : 0;
-			flipOffset[1] = flipY ? len - rotateOffset[1] : 0;
-			BlockVector3 direction = BlockVector3.at(flipX ? 1 : 0, 0, flipY ? 1 : 0);
+			flipOffset[1] = flipZ ? len - rotateOffset[1] : 0;
+			BlockVector3 direction = BlockVector3.at(flipX ? 1 : 0, 0, flipZ ? 1 : 0);
 			transform = transform.scale(direction.abs().multiply(-2).add(1, 1, 1).toVector3());
 			schematic.setTransform(transform);
 		}
@@ -155,18 +160,16 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 	}
 	
 	public void rotateToFace(RotatableCoordinates existing, RotatableCoordinates toAttach) {
-		int amount = (existing.getDirection().getValue() - toAttach.getDirection().getValue()) % 4;
-		if (amount < 0) amount += 4;
-		rotate(amount);
+		int amount = (existing.getDirection().getValue() - toAttach.getOriginalDirection().getValue() + 6) % 4;
+		setRotations(amount);
 	}
 	
 	public void flipOppositeAxis() {
-		flip(entrance.getDirection() == Direction.NORTH || entrance.getDirection() == Direction.SOUTH);
+		flip(entrance.getDirection() == Direction.EAST || entrance.getDirection() == Direction.WEST);
 	}
 	
 	public int[] calculateOffset(RotatableCoordinates available) {
 		entrance.applySettings(this);
-		System.out.println("Calculating offset: " + available.toStringFacing() + " -> " + entrance);
 		return new int[] { available.getXFacing() - entrance.getX(), available.getY() - entrance.getY(), available.getZFacing() - entrance.getZ() };
 	}
 	
@@ -206,6 +209,10 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public RotatableCoordinates getEntrance() {
+		return entrance;
 	}
 
 	@Override

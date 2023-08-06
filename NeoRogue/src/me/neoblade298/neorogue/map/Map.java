@@ -65,6 +65,7 @@ public class Map {
 			while (map.entrances.size() < 2 && piece.getNumEntrances() < 2 && i < numPieces - 1);
 			
 			map.place(piece);
+			
 		}
 		
 		return map;
@@ -75,10 +76,11 @@ public class Map {
 		if (pieces.size() == 0) {
 			MapPieceInstance inst = piece.getInstance();
 			// Randomly rotate the piece TODO
-			inst.rotate(NeoCore.gen.nextInt(4));
+			/*inst.setRotations(NeoCore.gen.nextInt(4));
 			int rand = NeoCore.gen.nextInt(3);
 			if (rand == 1) inst.flip(true);
-			else if (rand == 2) inst.flip(false);
+			else if (rand == 2) inst.flip(false);*/
+			inst.setRotations(1);
 			MapShape shape = inst.getPiece().getShape();
 			shape.applySettings(inst);
 			
@@ -89,7 +91,7 @@ public class Map {
 			inst.setX(x);
 			inst.setY(0);
 			inst.setZ(z);
-			System.out.println("Placing 1: " + piece.getId() + " with settings: " + inst.getNumRotations() + " " + inst.flipX + " " + inst.flipY);
+			System.out.println("Placing 1: " + piece.getId() + " with settings: " + inst.getNumRotations() + " " + inst.flipX + " " + inst.flipZ);
 			place(inst);
 		}
 		// Standard case, find an existing entrance and try to put the piece on
@@ -98,7 +100,9 @@ public class Map {
 			for (RotatableCoordinates available : entrances) {
 				for (RotatableCoordinates potential : piece.getEntrances()) {
 					for (MapPieceInstance pSettings : piece.getRotationOptions(available, potential)) {
+						piece.getShape().applySettings(pSettings);
 						int[] offset = pSettings.calculateOffset(available);
+						System.out.println("? " + pSettings.numRotations + " " + pSettings.flipX + " " + pSettings.flipZ + ": " + available.toStringFacing() + " -> " + pSettings.getEntrance());
 						if (canPlace(piece.getShape(), offset[0], offset[2])) {
 							int value = Math.abs(offset[0] - (MAP_SIZE / 2)) + Math.abs(offset[2] - (MAP_SIZE / 2));
 							pSettings.setPotential(value);
@@ -106,19 +110,19 @@ public class Map {
 							pSettings.setX(offset[0]);
 							pSettings.setY(offset[1]);
 							pSettings.setZ(offset[2]);
-							System.out.println("Placeable," + value + ", settings " + pSettings.numRotations + " " + pSettings.flipX + " " + pSettings.flipY);
+							System.out.println("! " + value);
 						}
 					}
 				}
 				
 				// If there are already plenty of options, don't try more
-				if (potentialPlacements.size() > 10) break;
+				if (potentialPlacements.size() > 50) break;
 			}
 			
 			if (potentialPlacements.size() == 0) return false;
 
 			MapPieceInstance best = potentialPlacements.first();
-			System.out.println("Placing 2: " + piece.getId() + " with settings: " + best.numRotations + " " + best.flipX + " " + best.flipY);
+			System.out.println("Placing 2: " + piece.getId() + " with settings: " + best.numRotations + " " + best.flipX + " " + best.flipZ);
 			place(best);
 		}
 		display();
@@ -128,38 +132,21 @@ public class Map {
 	private boolean canPlace(MapShape shape, int x, int z) {
 		for (int i = 0; i < shape.getLength(); i++) {
 			for (int j = 0; j < shape.getHeight(); j++) {
+				System.out.println(">> " + (z + j) + "," + (x + i) + ", " + this.shape[x + i][z + j]);
 				if (this.shape[z + j][x + i]) return false;
 			}
 		}
 		return true;
 	}
 	
-	private MapPieceInstance selectBestSettings(HashMap<MapPieceInstance, Integer> placements) {
-		int best = 999;
-		MapPieceInstance s = null;
-		boolean randomizer = NeoCore.gen.nextBoolean();
-		for (Entry<MapPieceInstance, Integer> e : placements.entrySet()) {
-			if (randomizer) {
-				if (e.getValue() < best) {
-					best = e.getValue();
-					s = e.getKey();
-				}
-			}
-			else {
-				if (e.getValue() <= best) {
-					best = e.getValue();
-					s = e.getKey();
-				}
-			}
-		}
-		return s;
-	}
-	
 	private void place(MapPieceInstance inst) {
 		MapShape shape = inst.getPiece().getShape();
+		shape.applySettings(inst);
+		System.out.println("Placing: ");
 		for (int i = 0; i < shape.getLength(); i++) {
 			for (int j = 0; j < shape.getHeight(); j++) {
-				this.shape[inst.getX() + j][inst.getZ() + i] = shape.get(j, i);
+				this.shape[inst.getZ() + j][inst.getX() + i] = shape.get(j, i);
+				System.out.println((inst.getZ() + j) + "," + (inst.getX() + i) + ": " + j + "," + i + " - " + shape.get(j, i));
 			}
 		}
 		
@@ -192,7 +179,7 @@ public class Map {
 		for (int i = shape.length - 1; i >= 0; i--) {
 			System.out.print(i + ": ");
 			for (int j = 0; j < shape[0].length; j++) {
-				System.out.print(shape[i][j] ? "X" : "_");
+				System.out.print(shape[i][j] ? "X" : ".");
 			}
 			System.out.println();
 		}

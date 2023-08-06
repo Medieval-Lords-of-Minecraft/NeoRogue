@@ -1,6 +1,8 @@
 package me.neoblade298.neorogue;
 
 import java.io.File;
+import java.util.ArrayList;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -8,9 +10,11 @@ import me.filoghost.holographicdisplays.api.HolographicDisplaysAPI;
 import me.filoghost.holographicdisplays.api.internal.HolographicDisplaysAPIProvider;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neorogue.area.AreaType;
+import me.neoblade298.neorogue.map.Direction;
 import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.map.MapPiece;
 import me.neoblade298.neorogue.map.MapShape;
+import me.neoblade298.neorogue.map.RotatableCoordinates;
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
@@ -23,8 +27,13 @@ public class NeoRogue extends JavaPlugin {
 	public static HolographicDisplaysAPI holo;
 	
 	public static void main(String[] args) {
-		boolean[][] shape = { {true, false}, {false, true}, {true, false} };
-		MapShape ms = new MapShape(shape);
+		boolean[][] shape = { {true, true}, {false, true}};
+		ArrayList<String> list = new ArrayList<String>();
+		list.add("XX");
+		list.add("_X");
+		MapShape ms = new MapShape(list);
+		ms.setFlip(true, false);
+		ms.display();
 	}
 	
 	public void onEnable() {

@@ -12,9 +12,10 @@ import me.neoblade298.neorogue.area.Area;
 public class RotatableCoordinates {
 	private int x, y, z, numRotations = 0, xlen, zlen;
 	private int xOff, yOff, zOff;
+	private final Direction ogDir;
 	private Direction dir = Direction.NORTH;
 	
-	private boolean reverseX, reverseY, flipX, flipY;
+	private boolean reverseX, reverseZ, flipX, flipZ, swapAxes;
 	
 	public RotatableCoordinates(MapPiece piece, String line) {
 		String[] parsed = line.split(",");
@@ -23,24 +24,30 @@ public class RotatableCoordinates {
 		this.z = Integer.parseInt(parsed[2]);
 		this.xlen = piece.getShape().getLength() - 1;
 		this.zlen = piece.getShape().getHeight() - 1;
-		this.dir = Direction.getFromCharacter(parsed[3].charAt(0));
+		this.ogDir = Direction.getFromCharacter(parsed[3].charAt(0));
+		this.dir = ogDir;
 	}
 	
 	public RotatableCoordinates(int x, int y, int z, int xlen, int zlen) {
+		this(x, y, z, xlen, zlen, Direction.NORTH);
+	}
+	
+	public RotatableCoordinates(int x, int y, int z, int xlen, int zlen, Direction dir) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
 		this.xlen = xlen;
 		this.zlen = zlen;
-	}
-	
-	public RotatableCoordinates(int x, int y, int z, int xlen, int zlen, Direction dir) {
-		this(x, y, z, xlen, zlen);
+		this.ogDir = dir;
 		this.dir = dir;
 	}
 	
 	public RotatableCoordinates clone() {
-		return new RotatableCoordinates(x, y, z, xlen, zlen, dir);
+		return new RotatableCoordinates(x, y, z, xlen, zlen, ogDir);
+	}
+	
+	public Direction getOriginalDirection() {
+		return ogDir;
 	}
 	
 	public Direction getDirection() {
@@ -48,24 +55,41 @@ public class RotatableCoordinates {
 	}
 	
 	private void update() {
-		dir = dir.rotate(numRotations);
-		reverseY = numRotations % 3 != 0;
+		dir = ogDir.rotate(numRotations);
+		reverseZ = numRotations % 3 != 0;
 		reverseX = numRotations >= 2;
 		
-		if (flipX && flipY) {
+		if (flipX && flipZ) {
 			flipX = false;
-			flipY = false;
+			flipZ = false;
 			numRotations = (numRotations + 2) % 4;
 			update();
 			return;
 		}
+		if (flipX) {
+			reverseZ = !reverseZ;
+			dir = dir.flip(true);
+		}
+		if (flipZ) {
+			reverseX = !reverseX;
+			dir = dir.flip(false);
+		}
+		swapAxes = numRotations % 2 == 1;
+		if (swapAxes) {
+			reverseX = !reverseX;
+			reverseZ = !reverseZ;
+		}
+	}
+	
+	private int[] getCoordinates() {
+		int newX = reverseX ? (!swapAxes ? zlen : xlen) - x : x;
+		int newZ = reverseZ ? (!swapAxes ? xlen : zlen) - z : z;
 		
-		if (flipX) reverseX = !reverseX;
-		if (flipY) reverseY = !reverseY;
+		return swapAxes ? new int[] {newZ, newX} : new int[] {newX, newZ};
 	}
 	
 	public int getX() {
-		return (flipX ? xlen - x : x) + xOff;
+		return getCoordinates()[0] + xOff;
 	}
 	
 	public int getY() {
@@ -73,13 +97,13 @@ public class RotatableCoordinates {
 	}
 	
 	public int getZ() {
-		return (flipY ? zlen - z : z) + zOff;
+		return getCoordinates()[1] + zOff;
 	}
 	
 	public int getXFacing() {
 		int offset = 0;
-		if (dir == Direction.EAST) offset = -1;
-		else if (dir == Direction.WEST) offset = 1;
+		if (dir == Direction.EAST) offset = 1;
+		else if (dir == Direction.WEST) offset = -1;
 		return getX() + offset;
 	}
 	
@@ -96,9 +120,24 @@ public class RotatableCoordinates {
 		this.zOff = settings.getZ();
 		this.numRotations = settings.numRotations;
 		this.flipX = settings.flipX;
-		this.flipY = settings.flipY;
+		this.flipZ = settings.flipZ;
 		update();
 		return this;
+	}
+	
+	public void setRotations(int amount) {
+		this.numRotations = amount;
+		update();
+	}
+	
+	public void setFlipX(boolean flipX) {
+		this.flipX = flipX;
+		update();
+	}
+	
+	public void setFlipZ(boolean flipZ) {
+		this.flipZ = flipZ;
+		update();
 	}
 	
 	public Location toLocation() {
@@ -111,6 +150,6 @@ public class RotatableCoordinates {
 	}
 	
 	public String toStringFacing() {
-		return getXFacing() + "," + getY() + "," + getZFacing() + "," + dir.getCharacter();
+		return getX() + "," + getZ() + ":" + getXFacing() + "," + getY() + "," + getZFacing() + ":" + dir.getCharacter();
 	}
 }
