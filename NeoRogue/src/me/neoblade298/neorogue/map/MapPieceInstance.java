@@ -170,7 +170,17 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 	
 	public int[] calculateOffset(RotatableCoordinates available) {
 		entrance.applySettings(this);
-		return new int[] { available.getXFacing() - entrance.getX(), available.getY() - entrance.getY(), available.getZFacing() - entrance.getZ() };
+		int xOff = 0, zOff = 0;
+		switch (entrance.getDirection()) {
+		case NORTH: zOff = entrance.getZ();
+		break;
+		case SOUTH: zOff = -entrance.getZ();
+		break;
+		case EAST: xOff = entrance.getX();
+		break;
+		case WEST: xOff = -entrance.getX();
+		}
+		return new int[] { available.getXFacing() + xOff, available.getY() - entrance.getY(), available.getZFacing() + zOff };
 	}
 	
 	public int getPotential() {
