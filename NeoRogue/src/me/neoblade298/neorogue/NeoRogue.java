@@ -32,9 +32,7 @@ public class NeoRogue extends JavaPlugin {
 		list.add("XX");
 		list.add("_X");
 		MapShape ms = new MapShape(list);
-		RotatableCoordinates coords = new RotatableCoordinates(0,0,0,1,1,Direction.WEST);
-		coords.setRotations(3);
-		System.out.println(coords);
+		RotatableCoordinates coords = new RotatableCoordinates(0,0,1,2,4,Direction.EAST);
 	}
 	
 	public void onEnable() {

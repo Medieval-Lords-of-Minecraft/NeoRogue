@@ -10,7 +10,7 @@ import me.neoblade298.neorogue.area.Area;
  * Used for MapEntrances and MapSpawners, MapEntrance uses direction too
  */
 public class RotatableCoordinates {
-	private int x, y, z, numRotations = 0, xlen, zlen;
+	private int x, y, z, xp, zp, numRotations = 0, xlen, zlen;
 	private int xOff, yOff, zOff;
 	private final Direction ogDir;
 	private Direction dir = Direction.NORTH;
@@ -24,6 +24,8 @@ public class RotatableCoordinates {
 		this.z = Integer.parseInt(parsed[2]);
 		this.xlen = piece.getShape().getLength() - 1;
 		this.zlen = piece.getShape().getHeight() - 1;
+		this.xp = xlen - x;
+		this.zp = zlen - z;
 		this.ogDir = Direction.getFromCharacter(parsed[3].charAt(0));
 		this.dir = ogDir;
 	}
@@ -38,6 +40,8 @@ public class RotatableCoordinates {
 		this.z = z;
 		this.xlen = xlen;
 		this.zlen = zlen;
+		this.xp = xlen - x;
+		this.zp = zlen - z;
 		this.ogDir = dir;
 		this.dir = dir;
 	}
@@ -56,8 +60,8 @@ public class RotatableCoordinates {
 	
 	private void update() {
 		dir = ogDir.rotate(numRotations);
-		reverseZ = numRotations % 3 != 0;
-		reverseX = numRotations >= 2;
+		reverseX = numRotations % 3 != 0;
+		reverseZ = numRotations >= 2;
 		
 		if (flipX && flipZ) {
 			flipX = false;
@@ -82,10 +86,10 @@ public class RotatableCoordinates {
 	}
 	
 	private int[] getCoordinates() {
-		int newX = reverseX ? (!swapAxes ? zlen : xlen) - x : x;
-		int newZ = reverseZ ? (!swapAxes ? xlen : zlen) - z : z;
+		int newX = swapAxes ? (reverseX ? zp : z) : (reverseX ? xp : x);
+		int newZ = swapAxes ? (reverseZ ? xp : x) : (reverseZ ? zp : z);
 		
-		return swapAxes ? new int[] {newZ, newX} : new int[] {newX, newZ};
+		return new int[] {newX, newZ};
 	}
 	
 	public int getX() {
