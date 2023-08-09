@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 import java.util.TreeSet;
@@ -23,7 +24,8 @@ public class Map {
 			usedPieces = new HashMap<AreaType, LinkedList<MapPiece>>();
 	
 	private ArrayList<MapPieceInstance> pieces = new ArrayList<MapPieceInstance>();
-	private LinkedList<RotatableCoordinates> entrances = new LinkedList<RotatableCoordinates>();
+	private LinkedList<Coordinates> entrances = new LinkedList<Coordinates>();
+	private LinkedList<Coordinates> blockedEntrances = new LinkedList<Coordinates>();
 	private static final int MAP_SIZE = 12;
 	private boolean[][] shape = new boolean[MAP_SIZE][MAP_SIZE];
 	
@@ -47,7 +49,7 @@ public class Map {
 		}
 		
 		for (AreaType type : AreaType.values()) {
-			// TODO Collections.shuffle(allPieces.get(type));
+			Collections.shuffle(allPieces.get(type));
 		}
 	}
 	
@@ -64,6 +66,10 @@ public class Map {
 			// Make sure there are enough entrances to continue expanding while we still need size
 			while (map.entrances.size() < 2 && piece.getNumEntrances() < 2 && i < numPieces - 1);
 			
+			if (piece == null) {
+				Bukkit.getLogger().warning("[NeoRogue] Failed to find piece for generation. Returning map as is.");
+				return map;
+			}
 			map.place(piece);
 			
 		}
@@ -76,11 +82,10 @@ public class Map {
 		if (pieces.size() == 0) {
 			MapPieceInstance inst = piece.getInstance();
 			// Randomly rotate the piece TODO
-			/*inst.setRotations(NeoCore.gen.nextInt(4));
+			inst.setRotations(NeoCore.gen.nextInt(4));
 			int rand = NeoCore.gen.nextInt(3);
 			if (rand == 1) inst.flip(true);
-			else if (rand == 2) inst.flip(false);*/
-			inst.setRotations(1);
+			else if (rand == 2) inst.flip(false);
 			MapShape shape = inst.getPiece().getShape();
 			shape.applySettings(inst);
 			
@@ -97,12 +102,13 @@ public class Map {
 		// Standard case, find an existing entrance and try to put the piece on
 		else {
 			TreeSet<MapPieceInstance> potentialPlacements = new TreeSet<MapPieceInstance>();
-			for (RotatableCoordinates available : entrances) {
-				for (RotatableCoordinates potential : piece.getEntrances()) {
+			for (Coordinates available : entrances) {
+				for (Coordinates potential : piece.getEntrances()) {
 					for (MapPieceInstance pSettings : piece.getRotationOptions(available, potential)) {
 						piece.getShape().applySettings(pSettings);
 						int[] offset = pSettings.calculateOffset(available);
 						System.out.println("? " + pSettings.numRotations + " " + pSettings.flipX + " " + pSettings.flipZ + ": " + available.toStringFacing() + " -> " + pSettings.getEntrance());
+						System.out.println("O: " + offset[0] + " " + offset[2]);
 						if (canPlace(piece.getShape(), offset[0], offset[2])) {
 							int value = Math.abs(offset[0] - (MAP_SIZE / 2)) + Math.abs(offset[2] - (MAP_SIZE / 2));
 							pSettings.setPotential(value);
@@ -132,8 +138,10 @@ public class Map {
 	private boolean canPlace(MapShape shape, int x, int z) {
 		for (int i = 0; i < shape.getLength(); i++) {
 			for (int j = 0; j < shape.getHeight(); j++) {
-				System.out.println(">> " + (z + j) + "," + (x + i) + ", " + this.shape[x + i][z + j]);
-				if (this.shape[z + j][x + i]) return false;
+				if (x + i > MAP_SIZE || x + i < 0 || z + j > MAP_SIZE || z + j < 0) return false;
+				
+				System.out.println(">> " + (x + i) + "," + (z + j) + "; " + i + "," + j + ": " + this.shape[x + i][z + j] + " " + shape.get(i, j));
+				if (this.shape[x + i][z + j] && shape.get(i, j)) return false;
 			}
 		}
 		return true;
@@ -141,18 +149,40 @@ public class Map {
 	
 	private void place(MapPieceInstance inst) {
 		MapShape shape = inst.getPiece().getShape();
+		entrances.remove(inst.getAvailableEntrance());
 		shape.applySettings(inst);
 		System.out.println("Placing: ");
 		for (int i = 0; i < shape.getLength(); i++) {
 			for (int j = 0; j < shape.getHeight(); j++) {
-				this.shape[inst.getZ() + j][inst.getX() + i] = shape.get(j, i);
-				System.out.println((inst.getZ() + j) + "," + (inst.getX() + i) + ": " + j + "," + i + " - " + shape.get(j, i));
+				boolean b = shape.get(i, j);
+				System.out.println((inst.getX() + i) + "," + (inst.getZ() + j) + ": " + i + "," + j + " - " + shape.get(i, j));
+				
+				// Only do things if we're placing a tangible piece
+				if (b) {
+					this.shape[inst.getX() + i][inst.getZ() + j] = shape.get(i, j);
+
+					// Remove any entrances at this location, may need to save them to properly block them
+					Iterator<Coordinates> iter = entrances.iterator();
+					while (iter.hasNext()) {
+						Coordinates entrance = iter.next();
+						if (entrance.getXFacing() == inst.getX() + i && entrance.getZFacing() == inst.getZ() + j) {
+							blockedEntrances.add(entrance);
+							iter.remove();
+						}
+					}
+				}
 			}
 		}
 		
-		for (RotatableCoordinates entrance : inst.getPiece().getEntrances()) {
-			RotatableCoordinates coords = entrance.clone();
+		for (Coordinates entrance : inst.getPiece().getEntrances()) {
+			Coordinates coords = entrance.clone();
 			coords.applySettings(inst);
+			
+			 // Don't add entrance if it's already blocked
+			if (this.shape[coords.getXFacing()][coords.getZFacing()]) {
+				blockedEntrances.add(entrance);
+				continue;
+			}
 			entrances.add(coords);
 		}
 		
@@ -176,10 +206,10 @@ public class Map {
 	
 	public void display() {
 		System.out.println("   0123456789AB");
-		for (int i = shape.length - 1; i >= 0; i--) {
-			System.out.print(i + ": ");
-			for (int j = 0; j < shape[0].length; j++) {
-				System.out.print(shape[i][j] ? "X" : ".");
+		for (int z = shape[0].length - 1; z >= 0; z--) {
+			System.out.print(z + ": ");
+			for (int x = 0; x < shape.length; x++) {
+				System.out.print(shape[x][z] ? "X" : ".");
 			}
 			System.out.println();
 		}

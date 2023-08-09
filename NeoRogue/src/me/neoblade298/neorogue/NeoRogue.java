@@ -14,7 +14,7 @@ import me.neoblade298.neorogue.map.Direction;
 import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.map.MapPiece;
 import me.neoblade298.neorogue.map.MapShape;
-import me.neoblade298.neorogue.map.RotatableCoordinates;
+import me.neoblade298.neorogue.map.Coordinates;
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
@@ -32,7 +32,9 @@ public class NeoRogue extends JavaPlugin {
 		list.add("XX");
 		list.add("_X");
 		MapShape ms = new MapShape(list);
-		RotatableCoordinates coords = new RotatableCoordinates(0,0,1,2,4,Direction.EAST);
+		ms.setRotations(1);
+		ms.setFlip(true, false);
+		ms.display();
 	}
 	
 	public void onEnable() {
@@ -72,7 +74,7 @@ public class NeoRogue extends JavaPlugin {
 		//s.setInstance(new FightInstance(s));
 		//s.getInstance().start(s);
 
-		Map.generate(AreaType.LOW_DISTRICT, 2);
+		Map.generate(AreaType.LOW_DISTRICT, 4);
 		
 		/*
 		new BukkitRunnable() {

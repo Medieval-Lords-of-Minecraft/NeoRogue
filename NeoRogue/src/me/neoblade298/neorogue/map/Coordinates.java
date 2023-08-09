@@ -9,15 +9,13 @@ import me.neoblade298.neorogue.area.Area;
  * After rotating, the coordinates translate themselves to be above 0,0
  * Used for MapEntrances and MapSpawners, MapEntrance uses direction too
  */
-public class RotatableCoordinates {
-	private int x, y, z, xp, zp, numRotations = 0, xlen, zlen;
+public class Coordinates extends Rotatable {
+	private int x, y, z, xp, zp, xlen, zlen;
 	private int xOff, yOff, zOff;
 	private final Direction ogDir;
 	private Direction dir = Direction.NORTH;
 	
-	private boolean reverseX, reverseZ, flipX, flipZ, swapAxes;
-	
-	public RotatableCoordinates(MapPiece piece, String line) {
+	public Coordinates(MapPiece piece, String line) {
 		String[] parsed = line.split(",");
 		this.x = Integer.parseInt(parsed[0]);
 		this.y = Integer.parseInt(parsed[1]);
@@ -30,11 +28,11 @@ public class RotatableCoordinates {
 		this.dir = ogDir;
 	}
 	
-	public RotatableCoordinates(int x, int y, int z, int xlen, int zlen) {
+	public Coordinates(int x, int y, int z, int xlen, int zlen) {
 		this(x, y, z, xlen, zlen, Direction.NORTH);
 	}
 	
-	public RotatableCoordinates(int x, int y, int z, int xlen, int zlen, Direction dir) {
+	public Coordinates(int x, int y, int z, int xlen, int zlen, Direction dir) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -46,8 +44,8 @@ public class RotatableCoordinates {
 		this.dir = dir;
 	}
 	
-	public RotatableCoordinates clone() {
-		return new RotatableCoordinates(x, y, z, xlen, zlen, ogDir);
+	public Coordinates clone() {
+		return new Coordinates(x, y, z, xlen, zlen, ogDir);
 	}
 	
 	public Direction getOriginalDirection() {
@@ -58,30 +56,15 @@ public class RotatableCoordinates {
 		return dir;
 	}
 	
-	private void update() {
+	@Override
+	protected void update() {
+		super.update();
 		dir = ogDir.rotate(numRotations);
-		reverseX = numRotations % 3 != 0;
-		reverseZ = numRotations >= 2;
-		
-		if (flipX && flipZ) {
-			flipX = false;
-			flipZ = false;
-			numRotations = (numRotations + 2) % 4;
-			update();
-			return;
-		}
 		if (flipX) {
-			reverseZ = !reverseZ;
 			dir = dir.flip(true);
 		}
 		if (flipZ) {
-			reverseX = !reverseX;
 			dir = dir.flip(false);
-		}
-		swapAxes = numRotations % 2 == 1;
-		if (swapAxes) {
-			reverseX = !reverseX;
-			reverseZ = !reverseZ;
 		}
 	}
 	
@@ -118,30 +101,13 @@ public class RotatableCoordinates {
 		return getZ() + offset;
 	}
 	
-	public RotatableCoordinates applySettings(MapPieceInstance settings) {
+	@Override
+	public Coordinates applySettings(MapPieceInstance settings) {
 		this.xOff = settings.getX();
 		this.yOff = settings.getY();
 		this.zOff = settings.getZ();
-		this.numRotations = settings.numRotations;
-		this.flipX = settings.flipX;
-		this.flipZ = settings.flipZ;
-		update();
+		super.applySettings(settings);
 		return this;
-	}
-	
-	public void setRotations(int amount) {
-		this.numRotations = amount;
-		update();
-	}
-	
-	public void setFlipX(boolean flipX) {
-		this.flipX = flipX;
-		update();
-	}
-	
-	public void setFlipZ(boolean flipZ) {
-		this.flipZ = flipZ;
-		update();
 	}
 	
 	public Location toLocation() {

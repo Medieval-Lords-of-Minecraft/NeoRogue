@@ -15,7 +15,8 @@ import me.neoblade298.neorogue.session.fights.FightInstance;
 
 public class MapPieceInstance implements Comparable<MapPieceInstance> {
 	private MapPiece piece;
-	private RotatableCoordinates entrance;
+	private Coordinates entrance;
+	private Coordinates available;
 	protected int numRotations;
 	private int x, y, z; // In chunk offset
 	protected boolean flipX, flipZ;
@@ -31,8 +32,9 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		schematic = new ClipboardHolder(piece.clipboard);
 	}
 	
-	protected MapPieceInstance(MapPiece piece, RotatableCoordinates available, RotatableCoordinates toAttach) {
+	protected MapPieceInstance(MapPiece piece, Coordinates available, Coordinates toAttach) {
 		this(piece);
+		this.available = available.clone();
 		this.entrance = toAttach.clone();
 	}
 	
@@ -119,8 +121,7 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 			flipZ = !flipZ;
 		}
 		if (entrance != null) {
-			entrance.setFlipX(flipX);
-			entrance.setFlipZ(flipZ);
+			entrance.setFlip(flipX, flipZ);
 		}
 	}
 	
@@ -159,7 +160,7 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		return piece;
 	}
 	
-	public void rotateToFace(RotatableCoordinates existing, RotatableCoordinates toAttach) {
+	public void rotateToFace(Coordinates existing, Coordinates toAttach) {
 		int amount = (existing.getDirection().getValue() - toAttach.getOriginalDirection().getValue() + 6) % 4;
 		setRotations(amount);
 	}
@@ -168,8 +169,9 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		flip(entrance.getDirection() == Direction.EAST || entrance.getDirection() == Direction.WEST);
 	}
 	
-	public int[] calculateOffset(RotatableCoordinates available) {
+	public int[] calculateOffset(Coordinates available) {
 		entrance.applySettings(this);
+		/*
 		int xOff = 0, zOff = 0;
 		switch (entrance.getDirection()) {
 		case NORTH: zOff = entrance.getZ();
@@ -180,7 +182,8 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		break;
 		case WEST: xOff = -entrance.getX();
 		}
-		return new int[] { available.getXFacing() + xOff, available.getY() - entrance.getY(), available.getZFacing() + zOff };
+		*/
+		return new int[] { available.getXFacing() - entrance.getX(), available.getY() - entrance.getY(), available.getZFacing() - entrance.getZ() };
 	}
 	
 	public int getPotential() {
@@ -221,8 +224,12 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		}
 	}
 	
-	public RotatableCoordinates getEntrance() {
+	public Coordinates getEntrance() {
 		return entrance;
+	}
+	
+	public Coordinates getAvailableEntrance() {
+		return available;
 	}
 
 	@Override

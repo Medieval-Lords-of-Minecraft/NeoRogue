@@ -8,14 +8,14 @@ import io.lumine.mythic.bukkit.MythicBukkit;
 public class MapSpawner {
 	private MythicMob mob;
 	private int amount, radius;
-	private RotatableCoordinates coords;
+	private Coordinates coords;
 	
 	public MapSpawner(ConfigurationSection cfg, MapPiece piece) {
 		mob = MythicBukkit.inst().getMobManager().getMythicMob(cfg.getString("mob")).get();
 		amount = cfg.getInt("amount", 1);
 		radius = cfg.getInt("radius", 0);
 		String[] parsed = cfg.getString("coords").split(",");
-		coords = new RotatableCoordinates(Integer.parseInt(parsed[0]), Integer.parseInt(parsed[1]),
+		coords = new Coordinates(Integer.parseInt(parsed[0]), Integer.parseInt(parsed[1]),
 				Integer.parseInt(parsed[2]), piece.getShape().getBaseLength() * 16, piece.getShape().getBaseHeight() * 16);
 	}
 
@@ -31,7 +31,7 @@ public class MapSpawner {
 		return radius;
 	}
 	
-	public RotatableCoordinates getCoordinates() {
+	public Coordinates getCoordinates() {
 		return coords;
 	}
 }
