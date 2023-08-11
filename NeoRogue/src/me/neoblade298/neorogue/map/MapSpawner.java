@@ -16,7 +16,7 @@ public class MapSpawner {
 		radius = cfg.getInt("radius", 0);
 		String[] parsed = cfg.getString("coords").split(",");
 		coords = new Coordinates(Integer.parseInt(parsed[0]), Integer.parseInt(parsed[1]),
-				Integer.parseInt(parsed[2]), piece.getShape().getBaseLength() * 16, piece.getShape().getBaseHeight() * 16);
+				Integer.parseInt(parsed[2]), piece.getShape().getBaseLength() * 16 - 1, piece.getShape().getBaseHeight() * 16 - 1);
 	}
 
 	public MythicMob getMob() {
@@ -33,5 +33,9 @@ public class MapSpawner {
 	
 	public Coordinates getCoordinates() {
 		return coords;
+	}
+	
+	public MapSpawnerInstance instantiate(MapPieceInstance settings, int xOff, int zOff) {
+		return new MapSpawnerInstance(this, settings, xOff, zOff);
 	}
 }

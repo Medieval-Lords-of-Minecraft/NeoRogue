@@ -226,6 +226,7 @@ public class Map {
 		for (MapPieceInstance inst : pieces) {
 			inst.instantiate(fi, xOff, zOff);
 		}
+		
 	}
 	
 	private static void shufflePieces(AreaType type) {

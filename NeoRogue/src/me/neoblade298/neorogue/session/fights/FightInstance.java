@@ -27,6 +27,8 @@ import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
 import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
+import me.neoblade298.neorogue.map.Map;
+import me.neoblade298.neorogue.map.MapSpawnerInstance;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.Status;
 import me.neoblade298.neorogue.player.Trigger;
@@ -40,6 +42,8 @@ public class FightInstance implements Instance {
 	private static HashMap<UUID, BukkitTask> blockTasks = new HashMap<UUID, BukkitTask>();
 	private static HashSet<UUID> toTick = new HashSet<UUID>();
 	
+	private Map map;
+	private MapSpawnerInstance[] spawners;
 	private Session s;
 	private HashMap<String, Barrier> enemyBarriers = new HashMap<String, Barrier>();
 	
@@ -70,6 +74,11 @@ public class FightInstance implements Instance {
 	
 	public FightInstance(Session s) {
 		this.s = s;
+		map = Map.generate(s.getArea().getType(), 2);
+	}
+	
+	public void instantiate() {
+		map.instantiate(this, s.getXOff(), s.getZOff());
 	}
 	
 	// This will only ever handle basic left click

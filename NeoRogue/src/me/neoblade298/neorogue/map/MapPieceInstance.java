@@ -21,8 +21,7 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 	private int x, y, z; // In chunk offset
 	protected boolean flipX, flipZ;
 	private ClipboardHolder schematic;
-	private static final int Y_OFFSET = 64;
-	public static final int Z_FIGHT_OFFSET = 64, X_FIGHT_OFFSET = 1;
+	public static final int Z_FIGHT_OFFSET = 64, Y_OFFSET = 64, X_FIGHT_OFFSET = 1;
 	private int potential = 100;
 	private int len, hgt;
 	private int[] rotateOffset = new int[] {0, 0},
@@ -228,11 +227,12 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		int x = -((this.x * 16) + rotateOffset[0] + flipOffset[0] + xOff + X_FIGHT_OFFSET); // So that it's flush with minecraft chunks
 		int y = Y_OFFSET + this.y;
 		int z = (this.z * 16) + rotateOffset[1] + flipOffset[1] + zOff + Z_FIGHT_OFFSET;
+		
 		System.out.println("Pasted " + piece.getId() + " at " + x + " " + y + " " + z);
 		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Area.world)) {
 		    Operation operation = schematic.createPaste(editSession)
 		            .to(BlockVector3.at(x, y, z))
-		            .ignoreAirBlocks(true)
+		            .ignoreAirBlocks(false) // TODO
 		            .build();
 		    System.out.println(rotateOffset[0] + " " + rotateOffset[1]);
 		    System.out.println(flipOffset[0] + " " + flipOffset[1]);
@@ -245,6 +245,10 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 			} catch (WorldEditException e) {
 				e.printStackTrace();
 			}
+		}
+		// Instantiate spawners
+		for (MapSpawner spawner : piece.getSpawners()) {
+			spawner.instantiate(this, xOff, zOff);
 		}
 	}
 	

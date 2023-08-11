@@ -66,4 +66,12 @@ public class Session {
 	public int getNodesVisited() {
 		return nodesVisited;
 	}
+	
+	public int getXOff() {
+		return xOff;
+	}
+	
+	public int getZOff() {
+		return zOff;
+	}
 }
