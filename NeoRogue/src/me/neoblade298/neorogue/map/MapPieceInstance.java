@@ -22,14 +22,19 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 	protected boolean flipX, flipZ;
 	private ClipboardHolder schematic;
 	private static final int Y_OFFSET = 64;
-	private static final int Z_FIGHT_OFFSET = 36;
+	public static final int Z_FIGHT_OFFSET = 64, X_FIGHT_OFFSET = 1;
 	private int potential = 100;
+	private int len, hgt;
 	private int[] rotateOffset = new int[] {0, 0},
 			flipOffset = new int[] {0, 0};
 	
 	protected MapPieceInstance(MapPiece piece) {
 		this.piece = piece;
 		schematic = new ClipboardHolder(piece.clipboard);
+		
+		MapShape shape = piece.getShape();
+		len = shape.getBaseLength() * 16 - 1;
+		hgt = shape.getBaseHeight() * 16 - 1;
 	}
 	
 	protected MapPieceInstance(MapPiece piece, Coordinates available, Coordinates toAttach) {
@@ -84,26 +89,7 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 	
 	public void setRotations(int amount) {
 		numRotations = amount % 4;
-		MapShape shape = piece.getShape();
-		
-		int lenOff = (numRotations % 2 == 0 ? shape.getLength() : shape.getHeight()) * 16 - 1;
-		int heightOff = (numRotations % 2 == 0 ? shape.getHeight() : shape.getLength()) * 16 - 1;
-
 		if (entrance != null) entrance.setRotations(numRotations);
-		switch (numRotations) {
-		case 0: rotateOffset[0] = 0;
-		rotateOffset[1] = 0;
-		break;
-		case 1: rotateOffset[1] = heightOff;
-		rotateOffset[0] = 0;
-		break;
-		case 2: rotateOffset[0] = -lenOff;
-		rotateOffset[1] = heightOff;
-		break;
-		case 3: rotateOffset[0] = -lenOff;
-		rotateOffset[1] = 0;
-		break;
-		}
 	}
 	
 	public void flip(boolean xAxis) {
@@ -126,13 +112,49 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 	}
 	
 	private void updateSchematic() {
+		switch (numRotations) {
+		case 0: rotateOffset[0] = 0;
+		rotateOffset[1] = 0;
+		break;
+		case 1: rotateOffset[0] = 0;
+		rotateOffset[1] = len;
+		break;
+		case 2: rotateOffset[0] = len;
+		rotateOffset[1] = hgt;
+		break;
+		case 3: rotateOffset[0] = hgt;
+		rotateOffset[1] = 0;
+		break;
+		}
+		
 		AffineTransform transform = new AffineTransform();
 		// It is only possible for one of these to be true at a time
-		int len = piece.getShape().getLength() * 16 -1;
 		if (flipX || flipZ) {
-			flipOffset[0] = flipX ? -len - rotateOffset[0] : 0;
-			flipOffset[1] = flipZ ? len - rotateOffset[1] : 0;
-			BlockVector3 direction = BlockVector3.at(flipX ? 1 : 0, 0, flipZ ? 1 : 0);
+			if (flipX) {
+				switch (numRotations) {
+				case 0: flipOffset[1] = hgt;
+				break;
+				case 1: flipOffset[1] = -len;
+				break;
+				case 2: flipOffset[1] = -hgt;
+				break;
+				case 3: flipOffset[1] = len;
+				break;
+				}
+			}
+			else {
+				switch (numRotations) {
+				case 0: flipOffset[0] = len;
+				break;
+				case 1: flipOffset[0] = hgt;
+				break;
+				case 2: flipOffset[0] = -len;
+				break;
+				case 3: flipOffset[0] = -hgt;
+				break;
+				}
+			}
+			BlockVector3 direction = BlockVector3.at(flipZ ? 1 : 0, 0, flipX ? 1 : 0);
 			transform = transform.scale(direction.abs().multiply(-2).add(1, 1, 1).toVector3());
 			schematic.setTransform(transform);
 		}
@@ -203,16 +225,18 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		 * Z_FIGHT_OFFSET is the offset of where the fighting area is in the plot
 		 * x is negative because south is +z and right of south is -x
 		 */
-		int x = (this.x * 16) + rotateOffset[0] + flipOffset[0] + xOff;
+		int x = -((this.x * 16) + rotateOffset[0] + flipOffset[0] + xOff + X_FIGHT_OFFSET); // So that it's flush with minecraft chunks
+		int y = Y_OFFSET + this.y;
 		int z = (this.z * 16) + rotateOffset[1] + flipOffset[1] + zOff + Z_FIGHT_OFFSET;
+		System.out.println("Pasted " + piece.getId() + " at " + x + " " + y + " " + z);
 		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Area.world)) {
 		    Operation operation = schematic.createPaste(editSession)
-		            .to(BlockVector3.at(-x, Y_OFFSET + this.y, z))
+		            .to(BlockVector3.at(x, y, z))
 		            .ignoreAirBlocks(true)
 		            .build();
-		    System.out.println("===");
 		    System.out.println(rotateOffset[0] + " " + rotateOffset[1]);
 		    System.out.println(flipOffset[0] + " " + flipOffset[1]);
+		    System.out.println("===");
 		    // CuboidRegion o = new CuboidRegion(null, null);
 		    // Mask mask = new ExistingBlockMask(editSession);
 		    try {

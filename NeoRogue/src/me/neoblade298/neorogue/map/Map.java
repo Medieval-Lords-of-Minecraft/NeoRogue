@@ -11,11 +11,25 @@ import java.util.Map.Entry;
 import java.util.TreeSet;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.WorldEditException;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.function.mask.ExistingBlockMask;
+import com.sk89q.worldedit.function.mask.Mask;
+import com.sk89q.worldedit.function.operation.Operation;
+import com.sk89q.worldedit.function.operation.Operations;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.regions.CuboidRegion;
+import com.sk89q.worldedit.session.ClipboardHolder;
 
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.shared.exceptions.NeoIOException;
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.session.fights.FightInstance;
 
@@ -49,7 +63,7 @@ public class Map {
 		}
 		
 		for (AreaType type : AreaType.values()) {
-			Collections.shuffle(allPieces.get(type));
+			//Collections.shuffle(allPieces.get(type));
 		}
 	}
 	
@@ -138,7 +152,7 @@ public class Map {
 	private boolean canPlace(MapShape shape, int x, int z) {
 		for (int i = 0; i < shape.getLength(); i++) {
 			for (int j = 0; j < shape.getHeight(); j++) {
-				if (x + i > MAP_SIZE || x + i < 0 || z + j > MAP_SIZE || z + j < 0) return false;
+				if (x + i > MAP_SIZE - 1 || x + i < 0 || z + j > MAP_SIZE - 1 || z + j < 0) return false;
 				
 				System.out.println(">> " + (x + i) + "," + (z + j) + "; " + i + "," + j + ": " + this.shape[x + i][z + j] + " " + shape.get(i, j));
 				if (this.shape[x + i][z + j] && shape.get(i, j)) return false;
@@ -177,6 +191,8 @@ public class Map {
 		for (Coordinates entrance : inst.getPiece().getEntrances()) {
 			Coordinates coords = entrance.clone();
 			coords.applySettings(inst);
+			if (coords.getXFacing() > MAP_SIZE - 1 || coords.getXFacing() < 0 || coords.getZFacing() > MAP_SIZE - 1 || coords.getZFacing() < 0)
+				continue;
 			
 			 // Don't add entrance if it's already blocked
 			if (this.shape[coords.getXFacing()][coords.getZFacing()]) {
@@ -189,7 +205,24 @@ public class Map {
 		pieces.add(inst);
 	}
 	
+	public void cleanup() {
+		
+	}
+	
 	public void instantiate(FightInstance fi, int xOff, int zOff) {
+		// First clear the board
+		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Area.world)) {
+		    CuboidRegion o = new CuboidRegion(
+		    		BlockVector3.at(-xOff, 0, MapPieceInstance.Z_FIGHT_OFFSET + zOff),
+		    		BlockVector3.at(-(xOff + MAP_SIZE * 16), 128, MapPieceInstance.Z_FIGHT_OFFSET + zOff + MAP_SIZE * 16));
+		    Mask mask = new ExistingBlockMask(editSession);
+		    try {
+			    editSession.replaceBlocks(o, mask, BukkitAdapter.adapt(Material.AIR.createBlockData()));
+			} catch (WorldEditException e) {
+				e.printStackTrace();
+			}
+		}
+		
 		for (MapPieceInstance inst : pieces) {
 			inst.instantiate(fi, xOff, zOff);
 		}

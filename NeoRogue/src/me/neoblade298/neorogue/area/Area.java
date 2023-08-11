@@ -80,6 +80,10 @@ public class Area {
 	private int xOff, zOff;
 	
 	private ArrayList<Hologram> holograms = new ArrayList<Hologram>();
+	
+	public static void initialize() {
+		world = BukkitAdapter.adapt(Bukkit.getWorld(WORLD_NAME));
+	}
 
 	// Deserialize
 	public Area(AreaType type, int xOff, int zOff, UUID uuid, int saveSlot, Session s, Statement stmt) throws SQLException {

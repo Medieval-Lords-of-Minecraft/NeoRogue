@@ -1,24 +1,48 @@
 package me.neoblade298.neorogue;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.WorldEditException;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.extent.clipboard.Clipboard;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
+import com.sk89q.worldedit.function.operation.Operation;
+import com.sk89q.worldedit.function.operation.Operations;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.session.ClipboardHolder;
+
 import me.filoghost.holographicdisplays.api.HolographicDisplaysAPI;
 import me.filoghost.holographicdisplays.api.internal.HolographicDisplaysAPIProvider;
 import me.neoblade298.neocore.bukkit.NeoCore;
+import me.neoblade298.neocore.bukkit.commands.SubcommandManager;
+import me.neoblade298.neocore.shared.commands.SubcommandRunner;
+import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.area.AreaType;
+import me.neoblade298.neorogue.commands.CmdAdminDebug;
 import me.neoblade298.neorogue.map.Direction;
 import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.map.MapPiece;
+import me.neoblade298.neorogue.map.MapPieceInstance;
 import me.neoblade298.neorogue.map.MapShape;
 import me.neoblade298.neorogue.map.Coordinates;
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
 import me.neoblade298.neorogue.session.fights.FightInstance;
+import net.md_5.bungee.api.ChatColor;
 
 public class NeoRogue extends JavaPlugin {
 	private static NeoRogue inst;
@@ -42,6 +66,7 @@ public class NeoRogue extends JavaPlugin {
 		NeoCore.registerIOComponent(this, new PlayerManager(), "NeoRogue-PlayerManager");
 		Bukkit.getPluginManager().registerEvents(new SessionManager(), this);
 		initCommands();
+		Area.initialize();
 		
 		inst = this;
 
@@ -60,8 +85,8 @@ public class NeoRogue extends JavaPlugin {
 	}
 	
 	private void initCommands() {
-		// SubcommandManager mngr = new SubcommandManager("disenchant", "disenchant.use", ChatColor.RED, this);
-		// mngr.register(new CmdDisenchant("disenchant", "Disenchants the item", null, SubcommandRunner.PLAYER_ONLY));
+		SubcommandManager mngr = new SubcommandManager("nradmin", "neorogue.admin", ChatColor.DARK_RED, this);
+		mngr.register(new CmdAdminDebug("debug", "Testing", null, SubcommandRunner.BOTH));
 	}
 	
 	public static NeoRogue inst() {
@@ -74,7 +99,12 @@ public class NeoRogue extends JavaPlugin {
 		//s.setInstance(new FightInstance(s));
 		//s.getInstance().start(s);
 
-		Map.generate(AreaType.LOW_DISTRICT, 4);
+		Map map = Map.generate(AreaType.LOW_DISTRICT, 4);
+		map.instantiate(null, 0, 0);
+		LinkedList<MapPiece> pieces = Map.getPieces(AreaType.LOW_DISTRICT);
+		//MapPieceInstance inst = pieces.get(0).getInstance();
+		//inst.setRotations(1);
+		//inst.instantiate(null, 0, 0);
 		
 		/*
 		new BukkitRunnable() {
