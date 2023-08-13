@@ -7,8 +7,8 @@ import me.neoblade298.neorogue.session.fights.PlayerFightData;
 
 public abstract class HotbarCompatible extends Equipment {
 	protected double manaCost, staminaCost;
-	public HotbarCompatible(String id, boolean isUpgraded, Rarity rarity) {
-		super(id, isUpgraded, rarity);
+	public HotbarCompatible(String id, boolean isUpgraded, Rarity rarity, EquipmentClass ec) {
+		super(id, isUpgraded, rarity, ec);
 	}
 	
 	protected void addToLore(ArrayList<String> lore) {

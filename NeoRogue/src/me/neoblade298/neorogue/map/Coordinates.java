@@ -114,8 +114,10 @@ public class Coordinates extends Rotatable {
 		return this;
 	}
 	
+	// Should only be used for spawners as it turns x offset into chunk offset
+	// * 15 because xOff/zOff was already added once
 	public Location toLocation() {
-		return new Location(Bukkit.getWorld(Area.WORLD_NAME), getX(), getY(), getZ());
+		return new Location(Bukkit.getWorld(Area.WORLD_NAME), getX() + (xOff * 15), getY() - 1, getZ() + (zOff * 15));
 	}
 	
 	@Override

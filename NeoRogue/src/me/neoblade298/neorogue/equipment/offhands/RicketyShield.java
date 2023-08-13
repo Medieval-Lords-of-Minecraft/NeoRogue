@@ -5,6 +5,7 @@ import java.util.HashMap;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.Offhand;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
@@ -16,7 +17,7 @@ import me.neoblade298.neorogue.session.fights.PlayerFightData;
 public class RicketyShield extends Offhand {
 	
 	public RicketyShield(boolean isUpgraded) {
-		super("ricketyShield", isUpgraded, Rarity.COMMON);
+		super("ricketyShield", isUpgraded, Rarity.COMMON, EquipmentClass.SWORDSMAN);
 		display = "Rickety Shield";
 		item = createItem(this, Material.SHIELD, null, "When raised, creates a barrier in front of you of size &e3x3 &7"
 				+ "that intercepts projectiles. Projectiles that hit the barrier hit you but have their damage reduced by &e5&7.");

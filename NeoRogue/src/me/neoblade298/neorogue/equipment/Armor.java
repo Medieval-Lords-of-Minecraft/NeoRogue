@@ -7,8 +7,8 @@ import me.neoblade298.neocore.shared.util.SharedUtil;
 
 public abstract class Armor extends Equipment {
 
-	public Armor(String id, boolean isUpgraded, Rarity rarity) {
-		super(id, isUpgraded, rarity);
+	public Armor(String id, boolean isUpgraded, Rarity rarity, EquipmentClass ec) {
+		super(id, isUpgraded, rarity, ec);
 		// TODO Auto-generated constructor stub
 	}
 

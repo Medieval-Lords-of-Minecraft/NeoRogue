@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.Weapon;
 import me.neoblade298.neorogue.player.Trigger;
@@ -16,7 +17,7 @@ public class FencingSword extends Weapon {
 	private int shields;
 	
 	public FencingSword(boolean isUpgraded) {
-		super("fencingSword", isUpgraded, Rarity.UNCOMMON);
+		super("fencingSword", isUpgraded, Rarity.UNCOMMON, EquipmentClass.SWORDSMAN);
 		display = "Fencing Sword";
 		damage = isUpgraded ? 7 : 5;
 		type = DamageType.PIERCING;

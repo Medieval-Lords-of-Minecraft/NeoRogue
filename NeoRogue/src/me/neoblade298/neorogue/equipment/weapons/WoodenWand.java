@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.particles.ParticleUtil;
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.Weapon;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
@@ -20,7 +21,7 @@ import me.neoblade298.neorogue.session.fights.PlayerFightData;
 
 public class WoodenWand extends Weapon {
 	public WoodenWand(boolean isUpgraded) {
-		super("woodenWand", isUpgraded, Rarity.COMMON);
+		super("woodenWand", isUpgraded, Rarity.COMMON, EquipmentClass.SWORDSMAN);
 		display = "Wooden Wand";
 		damage = isUpgraded ? 10 : 7;
 		manaCost = 5;

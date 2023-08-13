@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neocore.bukkit.particles.ParticleUtil;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Ability;
+import me.neoblade298.neorogue.equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.Trigger;
@@ -20,7 +21,7 @@ import me.neoblade298.neorogue.session.fights.PlayerFightData;
 public class BattleCry extends Ability {
 	
 	public BattleCry(boolean isUpgraded) {
-		super("battleCry", isUpgraded, Rarity.COMMON);
+		super("battleCry", isUpgraded, Rarity.COMMON, EquipmentClass.SWORDSMAN);
 		display = "Battle Cry";
 		cooldown = 30;
 		staminaCost = 25;

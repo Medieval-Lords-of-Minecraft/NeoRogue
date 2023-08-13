@@ -10,6 +10,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import de.tr7zw.nbtapi.NBTItem;
+import me.neoblade298.neocore.shared.droptables.DropTable;
+import me.neoblade298.neocore.shared.droptables.Droppable;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.equipment.abilities.*;
 import me.neoblade298.neorogue.equipment.armor.*;
@@ -19,12 +21,12 @@ import me.neoblade298.neorogue.player.Trigger;
 import me.neoblade298.neorogue.session.fights.PlayerFightData;
 import net.md_5.bungee.api.ChatColor;
 
-public abstract class Equipment {
+public abstract class Equipment extends Droppable {
 	private static HashMap<String, Equipment> equipment = new HashMap<String, Equipment>();
 	private static HashMap<String, Equipment> upgraded = new HashMap<String, Equipment>();
 	
-	private static HashMap<EquipmentClass, ArrayList<Equipment>> droptables =
-			new HashMap<EquipmentClass, ArrayList<Equipment>>();
+	private static HashMap<EquipmentClass, HashMap<Integer, DropTable<Equipment>>> droptables =
+			new HashMap<EquipmentClass, HashMap<Integer, DropTable<Equipment>>>();
 	protected String id, display;
 	protected ArrayList<String> reforgeOptions = new ArrayList<String>();
 	protected boolean isUpgraded;
@@ -34,8 +36,13 @@ public abstract class Equipment {
 	
 	static {
 		for (EquipmentClass ec : EquipmentClass.values()) {
-			droptables.put(ec, new ArrayList<Equipment>());
+			HashMap<Integer, DropTable<Equipment>> tables = new HashMap<Integer, DropTable<Equipment>>();
+			for (int i = 0; i < 10; i++) {
+				tables.put(i, new DropTable<Equipment>());
+			}
+			droptables.put(ec, tables);
 		}
+		
 		for (boolean b : new boolean[] {false, true}) {
 			// Armor
 			new LeatherHelmet(b);
@@ -56,6 +63,7 @@ public abstract class Equipment {
 	}
 	
 	public Equipment(String id, boolean isUpgraded, Rarity rarity, EquipmentClass ec) {
+		super(rarity.getValue() + (isUpgraded ? 1 : 0));
 		this.id = id;
 		this.rarity = rarity;
 		this.isUpgraded = isUpgraded;
@@ -63,8 +71,6 @@ public abstract class Equipment {
 		
 		if (isUpgraded) upgraded.put(id, this);
 		else equipment.put(id, this);
-		
-		
 	}
 	
 	// Run at the start of a fight to initialize Fight Data

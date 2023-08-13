@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neocore.bukkit.particles.ParticleUtil;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Ability;
+import me.neoblade298.neorogue.equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.Trigger;
@@ -20,7 +21,7 @@ public class EmpoweredEdge extends Ability {
 	private int damage;
 	
 	public EmpoweredEdge(boolean isUpgraded) {
-		super("empoweredEdge", isUpgraded, Rarity.COMMON);
+		super("empoweredEdge", isUpgraded, Rarity.COMMON, EquipmentClass.SWORDSMAN);
 		display = "Empowered Edge";
 		cooldown = isUpgraded ? 5 : 7;
 		damage = isUpgraded ? 100 : 75;

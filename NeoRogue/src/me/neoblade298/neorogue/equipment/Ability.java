@@ -9,8 +9,8 @@ public abstract class Ability extends Usable {
 	protected int manaCost = 0;
 	protected int staminaCost = 0;
 	protected int range = 0;
-	public Ability(String id, boolean isUpgraded, Rarity rarity) {
-		super(id, isUpgraded, rarity);
+	public Ability(String id, boolean isUpgraded, Rarity rarity, EquipmentClass ec) {
+		super(id, isUpgraded, rarity, ec);
 	}
 	
 	public ItemStack createItem(Ability a, Material mat, String[] preLoreLine, String loreLine) {

@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.Weapon;
 import me.neoblade298.neorogue.player.Trigger;
@@ -16,7 +17,7 @@ public class SerratedFencingSword extends Weapon {
 	private int bleed;
 	private int shields;
 	public SerratedFencingSword(boolean isUpgraded) {
-		super("serratedFencingSword", isUpgraded, Rarity.UNCOMMON);
+		super("serratedFencingSword", isUpgraded, Rarity.UNCOMMON, EquipmentClass.SWORDSMAN);
 		display = "Serrated Fencing Sword";
 		damage = 8;
 		attackSpeed = 1;

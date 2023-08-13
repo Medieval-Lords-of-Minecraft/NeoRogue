@@ -32,6 +32,6 @@ public class CmdAdminDebug extends Subcommand {
 		inst.setRotations(Integer.parseInt(args[3]));
 		if (Boolean.parseBoolean(args[1])) inst.flip(true);
 		if (Boolean.parseBoolean(args[2])) inst.flip(false);
-		inst.instantiate(null, 32, 16);
+		inst.instantiate(null, 16, 0);
 	}
 }

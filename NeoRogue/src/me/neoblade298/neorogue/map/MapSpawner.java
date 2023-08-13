@@ -35,7 +35,7 @@ public class MapSpawner {
 		return coords;
 	}
 	
-	public MapSpawnerInstance instantiate(MapPieceInstance settings) {
-		return new MapSpawnerInstance(this, settings);
+	public MapSpawnerInstance instantiate(MapPieceInstance settings, int xOff, int zOff) {
+		return new MapSpawnerInstance(this, settings, xOff, zOff);
 	}
 }

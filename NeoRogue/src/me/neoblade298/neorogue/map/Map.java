@@ -63,7 +63,7 @@ public class Map {
 		}
 		
 		for (AreaType type : AreaType.values()) {
-			//Collections.shuffle(allPieces.get(type));
+			Collections.shuffle(allPieces.get(type));
 		}
 	}
 	
@@ -85,7 +85,6 @@ public class Map {
 				return map;
 			}
 			map.place(piece);
-			
 		}
 		
 		return map;
@@ -135,7 +134,7 @@ public class Map {
 				// If there are already plenty of options, don't try more
 				if (potentialPlacements.size() > 50) break;
 			}
-			
+
 			if (potentialPlacements.size() == 0) return false;
 
 			MapPieceInstance best = potentialPlacements.first();

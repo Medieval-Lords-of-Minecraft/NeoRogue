@@ -232,7 +232,7 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		}
 		// Instantiate spawners
 		for (MapSpawner spawner : piece.getSpawners()) {
-			spawner.instantiate(this);
+			spawner.instantiate(this, xOff, zOff);
 		}
 	}
 	

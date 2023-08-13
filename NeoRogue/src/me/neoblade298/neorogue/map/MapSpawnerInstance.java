@@ -10,18 +10,16 @@ public class MapSpawnerInstance {
 	private int amount, radius;
 	private Location loc;
 	
-	public MapSpawnerInstance(MapSpawner original, MapPieceInstance inst) {
+	public MapSpawnerInstance(MapSpawner original, MapPieceInstance inst, int xOff, int zOff) {
 		this.mob = original.getMob();
 		this.amount = original.getAmount();
 		this.radius = original.getRadius();
 		this.loc = original.getCoordinates().clone().applySettings(inst).toLocation();
-		System.out.println("Spawner : " + inst.getPiece().getId() + " " + loc);
 		
-		this.loc.add(MapPieceInstance.X_FIGHT_OFFSET + inst.getX() * 16,
-				MapPieceInstance.Y_OFFSET + inst.getY(),
-				MapPieceInstance.Z_FIGHT_OFFSET + inst.getZ() * 16);
+		this.loc.add(MapPieceInstance.X_FIGHT_OFFSET + xOff,
+				MapPieceInstance.Y_OFFSET,
+				MapPieceInstance.Z_FIGHT_OFFSET + zOff);
 		this.loc.setX(-this.loc.getX());
 		loc.getBlock().setType(Material.BLUE_WOOL);
-		System.out.println("Final location : " + loc);
 	}
 }

@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.Weapon;
 import me.neoblade298.neorogue.player.Trigger;
@@ -14,7 +15,7 @@ import me.neoblade298.neorogue.session.fights.PlayerFightData;
 public class WoodenSword extends Weapon {
 	
 	public WoodenSword(boolean isUpgraded) {
-		super("woodenSword", isUpgraded, Rarity.COMMON);
+		super("woodenSword", isUpgraded, Rarity.COMMON, EquipmentClass.SWORDSMAN);
 		display = "Wooden Sword";
 		damage = isUpgraded ? 3.5 : 4;
 		type = DamageType.SLASHING;

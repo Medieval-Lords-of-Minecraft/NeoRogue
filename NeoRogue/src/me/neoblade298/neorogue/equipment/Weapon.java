@@ -20,8 +20,8 @@ public abstract class Weapon extends HotbarCompatible {
 	protected double damage, attackSpeed;
 	protected DamageType type;
 
-	public Weapon(String id, boolean isUpgraded, Rarity rarity) {
-		super(id, isUpgraded, rarity);
+	public Weapon(String id, boolean isUpgraded, Rarity rarity, EquipmentClass ec) {
+		super(id, isUpgraded, rarity, ec);
 		// TODO Auto-generated constructor stub
 	}
 

@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.Weapon;
 import me.neoblade298.neorogue.player.Trigger;
@@ -16,7 +17,7 @@ public class Rapier extends Weapon {
 	
 	private int shields;
 	public Rapier(boolean isUpgraded) {
-		super("rapier", isUpgraded, Rarity.UNCOMMON);
+		super("rapier", isUpgraded, Rarity.UNCOMMON, EquipmentClass.SWORDSMAN);
 		display = "Rapier";
 		damage = isUpgraded ? 12 : 9;
 		type = DamageType.PIERCING;
