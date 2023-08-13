@@ -192,18 +192,6 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 	
 	public int[] calculateOffset(Coordinates available) {
 		entrance.applySettings(this);
-		/*
-		int xOff = 0, zOff = 0;
-		switch (entrance.getDirection()) {
-		case NORTH: zOff = entrance.getZ();
-		break;
-		case SOUTH: zOff = -entrance.getZ();
-		break;
-		case EAST: xOff = entrance.getX();
-		break;
-		case WEST: xOff = -entrance.getX();
-		}
-		*/
 		return new int[] { available.getXFacing() - entrance.getX(), available.getY() - entrance.getY(), available.getZFacing() - entrance.getZ() };
 	}
 	
@@ -228,15 +216,11 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		int y = Y_OFFSET + this.y;
 		int z = (this.z * 16) + rotateOffset[1] + flipOffset[1] + zOff + Z_FIGHT_OFFSET;
 		
-		System.out.println("Pasted " + piece.getId() + " at " + x + " " + y + " " + z);
 		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Area.world)) {
 		    Operation operation = schematic.createPaste(editSession)
 		            .to(BlockVector3.at(x, y, z))
-		            .ignoreAirBlocks(false) // TODO
+		            .ignoreAirBlocks(true)
 		            .build();
-		    System.out.println(rotateOffset[0] + " " + rotateOffset[1]);
-		    System.out.println(flipOffset[0] + " " + flipOffset[1]);
-		    System.out.println("===");
 		    // CuboidRegion o = new CuboidRegion(null, null);
 		    // Mask mask = new ExistingBlockMask(editSession);
 		    try {
@@ -248,7 +232,7 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		}
 		// Instantiate spawners
 		for (MapSpawner spawner : piece.getSpawners()) {
-			spawner.instantiate(this, xOff, zOff);
+			spawner.instantiate(this);
 		}
 	}
 	

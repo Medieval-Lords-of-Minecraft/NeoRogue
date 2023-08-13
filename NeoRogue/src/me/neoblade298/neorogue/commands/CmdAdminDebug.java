@@ -26,11 +26,12 @@ public class CmdAdminDebug extends Subcommand {
 
 	@Override
 	public void run(CommandSender s, String[] args) {
+		Map.load();
 		LinkedList<MapPiece> pieces = Map.getPieces(AreaType.LOW_DISTRICT);
 		MapPieceInstance inst = pieces.get(Integer.parseInt(args[0])).getInstance();
 		inst.setRotations(Integer.parseInt(args[3]));
 		if (Boolean.parseBoolean(args[1])) inst.flip(true);
 		if (Boolean.parseBoolean(args[2])) inst.flip(false);
-		inst.instantiate(null, 0, 0);
+		inst.instantiate(null, 32, 16);
 	}
 }

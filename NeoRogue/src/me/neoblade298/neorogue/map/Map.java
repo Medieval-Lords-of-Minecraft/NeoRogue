@@ -121,8 +121,6 @@ public class Map {
 					for (MapPieceInstance pSettings : piece.getRotationOptions(available, potential)) {
 						piece.getShape().applySettings(pSettings);
 						int[] offset = pSettings.calculateOffset(available);
-						System.out.println("? " + pSettings.numRotations + " " + pSettings.flipX + " " + pSettings.flipZ + ": " + available.toStringFacing() + " -> " + pSettings.getEntrance());
-						System.out.println("O: " + offset[0] + " " + offset[2]);
 						if (canPlace(piece.getShape(), offset[0], offset[2])) {
 							int value = Math.abs(offset[0] - (MAP_SIZE / 2)) + Math.abs(offset[2] - (MAP_SIZE / 2));
 							pSettings.setPotential(value);
@@ -130,7 +128,6 @@ public class Map {
 							pSettings.setX(offset[0]);
 							pSettings.setY(offset[1]);
 							pSettings.setZ(offset[2]);
-							System.out.println("! " + value);
 						}
 					}
 				}
@@ -143,9 +140,9 @@ public class Map {
 
 			MapPieceInstance best = potentialPlacements.first();
 			System.out.println("Placing 2: " + piece.getId() + " with settings: " + best.numRotations + " " + best.flipX + " " + best.flipZ);
+			System.out.println("Offset: " + best.getX() + " " + best.getY() + " " + best.getZ());
 			place(best);
 		}
-		display();
 		return true;
 	}
 	
@@ -154,7 +151,6 @@ public class Map {
 			for (int j = 0; j < shape.getHeight(); j++) {
 				if (x + i > MAP_SIZE - 1 || x + i < 0 || z + j > MAP_SIZE - 1 || z + j < 0) return false;
 				
-				System.out.println(">> " + (x + i) + "," + (z + j) + "; " + i + "," + j + ": " + this.shape[x + i][z + j] + " " + shape.get(i, j));
 				if (this.shape[x + i][z + j] && shape.get(i, j)) return false;
 			}
 		}
@@ -165,11 +161,9 @@ public class Map {
 		MapShape shape = inst.getPiece().getShape();
 		entrances.remove(inst.getAvailableEntrance());
 		shape.applySettings(inst);
-		System.out.println("Placing: ");
 		for (int i = 0; i < shape.getLength(); i++) {
 			for (int j = 0; j < shape.getHeight(); j++) {
 				boolean b = shape.get(i, j);
-				System.out.println((inst.getX() + i) + "," + (inst.getZ() + j) + ": " + i + "," + j + " - " + shape.get(i, j));
 				
 				// Only do things if we're placing a tangible piece
 				if (b) {

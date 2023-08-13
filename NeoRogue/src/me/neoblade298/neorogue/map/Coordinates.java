@@ -80,7 +80,7 @@ public class Coordinates extends Rotatable {
 	}
 	
 	public int getY() {
-		return y;
+		return y + yOff;
 	}
 	
 	public int getZ() {
@@ -99,6 +99,10 @@ public class Coordinates extends Rotatable {
 		if (dir == Direction.NORTH) offset = 1;
 		else if (dir == Direction.SOUTH) offset = -1;
 		return getZ() + offset;
+	}
+	
+	public void setY(int y) {
+		this.y = y;
 	}
 	
 	@Override

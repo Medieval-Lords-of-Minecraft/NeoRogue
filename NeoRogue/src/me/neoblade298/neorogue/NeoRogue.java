@@ -99,8 +99,8 @@ public class NeoRogue extends JavaPlugin {
 		//s.setInstance(new FightInstance(s));
 		//s.getInstance().start(s);
 
-		//Map map = Map.generate(AreaType.LOW_DISTRICT, 4);
-		//map.instantiate(null, 0, 0);
+		Map map = Map.generate(AreaType.LOW_DISTRICT, 2);
+		map.instantiate(null, 0, 0);
 		
 		/*
 		new BukkitRunnable() {
