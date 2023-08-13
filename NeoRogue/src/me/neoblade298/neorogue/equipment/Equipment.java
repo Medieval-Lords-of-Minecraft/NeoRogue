@@ -22,14 +22,20 @@ import net.md_5.bungee.api.ChatColor;
 public abstract class Equipment {
 	private static HashMap<String, Equipment> equipment = new HashMap<String, Equipment>();
 	private static HashMap<String, Equipment> upgraded = new HashMap<String, Equipment>();
+	
+	private static HashMap<EquipmentClass, ArrayList<Equipment>> droptables =
+			new HashMap<EquipmentClass, ArrayList<Equipment>>();
 	protected String id, display;
 	protected ArrayList<String> reforgeOptions = new ArrayList<String>();
 	protected boolean isUpgraded;
 	protected ItemStack item;
 	protected Rarity rarity;
+	protected EquipmentClass ec;
 	
 	static {
-		// Reforge options must be added AFTER their base option
+		for (EquipmentClass ec : EquipmentClass.values()) {
+			droptables.put(ec, new ArrayList<Equipment>());
+		}
 		for (boolean b : new boolean[] {false, true}) {
 			// Armor
 			new LeatherHelmet(b);
@@ -49,13 +55,16 @@ public abstract class Equipment {
 		}
 	}
 	
-	public Equipment(String id, boolean isUpgraded, Rarity rarity) {
+	public Equipment(String id, boolean isUpgraded, Rarity rarity, EquipmentClass ec) {
 		this.id = id;
 		this.rarity = rarity;
 		this.isUpgraded = isUpgraded;
+		this.ec = ec;
 		
 		if (isUpgraded) upgraded.put(id, this);
 		else equipment.put(id, this);
+		
+		
 	}
 	
 	// Run at the start of a fight to initialize Fight Data
@@ -141,6 +150,14 @@ public abstract class Equipment {
 	
 	public ArrayList<String> getReforgeOptions() {
 		return reforgeOptions;
+	}
+	
+	public Equipment getUnupgraded() {
+		return equipment.get(id);
+	}
+	
+	public Equipment getUpgraded() {
+		return upgraded.get(id);
 	}
 	
 	@Override
