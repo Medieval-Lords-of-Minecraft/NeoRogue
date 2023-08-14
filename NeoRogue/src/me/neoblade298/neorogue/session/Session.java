@@ -21,8 +21,9 @@ public class Session {
 	private Node curr;
 	private SessionStatistics stats;
 	private int xOff, zOff, nodesVisited;
+	private Plot plot;
 	
-	public Session(Player p, Plot plot) {
+	public Session(Player p, Plot plot, String lobby) {
 		this.xOff = plot.getXOffset();
 		this.zOff = plot.getZOffset();
 		host = p.getUniqueId();
@@ -32,8 +33,9 @@ public class Session {
 		area.generate();
 		// Strictly Debug
 		area.update(area.getNodes()[1][2]);
+		this.plot = plot;
 		
-		this.inst = new LobbyInstance();
+		this.inst = new LobbyInstance(lobby, host, this);
 	}
 	
 	public HashMap<UUID, PlayerSessionData> getParty() {
@@ -77,5 +79,9 @@ public class Session {
 	
 	public int getZOff() {
 		return zOff;
+	}
+	
+	public Plot getPlot() {
+		return plot;
 	}
 }

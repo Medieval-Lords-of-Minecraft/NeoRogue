@@ -57,7 +57,7 @@ public class MapShape extends Rotatable {
 	 */
 	@Override
 	public void setRotations(int amount) {
-		super.setRotations(4 - (amount % 4));
+		super.setRotations((4 - amount) % 4);
 	}
 	
 	@Override

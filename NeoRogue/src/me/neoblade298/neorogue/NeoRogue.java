@@ -31,7 +31,7 @@ import me.neoblade298.neocore.bukkit.commands.SubcommandManager;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
 import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.area.AreaType;
-import me.neoblade298.neorogue.commands.CmdAdminDebug;
+import me.neoblade298.neorogue.commands.*;
 import me.neoblade298.neorogue.map.Direction;
 import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.map.MapPiece;
@@ -51,13 +51,12 @@ public class NeoRogue extends JavaPlugin {
 	public static HolographicDisplaysAPI holo;
 	
 	public static void main(String[] args) {
-		boolean[][] shape = { {true, true}, {false, true}};
 		ArrayList<String> list = new ArrayList<String>();
+		list.add("X_");
 		list.add("XX");
-		list.add("_X");
 		MapShape ms = new MapShape(list);
-		ms.setRotations(1);
-		ms.setFlip(true, false);
+		ms.setRotations(0);
+		ms.setFlip(false, false);
 		ms.display();
 	}
 	
@@ -85,7 +84,10 @@ public class NeoRogue extends JavaPlugin {
 	}
 	
 	private void initCommands() {
-		SubcommandManager mngr = new SubcommandManager("nradmin", "neorogue.admin", ChatColor.DARK_RED, this);
+		SubcommandManager mngr = new SubcommandManager("nradmin", "neorogue.general", ChatColor.DARK_RED, this);
+		mngr.register(new CmdCreate("create", "Create a new party", null, SubcommandRunner.BOTH));
+		
+		mngr = new SubcommandManager("nradmin", "neorogue.admin", ChatColor.DARK_RED, this);
 		mngr.register(new CmdAdminDebug("debug", "Testing", null, SubcommandRunner.BOTH));
 	}
 	
@@ -99,22 +101,7 @@ public class NeoRogue extends JavaPlugin {
 		//s.setInstance(new FightInstance(s));
 		//s.getInstance().start(s);
 
-		Map map = Map.generate(AreaType.LOW_DISTRICT, 4);
+		Map map = Map.generate(AreaType.LOW_DISTRICT, 8);
 		map.instantiate(null, 0, 0);
-		
-		/*
-		new BukkitRunnable() {
-			int count = 0; 
-			public void run() {
-				count++;
-				if (count > 20) {
-					this.cancel();
-				}
-				if (p == null) return;
-
-				// area.tickParticles(p, area.getNodes()[1][2]);
-			}
-		}.runTaskTimer(this, 0L, 20L);
-		*/
 	}
 }

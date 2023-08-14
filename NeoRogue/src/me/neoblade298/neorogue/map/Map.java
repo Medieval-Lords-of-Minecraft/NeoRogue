@@ -76,6 +76,7 @@ public class Map {
 			do {
 				if (pieces.size() == 0) shufflePieces(type);
 				piece = pieces.poll();
+				usedPieces.get(type).add(piece);
 			}
 			// Make sure there are enough entrances to continue expanding while we still need size
 			while (map.entrances.size() < 2 && piece.getNumEntrances() < 2 && i < numPieces - 1);
@@ -85,6 +86,7 @@ public class Map {
 				return map;
 			}
 			map.place(piece);
+			map.display();
 		}
 		
 		return map;
@@ -160,6 +162,7 @@ public class Map {
 		MapShape shape = inst.getPiece().getShape();
 		entrances.remove(inst.getAvailableEntrance());
 		shape.applySettings(inst);
+		shape.display();
 		for (int i = 0; i < shape.getLength(); i++) {
 			for (int j = 0; j < shape.getHeight(); j++) {
 				boolean b = shape.get(i, j);

@@ -21,9 +21,10 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
 import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
@@ -35,9 +36,9 @@ import me.neoblade298.neorogue.session.fights.*;
 
 public class SessionManager implements Listener {
 	private static HashMap<UUID, Session> sessions = new HashMap<UUID, Session>();
-	private static HashMap<String, Session> sessionPlots = new HashMap<String, Session>();
+	private static HashMap<Plot, Session> sessionPlots = new HashMap<Plot, Session>();
 	
-	public static Session createSession(Player p) {
+	public static Session createSession(Player p, String name) {
 		// Find an available plot
 		Plot plot = null;
 		boolean found = false;
@@ -45,7 +46,7 @@ public class SessionManager implements Listener {
 		for (int x = 0; x < 6; x++) {
 			for (int z = 0; z < 100; z++) {
 				plot = new Plot(x,z);
-				if (!sessionPlots.containsKey(plot.toString())) {
+				if (!sessionPlots.containsKey(plot)) {
 					found = true;
 					break;
 				}
@@ -56,14 +57,29 @@ public class SessionManager implements Listener {
 		}
 		
 		// Create session on plot
-		Session s = new Session(p, plot);
+		Session s = new Session(p, plot, name);
 		sessions.put(p.getUniqueId(), s);
-		sessionPlots.put(plot.toString(), s);
+		sessionPlots.put(plot, s);
 		return s;
 	}
 	
+	public static void addToSession(UUID uuid, Session s) {
+		sessions.put(uuid, s);
+	}
+	
+	public static void removeFromSession(UUID uuid) {
+		sessions.remove(uuid);
+	}
+	
+	public static void removeSession(Session s) {
+		for (UUID uuid : s.getParty().keySet()) {
+			sessions.remove(uuid);
+		}
+		sessionPlots.remove(s.getPlot());
+	}
+	
 	public static Session getSession(Plot p) {
-		return sessionPlots.get(p.toString());
+		return sessionPlots.get(p);
 	}
 	
 	public static Session getSession(UUID uuid) {
@@ -210,6 +226,27 @@ public class SessionManager implements Listener {
 	public void onHungerRegen(EntityRegainHealthEvent e) {
 		if (e.getRegainReason() == RegainReason.SATIATED) {
 			e.setCancelled(true);
+		}
+	}
+	
+	@EventHandler
+	public void onKick(PlayerKickEvent e) {
+		handleLeave(e.getPlayer());
+	}
+	
+	@EventHandler
+	public void onLeave(PlayerQuitEvent e) {
+		handleLeave(e.getPlayer());
+	}
+	
+	private void handleLeave(Player p) {
+		if (sessions.containsKey(p.getUniqueId())) {
+			Session s = sessions.get(p.getUniqueId());
+			
+			if (s.getInstance() instanceof LobbyInstance) {
+				LobbyInstance li = (LobbyInstance) s.getInstance();
+				li.leavePlayer(p);
+			}
 		}
 	}
 }
