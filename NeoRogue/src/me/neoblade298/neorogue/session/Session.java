@@ -32,6 +32,8 @@ public class Session {
 		area.generate();
 		// Strictly Debug
 		area.update(area.getNodes()[1][2]);
+		
+		this.inst = new LobbyInstance();
 	}
 	
 	public HashMap<UUID, PlayerSessionData> getParty() {
@@ -43,7 +45,9 @@ public class Session {
 	}
 	
 	public void setInstance(Instance inst) {
+		this.inst.cleanup();
 		this.inst = inst;
+		inst.start(this);
 	}
 	
 	public PlayerSessionData getData(UUID uuid) {

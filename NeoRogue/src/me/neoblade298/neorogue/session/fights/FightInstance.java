@@ -355,6 +355,7 @@ public class FightInstance implements Instance {
 		userData.put(uuid, fd);
 	}
 	
+	@Override
 	public void cleanup() {
 		for (UUID uuid : s.getParty().keySet()) {
 			userData.remove(uuid).cleanup();

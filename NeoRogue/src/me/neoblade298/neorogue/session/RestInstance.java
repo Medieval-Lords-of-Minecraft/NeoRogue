@@ -8,4 +8,10 @@ public class RestInstance implements Instance {
 		
 	}
 
+	@Override
+	public void cleanup() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

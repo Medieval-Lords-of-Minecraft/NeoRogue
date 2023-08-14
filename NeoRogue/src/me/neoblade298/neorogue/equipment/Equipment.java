@@ -21,7 +21,7 @@ import me.neoblade298.neorogue.player.Trigger;
 import me.neoblade298.neorogue.session.fights.PlayerFightData;
 import net.md_5.bungee.api.ChatColor;
 
-public abstract class Equipment extends Droppable {
+public abstract class Equipment {
 	private static HashMap<String, Equipment> equipment = new HashMap<String, Equipment>();
 	private static HashMap<String, Equipment> upgraded = new HashMap<String, Equipment>();
 	
@@ -63,7 +63,7 @@ public abstract class Equipment extends Droppable {
 	}
 	
 	public Equipment(String id, boolean isUpgraded, Rarity rarity, EquipmentClass ec) {
-		super(rarity.getValue() + (isUpgraded ? 1 : 0));
+		int value = rarity.getValue() + (isUpgraded ? 1 : 0);
 		this.id = id;
 		this.rarity = rarity;
 		this.isUpgraded = isUpgraded;
@@ -71,6 +71,14 @@ public abstract class Equipment extends Droppable {
 		
 		if (isUpgraded) upgraded.put(id, this);
 		else equipment.put(id, this);
+		
+		if (value >= 2) {
+			droptables.get(ec).get(value - 2).add(this, 1); // Rare drop for the value
+		}
+		if (value >= 1) {
+			droptables.get(ec).get(value - 1).add(this, 2); // Uncommon drop for the value
+		}
+		droptables.get(ec).get(value).add(this, 4);
 	}
 	
 	// Run at the start of a fight to initialize Fight Data
