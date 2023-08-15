@@ -111,7 +111,6 @@ public class Map {
 			inst.setX(x);
 			inst.setY(0);
 			inst.setZ(z);
-			System.out.println("Placing 1: " + piece.getId() + " with settings: " + inst.getNumRotations() + " " + inst.flipX + " " + inst.flipZ);
 			place(inst);
 		}
 		// Standard case, find an existing entrance and try to put the piece on
@@ -140,8 +139,6 @@ public class Map {
 			if (potentialPlacements.size() == 0) return false;
 
 			MapPieceInstance best = potentialPlacements.first();
-			System.out.println("Placing 2: " + piece.getId() + " with settings: " + best.numRotations + " " + best.flipX + " " + best.flipZ);
-			System.out.println("Offset: " + best.getX() + " " + best.getY() + " " + best.getZ());
 			place(best);
 		}
 		return true;

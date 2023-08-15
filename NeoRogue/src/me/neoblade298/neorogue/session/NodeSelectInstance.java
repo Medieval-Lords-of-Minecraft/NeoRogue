@@ -8,21 +8,21 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.Area;
 
 public class NodeSelectInstance implements Instance {
+	private Session s;
 	private BukkitTask task;
+	
+	public NodeSelectInstance(Session s) {
+		this.s = s;
+	}
 
 	@Override
 	public void start(Session s) {
+		Area area = s.getArea();
+		area.update(s.getNode());
 		task = new BukkitRunnable() {
-			Area area = s.getArea();
-			int count = 0; 
 			public void run() {
-				count++;
-				if (count > 20) {
-					this.cancel();
-				}
-
 				for (Player p : s.getOnlinePlayers()) {
-					area.tickParticles(p, area.getNodes()[1][2]);
+					area.tickParticles(p, s.getNode());
 				}
 			}
 		}.runTaskTimer(NeoRogue.inst(), 0L, 20L);

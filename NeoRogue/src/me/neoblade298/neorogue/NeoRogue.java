@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -50,6 +51,8 @@ public class NeoRogue extends JavaPlugin {
 	public static File SCHEMATIC_FOLDER = new File("/home/MLMC/DevServers/ServerDev/plugins/WorldEdit/schematics");
 	public static HolographicDisplaysAPI holo;
 	
+	public static Location spawn;
+	
 	public static void main(String[] args) {
 		ArrayList<String> list = new ArrayList<String>();
 		list.add("X_");
@@ -66,6 +69,9 @@ public class NeoRogue extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new SessionManager(), this);
 		initCommands();
 		Area.initialize();
+		
+		// Will need to add multiverse dependency is the world isn't first loaded
+		spawn = new Location(Bukkit.getWorld(Area.WORLD_NAME), -250, 65, -250);
 		
 		inst = this;
 
@@ -84,8 +90,12 @@ public class NeoRogue extends JavaPlugin {
 	}
 	
 	private void initCommands() {
-		SubcommandManager mngr = new SubcommandManager("nradmin", "neorogue.general", ChatColor.DARK_RED, this);
+		SubcommandManager mngr = new SubcommandManager("nr", "neorogue.general", ChatColor.DARK_RED, this);
 		mngr.register(new CmdCreate("create", "Create a new party", null, SubcommandRunner.BOTH));
+		mngr.register(new CmdInvite("invite", "Invite a player to your party", null, SubcommandRunner.BOTH));
+		mngr.register(new CmdLeave("leave", "Leave your session", null, SubcommandRunner.BOTH));
+		mngr.register(new CmdKick("kick", "Kick a player from your party", null, SubcommandRunner.BOTH));
+		mngr.register(new CmdStart("start", "Start the game with your party", null, SubcommandRunner.BOTH));
 		
 		mngr = new SubcommandManager("nradmin", "neorogue.admin", ChatColor.DARK_RED, this);
 		mngr.register(new CmdAdminDebug("debug", "Testing", null, SubcommandRunner.BOTH));

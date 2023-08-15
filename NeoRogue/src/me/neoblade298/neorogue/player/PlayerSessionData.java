@@ -18,6 +18,7 @@ import net.md_5.bungee.api.ChatColor;
 
 public class PlayerSessionData {
 	private PlayerData data;
+	private PlayerClass pc;
 	private double maxHealth, maxMana, maxStamina, health, manaRegen, staminaRegen;
 	private HotbarCompatible[] hotbar = new HotbarCompatible[9];
 	private Armor[] armors = new Armor[3];
@@ -28,7 +29,7 @@ public class PlayerSessionData {
 	private Usable[] otherBinds = new Usable[8];
 	private int abilitiesEquipped = 0, maxAbilities = 2, maxStorage = 9;
 	
-	public PlayerSessionData(UUID uuid) {
+	public PlayerSessionData(UUID uuid, PlayerClass pc) {
 		data = PlayerManager.getPlayerData(uuid);
 		maxHealth = 100;
 		maxMana = 100;
@@ -36,8 +37,14 @@ public class PlayerSessionData {
 		manaRegen = 2;
 		staminaRegen = 2;
 		health = maxHealth;
+		this.pc = pc;
 		
 		// Need to give player a weapon at the start
+		switch (pc) {
+		case SWORDSMAN: hotbar[0] = (HotbarCompatible) Equipment.getEquipment("woodenSword", false);
+		hotbar[1] = (HotbarCompatible) Equipment.getEquipment("empoweredEdge", true);
+		break;
+		}
 		
 		// Strictly debug purposes
 		hotbar[0] = (HotbarCompatible) Equipment.getEquipment("woodenWand", true);

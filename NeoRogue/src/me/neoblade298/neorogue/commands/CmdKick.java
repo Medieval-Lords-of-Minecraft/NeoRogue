@@ -30,6 +30,7 @@ public class CmdKick extends Subcommand {
 		Instance inst = sess.getInstance();
 		if (!(inst instanceof LobbyInstance)) {
 			Util.msg(s, "&cYou can't invite anyone at this time!");
+			return;
 		}
 		
 		LobbyInstance li = (LobbyInstance) inst;

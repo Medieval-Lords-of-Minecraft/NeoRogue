@@ -11,11 +11,10 @@ import me.neoblade298.neorogue.session.LobbyInstance;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
 
-public class CmdSetHost extends Subcommand {
+public class CmdInfo extends Subcommand {
 
-	public CmdSetHost(String key, String desc, String perm, SubcommandRunner runner) {
+	public CmdInfo(String key, String desc, String perm, SubcommandRunner runner) {
 		super(key, desc, perm, runner);
-		args.add(new Arg("username"));
 	}
 
 	@Override
@@ -29,10 +28,11 @@ public class CmdSetHost extends Subcommand {
 		
 		Instance inst = sess.getInstance();
 		if (!(inst instanceof LobbyInstance)) {
-			Util.msg(s, "&cYou can't do this at this time!");
+			Util.msg(s, "&cYou're not in a lobby!");
+			return;
 		}
 		
 		LobbyInstance li = (LobbyInstance) inst;
-		// TODO
+		li.displayInfo(p);
 	}
 }

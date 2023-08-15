@@ -11,11 +11,10 @@ import me.neoblade298.neorogue.session.LobbyInstance;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
 
-public class CmdInvite extends Subcommand {
+public class CmdStart extends Subcommand {
 
-	public CmdInvite(String key, String desc, String perm, SubcommandRunner runner) {
+	public CmdStart(String key, String desc, String perm, SubcommandRunner runner) {
 		super(key, desc, perm, runner);
-		args.add(new Arg("username"));
 	}
 
 	@Override
@@ -29,11 +28,11 @@ public class CmdInvite extends Subcommand {
 		
 		Instance inst = sess.getInstance();
 		if (!(inst instanceof LobbyInstance)) {
-			Util.msg(s, "&cYou can't invite anyone at this time!");
+			Util.msg(s, "&cYou can't do this at this time!");
 			return;
 		}
 		
 		LobbyInstance li = (LobbyInstance) inst;
-		li.invitePlayer(p, args[0]);
+		li.startGame(p);
 	}
 }

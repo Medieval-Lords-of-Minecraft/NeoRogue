@@ -25,6 +25,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
 import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
+import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.map.Map;
@@ -74,11 +75,15 @@ public class FightInstance implements Instance {
 	
 	public FightInstance(Session s) {
 		this.s = s;
-		map = Map.generate(s.getArea().getType(), 2);
+		map = Map.generate(s.getArea().getType(), 3 + NeoCore.gen.nextInt(s.getNodesVisited() / 5));
 	}
 	
 	public void instantiate() {
 		map.instantiate(this, s.getXOff(), s.getZOff());
+	}
+	
+	public Map getMap() {
+		return map;
 	}
 	
 	// This will only ever handle basic left click

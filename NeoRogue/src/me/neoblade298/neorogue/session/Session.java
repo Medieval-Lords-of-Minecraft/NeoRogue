@@ -2,14 +2,17 @@ package me.neoblade298.neorogue.session;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.area.Node;
+import me.neoblade298.neorogue.player.PlayerClass;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 
 public class Session {
@@ -27,15 +30,20 @@ public class Session {
 		this.xOff = plot.getXOffset();
 		this.zOff = plot.getZOffset();
 		host = p.getUniqueId();
-		party.put(p.getUniqueId(), new PlayerSessionData(p.getUniqueId()));
-		
-		area = new Area(AreaType.LOW_DISTRICT, xOff, zOff, this);
-		area.generate();
-		// Strictly Debug
-		area.update(area.getNodes()[1][2]);
 		this.plot = plot;
-		
-		this.inst = new LobbyInstance(lobby, host, this);
+		this.inst = new LobbyInstance(lobby, p, this);
+	}
+	
+	public void addPlayers(HashMap<UUID, PlayerClass> players) {
+		for (Entry<UUID, PlayerClass> ent : players.entrySet()) {
+			party.put(ent.getKey(), new PlayerSessionData(ent.getKey(), ent.getValue()));
+		}
+	}
+
+	public void broadcast(String msg) {
+		for (Player p : getOnlinePlayers()) {
+			Util.msgRaw(p, msg);
+		}
 	}
 	
 	public HashMap<UUID, PlayerSessionData> getParty() {
@@ -83,5 +91,18 @@ public class Session {
 	
 	public Plot getPlot() {
 		return plot;
+	}
+	
+	public void generateArea(AreaType type) {
+		this.area = new Area(type, xOff, zOff, this);
+		area.instantiate();
+	}
+	
+	public Node getNode() {
+		return curr;
+	}
+	
+	public void setNode(Node node) {
+		this.curr = node;
 	}
 }

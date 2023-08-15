@@ -35,32 +35,26 @@ import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
-import com.sk89q.worldedit.function.mask.ExistingBlockMask;
-import com.sk89q.worldedit.function.mask.Mask;
 import com.sk89q.worldedit.function.operation.Operation;
 import com.sk89q.worldedit.function.operation.Operations;
-import com.sk89q.worldedit.function.pattern.Pattern;
 import com.sk89q.worldedit.math.BlockVector3;
-import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldedit.world.World;
-import com.sk89q.worldedit.world.block.BaseBlock;
-import com.sk89q.worldedit.world.block.BlockState;
-import com.sk89q.worldedit.world.block.BlockType;
-import com.sk89q.worldedit.world.block.BlockTypes;
-
 import me.filoghost.holographicdisplays.api.hologram.Hologram;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.particles.ParticleUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.fights.FightInstance;
 
 public class Area {
 	private AreaType type;
 	private Node[][] nodes = new Node[MAX_POSITIONS][MAX_LANES];
+	private FightInstance[] fights;
 	private Session s;
 	public static World world;
-
+	
+	private static Clipboard clipboard;
 	private static final int MIN_MINIBOSSES = 2;
 	private static final int MIN_SHOPS = 3;
 	private static final int MAX_LANES = 5;
@@ -69,9 +63,13 @@ public class Area {
 	private static final double STRAIGHT_PATH_CHANCE = 0.7;
 	private static final double DOUBLE_PATH_CHANCE = 0.6;
 	public static final String WORLD_NAME = "Dev";
-	private static final int EDGE_PADDING = 6, NODE_DIST_BETWEEN = 4;
+	private static final int X_EDGE_PADDING = 13, Z_EDGE_PADDING = 11, NODE_DIST_BETWEEN = 4;
 	
-	private static final int NODE_Y = 66;
+	private static final int Z_OFFSET = 10;
+	private static final int NODE_Y = 64;
+	private static Location teleportBase;
+	
+	private Location teleport;
 	
 	// schematics
 	private static String NODE_SELECT = "nodeselect.schem";
@@ -83,14 +81,34 @@ public class Area {
 	
 	public static void initialize() {
 		world = BukkitAdapter.adapt(Bukkit.getWorld(WORLD_NAME));
+
+		// Load the node select schematic
+		File file = new File(NeoRogue.SCHEMATIC_FOLDER, NODE_SELECT);
+		ClipboardFormat format = ClipboardFormats.findByFile(file);
+		try (ClipboardReader reader = format.getReader(new FileInputStream(file))) {
+			clipboard = reader.read();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		teleportBase = new Location(Bukkit.getWorld(WORLD_NAME), -20.5, 0, 6.5);
+	}
+	
+	public Area(AreaType type, int xOff, int zOff, Session s) {
+		this.type = type;
+		this.xOff = xOff;
+		this.zOff = zOff + Z_OFFSET;
+		this.teleport = teleportBase.clone().add(-this.xOff, 64, this.zOff);
+		
+		generateNodes();
 	}
 
 	// Deserialize
 	public Area(AreaType type, int xOff, int zOff, UUID uuid, int saveSlot, Session s, Statement stmt) throws SQLException {
-		this.type = type;
-		this.xOff = xOff;
-		this.zOff = zOff;
-
+		this(type, xOff, zOff, s);
+		
 		ResultSet rs = stmt
 				.executeQuery("SELECT * FROM neorogue_nodes WHERE uuid = '" + uuid + "' AND slot = " + saveSlot + ";");
 		// First load the nodes themselves
@@ -119,13 +137,8 @@ public class Area {
 			}
 		}
 	}
-
-	// Create from scratch
-	public Area(AreaType type, int xOff, int zOff, Session s) {
-		this.type = type;
-		this.xOff = xOff;
-		this.zOff = zOff;
-
+	
+	private void generateNodes() {
 		// Static nodes
 		nodes[0][CENTER_LANE] = new Node(NodeType.START, 0, CENTER_LANE);
 		nodes[1][CENTER_LANE - 2] = generateNode(true, 1, CENTER_LANE - 2);
@@ -235,7 +248,7 @@ public class Area {
 		 */
 		double rand = NeoCore.gen.nextDouble();
 
-		rand -= 1.35; // Set to 0.35 after debug
+		rand -= 0.35;
 		if (rand < 0) return new Node(NodeType.FIGHT, pos, lane);
 		rand -= 0.05;
 		if (rand < 0) return new Node(NodeType.REST, pos, lane);
@@ -281,32 +294,15 @@ public class Area {
 		}
 	}
 
-	public void generate() {
-		// Paste the schematic
-		Clipboard clipboard = null;
-
-		File file = new File(NeoRogue.SCHEMATIC_FOLDER, NODE_SELECT);
-		ClipboardFormat format = ClipboardFormats.findByFile(file);
-		try (ClipboardReader reader = format.getReader(new FileInputStream(file))) {
-			clipboard = reader.read();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		if (world == null) world = BukkitAdapter.adapt(Bukkit.getWorld(WORLD_NAME));
+	public void instantiate() {
 		try (EditSession editSession = WorldEdit.getInstance().newEditSession(world)) {
 		    Operation operation = new ClipboardHolder(clipboard)
 		            .createPaste(editSession)
 		            .to(BlockVector3.at(xOff, 64, zOff))
-		            .ignoreAirBlocks(true)
+		            .ignoreAirBlocks(false)
 		            .build();
-		    // CuboidRegion o = new CuboidRegion(null, null);
-		    // Mask mask = new ExistingBlockMask(editSession);
 		    try {
 				Operations.complete(operation);
-			    // editSession.replaceBlocks(o, mask, BukkitAdapter.adapt(Material.AIR.createBlockData()));
 			} catch (WorldEditException e) {
 				e.printStackTrace();
 			}
@@ -314,18 +310,18 @@ public class Area {
 		
 		// Create nodes
 		org.bukkit.World w = Bukkit.getWorld(WORLD_NAME);
-		for (int lane = 0; lane < MAX_LANES; lane++) {
-			for (int pos = 0; pos < MAX_POSITIONS; pos++) {
+		for (int lane = 0; lane < MAX_LANES; lane++) { // x
+			for (int pos = 0; pos < MAX_POSITIONS; pos++) { // z
 				Node node = nodes[pos][lane];
 				if (node == null) continue;
 				
-				Location loc = new Location(w, xOff + EDGE_PADDING + (pos * NODE_DIST_BETWEEN), NODE_Y, zOff + EDGE_PADDING + (lane * NODE_DIST_BETWEEN));
+				Location loc = new Location(w, -(xOff + X_EDGE_PADDING + (lane * NODE_DIST_BETWEEN)), NODE_Y, zOff + Z_EDGE_PADDING + (pos * NODE_DIST_BETWEEN));
 				loc.getBlock().setType(node.getType().getBlock());
-				loc.add(-1, 0, 0);
+				loc.add(0, 0, -1);
 				loc.getBlock().setType(Material.OAK_WALL_SIGN);
 				Block b = loc.getBlock();
 				Directional dir = (Directional) b.getBlockData();
-				dir.setFacing(BlockFace.WEST);
+				dir.setFacing(BlockFace.NORTH);
 				b.setBlockData(dir);
 				
 				Sign sign = (Sign) b.getState();
@@ -338,9 +334,9 @@ public class Area {
 	
 	public Node getNodeFromLocation(Location loc) {
 		int pos = loc.getBlockX(), lane = loc.getBlockZ();
-		pos -= xOff + EDGE_PADDING;
+		pos -= xOff + X_EDGE_PADDING;
 		pos /= NODE_DIST_BETWEEN;
-		lane -= zOff + EDGE_PADDING;
+		lane -= zOff + Z_EDGE_PADDING;
 		lane /= NODE_DIST_BETWEEN;
 		return nodes[pos][lane];
 	}
@@ -359,6 +355,7 @@ public class Area {
 		}
 		
 		// Add button to new paths and generate them
+		fights = new FightInstance[MAX_LANES];
 		for (Node dest : node.getDestinations()) {
 			dest.generateInstance(s);
 			
@@ -374,8 +371,10 @@ public class Area {
 			holo.getLines().appendText("§f§l" + dest.getType() + " Node");
 			holograms.add(holo);
 			
-			// Add lecterns to fight nodes
+			// Fight nodes
 			if (dest.getType() == NodeType.FIGHT) {
+				FightInstance fi = new FightInstance(s);
+				
 				loc.add(-1, -4, 0);
 				Block b = loc.getBlock();
 				b.setType(Material.LECTERN);
@@ -417,8 +416,12 @@ public class Area {
 		}
 	}
 	
+	public Location getTeleport() {
+		return teleport;
+	}
+	
 	private Location nodeToLocation(Node node, double yOff) {
 		org.bukkit.World w = Bukkit.getWorld(WORLD_NAME);
-		return new Location(w, xOff + 6.5 + (node.getPosition() * 4), NODE_Y + yOff, zOff + 6.5 + (node.getLane() * 4));
+		return new Location(w, -(xOff + X_EDGE_PADDING - 0.5 + (node.getLane() * 4)), NODE_Y + yOff, zOff + Z_EDGE_PADDING + 0.5 + (node.getPosition() * 4));
 	}
 }
