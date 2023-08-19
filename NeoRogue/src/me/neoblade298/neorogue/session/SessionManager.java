@@ -6,7 +6,9 @@ import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.Tag;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.EntityType;
@@ -25,6 +27,7 @@ import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
@@ -63,6 +66,8 @@ public class SessionManager implements Listener {
 		Session s = new Session(p, plot, name);
 		sessions.put(p.getUniqueId(), s);
 		sessionPlots.put(plot, s);
+		
+		Util.msg(p, "&7Successfully created a lobby!");
 		return s;
 	}
 
@@ -167,28 +172,8 @@ public class SessionManager implements Listener {
 		
 		// Node select
 		if (s.getInstance() instanceof NodeSelectInstance) {
-			if (a != Action.RIGHT_CLICK_BLOCK || !Tag.BUTTONS.isTagged(e.getClickedBlock().getType())) return;
-			
-			// Validation
-			for (Entry<UUID, PlayerSessionData> ent : s.getParty().entrySet()) {
-				Player member = ent.getValue().getPlayer();
-				if (member == null) {
-					for (Player online : s.getOnlinePlayers()) {
-						Util.displayError(online, "&cAt least one party member (&4" + ent.getValue().getData().getDisplay() + "&c) is not online!");
-					}
-					return;
-				}
-				
-				if (!ent.getValue().saveStorage()) {
-					for (Player online : s.getOnlinePlayers()) {
-						Util.displayError(online, "&&4" + ent.getValue().getData().getDisplay() + "&c has too many items in their inventory! They must drop some "
-								+ "to satisfy their storage limit of &e" + ent.getValue().getMaxStorage() + "&c!");
-					}
-					return;
-				}
-			}
-			s.getArea().getNodeFromLocation(e.getClickedBlock().getLocation()).startInstance(s);
-			return;
+			if (a != Action.RIGHT_CLICK_BLOCK) return;
+			((NodeSelectInstance) s.getInstance()).handleRightClick(e);
 		}
 			
 		// Class select
@@ -259,6 +244,11 @@ public class SessionManager implements Listener {
 	@EventHandler
 	public void onLeave(PlayerQuitEvent e) {
 		handleLeave(e.getPlayer());
+	}
+	
+	@EventHandler
+	public void onJoin(PlayerJoinEvent e) {
+		e.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
 	}
 
 	private void handleLeave(Player p) {

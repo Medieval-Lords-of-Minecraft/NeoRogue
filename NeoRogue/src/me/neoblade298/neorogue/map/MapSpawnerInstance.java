@@ -11,7 +11,7 @@ public class MapSpawnerInstance {
 	private Location loc;
 	
 	public MapSpawnerInstance(MapSpawner original, MapPieceInstance inst, int xOff, int zOff) {
-		this.mob = original.getMob();
+		this.mob = original.getMythicMob();
 		this.amount = original.getAmount();
 		this.radius = original.getRadius();
 		this.loc = original.getCoordinates().clone().applySettings(inst).toLocation();

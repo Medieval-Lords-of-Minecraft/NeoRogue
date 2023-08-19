@@ -30,6 +30,7 @@ import me.filoghost.holographicdisplays.api.internal.HolographicDisplaysAPIProvi
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.commands.SubcommandManager;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
+import me.neoblade298.neocore.shared.exceptions.NeoIOException;
 import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.commands.*;
@@ -43,6 +44,7 @@ import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
 import me.neoblade298.neorogue.session.fights.FightInstance;
+import me.neoblade298.neorogue.session.fights.Mob;
 import net.md_5.bungee.api.ChatColor;
 
 public class NeoRogue extends JavaPlugin {
@@ -75,6 +77,11 @@ public class NeoRogue extends JavaPlugin {
 		
 		inst = this;
 
+		try {
+			Mob.load(); // Load in mob types
+		} catch (NeoIOException e) {
+			e.printStackTrace();
+		}
 		Map.load(); // Load in map pieces
 		
 		holo = HolographicDisplaysAPIProvider.getImplementation().getHolographicDisplaysAPI(this);
@@ -111,7 +118,7 @@ public class NeoRogue extends JavaPlugin {
 		//s.setInstance(new FightInstance(s));
 		//s.getInstance().start(s);
 
-		Map map = Map.generate(AreaType.LOW_DISTRICT, 8);
-		map.instantiate(null, 0, 0);
+		//Map map = Map.generate(AreaType.LOW_DISTRICT, 8);
+		//map.instantiate(null, 0, 0);
 	}
 }

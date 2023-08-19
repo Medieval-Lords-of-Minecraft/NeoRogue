@@ -4,10 +4,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Map.Entry;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.bukkit.Bukkit;
@@ -20,27 +19,26 @@ import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.function.mask.ExistingBlockMask;
 import com.sk89q.worldedit.function.mask.Mask;
-import com.sk89q.worldedit.function.operation.Operation;
-import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
-import com.sk89q.worldedit.session.ClipboardHolder;
-
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.shared.exceptions.NeoIOException;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.session.fights.FightInstance;
+import me.neoblade298.neorogue.session.fights.Mob;
+import me.neoblade298.neorogue.session.fights.MobModifier;
 
 public class Map {
 	private static HashMap<AreaType, LinkedList<MapPiece>> allPieces = new HashMap<AreaType, LinkedList<MapPiece>>(),
 			usedPieces = new HashMap<AreaType, LinkedList<MapPiece>>();
+	private static final int MAP_SIZE = 12;
 	
 	private ArrayList<MapPieceInstance> pieces = new ArrayList<MapPieceInstance>();
 	private LinkedList<Coordinates> entrances = new LinkedList<Coordinates>();
 	private LinkedList<Coordinates> blockedEntrances = new LinkedList<Coordinates>();
-	private static final int MAP_SIZE = 12;
+	private TreeMap<Mob, ArrayList<MobModifier>> mobs = new TreeMap<Mob, ArrayList<MobModifier>>();
 	private boolean[][] shape = new boolean[MAP_SIZE][MAP_SIZE];
 	
 	public static void load() {
@@ -86,7 +84,6 @@ public class Map {
 				return map;
 			}
 			map.place(piece);
-			map.display();
 		}
 		
 		return map;
@@ -96,7 +93,7 @@ public class Map {
 		// Special case, first piece being placed
 		if (pieces.size() == 0) {
 			MapPieceInstance inst = piece.getInstance();
-			// Randomly rotate the piece TODO
+			// Randomly rotate the piece
 			inst.setRotations(NeoCore.gen.nextInt(4));
 			int rand = NeoCore.gen.nextInt(3);
 			if (rand == 1) inst.flip(true);
@@ -159,7 +156,6 @@ public class Map {
 		MapShape shape = inst.getPiece().getShape();
 		entrances.remove(inst.getAvailableEntrance());
 		shape.applySettings(inst);
-		shape.display();
 		for (int i = 0; i < shape.getLength(); i++) {
 			for (int j = 0; j < shape.getHeight(); j++) {
 				boolean b = shape.get(i, j);
@@ -194,7 +190,12 @@ public class Map {
 			}
 			entrances.add(coords);
 		}
-		
+
+		// Set up the mobs
+		for (MapSpawner spawner : inst.getPiece().getSpawners()) {
+			mobs.put(spawner.getMob(), MobModifier.generateModifiers(0));
+		}
+
 		pieces.add(inst);
 	}
 	
@@ -216,8 +217,14 @@ public class Map {
 			}
 		}
 		
+		// Place down the map pieces
 		for (MapPieceInstance inst : pieces) {
 			inst.instantiate(fi, xOff, zOff);
+			
+			// Set up the mobs
+			for (MapSpawner spawner : inst.getPiece().getSpawners()) {
+				fi.addSpawner(spawner.instantiate(inst, xOff, zOff));
+			}
 		}
 		
 	}
@@ -229,6 +236,10 @@ public class Map {
 	
 	public static LinkedList<MapPiece> getPieces(AreaType type) {
 		return allPieces.get(type);
+	}
+	
+	public TreeMap<Mob, ArrayList<MobModifier>> getMobs() {
+		return mobs;
 	}
 	
 	public void display() {

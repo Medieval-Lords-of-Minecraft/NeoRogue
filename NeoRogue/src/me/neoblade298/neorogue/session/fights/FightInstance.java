@@ -1,5 +1,6 @@
 package me.neoblade298.neorogue.session.fights;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -44,7 +45,7 @@ public class FightInstance implements Instance {
 	private static HashSet<UUID> toTick = new HashSet<UUID>();
 	
 	private Map map;
-	private MapSpawnerInstance[] spawners;
+	private ArrayList<MapSpawnerInstance> spawners = new ArrayList<MapSpawnerInstance>();
 	private Session s;
 	private HashMap<String, Barrier> enemyBarriers = new HashMap<String, Barrier>();
 	
@@ -75,7 +76,8 @@ public class FightInstance implements Instance {
 	
 	public FightInstance(Session s) {
 		this.s = s;
-		map = Map.generate(s.getArea().getType(), 3 + NeoCore.gen.nextInt(s.getNodesVisited() / 5));
+		int rand = s.getNodesVisited() >= 5 ? NeoCore.gen.nextInt(s.getNodesVisited() / 5) : 0;
+		map = Map.generate(s.getArea().getType(), 3 + rand);
 	}
 	
 	public void instantiate() {
@@ -342,8 +344,6 @@ public class FightInstance implements Instance {
 
 	@Override
 	public void start(Session s) {
-		s.setInstance(this);
-
 		for (Player p : s.getOnlinePlayers()) {
 			setup(p, s.getData(p.getUniqueId()));
 		}
@@ -399,5 +399,9 @@ public class FightInstance implements Instance {
 	
 	public HashMap<String, Barrier> getBarriers() {
 		return enemyBarriers;
+	}
+	
+	public void addSpawner(MapSpawnerInstance spawner) {
+		spawners.add(spawner);
 	}
 }

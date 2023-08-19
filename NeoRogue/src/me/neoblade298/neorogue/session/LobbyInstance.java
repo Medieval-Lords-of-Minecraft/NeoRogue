@@ -69,6 +69,7 @@ public class LobbyInstance implements Instance {
 	}
 
 	public LobbyInstance(String name, Player host, Session session) {
+		this.name = name;
 		this.host = host.getUniqueId();
 		players.put(host.getUniqueId(), PlayerClass.SWORDSMAN);
 		this.session = session;
@@ -265,6 +266,10 @@ public class LobbyInstance implements Instance {
 		
 		broadcast("&e" + Bukkit.getPlayer(uuid).getName() + " &7switched to class &c" + pc.getDisplay());
 		players.put(uuid, pc);
+	}
+	
+	public String getName() {
+		return name;
 	}
 
 	@Override

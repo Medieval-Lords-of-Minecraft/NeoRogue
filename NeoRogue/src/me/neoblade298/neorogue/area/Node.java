@@ -88,8 +88,7 @@ public class Node {
 		}
 	}
 	
-	public void startInstance(Session s) {
-		inst.start(s);
-		
+	public Instance getInstance() {
+		return inst;
 	}
 }

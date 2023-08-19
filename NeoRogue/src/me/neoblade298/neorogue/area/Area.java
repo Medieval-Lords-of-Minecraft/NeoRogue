@@ -101,6 +101,7 @@ public class Area {
 		this.xOff = xOff;
 		this.zOff = zOff + Z_OFFSET;
 		this.teleport = teleportBase.clone().add(-this.xOff, 64, this.zOff);
+		this.s = s;
 		
 		generateNodes();
 	}
@@ -333,12 +334,12 @@ public class Area {
 	}
 	
 	public Node getNodeFromLocation(Location loc) {
-		int pos = loc.getBlockX(), lane = loc.getBlockZ();
-		pos -= xOff + X_EDGE_PADDING;
-		pos /= NODE_DIST_BETWEEN;
-		lane -= zOff + Z_EDGE_PADDING;
+		int pos = loc.getBlockZ(), lane = loc.getBlockX();
+		lane += xOff + X_EDGE_PADDING;
 		lane /= NODE_DIST_BETWEEN;
-		return nodes[pos][lane];
+		pos -= zOff + Z_EDGE_PADDING;
+		pos /= NODE_DIST_BETWEEN;
+		return nodes[pos][-lane];
 	}
 	
 	// Called whenever a player advances to a new node
@@ -348,12 +349,12 @@ public class Area {
 			Location loc = nodeToLocation(src, 1);
 			loc.getBlock().setType(Material.AIR);
 		}
-		
+
 		// Delete holograms
 		for (Hologram holo : holograms) {
 			holo.delete();
 		}
-		
+
 		// Add button to new paths and generate them
 		fights = new FightInstance[MAX_LANES];
 		for (Node dest : node.getDestinations()) {
@@ -374,21 +375,19 @@ public class Area {
 			// Fight nodes
 			if (dest.getType() == NodeType.FIGHT) {
 				FightInstance fi = new FightInstance(s);
-				
-				loc.add(-1, -4, 0);
+				fights[dest.getLane()] = fi;
+
+				loc.add(0, -4, -1);
 				Block b = loc.getBlock();
 				b.setType(Material.LECTERN);
 				Lectern lec = (Lectern) b.getBlockData();
-				lec.setFacing(BlockFace.WEST);
+				lec.setFacing(BlockFace.NORTH);
 				b.setBlockData(lec);
-				
+
 				ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
 				BookMeta meta = (BookMeta) book.getItemMeta();
 				meta.setAuthor("MLMC");
 				meta.setTitle("Fight Info");
-				// TODO: Setup books
-				meta.addPage("Test page with test stuff\n Hello");
-				book.setItemMeta(meta);
 				org.bukkit.block.Lectern lc = (org.bukkit.block.Lectern) b.getState();
 				lc.getInventory().addItem(book);
 			}
@@ -414,6 +413,10 @@ public class Area {
 				}
 			}
 		}
+	}
+	
+	public FightInstance getFightInstance(int lane) {
+		return fights[lane];
 	}
 	
 	public Location getTeleport() {
