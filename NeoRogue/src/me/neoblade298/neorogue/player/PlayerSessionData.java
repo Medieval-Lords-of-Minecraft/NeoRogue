@@ -40,8 +40,17 @@ public class PlayerSessionData {
 		this.pc = pc;
 		
 		// Need to give player a weapon at the start
-		switch (pc) {
+		switch (this.pc) {
 		case SWORDSMAN: hotbar[0] = (HotbarCompatible) Equipment.getEquipment("woodenSword", false);
+		hotbar[1] = (HotbarCompatible) Equipment.getEquipment("empoweredEdge", true);
+		break;
+		case THIEF: hotbar[0] = (HotbarCompatible) Equipment.getEquipment("woodenSword", false);
+		hotbar[1] = (HotbarCompatible) Equipment.getEquipment("empoweredEdge", true);
+		break;
+		case ARCHER: hotbar[0] = (HotbarCompatible) Equipment.getEquipment("woodenSword", false);
+		hotbar[1] = (HotbarCompatible) Equipment.getEquipment("empoweredEdge", true);
+		break;
+		case MAGE: hotbar[0] = (HotbarCompatible) Equipment.getEquipment("woodenSword", false);
 		hotbar[1] = (HotbarCompatible) Equipment.getEquipment("empoweredEdge", true);
 		break;
 		}

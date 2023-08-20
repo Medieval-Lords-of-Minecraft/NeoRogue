@@ -16,7 +16,6 @@ import me.neoblade298.neorogue.player.PlayerClass;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 
 public class Session {
-	private AreaType areaType;
 	private Area area;
 	private UUID host;
 	private HashMap<UUID, PlayerSessionData> party = new HashMap<UUID, PlayerSessionData>();
@@ -104,5 +103,13 @@ public class Session {
 	
 	public void setNode(Node node) {
 		this.curr = node;
+	}
+	
+	public UUID getHost() {
+		return host;
+	}
+	
+	public SessionStatistics getStats() {
+		return stats;
 	}
 }

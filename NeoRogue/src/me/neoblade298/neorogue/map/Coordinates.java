@@ -16,12 +16,16 @@ public class Coordinates extends Rotatable {
 	private Direction dir = Direction.NORTH;
 	
 	public Coordinates(MapPiece piece, String line) {
+		this(piece, line, false);
+	}
+	
+	public Coordinates(MapPiece piece, String line, boolean usesMinecraftCoords) {
 		String[] parsed = line.split(",");
 		this.x = Integer.parseInt(parsed[0]);
 		this.y = Integer.parseInt(parsed[1]);
 		this.z = Integer.parseInt(parsed[2]);
-		this.xlen = piece.getShape().getLength() - 1;
-		this.zlen = piece.getShape().getHeight() - 1;
+		this.xlen = usesMinecraftCoords ? piece.getShape().getLength() * 16: piece.getShape().getLength() - 1;
+		this.zlen = usesMinecraftCoords ? piece.getShape().getHeight() * 16: piece.getShape().getHeight() - 1;
 		this.xp = xlen - x;
 		this.zp = zlen - z;
 		this.ogDir = Direction.getFromCharacter(parsed[3].charAt(0));
@@ -117,7 +121,7 @@ public class Coordinates extends Rotatable {
 	// Should only be used for spawners as it turns x offset into chunk offset
 	// * 15 because xOff/zOff was already added once
 	public Location toLocation() {
-		return new Location(Bukkit.getWorld(Area.WORLD_NAME), getX() + (xOff * 15), getY() - 1, getZ() + (zOff * 15));
+		return new Location(Bukkit.getWorld(Area.WORLD_NAME), getX() + (xOff * 15), getY() - 1, getZ() + (zOff * 15), 0, dir.getYaw());
 	}
 	
 	@Override

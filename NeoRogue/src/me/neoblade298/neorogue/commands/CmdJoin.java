@@ -30,6 +30,7 @@ public class CmdJoin extends Subcommand {
 				LobbyInstance li = (LobbyInstance) sess.getInstance();
 				if (li.getName().equals(args[0])) {
 					li.addPlayer(p);
+					return;
 				}
 			}
 		}

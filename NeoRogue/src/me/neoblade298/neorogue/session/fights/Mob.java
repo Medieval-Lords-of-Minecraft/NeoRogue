@@ -1,7 +1,6 @@
 package me.neoblade298.neorogue.session.fights;
 
 import java.io.File;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
@@ -14,35 +13,34 @@ import org.bukkit.inventory.meta.ItemMeta;
 import io.lumine.mythic.api.mobs.MythicMob;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.neoblade298.neocore.bukkit.NeoCore;
+import me.neoblade298.neocore.bukkit.util.SkullUtil;
 import me.neoblade298.neocore.shared.exceptions.NeoIOException;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.area.AreaType;
-import me.neoblade298.neorogue.map.MapPiece;
 import net.md_5.bungee.api.ChatColor;
 
 public class Mob implements Comparable<Mob> {
-	private static ArrayList<DamageType> typeOrder = new ArrayList<DamageType>();
+	private static ArrayList<BuffType> typeOrder = new ArrayList<BuffType>();
 	private static HashMap<String, Mob> mobs = new HashMap<String, Mob>();
 	
-	private String id, display;
+	private String id, display, base64;
 	private Material mat;
-	private HashMap<DamageType, Integer> resistances = new HashMap<DamageType, Integer>();
-	private HashMap<DamageType, Amount> damageTypes = new HashMap<DamageType, Amount>();
+	private HashMap<BuffType, Integer> resistances = new HashMap<BuffType, Integer>();
+	private HashMap<BuffType, Amount> damageTypes = new HashMap<BuffType, Amount>();
 	private ArrayList<String> lore;
 	
 	static {
-		typeOrder.add(DamageType.SLASHING);
-		typeOrder.add(DamageType.PIERCING);
-		typeOrder.add(DamageType.BLUNT);
-		typeOrder.add(DamageType.FIRE);
-		typeOrder.add(DamageType.ICE);
-		typeOrder.add(DamageType.LIGHTNING);
-		typeOrder.add(DamageType.EARTH);
-		typeOrder.add(DamageType.LIGHT);
-		typeOrder.add(DamageType.DARK);
-		typeOrder.add(DamageType.BLEED);
-		typeOrder.add(DamageType.POISON);
+		typeOrder.add(BuffType.SLASHING);
+		typeOrder.add(BuffType.PIERCING);
+		typeOrder.add(BuffType.BLUNT);
+		typeOrder.add(BuffType.FIRE);
+		typeOrder.add(BuffType.ICE);
+		typeOrder.add(BuffType.LIGHTNING);
+		typeOrder.add(BuffType.EARTH);
+		typeOrder.add(BuffType.LIGHT);
+		typeOrder.add(BuffType.DARK);
+		typeOrder.add(BuffType.BLEED);
+		typeOrder.add(BuffType.POISON);
 	}
 	
 	public static void load() throws NeoIOException {
@@ -69,42 +67,47 @@ public class Mob implements Comparable<Mob> {
 			for (String key : resSec.getKeys(false)) {
 				int pct = resSec.getInt(key);
 				if (key.equals("MAGICAL")) {
-					resistances.put(DamageType.FIRE, pct);
-					resistances.put(DamageType.ICE, pct);
-					resistances.put(DamageType.LIGHTNING, pct);
-					resistances.put(DamageType.EARTH, pct);
-					resistances.put(DamageType.LIGHT, pct);
-					resistances.put(DamageType.DARK, pct);
+					resistances.put(BuffType.FIRE, pct);
+					resistances.put(BuffType.ICE, pct);
+					resistances.put(BuffType.LIGHTNING, pct);
+					resistances.put(BuffType.EARTH, pct);
+					resistances.put(BuffType.LIGHT, pct);
+					resistances.put(BuffType.DARK, pct);
 				}
 				else if (key.equals("PHYSICAL")) {
-					resistances.put(DamageType.SLASHING, pct);
-					resistances.put(DamageType.PIERCING, pct);
-					resistances.put(DamageType.BLUNT, pct);
+					resistances.put(BuffType.SLASHING, pct);
+					resistances.put(BuffType.PIERCING, pct);
+					resistances.put(BuffType.BLUNT, pct);
 				}
 				else {
-					resistances.put(DamageType.valueOf(key), pct);
+					resistances.put(BuffType.valueOf(key), pct);
 				}
 			}
 		}
 		
-		ConfigurationSection dmgSec = sec.getConfigurationSection("damageTypes");
+		ConfigurationSection dmgSec = sec.getConfigurationSection("BuffTypes");
 		if (dmgSec != null) {
 			for (String key : dmgSec.getKeys(false)) {
-				damageTypes.put(DamageType.valueOf(key), Amount.valueOf(dmgSec.getString(key)));
+				damageTypes.put(BuffType.valueOf(key), Amount.valueOf(dmgSec.getString(key)));
 			}
 		}
 		
 		lore = SharedUtil.addLineBreaks(sec.getString("description"), 250, ChatColor.GRAY);
-		mat = Material.valueOf(sec.getString("material"));
+		mat = sec.contains("material") ? Material.valueOf(sec.getString("material")) : null;
+		base64 = sec.getString("base64");
+	}
+	
+	public HashMap<BuffType, Integer> getResistances() {
+		return resistances;
 	}
 	
 	public ItemStack getItemDisplay(ArrayList<MobModifier> modifiers) {
-		ItemStack item = new ItemStack(mat);
+		ItemStack item = base64 == null ? new ItemStack(mat) : SkullUtil.itemFromBase64(base64);
 		ItemMeta meta = item.getItemMeta();
 		meta.setDisplayName(display);
 		ArrayList<String> lore = new ArrayList<String>();
 		lore.add("§6Resistances:");
-		for (DamageType dt : typeOrder) {
+		for (BuffType dt : typeOrder) {
 			if (resistances.containsKey(dt)) {
 				int pct = resistances.get(dt);
 				String str = (pct > 0 ? ChatColor.RED : ChatColor.GREEN) + "" + pct + "%";
@@ -112,7 +115,7 @@ public class Mob implements Comparable<Mob> {
 			}
 		}
 		
-		for (DamageType dt : typeOrder) {
+		for (BuffType dt : typeOrder) {
 			if (damageTypes.containsKey(dt)) {
 				lore.add("§e" + dt.getDisplay() + "§7: " + damageTypes.get(dt).getDisplay(true));
 			}

@@ -2,11 +2,9 @@ package me.neoblade298.neorogue.session;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Sign;
@@ -36,7 +34,6 @@ import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
 import io.lumine.mythic.bukkit.events.MythicMobSpawnEvent;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.player.PlayerClass;
-import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.PlayerSessionInventory;
 import me.neoblade298.neorogue.session.fights.*;
 

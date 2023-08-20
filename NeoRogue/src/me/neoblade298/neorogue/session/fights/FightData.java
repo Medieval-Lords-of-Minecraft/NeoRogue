@@ -46,11 +46,12 @@ public class FightData {
 
 	public FightData(Damageable e) {
 		// Only use this for mobs
-		this.entity = e;
-		this.shields = new ShieldHolder(this);
 		Plot p = Plot.locationToPlot(e.getLocation());
 		Session s = SessionManager.getSession(p);
+		if (s == null) return;
 		inst = (FightInstance) s.getInstance();
+		this.entity = e;
+		this.shields = new ShieldHolder(this);
 	}
 
 	public FightInstance getInstance() {

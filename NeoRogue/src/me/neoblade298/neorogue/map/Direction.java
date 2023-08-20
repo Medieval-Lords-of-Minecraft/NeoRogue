@@ -1,16 +1,21 @@
 package me.neoblade298.neorogue.map;
 
+/* Confusing, but Direction is INVERTED with actual Minecraft direction
+ * North is south, east is west, etc.
+ */
 public enum Direction {
-	NORTH(0, 'N'),
-	EAST(1, 'E'),
-	SOUTH(2, 'S'),
-	WEST(3, 'W');
+	NORTH(0, 'N', 0),
+	EAST(1, 'E', 90),
+	SOUTH(2, 'S', 180),
+	WEST(3, 'W', 270);
 	
 	private int value;
 	private char c;
-	private Direction(int value, char c) {
+	private float yaw;
+	private Direction(int value, char c, float yaw) {
 		this.value = value;
 		this.c = c;
+		this.yaw = yaw;
 	}
 	
 	public char getCharacter() {
@@ -49,5 +54,9 @@ public enum Direction {
 		case 'S': return SOUTH;
 		default: return WEST;
 		}
+	}
+	
+	public float getYaw() {
+		return yaw;
 	}
 }

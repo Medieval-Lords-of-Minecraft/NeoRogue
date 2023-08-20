@@ -130,6 +130,7 @@ public class LobbyInstance implements Instance {
 
 		invited.remove(p.getUniqueId());
 		players.put(p.getUniqueId(), PlayerClass.SWORDSMAN);
+		SessionManager.addToSession(p.getUniqueId(), this.session);
 		p.teleport(loc);
 		displayInfo(p);
 		broadcast("&e" + p.getName() + " &7joined the lobby!");

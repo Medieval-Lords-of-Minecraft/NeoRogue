@@ -96,8 +96,8 @@ public class Map {
 			// Randomly rotate the piece
 			inst.setRotations(NeoCore.gen.nextInt(4));
 			int rand = NeoCore.gen.nextInt(3);
-			if (rand == 1) inst.flip(true);
-			else if (rand == 2) inst.flip(false);
+			if (rand == 1) inst.setFlip(true, false);
+			else if (rand == 2) inst.setFlip(false, true);
 			MapShape shape = inst.getPiece().getShape();
 			shape.applySettings(inst);
 			
@@ -240,6 +240,10 @@ public class Map {
 	
 	public TreeMap<Mob, ArrayList<MobModifier>> getMobs() {
 		return mobs;
+	}
+	
+	public ArrayList<MapPieceInstance> getPieces() {
+		return pieces;
 	}
 	
 	public void display() {

@@ -44,7 +44,13 @@ public class NodeSelectInstance implements Instance {
 	}
 	
 	public void handleRightClick(PlayerInteractEvent e) {
+		Player p = e.getPlayer();
 		if (Tag.BUTTONS.isTagged(e.getClickedBlock().getType())) {
+			if (!p.getUniqueId().equals(s.getHost())) {
+				Util.displayError(p, "&cOnly the host may choose the next node to visit!");
+				return;
+			}
+			
 			// Validation
 			for (Entry<UUID, PlayerSessionData> ent : s.getParty().entrySet()) {
 				Player member = ent.getValue().getPlayer();

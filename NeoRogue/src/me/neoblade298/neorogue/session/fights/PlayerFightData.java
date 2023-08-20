@@ -2,28 +2,14 @@ package me.neoblade298.neorogue.session.fights;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.UUID;
-
-import org.bukkit.attribute.Attribute;
-import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
-
 import me.neoblade298.neorogue.player.KeyBind;
 import me.neoblade298.neorogue.player.PlayerSessionData;
-import me.neoblade298.neorogue.player.Status;
 import me.neoblade298.neorogue.player.Trigger;
 import me.neoblade298.neorogue.player.TriggerAction;
-import me.neoblade298.neorogue.session.Plot;
-import me.neoblade298.neorogue.session.Session;
-import me.neoblade298.neorogue.session.SessionManager;
-import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.*;
-import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 
 public class PlayerFightData extends FightData {
 	private PlayerSessionData sessdata;
@@ -86,7 +72,6 @@ public class PlayerFightData extends FightData {
 		if (data.getOffhand() != null) inv.setItemInOffHand(data.getOffhand().getItem());
 		
 		// Setup mana and hunger bar
-		double maxMana = sessdata.getMaxMana();
 		updateStamina();
 		updateMana();
 		this.staminaRegen = sessdata.getStaminaRegen();

@@ -11,7 +11,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.shared.droptables.DropTable;
-import me.neoblade298.neocore.shared.droptables.Droppable;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.equipment.abilities.*;
 import me.neoblade298.neorogue.equipment.armor.*;

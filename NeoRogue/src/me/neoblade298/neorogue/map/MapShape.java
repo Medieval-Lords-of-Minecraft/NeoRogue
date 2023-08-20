@@ -2,8 +2,6 @@ package me.neoblade298.neorogue.map;
 
 import java.util.List;
 
-import org.bukkit.Bukkit;
-
 public class MapShape extends Rotatable {
 	private boolean[][] shape;
 	private int xlen, zlen;

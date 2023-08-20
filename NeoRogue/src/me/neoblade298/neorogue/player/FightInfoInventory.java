@@ -1,24 +1,16 @@
 package me.neoblade298.neorogue.player;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
-
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
-import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.session.fights.Mob;
 import me.neoblade298.neorogue.session.fights.MobModifier;
 

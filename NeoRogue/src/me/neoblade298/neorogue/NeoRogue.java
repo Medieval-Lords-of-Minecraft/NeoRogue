@@ -1,29 +1,10 @@
 package me.neoblade298.neorogue;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedList;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.WorldEdit;
-import com.sk89q.worldedit.WorldEditException;
-import com.sk89q.worldedit.bukkit.BukkitAdapter;
-import com.sk89q.worldedit.extent.clipboard.Clipboard;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
-import com.sk89q.worldedit.function.operation.Operation;
-import com.sk89q.worldedit.function.operation.Operations;
-import com.sk89q.worldedit.math.BlockVector3;
-import com.sk89q.worldedit.session.ClipboardHolder;
 
 import me.filoghost.holographicdisplays.api.HolographicDisplaysAPI;
 import me.filoghost.holographicdisplays.api.internal.HolographicDisplaysAPIProvider;
@@ -32,18 +13,11 @@ import me.neoblade298.neocore.bukkit.commands.SubcommandManager;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
 import me.neoblade298.neocore.shared.exceptions.NeoIOException;
 import me.neoblade298.neorogue.area.Area;
-import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.commands.*;
-import me.neoblade298.neorogue.map.Direction;
 import me.neoblade298.neorogue.map.Map;
-import me.neoblade298.neorogue.map.MapPiece;
-import me.neoblade298.neorogue.map.MapPieceInstance;
 import me.neoblade298.neorogue.map.MapShape;
-import me.neoblade298.neorogue.map.Coordinates;
 import me.neoblade298.neorogue.player.PlayerManager;
-import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
-import me.neoblade298.neorogue.session.fights.FightInstance;
 import me.neoblade298.neorogue.session.fights.Mob;
 import net.md_5.bungee.api.ChatColor;
 
@@ -103,9 +77,14 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdLeave("leave", "Leave your session", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdKick("kick", "Kick a player from your party", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdStart("start", "Start the game with your party", null, SubcommandRunner.BOTH));
+		mngr.register(new CmdJoin("join", "Join an existing party", null, SubcommandRunner.BOTH));
+		mngr.register(new CmdInfo("info", "View session info", null, SubcommandRunner.BOTH));
+		mngr.registerCommandList("");
 		
 		mngr = new SubcommandManager("nradmin", "neorogue.admin", ChatColor.DARK_RED, this);
 		mngr.register(new CmdAdminDebug("debug", "Testing", null, SubcommandRunner.BOTH));
+		mngr.register(new CmdAdminTestPiece("testpiece", "Pastes a map piece in the map to show you how it looks ingame", null, SubcommandRunner.BOTH));
+		mngr.registerCommandList("");
 	}
 	
 	public static NeoRogue inst() {

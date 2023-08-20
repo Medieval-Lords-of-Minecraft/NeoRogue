@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.attribute.Attributable;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Damageable;
@@ -19,8 +20,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -29,7 +28,9 @@ import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
+import me.neoblade298.neorogue.map.Coordinates;
 import me.neoblade298.neorogue.map.Map;
+import me.neoblade298.neorogue.map.MapPieceInstance;
 import me.neoblade298.neorogue.map.MapSpawnerInstance;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.Status;
@@ -166,11 +167,17 @@ public class FightInstance implements Instance {
 	}
 	
 	public static void handleMythicDespawn(MythicMobDespawnEvent e) {
-		removeFightData(e.getEntity().getUniqueId());
+		handleMythicRemoved(removeFightData(e.getEntity().getUniqueId()));
 	}
 	
 	public static void handleMythicDeath(MythicMobDeathEvent e) {
-		removeFightData(e.getEntity().getUniqueId());
+		handleMythicRemoved(removeFightData(e.getEntity().getUniqueId()));
+	}
+	
+	public static void handleMythicRemoved(FightData data) {
+		if (data == null) return;
+		
+		data.getInstance().spawnMob(1);
 	}
 	
 	// Returns true if the event should be cancelled (basically only on hotbar swap)
@@ -344,9 +351,34 @@ public class FightInstance implements Instance {
 
 	@Override
 	public void start(Session s) {
+		instantiate();
+		s.broadcast("&7Commencing fight...");
 		for (Player p : s.getOnlinePlayers()) {
 			setup(p, s.getData(p.getUniqueId()));
 		}
+		
+		new BukkitRunnable() {
+			public void run() {
+				// Choose random teleport location
+				int rand = NeoCore.gen.nextInt(map.getPieces().size());
+				MapPieceInstance inst = map.getPieces().get(rand);
+				Coordinates[] spawns = inst.getSpawns();
+				Location loc = spawns[spawns.length > 1 ? NeoCore.gen.nextInt(spawns.length) : 0].clone().applySettings(inst).toLocation();
+				loc.add(s.getXOff(),
+						MapPieceInstance.Y_OFFSET,
+						MapPieceInstance.Z_FIGHT_OFFSET + s.getZOff());
+				loc.setX(-loc.getX());
+				for (Player p : s.getOnlinePlayers()) {
+					p.teleport(loc);
+				}
+			}
+		}.runTaskLater(NeoRogue.inst(), 20L);
+		
+		new BukkitRunnable() {
+			public void run() {
+				spawnMob(3 + (s.getNodesVisited() / 5));
+			}
+		}.runTaskLater(NeoRogue.inst(), 60L);
 	}
 	
 	public static void putFightData(UUID uuid, FightData data) {
@@ -368,9 +400,9 @@ public class FightInstance implements Instance {
 		}
 	}
 	
-	public static void removeFightData(UUID uuid) {
+	public static FightData removeFightData(UUID uuid) {
 		toTick.remove(uuid);
-		fightData.remove(uuid);
+		return fightData.remove(uuid);
 	}
 	
 	public static void addToTickList(UUID uuid) {
@@ -403,5 +435,11 @@ public class FightInstance implements Instance {
 	
 	public void addSpawner(MapSpawnerInstance spawner) {
 		spawners.add(spawner);
+	}
+	
+	private void spawnMob(int num) {
+		for (int i = 0; i < num; i++) {
+			spawners.get(NeoCore.gen.nextInt(spawners.size())).spawnMob(5 + s.getNodesVisited());
+		}
 	}
 }

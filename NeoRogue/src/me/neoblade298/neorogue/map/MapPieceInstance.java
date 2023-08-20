@@ -1,8 +1,13 @@
 package me.neoblade298.neorogue.map;
 
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
+
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.WorldEditException;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.function.operation.Operation;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
@@ -14,14 +19,15 @@ import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.session.fights.FightInstance;
 
 public class MapPieceInstance implements Comparable<MapPieceInstance> {
+	public static final int Z_FIGHT_OFFSET = 64, Y_OFFSET = 64, X_FIGHT_OFFSET = 1;
+	
 	private MapPiece piece;
-	private Coordinates entrance;
-	private Coordinates available;
+	private Coordinates[] spawns;
+	private Coordinates entrance, available;
 	protected int numRotations;
 	private int x, y, z; // In chunk offset
 	protected boolean flipX, flipZ;
 	private ClipboardHolder schematic;
-	public static final int Z_FIGHT_OFFSET = 64, Y_OFFSET = 64, X_FIGHT_OFFSET = 1;
 	private int potential = 100;
 	private int len, hgt;
 	private int[] rotateOffset = new int[] {0, 0},
@@ -30,6 +36,12 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 	protected MapPieceInstance(MapPiece piece) {
 		this.piece = piece;
 		schematic = new ClipboardHolder(piece.clipboard);
+		
+		spawns = new Coordinates[piece.spawns.length];
+		int i = 0;
+		for (Coordinates coords : piece.spawns) {
+			spawns[i++] = coords.clone();
+		}
 		
 		MapShape shape = piece.getShape();
 		len = shape.getBaseLength() * 16 - 1;
@@ -89,24 +101,28 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 	public void setRotations(int amount) {
 		numRotations = amount % 4;
 		if (entrance != null) entrance.setRotations(numRotations);
+		
+		for (Coordinates coords : spawns) {
+			coords.setRotations(amount);
+		}
 	}
 	
-	public void flip(boolean xAxis) {
-		if ((flipZ && !flipX && xAxis) || (flipX && !flipZ && !xAxis)) {
-			flipX = false;
-			flipZ = false;
+	public void setFlip(boolean flipX, boolean flipZ) {
+		if (flipX && flipZ) {
+			this.flipX = false;
+			this.flipZ = false;
 			setRotations((numRotations + 2) % 4); // A double flip is just a 180 rotation
 			return;
 		}
 		
-		if (xAxis) {
-			flipX = !flipX;
-		}
-		else {
-			flipZ = !flipZ;
-		}
+		this.flipX = flipX;
+		this.flipZ = flipZ;
+		
 		if (entrance != null) {
 			entrance.setFlip(flipX, flipZ);
+		}
+		for (Coordinates coords : spawns) {
+			coords.setFlip(flipX, flipZ);
 		}
 	}
 	
@@ -128,6 +144,8 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		
 		AffineTransform transform = new AffineTransform();
 		// It is only possible for one of these to be true at a time
+		flipOffset[0] = 0;
+		flipOffset[1] = 0;
 		if (flipX || flipZ) {
 			if (flipX) {
 				switch (numRotations) {
@@ -157,10 +175,6 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 			transform = transform.scale(direction.abs().multiply(-2).add(1, 1, 1).toVector3());
 			schematic.setTransform(transform);
 		}
-		else {
-			flipOffset[0] = 0;
-			flipOffset[1] = 0;
-		}
 		transform = transform.rotateY(numRotations * -90);
 		schematic.setTransform(transform);
 	}
@@ -187,7 +201,8 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 	}
 	
 	public void flipOppositeAxis() {
-		flip(entrance.getDirection() == Direction.EAST || entrance.getDirection() == Direction.WEST);
+		int val = entrance.getDirection().getValue();
+		setFlip(val % 2 == 1, val % 2 == 0);
 	}
 	
 	public int[] calculateOffset(Coordinates available) {
@@ -221,11 +236,8 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		            .to(BlockVector3.at(x, y, z))
 		            .ignoreAirBlocks(true)
 		            .build();
-		    // CuboidRegion o = new CuboidRegion(null, null);
-		    // Mask mask = new ExistingBlockMask(editSession);
 		    try {
 				Operations.complete(operation);
-			    // editSession.replaceBlocks(o, mask, BukkitAdapter.adapt(Material.AIR.createBlockData()));
 			} catch (WorldEditException e) {
 				e.printStackTrace();
 			}
@@ -236,12 +248,56 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		}
 	}
 	
+	public void testPaste(World world, int xOff, int zOff) {
+		updateSchematic();
+		/*
+		 * this.x is the chunk coordinates within the fighting area
+		 * xOff is the offset of the plot
+		 * Z_FIGHT_OFFSET is the offset of where the fighting area is in the plot
+		 * x is negative because south is +z and right of south is -x
+		 */
+		int x = -(rotateOffset[0] + flipOffset[0] + xOff + X_FIGHT_OFFSET);
+		int y = Y_OFFSET + this.y;
+		int z = rotateOffset[1] + flipOffset[1] + zOff;
+		
+		try (EditSession editSession = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(world))) {
+		    Operation operation = schematic.createPaste(editSession)
+		            .to(BlockVector3.at(x, y, z))
+		            .ignoreAirBlocks(false)
+		            .build();
+		    try {
+				Operations.complete(operation);
+			} catch (WorldEditException e) {
+				e.printStackTrace();
+			}
+		}
+		// Instantiate spawners
+		for (MapSpawner spawner : piece.getSpawners()) {
+			MapSpawnerInstance inst = spawner.instantiate(this, xOff, zOff);
+			inst.testPaste(world);
+		}
+		
+		for (Coordinates coords : spawns) {
+			Location loc = coords.clone().applySettings(this).toLocation();
+			loc.add(MapPieceInstance.X_FIGHT_OFFSET + xOff,
+					MapPieceInstance.Y_OFFSET,
+					zOff);
+			loc.setX(-loc.getX());
+			loc.setWorld(world);
+			loc.getBlock().setType(Material.ORANGE_WOOL);
+		}
+	}
+	
 	public Coordinates getEntrance() {
 		return entrance;
 	}
 	
 	public Coordinates getAvailableEntrance() {
 		return available;
+	}
+	
+	public Coordinates[] getSpawns() { 
+		return spawns;
 	}
 
 	@Override

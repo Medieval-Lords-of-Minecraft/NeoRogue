@@ -11,10 +11,8 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.session.fights.DamageType;
-import me.neoblade298.neorogue.session.fights.PlayerFightData;
 
 public abstract class Weapon extends HotbarCompatible {
 	protected double damage, attackSpeed;
