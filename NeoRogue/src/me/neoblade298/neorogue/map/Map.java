@@ -207,8 +207,8 @@ public class Map {
 		// First clear the board
 		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Area.world)) {
 		    CuboidRegion o = new CuboidRegion(
-		    		BlockVector3.at(-xOff, 0, MapPieceInstance.Z_FIGHT_OFFSET + zOff),
-		    		BlockVector3.at(-(xOff + MAP_SIZE * 16), 128, MapPieceInstance.Z_FIGHT_OFFSET + zOff + MAP_SIZE * 16));
+		    		BlockVector3.at(-(xOff + MapPieceInstance.X_FIGHT_OFFSET), 0, MapPieceInstance.Z_FIGHT_OFFSET + zOff),
+		    		BlockVector3.at(-(xOff + MapPieceInstance.X_FIGHT_OFFSET + MAP_SIZE * 16), 128, MapPieceInstance.Z_FIGHT_OFFSET + zOff + MAP_SIZE * 16));
 		    Mask mask = new ExistingBlockMask(editSession);
 		    try {
 			    editSession.replaceBlocks(o, mask, BukkitAdapter.adapt(Material.AIR.createBlockData()));

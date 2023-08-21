@@ -33,6 +33,7 @@ import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
 import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
 import io.lumine.mythic.bukkit.events.MythicMobSpawnEvent;
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.map.MapSpawnerInstance;
 import me.neoblade298.neorogue.player.PlayerClass;
 import me.neoblade298.neorogue.player.PlayerSessionInventory;
 import me.neoblade298.neorogue.session.fights.*;
@@ -218,7 +219,7 @@ public class SessionManager implements Listener {
 	@EventHandler
 	public void onMythicSpawn(MythicMobSpawnEvent e) {
 		UUID uuid = e.getEntity().getUniqueId();
-		FightInstance.putFightData(uuid, new FightData((Damageable) e.getEntity()));
+		FightInstance.putFightData(uuid, new FightData((Damageable) e.getEntity(), (MapSpawnerInstance) null));
 	}
 
 	@EventHandler

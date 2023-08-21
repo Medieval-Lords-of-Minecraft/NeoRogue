@@ -30,13 +30,10 @@ public class NeoRogue extends JavaPlugin {
 	public static Location spawn;
 	
 	public static void main(String[] args) {
-		ArrayList<String> list = new ArrayList<String>();
-		list.add("X_");
-		list.add("XX");
-		MapShape ms = new MapShape(list);
-		ms.setRotations(0);
-		ms.setFlip(false, false);
-		ms.display();
+		double spawnCounter = 0;
+		for (double totalSpawns = 0; totalSpawns < 100; totalSpawns++) {
+			spawnCounter += 1 + (totalSpawns / 25);
+		}
 	}
 	
 	public void onEnable() {

@@ -11,9 +11,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attributable;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.boss.BarColor;
-import org.bukkit.boss.BarStyle;
-import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -29,7 +26,6 @@ import org.bukkit.scheduler.BukkitTask;
 import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
 import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
 import me.neoblade298.neocore.bukkit.NeoCore;
-import me.neoblade298.neocore.bukkit.bar.CoreBar;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.map.Coordinates;
@@ -48,12 +44,16 @@ public abstract class FightInstance implements Instance {
 	private static HashMap<UUID, FightData> fightData = new HashMap<UUID, FightData>();
 	private static HashMap<UUID, BukkitTask> blockTasks = new HashMap<UUID, BukkitTask>();
 	private static HashSet<UUID> toTick = new HashSet<UUID>();
+	private static final int KILLS_TO_SCALE = 5; // number of mobs to kill before increasing total mobs by 1
 	
 	protected Map map;
-	protected ArrayList<MapSpawnerInstance> spawners = new ArrayList<MapSpawnerInstance>();
+	protected ArrayList<MapSpawnerInstance> spawners = new ArrayList<MapSpawnerInstance>(),
+			unlimitedSpawners = new ArrayList<MapSpawnerInstance>();
 	protected Session s;
 	protected HashMap<String, Barrier> enemyBarriers = new HashMap<String, Barrier>();
 	protected ArrayList<BukkitTask> tasks = new ArrayList<BukkitTask>();
+	protected double spawnCounter; // Holds a value between 0 and 1, when above 1, a mob spawns
+	protected double totalSpawnValue; // Keeps track of total mob spawns, to handle scaling of spawning
 	
 	static {
 		new BukkitRunnable() {
@@ -83,7 +83,8 @@ public abstract class FightInstance implements Instance {
 	public FightInstance(Session s) {
 		this.s = s;
 		int rand = s.getNodesVisited() >= 5 ? NeoCore.gen.nextInt(s.getNodesVisited() / 5) : 0;
-		map = Map.generate(s.getArea().getType(), 3 + rand);
+		int min = s.getNodesVisited() / 10;
+		map = Map.generate(s.getArea().getType(), 1 + rand + min);
 	}
 	
 	public void instantiate() {
@@ -174,21 +175,43 @@ public abstract class FightInstance implements Instance {
 	public static void handleMythicDespawn(MythicMobDespawnEvent e) {
 		FightData data = removeFightData(e.getEntity().getUniqueId());
 		if (data == null) return;
-		handleRespawn(data);
+		data.getInstance().handleRespawn(data, e.getMobType().getInternalName(), true);
 	}
 	
 	public static void handleMythicDeath(MythicMobDeathEvent e) {
 		FightData data = removeFightData(e.getEntity().getUniqueId());
 		if (data == null) return;
-		handleRespawn(data);
+		data.getInstance().handleRespawn(data, e.getMobType().getInternalName(), false);
 		
 		if (data.getInstance() instanceof StandardFightInstance) {
-			((StandardFightInstance) data.getInstance()).handleMobKill(e);
+			((StandardFightInstance) data.getInstance()).handleMobKill(e.getMobType().getInternalName());
 		}
 	}
 	
-	public static void handleRespawn(FightData data) {
-		data.getInstance().spawnMob(1);
+	public void handleRespawn(FightData data, String id, boolean isDespawn) {
+		Mob mob = Mob.get(id);
+		if (mob == null) {
+			Bukkit.getLogger().warning("[NeoRogue] Failed to find meta-info for mob " + id + " to handle respawn");
+			return;
+		}
+
+		if (data.getSpawner() != null) {
+			data.getSpawner().subtractActiveMobs();
+		}
+		
+		if (!isDespawn) {
+			totalSpawnValue += mob.getValue();
+			if (totalSpawnValue > KILLS_TO_SCALE) {
+				spawnCounter++;
+				totalSpawnValue -= KILLS_TO_SCALE;
+			}
+		}
+		
+		spawnCounter += mob.getValue();
+		while (spawnCounter >= 1) {
+			spawnCounter--;
+			data.getInstance().spawnMob(1);
+		}
 	}
 	
 	// Returns true if the event should be cancelled (basically only on hotbar swap)
@@ -202,7 +225,7 @@ public abstract class FightInstance implements Instance {
 	
 	public static FightData getFightData(UUID uuid) {
 		if (!fightData.containsKey(uuid)) {
-			FightData fd = new FightData((Damageable) Bukkit.getEntity(uuid));
+			FightData fd = new FightData((Damageable) Bukkit.getEntity(uuid), (MapSpawnerInstance) null);
 			fightData.put(uuid, fd);
 		}
 		return fightData.get(uuid);
@@ -376,7 +399,7 @@ public abstract class FightInstance implements Instance {
 				MapPieceInstance inst = map.getPieces().get(rand);
 				Coordinates[] spawns = inst.getSpawns();
 				Location loc = spawns[spawns.length > 1 ? NeoCore.gen.nextInt(spawns.length) : 0].clone().applySettings(inst).toLocation();
-				loc.add(s.getXOff(),
+				loc.add(s.getXOff() + MapPieceInstance.X_FIGHT_OFFSET,
 						MapPieceInstance.Y_OFFSET,
 						MapPieceInstance.Z_FIGHT_OFFSET + s.getZOff());
 				loc.setX(-loc.getX());
@@ -453,11 +476,18 @@ public abstract class FightInstance implements Instance {
 	
 	public void addSpawner(MapSpawnerInstance spawner) {
 		spawners.add(spawner);
+		if (spawner.getMaxMobs() == -1) {
+			unlimitedSpawners.add(spawner);
+		}
 	}
 	
 	private void spawnMob(int num) {
 		for (int i = 0; i < num; i++) {
-			spawners.get(NeoCore.gen.nextInt(spawners.size())).spawnMob(5 + s.getNodesVisited());
+			MapSpawnerInstance spawner = spawners.get(NeoCore.gen.nextInt(spawners.size()));
+			if (!spawner.canSpawn()) {
+				spawner = unlimitedSpawners.get(NeoCore.gen.nextInt(unlimitedSpawners.size()));
+			}
+			spawner.spawnMob(5 + s.getNodesVisited());
 		}
 	}
 }

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import me.neoblade298.neorogue.session.Instance;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.fights.FightInstance;
+import me.neoblade298.neorogue.session.fights.StandardFightInstance;
 
 public class Node {
 	private static int MAX_DESTS = 3;
@@ -81,7 +82,7 @@ public class Node {
 	
 	public void generateInstance(Session s) {
 		switch (type) {
-		case FIGHT: inst = new FightInstance(s);
+		case FIGHT: inst = new StandardFightInstance(s);
 		break;
 		default:
 			break;

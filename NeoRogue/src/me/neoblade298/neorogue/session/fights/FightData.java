@@ -15,6 +15,7 @@ import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
+import me.neoblade298.neorogue.map.MapSpawnerInstance;
 
 public class FightData {
 	protected FightInstance inst;
@@ -26,6 +27,7 @@ public class FightData {
 	protected ShieldHolder shields = null;
 	protected Damageable entity = null;
 	protected LinkedList<TickAction> tickActions = new LinkedList<TickAction>(); // Every 20 ticks
+	protected MapSpawnerInstance spawner;
 
 	// Buffs
 	protected HashMap<BuffType, Buff> damageBuffs = new HashMap<BuffType, Buff>();
@@ -44,7 +46,7 @@ public class FightData {
 		this.shields = new ShieldHolder(this);
 	}
 
-	public FightData(Damageable e) {
+	public FightData(Damageable e, MapSpawnerInstance spawner) {
 		// Only use this for mobs
 		Plot p = Plot.locationToPlot(e.getLocation());
 		Session s = SessionManager.getSession(p);
@@ -52,6 +54,7 @@ public class FightData {
 		inst = (FightInstance) s.getInstance();
 		this.entity = e;
 		this.shields = new ShieldHolder(this);
+		this.spawner = spawner;
 	}
 
 	public FightInstance getInstance() {
@@ -141,5 +144,9 @@ public class FightData {
 		Status s = statuses.getOrDefault(id, Status.createFromId(id, applier, this));
 		s.apply(applier, stacks, seconds);
 		statuses.put(id, s);
+	}
+	
+	public MapSpawnerInstance getSpawner() {
+		return spawner;
 	}
 }

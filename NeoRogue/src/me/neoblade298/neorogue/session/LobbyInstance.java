@@ -10,6 +10,7 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -41,21 +42,34 @@ public class LobbyInstance implements Instance {
 	private HashMap<UUID, PlayerClass> players = new HashMap<UUID, PlayerClass>();
 	private UUID host;
 	private Session session;
-	private static Clipboard clipboard;
+	private static Clipboard nodeSelect, rewardsRoom;
 	private Location loc;
 	private boolean busy = false;
 	
-	private static final int X_OFFSET = -7, Z_OFFSET = 3;
+	private static final int LOBBY_X = -7, LOBBY_Z = 3;
+	private static final int REWARDS_Z_OFF = 75, REWARDS_X = 3, REWARDS_Z = 76;
 	
 	// schematics
 	private static String NODE_SELECT = "classselect.schem";
+	private static String REWARDS_ROOM = "rewardsroom.schem";
 	
 	static {
 		// Load the node select schematic
 		File file = new File(NeoRogue.SCHEMATIC_FOLDER, NODE_SELECT);
 		ClipboardFormat format = ClipboardFormats.findByFile(file);
 		try (ClipboardReader reader = format.getReader(new FileInputStream(file))) {
-			clipboard = reader.read();
+			nodeSelect = reader.read();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		// Load the rewards room schematic
+		file = new File(NeoRogue.SCHEMATIC_FOLDER, REWARDS_ROOM);
+		format = ClipboardFormats.findByFile(file);
+		try (ClipboardReader reader = format.getReader(new FileInputStream(file))) {
+			rewardsRoom = reader.read();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -76,9 +90,9 @@ public class LobbyInstance implements Instance {
 		
 		// Generate the starting area and add the host there
 		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Area.world)) {
-		    Operation operation = new ClipboardHolder(clipboard)
+		    Operation operation = new ClipboardHolder(nodeSelect)
 		            .createPaste(editSession)
-		            .to(BlockVector3.at(session.getXOff(), 64, session.getZOff()))
+		            .to(BlockVector3.at(session.getXOff() - 1, 64, session.getZOff()))
 		            .ignoreAirBlocks(true)
 		            .build();
 		    try {
@@ -87,9 +101,23 @@ public class LobbyInstance implements Instance {
 				e.printStackTrace();
 			}
 		}
-		
-		loc = new Location(Bukkit.getWorld(Area.WORLD_NAME), session.getXOff() + X_OFFSET, 64, session.getZOff() + Z_OFFSET);
+		loc = new Location(Bukkit.getWorld(Area.WORLD_NAME), session.getXOff() + LOBBY_X, 64, session.getZOff() + LOBBY_Z);
 		host.teleport(loc);
+
+		// Generate the rewards room
+		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Area.world)) {
+		    Operation operation = new ClipboardHolder(rewardsRoom)
+		            .createPaste(editSession)
+		            .to(BlockVector3.at(session.getXOff() - 1, 64, session.getZOff() + REWARDS_Z))
+		            .ignoreAirBlocks(true)
+		            .build();
+		    System.out.println("Generating " + (session.getXOff() - 1) + ", " + REWARDS_Z);
+		    try {
+				Operations.complete(operation);
+			} catch (WorldEditException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public void invitePlayer(Player inviter, String username) {
@@ -248,7 +276,9 @@ public class LobbyInstance implements Instance {
 		new BukkitRunnable() {
 			public void run() {
 				for (UUID uuid : players.keySet()) {
-					Bukkit.getPlayer(uuid).teleport(session.getArea().getTeleport());
+					Player p = Bukkit.getPlayer(uuid);
+					p.teleport(session.getArea().getTeleport());
+					p.setHealth(p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
 				}
 			}
 		}.runTaskLater(NeoRogue.inst(), 20L);

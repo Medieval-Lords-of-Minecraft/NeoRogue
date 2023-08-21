@@ -20,20 +20,22 @@ import me.neoblade298.neorogue.session.fights.Mob;
 public class MapSpawnerInstance {
 	private MythicMob mythicMob;
 	private Mob mob;
-	private int amount, radius;
 	private Location loc;
+	private double radius;
+	private int maxMobs, activeMobs;
 	
 	public MapSpawnerInstance(MapSpawner original, MapPieceInstance inst, int xOff, int zOff) {
 		this.mythicMob = original.getMythicMob();
 		this.mob = original.getMob();
-		this.amount = original.getAmount();
-		this.radius = original.getRadius();
 		this.loc = original.getCoordinates().clone().applySettings(inst).toLocation();
 		
-		this.loc.add(MapPieceInstance.X_FIGHT_OFFSET + xOff,
+		this.loc.add(MapPieceInstance.X_FIGHT_OFFSET + xOff + 0.5,
 				MapPieceInstance.Y_OFFSET,
-				MapPieceInstance.Z_FIGHT_OFFSET + zOff);
+				MapPieceInstance.Z_FIGHT_OFFSET + zOff + 0.5);
 		this.loc.setX(-this.loc.getX());
+		
+		this.radius = original.getRadius();
+		this.maxMobs = original.getMaxMobs();
 	}
 	
 	public void testPaste(World w) {
@@ -42,8 +44,16 @@ public class MapSpawnerInstance {
 		loc.getBlock().setType(Material.BLUE_WOOL);
 	}
 	
+	public boolean canSpawn() {
+		return maxMobs == -1 || activeMobs >= maxMobs;
+	}
+	
+	public int getMaxMobs() {
+		return maxMobs;
+	}
+	
 	public void spawnMob(double lvl) {
-		for (int i = 0; i < amount; i++) {
+		for (int i = 0; i < mob.getAmount(); i++) {
 			Location loc = this.loc;
 			if (radius > 0) {
 				loc = loc.clone().add(NeoCore.gen.nextDouble(-radius, radius), 0, NeoCore.gen.nextDouble(-radius, radius));
@@ -55,11 +65,16 @@ public class MapSpawnerInstance {
 			am.getEntity().setHealth(mhealth);
 			
 			UUID uuid = am.getEntity().getUniqueId();
-			FightData fd = new FightData((Damageable) am.getEntity().getBukkitEntity());
+			FightData fd = new FightData((Damageable) am.getEntity().getBukkitEntity(), this);
 			for (Entry<BuffType, Integer> ent : mob.getResistances().entrySet()) {
 				fd.addBuff(uuid, false, true, ent.getKey(), (double) ent.getValue() / 100);
 			}
 			FightInstance.putFightData(uuid, fd);
+			activeMobs++;
 		}
+	}
+	
+	public void subtractActiveMobs() {
+		activeMobs--;
 	}
 }

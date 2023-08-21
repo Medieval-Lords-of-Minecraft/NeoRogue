@@ -19,7 +19,7 @@ import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.session.fights.FightInstance;
 
 public class MapPieceInstance implements Comparable<MapPieceInstance> {
-	public static final int Z_FIGHT_OFFSET = 64, Y_OFFSET = 64, X_FIGHT_OFFSET = 1;
+	public static final int Z_FIGHT_OFFSET = 0, Y_OFFSET = 64, X_FIGHT_OFFSET = 49;
 	
 	private MapPiece piece;
 	private Coordinates[] spawns;

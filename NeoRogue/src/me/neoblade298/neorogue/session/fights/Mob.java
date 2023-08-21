@@ -11,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import io.lumine.mythic.api.mobs.MythicMob;
+import io.lumine.mythic.api.mobs.entities.MythicEntityType;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.util.SkullUtil;
@@ -24,6 +25,7 @@ public class Mob implements Comparable<Mob> {
 	private static HashMap<String, Mob> mobs = new HashMap<String, Mob>();
 	
 	private String id, display, base64;
+	private int amount;
 	private double value;
 	private Material mat;
 	private HashMap<BuffType, Integer> resistances = new HashMap<BuffType, Integer>();
@@ -95,8 +97,11 @@ public class Mob implements Comparable<Mob> {
 		
 		lore = SharedUtil.addLineBreaks(sec.getString("description"), 250, ChatColor.GRAY);
 		mat = sec.contains("material") ? Material.valueOf(sec.getString("material")) : null;
+		amount = sec.getInt("amount", 1);
+		value = sec.getDouble("value", (double) 1 / (double) amount);
+
+		if (opt.isPresent() && opt.get().getEntityType() == MythicEntityType.SLIME) value /= 2; // Slime's death event is called twice so this must happen
 		base64 = sec.getString("base64");
-		value = sec.getDouble("value", 1);
 	}
 	
 	public HashMap<BuffType, Integer> getResistances() {
@@ -155,5 +160,8 @@ public class Mob implements Comparable<Mob> {
 	public double getValue() {
 		return value;
 	}
-	
+
+	public int getAmount() {
+		return amount;
+	}
 }
