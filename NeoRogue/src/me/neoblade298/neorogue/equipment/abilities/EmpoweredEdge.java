@@ -47,7 +47,8 @@ public class EmpoweredEdge extends Ability {
 		@Override
 		public boolean run(Object[] inputs) {
 			Util.playSound(p, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1F, 1F, false);
-			ParticleUtil.spawnParticle(p, false, p.getLocation(), Particle.CLOUD, 50, 0.5, 0.5, 0.5, 0.2);
+			ParticleUtil.spawnParticle(p, false, p.getLocation(), Particle.CLOUD, 50, 0.5, 0.5,
+					0.5, 0.2);
 			data.addTrigger(id, Trigger.BASIC_ATTACK, (in) -> {
 				FightInstance.dealDamage(p, DamageType.SLASHING, damage, (Damageable) in[1]);
 				return false;

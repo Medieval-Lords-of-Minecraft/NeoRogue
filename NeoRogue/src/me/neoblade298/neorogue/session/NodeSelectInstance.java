@@ -13,6 +13,7 @@ import org.bukkit.scheduler.BukkitTask;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.Area;
+import me.neoblade298.neorogue.area.Node;
 import me.neoblade298.neorogue.player.FightInfoInventory;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fights.FightInstance;
@@ -74,8 +75,8 @@ public class NodeSelectInstance implements Instance {
 		}
 		else if (e.getClickedBlock().getType() == Material.LECTERN) {
 			e.setCancelled(true);
-			int lane = s.getArea().getNodeFromLocation(e.getClickedBlock().getLocation().add(0, 2, 1)).getLane();
-			FightInstance inst = s.getArea().getFightInstance(lane);
+			Node n = s.getArea().getNodeFromLocation(e.getClickedBlock().getLocation().add(0, 2, 1));
+			FightInstance inst = (FightInstance) n.getInstance();
 			new FightInfoInventory(e.getPlayer(), inst.getMap().getMobs());
 		}
 	}

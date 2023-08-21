@@ -50,7 +50,6 @@ import me.neoblade298.neorogue.session.fights.FightInstance;
 public class Area {
 	private AreaType type;
 	private Node[][] nodes = new Node[MAX_POSITIONS][MAX_LANES];
-	private FightInstance[] fights;
 	private Session s;
 	public static World world;
 	
@@ -356,7 +355,6 @@ public class Area {
 		}
 
 		// Add button to new paths and generate them
-		fights = new FightInstance[MAX_LANES];
 		for (Node dest : node.getDestinations()) {
 			dest.generateInstance(s);
 			
@@ -374,9 +372,6 @@ public class Area {
 			
 			// Fight nodes
 			if (dest.getType() == NodeType.FIGHT) {
-				FightInstance fi = new FightInstance(s);
-				fights[dest.getLane()] = fi;
-
 				loc.add(0, -4, -1);
 				Block b = loc.getBlock();
 				b.setType(Material.LECTERN);
@@ -413,10 +408,6 @@ public class Area {
 				}
 			}
 		}
-	}
-	
-	public FightInstance getFightInstance(int lane) {
-		return fights[lane];
 	}
 	
 	public Location getTeleport() {

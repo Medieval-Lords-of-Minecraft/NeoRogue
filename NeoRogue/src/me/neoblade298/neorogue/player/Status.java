@@ -10,7 +10,7 @@ public abstract class Status {
 	protected int stacks;
 	protected TickAction action;
 	protected FightData data;
-	protected StatusSliceHolder slices;
+	protected StatusSliceHolder slices = new StatusSliceHolder();
 	protected int seconds;
 	
 	public Status(String id, FightData data) {

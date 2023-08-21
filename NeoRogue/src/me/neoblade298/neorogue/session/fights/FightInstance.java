@@ -11,6 +11,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attributable;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -26,6 +29,7 @@ import org.bukkit.scheduler.BukkitTask;
 import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
 import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
 import me.neoblade298.neocore.bukkit.NeoCore;
+import me.neoblade298.neocore.bukkit.bar.CoreBar;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.map.Coordinates;
@@ -306,7 +310,7 @@ public class FightInstance implements Instance {
 		}
 
 		// Calculate damage to shields
-		if (!data.getShields().isEmpty() && !meta.bypassShields()) {
+		if (data.getShields() != null && !data.getShields().isEmpty() && !meta.bypassShields()) {
 			ShieldHolder shields = data.getShields();
 			amount = Math.max(0, shields.useShields(amount));
 			new BukkitRunnable() {
@@ -370,6 +374,7 @@ public class FightInstance implements Instance {
 				loc.setX(-loc.getX());
 				for (Player p : s.getOnlinePlayers()) {
 					p.teleport(loc);
+					new CoreBar(p, Bukkit.createBossBar("Time Remaining", BarColor.WHITE, BarStyle.SOLID), NeoCore.getPlayerTags("neocore"));
 				}
 			}
 		}.runTaskLater(NeoRogue.inst(), 20L);
