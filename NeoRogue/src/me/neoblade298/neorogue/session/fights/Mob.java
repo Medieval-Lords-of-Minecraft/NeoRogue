@@ -24,6 +24,7 @@ public class Mob implements Comparable<Mob> {
 	private static HashMap<String, Mob> mobs = new HashMap<String, Mob>();
 	
 	private String id, display, base64;
+	private double value;
 	private Material mat;
 	private HashMap<BuffType, Integer> resistances = new HashMap<BuffType, Integer>();
 	private HashMap<BuffType, Amount> damageTypes = new HashMap<BuffType, Amount>();
@@ -95,6 +96,7 @@ public class Mob implements Comparable<Mob> {
 		lore = SharedUtil.addLineBreaks(sec.getString("description"), 250, ChatColor.GRAY);
 		mat = sec.contains("material") ? Material.valueOf(sec.getString("material")) : null;
 		base64 = sec.getString("base64");
+		value = sec.getDouble("value", 1);
 	}
 	
 	public HashMap<BuffType, Integer> getResistances() {
@@ -150,5 +152,8 @@ public class Mob implements Comparable<Mob> {
 		return this.id.compareTo(o.id);
 	}
 	
+	public double getValue() {
+		return value;
+	}
 	
 }

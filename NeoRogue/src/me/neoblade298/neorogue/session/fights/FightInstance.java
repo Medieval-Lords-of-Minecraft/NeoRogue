@@ -43,16 +43,17 @@ import me.neoblade298.neorogue.session.Instance;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
 
-public class FightInstance implements Instance {
+public abstract class FightInstance implements Instance {
 	private static HashMap<UUID, PlayerFightData> userData = new HashMap<UUID, PlayerFightData>();
 	private static HashMap<UUID, FightData> fightData = new HashMap<UUID, FightData>();
 	private static HashMap<UUID, BukkitTask> blockTasks = new HashMap<UUID, BukkitTask>();
 	private static HashSet<UUID> toTick = new HashSet<UUID>();
 	
-	private Map map;
-	private ArrayList<MapSpawnerInstance> spawners = new ArrayList<MapSpawnerInstance>();
-	private Session s;
-	private HashMap<String, Barrier> enemyBarriers = new HashMap<String, Barrier>();
+	protected Map map;
+	protected ArrayList<MapSpawnerInstance> spawners = new ArrayList<MapSpawnerInstance>();
+	protected Session s;
+	protected HashMap<String, Barrier> enemyBarriers = new HashMap<String, Barrier>();
+	protected ArrayList<BukkitTask> tasks = new ArrayList<BukkitTask>();
 	
 	static {
 		new BukkitRunnable() {
@@ -171,16 +172,22 @@ public class FightInstance implements Instance {
 	}
 	
 	public static void handleMythicDespawn(MythicMobDespawnEvent e) {
-		handleMythicRemoved(removeFightData(e.getEntity().getUniqueId()));
+		FightData data = removeFightData(e.getEntity().getUniqueId());
+		if (data == null) return;
+		handleRespawn(data);
 	}
 	
 	public static void handleMythicDeath(MythicMobDeathEvent e) {
-		handleMythicRemoved(removeFightData(e.getEntity().getUniqueId()));
+		FightData data = removeFightData(e.getEntity().getUniqueId());
+		if (data == null) return;
+		handleRespawn(data);
+		
+		if (data.getInstance() instanceof StandardFightInstance) {
+			((StandardFightInstance) data.getInstance()).handleMobKill(e);
+		}
 	}
 	
-	public static void handleMythicRemoved(FightData data) {
-		if (data == null) return;
-		
+	public static void handleRespawn(FightData data) {
 		data.getInstance().spawnMob(1);
 	}
 	
@@ -360,6 +367,7 @@ public class FightInstance implements Instance {
 		for (Player p : s.getOnlinePlayers()) {
 			setup(p, s.getData(p.getUniqueId()));
 		}
+		setupInstance(s);
 		
 		new BukkitRunnable() {
 			public void run() {
@@ -374,7 +382,6 @@ public class FightInstance implements Instance {
 				loc.setX(-loc.getX());
 				for (Player p : s.getOnlinePlayers()) {
 					p.teleport(loc);
-					new CoreBar(p, Bukkit.createBossBar("Time Remaining", BarColor.WHITE, BarStyle.SOLID), NeoCore.getPlayerTags("neocore"));
 				}
 			}
 		}.runTaskLater(NeoRogue.inst(), 20L);
@@ -385,6 +392,8 @@ public class FightInstance implements Instance {
 			}
 		}.runTaskLater(NeoRogue.inst(), 60L);
 	}
+	
+	protected abstract void setupInstance(Session s);
 	
 	public static void putFightData(UUID uuid, FightData data) {
 		fightData.put(uuid, data);
@@ -402,6 +411,10 @@ public class FightInstance implements Instance {
 		for (UUID uuid : s.getParty().keySet()) {
 			userData.remove(uuid).cleanup();
 			fightData.remove(uuid).cleanup();
+		}
+		
+		for (BukkitTask task : tasks) {
+			task.cancel();
 		}
 	}
 	
