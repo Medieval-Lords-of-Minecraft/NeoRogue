@@ -1,5 +1,9 @@
 package me.neoblade298.neorogue.session.fights;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.boss.BarColor;
@@ -9,14 +13,21 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentClass;
+import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.session.CoinsReward;
+import me.neoblade298.neorogue.session.EquipmentChoiceReward;
+import me.neoblade298.neorogue.session.Reward;
+import me.neoblade298.neorogue.session.RewardInstance;
 import me.neoblade298.neorogue.session.Session;
 
 public class StandardFightInstance extends FightInstance {
-	private static final double FIGHT_TIME = 180;
+	private static final double SCORE_REQUIRED = 75;
 	
 	private BossBar timeBar, scoreBar;
-	private double timeRemaining, score;
-	private FightScore fightScore = FightScore.D;
+	private double time, score;
+	private FightScore fightScore = FightScore.S;
 
 	public StandardFightInstance(Session s) {
 		super(s);
@@ -24,8 +35,8 @@ public class StandardFightInstance extends FightInstance {
 
 	@Override
 	protected void setupInstance(Session s) {
-		timeBar = Bukkit.createBossBar("Time Remaining", BarColor.WHITE, BarStyle.SOLID);
-		scoreBar = Bukkit.createBossBar("Current Rating: " + fightScore.getDisplay(), BarColor.RED, BarStyle.SEGMENTED_6);
+		scoreBar = Bukkit.createBossBar("Objective: Kill Enemies", BarColor.RED, BarStyle.SEGMENTED_6);
+		timeBar = Bukkit.createBossBar("Current Rating: " + fightScore.getDisplay(), BarColor.WHITE, BarStyle.SOLID);
 		scoreBar.setProgress(0);
 		
 		for (Player p : s.getOnlinePlayers()) {
@@ -33,17 +44,22 @@ public class StandardFightInstance extends FightInstance {
 			scoreBar.addPlayer(p);
 		}
 		
-		timeRemaining = FIGHT_TIME;
+		time = fightScore.getThreshold();
 		
 		tasks.add(new BukkitRunnable() {
 			public void run() {
-				timeRemaining--;
+				time--;
+				timeBar.setProgress(time / fightScore.getThreshold());
 				
-				if (timeRemaining <= 0) {
-					this.cancel();
-				}
-				else {
-					timeBar.setProgress(timeRemaining / FIGHT_TIME);
+				if (time <= 0) {
+					if (fightScore.getNext() == null) {
+						this.cancel();
+					}
+					else {
+						fightScore = fightScore.getNext();
+						time = fightScore.getThreshold();
+						timeBar.setTitle("Current Rating: " + fightScore.getDisplay());
+					}
 				}
 			}
 		}.runTaskTimer(NeoRogue.inst(), 20L, 20L));
@@ -57,25 +73,56 @@ public class StandardFightInstance extends FightInstance {
 		}
 		
 		score += mob.getValue();
-		
-		if (fightScore != FightScore.S) {
-			scoreBar.setProgress(score / fightScore.getThreshold());
+		if (score >= SCORE_REQUIRED) {
+			timeBar.removeAll();
+			scoreBar.removeAll();
+			s.setInstance(new RewardInstance(generateRewards()));
+			return;
 		}
-		
-		if (score >= fightScore.getThreshold()) {
-			score -= fightScore.getThreshold();
-			fightScore = fightScore.getNext();
-			if (fightScore == FightScore.S) {
-				scoreBar.setProgress(1);
+		scoreBar.setProgress(score / fightScore.getThreshold());
+	}
+	
+	private HashMap<UUID, ArrayList<Reward>> generateRewards() {
+		HashMap<UUID, ArrayList<Reward>> rewards = new HashMap<UUID, ArrayList<Reward>>();
+		for (UUID uuid : s.getParty().keySet()) {
+			PlayerSessionData data = s.getParty().get(uuid);
+			ArrayList<Reward> list = new ArrayList<Reward>();
+			list.add(new CoinsReward(fightScore.getCoins()));
+			
+			ArrayList<Equipment> equipDrops = new ArrayList<Equipment>();
+			EquipmentClass ec = data.getPlayerClass().toEquipmentClass();
+			int value = fightScore.getValue() + s.getAreasCompleted();
+			switch (fightScore) {
+			case S:
+				equipDrops.add(Equipment.getDrop(ec, value + 2));
+				equipDrops.add(Equipment.getDrop(ec, value + 1));
+				equipDrops.add(Equipment.getDrop(ec, value + 1));
+				equipDrops.add(Equipment.getDrop(ec, value));
+				break;
+			case A:
+				equipDrops.add(Equipment.getDrop(ec, value + 1));
+				equipDrops.add(Equipment.getDrop(ec, value + 1));
+				equipDrops.add(Equipment.getDrop(ec, value));
+				break;
+			case B:
+				equipDrops.add(Equipment.getDrop(ec, value + 1));
+				equipDrops.add(Equipment.getDrop(ec, value));
+				equipDrops.add(Equipment.getDrop(ec, value));
+				break;
+			case C:
+				equipDrops.add(Equipment.getDrop(ec, value));
+				equipDrops.add(Equipment.getDrop(ec, value));
+				equipDrops.add(Equipment.getDrop(ec, value));
+				break;
+			case D:
+				equipDrops.add(Equipment.getDrop(ec, value));
+				equipDrops.add(Equipment.getDrop(ec, value));
+				break;
 			}
-			else {
-				scoreBar.setProgress(score / fightScore.getThreshold());
-			}
-			scoreBar.setTitle("Current Score: " + fightScore.getDisplay());
-			for (Player p : s.getOnlinePlayers()) {
-				p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1F, 1F);
-			}
-			s.broadcast("&7Your fight rating increased to " + fightScore.getDisplay() + "&7!");
+			
+			list.add(new EquipmentChoiceReward(equipDrops));
+			rewards.put(uuid, list);
 		}
+		return rewards;
 	}
 }

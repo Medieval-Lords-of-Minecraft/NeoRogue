@@ -184,7 +184,10 @@ public abstract class Equipment {
 		return eq.id.equals(this.id);
 	}
 	
-	public Equipment getDrop(EquipmentClass ec, int value) {
+	public static Equipment getDrop(EquipmentClass ec, int value) {
 		return droptables.get(ec).get(value).get();
+	}
+	public String getDisplay() {
+		return display;
 	}
 }

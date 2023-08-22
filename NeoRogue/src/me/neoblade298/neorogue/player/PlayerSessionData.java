@@ -216,4 +216,8 @@ public class PlayerSessionData {
 	public int getCoins() {
 		return coins;
 	}
+	
+	public PlayerClass getPlayerClass() {
+		return pc;
+	}
 }

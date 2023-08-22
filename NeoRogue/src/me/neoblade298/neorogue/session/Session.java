@@ -22,7 +22,7 @@ public class Session {
 	private Instance inst;
 	private Node curr;
 	private SessionStatistics stats;
-	private int xOff, zOff, nodesVisited;
+	private int xOff, zOff, nodesVisited, areasCompleted;
 	private Plot plot;
 	
 	public Session(Player p, Plot plot, String lobby) {
@@ -111,5 +111,9 @@ public class Session {
 	
 	public SessionStatistics getStats() {
 		return stats;
+	}
+	
+	public int getAreasCompleted() {
+		return areasCompleted;
 	}
 }
