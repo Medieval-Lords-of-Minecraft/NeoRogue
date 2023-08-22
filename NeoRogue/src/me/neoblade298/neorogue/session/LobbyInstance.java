@@ -9,9 +9,14 @@ import java.util.HashSet;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Tag;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.sk89q.worldedit.EditSession;
@@ -47,7 +52,7 @@ public class LobbyInstance implements Instance {
 	private boolean busy = false;
 	
 	private static final int LOBBY_X = -7, LOBBY_Z = 3;
-	private static final int REWARDS_Z_OFF = 75, REWARDS_X = 3, REWARDS_Z = 76;
+	private static final int REWARDS_Z = 76;
 	
 	// schematics
 	private static String NODE_SELECT = "classselect.schem";
@@ -307,5 +312,25 @@ public class LobbyInstance implements Instance {
 	public void cleanup() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void handleInteractEvent(PlayerInteractEvent e) {
+		if (e.getAction() != Action.RIGHT_CLICK_BLOCK || !Tag.SIGNS.isTagged(e.getClickedBlock().getType())) return;
+		
+		UUID uuid = e.getPlayer().getUniqueId();
+		Sign sign = (Sign) e.getClickedBlock().getState();
+		char c = ChatColor.stripColor(sign.getLine(2)).charAt(0);
+		
+		switch (c) {
+		case 'S': switchClass(uuid, PlayerClass.SWORDSMAN);
+		break;
+		case 'T': switchClass(uuid, PlayerClass.THIEF);
+		break;
+		case 'A': switchClass(uuid, PlayerClass.ARCHER);
+		break;
+		case 'M': switchClass(uuid, PlayerClass.MAGE);
+		break;
+		}
 	}
 }

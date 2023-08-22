@@ -27,7 +27,7 @@ public class PlayerSessionData {
 	private ArrayList<Artifact> artifacts = new ArrayList<Artifact>();
 	private ArrayList<Equipment> storage = new ArrayList<Equipment>(9);
 	private Usable[] otherBinds = new Usable[8];
-	private int abilitiesEquipped = 0, maxAbilities = 2, maxStorage = 9;
+	private int abilitiesEquipped = 0, maxAbilities = 2, maxStorage = 9, coins = 0;
 	
 	public PlayerSessionData(UUID uuid, PlayerClass pc) {
 		data = PlayerManager.getPlayerData(uuid);
@@ -203,5 +203,17 @@ public class PlayerSessionData {
 			}
 		}
 		return true;
+	}
+	
+	public boolean hasCoins(int amount) {
+		return coins >= amount;
+	}
+	
+	public void addCoins(int amount) {
+		coins += amount;
+	}
+	
+	public int getCoins() {
+		return coins;
 	}
 }

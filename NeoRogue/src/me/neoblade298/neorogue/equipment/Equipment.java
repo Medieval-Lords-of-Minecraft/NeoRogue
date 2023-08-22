@@ -183,4 +183,8 @@ public abstract class Equipment {
 	public boolean isSimilar(Equipment eq) {
 		return eq.id.equals(this.id);
 	}
+	
+	public Equipment getDrop(EquipmentClass ec, int value) {
+		return droptables.get(ec).get(value).get();
+	}
 }

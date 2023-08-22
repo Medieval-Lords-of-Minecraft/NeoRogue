@@ -167,43 +167,11 @@ public class SessionManager implements Listener {
 		Action a = e.getAction();
 		if (!sessions.containsKey(uuid)) return;
 		Session s = sessions.get(uuid);
-		
-		// Node select
-		if (s.getInstance() instanceof NodeSelectInstance) {
-			if (a != Action.RIGHT_CLICK_BLOCK) return;
-			((NodeSelectInstance) s.getInstance()).handleRightClick(e);
-		}
-			
-		// Class select
-		if (s.getInstance() instanceof LobbyInstance) {
-			if (a != Action.RIGHT_CLICK_BLOCK || !Tag.SIGNS.isTagged(e.getClickedBlock().getType())) return;
-			LobbyInstance li = (LobbyInstance) s.getInstance();
-			
-			Sign sign = (Sign) e.getClickedBlock().getState();
-			char c = ChatColor.stripColor(sign.getLine(2)).charAt(0);
-			
-			switch (c) {
-			case 'S': li.switchClass(uuid, PlayerClass.SWORDSMAN);
-			break;
-			case 'T': li.switchClass(uuid, PlayerClass.THIEF);
-			break;
-			case 'A': li.switchClass(uuid, PlayerClass.ARCHER);
-			break;
-			case 'M': li.switchClass(uuid, PlayerClass.MAGE);
-			break;
-			}
-		}
+		s.getInstance().handleInteractEvent(e);
 
 		// Check fight instance
 		if (!(s.getInstance() instanceof FightInstance)) return;
 		
-		if (a == Action.LEFT_CLICK_AIR || a == Action.LEFT_CLICK_BLOCK) {
-			FightInstance.handleLeftClick(e);
-		}
-		// Right click
-		else if (a == Action.RIGHT_CLICK_AIR || a == Action.RIGHT_CLICK_BLOCK) {
-			FightInstance.handleRightClick(e);
-		}
 	}
 
 	@EventHandler

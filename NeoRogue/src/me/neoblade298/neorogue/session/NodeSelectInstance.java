@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -44,7 +45,9 @@ public class NodeSelectInstance implements Instance {
 		task.cancel();
 	}
 	
-	public void handleRightClick(PlayerInteractEvent e) {
+	@Override
+	public void handleInteractEvent(PlayerInteractEvent e) {
+		if (e.getAction() != Action.RIGHT_CLICK_BLOCK) return;
 		Player p = e.getPlayer();
 		if (Tag.BUTTONS.isTagged(e.getClickedBlock().getType())) {
 			if (!p.getUniqueId().equals(s.getHost())) {

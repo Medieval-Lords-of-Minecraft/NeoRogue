@@ -14,6 +14,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -124,6 +125,17 @@ public abstract class FightInstance implements Instance {
 		e.setCancelled(true);
 		Player p = e.getPlayer();
 		trigger(p, p.isSneaking() ? Trigger.SHIFT_DROP : Trigger.DROP, null);
+	}
+	
+	public void handleInteractEvent(PlayerInteractEvent e) {
+		Action a = e.getAction();
+		if (a == Action.LEFT_CLICK_AIR || a == Action.LEFT_CLICK_BLOCK) {
+			handleLeftClick(e);
+		}
+		// Right click
+		else if (a == Action.RIGHT_CLICK_AIR || a == Action.RIGHT_CLICK_BLOCK) {
+			handleRightClick(e);
+		}
 	}
 	
 	public static void handleRightClick(PlayerInteractEvent e) {
