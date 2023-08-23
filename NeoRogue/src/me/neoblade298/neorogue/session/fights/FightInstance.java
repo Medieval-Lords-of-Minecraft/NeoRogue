@@ -56,36 +56,11 @@ public abstract class FightInstance implements Instance {
 	protected double spawnCounter; // Holds a value between 0 and 1, when above 1, a mob spawns
 	protected double totalSpawnValue; // Keeps track of total mob spawns, to handle scaling of spawning
 	
-	static {
-		new BukkitRunnable() {
-			boolean alternate = false;
-			public void run() {
-				alternate = !alternate;
-				
-				// Every 20 ticks
-				if (alternate && !toTick.isEmpty()) {
-					Iterator<UUID> iter = toTick.iterator();
-					while (iter.hasNext()) {
-						if (fightData.get(iter.next()).runTickActions()) iter.remove();
-					}
-				}
-				
-				// Every 10 ticks
-				for (Session s : SessionManager.getSessions()) {
-					if (!(s.getInstance() instanceof FightInstance)) continue;
-					for (Barrier b : ((FightInstance) s.getInstance()).getBarriers().values()) {
-						b.tick();
-					}
-				}
-			}
-		}.runTaskTimer(NeoRogue.inst(), 0L, 10L);
-	}
-	
 	public FightInstance(Session s) {
 		this.s = s;
 		int rand = s.getNodesVisited() >= 5 ? NeoCore.gen.nextInt(s.getNodesVisited() / 5) : 0;
 		int min = s.getNodesVisited() / 10;
-		map = Map.generate(s.getArea().getType(), 1 + rand + min);
+		map = Map.generate(s.getArea().getType(), 2 + rand + min);
 	}
 	
 	public void instantiate() {
@@ -426,6 +401,30 @@ public abstract class FightInstance implements Instance {
 				spawnMob(3 + (s.getNodesVisited() / 5));
 			}
 		}.runTaskLater(NeoRogue.inst(), 60L);
+		
+		tasks.add(new BukkitRunnable() {
+			boolean alternate = false;
+			public void run() {
+				alternate = !alternate;
+				
+				// Every 20 ticks
+				if (alternate && !toTick.isEmpty()) {
+					Iterator<UUID> iter = toTick.iterator();
+					while (iter.hasNext()) {
+						FightData data = fightData.get(iter.next());
+						if (data == null || data.runTickActions()) iter.remove();
+					}
+				}
+				
+				// Every 10 ticks
+				for (Session s : SessionManager.getSessions()) {
+					if (!(s.getInstance() instanceof FightInstance)) continue;
+					for (Barrier b : ((FightInstance) s.getInstance()).getBarriers().values()) {
+						b.tick();
+					}
+				}
+			}
+		}.runTaskTimer(NeoRogue.inst(), 0L, 10L));
 	}
 	
 	protected abstract void setupInstance(Session s);

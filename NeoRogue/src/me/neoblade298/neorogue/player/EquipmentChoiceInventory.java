@@ -14,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.session.RewardInventory;
 
@@ -21,9 +22,11 @@ public class EquipmentChoiceInventory extends CoreInventory {
 	private RewardInventory prev;
 	private ArrayList<Equipment> equips;
 	private int prevSlot;
+	private PlayerSessionData data;
 
-	public EquipmentChoiceInventory(Player p, Inventory inv, ArrayList<Equipment> equips, RewardInventory prev, int prevSlot) {
-		super(p, inv);
+	public EquipmentChoiceInventory(PlayerSessionData data, Inventory inv, ArrayList<Equipment> equips, RewardInventory prev, int prevSlot) {
+		super(data.getPlayer(), inv);
+		this.data = data;
 		this.prev = prev;
 		this.prevSlot = prevSlot;
 		this.equips = equips;
@@ -31,6 +34,7 @@ public class EquipmentChoiceInventory extends CoreInventory {
 		for (int i = 0; i < equips.size(); i++) {
 			contents[i] = equips.get(i).getItem();
 		}
+		inv.setContents(contents);
 	}
 
 	@Override
@@ -44,14 +48,25 @@ public class EquipmentChoiceInventory extends CoreInventory {
 			p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1F, 1F);
 			Equipment eq = equips.get(slot);
 			Util.msg(p, "You claimed your reward of " + eq.getDisplay());
-			HashMap<Integer, ItemStack> overflow = p.getInventory().addItem(eq.getItem());
-			if (!overflow.isEmpty()) {
-				for (ItemStack item : overflow.values()) {
-					p.getWorld().dropItem(p.getLocation(), item);
+			
+			if (eq instanceof Artifact) {
+				data.giveArtifact((Artifact) eq);
+			}
+			else {
+				HashMap<Integer, ItemStack> overflow = p.getInventory().addItem(eq.getItem());
+				if (!overflow.isEmpty()) {
+					for (ItemStack item : overflow.values()) {
+						p.getWorld().dropItem(p.getLocation(), item);
+					}
 				}
 			}
-			prev.claimReward(prevSlot);
-			prev.openInventory();
+			if (prev.claimReward(prevSlot)) {
+				prev.openInventory();
+			}
+			else {
+				p.playSound(p, Sound.BLOCK_CHEST_CLOSE, 1F, 1F);
+				p.closeInventory();
+			}
 		}
 	}
 

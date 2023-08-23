@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Sound;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
@@ -23,7 +22,7 @@ import me.neoblade298.neorogue.session.RewardInstance;
 import me.neoblade298.neorogue.session.Session;
 
 public class StandardFightInstance extends FightInstance {
-	private static final double SCORE_REQUIRED = 75;
+	private static final double SCORE_REQUIRED = 25;
 	
 	private BossBar timeBar, scoreBar;
 	private double time, score;
@@ -79,7 +78,7 @@ public class StandardFightInstance extends FightInstance {
 			s.setInstance(new RewardInstance(generateRewards()));
 			return;
 		}
-		scoreBar.setProgress(score / fightScore.getThreshold());
+		scoreBar.setProgress(Math.min(1, score / SCORE_REQUIRED));
 	}
 	
 	private HashMap<UUID, ArrayList<Reward>> generateRewards() {
@@ -91,7 +90,7 @@ public class StandardFightInstance extends FightInstance {
 			
 			ArrayList<Equipment> equipDrops = new ArrayList<Equipment>();
 			EquipmentClass ec = data.getPlayerClass().toEquipmentClass();
-			int value = fightScore.getValue() + s.getAreasCompleted();
+			int value = s.getAreasCompleted();
 			switch (fightScore) {
 			case S:
 				equipDrops.add(Equipment.getDrop(ec, value + 2));
@@ -121,8 +120,19 @@ public class StandardFightInstance extends FightInstance {
 			}
 			
 			list.add(new EquipmentChoiceReward(equipDrops));
+			equipDrops = new ArrayList<Equipment>(3);
+			equipDrops.add(Equipment.get("rubyShard", fightScore == FightScore.S));
+			equipDrops.add(Equipment.get("emeraldShard", fightScore == FightScore.S));
+			equipDrops.add(Equipment.get("sapphireShard", fightScore == FightScore.S));
+			list.add(new EquipmentChoiceReward(equipDrops));
 			rewards.put(uuid, list);
 		}
 		return rewards;
+	}
+	
+	@Override
+	public void cleanup() {
+		super.cleanup();
+		s.broadcast("&7You completed the fight with a score of " + fightScore.getDisplay() + "&7!");
 	}
 }

@@ -276,14 +276,13 @@ public class LobbyInstance implements Instance {
 		session.broadcast("&7Generating your game...");
 		session.generateArea(AreaType.LOW_DISTRICT);
 		session.setNode(session.getArea().getNodes()[0][2]);
-		session.setInstance(new NodeSelectInstance(session));
 		
 		new BukkitRunnable() {
 			public void run() {
 				for (UUID uuid : players.keySet()) {
 					Player p = Bukkit.getPlayer(uuid);
-					p.teleport(session.getArea().getTeleport());
 					p.setHealth(p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+					session.setInstance(new NodeSelectInstance());
 				}
 			}
 		}.runTaskLater(NeoRogue.inst(), 20L);

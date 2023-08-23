@@ -49,7 +49,7 @@ public class PlayerFightData extends FightData {
 			if (other == null) continue;
 			other.initialize(p, this, KeyBind.getBindFromData(i).getTrigger(), -1);
 		}
-		for (Artifact art : data.getArtifacts()) {
+		for (ArtifactInstance art : data.getArtifacts()) {
 			if (art == null) continue;
 			art.initialize(p, this, null, -1);
 		}

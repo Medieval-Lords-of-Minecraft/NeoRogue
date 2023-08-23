@@ -40,7 +40,7 @@ public class ReforgeOptionsInventory extends CoreInventory {
 		int offset = options.size() - 6; // -5 for middle of inv, -1 for 0 offset at size 1
 		contents[0] = toReforge.getItem();
 		for (int i = 0; i < options.size(); i++) {
-			Equipment eq = Equipment.getEquipment(options.get(i), false);
+			Equipment eq = Equipment.get(options.get(i), false);
 			contents[(2 * i) - offset] = eq.getItem();
 			reforgeOptions.add(eq);
 		}

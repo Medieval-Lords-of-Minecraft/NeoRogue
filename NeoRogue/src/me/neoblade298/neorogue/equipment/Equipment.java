@@ -14,6 +14,7 @@ import me.neoblade298.neocore.shared.droptables.DropTable;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.equipment.abilities.*;
 import me.neoblade298.neorogue.equipment.armor.*;
+import me.neoblade298.neorogue.equipment.artifacts.*;
 import me.neoblade298.neorogue.equipment.offhands.*;
 import me.neoblade298.neorogue.equipment.weapons.*;
 import me.neoblade298.neorogue.player.Trigger;
@@ -33,7 +34,7 @@ public abstract class Equipment {
 	protected Rarity rarity;
 	protected EquipmentClass ec;
 	
-	static {
+	public static void load() {
 		for (EquipmentClass ec : EquipmentClass.values()) {
 			HashMap<Integer, DropTable<Equipment>> tables = new HashMap<Integer, DropTable<Equipment>>();
 			for (int i = 0; i < 10; i++) {
@@ -56,8 +57,14 @@ public abstract class Equipment {
 			// Offhands
 			new RicketyShield(b);
 			
+			// Abilities
 			new BattleCry(b);
 			new EmpoweredEdge(b);
+			
+			// Artifacts
+			new RubyShard(b);
+			new SapphireShard(b);
+			new EmeraldShard(b);
 		}
 	}
 	
@@ -99,7 +106,7 @@ public abstract class Equipment {
 		return rarity;
 	}
 	
-	public static Equipment getEquipment(String id, boolean upgrade) {
+	public static Equipment get(String id, boolean upgrade) {
 		return upgrade ? upgraded.get(id) : equipment.get(id);
 	}
 	

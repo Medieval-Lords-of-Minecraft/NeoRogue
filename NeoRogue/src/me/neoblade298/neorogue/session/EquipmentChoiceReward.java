@@ -20,7 +20,7 @@ public class EquipmentChoiceReward implements Reward {
 
 	@Override
 	public boolean claim(PlayerSessionData data, int slot, RewardInventory inv) {
-		new EquipmentChoiceInventory(data.getPlayer(), Bukkit.createInventory(data.getPlayer(), 9, "§9Choose one!"), equips, inv, slot);
+		new EquipmentChoiceInventory(data, Bukkit.createInventory(data.getPlayer(), 9, "§9Choose one!"), equips, inv, slot);
 		return false;
 	}
 

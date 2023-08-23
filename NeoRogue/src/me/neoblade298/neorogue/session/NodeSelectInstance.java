@@ -22,15 +22,13 @@ import me.neoblade298.neorogue.session.fights.FightInstance;
 public class NodeSelectInstance implements Instance {
 	private Session s;
 	private BukkitTask task;
-	
-	public NodeSelectInstance(Session s) {
-		this.s = s;
-	}
 
 	@Override
 	public void start(Session s) {
+		this.s = s;
 		Area area = s.getArea();
 		area.update(s.getNode());
+		p.teleport(area.getTeleport());
 		task = new BukkitRunnable() {
 			public void run() {
 				for (Player p : s.getOnlinePlayers()) {
@@ -73,7 +71,9 @@ public class NodeSelectInstance implements Instance {
 					return;
 				}
 			}
-			s.setInstance(s.getArea().getNodeFromLocation(e.getClickedBlock().getLocation()).getInstance());
+			Node node = s.getArea().getNodeFromLocation(e.getClickedBlock().getLocation());
+			s.setNode(node);
+			s.setInstance(node.getInstance());
 			return;
 		}
 		else if (e.getClickedBlock().getType() == Material.LECTERN) {

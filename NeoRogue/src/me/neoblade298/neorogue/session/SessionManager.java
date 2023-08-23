@@ -9,6 +9,7 @@ import org.bukkit.Tag;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Damageable;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -186,8 +187,9 @@ public class SessionManager implements Listener {
 
 	@EventHandler
 	public void onMythicSpawn(MythicMobSpawnEvent e) {
-		UUID uuid = e.getEntity().getUniqueId();
-		FightInstance.putFightData(uuid, new FightData((Damageable) e.getEntity(), (MapSpawnerInstance) null));
+		Entity ent = e.getEntity();
+		UUID uuid = ent.getUniqueId();
+		FightInstance.putFightData(uuid, new FightData((Damageable) ent, (MapSpawnerInstance) null));
 	}
 
 	@EventHandler

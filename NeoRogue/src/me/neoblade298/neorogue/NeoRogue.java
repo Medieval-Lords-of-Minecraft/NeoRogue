@@ -14,6 +14,8 @@ import me.neoblade298.neocore.shared.commands.SubcommandRunner;
 import me.neoblade298.neocore.shared.exceptions.NeoIOException;
 import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.commands.*;
+import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentClass;
 import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.map.MapShape;
 import me.neoblade298.neorogue.player.PlayerManager;
@@ -28,13 +30,6 @@ public class NeoRogue extends JavaPlugin {
 	public static HolographicDisplaysAPI holo;
 	
 	public static Location spawn;
-	
-	public static void main(String[] args) {
-		double spawnCounter = 0;
-		for (double totalSpawns = 0; totalSpawns < 100; totalSpawns++) {
-			spawnCounter += 1 + (totalSpawns / 25);
-		}
-	}
 	
 	public void onEnable() {
 		Bukkit.getServer().getLogger().info("NeoRogue Enabled");
@@ -54,6 +49,7 @@ public class NeoRogue extends JavaPlugin {
 			e.printStackTrace();
 		}
 		Map.load(); // Load in map pieces
+		Equipment.load();
 		
 		holo = HolographicDisplaysAPIProvider.getImplementation().getHolographicDisplaysAPI(this);
 		

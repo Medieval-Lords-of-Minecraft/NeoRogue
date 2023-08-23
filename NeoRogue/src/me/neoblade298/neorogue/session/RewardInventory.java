@@ -2,7 +2,8 @@ package me.neoblade298.neorogue.session;
 
 import java.util.ArrayList;
 
-import org.bukkit.entity.Player;
+import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
@@ -14,7 +15,7 @@ import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 
 public class RewardInventory extends CoreInventory {
-
+	private boolean playSound = true;
 	private ArrayList<Reward> rewards;
 	private PlayerSessionData data;
 	
@@ -28,6 +29,8 @@ public class RewardInventory extends CoreInventory {
 		for (Reward reward : rewards) {
 			contents[i++] = reward.getIcon();
 		}
+		contents[8] = CoreInventory.createButton(Material.RED_WOOL, "&cClear remaining rewards");
+		inv.setContents(contents);
 	}
 
 	@Override
@@ -41,14 +44,23 @@ public class RewardInventory extends CoreInventory {
 			Reward reward = rewards.get(slot);
 			
 			if (reward.claim(data, slot, this)) {
+				playSound = false; // Don't play close inventory sound effect if opening another inv
 				claimReward(slot);
+				playSound = true;
 			}
+		}
+		else if (slot == 8) {
+			rewards.clear();
+			((RewardInstance) data.getSession().getInstance()).onRewardClaim();
+			p.closeInventory();
 		}
 	}
 
 	@Override
 	public void handleInventoryClose(InventoryCloseEvent e) {
-		
+		if (playSound) {
+			p.playSound(p, Sound.BLOCK_CHEST_CLOSE, 1F, 1F);
+		}
 	}
 
 	@Override
@@ -56,12 +68,16 @@ public class RewardInventory extends CoreInventory {
 		e.setCancelled(true);
 	}
 
-	public void claimReward(int slot) {
-		rewards.remove(slot);
+	// True if there are still rewards remaining
+	public boolean claimReward(int slot) {
 		ItemStack[] contents = inv.getContents();
 		for (int i = slot; i < rewards.size() - 1; i++) {
 			contents[i] = contents[i + 1];
 		}
 		contents[rewards.size() - 1] = null;
+		rewards.remove(slot);
+		inv.setContents(contents);
+		((RewardInstance) data.getSession().getInstance()).onRewardClaim();
+		return !rewards.isEmpty();
 	}
 }

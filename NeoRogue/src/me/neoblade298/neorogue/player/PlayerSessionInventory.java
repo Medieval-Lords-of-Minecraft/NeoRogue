@@ -178,13 +178,13 @@ public class PlayerSessionInventory extends CoreInventory {
 				p.setItemOnCursor(null);
 				boolean isUpgraded = nclicked.getBoolean("isUpgraded") || ncursor.getBoolean("isUpgraded");
 				new ReforgeOptionsInventory(this, e.getSlot(), onChest, onChest ? slotTypes.get(e.getSlot()) : null, nclicked.getInteger("dataSlot"),
-						Equipment.getEquipment(eqId, isUpgraded), cursor);
+						Equipment.get(eqId, isUpgraded), cursor);
 				return;
 			}
 			
 			if (onChest) {
-				Equipment eq = Equipment.getEquipment(eqId, false);
-				Equipment equippedEq = Equipment.getEquipment(eqedId, false);
+				Equipment eq = Equipment.get(eqId, false);
+				Equipment equippedEq = Equipment.get(eqedId, false);
 				if (!nclicked.hasTag("dataSlot")) return;
 				if (eq instanceof Ability && (equippedEq == null || !(equippedEq instanceof Ability)) && !data.canEquipAbility()) {
 					displayError("&cYou can only equip &e" + data.getMaxAbilities() + " &cabilities!", true);
@@ -233,8 +233,8 @@ public class PlayerSessionInventory extends CoreInventory {
 			}
 			else {
 				if (!nclicked.hasTag("dataSlot")) return;
-				Equipment eq = Equipment.getEquipment(nswapped.getString("equipId"), false);
-				Equipment equippedEq = Equipment.getEquipment(nswapped.getString("equipId"), false);
+				Equipment eq = Equipment.get(nswapped.getString("equipId"), false);
+				Equipment equippedEq = Equipment.get(nswapped.getString("equipId"), false);
 				if (eq instanceof Ability && (equippedEq == null || !(equippedEq instanceof Ability)) && !data.canEquipAbility()) {
 					displayError("&cYou can only equip &e" + data.getMaxAbilities() + " &cabilities!", true);
 					return;
@@ -337,7 +337,7 @@ public class PlayerSessionInventory extends CoreInventory {
 	}
 
 	public boolean setEquipment(String slotType, int dataSlot, String equipId, boolean isUpgraded) {
-		Equipment eq = Equipment.getEquipment(equipId, isUpgraded);
+		Equipment eq = Equipment.get(equipId, isUpgraded);
 		switch (slotType) {
 		case "ARMOR":
 			if (!(eq instanceof Armor)) return false;

@@ -50,7 +50,7 @@ public class FightData {
 		// Only use this for mobs
 		Plot p = Plot.locationToPlot(e.getLocation());
 		Session s = SessionManager.getSession(p);
-		if (s == null) return;
+		if (s == null || !(s.getInstance() instanceof FightInstance)) return;
 		inst = (FightInstance) s.getInstance();
 		this.entity = e;
 		this.shields = new ShieldHolder(this);

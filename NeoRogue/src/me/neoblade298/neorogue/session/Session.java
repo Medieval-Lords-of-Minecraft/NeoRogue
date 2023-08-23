@@ -35,7 +35,7 @@ public class Session {
 	
 	public void addPlayers(HashMap<UUID, PlayerClass> players) {
 		for (Entry<UUID, PlayerClass> ent : players.entrySet()) {
-			party.put(ent.getKey(), new PlayerSessionData(ent.getKey(), ent.getValue()));
+			party.put(ent.getKey(), new PlayerSessionData(ent.getKey(), ent.getValue(), this));
 		}
 	}
 
