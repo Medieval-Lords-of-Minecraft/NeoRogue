@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import me.neoblade298.neorogue.session.Instance;
 import me.neoblade298.neorogue.session.Session;
-import me.neoblade298.neorogue.session.fights.FightInstance;
 import me.neoblade298.neorogue.session.fights.StandardFightInstance;
 
 public class Node {

@@ -15,19 +15,21 @@ import me.neoblade298.neorogue.session.fights.BuffType;
 import me.neoblade298.neorogue.session.fights.PlayerFightData;
 
 public class RicketyShield extends Offhand {
+	private int reduction;
 	
 	public RicketyShield(boolean isUpgraded) {
 		super("ricketyShield", isUpgraded, Rarity.COMMON, EquipmentClass.SWORDSMAN);
 		display = "Rickety Shield";
+		reduction = isUpgraded ? 8 : 5;
 		item = createItem(this, Material.SHIELD, null, "When raised, creates a barrier in front of you of size &e3x3 &7"
-				+ "that intercepts projectiles. Projectiles that hit the barrier hit you but have their damage reduced by &e5&7.");
+				+ "that intercepts projectiles. Projectiles that hit the barrier hit you but have their damage reduced by &e" + reduction + "&7.");
 	}
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int hotbar) {
 		data.addTrigger(id, Trigger.RAISE_SHIELD, (inputs) -> {
 			HashMap<BuffType, Buff> buffs = new HashMap<BuffType, Buff>();
-			buffs.put(BuffType.GENERAL, new Buff(p.getUniqueId(), 5, 0));
+			buffs.put(BuffType.GENERAL, new Buff(p.getUniqueId(), reduction, 0));
 			data.setBarrier(new Barrier(p, 2, 3, 3, 0, buffs, false));
 			return true;
 		});

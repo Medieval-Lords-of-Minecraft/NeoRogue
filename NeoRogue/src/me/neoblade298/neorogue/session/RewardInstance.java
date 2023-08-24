@@ -17,9 +17,8 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.player.PlayerSessionData;
-import me.neoblade298.neorogue.session.fights.FightScore;
 
-public class RewardInstance implements Instance {
+public class RewardInstance implements EditInventoryInstance {
 	private static final int REWARDS_X = 4, REWARDS_Z = 78;
 	
 	private HashMap<UUID, ArrayList<Reward>> rewards = new HashMap<UUID, ArrayList<Reward>>();
@@ -37,7 +36,6 @@ public class RewardInstance implements Instance {
 			Player p = data.getPlayer();
 			p.playSound(p, Sound.ENTITY_PLAYER_LEVELUP, 1F, 1F);
 			p.teleport(loc);
-			data.setupInventory();
 		}
 	}
 

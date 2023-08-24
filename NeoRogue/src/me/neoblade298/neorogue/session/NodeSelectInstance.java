@@ -19,7 +19,7 @@ import me.neoblade298.neorogue.player.FightInfoInventory;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fights.FightInstance;
 
-public class NodeSelectInstance implements Instance {
+public class NodeSelectInstance implements EditInventoryInstance {
 	private Session s;
 	private BukkitTask task;
 
@@ -28,7 +28,9 @@ public class NodeSelectInstance implements Instance {
 		this.s = s;
 		Area area = s.getArea();
 		area.update(s.getNode());
-		p.teleport(area.getTeleport());
+		for (Player p : s.getOnlinePlayers()) {
+			p.teleport(area.getTeleport());
+		}
 		task = new BukkitRunnable() {
 			public void run() {
 				for (Player p : s.getOnlinePlayers()) {
@@ -59,14 +61,6 @@ public class NodeSelectInstance implements Instance {
 				if (member == null) {
 					for (Player online : s.getOnlinePlayers()) {
 						Util.displayError(online, "&cAt least one party member (&4" + ent.getValue().getData().getDisplay() + "&c) is not online!");
-					}
-					return;
-				}
-				
-				if (!ent.getValue().saveStorage()) {
-					for (Player online : s.getOnlinePlayers()) {
-						Util.displayError(online, "&&4" + ent.getValue().getData().getDisplay() + "&c has too many items in their inventory! They must drop some "
-								+ "to satisfy their storage limit of &e" + ent.getValue().getMaxStorage() + "&c!");
 					}
 					return;
 				}

@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.filoghost.holographicdisplays.api.HolographicDisplaysAPI;
@@ -18,7 +19,10 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentClass;
 import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.map.MapShape;
+import me.neoblade298.neorogue.player.PlayerClass;
 import me.neoblade298.neorogue.player.PlayerManager;
+import me.neoblade298.neorogue.session.CampfireInstance;
+import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
 import me.neoblade298.neorogue.session.fights.Mob;
 import net.md_5.bungee.api.ChatColor;
@@ -85,10 +89,10 @@ public class NeoRogue extends JavaPlugin {
 	}
 	
 	private void debugInitialize() {
-		//Player p = Bukkit.getPlayer("Ascheladd");
-		//Session s = SessionManager.createSession(p);
-		//s.setInstance(new FightInstance(s));
-		//s.getInstance().start(s);
+		Player p = Bukkit.getPlayer("Ascheladd");
+		Session s = SessionManager.createSession(p, "test");
+		s.addPlayer(p.getUniqueId(), PlayerClass.SWORDSMAN);
+		s.setInstance(new CampfireInstance());
 
 		//Map map = Map.generate(AreaType.LOW_DISTRICT, 8);
 		//map.instantiate(null, 0, 0);

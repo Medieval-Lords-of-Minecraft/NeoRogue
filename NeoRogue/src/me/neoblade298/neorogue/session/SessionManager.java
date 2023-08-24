@@ -4,10 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.UUID;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Tag;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.block.Sign;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -15,7 +12,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
@@ -35,7 +31,6 @@ import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
 import io.lumine.mythic.bukkit.events.MythicMobSpawnEvent;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.map.MapSpawnerInstance;
-import me.neoblade298.neorogue.player.PlayerClass;
 import me.neoblade298.neorogue.player.PlayerSessionInventory;
 import me.neoblade298.neorogue.session.fights.*;
 
@@ -132,7 +127,7 @@ public class SessionManager implements Listener {
 			Session s = sessions.get(uuid);
 			e.setCancelled(true);
 
-			if (s.getInstance() instanceof NodeSelectInstance || s.getInstance() instanceof RestInstance) {
+			if (s.getInstance() instanceof EditInventoryInstance) {
 				p.setItemOnCursor(null);
 				new PlayerSessionInventory(s.getData(uuid));
 			}
@@ -165,14 +160,9 @@ public class SessionManager implements Listener {
 	@EventHandler(ignoreCancelled = false)
 	public void onInteract(PlayerInteractEvent e) {
 		UUID uuid = e.getPlayer().getUniqueId();
-		Action a = e.getAction();
 		if (!sessions.containsKey(uuid)) return;
 		Session s = sessions.get(uuid);
 		s.getInstance().handleInteractEvent(e);
-
-		// Check fight instance
-		if (!(s.getInstance() instanceof FightInstance)) return;
-		
 	}
 
 	@EventHandler

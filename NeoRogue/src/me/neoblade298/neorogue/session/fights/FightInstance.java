@@ -161,7 +161,7 @@ public abstract class FightInstance implements Instance {
 	
 	public static void handleMythicDespawn(MythicMobDespawnEvent e) {
 		FightData data = removeFightData(e.getEntity().getUniqueId());
-		if (data == null) return;
+		if (data == null || data.getInstance() == null) return;
 		data.getInstance().handleRespawn(data, e.getMobType().getInternalName(), true);
 	}
 	
@@ -445,6 +445,7 @@ public abstract class FightInstance implements Instance {
 		for (UUID uuid : s.getParty().keySet()) {
 			userData.remove(uuid).cleanup();
 			fightData.remove(uuid).cleanup();
+			s.getParty().get(uuid).updateHealth();
 		}
 		
 		for (BukkitTask task : tasks) {

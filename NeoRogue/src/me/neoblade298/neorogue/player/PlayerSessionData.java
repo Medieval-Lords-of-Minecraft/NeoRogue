@@ -35,6 +35,7 @@ public class PlayerSessionData {
 	public PlayerSessionData(UUID uuid, PlayerClass pc, Session s) {
 		data = PlayerManager.getPlayerData(uuid);
 		this.s = s;
+		health = 100;
 		maxHealth = 100;
 		maxMana = 100;
 		maxStamina = 100;
@@ -46,16 +47,16 @@ public class PlayerSessionData {
 		// Need to give player a weapon at the start
 		switch (this.pc) {
 		case SWORDSMAN: hotbar[0] = (HotbarCompatible) Equipment.get("woodenSword", false);
-		hotbar[1] = (HotbarCompatible) Equipment.get("empoweredEdge", true);
+		hotbar[1] = (HotbarCompatible) Equipment.get("empoweredEdge", false);
 		break;
 		case THIEF: hotbar[0] = (HotbarCompatible) Equipment.get("woodenSword", false);
-		hotbar[1] = (HotbarCompatible) Equipment.get("empoweredEdge", true);
+		hotbar[1] = (HotbarCompatible) Equipment.get("empoweredEdge", false);
 		break;
 		case ARCHER: hotbar[0] = (HotbarCompatible) Equipment.get("woodenSword", false);
-		hotbar[1] = (HotbarCompatible) Equipment.get("empoweredEdge", true);
+		hotbar[1] = (HotbarCompatible) Equipment.get("empoweredEdge", false);
 		break;
 		case MAGE: hotbar[0] = (HotbarCompatible) Equipment.get("woodenSword", false);
-		hotbar[1] = (HotbarCompatible) Equipment.get("empoweredEdge", true);
+		hotbar[1] = (HotbarCompatible) Equipment.get("empoweredEdge", false);
 		break;
 		}
 		
@@ -84,6 +85,7 @@ public class PlayerSessionData {
 			if (eq == null) continue;
 			inv.setItem(i, eq.getItem());
 		}
+		System.out.println("Setting");
  	}
 	
 	public Player getPlayer() {
@@ -148,10 +150,6 @@ public class PlayerSessionData {
 
 	public double getMaxStamina() {
 		return maxStamina;
-	}
-
-	public double getHealth() {
-		return health;
 	}
 
 	public Armor[] getArmors() {
@@ -244,5 +242,18 @@ public class PlayerSessionData {
 	}
 	public Session getSession() {
 		return s;
+	}
+	
+	public double getHealth() {
+		return health;
+	}
+	
+	public void updateHealth() {
+		health = Math.round(getPlayer().getHealth());
+	}
+	
+	public void setHealth(double health) {
+		this.health = health;
+		getPlayer().setHealth(Math.min(health, maxHealth));
 	}
 }

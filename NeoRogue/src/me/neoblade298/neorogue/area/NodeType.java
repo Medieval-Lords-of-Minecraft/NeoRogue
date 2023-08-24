@@ -8,7 +8,7 @@ public enum NodeType {
 	SHOP(Material.EMERALD_BLOCK),
 	MINIBOSS(Material.OBSIDIAN),
 	BOSS(Material.DIAMOND_BLOCK),
-	REST(Material.OCHRE_FROGLIGHT),
+	CAMPFIRE(Material.OCHRE_FROGLIGHT),
 	TREASURE(Material.GOLD_BLOCK),
 	START(Material.IRON_BLOCK);
 

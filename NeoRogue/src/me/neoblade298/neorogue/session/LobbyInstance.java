@@ -47,23 +47,24 @@ public class LobbyInstance implements Instance {
 	private HashMap<UUID, PlayerClass> players = new HashMap<UUID, PlayerClass>();
 	private UUID host;
 	private Session session;
-	private static Clipboard nodeSelect, rewardsRoom;
+	private static Clipboard classSelect, rewardsRoom, campfire;
 	private Location loc;
 	private boolean busy = false;
 	
 	private static final int LOBBY_X = -7, LOBBY_Z = 3;
-	private static final int REWARDS_Z = 76;
+	private static final int REWARDS_Z = 76, CAMPFIRE_Z = 82;
 	
 	// schematics
-	private static String NODE_SELECT = "classselect.schem";
-	private static String REWARDS_ROOM = "rewardsroom.schem";
+	private static String CLASS_SELECT = "classselect.schem",
+			REWARDS_ROOM = "rewardsroom.schem",
+			CAMPFIRE = "campfire.schem";
 	
 	static {
 		// Load the node select schematic
-		File file = new File(NeoRogue.SCHEMATIC_FOLDER, NODE_SELECT);
+		File file = new File(NeoRogue.SCHEMATIC_FOLDER, CLASS_SELECT);
 		ClipboardFormat format = ClipboardFormats.findByFile(file);
 		try (ClipboardReader reader = format.getReader(new FileInputStream(file))) {
-			nodeSelect = reader.read();
+			classSelect = reader.read();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -75,6 +76,17 @@ public class LobbyInstance implements Instance {
 		format = ClipboardFormats.findByFile(file);
 		try (ClipboardReader reader = format.getReader(new FileInputStream(file))) {
 			rewardsRoom = reader.read();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		// Load the rest area schematic
+		file = new File(NeoRogue.SCHEMATIC_FOLDER, CAMPFIRE);
+		format = ClipboardFormats.findByFile(file);
+		try (ClipboardReader reader = format.getReader(new FileInputStream(file))) {
+			campfire = reader.read();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -93,9 +105,9 @@ public class LobbyInstance implements Instance {
 		players.put(host.getUniqueId(), PlayerClass.SWORDSMAN);
 		this.session = session;
 		
-		// Generate the starting area and add the host there
+		// Generate the lobby and add the host there
 		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Area.world)) {
-		    Operation operation = new ClipboardHolder(nodeSelect)
+		    Operation operation = new ClipboardHolder(classSelect)
 		            .createPaste(editSession)
 		            .to(BlockVector3.at(session.getXOff() - 1, 64, session.getZOff()))
 		            .ignoreAirBlocks(true)
@@ -107,6 +119,7 @@ public class LobbyInstance implements Instance {
 			}
 		}
 		loc = new Location(Bukkit.getWorld(Area.WORLD_NAME), session.getXOff() + LOBBY_X, 64, session.getZOff() + LOBBY_Z);
+		System.out.println("Created lobby instance and teleported");
 		host.teleport(loc);
 
 		// Generate the rewards room
@@ -116,7 +129,20 @@ public class LobbyInstance implements Instance {
 		            .to(BlockVector3.at(session.getXOff() - 1, 64, session.getZOff() + REWARDS_Z))
 		            .ignoreAirBlocks(true)
 		            .build();
-		    System.out.println("Generating " + (session.getXOff() - 1) + ", " + REWARDS_Z);
+		    try {
+				Operations.complete(operation);
+			} catch (WorldEditException e) {
+				e.printStackTrace();
+			}
+		}
+
+		// Generate the campfire
+		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Area.world)) {
+		    Operation operation = new ClipboardHolder(campfire)
+		            .createPaste(editSession)
+		            .to(BlockVector3.at(session.getXOff() - 1, 64, session.getZOff() + CAMPFIRE_Z))
+		            .ignoreAirBlocks(true)
+		            .build();
 		    try {
 				Operations.complete(operation);
 			} catch (WorldEditException e) {

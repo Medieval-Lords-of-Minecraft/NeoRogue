@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.util.Util;
@@ -38,10 +39,20 @@ public class Session {
 			party.put(ent.getKey(), new PlayerSessionData(ent.getKey(), ent.getValue(), this));
 		}
 	}
+	
+	public void addPlayer(UUID uuid, PlayerClass pc) {
+		party.put(uuid, new PlayerSessionData(uuid, pc, this));
+	}
 
 	public void broadcast(String msg) {
 		for (Player p : getOnlinePlayers()) {
 			Util.msgRaw(p, msg);
+		}
+	}
+	
+	public void broadcastSound(Sound s) {
+		for (Player p : getOnlinePlayers()) {
+			p.playSound(p, s, 1F, 1F);
 		}
 	}
 	
@@ -54,9 +65,25 @@ public class Session {
 	}
 	
 	public void setInstance(Instance inst) {
+		if (inst instanceof EditInventoryInstance) {
+			for (PlayerSessionData data : party.values()) {
+				if (!data.saveStorage()) {
+					for (Player online : getOnlinePlayers()) {
+						Util.displayError(online, "&&4" + data.getData().getDisplay() + "&c has too many items in their inventory! They must drop some "
+								+ "to satisfy their storage limit of &e" + data.getMaxStorage() + "&c!");
+					}
+					return;
+				}
+			}
+		}
 		this.inst.cleanup();
 		this.inst = inst;
 		inst.start(this);
+		if (inst instanceof EditInventoryInstance) {
+			for (PlayerSessionData data : party.values()) {
+				data.setupInventory();
+			}
+		}
 	}
 	
 	public PlayerSessionData getData(UUID uuid) {

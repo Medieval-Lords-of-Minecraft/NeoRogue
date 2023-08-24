@@ -45,11 +45,15 @@ public class MapSpawnerInstance {
 	}
 	
 	public boolean canSpawn() {
-		return maxMobs == -1 || activeMobs >= maxMobs;
+		return maxMobs == -1 || activeMobs < maxMobs;
 	}
 	
 	public int getMaxMobs() {
 		return maxMobs;
+	}
+	
+	public MythicMob getMythicMob() {
+		return mythicMob;
 	}
 	
 	public void spawnMob(double lvl) {
@@ -70,7 +74,7 @@ public class MapSpawnerInstance {
 				fd.addBuff(uuid, false, true, ent.getKey(), (double) ent.getValue() / 100);
 			}
 			FightInstance.putFightData(uuid, fd);
-			activeMobs++;
+			activeMobs += mob.getAmount();
 		}
 	}
 	
