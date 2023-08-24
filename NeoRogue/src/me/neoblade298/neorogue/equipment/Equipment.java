@@ -191,8 +191,27 @@ public abstract class Equipment {
 		return eq.id.equals(this.id);
 	}
 	
-	public static Equipment getDrop(EquipmentClass ec, int value) {
-		return droptables.get(ec).get(value).get();
+	public static Equipment getDrop(int value, EquipmentClass... ec) {
+
+		HashMap<Integer, DropTable<Equipment>> tables;
+		if (ec.length > 1) {
+			int total = 0;
+			for (int i = 0; i < ec.length; i++) {
+				total += droptables.get(ec[i]).getTotalWeight();
+			}
+			
+			int rand = NeoCore.gen.nextInt(total);
+			int i = -1;
+			while (rand > 0) {
+				total -= droptables.get(ec[++i]).getTotalWeight();
+			}
+			tables = droptables.get(ec[i]);
+		}
+		else {
+			tables = droptables.get(ec[0]);
+		}
+		
+		return tables.get(value).get();
 	}
 	public String getDisplay() {
 		return display;
