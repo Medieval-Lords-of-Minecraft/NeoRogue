@@ -191,28 +191,31 @@ public abstract class Equipment {
 		return eq.id.equals(this.id);
 	}
 	
-	public static Equipment getDrop(int value, EquipmentClass... ec) {
-
-		HashMap<Integer, DropTable<Equipment>> tables;
-		if (ec.length > 1) {
-			int total = 0;
-			for (int i = 0; i < ec.length; i++) {
-				total += droptables.get(ec[i]).getTotalWeight();
+	public static ArrayList<Equipment> getDrop(int value, int numDrops, EquipmentClass... ec) {
+		ArrayList<Equipment> list = new ArrayList<Equipment>();
+		DropTable<Equipment> table;
+		for (int i = 0; i < numDrops; i++) {
+			if (ec.length > 1) {
+				DropTable<DropTable<Equipment>> tables = new DropTable<DropTable<Equipment>>();
+				for (int j = 0; j < ec.length; j++) {
+					DropTable<Equipment> temp = droptables.get(ec[j]).get(value);
+					tables.add(temp, temp.getTotalWeight());
+				}
+				table = tables.get();
+			}
+			else {
+				table = droptables.get(ec[0]).get(value);
 			}
 			
-			int rand = NeoCore.gen.nextInt(total);
-			int i = -1;
-			while (rand > 0) {
-				total -= droptables.get(ec[++i]).getTotalWeight();
-			}
-			tables = droptables.get(ec[i]);
+			list.add(table.get());
 		}
-		else {
-			tables = droptables.get(ec[0]);
-		}
-		
-		return tables.get(value).get();
+		return list;
 	}
+	
+	public static Equipment getDrop(int value, EquipmentClass... ec) {
+		return getDrop(value, 1, ec).get(0);
+	}
+	
 	public String getDisplay() {
 		return display;
 	}

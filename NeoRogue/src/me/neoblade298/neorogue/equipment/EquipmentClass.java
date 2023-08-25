@@ -5,5 +5,6 @@ public enum EquipmentClass {
 	THIEF,
 	ARCHER,
 	MAGE,
+	SHOP,
 	CLASSLESS;
 }

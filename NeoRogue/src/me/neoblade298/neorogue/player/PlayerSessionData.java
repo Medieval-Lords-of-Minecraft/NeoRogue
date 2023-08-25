@@ -85,7 +85,6 @@ public class PlayerSessionData {
 			if (eq == null) continue;
 			inv.setItem(i, eq.getItem());
 		}
-		System.out.println("Setting");
  	}
 	
 	public Player getPlayer() {

@@ -93,29 +93,23 @@ public class StandardFightInstance extends FightInstance {
 			int value = s.getAreasCompleted();
 			switch (fightScore) {
 			case S:
-				equipDrops.add(Equipment.getDrop(ec, value + 2));
-				equipDrops.add(Equipment.getDrop(ec, value + 1));
-				equipDrops.add(Equipment.getDrop(ec, value + 1));
-				equipDrops.add(Equipment.getDrop(ec, value));
+				equipDrops.add(Equipment.getDrop(value + 2, ec));
+				equipDrops.addAll(Equipment.getDrop(value + 1, 2, ec));
+				equipDrops.add(Equipment.getDrop(value, ec));
 				break;
 			case A:
-				equipDrops.add(Equipment.getDrop(ec, value + 1));
-				equipDrops.add(Equipment.getDrop(ec, value + 1));
-				equipDrops.add(Equipment.getDrop(ec, value));
+				equipDrops.addAll(Equipment.getDrop(value + 1, 2, ec));
+				equipDrops.add(Equipment.getDrop(value, ec));
 				break;
 			case B:
-				equipDrops.add(Equipment.getDrop(ec, value + 1));
-				equipDrops.add(Equipment.getDrop(ec, value));
-				equipDrops.add(Equipment.getDrop(ec, value));
+				equipDrops.add(Equipment.getDrop(value + 1, ec));
+				equipDrops.addAll(Equipment.getDrop(value, 2, ec));
 				break;
 			case C:
-				equipDrops.add(Equipment.getDrop(ec, value));
-				equipDrops.add(Equipment.getDrop(ec, value));
-				equipDrops.add(Equipment.getDrop(ec, value));
+				equipDrops.addAll(Equipment.getDrop(value, 3, ec));
 				break;
 			case D:
-				equipDrops.add(Equipment.getDrop(ec, value));
-				equipDrops.add(Equipment.getDrop(ec, value));
+				equipDrops.addAll(Equipment.getDrop(value, 2, ec));
 				break;
 			}
 			

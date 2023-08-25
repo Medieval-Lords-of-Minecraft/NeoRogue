@@ -30,7 +30,6 @@ public class CampfireInstance implements EditInventoryInstance {
 	public void start(Session s) {
 		this.s = s;
 		Location loc = new Location(Bukkit.getWorld(Area.WORLD_NAME), -(s.getXOff() + REST_X - 0.5), 64, s.getZOff() + REST_Z);
-		System.out.println(loc);
 		center = loc.clone().add(0, 0, 2);
 		for (PlayerSessionData data : s.getParty().values()) {
 			Player p = data.getPlayer();

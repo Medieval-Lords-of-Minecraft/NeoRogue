@@ -24,6 +24,7 @@ import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.session.CampfireInstance;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
+import me.neoblade298.neorogue.session.ShopInstance;
 import me.neoblade298.neorogue.session.fights.Mob;
 import net.md_5.bungee.api.ChatColor;
 
@@ -92,7 +93,7 @@ public class NeoRogue extends JavaPlugin {
 		Player p = Bukkit.getPlayer("Ascheladd");
 		Session s = SessionManager.createSession(p, "test");
 		s.addPlayer(p.getUniqueId(), PlayerClass.SWORDSMAN);
-		s.setInstance(new CampfireInstance());
+		s.setInstance(new ShopInstance());
 
 		//Map map = Map.generate(AreaType.LOW_DISTRICT, 8);
 		//map.instantiate(null, 0, 0);
