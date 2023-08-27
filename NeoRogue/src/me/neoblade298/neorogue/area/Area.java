@@ -256,7 +256,7 @@ public class Area {
 		rand -= 0.05;
 		if (rand < 0) return new Node(NodeType.SHOP, pos, lane);
 		rand -= 0.25;
-		if (rand < 0) return new Node(NodeType.EVENT, pos, lane);
+		if (rand < 0) return new Node(NodeType.CHANCE, pos, lane);
 
 		return guaranteeNode ? new Node(NodeType.FIGHT, pos, lane) : null;
 	}

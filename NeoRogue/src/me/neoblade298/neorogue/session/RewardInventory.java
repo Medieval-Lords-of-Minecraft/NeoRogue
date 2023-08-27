@@ -36,7 +36,8 @@ public class RewardInventory extends CoreInventory {
 	@Override
 	public void handleInventoryClick(InventoryClickEvent e) {
 		e.setCancelled(true);
-		if (e.getClickedInventory().getType() != InventoryType.CHEST) return;
+		Inventory iclicked = e.getClickedInventory();
+		if (iclicked == null || iclicked.getType() != InventoryType.CHEST) return;
 		if (e.getCurrentItem() == null) return;
 
 		int slot = e.getSlot();

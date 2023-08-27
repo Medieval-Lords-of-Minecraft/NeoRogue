@@ -59,6 +59,7 @@ public abstract class Equipment {
 			
 			// Abilities
 			new BattleCry(b);
+			new Berserk(b);
 			new EmpoweredEdge(b);
 			
 			// Artifacts

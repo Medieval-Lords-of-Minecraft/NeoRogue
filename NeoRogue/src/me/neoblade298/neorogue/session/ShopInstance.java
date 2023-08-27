@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
@@ -28,27 +29,28 @@ public class ShopInstance implements EditInventoryInstance {
 	private HashMap<UUID, ArrayList<Equipment>> shops = new HashMap<UUID, ArrayList<Equipment>>();
 	private HashSet<UUID> ready = new HashSet<UUID>();
 	private Session s;
+	private Entity trader;
 
 	@Override
 	public void start(Session s) {
 		this.s = s;
 		Location loc = new Location(Bukkit.getWorld(Area.WORLD_NAME), -(s.getXOff() + SHOP_X), 64, s.getZOff() + SHOP_Z);
 		Location mob = loc.clone().add(0, 0, 3);
-		mob.getWorld().spawnEntity(mob, EntityType.WANDERING_TRADER);
+		this.trader = mob.getWorld().spawnEntity(mob, EntityType.WANDERING_TRADER);
 		for (PlayerSessionData data : s.getParty().values()) {
 			Player p = data.getPlayer();
 			EquipmentClass ec = data.getPlayerClass().toEquipmentClass();
 			p.teleport(loc);
 			ArrayList<Equipment> shopItems = new ArrayList<Equipment>();
 			shopItems.addAll(Equipment.getDrop(s.getAreasCompleted() + 2, NUM_ITEMS / 2, ec, EquipmentClass.SHOP));
-			// shopItems.addAll(Equipment.getDrop(s.getAreasCompleted() + 3, NUM_ITEMS / 2, ec, EquipmentClass.SHOP));
+			shopItems.addAll(Equipment.getDrop(s.getAreasCompleted() + 3, NUM_ITEMS / 2, ec, EquipmentClass.SHOP));
 			shops.put(p.getUniqueId(), shopItems);
 		}
 	}
 
 	@Override
 	public void cleanup() {
-		
+		trader.remove();
 	}
 
 	@Override

@@ -7,6 +7,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
@@ -30,7 +31,8 @@ public class CampfireChoiceInventory extends CoreInventory {
 
 	@Override
 	public void handleInventoryClick(InventoryClickEvent e) {
-		if (e.getClickedInventory().getType() != InventoryType.CHEST) return;
+		Inventory iclicked = e.getClickedInventory();
+		if (iclicked == null || iclicked.getType() != InventoryType.CHEST) return;
 		e.setCancelled(true);
 		
 		int slot = e.getSlot();

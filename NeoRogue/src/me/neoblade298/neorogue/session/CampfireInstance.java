@@ -62,9 +62,7 @@ public class CampfireInstance implements EditInventoryInstance {
 			return;
 		}
 
-		System.out.println(e.getClickedBlock().getType() + " " + notUsed);
 		if (e.getClickedBlock().getType() == Material.ANVIL && notUsed.contains(uuid)) {
-			System.out.println("TRUE");
 			new CampfireUpgradeInventory(p, this);
 		}
 	}

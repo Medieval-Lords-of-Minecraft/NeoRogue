@@ -148,8 +148,9 @@ public class PlayerSessionInventory extends CoreInventory {
 		}
 
 		NBTItem ncursor = !cursor.getType().isAir() ? new NBTItem(cursor) : null;
+		Inventory iclicked = e.getClickedInventory();
 		NBTItem nclicked = clicked != null ? new NBTItem(clicked) : null;
-		boolean onChest = e.getClickedInventory().getType() == InventoryType.CHEST;
+		boolean onChest = iclicked != null && e.getClickedInventory().getType() == InventoryType.CHEST;
 
 		if (cursor.getType().isAir() && clicked != null) {
 			// Only allow picking up equipment
@@ -219,7 +220,8 @@ public class PlayerSessionInventory extends CoreInventory {
 		ItemStack clicked = e.getCurrentItem();
 		NBTItem nswapped = swapped != null ? new NBTItem(swapped) : null;
 		NBTItem nclicked = clicked != null ? new NBTItem(clicked) : null;
-		boolean onChest = e.getClickedInventory().getType() == InventoryType.CHEST;
+		Inventory iclicked = e.getClickedInventory();
+		boolean onChest = iclicked != null && iclicked.getType() == InventoryType.CHEST;
 
 		if (clicked != null && onChest) {
 			e.setCancelled(true);
@@ -266,7 +268,8 @@ public class PlayerSessionInventory extends CoreInventory {
 		int slot = e.getRawSlot();
 		
 		if (clicked == null) return;
-		if (e.getClickedInventory().getType() != InventoryType.CHEST) return;
+		Inventory iclicked = e.getClickedInventory();
+		if (iclicked == null || iclicked.getType() != InventoryType.CHEST) return;
 		NBTItem nclicked = new NBTItem(clicked);
 		
 		if (!nclicked.hasTag("equipId")) {

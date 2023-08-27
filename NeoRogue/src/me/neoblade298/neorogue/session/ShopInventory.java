@@ -22,6 +22,7 @@ import net.md_5.bungee.api.ChatColor;
 
 public class ShopInventory extends CoreInventory {
 	private static final int[] SLOT_ORDER = new int[] {0, 2, 4, 6, 8, 9, 11, 13, 15, 17};
+	private static final int SELL_PRICE = 10;
 	private ArrayList<Equipment> equips;
 	private PlayerSessionData data;
 	
@@ -36,6 +37,8 @@ public class ShopInventory extends CoreInventory {
 			updatePrice(contents[SLOT_ORDER[i]], SLOT_ORDER[i] <= 9, true);
 		}
 		contents[22] = CoreInventory.createButton(Material.GOLD_NUGGET, "&eYou have " + data.getCoins() + " coins");
+		contents[18] = CoreInventory.createButton(Material.GOLD_NUGGET, "&cSell Items",
+				"&7Drag equipment here to sell it", "&7for &e" + SELL_PRICE + " coins&7.");
 		inv.setContents(contents);
 	}
 	
@@ -57,30 +60,40 @@ public class ShopInventory extends CoreInventory {
 
 	@Override
 	public void handleInventoryClick(InventoryClickEvent e) {
+		Inventory iclicked = e.getClickedInventory();
+		if (iclicked == null || iclicked.getType() != InventoryType.CHEST) return;
 		e.setCancelled(true);
-		if (e.getClickedInventory().getType() != InventoryType.CHEST) return;
 		if (e.getCurrentItem() == null) return;
 		int slot = e.getSlot();
-		if (slot > 18) return;
 
-		int price = slot <= 9 ? 50 : 100;
-		if (!data.hasCoins(price)) {
-			Util.displayError(p, "&cYou don't have enough coins!");
-			return;
+		if (slot < 18) {
+			int price = slot <= 9 ? 50 : 100;
+			if (!data.hasCoins(price)) {
+				Util.displayError(p, "&cYou don't have enough coins!");
+				return;
+			}
+			
+			data.addCoins(-price);
+			p.getInventory().addItem(e.getCurrentItem());
+			p.playSound(p, Sound.ENTITY_WANDERING_TRADER_YES, 1F, 1F);
+			p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1F, 1F);
+			
+			ItemStack[] contents = inv.getContents();
+			contents[slot] = null;
+			for (int i : SLOT_ORDER) {
+				updatePrice(contents[i], i <= 9, false);
+			}
+			contents[22] = CoreInventory.createButton(Material.GOLD_NUGGET, "&eYou have " + data.getCoins() + " coins");
+			inv.setContents(contents);
 		}
-		
-		data.addCoins(-price);
-		p.getInventory().addItem(e.getCurrentItem());
-		p.playSound(p, Sound.ENTITY_WANDERING_TRADER_YES, 1F, 1F);
-		p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1F, 1F);
-		
-		ItemStack[] contents = inv.getContents();
-		contents[slot] = null;
-		for (int i : SLOT_ORDER) {
-			updatePrice(contents[i], i <= 9, false);
+		else {
+			if (slot == 18 && e.getCursor() != null) {
+				data.addCoins(SELL_PRICE);
+				inv.setItem(22, CoreInventory.createButton(Material.GOLD_NUGGET, "&eYou have " + data.getCoins() + " coins"));
+				p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1F, 1F);
+				p.setItemOnCursor(null);
+			}
 		}
-		contents[22] = CoreInventory.createButton(Material.GOLD_NUGGET, "&eYou have " + data.getCoins() + " coins");
-		inv.setContents(contents);
 	}
 
 	@Override

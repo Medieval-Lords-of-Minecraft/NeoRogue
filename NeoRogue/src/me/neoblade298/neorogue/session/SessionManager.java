@@ -117,7 +117,7 @@ public class SessionManager implements Listener {
 
 		if (e.getView().getTopInventory().getType() != InventoryType.CRAFTING) return;
 
-		// If the inventory type is crafting, open up a player session inventory
+		// If the inventory type is normal player inventory, open up a player session inventory
 		openInventory(p, e);
 	}
 

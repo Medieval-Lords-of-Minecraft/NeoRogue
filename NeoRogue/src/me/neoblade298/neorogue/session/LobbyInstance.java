@@ -128,7 +128,6 @@ public class LobbyInstance implements Instance {
 			}
 		}
 		loc = new Location(Bukkit.getWorld(Area.WORLD_NAME), session.getXOff() + LOBBY_X, 64, session.getZOff() + LOBBY_Z);
-		System.out.println("Created lobby instance and teleported");
 		host.teleport(loc);
 
 		// Generate the rewards room

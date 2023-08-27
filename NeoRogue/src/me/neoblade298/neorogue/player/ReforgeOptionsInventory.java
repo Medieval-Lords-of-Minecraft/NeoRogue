@@ -10,6 +10,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -56,7 +57,8 @@ public class ReforgeOptionsInventory extends CoreInventory {
 	@Override
 	public void handleInventoryClick(InventoryClickEvent e) {
 		e.setCancelled(true);
-		if (e.getClickedInventory().getType() != InventoryType.CHEST) return;
+		Inventory iclicked = e.getClickedInventory();
+		if (iclicked == null || iclicked.getType() != InventoryType.CHEST) return;
 		if (e.getSlot() == 0) return;
 		if (e.getCurrentItem().getType() == Material.RED_STAINED_GLASS_PANE) {
 			p.closeInventory();
