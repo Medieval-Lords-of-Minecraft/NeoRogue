@@ -1,11 +1,7 @@
 package me.neoblade298.neorogue.session.chance;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Map.Entry;
-import java.util.UUID;
-
 import org.bukkit.Material;
 
 import me.neoblade298.neocore.bukkit.NeoCore;
@@ -15,13 +11,13 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 public class GreedChance extends ChanceSet {
 
 	public GreedChance() {
-		super(AreaType.LOW_DISTRICT, "Greed");
-		ChanceStage stage = new ChanceStage("You come across a thick sludge that seems to contain various coins within."
+		super(AreaType.LOW_DISTRICT, Material.GOLD_INGOT, "Greed");
+		ChanceStage stage = new ChanceStage("init", "You come across a thick sludge that seems to contain various coins within."
 				+ " You'll take damage if you reach into it, but the extra coins may be worth the effort.");
 
-		ChanceChoice choice = new ChanceChoice(Material.GOLD_BLOCK, "&7Be Logical",
-				"&7The highest HP party member takes &c10 &7damage and gets everyone &e25 coins&7.",
-				"&cNobody has enough health to do this!", (s, run) -> {
+		ChanceChoice choice = new ChanceChoice(Material.GOLD_BLOCK, "Be Logical",
+				"The highest HP party member takes &c10 &7damage and gets everyone &e25 coins&7.",
+				"Nobody has enough health to do this!", (s, run) -> {
 					PlayerSessionData data = Collections.max(s.getParty().values(), new Comparator<PlayerSessionData>() {
 						@Override
 						public int compare(PlayerSessionData a, PlayerSessionData b) {
@@ -43,10 +39,10 @@ public class GreedChance extends ChanceSet {
 				});
 		stage.addChoice(choice);
 		
-		choice = new ChanceChoice(Material.EMERALD_BLOCK, "&7Be Democratic",
-				"&7Everyone takes an equal portion of &c10 &7damage rounded up, and everyone gains &e25 coins&7.",
-				"&cSomebody lacks the health to do this!", (s, run) -> {
-					final int HEALTH_LOSS = Math.ceilDiv(10, s.getParty().size());
+		choice = new ChanceChoice(Material.EMERALD_BLOCK, "Be Democratic",
+				"Everyone takes an equal portion of &c10 &7damage rounded up, and everyone gains &e25 coins&7.",
+				"Somebody lacks the health to do this!", (s, run) -> {
+					final int HEALTH_LOSS = (int) Math.ceil(10D / s.getParty().size());
 					for (PlayerSessionData pd : s.getParty().values()) {
 						if (pd.getHealth() <= HEALTH_LOSS) return false;
 					}
@@ -56,16 +52,19 @@ public class GreedChance extends ChanceSet {
 					for (PlayerSessionData pd : s.getParty().values()) {
 						pd.setHealth(pd.getHealth() - HEALTH_LOSS);
 					}
+					s.broadcast("&7Everyone takes a little damage, but they're all &e25 coins &7richer.");
 					return true;
 				});
 		stage.addChoice(choice);
 		
-		choice = new ChanceChoice(Material.BARRIER, "&7Be Risk-averse",
-				"&7Leave the dangerous sludge alone.",
+		choice = new ChanceChoice(Material.BARRIER, "Be Risk-averse",
+				"Leave the dangerous sludge alone.",
 				"", (s, run) -> {
+					if (!run) return true;
+					s.broadcast("&7Good health is more valuable than riches.");
 					return true;
 				});
 		stage.addChoice(choice);
-		stages.add(stage);
+		setInitialStage(stage);
 	}
 }

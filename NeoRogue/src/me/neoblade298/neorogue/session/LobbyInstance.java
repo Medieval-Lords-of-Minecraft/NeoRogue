@@ -47,58 +47,50 @@ public class LobbyInstance implements Instance {
 	private HashMap<UUID, PlayerClass> players = new HashMap<UUID, PlayerClass>();
 	private UUID host;
 	private Session session;
-	private static Clipboard classSelect, rewardsRoom, campfire, shop;
+	private static Clipboard classSelect, rewardsRoom, campfire, shop, chance;
 	private Location loc;
 	private boolean busy = false;
 	
 	private static final int LOBBY_X = -7, LOBBY_Z = 3;
-	private static final int REWARDS_Z = 76, CAMPFIRE_Z = 82, SHOP_Z = 90;
+	private static final int REWARDS_Z = 76, CAMPFIRE_Z = 82, SHOP_Z = 90, CHANCE_Z = 98;
 	
 	// schematics
 	private static String CLASS_SELECT = "classselect.schem",
 			REWARDS_ROOM = "rewardsroom.schem",
 			CAMPFIRE = "campfire.schem",
-			SHOP = "shop.schem";
+			SHOP = "shop.schem",
+			CHANCE = "chance.schem";
 	
 	static {
-		// Load the node select schematic
-		File file = new File(NeoRogue.SCHEMATIC_FOLDER, CLASS_SELECT);
+		classSelect = loadClipboard(CLASS_SELECT);
+		rewardsRoom = loadClipboard(REWARDS_ROOM);
+		campfire = loadClipboard(CAMPFIRE);
+		shop = loadClipboard(SHOP);
+		chance = loadClipboard(CHANCE);
+	}
+	
+	private static Clipboard loadClipboard(String schematic) {
+		File file = new File(NeoRogue.SCHEMATIC_FOLDER, schematic);
 		ClipboardFormat format = ClipboardFormats.findByFile(file);
 		try (ClipboardReader reader = format.getReader(new FileInputStream(file))) {
-			classSelect = reader.read();
+			return reader.read();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		file = new File(NeoRogue.SCHEMATIC_FOLDER, REWARDS_ROOM);
-		format = ClipboardFormats.findByFile(file);
-		try (ClipboardReader reader = format.getReader(new FileInputStream(file))) {
-			rewardsRoom = reader.read();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		file = new File(NeoRogue.SCHEMATIC_FOLDER, CAMPFIRE);
-		format = ClipboardFormats.findByFile(file);
-		try (ClipboardReader reader = format.getReader(new FileInputStream(file))) {
-			campfire = reader.read();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		file = new File(NeoRogue.SCHEMATIC_FOLDER, SHOP);
-		format = ClipboardFormats.findByFile(file);
-		try (ClipboardReader reader = format.getReader(new FileInputStream(file))) {
-			shop = reader.read();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
+		return null;
+	}
+	
+	private static void pasteSchematic(Clipboard clipboard, EditSession editSession, Session session, int xOff, int zOff) {
+	    Operation operation = new ClipboardHolder(clipboard)
+	            .createPaste(editSession)
+	            .to(BlockVector3.at(-(session.getXOff() + xOff + 1), 64, session.getZOff() + zOff))
+	            .ignoreAirBlocks(true)
+	            .build();
+	    try {
+			Operations.complete(operation);
+		} catch (WorldEditException e) {
 			e.printStackTrace();
 		}
 	}
@@ -116,58 +108,14 @@ public class LobbyInstance implements Instance {
 		
 		// Generate the lobby and add the host there
 		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Area.world)) {
-		    Operation operation = new ClipboardHolder(classSelect)
-		            .createPaste(editSession)
-		            .to(BlockVector3.at(session.getXOff() - 1, 64, session.getZOff()))
-		            .ignoreAirBlocks(true)
-		            .build();
-		    try {
-				Operations.complete(operation);
-			} catch (WorldEditException e) {
-				e.printStackTrace();
-			}
+			pasteSchematic(classSelect, editSession, session, 0, 0);
+			pasteSchematic(rewardsRoom, editSession, session, 0, REWARDS_Z);
+			pasteSchematic(campfire, editSession, session, 0, CAMPFIRE_Z);
+			pasteSchematic(shop, editSession, session, 0, SHOP_Z);
+			pasteSchematic(chance, editSession, session, 0, CHANCE_Z);
 		}
 		loc = new Location(Bukkit.getWorld(Area.WORLD_NAME), session.getXOff() + LOBBY_X, 64, session.getZOff() + LOBBY_Z);
 		host.teleport(loc);
-
-		// Generate the rewards room
-		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Area.world)) {
-		}
-
-		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Area.world)) {
-		    Operation operation = new ClipboardHolder(rewardsRoom)
-		            .createPaste(editSession)
-		            .to(BlockVector3.at(session.getXOff() - 1, 64, session.getZOff() + REWARDS_Z))
-		            .ignoreAirBlocks(true)
-		            .build();
-		    try {
-				Operations.complete(operation);
-			} catch (WorldEditException e) {
-				e.printStackTrace();
-			}
-		    
-		    operation = new ClipboardHolder(campfire)
-		            .createPaste(editSession)
-		            .to(BlockVector3.at(session.getXOff() - 1, 64, session.getZOff() + CAMPFIRE_Z))
-		            .ignoreAirBlocks(true)
-		            .build();
-		    try {
-				Operations.complete(operation);
-			} catch (WorldEditException e) {
-				e.printStackTrace();
-			}
-		    
-		    operation = new ClipboardHolder(shop)
-		            .createPaste(editSession)
-		            .to(BlockVector3.at(session.getXOff() - 1, 64, session.getZOff() + SHOP_Z))
-		            .ignoreAirBlocks(true)
-		            .build();
-		    try {
-				Operations.complete(operation);
-			} catch (WorldEditException e) {
-				e.printStackTrace();
-			}
-		}
 	}
 
 	public void invitePlayer(Player inviter, String username) {

@@ -22,15 +22,16 @@ import me.neoblade298.neorogue.session.RewardInstance;
 import me.neoblade298.neorogue.session.Session;
 
 public class StandardFightInstance extends FightInstance {
+	public StandardFightInstance(Session s) {
+		super(s);
+		// TODO Auto-generated constructor stub
+	}
+
 	private static final double SCORE_REQUIRED = 25;
 	
 	private BossBar timeBar, scoreBar;
 	private double time, score;
 	private FightScore fightScore = FightScore.S;
-
-	public StandardFightInstance(Session s) {
-		super(s);
-	}
 
 	@Override
 	protected void setupInstance(Session s) {

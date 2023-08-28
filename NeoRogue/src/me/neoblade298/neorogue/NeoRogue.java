@@ -14,6 +14,7 @@ import me.neoblade298.neocore.bukkit.commands.SubcommandManager;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
 import me.neoblade298.neocore.shared.exceptions.NeoIOException;
 import me.neoblade298.neorogue.area.Area;
+import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.commands.*;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentClass;
@@ -25,6 +26,8 @@ import me.neoblade298.neorogue.session.CampfireInstance;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
 import me.neoblade298.neorogue.session.ShopInstance;
+import me.neoblade298.neorogue.session.chance.ChanceInstance;
+import me.neoblade298.neorogue.session.chance.ChanceSet;
 import me.neoblade298.neorogue.session.fights.Mob;
 import net.md_5.bungee.api.ChatColor;
 
@@ -42,6 +45,7 @@ public class NeoRogue extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new SessionManager(), this);
 		initCommands();
 		Area.initialize();
+		ChanceSet.load();
 		
 		// Will need to add multiverse dependency is the world isn't first loaded
 		spawn = new Location(Bukkit.getWorld(Area.WORLD_NAME), -250, 65, -250);
@@ -90,10 +94,11 @@ public class NeoRogue extends JavaPlugin {
 	}
 	
 	private void debugInitialize() {
-		Player p = Bukkit.getPlayer("Ascheladd");
-		Session s = SessionManager.createSession(p, "test");
-		s.addPlayer(p.getUniqueId(), PlayerClass.SWORDSMAN);
-		s.setInstance(new ShopInstance());
+		// Player p = Bukkit.getPlayer("Ascheladd");
+		// Session s = SessionManager.createSession(p, "test");
+		// s.generateArea(AreaType.LOW_DISTRICT);
+		// s.addPlayer(p.getUniqueId(), PlayerClass.SWORDSMAN);
+		// s.setInstance(new ChanceInstance());
 
 		//Map map = Map.generate(AreaType.LOW_DISTRICT, 8);
 		//map.instantiate(null, 0, 0);

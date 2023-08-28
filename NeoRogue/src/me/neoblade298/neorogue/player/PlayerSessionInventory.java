@@ -81,8 +81,8 @@ public class PlayerSessionInventory extends CoreInventory {
 		}
 
 		contents[STATS] = createStatsIcon();
-		contents[SELL] = addNbt(CoreInventory.createButton(Material.HOPPER, "&6Sell",
-				"&7Place an item here to sell it!"), 0);
+		contents[SELL] = addNbt(CoreInventory.createButton(Material.HOPPER, "&6Trash",
+				"&7Place an item here to destroy it!"), 0);
 
 		contents[ARTIFACTS] = addNbt(CoreInventory.createButton(Material.NETHER_STAR, "&6Artifacts",
 				"&7Click here to view all your artifacts!"), 0);
@@ -113,7 +113,8 @@ public class PlayerSessionInventory extends CoreInventory {
 	private ItemStack createStatsIcon() {
 		return CoreInventory.createButton(Material.ARMOR_STAND, "&6Your Stats",
 			"&6Health: &f" + data.getHealth() + " / " + data.getMaxHealth(),
-			"&6Mana: &f" + data.getMaxMana(), "&6Stamina: &f" + data.getMaxStamina());
+			"&6Mana: &f" + data.getMaxMana(), "&6Stamina: &f" + data.getMaxStamina(),
+			"&6Coins: &f" + data.getCoins());
 	}
 
 	@Override

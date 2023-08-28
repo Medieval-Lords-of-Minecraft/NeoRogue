@@ -10,8 +10,9 @@ import me.neoblade298.neorogue.area.AreaType;
 
 public class ChanceSet {
 	private static HashMap<AreaType, ArrayList<ChanceSet>> sets = new HashMap<AreaType, ArrayList<ChanceSet>>();
+	public static final String INIT_ID = "init";
 	
-	protected ArrayList<ChanceStage> stages = new ArrayList<ChanceStage>();
+	private HashMap<String, ChanceStage> stages = new HashMap<String, ChanceStage>();
 	private String id, display;
 	private Material mat;
 	
@@ -24,6 +25,9 @@ public class ChanceSet {
 		for (AreaType type : AreaType.values()) {
 			sets.put(type, new ArrayList<ChanceSet>());
 		}
+		
+		new GreedChance();
+		new ForkInTheRoadChance();
 	}
 	
 	public ChanceSet(AreaType type, Material mat, String id) {
@@ -32,13 +36,13 @@ public class ChanceSet {
 	
 	public ChanceSet(AreaType type, Material mat, String id, String display) {
 		this.id = id;
-		this.display = display;
+		this.display = "§6" + display;
 		this.mat = mat;
 		sets.get(type).add(this);
 	}
 	
-	public ArrayList<ChanceStage> getStages() {
-		return stages;
+	public ChanceStage getInitialStage() {
+		return stages.get(INIT_ID);
 	}
 	
 	public String getDisplay() {
@@ -51,5 +55,9 @@ public class ChanceSet {
 	
 	public Material getMaterial() {
 		return mat;
+	}
+	
+	public void setInitialStage(ChanceStage stage) {
+		stages.put(INIT_ID, stage);
 	}
 }
