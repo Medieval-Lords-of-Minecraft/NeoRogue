@@ -81,13 +81,13 @@ public class ChanceInstance implements EditInventoryInstance {
 						s.broadcast("&7Sending you back to node select...");
 					}
 				}
-			}.runTaskLater(NeoRogue.inst(), 60L);
+			}.runTaskLater(NeoRogue.inst(), 20L);
 
 			new BukkitRunnable() {
 				public void run() {
 					s.setInstance(nextInstance == null ? new NodeSelectInstance() : nextInstance);
 				}
-			}.runTaskLater(NeoRogue.inst(), 80L);
+			}.runTaskLater(NeoRogue.inst(), 60L);
 		}
 		else {
 			this.stage = stage;

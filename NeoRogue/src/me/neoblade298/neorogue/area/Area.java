@@ -344,14 +344,14 @@ public class Area {
 	public void update(Node node) {
 		// Remove buttons and lecterns from old paths
 		int pos = node.getPosition();
-		if (pos > 0) {
-			for (int lane = 0; lane < 5; lane++) {
-				Node src = nodes[node.getPosition() - 1][lane];
-				Location loc = nodeToLocation(src, 1);
-				loc.getBlock().setType(Material.AIR);
-				loc.add(0, -2, -1);
-				loc.getBlock().setType(Material.POLISHED_ANDESITE);
-			}
+		for (int lane = 0; lane < 5; lane++) {
+			Node src = nodes[node.getPosition()][lane];
+			if (src == null) continue;
+			Location loc = nodeToLocation(src, 1);
+			System.out.println(loc);
+			loc.getBlock().setType(Material.AIR);
+			loc.add(0, -2, -1);
+			loc.getBlock().setType(Material.POLISHED_ANDESITE);
 		}
 
 		// Delete holograms

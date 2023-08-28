@@ -2,8 +2,8 @@ package me.neoblade298.neorogue.area;
 
 import java.util.ArrayList;
 
-import me.neoblade298.neorogue.session.Instance;
-import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.*;
+import me.neoblade298.neorogue.session.chance.ChanceInstance;
 import me.neoblade298.neorogue.session.fights.StandardFightInstance;
 
 public class Node {
@@ -83,6 +83,12 @@ public class Node {
 		switch (type) {
 		case FIGHT: inst = new StandardFightInstance(s);
 		break;
+		case CAMPFIRE: inst = new CampfireInstance();
+			break;
+		case CHANCE: inst = new ChanceInstance();
+			break;
+		case SHOP: inst = new ShopInstance();
+			break;
 		default:
 			break;
 		}

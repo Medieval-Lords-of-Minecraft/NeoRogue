@@ -27,6 +27,7 @@ public class NodeSelectInstance implements EditInventoryInstance {
 	public void start(Session s) {
 		this.s = s;
 		Area area = s.getArea();
+		System.out.println("Node is now " + s.getNode());
 		area.update(s.getNode());
 		for (Player p : s.getOnlinePlayers()) {
 			p.teleport(area.getTeleport());

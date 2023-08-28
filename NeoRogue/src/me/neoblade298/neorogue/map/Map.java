@@ -33,6 +33,8 @@ import me.neoblade298.neorogue.session.fights.MobModifier;
 public class Map {
 	private static HashMap<AreaType, LinkedList<MapPiece>> allPieces = new HashMap<AreaType, LinkedList<MapPiece>>(),
 			usedPieces = new HashMap<AreaType, LinkedList<MapPiece>>();
+	private static HashMap<AreaType, ArrayList<MapPiece>> minibossPieces = new HashMap<AreaType, ArrayList<MapPiece>>(),
+			bossPieces = new HashMap<AreaType, ArrayList<MapPiece>>();
 	private static final int MAP_SIZE = 12;
 	
 	private ArrayList<MapPieceInstance> pieces = new ArrayList<MapPieceInstance>();
@@ -63,6 +65,31 @@ public class Map {
 		for (AreaType type : AreaType.values()) {
 			Collections.shuffle(allPieces.get(type));
 		}
+	}
+	
+	public static Map generateMiniboss(AreaType type, int numPieces) {
+		// TODO: Start here
+		Map map = new Map();
+		LinkedList<MapPiece> pieces = allPieces.get(type);
+		
+		for (int i = 0; i < numPieces; i++) {
+			MapPiece piece = null;
+			do {
+				if (pieces.size() == 0) shufflePieces(type);
+				piece = pieces.poll();
+				usedPieces.get(type).add(piece);
+			}
+			// Make sure there are enough entrances to continue expanding while we still need size
+			while (map.entrances.size() < 2 && piece.getNumEntrances() < 2 && i < numPieces - 1);
+			
+			if (piece == null) {
+				Bukkit.getLogger().warning("[NeoRogue] Failed to find piece for generation. Returning map as is.");
+				return map;
+			}
+			map.place(piece);
+		}
+		
+		return map;
 	}
 	
 	public static Map generate(AreaType type, int numPieces) {
