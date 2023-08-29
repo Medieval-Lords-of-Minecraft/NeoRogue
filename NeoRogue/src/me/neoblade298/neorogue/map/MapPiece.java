@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 
 import org.bukkit.configuration.ConfigurationSection;
@@ -16,6 +17,7 @@ import me.neoblade298.neorogue.NeoRogue;
 public class MapPiece {
 	private String id;
 	private MapShape shape;
+	private HashSet<String> targets;
 	protected Coordinates[] entrances, spawns;
 	private MapSpawner[] spawners;
 	protected Clipboard clipboard;
@@ -56,6 +58,16 @@ public class MapPiece {
 		for (String line : spawns) {
 			this.spawns[i++] = new Coordinates(this, line, true);
 		}
+		
+		List<String> targets = cfg.getStringList("targets");
+		if (targets != null) {
+			this.targets = new HashSet<String>();
+			this.targets.addAll(targets);
+		}
+	}
+	
+	public HashSet<String> getTargets() {
+		return targets;
 	}
 	
 	public int getNumEntrances() {

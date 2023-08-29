@@ -11,9 +11,11 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentClass;
+import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.CoinsReward;
 import me.neoblade298.neorogue.session.EquipmentChoiceReward;
@@ -22,16 +24,19 @@ import me.neoblade298.neorogue.session.RewardInstance;
 import me.neoblade298.neorogue.session.Session;
 
 public class StandardFightInstance extends FightInstance {
-	public StandardFightInstance(Session s) {
-		super(s);
-		// TODO Auto-generated constructor stub
-	}
 
 	private static final double SCORE_REQUIRED = 25;
 	
 	private BossBar timeBar, scoreBar;
 	private double time, score;
 	private FightScore fightScore = FightScore.S;
+	
+	public StandardFightInstance(Session s) {
+		super(s);
+		int rand = s.getNodesVisited() >= 5 ? NeoCore.gen.nextInt(s.getNodesVisited() / 5) : 0;
+		int min = s.getNodesVisited() / 10;
+		map = Map.generate(s.getArea().getType(), 2 + rand + min);
+	}
 
 	@Override
 	protected void setupInstance(Session s) {

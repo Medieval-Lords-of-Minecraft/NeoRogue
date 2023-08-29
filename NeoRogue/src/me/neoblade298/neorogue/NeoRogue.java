@@ -1,10 +1,8 @@
 package me.neoblade298.neorogue;
 
 import java.io.File;
-import java.util.ArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.filoghost.holographicdisplays.api.HolographicDisplaysAPI;
@@ -14,19 +12,11 @@ import me.neoblade298.neocore.bukkit.commands.SubcommandManager;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
 import me.neoblade298.neocore.shared.exceptions.NeoIOException;
 import me.neoblade298.neorogue.area.Area;
-import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.commands.*;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentClass;
 import me.neoblade298.neorogue.map.Map;
-import me.neoblade298.neorogue.map.MapShape;
-import me.neoblade298.neorogue.player.PlayerClass;
 import me.neoblade298.neorogue.player.PlayerManager;
-import me.neoblade298.neorogue.session.CampfireInstance;
-import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
-import me.neoblade298.neorogue.session.ShopInstance;
-import me.neoblade298.neorogue.session.chance.ChanceInstance;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
 import me.neoblade298.neorogue.session.fights.Mob;
 import net.md_5.bungee.api.ChatColor;

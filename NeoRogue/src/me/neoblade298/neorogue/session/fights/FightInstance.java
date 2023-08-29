@@ -58,9 +58,6 @@ public abstract class FightInstance implements Instance {
 	
 	public FightInstance(Session s) {
 		this.s = s;
-		int rand = s.getNodesVisited() >= 5 ? NeoCore.gen.nextInt(s.getNodesVisited() / 5) : 0;
-		int min = s.getNodesVisited() / 10;
-		map = Map.generate(s.getArea().getType(), 2 + rand + min);
 	}
 	
 	public void instantiate() {

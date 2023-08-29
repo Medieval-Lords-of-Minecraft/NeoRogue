@@ -345,10 +345,9 @@ public class Area {
 		// Remove buttons and lecterns from old paths
 		int pos = node.getPosition();
 		for (int lane = 0; lane < 5; lane++) {
-			Node src = nodes[node.getPosition()][lane];
+			Node src = nodes[pos][lane];
 			if (src == null) continue;
 			Location loc = nodeToLocation(src, 1);
-			System.out.println(loc);
 			loc.getBlock().setType(Material.AIR);
 			loc.add(0, -2, -1);
 			loc.getBlock().setType(Material.POLISHED_ANDESITE);

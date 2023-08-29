@@ -23,14 +23,12 @@ import net.md_5.bungee.api.ChatColor;
 public class ShopInventory extends CoreInventory {
 	private static final int[] SLOT_ORDER = new int[] {0, 2, 4, 6, 8, 9, 11, 13, 15, 17};
 	private static final int SELL_PRICE = 10;
-	private ArrayList<Equipment> equips;
 	private PlayerSessionData data;
 	
 	public ShopInventory(PlayerSessionData data, ArrayList<Equipment> equips) {
 		super(data.getPlayer(), Bukkit.createInventory(data.getPlayer(), 27, "§9Shop"));
 		
 		this.data = data;
-		this.equips = equips;
 		ItemStack[] contents = inv.getContents();
 		for (int i = 0; i < equips.size(); i++) {
 			contents[SLOT_ORDER[i]] = equips.get(i).getItem();

@@ -2,8 +2,10 @@ package me.neoblade298.neorogue.map;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.TreeMap;
@@ -41,6 +43,7 @@ public class Map {
 	private LinkedList<Coordinates> entrances = new LinkedList<Coordinates>();
 	private LinkedList<Coordinates> blockedEntrances = new LinkedList<Coordinates>();
 	private TreeMap<Mob, ArrayList<MobModifier>> mobs = new TreeMap<Mob, ArrayList<MobModifier>>();
+	private HashSet<String> targets = new HashSet<String>();
 	private boolean[][] shape = new boolean[MAP_SIZE][MAP_SIZE];
 	
 	public static void load() {
@@ -67,33 +70,27 @@ public class Map {
 		}
 	}
 	
-	public static Map generateMiniboss(AreaType type, int numPieces) {
-		// TODO: Start here
+	public static Map generateBoss(AreaType type, int numPieces) {
 		Map map = new Map();
-		LinkedList<MapPiece> pieces = allPieces.get(type);
-		
-		for (int i = 0; i < numPieces; i++) {
-			MapPiece piece = null;
-			do {
-				if (pieces.size() == 0) shufflePieces(type);
-				piece = pieces.poll();
-				usedPieces.get(type).add(piece);
-			}
-			// Make sure there are enough entrances to continue expanding while we still need size
-			while (map.entrances.size() < 2 && piece.getNumEntrances() < 2 && i < numPieces - 1);
-			
-			if (piece == null) {
-				Bukkit.getLogger().warning("[NeoRogue] Failed to find piece for generation. Returning map as is.");
-				return map;
-			}
-			map.place(piece);
-		}
-		
+		MapPiece piece = bossPieces.get(type).get(NeoCore.gen.nextInt(bossPieces.get(type).size()));
+		map.place(piece);
+		map.addTargets(piece.getTargets());
 		return map;
 	}
 	
-	public static Map generate(AreaType type, int numPieces) {
+	public static Map generateMiniboss(AreaType type, int numPieces) {
 		Map map = new Map();
+		MapPiece piece = minibossPieces.get(type).get(NeoCore.gen.nextInt(minibossPieces.get(type).size()));
+		map.place(piece);
+		map.addTargets(piece.getTargets());
+		return generate(map, type, numPieces);
+	}
+	
+	public static Map generate(AreaType type, int numPieces) {
+		return generate(new Map(), type, numPieces);
+	}
+	
+	public static Map generate(Map map, AreaType type, int numPieces) {
 		LinkedList<MapPiece> pieces = allPieces.get(type);
 		
 		for (int i = 0; i < numPieces; i++) {
@@ -282,5 +279,13 @@ public class Map {
 			}
 			System.out.println();
 		}
+	}
+	
+	public void addTargets(Collection<String> targets) {
+		this.targets.addAll(targets);
+	}
+	
+	public HashSet<String> getTargets() {
+		return targets;
 	}
 }

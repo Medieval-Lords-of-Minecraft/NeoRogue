@@ -69,7 +69,6 @@ public class ChanceInventory extends CoreInventory {
 		inv.setContents(contents);
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public void handleInventoryClick(InventoryClickEvent e) {
 		e.setCancelled(true);

@@ -18,4 +18,8 @@ public class ChanceStage {
 	public void addChoice(ChanceChoice choice) {
 		this.choices.add(choice);
 	}
+	
+	public String getId() {
+		return id;
+	}
 }

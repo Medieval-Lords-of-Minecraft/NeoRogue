@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import me.neoblade298.neorogue.session.*;
 import me.neoblade298.neorogue.session.chance.ChanceInstance;
+import me.neoblade298.neorogue.session.fights.BossFightInstance;
+import me.neoblade298.neorogue.session.fights.MinibossFightInstance;
 import me.neoblade298.neorogue.session.fights.StandardFightInstance;
 
 public class Node {
@@ -89,6 +91,9 @@ public class Node {
 			break;
 		case SHOP: inst = new ShopInstance();
 			break;
+		case MINIBOSS: inst = new MinibossFightInstance(s);
+		break;
+		case BOSS: inst = new BossFightInstance(s);
 		default:
 			break;
 		}
