@@ -2,10 +2,10 @@ package me.neoblade298.neorogue.equipment;
 
 public enum Rarity {
 	COMMON(0, "Common", "&7"),
-	UNCOMMON(1, "Uncommon", "&a"),
-	RARE(2, "Rare", "&9"),
-	EPIC(3, "Epic", "&6"),
-	LEGENDARY(4, "Legendary", "&4&l");
+	UNCOMMON(2, "Uncommon", "&a"),
+	RARE(4, "Rare", "&9"),
+	EPIC(6, "Epic", "&6"),
+	LEGENDARY(8, "Legendary", "&4&l");
 	
 	private int value;
 	private String display;

@@ -10,57 +10,57 @@ import me.neoblade298.neorogue.session.fights.StandardFightInstance;
 
 public class Node {
 	private static int MAX_DESTS = 3;
-	
+
 	private ArrayList<Node> dests = new ArrayList<Node>(MAX_DESTS);
 	private ArrayList<Node> srcs = new ArrayList<Node>(MAX_DESTS);
 	private NodeType type;
 	private Instance inst;
 	private int pos, lane;
-	
+
 	public Node(NodeType type, int pos, int lane) {
 		this.type = type;
 		this.pos = pos;
 		this.lane = lane;
 	}
-	
+
 	public void addDestination(Node node) {
 		dests.add(node);
 		node.addSource(this);
 	}
-	
+
 	public void addSource(Node node) {
 		srcs.add(node);
 	}
-	
+
 	public ArrayList<Node> getDestinations() {
 		return dests;
 	}
-	
+
 	public ArrayList<Node> getSources() {
 		return srcs;
 	}
-	
+
 	public void removeSource(Node node) {
 		srcs.remove(node);
 	}
-	
+
 	public int getPosition() {
 		return pos;
 	}
-	
+
 	public int getLane() {
 		return lane;
 	}
-	
+
 	@Override
 	public String toString() {
 		return type.toString().substring(0, 3);
 	}
-	
+
 	public String serializePosition() {
 		return pos + "," + lane;
 	}
-	
+
 	public String serializeDestinations() {
 		String str = dests.get(0).serializePosition();
 		for (int i = 1; i < dests.size(); i++) {
@@ -68,10 +68,11 @@ public class Node {
 		}
 		return str;
 	}
-	
+
 	public NodeType getType() {
 		return type;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof Node) {
@@ -80,25 +81,31 @@ public class Node {
 		}
 		return false;
 	}
-	
+
 	public void generateInstance(Session s) {
 		switch (type) {
-		case FIGHT: inst = new StandardFightInstance(s);
-		break;
-		case CAMPFIRE: inst = new CampfireInstance();
+		case FIGHT:
+			inst = new StandardFightInstance(s);
 			break;
-		case CHANCE: inst = new ChanceInstance();
+		case CAMPFIRE:
+			inst = new CampfireInstance();
 			break;
-		case SHOP: inst = new ShopInstance();
+		case CHANCE:
+			inst = new ChanceInstance();
 			break;
-		case MINIBOSS: inst = new MinibossFightInstance(s);
-		break;
-		case BOSS: inst = new BossFightInstance(s);
+		case SHOP:
+			inst = new ShopInstance();
+			break;
+		case MINIBOSS:
+			inst = new MinibossFightInstance(s);
+			break;
+		case BOSS:
+			inst = new BossFightInstance(s);
 		default:
 			break;
 		}
 	}
-	
+
 	public Instance getInstance() {
 		return inst;
 	}

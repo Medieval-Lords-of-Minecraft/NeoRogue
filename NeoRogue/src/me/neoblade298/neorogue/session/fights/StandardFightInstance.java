@@ -99,8 +99,7 @@ public class StandardFightInstance extends FightInstance {
 			int value = s.getAreasCompleted();
 			switch (fightScore) {
 			case S:
-				equipDrops.add(Equipment.getDrop(value + 2, ec));
-				equipDrops.addAll(Equipment.getDrop(value + 1, 2, ec));
+				equipDrops.addAll(Equipment.getDrop(value + 1, 3, ec));
 				equipDrops.add(Equipment.getDrop(value, ec));
 				break;
 			case A:

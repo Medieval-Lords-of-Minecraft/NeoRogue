@@ -1,5 +1,6 @@
 package me.neoblade298.neorogue.session;
 
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -32,6 +33,10 @@ public class Session {
 		host = p.getUniqueId();
 		this.plot = plot;
 		this.inst = new LobbyInstance(lobby, p, this);
+	}
+	
+	public Session(UUID uuid, int saveSlot) {
+		
 	}
 	
 	public void addPlayers(HashMap<UUID, PlayerClass> players) {

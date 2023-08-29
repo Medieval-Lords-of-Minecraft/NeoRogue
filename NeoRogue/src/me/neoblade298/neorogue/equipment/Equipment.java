@@ -64,8 +64,14 @@ public abstract class Equipment {
 			
 			// Artifacts
 			new RubyShard(b);
+			new RubyCluster(b);
+			new RubyGem(b);
 			new SapphireShard(b);
+			new SapphireCluster(b);
+			new SapphireGem(b);
 			new EmeraldShard(b);
+			new EmeraldCluster(b);
+			new EmeraldGem(b);
 		}
 	}
 	
@@ -83,9 +89,9 @@ public abstract class Equipment {
 			droptables.get(ec).get(value - 2).add(this, 1); // Rare drop for the value
 		}
 		if (value >= 1) {
-			droptables.get(ec).get(value - 1).add(this, 2); // Uncommon drop for the value
+			droptables.get(ec).get(value - 1).add(this, 3); // Uncommon drop for the value
 		}
-		droptables.get(ec).get(value).add(this, 4);
+		droptables.get(ec).get(value).add(this, 8);
 	}
 	
 	// Run at the start of a fight to initialize Fight Data
