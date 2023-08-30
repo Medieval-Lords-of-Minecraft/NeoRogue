@@ -32,6 +32,7 @@ public class PlayerSessionData {
 	private ArrayList<Equipment> storage = new ArrayList<Equipment>(9);
 	private Usable[] otherBinds = new Usable[8];
 	private int abilitiesEquipped = 0, maxAbilities = 2, maxStorage = 9, coins = 0;
+	private String instanceData;
 	
 	public PlayerSessionData(UUID uuid, PlayerClass pc, Session s) {
 		data = PlayerManager.getPlayerData(uuid);
@@ -257,7 +258,11 @@ public class PlayerSessionData {
 		getPlayer().setHealth(Math.min(health, maxHealth));
 	}
 	
+	public void setInstanceData(String str) {
+		this.instanceData = str;
+	}
+	
 	public void save(Statement stmt) {
-		stmt.addBatch(sql);
+		// TODO
 	}
 }

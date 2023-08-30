@@ -59,7 +59,7 @@ public class PlayerManager implements IOComponent {
 
 	@Override
 	public void savePlayer(Player p, Statement insert, Statement delete) {
-		data.get(p.getUniqueId()).save(insert, delete);
+		data.get(p.getUniqueId()).save(insert);
 	}
 
 }

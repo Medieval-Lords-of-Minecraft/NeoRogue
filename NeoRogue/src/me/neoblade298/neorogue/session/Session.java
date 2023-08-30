@@ -1,6 +1,7 @@
 package me.neoblade298.neorogue.session;
 
-import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -11,6 +12,8 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neocore.shared.util.SQLInsertBuilder;
+import me.neoblade298.neocore.shared.util.SQLInsertBuilder.SQLAction;
 import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.area.Node;
@@ -37,6 +40,21 @@ public class Session {
 	
 	public Session(UUID uuid, int saveSlot) {
 		
+	}
+	
+	public void save(Statement stmt, int saveSlot) {
+		try {
+			SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_sessions")
+			.addString(host.toString()).addValue(saveSlot).addString(area.getType().name())
+			.addValue(curr.getPosition()).addValue(curr.getLane()).addValue(nodesVisited)
+			.addValue(System.currentTimeMillis()).addString(inst.generateSaveString(party))
+			.addCondition("host = '" + host + "'").addCondition("slot = " + saveSlot);
+			stmt.addBatch(sql.build());
+		}
+		catch (SQLException ex) {
+			Bukkit.getLogger().warning("[NeoRogue] Failed to save session hosted by " + host + " to slot " + saveSlot);
+			ex.printStackTrace();
+		}
 	}
 	
 	public void addPlayers(HashMap<UUID, PlayerClass> players) {

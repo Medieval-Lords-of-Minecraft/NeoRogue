@@ -1,8 +1,10 @@
 package me.neoblade298.neorogue.session;
 
+import java.util.HashMap;
 import java.util.UUID;
 import java.util.Map.Entry;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.entity.Player;
@@ -77,5 +79,11 @@ public class NodeSelectInstance implements EditInventoryInstance {
 			FightInstance inst = (FightInstance) n.getInstance();
 			new FightInfoInventory(e.getPlayer(), inst.getMap().getMobs());
 		}
+	}
+
+	@Override
+	public String generateSaveString(HashMap<UUID, PlayerSessionData> party) {
+		Bukkit.getLogger().warning("[NeoRogue] LobbyInstance attempted to save, this should never happen");
+		return null;
 	}
 }

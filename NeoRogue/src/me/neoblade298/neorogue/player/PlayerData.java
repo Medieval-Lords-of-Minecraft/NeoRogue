@@ -69,7 +69,7 @@ public class PlayerData {
 	public void save(Statement stmt) {
 		// Only saves player data and ascension tree, session saving is handled elsewhere
 		try {
-			insert.addBatch("REPLACE INTO neorogue_playerdata "
+			stmt.addBatch("REPLACE INTO neorogue_playerdata "
 					+ "VALUES ('" + uuid + "'," + level + "," + exp + ",'" + display + "');");
 		} catch (SQLException e) {
 			e.printStackTrace();

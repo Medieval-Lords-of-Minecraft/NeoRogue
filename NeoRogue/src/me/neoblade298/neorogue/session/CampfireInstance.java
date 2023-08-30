@@ -1,6 +1,8 @@
 package me.neoblade298.neorogue.session;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -100,5 +102,13 @@ public class CampfireInstance implements EditInventoryInstance {
 				s.setInstance(new NodeSelectInstance());
 			}
 		}.runTaskLater(NeoRogue.inst(), 60L);
+	}
+
+	@Override
+	public String generateSaveString(HashMap<UUID, PlayerSessionData> party) {
+		for (Entry<UUID, PlayerSessionData> ent : party.entrySet()) {
+			ent.getValue().setInstanceData(notUsed.contains(ent.getKey()) ? "F" : "T");
+		}
+		return "" + state;
 	}
 }
