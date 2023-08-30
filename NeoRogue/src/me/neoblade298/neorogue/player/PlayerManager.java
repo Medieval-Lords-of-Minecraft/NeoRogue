@@ -1,5 +1,6 @@
 package me.neoblade298.neorogue.player;
 
+import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.UUID;
@@ -23,6 +24,14 @@ public class PlayerManager implements IOComponent {
 	public static PlayerData getPlayerData(UUID uuid) {
 		return data.get(uuid);
 	}
+	
+	public static boolean hasPlayerData(UUID uuid) {
+		return data.containsKey(uuid);
+	}
+	
+	public static String getDisplay(UUID uuid) {
+		return data.get(uuid).getDisplay();
+	}
 
 	@Override
 	public void cleanup(Statement p, Statement stmt) {
@@ -31,19 +40,26 @@ public class PlayerManager implements IOComponent {
 
 	@Override
 	public void loadPlayer(Player p, Statement stmt) {
-		data.putIfAbsent(p.getUniqueId(), new PlayerData(p));
+		UUID uuid = p.getUniqueId();
+		if (data.containsKey(uuid)) return;
+		// Check if player exists on SQL
+		try {
+			data.put(uuid, new PlayerData(p, stmt));
+		}
+		catch (Exception e) {
+			Bukkit.getLogger().warning("[NeoRogue] Failed to load player data for user " + p.getName());
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public void preloadPlayer(OfflinePlayer p, Statement stmt) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void savePlayer(Player arg0, Statement arg1, Statement arg2) {
-		// TODO Auto-generated method stub
-		
+	public void savePlayer(Player p, Statement insert, Statement delete) {
+		data.get(p.getUniqueId()).save(insert, delete);
 	}
 
 }

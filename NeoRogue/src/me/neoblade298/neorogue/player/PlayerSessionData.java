@@ -1,5 +1,6 @@
 package me.neoblade298.neorogue.player;
 
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.TreeSet;
 import java.util.UUID;
@@ -254,5 +255,9 @@ public class PlayerSessionData {
 	public void setHealth(double health) {
 		this.health = health;
 		getPlayer().setHealth(Math.min(health, maxHealth));
+	}
+	
+	public void save(Statement stmt) {
+		stmt.addBatch(sql);
 	}
 }
