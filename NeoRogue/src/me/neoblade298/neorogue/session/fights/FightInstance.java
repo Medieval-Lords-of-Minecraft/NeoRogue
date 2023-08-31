@@ -499,4 +499,18 @@ public abstract class FightInstance implements Instance {
 			spawner.spawnMob(5 + s.getNodesVisited());
 		}
 	}
+
+	@Override
+	public String serialize(HashMap<UUID, PlayerSessionData> party) {
+		Bukkit.getLogger().warning("[NeoRogue] LobbyInstance attempted to save, this should never happen");
+		return null;
+	}
+	
+	public String serializeMap() {
+		String str = "";
+		for (MapPieceInstance mpi : map.getPieces()) {
+			str += mpi.serialize() + ";";
+		}
+		return str;
+	}
 }

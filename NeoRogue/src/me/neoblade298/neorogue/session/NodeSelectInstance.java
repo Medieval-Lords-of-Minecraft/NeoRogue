@@ -82,8 +82,7 @@ public class NodeSelectInstance implements EditInventoryInstance {
 	}
 
 	@Override
-	public String generateSaveString(HashMap<UUID, PlayerSessionData> party) {
-		Bukkit.getLogger().warning("[NeoRogue] LobbyInstance attempted to save, this should never happen");
-		return null;
+	public String serialize(HashMap<UUID, PlayerSessionData> party) {
+		return "NODESELECT:";
 	}
 }

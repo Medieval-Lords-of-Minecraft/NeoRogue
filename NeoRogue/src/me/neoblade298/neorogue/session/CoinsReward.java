@@ -33,4 +33,9 @@ public class CoinsReward implements Reward {
 		return item;
 	}
 
+	@Override
+	public String serialize() {
+		return "coins-" + amount;
+	}
+
 }

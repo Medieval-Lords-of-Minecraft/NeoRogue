@@ -10,15 +10,19 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neocore.shared.io.SQLManager;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder.SQLAction;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.area.Node;
 import me.neoblade298.neorogue.player.PlayerClass;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.session.fights.FightInstance;
 
 public class Session {
 	private Area area;
@@ -27,10 +31,11 @@ public class Session {
 	private Instance inst;
 	private Node curr;
 	private SessionStatistics stats;
-	private int xOff, zOff, nodesVisited, areasCompleted;
+	private int saveSlot, xOff, zOff, nodesVisited, areasCompleted;
 	private Plot plot;
 	
-	public Session(Player p, Plot plot, String lobby) {
+	public Session(Player p, Plot plot, String lobby, int saveSlot) {
+		this.saveSlot = saveSlot;
 		this.xOff = plot.getXOffset();
 		this.zOff = plot.getZOffset();
 		host = p.getUniqueId();
@@ -38,23 +43,20 @@ public class Session {
 		this.inst = new LobbyInstance(lobby, p, this);
 	}
 	
-	public Session(UUID uuid, int saveSlot) {
-		
+	// Load from existing data
+	public Session(Player p, int saveSlot) {
+		this.saveSlot = saveSlot;
 	}
 	
-	public void save(Statement stmt, int saveSlot) {
-		try {
-			SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_sessions")
-			.addString(host.toString()).addValue(saveSlot).addString(area.getType().name())
-			.addValue(curr.getPosition()).addValue(curr.getLane()).addValue(nodesVisited)
-			.addValue(System.currentTimeMillis()).addString(inst.generateSaveString(party))
-			.addCondition("host = '" + host + "'").addCondition("slot = " + saveSlot);
-			stmt.addBatch(sql.build());
-		}
-		catch (SQLException ex) {
-			Bukkit.getLogger().warning("[NeoRogue] Failed to save session hosted by " + host + " to slot " + saveSlot);
-			ex.printStackTrace();
-		}
+	public void save(Statement insert, Statement delete) throws SQLException {
+		SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_sessions")
+		.addString(host.toString()).addValue(saveSlot).addString(area.getType().name())
+		.addValue(curr.getPosition()).addValue(curr.getLane()).addValue(nodesVisited)
+		.addValue(System.currentTimeMillis()).addString(inst.serialize(party))
+		.addCondition("host = '" + host + "'").addCondition("slot = " + saveSlot);
+		insert.addBatch(sql.build());
+		
+		area.serialize(insert, delete);
 	}
 	
 	public void addPlayers(HashMap<UUID, PlayerClass> players) {
@@ -107,6 +109,23 @@ public class Session {
 				data.setupInventory();
 			}
 		}
+		
+		// Auto-save
+		new BukkitRunnable() {
+			public void run() {
+				try {
+					Statement insert = SQLManager.getConnection(null).createStatement();
+					Statement delete = SQLManager.getConnection(null).createStatement();
+					
+					save(insert, delete);
+					delete.executeBatch();
+					insert.executeBatch();
+				} catch (SQLException ex) {
+					Bukkit.getLogger().warning("[NeoRogue] Failed to save session hosted by " + host + " to slot " + saveSlot);
+					ex.printStackTrace();
+				}
+			}
+		}.runTaskAsynchronously(NeoRogue.inst());
 	}
 	
 	public PlayerSessionData getData(UUID uuid) {
@@ -165,5 +184,9 @@ public class Session {
 	
 	public int getAreasCompleted() {
 		return areasCompleted;
+	}
+	
+	public int getSaveSlot() {
+		return saveSlot;
 	}
 }

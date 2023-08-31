@@ -43,6 +43,8 @@ import com.sk89q.worldedit.world.World;
 import me.filoghost.holographicdisplays.api.hologram.Hologram;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.particles.ParticleUtil;
+import me.neoblade298.neocore.shared.util.SQLInsertBuilder;
+import me.neoblade298.neocore.shared.util.SQLInsertBuilder.SQLAction;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.session.Session;
 
@@ -281,14 +283,18 @@ public class Area {
 		return nodes;
 	}
 
-	public void save(UUID uuid, int saveSlot, Statement insert, Statement delete) throws SQLException {
-		delete.addBatch("DELETE FROM neorogue_nodes WHERE uuid = '" + uuid + "' AND slot = " + saveSlot + ";");
+	public void serialize(Statement insert, Statement delete) throws SQLException {
+		int saveSlot = s.getSaveSlot();
+		UUID host = s.getHost();
+		delete.addBatch("DELETE FROM neorogue_nodes WHERE uuid = '" + host + "' AND slot = " + saveSlot + ";");
 		for (int pos = 1; pos < MAX_POSITIONS; pos++) {
 			for (int lane = 0; lane < MAX_LANES; lane++) {
 				Node node = nodes[pos][lane];
-				// uuid, slot, node (0,0), dests (1,0 1,1), type
-				insert.addBatch("INSERT INTO neorogue_nodes values('" + uuid + "'," + saveSlot + ",'" + node.toString()
-						+ "','" + node.serializeDestinations() + "','" + node.getType());
+				SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.INSERT, "neorogue_nodes")
+						.addString(host.toString()).addValue(saveSlot).addString(node.toString())
+						.addString(node.serializeDestinations()).addString(node.serializeInstanceData())
+						.addCondition("host = '" + host + "'").addCondition("slot = " + saveSlot);
+				insert.addBatch(sql.build());
 			}
 		}
 	}

@@ -105,10 +105,10 @@ public class CampfireInstance implements EditInventoryInstance {
 	}
 
 	@Override
-	public String generateSaveString(HashMap<UUID, PlayerSessionData> party) {
+	public String serialize(HashMap<UUID, PlayerSessionData> party) {
 		for (Entry<UUID, PlayerSessionData> ent : party.entrySet()) {
 			ent.getValue().setInstanceData(notUsed.contains(ent.getKey()) ? "F" : "T");
 		}
-		return "" + state;
+		return "CAMPFIRE:" + state;
 	}
 }

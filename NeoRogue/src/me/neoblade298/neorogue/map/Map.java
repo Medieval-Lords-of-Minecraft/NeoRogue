@@ -74,7 +74,6 @@ public class Map {
 		Map map = new Map();
 		MapPiece piece = bossPieces.get(type).get(NeoCore.gen.nextInt(bossPieces.get(type).size()));
 		map.place(piece);
-		map.addTargets(piece.getTargets());
 		return map;
 	}
 	
@@ -82,7 +81,6 @@ public class Map {
 		Map map = new Map();
 		MapPiece piece = minibossPieces.get(type).get(NeoCore.gen.nextInt(minibossPieces.get(type).size()));
 		map.place(piece);
-		map.addTargets(piece.getTargets());
 		return generate(map, type, numPieces);
 	}
 	
@@ -162,6 +160,7 @@ public class Map {
 			MapPieceInstance best = potentialPlacements.first();
 			place(best);
 		}
+		addTargets(piece.getTargets());
 		return true;
 	}
 	

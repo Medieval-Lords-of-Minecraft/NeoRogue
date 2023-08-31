@@ -39,4 +39,9 @@ public class EquipmentChoiceReward implements Reward {
 		return item;
 	}
 
+	@Override
+	public String serialize() {
+		return "choice-" + Equipment.serialize(equips);
+	}
+
 }

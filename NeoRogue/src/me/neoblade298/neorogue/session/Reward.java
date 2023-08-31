@@ -8,4 +8,5 @@ public interface Reward {
 	// True if the reward can be removed, false if not (usually when it involves opening a secondary choice inventory
 	public boolean claim(PlayerSessionData data, int slot, RewardInventory inv);
 	public ItemStack getIcon();
+	public String serialize();
 }

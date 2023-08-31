@@ -329,7 +329,7 @@ public class LobbyInstance implements Instance {
 	}
 
 	@Override
-	public String generateSaveString(HashMap<UUID, PlayerSessionData> party) {
+	public String serialize(HashMap<UUID, PlayerSessionData> party) {
 		Bukkit.getLogger().warning("[NeoRogue] LobbyInstance attempted to save, this should never happen");
 		return null;
 	}

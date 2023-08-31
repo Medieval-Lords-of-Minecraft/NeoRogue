@@ -118,16 +118,23 @@ public abstract class Equipment {
 	}
 	
 	public static String serialize(ArrayList<Equipment> arr) {
-		if (arr.isEmpty()) return null;
-		
 		String str = "";
 		for (int i = 0; i < arr.size(); i++) {
-			str += arr.get(i);
-			if (i + 1 < arr.size()) {
-				str += ",";
-			}
+			str += arr.get(i).serialize() + ";";
 		}
 		return str;
+	}
+	
+	public static String serialize(Equipment[] arr) {
+		String str = "";
+		for (int i = 0; i < arr.length; i++) {
+			str += arr[i].serialize() + ";";
+		}
+		return str;
+	}
+	
+	public String serialize() {
+		return id + (isUpgraded ? "+" : "");
 	}
 	
 	public static ArrayList<Equipment> deserialize(String str) {

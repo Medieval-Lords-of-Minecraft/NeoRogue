@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.session;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -74,5 +75,19 @@ public class RewardInstance implements EditInventoryInstance {
 				s.setInstance(new NodeSelectInstance());
 			}
 		}.runTaskLater(NeoRogue.inst(), 100L);
+	}
+
+	@Override
+	public String serialize(HashMap<UUID, PlayerSessionData> party) {
+		for (Entry<UUID, ArrayList<Reward>> ent : rewards.entrySet()) {
+			String serialized = "";
+			for (Reward r : ent.getValue()) {
+				serialized += r.serialize() + ";";
+			}
+			
+			PlayerSessionData data = party.get(ent.getKey());
+			data.setInstanceData(serialized);
+		}
+		return "REWARD:";
 	}
 }

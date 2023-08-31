@@ -54,6 +54,10 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		this.entrance = toAttach.clone();
 	}
 	
+	public String serialize() {
+		return piece.getId() + "," + x + "," + y + "," + z + "," + numRotations + "," + (flipX ? "T" : "F") + "," + (flipZ ? "T" : "F");
+	}
+	
 	public int getNumRotations() {
 		return numRotations;
 	}

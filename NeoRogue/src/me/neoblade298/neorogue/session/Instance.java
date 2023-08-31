@@ -11,5 +11,5 @@ public interface Instance {
 	public void start(Session s);
 	public void cleanup();
 	public void handleInteractEvent(PlayerInteractEvent e);
-	public String generateSaveString(HashMap<UUID, PlayerSessionData> party);
+	public String serialize(HashMap<UUID, PlayerSessionData> party);
 }

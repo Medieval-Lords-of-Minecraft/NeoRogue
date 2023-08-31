@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
+import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -98,5 +99,14 @@ public class ShopInstance implements EditInventoryInstance {
 			s.broadcast("&e" + p.getName() + " &7is no longer ready&7!");
 			ready.remove(uuid);
 		}
+	}
+
+	@Override
+	public String serialize(HashMap<UUID, PlayerSessionData> party) {
+		for (Entry<UUID, ArrayList<Equipment>> ent : shops.entrySet()) {
+			PlayerSessionData data = party.get(ent.getKey());
+			data.setInstanceData(Equipment.serialize(ent.getValue()));
+		}
+		return "SHOP:";
 	}
 }

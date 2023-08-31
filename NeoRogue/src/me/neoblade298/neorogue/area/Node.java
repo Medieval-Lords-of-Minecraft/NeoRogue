@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import me.neoblade298.neorogue.session.*;
 import me.neoblade298.neorogue.session.chance.ChanceInstance;
 import me.neoblade298.neorogue.session.fights.BossFightInstance;
+import me.neoblade298.neorogue.session.fights.FightInstance;
 import me.neoblade298.neorogue.session.fights.MinibossFightInstance;
 import me.neoblade298.neorogue.session.fights.StandardFightInstance;
 
@@ -54,11 +55,18 @@ public class Node {
 
 	@Override
 	public String toString() {
-		return type.toString().substring(0, 3);
+		return type.name();
 	}
 
 	public String serializePosition() {
 		return pos + "," + lane;
+	}
+	
+	public String serializeInstanceData() {
+		if (inst instanceof FightInstance) {
+			return ((FightInstance) inst).serializeMap();
+		}
+		return "";
 	}
 
 	public String serializeDestinations() {

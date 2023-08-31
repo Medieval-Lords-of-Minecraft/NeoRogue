@@ -1,5 +1,8 @@
 package me.neoblade298.neorogue.session.chance;
 
+import java.util.HashMap;
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -100,5 +103,10 @@ public class ChanceInstance implements EditInventoryInstance {
 	
 	public Instance getNextInstance() {
 		return nextInstance;
+	}
+
+	@Override
+	public String serialize(HashMap<UUID, PlayerSessionData> party) {
+		return "CHANCE:" + set.getId() + "-" + stage.getId();
 	}
 }
