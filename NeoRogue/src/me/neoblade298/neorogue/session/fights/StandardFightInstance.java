@@ -37,6 +37,11 @@ public class StandardFightInstance extends FightInstance {
 		int min = s.getNodesVisited() / 10;
 		map = Map.generate(s.getArea().getType(), 2 + rand + min);
 	}
+	
+	public StandardFightInstance(Session s, Map map) {
+		super(s);
+		this.map = map;
+	}
 
 	@Override
 	protected void setupInstance(Session s) {
@@ -133,5 +138,9 @@ public class StandardFightInstance extends FightInstance {
 	public void cleanup() {
 		super.cleanup();
 		s.broadcast("&7You completed the fight with a score of " + fightScore.getDisplay() + "&7!");
+	}
+	
+	public String serializeInstanceData() {
+		return "STANDARD:" + map.serialize();
 	}
 }

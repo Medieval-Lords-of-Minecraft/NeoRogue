@@ -27,6 +27,18 @@ public class CampfireInstance implements EditInventoryInstance {
 	private HashSet<UUID> notUsed = new HashSet<UUID>();
 	
 	private Session s;
+	
+	public CampfireInstance() {}
+	
+	public CampfireInstance(String data, HashMap<UUID, PlayerSessionData> party) {
+		state = Integer.parseInt(data.substring(data.length() - 1));
+		
+		for (PlayerSessionData pd : party.values()) {
+			if (pd.getInstanceData().equals("F")) {
+				notUsed.add(pd.getPlayer().getUniqueId());
+			}
+		}
+	}
 
 	@Override
 	public void start(Session s) {

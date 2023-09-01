@@ -502,15 +502,20 @@ public abstract class FightInstance implements Instance {
 
 	@Override
 	public String serialize(HashMap<UUID, PlayerSessionData> party) {
-		Bukkit.getLogger().warning("[NeoRogue] LobbyInstance attempted to save, this should never happen");
+		Bukkit.getLogger().warning("[NeoRogue] FightInstance attempted to save, this should never happen");
 		return null;
 	}
 	
-	public String serializeMap() {
-		String str = "";
-		for (MapPieceInstance mpi : map.getPieces()) {
-			str += mpi.serialize() + ";";
+	public abstract String serializeInstanceData();
+	public static FightInstance deserializeInstanceData(Session s, String str) {
+		if (str.startsWith("STANDARD")) {
+			return new StandardFightInstance(s, Map.deserialize(str.substring("STANDARD:".length())));
 		}
-		return str;
+		else if (str.startsWith("MINIBOSS")) {
+			return new MinibossFightInstance(s, Map.deserialize(str.substring("MINIBOSS:".length())));
+		}
+		else {
+			return new BossFightInstance(s, Map.deserialize(str.substring("BOSS:".length())));
+		}
 	}
 }

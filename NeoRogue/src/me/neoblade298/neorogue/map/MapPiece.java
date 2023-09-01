@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
 import me.neoblade298.neorogue.NeoRogue;
 
 public class MapPiece {
+	private static HashMap<String, MapPiece> pieces = new HashMap<String, MapPiece>();
 	private String id;
 	private MapShape shape;
 	private HashSet<String> targets;
@@ -64,6 +66,12 @@ public class MapPiece {
 			this.targets = new HashSet<String>();
 			this.targets.addAll(targets);
 		}
+		
+		pieces.put(id, this);
+	}
+	
+	public static MapPiece get(String id) {
+		return pieces.get(id);
 	}
 	
 	public HashSet<String> getTargets() {

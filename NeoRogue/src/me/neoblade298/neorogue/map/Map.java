@@ -222,6 +222,29 @@ public class Map {
 		pieces.add(inst);
 	}
 	
+	// Ignores working with entrances as it was already generated before
+	private void placeDeserialized(MapPieceInstance inst) {
+		MapShape shape = inst.getPiece().getShape();
+		shape.applySettings(inst);
+		for (int i = 0; i < shape.getLength(); i++) {
+			for (int j = 0; j < shape.getHeight(); j++) {
+				boolean b = shape.get(i, j);
+				
+				// Only do things if we're placing a tangible piece
+				if (b) {
+					this.shape[inst.getX() + i][inst.getZ() + j] = shape.get(i, j);
+				}
+			}
+		}
+
+		// Set up the mobs
+		for (MapSpawner spawner : inst.getPiece().getSpawners()) {
+			mobs.put(spawner.getMob(), MobModifier.generateModifiers(0));
+		}
+
+		pieces.add(inst);
+	}
+	
 	public void cleanup() {
 		
 	}
@@ -286,5 +309,22 @@ public class Map {
 	
 	public HashSet<String> getTargets() {
 		return targets;
+	}
+	
+	public String serialize() {
+		String str = "";
+		for (MapPieceInstance mpi : pieces) {
+			str += mpi.serialize() + ";";
+		}
+		return str;
+	}
+	
+	public static Map deserialize(String str) {
+		Map map = new Map();
+		String[] pieces = str.split(";");
+		for (String piece : pieces) {
+			map.placeDeserialized(MapPieceInstance.deserialize(piece));
+		}
+		return map;
 	}
 }

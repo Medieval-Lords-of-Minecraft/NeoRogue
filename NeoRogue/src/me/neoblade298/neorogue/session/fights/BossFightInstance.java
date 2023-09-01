@@ -24,6 +24,12 @@ public class BossFightInstance extends FightInstance {
 		map = Map.generateBoss(s.getArea().getType(), 2);
 		targets.addAll(map.getTargets());
 	}
+	
+	public BossFightInstance(Session s, Map map) {
+		super(s);
+		this.map = map;
+		targets.addAll(map.getTargets());
+	}
 
 	@Override
 	protected void setupInstance(Session s) {
@@ -74,5 +80,10 @@ public class BossFightInstance extends FightInstance {
 	public void cleanup() {
 		super.cleanup();
 		s.broadcast("&7You beat the boss!");
+	}
+
+	@Override
+	public String serializeInstanceData() {
+		return "BOSS:" + map.serialize();
 	}
 }

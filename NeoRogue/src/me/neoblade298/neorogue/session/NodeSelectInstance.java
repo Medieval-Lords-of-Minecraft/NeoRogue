@@ -24,12 +24,17 @@ import me.neoblade298.neorogue.session.fights.FightInstance;
 public class NodeSelectInstance implements EditInventoryInstance {
 	private Session s;
 	private BukkitTask task;
+	
+	public NodeSelectInstance() {}
+	
+	public NodeSelectInstance(HashMap<UUID, PlayerSessionData> party) {
+		
+	}
 
 	@Override
 	public void start(Session s) {
 		this.s = s;
 		Area area = s.getArea();
-		System.out.println("Node is now " + s.getNode());
 		area.update(s.getNode());
 		for (Player p : s.getOnlinePlayers()) {
 			p.teleport(area.getTeleport());
@@ -83,6 +88,6 @@ public class NodeSelectInstance implements EditInventoryInstance {
 
 	@Override
 	public String serialize(HashMap<UUID, PlayerSessionData> party) {
-		return "NODESELECT:";
+		return "NODESELECT";
 	}
 }

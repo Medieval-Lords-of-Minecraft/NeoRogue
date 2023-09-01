@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.session;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -12,4 +14,18 @@ public interface Instance {
 	public void cleanup();
 	public void handleInteractEvent(PlayerInteractEvent e);
 	public String serialize(HashMap<UUID, PlayerSessionData> party);
+	
+	public static Instance deserialize(ResultSet row, HashMap<UUID, PlayerSessionData> party) throws SQLException {
+		String data = row.getString("instanceData");
+		
+		if (data.startsWith("CAMPFIRE")) {
+			return new CampfireInstance(data, party);
+		}
+		else if (data.startsWith("NODESELECT")) {
+			return new NodeSelectInstance();
+		}
+		else if (data.startsWith("REWARD")) {
+			return new RewardInstance();
+		}
+	}
 }

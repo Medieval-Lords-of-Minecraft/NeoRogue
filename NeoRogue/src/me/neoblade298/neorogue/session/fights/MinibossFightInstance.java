@@ -24,6 +24,12 @@ public class MinibossFightInstance extends FightInstance {
 		map = Map.generateMiniboss(s.getArea().getType(), 2);
 		targets.addAll(map.getTargets());
 	}
+	
+	public MinibossFightInstance(Session s, Map map) {
+		super(s);
+		this.map = map;
+		targets.addAll(map.getTargets());
+	}
 
 	@Override
 	protected void setupInstance(Session s) {
@@ -74,5 +80,9 @@ public class MinibossFightInstance extends FightInstance {
 	public void cleanup() {
 		super.cleanup();
 		s.broadcast("&7You beat the miniboss!");
+	}
+	
+	public String serializeInstanceData() {
+		return "MINIBOSS:" + map.serialize();
 	}
 }

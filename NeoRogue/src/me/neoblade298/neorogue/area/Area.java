@@ -114,23 +114,22 @@ public class Area {
 				.executeQuery("SELECT * FROM neorogue_nodes WHERE uuid = '" + uuid + "' AND slot = " + saveSlot + ";");
 		// First load the nodes themselves
 		while (rs.next()) {
-			String[] coords = rs.getString("node").split(",");
-			int pos = Integer.parseInt(coords[0]);
-			int lane = Integer.parseInt(coords[1]);
+			int pos = rs.getInt("position");
+			int lane = rs.getInt("lane");
 			nodes[pos][lane] = new Node(NodeType.valueOf(rs.getString("type")), pos, lane);
+			nodes[pos][lane].deserializeInstance(s, rs.getString("instanceData"));
 		}
 
 		// Next load the node destinations now that they're populated
 		rs.beforeFirst();
 		while (rs.next()) {
-			String[] coords = rs.getString("node").split(",");
-			int pos = Integer.parseInt(coords[0]);
-			int lane = Integer.parseInt(coords[1]);
+			int pos = rs.getInt("position");
+			int lane = rs.getInt("lane");
 			Node node = nodes[pos][lane];
 
-			String[] dests = rs.getString("dests").split(" ");
+			String[] dests = rs.getString("destinations").split(" ");
 			for (String dest : dests) {
-				coords = dest.split(",");
+				String[] coords = dest.split(",");
 				pos = Integer.parseInt(coords[0]);
 				lane = Integer.parseInt(coords[1]);
 
@@ -151,6 +150,9 @@ public class Area {
 		nodes[MAX_POSITIONS - 2][CENTER_LANE] = new Node(NodeType.CAMPFIRE, MAX_POSITIONS - 2, CENTER_LANE);
 		nodes[MAX_POSITIONS - 2][CENTER_LANE + 1] = new Node(NodeType.CAMPFIRE, MAX_POSITIONS - 2, CENTER_LANE + 1);
 		nodes[MAX_POSITIONS - 1][CENTER_LANE] = new Node(NodeType.BOSS, MAX_POSITIONS - 1, CENTER_LANE);
+		
+		// Generate boss
+		nodes[MAX_POSITIONS - 1][CENTER_LANE].generateInstance(s);
 
 		// Guaranteed minimums
 		placeNodeRandomly(NodeType.MINIBOSS, MIN_MINIBOSSES);
@@ -292,6 +294,7 @@ public class Area {
 				Node node = nodes[pos][lane];
 				SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.INSERT, "neorogue_nodes")
 						.addString(host.toString()).addValue(saveSlot).addString(node.toString())
+						.addValue(node.getPosition()).addValue(node.getLane())
 						.addString(node.serializeDestinations()).addString(node.serializeInstanceData())
 						.addCondition("host = '" + host + "'").addCondition("slot = " + saveSlot);
 				insert.addBatch(sql.build());

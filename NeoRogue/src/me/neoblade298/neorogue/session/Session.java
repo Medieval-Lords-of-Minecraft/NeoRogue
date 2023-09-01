@@ -61,6 +61,7 @@ public class Session {
 				try (Connection con = SQLManager.getConnection(null);
 						Statement stmt = con.createStatement()) {
 					ResultSet sessSet = stmt.executeQuery("SELECT * FROM neorogue_sessions WHERE host = '" + host + "' AND slot = " + saveSlot + ";");
+					sessSet.next();
 					nodesVisited = sessSet.getInt("nodesVisited");
 
 					area = new Area(AreaType.valueOf(sessSet.getString("areaType")),
@@ -71,6 +72,8 @@ public class Session {
 						UUID uuid = UUID.fromString(partySet.getString("uuid"));
 						party.put(uuid, new PlayerSessionData(uuid, s, partySet));
 					}
+					
+					setInstance(Instance.deserialize(sessSet, party));
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
@@ -123,18 +126,22 @@ public class Session {
 	}
 	
 	public void setInstance(Instance inst) {
-		if (inst instanceof EditInventoryInstance) {
-			for (PlayerSessionData data : party.values()) {
-				if (!data.saveStorage()) {
-					for (Player online : getOnlinePlayers()) {
-						Util.displayError(online, "&&4" + data.getData().getDisplay() + "&c has too many items in their inventory! They must drop some "
-								+ "to satisfy their storage limit of &e" + data.getMaxStorage() + "&c!");
+		boolean firstLoad = this.inst == null;
+		if (!firstLoad) {
+			if (this.inst instanceof EditInventoryInstance) {
+				for (PlayerSessionData data : party.values()) {
+					if (!data.saveStorage()) {
+						for (Player online : getOnlinePlayers()) {
+							Util.displayError(online, "&&4" + data.getData().getDisplay() + "&c has too many items in their inventory! They must drop some "
+									+ "to satisfy their storage limit of &e" + data.getMaxStorage() + "&c!");
+						}
+						return;
 					}
-					return;
 				}
 			}
+			this.inst.cleanup();
 		}
-		this.inst.cleanup();
+		
 		this.inst = inst;
 		inst.start(this);
 		if (inst instanceof EditInventoryInstance) {
@@ -144,6 +151,7 @@ public class Session {
 		}
 		
 		// Auto-save
+		if (firstLoad) return;
 		new BukkitRunnable() {
 			public void run() {
 				try {

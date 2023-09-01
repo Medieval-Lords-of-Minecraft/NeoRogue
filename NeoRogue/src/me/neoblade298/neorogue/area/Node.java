@@ -62,9 +62,15 @@ public class Node {
 		return pos + "," + lane;
 	}
 	
+	public void deserializeInstance(Session s, String data) {
+		if (!data.isBlank()) {
+			inst = FightInstance.deserializeInstanceData(s, data);
+		}
+	}
+	
 	public String serializeInstanceData() {
 		if (inst instanceof FightInstance) {
-			return ((FightInstance) inst).serializeMap();
+			return ((FightInstance) inst).serializeInstanceData();
 		}
 		return "";
 	}

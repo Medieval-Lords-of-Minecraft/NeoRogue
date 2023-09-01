@@ -290,6 +290,10 @@ public class PlayerSessionData {
 		this.instanceData = str;
 	}
 	
+	public String getInstanceData() {
+		return instanceData;
+	}
+	
 	public void save(Statement stmt) throws SQLException {
 		UUID host = s.getHost();
 		int saveSlot = s.getSaveSlot();

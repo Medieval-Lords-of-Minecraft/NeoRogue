@@ -28,6 +28,12 @@ public class RewardInstance implements EditInventoryInstance {
 	public RewardInstance(HashMap<UUID, ArrayList<Reward>> rewards) {
 		this.rewards = rewards;
 	}
+	
+	public RewardInstance(HashMap<UUID, PlayerSessionData> party) {
+		for (Entry<UUID, PlayerSessionData> ent : party.entrySet()) {
+			
+		}
+	}
 
 	@Override
 	public void start(Session s) {
@@ -88,6 +94,6 @@ public class RewardInstance implements EditInventoryInstance {
 			PlayerSessionData data = party.get(ent.getKey());
 			data.setInstanceData(serialized);
 		}
-		return "REWARD:";
+		return "REWARD";
 	}
 }
