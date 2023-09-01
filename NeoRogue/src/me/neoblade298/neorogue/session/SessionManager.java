@@ -57,7 +57,7 @@ public class SessionManager implements Listener {
 		}
 
 		// Create session on plot
-		Session s = new Session(p, plot, name);
+		Session s = new Session(p, plot, name, 0);
 		sessions.put(p.getUniqueId(), s);
 		sessionPlots.put(plot, s);
 		

@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.player;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.TreeSet;
@@ -15,6 +17,8 @@ import org.bukkit.inventory.PlayerInventory;
 import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neocore.shared.util.SQLInsertBuilder;
+import me.neoblade298.neocore.shared.util.SQLInsertBuilder.SQLAction;
 import me.neoblade298.neorogue.equipment.*;
 import me.neoblade298.neorogue.session.Session;
 import net.md_5.bungee.api.ChatColor;
@@ -33,6 +37,30 @@ public class PlayerSessionData {
 	private Usable[] otherBinds = new Usable[8];
 	private int abilitiesEquipped = 0, maxAbilities = 2, maxStorage = 9, coins = 0;
 	private String instanceData;
+	
+	public PlayerSessionData(UUID uuid, Session s, ResultSet rs) throws SQLException {
+		data = PlayerManager.getPlayerData(uuid);
+		this.s = s;
+		
+		this.pc = PlayerClass.valueOf(rs.getString("playerClass"));
+		this.maxHealth = rs.getDouble("maxHealth");
+		this.maxMana = rs.getDouble("maxMana");
+		this.maxStamina = rs.getDouble("maxStamina");
+		this.health = rs.getDouble("health");
+		this.manaRegen = rs.getDouble("manaRegen");
+		this.staminaRegen = rs.getDouble("staminaRegen");
+		this.hotbar = Equipment.deserializeHotbar(rs.getString("hotbar"));
+		this.armors = Equipment.deserializeArmor(rs.getString("armors"));
+		this.offhand = (Offhand) Equipment.deserialize(rs.getString("offhand"));
+		this.accessories = Equipment.deserializeAccessories(rs.getString("accessories"));
+		this.storage = Equipment.deserializeAsArrayList(rs.getString("storage"));
+		this.otherBinds = Equipment.deserializeUsables(rs.getString("otherBinds"));
+		this.artifacts = ArtifactInstance.deserializeSet(rs.getString("artifacts"));
+		this.maxAbilities = rs.getInt("maxAbilities");
+		this.maxStorage = rs.getInt("maxStorage");
+		this.coins = rs.getInt("coins");
+		this.instanceData = rs.getString("instanceData");
+	}
 	
 	public PlayerSessionData(UUID uuid, PlayerClass pc, Session s) {
 		data = PlayerManager.getPlayerData(uuid);
@@ -262,7 +290,18 @@ public class PlayerSessionData {
 		this.instanceData = str;
 	}
 	
-	public void save(Statement stmt) {
-		// TODO
+	public void save(Statement stmt) throws SQLException {
+		UUID host = s.getHost();
+		int saveSlot = s.getSaveSlot();
+		SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_playersessiondata")
+				.addString(host.toString()).addValue(saveSlot).addString(data.getPlayer().getUniqueId().toString())
+				.addString(data.getPlayer().getDisplayName()).addString(pc.name()).addValue(maxHealth).addValue(maxMana)
+				.addValue(maxStamina).addValue(health).addValue(manaRegen).addValue(staminaRegen)
+				.addString(Equipment.serialize(hotbar)).addString(Equipment.serialize(armors))
+				.addString(offhand != null ? offhand.serialize() : "").addString(Equipment.serialize(accessories))
+				.addString(Equipment.serialize(storage)).addString(Equipment.serialize(otherBinds))
+				.addString(ArtifactInstance.serialize(artifacts)).addValue(maxAbilities).addValue(maxStorage)
+				.addValue(coins).addString(instanceData);
+		stmt.addBatch(sql.build());
 	}
 }

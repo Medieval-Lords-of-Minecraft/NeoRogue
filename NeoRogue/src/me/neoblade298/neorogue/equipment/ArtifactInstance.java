@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment;
 
+import java.util.TreeSet;
+
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.player.Trigger;
@@ -50,4 +52,37 @@ public class ArtifactInstance implements Comparable<ArtifactInstance> {
 		return true;
 	}
 	
+	public String serialize() {
+		return artifact.getId() + (artifact.isUpgraded ? "+" : "") + "-" + amount;
+	}
+	
+	public static String serialize(TreeSet<ArtifactInstance> set) {
+		String str = "";
+		for (ArtifactInstance ai : set) {
+			str += ai.serialize();
+			if (ai.getArtifact().isUpgraded) str += "+";
+			str += "-" + ai.getAmount() + ";";
+		}
+		return str;
+	}
+	
+	public static TreeSet<ArtifactInstance> deserializeSet(String str) {
+		TreeSet<ArtifactInstance> set = new TreeSet<ArtifactInstance>();
+		String[] separated = str.split(";");
+		for (String aiString : separated) {
+			set.add(deserialize(aiString));
+		}
+		return set;
+	}
+	
+	public static ArtifactInstance deserialize(String str) {
+		String[] aiPieces = str.split(";");
+		boolean isUpgraded = false;
+		if (aiPieces[0].endsWith("+")) {
+			isUpgraded = true;
+			aiPieces[0] = aiPieces[0].substring(0, aiPieces[0].length() - 1);
+		}
+		Artifact a = (Artifact) Equipment.get(aiPieces[0], isUpgraded);
+		return new ArtifactInstance(a, Integer.parseInt(aiPieces[1]));
+	}
 }

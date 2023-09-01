@@ -78,15 +78,15 @@ public class PlayerData {
 	
 	// Should only ever be displayed to the owner
 	public void displayLoadButtons() {
-		Util.msgRaw(p, "&7Save files (Click one to load):");
+		Util.msgRaw(p, "&7Save slots (Click one to load):");
 		for (int i = 1; i <= snapshots.size(); i++) {
 			snapshots.get(i).displayLoadButton(p, i);
 		}
 	}
 	
 	// Should only ever be displayed to the owner
-	public void displaySaveButtons() {
-		Util.msgRaw(p, "&7Save files (Click one to overwrite):");
+	public void displayNewButtons() {
+		Util.msgRaw(p, "&7Save slots (Click one to start a new game with):");
 		int i;
 		for (i = 1; i <= snapshots.size(); i++) {
 			snapshots.get(i).displaySaveButton(p, i);

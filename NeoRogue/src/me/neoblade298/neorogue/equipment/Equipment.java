@@ -128,6 +128,10 @@ public abstract class Equipment {
 	public static String serialize(Equipment[] arr) {
 		String str = "";
 		for (int i = 0; i < arr.length; i++) {
+			if (arr[i] == null) {
+				str += ";";
+				break;
+			}
 			str += arr[i].serialize() + ";";
 		}
 		return str;
@@ -137,11 +141,66 @@ public abstract class Equipment {
 		return id + (isUpgraded ? "+" : "");
 	}
 	
-	public static ArrayList<Equipment> deserialize(String str) {
+	public static Equipment deserialize(String str) {
+		if (str.isBlank()) return null;
+		boolean isUpgraded = false;
+		if (str.endsWith("+")) {
+			isUpgraded = true;
+			str = str.substring(0, str.length() - 1);
+		}
+		return get(str, isUpgraded);
+	}
+	
+	public static Equipment[] deserializeAsArray(String str) {
+		String[] separated = str.split(",");
+		Equipment[] arr = new Equipment[separated.length];
+		for (int i = 0; i < separated.length; i++) {
+			arr[i] = (Equipment) Equipment.deserialize(str);
+		}
+		return arr;
+	}
+	
+	public static ArrayList<Equipment> deserializeAsArrayList(String str) {
 		String[] separated = str.split(",");
 		ArrayList<Equipment> arr = new ArrayList<Equipment>(separated.length);
 		for (String s : separated) {
-			arr.add(equipment.get(s));
+			arr.add(Equipment.deserialize(str));
+		}
+		return arr;
+	}
+	
+	public static HotbarCompatible[] deserializeHotbar(String str) {
+		String[] separated = str.split(",");
+		HotbarCompatible[] arr = new HotbarCompatible[separated.length];
+		for (int i = 0; i < separated.length; i++) {
+			arr[i] = (HotbarCompatible) Equipment.deserialize(str);
+		}
+		return arr;
+	}
+	
+	public static Armor[] deserializeArmor(String str) {
+		String[] separated = str.split(",");
+		Armor[] arr = new Armor[separated.length];
+		for (int i = 0; i < separated.length; i++) {
+			arr[i] = (Armor) Equipment.deserialize(str);
+		}
+		return arr;
+	}
+	
+	public static Accessory[] deserializeAccessories(String str) {
+		String[] separated = str.split(",");
+		Accessory[] arr = new Accessory[separated.length];
+		for (int i = 0; i < separated.length; i++) {
+			arr[i] = (Accessory) Equipment.deserialize(str);
+		}
+		return arr;
+	}
+	
+	public static Usable[] deserializeUsables(String str) {
+		String[] separated = str.split(",");
+		Usable[] arr = new Usable[separated.length];
+		for (int i = 0; i < separated.length; i++) {
+			arr[i] = (Usable) Equipment.deserialize(str);
 		}
 		return arr;
 	}

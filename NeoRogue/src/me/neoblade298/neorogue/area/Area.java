@@ -283,7 +283,7 @@ public class Area {
 		return nodes;
 	}
 
-	public void serialize(Statement insert, Statement delete) throws SQLException {
+	public void save(Statement insert, Statement delete) throws SQLException {
 		int saveSlot = s.getSaveSlot();
 		UUID host = s.getHost();
 		delete.addBatch("DELETE FROM neorogue_nodes WHERE uuid = '" + host + "' AND slot = " + saveSlot + ";");

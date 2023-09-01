@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.session;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -44,8 +46,36 @@ public class Session {
 	}
 	
 	// Load from existing data
-	public Session(Player p, int saveSlot) {
+	public Session(Player p, Plot plot, int saveSlot) {
 		this.saveSlot = saveSlot;
+		this.xOff = plot.getXOffset();
+		this.zOff = plot.getZOffset();
+		host = p.getUniqueId();
+		this.plot = plot;
+		
+		Session s = this;
+		new BukkitRunnable() {
+			public void run() {
+				Util.msgRaw(p, "&7Loading game...");
+				
+				try (Connection con = SQLManager.getConnection(null);
+						Statement stmt = con.createStatement()) {
+					ResultSet sessSet = stmt.executeQuery("SELECT * FROM neorogue_sessions WHERE host = '" + host + "' AND slot = " + saveSlot + ";");
+					nodesVisited = sessSet.getInt("nodesVisited");
+
+					area = new Area(AreaType.valueOf(sessSet.getString("areaType")),
+							xOff, zOff, host, saveSlot, s, stmt);
+					
+					ResultSet partySet = stmt.executeQuery("SELECT * FROM neorogue_playersessiondata WHERE host = '" + host + "' AND slot = " + saveSlot + ";");
+					while (partySet.next()) {
+						UUID uuid = UUID.fromString(partySet.getString("uuid"));
+						party.put(uuid, new PlayerSessionData(uuid, s, partySet));
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}.runTaskAsynchronously(NeoRogue.inst());
 	}
 	
 	public void save(Statement insert, Statement delete) throws SQLException {
@@ -56,7 +86,10 @@ public class Session {
 		.addCondition("host = '" + host + "'").addCondition("slot = " + saveSlot);
 		insert.addBatch(sql.build());
 		
-		area.serialize(insert, delete);
+		area.save(insert, delete);
+		for (PlayerSessionData psd : party.values()) {
+			psd.save(insert);
+		}
 	}
 	
 	public void addPlayers(HashMap<UUID, PlayerClass> players) {
