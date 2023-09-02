@@ -14,6 +14,10 @@ public class CoinsReward implements Reward {
 	public CoinsReward(int amount) {
 		this.amount = amount;
 	}
+	
+	public CoinsReward(String str) {
+		this.amount = Integer.parseInt(str);
+	}
 
 	@Override
 	public boolean claim(PlayerSessionData data, int slot, RewardInventory inv) {
@@ -35,7 +39,7 @@ public class CoinsReward implements Reward {
 
 	@Override
 	public String serialize() {
-		return "coins-" + amount;
+		return "coins:" + amount;
 	}
 
 }

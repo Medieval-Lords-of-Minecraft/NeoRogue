@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.session;
 
+import java.util.ArrayList;
+
 import org.bukkit.inventory.ItemStack;
 
 import me.neoblade298.neorogue.player.PlayerSessionData;
@@ -9,4 +11,23 @@ public interface Reward {
 	public boolean claim(PlayerSessionData data, int slot, RewardInventory inv);
 	public ItemStack getIcon();
 	public String serialize();
+	
+	public static Reward deserialize(String str) {
+		if (str.startsWith("coins")) {
+			return new CoinsReward(str.substring("coins:".length()));
+		}
+		else if (str.startsWith("equips")) {
+			return new EquipmentChoiceReward(str.substring("equips:".length()));
+		}
+		return null;
+	}
+	
+	public static ArrayList<Reward> deserializeArray(String str) {
+		ArrayList<Reward> rewards = new ArrayList<Reward>();
+		String[] split = str.split(";");
+		for (String s : split) {
+			rewards.add(Reward.deserialize(s));
+		}
+		return rewards;
+	}
 }

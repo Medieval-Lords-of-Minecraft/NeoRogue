@@ -17,6 +17,10 @@ public class EquipmentChoiceReward implements Reward {
 	public EquipmentChoiceReward(ArrayList<Equipment> equips) {
 		this.equips = equips;
 	}
+	
+	public EquipmentChoiceReward(String str) {
+		Equipment.deserializeAsArrayList(str);
+	}
 
 	@Override
 	public boolean claim(PlayerSessionData data, int slot, RewardInventory inv) {
@@ -41,7 +45,7 @@ public class EquipmentChoiceReward implements Reward {
 
 	@Override
 	public String serialize() {
-		return "choice-" + Equipment.serialize(equips);
+		return "choice:" + Equipment.serialize(equips);
 	}
 
 }

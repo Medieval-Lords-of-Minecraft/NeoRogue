@@ -10,6 +10,7 @@ import me.neoblade298.neorogue.area.AreaType;
 
 public class ChanceSet {
 	private static HashMap<AreaType, ArrayList<ChanceSet>> sets = new HashMap<AreaType, ArrayList<ChanceSet>>();
+	private static HashMap<String, ChanceSet> setsById = new HashMap<String, ChanceSet>();
 	public static final String INIT_ID = "init";
 	
 	private HashMap<String, ChanceStage> stages = new HashMap<String, ChanceStage>();
@@ -19,6 +20,10 @@ public class ChanceSet {
 	public static ChanceSet getSet(AreaType type) {
 		ArrayList<ChanceSet> set = sets.get(type);
 		return set.get(NeoCore.gen.nextInt(set.size()));
+	}
+	
+	public static ChanceSet get(String id) {
+		return setsById.get(id);
 	}
 	
 	public static void load() {
@@ -39,6 +44,7 @@ public class ChanceSet {
 		this.display = "§6" + display;
 		this.mat = mat;
 		sets.get(type).add(this);
+		setsById.put(id, this);
 	}
 	
 	public ChanceStage getInitialStage() {

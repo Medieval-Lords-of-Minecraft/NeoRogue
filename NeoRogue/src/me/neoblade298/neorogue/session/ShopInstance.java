@@ -31,6 +31,14 @@ public class ShopInstance implements EditInventoryInstance {
 	private HashSet<UUID> ready = new HashSet<UUID>();
 	private Session s;
 	private Entity trader;
+	
+	public ShopInstance() {}
+	
+	public ShopInstance(HashMap<UUID, PlayerSessionData> party) {
+		for (Entry<UUID, PlayerSessionData> ent : party.entrySet()) {
+			shops.put(ent.getKey(), Equipment.deserializeAsArrayList(ent.getValue().getInstanceData()));
+		}
+	}
 
 	@Override
 	public void start(Session s) {

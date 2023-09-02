@@ -8,6 +8,7 @@ import java.util.UUID;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.session.chance.ChanceInstance;
 
 public interface Instance {
 	public void start(Session s);
@@ -25,7 +26,14 @@ public interface Instance {
 			return new NodeSelectInstance();
 		}
 		else if (data.startsWith("REWARD")) {
-			return new RewardInstance();
+			return new RewardInstance(party, false); // boolean is literally just to differentiate constructors
 		}
+		else if (data.startsWith("SHOP")) {
+			return new ShopInstance(party);
+		}
+		else if (data.startsWith("CHANCE")) {
+			return new ChanceInstance(data);
+		}
+		return null;
 	}
 }

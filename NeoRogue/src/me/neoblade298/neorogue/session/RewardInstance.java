@@ -29,9 +29,9 @@ public class RewardInstance implements EditInventoryInstance {
 		this.rewards = rewards;
 	}
 	
-	public RewardInstance(HashMap<UUID, PlayerSessionData> party) {
+	public RewardInstance(HashMap<UUID, PlayerSessionData> party, boolean useless) {
 		for (Entry<UUID, PlayerSessionData> ent : party.entrySet()) {
-			
+			rewards.put(ent.getKey(), Reward.deserializeArray(ent.getValue().getInstanceData()));
 		}
 	}
 

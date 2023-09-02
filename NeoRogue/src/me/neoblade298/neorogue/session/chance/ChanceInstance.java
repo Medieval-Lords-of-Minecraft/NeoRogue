@@ -24,6 +24,15 @@ public class ChanceInstance implements EditInventoryInstance {
 	private ChanceStage stage;
 	private Instance nextInstance; // For taking you directly from this instance to another
 	private Session s;
+	
+	public ChanceInstance() {}
+	
+	public ChanceInstance(String data) {
+		data = data.substring("CHANCE:".length());
+		String[] split = data.split("-");
+		set = ChanceSet.get(split[0]);
+		stage = ChanceStage.get(split[1]);
+	}
 
 	@Override
 	public void start(Session s) {
