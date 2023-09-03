@@ -21,8 +21,7 @@ import me.neoblade298.neorogue.player.FightInfoInventory;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fights.FightInstance;
 
-public class NodeSelectInstance implements EditInventoryInstance {
-	private Session s;
+public class NodeSelectInstance extends EditInventoryInstance {
 	private BukkitTask task;
 	
 	public NodeSelectInstance() {}
@@ -36,8 +35,9 @@ public class NodeSelectInstance implements EditInventoryInstance {
 		this.s = s;
 		Area area = s.getArea();
 		area.update(s.getNode());
+		spawn = area.getTeleport();
 		for (Player p : s.getOnlinePlayers()) {
-			p.teleport(area.getTeleport());
+			p.teleport(spawn);
 		}
 		task = new BukkitRunnable() {
 			public void run() {

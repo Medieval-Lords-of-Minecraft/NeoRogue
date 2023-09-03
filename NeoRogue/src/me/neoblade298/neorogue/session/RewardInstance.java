@@ -19,11 +19,10 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 
-public class RewardInstance implements EditInventoryInstance {
+public class RewardInstance extends EditInventoryInstance {
 	private static final int REWARDS_X = 4, REWARDS_Z = 78;
 	
 	private HashMap<UUID, ArrayList<Reward>> rewards = new HashMap<UUID, ArrayList<Reward>>();
-	private Session s;
 	
 	public RewardInstance(HashMap<UUID, ArrayList<Reward>> rewards) {
 		this.rewards = rewards;
@@ -38,11 +37,11 @@ public class RewardInstance implements EditInventoryInstance {
 	@Override
 	public void start(Session s) {
 		this.s = s;
-		Location loc = new Location(Bukkit.getWorld(Area.WORLD_NAME), -(s.getXOff() + REWARDS_X), 64, s.getZOff() + REWARDS_Z);
+		spawn = new Location(Bukkit.getWorld(Area.WORLD_NAME), -(s.getXOff() + REWARDS_X), 64, s.getZOff() + REWARDS_Z);
 		for (PlayerSessionData data : s.getParty().values()) {
 			Player p = data.getPlayer();
 			p.playSound(p, Sound.ENTITY_PLAYER_LEVELUP, 1F, 1F);
-			p.teleport(loc);
+			p.teleport(spawn);
 		}
 	}
 

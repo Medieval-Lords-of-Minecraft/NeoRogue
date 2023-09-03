@@ -24,12 +24,11 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 
-public class ShopInstance implements EditInventoryInstance {
+public class ShopInstance extends EditInventoryInstance {
 	private static final int SHOP_X = 4, SHOP_Z = 94, NUM_ITEMS = 10;
 	
 	private HashMap<UUID, ArrayList<Equipment>> shops = new HashMap<UUID, ArrayList<Equipment>>();
 	private HashSet<UUID> ready = new HashSet<UUID>();
-	private Session s;
 	private Entity trader;
 	
 	public ShopInstance() {}
@@ -43,13 +42,13 @@ public class ShopInstance implements EditInventoryInstance {
 	@Override
 	public void start(Session s) {
 		this.s = s;
-		Location loc = new Location(Bukkit.getWorld(Area.WORLD_NAME), -(s.getXOff() + SHOP_X), 64, s.getZOff() + SHOP_Z);
-		Location mob = loc.clone().add(0, 0, 3);
+		spawn = new Location(Bukkit.getWorld(Area.WORLD_NAME), -(s.getXOff() + SHOP_X), 64, s.getZOff() + SHOP_Z);
+		Location mob = spawn.clone().add(0, 0, 3);
 		this.trader = mob.getWorld().spawnEntity(mob, EntityType.WANDERING_TRADER);
 		for (PlayerSessionData data : s.getParty().values()) {
 			Player p = data.getPlayer();
 			EquipmentClass ec = data.getPlayerClass().toEquipmentClass();
-			p.teleport(loc);
+			p.teleport(spawn);
 			ArrayList<Equipment> shopItems = new ArrayList<Equipment>();
 			shopItems.addAll(Equipment.getDrop(s.getAreasCompleted() + 2, NUM_ITEMS / 2, ec, EquipmentClass.SHOP));
 			shopItems.addAll(Equipment.getDrop(s.getAreasCompleted() + 3, NUM_ITEMS / 2, ec, EquipmentClass.SHOP));

@@ -24,6 +24,7 @@ import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.area.Node;
 import me.neoblade298.neorogue.player.PlayerClass;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.session.fights.FightInstance;
 
 public class Session {
 	private Area area;
@@ -93,6 +94,8 @@ public class Session {
 		for (PlayerSessionData psd : party.values()) {
 			psd.save(insert);
 		}
+		
+		party.get(host).getData().updateSnapshot(this, saveSlot);
 	}
 	
 	public void addPlayers(HashMap<UUID, PlayerClass> players) {
@@ -128,17 +131,17 @@ public class Session {
 	public void setInstance(Instance inst) {
 		boolean firstLoad = this.inst == null;
 		if (!firstLoad) {
-			if (this.inst instanceof EditInventoryInstance) {
-				for (PlayerSessionData data : party.values()) {
-					if (!data.saveStorage()) {
-						for (Player online : getOnlinePlayers()) {
-							Util.displayError(online, "&&4" + data.getData().getDisplay() + "&c has too many items in their inventory! They must drop some "
-									+ "to satisfy their storage limit of &e" + data.getMaxStorage() + "&c!");
-						}
+			if (!(this.inst instanceof FightInstance)) {
+				for (UUID uuid : party.keySet()) {
+					if (Bukkit.getPlayer(uuid) == null) {
+						broadcast("&cYou can't move on until every member in your party is online!");
 						return;
 					}
 				}
 			}
+			
+			// Save player's storage
+			if (this.inst instanceof EditInventoryInstance && !EditInventoryInstance.isValid(this)) return;
 			this.inst.cleanup();
 		}
 		
@@ -229,5 +232,13 @@ public class Session {
 	
 	public int getSaveSlot() {
 		return saveSlot;
+	}
+	
+	public void teleportToInstance(Player p) {
+		inst.teleportPlayer(p);
+	}
+	
+	public void cleanup() {
+		inst.cleanup();
 	}
 }

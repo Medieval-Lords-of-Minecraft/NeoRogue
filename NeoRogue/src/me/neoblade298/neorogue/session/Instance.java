@@ -5,16 +5,23 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.UUID;
 
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.chance.ChanceInstance;
 
-public interface Instance {
-	public void start(Session s);
-	public void cleanup();
-	public void handleInteractEvent(PlayerInteractEvent e);
-	public String serialize(HashMap<UUID, PlayerSessionData> party);
+public abstract class Instance {
+	protected Session s;
+	protected Location spawn;
+	public abstract void start(Session s);
+	public abstract void cleanup();
+	public abstract void handleInteractEvent(PlayerInteractEvent e);
+	public abstract String serialize(HashMap<UUID, PlayerSessionData> party);
+	public void teleportPlayer(Player p) {
+		p.teleport(spawn);
+	}
 	
 	public static Instance deserialize(ResultSet row, HashMap<UUID, PlayerSessionData> party) throws SQLException {
 		String data = row.getString("instanceData");

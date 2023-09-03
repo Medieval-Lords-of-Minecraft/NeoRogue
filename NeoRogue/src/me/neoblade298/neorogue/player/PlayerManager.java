@@ -1,6 +1,5 @@
 package me.neoblade298.neorogue.player;
 
-import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.UUID;

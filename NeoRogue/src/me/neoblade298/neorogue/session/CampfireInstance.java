@@ -19,14 +19,12 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 
-public class CampfireInstance implements EditInventoryInstance {
+public class CampfireInstance extends EditInventoryInstance {
 	private static final int REST_X = 6, REST_Z = 84;
 	private static final int INIT_STATE = 0, REST_STATE = 1, UPGRADE_STATE = 2;
 	private int state = 0;
 	private Location center;
 	private HashSet<UUID> notUsed = new HashSet<UUID>();
-	
-	private Session s;
 	
 	public CampfireInstance() {}
 	
@@ -43,12 +41,12 @@ public class CampfireInstance implements EditInventoryInstance {
 	@Override
 	public void start(Session s) {
 		this.s = s;
-		Location loc = new Location(Bukkit.getWorld(Area.WORLD_NAME), -(s.getXOff() + REST_X - 0.5), 64, s.getZOff() + REST_Z);
-		center = loc.clone().add(0, 0, 2);
+		spawn = new Location(Bukkit.getWorld(Area.WORLD_NAME), -(s.getXOff() + REST_X - 0.5), 64, s.getZOff() + REST_Z);
+		center = spawn.clone().add(0, 0, 2);
 		for (PlayerSessionData data : s.getParty().values()) {
 			Player p = data.getPlayer();
 			notUsed.add(p.getUniqueId());
-			p.teleport(loc);
+			p.teleport(spawn);
 		}
 	}
 
@@ -122,5 +120,10 @@ public class CampfireInstance implements EditInventoryInstance {
 			ent.getValue().setInstanceData(notUsed.contains(ent.getKey()) ? "F" : "T");
 		}
 		return "CAMPFIRE:" + state;
+	}
+
+	@Override
+	public void teleportPlayer(Player p) {
+		p.teleport(spawn);
 	}
 }

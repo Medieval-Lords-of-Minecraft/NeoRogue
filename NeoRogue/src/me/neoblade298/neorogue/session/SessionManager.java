@@ -212,7 +212,14 @@ public class SessionManager implements Listener {
 	
 	@EventHandler
 	public void onJoin(PlayerJoinEvent e) {
-		e.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
+		Player p = e.getPlayer();
+		if (!sessions.containsKey(p.getUniqueId())) {
+			Session s = sessions.get(p.getUniqueId());
+			s.teleportToInstance(p);
+		}
+		else {
+			p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
+		}
 	}
 
 	private void handleLeave(Player p) {
@@ -223,6 +230,19 @@ public class SessionManager implements Listener {
 				LobbyInstance li = (LobbyInstance) s.getInstance();
 				li.leavePlayer(p);
 			}
+			else {
+				if (s.getOnlinePlayers().size() <= 1) {
+					endSession(s);
+				}
+			}
 		}
+	}
+	
+	public static void endSession(Session s) {
+		s.cleanup();
+		for (UUID uuid : s.getParty().keySet()) {
+			sessions.remove(uuid);
+		}
+		sessionPlots.remove(s.getPlot());
 	}
 }

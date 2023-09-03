@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.util.SharedUtil;
+import me.neoblade298.neorogue.session.Session;
 
 public class PlayerData {
 	private int exp, level;
@@ -64,6 +65,10 @@ public class PlayerData {
 	
 	public int getExp() {
 		return exp;
+	}
+	
+	public void updateSnapshot(Session s, int saveSlot) {
+		snapshots.put(saveSlot, new SessionSnapshot(s));
 	}
 	
 	public void save(Statement stmt) {

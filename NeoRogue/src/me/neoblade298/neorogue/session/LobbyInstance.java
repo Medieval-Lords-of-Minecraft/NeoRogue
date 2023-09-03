@@ -41,16 +41,14 @@ import me.neoblade298.neorogue.player.PlayerClass;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 
-public class LobbyInstance implements Instance {
+public class LobbyInstance extends Instance {
 	private static final int MAX_SIZE = 4;
 	
 	private String name;
 	private HashSet<UUID> invited = new HashSet<UUID>();
 	private HashMap<UUID, PlayerClass> players = new HashMap<UUID, PlayerClass>();
 	private UUID host;
-	private Session session;
 	private static Clipboard classSelect, rewardsRoom, campfire, shop, chance;
-	private Location loc;
 	private boolean busy = false;
 	
 	private static final int LOBBY_X = -7, LOBBY_Z = 3;
@@ -106,7 +104,7 @@ public class LobbyInstance implements Instance {
 		this.name = name;
 		this.host = host.getUniqueId();
 		players.put(host.getUniqueId(), PlayerClass.SWORDSMAN);
-		this.session = session;
+		this.s = session;
 		
 		// Generate the lobby and add the host there
 		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Area.world)) {
@@ -116,8 +114,8 @@ public class LobbyInstance implements Instance {
 			pasteSchematic(shop, editSession, session, 0, SHOP_Z);
 			pasteSchematic(chance, editSession, session, 0, CHANCE_Z);
 		}
-		loc = new Location(Bukkit.getWorld(Area.WORLD_NAME), session.getXOff() + LOBBY_X, 64, session.getZOff() + LOBBY_Z);
-		host.teleport(loc);
+		spawn = new Location(Bukkit.getWorld(Area.WORLD_NAME), session.getXOff() + LOBBY_X, 64, session.getZOff() + LOBBY_Z);
+		host.teleport(spawn);
 	}
 
 	public void invitePlayer(Player inviter, String username) {
@@ -158,8 +156,8 @@ public class LobbyInstance implements Instance {
 
 		invited.remove(p.getUniqueId());
 		players.put(p.getUniqueId(), PlayerClass.SWORDSMAN);
-		SessionManager.addToSession(p.getUniqueId(), this.session);
-		p.teleport(loc);
+		SessionManager.addToSession(p.getUniqueId(), this.s);
+		p.teleport(spawn);
 		displayInfo(p);
 		broadcast("&e" + p.getName() + " &7joined the lobby!");
 	}
@@ -188,22 +186,22 @@ public class LobbyInstance implements Instance {
 		broadcast("&e" + p.getName() + " &7was kicked from the lobby!");
 	}
 
-	public void leavePlayer(Player s) {
+	public void leavePlayer(Player p) {
 		if (busy) {
-			Util.msgRaw(s, "&cYour game is generating! You can't do this right now!");
+			Util.msgRaw(p, "&cYour game is generating! You can't do this right now!");
 			return;
 		}
 		
-		if (s.getUniqueId().equals(host)) {
-			SessionManager.removeSession(session);
-			broadcast("&e" + s.getName() + " &7disbanded the lobby!");
+		if (p.getUniqueId().equals(host)) {
+			SessionManager.removeSession(this.s);
+			broadcast("&e" + p.getName() + " &7disbanded the lobby!");
 		}
 		else {
-			players.remove(s.getUniqueId());
-			SessionManager.removeFromSession(s.getUniqueId());
-			broadcast("&e" + s.getName() + " &7left the lobby!");
+			players.remove(p.getUniqueId());
+			SessionManager.removeFromSession(p.getUniqueId());
+			broadcast("&e" + p.getName() + " &7left the lobby!");
 		}
-		s.teleport(NeoRogue.spawn);
+		p.teleport(NeoRogue.spawn);
 	}
 
 	public void broadcast(String msg) {
@@ -256,28 +254,28 @@ public class LobbyInstance implements Instance {
 		return invited;
 	}
 	
-	public void startGame(Player s) {
-		if (!s.getUniqueId().equals(host)) {
-			Util.msgRaw(s, "&cOnly the host may start the game!");
+	public void startGame(Player p) {
+		if (!p.getUniqueId().equals(host)) {
+			Util.msgRaw(p, "&cOnly the host may start the game!");
 			return;
 		}
 		
 		if (busy) {
-			Util.msgRaw(s, "&cYour game is generating! You can't do this right now!");
+			Util.msgRaw(p, "&cYour game is generating! You can't do this right now!");
 			return;
 		}
 
-		session.addPlayers(players);
-		session.broadcast("&7Generating your game...");
-		session.generateArea(AreaType.LOW_DISTRICT);
-		session.setNode(session.getArea().getNodes()[0][2]);
+		s.addPlayers(players);
+		s.broadcast("&7Generating your game...");
+		s.generateArea(AreaType.LOW_DISTRICT);
+		s.setNode(s.getArea().getNodes()[0][2]);
 		
 		new BukkitRunnable() {
 			public void run() {
 				for (UUID uuid : players.keySet()) {
 					Player p = Bukkit.getPlayer(uuid);
 					p.setHealth(p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
-					session.setInstance(new NodeSelectInstance());
+					s.setInstance(new NodeSelectInstance());
 				}
 			}
 		}.runTaskLater(NeoRogue.inst(), 20L);
@@ -332,5 +330,10 @@ public class LobbyInstance implements Instance {
 	public String serialize(HashMap<UUID, PlayerSessionData> party) {
 		Bukkit.getLogger().warning("[NeoRogue] LobbyInstance attempted to save, this should never happen");
 		return null;
+	}
+
+	@Override
+	public void teleportPlayer(Player p) {
+		p.teleport(spawn);
 	}
 }

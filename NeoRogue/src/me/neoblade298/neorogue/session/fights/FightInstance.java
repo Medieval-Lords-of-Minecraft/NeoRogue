@@ -40,7 +40,7 @@ import me.neoblade298.neorogue.session.Instance;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
 
-public abstract class FightInstance implements Instance {
+public abstract class FightInstance extends Instance {
 	private static HashMap<UUID, PlayerFightData> userData = new HashMap<UUID, PlayerFightData>();
 	private static HashMap<UUID, FightData> fightData = new HashMap<UUID, FightData>();
 	private static HashMap<UUID, BukkitTask> blockTasks = new HashMap<UUID, BukkitTask>();
@@ -50,7 +50,6 @@ public abstract class FightInstance implements Instance {
 	protected Map map;
 	protected ArrayList<MapSpawnerInstance> spawners = new ArrayList<MapSpawnerInstance>(),
 			unlimitedSpawners = new ArrayList<MapSpawnerInstance>();
-	protected Session s;
 	protected HashMap<String, Barrier> enemyBarriers = new HashMap<String, Barrier>();
 	protected ArrayList<BukkitTask> tasks = new ArrayList<BukkitTask>();
 	protected double spawnCounter; // Holds a value between 0 and 1, when above 1, a mob spawns
@@ -382,13 +381,13 @@ public abstract class FightInstance implements Instance {
 				int rand = NeoCore.gen.nextInt(map.getPieces().size());
 				MapPieceInstance inst = map.getPieces().get(rand);
 				Coordinates[] spawns = inst.getSpawns();
-				Location loc = spawns[spawns.length > 1 ? NeoCore.gen.nextInt(spawns.length) : 0].clone().applySettings(inst).toLocation();
-				loc.add(s.getXOff() + MapPieceInstance.X_FIGHT_OFFSET,
+				spawn = spawns[spawns.length > 1 ? NeoCore.gen.nextInt(spawns.length) : 0].clone().applySettings(inst).toLocation();
+				spawn.add(s.getXOff() + MapPieceInstance.X_FIGHT_OFFSET,
 						MapPieceInstance.Y_OFFSET,
 						MapPieceInstance.Z_FIGHT_OFFSET + s.getZOff());
-				loc.setX(-loc.getX());
+				spawn.setX(-spawn.getX());
 				for (Player p : s.getOnlinePlayers()) {
-					p.teleport(loc);
+					p.teleport(spawn);
 				}
 			}
 		}.runTaskLater(NeoRogue.inst(), 20L);

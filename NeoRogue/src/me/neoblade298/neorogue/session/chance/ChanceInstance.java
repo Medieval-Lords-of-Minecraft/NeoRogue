@@ -17,13 +17,12 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.*;
 import me.neoblade298.neorogue.session.fights.FightInstance;
 
-public class ChanceInstance implements EditInventoryInstance {
+public class ChanceInstance extends EditInventoryInstance {
 	private static final int CHANCE_X = 6, CHANCE_Z = 101;
 	
 	private ChanceSet set;
 	private ChanceStage stage;
 	private Instance nextInstance; // For taking you directly from this instance to another
-	private Session s;
 	
 	public ChanceInstance() {}
 	
@@ -37,9 +36,9 @@ public class ChanceInstance implements EditInventoryInstance {
 	@Override
 	public void start(Session s) {
 		this.s = s;
-		Location loc = new Location(Bukkit.getWorld(Area.WORLD_NAME), -(s.getXOff() + CHANCE_X - 0.5), 64, s.getZOff() + CHANCE_Z);
+		spawn = new Location(Bukkit.getWorld(Area.WORLD_NAME), -(s.getXOff() + CHANCE_X - 0.5), 64, s.getZOff() + CHANCE_Z);
 		for (PlayerSessionData data : s.getParty().values()) {
-			data.getPlayer().teleport(loc);
+			data.getPlayer().teleport(spawn);
 		}
 		
 		// Pick a random chance set
