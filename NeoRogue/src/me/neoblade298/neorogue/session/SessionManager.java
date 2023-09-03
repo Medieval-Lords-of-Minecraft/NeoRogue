@@ -52,11 +52,9 @@ public class SessionManager implements Listener {
 	public static Session loadSession(Player p, int saveSlot) {
 		// Create session on plot
 		Plot plot = findPlot();
-		Session s = new Session(p, plot, name, saveSlot);
+		Session s = new Session(p, plot, saveSlot);
 		sessions.put(p.getUniqueId(), s);
 		sessionPlots.put(plot, s);
-		
-		Util.msg(p, "&7Successfully created a lobby!");
 		return s;
 	}
 	
