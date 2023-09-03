@@ -38,31 +38,39 @@ public class SessionManager implements Listener {
 	private static HashMap<UUID, Session> sessions = new HashMap<UUID, Session>();
 	private static HashMap<Plot, Session> sessionPlots = new HashMap<Plot, Session>();
 
-	public static Session createSession(Player p, String name) {
-		// Find an available plot
-		Plot plot = null;
-		boolean found = false;
-
-		for (int x = 0; x < 6; x++) {
-			for (int z = 0; z < 100; z++) {
-				plot = new Plot(x, z);
-				if (!sessionPlots.containsKey(plot)) {
-					found = true;
-					break;
-				}
-			}
-			if (found) {
-				break;
-			}
-		}
-
+	public static Session createSession(Player p, String name, int saveSlot) {
 		// Create session on plot
-		Session s = new Session(p, plot, name, 0);
+		Plot plot = findPlot();
+		Session s = new Session(p, plot, name, saveSlot);
 		sessions.put(p.getUniqueId(), s);
 		sessionPlots.put(plot, s);
 		
 		Util.msg(p, "&7Successfully created a lobby!");
 		return s;
+	}
+	
+	public static Session loadSession(Player p, int saveSlot) {
+		// Create session on plot
+		Plot plot = findPlot();
+		Session s = new Session(p, plot, name, saveSlot);
+		sessions.put(p.getUniqueId(), s);
+		sessionPlots.put(plot, s);
+		
+		Util.msg(p, "&7Successfully created a lobby!");
+		return s;
+	}
+	
+	private static Plot findPlot() {
+		for (int x = 0; x < 6; x++) {
+			for (int z = 0; z < 100; z++) {
+				Plot plot = new Plot(x, z);
+				if (!sessionPlots.containsKey(plot)) {
+					return plot;
+				}
+			}
+		}
+		
+		return null;
 	}
 
 	public static void addToSession(UUID uuid, Session s) {

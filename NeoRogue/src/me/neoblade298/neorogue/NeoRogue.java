@@ -33,11 +33,6 @@ public class NeoRogue extends JavaPlugin {
 	
 	public static Location spawn;
 	
-	public static void main(String args[]) {
-		Equipment[] eq = new Equipment[1];
-		HotbarCompatible[] hb = (HotbarCompatible[]) eq;
-	}
-	
 	public void onEnable() {
 		Bukkit.getServer().getLogger().info("NeoRogue Enabled");
 		NeoCore.registerIOComponent(this, new PlayerManager(), "NeoRogue-PlayerManager");
@@ -73,7 +68,8 @@ public class NeoRogue extends JavaPlugin {
 	
 	private void initCommands() {
 		SubcommandManager mngr = new SubcommandManager("nr", "neorogue.general", ChatColor.DARK_RED, this);
-		mngr.register(new CmdCreate("create", "Create a new party", null, SubcommandRunner.BOTH));
+		mngr.register(new CmdNew("new", "Create a new game", null, SubcommandRunner.BOTH));
+		mngr.register(new CmdNew("load", "Load an existing game", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdInvite("invite", "Invite a player to your party", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdLeave("leave", "Leave your session", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdKick("kick", "Kick a player from your party", null, SubcommandRunner.BOTH));

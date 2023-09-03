@@ -24,7 +24,6 @@ import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.area.Node;
 import me.neoblade298.neorogue.player.PlayerClass;
 import me.neoblade298.neorogue.player.PlayerSessionData;
-import me.neoblade298.neorogue.session.fights.FightInstance;
 
 public class Session {
 	private Area area;
@@ -77,6 +76,7 @@ public class Session {
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
+				Util.msgRaw(p, "&7Finished loading.");
 			}
 		}.runTaskAsynchronously(NeoRogue.inst());
 	}
