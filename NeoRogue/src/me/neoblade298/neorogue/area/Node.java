@@ -76,6 +76,7 @@ public class Node {
 	}
 
 	public String serializeDestinations() {
+		if (dests.isEmpty()) return "";
 		String str = dests.get(0).serializePosition();
 		for (int i = 1; i < dests.size(); i++) {
 			str += " " + dests.get(i).serializePosition();
@@ -96,10 +97,10 @@ public class Node {
 		return false;
 	}
 
-	public void generateInstance(Session s) {
+	public void generateInstance(Session s, AreaType area) {
 		switch (type) {
 		case FIGHT:
-			inst = new StandardFightInstance(s);
+			inst = new StandardFightInstance(area, s.getNodesVisited());
 			break;
 		case CAMPFIRE:
 			inst = new CampfireInstance();
@@ -111,10 +112,10 @@ public class Node {
 			inst = new ShopInstance();
 			break;
 		case MINIBOSS:
-			inst = new MinibossFightInstance(s);
+			inst = new MinibossFightInstance(area);
 			break;
 		case BOSS:
-			inst = new BossFightInstance(s);
+			inst = new BossFightInstance(area);
 		default:
 			break;
 		}

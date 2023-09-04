@@ -29,7 +29,7 @@ public class PlayerSessionData {
 	private PlayerClass pc;
 	private double maxHealth, maxMana, maxStamina, health, manaRegen, staminaRegen;
 	private HotbarCompatible[] hotbar = new HotbarCompatible[9];
-	private Armor[] armors = new Armor[3];
+	private Armor[] armors = new Armor[4];
 	private Offhand offhand;
 	private Accessory[] accessories = new Accessory[6];
 	private TreeSet<ArtifactInstance> artifacts = new TreeSet<ArtifactInstance>();
@@ -42,6 +42,7 @@ public class PlayerSessionData {
 		data = PlayerManager.getPlayerData(uuid);
 		this.s = s;
 		
+		System.out.println("Loading session data");
 		this.pc = PlayerClass.valueOf(rs.getString("playerClass"));
 		this.maxHealth = rs.getDouble("maxHealth");
 		this.maxMana = rs.getDouble("maxMana");
@@ -101,6 +102,7 @@ public class PlayerSessionData {
 		
 		data.getPlayer().setHealthScaled(true);
 		data.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHealth);
+		data.initialize(s, this);
 	}
 	
 	public void setupInventory() {
@@ -294,18 +296,25 @@ public class PlayerSessionData {
 		return instanceData;
 	}
 	
-	public void save(Statement stmt) throws SQLException {
+	public void save(Statement stmt) {
 		UUID host = s.getHost();
+		String uuid = data.getPlayer().getUniqueId().toString();
 		int saveSlot = s.getSaveSlot();
-		SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_playersessiondata")
-				.addString(host.toString()).addValue(saveSlot).addString(data.getPlayer().getUniqueId().toString())
-				.addString(data.getPlayer().getDisplayName()).addString(pc.name()).addValue(maxHealth).addValue(maxMana)
-				.addValue(maxStamina).addValue(health).addValue(manaRegen).addValue(staminaRegen)
-				.addString(Equipment.serialize(hotbar)).addString(Equipment.serialize(armors))
-				.addString(offhand != null ? offhand.serialize() : "").addString(Equipment.serialize(accessories))
-				.addString(Equipment.serialize(storage)).addString(Equipment.serialize(otherBinds))
-				.addString(ArtifactInstance.serialize(artifacts)).addValue(maxAbilities).addValue(maxStorage)
-				.addValue(coins).addString(instanceData);
-		stmt.addBatch(sql.build());
+		try {
+			SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_playersessiondata")
+					.addString(host.toString()).addValue(saveSlot).addString(uuid)
+					.addString(data.getPlayer().getDisplayName()).addString(pc.name()).addValue(maxHealth).addValue(maxMana)
+					.addValue(maxStamina).addValue(health).addValue(manaRegen).addValue(staminaRegen)
+					.addString(Equipment.serialize(hotbar)).addString(Equipment.serialize(armors))
+					.addString(offhand != null ? offhand.serialize() : "").addString(Equipment.serialize(accessories))
+					.addString(Equipment.serialize(storage)).addString(Equipment.serialize(otherBinds))
+					.addString(ArtifactInstance.serialize(artifacts)).addValue(maxAbilities).addValue(maxStorage)
+					.addValue(coins).addString(instanceData);
+			stmt.execute(sql.build());
+		}
+		catch (SQLException ex) {
+			Bukkit.getLogger().warning("[NeoRogue] Failed to save player session data for " + uuid + " hosted by " + host + " to slot " + saveSlot);
+			ex.printStackTrace();
+		}
 	}
 }

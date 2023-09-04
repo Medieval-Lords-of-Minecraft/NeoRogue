@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -26,6 +27,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
@@ -104,14 +106,32 @@ public class Area {
 		this.s = s;
 		
 		generateNodes();
+		
+		// Only save areas when they're first created, not when they're deserialized
+		new BukkitRunnable() {
+			public void run() {
+				try (Connection con = NeoCore.getConnection("NeoRogue-Area");
+						Statement insert = con.createStatement();
+						Statement delete = con.createStatement()) {
+					save(insert, delete);
+				}
+				catch (SQLException ex) {
+					ex.printStackTrace();
+				}
+			}
+		}.runTaskAsynchronously(NeoRogue.inst());
 	}
 
 	// Deserialize
 	public Area(AreaType type, int xOff, int zOff, UUID uuid, int saveSlot, Session s, Statement stmt) throws SQLException {
-		this(type, xOff, zOff, s);
+		this.type = type;
+		this.xOff = xOff;
+		this.zOff = zOff + Z_OFFSET;
+		this.teleport = teleportBase.clone().add(-this.xOff, 64, this.zOff);
+		this.s = s;
 		
 		ResultSet rs = stmt
-				.executeQuery("SELECT * FROM neorogue_nodes WHERE uuid = '" + uuid + "' AND slot = " + saveSlot + ";");
+				.executeQuery("SELECT * FROM neorogue_nodes WHERE host = '" + uuid + "' AND slot = " + saveSlot + ";");
 		// First load the nodes themselves
 		while (rs.next()) {
 			int pos = rs.getInt("position");
@@ -121,7 +141,9 @@ public class Area {
 		}
 
 		// Next load the node destinations now that they're populated
-		rs.beforeFirst();
+		// have to redo the statement since resultsets are type forward only
+		rs = stmt
+				.executeQuery("SELECT * FROM neorogue_nodes WHERE host = '" + uuid + "' AND slot = " + saveSlot + ";");
 		while (rs.next()) {
 			int pos = rs.getInt("position");
 			int lane = rs.getInt("lane");
@@ -129,6 +151,7 @@ public class Area {
 
 			String[] dests = rs.getString("destinations").split(" ");
 			for (String dest : dests) {
+				if (dest.isBlank()) continue;
 				String[] coords = dest.split(",");
 				pos = Integer.parseInt(coords[0]);
 				lane = Integer.parseInt(coords[1]);
@@ -152,7 +175,7 @@ public class Area {
 		nodes[MAX_POSITIONS - 1][CENTER_LANE] = new Node(NodeType.BOSS, MAX_POSITIONS - 1, CENTER_LANE);
 		
 		// Generate boss
-		nodes[MAX_POSITIONS - 1][CENTER_LANE].generateInstance(s);
+		nodes[MAX_POSITIONS - 1][CENTER_LANE].generateInstance(s, type);
 
 		// Guaranteed minimums
 		placeNodeRandomly(NodeType.MINIBOSS, MIN_MINIBOSSES);
@@ -285,20 +308,27 @@ public class Area {
 		return nodes;
 	}
 
-	public void save(Statement insert, Statement delete) throws SQLException {
+	public void save(Statement insert, Statement delete) {
 		int saveSlot = s.getSaveSlot();
 		UUID host = s.getHost();
-		delete.addBatch("DELETE FROM neorogue_nodes WHERE uuid = '" + host + "' AND slot = " + saveSlot + ";");
-		for (int pos = 1; pos < MAX_POSITIONS; pos++) {
-			for (int lane = 0; lane < MAX_LANES; lane++) {
-				Node node = nodes[pos][lane];
-				SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.INSERT, "neorogue_nodes")
-						.addString(host.toString()).addValue(saveSlot).addString(node.toString())
-						.addValue(node.getPosition()).addValue(node.getLane())
-						.addString(node.serializeDestinations()).addString(node.serializeInstanceData())
-						.addCondition("host = '" + host + "'").addCondition("slot = " + saveSlot);
-				insert.addBatch(sql.build());
+		try {
+			delete.execute("DELETE FROM neorogue_nodes WHERE host = '" + host + "' AND slot = " + saveSlot + ";");
+			for (int pos = 1; pos < MAX_POSITIONS; pos++) {
+				for (int lane = 0; lane < MAX_LANES; lane++) {
+					Node node = nodes[pos][lane];
+					if (node == null) continue;
+					SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.INSERT, "neorogue_nodes")
+							.addString(host.toString()).addValue(saveSlot).addString(node.toString())
+							.addValue(node.getPosition()).addValue(node.getLane())
+							.addString(node.serializeDestinations()).addString(node.serializeInstanceData());
+					insert.addBatch(sql.build());
+				}
 			}
+			insert.executeBatch();
+		}
+		catch (SQLException ex) {
+			Bukkit.getLogger().warning("[NeoRogue] Failed to save node for host " + host + " to slot " + saveSlot);
+			ex.printStackTrace();
 		}
 	}
 
@@ -369,7 +399,7 @@ public class Area {
 
 		// Add button to new paths and generate them
 		for (Node dest : node.getDestinations()) {
-			dest.generateInstance(s);
+			dest.generateInstance(s, type);
 			
 			Location loc = nodeToLocation(dest, 1);
 			loc.getBlock().setType(Material.OAK_BUTTON);

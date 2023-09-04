@@ -13,6 +13,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentClass;
 import me.neoblade298.neorogue.map.Map;
@@ -31,15 +32,15 @@ public class StandardFightInstance extends FightInstance {
 	private double time, score;
 	private FightScore fightScore = FightScore.S;
 	
-	public StandardFightInstance(Session s) {
-		super(s);
-		int rand = s.getNodesVisited() >= 5 ? NeoCore.gen.nextInt(s.getNodesVisited() / 5) : 0;
-		int min = s.getNodesVisited() / 10;
-		map = Map.generate(s.getArea().getType(), 2 + rand + min);
+	public StandardFightInstance(AreaType type, int nodesVisited) {
+		super();
+		int rand = nodesVisited >= 5 ? NeoCore.gen.nextInt(nodesVisited / 5) : 0;
+		int min = nodesVisited / 10;
+		map = Map.generate(type, 2 + rand + min);
 	}
 	
-	public StandardFightInstance(Session s, Map map) {
-		super(s);
+	public StandardFightInstance(Map map) {
+		super();
 		this.map = map;
 	}
 

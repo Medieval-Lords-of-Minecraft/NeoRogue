@@ -4,11 +4,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 import me.neoblade298.neocore.shared.util.SharedUtil;
@@ -68,7 +66,7 @@ public class SessionSnapshot {
 	private String createHoverText() {
 		String text = "&7Area: &e" + areaType.getDisplay() + "\n&7Nodes visited: &e" + nodesVisited + "\n&7Party members:";
 		for (Entry<String, PlayerClass> ent : party.entrySet()) {
-			text += "\n&7- &e" + ent.getKey() + " &7[&c" + ent.getValue().getDisplay() + "]";
+			text += "\n&7- &e" + ent.getKey() + " &7[&c" + ent.getValue().getDisplay() + "&7]";
 		}
 		return SharedUtil.translateColors(text);
 	}

@@ -125,5 +125,6 @@ public class CampfireInstance extends EditInventoryInstance {
 	@Override
 	public void teleportPlayer(Player p) {
 		p.teleport(spawn);
+		returnToNodes();
 	}
 }

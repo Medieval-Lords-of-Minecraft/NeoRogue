@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+
+import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentClass;
 import me.neoblade298.neorogue.map.Map;
@@ -17,16 +19,16 @@ import me.neoblade298.neorogue.session.RewardInstance;
 import me.neoblade298.neorogue.session.Session;
 
 public class BossFightInstance extends FightInstance {
-	private HashSet<String> targets;
+	private HashSet<String> targets = new HashSet<String>();
 	
-	public BossFightInstance(Session s) {
-		super(s);
-		map = Map.generateBoss(s.getArea().getType(), 2);
+	public BossFightInstance(AreaType type) {
+		super();
+		map = Map.generateBoss(type, 2);
 		targets.addAll(map.getTargets());
 	}
 	
-	public BossFightInstance(Session s, Map map) {
-		super(s);
+	public BossFightInstance(Map map) {
+		super();
 		this.map = map;
 		targets.addAll(map.getTargets());
 	}

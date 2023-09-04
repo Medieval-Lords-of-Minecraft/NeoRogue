@@ -25,7 +25,7 @@ public class CmdLoad extends Subcommand {
 		}
 		
 		if (args.length == 0) {
-			PlayerManager.getPlayerData(p.getUniqueId()).displayLoadButtons();
+			PlayerManager.getPlayerData(p.getUniqueId()).displayLoadButtons(s);
 		}
 		else {
 			SessionManager.loadSession(p, Integer.parseInt(args[0])); 

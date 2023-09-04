@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
@@ -129,8 +130,8 @@ public abstract class Equipment {
 		String str = "";
 		for (int i = 0; i < arr.length; i++) {
 			if (arr[i] == null) {
-				str += ";";
-				break;
+				str += " ;";
+				continue;
 			}
 			str += arr[i].serialize() + ";";
 		}
@@ -152,55 +153,57 @@ public abstract class Equipment {
 	}
 	
 	public static Equipment[] deserializeAsArray(String str) {
-		String[] separated = str.split(",");
+		String[] separated = str.split(";");
 		Equipment[] arr = new Equipment[separated.length];
 		for (int i = 0; i < separated.length; i++) {
-			arr[i] = (Equipment) Equipment.deserialize(str);
+			arr[i] = (Equipment) Equipment.deserialize(separated[i]);
 		}
 		return arr;
 	}
 	
 	public static ArrayList<Equipment> deserializeAsArrayList(String str) {
-		String[] separated = str.split(",");
+		String[] separated = str.split(";");
 		ArrayList<Equipment> arr = new ArrayList<Equipment>(separated.length);
 		for (String s : separated) {
-			arr.add(Equipment.deserialize(str));
+			arr.add(Equipment.deserialize(s));
 		}
 		return arr;
 	}
 	
 	public static HotbarCompatible[] deserializeHotbar(String str) {
-		String[] separated = str.split(",");
+		String[] separated = str.split(";");
 		HotbarCompatible[] arr = new HotbarCompatible[separated.length];
 		for (int i = 0; i < separated.length; i++) {
-			arr[i] = (HotbarCompatible) Equipment.deserialize(str);
+			arr[i] = (HotbarCompatible) Equipment.deserialize(separated[i]);
 		}
 		return arr;
 	}
 	
 	public static Armor[] deserializeArmor(String str) {
-		String[] separated = str.split(",");
+		String[] separated = str.split(";");
 		Armor[] arr = new Armor[separated.length];
+		Bukkit.getLogger().info("Length: " + separated.length);
 		for (int i = 0; i < separated.length; i++) {
-			arr[i] = (Armor) Equipment.deserialize(str);
+			arr[i] = (Armor) Equipment.deserialize(separated[i]);
+			System.out.println(arr[i] == null ? i + " null" : i + " " + arr[i].display);
 		}
 		return arr;
 	}
 	
 	public static Accessory[] deserializeAccessories(String str) {
-		String[] separated = str.split(",");
+		String[] separated = str.split(";");
 		Accessory[] arr = new Accessory[separated.length];
 		for (int i = 0; i < separated.length; i++) {
-			arr[i] = (Accessory) Equipment.deserialize(str);
+			arr[i] = (Accessory) Equipment.deserialize(separated[i]);
 		}
 		return arr;
 	}
 	
 	public static Usable[] deserializeUsables(String str) {
-		String[] separated = str.split(",");
+		String[] separated = str.split(";");
 		Usable[] arr = new Usable[separated.length];
 		for (int i = 0; i < separated.length; i++) {
-			arr[i] = (Usable) Equipment.deserialize(str);
+			arr[i] = (Usable) Equipment.deserialize(separated[i]);
 		}
 		return arr;
 	}

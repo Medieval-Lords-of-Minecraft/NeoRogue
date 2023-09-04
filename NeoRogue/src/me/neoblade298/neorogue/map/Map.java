@@ -50,14 +50,26 @@ public class Map {
 		for (AreaType type : AreaType.values()) {
 			allPieces.put(type, new LinkedList<MapPiece>());
 			usedPieces.put(type, new LinkedList<MapPiece>());
+			minibossPieces.put(type, new ArrayList<MapPiece>());
+			bossPieces.put(type, new ArrayList<MapPiece>());
 		}
 		
 		try {
 			NeoCore.loadFiles(new File(NeoRogue.inst().getDataFolder(), "mappieces"), (yml, file) -> {
 				for (String key : yml.getKeys(false)) {
-					ConfigurationSection sec = yml.getConfigurationSection(key);
-					MapPiece piece = new MapPiece(sec);
-					allPieces.get(AreaType.valueOf(sec.getString("type"))).add(piece);
+					try {
+						ConfigurationSection sec = yml.getConfigurationSection(key);
+						MapPiece piece = new MapPiece(sec);
+						AreaType area = AreaType.valueOf(sec.getString("area"));
+						String type = sec.getString("type", "STANDARD");
+						allPieces.get(area).add(piece);
+						if (type.equals("BOSS")) bossPieces.get(area).add(piece);
+						else if (type.equals("MINIBOSS")) minibossPieces.get(area).add(piece);
+					}
+					catch (Exception e) {
+						e.printStackTrace();
+						Bukkit.getLogger().warning("[NeoRogue] Failed to load MapPiece " + key + " in file " + file.getName());
+					}
 				}
 			});
 		} catch (NeoIOException e) {

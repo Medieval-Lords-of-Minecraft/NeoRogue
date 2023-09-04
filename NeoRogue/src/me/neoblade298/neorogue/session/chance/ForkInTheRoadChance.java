@@ -27,7 +27,7 @@ public class ForkInTheRoadChance extends ChanceSet {
 					}
 					else {
 						s.broadcast("&7Looks like the path was made by enemies, and you just walked straight into their lair.");
-						((ChanceInstance) s.getInstance()).setNextInstance(new StandardFightInstance(s));
+						((ChanceInstance) s.getInstance()).setNextInstance(new StandardFightInstance(s.getArea().getType(), s.getNodesVisited()));
 					}
 					return true;
 				});

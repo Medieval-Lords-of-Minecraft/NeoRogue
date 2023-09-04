@@ -95,4 +95,10 @@ public class RewardInstance extends EditInventoryInstance {
 		}
 		return "REWARD";
 	}
+
+	@Override
+	public void teleportPlayer(Player p) {
+		p.teleport(spawn);
+		onRewardClaim();
+	}
 }

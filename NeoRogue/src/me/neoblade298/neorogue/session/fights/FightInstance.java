@@ -55,9 +55,7 @@ public abstract class FightInstance extends Instance {
 	protected double spawnCounter; // Holds a value between 0 and 1, when above 1, a mob spawns
 	protected double totalSpawnValue; // Keeps track of total mob spawns, to handle scaling of spawning
 	
-	public FightInstance(Session s) {
-		this.s = s;
-	}
+	public FightInstance() {}
 	
 	public void instantiate() {
 		map.instantiate(this, s.getXOff(), s.getZOff());
@@ -368,6 +366,7 @@ public abstract class FightInstance extends Instance {
 
 	@Override
 	public void start(Session s) {
+		this.s = s;
 		instantiate();
 		s.broadcast("&7Commencing fight...");
 		for (Player p : s.getOnlinePlayers()) {
@@ -508,13 +507,13 @@ public abstract class FightInstance extends Instance {
 	public abstract String serializeInstanceData();
 	public static FightInstance deserializeInstanceData(Session s, String str) {
 		if (str.startsWith("STANDARD")) {
-			return new StandardFightInstance(s, Map.deserialize(str.substring("STANDARD:".length())));
+			return new StandardFightInstance(Map.deserialize(str.substring("STANDARD:".length())));
 		}
 		else if (str.startsWith("MINIBOSS")) {
-			return new MinibossFightInstance(s, Map.deserialize(str.substring("MINIBOSS:".length())));
+			return new MinibossFightInstance(Map.deserialize(str.substring("MINIBOSS:".length())));
 		}
 		else {
-			return new BossFightInstance(s, Map.deserialize(str.substring("BOSS:".length())));
+			return new BossFightInstance(Map.deserialize(str.substring("BOSS:".length())));
 		}
 	}
 }

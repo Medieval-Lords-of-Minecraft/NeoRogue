@@ -58,14 +58,18 @@ public class Session {
 			public void run() {
 				Util.msgRaw(p, "&7Loading game...");
 				
-				try (Connection con = SQLManager.getConnection(null);
+				try (Connection con = SQLManager.getConnection("NeoRogue");
 						Statement stmt = con.createStatement()) {
 					ResultSet sessSet = stmt.executeQuery("SELECT * FROM neorogue_sessions WHERE host = '" + host + "' AND slot = " + saveSlot + ";");
 					sessSet.next();
 					nodesVisited = sessSet.getInt("nodesVisited");
+					int pos = sessSet.getInt("position");
+					int lane = sessSet.getInt("lane");
+					Instance inst = Instance.deserialize(sessSet, party);
 
 					area = new Area(AreaType.valueOf(sessSet.getString("areaType")),
 							xOff, zOff, host, saveSlot, s, stmt);
+					curr = area.getNodes()[pos][lane];
 					
 					ResultSet partySet = stmt.executeQuery("SELECT * FROM neorogue_playersessiondata WHERE host = '" + host + "' AND slot = " + saveSlot + ";");
 					while (partySet.next()) {
@@ -73,26 +77,42 @@ public class Session {
 						party.put(uuid, new PlayerSessionData(uuid, s, partySet));
 					}
 					
-					setInstance(Instance.deserialize(sessSet, party));
+					new BukkitRunnable() {
+						public void run() {
+							area.instantiate();
+							setInstance(inst);
+							Util.msgRaw(p, "&7Finished loading.");
+						}
+					}.runTask(NeoRogue.inst());
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
-				Util.msgRaw(p, "&7Finished loading.");
 			}
 		}.runTaskAsynchronously(NeoRogue.inst());
 	}
 	
-	public void save(Statement insert, Statement delete) throws SQLException {
-		SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_sessions")
-		.addString(host.toString()).addValue(saveSlot).addString(area.getType().name())
-		.addValue(curr.getPosition()).addValue(curr.getLane()).addValue(nodesVisited)
-		.addValue(System.currentTimeMillis()).addString(inst.serialize(party))
-		.addCondition("host = '" + host + "'").addCondition("slot = " + saveSlot);
-		insert.addBatch(sql.build());
+	public void save(Statement insert, Statement delete) {
+		try {
+			SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_sessions")
+					.addString(host.toString()).addValue(saveSlot).addString(area.getType().name())
+					.addValue(curr.getPosition()).addValue(curr.getLane()).addValue(nodesVisited)
+					.addValue(System.currentTimeMillis()).addString(inst.serialize(party));
+					insert.execute(sql.build());
+		}
+		catch (SQLException ex) {
+			Bukkit.getLogger().warning("[NeoRogue] Failed to save session for host " + host + " to slot " + saveSlot);
+			ex.printStackTrace();
+		}
 		
-		area.save(insert, delete);
-		for (PlayerSessionData psd : party.values()) {
-			psd.save(insert);
+		try {
+			delete.execute("DELETE FROM neorogue_playersessiondata WHERE host = '" + host + "' AND slot = " + saveSlot + ";");
+			for (PlayerSessionData psd : party.values()) {
+				psd.save(insert);
+			}
+		}
+		catch (SQLException ex) {
+			Bukkit.getLogger().warning("[NeoRogue] Failed to save player session data for host " + host + " to slot " + saveSlot);
+			ex.printStackTrace();
 		}
 		
 		party.get(host).getData().updateSnapshot(this, saveSlot);
@@ -128,6 +148,16 @@ public class Session {
 		return inst;
 	}
 	
+	public boolean isEveryoneOnline() {
+		for (UUID uuid : party.keySet()) {
+			if (Bukkit.getPlayer(uuid) == null) {
+				broadcast("&cYou can't move on until every member in your party is online!");
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	public void setInstance(Instance inst) {
 		boolean firstLoad = this.inst == null;
 		if (!firstLoad) {
@@ -157,15 +187,12 @@ public class Session {
 		if (firstLoad) return;
 		new BukkitRunnable() {
 			public void run() {
-				try {
-					Statement insert = SQLManager.getConnection(null).createStatement();
-					Statement delete = SQLManager.getConnection(null).createStatement();
-					
+				try (Connection con = SQLManager.getConnection("NeoRogue");
+						Statement insert = con.createStatement();
+						Statement delete = con.createStatement()){
 					save(insert, delete);
-					delete.executeBatch();
-					insert.executeBatch();
 				} catch (SQLException ex) {
-					Bukkit.getLogger().warning("[NeoRogue] Failed to save session hosted by " + host + " to slot " + saveSlot);
+					Bukkit.getLogger().warning("[NeoRogue] Failed to acquire connection to save session hosted by " + host + " to slot " + saveSlot);
 					ex.printStackTrace();
 				}
 			}
@@ -240,5 +267,30 @@ public class Session {
 	
 	public void cleanup() {
 		inst.cleanup();
+	}
+	
+	public void leavePlayer(Player p) {
+		UUID uuid = p.getUniqueId();
+		if (uuid.equals(host)) {
+			broadcast("&7The host has left the party, so the game has ended!");
+			SessionManager.endSession(this);
+		}
+		else {
+			broadcast("&e" + p.getName() + " &7has left the party!");
+			party.remove(p.getUniqueId());
+			SessionManager.removeFromSession(p.getUniqueId());
+		}
+	}
+	
+	public void kickPlayer(Player p) {
+		UUID uuid = p.getUniqueId();
+		if (!uuid.equals(host)) {
+			Util.msgRaw(p, "&cOnly the host may kick players");
+		}
+		else {
+			broadcast("&e" + p.getName() + " &7was kicked from the party!");
+			party.remove(p.getUniqueId());
+			SessionManager.removeFromSession(p.getUniqueId());
+		}
 	}
 }

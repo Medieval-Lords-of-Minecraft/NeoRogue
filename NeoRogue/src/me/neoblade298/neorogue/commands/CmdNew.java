@@ -25,7 +25,7 @@ public class CmdNew extends Subcommand {
 		}
 		
 		if (args.length == 0) {
-			PlayerManager.getPlayerData(p.getUniqueId()).displayNewButtons();
+			PlayerManager.getPlayerData(p.getUniqueId()).displayNewButtons(s);
 		}
 		else if (args.length == 2) {
 			SessionManager.createSession(p, args[1], Integer.parseInt(args[0])); 

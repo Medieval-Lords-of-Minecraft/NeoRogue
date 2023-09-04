@@ -31,7 +31,8 @@ public class CmdLeave extends Subcommand {
 			li.leavePlayer(p);
 			return;
 		}
-		
-		// TODO handle non-lobby leave
+		else {
+			sess.leavePlayer(p);
+		}
 	}
 }

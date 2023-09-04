@@ -1,5 +1,8 @@
 package me.neoblade298.neorogue.session;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -28,10 +31,14 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import org.bukkit.scheduler.BukkitRunnable;
+
 import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
 import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
 import io.lumine.mythic.bukkit.events.MythicMobSpawnEvent;
+import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.map.MapSpawnerInstance;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
@@ -89,11 +96,13 @@ public class SessionManager implements Listener {
 
 	public static void removeFromSession(UUID uuid) {
 		sessions.remove(uuid);
+		Player p = Bukkit.getPlayer(uuid);
+		if (p != null) p.teleport(NeoRogue.spawn);
 	}
 
 	public static void removeSession(Session s) {
 		for (UUID uuid : s.getParty().keySet()) {
-			sessions.remove(uuid);
+			removeFromSession(uuid);
 		}
 		sessionPlots.remove(s.getPlot());
 	}
@@ -225,7 +234,7 @@ public class SessionManager implements Listener {
 	@EventHandler
 	public void onJoin(PlayerJoinEvent e) {
 		Player p = e.getPlayer();
-		if (!sessions.containsKey(p.getUniqueId())) {
+		if (sessions.containsKey(p.getUniqueId())) {
 			Session s = sessions.get(p.getUniqueId());
 			s.teleportToInstance(p);
 		}
@@ -252,9 +261,18 @@ public class SessionManager implements Listener {
 	
 	public static void endSession(Session s) {
 		s.cleanup();
-		for (UUID uuid : s.getParty().keySet()) {
-			sessions.remove(uuid);
-		}
-		sessionPlots.remove(s.getPlot());
+		removeSession(s);
+		new BukkitRunnable() {
+			public void run() {
+				try (Connection con = NeoCore.getConnection("NeoRogue-SessionManager");
+						Statement insert = con.createStatement();
+						Statement delete = con.createStatement()) {
+					s.save(insert, delete);
+				}
+				catch (SQLException ex) {
+					ex.printStackTrace();
+				}
+			}
+		}.runTaskAsynchronously(NeoRogue.inst());
 	}
 }

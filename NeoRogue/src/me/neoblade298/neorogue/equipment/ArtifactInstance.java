@@ -70,6 +70,7 @@ public class ArtifactInstance implements Comparable<ArtifactInstance> {
 		TreeSet<ArtifactInstance> set = new TreeSet<ArtifactInstance>();
 		String[] separated = str.split(";");
 		for (String aiString : separated) {
+			if (aiString.isBlank()) continue;
 			set.add(deserialize(aiString));
 		}
 		return set;

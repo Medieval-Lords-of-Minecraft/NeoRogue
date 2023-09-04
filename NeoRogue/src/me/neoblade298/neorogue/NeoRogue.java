@@ -1,9 +1,6 @@
 package me.neoblade298.neorogue;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Date;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -16,8 +13,9 @@ import me.neoblade298.neocore.shared.commands.SubcommandRunner;
 import me.neoblade298.neocore.shared.exceptions.NeoIOException;
 import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.commands.*;
+import me.neoblade298.neorogue.equipment.Armor;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.HotbarCompatible;
+import me.neoblade298.neorogue.equipment.armor.LeatherHelmet;
 import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.session.SessionManager;
@@ -69,7 +67,7 @@ public class NeoRogue extends JavaPlugin {
 	private void initCommands() {
 		SubcommandManager mngr = new SubcommandManager("nr", "neorogue.general", ChatColor.DARK_RED, this);
 		mngr.register(new CmdNew("new", "Create a new game", null, SubcommandRunner.BOTH));
-		mngr.register(new CmdNew("load", "Load an existing game", null, SubcommandRunner.BOTH));
+		mngr.register(new CmdLoad("load", "Load an existing game", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdInvite("invite", "Invite a player to your party", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdLeave("leave", "Leave your session", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdKick("kick", "Kick a player from your party", null, SubcommandRunner.BOTH));
