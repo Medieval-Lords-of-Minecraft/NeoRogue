@@ -2,8 +2,10 @@ package me.neoblade298.neorogue.session;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
@@ -31,7 +33,10 @@ import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
 import io.lumine.mythic.bukkit.events.MythicMobSpawnEvent;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.map.MapSpawnerInstance;
+import me.neoblade298.neorogue.player.PlayerData;
+import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.PlayerSessionInventory;
+import me.neoblade298.neorogue.player.SessionSnapshot;
 import me.neoblade298.neorogue.session.fights.*;
 
 public class SessionManager implements Listener {
@@ -39,7 +44,6 @@ public class SessionManager implements Listener {
 	private static HashMap<Plot, Session> sessionPlots = new HashMap<Plot, Session>();
 
 	public static Session createSession(Player p, String name, int saveSlot) {
-		// Create session on plot
 		Plot plot = findPlot();
 		Session s = new Session(p, plot, name, saveSlot);
 		sessions.put(p.getUniqueId(), s);
@@ -50,7 +54,15 @@ public class SessionManager implements Listener {
 	}
 	
 	public static Session loadSession(Player p, int saveSlot) {
-		// Create session on plot
+		PlayerData pd = PlayerManager.getPlayerData(p.getUniqueId());
+		SessionSnapshot ss = pd.getSnapshot(saveSlot);
+		for (Entry<UUID, String> ent : ss.getPartyIds().entrySet()) {
+			if (Bukkit.getPlayer(ent.getKey()) == null) {
+				Util.displayError(p, "&cCannot load this save as &e" + ent.getValue() + " &cis not online!");
+				return null;
+			}
+		}
+		
 		Plot plot = findPlot();
 		Session s = new Session(p, plot, saveSlot);
 		sessions.put(p.getUniqueId(), s);

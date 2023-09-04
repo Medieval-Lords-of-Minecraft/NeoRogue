@@ -8,18 +8,20 @@ import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.session.Session;
+import net.md_5.bungee.api.chat.ClickEvent.Action;
 
 public class SessionSnapshot {
 	private long lastSaved;
 	private int nodesVisited;
 	private AreaType areaType;
 	private HashMap<String, PlayerClass> party = new HashMap<String, PlayerClass>();
-	private HashSet<UUID> partyIds = new HashSet<UUID>();
+	private HashMap<UUID, String> partyIds = new HashMap<UUID, String>();
 	
 	public SessionSnapshot(Session s) {
 		this.lastSaved = System.currentTimeMillis();
@@ -27,7 +29,7 @@ public class SessionSnapshot {
 		this.areaType = s.getArea().getType();
 		
 		for (Entry<UUID, PlayerSessionData> ent : s.getParty().entrySet()) {
-			partyIds.add(ent.getKey());
+			partyIds.put(ent.getKey(), ent.getValue().getData().getDisplay());
 			party.put(ent.getValue().getData().getDisplay(), ent.getValue().getPlayerClass());
 		}
 	}
@@ -41,14 +43,21 @@ public class SessionSnapshot {
 			UUID uuid = UUID.fromString(party.getString("uuid"));
 			String display = party.getString("display");
 			PlayerClass pc = PlayerClass.valueOf(party.getString("playerClass"));
-			partyIds.add(uuid);
+			partyIds.put(uuid, display);
 			this.party.put(display, pc);
 		}
 	}
 	
-	public void displaySaveButton(CommandSender s, int saveSlot) {
+	public void displayNewButton(CommandSender s, int saveSlot) {
 		String text = SharedUtil.translateColors("&7&l[1] &7" + new Date(lastSaved));
-		s.spigot().sendMessage(SharedUtil.createText(text, createHoverText(), "/nr save " + saveSlot).create());
+		s.spigot().sendMessage(SharedUtil.createText(text, createHoverText(),
+				"/nr new " + saveSlot + " partyname", Action.SUGGEST_COMMAND).create());
+	}
+	
+	public static void displayEmptyNewButton(CommandSender s, int saveSlot) {
+		String text = SharedUtil.translateColors("&7&l[1] &7Empty");
+		s.spigot().sendMessage(SharedUtil.createText(text, "Click to start a new game on this slot!",
+				"/nr new " + saveSlot + " partyname", Action.SUGGEST_COMMAND).create());
 	}
 	
 	public void displayLoadButton(CommandSender s, int saveSlot) {
@@ -62,5 +71,9 @@ public class SessionSnapshot {
 			text += "\n&7- &e" + ent.getKey() + " &7[&c" + ent.getValue().getDisplay() + "]";
 		}
 		return SharedUtil.translateColors(text);
+	}
+	
+	public HashMap<UUID, String> getPartyIds() {
+		return partyIds;
 	}
 }

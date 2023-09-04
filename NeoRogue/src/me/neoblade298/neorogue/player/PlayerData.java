@@ -3,7 +3,9 @@ package me.neoblade298.neorogue.player;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -18,7 +20,9 @@ public class PlayerData {
 	private UUID uuid;
 	private Player p;
 	private String display;
+	private HashSet<String> upgrades;
 	private HashMap<Integer, SessionSnapshot> snapshots;
+	private int slotsAvailable;
 	// Something that holds ascension tree skills
 	
 	// Create new one if one doesn't exist
@@ -27,6 +31,19 @@ public class PlayerData {
 		this.p = p;
 		this.display = p.getName();
 		this.snapshots = new HashMap<Integer, SessionSnapshot>();
+		
+		if (p.hasPermission("donator.diamond")) {
+			slotsAvailable = 5;
+		}
+		else if (p.hasPermission("donator.emerald")) {
+			slotsAvailable = 3;
+		}
+		else if (p.hasPermission("donator.sapphire")) {
+			slotsAvailable = 2;
+		}
+		else {
+			slotsAvailable = 1;
+		}
 	}
 	
 	public PlayerData(Player p, Statement stmt) {
@@ -84,18 +101,38 @@ public class PlayerData {
 	// Should only ever be displayed to the owner
 	public void displayLoadButtons() {
 		Util.msgRaw(p, "&7Save slots (Click one to load):");
-		for (int i = 1; i <= snapshots.size(); i++) {
-			snapshots.get(i).displayLoadButton(p, i);
+		for (int i = 1; i <= slotsAvailable; i++) {
+			if (snapshots.containsKey(i)) {
+				snapshots.get(i).displayLoadButton(p, i);
+			}
+			else {
+				Util.msgRaw(p, "&7&l[" + i + "] &7Empty");
+			}
 		}
 	}
 	
 	// Should only ever be displayed to the owner
 	public void displayNewButtons() {
 		Util.msgRaw(p, "&7Save slots (Click one to start a new game with):");
-		int i;
-		for (i = 1; i <= snapshots.size(); i++) {
-			snapshots.get(i).displaySaveButton(p, i);
+		for (int i = 1; i <= slotsAvailable; i++) {
+			if (snapshots.containsKey(i)) {
+				snapshots.get(i).displayNewButton(p, i);
+			}
+			else {
+				SessionSnapshot.displayEmptyNewButton(p, i);
+			}
 		}
-		p.spigot().sendMessage(SharedUtil.createText("&7&l[" + ++i + "] &7&oClick here to create new save").create());
+	}
+	
+	public SessionSnapshot getSnapshot(int saveSlot) {
+		return snapshots.get(saveSlot);
+	}
+	
+	public boolean hasUpgrade(String id) {
+		return upgrades.contains(id);
+	}
+	
+	public void addUpgrade(String id) {
+		upgrades.add(id);
 	}
 }
