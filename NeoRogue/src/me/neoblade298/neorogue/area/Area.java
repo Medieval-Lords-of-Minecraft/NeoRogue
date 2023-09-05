@@ -48,6 +48,7 @@ import me.neoblade298.neocore.bukkit.particles.ParticleUtil;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder.SQLAction;
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.session.NodeSelectInstance;
 import me.neoblade298.neorogue.session.Session;
 
 public class Area {
@@ -78,8 +79,6 @@ public class Area {
 	
 	// Offsets
 	private int xOff, zOff;
-	
-	private ArrayList<Hologram> holograms = new ArrayList<Hologram>();
 	
 	public static void initialize() {
 		world = BukkitAdapter.adapt(Bukkit.getWorld(WORLD_NAME));
@@ -313,7 +312,7 @@ public class Area {
 		UUID host = s.getHost();
 		try {
 			delete.execute("DELETE FROM neorogue_nodes WHERE host = '" + host + "' AND slot = " + saveSlot + ";");
-			for (int pos = 1; pos < MAX_POSITIONS; pos++) {
+			for (int pos = 0; pos < MAX_POSITIONS; pos++) {
 				for (int lane = 0; lane < MAX_LANES; lane++) {
 					Node node = nodes[pos][lane];
 					if (node == null) continue;
@@ -380,7 +379,7 @@ public class Area {
 	}
 	
 	// Called whenever a player advances to a new node
-	public void update(Node node) {
+	public void update(Node node, NodeSelectInstance inst) {
 		// Remove buttons and lecterns from old paths
 		int pos = node.getPosition();
 		for (int lane = 0; lane < 5; lane++) {
@@ -390,11 +389,6 @@ public class Area {
 			loc.getBlock().setType(Material.AIR);
 			loc.add(0, -2, -1);
 			loc.getBlock().setType(Material.POLISHED_ANDESITE);
-		}
-
-		// Delete holograms
-		for (Hologram holo : holograms) {
-			holo.delete();
 		}
 
 		// Add button to new paths and generate them
@@ -409,9 +403,7 @@ public class Area {
 
 			// Add holograms to active nodes
 			loc.add(0, 2, 0);
-			Hologram holo = NeoRogue.holo.createHologram(loc);
-			holo.getLines().appendText("§f§l" + dest.getType() + " Node");
-			holograms.add(holo);
+			inst.createHologram(loc, dest);
 			
 			// Fight nodes
 			if (dest.getType() == NodeType.FIGHT) {

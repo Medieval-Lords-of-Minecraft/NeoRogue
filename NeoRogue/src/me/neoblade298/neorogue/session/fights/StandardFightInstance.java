@@ -87,6 +87,7 @@ public class StandardFightInstance extends FightInstance {
 		if (score >= SCORE_REQUIRED) {
 			timeBar.removeAll();
 			scoreBar.removeAll();
+			s.broadcast("&7You completed the fight with a score of " + fightScore.getDisplay() + "&7!");
 			s.setInstance(new RewardInstance(generateRewards()));
 			return;
 		}
@@ -138,7 +139,6 @@ public class StandardFightInstance extends FightInstance {
 	@Override
 	public void cleanup() {
 		super.cleanup();
-		s.broadcast("&7You completed the fight with a score of " + fightScore.getDisplay() + "&7!");
 	}
 	
 	public String serializeInstanceData() {

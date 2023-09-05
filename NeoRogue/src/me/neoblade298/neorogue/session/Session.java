@@ -70,6 +70,7 @@ public class Session {
 					area = new Area(AreaType.valueOf(sessSet.getString("areaType")),
 							xOff, zOff, host, saveSlot, s, stmt);
 					curr = area.getNodes()[pos][lane];
+					System.out.println("Set curr to " + curr);
 					
 					ResultSet partySet = stmt.executeQuery("SELECT * FROM neorogue_playersessiondata WHERE host = '" + host + "' AND slot = " + saveSlot + ";");
 					while (partySet.next()) {

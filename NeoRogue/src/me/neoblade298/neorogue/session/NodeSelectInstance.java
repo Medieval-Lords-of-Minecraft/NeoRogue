@@ -1,10 +1,12 @@
 package me.neoblade298.neorogue.session;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.entity.Player;
@@ -13,6 +15,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import me.filoghost.holographicdisplays.api.hologram.Hologram;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.Area;
@@ -23,6 +26,7 @@ import me.neoblade298.neorogue.session.fights.FightInstance;
 
 public class NodeSelectInstance extends EditInventoryInstance {
 	private BukkitTask task;
+	private ArrayList<Hologram> holograms = new ArrayList<Hologram>();
 	
 	public NodeSelectInstance() {}
 	
@@ -34,7 +38,8 @@ public class NodeSelectInstance extends EditInventoryInstance {
 	public void start(Session s) {
 		this.s = s;
 		Area area = s.getArea();
-		area.update(s.getNode());
+		area.update(s.getNode(), this);
+		
 		spawn = area.getTeleport();
 		for (Player p : s.getOnlinePlayers()) {
 			p.teleport(spawn);
@@ -47,10 +52,20 @@ public class NodeSelectInstance extends EditInventoryInstance {
 			}
 		}.runTaskTimer(NeoRogue.inst(), 0L, 20L);
 	}
+	
+	public void createHologram(Location loc, Node dest) {
+		Hologram holo = NeoRogue.holo.createHologram(loc);
+		holo.getLines().appendText("§f§l" + dest.getType() + " Node");
+		holograms.add(holo);
+	}
 
 	@Override
 	public void cleanup() {
 		task.cancel();
+		
+		for (Hologram holo : holograms) {
+			holo.delete();
+		}
 	}
 	
 	@Override

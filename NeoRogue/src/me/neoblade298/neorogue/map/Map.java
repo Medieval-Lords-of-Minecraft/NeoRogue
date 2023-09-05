@@ -33,7 +33,7 @@ import me.neoblade298.neorogue.session.fights.Mob;
 import me.neoblade298.neorogue.session.fights.MobModifier;
 
 public class Map {
-	private static HashMap<AreaType, LinkedList<MapPiece>> allPieces = new HashMap<AreaType, LinkedList<MapPiece>>(),
+	private static HashMap<AreaType, LinkedList<MapPiece>> standardPieces = new HashMap<AreaType, LinkedList<MapPiece>>(),
 			usedPieces = new HashMap<AreaType, LinkedList<MapPiece>>();
 	private static HashMap<AreaType, ArrayList<MapPiece>> minibossPieces = new HashMap<AreaType, ArrayList<MapPiece>>(),
 			bossPieces = new HashMap<AreaType, ArrayList<MapPiece>>();
@@ -48,7 +48,7 @@ public class Map {
 	
 	public static void load() {
 		for (AreaType type : AreaType.values()) {
-			allPieces.put(type, new LinkedList<MapPiece>());
+			standardPieces.put(type, new LinkedList<MapPiece>());
 			usedPieces.put(type, new LinkedList<MapPiece>());
 			minibossPieces.put(type, new ArrayList<MapPiece>());
 			bossPieces.put(type, new ArrayList<MapPiece>());
@@ -62,9 +62,10 @@ public class Map {
 						MapPiece piece = new MapPiece(sec);
 						AreaType area = AreaType.valueOf(sec.getString("area"));
 						String type = sec.getString("type", "STANDARD");
-						allPieces.get(area).add(piece);
+						
 						if (type.equals("BOSS")) bossPieces.get(area).add(piece);
 						else if (type.equals("MINIBOSS")) minibossPieces.get(area).add(piece);
+						else standardPieces.get(area).add(piece);
 					}
 					catch (Exception e) {
 						e.printStackTrace();
@@ -78,7 +79,7 @@ public class Map {
 		}
 		
 		for (AreaType type : AreaType.values()) {
-			Collections.shuffle(allPieces.get(type));
+			Collections.shuffle(standardPieces.get(type));
 		}
 	}
 	
@@ -101,7 +102,7 @@ public class Map {
 	}
 	
 	public static Map generate(Map map, AreaType type, int numPieces) {
-		LinkedList<MapPiece> pieces = allPieces.get(type);
+		LinkedList<MapPiece> pieces = standardPieces.get(type);
 		
 		for (int i = 0; i < numPieces; i++) {
 			MapPiece piece = null;
@@ -289,11 +290,11 @@ public class Map {
 	
 	private static void shufflePieces(AreaType type) {
 		Collections.shuffle(usedPieces.get(type));
-		allPieces.get(type).addAll(usedPieces.get(type));
+		standardPieces.get(type).addAll(usedPieces.get(type));
 	}
 	
 	public static LinkedList<MapPiece> getPieces(AreaType type) {
-		return allPieces.get(type);
+		return standardPieces.get(type);
 	}
 	
 	public TreeMap<Mob, ArrayList<MobModifier>> getMobs() {

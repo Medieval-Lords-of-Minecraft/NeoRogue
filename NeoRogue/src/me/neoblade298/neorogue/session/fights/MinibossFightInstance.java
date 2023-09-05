@@ -50,6 +50,7 @@ public class MinibossFightInstance extends FightInstance {
 		}
 		
 		if (targets.isEmpty()) {
+			s.broadcast("&7You beat the miniboss!");
 			s.setInstance(new RewardInstance(generateRewards()));
 			return;
 		}
@@ -81,7 +82,6 @@ public class MinibossFightInstance extends FightInstance {
 	@Override
 	public void cleanup() {
 		super.cleanup();
-		s.broadcast("&7You beat the miniboss!");
 	}
 	
 	public String serializeInstanceData() {
