@@ -87,7 +87,7 @@ public class RewardInstance extends EditInventoryInstance {
 		for (Entry<UUID, ArrayList<Reward>> ent : rewards.entrySet()) {
 			String serialized = "";
 			for (Reward r : ent.getValue()) {
-				serialized += r.serialize() + ";";
+				serialized += r.serialize() + ",";
 			}
 			
 			PlayerSessionData data = party.get(ent.getKey());

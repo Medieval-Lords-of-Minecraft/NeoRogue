@@ -24,7 +24,7 @@ public interface Reward {
 	
 	public static ArrayList<Reward> deserializeArray(String str) {
 		ArrayList<Reward> rewards = new ArrayList<Reward>();
-		String[] split = str.split(";");
+		String[] split = str.split(",");
 		for (String s : split) {
 			rewards.add(Reward.deserialize(s));
 		}

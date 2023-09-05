@@ -29,7 +29,6 @@ public class PlayerManager implements IOComponent {
 	}
 
 	public static PlayerData getPlayerData(UUID uuid) {
-		System.out.println(data);
 		return data.get(uuid);
 	}
 	

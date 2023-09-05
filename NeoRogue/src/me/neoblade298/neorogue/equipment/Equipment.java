@@ -182,10 +182,8 @@ public abstract class Equipment {
 	public static Armor[] deserializeArmor(String str) {
 		String[] separated = str.split(";");
 		Armor[] arr = new Armor[separated.length];
-		Bukkit.getLogger().info("Length: " + separated.length);
 		for (int i = 0; i < separated.length; i++) {
 			arr[i] = (Armor) Equipment.deserialize(separated[i]);
-			System.out.println(arr[i] == null ? i + " null" : i + " " + arr[i].display);
 		}
 		return arr;
 	}

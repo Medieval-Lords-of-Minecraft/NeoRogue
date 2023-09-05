@@ -42,7 +42,6 @@ public class PlayerSessionData {
 		data = PlayerManager.getPlayerData(uuid);
 		this.s = s;
 		
-		System.out.println("Loading session data");
 		this.pc = PlayerClass.valueOf(rs.getString("playerClass"));
 		this.maxHealth = rs.getDouble("maxHealth");
 		this.maxMana = rs.getDouble("maxMana");

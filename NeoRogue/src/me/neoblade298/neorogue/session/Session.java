@@ -60,6 +60,12 @@ public class Session {
 				
 				try (Connection con = SQLManager.getConnection("NeoRogue");
 						Statement stmt = con.createStatement()) {
+					ResultSet partySet = stmt.executeQuery("SELECT * FROM neorogue_playersessiondata WHERE host = '" + host + "' AND slot = " + saveSlot + ";");
+					while (partySet.next()) {
+						UUID uuid = UUID.fromString(partySet.getString("uuid"));
+						party.put(uuid, new PlayerSessionData(uuid, s, partySet));
+					}
+					
 					ResultSet sessSet = stmt.executeQuery("SELECT * FROM neorogue_sessions WHERE host = '" + host + "' AND slot = " + saveSlot + ";");
 					sessSet.next();
 					nodesVisited = sessSet.getInt("nodesVisited");
@@ -70,13 +76,6 @@ public class Session {
 					area = new Area(AreaType.valueOf(sessSet.getString("areaType")),
 							xOff, zOff, host, saveSlot, s, stmt);
 					curr = area.getNodes()[pos][lane];
-					System.out.println("Set curr to " + curr);
-					
-					ResultSet partySet = stmt.executeQuery("SELECT * FROM neorogue_playersessiondata WHERE host = '" + host + "' AND slot = " + saveSlot + ";");
-					while (partySet.next()) {
-						UUID uuid = UUID.fromString(partySet.getString("uuid"));
-						party.put(uuid, new PlayerSessionData(uuid, s, partySet));
-					}
 					
 					new BukkitRunnable() {
 						public void run() {
