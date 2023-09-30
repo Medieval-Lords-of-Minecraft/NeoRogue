@@ -30,6 +30,7 @@ public class NeoRogue extends JavaPlugin {
 	public static Location spawn;
 	
 	public void onEnable() {
+		// TODO: After returning from China, re-enable build automatically
 		Bukkit.getServer().getLogger().info("NeoRogue Enabled");
 		NeoCore.registerIOComponent(this, new PlayerManager(), "NeoRogue-PlayerManager");
 		Bukkit.getPluginManager().registerEvents(new SessionManager(), this);
@@ -88,7 +89,7 @@ public class NeoRogue extends JavaPlugin {
 		// Player p = Bukkit.getPlayer("Ascheladd");
 		// Session s = SessionManager.createSession(p, "test");
 		// s.generateArea(AreaType.LOW_DISTRICT);
-		// s.addPlayer(p.getUniqueId(), PlayerClass.SWORDSMAN);
+		// s.addPlayer(p.getUniqueId(), PlayerClass.WARRIOR);
 		// s.setInstance(new ChanceInstance());
 
 		//Map map = Map.generate(AreaType.LOW_DISTRICT, 8);

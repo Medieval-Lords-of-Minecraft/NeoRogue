@@ -17,13 +17,13 @@ public class SerratedFencingSword extends Weapon {
 	private int bleed;
 	private int shields;
 	public SerratedFencingSword(boolean isUpgraded) {
-		super("serratedFencingSword", isUpgraded, Rarity.UNCOMMON, EquipmentClass.SWORDSMAN);
+		super("serratedFencingSword", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
 		display = "Serrated Fencing Sword";
-		damage = 108;
+		damage = 60;
 		attackSpeed = 1;
 		type = DamageType.PIERCING;
 		shields = 7;
-		bleed = isUpgraded ? 3 : 2;
+		bleed = isUpgraded ? 4 : 2;
 		item = createItem(Material.STONE_SWORD, null, "&7On hit, grant yourself &e" + shields + "&7 shields. Apply &e" + bleed
 				+ " &7bleed every 2 hits.");
 	}

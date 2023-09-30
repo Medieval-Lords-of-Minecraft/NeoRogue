@@ -17,12 +17,12 @@ public class Rapier extends Weapon {
 	
 	private int shields;
 	public Rapier(boolean isUpgraded) {
-		super("rapier", isUpgraded, Rarity.UNCOMMON, EquipmentClass.SWORDSMAN);
+		super("rapier", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
 		display = "Rapier";
-		damage = isUpgraded ? 12 : 9;
+		damage = isUpgraded ? 90 : 60;
 		type = DamageType.PIERCING;
 		attackSpeed = 1;
-		shields = isUpgraded ? 20 : 15;
+		shields = isUpgraded ? 15 : 10;
 		item = createItem(Material.STONE_SWORD, null, "&7On hit, grant yourself &e" + shields + "&7 shields");
 	}
 

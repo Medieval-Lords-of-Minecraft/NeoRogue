@@ -18,7 +18,7 @@ public class RicketyShield extends Offhand {
 	private int reduction;
 	
 	public RicketyShield(boolean isUpgraded) {
-		super("ricketyShield", isUpgraded, Rarity.COMMON, EquipmentClass.SWORDSMAN);
+		super("ricketyShield", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
 		display = "Rickety Shield";
 		reduction = isUpgraded ? 8 : 5;
 		item = createItem(this, Material.SHIELD, null, "When raised, creates a barrier in front of you of size &e3x3 &7"

@@ -15,12 +15,15 @@ import me.neoblade298.neorogue.session.fights.PlayerFightData;
 public class WoodenSword extends Weapon {
 	
 	public WoodenSword(boolean isUpgraded) {
-		super("woodenSword", isUpgraded, Rarity.COMMON, EquipmentClass.SWORDSMAN);
+		super("woodenSword", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
 		display = "Wooden Sword";
-		damage = isUpgraded ? 3.5 : 4;
+		damage = !isUpgraded ? 25 : 35;
 		type = DamageType.SLASHING;
 		attackSpeed = 1;
 		item = createItem(Material.WOODEN_SWORD, null, null);
+		reforgeOptions.add("stoneSword");
+		reforgeOptions.add("stoneAxe");
+		reforgeOptions.add("stoneDagger");
 	}
 
 	@Override

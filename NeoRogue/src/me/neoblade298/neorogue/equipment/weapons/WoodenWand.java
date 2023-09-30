@@ -21,9 +21,9 @@ import me.neoblade298.neorogue.session.fights.PlayerFightData;
 
 public class WoodenWand extends Weapon {
 	public WoodenWand(boolean isUpgraded) {
-		super("woodenWand", isUpgraded, Rarity.COMMON, EquipmentClass.SWORDSMAN);
+		super("woodenWand", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE);
 		display = "Wooden Wand";
-		damage = isUpgraded ? 10 : 7;
+		damage = !isUpgraded ? 50 : 75;
 		manaCost = 5;
 		type = DamageType.FIRE;
 		attackSpeed = 0.5;
