@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.UUID;
 import java.util.Map.Entry;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Tag;
@@ -15,7 +14,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import me.filoghost.holographicdisplays.api.hologram.Hologram;
+import eu.decentsoftware.holograms.api.DHAPI;
+import eu.decentsoftware.holograms.api.holograms.Hologram;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.Area;
@@ -54,8 +54,9 @@ public class NodeSelectInstance extends EditInventoryInstance {
 	}
 	
 	public void createHologram(Location loc, Node dest) {
-		Hologram holo = NeoRogue.holo.createHologram(loc);
-		holo.getLines().appendText("§f§l" + dest.getType() + " Node");
+		ArrayList<String> lines = new ArrayList<String>();
+		lines.add("§f§l" + dest.getType() + " Node");
+		Hologram holo = DHAPI.createHologram(s.getPlot() + "-" + dest.getPosition(), loc, lines);
 		holograms.add(holo);
 	}
 

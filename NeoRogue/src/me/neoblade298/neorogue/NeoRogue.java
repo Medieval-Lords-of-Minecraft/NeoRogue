@@ -5,8 +5,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import me.filoghost.holographicdisplays.api.HolographicDisplaysAPI;
-import me.filoghost.holographicdisplays.api.internal.HolographicDisplaysAPIProvider;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.commands.SubcommandManager;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
@@ -25,7 +23,6 @@ public class NeoRogue extends JavaPlugin {
 	private static NeoRogue inst;
 	
 	public static File SCHEMATIC_FOLDER = new File("/home/MLMC/DevServers/ServerDev/plugins/WorldEdit/schematics");
-	public static HolographicDisplaysAPI holo;
 	
 	public static Location spawn;
 	
@@ -50,14 +47,11 @@ public class NeoRogue extends JavaPlugin {
 		Map.load(); // Load in map pieces
 		Equipment.load();
 		
-		holo = HolographicDisplaysAPIProvider.getImplementation().getHolographicDisplaysAPI(this);
-		
 		// Strictly for debug usage
 		debugInitialize();
 	}
 	
 	public void onDisable() {
-		holo.deleteHolograms();
 	    org.bukkit.Bukkit.getServer().getLogger().info("NeoRogue Disabled");
 	    super.onDisable();
 	}
