@@ -17,12 +17,12 @@ public class FencingSword extends Weapon {
 	private int shields;
 	
 	public FencingSword(boolean isUpgraded) {
-		super("fencingSword", isUpgraded, Rarity.UNCOMMON, EquipmentClass.SWORDSMAN);
+		super("fencingSword", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
 		display = "Fencing Sword";
-		damage = isUpgraded ? 7 : 5;
+		damage = isUpgraded ? 50 : 40;
 		type = DamageType.PIERCING;
 		attackSpeed = 1;
-		shields = isUpgraded ? 6 : 4;
+		shields = isUpgraded ? 7 : 4;
 		item = createItem(Material.STONE_SWORD, null, "&7On hit, grant yourself &e" + shields + "&7 shields");
 		reforgeOptions.add("rapier");
 		reforgeOptions.add("serratedFencingSword");

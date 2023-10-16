@@ -21,7 +21,7 @@ import me.neoblade298.neorogue.session.fights.PlayerFightData;
 public class BattleCry extends Ability {
 	
 	public BattleCry(boolean isUpgraded) {
-		super("battleCry", isUpgraded, Rarity.COMMON, EquipmentClass.SWORDSMAN);
+		super("battleCry", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
 		display = "Battle Cry";
 		cooldown = 30;
 		staminaCost = 25;

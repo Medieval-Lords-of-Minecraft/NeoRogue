@@ -82,6 +82,11 @@ public abstract class Equipment {
 		this.isUpgraded = isUpgraded;
 		this.ec = ec;
 		
+
+		if (equipment.containsKey(id)) {
+			Bukkit.getLogger().warning("[NeoRogue] Duplicate id of " + id + " found while loading equipment");
+		}
+		
 		if (isUpgraded) upgraded.put(id, this);
 		else equipment.put(id, this);
 		

@@ -102,7 +102,7 @@ public class LobbyInstance extends Instance {
 	public LobbyInstance(String name, Player host, Session session) {
 		this.name = name;
 		this.host = host.getUniqueId();
-		players.put(host.getUniqueId(), PlayerClass.SWORDSMAN);
+		players.put(host.getUniqueId(), PlayerClass.WARRIOR);
 		this.s = session;
 		
 		// Generate the lobby and add the host there
@@ -154,7 +154,7 @@ public class LobbyInstance extends Instance {
 		}
 
 		invited.remove(p.getUniqueId());
-		players.put(p.getUniqueId(), PlayerClass.SWORDSMAN);
+		players.put(p.getUniqueId(), PlayerClass.WARRIOR);
 		SessionManager.addToSession(p.getUniqueId(), this.s);
 		p.teleport(spawn);
 		displayInfo(p);
@@ -314,7 +314,7 @@ public class LobbyInstance extends Instance {
 		char c = ChatColor.stripColor(sign.getLine(2)).charAt(0);
 		
 		switch (c) {
-		case 'S': switchClass(uuid, PlayerClass.SWORDSMAN);
+		case 'W': switchClass(uuid, PlayerClass.WARRIOR);
 		break;
 		case 'T': switchClass(uuid, PlayerClass.THIEF);
 		break;

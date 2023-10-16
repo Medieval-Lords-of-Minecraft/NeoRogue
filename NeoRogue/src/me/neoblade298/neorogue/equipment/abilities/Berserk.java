@@ -17,7 +17,7 @@ public class Berserk extends Ability {
 	private int seconds;
 	
 	public Berserk(boolean isUpgraded) {
-		super("berserk", isUpgraded, Rarity.RARE, EquipmentClass.SWORDSMAN);
+		super("berserk", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR);
 		display = "Berserk";
 		seconds = isUpgraded ? 60 : 30;
 		item = createItem(this, Material.REDSTONE, null,

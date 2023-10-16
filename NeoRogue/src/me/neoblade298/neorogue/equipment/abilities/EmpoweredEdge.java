@@ -21,7 +21,7 @@ public class EmpoweredEdge extends Ability {
 	private int damage;
 	
 	public EmpoweredEdge(boolean isUpgraded) {
-		super("empoweredEdge", isUpgraded, Rarity.COMMON, EquipmentClass.SWORDSMAN);
+		super("empoweredEdge", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
 		display = "Empowered Edge";
 		cooldown = isUpgraded ? 5 : 7;
 		damage = isUpgraded ? 100 : 75;

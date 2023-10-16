@@ -14,7 +14,7 @@ public class LeatherHelmet extends Armor {
 	private double shields;
 	
 	public LeatherHelmet(boolean isUpgraded) {
-		super("leatherHelmet", isUpgraded, Rarity.COMMON, EquipmentClass.SWORDSMAN);
+		super("leatherHelmet", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
 		display = "Leather Helmet";
 		shields = isUpgraded ? 30 : 20;
 		item = createItem(this, Material.LEATHER_HELMET, null, "&7Start every fight with &e" + shields + " &7permanent shields.");

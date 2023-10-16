@@ -3,7 +3,7 @@ package me.neoblade298.neorogue.player;
 import me.neoblade298.neorogue.equipment.EquipmentClass;
 
 public enum PlayerClass {
-	SWORDSMAN("Swordsman", EquipmentClass.SWORDSMAN),
+	WARRIOR("Warrior", EquipmentClass.WARRIOR),
 	THIEF("Thief", EquipmentClass.THIEF),
 	ARCHER("Archer", EquipmentClass.ARCHER),
 	MAGE("Mage", EquipmentClass.MAGE);
