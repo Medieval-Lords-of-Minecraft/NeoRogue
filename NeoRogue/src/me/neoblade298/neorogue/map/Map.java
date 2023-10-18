@@ -13,7 +13,6 @@ import java.util.TreeSet;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
 
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
@@ -24,7 +23,7 @@ import com.sk89q.worldedit.function.mask.Mask;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import me.neoblade298.neocore.bukkit.NeoCore;
-import me.neoblade298.neocore.shared.exceptions.NeoIOException;
+import me.neoblade298.neocore.shared.io.Section;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.area.AreaType;
@@ -54,29 +53,24 @@ public class Map {
 			bossPieces.put(type, new ArrayList<MapPiece>());
 		}
 		
-		try {
-			NeoCore.loadFiles(new File(NeoRogue.inst().getDataFolder(), "mappieces"), (yml, file) -> {
-				for (String key : yml.getKeys(false)) {
-					try {
-						ConfigurationSection sec = yml.getConfigurationSection(key);
-						MapPiece piece = new MapPiece(sec);
-						AreaType area = AreaType.valueOf(sec.getString("area"));
-						String type = sec.getString("type", "STANDARD");
-						
-						if (type.equals("BOSS")) bossPieces.get(area).add(piece);
-						else if (type.equals("MINIBOSS")) minibossPieces.get(area).add(piece);
-						else standardPieces.get(area).add(piece);
-					}
-					catch (Exception e) {
-						e.printStackTrace();
-						Bukkit.getLogger().warning("[NeoRogue] Failed to load MapPiece " + key + " in file " + file.getName());
-					}
+		NeoCore.loadFiles(new File(NeoRogue.inst().getDataFolder(), "mappieces"), (yml, file) -> {
+			for (String key : yml.getKeys()) {
+				try {
+					Section sec = yml.getSection(key);
+					MapPiece piece = new MapPiece(sec);
+					AreaType area = AreaType.valueOf(sec.getString("area"));
+					String type = sec.getString("type", "STANDARD");
+					
+					if (type.equals("BOSS")) bossPieces.get(area).add(piece);
+					else if (type.equals("MINIBOSS")) minibossPieces.get(area).add(piece);
+					else standardPieces.get(area).add(piece);
 				}
-			});
-		} catch (NeoIOException e) {
-			Bukkit.getLogger().warning("[NeoRogue] Failed to load MapPiece");
-			e.printStackTrace();
-		}
+				catch (Exception e) {
+					e.printStackTrace();
+					Bukkit.getLogger().warning("[NeoRogue] Failed to load MapPiece " + key + " in file " + file.getName());
+				}
+			}
+		});
 		
 		for (AreaType type : AreaType.values()) {
 			Collections.shuffle(standardPieces.get(type));

@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Optional;
 
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -15,7 +14,7 @@ import io.lumine.mythic.api.mobs.entities.MythicEntityType;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.util.SkullUtil;
-import me.neoblade298.neocore.shared.exceptions.NeoIOException;
+import me.neoblade298.neocore.shared.io.Section;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import net.md_5.bungee.api.ChatColor;
@@ -46,10 +45,10 @@ public class Mob implements Comparable<Mob> {
 		typeOrder.add(BuffType.POISON);
 	}
 	
-	public static void load() throws NeoIOException {
+	public static void load() {
 		NeoCore.loadFiles(new File(NeoRogue.inst().getDataFolder(), "mobs"), (yml, file) -> {
-			for (String key : yml.getKeys(false)) {
-				ConfigurationSection sec = yml.getConfigurationSection(key);
+			for (String key : yml.getKeys()) {
+				Section sec = yml.getSection(key);
 				Mob mob = new Mob(sec);
 				mobs.put(key, mob);
 			}
@@ -60,14 +59,14 @@ public class Mob implements Comparable<Mob> {
 		return mobs.get(id);
 	}
 	
-	public Mob(ConfigurationSection sec) {
+	public Mob(Section sec) {
 		id = sec.getName();
 		Optional<MythicMob> opt = MythicBukkit.inst().getMobManager().getMythicMob(id);
 		display = opt.isPresent() ? opt.get().getDisplayName().get() : "Mob Not Loaded";
 		
-		ConfigurationSection resSec = sec.getConfigurationSection("resistances");
+		Section resSec = sec.getSection("resistances");
 		if (resSec != null) {
-			for (String key : resSec.getKeys(false)) {
+			for (String key : resSec.getKeys()) {
 				int pct = resSec.getInt(key);
 				if (key.equals("MAGICAL")) {
 					resistances.put(BuffType.FIRE, pct);
@@ -88,9 +87,9 @@ public class Mob implements Comparable<Mob> {
 			}
 		}
 		
-		ConfigurationSection dmgSec = sec.getConfigurationSection("BuffTypes");
+		Section dmgSec = sec.getSection("BuffTypes");
 		if (dmgSec != null) {
-			for (String key : dmgSec.getKeys(false)) {
+			for (String key : dmgSec.getKeys()) {
 				damageTypes.put(BuffType.valueOf(key), Amount.valueOf(dmgSec.getString(key)));
 			}
 		}

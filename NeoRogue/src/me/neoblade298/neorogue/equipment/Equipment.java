@@ -49,10 +49,20 @@ public abstract class Equipment {
 			new LeatherHelmet(b);
 			
 			// Weapons
-			new WoodenSword(b);
+			new EarthenLeatherGauntlets(b);
 			new FencingSword(b);
+			new ForcefulLeatherGauntlets(b);
+			new IronAxe(b);
+			new IronDagger(b);
+			new IronSword(b);
+			new LeatherGauntlets(b);
+			new LightLeatherGauntlets(b);
 			new Rapier(b);
 			new SerratedFencingSword(b);
+			new StoneAxe(b);
+			new StoneDagger(b);
+			new StoneSword(b);
+			new WoodenSword(b);
 			new WoodenWand(b);
 			
 			// Offhands
@@ -84,7 +94,7 @@ public abstract class Equipment {
 		this.ec = ec;
 		
 
-		if (equipment.containsKey(id)) {
+		if (equipment.containsKey(id) && !isUpgraded) {
 			Bukkit.getLogger().warning("[NeoRogue] Duplicate id of " + id + " found while loading equipment");
 		}
 		

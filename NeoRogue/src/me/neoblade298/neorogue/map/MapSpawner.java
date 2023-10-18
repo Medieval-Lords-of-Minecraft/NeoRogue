@@ -2,10 +2,9 @@ package me.neoblade298.neorogue.map;
 
 import java.util.Optional;
 
-import org.bukkit.configuration.ConfigurationSection;
-
 import io.lumine.mythic.api.mobs.MythicMob;
 import io.lumine.mythic.bukkit.MythicBukkit;
+import me.neoblade298.neocore.shared.io.Section;
 import me.neoblade298.neorogue.session.fights.Mob;
 
 public class MapSpawner {
@@ -16,7 +15,7 @@ public class MapSpawner {
 	private double radius;
 	private int maxMobs;
 	
-	public MapSpawner(ConfigurationSection cfg, MapPiece piece) {
+	public MapSpawner(Section cfg, MapPiece piece) {
 		id = cfg.getString("mob");
 		mob = Mob.get(id);
 		Optional<MythicMob> opt = MythicBukkit.inst().getMobManager().getMythicMob(id);

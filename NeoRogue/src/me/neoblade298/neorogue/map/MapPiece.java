@@ -8,11 +8,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import org.bukkit.configuration.ConfigurationSection;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
+
+import me.neoblade298.neocore.shared.io.Section;
 import me.neoblade298.neorogue.NeoRogue;
 
 public class MapPiece {
@@ -24,7 +25,7 @@ public class MapPiece {
 	private MapSpawner[] spawners;
 	protected Clipboard clipboard;
 	
-	public MapPiece(ConfigurationSection cfg) {
+	public MapPiece(Section cfg) {
 		id = cfg.getName();
 
 		// Save schematic
@@ -47,11 +48,11 @@ public class MapPiece {
 			this.entrances[i++] = new Coordinates(this, line);
 		}
 		
-		ConfigurationSection sec = cfg.getConfigurationSection("spawners");
-		this.spawners = new MapSpawner[sec.getKeys(false).size()];
+		Section sec = cfg.getSection("spawners");
+		this.spawners = new MapSpawner[sec.getKeys().size()];
 		i = 0;
-		for (String key : sec.getKeys(false)) {
-			this.spawners[i++] = new MapSpawner(sec.getConfigurationSection(key), this);
+		for (String key : sec.getKeys()) {
+			this.spawners[i++] = new MapSpawner(sec.getSection(key), this);
 		}
 		
 		List<String> spawns = cfg.getStringList("spawns");

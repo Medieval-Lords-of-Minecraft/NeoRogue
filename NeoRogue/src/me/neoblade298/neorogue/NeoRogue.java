@@ -8,7 +8,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.commands.SubcommandManager;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
-import me.neoblade298.neocore.shared.exceptions.NeoIOException;
 import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.commands.*;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -17,12 +16,12 @@ import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.session.SessionManager;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
 import me.neoblade298.neorogue.session.fights.Mob;
-import net.md_5.bungee.api.ChatColor;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class NeoRogue extends JavaPlugin {
 	private static NeoRogue inst;
 	
-	public static File SCHEMATIC_FOLDER = new File("/home/MLMC/DevServers/ServerDev/plugins/WorldEdit/schematics");
+	public static File SCHEMATIC_FOLDER = new File("/home/MLMC/Dev/plugins/WorldEdit/schematics");
 	
 	public static Location spawn;
 	
@@ -40,11 +39,7 @@ public class NeoRogue extends JavaPlugin {
 		
 		inst = this;
 
-		try {
-			Mob.load(); // Load in mob types
-		} catch (NeoIOException e) {
-			e.printStackTrace();
-		}
+		Mob.load(); // Load in mob types
 		Map.load(); // Load in map pieces
 		Equipment.load();
 		
@@ -58,7 +53,7 @@ public class NeoRogue extends JavaPlugin {
 	}
 	
 	private void initCommands() {
-		SubcommandManager mngr = new SubcommandManager("nr", "neorogue.general", ChatColor.DARK_RED, this);
+		SubcommandManager mngr = new SubcommandManager("nr", "neorogue.general", NamedTextColor.DARK_RED, this);
 		mngr.register(new CmdNew("new", "Create a new game", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdLoad("load", "Load an existing game", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdInvite("invite", "Invite a player to your party", null, SubcommandRunner.BOTH));
@@ -69,7 +64,7 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdInfo("info", "View session info", null, SubcommandRunner.BOTH));
 		mngr.registerCommandList("");
 		
-		mngr = new SubcommandManager("nradmin", "neorogue.admin", ChatColor.DARK_RED, this);
+		mngr = new SubcommandManager("nradmin", "neorogue.admin", NamedTextColor.DARK_RED, this);
 		mngr.register(new CmdAdminDebug("debug", "Testing", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminTestPiece("testpiece", "Pastes a map piece in the map to show you how it looks ingame", null, SubcommandRunner.BOTH));
 		mngr.registerCommandList("");
