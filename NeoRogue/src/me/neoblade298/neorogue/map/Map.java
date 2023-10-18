@@ -311,6 +311,7 @@ public class Map {
 	}
 	
 	public void addTargets(Collection<String> targets) {
+		if (targets == null) return;
 		this.targets.addAll(targets);
 	}
 	

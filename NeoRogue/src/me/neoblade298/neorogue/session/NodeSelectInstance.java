@@ -56,7 +56,8 @@ public class NodeSelectInstance extends EditInventoryInstance {
 	public void createHologram(Location loc, Node dest) {
 		ArrayList<String> lines = new ArrayList<String>();
 		lines.add("§f§l" + dest.getType() + " Node");
-		Hologram holo = DHAPI.createHologram(s.getPlot() + "-" + dest.getPosition(), loc, lines);
+		Plot plot = s.getPlot();
+		Hologram holo = DHAPI.createHologram(plot.getXOffset() + "-" + plot.getZOffset() + "-" + dest.getPosition() + "-" + dest.getLane(), loc, lines);
 		holograms.add(holo);
 	}
 

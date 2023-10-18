@@ -13,6 +13,7 @@ import me.neoblade298.neorogue.commands.*;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.player.PlayerManager;
+import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
 import me.neoblade298.neorogue.session.fights.Mob;
@@ -48,6 +49,9 @@ public class NeoRogue extends JavaPlugin {
 	}
 	
 	public void onDisable() {
+		for (Session s : SessionManager.getSessions()) {
+			s.cleanup();
+		}
 	    org.bukkit.Bukkit.getServer().getLogger().info("NeoRogue Disabled");
 	    super.onDisable();
 	}
