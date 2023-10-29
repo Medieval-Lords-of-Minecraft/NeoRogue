@@ -3,7 +3,6 @@ package me.neoblade298.neorogue.equipment;
 import java.util.ArrayList;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import me.neoblade298.neocore.shared.util.SharedUtil;
 
 public abstract class Ability extends Usable {
 	protected int manaCost = 0;
@@ -21,7 +20,7 @@ public abstract class Ability extends Usable {
 		if (a.cooldown > 0) preLore.add("§6Cooldown: §e" + a.cooldown);
 		if (preLoreLine != null) {
 			for (String l : preLoreLine) {
-				preLore.add(SharedUtil.translateColors(l));
+				preLore.add(l);
 			}
 		}
 		

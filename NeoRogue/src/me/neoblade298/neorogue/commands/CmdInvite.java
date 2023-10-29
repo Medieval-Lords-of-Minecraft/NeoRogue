@@ -23,13 +23,13 @@ public class CmdInvite extends Subcommand {
 		Player p = (Player) s;
 		Session sess = SessionManager.getSession(p);
 		if (sess == null) {
-			Util.msg(s, "&cYou're not in a session!");
+			Util.displayError(p, "&cYou're not in a session!");
 			return;
 		}
 		
 		Instance inst = sess.getInstance();
 		if (!(inst instanceof LobbyInstance)) {
-			Util.msg(s, "&cYou can't invite anyone at this time!");
+			Util.displayError(p, "&cYou can't invite anyone at this time!");
 			return;
 		}
 		

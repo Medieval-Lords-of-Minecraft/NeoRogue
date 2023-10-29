@@ -1,16 +1,16 @@
 package me.neoblade298.neorogue.session.fights;
 
-import net.md_5.bungee.api.ChatColor;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public enum Amount {
-	NONE(ChatColor.GRAY, "None"),
-	LIGHT(ChatColor.YELLOW, "Light"),
-	MEDIUM(ChatColor.GOLD, "Medium"),
-	HEAVY(ChatColor.RED, "Heavy");
+	NONE(NamedTextColor.GRAY, "None"),
+	LIGHT(NamedTextColor.YELLOW, "Light"),
+	MEDIUM(NamedTextColor.GOLD, "Medium"),
+	HEAVY(NamedTextColor.RED, "Heavy");
 	
-	private ChatColor color;
+	private NamedTextColor color;
 	private String display;
-	private Amount(ChatColor color, String display) {
+	private Amount(NamedTextColor color, String display) {
 		this.color = color;
 		this.display = display;
 	}

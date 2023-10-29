@@ -19,7 +19,7 @@ public class SapphireGem extends Artifact {
 		display = "Sapphire Gem";
 		inc = isUpgraded ? 75 : 50;
 		item = createItem(Material.LAPIS_LAZULI, "ARTIFACT",
-				null, "&7Increases max mana by &e" + inc, display);
+				null, "<gray>Increases max mana by <yellow>"+ inc);
 	}
 
 	@Override

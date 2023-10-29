@@ -2,8 +2,6 @@ package me.neoblade298.neorogue.session.fights;
 
 import java.awt.Color;
 
-import net.md_5.bungee.api.ChatColor;
-
 public enum FightScore {
 	D(0, 9999, 5, null, new Color(255, 140, 90)),
 	C(1, 20, 10, D, new Color(255, 178, 52)),

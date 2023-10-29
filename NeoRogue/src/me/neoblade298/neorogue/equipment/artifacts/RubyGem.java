@@ -19,7 +19,7 @@ public class RubyGem extends Artifact {
 		display = "Ruby Gem";
 		inc = isUpgraded ? 75 : 50;
 		item = createItem(Material.REDSTONE, "ARTIFACT",
-				null, "&7Increases max health by &e" + inc, display);
+				null, "<gray>Increases max health by <yellow>" + inc);
 	}
 
 	@Override

@@ -19,7 +19,7 @@ public class EmeraldCluster extends Artifact {
 		display = "Emerald Cluster";
 		inc = isUpgraded ? 35 : 25;
 		item = createItem(Material.EMERALD, "ARTIFACT",
-				null, "&7Increases max stamina by &e" + inc, display);
+				null, "<gray>Increases max stamina by <yellow>" + inc);
 	}
 
 	@Override

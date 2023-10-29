@@ -6,6 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
 import me.neoblade298.neocore.bukkit.commands.Subcommand;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.commands.Arg;
@@ -41,7 +42,7 @@ public class CmdAdminDebug extends Subcommand {
 		z -= z % 16;
 		
 		if (piece == null) {
-			Util.displayError(p, "&cCouldn't find a map piece with that name!");
+			Util.displayError(p, "Couldn't find a map piece with that name!");
 			return;
 		}
 		

@@ -9,18 +9,21 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.session.Session;
-import net.md_5.bungee.api.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 
 public class ChanceChoice {
 	private String title;
 	private Material mat;
 	private ChanceStage result;
-	private ArrayList<String> desc, prereqFail;
+	private ArrayList<TextComponent> desc, prereqFail;
 	private ChanceAction action;
 	
 	public ChanceChoice(Material mat, String title, String description, String prereqFail, ChanceAction action) {
 		this(mat, title, description, action);
-		this.prereqFail = SharedUtil.addLineBreaks(prereqFail, 250, ChatColor.RED);
+		this.prereqFail = SharedUtil.addLineBreaks(Component.text(prereqFail), 250);
 	}
 	
 	public ChanceChoice(Material mat, String title, String description, ChanceAction action) {
@@ -30,12 +33,12 @@ public class ChanceChoice {
 	
 	public ChanceChoice(Material mat, String title, String description) {
 		this(mat, title);
-		this.desc = SharedUtil.addLineBreaks(SharedUtil.translateColors(description), 250, ChatColor.GRAY);
+		this.desc = SharedUtil.addLineBreaks(Component.text(description), 250);
 	}
 	
 	public ChanceChoice(Material mat, String title) {
 		this.mat = mat;
-		this.title = SharedUtil.translateColors(title);
+		this.title = title;
 	}
 	
 	public ItemStack getItem(Session s) {
@@ -44,19 +47,20 @@ public class ChanceChoice {
 		// Check conditions
 		boolean canRun = action != null ? action.run(s, false) : true;
 		ItemMeta meta = item.getItemMeta();
-		meta.setDisplayName((canRun ? "§e" : "§c§m") + title);
-		ArrayList<String> lore = new ArrayList<String>();
+		Component display = Component.text(title, canRun ? NamedTextColor.YELLOW : NamedTextColor.RED);
+		if (!canRun) display.decorate(TextDecoration.STRIKETHROUGH);
+		ArrayList<TextComponent> lore = new ArrayList<TextComponent>();
 		
 		if (desc != null) {
-			for (String line : desc) {
-				lore.add((canRun ? "" : "§m") + line);
+			for (TextComponent text : desc) {
+				if (!canRun) text.decorate(TextDecoration.STRIKETHROUGH);
 			}
 		}
 		
 		if (!canRun && prereqFail != null) {
 			lore.addAll(prereqFail);
 		}
-		meta.setLore(lore);
+		meta.lore(lore);
 		item.setItemMeta(meta);
 		return item;
 	}

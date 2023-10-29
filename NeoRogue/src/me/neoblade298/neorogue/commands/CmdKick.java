@@ -23,7 +23,7 @@ public class CmdKick extends Subcommand {
 		Player p = (Player) s;
 		Session sess = SessionManager.getSession(p);
 		if (sess == null) {
-			Util.msg(s, "&cYou're not in a session!");
+			Util.displayError(p, "You're not in a session!");
 			return;
 		}
 		

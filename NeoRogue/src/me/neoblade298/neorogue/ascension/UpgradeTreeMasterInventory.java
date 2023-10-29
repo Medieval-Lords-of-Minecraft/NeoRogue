@@ -11,12 +11,14 @@ import org.bukkit.inventory.ItemStack;
 import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neorogue.player.PlayerData;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class UpgradeTreeMasterInventory extends CoreInventory  {
 	private PlayerData data;
 
 	public UpgradeTreeMasterInventory(Player p, PlayerData data) {
-		super(p, Bukkit.createInventory(p, 54, "§9Ascension Tree Branches"));
+		super(p, Bukkit.createInventory(p, 54, Component.text("Ascension Tree Branches", NamedTextColor.BLUE)));
 		this.data = data;
 		
 		ItemStack[] contents = inv.getContents();

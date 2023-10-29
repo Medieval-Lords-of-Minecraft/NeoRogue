@@ -21,7 +21,7 @@ public class CmdJoin extends Subcommand {
 	public void run(CommandSender s, String[] args) {
 		Player p = (Player) s;
 		if (SessionManager.getSession(p) != null) {
-			Util.msg(s, "&cYou're already in a session!");
+			Util.displayError(p, "You're already in a session!");
 			return;
 		}
 		

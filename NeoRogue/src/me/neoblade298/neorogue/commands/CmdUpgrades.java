@@ -21,7 +21,7 @@ public class CmdUpgrades extends Subcommand {
 		Player p = (Player) s;
 		Session sess = SessionManager.getSession(p);
 		if (sess != null) {
-			Util.msg(s, "&cYou can't do this while in a session!");
+			Util.displayError(p, "You can't do this while in a session!");
 			return;
 		}
 		

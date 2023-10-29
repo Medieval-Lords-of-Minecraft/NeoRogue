@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import me.neoblade298.neocore.shared.util.SharedUtil;
-import net.md_5.bungee.api.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 
 public class ChanceStage {
 	private static HashMap<String, ChanceStage> stages = new HashMap<String, ChanceStage>();
 	
 	protected ArrayList<ChanceChoice> choices = new ArrayList<ChanceChoice>();
-	protected ArrayList<String> description;
+	protected ArrayList<TextComponent> description;
 	private String id;
 	
 	public static ChanceStage get(String id) {
@@ -19,7 +20,7 @@ public class ChanceStage {
 	
 	public ChanceStage(String id, String description) {
 		this.id = id;
-		this.description = SharedUtil.addLineBreaks(description, 250, ChatColor.GRAY);
+		this.description = SharedUtil.addLineBreaks(Component.text(description), 250);
 		stages.put(id, this);
 	}
 	

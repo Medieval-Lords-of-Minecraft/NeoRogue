@@ -19,7 +19,7 @@ public class RubyCluster extends Artifact {
 		display = "Ruby Cluster";
 		inc = isUpgraded ? 35 : 25;
 		item = createItem(Material.REDSTONE, "ARTIFACT",
-				null, "&7Increases max health by &e" + inc, display);
+				null, "<gray>Increases max health by <yellow>" + inc);
 	}
 
 	@Override

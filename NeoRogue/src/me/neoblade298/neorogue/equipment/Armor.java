@@ -3,7 +3,6 @@ package me.neoblade298.neorogue.equipment;
 import java.util.ArrayList;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import me.neoblade298.neocore.shared.util.SharedUtil;
 
 public abstract class Armor extends Equipment {
 
@@ -18,7 +17,7 @@ public abstract class Armor extends Equipment {
 		// Add stats
 		if (preLoreLine != null) {
 			for (String l : preLoreLine) {
-				preLore.add(SharedUtil.translateColors(l));
+				preLore.add(l);
 			}
 		}
 		

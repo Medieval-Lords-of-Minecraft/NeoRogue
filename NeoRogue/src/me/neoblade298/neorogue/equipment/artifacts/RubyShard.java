@@ -19,7 +19,7 @@ public class RubyShard extends Artifact {
 		display = "Ruby Shard";
 		inc = isUpgraded ? 15 : 10;
 		item = createItem(Material.REDSTONE, "ARTIFACT",
-				null, "&7Increases max health by &e" + inc, display);
+				null, "<gray>Increases max health by <yellow>" + inc);
 	}
 
 	@Override

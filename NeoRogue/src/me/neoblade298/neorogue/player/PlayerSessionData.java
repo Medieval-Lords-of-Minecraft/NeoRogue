@@ -21,7 +21,6 @@ import me.neoblade298.neocore.shared.util.SQLInsertBuilder;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder.SQLAction;
 import me.neoblade298.neorogue.equipment.*;
 import me.neoblade298.neorogue.session.Session;
-import net.md_5.bungee.api.ChatColor;
 
 public class PlayerSessionData {
 	private PlayerData data;

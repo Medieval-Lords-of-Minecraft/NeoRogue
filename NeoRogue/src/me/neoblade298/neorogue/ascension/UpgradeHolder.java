@@ -11,7 +11,8 @@ import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
-import net.md_5.bungee.api.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class UpgradeHolder {
 	private String id, display, description;
@@ -52,9 +53,9 @@ public class UpgradeHolder {
 	public ItemStack getIcon(PlayerData data) {
 		ItemStack item = new ItemStack(canGet ? mat : Material.BARRIER);
 		ItemMeta meta = item.getItemMeta();
-		ChatColor c = data.hasUpgrade(id) ? ChatColor.GREEN : (canGet ? ChatColor.WHITE : ChatColor.RED);
-		meta.setDisplayName(c + display + (has ? " (Owned)" : ""));
-		meta.setLore(SharedUtil.addLineBreaks(description, 250, ChatColor.GRAY));
+		NamedTextColor c = data.hasUpgrade(id) ? NamedTextColor.GREEN : (canGet ? NamedTextColor.WHITE : NamedTextColor.RED);
+		meta.displayName(Component.text(display + (has ? " (Owned)" : ""), c));
+		meta.lore(SharedUtil.addLineBreaks(Component.text(description), 250));
 		item.setItemMeta(meta);
 		NBTItem nbti = new NBTItem(item);
 		nbti.setString("id", id);
@@ -68,8 +69,8 @@ public class UpgradeHolder {
 			item.setType(mat);
 		}
 		ItemMeta meta = item.getItemMeta();
-		ChatColor c = data.hasUpgrade(id) ? ChatColor.GREEN : (canGet ? ChatColor.WHITE : ChatColor.RED);
-		meta.setDisplayName(c + display + (has ? " (Owned)" : ""));
+		NamedTextColor c = data.hasUpgrade(id) ? NamedTextColor.GREEN : (canGet ? NamedTextColor.WHITE : NamedTextColor.RED);
+		meta.displayName(Component.text(display + (has ? " (Owned)" : ""), c));
 		item.setItemMeta(meta);
 		return item;
 	}

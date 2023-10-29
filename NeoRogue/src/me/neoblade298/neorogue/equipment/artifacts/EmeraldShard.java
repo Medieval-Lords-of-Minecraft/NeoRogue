@@ -19,7 +19,7 @@ public class EmeraldShard extends Artifact {
 		display = "Emerald Shard";
 		inc = isUpgraded ? 15 : 10;
 		item = createItem(Material.EMERALD, "ARTIFACT",
-				null, "&7Increases max stamina by &e" + inc, display);
+				null, "<gray>Increases max stamina by <yellow>" + inc);
 	}
 
 	@Override

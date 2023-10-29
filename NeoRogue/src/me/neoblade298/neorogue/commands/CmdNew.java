@@ -20,7 +20,7 @@ public class CmdNew extends Subcommand {
 	public void run(CommandSender s, String[] args) {
 		Player p = (Player) s;
 		if (SessionManager.getSession(p) != null) {
-			Util.msg(s, "&cYou're already in a session!");
+			Util.displayError(p, "You're already in a session!");
 			return;
 		}
 		
@@ -31,7 +31,7 @@ public class CmdNew extends Subcommand {
 			SessionManager.createSession(p, args[1], Integer.parseInt(args[0])); 
 		}
 		else {
-			Util.msg(s, "&cYour command is missing an argument!");
+			Util.displayError(p, "Your command is missing an argument!");
 		}
 	}
 }

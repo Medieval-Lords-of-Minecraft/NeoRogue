@@ -11,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import de.tr7zw.nbtapi.NBTItem;
+import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.shared.droptables.DropTable;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.equipment.abilities.*;
@@ -20,7 +21,9 @@ import me.neoblade298.neorogue.equipment.offhands.*;
 import me.neoblade298.neorogue.equipment.weapons.*;
 import me.neoblade298.neorogue.player.Trigger;
 import me.neoblade298.neorogue.session.fights.PlayerFightData;
-import net.md_5.bungee.api.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public abstract class Equipment {
 	private static HashMap<String, Equipment> equipment = new HashMap<String, Equipment>();
@@ -220,30 +223,34 @@ public abstract class Equipment {
 		}
 		return arr;
 	}
+
+	public ItemStack createItem(Material mat, String type, ArrayList<String> preLoreLine, String loreLine) {
+		return createItem(mat, type, preLoreLine, loreLine, null);
+	}
 	
 	public ItemStack createItem(Material mat, String type, ArrayList<String> preLoreLine, String loreLine, String nameOverride) {
 		ItemStack item = new ItemStack(mat);
 		ItemMeta meta = item.getItemMeta();
 		
 		if (nameOverride == null) {
-			meta.setDisplayName(rarity.getColor() + display + (isUpgraded ? "+" : ""));
+			meta.displayName(rarity.applyDecorations(Component.text(display + (isUpgraded ? "+" : ""))));
 		}
 		else {
-			meta.setDisplayName(nameOverride);
+			meta.displayName(NeoCore.miniMessage().deserialize(nameOverride));
 		}
 		
-		ArrayList<String> lore = new ArrayList<String>();
-		lore.add(rarity.getDisplay(true) + " " + type);
-		if (!reforgeOptions.isEmpty()) lore.add("§eReforgeable (Combine 2 of this item)");
+		ArrayList<Component> lore = new ArrayList<Component>();
+		lore.add(rarity.getDisplay(true).append(Component.text(" " + type)));
+		if (!reforgeOptions.isEmpty()) lore.add(Component.text("Reforgeable (Combine 2 of this item)", NamedTextColor.YELLOW));
 		if (preLoreLine != null) {
 			for (String l : preLoreLine) {
-				lore.add(SharedUtil.translateColors(l));
+				lore.add(NeoCore.miniMessage().deserialize(l));
 			}
 		}
 		if (loreLine != null) {
-			lore.addAll(SharedUtil.addLineBreaks(SharedUtil.translateColors(loreLine), 200, ChatColor.GRAY));
+			lore.addAll(SharedUtil.addLineBreaks((TextComponent) NeoCore.miniMessage().deserialize(loreLine), 200));
 		}
-		meta.setLore(lore);
+		meta.lore(lore);
 		
 		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 		meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);

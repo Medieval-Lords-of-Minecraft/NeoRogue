@@ -9,10 +9,14 @@ import java.util.UUID;
 
 import org.bukkit.command.CommandSender;
 
-import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.session.Session;
-import net.md_5.bungee.api.chat.ClickEvent.Action;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent.Builder;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 
 public class SessionSnapshot {
 	private long lastSaved;
@@ -47,28 +51,46 @@ public class SessionSnapshot {
 	}
 	
 	public void displayNewButton(CommandSender s, int saveSlot) {
-		String text = SharedUtil.translateColors("&7&l[1] &7" + new Date(lastSaved));
-		s.spigot().sendMessage(SharedUtil.createText(text, createHoverText(),
-				"/nr new " + saveSlot + " partyname", Action.SUGGEST_COMMAND).create());
+		Component text = Component.text().content("[1] ").color(NamedTextColor.GRAY)
+				.decorate(TextDecoration.BOLD)
+				.append(Component.text(new Date(lastSaved).toString(), NamedTextColor.GRAY)).build();
+		text.clickEvent(ClickEvent.suggestCommand("/nr new " + saveSlot + " partyname"))
+		.hoverEvent(HoverEvent.showText(createHoverText()));
+		s.sendMessage(text);
 	}
 	
 	public static void displayEmptyNewButton(CommandSender s, int saveSlot) {
-		String text = SharedUtil.translateColors("&7&l[1] &7Empty");
-		s.spigot().sendMessage(SharedUtil.createText(text, "Click to start a new game on this slot!",
-				"/nr new " + saveSlot + " partyname", Action.SUGGEST_COMMAND).create());
+		Component text = Component.text().content("[1] ").color(NamedTextColor.GRAY)
+				.decorate(TextDecoration.BOLD)
+				.append(Component.text("Empty", NamedTextColor.GRAY)).build();
+		text.clickEvent(ClickEvent.suggestCommand("/nr new " + saveSlot + " partyname"))
+		.hoverEvent(HoverEvent.showText(Component.text("Click to start a new game on this slot!")));
+		s.sendMessage(text);
 	}
 	
 	public void displayLoadButton(CommandSender s, int saveSlot) {
-		String text = SharedUtil.translateColors("&7&l[1] &7" + new Date(lastSaved));
-		s.spigot().sendMessage(SharedUtil.createText(text, createHoverText(), "/nr load " + saveSlot).create());
+		Component text = Component.text().content("[1] ").color(NamedTextColor.GRAY)
+				.decorate(TextDecoration.BOLD)
+				.append(Component.text(new Date(lastSaved).toString(), NamedTextColor.GRAY)).build();
+		text.clickEvent(ClickEvent.suggestCommand("/nr load " + saveSlot))
+		.hoverEvent(HoverEvent.showText(createHoverText()));
+		s.sendMessage(text);
 	}
 	
-	private String createHoverText() {
-		String text = "&7Area: &e" + areaType.getDisplay() + "\n&7Nodes visited: &e" + nodesVisited + "\n&7Party members:";
+	private Component createHoverText() {
+		Builder b = Component.text().content("Area: ").color(NamedTextColor.GRAY)
+				.append(Component.text(areaType.getDisplay(), NamedTextColor.GOLD))
+				.append(Component.text("\nNodes visited: ", NamedTextColor.GRAY))
+				.append(Component.text(nodesVisited, NamedTextColor.GOLD))
+				.append(Component.text("\nParty members:", NamedTextColor.GRAY));
 		for (Entry<String, PlayerClass> ent : party.entrySet()) {
-			text += "\n&7- &e" + ent.getKey() + " &7[&c" + ent.getValue().getDisplay() + "&7]";
+			b.append(Component.text("\n- ", NamedTextColor.GRAY))
+			.append(Component.text(ent.getKey(), NamedTextColor.YELLOW))
+			.append(Component.text("[", NamedTextColor.GRAY))
+			.append(Component.text(ent.getValue().getDisplay(), NamedTextColor.RED))
+			.append(Component.text("]", NamedTextColor.GRAY));
 		}
-		return SharedUtil.translateColors(text);
+		return b.build();
 	}
 	
 	public HashMap<UUID, String> getPartyIds() {

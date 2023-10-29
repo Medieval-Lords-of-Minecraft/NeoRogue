@@ -19,7 +19,7 @@ public class SapphireShard extends Artifact {
 		display = "Sapphire Shard";
 		inc = isUpgraded ? 15 : 10;
 		item = createItem(Material.LAPIS_LAZULI, "ARTIFACT",
-				null, "&7Increases max mana by &e" + inc, display);
+				null, "<gray>Increases max mana by <yellow>" + inc);
 	}
 
 	@Override

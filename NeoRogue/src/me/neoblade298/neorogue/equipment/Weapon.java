@@ -11,7 +11,6 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.session.fights.DamageType;
 
 public abstract class Weapon extends HotbarCompatible {
@@ -20,7 +19,6 @@ public abstract class Weapon extends HotbarCompatible {
 
 	public Weapon(String id, boolean isUpgraded, Rarity rarity, EquipmentClass ec) {
 		super(id, isUpgraded, rarity, ec);
-		// TODO Auto-generated constructor stub
 	}
 
 	public ItemStack createItem(Material mat, String[] preLoreLine, String loreLine) {
@@ -35,7 +33,7 @@ public abstract class Weapon extends HotbarCompatible {
 		addToLore(preLore);
 		if (preLoreLine != null) {
 			for (String l : preLoreLine) {
-				preLore.add(SharedUtil.translateColors(l));
+				preLore.add(l);
 			}
 		}
 		ItemStack item = createItem(mat, "Weapon", preLore, loreLine, null);

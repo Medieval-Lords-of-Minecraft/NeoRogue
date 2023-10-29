@@ -23,6 +23,8 @@ import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.FaceAttachable;
 import org.bukkit.block.data.FaceAttachable.AttachedFace;
 import org.bukkit.block.data.type.Lectern;
+import org.bukkit.block.sign.Side;
+import org.bukkit.block.sign.SignSide;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -49,6 +51,8 @@ import me.neoblade298.neocore.shared.util.SQLInsertBuilder.SQLAction;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.session.NodeSelectInstance;
 import me.neoblade298.neorogue.session.Session;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 
 public class Area {
 	private AreaType type;
@@ -361,8 +365,9 @@ public class Area {
 				b.setBlockData(dir);
 				
 				Sign sign = (Sign) b.getState();
-				sign.setLine(1, "§l" + node.getType().toString());
-				sign.setGlowingText(true);
+				SignSide side = sign.getSide(Side.FRONT);
+				sign.getSide(Side.FRONT).line(1, Component.text(node.getType().toString(), null, TextDecoration.BOLD));
+				side.setGlowingText(true);
 				sign.update();
 			}
 		}

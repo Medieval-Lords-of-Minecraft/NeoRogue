@@ -12,13 +12,16 @@ import org.bukkit.inventory.ItemStack;
 
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neorogue.player.PlayerData;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class UpgradeTreeInventory extends CoreInventory {
 	private PlayerData data;
 	private UpgradeTree tree;
 
 	public UpgradeTreeInventory(Player p, UpgradeTree tree, PlayerData data) {
-		super(p, Bukkit.createInventory(p, 54, "§9Ascension Tree: " + tree.getDisplay()));
+		super(p, Bukkit.createInventory(p, 54, Component.text("Ascension Tree: " + tree.getDisplay(), NamedTextColor.BLUE)));
 		this.data = data;
 		this.tree = tree;
 		ItemStack[] contents = inv.getContents();
@@ -26,7 +29,11 @@ public class UpgradeTreeInventory extends CoreInventory {
 		for (Entry<Integer, UpgradeHolder> ent : tree.getUpgrades().entrySet()) {
 			contents[ent.getKey()] = ent.getValue().getIcon(data);
 		}
-		contents[53] = CoreInventory.createButton(Material.ENCHANTED_BOOK, "&7You have &e" + data.getPoints() + " &7points to use");
+		
+		TextComponent c = Component.text("You have ", NamedTextColor.GRAY).toBuilder()
+				.append(Component.text(data.getPoints(), NamedTextColor.YELLOW))
+				.append(Component.text(" points to use")).build();
+		contents[53] = CoreInventory.createButton(Material.ENCHANTED_BOOK, c);
 		inv.setContents(contents);
 	}
 
@@ -44,7 +51,10 @@ public class UpgradeTreeInventory extends CoreInventory {
 			for (Entry<Integer, UpgradeHolder> ent : tree.getUpgrades().entrySet()) {
 				contents[ent.getKey()] = ent.getValue().updateItem(contents[ent.getKey()], data);
 			}
-			contents[53] = CoreInventory.createButton(Material.ENCHANTED_BOOK, "&7You have &e" + data.getPoints() + " &7points to use");
+			TextComponent c = Component.text("You have ", NamedTextColor.GRAY).toBuilder()
+					.append(Component.text(data.getPoints(), NamedTextColor.YELLOW))
+					.append(Component.text(" points to use")).build();
+			contents[53] = CoreInventory.createButton(Material.ENCHANTED_BOOK, c);
 			inv.setContents(contents);
 		}
 		

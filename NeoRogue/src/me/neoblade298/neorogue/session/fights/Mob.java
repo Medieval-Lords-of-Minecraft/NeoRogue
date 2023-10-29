@@ -17,19 +17,22 @@ import me.neoblade298.neocore.bukkit.util.SkullUtil;
 import me.neoblade298.neocore.shared.io.Section;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.NeoRogue;
-import net.md_5.bungee.api.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class Mob implements Comparable<Mob> {
 	private static ArrayList<BuffType> typeOrder = new ArrayList<BuffType>();
 	private static HashMap<String, Mob> mobs = new HashMap<String, Mob>();
 	
-	private String id, display, base64;
+	private String id, base64;
+	private TextComponent display;
 	private int amount;
 	private double value;
 	private Material mat;
 	private HashMap<BuffType, Integer> resistances = new HashMap<BuffType, Integer>();
 	private HashMap<BuffType, Amount> damageTypes = new HashMap<BuffType, Amount>();
-	private ArrayList<String> lore;
+	private ArrayList<TextComponent> lore;
 	
 	static {
 		typeOrder.add(BuffType.SLASHING);
@@ -62,7 +65,7 @@ public class Mob implements Comparable<Mob> {
 	public Mob(Section sec) {
 		id = sec.getName();
 		Optional<MythicMob> opt = MythicBukkit.inst().getMobManager().getMythicMob(id);
-		display = opt.isPresent() ? opt.get().getDisplayName().get() : "Mob Not Loaded";
+		display = Component.text(opt.isPresent() ? opt.get().getDisplayName().get() : "Mob Not Loaded");
 		
 		Section resSec = sec.getSection("resistances");
 		if (resSec != null) {
@@ -94,7 +97,7 @@ public class Mob implements Comparable<Mob> {
 			}
 		}
 		
-		lore = SharedUtil.addLineBreaks(sec.getString("description"), 250, ChatColor.GRAY);
+		lore = SharedUtil.addLineBreaks(Component.text(sec.getString("description")), 250);
 		mat = sec.contains("material") ? Material.valueOf(sec.getString("material")) : null;
 		amount = sec.getInt("amount", 1);
 		value = sec.getDouble("value", (double) 1 / (double) amount);
@@ -110,13 +113,13 @@ public class Mob implements Comparable<Mob> {
 	public ItemStack getItemDisplay(ArrayList<MobModifier> modifiers) {
 		ItemStack item = base64 == null ? new ItemStack(mat) : SkullUtil.itemFromBase64(base64);
 		ItemMeta meta = item.getItemMeta();
-		meta.setDisplayName(display);
+		meta.displayName(display);
 		ArrayList<String> lore = new ArrayList<String>();
 		lore.add("§6Resistances:");
 		for (BuffType dt : typeOrder) {
 			if (resistances.containsKey(dt)) {
 				int pct = resistances.get(dt);
-				String str = (pct > 0 ? ChatColor.RED : ChatColor.GREEN) + "" + pct + "%";
+				String str = (pct > 0 ? NamedTextColor.RED : NamedTextColor.GREEN) + "" + pct + "%";
 				lore.add("§e" + dt.getDisplay() + "§7: " + str);
 			}
 		}
