@@ -76,7 +76,7 @@ public class NodeSelectInstance extends EditInventoryInstance {
 		Player p = e.getPlayer();
 		if (Tag.BUTTONS.isTagged(e.getClickedBlock().getType())) {
 			if (!p.getUniqueId().equals(s.getHost())) {
-				Util.displayError(p, "&cOnly the host may choose the next node to visit!");
+				Util.displayError(p, "Only the host may choose the next node to visit!");
 				return;
 			}
 			
@@ -85,7 +85,7 @@ public class NodeSelectInstance extends EditInventoryInstance {
 				Player member = ent.getValue().getPlayer();
 				if (member == null) {
 					for (Player online : s.getOnlinePlayers()) {
-						Util.displayError(online, "&cAt least one party member (&4" + ent.getValue().getData().getDisplay() + "&c) is not online!");
+						Util.displayError(online, "At least one party member (" + ent.getValue().getData().getDisplay() + ") is not online!");
 					}
 					return;
 				}

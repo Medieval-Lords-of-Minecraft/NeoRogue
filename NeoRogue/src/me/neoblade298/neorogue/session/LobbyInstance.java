@@ -303,7 +303,7 @@ public class LobbyInstance extends Instance {
 		}
 
 		s.addPlayers(players);
-		s.broadcast("&7Generating your game...");
+		s.broadcast("Generating your game...");
 		s.generateArea(AreaType.LOW_DISTRICT);
 		s.setNode(s.getArea().getNodes()[0][2]);
 		

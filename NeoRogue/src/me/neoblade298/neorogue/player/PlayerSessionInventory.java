@@ -201,7 +201,7 @@ public class PlayerSessionInventory extends CoreInventory {
 				Equipment equippedEq = Equipment.get(eqedId, false);
 				if (!nclicked.hasTag("dataSlot")) return;
 				if (eq instanceof Ability && (equippedEq == null || !(equippedEq instanceof Ability)) && !data.canEquipAbility()) {
-					displayError("&cYou can only equip &e" + data.getMaxAbilities() + " &cabilities!", true);
+					displayError("You can only equip " + data.getMaxAbilities() + " abilities!", true);
 					return;
 				}
 				
@@ -220,7 +220,7 @@ public class PlayerSessionInventory extends CoreInventory {
 					}
 				}
 				else {
-					displayError("&cYou can't equip this item in this slot!", false);
+					displayError("You can't equip this item in this slot!", false);
 				}
 			}
 		}
@@ -251,7 +251,7 @@ public class PlayerSessionInventory extends CoreInventory {
 				Equipment eq = Equipment.get(nswapped.getString("equipId"), false);
 				Equipment equippedEq = Equipment.get(nswapped.getString("equipId"), false);
 				if (eq instanceof Ability && (equippedEq == null || !(equippedEq instanceof Ability)) && !data.canEquipAbility()) {
-					displayError("&cYou can only equip &e" + data.getMaxAbilities() + " &cabilities!", true);
+					displayError("You can only equip " + data.getMaxAbilities() + " abilities!", true);
 					return;
 				}
 				
@@ -270,7 +270,7 @@ public class PlayerSessionInventory extends CoreInventory {
 					}
 				}
 				else {
-					displayError("&cYou can't equip this item in this slot!", false);
+					displayError("You can't equip this item in this slot!", false);
 				}
 			}
 		}

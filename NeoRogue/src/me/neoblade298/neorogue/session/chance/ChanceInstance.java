@@ -16,6 +16,7 @@ import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.*;
 import me.neoblade298.neorogue.session.fights.FightInstance;
+import net.kyori.adventure.text.Component;
 
 public class ChanceInstance extends EditInventoryInstance {
 	private static final int CHANCE_X = 6, CHANCE_Z = 101;
@@ -86,10 +87,10 @@ public class ChanceInstance extends EditInventoryInstance {
 						else if (nextInstance instanceof ShopInstance) {
 							instDisplay = "shop";
 						}
-						s.broadcast("&7Sending you to " + instDisplay + "...");
+						s.broadcast(Component.text("Sending you to " + instDisplay + "..."));
 					}
 					else {
-						s.broadcast("&7Sending you back to node select...");
+						s.broadcast(Component.text("Sending you back to node select..."));
 					}
 				}
 			}.runTaskLater(NeoRogue.inst(), 20L);

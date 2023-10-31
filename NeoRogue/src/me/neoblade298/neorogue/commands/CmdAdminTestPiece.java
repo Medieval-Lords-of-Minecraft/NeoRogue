@@ -46,7 +46,7 @@ public class CmdAdminTestPiece extends Subcommand {
 		Player p = (Player) s;
 		
 		if (piece == null) {
-			Util.displayError(p, "&cCouldn't find a map piece with that name!");
+			Util.displayError(p, "Couldn't find a map piece with that name!");
 			return;
 		}
 		

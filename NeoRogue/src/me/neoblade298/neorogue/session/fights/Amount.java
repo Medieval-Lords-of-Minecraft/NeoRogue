@@ -1,5 +1,6 @@
 package me.neoblade298.neorogue.session.fights;
 
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public enum Amount {
@@ -15,7 +16,8 @@ public enum Amount {
 		this.display = display;
 	}
 	
-	public String getDisplay(boolean hasColor) {
-		return (hasColor ? color : "") + display;
+	public Component getDisplay(boolean hasColor) {
+		Component c = Component.text(display);
+		return hasColor ? c.color(color) : c;
 	}
 }

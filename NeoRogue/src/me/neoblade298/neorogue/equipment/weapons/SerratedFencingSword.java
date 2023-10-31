@@ -24,8 +24,8 @@ public class SerratedFencingSword extends Weapon {
 		type = DamageType.PIERCING;
 		shields = 7;
 		bleed = isUpgraded ? 4 : 2;
-		item = createItem(Material.STONE_SWORD, null, "&7On hit, grant yourself &e" + shields + "&7 shields. Apply &e" + bleed
-				+ " &7bleed every 2 hits.");
+		item = createItem(Material.STONE_SWORD, null, "On hit, grant yourself <yellow>" + shields + "</yellow> shields. Apply <yellow>" + bleed
+				+ " </yellow>bleed every 2 hits.");
 	}
 
 	@Override

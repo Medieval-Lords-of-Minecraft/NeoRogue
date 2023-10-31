@@ -61,7 +61,7 @@ public class CampfireUpgradeInventory extends CoreInventory {
 			NBTItem nbti = new NBTItem(item);
 			String id = nbti.getString("equipId");
 			if (id.isBlank()) {
-				Util.displayError(p, "&cInvalid upgrade!");
+				Util.displayError(p, "Invalid upgrade!");
 				return;
 			}
 			

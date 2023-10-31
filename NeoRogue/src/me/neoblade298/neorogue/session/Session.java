@@ -14,6 +14,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.io.SQLManager;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder;
@@ -25,6 +26,8 @@ import me.neoblade298.neorogue.area.Node;
 import me.neoblade298.neorogue.player.PlayerClass;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fights.FightInstance;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class Session {
 	private Area area;
@@ -56,7 +59,7 @@ public class Session {
 		Session s = this;
 		new BukkitRunnable() {
 			public void run() {
-				Util.msgRaw(p, "&7Loading game...");
+				Util.msgRaw(p, Component.text("Loading game...", NamedTextColor.GRAY));
 				
 				try (Connection con = SQLManager.getConnection("NeoRogue");
 						Statement stmt = con.createStatement()) {
@@ -81,7 +84,7 @@ public class Session {
 						public void run() {
 							area.instantiate();
 							setInstance(inst);
-							Util.msgRaw(p, "&7Finished loading.");
+							Util.msgRaw(p, Component.text("Finished loading.", NamedTextColor.GRAY));
 						}
 					}.runTask(NeoRogue.inst());
 				} catch (SQLException e) {
@@ -130,7 +133,13 @@ public class Session {
 
 	public void broadcast(String msg) {
 		for (Player p : getOnlinePlayers()) {
-			Util.msgRaw(p, msg);
+			Util.msgRaw(p, NeoCore.miniMessage().deserialize(msg).colorIfAbsent(NamedTextColor.GRAY));
+		}
+	}
+
+	public void broadcast(Component msg) {
+		for (Player p : getOnlinePlayers()) {
+			Util.msgRaw(p, msg.colorIfAbsent(NamedTextColor.GRAY));
 		}
 	}
 	
@@ -151,7 +160,7 @@ public class Session {
 	public boolean isEveryoneOnline() {
 		for (UUID uuid : party.keySet()) {
 			if (Bukkit.getPlayer(uuid) == null) {
-				broadcast("&cYou can't move on until every member in your party is online!");
+				broadcast("<red>You can't move on until every member in your party is online!");
 				return false;
 			}
 		}
@@ -164,7 +173,7 @@ public class Session {
 			if (!(this.inst instanceof FightInstance)) {
 				for (UUID uuid : party.keySet()) {
 					if (Bukkit.getPlayer(uuid) == null) {
-						broadcast("&cYou can't move on until every member in your party is online!");
+						broadcast("<red>You can't move on until every member in your party is online!");
 						return;
 					}
 				}
@@ -272,11 +281,11 @@ public class Session {
 	public void leavePlayer(Player p) {
 		UUID uuid = p.getUniqueId();
 		if (uuid.equals(host)) {
-			broadcast("&7The host has left the party, so the game has ended!");
+			broadcast("The host has left the party, so the game has ended!");
 			SessionManager.endSession(this);
 		}
 		else {
-			broadcast("&e" + p.getName() + " &7has left the party!");
+			broadcast("<yellow>" + p.getName() + " <gray>has left the party!");
 			party.remove(p.getUniqueId());
 			SessionManager.removeFromSession(p.getUniqueId());
 		}
@@ -285,10 +294,10 @@ public class Session {
 	public void kickPlayer(Player p) {
 		UUID uuid = p.getUniqueId();
 		if (!uuid.equals(host)) {
-			Util.msgRaw(p, "&cOnly the host may kick players");
+			Util.displayError(p, "Only the host may kick players");
 		}
 		else {
-			broadcast("&e" + p.getName() + " &7was kicked from the party!");
+			broadcast("<yellow>" + p.getName() + " <gray>was kicked from the party!");
 			party.remove(p.getUniqueId());
 			SessionManager.removeFromSession(p.getUniqueId());
 		}

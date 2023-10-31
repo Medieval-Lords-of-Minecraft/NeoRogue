@@ -114,24 +114,29 @@ public class Mob implements Comparable<Mob> {
 		ItemStack item = base64 == null ? new ItemStack(mat) : SkullUtil.itemFromBase64(base64);
 		ItemMeta meta = item.getItemMeta();
 		meta.displayName(display);
-		ArrayList<String> lore = new ArrayList<String>();
-		lore.add("§6Resistances:");
+		ArrayList<Component> lore = new ArrayList<Component>();
+		lore.add(Component.text("Resistances:", NamedTextColor.GOLD));
 		for (BuffType dt : typeOrder) {
 			if (resistances.containsKey(dt)) {
 				int pct = resistances.get(dt);
 				String str = (pct > 0 ? NamedTextColor.RED : NamedTextColor.GREEN) + "" + pct + "%";
-				lore.add("§e" + dt.getDisplay() + "§7: " + str);
+				Component c = Component.text(dt.getDisplay(), NamedTextColor.YELLOW)
+						.append(Component.text(": " + str, NamedTextColor.GRAY));
+				lore.add(c);
 			}
 		}
 		
 		for (BuffType dt : typeOrder) {
 			if (damageTypes.containsKey(dt)) {
-				lore.add("§e" + dt.getDisplay() + "§7: " + damageTypes.get(dt).getDisplay(true));
+				Component c = Component.text(dt.getDisplay(), NamedTextColor.YELLOW)
+						.append(Component.text(": ", NamedTextColor.GRAY))
+						.append(damageTypes.get(dt).getDisplay(true));
+				lore.add(c);
 			}
 		}
 		
 		lore.addAll(this.lore);
-		meta.setLore(lore);
+		meta.lore(lore);
 		item.setItemMeta(meta);
 		return item;
 	}

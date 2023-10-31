@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.session.Session;
 import net.kyori.adventure.text.Component;
@@ -23,7 +24,7 @@ public class ChanceChoice {
 	
 	public ChanceChoice(Material mat, String title, String description, String prereqFail, ChanceAction action) {
 		this(mat, title, description, action);
-		this.prereqFail = SharedUtil.addLineBreaks(Component.text(prereqFail), 250);
+		this.prereqFail = SharedUtil.addLineBreaks((TextComponent) NeoCore.miniMessage().deserialize(prereqFail), 250);
 	}
 	
 	public ChanceChoice(Material mat, String title, String description, ChanceAction action) {
@@ -33,7 +34,7 @@ public class ChanceChoice {
 	
 	public ChanceChoice(Material mat, String title, String description) {
 		this(mat, title);
-		this.desc = SharedUtil.addLineBreaks(Component.text(description), 250);
+		this.desc = SharedUtil.addLineBreaks((TextComponent) NeoCore.miniMessage().deserialize(description), 250);
 	}
 	
 	public ChanceChoice(Material mat, String title) {

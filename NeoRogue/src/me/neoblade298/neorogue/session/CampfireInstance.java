@@ -65,7 +65,7 @@ public class CampfireInstance extends EditInventoryInstance {
 		UUID uuid = p.getUniqueId();
 		if (e.getClickedBlock().getType() == Material.STONE_BRICK_STAIRS && state == INIT_STATE) {
 			if (!s.getHost().equals(uuid)) {
-				Util.displayError(p, "&cThe host must first choose what to do!");
+				Util.displayError(p, "The host must first choose what to do!");
 				return;
 			}
 			
@@ -81,7 +81,7 @@ public class CampfireInstance extends EditInventoryInstance {
 
 	public void chooseState(boolean rest) {
 		state = rest ? REST_STATE : UPGRADE_STATE;
-		s.broadcast("&7The host has chosen to &e" + (rest ? "rest" : "upgrade"));
+		s.broadcast("The host has chosen to <yellow>" + (rest ? "rest" : "upgrade"));
 		
 		if (rest) {
 			center.getBlock().setType(Material.CAMPFIRE);
@@ -106,7 +106,7 @@ public class CampfireInstance extends EditInventoryInstance {
 	}
 	
 	public void returnToNodes() {
-		if (state == UPGRADE_STATE) s.broadcast("&7Everyone is ready! Returning you to node select...");
+		if (state == UPGRADE_STATE) s.broadcast("Everyone is ready! Returning you to node select...");
 		new BukkitRunnable() {
 			public void run() {
 				s.setInstance(new NodeSelectInstance());

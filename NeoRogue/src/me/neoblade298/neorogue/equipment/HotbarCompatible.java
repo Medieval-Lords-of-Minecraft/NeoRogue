@@ -18,12 +18,12 @@ public abstract class HotbarCompatible extends Equipment {
 	
 	protected boolean canCast(PlayerFightData data) {
 		if (data.getMana() <= manaCost) {
-			Util.displayError(data.getPlayer(), "&cNot enough mana!");
+			Util.displayError(data.getPlayer(), "Not enough mana!");
 			return false;
 		}
 		
 		if (data.getStamina() <= staminaCost) {
-			Util.displayError(data.getPlayer(), "&cNot enough stamina!");
+			Util.displayError(data.getPlayer(), "Not enough stamina!");
 			return false;
 		}
 		

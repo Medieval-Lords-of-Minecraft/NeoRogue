@@ -61,7 +61,7 @@ public class RewardInstance extends EditInventoryInstance {
 		Player p = e.getPlayer();
 		UUID uuid = p.getUniqueId();
 		if (rewards.get(uuid).isEmpty()) {
-			Util.displayError(p, "&cYou don't have any rewards remaining!");
+			Util.displayError(p, "You don't have any rewards remaining!");
 			return;
 		}
 		p.playSound(p, Sound.BLOCK_ENDER_CHEST_OPEN, 1F, 1F);
@@ -73,7 +73,7 @@ public class RewardInstance extends EditInventoryInstance {
 		for (ArrayList<Reward> rewards : this.rewards.values()) {
 			if (!rewards.isEmpty()) return;
 		}
-		s.broadcast("&7Everyone's finished claiming rewards! Returning to node select in 5 seconds.");
+		s.broadcast("Everyone's finished claiming rewards! Returning to node select in 5 seconds.");
 		
 		// Everyone's done claiming rewards
 		new BukkitRunnable() {

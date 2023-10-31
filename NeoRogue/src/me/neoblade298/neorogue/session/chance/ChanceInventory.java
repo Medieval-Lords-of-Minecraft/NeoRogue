@@ -28,7 +28,7 @@ public class ChanceInventory extends CoreInventory {
 	private ChanceStage stage;
 
 	public ChanceInventory(Player p, ChanceInstance inst, ChanceSet set, ChanceStage stage) {
-		super(p, Bukkit.createInventory(p, 18, Component.text("Chance Event", NamedTextColor.BLUE));
+		super(p, Bukkit.createInventory(p, 18, Component.text("Chance Event", NamedTextColor.BLUE)));
 		this.set = set;
 		this.inst = inst;
 		this.s = inst.getSession();
@@ -39,11 +39,11 @@ public class ChanceInventory extends CoreInventory {
 	private void setupInventory() {
 		// Create title
 		ItemStack[] contents = new ItemStack[18];
-		ItemStack title = CoreInventory.createButton(set.getMaterial(), set.getDisplay());
+		ItemStack title = CoreInventory.createButton(set.getMaterial(), Component.text(set.getDisplay()));
 		ItemMeta meta = title.getItemMeta();
-		ArrayList<String> lore = new ArrayList<String>();
+		ArrayList<Component> lore = new ArrayList<Component>();
 		lore.addAll(stage.description);
-		meta.setLore(lore);
+		meta.lore(lore);
 		title.setItemMeta(meta);
 		contents[4] = title;
 		
@@ -66,7 +66,7 @@ public class ChanceInventory extends CoreInventory {
 		
 		// Specific setup for if the chance led to a fight instance
 		if (inst.getNextInstance() instanceof FightInstance) {
-			contents[0] = CoreInventory.createButton(Material.ENCHANTED_BOOK, "&9Fight Info");
+			contents[0] = CoreInventory.createButton(Material.ENCHANTED_BOOK, Component.text("Fight Info", NamedTextColor.BLUE));
 		}
 		inv.setContents(contents);
 	}

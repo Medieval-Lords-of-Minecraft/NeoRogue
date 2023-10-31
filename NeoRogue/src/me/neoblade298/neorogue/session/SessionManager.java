@@ -45,6 +45,8 @@ import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.PlayerSessionInventory;
 import me.neoblade298.neorogue.player.SessionSnapshot;
 import me.neoblade298.neorogue.session.fights.*;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class SessionManager implements Listener {
 	private static HashMap<UUID, Session> sessions = new HashMap<UUID, Session>();
@@ -56,7 +58,7 @@ public class SessionManager implements Listener {
 		sessions.put(p.getUniqueId(), s);
 		sessionPlots.put(plot, s);
 		
-		Util.msg(p, "&7Successfully created a lobby!");
+		Util.msg(p, Component.text("Successfully created a lobby!", NamedTextColor.GRAY));
 		return s;
 	}
 	
@@ -65,7 +67,7 @@ public class SessionManager implements Listener {
 		SessionSnapshot ss = pd.getSnapshot(saveSlot);
 		for (Entry<UUID, String> ent : ss.getPartyIds().entrySet()) {
 			if (Bukkit.getPlayer(ent.getKey()) == null) {
-				Util.displayError(p, "&cCannot load this save as &e" + ent.getValue() + " &cis not online!");
+				Util.displayError(p, "Cannot load this save as " + ent.getValue() + " is not online!");
 				return null;
 			}
 		}

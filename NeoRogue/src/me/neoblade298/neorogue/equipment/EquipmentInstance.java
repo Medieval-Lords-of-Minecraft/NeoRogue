@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.equipment;
 
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.player.TriggerAction;
 
@@ -30,7 +31,7 @@ public abstract class EquipmentInstance implements TriggerAction {
 	public void sendCooldownMessage(Player p) {
 		int cooldownOver = (int) ((lastUsed / 1000) + cooldown);
 		int now = (int) (System.currentTimeMillis() / 1000);
-		Util.msgRaw(p, "&e" + eq.display + " &ccooldown: &e" + (cooldownOver - now) + "s");
+		Util.msgRaw(p, NeoCore.miniMessage().deserialize("<yellow>" + eq.display + " <red>cooldown: </red>" + (cooldownOver - now) + "s"));
 	}
 	
 	public Equipment getEquipment() {

@@ -248,7 +248,7 @@ public abstract class Equipment {
 			}
 		}
 		if (loreLine != null) {
-			lore.addAll(SharedUtil.addLineBreaks((TextComponent) NeoCore.miniMessage().deserialize(loreLine), 200));
+			lore.addAll(SharedUtil.addLineBreaks((TextComponent) NeoCore.miniMessage().deserialize(loreLine).colorIfAbsent(NamedTextColor.GRAY), 200));
 		}
 		meta.lore(lore);
 		

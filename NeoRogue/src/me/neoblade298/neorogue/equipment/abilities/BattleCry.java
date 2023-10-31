@@ -27,7 +27,7 @@ public class BattleCry extends Ability {
 		staminaCost = 25;
 		int strength = isUpgraded ? 20 : 14;
 		item = createItem(this, Material.REDSTONE, null,
-				"&7On cast, give yourself &e" + strength + " &7bonus physical damage for &e10&7 seconds.");
+				"On cast, give yourself <yellow>" + strength + " </yellow>bonus physical damage for <yellow>10</yellow> seconds.");
 	}
 
 	@Override

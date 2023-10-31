@@ -23,7 +23,7 @@ public class Rapier extends Weapon {
 		type = DamageType.PIERCING;
 		attackSpeed = 1;
 		shields = isUpgraded ? 15 : 10;
-		item = createItem(Material.STONE_SWORD, null, "&7On hit, grant yourself &e" + shields + "&7 shields");
+		item = createItem(Material.STONE_SWORD, null, "&7On hit, grant yourself <yellow>" + shields + "</yellow> shields");
 	}
 
 	@Override

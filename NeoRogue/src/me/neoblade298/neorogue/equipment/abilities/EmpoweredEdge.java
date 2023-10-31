@@ -26,7 +26,7 @@ public class EmpoweredEdge extends Ability {
 		cooldown = isUpgraded ? 5 : 7;
 		damage = isUpgraded ? 100 : 75;
 		item = createItem(this, Material.FLINT, null,
-				"&7On cast, your next basic attack deals &e" + damage + " &7damage.");
+				"On cast, your next basic attack deals <yellow>" + damage + " </yellow>damage.");
 	}
 
 	@Override

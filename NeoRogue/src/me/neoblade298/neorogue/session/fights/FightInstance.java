@@ -367,7 +367,7 @@ public abstract class FightInstance extends Instance {
 	public void start(Session s) {
 		this.s = s;
 		instantiate();
-		s.broadcast("&7Commencing fight...");
+		s.broadcast("Commencing fight...");
 		for (Player p : s.getOnlinePlayers()) {
 			setup(p, s.getData(p.getUniqueId()));
 		}

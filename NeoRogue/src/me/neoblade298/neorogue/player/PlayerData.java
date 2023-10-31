@@ -17,6 +17,8 @@ import me.neoblade298.neocore.shared.util.SQLInsertBuilder;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder.SQLAction;
 import me.neoblade298.neorogue.ascension.Upgrade;
 import me.neoblade298.neorogue.session.Session;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class PlayerData {
 	private int exp, level;
@@ -127,20 +129,20 @@ public class PlayerData {
 	
 	// Should only ever be displayed to the owner
 	public void displayLoadButtons(CommandSender s) {
-		Util.msgRaw(s, "&7Save slots (Click one to load):");
+		Util.msgRaw(s, Component.text("Save slots (Click one to load):", NamedTextColor.GRAY));
 		for (int i = 1; i <= slotsAvailable; i++) {
 			if (snapshots.containsKey(i)) {
 				snapshots.get(i).displayLoadButton(s, i);
 			}
 			else {
-				Util.msgRaw(s, "&7&l[" + i + "] &7Empty");
+				Util.msgRaw(s, NeoCore.miniMessage().deserialize("<gray><bold>[" + i + "] </bold>Empty"));
 			}
 		}
 	}
 	
 	// Should only ever be displayed to the owner
 	public void displayNewButtons(CommandSender s) {
-		Util.msgRaw(s, "&7Save slots (Click one to start a new game with):");
+		Util.msgRaw(s, Component.text("Save slots (Click one to start a new game with):", NamedTextColor.GRAY));
 		for (int i = 1; i <= slotsAvailable; i++) {
 			if (snapshots.containsKey(i)) {
 				snapshots.get(i).displayNewButton(s, i);

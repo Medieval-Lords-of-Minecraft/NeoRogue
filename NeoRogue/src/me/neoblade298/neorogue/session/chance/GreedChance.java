@@ -16,7 +16,7 @@ public class GreedChance extends ChanceSet {
 				+ " You'll take damage if you reach into it, but the extra coins may be worth the effort.");
 
 		ChanceChoice choice = new ChanceChoice(Material.GOLD_BLOCK, "Be Logical",
-				"The highest HP party member takes &c10 &7damage and gets everyone &e25 coins&7.",
+				"The highest HP party member takes <red>10 </red>damage and gets everyone <yellow>25 coins</yellow>.",
 				"Nobody has enough health to do this!", (s, run) -> {
 					PlayerSessionData data = Collections.max(s.getParty().values(), new Comparator<PlayerSessionData>() {
 						@Override
@@ -30,8 +30,8 @@ public class GreedChance extends ChanceSet {
 					if (!run) return true;
 
 					data.setHealth(data.getHealth() - 10);
-					s.broadcast("&e" + data.getData().getDisplay() + " &7reaches in, losing &c10 &7health but "
-							+ "netting everybody &e25 &7coins!");
+					s.broadcast("<yellow>" + data.getData().getDisplay() + "</yellow><gray> reaches in, losing <red>10 </red>health but "
+							+ "netting everybody <yellow>25 coins</yellow>!");
 					for (PlayerSessionData pd : s.getParty().values()) {
 						pd.addCoins(25);
 					}
@@ -40,7 +40,7 @@ public class GreedChance extends ChanceSet {
 		stage.addChoice(choice);
 		
 		choice = new ChanceChoice(Material.EMERALD_BLOCK, "Be Democratic",
-				"Everyone takes an equal portion of &c10 &7damage rounded up, and everyone gains &e25 coins&7.",
+				"Everyone takes an equal portion of <red>10 </red>damage rounded up, and everyone gains <yellow>25 coins</yellow>.",
 				"Somebody lacks the health to do this!", (s, run) -> {
 					final int HEALTH_LOSS = (int) Math.ceil(10D / s.getParty().size());
 					for (PlayerSessionData pd : s.getParty().values()) {
@@ -52,7 +52,7 @@ public class GreedChance extends ChanceSet {
 					for (PlayerSessionData pd : s.getParty().values()) {
 						pd.setHealth(pd.getHealth() - HEALTH_LOSS);
 					}
-					s.broadcast("&7Everyone takes a little damage, but they're all &e25 coins &7richer.");
+					s.broadcast("Everyone takes a little damage, but they're all <yellow>25 coins </yellow>richer.");
 					return true;
 				});
 		stage.addChoice(choice);
@@ -61,7 +61,7 @@ public class GreedChance extends ChanceSet {
 				"Leave the dangerous sludge alone.",
 				"", (s, run) -> {
 					if (!run) return true;
-					s.broadcast("&7Good health is more valuable than riches.");
+					s.broadcast("Good health is more valuable than riches.");
 					return true;
 				});
 		stage.addChoice(choice);

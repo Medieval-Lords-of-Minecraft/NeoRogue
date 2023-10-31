@@ -35,6 +35,6 @@ public class CmdJoin extends Subcommand {
 			}
 		}
 		
-		Util.msg(s, "&cThat lobby doesn't exist!");
+		Util.displayError(p, "That lobby doesn't exist!");
 	}
 }

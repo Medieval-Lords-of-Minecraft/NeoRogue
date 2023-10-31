@@ -50,7 +50,7 @@ public class BossFightInstance extends FightInstance {
 		}
 		
 		if (targets.isEmpty()) {
-			s.broadcast("&7You beat the boss!");
+			s.broadcast("You beat the boss!");
 			s.setInstance(new RewardInstance(generateRewards()));
 			return;
 		}

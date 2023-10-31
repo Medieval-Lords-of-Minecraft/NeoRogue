@@ -69,12 +69,12 @@ public class ShopInstance extends EditInventoryInstance {
 			e.setCancelled(true);
 			
 			if (ready.contains(uuid)) {
-				Util.displayError(p, "&cYou've already been marked as ready! Press the button again to un-ready!");
+				Util.displayError(p, "You've already been marked as ready! Press the button again to un-ready!");
 				return;
 			}
 			
 			if (shops.get(uuid).isEmpty()) {
-				Util.displayError(p, "&cYou don't have any shop items remaining!");
+				Util.displayError(p, "You don't have any shop items remaining!");
 				return;
 			}
 			p.playSound(p, Sound.BLOCK_ENDER_CHEST_OPEN, 1F, 1F);
@@ -89,11 +89,11 @@ public class ShopInstance extends EditInventoryInstance {
 	public void handleReady(Player p) {
 		UUID uuid = p.getUniqueId();
 		if (!ready.contains(uuid)) {
-			s.broadcast("&e" + p.getName() + " &7is &aready&7!");
+			s.broadcast("<yellow>" + p.getName() + " <gray>is <green>ready</green>!");
 			ready.add(uuid);
 			
 			if (ready.size() == s.getParty().size()) {
-				s.broadcast("&7Everyone is ready! Teleporting back to node select...");
+				s.broadcast("Everyone is ready! Teleporting back to node select...");
 				s.broadcastSound(Sound.ENTITY_PLAYER_LEVELUP);
 				new BukkitRunnable() {
 					public void run() {
@@ -103,7 +103,7 @@ public class ShopInstance extends EditInventoryInstance {
 			}
 		}
 		else {
-			s.broadcast("&e" + p.getName() + " &7is no longer ready&7!");
+			s.broadcast("<yellow>" + p.getName() + " <gray>is no longer ready!");
 			ready.remove(uuid);
 		}
 	}

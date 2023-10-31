@@ -71,7 +71,7 @@ public class ShopInventory extends CoreInventory {
 		if (slot < 18) {
 			int price = slot <= 9 ? 50 : 100;
 			if (!data.hasCoins(price)) {
-				Util.displayError(p, "&cYou don't have enough coins!");
+				Util.displayError(p, "You don't have enough coins!");
 				return;
 			}
 			

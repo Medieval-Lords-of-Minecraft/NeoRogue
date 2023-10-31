@@ -23,6 +23,8 @@ import me.neoblade298.neorogue.session.EquipmentChoiceReward;
 import me.neoblade298.neorogue.session.Reward;
 import me.neoblade298.neorogue.session.RewardInstance;
 import me.neoblade298.neorogue.session.Session;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class StandardFightInstance extends FightInstance {
 
@@ -87,7 +89,8 @@ public class StandardFightInstance extends FightInstance {
 		if (score >= SCORE_REQUIRED) {
 			timeBar.removeAll();
 			scoreBar.removeAll();
-			s.broadcast("&7You completed the fight with a score of " + fightScore.getDisplay() + "&7!");
+			s.broadcast(Component.text("You completed the fight with a score of ", NamedTextColor.GRAY)
+					.append(fightScore.getDisplay()).append(Component.text("!", NamedTextColor.GRAY)));
 			s.setInstance(new RewardInstance(generateRewards()));
 			return;
 		}
