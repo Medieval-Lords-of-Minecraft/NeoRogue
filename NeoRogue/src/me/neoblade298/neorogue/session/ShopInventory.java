@@ -14,10 +14,14 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class ShopInventory extends CoreInventory {
 	private static final int[] SLOT_ORDER = new int[] {0, 2, 4, 6, 8, 9, 11, 13, 15, 17};
@@ -25,7 +29,7 @@ public class ShopInventory extends CoreInventory {
 	private PlayerSessionData data;
 	
 	public ShopInventory(PlayerSessionData data, ArrayList<Equipment> equips) {
-		super(data.getPlayer(), Bukkit.createInventory(data.getPlayer(), 27, "§9Shop"));
+		super(data.getPlayer(), Bukkit.createInventory(data.getPlayer(), 27, Component.text("Shop", NamedTextColor.BLUE)));
 		
 		this.data = data;
 		ItemStack[] contents = inv.getContents();
@@ -33,25 +37,26 @@ public class ShopInventory extends CoreInventory {
 			contents[SLOT_ORDER[i]] = equips.get(i).getItem();
 			updatePrice(contents[SLOT_ORDER[i]], SLOT_ORDER[i] <= 9, true);
 		}
-		contents[22] = CoreInventory.createButton(Material.GOLD_NUGGET, "&eYou have " + data.getCoins() + " coins");
-		contents[18] = CoreInventory.createButton(Material.GOLD_NUGGET, "&cSell Items",
-				"&7Drag equipment here to sell it", "&7for &e" + SELL_PRICE + " coins&7.");
+		contents[22] = CoreInventory.createButton(Material.GOLD_NUGGET, Component.text("You have " + data.getCoins() + " coins", NamedTextColor.YELLOW));
+		contents[18] = CoreInventory.createButton(Material.GOLD_NUGGET, Component.text("Sell Items", NamedTextColor.RED),
+				(TextComponent) NeoCore.miniMessage().deserialize("Drag equipment here to sell it" +
+						"for <yellow>" + SELL_PRICE + " coins</yellow>."), 250, NamedTextColor.GRAY);
 		inv.setContents(contents);
 	}
 	
 	private void updatePrice(ItemStack item, boolean expensive, boolean first) {
 		if (item == null) return;
 		ItemMeta meta = item.getItemMeta();
-		List<String> lore = meta.getLore();
+		List<Component> lore = meta.lore();
 		int price = expensive ? 50 : 100;
-		ChatColor color = data.hasCoins(price) ? ChatColor.GREEN : ChatColor.RED;
+		NamedTextColor color = data.hasCoins(price) ? NamedTextColor.GREEN : NamedTextColor.RED;
 		if (first) {
-			lore.add(0, color + "" + price);
+			lore.add(0, Component.text(price, color));
 		}
 		else {
-			lore.set(0, color + "" + price);
+			lore.set(0, Component.text(price, color));
 		}
-		meta.setLore(lore);
+		meta.lore(lore);
 		item.setItemMeta(meta);
 	}
 
@@ -80,13 +85,14 @@ public class ShopInventory extends CoreInventory {
 			for (int i : SLOT_ORDER) {
 				updatePrice(contents[i], i <= 9, false);
 			}
-			contents[22] = CoreInventory.createButton(Material.GOLD_NUGGET, "&eYou have " + data.getCoins() + " coins");
+			contents[22] = CoreInventory.createButton(Material.GOLD_NUGGET, Component.text("You have " + data.getCoins() + " coins", NamedTextColor.YELLOW));
 			inv.setContents(contents);
 		}
 		else {
 			if (slot == 18 && e.getCursor() != null) {
 				data.addCoins(SELL_PRICE);
-				inv.setItem(22, CoreInventory.createButton(Material.GOLD_NUGGET, "&eYou have " + data.getCoins() + " coins"));
+				inv.setItem(22, CoreInventory.createButton(Material.GOLD_NUGGET,
+						Component.text("You have " + data.getCoins() + " coins", NamedTextColor.YELLOW)));
 				p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1F, 1F);
 				p.setItemOnCursor(null);
 			}

@@ -18,6 +18,8 @@ import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neorogue.player.FightInfoInventory;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.fights.FightInstance;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class ChanceInventory extends CoreInventory {
 	private Session s;
@@ -26,7 +28,7 @@ public class ChanceInventory extends CoreInventory {
 	private ChanceStage stage;
 
 	public ChanceInventory(Player p, ChanceInstance inst, ChanceSet set, ChanceStage stage) {
-		super(p, Bukkit.createInventory(p, 18, "§9Chance Event"));
+		super(p, Bukkit.createInventory(p, 18, Component.text("Chance Event", NamedTextColor.BLUE));
 		this.set = set;
 		this.inst = inst;
 		this.s = inst.getSession();

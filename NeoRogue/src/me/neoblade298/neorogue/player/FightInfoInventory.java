@@ -10,13 +10,16 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.ItemStack;
+
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neorogue.session.fights.Mob;
 import me.neoblade298.neorogue.session.fights.MobModifier;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class FightInfoInventory extends CoreInventory {
 	public FightInfoInventory(Player viewer, TreeMap<Mob, ArrayList<MobModifier>> mobs) {
-		super(viewer, Bukkit.createInventory(viewer, mobs.size() + (9 - mobs.size() % 9) + 9, "§9Fight Info"));
+		super(viewer, Bukkit.createInventory(viewer, mobs.size() + (9 - mobs.size() % 9) + 9, Component.text("Fight Info", NamedTextColor.BLUE)));
 
 		ItemStack[] contents = inv.getContents();
 		

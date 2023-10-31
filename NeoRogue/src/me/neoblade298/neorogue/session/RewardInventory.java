@@ -13,6 +13,8 @@ import org.bukkit.inventory.ItemStack;
 
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class RewardInventory extends CoreInventory {
 	private boolean playSound = true;
@@ -29,7 +31,7 @@ public class RewardInventory extends CoreInventory {
 		for (Reward reward : rewards) {
 			contents[i++] = reward.getIcon();
 		}
-		contents[8] = CoreInventory.createButton(Material.RED_WOOL, "&cClear remaining rewards");
+		contents[8] = CoreInventory.createButton(Material.RED_WOOL, Component.text("Clear remaining rewards", NamedTextColor.BLUE));
 		inv.setContents(contents);
 	}
 

@@ -10,6 +10,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.player.EquipmentChoiceInventory;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class EquipmentChoiceReward implements Reward {
 	private ArrayList<Equipment> equips;
@@ -24,7 +26,8 @@ public class EquipmentChoiceReward implements Reward {
 
 	@Override
 	public boolean claim(PlayerSessionData data, int slot, RewardInventory inv) {
-		new EquipmentChoiceInventory(data, Bukkit.createInventory(data.getPlayer(), 9, "§9Choose one!"), equips, inv, slot);
+		new EquipmentChoiceInventory(data, Bukkit.createInventory(data.getPlayer(), 9, Component.text("Choose one!", NamedTextColor.BLUE)),
+				equips, inv, slot);
 		return false;
 	}
 
@@ -33,12 +36,12 @@ public class EquipmentChoiceReward implements Reward {
 		ItemStack item = new ItemStack(Material.LEATHER_CHESTPLATE);
 		item.setAmount(equips.size());
 		ItemMeta meta = item.getItemMeta();
-		meta.setDisplayName("§6Choose 1 of " + equips.size() + " equipment");
-		ArrayList<String> lore = new ArrayList<String>();
+		meta.displayName(Component.text("Choose 1 of " + equips.size() + " equipment", NamedTextColor.GOLD));
+		ArrayList<Component> lore = new ArrayList<Component>();
 		for (Equipment equip : equips) {
-			lore.add(equip.getDisplay());
+			lore.add(Component.text(equip.getDisplay()));
 		}
-		meta.setLore(lore);
+		meta.lore(lore);
 		item.setItemMeta(meta);
 		return item;
 	}

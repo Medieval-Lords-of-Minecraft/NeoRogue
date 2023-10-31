@@ -21,6 +21,9 @@ import me.neoblade298.neocore.shared.util.SQLInsertBuilder;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder.SQLAction;
 import me.neoblade298.neorogue.equipment.*;
 import me.neoblade298.neorogue.session.Session;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class PlayerSessionData {
 	private PlayerData data;
@@ -107,8 +110,8 @@ public class PlayerSessionData {
 		Player p = data.getPlayer();
 		PlayerInventory inv = p.getInventory();
 		inv.clear();
-		inv.setItemInOffHand(CoreInventory.createButton(Material.ENCHANTED_BOOK, "&eStorage Book",
-				"Swap hands or click anywhere in your inventory to open your storage.", 200, ChatColor.GRAY));
+		inv.setItemInOffHand(CoreInventory.createButton(Material.ENCHANTED_BOOK, Component.text("Storage Book", NamedTextColor.YELLOW),
+				Component.text("Swap hands or click anywhere in your inventory to open your storage."), 200, NamedTextColor.GRAY));
 		
 		for (int i = 0; i < storage.size(); i++) {
 			Equipment eq = storage.get(i);
@@ -231,7 +234,8 @@ public class PlayerSessionData {
 			boolean isUpgraded = nbti.getBoolean("isUpgraded");
 			Equipment eq = Equipment.get(id, isUpgraded);
 			if (eq == null) {
-				String display = item.hasItemMeta() && item.getItemMeta().hasDisplayName() ? item.getItemMeta().getDisplayName() : item.getType().name();
+				String display = item.hasItemMeta() && item.getItemMeta().hasDisplayName() ?
+						((TextComponent) item.getItemMeta().displayName()).content() : item.getType().name();
 				Bukkit.getLogger().warning("[NeoRogue] " + p.getName() + " could not save " + display + " to their storage");
 				continue;
 			}
@@ -301,7 +305,8 @@ public class PlayerSessionData {
 		try {
 			SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_playersessiondata")
 					.addString(host.toString()).addValue(saveSlot).addString(uuid)
-					.addString(data.getPlayer().getDisplayName()).addString(pc.name()).addValue(maxHealth).addValue(maxMana)
+					.addString(((TextComponent) data.getPlayer().displayName()).content())
+					.addString(pc.name()).addValue(maxHealth).addValue(maxMana)
 					.addValue(maxStamina).addValue(health).addValue(manaRegen).addValue(staminaRegen)
 					.addString(Equipment.serialize(hotbar)).addString(Equipment.serialize(armors))
 					.addString(offhand != null ? offhand.serialize() : "").addString(Equipment.serialize(accessories))

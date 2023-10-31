@@ -14,10 +14,14 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
 import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.*;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class PlayerSessionInventory extends CoreInventory {
 	private static final int[] ARMOR = new int[] { 0, 1, 2 };
@@ -29,11 +33,15 @@ public class PlayerSessionInventory extends CoreInventory {
 	private static final int OFFHAND = 17;
 	private static final int ARTIFACTS = 31;
 	private static HashMap<Integer, String> slotTypes = new HashMap<Integer, String>();
+	
+	private static final TextComponent instruct = Component.text("Drag a weapon, ability, or consumable", NamedTextColor.GRAY);
+	private static final TextComponent instruct2 = Component.text("here to bind it!", NamedTextColor.GRAY);
+	private static final TextComponent statsText = Component.text("Your stats:", NamedTextColor.GOLD);
 
 	private PlayerSessionData data;
 
 	public PlayerSessionInventory(PlayerSessionData data) {
-		super(data.getPlayer(), Bukkit.createInventory(data.getPlayer(), 36, "§9Equipment"));
+		super(data.getPlayer(), Bukkit.createInventory(data.getPlayer(), 36, Component.text("Equipment", NamedTextColor.BLUE)));
 		this.data = data;
 		ItemStack[] contents = inv.getContents();
 
@@ -77,44 +85,48 @@ public class PlayerSessionInventory extends CoreInventory {
 		}
 
 		for (int i : FILLER) {
-			contents[i] = CoreInventory.createButton(Material.BLACK_STAINED_GLASS_PANE, " ");
+			contents[i] = CoreInventory.createButton(Material.BLACK_STAINED_GLASS_PANE, Component.text(" "));
 		}
 
 		contents[STATS] = createStatsIcon();
-		contents[SELL] = addNbt(CoreInventory.createButton(Material.HOPPER, "&6Trash",
-				"&7Place an item here to destroy it!"), 0);
+		contents[SELL] = addNbt(CoreInventory.createButton(Material.HOPPER, Component.text("Trash", NamedTextColor.GOLD),
+				"Place an item here to destroy it!", 250, NamedTextColor.GRAY), 0);
 
-		contents[ARTIFACTS] = addNbt(CoreInventory.createButton(Material.NETHER_STAR, "&6Artifacts",
-				"&7Click here to view all your artifacts!"), 0);
+		contents[ARTIFACTS] = addNbt(CoreInventory.createButton(Material.NETHER_STAR, Component.text("Artifacts", NamedTextColor.GOLD),
+				"Click here to view all your artifacts!", 250, NamedTextColor.GRAY), 0);
 		inv.setContents(contents);
 	}
 	
 	private static ItemStack createArmorIcon(int dataSlot) {
-		return addNbt(CoreInventory.createButton(Material.YELLOW_STAINED_GLASS_PANE, "&eArmor Slot",
-			"&7Drag an armor here to equip it!"), dataSlot);
+		return addNbt(CoreInventory.createButton(Material.YELLOW_STAINED_GLASS_PANE, Component.text("Armor Slot", NamedTextColor.YELLOW),
+			"Drag an armor here to equip it!", 250, NamedTextColor.GRAY), dataSlot);
 	}
 	
 	public static ItemStack createAccessoryIcon(int dataSlot) {
-		return addNbt(CoreInventory.createButton(Material.LIME_STAINED_GLASS_PANE, "&aAccessory Slot",
-				"&7Drag an accessory here to equip it!"), dataSlot);
+		return addNbt(CoreInventory.createButton(Material.LIME_STAINED_GLASS_PANE, Component.text("Accessory Slot", NamedTextColor.GREEN),
+				"Drag an accessory here to equip it!", 250, NamedTextColor.GRAY), dataSlot);
 	}
 	
 	public static ItemStack createOffhandIcon() {
-		return addNbt(CoreInventory.createButton(Material.WHITE_STAINED_GLASS_PANE, "&fOffhand Slot",
-				"&7Drag an offhand here to equip it!"), 0);
+		return addNbt(CoreInventory.createButton(Material.WHITE_STAINED_GLASS_PANE, Component.text("Offhand Slot", NamedTextColor.WHITE),
+				"Drag an offhand here to equip it!", 250, NamedTextColor.GRAY ), 0);
 	}
 	
 	private static ItemStack createHotbarIcon(int dataSlot) {
-		return addNbt(CoreInventory.createButton(Material.RED_STAINED_GLASS_PANE, "&cHotbar Slot",
-				"&eBound to Hotbar #" + (dataSlot + 1), "&7Drag a weapon, ability, or consumable",
-				"&7here to bind it!"), dataSlot);
+		TextComponent bound = Component.text("Bound to hotbar " + (dataSlot + 1), NamedTextColor.YELLOW);
+		return addNbt(CoreInventory.createButton(Material.RED_STAINED_GLASS_PANE, Component.text("Hotbar Slot", NamedTextColor.RED),
+				bound, instruct, instruct2), dataSlot);
 	}
 	
 	private ItemStack createStatsIcon() {
-		return CoreInventory.createButton(Material.ARMOR_STAND, "&6Your Stats",
-			"&6Health: &f" + data.getHealth() + " / " + data.getMaxHealth(),
-			"&6Mana: &f" + data.getMaxMana(), "&6Stamina: &f" + data.getMaxStamina(),
-			"&6Coins: &f" + data.getCoins());
+		TextComponent health = Component.text("Health: ", NamedTextColor.GOLD)
+				.append(Component.text(data.getHealth() + " / " + data.getMaxHealth(), NamedTextColor.WHITE));
+		TextComponent mana = Component.text("Mana: ", NamedTextColor.GOLD)
+				.append(Component.text(data.getMaxMana(), NamedTextColor.WHITE));
+		TextComponent coins = Component.text("Health: ", NamedTextColor.GOLD)
+				.append(Component.text(data.getCoins(), NamedTextColor.WHITE));
+		return CoreInventory.createButton(Material.ARMOR_STAND, statsText,
+			health, mana, coins);
 	}
 
 	@Override
@@ -373,24 +385,24 @@ public class PlayerSessionInventory extends CoreInventory {
 	
 	private ItemStack addBindLore(ItemStack item, int invSlot, int dataSlot) {
 		ItemMeta meta = item.getItemMeta();
-		List<String> lore = meta.getLore();
+		List<Component> lore = meta.lore();
 		String type = slotTypes.get(invSlot);
 		if (type.equals("OTHERBINDS")) {
-			lore.add(1, "§eBound to " + KeyBind.getBindFromSlot(invSlot).getDisplay());
+			lore.add(1, Component.text("Bound to " + KeyBind.getBindFromSlot(invSlot).getDisplay(), NamedTextColor.YELLOW));
 		}
 		else if (type.equals("HOTBAR")) {
-			lore.add(1, "§eBound to Hotbar #" + (dataSlot + 1));
+			lore.add(1, Component.text("Bound to Hotbar #" + (dataSlot + 1), NamedTextColor.YELLOW));
 		}
-		meta.setLore(lore);
+		meta.lore(lore);
 		item.setItemMeta(meta);
 		return item;
 	}
 	
 	private ItemStack removeBindLore(ItemStack item) {
 		ItemMeta meta = item.getItemMeta();
-		List<String> lore = meta.getLore();
+		List<Component> lore = meta.lore();
 		lore.remove(1);
-		meta.setLore(lore);
+		meta.lore(lore);
 		item.setItemMeta(meta);
 		return item;
 	}

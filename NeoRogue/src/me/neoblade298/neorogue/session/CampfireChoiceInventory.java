@@ -11,21 +11,23 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class CampfireChoiceInventory extends CoreInventory {
 	private CampfireInstance inst;
 
 	public CampfireChoiceInventory(Player p, CampfireInstance inst) {
-		super(p, Bukkit.createInventory(p, 9, "§9Choose"));
+		super(p, Bukkit.createInventory(p, 9, Component.text("Choose", NamedTextColor.BLUE)));
 		this.inst = inst;
 		ItemStack[] contents = inv.getContents();
 		for (int i = 0; i < 4; i++) {
-			contents[i] = CoreInventory.createButton(Material.SOUL_LANTERN, "&aRest", 
-					"&7Everyone in the party heals for", "&725% of their max health.");
-			contents[5 + i] = CoreInventory.createButton(Material.ANVIL, "&6Upgrade", 
-					"&7Everyone in the party gets to", "&7upgrade 1 equipment.");
+			contents[i] = CoreInventory.createButton(Material.SOUL_LANTERN, Component.text("Rest", NamedTextColor.GREEN), 
+					"Everyone in the party heals for 25% of their max health.", 250, NamedTextColor.GRAY);
+			contents[5 + i] = CoreInventory.createButton(Material.ANVIL, Component.text("Upgrade", NamedTextColor.GOLD), 
+					"Everyone in the party gets to upgrade 1 equipment.", 250, NamedTextColor.GRAY);
 		}
-		contents[4] = CoreInventory.createButton(Material.GRAY_STAINED_GLASS_PANE, " ");
+		contents[4] = CoreInventory.createButton(Material.GRAY_STAINED_GLASS_PANE, Component.text(" "));
 		inv.setContents(contents);
 	}
 

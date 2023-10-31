@@ -18,6 +18,8 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class RewardInstance extends EditInventoryInstance {
 	private static final int REWARDS_X = 4, REWARDS_Z = 78;
@@ -47,7 +49,6 @@ public class RewardInstance extends EditInventoryInstance {
 
 	@Override
 	public void cleanup() {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -65,7 +66,7 @@ public class RewardInstance extends EditInventoryInstance {
 		}
 		p.playSound(p, Sound.BLOCK_ENDER_CHEST_OPEN, 1F, 1F);
 		
-		new RewardInventory(s.getParty().get(uuid), Bukkit.createInventory(p, 9, "§9Rewards"), rewards.get(uuid));
+		new RewardInventory(s.getParty().get(uuid), Bukkit.createInventory(p, 9, Component.text("Rewards", NamedTextColor.BLUE)), rewards.get(uuid));
 	}
 	
 	public void onRewardClaim() {

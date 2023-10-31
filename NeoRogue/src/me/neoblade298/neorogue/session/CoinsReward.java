@@ -5,8 +5,11 @@ import org.bukkit.Sound;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class CoinsReward implements Reward {
 	private int amount;
@@ -23,7 +26,9 @@ public class CoinsReward implements Reward {
 	public boolean claim(PlayerSessionData data, int slot, RewardInventory inv) {
 		data.addCoins(amount);
 		data.getPlayer().playSound(data.getPlayer(), Sound.ENTITY_ARROW_HIT_PLAYER, 1F, 1F);
-		Util.msg(data.getPlayer(), "You claimed your reward of &e" + amount + " coins&7. You now have &e" + data.getCoins() + "&7.");
+		Util.msg(data.getPlayer(), 
+				NeoCore.miniMessage().deserialize("You claimed your reward of <yellow>" + amount
+						+ " coins</yellow>. You now have <yellow>" + data.getCoins() + "</yellow>."));
 		return true;
 	}
 
@@ -32,7 +37,7 @@ public class CoinsReward implements Reward {
 		ItemStack item = new ItemStack(Material.GOLD_NUGGET);
 		item.setAmount(amount);
 		ItemMeta meta = item.getItemMeta();
-		meta.setDisplayName("§e" + amount + " coins");
+		meta.displayName(Component.text(amount + " coins", NamedTextColor.YELLOW));
 		item.setItemMeta(meta);
 		return item;
 	}

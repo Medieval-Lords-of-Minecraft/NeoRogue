@@ -17,6 +17,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class ReforgeOptionsInventory extends CoreInventory {
 	private int slot, dataSlot;
@@ -26,7 +28,7 @@ public class ReforgeOptionsInventory extends CoreInventory {
 	private String type;
 	private ArrayList<Equipment> reforgeOptions = new ArrayList<Equipment>();
 	public ReforgeOptionsInventory(PlayerSessionInventory prev, int slot, boolean isEquipSlot, String type, int dataSlot, Equipment toReforge, ItemStack hostage) {
-		super(prev.getPlayer(), Bukkit.createInventory(prev.getPlayer(), 9, "§9Reforge Options"));
+		super(prev.getPlayer(), Bukkit.createInventory(prev.getPlayer(), 9, Component.text("Reforge Options", NamedTextColor.BLUE)));
 		
 		this.slot = slot;
 		this.isEquipSlot = isEquipSlot;
@@ -48,7 +50,7 @@ public class ReforgeOptionsInventory extends CoreInventory {
 		
 		for (int i = 0; i < 9; i++) {
 			if (contents[i] != null) continue;
-			contents[i] = CoreInventory.createButton(Material.RED_STAINED_GLASS_PANE, "&cCancel");
+			contents[i] = CoreInventory.createButton(Material.RED_STAINED_GLASS_PANE, Component.text("Cancel", NamedTextColor.RED));
 		}
 		
 		inv.setContents(contents);
