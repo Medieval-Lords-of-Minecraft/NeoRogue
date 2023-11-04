@@ -50,6 +50,7 @@ public class StandardFightInstance extends FightInstance {
 	protected void setupInstance(Session s) {
 		scoreBar = Bukkit.createBossBar("Objective: Kill Enemies", BarColor.RED, BarStyle.SEGMENTED_6);
 		timeBar = Bukkit.createBossBar("Current Rating: " + fightScore.getDisplay(), BarColor.WHITE, BarStyle.SOLID);
+		
 		scoreBar.setProgress(0);
 		
 		for (Player p : s.getOnlinePlayers()) {
@@ -90,7 +91,7 @@ public class StandardFightInstance extends FightInstance {
 			timeBar.removeAll();
 			scoreBar.removeAll();
 			s.broadcast(Component.text("You completed the fight with a score of ", NamedTextColor.GRAY)
-					.append(fightScore.getDisplay()).append(Component.text("!", NamedTextColor.GRAY)));
+					.append(fightScore.getComponentDisplay()).append(Component.text("!")));
 			s.setInstance(new RewardInstance(generateRewards()));
 			return;
 		}
