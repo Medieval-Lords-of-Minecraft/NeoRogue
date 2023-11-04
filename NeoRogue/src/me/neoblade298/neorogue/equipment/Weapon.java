@@ -26,10 +26,10 @@ public abstract class Weapon extends HotbarCompatible {
 		
 		// Add stats
 		if (damage > 0) {
-			preLore.add("§6Damage: §e" + damage);
-			preLore.add("§6Damage Type: §e" + type.getDisplay());
+			preLore.add("<gold>Damage: <yellow>" + damage);
+			preLore.add("<gold>Damage Type: <yellow>" + type.getDisplay());
 		}
-		if (attackSpeed > 0) preLore.add("§6Attack Speed: §e" + attackSpeed + "/s");
+		if (attackSpeed > 0) preLore.add("<gold>Attack Speed: <yellow>" + attackSpeed + "/s");
 		addToLore(preLore);
 		if (preLoreLine != null) {
 			for (String l : preLoreLine) {

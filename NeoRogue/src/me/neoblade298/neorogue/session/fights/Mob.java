@@ -20,6 +20,8 @@ import me.neoblade298.neorogue.NeoRogue;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.format.TextDecoration.State;
 
 public class Mob implements Comparable<Mob> {
 	private static ArrayList<BuffType> typeOrder = new ArrayList<BuffType>();
@@ -115,14 +117,14 @@ public class Mob implements Comparable<Mob> {
 		ItemMeta meta = item.getItemMeta();
 		meta.displayName(display);
 		ArrayList<Component> lore = new ArrayList<Component>();
-		lore.add(Component.text("Resistances:", NamedTextColor.GOLD));
+		Component header = Component.text("Resistances:", NamedTextColor.GOLD);
+		lore.add(header.decoration(TextDecoration.ITALIC, State.FALSE));
 		for (BuffType dt : typeOrder) {
 			if (resistances.containsKey(dt)) {
 				int pct = resistances.get(dt);
-				String str = (pct > 0 ? NamedTextColor.RED : NamedTextColor.GREEN) + "" + pct + "%";
-				Component c = Component.text(dt.getDisplay(), NamedTextColor.YELLOW)
-						.append(Component.text(": " + str, NamedTextColor.GRAY));
-				lore.add(c);
+				Component c = Component.text(dt.getDisplay() + ": ", NamedTextColor.YELLOW)
+						.append(Component.text(pct + "%", pct > 0 ? NamedTextColor.RED : NamedTextColor.GREEN));
+				lore.add(c.decoration(TextDecoration.ITALIC, State.FALSE));
 			}
 		}
 		
@@ -131,7 +133,7 @@ public class Mob implements Comparable<Mob> {
 				Component c = Component.text(dt.getDisplay(), NamedTextColor.YELLOW)
 						.append(Component.text(": ", NamedTextColor.GRAY))
 						.append(damageTypes.get(dt).getDisplay(true));
-				lore.add(c);
+				lore.add(c.decoration(TextDecoration.ITALIC, State.FALSE));
 			}
 		}
 		

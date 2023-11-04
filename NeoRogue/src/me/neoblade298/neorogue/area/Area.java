@@ -109,13 +109,13 @@ public class Area {
 		
 		generateNodes();
 		
-		// Only save areas when they're first created, not when they're deserialized
+		// Should only save all nodes at first, on auto-save only save nodes within reach (for instance data)
 		new BukkitRunnable() {
 			public void run() {
 				try (Connection con = NeoCore.getConnection("NeoRogue-Area");
 						Statement insert = con.createStatement();
 						Statement delete = con.createStatement()) {
-					save(insert, delete);
+					saveAll(insert, delete);
 				}
 				catch (SQLException ex) {
 					ex.printStackTrace();
@@ -310,7 +310,7 @@ public class Area {
 		return nodes;
 	}
 
-	public void save(Statement insert, Statement delete) {
+	public void saveAll(Statement insert, Statement delete) {
 		int saveSlot = s.getSaveSlot();
 		UUID host = s.getHost();
 		try {
@@ -325,6 +325,30 @@ public class Area {
 							.addString(node.serializeDestinations()).addString(node.serializeInstanceData());
 					insert.addBatch(sql.build());
 				}
+			}
+			insert.executeBatch();
+		}
+		catch (SQLException ex) {
+			Bukkit.getLogger().warning("[NeoRogue] Failed to save node for host " + host + " to slot " + saveSlot);
+			ex.printStackTrace();
+		}
+	}
+
+	// Only save nodes that need saving (the ones within reach)
+	public void saveRelevant(Statement insert, Statement delete) {
+		int saveSlot = s.getSaveSlot();
+		UUID host = s.getHost();
+		try {
+			int pos = s.getNode().getPosition() + 1;
+			delete.execute("DELETE FROM neorogue_nodes WHERE host = '" + host + "' AND slot = " + saveSlot + " AND position = " + pos + ";");
+			for (int lane = 0; lane < MAX_LANES; lane++) {
+				Node node = nodes[pos][lane];
+				if (node == null) continue;
+				SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.INSERT, "neorogue_nodes")
+						.addString(host.toString()).addValue(saveSlot).addString(node.toString())
+						.addValue(node.getPosition()).addValue(node.getLane())
+						.addString(node.serializeDestinations()).addString(node.serializeInstanceData());
+				insert.addBatch(sql.build());
 			}
 			insert.executeBatch();
 		}

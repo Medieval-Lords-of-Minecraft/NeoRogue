@@ -180,6 +180,7 @@ public abstract class Equipment {
 	}
 	
 	public static ArrayList<Equipment> deserializeAsArrayList(String str) {
+		if (str.isBlank()) return new ArrayList<Equipment>();
 		String[] separated = str.split(";");
 		ArrayList<Equipment> arr = new ArrayList<Equipment>(separated.length);
 		for (String s : separated) {

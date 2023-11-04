@@ -98,6 +98,8 @@ public class Node {
 	}
 
 	public void generateInstance(Session s, AreaType area) {
+		if (inst != null) return;
+		
 		switch (type) {
 		case FIGHT:
 			inst = new StandardFightInstance(area, s.getNodesVisited());

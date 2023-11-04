@@ -41,7 +41,7 @@ public class ChanceSet {
 	
 	public ChanceSet(AreaType type, Material mat, String id, String display) {
 		this.id = id;
-		this.display = "§6" + display;
+		this.display = "<gold>" + display;
 		this.mat = mat;
 		sets.get(type).add(this);
 		setsById.put(id, this);

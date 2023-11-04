@@ -95,6 +95,8 @@ public class Session {
 	}
 	
 	public void save(Statement insert, Statement delete) {
+		if (inst instanceof FightInstance) return;
+		
 		try {
 			SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_sessions")
 					.addString(host.toString()).addValue(saveSlot).addString(area.getType().name())
@@ -106,6 +108,9 @@ public class Session {
 			Bukkit.getLogger().warning("[NeoRogue] Failed to save session for host " + host + " to slot " + saveSlot);
 			ex.printStackTrace();
 		}
+		
+		// Only save the nodes near the player
+		area.saveRelevant(insert, delete);
 		
 		try {
 			delete.execute("DELETE FROM neorogue_playersessiondata WHERE host = '" + host + "' AND slot = " + saveSlot + ";");

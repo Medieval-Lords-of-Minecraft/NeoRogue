@@ -183,8 +183,12 @@ public class Map {
 	}
 	
 	private void place(MapPieceInstance inst) {
+		place(inst, false);
+	}
+	
+	private void place(MapPieceInstance inst, boolean ignoreEntrances) {
 		MapShape shape = inst.getPiece().getShape();
-		entrances.remove(inst.getAvailableEntrance());
+		if (!ignoreEntrances) entrances.remove(inst.getAvailableEntrance());
 		shape.applySettings(inst);
 		for (int i = 0; i < shape.getLength(); i++) {
 			for (int j = 0; j < shape.getHeight(); j++) {
@@ -195,52 +199,33 @@ public class Map {
 					this.shape[inst.getX() + i][inst.getZ() + j] = shape.get(i, j);
 
 					// Remove any entrances at this location, may need to save them to properly block them
-					Iterator<Coordinates> iter = entrances.iterator();
-					while (iter.hasNext()) {
-						Coordinates entrance = iter.next();
-						if (entrance.getXFacing() == inst.getX() + i && entrance.getZFacing() == inst.getZ() + j) {
-							blockedEntrances.add(entrance);
-							iter.remove();
+					if (!ignoreEntrances) {
+						Iterator<Coordinates> iter = entrances.iterator();
+						while (iter.hasNext()) {
+							Coordinates entrance = iter.next();
+							if (entrance.getXFacing() == inst.getX() + i && entrance.getZFacing() == inst.getZ() + j) {
+								blockedEntrances.add(entrance);
+								iter.remove();
+							}
 						}
 					}
 				}
 			}
 		}
 		
-		for (Coordinates entrance : inst.getPiece().getEntrances()) {
-			Coordinates coords = entrance.clone();
-			coords.applySettings(inst);
-			if (coords.getXFacing() > MAP_SIZE - 1 || coords.getXFacing() < 0 || coords.getZFacing() > MAP_SIZE - 1 || coords.getZFacing() < 0)
-				continue;
-			
-			 // Don't add entrance if it's already blocked
-			if (this.shape[coords.getXFacing()][coords.getZFacing()]) {
-				blockedEntrances.add(entrance);
-				continue;
-			}
-			entrances.add(coords);
-		}
-
-		// Set up the mobs
-		for (MapSpawner spawner : inst.getPiece().getSpawners()) {
-			mobs.put(spawner.getMob(), MobModifier.generateModifiers(0));
-		}
-
-		pieces.add(inst);
-	}
-	
-	// Ignores working with entrances as it was already generated before
-	private void placeDeserialized(MapPieceInstance inst) {
-		MapShape shape = inst.getPiece().getShape();
-		shape.applySettings(inst);
-		for (int i = 0; i < shape.getLength(); i++) {
-			for (int j = 0; j < shape.getHeight(); j++) {
-				boolean b = shape.get(i, j);
+		if (!ignoreEntrances) {
+			for (Coordinates entrance : inst.getPiece().getEntrances()) {
+				Coordinates coords = entrance.clone();
+				coords.applySettings(inst);
+				if (coords.getXFacing() > MAP_SIZE - 1 || coords.getXFacing() < 0 || coords.getZFacing() > MAP_SIZE - 1 || coords.getZFacing() < 0)
+					continue;
 				
-				// Only do things if we're placing a tangible piece
-				if (b) {
-					this.shape[inst.getX() + i][inst.getZ() + j] = shape.get(i, j);
+				 // Don't add entrance if it's already blocked
+				if (this.shape[coords.getXFacing()][coords.getZFacing()]) {
+					blockedEntrances.add(entrance);
+					continue;
 				}
+				entrances.add(coords);
 			}
 		}
 
@@ -331,7 +316,7 @@ public class Map {
 		Map map = new Map();
 		String[] pieces = str.split(";");
 		for (String piece : pieces) {
-			map.placeDeserialized(MapPieceInstance.deserialize(piece));
+			map.place(MapPieceInstance.deserialize(piece), true);
 		}
 		return map;
 	}

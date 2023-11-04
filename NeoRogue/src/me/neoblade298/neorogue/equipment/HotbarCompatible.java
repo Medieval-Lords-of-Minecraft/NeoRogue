@@ -12,8 +12,8 @@ public abstract class HotbarCompatible extends Equipment {
 	}
 	
 	protected void addToLore(ArrayList<String> lore) {
-		if (manaCost > 0) lore.add("§6Mana Cost: §e" + manaCost);
-		if (staminaCost > 0) lore.add("§6Stamina Cost: §e" + staminaCost);
+		if (manaCost > 0) lore.add("<gold>Mana Cost: <yellow>" + manaCost);
+		if (staminaCost > 0) lore.add("<gold>Stamina Cost: <yellow>" + staminaCost);
 	}
 	
 	protected boolean canCast(PlayerFightData data) {

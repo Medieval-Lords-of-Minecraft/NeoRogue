@@ -103,8 +103,16 @@ public class SessionManager implements Listener {
 	}
 
 	public static void removeSession(Session s) {
-		for (UUID uuid : s.getParty().keySet()) {
-			removeFromSession(uuid);
+		if (s.getInstance() instanceof LobbyInstance) {
+			LobbyInstance lob = (LobbyInstance) s.getInstance();
+			for (UUID uuid : lob.getPlayers().keySet()) {
+				removeFromSession(uuid);
+			}
+		}
+		else {
+			for (UUID uuid : s.getParty().keySet()) {
+				removeFromSession(uuid);
+			}
 		}
 		sessionPlots.remove(s.getPlot());
 	}
@@ -264,6 +272,7 @@ public class SessionManager implements Listener {
 	public static void endSession(Session s) {
 		s.cleanup();
 		removeSession(s);
+		
 		new BukkitRunnable() {
 			public void run() {
 				try (Connection con = NeoCore.getConnection("NeoRogue-SessionManager");

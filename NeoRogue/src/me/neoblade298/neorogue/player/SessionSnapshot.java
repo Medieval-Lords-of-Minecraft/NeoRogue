@@ -54,7 +54,7 @@ public class SessionSnapshot {
 		Component text = Component.text().content("[1] ").color(NamedTextColor.GRAY)
 				.decorate(TextDecoration.BOLD)
 				.append(Component.text(new Date(lastSaved).toString(), NamedTextColor.GRAY)).build();
-		text.clickEvent(ClickEvent.suggestCommand("/nr new " + saveSlot + " partyname"))
+		text = text.clickEvent(ClickEvent.suggestCommand("/nr new " + saveSlot + " partyname"))
 		.hoverEvent(HoverEvent.showText(createHoverText()));
 		s.sendMessage(text);
 	}
@@ -63,7 +63,7 @@ public class SessionSnapshot {
 		Component text = Component.text().content("[1] ").color(NamedTextColor.GRAY)
 				.decorate(TextDecoration.BOLD)
 				.append(Component.text("Empty", NamedTextColor.GRAY)).build();
-		text.clickEvent(ClickEvent.suggestCommand("/nr new " + saveSlot + " partyname"))
+		text = text.clickEvent(ClickEvent.suggestCommand("/nr new " + saveSlot + " partyname"))
 		.hoverEvent(HoverEvent.showText(Component.text("Click to start a new game on this slot!")));
 		s.sendMessage(text);
 	}
@@ -72,7 +72,7 @@ public class SessionSnapshot {
 		Component text = Component.text().content("[1] ").color(NamedTextColor.GRAY)
 				.decorate(TextDecoration.BOLD)
 				.append(Component.text(new Date(lastSaved).toString(), NamedTextColor.GRAY)).build();
-		text.clickEvent(ClickEvent.suggestCommand("/nr load " + saveSlot))
+		text = text.clickEvent(ClickEvent.suggestCommand("/nr load " + saveSlot))
 		.hoverEvent(HoverEvent.showText(createHoverText()));
 		s.sendMessage(text);
 	}
