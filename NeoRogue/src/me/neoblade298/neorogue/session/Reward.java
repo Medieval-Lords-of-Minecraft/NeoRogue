@@ -16,8 +16,8 @@ public interface Reward {
 		if (str.startsWith("coins")) {
 			return new CoinsReward(str.substring("coins:".length()));
 		}
-		else if (str.startsWith("equips")) {
-			return new EquipmentChoiceReward(str.substring("equips:".length()));
+		else if (str.startsWith("choice")) {
+			return new EquipmentChoiceReward(str.substring("choice:".length()));
 		}
 		return null;
 	}
@@ -26,6 +26,7 @@ public interface Reward {
 		ArrayList<Reward> rewards = new ArrayList<Reward>();
 		String[] split = str.split(",");
 		for (String s : split) {
+			if (s.isBlank()) continue;
 			rewards.add(Reward.deserialize(s));
 		}
 		return rewards;

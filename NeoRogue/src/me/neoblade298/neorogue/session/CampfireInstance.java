@@ -106,12 +106,8 @@ public class CampfireInstance extends EditInventoryInstance {
 	}
 	
 	public void returnToNodes() {
-		if (state == UPGRADE_STATE) s.broadcast("Everyone is ready! Returning you to node select...");
-		new BukkitRunnable() {
-			public void run() {
-				s.setInstance(new NodeSelectInstance());
-			}
-		}.runTaskLater(NeoRogue.inst(), 60L);
+		if (state == UPGRADE_STATE) s.broadcast("Everyone is ready! Returning you to node select.");
+		s.setInstance(new NodeSelectInstance());
 	}
 
 	@Override

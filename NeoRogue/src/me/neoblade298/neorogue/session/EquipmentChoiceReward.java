@@ -21,7 +21,7 @@ public class EquipmentChoiceReward implements Reward {
 	}
 	
 	public EquipmentChoiceReward(String str) {
-		Equipment.deserializeAsArrayList(str);
+		this.equips = Equipment.deserializeAsArrayList(str);
 	}
 
 	@Override

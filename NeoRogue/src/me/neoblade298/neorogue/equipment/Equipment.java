@@ -174,6 +174,7 @@ public abstract class Equipment {
 		String[] separated = str.split(";");
 		Equipment[] arr = new Equipment[separated.length];
 		for (int i = 0; i < separated.length; i++) {
+			if (str.isBlank()) continue;
 			arr[i] = (Equipment) Equipment.deserialize(separated[i]);
 		}
 		return arr;
@@ -184,6 +185,7 @@ public abstract class Equipment {
 		String[] separated = str.split(";");
 		ArrayList<Equipment> arr = new ArrayList<Equipment>(separated.length);
 		for (String s : separated) {
+			if (str.isBlank()) continue;
 			arr.add(Equipment.deserialize(s));
 		}
 		return arr;
@@ -193,6 +195,7 @@ public abstract class Equipment {
 		String[] separated = str.split(";");
 		HotbarCompatible[] arr = new HotbarCompatible[separated.length];
 		for (int i = 0; i < separated.length; i++) {
+			if (str.isBlank()) continue;
 			arr[i] = (HotbarCompatible) Equipment.deserialize(separated[i]);
 		}
 		return arr;
@@ -202,6 +205,7 @@ public abstract class Equipment {
 		String[] separated = str.split(";");
 		Armor[] arr = new Armor[separated.length];
 		for (int i = 0; i < separated.length; i++) {
+			if (str.isBlank()) continue;
 			arr[i] = (Armor) Equipment.deserialize(separated[i]);
 		}
 		return arr;
@@ -211,6 +215,7 @@ public abstract class Equipment {
 		String[] separated = str.split(";");
 		Accessory[] arr = new Accessory[separated.length];
 		for (int i = 0; i < separated.length; i++) {
+			if (str.isBlank()) continue;
 			arr[i] = (Accessory) Equipment.deserialize(separated[i]);
 		}
 		return arr;
@@ -220,6 +225,7 @@ public abstract class Equipment {
 		String[] separated = str.split(";");
 		Usable[] arr = new Usable[separated.length];
 		for (int i = 0; i < separated.length; i++) {
+			if (str.isBlank()) continue;
 			arr[i] = (Usable) Equipment.deserialize(separated[i]);
 		}
 		return arr;

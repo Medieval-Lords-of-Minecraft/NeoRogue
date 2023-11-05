@@ -34,6 +34,7 @@ public class RewardInstance extends EditInventoryInstance {
 		for (Entry<UUID, PlayerSessionData> ent : party.entrySet()) {
 			rewards.put(ent.getKey(), Reward.deserializeArray(ent.getValue().getInstanceData()));
 		}
+		System.out.println(rewards);
 	}
 
 	@Override
@@ -73,14 +74,8 @@ public class RewardInstance extends EditInventoryInstance {
 		for (ArrayList<Reward> rewards : this.rewards.values()) {
 			if (!rewards.isEmpty()) return;
 		}
-		s.broadcast("Everyone's finished claiming rewards! Returning to node select in 5 seconds.");
-		
-		// Everyone's done claiming rewards
-		new BukkitRunnable() {
-			public void run() {
-				s.setInstance(new NodeSelectInstance());
-			}
-		}.runTaskLater(NeoRogue.inst(), 100L);
+		s.broadcast("Everyone's finished claiming rewards! Returning to node select.");
+		s.setInstance(new NodeSelectInstance());
 	}
 
 	@Override
