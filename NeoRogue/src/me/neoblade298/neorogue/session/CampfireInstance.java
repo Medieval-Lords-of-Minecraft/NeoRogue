@@ -12,10 +12,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.scheduler.BukkitRunnable;
-
 import me.neoblade298.neocore.bukkit.util.Util;
-import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 
@@ -91,6 +88,8 @@ public class CampfireInstance extends EditInventoryInstance {
 			for (PlayerSessionData data : s.getParty().values()) {
 				data.setHealth(data.getHealth() + (data.getMaxHealth() * 0.25));
 			}
+			
+			returnToNodes();
 		}
 		else {
 			center.getBlock().setType(Material.ANVIL);

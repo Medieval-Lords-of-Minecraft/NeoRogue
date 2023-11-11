@@ -14,6 +14,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.format.TextDecoration.State;
 
 public class ChanceChoice {
 	private String title;
@@ -48,19 +49,24 @@ public class ChanceChoice {
 		// Check conditions
 		boolean canRun = action != null ? action.run(s, false) : true;
 		ItemMeta meta = item.getItemMeta();
-		Component display = Component.text(title, canRun ? NamedTextColor.YELLOW : NamedTextColor.RED);
-		if (!canRun) display.decorate(TextDecoration.STRIKETHROUGH);
+		Component display = Component.text(title, canRun ? NamedTextColor.YELLOW : NamedTextColor.RED).decoration(TextDecoration.ITALIC, State.FALSE);
+		if (!canRun) display = display.decorate(TextDecoration.STRIKETHROUGH);
 		ArrayList<TextComponent> lore = new ArrayList<TextComponent>();
+		meta.displayName(display);
 		
 		if (desc != null) {
 			for (TextComponent text : desc) {
-				if (!canRun) text.decorate(TextDecoration.STRIKETHROUGH);
+				if (!canRun) lore.add(text.decorate(TextDecoration.STRIKETHROUGH).decoration(TextDecoration.ITALIC, State.FALSE));
+				else lore.add(text.decoration(TextDecoration.ITALIC, State.FALSE));
 			}
 		}
 		
 		if (!canRun && prereqFail != null) {
 			lore.addAll(prereqFail);
 		}
+		System.out.println("Desc: " + desc);
+		System.out.println("fail: " + prereqFail);
+		System.out.println("lore: " + lore);
 		meta.lore(lore);
 		item.setItemMeta(meta);
 		return item;

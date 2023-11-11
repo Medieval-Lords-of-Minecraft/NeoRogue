@@ -6,7 +6,11 @@ import java.util.HashMap;
 import org.bukkit.Material;
 
 import me.neoblade298.neocore.bukkit.NeoCore;
+import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.area.AreaType;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.format.TextDecoration.State;
 
 public class ChanceSet {
 	private static HashMap<AreaType, ArrayList<ChanceSet>> sets = new HashMap<AreaType, ArrayList<ChanceSet>>();
@@ -14,7 +18,8 @@ public class ChanceSet {
 	public static final String INIT_ID = "init";
 	
 	private HashMap<String, ChanceStage> stages = new HashMap<String, ChanceStage>();
-	private String id, display;
+	private String id;
+	private TextComponent display;
 	private Material mat;
 	
 	public static ChanceSet getSet(AreaType type) {
@@ -41,7 +46,7 @@ public class ChanceSet {
 	
 	public ChanceSet(AreaType type, Material mat, String id, String display) {
 		this.id = id;
-		this.display = "<gold>" + display;
+		this.display = (TextComponent) SharedUtil.color("<gold>" + display).decoration(TextDecoration.ITALIC, State.FALSE);
 		this.mat = mat;
 		sets.get(type).add(this);
 		setsById.put(id, this);
@@ -51,7 +56,7 @@ public class ChanceSet {
 		return stages.get(INIT_ID);
 	}
 	
-	public String getDisplay() {
+	public TextComponent getDisplay() {
 		return display;
 	}
 	

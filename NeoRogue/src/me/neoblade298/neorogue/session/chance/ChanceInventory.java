@@ -1,7 +1,5 @@
 package me.neoblade298.neorogue.session.chance;
 
-import java.util.ArrayList;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -39,11 +37,10 @@ public class ChanceInventory extends CoreInventory {
 	private void setupInventory() {
 		// Create title
 		ItemStack[] contents = new ItemStack[18];
-		ItemStack title = CoreInventory.createButton(set.getMaterial(), Component.text(set.getDisplay()));
+		ItemStack title = CoreInventory.createButton(set.getMaterial(), set.getDisplay());
 		ItemMeta meta = title.getItemMeta();
-		ArrayList<Component> lore = new ArrayList<Component>();
-		lore.addAll(stage.description);
-		meta.lore(lore);
+		meta.lore(stage.description);
+		System.out.println(stage.description);
 		title.setItemMeta(meta);
 		contents[4] = title;
 		
