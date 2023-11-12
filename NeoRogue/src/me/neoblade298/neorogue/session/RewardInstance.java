@@ -31,7 +31,6 @@ public class RewardInstance extends EditInventoryInstance {
 		for (Entry<UUID, PlayerSessionData> ent : party.entrySet()) {
 			rewards.put(ent.getKey(), Reward.deserializeArray(ent.getValue().getInstanceData()));
 		}
-		System.out.println(rewards);
 	}
 
 	@Override

@@ -40,7 +40,6 @@ public class ChanceInventory extends CoreInventory {
 		ItemStack title = CoreInventory.createButton(set.getMaterial(), set.getDisplay());
 		ItemMeta meta = title.getItemMeta();
 		meta.lore(stage.description);
-		System.out.println(stage.description);
 		title.setItemMeta(meta);
 		contents[4] = title;
 		

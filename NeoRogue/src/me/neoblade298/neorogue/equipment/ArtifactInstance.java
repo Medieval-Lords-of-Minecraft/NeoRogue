@@ -75,7 +75,6 @@ public class ArtifactInstance implements Comparable<ArtifactInstance> {
 	}
 	
 	public static ArtifactInstance deserialize(String str) {
-		System.out.println("Deserializing artifact " + str);
 		String[] aiPieces = str.split("-");
 		boolean isUpgraded = false;
 		if (aiPieces[0].endsWith("+")) {

@@ -28,7 +28,6 @@ public class RewardInventory extends CoreInventory {
 		this.rewards = rewards;
 		ItemStack[] contents = inv.getContents();
 		int i = 0;
-		System.out.println(rewards);
 		for (Reward reward : rewards) {
 			contents[i++] = reward.getIcon();
 		}
