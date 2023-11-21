@@ -16,7 +16,6 @@ import com.sk89q.worldedit.session.ClipboardHolder;
 
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neorogue.area.Area;
-import me.neoblade298.neorogue.session.fights.FightInstance;
 
 public class MapPieceInstance implements Comparable<MapPieceInstance> {
 	public static final int Z_FIGHT_OFFSET = 0, Y_OFFSET = 64, X_FIGHT_OFFSET = 49;
@@ -234,7 +233,7 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 	}
 	
 	// Pastes the map piece and sets up its spawners
-	public void instantiate(FightInstance inst, int xOff, int zOff) {
+	public void instantiate(int xOff, int zOff) {
 		updateSchematic();
 		/*
 		 * this.x is the chunk coordinates within the fighting area

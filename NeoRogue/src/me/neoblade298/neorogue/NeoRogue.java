@@ -68,8 +68,9 @@ public class NeoRogue extends JavaPlugin {
 		mngr.registerCommandList("");
 		
 		mngr = new SubcommandManager("nradmin", "neorogue.admin", NamedTextColor.DARK_RED, this);
-		mngr.register(new CmdAdminDebug("debug", "Testing", null, SubcommandRunner.BOTH));
-		mngr.register(new CmdAdminTestPiece("testpiece", "Pastes a map piece in the map to show you how it looks ingame", null, SubcommandRunner.BOTH));
+		mngr.register(new CmdAdminDebug("debug", "Testing", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdAdminTestPiece("testpiece", "Pastes a map piece in the map to show you how it looks ingame", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdAdminTestMap("testmap", "Generates and pastes a map", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.registerCommandList("");
 	}
 	

@@ -78,41 +78,55 @@ public class Map {
 	}
 	
 	public static Map generateBoss(AreaType type, int numPieces) {
-		Map map = new Map();
 		MapPiece piece = bossPieces.get(type).get(NeoCore.gen.nextInt(bossPieces.get(type).size()));
-		map.place(piece);
-		return map;
+		return generate(type, numPieces, piece);
 	}
 	
 	public static Map generateMiniboss(AreaType type, int numPieces) {
-		Map map = new Map();
 		MapPiece piece = minibossPieces.get(type).get(NeoCore.gen.nextInt(minibossPieces.get(type).size()));
-		map.place(piece);
-		return generate(map, type, numPieces);
+		return generate(type, numPieces, piece);
 	}
 	
 	public static Map generate(AreaType type, int numPieces) {
 		return generate(new Map(), type, numPieces);
 	}
 	
+	public static Map generate(AreaType type, int numPieces, MapPiece requiredPiece) {
+		Map map = new Map();
+		map.place(requiredPiece);
+		return generate(map, type, numPieces);
+	}
+	
 	public static Map generate(Map map, AreaType type, int numPieces) {
 		LinkedList<MapPiece> pieces = standardPieces.get(type);
+		int totalAttempts = pieces.size() + usedPieces.get(type).size();
 		
 		for (int i = 0; i < numPieces; i++) {
 			MapPiece piece = null;
+			int attempts = 0;
 			do {
 				if (pieces.size() == 0) shufflePieces(type);
 				piece = pieces.poll();
 				usedPieces.get(type).add(piece);
+				
+				if (attempts++ > totalAttempts) {
+					Bukkit.getLogger().warning("[NeoRogue] Ran out of valid pieces to place. Returning map as is.");
+					return map;
+				}
 			}
-			// Make sure there are enough entrances to continue expanding while we still need size
-			while (map.entrances.size() < 2 && piece.getNumEntrances() < 2 && i < numPieces - 1);
+			/* Skip to another piece if
+			* 1: we have 1 entrance left and the next piece is 1 entrance and there are still more pieces we need to place
+			* 2: the piece cannot be placed anywhere on the map
+			*/
+			while ((map.entrances.size() < 2 && piece.getNumEntrances() < 2 && i < numPieces - 1)
+					|| !map.place(piece));
+
+			map.display();
 			
 			if (piece == null) {
 				Bukkit.getLogger().warning("[NeoRogue] Failed to find piece for generation. Returning map as is.");
 				return map;
 			}
-			map.place(piece);
 		}
 		
 		return map;
@@ -137,7 +151,7 @@ public class Map {
 			inst.setX(x);
 			inst.setY(0);
 			inst.setZ(z);
-			place(inst);
+			place(inst, false);
 		}
 		// Standard case, find an existing entrance and try to put the piece on
 		else {
@@ -165,7 +179,7 @@ public class Map {
 			if (potentialPlacements.size() == 0) return false;
 
 			MapPieceInstance best = potentialPlacements.first();
-			place(best);
+			place(best, false);
 		}
 		addTargets(piece.getTargets());
 		return true;
@@ -180,10 +194,6 @@ public class Map {
 			}
 		}
 		return true;
-	}
-	
-	private void place(MapPieceInstance inst) {
-		place(inst, false);
 	}
 	
 	private void place(MapPieceInstance inst, boolean ignoreEntrances) {
@@ -241,7 +251,8 @@ public class Map {
 		
 	}
 	
-	public void instantiate(FightInstance fi, int xOff, int zOff) {
+	// Instantiate without spawners
+	public void instantiateBlocks(int xOff, int zOff) {
 		// First clear the board
 		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Area.world)) {
 		    CuboidRegion o = new CuboidRegion(
@@ -257,14 +268,20 @@ public class Map {
 		
 		// Place down the map pieces
 		for (MapPieceInstance inst : pieces) {
-			inst.instantiate(fi, xOff, zOff);
-			
+			inst.instantiate(xOff, zOff);
+		}
+	}
+	
+	public void instantiate(FightInstance fi, int xOff, int zOff) {
+		instantiateBlocks(xOff, zOff);
+		
+		// Setup spawners
+		for (MapPieceInstance inst : pieces) {
 			// Set up the mobs
 			for (MapSpawner spawner : inst.getPiece().getSpawners()) {
 				fi.addSpawner(spawner.instantiate(inst, xOff, zOff));
 			}
 		}
-		
 	}
 	
 	private static void shufflePieces(AreaType type) {
@@ -285,7 +302,7 @@ public class Map {
 	}
 	
 	public void display() {
-		System.out.println("   0123456789AB");
+		System.out.println("X left/right, Z up/down");
 		for (int z = shape[0].length - 1; z >= 0; z--) {
 			System.out.print(z + ": ");
 			for (int x = 0; x < shape.length; x++) {
