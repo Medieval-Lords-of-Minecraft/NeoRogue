@@ -45,7 +45,9 @@ public class MapPiece {
 		this.entrances = new Coordinates[entrances.size()];
 		int i = 0;
 		for (String line : entrances) {
-			this.entrances[i++] = new Coordinates(this, line);
+			Coordinates entrance = new Coordinates(this, line);
+			entrance.setOriginalDirection(entrance.getOriginalDirection().invert());
+			this.entrances[i++] = entrance;
 		}
 		
 		Section sec = cfg.getSection("spawners");

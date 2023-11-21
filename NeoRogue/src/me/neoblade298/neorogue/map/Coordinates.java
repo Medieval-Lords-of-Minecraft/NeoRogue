@@ -12,7 +12,7 @@ import me.neoblade298.neorogue.area.Area;
 public class Coordinates extends Rotatable {
 	private int x, y, z, xp, zp, xlen, zlen;
 	private int xOff, yOff, zOff;
-	private final Direction ogDir;
+	private Direction ogDir;
 	private Direction dir = Direction.NORTH;
 	
 	public Coordinates(MapPiece piece, String line) {
@@ -54,6 +54,10 @@ public class Coordinates extends Rotatable {
 	
 	public Direction getOriginalDirection() {
 		return ogDir;
+	}
+	
+	public void setOriginalDirection(Direction dir) {
+		ogDir = dir;
 	}
 	
 	public Direction getDirection() {
