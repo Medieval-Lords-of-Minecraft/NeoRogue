@@ -4,10 +4,10 @@ package me.neoblade298.neorogue.map;
  * North is south, east is west, etc.
  */
 public enum Direction {
-	NORTH(0, 'N', 0),
-	EAST(1, 'E', 90),
-	SOUTH(2, 'S', 180),
-	WEST(3, 'W', 270);
+	NORTH(0, 'N', 180),
+	EAST(1, 'E', 270),
+	SOUTH(2, 'S', 0),
+	WEST(3, 'W', 90);
 	
 	private int value;
 	private char c;

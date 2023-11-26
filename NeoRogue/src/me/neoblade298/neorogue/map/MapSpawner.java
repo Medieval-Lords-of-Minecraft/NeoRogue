@@ -20,11 +20,10 @@ public class MapSpawner {
 		mob = Mob.get(id);
 		Optional<MythicMob> opt = MythicBukkit.inst().getMobManager().getMythicMob(id);
 		mythicMob = opt.isPresent() ? opt.get() : null;
-		String[] parsed = cfg.getString("coords").split(",");
-		coords = new Coordinates(Integer.parseInt(parsed[0]), Integer.parseInt(parsed[1]),
-				Integer.parseInt(parsed[2]), piece.getShape().getBaseLength() * 16 - 1, piece.getShape().getBaseHeight() * 16 - 1);
+		coords = new Coordinates(piece, cfg.getString("coords"), true);
 		radius = cfg.getDouble("radius");
 		maxMobs = cfg.getInt("maxmobs", -1);
+		System.out.println("A: " + coords);
 	}
 
 	public MythicMob getMythicMob() {

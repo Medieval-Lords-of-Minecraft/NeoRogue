@@ -379,6 +379,7 @@ public abstract class FightInstance extends Instance {
 				int rand = NeoCore.gen.nextInt(map.getPieces().size());
 				MapPieceInstance inst = map.getPieces().get(rand);
 				Coordinates[] spawns = inst.getSpawns();
+				
 				spawn = spawns[spawns.length > 1 ? NeoCore.gen.nextInt(spawns.length) : 0].clone().applySettings(inst).toLocation();
 				spawn.add(s.getXOff() + MapPieceInstance.X_FIGHT_OFFSET,
 						MapPieceInstance.Y_OFFSET,

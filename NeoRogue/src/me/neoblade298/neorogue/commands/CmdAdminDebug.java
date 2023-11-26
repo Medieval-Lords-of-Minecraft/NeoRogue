@@ -2,10 +2,19 @@ package me.neoblade298.neorogue.commands;
 
 import java.util.LinkedList;
 
-import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.WorldEditException;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.function.mask.ExistingBlockMask;
+import com.sk89q.worldedit.function.mask.Mask;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.regions.CuboidRegion;
 
 import me.neoblade298.neocore.bukkit.commands.Subcommand;
 import me.neoblade298.neocore.bukkit.util.Util;
@@ -35,11 +44,12 @@ public class CmdAdminDebug extends Subcommand {
 			}
 		}
 		Player p = (Player) s;
-		Location loc = p.getLocation();
 		World w = p.getWorld();
-		int x = loc.getBlockX(), z = loc.getBlockZ();
-		x = -(x + 16 - (x % 16));
-		z -= z % 16;
+		
+		if (!w.getName().equals("TestMap")) {
+			Util.displayError(p, "You can't use this command on worlds that aren't named TestMap!");
+			return;
+		}
 		
 		if (piece == null) {
 			Util.displayError(p, "Couldn't find a map piece with that name!");
@@ -48,7 +58,27 @@ public class CmdAdminDebug extends Subcommand {
 		
 		MapPieceInstance inst = piece.getInstance();
 		inst.setRotations(Integer.parseInt(args[3 + offset]));
-		inst.setFlip(Boolean.parseBoolean(args[1 + offset]), Boolean.parseBoolean(args[2 + offset]));
+		inst.setFlip(Integer.parseInt(args[1 + offset]) == 1, Integer.parseInt(args[2 + offset]) == 1);
+		int x = 0;
+		int z = 16;
+		System.out.println("Here: " + x + " " + z);
+		
+
+		final int PADDING = (Math.max(piece.getShape().getBaseHeight(), piece.getShape().getBaseLength()) + 1) * 16;
+		
+		// First clear the board
+		try (EditSession editSession = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(w))) {
+		    CuboidRegion o = new CuboidRegion(
+		    		BlockVector3.at(-x + PADDING, 1, z - PADDING),
+		    		BlockVector3.at(-x - PADDING, 128, z + PADDING));
+		    Mask mask = new ExistingBlockMask(editSession);
+		    try {
+			    editSession.replaceBlocks(o, mask, BukkitAdapter.adapt(Material.AIR.createBlockData()));
+			} catch (WorldEditException e) {
+				e.printStackTrace();
+			}
+		}
+		
 		inst.testPaste(w, x, z);
 	}
 }

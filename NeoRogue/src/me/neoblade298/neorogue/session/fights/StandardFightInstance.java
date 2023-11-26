@@ -143,6 +143,8 @@ public class StandardFightInstance extends FightInstance {
 	@Override
 	public void cleanup() {
 		super.cleanup();
+		timeBar.removeAll();
+		scoreBar.removeAll();
 	}
 	
 	public String serializeInstanceData() {

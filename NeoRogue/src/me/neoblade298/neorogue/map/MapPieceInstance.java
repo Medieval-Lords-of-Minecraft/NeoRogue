@@ -3,6 +3,9 @@ package me.neoblade298.neorogue.map;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.Directional;
 
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
@@ -16,6 +19,7 @@ import com.sk89q.worldedit.session.ClipboardHolder;
 
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neorogue.area.Area;
+import me.neoblade298.neorogue.session.fights.FightInstance;
 
 public class MapPieceInstance implements Comparable<MapPieceInstance> {
 	public static final int Z_FIGHT_OFFSET = 0, Y_OFFSET = 64, X_FIGHT_OFFSET = 49;
@@ -233,7 +237,7 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 	}
 	
 	// Pastes the map piece and sets up its spawners
-	public void instantiate(int xOff, int zOff) {
+	public void instantiate(FightInstance fi, int xOff, int zOff) {
 		updateSchematic();
 		/*
 		 * this.x is the chunk coordinates within the fighting area
@@ -248,7 +252,7 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Area.world)) {
 		    Operation operation = schematic.createPaste(editSession)
 		            .to(BlockVector3.at(x, y, z))
-		            .ignoreAirBlocks(true)
+		            .ignoreAirBlocks(false)
 		            .build();
 		    try {
 				Operations.complete(operation);
@@ -256,9 +260,16 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 				e.printStackTrace();
 			}
 		}
-		// Instantiate spawners
-		for (MapSpawner spawner : piece.getSpawners()) {
-			spawner.instantiate(this, xOff, zOff);
+		// Instantiate spawners; if fi is null, that means it's a testmap
+		if (fi != null) {
+			for (MapSpawner spawner : piece.getSpawners()) {
+				fi.addSpawner(spawner.instantiate(this, xOff, zOff));
+			}
+		}
+		else {
+			for (MapSpawner spawner : piece.getSpawners()) {
+				spawner.instantiate(this, xOff, zOff);
+			}
 		}
 	}
 	
@@ -267,12 +278,16 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		/*
 		 * this.x is the chunk coordinates within the fighting area
 		 * xOff is the offset of the plot
-		 * Z_FIGHT_OFFSET is the offset of where the fighting area is in the plot
+		 * X/Y/Z_FIGHT_OFFSET is the offset of where the fighting area is in the plot
 		 * x is negative because south is +z and right of south is -x
+		 * x/zLocal is the offset due to the player choosing the chunk to paste it in
 		 */
-		int x = -(rotateOffset[0] + flipOffset[0] + xOff + X_FIGHT_OFFSET);
+		
+		int xLocal = 1;
+		int zLocal = -16;
+		int x = -(rotateOffset[0] + flipOffset[0] + xOff + xLocal);
 		int y = Y_OFFSET + this.y;
-		int z = rotateOffset[1] + flipOffset[1] + zOff;
+		int z = rotateOffset[1] + flipOffset[1] + zOff + zLocal;
 		
 		try (EditSession editSession = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(world))) {
 		    Operation operation = schematic.createPaste(editSession)
@@ -285,22 +300,92 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 				e.printStackTrace();
 			}
 		}
-		// Instantiate spawners
-		for (MapSpawner spawner : piece.getSpawners()) {
-			MapSpawnerInstance inst = spawner.instantiate(this, xOff, zOff);
-			inst.testPaste(world);
-		}
 		
-		for (Coordinates coords : spawns) {
-			Location loc = coords.clone().applySettings(this).toLocation();
-			loc.add(MapPieceInstance.X_FIGHT_OFFSET + xOff,
-					MapPieceInstance.Y_OFFSET,
-					zOff);
-			loc.setX(-loc.getX());
+		// Spawners
+		for (MapSpawner spawner : piece.getSpawners()) {
+			Location loc = spawner.getCoordinates().clone().applySettings(this).toLocation();
 			loc.setWorld(world);
+			loc.add(-x - rotateOffset[0] - flipOffset[0],
+					MapPieceInstance.Y_OFFSET,
+					z - rotateOffset[1] - flipOffset[1]);
+			loc.setX(-loc.getX());
 			loc.getBlock().setType(Material.ORANGE_WOOL);
 		}
+		
+		// Spawns
+		for (Coordinates spawn : spawns) {
+			Coordinates coords = spawn.clone().applySettings(this);
+			Location loc = coords.toLocation();
+			loc.setWorld(world);
+			loc.add(-x - rotateOffset[0] - flipOffset[0],
+					MapPieceInstance.Y_OFFSET,
+					z - rotateOffset[1] - flipOffset[1]);
+			loc.setX(-loc.getX());
+			Block b = loc.getBlock();
+			b.setType(Material.MAGENTA_GLAZED_TERRACOTTA);
+
+            Directional bmeta = (Directional) b.getBlockData();
+            
+            // Apparently terracotta blocks point the direction opposite they're facing
+            switch (coords.getDirection()) {
+            case NORTH: bmeta.setFacing(BlockFace.SOUTH);
+            break;
+            case SOUTH: bmeta.setFacing(BlockFace.NORTH);
+            break;
+            case EAST: bmeta.setFacing(BlockFace.WEST);
+            break;
+            case WEST: bmeta.setFacing(BlockFace.EAST);
+            }
+            b.setBlockData(bmeta);
+		}
+
+		for (Coordinates entrance : piece.getEntrances()) {
+			Coordinates coords = entrance.clone().applySettings(this);
+			Location loc = coords.toLocation();
+			loc.setX(loc.getX() * 16);
+			loc.setZ(loc.getZ() * 16);
+			loc.add(-x - rotateOffset[0] - flipOffset[0],
+					MapPieceInstance.Y_OFFSET,
+					z - rotateOffset[1] - flipOffset[1]);
+			loc.setX(-loc.getX());
+			loc.setWorld(world);
+			
+			double entx = loc.getX();
+			double entz = loc.getZ();
+			// Loc is currently on the northeast of the entrance
+			
+			// Iterate through the 4 entrance blocks based on entrance direction
+			switch (coords.getDirection()) {
+			case NORTH:
+				loc.setZ(entz + 15);
+				for (double tempx = entx - 6; tempx > entx - 10; tempx--) {
+					loc.setX(tempx);
+					loc.getBlock().setType(Material.RED_CONCRETE);
+				}
+				break;
+			case SOUTH:
+				for (double tempx = entx - 6; tempx > entx - 10; tempx--) {
+					loc.setX(tempx);
+					loc.getBlock().setType(Material.RED_CONCRETE);
+				}
+				break;
+			case EAST:
+				loc.setX(entx - 15);
+				for (double tempz = entz + 6; tempz < entz + 10; tempz++) {
+					loc.setZ(tempz);
+					loc.getBlock().setType(Material.RED_CONCRETE);
+				}
+				break;
+			case WEST:
+				for (double tempz = entz + 6; tempz < entz + 10; tempz++) {
+					loc.setZ(tempz);
+					loc.getBlock().setType(Material.RED_CONCRETE);
+				}
+				break;
+			}
+		}
 	}
+	
 	
 	public Coordinates getEntrance() {
 		return entrance;

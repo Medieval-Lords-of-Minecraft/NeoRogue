@@ -9,4 +9,5 @@ commands:
    nr:
       description: NeoRogue General command
    nradmin:
+      aliases: [nra]
       description: NeoRogue Admin command

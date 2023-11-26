@@ -24,11 +24,11 @@ public class Coordinates extends Rotatable {
 		this.x = Integer.parseInt(parsed[0]);
 		this.y = Integer.parseInt(parsed[1]);
 		this.z = Integer.parseInt(parsed[2]);
-		this.xlen = usesMinecraftCoords ? piece.getShape().getLength() * 16: piece.getShape().getLength() - 1;
-		this.zlen = usesMinecraftCoords ? piece.getShape().getHeight() * 16: piece.getShape().getHeight() - 1;
+		this.xlen = usesMinecraftCoords ? piece.getShape().getBaseLength() * 16 - 1: piece.getShape().getBaseLength() - 1;
+		this.zlen = usesMinecraftCoords ? piece.getShape().getBaseHeight() * 16 - 1: piece.getShape().getBaseHeight() - 1;
 		this.xp = xlen - x;
 		this.zp = zlen - z;
-		this.ogDir = Direction.getFromCharacter(parsed[3].charAt(0));
+		this.ogDir = parsed.length > 3 ? Direction.getFromCharacter(parsed[3].charAt(0)) : Direction.NORTH;
 		this.dir = ogDir;
 	}
 	
@@ -58,6 +58,10 @@ public class Coordinates extends Rotatable {
 	
 	public void setOriginalDirection(Direction dir) {
 		ogDir = dir;
+	}
+	
+	public void setDirection(Direction dir) {
+		this.dir = dir;
 	}
 	
 	public Direction getDirection() {
@@ -125,7 +129,7 @@ public class Coordinates extends Rotatable {
 	// Should only be used for spawners as it turns x offset into chunk offset
 	// * 15 because xOff/zOff was already added once
 	public Location toLocation() {
-		return new Location(Bukkit.getWorld(Area.WORLD_NAME), getX() + (xOff * 15), getY() - 1, getZ() + (zOff * 15), 0, dir.getYaw());
+		return new Location(Bukkit.getWorld(Area.WORLD_NAME), getX() + (xOff * 15), getY() - 1, getZ() + (zOff * 15), dir.getYaw(), 0);
 	}
 	
 	@Override

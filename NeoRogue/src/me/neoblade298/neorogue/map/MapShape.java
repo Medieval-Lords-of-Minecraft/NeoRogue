@@ -24,6 +24,10 @@ public class MapShape extends Rotatable {
 		zlen = shape[0].length - 1;
 	}
 	
+	public MapShape clone() {
+		return new MapShape(this.shape);
+	}
+	
 	public boolean get(int x, int z) {
 		int[] coords = getCoordinates(x, z);
 		return shape[coords[0]][coords[1]];

@@ -3,6 +3,10 @@ package me.neoblade298.neorogue.commands;
 import java.util.LinkedList;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.Directional;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -34,7 +38,7 @@ public class CmdAdminTestMap extends Subcommand {
 		MapPiece piece = null;
 		if (args.length > 1) {
 			for (MapPiece temp : pieces) {
-				if (temp.getId().equalsIgnoreCase(args[0])) {
+				if (temp.getId().equalsIgnoreCase(args[1])) {
 					piece = temp;
 					break;
 				}
@@ -50,7 +54,34 @@ public class CmdAdminTestMap extends Subcommand {
 		Map map = piece == null ? Map.generate(type, numPieces) : Map.generate(type, numPieces, piece);
 		Util.msg(p, "Successfully generated map");
 		int xOff = 0, zOff = 0;
-		map.instantiateBlocks(xOff, zOff);
+		map.instantiate(null, xOff, zOff);
+		
+		// Mark down spawn location blocks
+		for (MapPieceInstance mpi : map.getPieces()) {
+			for (Coordinates c : mpi.getSpawns()) {
+				Location l = c.clone().applySettings(mpi).toLocation();
+				l.add(0 + MapPieceInstance.X_FIGHT_OFFSET,
+						MapPieceInstance.Y_OFFSET,
+						MapPieceInstance.Z_FIGHT_OFFSET + 0);
+				l.setX(-l.getX());
+				
+				Block b = l.getBlock();
+				b.setType(Material.MAGENTA_GLAZED_TERRACOTTA);
+	            Directional bmeta = (Directional) b.getBlockData();
+	            
+	            // Apparently terracotta blocks point the direction opposite they're facing
+	            switch (c.getDirection()) {
+	            case NORTH: bmeta.setFacing(BlockFace.SOUTH);
+	            break;
+	            case SOUTH: bmeta.setFacing(BlockFace.NORTH);
+	            break;
+	            case EAST: bmeta.setFacing(BlockFace.WEST);
+	            break;
+	            case WEST: bmeta.setFacing(BlockFace.EAST);
+	            }
+	            b.setBlockData(bmeta);
+			}
+		}
 		
 		// Choose random teleport location
 		int rand = NeoCore.gen.nextInt(map.getPieces().size());

@@ -62,7 +62,7 @@ public class CmdAdminTestPiece extends Subcommand {
 		// First clear the board
 		try (EditSession editSession = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(w))) {
 		    CuboidRegion o = new CuboidRegion(
-		    		BlockVector3.at(-x + PADDING, 0, z - PADDING),
+		    		BlockVector3.at(-x + PADDING, 1, z - PADDING),
 		    		BlockVector3.at(-x - PADDING * 4, 128, z + PADDING * 4));
 		    Mask mask = new ExistingBlockMask(editSession);
 		    try {

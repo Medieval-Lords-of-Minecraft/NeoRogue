@@ -39,8 +39,8 @@ public class Map {
 	private static final int MAP_SIZE = 12;
 	
 	private ArrayList<MapPieceInstance> pieces = new ArrayList<MapPieceInstance>();
-	private LinkedList<Coordinates> entrances = new LinkedList<Coordinates>();
-	private LinkedList<Coordinates> blockedEntrances = new LinkedList<Coordinates>();
+	private LinkedList<Coordinates> entrances = new LinkedList<Coordinates>(),
+			blockedEntrances = new LinkedList<Coordinates>();
 	private TreeMap<Mob, ArrayList<MobModifier>> mobs = new TreeMap<Mob, ArrayList<MobModifier>>();
 	private HashSet<String> targets = new HashSet<String>();
 	private boolean[][] shape = new boolean[MAP_SIZE][MAP_SIZE];
@@ -121,7 +121,6 @@ public class Map {
 			while ((map.entrances.size() < 2 && piece.getNumEntrances() < 2 && i < numPieces - 1)
 					|| !map.place(piece));
 
-			map.display();
 			
 			if (piece == null) {
 				Bukkit.getLogger().warning("[NeoRogue] Failed to find piece for generation. Returning map as is.");
@@ -196,9 +195,9 @@ public class Map {
 		return true;
 	}
 	
-	private void place(MapPieceInstance inst, boolean ignoreEntrances) {
+	private void place(MapPieceInstance inst, boolean deserializing) {
 		MapShape shape = inst.getPiece().getShape();
-		if (!ignoreEntrances) entrances.remove(inst.getAvailableEntrance());
+		if (!deserializing) entrances.remove(inst.getAvailableEntrance());
 		shape.applySettings(inst);
 		for (int i = 0; i < shape.getLength(); i++) {
 			for (int j = 0; j < shape.getHeight(); j++) {
@@ -209,7 +208,7 @@ public class Map {
 					this.shape[inst.getX() + i][inst.getZ() + j] = shape.get(i, j);
 
 					// Remove any entrances at this location, may need to save them to properly block them
-					if (!ignoreEntrances) {
+					if (!deserializing) {
 						Iterator<Coordinates> iter = entrances.iterator();
 						while (iter.hasNext()) {
 							Coordinates entrance = iter.next();
@@ -223,7 +222,7 @@ public class Map {
 			}
 		}
 		
-		if (!ignoreEntrances) {
+		if (!deserializing) {
 			for (Coordinates entrance : inst.getPiece().getEntrances()) {
 				Coordinates coords = entrance.clone();
 				coords.applySettings(inst);
@@ -251,8 +250,7 @@ public class Map {
 		
 	}
 	
-	// Instantiate without spawners
-	public void instantiateBlocks(int xOff, int zOff) {
+	public void instantiate(FightInstance fi, int xOff, int zOff) {
 		// First clear the board
 		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Area.world)) {
 		    CuboidRegion o = new CuboidRegion(
@@ -266,21 +264,15 @@ public class Map {
 			}
 		}
 		
-		// Place down the map pieces
+		// Setup pieces and spawners
 		for (MapPieceInstance inst : pieces) {
-			inst.instantiate(xOff, zOff);
+			inst.instantiate(fi, xOff, zOff);
 		}
-	}
-	
-	public void instantiate(FightInstance fi, int xOff, int zOff) {
-		instantiateBlocks(xOff, zOff);
 		
-		// Setup spawners
-		for (MapPieceInstance inst : pieces) {
-			// Set up the mobs
-			for (MapSpawner spawner : inst.getPiece().getSpawners()) {
-				fi.addSpawner(spawner.instantiate(inst, xOff, zOff));
-			}
+		// Block off all unused entrances
+		blockedEntrances.addAll(entrances);
+		for (Coordinates coords : blockedEntrances) {
+			System.out.println("Coords: " + coords);
 		}
 	}
 	

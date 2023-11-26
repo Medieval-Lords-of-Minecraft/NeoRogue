@@ -46,7 +46,9 @@ public class MapPiece {
 		int i = 0;
 		for (String line : entrances) {
 			Coordinates entrance = new Coordinates(this, line);
-			entrance.setOriginalDirection(entrance.getOriginalDirection().invert());
+			Direction invert = entrance.getOriginalDirection().invert();
+			entrance.setOriginalDirection(invert);
+			entrance.setDirection(invert);
 			this.entrances[i++] = entrance;
 		}
 		
