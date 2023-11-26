@@ -246,6 +246,30 @@ public class Map {
 		pieces.add(inst);
 	}
 	
+	// Used to calculate blocked entrances because of how deserialization ignores entrances
+	private void recalculateEntrances() {
+		for (MapPieceInstance inst : pieces) {
+			// First add all entrances
+			for (Coordinates c : inst.getPiece().getEntrances()) {
+				entrances.add(c.clone().applySettings(inst));
+			}
+		}
+		
+		for (MapPieceInstance inst : pieces) {
+			for (Coordinates ent : inst.getPiece().getEntrances()) {
+				Coordinates toRemove = null;
+				for (Coordinates otherEnt : entrances) {
+					if (ent.isFacing(otherEnt)) {
+						toRemove = otherEnt;
+						break;
+					}
+				}
+				entrances.remove(toRemove);
+				entrances.remove(ent);
+			}
+		}
+	}
+	
 	public void cleanup() {
 		
 	}

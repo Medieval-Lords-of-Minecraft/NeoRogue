@@ -140,4 +140,8 @@ public class Coordinates extends Rotatable {
 	public String toStringFacing() {
 		return getX() + "," + getZ() + ":" + getXFacing() + "," + getY() + "," + getZFacing() + ":" + dir.getCharacter();
 	}
+	
+	public boolean isFacing(Coordinates coords) {
+		return getX() == coords.getXFacing() && getZ() == coords.getZFacing() && getXFacing() == coords.getX() && getZFacing() == coords.getZ();
+	}
 }
