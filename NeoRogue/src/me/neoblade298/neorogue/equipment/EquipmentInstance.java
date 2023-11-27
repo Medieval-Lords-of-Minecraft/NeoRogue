@@ -10,16 +10,27 @@ public abstract class EquipmentInstance implements TriggerAction {
 	private Equipment eq;
 	private long lastUsed = 0L;
 	protected int cooldown = 0;
+	private boolean isCancelled = false;
 	
 	public EquipmentInstance(Equipment eq) {
 		this.eq = eq;
 	}
 	
+	@Override
 	public boolean trigger(Object[] inputs) {
 		lastUsed = System.currentTimeMillis();
 		return run(inputs);
 	}
+	@Override
+	public boolean isCancelled() {
+		return isCancelled;
+	}
 	public abstract boolean run(Object[] inputs);
+	
+	public void setCancelled(boolean isCancelled) {
+		this.isCancelled = isCancelled;
+	}
+	
 	public boolean canTrigger() {
 		return lastUsed + (cooldown * 1000) < System.currentTimeMillis();
 	}

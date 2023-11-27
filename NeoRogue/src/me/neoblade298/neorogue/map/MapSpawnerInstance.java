@@ -4,7 +4,6 @@ import java.util.UUID;
 import java.util.Map.Entry;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Damageable;
 
 import io.lumine.mythic.api.mobs.MythicMob;

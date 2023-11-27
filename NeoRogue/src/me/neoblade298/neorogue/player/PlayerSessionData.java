@@ -92,13 +92,14 @@ public class PlayerSessionData {
 		break;
 		}
 		
-		// Strictly debug purposes
+		/* Strictly debug purposes
 		hotbar[0] = (HotbarCompatible) Equipment.get("woodenWand", true);
 		hotbar[1] = (HotbarCompatible) Equipment.get("empoweredEdge", true);
 		hotbar[2] = (HotbarCompatible) Equipment.get("battleCry", false);
 		hotbar[3] = (HotbarCompatible) Equipment.get("serratedFencingSword", true);
 		offhand = (Offhand) Equipment.get("ricketyShield", false);
 		armors[0] = (Armor) Equipment.get("leatherHelmet", true);
+		*/
 		setupInventory();
 		
 		data.getPlayer().setHealthScaled(true);

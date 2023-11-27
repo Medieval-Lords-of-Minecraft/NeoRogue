@@ -78,9 +78,43 @@ public class PlayerFightData extends FightData {
 		this.manaRegen = sessdata.getManaRegen();
 		addTickAction(new ManaStaminaTickAction());
 	}
+	
+	public void cleanup(PlayerSessionData data) {
+		super.cleanup();
+		
+		// Perform end of fight actions (currently only used for resetting damage ticks)
+		for (Accessory acc : data.getAccessories()) {
+			if (acc == null) continue;
+			acc.cleanup(p, this);
+		}
+		for (Armor armor : data.getArmor()) {
+			if (armor == null) continue;
+			armor.cleanup(p, this);
+		}
+		for (int i = 0; i < data.getHotbar().length; i++) {
+			HotbarCompatible hotbar = data.getHotbar()[i];
+			if (hotbar == null) continue;
+			hotbar.cleanup(p, this);
+		}
+		for (int i = 0; i < data.getOtherBinds().length; i++) {
+			Usable other = data.getOtherBinds()[i];
+			if (other == null) continue;
+			other.cleanup(p, this);
+		}
+		for (ArtifactInstance art : data.getArtifacts()) {
+			if (art == null) continue;
+			art.cleanup(p, this);
+		}
+		
+		if (data.getOffhand() != null) {
+			data.getOffhand().cleanup(p, this);
+		}
+	}
 
+	// Returns whether to cancel the event, which may or may not be ignored if it's an event that can be cancelled
 	public boolean runActions(Trigger trigger, Object[] inputs) {
 		if (triggers.containsKey(trigger)) {
+			boolean cancel = false;
 			Iterator<TriggerAction> iter = triggers.get(trigger).values().iterator();
 			while (iter.hasNext()) {
 				TriggerAction inst = iter.next();
@@ -93,8 +127,9 @@ public class PlayerFightData extends FightData {
 					}
 				}
 				if (!inst.trigger(inputs)) iter.remove();
+				if (inst.isCancelled()) cancel = true;
 			}
-			return true;
+			return cancel;
 		}
 		return false;
 	}

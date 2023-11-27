@@ -26,6 +26,7 @@ public enum Trigger {
 	LOWER_SHIELD(false, false),
 	RECEIVED_DAMAGE_SHIELD(false, false),
 	DEALT_DAMAGE(false, false),
+	PRE_RECEIVED_DAMAGE(false, false), // Useful for cancelling damage, inputs: Damaged, damager
 	RECEIVED_DAMAGE(false, false);
 	
 	private boolean hasCooldownMsg;

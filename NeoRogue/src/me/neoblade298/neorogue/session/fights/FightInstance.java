@@ -64,17 +64,18 @@ public abstract class FightInstance extends Instance {
 		return map;
 	}
 	
-	// This will only ever handle basic left click
+	// This handles basic left click and/or enemy damage
 	public static void handleDamage(EntityDamageByEntityEvent e, boolean playerDamager) {
 		Player p = playerDamager ? (Player) e.getDamager() : (Player) e.getEntity();
 		e.setCancelled(true);
 		if (p.getAttackCooldown() < 0.9F) return;
 		
 		if (playerDamager) {
+			// Left click is always cancelled regardless
 			trigger(p, Trigger.LEFT_CLICK_HIT, new Object[] {p, e.getEntity()});
 		}
 		else {
-			trigger(p, Trigger.RECEIVED_DAMAGE, new Object[] {p, e.getDamager()});
+			e.setCancelled(trigger(p, Trigger.RECEIVED_DAMAGE, new Object[] {p, e.getDamager()}));
 		}
 	}
 	
@@ -86,12 +87,14 @@ public abstract class FightInstance extends Instance {
 	public static void handleOffhandSwap(PlayerSwapHandItemsEvent e) {
 		e.setCancelled(true);
 		Player p = e.getPlayer();
+		// Offhand is always cancelled
 		trigger(p, p.isSneaking() ? Trigger.SHIFT_SWAP : Trigger.SWAP, null);
 	}
 	
 	public static void handleDropItem(PlayerDropItemEvent e) {
 		e.setCancelled(true);
 		Player p = e.getPlayer();
+		// Drop item is always cancelled
 		trigger(p, p.isSneaking() ? Trigger.SHIFT_DROP : Trigger.DROP, null);
 	}
 	
@@ -100,7 +103,6 @@ public abstract class FightInstance extends Instance {
 		if (a == Action.LEFT_CLICK_AIR || a == Action.LEFT_CLICK_BLOCK) {
 			handleLeftClick(e);
 		}
-		// Right click
 		else if (a == Action.RIGHT_CLICK_AIR || a == Action.RIGHT_CLICK_BLOCK) {
 			handleRightClick(e);
 		}
@@ -194,7 +196,8 @@ public abstract class FightInstance extends Instance {
 		}
 	}
 	
-	// Returns true if the event should be cancelled (basically only on hotbar swap)
+	// Method that's called by all listeners and is directly connected to events
+	// Returns true if the event should be cancelled
 	private static boolean trigger(Player p, Trigger trigger, Object[] obj) {
 		PlayerFightData data = userData.get(p.getUniqueId());
 		if (trigger.isSlotDependent()) {
@@ -277,6 +280,14 @@ public abstract class FightInstance extends Instance {
 		double amount = meta.getDamage();
 		double original = amount;
 		DamageType type = meta.getType();
+		
+		// See if any of our effects cancel damage first
+		if (data instanceof PlayerFightData) {
+			PlayerFightData pdata = (PlayerFightData) data;
+			if (pdata.runActions(Trigger.PRE_RECEIVED_DAMAGE, new Object[] {target, damager})) {
+				return;
+			}
+		}
 		
 		// Reduce damage from barriers
 		if (meta.hitBarrier() && data.getBarrier() != null) {

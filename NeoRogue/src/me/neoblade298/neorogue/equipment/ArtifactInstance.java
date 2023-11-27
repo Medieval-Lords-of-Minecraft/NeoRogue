@@ -26,6 +26,9 @@ public class ArtifactInstance implements Comparable<ArtifactInstance> {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int hotbar) {
 		this.artifact.initialize(p, data, bind, hotbar);
 	}
+	public void cleanup(Player p, PlayerFightData data) {
+		this.artifact.cleanup(p, data);
+	}
 	@Override
 	public int compareTo(ArtifactInstance o) {
 		return artifact.getId().compareTo(o.getArtifact().getId());
