@@ -25,20 +25,20 @@ public class CmdAdminTestMap extends Subcommand {
 
 	public CmdAdminTestMap(String key, String desc, String perm, SubcommandRunner runner) {
 		super(key, desc, perm, runner);
-		args.add(new Arg("AreaType", false), new Arg("RequiredPiece", false), new Arg("NumPieces", false));
+		args.add(new Arg("AreaType", false), new Arg("NumPieces", false), new Arg("RequiredPiece", false));
 	}
 
 	@Override
 	public void run(CommandSender s, String[] args) {
-		int numPieces = args.length > 2 ? Integer.parseInt(args[2]) : 5;
+		int numPieces = args.length > 1 ? Integer.parseInt(args[1]) : 5;
 		AreaType type = args.length > 0 ? AreaType.valueOf(args[0]) : AreaType.LOW_DISTRICT;
 		LinkedList<MapPiece> pieces = Map.getPieces(type);
 		Player p = (Player) s;
 
 		MapPiece piece = null;
-		if (args.length > 1) {
+		if (args.length > 2) {
 			for (MapPiece temp : pieces) {
-				if (temp.getId().equalsIgnoreCase(args[1])) {
+				if (temp.getId().equalsIgnoreCase(args[2])) {
 					piece = temp;
 					break;
 				}

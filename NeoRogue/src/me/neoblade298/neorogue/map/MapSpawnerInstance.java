@@ -26,17 +26,11 @@ public class MapSpawnerInstance {
 	public MapSpawnerInstance(MapSpawner original, MapPieceInstance inst, int xOff, int zOff) {
 		this.mythicMob = original.getMythicMob();
 		this.mob = original.getMob();
-		System.out.println("Original coords: " + original.getCoordinates());
 		this.loc = original.getCoordinates().clone().applySettings(inst).toLocation();
-		
-		System.out.println("coords: " + original.getCoordinates().clone().applySettings(inst));
-		System.out.println("0: " + this.loc);
 		this.loc.add(MapPieceInstance.X_FIGHT_OFFSET + xOff - 0.5,
 				MapPieceInstance.Y_OFFSET,
 				MapPieceInstance.Z_FIGHT_OFFSET + zOff + 0.5);
 		this.loc.setX(-this.loc.getX());
-		this.loc.getBlock().setType(Material.GOLD_BLOCK);
-		System.out.println("1: " + this.loc);
 		
 		this.radius = original.getRadius();
 		this.maxMobs = original.getMaxMobs();

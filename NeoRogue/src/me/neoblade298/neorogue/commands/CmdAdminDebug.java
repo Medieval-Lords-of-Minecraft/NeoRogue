@@ -61,7 +61,6 @@ public class CmdAdminDebug extends Subcommand {
 		inst.setFlip(Integer.parseInt(args[1 + offset]) == 1, Integer.parseInt(args[2 + offset]) == 1);
 		int x = 0;
 		int z = 16;
-		System.out.println("Here: " + x + " " + z);
 		
 
 		final int PADDING = (Math.max(piece.getShape().getBaseHeight(), piece.getShape().getBaseLength()) + 1) * 16;

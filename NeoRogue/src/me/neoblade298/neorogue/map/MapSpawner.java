@@ -23,7 +23,6 @@ public class MapSpawner {
 		coords = new Coordinates(piece, cfg.getString("coords"), true);
 		radius = cfg.getDouble("radius");
 		maxMobs = cfg.getInt("maxmobs", -1);
-		System.out.println("A: " + coords);
 	}
 
 	public MythicMob getMythicMob() {

@@ -53,8 +53,8 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 	
 	protected MapPieceInstance(MapPiece piece, Coordinates available, Coordinates toAttach) {
 		this(piece);
-		this.available = available.clone();
-		this.entrance = toAttach.clone();
+		this.available = available.clone().applySettings(this);
+		this.entrance = toAttach.clone().applySettings(this);
 	}
 	
 	public static MapPieceInstance deserialize(String str) {
@@ -224,7 +224,6 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 	}
 	
 	public int[] calculateOffset(Coordinates available) {
-		entrance.applySettings(this);
 		return new int[] { available.getXFacing() - entrance.getX(), available.getY() - entrance.getY(), available.getZFacing() - entrance.getZ() };
 	}
 	

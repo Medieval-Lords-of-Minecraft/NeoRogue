@@ -144,4 +144,45 @@ public class Coordinates extends Rotatable {
 	public boolean isFacing(Coordinates coords) {
 		return getX() == coords.getXFacing() && getZ() == coords.getZFacing() && getXFacing() == coords.getX() && getZFacing() == coords.getZ();
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((dir == null) ? 0 : dir.getValue() + 1);
+		result = prime * result + ((ogDir == null) ? 0 : ogDir.getValue() + 1);
+		result = prime * result + x;
+		result = prime * result + xOff;
+		result = prime * result + xlen;
+		result = prime * result + xp;
+		result = prime * result + y;
+		result = prime * result + yOff;
+		result = prime * result + z;
+		result = prime * result + zOff;
+		result = prime * result + zlen;
+		result = prime * result + zp;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+		Coordinates other = (Coordinates) obj;
+		if (dir != other.dir) return false;
+		if (ogDir != other.ogDir) return false;
+		if (x != other.x) return false;
+		if (xOff != other.xOff) return false;
+		if (xlen != other.xlen) return false;
+		if (xp != other.xp) return false;
+		if (y != other.y) return false;
+		if (yOff != other.yOff) return false;
+		if (z != other.z) return false;
+		if (zOff != other.zOff) return false;
+		if (zlen != other.zlen) return false;
+		if (zp != other.zp) return false;
+		return true;
+	}
 }
+

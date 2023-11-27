@@ -12,7 +12,11 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
@@ -197,7 +201,13 @@ public class Map {
 	
 	private void place(MapPieceInstance inst, boolean deserializing) {
 		MapShape shape = inst.getPiece().getShape();
-		if (!deserializing) entrances.remove(inst.getAvailableEntrance());
+		/*
+		 * Unsure what this piece of code does, it doesn't actually remove anything
+		 * from the entrances list, so removing for now until something breaks
+		if (!deserializing && inst.getAvailableEntrance() != null) {
+			entrances.remove(inst.getAvailableEntrance());
+		}
+		*/
 		shape.applySettings(inst);
 		for (int i = 0; i < shape.getLength(); i++) {
 			for (int j = 0; j < shape.getHeight(); j++) {
@@ -212,6 +222,10 @@ public class Map {
 						Iterator<Coordinates> iter = entrances.iterator();
 						while (iter.hasNext()) {
 							Coordinates entrance = iter.next();
+							// TODO: May need to have an additional check for if the entrance is the one we're connecting to
+							// or not. If it is, it's not a blocked entrance.
+							// As it is right now, all entrances facing this shape are not filled with black concrete, even the ones
+							// that aren't actually used.
 							if (entrance.getXFacing() == inst.getX() + i && entrance.getZFacing() == inst.getZ() + j) {
 								blockedEntrances.add(entrance);
 								iter.remove();
@@ -224,8 +238,7 @@ public class Map {
 		
 		if (!deserializing) {
 			for (Coordinates entrance : inst.getPiece().getEntrances()) {
-				Coordinates coords = entrance.clone();
-				coords.applySettings(inst);
+				Coordinates coords = entrance.clone().applySettings(inst);
 				if (coords.getXFacing() > MAP_SIZE - 1 || coords.getXFacing() < 0 || coords.getZFacing() > MAP_SIZE - 1 || coords.getZFacing() < 0)
 					continue;
 				
@@ -237,6 +250,7 @@ public class Map {
 				entrances.add(coords);
 			}
 		}
+		System.out.println("Entrances final is " + entrances);
 
 		// Set up the mobs
 		for (MapSpawner spawner : inst.getPiece().getSpawners()) {
@@ -277,26 +291,79 @@ public class Map {
 	public void instantiate(FightInstance fi, int xOff, int zOff) {
 		// First clear the board
 		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Area.world)) {
-		    CuboidRegion o = new CuboidRegion(
+		    CuboidRegion r = new CuboidRegion(
 		    		BlockVector3.at(-(xOff + MapPieceInstance.X_FIGHT_OFFSET), 0, MapPieceInstance.Z_FIGHT_OFFSET + zOff),
 		    		BlockVector3.at(-(xOff + MapPieceInstance.X_FIGHT_OFFSET + MAP_SIZE * 16), 128, MapPieceInstance.Z_FIGHT_OFFSET + zOff + MAP_SIZE * 16));
 		    Mask mask = new ExistingBlockMask(editSession);
 		    try {
-			    editSession.replaceBlocks(o, mask, BukkitAdapter.adapt(Material.AIR.createBlockData()));
+			    editSession.replaceBlocks(r, mask, BukkitAdapter.adapt(Material.AIR.createBlockData()));
 			} catch (WorldEditException e) {
 				e.printStackTrace();
 			}
-		}
-		
-		// Setup pieces and spawners
-		for (MapPieceInstance inst : pieces) {
-			inst.instantiate(fi, xOff, zOff);
-		}
-		
-		// Block off all unused entrances
-		blockedEntrances.addAll(entrances);
-		for (Coordinates coords : blockedEntrances) {
-			System.out.println("Coords: " + coords);
+			
+		    new BukkitRunnable() {
+		    	public void run() {
+					// Setup pieces and spawners
+					for (MapPieceInstance inst : pieces) {
+						inst.instantiate(fi, xOff, zOff);
+					}
+					
+					// Block off all unused entrances
+					World w = Bukkit.getWorld(Area.WORLD_NAME);
+					for (Coordinates coords : entrances) {
+						int x = -(xOff + MapPieceInstance.X_FIGHT_OFFSET + (coords.getX() * 16));
+						int y = MapPieceInstance.Y_OFFSET + coords.getY();
+						int z = MapPieceInstance.Z_FIGHT_OFFSET + zOff + (coords.getZ() * 16);
+						int xp = x, zp = z;
+						
+						// Testing only
+					    Location test = new Location(Bukkit.getWorld("Dev"), x, y, z);
+					    test.getBlock().setType(Material.GOLD_BLOCK);
+					    
+					    // Remember that entrance directions are inverted due to how they're constructed
+						switch (coords.getDirection()) {
+						case NORTH:
+							x -= 5;
+							z += 15;
+							xp = x - 4;
+							zp = z;
+							break;
+						case SOUTH:
+							x -= 5;
+							xp = x - 4;
+							z -= 1;
+							zp = z;
+							break;
+						case EAST:
+							z += 5;
+							x -= 15;
+							zp = z + 4;
+							xp = x;
+							break;
+						case WEST:
+							z += 5;
+							zp = z + 4;
+							break;
+						}
+						
+						System.out.println(coords.getDirection().invert() + " " + x + ":" + xp + " " + y + ":" + (y+4) + " " + z + ":" + zp);
+						for (int i = x; i >= xp; i--) {
+							for (int j = y; j < y + 4; j++) {
+								for (int k = z; k <= zp; k++) {
+									Block b = new Location(w, i, j, k).getBlock();
+									if (!b.getType().isOccluding()) b.setType(Material.BLACK_CONCRETE);
+								}
+							}
+						}
+						//r = new CuboidRegion(BlockVector3.at(x, y, z), BlockVector3.at(xp, y + 4, z + zp));
+					    /*try {
+						    editSession.replaceBlocks(r, mask, BukkitAdapter.adapt(Material.BLACK_CONCRETE.createBlockData()));
+						} catch (WorldEditException e) {
+							e.printStackTrace();
+						}*/
+					}
+		    	}
+		    }.runTaskLater(NeoRogue.inst(), 10L);
 		}
 	}
 	
@@ -351,6 +418,7 @@ public class Map {
 		for (String piece : pieces) {
 			map.place(MapPieceInstance.deserialize(piece), true);
 		}
+		map.recalculateEntrances();
 		return map;
 	}
 }
