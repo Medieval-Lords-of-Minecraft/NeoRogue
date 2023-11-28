@@ -9,4 +9,8 @@ public interface TriggerAction {
 	public default boolean isCancelled() {
 		return false;
 	}
+	
+	public default void cancel() {
+		
+	}
 }
