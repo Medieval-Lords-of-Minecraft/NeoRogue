@@ -215,6 +215,12 @@ public class PlayerFightData extends FightData {
 		p.setFoodLevel((int) (this.stamina * 20 / sessdata.getMaxStamina()));
 	}
 	
+	public void addHealth(double amount) {
+		double curr = p.getHealth();
+		double after = Math.max(sessdata.getMaxHealth(), curr + amount);
+		p.setHealth(after);
+	}
+	
 	public void addMana(double amount) {
 		this.mana += amount;
 		updateMana();

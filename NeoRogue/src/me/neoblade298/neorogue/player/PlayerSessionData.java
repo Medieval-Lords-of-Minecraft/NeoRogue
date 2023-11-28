@@ -31,7 +31,7 @@ public class PlayerSessionData {
 	private PlayerClass pc;
 	private double maxHealth, maxMana, maxStamina, health, manaRegen, staminaRegen;
 	private HotbarCompatible[] hotbar = new HotbarCompatible[9];
-	private Armor[] armors = new Armor[4];
+	private Armor[] armors = new Armor[3];
 	private Offhand offhand;
 	private Accessory[] accessories = new Accessory[6];
 	private TreeSet<ArtifactInstance> artifacts = new TreeSet<ArtifactInstance>();

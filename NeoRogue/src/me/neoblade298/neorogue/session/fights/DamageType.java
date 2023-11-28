@@ -12,6 +12,7 @@ public enum DamageType {
 	LIGHT("Light", DamageCategory.MAGICAL, new BuffType[]  { BuffType.LIGHT, BuffType.MAGICAL, BuffType.GENERAL }),
 	BLEED("Bleed", DamageCategory.STATUS, new BuffType[]  { BuffType.STATUS, BuffType.GENERAL }),
 	POISON("Poison", DamageCategory.STATUS, new BuffType[]  { BuffType.STATUS, BuffType.GENERAL }),
+	THORNS("Thorns", DamageCategory.STATUS, new BuffType[] {BuffType.STATUS, BuffType.GENERAL }),
 	OTHER("Other", DamageCategory.OTHER, new BuffType[]  { BuffType.OTHER, BuffType.GENERAL });
 	
 	private DamageCategory category;

@@ -27,10 +27,10 @@ public enum Trigger {
 	RECEIVED_DAMAGE_SHIELD(false, false),
 	DEALT_DAMAGE(false, false),
 	PRE_RECEIVED_DAMAGE(false, false), // Useful for cancelling damage, inputs: Damaged, damager
+	WIN_FIGHT(false, false),
 	RECEIVED_DAMAGE(false, false);
 	
-	private boolean hasCooldownMsg;
-	private boolean isSlotDependent;
+	private boolean hasCooldownMsg, isSlotDependent;
 	private Trigger(boolean hasCooldownMsg, boolean isSlotDependent) {
 		this.hasCooldownMsg = hasCooldownMsg;
 		this.isSlotDependent = isSlotDependent;

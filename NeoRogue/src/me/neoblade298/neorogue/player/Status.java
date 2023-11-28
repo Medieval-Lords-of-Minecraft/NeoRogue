@@ -21,17 +21,27 @@ public abstract class Status {
 	// Setting stacks or status to 0 means they will be untouched
 	public abstract void apply(UUID applier, int stacks, int seconds);
 	
-	public static Status createFromId(String id, UUID applier, FightData target) {
+	public static Status createByType(StatusType id, UUID applier, FightData target) {
 		switch (id) {
-		case "POISON": return new PoisonStatus(target);
-		case "BLEED": return new BleedStatus(target);
-		case "BURN": return new DecrementStackStatus(id, target);
-		case "FROST": return new DecrementStackStatus(id, target);
-		case "ELECTRIFIED": return new DecrementStackStatus(id, target);
-		case "CONCUSSED": return new DecrementStackStatus(id, target);
-		case "INSANITY": return new DecrementStackStatus(id, target);
-		case "SANCTIFIED": return new DecrementStackStatus(id, target);
-		default: return new DurationStatus(id, target);
+		case POISON: return new PoisonStatus(target);
+		case BLEED: return new BleedStatus(target);
+		case BURN: return new DecrementStackStatus(id.name(), target);
+		case FROST: return new DecrementStackStatus(id.name(), target);
+		case ELECTRIFIED: return new DecrementStackStatus(id.name(), target);
+		case CONCUSSED: return new DecrementStackStatus(id.name(), target);
+		case INSANITY: return new DecrementStackStatus(id.name(), target);
+		case SANCTIFIED: return new DecrementStackStatus(id.name(), target);
+		case THORNS: return new BasicStatus(id.name(), target);
+		default: return null;
+		}
+	}
+	
+	public static Status createByGenericType(GenericStatusType type, String id, UUID applier, FightData target) {
+		switch (type) {
+		case DECREMENT_STACK: return new DecrementStackStatus(id, target);
+		case BASIC: return new BasicStatus(id, target);
+		case DURATION: return new DurationStatus(id, target);
+		default: return null;
 		}
 	}
 	
@@ -45,5 +55,12 @@ public abstract class Status {
 	
 	public int getStacks() {
 		return stacks;
+	}
+	
+	public enum StatusType {
+		POISON, BLEED, BURN, FROST, ELECTRIFIED, CONCUSSED, INSANITY, SANCTIFIED, THORNS;
+	}
+	public enum GenericStatusType {
+		DECREMENT_STACK, BASIC, DURATION;
 	}
 }

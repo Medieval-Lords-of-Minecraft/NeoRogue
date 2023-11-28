@@ -34,6 +34,7 @@ import me.neoblade298.neorogue.map.MapPieceInstance;
 import me.neoblade298.neorogue.map.MapSpawnerInstance;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.Status;
+import me.neoblade298.neorogue.player.Status.StatusType;
 import me.neoblade298.neorogue.player.Trigger;
 import me.neoblade298.neorogue.session.Instance;
 import me.neoblade298.neorogue.session.Session;
@@ -76,6 +77,12 @@ public abstract class FightInstance extends Instance {
 		}
 		else {
 			e.setCancelled(trigger(p, Trigger.RECEIVED_DAMAGE, new Object[] {p, e.getDamager()}));
+		}
+	}
+	
+	public static void handleWin() {
+		for (PlayerFightData data : userData.values()) {
+			trigger(data.getPlayer(), Trigger.WIN_FIGHT, new Object[0]);
 		}
 	}
 	
@@ -253,8 +260,8 @@ public abstract class FightInstance extends Instance {
 			}
 		}
 		
-		if (data.hasStatus("FROST") && type.containsBuffType(BuffType.PHYSICAL)) {
-			Status status = data.getStatus("FROST");
+		if (data.hasStatus(StatusType.FROST) && type.containsBuffType(BuffType.PHYSICAL)) {
+			Status status = data.getStatus(StatusType.FROST);
 			int stacks = status.getStacks();
 			for (Entry<UUID, Integer> ent : status.getSlices().getSliceOwners().entrySet()) {
 				userData.get(ent.getKey()).getStats().addDamageMitigated(amount * Math.max(100, ent.getValue()) * 0.01);
@@ -299,11 +306,11 @@ public abstract class FightInstance extends Instance {
 		
 		// Status effects
 		if (!meta.isSecondary()) {
-			if (data.hasStatus("BURN")) {
+			if (data.hasStatus(StatusType.BURN)) {
 				dealDamage(damager, DamageType.FIRE, amount * 0.1, target);
 			}
 			
-			if (data.hasStatus("ELECTRIFIED")) {
+			if (data.hasStatus(StatusType.ELECTRIFIED)) {
 				for (Entity e : target.getNearbyEntities(5, 5, 5)) {
 					if (e == target) continue;
 					if (e instanceof Player) continue;
@@ -314,19 +321,23 @@ public abstract class FightInstance extends Instance {
 				}
 			}
 			
-			if (data.hasStatus("CONCUSSED") && type.containsBuffType(BuffType.PHYSICAL)) {
-				int stacks = data.getStatus("CONCUSSED").getStacks();
+			if (data.hasStatus(StatusType.CONCUSSED) && type.containsBuffType(BuffType.PHYSICAL)) {
+				int stacks = data.getStatus(StatusType.CONCUSSED).getStacks();
 				dealDamage(damager, DamageType.EARTH, amount * stacks * 0.1, target);
 			}
 			
-			if (data.hasStatus("INSANITY") && type.containsBuffType(BuffType.MAGICAL)) {
-				int stacks = data.getStatus("CONCUSSED").getStacks();
+			if (data.hasStatus(StatusType.INSANITY) && type.containsBuffType(BuffType.MAGICAL)) {
+				int stacks = data.getStatus(StatusType.INSANITY).getStacks();
 				dealDamage(damager, DamageType.DARK, amount * stacks * 0.1, target);
 			}
 			
-			if (data.hasStatus("SANCTIFIED")) {
-				int stacks = data.getStatus("SANCTIFIED").getStacks();
+			if (data.hasStatus(StatusType.SANCTIFIED)) {
+				int stacks = data.getStatus(StatusType.SANCTIFIED).getStacks();
 				giveHeal(damager, amount * stacks * 0.1, target);
+			}
+			
+			if (data.hasStatus(StatusType.THORNS)) {
+				dealDamage(damager, DamageType.THORNS, amount * data.getStatus(StatusType.THORNS).getStacks(), target);
 			}
 		}
 

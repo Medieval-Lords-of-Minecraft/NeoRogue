@@ -8,6 +8,7 @@ import me.neoblade298.neorogue.equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.Weapon;
 import me.neoblade298.neorogue.player.Trigger;
+import me.neoblade298.neorogue.player.Status.StatusType;
 import me.neoblade298.neorogue.session.fights.DamageType;
 import me.neoblade298.neorogue.session.fights.FightInstance;
 import me.neoblade298.neorogue.session.fights.PlayerFightData;
@@ -33,7 +34,7 @@ public class SerratedFencingSword extends Weapon {
 		data.addHotbarTrigger(id, hotbar, Trigger.LEFT_CLICK_HIT, (inputs) -> {
 			Damageable target = (Damageable) inputs[1];
 			FightInstance.dealDamage(p, type, damage, target);
-			FightInstance.getFightData(target.getUniqueId()).applyStatus("BLEED", p.getUniqueId(), bleed, 0);
+			FightInstance.getFightData(target.getUniqueId()).applyStatus(StatusType.BLEED, p.getUniqueId(), bleed, 0);
 			data.getShields().addShield(new Shield(data, p.getUniqueId(), shields, true, 1, 100, 1, 1));
 			data.runActions(Trigger.BASIC_ATTACK, inputs);
 			return true;

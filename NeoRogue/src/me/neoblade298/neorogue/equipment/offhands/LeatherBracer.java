@@ -1,24 +1,26 @@
-package me.neoblade298.neorogue.equipment.armor;
+package me.neoblade298.neorogue.equipment.offhands;
 
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.util.Util;
-import me.neoblade298.neorogue.equipment.Armor;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
+import me.neoblade298.neorogue.equipment.Offhand;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.Trigger;
 import me.neoblade298.neorogue.session.fights.PlayerFightData;
 
-public class LeatherBracer extends Armor {
+public class LeatherBracer extends Offhand {
+	private int instances;
 	
 	public LeatherBracer(boolean isUpgraded) {
 		super("leatherBracer", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
 		display = "Leather Bracer";
-		item = createItem(this, Material.LEATHER, null, "Prevents the first instance of taking damage in a fight.");
+		instances = isUpgraded ? 3 : 2;
+		item = createItem(this, Material.LEATHER, null, "Prevents the first <yellow>" + instances + "</yellow> instances of taking damage in a fight.");
 	}
 
 	@Override

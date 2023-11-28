@@ -14,14 +14,14 @@ import me.neoblade298.neorogue.session.fights.Buff;
 import me.neoblade298.neorogue.session.fights.BuffType;
 import me.neoblade298.neorogue.session.fights.PlayerFightData;
 
-public class RicketyShield extends Offhand {
+public class CaptainsTowerShield extends Offhand {
 	private int reduction;
 	
-	public RicketyShield(boolean isUpgraded) {
-		super("ricketyShield", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
-		display = "Rickety Shield";
-		reduction = isUpgraded ? 8 : 5;
-		item = createItem(this, Material.SHIELD, null, "When raised, creates a barrier in front of you of size <yellow>3x3</yellow> "
+	public CaptainsTowerShield(boolean isUpgraded) {
+		super("captainsTowerShield", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
+		display = "Captain's Tower Shield";
+		reduction = isUpgraded ? 10 : 7;
+		item = createItem(this, Material.SHIELD, null, "When raised, creates a barrier in front of you of size <yellow>4x3</yellow> "
 				+ "that intercepts projectiles. Projectiles that hit the barrier hit you but have their damage reduced by <yellow>" + reduction + "</yellow>.");
 	}
 
@@ -30,7 +30,7 @@ public class RicketyShield extends Offhand {
 		data.addTrigger(id, Trigger.RAISE_SHIELD, (inputs) -> {
 			HashMap<BuffType, Buff> buffs = new HashMap<BuffType, Buff>();
 			buffs.put(BuffType.GENERAL, new Buff(p.getUniqueId(), reduction, 0));
-			data.setBarrier(new Barrier(p, 2, 3, 3, 0, buffs, false));
+			data.setBarrier(new Barrier(p, 2, 4, 3, 0, buffs, false));
 			return true;
 		});
 

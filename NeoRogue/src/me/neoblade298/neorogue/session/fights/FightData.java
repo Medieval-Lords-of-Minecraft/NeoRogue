@@ -10,6 +10,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import me.neoblade298.neorogue.player.Status;
+import me.neoblade298.neorogue.player.Status.GenericStatusType;
+import me.neoblade298.neorogue.player.Status.StatusType;
 import me.neoblade298.neorogue.session.Plot;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
@@ -136,14 +138,28 @@ public class FightData {
 		return statuses.containsKey(id);
 	}
 	
+	public boolean hasStatus(StatusType type) {
+		return statuses.containsKey(type.name());
+	}
+	
 	public Status getStatus(String id) {
 		return statuses.get(id);
 	}
 	
-	public void applyStatus(String id, UUID applier, int stacks, int seconds) {
-		Status s = statuses.getOrDefault(id, Status.createFromId(id, applier, this));
+	public Status getStatus(StatusType type) {
+		return statuses.get(type.name());
+	}
+	
+	public void applyStatus(StatusType type, UUID applier, int stacks, int seconds) {
+		Status s = statuses.getOrDefault(type.name(), Status.createByType(type, applier, this));
 		s.apply(applier, stacks, seconds);
-		statuses.put(id, s);
+		statuses.put(type.name(), s);
+	}
+	
+	public void applyStatus(GenericStatusType type, String id, UUID applier, int stacks, int seconds) {
+		Status s = statuses.getOrDefault(type.name(), Status.createByGenericType(type, id, applier, this));
+		s.apply(applier, stacks, seconds);
+		statuses.put(type.name(), s);
 	}
 	
 	public MapSpawnerInstance getSpawner() {

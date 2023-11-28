@@ -10,6 +10,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.Weapon;
 import me.neoblade298.neorogue.player.Trigger;
+import me.neoblade298.neorogue.player.Status.StatusType;
 import me.neoblade298.neorogue.session.fights.DamageType;
 import me.neoblade298.neorogue.session.fights.FightInstance;
 import me.neoblade298.neorogue.session.fights.PlayerFightData;
@@ -46,7 +47,7 @@ public class IronDagger extends Weapon {
 			data.runActions(Trigger.BASIC_ATTACK, inputs);
 			if (++count >= 3) {
 				count = 0;
-				FightInstance.getFightData(((Entity) inputs[1]).getUniqueId()).applyStatus("BLEED", p.getUniqueId(), 6, 0);
+				FightInstance.getFightData(((Entity) inputs[1]).getUniqueId()).applyStatus(StatusType.BLEED, p.getUniqueId(), 6, 0);
 			}
 			return true;
 		}

@@ -50,6 +50,7 @@ public class MinibossFightInstance extends FightInstance {
 		}
 		
 		if (targets.isEmpty()) {
+			FightInstance.handleWin();
 			s.broadcast("You beat the miniboss!");
 			s.setInstance(new RewardInstance(generateRewards()));
 			return;

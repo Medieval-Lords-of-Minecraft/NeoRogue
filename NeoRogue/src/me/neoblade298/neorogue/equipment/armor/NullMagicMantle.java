@@ -10,18 +10,18 @@ import me.neoblade298.neorogue.player.Trigger;
 import me.neoblade298.neorogue.session.fights.BuffType;
 import me.neoblade298.neorogue.session.fights.PlayerFightData;
 
-public class LeatherChestplate extends Armor {
+public class NullMagicMantle extends Armor {
 	private double damageReduction;
 	
-	public LeatherChestplate(boolean isUpgraded) {
-		super("leatherChestplate", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
-		display = "Leather Chestplate";
+	public NullMagicMantle(boolean isUpgraded) {
+		super("nullMagicMantle", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
+		display = "Null Magic Mantle";
 		damageReduction = isUpgraded ? 2 : 1;
-		item = createItem(this, Material.LEATHER_CHESTPLATE, null, "Decrease all physical damage by <yellow>" + damageReduction + ".");
+		item = createItem(this, Material.RABBIT_HIDE, null, "Decrease all magical damage by <yellow>" + damageReduction + ".");
 	}
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int hotbar) {
-		data.addBuff(p.getUniqueId(), false, false, BuffType.PHYSICAL, damageReduction);
+		data.addBuff(p.getUniqueId(), false, false, BuffType.MAGICAL, damageReduction);
 	}
 }

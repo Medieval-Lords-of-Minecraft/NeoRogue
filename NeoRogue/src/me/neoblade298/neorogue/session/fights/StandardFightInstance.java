@@ -88,6 +88,7 @@ public class StandardFightInstance extends FightInstance {
 		
 		score += mob.getValue();
 		if (score >= SCORE_REQUIRED) {
+			FightInstance.handleWin();
 			timeBar.removeAll();
 			scoreBar.removeAll();
 			s.broadcast(Component.text("You completed the fight with a score of ", NamedTextColor.GRAY)

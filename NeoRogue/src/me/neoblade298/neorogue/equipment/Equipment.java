@@ -69,7 +69,7 @@ public abstract class Equipment {
 			new WoodenWand(b);
 			
 			// Offhands
-			new RicketyShield(b);
+			new SmallShield(b);
 			
 			// Abilities
 			new BattleCry(b);
