@@ -21,7 +21,7 @@ public class SpikedPauldrons extends Armor {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, int hotbar) {
+	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
 		data.applyStatus(StatusType.THORNS, p.getUniqueId(), thorns, -1);
 	}
 }

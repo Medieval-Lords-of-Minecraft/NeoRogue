@@ -23,7 +23,7 @@ public class EmeraldGem extends Artifact {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, int hotbar) {
+	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
 		
 	}
 

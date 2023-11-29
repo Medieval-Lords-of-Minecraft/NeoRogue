@@ -30,7 +30,7 @@ public class EmpoweredEdge extends Ability {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, int hotbar) {
+	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
 		data.addTrigger(id, bind, new EmpoweredEdgeInstance(this, p, damage, data, bind));
 	}
 	

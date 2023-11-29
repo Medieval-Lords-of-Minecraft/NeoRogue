@@ -31,31 +31,34 @@ public class PlayerFightData extends FightData {
 		this.sessdata = data;
 
 		// Initialize fight data
+		int i = 0;
 		for (Accessory acc : data.getAccessories()) {
 			if (acc == null) continue;
-			acc.initialize(p, this, null, -1);
+			acc.initialize(p, this, null, i++);
 		}
+		i = 0;
 		for (Armor armor : data.getArmor()) {
 			if (armor == null) continue;
-			armor.initialize(p, this, null, -1);
+			armor.initialize(p, this, null, i++);
 		}
-		for (int i = 0; i < data.getHotbar().length; i++) {
+		for (i = 0; i < data.getHotbar().length; i++) {
 			HotbarCompatible hotbar = data.getHotbar()[i];
 			if (hotbar == null) continue;
 			hotbar.initialize(p, this, Trigger.getFromHotbarSlot(i), i);
 		}
-		for (int i = 0; i < data.getOtherBinds().length; i++) {
+		for (i = 0; i < data.getOtherBinds().length; i++) {
 			Usable other = data.getOtherBinds()[i];
 			if (other == null) continue;
 			other.initialize(p, this, KeyBind.getBindFromData(i).getTrigger(), -1);
 		}
+		i = 0;
 		for (ArtifactInstance art : data.getArtifacts()) {
 			if (art == null) continue;
-			art.initialize(p, this, null, -1);
+			art.initialize(p, this, null, i++);
 		}
 		
 		if (data.getOffhand() != null) {
-			data.getOffhand().initialize(p, this, null, -1);
+			data.getOffhand().initialize(p, this, null, 0);
 		}
 		
 		// Setup inventory
@@ -63,7 +66,7 @@ public class PlayerFightData extends FightData {
 		inv.clear();
 		ItemStack[] contents = inv.getContents();
 		
-		for (int i = 0; i < 9; i++) {
+		for (i = 0; i < 9; i++) {
 			if (data.getHotbar()[i] == null) continue;
 			contents[i] = data.getHotbar()[i].getItem();
 		}
@@ -77,6 +80,10 @@ public class PlayerFightData extends FightData {
 		this.staminaRegen = sessdata.getStaminaRegen();
 		this.manaRegen = sessdata.getManaRegen();
 		addTickAction(new ManaStaminaTickAction());
+	}
+	
+	public PlayerSessionData getSessionData() {
+		return sessdata;
 	}
 	
 	public void cleanup(PlayerSessionData data) {
@@ -134,9 +141,9 @@ public class PlayerFightData extends FightData {
 		return false;
 	}
 
-	public boolean runSlotBasedTriggers(Trigger trigger, int hotbar, Object[] inputs) {
-		if (!slotBasedTriggers.containsKey(hotbar)) return false;
-		HashMap<Trigger, HashMap<String, TriggerAction>> triggers = slotBasedTriggers.get(hotbar);
+	public boolean runSlotBasedTriggers(Trigger trigger, int slot, Object[] inputs) {
+		if (!slotBasedTriggers.containsKey(slot)) return false;
+		HashMap<Trigger, HashMap<String, TriggerAction>> triggers = slotBasedTriggers.get(slot);
 
 		if (triggers.containsKey(trigger)) {
 			Iterator<TriggerAction> iter = triggers.get(trigger).values().iterator();
@@ -157,15 +164,15 @@ public class PlayerFightData extends FightData {
 		return false;
 	}
 	
-	public void addHotbarTrigger(String id, int hotbar, Trigger trigger, TriggerAction action) {
-		HashMap<Trigger, HashMap<String, TriggerAction>> triggers = slotBasedTriggers.getOrDefault(hotbar, 
+	public void addHotbarTrigger(String id, int slot, Trigger trigger, TriggerAction action) {
+		HashMap<Trigger, HashMap<String, TriggerAction>> triggers = slotBasedTriggers.getOrDefault(slot, 
 				new HashMap<Trigger, HashMap<String, TriggerAction>>());
 		
 		HashMap<String, TriggerAction> actions = triggers.containsKey(trigger) ? triggers.get(trigger)
 				: new HashMap<String, TriggerAction>();
 		addTrigger(id, actions, action);
 		triggers.put(trigger, actions);
-		slotBasedTriggers.put(hotbar, triggers);
+		slotBasedTriggers.put(slot, triggers);
 	}
 
 	public void addTrigger(String id, Trigger trigger, TriggerAction action) {
@@ -182,6 +189,10 @@ public class PlayerFightData extends FightData {
 			EquipmentInstance inst = (EquipmentInstance) action;
 			equips.put(id, inst);
 		}
+	}
+	
+	public boolean isActive() {
+		return sessdata.isDead() || getPlayer() == null;
 	}
 
 	public FightInstance getInstance() {

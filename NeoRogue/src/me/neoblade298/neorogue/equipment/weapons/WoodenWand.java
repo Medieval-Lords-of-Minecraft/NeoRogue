@@ -31,14 +31,14 @@ public class WoodenWand extends Weapon {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, int hotbar) {
-		data.addHotbarTrigger(id, hotbar, Trigger.LEFT_CLICK_HIT, (inputs) -> {
+	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
+		data.addHotbarTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (inputs) -> {
 			if (!canCast(data)) return true;
 			new WoodenWandProjectile(p, 0.5, 10, 3, false, false, false, false, 0, 0, data.getInstance(), data, 0.2, 0.2, 0.2);
 			return true;
 		});
 
-		data.addHotbarTrigger(id, hotbar, Trigger.LEFT_CLICK_NO_HIT, (inputs) -> {
+		data.addHotbarTrigger(id, slot, Trigger.LEFT_CLICK_NO_HIT, (inputs) -> {
 			if (!canCast(data)) return true;
 			new WoodenWandProjectile(p, 1, 10, 2, false, false, false, false, 0, 0, data.getInstance(), data, 0.5, 0.2, 0.5);
 			return true;

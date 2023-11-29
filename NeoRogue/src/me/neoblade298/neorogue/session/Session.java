@@ -307,4 +307,10 @@ public class Session {
 			SessionManager.removeFromSession(p.getUniqueId());
 		}
 	}
+	
+	public void deleteSave() {
+		// Add more deletes for everything
+		stmt.executeUpdate("DELETE FROM neorogue_playersessiondata WHERE host = '" + host + "' AND slot = " + saveSlot + ";");
+		stmt.executeQuery("DELETE FROM neorogue_sessions WHERE host = '" + host + "' AND slot = " + saveSlot + ";");
+	}
 }

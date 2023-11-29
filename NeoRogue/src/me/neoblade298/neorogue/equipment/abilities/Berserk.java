@@ -26,7 +26,7 @@ public class Berserk extends Ability {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, int hotbar) {
+	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
 		data.addBuff(p.getUniqueId(), id, false, true, BuffType.GENERAL, 1, seconds);
 		data.addTrigger(id, Trigger.BASIC_ATTACK, (inputs) -> {
 			p.playSound(p, Sound.ENTITY_BLAZE_SHOOT, 1F, 1F);

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -15,6 +16,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
@@ -47,6 +49,7 @@ public abstract class FightInstance extends Instance {
 	private static HashSet<UUID> toTick = new HashSet<UUID>();
 	private static final int KILLS_TO_SCALE = 5; // number of mobs to kill before increasing total mobs by 1
 	
+	protected HashSet<UUID> party = new HashSet<UUID>();
 	protected Map map;
 	protected ArrayList<MapSpawnerInstance> spawners = new ArrayList<MapSpawnerInstance>(),
 			unlimitedSpawners = new ArrayList<MapSpawnerInstance>();
@@ -55,7 +58,9 @@ public abstract class FightInstance extends Instance {
 	protected double spawnCounter; // Holds a value between 0 and 1, when above 1, a mob spawns
 	protected double totalSpawnValue; // Keeps track of total mob spawns, to handle scaling of spawning
 	
-	public FightInstance() {}
+	public FightInstance(Set<UUID> players) {
+		party.addAll(players);
+	}
 	
 	public void instantiate() {
 		map.instantiate(this, s.getXOff(), s.getZOff());
@@ -63,6 +68,34 @@ public abstract class FightInstance extends Instance {
 	
 	public Map getMap() {
 		return map;
+	}
+	
+	public HashSet<UUID> getParty() {
+		return party;
+	}
+	
+	public static void handleDeath(PlayerDeathEvent e) {
+		Player p = e.getEntity();
+		p.spigot().respawn();
+		UUID pu = p.getUniqueId();
+		if (!userData.containsKey(pu)) return;
+		PlayerFightData data = userData.remove(pu);
+		data.getSessionData().setDeath(true);
+
+		// Remove the player's abilities from the fight
+		data.cleanup();
+		fightData.remove(pu).cleanup();
+		PlayerSessionData sdata = data.getSessionData();
+		sdata.setDeath(true);
+		
+		// If that's the last player alive, send them to a post death instance
+		for (UUID uuid : data.getInstance().getParty()) {
+			PlayerFightData fdata = userData.get(uuid);
+			if (fdata.isActive()) return;
+		}
+		
+		// End game as a loss
+		// TODO: Add a loss instance that also deletes the game from saves
 	}
 	
 	// This handles basic left click and/or enemy damage
@@ -207,6 +240,7 @@ public abstract class FightInstance extends Instance {
 	// Returns true if the event should be cancelled
 	private static boolean trigger(Player p, Trigger trigger, Object[] obj) {
 		PlayerFightData data = userData.get(p.getUniqueId());
+		if (data == null) return false;
 		if (trigger.isSlotDependent()) {
 			data.runSlotBasedTriggers(trigger, p.getInventory().getHeldItemSlot(), obj);
 		}
@@ -337,7 +371,7 @@ public abstract class FightInstance extends Instance {
 			}
 			
 			if (data.hasStatus(StatusType.THORNS)) {
-				dealDamage(damager, DamageType.THORNS, amount * data.getStatus(StatusType.THORNS).getStacks(), target);
+				dealDamage(damager, new DamageMeta(amount * data.getStatus(StatusType.THORNS).getStacks(), DamageType.THORNS, false), target);
 			}
 		}
 
@@ -529,13 +563,13 @@ public abstract class FightInstance extends Instance {
 	public abstract String serializeInstanceData();
 	public static FightInstance deserializeInstanceData(Session s, String str) {
 		if (str.startsWith("STANDARD")) {
-			return new StandardFightInstance(Map.deserialize(str.substring("STANDARD:".length())));
+			return new StandardFightInstance(s.getParty().keySet(), Map.deserialize(str.substring("STANDARD:".length())));
 		}
 		else if (str.startsWith("MINIBOSS")) {
-			return new MinibossFightInstance(Map.deserialize(str.substring("MINIBOSS:".length())));
+			return new MinibossFightInstance(s.getParty().keySet(), Map.deserialize(str.substring("MINIBOSS:".length())));
 		}
 		else {
-			return new BossFightInstance(Map.deserialize(str.substring("BOSS:".length())));
+			return new BossFightInstance(s.getParty().keySet(), Map.deserialize(str.substring("BOSS:".length())));
 		}
 	}
 }

@@ -24,7 +24,7 @@ public class FaerieCirclet extends Artifact {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, int hotbar) {
+	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
 		p.setNoDamageTicks(p.getNoDamageTicks() + ticks);
 	}
 

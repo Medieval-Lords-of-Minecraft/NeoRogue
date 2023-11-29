@@ -21,7 +21,7 @@ public class SmallShield extends Offhand {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, int hotbar) {
+	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
 		data.addTrigger(id, Trigger.RAISE_SHIELD, (inputs) -> {
 			data.addBuff(p.getUniqueId(), false, false, BuffType.PHYSICAL, reduction);
 			return false;

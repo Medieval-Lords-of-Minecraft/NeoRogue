@@ -23,7 +23,7 @@ public class WristBlade extends Offhand {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, int hotbar) {
+	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
 		data.addTrigger(id, Trigger.BASIC_ATTACK, new WristBladeInstance(this, data));
 	}
 	

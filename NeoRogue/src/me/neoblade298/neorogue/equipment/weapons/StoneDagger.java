@@ -28,8 +28,8 @@ public class StoneDagger extends Weapon {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, int hotbar) {
-		data.addHotbarTrigger(id, hotbar, Trigger.LEFT_CLICK_HIT, new StoneDaggerInstance(this, p, data));
+	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
+		data.addHotbarTrigger(id, slot, Trigger.LEFT_CLICK_HIT, new StoneDaggerInstance(this, p, data));
 	}
 	
 	private class StoneDaggerInstance extends EquipmentInstance {

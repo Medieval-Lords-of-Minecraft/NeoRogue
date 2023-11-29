@@ -114,7 +114,7 @@ public abstract class Equipment {
 	}
 	
 	// Run at the start of a fight to initialize Fight Data
-	public abstract void initialize(Player p, PlayerFightData data, Trigger bind, int hotbar);
+	public abstract void initialize(Player p, PlayerFightData data, Trigger bind, int slot);
 	
 	// Run at the end of a fight if needed
 	public void cleanup(Player p, PlayerFightData data) {

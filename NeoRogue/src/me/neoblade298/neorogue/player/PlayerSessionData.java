@@ -39,6 +39,7 @@ public class PlayerSessionData {
 	private Usable[] otherBinds = new Usable[8];
 	private int abilitiesEquipped = 0, maxAbilities = 2, maxStorage = 9, coins = 0;
 	private String instanceData;
+	private boolean isDead;
 	
 	public PlayerSessionData(UUID uuid, Session s, ResultSet rs) throws SQLException {
 		data = PlayerManager.getPlayerData(uuid);
@@ -120,6 +121,14 @@ public class PlayerSessionData {
 			inv.setItem(i, eq.getItem());
 		}
  	}
+	
+	public void cleanup() {
+		if (isDead) {
+			Player p = getPlayer();
+			p.setInvisible(false);
+			p.setInvulnerable(false);
+		}
+	}
 	
 	public Player getPlayer() {
 		return data.getPlayer();
@@ -291,12 +300,32 @@ public class PlayerSessionData {
 		getPlayer().setHealth(Math.min(health, maxHealth));
 	}
 	
+	// Used when the player dies
+	public void setDeath(boolean isDead) {
+		Player p = getPlayer();
+		this.isDead = isDead;
+		if (isDead) {
+			this.health = 1;
+			p.setInvulnerable(true);
+			p.setInvisible(true);
+		}
+		else {
+			p.setInvulnerable(false);
+			p.setInvisible(false);
+			p.setHealth(1);
+		}
+	}
+	
 	public void setInstanceData(String str) {
 		this.instanceData = str;
 	}
 	
 	public String getInstanceData() {
 		return instanceData;
+	}
+	
+	public boolean isDead() {
+		return isDead;
 	}
 	
 	public void save(Statement stmt) {

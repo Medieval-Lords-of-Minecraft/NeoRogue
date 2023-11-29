@@ -102,7 +102,7 @@ public class Node {
 		
 		switch (type) {
 		case FIGHT:
-			inst = new StandardFightInstance(area, s.getNodesVisited());
+			inst = new StandardFightInstance(s.getParty().keySet(), area, s.getNodesVisited());
 			break;
 		case CAMPFIRE:
 			inst = new CampfireInstance();
@@ -114,10 +114,10 @@ public class Node {
 			inst = new ShopInstance();
 			break;
 		case MINIBOSS:
-			inst = new MinibossFightInstance(area);
+			inst = new MinibossFightInstance(s.getParty().keySet(), area);
 			break;
 		case BOSS:
-			inst = new BossFightInstance(area);
+			inst = new BossFightInstance(s.getParty().keySet(), area);
 		default:
 			break;
 		}

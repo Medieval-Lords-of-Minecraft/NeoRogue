@@ -21,7 +21,7 @@ public class MinorStaminaRelic extends Accessory {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, int hotbar) {
+	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
 		data.addTickAction(new MinorStaminaRelicTick(data));
 	}
 	

@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.session.fights;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -21,14 +22,14 @@ import me.neoblade298.neorogue.session.Session;
 public class MinibossFightInstance extends FightInstance {
 	private HashSet<String> targets = new HashSet<String>();
 	
-	public MinibossFightInstance(AreaType type) {
-		super();
+	public MinibossFightInstance(Set<UUID> party, AreaType type) {
+		super(party);
 		map = Map.generateMiniboss(type, 2);
 		targets.addAll(map.getTargets());
 	}
 	
-	public MinibossFightInstance(Map map) {
-		super();
+	public MinibossFightInstance(Set<UUID> party, Map map) {
+		super(party);
 		this.map = map;
 		targets.addAll(map.getTargets());
 	}

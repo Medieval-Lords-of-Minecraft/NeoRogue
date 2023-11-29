@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.session.fights;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -34,15 +35,15 @@ public class StandardFightInstance extends FightInstance {
 	private double time, score;
 	private FightScore fightScore = FightScore.S;
 	
-	public StandardFightInstance(AreaType type, int nodesVisited) {
-		super();
+	public StandardFightInstance(Set<UUID> players, AreaType type, int nodesVisited) {
+		super(players);
 		int rand = nodesVisited >= 5 ? NeoCore.gen.nextInt(nodesVisited / 5) : 0;
 		int min = nodesVisited / 10;
 		map = Map.generate(type, 2 + rand + min);
 	}
 	
-	public StandardFightInstance(Map map) {
-		super();
+	public StandardFightInstance(Set<UUID> players, Map map) {
+		super(players);
 		this.map = map;
 	}
 

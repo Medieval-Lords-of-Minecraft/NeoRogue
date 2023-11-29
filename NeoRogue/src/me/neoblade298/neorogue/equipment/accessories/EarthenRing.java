@@ -23,7 +23,7 @@ public class EarthenRing extends Accessory {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, int hotbar) {
+	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
 		data.addTrigger(id, Trigger.BASIC_ATTACK, (in) -> {
 			Damageable target = (Damageable) in[1];
 			FightInstance.dealDamage(p, DamageType.EARTH, damage, target);

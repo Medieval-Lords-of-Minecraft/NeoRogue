@@ -20,6 +20,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
@@ -147,6 +148,11 @@ public class SessionManager implements Listener {
 	public void onSwap(PlayerSwapHandItemsEvent e) {
 		Player p = e.getPlayer();
 		openInventory(p, e);
+	}
+	
+	@EventHandler
+	public void onDeath(PlayerDeathEvent e) {
+		FightInstance.handleDeath(e);
 	}
 
 	private void handlePlayerInventoryInteract(InventoryInteractEvent e) {

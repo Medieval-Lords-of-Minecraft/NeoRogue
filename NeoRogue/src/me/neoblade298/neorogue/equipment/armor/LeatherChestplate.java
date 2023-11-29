@@ -21,7 +21,7 @@ public class LeatherChestplate extends Armor {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, int hotbar) {
+	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
 		data.addBuff(p.getUniqueId(), false, false, BuffType.PHYSICAL, damageReduction);
 	}
 }

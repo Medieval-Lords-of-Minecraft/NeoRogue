@@ -20,7 +20,7 @@ public class Footpads extends Armor {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, int hotbar) {
+	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
 		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, (in) -> {
 			data.addStamina(stamina);
 			return false;
