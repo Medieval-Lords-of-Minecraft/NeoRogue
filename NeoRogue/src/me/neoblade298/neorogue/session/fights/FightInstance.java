@@ -45,6 +45,7 @@ import me.neoblade298.neorogue.session.SessionManager;
 
 public abstract class FightInstance extends Instance {
 	private static HashMap<UUID, PlayerFightData> userData = new HashMap<UUID, PlayerFightData>();
+	private static HashMap<String, Barrier> userBarriers = new HashMap<String, Barrier>();
 	private static HashMap<UUID, FightData> fightData = new HashMap<UUID, FightData>();
 	private static HashMap<UUID, BukkitTask> blockTasks = new HashMap<UUID, BukkitTask>();
 	private static HashSet<UUID> toTick = new HashSet<UUID>();
@@ -54,14 +55,17 @@ public abstract class FightInstance extends Instance {
 	protected Map map;
 	protected ArrayList<MapSpawnerInstance> spawners = new ArrayList<MapSpawnerInstance>(),
 			unlimitedSpawners = new ArrayList<MapSpawnerInstance>();
-	protected HashMap<String, Barrier> userBarriers = new HashMap<String, Barrier>(),
-			enemyBarriers = new HashMap<String, Barrier>();
+	protected HashMap<String, Barrier> enemyBarriers = new HashMap<String, Barrier>();
 	protected ArrayList<BukkitTask> tasks = new ArrayList<BukkitTask>();
 	protected double spawnCounter; // Holds a value between 0 and 1, when above 1, a mob spawns
 	protected double totalSpawnValue; // Keeps track of total mob spawns, to handle scaling of spawning
 	
 	public FightInstance(Set<UUID> players) {
 		party.addAll(players);
+	}
+	
+	public static HashMap<String, Barrier> getUserBarriers() {
+		return userBarriers;
 	}
 	
 	public void instantiate() {
@@ -472,7 +476,7 @@ public abstract class FightInstance extends Instance {
 				// Every 10 ticks
 				for (Session s : SessionManager.getSessions()) {
 					if (!(s.getInstance() instanceof FightInstance)) continue;
-					for (Barrier b : ((FightInstance) s.getInstance()).getBarriers().values()) {
+					for (Barrier b : ((FightInstance) s.getInstance()).getEnemyBarriers().values()) {
 						b.tick();
 					}
 				}
@@ -545,7 +549,7 @@ public abstract class FightInstance extends Instance {
 		owner.removeTask(id);
 	}
 	
-	public HashMap<String, Barrier> getBarriers() {
+	public HashMap<String, Barrier> getEnemyBarriers() {
 		return enemyBarriers;
 	}
 	

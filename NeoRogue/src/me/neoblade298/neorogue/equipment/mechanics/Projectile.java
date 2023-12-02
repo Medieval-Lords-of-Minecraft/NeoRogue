@@ -63,7 +63,7 @@ public abstract class Projectile {
 		
 		// Check for collision with shields
 		if (!ignoreBarriers) {
-			for (Barrier b : inst.getBarriers().values()) {
+			for (Barrier b : inst.getEnemyBarriers().values()) {
 				if (b.collides(loc)) {
 					onHit(FightInstance.getFightData(b.getOwner().getUniqueId()), b);
 					Player p = owner.getEntity() instanceof Player ? (Player) owner.getEntity() : null;
