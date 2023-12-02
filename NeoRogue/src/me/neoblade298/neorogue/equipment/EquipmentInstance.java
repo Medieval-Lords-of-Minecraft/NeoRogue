@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.player.TriggerAction;
+import me.neoblade298.neorogue.session.fights.PlayerFightData;
 
 public abstract class EquipmentInstance implements TriggerAction {
 	private Equipment eq;
@@ -17,22 +18,26 @@ public abstract class EquipmentInstance implements TriggerAction {
 	}
 	
 	@Override
-	public boolean trigger(Object[] inputs) {
+	public boolean trigger(PlayerFightData data, Object[] inputs) {
 		lastUsed = System.currentTimeMillis();
-		return run(inputs);
+		return run(data, inputs);
 	}
 	@Override
 	public boolean isCancelled() {
 		return isCancelled;
 	}
-	public abstract boolean run(Object[] inputs);
+	public abstract boolean run(PlayerFightData data, Object[] inputs);
 	
 	public void setCancelled(boolean isCancelled) {
 		this.isCancelled = isCancelled;
 	}
 	
-	public boolean canTrigger() {
-		return lastUsed + (cooldown * 1000) < System.currentTimeMillis();
+	public boolean canTrigger(Player p, PlayerFightData data) {
+		if (lastUsed + (cooldown * 1000) < System.currentTimeMillis()) {
+			sendCooldownMessage(p);
+			return false;
+		}
+		return true;
 	}
 	
 	public String getDisplay() {

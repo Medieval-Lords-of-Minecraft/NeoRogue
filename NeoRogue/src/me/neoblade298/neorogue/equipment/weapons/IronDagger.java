@@ -28,23 +28,21 @@ public class IronDagger extends Weapon {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
-		data.addHotbarTrigger(id, slot, Trigger.LEFT_CLICK_HIT, new IronDaggerInstance(this, p, data));
+		data.addHotbarTrigger(id, slot, Trigger.LEFT_CLICK_HIT, new IronDaggerInstance(this, p));
 	}
 	
 	private class IronDaggerInstance extends EquipmentInstance {
 		private Player p;
 		private int count = 0;
-		private PlayerFightData data;
-		public IronDaggerInstance(IronDagger eq, Player p, PlayerFightData data) {
+		public IronDaggerInstance(IronDagger eq, Player p) {
 			super(eq);
 			this.p = p;
-			this.data = data;
 		}
 		
 		@Override
-		public boolean run(Object[] inputs) {
+		public boolean run(PlayerFightData data, Object[] inputs) {
 			FightInstance.dealDamage(p, type, damage, ((Damageable) inputs[1]));
-			data.runActions(Trigger.BASIC_ATTACK, inputs);
+			data.runActions(data, Trigger.BASIC_ATTACK, inputs);
 			if (++count >= 3) {
 				count = 0;
 				FightInstance.getFightData(((Entity) inputs[1]).getUniqueId()).applyStatus(StatusType.BLEED, p.getUniqueId(), 6, 0);

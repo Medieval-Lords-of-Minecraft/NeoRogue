@@ -5,11 +5,14 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 public abstract class Ability extends Usable {
-	protected int manaCost = 0;
-	protected int staminaCost = 0;
 	protected int range = 0;
 	public Ability(String id, boolean isUpgraded, Rarity rarity, EquipmentClass ec) {
 		super(id, isUpgraded, rarity, ec);
+	}
+	
+	protected void setBaseProperties(int cooldown, int manaCost, int staminaCost, int range) {
+		super.setBaseProperties(cooldown, manaCost, staminaCost);
+		this.range = range;
 	}
 	
 	public ItemStack createItem(Ability a, Material mat, String[] preLoreLine, String loreLine) {
@@ -25,14 +28,6 @@ public abstract class Ability extends Usable {
 		}
 		
 		return createItem(mat, "Armor", preLore, loreLine, null);
-	}
-	
-	public int getManaCost() {
-		return manaCost;
-	}
-	
-	public int getStaminaCost() {
-		return staminaCost;
 	}
 	
 	public int getRange() {

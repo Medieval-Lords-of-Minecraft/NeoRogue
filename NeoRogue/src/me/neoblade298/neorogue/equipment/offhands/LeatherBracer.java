@@ -36,7 +36,7 @@ public class LeatherBracer extends Offhand {
 		}
 
 		@Override
-		public boolean run(Object[] inputs) {
+		public boolean run(PlayerFightData data, Object[] inputs) {
 			Util.playSound(p, Sound.ITEM_SHIELD_BREAK, 1F, 1F, false);
 			this.setCancelled(true);
 			return true; // Only happens once

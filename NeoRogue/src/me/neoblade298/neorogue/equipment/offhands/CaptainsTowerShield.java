@@ -27,19 +27,19 @@ public class CaptainsTowerShield extends Offhand {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
-		data.addTrigger(id, Trigger.RAISE_SHIELD, (inputs) -> {
+		data.addTrigger(id, Trigger.RAISE_SHIELD, (pdata, inputs) -> {
 			HashMap<BuffType, Buff> buffs = new HashMap<BuffType, Buff>();
 			buffs.put(BuffType.GENERAL, new Buff(p.getUniqueId(), reduction, 0));
 			data.setBarrier(new Barrier(p, 2, 4, 3, 0, buffs, false));
 			return true;
 		});
 
-		data.addTrigger(id, Trigger.SHIELD_TICK, (inputs) -> {
+		data.addTrigger(id, Trigger.SHIELD_TICK, (pdata, inputs) -> {
 			data.getBarrier().tick();
 			return true;
 		});
 		
-		data.addTrigger(id, Trigger.LOWER_SHIELD, (inputs) -> {
+		data.addTrigger(id, Trigger.LOWER_SHIELD, (pdata, inputs) -> {
 			data.setBarrier(null);
 			return true;
 		});

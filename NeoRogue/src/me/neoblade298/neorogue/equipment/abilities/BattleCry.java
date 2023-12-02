@@ -11,11 +11,10 @@ import me.neoblade298.neocore.bukkit.particles.ParticleUtil;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Ability;
 import me.neoblade298.neorogue.equipment.EquipmentClass;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
+import me.neoblade298.neorogue.equipment.HotbarCompatibleInstance;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.Trigger;
 import me.neoblade298.neorogue.session.fights.BuffType;
-import me.neoblade298.neorogue.session.fights.FightData;
 import me.neoblade298.neorogue.session.fights.PlayerFightData;
 
 public class BattleCry extends Ability {
@@ -32,21 +31,19 @@ public class BattleCry extends Ability {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
-		data.addTrigger(id, bind, new BattleCryInstance(this, p, data));
+		data.addTrigger(id, bind, new BattleCryInstance(this, p));
 	}
 	
-	private class BattleCryInstance extends EquipmentInstance {
+	private class BattleCryInstance extends HotbarCompatibleInstance {
 		private Player p;
-		private FightData data;
-		public BattleCryInstance(Ability a, Player p, FightData data) {
+		public BattleCryInstance(Ability a, Player p) {
 			super(a);
 			this.p = p;
 			this.cooldown = a.getCooldown();
-			this.data = data;
 		}
 		
 		@Override
-		public boolean run(Object[] inputs) {
+		public boolean run(PlayerFightData data, Object[] inputs) {
 			Util.playSound(p, Sound.ENTITY_BLAZE_DEATH, 1F, 1F, false);
 			ParticleUtil.spawnParticle(p, false, p.getLocation(), Particle.REDSTONE, 50, 0.5, 0.5, 0.5, 0, new DustOptions(Color.RED, 1F));
 			data.addBuff(p.getUniqueId(), id, true, false, BuffType.PHYSICAL, isUpgraded ? 20 : 14, 10);

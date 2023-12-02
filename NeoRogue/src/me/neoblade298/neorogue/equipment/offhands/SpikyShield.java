@@ -26,21 +26,19 @@ public class SpikyShield extends Offhand {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
-		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, new HastyShieldInstance(this, p, data));
+		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, new HastyShieldInstance(this, p));
 	}
 	
 	private class HastyShieldInstance extends EquipmentInstance {
 		private Player p;
-		private PlayerFightData data;
 		private long nextUsable = 0L;
-		public HastyShieldInstance(Equipment eq, Player p, PlayerFightData data) {
+		public HastyShieldInstance(Equipment eq, Player p) {
 			super(eq);
 			this.p = p;
-			this.data = data;
 		}
 		
 		@Override
-		public boolean run(Object[] inputs) {
+		public boolean run(PlayerFightData data, Object[] inputs) {
 			if (!p.isHandRaised()) return false;
 			long now = System.currentTimeMillis();
 			if (now <= nextUsable) return false;

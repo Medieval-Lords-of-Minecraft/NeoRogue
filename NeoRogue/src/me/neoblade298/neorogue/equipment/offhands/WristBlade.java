@@ -24,21 +24,19 @@ public class WristBlade extends Offhand {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
-		data.addTrigger(id, Trigger.BASIC_ATTACK, new WristBladeInstance(this, data));
+		data.addTrigger(id, Trigger.BASIC_ATTACK, new WristBladeInstance(this));
 	}
 	
 	private class WristBladeInstance extends EquipmentInstance {
-		private PlayerFightData data;
 		private int count = 0;
-		public WristBladeInstance(Equipment eq, PlayerFightData data) {
+		public WristBladeInstance(Equipment eq) {
 			super(eq);
-			this.data = data;
 		}
 		
 		@Override
-		public boolean run(Object[] inputs) {
+		public boolean run(PlayerFightData data, Object[] inputs) {
 			if (++count >= hits) {
-				data.runActions(Trigger.BASIC_ATTACK, inputs);
+				data.runActions(data, Trigger.BASIC_ATTACK, inputs);
 				count = 0;
 			}
 			return false;

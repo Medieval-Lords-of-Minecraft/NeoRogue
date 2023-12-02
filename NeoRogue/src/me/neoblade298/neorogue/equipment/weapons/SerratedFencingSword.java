@@ -31,12 +31,12 @@ public class SerratedFencingSword extends Weapon {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
-		data.addHotbarTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (inputs) -> {
+		data.addHotbarTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
 			Damageable target = (Damageable) inputs[1];
 			FightInstance.dealDamage(p, type, damage, target);
 			FightInstance.getFightData(target.getUniqueId()).applyStatus(StatusType.BLEED, p.getUniqueId(), bleed, 0);
 			data.getShields().addShield(new Shield(data, p.getUniqueId(), shields, true, 1, 100, 1, 1));
-			data.runActions(Trigger.BASIC_ATTACK, inputs);
+			pdata.runActions(pdata, Trigger.BASIC_ATTACK, inputs);
 			return true;
 		});
 	}

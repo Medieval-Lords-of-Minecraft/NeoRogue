@@ -33,7 +33,7 @@ public abstract class Equipment {
 			new HashMap<EquipmentClass, HashMap<Integer, DropTable<Equipment>>>();
 	protected String id, display;
 	protected ArrayList<String> reforgeOptions = new ArrayList<String>();
-	protected boolean isUpgraded;
+	protected boolean isUpgraded, canDrop;
 	protected ItemStack item;
 	protected Rarity rarity;
 	protected EquipmentClass ec;
@@ -104,6 +104,7 @@ public abstract class Equipment {
 		if (isUpgraded) upgraded.put(id, this);
 		else equipment.put(id, this);
 		
+		if (!canDrop) return;
 		if (value >= 2) {
 			droptables.get(ec).get(value - 2).add(this, 1); // Rare drop for the value
 		}

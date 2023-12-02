@@ -95,7 +95,7 @@ public class Session {
 	}
 	
 	public void save(Statement insert, Statement delete) {
-		if (inst instanceof FightInstance) return;
+		if (inst instanceof FightInstance || inst instanceof LoseInstance) return;
 		
 		try {
 			SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_sessions")
@@ -309,8 +309,14 @@ public class Session {
 	}
 	
 	public void deleteSave() {
-		// Add more deletes for everything
-		stmt.executeUpdate("DELETE FROM neorogue_playersessiondata WHERE host = '" + host + "' AND slot = " + saveSlot + ";");
-		stmt.executeQuery("DELETE FROM neorogue_sessions WHERE host = '" + host + "' AND slot = " + saveSlot + ";");
+		try (Connection con = SQLManager.getConnection("NeoRogue");
+				Statement stmt = con.createStatement()){
+			stmt.executeUpdate("DELETE FROM neorogue_playersessiondata WHERE host = '" + host + "' AND slot = " + saveSlot + ";");
+			stmt.executeUpdate("DELETE FROM neorogue_sessions WHERE host = '" + host + "' AND slot = " + saveSlot + ";");
+			stmt.executeUpdate("DELETE FROM neorogue_sessions WHERE host = '" + host + "' AND slot = " + saveSlot + ";");
+		} catch (SQLException ex) {
+			Bukkit.getLogger().warning("[NeoRogue] Failed to acquire connection to delete session hosted by " + host + " from slot " + saveSlot);
+			ex.printStackTrace();
+		}
 	}
 }

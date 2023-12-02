@@ -39,6 +39,7 @@ import me.neoblade298.neorogue.player.Status;
 import me.neoblade298.neorogue.player.Status.StatusType;
 import me.neoblade298.neorogue.player.Trigger;
 import me.neoblade298.neorogue.session.Instance;
+import me.neoblade298.neorogue.session.LoseInstance;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
 
@@ -53,7 +54,8 @@ public abstract class FightInstance extends Instance {
 	protected Map map;
 	protected ArrayList<MapSpawnerInstance> spawners = new ArrayList<MapSpawnerInstance>(),
 			unlimitedSpawners = new ArrayList<MapSpawnerInstance>();
-	protected HashMap<String, Barrier> enemyBarriers = new HashMap<String, Barrier>();
+	protected HashMap<String, Barrier> userBarriers = new HashMap<String, Barrier>(),
+			enemyBarriers = new HashMap<String, Barrier>();
 	protected ArrayList<BukkitTask> tasks = new ArrayList<BukkitTask>();
 	protected double spawnCounter; // Holds a value between 0 and 1, when above 1, a mob spawns
 	protected double totalSpawnValue; // Keeps track of total mob spawns, to handle scaling of spawning
@@ -95,7 +97,7 @@ public abstract class FightInstance extends Instance {
 		}
 		
 		// End game as a loss
-		// TODO: Add a loss instance that also deletes the game from saves
+		data.getInstance().s.setInstance(new LoseInstance());
 	}
 	
 	// This handles basic left click and/or enemy damage
@@ -242,9 +244,9 @@ public abstract class FightInstance extends Instance {
 		PlayerFightData data = userData.get(p.getUniqueId());
 		if (data == null) return false;
 		if (trigger.isSlotDependent()) {
-			data.runSlotBasedTriggers(trigger, p.getInventory().getHeldItemSlot(), obj);
+			data.runSlotBasedTriggers(data, trigger, p.getInventory().getHeldItemSlot(), obj);
 		}
-		return data.runActions(trigger, obj);
+		return data.runActions(data, trigger, obj);
 	}
 	
 	public static FightData getFightData(UUID uuid) {
@@ -325,7 +327,7 @@ public abstract class FightInstance extends Instance {
 		// See if any of our effects cancel damage first
 		if (data instanceof PlayerFightData) {
 			PlayerFightData pdata = (PlayerFightData) data;
-			if (pdata.runActions(Trigger.PRE_RECEIVED_DAMAGE, new Object[] {target, damager})) {
+			if (pdata.runActions(pdata, Trigger.PRE_RECEIVED_DAMAGE, new Object[] {target, damager})) {
 				return;
 			}
 		}
@@ -513,16 +515,26 @@ public abstract class FightInstance extends Instance {
 		toTick.add(uuid);
 	}
 	
-	public void addBarrier(FightData owner, String id, Barrier b, int duration) {
+	// For any barrier that isn't the user's personal barrier (shield)
+	public void addUserBarrier(PlayerFightData owner, Barrier b, int duration) {
+		addBarrier(owner, null, b, duration, true);
+	}
+	
+	public void addEnemyBarrier(PlayerFightData owner, Barrier b, int duration) {
+		addBarrier(owner, null, b, duration, false);
+	}
+	
+	public void addBarrier(FightData owner, String id, Barrier b, int duration, boolean isUser) {
 		if (id == null) {
 			id = UUID.randomUUID().toString().substring(0, 8);
 		}
-		enemyBarriers.put(id, b);
+		HashMap<String, Barrier> barriers = isUser ? userBarriers : enemyBarriers;
+		barriers.put(id, b);
 		final String fid = id;
 		
 		owner.addTask(id, new BukkitRunnable() {
 			public void run() {
-				enemyBarriers.remove(fid);
+				barriers.remove(fid);
 				owner.removeTask(fid);
 			}
 		}.runTaskLater(NeoRogue.inst(), duration));

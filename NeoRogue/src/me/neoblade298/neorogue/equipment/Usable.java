@@ -7,6 +7,11 @@ public abstract class Usable extends HotbarCompatible {
 		super(id, isUpgraded, rarity, ec);
 	}
 	
+	protected void setBaseProperties(int cooldown, int manaCost, int staminaCost) {
+		super.setBaseProperties(manaCost, staminaCost);
+		this.cooldown = cooldown;
+	}
+	
 	public int getCooldown() {
 		return cooldown;
 	}

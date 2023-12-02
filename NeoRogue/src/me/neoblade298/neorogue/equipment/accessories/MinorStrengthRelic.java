@@ -1,0 +1,27 @@
+package me.neoblade298.neorogue.equipment.accessories;
+
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+
+import me.neoblade298.neorogue.equipment.Accessory;
+import me.neoblade298.neorogue.equipment.EquipmentClass;
+import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.player.Trigger;
+import me.neoblade298.neorogue.session.fights.BuffType;
+import me.neoblade298.neorogue.session.fights.PlayerFightData;
+
+public class MinorStrengthRelic extends Accessory {
+	private double str;
+	
+	public MinorStrengthRelic(boolean isUpgraded) {
+		super("minorStrengthRelic", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
+		str = isUpgraded ? 1.5 : 1;
+		display = "Minor Strength Relic";
+		item = createItem(Material.REDSTONE, "ACCESSORY", reforgeOptions, "Increases physical damage by <yellow>" + str + "</yellow>.");
+	}
+
+	@Override
+	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
+		data.addBuff(p.getUniqueId(), true, false, BuffType.PHYSICAL, str);
+	}
+}

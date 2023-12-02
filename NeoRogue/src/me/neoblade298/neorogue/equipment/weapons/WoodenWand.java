@@ -29,17 +29,33 @@ public class WoodenWand extends Weapon {
 		attackSpeed = 0.5;
 		item = createItem(Material.WOODEN_HOE, null, null);
 	}
+	
+	private boolean cast(PlayerFightData data) {
+		if (data.getMana() <= manaCost) {
+			Util.displayError(data.getPlayer(), "Not enough mana!");
+			return false;
+		}
+		
+		if (data.getStamina() <= staminaCost) {
+			Util.displayError(data.getPlayer(), "Not enough stamina!");
+			return false;
+		}
+		
+		data.addMana(-manaCost);
+		data.addStamina(-staminaCost);
+		return true;
+	}
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
-		data.addHotbarTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (inputs) -> {
-			if (!canCast(data)) return true;
+		data.addHotbarTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (d, inputs) -> {
+			if (!cast(data)) return true;
 			new WoodenWandProjectile(p, 0.5, 10, 3, false, false, false, false, 0, 0, data.getInstance(), data, 0.2, 0.2, 0.2);
 			return true;
 		});
 
-		data.addHotbarTrigger(id, slot, Trigger.LEFT_CLICK_NO_HIT, (inputs) -> {
-			if (!canCast(data)) return true;
+		data.addHotbarTrigger(id, slot, Trigger.LEFT_CLICK_NO_HIT, (d, inputs) -> {
+			if (!cast(data)) return true;
 			new WoodenWandProjectile(p, 1, 10, 2, false, false, false, false, 0, 0, data.getInstance(), data, 0.5, 0.2, 0.5);
 			return true;
 		});
@@ -75,7 +91,7 @@ public class WoodenWand extends Weapon {
 				finalDamage = hitBarrier.applyDefenseBuffs(finalDamage, type);
 			}
 			FightInstance.dealDamage(p, type, finalDamage, hit.getEntity());
-			data.runActions(Trigger.BASIC_ATTACK, new Object[] { p, hit.getEntity() });
+			data.runActions(data, Trigger.BASIC_ATTACK, new Object[] { p, hit.getEntity() });
 			Util.playSound(p, hit.getEntity().getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1F, 1F, true);
 			ParticleUtil.spawnParticle(p, true, hit.getEntity().getLocation(), Particle.EXPLOSION_NORMAL, 2, 0.1, 0.1, 0.1, 0);
 		}

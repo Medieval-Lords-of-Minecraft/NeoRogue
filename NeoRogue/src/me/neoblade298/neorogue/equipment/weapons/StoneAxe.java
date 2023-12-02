@@ -28,11 +28,11 @@ public class StoneAxe extends Weapon {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
-		data.addHotbarTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (inputs) -> {
+		data.addHotbarTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
 			Buff b = data.getBuff(true, BuffType.PHYSICAL);
 			double strength = b.getIncrease();
 			FightInstance.dealDamage(p, type, damage + (strength * 2), ((Damageable) inputs[1]));
-			data.runActions(Trigger.BASIC_ATTACK, inputs);
+			pdata.runActions(pdata, Trigger.BASIC_ATTACK, inputs);
 			return true;
 		});
 	}

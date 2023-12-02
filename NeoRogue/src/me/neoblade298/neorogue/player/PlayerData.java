@@ -111,6 +111,10 @@ public class PlayerData {
 		snapshots.put(saveSlot, new SessionSnapshot(s));
 	}
 	
+	public void removeSnapshot(int saveSlot) {
+		snapshots.remove(saveSlot);
+	}
+	
 	public void save(Statement stmt) {
 		// Only saves player data and ascension tree, session saving is handled elsewhere
 		try {

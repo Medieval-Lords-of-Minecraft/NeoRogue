@@ -119,7 +119,7 @@ public class PlayerFightData extends FightData {
 	}
 
 	// Returns whether to cancel the event, which may or may not be ignored if it's an event that can be cancelled
-	public boolean runActions(Trigger trigger, Object[] inputs) {
+	public boolean runActions(PlayerFightData data, Trigger trigger, Object[] inputs) {
 		if (triggers.containsKey(trigger)) {
 			boolean cancel = false;
 			Iterator<TriggerAction> iter = triggers.get(trigger).values().iterator();
@@ -128,12 +128,11 @@ public class PlayerFightData extends FightData {
 
 				if (inst instanceof EquipmentInstance) {
 					EquipmentInstance ei = (EquipmentInstance) inst;
-					if (!ei.canTrigger()) {
-						ei.sendCooldownMessage(sessdata.getPlayer());
+					if (!ei.canTrigger(p, data)) {
 						continue;
 					}
 				}
-				if (!inst.trigger(inputs)) iter.remove();
+				if (!inst.trigger(data, inputs)) iter.remove();
 				if (inst.isCancelled()) cancel = true;
 			}
 			return cancel;
@@ -141,7 +140,7 @@ public class PlayerFightData extends FightData {
 		return false;
 	}
 
-	public boolean runSlotBasedTriggers(Trigger trigger, int slot, Object[] inputs) {
+	public boolean runSlotBasedTriggers(PlayerFightData data, Trigger trigger, int slot, Object[] inputs) {
 		if (!slotBasedTriggers.containsKey(slot)) return false;
 		HashMap<Trigger, HashMap<String, TriggerAction>> triggers = slotBasedTriggers.get(slot);
 
@@ -152,12 +151,12 @@ public class PlayerFightData extends FightData {
 
 				if (inst instanceof EquipmentInstance) {
 					EquipmentInstance ei = (EquipmentInstance) inst;
-					if (!ei.canTrigger()) {
+					if (!ei.canTrigger(p, data)) {
 						ei.sendCooldownMessage(sessdata.getPlayer());
 						continue;
 					}
 				}
-				if (!inst.trigger(inputs)) iter.remove();
+				if (!inst.trigger(data, inputs)) iter.remove();
 			}
 			return true;
 		}

@@ -1,20 +1,18 @@
 package me.neoblade298.neorogue.session;
 
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import me.neoblade298.neocore.bukkit.util.Util;
+
 import me.neoblade298.neorogue.area.Area;
+import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class LoseInstance extends EditInventoryInstance {
 	private static final int LOSE_X = 6, LOSE_Z = 84;
@@ -28,8 +26,10 @@ public class LoseInstance extends EditInventoryInstance {
 		for (PlayerSessionData data : s.getParty().values()) {
 			data.getPlayer().teleport(spawn);
 		}
-		
-		s.get
+
+		s.broadcast(Component.text("You lost!", NamedTextColor.RED));
+		PlayerManager.getPlayerData(s.getHost()).removeSnapshot(s.getSaveSlot());
+		s.deleteSave();
 	}
 
 	@Override

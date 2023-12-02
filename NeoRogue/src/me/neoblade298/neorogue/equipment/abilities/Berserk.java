@@ -28,7 +28,7 @@ public class Berserk extends Ability {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
 		data.addBuff(p.getUniqueId(), id, false, true, BuffType.GENERAL, 1, seconds);
-		data.addTrigger(id, Trigger.BASIC_ATTACK, (inputs) -> {
+		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, inputs) -> {
 			p.playSound(p, Sound.ENTITY_BLAZE_SHOOT, 1F, 1F);
 			ParticleUtil.spawnParticle(p, false, p.getLocation(), Particle.FLAME, 25, 0.5, 0.5, 0.5, 0.1, null);
 			data.addBuff(p.getUniqueId(), true, false, BuffType.GENERAL, 1);

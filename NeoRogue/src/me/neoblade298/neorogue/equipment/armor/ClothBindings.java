@@ -21,7 +21,7 @@ public class ClothBindings extends Armor {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
-		data.addTrigger(id, Trigger.WIN_FIGHT, (in) -> {
+		data.addTrigger(id, Trigger.WIN_FIGHT, (pdata, in) -> {
 			data.addHealth(health);
 			return true;
 		});
