@@ -177,17 +177,17 @@ public class SessionManager implements Listener {
 		}
 	}
 
+	
+	// Only handles player left click
 	@EventHandler
 	public void onDamage(EntityDamageByEntityEvent e) {
-		if (e.getEntityType() != EntityType.PLAYER && e.getDamager().getType() != EntityType.PLAYER) return;
-
-		boolean playerDamager = e.getEntityType() != EntityType.PLAYER;
-		UUID uuid = playerDamager ? e.getDamager().getUniqueId() : e.getEntity().getUniqueId();
+		if (e.getDamager().getType() != EntityType.PLAYER) return;
+		UUID uuid = e.getDamager().getUniqueId();
 		if (!sessions.containsKey(uuid)) return;
 		Session s = sessions.get(uuid);
 
 		if (!(s.getInstance() instanceof FightInstance)) return;
-		FightInstance.handleDamage(e, playerDamager);
+		FightInstance.handleDamage(e);
 	}
 
 	@EventHandler

@@ -26,10 +26,9 @@ public enum Trigger {
 	LOWER_SHIELD(false, false),
 	RECEIVED_DAMAGE_SHIELD(false, false),
 	DEALT_DAMAGE(false, false),
-	PRE_RECEIVED_DAMAGE(false, false), // Useful for cancelling damage, inputs: Damaged, damager
 	WIN_FIGHT(false, false),
 	APPLY_STATUS(false, false), // Damageable target, Status ID, stacks, duration
-	RECEIVED_DAMAGE(false, false);
+	RECEIVED_DAMAGE(false, false); // Cancellable
 	
 	private boolean hasCooldownMsg, isSlotDependent;
 	private Trigger(boolean hasCooldownMsg, boolean isSlotDependent) {

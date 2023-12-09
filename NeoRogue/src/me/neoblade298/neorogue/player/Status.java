@@ -28,7 +28,7 @@ public abstract class Status {
 		case BURN: return new DecrementStackStatus(id.name(), target);
 		case FROST: return new DecrementStackStatus(id.name(), target);
 		case ELECTRIFIED: return new DecrementStackStatus(id.name(), target);
-		case CONCUSSED: return new DecrementStackStatus(id.name(), target);
+		case CONCUSSED: return new ConcussedStatus(target);
 		case INSANITY: return new DecrementStackStatus(id.name(), target);
 		case SANCTIFIED: return new DecrementStackStatus(id.name(), target);
 		case THORNS: return new BasicStatus(id.name(), target);

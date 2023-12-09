@@ -1,12 +1,13 @@
 package me.neoblade298.neorogue.equipment.weapons;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-import me.neoblade298.neocore.bukkit.particles.ParticleUtil;
+import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -20,6 +21,14 @@ import me.neoblade298.neorogue.session.fights.FightInstance;
 import me.neoblade298.neorogue.session.fights.PlayerFightData;
 
 public class WoodenWand extends Weapon {
+	private static ParticleContainer tick, explode;
+	
+	static {
+		tick = new ParticleContainer(Particle.FLAME);
+		tick.count(10).offset(0.1, 0.1).speed(0.01);
+		explode = new ParticleContainer(Particle.EXPLOSION_NORMAL);
+	}
+	
 	public WoodenWand(boolean isUpgraded) {
 		super("woodenWand", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE);
 		display = "Wooden Wand";
@@ -48,13 +57,13 @@ public class WoodenWand extends Weapon {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
-		data.addHotbarTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (d, inputs) -> {
+		data.addTrigger(id, Trigger.LEFT_CLICK_HIT, (d, inputs) -> {
 			if (!cast(data)) return true;
 			new WoodenWandProjectile(p, 0.5, 10, 3, false, false, false, false, 0, 0, data.getInstance(), data, 0.2, 0.2, 0.2);
 			return true;
 		});
 
-		data.addHotbarTrigger(id, slot, Trigger.LEFT_CLICK_NO_HIT, (d, inputs) -> {
+		data.addTrigger(id, Trigger.LEFT_CLICK_NO_HIT, (d, inputs) -> {
 			if (!cast(data)) return true;
 			new WoodenWandProjectile(p, 1, 10, 2, false, false, false, false, 0, 0, data.getInstance(), data, 0.5, 0.2, 0.5);
 			return true;
@@ -62,8 +71,8 @@ public class WoodenWand extends Weapon {
 	}
 	
 	private class WoodenWandProjectile extends Projectile {
-		PlayerFightData data;
-		Player p;
+		private PlayerFightData data;
+		private Player p;
 		public WoodenWandProjectile(LivingEntity origin, double blocksPerTick, double maxRange, int tickSpeed,
 				boolean pierce, boolean ignoreBarriers, boolean ignoreBlocks, boolean ignoreEntities, double yRotate, double gravity,
 				FightInstance inst, PlayerFightData owner, double x, double y, double z) {
@@ -75,7 +84,8 @@ public class WoodenWand extends Weapon {
 
 		@Override
 		public void onTick() {
-			ParticleUtil.spawnParticle(p, true, loc, Particle.FLAME, 10, 0.1, 0.1, 0.1, 0.01);
+			// How do I allow people to individually opt out of this?
+			tick.spawn(loc);
 			Util.playSound(p, loc, Sound.ENTITY_BLAZE_SHOOT, 1F, 1F, true);
 		}
 
@@ -92,8 +102,9 @@ public class WoodenWand extends Weapon {
 			}
 			FightInstance.dealDamage(p, type, finalDamage, hit.getEntity());
 			data.runActions(data, Trigger.BASIC_ATTACK, new Object[] { p, hit.getEntity() });
-			Util.playSound(p, hit.getEntity().getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1F, 1F, true);
-			ParticleUtil.spawnParticle(p, true, hit.getEntity().getLocation(), Particle.EXPLOSION_NORMAL, 2, 0.1, 0.1, 0.1, 0);
+			Location loc = hit.getEntity().getLocation();
+			Util.playSound(p, loc, Sound.ENTITY_GENERIC_EXPLODE, 1F, 1F, true);
+			explode.spawn(loc);
 		}
 	}
 }

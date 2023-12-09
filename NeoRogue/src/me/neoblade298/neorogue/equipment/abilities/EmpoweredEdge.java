@@ -6,7 +6,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
 
-import me.neoblade298.neocore.bukkit.particles.ParticleUtil;
+import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Ability;
 import me.neoblade298.neorogue.equipment.EquipmentClass;
@@ -19,6 +19,8 @@ import me.neoblade298.neorogue.session.fights.PlayerFightData;
 
 public class EmpoweredEdge extends Ability {
 	private int damage;
+	private ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
+			hit = new ParticleContainer(Particle.REDSTONE);
 	
 	public EmpoweredEdge(boolean isUpgraded) {
 		super("empoweredEdge", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
@@ -27,11 +29,13 @@ public class EmpoweredEdge extends Ability {
 		damage = isUpgraded ? 100 : 75;
 		item = createItem(this, Material.FLINT, null,
 				"On cast, your next basic attack deals <yellow>" + damage + " </yellow>damage.");
+		pc.count(50).offset(0.5, 0.5).speed(0.2);
+		hit.count(50).offset(0.5, 0.5);
 	}
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
-		data.addTrigger(id, bind, new EmpoweredEdgeInstance(this, p, damage, bind));
+		data.addHotbarTrigger(id, slot, bind, new EmpoweredEdgeInstance(this, p, damage, bind));
 	}
 	
 	private class EmpoweredEdgeInstance extends EquipmentInstance {
@@ -45,10 +49,11 @@ public class EmpoweredEdge extends Ability {
 		@Override
 		public boolean run(PlayerFightData data, Object[] inputs) {
 			Util.playSound(p, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1F, 1F, false);
-			ParticleUtil.spawnParticle(p, false, p.getLocation(), Particle.CLOUD, 50, 0.5, 0.5,
-					0.5, 0.2);
+			pc.spawn(p);
 			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
 				FightInstance.dealDamage(p, DamageType.SLASHING, damage, (Damageable) in[1]);
+				hit.spawn(((Damageable) in[1]).getLocation());
+				Util.playSound(p, Sound.BLOCK_ANVIL_LAND, 1F, 1F, false);
 				return false;
 			});
 			return true;

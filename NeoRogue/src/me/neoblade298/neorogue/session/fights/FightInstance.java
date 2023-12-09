@@ -45,7 +45,7 @@ import me.neoblade298.neorogue.session.SessionManager;
 
 public abstract class FightInstance extends Instance {
 	private static HashMap<UUID, PlayerFightData> userData = new HashMap<UUID, PlayerFightData>();
-	private static HashMap<String, Barrier> userBarriers = new HashMap<String, Barrier>();
+	private static HashMap<UUID, Barrier> userBarriers = new HashMap<UUID, Barrier>();
 	private static HashMap<UUID, FightData> fightData = new HashMap<UUID, FightData>();
 	private static HashMap<UUID, BukkitTask> blockTasks = new HashMap<UUID, BukkitTask>();
 	private static HashSet<UUID> toTick = new HashSet<UUID>();
@@ -55,7 +55,7 @@ public abstract class FightInstance extends Instance {
 	protected Map map;
 	protected ArrayList<MapSpawnerInstance> spawners = new ArrayList<MapSpawnerInstance>(),
 			unlimitedSpawners = new ArrayList<MapSpawnerInstance>();
-	protected HashMap<String, Barrier> enemyBarriers = new HashMap<String, Barrier>();
+	protected HashMap<UUID, Barrier> enemyBarriers = new HashMap<UUID, Barrier>();
 	protected ArrayList<BukkitTask> tasks = new ArrayList<BukkitTask>();
 	protected double spawnCounter; // Holds a value between 0 and 1, when above 1, a mob spawns
 	protected double totalSpawnValue; // Keeps track of total mob spawns, to handle scaling of spawning
@@ -64,7 +64,7 @@ public abstract class FightInstance extends Instance {
 		party.addAll(players);
 	}
 	
-	public static HashMap<String, Barrier> getUserBarriers() {
+	public static HashMap<UUID, Barrier> getUserBarriers() {
 		return userBarriers;
 	}
 	
@@ -105,18 +105,12 @@ public abstract class FightInstance extends Instance {
 	}
 	
 	// This handles basic left click and/or enemy damage
-	public static void handleDamage(EntityDamageByEntityEvent e, boolean playerDamager) {
-		Player p = playerDamager ? (Player) e.getDamager() : (Player) e.getEntity();
+	public static void handleDamage(EntityDamageByEntityEvent e) {
+		Player p = (Player) e.getDamager();
 		e.setCancelled(true);
 		if (p.getAttackCooldown() < 0.9F) return;
 		
-		if (playerDamager) {
-			// Left click is always cancelled regardless
-			trigger(p, Trigger.LEFT_CLICK_HIT, new Object[] {p, e.getEntity()});
-		}
-		else {
-			e.setCancelled(trigger(p, Trigger.RECEIVED_DAMAGE, new Object[] {p, e.getDamager()}));
-		}
+		trigger(p, Trigger.LEFT_CLICK_HIT, new Object[] {p, e.getEntity()});
 	}
 	
 	public static void handleWin() {
@@ -315,6 +309,8 @@ public abstract class FightInstance extends Instance {
 		if (data instanceof PlayerFightData) {
 			((PlayerFightData) data).getStats().addDamageDealt(type, amount * targets.length);
 		}
+		else {
+		}
 
 		for (Damageable target : targets) {
 			receiveDamage(damager, meta, target);
@@ -331,7 +327,7 @@ public abstract class FightInstance extends Instance {
 		// See if any of our effects cancel damage first
 		if (data instanceof PlayerFightData) {
 			PlayerFightData pdata = (PlayerFightData) data;
-			if (pdata.runActions(pdata, Trigger.PRE_RECEIVED_DAMAGE, new Object[] {target, damager})) {
+			if (pdata.runActions(pdata, Trigger.RECEIVED_DAMAGE, new Object[] {target, damager})) {
 				return;
 			}
 		}
@@ -521,35 +517,25 @@ public abstract class FightInstance extends Instance {
 	
 	// For any barrier that isn't the user's personal barrier (shield)
 	public void addUserBarrier(PlayerFightData owner, Barrier b, int duration) {
-		addBarrier(owner, null, b, duration, true);
+		addBarrier(owner, b, duration, true);
 	}
 	
 	public void addEnemyBarrier(PlayerFightData owner, Barrier b, int duration) {
-		addBarrier(owner, null, b, duration, false);
+		addBarrier(owner, b, duration, false);
 	}
 	
-	public void addBarrier(FightData owner, String id, Barrier b, int duration, boolean isUser) {
-		if (id == null) {
-			id = UUID.randomUUID().toString().substring(0, 8);
-		}
-		HashMap<String, Barrier> barriers = isUser ? userBarriers : enemyBarriers;
-		barriers.put(id, b);
-		final String fid = id;
-		
-		owner.addTask(id, new BukkitRunnable() {
+	public void addBarrier(FightData owner, Barrier b, int duration, boolean isUser) {
+		HashMap<UUID, Barrier> barriers = isUser ? userBarriers : enemyBarriers;
+		UUID uuid = b.getUniqueId();
+		barriers.put(uuid, b);
+		owner.addGuaranteedTask(uuid, new Runnable() {
 			public void run() {
-				barriers.remove(fid);
-				owner.removeTask(fid);
+				barriers.remove(uuid);
 			}
-		}.runTaskLater(NeoRogue.inst(), duration));
+		}, duration * 20);
 	}
 	
-	public void removeBarrier(FightData owner, String id) {
-		enemyBarriers.remove(id);
-		owner.removeTask(id);
-	}
-	
-	public HashMap<String, Barrier> getEnemyBarriers() {
+	public HashMap<UUID, Barrier> getEnemyBarriers() {
 		return enemyBarriers;
 	}
 	

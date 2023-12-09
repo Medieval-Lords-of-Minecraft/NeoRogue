@@ -43,6 +43,10 @@ public class StatusSliceHolder {
 		}
 	}
 	
+	public StatusSlice first() {
+		return slices.getFirst();
+	}
+	
 	public HashMap<UUID, Integer> getSliceOwners() {
 		return sliceOwners;
 	}

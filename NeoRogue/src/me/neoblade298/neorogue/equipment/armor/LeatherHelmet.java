@@ -8,7 +8,6 @@ import me.neoblade298.neorogue.equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.Trigger;
 import me.neoblade298.neorogue.session.fights.PlayerFightData;
-import me.neoblade298.neorogue.session.fights.Shield;
 
 public class LeatherHelmet extends Armor {
 	private double shields;
@@ -22,6 +21,6 @@ public class LeatherHelmet extends Armor {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
-		data.getShields().addShield(new Shield(data, p.getUniqueId(), shields, false, 0, 0, 0, 0));
+		data.addShield(p.getUniqueId(), shields, false, 0, 0, 0, 0);
 	}
 }

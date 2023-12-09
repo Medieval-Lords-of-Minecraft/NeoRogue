@@ -29,7 +29,7 @@ public class StoneDagger extends Weapon {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
-		data.addHotbarTrigger(id, slot, Trigger.LEFT_CLICK_HIT, new StoneDaggerInstance(this, p));
+		data.addTrigger(id, Trigger.LEFT_CLICK_HIT, new StoneDaggerInstance(this, p));
 	}
 	
 	private class StoneDaggerInstance extends EquipmentInstance {

@@ -31,6 +31,40 @@ public class CmdAdminDebug extends Subcommand {
 		super(key, desc, perm, runner);
 		args.add(new Arg("Piece"), new Arg("Area", false), new Arg("FlipX"), new Arg("FlipY"), new Arg("Rotations"));
 	}
+	
+	/*
+	@Override
+	public void run(CommandSender s, String[] args) {
+		Player p = (Player) s;
+		Location loc = p.getLocation();
+		ParticleContainer part = new ParticleContainer(Particle.FLAME);
+		part.setCount(50);
+		part.setOffset(0.5, 0.5);
+		
+		// For every 50 players
+		long start = System.currentTimeMillis();
+		for (int i = 0; i < 50; i++) {
+			// 20 particles spawned
+			for (int j = 0; j < 20; j++) {
+				if (p.getLocation().distanceSquared(loc) > 1000) continue;
+				if (i == 0 && j == 0) part.spawn(loc);
+			}
+		}
+		long end = System.currentTimeMillis();
+		System.out.println("Time taken, 50 players 20 particles: " + (end - start));
+
+		start = System.currentTimeMillis();
+		for (int i = 0; i < 100; i++) {
+			// 20 particles spawned
+			for (int j = 0; j < 100; j++) {
+				if (p.getLocation().distanceSquared(loc) > 1000) continue;
+				if (i == 0 && j == 0) part.spawn(loc);
+			}
+		}
+		end = System.currentTimeMillis();
+		System.out.println("Time taken, 100 players 100 particles: " + (end - start));
+	}
+	*/
 
 	@Override
 	public void run(CommandSender s, String[] args) {

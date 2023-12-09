@@ -12,7 +12,6 @@ import me.neoblade298.neorogue.player.Status.StatusType;
 import me.neoblade298.neorogue.session.fights.DamageType;
 import me.neoblade298.neorogue.session.fights.FightInstance;
 import me.neoblade298.neorogue.session.fights.PlayerFightData;
-import me.neoblade298.neorogue.session.fights.Shield;
 
 public class SerratedFencingSword extends Weapon {
 	private int bleed;
@@ -31,11 +30,11 @@ public class SerratedFencingSword extends Weapon {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
-		data.addHotbarTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
+		data.addTrigger(id, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
 			Damageable target = (Damageable) inputs[1];
 			FightInstance.dealDamage(p, type, damage, target);
 			FightInstance.getFightData(target.getUniqueId()).applyStatus(StatusType.BLEED, p.getUniqueId(), bleed, 0);
-			data.getShields().addShield(new Shield(data, p.getUniqueId(), shields, true, 1, 100, 1, 1));
+			data.addShield(p.getUniqueId(), shields, true, 1, 100, 1, 1);
 			pdata.runActions(pdata, Trigger.BASIC_ATTACK, inputs);
 			return true;
 		});

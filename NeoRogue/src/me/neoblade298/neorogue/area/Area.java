@@ -45,6 +45,7 @@ import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldedit.world.World;
 import me.neoblade298.neocore.bukkit.NeoCore;
+import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neocore.bukkit.particles.ParticleUtil;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder.SQLAction;
@@ -70,6 +71,7 @@ public class Area {
 	private static final double DOUBLE_PATH_CHANCE = 0.6;
 	public static final String WORLD_NAME = "Dev";
 	private static final int X_EDGE_PADDING = 13, Z_EDGE_PADDING = 11, NODE_DIST_BETWEEN = 4;
+	private static ParticleContainer red = new ParticleContainer(Particle.REDSTONE), black;
 	
 	private static final int Z_OFFSET = 10;
 	private static final int NODE_Y = 64;
@@ -98,6 +100,10 @@ public class Area {
 		}
 		
 		teleportBase = new Location(Bukkit.getWorld(WORLD_NAME), -20.5, 0, 6.5);
+		
+		// Load particles
+		red.count(3).offset(0.1, 0).ignoreSettings(true).dustOptions(new DustOptions(Color.RED, 1F));
+		black = red.clone().dustOptions(new DustOptions(Color.BLACK, 1F));
 	}
 	
 	public Area(AreaType type, int xOff, int zOff, Session s) {
@@ -455,8 +461,7 @@ public class Area {
 	public void tickParticles(Player p, Node curr) {
 		// Draw red lines for any locations that can immediately be visited
 		for (Node dest : curr.getDestinations()) {
-			ParticleUtil.drawLine(p, nodeToLocation(curr, 0.5), nodeToLocation(dest, 0.5),
-					Particle.REDSTONE, true, 3, 0, 0, 0.3, new DustOptions(Color.RED, 1F));
+			ParticleUtil.drawLine(red, nodeToLocation(curr, 0.5), nodeToLocation(dest, 0.5), 0.3);
 		}
 		
 		// Draw black lines for locations past the immediate nodes
@@ -466,8 +471,7 @@ public class Area {
 				if (node == null) continue;
 				
 				for (Node dest : node.getDestinations()) {
-					ParticleUtil.drawLine(p, nodeToLocation(node, 0.5), nodeToLocation(dest, 0.5),
-							Particle.REDSTONE, true, 3, 0, 0, 0.3, new DustOptions(Color.BLACK, 1F));
+					ParticleUtil.drawLine(black, nodeToLocation(node, 0.5), nodeToLocation(dest, 0.5), 0.3);
 				}
 			}
 		}

@@ -7,7 +7,7 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-import me.neoblade298.neocore.bukkit.particles.ParticleUtil;
+import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Ability;
 import me.neoblade298.neorogue.equipment.EquipmentClass;
@@ -20,6 +20,14 @@ import me.neoblade298.neorogue.session.fights.BuffType;
 import me.neoblade298.neorogue.session.fights.PlayerFightData;
 
 public class EarthenWall extends Ability {
+	private static ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
+	private static ParticleContainer earth = new ParticleContainer(Particle.BLOCK_CRACK);
+	
+	static {
+		pc.count(50).offset(0.5, 0.5).speed(0.2);
+		earth.count(1).offset(0.5, 0.5).blockData(Material.COARSE_DIRT.createBlockData());
+	}
+	
 	public EarthenWall(boolean isUpgraded) {
 		super("earthenWall", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
 		setBaseProperties(20, 100, 0, 10);
@@ -37,10 +45,10 @@ public class EarthenWall extends Ability {
 			if (((String) in[1]).equals("CONCUSSED")) {
 				inst.addStacks((Integer) in[2]);
 			}
-			return false;
+			return true;
 		});
 		
-		data.addTrigger(id, bind, inst);
+		data.addHotbarTrigger(id, slot, bind, inst);
 	}
 	
 	private class EarthenWallInstance extends HotbarCompatibleInstance {
@@ -76,11 +84,9 @@ public class EarthenWall extends Ability {
 		@Override
 		public boolean run(PlayerFightData data, Object[] inputs) {
 			Util.playSound(p, Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1F, 1F, false);
-			ParticleUtil.spawnParticle(p, false, p.getLocation(), Particle.CLOUD, 50, 0.5, 0.5,
-					0.5, 0.2);
-			
-			data.getInstance().addUserBarrier(data, new Barrier(null, 2, 3, 3, 0, new HashMap<BuffType, Buff>(), true), 10);
-			return false;
+			pc.spawn(p);
+			data.getInstance().addUserBarrier(data, new Barrier(null, 2, 3, 3, 0, new HashMap<BuffType, Buff>(), true, earth), 10);
+			return true;
 		}
 	}
 }

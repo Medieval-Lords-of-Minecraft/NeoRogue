@@ -2,18 +2,21 @@ package me.neoblade298.neorogue.equipment.mechanics;
 
 
 import java.util.HashMap;
+import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.Vector;
 
+import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neocore.bukkit.particles.Rectangle;
 import me.neoblade298.neorogue.session.fights.Buff;
 import me.neoblade298.neorogue.session.fights.BuffType;
 import me.neoblade298.neorogue.session.fights.DamageType;
 
 public class Barrier {
+	private UUID uuid;
 	private LivingEntity owner;
 	private double height, width, forward, forwardOffset;
 	private Location bottomLeft, topRight, midpoint;
@@ -22,9 +25,16 @@ public class Barrier {
 	
 	private Rectangle rect;
 	private HashMap<BuffType, Buff> buffs = new HashMap<BuffType, Buff>();
+	private ParticleContainer part;
 	
 	public Barrier(LivingEntity owner, double width, double forward, double height, double forwardOffset,
 			HashMap<BuffType, Buff> buffs, boolean isStatic) {
+		this(owner, width, forward, height, forwardOffset, buffs, isStatic, null);
+	}
+	
+	public Barrier(LivingEntity owner, double width, double forward, double height, double forwardOffset,
+			HashMap<BuffType, Buff> buffs, boolean isStatic, ParticleContainer part) {
+		this.uuid = UUID.randomUUID();
 		this.owner = owner;
 		this.height = height;
 		this.width = width;
@@ -37,14 +47,22 @@ public class Barrier {
 			rect = new Rectangle(owner, width, height, forward, forwardOffset, 0.2);
 			update(true);
 		}
+		
+		if (part == null) {
+			part = new ParticleContainer(Particle.END_ROD);
+			part.count(1);
+		}
+		else {
+			this.part = part;
+		}
 	}
 	
 	public void tick() {
 		if (isStatic) {
-			rect.drawEdges(null, true, Particle.END_ROD, null);
+			rect.drawEdges(part);
 		}
 		else {
-			new Rectangle(owner, width, height, forward, forwardOffset, 0.2).drawEdges(null, true, Particle.END_ROD, null);
+			new Rectangle(owner, width, height, forward, forwardOffset, 0.2).drawEdges(part);
 			needsUpdate = true;
 		}
 	}
@@ -106,5 +124,9 @@ public class Barrier {
 
 	public LivingEntity getOwner() {
 		return this.owner;
+	}
+	
+	public UUID getUniqueId() {
+		return uuid;
 	}
 }

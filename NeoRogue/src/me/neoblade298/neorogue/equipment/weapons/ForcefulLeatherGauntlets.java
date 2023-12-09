@@ -25,7 +25,7 @@ public class ForcefulLeatherGauntlets extends Weapon {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
-		data.addHotbarTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
+		data.addTrigger(id, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
 			FightInstance.dealDamage(p, type, damage, ((Damageable) inputs[1]));
 			pdata.runActions(pdata, Trigger.BASIC_ATTACK, inputs);
 			return true;

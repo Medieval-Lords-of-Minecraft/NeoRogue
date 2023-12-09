@@ -11,7 +11,6 @@ import me.neoblade298.neorogue.player.Trigger;
 import me.neoblade298.neorogue.session.fights.DamageType;
 import me.neoblade298.neorogue.session.fights.FightInstance;
 import me.neoblade298.neorogue.session.fights.PlayerFightData;
-import me.neoblade298.neorogue.session.fights.Shield;
 
 public class FencingSword extends Weapon {
 	private int shields;
@@ -30,9 +29,9 @@ public class FencingSword extends Weapon {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
-		data.addHotbarTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
+		data.addTrigger(id, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
 			FightInstance.dealDamage(p, type, damage, ((Damageable) inputs[1]));
-			data.getShields().addShield(new Shield(data, p.getUniqueId(), shields, true, 1, 100, 1, 1));
+			data.addShield(p.getUniqueId(), shields, true, 1, 100, 1, 1);
 			pdata.runActions(pdata, Trigger.BASIC_ATTACK, inputs);
 			return true;
 		});

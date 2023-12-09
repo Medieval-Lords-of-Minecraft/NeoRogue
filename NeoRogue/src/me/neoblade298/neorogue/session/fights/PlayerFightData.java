@@ -140,6 +140,7 @@ public class PlayerFightData extends FightData {
 		return false;
 	}
 
+	// Must be separate due to requiring the int slot parameter
 	public boolean runSlotBasedTriggers(PlayerFightData data, Trigger trigger, int slot, Object[] inputs) {
 		if (!slotBasedTriggers.containsKey(slot)) return false;
 		HashMap<Trigger, HashMap<String, TriggerAction>> triggers = slotBasedTriggers.get(slot);
@@ -166,11 +167,7 @@ public class PlayerFightData extends FightData {
 	public void addHotbarTrigger(String id, int slot, Trigger trigger, TriggerAction action) {
 		HashMap<Trigger, HashMap<String, TriggerAction>> triggers = slotBasedTriggers.getOrDefault(slot, 
 				new HashMap<Trigger, HashMap<String, TriggerAction>>());
-		
-		HashMap<String, TriggerAction> actions = triggers.containsKey(trigger) ? triggers.get(trigger)
-				: new HashMap<String, TriggerAction>();
-		addTrigger(id, actions, action);
-		triggers.put(trigger, actions);
+		addTrigger(id, trigger, action);
 		slotBasedTriggers.put(slot, triggers);
 	}
 

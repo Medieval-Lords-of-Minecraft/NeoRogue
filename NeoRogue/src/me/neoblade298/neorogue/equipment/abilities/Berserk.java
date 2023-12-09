@@ -5,7 +5,7 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-import me.neoblade298.neocore.bukkit.particles.ParticleUtil;
+import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neorogue.equipment.Ability;
 import me.neoblade298.neorogue.equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -14,6 +14,7 @@ import me.neoblade298.neorogue.session.fights.BuffType;
 import me.neoblade298.neorogue.session.fights.PlayerFightData;
 
 public class Berserk extends Ability {
+	private ParticleContainer pc = new ParticleContainer(Particle.FLAME);
 	private int seconds;
 	
 	public Berserk(boolean isUpgraded) {
@@ -23,6 +24,7 @@ public class Berserk extends Ability {
 		item = createItem(this, Material.REDSTONE, null,
 				"Passive. Increase your damage by 1 every 10 basic attacks. In exchange, take "
 				+ "50% increased damage for the first <yellow>" + seconds + "s</yellow> of a fight.");
+		pc.count(25).offset(0.5, 0.5).speed(0.1);
 	}
 
 	@Override
@@ -30,7 +32,7 @@ public class Berserk extends Ability {
 		data.addBuff(p.getUniqueId(), id, false, true, BuffType.GENERAL, 1, seconds);
 		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, inputs) -> {
 			p.playSound(p, Sound.ENTITY_BLAZE_SHOOT, 1F, 1F);
-			ParticleUtil.spawnParticle(p, false, p.getLocation(), Particle.FLAME, 25, 0.5, 0.5, 0.5, 0.1, null);
+			pc.spawn(p);
 			data.addBuff(p.getUniqueId(), true, false, BuffType.GENERAL, 1);
 			return true;
 		});

@@ -35,7 +35,7 @@ public class DecrementStackStatus extends Status {
 		@Override
 		public boolean run() {
 			if (action.isCancelled()) return true;
-			onRun();
+			onTickAction();
 			
 			stacks--;
 			if (stacks <= 0) {
@@ -45,10 +45,6 @@ public class DecrementStackStatus extends Status {
 			
 			slices.remove(1);
 			return false;
-		}
-		
-		public void onRun() {
-			onTickAction();
 		}
 	}
 	

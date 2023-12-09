@@ -24,6 +24,7 @@ public class FightData {
 	protected HashMap<String, Status> statuses = new HashMap<String, Status>();
 
 	protected HashMap<String, BukkitTask> tasks = new HashMap<String, BukkitTask>();
+	protected HashMap<String, Runnable> cleanupTasks = new HashMap<String, Runnable>();
 	
 	protected Barrier barrier = null;
 	protected ShieldHolder shields = null;
@@ -36,6 +37,9 @@ public class FightData {
 	protected HashMap<BuffType, Buff> defenseBuffs = new HashMap<BuffType, Buff>();
 
 	public void cleanup() {
+		for (Runnable task : cleanupTasks.values()) {
+			task.run();
+		}
 		for (BukkitTask task : tasks.values()) {
 			task.cancel();
 		}
@@ -80,13 +84,12 @@ public class FightData {
 
 	public void addBuff(UUID applier, String id, boolean damageBuff, boolean multiplier, BuffType type, double amount, int seconds) {
 		addBuff(applier, damageBuff, multiplier, type, amount);
-		String uid = applier.toString().substring(0,10) + id;
 
 		if (seconds > 0) {
-			addTask(uid, new BukkitRunnable() {
+			addTask(id, new BukkitRunnable() {
 				public void run() {
-					addBuff(applier, id, damageBuff, multiplier, type, -amount, -1);
-					tasks.remove(uid);
+					addBuff(applier, damageBuff, multiplier, type, -amount);
+					tasks.remove(id);
 				}
 			}.runTaskLater(NeoRogue.inst(), seconds * 20));
 		}
@@ -99,9 +102,30 @@ public class FightData {
 	public void addTask(String id, BukkitTask task) {
 		tasks.put(id, task);
 	}
+	
+	public void addCleanupTask(String id, Runnable runnable) {
+		cleanupTasks.put(id, runnable);
+	}
+	
+	public void addGuaranteedTask(UUID uuid, Runnable runnable, long delay) {
+		String id = uuid.toString();
+		tasks.put(id, new BukkitRunnable() {
+			public void run() {
+				runnable.run();
+				tasks.remove(id);
+				cleanupTasks.remove(id);
+			}
+		}.runTaskLater(NeoRogue.inst(), delay));
+		
+		cleanupTasks.put(id, runnable);
+	}
 
 	public void removeTask(String id) {
 		tasks.remove(id);
+	}
+	
+	public void removeCleanupTasks(String id) {
+		cleanupTasks.remove(id);
 	}
 	
 	public void setBarrier(Barrier barrier) {
@@ -114,6 +138,10 @@ public class FightData {
 	
 	public ShieldHolder getShields() {
 		return shields;
+	}
+	
+	public void addShield(UUID applier, double amt, boolean decayPercent, double decayDelay, double decayAmount, double decayPeriod, int decayRepetitions) {
+		shields.addShield(new Shield(this, applier, amt, decayPercent, decayDelay, decayAmount, decayPeriod, decayRepetitions));
 	}
 	
 	public void addTickAction(TickAction action) {
@@ -159,7 +187,13 @@ public class FightData {
 	public void applyStatus(GenericStatusType type, String id, UUID applier, int stacks, int seconds) {
 		Status s = statuses.getOrDefault(type.name(), Status.createByGenericType(type, id, applier, this));
 		s.apply(applier, stacks, seconds);
-		statuses.put(type.name(), s);
+		statuses.put(id, s);
+	}
+	
+	public void applyStatus(String id, UUID applier, int stacks) {
+		Status s = Status.createByGenericType(GenericStatusType.BASIC, id, applier, this);
+		s.apply(applier, stacks, -1);
+		statuses.put(id, s);
 	}
 	
 	public MapSpawnerInstance getSpawner() {
