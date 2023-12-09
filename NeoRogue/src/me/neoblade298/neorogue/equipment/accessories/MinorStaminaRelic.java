@@ -6,9 +6,9 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neorogue.equipment.Accessory;
 import me.neoblade298.neorogue.equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.player.Trigger;
-import me.neoblade298.neorogue.session.fights.PlayerFightData;
-import me.neoblade298.neorogue.session.fights.TickAction;
+import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.TickAction;
+import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class MinorStaminaRelic extends Accessory {
 	private double regen;
@@ -32,9 +32,9 @@ public class MinorStaminaRelic extends Accessory {
 		}
 		
 		@Override
-		public boolean run() {
+		public TickResult run() {
 			data.addStamina(regen);
-			return false;
+			return TickResult.KEEP;
 		}
 	}
 }

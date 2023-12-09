@@ -9,11 +9,12 @@ import me.neoblade298.neorogue.equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.Weapon;
-import me.neoblade298.neorogue.player.Trigger;
-import me.neoblade298.neorogue.player.Status.StatusType;
-import me.neoblade298.neorogue.session.fights.DamageType;
-import me.neoblade298.neorogue.session.fights.FightInstance;
-import me.neoblade298.neorogue.session.fights.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.DamageType;
+import me.neoblade298.neorogue.session.fight.FightInstance;
+import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
+import me.neoblade298.neorogue.session.fight.trigger.Trigger;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class IronDagger extends Weapon {
 	
@@ -40,14 +41,14 @@ public class IronDagger extends Weapon {
 		}
 		
 		@Override
-		public boolean run(PlayerFightData data, Object[] inputs) {
+		public TriggerResult run(PlayerFightData data, Object[] inputs) {
 			FightInstance.dealDamage(p, type, damage, ((Damageable) inputs[1]));
 			data.runActions(data, Trigger.BASIC_ATTACK, inputs);
 			if (++count >= 3) {
 				count = 0;
 				FightInstance.getFightData(((Entity) inputs[1]).getUniqueId()).applyStatus(StatusType.BLEED, p.getUniqueId(), 6, 0);
 			}
-			return true;
+			return TriggerResult.keep();
 		}
 	}
 }

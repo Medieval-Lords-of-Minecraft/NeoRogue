@@ -3,7 +3,8 @@ package me.neoblade298.neorogue.equipment;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.util.Util;
-import me.neoblade298.neorogue.session.fights.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public abstract class HotbarCompatibleInstance extends EquipmentInstance {
 	protected double staminaCost, manaCost;
@@ -15,7 +16,7 @@ public abstract class HotbarCompatibleInstance extends EquipmentInstance {
 	}
 	
 	@Override
-	public boolean trigger(PlayerFightData data, Object[] inputs) {
+	public TriggerResult trigger(PlayerFightData data, Object[] inputs) {
 		data.addMana(-manaCost);
 		data.addStamina(-staminaCost);
 		return super.trigger(data, inputs);

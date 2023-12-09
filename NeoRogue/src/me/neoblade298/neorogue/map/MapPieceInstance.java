@@ -19,7 +19,7 @@ import com.sk89q.worldedit.session.ClipboardHolder;
 
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neorogue.area.Area;
-import me.neoblade298.neorogue.session.fights.FightInstance;
+import me.neoblade298.neorogue.session.fight.FightInstance;
 
 public class MapPieceInstance implements Comparable<MapPieceInstance> {
 	public static final int Z_FIGHT_OFFSET = 0, Y_OFFSET = 64, X_FIGHT_OFFSET = 49;

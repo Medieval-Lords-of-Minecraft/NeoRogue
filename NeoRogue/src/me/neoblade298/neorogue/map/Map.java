@@ -31,9 +31,9 @@ import me.neoblade298.neocore.shared.io.Section;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.area.AreaType;
-import me.neoblade298.neorogue.session.fights.FightInstance;
-import me.neoblade298.neorogue.session.fights.Mob;
-import me.neoblade298.neorogue.session.fights.MobModifier;
+import me.neoblade298.neorogue.session.fight.FightInstance;
+import me.neoblade298.neorogue.session.fight.Mob;
+import me.neoblade298.neorogue.session.fight.MobModifier;
 
 public class Map {
 	private static HashMap<AreaType, LinkedList<MapPiece>> standardPieces = new HashMap<AreaType, LinkedList<MapPiece>>(),

@@ -6,9 +6,10 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neorogue.equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.Offhand;
 import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.player.Trigger;
-import me.neoblade298.neorogue.session.fights.BuffType;
-import me.neoblade298.neorogue.session.fights.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.buff.BuffType;
+import me.neoblade298.neorogue.session.fight.trigger.Trigger;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class SmallShield extends Offhand {
 	private int reduction;
@@ -24,12 +25,12 @@ public class SmallShield extends Offhand {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
 		data.addTrigger(id, Trigger.RAISE_SHIELD, (pdata, inputs) -> {
 			data.addBuff(p.getUniqueId(), false, false, BuffType.PHYSICAL, reduction);
-			return false;
+			return TriggerResult.keep();
 		});
 		
 		data.addTrigger(id, Trigger.LOWER_SHIELD, (pdata, inputs) -> {
 			data.addBuff(p.getUniqueId(), false, false, BuffType.PHYSICAL, -reduction);
-			return false;
+			return TriggerResult.keep();
 		});
 	}
 }

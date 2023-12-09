@@ -11,9 +11,9 @@ import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neocore.bukkit.particles.Rectangle;
-import me.neoblade298.neorogue.session.fights.Buff;
-import me.neoblade298.neorogue.session.fights.BuffType;
-import me.neoblade298.neorogue.session.fights.DamageType;
+import me.neoblade298.neorogue.session.fight.DamageType;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.BuffType;
 
 public class Barrier {
 	private UUID uuid;

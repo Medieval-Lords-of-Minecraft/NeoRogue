@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 import me.neoblade298.neorogue.session.*;
 import me.neoblade298.neorogue.session.chance.ChanceInstance;
-import me.neoblade298.neorogue.session.fights.BossFightInstance;
-import me.neoblade298.neorogue.session.fights.FightInstance;
-import me.neoblade298.neorogue.session.fights.MinibossFightInstance;
-import me.neoblade298.neorogue.session.fights.StandardFightInstance;
+import me.neoblade298.neorogue.session.fight.BossFightInstance;
+import me.neoblade298.neorogue.session.fight.FightInstance;
+import me.neoblade298.neorogue.session.fight.MinibossFightInstance;
+import me.neoblade298.neorogue.session.fight.StandardFightInstance;
 
 public class Node {
 	private static int MAX_DESTS = 3;

@@ -6,9 +6,9 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neorogue.equipment.Accessory;
 import me.neoblade298.neorogue.equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.player.Trigger;
-import me.neoblade298.neorogue.session.fights.BuffType;
-import me.neoblade298.neorogue.session.fights.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.buff.BuffType;
+import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class MinorStrengthRelic extends Accessory {
 	private double str;

@@ -5,7 +5,7 @@ import java.util.Optional;
 import io.lumine.mythic.api.mobs.MythicMob;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.neoblade298.neocore.shared.io.Section;
-import me.neoblade298.neorogue.session.fights.Mob;
+import me.neoblade298.neorogue.session.fight.Mob;
 
 public class MapSpawner {
 	private String id;

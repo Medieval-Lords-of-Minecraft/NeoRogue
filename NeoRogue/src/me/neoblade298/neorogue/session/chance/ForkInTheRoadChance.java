@@ -5,7 +5,7 @@ import org.bukkit.Material;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.session.CampfireInstance;
-import me.neoblade298.neorogue.session.fights.StandardFightInstance;
+import me.neoblade298.neorogue.session.fight.StandardFightInstance;
 
 public class ForkInTheRoadChance extends ChanceSet {
 

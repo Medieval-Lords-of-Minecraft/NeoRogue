@@ -9,8 +9,9 @@ import me.neoblade298.neorogue.equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.Offhand;
 import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.player.Trigger;
-import me.neoblade298.neorogue.session.fights.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.trigger.Trigger;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class SpikyShield extends Offhand {
 	private int reduction, amount;
@@ -38,16 +39,16 @@ public class SpikyShield extends Offhand {
 		}
 		
 		@Override
-		public boolean run(PlayerFightData data, Object[] inputs) {
-			if (!p.isHandRaised()) return false;
+		public TriggerResult run(PlayerFightData data, Object[] inputs) {
+			if (!p.isHandRaised()) return TriggerResult.keep();
 			long now = System.currentTimeMillis();
-			if (now <= nextUsable) return false;
+			if (now <= nextUsable) return TriggerResult.keep();
 			
 			nextUsable = now + 5000L; // 5s
 			p.playSound(p, Sound.ITEM_SHIELD_BLOCK, 1F, 1F);
 			data.addMana(amount);
 			data.addStamina(amount);
-			return false;
+			return TriggerResult.keep();
 		}
 	}
 }

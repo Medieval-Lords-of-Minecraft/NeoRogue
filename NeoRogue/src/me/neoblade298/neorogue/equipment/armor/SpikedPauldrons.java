@@ -6,9 +6,9 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neorogue.equipment.Armor;
 import me.neoblade298.neorogue.equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.player.Trigger;
-import me.neoblade298.neorogue.player.Status.StatusType;
-import me.neoblade298.neorogue.session.fights.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
+import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class SpikedPauldrons extends Armor {
 	private int thorns;

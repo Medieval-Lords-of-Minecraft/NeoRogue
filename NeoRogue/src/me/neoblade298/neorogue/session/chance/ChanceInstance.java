@@ -15,7 +15,7 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.*;
-import me.neoblade298.neorogue.session.fights.FightInstance;
+import me.neoblade298.neorogue.session.fight.FightInstance;
 import net.kyori.adventure.text.Component;
 
 public class ChanceInstance extends EditInventoryInstance {

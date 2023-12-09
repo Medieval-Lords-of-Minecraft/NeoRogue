@@ -16,8 +16,8 @@ import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.session.fights.FightData;
-import me.neoblade298.neorogue.session.fights.FightInstance;
+import me.neoblade298.neorogue.session.fight.FightData;
+import me.neoblade298.neorogue.session.fight.FightInstance;
 
 public abstract class Projectile {
 	protected HashSet<UUID> targetsHit = new HashSet<UUID>();

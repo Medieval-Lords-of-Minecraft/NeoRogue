@@ -10,8 +10,9 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Ability;
 import me.neoblade298.neorogue.equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.player.Trigger;
-import me.neoblade298.neorogue.session.fights.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.trigger.Trigger;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Brace extends Ability {
 	private int shields;
@@ -36,7 +37,7 @@ public class Brace extends Ability {
 			pc.spawn(p);
 			data.addShield(p.getUniqueId(), shields, true, 100, 100, 0, 1);
 			Util.playSound(p, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1F, 1F, false);
-			return true;
+			return TriggerResult.keep();
 		});
 	}
 }

@@ -8,8 +8,9 @@ import me.neoblade298.neorogue.equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.Offhand;
 import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.player.Trigger;
-import me.neoblade298.neorogue.session.fights.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.trigger.Trigger;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class WristBlade extends Offhand {
 	private int hits;
@@ -34,12 +35,12 @@ public class WristBlade extends Offhand {
 		}
 		
 		@Override
-		public boolean run(PlayerFightData data, Object[] inputs) {
+		public TriggerResult run(PlayerFightData data, Object[] inputs) {
 			if (++count >= hits) {
 				data.runActions(data, Trigger.BASIC_ATTACK, inputs);
 				count = 0;
 			}
-			return false;
+			return TriggerResult.keep();
 		}
 	}
 }

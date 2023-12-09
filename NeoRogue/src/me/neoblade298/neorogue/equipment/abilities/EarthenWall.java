@@ -14,10 +14,11 @@ import me.neoblade298.neorogue.equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.HotbarCompatibleInstance;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
-import me.neoblade298.neorogue.player.Trigger;
-import me.neoblade298.neorogue.session.fights.Buff;
-import me.neoblade298.neorogue.session.fights.BuffType;
-import me.neoblade298.neorogue.session.fights.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.BuffType;
+import me.neoblade298.neorogue.session.fight.trigger.Trigger;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class EarthenWall extends Ability {
 	private static ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
@@ -45,7 +46,7 @@ public class EarthenWall extends Ability {
 			if (((String) in[1]).equals("CONCUSSED")) {
 				inst.addStacks((Integer) in[2]);
 			}
-			return true;
+			return TriggerResult.keep();
 		});
 		
 		data.addHotbarTrigger(id, slot, bind, inst);
@@ -76,17 +77,17 @@ public class EarthenWall extends Ability {
 		}
 		
 		@Override
-		public boolean trigger(PlayerFightData data, Object[] inputs) {
+		public TriggerResult trigger(PlayerFightData data, Object[] inputs) {
 			stacks -= 10;
 			return super.trigger(data, inputs);
 		}
 		
 		@Override
-		public boolean run(PlayerFightData data, Object[] inputs) {
+		public TriggerResult run(PlayerFightData data, Object[] inputs) {
 			Util.playSound(p, Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1F, 1F, false);
 			pc.spawn(p);
 			data.getInstance().addUserBarrier(data, new Barrier(null, 2, 3, 3, 0, new HashMap<BuffType, Buff>(), true, earth), 10);
-			return true;
+			return TriggerResult.keep();
 		}
 	}
 }

@@ -9,9 +9,10 @@ import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neorogue.equipment.Ability;
 import me.neoblade298.neorogue.equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.player.Trigger;
-import me.neoblade298.neorogue.session.fights.BuffType;
-import me.neoblade298.neorogue.session.fights.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.buff.BuffType;
+import me.neoblade298.neorogue.session.fight.trigger.Trigger;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Berserk extends Ability {
 	private ParticleContainer pc = new ParticleContainer(Particle.FLAME);
@@ -34,7 +35,7 @@ public class Berserk extends Ability {
 			p.playSound(p, Sound.ENTITY_BLAZE_SHOOT, 1F, 1F);
 			pc.spawn(p);
 			data.addBuff(p.getUniqueId(), true, false, BuffType.GENERAL, 1);
-			return true;
+			return TriggerResult.keep();
 		});
 	}
 }

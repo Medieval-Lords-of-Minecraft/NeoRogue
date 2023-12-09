@@ -7,10 +7,11 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neorogue.equipment.Accessory;
 import me.neoblade298.neorogue.equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.player.Trigger;
-import me.neoblade298.neorogue.session.fights.DamageType;
-import me.neoblade298.neorogue.session.fights.FightInstance;
-import me.neoblade298.neorogue.session.fights.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.DamageType;
+import me.neoblade298.neorogue.session.fight.FightInstance;
+import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.trigger.Trigger;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class EarthenRing extends Accessory {
 	private int damage;
@@ -19,7 +20,7 @@ public class EarthenRing extends Accessory {
 		super("earthenRing", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
 		damage = isUpgraded ? 3 : 2;
 		display = "Earthen Ring";
-		item = createItem(Material.GOLD_NUGGET, "ACCESSORY", reforgeOptions, "Basic attacks additionally deal <yellow>" + damage + "</yellow> damage.");
+		item = createItem(Material.GOLD_NUGGET, "ACCESSORY", reforgeOptions, "Basic attacks additionally deal <yellow>" + damage + "</yellow> earthen damage.");
 	}
 
 	@Override
@@ -27,7 +28,7 @@ public class EarthenRing extends Accessory {
 		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
 			Damageable target = (Damageable) in[1];
 			FightInstance.dealDamage(p, DamageType.EARTH, damage, target);
-			return false;
+			return TriggerResult.keep();
 		});
 	}
 }

@@ -10,10 +10,10 @@ import io.lumine.mythic.api.mobs.MythicMob;
 import io.lumine.mythic.bukkit.BukkitAdapter;
 import io.lumine.mythic.core.mobs.ActiveMob;
 import me.neoblade298.neocore.bukkit.NeoCore;
-import me.neoblade298.neorogue.session.fights.BuffType;
-import me.neoblade298.neorogue.session.fights.FightData;
-import me.neoblade298.neorogue.session.fights.FightInstance;
-import me.neoblade298.neorogue.session.fights.Mob;
+import me.neoblade298.neorogue.session.fight.FightData;
+import me.neoblade298.neorogue.session.fight.FightInstance;
+import me.neoblade298.neorogue.session.fight.Mob;
+import me.neoblade298.neorogue.session.fight.buff.BuffType;
 
 public class MapSpawnerInstance {
 	private MythicMob mythicMob;

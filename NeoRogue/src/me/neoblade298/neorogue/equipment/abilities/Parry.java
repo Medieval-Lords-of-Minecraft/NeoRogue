@@ -11,11 +11,12 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Ability;
 import me.neoblade298.neorogue.equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.player.Trigger;
-import me.neoblade298.neorogue.player.TriggerAction;
-import me.neoblade298.neorogue.session.fights.DamageType;
-import me.neoblade298.neorogue.session.fights.FightInstance;
-import me.neoblade298.neorogue.session.fights.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.DamageType;
+import me.neoblade298.neorogue.session.fight.FightInstance;
+import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.trigger.Trigger;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Parry extends Ability {
 	private int shields, damage;
@@ -45,7 +46,7 @@ public class Parry extends Ability {
 			data.addShield(p.getUniqueId(), shields, true, 100, 100, 0, 1);
 			Util.playSound(p, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1F, 1F, false);
 			data.addTrigger(id, Trigger.RECEIVED_DAMAGE, new ParryInstance(p));
-			return true;
+			return TriggerResult.keep();
 		});
 	}
 	
@@ -60,17 +61,17 @@ public class Parry extends Ability {
 			createTime = System.currentTimeMillis();
 		}
 		@Override
-		public boolean trigger(PlayerFightData data, Object[] inputs) {
-			if (System.currentTimeMillis() - createTime > 5000) return true;
+		public TriggerResult trigger(PlayerFightData data, Object[] inputs) {
+			if (System.currentTimeMillis() - createTime > 5000) return TriggerResult.remove();
 			bpc.spawn(p);
 			Util.playSound(p, Sound.ENTITY_BLAZE_SHOOT, 1F, 1F, false);
 			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
 				FightInstance.dealDamage(p, DamageType.SLASHING, damage, (Damageable) in[1]);
 				hit.spawn(((Damageable) in[1]).getLocation());
 				Util.playSound(p, Sound.BLOCK_ANVIL_LAND, 1F, 1F, false);
-				return false;
+				return TriggerResult.remove();
 			});
-			return true;
+			return TriggerResult.keep();
 		}
 		
 	}

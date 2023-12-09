@@ -43,9 +43,9 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.map.MapSpawnerInstance;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
-import me.neoblade298.neorogue.player.PlayerSessionInventory;
 import me.neoblade298.neorogue.player.SessionSnapshot;
-import me.neoblade298.neorogue.session.fights.*;
+import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
+import me.neoblade298.neorogue.session.fight.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 

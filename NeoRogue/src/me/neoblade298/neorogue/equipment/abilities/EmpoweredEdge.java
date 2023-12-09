@@ -12,10 +12,11 @@ import me.neoblade298.neorogue.equipment.Ability;
 import me.neoblade298.neorogue.equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.player.Trigger;
-import me.neoblade298.neorogue.session.fights.DamageType;
-import me.neoblade298.neorogue.session.fights.FightInstance;
-import me.neoblade298.neorogue.session.fights.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.DamageType;
+import me.neoblade298.neorogue.session.fight.FightInstance;
+import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.trigger.Trigger;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class EmpoweredEdge extends Ability {
 	private int damage;
@@ -47,16 +48,16 @@ public class EmpoweredEdge extends Ability {
 		}
 		
 		@Override
-		public boolean run(PlayerFightData data, Object[] inputs) {
+		public TriggerResult run(PlayerFightData data, Object[] inputs) {
 			Util.playSound(p, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1F, 1F, false);
 			pc.spawn(p);
 			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
 				FightInstance.dealDamage(p, DamageType.SLASHING, damage, (Damageable) in[1]);
 				hit.spawn(((Damageable) in[1]).getLocation());
 				Util.playSound(p, Sound.BLOCK_ANVIL_LAND, 1F, 1F, false);
-				return false;
+				return TriggerResult.remove();
 			});
-			return true;
+			return TriggerResult.keep();
 		}
 	}
 }

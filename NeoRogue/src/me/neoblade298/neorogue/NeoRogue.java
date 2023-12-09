@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
-import me.neoblade298.neorogue.session.fights.Mob;
+import me.neoblade298.neorogue.session.fight.Mob;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class NeoRogue extends JavaPlugin {

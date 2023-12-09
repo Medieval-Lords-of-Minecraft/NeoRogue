@@ -10,9 +10,10 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Ability;
 import me.neoblade298.neorogue.equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.player.Trigger;
-import me.neoblade298.neorogue.player.TriggerAction;
-import me.neoblade298.neorogue.session.fights.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.trigger.Trigger;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Bide extends Ability {
 	private int shields, berserk, duration;
@@ -40,7 +41,7 @@ public class Bide extends Ability {
 			data.addShield(p.getUniqueId(), shields, true, duration * 20, 100, 0, 1);
 			Util.playSound(p, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1F, 1F, false);
 			data.addTrigger(id, Trigger.RECEIVED_DAMAGE, new BideInstance(p));
-			return true;
+			return TriggerResult.keep();
 		});
 	}
 	
@@ -52,12 +53,12 @@ public class Bide extends Ability {
 			createTime = System.currentTimeMillis();
 		}
 		@Override
-		public boolean trigger(PlayerFightData data, Object[] inputs) {
-			if (System.currentTimeMillis() - createTime > 5000) return false;
+		public TriggerResult trigger(PlayerFightData data, Object[] inputs) {
+			if (System.currentTimeMillis() - createTime > 5000) return TriggerResult.remove();
 			bpc.spawn(p);
 			data.applyStatus("BERSERK", p.getUniqueId(), berserk);
 			Util.playSound(p, Sound.ENTITY_BLAZE_SHOOT, 1F, 1F, false);
-			return true;
+			return TriggerResult.keep();
 		}
 		
 	}

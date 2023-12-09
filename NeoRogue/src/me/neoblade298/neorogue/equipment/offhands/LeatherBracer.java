@@ -10,8 +10,9 @@ import me.neoblade298.neorogue.equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.Offhand;
 import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.player.Trigger;
-import me.neoblade298.neorogue.session.fights.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.trigger.Trigger;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class LeatherBracer extends Offhand {
 	private int instances;
@@ -36,10 +37,9 @@ public class LeatherBracer extends Offhand {
 		}
 
 		@Override
-		public boolean run(PlayerFightData data, Object[] inputs) {
+		public TriggerResult run(PlayerFightData data, Object[] inputs) {
 			Util.playSound(p, Sound.ITEM_SHIELD_BREAK, 1F, 1F, false);
-			this.setCancelled(true);
-			return true; // Only happens once
+			return TriggerResult.of(true, true);
 		}
 	}
 }

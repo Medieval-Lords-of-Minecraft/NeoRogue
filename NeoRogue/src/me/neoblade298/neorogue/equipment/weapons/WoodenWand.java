@@ -14,11 +14,12 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.Weapon;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
-import me.neoblade298.neorogue.player.Trigger;
-import me.neoblade298.neorogue.session.fights.DamageType;
-import me.neoblade298.neorogue.session.fights.FightData;
-import me.neoblade298.neorogue.session.fights.FightInstance;
-import me.neoblade298.neorogue.session.fights.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.DamageType;
+import me.neoblade298.neorogue.session.fight.FightData;
+import me.neoblade298.neorogue.session.fight.FightInstance;
+import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.trigger.Trigger;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class WoodenWand extends Weapon {
 	private static ParticleContainer tick, explode;
@@ -58,15 +59,15 @@ public class WoodenWand extends Weapon {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
 		data.addTrigger(id, Trigger.LEFT_CLICK_HIT, (d, inputs) -> {
-			if (!cast(data)) return true;
+			if (!cast(data)) return TriggerResult.keep();
 			new WoodenWandProjectile(p, 0.5, 10, 3, false, false, false, false, 0, 0, data.getInstance(), data, 0.2, 0.2, 0.2);
-			return true;
+			return TriggerResult.keep();
 		});
 
 		data.addTrigger(id, Trigger.LEFT_CLICK_NO_HIT, (d, inputs) -> {
-			if (!cast(data)) return true;
+			if (!cast(data)) return TriggerResult.keep();
 			new WoodenWandProjectile(p, 1, 10, 2, false, false, false, false, 0, 0, data.getInstance(), data, 0.5, 0.2, 0.5);
-			return true;
+			return TriggerResult.keep();
 		});
 	}
 	

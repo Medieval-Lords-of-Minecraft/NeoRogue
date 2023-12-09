@@ -7,10 +7,11 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neorogue.equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.Weapon;
-import me.neoblade298.neorogue.player.Trigger;
-import me.neoblade298.neorogue.session.fights.DamageType;
-import me.neoblade298.neorogue.session.fights.FightInstance;
-import me.neoblade298.neorogue.session.fights.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.DamageType;
+import me.neoblade298.neorogue.session.fight.FightInstance;
+import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.trigger.Trigger;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class LightLeatherGauntlets extends Weapon {
 	private int stamina;
@@ -31,7 +32,7 @@ public class LightLeatherGauntlets extends Weapon {
 			FightInstance.dealDamage(p, type, damage, ((Damageable) inputs[1]));
 			pdata.runActions(pdata, Trigger.BASIC_ATTACK, inputs);
 			data.addStamina(stamina);
-			return true;
+			return TriggerResult.keep();
 		});
 	}
 }

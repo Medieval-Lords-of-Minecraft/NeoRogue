@@ -9,10 +9,11 @@ import me.neoblade298.neorogue.equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.Offhand;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
-import me.neoblade298.neorogue.player.Trigger;
-import me.neoblade298.neorogue.session.fights.Buff;
-import me.neoblade298.neorogue.session.fights.BuffType;
-import me.neoblade298.neorogue.session.fights.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.BuffType;
+import me.neoblade298.neorogue.session.fight.trigger.Trigger;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class TowerShield extends Offhand {
 	private int reduction;
@@ -31,17 +32,17 @@ public class TowerShield extends Offhand {
 			HashMap<BuffType, Buff> buffs = new HashMap<BuffType, Buff>();
 			buffs.put(BuffType.GENERAL, new Buff(p.getUniqueId(), reduction, 0));
 			data.setBarrier(new Barrier(p, 2, 3, 3, 0, buffs, false));
-			return true;
+			return TriggerResult.keep();
 		});
 
 		data.addTrigger(id, Trigger.SHIELD_TICK, (pdata, inputs) -> {
 			data.getBarrier().tick();
-			return true;
+			return TriggerResult.keep();
 		});
 		
 		data.addTrigger(id, Trigger.LOWER_SHIELD, (pdata, inputs) -> {
 			data.setBarrier(null);
-			return true;
+			return TriggerResult.keep();
 		});
 	}
 }
