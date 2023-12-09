@@ -7,6 +7,7 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import net.kyori.adventure.text.Component;
 
 public abstract class EquipmentInstance implements TriggerAction {
 	private Equipment eq;
@@ -32,7 +33,7 @@ public abstract class EquipmentInstance implements TriggerAction {
 		return true;
 	}
 	
-	public String getDisplay() {
+	public Component getDisplay() {
 		return eq.display;
 	}
 	

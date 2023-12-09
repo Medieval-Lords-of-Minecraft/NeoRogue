@@ -14,8 +14,7 @@ public class SpikedPauldrons extends Armor {
 	private int thorns;
 	
 	public SpikedPauldrons(boolean isUpgraded) {
-		super("spikedPauldrons", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
-		display = "Leather Helmet";
+		super("spikedPauldrons", "Spiked Pauldrons", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
 		thorns = isUpgraded ? 3 : 2;
 		item = createItem(this, Material.ARMOR_STAND, null, "Start every fight with <yellow>" + thorns + " </yellow>thorns.");
 	}

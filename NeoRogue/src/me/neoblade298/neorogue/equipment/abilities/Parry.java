@@ -25,8 +25,7 @@ public class Parry extends Ability {
 			hit = new ParticleContainer(Particle.REDSTONE);
 	
 	public Parry(boolean isUpgraded) {
-		super("parry", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR);
-		display = "Parry";
+		super("parry", "Parry", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR);
 		canDrop = false;
 		setBaseProperties(20, 0, 100, 0);
 		shields = 30;
@@ -50,7 +49,6 @@ public class Parry extends Ability {
 		});
 	}
 	
-	// TODO: Change boolean return to TriggerResult using hashset
 	// Change reforgeoptions to allow multiple alternatives
 	// Add an equipment type that's just reforge material
 	private class ParryInstance implements TriggerAction {

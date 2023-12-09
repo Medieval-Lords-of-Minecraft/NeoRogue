@@ -14,9 +14,8 @@ public class FaerieCirclet extends Artifact {
 	private int ticks;
 
 	public FaerieCirclet(boolean isUpgraded) {
-		super("faerieCirclet", isUpgraded, Rarity.RARE, EquipmentClass.CLASSLESS);
+		super("faerieCirclet", "Faerie Circlet", isUpgraded, Rarity.RARE, EquipmentClass.CLASSLESS);
 
-		display = "Faerie Circlet";
 		ticks = isUpgraded ? 5 : 3;
 		item = createItem(Material.EMERALD, "ARTIFACT",
 				null, "Lengthens your invulnerability frames by <yellow>" + ticks + "</yellow> ticks. The default is " +

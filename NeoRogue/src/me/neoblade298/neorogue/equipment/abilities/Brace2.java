@@ -19,8 +19,7 @@ public class Brace2 extends Ability {
 	private ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
 	
 	public Brace2(boolean isUpgraded) {
-		super("brace2", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR);
-		display = "Brace II";
+		super("brace2", "Brace II", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR);
 		canDrop = false;
 		setBaseProperties(20, 0, 100, 0);
 		shields = isUpgraded ? 180 : 120;

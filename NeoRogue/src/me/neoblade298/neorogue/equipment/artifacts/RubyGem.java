@@ -14,9 +14,8 @@ public class RubyGem extends Artifact {
 	private int inc;
 
 	public RubyGem(boolean isUpgraded) {
-		super("rubyGem", isUpgraded, Rarity.EPIC, EquipmentClass.CLASSLESS);
+		super("rubyGem", "Ruby Gem", isUpgraded, Rarity.EPIC, EquipmentClass.CLASSLESS);
 
-		display = "Ruby Gem";
 		inc = isUpgraded ? 75 : 50;
 		item = createItem(Material.REDSTONE, "ARTIFACT",
 				null, "<gray>Increases max health by <yellow>" + inc);

@@ -14,9 +14,8 @@ public class SapphireCluster extends Artifact {
 	private int inc;
 
 	public SapphireCluster(boolean isUpgraded) {
-		super("sapphireCluster", isUpgraded, Rarity.RARE, EquipmentClass.CLASSLESS);
+		super("sapphireCluster", "Sapphire Cluster", isUpgraded, Rarity.RARE, EquipmentClass.CLASSLESS);
 
-		display = "Sapphire Cluster";
 		inc = isUpgraded ? 35 : 25;
 		item = createItem(Material.LAPIS_LAZULI, "ARTIFACT",
 				null, "<gray>Increases max mana by <yellow>" + inc);

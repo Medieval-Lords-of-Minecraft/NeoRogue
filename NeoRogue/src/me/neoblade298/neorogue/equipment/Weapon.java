@@ -17,8 +17,8 @@ public abstract class Weapon extends HotbarCompatible {
 	protected double damage, attackSpeed;
 	protected DamageType type;
 
-	public Weapon(String id, boolean isUpgraded, Rarity rarity, EquipmentClass ec) {
-		super(id, isUpgraded, rarity, ec);
+	public Weapon(String id, String display, boolean isUpgraded, Rarity rarity, EquipmentClass ec) {
+		super(id, display, isUpgraded, rarity, ec);
 	}
 
 	public ItemStack createItem(Material mat, String[] preLoreLine, String loreLine) {
@@ -36,7 +36,7 @@ public abstract class Weapon extends HotbarCompatible {
 				preLore.add(l);
 			}
 		}
-		ItemStack item = createItem(mat, "Weapon", preLore, loreLine, null);
+		ItemStack item = createItem(mat, "Weapon", preLore, loreLine);
 		ItemMeta meta = item.getItemMeta();
 		
 		// Set attack speed if weapon is melee

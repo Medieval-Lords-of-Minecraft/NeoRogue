@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 public abstract class HotbarCompatible extends Equipment {
 	protected double manaCost, staminaCost;
-	public HotbarCompatible(String id, boolean isUpgraded, Rarity rarity, EquipmentClass ec) {
-		super(id, isUpgraded, rarity, ec);
+	public HotbarCompatible(String id, String display, boolean isUpgraded, Rarity rarity, EquipmentClass ec) {
+		super(id, display, isUpgraded, rarity, ec);
 	}
 	
 	protected void setBaseProperties(int manaCost, int staminaCost) {

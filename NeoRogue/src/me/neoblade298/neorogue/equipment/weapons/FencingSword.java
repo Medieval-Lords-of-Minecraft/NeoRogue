@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.weapons;
 
+import java.util.Arrays;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
@@ -24,8 +26,7 @@ public class FencingSword extends Weapon {
 		attackSpeed = 1;
 		shields = isUpgraded ? 7 : 4;
 		item = createItem(Material.STONE_SWORD, null, "On hit, grant yourself <yellow>" + shields + "</yellow> shields");
-		reforgeOptions.add("rapier");
-		reforgeOptions.add("serratedFencingSword");
+		reforgeOptions.put("fencingSword", Arrays.asList("rapier", "serratedFencingSword"));
 	}
 
 	@Override

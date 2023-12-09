@@ -14,10 +14,9 @@ public class MinorStrengthRelic extends Accessory {
 	private double str;
 	
 	public MinorStrengthRelic(boolean isUpgraded) {
-		super("minorStrengthRelic", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
+		super("minorStrengthRelic", "Minor Strength Relic", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
 		str = isUpgraded ? 1.5 : 1;
-		display = "Minor Strength Relic";
-		item = createItem(Material.REDSTONE, "ACCESSORY", reforgeOptions, "Increases physical damage by <yellow>" + str + "</yellow>.");
+		item = createItem(Material.REDSTONE, "ACCESSORY", null, "Increases physical damage by <yellow>" + str + "</yellow>.");
 	}
 
 	@Override

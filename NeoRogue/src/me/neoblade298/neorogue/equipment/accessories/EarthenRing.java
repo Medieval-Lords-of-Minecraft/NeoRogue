@@ -17,10 +17,9 @@ public class EarthenRing extends Accessory {
 	private int damage;
 	
 	public EarthenRing(boolean isUpgraded) {
-		super("earthenRing", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
+		super("earthenRing", "Earthen Ring", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
 		damage = isUpgraded ? 3 : 2;
-		display = "Earthen Ring";
-		item = createItem(Material.GOLD_NUGGET, "ACCESSORY", reforgeOptions, "Basic attacks additionally deal <yellow>" + damage + "</yellow> earthen damage.");
+		item = createItem(Material.GOLD_NUGGET, "ACCESSORY", null, "Basic attacks additionally deal <yellow>" + damage + "</yellow> earthen damage.");
 	}
 
 	@Override

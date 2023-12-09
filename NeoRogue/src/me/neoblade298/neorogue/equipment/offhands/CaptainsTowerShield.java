@@ -19,8 +19,7 @@ public class CaptainsTowerShield extends Offhand {
 	private int reduction;
 	
 	public CaptainsTowerShield(boolean isUpgraded) {
-		super("captainsTowerShield", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
-		display = "Captain's Tower Shield";
+		super("captainsTowerShield", "Captain's Tower Shield", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
 		reduction = isUpgraded ? 10 : 7;
 		item = createItem(this, Material.SHIELD, null, "When raised, creates a barrier in front of you of size <yellow>4x3</yellow> "
 				+ "that intercepts projectiles. Projectiles that hit the barrier hit you but have their damage reduced by <yellow>" + reduction + "</yellow>.");

@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import java.util.Arrays;
+
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -19,16 +21,13 @@ public class Brace extends Ability {
 	private ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
 	
 	public Brace(boolean isUpgraded) {
-		super("brace", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
-		display = "Brace";
+		super("brace", "Brace", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
 		setBaseProperties(20, 0, 50, 0);
 		shields = isUpgraded ? 30 : 20;
 		item = createItem(this, Material.FLINT, null,
 				"On cast, gain <yellow>" + shields + " </yellow>shields for 5 seconds.");
 		pc.count(10).offset(0.5, 0.5).speed(0.2);
-		reforgeOptions.add("brace2");
-		reforgeOptions.add("parry");
-		reforgeOptions.add("bide");
+		reforgeOptions.put("brace", Arrays.asList("brace2", "parry", "bide"));
 	}
 
 	@Override

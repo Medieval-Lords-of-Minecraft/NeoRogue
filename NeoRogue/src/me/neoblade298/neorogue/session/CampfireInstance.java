@@ -49,7 +49,6 @@ public class CampfireInstance extends EditInventoryInstance {
 
 	@Override
 	public void cleanup() {
-		// TODO Auto-generated method stub
 		
 	}
 

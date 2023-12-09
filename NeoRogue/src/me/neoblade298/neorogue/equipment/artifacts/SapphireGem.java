@@ -14,9 +14,8 @@ public class SapphireGem extends Artifact {
 	private int inc;
 
 	public SapphireGem(boolean isUpgraded) {
-		super("sapphireGem", isUpgraded, Rarity.EPIC, EquipmentClass.CLASSLESS);
+		super("sapphireGem", "Sapphire Gem", isUpgraded, Rarity.EPIC, EquipmentClass.CLASSLESS);
 
-		display = "Sapphire Gem";
 		inc = isUpgraded ? 75 : 50;
 		item = createItem(Material.LAPIS_LAZULI, "ARTIFACT",
 				null, "<gray>Increases max mana by <yellow>"+ inc);

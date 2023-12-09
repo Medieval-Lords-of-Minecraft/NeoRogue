@@ -14,9 +14,8 @@ public class SapphireShard extends Artifact {
 	private int inc;
 
 	public SapphireShard(boolean isUpgraded) {
-		super("sapphireShard", isUpgraded, Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
+		super("sapphireShard", "Sapphire Shard", isUpgraded, Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
 
-		display = "Sapphire Shard";
 		inc = isUpgraded ? 15 : 10;
 		item = createItem(Material.LAPIS_LAZULI, "ARTIFACT",
 				null, "<gray>Increases max mana by <yellow>" + inc);

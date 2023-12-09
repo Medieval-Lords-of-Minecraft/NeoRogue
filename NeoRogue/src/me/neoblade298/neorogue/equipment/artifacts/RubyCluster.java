@@ -14,9 +14,8 @@ public class RubyCluster extends Artifact {
 	private int inc;
 
 	public RubyCluster(boolean isUpgraded) {
-		super("rubyCluster", isUpgraded, Rarity.RARE, EquipmentClass.CLASSLESS);
+		super("rubyCluster", "Ruby Cluster", isUpgraded, Rarity.RARE, EquipmentClass.CLASSLESS);
 
-		display = "Ruby Cluster";
 		inc = isUpgraded ? 35 : 25;
 		item = createItem(Material.REDSTONE, "ARTIFACT",
 				null, "<gray>Increases max health by <yellow>" + inc);

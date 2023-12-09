@@ -14,9 +14,8 @@ public class EmeraldCluster extends Artifact {
 	private int inc;
 
 	public EmeraldCluster(boolean isUpgraded) {
-		super("emeraldCluster", isUpgraded, Rarity.RARE, EquipmentClass.CLASSLESS);
+		super("emeraldCluster", "Emerald Cluster", isUpgraded, Rarity.RARE, EquipmentClass.CLASSLESS);
 
-		display = "Emerald Cluster";
 		inc = isUpgraded ? 35 : 25;
 		item = createItem(Material.EMERALD, "ARTIFACT",
 				null, "<gray>Increases max stamina by <yellow>" + inc);

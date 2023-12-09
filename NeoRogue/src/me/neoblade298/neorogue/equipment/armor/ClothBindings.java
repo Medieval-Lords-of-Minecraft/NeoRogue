@@ -14,8 +14,7 @@ public class ClothBindings extends Armor {
 	private double health;
 	
 	public ClothBindings(boolean isUpgraded) {
-		super("clothBindings", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
-		display = "Cloth Bindings";
+		super("clothBindings", "Cloth Bindings", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
 		health = isUpgraded ? 10 : 7;
 		item = createItem(this, Material.WHITE_DYE, null, "Winning a fight heals you for <yellow>" + health + "</yellow>.");
 	}

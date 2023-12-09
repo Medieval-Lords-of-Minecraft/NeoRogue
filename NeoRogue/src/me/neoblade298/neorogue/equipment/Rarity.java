@@ -45,7 +45,7 @@ public enum Rarity {
 	}
 	
 	public Component applyDecorations(Component c) {
-		c = c.color(color);
+		c = c.colorIfAbsent(color);
 		if (decor != null) c = c.decorate(decor);
 		return c;
 	}

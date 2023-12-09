@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.player.inventory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -27,7 +28,7 @@ public class ReforgeOptionsInventory extends CoreInventory {
 	private ItemStack hostage;
 	private String type;
 	private ArrayList<Equipment> reforgeOptions = new ArrayList<Equipment>();
-	public ReforgeOptionsInventory(PlayerSessionInventory prev, int slot, boolean isEquipSlot, String type, int dataSlot, Equipment toReforge, ItemStack hostage) {
+	public ReforgeOptionsInventory(PlayerSessionInventory prev, int slot, boolean isEquipSlot, String type, int dataSlot, Equipment toReforge, Equipment reforgeWith, ItemStack hostage) {
 		super(prev.getPlayer(), Bukkit.createInventory(prev.getPlayer(), 9, Component.text("Reforge Options", NamedTextColor.BLUE)));
 		
 		this.slot = slot;
@@ -39,9 +40,10 @@ public class ReforgeOptionsInventory extends CoreInventory {
 
 		ItemStack[] contents = inv.getContents();
 		
-		ArrayList<String> options = toReforge.getReforgeOptions();
-		int offset = options.size() - 6; // -5 for middle of inv, -1 for 0 offset at size 1
+		List<String> options = toReforge.getReforgeOptions().get(reforgeWith.getId());
+		int offset = options.size() - 7; // -5 for middle of inv, -1 for 0 offset at size 2
 		contents[0] = toReforge.getItem();
+		contents[1] = reforgeWith.getItem();
 		for (int i = 0; i < options.size(); i++) {
 			Equipment eq = Equipment.get(options.get(i), false);
 			contents[(2 * i) - offset] = eq.getItem();

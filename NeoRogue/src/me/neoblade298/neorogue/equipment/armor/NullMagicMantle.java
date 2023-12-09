@@ -14,8 +14,7 @@ public class NullMagicMantle extends Armor {
 	private double damageReduction;
 	
 	public NullMagicMantle(boolean isUpgraded) {
-		super("nullMagicMantle", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
-		display = "Null Magic Mantle";
+		super("nullMagicMantle", "Null Magic Mantle", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
 		damageReduction = isUpgraded ? 2 : 1;
 		item = createItem(this, Material.RABBIT_HIDE, null, "Decrease all magical damage by <yellow>" + damageReduction + ".");
 	}

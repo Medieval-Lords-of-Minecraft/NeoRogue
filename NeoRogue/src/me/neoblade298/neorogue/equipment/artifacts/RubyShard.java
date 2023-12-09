@@ -14,9 +14,8 @@ public class RubyShard extends Artifact {
 	private int inc;
 
 	public RubyShard(boolean isUpgraded) {
-		super("rubyShard", isUpgraded, Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
+		super("rubyShard", "Ruby Shard", isUpgraded, Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
 
-		display = "Ruby Shard";
 		inc = isUpgraded ? 15 : 10;
 		item = createItem(Material.REDSTONE, "ARTIFACT",
 				null, "<gray>Increases max health by <yellow>" + inc);

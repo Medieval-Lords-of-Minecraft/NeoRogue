@@ -2,6 +2,8 @@ package me.neoblade298.neorogue.equipment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.TreeMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -31,8 +33,9 @@ public abstract class Equipment {
 	
 	private static HashMap<EquipmentClass, HashMap<Integer, DropTable<Equipment>>> droptables =
 			new HashMap<EquipmentClass, HashMap<Integer, DropTable<Equipment>>>();
-	protected String id, display;
-	protected ArrayList<String> reforgeOptions = new ArrayList<String>();
+	protected String id;
+	protected Component display;
+	protected TreeMap<String, List<String>> reforgeOptions = new TreeMap<String, List<String>>();
 	protected boolean isUpgraded, canDrop;
 	protected ItemStack item;
 	protected Rarity rarity;
@@ -89,12 +92,15 @@ public abstract class Equipment {
 		}
 	}
 	
-	public Equipment(String id, boolean isUpgraded, Rarity rarity, EquipmentClass ec) {
+	public Equipment(String id, String display, boolean isUpgraded, Rarity rarity, EquipmentClass ec) {
 		int value = rarity.getValue() + (isUpgraded ? 1 : 0);
 		this.id = id;
 		this.rarity = rarity;
 		this.isUpgraded = isUpgraded;
 		this.ec = ec;
+		
+		// Just make sure not to close any of the tags
+		this.display = rarity.applyDecorations(SharedUtil.color(display + (isUpgraded ? "+" : "")));
 		
 
 		if (equipment.containsKey(id) && !isUpgraded) {
@@ -236,25 +242,20 @@ public abstract class Equipment {
 		}
 		return arr;
 	}
-
-	public ItemStack createItem(Material mat, String type, ArrayList<String> preLoreLine, String loreLine) {
-		return createItem(mat, type, preLoreLine, loreLine, null);
-	}
 	
-	public ItemStack createItem(Material mat, String type, ArrayList<String> preLoreLine, String loreLine, String nameOverride) {
+	public ItemStack createItem(Material mat, String type, ArrayList<String> preLoreLine, String loreLine) {
 		ItemStack item = new ItemStack(mat);
 		ItemMeta meta = item.getItemMeta();
-		
-		if (nameOverride == null) {
-			meta.displayName(rarity.applyDecorations(Component.text(display + (isUpgraded ? "+" : ""))));
-		}
-		else {
-			meta.displayName(NeoCore.miniMessage().deserialize(nameOverride));
-		}
-		
+
+		meta.displayName(display);
 		ArrayList<Component> lore = new ArrayList<Component>();
 		lore.add(rarity.getDisplay(true).append(Component.text(" " + type)));
-		if (!reforgeOptions.isEmpty()) lore.add(Component.text("Reforgeable (Combine 2 of this item)", NamedTextColor.YELLOW));
+		if (!reforgeOptions.isEmpty()) {
+			lore.add(Component.text("Reforgeable with:" , NamedTextColor.YELLOW));
+			for (String id : reforgeOptions.keySet()) {
+				lore.add(Component.text("- ", NamedTextColor.GOLD));
+			}
+		}
 		if (preLoreLine != null) {
 			for (String l : preLoreLine) {
 				lore.add(NeoCore.miniMessage().deserialize(l));
@@ -277,7 +278,7 @@ public abstract class Equipment {
 		return nbti.getItem();
 	}
 	
-	public ArrayList<String> getReforgeOptions() {
+	public TreeMap<String, List<String>> getReforgeOptions() {
 		return reforgeOptions;
 	}
 	
@@ -325,7 +326,7 @@ public abstract class Equipment {
 		return getDrop(value, 1, ec).get(0);
 	}
 	
-	public String getDisplay() {
+	public Component getDisplay() {
 		return display;
 	}
 }

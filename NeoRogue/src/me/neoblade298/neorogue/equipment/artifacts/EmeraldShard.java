@@ -14,9 +14,8 @@ public class EmeraldShard extends Artifact {
 	private int inc;
 
 	public EmeraldShard(boolean isUpgraded) {
-		super("emeraldShard", isUpgraded, Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
+		super("emeraldShard", "Emerald Shard", isUpgraded, Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
 
-		display = "Emerald Shard";
 		inc = isUpgraded ? 15 : 10;
 		item = createItem(Material.EMERALD, "ARTIFACT",
 				null, "<gray>Increases max stamina by <yellow>" + inc);

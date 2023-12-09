@@ -14,8 +14,7 @@ public class Footpads extends Armor {
 	private double stamina;
 	
 	public Footpads(boolean isUpgraded) {
-		super("footpads", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
-		display = "Footpads";
+		super("footpads", "Footpads", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
 		stamina = isUpgraded ? 3 : 5;
 		item = createItem(this, Material.LEATHER_BOOTS, null, "Receiving damage grants you <yellow>" + stamina + "</yellow> stamina.");
 	}

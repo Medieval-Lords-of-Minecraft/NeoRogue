@@ -14,8 +14,7 @@ public class LeatherChestplate extends Armor {
 	private double damageReduction;
 	
 	public LeatherChestplate(boolean isUpgraded) {
-		super("leatherChestplate", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
-		display = "Leather Chestplate";
+		super("leatherChestplate", "Leather Chestplate", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
 		damageReduction = isUpgraded ? 2 : 1;
 		item = createItem(this, Material.LEATHER_CHESTPLATE, null, "Decrease all physical damage by <yellow>" + damageReduction + ".");
 	}

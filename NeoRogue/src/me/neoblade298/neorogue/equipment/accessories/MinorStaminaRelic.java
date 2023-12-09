@@ -14,10 +14,9 @@ public class MinorStaminaRelic extends Accessory {
 	private double regen;
 	
 	public MinorStaminaRelic(boolean isUpgraded) {
-		super("minorStaminaRelic", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
+		super("minorStaminaRelic", "Minor Stamina Relic", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
 		regen = isUpgraded ? 1.5 : 1;
-		display = "Earthen Ring";
-		item = createItem(Material.GOLD_NUGGET, "ACCESSORY", reforgeOptions, "Increases stamina regen by <yellow>" + regen + "</yellow>.");
+		item = createItem(Material.GOLD_NUGGET, "ACCESSORY", null, "Increases stamina regen by <yellow>" + regen + "</yellow>.");
 	}
 
 	@Override

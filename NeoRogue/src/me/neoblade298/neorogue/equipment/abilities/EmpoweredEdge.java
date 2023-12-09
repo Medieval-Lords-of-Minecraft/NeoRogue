@@ -24,8 +24,7 @@ public class EmpoweredEdge extends Ability {
 			hit = new ParticleContainer(Particle.REDSTONE);
 	
 	public EmpoweredEdge(boolean isUpgraded) {
-		super("empoweredEdge", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
-		display = "Empowered Edge";
+		super("empoweredEdge", "Empowered Edge", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
 		cooldown = isUpgraded ? 5 : 7;
 		damage = isUpgraded ? 100 : 75;
 		item = createItem(this, Material.FLINT, null,

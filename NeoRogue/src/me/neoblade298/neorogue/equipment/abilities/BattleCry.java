@@ -22,8 +22,7 @@ public class BattleCry extends Ability {
 	private ParticleContainer pc = new ParticleContainer(Particle.REDSTONE);
 	
 	public BattleCry(boolean isUpgraded) {
-		super("battleCry", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
-		display = "Battle Cry";
+		super("battleCry", "Battle Cry", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
 		cooldown = 30;
 		staminaCost = 25;
 		int strength = isUpgraded ? 20 : 14;

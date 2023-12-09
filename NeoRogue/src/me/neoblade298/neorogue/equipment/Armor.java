@@ -6,9 +6,8 @@ import org.bukkit.inventory.ItemStack;
 
 public abstract class Armor extends Equipment {
 
-	public Armor(String id, boolean isUpgraded, Rarity rarity, EquipmentClass ec) {
-		super(id, isUpgraded, rarity, ec);
-		// TODO Auto-generated constructor stub
+	public Armor(String id, String display, boolean isUpgraded, Rarity rarity, EquipmentClass ec) {
+		super(id, display, isUpgraded, rarity, ec);
 	}
 
 
@@ -21,6 +20,6 @@ public abstract class Armor extends Equipment {
 			}
 		}
 		
-		return createItem(mat, "Armor", preLore, loreLine, null);
+		return createItem(mat, "Armor", preLore, loreLine);
 	}
 }
