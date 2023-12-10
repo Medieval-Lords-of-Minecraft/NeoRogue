@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.equipment.*;
 public class PlayerFightData extends FightData {
 	private PlayerSessionData sessdata;
 	private HashMap<Trigger, HashMap<String, TriggerAction>> triggers = new HashMap<Trigger, HashMap<String, TriggerAction>>();
-	private HashMap<String, EquipmentInstance> equips = new HashMap<String, EquipmentInstance>();
+	private HashMap<String, UsableInstance> equips = new HashMap<String, UsableInstance>();
 	private HashMap<Integer, HashMap<Trigger, HashMap<String, TriggerAction>>> slotBasedTriggers = new HashMap<Integer, HashMap<Trigger, HashMap<String, TriggerAction>>>();
 	private Player p;
 
@@ -128,9 +128,9 @@ public class PlayerFightData extends FightData {
 			while (iter.hasNext()) {
 				TriggerAction inst = iter.next();
 
-				if (inst instanceof EquipmentInstance) {
-					EquipmentInstance ei = (EquipmentInstance) inst;
-					if (!ei.canTrigger(p, data)) {
+				if (inst instanceof UsableInstance) {
+					UsableInstance ui = (UsableInstance) inst;
+					if (!ui.canTrigger(p, data)) {
 						continue;
 					}
 				}
@@ -153,10 +153,10 @@ public class PlayerFightData extends FightData {
 			while (iter.hasNext()) {
 				TriggerAction inst = iter.next();
 
-				if (inst instanceof EquipmentInstance) {
-					EquipmentInstance ei = (EquipmentInstance) inst;
-					if (!ei.canTrigger(p, data)) {
-						ei.sendCooldownMessage(sessdata.getPlayer());
+				if (inst instanceof UsableInstance) {
+					UsableInstance ui = (UsableInstance) inst;
+					if (!ui.canTrigger(p, data)) {
+						ui.sendCooldownMessage(sessdata.getPlayer());
 						continue;
 					}
 				}
@@ -185,8 +185,8 @@ public class PlayerFightData extends FightData {
 	private void addTrigger(String id, HashMap<String, TriggerAction> actions, TriggerAction action) {
 		actions.put(id, action);
 
-		if (action instanceof EquipmentInstance) {
-			EquipmentInstance inst = (EquipmentInstance) action;
+		if (action instanceof UsableInstance) {
+			UsableInstance inst = (UsableInstance) action;
 			equips.put(id, inst);
 		}
 	}

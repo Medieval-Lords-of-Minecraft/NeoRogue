@@ -20,7 +20,6 @@ public class Brace2 extends Ability {
 	
 	public Brace2(boolean isUpgraded) {
 		super("brace2", "Brace II", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR);
-		canDrop = false;
 		setBaseProperties(20, 0, 100, 0);
 		shields = isUpgraded ? 180 : 120;
 		item = createItem(this, Material.FLINT, null,

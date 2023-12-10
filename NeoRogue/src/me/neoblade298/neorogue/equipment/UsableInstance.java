@@ -7,22 +7,27 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import net.kyori.adventure.text.Component;
 
-public abstract class EquipmentInstance implements TriggerAction {
-	private Equipment eq;
+public abstract class UsableInstance implements TriggerAction {
+	protected Usable u;
+	protected double staminaCost, manaCost, cooldown;
 	private long lastUsed = 0L;
-	protected int cooldown = 0;
 	
-	public EquipmentInstance(Equipment eq) {
-		this.eq = eq;
+	public UsableInstance(Usable u) {
+		this.u = u;
+		this.manaCost = u.manaCost;
+		this.staminaCost = u.staminaCost;
+		this.cooldown = u.cooldown;
 	}
 	
 	@Override
 	public TriggerResult trigger(PlayerFightData data, Object[] inputs) {
 		lastUsed = System.currentTimeMillis();
+		data.addMana(-manaCost);
+		data.addStamina(-staminaCost);
 		return run(data, inputs);
 	}
+	
 	public abstract TriggerResult run(PlayerFightData data, Object[] inputs);
 	
 	public boolean canTrigger(Player p, PlayerFightData data) {
@@ -30,20 +35,21 @@ public abstract class EquipmentInstance implements TriggerAction {
 			sendCooldownMessage(p);
 			return false;
 		}
+		if (data.getMana() <= manaCost) {
+			Util.displayError(data.getPlayer(), "Not enough mana!");
+			return false;
+		}
+		
+		if (data.getStamina() <= staminaCost) {
+			Util.displayError(data.getPlayer(), "Not enough stamina!");
+			return false;
+		}
 		return true;
-	}
-	
-	public Component getDisplay() {
-		return eq.display;
 	}
 	
 	public void sendCooldownMessage(Player p) {
 		int cooldownOver = (int) ((lastUsed / 1000) + cooldown);
 		int now = (int) (System.currentTimeMillis() / 1000);
-		Util.msgRaw(p, NeoCore.miniMessage().deserialize("<yellow>" + eq.display + " <red>cooldown: </red>" + (cooldownOver - now) + "s"));
-	}
-	
-	public Equipment getEquipment() {
-		return eq;
+		Util.msgRaw(p, NeoCore.miniMessage().deserialize("<yellow>" + u.display + " <red>cooldown: </red>" + (cooldownOver - now) + "s"));
 	}
 }

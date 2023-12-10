@@ -10,58 +10,58 @@ import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Ability;
 import me.neoblade298.neorogue.equipment.EquipmentClass;
+import me.neoblade298.neorogue.equipment.UsableInstance;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
-import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class Parry extends Ability {
-	private int shields, damage;
+public class RecklessSwing extends Ability {
+	private int damage;
+	private static int HEALTH_COST;
 	private ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
-			bpc = new ParticleContainer(Particle.FLAME),
 			hit = new ParticleContainer(Particle.REDSTONE);
 	
-	public Parry(boolean isUpgraded) {
-		super("parry", "Parry", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR);
-		setBaseProperties(20, 0, 100, 0);
-		shields = 30;
+	public RecklessSwing(boolean isUpgraded) {
+		super("recklessSwing", "Reckless Swing", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR);
+		setBaseProperties(7, 0, 30);
 		damage = isUpgraded ? 600 : 400;
 		item = createItem(this, Material.FLINT, null,
-				"On cast, gain <yellow>" + shields + " </yellow>shields for 2 seconds. Taking damage during this "
-						+ "increases your next basic attack's damage by <yellow>" + damage + "</yellow>.");
-		pc.count(10).offset(0.5, 0.5).speed(0.2);
-		bpc.count(20).offset(0.5, 0.5).speed(0.1);
+				"On cast, your next basic attack deals <yellow>" + damage + " </yellow>damage at the cost of <yellow>" + HEALTH_COST
+						+ "</yellow> health.");
+		pc.count(50).offset(0.5, 0.5).speed(0.2);
 		hit.count(50).offset(0.5, 0.5);
 	}
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
-		data.addHotbarTrigger(id, slot, bind, (fd, in) -> {
-			pc.spawn(p);
-			data.addShield(p.getUniqueId(), shields, true, 100, 100, 0, 1);
-			Util.playSound(p, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1F, 1F, false);
-			data.addTrigger(id, Trigger.RECEIVED_DAMAGE, new ParryInstance(p));
-			return TriggerResult.keep();
-		});
+		data.addHotbarTrigger(id, slot, bind, new EmpoweredEdgeInstance(this, p, damage, bind));
 	}
 	
-	// Change reforgeoptions to allow multiple alternatives
-	// Add an equipment type that's just reforge material
-	private class ParryInstance implements TriggerAction {
-		private long createTime;
+	private class EmpoweredEdgeInstance extends UsableInstance {
 		private Player p;
-		public ParryInstance(Player p) {
+		public EmpoweredEdgeInstance(Ability a, Player p, int damage, Trigger bind) {
+			super(a);
 			this.p = p;
-			createTime = System.currentTimeMillis();
+			this.cooldown = a.getCooldown();
 		}
+		
 		@Override
-		public TriggerResult trigger(PlayerFightData data, Object[] inputs) {
-			if (System.currentTimeMillis() - createTime > 5000) return TriggerResult.remove();
-			bpc.spawn(p);
-			Util.playSound(p, Sound.ENTITY_BLAZE_SHOOT, 1F, 1F, false);
+		public boolean canTrigger(Player p, PlayerFightData data) {
+			if (p.getHealth() <= 5) {
+				Util.displayError(data.getPlayer(), "Not enough health!");
+				return false;
+			}
+			return super.canTrigger(p, data);
+		}
+		
+		@Override
+		public TriggerResult run(PlayerFightData data, Object[] inputs) {
+			Util.playSound(p, Sound.ENTITY_ENDER_DRAGON_AMBIENT, 1F, 1F, false);
+			p.setHealth(p.getHealth() - HEALTH_COST);
+			pc.spawn(p);
 			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
 				FightInstance.dealDamage(p, DamageType.SLASHING, damage, (Damageable) in[1]);
 				hit.spawn(((Damageable) in[1]).getLocation());
@@ -70,6 +70,5 @@ public class Parry extends Ability {
 			});
 			return TriggerResult.keep();
 		}
-		
 	}
 }

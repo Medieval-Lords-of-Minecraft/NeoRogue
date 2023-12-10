@@ -19,8 +19,8 @@ public class Berserk extends Ability {
 	private int seconds;
 	
 	public Berserk(boolean isUpgraded) {
-		super("berserk", "Berserk", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR);
-		seconds = isUpgraded ? 60 : 30;
+		super("darkPact", "Dark Pact", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR);
+		seconds = isUpgraded ? 40 : 25;
 		item = createItem(this, Material.REDSTONE, null,
 				"Passive. Increase your damage by 1 every 10 basic attacks. In exchange, take "
 				+ "50% increased damage for the first <yellow>" + seconds + "s</yellow> of a fight.");

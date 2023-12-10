@@ -11,7 +11,7 @@ import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Ability;
 import me.neoblade298.neorogue.equipment.EquipmentClass;
-import me.neoblade298.neorogue.equipment.HotbarCompatibleInstance;
+import me.neoblade298.neorogue.equipment.UsableInstance;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -51,7 +51,7 @@ public class EarthenWall extends Ability {
 		data.addHotbarTrigger(id, slot, bind, inst);
 	}
 	
-	private class EarthenWallInstance extends HotbarCompatibleInstance {
+	private class EarthenWallInstance extends UsableInstance {
 		private Player p;
 		private int stacks = 0;
 		public EarthenWallInstance(Ability a, Player p) {

@@ -4,13 +4,12 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentClass;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.Offhand;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class HastyShield extends Offhand {
@@ -26,19 +25,18 @@ public class HastyShield extends Offhand {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
-		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, new HastyShieldInstance(this, p));
+		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, new HastyShieldInstance(p));
 	}
 	
-	private class HastyShieldInstance extends EquipmentInstance {
+	private class HastyShieldInstance implements TriggerAction {
 		private Player p;
 		private long nextUsable = 0L;
-		public HastyShieldInstance(Equipment eq, Player p) {
-			super(eq);
+		public HastyShieldInstance(Player p) {
 			this.p = p;
 		}
 		
 		@Override
-		public TriggerResult run(PlayerFightData data, Object[] inputs) {
+		public TriggerResult trigger(PlayerFightData data, Object[] inputs) {
 			if (!p.isHandRaised()) return TriggerResult.keep();
 			long now = System.currentTimeMillis();
 			if (now <= nextUsable) return TriggerResult.keep();

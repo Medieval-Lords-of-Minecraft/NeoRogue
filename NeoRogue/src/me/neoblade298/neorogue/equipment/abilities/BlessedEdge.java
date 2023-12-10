@@ -10,28 +10,30 @@ import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Ability;
 import me.neoblade298.neorogue.equipment.EquipmentClass;
-import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.UsableInstance;
+import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class EmpoweredEdge extends Ability {
-	private int damage;
+public class BlessedEdge extends Ability {
+	private int damage, sanct;
 	private ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
-			hit = new ParticleContainer(Particle.REDSTONE);
+			hit = new ParticleContainer(Particle.FIREWORKS_SPARK);
 	
-	public EmpoweredEdge(boolean isUpgraded) {
-		super("empoweredEdge", "Empowered Edge", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
-		setBaseProperties(isUpgraded ? 5 : 7, 0, 30);
-		damage = isUpgraded ? 100 : 75;
+	public BlessedEdge(boolean isUpgraded) {
+		super("blessedEdge", "Blessed Edge", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR);
+		setBaseProperties(5, 20, 20);
+		damage = 125;
+		sanct = isUpgraded ? 9 : 6;
 		item = createItem(this, Material.FLINT, null,
-				"On cast, your next basic attack deals <yellow>" + damage + " </yellow>damage.");
+				"On cast, your next basic attack deals <yellow>" + damage + " </yellow>damage and applies <yellow>" + sanct +
+				"</yellow> sanctified.");
 		pc.count(50).offset(0.5, 0.5).speed(0.2);
 		hit.count(50).offset(0.5, 0.5);
-		addReforgeOption("empoweredEdge", "recklessSwing", "blessedEdge", "furiousSwing");
 	}
 
 	@Override
@@ -44,6 +46,7 @@ public class EmpoweredEdge extends Ability {
 		public EmpoweredEdgeInstance(Ability a, Player p, int damage, Trigger bind) {
 			super(a);
 			this.p = p;
+			this.cooldown = a.getCooldown();
 		}
 		
 		@Override
@@ -51,7 +54,9 @@ public class EmpoweredEdge extends Ability {
 			Util.playSound(p, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1F, 1F, false);
 			pc.spawn(p);
 			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
-				FightInstance.dealDamage(p, DamageType.SLASHING, damage, (Damageable) in[1]);
+				Damageable target = (Damageable) in[1];
+				FightInstance.dealDamage(p, DamageType.SLASHING, damage, target);
+				FightInstance.getFightData(target.getUniqueId()).applyStatus(StatusType.SANCTIFIED, p.getUniqueId(), sanct, -1);
 				hit.spawn(((Damageable) in[1]).getLocation());
 				Util.playSound(p, Sound.BLOCK_ANVIL_LAND, 1F, 1F, false);
 				return TriggerResult.remove();

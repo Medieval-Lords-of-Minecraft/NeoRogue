@@ -22,7 +22,6 @@ public class Bide extends Ability {
 	
 	public Bide(boolean isUpgraded) {
 		super("brace", "Brace", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR);
-		canDrop = false;
 		setBaseProperties(20, 0, 50, 0);
 		shields = 50;
 		duration = 5;

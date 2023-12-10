@@ -11,7 +11,7 @@ import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Ability;
 import me.neoblade298.neorogue.equipment.EquipmentClass;
-import me.neoblade298.neorogue.equipment.HotbarCompatibleInstance;
+import me.neoblade298.neorogue.equipment.UsableInstance;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.BuffType;
@@ -23,6 +23,7 @@ public class BattleCry extends Ability {
 	
 	public BattleCry(boolean isUpgraded) {
 		super("battleCry", "Battle Cry", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
+		setBaseProperties(30, 0, 25);
 		cooldown = 30;
 		staminaCost = 25;
 		int strength = isUpgraded ? 20 : 14;
@@ -37,7 +38,7 @@ public class BattleCry extends Ability {
 		data.addHotbarTrigger(id, slot, bind, new BattleCryInstance(this, p));
 	}
 	
-	private class BattleCryInstance extends HotbarCompatibleInstance {
+	private class BattleCryInstance extends UsableInstance {
 		private Player p;
 		public BattleCryInstance(Ability a, Player p) {
 			super(a);
