@@ -2,7 +2,7 @@ package me.neoblade298.neorogue.equipment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.TreeMap;
 
 import org.bukkit.Bukkit;
@@ -30,12 +30,13 @@ import net.kyori.adventure.text.format.NamedTextColor;
 public abstract class Equipment {
 	private static HashMap<String, Equipment> equipment = new HashMap<String, Equipment>();
 	private static HashMap<String, Equipment> upgraded = new HashMap<String, Equipment>();
-	
+	private static HashSet<String> reforged = new HashSet<String>();
 	private static HashMap<EquipmentClass, HashMap<Integer, DropTable<Equipment>>> droptables =
 			new HashMap<EquipmentClass, HashMap<Integer, DropTable<Equipment>>>();
+	
 	protected String id;
 	protected Component display;
-	protected TreeMap<String, List<String>> reforgeOptions = new TreeMap<String, List<String>>();
+	private TreeMap<String, String[]> reforgeOptions = new TreeMap<String, String[]>();
 	protected boolean isUpgraded, canDrop;
 	protected ItemStack item;
 	protected Rarity rarity;
@@ -58,9 +59,6 @@ public abstract class Equipment {
 			new EarthenLeatherGauntlets(b);
 			new FencingSword(b);
 			new ForcefulLeatherGauntlets(b);
-			new IronAxe(b);
-			new IronDagger(b);
-			new IronSword(b);
 			new LeatherGauntlets(b);
 			new LightLeatherGauntlets(b);
 			new Rapier(b);
@@ -90,16 +88,22 @@ public abstract class Equipment {
 			new EmeraldCluster(b);
 			new EmeraldGem(b);
 		}
+		
+		for (Equipment eq : equipment.values()) {
+			eq.setupDroptable();
+		}
+		for (Equipment eq : upgraded.values()) {
+			eq.setupDroptable();
+		}
 	}
 	
 	public Equipment(String id, String display, boolean isUpgraded, Rarity rarity, EquipmentClass ec) {
-		int value = rarity.getValue() + (isUpgraded ? 1 : 0);
 		this.id = id;
 		this.rarity = rarity;
 		this.isUpgraded = isUpgraded;
 		this.ec = ec;
 		
-		// Just make sure not to close any of the tags
+		// Just make sure not to close any of the tags in display string
 		this.display = rarity.applyDecorations(SharedUtil.color(display + (isUpgraded ? "+" : "")));
 		
 
@@ -109,8 +113,12 @@ public abstract class Equipment {
 		
 		if (isUpgraded) upgraded.put(id, this);
 		else equipment.put(id, this);
-		
+	}
+	
+	public void setupDroptable() {
+		int value = rarity.getValue() + (isUpgraded ? 1 : 0);
 		if (!canDrop) return;
+		if (reforged.contains(id)) return;
 		if (value >= 2) {
 			droptables.get(ec).get(value - 2).add(this, 1); // Rare drop for the value
 		}
@@ -278,8 +286,15 @@ public abstract class Equipment {
 		return nbti.getItem();
 	}
 	
-	public TreeMap<String, List<String>> getReforgeOptions() {
+	public TreeMap<String, String[]> getReforgeOptions() {
 		return reforgeOptions;
+	}
+	
+	protected void addReforgeOption(String base, String... options) {
+		reforgeOptions.put(base, options);
+		for (String option : options) {
+			reforged.add(option);
+		}
 	}
 	
 	public Equipment getUnupgraded() {
@@ -320,6 +335,10 @@ public abstract class Equipment {
 			list.add(table.get());
 		}
 		return list;
+	}
+	
+	public static void addReforgedItem(String id) {
+		reforged.add(id);
 	}
 	
 	public static Equipment getDrop(int value, EquipmentClass... ec) {

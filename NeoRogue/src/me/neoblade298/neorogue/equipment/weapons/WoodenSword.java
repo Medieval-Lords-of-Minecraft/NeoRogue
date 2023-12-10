@@ -1,7 +1,5 @@
 package me.neoblade298.neorogue.equipment.weapons;
 
-import java.util.Arrays;
-
 import org.bukkit.Material;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
@@ -23,7 +21,7 @@ public class WoodenSword extends Weapon {
 		type = DamageType.SLASHING;
 		attackSpeed = 1;
 		item = createItem(Material.WOODEN_SWORD, null, null);
-		reforgeOptions.put("woodenSword", Arrays.asList("stoneSword", "stoneAxe", "stoneDagger"));
+		addReforgeOption("woodenSword", new String[] {"stoneSword", "stoneAxe", "stoneDagger"});
 	}
 
 	@Override

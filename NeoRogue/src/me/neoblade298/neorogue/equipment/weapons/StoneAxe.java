@@ -1,7 +1,5 @@
 package me.neoblade298.neorogue.equipment.weapons;
 
-import java.util.Arrays;
-
 import org.bukkit.Material;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
@@ -25,7 +23,6 @@ public class StoneAxe extends Weapon {
 		type = DamageType.BLUNT;
 		attackSpeed = 2;
 		item = createItem(Material.STONE_AXE, null, null);
-		reforgeOptions.put("stoneAxe", Arrays.asList("ironAxe"));
 	}
 
 	@Override

@@ -1,7 +1,5 @@
 package me.neoblade298.neorogue.equipment.weapons;
 
-import java.util.Arrays;
-
 import org.bukkit.Material;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
@@ -23,7 +21,7 @@ public class LeatherGauntlets extends Weapon {
 		type = DamageType.BLUNT;
 		attackSpeed = 0.5;
 		item = createItem(Material.LEATHER, null, null);
-		reforgeOptions.put("ironSword", Arrays.asList("forcefulLeatherGauntlets", "earthenLeatherGauntlets", "lightLeatherGauntlets"));
+		addReforgeOption("leatherGauntlets", new String[] {"forcefulLeatherGauntlets", "earthenLeatherGauntlets", "lightLeatherGauntlets"});
 	}
 
 	@Override

@@ -2,7 +2,6 @@ package me.neoblade298.neorogue.player.inventory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -40,12 +39,12 @@ public class ReforgeOptionsInventory extends CoreInventory {
 
 		ItemStack[] contents = inv.getContents();
 		
-		List<String> options = toReforge.getReforgeOptions().get(reforgeWith.getId());
-		int offset = options.size() - 7; // -5 for middle of inv, -1 for 0 offset at size 2
+		String[] options = toReforge.getReforgeOptions().get(reforgeWith.getId());
+		int offset = options.length - 7; // -5 for middle of inv, -1 for 0 offset at size 2
 		contents[0] = toReforge.getItem();
 		contents[1] = reforgeWith.getItem();
-		for (int i = 0; i < options.size(); i++) {
-			Equipment eq = Equipment.get(options.get(i), false);
+		for (int i = 0; i < options.length; i++) {
+			Equipment eq = Equipment.get(options[i], false);
 			contents[(2 * i) - offset] = eq.getItem();
 			reforgeOptions.add(eq);
 		}

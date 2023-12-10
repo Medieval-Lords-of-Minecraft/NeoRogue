@@ -30,7 +30,7 @@ public class EarthenWall extends Ability {
 	}
 	
 	public EarthenWall(boolean isUpgraded) {
-		super("earthenWall", "Earthen Wall", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
+		super("earthenWall", "Earthen Wall", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
 		setBaseProperties(20, 100, 0, 10);
 		item = createItem(this, Material.COARSE_DIRT, null,
 				"Can be cast once for every 10 stacks of concussed you apply."

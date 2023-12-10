@@ -1,7 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
-import java.util.Arrays;
-
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -27,7 +25,7 @@ public class Brace extends Ability {
 		item = createItem(this, Material.FLINT, null,
 				"On cast, gain <yellow>" + shields + " </yellow>shields for 5 seconds.");
 		pc.count(10).offset(0.5, 0.5).speed(0.2);
-		reforgeOptions.put("brace", Arrays.asList("brace2", "parry", "bide"));
+		addReforgeOption("brace", new String[] {"brace2", "parry", "bide"});
 	}
 
 	@Override
