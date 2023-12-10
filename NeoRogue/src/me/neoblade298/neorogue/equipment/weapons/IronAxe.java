@@ -18,8 +18,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class IronAxe extends Weapon {
 	
 	public IronAxe(boolean isUpgraded) {
-		super("ironAxe", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR);
-		display = "Iron Axe";
+		super("ironAxe", "Iron Axe", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR);
 		damage = isUpgraded ? 150 : 225;
 		type = DamageType.BLUNT;
 		attackSpeed = 2;

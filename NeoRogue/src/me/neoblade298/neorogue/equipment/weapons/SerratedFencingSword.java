@@ -18,8 +18,7 @@ public class SerratedFencingSword extends Weapon {
 	private int bleed;
 	private int shields;
 	public SerratedFencingSword(boolean isUpgraded) {
-		super("serratedFencingSword", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
-		display = "Serrated Fencing Sword";
+		super("serratedFencingSword", "Serrated Fencing Sword", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
 		damage = 60;
 		attackSpeed = 1;
 		type = DamageType.PIERCING;

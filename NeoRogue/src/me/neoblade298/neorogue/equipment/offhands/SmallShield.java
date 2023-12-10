@@ -15,8 +15,7 @@ public class SmallShield extends Offhand {
 	private int reduction;
 	
 	public SmallShield(boolean isUpgraded) {
-		super("smallShield", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
-		display = "Small Shield";
+		super("smallShield", "Small Shield", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
 		reduction = isUpgraded ? 5 : 3;
 		item = createItem(this, Material.SHIELD, null, "When raised, reduce all damage taken by <yellow>" + reduction + "</yellow>.");
 	}

@@ -16,7 +16,7 @@ public class WristBlade extends Offhand {
 	private int hits;
 	
 	public WristBlade(boolean isUpgraded) {
-		super("wristBlade", isUpgraded, Rarity.RARE, EquipmentClass.THIEF);
+		super("wristBlade", "Wrist Blade", isUpgraded, Rarity.RARE, EquipmentClass.THIEF);
 		hits = isUpgraded ? 3 : 2;
 		String hitsString = isUpgraded ? "3rd" : "2nd";
 		item = createItem(this, Material.PRISMARINE_SHARD, null, "Every <yellow>" + hitsString + " basic attack will trigger"

@@ -18,8 +18,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class WoodenSword extends Weapon {
 	
 	public WoodenSword(boolean isUpgraded) {
-		super("woodenSword", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
-		display = "Wooden Sword";
+		super("woodenSword", "Wooden Sword", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
 		damage = !isUpgraded ? 25 : 35;
 		type = DamageType.SLASHING;
 		attackSpeed = 1;

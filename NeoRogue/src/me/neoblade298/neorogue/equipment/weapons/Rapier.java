@@ -17,8 +17,7 @@ public class Rapier extends Weapon {
 	
 	private int shields;
 	public Rapier(boolean isUpgraded) {
-		super("rapier", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
-		display = "Rapier";
+		super("rapier", "Rapier", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
 		damage = isUpgraded ? 90 : 60;
 		type = DamageType.PIERCING;
 		attackSpeed = 1;

@@ -16,8 +16,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class ForcefulLeatherGauntlets extends Weapon {
 	
 	public ForcefulLeatherGauntlets(boolean isUpgraded) {
-		super("forcefulLeatherGauntlets", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
-		display = "Forceful Leather Gauntlets";
+		super("forcefulLeatherGauntlets", "Forceful Leather Gauntlets", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
 		damage = isUpgraded ? 15 : 20;
 		type = DamageType.BLUNT;
 		attackSpeed = 0.5;

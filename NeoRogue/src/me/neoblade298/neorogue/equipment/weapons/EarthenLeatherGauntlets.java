@@ -21,8 +21,7 @@ public class EarthenLeatherGauntlets extends Weapon {
 	private int concuss;
 	
 	public EarthenLeatherGauntlets(boolean isUpgraded) {
-		super("earthenLeatherGauntlets", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
-		display = "Earthen Leather Gauntlets";
+		super("earthenLeatherGauntlets", "Earthen Leather Gauntlets", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
 		damage = 15;
 		type = DamageType.BLUNT;
 		attackSpeed = 0.5;

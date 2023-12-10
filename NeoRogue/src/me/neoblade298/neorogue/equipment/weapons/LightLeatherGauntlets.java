@@ -17,8 +17,7 @@ public class LightLeatherGauntlets extends Weapon {
 	private int stamina;
 	
 	public LightLeatherGauntlets(boolean isUpgraded) {
-		super("lightLeatherGauntlets", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
-		display = "Light Leather Gauntlets";
+		super("lightLeatherGauntlets", "Light Leather Gauntlets", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
 		damage = 15;
 		type = DamageType.BLUNT;
 		attackSpeed = 0.5;

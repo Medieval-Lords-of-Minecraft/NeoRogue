@@ -17,8 +17,7 @@ public class HastyShield extends Offhand {
 	private int reduction, amount;
 	
 	public HastyShield(boolean isUpgraded) {
-		super("hastyShield", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
-		display = "Hasty Shield";
+		super("hastyShield", "Hasty Shield", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
 		reduction = 15;
 		amount = isUpgraded ? 15 : 10;
 		item = createItem(this, Material.SHIELD, null, "When raised, reduce the next hit taken by <yellow>" + reduction + "</yellow>"

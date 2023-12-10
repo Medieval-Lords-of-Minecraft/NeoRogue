@@ -31,8 +31,7 @@ public class WoodenWand extends Weapon {
 	}
 	
 	public WoodenWand(boolean isUpgraded) {
-		super("woodenWand", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE);
-		display = "Wooden Wand";
+		super("woodenWand", "Wooden Wand", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE);
 		damage = !isUpgraded ? 50 : 75;
 		manaCost = 5;
 		type = DamageType.FIRE;

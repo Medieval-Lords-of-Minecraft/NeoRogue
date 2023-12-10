@@ -19,8 +19,7 @@ public class FencingSword extends Weapon {
 	private int shields;
 	
 	public FencingSword(boolean isUpgraded) {
-		super("fencingSword", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
-		display = "Fencing Sword";
+		super("fencingSword", "Fencing Sword", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
 		damage = isUpgraded ? 50 : 40;
 		type = DamageType.PIERCING;
 		attackSpeed = 1;

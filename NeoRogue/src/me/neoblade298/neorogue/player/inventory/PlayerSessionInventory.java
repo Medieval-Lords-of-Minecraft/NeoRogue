@@ -187,22 +187,27 @@ public class PlayerSessionInventory extends CoreInventory {
 		else if (!cursor.getType().isAir() && clicked != null) {
 			e.setCancelled(true);
 			
-			// First check if both items are the same and can be reforged
 			String eqId = ncursor.getString("equipId");
 			String eqedId = nclicked.getString("equipId");
-			if (eqId.equals(eqedId)) {
+			Equipment eq = Equipment.get(eqId, ncursor.getBoolean("isUpgraded"));
+			Equipment eqed = Equipment.get(eqedId, nclicked.getBoolean("isUpgraded"));
+			
+			// First check if the items can be reforged together
+			if (eq.getReforgeOptions().containsKey(eqedId)) {
 				p.setItemOnCursor(null);
-				boolean isUpgraded = nclicked.getBoolean("isUpgraded") || ncursor.getBoolean("isUpgraded");
 				new ReforgeOptionsInventory(this, e.getSlot(), onChest, onChest ? slotTypes.get(e.getSlot()) : null, nclicked.getInteger("dataSlot"),
-						Equipment.get(eqId, isUpgraded), cursor);
+						eq, eqed, cursor);
 				return;
+			}
+			else if (eqed.getReforgeOptions().containsKey(eqId)) {
+				p.setItemOnCursor(null);
+				new ReforgeOptionsInventory(this, e.getSlot(), onChest, onChest ? slotTypes.get(e.getSlot()) : null, nclicked.getInteger("dataSlot"),
+						eqed, eq, cursor);
 			}
 			
 			if (onChest) {
-				Equipment eq = Equipment.get(eqId, false);
-				Equipment equippedEq = Equipment.get(eqedId, false);
 				if (!nclicked.hasTag("dataSlot")) return;
-				if (eq instanceof Ability && (equippedEq == null || !(equippedEq instanceof Ability)) && !data.canEquipAbility()) {
+				if (eq instanceof Ability && (eqed == null || !(eqed instanceof Ability)) && !data.canEquipAbility()) {
 					displayError("You can only equip " + data.getMaxAbilities() + " abilities!", true);
 					return;
 				}

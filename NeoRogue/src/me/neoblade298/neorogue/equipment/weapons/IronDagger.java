@@ -19,8 +19,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class IronDagger extends Weapon {
 	
 	public IronDagger(boolean isUpgraded) {
-		super("ironDagger", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR);
-		display = "Iron Dagger";
+		super("ironDagger", "Iron Dagger", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR);
 		damage = isUpgraded ? 45 : 35;
 		type = DamageType.SLASHING;
 		attackSpeed = 0.75;

@@ -253,7 +253,7 @@ public abstract class Equipment {
 		if (!reforgeOptions.isEmpty()) {
 			lore.add(Component.text("Reforgeable with:" , NamedTextColor.YELLOW));
 			for (String id : reforgeOptions.keySet()) {
-				lore.add(Component.text("- ", NamedTextColor.GOLD));
+				lore.add(Component.text("- ", NamedTextColor.GOLD).append(Equipment.get(id, false).getDisplay()));
 			}
 		}
 		if (preLoreLine != null) {

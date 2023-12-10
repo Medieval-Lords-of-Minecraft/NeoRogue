@@ -17,8 +17,7 @@ public class SpikyShield extends Offhand {
 	private int reduction, amount;
 	
 	public SpikyShield(boolean isUpgraded) {
-		super("spikyShield", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
-		display = "Spiky Shield";
+		super("spikyShield", "Spiky Shield", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
 		reduction = 8;
 		amount = isUpgraded ? 6 : 4;
 		item = createItem(this, Material.SHIELD, null, "When raised, reduce all damage taken by <yellow>" + reduction + "</yellow>."

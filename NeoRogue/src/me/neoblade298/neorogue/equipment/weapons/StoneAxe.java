@@ -20,8 +20,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class StoneAxe extends Weapon {
 	
 	public StoneAxe(boolean isUpgraded) {
-		super("stoneAxe", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
-		display = "Stone Axe";
+		super("stoneAxe", "Stone Axe", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
 		damage = !isUpgraded ? 70 : 115;
 		type = DamageType.BLUNT;
 		attackSpeed = 2;

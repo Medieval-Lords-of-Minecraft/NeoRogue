@@ -18,8 +18,7 @@ public class LeatherBracer extends Offhand {
 	private int instances;
 	
 	public LeatherBracer(boolean isUpgraded) {
-		super("leatherBracer", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
-		display = "Leather Bracer";
+		super("leatherBracer", "Leather Bracer", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
 		instances = isUpgraded ? 3 : 2;
 		item = createItem(this, Material.LEATHER, null, "Prevents the first <yellow>" + instances + "</yellow> instances of taking damage in a fight.");
 	}

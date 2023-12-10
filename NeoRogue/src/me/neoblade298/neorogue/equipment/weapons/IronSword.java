@@ -21,8 +21,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class IronSword extends Weapon {
 	
 	public IronSword(boolean isUpgraded) {
-		super("ironSword", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
-		display = "Iron Sword";
+		super("ironSword", "Iron Sword", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
 		damage = isUpgraded ? 90 : 60;
 		type = DamageType.SLASHING;
 		attackSpeed = 1;

@@ -18,8 +18,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class StoneSword extends Weapon {
 	
 	public StoneSword(boolean isUpgraded) {
-		super("stoneSword", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
-		display = "Stone Sword";
+		super("stoneSword", "Stone Sword", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
 		damage = !isUpgraded ? 35 : 50;
 		type = DamageType.SLASHING;
 		attackSpeed = 1;

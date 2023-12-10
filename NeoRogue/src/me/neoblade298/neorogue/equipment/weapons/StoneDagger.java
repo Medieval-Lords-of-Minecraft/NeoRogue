@@ -21,8 +21,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class StoneDagger extends Weapon {
 	
 	public StoneDagger(boolean isUpgraded) {
-		super("stoneDagger", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
-		display = "Stone Dagger";
+		super("stoneDagger", "Stone Dagger", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
 		damage = !isUpgraded ? 25 : 35;
 		type = DamageType.SLASHING;
 		attackSpeed = 0.75;

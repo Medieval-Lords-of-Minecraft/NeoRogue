@@ -39,7 +39,7 @@ public class EquipmentChoiceReward implements Reward {
 		meta.displayName(Component.text("Choose 1 of " + equips.size() + " equipment", NamedTextColor.GOLD));
 		ArrayList<Component> lore = new ArrayList<Component>();
 		for (Equipment equip : equips) {
-			lore.add(Component.text(equip.getDisplay()));
+			lore.add(equip.getDisplay());
 		}
 		meta.lore(lore);
 		item.setItemMeta(meta);

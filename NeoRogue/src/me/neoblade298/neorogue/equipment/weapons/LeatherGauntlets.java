@@ -18,8 +18,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class LeatherGauntlets extends Weapon {
 	
 	public LeatherGauntlets(boolean isUpgraded) {
-		super("leatherGauntlets", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
-		display = "Leather Gauntlets";
+		super("leatherGauntlets", "Leather Gauntlets", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
 		damage = !isUpgraded ? 10 : 15;
 		type = DamageType.BLUNT;
 		attackSpeed = 0.5;
