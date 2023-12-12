@@ -27,7 +27,7 @@ public class Fury extends Ability {
 	public Fury(boolean isUpgraded) {
 		super("fury", "Fury", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR);
 		setBaseProperties(5, 0, 50);
-		damage = 100;
+		damage = 200;
 		berserk = isUpgraded ? 40 : 60;
 		item = createItem(this, Material.FLINT, null,
 				"On cast, your next basic attack deals <yellow>" + damage + " </yellow>damage and grants a stack of Berserk. " +
@@ -74,7 +74,7 @@ public class Fury extends Ability {
 				hit.spawn(((Damageable) in[1]).getLocation());
 				Util.playSound(p, Sound.BLOCK_ANVIL_LAND, 1F, 1F, false);
 				if (isBerserk) {
-					Util.playSound(p, Sound.ENTITY_GENERIC_EXPLODE, 1F, 1F, false);
+					Util.playSound(p, target.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1F, 1F, false);
 					explode.spawn(target.getLocation());
 				}
 				return TriggerResult.remove();
