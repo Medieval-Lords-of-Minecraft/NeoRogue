@@ -52,4 +52,8 @@ public abstract class UsableInstance implements TriggerAction {
 		int now = (int) (System.currentTimeMillis() / 1000);
 		Util.msgRaw(p, NeoCore.miniMessage().deserialize("<yellow>" + u.display + " <red>cooldown: </red>" + (cooldownOver - now) + "s"));
 	}
+	
+	public void reduceCooldown(int seconds) {
+		lastUsed += seconds * 1000;
+	}
 }

@@ -127,7 +127,7 @@ public class FightData {
 		tasks.remove(id);
 	}
 	
-	public void removeCleanupTasks(String id) {
+	public void removeCleanupTask(String id) {
 		cleanupTasks.remove(id);
 	}
 	

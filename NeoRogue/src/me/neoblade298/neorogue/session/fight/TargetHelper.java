@@ -22,15 +22,16 @@ public class TargetHelper {
 		return TargetUtil.getEntitiesInSight(source, props.range, tolerance, new TargetFilter(source, props)).peekFirst();
 	}
 	
-	public static List<LivingEntity> getEntitiesInSight(LivingEntity source, TargetProperties props) {
+	public static LinkedList<LivingEntity> getEntitiesInSight(LivingEntity source, TargetProperties props) {
 		return TargetUtil.getEntitiesInSight(source, props.range, props.tolerance, new TargetFilter(source, props));
 	}
 
-	public static List<LivingEntity> getEntitiesInRadius(LivingEntity source, TargetProperties props) {
-		return source.getNearbyEntities(props.range, props.range, props.range).stream()
-			.filter(trg -> trg instanceof LivingEntity)
-			.map(trg -> (LivingEntity) trg)
-			.filter(new TargetFilter(source, props)).collect(Collectors.toCollection(LinkedList::new));
+	public static LinkedList<LivingEntity> getEntitiesInRadius(LivingEntity source, TargetProperties props) {
+		return TargetUtil.getEntitiesInRadius(source, props.range, props.tolerance, new TargetFilter(source, props));
+	}
+
+	public static LivingEntity getNearest(LivingEntity source, TargetProperties props) {
+		return getEntitiesInRadius(source, props).peekFirst();
 	}
 	
 	public static class TargetProperties {
