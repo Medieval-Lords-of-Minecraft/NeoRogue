@@ -9,8 +9,10 @@ import org.bukkit.util.RayTraceResult;
 import io.lumine.mythic.bukkit.BukkitAPIHelper;
 import io.lumine.mythic.bukkit.MythicBukkit;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import me.neoblade298.neocore.bukkit.util.TargetUtil;
 
@@ -22,6 +24,13 @@ public class TargetHelper {
 	
 	public static List<LivingEntity> getEntitiesInSight(LivingEntity source, TargetProperties props) {
 		return TargetUtil.getEntitiesInSight(source, props.range, props.tolerance, new TargetFilter(source, props));
+	}
+
+	public static List<LivingEntity> getEntitiesInRadius(LivingEntity source, TargetProperties props) {
+		return source.getNearbyEntities(props.range, props.range, props.range).stream()
+			.filter(trg -> trg instanceof LivingEntity)
+			.map(trg -> (LivingEntity) trg)
+			.filter(new TargetFilter(source, props)).collect(Collectors.toCollection(LinkedList::new));
 	}
 	
 	public static class TargetProperties {
