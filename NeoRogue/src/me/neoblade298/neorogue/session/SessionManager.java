@@ -222,7 +222,9 @@ public class SessionManager implements Listener {
 	public void onMythicSpawn(MythicMobSpawnEvent e) {
 		Entity ent = e.getEntity();
 		UUID uuid = ent.getUniqueId();
-		FightInstance.putFightData(uuid, new FightData((Damageable) ent, (MapSpawnerInstance) null));
+		if (ent instanceof Damageable) {
+			FightInstance.putFightData(uuid, new FightData((Damageable) ent, (MapSpawnerInstance) null));
+		}
 	}
 
 	@EventHandler

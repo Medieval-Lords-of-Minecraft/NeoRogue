@@ -39,6 +39,7 @@ import me.neoblade298.neorogue.session.Instance;
 import me.neoblade298.neorogue.session.LoseInstance;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
+import me.neoblade298.neorogue.session.fight.TickAction.TickResult;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffSlice;
 import me.neoblade298.neorogue.session.fight.buff.BuffType;
@@ -214,6 +215,7 @@ public abstract class FightInstance extends Instance {
 	}
 	
 	public void handleRespawn(FightData data, String id, boolean isDespawn) {
+		System.out.println("Handling respawn");
 		Mob mob = Mob.get(id);
 		if (mob == null) {
 			Bukkit.getLogger().warning("[NeoRogue] Failed to find meta-info for mob " + id + " to handle respawn");
@@ -245,7 +247,7 @@ public abstract class FightInstance extends Instance {
 		PlayerFightData data = userData.get(p.getUniqueId());
 		if (data == null) return false;
 		if (trigger.isSlotDependent()) {
-			data.runSlotBasedTriggers(data, trigger, p.getInventory().getHeldItemSlot(), obj);
+			return data.runSlotBasedTriggers(data, trigger, p.getInventory().getHeldItemSlot(), obj);
 		}
 		return data.runActions(data, trigger, obj);
 	}
@@ -454,7 +456,7 @@ public abstract class FightInstance extends Instance {
 		
 		new BukkitRunnable() {
 			public void run() {
-				spawnMob(3 + (s.getNodesVisited() / 5));
+				spawnMob(5 + (s.getNodesVisited() / 5));
 			}
 		}.runTaskLater(NeoRogue.inst(), 60L);
 		
@@ -468,7 +470,7 @@ public abstract class FightInstance extends Instance {
 					Iterator<UUID> iter = toTick.iterator();
 					while (iter.hasNext()) {
 						FightData data = fightData.get(iter.next());
-						if (data == null || data.runTickActions()) iter.remove();
+						if (data == null || data.runTickActions() == TickResult.REMOVE) iter.remove();
 					}
 				}
 				
@@ -536,6 +538,10 @@ public abstract class FightInstance extends Instance {
 				barriers.remove(uuid);
 			}
 		}, duration * 20);
+	}
+	
+	public void removeEnemyBarrier(UUID uuid) {
+		enemyBarriers.remove(uuid);
 	}
 	
 	public HashMap<UUID, Barrier> getEnemyBarriers() {

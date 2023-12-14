@@ -17,6 +17,7 @@ import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.shared.droptables.DropTable;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.equipment.abilities.*;
+import me.neoblade298.neorogue.equipment.accessories.*;
 import me.neoblade298.neorogue.equipment.armor.*;
 import me.neoblade298.neorogue.equipment.artifacts.*;
 import me.neoblade298.neorogue.equipment.offhands.*;
@@ -37,7 +38,7 @@ public abstract class Equipment {
 	protected String id;
 	protected Component display;
 	private TreeMap<String, String[]> reforgeOptions = new TreeMap<String, String[]>();
-	protected boolean isUpgraded, canDrop;
+	protected boolean isUpgraded, canDrop = true;
 	protected ItemStack item;
 	protected Rarity rarity;
 	protected EquipmentClass ec;
@@ -52,8 +53,55 @@ public abstract class Equipment {
 		}
 		
 		for (boolean b : new boolean[] {false, true}) {
+			// Abilities
+			new BattleCry(b);
+			new Berserk(b);
+			new Bide(b);
+			new BlessedEdge(b);
+			new Brace(b);
+			new Brace2(b);
+			new EarthenWall(b);
+			new EmpoweredEdge(b);
+			new Fury(b);
+			new Glare(b);
+			new Parry(b);
+			new Provoke(b);
+			new RecklessSwing(b);
+			new SavageCry(b);
+			new Tackle(b);
+			
+			// Accessories
+			new EarthenRing(b);
+			new MinorStaminaRelic(b);
+			new MinorStrengthRelic(b);
+			
+			// Artifacts
+			new RubyShard(b);
+			new RubyCluster(b);
+			new RubyGem(b);
+			new SapphireShard(b);
+			new SapphireCluster(b);
+			new SapphireGem(b);
+			new EmeraldShard(b);
+			new EmeraldCluster(b);
+			new EmeraldGem(b);
+			
 			// Armor
+			new ClothBindings(b);
+			new Footpads(b);
+			new LeatherChestplate(b);
 			new LeatherHelmet(b);
+			new NullMagicMantle(b);
+			new SpikedPauldrons(b);
+			
+			// Offhands
+			new CaptainsTowerShield(b);
+			new HastyShield(b);
+			new LeatherBracer(b);
+			new SmallShield(b);
+			new SpikyShield(b);
+			new TowerShield(b);
+			new WristBlade(b);
 			
 			// Weapons
 			new EarthenLeatherGauntlets(b);
@@ -68,32 +116,11 @@ public abstract class Equipment {
 			new StoneSword(b);
 			new WoodenSword(b);
 			new WoodenWand(b);
-			
-			// Offhands
-			new SmallShield(b);
-			
-			// Abilities
-			new BattleCry(b);
-			new Berserk(b);
-			new EmpoweredEdge(b);
-			
-			// Artifacts
-			new RubyShard(b);
-			new RubyCluster(b);
-			new RubyGem(b);
-			new SapphireShard(b);
-			new SapphireCluster(b);
-			new SapphireGem(b);
-			new EmeraldShard(b);
-			new EmeraldCluster(b);
-			new EmeraldGem(b);
 		}
 		
 		for (Equipment eq : equipment.values()) {
 			eq.setupDroptable();
-		}
-		for (Equipment eq : upgraded.values()) {
-			eq.setupDroptable();
+			eq.getUpgraded().setupDroptable();
 		}
 	}
 	

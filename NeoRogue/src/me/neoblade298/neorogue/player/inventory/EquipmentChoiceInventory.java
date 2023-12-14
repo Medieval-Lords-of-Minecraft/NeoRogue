@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
@@ -48,7 +49,7 @@ public class EquipmentChoiceInventory extends CoreInventory {
 		if (slot < equips.size()) {
 			p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1F, 1F);
 			Equipment eq = equips.get(slot);
-			Util.msg(p, "You claimed your reward of " + eq.getDisplay());
+			Util.msg(p, SharedUtil.color("<gray>You claimed your reward of ").append(eq.getDisplay()));
 			
 			if (eq instanceof Artifact) {
 				data.giveArtifact((Artifact) eq);

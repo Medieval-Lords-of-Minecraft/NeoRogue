@@ -152,13 +152,13 @@ public class FightData {
 		tickActions.add(action);
 	}
 	
-	public boolean runTickActions() {
+	public TickResult runTickActions() {
 		Iterator<TickAction> iter = tickActions.iterator();
 		while (iter.hasNext()) {
 			TickResult tr = iter.next().run();
-			if (tr == TickResult.KEEP) iter.remove();
+			if (tr == TickResult.REMOVE) iter.remove();
 		}
-		return tickActions.isEmpty();
+		return tickActions.isEmpty() ? TickResult.REMOVE : TickResult.KEEP;
 	}
 	
 	public void removeStatus(String id) {

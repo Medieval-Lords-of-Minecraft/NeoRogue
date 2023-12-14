@@ -250,7 +250,6 @@ public class Map {
 				entrances.add(coords);
 			}
 		}
-		System.out.println("Entrances final is " + entrances);
 
 		// Set up the mobs
 		for (MapSpawner spawner : inst.getPiece().getSpawners()) {

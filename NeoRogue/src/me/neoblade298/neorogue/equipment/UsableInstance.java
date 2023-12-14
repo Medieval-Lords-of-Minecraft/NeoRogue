@@ -31,7 +31,7 @@ public abstract class UsableInstance implements TriggerAction {
 	public abstract TriggerResult run(PlayerFightData data, Object[] inputs);
 	
 	public boolean canTrigger(Player p, PlayerFightData data) {
-		if (lastUsed + (cooldown * 1000) < System.currentTimeMillis()) {
+		if (lastUsed + (cooldown * 1000) >= System.currentTimeMillis()) {
 			sendCooldownMessage(p);
 			return false;
 		}
@@ -50,7 +50,7 @@ public abstract class UsableInstance implements TriggerAction {
 	public void sendCooldownMessage(Player p) {
 		int cooldownOver = (int) ((lastUsed / 1000) + cooldown);
 		int now = (int) (System.currentTimeMillis() / 1000);
-		Util.msgRaw(p, NeoCore.miniMessage().deserialize("<yellow>" + u.display + " <red>cooldown: </red>" + (cooldownOver - now) + "s"));
+		Util.msgRaw(p, u.display.append(NeoCore.miniMessage().deserialize(" <red>cooldown: </red><yellow>" + (cooldownOver - now) + "s")));
 	}
 	
 	public void reduceCooldown(int seconds) {

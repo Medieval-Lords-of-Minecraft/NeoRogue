@@ -21,7 +21,7 @@ public class Bide extends Ability {
 			bpc = new ParticleContainer(Particle.FLAME);
 	
 	public Bide(boolean isUpgraded) {
-		super("brace", "Brace", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR);
+		super("bide", "Bide", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR);
 		setBaseProperties(20, 0, 50, 0);
 		shields = 50;
 		duration = 5;
