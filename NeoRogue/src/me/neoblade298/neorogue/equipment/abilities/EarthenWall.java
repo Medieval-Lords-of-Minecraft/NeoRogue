@@ -25,8 +25,8 @@ public class EarthenWall extends Ability {
 	private static ParticleContainer earth = new ParticleContainer(Particle.BLOCK_CRACK);
 	
 	static {
-		pc.count(50).offset(0.5, 0.5).speed(0.2);
-		earth.count(1).offset(0.5, 0.5).blockData(Material.COARSE_DIRT.createBlockData());
+		pc.count(50).spread(0.5, 0.5).speed(0.2);
+		earth.count(1).spread(0.5, 0.5).blockData(Material.COARSE_DIRT.createBlockData());
 	}
 	
 	public EarthenWall(boolean isUpgraded) {

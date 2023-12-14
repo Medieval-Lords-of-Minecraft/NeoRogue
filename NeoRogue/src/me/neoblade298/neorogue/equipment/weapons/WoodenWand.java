@@ -26,7 +26,7 @@ public class WoodenWand extends Weapon {
 	
 	static {
 		tick = new ParticleContainer(Particle.FLAME);
-		tick.count(10).offset(0.1, 0.1).speed(0.01);
+		tick.count(10).spread(0.1, 0.1).speed(0.01);
 		explode = new ParticleContainer(Particle.EXPLOSION_NORMAL);
 	}
 	

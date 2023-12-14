@@ -28,7 +28,7 @@ public class BattleCry extends Ability {
 		item = createItem(this, Material.REDSTONE, null,
 				"On cast, give yourself <yellow>" + strength + " </yellow>bonus physical damage for <yellow>10</yellow> seconds.");
 		
-		pc.count(50).offset(0.5, 0.5).dustOptions(new DustOptions(Color.RED, 1F));
+		pc.count(50).spread(0.5, 0.5).dustOptions(new DustOptions(Color.RED, 1F));
 	}
 
 	@Override

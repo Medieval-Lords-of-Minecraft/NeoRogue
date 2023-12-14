@@ -42,8 +42,8 @@ public class Tackle extends Ability {
 				"On cast, dash forward, stopping at the first enemy hit and dealing <yellow>" + damage + "</yellow> damage in a small area. "
 						+ "If an enemy is hit, reduce this ability's cooldown by <yellow>10</yellow>.");
 		
-		pc.count(25).offset(0.5, 0.5);
-		start.count(25).offset(0.5, 0);
+		pc.count(25).spread(0.5, 0.5);
+		start.count(25).spread(0.5, 0);
 	}
 
 	@Override
@@ -62,7 +62,7 @@ public class Tackle extends Ability {
 		public TriggerResult run(PlayerFightData data, Object[] inputs) {
 			Util.playSound(p, Sound.ENTITY_SHULKER_SHOOT, false);
 			start.spawn(p);
-			Vector v = p.getEyeLocation().toVector();
+			Vector v = p.getEyeLocation().getDirection();
 			p.setVelocity(v.setY(0).normalize().multiply(3).setY(0.5));
 			new TackleHitChecker(p, data, this);
 			return TriggerResult.keep();

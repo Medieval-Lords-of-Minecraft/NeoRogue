@@ -32,7 +32,7 @@ public class Glare extends Ability {
 		threat = isUpgraded ? 40000 : 25000;
 		item = createItem(this, Material.FLINT, null,
 				"On cast, threaten all enemies you're looking at for <yellow>" + threat + "</yellow>.");
-		taunt.count(50).offset(0.5, 0.5).speed(0.2);
+		taunt.count(50).spread(0.5, 0.5).speed(0.2);
 	}
 
 	@Override

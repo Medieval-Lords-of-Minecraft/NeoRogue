@@ -31,8 +31,8 @@ public class RecklessSwing extends Ability {
 		item = createItem(this, Material.FLINT, null,
 				"On cast, your next basic attack deals <yellow>" + damage + " </yellow>damage at the cost of <yellow>" + HEALTH_COST
 						+ "</yellow> health.");
-		pc.count(50).offset(0.5, 0.5).speed(0.2);
-		hit.count(50).offset(0.5, 0.5);
+		pc.count(50).spread(0.5, 0.5).speed(0.2);
+		hit.count(50).spread(0.5, 0.5);
 	}
 
 	@Override

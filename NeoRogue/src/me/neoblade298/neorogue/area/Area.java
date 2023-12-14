@@ -102,7 +102,7 @@ public class Area {
 		teleportBase = new Location(Bukkit.getWorld(WORLD_NAME), -20.5, 0, 6.5);
 		
 		// Load particles
-		red.count(3).offset(0.1, 0).ignoreSettings(true).dustOptions(new DustOptions(Color.RED, 1F));
+		red.count(3).spread(0.1, 0.1).ignoreSettings(true).dustOptions(new DustOptions(Color.RED, 1F));
 		black = red.clone().dustOptions(new DustOptions(Color.BLACK, 1F));
 	}
 	

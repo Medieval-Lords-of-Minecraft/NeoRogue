@@ -32,9 +32,9 @@ public class Fury extends Ability {
 		item = createItem(this, Material.FLINT, null,
 				"On cast, your next basic attack deals <yellow>" + damage + " </yellow>damage and grants a stack of Berserk. " +
 				"At <yellow>" + berserk + " </yellow>stacks, the cooldown of this skill is halved and the cost is removed.");
-		pc.count(50).offset(0.5, 0.5).speed(0.2);
-		hit.count(50).offset(0.5, 0.5);
-		explode.count(25).offset(0.5, 0.5).speed(0.1);
+		pc.count(50).spread(0.5, 0.5).speed(0.2);
+		hit.count(50).spread(0.5, 0.5);
+		explode.count(25).spread(0.5, 0.5).speed(0.1);
 	}
 
 	@Override

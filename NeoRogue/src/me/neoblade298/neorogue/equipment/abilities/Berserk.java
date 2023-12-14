@@ -24,7 +24,7 @@ public class Berserk extends Ability {
 		item = createItem(this, Material.REDSTONE, null,
 				"Passive. Increase your damage by 1 every 10 basic attacks. In exchange, take "
 				+ "50% increased damage for the first <yellow>" + seconds + "s</yellow> of a fight.");
-		pc.count(25).offset(0.5, 0.5).speed(0.1);
+		pc.count(25).spread(0.5, 0.5).speed(0.1);
 	}
 
 	@Override

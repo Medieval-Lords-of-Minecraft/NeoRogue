@@ -5,21 +5,16 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.RayTraceResult;
-
 import io.lumine.mythic.bukkit.BukkitAPIHelper;
 import io.lumine.mythic.bukkit.MythicBukkit;
 
 import java.util.LinkedList;
-import java.util.List;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
-
 import me.neoblade298.neocore.bukkit.util.TargetUtil;
 
 public class TargetHelper {
-	
-	public static LivingEntity getNearestInSight(LivingEntity source, double tolerance, TargetProperties props) {
-		return TargetUtil.getEntitiesInSight(source, props.range, tolerance, new TargetFilter(source, props)).peekFirst();
+	public static LivingEntity getNearestInSight(LivingEntity source, TargetProperties props) {
+		return TargetUtil.getEntitiesInSight(source, props.range, props.tolerance, new TargetFilter(source, props)).peekFirst();
 	}
 	
 	public static LinkedList<LivingEntity> getEntitiesInSight(LivingEntity source, TargetProperties props) {
@@ -36,8 +31,13 @@ public class TargetHelper {
 	
 	public static class TargetProperties {
 		public double range, tolerance = 4, arc;
-		public boolean throughWall;
+		public boolean throughWall, stickToGround;
 		public TargetType type;
+		
+		public TargetProperties(double range, boolean stickToGround) {
+			this.range = range;
+			this.stickToGround = stickToGround;
+		}
 		
 		public TargetProperties(double range, boolean throughWall, TargetType type) {
 			this.range = range;
@@ -95,7 +95,11 @@ public class TargetHelper {
 	static boolean isValidTarget(final LivingEntity source, final LivingEntity target,
 			boolean throughWall) {
 		return target != source
-				&& (throughWall || !isObstructed(source.getEyeLocation(), target.getEyeLocation()))
+				
+				&& (throughWall ||
+						!isObstructed(source.getEyeLocation(), target.getEyeLocation()) ||
+						!isObstructed(source.getEyeLocation(), target.getLocation()))
+				
 				&& target.getType() != EntityType.ARMOR_STAND;
 	}
 }

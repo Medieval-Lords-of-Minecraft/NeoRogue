@@ -24,7 +24,7 @@ public class Brace2 extends Ability {
 		shields = isUpgraded ? 180 : 120;
 		item = createItem(this, Material.FLINT, null,
 				"On cast, gain <yellow>" + shields + " </yellow>shields for 5 seconds.");
-		pc.count(10).offset(0.5, 0.5).speed(0.2);
+		pc.count(10).spread(0.5, 0.5).speed(0.2);
 	}
 
 	@Override
