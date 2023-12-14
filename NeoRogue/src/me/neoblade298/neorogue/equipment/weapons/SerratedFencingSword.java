@@ -30,7 +30,7 @@ public class SerratedFencingSword extends Weapon {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
-		data.addTrigger(id, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
+		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
 			Damageable target = (Damageable) inputs[1];
 			FightInstance.dealDamage(p, type, damage, target);
 			FightInstance.getFightData(target.getUniqueId()).applyStatus(StatusType.BLEED, p.getUniqueId(), bleed, 0);

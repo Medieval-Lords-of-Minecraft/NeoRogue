@@ -31,12 +31,13 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class Tackle extends Ability {
 	private ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION_LARGE),
 			start = new ParticleContainer(Particle.CLOUD);
-	private static final TargetProperties hc = new TargetProperties(1, true, TargetType.ENEMY);
+	private static final TargetProperties hc = new TargetProperties(1, true, TargetType.ENEMY),
+			aoe = new TargetProperties(2, true, TargetType.ENEMY);
 	private int damage;
 	
 	public Tackle(boolean isUpgraded) {
 		super("tackle", "Tackle", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
-		setBaseProperties(25, 0, 75, 5);
+		setBaseProperties(2, 0, 1, 5); // 25 cd, 75 stamina
 		damage = isUpgraded ? 300 : 200;
 		item = createItem(this, Material.REDSTONE, null,
 				"On cast, dash forward, stopping at the first enemy hit and dealing <yellow>" + damage + "</yellow> damage in a small area. "
@@ -48,7 +49,7 @@ public class Tackle extends Ability {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
-		data.addHotbarTrigger(id, slot, bind, new TackleInstance(this, p));
+		data.addTrigger(id, bind, new TackleInstance(this, p));
 	}
 	
 	private class TackleInstance extends UsableInstance {
@@ -62,8 +63,9 @@ public class Tackle extends Ability {
 		public TriggerResult run(PlayerFightData data, Object[] inputs) {
 			Util.playSound(p, Sound.ENTITY_SHULKER_SHOOT, false);
 			start.spawn(p);
+			double ySpeed = p.getVelocity().getY();
 			Vector v = p.getEyeLocation().getDirection();
-			p.setVelocity(v.setY(0).normalize().multiply(3).setY(0.5));
+			p.setVelocity(v.setY(0).normalize().setY(ySpeed < 0 ? ySpeed : 0.5));
 			new TackleHitChecker(p, data, this);
 			return TriggerResult.keep();
 		}
@@ -78,9 +80,13 @@ public class Tackle extends Ability {
 			for (long delay = 1; delay <= 10; delay++) {
 				tasks.add(new BukkitRunnable() {
 					public void run() {
-						LinkedList<LivingEntity> hit = TargetHelper.getEntitiesInRadius(p, hc);
-						if (hit.size() == 0) return;
-						
+						LivingEntity first = TargetHelper.getNearest(p, hc);
+						if (first == null) return;
+
+						LinkedList<LivingEntity> hit = TargetHelper.getEntitiesInRadius(p, aoe);
+						Vector v = p.getLocation().subtract(hit.getFirst().getLocation()).toVector();
+						v = v.setY(Math.min(0.3, v.getY())).normalize(); // Limit how high a tackle can take you
+						p.setVelocity(v.multiply(0.5));
 						cancelTasks();
 						inst.reduceCooldown(10);
 						Util.playSound(p, Sound.ENTITY_GENERIC_EXPLODE, false);

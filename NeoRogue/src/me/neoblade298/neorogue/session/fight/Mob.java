@@ -119,13 +119,13 @@ public class Mob implements Comparable<Mob> {
 		meta.displayName(display);
 		ArrayList<Component> lore = new ArrayList<Component>();
 		Component header = Component.text("Resistances:", NamedTextColor.GOLD);
-		lore.add(header.decoration(TextDecoration.ITALIC, State.FALSE));
+		lore.add(header.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
 		for (BuffType dt : typeOrder) {
 			if (resistances.containsKey(dt)) {
 				int pct = resistances.get(dt);
 				Component c = Component.text(dt.getDisplay() + ": ", NamedTextColor.YELLOW)
 						.append(Component.text(pct + "%", pct > 0 ? NamedTextColor.RED : NamedTextColor.GREEN));
-				lore.add(c.decoration(TextDecoration.ITALIC, State.FALSE));
+				lore.add(c.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
 			}
 		}
 		
@@ -134,7 +134,7 @@ public class Mob implements Comparable<Mob> {
 				Component c = Component.text(dt.getDisplay(), NamedTextColor.YELLOW)
 						.append(Component.text(": ", NamedTextColor.GRAY))
 						.append(damageTypes.get(dt).getDisplay(true));
-				lore.add(c.decoration(TextDecoration.ITALIC, State.FALSE));
+				lore.add(c.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
 			}
 		}
 		

@@ -58,8 +58,9 @@ public class ChanceChoice {
 		
 		if (desc != null) {
 			for (TextComponent text : desc) {
-				if (!canRun) lore.add(text.decorate(TextDecoration.STRIKETHROUGH).decoration(TextDecoration.ITALIC, State.FALSE));
-				else lore.add(text.decoration(TextDecoration.ITALIC, State.FALSE));
+				if (!canRun) lore.add(
+						(TextComponent) text.decorate(TextDecoration.STRIKETHROUGH).decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
+				else lore.add((TextComponent) text.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
 			}
 		}
 		

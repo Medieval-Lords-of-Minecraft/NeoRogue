@@ -24,6 +24,8 @@ import me.neoblade298.neorogue.session.fight.trigger.KeyBind;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.format.TextDecoration.State;
 
 public class PlayerSessionInventory extends CoreInventory {
 	private static final int[] ARMOR = new int[] { 0, 1, 2 };
@@ -395,10 +397,12 @@ public class PlayerSessionInventory extends CoreInventory {
 		List<Component> lore = meta.lore();
 		String type = slotTypes.get(invSlot);
 		if (type.equals("OTHERBINDS")) {
-			lore.add(1, Component.text("Bound to " + KeyBind.getBindFromSlot(invSlot).getDisplay(), NamedTextColor.YELLOW));
+			lore.add(1, Component.text("Bound to " + KeyBind.getBindFromSlot(invSlot).getDisplay(), NamedTextColor.YELLOW)
+					.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
 		}
 		else if (type.equals("HOTBAR")) {
-			lore.add(1, Component.text("Bound to Hotbar #" + (dataSlot + 1), NamedTextColor.YELLOW));
+			lore.add(1, Component.text("Bound to Hotbar #" + (dataSlot + 1), NamedTextColor.YELLOW)
+					.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
 		}
 		meta.lore(lore);
 		item.setItemMeta(meta);

@@ -33,7 +33,7 @@ public class BattleCry extends Ability {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
-		data.addHotbarTrigger(id, slot, bind, new BattleCryInstance(this, p));
+		data.addTrigger(id, bind, new BattleCryInstance(this, p));
 	}
 	
 	private class BattleCryInstance extends UsableInstance {

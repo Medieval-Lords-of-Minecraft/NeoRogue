@@ -36,7 +36,7 @@ public class Provoke extends Ability {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
-		data.addHotbarTrigger(id, slot, bind, (pd, in) -> {
+		data.addTrigger(id, bind, (pd, in) -> {
 			for (LivingEntity ent : TargetHelper.getEntitiesInSight(p, tp)) {
 				api.addThreat(p, ent, threat);
 				taunt.spawn(ent);

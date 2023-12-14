@@ -54,6 +54,6 @@ public abstract class UsableInstance implements TriggerAction {
 	}
 	
 	public void reduceCooldown(int seconds) {
-		lastUsed += seconds * 1000;
+		lastUsed -= seconds * 1000;
 	}
 }

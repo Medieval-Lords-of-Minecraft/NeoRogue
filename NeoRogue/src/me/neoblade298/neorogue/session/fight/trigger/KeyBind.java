@@ -6,6 +6,8 @@ import org.bukkit.inventory.ItemStack;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.format.TextDecoration.State;
 
 public enum KeyBind {
 	
@@ -53,7 +55,7 @@ public enum KeyBind {
 		this.invSlot = invSlot;
 		this.dataSlot = dataSlot;
 		this.item = item;
-		this.display = display;
+		this.display = display.decoration(TextDecoration.ITALIC, State.FALSE);
 		this.trigger = trigger;
 	}
 	

@@ -48,7 +48,7 @@ public class EarthenWall extends Ability {
 			return TriggerResult.keep();
 		});
 		
-		data.addHotbarTrigger(id, slot, bind, inst);
+		data.addTrigger(id, bind, inst);
 	}
 	
 	private class EarthenWallInstance extends UsableInstance {

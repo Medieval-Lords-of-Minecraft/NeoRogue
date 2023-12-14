@@ -113,7 +113,8 @@ public abstract class FightInstance extends Instance {
 		Player p = (Player) e.getDamager();
 		e.setCancelled(true);
 		if (p.getAttackCooldown() < 0.9F) return;
-		
+
+		trigger(p, Trigger.LEFT_CLICK, null);
 		trigger(p, Trigger.LEFT_CLICK_HIT, new Object[] {p, e.getEntity()});
 	}
 	
@@ -125,7 +126,10 @@ public abstract class FightInstance extends Instance {
 	
 	public static void handleHotbarSwap(PlayerItemHeldEvent e) {
 		// Only cancel swap if something is bound to the trigger
-		e.setCancelled(trigger(e.getPlayer(), Trigger.getFromHotbarSlot(e.getNewSlot()), null));
+		Player p = e.getPlayer();
+		PlayerFightData data = userData.get(p.getUniqueId());
+		e.setCancelled(data.hasTriggerAction(Trigger.getFromHotbarSlot(e.getNewSlot())));
+		trigger(e.getPlayer(), Trigger.getFromHotbarSlot(e.getNewSlot()), null);
 	}
 	
 	public static void handleOffhandSwap(PlayerSwapHandItemsEvent e) {
@@ -194,7 +198,8 @@ public abstract class FightInstance extends Instance {
 	public static void handleLeftClick(PlayerInteractEvent e) {
 		if (e.getHand() != EquipmentSlot.HAND) return;
 		if (e.getPlayer().getAttackCooldown() < 0.9F) return;
-		
+
+		trigger(e.getPlayer(), Trigger.LEFT_CLICK, null);
 		trigger(e.getPlayer(), Trigger.LEFT_CLICK_NO_HIT, null);
 	}
 	
@@ -215,7 +220,6 @@ public abstract class FightInstance extends Instance {
 	}
 	
 	public void handleRespawn(FightData data, String id, boolean isDespawn) {
-		System.out.println("Handling respawn");
 		Mob mob = Mob.get(id);
 		if (mob == null) {
 			Bukkit.getLogger().warning("[NeoRogue] Failed to find meta-info for mob " + id + " to handle respawn");
@@ -247,7 +251,8 @@ public abstract class FightInstance extends Instance {
 		PlayerFightData data = userData.get(p.getUniqueId());
 		if (data == null) return false;
 		if (trigger.isSlotDependent()) {
-			return data.runSlotBasedTriggers(data, trigger, p.getInventory().getHeldItemSlot(), obj);
+			// Run triggers that change based on slot (like left/right click, NOT hotbar swap)
+			data.runSlotBasedActions(data, trigger, p.getInventory().getHeldItemSlot(), obj);
 		}
 		return data.runActions(data, trigger, obj);
 	}

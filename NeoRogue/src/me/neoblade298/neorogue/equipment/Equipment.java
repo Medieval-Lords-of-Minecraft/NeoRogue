@@ -27,6 +27,8 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.format.TextDecoration.State;
 
 public abstract class Equipment {
 	private static HashMap<String, Equipment> equipment = new HashMap<String, Equipment>();
@@ -282,22 +284,28 @@ public abstract class Equipment {
 		ItemStack item = new ItemStack(mat);
 		ItemMeta meta = item.getItemMeta();
 
-		meta.displayName(display);
-		ArrayList<Component> lore = new ArrayList<Component>();
-		lore.add(rarity.getDisplay(true).append(Component.text(" " + type)));
+		meta.displayName(display.decoration(TextDecoration.ITALIC, State.FALSE));
+		ArrayList<Component> loreItalicized = new ArrayList<Component>();
+		loreItalicized.add(rarity.getDisplay(true).append(Component.text(" " + type)));
 		if (!reforgeOptions.isEmpty()) {
-			lore.add(Component.text("Reforgeable with:" , NamedTextColor.YELLOW));
+			loreItalicized.add(Component.text("Reforgeable with:" , NamedTextColor.YELLOW));
 			for (String id : reforgeOptions.keySet()) {
-				lore.add(Component.text("- ", NamedTextColor.GOLD).append(Equipment.get(id, false).getDisplay()));
+				loreItalicized.add(Component.text("- ", NamedTextColor.GOLD).append(Equipment.get(id, false).getDisplay()));
 			}
 		}
 		if (preLoreLine != null) {
 			for (String l : preLoreLine) {
-				lore.add(NeoCore.miniMessage().deserialize(l));
+				loreItalicized.add(NeoCore.miniMessage().deserialize(l));
 			}
 		}
 		if (loreLine != null) {
-			lore.addAll(SharedUtil.addLineBreaks((TextComponent) NeoCore.miniMessage().deserialize(loreLine).colorIfAbsent(NamedTextColor.GRAY), 200));
+			for (TextComponent tc : SharedUtil.addLineBreaks((TextComponent) NeoCore.miniMessage().deserialize(loreLine).colorIfAbsent(NamedTextColor.GRAY), 200)) {
+				loreItalicized.add(tc);
+			}
+		}
+		ArrayList<Component> lore = new ArrayList<Component>(loreItalicized.size());
+		for (Component c : loreItalicized) {
+			lore.add(c.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
 		}
 		meta.lore(lore);
 		

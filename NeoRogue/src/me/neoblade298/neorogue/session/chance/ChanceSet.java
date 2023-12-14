@@ -46,7 +46,7 @@ public class ChanceSet {
 	
 	public ChanceSet(AreaType type, Material mat, String id, String display) {
 		this.id = id;
-		this.display = (TextComponent) SharedUtil.color("<gold>" + display).decoration(TextDecoration.ITALIC, State.FALSE);
+		this.display = (TextComponent) SharedUtil.color("<gold>" + display).decorationIfAbsent(TextDecoration.ITALIC, State.FALSE);
 		this.mat = mat;
 		sets.get(type).add(this);
 		setsById.put(id, this);

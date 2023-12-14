@@ -143,8 +143,8 @@ public class PlayerFightData extends FightData {
 		return false;
 	}
 
-	// Must be separate due to requiring the int slot parameter
-	public boolean runSlotBasedTriggers(PlayerFightData data, Trigger trigger, int slot, Object[] inputs) {
+	// Must be separate due to the same trigger doing a different thing based on slot (like weapons)
+	public boolean runSlotBasedActions(PlayerFightData data, Trigger trigger, int slot, Object[] inputs) {
 		if (!slotBasedTriggers.containsKey(slot)) return false;
 		HashMap<Trigger, HashMap<String, TriggerAction>> triggers = slotBasedTriggers.get(slot);
 
@@ -156,7 +156,6 @@ public class PlayerFightData extends FightData {
 				if (inst instanceof UsableInstance) {
 					UsableInstance ui = (UsableInstance) inst;
 					if (!ui.canTrigger(p, data)) {
-						ui.sendCooldownMessage(sessdata.getPlayer());
 						continue;
 					}
 				}
@@ -168,18 +167,24 @@ public class PlayerFightData extends FightData {
 		return false;
 	}
 	
-	public void addHotbarTrigger(String id, int slot, Trigger trigger, TriggerAction action) {
+	public boolean hasTriggerAction(Trigger trigger) {
+		return triggers.containsKey(trigger);
+	}
+	
+	public void addSlotBasedTrigger(String id, int slot, Trigger trigger, TriggerAction action) {
 		HashMap<Trigger, HashMap<String, TriggerAction>> triggers = slotBasedTriggers.getOrDefault(slot, 
 				new HashMap<Trigger, HashMap<String, TriggerAction>>());
-		addTrigger(id, trigger, action);
 		slotBasedTriggers.put(slot, triggers);
+		HashMap<String, TriggerAction> actions = triggers.getOrDefault(trigger, new HashMap<String, TriggerAction>());
+		triggers.put(trigger, actions);
+		addTrigger(id, actions, action);
 	}
 
 	public void addTrigger(String id, Trigger trigger, TriggerAction action) {
 		HashMap<String, TriggerAction> actions = triggers.containsKey(trigger) ? triggers.get(trigger)
 				: new HashMap<String, TriggerAction>();
-		addTrigger(id, actions, action);
 		triggers.put(trigger, actions);
+		addTrigger(id, actions, action);
 	}
 	
 	private void addTrigger(String id, HashMap<String, TriggerAction> actions, TriggerAction action) {

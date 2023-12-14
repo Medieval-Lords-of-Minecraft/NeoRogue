@@ -18,6 +18,7 @@ public enum Trigger {
 	HOTBAR_8(true, false),
 	HOTBAR_9(true, false),
 	BASIC_ATTACK(false, false), // Only runs off the in-house basic attack event
+	LEFT_CLICK(false, true),
 	LEFT_CLICK_NO_HIT(false, true),
 	LEFT_CLICK_HIT(false, true),
 	RIGHT_CLICK(false, true),

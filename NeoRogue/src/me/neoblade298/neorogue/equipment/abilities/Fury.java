@@ -39,7 +39,7 @@ public class Fury extends Ability {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
-		data.addHotbarTrigger(id, slot, bind, new EmpoweredEdgeInstance(this, p, damage, bind));
+		data.addTrigger(id, bind, new EmpoweredEdgeInstance(this, p, damage, bind));
 	}
 	
 	private class EmpoweredEdgeInstance extends UsableInstance {

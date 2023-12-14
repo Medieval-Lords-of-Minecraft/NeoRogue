@@ -24,7 +24,7 @@ public class ChanceStage {
 	public ChanceStage(String id, String description) {
 		this.id = id;
 		for (TextComponent c : SharedUtil.addLineBreaks(Component.text(description, NamedTextColor.GRAY), 250)) {
-			this.description.add(c.decoration(TextDecoration.ITALIC, State.FALSE));
+			this.description.add((TextComponent) c.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
 		}
 		stages.put(id, this);
 	}

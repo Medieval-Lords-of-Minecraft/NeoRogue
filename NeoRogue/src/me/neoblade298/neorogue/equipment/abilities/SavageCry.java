@@ -37,7 +37,7 @@ public class SavageCry extends Ability {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
-		data.addHotbarTrigger(id, slot, bind, (pd, in) -> {
+		data.addTrigger(id, bind, (pd, in) -> {
 			Util.playSound(p, Sound.ENTITY_ENDER_DRAGON_AMBIENT, false);
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
 				api.addThreat(p, ent, threat);

@@ -22,7 +22,7 @@ public class TargetHelper {
 	}
 
 	public static LinkedList<LivingEntity> getEntitiesInRadius(LivingEntity source, TargetProperties props) {
-		return TargetUtil.getEntitiesInRadius(source, props.range, props.tolerance, new TargetFilter(source, props));
+		return TargetUtil.getEntitiesInRadius(source, props.range, new TargetFilter(source, props));
 	}
 
 	public static LivingEntity getNearest(LivingEntity source, TargetProperties props) {

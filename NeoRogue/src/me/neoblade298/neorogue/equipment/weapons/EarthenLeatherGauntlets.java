@@ -30,10 +30,8 @@ public class EarthenLeatherGauntlets extends Weapon {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
-		data.addTrigger(id, Trigger.LEFT_CLICK_HIT, new EarthenLeatherGauntletsInstance(p));
+		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, new EarthenLeatherGauntletsInstance(p));
 	}
-	
-
 	
 	private class EarthenLeatherGauntletsInstance implements TriggerAction {
 		private Player p;

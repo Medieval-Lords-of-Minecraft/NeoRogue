@@ -14,6 +14,9 @@ public abstract class Ability extends Usable {
 		super.setBaseProperties(cooldown, manaCost, staminaCost);
 		this.range = range;
 	}
+	public ItemStack createItem(Ability a, Material mat, String loreLine) {
+		return createItem(a, mat, null, loreLine);
+	}
 	
 	public ItemStack createItem(Ability a, Material mat, String[] preLoreLine, String loreLine) {
 		ArrayList<String> preLore = new ArrayList<String>();
@@ -27,7 +30,7 @@ public abstract class Ability extends Usable {
 			}
 		}
 		
-		return createItem(mat, "Armor", preLore, loreLine);
+		return createItem(mat, "Ability", preLore, loreLine);
 	}
 	
 	public int getRange() {

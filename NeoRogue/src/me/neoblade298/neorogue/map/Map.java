@@ -345,7 +345,6 @@ public class Map {
 							break;
 						}
 						
-						System.out.println(coords.getDirection().invert() + " " + x + ":" + xp + " " + y + ":" + (y+4) + " " + z + ":" + zp);
 						for (int i = x; i >= xp; i--) {
 							for (int j = y; j < y + 4; j++) {
 								for (int k = z; k <= zp; k++) {
