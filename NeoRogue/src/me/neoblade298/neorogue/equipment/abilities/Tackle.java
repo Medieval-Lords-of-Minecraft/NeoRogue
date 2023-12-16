@@ -37,7 +37,7 @@ public class Tackle extends Ability {
 	
 	public Tackle(boolean isUpgraded) {
 		super("tackle", "Tackle", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
-		setBaseProperties(2, 0, 1, 5); // 25 cd, 75 stamina
+		setBaseProperties(5, 0, 1, 5); // 25 cd, 75 stamina
 		damage = isUpgraded ? 300 : 200;
 		item = createItem(this, Material.REDSTONE, null,
 				"On cast, dash forward, stopping at the first enemy hit and dealing <yellow>" + damage + "</yellow> damage in a small area. "

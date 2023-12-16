@@ -21,6 +21,7 @@ public class ChanceSet {
 	private String id;
 	private TextComponent display;
 	private Material mat;
+	private boolean individualChoices = false;
 	
 	public static ChanceSet getSet(AreaType type) {
 		ArrayList<ChanceSet> set = sets.get(type);
@@ -70,5 +71,9 @@ public class ChanceSet {
 	
 	public void setInitialStage(ChanceStage stage) {
 		stages.put(INIT_ID, stage);
+	}
+	
+	public boolean isIndividual() {
+		return individualChoices;
 	}
 }

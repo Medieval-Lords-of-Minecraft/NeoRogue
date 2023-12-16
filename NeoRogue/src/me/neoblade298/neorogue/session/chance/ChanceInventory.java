@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.session.chance;
 
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -13,6 +15,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.player.inventory.FightInfoInventory;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -70,6 +73,8 @@ public class ChanceInventory extends CoreInventory {
 	@Override
 	public void handleInventoryClick(InventoryClickEvent e) {
 		e.setCancelled(true);
+		Player p = (Player) e.getWhoClicked();
+		UUID uuid = p.getUniqueId();
 		Inventory inv = e.getClickedInventory();
 		if (inv == null || inv.getType() != InventoryType.CHEST) return;
 		
@@ -82,7 +87,12 @@ public class ChanceInventory extends CoreInventory {
 		NBTItem nbti = new NBTItem(item);
 		int num = nbti.getInteger("choice");
 		if (num == 0) return;
-		inst.advanceStage(stage.choices.get(num - 1).choose(s, inst));
+		
+		if (!set.isIndividual() && !uuid.equals(s.getHost())) {
+			Util.displayError(p, "Only the host may make choices for this event!");
+			return;
+		}
+		inst.advanceStage(uuid, stage.choices.get(num - 1).choose(s, inst));
 	}
 
 	@Override

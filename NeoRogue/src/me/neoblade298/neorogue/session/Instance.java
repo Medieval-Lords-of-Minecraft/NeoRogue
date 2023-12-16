@@ -39,7 +39,7 @@ public abstract class Instance {
 			return new ShopInstance(party);
 		}
 		else if (data.startsWith("CHANCE")) {
-			return new ChanceInstance(data);
+			return new ChanceInstance(data, party);
 		}
 		return null;
 	}
