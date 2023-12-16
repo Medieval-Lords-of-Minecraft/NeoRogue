@@ -83,6 +83,8 @@ public class PlayerSessionData {
 		case WARRIOR: hotbar[0] = (HotbarCompatible) Equipment.get("woodenSword", false);
 		hotbar[1] = (HotbarCompatible) Equipment.get("empoweredEdge", false);
 		hotbar[2] = (HotbarCompatible) Equipment.get("tackle", true);
+		hotbar[3] = (HotbarCompatible) Equipment.get("tackle", true);
+		hotbar[3] = (HotbarCompatible) Equipment.get("brace", true);
 		break;
 		case THIEF: hotbar[0] = (HotbarCompatible) Equipment.get("woodenSword", false);
 		hotbar[1] = (HotbarCompatible) Equipment.get("empoweredEdge", false);

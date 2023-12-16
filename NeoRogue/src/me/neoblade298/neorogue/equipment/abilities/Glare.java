@@ -30,8 +30,6 @@ public class Glare extends Ability {
 		super("glare", "Glare", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR);
 		setBaseProperties(5, 0, 60, (int) tp.range);
 		threat = isUpgraded ? 40000 : 25000;
-		item = createItem(this, Material.FLINT, null,
-				"On cast, threaten all enemies you're looking at for <yellow>" + threat + "</yellow>.");
 		taunt.count(50).spread(0.5, 0.5).speed(0.2);
 	}
 
@@ -45,5 +43,11 @@ public class Glare extends Ability {
 			}
 			return TriggerResult.keep();
 		});
+	}
+
+	@Override
+	public void setupItem() {
+		item = createItem(this, Material.FLINT, null,
+				"On cast, threaten all enemies you're looking at for <yellow>" + threat + "</yellow>.");
 	}
 }

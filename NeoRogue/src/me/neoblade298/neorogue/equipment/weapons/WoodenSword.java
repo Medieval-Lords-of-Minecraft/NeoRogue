@@ -20,7 +20,6 @@ public class WoodenSword extends Weapon {
 		damage = !isUpgraded ? 25 : 35;
 		type = DamageType.SLASHING;
 		attackSpeed = 1;
-		item = createItem(Material.WOODEN_SWORD, null, null);
 		addReforgeOption("woodenSword", new String[] {"stoneSword", "stoneAxe", "stoneDagger"});
 	}
 
@@ -31,5 +30,10 @@ public class WoodenSword extends Weapon {
 			pdata.runActions(pdata, Trigger.BASIC_ATTACK, inputs);
 			return TriggerResult.keep();
 		});
+	}
+
+	@Override
+	public void setupItem() {
+		item = createItem(Material.WOODEN_SWORD, null, null);
 	}
 }

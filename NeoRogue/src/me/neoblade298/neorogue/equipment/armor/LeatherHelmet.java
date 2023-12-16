@@ -15,11 +15,15 @@ public class LeatherHelmet extends Armor {
 	public LeatherHelmet(boolean isUpgraded) {
 		super("leatherHelmet", "Leather Helmet", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
 		shields = isUpgraded ? 30 : 20;
-		item = createItem(this, Material.LEATHER_HELMET, null, "Start every fight with <yellow>" + shields + " </yellow>shields.");
 	}
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
 		data.addShield(p.getUniqueId(), shields, false, 0, 0, 0, 0);
+	}
+
+	@Override
+	public void setupItem() {
+		item = createItem(this, Material.LEATHER_HELMET, null, "Start every fight with <yellow>" + shields + " </yellow>shields.");
 	}
 }

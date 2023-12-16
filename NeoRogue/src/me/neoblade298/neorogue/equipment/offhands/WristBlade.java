@@ -17,9 +17,6 @@ public class WristBlade extends Offhand {
 	public WristBlade(boolean isUpgraded) {
 		super("wristBlade", "Wrist Blade", isUpgraded, Rarity.RARE, EquipmentClass.THIEF);
 		hits = isUpgraded ? 3 : 2;
-		String hitsString = isUpgraded ? "3rd" : "2nd";
-		item = createItem(this, Material.PRISMARINE_SHARD, null, "Every <yellow>" + hitsString + " basic attack will trigger"
-				+ " on-hit effects twice.");
 	}
 
 	@Override
@@ -38,5 +35,12 @@ public class WristBlade extends Offhand {
 			}
 			return TriggerResult.keep();
 		}
+	}
+
+	@Override
+	public void setupItem() {
+		String hitsString = isUpgraded ? "3rd" : "2nd";
+		item = createItem(this, Material.PRISMARINE_SHARD, null, "Every <yellow>" + hitsString + " basic attack will trigger"
+				+ " on-hit effects twice.");
 	}
 }

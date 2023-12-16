@@ -28,8 +28,6 @@ public class Provoke extends Ability {
 		super("provoke", "Provoke", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
 		setBaseProperties(isUpgraded ? 5 : 10, 0, 20, (int) tp.range);
 		threat = 5000;
-		item = createItem(this, Material.FLINT, null,
-				"On cast, threaten all enemies you're looking at for <yellow>" + threat + "</yellow>.");
 		taunt.count(50).spread(0.5, 0.5).speed(0.2);
 		addReforgeOption("provoke", "savageCry", "glare");
 	}
@@ -43,5 +41,11 @@ public class Provoke extends Ability {
 			}
 			return TriggerResult.keep();
 		});
+	}
+
+	@Override
+	public void setupItem() {
+		item = createItem(this, Material.FLINT, null,
+				"On cast, threaten all enemies you're looking at for <yellow>" + threat + "</yellow>.");
 	}
 }

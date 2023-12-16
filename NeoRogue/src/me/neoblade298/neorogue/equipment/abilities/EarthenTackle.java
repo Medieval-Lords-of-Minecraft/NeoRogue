@@ -25,35 +25,37 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class Tackle extends Ability {
+public class EarthenTackle extends Ability {
 	private ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION_LARGE),
-			start = new ParticleContainer(Particle.CLOUD);
+			start = new ParticleContainer(Particle.BLOCK_CRACK),
+			dirt = new ParticleContainer(Particle.BLOCK_CRACK);
 	private static final TargetProperties hc = new TargetProperties(1.5, true, TargetType.ENEMY),
-			aoe = new TargetProperties(2, true, TargetType.ENEMY);
-	private int damage;
+			aoe = new TargetProperties(4, true, TargetType.ENEMY);
+	private int damage, concussed;
 	
-	public Tackle(boolean isUpgraded) {
-		super("tackle", "Tackle", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
-		setBaseProperties(20, 0, 1, 50);
-		damage = isUpgraded ? 300 : 200;
+	public EarthenTackle(boolean isUpgraded) {
+		super("earthenTackle", "Earthen Tackle", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR);
+		setBaseProperties(20, 0, 25, 50);
+		damage = isUpgraded ? 600 : 400;
+		concussed = isUpgraded? 35 : 25;
 		
 		pc.count(25).spread(0.5, 0.5);
-		start.count(25).spread(0.5, 0);
-		
-		addReforgeOption("tackle", "bulldoze", "earthenTackle");
+		start.count(25).spread(0.5, 0).blockData(Material.DIRT.createBlockData());
+		dirt = start.clone().spread(0.5, 0.5);
 	}
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
-		data.addTrigger(id, bind, new TackleInstance(this, p));
+		data.addTrigger(id, bind, new EarthenTackleInstance(this, p));
 	}
 	
-	private class TackleInstance extends UsableInstance {
+	private class EarthenTackleInstance extends UsableInstance {
 		private Player p;
-		public TackleInstance(Ability a, Player p) {
+		public EarthenTackleInstance(Ability a, Player p) {
 			super(a);
 			this.p = p;
 		}
@@ -68,16 +70,16 @@ public class Tackle extends Ability {
 				p.teleport(p.getLocation().add(0, 0.2, 0));
 			}
 			p.setVelocity(v.setY(0).normalize().setY(0.3));
-			new TackleHitChecker(p, data, this);
+			new EarthenTackleHitChecker(p, data, this);
 			return TriggerResult.keep();
 		}
 	}
 	
-	private class TackleHitChecker {
+	private class EarthenTackleHitChecker {
 		private ArrayList<BukkitTask> tasks = new ArrayList<BukkitTask>();
 		private PlayerFightData data;
 		
-		protected TackleHitChecker(Player p, PlayerFightData data, TackleInstance inst) {
+		protected EarthenTackleHitChecker(Player p, PlayerFightData data, EarthenTackleInstance inst) {
 			this.data = data;
 			for (long delay = 1; delay <= 10; delay++) {
 				tasks.add(new BukkitRunnable() {
@@ -93,8 +95,10 @@ public class Tackle extends Ability {
 						inst.reduceCooldown(10);
 						Util.playSound(p, Sound.ENTITY_GENERIC_EXPLODE, false);
 						for (LivingEntity ent : hit) {
-							pc.spawn(p);
+							pc.spawn(ent);
+							dirt.spawn(ent);
 							FightInstance.dealDamage(p, DamageType.BLUNT, damage, ent);
+							FightInstance.applyStatus(ent, StatusType.CONCUSSED, p, concussed, -1);
 						}
 					}
 				}.runTaskLater(NeoRogue.inst(), delay));
@@ -113,8 +117,9 @@ public class Tackle extends Ability {
 
 	@Override
 	public void setupItem() {
-		item = createItem(this, Material.REDSTONE, new String[] { "<gold>Area of Effect: <yellow>2" },
-				"On cast, dash forward, stopping at the first enemy hit and dealing <yellow>" + damage + "</yellow> blunt damage in a small area. "
+		item = createItem(this, Material.REDSTONE, new String[] { "<gold>Area of Effect: <yellow>4" },
+				"On cast, dash forward, stopping at the first enemy hit and dealing <yellow>" + damage + "</yellow> blunt damage in an area "
+						+ "and applies <yellow>" + concussed + "</yellow> concussed."
 						+ "If an enemy is hit, reduce this ability's cooldown by <yellow>10</yellow>.");
 	}
 }

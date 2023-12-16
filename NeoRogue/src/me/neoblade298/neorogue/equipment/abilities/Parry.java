@@ -11,6 +11,8 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Ability;
 import me.neoblade298.neorogue.equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.Usable;
+import me.neoblade298.neorogue.equipment.UsableInstance;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -29,9 +31,6 @@ public class Parry extends Ability {
 		setBaseProperties(20, 0, 100, 0);
 		shields = 30;
 		damage = isUpgraded ? 600 : 400;
-		item = createItem(this, Material.FLINT, null,
-				"On cast, gain <yellow>" + shields + " </yellow>shields for 2 seconds. Taking damage during this "
-						+ "increases your next basic attack's damage by <yellow>" + damage + "</yellow>.");
 		pc.count(10).spread(0.5, 0.5).speed(0.2);
 		bpc.count(20).spread(0.5, 0.5).speed(0.1);
 		hit.count(50).spread(0.5, 0.5);
@@ -39,21 +38,30 @@ public class Parry extends Ability {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
-		data.addTrigger(id, bind, (fd, in) -> {
+		data.addTrigger(id, bind, new ParryInstance(this, p));
+	}
+	
+	private class ParryInstance extends UsableInstance {
+		private Player p;
+		public ParryInstance(Usable u, Player p) {
+			super(u);
+			this.p = p;
+		}
+
+		@Override
+		public TriggerResult run(PlayerFightData data, Object[] inputs) {
 			pc.spawn(p);
 			data.addShield(p.getUniqueId(), shields, true, 100, 100, 0, 1);
 			Util.playSound(p, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1F, 1F, false);
-			data.addTrigger(id, Trigger.RECEIVED_DAMAGE, new ParryInstance(p));
+			data.addTrigger(id, Trigger.RECEIVED_DAMAGE, new ParryBlock(p));
 			return TriggerResult.keep();
-		});
+		}
 	}
 	
-	// Change reforgeoptions to allow multiple alternatives
-	// Add an equipment type that's just reforge material
-	private class ParryInstance implements TriggerAction {
+	private class ParryBlock implements TriggerAction {
 		private long createTime;
 		private Player p;
-		public ParryInstance(Player p) {
+		public ParryBlock(Player p) {
 			this.p = p;
 			createTime = System.currentTimeMillis();
 		}
@@ -70,6 +78,12 @@ public class Parry extends Ability {
 			});
 			return TriggerResult.keep();
 		}
-		
+	}
+
+	@Override
+	public void setupItem() {
+		item = createItem(this, Material.FLINT, null,
+				"On cast, gain <yellow>" + shields + " </yellow>shields for 2 seconds. Taking damage during this "
+						+ "increases your next basic attack's damage by <yellow>" + damage + "</yellow>.");
 	}
 }

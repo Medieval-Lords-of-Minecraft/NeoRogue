@@ -16,11 +16,15 @@ public class SpikedPauldrons extends Armor {
 	public SpikedPauldrons(boolean isUpgraded) {
 		super("spikedPauldrons", "Spiked Pauldrons", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
 		thorns = isUpgraded ? 3 : 2;
-		item = createItem(this, Material.ARMOR_STAND, null, "Start every fight with <yellow>" + thorns + " </yellow>thorns.");
 	}
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
 		data.applyStatus(StatusType.THORNS, p.getUniqueId(), thorns, -1);
+	}
+
+	@Override
+	public void setupItem() {
+		item = createItem(this, Material.ARMOR_STAND, null, "Start every fight with <yellow>" + thorns + " </yellow>thorns.");
 	}
 }

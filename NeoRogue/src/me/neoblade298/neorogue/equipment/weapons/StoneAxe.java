@@ -22,7 +22,6 @@ public class StoneAxe extends Weapon {
 		damage = !isUpgraded ? 70 : 115;
 		type = DamageType.BLUNT;
 		attackSpeed = 2;
-		item = createItem(Material.STONE_AXE, null, null);
 	}
 
 	@Override
@@ -34,5 +33,10 @@ public class StoneAxe extends Weapon {
 			pdata.runActions(pdata, Trigger.BASIC_ATTACK, inputs);
 			return TriggerResult.keep();
 		});
+	}
+
+	@Override
+	public void setupItem() {
+		item = createItem(Material.STONE_AXE, null, null);
 	}
 }

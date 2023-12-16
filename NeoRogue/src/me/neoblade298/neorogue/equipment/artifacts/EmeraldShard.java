@@ -17,8 +17,6 @@ public class EmeraldShard extends Artifact {
 		super("emeraldShard", "Emerald Shard", isUpgraded, Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
 
 		inc = isUpgraded ? 15 : 10;
-		item = createItem(Material.EMERALD, "ARTIFACT",
-				null, "<gray>Increases max stamina by <yellow>" + inc);
 	}
 
 	@Override
@@ -29,5 +27,11 @@ public class EmeraldShard extends Artifact {
 	@Override
 	public void onAcquire(PlayerSessionData data) {
 		data.addMaxStamina(inc);
+	}
+
+	@Override
+	public void setupItem() {
+		item = createItem(Material.EMERALD, "Artifact",
+				null, "<gray>Increases max stamina by <yellow>" + inc);
 	}
 }

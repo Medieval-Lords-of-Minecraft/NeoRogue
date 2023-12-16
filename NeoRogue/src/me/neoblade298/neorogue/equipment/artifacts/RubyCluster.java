@@ -17,8 +17,6 @@ public class RubyCluster extends Artifact {
 		super("rubyCluster", "Ruby Cluster", isUpgraded, Rarity.RARE, EquipmentClass.CLASSLESS);
 
 		inc = isUpgraded ? 35 : 25;
-		item = createItem(Material.REDSTONE, "ARTIFACT",
-				null, "<gray>Increases max health by <yellow>" + inc);
 	}
 
 	@Override
@@ -29,5 +27,11 @@ public class RubyCluster extends Artifact {
 	@Override
 	public void onAcquire(PlayerSessionData data) {
 		data.addMaxHealth(inc);
+	}
+
+	@Override
+	public void setupItem() {
+		item = createItem(Material.REDSTONE, "Artifact",
+				null, "<gray>Increases max health by <yellow>" + inc);
 	}
 }

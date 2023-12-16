@@ -31,4 +31,9 @@ public class ForcefulLeatherGauntlets extends Weapon {
 			return TriggerResult.keep();
 		});
 	}
+
+	@Override
+	public void setupItem() {
+		item = createItem(Material.LEATHER, null, null);
+	}
 }

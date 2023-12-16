@@ -36,9 +36,6 @@ public class Bulldoze extends Ability {
 		super("bulldoze", "Bulldoze", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
 		setBaseProperties(5, 0, 1, 5); // 25 cd, 75 stamina
 		damage = isUpgraded ? 300 : 200;
-		item = createItem(this, Material.REDSTONE, null,
-				"On cast, gain speed for 3 seconds, dealing <yellow>" + damage + "</yellow> damage to enemies you touch"
-						+ " and knock them back, once per enemy.");
 		
 		pc.count(25).spread(0.5, 0.5);
 		start.count(25).spread(0.5, 0);
@@ -96,5 +93,12 @@ public class Bulldoze extends Ability {
 				task.cancel();
 			}
 		}
+	}
+
+	@Override
+	public void setupItem() {
+		item = createItem(this, Material.REDSTONE, null,
+				"On cast, gain speed for 3 seconds, dealing <yellow>" + damage + "</yellow> damage to enemies you touch"
+						+ " and knock them back, once per enemy.");
 	}
 }

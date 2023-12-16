@@ -16,7 +16,6 @@ public class MinorStaminaRelic extends Accessory {
 	public MinorStaminaRelic(boolean isUpgraded) {
 		super("minorStaminaRelic", "Minor Stamina Relic", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
 		regen = isUpgraded ? 1.5 : 1;
-		item = createItem(Material.GOLD_NUGGET, "ACCESSORY", null, "Increases stamina regen by <yellow>" + regen + "</yellow>.");
 	}
 
 	@Override
@@ -35,5 +34,10 @@ public class MinorStaminaRelic extends Accessory {
 			data.addStamina(regen);
 			return TickResult.KEEP;
 		}
+	}
+
+	@Override
+	public void setupItem() {
+		item = createItem(Material.GOLD_NUGGET, "ACCESSORY", null, "Increases stamina regen by <yellow>" + regen + "</yellow>.");
 	}
 }

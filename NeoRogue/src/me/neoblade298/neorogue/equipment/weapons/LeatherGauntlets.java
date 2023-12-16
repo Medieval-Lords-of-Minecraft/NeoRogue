@@ -20,7 +20,6 @@ public class LeatherGauntlets extends Weapon {
 		damage = !isUpgraded ? 10 : 15;
 		type = DamageType.BLUNT;
 		attackSpeed = 0.5;
-		item = createItem(Material.LEATHER, null, null);
 		addReforgeOption("leatherGauntlets", new String[] {"forcefulLeatherGauntlets", "earthenLeatherGauntlets", "lightLeatherGauntlets"});
 	}
 
@@ -31,5 +30,10 @@ public class LeatherGauntlets extends Weapon {
 			pdata.runActions(pdata, Trigger.BASIC_ATTACK, inputs);
 			return TriggerResult.keep();
 		});
+	}
+
+	@Override
+	public void setupItem() {
+		item = createItem(Material.LEATHER, null, null);
 	}
 }

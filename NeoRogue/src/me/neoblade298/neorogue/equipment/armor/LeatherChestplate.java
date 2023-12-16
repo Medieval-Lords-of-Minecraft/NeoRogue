@@ -16,11 +16,15 @@ public class LeatherChestplate extends Armor {
 	public LeatherChestplate(boolean isUpgraded) {
 		super("leatherChestplate", "Leather Chestplate", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
 		damageReduction = isUpgraded ? 2 : 1;
-		item = createItem(this, Material.LEATHER_CHESTPLATE, null, "Decrease all physical damage by <yellow>" + damageReduction + ".");
 	}
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
 		data.addBuff(p.getUniqueId(), false, false, BuffType.PHYSICAL, damageReduction);
+	}
+
+	@Override
+	public void setupItem() {
+		item = createItem(this, Material.LEATHER_CHESTPLATE, null, "Decrease all physical damage by <yellow>" + damageReduction + ".");
 	}
 }

@@ -22,7 +22,6 @@ public class FencingSword extends Weapon {
 		type = DamageType.PIERCING;
 		attackSpeed = 1;
 		shields = isUpgraded ? 7 : 4;
-		item = createItem(Material.STONE_SWORD, null, "On hit, grant yourself <yellow>" + shields + "</yellow> shields");
 		addReforgeOption("fencingSword", new String[] {"rapier", "serratedFencingSword"});
 	}
 
@@ -34,5 +33,10 @@ public class FencingSword extends Weapon {
 			pdata.runActions(pdata, Trigger.BASIC_ATTACK, inputs);
 			return TriggerResult.keep();
 		});
+	}
+
+	@Override
+	public void setupItem() {
+		item = createItem(Material.STONE_SWORD, null, "On hit, grant yourself <yellow>" + shields + "</yellow> shields");
 	}
 }

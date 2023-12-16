@@ -16,11 +16,15 @@ public class NullMagicMantle extends Armor {
 	public NullMagicMantle(boolean isUpgraded) {
 		super("nullMagicMantle", "Null Magic Mantle", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
 		damageReduction = isUpgraded ? 2 : 1;
-		item = createItem(this, Material.RABBIT_HIDE, null, "Decrease all magical damage by <yellow>" + damageReduction + ".");
 	}
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
 		data.addBuff(p.getUniqueId(), false, false, BuffType.MAGICAL, damageReduction);
+	}
+
+	@Override
+	public void setupItem() {
+		item = createItem(this, Material.RABBIT_HIDE, null, "Decrease all magical damage by <yellow>" + damageReduction + ".");
 	}
 }

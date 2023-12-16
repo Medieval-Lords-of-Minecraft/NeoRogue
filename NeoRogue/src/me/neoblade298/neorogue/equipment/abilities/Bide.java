@@ -26,11 +26,15 @@ public class Bide extends Ability {
 		shields = 50;
 		duration = 5;
 		berserk = isUpgraded ? 3 : 2;
+		pc.count(10).spread(0.5, 0.5).speed(0.2);
+		bpc.count(20).spread(0.5, 0.5).speed(0.1);
+	}
+
+	@Override
+	public void setupItem() {
 		item = createItem(this, Material.FLINT, null,
 				"On cast, gain <yellow>" + shields + " </yellow>shields for " + duration + " seconds. During this time, "
 						+ "taking damage grants you <yellow>" + berserk + "</yellow> berserk stacks.");
-		pc.count(10).spread(0.5, 0.5).speed(0.2);
-		bpc.count(20).spread(0.5, 0.5).speed(0.1);
 	}
 
 	@Override

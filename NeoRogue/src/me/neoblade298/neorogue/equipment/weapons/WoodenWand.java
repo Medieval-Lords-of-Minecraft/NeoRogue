@@ -36,7 +36,6 @@ public class WoodenWand extends Weapon {
 		manaCost = 5;
 		type = DamageType.FIRE;
 		attackSpeed = 0.5;
-		item = createItem(Material.WOODEN_HOE, null, null);
 	}
 	
 	private boolean cast(PlayerFightData data) {
@@ -106,5 +105,10 @@ public class WoodenWand extends Weapon {
 			Util.playSound(p, loc, Sound.ENTITY_GENERIC_EXPLODE, 1F, 1F, true);
 			explode.spawn(loc);
 		}
+	}
+
+	@Override
+	public void setupItem() {
+		item = createItem(Material.WOODEN_HOE, null, null);
 	}
 }

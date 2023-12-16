@@ -19,7 +19,6 @@ public class LeatherBracer extends Offhand {
 	public LeatherBracer(boolean isUpgraded) {
 		super("leatherBracer", "Leather Bracer", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
 		instances = isUpgraded ? 3 : 2;
-		item = createItem(this, Material.LEATHER, null, "Prevents the first <yellow>" + instances + "</yellow> instances of taking damage in a fight.");
 	}
 
 	@Override
@@ -38,5 +37,10 @@ public class LeatherBracer extends Offhand {
 			Util.playSound(p, Sound.ITEM_SHIELD_BREAK, 1F, 1F, false);
 			return TriggerResult.of(true, true);
 		}
+	}
+
+	@Override
+	public void setupItem() {
+		item = createItem(this, Material.LEATHER, null, "Prevents the first <yellow>" + instances + "</yellow> instances of taking damage in a fight.");
 	}
 }

@@ -19,8 +19,6 @@ public class SpikyShield extends Offhand {
 		super("spikyShield", "Spiky Shield", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
 		reduction = 8;
 		amount = isUpgraded ? 6 : 4;
-		item = createItem(this, Material.SHIELD, null, "When raised, reduce all damage taken by <yellow>" + reduction + "</yellow>."
-				+ " Also grants <yellow>" + amount + "</yellow> thorns at the start of combat.");
 	}
 
 	@Override
@@ -47,5 +45,11 @@ public class SpikyShield extends Offhand {
 			data.addStamina(amount);
 			return TriggerResult.keep();
 		}
+	}
+
+	@Override
+	public void setupItem() {
+		item = createItem(this, Material.SHIELD, null, "When raised, reduce all damage taken by <yellow>" + reduction + "</yellow>."
+				+ " Also grants <yellow>" + amount + "</yellow> thorns at the start of combat.");
 	}
 }

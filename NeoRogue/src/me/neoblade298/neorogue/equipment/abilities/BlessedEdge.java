@@ -29,9 +29,6 @@ public class BlessedEdge extends Ability {
 		setBaseProperties(5, 20, 20);
 		damage = 125;
 		sanct = isUpgraded ? 9 : 6;
-		item = createItem(this, Material.FLINT, null,
-				"On cast, your next basic attack deals <yellow>" + damage + " </yellow>damage and applies <yellow>" + sanct +
-				"</yellow> sanctified.");
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		hit.count(50).spread(0.5, 0.5);
 	}
@@ -63,5 +60,12 @@ public class BlessedEdge extends Ability {
 			});
 			return TriggerResult.keep();
 		}
+	}
+
+	@Override
+	public void setupItem() {
+		item = createItem(this, Material.FLINT, null,
+				"On cast, your next basic attack deals <yellow>" + damage + " </yellow>damage and applies <yellow>" + sanct +
+				"</yellow> sanctified.");
 	}
 }

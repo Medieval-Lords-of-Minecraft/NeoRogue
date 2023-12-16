@@ -46,6 +46,7 @@ import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffSlice;
 import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.status.Status;
+import me.neoblade298.neorogue.session.fight.status.Status.GenericStatusType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
@@ -281,6 +282,21 @@ public abstract class FightInstance extends Instance {
 			double toSet = Math.min(caster.getHealth() + amount, ((Attributable) caster).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
 			caster.setHealth(toSet);
 		}
+	}
+	
+	public static void applyStatus(Entity target, String id, Entity applier, int stacks, int seconds) {
+		FightData data = getFightData(target.getUniqueId());
+		data.applyStatus(id, applier.getUniqueId(), stacks);
+	}
+	
+	public static void applyStatus(Entity target, StatusType type, Entity applier, int stacks, int seconds) {
+		FightData data = getFightData(target.getUniqueId());
+		data.applyStatus(type, applier.getUniqueId(), stacks, seconds);
+	}
+	
+	public static void applyStatus(Entity target, GenericStatusType type, String id, Entity applier, int stacks, int seconds) {
+		FightData data = getFightData(target.getUniqueId());
+		data.applyStatus(type, id, applier.getUniqueId(), stacks, seconds);
 	}
 	
 	public static void dealDamage(Damageable damager, DamageType type, double amount, Damageable... targets) {

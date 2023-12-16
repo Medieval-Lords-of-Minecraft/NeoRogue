@@ -17,7 +17,6 @@ public class SmallShield extends Offhand {
 	public SmallShield(boolean isUpgraded) {
 		super("smallShield", "Small Shield", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
 		reduction = isUpgraded ? 5 : 3;
-		item = createItem(this, Material.SHIELD, null, "When raised, reduce all damage taken by <yellow>" + reduction + "</yellow>.");
 		addReforgeOption("smallShield", "hastyShield", "spikyShield");
 	}
 
@@ -32,5 +31,10 @@ public class SmallShield extends Offhand {
 			data.addBuff(p.getUniqueId(), false, false, BuffType.PHYSICAL, -reduction);
 			return TriggerResult.keep();
 		});
+	}
+
+	@Override
+	public void setupItem() {
+		item = createItem(this, Material.SHIELD, null, "When raised, reduce all damage taken by <yellow>" + reduction + "</yellow>.");
 	}
 }

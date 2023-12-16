@@ -19,8 +19,6 @@ public class HastyShield extends Offhand {
 		super("hastyShield", "Hasty Shield", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
 		reduction = 15;
 		amount = isUpgraded ? 15 : 10;
-		item = createItem(this, Material.SHIELD, null, "When raised, reduce the next hit taken by <yellow>" + reduction + "</yellow>"
-				+ " and grant <yellow>" + amount + " </yellow>mana and stamina. 5 second cooldown.");
 	}
 
 	@Override
@@ -47,5 +45,11 @@ public class HastyShield extends Offhand {
 			data.addStamina(amount);
 			return TriggerResult.keep();
 		}
+	}
+
+	@Override
+	public void setupItem() {
+		item = createItem(this, Material.SHIELD, null, "When raised, reduce the next hit taken by <yellow>" + reduction + "</yellow>"
+				+ " and grant <yellow>" + amount + " </yellow>mana and stamina. 5 second cooldown.");
 	}
 }

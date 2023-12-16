@@ -27,8 +27,6 @@ public class EmpoweredEdge extends Ability {
 		super("empoweredEdge", "Empowered Edge", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
 		setBaseProperties(isUpgraded ? 5 : 7, 0, 30);
 		damage = isUpgraded ? 100 : 75;
-		item = createItem(this, Material.FLINT, null,
-				"On cast, your next basic attack deals <yellow>" + damage + " </yellow>damage.");
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		hit.count(50).spread(0.5, 0.5);
 		addReforgeOption("empoweredEdge", "recklessSwing", "blessedEdge", "furiousSwing");
@@ -58,5 +56,11 @@ public class EmpoweredEdge extends Ability {
 			});
 			return TriggerResult.keep();
 		}
+	}
+
+	@Override
+	public void setupItem() {
+		item = createItem(this, Material.FLINT, null,
+				"On cast, your next basic attack deals <yellow>" + damage + " </yellow>damage.");
 	}
 }

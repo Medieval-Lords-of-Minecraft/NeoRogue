@@ -16,7 +16,6 @@ public class ClothBindings extends Armor {
 	public ClothBindings(boolean isUpgraded) {
 		super("clothBindings", "Cloth Bindings", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
 		health = isUpgraded ? 10 : 7;
-		item = createItem(this, Material.WHITE_DYE, null, "Winning a fight heals you for <yellow>" + health + "</yellow>.");
 	}
 
 	@Override
@@ -25,5 +24,10 @@ public class ClothBindings extends Armor {
 			data.addHealth(health);
 			return TriggerResult.keep();
 		});
+	}
+
+	@Override
+	public void setupItem() {
+		item = createItem(this, Material.WHITE_DYE, null, "Winning a fight heals you for <yellow>" + health + "</yellow>.");
 	}
 }

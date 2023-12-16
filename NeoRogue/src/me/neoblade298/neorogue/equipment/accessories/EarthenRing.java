@@ -19,7 +19,6 @@ public class EarthenRing extends Accessory {
 	public EarthenRing(boolean isUpgraded) {
 		super("earthenRing", "Earthen Ring", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
 		damage = isUpgraded ? 3 : 2;
-		item = createItem(Material.GOLD_NUGGET, "ACCESSORY", null, "Basic attacks additionally deal <yellow>" + damage + "</yellow> earthen damage.");
 	}
 
 	@Override
@@ -29,5 +28,10 @@ public class EarthenRing extends Accessory {
 			FightInstance.dealDamage(p, DamageType.EARTH, damage, target);
 			return TriggerResult.keep();
 		});
+	}
+
+	@Override
+	public void setupItem() {
+		item = createItem(Material.GOLD_NUGGET, "ACCESSORY", null, "Basic attacks additionally deal <yellow>" + damage + "</yellow> earthen damage.");
 	}
 }

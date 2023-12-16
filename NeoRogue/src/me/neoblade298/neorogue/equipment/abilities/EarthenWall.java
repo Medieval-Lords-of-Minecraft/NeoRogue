@@ -32,9 +32,6 @@ public class EarthenWall extends Ability {
 	public EarthenWall(boolean isUpgraded) {
 		super("earthenWall", "Earthen Wall", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
 		setBaseProperties(20, 100, 0, 10);
-		item = createItem(this, Material.COARSE_DIRT, null,
-				"Can be cast once for every 10 stacks of concussed you apply."
-				+ " Raises a wall size 3x3 that blocks projectiles for 10 seconds.");
 	}
 
 	@Override
@@ -88,5 +85,12 @@ public class EarthenWall extends Ability {
 			data.getInstance().addUserBarrier(data, new Barrier(null, 2, 3, 3, 0, new HashMap<BuffType, Buff>(), true, earth), 10);
 			return TriggerResult.keep();
 		}
+	}
+
+	@Override
+	public void setupItem() {
+		item = createItem(this, Material.COARSE_DIRT, null,
+				"Can be cast once for every 10 stacks of concussed you apply."
+				+ " Raises a wall size 3x3 that blocks projectiles for 10 seconds.");
 	}
 }

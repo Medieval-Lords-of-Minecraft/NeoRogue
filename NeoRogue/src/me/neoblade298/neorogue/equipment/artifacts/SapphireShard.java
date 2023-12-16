@@ -17,8 +17,6 @@ public class SapphireShard extends Artifact {
 		super("sapphireShard", "Sapphire Shard", isUpgraded, Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
 
 		inc = isUpgraded ? 15 : 10;
-		item = createItem(Material.LAPIS_LAZULI, "ARTIFACT",
-				null, "<gray>Increases max mana by <yellow>" + inc);
 	}
 
 	@Override
@@ -29,5 +27,11 @@ public class SapphireShard extends Artifact {
 	@Override
 	public void onAcquire(PlayerSessionData data) {
 		data.addMaxMana(inc);
+	}
+
+	@Override
+	public void setupItem() {
+		item = createItem(Material.LAPIS_LAZULI, "Artifact",
+				null, "<gray>Increases max mana by <yellow>" + inc);
 	}
 }

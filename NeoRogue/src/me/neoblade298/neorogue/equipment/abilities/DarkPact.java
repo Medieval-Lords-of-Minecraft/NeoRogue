@@ -14,16 +14,13 @@ import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class Berserk extends Ability {
+public class DarkPact extends Ability {
 	private ParticleContainer pc = new ParticleContainer(Particle.FLAME);
 	private int seconds;
 	
-	public Berserk(boolean isUpgraded) {
+	public DarkPact(boolean isUpgraded) {
 		super("darkPact", "Dark Pact", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR);
 		seconds = isUpgraded ? 40 : 25;
-		item = createItem(this, Material.REDSTONE, null,
-				"Passive. Increase your damage by 1 every 10 basic attacks. In exchange, take "
-				+ "50% increased damage for the first <yellow>" + seconds + "s</yellow> of a fight.");
 		pc.count(25).spread(0.5, 0.5).speed(0.1);
 	}
 
@@ -36,5 +33,12 @@ public class Berserk extends Ability {
 			data.addBuff(p.getUniqueId(), true, false, BuffType.GENERAL, 1);
 			return TriggerResult.keep();
 		});
+	}
+
+	@Override
+	public void setupItem() {
+		item = createItem(this, Material.REDSTONE, null,
+				"Passive. Increase your damage by 1 every 10 basic attacks. In exchange, take "
+				+ "50% increased damage for the first <yellow>" + seconds + "s</yellow> of a fight.");
 	}
 }

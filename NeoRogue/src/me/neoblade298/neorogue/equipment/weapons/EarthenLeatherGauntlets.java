@@ -51,4 +51,9 @@ public class EarthenLeatherGauntlets extends Weapon {
 			return TriggerResult.keep();
 		}
 	}
+
+	@Override
+	public void setupItem() {
+		item = createItem(Material.LEATHER, null, null);
+	}
 }

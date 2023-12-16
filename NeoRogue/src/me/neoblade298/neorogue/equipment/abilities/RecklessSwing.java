@@ -28,9 +28,6 @@ public class RecklessSwing extends Ability {
 		super("recklessSwing", "Reckless Swing", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR);
 		setBaseProperties(7, 0, 30);
 		damage = isUpgraded ? 600 : 400;
-		item = createItem(this, Material.FLINT, null,
-				"On cast, your next basic attack deals <yellow>" + damage + " </yellow>damage at the cost of <yellow>" + HEALTH_COST
-						+ "</yellow> health.");
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		hit.count(50).spread(0.5, 0.5);
 	}
@@ -70,5 +67,12 @@ public class RecklessSwing extends Ability {
 			});
 			return TriggerResult.keep();
 		}
+	}
+
+	@Override
+	public void setupItem() {
+		item = createItem(this, Material.FLINT, null,
+				"On cast, your next basic attack deals <yellow>" + damage + " </yellow>damage at the cost of <yellow>" + HEALTH_COST
+						+ "</yellow> health.");
 	}
 }

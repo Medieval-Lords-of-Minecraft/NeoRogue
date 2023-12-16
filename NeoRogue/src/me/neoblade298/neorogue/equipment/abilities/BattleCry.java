@@ -20,15 +20,20 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class BattleCry extends Ability {
 	private ParticleContainer pc = new ParticleContainer(Particle.REDSTONE);
+	private int strength;
 	
 	public BattleCry(boolean isUpgraded) {
 		super("battleCry", "Battle Cry", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
 		setBaseProperties(30, 0, 25);
-		int strength = isUpgraded ? 20 : 14;
-		item = createItem(this, Material.REDSTONE, null,
-				"On cast, give yourself <yellow>" + strength + " </yellow>bonus physical damage for <yellow>10</yellow> seconds.");
+		strength = isUpgraded ? 20 : 14;
 		
 		pc.count(50).spread(0.5, 0.5).dustOptions(new DustOptions(Color.RED, 1F));
+	}
+
+	@Override
+	public void setupItem() {
+		item = createItem(this, Material.REDSTONE, null,
+				"On cast, give yourself <yellow>" + strength + " </yellow>bonus physical damage for <yellow>10</yellow> seconds.");
 	}
 
 	@Override
@@ -48,7 +53,7 @@ public class BattleCry extends Ability {
 		public TriggerResult run(PlayerFightData data, Object[] inputs) {
 			Util.playSound(p, Sound.ENTITY_BLAZE_DEATH, 1F, 1F, false);
 			pc.spawn(p);
-			data.addBuff(p.getUniqueId(), id, true, false, BuffType.PHYSICAL, isUpgraded ? 20 : 14, 10);
+			data.addBuff(p.getUniqueId(), id, true, false, BuffType.PHYSICAL, strength, 10);
 			return TriggerResult.keep();
 		}
 	}

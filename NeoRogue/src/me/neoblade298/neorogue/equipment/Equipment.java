@@ -57,11 +57,13 @@ public abstract class Equipment {
 		for (boolean b : new boolean[] {false, true}) {
 			// Abilities
 			new BattleCry(b);
-			new Berserk(b);
+			new DarkPact(b);
 			new Bide(b);
 			new BlessedEdge(b);
 			new Brace(b);
 			new Brace2(b);
+			new Bulldoze(b);
+			new EarthenTackle(b);
 			new EarthenWall(b);
 			new EmpoweredEdge(b);
 			new Fury(b);
@@ -121,8 +123,11 @@ public abstract class Equipment {
 		}
 		
 		for (Equipment eq : equipment.values()) {
+			Equipment up = eq.getUpgraded();
 			eq.setupDroptable();
-			eq.getUpgraded().setupDroptable();
+			up.setupDroptable();
+			eq.setupItem();
+			up.setupItem();
 		}
 	}
 	
@@ -143,6 +148,8 @@ public abstract class Equipment {
 		if (isUpgraded) upgraded.put(id, this);
 		else equipment.put(id, this);
 	}
+	
+	public abstract void setupItem();
 	
 	public void setupDroptable() {
 		int value = rarity.getValue() + (isUpgraded ? 1 : 0);

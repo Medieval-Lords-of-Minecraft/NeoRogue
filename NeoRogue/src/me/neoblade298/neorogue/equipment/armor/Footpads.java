@@ -16,7 +16,6 @@ public class Footpads extends Armor {
 	public Footpads(boolean isUpgraded) {
 		super("footpads", "Footpads", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
 		stamina = isUpgraded ? 3 : 5;
-		item = createItem(this, Material.LEATHER_BOOTS, null, "Receiving damage grants you <yellow>" + stamina + "</yellow> stamina.");
 	}
 
 	@Override
@@ -25,5 +24,10 @@ public class Footpads extends Armor {
 			data.addStamina(stamina);
 			return TriggerResult.keep();
 		});
+	}
+
+	@Override
+	public void setupItem() {
+		item = createItem(this, Material.LEATHER_BOOTS, null, "Receiving damage grants you <yellow>" + stamina + "</yellow> stamina.");
 	}
 }

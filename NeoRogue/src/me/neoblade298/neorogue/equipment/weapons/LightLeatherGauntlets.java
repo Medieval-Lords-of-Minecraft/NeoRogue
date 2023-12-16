@@ -22,7 +22,6 @@ public class LightLeatherGauntlets extends Weapon {
 		type = DamageType.BLUNT;
 		attackSpeed = 0.5;
 		stamina = !isUpgraded ? 1 : 3;
-		item = createItem(Material.LEATHER, null, null);
 	}
 
 	@Override
@@ -33,5 +32,10 @@ public class LightLeatherGauntlets extends Weapon {
 			data.addStamina(stamina);
 			return TriggerResult.keep();
 		});
+	}
+
+	@Override
+	public void setupItem() {
+		item = createItem(Material.LEATHER, null, null);
 	}
 }

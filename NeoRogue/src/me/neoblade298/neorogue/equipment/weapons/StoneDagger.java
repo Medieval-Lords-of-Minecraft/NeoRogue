@@ -23,7 +23,6 @@ public class StoneDagger extends Weapon {
 		damage = !isUpgraded ? 25 : 35;
 		type = DamageType.SLASHING;
 		attackSpeed = 0.75;
-		item = createItem(Material.STONE_SWORD, null, null);
 	}
 
 	@Override
@@ -48,5 +47,10 @@ public class StoneDagger extends Weapon {
 			}
 			return TriggerResult.keep();
 		}
+	}
+
+	@Override
+	public void setupItem() {
+		item = createItem(Material.STONE_SWORD, null, null);
 	}
 }

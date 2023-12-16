@@ -17,9 +17,6 @@ public class FaerieCirclet extends Artifact {
 		super("faerieCirclet", "Faerie Circlet", isUpgraded, Rarity.RARE, EquipmentClass.CLASSLESS);
 
 		ticks = isUpgraded ? 5 : 3;
-		item = createItem(Material.EMERALD, "ARTIFACT",
-				null, "Lengthens your invulnerability frames by <yellow>" + ticks + "</yellow> ticks. The default is " +
-				"10 ticks, or 0.5 seconds.");
 	}
 
 	@Override
@@ -35,5 +32,12 @@ public class FaerieCirclet extends Artifact {
 	@Override
 	public void cleanup(Player p, PlayerFightData data) {
 		p.setNoDamageTicks(10);
+	}
+
+	@Override
+	public void setupItem() {
+		item = createItem(Material.EMERALD, "Artifact",
+				null, "Lengthens your invulnerability frames by <yellow>" + ticks + "</yellow> ticks. The default is " +
+				"10 ticks, or 0.5 seconds.");
 	}
 }

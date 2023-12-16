@@ -21,7 +21,6 @@ public class StoneSword extends Weapon {
 		damage = !isUpgraded ? 35 : 50;
 		type = DamageType.SLASHING;
 		attackSpeed = 1;
-		item = createItem(Material.STONE_SWORD, null, null);
 	}
 
 	@Override
@@ -31,5 +30,10 @@ public class StoneSword extends Weapon {
 			pdata.runActions(pdata, Trigger.BASIC_ATTACK, inputs);
 			return TriggerResult.keep();
 		});
+	}
+
+	@Override
+	public void setupItem() {
+		item = createItem(Material.STONE_SWORD, null, null);
 	}
 }

@@ -22,7 +22,6 @@ public class Rapier extends Weapon {
 		type = DamageType.PIERCING;
 		attackSpeed = 1;
 		shields = isUpgraded ? 15 : 10;
-		item = createItem(Material.STONE_SWORD, null, "&7On hit, grant yourself <yellow>" + shields + "</yellow> shields");
 	}
 
 	@Override
@@ -33,5 +32,10 @@ public class Rapier extends Weapon {
 			pdata.runActions(pdata, Trigger.BASIC_ATTACK, inputs);
 			return TriggerResult.keep();
 		});
+	}
+
+	@Override
+	public void setupItem() {
+		item = createItem(Material.STONE_SWORD, null, "On hit, grant yourself <yellow>" + shields + "</yellow> shields");
 	}
 }

@@ -16,11 +16,15 @@ public class MinorStrengthRelic extends Accessory {
 	public MinorStrengthRelic(boolean isUpgraded) {
 		super("minorStrengthRelic", "Minor Strength Relic", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
 		str = isUpgraded ? 1.5 : 1;
-		item = createItem(Material.REDSTONE, "ACCESSORY", null, "Increases physical damage by <yellow>" + str + "</yellow>.");
 	}
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
 		data.addBuff(p.getUniqueId(), true, false, BuffType.PHYSICAL, str);
+	}
+
+	@Override
+	public void setupItem() {
+		item = createItem(Material.REDSTONE, "ACCESSORY", null, "Increases physical damage by <yellow>" + str + "</yellow>.");
 	}
 }

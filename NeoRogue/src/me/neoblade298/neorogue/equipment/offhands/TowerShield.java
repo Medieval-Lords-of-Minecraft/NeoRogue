@@ -21,8 +21,6 @@ public class TowerShield extends Offhand {
 	public TowerShield(boolean isUpgraded) {
 		super("towerShield", "Tower Shield", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
 		reduction = isUpgraded ? 6 : 4;
-		item = createItem(this, Material.SHIELD, null, "When raised, creates a barrier in front of you of size <yellow>3x3</yellow> "
-				+ "that intercepts projectiles. Projectiles that hit the barrier hit you but have their damage reduced by <yellow>" + reduction + "</yellow>.");
 		addReforgeOption("towerShield", "captainsTowerShield");
 	}
 
@@ -44,5 +42,12 @@ public class TowerShield extends Offhand {
 			data.setBarrier(null);
 			return TriggerResult.keep();
 		});
+	}
+
+	@Override
+	public void setupItem() {
+		item = createItem(this, Material.SHIELD, null, "When raised, creates a barrier in front of you of size <yellow>3x3</yellow> "
+				+ "that intercepts projectiles. Projectiles that hit the barrier hit you but have their damage reduced by <yellow>"
+				+ reduction + "</yellow>.");
 	}
 }
