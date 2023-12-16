@@ -18,16 +18,16 @@ public class ForkInTheRoadChance extends ChanceSet {
 		boolean isCampfire = NeoCore.gen.nextBoolean();
 		ChanceChoice choice = new ChanceChoice(Material.COBBLESTONE, "Let's risk it",
 				"<gray><yellow>50% </yellow>chance to arrive at a campfire, <yellow>50% </yellow>chance to encounter a fight", "",
-				(s, run) -> {
+				(s, inst, run) -> {
 					if (!run) return true;
 
 					if (isCampfire) {
 						s.broadcast("The fork takes you to a nice open space by a river. Nice!");
-						((ChanceInstance) s.getInstance()).setNextInstance(new CampfireInstance());
+						inst.setNextInstance(new CampfireInstance());
 					}
 					else {
 						s.broadcast("Looks like the path was made by enemies, and you just walked straight into their lair.");
-						((ChanceInstance) s.getInstance()).setNextInstance(new StandardFightInstance(s.getParty().keySet(), s.getArea().getType(), s.getNodesVisited()));
+						inst.setNextInstance(new StandardFightInstance(s.getParty().keySet(), s.getArea().getType(), s.getNodesVisited()));
 					}
 					return true;
 				});
@@ -42,7 +42,7 @@ public class ForkInTheRoadChance extends ChanceSet {
 		
 		choice = new ChanceChoice(Material.STONE_BRICKS, "Let's not",
 				"Stay on your path and avoid any risk.", "",
-				(s, run) -> {
+				(s, inst, run) -> {
 					if (!run) return true;
 
 					s.broadcast("You were never a fan of Robert Frost's works anyway. You get back to walking.");

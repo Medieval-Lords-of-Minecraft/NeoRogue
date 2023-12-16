@@ -201,7 +201,7 @@ public class PlayerSessionInventory extends CoreInventory {
 						eq, eqed, cursor);
 				return;
 			}
-			else if (eqed.getReforgeOptions().containsKey(eqId)) {
+			else if (eqed != null && eqed.getReforgeOptions().containsKey(eqId)) {
 				p.setItemOnCursor(null);
 				new ReforgeOptionsInventory(this, e.getSlot(), onChest, onChest ? slotTypes.get(e.getSlot()) : null, nclicked.getInteger("dataSlot"),
 						eqed, eq, cursor);

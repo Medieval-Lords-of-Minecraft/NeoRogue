@@ -39,7 +39,7 @@ public class ShopInventory extends CoreInventory {
 		}
 		contents[22] = CoreInventory.createButton(Material.GOLD_NUGGET, Component.text("You have " + data.getCoins() + " coins", NamedTextColor.YELLOW));
 		contents[18] = CoreInventory.createButton(Material.GOLD_NUGGET, Component.text("Sell Items", NamedTextColor.RED),
-				(TextComponent) NeoCore.miniMessage().deserialize("Drag equipment here to sell it" +
+				(TextComponent) NeoCore.miniMessage().deserialize("Drag equipment here to sell it " +
 						"for <yellow>" + SELL_PRICE + " coins</yellow>."), 250, NamedTextColor.GRAY);
 		inv.setContents(contents);
 	}

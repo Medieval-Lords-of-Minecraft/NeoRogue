@@ -20,7 +20,7 @@ import me.neoblade298.neorogue.session.fight.FightInstance;
 import net.kyori.adventure.text.Component;
 
 public class ChanceInstance extends EditInventoryInstance {
-	private static final int CHANCE_X = 6, CHANCE_Z = 101;
+	public static final int CHANCE_X = 6, CHANCE_Z = 103;
 
 	private ChanceSet set;
 	private HashMap<UUID, ChanceStage> stage = new HashMap<UUID, ChanceStage>();
@@ -34,7 +34,9 @@ public class ChanceInstance extends EditInventoryInstance {
 		String[] split = data.split("-");
 		set = ChanceSet.get(split[0]);
 		for (Entry<UUID, PlayerSessionData> ent : party.entrySet()) {
-			stage.put(ent.getKey(), ChanceStage.get(ent.getValue().getInstanceData()));
+			String id = ent.getValue().getInstanceData();
+			if (id == null) continue;
+			stage.put(ent.getKey(), ChanceStage.get(id));
 		}
 	}
 
@@ -78,35 +80,15 @@ public class ChanceInstance extends EditInventoryInstance {
 	public void advanceStage(UUID uuid, ChanceStage stage) {
 		// Only runs if we're out of stages
 		if (stage == null) {
-			new BukkitRunnable() {
-				public void run() {
-					if (nextInstance != null) {
-						String instDisplay = null;
-						if (nextInstance instanceof FightInstance) {
-							instDisplay = "fight";
-						}
-						else if (nextInstance instanceof CampfireInstance) {
-							instDisplay = "campfire";
-						}
-						else if (nextInstance instanceof RewardInstance) {
-							instDisplay = "claim rewards";
-						}
-						else if (nextInstance instanceof ShopInstance) {
-							instDisplay = "shop";
-						}
-						s.broadcast(Component.text("Sending you to " + instDisplay + "..."));
-					}
-					else {
-						s.broadcast(Component.text("Sending you back to node select..."));
-					}
+			if (!set.isIndividual()) {
+				returnPlayers();
+			}
+			else {
+				this.stage.remove(uuid);
+				if (this.stage.size() == 0) {
+					returnPlayers();
 				}
-			}.runTaskLater(NeoRogue.inst(), 20L);
-
-			new BukkitRunnable() {
-				public void run() {
-					s.setInstance(nextInstance == null ? new NodeSelectInstance() : nextInstance);
-				}
-			}.runTaskLater(NeoRogue.inst(), 60L);
+			}
 		}
 		else {
 			if (!set.isIndividual()) {
@@ -118,6 +100,38 @@ public class ChanceInstance extends EditInventoryInstance {
 				this.stage.put(uuid, stage);
 			}
 		}
+	}
+	
+	private void returnPlayers() {
+		new BukkitRunnable() {
+			public void run() {
+				if (nextInstance != null) {
+					String instDisplay = null;
+					if (nextInstance instanceof FightInstance) {
+						instDisplay = "fight";
+					}
+					else if (nextInstance instanceof CampfireInstance) {
+						instDisplay = "campfire";
+					}
+					else if (nextInstance instanceof RewardInstance) {
+						instDisplay = "claim rewards";
+					}
+					else if (nextInstance instanceof ShopInstance) {
+						instDisplay = "shop";
+					}
+					s.broadcast(Component.text("Sending you to " + instDisplay + "..."));
+				}
+				else {
+					s.broadcast(Component.text("Sending you back to node select..."));
+				}
+			}
+		}.runTaskLater(NeoRogue.inst(), 20L);
+
+		new BukkitRunnable() {
+			public void run() {
+				s.setInstance(nextInstance == null ? new NodeSelectInstance() : nextInstance);
+			}
+		}.runTaskLater(NeoRogue.inst(), 60L);
 	}
 
 	public void setNextInstance(Instance inst) {

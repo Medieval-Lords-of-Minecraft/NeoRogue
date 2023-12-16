@@ -9,6 +9,7 @@ import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.area.AreaType;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextDecoration.State;
 
@@ -47,7 +48,8 @@ public class ChanceSet {
 	
 	public ChanceSet(AreaType type, Material mat, String id, String display) {
 		this.id = id;
-		this.display = (TextComponent) SharedUtil.color("<gold>" + display).decorationIfAbsent(TextDecoration.ITALIC, State.FALSE);
+		this.display = (TextComponent) SharedUtil.color(display).colorIfAbsent(NamedTextColor.RED)
+				.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE);
 		this.mat = mat;
 		sets.get(type).add(this);
 		setsById.put(id, this);

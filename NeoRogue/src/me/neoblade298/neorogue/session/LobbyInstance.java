@@ -37,6 +37,7 @@ import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.player.PlayerClass;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.session.chance.ChanceInstance;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -54,7 +55,6 @@ public class LobbyInstance extends Instance {
 	private boolean busy = false;
 	
 	private static final int LOBBY_X = -7, LOBBY_Z = 3;
-	private static final int REWARDS_Z = 76, CAMPFIRE_Z = 82, SHOP_Z = 90, CHANCE_Z = 98;
 	
 	// Static error messages
 	private static final TextComponent hostOnlyInvite = Component.text("Only the host may invite other players!", NamedTextColor.RED),
@@ -127,10 +127,10 @@ public class LobbyInstance extends Instance {
 		// Generate the lobby and add the host there
 		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Area.world)) {
 			pasteSchematic(classSelect, editSession, session, 0, 0);
-			pasteSchematic(rewardsRoom, editSession, session, 0, REWARDS_Z);
-			pasteSchematic(campfire, editSession, session, 0, CAMPFIRE_Z);
-			pasteSchematic(shop, editSession, session, 0, SHOP_Z);
-			pasteSchematic(chance, editSession, session, 0, CHANCE_Z);
+			pasteSchematic(rewardsRoom, editSession, session, 0, RewardInstance.REWARDS_Z - 2);
+			pasteSchematic(campfire, editSession, session, 0, CampfireInstance.REST_Z - 2);
+			pasteSchematic(shop, editSession, session, 0, ShopInstance.SHOP_Z - 4);
+			pasteSchematic(chance, editSession, session, 0, ChanceInstance.CHANCE_Z - 3);
 		}
 		spawn = new Location(Bukkit.getWorld(Area.WORLD_NAME), session.getXOff() + LOBBY_X, 64, session.getZOff() + LOBBY_Z);
 		host.teleport(spawn);

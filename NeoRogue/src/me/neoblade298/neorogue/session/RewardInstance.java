@@ -19,7 +19,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class RewardInstance extends EditInventoryInstance {
-	private static final int REWARDS_X = 4, REWARDS_Z = 78;
+	public static final int REWARDS_X = 4, REWARDS_Z = 78;
 	
 	private HashMap<UUID, ArrayList<Reward>> rewards = new HashMap<UUID, ArrayList<Reward>>();
 	

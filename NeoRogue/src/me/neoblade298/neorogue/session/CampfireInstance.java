@@ -17,7 +17,7 @@ import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 
 public class CampfireInstance extends EditInventoryInstance {
-	private static final int REST_X = 6, REST_Z = 84;
+	static final int REST_X = 6, REST_Z = 84;
 	private static final int INIT_STATE = 0, REST_STATE = 1, UPGRADE_STATE = 2;
 	private int state = 0;
 	private Location center;

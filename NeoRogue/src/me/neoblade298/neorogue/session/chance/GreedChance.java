@@ -17,7 +17,7 @@ public class GreedChance extends ChanceSet {
 
 		ChanceChoice choice = new ChanceChoice(Material.GOLD_BLOCK, "Be Logical",
 				"The highest HP party member takes <red>10 </red>damage and gets everyone <yellow>25 coins</yellow>.",
-				"Nobody has enough health to do this!", (s, run) -> {
+				"Nobody has enough health to do this!", (s, inst, run) -> {
 					PlayerSessionData data = Collections.max(s.getParty().values(), new Comparator<PlayerSessionData>() {
 						@Override
 						public int compare(PlayerSessionData a, PlayerSessionData b) {
@@ -41,7 +41,7 @@ public class GreedChance extends ChanceSet {
 		
 		choice = new ChanceChoice(Material.EMERALD_BLOCK, "Be Democratic",
 				"Everyone takes an equal portion of <red>10 </red>damage rounded up, and everyone gains <yellow>25 coins</yellow>.",
-				"Somebody lacks the health to do this!", (s, run) -> {
+				"Somebody lacks the health to do this!", (s, inst, run) -> {
 					final int HEALTH_LOSS = (int) Math.ceil(10D / s.getParty().size());
 					for (PlayerSessionData pd : s.getParty().values()) {
 						if (pd.getHealth() <= HEALTH_LOSS) return false;
@@ -59,7 +59,7 @@ public class GreedChance extends ChanceSet {
 		
 		choice = new ChanceChoice(Material.BARRIER, "Be Risk-averse",
 				"Leave the dangerous sludge alone.",
-				"", (s, run) -> {
+				"", (s, inst, run) -> {
 					if (!run) return true;
 					s.broadcast("Good health is more valuable than riches.");
 					return true;

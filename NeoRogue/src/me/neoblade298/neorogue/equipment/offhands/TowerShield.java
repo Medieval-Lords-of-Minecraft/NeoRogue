@@ -23,6 +23,7 @@ public class TowerShield extends Offhand {
 		reduction = isUpgraded ? 6 : 4;
 		item = createItem(this, Material.SHIELD, null, "When raised, creates a barrier in front of you of size <yellow>3x3</yellow> "
 				+ "that intercepts projectiles. Projectiles that hit the barrier hit you but have their damage reduced by <yellow>" + reduction + "</yellow>.");
+		addReforgeOption("towerShield", "captainsTowerShield");
 	}
 
 	@Override

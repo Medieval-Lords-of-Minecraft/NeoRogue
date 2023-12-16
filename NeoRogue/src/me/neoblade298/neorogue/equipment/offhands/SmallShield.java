@@ -18,6 +18,7 @@ public class SmallShield extends Offhand {
 		super("smallShield", "Small Shield", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
 		reduction = isUpgraded ? 5 : 3;
 		item = createItem(this, Material.SHIELD, null, "When raised, reduce all damage taken by <yellow>" + reduction + "</yellow>.");
+		addReforgeOption("smallShield", "hastyShield", "spikyShield");
 	}
 
 	@Override

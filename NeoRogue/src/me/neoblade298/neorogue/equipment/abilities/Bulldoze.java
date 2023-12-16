@@ -10,8 +10,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.util.Vector;
-
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
@@ -28,25 +26,22 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class Tackle extends Ability {
+public class Bulldoze extends Ability {
 	private ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION_LARGE),
 			start = new ParticleContainer(Particle.CLOUD);
-	private static final TargetProperties hc = new TargetProperties(1, true, TargetType.ENEMY),
-			aoe = new TargetProperties(2, true, TargetType.ENEMY);
+	private static final TargetProperties hc = new TargetProperties(2, true, TargetType.ENEMY);
 	private int damage;
 	
-	public Tackle(boolean isUpgraded) {
-		super("tackle", "Tackle", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
+	public Bulldoze(boolean isUpgraded) {
+		super("bulldoze", "Bulldoze", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
 		setBaseProperties(5, 0, 1, 5); // 25 cd, 75 stamina
 		damage = isUpgraded ? 300 : 200;
 		item = createItem(this, Material.REDSTONE, null,
-				"On cast, dash forward, stopping at the first enemy hit and dealing <yellow>" + damage + "</yellow> damage in a small area. "
-						+ "If an enemy is hit, reduce this ability's cooldown by <yellow>10</yellow>.");
+				"On cast, gain speed for 3 seconds, dealing <yellow>" + damage + "</yellow> damage to enemies you touch"
+						+ " and knock them back, once per enemy.");
 		
 		pc.count(25).spread(0.5, 0.5);
 		start.count(25).spread(0.5, 0);
-		
-		addReforgeOption("tackle", "bulldoze");
 	}
 
 	@Override
@@ -61,43 +56,32 @@ public class Tackle extends Ability {
 			this.p = p;
 		}
 		
-		@SuppressWarnings("deprecation")
 		@Override
 		public TriggerResult run(PlayerFightData data, Object[] inputs) {
-			Util.playSound(p, Sound.ENTITY_SHULKER_SHOOT, false);
+			Util.playSound(p, Sound.ENTITY_ENDER_DRAGON_AMBIENT, false);
 			start.spawn(p);
-			Vector v = p.getEyeLocation().getDirection();
-			if (p.isOnGround()) {
-				p.teleport(p.getLocation().add(0, 0.2, 0));
-			}
-			p.setVelocity(v.setY(0).normalize().setY(0.3));
-			new TackleHitChecker(p, data, this);
+			new BulldozeHitChecker(p, data, this);
 			return TriggerResult.keep();
 		}
 	}
 	
-	private class TackleHitChecker {
+	private class BulldozeHitChecker {
 		private ArrayList<BukkitTask> tasks = new ArrayList<BukkitTask>();
 		private PlayerFightData data;
 		
-		protected TackleHitChecker(Player p, PlayerFightData data, TackleInstance inst) {
+		protected BulldozeHitChecker(Player p, PlayerFightData data, TackleInstance inst) {
 			this.data = data;
-			for (long delay = 1; delay <= 10; delay++) {
+			for (long delay = 2; delay <= 60; delay+= 2) {
 				tasks.add(new BukkitRunnable() {
 					public void run() {
-						LivingEntity first = TargetHelper.getNearest(p, hc);
-						if (first == null) return;
+						LinkedList<LivingEntity> hit = TargetHelper.getEntitiesInRadius(p, hc);
+						if (hit.size() == 0) return;
 
-						LinkedList<LivingEntity> hit = TargetHelper.getEntitiesInRadius(p, aoe);
-						Vector v = p.getLocation().subtract(hit.getFirst().getLocation()).toVector();
-						v = v.setY(Math.min(0.3, v.getY())).normalize(); // Limit how high a tackle can take you
-						p.setVelocity(v.multiply(0.5));
-						cancelTasks();
-						inst.reduceCooldown(10);
 						Util.playSound(p, Sound.ENTITY_GENERIC_EXPLODE, false);
-						pc.spawn(p);
 						for (LivingEntity ent : hit) {
+							pc.spawn(ent);
 							FightInstance.dealDamage(p, DamageType.BLUNT, damage, ent);
+							FightInstance.knockback(p, ent, 2);
 						}
 					}
 				}.runTaskLater(NeoRogue.inst(), delay));

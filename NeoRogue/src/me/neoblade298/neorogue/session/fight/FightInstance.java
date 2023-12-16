@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.attribute.Attributable;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Damageable;
@@ -24,6 +25,7 @@ import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.Vector;
 
 import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
 import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
@@ -283,6 +285,16 @@ public abstract class FightInstance extends Instance {
 	
 	public static void dealDamage(Damageable damager, DamageType type, double amount, Damageable... targets) {
 		dealDamage(damager, new DamageMeta(amount, type), targets);
+	}
+	
+	public static void knockback(Entity src, Entity trg, double force) {
+		knockback(src.getLocation(), trg, force);
+	}
+	
+	public static void knockback(Location src, Entity trg, double force) {
+		Vector v = src.subtract(trg.getLocation()).toVector();
+		v.normalize().multiply(force);
+		trg.setVelocity(v);
 	}
 	
 	public static void dealDamage(Damageable damager, DamageMeta meta, Damageable... targets) {

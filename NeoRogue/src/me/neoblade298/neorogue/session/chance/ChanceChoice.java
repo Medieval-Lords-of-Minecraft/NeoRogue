@@ -40,27 +40,30 @@ public class ChanceChoice {
 	
 	public ChanceChoice(Material mat, String title) {
 		this.mat = mat;
-		this.title = SharedUtil.color(title);
+		this.title = SharedUtil.color(title).decorationIfAbsent(TextDecoration.ITALIC, State.FALSE)
+				.colorIfAbsent(NamedTextColor.GOLD);
 	}
 	
 	public ItemStack getItem(Session s) {
 		ItemStack item = new ItemStack(mat);
 		
 		// Check conditions
-		boolean canRun = action != null ? action.run(s, false) : true;
+		boolean canRun = action != null ? action.run(s, (ChanceInstance) s.getInstance(), false) : true;
 		ItemMeta meta = item.getItemMeta();
 		Component display = title;
 		if (!canRun) {
 			display = display.decorate(TextDecoration.STRIKETHROUGH).color(NamedTextColor.RED);
 		}
-		ArrayList<TextComponent> lore = new ArrayList<TextComponent>();
 		meta.displayName(display);
+		ArrayList<TextComponent> lore = new ArrayList<TextComponent>();
 		
 		if (desc != null) {
 			for (TextComponent text : desc) {
+				text = (TextComponent) text.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE)
+						.colorIfAbsent(NamedTextColor.GRAY);
 				if (!canRun) lore.add(
-						(TextComponent) text.decorate(TextDecoration.STRIKETHROUGH).decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
-				else lore.add((TextComponent) text.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
+						(TextComponent) text.decorate(TextDecoration.STRIKETHROUGH));
+				else lore.add(text);
 			}
 		}
 		
@@ -81,7 +84,7 @@ public class ChanceChoice {
 		for (Player player : s.getOnlinePlayers()) {
 			player.closeInventory();
 		}
-		if (action != null) action.run(s, true);
+		if (action != null) action.run(s, inst, true);
 		return result;
 	}
 }

@@ -87,7 +87,10 @@ public class StandardFightInstance extends FightInstance {
 			return;
 		}
 		
+		if (s.getInstance() != this) return; // If we've moved on to reward instance don't spam the user
+		
 		score += mob.getValue();
+		scoreBar.setProgress(Math.min(1, score / SCORE_REQUIRED));
 		if (score >= SCORE_REQUIRED) {
 			FightInstance.handleWin();
 			timeBar.removeAll();
@@ -97,7 +100,6 @@ public class StandardFightInstance extends FightInstance {
 			s.setInstance(new RewardInstance(generateRewards()));
 			return;
 		}
-		scoreBar.setProgress(Math.min(1, score / SCORE_REQUIRED));
 	}
 	
 	private HashMap<UUID, ArrayList<Reward>> generateRewards() {
