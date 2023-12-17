@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -13,6 +14,7 @@ import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
 
+import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.shared.io.Section;
 import me.neoblade298.neorogue.NeoRogue;
 
@@ -23,7 +25,7 @@ public class MapPiece {
 	private MapShape shape;
 	private HashSet<String> targets;
 	protected Coordinates[] entrances, spawns;
-	private MapSpawner[] spawners;
+	private ArrayList<MapSpawner[]> spawnerSets = new ArrayList<MapSpawner[]>();
 	protected Clipboard clipboard;
 	
 	public MapPiece(Section cfg) {
@@ -53,18 +55,23 @@ public class MapPiece {
 			this.entrances[i++] = entrance;
 		}
 		
-		Section sec = cfg.getSection("spawners");
-		this.spawners = new MapSpawner[sec.getKeys().size()];
-		i = 0;
+		Section sec = cfg.getSection("spawnersets");
 		for (String key : sec.getKeys()) {
-			this.spawners[i++] = new MapSpawner(sec.getSection(key), this);
+			Section spawnerSets = sec.getSection(key);
+			MapSpawner[] spawners = new MapSpawner[spawnerSets.getKeys().size()];
+			i = 0;
+			for (String spawnerKey : spawnerSets.getKeys()) {
+				spawners[i++] = new MapSpawner(spawnerSets.getSection(spawnerKey), this);
+			}
+			this.spawnerSets.add(spawners);
 		}
 		
 		List<String> spawns = cfg.getStringList("spawns");
 		this.spawns = new Coordinates[spawns.size()];
 		i = 0;
 		for (String line : spawns) {
-			this.spawns[i++] = new Coordinates(this, line, true);
+			this.spawns[i] = new Coordinates(this, line, true);
+			i++;
 		}
 		
 		List<String> targets = cfg.getStringList("targets");
@@ -100,8 +107,13 @@ public class MapPiece {
 		return entrances;
 	}
 	
-	public MapSpawner[] getSpawners() {
-		return spawners;
+	public ArrayList<MapSpawner[]> getSpawnerSets() {
+		return spawnerSets;
+	}
+	
+	// Pick between the different sets of spawners
+	public MapSpawner[] chooseSpawners() {
+		return spawnerSets.get(NeoCore.gen.nextInt(spawnerSets.size()));
 	}
 	
 	public MapPieceInstance[] getRotationOptions(Coordinates existing, Coordinates toAttach) {

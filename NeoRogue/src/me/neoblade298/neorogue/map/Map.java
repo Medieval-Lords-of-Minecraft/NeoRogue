@@ -254,7 +254,7 @@ public class Map {
 		}
 
 		// Set up the mobs
-		for (MapSpawner spawner : inst.getPiece().getSpawners()) {
+		for (MapSpawner spawner : inst.getPiece().chooseSpawners()) {
 			mobs.put(spawner.getMob(), MobModifier.generateModifiers(0));
 		}
 

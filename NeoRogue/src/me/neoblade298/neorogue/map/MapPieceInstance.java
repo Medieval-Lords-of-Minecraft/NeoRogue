@@ -11,6 +11,8 @@ import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.function.mask.Masks;
+import com.sk89q.worldedit.function.mask.SolidBlockMask;
 import com.sk89q.worldedit.function.operation.Operation;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
@@ -249,24 +251,31 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		int z = (this.z * 16) + rotateOffset[1] + flipOffset[1] + zOff + Z_FIGHT_OFFSET;
 		
 		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Area.world)) {
-		    Operation operation = schematic.createPaste(editSession)
+		    Operation pasteSolid = schematic.createPaste(editSession)
+		    		.maskSource(new SolidBlockMask(Area.world))
 		            .to(BlockVector3.at(x, y, z))
-		            .ignoreAirBlocks(false)
+		            .ignoreAirBlocks(true)
+		            .build();
+		    Operation pasteRemaining = schematic.createPaste(editSession)
+		    		.maskSource(Masks.negate(new SolidBlockMask(Area.world)))
+		            .to(BlockVector3.at(x, y, z))
+		            .ignoreAirBlocks(true)
 		            .build();
 		    try {
-				Operations.complete(operation);
+				Operations.complete(pasteSolid);
+				Operations.complete(pasteRemaining);
 			} catch (WorldEditException e) {
 				e.printStackTrace();
 			}
 		}
 		// Instantiate spawners; if fi is null, that means it's a testmap
 		if (fi != null) {
-			for (MapSpawner spawner : piece.getSpawners()) {
+			for (MapSpawner spawner : piece.chooseSpawners()) {
 				fi.addSpawner(spawner.instantiate(this, xOff, zOff));
 			}
 		}
 		else {
-			for (MapSpawner spawner : piece.getSpawners()) {
+			for (MapSpawner spawner : piece.chooseSpawners()) {
 				spawner.instantiate(this, xOff, zOff);
 			}
 		}
@@ -285,30 +294,40 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		int xLocal = 1;
 		int zLocal = -16;
 		int x = -(rotateOffset[0] + flipOffset[0] + xOff + xLocal);
-		int y = Y_OFFSET + this.y;
+		int y = 1 + this.y;
 		int z = rotateOffset[1] + flipOffset[1] + zOff + zLocal;
 		
 		try (EditSession editSession = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(world))) {
-		    Operation operation = schematic.createPaste(editSession)
+		    Operation pasteSolid = schematic.createPaste(editSession)
+		    		.maskSource(new SolidBlockMask(BukkitAdapter.adapt(world)))
+		            .to(BlockVector3.at(x, y, z))
+		            .ignoreAirBlocks(false)
+		            .build();
+		    
+		    Operation pasteRemaining = schematic.createPaste(editSession)
+		    		.maskSource(Masks.negate(new SolidBlockMask(BukkitAdapter.adapt(world))))
 		            .to(BlockVector3.at(x, y, z))
 		            .ignoreAirBlocks(false)
 		            .build();
 		    try {
-				Operations.complete(operation);
+				Operations.complete(pasteSolid);
+				Operations.complete(pasteRemaining);
 			} catch (WorldEditException e) {
 				e.printStackTrace();
 			}
 		}
 		
 		// Spawners
-		for (MapSpawner spawner : piece.getSpawners()) {
-			Location loc = spawner.getCoordinates().clone().applySettings(this).toLocation();
-			loc.setWorld(world);
-			loc.add(-x - rotateOffset[0] - flipOffset[0],
-					MapPieceInstance.Y_OFFSET,
-					z - rotateOffset[1] - flipOffset[1]);
-			loc.setX(-loc.getX());
-			loc.getBlock().setType(Material.ORANGE_WOOL);
+		for (MapSpawner[] list : piece.getSpawnerSets()) {
+			for (MapSpawner spawner : list) {
+				Location loc = spawner.getCoordinates().clone().applySettings(this).toLocation();
+				loc.setWorld(world);
+				loc.add(-x - rotateOffset[0] - flipOffset[0],
+						y,
+						z - rotateOffset[1] - flipOffset[1]);
+				loc.setX(-loc.getX());
+				loc.getBlock().setType(Material.ORANGE_WOOL);
+			}
 		}
 		
 		// Spawns
@@ -317,7 +336,7 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 			Location loc = coords.toLocation();
 			loc.setWorld(world);
 			loc.add(-x - rotateOffset[0] - flipOffset[0],
-					MapPieceInstance.Y_OFFSET,
+					y,
 					z - rotateOffset[1] - flipOffset[1]);
 			loc.setX(-loc.getX());
 			Block b = loc.getBlock();
@@ -344,7 +363,7 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 			loc.setX(loc.getX() * 16);
 			loc.setZ(loc.getZ() * 16);
 			loc.add(-x - rotateOffset[0] - flipOffset[0],
-					MapPieceInstance.Y_OFFSET,
+					y,
 					z - rotateOffset[1] - flipOffset[1]);
 			loc.setX(-loc.getX());
 			loc.setWorld(world);

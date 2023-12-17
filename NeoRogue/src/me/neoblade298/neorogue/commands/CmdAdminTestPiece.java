@@ -1,6 +1,9 @@
 package me.neoblade298.neorogue.commands;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
@@ -27,7 +30,8 @@ public class CmdAdminTestPiece extends Subcommand {
 
 	public CmdAdminTestPiece(String key, String desc, String perm, SubcommandRunner runner) {
 		super(key, desc, perm, runner);
-		args.add(new Arg("Piece"));
+		this.enableTabComplete();
+		args.add(new Arg("Piece").setTabOptions(new ArrayList<String>(Map.getAllPieces().keySet())));
 	}
 
 	@Override
@@ -47,19 +51,17 @@ public class CmdAdminTestPiece extends Subcommand {
 			return;
 		}
 		
-		
 		MapPieceInstance inst = piece.getInstance();
-		inst.setFlip(false, false);
-		int x = 0;
+		inst.setRotations(2);
+		inst.setFlip(true, false);
+		int x = -(piece.getShape().getBaseLength() * 16);
 		int z = 16;
-		
-
 		final int PADDING = (Math.max(piece.getShape().getBaseHeight(), piece.getShape().getBaseLength()) + 1) * 16;
 		
 		// First clear the board
 		try (EditSession editSession = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(w))) {
 		    CuboidRegion o = new CuboidRegion(
-		    		BlockVector3.at(-x + PADDING, -64, z - PADDING),
+		    		BlockVector3.at(-x + PADDING, -63, z - PADDING),
 		    		BlockVector3.at(-x - PADDING, 64, z + PADDING));
 		    Mask mask = new ExistingBlockMask(editSession);
 		    try {
@@ -70,5 +72,6 @@ public class CmdAdminTestPiece extends Subcommand {
 		}
 		
 		inst.testPaste(w, x, z);
+		p.teleport(new Location(w, -8, 1, 8, -90, 0));
 	}
 }

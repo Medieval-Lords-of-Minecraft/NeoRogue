@@ -28,20 +28,19 @@ public class NeoRogue extends JavaPlugin {
 	
 	public void onEnable() {
 		Bukkit.getServer().getLogger().info("NeoRogue Enabled");
+		inst = this;
 		NeoCore.registerIOComponent(this, new PlayerManager(), "NeoRogue-PlayerManager");
 		Bukkit.getPluginManager().registerEvents(new SessionManager(), this);
-		initCommands();
 		Area.initialize();
 		ChanceSet.load();
-		
-		// Will need to add multiverse dependency is the world isn't first loaded
-		spawn = new Location(Bukkit.getWorld(Area.WORLD_NAME), -250, 65, -250);
-		
-		inst = this;
-
 		Mob.load(); // Load in mob types
 		Map.load(); // Load in map pieces
 		Equipment.load();
+		initCommands(); // Must load commands AFTER map pieces due to command suggestion
+		
+		// Will need to add multiverse dependency if the world isn't first loaded
+		spawn = new Location(Bukkit.getWorld(Area.WORLD_NAME), -250, 65, -250);
+
 		
 		// Strictly for debug usage
 		debugInitialize();
