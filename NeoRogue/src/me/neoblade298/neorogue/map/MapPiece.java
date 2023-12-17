@@ -17,6 +17,7 @@ import me.neoblade298.neocore.shared.io.Section;
 import me.neoblade298.neorogue.NeoRogue;
 
 public class MapPiece {
+
 	private static HashMap<String, MapPiece> pieces = new HashMap<String, MapPiece>();
 	private String id;
 	private MapShape shape;
@@ -120,5 +121,22 @@ public class MapPiece {
 	
 	public MapPieceInstance getInstance() {
 		return new MapPieceInstance(this);
+	}
+	@Override
+	public int hashCode() {
+		return id.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+		MapPiece other = (MapPiece) obj;
+		if (id == null) {
+			if (other.id != null) return false;
+		}
+		else if (!id.equals(other.id)) return false;
+		return true;
 	}
 }

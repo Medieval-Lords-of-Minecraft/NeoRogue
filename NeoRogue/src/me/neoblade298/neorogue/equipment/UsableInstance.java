@@ -48,12 +48,16 @@ public abstract class UsableInstance implements TriggerAction {
 	}
 	
 	public void sendCooldownMessage(Player p) {
-		int cooldownOver = (int) ((lastUsed / 1000) + cooldown);
-		int now = (int) (System.currentTimeMillis() / 1000);
-		Util.msgRaw(p, u.display.append(NeoCore.miniMessage().deserialize(" <red>cooldown: </red><yellow>" + (cooldownOver - now) + "s")));
+		Util.msgRaw(p, u.display.append(NeoCore.miniMessage().deserialize(" <red>cooldown: </red><yellow>" + getCooldown() + "s")));
 	}
 	
 	public void reduceCooldown(int seconds) {
 		lastUsed -= seconds * 1000;
+	}
+	
+	public int getCooldown() {
+		int nextUse = (int) ((lastUsed / 1000) + cooldown);
+		int now = (int) (System.currentTimeMillis() / 1000);
+		return Math.max(0, nextUse - now);
 	}
 }

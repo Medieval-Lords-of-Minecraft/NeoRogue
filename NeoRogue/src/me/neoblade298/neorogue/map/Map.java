@@ -36,6 +36,7 @@ import me.neoblade298.neorogue.session.fight.Mob;
 import me.neoblade298.neorogue.session.fight.MobModifier;
 
 public class Map {
+	private static HashMap<String, MapPiece> allPieces = new HashMap<String, MapPiece>();
 	private static HashMap<AreaType, LinkedList<MapPiece>> standardPieces = new HashMap<AreaType, LinkedList<MapPiece>>(),
 			usedPieces = new HashMap<AreaType, LinkedList<MapPiece>>();
 	private static HashMap<AreaType, ArrayList<MapPiece>> minibossPieces = new HashMap<AreaType, ArrayList<MapPiece>>(),
@@ -64,7 +65,8 @@ public class Map {
 					MapPiece piece = new MapPiece(sec);
 					AreaType area = AreaType.valueOf(sec.getString("area"));
 					String type = sec.getString("type", "STANDARD");
-					
+
+					allPieces.put(key, piece);
 					if (type.equals("BOSS")) bossPieces.get(area).add(piece);
 					else if (type.equals("MINIBOSS")) minibossPieces.get(area).add(piece);
 					else standardPieces.get(area).add(piece);
@@ -368,6 +370,10 @@ public class Map {
 	private static void shufflePieces(AreaType type) {
 		Collections.shuffle(usedPieces.get(type));
 		standardPieces.get(type).addAll(usedPieces.get(type));
+	}
+	
+	public static HashMap<String, MapPiece> getAllPieces() {
+		return allPieces;
 	}
 	
 	public static LinkedList<MapPiece> getPieces(AreaType type) {

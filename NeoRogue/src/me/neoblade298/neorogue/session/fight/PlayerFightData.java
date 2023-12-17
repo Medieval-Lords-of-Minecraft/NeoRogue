@@ -2,6 +2,8 @@ package me.neoblade298.neorogue.session.fight;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map.Entry;
+
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -81,7 +83,7 @@ public class PlayerFightData extends FightData {
 		updateMana();
 		this.staminaRegen = sessdata.getStaminaRegen();
 		this.manaRegen = sessdata.getManaRegen();
-		addTickAction(new ManaStaminaTickAction());
+		addTickAction(new PlayerUpdateTickAction());
 	}
 	
 	public PlayerSessionData getSessionData() {
@@ -258,11 +260,34 @@ public class PlayerFightData extends FightData {
 		p.setExp(fraction);
 	}
 	
-	private class ManaStaminaTickAction extends TickAction {
+	private class PlayerUpdateTickAction extends TickAction {
+		HashMap<Integer, UsableInstance> insts = new HashMap<Integer, UsableInstance>();
+		
+		public PlayerUpdateTickAction() {
+			// Get the usable instances to tie cooldowns to
+			for (int i = 0 ; i < 8; i++) {
+				Trigger t = Trigger.getFromHotbarSlot(i);
+				if (triggers.containsKey(t)) continue;
+				HashMap<String, TriggerAction> actions = triggers.get(t);
+				for (TriggerAction action : actions.values()) {
+					// Only the first valid usable instance is used as the cooldown
+					if (action instanceof UsableInstance) {
+						insts.put(i, (UsableInstance) action);
+						break;
+					}
+				}
+			}
+		}
 		@Override
 		public TickResult run() {
 			addMana(manaRegen);
 			addStamina(p.isSprinting() ? -4 : staminaRegen);
+			
+			// Update hotbar cooldowns
+			PlayerInventory inv = p.getInventory();
+			for (Entry<Integer, UsableInstance> ent : insts.entrySet()) {
+				inv.getItem(ent.getKey()).setAmount(Math.min(1, ent.getValue().getCooldown()));
+			}
 			return TickResult.KEEP;
 		}
 	}

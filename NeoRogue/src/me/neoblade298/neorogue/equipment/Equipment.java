@@ -295,7 +295,7 @@ public abstract class Equipment {
 		ArrayList<Component> loreItalicized = new ArrayList<Component>();
 		loreItalicized.add(rarity.getDisplay(true).append(Component.text(" " + type)));
 		if (!reforgeOptions.isEmpty()) {
-			loreItalicized.add(Component.text("Reforgeable with:" , NamedTextColor.YELLOW));
+			loreItalicized.add(Component.text("Reforgeable with:" , NamedTextColor.GOLD));
 			for (String id : reforgeOptions.keySet()) {
 				loreItalicized.add(Component.text("- ", NamedTextColor.GOLD).append(Equipment.get(id, false).getDisplay()));
 			}

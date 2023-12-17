@@ -8,6 +8,8 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
@@ -28,17 +30,19 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Bulldoze extends Ability {
 	private ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION_LARGE),
-			start = new ParticleContainer(Particle.CLOUD);
+			start = new ParticleContainer(Particle.CLOUD),
+			wake = new ParticleContainer(Particle.EXPLOSION_NORMAL);
 	private static final TargetProperties hc = new TargetProperties(2, true, TargetType.ENEMY);
 	private int damage;
 	
 	public Bulldoze(boolean isUpgraded) {
 		super("bulldoze", "Bulldoze", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
-		setBaseProperties(5, 0, 1, 5); // 25 cd, 75 stamina
+		setBaseProperties(5, 0, 1, 5);
 		damage = isUpgraded ? 300 : 200;
 		
 		pc.count(25).spread(0.5, 0.5);
 		start.count(25).spread(0.5, 0);
+		wake.count(25).spread(0.5, 0).offsetForward(2);
 	}
 
 	@Override
@@ -57,6 +61,7 @@ public class Bulldoze extends Ability {
 		public TriggerResult run(PlayerFightData data, Object[] inputs) {
 			Util.playSound(p, Sound.ENTITY_ENDER_DRAGON_AMBIENT, false);
 			start.spawn(p);
+			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 60, 0));
 			new BulldozeHitChecker(p, data, this);
 			return TriggerResult.keep();
 		}
@@ -69,8 +74,11 @@ public class Bulldoze extends Ability {
 		protected BulldozeHitChecker(Player p, PlayerFightData data, TackleInstance inst) {
 			this.data = data;
 			for (long delay = 2; delay <= 60; delay+= 2) {
+				boolean spawnParticle = delay % 4 == 0;
 				tasks.add(new BukkitRunnable() {
 					public void run() {
+						if (spawnParticle) wake.spawn(p);
+						
 						LinkedList<LivingEntity> hit = TargetHelper.getEntitiesInRadius(p, hc);
 						if (hit.size() == 0) return;
 

@@ -1,6 +1,7 @@
 package me.neoblade298.neorogue.commands;
 
 import java.util.HashMap;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
@@ -23,11 +24,11 @@ import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.map.MapPiece;
 import me.neoblade298.neorogue.map.MapPieceInstance;
 
-public class CmdAdminTestPiece extends Subcommand {
+public class CmdAdminTestPieceSettings extends Subcommand {
 
-	public CmdAdminTestPiece(String key, String desc, String perm, SubcommandRunner runner) {
+	public CmdAdminTestPieceSettings(String key, String desc, String perm, SubcommandRunner runner) {
 		super(key, desc, perm, runner);
-		args.add(new Arg("Piece"));
+		args.add(new Arg("Piece"), new Arg("Rotations", false), new Arg("FlipX", false), new Arg("FlipY", false));
 	}
 
 	@Override
@@ -38,29 +39,22 @@ public class CmdAdminTestPiece extends Subcommand {
 			Util.displayError(p, "Couldn't find a map piece with that name!");
 			return;
 		}
-		
 		MapPiece piece = pieces.get(args[0]);
-		World w = p.getWorld();
-		
-		if (!w.getName().equals("TestMap")) {
-			Util.displayError(p, "You can't use this command on worlds that aren't named TestMap!");
-			return;
-		}
-		
-		
 		MapPieceInstance inst = piece.getInstance();
-		inst.setFlip(false, false);
-		int x = 0;
-		int z = 16;
+		boolean pasteAll = args.length > 1;
 		
-
+		Location loc = p.getLocation();
+		World w = p.getWorld();
+		int x = loc.getBlockX(), z = loc.getBlockZ();
+		x = -(x - (x % 16));
+		z -= z % 16;
 		final int PADDING = (Math.max(piece.getShape().getBaseHeight(), piece.getShape().getBaseLength()) + 1) * 16;
 		
 		// First clear the board
 		try (EditSession editSession = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(w))) {
 		    CuboidRegion o = new CuboidRegion(
-		    		BlockVector3.at(-x + PADDING, -64, z - PADDING),
-		    		BlockVector3.at(-x - PADDING, 64, z + PADDING));
+		    		BlockVector3.at(-x + PADDING, 1, z - PADDING),
+		    		BlockVector3.at(-x - PADDING * (pasteAll ? 4 : 1), 128, z + PADDING * (pasteAll ? 4 : 1)));
 		    Mask mask = new ExistingBlockMask(editSession);
 		    try {
 			    editSession.replaceBlocks(o, mask, BukkitAdapter.adapt(Material.AIR.createBlockData()));
@@ -69,6 +63,25 @@ public class CmdAdminTestPiece extends Subcommand {
 			}
 		}
 		
-		inst.testPaste(w, x, z);
+		if (pasteAll) {
+			for (int i = 0; i < 4; i++) {
+				inst.setRotations(i);
+				inst.setFlip(false, false);
+				inst.testPaste(w, x + (PADDING * i), z);
+				inst.setFlip(true, false);
+				inst.testPaste(w, x + (PADDING * i), z + PADDING);
+				inst.setFlip(false, true);
+				inst.testPaste(w, x + (PADDING * i), z + (PADDING * 2));
+			}
+		}
+		else {
+			int rotations = Integer.parseInt(args[1]);
+			boolean flipX = args.length > 2 ? args[2].equals("1") : false;
+			boolean flipZ = args.length > 3 ? args[3].equals("1") : false;
+			inst.setRotations(rotations);
+			inst.setFlip(flipX, flipZ);
+			inst.testPaste(w, x, z);
+		}
+		Util.msg(p, "Successfully pasted piece settings");
 	}
 }

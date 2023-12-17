@@ -28,7 +28,7 @@ public class ReforgeOptionsInventory extends CoreInventory {
 	private String type;
 	private ArrayList<Equipment> reforgeOptions = new ArrayList<Equipment>();
 	public ReforgeOptionsInventory(PlayerSessionInventory prev, int slot, boolean isEquipSlot, String type, int dataSlot, Equipment toReforge, Equipment reforgeWith, ItemStack hostage) {
-		super(prev.getPlayer(), Bukkit.createInventory(prev.getPlayer(), 9, Component.text("Reforge Options", NamedTextColor.BLUE)));
+		super(prev.getPlayer(), Bukkit.createInventory(prev.getPlayer(), 18, Component.text("Reforge Options", NamedTextColor.BLUE)));
 		
 		this.slot = slot;
 		this.isEquipSlot = isEquipSlot;
@@ -40,16 +40,20 @@ public class ReforgeOptionsInventory extends CoreInventory {
 		ItemStack[] contents = inv.getContents();
 		
 		String[] options = toReforge.getReforgeOptions().get(reforgeWith.getId());
-		int offset = options.length - 7; // -5 for middle of inv, -1 for 0 offset at size 2
-		contents[0] = toReforge.getItem();
-		contents[1] = reforgeWith.getItem();
+		int offset = options.length - 5; // -5 for middle of inv, -1 for 0 offset at size 2
+		contents[3] = toReforge.getItem();
+		contents[5] = reforgeWith.getItem();
 		for (int i = 0; i < options.length; i++) {
 			Equipment eq = Equipment.get(options[i], false);
-			contents[(2 * i) - offset] = eq.getItem();
+			contents[(2 * i) - offset + 9] = eq.getItem();
 			reforgeOptions.add(eq);
 		}
-		
+
 		for (int i = 0; i < 9; i++) {
+			if (contents[i] != null) continue;
+			contents[i] = CoreInventory.createButton(Material.GRAY_STAINED_GLASS_PANE, Component.text(" "));
+		}
+		for (int i = 9; i < 18; i++) {
 			if (contents[i] != null) continue;
 			contents[i] = CoreInventory.createButton(Material.RED_STAINED_GLASS_PANE, Component.text("Cancel", NamedTextColor.RED));
 		}
@@ -62,7 +66,7 @@ public class ReforgeOptionsInventory extends CoreInventory {
 		e.setCancelled(true);
 		Inventory iclicked = e.getClickedInventory();
 		if (iclicked == null || iclicked.getType() != InventoryType.CHEST) return;
-		if (e.getSlot() == 0) return;
+		if (e.getSlot() < 9) return;
 		if (e.getCurrentItem().getType() == Material.RED_STAINED_GLASS_PANE) {
 			p.closeInventory();
 		}
@@ -100,8 +104,9 @@ public class ReforgeOptionsInventory extends CoreInventory {
 	}
 	
 	private Equipment getFromSlot(int slot) {
-		int offset = reforgeOptions.size() - 6;
+		int offset = reforgeOptions.size() - 5;
 		slot += offset;
+		slot -= 9;
 		return reforgeOptions.get(slot / 2);
 	}
 }

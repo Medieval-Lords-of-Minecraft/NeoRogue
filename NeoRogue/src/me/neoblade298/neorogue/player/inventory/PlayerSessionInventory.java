@@ -127,7 +127,7 @@ public class PlayerSessionInventory extends CoreInventory {
 				.append(Component.text(data.getHealth() + " / " + data.getMaxHealth(), NamedTextColor.WHITE));
 		TextComponent mana = Component.text("Mana: ", NamedTextColor.GOLD)
 				.append(Component.text(data.getMaxMana(), NamedTextColor.WHITE));
-		TextComponent coins = Component.text("Health: ", NamedTextColor.GOLD)
+		TextComponent coins = Component.text("Coins: ", NamedTextColor.GOLD)
 				.append(Component.text(data.getCoins(), NamedTextColor.WHITE));
 		return CoreInventory.createButton(Material.ARMOR_STAND, statsText,
 			health, mana, coins);
@@ -397,7 +397,7 @@ public class PlayerSessionInventory extends CoreInventory {
 		List<Component> lore = meta.lore();
 		String type = slotTypes.get(invSlot);
 		if (type.equals("OTHERBINDS")) {
-			lore.add(1, Component.text("Bound to " + KeyBind.getBindFromSlot(invSlot).getDisplay(), NamedTextColor.YELLOW)
+			lore.add(1, Component.text("Bound to ").append(KeyBind.getBindFromSlot(invSlot).getDisplay())
 					.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
 		}
 		else if (type.equals("HOTBAR")) {

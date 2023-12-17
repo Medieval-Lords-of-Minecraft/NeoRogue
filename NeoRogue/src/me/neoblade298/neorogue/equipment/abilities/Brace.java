@@ -22,7 +22,7 @@ public class Brace extends Ability {
 	
 	public Brace(boolean isUpgraded) {
 		super("brace", "Brace", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
-		setBaseProperties(20, 0, 50, 0);
+		setBaseProperties(20, 0, 50); //50
 		shields = isUpgraded ? 30 : 20;
 		pc.count(10).spread(0.5, 0.5).speed(0.2);
 		addReforgeOption("brace", new String[] {"brace2", "parry", "bide"});

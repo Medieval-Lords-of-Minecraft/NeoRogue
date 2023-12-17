@@ -89,26 +89,32 @@ public abstract class FightInstance extends Instance {
 	
 	public static void handleDeath(PlayerDeathEvent e) {
 		Player p = e.getEntity();
-		p.spigot().respawn();
-		UUID pu = p.getUniqueId();
-		if (!userData.containsKey(pu)) return;
-		PlayerFightData data = userData.remove(pu);
-		data.getSessionData().setDeath(true);
+		Location prev = p.getLocation();
+		new BukkitRunnable() {
+			public void run() {
+				p.spigot().respawn();
+				UUID pu = p.getUniqueId();
+				if (!userData.containsKey(pu)) return;
+				p.teleport(prev);
+				PlayerFightData data = userData.remove(pu);
+				data.getSessionData().setDeath(true);
 
-		// Remove the player's abilities from the fight
-		data.cleanup();
-		fightData.remove(pu).cleanup();
-		PlayerSessionData sdata = data.getSessionData();
-		sdata.setDeath(true);
-		
-		// If that's the last player alive, send them to a post death instance
-		for (UUID uuid : data.getInstance().getParty()) {
-			PlayerFightData fdata = userData.get(uuid);
-			if (fdata.isActive()) return;
-		}
-		
-		// End game as a loss
-		data.getInstance().s.setInstance(new LoseInstance());
+				// Remove the player's abilities from the fight
+				data.cleanup();
+				fightData.remove(pu).cleanup();
+				PlayerSessionData sdata = data.getSessionData();
+				sdata.setDeath(true);
+				
+				// If that's the last player alive, send them to a post death instance
+				for (UUID uuid : data.getInstance().getParty()) {
+					PlayerFightData fdata = userData.get(uuid);
+					if (fdata.isActive()) return;
+				}
+				
+				// End game as a loss
+				data.getInstance().s.setInstance(new LoseInstance());
+			}
+		}.runTaskLater(NeoRogue.inst(), 5L);
 	}
 	
 	// This handles basic left click and/or enemy damage
@@ -427,8 +433,11 @@ public abstract class FightInstance extends Instance {
 			
 			if (amount <= 0) {
 				// Make sure player never dies from chip damage from shields
-				if (target.getHealth() < 10) target.setHealth(target.getHealth() + 0.1);
-				target.damage(0.1);
+				// Chip damage only happens when a shield breaks
+				if (target.getHealth() < 10) {
+					target.setHealth(target.getHealth() + 0.1);
+					target.damage(0.1);
+				}
 				return;
 			}
 		}
@@ -537,6 +546,10 @@ public abstract class FightInstance extends Instance {
 			userData.remove(uuid).cleanup();
 			fightData.remove(uuid).cleanup();
 			s.getParty().get(uuid).updateHealth();
+			Player p = Bukkit.getPlayer(uuid);
+			if (p != null) {
+				p.setFoodLevel(20);
+			}
 		}
 		
 		for (BukkitTask task : tasks) {
