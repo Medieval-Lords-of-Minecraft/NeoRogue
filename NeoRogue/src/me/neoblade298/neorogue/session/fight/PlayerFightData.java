@@ -267,12 +267,13 @@ public class PlayerFightData extends FightData {
 			// Get the usable instances to tie cooldowns to
 			for (int i = 0 ; i < 8; i++) {
 				Trigger t = Trigger.getFromHotbarSlot(i);
-				if (triggers.containsKey(t)) continue;
+				if (!triggers.containsKey(t)) continue;
 				HashMap<String, TriggerAction> actions = triggers.get(t);
 				for (TriggerAction action : actions.values()) {
 					// Only the first valid usable instance is used as the cooldown
 					if (action instanceof UsableInstance) {
 						insts.put(i, (UsableInstance) action);
+						System.out.println("Putting " + action.getClass().getName() + " in " + i);
 						break;
 					}
 				}
@@ -286,7 +287,7 @@ public class PlayerFightData extends FightData {
 			// Update hotbar cooldowns
 			PlayerInventory inv = p.getInventory();
 			for (Entry<Integer, UsableInstance> ent : insts.entrySet()) {
-				inv.getItem(ent.getKey()).setAmount(Math.min(1, ent.getValue().getCooldown()));
+				inv.getItem(ent.getKey()).setAmount(Math.min(127, Math.max(1, ent.getValue().getCooldown())));
 			}
 			return TickResult.KEEP;
 		}
