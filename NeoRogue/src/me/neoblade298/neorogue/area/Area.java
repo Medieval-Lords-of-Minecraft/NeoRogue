@@ -335,7 +335,7 @@ public class Area {
 			insert.executeBatch();
 		}
 		catch (SQLException ex) {
-			Bukkit.getLogger().warning("[NeoRogue] Failed to save node for host " + host + " to slot " + saveSlot);
+			Bukkit.getLogger().warning("[NeoRogue] Failed to save nodes for host " + host + " to slot " + saveSlot);
 			ex.printStackTrace();
 		}
 	}
@@ -359,7 +359,7 @@ public class Area {
 			insert.executeBatch();
 		}
 		catch (SQLException ex) {
-			Bukkit.getLogger().warning("[NeoRogue] Failed to save node for host " + host + " to slot " + saveSlot);
+			Bukkit.getLogger().warning("[NeoRogue] Failed to save relevant nodes for host " + host + " to slot " + saveSlot);
 			ex.printStackTrace();
 		}
 	}

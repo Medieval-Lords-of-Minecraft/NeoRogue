@@ -188,7 +188,6 @@ public class Session {
 			if (this.inst instanceof EditInventoryInstance && !EditInventoryInstance.isValid(this)) return;
 			this.inst.cleanup();
 		}
-		
 		this.inst = inst;
 		inst.start(this);
 		if (inst instanceof EditInventoryInstance) {

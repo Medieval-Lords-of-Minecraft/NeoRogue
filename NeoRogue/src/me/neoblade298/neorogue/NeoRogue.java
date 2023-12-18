@@ -23,7 +23,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 public class NeoRogue extends JavaPlugin {
 	private static NeoRogue inst;
-	public static Random gen;
+	public static Random gen = new Random();
 	
 	public static File SCHEMATIC_FOLDER = new File("/home/MLMC/Dev/plugins/WorldEdit/schematics");
 	

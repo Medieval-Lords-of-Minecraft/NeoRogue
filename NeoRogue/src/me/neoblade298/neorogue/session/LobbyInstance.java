@@ -312,8 +312,8 @@ public class LobbyInstance extends Instance {
 				for (UUID uuid : players.keySet()) {
 					Player p = Bukkit.getPlayer(uuid);
 					p.setHealth(p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
-					s.setInstance(new NodeSelectInstance());
 				}
+				s.setInstance(new NodeSelectInstance());
 			}
 		}.runTaskLater(NeoRogue.inst(), 20L);
 	}
