@@ -193,14 +193,15 @@ public abstract class FightInstance extends Instance {
 		}
 		else {
 			double y = p.getEyeLocation().getDirection().normalize().getY();
-			if (y > 0.9) {
+			if (p.isSneaking()) {
+				trigger(p, Trigger.SHIFT_RCLICK, null);
+			}
+			
+			if (y > 0) {
 				trigger(p, Trigger.UP_RCLICK, null);
 			}
-			else if (y < 0.1) {
+			else {
 				trigger(p, Trigger.DOWN_RCLICK, null);
-			}
-			else if (p.isSneaking()) {
-				trigger(p, Trigger.SHIFT_RCLICK, null);
 			}
 		}
 	}
