@@ -281,6 +281,7 @@ public class SessionManager implements Listener {
 		if (sessions.containsKey(p.getUniqueId())) {
 			Session s = sessions.get(p.getUniqueId());
 			s.teleportToInstance(p);
+			s.getData(p.getUniqueId()).syncHealth();
 		}
 		else {
 			p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);

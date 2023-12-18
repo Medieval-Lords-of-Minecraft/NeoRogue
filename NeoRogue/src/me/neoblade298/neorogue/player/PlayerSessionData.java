@@ -289,12 +289,16 @@ public class PlayerSessionData {
 		health = Math.round(getPlayer().getHealth());
 	}
 	
+	public void syncHealth() {
+		getPlayer().setHealth(this.health);
+	}
+	
 	public void setHealth(double health) {
 		this.health = health;
 		getPlayer().setHealth(Math.min(health, maxHealth));
 	}
 	
-	// Used when the player dies
+	// Used when the player dies and on cleanup (to revive them)
 	public void setDeath(boolean isDead) {
 		Player p = getPlayer();
 		this.isDead = isDead;
@@ -302,11 +306,11 @@ public class PlayerSessionData {
 			this.health = 1;
 			p.setInvulnerable(true);
 			p.setInvisible(true);
+			p.getInventory().clear();
 		}
 		else {
 			p.setInvulnerable(false);
 			p.setInvisible(false);
-			p.setHealth(1);
 		}
 	}
 	

@@ -89,25 +89,24 @@ public abstract class FightInstance extends Instance {
 	public static void handleDeath(PlayerDeathEvent e) {
 		Player p = e.getEntity();
 		Location prev = p.getLocation();
+
+		// Remove the player's abilities from the fight
+		UUID pu = p.getUniqueId();
+		if (!userData.containsKey(pu)) return;
+		PlayerFightData data = userData.remove(pu);
+		data.cleanup();
+		fightData.remove(pu).cleanup();
+		
 		new BukkitRunnable() {
 			public void run() {
 				p.spigot().respawn();
-				UUID pu = p.getUniqueId();
-				if (!userData.containsKey(pu)) return;
 				p.teleport(prev);
-				PlayerFightData data = userData.remove(pu);
 				data.getSessionData().setDeath(true);
-
-				// Remove the player's abilities from the fight
-				data.cleanup();
-				fightData.remove(pu).cleanup();
-				PlayerSessionData sdata = data.getSessionData();
-				sdata.setDeath(true);
 				
 				// If that's the last player alive, send them to a post death instance
 				for (UUID uuid : data.getInstance().getParty()) {
 					PlayerFightData fdata = userData.get(uuid);
-					if (fdata.isActive()) return;
+					if (fdata != null && fdata.isActive()) return;
 				}
 				
 				// End game as a loss
@@ -121,6 +120,7 @@ public abstract class FightInstance extends Instance {
 		Player p = (Player) e.getDamager();
 		e.setCancelled(true);
 		PlayerFightData data = userData.get(p.getUniqueId());
+		if (data == null) return; // If you're dead
 		if (!data.canBasicAttack()) return;
 
 		trigger(p, Trigger.LEFT_CLICK, null);
@@ -544,11 +544,21 @@ public abstract class FightInstance extends Instance {
 	@Override
 	public void cleanup() {
 		for (UUID uuid : s.getParty().keySet()) {
-			userData.remove(uuid).cleanup();
-			fightData.remove(uuid).cleanup();
-			s.getParty().get(uuid).updateHealth();
+			PlayerFightData pdata = userData.remove(uuid);
+			if (pdata != null) pdata.cleanup();
+			FightData fdata = fightData.remove(uuid);
+			if (fdata != null) fdata.cleanup();
+			PlayerSessionData data = s.getParty().get(uuid);
+			if (!data.isDead()) {
+				data.updateHealth();
+			}
+			else {
+				data.setDeath(false);
+			}
+			
 			Player p = Bukkit.getPlayer(uuid);
 			if (p != null) {
+				data.syncHealth();
 				p.setFoodLevel(20);
 			}
 		}
