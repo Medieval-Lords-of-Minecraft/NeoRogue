@@ -10,11 +10,11 @@ import org.bukkit.block.data.Directional;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.commands.Subcommand;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.commands.Arg;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.map.Coordinates;
 import me.neoblade298.neorogue.map.Map;
@@ -84,10 +84,10 @@ public class CmdAdminTestMap extends Subcommand {
 		}
 		
 		// Choose random teleport location
-		int rand = NeoCore.gen.nextInt(map.getPieces().size());
+		int rand = NeoRogue.gen.nextInt(map.getPieces().size());
 		MapPieceInstance inst = map.getPieces().get(rand);
 		Coordinates[] spawns = inst.getSpawns();
-		Location spawn = spawns[spawns.length > 1 ? NeoCore.gen.nextInt(spawns.length) : 0].clone().applySettings(inst).toLocation();
+		Location spawn = spawns[spawns.length > 1 ? NeoRogue.gen.nextInt(spawns.length) : 0].clone().applySettings(inst).toLocation();
 		spawn.add(xOff + MapPieceInstance.X_FIGHT_OFFSET,
 				MapPieceInstance.Y_OFFSET,
 				MapPieceInstance.Z_FIGHT_OFFSET + zOff);

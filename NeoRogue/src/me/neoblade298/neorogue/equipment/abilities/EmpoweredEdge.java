@@ -25,7 +25,7 @@ public class EmpoweredEdge extends Ability {
 	
 	public EmpoweredEdge(boolean isUpgraded) {
 		super("empoweredEdge", "Empowered Edge", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
-		setBaseProperties(isUpgraded ? 5 : 7, 0, 30);
+		setBaseProperties(isUpgraded ? 5 : 7, 0, 10);
 		damage = isUpgraded ? 100 : 75;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		hit.count(50).spread(0.5, 0.5);

@@ -254,6 +254,7 @@ public class PlayerSessionData {
 	
 	public void addCoins(int amount) {
 		coins += amount;
+		Util.msg(getPlayer(), "<yellow>+" + amount + " coins </yellow>(<gold>" + coins + "</gold>)");
 	}
 	
 	public int getCoins() {

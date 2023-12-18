@@ -19,13 +19,14 @@ import net.kyori.adventure.text.format.TextDecoration.State;
 public class ChanceChoice {
 	private Component title;
 	private Material mat;
-	private ChanceStage result;
-	private ArrayList<TextComponent> desc, prereqFail;
+	private ArrayList<TextComponent> desc, reqFail;
 	private ChanceAction action;
+	private ChanceRequirement req;
 	
-	public ChanceChoice(Material mat, String title, String description, String prereqFail, ChanceAction action) {
+	public ChanceChoice(Material mat, String title, String description, String prereqFail, ChanceRequirement req, ChanceAction action) {
 		this(mat, title, description, action);
-		this.prereqFail = SharedUtil.addLineBreaks((TextComponent) NeoCore.miniMessage().deserialize(prereqFail), 250);
+		this.req = req;
+		this.reqFail = SharedUtil.addLineBreaks((TextComponent) NeoCore.miniMessage().deserialize(prereqFail), 250);
 	}
 	
 	public ChanceChoice(Material mat, String title, String description, ChanceAction action) {
@@ -48,7 +49,7 @@ public class ChanceChoice {
 		ItemStack item = new ItemStack(mat);
 		
 		// Check conditions
-		boolean canRun = action != null ? action.run(s, (ChanceInstance) s.getInstance(), false) : true;
+		boolean canRun = req != null ? req.check(s, (ChanceInstance) s.getInstance()) : true;
 		ItemMeta meta = item.getItemMeta();
 		Component display = title;
 		if (!canRun) {
@@ -67,24 +68,22 @@ public class ChanceChoice {
 			}
 		}
 		
-		if (!canRun && prereqFail != null) {
-			lore.addAll(prereqFail);
+		if (!canRun && reqFail != null) {
+			lore.addAll(reqFail);
 		}
 		meta.lore(lore);
 		item.setItemMeta(meta);
 		return item;
 	}
 	
-	public void setResult(ChanceStage stage) {
-		this.result = stage;
-	}
-	
-	public ChanceStage choose(Session s, ChanceInstance inst) {
+	public String choose(Session s, ChanceInstance inst) {
 		s.broadcastSound(Sound.ENTITY_ARROW_HIT_PLAYER);
 		for (Player player : s.getOnlinePlayers()) {
 			player.closeInventory();
 		}
-		if (action != null) action.run(s, inst, true);
-		return result;
+		if (action != null) {
+			return action.run(s, inst);
+		}
+		return null;
 	}
 }

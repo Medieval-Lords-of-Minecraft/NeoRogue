@@ -14,7 +14,6 @@ import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
 
-import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.shared.io.Section;
 import me.neoblade298.neorogue.NeoRogue;
 
@@ -113,7 +112,7 @@ public class MapPiece {
 	
 	// Pick between the different sets of spawners
 	public MapSpawner[] chooseSpawners() {
-		return spawnerSets.get(NeoCore.gen.nextInt(spawnerSets.size()));
+		return spawnerSets.get(NeoRogue.gen.nextInt(spawnerSets.size()));
 	}
 	
 	public MapPieceInstance[] getRotationOptions(Coordinates existing, Coordinates toAttach) {

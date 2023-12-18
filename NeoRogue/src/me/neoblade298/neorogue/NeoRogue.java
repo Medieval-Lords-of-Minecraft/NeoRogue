@@ -1,6 +1,8 @@
 package me.neoblade298.neorogue;
 
 import java.io.File;
+import java.util.Random;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -21,6 +23,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 public class NeoRogue extends JavaPlugin {
 	private static NeoRogue inst;
+	public static Random gen;
 	
 	public static File SCHEMATIC_FOLDER = new File("/home/MLMC/Dev/plugins/WorldEdit/schematics");
 	

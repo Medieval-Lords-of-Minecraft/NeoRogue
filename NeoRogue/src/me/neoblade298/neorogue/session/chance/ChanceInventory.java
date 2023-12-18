@@ -92,7 +92,8 @@ public class ChanceInventory extends CoreInventory {
 			Util.displayError(p, "Only the host may make choices for this event!");
 			return;
 		}
-		inst.advanceStage(uuid, stage.choices.get(num - 1).choose(s, inst));
+		ChanceStage next = set.getStage(stage.choices.get(num - 1).choose(s, inst));
+		inst.advanceStage(uuid, next);
 	}
 
 	@Override

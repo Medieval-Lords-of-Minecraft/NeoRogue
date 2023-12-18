@@ -37,7 +37,7 @@ public class StandardFightInstance extends FightInstance {
 	
 	public StandardFightInstance(Set<UUID> players, AreaType type, int nodesVisited) {
 		super(players);
-		int rand = nodesVisited >= 5 ? NeoCore.gen.nextInt(nodesVisited / 5) : 0;
+		int rand = nodesVisited >= 5 ? NeoRogue.gen.nextInt(nodesVisited / 5) : 0;
 		int min = nodesVisited / 10;
 		map = Map.generate(type, 2 + rand + min);
 	}

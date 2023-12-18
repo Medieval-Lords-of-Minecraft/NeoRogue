@@ -483,11 +483,11 @@ public abstract class FightInstance extends Instance {
 		new BukkitRunnable() {
 			public void run() {
 				// Choose random teleport location
-				int rand = NeoCore.gen.nextInt(map.getPieces().size());
+				int rand = NeoRogue.gen.nextInt(map.getPieces().size());
 				MapPieceInstance inst = map.getPieces().get(rand);
 				Coordinates[] spawns = inst.getSpawns();
 				
-				spawn = spawns[spawns.length > 1 ? NeoCore.gen.nextInt(spawns.length) : 0].clone().applySettings(inst).toLocation();
+				spawn = spawns[spawns.length > 1 ? NeoRogue.gen.nextInt(spawns.length) : 0].clone().applySettings(inst).toLocation();
 				spawn.add(s.getXOff() + MapPieceInstance.X_FIGHT_OFFSET,
 						MapPieceInstance.Y_OFFSET,
 						MapPieceInstance.Z_FIGHT_OFFSET + s.getZOff());
@@ -605,9 +605,9 @@ public abstract class FightInstance extends Instance {
 	
 	private void spawnMob(int num) {
 		for (int i = 0; i < num; i++) {
-			MapSpawnerInstance spawner = spawners.get(NeoCore.gen.nextInt(spawners.size()));
+			MapSpawnerInstance spawner = spawners.get(NeoRogue.gen.nextInt(spawners.size()));
 			if (!spawner.canSpawn()) {
-				spawner = unlimitedSpawners.get(NeoCore.gen.nextInt(unlimitedSpawners.size()));
+				spawner = unlimitedSpawners.get(NeoRogue.gen.nextInt(unlimitedSpawners.size()));
 			}
 			spawner.spawnMob(5 + s.getNodesVisited());
 		}

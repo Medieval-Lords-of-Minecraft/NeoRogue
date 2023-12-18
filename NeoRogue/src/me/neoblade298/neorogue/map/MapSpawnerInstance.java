@@ -9,7 +9,7 @@ import org.bukkit.entity.Damageable;
 import io.lumine.mythic.api.mobs.MythicMob;
 import io.lumine.mythic.bukkit.BukkitAdapter;
 import io.lumine.mythic.core.mobs.ActiveMob;
-import me.neoblade298.neocore.bukkit.NeoCore;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.Mob;
@@ -55,7 +55,7 @@ public class MapSpawnerInstance {
 		for (int i = 0; i < mob.getAmount(); i++) {
 			Location loc = this.loc;
 			if (radius > 0) {
-				loc = loc.clone().add(NeoCore.gen.nextDouble(-radius, radius), 0, NeoCore.gen.nextDouble(-radius, radius));
+				loc = loc.clone().add(NeoRogue.gen.nextDouble(-radius, radius), 0, NeoRogue.gen.nextDouble(-radius, radius));
 			}
 			ActiveMob am = mythicMob.spawn(BukkitAdapter.adapt(loc), lvl);
 			double mhealth = am.getEntity().getMaxHealth();

@@ -19,7 +19,7 @@ import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.math.transform.AffineTransform;
 import com.sk89q.worldedit.session.ClipboardHolder;
 
-import me.neoblade298.neocore.bukkit.NeoCore;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 
@@ -421,7 +421,7 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 	public int compareTo(MapPieceInstance o) {
 		int comp = this.potential - o.potential;
 		if (comp == 0) {
-			return NeoCore.gen.nextBoolean() ? 1 : -1; // Tiebreakers are random
+			return NeoRogue.gen.nextBoolean() ? 1 : -1; // Tiebreakers are random
 		}
 		return comp;
 	}

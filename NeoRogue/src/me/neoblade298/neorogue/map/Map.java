@@ -84,12 +84,12 @@ public class Map {
 	}
 	
 	public static Map generateBoss(AreaType type, int numPieces) {
-		MapPiece piece = bossPieces.get(type).get(NeoCore.gen.nextInt(bossPieces.get(type).size()));
+		MapPiece piece = bossPieces.get(type).get(NeoRogue.gen.nextInt(bossPieces.get(type).size()));
 		return generate(type, numPieces, piece);
 	}
 	
 	public static Map generateMiniboss(AreaType type, int numPieces) {
-		MapPiece piece = minibossPieces.get(type).get(NeoCore.gen.nextInt(minibossPieces.get(type).size()));
+		MapPiece piece = minibossPieces.get(type).get(NeoRogue.gen.nextInt(minibossPieces.get(type).size()));
 		return generate(type, numPieces, piece);
 	}
 	
@@ -142,8 +142,8 @@ public class Map {
 		if (pieces.size() == 0) {
 			MapPieceInstance inst = piece.getInstance();
 			// Randomly rotate the piece
-			inst.setRotations(NeoCore.gen.nextInt(4));
-			int rand = NeoCore.gen.nextInt(3);
+			inst.setRotations(NeoRogue.gen.nextInt(4));
+			int rand = NeoRogue.gen.nextInt(3);
 			if (rand == 1) inst.setFlip(true, false);
 			else if (rand == 2) inst.setFlip(false, true);
 			MapShape shape = inst.getPiece().getShape();

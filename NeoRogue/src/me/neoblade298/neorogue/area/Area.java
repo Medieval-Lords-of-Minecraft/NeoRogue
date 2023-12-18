@@ -238,7 +238,7 @@ public class Area {
 
 	private void generatePaths(int pos, int lane) {
 		Node node = nodes[pos][lane];
-		int numPaths = NeoCore.gen.nextDouble() < DOUBLE_PATH_CHANCE ? 2 : 1;
+		int numPaths = NeoRogue.gen.nextDouble() < DOUBLE_PATH_CHANCE ? 2 : 1;
 
 		ArrayList<Node> possiblePaths = new ArrayList<Node>(3);
 		boolean hasStraightPath = false;
@@ -255,12 +255,12 @@ public class Area {
 			node.addDestination(dest);
 		}
 		else if (possiblePaths.size() > numPaths) { // More nearby nodes than paths, choose which to path to
-			if (hasStraightPath && NeoCore.gen.nextDouble() < STRAIGHT_PATH_CHANCE) {
+			if (hasStraightPath && NeoRogue.gen.nextDouble() < STRAIGHT_PATH_CHANCE) {
 				node.addDestination(possiblePaths.get(0));
 			}
 			else {
 				if (numPaths == 1) {
-					node.addDestination(possiblePaths.get(NeoCore.gen.nextInt(1, possiblePaths.size())));
+					node.addDestination(possiblePaths.get(NeoRogue.gen.nextInt(1, possiblePaths.size())));
 				}
 				else if (numPaths == 2) {
 					node.addDestination(possiblePaths.get(1));
@@ -280,7 +280,7 @@ public class Area {
 		 * Base chances: Fight 35%, Rest 5%, Miniboss 10%, Shop 5%, Event 25%, Nothing
 		 * 20% Minimum Minibosses 2, Shops 3,
 		 */
-		double rand = NeoCore.gen.nextDouble();
+		double rand = NeoRogue.gen.nextDouble();
 
 		rand -= 0.35;
 		if (rand < 0) return new Node(NodeType.FIGHT, pos, lane);
@@ -300,8 +300,8 @@ public class Area {
 		int pos, lane;
 		for (int i = 0; i < count; i++) {
 			do {
-				pos = NeoCore.gen.nextInt(2, 10); // 2-9
-				lane = NeoCore.gen.nextInt(5); // 0-4;
+				pos = NeoRogue.gen.nextInt(2, 10); // 2-9
+				lane = NeoRogue.gen.nextInt(5); // 0-4;
 			} while (nodes[pos][lane] != null);
 
 			nodes[pos][lane] = new Node(type, pos, lane);

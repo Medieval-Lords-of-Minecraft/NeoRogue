@@ -279,7 +279,6 @@ public class PlayerFightData extends FightData {
 					// Only the first valid usable instance is used as the cooldown
 					if (action instanceof UsableInstance) {
 						insts.put(i, (UsableInstance) action);
-						System.out.println("Putting " + action.getClass().getName() + " in " + i);
 						break;
 					}
 				}

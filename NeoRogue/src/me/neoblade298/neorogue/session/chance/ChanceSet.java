@@ -5,8 +5,8 @@ import java.util.HashMap;
 
 import org.bukkit.Material;
 
-import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.shared.util.SharedUtil;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.AreaType;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -26,7 +26,7 @@ public class ChanceSet {
 	
 	public static ChanceSet getSet(AreaType type) {
 		ArrayList<ChanceSet> set = sets.get(type);
-		return set.get(NeoCore.gen.nextInt(set.size()));
+		return set.get(NeoRogue.gen.nextInt(set.size()));
 	}
 	
 	public static ChanceSet get(String id) {
@@ -57,6 +57,10 @@ public class ChanceSet {
 	
 	public ChanceStage getInitialStage() {
 		return stages.get(INIT_ID);
+	}
+	
+	public ChanceStage getStage(String key) {
+		return stages.get(key);
 	}
 	
 	public TextComponent getDisplay() {
