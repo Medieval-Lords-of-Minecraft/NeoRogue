@@ -29,7 +29,6 @@ import org.bukkit.util.Vector;
 
 import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
 import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
-import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.map.Coordinates;

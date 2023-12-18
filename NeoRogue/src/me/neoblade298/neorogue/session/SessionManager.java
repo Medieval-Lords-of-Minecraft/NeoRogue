@@ -32,6 +32,9 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
@@ -147,6 +150,7 @@ public class SessionManager implements Listener {
 	@EventHandler
 	public void onSwap(PlayerSwapHandItemsEvent e) {
 		Player p = e.getPlayer();
+		e.setCancelled(true);
 		openInventory(p, e);
 	}
 	
@@ -168,9 +172,9 @@ public class SessionManager implements Listener {
 		UUID uuid = p.getUniqueId();
 		if (sessions.containsKey(uuid)) {
 			Session s = sessions.get(uuid);
-			e.setCancelled(true);
 
 			if (s.getInstance() instanceof EditInventoryInstance) {
+				e.setCancelled(true);
 				p.setItemOnCursor(null);
 				new PlayerSessionInventory(s.getData(uuid));
 			}
@@ -202,10 +206,32 @@ public class SessionManager implements Listener {
 
 	@EventHandler(ignoreCancelled = false)
 	public void onInteract(PlayerInteractEvent e) {
-		UUID uuid = e.getPlayer().getUniqueId();
+		Player p = e.getPlayer();
+		UUID uuid = p.getUniqueId();
 		if (!sessions.containsKey(uuid)) return;
 		Session s = sessions.get(uuid);
+		
+		// Make sure you can't equip armor with right click
+		PlayerInventory inv = p.getInventory();
+		ItemStack hand = e.getItem();
+		if (hand != null) {
+			EquipmentSlot slot = canEquip(hand);
+			if (slot != null && inv.getItem(slot).getType().isAir()) {
+				e.setCancelled(true);
+			}
+		}
+		
 		s.getInstance().handleInteractEvent(e);
+	}
+	
+	private static EquipmentSlot canEquip(ItemStack item) {
+		String name = item.getType().name();
+		// For sake of efficiency, this is leaving out elytra, jackolanterns, turtle shell, and mob heads
+		if (name.endsWith("HELMET")) return EquipmentSlot.HEAD;
+		else if (name.endsWith("CHESTPLATE")) return EquipmentSlot.CHEST;
+		else if (name.endsWith("LEGGINGS")) return EquipmentSlot.LEGS;
+		else if (name.endsWith("BOOTS")) return EquipmentSlot.FEET;
+		return null;
 	}
 
 	@EventHandler

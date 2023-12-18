@@ -38,8 +38,9 @@ public class ChanceSet {
 			sets.put(type, new ArrayList<ChanceSet>());
 		}
 		
-		new GreedChance();
 		new ForkInTheRoadChance();
+		new GreedChance();
+		new VultureChance();
 	}
 	
 	public ChanceSet(AreaType type, Material mat, String id) {
