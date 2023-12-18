@@ -121,7 +121,8 @@ public abstract class FightInstance extends Instance {
 	public static void handleDamage(EntityDamageByEntityEvent e) {
 		Player p = (Player) e.getDamager();
 		e.setCancelled(true);
-		if (p.getAttackCooldown() < 0.9F) return;
+		PlayerFightData data = userData.get(p.getUniqueId());
+		if (!data.canBasicAttack()) return;
 
 		trigger(p, Trigger.LEFT_CLICK, null);
 		trigger(p, Trigger.LEFT_CLICK_HIT, new Object[] {p, e.getEntity()});

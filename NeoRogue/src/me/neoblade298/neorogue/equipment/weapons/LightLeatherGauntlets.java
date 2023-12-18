@@ -8,7 +8,6 @@ import me.neoblade298.neorogue.equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.Weapon;
 import me.neoblade298.neorogue.session.fight.DamageType;
-import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -27,8 +26,8 @@ public class LightLeatherGauntlets extends Weapon {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
-			FightInstance.dealDamage(p, type, damage, ((Damageable) inputs[1]));
-			pdata.runActions(pdata, Trigger.BASIC_ATTACK, inputs);
+			dealDamage(p, (Damageable) inputs[1]);
+			pdata.runBasicAttack(pdata, inputs, this);
 			data.addStamina(stamina);
 			return TriggerResult.keep();
 		});

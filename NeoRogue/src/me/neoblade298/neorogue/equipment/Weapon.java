@@ -7,11 +7,14 @@ import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.attribute.AttributeModifier.Operation;
+import org.bukkit.entity.Damageable;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import me.neoblade298.neorogue.session.fight.DamageType;
+import me.neoblade298.neorogue.session.fight.FightInstance;
 
 public abstract class Weapon extends HotbarCompatible {
 	protected double damage, attackSpeed;
@@ -19,6 +22,12 @@ public abstract class Weapon extends HotbarCompatible {
 
 	public Weapon(String id, String display, boolean isUpgraded, Rarity rarity, EquipmentClass ec) {
 		super(id, display, isUpgraded, rarity, ec);
+	}
+	
+	protected void setBaseProperties(double damage, double attackSpeed, DamageType type) {
+		this.damage = damage;
+		this.attackSpeed = attackSpeed;
+		this.type = type;
 	}
 
 	public ItemStack createItem(Material mat, String[] preLoreLine, String loreLine) {
@@ -46,5 +55,13 @@ public abstract class Weapon extends HotbarCompatible {
 		}
 		item.setItemMeta(meta);
 		return item;
+	}
+	
+	public double getAttackSpeed() {
+		return attackSpeed;
+	}
+	
+	protected void dealDamage(Player p, Damageable target) {
+		FightInstance.dealDamage(p, type, damage, target);
 	}
 }

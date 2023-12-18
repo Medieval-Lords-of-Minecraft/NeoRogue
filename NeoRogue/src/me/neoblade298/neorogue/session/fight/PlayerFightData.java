@@ -21,6 +21,7 @@ public class PlayerFightData extends FightData {
 	private HashMap<String, UsableInstance> equips = new HashMap<String, UsableInstance>();
 	private HashMap<Integer, HashMap<Trigger, HashMap<String, TriggerAction>>> slotBasedTriggers = new HashMap<Integer, HashMap<Trigger, HashMap<String, TriggerAction>>>();
 	private Player p;
+	private long nextAttack;
 
 	private double stamina = 0, mana = 0;
 	private double staminaRegen, manaRegen;
@@ -143,6 +144,11 @@ public class PlayerFightData extends FightData {
 			return cancel;
 		}
 		return false;
+	}
+	
+	public boolean runBasicAttack(PlayerFightData data, Object[] inputs, Weapon weapon) {
+		data.setBasicAttackCooldown(weapon);
+		return runActions(data, Trigger.BASIC_ATTACK, inputs);
 	}
 
 	// Must be separate due to the same trigger doing a different thing based on slot (like weapons)
@@ -291,5 +297,22 @@ public class PlayerFightData extends FightData {
 			}
 			return TickResult.KEEP;
 		}
+	}
+	
+	public boolean canBasicAttack() {
+		return nextAttack <= System.currentTimeMillis();
+	}
+	
+	public void setBasicAttackCooldown(Weapon w) {
+		long attackCooldown = (long) (1000 / w.getAttackSpeed()) - 50; // Subtract 50 for tick differentials
+		this.nextAttack = System.currentTimeMillis() + attackCooldown;
+	}
+	
+	public void setBasicAttackCooldown(long cooldown) {
+		this.nextAttack = System.currentTimeMillis() + cooldown;
+	}
+	
+	public void resetBasicAttackCooldown() {
+		this.nextAttack = 0;
 	}
 }

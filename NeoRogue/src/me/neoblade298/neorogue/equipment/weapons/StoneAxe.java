@@ -21,7 +21,7 @@ public class StoneAxe extends Weapon {
 		super("stoneAxe", "Stone Axe", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
 		damage = !isUpgraded ? 70 : 115;
 		type = DamageType.BLUNT;
-		attackSpeed = 2;
+		attackSpeed = 0.5;
 	}
 
 	@Override
@@ -30,7 +30,7 @@ public class StoneAxe extends Weapon {
 			Buff b = data.getBuff(true, BuffType.PHYSICAL);
 			double strength = b.getIncrease();
 			FightInstance.dealDamage(p, type, damage + (strength * 2), ((Damageable) inputs[1]));
-			pdata.runActions(pdata, Trigger.BASIC_ATTACK, inputs);
+			pdata.runBasicAttack(pdata, inputs, this);
 			return TriggerResult.keep();
 		});
 	}

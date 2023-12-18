@@ -22,25 +22,27 @@ public class StoneDagger extends Weapon {
 		super("stoneDagger", "Stone Dagger", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
 		damage = !isUpgraded ? 25 : 35;
 		type = DamageType.SLASHING;
-		attackSpeed = 0.75;
+		attackSpeed = 1.5;
 	}
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
-		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, new StoneDaggerInstance(p));
+		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, new StoneDaggerInstance(p, this));
 	}
 	
 	private class StoneDaggerInstance implements TriggerAction {
 		private Player p;
 		private int count = 0;
-		public StoneDaggerInstance(Player p) {
+		private Weapon w;
+		public StoneDaggerInstance(Player p, Weapon w) {
 			this.p = p;
+			this.w = w;
 		}
 		
 		@Override
 		public TriggerResult trigger(PlayerFightData data, Object[] inputs) {
-			FightInstance.dealDamage(p, type, damage, ((Damageable) inputs[1]));
-			data.runActions(data, Trigger.BASIC_ATTACK, inputs);
+			dealDamage(p, (Damageable) inputs[1]);
+			data.runBasicAttack(data, inputs, w);
 			if (++count >= 3) {
 				count = 0;
 				FightInstance.getFightData(((Entity) inputs[1]).getUniqueId()).applyStatus(StatusType.BLEED, p.getUniqueId(), 2, 0);

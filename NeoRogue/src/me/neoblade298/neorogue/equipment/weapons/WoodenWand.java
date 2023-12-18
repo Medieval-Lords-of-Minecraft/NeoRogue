@@ -58,12 +58,14 @@ public class WoodenWand extends Weapon {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (d, inputs) -> {
 			if (!cast(data)) return TriggerResult.keep();
+			d.setBasicAttackCooldown(this);
 			new WoodenWandProjectile(p, 0.5, 10, 3, false, false, false, false, 0, 0, data.getInstance(), data, 0.2, 0.2, 0.2);
 			return TriggerResult.keep();
 		});
 
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_NO_HIT, (d, inputs) -> {
 			if (!cast(data)) return TriggerResult.keep();
+			d.setBasicAttackCooldown(this);
 			new WoodenWandProjectile(p, 1, 10, 2, false, false, false, false, 0, 0, data.getInstance(), data, 0.5, 0.2, 0.5);
 			return TriggerResult.keep();
 		});

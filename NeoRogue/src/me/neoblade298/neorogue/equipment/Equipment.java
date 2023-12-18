@@ -294,15 +294,15 @@ public abstract class Equipment {
 		meta.displayName(display.decoration(TextDecoration.ITALIC, State.FALSE));
 		ArrayList<Component> loreItalicized = new ArrayList<Component>();
 		loreItalicized.add(rarity.getDisplay(true).append(Component.text(" " + type)));
+		if (preLoreLine != null) {
+			for (String l : preLoreLine) {
+				loreItalicized.add(NeoCore.miniMessage().deserialize(l));
+			}
+		}
 		if (!reforgeOptions.isEmpty()) {
 			loreItalicized.add(Component.text("Reforgeable with:" , NamedTextColor.GOLD));
 			for (String id : reforgeOptions.keySet()) {
 				loreItalicized.add(Component.text("- ", NamedTextColor.GOLD).append(Equipment.get(id, false).getDisplay()));
-			}
-		}
-		if (preLoreLine != null) {
-			for (String l : preLoreLine) {
-				loreItalicized.add(NeoCore.miniMessage().deserialize(l));
 			}
 		}
 		if (loreLine != null) {

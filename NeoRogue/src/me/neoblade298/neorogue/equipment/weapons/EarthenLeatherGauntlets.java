@@ -30,20 +30,22 @@ public class EarthenLeatherGauntlets extends Weapon {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
-		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, new EarthenLeatherGauntletsInstance(p));
+		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, new EarthenLeatherGauntletsInstance(p, this));
 	}
 	
 	private class EarthenLeatherGauntletsInstance implements TriggerAction {
 		private Player p;
 		private int count = 0;
-		public EarthenLeatherGauntletsInstance(Player p) {
+		private Weapon w;
+		public EarthenLeatherGauntletsInstance(Player p, Weapon w) {
 			this.p = p;
+			this.w = w;
 		}
 		
 		@Override
 		public TriggerResult trigger(PlayerFightData data, Object[] inputs) {
-			FightInstance.dealDamage(p, type, damage, ((Damageable) inputs[1]));
-			data.runActions(data, Trigger.BASIC_ATTACK, inputs);
+			dealDamage(p, ((Damageable) inputs[1]));
+			data.runBasicAttack(data, inputs, w);
 			if (++count >= 3) {
 				count = 0;
 				FightInstance.getFightData(((Entity) inputs[1]).getUniqueId()).applyStatus(StatusType.CONCUSSED, p.getUniqueId(), concuss, 0);
