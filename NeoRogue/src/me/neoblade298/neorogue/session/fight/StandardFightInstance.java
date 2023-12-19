@@ -79,6 +79,7 @@ public class StandardFightInstance extends FightInstance {
 		}.runTaskTimer(NeoRogue.inst(), 20L, 20L));
 	}
 	
+	@Override
 	public void handleMobKill(String id) {
 		Mob mob = Mob.get(id);
 		if (mob == null) {

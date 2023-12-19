@@ -222,12 +222,12 @@ public abstract class FightInstance extends Instance {
 	public static void handleMythicDeath(MythicMobDeathEvent e) {
 		FightData data = removeFightData(e.getEntity().getUniqueId());
 		if (data == null) return;
-		data.getInstance().handleRespawn(data, e.getMobType().getInternalName(), false);
-		
-		if (data.getInstance() instanceof StandardFightInstance) {
-			((StandardFightInstance) data.getInstance()).handleMobKill(e.getMobType().getInternalName());
-		}
+		String id = e.getMobType().getInternalName();
+		data.getInstance().handleRespawn(data, id, false);
+		data.getInstance().handleMobKill(id);
 	}
+	
+	public abstract void handleMobKill(String id);
 	
 	public void handleRespawn(FightData data, String id, boolean isDespawn) {
 		Mob mob = Mob.get(id);
