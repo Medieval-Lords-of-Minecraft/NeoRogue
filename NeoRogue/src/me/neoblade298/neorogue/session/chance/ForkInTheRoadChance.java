@@ -11,9 +11,8 @@ public class ForkInTheRoadChance extends ChanceSet {
 
 	public ForkInTheRoadChance() {
 		super(AreaType.LOW_DISTRICT, Material.GRAVEL, "ForkInTheRoad", "Fork in the road");
-		ChanceStage stage = new ChanceStage(this, "init", "There seems to be a new lightly-traveled path that isn't on your map."
+		ChanceStage stage = new ChanceStage(this, INIT_ID, "There seems to be a new lightly-traveled path that isn't on your map."
 				+ " It could lead to a nice new campfire spot or potentially some enemies.");
-		setInitialStage(stage);
 		
 		ChanceStage fight = new ChanceStage(this, "fight", "The path led you straight to enemies. You must fight.");
 		fight.addChoice(new ChanceChoice(Material.RED_WOOL, "Welp"));

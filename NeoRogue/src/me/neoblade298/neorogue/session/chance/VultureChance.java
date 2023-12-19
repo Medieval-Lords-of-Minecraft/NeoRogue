@@ -9,6 +9,11 @@ import me.neoblade298.neorogue.session.fight.MinibossFightInstance;
 
 public class VultureChance extends ChanceSet {
 	private ChanceStage fightMiniboss;
+	private static final ChanceChoice leave = new ChanceChoice(Material.FLINT, "Leave while you can",
+			"No need to risk anything else.", (s, inst) -> {
+		s.broadcast("This is a disaster waiting to happen. The party sneaks away.");
+		return null;
+	});
 
 	public VultureChance() {
 		super(AreaType.LOW_DISTRICT, Material.GRAVEL, "Vulture", "Vulture");
@@ -16,7 +21,7 @@ public class VultureChance extends ChanceSet {
 		fightMiniboss = new ChanceStage(this, "miniboss", "You're cornered by a powerful foe.");
 		fightMiniboss.addChoice(new ChanceChoice(Material.IRON_SWORD, "<red>You know what time it is!"));
 		
-		setInitialStage(createStage(true, false, false, false));
+		createStage(true, false, false, false);
 		boolean[] b = new boolean[] {false, true};
 		for (boolean foundArtifact : b) {
 			for (boolean foundHeal : b) {
@@ -31,7 +36,7 @@ public class VultureChance extends ChanceSet {
 		int id = getId(foundArtifact, foundHeal, foundEquipment);
 		int remaining = getRemaining(foundArtifact, foundHeal, foundEquipment);
 		int failPercent = 25 + (remaining * 25);
-		ChanceStage stage = new ChanceStage(this, init ? "init" : "find" + id,
+		ChanceStage stage = new ChanceStage(this, init ? INIT_ID : "find" + id,
 				init ? "You come across a dead adventurer lying against a wall. "
 						+ "Something dangerous was nearby and it may not be a good idea to stay for long, but the adventurer "
 						+ "looks to have had some useful items on them." : "You successfully loot some items from the adventurer.");
@@ -42,18 +47,16 @@ public class VultureChance extends ChanceSet {
 					if (NeoRogue.gen.nextInt(100) < failPercent) {
 						s.broadcast("<red>As you loot the body, the enemy returns!");
 						inst.setNextInstance(new MinibossFightInstance(s.getParty().keySet(), s.getArea().getType()));
-						return null;
+						return "miniboss";
 					}
 					else {
 						ItemFound nextFind = chooseNextFind(foundArtifact, foundHeal, foundEquipment, remaining);
 						s.broadcast(nextFind.getDesc());
-						return "found" + getIdAfter(nextFind, foundArtifact, foundHeal, foundEquipment);
+						return "find" + getIdAfter(nextFind, foundArtifact, foundHeal, foundEquipment);
 					}
 				});
 		
 
-		ChanceChoice leave = new ChanceChoice(Material.FLINT, "Leave while you can",
-				"No need to risk anything else.");
 		stage.addChoice(stay);
 		stage.addChoice(leave);
 		return stage;

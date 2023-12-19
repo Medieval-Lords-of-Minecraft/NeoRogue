@@ -13,9 +13,8 @@ public class GreedChance extends ChanceSet {
 
 	public GreedChance() {
 		super(AreaType.LOW_DISTRICT, Material.GOLD_INGOT, "Greed");
-		ChanceStage stage = new ChanceStage(this, "init", "You come across a thick sludge that seems to contain various coins within."
+		ChanceStage stage = new ChanceStage(this, INIT_ID, "You come across a thick sludge that seems to contain various coins within."
 				+ " You'll take damage if you reach into it, but the extra coins may be worth the effort.");
-		setInitialStage(stage);
 
 		ChanceChoice choice = new ChanceChoice(Material.GOLD_BLOCK, "Be Logical",
 				"The highest HP party member takes <red>10 </red>damage and gets everyone <yellow>25 coins</yellow>.",

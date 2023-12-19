@@ -38,8 +38,6 @@ public class ChanceSet {
 			sets.put(type, new ArrayList<ChanceSet>());
 		}
 		
-		new ForkInTheRoadChance();
-		new GreedChance();
 		new VultureChance();
 	}
 	
@@ -64,6 +62,10 @@ public class ChanceSet {
 		return stages.get(key);
 	}
 	
+	public void addStage(ChanceStage stage) {
+		stages.put(stage.getId(), stage);
+	}
+	
 	public TextComponent getDisplay() {
 		return display;
 	}
@@ -74,10 +76,6 @@ public class ChanceSet {
 	
 	public Material getMaterial() {
 		return mat;
-	}
-	
-	public void setInitialStage(ChanceStage stage) {
-		stages.put(INIT_ID, stage);
 	}
 	
 	public boolean isIndividual() {

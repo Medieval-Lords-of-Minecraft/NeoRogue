@@ -1,6 +1,7 @@
 package me.neoblade298.neorogue.session;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -14,28 +15,41 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.format.TextDecoration.State;
 
 public class ShopInventory extends CoreInventory {
 	private static final int[] SLOT_ORDER = new int[] {0, 2, 4, 6, 8, 9, 11, 13, 15, 17};
 	private static final int SELL_PRICE = 10;
 	private PlayerSessionData data;
+	private static final Component saleCmp = Component.text(" [On Sale]", NamedTextColor.DARK_GREEN, TextDecoration.BOLD, TextDecoration.ITALIC);
 	
 	public ShopInventory(PlayerSessionData data, ArrayList<Equipment> equips) {
 		super(data.getPlayer(), Bukkit.createInventory(data.getPlayer(), 27, Component.text("Shop", NamedTextColor.BLUE)));
 		
 		this.data = data;
 		ItemStack[] contents = inv.getContents();
+		
+		// Generate 2 random unique sale slots
+		HashSet<Integer> saleSlots = new HashSet<Integer>(2);
+		while (saleSlots.size() < 2) {
+			saleSlots.add(NeoRogue.gen.nextInt(equips.size()));
+		}
+		
 		for (int i = 0; i < equips.size(); i++) {
-			contents[SLOT_ORDER[i]] = equips.get(i).getItem();
-			updatePrice(contents[SLOT_ORDER[i]], SLOT_ORDER[i] <= 9, true);
+			Equipment eq = equips.get(i);
+			contents[SLOT_ORDER[i]] = setPrice(eq, SLOT_ORDER[i] >= 9, saleSlots.contains(i));
+			updateLore(contents[SLOT_ORDER[i]], true);
 		}
 		contents[22] = CoreInventory.createButton(Material.GOLD_NUGGET, Component.text("You have " + data.getCoins() + " coins", NamedTextColor.YELLOW));
 		contents[18] = CoreInventory.createButton(Material.GOLD_NUGGET, Component.text("Sell Items", NamedTextColor.RED),
@@ -44,17 +58,33 @@ public class ShopInventory extends CoreInventory {
 		inv.setContents(contents);
 	}
 	
-	private void updatePrice(ItemStack item, boolean expensive, boolean first) {
+	private ItemStack setPrice(Equipment eq, boolean expensive, boolean sale) {
+		ItemStack item = eq.getItem();
+		int price = expensive ? NeoRogue.gen.nextInt(200, 300) : NeoRogue.gen.nextInt(70, 130);
+		if (sale) price /= 2;
+		NBTItem nbti = new NBTItem(item);
+		nbti.setInteger("price", price);
+		nbti.setBoolean("sale", sale);
+		return nbti.getItem();
+	}
+	
+	private void updateLore(ItemStack item, boolean firstLoad) {
 		if (item == null) return;
+		NBTItem nbti = new NBTItem(item);
+		int price = nbti.getInteger("price");
 		ItemMeta meta = item.getItemMeta();
 		List<Component> lore = meta.lore();
-		int price = expensive ? 50 : 100;
 		NamedTextColor color = data.hasCoins(price) ? NamedTextColor.GREEN : NamedTextColor.RED;
-		if (first) {
-			lore.add(0, Component.text(price, color));
+		Component cmp = Component.text(price + " coins", color).decoration(TextDecoration.ITALIC, State.FALSE);
+		if (nbti.getBoolean("sale")) {
+			cmp = cmp.append(saleCmp);
+		}
+		
+		if (firstLoad) {
+			lore.add(0, cmp);
 		}
 		else {
-			lore.set(0, Component.text(price, color));
+			lore.set(0, cmp);
 		}
 		meta.lore(lore);
 		item.setItemMeta(meta);
@@ -83,7 +113,7 @@ public class ShopInventory extends CoreInventory {
 			ItemStack[] contents = inv.getContents();
 			contents[slot] = null;
 			for (int i : SLOT_ORDER) {
-				updatePrice(contents[i], i <= 9, false);
+				updateLore(contents[i], false);
 			}
 			contents[22] = CoreInventory.createButton(Material.GOLD_NUGGET, Component.text("You have " + data.getCoins() + " coins", NamedTextColor.YELLOW));
 			inv.setContents(contents);

@@ -37,7 +37,7 @@ public class ChanceInstance extends EditInventoryInstance {
 		for (Entry<UUID, PlayerSessionData> ent : party.entrySet()) {
 			String id = ent.getValue().getInstanceData();
 			if (id == null) continue;
-			stage.put(ent.getKey(), ChanceStage.get(id));
+			stage.put(ent.getKey(), set.getStage(id));
 		}
 	}
 
@@ -54,7 +54,6 @@ public class ChanceInstance extends EditInventoryInstance {
 			data.getPlayer().teleport(spawn);
 			stage.put(data.getPlayer().getUniqueId(), set.getInitialStage());
 		}
-
 	}
 
 	@Override
@@ -147,6 +146,11 @@ public class ChanceInstance extends EditInventoryInstance {
 	@Override
 	public String serialize(HashMap<UUID, PlayerSessionData> party) {
 		for (PlayerSessionData data : party.values()) {
+			UUID uuid = data.getPlayer().getUniqueId();
+			if (!this.stage.containsKey(uuid)) {
+				data.setInstanceData(null);
+				continue;
+			}
 			data.setInstanceData(this.stage.get(data.getPlayer().getUniqueId()).getId());
 		}
 		return "CHANCE:" + set.getId();
