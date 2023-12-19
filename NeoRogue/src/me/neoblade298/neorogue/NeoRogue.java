@@ -19,6 +19,7 @@ import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
 import me.neoblade298.neorogue.session.fight.Mob;
+import me.neoblade298.neorogue.session.fight.mythicbukkit.MythicLoader;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class NeoRogue extends JavaPlugin {
@@ -34,6 +35,7 @@ public class NeoRogue extends JavaPlugin {
 		inst = this;
 		NeoCore.registerIOComponent(this, new PlayerManager(), "NeoRogue-PlayerManager");
 		Bukkit.getPluginManager().registerEvents(new SessionManager(), this);
+		Bukkit.getPluginManager().registerEvents(new MythicLoader(), this);
 		Area.initialize();
 		ChanceSet.load();
 		Mob.load(); // Load in mob types
