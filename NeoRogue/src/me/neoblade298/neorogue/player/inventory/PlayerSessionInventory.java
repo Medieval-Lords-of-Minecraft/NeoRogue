@@ -310,7 +310,9 @@ public class PlayerSessionInventory extends CoreInventory {
 
 	@Override
 	public void handleInventoryClose(InventoryCloseEvent e) {
-
+		if (p.getItemOnCursor().getType().isAir()) return;
+		p.getInventory().addItem(p.getItemOnCursor());
+		p.updateInventory();
 	}
 
 	@Override

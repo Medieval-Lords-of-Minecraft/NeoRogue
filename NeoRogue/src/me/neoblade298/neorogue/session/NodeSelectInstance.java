@@ -11,6 +11,7 @@ import org.bukkit.Tag;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -73,6 +74,7 @@ public class NodeSelectInstance extends EditInventoryInstance {
 	@Override
 	public void handleInteractEvent(PlayerInteractEvent e) {
 		if (e.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+		if (e.getHand() != EquipmentSlot.HAND) return;
 		Player p = e.getPlayer();
 		if (Tag.BUTTONS.isTagged(e.getClickedBlock().getType())) {
 			if (!p.getUniqueId().equals(s.getHost())) {

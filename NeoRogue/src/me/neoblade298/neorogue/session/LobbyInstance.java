@@ -17,6 +17,7 @@ import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.sk89q.worldedit.EditSession;
@@ -348,6 +349,7 @@ public class LobbyInstance extends Instance {
 	@Override
 	public void handleInteractEvent(PlayerInteractEvent e) {
 		if (e.getAction() != Action.RIGHT_CLICK_BLOCK || !Tag.SIGNS.isTagged(e.getClickedBlock().getType())) return;
+		if (e.getHand() != EquipmentSlot.HAND) return;
 		
 		UUID uuid = e.getPlayer().getUniqueId();
 		Sign sign = (Sign) e.getClickedBlock().getState();

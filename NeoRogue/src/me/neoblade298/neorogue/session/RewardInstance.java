@@ -12,6 +12,8 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
+
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.player.PlayerSessionData;
@@ -52,6 +54,7 @@ public class RewardInstance extends EditInventoryInstance {
 	@Override
 	public void handleInteractEvent(PlayerInteractEvent e) {
 		if (e.getAction() != Action.RIGHT_CLICK_BLOCK || e.getClickedBlock().getType() != Material.CHEST) return;
+		if (e.getHand() != EquipmentSlot.HAND) return;
 		e.setCancelled(true);
 		
 		
