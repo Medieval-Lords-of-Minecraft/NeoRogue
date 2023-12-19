@@ -27,7 +27,7 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 public class ShopInstance extends EditInventoryInstance {
 	static final int SHOP_X = 4, SHOP_Z = 94, NUM_ITEMS = 10;
 	
-	private HashMap<UUID, ArrayList<Equipment>> shops = new HashMap<UUID, ArrayList<Equipment>>();
+	private HashMap<UUID, ArrayList<ShopItem>> shops = new HashMap<UUID, ArrayList<ShopItem>>();
 	private HashSet<UUID> ready = new HashSet<UUID>();
 	private Entity trader;
 	
@@ -35,7 +35,7 @@ public class ShopInstance extends EditInventoryInstance {
 	
 	public ShopInstance(HashMap<UUID, PlayerSessionData> party) {
 		for (Entry<UUID, PlayerSessionData> ent : party.entrySet()) {
-			shops.put(ent.getKey(), Equipment.deserializeAsArrayList(ent.getValue().getInstanceData()));
+			shops.put(ent.getKey(), ShopItem.deserializeShopItems(ent.getValue().getInstanceData()));
 		}
 	}
 
@@ -49,9 +49,23 @@ public class ShopInstance extends EditInventoryInstance {
 			Player p = data.getPlayer();
 			EquipmentClass ec = data.getPlayerClass().toEquipmentClass();
 			p.teleport(spawn);
-			ArrayList<Equipment> shopItems = new ArrayList<Equipment>();
-			shopItems.addAll(Equipment.getDrop(s.getAreasCompleted() + 2, NUM_ITEMS / 2, ec, EquipmentClass.SHOP));
-			shopItems.addAll(Equipment.getDrop(s.getAreasCompleted() + 3, NUM_ITEMS / 2, ec, EquipmentClass.SHOP));
+			
+			// Create shop contents
+			ArrayList<Equipment> equips = new ArrayList<Equipment>();
+			equips.addAll(Equipment.getDrop(s.getAreasCompleted() + 2, NUM_ITEMS / 2, ec, EquipmentClass.SHOP));
+			equips.addAll(Equipment.getDrop(s.getAreasCompleted() + 3, NUM_ITEMS / 2, ec, EquipmentClass.SHOP));
+			
+			// Generate 2 random unique sale slots
+			HashSet<Integer> saleSlots = new HashSet<Integer>(2);
+			while (saleSlots.size() < 2) {
+				saleSlots.add(NeoRogue.gen.nextInt(equips.size()));
+			}
+
+			// Turn equipment into shop items
+			ArrayList<ShopItem> shopItems = new ArrayList<ShopItem>();
+			for (int i = 0; i < equips.size(); i++) {
+				shopItems.add(new ShopItem(equips.get(i), ShopInventory.SLOT_ORDER[i], i >= NUM_ITEMS / 2, saleSlots.contains(i)));
+			}
 			shops.put(p.getUniqueId(), shopItems);
 		}
 	}
@@ -110,9 +124,9 @@ public class ShopInstance extends EditInventoryInstance {
 
 	@Override
 	public String serialize(HashMap<UUID, PlayerSessionData> party) {
-		for (Entry<UUID, ArrayList<Equipment>> ent : shops.entrySet()) {
+		for (Entry<UUID, ArrayList<ShopItem>> ent : shops.entrySet()) {
 			PlayerSessionData data = party.get(ent.getKey());
-			data.setInstanceData(Equipment.serialize(ent.getValue()));
+			data.setInstanceData(ShopItem.serializeShopItems(ent.getValue()));
 		}
 		return "SHOP:";
 	}
