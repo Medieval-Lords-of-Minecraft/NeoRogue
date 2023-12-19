@@ -399,7 +399,7 @@ public class PlayerSessionInventory extends CoreInventory {
 		List<Component> lore = meta.lore();
 		String type = slotTypes.get(invSlot);
 		if (type.equals("OTHERBINDS")) {
-			lore.add(1, Component.text("Bound to ").append(KeyBind.getBindFromSlot(invSlot).getDisplay())
+			lore.add(1, Component.text("Bound to ", NamedTextColor.YELLOW).append(KeyBind.getBindFromSlot(invSlot).getDisplay())
 					.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
 		}
 		else if (type.equals("HOTBAR")) {
