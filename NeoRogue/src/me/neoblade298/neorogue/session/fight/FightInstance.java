@@ -63,11 +63,16 @@ public abstract class FightInstance extends Instance {
 			unlimitedSpawners = new ArrayList<MapSpawnerInstance>();
 	protected HashMap<UUID, Barrier> enemyBarriers = new HashMap<UUID, Barrier>();
 	protected ArrayList<BukkitTask> tasks = new ArrayList<BukkitTask>();
+	protected ArrayList<FightRunnable> initialTasks = new ArrayList<FightRunnable>();
 	protected double spawnCounter; // Holds a value between 0 and 1, when above 1, a mob spawns
 	protected double totalSpawnValue; // Keeps track of total mob spawns, to handle scaling of spawning
 	
 	public FightInstance(Set<UUID> players) {
 		party.addAll(players);
+	}
+	
+	public void addInitialTask(FightRunnable runnable) {
+		initialTasks.add(runnable);
 	}
 	
 	public static HashMap<UUID, Barrier> getUserBarriers() {
@@ -474,10 +479,12 @@ public abstract class FightInstance extends Instance {
 		this.s = s;
 		instantiate();
 		s.broadcast("Commencing fight...");
+		ArrayList<PlayerFightData> fdata = new ArrayList<PlayerFightData>();
 		for (Player p : s.getOnlinePlayers()) {
-			setup(p, s.getData(p.getUniqueId()));
+			fdata.add(setup(p, s.getData(p.getUniqueId())));
 		}
 		setupInstance(s);
+		FightInstance fi = this;
 		
 		new BukkitRunnable() {
 			public void run() {
@@ -493,6 +500,10 @@ public abstract class FightInstance extends Instance {
 				spawn.setX(-spawn.getX());
 				for (Player p : s.getOnlinePlayers()) {
 					p.teleport(spawn);
+				}
+				
+				for (FightRunnable runnable : initialTasks) {
+					runnable.run(fi, fdata);
 				}
 			}
 		}.runTaskLater(NeoRogue.inst(), 20L);
@@ -534,11 +545,12 @@ public abstract class FightInstance extends Instance {
 		fightData.put(uuid, data);
 	}
 	
-	private void setup(Player p, PlayerSessionData data) {
+	private PlayerFightData setup(Player p, PlayerSessionData data) {
 		UUID uuid = p.getUniqueId();
 		PlayerFightData fd = new PlayerFightData(this, data);
 		fightData.put(uuid, fd);
 		userData.put(uuid, fd);
+		return fd;
 	}
 	
 	@Override
@@ -629,15 +641,19 @@ public abstract class FightInstance extends Instance {
 	}
 	
 	public abstract String serializeInstanceData();
-	public static FightInstance deserializeInstanceData(Session s, String str) {
+	public static FightInstance deserializeInstanceData(HashMap<UUID, PlayerSessionData> party, String str) {
 		if (str.startsWith("STANDARD")) {
-			return new StandardFightInstance(s.getParty().keySet(), Map.deserialize(str.substring("STANDARD:".length())));
+			return new StandardFightInstance(party.keySet(), Map.deserialize(str.substring("STANDARD:".length())));
 		}
 		else if (str.startsWith("MINIBOSS")) {
-			return new MinibossFightInstance(s.getParty().keySet(), Map.deserialize(str.substring("MINIBOSS:".length())));
+			return new MinibossFightInstance(party.keySet(), Map.deserialize(str.substring("MINIBOSS:".length())));
 		}
 		else {
-			return new BossFightInstance(s.getParty().keySet(), Map.deserialize(str.substring("BOSS:".length())));
+			return new BossFightInstance(party.keySet(), Map.deserialize(str.substring("BOSS:".length())));
 		}
+	}
+	
+	public interface FightRunnable {
+		public void run(FightInstance inst, ArrayList<PlayerFightData> fdata);
 	}
 }

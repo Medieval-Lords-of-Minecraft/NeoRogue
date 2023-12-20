@@ -64,7 +64,7 @@ public class Node {
 	
 	public void deserializeInstance(Session s, String data) {
 		if (!data.isBlank()) {
-			inst = FightInstance.deserializeInstanceData(s, data);
+			inst = FightInstance.deserializeInstanceData(s.getParty(), data);
 		}
 	}
 	

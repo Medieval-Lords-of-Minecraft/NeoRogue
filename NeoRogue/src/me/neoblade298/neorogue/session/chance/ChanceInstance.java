@@ -39,6 +39,10 @@ public class ChanceInstance extends EditInventoryInstance {
 			if (id == null) continue;
 			stage.put(ent.getKey(), set.getStage(id));
 		}
+		
+		if (split.length > 1) {
+			nextInstance = FightInstance.deserializeInstanceData(party, split[1]);
+		}
 	}
 
 	@Override
@@ -49,6 +53,7 @@ public class ChanceInstance extends EditInventoryInstance {
 
 		// Pick a random chance set
 		set = ChanceSet.getSet(s.getArea().getType());
+		set.initialize(s, this);
 
 		for (PlayerSessionData data : s.getParty().values()) {
 			data.getPlayer().teleport(spawn);
@@ -153,6 +158,7 @@ public class ChanceInstance extends EditInventoryInstance {
 			}
 			data.setInstanceData(this.stage.get(data.getPlayer().getUniqueId()).getId());
 		}
-		return "CHANCE:" + set.getId();
+		String next = nextInstance instanceof FightInstance ? "-" + ((FightInstance) nextInstance).serializeInstanceData() : "";
+		return "CHANCE:" + set.getId() + next;
 	}
 }

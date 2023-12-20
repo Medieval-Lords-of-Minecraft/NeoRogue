@@ -84,11 +84,10 @@ public class CampfireInstance extends EditInventoryInstance {
 		
 		if (rest) {
 			center.getBlock().setType(Material.CAMPFIRE);
-			s.broadcastSound(Sound.ENTITY_PLAYER_LEVELUP);
 			notUsed.clear();
 			
 			for (PlayerSessionData data : s.getParty().values()) {
-				data.setHealth(data.getHealth() + (data.getMaxHealth() * 0.25));
+				data.healPercent(0.25);
 			}
 			
 			returnToNodes();
