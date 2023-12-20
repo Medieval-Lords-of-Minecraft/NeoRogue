@@ -149,9 +149,9 @@ public abstract class Equipment {
 		if (!canDrop) return;
 		if (reforged.contains(id)) return;
 		
-		// Artifacts get their own special droptable
+		// Artifacts get their own special droptable with special weight due to reduced amount
 		if (this instanceof Artifact) {
-			artifactTables.add(ec, value, (Artifact) this);
+			artifactTables.addLenientWeight(ec, value, (Artifact) this);
 		}
 		else {
 			droptables.add(ec, value, this);
@@ -395,6 +395,23 @@ public abstract class Equipment {
 				table.get(value - 1).add(drop, 3);
 			}
 			table.get(value).add(drop, 8);
+		}
+		
+		public void addLenientWeight(EquipmentClass ec, int value, E drop) {
+			HashMap<Integer, DropTable<E>> table = droptables.get(ec);
+			if (value >= 4) {
+				table.get(value - 4).add(drop, 1);
+			}
+			if (value >= 3) {
+				table.get(value - 3).add(drop, 2);
+			}
+			if (value >= 2) {
+				table.get(value - 2).add(drop, 3);
+			}
+			if (value >= 1) {
+				table.get(value - 1).add(drop, 4);
+			}
+			table.get(value).add(drop, 5);
 		}
 		
 		public ArrayList<E> getMultiple(int value, int numDrops, EquipmentClass... ec) {
