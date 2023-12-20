@@ -4,19 +4,24 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.TreeSet;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
+import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder;
+import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder.SQLAction;
 import me.neoblade298.neorogue.equipment.*;
 import me.neoblade298.neorogue.session.Session;
@@ -40,6 +45,8 @@ public class PlayerSessionData {
 	private int abilitiesEquipped = 0, maxAbilities = 2, maxStorage = 9, coins = 0;
 	private String instanceData;
 	private boolean isDead;
+	
+	private static final ParticleContainer heal = new ParticleContainer(Particle.VILLAGER_HAPPY).count(50).spread(0.5, 1).speed(0.1).ignoreSettings(true);
 	
 	public PlayerSessionData(UUID uuid, Session s, ResultSet rs) throws SQLException {
 		data = PlayerManager.getPlayerData(uuid);
@@ -206,10 +213,29 @@ public class PlayerSessionData {
 		return staminaRegen;
 	}
 	
-	public void giveArtifact(Artifact artifact) {
+	private void giveArtifact(Artifact artifact) {
 		ArtifactInstance inst = new ArtifactInstance(artifact);
 		artifacts.add(inst);
 		inst.getArtifact().onAcquire(this);
+	}
+	
+	public void giveEquipment(Equipment eq) {
+		Player p = getPlayer();
+		Util.msg(p, SharedUtil.color("You received ").append(eq.getDisplay()));
+		Util.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, false);
+		
+		if (eq instanceof Artifact) {
+			giveArtifact((Artifact) eq);
+		}
+		else {
+			HashMap<Integer, ItemStack> overflow = p.getInventory().addItem(eq.getItem());
+			if (!overflow.isEmpty()) {
+				for (ItemStack item : overflow.values()) {
+					Util.msg(p, SharedUtil.color("<red>Your inventory is full! ").append(eq.getDisplay()).append(Component.text(" was dropped on the ground.")));
+					p.getWorld().dropItem(p.getLocation(), item);
+				}
+			}
+		}
 	}
 	
 	public boolean saveStorage() {
@@ -297,6 +323,13 @@ public class PlayerSessionData {
 	public void setHealth(double health) {
 		this.health = health;
 		getPlayer().setHealth(Math.min(health, maxHealth));
+	}
+	
+	public void healPercent(double percent) {
+		Player p = getPlayer();
+		setHealth(this.health + (percent * maxHealth));
+		heal.spawn(p);
+		Util.playSound(p, Sound.ENTITY_PLAYER_LEVELUP, false);
 	}
 	
 	// Used when the player dies and on cleanup (to revive them)

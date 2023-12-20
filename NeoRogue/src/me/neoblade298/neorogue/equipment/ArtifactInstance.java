@@ -7,6 +7,8 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
+// need instance to keep track of things like amount and such which are normally
+// handled by using itemstacks
 public class ArtifactInstance implements Comparable<ArtifactInstance> {
 	private Artifact artifact;
 	private int amount;

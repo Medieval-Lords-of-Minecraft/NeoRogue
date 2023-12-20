@@ -5,6 +5,9 @@ import org.bukkit.Material;
 
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.AreaType;
+import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.fight.MinibossFightInstance;
 
 public class VultureChance extends ChanceSet {
@@ -51,7 +54,8 @@ public class VultureChance extends ChanceSet {
 					}
 					else {
 						ItemFound nextFind = chooseNextFind(foundArtifact, foundHeal, foundEquipment, remaining);
-						s.broadcast(nextFind.getDesc());
+						s.broadcast(nextFind.desc);
+						nextFind.action.run(s);
 						return "find" + getIdAfter(nextFind, foundArtifact, foundHeal, foundEquipment);
 					}
 				});
@@ -94,17 +98,31 @@ public class VultureChance extends ChanceSet {
 	}
 
 	private enum ItemFound {
-		ARTIFACT("You find an artifact for your troubles!"),
-		HEAL("You get healed for <yellow>25%</yellow> of your max health!"),
-		EQUIPMENT("You find some equipment for your troubles!");
+		ARTIFACT("You find an artifact for your troubles!", (s) -> {
+			for (PlayerSessionData data : s.getParty().values()) {
+				data.giveEquipment(Equipment.getArtifact(s.getAreasCompleted() + 1, 1, data.getPlayerClass().toEquipmentClass()).get(0));
+			}
+		}),
+		HEAL("You get healed for <yellow>25%</yellow> of your max health!", (s) -> {
+			for (PlayerSessionData data : s.getParty().values()) {
+				data.healPercent(0.25);
+			}
+		}),
+		EQUIPMENT("You find some equipment for your troubles!", (s) -> {
+			for (PlayerSessionData data : s.getParty().values()) {
+				data.giveEquipment(Equipment.getDrop(s.getAreasCompleted() + 1, 1, data.getPlayerClass().toEquipmentClass()).get(0));
+			}
+		});
 		private String desc;
+		private RunnableFind action;
 
-		private ItemFound(String desc) {
+		private ItemFound(String desc, RunnableFind action) {
 			this.desc = desc;
+			this.action = action;
 		}
-
-		public String getDesc() {
-			return desc;
-		}
+	}
+	
+	private interface RunnableFind {
+		public void run(Session s);
 	}
 }

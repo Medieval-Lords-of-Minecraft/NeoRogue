@@ -34,8 +34,8 @@ public abstract class Equipment {
 	private static HashMap<String, Equipment> equipment = new HashMap<String, Equipment>();
 	private static HashMap<String, Equipment> upgraded = new HashMap<String, Equipment>();
 	private static HashSet<String> reforged = new HashSet<String>();
-	private static HashMap<EquipmentClass, HashMap<Integer, DropTable<Equipment>>> droptables =
-			new HashMap<EquipmentClass, HashMap<Integer, DropTable<Equipment>>>();
+	private static DropTableSet<Equipment> droptables = new DropTableSet<Equipment>();
+	private static DropTableSet<Artifact> artifactTables = new DropTableSet<Artifact>();
 	
 	protected String id;
 	protected Component display;
@@ -46,13 +46,6 @@ public abstract class Equipment {
 	protected EquipmentClass ec;
 	
 	public static void load() {
-		for (EquipmentClass ec : EquipmentClass.values()) {
-			HashMap<Integer, DropTable<Equipment>> tables = new HashMap<Integer, DropTable<Equipment>>();
-			for (int i = 0; i < 10; i++) {
-				tables.put(i, new DropTable<Equipment>());
-			}
-			droptables.put(ec, tables);
-		}
 		
 		for (boolean b : new boolean[] {false, true}) {
 			// Abilities
@@ -155,13 +148,14 @@ public abstract class Equipment {
 		int value = rarity.getValue() + (isUpgraded ? 1 : 0);
 		if (!canDrop) return;
 		if (reforged.contains(id)) return;
-		if (value >= 2) {
-			droptables.get(ec).get(value - 2).add(this, 1); // Rare drop for the value
+		
+		// Artifacts get their own special droptable
+		if (this instanceof Artifact) {
+			artifactTables.add(ec, value, (Artifact) this);
 		}
-		if (value >= 1) {
-			droptables.get(ec).get(value - 1).add(this, 3); // Uncommon drop for the value
+		else {
+			droptables.add(ec, value, this);
 		}
-		droptables.get(ec).get(value).add(this, 8);
 	}
 	
 	// Run at the start of a fight to initialize Fight Data
@@ -358,25 +352,12 @@ public abstract class Equipment {
 		return eq.id.equals(this.id);
 	}
 	
+	public static ArrayList<Artifact> getArtifact(int value, int numDrops, EquipmentClass... ec) {
+		return artifactTables.getMultiple(value, numDrops, ec);
+	}
+	
 	public static ArrayList<Equipment> getDrop(int value, int numDrops, EquipmentClass... ec) {
-		ArrayList<Equipment> list = new ArrayList<Equipment>();
-		DropTable<Equipment> table;
-		for (int i = 0; i < numDrops; i++) {
-			if (ec.length > 1) {
-				DropTable<DropTable<Equipment>> tables = new DropTable<DropTable<Equipment>>();
-				for (int j = 0; j < ec.length; j++) {
-					DropTable<Equipment> temp = droptables.get(ec[j]).get(value);
-					tables.add(temp, temp.getTotalWeight());
-				}
-				table = tables.get();
-			}
-			else {
-				table = droptables.get(ec[0]).get(value);
-			}
-			
-			list.add(table.get());
-		}
-		return list;
+		return droptables.getMultiple(value, numDrops, ec);
 	}
 	
 	public static void addReforgedItem(String id) {
@@ -389,5 +370,52 @@ public abstract class Equipment {
 	
 	public Component getDisplay() {
 		return display;
+	}
+	
+	private static class DropTableSet<E> {
+		private HashMap<EquipmentClass, HashMap<Integer, DropTable<E>>> droptables =
+				new HashMap<EquipmentClass, HashMap<Integer, DropTable<E>>>();
+		
+		public DropTableSet() {
+			for (EquipmentClass ec : EquipmentClass.values()) {
+				HashMap<Integer, DropTable<E>> tables = new HashMap<Integer, DropTable<E>>();
+				for (int i = 0; i < 10; i++) {
+					tables.put(i, new DropTable<E>());
+				}
+				droptables.put(ec, tables);
+			}
+		}
+		
+		public void add(EquipmentClass ec, int value, E drop) {
+			HashMap<Integer, DropTable<E>> table = droptables.get(ec);
+			if (value >= 2) {
+				table.get(value - 2).add(drop, 1);
+			}
+			if (value >= 1) {
+				table.get(value - 1).add(drop, 3);
+			}
+			table.get(value).add(drop, 8);
+		}
+		
+		public ArrayList<E> getMultiple(int value, int numDrops, EquipmentClass... ec) {
+			ArrayList<E> list = new ArrayList<E>();
+			DropTable<E> table;
+			for (int i = 0; i < numDrops; i++) {
+				if (ec.length > 1) {
+					DropTable<DropTable<E>> tables = new DropTable<DropTable<E>>();
+					for (int j = 0; j < ec.length; j++) {
+						DropTable<E> temp = droptables.get(ec[j]).get(value);
+						tables.add(temp, temp.getTotalWeight());
+					}
+					table = tables.get();
+				}
+				else {
+					table = droptables.get(ec[0]).get(value);
+				}
+				
+				list.add(table.get());
+			}
+			return list;
+		}
 	}
 }

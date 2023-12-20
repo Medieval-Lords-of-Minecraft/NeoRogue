@@ -38,6 +38,8 @@ public class ChanceSet {
 			sets.put(type, new ArrayList<ChanceSet>());
 		}
 		
+		new ForkInTheRoadChance();
+		new GreedChance();
 		new VultureChance();
 	}
 	
