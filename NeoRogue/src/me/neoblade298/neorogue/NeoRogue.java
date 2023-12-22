@@ -5,20 +5,24 @@ import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.commands.SubcommandManager;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
 import me.neoblade298.neorogue.area.Area;
+import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.commands.*;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.map.Map;
+import me.neoblade298.neorogue.player.PlayerClass;
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
 import me.neoblade298.neorogue.session.fight.Mob;
+import me.neoblade298.neorogue.session.fight.StandardFightInstance;
 import me.neoblade298.neorogue.session.fight.mythicbukkit.MythicLoader;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -49,6 +53,7 @@ public class NeoRogue extends JavaPlugin {
 		
 		// Strictly for debug usage
 		debugInitialize();
+		
 	}
 	
 	public void onDisable() {
@@ -84,10 +89,11 @@ public class NeoRogue extends JavaPlugin {
 	}
 	
 	private void debugInitialize() {
-		// Player p = Bukkit.getPlayer("Ascheladd");
-		// Session s = SessionManager.createSession(p, "test");
-		// s.generateArea(AreaType.LOW_DISTRICT);
-		// s.addPlayer(p.getUniqueId(), PlayerClass.WARRIOR);
+		Player p = Bukkit.getPlayer("Ascheladd");
+		Session s = SessionManager.createSession(p, "test", 1);
+		s.generateArea(AreaType.LOW_DISTRICT);
+		s.addPlayer(p.getUniqueId(), PlayerClass.WARRIOR);
+		s.setInstance(new StandardFightInstance(s.getParty().keySet(), AreaType.LOW_DISTRICT, s.getNodesVisited()));
 		// s.setInstance(new ChanceInstance());
 
 		//Map map = Map.generate(AreaType.LOW_DISTRICT, 8);

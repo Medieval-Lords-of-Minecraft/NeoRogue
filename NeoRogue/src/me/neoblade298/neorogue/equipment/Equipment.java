@@ -59,6 +59,7 @@ public abstract class Equipment {
 			new EarthenTackle(b);
 			new EarthenWall(b);
 			new EmpoweredEdge(b);
+			//new FuriousSwing(b);
 			new Fury(b);
 			new Glare(b);
 			new Parry(b);
@@ -110,6 +111,7 @@ public abstract class Equipment {
 			new SerratedFencingSword(b);
 			new StoneAxe(b);
 			new StoneDagger(b);
+			new StoneHammer(b);
 			new StoneSword(b);
 			new WoodenSword(b);
 			new WoodenWand(b);

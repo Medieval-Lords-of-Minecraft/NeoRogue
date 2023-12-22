@@ -50,7 +50,7 @@ public abstract class Weapon extends HotbarCompatible {
 		
 		// Set attack speed if weapon is melee
 		String name = item.getType().name();
-		if (name.endsWith("SWORD") || name.endsWith("AXE") || name.endsWith("HOE")) {
+		if (name.endsWith("SWORD") || name.endsWith("AXE") || name.endsWith("HOE") || name.endsWith("SHOVEL")) {
 			meta.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED, new AttributeModifier(UUID.randomUUID(), id, attackSpeed - 4, Operation.ADD_NUMBER, EquipmentSlot.HAND));
 		}
 		item.setItemMeta(meta);

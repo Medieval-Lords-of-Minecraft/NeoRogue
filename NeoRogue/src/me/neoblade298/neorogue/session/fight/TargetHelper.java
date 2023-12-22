@@ -21,6 +21,10 @@ public class TargetHelper {
 		return TargetUtil.getEntitiesInSight(source, props.range, props.tolerance, new TargetFilter(source, props));
 	}
 
+	public static LinkedList<LivingEntity> getEntitiesInRadius(LivingEntity source, Location loc, TargetProperties props) {
+		return TargetUtil.getEntitiesInRadius(loc, props.range, new TargetFilter(source, props));
+	}
+
 	public static LinkedList<LivingEntity> getEntitiesInRadius(LivingEntity source, TargetProperties props) {
 		return TargetUtil.getEntitiesInRadius(source, props.range, new TargetFilter(source, props));
 	}
@@ -94,6 +98,9 @@ public class TargetHelper {
 
 	static boolean isValidTarget(final LivingEntity source, final LivingEntity target,
 			boolean throughWall) {
+		System.out.println("Valid: " + (target != source) + ", " + (throughWall ||
+						!isObstructed(source.getEyeLocation(), target.getEyeLocation()) ||
+						!isObstructed(source.getEyeLocation(), target.getLocation())) + ", " + (target.getType() != EntityType.ARMOR_STAND));
 		return target != source
 				
 				&& (throughWall ||

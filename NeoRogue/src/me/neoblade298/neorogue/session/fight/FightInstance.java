@@ -212,7 +212,10 @@ public abstract class FightInstance extends Instance {
 	
 	public static void handleLeftClick(PlayerInteractEvent e) {
 		if (e.getHand() != EquipmentSlot.HAND) return;
-		if (e.getPlayer().getAttackCooldown() < 0.9F) return;
+		Player p = e.getPlayer();
+		PlayerFightData data = userData.get(p.getUniqueId());
+		if (data == null) return;
+		if (!data.canBasicAttack()) return;
 
 		trigger(e.getPlayer(), Trigger.LEFT_CLICK, null);
 		trigger(e.getPlayer(), Trigger.LEFT_CLICK_NO_HIT, null);

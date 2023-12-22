@@ -5,7 +5,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.UUID;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Damageable;
+import org.bukkit.entity.Entity;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -18,6 +20,8 @@ import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.GenericStatusType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
+import me.neoblade298.neocore.bukkit.particles.ParticleAnimation;
+import me.neoblade298.neocore.bukkit.particles.ParticleAnimation.ParticleAnimationInstance;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.map.MapSpawnerInstance;
@@ -104,6 +108,24 @@ public class FightData {
 
 	public void addTask(String id, BukkitTask task) {
 		tasks.put(id, task);
+	}
+	
+	public void runAnimation(String id, ParticleAnimation anim, Location loc) {
+		ParticleAnimationInstance inst = anim.run(loc);
+		cleanupTasks.put(id + "-anim", new BukkitRunnable() {
+			public void run() {
+				inst.cancel();
+			}
+		});
+	}
+	
+	public void runAnimation(String id, ParticleAnimation anim, Entity ent) {
+		ParticleAnimationInstance inst = anim.run(ent);
+		cleanupTasks.put(id + "-anim", new BukkitRunnable() {
+			public void run() {
+				inst.cancel();
+			}
+		});
 	}
 	
 	public void addCleanupTask(String id, Runnable runnable) {

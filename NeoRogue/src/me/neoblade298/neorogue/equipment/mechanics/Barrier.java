@@ -10,42 +10,46 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
+import me.neoblade298.neocore.bukkit.particles.ParticleShapeMemory;
 import me.neoblade298.neocore.bukkit.particles.Rectangle;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffType;
 
 public class Barrier {
+	private static double METERS_PER_PARTICLE = 0.2;
+	
 	private UUID uuid;
 	private LivingEntity owner;
-	private double height, width, forward, forwardOffset;
+	private double height, length, forward, forwardOffset;
 	private Location bottomLeft, topRight, midpoint;
 	private boolean needsUpdate = false, isStatic;
 	private Vector cubeAxis, localX, localZ, localY;
 	
 	private Rectangle rect;
+	private ParticleShapeMemory mem;
 	private HashMap<BuffType, Buff> buffs = new HashMap<BuffType, Buff>();
 	private ParticleContainer part;
 	
-	public Barrier(LivingEntity owner, double width, double forward, double height, double forwardOffset,
+	public Barrier(LivingEntity owner, double length, double forward, double height, double forwardOffset,
 			HashMap<BuffType, Buff> buffs, boolean isStatic) {
-		this(owner, width, forward, height, forwardOffset, buffs, isStatic, null);
+		this(owner, length, forward, height, forwardOffset, buffs, isStatic, null);
 	}
 	
-	public Barrier(LivingEntity owner, double width, double forward, double height, double forwardOffset,
+	public Barrier(LivingEntity owner, double length, double forward, double height, double forwardOffset,
 			HashMap<BuffType, Buff> buffs, boolean isStatic, ParticleContainer part) {
 		this.uuid = UUID.randomUUID();
 		this.owner = owner;
 		this.height = height;
-		this.width = width;
+		this.length = length;
 		this.forward = forward;
 		this.buffs = buffs;
 		this.isStatic = isStatic;
 		this.forwardOffset = forwardOffset;
+		rect = new Rectangle(length, height, METERS_PER_PARTICLE);
 		
 		if (isStatic) {
-			rect = new Rectangle(owner, width, height, forward, forwardOffset, 0.2);
-			update(true);
+			mem = rect.calculate(arg0, arg1, arg2, arg3)
 		}
 		
 		if (part == null) {
@@ -59,10 +63,11 @@ public class Barrier {
 	
 	public void tick() {
 		if (isStatic) {
-			rect.drawEdges(part);
+			mem.draw(mem.calculateCache(), part, part);
 		}
 		else {
-			new Rectangle(owner, width, height, forward, forwardOffset, 0.2).drawEdges(part);
+			rect.draw(part, center);
+			new Rectangle(owner, length, height, forward, forwardOffset, 0.2).drawEdges(part);
 			needsUpdate = true;
 		}
 	}
@@ -76,7 +81,7 @@ public class Barrier {
 		localX = localZ.clone().setY(0).rotateAroundY(Math.PI / 2);
 		localY = localZ.clone().rotateAroundAxis(localZ, -Math.PI / 2);
 		
-		Vector left = localX.clone().multiply(-width / 2);
+		Vector left = localX.clone().multiply(-length / 2);
 		Vector forward = localZ.clone().multiply(this.forward + 2);
 		
 		bottomLeft = owner.getLocation().clone().add(left);
@@ -86,7 +91,7 @@ public class Barrier {
 		
 		cubeAxis = topRight.clone().subtract(bottomLeft).toVector();
 		
-		localX.multiply(width);
+		localX.multiply(length);
 		localZ.multiply(this.forward);
 		midpoint = bottomLeft.clone().add(cubeAxis.clone().multiply(0.5));
 	}
@@ -104,7 +109,7 @@ public class Barrier {
 		if (needsUpdate) update(false);
 		Vector v = loc.clone().subtract(midpoint).toVector();
 		double vx = Math.abs(v.dot(localX));
-		if (vx >= width * 2) return false;
+		if (vx >= length * 2) return false;
 		double vy = Math.abs(v.dot(localY));
 		if (vy >= height * 2) return false;
 		double vz = Math.abs(v.dot(localZ));
