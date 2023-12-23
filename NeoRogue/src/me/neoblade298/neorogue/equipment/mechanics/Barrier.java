@@ -8,7 +8,9 @@ import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.Nullable;
 
+import me.neoblade298.neocore.bukkit.particles.LocalAxes;
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neocore.bukkit.particles.ParticleShapeMemory;
 import me.neoblade298.neocore.bukkit.particles.Rectangle;
@@ -17,102 +19,97 @@ import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffType;
 
 public class Barrier {
-	private static double METERS_PER_PARTICLE = 0.2;
+	private static final double METERS_PER_PARTICLE = 0.5,
+			FORWARD_OFFSET = 0.5; // Used so the shield hitbox doesn't protect the user from side attacks, only for centered
+	private static final ParticleContainer DEFAULT_SHIELD_PARTICLE = new ParticleContainer(Particle.END_ROD).count(1);
 	
+	// Shared
 	private UUID uuid;
 	private LivingEntity owner;
-	private double height, length, forward, forwardOffset;
-	private Location bottomLeft, topRight, midpoint;
-	private boolean needsUpdate = false, isStatic;
-	private Vector cubeAxis, localX, localZ, localY;
-	
-	private Rectangle rect;
-	private ParticleShapeMemory mem;
+	private double length, height, forward; // Forward is used for where the rectangle actually is drawn
 	private HashMap<BuffType, Buff> buffs = new HashMap<BuffType, Buff>();
 	private ParticleContainer part;
+	private Rectangle rect;
+	private Location center, rectcenter; // Center is midpoint of barrier, rectcenter is midpoint of actually rectangle to draw
 	
-	public Barrier(LivingEntity owner, double length, double forward, double height, double forwardOffset,
-			HashMap<BuffType, Buff> buffs, boolean isStatic) {
-		this(owner, length, forward, height, forwardOffset, buffs, isStatic, null);
-	}
+	// Stationary
+	private ParticleShapeMemory mem;
 	
-	public Barrier(LivingEntity owner, double length, double forward, double height, double forwardOffset,
-			HashMap<BuffType, Buff> buffs, boolean isStatic, ParticleContainer part) {
+	// Centered on owner
+	private LocalAxes axes;
+	
+	private Barrier(LivingEntity owner, double length, double forward, double height, HashMap<BuffType, Buff> buffs, ParticleContainer part) {
 		this.uuid = UUID.randomUUID();
 		this.owner = owner;
 		this.height = height;
 		this.length = length;
 		this.forward = forward;
 		this.buffs = buffs;
-		this.isStatic = isStatic;
-		this.forwardOffset = forwardOffset;
-		rect = new Rectangle(length, height, METERS_PER_PARTICLE);
-		
-		if (isStatic) {
-			mem = rect.calculate(bottomLeft, localY, localX, cubeAxis)
-		}
+		this.rect = new Rectangle(length, height, METERS_PER_PARTICLE);
 		
 		if (part == null) {
-			part = new ParticleContainer(Particle.END_ROD);
-			part.count(1);
+			this.part = DEFAULT_SHIELD_PARTICLE;
 		}
 		else {
 			this.part = part;
 		}
 	}
 	
+	// Stationary version
+	private Barrier(LivingEntity owner, double length, double forward, double height, Location center, LocalAxes axes,
+			HashMap<BuffType, Buff> buffs, ParticleContainer part) {
+		this(owner, length, forward, height, buffs, part);
+		this.center = center;
+		this.mem = rect.calculate(center, axes);
+	}
+	
+	public static Barrier stationary(LivingEntity owner, double length, double forward, double height, Location center, LocalAxes axes,
+			HashMap<BuffType, Buff> buffs, @Nullable ParticleContainer part) {
+		return new Barrier(owner, length, forward, height, buffs, part);
+	}
+	
+	public static Barrier stationary(LivingEntity owner, double length, double forward, double height, Location center, LocalAxes axes,
+			HashMap<BuffType, Buff> buffs) {
+		return new Barrier(owner, length, forward, height, buffs, null);
+	}
+	
+	public static Barrier centered(LivingEntity owner, double length, double forward, double height, double forwardOffset, 
+			HashMap<BuffType, Buff> buffs) {
+		return new Barrier(owner, length, forward, height, buffs, null);
+	}
+	
+	public static Barrier centered(LivingEntity owner, double length, double forward, double height, double forwardOffset, 
+			HashMap<BuffType, Buff> buffs, @Nullable ParticleContainer part) {
+		return new Barrier(owner, length, forward, height, buffs, part);
+	}
+	
 	public void tick() {
-		if (isStatic) {
+		// Static tick
+		if (mem != null) {
 			mem.draw(mem.calculateCache(), part, part);
 		}
 		else {
-			rect.draw(part, center);
-			new Rectangle(owner, length, height, forward, forwardOffset, 0.2).drawEdges(part);
-			needsUpdate = true;
+			axes = LocalAxes.usingEyeLocation(owner);
+			center = owner.getLocation().add(axes.forward().multiply((FORWARD_OFFSET + forward) / 2)).add(axes.up().multiply(height / 2));
+			rectcenter = center.clone().add(axes.forward().multiply((FORWARD_OFFSET + forward) / 2));
+			rect.draw(part, rectcenter, axes, new ParticleContainer(Particle.REDSTONE));
 		}
-	}
-	
-	private void update(boolean force) {
-		// localZ is calculated in collides
-		if (isStatic && !force) return;
-		if (force) {
-			localZ = owner.getEyeLocation().getDirection();
-		}
-		localX = localZ.clone().setY(0).rotateAroundY(Math.PI / 2);
-		localY = localZ.clone().rotateAroundAxis(localZ, -Math.PI / 2);
-		
-		Vector left = localX.clone().multiply(-length / 2);
-		Vector forward = localZ.clone().multiply(this.forward + 2);
-		
-		bottomLeft = owner.getLocation().clone().add(left);
-		topRight = bottomLeft.clone().add(left.multiply(-2));
-		topRight.add(forward);
-		topRight.add(0, height, 0);
-		
-		cubeAxis = topRight.clone().subtract(bottomLeft).toVector();
-		
-		localX.multiply(length);
-		localZ.multiply(this.forward);
-		midpoint = bottomLeft.clone().add(cubeAxis.clone().multiply(0.5));
 	}
 	
 	public boolean collides(Location loc) {
-		if (!isStatic) {
-			localZ = owner.getEyeLocation().getDirection().normalize();
-			Location approx = owner.getEyeLocation().add(localZ.clone().multiply(forward));
-			if (approx.distanceSquared(loc) > 200) return false; // Optimization, too far from shield to possibly collide
+		if (mem == null) {
+			if (owner.getLocation().distanceSquared(loc) > 200) return false; // Optimization, too far from shield to possibly collide
 		}
 		else {
-			if (midpoint.distanceSquared(loc) > 200) return false;
+			if (center.distanceSquared(loc) > 200) return false;
 		}
 
-		if (needsUpdate) update(false);
-		Vector v = loc.clone().subtract(midpoint).toVector();
-		double vx = Math.abs(v.dot(localX));
+		Vector v = loc.clone().subtract(center).toVector();
+		double vx = Math.abs(v.dot(axes.left().multiply(length)));
 		if (vx >= length * 2) return false;
-		double vy = Math.abs(v.dot(localY));
+		double vy = Math.abs(v.dot(axes.up().multiply(height)));
 		if (vy >= height * 2) return false;
-		double vz = Math.abs(v.dot(localZ));
+		double vz = Math.abs(v.dot(axes.forward().multiply(forward)));
 		return vz < forward * 2;
 	}
 	

@@ -90,6 +90,7 @@ public class NeoRogue extends JavaPlugin {
 	
 	private void debugInitialize() {
 		Player p = Bukkit.getPlayer("Ascheladd");
+		if (p == null) return;
 		Session s = SessionManager.createSession(p, "test", 1);
 		s.generateArea(AreaType.LOW_DISTRICT);
 		s.addPlayer(p.getUniqueId(), PlayerClass.WARRIOR);

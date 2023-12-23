@@ -38,6 +38,7 @@ public class MechanicBarrier implements ITargetedEntitySkill {
     }
 
 	public MechanicBarrier(MythicLineConfig config) {
+		System.out.println("Mechanic barrier");
 		width = config.getDouble(new String[] { "w", "width" }, 2);
 		height = config.getDouble(new String[] { "h", "height" }, 3);
 		forward = config.getDouble(new String[] { "f", "forward" }, 2);
@@ -72,7 +73,8 @@ public class MechanicBarrier implements ITargetedEntitySkill {
 			for (Entry<BuffType, Double> ent : this.buffs.entrySet()) {
 				buffs.put(ent.getKey(), new Buff(owner.getUniqueId(), 0, ent.getValue()));
 			}
-			Barrier b = new Barrier((LivingEntity) data.getCaster().getEntity().getBukkitEntity(), width, forward, height, forwardOffset, buffs, true);
+			LivingEntity ent = (LivingEntity) data.getCaster().getEntity().getBukkitEntity();
+			Barrier b = Barrier.centered(ent, width, forward, height, forwardOffset, buffs);
 			fd.getInstance().addBarrier(fd, b, duration, false);
 			barrierIds.put(id, b.getUniqueId());
 			return SkillResult.SUCCESS;

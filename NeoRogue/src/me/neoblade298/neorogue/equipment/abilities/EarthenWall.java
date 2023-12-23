@@ -7,6 +7,7 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neocore.bukkit.particles.LocalAxes;
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Ability;
@@ -82,7 +83,10 @@ public class EarthenWall extends Ability {
 		public TriggerResult run(PlayerFightData data, Object[] inputs) {
 			Util.playSound(p, Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1F, 1F, false);
 			pc.spawn(p);
-			data.getInstance().addUserBarrier(data, new Barrier(null, 2, 3, 3, 0, new HashMap<BuffType, Buff>(), true, earth), 10);
+			HashMap<BuffType, Buff> wall = new HashMap<BuffType, Buff>();
+			wall.put(BuffType.GENERAL, new Buff(p.getUniqueId(), 0, 0));
+			data.getInstance().addUserBarrier(data,
+					Barrier.stationary(p, 2, 3, 3, p.getLocation().add(0, 1.5, 0), LocalAxes.usingGroundedEyeLocation(p), wall, earth), 10);
 			return TriggerResult.keep();
 		}
 	}
