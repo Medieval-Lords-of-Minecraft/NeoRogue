@@ -49,7 +49,7 @@ public class Barrier {
 		rect = new Rectangle(length, height, METERS_PER_PARTICLE);
 		
 		if (isStatic) {
-			mem = rect.calculate(arg0, arg1, arg2, arg3)
+			mem = rect.calculate(bottomLeft, localY, localX, cubeAxis)
 		}
 		
 		if (part == null) {
@@ -76,7 +76,7 @@ public class Barrier {
 		// localZ is calculated in collides
 		if (isStatic && !force) return;
 		if (force) {
-			localZ = owner.getEyeLocation().getDirection().normalize();
+			localZ = owner.getEyeLocation().getDirection();
 		}
 		localX = localZ.clone().setY(0).rotateAroundY(Math.PI / 2);
 		localY = localZ.clone().rotateAroundAxis(localZ, -Math.PI / 2);

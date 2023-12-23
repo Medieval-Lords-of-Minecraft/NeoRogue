@@ -12,5 +12,6 @@
 	<classpathentry kind="lib" path="NeoRogue/src/NeoCore-0.0.1-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="NeoRogue/src/item-nbt-api-plugin-2.11.1.jar"/>
 	<classpathentry kind="lib" path="NeoRogue/src/MythicMobs-5.3.5.jar"/>
+	<classpathentry kind="lib" path="NeoRogue/src/paper-api-1.20.2-R0.1-20230922.151740-1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
