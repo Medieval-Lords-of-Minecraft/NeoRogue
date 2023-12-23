@@ -97,12 +97,12 @@ public class StandardFightInstance extends FightInstance {
 			scoreBar.removeAll();
 			s.broadcast(Component.text("You completed the fight with a score of ", NamedTextColor.GRAY)
 					.append(fightScore.getComponentDisplay()).append(Component.text("!")));
-			s.setInstance(new RewardInstance(generateRewards()));
+			s.setInstance(new RewardInstance(generateRewards(s, fightScore)));
 			return;
 		}
 	}
 	
-	private HashMap<UUID, ArrayList<Reward>> generateRewards() {
+	public static HashMap<UUID, ArrayList<Reward>> generateRewards(Session s, FightScore fightScore) {
 		HashMap<UUID, ArrayList<Reward>> rewards = new HashMap<UUID, ArrayList<Reward>>();
 		for (UUID uuid : s.getParty().keySet()) {
 			PlayerSessionData data = s.getParty().get(uuid);

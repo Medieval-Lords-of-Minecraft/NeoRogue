@@ -51,6 +51,7 @@ public class MapSpawnerInstance {
 		return mythicMob;
 	}
 	
+	// Level increases by 1 per node visited
 	public void spawnMob(double lvl) {
 		for (int i = 0; i < mob.getAmount(); i++) {
 			Location loc = this.loc;

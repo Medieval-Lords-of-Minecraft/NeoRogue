@@ -10,6 +10,9 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+
+import me.neoblade298.neocore.bukkit.particles.Circle;
+import me.neoblade298.neocore.bukkit.particles.LocalAxes;
 import me.neoblade298.neocore.bukkit.particles.ParticleAnimation;
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
@@ -29,7 +32,9 @@ public class StoneHammer extends Weapon {
 	private static final int DISTANCE = 4, RADIUS = 2;
 	private static final TargetProperties props = new TargetProperties(RADIUS, true, TargetType.ENEMY);
 	private static final ParticleContainer swingPart = new ParticleContainer(Particle.CLOUD).count(5).spread(0.1, 0.1),
-			hit = new ParticleContainer(Particle.CLOUD).count(25).spread(RADIUS, 0);
+			edge = new ParticleContainer(Particle.CLOUD).count(1).spread(0, 0),
+			fill = new ParticleContainer(Particle.CLOUD).count(1).spread(0.1, 0);
+	private static final Circle hitShape = new Circle(RADIUS);
 	private static final ParticleAnimation swing;
 	
 	static {
@@ -68,12 +73,14 @@ public class StoneHammer extends Weapon {
 	private void hitArea(Player p, PlayerFightData data) {
 		Location hit = p.getLocation().add(p.getLocation().getDirection().setY(0).normalize().multiply(DISTANCE));
 		Util.playSound(p, Sound.ENTITY_GENERIC_EXPLODE, false);
-		StoneHammer.hit.spawn(hit);
+		hitShape.draw(StoneHammer.edge, hit, LocalAxes.xz(), StoneHammer.fill);
 		LinkedList<LivingEntity> enemies = TargetHelper.getEntitiesInRadius(p, hit, props);
 		if (enemies.isEmpty()) return;
 		data.runBasicAttack(data, new Object[] {p, enemies.peekFirst()}, this);
 		for (LivingEntity ent : enemies) {
 			dealDamage(p, ent);
+			Vector v = ent.getVelocity();
+			ent.setVelocity(v.setY(v.getY() + 0.5));
 		}
 	}
 

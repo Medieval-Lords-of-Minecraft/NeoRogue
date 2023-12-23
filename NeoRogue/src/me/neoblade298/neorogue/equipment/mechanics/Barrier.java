@@ -92,7 +92,7 @@ public class Barrier {
 			axes = LocalAxes.usingEyeLocation(owner);
 			center = owner.getLocation().add(axes.forward().multiply((FORWARD_OFFSET + forward) / 2)).add(axes.up().multiply(height / 2));
 			rectcenter = center.clone().add(axes.forward().multiply((FORWARD_OFFSET + forward) / 2));
-			rect.draw(part, rectcenter, axes, new ParticleContainer(Particle.REDSTONE));
+			rect.draw(part, rectcenter, axes, part);
 		}
 	}
 	
