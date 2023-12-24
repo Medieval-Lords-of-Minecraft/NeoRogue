@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.equipment.*;
 public class PlayerFightData extends FightData {
 	private PlayerSessionData sessdata;
 	private HashMap<Trigger, HashMap<String, TriggerAction>> triggers = new HashMap<Trigger, HashMap<String, TriggerAction>>();
-	private HashMap<String, UsableInstance> equips = new HashMap<String, UsableInstance>();
+	private HashMap<String, EquipmentInstance> equips = new HashMap<String, EquipmentInstance>();
 	private HashMap<Integer, HashMap<Trigger, HashMap<String, TriggerAction>>> slotBasedTriggers = new HashMap<Integer, HashMap<Trigger, HashMap<String, TriggerAction>>>();
 	private Player p;
 	private long nextAttack, nextOffAttack;
@@ -47,12 +47,12 @@ public class PlayerFightData extends FightData {
 			armor.initialize(p, this, null, i++);
 		}
 		for (i = 0; i < data.getHotbar().length; i++) {
-			HotbarCompatible hotbar = data.getHotbar()[i];
+			Equipment hotbar = data.getHotbar()[i];
 			if (hotbar == null) continue;
 			hotbar.initialize(p, this, Trigger.getFromHotbarSlot(i), i);
 		}
 		for (i = 0; i < data.getOtherBinds().length; i++) {
-			Usable other = data.getOtherBinds()[i];
+			Equipment other = data.getOtherBinds()[i];
 			if (other == null) continue;
 			other.initialize(p, this, KeyBind.getBindFromData(i).getTrigger(), -1);
 		}
@@ -104,12 +104,12 @@ public class PlayerFightData extends FightData {
 			armor.cleanup(p, this);
 		}
 		for (int i = 0; i < data.getHotbar().length; i++) {
-			HotbarCompatible hotbar = data.getHotbar()[i];
+			Equipment hotbar = data.getHotbar()[i];
 			if (hotbar == null) continue;
 			hotbar.cleanup(p, this);
 		}
 		for (int i = 0; i < data.getOtherBinds().length; i++) {
-			Usable other = data.getOtherBinds()[i];
+			Equipment other = data.getOtherBinds()[i];
 			if (other == null) continue;
 			other.cleanup(p, this);
 		}
@@ -131,9 +131,9 @@ public class PlayerFightData extends FightData {
 			while (iter.hasNext()) {
 				TriggerAction inst = iter.next();
 
-				if (inst instanceof UsableInstance) {
-					UsableInstance ui = (UsableInstance) inst;
-					if (!ui.canTrigger(p, data)) {
+				if (inst instanceof EquipmentInstance) {
+					EquipmentInstance ei = (EquipmentInstance) inst;
+					if (!ei.canTrigger(p, data)) {
 						continue;
 					}
 				}
@@ -146,7 +146,7 @@ public class PlayerFightData extends FightData {
 		return false;
 	}
 	
-	public boolean runBasicAttack(PlayerFightData data, Object[] inputs, Weapon weapon) {
+	public boolean runBasicAttack(PlayerFightData data, Object[] inputs, AbstractWeapon weapon) {
 		data.setBasicAttackCooldown(weapon);
 		return runActions(data, Trigger.BASIC_ATTACK, inputs);
 	}
@@ -161,9 +161,9 @@ public class PlayerFightData extends FightData {
 			while (iter.hasNext()) {
 				TriggerAction inst = iter.next();
 
-				if (inst instanceof UsableInstance) {
-					UsableInstance ui = (UsableInstance) inst;
-					if (!ui.canTrigger(p, data)) {
+				if (inst instanceof EquipmentInstance) {
+					EquipmentInstance ei = (EquipmentInstance) inst;
+					if (!ei.canTrigger(p, data)) {
 						continue;
 					}
 				}
@@ -198,8 +198,8 @@ public class PlayerFightData extends FightData {
 	private void addTrigger(String id, HashMap<String, TriggerAction> actions, TriggerAction action) {
 		actions.put(id, action);
 
-		if (action instanceof UsableInstance) {
-			UsableInstance inst = (UsableInstance) action;
+		if (action instanceof EquipmentInstance) {
+			EquipmentInstance inst = (EquipmentInstance) action;
 			equips.put(id, inst);
 		}
 	}
@@ -267,7 +267,7 @@ public class PlayerFightData extends FightData {
 	}
 	
 	private class PlayerUpdateTickAction extends TickAction {
-		HashMap<Integer, UsableInstance> insts = new HashMap<Integer, UsableInstance>();
+		HashMap<Integer, EquipmentInstance> insts = new HashMap<Integer, EquipmentInstance>();
 		
 		public PlayerUpdateTickAction() {
 			// Get the usable instances to tie cooldowns to
@@ -277,8 +277,8 @@ public class PlayerFightData extends FightData {
 				HashMap<String, TriggerAction> actions = triggers.get(t);
 				for (TriggerAction action : actions.values()) {
 					// Only the first valid usable instance is used as the cooldown
-					if (action instanceof UsableInstance) {
-						insts.put(i, (UsableInstance) action);
+					if (action instanceof EquipmentInstance) {
+						insts.put(i, (EquipmentInstance) action);
 						break;
 					}
 				}
@@ -291,7 +291,7 @@ public class PlayerFightData extends FightData {
 			
 			// Update hotbar cooldowns
 			PlayerInventory inv = p.getInventory();
-			for (Entry<Integer, UsableInstance> ent : insts.entrySet()) {
+			for (Entry<Integer, EquipmentInstance> ent : insts.entrySet()) {
 				inv.getItem(ent.getKey()).setAmount(Math.min(127, Math.max(1, ent.getValue().getCooldown())));
 			}
 			return TickResult.KEEP;
@@ -302,8 +302,8 @@ public class PlayerFightData extends FightData {
 		return nextAttack <= System.currentTimeMillis();
 	}
 	
-	public void setBasicAttackCooldown(Weapon w) {
-		long attackCooldown = (long) (1000 / w.getAttackSpeed()) - 50; // Subtract 50 for tick differentials
+	public void setBasicAttackCooldown(AbstractWeapon weapon) {
+		long attackCooldown = (long) (1000 / weapon.getAttackSpeed()) - 50; // Subtract 50 for tick differentials
 		this.nextAttack = System.currentTimeMillis() + attackCooldown;
 	}
 	
@@ -319,7 +319,7 @@ public class PlayerFightData extends FightData {
 		return nextOffAttack <= System.currentTimeMillis();
 	}
 	
-	public void setOffhandAttackCooldown(Weapon w) {
+	public void setOffhandAttackCooldown(AbstractWeapon w) {
 		long attackCooldown = (long) (1000 / w.getAttackSpeed()) - 50; // Subtract 50 for tick differentials
 		this.nextOffAttack = System.currentTimeMillis() + attackCooldown;
 	}

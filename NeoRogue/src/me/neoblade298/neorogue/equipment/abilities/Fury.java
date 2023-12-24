@@ -9,8 +9,7 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Ability;
-import me.neoblade298.neorogue.equipment.EquipmentClass;
-import me.neoblade298.neorogue.equipment.UsableInstance;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -40,11 +39,26 @@ public class Fury extends Ability {
 	}
 	
 	private class FuryInstance extends EquipmentInstance {
-		private Player p;
 		private boolean isBerserk;
-		public EmpoweredEdgeInstance(Ability a, Player p, int damage, Trigger bind) {
+		public FuryInstance(Ability a, Player p, int damage, Trigger bind) {
 			super(a);
-			this.p = p;
+			
+			this.action = (data, in) -> {
+				Util.playSound(p, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1F, 1F, false);
+				pc.spawn(p);
+				data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in2) -> {
+					Damageable target = (Damageable) in[1];
+					FightInstance.dealDamage(p, DamageType.SLASHING, damage, target);
+					hit.spawn(((Damageable) in[1]).getLocation());
+					Util.playSound(p, Sound.BLOCK_ANVIL_LAND, 1F, 1F, false);
+					if (isBerserk) {
+						Util.playSound(p, target.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1F, 1F, false);
+						explode.spawn(target.getLocation());
+					}
+					return TriggerResult.remove();
+				});
+				return TriggerResult.keep();
+			};
 		}
 		
 		@Override
@@ -59,24 +73,6 @@ public class Fury extends Ability {
 				this.staminaCost = 50;
 			}
 			return super.canTrigger(p, data);
-		}
-		
-		@Override
-		public TriggerResult run(PlayerFightData data, Object[] inputs) {
-			Util.playSound(p, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1F, 1F, false);
-			pc.spawn(p);
-			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
-				Damageable target = (Damageable) in[1];
-				FightInstance.dealDamage(p, DamageType.SLASHING, damage, target);
-				hit.spawn(((Damageable) in[1]).getLocation());
-				Util.playSound(p, Sound.BLOCK_ANVIL_LAND, 1F, 1F, false);
-				if (isBerserk) {
-					Util.playSound(p, target.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1F, 1F, false);
-					explode.spawn(target.getLocation());
-				}
-				return TriggerResult.remove();
-			});
-			return TriggerResult.keep();
 		}
 	}
 

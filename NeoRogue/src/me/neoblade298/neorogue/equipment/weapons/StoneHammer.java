@@ -17,7 +17,7 @@ import me.neoblade298.neocore.bukkit.particles.ParticleAnimation;
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.equipment.EquipmentClass;
+
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.Weapon;
 import me.neoblade298.neorogue.session.fight.DamageType;

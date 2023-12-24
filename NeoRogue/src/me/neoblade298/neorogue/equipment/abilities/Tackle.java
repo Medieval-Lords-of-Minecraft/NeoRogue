@@ -16,8 +16,7 @@ import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Ability;
-import me.neoblade298.neorogue.equipment.EquipmentClass;
-import me.neoblade298.neorogue.equipment.UsableInstance;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -46,21 +45,11 @@ public class Tackle extends Ability {
 		addReforgeOption("tackle", "bulldoze", "earthenTackle");
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
-		data.addTrigger(id, bind, new TackleInstance(this, p));
-	}
-	
-	private class TackleInstance extends UsableInstance {
-		private Player p;
-		public TackleInstance(Ability a, Player p) {
-			super(a);
-			this.p = p;
-		}
-		
-		@SuppressWarnings("deprecation")
-		@Override
-		public TriggerResult run(PlayerFightData data, Object[] inputs) {
+		EquipmentInstance inst = new EquipmentInstance(this);
+		inst.setAction((pdata, in) -> {
 			Util.playSound(p, Sound.ENTITY_SHULKER_SHOOT, false);
 			start.spawn(p);
 			Vector v = p.getEyeLocation().getDirection();
@@ -68,16 +57,17 @@ public class Tackle extends Ability {
 				p.teleport(p.getLocation().add(0, 0.2, 0));
 			}
 			p.setVelocity(v.setY(0).normalize().setY(0.3));
-			new TackleHitChecker(p, data, this);
+			new TackleHitChecker(p, data, inst);
 			return TriggerResult.keep();
-		}
+		});
+		data.addTrigger(id, bind, inst);
 	}
 	
 	private class TackleHitChecker {
 		private ArrayList<BukkitTask> tasks = new ArrayList<BukkitTask>();
 		private PlayerFightData data;
 		
-		protected TackleHitChecker(Player p, PlayerFightData data, TackleInstance inst) {
+		protected TackleHitChecker(Player p, PlayerFightData data, EquipmentInstance inst) {
 			this.data = data;
 			for (long delay = 1; delay <= 10; delay++) {
 				tasks.add(new BukkitRunnable() {

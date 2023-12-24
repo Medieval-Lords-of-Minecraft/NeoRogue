@@ -9,10 +9,8 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Ability;
-import me.neoblade298.neorogue.equipment.EquipmentClass;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.equipment.Usable;
-import me.neoblade298.neorogue.equipment.UsableInstance;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -38,24 +36,13 @@ public class Parry extends Ability {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
-		data.addTrigger(id, bind, new ParryInstance(this, p));
-	}
-	
-	private class ParryInstance extends UsableInstance {
-		private Player p;
-		public ParryInstance(Usable u, Player p) {
-			super(u);
-			this.p = p;
-		}
-
-		@Override
-		public TriggerResult run(PlayerFightData data, Object[] inputs) {
+		data.addTrigger(id, bind, new EquipmentInstance(this, (pdata, in) -> {
 			pc.spawn(p);
 			data.addShield(p.getUniqueId(), shields, true, 100, 100, 0, 1);
 			Util.playSound(p, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1F, 1F, false);
 			data.addTrigger(id, Trigger.RECEIVED_DAMAGE, new ParryBlock(p));
 			return TriggerResult.keep();
-		}
+		}));
 	}
 	
 	private class ParryBlock implements TriggerAction {

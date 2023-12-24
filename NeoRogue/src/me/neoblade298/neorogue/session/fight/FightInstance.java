@@ -174,7 +174,7 @@ public abstract class FightInstance extends Instance {
 	public static void handleRightClickEntity(PlayerInteractEntityEvent e) {
 		Player p = e.getPlayer();
 		System.out.println("Right click hit");
-		trigger(p, Trigger.RIGHT_CLICK_HIT, new Object[] { e.getRightClicked() });
+		trigger(p, Trigger.RIGHT_CLICK_HIT, new Object[] { p, e.getRightClicked() });
 	}
 	
 	public static void handleRightClickGeneral(PlayerInteractEvent e) {

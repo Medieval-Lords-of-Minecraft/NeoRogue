@@ -9,8 +9,7 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Ability;
-import me.neoblade298.neorogue.equipment.EquipmentClass;
-import me.neoblade298.neorogue.equipment.UsableInstance;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -34,39 +33,26 @@ public class RecklessSwing extends Ability {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
-		data.addTrigger(id, bind, new EmpoweredEdgeInstance(this, p, damage, bind));
-	}
-	
-	private class EmpoweredEdgeInstance extends UsableInstance {
-		private Player p;
-		public EmpoweredEdgeInstance(Ability a, Player p, int damage, Trigger bind) {
-			super(a);
-			this.p = p;
-			this.cooldown = a.getCooldown();
-		}
-		
-		@Override
-		public boolean canTrigger(Player p, PlayerFightData data) {
-			if (p.getHealth() <= 5) {
-				Util.displayError(data.getPlayer(), "Not enough health!");
-				return false;
-			}
-			return super.canTrigger(p, data);
-		}
-		
-		@Override
-		public TriggerResult run(PlayerFightData data, Object[] inputs) {
+		data.addTrigger(id, bind, new EquipmentInstance(this,
+				(pdata, in) -> {
 			Util.playSound(p, Sound.ENTITY_ENDER_DRAGON_AMBIENT, 1F, 1F, false);
 			p.setHealth(p.getHealth() - HEALTH_COST);
 			pc.spawn(p);
-			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
-				FightInstance.dealDamage(p, DamageType.SLASHING, damage, (Damageable) in[1]);
-				hit.spawn(((Damageable) in[1]).getLocation());
+			pdata.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in2) -> {
+				FightInstance.dealDamage(p, DamageType.SLASHING, damage, (Damageable) in2[1]);
+				hit.spawn(((Damageable) in2[1]).getLocation());
 				Util.playSound(p, Sound.BLOCK_ANVIL_LAND, 1F, 1F, false);
 				return TriggerResult.remove();
 			});
 			return TriggerResult.keep();
-		}
+		},
+				(p2, pdata) -> {
+			if (p2.getHealth() <= 5) {
+				Util.displayError(data.getPlayer(), "Not enough health!");
+				return false;
+			}
+			return true;
+		}));
 	}
 
 	@Override

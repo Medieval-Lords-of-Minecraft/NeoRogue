@@ -8,6 +8,7 @@ public abstract class Offhand extends Equipment {
 
 	public Offhand(String id, String display, boolean isUpgraded, Rarity rarity, EquipmentClass ec) {
 		super(id, display, isUpgraded, rarity, ec);
+		this.equipSlot = EquipSlot.OFFHAND;
 	}
 
 	public ItemStack createItem(Offhand o, Material mat, String[] preLoreLine, String loreLine) {

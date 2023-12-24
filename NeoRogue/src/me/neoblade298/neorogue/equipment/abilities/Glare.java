@@ -11,7 +11,7 @@ import io.lumine.mythic.bukkit.MythicBukkit;
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Ability;
-import me.neoblade298.neorogue.equipment.EquipmentClass;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
@@ -35,14 +35,14 @@ public class Glare extends Ability {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
-		data.addTrigger(id, bind, (pd, in) -> {
+		data.addTrigger(id, bind, new EquipmentInstance(this, (pd, in) -> {
 			Util.playSound(p, Sound.ENTITY_ENDER_DRAGON_AMBIENT, false);
 			for (LivingEntity ent : TargetHelper.getEntitiesInSight(p, tp)) {
 				api.addThreat(p, ent, threat);
 				taunt.spawn(ent);
 			}
 			return TriggerResult.keep();
-		});
+		}));
 	}
 
 	@Override

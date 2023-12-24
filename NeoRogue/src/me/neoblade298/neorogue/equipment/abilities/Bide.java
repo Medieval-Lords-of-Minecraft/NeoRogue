@@ -8,10 +8,11 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Ability;
+import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
-import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Bide extends Ability {
@@ -41,15 +42,16 @@ public class Bide extends Ability {
 		data.addTrigger(id, bind, (fd, in) -> {
 			data.addShield(p.getUniqueId(), shields, true, duration * 20, 100, 0, 1);
 			Util.playSound(p, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1F, 1F, false);
-			data.addTrigger(id, Trigger.RECEIVED_DAMAGE, new BideInstance(p));
+			data.addTrigger(id, Trigger.RECEIVED_DAMAGE, new BideInstance(this, p));
 			return TriggerResult.keep();
 		});
 	}
 	
-	private class BideInstance implements TriggerAction {
+	private class BideInstance extends EquipmentInstance {
 		private long createTime;
 		private Player p;
-		public BideInstance(Player p) {
+		public BideInstance(Equipment eq, Player p) {
+			super(eq);
 			this.p = p;
 			createTime = System.currentTimeMillis();
 		}

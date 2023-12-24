@@ -31,7 +31,7 @@ public abstract class AbstractWeapon extends Equipment {
 		this.type = type;
 	}
 
-	public ItemStack createItem(Material mat, String[] preLoreLine, String loreLine) {
+	public ItemStack createItem(Material mat, String[] preLoreLine, String loreLine, boolean isMainhand) {
 		ArrayList<String> preLore = new ArrayList<String>();
 		
 		// Add stats
@@ -46,7 +46,7 @@ public abstract class AbstractWeapon extends Equipment {
 				preLore.add(l);
 			}
 		}
-		ItemStack item = createItem(mat, "Weapon", preLore, loreLine);
+		ItemStack item = createItem(mat, isMainhand ? "Weapon" : "Offhand", preLore, loreLine);
 		ItemMeta meta = item.getItemMeta();
 		
 		// Set attack speed if weapon is melee

@@ -8,6 +8,7 @@ public abstract class Ability extends Equipment {
 	protected int range = 0;
 	public Ability(String id, String display, boolean isUpgraded, Rarity rarity, EquipmentClass ec) {
 		super(id, display, isUpgraded, rarity, ec);
+		this.equipSlot = EquipSlot.USABLE;
 	}
 	
 	protected void setBaseProperties(int cooldown, int manaCost, int staminaCost, int range) {

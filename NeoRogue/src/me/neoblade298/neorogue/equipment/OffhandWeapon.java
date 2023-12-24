@@ -10,7 +10,7 @@ public abstract class OffhandWeapon extends AbstractWeapon {
 		super(id, display, isUpgraded, rarity, ec);
 	}
 
-	public ItemStack createItem(OffhandWeapon o, Material mat, String[] preLoreLine, String loreLine) {
+	public ItemStack createItem(Material mat, String[] preLoreLine, String loreLine) {
 		ArrayList<String> preLore = new ArrayList<String>();
 		// Add stats
 		if (preLoreLine != null) {
@@ -19,7 +19,7 @@ public abstract class OffhandWeapon extends AbstractWeapon {
 			}
 		}
 		
-		ItemStack item = createItem(mat, "Offhand", preLore, loreLine);
+		ItemStack item = createItem(mat, preLoreLine, loreLine, false);
 		return item;
 	}
 }

@@ -35,13 +35,13 @@ public class PlayerSessionData {
 	private Session s;
 	private PlayerClass pc;
 	private double maxHealth, maxMana, maxStamina, health, manaRegen, staminaRegen;
-	private HotbarCompatible[] hotbar = new HotbarCompatible[9];
+	private Equipment[] hotbar = new Equipment[9];
 	private Armor[] armors = new Armor[3];
 	private Offhand offhand;
 	private Accessory[] accessories = new Accessory[6];
 	private TreeSet<ArtifactInstance> artifacts = new TreeSet<ArtifactInstance>();
 	private ArrayList<Equipment> storage = new ArrayList<Equipment>(9);
-	private Usable[] otherBinds = new Usable[8];
+	private Equipment[] otherBinds = new Equipment[8];
 	private int abilitiesEquipped = 0, maxAbilities = 2, maxStorage = 9, coins = 0;
 	private String instanceData;
 	private boolean isDead;
@@ -86,18 +86,18 @@ public class PlayerSessionData {
 		
 		// Need to give player a weapon at the start
 		switch (this.pc) {
-		case WARRIOR: hotbar[0] = (HotbarCompatible) Equipment.get("woodenSword", false);
-		hotbar[1] = (HotbarCompatible) Equipment.get("empoweredEdge", false);
-		hotbar[1] = (HotbarCompatible) Equipment.get("stoneHammer", false);
+		case WARRIOR: hotbar[0] = Equipment.get("woodenSword", false);
+		hotbar[1] = Equipment.get("empoweredEdge", false);
+		offhand = (Offhand) Equipment.get("chasingDagger", false);
 		break;
-		case THIEF: hotbar[0] = (HotbarCompatible) Equipment.get("woodenSword", false);
-		hotbar[1] = (HotbarCompatible) Equipment.get("empoweredEdge", false);
+		case THIEF: hotbar[0] = Equipment.get("woodenSword", false);
+		hotbar[1] = Equipment.get("empoweredEdge", false);
 		break;
-		case ARCHER: hotbar[0] = (HotbarCompatible) Equipment.get("woodenSword", false);
-		hotbar[1] = (HotbarCompatible) Equipment.get("empoweredEdge", false);
+		case ARCHER: hotbar[0] = Equipment.get("woodenSword", false);
+		hotbar[1] = Equipment.get("empoweredEdge", false);
 		break;
-		case MAGE: hotbar[0] = (HotbarCompatible) Equipment.get("woodenSword", false);
-		hotbar[1] = (HotbarCompatible) Equipment.get("empoweredEdge", false);
+		case MAGE: hotbar[0] = Equipment.get("woodenSword", false);
+		hotbar[1] = Equipment.get("empoweredEdge", false);
 		break;
 		}
 		
@@ -138,7 +138,7 @@ public class PlayerSessionData {
 		return armors;
 	}
 	
-	public HotbarCompatible[] getHotbar() {
+	public Equipment[] getHotbar() {
 		return hotbar;
 	}
 	
@@ -158,11 +158,11 @@ public class PlayerSessionData {
 		this.offhand = offhand;
 	}
 	
-	public Usable[] getOtherBinds() {
+	public Equipment[] getOtherBinds() {
 		return otherBinds;
 	}
 	
-	public Usable getOtherBind(KeyBind bind) {
+	public Equipment getOtherBind(KeyBind bind) {
 		return otherBinds[bind.getDataSlot()];
 	}
 	

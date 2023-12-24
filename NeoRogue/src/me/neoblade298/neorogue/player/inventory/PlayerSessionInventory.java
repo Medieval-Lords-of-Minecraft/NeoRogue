@@ -19,6 +19,7 @@ import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.*;
+import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.trigger.KeyBind;
 import net.kyori.adventure.text.Component;
@@ -70,7 +71,7 @@ public class PlayerSessionInventory extends CoreInventory {
 
 		for (KeyBind bind : KeyBind.values()) {
 			slotTypes.put(bind.getInventorySlot(), "OTHERBINDS");
-			Usable a = data.getOtherBinds()[bind.getDataSlot()];
+			Equipment a = data.getOtherBinds()[bind.getDataSlot()];
 			contents[bind.getInventorySlot()] = a != null
 					? addNbt(addBindLore(a.getItem(), bind.getInventorySlot(), bind.getDataSlot()), a.getId(), a.isUpgraded(), bind.getDataSlot())
 					: addNbt(bind.getItem(), bind.getDataSlot());
@@ -83,7 +84,7 @@ public class PlayerSessionInventory extends CoreInventory {
 
 		for (int i : HOTBAR) {
 			slotTypes.put(i, "HOTBAR");
-			HotbarCompatible eq = data.getHotbar()[i - 18];
+			Equipment eq = data.getHotbar()[i - 18];
 			contents[i] = eq != null ? addNbt(addBindLore(eq.getItem(), i, i - 18), eq.getId(), eq.isUpgraded(), i - 18)
 					: createHotbarIcon(i - 18);
 		}
@@ -375,18 +376,18 @@ public class PlayerSessionInventory extends CoreInventory {
 			data.getAccessories()[dataSlot] = (Accessory) eq;
 			break;
 		case "OTHERBINDS":
-			if (!(eq instanceof Usable)) return false;
+			if (eq.getEquipSlot() != EquipSlot.USABLE) return false;
 			if (eq instanceof Ability && data.getOtherBinds()[dataSlot] == null) data.addAbilityEquipped(1);
-			data.getOtherBinds()[dataSlot] = (Usable) eq;
+			data.getOtherBinds()[dataSlot] = eq;
 			break;
 		case "OFFHAND":
 			if (!(eq instanceof Offhand)) return false;
 			data.setOffhand((Offhand) eq);
 			break;
 		case "HOTBAR":
-			if (!(eq instanceof HotbarCompatible)) return false;
+			if (eq.getEquipSlot() != EquipSlot.HOTBAR) return false;
 			if (eq instanceof Ability && data.getHotbar()[dataSlot] == null) data.addAbilityEquipped(1);
-			data.getHotbar()[dataSlot] = (HotbarCompatible) eq;
+			data.getHotbar()[dataSlot] = eq;
 			break;
 		default:
 			return false; // Just in case null pointer

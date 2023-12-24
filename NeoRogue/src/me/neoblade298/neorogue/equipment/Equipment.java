@@ -37,9 +37,11 @@ public abstract class Equipment {
 	private static DropTableSet<Equipment> droptables = new DropTableSet<Equipment>();
 	private static DropTableSet<Artifact> artifactTables = new DropTableSet<Artifact>();
 	
+	private TreeMap<String, String[]> reforgeOptions = new TreeMap<String, String[]>();
+	
 	protected String id;
 	protected Component display;
-	private TreeMap<String, String[]> reforgeOptions = new TreeMap<String, String[]>();
+	protected EquipSlot equipSlot;
 	protected boolean isUpgraded, canDrop = true;
 	protected ItemStack item;
 	protected Rarity rarity;
@@ -97,6 +99,7 @@ public abstract class Equipment {
 			
 			// Offhands
 			new CaptainsTowerShield(b);
+			new ChasingDagger(b);
 			new HastyShield(b);
 			new LeatherBracer(b);
 			new SmallShield(b);
@@ -398,6 +401,10 @@ public abstract class Equipment {
 	
 	public int getCooldown() {
 		return cooldown;
+	}
+	
+	public EquipSlot getEquipSlot() {
+		return equipSlot;
 	}
 	
 	public static enum EquipmentClass {

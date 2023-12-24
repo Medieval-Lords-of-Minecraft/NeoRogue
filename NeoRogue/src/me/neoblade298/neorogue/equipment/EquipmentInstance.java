@@ -6,10 +6,12 @@ import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerCondition;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class EquipmentInstance implements TriggerAction {
 	protected TriggerAction action;
+	protected TriggerCondition condition;
 	protected Equipment eq;
 	protected double staminaCost, manaCost, cooldown;
 	private long lastUsed = 0L;
@@ -27,6 +29,15 @@ public class EquipmentInstance implements TriggerAction {
 		this.staminaCost = eq.staminaCost;
 		this.cooldown = eq.cooldown;
 		this.action = action;
+	}
+	
+	public EquipmentInstance(Equipment eq, TriggerAction action, TriggerCondition condition) {
+		this.eq = eq;
+		this.manaCost = eq.manaCost;
+		this.staminaCost = eq.staminaCost;
+		this.cooldown = eq.cooldown;
+		this.action = action;
+		this.condition = condition;
 	}
 	
 	// Apparently earthen tackle needs this
@@ -55,6 +66,9 @@ public class EquipmentInstance implements TriggerAction {
 		if (data.getStamina() <= staminaCost) {
 			Util.displayError(data.getPlayer(), "Not enough stamina!");
 			return false;
+		}
+		if (condition != null) {
+			return condition.canTrigger(p, data);
 		}
 		return true;
 	}

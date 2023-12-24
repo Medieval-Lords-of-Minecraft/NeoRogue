@@ -1,6 +1,6 @@
 package me.neoblade298.neorogue.player;
 
-import me.neoblade298.neorogue.equipment.EquipmentClass;
+import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 
 public enum PlayerClass {
 	WARRIOR("Warrior", EquipmentClass.WARRIOR),
