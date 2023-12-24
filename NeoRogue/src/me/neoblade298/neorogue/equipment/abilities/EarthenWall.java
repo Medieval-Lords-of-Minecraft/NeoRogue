@@ -11,8 +11,7 @@ import me.neoblade298.neocore.bukkit.particles.LocalAxes;
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Ability;
-import me.neoblade298.neorogue.equipment.EquipmentClass;
-import me.neoblade298.neorogue.equipment.UsableInstance;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -49,12 +48,19 @@ public class EarthenWall extends Ability {
 		data.addTrigger(id, bind, inst);
 	}
 	
-	private class EarthenWallInstance extends UsableInstance {
-		private Player p;
+	private class EarthenWallInstance extends EquipmentInstance {
 		private int stacks = 0;
 		public EarthenWallInstance(Ability a, Player p) {
 			super(a);
-			this.p = p;
+			action = (pdata, in) -> {
+				Util.playSound(p, Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1F, 1F, false);
+				pc.spawn(p);
+				HashMap<BuffType, Buff> wall = new HashMap<BuffType, Buff>();
+				wall.put(BuffType.GENERAL, new Buff(p.getUniqueId(), 0, 0));
+				pdata.getInstance().addUserBarrier(pdata,
+						Barrier.stationary(p, 2, 3, 3, p.getLocation().add(0, 1.5, 0), LocalAxes.usingGroundedEyeLocation(p), wall, earth), 10);
+				return TriggerResult.keep();
+			};
 		}
 		
 		public void addStacks(int amount) {
@@ -77,17 +83,6 @@ public class EarthenWall extends Ability {
 		public TriggerResult trigger(PlayerFightData data, Object[] inputs) {
 			stacks -= 10;
 			return super.trigger(data, inputs);
-		}
-		
-		@Override
-		public TriggerResult run(PlayerFightData data, Object[] inputs) {
-			Util.playSound(p, Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1F, 1F, false);
-			pc.spawn(p);
-			HashMap<BuffType, Buff> wall = new HashMap<BuffType, Buff>();
-			wall.put(BuffType.GENERAL, new Buff(p.getUniqueId(), 0, 0));
-			data.getInstance().addUserBarrier(data,
-					Barrier.stationary(p, 2, 3, 3, p.getLocation().add(0, 1.5, 0), LocalAxes.usingGroundedEyeLocation(p), wall, earth), 10);
-			return TriggerResult.keep();
 		}
 	}
 

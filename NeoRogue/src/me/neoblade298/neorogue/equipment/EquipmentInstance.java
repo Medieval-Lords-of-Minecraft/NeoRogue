@@ -8,16 +8,30 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public abstract class UsableInstance implements TriggerAction {
-	protected Usable u;
+public class EquipmentInstance implements TriggerAction {
+	protected TriggerAction action;
+	protected Equipment eq;
 	protected double staminaCost, manaCost, cooldown;
 	private long lastUsed = 0L;
 	
-	public UsableInstance(Usable u) {
-		this.u = u;
-		this.manaCost = u.manaCost;
-		this.staminaCost = u.staminaCost;
-		this.cooldown = u.cooldown;
+	public EquipmentInstance(Equipment eq) {
+		this.eq = eq;
+		this.manaCost = eq.manaCost;
+		this.staminaCost = eq.staminaCost;
+		this.cooldown = eq.cooldown;
+	}
+	
+	public EquipmentInstance(Equipment eq, TriggerAction action) {
+		this.eq = eq;
+		this.manaCost = eq.manaCost;
+		this.staminaCost = eq.staminaCost;
+		this.cooldown = eq.cooldown;
+		this.action = action;
+	}
+	
+	// Apparently earthen tackle needs this
+	public void setAction(TriggerAction action) {
+		this.action = action;
 	}
 	
 	@Override
@@ -25,10 +39,8 @@ public abstract class UsableInstance implements TriggerAction {
 		lastUsed = System.currentTimeMillis();
 		data.addMana(-manaCost);
 		data.addStamina(-staminaCost);
-		return run(data, inputs);
+		return action.trigger(data, inputs);
 	}
-	
-	public abstract TriggerResult run(PlayerFightData data, Object[] inputs);
 	
 	public boolean canTrigger(Player p, PlayerFightData data) {
 		if (lastUsed + (cooldown * 1000) >= System.currentTimeMillis()) {
@@ -48,7 +60,7 @@ public abstract class UsableInstance implements TriggerAction {
 	}
 	
 	public void sendCooldownMessage(Player p) {
-		Util.msgRaw(p, u.display.append(NeoCore.miniMessage().deserialize(" <red>cooldown: </red><yellow>" + getCooldown() + "s")));
+		Util.msgRaw(p, eq.display.append(NeoCore.miniMessage().deserialize(" <red>cooldown: </red><yellow>" + getCooldown() + "s")));
 	}
 	
 	public void reduceCooldown(int seconds) {
@@ -59,5 +71,16 @@ public abstract class UsableInstance implements TriggerAction {
 		int nextUse = (int) ((lastUsed / 1000) + cooldown);
 		int now = (int) (System.currentTimeMillis() / 1000);
 		return Math.max(0, nextUse - now);
+	}
+	
+	public static class CountEquipmentInstance extends EquipmentInstance {
+		protected int count = 0;
+		public CountEquipmentInstance(Equipment eq) {
+			super(eq);
+		}
+
+		public CountEquipmentInstance(Equipment eq, TriggerAction action) {
+			super(eq, action);
+		}
 	}
 }

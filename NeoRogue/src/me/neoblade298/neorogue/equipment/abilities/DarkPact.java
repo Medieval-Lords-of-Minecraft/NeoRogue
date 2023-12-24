@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neorogue.equipment.Ability;
-import me.neoblade298.neorogue.equipment.EquipmentClass;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.BuffType;
@@ -27,12 +27,12 @@ public class DarkPact extends Ability {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
 		data.addBuff(p.getUniqueId(), id, false, true, BuffType.GENERAL, 1, seconds);
-		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, inputs) -> {
+		data.addTrigger(id, Trigger.BASIC_ATTACK, new EquipmentInstance(this, (pdata, inputs) -> {
 			p.playSound(p, Sound.ENTITY_BLAZE_SHOOT, 1F, 1F);
 			pc.spawn(p);
 			data.addBuff(p.getUniqueId(), true, false, BuffType.GENERAL, 1);
 			return TriggerResult.keep();
-		});
+		}));
 	}
 
 	@Override

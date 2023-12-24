@@ -16,8 +16,7 @@ import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Ability;
-import me.neoblade298.neorogue.equipment.EquipmentClass;
-import me.neoblade298.neorogue.equipment.UsableInstance;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -47,31 +46,20 @@ public class Bulldoze extends Ability {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
-		data.addTrigger(id, bind, new TackleInstance(this, p));
-	}
-	
-	private class TackleInstance extends UsableInstance {
-		private Player p;
-		public TackleInstance(Ability a, Player p) {
-			super(a);
-			this.p = p;
-		}
-		
-		@Override
-		public TriggerResult run(PlayerFightData data, Object[] inputs) {
+		data.addTrigger(id, bind, new EquipmentInstance(this, (pdata, inputs) -> {
 			Util.playSound(p, Sound.ENTITY_ENDER_DRAGON_AMBIENT, false);
 			start.spawn(p);
 			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 60, 0));
-			new BulldozeHitChecker(p, data, this);
+			new BulldozeHitChecker(p, data);
 			return TriggerResult.keep();
-		}
+		}));
 	}
 	
 	private class BulldozeHitChecker {
 		private ArrayList<BukkitTask> tasks = new ArrayList<BukkitTask>();
 		private PlayerFightData data;
 		
-		protected BulldozeHitChecker(Player p, PlayerFightData data, TackleInstance inst) {
+		protected BulldozeHitChecker(Player p, PlayerFightData data) {
 			this.data = data;
 			for (long delay = 2; delay <= 60; delay+= 2) {
 				boolean spawnParticle = delay % 4 == 0;

@@ -9,8 +9,7 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Ability;
-import me.neoblade298.neorogue.equipment.EquipmentClass;
-import me.neoblade298.neorogue.equipment.UsableInstance;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -35,22 +34,10 @@ public class BlessedEdge extends Ability {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
-		data.addTrigger(id, bind, new EmpoweredEdgeInstance(this, p, damage, bind));
-	}
-	
-	private class EmpoweredEdgeInstance extends UsableInstance {
-		private Player p;
-		public EmpoweredEdgeInstance(Ability a, Player p, int damage, Trigger bind) {
-			super(a);
-			this.p = p;
-			this.cooldown = a.getCooldown();
-		}
-		
-		@Override
-		public TriggerResult run(PlayerFightData data, Object[] inputs) {
+		data.addTrigger(id, bind, new EquipmentInstance(this, (pdata, inputs) -> {
 			Util.playSound(p, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1F, 1F, false);
 			pc.spawn(p);
-			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
+			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in) -> {
 				Damageable target = (Damageable) in[1];
 				FightInstance.dealDamage(p, DamageType.SLASHING, damage, target);
 				FightInstance.getFightData(target.getUniqueId()).applyStatus(StatusType.SANCTIFIED, p.getUniqueId(), sanct, -1);
@@ -59,7 +46,7 @@ public class BlessedEdge extends Ability {
 				return TriggerResult.remove();
 			});
 			return TriggerResult.keep();
-		}
+		}));
 	}
 
 	@Override

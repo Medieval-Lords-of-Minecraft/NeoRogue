@@ -21,7 +21,7 @@ public class PlayerFightData extends FightData {
 	private HashMap<String, UsableInstance> equips = new HashMap<String, UsableInstance>();
 	private HashMap<Integer, HashMap<Trigger, HashMap<String, TriggerAction>>> slotBasedTriggers = new HashMap<Integer, HashMap<Trigger, HashMap<String, TriggerAction>>>();
 	private Player p;
-	private long nextAttack;
+	private long nextAttack, nextOffAttack;
 
 	private double stamina = 0, mana = 0;
 	private double staminaRegen, manaRegen;
@@ -313,5 +313,22 @@ public class PlayerFightData extends FightData {
 	
 	public void resetBasicAttackCooldown() {
 		this.nextAttack = 0;
+	}
+	
+	public boolean canOffhandAttack() {
+		return nextOffAttack <= System.currentTimeMillis();
+	}
+	
+	public void setOffhandAttackCooldown(Weapon w) {
+		long attackCooldown = (long) (1000 / w.getAttackSpeed()) - 50; // Subtract 50 for tick differentials
+		this.nextOffAttack = System.currentTimeMillis() + attackCooldown;
+	}
+	
+	public void setOffhandAttackCooldown(long cooldown) {
+		this.nextOffAttack = System.currentTimeMillis() + cooldown;
+	}
+	
+	public void resetOffhandAttackCooldown() {
+		this.nextOffAttack = 0;
 	}
 }

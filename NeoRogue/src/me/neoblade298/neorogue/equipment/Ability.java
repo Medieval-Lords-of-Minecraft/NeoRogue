@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-public abstract class Ability extends Usable {
+public abstract class Ability extends Equipment {
 	protected int range = 0;
 	public Ability(String id, String display, boolean isUpgraded, Rarity rarity, EquipmentClass ec) {
 		super(id, display, isUpgraded, rarity, ec);

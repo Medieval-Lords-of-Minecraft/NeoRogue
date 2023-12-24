@@ -10,8 +10,7 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Ability;
-import me.neoblade298.neorogue.equipment.EquipmentClass;
-import me.neoblade298.neorogue.equipment.UsableInstance;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.BuffType;
@@ -38,23 +37,11 @@ public class BattleCry extends Ability {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
-		data.addTrigger(id, bind, new BattleCryInstance(this, p));
-	}
-	
-	private class BattleCryInstance extends UsableInstance {
-		private Player p;
-		public BattleCryInstance(Ability a, Player p) {
-			super(a);
-			this.p = p;
-			this.cooldown = a.getCooldown();
-		}
-		
-		@Override
-		public TriggerResult run(PlayerFightData data, Object[] inputs) {
+		data.addTrigger(id, bind, new EquipmentInstance(this, (pdata, inputs) -> {
 			Util.playSound(p, Sound.ENTITY_BLAZE_DEATH, 1F, 1F, false);
 			pc.spawn(p);
 			data.addBuff(p.getUniqueId(), id, true, false, BuffType.PHYSICAL, strength, 10);
 			return TriggerResult.keep();
-		}
+		}));
 	}
 }

@@ -16,11 +16,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 
-public abstract class Weapon extends Equipment {
+// Need this class because weapons can be both hotbar compatible and offhands
+public abstract class AbstractWeapon extends Equipment {
 	protected double damage, attackSpeed;
 	protected DamageType type;
 
-	public Weapon(String id, String display, boolean isUpgraded, Rarity rarity, EquipmentClass ec) {
+	public AbstractWeapon(String id, String display, boolean isUpgraded, Rarity rarity, EquipmentClass ec) {
 		super(id, display, isUpgraded, rarity, ec);
 	}
 	

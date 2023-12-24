@@ -36,10 +36,10 @@ public class Fury extends Ability {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
-		data.addTrigger(id, bind, new EmpoweredEdgeInstance(this, p, damage, bind));
+		data.addTrigger(id, bind, new FuryInstance(this, p, damage, bind));
 	}
 	
-	private class EmpoweredEdgeInstance extends UsableInstance {
+	private class FuryInstance extends EquipmentInstance {
 		private Player p;
 		private boolean isBerserk;
 		public EmpoweredEdgeInstance(Ability a, Player p, int damage, Trigger bind) {

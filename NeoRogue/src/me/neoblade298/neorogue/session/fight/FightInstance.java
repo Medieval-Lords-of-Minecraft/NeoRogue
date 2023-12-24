@@ -19,6 +19,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
@@ -166,15 +167,21 @@ public abstract class FightInstance extends Instance {
 			handleLeftClick(e);
 		}
 		else if (a == Action.RIGHT_CLICK_AIR || a == Action.RIGHT_CLICK_BLOCK) {
-			handleRightClick(e);
+			handleRightClickGeneral(e);
 		}
 	}
 	
-	public static void handleRightClick(PlayerInteractEvent e) {
+	public static void handleRightClickEntity(PlayerInteractEntityEvent e) {
+		Player p = e.getPlayer();
+		System.out.println("Right click hit");
+		trigger(p, Trigger.RIGHT_CLICK_HIT, new Object[] { e.getRightClicked() });
+	}
+	
+	public static void handleRightClickGeneral(PlayerInteractEvent e) {
 		Player p = e.getPlayer();
 		UUID uuid = p.getUniqueId();
-		// Look for non-offhand triggers
 		if (e.getHand() == EquipmentSlot.OFF_HAND) {
+			System.out.println("Right click general");
 			trigger(p, Trigger.RAISE_SHIELD, null);
 			trigger(p, Trigger.RIGHT_CLICK, null);
 			

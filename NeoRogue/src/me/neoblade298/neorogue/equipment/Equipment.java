@@ -44,6 +44,9 @@ public abstract class Equipment {
 	protected ItemStack item;
 	protected Rarity rarity;
 	protected EquipmentClass ec;
+	protected EquipSlot es = EquipSlot.NONE;
+	protected double manaCost, staminaCost;
+	protected int cooldown = 0;
 	
 	public static void load() {
 		
@@ -59,7 +62,7 @@ public abstract class Equipment {
 			new EarthenTackle(b);
 			new EarthenWall(b);
 			new EmpoweredEdge(b);
-			//new FuriousSwing(b);
+			new Fury(b);
 			new Fury(b);
 			new Glare(b);
 			new Parry(b);
@@ -142,6 +145,25 @@ public abstract class Equipment {
 		
 		if (isUpgraded) upgraded.put(id, this);
 		else equipment.put(id, this);
+	}
+	
+	protected void setBaseProperties(int cooldown, int manaCost, int staminaCost) {
+		this.cooldown = cooldown;
+		this.manaCost = manaCost;
+		this.staminaCost = staminaCost;
+	}
+	
+	protected void addResourcesToLore(ArrayList<String> lore) {
+		if (manaCost > 0) lore.add("<gold>Mana Cost: <yellow>" + manaCost);
+		if (staminaCost > 0) lore.add("<gold>Stamina Cost: <yellow>" + staminaCost);
+	}
+	
+	public double getManaCost() {
+		return manaCost;
+	}
+	
+	public double getStaminaCost() {
+		return staminaCost;
 	}
 	
 	public abstract void setupItem();
@@ -243,12 +265,12 @@ public abstract class Equipment {
 		return arr;
 	}
 	
-	public static HotbarCompatible[] deserializeHotbar(String str) {
+	public static Equipment[] deserializeHotbar(String str) {
 		String[] separated = str.split(";");
-		HotbarCompatible[] arr = new HotbarCompatible[separated.length];
+		Equipment[] arr = new Equipment[separated.length];
 		for (int i = 0; i < separated.length; i++) {
 			if (str.isBlank()) continue;
-			arr[i] = (HotbarCompatible) Equipment.deserialize(separated[i]);
+			arr[i] = Equipment.deserialize(separated[i]);
 		}
 		return arr;
 	}
@@ -273,12 +295,12 @@ public abstract class Equipment {
 		return arr;
 	}
 	
-	public static Usable[] deserializeUsables(String str) {
+	public static Equipment[] deserializeUsables(String str) {
 		String[] separated = str.split(";");
-		Usable[] arr = new Usable[separated.length];
+		Equipment[] arr = new Equipment[separated.length];
 		for (int i = 0; i < separated.length; i++) {
 			if (str.isBlank()) continue;
-			arr[i] = (Usable) Equipment.deserialize(separated[i]);
+			arr[i] = (Equipment) Equipment.deserialize(separated[i]);
 		}
 		return arr;
 	}
@@ -372,6 +394,29 @@ public abstract class Equipment {
 	
 	public Component getDisplay() {
 		return display;
+	}
+	
+	public int getCooldown() {
+		return cooldown;
+	}
+	
+	public static enum EquipmentClass {
+		WARRIOR,
+		THIEF,
+		ARCHER,
+		MAGE,
+		SHOP,
+		CLASSLESS;
+	}
+	
+	public static enum EquipSlot {
+		WEAPON,
+		ARMOR,
+		ACCESSORY,
+		OFFHAND,
+		HOTBAR,
+		USABLE, // Hotbar + other binds
+		NONE; // Artifacts
 	}
 	
 	private static class DropTableSet<E> {

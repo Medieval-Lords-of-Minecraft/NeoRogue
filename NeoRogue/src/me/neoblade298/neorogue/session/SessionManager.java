@@ -26,6 +26,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -202,6 +203,17 @@ public class SessionManager implements Listener {
 
 		if (!(s.getInstance() instanceof FightInstance)) return;
 		FightInstance.handleHotbarSwap(e);
+	}
+
+	@EventHandler(ignoreCancelled = false)
+	public void onInteractEntity(PlayerInteractEntityEvent e) {
+		Player p = e.getPlayer();
+		UUID uuid = p.getUniqueId();
+		if (!sessions.containsKey(uuid)) return;
+		Session s = sessions.get(uuid);
+		if (!(s.getInstance() instanceof FightInstance)) return;
+		
+		FightInstance.handleRightClickEntity(e);
 	}
 
 	@EventHandler(ignoreCancelled = false)
