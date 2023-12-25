@@ -15,8 +15,9 @@ import org.bukkit.util.Vector;
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.equipment.Ability;
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
+import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -28,7 +29,7 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class EarthenTackle extends Ability {
+public class EarthenTackle extends Equipment {
 	private ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION_LARGE),
 			start = new ParticleContainer(Particle.BLOCK_CRACK),
 			dirt = new ParticleContainer(Particle.BLOCK_CRACK);
@@ -37,8 +38,8 @@ public class EarthenTackle extends Ability {
 	private int damage, concussed;
 	
 	public EarthenTackle(boolean isUpgraded) {
-		super("earthenTackle", "Earthen Tackle", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR);
-		setBaseProperties(20, 0, 25, 50);
+		super("earthenTackle", "Earthen Tackle", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 30, 30, 0));
 		damage = isUpgraded ? 600 : 400;
 		concussed = isUpgraded? 35 : 25;
 		
@@ -107,7 +108,7 @@ public class EarthenTackle extends Ability {
 
 	@Override
 	public void setupItem() {
-		item = createItem(this, Material.REDSTONE, new String[] { "<gold>Area of Effect: <yellow>4" },
+		item = createItem(Material.REDSTONE, new String[] { "<gold>Area of Effect: <yellow>4" },
 				"On cast, dash forward, stopping at the first enemy hit and dealing <yellow>" + damage + "</yellow> blunt damage in an area "
 						+ "and applies <yellow>" + concussed + "</yellow> concussed."
 						+ "If an enemy is hit, reduce this ability's cooldown by <yellow>10</yellow>.");

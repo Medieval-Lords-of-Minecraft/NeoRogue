@@ -7,13 +7,16 @@ import java.util.TreeMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.util.Vector;
 
 import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.bukkit.NeoCore;
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.droptables.DropTable;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.equipment.abilities.*;
@@ -22,6 +25,7 @@ import me.neoblade298.neorogue.equipment.armor.*;
 import me.neoblade298.neorogue.equipment.artifacts.*;
 import me.neoblade298.neorogue.equipment.offhands.*;
 import me.neoblade298.neorogue.equipment.weapons.*;
+import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import net.kyori.adventure.text.Component;
@@ -46,8 +50,9 @@ public abstract class Equipment {
 	protected ItemStack item;
 	protected Rarity rarity;
 	protected EquipmentClass ec;
+	protected EquipmentType type;
 	protected EquipSlot es = EquipSlot.NONE;
-	protected double manaCost, staminaCost;
+	protected EquipmentProperties properties;
 	protected int cooldown = 0;
 	
 	public static void load() {
@@ -132,11 +137,14 @@ public abstract class Equipment {
 		}
 	}
 	
-	public Equipment(String id, String display, boolean isUpgraded, Rarity rarity, EquipmentClass ec) {
+	public Equipment(String id, String display, boolean isUpgraded, Rarity rarity, EquipmentClass ec, EquipmentType type, EquipmentProperties props) {
 		this.id = id;
 		this.rarity = rarity;
 		this.isUpgraded = isUpgraded;
 		this.ec = ec;
+		this.type = type;
+		this.equipSlot = type.getSlot();
+		this.properties = props;
 		
 		// Just make sure not to close any of the tags in display string
 		this.display = rarity.applyDecorations(SharedUtil.color(display + (isUpgraded ? "+" : "")));
@@ -150,23 +158,12 @@ public abstract class Equipment {
 		else equipment.put(id, this);
 	}
 	
-	protected void setBaseProperties(int cooldown, int manaCost, int staminaCost) {
-		this.cooldown = cooldown;
-		this.manaCost = manaCost;
-		this.staminaCost = staminaCost;
+	public Equipment(String id, String display, boolean isUpgraded, Rarity rarity, EquipmentClass ec, EquipmentType type) {
+		this(id, display, isUpgraded, rarity, ec, type, EquipmentProperties.none());
 	}
 	
-	protected void addResourcesToLore(ArrayList<String> lore) {
-		if (manaCost > 0) lore.add("<gold>Mana Cost: <yellow>" + manaCost);
-		if (staminaCost > 0) lore.add("<gold>Stamina Cost: <yellow>" + staminaCost);
-	}
-	
-	public double getManaCost() {
-		return manaCost;
-	}
-	
-	public double getStaminaCost() {
-		return staminaCost;
+	public EquipmentProperties getProperties() {
+		return properties;
 	}
 	
 	public abstract void setupItem();
@@ -268,53 +265,24 @@ public abstract class Equipment {
 		return arr;
 	}
 	
-	public static Equipment[] deserializeHotbar(String str) {
-		String[] separated = str.split(";");
-		Equipment[] arr = new Equipment[separated.length];
-		for (int i = 0; i < separated.length; i++) {
-			if (str.isBlank()) continue;
-			arr[i] = Equipment.deserialize(separated[i]);
-		}
-		return arr;
+
+	public ItemStack createItem(Material mat) {
+		return createItem(mat, null, null);
 	}
 	
-	public static Armor[] deserializeArmor(String str) {
-		String[] separated = str.split(";");
-		Armor[] arr = new Armor[separated.length];
-		for (int i = 0; i < separated.length; i++) {
-			if (str.isBlank()) continue;
-			arr[i] = (Armor) Equipment.deserialize(separated[i]);
-		}
-		return arr;
+
+	public ItemStack createItem(Material mat, String loreLine) {
+		return createItem(mat, null, loreLine);
 	}
 	
-	public static Accessory[] deserializeAccessories(String str) {
-		String[] separated = str.split(";");
-		Accessory[] arr = new Accessory[separated.length];
-		for (int i = 0; i < separated.length; i++) {
-			if (str.isBlank()) continue;
-			arr[i] = (Accessory) Equipment.deserialize(separated[i]);
-		}
-		return arr;
-	}
-	
-	public static Equipment[] deserializeUsables(String str) {
-		String[] separated = str.split(";");
-		Equipment[] arr = new Equipment[separated.length];
-		for (int i = 0; i < separated.length; i++) {
-			if (str.isBlank()) continue;
-			arr[i] = (Equipment) Equipment.deserialize(separated[i]);
-		}
-		return arr;
-	}
-	
-	public ItemStack createItem(Material mat, String type, ArrayList<String> preLoreLine, String loreLine) {
+	public ItemStack createItem(Material mat, String[] preLoreLine, String loreLine) {
 		ItemStack item = new ItemStack(mat);
 		ItemMeta meta = item.getItemMeta();
 
 		meta.displayName(display.decoration(TextDecoration.ITALIC, State.FALSE));
 		ArrayList<Component> loreItalicized = new ArrayList<Component>();
 		loreItalicized.add(rarity.getDisplay(true).append(Component.text(" " + type)));
+		loreItalicized.addAll(properties.generateLore());
 		if (preLoreLine != null) {
 			for (String l : preLoreLine) {
 				loreItalicized.add(NeoCore.miniMessage().deserialize(l));
@@ -340,11 +308,12 @@ public abstract class Equipment {
 		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 		meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
 		meta.setUnbreakable(true);
+		properties.modifyItemMeta(item, meta);
 		item.setItemMeta(meta);
 		
 		NBTItem nbti = new NBTItem(item);
 		nbti.setString("equipId", id);
-		nbti.setString("type", type.toUpperCase());
+		nbti.setString("type", type.getDisplay());
 		nbti.setBoolean("isUpgraded", isUpgraded);
 		return nbti.getItem();
 	}
@@ -407,6 +376,54 @@ public abstract class Equipment {
 		return equipSlot;
 	}
 	
+	public EquipmentType getType() {
+		return type;
+	}
+	
+	// Used for weapons that start cooldown on swing, not hit
+	public void swingWeapon(Player p, PlayerFightData data) {
+		Util.playSound(p, properties.getSwingSound(), false);
+		data.setBasicAttackCooldown(equipSlot, properties);
+		if (equipSlot == EquipSlot.OFFHAND) p.swingOffHand();
+	}
+	
+	// Both swings and hits enemy
+	public void meleeWeapon(Player p, PlayerFightData data, Object[] inputs, Damageable target) {
+		swingWeapon(p, data);
+		damageWithWeapon(p, data, inputs, target);
+	}
+	
+	// Both swings and hits enemy
+	public void meleeWeapon(Player p, PlayerFightData data, Object[] inputs, Damageable target, double damage) {
+		swingWeapon(p, data);
+		damageWithWeapon(p, data, inputs, target, damage);
+	}
+	
+	public void damageWithWeapon(Player p, PlayerFightData data, Object[] inputs, Damageable target) {
+		damageWithWeapon(p, data, inputs, target, properties.getDamage(), properties.getKnockback());
+	}
+	
+	public void damageWithWeapon(Player p, PlayerFightData data, Object[] inputs, Damageable target, double damage) {
+		damageWithWeapon(p, data, inputs, target, damage, properties.getKnockback());
+	}
+	
+	public void damageWithWeapon(Player p, PlayerFightData data, Object[] inputs, Damageable target, double damage, double knockback) {
+		FightInstance.dealDamage(p, properties.getType(), damage, target);
+		if (knockback != 0) {
+			FightInstance.knockback(p, target, knockback);
+		}
+		data.runActions(data, Trigger.BASIC_ATTACK, inputs);
+	}
+	
+	// for projectiles
+	public void damageWithWeapon(Player p, PlayerFightData data, Object[] inputs, Damageable target, Vector v) {
+		FightInstance.dealDamage(p, properties.getType(), properties.getDamage(), target);
+		if (properties.getKnockback() != 0) {
+			FightInstance.knockback(v, target, properties.getKnockback());
+		}
+		data.runActions(data, Trigger.BASIC_ATTACK, inputs);
+	}
+	
 	public static enum EquipmentClass {
 		WARRIOR,
 		THIEF,
@@ -416,13 +433,37 @@ public abstract class Equipment {
 		CLASSLESS;
 	}
 	
+	public static enum EquipmentType {
+		WEAPON("Weapon", EquipSlot.HOTBAR),
+		ARMOR("Armor", EquipSlot.ARMOR),
+		ACCESSORY("Accessory", EquipSlot.ACCESSORY),
+		OFFHAND("Offhand", EquipSlot.OFFHAND),
+		ABILITY("Ability", EquipSlot.KEYBIND),
+		ARTIFACT("Artifact", EquipSlot.NONE);
+		
+		private String display;
+		private EquipSlot slot;
+		private EquipmentType(String display, EquipSlot slot) {
+			this.display = display;
+			this.slot = slot;
+		}
+		
+		public String getDisplay() {
+			return display;
+		}
+		
+		public EquipSlot getSlot() {
+			return slot;
+		}
+	}
+	
 	public static enum EquipSlot {
 		WEAPON,
 		ARMOR,
 		ACCESSORY,
 		OFFHAND,
 		HOTBAR,
-		USABLE, // Hotbar + other binds
+		KEYBIND, // Hotbar + other binds
 		NONE; // Artifacts
 	}
 	

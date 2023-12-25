@@ -1,33 +1,33 @@
 package me.neoblade298.neorogue.equipment.weapons;
 
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
 
 
 import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.equipment.Weapon;
+import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class Rapier extends Weapon {
+public class Rapier extends Equipment {
 	
 	private int shields;
 	public Rapier(boolean isUpgraded) {
-		super("rapier", "Rapier", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
-		damage = isUpgraded ? 90 : 60;
-		type = DamageType.PIERCING;
-		attackSpeed = 1;
+		super("rapier", "Rapier", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
+				EquipmentType.WEAPON,
+				EquipmentProperties.ofWeapon(isUpgraded ? 45 : 30, 1, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_CRIT));
 		shields = isUpgraded ? 15 : 10;
 	}
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
-			dealDamage(p, (Damageable) inputs[1]);
-			pdata.runBasicAttack(pdata, inputs, this);
+			meleeWeapon(p, data, inputs, (Damageable) inputs[1]);
 			data.addShield(p.getUniqueId(), shields, true, 1, 100, 1, 1);
 			return TriggerResult.keep();
 		});

@@ -3,17 +3,18 @@ package me.neoblade298.neorogue.equipment.armor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-import me.neoblade298.neorogue.equipment.Armor;
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class ClothBindings extends Armor {
+public class ClothBindings extends Equipment {
 	private double health;
 	
 	public ClothBindings(boolean isUpgraded) {
-		super("clothBindings", "Cloth Bindings", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
+		super("clothBindings", "Cloth Bindings", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
+				EquipmentType.ARMOR);
 		health = isUpgraded ? 10 : 7;
 	}
 
@@ -27,6 +28,6 @@ public class ClothBindings extends Armor {
 
 	@Override
 	public void setupItem() {
-		item = createItem(this, Material.WHITE_DYE, null, "Winning a fight heals you for <yellow>" + health + "</yellow>.");
+		item = createItem(Material.WHITE_DYE, "Winning a fight heals you for <yellow>" + health + "</yellow>.");
 	}
 }

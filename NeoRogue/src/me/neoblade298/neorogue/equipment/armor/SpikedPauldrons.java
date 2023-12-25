@@ -3,17 +3,18 @@ package me.neoblade298.neorogue.equipment.armor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-import me.neoblade298.neorogue.equipment.Armor;
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
-public class SpikedPauldrons extends Armor {
+public class SpikedPauldrons extends Equipment {
 	private int thorns;
 	
 	public SpikedPauldrons(boolean isUpgraded) {
-		super("spikedPauldrons", "Spiked Pauldrons", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
+		super("spikedPauldrons", "Spiked Pauldrons", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
+				EquipmentType.ARMOR);
 		thorns = isUpgraded ? 3 : 2;
 	}
 
@@ -24,6 +25,6 @@ public class SpikedPauldrons extends Armor {
 
 	@Override
 	public void setupItem() {
-		item = createItem(this, Material.ARMOR_STAND, null, "Start every fight with <yellow>" + thorns + " </yellow>thorns.");
+		item = createItem(Material.ARMOR_STAND, "Start every fight with <yellow>" + thorns + " </yellow>thorns.");
 	}
 }

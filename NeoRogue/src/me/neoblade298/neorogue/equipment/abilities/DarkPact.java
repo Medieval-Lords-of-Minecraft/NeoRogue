@@ -6,20 +6,22 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
-import me.neoblade298.neorogue.equipment.Ability;
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
+import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class DarkPact extends Ability {
+public class DarkPact extends Equipment {
 	private ParticleContainer pc = new ParticleContainer(Particle.FLAME);
 	private int seconds;
 	
 	public DarkPact(boolean isUpgraded) {
-		super("darkPact", "Dark Pact", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR);
+		super("darkPact", "Dark Pact", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 20, 5, 0));
 		seconds = isUpgraded ? 40 : 25;
 		pc.count(25).spread(0.5, 0.5).speed(0.1);
 	}
@@ -37,7 +39,7 @@ public class DarkPact extends Ability {
 
 	@Override
 	public void setupItem() {
-		item = createItem(this, Material.REDSTONE, null,
+		item = createItem(Material.REDSTONE,
 				"Passive. Increase your damage by 1 every 10 basic attacks. In exchange, take "
 				+ "50% increased damage for the first <yellow>" + seconds + "s</yellow> of a fight.");
 	}

@@ -3,16 +3,17 @@ package me.neoblade298.neorogue.equipment.armor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-import me.neoblade298.neorogue.equipment.Armor;
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
-public class LeatherHelmet extends Armor {
+public class LeatherHelmet extends Equipment {
 	private double shields;
 	
 	public LeatherHelmet(boolean isUpgraded) {
-		super("leatherHelmet", "Leather Helmet", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
+		super("leatherHelmet", "Leather Helmet", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
+				EquipmentType.ARMOR);
 		shields = isUpgraded ? 30 : 20;
 	}
 
@@ -23,6 +24,6 @@ public class LeatherHelmet extends Armor {
 
 	@Override
 	public void setupItem() {
-		item = createItem(this, Material.LEATHER_HELMET, null, "Start every fight with <yellow>" + shields + " </yellow>shields.");
+		item = createItem(Material.LEATHER_HELMET, "Start every fight with <yellow>" + shields + " </yellow>shields.");
 	}
 }

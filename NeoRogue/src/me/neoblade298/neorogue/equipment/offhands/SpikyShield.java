@@ -5,18 +5,19 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 
-import me.neoblade298.neorogue.equipment.Offhand;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class SpikyShield extends Offhand {
+public class SpikyShield extends Equipment {
 	private int reduction, amount;
 	
 	public SpikyShield(boolean isUpgraded) {
-		super("spikyShield", "Spiky Shield", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
+		super("spikyShield", "Spiky Shield", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
+				EquipmentType.OFFHAND);
 		reduction = 8;
 		amount = isUpgraded ? 6 : 4;
 	}
@@ -49,7 +50,7 @@ public class SpikyShield extends Offhand {
 
 	@Override
 	public void setupItem() {
-		item = createItem(this, Material.SHIELD, null, "When raised, reduce all damage taken by <yellow>" + reduction + "</yellow>."
+		item = createItem(Material.SHIELD, "When raised, reduce all damage taken by <yellow>" + reduction + "</yellow>."
 				+ " Also grants <yellow>" + amount + "</yellow> thorns at the start of combat.");
 	}
 }

@@ -10,8 +10,9 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neocore.bukkit.particles.LocalAxes;
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
-import me.neoblade298.neorogue.equipment.Ability;
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
+import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -20,7 +21,7 @@ import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class EarthenWall extends Ability {
+public class EarthenWall extends Equipment {
 	private static ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
 	private static ParticleContainer earth = new ParticleContainer(Particle.BLOCK_CRACK);
 	
@@ -30,8 +31,8 @@ public class EarthenWall extends Ability {
 	}
 	
 	public EarthenWall(boolean isUpgraded) {
-		super("earthenWall", "Earthen Wall", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
-		setBaseProperties(20, 100, 0, 10);
+		super("earthenWall", "Earthen Wall", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(100, 20, 10, 0));
 	}
 
 	@Override
@@ -50,8 +51,8 @@ public class EarthenWall extends Ability {
 	
 	private class EarthenWallInstance extends EquipmentInstance {
 		private int stacks = 0;
-		public EarthenWallInstance(Ability a, Player p) {
-			super(a);
+		public EarthenWallInstance(Equipment eq, Player p) {
+			super(eq);
 			action = (pdata, in) -> {
 				Util.playSound(p, Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1F, 1F, false);
 				pc.spawn(p);
@@ -88,7 +89,7 @@ public class EarthenWall extends Ability {
 
 	@Override
 	public void setupItem() {
-		item = createItem(this, Material.COARSE_DIRT, null,
+		item = createItem(Material.COARSE_DIRT,
 				"Can be cast once for every 10 stacks of concussed you apply."
 				+ " Raises a wall size 3x3 that blocks projectiles for 10 seconds.");
 	}

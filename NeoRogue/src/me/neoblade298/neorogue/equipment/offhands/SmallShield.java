@@ -4,18 +4,19 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 
-import me.neoblade298.neorogue.equipment.Offhand;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class SmallShield extends Offhand {
+public class SmallShield extends Equipment {
 	private int reduction;
 	
 	public SmallShield(boolean isUpgraded) {
-		super("smallShield", "Small Shield", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
+		super("smallShield", "Small Shield", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
+				EquipmentType.OFFHAND);
 		reduction = isUpgraded ? 5 : 3;
 		addReforgeOption("smallShield", "hastyShield", "spikyShield");
 	}
@@ -35,6 +36,6 @@ public class SmallShield extends Offhand {
 
 	@Override
 	public void setupItem() {
-		item = createItem(this, Material.SHIELD, null, "When raised, reduce all damage taken by <yellow>" + reduction + "</yellow>.");
+		item = createItem(Material.SHIELD, "When raised, reduce all damage taken by <yellow>" + reduction + "</yellow>.");
 	}
 }

@@ -6,18 +6,19 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.util.Util;
 
-import me.neoblade298.neorogue.equipment.Offhand;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class LeatherBracer extends Offhand {
+public class LeatherBracer extends Equipment {
 	private int instances;
 	
 	public LeatherBracer(boolean isUpgraded) {
-		super("leatherBracer", "Leather Bracer", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
+		super("leatherBracer", "Leather Bracer", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
+				EquipmentType.OFFHAND);
 		instances = isUpgraded ? 3 : 2;
 	}
 
@@ -41,6 +42,6 @@ public class LeatherBracer extends Offhand {
 
 	@Override
 	public void setupItem() {
-		item = createItem(this, Material.LEATHER, null, "Prevents the first <yellow>" + instances + "</yellow> instances of taking damage in a fight.");
+		item = createItem(Material.LEATHER, "Prevents the first <yellow>" + instances + "</yellow> instances of taking damage in a fight.");
 	}
 }

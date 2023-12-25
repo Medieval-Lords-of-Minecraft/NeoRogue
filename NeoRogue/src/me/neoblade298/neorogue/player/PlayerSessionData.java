@@ -36,9 +36,9 @@ public class PlayerSessionData {
 	private PlayerClass pc;
 	private double maxHealth, maxMana, maxStamina, health, manaRegen, staminaRegen;
 	private Equipment[] hotbar = new Equipment[9];
-	private Armor[] armors = new Armor[3];
-	private Offhand offhand;
-	private Accessory[] accessories = new Accessory[6];
+	private Equipment[] armors = new Equipment[3];
+	private Equipment offhand;
+	private Equipment[] accessories = new Equipment[6];
 	private TreeSet<ArtifactInstance> artifacts = new TreeSet<ArtifactInstance>();
 	private ArrayList<Equipment> storage = new ArrayList<Equipment>(9);
 	private Equipment[] otherBinds = new Equipment[8];
@@ -59,12 +59,12 @@ public class PlayerSessionData {
 		this.health = rs.getDouble("health");
 		this.manaRegen = rs.getDouble("manaRegen");
 		this.staminaRegen = rs.getDouble("staminaRegen");
-		this.hotbar = Equipment.deserializeHotbar(rs.getString("hotbar"));
-		this.armors = Equipment.deserializeArmor(rs.getString("armors"));
-		this.offhand = (Offhand) Equipment.deserialize(rs.getString("offhand"));
-		this.accessories = Equipment.deserializeAccessories(rs.getString("accessories"));
+		this.hotbar = Equipment.deserializeAsArray(rs.getString("hotbar"));
+		this.armors = Equipment.deserializeAsArray(rs.getString("armors"));
+		this.offhand = Equipment.deserialize(rs.getString("offhand"));
+		this.accessories = Equipment.deserializeAsArray(rs.getString("accessories"));
 		this.storage = Equipment.deserializeAsArrayList(rs.getString("storage"));
-		this.otherBinds = Equipment.deserializeUsables(rs.getString("otherBinds"));
+		this.otherBinds = Equipment.deserializeAsArray(rs.getString("otherBinds"));
 		this.artifacts = ArtifactInstance.deserializeSet(rs.getString("artifacts"));
 		this.maxAbilities = rs.getInt("maxAbilities");
 		this.maxStorage = rs.getInt("maxStorage");
@@ -88,7 +88,7 @@ public class PlayerSessionData {
 		switch (this.pc) {
 		case WARRIOR: hotbar[0] = Equipment.get("woodenSword", false);
 		hotbar[1] = Equipment.get("empoweredEdge", false);
-		offhand = (Offhand) Equipment.get("chasingDagger", false);
+		offhand = Equipment.get("chasingDagger", false);
 		break;
 		case THIEF: hotbar[0] = Equipment.get("woodenSword", false);
 		hotbar[1] = Equipment.get("empoweredEdge", false);
@@ -134,7 +134,7 @@ public class PlayerSessionData {
 		return data.getPlayer();
 	}
 	
-	public Armor[] getArmor() {
+	public Equipment[] getArmor() {
 		return armors;
 	}
 	
@@ -142,7 +142,7 @@ public class PlayerSessionData {
 		return hotbar;
 	}
 	
-	public Accessory[] getAccessories() {
+	public Equipment[] getAccessories() {
 		return accessories;
 	}
 	
@@ -150,11 +150,11 @@ public class PlayerSessionData {
 		return storage;
 	}
 	
-	public Offhand getOffhand() {
+	public Equipment getOffhand() {
 		return offhand;
 	}
 	
-	public void setOffhand(Offhand offhand) {
+	public void setOffhand(Equipment offhand) {
 		this.offhand = offhand;
 	}
 	
@@ -194,7 +194,7 @@ public class PlayerSessionData {
 		return maxStamina;
 	}
 
-	public Armor[] getArmors() {
+	public Equipment[] getArmors() {
 		return armors;
 	}
 

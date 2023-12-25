@@ -19,7 +19,8 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 
 import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.equipment.Weapon;
+import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
@@ -28,7 +29,7 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class StoneHammer extends Weapon {
+public class StoneHammer extends Equipment {
 	private static final int DISTANCE = 4, RADIUS = 2;
 	private static final TargetProperties props = new TargetProperties(RADIUS, true, TargetType.ENEMY);
 	private static final ParticleContainer swingPart = new ParticleContainer(Particle.CLOUD).count(5).spread(0.1, 0.1),
@@ -50,17 +51,16 @@ public class StoneHammer extends Weapon {
 	}
 	
 	public StoneHammer(boolean isUpgraded) {
-		super("stoneHammer", "Stone Hammer", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
-		this.setBaseProperties(!isUpgraded ? 30 : 45, 0.5, DamageType.BLUNT);
+		super("stoneHammer", "Stone Hammer", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+				EquipmentType.WEAPON,
+				EquipmentProperties.ofWeapon(isUpgraded ? 45 : 30, 0.5, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
 	}
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
-		Weapon w = this;
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (pdata, inputs) -> {
-			Util.playSound(p, Sound.ENTITY_PLAYER_ATTACK_SWEEP, 1F, 0.5F, false);
+			swingWeapon(p, data);
 			data.runAnimation(id, swing, p);
-			data.setBasicAttackCooldown(w);
 			data.addTask(id, new BukkitRunnable() {
 				public void run() {
 					hitArea(p, data);
@@ -76,9 +76,8 @@ public class StoneHammer extends Weapon {
 		hitShape.draw(StoneHammer.edge, hit, LocalAxes.xz(), StoneHammer.fill);
 		LinkedList<LivingEntity> enemies = TargetHelper.getEntitiesInRadius(p, hit, props);
 		if (enemies.isEmpty()) return;
-		data.runBasicAttack(data, new Object[] {p, enemies.peekFirst()}, this);
 		for (LivingEntity ent : enemies) {
-			dealDamage(p, ent);
+			damageWithWeapon(p, data, null, ent);
 			Vector v = ent.getVelocity();
 			ent.setVelocity(v.setY(v.getY() + 0.5));
 		}

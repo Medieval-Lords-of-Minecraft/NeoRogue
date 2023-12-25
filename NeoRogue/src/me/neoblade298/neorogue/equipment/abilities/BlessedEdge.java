@@ -8,8 +8,9 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
-import me.neoblade298.neorogue.equipment.Ability;
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
+import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -18,14 +19,14 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class BlessedEdge extends Ability {
+public class BlessedEdge extends Equipment {
 	private int damage, sanct;
 	private ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
 			hit = new ParticleContainer(Particle.FIREWORKS_SPARK);
 	
 	public BlessedEdge(boolean isUpgraded) {
-		super("blessedEdge", "Blessed Edge", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR);
-		setBaseProperties(5, 20, 20);
+		super("blessedEdge", "Blessed Edge", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 20, 5, 0));
 		damage = 125;
 		sanct = isUpgraded ? 9 : 6;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
@@ -51,7 +52,7 @@ public class BlessedEdge extends Ability {
 
 	@Override
 	public void setupItem() {
-		item = createItem(this, Material.FLINT, null,
+		item = createItem(Material.FLINT,
 				"On cast, your next basic attack deals <yellow>" + damage + " </yellow>damage and applies <yellow>" + sanct +
 				"</yellow> sanctified.");
 	}

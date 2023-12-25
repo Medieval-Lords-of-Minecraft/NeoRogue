@@ -17,6 +17,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -25,9 +26,9 @@ public class ReforgeOptionsInventory extends CoreInventory {
 	private boolean isEquipSlot;
 	private PlayerSessionInventory prev;
 	private ItemStack hostage;
-	private String type;
+	private EquipSlot type;
 	private ArrayList<Equipment> reforgeOptions = new ArrayList<Equipment>();
-	public ReforgeOptionsInventory(PlayerSessionInventory prev, int slot, boolean isEquipSlot, String type, int dataSlot, Equipment toReforge, Equipment reforgeWith, ItemStack hostage) {
+	public ReforgeOptionsInventory(PlayerSessionInventory prev, int slot, boolean isEquipSlot, EquipSlot type, int dataSlot, Equipment toReforge, Equipment reforgeWith, ItemStack hostage) {
 		super(prev.getPlayer(), Bukkit.createInventory(prev.getPlayer(), 18, Component.text("Reforge Options", NamedTextColor.BLUE)));
 		
 		this.slot = slot;

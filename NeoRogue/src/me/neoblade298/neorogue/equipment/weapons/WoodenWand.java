@@ -11,7 +11,9 @@ import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 
 import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.equipment.Weapon;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
+import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.session.fight.DamageType;
@@ -21,7 +23,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class WoodenWand extends Weapon {
+public class WoodenWand extends Equipment {
 	private static ParticleContainer tick, explode;
 	
 	static {
@@ -31,44 +33,19 @@ public class WoodenWand extends Weapon {
 	}
 	
 	public WoodenWand(boolean isUpgraded) {
-		super("woodenWand", "Wooden Wand", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE);
-		damage = !isUpgraded ? 50 : 75;
-		manaCost = 5;
-		type = DamageType.FIRE;
-		attackSpeed = 0.5;
-	}
-	
-	private boolean cast(PlayerFightData data) {
-		if (data.getMana() <= manaCost) {
-			Util.displayError(data.getPlayer(), "Not enough mana!");
-			return false;
-		}
-		
-		if (data.getStamina() <= staminaCost) {
-			Util.displayError(data.getPlayer(), "Not enough stamina!");
-			return false;
-		}
-		
-		data.addMana(-manaCost);
-		data.addStamina(-staminaCost);
-		return true;
+		super("woodenWand", "Wooden Wand", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE,
+				EquipmentType.WEAPON,
+				EquipmentProperties.ofWeapon(isUpgraded ? 75 : 50, 0.5, DamageType.FIRE, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
+		properties.setManaCost(5);
 	}
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
-		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (d, inputs) -> {
-			if (!cast(data)) return TriggerResult.keep();
-			d.setBasicAttackCooldown(this);
+		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, new EquipmentInstance(this, (d, inputs) -> {
+			swingWeapon(p, data);
 			new WoodenWandProjectile(p, 0.5, 10, 3, false, false, false, false, 0, 0, data.getInstance(), data, 0.2, 0.2, 0.2);
 			return TriggerResult.keep();
-		});
-
-		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_NO_HIT, (d, inputs) -> {
-			if (!cast(data)) return TriggerResult.keep();
-			d.setBasicAttackCooldown(this);
-			new WoodenWandProjectile(p, 1, 10, 2, false, false, false, false, 0, 0, data.getInstance(), data, 0.5, 0.2, 0.5);
-			return TriggerResult.keep();
-		});
+		}));
 	}
 	
 	private class WoodenWandProjectile extends Projectile {
@@ -85,7 +62,6 @@ public class WoodenWand extends Weapon {
 
 		@Override
 		public void onTick() {
-			// How do I allow people to individually opt out of this?
 			tick.spawn(loc);
 			Util.playSound(p, loc, Sound.ENTITY_BLAZE_SHOOT, 1F, 1F, true);
 		}
@@ -97,12 +73,11 @@ public class WoodenWand extends Weapon {
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier) {
-			double finalDamage = damage;
+			double finalDamage = properties.getDamage();
 			if (hitBarrier != null) {
-				finalDamage = hitBarrier.applyDefenseBuffs(finalDamage, type);
+				finalDamage = hitBarrier.applyDefenseBuffs(finalDamage, properties.getType());
 			}
-			FightInstance.dealDamage(p, type, finalDamage, hit.getEntity());
-			data.runActions(data, Trigger.BASIC_ATTACK, new Object[] { p, hit.getEntity() });
+			damageWithWeapon(p, data, null, p, finalDamage);
 			Location loc = hit.getEntity().getLocation();
 			Util.playSound(p, loc, Sound.ENTITY_GENERIC_EXPLODE, 1F, 1F, true);
 			explode.spawn(loc);
@@ -111,6 +86,6 @@ public class WoodenWand extends Weapon {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.WOODEN_HOE, null, null);
+		item = createItem(Material.WOODEN_HOE);
 	}
 }

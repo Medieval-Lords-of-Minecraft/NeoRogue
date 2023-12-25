@@ -3,17 +3,18 @@ package me.neoblade298.neorogue.equipment.armor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-import me.neoblade298.neorogue.equipment.Armor;
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class Footpads extends Armor {
+public class Footpads extends Equipment {
 	private double stamina;
 	
 	public Footpads(boolean isUpgraded) {
-		super("footpads", "Footpads", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
+		super("footpads", "Footpads", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
+				EquipmentType.ARMOR);
 		stamina = isUpgraded ? 3 : 5;
 	}
 
@@ -27,6 +28,6 @@ public class Footpads extends Armor {
 
 	@Override
 	public void setupItem() {
-		item = createItem(this, Material.LEATHER_BOOTS, null, "Receiving damage grants you <yellow>" + stamina + "</yellow> stamina.");
+		item = createItem(Material.LEATHER_BOOTS, "Receiving damage grants you <yellow>" + stamina + "</yellow> stamina.");
 	}
 }

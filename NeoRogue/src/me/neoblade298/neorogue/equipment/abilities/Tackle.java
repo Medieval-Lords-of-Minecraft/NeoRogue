@@ -15,8 +15,9 @@ import org.bukkit.util.Vector;
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.equipment.Ability;
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
+import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -27,7 +28,7 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class Tackle extends Ability {
+public class Tackle extends Equipment {
 	private ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION_LARGE),
 			start = new ParticleContainer(Particle.CLOUD);
 	private static final TargetProperties hc = new TargetProperties(1.5, true, TargetType.ENEMY),
@@ -35,8 +36,8 @@ public class Tackle extends Ability {
 	private int damage;
 	
 	public Tackle(boolean isUpgraded) {
-		super("tackle", "Tackle", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
-		setBaseProperties(20, 0, 1, 50);
+		super("tackle", "Tackle", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 25, 25, 0));
 		damage = isUpgraded ? 300 : 200;
 		
 		pc.count(25).spread(0.5, 0.5);
@@ -103,7 +104,7 @@ public class Tackle extends Ability {
 
 	@Override
 	public void setupItem() {
-		item = createItem(this, Material.REDSTONE, new String[] { "<gold>Area of Effect: <yellow>2" },
+		item = createItem(Material.REDSTONE, new String[] { "<gold>Area of Effect: <yellow>2" },
 				"On cast, dash forward, stopping at the first enemy hit and dealing <yellow>" + damage + "</yellow> blunt damage in a small area. "
 						+ "If an enemy is hit, reduce this ability's cooldown by <yellow>10</yellow>.");
 	}

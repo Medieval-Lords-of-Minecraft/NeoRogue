@@ -7,22 +7,22 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
-import me.neoblade298.neorogue.equipment.Ability;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
+import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class Bide extends Ability {
+public class Bide extends Equipment {
 	private int shields, berserk, duration;
 	private ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
 			bpc = new ParticleContainer(Particle.FLAME);
 	
 	public Bide(boolean isUpgraded) {
-		super("bide", "Bide", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR);
-		setBaseProperties(20, 0, 50, 0);
+		super("bide", "Bide", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR, 
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 0, 20, 0));
 		shields = 50;
 		duration = 5;
 		berserk = isUpgraded ? 3 : 2;
@@ -32,7 +32,7 @@ public class Bide extends Ability {
 
 	@Override
 	public void setupItem() {
-		item = createItem(this, Material.FLINT, null,
+		item = createItem(Material.FLINT,
 				"On cast, gain <yellow>" + shields + " </yellow>shields for " + duration + " seconds. During this time, "
 						+ "taking damage grants you <yellow>" + berserk + "</yellow> berserk stacks.");
 	}

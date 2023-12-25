@@ -31,7 +31,6 @@ public class RubyCluster extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.REDSTONE, "Artifact",
-				null, "<gray>Increases max health by <yellow>" + inc);
+		item = createItem(Material.REDSTONE, "<gray>Increases max health by <yellow>" + inc);
 	}
 }

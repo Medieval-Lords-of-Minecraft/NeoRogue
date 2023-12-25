@@ -6,8 +6,8 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 
-import me.neoblade298.neorogue.equipment.Offhand;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
@@ -15,11 +15,12 @@ import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class CaptainsTowerShield extends Offhand {
+public class CaptainsTowerShield extends Equipment {
 	private int reduction;
 	
 	public CaptainsTowerShield(boolean isUpgraded) {
-		super("captainsTowerShield", "Captain's Tower Shield", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
+		super("captainsTowerShield", "Captain's Tower Shield", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+				EquipmentType.OFFHAND);
 		reduction = isUpgraded ? 10 : 7;
 	}
 
@@ -45,7 +46,7 @@ public class CaptainsTowerShield extends Offhand {
 
 	@Override
 	public void setupItem() {
-		item = createItem(this, Material.SHIELD, null, "When raised, creates a barrier in front of you of size <yellow>4x3</yellow> "
+		item = createItem(Material.SHIELD, "When raised, creates a barrier in front of you of size <yellow>4x3</yellow> "
 				+ "that intercepts projectiles. Projectiles that hit the barrier hit you but have their damage reduced by <yellow>"
 				+ reduction + "</yellow>.");
 	}

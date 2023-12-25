@@ -15,8 +15,9 @@ import org.bukkit.scheduler.BukkitTask;
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.equipment.Ability;
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
+import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -27,7 +28,7 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class Bulldoze extends Ability {
+public class Bulldoze extends Equipment {
 	private ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION_LARGE),
 			start = new ParticleContainer(Particle.CLOUD),
 			wake = new ParticleContainer(Particle.EXPLOSION_NORMAL);
@@ -35,8 +36,8 @@ public class Bulldoze extends Ability {
 	private int damage;
 	
 	public Bulldoze(boolean isUpgraded) {
-		super("bulldoze", "Bulldoze", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR);
-		setBaseProperties(5, 0, 1, 5);
+		super("bulldoze", "Bulldoze", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 50, 15, 0));
 		damage = isUpgraded ? 300 : 200;
 		
 		pc.count(25).spread(0.5, 0.5);
@@ -93,7 +94,7 @@ public class Bulldoze extends Ability {
 
 	@Override
 	public void setupItem() {
-		item = createItem(this, Material.REDSTONE, null,
+		item = createItem(Material.REDSTONE,
 				"On cast, gain speed for 3 seconds, dealing <yellow>" + damage + "</yellow> damage to enemies you touch"
 						+ " and knock them back, once per enemy.");
 	}

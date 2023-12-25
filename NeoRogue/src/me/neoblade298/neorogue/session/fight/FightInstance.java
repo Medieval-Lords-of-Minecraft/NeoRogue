@@ -31,6 +31,7 @@ import org.bukkit.util.Vector;
 import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
 import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.map.Coordinates;
 import me.neoblade298.neorogue.map.Map;
@@ -172,7 +173,10 @@ public abstract class FightInstance extends Instance {
 	}
 	
 	public static void handleRightClickEntity(PlayerInteractEntityEvent e) {
-		Player p = e.getPlayer();
+		Player p = (Player) e.getPlayer();
+		PlayerFightData data = userData.get(p.getUniqueId());
+		if (data == null) return; // If you're dead
+		if (!data.canBasicAttack(EquipSlot.OFFHAND)) return;
 		System.out.println("Right click hit");
 		trigger(p, Trigger.RIGHT_CLICK_HIT, new Object[] { p, e.getRightClicked() });
 	}
@@ -321,6 +325,10 @@ public abstract class FightInstance extends Instance {
 		data.applyStatus(type, id, applier.getUniqueId(), stacks, seconds);
 	}
 	
+	public static void dealDamage(Damageable damager, DamageType type, double amount, Damageable target) {
+		dealDamage(damager, new DamageMeta(amount, type), target);
+	}
+	
 	public static void dealDamage(Damageable damager, DamageType type, double amount, Damageable... targets) {
 		dealDamage(damager, new DamageMeta(amount, type), targets);
 	}
@@ -330,9 +338,12 @@ public abstract class FightInstance extends Instance {
 	}
 	
 	public static void knockback(Location src, Entity trg, double force) {
-		Vector v = src.subtract(trg.getLocation()).toVector();
-		v.normalize().multiply(force);
-		trg.setVelocity(v);
+		Vector v = src.subtract(trg.getLocation()).toVector().normalize().multiply(force);
+		knockback(v, trg, force);
+	}
+	
+	public static void knockback(Vector v, Entity trg, double force) {
+		trg.setVelocity(trg.getVelocity().add(v.multiply(force)));
 	}
 	
 	public static void dealDamage(Damageable damager, DamageMeta meta, Damageable... targets) {

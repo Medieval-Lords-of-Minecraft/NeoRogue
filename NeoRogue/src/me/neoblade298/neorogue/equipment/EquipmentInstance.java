@@ -18,24 +18,18 @@ public class EquipmentInstance implements TriggerAction {
 	
 	public EquipmentInstance(Equipment eq) {
 		this.eq = eq;
-		this.manaCost = eq.manaCost;
-		this.staminaCost = eq.staminaCost;
-		this.cooldown = eq.cooldown;
+		this.manaCost = eq.getProperties().getManaCost();
+		this.staminaCost = eq.getProperties().getStaminaCost();
+		this.cooldown = eq.getProperties().getCooldown();
 	}
 	
 	public EquipmentInstance(Equipment eq, TriggerAction action) {
-		this.eq = eq;
-		this.manaCost = eq.manaCost;
-		this.staminaCost = eq.staminaCost;
-		this.cooldown = eq.cooldown;
+		this(eq);
 		this.action = action;
 	}
 	
 	public EquipmentInstance(Equipment eq, TriggerAction action, TriggerCondition condition) {
-		this.eq = eq;
-		this.manaCost = eq.manaCost;
-		this.staminaCost = eq.staminaCost;
-		this.cooldown = eq.cooldown;
+		this(eq);
 		this.action = action;
 		this.condition = condition;
 	}

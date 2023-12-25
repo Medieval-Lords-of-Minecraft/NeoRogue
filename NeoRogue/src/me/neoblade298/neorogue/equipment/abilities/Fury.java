@@ -8,8 +8,9 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
-import me.neoblade298.neorogue.equipment.Ability;
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
+import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -17,15 +18,15 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class Fury extends Ability {
+public class Fury extends Equipment {
 	private int damage, berserk;
 	private ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
 			hit = new ParticleContainer(Particle.REDSTONE),
 			explode = new ParticleContainer(Particle.EXPLOSION_NORMAL);
 	
 	public Fury(boolean isUpgraded) {
-		super("fury", "Fury", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR);
-		setBaseProperties(5, 0, 50);
+		super("fury", "Fury", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 30, 5, 0));
 		damage = 200;
 		berserk = isUpgraded ? 40 : 60;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
@@ -40,8 +41,8 @@ public class Fury extends Ability {
 	
 	private class FuryInstance extends EquipmentInstance {
 		private boolean isBerserk;
-		public FuryInstance(Ability a, Player p, int damage, Trigger bind) {
-			super(a);
+		public FuryInstance(Equipment eq, Player p, int damage, Trigger bind) {
+			super(eq);
 			
 			this.action = (data, in) -> {
 				Util.playSound(p, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1F, 1F, false);
@@ -78,7 +79,7 @@ public class Fury extends Ability {
 
 	@Override
 	public void setupItem() {
-		item = createItem(this, Material.FLINT, null,
+		item = createItem(Material.FLINT,
 				"On cast, your next basic attack deals <yellow>" + damage + " </yellow>damage and grants a stack of Berserk. " +
 				"At <yellow>" + berserk + " </yellow>stacks, the cooldown of this skill is halved and the cost is removed.");
 	}

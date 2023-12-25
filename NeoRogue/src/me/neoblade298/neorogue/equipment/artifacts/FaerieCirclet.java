@@ -36,8 +36,8 @@ public class FaerieCirclet extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.EMERALD, "Artifact",
-				null, "Lengthens your invulnerability frames by <yellow>" + ticks + "</yellow> ticks. The default is " +
+		item = createItem(Material.EMERALD, 
+				"Lengthens your invulnerability frames by <yellow>" + ticks + "</yellow> ticks. The default is " +
 				"10 ticks, or 0.5 seconds.");
 	}
 }

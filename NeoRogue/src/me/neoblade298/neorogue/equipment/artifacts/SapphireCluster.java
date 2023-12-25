@@ -31,7 +31,6 @@ public class SapphireCluster extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LAPIS_LAZULI, "Artifact",
-				null, "<gray>Increases max mana by <yellow>" + inc);
+		item = createItem(Material.LAPIS_LAZULI, "<gray>Increases max mana by <yellow>" + inc);
 	}
 }

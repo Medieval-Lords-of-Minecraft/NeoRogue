@@ -3,19 +3,20 @@ package me.neoblade298.neorogue.equipment.offhands;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-
-import me.neoblade298.neorogue.equipment.Offhand;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class WristBlade extends Offhand {
+public class WristBlade extends Equipment {
 	private int hits;
 	
 	public WristBlade(boolean isUpgraded) {
-		super("wristBlade", "Wrist Blade", isUpgraded, Rarity.RARE, EquipmentClass.THIEF);
+		super("wristBlade", "Wrist Blade", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
+				EquipmentType.OFFHAND);
+		equipSlot = EquipSlot.OFFHAND;
 		hits = isUpgraded ? 3 : 2;
 	}
 
@@ -40,7 +41,7 @@ public class WristBlade extends Offhand {
 	@Override
 	public void setupItem() {
 		String hitsString = isUpgraded ? "3rd" : "2nd";
-		item = createItem(this, Material.PRISMARINE_SHARD, null, "Every <yellow>" + hitsString + " basic attack will trigger"
+		item = createItem(Material.PRISMARINE_SHARD, "Every <yellow>" + hitsString + " basic attack will trigger"
 				+ " on-hit effects twice.");
 	}
 }

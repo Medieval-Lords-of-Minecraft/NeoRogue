@@ -8,8 +8,9 @@ import org.bukkit.entity.Player;
 import io.lumine.mythic.bukkit.BukkitAPIHelper;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
-import me.neoblade298.neorogue.equipment.Ability;
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
+import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
@@ -18,15 +19,15 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class Provoke extends Ability {
+public class Provoke extends Equipment {
 	private static final TargetProperties tp = new TargetProperties(15, false, TargetType.ENEMY);
 	private int threat;
 	private ParticleContainer taunt = new ParticleContainer(Particle.VILLAGER_ANGRY);
 	private static BukkitAPIHelper api = MythicBukkit.inst().getAPIHelper();
 	
 	public Provoke(boolean isUpgraded) {
-		super("provoke", "Provoke", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
-		setBaseProperties(isUpgraded ? 5 : 10, 0, 20, (int) tp.range);
+		super("provoke", "Provoke", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 20, isUpgraded ? 5 : 10, tp.range));
 		threat = 5000;
 		taunt.count(50).spread(0.5, 0.5).speed(0.2);
 		addReforgeOption("provoke", "savageCry", "glare");
@@ -45,7 +46,7 @@ public class Provoke extends Ability {
 
 	@Override
 	public void setupItem() {
-		item = createItem(this, Material.FLINT, null,
+		item = createItem(Material.FLINT,
 				"On cast, threaten all enemies you're looking at for <yellow>" + threat + "</yellow>.");
 	}
 }

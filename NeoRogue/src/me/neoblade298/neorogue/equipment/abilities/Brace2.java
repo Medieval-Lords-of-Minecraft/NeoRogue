@@ -7,20 +7,21 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
-import me.neoblade298.neorogue.equipment.Ability;
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
+import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class Brace2 extends Ability {
+public class Brace2 extends Equipment {
 	private int shields;
 	private ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
 	
 	public Brace2(boolean isUpgraded) {
-		super("brace2", "Brace II", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR);
-		setBaseProperties(20, 0, 100, 0);
+		super("brace2", "Brace II", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 100, 20, 0));
 		shields = isUpgraded ? 180 : 120;
 		pc.count(10).spread(0.5, 0.5).speed(0.2);
 	}
@@ -37,7 +38,7 @@ public class Brace2 extends Ability {
 
 	@Override
 	public void setupItem() {
-		item = createItem(this, Material.FLINT, null,
+		item = createItem(Material.FLINT,
 				"On cast, gain <yellow>" + shields + " </yellow>shields for 5 seconds.");
 	}
 }

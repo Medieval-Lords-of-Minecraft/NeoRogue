@@ -14,6 +14,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.equipment.*;
+import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 
 public class PlayerFightData extends FightData {
 	private PlayerSessionData sessdata;
@@ -37,12 +38,12 @@ public class PlayerFightData extends FightData {
 
 		// Initialize fight data
 		int i = 0;
-		for (Accessory acc : data.getAccessories()) {
+		for (Equipment acc : data.getAccessories()) {
 			if (acc == null) continue;
 			acc.initialize(p, this, null, i++);
 		}
 		i = 0;
-		for (Armor armor : data.getArmor()) {
+		for (Equipment armor : data.getArmor()) {
 			if (armor == null) continue;
 			armor.initialize(p, this, null, i++);
 		}
@@ -95,11 +96,11 @@ public class PlayerFightData extends FightData {
 		super.cleanup();
 		
 		// Perform end of fight actions (currently only used for resetting damage ticks)
-		for (Accessory acc : data.getAccessories()) {
+		for (Equipment acc : data.getAccessories()) {
 			if (acc == null) continue;
 			acc.cleanup(p, this);
 		}
-		for (Armor armor : data.getArmor()) {
+		for (Equipment armor : data.getArmor()) {
 			if (armor == null) continue;
 			armor.cleanup(p, this);
 		}
@@ -144,11 +145,6 @@ public class PlayerFightData extends FightData {
 			return cancel;
 		}
 		return false;
-	}
-	
-	public boolean runBasicAttack(PlayerFightData data, Object[] inputs, AbstractWeapon weapon) {
-		data.setBasicAttackCooldown(weapon);
-		return runActions(data, Trigger.BASIC_ATTACK, inputs);
 	}
 
 	// Must be separate due to the same trigger doing a different thing based on slot (like weapons)
@@ -302,33 +298,25 @@ public class PlayerFightData extends FightData {
 		return nextAttack <= System.currentTimeMillis();
 	}
 	
-	public void setBasicAttackCooldown(AbstractWeapon weapon) {
-		long attackCooldown = (long) (1000 / weapon.getAttackSpeed()) - 50; // Subtract 50 for tick differentials
-		this.nextAttack = System.currentTimeMillis() + attackCooldown;
+	public void setBasicAttackCooldown(EquipSlot slot, EquipmentProperties props) {
+		long attackCooldown = (long) (1000 / props.getAttackSpeed()) - 50; // Subtract 50 for tick differentials
+		
+		if (slot == EquipSlot.HOTBAR) this.nextAttack = System.currentTimeMillis() + attackCooldown;
+		else this.nextOffAttack = System.currentTimeMillis() + attackCooldown;
 	}
 	
-	public void setBasicAttackCooldown(long cooldown) {
-		this.nextAttack = System.currentTimeMillis() + cooldown;
+	public void setBasicAttackCooldown(EquipSlot slot, long cooldown) {
+		if (slot == EquipSlot.HOTBAR) this.nextAttack = System.currentTimeMillis() + cooldown;
+		else this.nextOffAttack = System.currentTimeMillis() + cooldown;
 	}
 	
-	public void resetBasicAttackCooldown() {
-		this.nextAttack = 0;
+	public void resetBasicAttackCooldown(EquipSlot slot) {
+		if (slot == EquipSlot.HOTBAR) this.nextAttack = 0;
+		else this.nextOffAttack = 0;
 	}
 	
-	public boolean canOffhandAttack() {
-		return nextOffAttack <= System.currentTimeMillis();
-	}
-	
-	public void setOffhandAttackCooldown(AbstractWeapon w) {
-		long attackCooldown = (long) (1000 / w.getAttackSpeed()) - 50; // Subtract 50 for tick differentials
-		this.nextOffAttack = System.currentTimeMillis() + attackCooldown;
-	}
-	
-	public void setOffhandAttackCooldown(long cooldown) {
-		this.nextOffAttack = System.currentTimeMillis() + cooldown;
-	}
-	
-	public void resetOffhandAttackCooldown() {
-		this.nextOffAttack = 0;
+	public boolean canBasicAttack(EquipSlot slot) {
+		if (slot == EquipSlot.HOTBAR) return nextAttack <= System.currentTimeMillis();
+		else return nextOffAttack <= System.currentTimeMillis();
 	}
 }
