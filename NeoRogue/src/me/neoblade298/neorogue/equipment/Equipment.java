@@ -16,7 +16,6 @@ import org.bukkit.util.Vector;
 
 import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.bukkit.NeoCore;
-import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.droptables.DropTable;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.equipment.abilities.*;
@@ -382,7 +381,7 @@ public abstract class Equipment {
 	
 	// Used for weapons that start cooldown on swing, not hit
 	public void swingWeapon(Player p, PlayerFightData data) {
-		Util.playSound(p, properties.getSwingSound(), false);
+		properties.getSwingSound().play(p);
 		data.setBasicAttackCooldown(equipSlot, properties);
 		if (equipSlot == EquipSlot.OFFHAND) p.swingOffHand();
 	}

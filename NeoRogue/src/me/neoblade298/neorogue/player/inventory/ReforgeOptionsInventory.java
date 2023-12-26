@@ -76,7 +76,7 @@ public class ReforgeOptionsInventory extends CoreInventory {
 			p.playSound(p, Sound.BLOCK_ANVIL_USE, 1F, 1F);
 			
 			if (isEquipSlot) {
-				prev.setEquipment(type, dataSlot, reforged.getId(), false);
+				prev.getData().setEquipment(type, dataSlot, Equipment.get(reforged.getId(), false));
 			}
 			else {
 				p.getInventory().setItem(slot, reforged.getItem());

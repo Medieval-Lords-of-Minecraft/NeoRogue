@@ -38,24 +38,25 @@ public class PlayerFightData extends FightData {
 
 		// Initialize fight data
 		int i = 0;
-		for (Equipment acc : data.getAccessories()) {
+		for (Equipment acc : data.getEquipment(EquipSlot.ACCESSORY)) {
 			if (acc == null) continue;
 			acc.initialize(p, this, null, i++);
 		}
 		i = 0;
-		for (Equipment armor : data.getArmor()) {
+		for (Equipment armor : data.getEquipment(EquipSlot.ARMOR)) {
 			if (armor == null) continue;
 			armor.initialize(p, this, null, i++);
 		}
-		for (i = 0; i < data.getHotbar().length; i++) {
-			Equipment hotbar = data.getHotbar()[i];
+		i = 0;
+		for (Equipment hotbar : data.getEquipment(EquipSlot.HOTBAR)) {
 			if (hotbar == null) continue;
 			hotbar.initialize(p, this, Trigger.getFromHotbarSlot(i), i);
+			i++;
 		}
-		for (i = 0; i < data.getOtherBinds().length; i++) {
-			Equipment other = data.getOtherBinds()[i];
+		i = 0;
+		for (Equipment other : data.getEquipment(EquipSlot.KEYBIND)) {
 			if (other == null) continue;
-			other.initialize(p, this, KeyBind.getBindFromData(i).getTrigger(), -1);
+			other.initialize(p, this, KeyBind.getBindFromData(i++).getTrigger(), -1);
 		}
 		i = 0;
 		for (ArtifactInstance art : data.getArtifacts()) {
@@ -63,8 +64,9 @@ public class PlayerFightData extends FightData {
 			art.initialize(p, this, null, i++);
 		}
 		
-		if (data.getOffhand() != null) {
-			data.getOffhand()[0].initialize(p, this, null, 0);
+		Equipment offhand = data.getEquipment(EquipSlot.OFFHAND)[0];
+		if (offhand != null) {
+			offhand.initialize(p, this, null, 0);
 		}
 		
 		// Setup inventory
@@ -73,12 +75,12 @@ public class PlayerFightData extends FightData {
 		ItemStack[] contents = inv.getContents();
 		
 		for (i = 0; i < 9; i++) {
-			if (data.getHotbar()[i] == null) continue;
-			contents[i] = data.getHotbar()[i].getItem();
+			if (data.getEquipment(EquipSlot.HOTBAR)[i] == null) continue;
+			contents[i] = data.getEquipment(EquipSlot.HOTBAR)[i].getItem();
 		}
 		inv.setContents(contents);
 		
-		if (data.getOffhand() != null) inv.setItemInOffHand(data.getOffhand()[0].getItem());
+		if (offhand != null) inv.setItemInOffHand(offhand.getItem());
 		
 		// Setup mana and hunger bar
 		updateStamina();
@@ -96,21 +98,19 @@ public class PlayerFightData extends FightData {
 		super.cleanup();
 		
 		// Perform end of fight actions (currently only used for resetting damage ticks)
-		for (Equipment acc : data.getAccessories()) {
+		for (Equipment acc : data.getEquipment(EquipSlot.ACCESSORY)) {
 			if (acc == null) continue;
 			acc.cleanup(p, this);
 		}
-		for (Equipment armor : data.getArmor()) {
+		for (Equipment armor : data.getEquipment(EquipSlot.ARMOR)) {
 			if (armor == null) continue;
 			armor.cleanup(p, this);
 		}
-		for (int i = 0; i < data.getHotbar().length; i++) {
-			Equipment hotbar = data.getHotbar()[i];
+		for (Equipment hotbar : data.getEquipment(EquipSlot.HOTBAR)) {
 			if (hotbar == null) continue;
 			hotbar.cleanup(p, this);
 		}
-		for (int i = 0; i < data.getOtherBinds().length; i++) {
-			Equipment other = data.getOtherBinds()[i];
+		for (Equipment other : data.getEquipment(EquipSlot.KEYBIND)) {
 			if (other == null) continue;
 			other.cleanup(p, this);
 		}
@@ -119,8 +119,8 @@ public class PlayerFightData extends FightData {
 			art.cleanup(p, this);
 		}
 		
-		if (data.getOffhand()[0] != null) {
-			data.getOffhand()[0].cleanup(p, this);
+		if (data.getEquipment(EquipSlot.OFFHAND)[0] != null) {
+			data.getEquipment(EquipSlot.OFFHAND)[0].cleanup(p, this);
 		}
 	}
 

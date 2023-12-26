@@ -11,6 +11,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import me.neoblade298.neocore.bukkit.util.SoundContainer;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import net.kyori.adventure.text.Component;
@@ -20,10 +21,10 @@ public class EquipmentProperties {
 	private ArrayList<Component> lore;
 	private double manaCost, staminaCost, cooldown, range, damage, attackSpeed, knockback;
 	private DamageType type;
-	private Sound swingSound;
+	private SoundContainer swingSound;
 	
 	private EquipmentProperties(double manaCost, double staminaCost, double cooldown, double range, double damage, double attackSpeed,
-			double knockback, DamageType type, Sound swingSound) {
+			double knockback, DamageType type, SoundContainer swingSound) {
 		this.manaCost = manaCost;
 		this.staminaCost = staminaCost;
 		this.cooldown = cooldown;
@@ -31,14 +32,23 @@ public class EquipmentProperties {
 		this.damage = damage;
 		this.attackSpeed = attackSpeed;
 		this.type = type;
+		this.swingSound = swingSound;
 	}
 	
 	public static EquipmentProperties ofWeapon(double damage, double attackSpeed, DamageType type, Sound swingSound) {
+		return new EquipmentProperties(0, 0, 0, 0, damage, attackSpeed, 0, type, new SoundContainer(swingSound));
+	}
+	
+	public static EquipmentProperties ofWeapon(double damage, double attackSpeed, DamageType type, SoundContainer swingSound) {
 		return new EquipmentProperties(0, 0, 0, 0, damage, attackSpeed, 0, type, swingSound);
 	}
 	
 	public static EquipmentProperties ofWeapon(double damage, double attackSpeed, double knockback, DamageType type, Sound swingSound) {
-		return new EquipmentProperties(0, 0, 0, 0, damage, attackSpeed, knockback, type, null);
+		return new EquipmentProperties(0, 0, 0, 0, damage, attackSpeed, knockback, type, new SoundContainer(swingSound));
+	}
+	
+	public static EquipmentProperties ofWeapon(double damage, double attackSpeed, double knockback, DamageType type, SoundContainer swingSound) {
+		return new EquipmentProperties(0, 0, 0, 0, damage, attackSpeed, knockback, type, swingSound);
 	}
 	
 	public static EquipmentProperties ofUsable(double manaCost, double staminaCost, double cooldown, double range) {
@@ -127,11 +137,11 @@ public class EquipmentProperties {
 		this.knockback = knockback;
 	}
 
-	public Sound getSwingSound() {
+	public SoundContainer getSwingSound() {
 		return swingSound;
 	}
 
-	public void setSwingSound(Sound swingSound) {
+	public void setSwingSound(SoundContainer swingSound) {
 		this.swingSound = swingSound;
 	}
 
