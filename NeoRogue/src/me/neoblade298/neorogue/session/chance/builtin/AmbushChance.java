@@ -1,12 +1,19 @@
-package me.neoblade298.neorogue.session.chance;
+package me.neoblade298.neorogue.session.chance.builtin;
+
+import java.util.Collection;
 
 import org.bukkit.Material;
 
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.AreaType;
+import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.NodeSelectInstance;
 import me.neoblade298.neorogue.session.RewardInstance;
 import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.chance.ChanceChoice;
+import me.neoblade298.neorogue.session.chance.ChanceInstance;
+import me.neoblade298.neorogue.session.chance.ChanceSet;
+import me.neoblade298.neorogue.session.chance.ChanceStage;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.FightScore;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -47,7 +54,10 @@ public class AmbushChance extends ChanceSet {
 						s.broadcast("Success! You take your pick of the loot and go on your way.");
 					}
 					else {
-						s.broadcast("They spot you as you lumber over and snap a few twigs. You prepare to fight.");
+						Collection<PlayerSessionData> party = s.getParty().values();
+						PlayerSessionData data = (PlayerSessionData) party.toArray()[NeoRogue.gen.nextInt(party.size())];
+						s.broadcast("They spot you as <yellow>" + data.getData().getDisplay() +
+								"</yellow> lumbers over and snaps a few twigs. You groan and prepare to fight.");
 					}
 					return null;
 				}));

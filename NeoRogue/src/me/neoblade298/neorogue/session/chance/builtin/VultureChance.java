@@ -1,4 +1,4 @@
-package me.neoblade298.neorogue.session.chance;
+package me.neoblade298.neorogue.session.chance.builtin;
 
 import java.util.ArrayList;
 import org.bukkit.Material;
@@ -8,6 +8,9 @@ import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.chance.ChanceChoice;
+import me.neoblade298.neorogue.session.chance.ChanceSet;
+import me.neoblade298.neorogue.session.chance.ChanceStage;
 import me.neoblade298.neorogue.session.fight.MinibossFightInstance;
 
 public class VultureChance extends ChanceSet {

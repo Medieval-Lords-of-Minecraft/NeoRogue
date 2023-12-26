@@ -79,7 +79,7 @@ public class PlayerSessionInventory extends CoreInventory {
 		}
 
 		slotTypes.put(OFFHAND, EquipSlot.OFFHAND);
-		Equipment o = data.getOffhand();
+		Equipment o = data.getOffhand()[0];
 		contents[OFFHAND] = o != null ? addNbt(o.getItem(), o.getId(), o.isUpgraded(), 0)
 				: createOffhandIcon();
 

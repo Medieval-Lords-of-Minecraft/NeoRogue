@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.TreeSet;
 import java.util.UUID;
 
@@ -37,16 +38,18 @@ public class PlayerSessionData {
 	private double maxHealth, maxMana, maxStamina, health, manaRegen, staminaRegen;
 	private Equipment[] hotbar = new Equipment[9];
 	private Equipment[] armors = new Equipment[3];
-	private Equipment offhand;
+	private Equipment[] offhand = new Equipment[1];
 	private Equipment[] accessories = new Equipment[6];
-	private TreeSet<ArtifactInstance> artifacts = new TreeSet<ArtifactInstance>();
-	private ArrayList<Equipment> storage = new ArrayList<Equipment>(9);
+	private Equipment[] storage = new Equipment[STORAGE_SIZE];
 	private Equipment[] otherBinds = new Equipment[8];
+	private Equipment[][] allEquips = new Equipment[][] {hotbar, armors, offhand, accessories, storage, otherBinds};
+	private TreeSet<ArtifactInstance> artifacts = new TreeSet<ArtifactInstance>();
 	private int abilitiesEquipped = 0, maxAbilities = 2, maxStorage = 9, coins = 0;
 	private String instanceData;
 	private boolean isDead;
 	
 	private static final ParticleContainer heal = new ParticleContainer(Particle.VILLAGER_HAPPY).count(50).spread(0.5, 1).speed(0.1).ignoreSettings(true);
+	private static final int STORAGE_SIZE = 9;
 	
 	public PlayerSessionData(UUID uuid, Session s, ResultSet rs) throws SQLException {
 		data = PlayerManager.getPlayerData(uuid);
@@ -61,9 +64,9 @@ public class PlayerSessionData {
 		this.staminaRegen = rs.getDouble("staminaRegen");
 		this.hotbar = Equipment.deserializeAsArray(rs.getString("hotbar"));
 		this.armors = Equipment.deserializeAsArray(rs.getString("armors"));
-		this.offhand = Equipment.deserialize(rs.getString("offhand"));
+		this.offhand = Equipment.deserializeAsArray(rs.getString("offhand"));
 		this.accessories = Equipment.deserializeAsArray(rs.getString("accessories"));
-		this.storage = Equipment.deserializeAsArrayList(rs.getString("storage"));
+		this.storage = Equipment.deserializeAsArray(rs.getString("storage"));
 		this.otherBinds = Equipment.deserializeAsArray(rs.getString("otherBinds"));
 		this.artifacts = ArtifactInstance.deserializeSet(rs.getString("artifacts"));
 		this.maxAbilities = rs.getInt("maxAbilities");
@@ -88,7 +91,7 @@ public class PlayerSessionData {
 		switch (this.pc) {
 		case WARRIOR: hotbar[0] = Equipment.get("woodenSword", false);
 		hotbar[1] = Equipment.get("empoweredEdge", false);
-		offhand = Equipment.get("chasingDagger", false);
+		offhand[0] = Equipment.get("chasingDagger", false);
 		break;
 		case THIEF: hotbar[0] = Equipment.get("woodenSword", false);
 		hotbar[1] = Equipment.get("empoweredEdge", false);
@@ -115,8 +118,8 @@ public class PlayerSessionData {
 		inv.setItemInOffHand(CoreInventory.createButton(Material.ENCHANTED_BOOK, Component.text("Storage Book", NamedTextColor.YELLOW),
 				Component.text("Swap hands or click anywhere in your inventory to open your storage."), 200, NamedTextColor.GRAY));
 		
-		for (int i = 0; i < storage.size(); i++) {
-			Equipment eq = storage.get(i);
+		for (int i = 0; i < storage.length; i++) {
+			Equipment eq = storage[i];
 			if (eq == null) continue;
 			inv.setItem(i, eq.getItem());
 		}
@@ -146,16 +149,16 @@ public class PlayerSessionData {
 		return accessories;
 	}
 	
-	public ArrayList<Equipment> getStorage() {
+	public Equipment[] getStorage() {
 		return storage;
 	}
 	
-	public Equipment getOffhand() {
+	public Equipment[] getOffhand() {
 		return offhand;
 	}
 	
 	public void setOffhand(Equipment offhand) {
-		this.offhand = offhand;
+		this.offhand[0] = offhand;
 	}
 	
 	public Equipment[] getOtherBinds() {
@@ -196,6 +199,10 @@ public class PlayerSessionData {
 
 	public Equipment[] getArmors() {
 		return armors;
+	}
+	
+	public Equipment[][] getAllEquipment() {
+		return allEquips;
 	}
 
 	public TreeSet<ArtifactInstance> getArtifacts() {
@@ -255,8 +262,8 @@ public class PlayerSessionData {
 			return false;
 		}
 		
-		storage.clear();
-		
+		storage = new Equipment[maxStorage];
+		int i = 0;
 		for (ItemStack item : toSave) {
 			NBTItem nbti = new NBTItem(item);
 			String id = nbti.getString("equipId");
@@ -269,7 +276,7 @@ public class PlayerSessionData {
 				continue;
 			}
 			else {
-				storage.add(eq);
+				storage[i++] = eq;
 			}
 		}
 		return true;
@@ -372,7 +379,7 @@ public class PlayerSessionData {
 					.addString(pc.name()).addValue(maxHealth).addValue(maxMana)
 					.addValue(maxStamina).addValue(health).addValue(manaRegen).addValue(staminaRegen)
 					.addString(Equipment.serialize(hotbar)).addString(Equipment.serialize(armors))
-					.addString(offhand != null ? offhand.serialize() : "").addString(Equipment.serialize(accessories))
+					.addString(Equipment.serialize(offhand)).addString(Equipment.serialize(accessories))
 					.addString(Equipment.serialize(storage)).addString(Equipment.serialize(otherBinds))
 					.addString(ArtifactInstance.serialize(artifacts)).addValue(maxAbilities).addValue(maxStorage)
 					.addValue(coins).addString(instanceData);
@@ -381,6 +388,48 @@ public class PlayerSessionData {
 		catch (SQLException ex) {
 			Bukkit.getLogger().warning("[NeoRogue] Failed to save player session data for " + uuid + " hosted by " + host + " to slot " + saveSlot);
 			ex.printStackTrace();
+		}
+	}
+	
+	private class PlayerEquipmentIterator implements Iterator<Equipment> {
+		private int i = 0, j = 0;
+		private int[] next;
+
+		@Override
+		public boolean hasNext() {
+			int[] indices = getNextNonEmpty();
+			if (indices[0] == -1) {
+				return false;
+			}
+			else {
+				next = indices;
+				return true;
+			}
+		}
+
+		@Override
+		public Equipment next() {
+			if (next == null) next = getNextNonEmpty();
+			i = next[0];
+			j = next[1];
+			next = null;
+			return allEquips[i][j];
+		}
+		
+		private int[] getNextNonEmpty() {
+			int ip = i, jp = j;
+			while(ip < allEquips.length - 1 || jp < allEquips[ip].length - 1) {
+				if (allEquips[ip][jp] != null) return new int[] {ip, jp};
+				
+				if (jp >= allEquips[ip].length - 1) {
+					ip++;
+					jp = 0;
+				}
+				else {
+					jp++;
+				}
+			}
+			return new int[] {-1};
 		}
 	}
 }

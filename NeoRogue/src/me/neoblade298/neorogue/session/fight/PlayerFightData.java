@@ -64,7 +64,7 @@ public class PlayerFightData extends FightData {
 		}
 		
 		if (data.getOffhand() != null) {
-			data.getOffhand().initialize(p, this, null, 0);
+			data.getOffhand()[0].initialize(p, this, null, 0);
 		}
 		
 		// Setup inventory
@@ -78,7 +78,7 @@ public class PlayerFightData extends FightData {
 		}
 		inv.setContents(contents);
 		
-		if (data.getOffhand() != null) inv.setItemInOffHand(data.getOffhand().getItem());
+		if (data.getOffhand() != null) inv.setItemInOffHand(data.getOffhand()[0].getItem());
 		
 		// Setup mana and hunger bar
 		updateStamina();
@@ -119,8 +119,8 @@ public class PlayerFightData extends FightData {
 			art.cleanup(p, this);
 		}
 		
-		if (data.getOffhand() != null) {
-			data.getOffhand().cleanup(p, this);
+		if (data.getOffhand()[0] != null) {
+			data.getOffhand()[0].cleanup(p, this);
 		}
 	}
 
