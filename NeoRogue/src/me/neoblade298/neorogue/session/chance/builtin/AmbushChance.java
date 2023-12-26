@@ -27,7 +27,7 @@ public class AmbushChance extends ChanceSet {
 
 		stage.addChoice(new ChanceChoice(Material.DIAMOND_SWORD, "Gather yourself",
 				"Start the fight, but at max mana and stamina.",
-				(s, inst) -> {
+				(s, inst, data) -> {
 					s.broadcast("You get centered and are well-prepared for the fight before charging in.");
 					((FightInstance) inst.getNextInstance()).addInitialTask((fi, fdata) -> {
 						for (PlayerFightData pfdata : fdata) {
@@ -40,7 +40,7 @@ public class AmbushChance extends ChanceSet {
 		
 		stage.addChoice(new ChanceChoice(Material.LEATHER_BOOTS, "Skirt around them",
 				"Skip the fight entirely.",
-				(s, inst) -> {
+				(s, inst, data) -> {
 					inst.setNextInstance(new NodeSelectInstance());
 					s.broadcast("You sneak around the group without issue.");
 					return null;
@@ -48,7 +48,7 @@ public class AmbushChance extends ChanceSet {
 		
 		stage.addChoice(new ChanceChoice(Material.FLINT, "Steal from them",
 				"<yellow>50%</yellow> chance you get an S tier reward, <yellow>50%</yellow chance a normal fight starts.",
-				(s, inst) -> {
+				(s, inst, unused) -> {
 					if (NeoRogue.gen.nextBoolean()) {
 						inst.setNextInstance(new RewardInstance(StandardFightInstance.generateRewards(s, FightScore.S)));
 						s.broadcast("Success! You take your pick of the loot and go on your way.");

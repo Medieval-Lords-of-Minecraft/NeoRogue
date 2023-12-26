@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.MinibossFightInstance;
 public class VultureChance extends ChanceSet {
 	private ChanceStage fightMiniboss;
 	private static final ChanceChoice leave = new ChanceChoice(Material.FLINT, "Leave while you can",
-			"No need to risk anything else.", (s, inst) -> {
+			"No need to risk anything else.", (s, inst, unused) -> {
 		s.broadcast("This is a disaster waiting to happen. The party sneaks away.");
 		return null;
 	});
@@ -49,7 +49,7 @@ public class VultureChance extends ChanceSet {
 
 		ChanceChoice stay = new ChanceChoice(Material.FLINT, "Steal from the dead adventurer",
 				"<yellow>" + failPercent + "%</yellow> chance you will fail and be forced to fight a Miniboss.",
-				(s, inst) -> {
+				(s, inst, unused) -> {
 					if (NeoRogue.gen.nextInt(100) < failPercent) {
 						s.broadcast("<red>As you loot the body, the enemy returns!");
 						inst.setNextInstance(new MinibossFightInstance(s.getParty().keySet(), s.getArea().getType()));

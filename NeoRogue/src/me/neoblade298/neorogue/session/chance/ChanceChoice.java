@@ -9,6 +9,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.shared.util.SharedUtil;
+import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -45,11 +46,11 @@ public class ChanceChoice {
 				.colorIfAbsent(NamedTextColor.GOLD);
 	}
 	
-	public ItemStack getItem(Session s) {
+	public ItemStack getItem(Session s, PlayerSessionData data) {
 		ItemStack item = new ItemStack(mat);
 		
 		// Check conditions
-		boolean canRun = req != null ? req.check(s, (ChanceInstance) s.getInstance()) : true;
+		boolean canRun = req != null ? req.check(s, (ChanceInstance) s.getInstance(), data) : true;
 		ItemMeta meta = item.getItemMeta();
 		Component display = title;
 		if (!canRun) {
@@ -76,13 +77,13 @@ public class ChanceChoice {
 		return item;
 	}
 	
-	public String choose(Session s, ChanceInstance inst) {
+	public String choose(Session s, ChanceInstance inst, PlayerSessionData data) {
 		s.broadcastSound(Sound.ENTITY_ARROW_HIT_PLAYER);
 		for (Player player : s.getOnlinePlayers()) {
 			player.closeInventory();
 		}
 		if (action != null) {
-			return action.run(s, inst);
+			return action.run(s, inst, data);
 		}
 		return null;
 	}

@@ -50,7 +50,7 @@ public abstract class Equipment {
 	protected Rarity rarity;
 	protected EquipmentClass ec;
 	protected EquipmentType type;
-	protected EquipSlot es = EquipSlot.NONE;
+	protected EquipSlot es;
 	protected EquipmentProperties properties;
 	protected int cooldown = 0;
 	
@@ -438,7 +438,7 @@ public abstract class Equipment {
 		ACCESSORY("Accessory", EquipSlot.ACCESSORY),
 		OFFHAND("Offhand", EquipSlot.OFFHAND),
 		ABILITY("Ability", EquipSlot.KEYBIND),
-		ARTIFACT("Artifact", EquipSlot.NONE);
+		ARTIFACT("Artifact", null);
 		
 		private String display;
 		private EquipSlot slot;
@@ -457,13 +457,12 @@ public abstract class Equipment {
 	}
 	
 	public static enum EquipSlot {
-		WEAPON,
 		ARMOR,
 		ACCESSORY,
 		OFFHAND,
 		HOTBAR,
 		KEYBIND, // Hotbar + other binds
-		NONE; // Artifacts
+		STORAGE;
 	}
 	
 	private static class DropTableSet<E> {

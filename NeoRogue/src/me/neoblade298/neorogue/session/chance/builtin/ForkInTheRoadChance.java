@@ -24,7 +24,7 @@ public class ForkInTheRoadChance extends ChanceSet {
 
 		ChanceChoice choice = new ChanceChoice(Material.COBBLESTONE, "Let's risk it",
 				"<gray><yellow>50% </yellow>chance to arrive at a campfire, <yellow>50% </yellow>chance to encounter a fight",
-				(s, inst) -> {
+				(s, inst, data) -> {
 					boolean isCampfire = NeoRogue.gen.nextBoolean();
 					if (isCampfire) {
 						s.broadcast("The fork takes you to a nice open space by a river. Nice!");
@@ -41,7 +41,7 @@ public class ForkInTheRoadChance extends ChanceSet {
 		
 		choice = new ChanceChoice(Material.STONE_BRICKS, "Let's not",
 				"Stay on your path and avoid any risk.",
-				(s, inst) -> {
+				(s, inst, data) -> {
 					s.broadcast("You were never a fan of Robert Frost's works anyway. You get back to walking.");
 					return null;
 				});

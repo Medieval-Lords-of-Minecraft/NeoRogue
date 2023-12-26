@@ -6,6 +6,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.TreeSet;
 import java.util.UUID;
 
@@ -24,6 +25,7 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder.SQLAction;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.*;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
@@ -46,7 +48,8 @@ public class PlayerSessionData {
 	private Equipment[] otherBinds = new Equipment[8];
 	private TreeSet<ArtifactInstance> artifacts = new TreeSet<ArtifactInstance>();
 	private int abilitiesEquipped = 0, maxAbilities = 2, maxStorage = 9, coins = 0;
-	private HashMap<EquipSlot, HashSet<Integer>> equipment = new HashMap<EquipSlot, HashSet<Integer>>();
+	private HashMap<EquipSlot, HashSet<Integer>> equipment = new HashMap<EquipSlot, HashSet<Integer>>(),
+			upgraded = new HashMap<EquipSlot, HashSet<Integer>>();
 	private String instanceData;
 	private boolean isDead;
 
@@ -111,11 +114,10 @@ public class PlayerSessionData {
 			break;
 		}
 
-		equipment.put(EquipSlot.ACCESSORY, new HashSet<Integer>());
-		equipment.put(EquipSlot.ARMOR, new HashSet<Integer>());
-		equipment.put(EquipSlot.HOTBAR, new HashSet<Integer>());
-		equipment.put(EquipSlot.OFFHAND, new HashSet<Integer>());
-		equipment.put(EquipSlot.KEYBIND, new HashSet<Integer>());
+		for (EquipSlot es : EquipSlot.values()) {
+			equipment.put(es, new HashSet<Integer>());
+			upgraded.put(es, new HashSet<Integer>());
+		}
 
 		setupInventory();
 
@@ -154,6 +156,13 @@ public class PlayerSessionData {
 	
 	public Equipment[] getEquipment(EquipSlot es) {
 		return getArrayFromEquipSlot(es);
+	}
+	
+	public void upgradeEquipment(EquipSlot es, int slot) {
+		Equipment[] slots = getArrayFromEquipSlot(es);
+		slots[slot] = slots[slot].getUpgraded();
+		equipment.get(es).remove(slot);
+		upgraded.get(es).add(slot);
 	}
 
 	public void setEquipment(EquipSlot es, int slot, Equipment eq) {
@@ -286,6 +295,46 @@ public class PlayerSessionData {
 			}
 		}
 	}
+	
+	public PlayerSlot getRandomEquipment() {
+		return getRandomEquipment(NeoRogue.gen.nextBoolean());
+	}
+	
+	public PlayerSlot getRandomEquipment(boolean upgraded) {
+		HashMap<EquipSlot, HashSet<Integer>> pool = upgraded ? this.upgraded : this.equipment;
+		// First randomly roll equipment slot and try to find a non-empty one
+		EquipSlot es = null;
+		for (int i = 0; i < 20; i++) {
+			EquipSlot temp = EquipSlot.values()[NeoRogue.gen.nextInt(EquipSlot.values().length)];
+			if (pool.get(temp).size() > 0) {
+				es = temp;
+				break;
+			}
+		}
+		
+		// If randomly rolling failed, just manually look through
+		if (es == null) {
+			for (EquipSlot temp : EquipSlot.values()) {
+				if (pool.get(temp).size() > 0) {
+					es = temp;
+					break;
+				}
+			}
+			
+			// Player has nothing equipped
+			if (es == null) {
+				return null;
+			}
+		}
+		
+		HashSet<Integer> slots = pool.get(es);
+		Iterator<Integer> iter = slots.iterator();
+		int slot = iter.next();
+		for (int i = 0; i < NeoRogue.gen.nextInt(slots.size()); i++) {
+			slot = iter.next();
+		}
+		return new PlayerSlot(es, slot);
+	}
 
 	public boolean saveStorage() {
 		Player p = data.getPlayer();
@@ -304,6 +353,8 @@ public class PlayerSessionData {
 		}
 
 		storage = new Equipment[maxStorage];
+		equipment.get(EquipSlot.STORAGE).clear();
+		upgraded.get(EquipSlot.STORAGE).clear();
 		int i = 0;
 		for (ItemStack item : toSave) {
 			NBTItem nbti = new NBTItem(item);
@@ -319,6 +370,12 @@ public class PlayerSessionData {
 				continue;
 			}
 			else {
+				if (eq.isUpgraded()) {
+					upgraded.get(EquipSlot.STORAGE).add(i);
+				}
+				else {
+					equipment.get(EquipSlot.STORAGE).add(i);
+				}
 				storage[i++] = eq;
 			}
 		}
@@ -431,6 +488,24 @@ public class PlayerSessionData {
 			Bukkit.getLogger().warning("[NeoRogue] Failed to save player session data for " + uuid + " hosted by "
 					+ host + " to slot " + saveSlot);
 			ex.printStackTrace();
+		}
+	}
+	
+	public class PlayerSlot {
+		private int slot;
+		private EquipSlot es;
+		
+		public PlayerSlot(EquipSlot es, int slot) {
+			this.slot = slot;
+			this.es = es;
+		}
+		
+		public int getSlot() {
+			return slot;
+		}
+		
+		public EquipSlot getEquipSlot() {
+			return es;
 		}
 	}
 }

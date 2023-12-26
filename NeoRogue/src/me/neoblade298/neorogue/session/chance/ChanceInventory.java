@@ -16,6 +16,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.FightInfoInventory;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -34,10 +35,10 @@ public class ChanceInventory extends CoreInventory {
 		this.inst = inst;
 		this.s = inst.getSession();
 		this.stage = stage;
-		setupInventory();
+		setupInventory(inst.getSession().getData(p.getUniqueId()));
 	}
 	
-	private void setupInventory() {
+	private void setupInventory(PlayerSessionData data) {
 		// Create title
 		ItemStack[] contents = new ItemStack[18];
 		ItemStack title = CoreInventory.createButton(set.getMaterial(), set.getDisplay());
@@ -51,15 +52,15 @@ public class ChanceInventory extends CoreInventory {
 		int offset = 4 - (size / 2);
 		if (stage.choices.size() % 2 == 0) {
 			for (int i = 0; i < size / 2; i++) {
-				contents[offset + i + 9] = getChoiceItem(i);
+				contents[offset + i + 9] = getChoiceItem(i, data);
 			}
 			for (int i = (size / 2); i < size; i++) {
-				contents[offset + i + 10] = getChoiceItem(i);
+				contents[offset + i + 10] = getChoiceItem(i, data);
 			}
 		}
 		else {
 			for (int i = 0; i < size; i++) {
-				contents[offset + i + 9] = getChoiceItem(i);
+				contents[offset + i + 9] = getChoiceItem(i, data);
 			}
 		}
 		
@@ -92,7 +93,7 @@ public class ChanceInventory extends CoreInventory {
 			Util.displayError(p, "Only the host may make choices for this event!");
 			return;
 		}
-		ChanceStage next = set.getStage(stage.choices.get(num - 1).choose(s, inst));
+		ChanceStage next = set.getStage(stage.choices.get(num - 1).choose(s, inst, s.getData(uuid)));
 		inst.advanceStage(uuid, next);
 	}
 
@@ -106,8 +107,8 @@ public class ChanceInventory extends CoreInventory {
 		e.setCancelled(true);
 	}
 
-	private ItemStack getChoiceItem(int num) {
-		ItemStack item = stage.choices.get(num).getItem(s);
+	private ItemStack getChoiceItem(int num, PlayerSessionData data) {
+		ItemStack item = stage.choices.get(num).getItem(s, data);
 		NBTItem nbti = new NBTItem(item);
 		nbti.setInteger("choice", num + 1);
 		return nbti.getItem();

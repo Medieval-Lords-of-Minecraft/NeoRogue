@@ -9,9 +9,7 @@ import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.session.Session;
-import me.neoblade298.neorogue.session.chance.builtin.ForkInTheRoadChance;
-import me.neoblade298.neorogue.session.chance.builtin.GreedChance;
-import me.neoblade298.neorogue.session.chance.builtin.VultureChance;
+import me.neoblade298.neorogue.session.chance.builtin.*;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -42,8 +40,10 @@ public class ChanceSet {
 			sets.put(type, new ArrayList<ChanceSet>());
 		}
 		
+		new AmbushChance();
 		new ForkInTheRoadChance();
 		new GreedChance();
+		new ShiningLightChance();
 		new VultureChance();
 	}
 	
@@ -58,6 +58,10 @@ public class ChanceSet {
 		this.mat = mat;
 		sets.get(type).add(this);
 		setsById.put(id, this);
+	}
+	public ChanceSet(AreaType type, Material mat, String id, String display, boolean individualChoices) {
+		this(type, mat, id, display);
+		this.individualChoices = individualChoices;
 	}
 	
 	public ChanceStage getInitialStage() {
