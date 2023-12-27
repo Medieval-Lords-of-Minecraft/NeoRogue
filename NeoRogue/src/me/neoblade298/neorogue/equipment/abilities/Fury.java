@@ -35,7 +35,7 @@ public class Fury extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
+	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new FuryInstance(this, p, damage, bind));
 	}
 	

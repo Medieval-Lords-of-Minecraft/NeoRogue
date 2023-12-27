@@ -48,7 +48,7 @@ public class Tackle extends Equipment {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
+	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		EquipmentInstance inst = new EquipmentInstance(this);
 		inst.setAction((pdata, in) -> {
 			Util.playSound(p, Sound.ENTITY_SHULKER_SHOOT, false);

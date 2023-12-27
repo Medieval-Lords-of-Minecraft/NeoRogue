@@ -19,7 +19,7 @@ public class MinorStaminaRelic extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
+	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTickAction(new MinorStaminaRelicTick(data));
 	}
 	

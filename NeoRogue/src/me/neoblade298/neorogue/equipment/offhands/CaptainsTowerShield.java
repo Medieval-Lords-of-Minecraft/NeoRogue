@@ -25,7 +25,7 @@ public class CaptainsTowerShield extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
+	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.RAISE_SHIELD, (pdata, inputs) -> {
 			HashMap<BuffType, Buff> buffs = new HashMap<BuffType, Buff>();
 			buffs.put(BuffType.GENERAL, new Buff(p.getUniqueId(), reduction, 0));

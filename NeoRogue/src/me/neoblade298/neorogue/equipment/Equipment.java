@@ -25,6 +25,7 @@ import me.neoblade298.neorogue.equipment.artifacts.*;
 import me.neoblade298.neorogue.equipment.offhands.*;
 import me.neoblade298.neorogue.equipment.weapons.*;
 import me.neoblade298.neorogue.equipment.cursed.*;
+import me.neoblade298.neorogue.equipment.consumables.*;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -123,6 +124,11 @@ public abstract class Equipment {
 			new StoneSword(b);
 			new WoodenSword(b);
 			new WoodenWand(b);
+			
+			// Consumables
+			new MinorHealthPotion(b);
+			new MinorStaminaPotion(b);
+			new MinorManaPotion(b);
 		}
 		
 		// Curses
@@ -224,7 +230,7 @@ public abstract class Equipment {
 	}
 	
 	// Run at the start of a fight to initialize Fight Data
-	public abstract void initialize(Player p, PlayerFightData data, Trigger bind, int slot);
+	public abstract void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot);
 	
 	// Run at the end of a fight if needed
 	public void cleanup(Player p, PlayerFightData data) {
@@ -484,6 +490,7 @@ public abstract class Equipment {
 		ACCESSORY("Accessory", new EquipSlot[] {EquipSlot.ACCESSORY}),
 		OFFHAND("Offhand", new EquipSlot[] {EquipSlot.OFFHAND}),
 		ABILITY("Ability", new EquipSlot[] {EquipSlot.HOTBAR, EquipSlot.KEYBIND}),
+		CONSUMABLE("Consumable", new EquipSlot[] {EquipSlot.HOTBAR, EquipSlot.KEYBIND}),
 		MATERIAL("Material", new EquipSlot[0]),
 		ARTIFACT("Artifact", new EquipSlot[0]);
 		

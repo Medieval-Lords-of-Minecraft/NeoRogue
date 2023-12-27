@@ -24,7 +24,7 @@ public class LeatherGauntlets extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
+	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
 			meleeWeapon(p, data, inputs, (Damageable) inputs[1]);
 			return TriggerResult.keep();

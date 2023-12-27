@@ -425,7 +425,11 @@ public class PlayerSessionData {
 	}
 
 	public void updateHealth() {
-		health = Math.round(getPlayer().getHealth());
+		health = Math.round(Math.min(this.maxHealth, getPlayer().getHealth()));
+	}
+	
+	public void revertMaxHealth() {
+		getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(this.maxHealth);
 	}
 
 	public void syncHealth() {

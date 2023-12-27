@@ -27,7 +27,7 @@ public class DarkPact extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
+	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addBuff(p.getUniqueId(), id, false, true, BuffType.GENERAL, 1, seconds);
 		data.addTrigger(id, Trigger.BASIC_ATTACK, new EquipmentInstance(this, (pdata, inputs) -> {
 			p.playSound(p, Sound.ENTITY_BLAZE_SHOOT, 1F, 1F);

@@ -35,7 +35,7 @@ public class SavageCry extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
+	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(this, (pd, in) -> {
 			Util.playSound(p, Sound.ENTITY_ENDER_DRAGON_AMBIENT, false);
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {

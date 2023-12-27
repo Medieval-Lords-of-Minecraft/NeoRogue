@@ -19,7 +19,7 @@ public class SpikedPauldrons extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
+	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.applyStatus(StatusType.THORNS, p.getUniqueId(), thorns, -1);
 	}
 

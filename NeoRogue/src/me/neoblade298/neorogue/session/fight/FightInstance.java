@@ -580,6 +580,7 @@ public abstract class FightInstance extends Instance {
 			FightData fdata = fightData.remove(uuid);
 			if (fdata != null) fdata.cleanup();
 			PlayerSessionData data = s.getParty().get(uuid);
+			data.revertMaxHealth();
 			if (!data.isDead()) {
 				data.updateHealth();
 			}

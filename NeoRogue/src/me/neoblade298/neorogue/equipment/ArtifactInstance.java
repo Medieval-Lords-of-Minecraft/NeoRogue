@@ -4,6 +4,7 @@ import java.util.TreeSet;
 
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
@@ -25,8 +26,8 @@ public class ArtifactInstance implements Comparable<ArtifactInstance> {
 	public int getAmount() {
 		return amount;
 	}
-	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
-		this.artifact.initialize(p, data, bind, slot);
+	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		this.artifact.initialize(p, data, bind, es, slot);
 	}
 	public void cleanup(Player p, PlayerFightData data) {
 		this.artifact.cleanup(p, data);

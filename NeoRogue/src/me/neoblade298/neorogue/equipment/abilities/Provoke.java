@@ -34,7 +34,7 @@ public class Provoke extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
+	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(this, (pd, in) -> {
 			for (LivingEntity ent : TargetHelper.getEntitiesInSight(p, tp)) {
 				api.addThreat(p, ent, threat);

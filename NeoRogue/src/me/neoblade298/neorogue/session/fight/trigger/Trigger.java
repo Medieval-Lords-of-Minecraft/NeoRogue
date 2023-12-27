@@ -60,4 +60,19 @@ public enum Trigger {
 		default: return null;
 		}
 	}
+	
+	public static int toHotbarSlot(Trigger tr) {
+		switch (tr) {
+		case HOTBAR_1: return 0;
+		case HOTBAR_2: return 1;
+		case HOTBAR_3: return 2;
+		case HOTBAR_4: return 3;
+		case HOTBAR_5: return 4;
+		case HOTBAR_6: return 5;
+		case HOTBAR_7: return 6;
+		case HOTBAR_8: return 7;
+		case HOTBAR_9: return 8;
+		default: return -1;
+		}
+	}
 }

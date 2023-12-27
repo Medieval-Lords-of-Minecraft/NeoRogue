@@ -22,7 +22,7 @@ public class SmallShield extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
+	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.RAISE_SHIELD, (pdata, inputs) -> {
 			data.addBuff(p.getUniqueId(), false, false, BuffType.PHYSICAL, reduction);
 			return TriggerResult.keep();

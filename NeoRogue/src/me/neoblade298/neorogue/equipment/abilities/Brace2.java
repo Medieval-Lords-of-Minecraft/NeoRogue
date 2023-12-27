@@ -27,7 +27,7 @@ public class Brace2 extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
+	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(this, (pdata, inputs) -> {
 			pc.spawn(p);
 			data.addShield(p.getUniqueId(), shields, true, 100, 100, 0, 1);
