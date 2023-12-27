@@ -177,7 +177,6 @@ public abstract class FightInstance extends Instance {
 		PlayerFightData data = userData.get(p.getUniqueId());
 		if (data == null) return; // If you're dead
 		if (!data.canBasicAttack(EquipSlot.OFFHAND)) return;
-		System.out.println("Right click hit");
 		trigger(p, Trigger.RIGHT_CLICK_HIT, new Object[] { p, e.getRightClicked() });
 	}
 	
@@ -185,7 +184,6 @@ public abstract class FightInstance extends Instance {
 		Player p = e.getPlayer();
 		UUID uuid = p.getUniqueId();
 		if (e.getHand() == EquipmentSlot.OFF_HAND) {
-			System.out.println("Right click general");
 			trigger(p, Trigger.RAISE_SHIELD, null);
 			trigger(p, Trigger.RIGHT_CLICK, null);
 			

@@ -48,7 +48,7 @@ public class PlayerSessionData {
 	private Equipment[] otherBinds = new Equipment[8];
 	private TreeSet<ArtifactInstance> artifacts = new TreeSet<ArtifactInstance>();
 	private int abilitiesEquipped = 0, maxAbilities = 2, maxStorage = 9, coins = 0;
-	private HashMap<EquipSlot, HashSet<Integer>> equipment = new HashMap<EquipSlot, HashSet<Integer>>(),
+	private HashMap<EquipSlot, HashSet<Integer>> upgradable = new HashMap<EquipSlot, HashSet<Integer>>(),
 			upgraded = new HashMap<EquipSlot, HashSet<Integer>>();
 	private String instanceData;
 	private boolean isDead;
@@ -115,9 +115,11 @@ public class PlayerSessionData {
 		}
 
 		for (EquipSlot es : EquipSlot.values()) {
-			equipment.put(es, new HashSet<Integer>());
+			upgradable.put(es, new HashSet<Integer>());
 			upgraded.put(es, new HashSet<Integer>());
 		}
+		upgradable.get(EquipSlot.HOTBAR).add(0);
+		upgradable.get(EquipSlot.HOTBAR).add(1);
 
 		setupInventory();
 
@@ -161,14 +163,15 @@ public class PlayerSessionData {
 	public void upgradeEquipment(EquipSlot es, int slot) {
 		Equipment[] slots = getArrayFromEquipSlot(es);
 		slots[slot] = slots[slot].getUpgraded();
-		equipment.get(es).remove(slot);
+		upgradable.get(es).remove(slot);
 		upgraded.get(es).add(slot);
 	}
 
 	public void setEquipment(EquipSlot es, int slot, Equipment eq) {
 		Equipment[] slots = getArrayFromEquipSlot(es);
 		if (slots[slot] != null) removeEquipment(es, slot);
-		equipment.get(es).add(slot);
+		if (eq.isUpgraded()) upgraded.get(es).add(slot);
+		else upgradable.get(es).add(slot);
 		slots[slot] = eq;
 		if (eq.getType() == EquipmentType.ABILITY) abilitiesEquipped++;
 	}
@@ -176,7 +179,8 @@ public class PlayerSessionData {
 	public void removeEquipment(EquipSlot es, int slot) {
 		Equipment[] slots = getArrayFromEquipSlot(es);
 		Equipment eq = slots[slot];
-		equipment.get(es).remove(slot);
+		if (eq.isUpgraded()) upgraded.get(es).remove(slot);
+		else upgradable.get(es).remove(slot);
 		slots[slot] = null;
 		if (eq.getType() == EquipmentType.ABILITY) abilitiesEquipped--;
 	}
@@ -250,10 +254,6 @@ public class PlayerSessionData {
 		return maxStamina;
 	}
 
-	public Equipment[] getArmors() {
-		return armors;
-	}
-
 	public TreeSet<ArtifactInstance> getArtifacts() {
 		return artifacts;
 	}
@@ -301,7 +301,7 @@ public class PlayerSessionData {
 	}
 	
 	public PlayerSlot getRandomEquipment(boolean upgraded) {
-		HashMap<EquipSlot, HashSet<Integer>> pool = upgraded ? this.upgraded : this.equipment;
+		HashMap<EquipSlot, HashSet<Integer>> pool = upgraded ? this.upgraded : this.upgradable;
 		// First randomly roll equipment slot and try to find a non-empty one
 		EquipSlot es = null;
 		for (int i = 0; i < 20; i++) {
@@ -348,12 +348,12 @@ public class PlayerSessionData {
 		}
 
 		if (toSave.size() > max) {
-			Util.msg(p, "You have too many items in storage! Drop or sell some!");
+			Util.displayError(p, "You have too many items in storage! Drop or sell some!");
 			return false;
 		}
 
 		storage = new Equipment[maxStorage];
-		equipment.get(EquipSlot.STORAGE).clear();
+		upgradable.get(EquipSlot.STORAGE).clear();
 		upgraded.get(EquipSlot.STORAGE).clear();
 		int i = 0;
 		for (ItemStack item : toSave) {
@@ -369,15 +369,18 @@ public class PlayerSessionData {
 						.warning("[NeoRogue] " + p.getName() + " could not save " + display + " to their storage");
 				continue;
 			}
-			else {
-				if (eq.isUpgraded()) {
-					upgraded.get(EquipSlot.STORAGE).add(i);
-				}
-				else {
-					equipment.get(EquipSlot.STORAGE).add(i);
-				}
-				storage[i++] = eq;
+			if (eq.isCursed()) {
+				Util.displayError(p, "All cursed items must be equipped before continuing!");
+				return false;
 			}
+			
+			if (eq.isUpgraded()) {
+				upgraded.get(EquipSlot.STORAGE).add(i);
+			}
+			else {
+				upgradable.get(EquipSlot.STORAGE).add(i);
+			}
+			storage[i++] = eq;
 		}
 		return true;
 	}
@@ -430,8 +433,9 @@ public class PlayerSessionData {
 	}
 
 	public void setHealth(double health) {
+		if (this.health > health) getPlayer().damage(0.1);
 		this.health = health;
-		getPlayer().setHealth(Math.min(health, maxHealth));
+		getPlayer().setHealth(Math.min(this.health, maxHealth));
 	}
 
 	public void healPercent(double percent) {
@@ -439,6 +443,10 @@ public class PlayerSessionData {
 		setHealth(this.health + (percent * maxHealth));
 		heal.spawn(p);
 		Util.playSound(p, Sound.ENTITY_PLAYER_LEVELUP, false);
+	}
+
+	public void damagePercent(double percent) {
+		setHealth(this.health - (percent * maxHealth));
 	}
 
 	// Used when the player dies and on cleanup (to revive them)

@@ -26,6 +26,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
@@ -151,8 +152,17 @@ public class SessionManager implements Listener {
 	@EventHandler
 	public void onSwap(PlayerSwapHandItemsEvent e) {
 		Player p = e.getPlayer();
-		e.setCancelled(true);
+		UUID uuid = p.getUniqueId();
+		e.setCancelled(sessions.containsKey(uuid));
 		openInventory(p, e);
+	}
+
+	@EventHandler
+	public void onDrop(PlayerDropItemEvent e) {
+		Player p = e.getPlayer();
+		UUID uuid = p.getUniqueId();
+		e.setCancelled(sessions.containsKey(uuid));
+		FightInstance.handleDropItem(e);
 	}
 	
 	@EventHandler

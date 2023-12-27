@@ -38,7 +38,6 @@ public class MechanicBarrier implements ITargetedEntitySkill {
     }
 
 	public MechanicBarrier(MythicLineConfig config) {
-		System.out.println("Mechanic barrier");
 		width = config.getDouble(new String[] { "w", "width" }, 2);
 		height = config.getDouble(new String[] { "h", "height" }, 3);
 		forward = config.getDouble(new String[] { "f", "forward" }, 2);

@@ -24,6 +24,7 @@ import me.neoblade298.neorogue.equipment.armor.*;
 import me.neoblade298.neorogue.equipment.artifacts.*;
 import me.neoblade298.neorogue.equipment.offhands.*;
 import me.neoblade298.neorogue.equipment.weapons.*;
+import me.neoblade298.neorogue.equipment.cursed.*;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -44,13 +45,11 @@ public abstract class Equipment {
 	
 	protected String id;
 	protected Component display;
-	protected EquipSlot equipSlot;
-	protected boolean isUpgraded, canDrop = true;
+	protected boolean isUpgraded, canDrop = true, isCursed;
 	protected ItemStack item;
 	protected Rarity rarity;
 	protected EquipmentClass ec;
 	protected EquipmentType type;
-	protected EquipSlot es;
 	protected EquipmentProperties properties;
 	protected int cooldown = 0;
 	
@@ -68,7 +67,6 @@ public abstract class Equipment {
 			new EarthenTackle(b);
 			new EarthenWall(b);
 			new EmpoweredEdge(b);
-			new Fury(b);
 			new Fury(b);
 			new Glare(b);
 			new Parry(b);
@@ -127,12 +125,21 @@ public abstract class Equipment {
 			new WoodenWand(b);
 		}
 		
+		// Curses
+		new CurseOfInexperience();
+		new DullDagger();
+		new GnarledWand();
+		new MangledBow();
+		new RustySword();
+		
 		for (Equipment eq : equipment.values()) {
-			Equipment up = eq.getUpgraded();
 			eq.setupDroptable();
-			up.setupDroptable();
 			eq.setupItem();
-			up.setupItem();
+			if (!eq.isCursed) {
+				Equipment up = eq.getUpgraded();
+				up.setupDroptable();
+				up.setupItem();
+			}
 		}
 	}
 	
@@ -142,10 +149,9 @@ public abstract class Equipment {
 		this.isUpgraded = isUpgraded;
 		this.ec = ec;
 		this.type = type;
-		this.equipSlot = type.getSlot();
 		this.properties = props;
 		
-		// Just make sure not to close any of the tags in display string
+		// Just make sure not to close any of the tags in display string or the upgraded sign will break it
 		this.display = rarity.applyDecorations(SharedUtil.color(display + (isUpgraded ? "+" : "")));
 		
 
@@ -159,6 +165,42 @@ public abstract class Equipment {
 	
 	public Equipment(String id, String display, boolean isUpgraded, Rarity rarity, EquipmentClass ec, EquipmentType type) {
 		this(id, display, isUpgraded, rarity, ec, type, EquipmentProperties.none());
+	}
+	
+	// For curses
+	public Equipment(String id, String display, EquipmentType type) {
+		this.id = id;
+		this.rarity = Rarity.COMMON;
+		this.isUpgraded = false;
+		this.ec = EquipmentClass.CLASSLESS;
+		this.type = type;
+		this.display = rarity.applyDecorations(SharedUtil.color(display + (isUpgraded ? "+" : "")));
+		this.properties = EquipmentProperties.none();
+		
+		if (equipment.containsKey(id)) {
+			Bukkit.getLogger().warning("[NeoRogue] Duplicate id of " + id + " found while loading equipment");
+		}
+		
+		equipment.put(id, this);
+	}
+	
+	// For materials
+	public Equipment(String id, String display, Rarity rarity, EquipmentClass ec) {
+		this.id = id;
+		this.rarity = rarity;
+		this.isUpgraded = false;
+		this.ec = ec;
+		this.type = EquipmentType.MATERIAL;
+		this.display = SharedUtil.color("<red>" + display);
+		this.properties = EquipmentProperties.none();
+		this.isCursed = true;
+		this.canDrop = false;
+		
+		if (equipment.containsKey(id)) {
+			Bukkit.getLogger().warning("[NeoRogue] Duplicate id of " + id + " found while loading equipment");
+		}
+		
+		equipment.put(id, this);
 	}
 	
 	public EquipmentProperties getProperties() {
@@ -371,19 +413,19 @@ public abstract class Equipment {
 		return cooldown;
 	}
 	
-	public EquipSlot getEquipSlot() {
-		return equipSlot;
-	}
-	
 	public EquipmentType getType() {
 		return type;
+	}
+	
+	public boolean canEquip(EquipSlot es) {
+		return type.canEquip(es);
 	}
 	
 	// Used for weapons that start cooldown on swing, not hit
 	public void swingWeapon(Player p, PlayerFightData data) {
 		properties.getSwingSound().play(p);
-		data.setBasicAttackCooldown(equipSlot, properties);
-		if (equipSlot == EquipSlot.OFFHAND) p.swingOffHand();
+		data.setBasicAttackCooldown(type.getSlots()[0], properties);
+		if (type.getSlots()[0] == EquipSlot.OFFHAND) p.swingOffHand();
 	}
 	
 	// Both swings and hits enemy
@@ -423,6 +465,10 @@ public abstract class Equipment {
 		data.runActions(data, Trigger.BASIC_ATTACK, inputs);
 	}
 	
+	public boolean isCursed() {
+		return isCursed;
+	}
+	
 	public static enum EquipmentClass {
 		WARRIOR,
 		THIEF,
@@ -433,26 +479,34 @@ public abstract class Equipment {
 	}
 	
 	public static enum EquipmentType {
-		WEAPON("Weapon", EquipSlot.HOTBAR),
-		ARMOR("Armor", EquipSlot.ARMOR),
-		ACCESSORY("Accessory", EquipSlot.ACCESSORY),
-		OFFHAND("Offhand", EquipSlot.OFFHAND),
-		ABILITY("Ability", EquipSlot.KEYBIND),
-		ARTIFACT("Artifact", null);
+		WEAPON("Weapon", new EquipSlot[] {EquipSlot.HOTBAR}),
+		ARMOR("Armor", new EquipSlot[] {EquipSlot.ARMOR}),
+		ACCESSORY("Accessory", new EquipSlot[] {EquipSlot.ACCESSORY}),
+		OFFHAND("Offhand", new EquipSlot[] {EquipSlot.OFFHAND}),
+		ABILITY("Ability", new EquipSlot[] {EquipSlot.HOTBAR, EquipSlot.KEYBIND}),
+		MATERIAL("Material", new EquipSlot[0]),
+		ARTIFACT("Artifact", new EquipSlot[0]);
 		
 		private String display;
-		private EquipSlot slot;
-		private EquipmentType(String display, EquipSlot slot) {
+		private EquipSlot[] slots;
+		private EquipmentType(String display, EquipSlot[] slots) {
 			this.display = display;
-			this.slot = slot;
+			this.slots = slots;
 		}
 		
 		public String getDisplay() {
 			return display;
 		}
 		
-		public EquipSlot getSlot() {
-			return slot;
+		public EquipSlot[] getSlots() {
+			return slots;
+		}
+		
+		public boolean canEquip(EquipSlot es) {
+			for (EquipSlot slot : slots) {
+				if (slot == es) return true;
+			}
+			return false;
 		}
 	}
 	

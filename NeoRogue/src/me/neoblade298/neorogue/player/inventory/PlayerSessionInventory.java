@@ -20,6 +20,7 @@ import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
+import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.trigger.KeyBind;
 import net.kyori.adventure.text.Component;
@@ -190,6 +191,10 @@ public class PlayerSessionInventory extends CoreInventory {
 			else if (onChest) {
 				e.setCancelled(true);
 				EquipSlot type = slotTypes.get(slot);
+				if (Equipment.get(nclicked.getString("equipId"), false).isCursed()) {
+					Util.displayError(p, "You can't unequip cursed equipment!");
+					return;
+				}
 				removeEquipment(type, nclicked.getInteger("dataSlot"), slot, e.getClickedInventory());
 				if (isBindable(type)) clicked = removeBindLore(clicked);
 				p.setItemOnCursor(clicked);
@@ -221,25 +226,29 @@ public class PlayerSessionInventory extends CoreInventory {
 			
 			if (onChest) {
 				if (!nclicked.hasTag("dataSlot")) return;
-				if (eq.getEquipSlot() == EquipSlot.KEYBIND &&
-						(eqed == null || !(eq.getEquipSlot() != EquipSlot.KEYBIND)) && !data.canEquipAbility()) {
+				if (eq.getType() == EquipmentType.ABILITY &&
+						(eqed == null || eqed.getType() != EquipmentType.ABILITY) && !data.canEquipAbility()) {
 					displayError("You can only equip " + data.getMaxAbilities() + " abilities!", true);
 					return;
 				}
 
 				EquipSlot type = slotTypes.get(slot);
-				if (eq.getEquipSlot() != type) {
+				if (!eq.canEquip(type)) {
 					displayError("You can't equip this item in this slot!", false);
 					return;
 				}
 				
 				// If swapping equipment with equipment, remove that equipment
 				if (!nclicked.hasTag("equipId")) {
-					data.removeEquipment(type, nclicked.getInteger("dataSlot"));
 					p.setItemOnCursor(null);
+				}
+				else if (Equipment.get(nclicked.getString("equipId"), false).isCursed()) {
+					Util.displayError(p, "You can't unequip cursed equipment!");
+					return;
 				}
 				else {
 					if (isBindable(type)) clicked = removeBindLore(clicked);
+					data.removeEquipment(type, nclicked.getInteger("dataSlot"));
 					p.setItemOnCursor(clicked);
 				}
 				
@@ -266,6 +275,10 @@ public class PlayerSessionInventory extends CoreInventory {
 			if (swapped == null) {
 				if (!nclicked.hasTag("equipId")) return;
 				EquipSlot type = slotTypes.get(slot);
+				if (Equipment.get(nclicked.getString("equipId"), false).isCursed()) {
+					Util.displayError(p, "You can't unequip cursed equipment!");
+					return;
+				}
 				if (isBindable(type)) clicked = removeBindLore(clicked);
 				p.getInventory().setItem(swapNum, clicked);
 				removeEquipment(type, nclicked.getInteger("dataSlot"), slot, e.getClickedInventory());
@@ -275,8 +288,8 @@ public class PlayerSessionInventory extends CoreInventory {
 				if (!nclicked.hasTag("dataSlot")) return;
 				Equipment eq = Equipment.get(nswapped.getString("equipId"), nswapped.getBoolean("isUpgraded"));
 				Equipment eqed = Equipment.get(nclicked.getString("equipId"), nclicked.getBoolean("isUpgraded"));
-				if (eq.getEquipSlot() == EquipSlot.KEYBIND &&
-						(eqed == null || !(eqed.getEquipSlot() == EquipSlot.KEYBIND)) && !data.canEquipAbility()) {
+				if (eq.getType() == EquipmentType.ABILITY &&
+						(eqed == null || eqed.getType() != EquipmentType.ABILITY) && !data.canEquipAbility()) {
 					displayError("You can only equip " + data.getMaxAbilities() + " abilities!", true);
 					return;
 				}
@@ -284,10 +297,14 @@ public class PlayerSessionInventory extends CoreInventory {
 				EquipSlot type = slotTypes.get(slot);
 				// If swapping equipment with equipment, remove that equipment
 				if (!nclicked.hasTag("equipId")) {
-					data.removeEquipment(type, nclicked.getInteger("dataSlot"));
 					p.getInventory().setItem(swapNum, null);
 				}
+				else if (Equipment.get(nclicked.getString("equipId"), false).isCursed()) {
+					Util.displayError(p, "You can't unequip cursed equipment!");
+					return;
+				}
 				else {
+					data.removeEquipment(type, nclicked.getInteger("dataSlot"));
 					if (isBindable(type)) clicked = removeBindLore(clicked);
 					p.setItemOnCursor(clicked);
 				}
@@ -316,6 +333,10 @@ public class PlayerSessionInventory extends CoreInventory {
 		else {
 			e.setCancelled(true);
 			EquipSlot type = slotTypes.get(slot);
+			if (Equipment.get(nclicked.getString("equipId"), false).isCursed()) {
+				Util.displayError(p, "You can't unequip cursed equipment!");
+				return;
+			}
 			if (isBindable(type)) clicked = removeBindLore(clicked);
 			p.getWorld().dropItem(p.getLocation(), clicked).setPickupDelay(40);
 			removeEquipment(type, nclicked.getInteger("dataSlot"), slot, e.getClickedInventory());

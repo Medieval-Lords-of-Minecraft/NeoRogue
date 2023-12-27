@@ -13,6 +13,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.player.PlayerSessionData;
@@ -74,8 +75,11 @@ public class ChanceInstance extends EditInventoryInstance {
 
 		Player p = e.getPlayer();
 		if (e.getClickedBlock().getType() == Material.LECTERN) {
+			if (!stage.containsKey(p.getUniqueId())) {
+				Util.msg(p, "You've already completed the chance event! Now just wait for the rest of the party members.");
+				return;
+			}
 			new ChanceInventory(p, this, set, stage.get(p.getUniqueId()));
-			return;
 		}
 	}
 

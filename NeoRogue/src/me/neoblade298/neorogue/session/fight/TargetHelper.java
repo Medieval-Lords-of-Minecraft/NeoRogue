@@ -98,9 +98,6 @@ public class TargetHelper {
 
 	static boolean isValidTarget(final LivingEntity source, final LivingEntity target,
 			boolean throughWall) {
-		System.out.println("Valid: " + (target != source) + ", " + (throughWall ||
-						!isObstructed(source.getEyeLocation(), target.getEyeLocation()) ||
-						!isObstructed(source.getEyeLocation(), target.getLocation())) + ", " + (target.getType() != EntityType.ARMOR_STAND));
 		return target != source
 				
 				&& (throughWall ||

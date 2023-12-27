@@ -282,6 +282,7 @@ public class Area {
 		 */
 		double rand = NeoRogue.gen.nextDouble();
 
+		if (rand < 1) return new Node(NodeType.CHANCE, pos, lane);
 		rand -= 0.35;
 		if (rand < 0) return new Node(NodeType.FIGHT, pos, lane);
 		rand -= 0.05;

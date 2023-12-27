@@ -67,7 +67,7 @@ public class EquipmentProperties {
 		if (range > 0) lore.add(SharedUtil.color("<gold>Range: <yellow>" + range));
 		if (cooldown > 0) lore.add(SharedUtil.color("<gold>Cooldown: <yellow>" + cooldown));
 		if (damage > 0) lore.add(SharedUtil.color("<gold>Damage: <yellow>" + damage));
-		if (damage > 0) lore.add(SharedUtil.color("<gold>Knockback: <yellow>" + knockback));
+		if (knockback > 0) lore.add(SharedUtil.color("<gold>Knockback: <yellow>" + knockback));
 		if (type != null) lore.add(SharedUtil.color("<gold>Damage Type: <yellow>" + type));
 		if (attackSpeed > 0) lore.add(SharedUtil.color("<gold>Attack Speed: <yellow>" + attackSpeed + "/s"));
 		return lore;

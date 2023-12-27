@@ -22,7 +22,7 @@ public class VultureChance extends ChanceSet {
 	});
 
 	public VultureChance() {
-		super(AreaType.LOW_DISTRICT, Material.GRAVEL, "Vulture", "Vulture");
+		super(AreaType.LOW_DISTRICT, Material.GRAVEL, "Vulture");
 		
 		fightMiniboss = new ChanceStage(this, "miniboss", "You're cornered by a powerful foe.");
 		fightMiniboss.addChoice(new ChanceChoice(Material.IRON_SWORD, "<red>You know what time it is!"));
