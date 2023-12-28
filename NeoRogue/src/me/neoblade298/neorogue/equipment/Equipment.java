@@ -141,8 +141,8 @@ public abstract class Equipment {
 		for (Equipment eq : equipment.values()) {
 			eq.setupDroptable();
 			eq.setupItem();
-			if (!eq.isCursed) {
-				Equipment up = eq.getUpgraded();
+			Equipment up = eq.getUpgraded();
+			if (up != null) {
 				up.setupDroptable();
 				up.setupItem();
 			}

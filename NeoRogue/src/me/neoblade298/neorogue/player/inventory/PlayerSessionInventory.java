@@ -35,7 +35,7 @@ public class PlayerSessionInventory extends CoreInventory {
 	private static final int[] HOTBAR = new int[] { 18, 19, 20, 21, 22, 23, 24, 25, 26 };
 	private static final int[] FILLER = new int[] { 16, 28, 29, 30, 32, 33, 34 };
 	private static final int STATS = 27;
-	private static final int SELL = 35;
+	private static final int TRASH = 35;
 	private static final int OFFHAND = 17;
 	private static final int ARTIFACTS = 31;
 	private static HashMap<Integer, EquipSlot> slotTypes = new HashMap<Integer, EquipSlot>();
@@ -95,8 +95,8 @@ public class PlayerSessionInventory extends CoreInventory {
 		}
 
 		contents[STATS] = createStatsIcon();
-		contents[SELL] = addNbt(CoreInventory.createButton(Material.HOPPER, Component.text("Trash", NamedTextColor.GOLD),
-				"Place an item here to destroy it!", 250, NamedTextColor.GRAY), 0);
+		contents[TRASH] = addNbt(CoreInventory.createButton(Material.HOPPER, Component.text("Trash", NamedTextColor.GOLD),
+				"Click to open a trash can!", 250, NamedTextColor.GRAY), 0);
 
 		contents[ARTIFACTS] = addNbt(CoreInventory.createButton(Material.NETHER_STAR, Component.text("Artifacts", NamedTextColor.GOLD),
 				"Click here to view all your artifacts!", 250, NamedTextColor.GRAY), 0);
@@ -153,14 +153,16 @@ public class PlayerSessionInventory extends CoreInventory {
 		if (cursor.getType().isAir() && clicked == null) return;
 
 		int slot = e.getRawSlot();
-		// First check for specific cases: Sell and Artifact view
-		if (slot == SELL) {
+		// First check for specific cases: Trash and Artifact view
+		if (slot == TRASH) {
 			e.setCancelled(true);
-			// TODO: Create sell confirmation
+			p.openInventory(Bukkit.createInventory(p, 27, Component.text("Trash Can", NamedTextColor.RED)));
+			return;
 		}
-		else if (slot == ARTIFACTS) {
+		if (slot == ARTIFACTS) {
 			e.setCancelled(true);
-			// TODO: Create artifact inventory
+			new ArtifactsInventory(data);
+			return;
 		}
 		
 		InventoryAction action = e.getAction();

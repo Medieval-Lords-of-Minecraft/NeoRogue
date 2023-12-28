@@ -19,6 +19,7 @@ import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.*;
 import me.neoblade298.neorogue.session.fight.FightInstance;
+import me.neoblade298.neorogue.session.reward.RewardInstance;
 import net.kyori.adventure.text.Component;
 
 public class ChanceInstance extends EditInventoryInstance {
@@ -29,6 +30,11 @@ public class ChanceInstance extends EditInventoryInstance {
 	private Instance nextInstance; // For taking you directly from this instance to another
 
 	public ChanceInstance() {
+	}
+	
+	public ChanceInstance(String setId) {
+		this.set = ChanceSet.get(setId);
+		System.out.println("Getting set: " + this.set);
 	}
 
 	public ChanceInstance(String data, HashMap<UUID, PlayerSessionData> party) {
@@ -52,8 +58,10 @@ public class ChanceInstance extends EditInventoryInstance {
 		spawn = new Location(Bukkit.getWorld(Area.WORLD_NAME), -(s.getXOff() + CHANCE_X - 0.5), 64,
 				s.getZOff() + CHANCE_Z);
 
-		// Pick a random chance set
-		set = ChanceSet.getSet(s.getArea().getType());
+		// Pick a random chance set if not already picked
+		if (set == null) {
+			set = ChanceSet.getSet(s.getArea().getType());
+		}
 		set.initialize(s, this);
 
 		for (PlayerSessionData data : s.getParty().values()) {

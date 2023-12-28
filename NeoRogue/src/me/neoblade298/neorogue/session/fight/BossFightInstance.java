@@ -13,11 +13,11 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.player.PlayerSessionData;
-import me.neoblade298.neorogue.session.CoinsReward;
-import me.neoblade298.neorogue.session.EquipmentChoiceReward;
-import me.neoblade298.neorogue.session.Reward;
-import me.neoblade298.neorogue.session.RewardInstance;
 import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.reward.CoinsReward;
+import me.neoblade298.neorogue.session.reward.EquipmentChoiceReward;
+import me.neoblade298.neorogue.session.reward.Reward;
+import me.neoblade298.neorogue.session.reward.RewardInstance;
 
 public class BossFightInstance extends FightInstance {
 	private HashSet<String> targets = new HashSet<String>();

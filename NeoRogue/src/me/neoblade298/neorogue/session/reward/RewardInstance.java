@@ -1,4 +1,4 @@
-package me.neoblade298.neorogue.session;
+package me.neoblade298.neorogue.session.reward;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,6 +17,9 @@ import org.bukkit.inventory.EquipmentSlot;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.session.EditInventoryInstance;
+import me.neoblade298.neorogue.session.NodeSelectInstance;
+import me.neoblade298.neorogue.session.Session;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 

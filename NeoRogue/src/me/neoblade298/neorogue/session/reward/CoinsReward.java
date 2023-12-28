@@ -1,4 +1,4 @@
-package me.neoblade298.neorogue.session;
+package me.neoblade298.neorogue.session.reward;
 
 import org.bukkit.Material;
 import org.bukkit.Sound;

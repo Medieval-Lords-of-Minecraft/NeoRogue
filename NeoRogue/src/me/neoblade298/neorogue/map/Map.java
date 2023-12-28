@@ -99,7 +99,7 @@ public class Map {
 	
 	public static Map generate(AreaType type, int numPieces, MapPiece requiredPiece) {
 		Map map = new Map();
-		map.place(requiredPiece);
+		map.placeFirst(requiredPiece, true);
 		return generate(map, type, numPieces);
 	}
 	
@@ -137,26 +137,34 @@ public class Map {
 		return map;
 	}
 	
-	public boolean place(MapPiece piece) {
-		// Special case, first piece being placed
-		if (pieces.size() == 0) {
-			MapPieceInstance inst = piece.getInstance();
+	
+	public void placeFirst(MapPiece piece, boolean randomizeOrientation) {
+		MapPieceInstance inst = piece.getInstance();
+		MapShape shape = inst.getPiece().getShape();
+		
+		if (randomizeOrientation) {
 			// Randomly rotate the piece
 			inst.setRotations(NeoRogue.gen.nextInt(4));
 			int rand = NeoRogue.gen.nextInt(3);
 			if (rand == 1) inst.setFlip(true, false);
 			else if (rand == 2) inst.setFlip(false, true);
-			MapShape shape = inst.getPiece().getShape();
 			shape.applySettings(inst);
-			
-			// Place the piece in the middle of the board
-			int x = (MAP_SIZE / 2) - (shape.getHeight() / 2);
-			int z = (MAP_SIZE / 2) - (shape.getLength() / 2);
-			
-			inst.setX(x);
-			inst.setY(0);
-			inst.setZ(z);
-			place(inst, false);
+		}
+		
+		// Place the piece in the middle of the board
+		int x = (MAP_SIZE / 2) - (shape.getHeight() / 2);
+		int z = (MAP_SIZE / 2) - (shape.getLength() / 2);
+		
+		inst.setX(x);
+		inst.setY(0);
+		inst.setZ(z);
+		place(inst, false);
+	}
+	
+	public boolean place(MapPiece piece) {
+		// Special case, first piece being placed
+		if (pieces.size() == 0) {
+			placeFirst(piece, true);
 		}
 		// Standard case, find an existing entrance and try to put the piece on
 		else {
@@ -255,6 +263,10 @@ public class Map {
 
 		// Set up the mobs
 		for (MapSpawner spawner : inst.getPiece().chooseSpawners()) {
+			if (spawner.getMob() == null) {
+				Bukkit.getLogger().warning("[NeoRogue] Failed to load map piece " + inst.getPiece().getId() + ", spawner had null mob");
+				continue;
+			}
 			mobs.put(spawner.getMob(), MobModifier.generateModifiers(0));
 		}
 

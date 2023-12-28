@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.TreeSet;
+import java.util.TreeMap;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -46,7 +46,7 @@ public class PlayerSessionData {
 	private Equipment[] accessories = new Equipment[6];
 	private Equipment[] storage = new Equipment[STORAGE_SIZE];
 	private Equipment[] otherBinds = new Equipment[8];
-	private TreeSet<ArtifactInstance> artifacts = new TreeSet<ArtifactInstance>();
+	private TreeMap<String, ArtifactInstance> artifacts = new TreeMap<String, ArtifactInstance>();
 	private int abilitiesEquipped = 0, maxAbilities = 2, maxStorage = 9, coins = 0;
 	private HashMap<EquipSlot, HashSet<Integer>> upgradable = new HashMap<EquipSlot, HashSet<Integer>>(),
 			upgraded = new HashMap<EquipSlot, HashSet<Integer>>();
@@ -74,7 +74,7 @@ public class PlayerSessionData {
 		this.accessories = Equipment.deserializeAsArray(rs.getString("accessories"));
 		this.storage = Equipment.deserializeAsArray(rs.getString("storage"));
 		this.otherBinds = Equipment.deserializeAsArray(rs.getString("otherBinds"));
-		this.artifacts = ArtifactInstance.deserializeSet(rs.getString("artifacts"));
+		this.artifacts = ArtifactInstance.deserializeMap(rs.getString("artifacts"));
 		this.maxAbilities = rs.getInt("maxAbilities");
 		this.maxStorage = rs.getInt("maxStorage");
 		this.coins = rs.getInt("coins");
@@ -254,7 +254,7 @@ public class PlayerSessionData {
 		return maxStamina;
 	}
 
-	public TreeSet<ArtifactInstance> getArtifacts() {
+	public TreeMap<String, ArtifactInstance> getArtifacts() {
 		return artifacts;
 	}
 
@@ -271,8 +271,15 @@ public class PlayerSessionData {
 	}
 
 	private void giveArtifact(Artifact artifact) {
-		ArtifactInstance inst = new ArtifactInstance(artifact);
-		artifacts.add(inst);
+		ArtifactInstance inst;
+		if (artifacts.containsKey(artifact.getId())) {
+			inst = artifacts.get(artifact.getId());
+			inst.add(1);
+		}
+		else {
+			inst = new ArtifactInstance(artifact);
+			artifacts.put(artifact.getId(), inst);
+		}
 		inst.getArtifact().onAcquire(this);
 	}
 
@@ -430,6 +437,12 @@ public class PlayerSessionData {
 	
 	public void revertMaxHealth() {
 		getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(this.maxHealth);
+	}
+	
+	public void revertXpBarToCoins() {
+		Player p = getPlayer();
+		p.setLevel(coins);
+		p.setExp(0);
 	}
 
 	public void syncHealth() {

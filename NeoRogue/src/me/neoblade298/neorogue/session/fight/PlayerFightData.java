@@ -61,7 +61,7 @@ public class PlayerFightData extends FightData {
 			other.initialize(p, this, KeyBind.getBindFromData(i).getTrigger(), EquipSlot.KEYBIND, i++);
 		}
 		i = 0;
-		for (ArtifactInstance art : data.getArtifacts()) {
+		for (ArtifactInstance art : data.getArtifacts().values()) {
 			if (art == null) continue;
 			art.initialize(p, this, null, null, i++);
 		}
@@ -119,7 +119,7 @@ public class PlayerFightData extends FightData {
 			if (other == null) continue;
 			other.cleanup(p, this);
 		}
-		for (ArtifactInstance art : data.getArtifacts()) {
+		for (ArtifactInstance art : data.getArtifacts().values()) {
 			if (art == null) continue;
 			art.cleanup(p, this);
 		}
