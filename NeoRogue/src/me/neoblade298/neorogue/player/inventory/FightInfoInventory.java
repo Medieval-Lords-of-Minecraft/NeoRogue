@@ -25,7 +25,18 @@ public class FightInfoInventory extends CoreInventory {
 		
 		int pos = 0;
 		for (Entry<Mob, ArrayList<MobModifier>> ent : mobs.entrySet()) {
-			contents[pos++] = ent.getKey().getItemDisplay(ent.getValue());
+			Mob mob = ent.getKey();
+			contents[pos++] = mob.getItemDisplay(ent.getValue());
+			if (mob.getSummons() != null) {
+				for (String summonStr : mob.getSummons()) {
+					Mob summon = Mob.get(summonStr);
+					if (summon == null) {
+						Bukkit.getLogger().warning("[NeoRogue] Failed to load summon " + summonStr + " for mob " + ent.getKey().getId());
+						continue;
+					}
+					contents[pos++] = summon.getItemDisplay(ent.getValue());
+				}
+			}
 		}
 		
 		inv.setContents(contents);

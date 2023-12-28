@@ -228,7 +228,6 @@ public abstract class Equipment {
 		// Artifacts get their own special droptable with special weight due to reduced amount
 		if (this instanceof Artifact) {
 			artifactTables.addLenientWeight(ec, value, (Artifact) this);
-			System.out.println("Adding artifact " + id);
 		}
 		else {
 			droptables.add(ec, value, this);

@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.session.fight;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 
 import org.bukkit.Material;
@@ -35,9 +36,12 @@ public class Mob implements Comparable<Mob> {
 	private Material mat;
 	private HashMap<BuffType, Integer> resistances = new HashMap<BuffType, Integer>();
 	private HashMap<BuffType, Amount> damageTypes = new HashMap<BuffType, Amount>();
-	private ArrayList<TextComponent> lore;
+	private List<String> summons;
+	private ArrayList<TextComponent> lore = new ArrayList<TextComponent>();
 	
 	static {
+		typeOrder.add(BuffType.PHYSICAL);
+		typeOrder.add(BuffType.MAGICAL);
 		typeOrder.add(BuffType.SLASHING);
 		typeOrder.add(BuffType.PIERCING);
 		typeOrder.add(BuffType.BLUNT);
@@ -74,36 +78,26 @@ public class Mob implements Comparable<Mob> {
 		if (resSec != null) {
 			for (String key : resSec.getKeys()) {
 				int pct = resSec.getInt(key);
-				if (key.equals("MAGICAL")) {
-					resistances.put(BuffType.FIRE, pct);
-					resistances.put(BuffType.ICE, pct);
-					resistances.put(BuffType.LIGHTNING, pct);
-					resistances.put(BuffType.EARTH, pct);
-					resistances.put(BuffType.LIGHT, pct);
-					resistances.put(BuffType.DARK, pct);
-				}
-				else if (key.equals("PHYSICAL")) {
-					resistances.put(BuffType.SLASHING, pct);
-					resistances.put(BuffType.PIERCING, pct);
-					resistances.put(BuffType.BLUNT, pct);
-				}
-				else {
-					resistances.put(BuffType.valueOf(key), pct);
-				}
+				resistances.put(BuffType.valueOf(key), pct);
 			}
 		}
 		
-		Section dmgSec = sec.getSection("BuffTypes");
+		Section dmgSec = sec.getSection("damagetypes");
 		if (dmgSec != null) {
 			for (String key : dmgSec.getKeys()) {
 				damageTypes.put(BuffType.valueOf(key), Amount.valueOf(dmgSec.getString(key)));
 			}
 		}
 		
-		lore = SharedUtil.addLineBreaks(Component.text(sec.getString("description")), 250);
+		ArrayList<TextComponent> italicizedLore = SharedUtil.addLineBreaks(
+				(TextComponent) SharedUtil.color(sec.getString("description")).colorIfAbsent(NamedTextColor.GRAY), 250);
+		for (TextComponent tc : italicizedLore) {
+			lore.add((TextComponent) tc.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
+		}
 		mat = sec.contains("material") ? Material.valueOf(sec.getString("material")) : null;
 		amount = sec.getInt("amount", 1);
 		value = sec.getDouble("value", (double) 1 / (double) amount);
+		summons = sec.getStringList("summons");
 
 		if (opt.isPresent() && opt.get().getEntityType() == MythicEntityType.SLIME) value /= 2; // Slime's death event is called twice so this must happen
 		base64 = sec.getString("base64");
@@ -118,23 +112,29 @@ public class Mob implements Comparable<Mob> {
 		ItemMeta meta = item.getItemMeta();
 		meta.displayName(display);
 		ArrayList<Component> lore = new ArrayList<Component>();
-		Component header = Component.text("Resistances:", NamedTextColor.GOLD);
-		lore.add(header.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
-		for (BuffType dt : typeOrder) {
-			if (resistances.containsKey(dt)) {
-				int pct = resistances.get(dt);
-				Component c = Component.text(dt.getDisplay() + ": ", NamedTextColor.YELLOW)
-						.append(Component.text(pct + "%", pct > 0 ? NamedTextColor.RED : NamedTextColor.GREEN));
-				lore.add(c.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
+		if (!resistances.isEmpty()) {
+			Component header = Component.text("Resistances:", NamedTextColor.GOLD);
+			lore.add(header.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
+			for (BuffType dt : typeOrder) {
+				if (resistances.containsKey(dt)) {
+					int pct = resistances.get(dt);
+					Component c = Component.text(dt.getDisplay() + ": ", NamedTextColor.YELLOW)
+							.append(Component.text(pct + "%", pct > 0 ? NamedTextColor.RED : NamedTextColor.GREEN));
+					lore.add(c.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
+				}
 			}
 		}
-		
-		for (BuffType dt : typeOrder) {
-			if (damageTypes.containsKey(dt)) {
-				Component c = Component.text(dt.getDisplay(), NamedTextColor.YELLOW)
-						.append(Component.text(": ", NamedTextColor.GRAY))
-						.append(damageTypes.get(dt).getDisplay(true));
-				lore.add(c.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
+
+		if (!damageTypes.isEmpty()) {
+			Component header = Component.text("Damage:", NamedTextColor.GOLD);
+			lore.add(header.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
+			for (BuffType dt : typeOrder) {
+				if (damageTypes.containsKey(dt)) {
+					Component c = Component.text(dt.getDisplay(), NamedTextColor.YELLOW)
+							.append(Component.text(": ", NamedTextColor.GRAY))
+							.append(damageTypes.get(dt).getDisplay(true));
+					lore.add(c.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
+				}
 			}
 		}
 		
@@ -173,5 +173,13 @@ public class Mob implements Comparable<Mob> {
 
 	public int getAmount() {
 		return amount;
+	}
+	
+	public List<String> getSummons() {
+		return summons;
+	}
+	
+	public String getId() {
+		return id;
 	}
 }
