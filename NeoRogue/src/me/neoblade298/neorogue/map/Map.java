@@ -367,12 +367,6 @@ public class Map {
 								}
 							}
 						}
-						//r = new CuboidRegion(BlockVector3.at(x, y, z), BlockVector3.at(xp, y + 4, z + zp));
-					    /*try {
-						    editSession.replaceBlocks(r, mask, BukkitAdapter.adapt(Material.BLACK_CONCRETE.createBlockData()));
-						} catch (WorldEditException e) {
-							e.printStackTrace();
-						}*/
 					}
 		    	}
 		    }.runTaskLater(NeoRogue.inst(), 10L);

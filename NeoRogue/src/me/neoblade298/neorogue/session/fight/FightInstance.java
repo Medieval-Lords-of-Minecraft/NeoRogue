@@ -63,6 +63,7 @@ public abstract class FightInstance extends Instance {
 	protected Map map;
 	protected ArrayList<MapSpawnerInstance> spawners = new ArrayList<MapSpawnerInstance>(),
 			unlimitedSpawners = new ArrayList<MapSpawnerInstance>();
+	private HashMap<String, Location> mythicLocations = new HashMap<String, Location>();
 	protected HashMap<UUID, Barrier> enemyBarriers = new HashMap<UUID, Barrier>();
 	protected ArrayList<BukkitTask> tasks = new ArrayList<BukkitTask>();
 	protected ArrayList<FightRunnable> initialTasks = new ArrayList<FightRunnable>();
@@ -517,6 +518,16 @@ public abstract class FightInstance extends Instance {
 						MapPieceInstance.Y_OFFSET,
 						MapPieceInstance.Z_FIGHT_OFFSET + s.getZOff());
 				spawn.setX(-spawn.getX());
+				
+				for (Entry<String, Coordinates> ent : inst.getMythicLocations().entrySet()) {
+					Location loc = ent.getValue().applySettings(inst).toLocation();
+					loc.add(s.getXOff() + MapPieceInstance.X_FIGHT_OFFSET,
+							MapPieceInstance.Y_OFFSET,
+							MapPieceInstance.Z_FIGHT_OFFSET + s.getZOff());
+					loc.setX(-loc.getX());
+					mythicLocations.put(ent.getKey(), loc);
+				}
+				
 				for (Player p : s.getOnlinePlayers()) {
 					p.teleport(spawn);
 				}
@@ -628,6 +639,10 @@ public abstract class FightInstance extends Instance {
 				barriers.remove(uuid);
 			}
 		}, duration * 20);
+	}
+	
+	public Location getMythicLocation(String key) {
+		return mythicLocations.get(key);
 	}
 	
 	public void removeEnemyBarrier(UUID uuid) {

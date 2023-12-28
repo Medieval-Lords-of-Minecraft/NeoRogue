@@ -24,6 +24,7 @@ public class MapPiece {
 	private MapShape shape;
 	private HashSet<String> targets;
 	protected Coordinates[] entrances, spawns;
+	protected HashMap<String, Coordinates> mythicLocations = new HashMap<String, Coordinates>();
 	private ArrayList<MapSpawner[]> spawnerSets = new ArrayList<MapSpawner[]>();
 	protected Clipboard clipboard;
 	
@@ -71,6 +72,13 @@ public class MapPiece {
 		for (String line : spawns) {
 			this.spawns[i] = new Coordinates(this, line, true);
 			i++;
+		}
+
+		sec = cfg.getSection("mythiclocations");
+		if (sec != null) {
+			for (String key : sec.getKeys()) {
+				mythicLocations.put(key, new Coordinates(this, sec.getString(key), true));
+			}
 		}
 		
 		List<String> targets = cfg.getStringList("targets");

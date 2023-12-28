@@ -1,5 +1,8 @@
 package me.neoblade298.neorogue.map;
 
+import java.util.HashMap;
+import java.util.Map.Entry;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -28,6 +31,7 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 	
 	private MapPiece piece;
 	private Coordinates[] spawns;
+	private HashMap<String, Coordinates> mythicLocations = new HashMap<String, Coordinates>();
 	private Coordinates entrance, available;
 	protected int numRotations;
 	private int x, y, z; // In chunk offset
@@ -46,6 +50,10 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		int i = 0;
 		for (Coordinates coords : piece.spawns) {
 			spawns[i++] = coords.clone();
+		}
+		
+		for (Entry<String, Coordinates> ent : piece.mythicLocations.entrySet()) {
+			mythicLocations.put(ent.getKey(), ent.getValue());
 		}
 		
 		MapShape shape = piece.getShape();
@@ -125,6 +133,10 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		for (Coordinates coords : spawns) {
 			coords.setRotations(amount);
 		}
+		
+		for (Coordinates coords : mythicLocations.values()) {
+			coords.setRotations(amount);
+		}
 	}
 	
 	public void setFlip(boolean flipX, boolean flipZ) {
@@ -142,6 +154,10 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 			entrance.setFlip(flipX, flipZ);
 		}
 		for (Coordinates coords : spawns) {
+			coords.setFlip(flipX, flipZ);
+		}
+		
+		for (Coordinates coords : mythicLocations.values()) {
 			coords.setFlip(flipX, flipZ);
 		}
 	}
@@ -356,6 +372,33 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
             }
             b.setBlockData(bmeta);
 		}
+		
+		// Mythic Locations
+		for (Coordinates mythicLocation : mythicLocations.values()) {
+			Coordinates coords = mythicLocation.clone().applySettings(this);
+			Location loc = coords.toLocation();
+			loc.setWorld(world);
+			loc.add(-x - rotateOffset[0] - flipOffset[0],
+					y,
+					z - rotateOffset[1] - flipOffset[1]);
+			loc.setX(-loc.getX());
+			Block b = loc.getBlock();
+			b.setType(Material.MAGENTA_GLAZED_TERRACOTTA);
+
+            Directional bmeta = (Directional) b.getBlockData();
+            
+            // Apparently terracotta blocks point the direction opposite they're facing
+            switch (coords.getDirection()) {
+            case NORTH: bmeta.setFacing(BlockFace.SOUTH);
+            break;
+            case SOUTH: bmeta.setFacing(BlockFace.NORTH);
+            break;
+            case EAST: bmeta.setFacing(BlockFace.WEST);
+            break;
+            case WEST: bmeta.setFacing(BlockFace.EAST);
+            }
+            b.setBlockData(bmeta);
+		}
 
 		for (Coordinates entrance : piece.getEntrances()) {
 			Coordinates coords = entrance.clone().applySettings(this);
@@ -415,6 +458,14 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 	
 	public Coordinates[] getSpawns() { 
 		return spawns;
+	}
+	
+	public Coordinates getMythicLocation(String key) {
+		return mythicLocations.get(key);
+	}
+	
+	public HashMap<String, Coordinates> getMythicLocations() {
+		return mythicLocations;
 	}
 
 	@Override
