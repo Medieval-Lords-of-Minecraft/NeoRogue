@@ -33,7 +33,7 @@ public class ThiefsCacheChance extends ChanceSet {
 				"Receive a random piece of equipment.",
 				(s, inst, data) -> {
 					Player p = data.getPlayer();
-					Equipment eq = Equipment.getDrop(s.getAreasCompleted(), data.getPlayerClass().toEquipmentClass());
+					Equipment eq = Equipment.getDrop(s.getAreasCompleted(), data.getPlayerClass());
 					Util.msg(p, Component.text("You pick up a(n) ").append(eq.getDisplay())
 							.append(Component.text(" and go on your way.")));
 					data.giveEquipment(eq);

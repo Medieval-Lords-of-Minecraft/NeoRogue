@@ -110,7 +110,7 @@ public class StandardFightInstance extends FightInstance {
 			list.add(new CoinsReward(fightScore.getCoins()));
 			
 			ArrayList<Equipment> equipDrops = new ArrayList<Equipment>();
-			EquipmentClass ec = data.getPlayerClass().toEquipmentClass();
+			EquipmentClass ec = data.getPlayerClass();
 			int value = s.getAreasCompleted();
 			switch (fightScore) {
 			case S:

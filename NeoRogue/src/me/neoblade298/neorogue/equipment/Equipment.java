@@ -228,6 +228,7 @@ public abstract class Equipment {
 		// Artifacts get their own special droptable with special weight due to reduced amount
 		if (this instanceof Artifact) {
 			artifactTables.addLenientWeight(ec, value, (Artifact) this);
+			System.out.println("Adding artifact " + id);
 		}
 		else {
 			droptables.add(ec, value, this);
@@ -488,12 +489,21 @@ public abstract class Equipment {
 	}
 	
 	public static enum EquipmentClass {
-		WARRIOR,
-		THIEF,
-		ARCHER,
-		MAGE,
-		SHOP,
-		CLASSLESS;
+		WARRIOR("Warrior"),
+		THIEF("Thief"),
+		ARCHER("Archer"),
+		MAGE("Mage"),
+		SHOP("Shop"),
+		CLASSLESS("Classless");
+		
+		private String display;
+		private EquipmentClass(String display) {
+			this.display = display;
+		}
+		
+		public String getDisplay() {
+			return display;
+		}
 	}
 	
 	public static enum EquipmentType {

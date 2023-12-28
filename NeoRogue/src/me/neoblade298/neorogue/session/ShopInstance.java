@@ -47,7 +47,7 @@ public class ShopInstance extends EditInventoryInstance {
 		this.trader = mob.getWorld().spawnEntity(mob, EntityType.WANDERING_TRADER);
 		for (PlayerSessionData data : s.getParty().values()) {
 			Player p = data.getPlayer();
-			EquipmentClass ec = data.getPlayerClass().toEquipmentClass();
+			EquipmentClass ec = data.getPlayerClass();
 			p.teleport(spawn);
 			
 			// Create shop contents

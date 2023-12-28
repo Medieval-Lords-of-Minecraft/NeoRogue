@@ -28,6 +28,7 @@ import me.neoblade298.neocore.shared.util.SQLInsertBuilder.SQLAction;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.*;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
+import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.fight.trigger.KeyBind;
@@ -38,7 +39,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 public class PlayerSessionData {
 	private PlayerData data;
 	private Session s;
-	private PlayerClass pc;
+	private EquipmentClass pc;
 	private double maxHealth, maxMana, maxStamina, health, manaRegen, staminaRegen;
 	private Equipment[] hotbar = new Equipment[9];
 	private Equipment[] armors = new Equipment[3];
@@ -61,7 +62,7 @@ public class PlayerSessionData {
 		data = PlayerManager.getPlayerData(uuid);
 		this.s = s;
 
-		this.pc = PlayerClass.valueOf(rs.getString("playerClass"));
+		this.pc = EquipmentClass.valueOf(rs.getString("playerClass"));
 		this.maxHealth = rs.getDouble("maxHealth");
 		this.maxMana = rs.getDouble("maxMana");
 		this.maxStamina = rs.getDouble("maxStamina");
@@ -81,7 +82,7 @@ public class PlayerSessionData {
 		this.instanceData = rs.getString("instanceData");
 	}
 
-	public PlayerSessionData(UUID uuid, PlayerClass pc, Session s) {
+	public PlayerSessionData(UUID uuid, EquipmentClass pc, Session s) {
 		data = PlayerManager.getPlayerData(uuid);
 		this.s = s;
 		health = 100;
@@ -93,7 +94,7 @@ public class PlayerSessionData {
 		health = maxHealth;
 		this.pc = pc;
 
-		// Need to give player a weapon at the start
+		// Starting equipment
 		switch (this.pc) {
 		case WARRIOR:
 			hotbar[0] = Equipment.get("woodenSword", false);
@@ -111,6 +112,8 @@ public class PlayerSessionData {
 		case MAGE:
 			hotbar[0] = Equipment.get("woodenSword", false);
 			hotbar[1] = Equipment.get("empoweredEdge", false);
+			break;
+		default:
 			break;
 		}
 
@@ -412,7 +415,7 @@ public class PlayerSessionData {
 		return coins;
 	}
 
-	public PlayerClass getPlayerClass() {
+	public EquipmentClass getPlayerClass() {
 		return pc;
 	}
 
@@ -457,8 +460,8 @@ public class PlayerSessionData {
 
 	public void setHealth(double health) {
 		if (this.health > health) getPlayer().damage(0.1);
-		this.health = health;
-		getPlayer().setHealth(Math.min(this.health, maxHealth));
+		this.health = Math.min(health, maxHealth);
+		getPlayer().setHealth(this.health);
 	}
 
 	public void healPercent(double percent) {

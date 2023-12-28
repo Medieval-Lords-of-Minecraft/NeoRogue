@@ -36,7 +36,7 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.area.AreaType;
-import me.neoblade298.neorogue.player.PlayerClass;
+import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.chance.ChanceInstance;
 import me.neoblade298.neorogue.session.reward.RewardInstance;
@@ -51,7 +51,7 @@ public class LobbyInstance extends Instance {
 	private static String invPrefix = "<dark_gray>[<green><click:run_command:'/nr join ",
 			invSuffix = "'><hover:show_text:'Click to accept invite'>Click here to accept the invite!</hover></click></green>]";
 	private HashSet<UUID> invited = new HashSet<UUID>();
-	private HashMap<UUID, PlayerClass> players = new HashMap<UUID, PlayerClass>();
+	private HashMap<UUID, EquipmentClass> players = new HashMap<UUID, EquipmentClass>();
 	private UUID host;
 	private static Clipboard classSelect, rewardsRoom, campfire, shop, chance;
 	private boolean busy = false;
@@ -123,7 +123,7 @@ public class LobbyInstance extends Instance {
 	public LobbyInstance(String name, Player host, Session session) {
 		this.name = name;
 		this.host = host.getUniqueId();
-		players.put(host.getUniqueId(), PlayerClass.WARRIOR);
+		players.put(host.getUniqueId(), EquipmentClass.WARRIOR);
 		this.s = session;
 		
 		// Generate the lobby and add the host there
@@ -177,7 +177,7 @@ public class LobbyInstance extends Instance {
 		}
 
 		invited.remove(p.getUniqueId());
-		players.put(p.getUniqueId(), PlayerClass.WARRIOR);
+		players.put(p.getUniqueId(), EquipmentClass.WARRIOR);
 		SessionManager.addToSession(p.getUniqueId(), this.s);
 		p.teleport(spawn);
 		displayInfo(p);
@@ -285,7 +285,7 @@ public class LobbyInstance extends Instance {
 		}
 	}
 
-	public HashMap<UUID, PlayerClass> getPlayers() {
+	public HashMap<UUID, EquipmentClass> getPlayers() {
 		return players;
 	}
 
@@ -320,7 +320,7 @@ public class LobbyInstance extends Instance {
 		}.runTaskLater(NeoRogue.inst(), 20L);
 	}
 	
-	public void switchClass(UUID uuid, PlayerClass pc) {
+	public void switchClass(UUID uuid, EquipmentClass pc) {
 		if (!players.containsKey(uuid)) {
 			Bukkit.getLogger().warning("[NeoRogue] Player tried to switch class when not belonging to that session");
 			return;
@@ -357,13 +357,13 @@ public class LobbyInstance extends Instance {
 		char c = ((TextComponent)sign.getSide(Side.FRONT).line(2)).content().charAt(0);
 		
 		switch (c) {
-		case 'W': switchClass(uuid, PlayerClass.WARRIOR);
+		case 'W': switchClass(uuid, EquipmentClass.WARRIOR);
 		break;
-		case 'T': switchClass(uuid, PlayerClass.THIEF);
+		case 'T': switchClass(uuid, EquipmentClass.THIEF);
 		break;
-		case 'A': switchClass(uuid, PlayerClass.ARCHER);
+		case 'A': switchClass(uuid, EquipmentClass.ARCHER);
 		break;
-		case 'M': switchClass(uuid, PlayerClass.MAGE);
+		case 'M': switchClass(uuid, EquipmentClass.MAGE);
 		break;
 		}
 	}

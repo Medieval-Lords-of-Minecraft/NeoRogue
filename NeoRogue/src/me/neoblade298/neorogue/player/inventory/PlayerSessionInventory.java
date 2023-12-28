@@ -138,12 +138,14 @@ public class PlayerSessionInventory extends CoreInventory {
 	private ItemStack createStatsIcon() {
 		TextComponent health = Component.text("Health: ", NamedTextColor.GOLD)
 				.append(Component.text(data.getHealth() + " / " + data.getMaxHealth(), NamedTextColor.WHITE));
-		TextComponent mana = Component.text("Mana: ", NamedTextColor.GOLD)
+		TextComponent mana = Component.text("Max Mana: ", NamedTextColor.GOLD)
 				.append(Component.text(data.getMaxMana(), NamedTextColor.WHITE));
+		TextComponent stamina = Component.text("Max Stamina: ", NamedTextColor.GOLD)
+				.append(Component.text(data.getMaxStamina(), NamedTextColor.WHITE));
 		TextComponent coins = Component.text("Coins: ", NamedTextColor.GOLD)
 				.append(Component.text(data.getCoins(), NamedTextColor.WHITE));
 		return CoreInventory.createButton(Material.ARMOR_STAND, statsText,
-			health, mana, coins);
+			health, mana, stamina, coins);
 	}
 
 	@Override

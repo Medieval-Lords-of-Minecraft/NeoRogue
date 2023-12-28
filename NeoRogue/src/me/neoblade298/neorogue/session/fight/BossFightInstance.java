@@ -67,7 +67,7 @@ public class BossFightInstance extends FightInstance {
 			list.add(new CoinsReward(100));
 			
 			ArrayList<Equipment> equipDrops = new ArrayList<Equipment>();
-			EquipmentClass ec = data.getPlayerClass().toEquipmentClass();
+			EquipmentClass ec = data.getPlayerClass();
 			int value = s.getAreasCompleted();
 			equipDrops.addAll(Equipment.getDrop(value + 4, 3, ec));
 			

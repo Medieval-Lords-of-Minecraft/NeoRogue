@@ -8,19 +8,19 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.player.PlayerClass;
+import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.session.chance.ChanceChoice;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
 import me.neoblade298.neorogue.session.chance.ChanceStage;
 
 public class LostRelicChance extends ChanceSet {
-	private static final HashMap<PlayerClass, Equipment> items = new HashMap<PlayerClass, Equipment>();
+	private static final HashMap<EquipmentClass, Equipment> items = new HashMap<EquipmentClass, Equipment>();
 	
 	static {
-		items.put(PlayerClass.ARCHER, Equipment.get("mangledBow", false));
-		items.put(PlayerClass.THIEF, Equipment.get("dullDagger", false));
-		items.put(PlayerClass.WARRIOR, Equipment.get("rustySword", false));
-		items.put(PlayerClass.MAGE, Equipment.get("gnarledWand", false));
+		items.put(EquipmentClass.ARCHER, Equipment.get("mangledBow", false));
+		items.put(EquipmentClass.THIEF, Equipment.get("dullDagger", false));
+		items.put(EquipmentClass.WARRIOR, Equipment.get("rustySword", false));
+		items.put(EquipmentClass.MAGE, Equipment.get("gnarledWand", false));
 	}
 
 	public LostRelicChance() {
