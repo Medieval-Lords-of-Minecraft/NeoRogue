@@ -10,8 +10,8 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class DullGem extends Equipment {
 	
-	public DullGem(boolean isUpgraded) {
-		super("dullGem", "Dull Gem", Rarity.COMMON, EquipmentClass.WARRIOR);
+	public DullGem() {
+		super("dullGem", "Dull Gem", Rarity.COMMON, EquipmentClass.CLASSLESS);
 	}
 
 	@Override

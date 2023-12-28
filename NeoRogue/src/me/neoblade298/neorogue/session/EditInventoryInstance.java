@@ -18,6 +18,7 @@ public abstract class EditInventoryInstance extends Instance {
 		for (PlayerSessionData data : s.getParty().values()) {
 			if (!data.saveStorage()) {
 				for (Player on : online) {
+					if (on == data.getPlayer()) continue;
 					Util.displayError(on, data.getData().getDisplay() + " has too many items in their inventory! They must drop or equip some "
 							+ "to satisfy their storage limit!");
 				}

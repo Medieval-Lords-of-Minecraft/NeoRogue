@@ -193,6 +193,7 @@ public class Session {
 		if (inst instanceof EditInventoryInstance) {
 			for (PlayerSessionData data : party.values()) {
 				data.setupInventory();
+				data.setupEditInventory(); // hunger and exp bar
 			}
 		}
 		

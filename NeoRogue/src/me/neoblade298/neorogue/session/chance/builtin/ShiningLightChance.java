@@ -43,7 +43,8 @@ public class ShiningLightChance extends ChanceSet {
 		
 		stage.addChoice(new ChanceChoice(Material.LEATHER_BOOTS, "Find another way",
 				"Looks dangerous. I'd rather not.",
-				(s, inst, unused) -> {
+				(s, inst, data) -> {
+					Util.msg(data.getPlayer(), "No way, that's too bright, it's bad for my skin.");
 					return null;
 				}));
 	}

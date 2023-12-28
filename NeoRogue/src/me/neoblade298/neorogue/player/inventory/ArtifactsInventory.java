@@ -57,7 +57,8 @@ public class ArtifactsInventory extends CoreInventory {
 	
 	private static int calculateInventorySize(PlayerSessionData data) {
 		int size = data.getArtifacts().size();
-		size = 9*((int) Math.ceil((double) size / 9) + 1); // Extra 9 for UI
+		size = 9*(int) Math.ceil((double) size / 9);
+		if (data.getArtifacts().size() > 45) size += 9; // Only add buttons if pagination is needed
 		return Math.min(54, size);
 	}
 	

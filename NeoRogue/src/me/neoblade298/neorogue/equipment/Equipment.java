@@ -26,6 +26,7 @@ import me.neoblade298.neorogue.equipment.offhands.*;
 import me.neoblade298.neorogue.equipment.weapons.*;
 import me.neoblade298.neorogue.equipment.cursed.*;
 import me.neoblade298.neorogue.equipment.consumables.*;
+import me.neoblade298.neorogue.equipment.materials.*;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -138,6 +139,9 @@ public abstract class Equipment {
 		new MangledBow();
 		new RustySword();
 		
+		// Materials
+		new DullGem();
+		
 		for (Equipment eq : equipment.values()) {
 			eq.setupDroptable();
 			eq.setupItem();
@@ -180,8 +184,10 @@ public abstract class Equipment {
 		this.isUpgraded = false;
 		this.ec = EquipmentClass.CLASSLESS;
 		this.type = type;
-		this.display = rarity.applyDecorations(SharedUtil.color(display + (isUpgraded ? "+" : "")));
+		this.display = SharedUtil.color("<red>" + display);
 		this.properties = EquipmentProperties.none();
+		this.isCursed = true;
+		this.canDrop = false;
 		
 		if (equipment.containsKey(id)) {
 			Bukkit.getLogger().warning("[NeoRogue] Duplicate id of " + id + " found while loading equipment");
@@ -197,9 +203,8 @@ public abstract class Equipment {
 		this.isUpgraded = false;
 		this.ec = ec;
 		this.type = EquipmentType.MATERIAL;
-		this.display = SharedUtil.color("<red>" + display);
+		this.display = rarity.applyDecorations(SharedUtil.color(display));
 		this.properties = EquipmentProperties.none();
-		this.isCursed = true;
 		this.canDrop = false;
 		
 		if (equipment.containsKey(id)) {
@@ -311,7 +316,6 @@ public abstract class Equipment {
 		}
 		return arr;
 	}
-	
 
 	public ItemStack createItem(Material mat) {
 		return createItem(mat, null, null);
@@ -328,12 +332,20 @@ public abstract class Equipment {
 
 		meta.displayName(display.decoration(TextDecoration.ITALIC, State.FALSE));
 		ArrayList<Component> loreItalicized = new ArrayList<Component>();
-		loreItalicized.add(rarity.getDisplay(true).append(Component.text(" " + type)));
+		if (isCursed) {
+			loreItalicized.add(Component.text("Cursed " + type.getDisplay(), NamedTextColor.RED));
+		}
+		else {
+			loreItalicized.add(rarity.getDisplay(true).append(Component.text(" " + type.getDisplay())));
+		}
 		loreItalicized.addAll(properties.generateLore());
 		if (preLoreLine != null) {
 			for (String l : preLoreLine) {
 				loreItalicized.add(NeoCore.miniMessage().deserialize(l));
 			}
+		}
+		if (isCursed) {
+			loreItalicized.add(Component.text("This item is cursed. It must be equipped continue.", NamedTextColor.DARK_RED));
 		}
 		if (!reforgeOptions.isEmpty()) {
 			loreItalicized.add(Component.text("Reforgeable with:" , NamedTextColor.GOLD));

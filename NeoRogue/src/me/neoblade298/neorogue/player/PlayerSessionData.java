@@ -127,6 +127,11 @@ public class PlayerSessionData {
 		data.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHealth);
 		data.initialize(s, this);
 	}
+	
+	public void setupEditInventory() {
+		updateCoinsBar();
+		getPlayer().setSaturation(20);
+	}
 
 	public void setupInventory() {
 		Player p = data.getPlayer();
@@ -400,6 +405,7 @@ public class PlayerSessionData {
 		coins += amount;
 		char symbol = amount > 0 ? '+' : '-';
 		Util.msg(getPlayer(), "<yellow>" + symbol + amount + " coins </yellow>(<gold>" + coins + "</gold>)");
+		updateCoinsBar();
 	}
 
 	public int getCoins() {
@@ -439,7 +445,7 @@ public class PlayerSessionData {
 		getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(this.maxHealth);
 	}
 	
-	public void revertXpBarToCoins() {
+	public void updateCoinsBar() {
 		Player p = getPlayer();
 		p.setLevel(coins);
 		p.setExp(0);

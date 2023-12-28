@@ -36,14 +36,16 @@ public class ThiefsCacheChance extends ChanceSet {
 					Equipment eq = Equipment.getDrop(s.getAreasCompleted(), data.getPlayerClass().toEquipmentClass());
 					Util.msg(p, Component.text("You pick up a(n) ").append(eq.getDisplay())
 							.append(Component.text(" and go on your way.")));
+					data.giveEquipment(eq);
 					return null;
 				});
 		stage.addChoice(choice);
 		
-		choice = new ChanceChoice(Material.BARRIER, "Pick up the gold",
+		choice = new ChanceChoice(Material.GOLD_NUGGET, "Pick up the gold",
 				"Receive <yellow>100 coins</yellow>.", (s, inst, data) -> {
 					Player p = data.getPlayer();
 					Util.msg(p, "You pick up <yellow>100 coins</yellow> and go on your way.");
+					data.addCoins(100);
 					return null;
 				});
 		stage.addChoice(choice);

@@ -39,7 +39,8 @@ public class LostRelicChance extends ChanceSet {
 		
 		stage.addChoice(new ChanceChoice(Material.LEATHER_BOOTS, "Leave it",
 				"Doesn't look worth the extra weight.",
-				(s, inst, unused) -> {
+				(s, inst, data) -> {
+					Util.msg(data.getPlayer(), "Hard pass. It looks ugly too.");
 					return null;
 				}));
 	}

@@ -25,6 +25,7 @@ public class CmdAdminTestChance extends Subcommand {
 		Player host = (Player) s;
 		Session sess = SessionManager.createSession(host, "test", 1);
 		for (Player p : Bukkit.getOnlinePlayers()) {
+			SessionManager.addToSession(p.getUniqueId(), sess);
 			sess.addPlayer(p.getUniqueId(), PlayerClass.WARRIOR);
 		}
 		sess.generateArea(AreaType.LOW_DISTRICT);

@@ -592,7 +592,7 @@ public abstract class FightInstance extends Instance {
 				data.syncHealth();
 				p.setFoodLevel(20);
 				data.revertMaxHealth();
-				data.revertXpBarToCoins();
+				data.updateCoinsBar();
 			}
 		}
 		
