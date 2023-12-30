@@ -26,6 +26,7 @@ public class MapPiece {
 	protected Coordinates[] entrances, spawns;
 	protected HashMap<String, Coordinates> mythicLocations = new HashMap<String, Coordinates>();
 	private ArrayList<MapSpawner[]> spawnerSets = new ArrayList<MapSpawner[]>();
+	private MapSpawner[] initialSpawns;
 	protected Clipboard clipboard;
 	
 	public MapPiece(Section cfg) {
@@ -56,14 +57,25 @@ public class MapPiece {
 		}
 		
 		Section sec = cfg.getSection("spawnersets");
-		for (String key : sec.getKeys()) {
-			Section spawnerSets = sec.getSection(key);
-			MapSpawner[] spawners = new MapSpawner[spawnerSets.getKeys().size()];
-			i = 0;
-			for (String spawnerKey : spawnerSets.getKeys()) {
-				spawners[i++] = new MapSpawner(spawnerSets.getSection(spawnerKey), this);
+		if (sec != null) {
+			for (String key : sec.getKeys()) {
+				Section spawnerSets = sec.getSection(key);
+				MapSpawner[] spawners = new MapSpawner[spawnerSets.getKeys().size()];
+				i = 0;
+				for (String spawnerKey : spawnerSets.getKeys()) {
+					spawners[i++] = new MapSpawner(spawnerSets.getSection(spawnerKey), this);
+				}
+				this.spawnerSets.add(spawners);
 			}
-			this.spawnerSets.add(spawners);
+		}
+		
+		sec = cfg.getSection("initialspawns");
+		if (sec != null) {
+			initialSpawns = new MapSpawner[sec.getKeys().size()];
+			i = 0;
+			for (String spawnerKey : sec.getKeys()) {
+				initialSpawns[i++] = new MapSpawner(sec.getSection(spawnerKey), this);
+			}
 		}
 		
 		List<String> spawns = cfg.getStringList("spawns");
@@ -117,9 +129,18 @@ public class MapPiece {
 	public ArrayList<MapSpawner[]> getSpawnerSets() {
 		return spawnerSets;
 	}
+
+	public MapSpawner[] getInitialSpawns() {
+		return initialSpawns;
+	}
+	
+	public boolean hasSpawners() {
+		return !spawnerSets.isEmpty();
+	}
 	
 	// Pick between the different sets of spawners
 	public MapSpawner[] chooseSpawners() {
+		if (spawnerSets.size() == 0) return null;
 		return spawnerSets.get(NeoRogue.gen.nextInt(spawnerSets.size()));
 	}
 	

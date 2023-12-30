@@ -9,6 +9,7 @@ import io.lumine.mythic.api.config.MythicLineConfig;
 import io.lumine.mythic.api.skills.SkillMetadata;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.core.skills.targeters.ILocationSelector;
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.session.Instance;
 import me.neoblade298.neorogue.session.Plot;
 import me.neoblade298.neorogue.session.SessionManager;
@@ -35,6 +36,7 @@ public class MythicLocationTargeter extends ILocationSelector {
 			Location mythicLoc = inst.getMythicLocation(key);
 			if (loc == null) return null;
 	
+			System.out.println("Location " + key + ": " + Util.locToString(mythicLoc, false, false));
 	        locs.add(new AbstractLocation(data.getCaster().getLocation().getWorld(), mythicLoc.getX(), mythicLoc.getY(), mythicLoc.getZ()));
 		} catch (Exception e) {
 			e.printStackTrace();

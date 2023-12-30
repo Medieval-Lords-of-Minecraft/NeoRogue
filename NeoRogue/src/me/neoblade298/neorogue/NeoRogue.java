@@ -37,20 +37,23 @@ public class NeoRogue extends JavaPlugin {
 		NeoCore.registerIOComponent(this, new PlayerManager(), "NeoRogue-PlayerManager");
 		Bukkit.getPluginManager().registerEvents(new SessionManager(), this);
 		Bukkit.getPluginManager().registerEvents(new MythicLoader(), this);
+		initCommands(); // Must load commands AFTER map pieces due to command suggestion
+		reload();
+
+		// Strictly for debug usage
+		debugInitialize();
+		
+	}
+	
+	public static void reload() {
 		Area.initialize();
 		Equipment.load();
 		ChanceSet.load(); // Must load after equipment
 		Mob.load(); // Load in mob types
 		Map.load(); // Load in map pieces
-		initCommands(); // Must load commands AFTER map pieces due to command suggestion
 		
 		// Will need to add multiverse dependency if the world isn't first loaded
 		spawn = new Location(Bukkit.getWorld(Area.WORLD_NAME), -250, 65, -250);
-
-		
-		// Strictly for debug usage
-		debugInitialize();
-		
 	}
 	
 	public void onDisable() {
@@ -74,11 +77,14 @@ public class NeoRogue extends JavaPlugin {
 		mngr.registerCommandList("");
 		
 		mngr = new SubcommandManager("nradmin", "neorogue.admin", NamedTextColor.DARK_RED, this);
+		mngr.register(new CmdAdminDebug("reload", "Reloads everything except mythic extensions", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminDebug("debug", "Testing", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminTestPiece("testpiece", "Pastes a map piece at 0,0 for ease of setting up spawners with coords", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminTestPieceSettings("testpiecesettings", "Pastes map piece to show how it looks rotated and flipped", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminTestMap("testmap", "Generates and pastes a map", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminTestChance("testchance", "Tests a chance event", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdAdminTestMiniboss("testminiboss", "Tests a miniboss fight", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdAdminTestBoss("testboss", "Tests a boss fight", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.registerCommandList("");
 	}
 	

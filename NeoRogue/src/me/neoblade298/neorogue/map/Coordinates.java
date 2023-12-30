@@ -10,8 +10,7 @@ import me.neoblade298.neorogue.area.Area;
  * Used for MapEntrances and MapSpawners, MapEntrance uses direction too
  */
 public class Coordinates extends Rotatable {
-	private int x, y, z, xp, zp, xlen, zlen;
-	private int xOff, yOff, zOff;
+	private double x, y, z, xp, zp, xlen, zlen, xOff, yOff, zOff;
 	private Direction ogDir;
 	private Direction dir = Direction.NORTH;
 	
@@ -21,9 +20,9 @@ public class Coordinates extends Rotatable {
 	
 	public Coordinates(MapPiece piece, String line, boolean usesMinecraftCoords) {
 		String[] parsed = line.split(",");
-		this.x = Integer.parseInt(parsed[0]);
-		this.y = Integer.parseInt(parsed[1]);
-		this.z = Integer.parseInt(parsed[2]);
+		this.x = Double.parseDouble(parsed[0]);
+		this.y = Double.parseDouble(parsed[1]);
+		this.z = Double.parseDouble(parsed[2]);
 		this.xlen = usesMinecraftCoords ? piece.getShape().getBaseLength() * 16 - 1: piece.getShape().getBaseLength() - 1;
 		this.zlen = usesMinecraftCoords ? piece.getShape().getBaseHeight() * 16 - 1: piece.getShape().getBaseHeight() - 1;
 		this.xp = xlen - x;
@@ -32,11 +31,11 @@ public class Coordinates extends Rotatable {
 		this.dir = ogDir;
 	}
 	
-	public Coordinates(int x, int y, int z, int xlen, int zlen) {
+	public Coordinates(double x, double y, double z, double xlen, double zlen) {
 		this(x, y, z, xlen, zlen, Direction.NORTH);
 	}
 	
-	public Coordinates(int x, int y, int z, int xlen, int zlen, Direction dir) {
+	public Coordinates(double x, double y, double z, double xlen, double zlen, Direction dir) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -80,33 +79,33 @@ public class Coordinates extends Rotatable {
 		}
 	}
 	
-	private int[] getCoordinates() {
-		int newX = swapAxes ? (reverseX ? zp : z) : (reverseX ? xp : x);
-		int newZ = swapAxes ? (reverseZ ? xp : x) : (reverseZ ? zp : z);
+	private double[] getCoordinates() {
+		double newX = swapAxes ? (reverseX ? zp : z) : (reverseX ? xp : x);
+		double newZ = swapAxes ? (reverseZ ? xp : x) : (reverseZ ? zp : z);
 		
-		return new int[] {newX, newZ};
+		return new double[] {newX, newZ};
 	}
 	
-	public int getX() {
+	public double getX() {
 		return getCoordinates()[0] + xOff;
 	}
 	
-	public int getY() {
+	public double getY() {
 		return y + yOff;
 	}
 	
-	public int getZ() {
+	public double getZ() {
 		return getCoordinates()[1] + zOff;
 	}
 	
-	public int getXFacing() {
+	public double getXFacing() {
 		int offset = 0;
 		if (dir == Direction.EAST) offset = 1;
 		else if (dir == Direction.WEST) offset = -1;
 		return getX() + offset;
 	}
 	
-	public int getZFacing() {
+	public double getZFacing() {
 		int offset = 0;
 		if (dir == Direction.NORTH) offset = 1;
 		else if (dir == Direction.SOUTH) offset = -1;
@@ -131,6 +130,9 @@ public class Coordinates extends Rotatable {
 	public Location toLocation() {
 		return new Location(Bukkit.getWorld(Area.WORLD_NAME), getX() + (xOff * 15), getY() - 1, getZ() + (zOff * 15), dir.getYaw(), 0);
 	}
+	public Location toBlockLocation() {
+		return new Location(Bukkit.getWorld(Area.WORLD_NAME), getX() + (xOff * 15), getY() - 1, getZ() + (zOff * 15), dir.getYaw(), 0);
+	}
 	
 	@Override
 	public String toString() {
@@ -149,18 +151,24 @@ public class Coordinates extends Rotatable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((dir == null) ? 0 : dir.getValue() + 1);
-		result = prime * result + ((ogDir == null) ? 0 : ogDir.getValue() + 1);
-		result = prime * result + x;
-		result = prime * result + xOff;
-		result = prime * result + xlen;
-		result = prime * result + xp;
-		result = prime * result + y;
-		result = prime * result + yOff;
-		result = prime * result + z;
-		result = prime * result + zOff;
-		result = prime * result + zlen;
-		result = prime * result + zp;
+		result = prime * result + ((ogDir == null) ? 0 : ogDir.hashCode());
+		long temp;
+		temp = Double.doubleToLongBits(x);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(xOff);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(xlen);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(y);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(yOff);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(z);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(zOff);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(zlen);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
 		return result;
 	}
 
@@ -170,18 +178,15 @@ public class Coordinates extends Rotatable {
 		if (obj == null) return false;
 		if (getClass() != obj.getClass()) return false;
 		Coordinates other = (Coordinates) obj;
-		if (dir != other.dir) return false;
 		if (ogDir != other.ogDir) return false;
-		if (x != other.x) return false;
-		if (xOff != other.xOff) return false;
-		if (xlen != other.xlen) return false;
-		if (xp != other.xp) return false;
-		if (y != other.y) return false;
-		if (yOff != other.yOff) return false;
-		if (z != other.z) return false;
-		if (zOff != other.zOff) return false;
-		if (zlen != other.zlen) return false;
-		if (zp != other.zp) return false;
+		if (Double.doubleToLongBits(x) != Double.doubleToLongBits(other.x)) return false;
+		if (Double.doubleToLongBits(xOff) != Double.doubleToLongBits(other.xOff)) return false;
+		if (Double.doubleToLongBits(xlen) != Double.doubleToLongBits(other.xlen)) return false;
+		if (Double.doubleToLongBits(y) != Double.doubleToLongBits(other.y)) return false;
+		if (Double.doubleToLongBits(yOff) != Double.doubleToLongBits(other.yOff)) return false;
+		if (Double.doubleToLongBits(z) != Double.doubleToLongBits(other.z)) return false;
+		if (Double.doubleToLongBits(zOff) != Double.doubleToLongBits(other.zOff)) return false;
+		if (Double.doubleToLongBits(zlen) != Double.doubleToLongBits(other.zlen)) return false;
 		return true;
 	}
 }

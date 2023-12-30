@@ -62,13 +62,15 @@ public abstract class FightInstance extends Instance {
 	protected HashSet<UUID> party = new HashSet<UUID>();
 	protected Map map;
 	protected ArrayList<MapSpawnerInstance> spawners = new ArrayList<MapSpawnerInstance>(),
-			unlimitedSpawners = new ArrayList<MapSpawnerInstance>();
+			unlimitedSpawners = new ArrayList<MapSpawnerInstance>(),
+			initialSpawns = new ArrayList<MapSpawnerInstance>();
 	private HashMap<String, Location> mythicLocations = new HashMap<String, Location>();
 	protected HashMap<UUID, Barrier> enemyBarriers = new HashMap<UUID, Barrier>();
 	protected ArrayList<BukkitTask> tasks = new ArrayList<BukkitTask>();
 	protected ArrayList<FightRunnable> initialTasks = new ArrayList<FightRunnable>();
 	protected double spawnCounter; // Holds a value between 0 and 1, when above 1, a mob spawns
 	protected double totalSpawnValue; // Keeps track of total mob spawns, to handle scaling of spawning
+	protected int level; // The level of the instance
 	
 	public FightInstance(Set<UUID> players) {
 		party.addAll(players);
@@ -82,8 +84,8 @@ public abstract class FightInstance extends Instance {
 		return userBarriers;
 	}
 	
-	public void instantiate() {
-		map.instantiate(this, s.getXOff(), s.getZOff());
+	public void instantiate(int level) {
+		map.instantiate(this, s.getXOff(), s.getZOff(), level);
 	}
 	
 	public Map getMap() {
@@ -497,7 +499,9 @@ public abstract class FightInstance extends Instance {
 	@Override
 	public void start(Session s) {
 		this.s = s;
-		instantiate();
+		level = 5 + s.getNodesVisited();
+		
+		instantiate(level);
 		s.broadcast("Commencing fight...");
 		ArrayList<PlayerFightData> fdata = new ArrayList<PlayerFightData>();
 		for (Player p : s.getOnlinePlayers()) {
@@ -519,14 +523,6 @@ public abstract class FightInstance extends Instance {
 						MapPieceInstance.Z_FIGHT_OFFSET + s.getZOff());
 				spawn.setX(-spawn.getX());
 				
-				for (Entry<String, Coordinates> ent : inst.getMythicLocations().entrySet()) {
-					Location loc = ent.getValue().applySettings(inst).toLocation();
-					loc.add(s.getXOff() + MapPieceInstance.X_FIGHT_OFFSET,
-							MapPieceInstance.Y_OFFSET,
-							MapPieceInstance.Z_FIGHT_OFFSET + s.getZOff());
-					loc.setX(-loc.getX());
-					mythicLocations.put(ent.getKey(), loc);
-				}
 				
 				for (Player p : s.getOnlinePlayers()) {
 					p.teleport(spawn);
@@ -540,7 +536,10 @@ public abstract class FightInstance extends Instance {
 		
 		new BukkitRunnable() {
 			public void run() {
-				spawnMob(5 + (s.getNodesVisited() / 5));
+				spawnMob(3 + (s.getNodesVisited() / 5));
+				for (MapSpawnerInstance inst : initialSpawns) {
+					inst.spawnMob(level);
+				}
 			}
 		}.runTaskLater(NeoRogue.inst(), 60L);
 		
@@ -660,7 +659,16 @@ public abstract class FightInstance extends Instance {
 		}
 	}
 	
-	private void spawnMob(int num) {
+	public void addInitialSpawn(MapSpawnerInstance spawner) {
+		initialSpawns.add(spawner);
+	}
+	
+	public void addMythicLocation(String key, Location loc) {
+		mythicLocations.put(key, loc);
+	}
+	
+	protected void spawnMob(int num) {
+		if (spawners.isEmpty()) return;
 		for (int i = 0; i < num; i++) {
 			MapSpawnerInstance spawner = spawners.get(NeoRogue.gen.nextInt(spawners.size()));
 			if (!spawner.canSpawn()) {

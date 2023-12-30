@@ -82,6 +82,7 @@ public class SessionManager implements Listener {
 		Session s = new Session(p, plot, saveSlot);
 		sessions.put(p.getUniqueId(), s);
 		sessionPlots.put(plot, s);
+		System.out.println("Putting session " + s + " in plot");
 		return s;
 	}
 	

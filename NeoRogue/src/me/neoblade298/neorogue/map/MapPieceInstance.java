@@ -242,7 +242,7 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 	}
 	
 	public int[] calculateOffset(Coordinates available) {
-		return new int[] { available.getXFacing() - entrance.getX(), available.getY() - entrance.getY(), available.getZFacing() - entrance.getZ() };
+		return new int[] { (int) (available.getXFacing() - entrance.getX()), (int) (available.getY() - entrance.getY()), (int) (available.getZFacing() - entrance.getZ()) };
 	}
 	
 	public int getPotential() {
@@ -254,7 +254,7 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 	}
 	
 	// Pastes the map piece and sets up its spawners
-	public void instantiate(FightInstance fi, int xOff, int zOff) {
+	public void instantiate(FightInstance fi, int xOff, int zOff, int level) {
 		updateSchematic();
 		/*
 		 * this.x is the chunk coordinates within the fighting area
@@ -286,13 +286,22 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		}
 		// Instantiate spawners; if fi is null, that means it's a testmap
 		if (fi != null) {
-			for (MapSpawner spawner : piece.chooseSpawners()) {
-				fi.addSpawner(spawner.instantiate(this, xOff, zOff));
+			if (piece.getInitialSpawns() != null) {
+				for (MapSpawner spawner : piece.getInitialSpawns()) {
+					fi.addInitialSpawn(spawner.instantiate(this, xOff, zOff));
+				}
+			}
+			if (piece.hasSpawners()) {
+				for (MapSpawner spawner : piece.chooseSpawners()) {
+					fi.addSpawner(spawner.instantiate(this, xOff, zOff));
+				}
 			}
 		}
 		else {
-			for (MapSpawner spawner : piece.chooseSpawners()) {
-				spawner.instantiate(this, xOff, zOff);
+			if (piece.hasSpawners()) {
+				for (MapSpawner spawner : piece.chooseSpawners()) {
+					spawner.instantiate(this, xOff, zOff);
+				}
 			}
 		}
 	}
@@ -343,6 +352,17 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 						z - rotateOffset[1] - flipOffset[1]);
 				loc.setX(-loc.getX());
 				loc.getBlock().setType(Material.ORANGE_WOOL);
+			}
+		}
+		if (piece.getInitialSpawns() != null) {
+			for (MapSpawner initialSpawner : piece.getInitialSpawns()) {
+				Location loc = initialSpawner.getCoordinates().clone().applySettings(this).toLocation();
+				loc.setWorld(world);
+				loc.add(-x - rotateOffset[0] - flipOffset[0],
+						y,
+						z - rotateOffset[1] - flipOffset[1]);
+				loc.setX(-loc.getX());
+				loc.getBlock().setType(Material.PURPLE_WOOL);
 			}
 		}
 		

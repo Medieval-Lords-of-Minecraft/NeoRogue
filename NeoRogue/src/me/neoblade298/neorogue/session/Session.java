@@ -319,4 +319,9 @@ public class Session {
 			ex.printStackTrace();
 		}
 	}
+	
+	@Override
+	public String toString() {
+		return plot.toString();
+	}
 }
