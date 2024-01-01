@@ -1,6 +1,8 @@
 package me.neoblade298.neorogue.commands;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
 import me.neoblade298.neocore.bukkit.commands.Subcommand;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
@@ -14,7 +16,9 @@ public class CmdAdminReload extends Subcommand {
 
 	@Override
 	public void run(CommandSender s, String[] args) {
-		NeoRogue.reload();
+		System.out.println("Test");
 		Util.msg(s, "Reloaded configurations.");
+		Util.msg((Player) s, "Test");
+		NeoRogue.reload();
 	}
 }

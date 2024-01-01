@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.commands;
 
+import java.util.ArrayList;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -19,7 +21,8 @@ public class CmdAdminTestMiniboss extends Subcommand {
 
 	public CmdAdminTestMiniboss(String key, String desc, String perm, SubcommandRunner runner) {
 		super(key, desc, perm, runner);
-		args.add(new Arg("miniboss map ID"));
+		this.enableTabComplete();
+		args.add(new Arg("miniboss map ID").setTabOptions(new ArrayList<String>(Map.getAllPieces().keySet())));
 	}
 
 	@Override

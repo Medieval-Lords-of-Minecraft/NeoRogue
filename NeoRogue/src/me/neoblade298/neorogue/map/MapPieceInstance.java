@@ -420,49 +420,51 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
             b.setBlockData(bmeta);
 		}
 
-		for (Coordinates entrance : piece.getEntrances()) {
-			Coordinates coords = entrance.clone().applySettings(this);
-			Location loc = coords.toLocation();
-			loc.setX(loc.getX() * 16);
-			loc.setZ(loc.getZ() * 16);
-			loc.add(-x - rotateOffset[0] - flipOffset[0],
-					y,
-					z - rotateOffset[1] - flipOffset[1]);
-			loc.setX(-loc.getX());
-			loc.setWorld(world);
-			
-			double entx = loc.getX();
-			double entz = loc.getZ();
-			// Loc is currently on the northeast of the entrance
-			
-			// Iterate through the 4 entrance blocks based on entrance direction
-			switch (coords.getDirection()) {
-			case NORTH:
-				loc.setZ(entz + 15);
-				for (double tempx = entx - 6; tempx > entx - 10; tempx--) {
-					loc.setX(tempx);
-					loc.getBlock().setType(Material.RED_CONCRETE);
+		if (piece.getEntrances() != null) {
+			for (Coordinates entrance : piece.getEntrances()) {
+				Coordinates coords = entrance.clone().applySettings(this);
+				Location loc = coords.toLocation();
+				loc.setX(loc.getX() * 16);
+				loc.setZ(loc.getZ() * 16);
+				loc.add(-x - rotateOffset[0] - flipOffset[0],
+						y,
+						z - rotateOffset[1] - flipOffset[1]);
+				loc.setX(-loc.getX());
+				loc.setWorld(world);
+				
+				double entx = loc.getX();
+				double entz = loc.getZ();
+				// Loc is currently on the northeast of the entrance
+				
+				// Iterate through the 4 entrance blocks based on entrance direction
+				switch (coords.getDirection()) {
+				case NORTH:
+					loc.setZ(entz + 15);
+					for (double tempx = entx - 6; tempx > entx - 10; tempx--) {
+						loc.setX(tempx);
+						loc.getBlock().setType(Material.RED_CONCRETE);
+					}
+					break;
+				case SOUTH:
+					for (double tempx = entx - 6; tempx > entx - 10; tempx--) {
+						loc.setX(tempx);
+						loc.getBlock().setType(Material.RED_CONCRETE);
+					}
+					break;
+				case EAST:
+					loc.setX(entx - 15);
+					for (double tempz = entz + 6; tempz < entz + 10; tempz++) {
+						loc.setZ(tempz);
+						loc.getBlock().setType(Material.RED_CONCRETE);
+					}
+					break;
+				case WEST:
+					for (double tempz = entz + 6; tempz < entz + 10; tempz++) {
+						loc.setZ(tempz);
+						loc.getBlock().setType(Material.RED_CONCRETE);
+					}
+					break;
 				}
-				break;
-			case SOUTH:
-				for (double tempx = entx - 6; tempx > entx - 10; tempx--) {
-					loc.setX(tempx);
-					loc.getBlock().setType(Material.RED_CONCRETE);
-				}
-				break;
-			case EAST:
-				loc.setX(entx - 15);
-				for (double tempz = entz + 6; tempz < entz + 10; tempz++) {
-					loc.setZ(tempz);
-					loc.getBlock().setType(Material.RED_CONCRETE);
-				}
-				break;
-			case WEST:
-				for (double tempz = entz + 6; tempz < entz + 10; tempz++) {
-					loc.setZ(tempz);
-					loc.getBlock().setType(Material.RED_CONCRETE);
-				}
-				break;
 			}
 		}
 	}

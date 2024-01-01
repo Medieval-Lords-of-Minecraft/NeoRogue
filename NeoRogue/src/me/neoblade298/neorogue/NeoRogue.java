@@ -77,7 +77,7 @@ public class NeoRogue extends JavaPlugin {
 		mngr.registerCommandList("");
 		
 		mngr = new SubcommandManager("nradmin", "neorogue.admin", NamedTextColor.DARK_RED, this);
-		mngr.register(new CmdAdminDebug("reload", "Reloads everything except mythic extensions", null, SubcommandRunner.BOTH));
+		mngr.register(new CmdAdminReload("reload", "Reloads everything except mythic extensions", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminDebug("debug", "Testing", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminTestPiece("testpiece", "Pastes a map piece at 0,0 for ease of setting up spawners with coords", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminTestPieceSettings("testpiecesettings", "Pastes map piece to show how it looks rotated and flipped", null, SubcommandRunner.PLAYER_ONLY));

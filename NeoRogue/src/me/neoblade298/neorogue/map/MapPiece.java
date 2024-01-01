@@ -46,14 +46,16 @@ public class MapPiece {
 		shape = new MapShape(cfg.getStringList("shape"));
 		
 		List<String> entrances = cfg.getStringList("entrances");
-		this.entrances = new Coordinates[entrances.size()];
 		int i = 0;
-		for (String line : entrances) {
-			Coordinates entrance = new Coordinates(this, line);
-			Direction invert = entrance.getOriginalDirection().invert();
-			entrance.setOriginalDirection(invert);
-			entrance.setDirection(invert);
-			this.entrances[i++] = entrance;
+		if (entrances != null) {
+			this.entrances = new Coordinates[entrances.size()];
+			for (String line : entrances) {
+				Coordinates entrance = new Coordinates(this, line);
+				Direction invert = entrance.getOriginalDirection().invert();
+				entrance.setOriginalDirection(invert);
+				entrance.setDirection(invert);
+				this.entrances[i++] = entrance;
+			}
 		}
 		
 		Section sec = cfg.getSection("spawnersets");
