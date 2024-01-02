@@ -40,7 +40,7 @@ public class PlayerSessionData {
 	private PlayerData data;
 	private Session s;
 	private EquipmentClass pc;
-	private double maxHealth, maxMana, maxStamina, health, manaRegen, staminaRegen;
+	private double maxHealth, maxMana, maxStamina, health, startingMana, startingStamina, manaRegen, staminaRegen;
 	private Equipment[] hotbar = new Equipment[9];
 	private Equipment[] armors = new Equipment[3];
 	private Equipment[] offhand = new Equipment[1];
@@ -67,6 +67,8 @@ public class PlayerSessionData {
 		this.maxMana = rs.getDouble("maxMana");
 		this.maxStamina = rs.getDouble("maxStamina");
 		this.health = rs.getDouble("health");
+		this.startingMana = rs.getDouble("startingMana");
+		this.startingStamina = rs.getDouble("startingStamina");
 		this.manaRegen = rs.getDouble("manaRegen");
 		this.staminaRegen = rs.getDouble("staminaRegen");
 		this.hotbar = Equipment.deserializeAsArray(rs.getString("hotbar"));
@@ -439,9 +441,25 @@ public class PlayerSessionData {
 	public void addMaxMana(int amount) {
 		this.maxMana += amount;
 	}
+	
+	public void addStartingStamina(int amount) {
+		this.startingStamina += amount;
+	}
+	
+	public void addStartingMana(int amount) {
+		this.startingMana += amount;
+	}
 
 	public Session getSession() {
 		return s;
+	}
+	
+	public double getStartingMana() {
+		return startingMana;
+	}
+	
+	public double getStartingStamina() {
+		return startingStamina;
 	}
 
 	public double getHealth() {
@@ -519,7 +537,8 @@ public class PlayerSessionData {
 			SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_playersessiondata")
 					.addString(host.toString()).addValue(saveSlot).addString(uuid)
 					.addString(((TextComponent) data.getPlayer().displayName()).content()).addString(pc.name())
-					.addValue(maxHealth).addValue(maxMana).addValue(maxStamina).addValue(health).addValue(manaRegen)
+					.addValue(maxHealth).addValue(maxMana).addValue(maxStamina).addValue(health)
+					.addValue(startingMana).addValue(startingStamina).addValue(manaRegen)
 					.addValue(staminaRegen).addString(Equipment.serialize(hotbar))
 					.addString(Equipment.serialize(armors)).addString(Equipment.serialize(offhand))
 					.addString(Equipment.serialize(accessories)).addString(Equipment.serialize(storage))

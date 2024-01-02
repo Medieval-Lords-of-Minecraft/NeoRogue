@@ -11,12 +11,12 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class RubyCluster extends Artifact {
-	private int inc;
+	private int max;
 
 	public RubyCluster(boolean isUpgraded) {
 		super("rubyCluster", "Ruby Cluster", isUpgraded, Rarity.RARE, EquipmentClass.CLASSLESS);
 
-		inc = isUpgraded ? 35 : 25;
+		max = isUpgraded ? 35 : 25;
 	}
 
 	@Override
@@ -26,11 +26,11 @@ public class RubyCluster extends Artifact {
 
 	@Override
 	public void onAcquire(PlayerSessionData data) {
-		data.addMaxHealth(inc);
+		data.addMaxHealth(max);
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.REDSTONE, "<gray>Increases max health by <yellow>" + inc);
+		item = createItem(Material.REDSTONE, "<gray>Increases max health by <yellow>" + max);
 	}
 }

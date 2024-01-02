@@ -11,12 +11,13 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class SapphireShard extends Artifact {
-	private int inc;
+	private int max, starting;
 
 	public SapphireShard(boolean isUpgraded) {
 		super("sapphireShard", "Sapphire Shard", isUpgraded, Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
 
-		inc = isUpgraded ? 15 : 10;
+		max = isUpgraded ? 15 : 10;
+		starting = isUpgraded ? 3 : 2;
 	}
 
 	@Override
@@ -26,11 +27,12 @@ public class SapphireShard extends Artifact {
 
 	@Override
 	public void onAcquire(PlayerSessionData data) {
-		data.addMaxMana(inc);
+		data.addMaxMana(max);
+		data.addStartingMana(starting);
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LAPIS_LAZULI, "<gray>Increases max mana by <yellow>" + inc);
+		item = createItem(Material.LAPIS_LAZULI, "<gray>Increases max mana by <yellow>" + max + "</yellow> and starting mana by <yellow>" + starting);
 	}
 }

@@ -11,12 +11,13 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class SapphireGem extends Artifact {
-	private int inc;
+	private int max, starting;
 
 	public SapphireGem(boolean isUpgraded) {
 		super("sapphireGem", "Sapphire Gem", isUpgraded, Rarity.EPIC, EquipmentClass.CLASSLESS);
 
-		inc = isUpgraded ? 75 : 50;
+		max = isUpgraded ? 75 : 50;
+		starting = isUpgraded ? 15 : 10;
 	}
 
 	@Override
@@ -26,11 +27,12 @@ public class SapphireGem extends Artifact {
 
 	@Override
 	public void onAcquire(PlayerSessionData data) {
-		data.addMaxMana(inc);
+		data.addMaxMana(max);
+		data.addStartingMana(starting);
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LAPIS_LAZULI, "<gray>Increases max mana by <yellow>"+ inc);
+		item = createItem(Material.LAPIS_LAZULI, "<gray>Increases max mana by <yellow>" + max + "</yellow> and starting mana by <yellow>" + starting);
 	}
 }

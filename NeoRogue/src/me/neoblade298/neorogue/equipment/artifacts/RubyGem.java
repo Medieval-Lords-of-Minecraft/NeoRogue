@@ -11,12 +11,12 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class RubyGem extends Artifact {
-	private int inc;
+	private int max;
 
 	public RubyGem(boolean isUpgraded) {
 		super("rubyGem", "Ruby Gem", isUpgraded, Rarity.EPIC, EquipmentClass.CLASSLESS);
 
-		inc = isUpgraded ? 75 : 50;
+		max = isUpgraded ? 75 : 50;
 	}
 
 	@Override
@@ -26,11 +26,11 @@ public class RubyGem extends Artifact {
 
 	@Override
 	public void onAcquire(PlayerSessionData data) {
-		data.addMaxHealth(inc);
+		data.addMaxHealth(max);
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.REDSTONE, "<gray>Increases max health by <yellow>" + inc);
+		item = createItem(Material.REDSTONE, "<gray>Increases max health by <yellow>" + max);
 	}
 }

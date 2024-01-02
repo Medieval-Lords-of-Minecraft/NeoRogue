@@ -11,12 +11,13 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class SapphireCluster extends Artifact {
-	private int inc;
+	private int max, starting;
 
 	public SapphireCluster(boolean isUpgraded) {
 		super("sapphireCluster", "Sapphire Cluster", isUpgraded, Rarity.RARE, EquipmentClass.CLASSLESS);
 
-		inc = isUpgraded ? 35 : 25;
+		max = isUpgraded ? 35 : 25;
+		starting = isUpgraded ? 7 : 5;
 	}
 
 	@Override
@@ -26,11 +27,12 @@ public class SapphireCluster extends Artifact {
 
 	@Override
 	public void onAcquire(PlayerSessionData data) {
-		data.addMaxMana(inc);
+		data.addMaxMana(max);
+		data.addStartingMana(starting);
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LAPIS_LAZULI, "<gray>Increases max mana by <yellow>" + inc);
+		item = createItem(Material.LAPIS_LAZULI, "<gray>Increases max mana by <yellow>" + max + "</yellow> and starting mana by <yellow>" + starting);
 	}
 }

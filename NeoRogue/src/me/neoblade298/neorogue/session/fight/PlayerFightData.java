@@ -25,7 +25,7 @@ public class PlayerFightData extends FightData {
 	private Player p;
 	private long nextAttack, nextOffAttack;
 
-	private double stamina = 0, mana = 0;
+	private double stamina, mana;
 	private double maxStamina, maxMana, maxHealth;
 	private double staminaRegen, manaRegen;
 	
@@ -88,6 +88,8 @@ public class PlayerFightData extends FightData {
 		this.maxStamina = sessdata.getMaxStamina();
 		this.maxMana = sessdata.getMaxMana();
 		this.maxHealth = sessdata.getMaxHealth();
+		this.mana = sessdata.getStartingMana();
+		this.stamina = sessdata.getStartingStamina();
 		updateStamina();
 		updateMana();
 		this.staminaRegen = sessdata.getStaminaRegen();
@@ -251,7 +253,7 @@ public class PlayerFightData extends FightData {
 	
 	private void updateStamina() {
 		this.stamina = Math.min(this.stamina, this.maxStamina);
-		p.setFoodLevel((int) (this.stamina * 20 / sessdata.getMaxStamina()));
+		p.setFoodLevel((int) (this.stamina * 14 / sessdata.getMaxStamina()) + 6);
 	}
 	
 	public void addHealth(double amount) {
