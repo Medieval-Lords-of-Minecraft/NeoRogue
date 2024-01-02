@@ -63,6 +63,9 @@ public class MythicLoader implements Listener {
 		case "nrbuff":
 			mechanic = new MechanicBuff(cfg);
 			break;
+		case "nrstatus":
+			mechanic = new MechanicStatus(cfg);
+			break;
 		}
 		if (mechanic != null) {
 			event.register(mechanic);

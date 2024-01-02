@@ -42,12 +42,14 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 	private ClipboardHolder schematic;
 	private int potential = 100;
 	private int len, hgt;
+	private int spawnerIdx;
 	private int[] rotateOffset = new int[] {0, 0},
 			flipOffset = new int[] {0, 0};
 	
 	protected MapPieceInstance(MapPiece piece) {
 		this.piece = piece;
 		schematic = new ClipboardHolder(piece.clipboard);
+		spawnerIdx = piece.chooseSpawners();
 		
 		spawns = new Coordinates[piece.spawns.length];
 		int i = 0;
@@ -78,11 +80,12 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		mpi.setZ(Integer.parseInt(split[3]));
 		mpi.setRotations(Integer.parseInt(split[4]));
 		mpi.setFlip(split[5].equals("T"), split[6].equals("T"));
+		mpi.spawnerIdx = Integer.parseInt(split[7]);
 		return mpi;
 	}
 	
 	public String serialize() {
-		return piece.getId() + "," + x + "," + y + "," + z + "," + numRotations + "," + (flipX ? "T" : "F") + "," + (flipZ ? "T" : "F");
+		return piece.getId() + "," + x + "," + y + "," + z + "," + numRotations + "," + (flipX ? "T" : "F") + "," + (flipZ ? "T" : "F") + "," + spawnerIdx;
 	}
 	
 	public int getNumRotations() {
@@ -295,14 +298,14 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 				}
 			}
 			if (piece.hasSpawners()) {
-				for (MapSpawner spawner : piece.chooseSpawners()) {
+				for (MapSpawner spawner : piece.getSpawners(spawnerIdx)) {
 					fi.addSpawner(spawner.instantiate(this, xOff, zOff));
 				}
 			}
 		}
 		else {
 			if (piece.hasSpawners()) {
-				for (MapSpawner spawner : piece.chooseSpawners()) {
+				for (MapSpawner spawner : piece.getSpawners(spawnerIdx)) {
 					spawner.instantiate(this, xOff, zOff);
 				}
 			}
@@ -516,6 +519,10 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 	
 	public HashMap<String, Coordinates> getMythicLocations() {
 		return mythicLocations;
+	}
+	
+	public int getSpawnerSet() {
+		return spawnerIdx;
 	}
 
 	@Override

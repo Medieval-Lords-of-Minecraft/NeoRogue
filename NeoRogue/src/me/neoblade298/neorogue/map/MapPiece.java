@@ -28,6 +28,7 @@ public class MapPiece {
 	private ArrayList<MapSpawner[]> spawnerSets = new ArrayList<MapSpawner[]>();
 	private MapSpawner[] initialSpawns;
 	protected Clipboard clipboard;
+	private ArrayList<String> customInfoOrder = new ArrayList<String>(); // For showing fight info mobs in a specific order
 	
 	public MapPiece(Section cfg) {
 		id = cfg.getName();
@@ -101,6 +102,8 @@ public class MapPiece {
 			this.targets.addAll(targets);
 		}
 		
+		this.customInfoOrder = (ArrayList<String>) cfg.getStringList("fightinfomobs");
+		
 		pieces.put(id, this);
 	}
 	
@@ -141,9 +144,13 @@ public class MapPiece {
 	}
 	
 	// Pick between the different sets of spawners
-	public MapSpawner[] chooseSpawners() {
-		if (spawnerSets.size() == 0) return null;
-		return spawnerSets.get(NeoRogue.gen.nextInt(spawnerSets.size()));
+	public int chooseSpawners() {
+		if (spawnerSets.size() == 0) return -1;
+		return NeoRogue.gen.nextInt(spawnerSets.size());
+	}
+	
+	public MapSpawner[] getSpawners(int idx) {
+		return spawnerSets.get(idx);
 	}
 	
 	public MapPieceInstance[] getRotationOptions(Coordinates existing, Coordinates toAttach) {
@@ -180,5 +187,13 @@ public class MapPiece {
 		}
 		else if (!id.equals(other.id)) return false;
 		return true;
+	}
+	
+	public boolean hasCustomMobInfo() {
+		return this.customInfoOrder != null;
+	}
+	
+	public ArrayList<String> getCustomMobInfo() {
+		return this.customInfoOrder;
 	}
 }

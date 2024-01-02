@@ -118,7 +118,7 @@ public class Mob implements Comparable<Mob> {
 				if (resistances.containsKey(dt)) {
 					int pct = resistances.get(dt);
 					Component c = Component.text(dt.getDisplay() + ": ", NamedTextColor.YELLOW)
-							.append(Component.text(pct + "%", pct > 0 ? NamedTextColor.RED : NamedTextColor.GREEN));
+							.append(Component.text(pct + "%", pct > 0 ? NamedTextColor.GREEN : NamedTextColor.RED));
 					lore.add(c.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
 				}
 			}
