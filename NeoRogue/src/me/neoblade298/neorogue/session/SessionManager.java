@@ -14,7 +14,6 @@ import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -156,7 +155,17 @@ public class SessionManager implements Listener {
 		Player p = e.getPlayer();
 		UUID uuid = p.getUniqueId();
 		e.setCancelled(sessions.containsKey(uuid));
-		openInventory(p, e);
+		if (sessions.containsKey(uuid)) {
+			Session s = sessions.get(uuid);
+
+			if (s.getInstance() instanceof EditInventoryInstance) {
+				p.setItemOnCursor(null);
+				new PlayerSessionInventory(s.getData(uuid));
+			}
+			else if (s.getInstance() instanceof FightInstance) {
+				FightInstance.handleOffhandSwap(e);
+			}
+		}
 	}
 
 	@EventHandler
@@ -178,10 +187,6 @@ public class SessionManager implements Listener {
 		if (e.getView().getTopInventory().getType() != InventoryType.CRAFTING) return;
 
 		// If the inventory type is normal player inventory, open up a player session inventory
-		openInventory(p, e);
-	}
-
-	private void openInventory(Player p, Cancellable e) {
 		UUID uuid = p.getUniqueId();
 		if (sessions.containsKey(uuid)) {
 			Session s = sessions.get(uuid);
