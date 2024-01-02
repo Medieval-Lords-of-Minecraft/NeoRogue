@@ -384,7 +384,8 @@ public abstract class FightInstance extends Instance {
 		}
 		else {
 		}
-
+		
+		meta.setDamage(amount);
 		for (Damageable target : targets) {
 			receiveDamage(damager, meta, target);
 		}

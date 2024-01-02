@@ -6,11 +6,11 @@
 	<classpathentry kind="lib" path="src/item-nbt-api-plugin-2.11.1.jar"/>
 	<classpathentry kind="lib" path="src/MythicMobs-5.3.5.jar"/>
 	<classpathentry kind="lib" path="src/DecentHolograms-2.8.4.jar"/>
-	<classpathentry kind="lib" path="src/paper-api-1.20.2-R0.1-20230922.151740-1.jar"/>
 	<classpathentry kind="lib" path="src/adventure-api-4.14.0.jar"/>
 	<classpathentry kind="lib" path="src/adventure-text-minimessage-4.14.0.jar"/>
 	<classpathentry kind="lib" path="src/examination-api-1.3.0.jar"/>
-	<classpathentry kind="lib" path="src/spigot-api-1.17.1-R0.1-SNAPSHOT-shaded.jar"/>
+	<classpathentry kind="lib" path="src/paper-api-1.20.4-R0.1-20231230.235934-47.jar"/>
+	<classpathentry kind="lib" path="src/spigot-api-1.20.4-R0.1-SNAPSHOT-shaded.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
 		<attributes>
 			<attribute name="module" value="true"/>

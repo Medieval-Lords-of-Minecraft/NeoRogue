@@ -75,9 +75,11 @@ public class PlayerFightData extends FightData {
 		PlayerInventory inv = p.getInventory();
 		inv.clear();
 		ItemStack[] contents = inv.getContents();
-		
+
 		for (i = 0; i < 9; i++) {
 			if (data.getEquipment(EquipSlot.HOTBAR)[i] == null) continue;
+			if (!hasTriggerAction(Trigger.getFromHotbarSlot(i)) && 
+					!slotBasedTriggers.containsKey(i)) continue;
 			contents[i] = data.getEquipment(EquipSlot.HOTBAR)[i].getItem();
 		}
 		inv.setContents(contents);

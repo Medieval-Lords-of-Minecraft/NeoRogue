@@ -64,7 +64,7 @@ public class Fury extends Equipment {
 		
 		@Override
 		public boolean canTrigger(Player p, PlayerFightData data) {
-			boolean isBerserkAfter = data.getStatus("BERSERK").getStacks() >= berserk;
+			boolean isBerserkAfter = data.hasStatus("BERSERK") && data.getStatus("BERSERK").getStacks() >= berserk;
 			if (!isBerserk && isBerserkAfter) {
 				this.cooldown = 2.5;
 				this.staminaCost = 0;

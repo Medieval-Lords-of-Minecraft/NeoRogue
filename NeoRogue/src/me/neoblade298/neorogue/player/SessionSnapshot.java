@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import org.bukkit.command.CommandSender;
 
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.session.Session;
@@ -57,7 +58,7 @@ public class SessionSnapshot {
 				.append(Component.text(new Date(lastSaved).toString(), NamedTextColor.GRAY)).build();
 		text = text.clickEvent(ClickEvent.suggestCommand("/nr new " + saveSlot + " partyname"))
 		.hoverEvent(HoverEvent.showText(createHoverText()));
-		s.sendMessage(text);
+		Util.msg(s, text);
 	}
 	
 	public static void displayEmptyNewButton(CommandSender s, int saveSlot) {
@@ -66,7 +67,7 @@ public class SessionSnapshot {
 				.append(Component.text("Empty", NamedTextColor.GRAY)).build();
 		text = text.clickEvent(ClickEvent.suggestCommand("/nr new " + saveSlot + " partyname"))
 		.hoverEvent(HoverEvent.showText(Component.text("Click to start a new game on this slot!")));
-		s.sendMessage(text);
+		Util.msg(s, text);
 	}
 	
 	public void displayLoadButton(CommandSender s, int saveSlot) {
@@ -75,7 +76,7 @@ public class SessionSnapshot {
 				.append(Component.text(new Date(lastSaved).toString(), NamedTextColor.GRAY)).build();
 		text = text.clickEvent(ClickEvent.suggestCommand("/nr load " + saveSlot))
 		.hoverEvent(HoverEvent.showText(createHoverText()));
-		s.sendMessage(text);
+		Util.msg(s, text);
 	}
 	
 	private Component createHoverText() {

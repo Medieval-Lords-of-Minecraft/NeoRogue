@@ -27,6 +27,10 @@ public class DamageMeta {
 	public double getDamage() {
 		return damage;
 	}
+	
+	public void setDamage(double damage) {
+		this.damage = damage;
+	}
 
 	public DamageType getType() {
 		return type;

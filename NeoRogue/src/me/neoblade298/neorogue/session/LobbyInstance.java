@@ -162,7 +162,7 @@ public class LobbyInstance extends Instance {
 				.append(Component.text(name, NamedTextColor.YELLOW))
 				.append(Component.text(" party!")));
 
-		recipient.sendMessage(NeoCore.miniMessage().deserialize(invPrefix + name + invSuffix));
+		Util.msg(recipient, NeoCore.miniMessage().deserialize(invPrefix + name + invSuffix));
 	}
 
 	public void addPlayer(Player p) {
@@ -275,12 +275,12 @@ public class LobbyInstance extends Instance {
 							p.getName() + "'>Click to kick</hover></click></red>]";
 				}
 			}
-			viewer.sendMessage(NeoCore.miniMessage().deserialize(str));
+			Util.msg(viewer, NeoCore.miniMessage().deserialize(str));
 		}
 
 		if (viewer.getUniqueId().equals(host)) {
 			str = "<dark_gray>[<red><click:run_command:'/nr start'><hover:show_text:'Click me to start!'>Click here to start!</hover></click></red>]";
-			viewer.sendMessage(NeoCore.miniMessage().deserialize(str));
+			Util.msg(viewer, NeoCore.miniMessage().deserialize(str));
 		}
 	}
 
