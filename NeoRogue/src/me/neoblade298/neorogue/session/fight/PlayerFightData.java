@@ -49,11 +49,11 @@ public class PlayerFightData extends FightData {
 			if (armor == null) continue;
 			armor.initialize(p, this, null, EquipSlot.ARMOR, i++);
 		}
-		i = 0;
+		i = -1;
 		for (Equipment hotbar : data.getEquipment(EquipSlot.HOTBAR)) {
+			i++;
 			if (hotbar == null) continue;
 			hotbar.initialize(p, this, Trigger.getFromHotbarSlot(i), EquipSlot.HOTBAR, i);
-			i++;
 		}
 		i = 0;
 		for (Equipment other : data.getEquipment(EquipSlot.KEYBIND)) {

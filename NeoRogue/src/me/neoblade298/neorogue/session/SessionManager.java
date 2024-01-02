@@ -154,9 +154,9 @@ public class SessionManager implements Listener {
 	public void onSwap(PlayerSwapHandItemsEvent e) {
 		Player p = e.getPlayer();
 		UUID uuid = p.getUniqueId();
-		e.setCancelled(sessions.containsKey(uuid));
 		if (sessions.containsKey(uuid)) {
 			Session s = sessions.get(uuid);
+			e.setCancelled(true);
 
 			if (s.getInstance() instanceof EditInventoryInstance) {
 				p.setItemOnCursor(null);
