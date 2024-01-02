@@ -36,7 +36,7 @@ public class Session {
 	private Instance inst;
 	private Node curr;
 	private SessionStatistics stats;
-	private int saveSlot, xOff, zOff, nodesVisited, areasCompleted;
+	private int saveSlot, xOff, zOff, nodesVisited = 12, areasCompleted;
 	private Plot plot;
 	
 	public Session(Player p, Plot plot, String lobby, int saveSlot) {

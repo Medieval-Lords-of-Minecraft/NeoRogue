@@ -272,7 +272,7 @@ public abstract class FightInstance extends Instance {
 		spawnCounter += mob.getValue();
 		while (spawnCounter >= 1) {
 			spawnCounter--;
-			data.getInstance().spawnMob(1);
+			data.getInstance().activateSpawner(1);
 		}
 	}
 	
@@ -543,7 +543,7 @@ public abstract class FightInstance extends Instance {
 		
 		new BukkitRunnable() {
 			public void run() {
-				spawnMob(3 + (s.getNodesVisited() / 5));
+				activateSpawner(3 + (s.getNodesVisited() / 5));
 				for (MapSpawnerInstance inst : initialSpawns) {
 					inst.spawnMob(level);
 				}
@@ -674,7 +674,7 @@ public abstract class FightInstance extends Instance {
 		mythicLocations.put(key, loc);
 	}
 	
-	protected void spawnMob(int num) {
+	protected void activateSpawner(int num) {
 		if (spawners.isEmpty()) return;
 		for (int i = 0; i < num; i++) {
 			MapSpawnerInstance spawner = spawners.get(NeoRogue.gen.nextInt(spawners.size()));
