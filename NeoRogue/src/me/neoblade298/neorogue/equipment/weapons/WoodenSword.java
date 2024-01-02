@@ -19,7 +19,7 @@ public class WoodenSword extends Equipment {
 	public WoodenSword(boolean isUpgraded) {
 		super("woodenSword", "Wooden Sword", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(isUpgraded ? 20 : 14, 1, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
+				EquipmentProperties.ofWeapon(isUpgraded ? 30 : 20, 1, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
 		addReforgeOption("woodenSword", new String[] {"stoneSword", "stoneAxe", "stoneDagger"});
 	}
 

@@ -24,7 +24,7 @@ public class BattleCry extends Equipment {
 	
 	public BattleCry(boolean isUpgraded) {
 		super("battleCry", "Battle Cry", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 20, 10, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 5, 15, 0));
 		strength = isUpgraded ? 20 : 14;
 		
 		pc.count(50).spread(0.5, 0.5).dustOptions(new DustOptions(Color.RED, 1F));

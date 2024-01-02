@@ -21,8 +21,8 @@ public class Brace2 extends Equipment {
 	
 	public Brace2(boolean isUpgraded) {
 		super("brace2", "Brace II", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 100, 20, 0));
-		shields = isUpgraded ? 180 : 120;
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 10, 15, 0));
+		shields = isUpgraded ? 50 : 35;
 		pc.count(10).spread(0.5, 0.5).speed(0.2);
 	}
 
@@ -39,6 +39,6 @@ public class Brace2 extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FLINT,
-				"On cast, gain <yellow>" + shields + " </yellow>shields for 5 seconds.");
+				"On cast, gain <yellow>" + shields + " </yellow>shields for 10 seconds.");
 	}
 }

@@ -23,8 +23,8 @@ public class EarthenLeatherGauntlets extends Equipment {
 	
 	public EarthenLeatherGauntlets(boolean isUpgraded) {
 		super("earthenLeatherGauntlets", "Earthen Leather Gauntlets", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.WEAPON, EquipmentProperties.ofWeapon(15, 2, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_CRIT));
-		concuss = isUpgraded ? 5 : 2;
+				EquipmentType.WEAPON, EquipmentProperties.ofWeapon(20, 2, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_CRIT));
+		concuss = isUpgraded ? 4 : 2;
 	}
 
 	@Override

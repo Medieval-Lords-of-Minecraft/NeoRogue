@@ -15,7 +15,7 @@ public class ClothBindings extends Equipment {
 	public ClothBindings(boolean isUpgraded) {
 		super("clothBindings", "Cloth Bindings", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ARMOR);
-		health = isUpgraded ? 10 : 7;
+		health = isUpgraded ? 15 : 10;
 	}
 
 	@Override

@@ -27,9 +27,9 @@ public class Parry extends Equipment {
 	
 	public Parry(boolean isUpgraded) {
 		super("parry", "Parry", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 30, 15, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 5, 5, 0));
 		shields = 30;
-		damage = isUpgraded ? 600 : 400;
+		damage = isUpgraded ? 100 : 70;
 		pc.count(10).spread(0.5, 0.5).speed(0.2);
 		bpc.count(20).spread(0.5, 0.5).speed(0.1);
 		hit.count(50).spread(0.5, 0.5);

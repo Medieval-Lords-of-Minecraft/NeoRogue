@@ -18,7 +18,7 @@ public class EarthenRing extends Equipment {
 	public EarthenRing(boolean isUpgraded) {
 		super("earthenRing", "Earthen Ring", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ACCESSORY);
-		damage = isUpgraded ? 3 : 2;
+		damage = isUpgraded ? 6 : 4;
 	}
 
 	@Override

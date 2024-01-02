@@ -14,7 +14,7 @@ public class WristBlade extends Equipment {
 	private int hits;
 	
 	public WristBlade(boolean isUpgraded) {
-		super("wristBlade", "Wrist Blade", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
+		super("wristBlade", "Wrist Blade", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.OFFHAND);
 		equipSlot = EquipSlot.OFFHAND;
 		hits = isUpgraded ? 3 : 2;

@@ -23,7 +23,7 @@ public class StoneDagger extends Equipment {
 	public StoneDagger(boolean isUpgraded) {
 		super("stoneDagger", "Stone Dagger", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(isUpgraded ? 35 : 25, 1.5, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_CRIT));
+				EquipmentProperties.ofWeapon(isUpgraded ? 30 : 25, 1.5, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_CRIT));
 	}
 
 	@Override

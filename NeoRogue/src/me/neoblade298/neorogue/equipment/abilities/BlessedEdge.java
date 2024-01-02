@@ -26,7 +26,7 @@ public class BlessedEdge extends Equipment {
 	
 	public BlessedEdge(boolean isUpgraded) {
 		super("blessedEdge", "Blessed Edge", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 20, 5, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 15, 5, 0));
 		damage = 125;
 		sanct = isUpgraded ? 9 : 6;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);

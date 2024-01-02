@@ -30,7 +30,7 @@ public class SavageCry extends Equipment {
 	public SavageCry(boolean isUpgraded) {
 		super("savageCry", "Savage Cry", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 60, 5, tp.range));
-		threat = isUpgraded ? 40000 : 25000;
+		threat = isUpgraded ? 1500 : 1000;
 		taunt.count(50).spread(0.5, 0.5).speed(0.2);
 	}
 

@@ -21,7 +21,7 @@ public class Rapier extends Equipment {
 		super("rapier", "Rapier", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(isUpgraded ? 45 : 30, 1, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_CRIT));
-		shields = isUpgraded ? 15 : 10;
+		shields = isUpgraded ? 10 : 7;
 	}
 
 	@Override

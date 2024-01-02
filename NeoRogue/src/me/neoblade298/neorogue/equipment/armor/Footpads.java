@@ -15,7 +15,7 @@ public class Footpads extends Equipment {
 	public Footpads(boolean isUpgraded) {
 		super("footpads", "Footpads", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ARMOR);
-		stamina = isUpgraded ? 3 : 5;
+		stamina = isUpgraded ? 15 : 10;
 	}
 
 	@Override

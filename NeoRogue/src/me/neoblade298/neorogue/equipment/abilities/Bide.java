@@ -22,7 +22,7 @@ public class Bide extends Equipment {
 	
 	public Bide(boolean isUpgraded) {
 		super("bide", "Bide", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR, 
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 0, 20, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 20, 10, 0));
 		shields = 50;
 		duration = 5;
 		berserk = isUpgraded ? 3 : 2;

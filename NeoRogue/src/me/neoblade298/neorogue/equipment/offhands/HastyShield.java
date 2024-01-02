@@ -19,7 +19,7 @@ public class HastyShield extends Equipment {
 		super("hastyShield", "Hasty Shield", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.OFFHAND);
 		reduction = 15;
-		amount = isUpgraded ? 15 : 10;
+		amount = isUpgraded ? 25 : 18;
 	}
 
 	@Override

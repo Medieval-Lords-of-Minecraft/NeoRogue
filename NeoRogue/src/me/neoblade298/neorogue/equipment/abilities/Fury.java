@@ -26,9 +26,9 @@ public class Fury extends Equipment {
 	
 	public Fury(boolean isUpgraded) {
 		super("fury", "Fury", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 30, 5, 0));
-		damage = 200;
-		berserk = isUpgraded ? 40 : 60;
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 25, 5, 0));
+		damage = 125;
+		berserk = isUpgraded ? 10 : 15;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		hit.count(50).spread(0.5, 0.5);
 		explode.count(25).spread(0.5, 0.5).speed(0.1);

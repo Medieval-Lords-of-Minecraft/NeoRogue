@@ -23,7 +23,7 @@ public class SerratedFencingSword extends Equipment {
 		super("serratedFencingSword", "Serrated Fencing Sword", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(30, 1, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_CRIT));
-		shields = 7;
+		shields = 4;
 		bleed = isUpgraded ? 4 : 2;
 	}
 

@@ -37,8 +37,8 @@ public class Tackle extends Equipment {
 	
 	public Tackle(boolean isUpgraded) {
 		super("tackle", "Tackle", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 25, 25, 0));
-		damage = isUpgraded ? 300 : 200;
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 10, 25, 0));
+		damage = isUpgraded ? 150 : 100;
 		
 		pc.count(25).spread(0.5, 0.5);
 		start.count(25).spread(0.5, 0);

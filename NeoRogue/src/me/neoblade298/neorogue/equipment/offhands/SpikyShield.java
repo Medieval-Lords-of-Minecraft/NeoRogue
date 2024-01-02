@@ -16,7 +16,7 @@ public class SpikyShield extends Equipment {
 	private int reduction, amount;
 	
 	public SpikyShield(boolean isUpgraded) {
-		super("spikyShield", "Spiky Shield", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
+		super("spikyShield", "Spiky Shield", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.OFFHAND);
 		reduction = 8;
 		amount = isUpgraded ? 6 : 4;

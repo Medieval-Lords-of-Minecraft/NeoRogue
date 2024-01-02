@@ -26,7 +26,7 @@ public class EmpoweredEdge extends Equipment {
 	public EmpoweredEdge(boolean isUpgraded) {
 		super("empoweredEdge", "Empowered Edge", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 15, isUpgraded ? 5 : 7, 0));
-		damage = isUpgraded ? 100 : 75;
+		damage = isUpgraded ? 105 : 75;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		hit.count(50).spread(0.5, 0.5);
 		addReforgeOption("empoweredEdge", "recklessSwing", "blessedEdge", "furiousSwing");

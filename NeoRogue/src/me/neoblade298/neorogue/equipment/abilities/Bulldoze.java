@@ -37,8 +37,8 @@ public class Bulldoze extends Equipment {
 	
 	public Bulldoze(boolean isUpgraded) {
 		super("bulldoze", "Bulldoze", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 50, 15, 0));
-		damage = isUpgraded ? 300 : 200;
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 20, 20, 0));
+		damage = isUpgraded ? 250 : 200;
 		
 		pc.count(25).spread(0.5, 0.5);
 		start.count(25).spread(0.5, 0);

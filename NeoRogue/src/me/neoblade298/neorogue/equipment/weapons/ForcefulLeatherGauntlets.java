@@ -19,7 +19,7 @@ public class ForcefulLeatherGauntlets extends Equipment {
 	public ForcefulLeatherGauntlets(boolean isUpgraded) {
 		super("forcefulLeatherGauntlets", "Forceful Leather Gauntlets", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(isUpgraded ? 20 : 15, 2, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_CRIT));
+				EquipmentProperties.ofWeapon(isUpgraded ? 27 : 22, 2, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_CRIT));
 		item = createItem(Material.LEATHER, null, null);
 	}
 

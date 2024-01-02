@@ -24,6 +24,8 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class EarthenWall extends Equipment {
 	private static ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
 	private static ParticleContainer earth = new ParticleContainer(Particle.BLOCK_CRACK);
+	private int duration = 20;
+	private int stacksNeeded;
 	
 	static {
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
@@ -33,6 +35,7 @@ public class EarthenWall extends Equipment {
 	public EarthenWall(boolean isUpgraded) {
 		super("earthenWall", "Earthen Wall", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(100, 20, 10, 0));
+		stacksNeeded = isUpgraded ? 6 : 9;
 	}
 
 	@Override
@@ -59,7 +62,7 @@ public class EarthenWall extends Equipment {
 				HashMap<BuffType, Buff> wall = new HashMap<BuffType, Buff>();
 				wall.put(BuffType.GENERAL, new Buff(p.getUniqueId(), 0, 0));
 				pdata.getInstance().addUserBarrier(pdata,
-						Barrier.stationary(p, 2, 3, 3, p.getLocation().add(0, 1.5, 0), LocalAxes.usingGroundedEyeLocation(p), wall, earth), 10);
+						Barrier.stationary(p, 2, 3, 3, p.getLocation().add(0, 1.5, 0), LocalAxes.usingGroundedEyeLocation(p), wall, earth), duration);
 				return TriggerResult.keep();
 			};
 		}
@@ -71,7 +74,7 @@ public class EarthenWall extends Equipment {
 		@Override
 		public boolean canTrigger(Player p, PlayerFightData data) {
 			if (super.canTrigger(p, data)) {
-				if (stacks < 10) {
+				if (stacks < stacksNeeded) {
 					Util.displayError(p, "Not enough stacks of concussed!");
 					return false;
 				}
@@ -82,7 +85,7 @@ public class EarthenWall extends Equipment {
 		
 		@Override
 		public TriggerResult trigger(PlayerFightData data, Object[] inputs) {
-			stacks -= 10;
+			stacks -= stacksNeeded;
 			return super.trigger(data, inputs);
 		}
 	}
@@ -90,7 +93,7 @@ public class EarthenWall extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.COARSE_DIRT,
-				"Can be cast once for every 10 stacks of concussed you apply."
-				+ " Raises a wall size 3x3 that blocks projectiles for 10 seconds.");
+				"Can be cast once for every " + stacksNeeded + " stacks of concussed you apply."
+				+ " Raises a wall size 3x3 that blocks projectiles for " + duration + " seconds.");
 	}
 }

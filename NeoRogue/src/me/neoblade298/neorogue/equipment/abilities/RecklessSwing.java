@@ -26,8 +26,8 @@ public class RecklessSwing extends Equipment {
 	
 	public RecklessSwing(boolean isUpgraded) {
 		super("recklessSwing", "Reckless Swing", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 30, 7, 0));
-		damage = isUpgraded ? 600 : 400;
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 20, 10, 0));
+		damage = isUpgraded ? 240 : 180;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		hit.count(50).spread(0.5, 0.5);
 	}

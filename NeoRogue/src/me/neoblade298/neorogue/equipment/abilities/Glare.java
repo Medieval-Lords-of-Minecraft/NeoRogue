@@ -30,7 +30,7 @@ public class Glare extends Equipment {
 	public Glare(boolean isUpgraded) {
 		super("glare", "Glare", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 30, 5, tp.range));
-		threat = isUpgraded ? 40000 : 25000;
+		threat = isUpgraded ? 750 : 500;
 		taunt.count(50).spread(0.5, 0.5).speed(0.2);
 	}
 
