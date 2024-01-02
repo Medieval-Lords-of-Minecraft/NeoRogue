@@ -1,6 +1,7 @@
 package me.neoblade298.neorogue.map;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map.Entry;
 
 import org.bukkit.Location;
@@ -9,6 +10,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Directional;
+import org.bukkit.entity.Player;
 
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
@@ -22,6 +24,7 @@ import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.math.transform.AffineTransform;
 import com.sk89q.worldedit.session.ClipboardHolder;
 
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -306,7 +309,7 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		}
 	}
 	
-	public void testPaste(World world, int xOff, int zOff) {
+	public void testPaste(Player p, World world, int xOff, int zOff) {
 		updateSchematic();
 		/*
 		 * this.x is the chunk coordinates within the fighting area
@@ -343,6 +346,7 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		}
 		
 		// Spawners
+		HashSet<Location> locs = new HashSet<Location>();
 		for (MapSpawner[] list : piece.getSpawnerSets()) {
 			for (MapSpawner spawner : list) {
 				Location loc = spawner.getCoordinates().clone().applySettings(this).toLocation();
@@ -351,9 +355,18 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 						y,
 						z - rotateOffset[1] - flipOffset[1]);
 				loc.setX(-loc.getX());
-				loc.getBlock().setType(Material.ORANGE_WOOL);
+				if (loc.getBlock().getType().isSolid()) {
+					Util.msg(p, "<red>A spawner appears to be inside a block.");
+					Util.msg(p, "<red>Coords: " + Util.locToString(loc, false, false));
+					Util.msg(p, "<red>Block: " + loc.getBlock().getType());
+				}
+				locs.add(loc);
 			}
 		}
+		for (Location loc : locs) {
+			loc.getBlock().setType(Material.ORANGE_WOOL);
+		}
+		
 		if (piece.getInitialSpawns() != null) {
 			for (MapSpawner initialSpawner : piece.getInitialSpawns()) {
 				Location loc = initialSpawner.getCoordinates().clone().applySettings(this).toLocation();
@@ -362,6 +375,11 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 						y,
 						z - rotateOffset[1] - flipOffset[1]);
 				loc.setX(-loc.getX());
+				if (loc.getBlock().getType().isSolid()) {
+					Util.msg(p, "<red>An initial spawn appears to be inside a block.");
+					Util.msg(p, "<red>Coords: " + Util.locToString(loc, false, false));
+					Util.msg(p, "<red>Block: " + loc.getBlock().getType());
+				}
 				loc.getBlock().setType(Material.PURPLE_WOOL);
 			}
 		}
@@ -376,6 +394,11 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 					z - rotateOffset[1] - flipOffset[1]);
 			loc.setX(-loc.getX());
 			Block b = loc.getBlock();
+			if (b.getType().isSolid()) {
+				Util.msg(p, "<red>A spawnpoint appears to be inside a block.");
+				Util.msg(p, "<red>Coords: " + Util.locToString(loc, false, false));
+				Util.msg(p, "<red>Block: " + loc.getBlock().getType());
+			}
 			b.setType(Material.MAGENTA_GLAZED_TERRACOTTA);
 
             Directional bmeta = (Directional) b.getBlockData();
@@ -403,6 +426,11 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 					z - rotateOffset[1] - flipOffset[1]);
 			loc.setX(-loc.getX());
 			Block b = loc.getBlock();
+			if (b.getType().isSolid()) {
+				Util.msg(p, "<red>A mythic location appears to be inside a block.");
+				Util.msg(p, "<red>Coords: " + Util.locToString(loc, false, false));
+				Util.msg(p, "<red>Block: " + loc.getBlock().getType());
+			}
 			b.setType(Material.MAGENTA_GLAZED_TERRACOTTA);
 
             Directional bmeta = (Directional) b.getBlockData();

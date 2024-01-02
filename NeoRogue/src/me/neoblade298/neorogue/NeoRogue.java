@@ -51,7 +51,7 @@ public class NeoRogue extends JavaPlugin {
 		reload();
 
 		// Strictly for debug usage
-		debugInitialize();
+		// debugInitialize();
 		
 	}
 	

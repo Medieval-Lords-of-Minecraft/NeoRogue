@@ -72,7 +72,7 @@ public class CmdAdminTestPiece extends Subcommand {
 			}
 		}
 		
-		inst.testPaste(w, x, z);
+		inst.testPaste(p, w, x, z);
 		p.teleport(new Location(w, -8, 1, 8, -90, 0));
 	}
 }
