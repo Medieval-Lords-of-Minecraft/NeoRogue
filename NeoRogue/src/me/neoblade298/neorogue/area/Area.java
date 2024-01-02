@@ -216,7 +216,7 @@ public class Area {
 		}
 
 		// Delete all nodes that don't have sources
-		for (int pos = 1; pos < MAX_POSITIONS - 2; pos++) {
+		for (int pos = 1; pos < MAX_POSITIONS - 1; pos++) {
 			for (int lane = 0; lane < MAX_LANES; lane++) {
 				Node curr = nodes[pos][lane];
 				if (curr == null) continue;
@@ -440,7 +440,7 @@ public class Area {
 			inst.createHologram(loc, dest);
 			
 			// Fight nodes
-			if (dest.getType() == NodeType.FIGHT) {
+			if (dest.getType() == NodeType.FIGHT || dest.getType() == NodeType.MINIBOSS || dest.getType() == NodeType.BOSS) {
 				loc.add(0, -4, -1);
 				Block b = loc.getBlock();
 				b.setType(Material.LECTERN);

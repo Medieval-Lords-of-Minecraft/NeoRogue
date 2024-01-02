@@ -56,6 +56,10 @@ public abstract class Equipment {
 	protected int cooldown = 0;
 	
 	public static void load() {
+		equipment.clear();
+		upgraded.clear();
+		droptables.reload();
+		artifactTables.reload();
 		
 		for (boolean b : new boolean[] {false, true}) {
 			// Abilities
@@ -141,6 +145,13 @@ public abstract class Equipment {
 		
 		// Materials
 		new DullGem();
+		
+		// Check for missing reforge items
+		for (String id : reforged) {
+			if (!equipment.containsKey(id)) {
+				Bukkit.getLogger().warning("[NeoRogue] Reforged item id " + id + " was not found in equipment list");
+			}
+		}
 		
 		for (Equipment eq : equipment.values()) {
 			eq.setupDroptable();
@@ -552,6 +563,10 @@ public abstract class Equipment {
 				new HashMap<EquipmentClass, HashMap<Integer, DropTable<E>>>();
 		
 		public DropTableSet() {
+			reload();
+		}
+		
+		public void reload() {
 			for (EquipmentClass ec : EquipmentClass.values()) {
 				HashMap<Integer, DropTable<E>> tables = new HashMap<Integer, DropTable<E>>();
 				for (int i = 0; i < 10; i++) {

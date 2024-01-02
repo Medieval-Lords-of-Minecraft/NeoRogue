@@ -6,10 +6,9 @@ import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-import io.lumine.mythic.bukkit.BukkitAPIHelper;
-import io.lumine.mythic.bukkit.MythicBukkit;
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -25,7 +24,6 @@ public class SavageCry extends Equipment {
 	private static final TargetProperties tp = new TargetProperties(15, true, TargetType.ENEMY);
 	private int threat;
 	private ParticleContainer taunt = new ParticleContainer(Particle.VILLAGER_ANGRY);
-	private static BukkitAPIHelper api = MythicBukkit.inst().getAPIHelper();
 	
 	public SavageCry(boolean isUpgraded) {
 		super("savageCry", "Savage Cry", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
@@ -39,7 +37,7 @@ public class SavageCry extends Equipment {
 		data.addTrigger(id, bind, new EquipmentInstance(this, (pd, in) -> {
 			Util.playSound(p, Sound.ENTITY_ENDER_DRAGON_AMBIENT, false);
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
-				api.addThreat(p, ent, threat);
+				NeoRogue.mythicApi.addThreat(p, ent, threat);
 				taunt.spawn(ent);
 			}
 			return TriggerResult.keep();

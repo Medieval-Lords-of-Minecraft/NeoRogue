@@ -146,7 +146,7 @@ public class PlayerFightData extends FightData {
 				TriggerResult tr = inst.trigger(data, inputs);
 				if (tr.removeTrigger()) {
 					int hotbar = Trigger.toHotbarSlot(trigger);
-					if (hotbar == -1) {
+					if (hotbar != -1) {
 						data.getPlayer().getInventory().setItem(hotbar, null);
 					}
 					iter.remove();
@@ -203,6 +203,9 @@ public class PlayerFightData extends FightData {
 	}
 	
 	private void addTrigger(String id, HashMap<String, TriggerAction> actions, TriggerAction action) {
+		while (actions.containsKey(id)) {
+			id += 'I';
+		}
 		actions.put(id, action);
 
 		if (action instanceof EquipmentInstance) {

@@ -14,6 +14,7 @@ import org.bukkit.attribute.Attributable;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -395,6 +396,11 @@ public abstract class FightInstance extends Instance {
 		double amount = meta.getDamage();
 		double original = amount;
 		DamageType type = meta.getType();
+		
+		// If target is mythicmob, threat is premitigation damage
+		if (NeoRogue.mythicApi.isMythicMob(target)) {
+			NeoRogue.mythicApi.addThreat(damager, (LivingEntity) target, amount);
+		}
 		
 		// See if any of our effects cancel damage first
 		if (data instanceof PlayerFightData) {

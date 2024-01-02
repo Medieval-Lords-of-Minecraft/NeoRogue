@@ -1,6 +1,7 @@
 package me.neoblade298.neorogue.session.chance.builtin;
 
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.area.AreaType;
@@ -25,18 +26,19 @@ public class ShiningLightChance extends ChanceSet {
 					return data.getMaxHealth() * 0.2 < data.getHealth();
 				},
 				(s, inst, data) -> {
-					s.broadcast("You are engulfed by the light. You feel a sharp pain, but you can tell your equipment has absorbed some power.");
+					Player p = data.getPlayer();
+					Util.msg(p, "You are engulfed by the light. You feel a sharp pain, but you can tell your equipment has absorbed some power.");
 					
 					data.damagePercent(0.2);
 					for (int i = 0; i < 2; i++) {
 						PlayerSlot ps = data.getRandomEquipment(false);
 						if (ps == null) {
-							Util.msg(data.getPlayer(), "You had nothing else to upgrade!");
+							Util.msg(p, "You had nothing else to upgrade!");
 							continue;
 						}
 						data.upgradeEquipment(ps.getEquipSlot(), ps.getSlot());
 						Equipment eq = data.getEquipment(ps.getEquipSlot())[ps.getSlot()];
-						Util.msg(data.getPlayer(), Component.text("You upgraded your ").append(eq.getDisplay()));
+						Util.msg(p, Component.text("You upgraded your ").append(eq.getDisplay()));
 					}
 					return null;
 				}));

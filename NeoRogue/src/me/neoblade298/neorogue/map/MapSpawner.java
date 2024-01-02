@@ -3,8 +3,8 @@ package me.neoblade298.neorogue.map;
 import java.util.Optional;
 
 import io.lumine.mythic.api.mobs.MythicMob;
-import io.lumine.mythic.bukkit.MythicBukkit;
 import me.neoblade298.neocore.shared.io.Section;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.session.fight.Mob;
 
 public class MapSpawner {
@@ -18,7 +18,7 @@ public class MapSpawner {
 	public MapSpawner(Section cfg, MapPiece piece) {
 		id = cfg.getString("mob");
 		mob = Mob.get(id);
-		Optional<MythicMob> opt = MythicBukkit.inst().getMobManager().getMythicMob(id);
+		Optional<MythicMob> opt = NeoRogue.mythicMobs.getMythicMob(id);
 		mythicMob = opt.isPresent() ? opt.get() : null;
 		coords = new Coordinates(piece, cfg.getString("coords"), true);
 		radius = cfg.getDouble("radius");

@@ -7,7 +7,6 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -22,19 +21,19 @@ public class DarkPact extends Equipment {
 	public DarkPact(boolean isUpgraded) {
 		super("darkPact", "Dark Pact", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 20, 5, 0));
-		seconds = isUpgraded ? 40 : 25;
+		seconds = isUpgraded ? 25 : 40;
 		pc.count(25).spread(0.5, 0.5).speed(0.1);
 	}
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addBuff(p.getUniqueId(), id, false, true, BuffType.GENERAL, 1, seconds);
-		data.addTrigger(id, Trigger.BASIC_ATTACK, new EquipmentInstance(this, (pdata, inputs) -> {
+		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, inputs) -> {
 			p.playSound(p, Sound.ENTITY_BLAZE_SHOOT, 1F, 1F);
 			pc.spawn(p);
 			data.addBuff(p.getUniqueId(), true, false, BuffType.GENERAL, 1);
 			return TriggerResult.keep();
-		}));
+		});
 	}
 
 	@Override

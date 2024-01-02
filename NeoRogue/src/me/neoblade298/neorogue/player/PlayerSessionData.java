@@ -48,7 +48,7 @@ public class PlayerSessionData {
 	private Equipment[] storage = new Equipment[STORAGE_SIZE];
 	private Equipment[] otherBinds = new Equipment[8];
 	private TreeMap<String, ArtifactInstance> artifacts = new TreeMap<String, ArtifactInstance>();
-	private int abilitiesEquipped = 0, maxAbilities = 2, maxStorage = 9, coins = 0;
+	private int abilitiesEquipped = 0, maxAbilities = 2, maxStorage = 9, coins = 50;
 	private HashMap<EquipSlot, HashSet<Integer>> upgradable = new HashMap<EquipSlot, HashSet<Integer>>(),
 			upgraded = new HashMap<EquipSlot, HashSet<Integer>>();
 	private String instanceData;
@@ -87,8 +87,8 @@ public class PlayerSessionData {
 		this.s = s;
 		health = 100;
 		maxHealth = 100;
-		maxMana = 100;
-		maxStamina = 100;
+		maxMana = 50;
+		maxStamina = 50;
 		manaRegen = 2;
 		staminaRegen = 2;
 		health = maxHealth;
@@ -99,7 +99,15 @@ public class PlayerSessionData {
 		case WARRIOR:
 			hotbar[0] = Equipment.get("woodenSword", false);
 			hotbar[1] = Equipment.get("empoweredEdge", false);
-			offhand[0] = Equipment.get("captainsTowerShield", false);
+			hotbar[2] = Equipment.get("empoweredEdge", false);
+			otherBinds[0] = Equipment.get("empoweredEdge", false);
+			otherBinds[1] = Equipment.get("empoweredEdge", false);
+			otherBinds[2] = Equipment.get("empoweredEdge", false);
+			otherBinds[3] = Equipment.get("empoweredEdge", false);
+			otherBinds[4] = Equipment.get("empoweredEdge", false);
+			otherBinds[5] = Equipment.get("empoweredEdge", false);
+			otherBinds[6] = Equipment.get("empoweredEdge", false);
+			otherBinds[7] = Equipment.get("empoweredEdge", false);
 			break;
 		case THIEF:
 			hotbar[0] = Equipment.get("woodenSword", false);
@@ -406,7 +414,7 @@ public class PlayerSessionData {
 
 	public void addCoins(int amount) {
 		coins += amount;
-		char symbol = amount > 0 ? '+' : '-';
+		String symbol = amount > 0 ? "+" : "";
 		Util.msg(getPlayer(), "<yellow>" + symbol + amount + " coins </yellow>(<gold>" + coins + "</gold>)");
 		updateCoinsBar();
 	}

@@ -18,9 +18,11 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
@@ -82,7 +84,6 @@ public class SessionManager implements Listener {
 		Session s = new Session(p, plot, saveSlot);
 		sessions.put(p.getUniqueId(), s);
 		sessionPlots.put(plot, s);
-		System.out.println("Putting session " + s + " in plot");
 		return s;
 	}
 	
@@ -196,14 +197,23 @@ public class SessionManager implements Listener {
 	
 	// Only handles player left click
 	@EventHandler
-	public void onDamage(EntityDamageByEntityEvent e) {
+	public void onDamageByEntity(EntityDamageByEntityEvent e) {
 		if (e.getDamager().getType() != EntityType.PLAYER) return;
 		UUID uuid = e.getDamager().getUniqueId();
 		if (!sessions.containsKey(uuid)) return;
 		Session s = sessions.get(uuid);
 
+		if (e.getEntity() instanceof Player) return;
 		if (!(s.getInstance() instanceof FightInstance)) return;
 		FightInstance.handleDamage(e);
+	}
+	
+	@EventHandler
+	public void onDamage(EntityDamageEvent e) {
+		if (e.getEntity().getType() != EntityType.PLAYER) return;
+		UUID uuid = e.getEntity().getUniqueId();
+		if (!sessions.containsKey(uuid)) return;
+		if (e.getCause() == DamageCause.STARVATION) return;
 	}
 
 	@EventHandler

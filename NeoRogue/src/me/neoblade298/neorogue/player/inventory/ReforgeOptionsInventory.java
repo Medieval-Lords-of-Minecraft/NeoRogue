@@ -46,6 +46,10 @@ public class ReforgeOptionsInventory extends CoreInventory {
 		contents[5] = reforgeWith.getItem();
 		for (int i = 0; i < options.length; i++) {
 			Equipment eq = Equipment.get(options[i], false);
+			if (eq == null) {
+				Bukkit.getLogger().warning("[NeoRogue] Failed to load reforge option " + options[i] + " for item " + toReforge.getId() + ", skipping");
+				continue;
+			}
 			contents[(2 * i) - offset + 9] = eq.getItem();
 			reforgeOptions.add(eq);
 		}

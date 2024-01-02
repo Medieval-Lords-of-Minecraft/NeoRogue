@@ -159,7 +159,6 @@ public class Map {
 		inst.setX(x);
 		inst.setY(0);
 		inst.setZ(z);
-		System.out.println("Settings: " + inst.getNumRotations() + " " + inst.isFlipX() + " " + inst.isFlipZ());
 		place(inst, false);
 	}
 	
@@ -249,17 +248,19 @@ public class Map {
 		}
 		
 		if (!deserializing) {
-			for (Coordinates entrance : inst.getPiece().getEntrances()) {
-				Coordinates coords = entrance.clone().applySettings(inst);
-				if (coords.getXFacing() > MAP_SIZE - 1 || coords.getXFacing() < 0 || coords.getZFacing() > MAP_SIZE - 1 || coords.getZFacing() < 0)
-					continue;
-				
-				 // Don't add entrance if it's already blocked
-				if (this.shape[(int) coords.getXFacing()][(int) coords.getZFacing()]) {
-					blockedEntrances.add(entrance);
-					continue;
+			if (inst.getPiece().getEntrances() != null) {
+				for (Coordinates entrance : inst.getPiece().getEntrances()) {
+					Coordinates coords = entrance.clone().applySettings(inst);
+					if (coords.getXFacing() > MAP_SIZE - 1 || coords.getXFacing() < 0 || coords.getZFacing() > MAP_SIZE - 1 || coords.getZFacing() < 0)
+						continue;
+					
+					 // Don't add entrance if it's already blocked
+					if (this.shape[(int) coords.getXFacing()][(int) coords.getZFacing()]) {
+						blockedEntrances.add(entrance);
+						continue;
+					}
+					entrances.add(coords);
 				}
-				entrances.add(coords);
 			}
 		}
 

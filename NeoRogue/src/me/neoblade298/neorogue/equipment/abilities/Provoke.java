@@ -5,9 +5,8 @@ import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-import io.lumine.mythic.bukkit.BukkitAPIHelper;
-import io.lumine.mythic.bukkit.MythicBukkit;
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -23,7 +22,6 @@ public class Provoke extends Equipment {
 	private static final TargetProperties tp = new TargetProperties(15, false, TargetType.ENEMY);
 	private int threat;
 	private ParticleContainer taunt = new ParticleContainer(Particle.VILLAGER_ANGRY);
-	private static BukkitAPIHelper api = MythicBukkit.inst().getAPIHelper();
 	
 	public Provoke(boolean isUpgraded) {
 		super("provoke", "Provoke", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
@@ -37,7 +35,7 @@ public class Provoke extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(this, (pd, in) -> {
 			for (LivingEntity ent : TargetHelper.getEntitiesInSight(p, tp)) {
-				api.addThreat(p, ent, threat);
+				NeoRogue.mythicApi.addThreat(p, ent, threat);
 				taunt.spawn(ent);
 			}
 			return TriggerResult.keep();

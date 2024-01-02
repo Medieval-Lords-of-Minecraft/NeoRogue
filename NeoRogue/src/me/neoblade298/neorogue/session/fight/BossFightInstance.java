@@ -24,7 +24,7 @@ public class BossFightInstance extends FightInstance {
 	
 	public BossFightInstance(Set<UUID> players, AreaType type) {
 		super(players);
-		map = Map.generateBoss(type, 2);
+		map = Map.generateBoss(type, 0);
 		targets.addAll(map.getTargets());
 	}
 	

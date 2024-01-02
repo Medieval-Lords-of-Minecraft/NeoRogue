@@ -24,7 +24,7 @@ public class MinibossFightInstance extends FightInstance {
 	
 	public MinibossFightInstance(Set<UUID> party, AreaType type) {
 		super(party);
-		map = Map.generateMiniboss(type, 2);
+		map = Map.generateMiniboss(type, 0);
 		targets.addAll(map.getTargets());
 	}
 	

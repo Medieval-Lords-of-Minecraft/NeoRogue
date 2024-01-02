@@ -55,6 +55,7 @@ public class LobbyInstance extends Instance {
 	private UUID host;
 	private static Clipboard classSelect, rewardsRoom, campfire, shop, chance;
 	private boolean busy = false;
+	private Component partyInfoHeader;
 	
 	private static final int LOBBY_X = -7, LOBBY_Z = 3;
 	
@@ -65,8 +66,7 @@ public class LobbyInstance extends Instance {
 			gameGenerating = Component.text("Your game is generating! You can't do this right now!", NamedTextColor.RED),
 			playerNotOnline = Component.text("That player isn't online!", NamedTextColor.RED),
 			playerNotInLobby = Component.text("That player isn't in the lobby!", NamedTextColor.RED),
-			maxSizeError = Component.text("This lobby is full as it has a max of " + MAX_SIZE + " players!", NamedTextColor.RED),
-			partyInfoHeader;
+			maxSizeError = Component.text("This lobby is full as it has a max of " + MAX_SIZE + " players!", NamedTextColor.RED);
 			
 	
 	// schematics
@@ -82,11 +82,6 @@ public class LobbyInstance extends Instance {
 		campfire = loadClipboard(CAMPFIRE);
 		shop = loadClipboard(SHOP);
 		chance = loadClipboard(CHANCE);
-		
-		partyInfoHeader = Component.text().content("<< (").color(NamedTextColor.GRAY)
-				.append(Component.text("1"))
-				.append(Component.text(") >>"))
-				.append(Component.text("\nPlayers:")).build();
 	}
 	
 	private static Clipboard loadClipboard(String schematic) {
@@ -136,6 +131,10 @@ public class LobbyInstance extends Instance {
 		}
 		spawn = new Location(Bukkit.getWorld(Area.WORLD_NAME), session.getXOff() + LOBBY_X, 64, session.getZOff() + LOBBY_Z);
 		host.teleport(spawn);
+		partyInfoHeader = Component.text().content("<< ( ").color(NamedTextColor.GRAY)
+				.append(Component.text(name, NamedTextColor.RED))
+				.append(Component.text(" ) >>"))
+				.append(Component.text("\nPlayers:")).build();
 	}
 
 	public void invitePlayer(Player inviter, String username) {

@@ -12,7 +12,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import io.lumine.mythic.api.mobs.MythicMob;
 import io.lumine.mythic.api.mobs.entities.MythicEntityType;
-import io.lumine.mythic.bukkit.MythicBukkit;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.util.SkullUtil;
 import me.neoblade298.neocore.shared.io.Section;
@@ -71,7 +70,7 @@ public class Mob implements Comparable<Mob> {
 	
 	public Mob(Section sec) {
 		id = sec.getName();
-		Optional<MythicMob> opt = MythicBukkit.inst().getMobManager().getMythicMob(id);
+		Optional<MythicMob> opt = NeoRogue.mythicMobs.getMythicMob(id);
 		display = Component.text(opt.isPresent() ? opt.get().getDisplayName().get() : "Mob Not Loaded");
 		
 		Section resSec = sec.getSection("resistances");
