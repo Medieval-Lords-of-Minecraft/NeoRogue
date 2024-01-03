@@ -6,10 +6,10 @@ import org.bukkit.event.Listener;
 import io.lumine.mythic.api.config.MythicLineConfig;
 import io.lumine.mythic.api.skills.ISkillMechanic;
 import io.lumine.mythic.api.skills.conditions.ISkillCondition;
+import io.lumine.mythic.api.skills.targeters.ISkillTargeter;
 import io.lumine.mythic.bukkit.events.MythicConditionLoadEvent;
 import io.lumine.mythic.bukkit.events.MythicMechanicLoadEvent;
 import io.lumine.mythic.bukkit.events.MythicTargeterLoadEvent;
-import io.lumine.mythic.core.skills.targeters.ILocationSelector;
 
 public class MythicLoader implements Listener {
 
@@ -31,12 +31,16 @@ public class MythicLoader implements Listener {
 	@EventHandler
 	public void onMythicTargeterLoad(MythicTargeterLoadEvent event) {
 		String name = event.getTargeterName().toLowerCase();
-		ILocationSelector targeter = null;
+		ISkillTargeter targeter = null;
 		MythicLineConfig cfg = event.getConfig();
 		
 		switch (name) {
 		case "mythiclocation":
-			targeter = new MythicLocationTargeter(cfg);
+			targeter = new TargeterMythicLocation(cfg);
+			break;
+		case "session":
+			targeter = new TargeterSession(cfg);
+			break;
 		}
 		
 		if (targeter != null) {

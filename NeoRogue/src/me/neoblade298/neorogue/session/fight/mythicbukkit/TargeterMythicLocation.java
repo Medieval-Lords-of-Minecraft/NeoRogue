@@ -14,11 +14,11 @@ import me.neoblade298.neorogue.session.Plot;
 import me.neoblade298.neorogue.session.SessionManager;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 
-public class MythicLocationTargeter extends ILocationSelector {
+public class TargeterMythicLocation extends ILocationSelector {
 
 	protected final String key;
 
-	public MythicLocationTargeter(MythicLineConfig config) {
+	public TargeterMythicLocation(MythicLineConfig config) {
 		super(MythicBukkit.inst().getSkillManager(), config);
 		this.key = config.getString("id");
 	}
