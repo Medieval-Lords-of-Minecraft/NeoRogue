@@ -14,18 +14,20 @@ import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
@@ -151,8 +153,27 @@ public class SessionManager implements Listener {
 	@EventHandler
 	public void onSwap(PlayerSwapHandItemsEvent e) {
 		Player p = e.getPlayer();
-		e.setCancelled(true);
-		openInventory(p, e);
+		UUID uuid = p.getUniqueId();
+		if (sessions.containsKey(uuid)) {
+			Session s = sessions.get(uuid);
+			e.setCancelled(true);
+
+			if (s.getInstance() instanceof EditInventoryInstance) {
+				p.setItemOnCursor(null);
+				new PlayerSessionInventory(s.getData(uuid));
+			}
+			else if (s.getInstance() instanceof FightInstance) {
+				FightInstance.handleOffhandSwap(e);
+			}
+		}
+	}
+
+	@EventHandler
+	public void onDrop(PlayerDropItemEvent e) {
+		Player p = e.getPlayer();
+		UUID uuid = p.getUniqueId();
+		e.setCancelled(sessions.containsKey(uuid));
+		FightInstance.handleDropItem(e);
 	}
 	
 	@EventHandler
@@ -166,10 +187,6 @@ public class SessionManager implements Listener {
 		if (e.getView().getTopInventory().getType() != InventoryType.CRAFTING) return;
 
 		// If the inventory type is normal player inventory, open up a player session inventory
-		openInventory(p, e);
-	}
-
-	private void openInventory(Player p, Cancellable e) {
 		UUID uuid = p.getUniqueId();
 		if (sessions.containsKey(uuid)) {
 			Session s = sessions.get(uuid);
@@ -185,14 +202,23 @@ public class SessionManager implements Listener {
 	
 	// Only handles player left click
 	@EventHandler
-	public void onDamage(EntityDamageByEntityEvent e) {
+	public void onDamageByEntity(EntityDamageByEntityEvent e) {
 		if (e.getDamager().getType() != EntityType.PLAYER) return;
 		UUID uuid = e.getDamager().getUniqueId();
 		if (!sessions.containsKey(uuid)) return;
 		Session s = sessions.get(uuid);
 
+		if (e.getEntity() instanceof Player) return;
 		if (!(s.getInstance() instanceof FightInstance)) return;
 		FightInstance.handleDamage(e);
+	}
+	
+	@EventHandler
+	public void onDamage(EntityDamageEvent e) {
+		if (e.getEntity().getType() != EntityType.PLAYER) return;
+		UUID uuid = e.getEntity().getUniqueId();
+		if (!sessions.containsKey(uuid)) return;
+		if (e.getCause() == DamageCause.STARVATION) return;
 	}
 
 	@EventHandler

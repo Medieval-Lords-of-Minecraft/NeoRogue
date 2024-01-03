@@ -53,13 +53,21 @@ public class ShopInventory extends CoreInventory {
 		int slot = e.getSlot();
 
 		if (slot < 18) {
-			ShopItem shopItem = shopItems.get(SLOT_ORDER[slot]);
+			ShopItem shopItem = null;
+			int shopItemSlot = -1;
+			for (int i = 0 ; i < SLOT_ORDER.length; i++) {
+				if (SLOT_ORDER[i] == slot) {
+					shopItem = shopItems.get(i);
+					shopItemSlot = i;
+					break;
+				}
+			}
 			int price = shopItem.getPrice();
 			if (!data.hasCoins(price)) {
-				Util.displayError(p, "You don't have enough coins!");
+				Util.displayError(p, "You don't have enough coins! You need " + (price - data.getCoins()) + " more.");
 				return;
 			}
-			shopItems.remove(SLOT_ORDER[slot]);
+			shopItems.remove(shopItemSlot);
 			
 			data.addCoins(-price);
 			p.getInventory().addItem(e.getCurrentItem());

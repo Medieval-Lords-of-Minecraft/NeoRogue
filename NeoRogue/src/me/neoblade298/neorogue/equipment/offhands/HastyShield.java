@@ -23,9 +23,8 @@ public class HastyShield extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
+	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, new HastyShieldInstance(p));
-		equipSlot = EquipSlot.OFFHAND;
 	}
 	
 	private class HastyShieldInstance implements TriggerAction {

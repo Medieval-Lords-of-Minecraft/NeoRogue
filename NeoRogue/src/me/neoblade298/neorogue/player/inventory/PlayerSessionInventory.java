@@ -20,6 +20,7 @@ import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
+import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.trigger.KeyBind;
 import net.kyori.adventure.text.Component;
@@ -34,7 +35,7 @@ public class PlayerSessionInventory extends CoreInventory {
 	private static final int[] HOTBAR = new int[] { 18, 19, 20, 21, 22, 23, 24, 25, 26 };
 	private static final int[] FILLER = new int[] { 16, 28, 29, 30, 32, 33, 34 };
 	private static final int STATS = 27;
-	private static final int SELL = 35;
+	private static final int TRASH = 35;
 	private static final int OFFHAND = 17;
 	private static final int ARTIFACTS = 31;
 	private static HashMap<Integer, EquipSlot> slotTypes = new HashMap<Integer, EquipSlot>();
@@ -94,8 +95,8 @@ public class PlayerSessionInventory extends CoreInventory {
 		}
 
 		contents[STATS] = createStatsIcon();
-		contents[SELL] = addNbt(CoreInventory.createButton(Material.HOPPER, Component.text("Trash", NamedTextColor.GOLD),
-				"Place an item here to destroy it!", 250, NamedTextColor.GRAY), 0);
+		contents[TRASH] = addNbt(CoreInventory.createButton(Material.HOPPER, Component.text("Trash", NamedTextColor.GOLD),
+				"Click to open a trash can!", 250, NamedTextColor.GRAY), 0);
 
 		contents[ARTIFACTS] = addNbt(CoreInventory.createButton(Material.NETHER_STAR, Component.text("Artifacts", NamedTextColor.GOLD),
 				"Click here to view all your artifacts!", 250, NamedTextColor.GRAY), 0);
@@ -137,12 +138,14 @@ public class PlayerSessionInventory extends CoreInventory {
 	private ItemStack createStatsIcon() {
 		TextComponent health = Component.text("Health: ", NamedTextColor.GOLD)
 				.append(Component.text(data.getHealth() + " / " + data.getMaxHealth(), NamedTextColor.WHITE));
-		TextComponent mana = Component.text("Mana: ", NamedTextColor.GOLD)
+		TextComponent mana = Component.text("Max Mana: ", NamedTextColor.GOLD)
 				.append(Component.text(data.getMaxMana(), NamedTextColor.WHITE));
+		TextComponent stamina = Component.text("Max Stamina: ", NamedTextColor.GOLD)
+				.append(Component.text(data.getMaxStamina(), NamedTextColor.WHITE));
 		TextComponent coins = Component.text("Coins: ", NamedTextColor.GOLD)
 				.append(Component.text(data.getCoins(), NamedTextColor.WHITE));
 		return CoreInventory.createButton(Material.ARMOR_STAND, statsText,
-			health, mana, coins);
+			health, mana, stamina, coins);
 	}
 
 	@Override
@@ -152,14 +155,16 @@ public class PlayerSessionInventory extends CoreInventory {
 		if (cursor.getType().isAir() && clicked == null) return;
 
 		int slot = e.getRawSlot();
-		// First check for specific cases: Sell and Artifact view
-		if (slot == SELL) {
+		// First check for specific cases: Trash and Artifact view
+		if (slot == TRASH) {
 			e.setCancelled(true);
-			// TODO: Create sell confirmation
+			p.openInventory(Bukkit.createInventory(p, 27, Component.text("Trash Can", NamedTextColor.RED)));
+			return;
 		}
-		else if (slot == ARTIFACTS) {
+		if (slot == ARTIFACTS) {
 			e.setCancelled(true);
-			// TODO: Create artifact inventory
+			new ArtifactsInventory(data);
+			return;
 		}
 		
 		InventoryAction action = e.getAction();
@@ -221,25 +226,25 @@ public class PlayerSessionInventory extends CoreInventory {
 			
 			if (onChest) {
 				if (!nclicked.hasTag("dataSlot")) return;
-				if (eq.getEquipSlot() == EquipSlot.KEYBIND &&
-						(eqed == null || !(eq.getEquipSlot() != EquipSlot.KEYBIND)) && !data.canEquipAbility()) {
+				if (eq.getType() == EquipmentType.ABILITY &&
+						(eqed == null || eqed.getType() != EquipmentType.ABILITY) && !data.canEquipAbility()) {
 					displayError("You can only equip " + data.getMaxAbilities() + " abilities!", true);
 					return;
 				}
 
 				EquipSlot type = slotTypes.get(slot);
-				if (eq.getEquipSlot() != type) {
+				if (!eq.canEquip(type)) {
 					displayError("You can't equip this item in this slot!", false);
 					return;
 				}
 				
 				// If swapping equipment with equipment, remove that equipment
 				if (!nclicked.hasTag("equipId")) {
-					data.removeEquipment(type, nclicked.getInteger("dataSlot"));
 					p.setItemOnCursor(null);
 				}
 				else {
 					if (isBindable(type)) clicked = removeBindLore(clicked);
+					data.removeEquipment(type, nclicked.getInteger("dataSlot"));
 					p.setItemOnCursor(clicked);
 				}
 				
@@ -275,8 +280,8 @@ public class PlayerSessionInventory extends CoreInventory {
 				if (!nclicked.hasTag("dataSlot")) return;
 				Equipment eq = Equipment.get(nswapped.getString("equipId"), nswapped.getBoolean("isUpgraded"));
 				Equipment eqed = Equipment.get(nclicked.getString("equipId"), nclicked.getBoolean("isUpgraded"));
-				if (eq.getEquipSlot() == EquipSlot.KEYBIND &&
-						(eqed == null || !(eqed.getEquipSlot() == EquipSlot.KEYBIND)) && !data.canEquipAbility()) {
+				if (eq.getType() == EquipmentType.ABILITY &&
+						(eqed == null || eqed.getType() != EquipmentType.ABILITY) && !data.canEquipAbility()) {
 					displayError("You can only equip " + data.getMaxAbilities() + " abilities!", true);
 					return;
 				}
@@ -284,10 +289,10 @@ public class PlayerSessionInventory extends CoreInventory {
 				EquipSlot type = slotTypes.get(slot);
 				// If swapping equipment with equipment, remove that equipment
 				if (!nclicked.hasTag("equipId")) {
-					data.removeEquipment(type, nclicked.getInteger("dataSlot"));
 					p.getInventory().setItem(swapNum, null);
 				}
 				else {
+					data.removeEquipment(type, nclicked.getInteger("dataSlot"));
 					if (isBindable(type)) clicked = removeBindLore(clicked);
 					p.setItemOnCursor(clicked);
 				}

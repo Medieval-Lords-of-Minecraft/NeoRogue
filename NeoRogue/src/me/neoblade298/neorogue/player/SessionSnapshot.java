@@ -9,7 +9,9 @@ import java.util.UUID;
 
 import org.bukkit.command.CommandSender;
 
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.area.AreaType;
+import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.session.Session;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent.Builder;
@@ -22,7 +24,7 @@ public class SessionSnapshot {
 	private long lastSaved;
 	private int nodesVisited;
 	private AreaType areaType;
-	private HashMap<String, PlayerClass> party = new HashMap<String, PlayerClass>();
+	private HashMap<String, EquipmentClass> party = new HashMap<String, EquipmentClass>();
 	private HashMap<UUID, String> partyIds = new HashMap<UUID, String>();
 	
 	public SessionSnapshot(Session s) {
@@ -44,7 +46,7 @@ public class SessionSnapshot {
 		while (party.next()) {
 			UUID uuid = UUID.fromString(party.getString("uuid"));
 			String display = party.getString("display");
-			PlayerClass pc = PlayerClass.valueOf(party.getString("playerClass"));
+			EquipmentClass pc = EquipmentClass.valueOf(party.getString("playerClass"));
 			partyIds.put(uuid, display);
 			this.party.put(display, pc);
 		}
@@ -56,7 +58,7 @@ public class SessionSnapshot {
 				.append(Component.text(new Date(lastSaved).toString(), NamedTextColor.GRAY)).build();
 		text = text.clickEvent(ClickEvent.suggestCommand("/nr new " + saveSlot + " partyname"))
 		.hoverEvent(HoverEvent.showText(createHoverText()));
-		s.sendMessage(text);
+		Util.msg(s, text);
 	}
 	
 	public static void displayEmptyNewButton(CommandSender s, int saveSlot) {
@@ -65,7 +67,7 @@ public class SessionSnapshot {
 				.append(Component.text("Empty", NamedTextColor.GRAY)).build();
 		text = text.clickEvent(ClickEvent.suggestCommand("/nr new " + saveSlot + " partyname"))
 		.hoverEvent(HoverEvent.showText(Component.text("Click to start a new game on this slot!")));
-		s.sendMessage(text);
+		Util.msg(s, text);
 	}
 	
 	public void displayLoadButton(CommandSender s, int saveSlot) {
@@ -74,7 +76,7 @@ public class SessionSnapshot {
 				.append(Component.text(new Date(lastSaved).toString(), NamedTextColor.GRAY)).build();
 		text = text.clickEvent(ClickEvent.suggestCommand("/nr load " + saveSlot))
 		.hoverEvent(HoverEvent.showText(createHoverText()));
-		s.sendMessage(text);
+		Util.msg(s, text);
 	}
 	
 	private Component createHoverText() {
@@ -83,7 +85,7 @@ public class SessionSnapshot {
 				.append(Component.text("\nNodes visited: ", NamedTextColor.GRAY))
 				.append(Component.text(nodesVisited, NamedTextColor.GOLD))
 				.append(Component.text("\nParty members:", NamedTextColor.GRAY));
-		for (Entry<String, PlayerClass> ent : party.entrySet()) {
+		for (Entry<String, EquipmentClass> ent : party.entrySet()) {
 			b.append(Component.text("\n- ", NamedTextColor.GRAY))
 			.append(Component.text(ent.getKey(), NamedTextColor.YELLOW))
 			.append(Component.text("[", NamedTextColor.GRAY))

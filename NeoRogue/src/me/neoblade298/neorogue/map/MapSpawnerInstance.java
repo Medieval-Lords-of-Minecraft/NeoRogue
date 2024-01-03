@@ -26,10 +26,10 @@ public class MapSpawnerInstance {
 		this.mythicMob = original.getMythicMob();
 		this.mob = original.getMob();
 		this.loc = original.getCoordinates().clone().applySettings(inst).toLocation();
-		this.loc.add(MapPieceInstance.X_FIGHT_OFFSET + xOff - 0.5,
+		this.loc.add(MapPieceInstance.X_FIGHT_OFFSET + xOff,
 				MapPieceInstance.Y_OFFSET,
 				MapPieceInstance.Z_FIGHT_OFFSET + zOff + 0.5);
-		this.loc.setX(-this.loc.getX());
+		this.loc.setX(-this.loc.getX() + 0.5);
 		
 		this.radius = original.getRadius();
 		this.maxMobs = original.getMaxMobs();

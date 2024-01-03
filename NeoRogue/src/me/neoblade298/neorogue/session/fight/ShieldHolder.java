@@ -4,6 +4,9 @@ import java.util.LinkedList;
 import java.util.Queue;
 import org.bukkit.attribute.Attributable;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class ShieldHolder {
 	private Queue<Shield> shields = new LinkedList<Shield>();
@@ -60,6 +63,13 @@ public class ShieldHolder {
 		pct = Math.max(0, pct);
 		double absorb = Math.round(pct * 20);
 		if (absorb < 1 && pct > 0) absorb = 1;
+		
+		if (data.getEntity() instanceof Player) {
+			Player p = (Player) data.getEntity();
+			if (!p.hasPotionEffect(PotionEffectType.ABSORPTION)) {
+				p.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, PotionEffect.INFINITE_DURATION, 0, false, false, false));
+			}
+		}
 		data.getEntity().setAbsorptionAmount(absorb);
 	}
 	

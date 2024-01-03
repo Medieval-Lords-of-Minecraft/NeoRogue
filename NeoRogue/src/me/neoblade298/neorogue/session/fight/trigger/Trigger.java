@@ -23,7 +23,6 @@ public enum Trigger {
 	LEFT_CLICK_HIT(false, true),
 	RIGHT_CLICK(false, false),
 	RIGHT_CLICK_HIT(false, false),
-	RIGHT_CLICK_NO_HIT(false, false),
 	RAISE_SHIELD(false, false),
 	SHIELD_TICK(false, false), // Ticks while you have your shield up
 	LOWER_SHIELD(false, false),
@@ -59,6 +58,21 @@ public enum Trigger {
 		case 7: return Trigger.HOTBAR_8;
 		case 8: return Trigger.HOTBAR_9;
 		default: return null;
+		}
+	}
+	
+	public static int toHotbarSlot(Trigger tr) {
+		switch (tr) {
+		case HOTBAR_1: return 0;
+		case HOTBAR_2: return 1;
+		case HOTBAR_3: return 2;
+		case HOTBAR_4: return 3;
+		case HOTBAR_5: return 4;
+		case HOTBAR_6: return 5;
+		case HOTBAR_7: return 6;
+		case HOTBAR_8: return 7;
+		case HOTBAR_9: return 8;
+		default: return -1;
 		}
 	}
 }

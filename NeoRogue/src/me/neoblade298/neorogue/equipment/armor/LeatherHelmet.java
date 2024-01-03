@@ -18,7 +18,7 @@ public class LeatherHelmet extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
+	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addShield(p.getUniqueId(), shields, false, 0, 0, 0, 0);
 	}
 

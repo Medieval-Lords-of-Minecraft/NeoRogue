@@ -23,7 +23,7 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.area.Node;
-import me.neoblade298.neorogue.player.PlayerClass;
+import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import net.kyori.adventure.text.Component;
@@ -36,7 +36,7 @@ public class Session {
 	private Instance inst;
 	private Node curr;
 	private SessionStatistics stats;
-	private int saveSlot, xOff, zOff, nodesVisited, areasCompleted;
+	private int saveSlot, xOff, zOff, nodesVisited = 12, areasCompleted;
 	private Plot plot;
 	
 	public Session(Player p, Plot plot, String lobby, int saveSlot) {
@@ -126,13 +126,13 @@ public class Session {
 		party.get(host).getData().updateSnapshot(this, saveSlot);
 	}
 	
-	public void addPlayers(HashMap<UUID, PlayerClass> players) {
-		for (Entry<UUID, PlayerClass> ent : players.entrySet()) {
+	public void addPlayers(HashMap<UUID, EquipmentClass> players) {
+		for (Entry<UUID, EquipmentClass> ent : players.entrySet()) {
 			party.put(ent.getKey(), new PlayerSessionData(ent.getKey(), ent.getValue(), this));
 		}
 	}
 	
-	public void addPlayer(UUID uuid, PlayerClass pc) {
+	public void addPlayer(UUID uuid, EquipmentClass pc) {
 		party.put(uuid, new PlayerSessionData(uuid, pc, this));
 	}
 
@@ -193,6 +193,7 @@ public class Session {
 		if (inst instanceof EditInventoryInstance) {
 			for (PlayerSessionData data : party.values()) {
 				data.setupInventory();
+				data.setupEditInventory(); // hunger and exp bar
 			}
 		}
 		
@@ -317,5 +318,10 @@ public class Session {
 			Bukkit.getLogger().warning("[NeoRogue] Failed to acquire connection to delete session hosted by " + host + " from slot " + saveSlot);
 			ex.printStackTrace();
 		}
+	}
+	
+	@Override
+	public String toString() {
+		return plot.toString();
 	}
 }

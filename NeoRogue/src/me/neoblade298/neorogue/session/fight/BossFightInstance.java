@@ -13,18 +13,18 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.player.PlayerSessionData;
-import me.neoblade298.neorogue.session.CoinsReward;
-import me.neoblade298.neorogue.session.EquipmentChoiceReward;
-import me.neoblade298.neorogue.session.Reward;
-import me.neoblade298.neorogue.session.RewardInstance;
 import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.reward.CoinsReward;
+import me.neoblade298.neorogue.session.reward.EquipmentChoiceReward;
+import me.neoblade298.neorogue.session.reward.Reward;
+import me.neoblade298.neorogue.session.reward.RewardInstance;
 
 public class BossFightInstance extends FightInstance {
 	private HashSet<String> targets = new HashSet<String>();
 	
 	public BossFightInstance(Set<UUID> players, AreaType type) {
 		super(players);
-		map = Map.generateBoss(type, 2);
+		map = Map.generateBoss(type, 0);
 		targets.addAll(map.getTargets());
 	}
 	
@@ -67,7 +67,7 @@ public class BossFightInstance extends FightInstance {
 			list.add(new CoinsReward(100));
 			
 			ArrayList<Equipment> equipDrops = new ArrayList<Equipment>();
-			EquipmentClass ec = data.getPlayerClass().toEquipmentClass();
+			EquipmentClass ec = data.getPlayerClass();
 			int value = s.getAreasCompleted();
 			equipDrops.addAll(Equipment.getDrop(value + 4, 3, ec));
 			

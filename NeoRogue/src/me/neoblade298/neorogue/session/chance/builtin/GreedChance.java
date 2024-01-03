@@ -25,7 +25,6 @@ public class GreedChance extends ChanceSet {
 					return getHighestHealth(s).getHealth() >= 10;
 				}, (s, inst, unused) -> {
 					PlayerSessionData data = getHighestHealth(s);
-					data.getPlayer().damage(0.1);
 					data.setHealth(data.getHealth() - 10);
 					s.broadcast("<yellow>" + data.getData().getDisplay() + "</yellow><gray> reaches in, losing <red>10 </red>health but "
 							+ "netting everybody <yellow>25 coins</yellow>!");

@@ -8,6 +8,8 @@ import io.lumine.mythic.api.skills.ISkillMechanic;
 import io.lumine.mythic.api.skills.conditions.ISkillCondition;
 import io.lumine.mythic.bukkit.events.MythicConditionLoadEvent;
 import io.lumine.mythic.bukkit.events.MythicMechanicLoadEvent;
+import io.lumine.mythic.bukkit.events.MythicTargeterLoadEvent;
+import io.lumine.mythic.core.skills.targeters.ILocationSelector;
 
 public class MythicLoader implements Listener {
 
@@ -23,6 +25,22 @@ public class MythicLoader implements Listener {
 		}
 		if (condition != null) {
 			event.register(condition);
+		}
+	}
+
+	@EventHandler
+	public void onMythicTargeterLoad(MythicTargeterLoadEvent event) {
+		String name = event.getTargeterName().toLowerCase();
+		ILocationSelector targeter = null;
+		MythicLineConfig cfg = event.getConfig();
+		
+		switch (name) {
+		case "mythiclocation":
+			targeter = new MythicLocationTargeter(cfg);
+		}
+		
+		if (targeter != null) {
+			event.register(targeter);
 		}
 	}
 
@@ -44,6 +62,9 @@ public class MythicLoader implements Listener {
 			break;
 		case "nrbuff":
 			mechanic = new MechanicBuff(cfg);
+			break;
+		case "nrstatus":
+			mechanic = new MechanicStatus(cfg);
 			break;
 		}
 		if (mechanic != null) {

@@ -1,9 +1,10 @@
 package me.neoblade298.neorogue.equipment;
 
-import java.util.TreeSet;
-
+import java.util.TreeMap;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
+import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
@@ -18,15 +19,24 @@ public class ArtifactInstance implements Comparable<ArtifactInstance> {
 	}
 	public ArtifactInstance(Artifact artifact) {
 		this.artifact = artifact;
+		this.amount = 1;
 	}
 	public Artifact getArtifact() {
 		return artifact;
 	}
+	public void add(int amount) {
+		amount++;
+	}
 	public int getAmount() {
 		return amount;
 	}
-	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
-		this.artifact.initialize(p, data, bind, slot);
+	public ItemStack getItem() {
+		ItemStack item = artifact.getItem();
+		item.setAmount(amount);
+		return item;
+	}
+	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		this.artifact.initialize(p, data, bind, es, slot);
 	}
 	public void cleanup(Player p, PlayerFightData data) {
 		this.artifact.cleanup(p, data);
@@ -61,22 +71,23 @@ public class ArtifactInstance implements Comparable<ArtifactInstance> {
 		return artifact.getId() + (artifact.isUpgraded ? "+" : "") + "-" + amount;
 	}
 	
-	public static String serialize(TreeSet<ArtifactInstance> set) {
+	public static String serialize(TreeMap<String, ArtifactInstance> map) {
 		String str = "";
-		for (ArtifactInstance ai : set) {
+		for (ArtifactInstance ai : map.values()) {
 			str += ai.serialize();
 		}
 		return str;
 	}
 	
-	public static TreeSet<ArtifactInstance> deserializeSet(String str) {
-		TreeSet<ArtifactInstance> set = new TreeSet<ArtifactInstance>();
+	public static TreeMap<String, ArtifactInstance> deserializeMap(String str) {
+		TreeMap<String, ArtifactInstance> map = new TreeMap<String, ArtifactInstance>();
 		String[] separated = str.split(";");
 		for (String aiString : separated) {
 			if (aiString.isBlank()) continue;
-			set.add(deserialize(aiString));
+			ArtifactInstance inst = deserialize(aiString);
+			map.put(inst.getArtifact().getId(), inst);
 		}
-		return set;
+		return map;
 	}
 	
 	public static ArtifactInstance deserialize(String str) {

@@ -40,7 +40,7 @@ public class WoodenWand extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
+	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, new EquipmentInstance(this, (d, inputs) -> {
 			swingWeapon(p, data);
 			new WoodenWandProjectile(p, 0.5, 10, 3, false, false, false, false, 0, 0, data.getInstance(), data, 0.2, 0.2, 0.2);

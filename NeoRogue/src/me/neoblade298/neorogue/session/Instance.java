@@ -11,6 +11,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.chance.ChanceInstance;
+import me.neoblade298.neorogue.session.reward.RewardInstance;
 
 public abstract class Instance {
 	protected Session s;

@@ -24,8 +24,11 @@ public class MapPiece {
 	private MapShape shape;
 	private HashSet<String> targets;
 	protected Coordinates[] entrances, spawns;
+	protected HashMap<String, Coordinates> mythicLocations = new HashMap<String, Coordinates>();
 	private ArrayList<MapSpawner[]> spawnerSets = new ArrayList<MapSpawner[]>();
+	private MapSpawner[] initialSpawns;
 	protected Clipboard clipboard;
+	private ArrayList<String> customInfoOrder = new ArrayList<String>(); // For showing fight info mobs in a specific order
 	
 	public MapPiece(Section cfg) {
 		id = cfg.getName();
@@ -44,25 +47,38 @@ public class MapPiece {
 		shape = new MapShape(cfg.getStringList("shape"));
 		
 		List<String> entrances = cfg.getStringList("entrances");
-		this.entrances = new Coordinates[entrances.size()];
 		int i = 0;
-		for (String line : entrances) {
-			Coordinates entrance = new Coordinates(this, line);
-			Direction invert = entrance.getOriginalDirection().invert();
-			entrance.setOriginalDirection(invert);
-			entrance.setDirection(invert);
-			this.entrances[i++] = entrance;
+		if (entrances != null) {
+			this.entrances = new Coordinates[entrances.size()];
+			for (String line : entrances) {
+				Coordinates entrance = new Coordinates(this, line);
+				Direction invert = entrance.getOriginalDirection().invert();
+				entrance.setOriginalDirection(invert);
+				entrance.setDirection(invert);
+				this.entrances[i++] = entrance;
+			}
 		}
 		
 		Section sec = cfg.getSection("spawnersets");
-		for (String key : sec.getKeys()) {
-			Section spawnerSets = sec.getSection(key);
-			MapSpawner[] spawners = new MapSpawner[spawnerSets.getKeys().size()];
-			i = 0;
-			for (String spawnerKey : spawnerSets.getKeys()) {
-				spawners[i++] = new MapSpawner(spawnerSets.getSection(spawnerKey), this);
+		if (sec != null) {
+			for (String key : sec.getKeys()) {
+				Section spawnerSets = sec.getSection(key);
+				MapSpawner[] spawners = new MapSpawner[spawnerSets.getKeys().size()];
+				i = 0;
+				for (String spawnerKey : spawnerSets.getKeys()) {
+					spawners[i++] = new MapSpawner(spawnerSets.getSection(spawnerKey), this);
+				}
+				this.spawnerSets.add(spawners);
 			}
-			this.spawnerSets.add(spawners);
+		}
+		
+		sec = cfg.getSection("initialspawns");
+		if (sec != null) {
+			initialSpawns = new MapSpawner[sec.getKeys().size()];
+			i = 0;
+			for (String spawnerKey : sec.getKeys()) {
+				initialSpawns[i++] = new MapSpawner(sec.getSection(spawnerKey), this);
+			}
 		}
 		
 		List<String> spawns = cfg.getStringList("spawns");
@@ -72,12 +88,21 @@ public class MapPiece {
 			this.spawns[i] = new Coordinates(this, line, true);
 			i++;
 		}
+
+		sec = cfg.getSection("mythiclocations");
+		if (sec != null) {
+			for (String key : sec.getKeys()) {
+				mythicLocations.put(key, new Coordinates(this, sec.getString(key), true));
+			}
+		}
 		
 		List<String> targets = cfg.getStringList("targets");
 		if (targets != null) {
 			this.targets = new HashSet<String>();
 			this.targets.addAll(targets);
 		}
+		
+		this.customInfoOrder = (ArrayList<String>) cfg.getStringList("fightinfomobs");
 		
 		pieces.put(id, this);
 	}
@@ -109,10 +134,23 @@ public class MapPiece {
 	public ArrayList<MapSpawner[]> getSpawnerSets() {
 		return spawnerSets;
 	}
+
+	public MapSpawner[] getInitialSpawns() {
+		return initialSpawns;
+	}
+	
+	public boolean hasSpawners() {
+		return !spawnerSets.isEmpty();
+	}
 	
 	// Pick between the different sets of spawners
-	public MapSpawner[] chooseSpawners() {
-		return spawnerSets.get(NeoRogue.gen.nextInt(spawnerSets.size()));
+	public int chooseSpawners() {
+		if (spawnerSets.size() == 0) return -1;
+		return NeoRogue.gen.nextInt(spawnerSets.size());
+	}
+	
+	public MapSpawner[] getSpawners(int idx) {
+		return spawnerSets.get(idx);
 	}
 	
 	public MapPieceInstance[] getRotationOptions(Coordinates existing, Coordinates toAttach) {
@@ -149,5 +187,13 @@ public class MapPiece {
 		}
 		else if (!id.equals(other.id)) return false;
 		return true;
+	}
+	
+	public boolean hasCustomMobInfo() {
+		return this.customInfoOrder != null;
+	}
+	
+	public ArrayList<String> getCustomMobInfo() {
+		return this.customInfoOrder;
 	}
 }

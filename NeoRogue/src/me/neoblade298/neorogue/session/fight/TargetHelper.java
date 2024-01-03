@@ -5,12 +5,11 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.RayTraceResult;
-import io.lumine.mythic.bukkit.BukkitAPIHelper;
-import io.lumine.mythic.bukkit.MythicBukkit;
 
 import java.util.LinkedList;
 import java.util.function.Predicate;
 import me.neoblade298.neocore.bukkit.util.TargetUtil;
+import me.neoblade298.neorogue.NeoRogue;
 
 public class TargetHelper {
 	public static LivingEntity getNearestInSight(LivingEntity source, TargetProperties props) {
@@ -68,7 +67,6 @@ public class TargetHelper {
 	private static class TargetFilter implements Predicate<LivingEntity> {
 		private LivingEntity src;
 		private TargetProperties props;
-		private BukkitAPIHelper api = MythicBukkit.inst().getAPIHelper();
 		public TargetFilter(LivingEntity src, TargetProperties props) {
 			this.src = src;
 			this.props = props;
@@ -78,7 +76,7 @@ public class TargetHelper {
 		public boolean test(LivingEntity trg) {
 			if (!isValidTarget(src, trg, props.throughWall)) return false;
 			switch (props.type) {
-			case ENEMY: return api.isMythicMob(trg);
+			case ENEMY: return NeoRogue.mythicApi.isMythicMob(trg);
 			case ALLY: return trg instanceof Player;
 			default: return true;
 			}
@@ -98,9 +96,6 @@ public class TargetHelper {
 
 	static boolean isValidTarget(final LivingEntity source, final LivingEntity target,
 			boolean throughWall) {
-		System.out.println("Valid: " + (target != source) + ", " + (throughWall ||
-						!isObstructed(source.getEyeLocation(), target.getEyeLocation()) ||
-						!isObstructed(source.getEyeLocation(), target.getLocation())) + ", " + (target.getType() != EntityType.ARMOR_STAND));
 		return target != source
 				
 				&& (throughWall ||

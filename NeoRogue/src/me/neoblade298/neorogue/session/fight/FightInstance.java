@@ -14,6 +14,7 @@ import org.bukkit.attribute.Attributable;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -62,12 +63,15 @@ public abstract class FightInstance extends Instance {
 	protected HashSet<UUID> party = new HashSet<UUID>();
 	protected Map map;
 	protected ArrayList<MapSpawnerInstance> spawners = new ArrayList<MapSpawnerInstance>(),
-			unlimitedSpawners = new ArrayList<MapSpawnerInstance>();
+			unlimitedSpawners = new ArrayList<MapSpawnerInstance>(),
+			initialSpawns = new ArrayList<MapSpawnerInstance>();
+	private HashMap<String, Location> mythicLocations = new HashMap<String, Location>();
 	protected HashMap<UUID, Barrier> enemyBarriers = new HashMap<UUID, Barrier>();
 	protected ArrayList<BukkitTask> tasks = new ArrayList<BukkitTask>();
 	protected ArrayList<FightRunnable> initialTasks = new ArrayList<FightRunnable>();
 	protected double spawnCounter; // Holds a value between 0 and 1, when above 1, a mob spawns
 	protected double totalSpawnValue; // Keeps track of total mob spawns, to handle scaling of spawning
+	protected int level; // The level of the instance
 	
 	public FightInstance(Set<UUID> players) {
 		party.addAll(players);
@@ -81,8 +85,8 @@ public abstract class FightInstance extends Instance {
 		return userBarriers;
 	}
 	
-	public void instantiate() {
-		map.instantiate(this, s.getXOff(), s.getZOff());
+	public void instantiate(int level) {
+		map.instantiate(this, s.getXOff(), s.getZOff(), level);
 	}
 	
 	public Map getMap() {
@@ -177,7 +181,6 @@ public abstract class FightInstance extends Instance {
 		PlayerFightData data = userData.get(p.getUniqueId());
 		if (data == null) return; // If you're dead
 		if (!data.canBasicAttack(EquipSlot.OFFHAND)) return;
-		System.out.println("Right click hit");
 		trigger(p, Trigger.RIGHT_CLICK_HIT, new Object[] { p, e.getRightClicked() });
 	}
 	
@@ -185,7 +188,6 @@ public abstract class FightInstance extends Instance {
 		Player p = e.getPlayer();
 		UUID uuid = p.getUniqueId();
 		if (e.getHand() == EquipmentSlot.OFF_HAND) {
-			System.out.println("Right click general");
 			trigger(p, Trigger.RAISE_SHIELD, null);
 			trigger(p, Trigger.RIGHT_CLICK, null);
 			
@@ -270,7 +272,7 @@ public abstract class FightInstance extends Instance {
 		spawnCounter += mob.getValue();
 		while (spawnCounter >= 1) {
 			spawnCounter--;
-			data.getInstance().spawnMob(1);
+			data.getInstance().activateSpawner(1);
 		}
 	}
 	
@@ -382,7 +384,8 @@ public abstract class FightInstance extends Instance {
 		}
 		else {
 		}
-
+		
+		meta.setDamage(amount);
 		for (Damageable target : targets) {
 			receiveDamage(damager, meta, target);
 		}
@@ -394,6 +397,11 @@ public abstract class FightInstance extends Instance {
 		double amount = meta.getDamage();
 		double original = amount;
 		DamageType type = meta.getType();
+		
+		// If target is mythicmob, threat is premitigation damage
+		if (NeoRogue.mythicApi.isMythicMob(target)) {
+			NeoRogue.mythicApi.addThreat(damager, (LivingEntity) target, amount);
+		}
 		
 		// See if any of our effects cancel damage first
 		if (data instanceof PlayerFightData) {
@@ -498,7 +506,9 @@ public abstract class FightInstance extends Instance {
 	@Override
 	public void start(Session s) {
 		this.s = s;
-		instantiate();
+		level = 5 + s.getNodesVisited();
+		
+		instantiate(level);
 		s.broadcast("Commencing fight...");
 		ArrayList<PlayerFightData> fdata = new ArrayList<PlayerFightData>();
 		for (Player p : s.getOnlinePlayers()) {
@@ -519,6 +529,8 @@ public abstract class FightInstance extends Instance {
 						MapPieceInstance.Y_OFFSET,
 						MapPieceInstance.Z_FIGHT_OFFSET + s.getZOff());
 				spawn.setX(-spawn.getX());
+				
+				
 				for (Player p : s.getOnlinePlayers()) {
 					p.teleport(spawn);
 				}
@@ -531,7 +543,10 @@ public abstract class FightInstance extends Instance {
 		
 		new BukkitRunnable() {
 			public void run() {
-				spawnMob(5 + (s.getNodesVisited() / 5));
+				activateSpawner(3 + (s.getNodesVisited() / 5));
+				for (MapSpawnerInstance inst : initialSpawns) {
+					inst.spawnMob(level);
+				}
 			}
 		}.runTaskLater(NeoRogue.inst(), 60L);
 		
@@ -593,6 +608,8 @@ public abstract class FightInstance extends Instance {
 			if (p != null) {
 				data.syncHealth();
 				p.setFoodLevel(20);
+				data.revertMaxHealth();
+				data.updateCoinsBar();
 			}
 		}
 		
@@ -630,6 +647,10 @@ public abstract class FightInstance extends Instance {
 		}, duration * 20);
 	}
 	
+	public Location getMythicLocation(String key) {
+		return mythicLocations.get(key);
+	}
+	
 	public void removeEnemyBarrier(UUID uuid) {
 		enemyBarriers.remove(uuid);
 	}
@@ -645,7 +666,16 @@ public abstract class FightInstance extends Instance {
 		}
 	}
 	
-	private void spawnMob(int num) {
+	public void addInitialSpawn(MapSpawnerInstance spawner) {
+		initialSpawns.add(spawner);
+	}
+	
+	public void addMythicLocation(String key, Location loc) {
+		mythicLocations.put(key, loc);
+	}
+	
+	protected void activateSpawner(int num) {
+		if (spawners.isEmpty()) return;
 		for (int i = 0; i < num; i++) {
 			MapSpawnerInstance spawner = spawners.get(NeoRogue.gen.nextInt(spawners.size()));
 			if (!spawner.canSpawn()) {

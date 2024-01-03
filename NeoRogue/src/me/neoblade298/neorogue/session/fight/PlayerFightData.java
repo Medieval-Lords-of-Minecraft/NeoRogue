@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -24,7 +25,8 @@ public class PlayerFightData extends FightData {
 	private Player p;
 	private long nextAttack, nextOffAttack;
 
-	private double stamina = 0, mana = 0;
+	private double stamina, mana;
+	private double maxStamina, maxMana, maxHealth;
 	private double staminaRegen, manaRegen;
 	
 	private FightStatistics stats = new FightStatistics();
@@ -40,42 +42,44 @@ public class PlayerFightData extends FightData {
 		int i = 0;
 		for (Equipment acc : data.getEquipment(EquipSlot.ACCESSORY)) {
 			if (acc == null) continue;
-			acc.initialize(p, this, null, i++);
+			acc.initialize(p, this, null, EquipSlot.ACCESSORY, i++);
 		}
 		i = 0;
 		for (Equipment armor : data.getEquipment(EquipSlot.ARMOR)) {
 			if (armor == null) continue;
-			armor.initialize(p, this, null, i++);
+			armor.initialize(p, this, null, EquipSlot.ARMOR, i++);
 		}
-		i = 0;
+		i = -1;
 		for (Equipment hotbar : data.getEquipment(EquipSlot.HOTBAR)) {
-			if (hotbar == null) continue;
-			hotbar.initialize(p, this, Trigger.getFromHotbarSlot(i), i);
 			i++;
+			if (hotbar == null) continue;
+			hotbar.initialize(p, this, Trigger.getFromHotbarSlot(i), EquipSlot.HOTBAR, i);
 		}
 		i = 0;
 		for (Equipment other : data.getEquipment(EquipSlot.KEYBIND)) {
 			if (other == null) continue;
-			other.initialize(p, this, KeyBind.getBindFromData(i++).getTrigger(), -1);
+			other.initialize(p, this, KeyBind.getBindFromData(i).getTrigger(), EquipSlot.KEYBIND, i++);
 		}
 		i = 0;
-		for (ArtifactInstance art : data.getArtifacts()) {
+		for (ArtifactInstance art : data.getArtifacts().values()) {
 			if (art == null) continue;
-			art.initialize(p, this, null, i++);
+			art.initialize(p, this, null, null, i++);
 		}
 		
 		Equipment offhand = data.getEquipment(EquipSlot.OFFHAND)[0];
 		if (offhand != null) {
-			offhand.initialize(p, this, null, 0);
+			offhand.initialize(p, this, null, EquipSlot.OFFHAND, 0);
 		}
 		
 		// Setup inventory
 		PlayerInventory inv = p.getInventory();
 		inv.clear();
 		ItemStack[] contents = inv.getContents();
-		
+
 		for (i = 0; i < 9; i++) {
 			if (data.getEquipment(EquipSlot.HOTBAR)[i] == null) continue;
+			if (!hasTriggerAction(Trigger.getFromHotbarSlot(i)) && 
+					!slotBasedTriggers.containsKey(i)) continue;
 			contents[i] = data.getEquipment(EquipSlot.HOTBAR)[i].getItem();
 		}
 		inv.setContents(contents);
@@ -83,6 +87,11 @@ public class PlayerFightData extends FightData {
 		if (offhand != null) inv.setItemInOffHand(offhand.getItem());
 		
 		// Setup mana and hunger bar
+		this.maxStamina = sessdata.getMaxStamina();
+		this.maxMana = sessdata.getMaxMana();
+		this.maxHealth = sessdata.getMaxHealth();
+		this.mana = sessdata.getStartingMana();
+		this.stamina = sessdata.getStartingStamina();
 		updateStamina();
 		updateMana();
 		this.staminaRegen = sessdata.getStaminaRegen();
@@ -114,7 +123,7 @@ public class PlayerFightData extends FightData {
 			if (other == null) continue;
 			other.cleanup(p, this);
 		}
-		for (ArtifactInstance art : data.getArtifacts()) {
+		for (ArtifactInstance art : data.getArtifacts().values()) {
 			if (art == null) continue;
 			art.cleanup(p, this);
 		}
@@ -139,7 +148,13 @@ public class PlayerFightData extends FightData {
 					}
 				}
 				TriggerResult tr = inst.trigger(data, inputs);
-				if (tr.removeTrigger()) iter.remove();
+				if (tr.removeTrigger()) {
+					int hotbar = Trigger.toHotbarSlot(trigger);
+					if (hotbar != -1) {
+						data.getPlayer().getInventory().setItem(hotbar, null);
+					}
+					iter.remove();
+				}
 				if (tr.cancelEvent()) cancel = true;
 			}
 			return cancel;
@@ -192,6 +207,9 @@ public class PlayerFightData extends FightData {
 	}
 	
 	private void addTrigger(String id, HashMap<String, TriggerAction> actions, TriggerAction action) {
+		while (actions.containsKey(id)) {
+			id += 'I';
+		}
 		actions.put(id, action);
 
 		if (action instanceof EquipmentInstance) {
@@ -221,6 +239,11 @@ public class PlayerFightData extends FightData {
 		updateStamina();
 	}
 	
+	public void addMaxStamina(double amount) {
+		this.maxStamina += amount;
+		updateStamina();
+	}
+	
 	public void setStamina(double amount) {
 		this.stamina = amount;
 		updateStamina();
@@ -231,18 +254,23 @@ public class PlayerFightData extends FightData {
 	}
 	
 	private void updateStamina() {
-		this.stamina = Math.min(this.stamina, sessdata.getMaxStamina());
-		p.setFoodLevel((int) (this.stamina * 20 / sessdata.getMaxStamina()));
+		this.stamina = Math.min(this.stamina, this.maxStamina);
+		p.setFoodLevel((int) (this.stamina * 14 / sessdata.getMaxStamina()) + 6);
 	}
 	
 	public void addHealth(double amount) {
 		double curr = p.getHealth();
-		double after = Math.max(sessdata.getMaxHealth(), curr + amount);
+		double after = Math.min(this.maxHealth, curr + amount);
 		p.setHealth(after);
 	}
 	
 	public void addMana(double amount) {
 		this.mana += amount;
+		updateMana();
+	}
+	
+	public void addMaxMana(double amount) {
+		this.maxMana += amount;
 		updateMana();
 	}
 	
@@ -256,9 +284,9 @@ public class PlayerFightData extends FightData {
 	}
 	
 	private void updateMana() {
-		this.mana = Math.min(this.mana, sessdata.getMaxMana());
-		p.setLevel((int) sessdata.getMaxMana());
-		float fraction = (float) (this.mana / sessdata.getMaxMana());
+		this.mana = Math.min(this.mana, this.maxMana);
+		p.setLevel((int) this.maxMana);
+		float fraction = (float) (this.mana / this.maxMana);
 		p.setExp(fraction);
 	}
 	
@@ -318,5 +346,10 @@ public class PlayerFightData extends FightData {
 	public boolean canBasicAttack(EquipSlot slot) {
 		if (slot == EquipSlot.HOTBAR) return nextAttack <= System.currentTimeMillis();
 		else return nextOffAttack <= System.currentTimeMillis();
+	}
+
+	public void addMaxHealth(double amount) {
+		this.maxHealth += amount;
+		getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(this.maxHealth);
 	}
 }

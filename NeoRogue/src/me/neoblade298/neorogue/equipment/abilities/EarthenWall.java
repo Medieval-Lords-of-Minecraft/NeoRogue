@@ -39,7 +39,7 @@ public class EarthenWall extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
+	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		EarthenWallInstance inst = new EarthenWallInstance(this, p);
 		
 		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {

@@ -16,12 +16,11 @@ public class WristBlade extends Equipment {
 	public WristBlade(boolean isUpgraded) {
 		super("wristBlade", "Wrist Blade", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.OFFHAND);
-		equipSlot = EquipSlot.OFFHAND;
 		hits = isUpgraded ? 3 : 2;
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, int slot) {
+	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.BASIC_ATTACK, new WristBladeInstance());
 	}
 	

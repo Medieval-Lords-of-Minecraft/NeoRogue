@@ -8,7 +8,6 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.NodeSelectInstance;
-import me.neoblade298.neorogue.session.RewardInstance;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.chance.ChanceChoice;
 import me.neoblade298.neorogue.session.chance.ChanceInstance;
@@ -18,6 +17,7 @@ import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.FightScore;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.StandardFightInstance;
+import me.neoblade298.neorogue.session.reward.RewardInstance;
 
 public class AmbushChance extends ChanceSet {
 
@@ -47,7 +47,7 @@ public class AmbushChance extends ChanceSet {
 				}));
 		
 		stage.addChoice(new ChanceChoice(Material.FLINT, "Steal from them",
-				"<yellow>50%</yellow> chance you get an S tier reward, <yellow>50%</yellow chance a normal fight starts.",
+				"<yellow>50%</yellow> chance you get an S tier reward, <yellow>50%</yellow> chance a normal fight starts.",
 				(s, inst, unused) -> {
 					if (NeoRogue.gen.nextBoolean()) {
 						inst.setNextInstance(new RewardInstance(StandardFightInstance.generateRewards(s, FightScore.S)));

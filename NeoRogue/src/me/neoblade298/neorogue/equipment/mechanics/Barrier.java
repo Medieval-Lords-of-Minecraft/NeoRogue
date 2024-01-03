@@ -4,6 +4,7 @@ package me.neoblade298.neorogue.equipment.mechanics;
 import java.util.HashMap;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
@@ -104,6 +105,10 @@ public class Barrier {
 			if (center.distanceSquared(loc) > 200) return false;
 		}
 
+		if (center.getWorld().equals(loc.getWorld())) {
+			Bukkit.getLogger().warning("[NeoRogue] Barrier and projectile in different worlds: " + center.getWorld() + " and " + loc.getWorld());
+			return false;
+		}
 		Vector v = loc.clone().subtract(center).toVector();
 		double vx = Math.abs(v.dot(axes.left().multiply(length)));
 		if (vx >= length * 2) return false;

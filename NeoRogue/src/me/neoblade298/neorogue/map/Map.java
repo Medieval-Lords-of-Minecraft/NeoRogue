@@ -1,15 +1,18 @@
 package me.neoblade298.neorogue.map;
 
 import java.io.File;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -47,6 +50,7 @@ public class Map {
 	private LinkedList<Coordinates> entrances = new LinkedList<Coordinates>(),
 			blockedEntrances = new LinkedList<Coordinates>();
 	private TreeMap<Mob, ArrayList<MobModifier>> mobs = new TreeMap<Mob, ArrayList<MobModifier>>();
+	private LinkedHashMap<Mob, ArrayList<MobModifier>> customMobs = new LinkedHashMap<Mob, ArrayList<MobModifier>>();
 	private HashSet<String> targets = new HashSet<String>();
 	private boolean[][] shape = new boolean[MAP_SIZE][MAP_SIZE];
 	
@@ -99,7 +103,7 @@ public class Map {
 	
 	public static Map generate(AreaType type, int numPieces, MapPiece requiredPiece) {
 		Map map = new Map();
-		map.place(requiredPiece);
+		map.placeFirst(requiredPiece, true);
 		return generate(map, type, numPieces);
 	}
 	
@@ -137,26 +141,34 @@ public class Map {
 		return map;
 	}
 	
-	public boolean place(MapPiece piece) {
-		// Special case, first piece being placed
-		if (pieces.size() == 0) {
-			MapPieceInstance inst = piece.getInstance();
+	
+	public void placeFirst(MapPiece piece, boolean randomizeOrientation) {
+		MapPieceInstance inst = piece.getInstance();
+		MapShape shape = inst.getPiece().getShape();
+		
+		if (randomizeOrientation) {
 			// Randomly rotate the piece
 			inst.setRotations(NeoRogue.gen.nextInt(4));
 			int rand = NeoRogue.gen.nextInt(3);
 			if (rand == 1) inst.setFlip(true, false);
 			else if (rand == 2) inst.setFlip(false, true);
-			MapShape shape = inst.getPiece().getShape();
 			shape.applySettings(inst);
-			
-			// Place the piece in the middle of the board
-			int x = (MAP_SIZE / 2) - (shape.getHeight() / 2);
-			int z = (MAP_SIZE / 2) - (shape.getLength() / 2);
-			
-			inst.setX(x);
-			inst.setY(0);
-			inst.setZ(z);
-			place(inst, false);
+		}
+		
+		// Place the piece in the middle of the board
+		int x = (MAP_SIZE / 2) - (shape.getHeight() / 2);
+		int z = (MAP_SIZE / 2) - (shape.getLength() / 2);
+		
+		inst.setX(x);
+		inst.setY(0);
+		inst.setZ(z);
+		place(inst, false);
+	}
+	
+	public boolean place(MapPiece piece) {
+		// Special case, first piece being placed
+		if (pieces.size() == 0) {
+			placeFirst(piece, true);
 		}
 		// Standard case, find an existing entrance and try to put the piece on
 		else {
@@ -239,23 +251,53 @@ public class Map {
 		}
 		
 		if (!deserializing) {
-			for (Coordinates entrance : inst.getPiece().getEntrances()) {
-				Coordinates coords = entrance.clone().applySettings(inst);
-				if (coords.getXFacing() > MAP_SIZE - 1 || coords.getXFacing() < 0 || coords.getZFacing() > MAP_SIZE - 1 || coords.getZFacing() < 0)
-					continue;
-				
-				 // Don't add entrance if it's already blocked
-				if (this.shape[coords.getXFacing()][coords.getZFacing()]) {
-					blockedEntrances.add(entrance);
-					continue;
+			if (inst.getPiece().getEntrances() != null) {
+				for (Coordinates entrance : inst.getPiece().getEntrances()) {
+					Coordinates coords = entrance.clone().applySettings(inst);
+					if (coords.getXFacing() > MAP_SIZE - 1 || coords.getXFacing() < 0 || coords.getZFacing() > MAP_SIZE - 1 || coords.getZFacing() < 0)
+						continue;
+					
+					 // Don't add entrance if it's already blocked
+					if (this.shape[(int) coords.getXFacing()][(int) coords.getZFacing()]) {
+						blockedEntrances.add(entrance);
+						continue;
+					}
+					entrances.add(coords);
 				}
-				entrances.add(coords);
 			}
 		}
 
 		// Set up the mobs
-		for (MapSpawner spawner : inst.getPiece().chooseSpawners()) {
-			mobs.put(spawner.getMob(), MobModifier.generateModifiers(0));
+		if (inst.getPiece().hasCustomMobInfo()) {
+			for (String str : inst.getPiece().getCustomMobInfo()) {
+				Mob mob = Mob.get(str);
+				if (mob == null) {
+					Bukkit.getLogger().warning("[NeoRogue] Failed to load mob " + str + " from custom mob info in mappiece " + inst.getPiece().getId());
+					continue;
+				}
+				customMobs.put(mob, MobModifier.generateModifiers(0));
+			}
+		}
+		
+		if (customMobs.isEmpty()) {
+			if (inst.getPiece().getInitialSpawns() != null) {
+				for (MapSpawner spawner : inst.getPiece().getInitialSpawns()) {
+					if (spawner.getMob() == null) {
+						Bukkit.getLogger().warning("[NeoRogue] Failed to load map piece " + inst.getPiece().getId() + ", initial spawner had null mob");
+						continue;
+					}
+					mobs.put(spawner.getMob(), MobModifier.generateModifiers(0));
+				}
+			}
+			if (inst.getPiece().hasSpawners()) {
+				for (MapSpawner spawner : inst.getPiece().getSpawners(inst.getSpawnerSet())) {
+					if (spawner.getMob() == null) {
+						Bukkit.getLogger().warning("[NeoRogue] Failed to load map piece " + inst.getPiece().getId() + ", spawner had null mob");
+						continue;
+					}
+					mobs.put(spawner.getMob(), MobModifier.generateModifiers(0));
+				}
+			}
 		}
 
 		pieces.add(inst);
@@ -265,22 +307,26 @@ public class Map {
 	private void recalculateEntrances() {
 		for (MapPieceInstance inst : pieces) {
 			// First add all entrances
-			for (Coordinates c : inst.getPiece().getEntrances()) {
-				entrances.add(c.clone().applySettings(inst));
+			if (inst.getPiece().getEntrances() != null) {
+				for (Coordinates c : inst.getPiece().getEntrances()) {
+					entrances.add(c.clone().applySettings(inst));
+				}
 			}
 		}
 		
 		for (MapPieceInstance inst : pieces) {
-			for (Coordinates ent : inst.getPiece().getEntrances()) {
-				Coordinates toRemove = null;
-				for (Coordinates otherEnt : entrances) {
-					if (ent.isFacing(otherEnt)) {
-						toRemove = otherEnt;
-						break;
+			if (inst.getPiece().getEntrances() != null) {
+				for (Coordinates ent : inst.getPiece().getEntrances()) {
+					Coordinates toRemove = null;
+					for (Coordinates otherEnt : entrances) {
+						if (ent.isFacing(otherEnt)) {
+							toRemove = otherEnt;
+							break;
+						}
 					}
+					entrances.remove(toRemove);
+					entrances.remove(ent);
 				}
-				entrances.remove(toRemove);
-				entrances.remove(ent);
 			}
 		}
 	}
@@ -289,7 +335,7 @@ public class Map {
 		
 	}
 	
-	public void instantiate(FightInstance fi, int xOff, int zOff) {
+	public void instantiate(FightInstance fi, int xOff, int zOff, int level) {
 		// First clear the board
 		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Area.world)) {
 		    CuboidRegion r = new CuboidRegion(
@@ -306,20 +352,28 @@ public class Map {
 		    	public void run() {
 					// Setup pieces and spawners
 					for (MapPieceInstance inst : pieces) {
-						inst.instantiate(fi, xOff, zOff);
+						// Setup mythic locations first before spawning anything
+						for (Entry<String, Coordinates> ent : inst.getMythicLocations().entrySet()) {
+							Location loc = ent.getValue().applySettings(inst).toLocation();
+							loc.add(xOff + MapPieceInstance.X_FIGHT_OFFSET,
+									MapPieceInstance.Y_OFFSET,
+									MapPieceInstance.Z_FIGHT_OFFSET + zOff + 0.5);
+							loc.setX(-loc.getX() + 0.5);
+							fi.addMythicLocation(ent.getKey(), loc);
+						}
+					}
+					
+					for (MapPieceInstance inst : pieces) {
+						inst.instantiate(fi, xOff, zOff, level);
 					}
 					
 					// Block off all unused entrances
 					World w = Bukkit.getWorld(Area.WORLD_NAME);
 					for (Coordinates coords : entrances) {
-						int x = -(xOff + MapPieceInstance.X_FIGHT_OFFSET + (coords.getX() * 16));
-						int y = MapPieceInstance.Y_OFFSET + coords.getY();
-						int z = MapPieceInstance.Z_FIGHT_OFFSET + zOff + (coords.getZ() * 16);
+						int x = (int) -(xOff + MapPieceInstance.X_FIGHT_OFFSET + (coords.getX() * 16));
+						int y = (int) (MapPieceInstance.Y_OFFSET + coords.getY());
+						int z = (int) (MapPieceInstance.Z_FIGHT_OFFSET + zOff + (coords.getZ() * 16));
 						int xp = x, zp = z;
-						
-						// Testing only
-					    Location test = new Location(Bukkit.getWorld("Dev"), x, y, z);
-					    test.getBlock().setType(Material.GOLD_BLOCK);
 					    
 					    // Remember that entrance directions are inverted due to how they're constructed
 						switch (coords.getDirection()) {
@@ -355,12 +409,6 @@ public class Map {
 								}
 							}
 						}
-						//r = new CuboidRegion(BlockVector3.at(x, y, z), BlockVector3.at(xp, y + 4, z + zp));
-					    /*try {
-						    editSession.replaceBlocks(r, mask, BukkitAdapter.adapt(Material.BLACK_CONCRETE.createBlockData()));
-						} catch (WorldEditException e) {
-							e.printStackTrace();
-						}*/
 					}
 		    	}
 		    }.runTaskLater(NeoRogue.inst(), 10L);
@@ -380,8 +428,8 @@ public class Map {
 		return standardPieces.get(type);
 	}
 	
-	public TreeMap<Mob, ArrayList<MobModifier>> getMobs() {
-		return mobs;
+	public AbstractMap<Mob, ArrayList<MobModifier>> getMobs() {
+		return customMobs.isEmpty() ? mobs : customMobs;
 	}
 	
 	public ArrayList<MapPieceInstance> getPieces() {

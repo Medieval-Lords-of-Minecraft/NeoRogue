@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.commands;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -44,10 +45,10 @@ public class CmdAdminTestPiece extends Subcommand {
 		}
 		
 		MapPiece piece = pieces.get(args[0]);
-		World w = p.getWorld();
+		World w = Bukkit.getWorld("TestMap");
 		
-		if (!w.getName().equals("TestMap")) {
-			Util.displayError(p, "You can't use this command on worlds that aren't named TestMap!");
+		if (w == null) {
+			Util.displayError(p, "There must be a loaded world named TestMap!");
 			return;
 		}
 		
@@ -71,7 +72,7 @@ public class CmdAdminTestPiece extends Subcommand {
 			}
 		}
 		
-		inst.testPaste(w, x, z);
+		inst.testPaste(p, w, x, z);
 		p.teleport(new Location(w, -8, 1, 8, -90, 0));
 	}
 }

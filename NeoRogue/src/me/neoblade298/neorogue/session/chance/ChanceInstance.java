@@ -7,18 +7,23 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.*;
 import me.neoblade298.neorogue.session.fight.FightInstance;
+import me.neoblade298.neorogue.session.reward.RewardInstance;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class ChanceInstance extends EditInventoryInstance {
 	public static final int CHANCE_X = 6, CHANCE_Z = 103;
@@ -26,8 +31,13 @@ public class ChanceInstance extends EditInventoryInstance {
 	private ChanceSet set;
 	private HashMap<UUID, ChanceStage> stage = new HashMap<UUID, ChanceStage>();
 	private Instance nextInstance; // For taking you directly from this instance to another
+	private boolean returning;
 
 	public ChanceInstance() {
+	}
+	
+	public ChanceInstance(String setId) {
+		this.set = ChanceSet.get(setId);
 	}
 
 	public ChanceInstance(String data, HashMap<UUID, PlayerSessionData> party) {
@@ -51,8 +61,10 @@ public class ChanceInstance extends EditInventoryInstance {
 		spawn = new Location(Bukkit.getWorld(Area.WORLD_NAME), -(s.getXOff() + CHANCE_X - 0.5), 64,
 				s.getZOff() + CHANCE_Z);
 
-		// Pick a random chance set
-		set = ChanceSet.getSet(s.getArea().getType());
+		// Pick a random chance set if not already picked
+		if (set == null) {
+			set = ChanceSet.getSet(s.getArea().getType());
+		}
 		set.initialize(s, this);
 
 		for (PlayerSessionData data : s.getParty().values()) {
@@ -74,8 +86,23 @@ public class ChanceInstance extends EditInventoryInstance {
 
 		Player p = e.getPlayer();
 		if (e.getClickedBlock().getType() == Material.LECTERN) {
+			// If we're stuck in chance event due to someone's inventory full or cursed
+			if (stage.isEmpty()) {
+				returnPlayers();
+				return;
+			}
+			
+			if (!stage.containsKey(p.getUniqueId())) {
+				Util.playSound(p, Sound.BLOCK_NOTE_BLOCK_PLING, false);
+				Util.msg(p, "You've already completed the chance event! You're waiting for:");
+				for (UUID uuid : stage.keySet()) {
+					Player waiting = Bukkit.getPlayer(uuid);
+					Component c = waiting != null ? waiting.displayName() : Component.text("(Offline) " + uuid);
+					Util.msg(p, SharedUtil.color("- ").append(c.color(NamedTextColor.RED)));
+				}
+				return;
+			}
 			new ChanceInventory(p, this, set, stage.get(p.getUniqueId()));
-			return;
 		}
 	}
 
@@ -109,6 +136,9 @@ public class ChanceInstance extends EditInventoryInstance {
 	}
 	
 	private void returnPlayers() {
+		if (returning) return;
+		s.broadcastSound(Sound.ENTITY_ARROW_HIT_PLAYER);
+		returning = true;
 		new BukkitRunnable() {
 			public void run() {
 				if (nextInstance != null) {
@@ -135,6 +165,7 @@ public class ChanceInstance extends EditInventoryInstance {
 
 		new BukkitRunnable() {
 			public void run() {
+				returning = false;
 				s.setInstance(nextInstance == null ? new NodeSelectInstance() : nextInstance);
 			}
 		}.runTaskLater(NeoRogue.inst(), 60L);

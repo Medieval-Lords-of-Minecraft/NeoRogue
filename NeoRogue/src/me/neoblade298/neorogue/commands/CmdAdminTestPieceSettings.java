@@ -70,11 +70,11 @@ public class CmdAdminTestPieceSettings extends Subcommand {
 			for (int i = 0; i < 4; i++) {
 				inst.setRotations(i);
 				inst.setFlip(false, false);
-				inst.testPaste(w, x + (PADDING * i), z);
+				inst.testPaste(p, w, x + (PADDING * i), z);
 				inst.setFlip(true, false);
-				inst.testPaste(w, x + (PADDING * i), z + PADDING);
+				inst.testPaste(p, w, x + (PADDING * i), z + PADDING);
 				inst.setFlip(false, true);
-				inst.testPaste(w, x + (PADDING * i), z + (PADDING * 2));
+				inst.testPaste(p, w, x + (PADDING * i), z + (PADDING * 2));
 			}
 		}
 		else {
@@ -83,7 +83,7 @@ public class CmdAdminTestPieceSettings extends Subcommand {
 			boolean flipZ = args.length > 3 ? args[3].equals("1") : false;
 			inst.setRotations(rotations);
 			inst.setFlip(flipX, flipZ);
-			inst.testPaste(w, x, z);
+			inst.testPaste(p, w, x, z);
 		}
 		Util.msg(p, "Successfully pasted piece settings");
 	}

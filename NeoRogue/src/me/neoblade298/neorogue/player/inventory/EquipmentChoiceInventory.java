@@ -12,7 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
-import me.neoblade298.neorogue.session.RewardInventory;
+import me.neoblade298.neorogue.session.reward.RewardInventory;
 
 public class EquipmentChoiceInventory extends CoreInventory {
 	private RewardInventory prev;
