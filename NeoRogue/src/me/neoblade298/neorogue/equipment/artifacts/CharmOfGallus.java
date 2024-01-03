@@ -16,18 +16,18 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class BurningCross extends Artifact {
-	private int damage;
+public class CharmOfGallus extends Artifact {
+	private int stamina;
 
-	public BurningCross(boolean isUpgraded) {
-		super("burningCross", "Burning Cross", isUpgraded, Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
+	public CharmOfGallus(boolean isUpgraded) {
+		super("charmOfGallus", "Charm Of Gallus", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR);
 
-		damage = isUpgraded ? 6 : 4;
+		stamina = isUpgraded ? 25 : 15;
 	}
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
+		data.addTrigger(id, Trigger.CAST_USABLE, (pdata, in) -> {
 			String id = (String) in[1];
 			int stacks = (int) in[2];
 			if (id.equals(StatusType.CONCUSSED.name())) {
@@ -46,7 +46,7 @@ public class BurningCross extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.NETHER_STAR, 
-				"For each stack of sanctified you apply, also deal <yellow>" + damage + "</yellow> fire damage.");
+		item = createItem(Material.GOLD_NUGGET, 
+				"Casting a skill that costs over 15 stamina grants you <yellow>" + stamina + "</yellow> stamina. Can be used 5x per fight.");
 	}
 }

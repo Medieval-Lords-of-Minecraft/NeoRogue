@@ -81,6 +81,18 @@ public class EquipmentInstance implements TriggerAction {
 		return Math.max(0, nextUse - now);
 	}
 	
+	public double getStaminaCost() {
+		return staminaCost;
+	}
+
+	public double getManaCost() {
+		return manaCost;
+	}
+	
+	public Equipment getEquipment() {
+		return eq;
+	}
+
 	public static class CountEquipmentInstance extends EquipmentInstance {
 		protected int count = 0;
 		public CountEquipmentInstance(Equipment eq) {

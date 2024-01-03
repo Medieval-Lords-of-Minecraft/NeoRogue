@@ -143,11 +143,14 @@ public class PlayerFightData extends FightData {
 
 				if (inst instanceof EquipmentInstance) {
 					EquipmentInstance ei = (EquipmentInstance) inst;
+					runActions(data, Trigger.PRE_CAST_USABLE, null);
 					if (!ei.canTrigger(p, data)) {
 						continue;
 					}
+					runActions(data, Trigger.CAST_USABLE, null);
 				}
 				TriggerResult tr = inst.trigger(data, inputs);
+				
 				if (tr.removeTrigger()) {
 					int hotbar = Trigger.toHotbarSlot(trigger);
 					if (hotbar != -1) {

@@ -282,7 +282,7 @@ public abstract class FightInstance extends Instance {
 		PlayerFightData data = userData.get(p.getUniqueId());
 		if (data == null) return false;
 		if (trigger.isSlotDependent()) {
-			// Run triggers that change based on slot (like left/right click, NOT hotbar swap)
+			// Run triggers that change based on slot (anything that starts with left click)
 			data.runSlotBasedActions(data, trigger, p.getInventory().getHeldItemSlot(), obj);
 		}
 		return data.runActions(data, trigger, obj);

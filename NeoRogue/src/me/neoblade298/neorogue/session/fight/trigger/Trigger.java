@@ -1,46 +1,40 @@
 package me.neoblade298.neorogue.session.fight.trigger;
 
 public enum Trigger {
-	SHIFT_RCLICK(true, false),
-	SHIFT_DROP(true, false),
-	SHIFT_SWAP(true, false),
-	DROP(true, false),
-	SWAP(true, false),
-	UP_RCLICK(true, false),
-	DOWN_RCLICK(true, false),
-	HOTBAR_1(true, false),
-	HOTBAR_2(true, false),
-	HOTBAR_3(true, false),
-	HOTBAR_4(true, false),
-	HOTBAR_5(true, false),
-	HOTBAR_6(true, false),
-	HOTBAR_7(true, false),
-	HOTBAR_8(true, false),
-	HOTBAR_9(true, false),
-	BASIC_ATTACK(false, false), // Only runs off the in-house basic attack event
-	LEFT_CLICK(false, true),
-	LEFT_CLICK_NO_HIT(false, true),
-	LEFT_CLICK_HIT(false, true),
-	RIGHT_CLICK(false, false),
-	RIGHT_CLICK_HIT(false, false),
-	RAISE_SHIELD(false, false),
-	SHIELD_TICK(false, false), // Ticks while you have your shield up
-	LOWER_SHIELD(false, false),
-	RECEIVED_DAMAGE_SHIELD(false, false),
-	DEALT_DAMAGE(false, false),
-	WIN_FIGHT(false, false),
-	APPLY_STATUS(false, false), // Damageable target, Status ID, stacks, duration
-	RECEIVED_DAMAGE(false, false); // Cancellable
+	SHIFT_RCLICK,
+	SHIFT_DROP,
+	SHIFT_SWAP,
+	DROP,
+	SWAP,
+	UP_RCLICK,
+	DOWN_RCLICK,
+	HOTBAR_1,
+	HOTBAR_2,
+	HOTBAR_3,
+	HOTBAR_4,
+	HOTBAR_5,
+	HOTBAR_6,
+	HOTBAR_7,
+	HOTBAR_8,
+	HOTBAR_9,
+	BASIC_ATTACK, // Only runs off the in-house basic attack event
+	PRE_CAST_USABLE, 
+	CAST_USABLE, 
+	LEFT_CLICK,
+	LEFT_CLICK_NO_HIT,
+	LEFT_CLICK_HIT,
+	RIGHT_CLICK,
+	RIGHT_CLICK_HIT,
+	RAISE_SHIELD,
+	SHIELD_TICK, // Ticks while you have your shield up
+	LOWER_SHIELD,
+	RECEIVED_DAMAGE_BARRIER, // FightData projectile owner, double damageBefore, double damageAfter
+	DEALT_DAMAGE,
+	WIN_FIGHT,
+	APPLY_STATUS, // FightData target, Status ID, stacks, duration
+	RECEIVED_DAMAGE; // Cancellable
 	
-	private boolean hasCooldownMsg, isSlotDependent;
-	private Trigger(boolean hasCooldownMsg, boolean isSlotDependent) {
-		this.hasCooldownMsg = hasCooldownMsg;
-		this.isSlotDependent = isSlotDependent;
-	}
-	
-	public boolean hasCooldownMessage() {
-		return hasCooldownMsg;
-	}
+	private boolean isSlotDependent = this.name().startsWith("LEFT_CLICK");
 	
 	public boolean isSlotDependent() {
 		return isSlotDependent;
