@@ -4,8 +4,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
+import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
@@ -13,6 +15,7 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.trigger.KeyBind;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerCastUsableEvent;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.equipment.*;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
@@ -140,16 +143,22 @@ public class PlayerFightData extends FightData {
 			Iterator<TriggerAction> iter = triggers.get(trigger).values().iterator();
 			while (iter.hasNext()) {
 				TriggerAction inst = iter.next();
+				TriggerResult tr;
 
 				if (inst instanceof EquipmentInstance) {
 					EquipmentInstance ei = (EquipmentInstance) inst;
-					runActions(data, Trigger.PRE_CAST_USABLE, null);
+					TriggerCastUsableEvent e = new TriggerCastUsableEvent(ei);
+					runActions(data, Trigger.CAST_USABLE, new Object[] { e });
+					ei = e.getEquipmentInstance();
 					if (!ei.canTrigger(p, data)) {
 						continue;
 					}
-					runActions(data, Trigger.CAST_USABLE, null);
+					tr = ei.trigger(data, inputs);
 				}
-				TriggerResult tr = inst.trigger(data, inputs);
+				else {
+					tr = inst.trigger(data, inputs);
+				}
+				
 				
 				if (tr.removeTrigger()) {
 					int hotbar = Trigger.toHotbarSlot(trigger);
@@ -214,6 +223,10 @@ public class PlayerFightData extends FightData {
 			id += 'I';
 		}
 		actions.put(id, action);
+		
+		if (action instanceof Listener) {
+			Bukkit.getPluginManager();
+		}
 
 		if (action instanceof EquipmentInstance) {
 			EquipmentInstance inst = (EquipmentInstance) action;

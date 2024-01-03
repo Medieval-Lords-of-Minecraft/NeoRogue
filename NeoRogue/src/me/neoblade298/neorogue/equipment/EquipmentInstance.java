@@ -92,6 +92,10 @@ public class EquipmentInstance implements TriggerAction {
 	public Equipment getEquipment() {
 		return eq;
 	}
+	
+	public TriggerAction getAction() {
+		return action;
+	}
 
 	public static class CountEquipmentInstance extends EquipmentInstance {
 		protected int count = 0;
