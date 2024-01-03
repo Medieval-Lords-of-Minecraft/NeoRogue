@@ -278,7 +278,7 @@ public abstract class FightInstance extends Instance {
 	
 	// Method that's called by all listeners and is directly connected to events
 	// Returns true if the event should be cancelled
-	private static boolean trigger(Player p, Trigger trigger, Object[] obj) {
+	public static boolean trigger(Player p, Trigger trigger, Object[] obj) {
 		PlayerFightData data = userData.get(p.getUniqueId());
 		if (data == null) return false;
 		if (trigger.isSlotDependent()) {

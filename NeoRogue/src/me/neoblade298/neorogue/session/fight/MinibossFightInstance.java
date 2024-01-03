@@ -69,7 +69,7 @@ public class MinibossFightInstance extends FightInstance {
 			ArrayList<Equipment> equipDrops = new ArrayList<Equipment>();
 			EquipmentClass ec = data.getPlayerClass();
 			int value = s.getAreasCompleted();
-			equipDrops.addAll(Equipment.getDrop(value + 3, 3, ec));
+			equipDrops.addAll(Equipment.getDrop(value + 3, 3, ec, EquipmentClass.CLASSLESS));
 			
 			list.add(new EquipmentChoiceReward(equipDrops));
 			equipDrops = new ArrayList<Equipment>(3);

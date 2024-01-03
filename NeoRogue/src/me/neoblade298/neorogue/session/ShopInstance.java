@@ -52,8 +52,8 @@ public class ShopInstance extends EditInventoryInstance {
 			
 			// Create shop contents
 			ArrayList<Equipment> equips = new ArrayList<Equipment>();
+			equips.addAll(Equipment.getDrop(s.getAreasCompleted() + 1, NUM_ITEMS / 2, ec, EquipmentClass.SHOP));
 			equips.addAll(Equipment.getDrop(s.getAreasCompleted() + 2, NUM_ITEMS / 2, ec, EquipmentClass.SHOP));
-			equips.addAll(Equipment.getDrop(s.getAreasCompleted() + 3, NUM_ITEMS / 2, ec, EquipmentClass.SHOP));
 			
 			// Generate 2 random unique sale slots
 			HashSet<Integer> saleSlots = new HashSet<Integer>(2);

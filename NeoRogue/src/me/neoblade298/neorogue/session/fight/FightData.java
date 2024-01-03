@@ -20,6 +20,7 @@ import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.GenericStatusType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
+import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neocore.bukkit.particles.ParticleAnimation;
 import me.neoblade298.neocore.bukkit.particles.ParticleAnimation.ParticleAnimationInstance;
 import me.neoblade298.neorogue.NeoRogue;
@@ -205,18 +206,30 @@ public class FightData {
 	}
 	
 	public void applyStatus(StatusType type, UUID applier, int stacks, int seconds) {
+		if (FightInstance.getUserData().containsKey(applier)) {
+			PlayerFightData data = FightInstance.getUserData(applier);
+			FightInstance.trigger(data.getPlayer(), Trigger.APPLY_STATUS, new Object[] { this, type.name(), stacks, seconds });
+		}
 		Status s = statuses.getOrDefault(type.name(), Status.createByType(type, applier, this));
 		s.apply(applier, stacks, seconds);
 		statuses.put(type.name(), s);
 	}
 	
 	public void applyStatus(GenericStatusType type, String id, UUID applier, int stacks, int seconds) {
+		if (FightInstance.getUserData().containsKey(applier)) {
+			PlayerFightData data = FightInstance.getUserData(applier);
+			FightInstance.trigger(data.getPlayer(), Trigger.APPLY_STATUS, new Object[] { this, id, stacks, seconds });
+		}
 		Status s = statuses.getOrDefault(type.name(), Status.createByGenericType(type, id, applier, this));
 		s.apply(applier, stacks, seconds);
 		statuses.put(id, s);
 	}
 	
 	public void applyStatus(String id, UUID applier, int stacks) {
+		if (FightInstance.getUserData().containsKey(applier)) {
+			PlayerFightData data = FightInstance.getUserData(applier);
+			FightInstance.trigger(data.getPlayer(), Trigger.APPLY_STATUS, new Object[] { this, id, stacks, -1 });
+		}
 		Status s = Status.createByGenericType(GenericStatusType.BASIC, id, applier, this);
 		s.apply(applier, stacks, -1);
 		statuses.put(id, s);
