@@ -69,9 +69,13 @@ public class MinibossFightInstance extends FightInstance {
 			ArrayList<Equipment> equipDrops = new ArrayList<Equipment>();
 			EquipmentClass ec = data.getPlayerClass();
 			int value = s.getAreasCompleted();
-			equipDrops.addAll(Equipment.getDrop(value + 3, 3, ec, EquipmentClass.CLASSLESS));
-			
+			equipDrops.addAll(Equipment.getDrop(value + 2, 3, ec, EquipmentClass.CLASSLESS));
 			list.add(new EquipmentChoiceReward(equipDrops));
+			
+			equipDrops = new ArrayList<Equipment>(3);
+			equipDrops.addAll(Equipment.getArtifact(value + 2, 3, ec, EquipmentClass.CLASSLESS));
+			list.add(new EquipmentChoiceReward(equipDrops));
+			
 			equipDrops = new ArrayList<Equipment>(3);
 			equipDrops.add(Equipment.get("rubyCluster", false));
 			equipDrops.add(Equipment.get("emeraldCluster", false));
