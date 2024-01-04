@@ -26,7 +26,7 @@ public class PracticeDummy extends Artifact {
 	private double damageMult;
 
 	public PracticeDummy() {
-		super("practice Dummy", "Practice Dummy", Rarity.RARE, EquipmentClass.CLASSLESS);
+		super("practiceDummy", "Practice Dummy", Rarity.RARE, EquipmentClass.CLASSLESS);
 
 		num = 25;
 		damageMult = 0.4;

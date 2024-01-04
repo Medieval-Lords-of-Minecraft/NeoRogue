@@ -59,8 +59,8 @@ public class Parry extends Equipment {
 			bpc.spawn(p);
 			Util.playSound(p, Sound.ENTITY_BLAZE_SHOOT, 1F, 1F, false);
 			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
-				FightInstance.dealDamage(p, DamageType.SLASHING, damage, (Damageable) in[1]);
-				hit.spawn(((Damageable) in[1]).getLocation());
+				FightInstance.dealDamage(p, DamageType.SLASHING, damage, (Damageable) in[0]);
+				hit.spawn(((Damageable) in[0]).getLocation());
 				Util.playSound(p, Sound.BLOCK_ANVIL_LAND, 1F, 1F, false);
 				return TriggerResult.remove();
 			});

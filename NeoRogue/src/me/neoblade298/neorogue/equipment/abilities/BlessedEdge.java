@@ -39,7 +39,7 @@ public class BlessedEdge extends Equipment {
 			Util.playSound(p, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1F, 1F, false);
 			pc.spawn(p);
 			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in) -> {
-				Damageable target = (Damageable) in[1];
+				Damageable target = (Damageable) in[0];
 				FightInstance.dealDamage(p, DamageType.SLASHING, damage, target);
 				FightInstance.getFightData(target.getUniqueId()).applyStatus(StatusType.SANCTIFIED, p.getUniqueId(), sanct, -1);
 				hit.spawn(((Damageable) in[1]).getLocation());

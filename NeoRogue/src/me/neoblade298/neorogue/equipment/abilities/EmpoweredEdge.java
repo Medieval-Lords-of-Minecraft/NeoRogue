@@ -38,8 +38,8 @@ public class EmpoweredEdge extends Equipment {
 			Util.playSound(p, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1F, 1F, false);
 			pc.spawn(p);
 			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in) -> {
-				FightInstance.dealDamage(p, DamageType.SLASHING, damage, (Damageable) in[1]);
-				hit.spawn(((Damageable) in[1]).getLocation());
+				FightInstance.dealDamage(p, DamageType.SLASHING, damage, (Damageable) in[0]);
+				hit.spawn(((Damageable) in[0]).getLocation());
 				Util.playSound(p, Sound.BLOCK_ANVIL_LAND, 1F, 1F, false);
 				return TriggerResult.remove();
 			});

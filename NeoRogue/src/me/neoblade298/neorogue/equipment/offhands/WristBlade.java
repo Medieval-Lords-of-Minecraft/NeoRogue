@@ -30,8 +30,8 @@ public class WristBlade extends Equipment {
 		@Override
 		public TriggerResult trigger(PlayerFightData data, Object[] inputs) {
 			if (++count >= hits) {
+				count = -1; // -1 so that the double trigger sets it to 0
 				data.runActions(data, Trigger.BASIC_ATTACK, inputs);
-				count = 0;
 			}
 			return TriggerResult.keep();
 		}

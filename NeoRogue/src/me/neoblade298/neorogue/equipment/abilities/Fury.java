@@ -48,9 +48,9 @@ public class Fury extends Equipment {
 				Util.playSound(p, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1F, 1F, false);
 				pc.spawn(p);
 				data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in2) -> {
-					Damageable target = (Damageable) in[1];
+					Damageable target = (Damageable) in[0];
 					FightInstance.dealDamage(p, DamageType.SLASHING, damage, target);
-					hit.spawn(((Damageable) in[1]).getLocation());
+					hit.spawn(((Damageable) in[0]).getLocation());
 					Util.playSound(p, Sound.BLOCK_ANVIL_LAND, 1F, 1F, false);
 					if (isBerserk) {
 						Util.playSound(p, target.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1F, 1F, false);
