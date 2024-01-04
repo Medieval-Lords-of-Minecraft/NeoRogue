@@ -13,8 +13,8 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 public class FaerieCirclet extends Artifact {
 	private int ticks;
 
-	public FaerieCirclet(boolean isUpgraded) {
-		super("faerieCirclet", "Faerie Circlet", isUpgraded, Rarity.RARE, EquipmentClass.CLASSLESS);
+	public FaerieCirclet() {
+		super("faerieCirclet", "Faerie Circlet", Rarity.RARE, EquipmentClass.CLASSLESS);
 
 		ticks = isUpgraded ? 5 : 3;
 	}

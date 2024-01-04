@@ -2,11 +2,13 @@ package me.neoblade298.neorogue.session.fight;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -15,16 +17,17 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.trigger.KeyBind;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
-import me.neoblade298.neorogue.session.fight.trigger.TriggerCastUsableEvent;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.*;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 
 public class PlayerFightData extends FightData {
 	private PlayerSessionData sessdata;
 	private HashMap<Trigger, HashMap<String, TriggerAction>> triggers = new HashMap<Trigger, HashMap<String, TriggerAction>>();
-	private HashMap<String, EquipmentInstance> equips = new HashMap<String, EquipmentInstance>();
+	private HashMap<String, EquipmentInstance> equips = new HashMap<String, EquipmentInstance>(); // Useful for modifying cooldowns
 	private HashMap<Integer, HashMap<Trigger, HashMap<String, TriggerAction>>> slotBasedTriggers = new HashMap<Integer, HashMap<Trigger, HashMap<String, TriggerAction>>>();
+	private LinkedList<Listener> listeners = new LinkedList<Listener>();
 	private Player p;
 	private long nextAttack, nextOffAttack;
 
@@ -134,6 +137,10 @@ public class PlayerFightData extends FightData {
 		if (data.getEquipment(EquipSlot.OFFHAND)[0] != null) {
 			data.getEquipment(EquipSlot.OFFHAND)[0].cleanup(p, this);
 		}
+		
+		for (Listener l : listeners) {
+			HandlerList.unregisterAll(l);
+		}
 	}
 
 	// Returns whether to cancel the event, which may or may not be ignored if it's an event that can be cancelled
@@ -147,9 +154,9 @@ public class PlayerFightData extends FightData {
 
 				if (inst instanceof EquipmentInstance) {
 					EquipmentInstance ei = (EquipmentInstance) inst;
-					TriggerCastUsableEvent e = new TriggerCastUsableEvent(ei);
-					runActions(data, Trigger.CAST_USABLE, new Object[] { e });
-					ei = e.getEquipmentInstance();
+					Object[] ev = new Object[] { ei };
+					runActions(data, Trigger.CAST_USABLE, ev);
+					ei = (EquipmentInstance) ev[0];
 					if (!ei.canTrigger(p, data)) {
 						continue;
 					}
@@ -225,7 +232,9 @@ public class PlayerFightData extends FightData {
 		actions.put(id, action);
 		
 		if (action instanceof Listener) {
-			Bukkit.getPluginManager();
+			Listener l = (Listener) action;
+			Bukkit.getPluginManager().registerEvents(l, NeoRogue.inst());
+			listeners.add(l);
 		}
 
 		if (action instanceof EquipmentInstance) {

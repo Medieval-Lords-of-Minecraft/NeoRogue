@@ -77,7 +77,7 @@ public class StoneHammer extends Equipment {
 		LinkedList<LivingEntity> enemies = TargetHelper.getEntitiesInRadius(p, hit, props);
 		if (enemies.isEmpty()) return;
 		for (LivingEntity ent : enemies) {
-			damageWithWeapon(p, data, null, ent);
+			damageWithWeapon(p, data, ent);
 			Vector v = ent.getVelocity();
 			ent.setVelocity(v.setY(v.getY() + 0.5));
 		}

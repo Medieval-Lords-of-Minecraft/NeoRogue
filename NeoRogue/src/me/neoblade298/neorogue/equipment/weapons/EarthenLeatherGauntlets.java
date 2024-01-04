@@ -41,7 +41,7 @@ public class EarthenLeatherGauntlets extends Equipment {
 		
 		@Override
 		public TriggerResult trigger(PlayerFightData data, Object[] inputs) {
-			meleeWeapon(p, data, inputs, (Damageable) inputs[1]);
+			meleeWeapon(p, data, (Damageable) inputs[1]);
 			if (++count >= 3) {
 				count = 0;
 				FightInstance.getFightData(((Entity) inputs[1]).getUniqueId()).applyStatus(StatusType.CONCUSSED, p.getUniqueId(), concuss, 0);

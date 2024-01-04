@@ -13,11 +13,11 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 public class SapphireCluster extends Artifact {
 	private int max, starting;
 
-	public SapphireCluster(boolean isUpgraded) {
-		super("sapphireCluster", "Sapphire Cluster", isUpgraded, Rarity.RARE, EquipmentClass.CLASSLESS);
+	public SapphireCluster() {
+		super("sapphireCluster", "Sapphire Cluster", Rarity.RARE, EquipmentClass.CLASSLESS);
 
-		max = isUpgraded ? 35 : 25;
-		starting = isUpgraded ? 7 : 5;
+		max = 25;
+		starting = 5;
 	}
 
 	@Override

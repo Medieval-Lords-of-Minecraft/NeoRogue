@@ -13,11 +13,11 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 public class EmeraldShard extends Artifact {
 	private int max, starting;
 
-	public EmeraldShard(boolean isUpgraded) {
-		super("emeraldShard", "Emerald Shard", isUpgraded, Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
+	public EmeraldShard() {
+		super("emeraldShard", "Emerald Shard", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
 
-		max = isUpgraded ? 15 : 10;
-		starting = isUpgraded ? 3 : 2;
+		max = 10;
+		starting = 2;
 	}
 
 	@Override

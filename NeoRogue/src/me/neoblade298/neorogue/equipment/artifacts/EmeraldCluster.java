@@ -13,11 +13,11 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 public class EmeraldCluster extends Artifact {
 	private int max, starting;
 
-	public EmeraldCluster(boolean isUpgraded) {
-		super("emeraldCluster", "Emerald Cluster", isUpgraded, Rarity.RARE, EquipmentClass.CLASSLESS);
+	public EmeraldCluster() {
+		super("emeraldCluster", "Emerald Cluster", Rarity.RARE, EquipmentClass.CLASSLESS);
 
-		max = isUpgraded ? 35 : 25;
-		starting = isUpgraded? 7 : 5;
+		max = 25;
+		starting = 5;
 	}
 
 	@Override

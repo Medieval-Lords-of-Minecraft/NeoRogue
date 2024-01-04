@@ -81,8 +81,16 @@ public class EquipmentInstance implements TriggerAction {
 		return Math.max(0, nextUse - now);
 	}
 	
+	public void setStaminaCost(double stamina) {
+		this.staminaCost = stamina;
+	}
+	
 	public double getStaminaCost() {
 		return staminaCost;
+	}
+	
+	public void setManaCost(double mana) {
+		this.manaCost = mana;
 	}
 
 	public double getManaCost() {

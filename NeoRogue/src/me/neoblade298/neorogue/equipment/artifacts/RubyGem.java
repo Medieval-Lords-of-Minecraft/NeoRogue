@@ -13,10 +13,10 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 public class RubyGem extends Artifact {
 	private int max;
 
-	public RubyGem(boolean isUpgraded) {
-		super("rubyGem", "Ruby Gem", isUpgraded, Rarity.EPIC, EquipmentClass.CLASSLESS);
+	public RubyGem() {
+		super("rubyGem", "Ruby Gem", Rarity.EPIC, EquipmentClass.CLASSLESS);
 
-		max = isUpgraded ? 75 : 50;
+		max = 50;
 	}
 
 	@Override

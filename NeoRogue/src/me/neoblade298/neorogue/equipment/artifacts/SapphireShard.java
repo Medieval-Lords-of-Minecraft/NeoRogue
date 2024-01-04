@@ -13,11 +13,11 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 public class SapphireShard extends Artifact {
 	private int max, starting;
 
-	public SapphireShard(boolean isUpgraded) {
-		super("sapphireShard", "Sapphire Shard", isUpgraded, Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
+	public SapphireShard() {
+		super("sapphireShard", "Sapphire Shard", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
 
-		max = isUpgraded ? 15 : 10;
-		starting = isUpgraded ? 3 : 2;
+		max = 10;
+		starting = 2;
 	}
 
 	@Override

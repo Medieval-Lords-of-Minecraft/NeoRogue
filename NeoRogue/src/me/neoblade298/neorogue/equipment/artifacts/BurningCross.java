@@ -19,10 +19,10 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class BurningCross extends Artifact {
 	private int damage;
 
-	public BurningCross(boolean isUpgraded) {
-		super("burningCross", "Burning Cross", isUpgraded, Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
+	public BurningCross() {
+		super("burningCross", "Burning Cross", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
 
-		damage = isUpgraded ? 6 : 4;
+		damage = 5;
 	}
 
 	@Override

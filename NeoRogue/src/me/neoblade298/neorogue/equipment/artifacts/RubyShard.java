@@ -13,8 +13,8 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 public class RubyShard extends Artifact {
 	private int max;
 
-	public RubyShard(boolean isUpgraded) {
-		super("rubyShard", "Ruby Shard", isUpgraded, Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
+	public RubyShard() {
+		super("rubyShard", "Ruby Shard", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
 
 		max = isUpgraded ? 15 : 10;
 	}

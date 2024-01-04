@@ -77,7 +77,7 @@ public class WoodenWand extends Equipment {
 			if (hitBarrier != null) {
 				finalDamage = hitBarrier.applyDefenseBuffs(finalDamage, properties.getType());
 			}
-			damageWithWeapon(p, data, null, p, finalDamage);
+			damageWithWeapon(p, data, p, finalDamage);
 			Location loc = hit.getEntity().getLocation();
 			Util.playSound(p, loc, Sound.ENTITY_GENERIC_EXPLODE, 1F, 1F, true);
 			explode.spawn(loc);

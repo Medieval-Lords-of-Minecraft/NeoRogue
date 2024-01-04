@@ -13,11 +13,11 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 public class SapphireGem extends Artifact {
 	private int max, starting;
 
-	public SapphireGem(boolean isUpgraded) {
-		super("sapphireGem", "Sapphire Gem", isUpgraded, Rarity.EPIC, EquipmentClass.CLASSLESS);
+	public SapphireGem() {
+		super("sapphireGem", "Sapphire Gem", Rarity.EPIC, EquipmentClass.CLASSLESS);
 
-		max = isUpgraded ? 75 : 50;
-		starting = isUpgraded ? 15 : 10;
+		max = 50;
+		starting = 10;
 	}
 
 	@Override

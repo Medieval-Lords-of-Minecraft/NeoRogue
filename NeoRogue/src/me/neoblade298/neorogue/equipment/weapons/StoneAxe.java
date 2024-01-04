@@ -29,7 +29,7 @@ public class StoneAxe extends Equipment {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
 			Buff b = data.getBuff(true, BuffType.PHYSICAL);
 			double strength = b.getIncrease();
-			meleeWeapon(p, data, inputs, (Damageable) inputs[1], properties.getDamage() + (strength * 2));
+			meleeWeapon(p, data, (Damageable) inputs[1], properties.getDamage() + (strength * 2));
 			return TriggerResult.keep();
 		});
 	}

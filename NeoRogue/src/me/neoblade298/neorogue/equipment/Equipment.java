@@ -86,17 +86,6 @@ public abstract class Equipment {
 			new MinorStaminaRelic(b);
 			new MinorStrengthRelic(b);
 			
-			// Artifacts
-			new RubyShard(b);
-			new RubyCluster(b);
-			new RubyGem(b);
-			new SapphireShard(b);
-			new SapphireCluster(b);
-			new SapphireGem(b);
-			new EmeraldShard(b);
-			new EmeraldCluster(b);
-			new EmeraldGem(b);
-			
 			// Armor
 			new ClothBindings(b);
 			new Footpads(b);
@@ -135,6 +124,22 @@ public abstract class Equipment {
 			new MinorStaminaPotion(b);
 			new MinorManaPotion(b);
 		}
+		
+		// Artifacts
+		new BurningCross();
+		new CharmOfGallus();
+		new EmeraldCluster();
+		new EmeraldGem();
+		new EmeraldShard();
+		new EnergyBattery();
+		new FaerieCirclet();
+		new PracticeDummy();
+		new RubyCluster();
+		new RubyGem();
+		new RubyShard();
+		new SapphireCluster();
+		new SapphireGem();
+		new SapphireShard();
 		
 		// Curses
 		new CurseOfInexperience();
@@ -458,40 +463,40 @@ public abstract class Equipment {
 	}
 	
 	// Both swings and hits enemy
-	public void meleeWeapon(Player p, PlayerFightData data, Object[] inputs, Damageable target) {
+	public void meleeWeapon(Player p, PlayerFightData data, Damageable target) {
 		swingWeapon(p, data);
-		damageWithWeapon(p, data, inputs, target);
+		damageWithWeapon(p, data, target);
 	}
 	
 	// Both swings and hits enemy
-	public void meleeWeapon(Player p, PlayerFightData data, Object[] inputs, Damageable target, double damage) {
+	public void meleeWeapon(Player p, PlayerFightData data, Damageable target, double damage) {
 		swingWeapon(p, data);
-		damageWithWeapon(p, data, inputs, target, damage);
+		damageWithWeapon(p, data, target, damage);
 	}
 	
-	public void damageWithWeapon(Player p, PlayerFightData data, Object[] inputs, Damageable target) {
-		damageWithWeapon(p, data, inputs, target, properties.getDamage(), properties.getKnockback());
+	public void damageWithWeapon(Player p, PlayerFightData data, Damageable target) {
+		damageWithWeapon(p, data, target, properties.getDamage(), properties.getKnockback());
 	}
 	
-	public void damageWithWeapon(Player p, PlayerFightData data, Object[] inputs, Damageable target, double damage) {
-		damageWithWeapon(p, data, inputs, target, damage, properties.getKnockback());
+	public void damageWithWeapon(Player p, PlayerFightData data, Damageable target, double damage) {
+		damageWithWeapon(p, data, target, damage, properties.getKnockback());
 	}
 	
-	public void damageWithWeapon(Player p, PlayerFightData data, Object[] inputs, Damageable target, double damage, double knockback) {
+	public void damageWithWeapon(Player p, PlayerFightData data, Damageable target, double damage, double knockback) {
 		FightInstance.dealDamage(p, properties.getType(), damage, target);
 		if (knockback != 0) {
 			FightInstance.knockback(p, target, knockback);
 		}
-		data.runActions(data, Trigger.BASIC_ATTACK, inputs);
+		data.runActions(data, Trigger.BASIC_ATTACK, new Object[] { target, damage, knockback, properties.getType(), this });
 	}
 	
 	// for projectiles
-	public void damageWithWeapon(Player p, PlayerFightData data, Object[] inputs, Damageable target, Vector v) {
+	public void damageWithWeapon(Player p, PlayerFightData data, Damageable target, Vector v) {
 		FightInstance.dealDamage(p, properties.getType(), properties.getDamage(), target);
 		if (properties.getKnockback() != 0) {
 			FightInstance.knockback(v, target, properties.getKnockback());
 		}
-		data.runActions(data, Trigger.BASIC_ATTACK, inputs);
+		data.runActions(data, Trigger.BASIC_ATTACK, new Object[] { target, properties.getDamage(), properties.getKnockback(), properties.getType(), this });
 	}
 	
 	public boolean isCursed() {

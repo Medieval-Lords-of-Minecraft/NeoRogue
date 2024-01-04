@@ -13,11 +13,11 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 public class EmeraldGem extends Artifact {
 	private int max, starting;
 
-	public EmeraldGem(boolean isUpgraded) {
-		super("emeraldGem", "Emerald Gem", isUpgraded, Rarity.EPIC, EquipmentClass.CLASSLESS);
+	public EmeraldGem() {
+		super("emeraldGem", "Emerald Gem", Rarity.EPIC, EquipmentClass.CLASSLESS);
 
-		max = isUpgraded ? 75 : 50;
-		starting = isUpgraded ? 15 : 10;
+		max = 50;
+		starting = 10;
 	}
 
 	@Override

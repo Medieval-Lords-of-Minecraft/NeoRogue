@@ -17,9 +17,8 @@ public enum Trigger {
 	HOTBAR_7,
 	HOTBAR_8,
 	HOTBAR_9,
-	BASIC_ATTACK, // Only runs off the in-house basic attack event
-	PRE_CAST_USABLE, 
-	CAST_USABLE, 
+	BASIC_ATTACK, // { Damageable target, double damage, double knockback, DamageType, Weapon }
+	CAST_USABLE, // { EquipmentInstance being used } 
 	LEFT_CLICK,
 	LEFT_CLICK_NO_HIT,
 	LEFT_CLICK_HIT,

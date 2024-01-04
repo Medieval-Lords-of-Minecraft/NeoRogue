@@ -13,10 +13,10 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 public class RubyCluster extends Artifact {
 	private int max;
 
-	public RubyCluster(boolean isUpgraded) {
-		super("rubyCluster", "Ruby Cluster", isUpgraded, Rarity.RARE, EquipmentClass.CLASSLESS);
+	public RubyCluster() {
+		super("rubyCluster", "Ruby Cluster", Rarity.RARE, EquipmentClass.CLASSLESS);
 
-		max = isUpgraded ? 35 : 25;
+		max = 25;
 	}
 
 	@Override
