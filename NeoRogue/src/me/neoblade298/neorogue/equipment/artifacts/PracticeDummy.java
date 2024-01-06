@@ -3,7 +3,6 @@ package me.neoblade298.neorogue.equipment.artifacts;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
@@ -19,6 +18,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
 public class PracticeDummy extends Artifact {
 	private static final ParticleContainer part = new ParticleContainer(Particle.FIREWORKS_SPARK).count(10).speed(0.1).spread(0.5, 0.5);
@@ -42,10 +42,11 @@ public class PracticeDummy extends Artifact {
 		private String weapon = null;
 
 		@Override
-		public TriggerResult trigger(PlayerFightData data, Object[] inputs) {
-			Equipment eq = (Equipment) inputs[4];
+		public TriggerResult trigger(PlayerFightData data, Object inputs) {
+			BasicAttackEvent ev = (BasicAttackEvent) inputs;
+			Equipment eq = ev.getWeapon();
 			DamageType type = eq.getProperties().getType();
-			double amount = (double) inputs[1];
+			double amount = ev.getDamage();
 			if (eq.getId().equals(weapon)) {
 				count = 0;
 				return TriggerResult.keep();
@@ -60,7 +61,7 @@ public class PracticeDummy extends Artifact {
 			}
 			if (count > num) {
 				DamageMeta meta = new DamageMeta(amount * damageMult, type, true);
-				FightInstance.dealDamage(p, meta, (Damageable) inputs[0]); 
+				FightInstance.dealDamage(p, meta, ev.getTarget()); 
 				return TriggerResult.keep();
 			}
 			return TriggerResult.remove();

@@ -36,7 +36,7 @@ public class DarkPact extends Equipment {
 		private int count = 0;
 
 		@Override
-		public TriggerResult trigger(PlayerFightData data, Object[] inputs) {
+		public TriggerResult trigger(PlayerFightData data, Object inputs) {
 			count++;
 			if (count >= 3) {
 				Player p = data.getPlayer();

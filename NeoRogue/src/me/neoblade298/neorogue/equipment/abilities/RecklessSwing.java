@@ -3,7 +3,6 @@ package me.neoblade298.neorogue.equipment.abilities;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
@@ -17,6 +16,7 @@ import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
 public class RecklessSwing extends Equipment {
 	private int damage;
@@ -40,8 +40,9 @@ public class RecklessSwing extends Equipment {
 			p.setHealth(p.getHealth() - HEALTH_COST);
 			pc.spawn(p);
 			pdata.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in2) -> {
-				FightInstance.dealDamage(p, DamageType.SLASHING, damage, (Damageable) in2[0]);
-				hit.spawn(((Damageable) in2[0]).getLocation());
+				BasicAttackEvent ev = (BasicAttackEvent) in2;
+				FightInstance.dealDamage(p, DamageType.SLASHING, damage, ev.getTarget());
+				hit.spawn(ev.getTarget().getLocation());
 				Util.playSound(p, Sound.BLOCK_ANVIL_LAND, 1F, 1F, false);
 				return TriggerResult.remove();
 			});

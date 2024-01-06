@@ -17,7 +17,7 @@ public enum Trigger {
 	HOTBAR_7,
 	HOTBAR_8,
 	HOTBAR_9,
-	BASIC_ATTACK, // { Damageable target, double damage, double knockback, DamageType, Weapon }
+	BASIC_ATTACK, // { LivingEntity target, double damage, double knockback, DamageType, Weapon }
 	CAST_USABLE, // { EquipmentInstance being used } 
 	LEFT_CLICK,
 	LEFT_CLICK_NO_HIT,

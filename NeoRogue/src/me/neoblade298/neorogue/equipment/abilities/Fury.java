@@ -3,7 +3,7 @@ package me.neoblade298.neorogue.equipment.abilities;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.entity.Damageable;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
@@ -17,6 +17,7 @@ import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
 public class Fury extends Equipment {
 	private int damage, berserk;
@@ -48,9 +49,10 @@ public class Fury extends Equipment {
 				Util.playSound(p, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1F, 1F, false);
 				pc.spawn(p);
 				data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in2) -> {
-					Damageable target = (Damageable) in[0];
+					BasicAttackEvent ev = (BasicAttackEvent) in2;
+					LivingEntity target = ev.getTarget();
 					FightInstance.dealDamage(p, DamageType.SLASHING, damage, target);
-					hit.spawn(((Damageable) in[0]).getLocation());
+					hit.spawn(target.getLocation());
 					Util.playSound(p, Sound.BLOCK_ANVIL_LAND, 1F, 1F, false);
 					if (isBerserk) {
 						Util.playSound(p, target.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1F, 1F, false);

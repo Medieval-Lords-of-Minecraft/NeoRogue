@@ -20,6 +20,7 @@ import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 
 public class EarthenWall extends Equipment {
 	private static ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
@@ -43,8 +44,9 @@ public class EarthenWall extends Equipment {
 		EarthenWallInstance inst = new EarthenWallInstance(this, p);
 		
 		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
-			if (((String) in[1]).equals("CONCUSSED")) {
-				inst.addStacks((Integer) in[2]);
+			ApplyStatusEvent ev = (ApplyStatusEvent) in;
+			if (ev.getStatusId().equals("CONCUSSED")) {
+				inst.addStacks(ev.getStacks());
 			}
 			return TriggerResult.keep();
 		});
@@ -84,7 +86,7 @@ public class EarthenWall extends Equipment {
 		}
 		
 		@Override
-		public TriggerResult trigger(PlayerFightData data, Object[] inputs) {
+		public TriggerResult trigger(PlayerFightData data, Object inputs) {
 			stacks -= stacksNeeded;
 			return super.trigger(data, inputs);
 		}

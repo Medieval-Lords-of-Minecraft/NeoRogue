@@ -118,9 +118,6 @@ public class PlayerSessionData {
 			break;
 		}
 
-		giveArtifact((Artifact) Equipment.get("energyBattery", false));
-		giveArtifact((Artifact) Equipment.get("practiceDummy", false));
-		giveArtifact((Artifact) Equipment.get("charmOfGallus", false));
 		for (EquipSlot es : EquipSlot.values()) {
 			upgradable.put(es, new HashSet<Integer>());
 			upgraded.put(es, new HashSet<Integer>());
@@ -293,7 +290,6 @@ public class PlayerSessionData {
 			artifacts.put(artifact.getId(), inst);
 		}
 		inst.getArtifact().onAcquire(this);
-		System.out.println("Here: " + artifacts);
 	}
 
 	public void giveEquipment(Equipment eq) {

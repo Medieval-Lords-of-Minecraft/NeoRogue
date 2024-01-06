@@ -2,8 +2,6 @@ package me.neoblade298.neorogue.equipment.weapons;
 
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.entity.Damageable;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 
@@ -17,6 +15,7 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class StoneDagger extends Equipment {
 	
@@ -39,11 +38,12 @@ public class StoneDagger extends Equipment {
 		}
 		
 		@Override
-		public TriggerResult trigger(PlayerFightData data, Object[] inputs) {
-			meleeWeapon(p, data, (Damageable) inputs[1]);
+		public TriggerResult trigger(PlayerFightData data, Object inputs) {
+			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
+			meleeWeapon(p, data, ev.getTarget());
 			if (++count >= 3) {
 				count = 0;
-				FightInstance.getFightData(((Entity) inputs[1]).getUniqueId()).applyStatus(StatusType.BLEED, p.getUniqueId(), 2, 0);
+				FightInstance.getFightData(ev.getTarget().getUniqueId()).applyStatus(StatusType.BLEED, p.getUniqueId(), 2, 0);
 			}
 			return TriggerResult.keep();
 		}

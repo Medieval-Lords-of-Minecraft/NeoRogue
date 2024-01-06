@@ -1,6 +1,6 @@
 package me.neoblade298.neorogue.session.fight.mythicbukkit;
 
-import org.bukkit.entity.Damageable;
+import org.bukkit.entity.LivingEntity;
 import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.api.config.MythicLineConfig;
 import io.lumine.mythic.api.skills.ITargetedEntitySkill;
@@ -34,7 +34,7 @@ public class MechanicDamage implements ITargetedEntitySkill {
 			final double fAmount = level > 5 ? amount * (level / 5) : amount;
 			DamageMeta meta = new DamageMeta(fAmount, type);
 			meta.setHitBarrier(hitBarrier);
-			FightInstance.dealDamage((Damageable) data.getCaster().getEntity().getBukkitEntity(), meta, (Damageable) target.getBukkitEntity());
+			FightInstance.dealDamage((LivingEntity) data.getCaster().getEntity().getBukkitEntity(), meta, (LivingEntity) target.getBukkitEntity());
 			return SkillResult.SUCCESS;
 		} catch (Exception e) {
 			e.printStackTrace();

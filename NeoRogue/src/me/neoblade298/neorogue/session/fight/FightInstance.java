@@ -12,9 +12,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attributable;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.entity.Damageable;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -51,6 +50,9 @@ import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.GenericStatusType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
+import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.RightClickHitEvent;
 
 public abstract class FightInstance extends Instance {
 	private static HashMap<UUID, PlayerFightData> userData = new HashMap<UUID, PlayerFightData>();
@@ -133,9 +135,10 @@ public abstract class FightInstance extends Instance {
 		PlayerFightData data = userData.get(p.getUniqueId());
 		if (data == null) return; // If you're dead
 		if (!data.canBasicAttack()) return;
+		if (!(e.getEntity() instanceof LivingEntity)) return;
 
 		trigger(p, Trigger.LEFT_CLICK, null);
-		trigger(p, Trigger.LEFT_CLICK_HIT, new Object[] {p, e.getEntity()});
+		trigger(p, Trigger.LEFT_CLICK_HIT, new LeftClickHitEvent((LivingEntity) e.getEntity()));
 	}
 	
 	public static void handleWin() {
@@ -181,7 +184,8 @@ public abstract class FightInstance extends Instance {
 		PlayerFightData data = userData.get(p.getUniqueId());
 		if (data == null) return; // If you're dead
 		if (!data.canBasicAttack(EquipSlot.OFFHAND)) return;
-		trigger(p, Trigger.RIGHT_CLICK_HIT, new Object[] { p, e.getRightClicked() });
+		if (!(e.getRightClicked() instanceof LivingEntity)) return;
+		trigger(p, Trigger.RIGHT_CLICK_HIT, new RightClickHitEvent((LivingEntity) e.getRightClicked()));
 	}
 	
 	public static void handleRightClickGeneral(PlayerInteractEvent e) {
@@ -278,7 +282,7 @@ public abstract class FightInstance extends Instance {
 	
 	// Method that's called by all listeners and is directly connected to events
 	// Returns true if the event should be cancelled
-	public static boolean trigger(Player p, Trigger trigger, Object[] obj) {
+	public static boolean trigger(Player p, Trigger trigger, Object obj) {
 		PlayerFightData data = userData.get(p.getUniqueId());
 		if (data == null) return false;
 		if (trigger.isSlotDependent()) {
@@ -290,7 +294,7 @@ public abstract class FightInstance extends Instance {
 	
 	public static FightData getFightData(UUID uuid) {
 		if (!fightData.containsKey(uuid)) {
-			FightData fd = new FightData((Damageable) Bukkit.getEntity(uuid), (MapSpawnerInstance) null);
+			FightData fd = new FightData((LivingEntity) Bukkit.getEntity(uuid), (MapSpawnerInstance) null);
 			fightData.put(uuid, fd);
 		}
 		return fightData.get(uuid);
@@ -304,8 +308,8 @@ public abstract class FightInstance extends Instance {
 		return userData.get(uuid);
 	}
 	
-	public static void giveHeal(Damageable caster, double amount, Damageable... targets) {
-		for (Damageable target : targets) {
+	public static void giveHeal(LivingEntity caster, double amount, LivingEntity... targets) {
+		for (LivingEntity target : targets) {
 			if (!(target instanceof Attributable)) continue;
 			double toSet = Math.min(caster.getHealth() + amount, ((Attributable) caster).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
 			caster.setHealth(toSet);
@@ -327,11 +331,11 @@ public abstract class FightInstance extends Instance {
 		data.applyStatus(type, id, applier.getUniqueId(), stacks, seconds);
 	}
 	
-	public static void dealDamage(Damageable damager, DamageType type, double amount, Damageable target) {
+	public static void dealDamage(LivingEntity damager, DamageType type, double amount, LivingEntity target) {
 		dealDamage(damager, new DamageMeta(amount, type), target);
 	}
 	
-	public static void dealDamage(Damageable damager, DamageType type, double amount, Damageable... targets) {
+	public static void dealDamage(LivingEntity damager, DamageType type, double amount, LivingEntity... targets) {
 		dealDamage(damager, new DamageMeta(amount, type), targets);
 	}
 	
@@ -348,7 +352,7 @@ public abstract class FightInstance extends Instance {
 		trg.setVelocity(trg.getVelocity().add(v.multiply(force)));
 	}
 	
-	public static void dealDamage(Damageable damager, DamageMeta meta, Damageable... targets) {
+	public static void dealDamage(LivingEntity damager, DamageMeta meta, LivingEntity... targets) {
 		UUID uuid = damager.getUniqueId();
 		FightData data = getFightData(uuid);
 		double amount = meta.getDamage();
@@ -386,12 +390,12 @@ public abstract class FightInstance extends Instance {
 		}
 		
 		meta.setDamage(amount);
-		for (Damageable target : targets) {
+		for (LivingEntity target : targets) {
 			receiveDamage(damager, meta, target);
 		}
 	}
 	
-	public static void receiveDamage(Damageable damager, DamageMeta meta, Damageable target) {
+	public static void receiveDamage(LivingEntity damager, DamageMeta meta, LivingEntity target) {
 		UUID uuid = target.getUniqueId();
 		FightData data = getFightData(uuid);
 		double amount = meta.getDamage();
@@ -406,7 +410,7 @@ public abstract class FightInstance extends Instance {
 		// See if any of our effects cancel damage first
 		if (data instanceof PlayerFightData) {
 			PlayerFightData pdata = (PlayerFightData) data;
-			if (pdata.runActions(pdata, Trigger.RECEIVED_DAMAGE, new Object[] {target, damager})) {
+			if (pdata.runActions(pdata, Trigger.RECEIVED_DAMAGE, new ReceivedDamageEvent(damager, meta))) {
 				return;
 			}
 		}
@@ -429,8 +433,8 @@ public abstract class FightInstance extends Instance {
 				for (Entity e : target.getNearbyEntities(5, 5, 5)) {
 					if (e == target) continue;
 					if (e instanceof Player) continue;
-					if (!(e instanceof Damageable)) continue;
-					Damageable dmg = (Damageable) e;
+					if (!(e instanceof LivingEntity)) continue;
+					LivingEntity dmg = (LivingEntity) e;
 					int stacks = data.getStatus("ELECTRIFIED").getStacks();
 					dealDamage(damager, DamageType.LIGHTNING, amount * stacks * 0.1, dmg);
 				}

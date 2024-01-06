@@ -35,7 +35,7 @@ public class SpikyShield extends Equipment {
 		}
 		
 		@Override
-		public TriggerResult trigger(PlayerFightData data, Object[] inputs) {
+		public TriggerResult trigger(PlayerFightData data, Object inputs) {
 			if (!p.isHandRaised()) return TriggerResult.keep();
 			long now = System.currentTimeMillis();
 			if (now <= nextUsable) return TriggerResult.keep();

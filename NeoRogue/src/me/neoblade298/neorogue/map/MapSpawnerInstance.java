@@ -4,7 +4,7 @@ import java.util.UUID;
 import java.util.Map.Entry;
 
 import org.bukkit.Location;
-import org.bukkit.entity.Damageable;
+import org.bukkit.entity.LivingEntity;
 
 import io.lumine.mythic.api.mobs.MythicMob;
 import io.lumine.mythic.bukkit.BukkitAdapter;
@@ -65,7 +65,7 @@ public class MapSpawnerInstance {
 			am.getEntity().setHealth(mhealth);
 			
 			UUID uuid = am.getEntity().getUniqueId();
-			FightData fd = new FightData((Damageable) am.getEntity().getBukkitEntity(), this);
+			FightData fd = new FightData((LivingEntity) am.getEntity().getBukkitEntity(), this);
 			for (Entry<BuffType, Integer> ent : mob.getResistances().entrySet()) {
 				fd.addBuff(uuid, false, true, ent.getKey(), (double) ent.getValue() / 100);
 			}

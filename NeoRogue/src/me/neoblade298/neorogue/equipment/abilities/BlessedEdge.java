@@ -3,7 +3,7 @@ package me.neoblade298.neorogue.equipment.abilities;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.entity.Damageable;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
@@ -18,6 +18,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
 public class BlessedEdge extends Equipment {
 	private int damage, sanct;
@@ -39,10 +40,11 @@ public class BlessedEdge extends Equipment {
 			Util.playSound(p, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1F, 1F, false);
 			pc.spawn(p);
 			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in) -> {
-				Damageable target = (Damageable) in[0];
+				BasicAttackEvent ev = (BasicAttackEvent) in;
+				LivingEntity target = ev.getTarget();
 				FightInstance.dealDamage(p, DamageType.SLASHING, damage, target);
 				FightInstance.getFightData(target.getUniqueId()).applyStatus(StatusType.SANCTIFIED, p.getUniqueId(), sanct, -1);
-				hit.spawn(((Damageable) in[1]).getLocation());
+				hit.spawn(target.getLocation());
 				Util.playSound(p, Sound.BLOCK_ANVIL_LAND, 1F, 1F, false);
 				return TriggerResult.remove();
 			});

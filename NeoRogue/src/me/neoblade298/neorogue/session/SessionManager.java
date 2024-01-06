@@ -10,7 +10,7 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.entity.Damageable;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -286,8 +286,8 @@ public class SessionManager implements Listener {
 	public void onMythicSpawn(MythicMobSpawnEvent e) {
 		Entity ent = e.getEntity();
 		UUID uuid = ent.getUniqueId();
-		if (ent instanceof Damageable) {
-			FightInstance.putFightData(uuid, new FightData((Damageable) ent, (MapSpawnerInstance) null));
+		if (ent instanceof LivingEntity) {
+			FightInstance.putFightData(uuid, new FightData((LivingEntity) ent, (MapSpawnerInstance) null));
 		}
 	}
 

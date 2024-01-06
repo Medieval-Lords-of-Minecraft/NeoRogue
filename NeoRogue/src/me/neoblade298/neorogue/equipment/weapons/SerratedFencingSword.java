@@ -2,7 +2,7 @@ package me.neoblade298.neorogue.equipment.weapons;
 
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.entity.Damageable;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 
@@ -15,6 +15,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class SerratedFencingSword extends Equipment {
 	private int bleed;
@@ -30,7 +31,8 @@ public class SerratedFencingSword extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
-			Damageable target = (Damageable) inputs[1];
+			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
+			LivingEntity target = ev.getTarget();
 			meleeWeapon(p, data, target);
 			FightInstance.getFightData(target.getUniqueId()).applyStatus(StatusType.BLEED, p.getUniqueId(), bleed, 0);
 			data.addShield(p.getUniqueId(), shields, true, 1, 100, 1, 1);

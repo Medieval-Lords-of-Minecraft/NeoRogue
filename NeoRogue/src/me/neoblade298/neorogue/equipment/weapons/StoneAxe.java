@@ -2,7 +2,6 @@ package me.neoblade298.neorogue.equipment.weapons;
 
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
 
 
@@ -15,6 +14,7 @@ import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class StoneAxe extends Equipment {
 	
@@ -27,9 +27,10 @@ public class StoneAxe extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
+			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
 			Buff b = data.getBuff(true, BuffType.PHYSICAL);
 			double strength = b.getIncrease();
-			meleeWeapon(p, data, (Damageable) inputs[1], properties.getDamage() + (strength * 2));
+			meleeWeapon(p, data, ev.getTarget(), properties.getDamage() + (strength * 2));
 			return TriggerResult.keep();
 		});
 	}

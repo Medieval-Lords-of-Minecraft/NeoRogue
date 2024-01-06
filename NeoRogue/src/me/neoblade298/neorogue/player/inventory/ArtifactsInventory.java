@@ -33,7 +33,6 @@ public class ArtifactsInventory extends CoreInventory {
 	private void setupInventory() {
 		ItemStack[] contents = inv.getContents();
 		TreeMap<String, ArtifactInstance> arts = data.getArtifacts();
-		System.out.println("Inv: " + arts);
 		
 		Iterator<String> iter = arts.navigableKeySet().iterator();
 		// Get iterator on the right page
@@ -44,7 +43,6 @@ public class ArtifactsInventory extends CoreInventory {
 		for (int i = 0; i < Math.max(contents.length - 9, 9) && iter.hasNext(); i++) {
 			ArtifactInstance art = arts.get(iter.next());
 			contents[i] = art.getItem();
-			System.out.println("Getting item " + art.getItem());
 		}
 		
 		if (arts.size() == 0) {

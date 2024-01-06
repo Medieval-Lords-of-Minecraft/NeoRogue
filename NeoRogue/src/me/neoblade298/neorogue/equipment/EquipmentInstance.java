@@ -40,7 +40,7 @@ public class EquipmentInstance implements TriggerAction {
 	}
 	
 	@Override
-	public TriggerResult trigger(PlayerFightData data, Object[] inputs) {
+	public TriggerResult trigger(PlayerFightData data, Object inputs) {
 		lastUsed = System.currentTimeMillis();
 		data.addMana(-manaCost);
 		data.addStamina(-staminaCost);

@@ -34,7 +34,7 @@ public class CharmOfGallus extends Artifact {
 		private int count = 0;
 
 		@Override
-		public TriggerResult trigger(PlayerFightData data, Object[] inputs) {
+		public TriggerResult trigger(PlayerFightData data, Object inputs) {
 			if (count < 5) {
 				count++;
 				Player p = data.getPlayer();

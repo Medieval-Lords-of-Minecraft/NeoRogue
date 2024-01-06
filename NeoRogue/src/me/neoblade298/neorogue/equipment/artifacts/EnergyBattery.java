@@ -15,6 +15,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.CastUsableEvent;
 
 public class EnergyBattery extends Artifact {
 	private static final ParticleContainer part = new ParticleContainer(Particle.FIREWORKS_SPARK).count(10).speed(0.1).spread(0.5, 0.5);
@@ -35,17 +36,18 @@ public class EnergyBattery extends Artifact {
 		private int count = 0;
 
 		@Override
-		public TriggerResult trigger(PlayerFightData data, Object[] inputs) {
+		public TriggerResult trigger(PlayerFightData data, Object inputs) {
 			if (count < num) {
 				count++;
+				CastUsableEvent ev = (CastUsableEvent) inputs;
 				Player p = data.getPlayer();
 				Util.playSound(data.getPlayer(), Sound.ENTITY_ARROW_HIT_PLAYER, false);
 				part.spawn(p);
-				EquipmentInstance eqi = (EquipmentInstance) inputs[0];
+				EquipmentInstance eqi = ev.getInstance();
 				EquipmentInstance replace = new EquipmentInstance(eqi.getEquipment(), eqi.getAction());
 				replace.setManaCost(0);
 				replace.setStaminaCost(0);
-				inputs[0] = replace;
+				ev.setInstance(replace);
 				return TriggerResult.keep();
 			}
 			return TriggerResult.remove();

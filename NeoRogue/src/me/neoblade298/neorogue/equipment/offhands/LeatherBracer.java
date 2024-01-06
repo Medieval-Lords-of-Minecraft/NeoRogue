@@ -34,7 +34,7 @@ public class LeatherBracer extends Equipment {
 		}
 
 		@Override
-		public TriggerResult trigger(PlayerFightData data, Object[] inputs) {
+		public TriggerResult trigger(PlayerFightData data, Object inputs) {
 			Util.playSound(p, Sound.ITEM_SHIELD_BREAK, 1F, 1F, false);
 			return TriggerResult.of(true, true);
 		}

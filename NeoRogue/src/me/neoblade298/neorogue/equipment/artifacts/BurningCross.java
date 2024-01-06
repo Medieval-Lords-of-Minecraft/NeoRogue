@@ -15,6 +15,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 
 public class BurningCross extends Artifact {
 	private int damage;
@@ -28,10 +29,11 @@ public class BurningCross extends Artifact {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
-			String id = (String) in[1];
-			int stacks = (int) in[2];
+			ApplyStatusEvent ev = (ApplyStatusEvent) in;
+			String id = ev.getStatusId();
+			int stacks = ev.getStacks();
 			if (id.equals(StatusType.CONCUSSED.name())) {
-				FightData fd = (FightData) in[0];
+				FightData fd = ev.getTarget();
 				DamageMeta dm = new DamageMeta(stacks * damage, DamageType.FIRE, false, true, false);
 				FightInstance.dealDamage(p, dm, fd.getEntity());
 			}

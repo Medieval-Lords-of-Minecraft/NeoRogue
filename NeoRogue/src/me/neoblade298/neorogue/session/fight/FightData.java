@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.UUID;
 
 import org.bukkit.Location;
-import org.bukkit.entity.Damageable;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -21,6 +21,7 @@ import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.GenericStatusType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
+import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 import me.neoblade298.neocore.bukkit.particles.ParticleAnimation;
 import me.neoblade298.neocore.bukkit.particles.ParticleAnimation.ParticleAnimationInstance;
 import me.neoblade298.neorogue.NeoRogue;
@@ -36,7 +37,7 @@ public class FightData {
 	
 	protected Barrier barrier = null;
 	protected ShieldHolder shields = null;
-	protected Damageable entity = null;
+	protected LivingEntity entity = null;
 	protected LinkedList<TickAction> tickActions = new LinkedList<TickAction>(); // Every 20 ticks
 	protected MapSpawnerInstance spawner;
 
@@ -53,14 +54,14 @@ public class FightData {
 		}
 	}
 
-	public FightData(Damageable p, FightInstance inst) {
+	public FightData(LivingEntity p, FightInstance inst) {
 		// Only use this for players
 		this.inst = inst;
 		this.entity = p;
 		this.shields = new ShieldHolder(this);
 	}
 
-	public FightData(Damageable e, MapSpawnerInstance spawner) {
+	public FightData(LivingEntity e, MapSpawnerInstance spawner) {
 		// Only use this for mobs
 		Plot p = Plot.locationToPlot(e.getLocation());
 		Session s = SessionManager.getSession(p);
@@ -75,7 +76,7 @@ public class FightData {
 		return inst;
 	}
 	
-	public Damageable getEntity() {
+	public LivingEntity getEntity() {
 		return entity;
 	}
 
@@ -208,7 +209,7 @@ public class FightData {
 	public void applyStatus(StatusType type, UUID applier, int stacks, int seconds) {
 		if (FightInstance.getUserData().containsKey(applier)) {
 			PlayerFightData data = FightInstance.getUserData(applier);
-			FightInstance.trigger(data.getPlayer(), Trigger.APPLY_STATUS, new Object[] { this, type.name(), stacks, seconds });
+			FightInstance.trigger(data.getPlayer(), Trigger.APPLY_STATUS, new ApplyStatusEvent(this, type.name(), stacks, seconds));
 		}
 		Status s = statuses.getOrDefault(type.name(), Status.createByType(type, applier, this));
 		s.apply(applier, stacks, seconds);
@@ -218,7 +219,7 @@ public class FightData {
 	public void applyStatus(GenericStatusType type, String id, UUID applier, int stacks, int seconds) {
 		if (FightInstance.getUserData().containsKey(applier)) {
 			PlayerFightData data = FightInstance.getUserData(applier);
-			FightInstance.trigger(data.getPlayer(), Trigger.APPLY_STATUS, new Object[] { this, id, stacks, seconds });
+			FightInstance.trigger(data.getPlayer(), Trigger.APPLY_STATUS, new ApplyStatusEvent(this, id, stacks, seconds));
 		}
 		Status s = statuses.getOrDefault(type.name(), Status.createByGenericType(type, id, applier, this));
 		s.apply(applier, stacks, seconds);
@@ -228,7 +229,7 @@ public class FightData {
 	public void applyStatus(String id, UUID applier, int stacks) {
 		if (FightInstance.getUserData().containsKey(applier)) {
 			PlayerFightData data = FightInstance.getUserData(applier);
-			FightInstance.trigger(data.getPlayer(), Trigger.APPLY_STATUS, new Object[] { this, id, stacks, -1 });
+			FightInstance.trigger(data.getPlayer(), Trigger.APPLY_STATUS, new ApplyStatusEvent(this, id, stacks, -1));
 		}
 		Status s = Status.createByGenericType(GenericStatusType.BASIC, id, applier, this);
 		s.apply(applier, stacks, -1);

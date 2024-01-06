@@ -7,7 +7,7 @@ import java.util.TreeMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.entity.Damageable;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -30,6 +30,7 @@ import me.neoblade298.neorogue.equipment.materials.*;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
+import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -463,40 +464,40 @@ public abstract class Equipment {
 	}
 	
 	// Both swings and hits enemy
-	public void meleeWeapon(Player p, PlayerFightData data, Damageable target) {
+	public void meleeWeapon(Player p, PlayerFightData data, LivingEntity target) {
 		swingWeapon(p, data);
 		damageWithWeapon(p, data, target);
 	}
 	
 	// Both swings and hits enemy
-	public void meleeWeapon(Player p, PlayerFightData data, Damageable target, double damage) {
+	public void meleeWeapon(Player p, PlayerFightData data, LivingEntity target, double damage) {
 		swingWeapon(p, data);
 		damageWithWeapon(p, data, target, damage);
 	}
 	
-	public void damageWithWeapon(Player p, PlayerFightData data, Damageable target) {
+	public void damageWithWeapon(Player p, PlayerFightData data, LivingEntity target) {
 		damageWithWeapon(p, data, target, properties.getDamage(), properties.getKnockback());
 	}
 	
-	public void damageWithWeapon(Player p, PlayerFightData data, Damageable target, double damage) {
+	public void damageWithWeapon(Player p, PlayerFightData data, LivingEntity target, double damage) {
 		damageWithWeapon(p, data, target, damage, properties.getKnockback());
 	}
 	
-	public void damageWithWeapon(Player p, PlayerFightData data, Damageable target, double damage, double knockback) {
+	public void damageWithWeapon(Player p, PlayerFightData data, LivingEntity target, double damage, double knockback) {
 		FightInstance.dealDamage(p, properties.getType(), damage, target);
 		if (knockback != 0) {
 			FightInstance.knockback(p, target, knockback);
 		}
-		data.runActions(data, Trigger.BASIC_ATTACK, new Object[] { target, damage, knockback, properties.getType(), this });
+		data.runActions(data, Trigger.BASIC_ATTACK, new BasicAttackEvent(target, damage, knockback, properties.getType(), this));
 	}
 	
 	// for projectiles
-	public void damageWithWeapon(Player p, PlayerFightData data, Damageable target, Vector v) {
+	public void damageWithWeapon(Player p, PlayerFightData data, LivingEntity target, Vector v) {
 		FightInstance.dealDamage(p, properties.getType(), properties.getDamage(), target);
 		if (properties.getKnockback() != 0) {
 			FightInstance.knockback(v, target, properties.getKnockback());
 		}
-		data.runActions(data, Trigger.BASIC_ATTACK, new Object[] { target, properties.getDamage(), properties.getKnockback(), properties.getType(), this });
+		data.runActions(data, Trigger.BASIC_ATTACK, new BasicAttackEvent(target, properties.getDamage(), properties.getKnockback(), properties.getType(), this));
 	}
 	
 	public boolean isCursed() {

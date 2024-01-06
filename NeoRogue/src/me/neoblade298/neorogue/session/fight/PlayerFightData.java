@@ -18,6 +18,7 @@ import me.neoblade298.neorogue.session.fight.trigger.KeyBind;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.CastUsableEvent;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.*;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
@@ -144,7 +145,7 @@ public class PlayerFightData extends FightData {
 	}
 
 	// Returns whether to cancel the event, which may or may not be ignored if it's an event that can be cancelled
-	public boolean runActions(PlayerFightData data, Trigger trigger, Object[] inputs) {
+	public boolean runActions(PlayerFightData data, Trigger trigger, Object inputs) {
 		if (triggers.containsKey(trigger)) {
 			boolean cancel = false;
 			Iterator<TriggerAction> iter = triggers.get(trigger).values().iterator();
@@ -154,9 +155,9 @@ public class PlayerFightData extends FightData {
 
 				if (inst instanceof EquipmentInstance) {
 					EquipmentInstance ei = (EquipmentInstance) inst;
-					Object[] ev = new Object[] { ei };
+					CastUsableEvent ev = new CastUsableEvent(ei);
 					runActions(data, Trigger.CAST_USABLE, ev);
-					ei = (EquipmentInstance) ev[0];
+					ei = ev.getInstance();
 					if (!ei.canTrigger(p, data)) {
 						continue;
 					}
@@ -182,7 +183,7 @@ public class PlayerFightData extends FightData {
 	}
 
 	// Must be separate due to the same trigger doing a different thing based on slot (like weapons)
-	public boolean runSlotBasedActions(PlayerFightData data, Trigger trigger, int slot, Object[] inputs) {
+	public boolean runSlotBasedActions(PlayerFightData data, Trigger trigger, int slot, Object inputs) {
 		if (!slotBasedTriggers.containsKey(slot)) return false;
 		HashMap<Trigger, HashMap<String, TriggerAction>> triggers = slotBasedTriggers.get(slot);
 
@@ -278,6 +279,10 @@ public class PlayerFightData extends FightData {
 		return this.stamina;
 	}
 	
+	public double getMaxStamina() {
+		return maxStamina;
+	}
+	
 	private void updateStamina() {
 		this.stamina = Math.min(this.stamina, this.maxStamina);
 		p.setFoodLevel((int) (this.stamina * 14 / sessdata.getMaxStamina()) + 6);
@@ -306,6 +311,10 @@ public class PlayerFightData extends FightData {
 	
 	public double getMana() {
 		return mana;
+	}
+	
+	public double getMaxMana() {
+		return maxMana;
 	}
 	
 	private void updateMana() {

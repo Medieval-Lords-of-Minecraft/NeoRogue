@@ -2,7 +2,6 @@ package me.neoblade298.neorogue.equipment.offhands;
 
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -12,6 +11,7 @@ import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.RightClickHitEvent;
 
 public class ChasingDagger extends Equipment {
 	public ChasingDagger(boolean isUpgraded) {
@@ -22,7 +22,8 @@ public class ChasingDagger extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.RIGHT_CLICK_HIT, (pdata, inputs) -> {
-			meleeWeapon(p, data, (Damageable) inputs[1]);
+			RightClickHitEvent ev = (RightClickHitEvent) inputs;
+			meleeWeapon(p, data, ev.getTarget());
 			return TriggerResult.keep();
 		});
 	}

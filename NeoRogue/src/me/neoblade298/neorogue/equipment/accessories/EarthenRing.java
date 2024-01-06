@@ -1,7 +1,7 @@
 package me.neoblade298.neorogue.equipment.accessories;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Damageable;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -11,6 +11,7 @@ import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
 public class EarthenRing extends Equipment {
 	private int damage;
@@ -24,7 +25,8 @@ public class EarthenRing extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
-			Damageable target = (Damageable) in[0];
+			BasicAttackEvent ev = (BasicAttackEvent) in;
+			LivingEntity target = ev.getTarget();
 			FightInstance.dealDamage(p, DamageType.EARTH, damage, target);
 			return TriggerResult.keep();
 		});

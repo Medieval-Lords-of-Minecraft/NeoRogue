@@ -56,7 +56,7 @@ public class Bide extends Equipment {
 			createTime = System.currentTimeMillis();
 		}
 		@Override
-		public TriggerResult trigger(PlayerFightData data, Object[] inputs) {
+		public TriggerResult trigger(PlayerFightData data, Object inputs) {
 			if (System.currentTimeMillis() - createTime > 5000) return TriggerResult.remove();
 			bpc.spawn(p);
 			data.applyStatus("BERSERK", p.getUniqueId(), berserk);

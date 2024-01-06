@@ -3,7 +3,6 @@ package me.neoblade298.neorogue.equipment.abilities;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
@@ -18,6 +17,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
 public class Parry extends Equipment {
 	private int shields, damage;
@@ -54,13 +54,14 @@ public class Parry extends Equipment {
 			createTime = System.currentTimeMillis();
 		}
 		@Override
-		public TriggerResult trigger(PlayerFightData data, Object[] inputs) {
+		public TriggerResult trigger(PlayerFightData data, Object inputs) {
 			if (System.currentTimeMillis() - createTime > 5000) return TriggerResult.remove();
 			bpc.spawn(p);
 			Util.playSound(p, Sound.ENTITY_BLAZE_SHOOT, 1F, 1F, false);
 			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
-				FightInstance.dealDamage(p, DamageType.SLASHING, damage, (Damageable) in[0]);
-				hit.spawn(((Damageable) in[0]).getLocation());
+				BasicAttackEvent ev = (BasicAttackEvent) in;
+				FightInstance.dealDamage(p, DamageType.SLASHING, damage, ev.getTarget());
+				hit.spawn(ev.getTarget().getLocation());
 				Util.playSound(p, Sound.BLOCK_ANVIL_LAND, 1F, 1F, false);
 				return TriggerResult.remove();
 			});
