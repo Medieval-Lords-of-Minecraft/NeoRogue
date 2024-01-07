@@ -13,8 +13,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
+import com.google.common.collect.TreeMultiset;
+
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.trigger.KeyBind;
+import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -25,9 +28,9 @@ import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 
 public class PlayerFightData extends FightData {
 	private PlayerSessionData sessdata;
-	private HashMap<Trigger, HashMap<String, TriggerAction>> triggers = new HashMap<Trigger, HashMap<String, TriggerAction>>();
+	private HashMap<Trigger, TreeMultiset<PriorityAction>> triggers = new HashMap<Trigger, TreeMultiset<PriorityAction>>();
 	private HashMap<String, EquipmentInstance> equips = new HashMap<String, EquipmentInstance>(); // Useful for modifying cooldowns
-	private HashMap<Integer, HashMap<Trigger, HashMap<String, TriggerAction>>> slotBasedTriggers = new HashMap<Integer, HashMap<Trigger, HashMap<String, TriggerAction>>>();
+	private HashMap<Integer, HashMap<Trigger, TreeMultiset<PriorityAction>>> slotBasedTriggers = new HashMap<Integer, HashMap<Trigger, TreeMultiset<PriorityAction>>>();
 	private LinkedList<Listener> listeners = new LinkedList<Listener>();
 	private Player p;
 	private long nextAttack, nextOffAttack;
@@ -148,9 +151,9 @@ public class PlayerFightData extends FightData {
 	public boolean runActions(PlayerFightData data, Trigger trigger, Object inputs) {
 		if (triggers.containsKey(trigger)) {
 			boolean cancel = false;
-			Iterator<TriggerAction> iter = triggers.get(trigger).values().iterator();
+			Iterator<PriorityAction> iter = triggers.get(trigger).iterator();
 			while (iter.hasNext()) {
-				TriggerAction inst = iter.next();
+				PriorityAction inst = iter.next();
 				TriggerResult tr;
 
 				if (inst instanceof EquipmentInstance) {
@@ -185,12 +188,12 @@ public class PlayerFightData extends FightData {
 	// Must be separate due to the same trigger doing a different thing based on slot (like weapons)
 	public boolean runSlotBasedActions(PlayerFightData data, Trigger trigger, int slot, Object inputs) {
 		if (!slotBasedTriggers.containsKey(slot)) return false;
-		HashMap<Trigger, HashMap<String, TriggerAction>> triggers = slotBasedTriggers.get(slot);
+		HashMap<Trigger, TreeMultiset<PriorityAction>> triggers = slotBasedTriggers.get(slot);
 
 		if (triggers.containsKey(trigger)) {
-			Iterator<TriggerAction> iter = triggers.get(trigger).values().iterator();
+			Iterator<PriorityAction> iter = triggers.get(trigger).iterator();
 			while (iter.hasNext()) {
-				TriggerAction inst = iter.next();
+				PriorityAction inst = iter.next();
 
 				if (inst instanceof EquipmentInstance) {
 					EquipmentInstance ei = (EquipmentInstance) inst;
@@ -211,26 +214,32 @@ public class PlayerFightData extends FightData {
 	}
 	
 	public void addSlotBasedTrigger(String id, int slot, Trigger trigger, TriggerAction action) {
-		HashMap<Trigger, HashMap<String, TriggerAction>> triggers = slotBasedTriggers.getOrDefault(slot, 
-				new HashMap<Trigger, HashMap<String, TriggerAction>>());
+		addSlotBasedTrigger(id, slot, trigger, new PriorityAction(action));
+	}
+	
+	public void addSlotBasedTrigger(String id, int slot, Trigger trigger, PriorityAction action) {
+		HashMap<Trigger, TreeMultiset<PriorityAction>> triggers = slotBasedTriggers.getOrDefault(slot, 
+				new HashMap<Trigger, TreeMultiset<PriorityAction>>());
 		slotBasedTriggers.put(slot, triggers);
-		HashMap<String, TriggerAction> actions = triggers.getOrDefault(trigger, new HashMap<String, TriggerAction>());
+		TreeMultiset<PriorityAction> actions = triggers.getOrDefault(trigger, TreeMultiset.create());
 		triggers.put(trigger, actions);
 		addTrigger(id, actions, action);
+		TreeMultiset.create();
 	}
 
 	public void addTrigger(String id, Trigger trigger, TriggerAction action) {
-		HashMap<String, TriggerAction> actions = triggers.containsKey(trigger) ? triggers.get(trigger)
-				: new HashMap<String, TriggerAction>();
+		addTrigger(id, trigger, new PriorityAction(action));
+	}
+
+	public void addTrigger(String id, Trigger trigger, PriorityAction action) {
+		TreeMultiset<PriorityAction> actions = triggers.containsKey(trigger) ? triggers.get(trigger)
+				: TreeMultiset.create();
 		triggers.put(trigger, actions);
 		addTrigger(id, actions, action);
 	}
 	
-	private void addTrigger(String id, HashMap<String, TriggerAction> actions, TriggerAction action) {
-		while (actions.containsKey(id)) {
-			id += 'I';
-		}
-		actions.put(id, action);
+	private void addTrigger(String id, TreeMultiset<PriorityAction> actions, PriorityAction action) {
+		actions.add(action);
 		
 		if (action instanceof Listener) {
 			Listener l = (Listener) action;
@@ -332,8 +341,8 @@ public class PlayerFightData extends FightData {
 			for (int i = 0 ; i < 8; i++) {
 				Trigger t = Trigger.getFromHotbarSlot(i);
 				if (!triggers.containsKey(t)) continue;
-				HashMap<String, TriggerAction> actions = triggers.get(t);
-				for (TriggerAction action : actions.values()) {
+				TreeMultiset<PriorityAction> actions = triggers.get(t);
+				for (PriorityAction action : actions) {
 					// Only the first valid usable instance is used as the cooldown
 					if (action instanceof EquipmentInstance) {
 						insts.put(i, (EquipmentInstance) action);

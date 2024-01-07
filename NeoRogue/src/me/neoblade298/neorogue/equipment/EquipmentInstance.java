@@ -5,11 +5,12 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerCondition;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class EquipmentInstance implements TriggerAction {
+public class EquipmentInstance extends PriorityAction {
 	protected TriggerAction action;
 	protected TriggerCondition condition;
 	protected Equipment eq;
@@ -29,8 +30,7 @@ public class EquipmentInstance implements TriggerAction {
 	}
 	
 	public EquipmentInstance(Equipment eq, TriggerAction action, TriggerCondition condition) {
-		this(eq);
-		this.action = action;
+		this(eq, action);
 		this.condition = condition;
 	}
 	
@@ -107,10 +107,6 @@ public class EquipmentInstance implements TriggerAction {
 
 	public static class CountEquipmentInstance extends EquipmentInstance {
 		protected int count = 0;
-		public CountEquipmentInstance(Equipment eq) {
-			super(eq);
-		}
-
 		public CountEquipmentInstance(Equipment eq, TriggerAction action) {
 			super(eq, action);
 		}

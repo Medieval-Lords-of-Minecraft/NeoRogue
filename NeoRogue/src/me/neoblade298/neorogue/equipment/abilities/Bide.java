@@ -8,10 +8,10 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
@@ -39,29 +39,26 @@ public class Bide extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, (fd, in) -> {
+		data.addTrigger(id, bind, new PriorityAction((fd, in) -> {
 			data.addShield(p.getUniqueId(), shields, true, duration * 20, 100, 0, 1);
 			Util.playSound(p, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1F, 1F, false);
-			data.addTrigger(id, Trigger.RECEIVED_DAMAGE, new BideInstance(this, p));
+			data.addTrigger(id, Trigger.RECEIVED_DAMAGE, new BideInstance(p));
 			return TriggerResult.keep();
-		});
+		}));
 	}
 	
-	private class BideInstance extends EquipmentInstance {
+	private class BideInstance extends PriorityAction {
 		private long createTime;
-		private Player p;
-		public BideInstance(Equipment eq, Player p) {
-			super(eq);
-			this.p = p;
+		public BideInstance(Player p) {
+			super();
 			createTime = System.currentTimeMillis();
-		}
-		@Override
-		public TriggerResult trigger(PlayerFightData data, Object inputs) {
-			if (System.currentTimeMillis() - createTime > 5000) return TriggerResult.remove();
-			bpc.spawn(p);
-			data.applyStatus("BERSERK", p.getUniqueId(), berserk);
-			Util.playSound(p, Sound.ENTITY_BLAZE_SHOOT, 1F, 1F, false);
-			return TriggerResult.keep();
+			action = (data, inputs) -> {
+				if (System.currentTimeMillis() - createTime > 5000) return TriggerResult.remove();
+				bpc.spawn(p);
+				data.applyStatus("BERSERK", p.getUniqueId(), berserk);
+				Util.playSound(p, Sound.ENTITY_BLAZE_SHOOT, 1F, 1F, false);
+				return TriggerResult.keep();
+			};
 		}
 		
 	}

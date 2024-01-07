@@ -52,7 +52,7 @@ public class EarthenTackle extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		final EquipmentInstance inst = new EquipmentInstance(this);
-		inst.setAction(new EquipmentInstance(this, (pdata, inputs) -> {
+		inst.setAction((pdata, inputs) -> {
 			Util.playSound(p, Sound.ENTITY_SHULKER_SHOOT, false);
 			start.spawn(p);
 			Vector v = p.getEyeLocation().getDirection();
@@ -62,7 +62,7 @@ public class EarthenTackle extends Equipment {
 			p.setVelocity(v.setY(0).normalize().setY(0.3));
 			new EarthenTackleHitChecker(p, data, inst);
 			return TriggerResult.keep();
-		}));
+		});
 		data.addTrigger(id, bind, inst);
 	}
 	
