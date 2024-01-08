@@ -42,7 +42,7 @@ public class WoodenWand extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, new EquipmentInstance(this, (d, inputs) -> {
-			swingWeapon(p, data);
+			weaponSwing(p, data);
 			new WoodenWandProjectile(p, 0.5, 10, 3, false, false, false, false, 0, 0, data.getInstance(), data, 0.2, 0.2, 0.2);
 			return TriggerResult.keep();
 		}));
@@ -77,7 +77,7 @@ public class WoodenWand extends Equipment {
 			if (hitBarrier != null) {
 				finalDamage = hitBarrier.applyDefenseBuffs(finalDamage, properties.getType());
 			}
-			damageWithWeapon(p, data, p, finalDamage);
+			weaponDamage(p, data, p, finalDamage);
 			Location loc = hit.getEntity().getLocation();
 			Util.playSound(p, loc, Sound.ENTITY_GENERIC_EXPLODE, 1F, 1F, true);
 			explode.spawn(loc);

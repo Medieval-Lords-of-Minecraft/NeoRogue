@@ -457,47 +457,49 @@ public abstract class Equipment {
 	}
 	
 	// Used for weapons that start cooldown on swing, not hit
-	public void swingWeapon(Player p, PlayerFightData data) {
+	public void weaponSwing(Player p, PlayerFightData data) {
 		properties.getSwingSound().play(p);
 		data.setBasicAttackCooldown(type.getSlots()[0], properties);
 		if (type.getSlots()[0] == EquipSlot.OFFHAND) p.swingOffHand();
 	}
 	
 	// Both swings and hits enemy
-	public void meleeWeapon(Player p, PlayerFightData data, LivingEntity target) {
-		swingWeapon(p, data);
-		damageWithWeapon(p, data, target);
+	public void weaponSwingAndDamage(Player p, PlayerFightData data, LivingEntity target) {
+		weaponSwing(p, data);
+		weaponDamage(p, data, target);
 	}
 	
 	// Both swings and hits enemy
-	public void meleeWeapon(Player p, PlayerFightData data, LivingEntity target, double damage) {
-		swingWeapon(p, data);
-		damageWithWeapon(p, data, target, damage);
+	public void weaponSwingAndDamage(Player p, PlayerFightData data, LivingEntity target, double damage) {
+		weaponSwing(p, data);
+		weaponDamage(p, data, target, damage);
 	}
 	
-	public void damageWithWeapon(Player p, PlayerFightData data, LivingEntity target) {
-		damageWithWeapon(p, data, target, properties.getDamage(), properties.getKnockback());
+	public void weaponDamage(Player p, PlayerFightData data, LivingEntity target) {
+		weaponDamage(p, data, target, properties.getDamage(), properties.getKnockback());
 	}
 	
-	public void damageWithWeapon(Player p, PlayerFightData data, LivingEntity target, double damage) {
-		damageWithWeapon(p, data, target, damage, properties.getKnockback());
+	public void weaponDamage(Player p, PlayerFightData data, LivingEntity target, double damage) {
+		weaponDamage(p, data, target, damage, properties.getKnockback());
 	}
 	
-	public void damageWithWeapon(Player p, PlayerFightData data, LivingEntity target, double damage, double knockback) {
-		FightInstance.dealDamage(p, properties.getType(), damage, target);
+	public void weaponDamage(Player p, PlayerFightData data, LivingEntity target, double damage, double knockback) {
+		BasicAttackEvent ev = new BasicAttackEvent(target, damage, knockback, properties.getType(), this);
+		data.runActions(data, Trigger.BASIC_ATTACK, ev);
+		FightInstance.dealDamage(p, properties.getType(), ev.getDamage(), target);
 		if (knockback != 0) {
 			FightInstance.knockback(p, target, knockback);
 		}
-		data.runActions(data, Trigger.BASIC_ATTACK, new BasicAttackEvent(target, damage, knockback, properties.getType(), this));
 	}
 	
 	// for projectiles
-	public void damageWithWeapon(Player p, PlayerFightData data, LivingEntity target, Vector v) {
-		FightInstance.dealDamage(p, properties.getType(), properties.getDamage(), target);
+	public void weaponDamageProjectile(Player p, PlayerFightData data, LivingEntity target, Vector v) {
+		BasicAttackEvent ev = new BasicAttackEvent(target, properties.getDamage(), properties.getKnockback(), properties.getType(), this);
+		data.runActions(data, Trigger.BASIC_ATTACK, ev);
+		FightInstance.dealDamage(p, properties.getType(), ev.getDamage(), target);
 		if (properties.getKnockback() != 0) {
 			FightInstance.knockback(v, target, properties.getKnockback());
 		}
-		data.runActions(data, Trigger.BASIC_ATTACK, new BasicAttackEvent(target, properties.getDamage(), properties.getKnockback(), properties.getType(), this));
 	}
 	
 	public boolean isCursed() {

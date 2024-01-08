@@ -29,7 +29,7 @@ public class FencingSword extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
-			meleeWeapon(p, data, ev.getTarget());
+			weaponSwingAndDamage(p, data, ev.getTarget());
 			data.addShield(p.getUniqueId(), shields, true, 1, 100, 1, 1);
 			return TriggerResult.keep();
 		});

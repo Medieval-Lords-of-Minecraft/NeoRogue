@@ -30,7 +30,7 @@ public class StoneAxe extends Equipment {
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
 			Buff b = data.getBuff(true, BuffType.PHYSICAL);
 			double strength = b.getIncrease();
-			meleeWeapon(p, data, ev.getTarget(), properties.getDamage() + (strength * 2));
+			weaponSwingAndDamage(p, data, ev.getTarget(), properties.getDamage() + (strength * 2));
 			return TriggerResult.keep();
 		});
 	}

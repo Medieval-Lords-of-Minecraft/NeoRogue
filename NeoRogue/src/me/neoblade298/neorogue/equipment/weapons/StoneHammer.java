@@ -59,7 +59,7 @@ public class StoneHammer extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (pdata, inputs) -> {
-			swingWeapon(p, data);
+			weaponSwing(p, data);
 			data.runAnimation(id, swing, p);
 			data.addTask(id, new BukkitRunnable() {
 				public void run() {
@@ -77,7 +77,7 @@ public class StoneHammer extends Equipment {
 		LinkedList<LivingEntity> enemies = TargetHelper.getEntitiesInRadius(p, hit, props);
 		if (enemies.isEmpty()) return;
 		for (LivingEntity ent : enemies) {
-			damageWithWeapon(p, data, ent);
+			weaponDamage(p, data, ent);
 			Vector v = ent.getVelocity();
 			ent.setVelocity(v.setY(v.getY() + 0.5));
 		}

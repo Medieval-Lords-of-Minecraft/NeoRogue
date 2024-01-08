@@ -11,9 +11,6 @@ import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
-import me.neoblade298.neorogue.session.fight.DamageMeta;
-import me.neoblade298.neorogue.session.fight.DamageType;
-import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
@@ -45,8 +42,6 @@ public class PracticeDummy extends Artifact {
 		public TriggerResult trigger(PlayerFightData data, Object inputs) {
 			BasicAttackEvent ev = (BasicAttackEvent) inputs;
 			Equipment eq = ev.getWeapon();
-			DamageType type = eq.getProperties().getType();
-			double amount = ev.getDamage();
 			if (eq.getId().equals(weapon)) {
 				count = 0;
 				return TriggerResult.keep();
@@ -60,8 +55,7 @@ public class PracticeDummy extends Artifact {
 				Util.msg(p, "<red>Practice Dummy</red> was activated");
 			}
 			if (count > num) {
-				DamageMeta meta = new DamageMeta(amount * damageMult, type, true);
-				FightInstance.dealDamage(p, meta, ev.getTarget()); 
+				ev.setDamage(ev.getDamage() * damageMult);
 				return TriggerResult.keep();
 			}
 			return TriggerResult.remove();

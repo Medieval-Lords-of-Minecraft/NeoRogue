@@ -40,7 +40,7 @@ public class StoneDagger extends Equipment {
 		@Override
 		public TriggerResult trigger(PlayerFightData data, Object inputs) {
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
-			meleeWeapon(p, data, ev.getTarget());
+			weaponSwingAndDamage(p, data, ev.getTarget());
 			if (++count >= 3) {
 				count = 0;
 				FightInstance.getFightData(ev.getTarget().getUniqueId()).applyStatus(StatusType.BLEED, p.getUniqueId(), 2, 0);
