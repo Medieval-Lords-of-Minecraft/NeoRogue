@@ -6,7 +6,6 @@ import java.util.LinkedList;
 import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -28,7 +27,6 @@ import me.neoblade298.neorogue.equipment.*;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 
 public class PlayerFightData extends FightData {
-	private static HashMap<Integer, Material> COOLDOWN_MATERIALS = new HashMap<Integer, Material>();
 	
 	private PlayerSessionData sessdata;
 	private HashMap<Trigger, TreeMultiset<PriorityAction>> triggers = new HashMap<Trigger, TreeMultiset<PriorityAction>>();
@@ -43,18 +41,6 @@ public class PlayerFightData extends FightData {
 	private double staminaRegen, manaRegen;
 	
 	private FightStatistics stats = new FightStatistics();
-	
-	static {
-		COOLDOWN_MATERIALS.put(0, Material.RED_CANDLE);
-		COOLDOWN_MATERIALS.put(1, Material.ORANGE_CANDLE);
-		COOLDOWN_MATERIALS.put(2, Material.YELLOW_CANDLE);
-		COOLDOWN_MATERIALS.put(3, Material.LIME_CANDLE);
-		COOLDOWN_MATERIALS.put(4, Material.GREEN_CANDLE);
-		COOLDOWN_MATERIALS.put(5, Material.CYAN_CANDLE);
-		COOLDOWN_MATERIALS.put(6, Material.BLUE_CANDLE);
-		COOLDOWN_MATERIALS.put(7, Material.PURPLE_CANDLE);
-		COOLDOWN_MATERIALS.put(8, Material.MAGENTA_CANDLE);
-	}
 
 	public PlayerFightData(FightInstance inst, PlayerSessionData data) {
 		super(data.getPlayer(), inst);
@@ -190,13 +176,7 @@ public class PlayerFightData extends FightData {
 						continue;
 					}
 					tr = ei.trigger(data, inputs);
-					
-					int slot = ei.getSlot();
-					if (slot != -1) {
-						Material mat = COOLDOWN_MATERIALS.get(slot);
-						inv.setItem(slot, new ItemStack(mat));
-						p.setCooldown(mat, ei.getCooldownTicks());
-					}
+					ei.updateSlot(p, inv);
 				}
 				else {
 					tr = inst.trigger(data, inputs);

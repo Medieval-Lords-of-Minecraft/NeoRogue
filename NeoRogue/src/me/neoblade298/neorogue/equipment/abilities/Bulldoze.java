@@ -47,7 +47,7 @@ public class Bulldoze extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(this, slot, (pdata, inputs) -> {
+		data.addTrigger(id, bind, new EquipmentInstance(p, this, slot, (pdata, inputs) -> {
 			Util.playSound(p, Sound.ENTITY_ENDER_DRAGON_AMBIENT, false);
 			start.spawn(p);
 			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 60, 0));

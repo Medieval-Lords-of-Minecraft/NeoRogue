@@ -57,7 +57,7 @@ public class EarthenWall extends Equipment {
 	private class EarthenWallInstance extends EquipmentInstance {
 		private int stacks = 0;
 		public EarthenWallInstance(Equipment eq, Player p, int slot) {
-			super(eq, slot);
+			super(p, eq, slot);
 			action = (pdata, in) -> {
 				Util.playSound(p, Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1F, 1F, false);
 				pc.spawn(p);

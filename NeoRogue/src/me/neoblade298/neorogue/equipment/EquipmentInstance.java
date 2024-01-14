@@ -1,6 +1,11 @@
 package me.neoblade298.neorogue.equipment;
 
+import java.util.HashMap;
+
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.util.Util;
@@ -11,6 +16,9 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerCondition;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class EquipmentInstance extends PriorityAction {
+	private static HashMap<Integer, Material> COOLDOWN_MATERIALS = new HashMap<Integer, Material>();
+	
+	protected Player p;
 	protected TriggerAction action;
 	protected TriggerCondition condition;
 	protected int slot;
@@ -18,7 +26,20 @@ public class EquipmentInstance extends PriorityAction {
 	protected double staminaCost, manaCost, cooldown;
 	private long lastUsed = 0L;
 	
-	public EquipmentInstance(Equipment eq, int slot) {
+	static {
+		COOLDOWN_MATERIALS.put(0, Material.RED_CANDLE);
+		COOLDOWN_MATERIALS.put(1, Material.ORANGE_CANDLE);
+		COOLDOWN_MATERIALS.put(2, Material.YELLOW_CANDLE);
+		COOLDOWN_MATERIALS.put(3, Material.LIME_CANDLE);
+		COOLDOWN_MATERIALS.put(4, Material.GREEN_CANDLE);
+		COOLDOWN_MATERIALS.put(5, Material.CYAN_CANDLE);
+		COOLDOWN_MATERIALS.put(6, Material.BLUE_CANDLE);
+		COOLDOWN_MATERIALS.put(7, Material.PURPLE_CANDLE);
+		COOLDOWN_MATERIALS.put(8, Material.MAGENTA_CANDLE);
+	}
+	
+	public EquipmentInstance(Player p, Equipment eq, int slot) {
+		this.p = p;
 		this.eq = eq;
 		this.manaCost = eq.getProperties().getManaCost();
 		this.staminaCost = eq.getProperties().getStaminaCost();
@@ -26,13 +47,13 @@ public class EquipmentInstance extends PriorityAction {
 		this.slot = slot;
 	}
 	
-	public EquipmentInstance(Equipment eq, int slot, TriggerAction action) {
-		this(eq, slot);
+	public EquipmentInstance(Player p, Equipment eq, int slot, TriggerAction action) {
+		this(p, eq, slot);
 		this.action = action;
 	}
 	
-	public EquipmentInstance(Equipment eq, int slot, TriggerAction action, TriggerCondition condition) {
-		this(eq, slot, action);
+	public EquipmentInstance(Player p, Equipment eq, int slot, TriggerAction action, TriggerCondition condition) {
+		this(p, eq, slot, action);
 		this.condition = condition;
 	}
 	
@@ -47,6 +68,10 @@ public class EquipmentInstance extends PriorityAction {
 		data.addMana(-manaCost);
 		data.addStamina(-staminaCost);
 		return action.trigger(data, inputs);
+	}
+	
+	public Player getPlayer() {
+		return p;
 	}
 	
 	public boolean canTrigger(Player p, PlayerFightData data) {
@@ -73,8 +98,15 @@ public class EquipmentInstance extends PriorityAction {
 		Util.msgRaw(p, eq.display.append(NeoCore.miniMessage().deserialize(" <red>cooldown: </red><yellow>" + getCooldownSeconds() + "s")));
 	}
 	
+	public void updateSlot(Player p, PlayerInventory inv) {
+		Material mat = COOLDOWN_MATERIALS.get(slot);
+		inv.setItem(slot, new ItemStack(mat));
+		p.setCooldown(mat, getCooldownTicks());
+	}
+	
 	public void reduceCooldown(int seconds) {
 		lastUsed -= seconds * 1000;
+		updateSlot(p, p.getInventory());
 	}
 	
 	public int getCooldownSeconds() {
