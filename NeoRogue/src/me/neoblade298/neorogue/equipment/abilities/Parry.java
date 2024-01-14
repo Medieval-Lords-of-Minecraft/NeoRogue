@@ -37,7 +37,7 @@ public class Parry extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(this, (pdata, in) -> {
+		data.addTrigger(id, bind, new EquipmentInstance(this, slot, (pdata, in) -> {
 			pc.spawn(p);
 			data.addShield(p.getUniqueId(), shields, true, 100, 100, 0, 1);
 			Util.playSound(p, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1F, 1F, false);

@@ -37,13 +37,13 @@ public class Fury extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new FuryInstance(this, p, damage, bind));
+		data.addTrigger(id, bind, new FuryInstance(this, p, damage, bind, slot));
 	}
 	
 	private class FuryInstance extends EquipmentInstance {
 		private boolean isBerserk;
-		public FuryInstance(Equipment eq, Player p, int damage, Trigger bind) {
-			super(eq);
+		public FuryInstance(Equipment eq, Player p, int damage, Trigger bind, int slot) {
+			super(eq, slot);
 			
 			this.action = (data, in) -> {
 				Util.playSound(p, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1F, 1F, false);

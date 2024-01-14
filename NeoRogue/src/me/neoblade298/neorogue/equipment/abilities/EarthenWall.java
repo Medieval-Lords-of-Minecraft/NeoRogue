@@ -41,7 +41,7 @@ public class EarthenWall extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		EarthenWallInstance inst = new EarthenWallInstance(this, p);
+		EarthenWallInstance inst = new EarthenWallInstance(this, p, slot);
 		
 		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
@@ -56,8 +56,8 @@ public class EarthenWall extends Equipment {
 	
 	private class EarthenWallInstance extends EquipmentInstance {
 		private int stacks = 0;
-		public EarthenWallInstance(Equipment eq, Player p) {
-			super(eq);
+		public EarthenWallInstance(Equipment eq, Player p, int slot) {
+			super(eq, slot);
 			action = (pdata, in) -> {
 				Util.playSound(p, Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1F, 1F, false);
 				pc.spawn(p);

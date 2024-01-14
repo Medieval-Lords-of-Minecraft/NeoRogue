@@ -13,24 +13,26 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class EquipmentInstance extends PriorityAction {
 	protected TriggerAction action;
 	protected TriggerCondition condition;
+	protected int slot;
 	protected Equipment eq;
 	protected double staminaCost, manaCost, cooldown;
 	private long lastUsed = 0L;
 	
-	public EquipmentInstance(Equipment eq) {
+	public EquipmentInstance(Equipment eq, int slot) {
 		this.eq = eq;
 		this.manaCost = eq.getProperties().getManaCost();
 		this.staminaCost = eq.getProperties().getStaminaCost();
 		this.cooldown = eq.getProperties().getCooldown();
+		this.slot = slot;
 	}
 	
-	public EquipmentInstance(Equipment eq, TriggerAction action) {
-		this(eq);
+	public EquipmentInstance(Equipment eq, int slot, TriggerAction action) {
+		this(eq, slot);
 		this.action = action;
 	}
 	
-	public EquipmentInstance(Equipment eq, TriggerAction action, TriggerCondition condition) {
-		this(eq, action);
+	public EquipmentInstance(Equipment eq, int slot, TriggerAction action, TriggerCondition condition) {
+		this(eq, slot, action);
 		this.condition = condition;
 	}
 	
@@ -68,17 +70,21 @@ public class EquipmentInstance extends PriorityAction {
 	}
 	
 	public void sendCooldownMessage(Player p) {
-		Util.msgRaw(p, eq.display.append(NeoCore.miniMessage().deserialize(" <red>cooldown: </red><yellow>" + getCooldown() + "s")));
+		Util.msgRaw(p, eq.display.append(NeoCore.miniMessage().deserialize(" <red>cooldown: </red><yellow>" + getCooldownSeconds() + "s")));
 	}
 	
 	public void reduceCooldown(int seconds) {
 		lastUsed -= seconds * 1000;
 	}
 	
-	public int getCooldown() {
+	public int getCooldownSeconds() {
 		int nextUse = (int) ((lastUsed / 1000) + cooldown);
 		int now = (int) (System.currentTimeMillis() / 1000);
 		return Math.max(0, nextUse - now);
+	}
+	
+	public int getCooldownTicks() {
+		return getCooldownSeconds() * 20;
 	}
 	
 	public void setStaminaCost(double stamina) {
@@ -104,11 +110,8 @@ public class EquipmentInstance extends PriorityAction {
 	public TriggerAction getAction() {
 		return action;
 	}
-
-	public static class CountEquipmentInstance extends EquipmentInstance {
-		protected int count = 0;
-		public CountEquipmentInstance(Equipment eq, TriggerAction action) {
-			super(eq, action);
-		}
+	
+	public int getSlot() {
+		return slot;
 	}
 }

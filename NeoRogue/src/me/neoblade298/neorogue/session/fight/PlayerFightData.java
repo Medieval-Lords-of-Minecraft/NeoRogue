@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -27,6 +28,8 @@ import me.neoblade298.neorogue.equipment.*;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 
 public class PlayerFightData extends FightData {
+	private static HashMap<Integer, Material> COOLDOWN_MATERIALS = new HashMap<Integer, Material>();
+	
 	private PlayerSessionData sessdata;
 	private HashMap<Trigger, TreeMultiset<PriorityAction>> triggers = new HashMap<Trigger, TreeMultiset<PriorityAction>>();
 	private HashMap<String, EquipmentInstance> equips = new HashMap<String, EquipmentInstance>(); // Useful for modifying cooldowns
@@ -40,6 +43,18 @@ public class PlayerFightData extends FightData {
 	private double staminaRegen, manaRegen;
 	
 	private FightStatistics stats = new FightStatistics();
+	
+	static {
+		COOLDOWN_MATERIALS.put(0, Material.RED_CANDLE);
+		COOLDOWN_MATERIALS.put(1, Material.ORANGE_CANDLE);
+		COOLDOWN_MATERIALS.put(2, Material.YELLOW_CANDLE);
+		COOLDOWN_MATERIALS.put(3, Material.LIME_CANDLE);
+		COOLDOWN_MATERIALS.put(4, Material.GREEN_CANDLE);
+		COOLDOWN_MATERIALS.put(5, Material.CYAN_CANDLE);
+		COOLDOWN_MATERIALS.put(6, Material.BLUE_CANDLE);
+		COOLDOWN_MATERIALS.put(7, Material.PURPLE_CANDLE);
+		COOLDOWN_MATERIALS.put(8, Material.MAGENTA_CANDLE);
+	}
 
 	public PlayerFightData(FightInstance inst, PlayerSessionData data) {
 		super(data.getPlayer(), inst);
@@ -88,8 +103,6 @@ public class PlayerFightData extends FightData {
 
 		for (i = 0; i < 9; i++) {
 			if (data.getEquipment(EquipSlot.HOTBAR)[i] == null) continue;
-			if (!hasTriggerAction(Trigger.getFromHotbarSlot(i)) && 
-					!slotBasedTriggers.containsKey(i)) continue;
 			contents[i] = data.getEquipment(EquipSlot.HOTBAR)[i].getItem();
 		}
 		inv.setContents(contents);
@@ -149,9 +162,21 @@ public class PlayerFightData extends FightData {
 
 	// Returns whether to cancel the event, which may or may not be ignored if it's an event that can be cancelled
 	public boolean runActions(PlayerFightData data, Trigger trigger, Object inputs) {
+		return runActions(data, triggers, trigger, inputs);
+	}
+
+	// Must be separate due to the same trigger doing a different thing based on slot (like weapons)
+	public boolean runSlotBasedActions(PlayerFightData data, Trigger trigger, int slot, Object inputs) {
+		if (!slotBasedTriggers.containsKey(slot)) return false;
+		HashMap<Trigger, TreeMultiset<PriorityAction>> triggers = slotBasedTriggers.get(slot);
+		return runActions(data, triggers, trigger, inputs);
+	}
+	
+	private boolean runActions(PlayerFightData data, HashMap<Trigger, TreeMultiset<PriorityAction>> triggers, Trigger trigger, Object inputs) {
 		if (triggers.containsKey(trigger)) {
 			boolean cancel = false;
 			Iterator<PriorityAction> iter = triggers.get(trigger).iterator();
+			PlayerInventory inv = p.getInventory();
 			while (iter.hasNext()) {
 				PriorityAction inst = iter.next();
 				TriggerResult tr;
@@ -165,6 +190,13 @@ public class PlayerFightData extends FightData {
 						continue;
 					}
 					tr = ei.trigger(data, inputs);
+					
+					int slot = ei.getSlot();
+					if (slot != -1) {
+						Material mat = COOLDOWN_MATERIALS.get(slot);
+						inv.setItem(slot, new ItemStack(mat));
+						p.setCooldown(mat, ei.getCooldownTicks());
+					}
 				}
 				else {
 					tr = inst.trigger(data, inputs);
@@ -180,31 +212,8 @@ public class PlayerFightData extends FightData {
 				}
 				if (tr.cancelEvent()) cancel = true;
 			}
+			p.updateInventory();
 			return cancel;
-		}
-		return false;
-	}
-
-	// Must be separate due to the same trigger doing a different thing based on slot (like weapons)
-	public boolean runSlotBasedActions(PlayerFightData data, Trigger trigger, int slot, Object inputs) {
-		if (!slotBasedTriggers.containsKey(slot)) return false;
-		HashMap<Trigger, TreeMultiset<PriorityAction>> triggers = slotBasedTriggers.get(slot);
-
-		if (triggers.containsKey(trigger)) {
-			Iterator<PriorityAction> iter = triggers.get(trigger).iterator();
-			while (iter.hasNext()) {
-				PriorityAction inst = iter.next();
-
-				if (inst instanceof EquipmentInstance) {
-					EquipmentInstance ei = (EquipmentInstance) inst;
-					if (!ei.canTrigger(p, data)) {
-						continue;
-					}
-				}
-				TriggerResult tr = inst.trigger(data, inputs);
-				if (tr.removeTrigger()) iter.remove();
-			}
-			return true;
 		}
 		return false;
 	}
@@ -359,7 +368,11 @@ public class PlayerFightData extends FightData {
 			// Update hotbar cooldowns
 			PlayerInventory inv = p.getInventory();
 			for (Entry<Integer, EquipmentInstance> ent : insts.entrySet()) {
-				inv.getItem(ent.getKey()).setAmount(Math.min(127, Math.max(1, ent.getValue().getCooldown())));
+				// Check if cooldown is over
+				if (inv.getItem(ent.getKey()).getType().name().endsWith("CANDLE") &&
+						ent.getValue().getCooldownSeconds() == 0) {
+					inv.setItem(ent.getKey(), ent.getValue().getEquipment().getItem());
+				}
 			}
 			p.updateInventory();
 			return TickResult.KEEP;
