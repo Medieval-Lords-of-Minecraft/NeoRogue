@@ -94,7 +94,7 @@ public class NodeSelectInstance extends EditInventoryInstance {
 			}
 			if (!s.isEveryoneOnline()) return;
 			Node node = s.getArea().getNodeFromLocation(e.getClickedBlock().getLocation());
-			s.setNode(node);
+			s.visitNode(node);
 			s.setInstance(node.getInstance());
 			return;
 		}

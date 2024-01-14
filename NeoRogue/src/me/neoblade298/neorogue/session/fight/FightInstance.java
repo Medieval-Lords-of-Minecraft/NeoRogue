@@ -87,8 +87,8 @@ public abstract class FightInstance extends Instance {
 		return userBarriers;
 	}
 	
-	public void instantiate(int level) {
-		map.instantiate(this, s.getXOff(), s.getZOff(), level);
+	public void instantiate() {
+		map.instantiate(this, s.getXOff(), s.getZOff());
 	}
 	
 	public Map getMap() {
@@ -504,7 +504,12 @@ public abstract class FightInstance extends Instance {
 			}
 		}
 		amount *= multiplier;
-		target.damage(amount);
+		if (amount > 0) {
+			if (!(target instanceof Player)) {
+				NeoRogue.mythicApi.castSkill(target, "UpdateHealthbar");
+			}
+			target.damage(amount);
+		}
 	}
 
 	@Override
@@ -512,7 +517,7 @@ public abstract class FightInstance extends Instance {
 		this.s = s;
 		level = 5 + s.getNodesVisited();
 		
-		instantiate(level);
+		instantiate();
 		s.broadcast("Commencing fight...");
 		ArrayList<PlayerFightData> fdata = new ArrayList<PlayerFightData>();
 		for (Player p : s.getOnlinePlayers()) {
@@ -547,10 +552,7 @@ public abstract class FightInstance extends Instance {
 		
 		new BukkitRunnable() {
 			public void run() {
-				activateSpawner(3 + (s.getNodesVisited() / 5));
-				for (MapSpawnerInstance inst : initialSpawns) {
-					inst.spawnMob(level);
-				}
+				activateSpawner(2 + (s.getNodesVisited() / 5) + s.getParty().size());
 			}
 		}.runTaskLater(NeoRogue.inst(), 60L);
 		
@@ -685,7 +687,7 @@ public abstract class FightInstance extends Instance {
 			if (!spawner.canSpawn()) {
 				spawner = unlimitedSpawners.get(NeoRogue.gen.nextInt(unlimitedSpawners.size()));
 			}
-			spawner.spawnMob(5 + s.getNodesVisited());
+			spawner.spawnMob(4 + s.getNodesVisited());
 		}
 	}
 

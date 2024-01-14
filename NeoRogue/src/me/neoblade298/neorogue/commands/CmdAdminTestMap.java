@@ -54,7 +54,7 @@ public class CmdAdminTestMap extends Subcommand {
 		Map map = piece == null ? Map.generate(type, numPieces) : Map.generate(type, numPieces, piece);
 		Util.msg(p, "Successfully generated map");
 		int xOff = 0, zOff = 0;
-		map.instantiate(null, xOff, zOff, 5);
+		map.instantiate(null, xOff, zOff);
 		
 		// Mark down spawn location blocks
 		for (MapPieceInstance mpi : map.getPieces()) {

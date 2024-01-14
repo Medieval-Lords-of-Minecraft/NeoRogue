@@ -59,10 +59,10 @@ public class MapSpawnerInstance {
 				loc = loc.clone().add(NeoRogue.gen.nextDouble(-radius, radius), 0, NeoRogue.gen.nextDouble(-radius, radius));
 			}
 			ActiveMob am = mythicMob.spawn(BukkitAdapter.adapt(loc), lvl);
-			double mhealth = am.getEntity().getMaxHealth();
-			mhealth *= lvl / 5;
-			am.getEntity().setMaxHealth(mhealth);
-			am.getEntity().setHealth(mhealth);
+			double mhealth = mythicMob.getHealth().get();
+			mhealth *= (lvl / 5);
+			am.getEntity().setMaxHealth(Math.round(mhealth));
+			am.getEntity().setHealth(Math.round(mhealth));
 			
 			UUID uuid = am.getEntity().getUniqueId();
 			FightData fd = new FightData((LivingEntity) am.getEntity().getBukkitEntity(), this);

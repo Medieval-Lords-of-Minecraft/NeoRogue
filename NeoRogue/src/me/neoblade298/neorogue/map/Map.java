@@ -335,7 +335,7 @@ public class Map {
 		
 	}
 	
-	public void instantiate(FightInstance fi, int xOff, int zOff, int level) {
+	public void instantiate(FightInstance fi, int xOff, int zOff) {
 		// First clear the board
 		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Area.world)) {
 		    CuboidRegion r = new CuboidRegion(
@@ -364,7 +364,7 @@ public class Map {
 					}
 					
 					for (MapPieceInstance inst : pieces) {
-						inst.instantiate(fi, xOff, zOff, level);
+						inst.instantiate(fi, xOff, zOff);
 					}
 					
 					// Block off all unused entrances

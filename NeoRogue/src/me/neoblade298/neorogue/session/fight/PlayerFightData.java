@@ -361,6 +361,7 @@ public class PlayerFightData extends FightData {
 			for (Entry<Integer, EquipmentInstance> ent : insts.entrySet()) {
 				inv.getItem(ent.getKey()).setAmount(Math.min(127, Math.max(1, ent.getValue().getCooldown())));
 			}
+			p.updateInventory();
 			return TickResult.KEEP;
 		}
 	}

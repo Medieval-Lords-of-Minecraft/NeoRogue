@@ -36,7 +36,7 @@ public class Session {
 	private Instance inst;
 	private Node curr;
 	private SessionStatistics stats;
-	private int saveSlot, xOff, zOff, nodesVisited = 12, areasCompleted;
+	private int saveSlot, xOff, zOff, nodesVisited, areasCompleted;
 	private Plot plot;
 	
 	public Session(Player p, Plot plot, String lobby, int saveSlot) {
@@ -257,6 +257,11 @@ public class Session {
 	
 	public void setNode(Node node) {
 		this.curr = node;
+	}
+	
+	public void visitNode(Node node) {
+		this.curr = node;
+		nodesVisited++;
 	}
 	
 	public UUID getHost() {

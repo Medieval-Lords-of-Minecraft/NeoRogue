@@ -28,11 +28,18 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 public class StandardFightInstance extends FightInstance {
 
-	private static final double SCORE_REQUIRED = 25;
+	private static final HashMap<Integer, Double> SCORE_REQUIRED = new HashMap<Integer, Double>();
 	
 	private BossBar timeBar, scoreBar;
-	private double time, score;
+	private double time, score, scoreRequired;
 	private FightScore fightScore = FightScore.S;
+	
+	static {
+		SCORE_REQUIRED.put(1, 15D);
+		SCORE_REQUIRED.put(2, 25D);
+		SCORE_REQUIRED.put(3, 35D);
+		SCORE_REQUIRED.put(4, 50D);
+	}
 	
 	public StandardFightInstance(Set<UUID> players, AreaType type, int nodesVisited) {
 		super(players);
@@ -48,6 +55,7 @@ public class StandardFightInstance extends FightInstance {
 
 	@Override
 	protected void setupInstance(Session s) {
+		scoreRequired = SCORE_REQUIRED.getOrDefault(s.getParty().size(), SCORE_REQUIRED.get(4));
 		scoreBar = Bukkit.createBossBar("Objective: Kill Enemies", BarColor.RED, BarStyle.SEGMENTED_6);
 		timeBar = Bukkit.createBossBar("Current Rating: " + fightScore.getDisplay(), BarColor.WHITE, BarStyle.SOLID);
 		
@@ -90,8 +98,8 @@ public class StandardFightInstance extends FightInstance {
 		if (s.getInstance() != this) return; // If we've moved on to reward instance don't spam the user
 		
 		score += mob.getValue();
-		scoreBar.setProgress(Math.min(1, score / SCORE_REQUIRED));
-		if (score >= SCORE_REQUIRED) {
+		scoreBar.setProgress(Math.min(1, score / scoreRequired));
+		if (score >= scoreRequired) {
 			FightInstance.handleWin();
 			timeBar.removeAll();
 			scoreBar.removeAll();
@@ -135,9 +143,9 @@ public class StandardFightInstance extends FightInstance {
 			
 			list.add(new EquipmentChoiceReward(equipDrops));
 			equipDrops = new ArrayList<Equipment>(3);
-			equipDrops.add(Equipment.get("rubyShard", fightScore == FightScore.S));
-			equipDrops.add(Equipment.get("emeraldShard", fightScore == FightScore.S));
-			equipDrops.add(Equipment.get("sapphireShard", fightScore == FightScore.S));
+			equipDrops.add(Equipment.get("rubyShard", false));
+			equipDrops.add(Equipment.get("emeraldShard", false));
+			equipDrops.add(Equipment.get("sapphireShard", false));
 			list.add(new EquipmentChoiceReward(equipDrops));
 			rewards.put(uuid, list);
 		}

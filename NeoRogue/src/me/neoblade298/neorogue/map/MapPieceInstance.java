@@ -260,7 +260,7 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 	}
 	
 	// Pastes the map piece and sets up its spawners
-	public void instantiate(FightInstance fi, int xOff, int zOff, int level) {
+	public void instantiate(FightInstance fi, int xOff, int zOff) {
 		updateSchematic();
 		/*
 		 * this.x is the chunk coordinates within the fighting area
