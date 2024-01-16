@@ -57,13 +57,13 @@ public class WoodenWand extends Equipment {
 		}
 
 		@Override
-		public void onTick(Location loc) {
-			tick.spawn(loc);
-			Util.playSound(p, loc, Sound.ENTITY_BLAZE_SHOOT, 1F, 1F, true);
+		public void onTick(Projectile proj) {
+			tick.spawn(proj.getLocation());
+			Util.playSound(p, proj.getLocation(), Sound.ENTITY_BLAZE_SHOOT, 1F, 1F, true);
 		}
 
 		@Override
-		public void onEnd(Location loc) {
+		public void onEnd(Projectile proj) {
 			
 		}
 

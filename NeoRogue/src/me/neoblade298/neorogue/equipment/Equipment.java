@@ -73,6 +73,7 @@ public abstract class Equipment {
 			new Brace(b);
 			new Brace2(b);
 			new Bulldoze(b);
+			new Cleave(b);
 			new EarthenTackle(b);
 			new EarthenWall(b);
 			new EmpoweredEdge(b);
@@ -501,7 +502,7 @@ public abstract class Equipment {
 	
 	public void weaponDamageProjectile(LivingEntity target, Projectile proj, Barrier hitBarrier) {
 		double damage = properties.getDamage();
-		if (proj.getBuffs() != null) {
+		if (!proj.getBuffs().isEmpty()) {
 			damage = Buff.applyOffenseBuffs(proj.getBuffs(), properties.getType(), damage);
 		}
 		if (hitBarrier != null) {

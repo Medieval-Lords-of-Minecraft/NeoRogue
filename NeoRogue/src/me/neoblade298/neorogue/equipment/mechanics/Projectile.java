@@ -31,12 +31,13 @@ public class Projectile {
 	private BukkitTask task;
 	private Location loc;
 	private BoundingBox bounds;
-	private HashMap<BuffType, Buff> buffs;
+	private HashMap<BuffType, Buff> buffs = new HashMap<BuffType, Buff>();
 	
 	public Projectile(ProjectileSettings settings, FightInstance inst, FightData owner) {
 		this.inst = inst;
 		this.owner = owner;
 		LivingEntity origin = owner.getEntity();
+		final Projectile proj = this;
 		
 		v = origin.getEyeLocation().getDirection().rotateAroundY(Math.toRadians(settings.getRotation()));
 		v.multiply(settings.getBlocksPerTick());
@@ -47,7 +48,7 @@ public class Projectile {
 			private int count = 0;
 			public void run() {
 				if (tick() || ++count > settings.getMaxTicks()) {
-					settings.onEnd(loc);
+					settings.onEnd(proj);
 					cancel();
 				}
 			}
@@ -105,7 +106,7 @@ public class Projectile {
 		}
 		
 		// Tick after making sure there's no collisions
-		settings.onTick(loc);
+		settings.onTick(this);
 		
 		// Gravity
 		if (settings.getGravity() != 0) {
@@ -116,7 +117,7 @@ public class Projectile {
 	
 	public void cancel(boolean useOnEnd) {
 		task.cancel();
-		if (useOnEnd) settings.onEnd(loc);
+		if (useOnEnd) settings.onEnd(this);
 	}
 	
 	public Vector getVector() {
@@ -129,5 +130,9 @@ public class Projectile {
 	
 	public FightData getOwner() {
 		return owner;
+	}
+	
+	public Location getLocation() {
+		return loc;
 	}
 }

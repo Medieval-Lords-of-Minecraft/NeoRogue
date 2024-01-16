@@ -87,7 +87,7 @@ public abstract class ProjectileSettings {
 	public Projectile start(FightInstance inst, FightData owner) {
 		return new Projectile(this, inst, owner);
 	}
-	public abstract void onTick(Location loc);
-	public abstract void onEnd(Location loc);
+	public abstract void onTick(Projectile proj);
+	public abstract void onEnd(Projectile proj);
 	public abstract void onHit(FightData hit, Barrier hitBarrier, Projectile proj);
 }

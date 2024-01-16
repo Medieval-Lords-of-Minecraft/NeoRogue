@@ -131,6 +131,7 @@ public class Barrier {
 	}
 	
 	public double applyDefenseBuffs(DamageType type, double amount) {
+		if (buffs.isEmpty()) return amount;
 		return Buff.applyDefenseBuffs(buffs, type, amount);
 	}
 }
