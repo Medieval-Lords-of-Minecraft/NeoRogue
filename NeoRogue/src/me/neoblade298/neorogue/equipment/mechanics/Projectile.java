@@ -1,5 +1,6 @@
 package me.neoblade298.neorogue.equipment.mechanics;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
 
@@ -18,42 +19,39 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.BuffType;
 
-public abstract class Projectile {
-	protected HashSet<UUID> targetsHit = new HashSet<UUID>();
-	protected Vector v;
-	protected Location loc;
-	protected double gravity;
-	protected boolean pierce, ignoreBarriers, ignoreBlocks, ignoreEntities;
-	protected BukkitTask task;
-	protected int maxTicks;
-	protected FightInstance inst;
-	protected FightData owner;
-	protected BoundingBox bounds;
-	public Projectile(LivingEntity origin, double blocksPerTick, double maxRange, int tickSpeed, boolean pierce, boolean ignoreBarriers,
-			boolean ignoreBlocks, boolean ignoreEntities, double yRotate, double gravity, FightInstance inst, FightData owner, double x, double y, double z) {
-		this.gravity = gravity;
-		this.pierce = pierce;
-		this.ignoreBarriers = ignoreBarriers;
-		this.maxTicks = (int) (maxRange / blocksPerTick) + 1;
+public class Projectile {
+	private FightInstance inst;
+	private FightData owner;
+	private HashSet<UUID> targetsHit = new HashSet<UUID>();
+	private Vector v;
+	private ProjectileSettings settings;
+	private BukkitTask task;
+	private Location loc;
+	private BoundingBox bounds;
+	private HashMap<BuffType, Buff> buffs;
+	
+	public Projectile(ProjectileSettings settings, FightInstance inst, FightData owner) {
 		this.inst = inst;
 		this.owner = owner;
+		LivingEntity origin = owner.getEntity();
 		
-		v = origin.getEyeLocation().getDirection().rotateAroundY(Math.toRadians(yRotate));
-		v.multiply(blocksPerTick);
-		
-		loc = origin.getLocation().add(0, 1.5, 0);
-		bounds = BoundingBox.of(loc, x, y, z);
+		v = origin.getEyeLocation().getDirection().rotateAroundY(Math.toRadians(settings.getRotation()));
+		v.multiply(settings.getBlocksPerTick());
+		loc = origin.getEyeLocation();
+		bounds = settings.getBounds().clone().shift(loc);
 		
 		task = new BukkitRunnable() {
 			private int count = 0;
 			public void run() {
-				if (tick() || ++count > maxTicks) {
-					onEnd();
+				if (tick() || ++count > settings.getMaxTicks()) {
+					settings.onEnd(loc);
 					cancel();
 				}
 			}
-		}.runTaskTimer(NeoRogue.inst(), tickSpeed, tickSpeed);
+		}.runTaskTimer(NeoRogue.inst(), settings.getTickSpeed(), settings.getTickSpeed());
 	}
 	
 	// True to cancel runnable
@@ -62,10 +60,10 @@ public abstract class Projectile {
 		bounds.shift(v);
 		
 		// Check for collision with shields
-		if (!ignoreBarriers) {
+		if (!settings.isIgnoreBarriers()) {
 			for (Barrier b : inst.getEnemyBarriers().values()) {
 				if (b.collides(loc)) {
-					onHit(FightInstance.getFightData(b.getOwner().getUniqueId()), b);
+					settings.onHit(FightInstance.getFightData(b.getOwner().getUniqueId()), b, this);
 					Player p = owner.getEntity() instanceof Player ? (Player) owner.getEntity() : null;
 					Util.playSound(p, Sound.ITEM_SHIELD_BLOCK, 1F, 1F, true);
 					return true;
@@ -74,7 +72,7 @@ public abstract class Projectile {
 		}
 		
 		// Check for collision with mobs
-		if (!ignoreEntities) {
+		if (!settings.isIgnoreEntities()) {
 			for (Entity ent : loc.getWorld().getNearbyEntities(bounds)) {
 				if (ent instanceof Player) continue;
 				
@@ -83,18 +81,18 @@ public abstract class Projectile {
 				if (targetsHit.contains(uuid)) continue;
 				targetsHit.add(uuid);
 				
-				if (!pierce) {
-					onHit(hit, null);
+				if (!settings.isPiercing()) {
+					settings.onHit(hit, null, this);
 					return true;
 				}
 				else {
-					onHit(hit, null);
+					settings.onHit(hit, null, this);
 				}
 			}
 		}
 		
 		// Check for collision with blocks
-		if (!ignoreBlocks) {
+		if (!settings.isIgnoreBlocks()) {
 			Block b = loc.getBlock();
 			if (!b.isPassable()) {
 				for (BoundingBox block : loc.getBlock().getCollisionShape().getBoundingBoxes()) {
@@ -107,21 +105,29 @@ public abstract class Projectile {
 		}
 		
 		// Tick after making sure there's no collisions
-		onTick();
+		settings.onTick(loc);
 		
 		// Gravity
-		if (gravity != 0) {
-			v.setY(v.getY() - gravity);
+		if (settings.getGravity() != 0) {
+			v.setY(v.getY() - settings.getGravity());
 		}
 		return false;
 	}
 	
 	public void cancel(boolean useOnEnd) {
 		task.cancel();
-		if (useOnEnd) onEnd();
+		if (useOnEnd) settings.onEnd(loc);
 	}
 	
-	public abstract void onTick();
-	public abstract void onEnd();
-	public abstract void onHit(FightData hit, Barrier hitBarrier);
+	public Vector getVector() {
+		return v;
+	}
+	
+	public HashMap<BuffType, Buff> getBuffs() {
+		return buffs;
+	}
+	
+	public FightData getOwner() {
+		return owner;
+	}
 }

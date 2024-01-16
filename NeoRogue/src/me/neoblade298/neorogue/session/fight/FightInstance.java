@@ -420,7 +420,7 @@ public abstract class FightInstance extends Instance {
 			if (data instanceof PlayerFightData) {
 				((PlayerFightData) data).getStats().addDamageBarriered(amount);
 			}
-			amount = data.getBarrier().applyDefenseBuffs(amount, type);
+			amount = Buff.applyDefenseBuffs(data.getBarrier().getBuffs(), type, amount);
 		}
 		
 		// Status effects

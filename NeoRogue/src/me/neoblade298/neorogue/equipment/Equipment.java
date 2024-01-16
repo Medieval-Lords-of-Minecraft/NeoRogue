@@ -12,7 +12,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.util.Vector;
 
 import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.bukkit.NeoCore;
@@ -27,8 +26,11 @@ import me.neoblade298.neorogue.equipment.weapons.*;
 import me.neoblade298.neorogue.equipment.cursed.*;
 import me.neoblade298.neorogue.equipment.consumables.*;
 import me.neoblade298.neorogue.equipment.materials.*;
+import me.neoblade298.neorogue.equipment.mechanics.Barrier;
+import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 import net.kyori.adventure.text.Component;
@@ -484,7 +486,7 @@ public abstract class Equipment {
 	}
 	
 	public void weaponDamage(Player p, PlayerFightData data, LivingEntity target, double damage, double knockback) {
-		BasicAttackEvent ev = new BasicAttackEvent(target, damage, knockback, properties.getType(), this);
+		BasicAttackEvent ev = new BasicAttackEvent(target, damage, knockback, properties.getType(), this, null);
 		data.runActions(data, Trigger.BASIC_ATTACK, ev);
 		FightInstance.dealDamage(p, properties.getType(), ev.getDamage(), target);
 		if (knockback != 0) {
@@ -493,12 +495,24 @@ public abstract class Equipment {
 	}
 	
 	// for projectiles
-	public void weaponDamageProjectile(Player p, PlayerFightData data, LivingEntity target, Vector v) {
-		BasicAttackEvent ev = new BasicAttackEvent(target, properties.getDamage(), properties.getKnockback(), properties.getType(), this);
+	public void weaponDamageProjectile(LivingEntity target, Projectile proj) {
+		weaponDamageProjectile(target, proj, null);
+	}
+	
+	public void weaponDamageProjectile(LivingEntity target, Projectile proj, Barrier hitBarrier) {
+		double damage = properties.getDamage();
+		if (proj.getBuffs() != null) {
+			damage = Buff.applyOffenseBuffs(proj.getBuffs(), properties.getType(), damage);
+		}
+		if (hitBarrier != null) {
+			damage = hitBarrier.applyDefenseBuffs(properties.getType(), damage);
+		}
+		BasicAttackEvent ev = new BasicAttackEvent(target, damage, properties.getKnockback(), properties.getType(), this, null);
+		PlayerFightData data = (PlayerFightData) proj.getOwner();
 		data.runActions(data, Trigger.BASIC_ATTACK, ev);
-		FightInstance.dealDamage(p, properties.getType(), ev.getDamage(), target);
+		FightInstance.dealDamage(data.getEntity(), properties.getType(), ev.getDamage(), target);
 		if (properties.getKnockback() != 0) {
-			FightInstance.knockback(v, target, properties.getKnockback());
+			FightInstance.knockback(proj.getVector(), target, properties.getKnockback());
 		}
 	}
 	

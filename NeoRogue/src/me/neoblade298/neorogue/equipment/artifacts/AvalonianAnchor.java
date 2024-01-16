@@ -26,6 +26,7 @@ public class AvalonianAnchor extends Artifact {
 		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
 			if (p.getVelocity().getY() < 0) {
 				BasicAttackEvent ev = (BasicAttackEvent) in;
+				if (ev.isProjectile()) return TriggerResult.keep();
 				Util.playSound(p, Sound.ENTITY_PLAYER_ATTACK_CRIT, false);
 				part.spawn(ev.getTarget());
 				ev.setDamage(ev.getDamage() * 1.5);
@@ -42,6 +43,6 @@ public class AvalonianAnchor extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.RESPAWN_ANCHOR,
-				"Landing a basic attack while falling multiplies its damage by <yellow>1.5x</yellow>");
+				"Landing a melee basic attack while falling multiplies its damage by <yellow>1.5x</yellow>");
 	}
 }

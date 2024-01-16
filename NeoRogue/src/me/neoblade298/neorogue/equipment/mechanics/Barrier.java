@@ -117,17 +117,6 @@ public class Barrier {
 		double vz = Math.abs(v.dot(axes.forward().multiply(forward)));
 		return vz < forward * 2;
 	}
-	
-	public double applyDefenseBuffs(double amount, DamageType type) {
-		double mult = 1;
-		for (BuffType bt : type.getBuffTypes()) {
-			if (!buffs.containsKey(bt)) continue;
-			Buff b = buffs.get(bt);
-			mult -= b.getMultiplier();
-			amount -= b.getIncrease();
-		}
-		return amount * mult;
-	}
 
 	public LivingEntity getOwner() {
 		return this.owner;
@@ -135,5 +124,13 @@ public class Barrier {
 	
 	public UUID getUniqueId() {
 		return uuid;
+	}
+	
+	public HashMap<BuffType, Buff> getBuffs() {
+		return buffs;
+	}
+	
+	public double applyDefenseBuffs(DamageType type, double amount) {
+		return Buff.applyDefenseBuffs(buffs, type, amount);
 	}
 }
