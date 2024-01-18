@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.abilities;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
@@ -11,20 +12,20 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.equipment.mechanics.Barrier;
-import me.neoblade298.neorogue.equipment.mechanics.Projectile;
-import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
-import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
+import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageType;
-import me.neoblade298.neorogue.session.fight.FightData;
+import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.TargetHelper;
+import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
+import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Cleave extends Equipment {
 	private int amount, damage;
-	private ProjectileGroup projs = new ProjectileGroup();
-	private static final ParticleContainer part = new ParticleContainer(Particle.SWEEP_ATTACK);
+	private static final ParticleContainer part = new ParticleContainer(Particle.SWEEP_ATTACK).offsetForward(2).count(10).spread(4, 0.2);
+	private static final TargetProperties tp = TargetProperties.cone(90, 5, false, TargetType.ENEMY);
 	
 	public Cleave(boolean isUpgraded) {
 		super("cleave", "Cleave", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
@@ -32,16 +33,17 @@ public class Cleave extends Equipment {
 		
 		amount = isUpgraded ? 5 : 3;
 		damage = isUpgraded ? 60 : 40;
-		for (int i = 0; i < amount; i++) {
-			projs.add(new CleaveProjectile(i, amount / 2));
-		}
+		addReforgeOption("cleave", "quake", "smite", "windSlash");
 	}
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(p, this, slot, (pd, in) -> {
 			Util.playSound(p, Sound.ENTITY_PLAYER_ATTACK_SWEEP, false);
-			projs.start(data);
+			part.spawn(p);
+			for (LivingEntity ent : TargetHelper.getEntitiesInCone(p, tp)) {
+				FightInstance.dealDamage(ent, new DamageMeta(amount, DamageType.SLASHING), ent);
+			}
 			return TriggerResult.keep();
 		}));
 	}
@@ -49,30 +51,6 @@ public class Cleave extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FLINT,
-				"On cast, fire <yellow>" + amount + " </yellow>projectiles in a cone in front of you that deal "
-						+ "<yellow>" + damage + " </yellow>.");
-	}
-	
-	private class CleaveProjectile extends Projectile {
-		public CleaveProjectile(int i, int center) {
-			super(0.5, properties.getRange(), 2);
-			this.size(1, 1);
-			int iter = i - center;
-			this.rotation(iter * 45);
-		}
-
-		@Override
-		public void onTick(ProjectileInstance proj) {
-			if (proj.getTick() % 3 == 0) Util.playSound((Player) proj.getOwner().getEntity(), proj.getLocation(), Sound.ENTITY_ENDER_DRAGON_FLAP, false);
-			part.spawn(proj.getLocation());
-		}
-
-		@Override
-		public void onEnd(ProjectileInstance proj) {}
-
-		@Override
-		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
-			damageProjectile(hit.getEntity(), proj, damage, DamageType.SLASHING);
-		}
+				"On cast, deal <yellow>" + damage + "</yellow> slashing damage in a cone in front of you.");
 	}
 }

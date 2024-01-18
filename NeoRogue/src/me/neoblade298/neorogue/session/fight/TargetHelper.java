@@ -32,6 +32,10 @@ public class TargetHelper {
 		return getEntitiesInRadius(source, props).peekFirst();
 	}
 	
+	public static LinkedList<LivingEntity> getEntitiesInCone(LivingEntity source, TargetProperties props) {
+		return TargetUtil.getEntitiesInCone(source, props.arc, props.range);
+	}
+	
 	public static class TargetProperties {
 		public double range, tolerance = 4, arc;
 		public boolean throughWall, stickToGround;
