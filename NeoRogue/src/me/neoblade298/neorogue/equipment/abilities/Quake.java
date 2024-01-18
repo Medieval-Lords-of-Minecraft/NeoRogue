@@ -18,17 +18,20 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
+import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class Cleave extends Equipment {
+public class Quake extends Equipment {
+	private static final TargetProperties tp = TargetProperties.radius(5, true, TargetType.ENEMY);
 	private int amount, damage;
 	private ProjectileGroup projs = new ProjectileGroup();
 	private static final ParticleContainer part = new ParticleContainer(Particle.SWEEP_ATTACK);
 	
-	public Cleave(boolean isUpgraded) {
-		super("cleave", "Cleave", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 10, 10, 7));
+	public Quake(boolean isUpgraded) {
+		super("quake", "Quake", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 10, 10, tp.range));
 		
 		amount = isUpgraded ? 5 : 3;
 		damage = isUpgraded ? 60 : 40;
@@ -55,7 +58,7 @@ public class Cleave extends Equipment {
 	
 	private class CleaveProjectile extends Projectile {
 		public CleaveProjectile(int i, int center) {
-			super(0.5, properties.getRange(), 2);
+			super(0.5, tp.range, 2);
 			this.size(1, 1);
 			int iter = i - center;
 			this.rotation(iter * 45);

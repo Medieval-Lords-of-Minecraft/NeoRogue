@@ -19,7 +19,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Provoke extends Equipment {
-	private static final TargetProperties tp = new TargetProperties(15, false, TargetType.ENEMY);
+	private static final TargetProperties tp = TargetProperties.radius(15, false, TargetType.ENEMY);
 	private int threat;
 	private ParticleContainer taunt = new ParticleContainer(Particle.VILLAGER_ANGRY);
 	

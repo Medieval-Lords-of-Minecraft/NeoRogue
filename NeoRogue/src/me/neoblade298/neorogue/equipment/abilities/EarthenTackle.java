@@ -33,8 +33,8 @@ public class EarthenTackle extends Equipment {
 	private ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION_LARGE),
 			start = new ParticleContainer(Particle.BLOCK_CRACK),
 			dirt = new ParticleContainer(Particle.BLOCK_CRACK);
-	private static final TargetProperties hc = new TargetProperties(1.5, true, TargetType.ENEMY),
-			aoe = new TargetProperties(4, true, TargetType.ENEMY);
+	private static final TargetProperties hc = TargetProperties.radius(1.5, true, TargetType.ENEMY),
+			aoe = TargetProperties.radius(4, true, TargetType.ENEMY);
 	private int damage, concussed;
 	
 	public EarthenTackle(boolean isUpgraded) {

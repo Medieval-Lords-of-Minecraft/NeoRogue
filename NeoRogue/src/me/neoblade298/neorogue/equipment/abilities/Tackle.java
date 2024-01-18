@@ -31,8 +31,8 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class Tackle extends Equipment {
 	private ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION_LARGE),
 			start = new ParticleContainer(Particle.CLOUD);
-	private static final TargetProperties hc = new TargetProperties(1.5, true, TargetType.ENEMY),
-			aoe = new TargetProperties(2, true, TargetType.ENEMY);
+	private static final TargetProperties hc = TargetProperties.radius(1.5, true, TargetType.ENEMY),
+			aoe = TargetProperties.radius(2, true, TargetType.ENEMY);
 	private int damage;
 	
 	public Tackle(boolean isUpgraded) {

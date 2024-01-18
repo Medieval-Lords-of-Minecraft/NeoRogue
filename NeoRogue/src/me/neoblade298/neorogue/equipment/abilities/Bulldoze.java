@@ -32,7 +32,7 @@ public class Bulldoze extends Equipment {
 	private ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION_LARGE),
 			start = new ParticleContainer(Particle.CLOUD),
 			wake = new ParticleContainer(Particle.EXPLOSION_NORMAL);
-	private static final TargetProperties hc = new TargetProperties(2, true, TargetType.ENEMY);
+	private static final TargetProperties hc = TargetProperties.radius(2, true, TargetType.ENEMY);
 	private int damage;
 	
 	public Bulldoze(boolean isUpgraded) {

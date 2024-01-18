@@ -17,8 +17,8 @@ public enum Trigger {
 	HOTBAR_7,
 	HOTBAR_8,
 	HOTBAR_9,
-	BASIC_ATTACK, // { LivingEntity target, double damage, double knockback, DamageType, Weapon }
-	CAST_USABLE, // { EquipmentInstance being used } 
+	BASIC_ATTACK,
+	CAST_USABLE,
 	LEFT_CLICK,
 	LEFT_CLICK_NO_HIT,
 	LEFT_CLICK_HIT,
@@ -27,10 +27,11 @@ public enum Trigger {
 	RAISE_SHIELD,
 	SHIELD_TICK, // Ticks while you have your shield up
 	LOWER_SHIELD,
-	RECEIVED_DAMAGE_BARRIER, // FightData projectile owner, double damageBefore, double damageAfter
+	RECEIVED_DAMAGE_BARRIER,
 	DEALT_DAMAGE,
 	WIN_FIGHT,
-	APPLY_STATUS, // FightData target, Status ID, stacks, duration
+	APPLY_STATUS,
+	LAUNCH_PROJECTILE_GROUP,
 	RECEIVED_DAMAGE; // Cancellable
 	
 	private boolean isSlotDependent = this.name().startsWith("LEFT_CLICK");

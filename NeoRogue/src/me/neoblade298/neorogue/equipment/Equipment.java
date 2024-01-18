@@ -27,7 +27,8 @@ import me.neoblade298.neorogue.equipment.cursed.*;
 import me.neoblade298.neorogue.equipment.consumables.*;
 import me.neoblade298.neorogue.equipment.materials.*;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
-import me.neoblade298.neorogue.equipment.mechanics.Projectile;
+import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
+import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
@@ -496,11 +497,11 @@ public abstract class Equipment {
 	}
 	
 	// for projectiles
-	public void weaponDamageProjectile(LivingEntity target, Projectile proj) {
+	public void weaponDamageProjectile(LivingEntity target, ProjectileInstance proj) {
 		weaponDamageProjectile(target, proj, null);
 	}
 	
-	public void weaponDamageProjectile(LivingEntity target, Projectile proj, Barrier hitBarrier) {
+	public void weaponDamageProjectile(LivingEntity target, ProjectileInstance proj, Barrier hitBarrier) {
 		double damage = properties.getDamage();
 		if (!proj.getBuffs().isEmpty()) {
 			damage = Buff.applyOffenseBuffs(proj.getBuffs(), properties.getType(), damage);
@@ -515,6 +516,20 @@ public abstract class Equipment {
 		if (properties.getKnockback() != 0) {
 			FightInstance.knockback(proj.getVector(), target, properties.getKnockback());
 		}
+	}
+
+	public void damageProjectile(LivingEntity target, ProjectileInstance proj, double damage, DamageType type) {
+		damageProjectile(target, proj, damage, type, null);
+	}
+	public void damageProjectile(LivingEntity target, ProjectileInstance proj, double damage, DamageType type, Barrier hitBarrier) {
+		if (!proj.getBuffs().isEmpty()) {
+			damage = Buff.applyOffenseBuffs(proj.getBuffs(), type, damage);
+		}
+		if (hitBarrier != null) {
+			damage = hitBarrier.applyDefenseBuffs(type, damage);
+		}
+		PlayerFightData data = (PlayerFightData) proj.getOwner();
+		FightInstance.dealDamage(data.getEntity(), type, damage, target);
 	}
 	
 	public boolean isCursed() {

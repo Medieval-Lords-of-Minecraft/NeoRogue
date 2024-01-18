@@ -3,7 +3,7 @@ package me.neoblade298.neorogue.session.fight.trigger.event;
 import org.bukkit.entity.LivingEntity;
 
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.mechanics.Projectile;
+import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.session.fight.DamageType;
 
 public class BasicAttackEvent {
@@ -11,8 +11,8 @@ public class BasicAttackEvent {
 	private double damage, knockback;
 	private DamageType type;
 	private Equipment weapon;
-	private Projectile proj;
-	public BasicAttackEvent(LivingEntity target, double damage, double knockback, DamageType type, Equipment weapon, Projectile proj) {
+	private ProjectileInstance proj;
+	public BasicAttackEvent(LivingEntity target, double damage, double knockback, DamageType type, Equipment weapon, ProjectileInstance proj) {
 		this.target = target;
 		this.damage = damage;
 		this.knockback = knockback;
@@ -50,7 +50,7 @@ public class BasicAttackEvent {
 	public void setWeapon(Equipment weapon) {
 		this.weapon = weapon;
 	}
-	public Projectile getProjectile() {
+	public ProjectileInstance getProjectile() {
 		return proj;
 	}
 	public boolean isProjectile() {
