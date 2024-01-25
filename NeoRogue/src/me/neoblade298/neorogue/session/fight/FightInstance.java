@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 
@@ -44,16 +43,11 @@ import me.neoblade298.neorogue.session.LoseInstance;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
 import me.neoblade298.neorogue.session.fight.TickAction.TickResult;
-import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.BuffSlice;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
-import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.GenericStatusType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
-import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.RightClickHitEvent;
 
 public abstract class FightInstance extends Instance {
@@ -374,53 +368,13 @@ public abstract class FightInstance extends Instance {
 	public static void dealDamage(DamageMeta meta, Collection<LivingEntity> targets) {
 		trigger((Player) meta.getOwner().getEntity(), Trigger.DEALT_DAMAGE_MULTIPLE, new DealtDamageEvent(meta));
 		for (LivingEntity target : targets) {
-			receiveDamage(meta.clone(), target);
+			meta.clone().dealDamage(target);
 		}
 	}
 
 	public static void dealDamage(DamageMeta meta, LivingEntity target) {
 		trigger((Player) meta.getOwner().getEntity(), Trigger.DEALT_DAMAGE, new DealtDamageEvent(meta));
-		receiveDamage(meta, target);
-	}
-
-	private static void receiveDamage(DamageMeta meta, LivingEntity target) {
-		UUID uuid = target.getUniqueId();
-		FightData data = getFightData(uuid);
-		LivingEntity damager = data.getEntity();
-
-		if (meta.bypassShields()) {
-			amount += target.getAbsorptionAmount();
-			new BukkitRunnable() {
-				public void run() {
-					data.getShields().update();
-				}
-			}.runTask(NeoRogue.inst());
-		}
-
-		// Finally calculate hp damage
-		double multiplier = 1;
-		for (BuffType buffType : type.getBuffTypes()) {
-			Buff b = data.getBuff(false, buffType);
-			if (b == null) continue;
-
-			amount -= b.getIncrease();
-			multiplier -= b.getMultiplier();
-			for (Entry<UUID, BuffSlice> ent : b.getSlices().entrySet()) {
-				BuffSlice slice = ent.getValue();
-				userData.get(ent.getKey()).getStats()
-						.addDefenseBuffed(slice.getIncrease() + (slice.getMultiplier() * original));
-			}
-		}
-		if (data instanceof PlayerFightData) {
-			((PlayerFightData) data).getStats().addDamageDealt(type, amount);
-		}
-		amount *= multiplier;
-		if (amount > 0) {
-			if (!(target instanceof Player)) {
-				NeoRogue.mythicApi.castSkill(target, "UpdateHealthbar");
-			}
-			target.damage(amount);
-		}
+		meta.dealDamage(target);
 	}
 
 	@Override

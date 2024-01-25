@@ -6,6 +6,7 @@ import java.util.UUID;
 import java.util.Map.Entry;
 
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neorogue.NeoRogue;
@@ -84,8 +85,8 @@ public class DamageMeta {
 		defenseBuffs.add(new BuffMap(buffs, origin));
 	}
 	
-	public void dealDamage(FightData recipient) {
-		LivingEntity target = recipient.getEntity();
+	public void dealDamage(LivingEntity target) {
+		FightData recipient = FightInstance.getFightData(target.getUniqueId());
 		LivingEntity damager = owner.getEntity();
 		addDefenseBuffs(recipient.getBuffs(false), BuffMapOrigin.NORMAL);
 		double damage = 0;
@@ -236,24 +237,29 @@ public class DamageMeta {
 		}
 
 		// Calculate damage to shields
-		if (data.getShields() != null && !data.getShields().isEmpty() && !meta.bypassShields()) {
-			ShieldHolder shields = data.getShields();
-			amount = Math.max(0, shields.useShields(amount));
-			new BukkitRunnable() {
-				public void run() {
-					shields.update();
-				}
-			}.runTask(NeoRogue.inst());
-
-			if (amount <= 0) {
-				// Make sure player never dies from chip damage from shields
-				// Chip damage only happens when a shield breaks
-				if (target.getHealth() < 10) {
-					target.setHealth(target.getHealth() + 0.1);
-					target.damage(0.1);
-				}
-				return;
+		if (recipient.getShields() != null && !recipient.getShields().isEmpty()) {
+			ShieldHolder shields = recipient.getShields();
+			damage = Math.max(0, shields.useShields(damage));
+			
+			// Update shield after if damage was dealt through shield
+			if (damage > 0 || ignoreShieldsDamage > 0) {
+				new BukkitRunnable() {
+					public void run() {
+						shields.update();
+					}
+				}.runTask(NeoRogue.inst());
 			}
+		}
+		
+		final double finalDamage = damage + ignoreShieldsDamage + target.getAbsorptionAmount();
+		if (finalDamage >= 0) {
+			target.damage(finalDamage, damager);
+			if (!(target instanceof Player)) {
+				NeoRogue.mythicApi.castSkill(target, "UpdateHealthbar");
+			}
+		}
+		else {
+			target.damage(0, damager);
 		}
 		
 	}
