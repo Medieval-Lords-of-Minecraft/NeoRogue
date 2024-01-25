@@ -11,6 +11,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.status.Status.GenericStatusType;
 import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -55,7 +56,7 @@ public class Bide extends Equipment {
 			action = (data, inputs) -> {
 				if (System.currentTimeMillis() - createTime > 5000) return TriggerResult.remove();
 				bpc.spawn(p);
-				data.applyStatus("BERSERK", p.getUniqueId(), berserk);
+				data.applyStatus(GenericStatusType.BASIC, "BERSERK", p.getUniqueId(), berserk, -1);
 				Util.playSound(p, Sound.ENTITY_BLAZE_SHOOT, 1F, 1F, false);
 				return TriggerResult.keep();
 			};

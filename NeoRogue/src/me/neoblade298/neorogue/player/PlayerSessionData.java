@@ -95,16 +95,12 @@ public class PlayerSessionData {
 		staminaRegen = 2;
 		health = maxHealth;
 		this.pc = pc;
-		
-		startingStamina = 100;
 
 		// Starting equipment
 		switch (this.pc) {
 		case WARRIOR:
 			hotbar[0] = Equipment.get("woodenSword", false);
 			hotbar[1] = Equipment.get("empoweredEdge", false);
-			hotbar[2] = Equipment.get("cleave", false);
-			hotbar[3] = Equipment.get("woodenWand", false);
 			break;
 		case THIEF:
 			hotbar[0] = Equipment.get("woodenSword", false);

@@ -88,7 +88,7 @@ public class EarthenTackle extends Equipment {
 						for (LivingEntity ent : hit) {
 							pc.spawn(ent);
 							dirt.spawn(ent);
-							FightInstance.dealDamage(p, DamageType.BLUNT, damage, ent);
+							FightInstance.dealDamage(data, DamageType.BLUNT, damage, ent);
 							FightInstance.applyStatus(ent, StatusType.CONCUSSED, p, concussed, -1);
 						}
 					}

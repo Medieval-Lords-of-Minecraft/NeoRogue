@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.abilities;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
@@ -40,9 +41,16 @@ public class Execute extends Equipment {
 			pc.spawn(p);
 			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in) -> {
 				BasicAttackEvent ev = (BasicAttackEvent) in;
-				FightInstance.dealDamage(p, DamageType.PIERCING, damage, ev.getTarget());
-				hit.spawn(ev.getTarget().getLocation());
+				double pct = ev.getTarget().getHealth() / ev.getTarget().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
 				Util.playSound(p, Sound.BLOCK_ANVIL_LAND, 1F, 1F, false);
+				hit.spawn(ev.getTarget().getLocation());
+				if (pct < 0.5) {
+					FightInstance.dealDamage(data, DamageType.PIERCING, damage + execute, ev.getTarget());
+					Util.playSound(p, Sound.ENTITY_BLAZE_SHOOT, 1F, 1F, false);
+				}
+				else {
+					FightInstance.dealDamage(data, DamageType.PIERCING, damage, ev.getTarget());
+				}
 				return TriggerResult.remove();
 			});
 			return TriggerResult.keep();

@@ -41,7 +41,7 @@ public class RecklessSwing extends Equipment {
 			pc.spawn(p);
 			pdata.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in2) -> {
 				BasicAttackEvent ev = (BasicAttackEvent) in2;
-				FightInstance.dealDamage(p, DamageType.SLASHING, damage, ev.getTarget());
+				FightInstance.dealDamage(data, DamageType.SLASHING, damage, ev.getTarget());
 				hit.spawn(ev.getTarget().getLocation());
 				Util.playSound(p, Sound.BLOCK_ANVIL_LAND, 1F, 1F, false);
 				return TriggerResult.remove();

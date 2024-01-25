@@ -18,7 +18,7 @@ public class PoisonStatus extends DurationStatus {
 	
 	@Override
 	public void onTickAction() {
-		FightInstance.receiveDamage(null, new DamageMeta(stacks, DamageType.POISON, true), data.getEntity());
+		FightInstance.dealDamage(new DamageMeta(null, stacks, DamageType.POISON, false, true), data.getEntity());
 		for (Entry<UUID, Integer> ent : slices.getSliceOwners().entrySet()) {
 			FightInstance.getUserData(ent.getKey()).getStats().addDamageDealt(DamageType.POISON, ent.getValue());
 		}

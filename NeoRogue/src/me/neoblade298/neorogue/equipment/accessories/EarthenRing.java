@@ -27,7 +27,7 @@ public class EarthenRing extends Equipment {
 		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
 			BasicAttackEvent ev = (BasicAttackEvent) in;
 			LivingEntity target = ev.getTarget();
-			FightInstance.dealDamage(p, DamageType.EARTH, damage, target);
+			FightInstance.dealDamage(data, DamageType.EARTH, damage, target);
 			return TriggerResult.keep();
 		});
 	}

@@ -3,8 +3,6 @@ package me.neoblade298.neorogue.session.fight.buff;
 import java.util.HashMap;
 import java.util.UUID;
 
-import me.neoblade298.neorogue.session.fight.DamageType;
-
 public class Buff {
 	private double increase, multiplier;
 	private HashMap<UUID, BuffSlice> slices = new HashMap<UUID, BuffSlice>();
@@ -15,6 +13,12 @@ public class Buff {
 		this.increase = increase;
 		this.multiplier = multiplier;
 		slices.put(applier, new BuffSlice(increase, multiplier));
+	}
+	
+	public Buff(double increase, double multiplier, HashMap<UUID, BuffSlice> slices) {
+		this.increase = increase;
+		this.multiplier = multiplier;
+		this.slices = slices;
 	}
 	
 	public void addIncrease(UUID applier, double increase) {
@@ -53,27 +57,5 @@ public class Buff {
 	
 	public double getMultiplier() {
 		return multiplier;
-	}
-	
-	public static double applyOffenseBuffs(HashMap<BuffType, Buff> buffs, DamageType type, double amount) {
-		double increase = 0, mult = 1;
-		for (BuffType bt : type.getBuffTypes()) {
-			if (!buffs.containsKey(bt)) continue;
-			Buff b = buffs.get(bt);
-			mult += b.getMultiplier();
-			increase += b.getIncrease();
-		}
-		return (amount * mult) + increase;
-	}
-	
-	public static double applyDefenseBuffs(HashMap<BuffType, Buff> buffs, DamageType type, double amount) {
-		double increase = 0, mult = 1;
-		for (BuffType bt : type.getBuffTypes()) {
-			if (!buffs.containsKey(bt)) continue;
-			Buff b = buffs.get(bt);
-			mult -= b.getMultiplier();
-			increase -= b.getIncrease();
-		}
-		return (amount * mult) + increase;
 	}
 }

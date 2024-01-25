@@ -71,6 +71,10 @@ public class FightData {
 		this.shields = new ShieldHolder(this);
 		this.spawner = spawner;
 	}
+	
+	public UUID getUniqueId() {
+		return entity.getUniqueId();
+	}
 
 	public FightInstance getInstance() {
 		return inst;
@@ -106,6 +110,10 @@ public class FightData {
 
 	public Buff getBuff(boolean damageBuff, BuffType type) {
 		return damageBuff ? damageBuffs.get(type) : defenseBuffs.get(type);
+	}
+	
+	public HashMap<BuffType, Buff> getBuffs(boolean damageBuff) {
+		return damageBuff ? damageBuffs : defenseBuffs;
 	}
 
 	public void addTask(String id, BukkitTask task) {
@@ -207,32 +215,30 @@ public class FightData {
 	}
 	
 	public void applyStatus(StatusType type, UUID applier, int stacks, int seconds) {
-		if (FightInstance.getUserData().containsKey(applier)) {
-			PlayerFightData data = FightInstance.getUserData(applier);
-			FightInstance.trigger(data.getPlayer(), Trigger.APPLY_STATUS, new ApplyStatusEvent(this, type.name(), stacks, seconds));
-		}
+		applyStatus(type, applier, stacks, seconds, null);
+	}
+	
+	public void applyStatus(StatusType type, UUID applier, int stacks, int seconds, DamageMeta meta) {
 		Status s = statuses.getOrDefault(type.name(), Status.createByType(type, applier, this));
-		s.apply(applier, stacks, seconds);
-		statuses.put(type.name(), s);
+		applyStatus(s, applier, stacks, seconds, meta);
 	}
 	
 	public void applyStatus(GenericStatusType type, String id, UUID applier, int stacks, int seconds) {
-		if (FightInstance.getUserData().containsKey(applier)) {
-			PlayerFightData data = FightInstance.getUserData(applier);
-			FightInstance.trigger(data.getPlayer(), Trigger.APPLY_STATUS, new ApplyStatusEvent(this, id, stacks, seconds));
-		}
-		Status s = statuses.getOrDefault(type.name(), Status.createByGenericType(type, id, applier, this));
-		s.apply(applier, stacks, seconds);
-		statuses.put(id, s);
+		applyStatus(type, id, applier, stacks, seconds, null);
 	}
 	
-	public void applyStatus(String id, UUID applier, int stacks) {
+	public void applyStatus(GenericStatusType type, String id, UUID applier, int stacks, int seconds, DamageMeta meta) {
+		Status s = statuses.getOrDefault(type.name(), Status.createByGenericType(type, id, applier, this));
+		applyStatus(s, applier, stacks, seconds, meta);
+	}
+	
+	private void applyStatus(Status s, UUID applier, int stacks, int seconds, DamageMeta meta) {
+		String id = s.getId();
 		if (FightInstance.getUserData().containsKey(applier)) {
 			PlayerFightData data = FightInstance.getUserData(applier);
-			FightInstance.trigger(data.getPlayer(), Trigger.APPLY_STATUS, new ApplyStatusEvent(this, id, stacks, -1));
+			FightInstance.trigger(data.getPlayer(), Trigger.APPLY_STATUS, new ApplyStatusEvent(this, id, stacks, seconds, meta));
 		}
-		Status s = Status.createByGenericType(GenericStatusType.BASIC, id, applier, this);
-		s.apply(applier, stacks, -1);
+		s.apply(applier, stacks, seconds);
 		statuses.put(id, s);
 	}
 	

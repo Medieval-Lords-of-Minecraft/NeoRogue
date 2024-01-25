@@ -4,8 +4,10 @@ import java.util.HashMap;
 
 public class FightStatistics {
 	private HashMap<DamageType, Double> damageDealt = new HashMap<DamageType, Double>(),
-			damageTaken = new HashMap<DamageType, Double>();
-	private double healingGiven, healingReceived, damageMitigated, damageBuffed, damageBarriered, damageShielded, defenseBuffed;
+			damageTaken = new HashMap<DamageType, Double>(),
+			damageMitigated = new HashMap<DamageType, Double>(),
+			damageBuffed = new HashMap<DamageType, Double>();
+	private double healingGiven, healingReceived, selfHealing, damageBarriered, damageShielded, defenseBuffed;
 	
 	public void addDamageDealt(DamageType type, double amount) {
 		double amt = damageDealt.getOrDefault(type, 0D);
@@ -21,12 +23,14 @@ public class FightStatistics {
 		this.damageBarriered += amount;
 	}
 	
-	public void addDamageMitigated(double amount) {
-		this.damageMitigated += amount;
+	public void addDamageMitigated(DamageType type, double amount) {
+		double amt = damageMitigated.getOrDefault(type, 0D);
+		damageMitigated.put(type, amt + amount);
 	}
 	
-	public void addDamageBuffed(double amount) {
-		this.damageBuffed += amount;
+	public void addDamageBuffed(DamageType type, double amount) {
+		double amt = damageBuffed.getOrDefault(type, 0D);
+		damageBuffed.put(type, amt + amount);
 	}
 	
 	public void addDamageShielded(double amount) {
@@ -39,6 +43,10 @@ public class FightStatistics {
 	
 	public void addHealingGiven(double amount) {
 		this.healingGiven += amount;
+	}
+	
+	public void addSelfHealing(double amount) {
+		this.selfHealing += amount;
 	}
 	
 	public void addHealingReceived(double amount) {
@@ -61,11 +69,11 @@ public class FightStatistics {
 		return healingReceived;
 	}
 
-	public double getDamageMitigated() {
+	public HashMap<DamageType, Double> getDamageMitigated() {
 		return damageMitigated;
 	}
 
-	public double getDamageBuffed() {
+	public HashMap<DamageType, Double> getDamageBuffed() {
 		return damageBuffed;
 	}
 
@@ -75,6 +83,10 @@ public class FightStatistics {
 
 	public double getDamageShielded() {
 		return damageShielded;
+	}
+	
+	public double getSelfHealing() {
+		return selfHealing;
 	}
 
 	public double getDefenseBuffed() {

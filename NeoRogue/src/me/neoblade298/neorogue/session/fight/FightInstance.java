@@ -1,6 +1,7 @@
 package me.neoblade298.neorogue.session.fight;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -50,6 +51,7 @@ import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.GenericStatusType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
+import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.RightClickHitEvent;
@@ -61,7 +63,7 @@ public abstract class FightInstance extends Instance {
 	private static HashMap<UUID, BukkitTask> blockTasks = new HashMap<UUID, BukkitTask>();
 	private static HashSet<UUID> toTick = new HashSet<UUID>();
 	private static final int KILLS_TO_SCALE = 5; // number of mobs to kill before increasing total mobs by 1
-	
+
 	protected HashSet<UUID> party = new HashSet<UUID>();
 	protected Map map;
 	protected ArrayList<MapSpawnerInstance> spawners = new ArrayList<MapSpawnerInstance>(),
@@ -74,31 +76,31 @@ public abstract class FightInstance extends Instance {
 	protected double spawnCounter; // Holds a value between 0 and 1, when above 1, a mob spawns
 	protected double totalSpawnValue; // Keeps track of total mob spawns, to handle scaling of spawning
 	protected int level; // The level of the instance
-	
+
 	public FightInstance(Set<UUID> players) {
 		party.addAll(players);
 	}
-	
+
 	public void addInitialTask(FightRunnable runnable) {
 		initialTasks.add(runnable);
 	}
-	
+
 	public static HashMap<UUID, Barrier> getUserBarriers() {
 		return userBarriers;
 	}
-	
+
 	public void instantiate() {
 		map.instantiate(this, s.getXOff(), s.getZOff());
 	}
-	
+
 	public Map getMap() {
 		return map;
 	}
-	
+
 	public HashSet<UUID> getParty() {
 		return party;
 	}
-	
+
 	public static void handleDeath(PlayerDeathEvent e) {
 		Player p = e.getEntity();
 		Location prev = p.getLocation();
@@ -109,25 +111,25 @@ public abstract class FightInstance extends Instance {
 		PlayerFightData data = userData.remove(pu);
 		data.cleanup();
 		fightData.remove(pu).cleanup();
-		
+
 		new BukkitRunnable() {
 			public void run() {
 				p.spigot().respawn();
 				p.teleport(prev);
 				data.getSessionData().setDeath(true);
-				
+
 				// If that's the last player alive, send them to a post death instance
 				for (UUID uuid : data.getInstance().getParty()) {
 					PlayerFightData fdata = userData.get(uuid);
 					if (fdata != null && fdata.isActive()) return;
 				}
-				
+
 				// End game as a loss
 				data.getInstance().s.setInstance(new LoseInstance());
 			}
 		}.runTaskLater(NeoRogue.inst(), 5L);
 	}
-	
+
 	// This handles basic left click and/or enemy damage
 	public static void handleDamage(EntityDamageByEntityEvent e) {
 		Player p = (Player) e.getDamager();
@@ -140,13 +142,13 @@ public abstract class FightInstance extends Instance {
 		trigger(p, Trigger.LEFT_CLICK, null);
 		trigger(p, Trigger.LEFT_CLICK_HIT, new LeftClickHitEvent((LivingEntity) e.getEntity()));
 	}
-	
+
 	public static void handleWin() {
 		for (PlayerFightData data : userData.values()) {
 			trigger(data.getPlayer(), Trigger.WIN_FIGHT, new Object[0]);
 		}
 	}
-	
+
 	public static void handleHotbarSwap(PlayerItemHeldEvent e) {
 		// Only cancel swap if something is bound to the trigger
 		Player p = e.getPlayer();
@@ -154,21 +156,21 @@ public abstract class FightInstance extends Instance {
 		e.setCancelled(data.hasTriggerAction(Trigger.getFromHotbarSlot(e.getNewSlot())));
 		trigger(e.getPlayer(), Trigger.getFromHotbarSlot(e.getNewSlot()), null);
 	}
-	
+
 	public static void handleOffhandSwap(PlayerSwapHandItemsEvent e) {
 		e.setCancelled(true);
 		Player p = e.getPlayer();
 		// Offhand is always cancelled
 		trigger(p, p.isSneaking() ? Trigger.SHIFT_SWAP : Trigger.SWAP, null);
 	}
-	
+
 	public static void handleDropItem(PlayerDropItemEvent e) {
 		e.setCancelled(true);
 		Player p = e.getPlayer();
 		// Drop item is always cancelled
 		trigger(p, p.isSneaking() ? Trigger.SHIFT_DROP : Trigger.DROP, null);
 	}
-	
+
 	public void handleInteractEvent(PlayerInteractEvent e) {
 		Action a = e.getAction();
 		if (a == Action.LEFT_CLICK_AIR || a == Action.LEFT_CLICK_BLOCK) {
@@ -178,7 +180,7 @@ public abstract class FightInstance extends Instance {
 			handleRightClickGeneral(e);
 		}
 	}
-	
+
 	public static void handleRightClickEntity(PlayerInteractEntityEvent e) {
 		Player p = (Player) e.getPlayer();
 		PlayerFightData data = userData.get(p.getUniqueId());
@@ -187,18 +189,18 @@ public abstract class FightInstance extends Instance {
 		if (!(e.getRightClicked() instanceof LivingEntity)) return;
 		trigger(p, Trigger.RIGHT_CLICK_HIT, new RightClickHitEvent((LivingEntity) e.getRightClicked()));
 	}
-	
+
 	public static void handleRightClickGeneral(PlayerInteractEvent e) {
 		Player p = e.getPlayer();
 		UUID uuid = p.getUniqueId();
 		if (e.getHand() == EquipmentSlot.OFF_HAND) {
 			trigger(p, Trigger.RAISE_SHIELD, null);
 			trigger(p, Trigger.RIGHT_CLICK, null);
-			
+
 			if (blockTasks.containsKey(uuid)) {
 				blockTasks.get(uuid).cancel();
 			}
-			
+
 			blockTasks.put(uuid, new BukkitRunnable() {
 				public void run() {
 					if (p == null || !p.isBlocking()) {
@@ -217,7 +219,7 @@ public abstract class FightInstance extends Instance {
 			if (p.isSneaking()) {
 				trigger(p, Trigger.SHIFT_RCLICK, null);
 			}
-			
+
 			if (y > 0) {
 				trigger(p, Trigger.UP_RCLICK, null);
 			}
@@ -226,7 +228,7 @@ public abstract class FightInstance extends Instance {
 			}
 		}
 	}
-	
+
 	public static void handleLeftClick(PlayerInteractEvent e) {
 		if (e.getHand() != EquipmentSlot.HAND) return;
 		Player p = e.getPlayer();
@@ -237,13 +239,13 @@ public abstract class FightInstance extends Instance {
 		trigger(e.getPlayer(), Trigger.LEFT_CLICK, null);
 		trigger(e.getPlayer(), Trigger.LEFT_CLICK_NO_HIT, null);
 	}
-	
+
 	public static void handleMythicDespawn(MythicMobDespawnEvent e) {
 		FightData data = removeFightData(e.getEntity().getUniqueId());
 		if (data == null || data.getInstance() == null) return;
 		data.getInstance().handleRespawn(data, e.getMobType().getInternalName(), true);
 	}
-	
+
 	public static void handleMythicDeath(MythicMobDeathEvent e) {
 		FightData data = removeFightData(e.getEntity().getUniqueId());
 		if (data == null) return;
@@ -251,9 +253,9 @@ public abstract class FightInstance extends Instance {
 		data.getInstance().handleRespawn(data, id, false);
 		data.getInstance().handleMobKill(id);
 	}
-	
+
 	public abstract void handleMobKill(String id);
-	
+
 	public void handleRespawn(FightData data, String id, boolean isDespawn) {
 		Mob mob = Mob.get(id);
 		if (mob == null) {
@@ -264,7 +266,7 @@ public abstract class FightInstance extends Instance {
 		if (data.getSpawner() != null) {
 			data.getSpawner().subtractActiveMobs();
 		}
-		
+
 		if (!isDespawn) {
 			totalSpawnValue += mob.getValue();
 			if (totalSpawnValue > KILLS_TO_SCALE) {
@@ -272,14 +274,14 @@ public abstract class FightInstance extends Instance {
 				totalSpawnValue -= KILLS_TO_SCALE;
 			}
 		}
-		
+
 		spawnCounter += mob.getValue();
 		while (spawnCounter >= 1) {
 			spawnCounter--;
 			data.getInstance().activateSpawner(1);
 		}
 	}
-	
+
 	// Method that's called by all listeners and is directly connected to events
 	// Returns true if the event should be cancelled
 	public static boolean trigger(Player p, Trigger trigger, Object obj) {
@@ -291,7 +293,7 @@ public abstract class FightInstance extends Instance {
 		}
 		return data.runActions(data, trigger, obj);
 	}
-	
+
 	public static FightData getFightData(UUID uuid) {
 		if (!fightData.containsKey(uuid)) {
 			FightData fd = new FightData((LivingEntity) Bukkit.getEntity(uuid), (MapSpawnerInstance) null);
@@ -299,188 +301,93 @@ public abstract class FightInstance extends Instance {
 		}
 		return fightData.get(uuid);
 	}
-	
+
 	public static HashMap<UUID, PlayerFightData> getUserData() {
 		return userData;
 	}
-	
+
 	public static PlayerFightData getUserData(UUID uuid) {
 		return userData.get(uuid);
 	}
-	
+
 	public static void giveHeal(LivingEntity caster, double amount, LivingEntity... targets) {
 		for (LivingEntity target : targets) {
 			if (!(target instanceof Attributable)) continue;
-			double toSet = Math.min(caster.getHealth() + amount, ((Attributable) caster).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+			PlayerFightData cfd = FightInstance.getUserData(caster.getUniqueId());
+			PlayerFightData tfd = FightInstance.getUserData(target.getUniqueId());
+			
+			double toSet = Math.min(caster.getHealth() + amount,
+					((Attributable) caster).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+			double actual = toSet - caster.getHealth();
+			
+			if(caster == target) {
+				if (cfd != null) {
+					cfd.getStats().addSelfHealing(actual);
+				}
+			}
+			else {
+				if (cfd != null) {
+					cfd.getStats().addHealingGiven(actual);
+				}
+				if (tfd != null) {
+					tfd.getStats().addHealingReceived(actual);
+				}
+			}
+			
 			caster.setHealth(toSet);
 		}
 	}
-	
+
 	public static void applyStatus(Entity target, String id, Entity applier, int stacks, int seconds) {
 		FightData data = getFightData(target.getUniqueId());
-		data.applyStatus(id, applier.getUniqueId(), stacks);
+		data.applyStatus(GenericStatusType.BASIC, id, applier.getUniqueId(), stacks, seconds);
 	}
-	
+
 	public static void applyStatus(Entity target, StatusType type, Entity applier, int stacks, int seconds) {
 		FightData data = getFightData(target.getUniqueId());
 		data.applyStatus(type, applier.getUniqueId(), stacks, seconds);
 	}
-	
-	public static void applyStatus(Entity target, GenericStatusType type, String id, Entity applier, int stacks, int seconds) {
+
+	public static void applyStatus(Entity target, GenericStatusType type, String id, Entity applier, int stacks,
+			int seconds) {
 		FightData data = getFightData(target.getUniqueId());
 		data.applyStatus(type, id, applier.getUniqueId(), stacks, seconds);
 	}
-	
-	public static void dealDamage(LivingEntity damager, DamageType type, double amount, LivingEntity target) {
-		dealDamage(damager, new DamageMeta(amount, type), target);
+
+	public static void dealDamage(FightData owner, DamageType type, double amount, LivingEntity target) {
+		dealDamage(new DamageMeta(owner, amount, type), target);
 	}
-	
-	public static void dealDamage(LivingEntity damager, DamageType type, double amount, LivingEntity... targets) {
-		dealDamage(damager, new DamageMeta(amount, type), targets);
-	}
-	
+
 	public static void knockback(Entity src, Entity trg, double force) {
 		knockback(src.getLocation(), trg, force);
 	}
-	
+
 	public static void knockback(Location src, Entity trg, double force) {
 		Vector v = src.subtract(trg.getLocation()).toVector().normalize().multiply(force);
 		knockback(v, trg, force);
 	}
-	
+
 	public static void knockback(Vector v, Entity trg, double force) {
 		trg.setVelocity(trg.getVelocity().add(v.multiply(force)));
 	}
-	
-	public static void dealDamage(LivingEntity damager, DamageMeta meta, LivingEntity... targets) {
-		UUID uuid = damager.getUniqueId();
-		FightData data = getFightData(uuid);
-		double amount = meta.getDamage();
-		DamageType type = meta.getType();
-		double original = amount;
-		double multiplier = 1;
-		for (BuffType buffType : type.getBuffTypes()) {
-			Buff b = data.getBuff(true, buffType);
-			if (b == null) continue;
-			
-			amount += b.getIncrease();
-			multiplier += b.getMultiplier();
-			for (Entry<UUID, BuffSlice> ent : b.getSlices().entrySet()) {
-				BuffSlice slice = ent.getValue();
-				userData.get(ent.getKey()).getStats().addDefenseBuffed(slice.getIncrease() + (slice.getMultiplier() * original));
-			}
-		}
-		
-		if (data.hasStatus(StatusType.FROST) && type.containsBuffType(BuffType.PHYSICAL)) {
-			Status status = data.getStatus(StatusType.FROST);
-			int stacks = status.getStacks();
-			for (Entry<UUID, Integer> ent : status.getSlices().getSliceOwners().entrySet()) {
-				userData.get(ent.getKey()).getStats().addDamageMitigated(amount * Math.max(100, ent.getValue()) * 0.01);
-			}
-			amount *= 1 - (stacks * 0.01);
-			status.apply(uuid, (int) (-stacks * 0.1), 0);
-		}
-		amount *= multiplier;
-		
-		if (amount <= 0) amount = 0.1;
-		if (data instanceof PlayerFightData) {
-			((PlayerFightData) data).getStats().addDamageDealt(type, amount * targets.length);
-		}
-		else {
-		}
-		
-		meta.setDamage(amount);
+
+	public static void dealDamage(DamageMeta meta, Collection<LivingEntity> targets) {
+		trigger((Player) meta.getOwner().getEntity(), Trigger.DEALT_DAMAGE_MULTIPLE, new DealtDamageEvent(meta));
 		for (LivingEntity target : targets) {
-			receiveDamage(damager, meta, target);
+			receiveDamage(meta.clone(), target);
 		}
 	}
-	
-	public static void receiveDamage(LivingEntity damager, DamageMeta meta, LivingEntity target) {
+
+	public static void dealDamage(DamageMeta meta, LivingEntity target) {
+		trigger((Player) meta.getOwner().getEntity(), Trigger.DEALT_DAMAGE, new DealtDamageEvent(meta));
+		receiveDamage(meta, target);
+	}
+
+	private static void receiveDamage(DamageMeta meta, LivingEntity target) {
 		UUID uuid = target.getUniqueId();
 		FightData data = getFightData(uuid);
-		double amount = meta.getDamage();
-		double original = amount;
-		DamageType type = meta.getType();
-		
-		// If target is mythicmob, threat is premitigation damage
-		if (NeoRogue.mythicApi.isMythicMob(target)) {
-			NeoRogue.mythicApi.addThreat(damager, (LivingEntity) target, amount);
-		}
-		
-		// See if any of our effects cancel damage first
-		if (data instanceof PlayerFightData) {
-			PlayerFightData pdata = (PlayerFightData) data;
-			if (pdata.runActions(pdata, Trigger.RECEIVED_DAMAGE, new ReceivedDamageEvent(damager, meta))) {
-				return;
-			}
-		}
-		
-		// Reduce damage from barriers
-		if (meta.hitBarrier() && data.getBarrier() != null) {
-			if (data instanceof PlayerFightData) {
-				((PlayerFightData) data).getStats().addDamageBarriered(amount);
-			}
-			amount = Buff.applyDefenseBuffs(data.getBarrier().getBuffs(), type, amount);
-		}
-		
-		// Status effects
-		if (!meta.isSecondary()) {
-			if (data.hasStatus(StatusType.BURN)) {
-				dealDamage(damager, DamageType.FIRE, amount * 0.1, target);
-			}
-			
-			if (data.hasStatus(StatusType.ELECTRIFIED)) {
-				for (Entity e : target.getNearbyEntities(5, 5, 5)) {
-					if (e == target) continue;
-					if (e instanceof Player) continue;
-					if (!(e instanceof LivingEntity)) continue;
-					LivingEntity dmg = (LivingEntity) e;
-					int stacks = data.getStatus("ELECTRIFIED").getStacks();
-					dealDamage(damager, DamageType.LIGHTNING, amount * stacks * 0.1, dmg);
-				}
-			}
-			
-			if (data.hasStatus(StatusType.CONCUSSED) && type.containsBuffType(BuffType.PHYSICAL)) {
-				int stacks = data.getStatus(StatusType.CONCUSSED).getStacks();
-				dealDamage(damager, DamageType.EARTH, amount * stacks * 0.1, target);
-			}
-			
-			if (data.hasStatus(StatusType.INSANITY) && type.containsBuffType(BuffType.MAGICAL)) {
-				int stacks = data.getStatus(StatusType.INSANITY).getStacks();
-				dealDamage(damager, DamageType.DARK, amount * stacks * 0.1, target);
-			}
-			
-			if (data.hasStatus(StatusType.SANCTIFIED)) {
-				int stacks = data.getStatus(StatusType.SANCTIFIED).getStacks();
-				giveHeal(damager, amount * stacks * 0.1, target);
-			}
-			
-			if (data.hasStatus(StatusType.THORNS)) {
-				dealDamage(damager, new DamageMeta(amount * data.getStatus(StatusType.THORNS).getStacks(), DamageType.THORNS, false), target);
-			}
-		}
+		LivingEntity damager = data.getEntity();
 
-		// Calculate damage to shields
-		if (data.getShields() != null && !data.getShields().isEmpty() && !meta.bypassShields()) {
-			ShieldHolder shields = data.getShields();
-			amount = Math.max(0, shields.useShields(amount));
-			new BukkitRunnable() {
-				public void run() {
-					shields.update();
-				}
-			}.runTask(NeoRogue.inst());
-			
-			if (amount <= 0) {
-				// Make sure player never dies from chip damage from shields
-				// Chip damage only happens when a shield breaks
-				if (target.getHealth() < 10) {
-					target.setHealth(target.getHealth() + 0.1);
-					target.damage(0.1);
-				}
-				return;
-			}
-		}
-		
 		if (meta.bypassShields()) {
 			amount += target.getAbsorptionAmount();
 			new BukkitRunnable() {
@@ -489,19 +396,23 @@ public abstract class FightInstance extends Instance {
 				}
 			}.runTask(NeoRogue.inst());
 		}
-		
+
 		// Finally calculate hp damage
 		double multiplier = 1;
 		for (BuffType buffType : type.getBuffTypes()) {
 			Buff b = data.getBuff(false, buffType);
-			if (b == null) continue; 
-			
+			if (b == null) continue;
+
 			amount -= b.getIncrease();
 			multiplier -= b.getMultiplier();
 			for (Entry<UUID, BuffSlice> ent : b.getSlices().entrySet()) {
 				BuffSlice slice = ent.getValue();
-				userData.get(ent.getKey()).getStats().addDefenseBuffed(slice.getIncrease() + (slice.getMultiplier() * original));
+				userData.get(ent.getKey()).getStats()
+						.addDefenseBuffed(slice.getIncrease() + (slice.getMultiplier() * original));
 			}
+		}
+		if (data instanceof PlayerFightData) {
+			((PlayerFightData) data).getStats().addDamageDealt(type, amount);
 		}
 		amount *= multiplier;
 		if (amount > 0) {
@@ -516,7 +427,7 @@ public abstract class FightInstance extends Instance {
 	public void start(Session s) {
 		this.s = s;
 		level = 5 + s.getNodesVisited();
-		
+
 		instantiate();
 		s.broadcast("Commencing fight...");
 		ArrayList<PlayerFightData> fdata = new ArrayList<PlayerFightData>();
@@ -525,42 +436,42 @@ public abstract class FightInstance extends Instance {
 		}
 		setupInstance(s);
 		FightInstance fi = this;
-		
+
 		new BukkitRunnable() {
 			public void run() {
 				// Choose random teleport location
 				int rand = NeoRogue.gen.nextInt(map.getPieces().size());
 				MapPieceInstance inst = map.getPieces().get(rand);
 				Coordinates[] spawns = inst.getSpawns();
-				
-				spawn = spawns[spawns.length > 1 ? NeoRogue.gen.nextInt(spawns.length) : 0].clone().applySettings(inst).toLocation();
-				spawn.add(s.getXOff() + MapPieceInstance.X_FIGHT_OFFSET,
-						MapPieceInstance.Y_OFFSET,
+
+				spawn = spawns[spawns.length > 1 ? NeoRogue.gen.nextInt(spawns.length) : 0].clone().applySettings(inst)
+						.toLocation();
+				spawn.add(s.getXOff() + MapPieceInstance.X_FIGHT_OFFSET, MapPieceInstance.Y_OFFSET,
 						MapPieceInstance.Z_FIGHT_OFFSET + s.getZOff());
 				spawn.setX(-spawn.getX());
-				
-				
+
 				for (Player p : s.getOnlinePlayers()) {
 					p.teleport(spawn);
 				}
-				
+
 				for (FightRunnable runnable : initialTasks) {
 					runnable.run(fi, fdata);
 				}
 			}
 		}.runTaskLater(NeoRogue.inst(), 20L);
-		
+
 		new BukkitRunnable() {
 			public void run() {
 				activateSpawner(2 + (s.getNodesVisited() / 5) + s.getParty().size());
 			}
 		}.runTaskLater(NeoRogue.inst(), 60L);
-		
+
 		tasks.add(new BukkitRunnable() {
 			boolean alternate = false;
+
 			public void run() {
 				alternate = !alternate;
-				
+
 				// Every 20 ticks
 				if (alternate && !toTick.isEmpty()) {
 					Iterator<UUID> iter = toTick.iterator();
@@ -569,7 +480,7 @@ public abstract class FightInstance extends Instance {
 						if (data == null || data.runTickActions() == TickResult.REMOVE) iter.remove();
 					}
 				}
-				
+
 				// Every 10 ticks
 				for (Session s : SessionManager.getSessions()) {
 					if (!(s.getInstance() instanceof FightInstance)) continue;
@@ -580,13 +491,13 @@ public abstract class FightInstance extends Instance {
 			}
 		}.runTaskTimer(NeoRogue.inst(), 0L, 10L));
 	}
-	
+
 	protected abstract void setupInstance(Session s);
-	
+
 	public static void putFightData(UUID uuid, FightData data) {
 		fightData.put(uuid, data);
 	}
-	
+
 	private PlayerFightData setup(Player p, PlayerSessionData data) {
 		UUID uuid = p.getUniqueId();
 		PlayerFightData fd = new PlayerFightData(this, data);
@@ -594,7 +505,7 @@ public abstract class FightInstance extends Instance {
 		userData.put(uuid, fd);
 		return fd;
 	}
-	
+
 	@Override
 	public void cleanup() {
 		for (UUID uuid : s.getParty().keySet()) {
@@ -609,7 +520,7 @@ public abstract class FightInstance extends Instance {
 			else {
 				data.setDeath(false);
 			}
-			
+
 			Player p = Bukkit.getPlayer(uuid);
 			if (p != null) {
 				data.syncHealth();
@@ -618,30 +529,30 @@ public abstract class FightInstance extends Instance {
 				data.updateCoinsBar();
 			}
 		}
-		
+
 		for (BukkitTask task : tasks) {
 			task.cancel();
 		}
 	}
-	
+
 	public static FightData removeFightData(UUID uuid) {
 		toTick.remove(uuid);
 		return fightData.remove(uuid);
 	}
-	
+
 	public static void addToTickList(UUID uuid) {
 		toTick.add(uuid);
 	}
-	
+
 	// For any barrier that isn't the user's personal barrier (shield)
 	public void addUserBarrier(PlayerFightData owner, Barrier b, int duration) {
 		addBarrier(owner, b, duration, true);
 	}
-	
+
 	public void addEnemyBarrier(PlayerFightData owner, Barrier b, int duration) {
 		addBarrier(owner, b, duration, false);
 	}
-	
+
 	public void addBarrier(FightData owner, Barrier b, int duration, boolean isUser) {
 		HashMap<UUID, Barrier> barriers = isUser ? userBarriers : enemyBarriers;
 		UUID uuid = b.getUniqueId();
@@ -652,34 +563,34 @@ public abstract class FightInstance extends Instance {
 			}
 		}, duration * 20);
 	}
-	
+
 	public Location getMythicLocation(String key) {
 		return mythicLocations.get(key);
 	}
-	
+
 	public void removeEnemyBarrier(UUID uuid) {
 		enemyBarriers.remove(uuid);
 	}
-	
+
 	public HashMap<UUID, Barrier> getEnemyBarriers() {
 		return enemyBarriers;
 	}
-	
+
 	public void addSpawner(MapSpawnerInstance spawner) {
 		spawners.add(spawner);
 		if (spawner.getMaxMobs() == -1) {
 			unlimitedSpawners.add(spawner);
 		}
 	}
-	
+
 	public void addInitialSpawn(MapSpawnerInstance spawner) {
 		initialSpawns.add(spawner);
 	}
-	
+
 	public void addMythicLocation(String key, Location loc) {
 		mythicLocations.put(key, loc);
 	}
-	
+
 	protected void activateSpawner(int num) {
 		if (spawners.isEmpty()) return;
 		for (int i = 0; i < num; i++) {
@@ -696,8 +607,9 @@ public abstract class FightInstance extends Instance {
 		Bukkit.getLogger().warning("[NeoRogue] FightInstance attempted to save, this should never happen");
 		return null;
 	}
-	
+
 	public abstract String serializeInstanceData();
+
 	public static FightInstance deserializeInstanceData(HashMap<UUID, PlayerSessionData> party, String str) {
 		if (str.startsWith("STANDARD")) {
 			return new StandardFightInstance(party.keySet(), Map.deserialize(str.substring("STANDARD:".length())));
@@ -709,7 +621,7 @@ public abstract class FightInstance extends Instance {
 			return new BossFightInstance(party.keySet(), Map.deserialize(str.substring("BOSS:".length())));
 		}
 	}
-	
+
 	public interface FightRunnable {
 		public void run(FightInstance inst, ArrayList<PlayerFightData> fdata);
 	}

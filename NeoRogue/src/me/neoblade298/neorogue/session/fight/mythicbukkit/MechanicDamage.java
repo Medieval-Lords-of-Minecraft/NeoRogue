@@ -9,6 +9,7 @@ import io.lumine.mythic.api.skills.SkillResult;
 import io.lumine.mythic.api.skills.ThreadSafetyLevel;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageType;
+import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 
 public class MechanicDamage implements ITargetedEntitySkill {
@@ -32,9 +33,10 @@ public class MechanicDamage implements ITargetedEntitySkill {
 		try {
 			double level = data.getCaster().getLevel();
 			final double fAmount = level > 5 ? amount * (level / 5) : amount;
-			DamageMeta meta = new DamageMeta(fAmount, type);
+			FightData fd = FightInstance.getFightData(data.getCaster().getEntity().getUniqueId());
+			DamageMeta meta = new DamageMeta(fd, fAmount, type);
 			meta.setHitBarrier(hitBarrier);
-			FightInstance.dealDamage((LivingEntity) data.getCaster().getEntity().getBukkitEntity(), meta, (LivingEntity) target.getBukkitEntity());
+			FightInstance.dealDamage(meta, (LivingEntity) target.getBukkitEntity());
 			return SkillResult.SUCCESS;
 		} catch (Exception e) {
 			e.printStackTrace();

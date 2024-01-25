@@ -15,7 +15,6 @@ import me.neoblade298.neocore.bukkit.particles.LocalAxes;
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neocore.bukkit.particles.ParticleShapeMemory;
 import me.neoblade298.neocore.bukkit.particles.Rectangle;
-import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffType;
 
@@ -128,10 +127,5 @@ public class Barrier {
 	
 	public HashMap<BuffType, Buff> getBuffs() {
 		return buffs;
-	}
-	
-	public double applyDefenseBuffs(DamageType type, double amount) {
-		if (buffs.isEmpty()) return amount;
-		return Buff.applyDefenseBuffs(buffs, type, amount);
 	}
 }

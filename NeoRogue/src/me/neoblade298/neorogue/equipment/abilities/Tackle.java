@@ -85,7 +85,7 @@ public class Tackle extends Equipment {
 						Util.playSound(p, Sound.ENTITY_GENERIC_EXPLODE, false);
 						for (LivingEntity ent : hit) {
 							pc.spawn(p);
-							FightInstance.dealDamage(p, DamageType.BLUNT, damage, ent);
+							FightInstance.dealDamage(data, DamageType.BLUNT, damage, ent);
 						}
 					}
 				}.runTaskLater(NeoRogue.inst(), delay));

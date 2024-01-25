@@ -74,7 +74,7 @@ public class Bulldoze extends Equipment {
 						Util.playSound(p, Sound.ENTITY_GENERIC_EXPLODE, false);
 						for (LivingEntity ent : hit) {
 							pc.spawn(ent);
-							FightInstance.dealDamage(p, DamageType.BLUNT, damage, ent);
+							FightInstance.dealDamage(data, DamageType.BLUNT, damage, ent);
 							FightInstance.knockback(p, ent, 2);
 						}
 					}

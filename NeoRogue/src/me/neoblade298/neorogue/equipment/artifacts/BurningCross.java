@@ -8,6 +8,7 @@ import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -34,8 +35,12 @@ public class BurningCross extends Artifact {
 			int stacks = ev.getStacks();
 			if (id.equals(StatusType.CONCUSSED.name())) {
 				FightData fd = ev.getTarget();
-				DamageMeta dm = new DamageMeta(stacks * damage, DamageType.FIRE, false, true, false);
-				FightInstance.dealDamage(p, dm, fd.getEntity());
+				if (ev.getMeta() == null) {
+					FightInstance.dealDamage(new DamageMeta(data, stacks * damage, DamageType.FIRE), fd.getEntity());
+				}
+				else {
+					ev.getMeta().addDamageSlice(new DamageSlice(data.getUniqueId(), stacks * damage, DamageType.FIRE));
+				}
 			}
 			return TriggerResult.keep();
 		});

@@ -42,7 +42,7 @@ public class Cleave extends Equipment {
 			Util.playSound(p, Sound.ENTITY_PLAYER_ATTACK_SWEEP, false);
 			part.spawn(p);
 			for (LivingEntity ent : TargetHelper.getEntitiesInCone(p, tp)) {
-				FightInstance.dealDamage(ent, new DamageMeta(amount, DamageType.SLASHING), ent);
+				FightInstance.dealDamage(new DamageMeta(data, amount, DamageType.SLASHING), ent);
 			}
 			return TriggerResult.keep();
 		}));

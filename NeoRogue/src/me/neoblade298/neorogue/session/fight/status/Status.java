@@ -49,6 +49,10 @@ public abstract class Status {
 		if (action != null) action.setCancelled(true);
 	}
 	
+	public String getId() {
+		return id;
+	}
+	
 	public StatusSliceHolder getSlices() {
 		return slices;
 	}

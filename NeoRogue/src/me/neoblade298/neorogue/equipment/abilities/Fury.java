@@ -51,7 +51,7 @@ public class Fury extends Equipment {
 				data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in2) -> {
 					BasicAttackEvent ev = (BasicAttackEvent) in2;
 					LivingEntity target = ev.getTarget();
-					FightInstance.dealDamage(p, DamageType.SLASHING, damage, target);
+					FightInstance.dealDamage(data, DamageType.SLASHING, damage, target);
 					hit.spawn(target.getLocation());
 					Util.playSound(p, Sound.BLOCK_ANVIL_LAND, 1F, 1F, false);
 					if (isBerserk) {

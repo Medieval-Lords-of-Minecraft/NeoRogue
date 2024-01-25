@@ -43,7 +43,7 @@ public class Smite extends Equipment {
 			Util.playSound(p, Sound.ENTITY_FIREWORK_ROCKET_TWINKLE, false);
 			part.spawn(p);
 			for (LivingEntity ent : TargetHelper.getEntitiesInCone(p, tp)) {
-				FightInstance.dealDamage(ent, new DamageMeta(damage, DamageType.SLASHING), ent);
+				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.SLASHING), ent);
 				FightInstance.applyStatus(ent, StatusType.SANCTIFIED, p, sanctified, -1);
 			}
 			return TriggerResult.keep();

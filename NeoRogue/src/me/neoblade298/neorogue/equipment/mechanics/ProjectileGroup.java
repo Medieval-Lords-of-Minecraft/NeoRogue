@@ -1,6 +1,6 @@
 package me.neoblade298.neorogue.equipment.mechanics;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 import org.bukkit.entity.Player;
 
@@ -10,7 +10,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroupEvent;
 
 public class ProjectileGroup {
-	private ArrayList<Projectile> group = new ArrayList<Projectile>();
+	private LinkedList<Projectile> group = new LinkedList<Projectile>();
 	
 	public ProjectileGroup(Projectile... projs) {
 		for (Projectile proj : projs) {
@@ -24,22 +24,22 @@ public class ProjectileGroup {
 		}
 	}
 	
-	public ArrayList<ProjectileInstance> startWithoutEvent(FightData owner) {
-		ArrayList<ProjectileInstance> projs = new ArrayList<ProjectileInstance>(group.size());
+	public LinkedList<ProjectileInstance> startWithoutEvent(FightData owner) {
+		LinkedList<ProjectileInstance> projs = new LinkedList<ProjectileInstance>();
 		for (Projectile proj : group) {
 			projs.add(proj.start(owner));
 		}
 		return projs;
 	}
 	
-	public ArrayList<ProjectileInstance> start(FightData owner) {
-		ArrayList<ProjectileInstance> projs = new ArrayList<ProjectileInstance>(group.size());
-		if (owner.getEntity() instanceof Player) {
-			Player p = (Player) owner.getEntity();
-			FightInstance.trigger(p, Trigger.LAUNCH_PROJECTILE_GROUP, new LaunchProjectileGroupEvent(this));
-		}
+	public LinkedList<ProjectileInstance> start(FightData owner) {
+		LinkedList<ProjectileInstance> projs = new LinkedList<ProjectileInstance>();
 		for (Projectile proj : group) {
 			projs.add(proj.start(owner));
+		}
+		if (owner.getEntity() instanceof Player) {
+			Player p = (Player) owner.getEntity();
+			FightInstance.trigger(p, Trigger.LAUNCH_PROJECTILE_GROUP, new LaunchProjectileGroupEvent(this, projs));
 		}
 		return projs;
 	}

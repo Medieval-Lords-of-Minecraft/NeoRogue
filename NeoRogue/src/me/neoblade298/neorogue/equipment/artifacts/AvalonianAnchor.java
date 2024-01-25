@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.artifacts;
 
+import java.util.HashMap;
+
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -11,6 +13,9 @@ import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.DamageMeta.BuffMapOrigin;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
@@ -29,7 +34,9 @@ public class AvalonianAnchor extends Artifact {
 				if (ev.isProjectile()) return TriggerResult.keep();
 				Util.playSound(p, Sound.ENTITY_PLAYER_ATTACK_CRIT, false);
 				part.spawn(ev.getTarget());
-				ev.setDamage(ev.getDamage() * 1.5);
+				HashMap<BuffType, Buff> buffs = new HashMap<BuffType, Buff>();
+				buffs.put(BuffType.GENERAL, new Buff(p.getUniqueId(), 0, 0.5));
+				ev.getMeta().addDamageBuffs(buffs, BuffMapOrigin.NORMAL);
 			}
 			return TriggerResult.keep();
 		});
@@ -43,6 +50,6 @@ public class AvalonianAnchor extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.RESPAWN_ANCHOR,
-				"Landing a melee basic attack while falling multiplies its damage by <yellow>1.5x</yellow>");
+				"Landing a melee basic attack while falling increases its damage by <yellow>50%</yellow>");
 	}
 }

@@ -42,7 +42,7 @@ public class Quake extends Equipment {
 			Util.playSound(p, Sound.ENTITY_WARDEN_ATTACK_IMPACT, false);
 			part.spawn(p);
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
-				FightInstance.dealDamage(p, new DamageMeta(damage, DamageType.EARTH), ent);
+				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.EARTH), ent);
 				FightInstance.applyStatus(ent, StatusType.CONCUSSED, p, concussed, -1);
 			}
 			return TriggerResult.keep();
