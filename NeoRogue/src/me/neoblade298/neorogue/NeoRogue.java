@@ -47,8 +47,8 @@ public class NeoRogue extends JavaPlugin {
 		NeoCore.registerIOComponent(this, new PlayerManager(), "NeoRogue-PlayerManager");
 		Bukkit.getPluginManager().registerEvents(new SessionManager(), this);
 		Bukkit.getPluginManager().registerEvents(new MythicLoader(), this);
-		initCommands(); // Must load commands AFTER map pieces due to command suggestion
 		reload();
+		initCommands(); // Must load commands AFTER map pieces due to command suggestion
 
 		// Strictly for debug usage
 		debugInitialize();
