@@ -6,11 +6,8 @@ import java.util.HashSet;
 import java.util.UUID;
 import java.util.Map.Entry;
 
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -28,7 +25,6 @@ public class ShopInstance extends EditInventoryInstance {
 	
 	private HashMap<UUID, ArrayList<ShopItem>> shops = new HashMap<UUID, ArrayList<ShopItem>>();
 	private HashSet<UUID> ready = new HashSet<UUID>();
-	private Entity trader;
 	
 	public ShopInstance(Session s) {
 		super(s, SPAWN_X, SPAWN_Z);
@@ -43,8 +39,6 @@ public class ShopInstance extends EditInventoryInstance {
 
 	@Override
 	public void start() {
-		Location mob = spawn.clone().add(0, 0, 3);
-		this.trader = mob.getWorld().spawnEntity(mob, EntityType.WANDERING_TRADER);
 		for (PlayerSessionData data : s.getParty().values()) {
 			Player p = data.getPlayer();
 			EquipmentClass ec = data.getPlayerClass();
@@ -72,7 +66,7 @@ public class ShopInstance extends EditInventoryInstance {
 
 	@Override
 	public void cleanup() {
-		trader.remove();
+		
 	}
 
 	@Override
