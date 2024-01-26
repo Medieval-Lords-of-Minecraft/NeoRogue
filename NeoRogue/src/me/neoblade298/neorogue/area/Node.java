@@ -104,8 +104,8 @@ public class Node {
 		case FIGHT:
 			inst = new StandardFightInstance(s, s.getParty().keySet(), area, s.getNodesVisited());
 			break;
-		case CAMPFIRE:
-			inst = new CampfireInstance(s);
+		case SHRINE:
+			inst = new ShrineInstance(s);
 			break;
 		case CHANCE:
 			inst = new ChanceInstance(s);

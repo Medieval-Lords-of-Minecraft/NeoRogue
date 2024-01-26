@@ -5,7 +5,6 @@ import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -17,7 +16,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.*;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -64,8 +62,6 @@ public class ChanceInstance extends EditInventoryInstance {
 
 	@Override
 	public void start() {
-		spawn = new Location(Bukkit.getWorld(Area.WORLD_NAME), -(s.getXOff() + Session.CHANCE_X - 0.5), 64,
-				s.getZOff() + Session.CHANCE_Z);
 
 		// Pick a random chance set if not already picked
 		if (set == null) {
@@ -152,8 +148,8 @@ public class ChanceInstance extends EditInventoryInstance {
 					if (nextInstance instanceof FightInstance) {
 						instDisplay = "fight";
 					}
-					else if (nextInstance instanceof CampfireInstance) {
-						instDisplay = "campfire";
+					else if (nextInstance instanceof ShrineInstance) {
+						instDisplay = "shrine";
 					}
 					else if (nextInstance instanceof RewardInstance) {
 						instDisplay = "claim rewards";

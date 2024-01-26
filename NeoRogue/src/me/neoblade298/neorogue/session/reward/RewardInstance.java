@@ -6,7 +6,6 @@ import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -15,7 +14,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
 import me.neoblade298.neocore.bukkit.util.Util;
-import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.EditInventoryInstance;
 import me.neoblade298.neorogue.session.NodeSelectInstance;
@@ -41,7 +39,6 @@ public class RewardInstance extends EditInventoryInstance {
 
 	@Override
 	public void start() {
-		spawn = new Location(Bukkit.getWorld(Area.WORLD_NAME), -(s.getXOff() + Session.REWARDS_X), 64, s.getZOff() + Session.REWARDS_Z);
 		for (PlayerSessionData data : s.getParty().values()) {
 			Player p = data.getPlayer();
 			p.playSound(p, Sound.ENTITY_PLAYER_LEVELUP, 1F, 1F);

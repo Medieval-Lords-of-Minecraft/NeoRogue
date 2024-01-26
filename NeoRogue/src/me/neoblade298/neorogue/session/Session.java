@@ -1,5 +1,9 @@
 package me.neoblade298.neorogue.session;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,6 +17,18 @@ import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.WorldEditException;
+import com.sk89q.worldedit.extent.clipboard.Clipboard;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
+import com.sk89q.worldedit.function.operation.Operation;
+import com.sk89q.worldedit.function.operation.Operations;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.session.ClipboardHolder;
 
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.util.Util;
@@ -39,12 +55,48 @@ public class Session {
 	private int saveSlot, xOff, zOff, nodesVisited, areasCompleted;
 	private Plot plot;
 	
+	private static Clipboard classSelect, nodeSelect, rewardsRoom, shrine, shop, chance, lose;
+	static {
+		classSelect = loadClipboard("classselect.schem");
+		nodeSelect = loadClipboard("nodeselect.schem");
+		rewardsRoom = loadClipboard("rewardsroom.schem");
+		shrine = loadClipboard("shrine.schem");
+		shop = loadClipboard("shop.schem");
+		chance = loadClipboard("chance.schem");
+		lose = loadClipboard("chance.schem");
+	}
+	
+	private static Clipboard loadClipboard(String schematic) {
+		File file = new File(NeoRogue.SCHEMATIC_FOLDER, schematic);
+		ClipboardFormat format = ClipboardFormats.findByFile(file);
+		try (ClipboardReader reader = format.getReader(new FileInputStream(file))) {
+			return reader.read();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	private static void pasteSchematic(Clipboard clipboard, EditSession editSession, Session session, int xOff,
+			int zOff) {
+		Operation operation = new ClipboardHolder(clipboard).createPaste(editSession)
+				.to(BlockVector3.at(-(session.getXOff() + xOff + 1), 64, session.getZOff() + zOff))
+				.ignoreAirBlocks(false).build();
+		try {
+			Operations.complete(operation);
+		} catch (WorldEditException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	// Session coordinates
 	public static final int LOBBY_X = 0, LOBBY_Z = 0, LOBBY_WIDTH = 15,
 			AREA_X = 0, AREA_Z = LOBBY_Z + LOBBY_WIDTH, AREA_WIDTH = 81,
 			REWARDS_X = 0, REWARDS_Z = AREA_Z + AREA_WIDTH, REWARDS_WIDTH = 6,
-			REST_X = 0, REST_Z = REWARDS_Z + REWARDS_WIDTH, REST_WIDTH = 13,
-			SHOP_X = 0, SHOP_Z = REST_Z + REST_WIDTH, SHOP_WIDTH = 12,
+			SHRINE_X = 0, SHRINE_Z = REWARDS_Z + REWARDS_WIDTH, SHRINE_WIDTH = 13,
+			SHOP_X = 0, SHOP_Z = SHRINE_Z + SHRINE_WIDTH, SHOP_WIDTH = 12,
 			CHANCE_X = 0, CHANCE_Z = SHOP_Z + SHOP_WIDTH, CHANCE_WIDTH = 4,
 			LOSE_X = 0, LOSE_Z = CHANCE_Z + CHANCE_WIDTH;
 	
@@ -55,6 +107,7 @@ public class Session {
 		host = p.getUniqueId();
 		this.plot = plot;
 		this.inst = new LobbyInstance(lobby, p, this);
+		generateInterstitials();
 	}
 	
 	// Load from existing data
@@ -66,6 +119,7 @@ public class Session {
 		this.plot = plot;
 		
 		Session s = this;
+		generateInterstitials();
 		new BukkitRunnable() {
 			public void run() {
 				Util.msgRaw(p, Component.text("Loading game...", NamedTextColor.GRAY));
@@ -101,6 +155,19 @@ public class Session {
 				}
 			}
 		}.runTaskAsynchronously(NeoRogue.inst());
+	}
+	
+	private void generateInterstitials() {
+		// Generate the lobby and add the host there
+		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Area.world)) {
+			pasteSchematic(classSelect, editSession, this, 0, Session.LOBBY_Z);
+			pasteSchematic(nodeSelect, editSession, this, 0, Session.AREA_Z);
+			pasteSchematic(rewardsRoom, editSession, this, 0, Session.REWARDS_Z);
+			pasteSchematic(shrine, editSession, this, 0, Session.SHRINE_Z);
+			pasteSchematic(shop, editSession, this, 0, Session.SHOP_Z);
+			pasteSchematic(chance, editSession, this, 0, Session.CHANCE_Z);
+			pasteSchematic(lose, editSession, this, 0, Session.LOSE_Z);
+		}
 	}
 	
 	public void save(Statement insert, Statement delete) {

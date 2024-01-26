@@ -14,10 +14,10 @@ import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-public class CampfireChoiceInventory extends CoreInventory {
-	private CampfireInstance inst;
+public class ShrineChoiceInventory extends CoreInventory {
+	private ShrineInstance inst;
 
-	public CampfireChoiceInventory(Player p, CampfireInstance inst) {
+	public ShrineChoiceInventory(Player p, ShrineInstance inst) {
 		super(p, Bukkit.createInventory(p, 9, Component.text("Choose", NamedTextColor.BLUE)));
 		this.inst = inst;
 		ItemStack[] contents = inv.getContents();

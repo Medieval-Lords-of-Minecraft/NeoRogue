@@ -36,8 +36,8 @@ public abstract class Instance {
 	public static Instance deserialize(Session s, ResultSet row, HashMap<UUID, PlayerSessionData> party) throws SQLException {
 		String data = row.getString("instanceData");
 		
-		if (data.startsWith("CAMPFIRE")) {
-			return new CampfireInstance(s, data, party);
+		if (data.startsWith("SHRINE")) {
+			return new ShrineInstance(s, data, party);
 		}
 		else if (data.startsWith("NODESELECT")) {
 			return new NodeSelectInstance(s);

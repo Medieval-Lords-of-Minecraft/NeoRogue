@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.UUID;
 import java.util.Map.Entry;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -19,13 +18,12 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 
 public class ShopInstance extends EditInventoryInstance {
-	private static final double SPAWN_X = Session.REST_X + 4.5, SPAWN_Z = Session.REST_Z + 4.5;
+	private static final double SPAWN_X = Session.SHOP_X + 4.5, SPAWN_Z = Session.SHOP_Z + 4.5;
 	static final int NUM_ITEMS = 10;
 	
 	private HashMap<UUID, ArrayList<ShopItem>> shops = new HashMap<UUID, ArrayList<ShopItem>>();
@@ -45,7 +43,6 @@ public class ShopInstance extends EditInventoryInstance {
 
 	@Override
 	public void start() {
-		spawn = new Location(Bukkit.getWorld(Area.WORLD_NAME), -(s.getXOff() + Session.SHOP_X), 64, s.getZOff() + Session.SHOP_Z);
 		Location mob = spawn.clone().add(0, 0, 3);
 		this.trader = mob.getWorld().spawnEntity(mob, EntityType.WANDERING_TRADER);
 		for (PlayerSessionData data : s.getParty().values()) {

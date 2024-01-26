@@ -55,17 +55,12 @@ public class Area {
 	private static ParticleContainer red = new ParticleContainer(Particle.REDSTONE), black;
 	
 	private static final int NODE_Y = 64;
-	private static Location teleportBase;
-	
-	private Location teleport;
 	
 	// Offsets
 	private int xOff, zOff;
 	
 	public static void initialize() {
 		world = BukkitAdapter.adapt(Bukkit.getWorld(WORLD_NAME));
-		
-		teleportBase = new Location(Bukkit.getWorld(WORLD_NAME), -20.5, 0, 6.5);
 		
 		// Load particles
 		red.count(3).spread(0.1, 0.1).ignoreSettings(true).dustOptions(new DustOptions(Color.RED, 1F));
@@ -76,7 +71,6 @@ public class Area {
 		this.type = type;
 		this.xOff = xOff;
 		this.zOff = zOff + Session.AREA_Z;
-		this.teleport = teleportBase.clone().add(-this.xOff, 64, this.zOff);
 		this.s = s;
 		
 		generateNodes();
@@ -101,7 +95,6 @@ public class Area {
 		this.type = type;
 		this.xOff = xOff;
 		this.zOff = zOff + Session.AREA_Z;
-		this.teleport = teleportBase.clone().add(-this.xOff, 64, this.zOff);
 		this.s = s;
 		
 		ResultSet rs = stmt
@@ -143,9 +136,9 @@ public class Area {
 		nodes[1][CENTER_LANE] = generateNode(true, 1, CENTER_LANE);
 		nodes[1][CENTER_LANE + 1] = generateNode(true, 1, CENTER_LANE + 1);
 		nodes[1][CENTER_LANE + 2] = generateNode(true, 1, CENTER_LANE + 2);
-		nodes[MAX_POSITIONS - 2][CENTER_LANE - 1] = new Node(NodeType.CAMPFIRE, MAX_POSITIONS - 2, CENTER_LANE - 1);
-		nodes[MAX_POSITIONS - 2][CENTER_LANE] = new Node(NodeType.CAMPFIRE, MAX_POSITIONS - 2, CENTER_LANE);
-		nodes[MAX_POSITIONS - 2][CENTER_LANE + 1] = new Node(NodeType.CAMPFIRE, MAX_POSITIONS - 2, CENTER_LANE + 1);
+		nodes[MAX_POSITIONS - 2][CENTER_LANE - 1] = new Node(NodeType.SHRINE, MAX_POSITIONS - 2, CENTER_LANE - 1);
+		nodes[MAX_POSITIONS - 2][CENTER_LANE] = new Node(NodeType.SHRINE, MAX_POSITIONS - 2, CENTER_LANE);
+		nodes[MAX_POSITIONS - 2][CENTER_LANE + 1] = new Node(NodeType.SHRINE, MAX_POSITIONS - 2, CENTER_LANE + 1);
 		nodes[MAX_POSITIONS - 1][CENTER_LANE] = new Node(NodeType.BOSS, MAX_POSITIONS - 1, CENTER_LANE);
 		
 		// Generate boss
@@ -252,7 +245,7 @@ public class Area {
 		rand -= 0.35;
 		if (rand < 0) return new Node(NodeType.FIGHT, pos, lane);
 		rand -= 0.05;
-		if (rand < 0) return new Node(NodeType.CAMPFIRE, pos, lane);
+		if (rand < 0) return new Node(NodeType.SHRINE, pos, lane);
 		rand -= 0.1;
 		if (rand < 0) return new Node(NodeType.MINIBOSS, pos, lane);
 		rand -= 0.05;
@@ -430,10 +423,6 @@ public class Area {
 				}
 			}
 		}
-	}
-	
-	public Location getTeleport() {
-		return teleport;
 	}
 	
 	private Location nodeToLocation(Node node, double yOff) {

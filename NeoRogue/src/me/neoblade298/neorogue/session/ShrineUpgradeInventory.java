@@ -22,10 +22,10 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-public class CampfireUpgradeInventory extends CoreInventory {
-	private CampfireInstance inst;
+public class ShrineUpgradeInventory extends CoreInventory {
+	private ShrineInstance inst;
 	
-	public CampfireUpgradeInventory(Player p, CampfireInstance inst) {
+	public ShrineUpgradeInventory(Player p, ShrineInstance inst) {
 		super(p, Bukkit.createInventory(p, InventoryType.SMITHING, Component.text("Upgrade Equipment", NamedTextColor.BLUE)));
 		this.inst = inst;
 		ItemStack[] contents = inv.getContents();

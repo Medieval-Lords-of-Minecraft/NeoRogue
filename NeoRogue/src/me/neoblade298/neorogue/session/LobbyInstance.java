@@ -1,15 +1,10 @@
 package me.neoblade298.neorogue.session;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.attribute.Attribute;
@@ -21,21 +16,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.WorldEdit;
-import com.sk89q.worldedit.WorldEditException;
-import com.sk89q.worldedit.extent.clipboard.Clipboard;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
-import com.sk89q.worldedit.function.operation.Operation;
-import com.sk89q.worldedit.function.operation.Operations;
-import com.sk89q.worldedit.math.BlockVector3;
-import com.sk89q.worldedit.session.ClipboardHolder;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.PlayerSessionData;
@@ -53,7 +36,6 @@ public class LobbyInstance extends Instance {
 	private HashSet<UUID> invited = new HashSet<UUID>();
 	private HashMap<UUID, EquipmentClass> players = new HashMap<UUID, EquipmentClass>();
 	private UUID host;
-	private static Clipboard classSelect, nodeSelect, rewardsRoom, shrine, shop, chance, lose;
 	private boolean busy = false;
 	private Component partyInfoHeader;
 	private HashSet<UUID> ready = new HashSet<UUID>();
@@ -69,40 +51,6 @@ public class LobbyInstance extends Instance {
 			maxSizeError = Component.text("This lobby is full as it has a max of " + MAX_SIZE + " players!",
 					NamedTextColor.RED);
 
-	static {
-		classSelect = loadClipboard("classselect.schem");
-		nodeSelect = loadClipboard("nodeselect.schem");
-		rewardsRoom = loadClipboard("rewardsroom.schem");
-		shrine = loadClipboard("shrine.schem");
-		shop = loadClipboard("shop.schem");
-		chance = loadClipboard("chance.schem");
-		lose = loadClipboard("chance.schem");
-	}
-
-	private static Clipboard loadClipboard(String schematic) {
-		File file = new File(NeoRogue.SCHEMATIC_FOLDER, schematic);
-		ClipboardFormat format = ClipboardFormats.findByFile(file);
-		try (ClipboardReader reader = format.getReader(new FileInputStream(file))) {
-			return reader.read();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	private static void pasteSchematic(Clipboard clipboard, EditSession editSession, Session session, int xOff,
-			int zOff) {
-		Operation operation = new ClipboardHolder(clipboard).createPaste(editSession)
-				.to(BlockVector3.at(-(session.getXOff() + xOff + 1), 64, session.getZOff() + zOff))
-				.ignoreAirBlocks(true).build();
-		try {
-			Operations.complete(operation);
-		} catch (WorldEditException e) {
-			e.printStackTrace();
-		}
-	}
 
 	@Override
 	public void start() {
@@ -114,19 +62,6 @@ public class LobbyInstance extends Instance {
 		this.name = name;
 		this.host = host.getUniqueId();
 		players.put(host.getUniqueId(), EquipmentClass.WARRIOR);
-		this.s = session;
-
-		// Generate the lobby and add the host there
-		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Area.world)) {
-			pasteSchematic(classSelect, editSession, session, 0, Session.LOBBY_Z);
-			pasteSchematic(nodeSelect, editSession, session, 0, Session.AREA_Z);
-			pasteSchematic(rewardsRoom, editSession, session, 0, Session.REWARDS_Z);
-			pasteSchematic(shrine, editSession, session, 0, Session.REST_Z);
-			pasteSchematic(shop, editSession, session, 0, Session.SHOP_Z);
-			pasteSchematic(chance, editSession, session, 0, Session.CHANCE_Z);
-			pasteSchematic(lose, editSession, session, 0, Session.LOSE_Z);
-		}
-		spawn = new Location(Bukkit.getWorld(Area.WORLD_NAME), -(s.getXOff() + SPAWN_X), 64, s.getZOff() + SPAWN_Z);
 		host.teleport(spawn);
 		partyInfoHeader = Component.text().content("<< ( ").color(NamedTextColor.GRAY)
 				.append(Component.text(name, NamedTextColor.RED)).append(Component.text(" ) >>"))
@@ -343,7 +278,6 @@ public class LobbyInstance extends Instance {
 		if (e.getAction() != Action.RIGHT_CLICK_BLOCK) return;
 		if (e.getHand() != EquipmentSlot.HAND) return;
 		
-		System.out.println("Got here " + e.getClickedBlock().getType());
 		if (e.getClickedBlock().getType() == Material.STONE_BUTTON) {
 			readyPlayer(e.getPlayer());
 			return;

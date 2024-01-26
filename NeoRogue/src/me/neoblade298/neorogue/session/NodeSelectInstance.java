@@ -26,7 +26,7 @@ import me.neoblade298.neorogue.player.inventory.FightInfoInventory;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 
 public class NodeSelectInstance extends EditInventoryInstance {
-	private static final double SPAWN_X = Session.AREA_X + 12.5, SPAWN_Z = Session.AREA_Z + 3.5;
+	private static final double SPAWN_X = Session.AREA_X + 21.5, SPAWN_Z = Session.AREA_Z + 6.5;
 	private BukkitTask task;
 	private ArrayList<Hologram> holograms = new ArrayList<Hologram>();
 	
@@ -42,8 +42,6 @@ public class NodeSelectInstance extends EditInventoryInstance {
 	public void start() {
 		Area area = s.getArea();
 		area.update(s.getNode(), this);
-		
-		spawn = area.getTeleport();
 		for (Player p : s.getOnlinePlayers()) {
 			p.teleport(spawn);
 		}
