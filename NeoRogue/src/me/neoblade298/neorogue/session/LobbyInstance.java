@@ -10,6 +10,7 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Sign;
@@ -287,6 +288,12 @@ public class LobbyInstance extends Instance {
 		return invited;
 	}
 
+	public void broadcast(String msg) {
+		for (UUID uuid : players.keySet()) {
+			Util.msgRaw(Bukkit.getPlayer(uuid), NeoCore.miniMessage().deserialize(msg).colorIfAbsent(NamedTextColor.GRAY));
+		}
+	}
+
 	public void startGame() {
 		s.addPlayers(players);
 		s.broadcast("Generating your game...");
@@ -333,9 +340,16 @@ public class LobbyInstance extends Instance {
 
 	@Override
 	public void handleInteractEvent(PlayerInteractEvent e) {
-		if (e.getAction() != Action.RIGHT_CLICK_BLOCK || !Tag.SIGNS.isTagged(e.getClickedBlock().getType())) return;
+		if (e.getAction() != Action.RIGHT_CLICK_BLOCK) return;
 		if (e.getHand() != EquipmentSlot.HAND) return;
+		
+		System.out.println("Got here " + e.getClickedBlock().getType());
+		if (e.getClickedBlock().getType() == Material.STONE_BUTTON) {
+			readyPlayer(e.getPlayer());
+			return;
+		}
 
+		if (!Tag.SIGNS.isTagged(e.getClickedBlock().getType())) return;
 		UUID uuid = e.getPlayer().getUniqueId();
 		Sign sign = (Sign) e.getClickedBlock().getState();
 
@@ -354,25 +368,22 @@ public class LobbyInstance extends Instance {
 		case 'M':
 			switchClass(uuid, EquipmentClass.MAGE);
 			break;
-		case 'R':
-			readyPlayer(e.getPlayer());
-			break;
 		}
 	}
 
 	private void readyPlayer(Player p) {
 		UUID uuid = p.getUniqueId();
 		if (busy) return;
-		if (ready.contains(uuid)) {
+		if (!ready.contains(uuid)) {
 			ready.add(uuid);
-			s.broadcast("<yellow>" + p.getName() + "</yellow> is ready!");
+			broadcast("<yellow>" + p.getName() + "</yellow> is ready!");
 			if (ready.size() == players.size()) {
-				this.startGame();
+				startGame();
 			}
 		}
 		else {
 			ready.remove(uuid);
-			s.broadcast("<yellow>" + p.getName() + "</yellow> is no longer ready!");
+			broadcast("<yellow>" + p.getName() + "</yellow> is no longer ready!");
 		}
 	}
 
