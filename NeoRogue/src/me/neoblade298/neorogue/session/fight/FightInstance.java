@@ -56,7 +56,7 @@ public abstract class FightInstance extends Instance {
 	private static HashMap<UUID, FightData> fightData = new HashMap<UUID, FightData>();
 	private static HashMap<UUID, BukkitTask> blockTasks = new HashMap<UUID, BukkitTask>();
 	private static HashSet<UUID> toTick = new HashSet<UUID>();
-	private static final int KILLS_TO_SCALE = 5; // number of mobs to kill before increasing total mobs by 1
+	private static final int KILLS_TO_SCALE = 8; // number of mobs to kill before increasing total mobs by 1
 
 	protected HashSet<UUID> party = new HashSet<UUID>();
 	protected Map map;
