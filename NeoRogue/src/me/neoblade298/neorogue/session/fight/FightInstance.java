@@ -30,6 +30,7 @@ import org.bukkit.util.Vector;
 
 import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
 import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
@@ -58,6 +59,8 @@ public abstract class FightInstance extends Instance {
 	private static HashSet<UUID> toTick = new HashSet<UUID>();
 	private static final int KILLS_TO_SCALE = 8; // number of mobs to kill before increasing total mobs by 1
 
+	protected HashMap<Entity, UUID> deadBodies = new HashMap<Entity, UUID>();
+	protected HashMap<Player, UUID> revivers = new HashMap<Player, UUID>();
 	protected HashSet<UUID> party = new HashSet<UUID>();
 	protected Map map;
 	protected ArrayList<MapSpawnerInstance> spawners = new ArrayList<MapSpawnerInstance>(),
@@ -103,6 +106,7 @@ public abstract class FightInstance extends Instance {
 		UUID pu = p.getUniqueId();
 		if (!userData.containsKey(pu)) return;
 		PlayerFightData data = userData.remove(pu);
+		FightInstance fi = data.getInstance();
 		data.cleanup();
 		fightData.remove(pu).cleanup();
 
@@ -111,6 +115,7 @@ public abstract class FightInstance extends Instance {
 				p.spigot().respawn();
 				p.teleport(prev);
 				data.getSessionData().setDeath(true);
+				fi.deadBodies.put(null, pu); // TODO: Create a corpse
 
 				// If that's the last player alive, send them to a post death instance
 				for (UUID uuid : data.getInstance().getParty()) {
@@ -180,9 +185,27 @@ public abstract class FightInstance extends Instance {
 		Player p = (Player) e.getPlayer();
 		PlayerFightData data = userData.get(p.getUniqueId());
 		if (data == null) return; // If you're dead
+		FightInstance fi = data.getInstance();
+		
+		// Reviving takes priority, only one revive at a time
+		if (data.getInstance().deadBodies.containsKey(e.getRightClicked()) && !fi.revivers.containsKey(p)) {
+			data.getInstance().startRevive(p, e.getRightClicked());
+			return;
+		}
+		
 		if (!data.canBasicAttack(EquipSlot.OFFHAND)) return;
 		if (!(e.getRightClicked() instanceof LivingEntity)) return;
 		trigger(p, Trigger.RIGHT_CLICK_HIT, new RightClickHitEvent((LivingEntity) e.getRightClicked()));
+	}
+	
+	private void startRevive(Player p, Entity deadBody) {
+		UUID deadPlayer = deadBodies.get(deadBody);
+		if (Bukkit.getPlayer(deadPlayer) == null) {
+			Util.displayError(p, "Offline dead players cannot be revived!");
+			return;
+		}
+		
+		revivers.put(p, deadBodies.get(deadBody));
 	}
 
 	public static void handleRightClickGeneral(PlayerInteractEvent e) {
