@@ -69,6 +69,10 @@ public class DamageMeta {
 		return isSecondary;
 	}
 	
+	public void isSecondary(boolean isSecondary) {
+		this.isSecondary = isSecondary;
+	}
+	
 	public void setHitBarrier(boolean hitBarrier) {
 		this.hitBarrier = hitBarrier;
 	}
@@ -86,6 +90,7 @@ public class DamageMeta {
 	}
 	
 	public void dealDamage(LivingEntity target) {
+		if (slices.isEmpty()) return;
 		FightData recipient = FightInstance.getFightData(target.getUniqueId());
 		LivingEntity damager = owner.getEntity();
 		addDefenseBuffs(recipient.getBuffs(false), BuffMapOrigin.NORMAL);
@@ -223,7 +228,7 @@ public class DamageMeta {
 					}
 				}
 			}
-			if (slice.isIgnoreShields()) {
+			if (!slice.isIgnoreShields()) {
 				damage += (slice.getDamage() * (mult + 1)) + increase;
 			}
 			else {
@@ -253,13 +258,13 @@ public class DamageMeta {
 		
 		final double finalDamage = damage + ignoreShieldsDamage + target.getAbsorptionAmount();
 		if (finalDamage >= 0) {
-			target.damage(finalDamage, damager);
+			target.damage(finalDamage);
 			if (!(target instanceof Player)) {
 				NeoRogue.mythicApi.castSkill(target, "UpdateHealthbar");
 			}
 		}
 		else {
-			target.damage(0, damager);
+			target.damage(0);
 		}
 		
 	}

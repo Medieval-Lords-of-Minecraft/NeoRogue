@@ -41,7 +41,7 @@ public class AmbushChance extends ChanceSet {
 		stage.addChoice(new ChanceChoice(Material.LEATHER_BOOTS, "Skirt around them",
 				"Skip the fight entirely.",
 				(s, inst, data) -> {
-					inst.setNextInstance(new NodeSelectInstance());
+					inst.setNextInstance(new NodeSelectInstance(s));
 					s.broadcast("You sneak around the group without issue.");
 					return null;
 				}));
@@ -50,7 +50,7 @@ public class AmbushChance extends ChanceSet {
 				"<yellow>50%</yellow> chance you get an S tier reward, <yellow>50%</yellow> chance a normal fight starts.",
 				(s, inst, unused) -> {
 					if (NeoRogue.gen.nextBoolean()) {
-						inst.setNextInstance(new RewardInstance(StandardFightInstance.generateRewards(s, FightScore.S)));
+						inst.setNextInstance(new RewardInstance(s, StandardFightInstance.generateRewards(s, FightScore.S)));
 						s.broadcast("Success! You take your pick of the loot and go on your way.");
 					}
 					else {
@@ -65,6 +65,6 @@ public class AmbushChance extends ChanceSet {
 	
 	@Override
 	public void initialize(Session s, ChanceInstance inst) {
-		inst.setNextInstance(new StandardFightInstance(s.getParty().keySet(), s.getArea().getType(), s.getNodesVisited()));
+		inst.setNextInstance(new StandardFightInstance(s, s.getParty().keySet(), s.getArea().getType(), s.getNodesVisited()));
 	}
 }

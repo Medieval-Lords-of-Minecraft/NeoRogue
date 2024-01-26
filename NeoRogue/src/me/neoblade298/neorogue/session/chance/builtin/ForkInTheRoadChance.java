@@ -28,12 +28,12 @@ public class ForkInTheRoadChance extends ChanceSet {
 					boolean isCampfire = NeoRogue.gen.nextBoolean();
 					if (isCampfire) {
 						s.broadcast("The fork takes you to a nice open space by a river. Nice!");
-						inst.setNextInstance(new CampfireInstance());
+						inst.setNextInstance(new CampfireInstance(s));
 						return null;
 					}
 					else {
 						s.broadcast("Looks like the path was made by enemies, and you just walked straight into their lair.");
-						inst.setNextInstance(new StandardFightInstance(s.getParty().keySet(), s.getArea().getType(), s.getNodesVisited()));
+						inst.setNextInstance(new StandardFightInstance(s, s.getParty().keySet(), s.getArea().getType(), s.getNodesVisited()));
 						return fight.getId();
 					}
 				});

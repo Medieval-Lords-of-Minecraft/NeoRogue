@@ -28,6 +28,7 @@ public class Mob implements Comparable<Mob> {
 	private static ArrayList<BuffType> typeOrder = new ArrayList<BuffType>();
 	private static HashMap<String, Mob> mobs = new HashMap<String, Mob>();
 	
+	private MobType type;
 	private String id, base64;
 	private TextComponent display;
 	private int amount;
@@ -72,6 +73,7 @@ public class Mob implements Comparable<Mob> {
 		id = sec.getName();
 		Optional<MythicMob> opt = NeoRogue.mythicMobs.getMythicMob(id);
 		display = Component.text(opt.isPresent() ? opt.get().getDisplayName().get() : "Mob Not Loaded");
+		type = MobType.valueOf(sec.getString("type", "NORMAL").toUpperCase());
 		
 		Section resSec = sec.getSection("resistances");
 		if (resSec != null) {
@@ -104,6 +106,10 @@ public class Mob implements Comparable<Mob> {
 	
 	public HashMap<BuffType, Integer> getResistances() {
 		return resistances;
+	}
+	
+	public MobType getType() {
+		return type;
 	}
 	
 	public ItemStack getItemDisplay(ArrayList<MobModifier> modifiers) {
@@ -180,5 +186,11 @@ public class Mob implements Comparable<Mob> {
 	
 	public String getId() {
 		return id;
+	}
+	
+	public static enum MobType {
+		NORMAL,
+		MINIBOSS,
+		BOSS;
 	}
 }

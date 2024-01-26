@@ -19,15 +19,18 @@ import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 
 public class CampfireInstance extends EditInventoryInstance {
-	static final int REST_X = 6, REST_Z = 84;
+	private static final double SPAWN_X = Session.REST_X + 6.5, SPAWN_Z = Session.REST_Z + 2.5;
 	private static final int INIT_STATE = 0, REST_STATE = 1, UPGRADE_STATE = 2;
 	private int state = 0;
 	private Location center;
 	private HashSet<UUID> notUsed = new HashSet<UUID>();
 	
-	public CampfireInstance() {}
+	public CampfireInstance(Session s) {
+		super(s, SPAWN_X, SPAWN_Z);
+	}
 	
-	public CampfireInstance(String data, HashMap<UUID, PlayerSessionData> party) {
+	public CampfireInstance(Session s, String data, HashMap<UUID, PlayerSessionData> party) {
+		this(s);
 		state = Integer.parseInt(data.substring(data.length() - 1));
 		
 		for (PlayerSessionData pd : party.values()) {
@@ -38,9 +41,8 @@ public class CampfireInstance extends EditInventoryInstance {
 	}
 
 	@Override
-	public void start(Session s) {
-		this.s = s;
-		spawn = new Location(Bukkit.getWorld(Area.WORLD_NAME), -(s.getXOff() + REST_X - 0.5), 64, s.getZOff() + REST_Z);
+	public void start() {
+		spawn = new Location(Bukkit.getWorld(Area.WORLD_NAME), -(s.getXOff() + Session.REST_X - 0.5), 64, s.getZOff() + Session.REST_Z);
 		center = spawn.clone().add(0, 0, 2);
 		for (PlayerSessionData data : s.getParty().values()) {
 			Player p = data.getPlayer();
@@ -107,7 +109,7 @@ public class CampfireInstance extends EditInventoryInstance {
 	
 	public void returnToNodes() {
 		if (state == UPGRADE_STATE) s.broadcast("Everyone is ready! Returning you to node select.");
-		s.setInstance(new NodeSelectInstance());
+		s.setInstance(new NodeSelectInstance(s));
 	}
 
 	@Override

@@ -15,7 +15,7 @@ public class EmeraldGem extends Artifact {
 
 	public EmeraldGem() {
 		super("emeraldGem", "Emerald Gem", Rarity.EPIC, EquipmentClass.CLASSLESS);
-
+		canDrop = false;
 		max = 50;
 		starting = 10;
 	}

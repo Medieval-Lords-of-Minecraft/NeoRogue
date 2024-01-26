@@ -26,18 +26,20 @@ import me.neoblade298.neorogue.player.inventory.FightInfoInventory;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 
 public class NodeSelectInstance extends EditInventoryInstance {
+	private static final double SPAWN_X = Session.AREA_X + 12.5, SPAWN_Z = Session.AREA_Z + 3.5;
 	private BukkitTask task;
 	private ArrayList<Hologram> holograms = new ArrayList<Hologram>();
 	
-	public NodeSelectInstance() {}
+	public NodeSelectInstance(Session s) {
+		super(s, SPAWN_X, SPAWN_Z);
+	}
 	
-	public NodeSelectInstance(HashMap<UUID, PlayerSessionData> party) {
-		
+	public NodeSelectInstance(Session s, HashMap<UUID, PlayerSessionData> party) {
+		this(s);
 	}
 
 	@Override
-	public void start(Session s) {
-		this.s = s;
+	public void start() {
 		Area area = s.getArea();
 		area.update(s.getNode(), this);
 		
@@ -47,9 +49,7 @@ public class NodeSelectInstance extends EditInventoryInstance {
 		}
 		task = new BukkitRunnable() {
 			public void run() {
-				for (Player p : s.getOnlinePlayers()) {
-					area.tickParticles(p, s.getNode());
-				}
+				area.tickParticles(s.getNode());
 			}
 		}.runTaskTimer(NeoRogue.inst(), 0L, 20L);
 	}

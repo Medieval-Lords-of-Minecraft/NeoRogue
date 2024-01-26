@@ -15,7 +15,7 @@ public class EmeraldShard extends Artifact {
 
 	public EmeraldShard() {
 		super("emeraldShard", "Emerald Shard", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
-
+		canDrop = false;
 		max = 10;
 		starting = 2;
 	}

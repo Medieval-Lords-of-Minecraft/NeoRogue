@@ -1,14 +1,11 @@
 package me.neoblade298.neorogue.area;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -31,18 +28,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.WorldEdit;
-import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
-import com.sk89q.worldedit.extent.clipboard.Clipboard;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
-import com.sk89q.worldedit.function.operation.Operation;
-import com.sk89q.worldedit.function.operation.Operations;
-import com.sk89q.worldedit.math.BlockVector3;
-import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldedit.world.World;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
@@ -61,43 +47,23 @@ public class Area {
 	private Session s;
 	public static World world;
 	
-	private static Clipboard clipboard;
-	private static final int MIN_MINIBOSSES = 2;
-	private static final int MIN_SHOPS = 3;
-	private static final int MAX_LANES = 5;
-	private static final int MAX_POSITIONS = 12;
-	private static final int CENTER_LANE = MAX_LANES / 2;
-	private static final double STRAIGHT_PATH_CHANCE = 0.7;
-	private static final double DOUBLE_PATH_CHANCE = 0.6;
+	private static final int MIN_MINIBOSSES = 2, MIN_SHOPS = 3, MAX_LANES = 5, MAX_POSITIONS = 16,
+		CENTER_LANE = MAX_LANES / 2;
+	private static final double STRAIGHT_PATH_CHANCE = 0.7, DOUBLE_PATH_CHANCE = 0.6;
 	public static final String WORLD_NAME = "Dev";
-	private static final int X_EDGE_PADDING = 13, Z_EDGE_PADDING = 11, NODE_DIST_BETWEEN = 4;
+	private static final int X_EDGE_PADDING = 14, Z_EDGE_PADDING = 11, NODE_DIST_BETWEEN = 4;
 	private static ParticleContainer red = new ParticleContainer(Particle.REDSTONE), black;
 	
-	private static final int Z_OFFSET = 10;
 	private static final int NODE_Y = 64;
 	private static Location teleportBase;
 	
 	private Location teleport;
-	
-	// schematics
-	private static String NODE_SELECT = "nodeselect.schem";
 	
 	// Offsets
 	private int xOff, zOff;
 	
 	public static void initialize() {
 		world = BukkitAdapter.adapt(Bukkit.getWorld(WORLD_NAME));
-
-		// Load the node select schematic
-		File file = new File(NeoRogue.SCHEMATIC_FOLDER, NODE_SELECT);
-		ClipboardFormat format = ClipboardFormats.findByFile(file);
-		try (ClipboardReader reader = format.getReader(new FileInputStream(file))) {
-			clipboard = reader.read();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 		
 		teleportBase = new Location(Bukkit.getWorld(WORLD_NAME), -20.5, 0, 6.5);
 		
@@ -109,7 +75,7 @@ public class Area {
 	public Area(AreaType type, int xOff, int zOff, Session s) {
 		this.type = type;
 		this.xOff = xOff;
-		this.zOff = zOff + Z_OFFSET;
+		this.zOff = zOff + Session.AREA_Z;
 		this.teleport = teleportBase.clone().add(-this.xOff, 64, this.zOff);
 		this.s = s;
 		
@@ -134,7 +100,7 @@ public class Area {
 	public Area(AreaType type, int xOff, int zOff, UUID uuid, int saveSlot, Session s, Statement stmt) throws SQLException {
 		this.type = type;
 		this.xOff = xOff;
-		this.zOff = zOff + Z_OFFSET;
+		this.zOff = zOff + Session.AREA_Z;
 		this.teleport = teleportBase.clone().add(-this.xOff, 64, this.zOff);
 		this.s = s;
 		
@@ -281,6 +247,7 @@ public class Area {
 		 * 20% Minimum Minibosses 2, Shops 3,
 		 */
 		double rand = NeoRogue.gen.nextDouble();
+		if (rand < 1) return new Node(NodeType.MINIBOSS, pos, lane);
 
 		rand -= 0.35;
 		if (rand < 0) return new Node(NodeType.FIGHT, pos, lane);
@@ -365,19 +332,6 @@ public class Area {
 	}
 
 	public void instantiate() {
-		try (EditSession editSession = WorldEdit.getInstance().newEditSession(world)) {
-		    Operation operation = new ClipboardHolder(clipboard)
-		            .createPaste(editSession)
-		            .to(BlockVector3.at(xOff, 64, zOff))
-		            .ignoreAirBlocks(false)
-		            .build();
-		    try {
-				Operations.complete(operation);
-			} catch (WorldEditException e) {
-				e.printStackTrace();
-			}
-		}
-		
 		// Create nodes
 		org.bukkit.World w = Bukkit.getWorld(WORLD_NAME);
 		for (int lane = 0; lane < MAX_LANES; lane++) { // x
@@ -458,10 +412,11 @@ public class Area {
 		}
 	}
 	
-	public void tickParticles(Player p, Node curr) {
+	public void tickParticles(Node curr) {
+		LinkedList<Player> cache = ParticleUtil.calculateCache(nodeToLocation(curr, 0), 64);
 		// Draw red lines for any locations that can immediately be visited
 		for (Node dest : curr.getDestinations()) {
-			ParticleUtil.drawLine(red, nodeToLocation(curr, 0.5), nodeToLocation(dest, 0.5), 0.3);
+			ParticleUtil.drawLineWithCache(cache, red, nodeToLocation(curr, 0.5), nodeToLocation(dest, 0.5), 0.3);
 		}
 		
 		// Draw black lines for locations past the immediate nodes
@@ -471,7 +426,7 @@ public class Area {
 				if (node == null) continue;
 				
 				for (Node dest : node.getDestinations()) {
-					ParticleUtil.drawLine(black, nodeToLocation(node, 0.5), nodeToLocation(dest, 0.5), 0.3);
+					ParticleUtil.drawLineWithCache(cache, black, nodeToLocation(node, 0.5), nodeToLocation(dest, 0.5), 0.3);
 				}
 			}
 		}

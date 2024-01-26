@@ -27,6 +27,7 @@ import com.sk89q.worldedit.session.ClipboardHolder;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.Area;
+import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 
 public class MapPieceInstance implements Comparable<MapPieceInstance> {
@@ -292,21 +293,27 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		}
 		// Instantiate spawners; if fi is null, that means it's a testmap
 		if (fi != null) {
+			Session s = fi.getSession();
 			if (piece.getInitialSpawns() != null) {
 				for (MapSpawner spawner : piece.getInitialSpawns()) {
-					fi.addInitialSpawn(spawner.instantiate(this, xOff, zOff));
+					fi.addInitialSpawn(spawner.instantiate(s, this, xOff, zOff));
 				}
 			}
 			if (piece.hasSpawners()) {
 				for (MapSpawner spawner : piece.getSpawners(spawnerIdx)) {
-					fi.addSpawner(spawner.instantiate(this, xOff, zOff));
+					fi.addSpawner(spawner.instantiate(s, this, xOff, zOff));
 				}
 			}
 		}
 		else {
+			if (piece.getInitialSpawns() != null) {
+				for (MapSpawner spawner : piece.getInitialSpawns()) {
+					spawner.instantiate(null, this, xOff, zOff);
+				}
+			}
 			if (piece.hasSpawners()) {
 				for (MapSpawner spawner : piece.getSpawners(spawnerIdx)) {
-					spawner.instantiate(this, xOff, zOff);
+					spawner.instantiate(null, this, xOff, zOff);
 				}
 			}
 		}

@@ -3,26 +3,23 @@ package me.neoblade298.neorogue.session;
 import java.util.HashMap;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class LoseInstance extends EditInventoryInstance {
-	private static final int LOSE_X = 6, LOSE_Z = 84;
+	private static final double SPAWN_X = Session.LOSE_X + 2.5, SPAWN_Z = Session.LOSE_Z + 2.5;
 	
-	public LoseInstance() {}
+	public LoseInstance(Session s) {
+		super(s, SPAWN_X, SPAWN_Z);
+	}
 
 	@Override
-	public void start(Session s) {
-		this.s = s;
-		spawn = new Location(Bukkit.getWorld(Area.WORLD_NAME), -(s.getXOff() + LOSE_X - 0.5), 64, s.getZOff() + LOSE_Z);
+	public void start() {
 		for (PlayerSessionData data : s.getParty().values()) {
 			data.getPlayer().teleport(spawn);
 		}

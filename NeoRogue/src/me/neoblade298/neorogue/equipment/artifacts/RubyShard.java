@@ -15,7 +15,7 @@ public class RubyShard extends Artifact {
 
 	public RubyShard() {
 		super("rubyShard", "Ruby Shard", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
-
+		canDrop = false;
 		max = isUpgraded ? 15 : 10;
 	}
 

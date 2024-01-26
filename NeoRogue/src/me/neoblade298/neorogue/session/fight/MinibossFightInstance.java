@@ -22,14 +22,14 @@ import me.neoblade298.neorogue.session.reward.RewardInstance;
 public class MinibossFightInstance extends FightInstance {
 	private HashSet<String> targets = new HashSet<String>();
 	
-	public MinibossFightInstance(Set<UUID> party, AreaType type) {
-		super(party);
+	public MinibossFightInstance(Session s, Set<UUID> party, AreaType type) {
+		super(s, party);
 		map = Map.generateMiniboss(type, 0);
 		targets.addAll(map.getTargets());
 	}
 	
-	public MinibossFightInstance(Set<UUID> party, Map map) {
-		super(party);
+	public MinibossFightInstance(Session s, Set<UUID> party, Map map) {
+		super(s, party);
 		this.map = map;
 		targets.addAll(map.getTargets());
 	}
@@ -54,7 +54,7 @@ public class MinibossFightInstance extends FightInstance {
 		if (targets.isEmpty()) {
 			FightInstance.handleWin();
 			s.broadcast("You beat the miniboss!");
-			s.setInstance(new RewardInstance(generateRewards()));
+			s.setInstance(new RewardInstance(s, generateRewards()));
 			return;
 		}
 	}

@@ -39,6 +39,15 @@ public class Session {
 	private int saveSlot, xOff, zOff, nodesVisited, areasCompleted;
 	private Plot plot;
 	
+	// Session coordinates
+	public static final int LOBBY_X = 0, LOBBY_Z = 0, LOBBY_WIDTH = 15,
+			AREA_X = 0, AREA_Z = LOBBY_Z + LOBBY_WIDTH, AREA_WIDTH = 81,
+			REWARDS_X = 0, REWARDS_Z = AREA_Z + AREA_WIDTH, REWARDS_WIDTH = 6,
+			REST_X = 0, REST_Z = REWARDS_Z + REWARDS_WIDTH, REST_WIDTH = 13,
+			SHOP_X = 0, SHOP_Z = REST_Z + REST_WIDTH, SHOP_WIDTH = 12,
+			CHANCE_X = 0, CHANCE_Z = SHOP_Z + SHOP_WIDTH, CHANCE_WIDTH = 4,
+			LOSE_X = 0, LOSE_Z = CHANCE_Z + CHANCE_WIDTH;
+	
 	public Session(Player p, Plot plot, String lobby, int saveSlot) {
 		this.saveSlot = saveSlot;
 		this.xOff = plot.getXOffset();
@@ -74,7 +83,7 @@ public class Session {
 					nodesVisited = sessSet.getInt("nodesVisited");
 					int pos = sessSet.getInt("position");
 					int lane = sessSet.getInt("lane");
-					Instance inst = Instance.deserialize(sessSet, party);
+					Instance inst = Instance.deserialize(s, sessSet, party);
 
 					area = new Area(AreaType.valueOf(sessSet.getString("areaType")),
 							xOff, zOff, host, saveSlot, s, stmt);
@@ -189,7 +198,7 @@ public class Session {
 			this.inst.cleanup();
 		}
 		this.inst = inst;
-		inst.start(this);
+		inst.start();
 		if (inst instanceof EditInventoryInstance) {
 			for (PlayerSessionData data : party.values()) {
 				data.setupInventory();

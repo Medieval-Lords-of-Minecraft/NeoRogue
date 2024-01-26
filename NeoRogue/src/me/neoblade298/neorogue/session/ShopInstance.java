@@ -25,24 +25,27 @@ import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 
 public class ShopInstance extends EditInventoryInstance {
-	static final int SHOP_X = 4, SHOP_Z = 94, NUM_ITEMS = 10;
+	private static final double SPAWN_X = Session.REST_X + 4.5, SPAWN_Z = Session.REST_Z + 4.5;
+	static final int NUM_ITEMS = 10;
 	
 	private HashMap<UUID, ArrayList<ShopItem>> shops = new HashMap<UUID, ArrayList<ShopItem>>();
 	private HashSet<UUID> ready = new HashSet<UUID>();
 	private Entity trader;
 	
-	public ShopInstance() {}
+	public ShopInstance(Session s) {
+		super(s, SPAWN_X, SPAWN_Z);
+	}
 	
-	public ShopInstance(HashMap<UUID, PlayerSessionData> party) {
+	public ShopInstance(Session s, HashMap<UUID, PlayerSessionData> party) {
+		this(s);
 		for (Entry<UUID, PlayerSessionData> ent : party.entrySet()) {
 			shops.put(ent.getKey(), ShopItem.deserializeShopItems(ent.getValue().getInstanceData()));
 		}
 	}
 
 	@Override
-	public void start(Session s) {
-		this.s = s;
-		spawn = new Location(Bukkit.getWorld(Area.WORLD_NAME), -(s.getXOff() + SHOP_X), 64, s.getZOff() + SHOP_Z);
+	public void start() {
+		spawn = new Location(Bukkit.getWorld(Area.WORLD_NAME), -(s.getXOff() + Session.SHOP_X), 64, s.getZOff() + Session.SHOP_Z);
 		Location mob = spawn.clone().add(0, 0, 3);
 		this.trader = mob.getWorld().spawnEntity(mob, EntityType.WANDERING_TRADER);
 		for (PlayerSessionData data : s.getParty().values()) {
@@ -111,7 +114,7 @@ public class ShopInstance extends EditInventoryInstance {
 				s.broadcastSound(Sound.ENTITY_PLAYER_LEVELUP);
 				new BukkitRunnable() {
 					public void run() {
-						s.setInstance(new NodeSelectInstance());
+						s.setInstance(new NodeSelectInstance(s));
 					}
 				}.runTaskLater(NeoRogue.inst(), 60L);
 			}

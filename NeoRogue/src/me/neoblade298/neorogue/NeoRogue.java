@@ -83,7 +83,6 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdInvite("invite", "Invite a player to your party", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdLeave("leave", "Leave your session", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdKick("kick", "Kick a player from your party", null, SubcommandRunner.BOTH));
-		mngr.register(new CmdStart("start", "Start the game with your party", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdJoin("join", "Join an existing party", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdInfo("info", "View session info", null, SubcommandRunner.BOTH));
 		mngr.registerCommandList("");
@@ -111,7 +110,7 @@ public class NeoRogue extends JavaPlugin {
 		s.generateArea(AreaType.LOW_DISTRICT);
 		s.addPlayer(p.getUniqueId(), EquipmentClass.WARRIOR);
 		s.setNode(s.getArea().getNodes()[0][2]);
-		s.setInstance(new NodeSelectInstance());
+		s.setInstance(new NodeSelectInstance(s));
 		//s.setInstance(new StandardFightInstance(s.getParty().keySet(), AreaType.LOW_DISTRICT, s.getNodesVisited()));
 		// s.setInstance(new ChanceInstance());
 

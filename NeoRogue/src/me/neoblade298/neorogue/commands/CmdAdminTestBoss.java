@@ -35,7 +35,7 @@ public class CmdAdminTestBoss extends Subcommand {
 		}
 		sess.generateArea(AreaType.LOW_DISTRICT);
 		sess.setNode(sess.getArea().getNodes()[0][2]);
-		BossFightInstance inst = new BossFightInstance(sess.getParty().keySet(), Map.generate(AreaType.LOW_DISTRICT, 0, MapPiece.get(args[0])));
+		BossFightInstance inst = new BossFightInstance(sess, sess.getParty().keySet(), Map.generate(AreaType.LOW_DISTRICT, 0, MapPiece.get(args[0])));
 		sess.setInstance(inst);
 	}
 }

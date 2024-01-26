@@ -15,7 +15,7 @@ public class SapphireShard extends Artifact {
 
 	public SapphireShard() {
 		super("sapphireShard", "Sapphire Shard", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
-
+		canDrop = false;
 		max = 10;
 		starting = 2;
 	}

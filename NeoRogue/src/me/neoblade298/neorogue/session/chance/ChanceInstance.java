@@ -26,21 +26,24 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class ChanceInstance extends EditInventoryInstance {
-	public static final int CHANCE_X = 6, CHANCE_Z = 103;
+	private static final double SPAWN_X = Session.CHANCE_X + 6.5, SPAWN_Z = Session.CHANCE_Z + 3.5;
 
 	private ChanceSet set;
 	private HashMap<UUID, ChanceStage> stage = new HashMap<UUID, ChanceStage>();
 	private Instance nextInstance; // For taking you directly from this instance to another
 	private boolean returning;
 
-	public ChanceInstance() {
+	public ChanceInstance(Session s) {
+		super(s, SPAWN_X, SPAWN_Z);
 	}
 	
-	public ChanceInstance(String setId) {
+	public ChanceInstance(Session s, String setId) {
+		this(s);
 		this.set = ChanceSet.get(setId);
 	}
 
-	public ChanceInstance(String data, HashMap<UUID, PlayerSessionData> party) {
+	public ChanceInstance(Session s, String data, HashMap<UUID, PlayerSessionData> party) {
+		this(s);
 		data = data.substring("CHANCE:".length());
 		String[] split = data.split("-");
 		set = ChanceSet.get(split[0]);
@@ -51,15 +54,18 @@ public class ChanceInstance extends EditInventoryInstance {
 		}
 		
 		if (split.length > 1) {
-			nextInstance = FightInstance.deserializeInstanceData(party, split[1]);
+			nextInstance = FightInstance.deserializeInstanceData(s, party, split[1]);
 		}
+	}
+	
+	public ChanceSet getSet() {
+		return set;
 	}
 
 	@Override
-	public void start(Session s) {
-		this.s = s;
-		spawn = new Location(Bukkit.getWorld(Area.WORLD_NAME), -(s.getXOff() + CHANCE_X - 0.5), 64,
-				s.getZOff() + CHANCE_Z);
+	public void start() {
+		spawn = new Location(Bukkit.getWorld(Area.WORLD_NAME), -(s.getXOff() + Session.CHANCE_X - 0.5), 64,
+				s.getZOff() + Session.CHANCE_Z);
 
 		// Pick a random chance set if not already picked
 		if (set == null) {
@@ -166,7 +172,7 @@ public class ChanceInstance extends EditInventoryInstance {
 		new BukkitRunnable() {
 			public void run() {
 				returning = false;
-				s.setInstance(nextInstance == null ? new NodeSelectInstance() : nextInstance);
+				s.setInstance(nextInstance == null ? new NodeSelectInstance(s) : nextInstance);
 			}
 		}.runTaskLater(NeoRogue.inst(), 60L);
 	}

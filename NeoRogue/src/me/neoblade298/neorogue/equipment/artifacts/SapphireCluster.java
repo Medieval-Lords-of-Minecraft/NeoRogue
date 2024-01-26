@@ -15,7 +15,7 @@ public class SapphireCluster extends Artifact {
 
 	public SapphireCluster() {
 		super("sapphireCluster", "Sapphire Cluster", Rarity.RARE, EquipmentClass.CLASSLESS);
-
+		canDrop = false;
 		max = 25;
 		starting = 5;
 	}

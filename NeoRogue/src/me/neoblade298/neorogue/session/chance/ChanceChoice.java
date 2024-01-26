@@ -8,6 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import me.neoblade298.neocore.bukkit.NeoCore;
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
@@ -78,10 +79,16 @@ public class ChanceChoice {
 	}
 	
 	public String choose(Session s, ChanceInstance inst, PlayerSessionData data) {
-		s.broadcastSound(Sound.ENTITY_ARROW_HIT_PLAYER);
-		for (Player player : s.getOnlinePlayers()) {
-			player.closeInventory();
+		if (inst.getSet().isIndividual()) {
+			s.broadcastSound(Sound.ENTITY_ARROW_HIT_PLAYER);
+			for (Player player : s.getOnlinePlayers()) {
+				player.closeInventory();
+			}
 		}
+		else {
+			Util.playSound(data.getPlayer(), Sound.ENTITY_ARROW_HIT_PLAYER, false);
+		}
+		
 		if (action != null) {
 			return action.run(s, inst, data);
 		}

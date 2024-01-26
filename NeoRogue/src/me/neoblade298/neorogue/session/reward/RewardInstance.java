@@ -24,24 +24,24 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class RewardInstance extends EditInventoryInstance {
-	public static final int REWARDS_X = 4, REWARDS_Z = 78;
-	
+	private static final double SPAWN_X = Session.REWARDS_X + 4.5, SPAWN_Z = Session.REWARDS_Z + 2.5;
 	private HashMap<UUID, ArrayList<Reward>> rewards = new HashMap<UUID, ArrayList<Reward>>();
 	
-	public RewardInstance(HashMap<UUID, ArrayList<Reward>> rewards) {
+	public RewardInstance(Session s, HashMap<UUID, ArrayList<Reward>> rewards) {
+		super(s, SPAWN_X, SPAWN_Z);
 		this.rewards = rewards;
 	}
 	
-	public RewardInstance(HashMap<UUID, PlayerSessionData> party, boolean useless) {
+	public RewardInstance(Session s, HashMap<UUID, PlayerSessionData> party, boolean useless) {
+		super(s, SPAWN_X, SPAWN_Z);
 		for (Entry<UUID, PlayerSessionData> ent : party.entrySet()) {
 			rewards.put(ent.getKey(), Reward.deserializeArray(ent.getValue().getInstanceData()));
 		}
 	}
 
 	@Override
-	public void start(Session s) {
-		this.s = s;
-		spawn = new Location(Bukkit.getWorld(Area.WORLD_NAME), -(s.getXOff() + REWARDS_X), 64, s.getZOff() + REWARDS_Z);
+	public void start() {
+		spawn = new Location(Bukkit.getWorld(Area.WORLD_NAME), -(s.getXOff() + Session.REWARDS_X), 64, s.getZOff() + Session.REWARDS_Z);
 		for (PlayerSessionData data : s.getParty().values()) {
 			Player p = data.getPlayer();
 			p.playSound(p, Sound.ENTITY_PLAYER_LEVELUP, 1F, 1F);
@@ -77,7 +77,7 @@ public class RewardInstance extends EditInventoryInstance {
 			if (!rewards.isEmpty()) return;
 		}
 		s.broadcast("Everyone's finished claiming rewards! Returning to node select.");
-		s.setInstance(new NodeSelectInstance());
+		s.setInstance(new NodeSelectInstance(s));
 	}
 
 	@Override

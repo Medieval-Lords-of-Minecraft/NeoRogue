@@ -53,7 +53,7 @@ public class VultureChance extends ChanceSet {
 				(s, inst, unused) -> {
 					if (NeoRogue.gen.nextInt(100) < failPercent) {
 						s.broadcast("<red>As you loot the body, the enemy returns!");
-						inst.setNextInstance(new MinibossFightInstance(s.getParty().keySet(), s.getArea().getType()));
+						inst.setNextInstance(new MinibossFightInstance(s, s.getParty().keySet(), s.getArea().getType()));
 						return "miniboss";
 					}
 					else {

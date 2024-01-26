@@ -1,8 +1,12 @@
 package me.neoblade298.neorogue.equipment.artifacts;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
@@ -30,7 +34,11 @@ public class GrendelsCrystalMirror extends Artifact {
 			if (count > 0) {
 				count--;
 				LaunchProjectileGroupEvent ev = (LaunchProjectileGroupEvent) inputs;
-				ev.getGroup().startWithoutEvent(data);
+				data.addTask(UUID.randomUUID().toString(), new BukkitRunnable() {
+					public void run() {
+						ev.getGroup().startWithoutEvent(data);
+					}
+				}.runTaskLater(NeoRogue.inst(), 10L));
 				return TriggerResult.keep();
 			}
 			return TriggerResult.remove();

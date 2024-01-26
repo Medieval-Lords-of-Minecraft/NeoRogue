@@ -30,6 +30,6 @@ public class CmdAdminTestChance extends Subcommand {
 		}
 		sess.generateArea(AreaType.LOW_DISTRICT);
 		sess.setNode(sess.getArea().getNodes()[0][2]);
-		sess.setInstance(new ChanceInstance(args[0]));
+		sess.setInstance(new ChanceInstance(sess, args[0]));
 	}
 }

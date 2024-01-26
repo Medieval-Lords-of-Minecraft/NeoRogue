@@ -41,15 +41,15 @@ public class StandardFightInstance extends FightInstance {
 		SCORE_REQUIRED.put(4, 50D);
 	}
 	
-	public StandardFightInstance(Set<UUID> players, AreaType type, int nodesVisited) {
-		super(players);
+	public StandardFightInstance(Session s, Set<UUID> players, AreaType type, int nodesVisited) {
+		super(s, players);
 		int rand = nodesVisited >= 5 ? NeoRogue.gen.nextInt(nodesVisited / 5) : 0;
 		int min = nodesVisited / 10;
 		map = Map.generate(type, 2 + rand + min);
 	}
 	
-	public StandardFightInstance(Set<UUID> players, Map map) {
-		super(players);
+	public StandardFightInstance(Session s, Set<UUID> players, Map map) {
+		super(s, players);
 		this.map = map;
 	}
 
@@ -105,7 +105,7 @@ public class StandardFightInstance extends FightInstance {
 			scoreBar.removeAll();
 			s.broadcast(Component.text("You completed the fight with a score of ", NamedTextColor.GRAY)
 					.append(fightScore.getComponentDisplay()).append(Component.text("!")));
-			s.setInstance(new RewardInstance(generateRewards(s, fightScore)));
+			s.setInstance(new RewardInstance(s, generateRewards(s, fightScore)));
 			return;
 		}
 	}

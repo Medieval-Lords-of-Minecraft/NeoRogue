@@ -15,7 +15,7 @@ public class RubyCluster extends Artifact {
 
 	public RubyCluster() {
 		super("rubyCluster", "Ruby Cluster", Rarity.RARE, EquipmentClass.CLASSLESS);
-
+		canDrop = false;
 		max = 25;
 	}
 

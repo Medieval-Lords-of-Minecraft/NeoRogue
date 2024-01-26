@@ -10,19 +10,23 @@ import io.lumine.mythic.api.mobs.MythicMob;
 import io.lumine.mythic.bukkit.BukkitAdapter;
 import io.lumine.mythic.core.mobs.ActiveMob;
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.Mob;
+import me.neoblade298.neorogue.session.fight.Mob.MobType;
 import me.neoblade298.neorogue.session.fight.buff.BuffType;
 
 public class MapSpawnerInstance {
+	private Session s;
 	private MythicMob mythicMob;
 	private Mob mob;
 	private Location loc;
 	private double radius;
 	private int maxMobs, activeMobs;
 	
-	public MapSpawnerInstance(MapSpawner original, MapPieceInstance inst, int xOff, int zOff) {
+	public MapSpawnerInstance(Session s, MapSpawner original, MapPieceInstance inst, int xOff, int zOff) {
+		this.s = s;
 		this.mythicMob = original.getMythicMob();
 		this.mob = original.getMob();
 		this.loc = original.getCoordinates().clone().applySettings(inst).toLocation();
@@ -51,7 +55,7 @@ public class MapSpawnerInstance {
 		return mythicMob;
 	}
 	
-	// Level increases by 1 per node visited
+	// Level is nodes visited
 	public void spawnMob(double lvl) {
 		for (int i = 0; i < mob.getAmount(); i++) {
 			Location loc = this.loc;
@@ -60,6 +64,10 @@ public class MapSpawnerInstance {
 			}
 			ActiveMob am = mythicMob.spawn(BukkitAdapter.adapt(loc), lvl);
 			double mhealth = mythicMob.getHealth().get();
+			// Bosses scale with number of players too
+			if (mob.getType() != MobType.NORMAL) {
+				mhealth *= 0.75 + (s.getParty().size() * 0.25); // 25% health increase per player, starting from 2 players
+			}
 			mhealth *= (lvl / 5);
 			am.getEntity().setMaxHealth(Math.round(mhealth));
 			am.getEntity().setHealth(Math.round(mhealth));

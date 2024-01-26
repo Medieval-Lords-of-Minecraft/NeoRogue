@@ -17,7 +17,6 @@ public class EquipmentChoiceReward implements Reward {
 	private ArrayList<Equipment> equips;
 	
 	public EquipmentChoiceReward(ArrayList<Equipment> equips) {
-		System.out.println("Equips: " + equips + " size: " + equips.size());
 		this.equips = equips;
 	}
 	
@@ -40,7 +39,6 @@ public class EquipmentChoiceReward implements Reward {
 		meta.displayName(Component.text("Choose 1 of " + equips.size() + " equipment", NamedTextColor.GOLD));
 		ArrayList<Component> lore = new ArrayList<Component>();
 		for (Equipment equip : equips) {
-			System.out.println("Equip: " + equip);
 			lore.add(equip.getDisplay());
 		}
 		meta.lore(lore);

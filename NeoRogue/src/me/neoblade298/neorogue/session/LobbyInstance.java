@@ -38,52 +38,46 @@ import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.PlayerSessionData;
-import me.neoblade298.neorogue.session.chance.ChanceInstance;
-import me.neoblade298.neorogue.session.reward.RewardInstance;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class LobbyInstance extends Instance {
 	private static final int MAX_SIZE = 4;
-	
+	private static final double SPAWN_X = Session.LOBBY_X + 6.5, SPAWN_Z = Session.LOBBY_Z + 3.5;
+
 	private String name;
 	private static String invPrefix = "<dark_gray>[<green><click:run_command:'/nr join ",
 			invSuffix = "'><hover:show_text:'Click to accept invite'>Click here to accept the invite!</hover></click></green>]";
 	private HashSet<UUID> invited = new HashSet<UUID>();
 	private HashMap<UUID, EquipmentClass> players = new HashMap<UUID, EquipmentClass>();
 	private UUID host;
-	private static Clipboard classSelect, rewardsRoom, campfire, shop, chance;
+	private static Clipboard classSelect, nodeSelect, rewardsRoom, shrine, shop, chance, lose;
 	private boolean busy = false;
 	private Component partyInfoHeader;
-	
-	private static final int LOBBY_X = -7, LOBBY_Z = 3;
-	
+	private HashSet<UUID> ready = new HashSet<UUID>();
+
 	// Static error messages
-	private static final TextComponent hostOnlyInvite = Component.text("Only the host may invite other players!", NamedTextColor.RED),
+	private static final TextComponent hostOnlyInvite = Component.text("Only the host may invite other players!",
+			NamedTextColor.RED),
 			hostOnlyKick = Component.text("Only the host may kick other players!", NamedTextColor.RED),
-			hostOnlyStart = Component.text("Only the host may start the game!", NamedTextColor.RED),
-			gameGenerating = Component.text("Your game is generating! You can't do this right now!", NamedTextColor.RED),
+			gameGenerating = Component.text("Your game is generating! You can't do this right now!",
+					NamedTextColor.RED),
 			playerNotOnline = Component.text("That player isn't online!", NamedTextColor.RED),
 			playerNotInLobby = Component.text("That player isn't in the lobby!", NamedTextColor.RED),
-			maxSizeError = Component.text("This lobby is full as it has a max of " + MAX_SIZE + " players!", NamedTextColor.RED);
-			
-	
-	// schematics
-	private static String CLASS_SELECT = "classselect.schem",
-			REWARDS_ROOM = "rewardsroom.schem",
-			CAMPFIRE = "campfire.schem",
-			SHOP = "shop.schem",
-			CHANCE = "chance.schem";
-	
+			maxSizeError = Component.text("This lobby is full as it has a max of " + MAX_SIZE + " players!",
+					NamedTextColor.RED);
+
 	static {
-		classSelect = loadClipboard(CLASS_SELECT);
-		rewardsRoom = loadClipboard(REWARDS_ROOM);
-		campfire = loadClipboard(CAMPFIRE);
-		shop = loadClipboard(SHOP);
-		chance = loadClipboard(CHANCE);
+		classSelect = loadClipboard("classselect.schem");
+		nodeSelect = loadClipboard("nodeselect.schem");
+		rewardsRoom = loadClipboard("rewardsroom.schem");
+		shrine = loadClipboard("shrine.schem");
+		shop = loadClipboard("shop.schem");
+		chance = loadClipboard("chance.schem");
+		lose = loadClipboard("chance.schem");
 	}
-	
+
 	private static Clipboard loadClipboard(String schematic) {
 		File file = new File(NeoRogue.SCHEMATIC_FOLDER, schematic);
 		ClipboardFormat format = ClipboardFormats.findByFile(file);
@@ -96,14 +90,13 @@ public class LobbyInstance extends Instance {
 		}
 		return null;
 	}
-	
-	private static void pasteSchematic(Clipboard clipboard, EditSession editSession, Session session, int xOff, int zOff) {
-	    Operation operation = new ClipboardHolder(clipboard)
-	            .createPaste(editSession)
-	            .to(BlockVector3.at(-(session.getXOff() + xOff + 1), 64, session.getZOff() + zOff))
-	            .ignoreAirBlocks(true)
-	            .build();
-	    try {
+
+	private static void pasteSchematic(Clipboard clipboard, EditSession editSession, Session session, int xOff,
+			int zOff) {
+		Operation operation = new ClipboardHolder(clipboard).createPaste(editSession)
+				.to(BlockVector3.at(-(session.getXOff() + xOff + 1), 64, session.getZOff() + zOff))
+				.ignoreAirBlocks(true).build();
+		try {
 			Operations.complete(operation);
 		} catch (WorldEditException e) {
 			e.printStackTrace();
@@ -111,29 +104,31 @@ public class LobbyInstance extends Instance {
 	}
 
 	@Override
-	public void start(Session s) {
-		
+	public void start() {
+
 	}
 
 	public LobbyInstance(String name, Player host, Session session) {
+		super(session, SPAWN_X, SPAWN_Z);
 		this.name = name;
 		this.host = host.getUniqueId();
 		players.put(host.getUniqueId(), EquipmentClass.WARRIOR);
 		this.s = session;
-		
+
 		// Generate the lobby and add the host there
 		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Area.world)) {
-			pasteSchematic(classSelect, editSession, session, 0, 0);
-			pasteSchematic(rewardsRoom, editSession, session, 0, RewardInstance.REWARDS_Z - 2);
-			pasteSchematic(campfire, editSession, session, 0, CampfireInstance.REST_Z - 2);
-			pasteSchematic(shop, editSession, session, 0, ShopInstance.SHOP_Z - 4);
-			pasteSchematic(chance, editSession, session, 0, ChanceInstance.CHANCE_Z - 3);
+			pasteSchematic(classSelect, editSession, session, 0, Session.LOBBY_Z);
+			pasteSchematic(nodeSelect, editSession, session, 0, Session.AREA_Z);
+			pasteSchematic(rewardsRoom, editSession, session, 0, Session.REWARDS_Z);
+			pasteSchematic(shrine, editSession, session, 0, Session.REST_Z);
+			pasteSchematic(shop, editSession, session, 0, Session.SHOP_Z);
+			pasteSchematic(chance, editSession, session, 0, Session.CHANCE_Z);
+			pasteSchematic(lose, editSession, session, 0, Session.LOSE_Z);
 		}
-		spawn = new Location(Bukkit.getWorld(Area.WORLD_NAME), session.getXOff() + LOBBY_X, 64, session.getZOff() + LOBBY_Z);
+		spawn = new Location(Bukkit.getWorld(Area.WORLD_NAME), -(s.getXOff() + SPAWN_X), 64, s.getZOff() + SPAWN_Z);
 		host.teleport(spawn);
 		partyInfoHeader = Component.text().content("<< ( ").color(NamedTextColor.GRAY)
-				.append(Component.text(name, NamedTextColor.RED))
-				.append(Component.text(" ) >>"))
+				.append(Component.text(name, NamedTextColor.RED)).append(Component.text(" ) >>"))
 				.append(Component.text("\nPlayers:")).build();
 	}
 
@@ -142,7 +137,7 @@ public class LobbyInstance extends Instance {
 			Util.msgRaw(inviter, hostOnlyInvite);
 			return;
 		}
-		
+
 		if (busy) {
 			Util.msgRaw(inviter, gameGenerating);
 			return;
@@ -159,8 +154,7 @@ public class LobbyInstance extends Instance {
 				.append(Component.text(" was invited to the lobby!", NamedTextColor.GRAY)).build();
 		broadcast(tc);
 		Util.msg(recipient, Component.text("You've been invited to the ")
-				.append(Component.text(name, NamedTextColor.YELLOW))
-				.append(Component.text(" party!")));
+				.append(Component.text(name, NamedTextColor.YELLOW)).append(Component.text(" party!")));
 
 		Util.msg(recipient, NeoCore.miniMessage().deserialize(invPrefix + name + invSuffix));
 	}
@@ -169,7 +163,7 @@ public class LobbyInstance extends Instance {
 		if (MAX_SIZE <= players.size()) {
 			Util.msgRaw(p, maxSizeError);
 		}
-		
+
 		if (busy) {
 			Util.msgRaw(p, gameGenerating);
 			return;
@@ -190,12 +184,12 @@ public class LobbyInstance extends Instance {
 			Util.msgRaw(s, hostOnlyKick);
 			return;
 		}
-		
+
 		if (busy) {
 			Util.msgRaw(s, gameGenerating);
 			return;
 		}
-		
+
 		Player p = Bukkit.getPlayer(name);
 
 		if (!players.containsKey(p.getUniqueId())) {
@@ -216,7 +210,7 @@ public class LobbyInstance extends Instance {
 			Util.msgRaw(p, gameGenerating);
 			return;
 		}
-		
+
 		if (p.getUniqueId().equals(host)) {
 			SessionManager.removeSession(this.s);
 			TextComponent tc = Component.text().content(p.getName()).color(NamedTextColor.YELLOW)
@@ -243,20 +237,19 @@ public class LobbyInstance extends Instance {
 	public void displayInfo(Player viewer) {
 		Player h = Bukkit.getPlayer(host);
 		boolean isHost = viewer.getUniqueId().equals(host);
-		
+
 		// Player list
 		boolean first = true;
 		Util.msgRaw(viewer, partyInfoHeader.replaceText(config -> {
 			config.match("%");
 			config.replacement(Component.text(name, NamedTextColor.RED));
 		}));
-		
+
 		TextComponent hostText = Component.text().content("- ").color(NamedTextColor.GRAY)
 				.append(Component.text(h.getName(), NamedTextColor.RED))
 				.append(Component.text(" (")
 						.append(Component.text(players.get(host).getDisplay(), NamedTextColor.YELLOW)))
-				.append(Component.text(") ("))
-				.append(Component.text("Host", NamedTextColor.YELLOW))
+				.append(Component.text(") (")).append(Component.text("Host", NamedTextColor.YELLOW))
 				.append(Component.text(")")).build();
 		Util.msgRaw(viewer, hostText);
 		String str = "";
@@ -269,13 +262,15 @@ public class LobbyInstance extends Instance {
 				}
 				first = false;
 				Player p = Bukkit.getPlayer(uuid);
-				str += "<gray>- <red>" + p.getName() + "</red> (<yellow>" + players.get(uuid).getDisplay() + "</yellow>)</gray>";
+				str += "<gray>- <red>" + p.getName() + "</red> (<yellow>" + players.get(uuid).getDisplay()
+						+ "</yellow>)</gray>";
 				if (isHost) {
-					str += "<dark_gray>[<red><click:run_command:'/nr kick " + p.getName() + "'><hover:show_text:'Click to kick " +
-							p.getName() + "'>Click to kick</hover></click></red>]";
+					str += "<dark_gray>[<red><click:run_command:'/nr kick " + p.getName()
+							+ "'><hover:show_text:'Click to kick " + p.getName()
+							+ "'>Click to kick</hover></click></red>]";
 				}
 			}
-			Util.msg(viewer, NeoCore.miniMessage().deserialize(str));
+			Util.msgRaw(viewer, NeoCore.miniMessage().deserialize(str));
 		}
 
 		if (viewer.getUniqueId().equals(host)) {
@@ -291,40 +286,30 @@ public class LobbyInstance extends Instance {
 	public HashSet<UUID> getInvited() {
 		return invited;
 	}
-	
-	public void startGame(Player p) {
-		if (!p.getUniqueId().equals(host)) {
-			Util.msgRaw(p, hostOnlyStart);
-			return;
-		}
-		
-		if (busy) {
-			Util.msgRaw(p, gameGenerating);
-			return;
-		}
 
+	public void startGame() {
 		s.addPlayers(players);
 		s.broadcast("Generating your game...");
 		s.generateArea(AreaType.LOW_DISTRICT);
 		s.setNode(s.getArea().getNodes()[0][2]);
-		
+
 		new BukkitRunnable() {
 			public void run() {
 				for (UUID uuid : players.keySet()) {
 					Player p = Bukkit.getPlayer(uuid);
 					p.setHealth(p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
 				}
-				s.setInstance(new NodeSelectInstance());
+				s.setInstance(new NodeSelectInstance(s));
 			}
 		}.runTaskLater(NeoRogue.inst(), 20L);
 	}
-	
+
 	public void switchClass(UUID uuid, EquipmentClass pc) {
 		if (!players.containsKey(uuid)) {
 			Bukkit.getLogger().warning("[NeoRogue] Player tried to switch class when not belonging to that session");
 			return;
 		}
-		
+
 		if (busy) {
 			Util.msgRaw(Bukkit.getPlayer(uuid), gameGenerating);
 			return;
@@ -336,34 +321,58 @@ public class LobbyInstance extends Instance {
 		broadcast(tc);
 		players.put(uuid, pc);
 	}
-	
+
 	public String getName() {
 		return name;
 	}
 
 	@Override
 	public void cleanup() {
-		
+
 	}
 
 	@Override
 	public void handleInteractEvent(PlayerInteractEvent e) {
 		if (e.getAction() != Action.RIGHT_CLICK_BLOCK || !Tag.SIGNS.isTagged(e.getClickedBlock().getType())) return;
 		if (e.getHand() != EquipmentSlot.HAND) return;
-		
+
 		UUID uuid = e.getPlayer().getUniqueId();
 		Sign sign = (Sign) e.getClickedBlock().getState();
-		char c = ((TextComponent)sign.getSide(Side.FRONT).line(2)).content().charAt(0);
-		
+
+		char c = ((TextComponent) sign.getSide(Side.FRONT).line(1)).content().charAt(0);
+
 		switch (c) {
-		case 'W': switchClass(uuid, EquipmentClass.WARRIOR);
-		break;
-		case 'T': switchClass(uuid, EquipmentClass.THIEF);
-		break;
-		case 'A': switchClass(uuid, EquipmentClass.ARCHER);
-		break;
-		case 'M': switchClass(uuid, EquipmentClass.MAGE);
-		break;
+		case 'W':
+			switchClass(uuid, EquipmentClass.WARRIOR);
+			break;
+		case 'T':
+			switchClass(uuid, EquipmentClass.THIEF);
+			break;
+		case 'A':
+			switchClass(uuid, EquipmentClass.ARCHER);
+			break;
+		case 'M':
+			switchClass(uuid, EquipmentClass.MAGE);
+			break;
+		case 'R':
+			readyPlayer(e.getPlayer());
+			break;
+		}
+	}
+
+	private void readyPlayer(Player p) {
+		UUID uuid = p.getUniqueId();
+		if (busy) return;
+		if (ready.contains(uuid)) {
+			ready.add(uuid);
+			s.broadcast("<yellow>" + p.getName() + "</yellow> is ready!");
+			if (ready.size() == players.size()) {
+				this.startGame();
+			}
+		}
+		else {
+			ready.remove(uuid);
+			s.broadcast("<yellow>" + p.getName() + "</yellow> is no longer ready!");
 		}
 	}
 

@@ -64,7 +64,7 @@ public class Node {
 	
 	public void deserializeInstance(Session s, String data) {
 		if (!data.isBlank()) {
-			inst = FightInstance.deserializeInstanceData(s.getParty(), data);
+			inst = FightInstance.deserializeInstanceData(s, s.getParty(), data);
 		}
 	}
 	
@@ -102,22 +102,22 @@ public class Node {
 		
 		switch (type) {
 		case FIGHT:
-			inst = new StandardFightInstance(s.getParty().keySet(), area, s.getNodesVisited());
+			inst = new StandardFightInstance(s, s.getParty().keySet(), area, s.getNodesVisited());
 			break;
 		case CAMPFIRE:
-			inst = new CampfireInstance();
+			inst = new CampfireInstance(s);
 			break;
 		case CHANCE:
-			inst = new ChanceInstance();
+			inst = new ChanceInstance(s);
 			break;
 		case SHOP:
-			inst = new ShopInstance();
+			inst = new ShopInstance(s);
 			break;
 		case MINIBOSS:
-			inst = new MinibossFightInstance(s.getParty().keySet(), area);
+			inst = new MinibossFightInstance(s, s.getParty().keySet(), area);
 			break;
 		case BOSS:
-			inst = new BossFightInstance(s.getParty().keySet(), area);
+			inst = new BossFightInstance(s, s.getParty().keySet(), area);
 		default:
 			break;
 		}

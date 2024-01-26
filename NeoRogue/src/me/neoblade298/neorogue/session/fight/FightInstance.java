@@ -69,9 +69,9 @@ public abstract class FightInstance extends Instance {
 	protected ArrayList<FightRunnable> initialTasks = new ArrayList<FightRunnable>();
 	protected double spawnCounter; // Holds a value between 0 and 1, when above 1, a mob spawns
 	protected double totalSpawnValue; // Keeps track of total mob spawns, to handle scaling of spawning
-	protected int level; // The level of the instance
 
-	public FightInstance(Set<UUID> players) {
+	public FightInstance(Session s, Set<UUID> players) {
+		super(s);
 		party.addAll(players);
 	}
 
@@ -119,7 +119,8 @@ public abstract class FightInstance extends Instance {
 				}
 
 				// End game as a loss
-				data.getInstance().s.setInstance(new LoseInstance());
+				Session sess = data.getInstance().getSession();
+				sess.setInstance(new LoseInstance(sess));
 			}
 		}.runTaskLater(NeoRogue.inst(), 5L);
 	}
@@ -366,22 +367,23 @@ public abstract class FightInstance extends Instance {
 	}
 
 	public static void dealDamage(DamageMeta meta, Collection<LivingEntity> targets) {
-		trigger((Player) meta.getOwner().getEntity(), Trigger.DEALT_DAMAGE_MULTIPLE, new DealtDamageEvent(meta));
+		if (meta.getOwner().getEntity() instanceof Player) {
+			trigger((Player) meta.getOwner().getEntity(), Trigger.DEALT_DAMAGE_MULTIPLE, new DealtDamageEvent(meta));
+		}
 		for (LivingEntity target : targets) {
 			meta.clone().dealDamage(target);
 		}
 	}
 
 	public static void dealDamage(DamageMeta meta, LivingEntity target) {
-		trigger((Player) meta.getOwner().getEntity(), Trigger.DEALT_DAMAGE, new DealtDamageEvent(meta));
+		if (meta.getOwner().getEntity() instanceof Player) {
+			trigger((Player) meta.getOwner().getEntity(), Trigger.DEALT_DAMAGE, new DealtDamageEvent(meta));
+		}
 		meta.dealDamage(target);
 	}
 
 	@Override
-	public void start(Session s) {
-		this.s = s;
-		level = 5 + s.getNodesVisited();
-
+	public void start() {
 		instantiate();
 		s.broadcast("Commencing fight...");
 		ArrayList<PlayerFightData> fdata = new ArrayList<PlayerFightData>();
@@ -417,6 +419,9 @@ public abstract class FightInstance extends Instance {
 		new BukkitRunnable() {
 			public void run() {
 				activateSpawner(2 + (s.getNodesVisited() / 5) + s.getParty().size());
+				for (MapSpawnerInstance inst : fi.initialSpawns) {
+					inst.spawnMob(s.getNodesVisited());
+				}
 			}
 		}.runTaskLater(NeoRogue.inst(), 60L);
 
@@ -458,6 +463,10 @@ public abstract class FightInstance extends Instance {
 		fightData.put(uuid, fd);
 		userData.put(uuid, fd);
 		return fd;
+	}
+	
+	public Session getSession() {
+		return s;
 	}
 
 	@Override
@@ -552,7 +561,7 @@ public abstract class FightInstance extends Instance {
 			if (!spawner.canSpawn()) {
 				spawner = unlimitedSpawners.get(NeoRogue.gen.nextInt(unlimitedSpawners.size()));
 			}
-			spawner.spawnMob(4 + s.getNodesVisited());
+			spawner.spawnMob(s.getNodesVisited());
 		}
 	}
 
@@ -564,15 +573,15 @@ public abstract class FightInstance extends Instance {
 
 	public abstract String serializeInstanceData();
 
-	public static FightInstance deserializeInstanceData(HashMap<UUID, PlayerSessionData> party, String str) {
+	public static FightInstance deserializeInstanceData(Session s, HashMap<UUID, PlayerSessionData> party, String str) {
 		if (str.startsWith("STANDARD")) {
-			return new StandardFightInstance(party.keySet(), Map.deserialize(str.substring("STANDARD:".length())));
+			return new StandardFightInstance(s, party.keySet(), Map.deserialize(str.substring("STANDARD:".length())));
 		}
 		else if (str.startsWith("MINIBOSS")) {
-			return new MinibossFightInstance(party.keySet(), Map.deserialize(str.substring("MINIBOSS:".length())));
+			return new MinibossFightInstance(s, party.keySet(), Map.deserialize(str.substring("MINIBOSS:".length())));
 		}
 		else {
-			return new BossFightInstance(party.keySet(), Map.deserialize(str.substring("BOSS:".length())));
+			return new BossFightInstance(s, party.keySet(), Map.deserialize(str.substring("BOSS:".length())));
 		}
 	}
 

@@ -8,6 +8,10 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 
 public abstract class EditInventoryInstance extends Instance {
+	public EditInventoryInstance(Session s, double spawnX, double spawnZ) {
+		super(s, spawnX, spawnZ);
+	}
+
 	public static boolean isValid(Session s) {
 		ArrayList<Player> online = s.getOnlinePlayers();
 		
