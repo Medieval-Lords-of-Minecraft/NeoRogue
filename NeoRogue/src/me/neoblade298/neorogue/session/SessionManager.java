@@ -28,6 +28,7 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
@@ -260,6 +261,17 @@ public class SessionManager implements Listener {
 		}
 		
 		s.getInstance().handleInteractEvent(e);
+	}
+	
+	@EventHandler(ignoreCancelled = false)
+	public void onInteractArmorStand(PlayerInteractAtEntityEvent e) {
+		Player p = e.getPlayer();
+		UUID uuid = p.getUniqueId();
+		if (!sessions.containsKey(uuid)) return;
+		Session s = sessions.get(uuid);
+		if (!(s.getInstance() instanceof FightInstance)) return;
+		
+		FightInstance.handleRightClickArmorStand(e);
 	}
 	
 	private static EquipmentSlot canEquip(ItemStack item) {

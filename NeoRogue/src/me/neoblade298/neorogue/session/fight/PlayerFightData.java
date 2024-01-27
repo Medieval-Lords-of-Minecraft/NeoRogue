@@ -12,7 +12,6 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-
 import com.google.common.collect.TreeMultiset;
 
 import me.neoblade298.neorogue.player.PlayerSessionData;
@@ -39,6 +38,7 @@ public class PlayerFightData extends FightData {
 	private double stamina, mana;
 	private double maxStamina, maxMana, maxHealth;
 	private double staminaRegen, manaRegen;
+	private boolean isDead;
 	
 	private FightStatistics stats = new FightStatistics();
 
@@ -111,9 +111,34 @@ public class PlayerFightData extends FightData {
 	public PlayerSessionData getSessionData() {
 		return sessdata;
 	}
+
+	// Used when the player dies or revived
+	public void setDeath(boolean isDead) {
+		Player p = getPlayer();
+		this.isDead = isDead;
+		if (isDead) {
+			p.setInvulnerable(true);
+			p.setInvisible(true);
+		}
+		else {
+			p.setInvulnerable(false);
+			p.setInvisible(false);
+			p.setHealth(Math.round(this.maxHealth * 0.25));
+		}
+	}
+
+	public boolean isDead() {
+		return isDead;
+	}
 	
 	public void cleanup(PlayerSessionData data) {
 		super.cleanup();
+
+		if (isDead) {
+			Player p = getPlayer();
+			p.setInvisible(false);
+			p.setInvulnerable(false);
+		}
 		
 		// Perform end of fight actions (currently only used for resetting damage ticks)
 		for (Equipment acc : data.getEquipment(EquipSlot.ACCESSORY)) {
@@ -243,7 +268,7 @@ public class PlayerFightData extends FightData {
 	}
 	
 	public boolean isActive() {
-		return !sessdata.isDead() && getPlayer() != null; // Not dead and online
+		return !isDead && getPlayer() != null; // Not dead and online
 	}
 
 	public FightInstance getInstance() {

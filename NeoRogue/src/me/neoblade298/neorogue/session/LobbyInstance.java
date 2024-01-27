@@ -230,6 +230,7 @@ public class LobbyInstance extends Instance {
 	}
 
 	public void startGame() {
+		busy = true;
 		s.addPlayers(players);
 		s.broadcast("Generating your game...");
 		s.generateArea(AreaType.LOW_DISTRICT);

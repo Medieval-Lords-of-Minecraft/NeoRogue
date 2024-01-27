@@ -52,7 +52,6 @@ public class PlayerSessionData {
 	private HashMap<EquipSlot, HashSet<Integer>> upgradable = new HashMap<EquipSlot, HashSet<Integer>>(),
 			upgraded = new HashMap<EquipSlot, HashSet<Integer>>();
 	private String instanceData;
-	private boolean isDead;
 
 	private static final ParticleContainer heal = new ParticleContainer(Particle.VILLAGER_HAPPY).count(50)
 			.spread(0.5, 1).speed(0.1).ignoreSettings(true);
@@ -150,14 +149,6 @@ public class PlayerSessionData {
 			Equipment eq = storage[i];
 			if (eq == null) continue;
 			inv.setItem(i, eq.getItem());
-		}
-	}
-
-	public void cleanup() {
-		if (isDead) {
-			Player p = getPlayer();
-			p.setInvisible(false);
-			p.setInvulnerable(false);
 		}
 	}
 
@@ -492,32 +483,12 @@ public class PlayerSessionData {
 		setHealth(this.health - (percent * maxHealth));
 	}
 
-	// Used when the player dies and on cleanup (to revive them)
-	public void setDeath(boolean isDead) {
-		Player p = getPlayer();
-		this.isDead = isDead;
-		if (isDead) {
-			this.health = 1;
-			p.setInvulnerable(true);
-			p.setInvisible(true);
-			p.getInventory().clear();
-		}
-		else {
-			p.setInvulnerable(false);
-			p.setInvisible(false);
-		}
-	}
-
 	public void setInstanceData(String str) {
 		this.instanceData = str;
 	}
 
 	public String getInstanceData() {
 		return instanceData;
-	}
-
-	public boolean isDead() {
-		return isDead;
 	}
 
 	public void save(Statement stmt) {

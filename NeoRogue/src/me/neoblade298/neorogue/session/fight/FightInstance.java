@@ -5,31 +5,39 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.attribute.Attributable;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
 import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
+import me.libraryaddict.disguise.disguisetypes.PlayerDisguise;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
@@ -59,7 +67,7 @@ public abstract class FightInstance extends Instance {
 	private static HashSet<UUID> toTick = new HashSet<UUID>();
 	private static final int KILLS_TO_SCALE = 8; // number of mobs to kill before increasing total mobs by 1
 
-	protected HashMap<Entity, UUID> deadBodies = new HashMap<Entity, UUID>();
+	protected LinkedList<Corpse> corpses = new LinkedList<Corpse>();
 	protected HashMap<Player, UUID> revivers = new HashMap<Player, UUID>();
 	protected HashSet<UUID> party = new HashSet<UUID>();
 	protected Map map;
@@ -105,19 +113,20 @@ public abstract class FightInstance extends Instance {
 		// Remove the player's abilities from the fight
 		UUID pu = p.getUniqueId();
 		if (!userData.containsKey(pu)) return;
-		PlayerFightData data = userData.remove(pu);
+		PlayerFightData data = userData.get(pu);
 		FightInstance fi = data.getInstance();
-		data.cleanup();
-		fightData.remove(pu).cleanup();
 
 		new BukkitRunnable() {
 			public void run() {
-				p.spigot().respawn();
-				p.teleport(prev);
-				data.getSessionData().setDeath(true);
-				fi.deadBodies.put(null, pu); // TODO: Create a corpse
+				data.setDeath(true);
+				if (p != null) {
+					p.spigot().respawn();
+					p.teleport(prev);
+					fi.corpses.add(new Corpse(data));
+					p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 3, 0));
+				}
 
-				// If that's the last player alive, send them to a post death instance
+				// If that's the last player alive, send them to lose instance
 				for (UUID uuid : data.getInstance().getParty()) {
 					PlayerFightData fdata = userData.get(uuid);
 					if (fdata != null && fdata.isActive()) return;
@@ -135,7 +144,6 @@ public abstract class FightInstance extends Instance {
 		Player p = (Player) e.getDamager();
 		e.setCancelled(true);
 		PlayerFightData data = userData.get(p.getUniqueId());
-		if (data == null) return; // If you're dead
 		if (!data.canBasicAttack()) return;
 		if (!(e.getEntity() instanceof LivingEntity)) return;
 
@@ -180,37 +188,55 @@ public abstract class FightInstance extends Instance {
 			handleRightClickGeneral(e);
 		}
 	}
+	
+	public static void handleRightClickArmorStand(PlayerInteractAtEntityEvent e) {
+		Player p = (Player) e.getPlayer();
+		PlayerFightData data = userData.get(p.getUniqueId());
+		FightInstance fi = data.getInstance();
+		if (data == null || data.isDead()) return;
+		if (fi.revivers.containsKey(p)) return;
+		for (Corpse c : fi.corpses) {
+			if (c.hitCorpse(e.getRightClicked())) {
+				fi.startRevive(p, c);
+			}
+		}
+	}
 
 	public static void handleRightClickEntity(PlayerInteractEntityEvent e) {
 		Player p = (Player) e.getPlayer();
 		PlayerFightData data = userData.get(p.getUniqueId());
-		if (data == null) return; // If you're dead
-		FightInstance fi = data.getInstance();
-		
-		// Reviving takes priority, only one revive at a time
-		if (data.getInstance().deadBodies.containsKey(e.getRightClicked()) && !fi.revivers.containsKey(p)) {
-			data.getInstance().startRevive(p, e.getRightClicked());
-			return;
-		}
-		
+		if (data == null) return;
 		if (!data.canBasicAttack(EquipSlot.OFFHAND)) return;
 		if (!(e.getRightClicked() instanceof LivingEntity)) return;
 		trigger(p, Trigger.RIGHT_CLICK_HIT, new RightClickHitEvent((LivingEntity) e.getRightClicked()));
 	}
 	
-	private void startRevive(Player p, Entity deadBody) {
-		UUID deadPlayer = deadBodies.get(deadBody);
-		if (Bukkit.getPlayer(deadPlayer) == null) {
+	private void startRevive(Player p, Corpse corpse) {
+		UUID deadId = corpse.data.getUniqueId();
+		Player dead = Bukkit.getPlayer(deadId);
+		if (dead == null) {
 			Util.displayError(p, "Offline dead players cannot be revived!");
 			return;
 		}
 		
-		revivers.put(p, deadBodies.get(deadBody));
+		revivers.put(p, deadId);
+		s.broadcast("<yellow>" + p.getName() + " </yellow>is reviving <yellow>" + dead.getName());
+		completeRevive(p, dead, corpse);
+	}
+	
+	private void completeRevive(Player p, Player dead, Corpse corpse) {
+		revivers.remove(p);
+		corpses.remove(corpse);
+		dead.teleport(corpse.corpseDisplay);
+		corpse.remove();
+		s.broadcast("<yellow>" + p.getName() + " </yellow>has revived <yellow>" + dead.getName());
+		userData.get(dead.getUniqueId()).setDeath(false);
 	}
 
 	public static void handleRightClickGeneral(PlayerInteractEvent e) {
 		Player p = e.getPlayer();
 		UUID uuid = p.getUniqueId();
+		
 		if (e.getHand() == EquipmentSlot.OFF_HAND) {
 			trigger(p, Trigger.RAISE_SHIELD, null);
 			trigger(p, Trigger.RIGHT_CLICK, null);
@@ -305,6 +331,7 @@ public abstract class FightInstance extends Instance {
 	public static boolean trigger(Player p, Trigger trigger, Object obj) {
 		PlayerFightData data = userData.get(p.getUniqueId());
 		if (data == null) return false;
+		if (data.isDead()) return false;
 		if (trigger.isSlotDependent()) {
 			// Run triggers that change based on slot (anything that starts with left click)
 			data.runSlotBasedActions(data, trigger, p.getInventory().getHeldItemSlot(), obj);
@@ -499,13 +526,12 @@ public abstract class FightInstance extends Instance {
 			if (pdata != null) pdata.cleanup();
 			FightData fdata = fightData.remove(uuid);
 			if (fdata != null) fdata.cleanup();
+			if (pdata.isDead()) {
+				pdata.setDeath(false);
+			}
+			
 			PlayerSessionData data = s.getParty().get(uuid);
-			if (!data.isDead()) {
-				data.updateHealth();
-			}
-			else {
-				data.setDeath(false);
-			}
+			data.updateHealth();
 
 			Player p = Bukkit.getPlayer(uuid);
 			if (p != null) {
@@ -514,6 +540,10 @@ public abstract class FightInstance extends Instance {
 				data.revertMaxHealth();
 				data.updateCoinsBar();
 			}
+		}
+		
+		for (Corpse c : corpses) {
+			c.remove();
 		}
 
 		for (BukkitTask task : tasks) {
@@ -610,5 +640,51 @@ public abstract class FightInstance extends Instance {
 
 	public interface FightRunnable {
 		public void run(FightInstance inst, ArrayList<PlayerFightData> fdata);
+	}
+	
+	private static class Corpse {
+		protected PlayerFightData data;
+		protected Entity corpseDisplay;
+		protected LinkedList<Entity> hitbox = new LinkedList<Entity>();
+		public Corpse(PlayerFightData data) {
+			this.data = data;
+			Player p = data.getPlayer();
+			World w = p.getWorld();
+			Location loc = p.getLocation();
+			Vector v = new Vector(-0.3, 0, 0); // The direction when yaw is 0
+			v.rotateAroundY(Math.toRadians(p.getYaw()));
+			corpseDisplay = w.spawnEntity(loc, EntityType.ARMOR_STAND);
+			PlayerDisguise dis = new PlayerDisguise(p);
+			dis.getWatcher().setSleeping(true);
+			dis.setName(p.getName() + "'s Corpse");
+			dis.setEntity(corpseDisplay);
+			dis.getWatcher().setGlowing(true);
+			dis.startDisguise();
+			
+			loc.subtract(v);
+			for (int i = 0; i < 7; i++) {
+				Entity e = w.spawnEntity(loc.add(v), EntityType.ARMOR_STAND);
+				hitbox.add(e);
+				ArmorStand as = (ArmorStand) e;
+				as.setSmall(true);
+				as.setArms(true);
+				as.setInvisible(true);
+			}
+		}
+		
+		public void remove() {
+			corpseDisplay.remove();
+			for (Entity ent : hitbox) {
+				ent.remove();
+			}
+		}
+		
+		public boolean hitCorpse(Entity e) {
+			if (e.getLocation().distanceSquared(corpseDisplay.getLocation()) > 9) return false;
+			for (Entity hit : hitbox) {
+				if (e == hit) return true;
+			}
+			return false;
+		}
 	}
 }
