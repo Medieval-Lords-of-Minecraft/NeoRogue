@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Entity;
@@ -250,13 +251,20 @@ public class SessionManager implements Listener {
 		if (!sessions.containsKey(uuid)) return;
 		Session s = sessions.get(uuid);
 		
-		// Make sure you can't equip armor with right click
 		PlayerInventory inv = p.getInventory();
 		ItemStack hand = e.getItem();
 		if (hand != null) {
+			// Make sure you can't equip armor with right click
 			EquipmentSlot slot = canEquip(hand);
 			if (slot != null && inv.getItem(slot).getType().isAir()) {
 				e.setCancelled(true);
+			}
+			
+			// Open inventory
+			if (s.getInstance() instanceof EditInventoryInstance && hand.getType() == Material.ENDER_CHEST) {
+				e.setCancelled(true);
+				new PlayerSessionInventory(s.getData(uuid));
+				return;
 			}
 		}
 		

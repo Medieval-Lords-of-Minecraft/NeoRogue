@@ -100,9 +100,6 @@ public class PlayerSessionData {
 		case WARRIOR:
 			hotbar[0] = Equipment.get("woodenSword", false);
 			hotbar[1] = Equipment.get("empoweredEdge", false);
-			hotbar[2] = Equipment.get("leatherBracer", false);
-			hotbar[3] = Equipment.get("stoneAxe", false);
-			hotbar[4] = Equipment.get("battleCry", false);
 			break;
 		case THIEF:
 			hotbar[0] = Equipment.get("woodenSword", false);
@@ -143,10 +140,10 @@ public class PlayerSessionData {
 		Player p = data.getPlayer();
 		PlayerInventory inv = p.getInventory();
 		inv.clear();
-		inv.setItemInOffHand(CoreInventory.createButton(Material.ENCHANTED_BOOK,
-				Component.text("Storage Book", NamedTextColor.YELLOW),
-				Component.text("Swap hands or click anywhere in your inventory to open your storage."), 200,
-				NamedTextColor.GRAY));
+		inv.setItem(4, (CoreInventory.createButton(Material.ENDER_CHEST,
+				Component.text("Left/right click to open inventory", NamedTextColor.YELLOW),
+				Component.text("You can also swap hands or click anywhere in your inventory."), 200,
+				NamedTextColor.GRAY)));
 
 		for (int i = 0; i < storage.length; i++) {
 			Equipment eq = storage[i];
