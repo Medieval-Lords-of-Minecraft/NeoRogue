@@ -42,6 +42,10 @@ public class NodeSelectInstance extends EditInventoryInstance {
 	public void start() {
 		Area area = s.getArea();
 		area.update(s.getNode(), this);
+		
+		// Teleport player to their previous node selection
+		if (s.getNode().getPosition() != 0) spawn = area.nodeToLocation(s.getNode(), 1);
+		
 		for (Player p : s.getOnlinePlayers()) {
 			p.teleport(spawn);
 		}

@@ -31,7 +31,7 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
-import me.neoblade298.neorogue.session.fight.DamageMeta.BuffMapOrigin;
+import me.neoblade298.neorogue.session.fight.DamageMeta.BuffOrigin;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 import net.kyori.adventure.text.Component;
@@ -505,10 +505,10 @@ public abstract class Equipment {
 		PlayerFightData data = (PlayerFightData) proj.getOwner();
 		DamageMeta dm = new DamageMeta(data, properties.getDamage(), properties.getType());
 		if (!proj.getBuffs().isEmpty()) {
-			dm.addDamageBuffs(proj.getBuffs(), BuffMapOrigin.PROJECTILE);
+			dm.addBuffs(proj.getBuffs(), BuffOrigin.PROJECTILE, true);
 		}
 		if (hitBarrier != null) {
-			dm.addDefenseBuffs(hitBarrier.getBuffs(), BuffMapOrigin.BARRIER);
+			dm.addBuffs(hitBarrier.getBuffs(), BuffOrigin.BARRIER, false);
 		}
 		BasicAttackEvent ev = new BasicAttackEvent(target, dm, properties.getKnockback(), this, null);
 		data.runActions(data, Trigger.BASIC_ATTACK, ev);
@@ -523,10 +523,10 @@ public abstract class Equipment {
 	}
 	public void damageProjectile(LivingEntity target, ProjectileInstance proj, DamageMeta meta, Barrier hitBarrier) {
 		if (!proj.getBuffs().isEmpty()) {
-			meta.addDamageBuffs(proj.getBuffs(), BuffMapOrigin.PROJECTILE);
+			meta.addBuffs(proj.getBuffs(), BuffOrigin.PROJECTILE, true);
 		}
 		if (hitBarrier != null) {
-			meta.addDefenseBuffs(hitBarrier.getBuffs(), BuffMapOrigin.BARRIER);
+			meta.addBuffs(hitBarrier.getBuffs(), BuffOrigin.BARRIER, false);
 		}
 		FightInstance.dealDamage(meta, target);
 	}

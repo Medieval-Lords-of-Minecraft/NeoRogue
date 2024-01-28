@@ -1,8 +1,5 @@
 package me.neoblade298.neorogue.equipment.artifacts;
 
-import java.util.HashMap;
-import java.util.UUID;
-
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -15,7 +12,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
-import me.neoblade298.neorogue.session.fight.DamageMeta.BuffMapOrigin;
+import me.neoblade298.neorogue.session.fight.DamageMeta.BuffOrigin;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -37,17 +34,12 @@ public class PracticeDummy extends Artifact {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.BASIC_ATTACK, new PracticeDummyInstance(p.getUniqueId()));
+		data.addTrigger(id, Trigger.BASIC_ATTACK, new PracticeDummyInstance());
 	}
 	
 	public class PracticeDummyInstance implements TriggerAction {
 		private int count = 0;
 		private String weapon = null;
-		private HashMap<BuffType, Buff> buffs = new HashMap<BuffType, Buff>();
-		
-		public PracticeDummyInstance(UUID uuid) {
-			buffs.put(BuffType.GENERAL, new Buff(uuid, 0, damageMult));
-		}
 
 		@Override
 		public TriggerResult trigger(PlayerFightData data, Object inputs) {
@@ -66,7 +58,7 @@ public class PracticeDummy extends Artifact {
 				Util.msg(p, "<red>Practice Dummy</red> was activated");
 			}
 			if (count > num) {
-				ev.getMeta().addDamageBuffs(buffs, BuffMapOrigin.NORMAL);
+				ev.getMeta().addBuff(BuffType.GENERAL, new Buff(p.getUniqueId(), 0, 0.5), BuffOrigin.NORMAL, true);
 				return TriggerResult.keep();
 			}
 			return TriggerResult.remove();

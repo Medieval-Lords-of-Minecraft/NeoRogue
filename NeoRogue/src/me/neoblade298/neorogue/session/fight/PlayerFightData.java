@@ -15,6 +15,7 @@ import org.bukkit.inventory.PlayerInventory;
 import com.google.common.collect.TreeMultiset;
 
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.session.fight.TickAction.TickResult;
 import me.neoblade298.neorogue.session.fight.trigger.KeyBind;
 import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -106,6 +107,12 @@ public class PlayerFightData extends FightData {
 		this.staminaRegen = sessdata.getStaminaRegen();
 		this.manaRegen = sessdata.getManaRegen();
 		addTickAction(new PlayerUpdateTickAction());
+	}
+	
+	@Override
+	public TickResult runTickActions() {
+		if (isDead) return TickResult.KEEP;
+		return super.runTickActions();
 	}
 	
 	public PlayerSessionData getSessionData() {
@@ -338,6 +345,14 @@ public class PlayerFightData extends FightData {
 	
 	public double getMaxMana() {
 		return maxMana;
+	}
+	
+	public void addStaminaRegen(double amount) {
+		this.staminaRegen += amount;
+	}
+	
+	public void addManaRegen(double amount) {
+		this.manaRegen += amount;
 	}
 	
 	private void updateMana() {

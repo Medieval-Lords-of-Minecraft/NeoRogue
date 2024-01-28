@@ -42,18 +42,18 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 
 public class Area {
+	private static final int MIN_MINIBOSSES = 2, MIN_SHOPS = 3, MAX_LANES = 5, MAX_POSITIONS = 16,
+			CENTER_LANE = MAX_LANES / 2;
+		private static final double STRAIGHT_PATH_CHANCE = 0.7, DOUBLE_PATH_CHANCE = 0.6;
+		public static final String WORLD_NAME = "Dev";
+		private static final int X_EDGE_PADDING = 14, Z_EDGE_PADDING = 11, NODE_DIST_BETWEEN = 4;
+		private static ParticleContainer red = new ParticleContainer(Particle.REDSTONE), black;
+		
 	private AreaType type;
 	private Node[][] nodes = new Node[MAX_POSITIONS][MAX_LANES];
 	private Session s;
+	
 	public static World world;
-	
-	private static final int MIN_MINIBOSSES = 2, MIN_SHOPS = 3, MAX_LANES = 5, MAX_POSITIONS = 16,
-		CENTER_LANE = MAX_LANES / 2;
-	private static final double STRAIGHT_PATH_CHANCE = 0.7, DOUBLE_PATH_CHANCE = 0.6;
-	public static final String WORLD_NAME = "Dev";
-	private static final int X_EDGE_PADDING = 14, Z_EDGE_PADDING = 11, NODE_DIST_BETWEEN = 4;
-	private static ParticleContainer red = new ParticleContainer(Particle.REDSTONE), black;
-	
 	private static final int NODE_Y = 64;
 	
 	// Offsets
@@ -425,7 +425,7 @@ public class Area {
 		}
 	}
 	
-	private Location nodeToLocation(Node node, double yOff) {
+	public Location nodeToLocation(Node node, double yOff) {
 		org.bukkit.World w = Bukkit.getWorld(WORLD_NAME);
 		return new Location(w, -(xOff + X_EDGE_PADDING - 0.5 + (node.getLane() * 4)), NODE_Y + yOff, zOff + Z_EDGE_PADDING + 0.5 + (node.getPosition() * 4));
 	}

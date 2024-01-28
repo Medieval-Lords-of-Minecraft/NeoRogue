@@ -33,7 +33,7 @@ public class CmdKick extends Subcommand {
 			li.kickPlayer(p, args[0]);
 		}
 		else {
-			sess.leavePlayer(p);
+			sess.kickPlayer(p);
 		}
 		
 	}

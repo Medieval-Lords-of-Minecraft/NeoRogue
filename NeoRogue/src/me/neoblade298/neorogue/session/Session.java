@@ -310,6 +310,10 @@ public class Session {
 		return nodesVisited;
 	}
 	
+	public void setNodesVisited(int nodesVisited) {
+		this.nodesVisited = nodesVisited;
+	}
+	
 	public int getXOff() {
 		return xOff;
 	}

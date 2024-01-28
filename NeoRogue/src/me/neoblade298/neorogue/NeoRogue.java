@@ -22,11 +22,11 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.player.PlayerManager;
+import me.neoblade298.neorogue.session.NodeSelectInstance;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
 import me.neoblade298.neorogue.session.fight.Mob;
-import me.neoblade298.neorogue.session.fight.StandardFightInstance;
 import me.neoblade298.neorogue.session.fight.mythicbukkit.MythicLoader;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -109,11 +109,9 @@ public class NeoRogue extends JavaPlugin {
 		Session s = SessionManager.createSession(p, "test", 1);
 		s.generateArea(AreaType.LOW_DISTRICT);
 		s.addPlayer(p.getUniqueId(), EquipmentClass.WARRIOR);
-		s.addPlayer(Bukkit.getPlayerUniqueId("SuaveGentleman"), EquipmentClass.WARRIOR);
 		SessionManager.addToSession(p.getUniqueId(), s);
-		SessionManager.addToSession(Bukkit.getPlayerUniqueId("SuaveGentleman"), s);
-		s.setNode(s.getArea().getNodes()[0][2]);
-		s.setInstance(new StandardFightInstance(s, s.getParty().keySet(), AreaType.LOW_DISTRICT, s.getNodesVisited()));
+		s.setNode(s.getArea().getNodes()[14][2]);
+		s.setInstance(new NodeSelectInstance(s));
 		// s.setInstance(new ChanceInstance());
 
 		//Map map = Map.generate(AreaType.LOW_DISTRICT, 8);

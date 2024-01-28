@@ -507,7 +507,7 @@ public abstract class FightInstance extends Instance {
 	}
 
 	public static void dealDamage(DamageMeta meta, Collection<LivingEntity> targets) {
-		if (meta.getOwner().getEntity() instanceof Player) {
+		if (meta.getOwner() instanceof PlayerFightData) {
 			trigger((Player) meta.getOwner().getEntity(), Trigger.DEALT_DAMAGE_MULTIPLE, new DealtDamageEvent(meta));
 		}
 		for (LivingEntity target : targets) {
@@ -516,7 +516,7 @@ public abstract class FightInstance extends Instance {
 	}
 
 	public static void dealDamage(DamageMeta meta, LivingEntity target) {
-		if (meta.getOwner().getEntity() instanceof Player) {
+		if (meta.getOwner() instanceof PlayerFightData) {
 			trigger((Player) meta.getOwner().getEntity(), Trigger.DEALT_DAMAGE, new DealtDamageEvent(meta));
 		}
 		meta.dealDamage(target);

@@ -29,6 +29,7 @@ public class LeatherBracer extends Equipment {
 	
 	private class LeatherBracerInstance implements TriggerAction {
 		private Player p;
+		int count = instances;
 		public LeatherBracerInstance(Player p) {
 			this.p = p;
 		}
@@ -36,7 +37,11 @@ public class LeatherBracer extends Equipment {
 		@Override
 		public TriggerResult trigger(PlayerFightData data, Object inputs) {
 			Util.playSound(p, Sound.ITEM_SHIELD_BREAK, 1F, 1F, false);
-			return TriggerResult.of(true, true);
+			if (--count <= 0) {
+				Util.msgRaw(p, "<red>Leather Bracer broke!");
+				return TriggerResult.of(true, true);
+			}
+			return TriggerResult.of(false, true);
 		}
 	}
 

@@ -1,6 +1,7 @@
 package me.neoblade298.neorogue.session.fight.buff;
 
 import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 public class Buff {
@@ -19,6 +20,14 @@ public class Buff {
 		this.increase = increase;
 		this.multiplier = multiplier;
 		this.slices = slices;
+	}
+	
+	public Buff clone() {
+		HashMap<UUID, BuffSlice> newSlices = new HashMap<UUID, BuffSlice>();
+		for (Entry<UUID, BuffSlice> ent : slices.entrySet()) {
+			newSlices.put(ent.getKey(), ent.getValue().clone());
+		}
+		return new Buff(increase, multiplier, newSlices);
 	}
 	
 	public void addIncrease(UUID applier, double increase) {
@@ -57,5 +66,10 @@ public class Buff {
 	
 	public double getMultiplier() {
 		return multiplier;
+	}
+	
+	@Override
+	public String toString() {
+		return increase + "," + multiplier;
 	}
 }

@@ -8,6 +8,9 @@ public class BuffSlice {
 		this.increase = increase;
 		this.multiplier = multiplier;
 	}
+	public BuffSlice clone() {
+		return new BuffSlice(increase, multiplier);
+	}
 	public double getIncrease() {
 		return increase;
 	}

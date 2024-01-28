@@ -24,18 +24,17 @@ public class DamageMeta {
 	private FightData owner;
 	private boolean hitBarrier, isSecondary;
 	private LinkedList<DamageSlice> slices = new  LinkedList<DamageSlice>();
-	private LinkedList<BuffMap> damageBuffs = new LinkedList<BuffMap>(),
-			defenseBuffs = new LinkedList<BuffMap>();
+	private HashMap<BuffType, LinkedList<BuffMeta>> damageBuffs = new HashMap<BuffType, LinkedList<BuffMeta>>(),
+			defenseBuffs = new HashMap<BuffType, LinkedList<BuffMeta>>();
 	
 	public DamageMeta(FightData data) {
 		this.owner = data;
-		this.damageBuffs.add(new BuffMap(owner.getBuffs(true), BuffMapOrigin.NORMAL));
+		addBuffs(owner.getBuffs(true), BuffOrigin.NORMAL, true);
 	}
 	
 	public DamageMeta(FightData data, double damage, DamageType type) {
-		this.owner = data;
+		this(data);
 		this.slices.add(new DamageSlice(data.getUniqueId(), damage, type));
-		this.damageBuffs.add(new BuffMap(owner.getBuffs(true), BuffMapOrigin.NORMAL));
 	}
 	
 	public DamageMeta(FightData data, double baseDamage, DamageType type, boolean hitBarrier, boolean isSecondary) {
@@ -48,9 +47,26 @@ public class DamageMeta {
 		this.owner = original.owner;
 		this.hitBarrier = original.hitBarrier;
  		this.slices = new LinkedList<DamageSlice>(original.slices);
- 		// As it is now, these are not deep clones
-		this.damageBuffs = new LinkedList<BuffMap>(original.damageBuffs);
-		this.defenseBuffs = new LinkedList<BuffMap>(original.defenseBuffs);
+ 		
+ 		// These are deep clones
+		this.damageBuffs = cloneBuffMap(original.damageBuffs);
+		this.defenseBuffs = cloneBuffMap(original.defenseBuffs);
+	}
+	
+	private HashMap<BuffType, LinkedList<BuffMeta>> cloneBuffMap(HashMap<BuffType, LinkedList<BuffMeta>> map) {
+		HashMap<BuffType, LinkedList<BuffMeta>> clone = new HashMap<BuffType, LinkedList<BuffMeta>>();
+		for (Entry<BuffType, LinkedList<BuffMeta>> ent : map.entrySet()) {
+			clone.put(ent.getKey(), cloneBuffList(ent.getValue()));
+		}
+		return clone;
+	}
+	
+	private LinkedList<BuffMeta> cloneBuffList(LinkedList<BuffMeta> list) {
+		LinkedList<BuffMeta> clone = new LinkedList<BuffMeta>();
+		for (BuffMeta meta : list) {
+			clone.add(meta.clone());
+		}
+		return clone;
 	}
 	
 	public DamageMeta clone() {
@@ -81,19 +97,24 @@ public class DamageMeta {
 		this.slices.add(slice);
 	}
 	
-	public void addDamageBuffs(HashMap<BuffType, Buff> buffs, BuffMapOrigin origin) {
-		damageBuffs.add(new BuffMap(buffs, origin));
+	public void addBuffs(HashMap<BuffType, Buff> buffs, BuffOrigin origin, boolean damageBuff) {
+		for (Entry<BuffType, Buff> buff : buffs.entrySet()) {
+			addBuff(buff.getKey(), buff.getValue(), origin, damageBuff);
+		}
 	}
 	
-	public void addDefenseBuffs(HashMap<BuffType, Buff> buffs, BuffMapOrigin origin) {
-		defenseBuffs.add(new BuffMap(buffs, origin));
+	public void addBuff(BuffType type, Buff b, BuffOrigin origin, boolean damageBuff) {
+		HashMap<BuffType, LinkedList<BuffMeta>> buffs = damageBuff ? damageBuffs : defenseBuffs;
+		LinkedList<BuffMeta> list = buffs.getOrDefault(type, new LinkedList<BuffMeta>());
+		list.add(new BuffMeta(b, origin));
+		buffs.putIfAbsent(type, list);
 	}
 	
 	public void dealDamage(LivingEntity target) {
 		if (slices.isEmpty()) return;
 		FightData recipient = FightInstance.getFightData(target.getUniqueId());
 		LivingEntity damager = owner.getEntity();
-		addDefenseBuffs(recipient.getBuffs(false), BuffMapOrigin.NORMAL);
+		addBuffs(recipient.getBuffs(false), BuffOrigin.NORMAL, false);
 		double damage = 0;
 		double ignoreShieldsDamage = 0;
 		
@@ -109,7 +130,7 @@ public class DamageMeta {
 		// Reduce damage from barriers, used only for players blocking projectiles
 		// For mobs blocking projectiles, go to damageProjectile
 		if (hitBarrier && recipient.getBarrier() != null) {
-			addDefenseBuffs(recipient.getBarrier().getBuffs(), BuffMapOrigin.BARRIER);
+			addBuffs(recipient.getBarrier().getBuffs(), BuffOrigin.BARRIER, false);
 		}
 
 		// Status effects
@@ -131,7 +152,7 @@ public class DamageMeta {
 				HashMap<BuffType, Buff> insanityBuffs = new HashMap<BuffType, Buff>();
 				int stacks = owner.getStatus(StatusType.INSANITY).getStacks();
 				insanityBuffs.put(BuffType.MAGICAL, new Buff(owner.getUniqueId(), 0, stacks * 0.01));
-				addDamageBuffs(insanityBuffs, BuffMapOrigin.STATUS);
+				addBuffs(insanityBuffs, BuffOrigin.STATUS, true);
 			}
 
 			if (recipient.hasStatus(StatusType.SANCTIFIED)) {
@@ -158,7 +179,7 @@ public class DamageMeta {
 					buffSlices.putIfAbsent(ent.getKey(), bs);
 				}
 				frostBuffs.put(BuffType.MAGICAL, new Buff(0, stacks * 0.01, buffSlices));
-				addDefenseBuffs(frostBuffs, BuffMapOrigin.STATUS);
+				addBuffs(frostBuffs, BuffOrigin.STATUS, true);
 				int toRemove = (int) (-stacks * 0.1);
 				status.apply(owner.getUniqueId(), toRemove, 0); // Remove 10% of frost stacks
 				returnDamage.addDamageSlice(new DamageSlice(recipient.getUniqueId(), toRemove, DamageType.ICE));
@@ -176,7 +197,7 @@ public class DamageMeta {
 					buffSlices.putIfAbsent(ent.getKey(), bs);
 				}
 				concussedBuffs.put(BuffType.PHYSICAL, new Buff(0, stacks * 0.01, buffSlices));
-				addDefenseBuffs(concussedBuffs, BuffMapOrigin.STATUS);
+				addBuffs(concussedBuffs, BuffOrigin.STATUS, false);
 				int toRemove = (int) (-stacks * 0.1);
 				status.apply(owner.getUniqueId(), toRemove, 0); // Remove 10% of earth stacks
 				returnDamage.addDamageSlice(new DamageSlice(recipient.getUniqueId(), toRemove, DamageType.EARTH));
@@ -188,10 +209,9 @@ public class DamageMeta {
 		for (DamageSlice slice : slices) {
 			double increase = 0, mult = 0;
 			for (BuffType bt : slice.getType().getBuffTypes()) {
-				for (BuffMap buffMap : damageBuffs) {
-					HashMap<BuffType, Buff> buffs = buffMap.getBuffs();
-					if (!buffs.containsKey(bt)) continue;
-					Buff b = buffs.get(bt);
+				if (!damageBuffs.containsKey(bt)) continue;
+				for (BuffMeta bm : damageBuffs.get(bt)) {
+					Buff b = bm.buff;
 					increase += b.getIncrease();
 					mult += b.getMultiplier();
 					if (!(owner instanceof PlayerFightData)) continue; // Don't need stats for non-player damager
@@ -203,11 +223,12 @@ public class DamageMeta {
 						}
 					}
 				}
+			}
 
-				for (BuffMap buffMap : defenseBuffs) {
-					HashMap<BuffType, Buff> buffs = buffMap.getBuffs();
-					if (!buffs.containsKey(bt)) continue;
-					Buff b = buffs.get(bt);
+			for (BuffType bt : slice.getType().getBuffTypes()) {
+				if (!defenseBuffs.containsKey(bt)) continue;
+				for (BuffMeta bm : defenseBuffs.get(bt)) {
+					Buff b = bm.buff;
 					increase -= b.getIncrease();
 					mult -= b.getMultiplier();
 					if (!(recipient instanceof PlayerFightData)) continue; // Don't need stats for non-player mitigation
@@ -216,7 +237,7 @@ public class DamageMeta {
 						PlayerFightData buffOwner = FightInstance.getUserData(ent.getKey());
 						if (buffOwner != null) {
 							double amt = bs.getIncrease() + (bs.getMultiplier() * slice.getDamage());
-							switch (buffMap.getOrigin()) {
+							switch (bm.origin) {
 							case BARRIER:
 								buffOwner.getStats().addDamageBarriered(amt);
 								break;
@@ -269,23 +290,21 @@ public class DamageMeta {
 		
 	}
 	
-	private class BuffMap {
-		private HashMap<BuffType, Buff> buffs;
-		private BuffMapOrigin origin;
-		public BuffMap(HashMap<BuffType, Buff> buffs, BuffMapOrigin origin) {
+	private class BuffMeta {
+		protected Buff buff;
+		protected BuffOrigin origin;
+		public BuffMeta(Buff buff, BuffOrigin origin) {
 			super();
-			this.buffs = buffs;
+			this.buff = buff;
 			this.origin = origin;
 		}
-		public HashMap<BuffType, Buff> getBuffs() {
-			return buffs;
-		}
-		public BuffMapOrigin getOrigin() {
-			return origin;
+		
+		public BuffMeta clone() {
+			return new BuffMeta(buff.clone(), origin);
 		}
 	}
 	
-	public static enum BuffMapOrigin {
+	public static enum BuffOrigin {
 		BARRIER,
 		STATUS,
 		SHIELD,
