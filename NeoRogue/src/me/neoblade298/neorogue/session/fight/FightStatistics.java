@@ -8,6 +8,7 @@ public class FightStatistics {
 			damageMitigated = new HashMap<DamageType, Double>(),
 			damageBuffed = new HashMap<DamageType, Double>();
 	private double healingGiven, healingReceived, selfHealing, damageBarriered, damageShielded, defenseBuffed;
+	private int deaths, revives;
 	
 	public void addDamageDealt(DamageType type, double amount) {
 		double amt = damageDealt.getOrDefault(type, 0D);
@@ -91,5 +92,21 @@ public class FightStatistics {
 
 	public double getDefenseBuffed() {
 		return defenseBuffed;
+	}
+	
+	public void addDeath() {
+		deaths++;
+	}
+	
+	public void addRevive() {
+		revives++;
+	}
+	
+	public int getDeaths() {
+		return deaths;
+	}
+	
+	public int getRevives() {
+		return revives;
 	}
 }

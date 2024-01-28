@@ -11,9 +11,14 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.attribute.Attributable;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
@@ -38,6 +43,10 @@ import org.bukkit.util.Vector;
 import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
 import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
 import me.libraryaddict.disguise.disguisetypes.PlayerDisguise;
+import me.neoblade298.neocore.bukkit.particles.Circle;
+import me.neoblade298.neocore.bukkit.particles.LocalAxes;
+import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
+import me.neoblade298.neocore.bukkit.util.SoundContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
@@ -76,10 +85,19 @@ public abstract class FightInstance extends Instance {
 			initialSpawns = new ArrayList<MapSpawnerInstance>();
 	private HashMap<String, Location> mythicLocations = new HashMap<String, Location>();
 	protected HashMap<UUID, Barrier> enemyBarriers = new HashMap<UUID, Barrier>();
-	protected ArrayList<BukkitTask> tasks = new ArrayList<BukkitTask>();
-	protected ArrayList<FightRunnable> initialTasks = new ArrayList<FightRunnable>();
+	protected LinkedList<BukkitTask> tasks = new LinkedList<BukkitTask>();
+	protected LinkedList<BukkitRunnable> cleanupTasks = new LinkedList<BukkitRunnable>();
+	protected LinkedList<FightRunnable> initialTasks = new LinkedList<FightRunnable>();
 	protected double spawnCounter; // Holds a value between 0 and 1, when above 1, a mob spawns
 	protected double totalSpawnValue; // Keeps track of total mob spawns, to handle scaling of spawning
+
+	private static final Circle reviveCircle = new Circle(5);
+	private static final ParticleContainer reviveCirclePart = new ParticleContainer(Particle.END_ROD).count(1);
+	private static final ParticleContainer revivePart = new ParticleContainer(Particle.FIREWORKS_SPARK).ignoreSettings(true).count(50).spread(2, 2).speed(0.1);
+	private static final SoundContainer[] reviveSounds = new SoundContainer[]
+			{ new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1F), new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1.059463F),
+				new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1.122462F), new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1.189207F),
+				new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1.259921F)};
 
 	public FightInstance(Session s, Set<UUID> players) {
 		super(s);
@@ -119,11 +137,16 @@ public abstract class FightInstance extends Instance {
 		new BukkitRunnable() {
 			public void run() {
 				data.setDeath(true);
+				data.getStats().addDeath();
 				if (p != null) {
 					p.spigot().respawn();
 					p.teleport(prev);
 					fi.corpses.add(new Corpse(data));
-					p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 3, 0));
+					new BukkitRunnable() {
+						public void run() {
+							p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 3, 0));
+						}
+					}.runTask(NeoRogue.inst());
 				}
 
 				// If that's the last player alive, send them to lose instance
@@ -220,17 +243,84 @@ public abstract class FightInstance extends Instance {
 		}
 		
 		revivers.put(p, deadId);
-		s.broadcast("<yellow>" + p.getName() + " </yellow>is reviving <yellow>" + dead.getName());
-		completeRevive(p, dead, corpse);
+		Util.msg(p, "You started reviving <yellow>" + dead.getName() + "</yellow>. Stay near their body for 5 seconds!");
+		Util.msg(dead, "You are being revived by <yellow>" + p.getName());
+		dead.teleport(corpse.corpseDisplay);
+		
+		BossBar reviveBar = Bukkit.createBossBar("Reviving: §e" + dead.getName(), BarColor.BLUE, BarStyle.SOLID);
+		reviveBar.addPlayer(p);
+		reviveBar.addPlayer(dead);
+		cleanupTasks.add(new BukkitRunnable() {
+			public void run() {
+				reviveBar.removeAll();
+			}
+		});
+		
+		LinkedList<BukkitTask> tasks = new LinkedList<BukkitTask>();
+		for (int i = 0; i < 5; i++) {
+			final int count = i;
+			final double progress = 0.2 * (i + 1);
+			tasks.add(new BukkitRunnable() {
+				public void run() {
+					if (!canRevive(corpse, p, dead)) {
+						cancelRevive(corpse, p, dead, tasks, reviveBar);
+						return;
+					}
+					
+					reviveBar.setProgress(progress);
+					reviveSounds[count].play(p);
+					reviveSounds[count].play(dead);
+					reviveCircle.draw(reviveCirclePart, corpse.corpseDisplay.getLocation(), LocalAxes.xz(), null);
+					
+					// Revive not complete
+					if (count == 4) {
+						completeRevive(p, dead, corpse, reviveBar);
+					}
+				}
+			}.runTaskLater(NeoRogue.inst(), 20 * i));
+		}
 	}
 	
-	private void completeRevive(Player p, Player dead, Corpse corpse) {
+	private boolean canRevive(Corpse corpse, Player p, Player dead) {
+		if (!corpse.isNear(p)) {
+			Util.msg(p, "<red>Revival failed! You got too far away!");
+			return false;
+		}
+		
+		if (dead == null || !dead.isOnline()) {
+			Util.msg(p, "<red>Revival failed! Dead player logged off!");
+			return false;
+		}
+		
+		return true;
+	}
+	
+	private void cancelRevive(Corpse corpse, Player p, Player dead, LinkedList<BukkitTask> tasks, BossBar reviveBar) {
+		Util.msg(dead, "<red>Revival failed!");
+		Util.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1, 0.7F, false);
+		Util.playSound(dead, Sound.BLOCK_NOTE_BLOCK_BASS, 1, 0.7F, false);
+		revivers.remove(p);
+		reviveBar.removeAll();
+		for (BukkitTask task : tasks) {
+			task.cancel();
+		}
+	}
+	
+	private void completeRevive(Player p, Player dead, Corpse corpse, BossBar reviveBar) {
+		Util.playSound(dead, Sound.ENTITY_PLAYER_LEVELUP, true);
+		revivePart.spawn(p);
 		revivers.remove(p);
 		corpses.remove(corpse);
 		dead.teleport(corpse.corpseDisplay);
 		corpse.remove();
 		s.broadcast("<yellow>" + p.getName() + " </yellow>has revived <yellow>" + dead.getName());
 		userData.get(dead.getUniqueId()).setDeath(false);
+		userData.get(p.getUniqueId()).getStats().addRevive();
+		new BukkitRunnable() {
+			public void run() {
+				reviveBar.removeAll();
+			}
+		}.runTaskLater(NeoRogue.inst(), 20L);
 	}
 
 	public static void handleRightClickGeneral(PlayerInteractEvent e) {
@@ -545,6 +635,10 @@ public abstract class FightInstance extends Instance {
 		for (Corpse c : corpses) {
 			c.remove();
 		}
+		
+		for (BukkitRunnable cleanupTask : cleanupTasks) {
+			cleanupTask.runTask(NeoRogue.inst());
+		}
 
 		for (BukkitTask task : tasks) {
 			task.cancel();
@@ -685,6 +779,10 @@ public abstract class FightInstance extends Instance {
 				if (e == hit) return true;
 			}
 			return false;
+		}
+		
+		public boolean isNear(Entity e) {
+			return e.getLocation().distanceSquared(corpseDisplay.getLocation()) < 25;
 		}
 	}
 }
