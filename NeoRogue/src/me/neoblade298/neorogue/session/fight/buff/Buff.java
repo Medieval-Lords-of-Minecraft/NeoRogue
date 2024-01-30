@@ -35,7 +35,7 @@ public class Buff {
 		BuffSlice slice = slices.getOrDefault(applier, new BuffSlice());
 		slice.addIncrease(increase);
 		
-		if (slice.isEmpty()) {
+		if (!slice.isEmpty()) {
 			slices.put(applier, slice);
 		}
 		else {
@@ -48,7 +48,7 @@ public class Buff {
 		BuffSlice slice = slices.getOrDefault(applier, new BuffSlice());
 		slice.addMultiplier(multiplier);
 		
-		if (slice.isEmpty()) {
+		if (!slice.isEmpty()) {
 			slices.put(applier, slice);
 		}
 		else {

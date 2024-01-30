@@ -429,4 +429,5 @@ public class PlayerFightData extends FightData {
 		this.maxHealth += amount;
 		getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(this.maxHealth);
 	}
+	
 }

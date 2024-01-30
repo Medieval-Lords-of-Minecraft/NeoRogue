@@ -34,6 +34,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -48,6 +49,7 @@ import me.neoblade298.neocore.bukkit.particles.LocalAxes;
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.SoundContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
@@ -67,6 +69,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.RightClickHitEvent;
+import net.kyori.adventure.text.Component;
 
 public abstract class FightInstance extends Instance {
 	private static HashMap<UUID, PlayerFightData> userData = new HashMap<UUID, PlayerFightData>();
@@ -98,6 +101,8 @@ public abstract class FightInstance extends Instance {
 			{ new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1F), new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1.059463F),
 				new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1.122462F), new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1.189207F),
 				new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1.259921F)};
+	private static final Component statsHeader = SharedUtil.color("<gray>Fight Statistics (Hover for more info!)\n=====\n"
+			+ "[<red>Damage Dealt </red>/ <dark_red>Received </dark_red>/ <blue>Buffed</blue> / <gold>Mitigated</gold>]");
 
 	public FightInstance(Session s, Set<UUID> players) {
 		super(s);
@@ -141,23 +146,27 @@ public abstract class FightInstance extends Instance {
 				if (p != null) {
 					p.spigot().respawn();
 					p.teleport(prev);
+					p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 60, 0));
 					fi.corpses.add(new Corpse(data));
-					new BukkitRunnable() {
-						public void run() {
-							p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 3, 0));
-						}
-					}.runTask(NeoRogue.inst());
 				}
 
 				// If that's the last player alive, send them to lose instance
+				boolean lose = true;
 				for (UUID uuid : data.getInstance().getParty()) {
 					PlayerFightData fdata = userData.get(uuid);
-					if (fdata != null && fdata.isActive()) return;
+					if (fdata != null && fdata.isActive()) {
+						lose = false;
+						break;
+					}
 				}
 
 				// End game as a loss
-				Session sess = data.getInstance().getSession();
-				sess.setInstance(new LoseInstance(sess));
+				if (lose) {
+					Session sess = data.getInstance().getSession();
+					sess.setInstance(new LoseInstance(sess));
+				}
+				else {
+				}
 			}
 		}.runTaskLater(NeoRogue.inst(), 5L);
 	}
@@ -216,6 +225,7 @@ public abstract class FightInstance extends Instance {
 		Player p = (Player) e.getPlayer();
 		PlayerFightData data = userData.get(p.getUniqueId());
 		FightInstance fi = data.getInstance();
+		e.setCancelled(true);
 		if (data == null || data.isDead()) return;
 		if (fi.revivers.containsKey(p)) return;
 		for (Corpse c : fi.corpses) {
@@ -315,6 +325,7 @@ public abstract class FightInstance extends Instance {
 		corpse.remove();
 		s.broadcast("<yellow>" + p.getName() + " </yellow>has revived <yellow>" + dead.getName());
 		userData.get(dead.getUniqueId()).setDeath(false);
+		dead.getInventory().setContents(corpse.inv);
 		userData.get(p.getUniqueId()).getStats().addRevive();
 		new BukkitRunnable() {
 			public void run() {
@@ -611,14 +622,18 @@ public abstract class FightInstance extends Instance {
 
 	@Override
 	public void cleanup() {
+		s.broadcast(statsHeader);
 		for (UUID uuid : s.getParty().keySet()) {
 			PlayerFightData pdata = userData.remove(uuid);
-			if (pdata != null) pdata.cleanup();
+			if (pdata != null) {
+				pdata.cleanup();
+				s.broadcast(pdata.getStats().getStatLine(pdata.getSessionData().getData().getDisplay()));
+				if (pdata.isDead()) {
+					pdata.setDeath(false);
+				}
+			}
 			FightData fdata = fightData.remove(uuid);
 			if (fdata != null) fdata.cleanup();
-			if (pdata.isDead()) {
-				pdata.setDeath(false);
-			}
 			
 			PlayerSessionData data = s.getParty().get(uuid);
 			data.updateHealth();
@@ -740,9 +755,12 @@ public abstract class FightInstance extends Instance {
 		protected PlayerFightData data;
 		protected Entity corpseDisplay;
 		protected LinkedList<Entity> hitbox = new LinkedList<Entity>();
+		protected ItemStack[] inv;
 		public Corpse(PlayerFightData data) {
 			this.data = data;
 			Player p = data.getPlayer();
+			inv = p.getInventory().getContents();
+			p.getInventory().clear();
 			World w = p.getWorld();
 			Location loc = p.getLocation();
 			Vector v = new Vector(-0.3, 0, 0); // The direction when yaw is 0

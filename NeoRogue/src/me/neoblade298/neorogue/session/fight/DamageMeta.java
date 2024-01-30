@@ -249,11 +249,16 @@ public class DamageMeta {
 					}
 				}
 			}
+			double sliceDamage = (slice.getDamage() * (mult + 1)) + increase;
+			if (owner instanceof PlayerFightData) {
+				((PlayerFightData) owner).getStats().addDamageDealt(slice.getType(), sliceDamage);
+			}
+			
 			if (!slice.isIgnoreShields()) {
-				damage += (slice.getDamage() * (mult + 1)) + increase;
+				damage += sliceDamage;
 			}
 			else {
-				ignoreShieldsDamage += (slice.getDamage() * (mult + 1)) + increase;
+				ignoreShieldsDamage += sliceDamage;
 			}
 		}
 		
