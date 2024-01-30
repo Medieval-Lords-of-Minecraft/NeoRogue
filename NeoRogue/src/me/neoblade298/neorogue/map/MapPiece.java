@@ -20,7 +20,7 @@ import me.neoblade298.neorogue.NeoRogue;
 public class MapPiece {
 
 	private static HashMap<String, MapPiece> pieces = new HashMap<String, MapPiece>();
-	private String id;
+	private String id, display;
 	private MapShape shape;
 	private HashSet<String> targets;
 	protected Coordinates[] entrances, spawns;
@@ -32,6 +32,7 @@ public class MapPiece {
 	
 	public MapPiece(Section cfg) {
 		id = cfg.getName();
+		display = cfg.getString("display"); // Only used for bosses at the moment
 
 		// Save schematic
 		File file = new File(NeoRogue.SCHEMATIC_FOLDER, cfg.getString("schematic") + ".schem");
@@ -105,6 +106,10 @@ public class MapPiece {
 		this.customInfoOrder = (ArrayList<String>) cfg.getStringList("fightinfomobs");
 		
 		pieces.put(id, this);
+	}
+	
+	public String getDisplay() {
+		return display;
 	}
 	
 	public static MapPiece get(String id) {

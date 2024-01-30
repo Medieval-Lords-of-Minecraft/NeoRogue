@@ -41,10 +41,19 @@ public class NodeSelectInstance extends EditInventoryInstance {
 	@Override
 	public void start() {
 		Area area = s.getArea();
-		area.update(s.getNode(), this);
 		
 		// Teleport player to their previous node selection
 		if (s.getNode().getPosition() != 0) spawn = area.nodeToLocation(s.getNode(), 1);
+		area.update(s.getNode(), this);
+		
+		// Set up boss hologram
+		ArrayList<String> lines = new ArrayList<String>();
+		lines.add("§f§lBoss: §4§l" + area.getBoss());
+		Plot plot = s.getPlot();
+		Location loc = spawn.clone().add(0, 3, 4);
+		System.out.println(lines.get(0) + " " + Util.locToString(loc, true, false));
+		Hologram holo = DHAPI.createHologram(plot.getXOffset() + "-" + plot.getZOffset() + "-bossdisplay", loc, lines);
+		holograms.add(holo);
 		
 		for (Player p : s.getOnlinePlayers()) {
 			p.teleport(spawn);

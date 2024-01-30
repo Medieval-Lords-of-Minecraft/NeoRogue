@@ -40,6 +40,7 @@ import me.neoblade298.neocore.shared.util.SQLInsertBuilder.SQLAction;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.session.NodeSelectInstance;
 import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.fight.BossFightInstance;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 
@@ -53,6 +54,7 @@ public class Area {
 	private AreaType type;
 	private Node[][] nodes = new Node[MAX_POSITIONS][MAX_LANES];
 	private Session s;
+	private String boss;
 
 	public static World world;
 	public static final String WORLD_NAME = "Dev";
@@ -176,6 +178,8 @@ public class Area {
 		nodes[MAX_POSITIONS - 2][CENTER_LANE + 1] = new Node(NodeType.SHRINE, MAX_POSITIONS - 2, CENTER_LANE + 1);
 		nodes[MAX_POSITIONS - 1][CENTER_LANE] = new Node(NodeType.BOSS, MAX_POSITIONS - 1, CENTER_LANE);
 		nodes[MAX_POSITIONS - 1][CENTER_LANE].generateInstance(s, type); // generate boss
+		BossFightInstance bi = (BossFightInstance) nodes[MAX_POSITIONS - 1][CENTER_LANE].getInstance();
+		boss = bi.getBossDisplay();
 
 		// Start generating by position
 		for (int pos = 2; pos < MAX_POSITIONS - 2; pos++) {
@@ -202,6 +206,10 @@ public class Area {
 		nodes[MAX_POSITIONS - 2][CENTER_LANE - 1].addDestination(nodes[MAX_POSITIONS - 1][CENTER_LANE]);
 		nodes[MAX_POSITIONS - 2][CENTER_LANE].addDestination(nodes[MAX_POSITIONS - 1][CENTER_LANE]);
 		nodes[MAX_POSITIONS - 2][CENTER_LANE + 1].addDestination(nodes[MAX_POSITIONS - 1][CENTER_LANE]);
+	}
+	
+	public String getBoss() {
+		return boss;
 	}
 	
 	private Node[] generatePosition(GenerationType type, Node[] prevPos) {

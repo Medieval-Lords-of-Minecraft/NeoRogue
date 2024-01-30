@@ -33,6 +33,10 @@ public class BossFightInstance extends FightInstance {
 		this.map = map;
 		targets.addAll(map.getTargets());
 	}
+	
+	public String getBossDisplay() {
+		return map.getPieces().get(0).getPiece().getDisplay();
+	}
 
 	@Override
 	protected void setupInstance(Session s) {
