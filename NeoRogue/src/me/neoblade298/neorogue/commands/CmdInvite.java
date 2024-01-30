@@ -1,5 +1,6 @@
 package me.neoblade298.neorogue.commands;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import me.neoblade298.neocore.bukkit.commands.Subcommand;
@@ -15,7 +16,7 @@ public class CmdInvite extends Subcommand {
 
 	public CmdInvite(String key, String desc, String perm, SubcommandRunner runner) {
 		super(key, desc, perm, runner);
-		args.add(new Arg("username"));
+		args.add(new Arg("username/all"));
 	}
 
 	@Override
@@ -34,6 +35,13 @@ public class CmdInvite extends Subcommand {
 		}
 		
 		LobbyInstance li = (LobbyInstance) inst;
-		li.invitePlayer(p, args[0]);
+		if (args[0].equalsIgnoreCase("all")) {
+			for (Player on : Bukkit.getOnlinePlayers()) {
+				li.invitePlayer(p, on.getName());
+			}
+		}
+		else {
+			li.invitePlayer(p, args[0]);
+		}
 	}
 }

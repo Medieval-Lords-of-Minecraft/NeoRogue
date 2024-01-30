@@ -212,6 +212,13 @@ public class Session {
 		party.put(uuid, new PlayerSessionData(uuid, pc, this));
 	}
 
+	public void broadcastError(String msg) {
+		for (Player p : getOnlinePlayers()) {
+			Util.msgRaw(p, NeoCore.miniMessage().deserialize(msg).colorIfAbsent(NamedTextColor.RED));
+			Util.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1F, 0.7F, false);
+		}
+	}
+
 	public void broadcast(String msg) {
 		for (Player p : getOnlinePlayers()) {
 			Util.msgRaw(p, NeoCore.miniMessage().deserialize(msg).colorIfAbsent(NamedTextColor.GRAY));

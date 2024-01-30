@@ -51,7 +51,6 @@ public class NodeSelectInstance extends EditInventoryInstance {
 		lines.add("§f§lBoss: §4§l" + area.getBoss());
 		Plot plot = s.getPlot();
 		Location loc = spawn.clone().add(0, 3, 4);
-		System.out.println(lines.get(0) + " " + Util.locToString(loc, true, false));
 		Hologram holo = DHAPI.createHologram(plot.getXOffset() + "-" + plot.getZOffset() + "-bossdisplay", loc, lines);
 		holograms.add(holo);
 		
