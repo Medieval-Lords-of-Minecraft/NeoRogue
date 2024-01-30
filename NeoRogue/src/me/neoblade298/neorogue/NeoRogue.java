@@ -88,7 +88,7 @@ public class NeoRogue extends JavaPlugin {
 		
 		mngr = new SubcommandManager("nradmin", "neorogue.admin", NamedTextColor.DARK_RED, this);
 		mngr.register(new CmdAdminReload("reload", "Reloads everything except mythic extensions", null, SubcommandRunner.BOTH));
-		mngr.register(new CmdAdminDebug("debug", "Testing", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdAdminDebug("debug", "Testing", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminTestPiece("testpiece", "Pastes a map piece at 0,0 for ease of setting up spawners with coords", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminTestPieceSettings("testpiecesettings", "Pastes map piece to show how it looks rotated and flipped", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminTestMap("testmap", "Generates and pastes a map", null, SubcommandRunner.PLAYER_ONLY));
@@ -110,7 +110,7 @@ public class NeoRogue extends JavaPlugin {
 		s.generateArea(AreaType.LOW_DISTRICT);
 		s.addPlayer(p.getUniqueId(), EquipmentClass.WARRIOR);
 		SessionManager.addToSession(p.getUniqueId(), s);
-		s.setNode(s.getArea().getNodes()[14][2]);
+		s.setNode(s.getArea().getNodes()[0][2]);
 		s.setInstance(new NodeSelectInstance(s));
 		// s.setInstance(new ChanceInstance());
 
