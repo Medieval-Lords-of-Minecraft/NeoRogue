@@ -98,10 +98,8 @@ public class PlayerSessionData {
 		// Starting equipment
 		switch (this.pc) {
 		case WARRIOR:
-			hotbar[0] = Equipment.get("stoneSword", false);
+			hotbar[0] = Equipment.get("woodenSword", false);
 			hotbar[1] = Equipment.get("empoweredEdge", false);
-			hotbar[2] = Equipment.get("woodenWand", false);
-			hotbar[3] = Equipment.get("battleCry", false);
 			break;
 		case THIEF:
 			hotbar[0] = Equipment.get("woodenSword", false);

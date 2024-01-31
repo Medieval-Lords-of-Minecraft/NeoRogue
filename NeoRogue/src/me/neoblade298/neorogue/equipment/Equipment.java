@@ -371,7 +371,8 @@ public abstract class Equipment {
 		if (!reforgeOptions.isEmpty()) {
 			loreItalicized.add(Component.text("Reforgeable with:" , NamedTextColor.GOLD));
 			for (String id : reforgeOptions.keySet()) {
-				loreItalicized.add(Component.text("- ", NamedTextColor.GOLD).append(Equipment.get(id, false).getDisplay()));
+				loreItalicized.add(Component.text("- ", NamedTextColor.GOLD)
+						.append(Equipment.get(id, false).getDisplay().append(Component.text(isUpgraded ? "(+)" : "+"))));
 			}
 		}
 		if (loreLine != null) {

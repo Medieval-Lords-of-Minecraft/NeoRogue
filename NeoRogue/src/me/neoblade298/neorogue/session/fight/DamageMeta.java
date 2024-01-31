@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.UUID;
 import java.util.Map.Entry;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -157,7 +158,9 @@ public class DamageMeta {
 
 			if (recipient.hasStatus(StatusType.SANCTIFIED)) {
 				int stacks = recipient.getStatus(StatusType.SANCTIFIED).getStacks();
-				FightInstance.giveHeal(damager, stacks * 0.5, damager);
+				for (Entry<UUID, Integer> slice : recipient.getStatus(StatusType.SANCTIFIED).getSlices().getSliceOwners().entrySet()) {
+					FightInstance.giveHeal(Bukkit.getPlayer(slice.getKey()), stacks * 0.2, damager);
+				}
 			}
 
 			// Return damage
@@ -253,6 +256,9 @@ public class DamageMeta {
 			if (owner instanceof PlayerFightData) {
 				((PlayerFightData) owner).getStats().addDamageDealt(slice.getType(), sliceDamage);
 			}
+			if (recipient instanceof PlayerFightData) {
+				((PlayerFightData) recipient).getStats().addDamageTaken(slice.getType(), sliceDamage);
+			}
 			
 			if (!slice.isIgnoreShields()) {
 				damage += sliceDamage;
@@ -270,7 +276,11 @@ public class DamageMeta {
 		// Calculate damage to shields
 		if (recipient.getShields() != null && !recipient.getShields().isEmpty()) {
 			ShieldHolder shields = recipient.getShields();
+			double damageBeforeShields = damage;
 			damage = Math.max(0, shields.useShields(damage));
+			if (recipient instanceof PlayerFightData) {
+				((PlayerFightData) recipient).getStats().addDamageShielded(damageBeforeShields - damage);
+			}
 			
 			// Update shield after if damage was dealt through shield
 			if (damage > 0 || ignoreShieldsDamage > 0) {

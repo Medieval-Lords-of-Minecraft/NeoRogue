@@ -52,7 +52,7 @@ public class WoodenWand extends Equipment {
 		private Player p;
 		public WoodenWandProjectile(Player p) {
 			super(2, 10, 3);
-			this.size(0.2, 0.2);
+			this.size(0.5, 0.5);
 			this.p = p;
 		}
 

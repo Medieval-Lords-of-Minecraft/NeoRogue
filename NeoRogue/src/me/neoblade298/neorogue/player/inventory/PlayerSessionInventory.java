@@ -44,6 +44,7 @@ public class PlayerSessionInventory extends CoreInventory {
 	private static final TextComponent instruct2 = Component.text("here to bind it!", NamedTextColor.GRAY);
 	private static final TextComponent statsText = Component.text("Your stats:", NamedTextColor.GOLD);
 
+	private boolean addItem = true;
 	private PlayerSessionData data;
 
 	public PlayerSessionInventory(PlayerSessionData data) {
@@ -213,6 +214,11 @@ public class PlayerSessionInventory extends CoreInventory {
 			
 			// Reforged item check
 			if (eq.getReforgeOptions().containsKey(eqedId)) {
+				if (!eq.isUpgraded() && !eqed.isUpgraded()) {
+					addItem = false;
+					displayError("At least one of the items must be upgraded to reforge!", true);
+					return;
+				}
 				p.setItemOnCursor(null);
 				new ReforgeOptionsInventory(this, e.getSlot(), onChest, onChest ? slotTypes.get(e.getSlot()) : null, nclicked.getInteger("dataSlot"),
 						eq, eqed, cursor);
@@ -220,8 +226,16 @@ public class PlayerSessionInventory extends CoreInventory {
 			}
 			else if (eqed != null && eqed.getReforgeOptions().containsKey(eqId)) {
 				p.setItemOnCursor(null);
+				if (!eq.isUpgraded() && !eqed.isUpgraded()) {
+					addItem = false;
+					displayError("At least one of the items must be upgraded to reforge!", true);
+					p.closeInventory();
+					return;
+				}
+				p.setItemOnCursor(null);
 				new ReforgeOptionsInventory(this, e.getSlot(), onChest, onChest ? slotTypes.get(e.getSlot()) : null, nclicked.getInteger("dataSlot"),
 						eqed, eq, cursor);
+				return;
 			}
 			
 			if (onChest) {
@@ -331,7 +345,7 @@ public class PlayerSessionInventory extends CoreInventory {
 	@Override
 	public void handleInventoryClose(InventoryCloseEvent e) {
 		if (p.getItemOnCursor().getType().isAir()) return;
-		p.getInventory().addItem(p.getItemOnCursor());
+		if (addItem) p.getInventory().addItem(p.getItemOnCursor());
 		p.updateInventory();
 	}
 

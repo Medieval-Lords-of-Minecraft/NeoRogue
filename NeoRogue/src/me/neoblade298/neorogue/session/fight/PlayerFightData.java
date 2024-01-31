@@ -41,7 +41,7 @@ public class PlayerFightData extends FightData {
 	private double staminaRegen, manaRegen;
 	private boolean isDead;
 	
-	private FightStatistics stats = new FightStatistics();
+	private FightStatistics stats = new FightStatistics(this);
 
 	public PlayerFightData(FightInstance inst, PlayerSessionData data) {
 		super(data.getPlayer(), inst);

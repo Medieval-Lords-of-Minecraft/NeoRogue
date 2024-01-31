@@ -111,8 +111,10 @@ public class NeoRogue extends JavaPlugin {
 		s.addPlayer(p.getUniqueId(), EquipmentClass.WARRIOR);
 		SessionManager.addToSession(p.getUniqueId(), s);
 		Player alt = Bukkit.getPlayer("SuaveGentleman");
-		s.addPlayer(alt.getUniqueId(), EquipmentClass.WARRIOR);
-		SessionManager.addToSession(alt.getUniqueId(), s);
+		if (alt != null) {
+			s.addPlayer(alt.getUniqueId(), EquipmentClass.WARRIOR);
+			SessionManager.addToSession(alt.getUniqueId(), s);
+		}
 		s.setNode(s.getArea().getNodes()[0][2]);
 		s.setInstance(new NodeSelectInstance(s));
 		// s.setInstance(new ChanceInstance());

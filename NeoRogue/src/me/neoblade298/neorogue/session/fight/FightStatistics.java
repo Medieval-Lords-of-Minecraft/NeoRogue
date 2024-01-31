@@ -9,6 +9,7 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class FightStatistics {
+	private PlayerFightData data;
 	private HashMap<DamageType, Double> damageDealt = new HashMap<DamageType, Double>(),
 			damageTaken = new HashMap<DamageType, Double>(),
 			damageMitigated = new HashMap<DamageType, Double>(),
@@ -18,6 +19,10 @@ public class FightStatistics {
 	
 	private static final DecimalFormat df = new DecimalFormat("#.##");
 	private static final Component separator = Component.text(" / ", NamedTextColor.GRAY).hoverEvent(null);
+	
+	public FightStatistics(PlayerFightData data) {
+		this.data = data;
+	}
 	
 	public void addDamageDealt(DamageType type, double amount) {
 		double amt = damageDealt.getOrDefault(type, 0D);
@@ -150,7 +155,8 @@ public class FightStatistics {
 	}
 	
 	private Component getNameHoverComponent() {
-		return getStatPiece("Ally Healing", healingGiven).appendNewline()
+		return getStatPiece("Health", data.getSessionData().getHealth()).appendNewline()
+				.append(getStatPiece("Ally Healing", healingGiven)).appendNewline()
 				.append(getStatPiece("Self Healing", selfHealing)).appendNewline()
 				.append(getStatPiece("Healing Received", healingReceived)).appendNewline()
 				.append(getStatPiece("Damage Barriered", damageBarriered)).appendNewline()

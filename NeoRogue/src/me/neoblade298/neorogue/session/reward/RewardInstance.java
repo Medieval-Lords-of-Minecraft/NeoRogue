@@ -12,8 +12,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.EditInventoryInstance;
 import me.neoblade298.neorogue.session.NodeSelectInstance;
@@ -24,6 +26,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 public class RewardInstance extends EditInventoryInstance {
 	private static final double SPAWN_X = Session.REWARDS_X + 4.5, SPAWN_Z = Session.REWARDS_Z + 2.5;
 	private HashMap<UUID, ArrayList<Reward>> rewards = new HashMap<UUID, ArrayList<Reward>>();
+	private boolean busy = false;
 	
 	public RewardInstance(Session s, HashMap<UUID, ArrayList<Reward>> rewards) {
 		super(s, SPAWN_X, SPAWN_Z);
@@ -61,7 +64,9 @@ public class RewardInstance extends EditInventoryInstance {
 		Player p = e.getPlayer();
 		UUID uuid = p.getUniqueId();
 		if (rewards.get(uuid).isEmpty()) {
-			Util.displayError(p, "You don't have any rewards remaining!");
+			if (!onRewardClaim()) {
+				Util.displayError(p, "You don't have any rewards remaining!");
+			}
 			return;
 		}
 		p.playSound(p, Sound.BLOCK_ENDER_CHEST_OPEN, 1F, 1F);
@@ -69,12 +74,21 @@ public class RewardInstance extends EditInventoryInstance {
 		new RewardInventory(s.getParty().get(uuid), Bukkit.createInventory(p, 9, Component.text("Rewards", NamedTextColor.BLUE)), rewards.get(uuid));
 	}
 	
-	public void onRewardClaim() {
+	public boolean onRewardClaim() {
 		for (ArrayList<Reward> rewards : this.rewards.values()) {
-			if (!rewards.isEmpty()) return;
+			if (!rewards.isEmpty()) return false;
 		}
-		s.broadcast("Everyone's finished claiming rewards! Returning to node select.");
-		s.setInstance(new NodeSelectInstance(s));
+		if (!busy) {
+			s.broadcast("Everyone's finished claiming rewards! Returning to node select...");
+			busy = true;
+			new BukkitRunnable() {
+				public void run() {
+					busy = false;
+					s.setInstance(new NodeSelectInstance(s));
+				}
+			}.runTaskLater(NeoRogue.inst(), 40L);
+		}
+		return true;
 	}
 
 	@Override

@@ -113,18 +113,21 @@ public class ChanceInstance extends EditInventoryInstance {
 	}
 
 	public void advanceStage(UUID uuid, ChanceStage stage) {
-		// Only runs if we're out of stages
+		// Finished with chance
 		if (stage == null) {
 			if (!set.isIndividual()) {
+				this.stage.clear();
 				returnPlayers();
 			}
 			else {
 				this.stage.remove(uuid);
-				if (this.stage.size() == 0) {
+				if (this.stage.isEmpty()) {
 					returnPlayers();
 				}
 			}
 		}
+		
+		// Normal behavior
 		else {
 			if (!set.isIndividual()) {
 				for (UUID id : this.stage.keySet()) {

@@ -205,7 +205,11 @@ public class SessionManager implements Listener {
 	// Only handles player left click
 	@EventHandler
 	public void onDamageByEntity(EntityDamageByEntityEvent e) {
-		if (e.getDamager().getType() != EntityType.PLAYER) return;
+		// Disable damage sources that aren't neorogue
+		if (e.getDamager().getType() != EntityType.PLAYER) {
+			if (e.getEntity() instanceof Player) e.setCancelled(true);
+			return;
+		}
 		UUID uuid = e.getDamager().getUniqueId();
 		if (!sessions.containsKey(uuid)) return;
 		Session s = sessions.get(uuid);

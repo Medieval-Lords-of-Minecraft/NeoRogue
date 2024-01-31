@@ -84,6 +84,8 @@ public class LobbyInstance extends Instance {
 			Util.msgRaw(inviter, playerNotOnline);
 			return;
 		}
+		
+		if (players.containsKey(recipient.getUniqueId())) return;
 
 		invited.add(recipient.getUniqueId());
 		TextComponent tc = Component.text().content(recipient.getName()).color(NamedTextColor.YELLOW)
