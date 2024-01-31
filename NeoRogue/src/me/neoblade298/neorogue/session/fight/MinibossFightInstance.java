@@ -6,8 +6,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
-
 import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
@@ -42,10 +40,7 @@ public class MinibossFightInstance extends FightInstance {
 	@Override
 	public void handleMobKill(String id) {
 		Mob mob = Mob.get(id);
-		if (mob == null) {
-			Bukkit.getLogger().warning("[NeoRogue] Failed to find meta-info for mob " + id + " to handle mob kill");
-			return;
-		}
+		if (mob == null) return;
 		
 		if (targets.contains(id)) {
 			targets.remove(id);

@@ -18,11 +18,17 @@ import me.neoblade298.neorogue.session.SessionManager;
 import me.neoblade298.neorogue.session.fight.BossFightInstance;
 
 public class CmdAdminTestBoss extends Subcommand {
+	private ArrayList<String> bossSet = new ArrayList<String>();
 
 	public CmdAdminTestBoss(String key, String desc, String perm, SubcommandRunner runner) {
 		super(key, desc, perm, runner);
+		for (ArrayList<MapPiece> pieces : Map.getBossPieces().values()) {
+			for (MapPiece piece : pieces) {
+				bossSet.add(piece.getId());
+			}
+		}
 		this.enableTabComplete();
-		args.add(new Arg("boss map ID").setTabOptions(new ArrayList<String>(Map.getAllPieces().keySet())));
+		args.add(new Arg("boss map ID").setTabOptions(bossSet));
 	}
 
 	@Override

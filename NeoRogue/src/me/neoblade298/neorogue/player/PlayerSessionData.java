@@ -369,7 +369,8 @@ public class PlayerSessionData {
 			String id = nbti.getString("equipId");
 			boolean isUpgraded = nbti.getBoolean("isUpgraded");
 			Equipment eq = Equipment.get(id, isUpgraded);
-			if (eq == null) {
+			// Hard coded so that the enderchest doesn't give an error
+			if (eq == null && item.getType() != Material.ENDER_CHEST) {
 				String display = item.hasItemMeta() && item.getItemMeta().hasDisplayName()
 						? ((TextComponent) item.getItemMeta().displayName()).content()
 						: item.getType().name();

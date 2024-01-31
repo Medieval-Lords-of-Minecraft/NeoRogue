@@ -18,11 +18,17 @@ import me.neoblade298.neorogue.session.SessionManager;
 import me.neoblade298.neorogue.session.fight.MinibossFightInstance;
 
 public class CmdAdminTestMiniboss extends Subcommand {
+	private ArrayList<String> minibossSet = new ArrayList<String>();
 
 	public CmdAdminTestMiniboss(String key, String desc, String perm, SubcommandRunner runner) {
 		super(key, desc, perm, runner);
+		for (ArrayList<MapPiece> pieces : Map.getMinibossPieces().values()) {
+			for (MapPiece piece : pieces) {
+				minibossSet.add(piece.getId());
+			}
+		}
 		this.enableTabComplete();
-		args.add(new Arg("miniboss map ID").setTabOptions(new ArrayList<String>(Map.getAllPieces().keySet())));
+		args.add(new Arg("miniboss map ID").setTabOptions(minibossSet));
 	}
 
 	@Override

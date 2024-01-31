@@ -90,10 +90,7 @@ public class StandardFightInstance extends FightInstance {
 	@Override
 	public void handleMobKill(String id) {
 		Mob mob = Mob.get(id);
-		if (mob == null) {
-			Bukkit.getLogger().warning("[NeoRogue] Failed to find meta-info for mob " + id + " to handle mob kill");
-			return;
-		}
+		if (mob == null) return;
 		
 		if (s.getInstance() != this) return; // If we've moved on to reward instance don't spam the user
 		

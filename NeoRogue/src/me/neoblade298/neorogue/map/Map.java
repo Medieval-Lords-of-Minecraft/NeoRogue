@@ -424,6 +424,14 @@ public class Map {
 		return allPieces;
 	}
 	
+	public static HashMap<AreaType, ArrayList<MapPiece>> getMinibossPieces() {
+		return minibossPieces;
+	}
+	
+	public static HashMap<AreaType, ArrayList<MapPiece>> getBossPieces() {
+		return bossPieces;
+	}
+	
 	public static LinkedList<MapPiece> getPieces(AreaType type) {
 		return standardPieces.get(type);
 	}

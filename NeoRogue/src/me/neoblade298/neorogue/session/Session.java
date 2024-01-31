@@ -317,6 +317,11 @@ public class Session {
 		return nodesVisited;
 	}
 	
+	// Can be changed in the future for different scaling setups
+	public int getLevel() {
+		return nodesVisited;
+	}
+	
 	public void setNodesVisited(int nodesVisited) {
 		this.nodesVisited = nodesVisited;
 	}

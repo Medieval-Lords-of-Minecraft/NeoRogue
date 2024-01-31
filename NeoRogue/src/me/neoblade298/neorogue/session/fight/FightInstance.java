@@ -41,8 +41,11 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
+import io.lumine.mythic.api.mobs.MythicMob;
+import io.lumine.mythic.bukkit.BukkitAdapter;
 import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
 import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
+import io.lumine.mythic.core.mobs.ActiveMob;
 import me.libraryaddict.disguise.disguisetypes.PlayerDisguise;
 import me.neoblade298.neocore.bukkit.particles.Circle;
 import me.neoblade298.neocore.bukkit.particles.LocalAxes;
@@ -62,6 +65,7 @@ import me.neoblade298.neorogue.session.Instance;
 import me.neoblade298.neorogue.session.LoseInstance;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
+import me.neoblade298.neorogue.session.fight.Mob.MobType;
 import me.neoblade298.neorogue.session.fight.TickAction.TickResult;
 import me.neoblade298.neorogue.session.fight.status.Status.GenericStatusType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
@@ -102,7 +106,7 @@ public abstract class FightInstance extends Instance {
 				new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1.122462F), new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1.189207F),
 				new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1.259921F)};
 	private static final Component statsHeader = SharedUtil.color("<gray>Fight Statistics (Hover for more info!)\n=====\n"
-			+ "[<green>Current Health </green> | <red>Health </red>/ <dark_red>Received </dark_red>/ <blue>Buffed</blue> / <gold>Mitigated</gold>]");
+			+ "[<green>Health </green> | <red>Damage Dealt </red>/ <dark_red>Received </dark_red>/ <blue>Buffed</blue> / <gold>Mitigated</gold>]");
 
 	public FightInstance(Session s, Set<UUID> players) {
 		super(s);
@@ -403,10 +407,7 @@ public abstract class FightInstance extends Instance {
 
 	public void handleRespawn(FightData data, String id, boolean isDespawn) {
 		Mob mob = Mob.get(id);
-		if (mob == null) {
-			Bukkit.getLogger().warning("[NeoRogue] Failed to find meta-info for mob " + id + " to handle respawn");
-			return;
-		}
+		if (mob == null) return;
 
 		if (data.getSpawner() != null) {
 			data.getSpawner().subtractActiveMobs();
@@ -571,7 +572,7 @@ public abstract class FightInstance extends Instance {
 			public void run() {
 				activateSpawner(2 + (s.getNodesVisited() / 5) + s.getParty().size());
 				for (MapSpawnerInstance inst : fi.initialSpawns) {
-					inst.spawnMob(s.getNodesVisited());
+					inst.spawnMob();
 				}
 			}
 		}.runTaskLater(NeoRogue.inst(), 60L);
@@ -725,7 +726,7 @@ public abstract class FightInstance extends Instance {
 			if (!spawner.canSpawn()) {
 				spawner = unlimitedSpawners.get(NeoRogue.gen.nextInt(unlimitedSpawners.size()));
 			}
-			spawner.spawnMob(s.getNodesVisited());
+			spawner.spawnMob();
 		}
 	}
 
@@ -751,6 +752,24 @@ public abstract class FightInstance extends Instance {
 
 	public interface FightRunnable {
 		public void run(FightInstance inst, ArrayList<PlayerFightData> fdata);
+	}
+
+	public static ActiveMob spawnScaledMob(Session s, Location loc, MythicMob mythicMob) {
+		return scaleMob(s, Mob.get(mythicMob.getInternalName()), mythicMob, mythicMob.spawn(BukkitAdapter.adapt(loc), s.getLevel()));
+	}
+	
+	public static ActiveMob scaleMob(Session s, Mob mob, MythicMob mythicMob, ActiveMob am) {
+		double lvl = s.getLevel();
+		am.setLevel(lvl);
+		double mhealth = mythicMob.getHealth().get();
+		// Bosses scale with number of players too
+		if (mob != null && mob.getType() != MobType.NORMAL) {
+			mhealth *= 0.75 + (s.getParty().size() * 0.25); // 25% health increase per player, starting from 2 players
+		}
+		mhealth *= 1 + (lvl / 5);
+		am.getEntity().setMaxHealth(Math.round(mhealth));
+		am.getEntity().setHealth(Math.round(mhealth));
+		return am;
 	}
 	
 	private static class Corpse {

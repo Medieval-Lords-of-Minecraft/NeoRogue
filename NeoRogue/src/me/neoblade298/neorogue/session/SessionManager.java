@@ -42,6 +42,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import io.lumine.mythic.api.mobs.MythicMob;
+import io.lumine.mythic.api.mobs.entities.SpawnReason;
 import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
 import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
 import io.lumine.mythic.bukkit.events.MythicMobSpawnEvent;
@@ -205,9 +207,9 @@ public class SessionManager implements Listener {
 	// Only handles player left click
 	@EventHandler
 	public void onDamageByEntity(EntityDamageByEntityEvent e) {
-		// Disable damage sources that aren't neorogue
 		if (e.getDamager().getType() != EntityType.PLAYER) {
-			if (e.getEntity() instanceof Player) e.setCancelled(true);
+			// Don't cancel damage, but set it to 0 so the ~onAttack mythicmob trigger still goes
+			if (e.getEntity() instanceof Player) e.setDamage(0);
 			return;
 		}
 		UUID uuid = e.getDamager().getUniqueId();
@@ -311,7 +313,12 @@ public class SessionManager implements Listener {
 		Entity ent = e.getEntity();
 		UUID uuid = ent.getUniqueId();
 		if (ent instanceof LivingEntity) {
-			FightInstance.putFightData(uuid, new FightData((LivingEntity) ent, (MapSpawnerInstance) null));
+			FightData fd = new FightData((LivingEntity) ent, (MapSpawnerInstance) null);
+			FightInstance.putFightData(uuid, fd);
+			if (e.getSpawnReason() == SpawnReason.SUMMON) {
+				MythicMob mythicMob = e.getMobType();
+				FightInstance.scaleMob(fd.getInstance().getSession(), Mob.get(mythicMob.getInternalName()), mythicMob, e.getMob());
+			}
 		}
 	}
 
