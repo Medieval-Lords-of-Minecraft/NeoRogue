@@ -209,8 +209,7 @@ public class PlayerFightData extends FightData {
 						continue;
 					}
 					tr = ei.trigger(data, inputs);
-					System.out.println("Trigger " + trigger + " is dependent " + trigger.isSlotDependent());
-					if (trigger.isSlotDependent()) ei.updateSlot(p, inv);
+					ei.updateSlot(p, inv);
 				}
 				else {
 					tr = inst.trigger(data, inputs);

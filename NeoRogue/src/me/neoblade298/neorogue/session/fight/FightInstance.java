@@ -201,7 +201,6 @@ public abstract class FightInstance extends Instance {
 		e.setCancelled(true);
 		Player p = e.getPlayer();
 		// Offhand is always cancelled
-		System.out.println("triggered swap " + p.isSneaking());
 		trigger(p, p.isSneaking() ? Trigger.SHIFT_SWAP : Trigger.SWAP, null);
 	}
 
@@ -366,10 +365,10 @@ public abstract class FightInstance extends Instance {
 				trigger(p, Trigger.SHIFT_RCLICK, null);
 			}
 
-			if (y > 0) {
+			if (y > 1) {
 				trigger(p, Trigger.UP_RCLICK, null);
 			}
-			else {
+			else if (y < -1){
 				trigger(p, Trigger.DOWN_RCLICK, null);
 			}
 		}
