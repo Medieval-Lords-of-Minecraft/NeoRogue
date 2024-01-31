@@ -106,7 +106,7 @@ public abstract class FightInstance extends Instance {
 				new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1.122462F), new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1.189207F),
 				new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1.259921F)};
 	private static final Component statsHeader = SharedUtil.color("<gray>Fight Statistics (Hover for more info!)\n=====\n"
-			+ "[<green>Health </green> | <red>Damage Dealt </red>/ <dark_red>Received </dark_red>/ <blue>Buffed</blue> / <gold>Mitigated</gold>]");
+			+ "[<yellow>Name</yellow> (<green>Health</green>) - <red>Damage Dealt </red>/ <dark_red>Received </dark_red>/ <blue>Buffed</blue> / <gold>Mitigated</gold>]");
 
 	public FightInstance(Session s, Set<UUID> players) {
 		super(s);
@@ -761,6 +761,8 @@ public abstract class FightInstance extends Instance {
 	public static ActiveMob scaleMob(Session s, Mob mob, MythicMob mythicMob, ActiveMob am) {
 		double lvl = s.getLevel();
 		am.setLevel(lvl);
+		if (mythicMob.getHealth() == null) return am; // Some summoned mobs don't have health
+		
 		double mhealth = mythicMob.getHealth().get();
 		// Bosses scale with number of players too
 		if (mob != null && mob.getType() != MobType.NORMAL) {

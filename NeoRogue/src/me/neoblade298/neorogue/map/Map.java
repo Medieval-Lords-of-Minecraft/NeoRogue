@@ -87,6 +87,12 @@ public class Map {
 		}
 	}
 	
+	public static void reloadMythicMobs() {
+		for (MapPiece piece : allPieces.values()) {
+			piece.reloadMythicMobs();
+		}
+	}
+	
 	public static Map generateBoss(AreaType type, int numPieces) {
 		MapPiece piece = bossPieces.get(type).get(NeoRogue.gen.nextInt(bossPieces.get(type).size()));
 		return generate(type, numPieces, piece);

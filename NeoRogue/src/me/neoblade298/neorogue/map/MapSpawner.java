@@ -25,6 +25,10 @@ public class MapSpawner {
 		radius = cfg.getDouble("radius");
 		maxMobs = cfg.getInt("maxmobs", -1);
 	}
+	
+	public void reloadMythicMob() {
+		mythicMob = NeoRogue.mythicApi.getMythicMob(mythicMob.getInternalName());
+	}
 
 	public MythicMob getMythicMob() {
 		return mythicMob;

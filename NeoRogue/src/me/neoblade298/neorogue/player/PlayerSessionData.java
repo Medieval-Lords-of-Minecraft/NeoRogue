@@ -100,7 +100,6 @@ public class PlayerSessionData {
 		case WARRIOR:
 			hotbar[0] = Equipment.get("woodenSword", false);
 			hotbar[1] = Equipment.get("empoweredEdge", false);
-			hotbar[2] = Equipment.get("tackle", false);
 			break;
 		case THIEF:
 			hotbar[0] = Equipment.get("woodenSword", false);
@@ -370,12 +369,14 @@ public class PlayerSessionData {
 			boolean isUpgraded = nbti.getBoolean("isUpgraded");
 			Equipment eq = Equipment.get(id, isUpgraded);
 			// Hard coded so that the enderchest doesn't give an error
-			if (eq == null && item.getType() != Material.ENDER_CHEST) {
-				String display = item.hasItemMeta() && item.getItemMeta().hasDisplayName()
-						? ((TextComponent) item.getItemMeta().displayName()).content()
-						: item.getType().name();
-				Bukkit.getLogger()
-						.warning("[NeoRogue] " + p.getName() + " could not save " + display + " to their storage");
+			if (eq == null) {
+				if (item.getType() != Material.ENDER_CHEST) {
+					String display = item.hasItemMeta() && item.getItemMeta().hasDisplayName()
+							? ((TextComponent) item.getItemMeta().displayName()).content()
+							: item.getType().name();
+					Bukkit.getLogger()
+							.warning("[NeoRogue] " + p.getName() + " could not save " + display + " to their storage");
+				}
 				continue;
 			}
 			if (eq.isCursed()) {

@@ -108,6 +108,17 @@ public class MapPiece {
 		pieces.put(id, this);
 	}
 	
+	public void reloadMythicMobs() {
+		for (MapSpawner[] set : spawnerSets) {
+			for (MapSpawner spawner : set) {
+				spawner.reloadMythicMob();
+			}
+		}
+		for (MapSpawner spawner : initialSpawns) {
+			spawner.reloadMythicMob();
+		}
+	}
+	
 	public String getDisplay() {
 		return display;
 	}
