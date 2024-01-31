@@ -124,9 +124,12 @@ public class FightStatistics {
 		return revives;
 	}
 	
-	public Component getStatLine(String name) {
-		return Component.text("").append(Component.text(name, NamedTextColor.YELLOW)
-		.hoverEvent(HoverEvent.showText(getNameHoverComponent())))
+	public Component getStatLine() {
+		return Component.text("").append(Component.text(data.getSessionData().getData().getDisplay(), NamedTextColor.YELLOW)
+				.append(Component.text(" (", NamedTextColor.GRAY))
+				.append(Component.text(df.format(data.getPlayer().getHealth()), NamedTextColor.GREEN))
+				.append(Component.text(")", NamedTextColor.GRAY))
+				.hoverEvent(HoverEvent.showText(getNameHoverComponent())))
 		.append(Component.text(" - ", NamedTextColor.GRAY).hoverEvent(null))
 		.append(getTypedComponent(damageDealt, NamedTextColor.RED)).append(separator)
 		.append(getTypedComponent(damageTaken, NamedTextColor.DARK_RED)).append(separator)
@@ -155,8 +158,7 @@ public class FightStatistics {
 	}
 	
 	private Component getNameHoverComponent() {
-		return getStatPiece("Health", data.getSessionData().getHealth()).appendNewline()
-				.append(getStatPiece("Ally Healing", healingGiven)).appendNewline()
+		return getStatPiece("Ally Healing", healingGiven).appendNewline()
 				.append(getStatPiece("Self Healing", selfHealing)).appendNewline()
 				.append(getStatPiece("Healing Received", healingReceived)).appendNewline()
 				.append(getStatPiece("Damage Barriered", damageBarriered)).appendNewline()

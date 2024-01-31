@@ -37,13 +37,13 @@ public class ControlledExecute extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new ControlledExecuteInstance(p, this, slot));
+		data.addTrigger(id, bind, new ControlledExecuteInstance(p, this, slot, es));
 	}
 	
 	private class ControlledExecuteInstance extends EquipmentInstance {
 
-		public ControlledExecuteInstance(Player p, Equipment eq, int slot) {
-			super(p, eq, slot);
+		public ControlledExecuteInstance(Player p, Equipment eq, int slot, EquipSlot es) {
+			super(p, eq, slot, es);
 			action = (pdata, inputs) -> {
 				Util.playSound(p, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1F, 1F, false);
 				pc.spawn(p);

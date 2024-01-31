@@ -9,6 +9,7 @@ import org.bukkit.inventory.PlayerInventory;
 
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
@@ -23,6 +24,7 @@ public class EquipmentInstance extends PriorityAction {
 	protected TriggerCondition condition;
 	protected int slot;
 	protected Equipment eq;
+	protected EquipSlot es;
 	protected double staminaCost, manaCost, cooldown;
 	private long lastUsed = 0L;
 	
@@ -38,23 +40,28 @@ public class EquipmentInstance extends PriorityAction {
 		COOLDOWN_MATERIALS.put(8, Material.MAGENTA_CANDLE);
 	}
 	
-	public EquipmentInstance(Player p, Equipment eq, int slot) {
+	public EquipmentInstance(Player p, Equipment eq, int slot, EquipSlot es) {
 		this.p = p;
 		this.eq = eq;
 		this.manaCost = eq.getProperties().getManaCost();
 		this.staminaCost = eq.getProperties().getStaminaCost();
 		this.cooldown = eq.getProperties().getCooldown();
 		this.slot = slot;
+		this.es = es;
 	}
 	
-	public EquipmentInstance(Player p, Equipment eq, int slot, TriggerAction action) {
-		this(p, eq, slot);
+	public EquipmentInstance(Player p, Equipment eq, int slot, EquipSlot es, TriggerAction action) {
+		this(p, eq, slot, es);
 		this.action = action;
 	}
 	
-	public EquipmentInstance(Player p, Equipment eq, int slot, TriggerAction action, TriggerCondition condition) {
-		this(p, eq, slot, action);
+	public EquipmentInstance(Player p, Equipment eq, int slot, EquipSlot es, TriggerAction action, TriggerCondition condition) {
+		this(p, eq, slot, es, action);
 		this.condition = condition;
+	}
+	
+	public EquipSlot getEquipSlot() {
+		return es;
 	}
 	
 	// Apparently earthen tackle needs this
@@ -99,6 +106,7 @@ public class EquipmentInstance extends PriorityAction {
 	}
 	
 	public void updateSlot(Player p, PlayerInventory inv) {
+		if (es != EquipSlot.HOTBAR) return;
 		Material mat = COOLDOWN_MATERIALS.get(slot);
 		inv.setItem(slot, new ItemStack(mat));
 		p.setCooldown(mat, getCooldownTicks());

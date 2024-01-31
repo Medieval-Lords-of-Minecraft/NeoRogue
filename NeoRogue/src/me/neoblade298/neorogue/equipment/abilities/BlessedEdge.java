@@ -36,7 +36,7 @@ public class BlessedEdge extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(p, this, slot, (pdata, inputs) -> {
+		data.addTrigger(id, bind, new EquipmentInstance(p, this, slot, es, (pdata, inputs) -> {
 			Util.playSound(p, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1F, 1F, false);
 			pc.spawn(p);
 			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in) -> {

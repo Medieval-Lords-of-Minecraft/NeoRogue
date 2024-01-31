@@ -102,7 +102,7 @@ public abstract class FightInstance extends Instance {
 				new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1.122462F), new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1.189207F),
 				new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1.259921F)};
 	private static final Component statsHeader = SharedUtil.color("<gray>Fight Statistics (Hover for more info!)\n=====\n"
-			+ "[<red>Damage Dealt </red>/ <dark_red>Received </dark_red>/ <blue>Buffed</blue> / <gold>Mitigated</gold>]");
+			+ "[<green>Current Health </green> | <red>Health </red>/ <dark_red>Received </dark_red>/ <blue>Buffed</blue> / <gold>Mitigated</gold>]");
 
 	public FightInstance(Session s, Set<UUID> players) {
 		super(s);
@@ -201,6 +201,7 @@ public abstract class FightInstance extends Instance {
 		e.setCancelled(true);
 		Player p = e.getPlayer();
 		// Offhand is always cancelled
+		System.out.println("triggered swap " + p.isSneaking());
 		trigger(p, p.isSneaking() ? Trigger.SHIFT_SWAP : Trigger.SWAP, null);
 	}
 
@@ -627,9 +628,11 @@ public abstract class FightInstance extends Instance {
 			PlayerFightData pdata = userData.remove(uuid);
 			if (pdata != null) {
 				pdata.cleanup();
-				s.broadcast(pdata.getStats().getStatLine(pdata.getSessionData().getData().getDisplay()));
-				if (pdata.isDead()) {
-					pdata.setDeath(false);
+				if (pdata.getPlayer() != null) {
+					s.broadcast(pdata.getStats().getStatLine());
+					if (pdata.isDead()) {
+						pdata.setDeath(false);
+					}
 				}
 			}
 			FightData fdata = fightData.remove(uuid);

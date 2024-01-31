@@ -40,7 +40,7 @@ public class WindSlash extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(p, this, slot, (pd, in) -> {
+		data.addTrigger(id, bind, new EquipmentInstance(p, this, slot, es, (pd, in) -> {
 			Util.playSound(p, Sound.ENTITY_PLAYER_ATTACK_SWEEP, false);
 			projs.start(data);
 			return TriggerResult.keep();

@@ -38,7 +38,7 @@ public class BattleCry extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(p, this, slot, (pdata, inputs) -> {
+		data.addTrigger(id, bind, new EquipmentInstance(p, this, slot, es, (pdata, inputs) -> {
 			Util.playSound(p, Sound.ENTITY_BLAZE_DEATH, 1F, 1F, false);
 			pc.spawn(p);
 			data.addBuff(p.getUniqueId(), id, true, false, BuffType.PHYSICAL, strength, 10);

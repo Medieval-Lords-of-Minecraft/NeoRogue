@@ -67,10 +67,11 @@ public class PlayerFightData extends FightData {
 			if (hotbar == null) continue;
 			hotbar.initialize(p, this, Trigger.getFromHotbarSlot(i), EquipSlot.HOTBAR, i);
 		}
-		i = 0;
+		i = -1;
 		for (Equipment other : data.getEquipment(EquipSlot.KEYBIND)) {
+			i++;
 			if (other == null) continue;
-			other.initialize(p, this, KeyBind.getBindFromData(i).getTrigger(), EquipSlot.KEYBIND, i++);
+			other.initialize(p, this, KeyBind.getBindFromData(i).getTrigger(), EquipSlot.KEYBIND, i);
 		}
 		i = 0;
 		for (ArtifactInstance art : data.getArtifacts().values()) {
@@ -208,7 +209,8 @@ public class PlayerFightData extends FightData {
 						continue;
 					}
 					tr = ei.trigger(data, inputs);
-					ei.updateSlot(p, inv);
+					System.out.println("Trigger " + trigger + " is dependent " + trigger.isSlotDependent());
+					if (trigger.isSlotDependent()) ei.updateSlot(p, inv);
 				}
 				else {
 					tr = inst.trigger(data, inputs);
