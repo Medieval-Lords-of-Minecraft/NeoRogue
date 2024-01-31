@@ -20,7 +20,7 @@ public class LightLeatherGauntlets extends Equipment {
 	public LightLeatherGauntlets(boolean isUpgraded) {
 		super("lightLeatherGauntlets", "Light Leather Gauntlets", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(15, 2, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_CRIT));
+				EquipmentProperties.ofWeapon(30, 2, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_CRIT));
 		stamina = !isUpgraded ? 2 : 3;
 	}
 
@@ -36,6 +36,6 @@ public class LightLeatherGauntlets extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LEATHER);
+		item = createItem(Material.LEATHER, "Grants <yellow>" + stamina + "</stamina> stamina for every hit.");
 	}
 }

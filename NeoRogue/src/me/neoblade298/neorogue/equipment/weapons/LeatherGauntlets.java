@@ -19,7 +19,7 @@ public class LeatherGauntlets extends Equipment {
 	public LeatherGauntlets(boolean isUpgraded) {
 		super("leatherGauntlets", "Leather Gauntlets", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(isUpgraded ? 20 : 15, 2, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_CRIT));
+				EquipmentProperties.ofWeapon(isUpgraded ? 30 : 20, 2, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_CRIT));
 		addReforgeOption("leatherGauntlets", new String[] {"forcefulLeatherGauntlets", "earthenLeatherGauntlets", "lightLeatherGauntlets"});
 	}
 

@@ -22,7 +22,7 @@ public class EarthenLeatherGauntlets extends Equipment {
 	
 	public EarthenLeatherGauntlets(boolean isUpgraded) {
 		super("earthenLeatherGauntlets", "Earthen Leather Gauntlets", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.WEAPON, EquipmentProperties.ofWeapon(20, 2, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_CRIT));
+				EquipmentType.WEAPON, EquipmentProperties.ofWeapon(30, 2, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_CRIT));
 		concuss = isUpgraded ? 4 : 2;
 	}
 
@@ -52,6 +52,6 @@ public class EarthenLeatherGauntlets extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LEATHER);
+		item = createItem(Material.LEATHER, "Applies <yellow>" + concuss + "</stamina> concussed for every 3rd hit.");
 	}
 }
