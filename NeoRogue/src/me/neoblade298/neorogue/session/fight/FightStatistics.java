@@ -150,7 +150,7 @@ public class FightStatistics {
 				}
 				total += ent.getValue();
 			}
-			return Component.text("" + total, color).hoverEvent(HoverEvent.showText(hover));
+			return Component.text("" + df.format(total), color).hoverEvent(HoverEvent.showText(hover));
 		}
 	}
 	

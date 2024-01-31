@@ -95,6 +95,7 @@ public class ChanceInventory extends CoreInventory {
 		}
 		ChanceStage next = set.getStage(stage.choices.get(num - 1).choose(s, inst, s.getData(uuid)));
 		inst.advanceStage(uuid, next);
+		p.closeInventory();
 	}
 
 	@Override

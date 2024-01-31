@@ -55,6 +55,15 @@ public class Session {
 	private int saveSlot, xOff, zOff, nodesVisited, areasCompleted;
 	private Plot plot;
 	
+	// Session coordinates
+	public static final int LOBBY_X = 0, LOBBY_Z = 0, LOBBY_WIDTH = 15,
+			AREA_X = 0, AREA_Z = LOBBY_Z + LOBBY_WIDTH, AREA_WIDTH = 81,
+			REWARDS_X = 0, REWARDS_Z = AREA_Z + AREA_WIDTH, REWARDS_WIDTH = 6,
+			SHRINE_X = 0, SHRINE_Z = REWARDS_Z + REWARDS_WIDTH, SHRINE_WIDTH = 13,
+			SHOP_X = 0, SHOP_Z = SHRINE_Z + SHRINE_WIDTH, SHOP_WIDTH = 12,
+			CHANCE_X = 0, CHANCE_Z = SHOP_Z + SHOP_WIDTH, CHANCE_WIDTH = 9,
+			LOSE_X = 0, LOSE_Z = CHANCE_Z + CHANCE_WIDTH;
+	
 	private static Clipboard classSelect, nodeSelect, rewardsRoom, shrine, shop, chance, lose;
 	static {
 		classSelect = loadClipboard("classselect.schem");
@@ -63,7 +72,7 @@ public class Session {
 		shrine = loadClipboard("shrine.schem");
 		shop = loadClipboard("shop.schem");
 		chance = loadClipboard("chance.schem");
-		lose = loadClipboard("chance.schem");
+		lose = loadClipboard("lose.schem");
 	}
 	
 	private static Clipboard loadClipboard(String schematic) {
@@ -90,15 +99,6 @@ public class Session {
 			e.printStackTrace();
 		}
 	}
-	
-	// Session coordinates
-	public static final int LOBBY_X = 0, LOBBY_Z = 0, LOBBY_WIDTH = 15,
-			AREA_X = 0, AREA_Z = LOBBY_Z + LOBBY_WIDTH, AREA_WIDTH = 81,
-			REWARDS_X = 0, REWARDS_Z = AREA_Z + AREA_WIDTH, REWARDS_WIDTH = 6,
-			SHRINE_X = 0, SHRINE_Z = REWARDS_Z + REWARDS_WIDTH, SHRINE_WIDTH = 13,
-			SHOP_X = 0, SHOP_Z = SHRINE_Z + SHRINE_WIDTH, SHOP_WIDTH = 12,
-			CHANCE_X = 0, CHANCE_Z = SHOP_Z + SHOP_WIDTH, CHANCE_WIDTH = 4,
-			LOSE_X = 0, LOSE_Z = CHANCE_Z + CHANCE_WIDTH;
 	
 	public Session(Player p, Plot plot, String lobby, int saveSlot) {
 		this.saveSlot = saveSlot;
