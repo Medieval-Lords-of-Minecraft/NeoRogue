@@ -487,6 +487,12 @@ public abstract class FightInstance extends Instance {
 
 	public static void applyStatus(Entity target, String id, Entity applier, int stacks, int seconds) {
 		FightData data = getFightData(target.getUniqueId());
+		for (StatusType st : StatusType.values()) {
+			if (st.name().equals(id)) {
+				data.applyStatus(st, applier.getUniqueId(), stacks, seconds);
+				return;
+			}
+		}
 		data.applyStatus(GenericStatusType.BASIC, id, applier.getUniqueId(), stacks, seconds);
 	}
 

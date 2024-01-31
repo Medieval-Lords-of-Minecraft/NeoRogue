@@ -3,8 +3,6 @@ package me.neoblade298.neorogue.session.fight.status;
 import java.util.UUID;
 
 import me.neoblade298.neorogue.session.fight.FightData;
-import me.neoblade298.neorogue.session.fight.FightInstance;
-import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TickAction;
 
 public class DurationStatus extends Status {
@@ -23,13 +21,12 @@ public class DurationStatus extends Status {
 				data.addTickAction(action);
 			}
 		}
-		
+
 		if (this.stacks <= 0 || this.seconds <= 0) {
 			data.removeStatus(id);
 			return;
 		}
-		
-		if (!(FightInstance.getFightData(applier) instanceof PlayerFightData)) return;
+
 		if (stacks > 0) slices.add(applier, stacks);
 		else if (stacks < 0) slices.remove(stacks);
 	}

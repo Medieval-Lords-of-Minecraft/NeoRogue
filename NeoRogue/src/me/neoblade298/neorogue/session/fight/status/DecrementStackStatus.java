@@ -3,8 +3,6 @@ package me.neoblade298.neorogue.session.fight.status;
 import java.util.UUID;
 
 import me.neoblade298.neorogue.session.fight.FightData;
-import me.neoblade298.neorogue.session.fight.FightInstance;
-import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TickAction;
 
 public class DecrementStackStatus extends Status {
@@ -28,7 +26,7 @@ public class DecrementStackStatus extends Status {
 			return;
 		}
 
-		if (FightInstance.getFightData(applier) instanceof PlayerFightData) slices.add(applier, stacks);
+		slices.add(applier, stacks);
 	}
 	
 	private class DecrementStackTickAction extends TickAction {
