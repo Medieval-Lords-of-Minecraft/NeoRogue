@@ -6,18 +6,18 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.PotionMeta;
 
+import me.neoblade298.neorogue.equipment.Consumable;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neocore.bukkit.util.Util;
-import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class MinorStaminaPotion extends Equipment {
+public class MinorStaminaPotion extends Consumable {
 	private double stamina;
 	
 	public MinorStaminaPotion(boolean isUpgraded) {
-		super("minorStaminaPotion", "Minor Stamina Potion", isUpgraded, Rarity.COMMON, EquipmentClass.CLASSLESS, EquipmentType.CONSUMABLE);
+		super("minorStaminaPotion", "Minor Stamina Potion", Rarity.COMMON, EquipmentClass.CLASSLESS);
 		this.stamina = isUpgraded ? 105 : 75;
 	}
 

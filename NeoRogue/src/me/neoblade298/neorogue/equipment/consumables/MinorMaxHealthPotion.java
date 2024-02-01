@@ -8,16 +8,16 @@ import org.bukkit.inventory.meta.PotionMeta;
 
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neocore.bukkit.util.Util;
-import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.Consumable;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class MinorMaxHealthPotion extends Equipment {
+public class MinorMaxHealthPotion extends Consumable {
 	private double health;
 	
 	public MinorMaxHealthPotion(boolean isUpgraded) {
-		super("minorMaxHealthPotion", "Minor Max Health Potion", isUpgraded, Rarity.COMMON, EquipmentClass.CLASSLESS, EquipmentType.CONSUMABLE);
+		super("minorMaxHealthPotion", "Minor Max Health Potion", Rarity.COMMON, EquipmentClass.CLASSLESS);
 		this.health = isUpgraded ? 50 : 35;
 	}
 

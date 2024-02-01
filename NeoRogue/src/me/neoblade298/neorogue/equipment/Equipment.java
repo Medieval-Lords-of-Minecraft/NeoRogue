@@ -45,7 +45,8 @@ public abstract class Equipment {
 	private static HashMap<String, Equipment> upgraded = new HashMap<String, Equipment>();
 	private static HashSet<String> reforged = new HashSet<String>();
 	private static DropTableSet<Equipment> droptables = new DropTableSet<Equipment>();
-	private static DropTableSet<Artifact> artifactTables = new DropTableSet<Artifact>();
+	private static DropTableSet<Artifact> artifacts = new DropTableSet<Artifact>();
+	private static DropTableSet<Consumable> consumables = new DropTableSet<Consumable>();
 	
 	private TreeMap<String, String[]> reforgeOptions = new TreeMap<String, String[]>();
 	
@@ -63,7 +64,7 @@ public abstract class Equipment {
 		equipment.clear();
 		upgraded.clear();
 		droptables.reload();
-		artifactTables.reload();
+		artifacts.reload();
 		
 		for (boolean b : new boolean[] {false, true}) {
 			// Abilities
@@ -246,9 +247,12 @@ public abstract class Equipment {
 		if (!canDrop) return;
 		if (reforged.contains(id)) return;
 		
-		// Artifacts get their own special droptable with special weight due to reduced amount
+		// Artifacts and consumables get their own special droptable with special weight due to reduced amount
 		if (this instanceof Artifact) {
-			artifactTables.addLenientWeight(ec, value, (Artifact) this);
+			artifacts.addLenientWeight(ec, value, (Artifact) this);
+		}
+		else if (this instanceof Consumable) {
+			consumables.addLenientWeight(ec, value, (Consumable) this);
 		}
 		else {
 			droptables.add(ec, value, this);
@@ -430,7 +434,11 @@ public abstract class Equipment {
 	}
 	
 	public static ArrayList<Artifact> getArtifact(int value, int numDrops, EquipmentClass... ec) {
-		return artifactTables.getMultiple(value, numDrops, ec);
+		return artifacts.getMultiple(value, numDrops, ec);
+	}
+	
+	public static ArrayList<Consumable> getConsumable(int value, int numDrops, EquipmentClass... ec) {
+		return consumables.getMultiple(value, numDrops, ec);
 	}
 	
 	public static ArrayList<Equipment> getDrop(int value, int numDrops, EquipmentClass... ec) {
@@ -442,7 +450,11 @@ public abstract class Equipment {
 	}
 	
 	public static Equipment getDrop(int value, EquipmentClass... ec) {
-		return getDrop(value, 1, ec).get(0);
+		return getDrops(value, 1, ec).get(0);
+	}
+	
+	public static Consumable getConsumable(int value, EquipmentClass... ec) {
+		return getConsumables(value, 1, ec).get(0);
 	}
 	
 	public Component getDisplay() {

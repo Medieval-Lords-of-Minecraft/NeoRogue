@@ -19,6 +19,9 @@ public interface Reward {
 		else if (str.startsWith("choice")) {
 			return new EquipmentChoiceReward(str.substring("choice:".length()));
 		}
+		else if (str.startsWith("equipment")) {
+			return new EquipmentReward(str.substring("equipment:".length()));
+		}
 		return null;
 	}
 	

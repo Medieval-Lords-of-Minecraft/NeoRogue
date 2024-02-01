@@ -21,6 +21,7 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.reward.CoinsReward;
 import me.neoblade298.neorogue.session.reward.EquipmentChoiceReward;
+import me.neoblade298.neorogue.session.reward.EquipmentReward;
 import me.neoblade298.neorogue.session.reward.Reward;
 import me.neoblade298.neorogue.session.reward.RewardInstance;
 import net.kyori.adventure.text.Component;
@@ -144,6 +145,14 @@ public class StandardFightInstance extends FightInstance {
 			equipDrops.add(Equipment.get("emeraldShard", false));
 			equipDrops.add(Equipment.get("sapphireShard", false));
 			list.add(new EquipmentChoiceReward(equipDrops));
+			
+			if (NeoRogue.gen.nextInt(100) < s.getPotionChance()) {
+				list.add(new EquipmentReward(Equipment.getConsumable(value, ec)));
+				s.addPotionChance(-25);
+			}
+			else {
+				s.addPotionChance(10);
+			}
 			rewards.put(uuid, list);
 		}
 		return rewards;

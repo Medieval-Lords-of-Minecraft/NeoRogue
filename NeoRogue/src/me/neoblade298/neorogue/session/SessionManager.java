@@ -223,10 +223,15 @@ public class SessionManager implements Listener {
 	
 	@EventHandler
 	public void onDamage(EntityDamageEvent e) {
+		if (e.getCause() == DamageCause.POISON || e.getCause() == DamageCause.WITHER) {
+			e.setCancelled(true);
+		}
 		if (e.getEntity().getType() != EntityType.PLAYER) return;
 		UUID uuid = e.getEntity().getUniqueId();
 		if (!sessions.containsKey(uuid)) return;
-		if (e.getCause() == DamageCause.STARVATION) return;
+		if (e.getCause() == DamageCause.STARVATION) {
+			e.setCancelled(true);
+		}
 	}
 
 	@EventHandler

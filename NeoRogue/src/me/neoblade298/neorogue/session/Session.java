@@ -52,7 +52,7 @@ public class Session {
 	private Instance inst;
 	private Node curr;
 	private SessionStatistics stats;
-	private int saveSlot, xOff, zOff, nodesVisited, areasCompleted;
+	private int saveSlot, xOff, zOff, nodesVisited, areasCompleted, potionChance = 25;
 	private Plot plot;
 	
 	// Session coordinates
@@ -176,7 +176,7 @@ public class Session {
 		try {
 			SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_sessions")
 					.addString(host.toString()).addValue(saveSlot).addString(area.getType().name())
-					.addValue(curr.getPosition()).addValue(curr.getLane()).addValue(nodesVisited)
+					.addValue(curr.getPosition()).addValue(curr.getLane()).addValue(nodesVisited).addValue(potionChance)
 					.addValue(System.currentTimeMillis()).addString(inst.serialize(party));
 					insert.execute(sql.build());
 		}
@@ -253,6 +253,14 @@ public class Session {
 			}
 		}
 		return true;
+	}
+	
+	public int getPotionChance() {
+		return potionChance;
+	}
+	
+	public void addPotionChance(int amount) {
+		this.potionChance = Math.max(0, Math.min(100, potionChance + amount));
 	}
 	
 	public void setInstance(Instance inst) {

@@ -8,16 +8,16 @@ import org.bukkit.inventory.meta.PotionMeta;
 
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neocore.bukkit.util.Util;
-import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.Consumable;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class MinorManaPotion extends Equipment {
+public class MinorManaPotion extends Consumable {
 	private double mana;
 	
 	public MinorManaPotion(boolean isUpgraded) {
-		super("minorManaPotion", "Minor Mana Potion", isUpgraded, Rarity.COMMON, EquipmentClass.CLASSLESS, EquipmentType.CONSUMABLE);
+		super("minorManaPotion", "Minor Mana Potion", Rarity.COMMON, EquipmentClass.CLASSLESS);
 		this.mana = isUpgraded ? 105 : 75;
 	}
 

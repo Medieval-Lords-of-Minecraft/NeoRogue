@@ -6,18 +6,18 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.PotionMeta;
 
+import me.neoblade298.neorogue.equipment.Consumable;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neocore.bukkit.util.Util;
-import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class MinorMaxManaPotion extends Equipment {
+public class MinorMaxManaPotion extends Consumable {
 	private double mana;
 	
 	public MinorMaxManaPotion(boolean isUpgraded) {
-		super("minorMaxManaPotion", "Minor Max Mana Potion", isUpgraded, Rarity.COMMON, EquipmentClass.CLASSLESS, EquipmentType.CONSUMABLE);
+		super("minorMaxManaPotion", "Minor Max Mana Potion", Rarity.COMMON, EquipmentClass.CLASSLESS);
 		this.mana = isUpgraded ? 50 : 35;
 	}
 
