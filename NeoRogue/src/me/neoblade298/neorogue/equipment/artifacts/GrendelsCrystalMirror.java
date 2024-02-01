@@ -53,6 +53,6 @@ public class GrendelsCrystalMirror extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GLASS_PANE,
-				"The first 3 sets of 1+ projectiles you fire will be fired twice.");
+				"The first <white>3</white> sets of 1+ projectiles you fire will be fired twice.");
 	}
 }

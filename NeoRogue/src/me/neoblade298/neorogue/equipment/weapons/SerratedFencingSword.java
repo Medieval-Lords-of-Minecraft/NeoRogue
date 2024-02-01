@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 
 
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.session.fight.DamageType;
@@ -42,7 +43,7 @@ public class SerratedFencingSword extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STONE_SWORD, "On hit, grant yourself <yellow>" + shields + "</yellow> shields. Apply <yellow>" + bleed
-				+ " </yellow>bleed every 2 hits.");
+		item = createItem(Material.STONE_SWORD, "On hit, grant yourself <white>" + shields + "</white> " + GlossaryTag.SHIELDS.tag(this) + ". Apply <white>" + bleed
+				+ " </white>" + GlossaryTag.BLEED.tag(this) + " every 2 hits.");
 	}
 }

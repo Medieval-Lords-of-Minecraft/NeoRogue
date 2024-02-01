@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 
 
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
@@ -51,6 +52,7 @@ public class StoneAxe extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STONE_AXE, "Non-multiplicative physical damage buffs are <yellow>3x</yellow> as effective with this weapon.");
+		item = createItem(Material.STONE_AXE, "Non-multiplicative " + GlossaryTag.PHYSICAL.tag(this) + " damage buffs "
+				+ "are <white>3x</white> as effective with this weapon.");
 	}
 }

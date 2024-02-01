@@ -9,6 +9,7 @@ import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -52,7 +53,7 @@ public class DarkPact extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE,
-				"Passive. Increase your physical damage by 2 every 3 basic attacks. In exchange, take "
-				+ "50% increased damage for the first <yellow>" + seconds + "s</yellow> of a fight.");
+				"Passive. Increase your " + GlossaryTag.PHYSICAL.tag(this) + " damage by 2 every 3 basic attacks. In exchange, take "
+				+ "<white>50%</white> increased damage for the first <white>" + seconds + "s</white> of a fight.");
 	}
 }

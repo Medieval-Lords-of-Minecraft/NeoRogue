@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -25,6 +26,6 @@ public class MinorStrengthRelic extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.REDSTONE, "Increases physical damage by <yellow>" + str + "</yellow>.");
+		item = createItem(Material.REDSTONE, "Increases " + GlossaryTag.PHYSICAL.tag(this) + " damage by <white>" + str + "</white>.");
 	}
 }

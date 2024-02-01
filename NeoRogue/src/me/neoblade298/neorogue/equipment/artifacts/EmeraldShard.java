@@ -33,6 +33,6 @@ public class EmeraldShard extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.EMERALD, "<gray>Increases max stamina by <yellow>" + max + "</yellow> and starting stamina by <yellow>" + starting);
+		item = createItem(Material.EMERALD, "Increases max stamina by <white>" + max + "</yellow> and starting stamina by <white>" + starting + "</white>.");
 	}
 }

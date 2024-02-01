@@ -2,8 +2,10 @@ package me.neoblade298.neorogue.session.fight.status;
 
 import java.util.UUID;
 
+import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.TickAction;
+import net.kyori.adventure.text.Component;
 
 public abstract class Status {
 	protected String id;
@@ -32,6 +34,7 @@ public abstract class Status {
 		case INSANITY: return new DecrementStackStatus(id.name(), target);
 		case SANCTIFIED: return new DecrementStackStatus(id.name(), target);
 		case THORNS: return new BasicStatus(id.name(), target);
+		case REFLECT: return new BasicStatus(id.name(), target);
 		default: return null;
 		}
 	}
@@ -62,7 +65,22 @@ public abstract class Status {
 	}
 	
 	public enum StatusType {
-		POISON, BLEED, BURN, FROST, ELECTRIFIED, CONCUSSED, INSANITY, SANCTIFIED, THORNS;
+		POISON("<dark_green>Poison</dark_green>"),
+		BLEED("<red>Bleed</red>"),
+		BURN("<gold>Burn</gold>"),
+		FROST("<blue>Frost</blue>"),
+		ELECTRIFIED("<yellow>Electrified</yellow>"),
+		CONCUSSED("<dark_green>Concussed</dark_green"),
+		INSANITY("<dark_purple>Insanity</dark_purple"),
+		SANCTIFIED("<white>Sanctified</white>"),
+		THORNS("<gold>Thorns</gold>"),
+		REFLECT("<purple>Reflect</purple>");
+		public String tag;
+		public Component ctag;
+		private StatusType(String tag) {
+			this.tag = tag;
+			this.ctag = SharedUtil.color(tag);
+		}
 	}
 	public enum GenericStatusType {
 		DECREMENT_STACK, BASIC, DURATION;

@@ -124,7 +124,7 @@ public class DamageMeta {
 			PlayerFightData pdata = (PlayerFightData) recipient;
 			ReceivedDamageEvent ev = new ReceivedDamageEvent(damager, this);
 			if (pdata.runActions(pdata, Trigger.RECEIVED_DAMAGE, ev)) {
-				return;
+				slices.clear();
 			}
 		}
 		
@@ -135,6 +135,8 @@ public class DamageMeta {
 		}
 
 		// Status effects
+		DamageMeta returnDamage = new DamageMeta(recipient);
+		returnDamage.isSecondary = true;
 		if (!isSecondary) {
 			if (recipient.hasStatus(StatusType.BURN)) {
 				for (Entry<UUID, Integer> ent : recipient.getStatus(StatusType.BURN).getSlices().getSliceOwners().entrySet()) {
@@ -161,13 +163,6 @@ public class DamageMeta {
 				for (Entry<UUID, Integer> slice : recipient.getStatus(StatusType.SANCTIFIED).getSlices().getSliceOwners().entrySet()) {
 					FightInstance.giveHeal(Bukkit.getPlayer(slice.getKey()), stacks * 0.2, damager);
 				}
-			}
-
-			// Return damage
-			DamageMeta returnDamage = new DamageMeta(recipient);
-			returnDamage.isSecondary = true;
-			if (recipient.hasStatus(StatusType.THORNS)) {
-				returnDamage.addDamageSlice(new DamageSlice(recipient.getUniqueId(), recipient.getStatus(StatusType.THORNS).getStacks(), DamageType.THORNS));
 			}
 			
 			if (owner.hasStatus(StatusType.FROST)) {
@@ -203,9 +198,8 @@ public class DamageMeta {
 				addBuffs(concussedBuffs, BuffOrigin.STATUS, false);
 				int toRemove = (int) (-stacks * 0.1);
 				status.apply(owner.getUniqueId(), toRemove, 0); // Remove 10% of earth stacks
-				returnDamage.addDamageSlice(new DamageSlice(recipient.getUniqueId(), toRemove, DamageType.EARTH));
+				returnDamage.addDamageSlice(new DamageSlice(recipient.getUniqueId(), toRemove, DamageType.EARTHEN));
 			}
-			FightInstance.dealDamage(returnDamage, owner.getEntity());
 		}
 		
 		// Calculate buffs for every slice of damage
@@ -266,6 +260,15 @@ public class DamageMeta {
 			else {
 				ignoreShieldsDamage += sliceDamage;
 			}
+
+
+			// Return damage
+			if (recipient.hasStatus(StatusType.THORNS) && slice.getType().containsBuffType(BuffType.PHYSICAL)) {
+				returnDamage.addDamageSlice(new DamageSlice(recipient.getUniqueId(), recipient.getStatus(StatusType.THORNS).getStacks(), DamageType.THORNS));
+			}
+			if (recipient.hasStatus(StatusType.REFLECT) && slice.getType().containsBuffType(BuffType.MAGICAL)) {
+				returnDamage.addDamageSlice(new DamageSlice(recipient.getUniqueId(), recipient.getStatus(StatusType.REFLECT).getStacks(), DamageType.REFLECT));
+			}
 		}
 		
 		// Threat
@@ -303,6 +306,8 @@ public class DamageMeta {
 			target.damage(0);
 		}
 		
+		// Return damage
+		FightInstance.dealDamage(returnDamage, owner.getEntity());
 	}
 	
 	private class BuffMeta {

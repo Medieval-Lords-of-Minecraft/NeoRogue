@@ -40,7 +40,7 @@ public class WristBlade extends Equipment {
 	@Override
 	public void setupItem() {
 		String hitsString = isUpgraded ? "3rd" : "2nd";
-		item = createItem(Material.PRISMARINE_SHARD, "Every <yellow>" + hitsString + " basic attack will trigger"
+		item = createItem(Material.PRISMARINE_SHARD, "Every <white>" + hitsString + "</white> basic attack will trigger"
 				+ " on-hit effects twice.");
 	}
 }

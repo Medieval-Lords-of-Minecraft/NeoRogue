@@ -33,6 +33,6 @@ public class EmeraldCluster extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.EMERALD, "<gray>Increases max stamina by <yellow>" + max + "</yellow> and starting stamina by <yellow>" + starting);
+		item = createItem(Material.EMERALD, "<gray>Increases max stamina by <white>" + max + "</white> and starting stamina by <white>" + starting +"</white>.");
 	}
 }

@@ -28,6 +28,6 @@ public class Footpads extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LEATHER_BOOTS, "Receiving damage grants you <yellow>" + stamina + "</yellow> stamina.");
+		item = createItem(Material.LEATHER_BOOTS, "Receiving damage grants you <white>" + stamina + "</white> stamina.");
 	}
 }

@@ -12,6 +12,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -42,7 +43,7 @@ public class Quake extends Equipment {
 			Util.playSound(p, Sound.ENTITY_WARDEN_ATTACK_IMPACT, false);
 			part.spawn(p);
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
-				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.EARTH), ent);
+				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.EARTHEN), ent);
 				FightInstance.applyStatus(ent, StatusType.CONCUSSED, p, concussed, -1);
 			}
 			return TriggerResult.keep();
@@ -52,6 +53,7 @@ public class Quake extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FLINT,
-				"On cast, deal <yellow>" + damage + "</yellow> earthen damage to all enemies in the radius and apply <yellow>" + concussed + "</yellow> concussed.");
+				"On cast, deal <white>" + damage + "</white> " + GlossaryTag.EARTHEN.tag(this) + " damage to all "
+						+ "enemies in the radius and apply <white>" + concussed + "</white> " + GlossaryTag.CONCUSSED.tag(this) + ".");
 	}
 }

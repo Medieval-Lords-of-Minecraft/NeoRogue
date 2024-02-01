@@ -59,7 +59,7 @@ public class EquipmentProperties {
 		return NONE;
 	}
 	
-	public ArrayList<Component> generateLore() {
+	public ArrayList<Component> generateLore(Equipment eq) {
 		if (lore != null) return lore;
 		ArrayList<Component> lore = new ArrayList<Component>();
 		if (manaCost > 0) lore.add(SharedUtil.color("<gold>Mana Cost: <yellow>" + manaCost));
@@ -68,7 +68,10 @@ public class EquipmentProperties {
 		if (cooldown > 0) lore.add(SharedUtil.color("<gold>Cooldown: <yellow>" + cooldown));
 		if (damage > 0) lore.add(SharedUtil.color("<gold>Damage: <yellow>" + damage));
 		if (knockback > 0) lore.add(SharedUtil.color("<gold>Knockback: <yellow>" + knockback));
-		if (type != null) lore.add(SharedUtil.color("<gold>Damage Type: <yellow>" + type));
+		if (type != null) {
+			lore.add(SharedUtil.color("<gold>Damage Type: <yellow>" + type));
+			eq.addTags(DamageType.toGlossary(type));
+		}
 		if (attackSpeed > 0) lore.add(SharedUtil.color("<gold>Attack Speed: <yellow>" + attackSpeed + "/s"));
 		return lore;
 	}

@@ -15,6 +15,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffType;
@@ -95,7 +96,7 @@ public class EarthenWall extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.COARSE_DIRT,
-				"Can be cast once for every " + stacksNeeded + " stacks of concussed you apply."
-				+ " Raises a wall size 3x3 that blocks projectiles for " + duration + " seconds.");
+				"Can be cast once for every <white>" + stacksNeeded + "</white> stacks of " + GlossaryTag.CONCUSSED.tag(this) + " you apply."
+				+ " Raises a stationary " + GlossaryTag.BARRIER.tag(this) + " size 3x3 that nullifies damage from projectiles for <white>" + duration + "</white> seconds.");
 	}
 }

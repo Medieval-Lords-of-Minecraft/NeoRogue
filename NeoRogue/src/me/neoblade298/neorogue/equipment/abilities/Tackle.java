@@ -19,6 +19,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -105,7 +106,8 @@ public class Tackle extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE, new String[] { "<gold>Area of Effect: <yellow>2" },
-				"On cast, dash forward, stopping at the first enemy hit and dealing <yellow>" + damage + "</yellow> blunt damage in a small area. "
-						+ "If an enemy is hit, reduce this ability's cooldown by <yellow>10</yellow>.");
+				"On cast, dash forward, stopping at the first enemy hit and dealing <white>" + damage + "</white> " + GlossaryTag.BLUNT.tag(this) +
+				" damage in a small area. "
+						+ "If an enemy is hit, reduce this ability's cooldown by <white>10</white>.");
 	}
 }

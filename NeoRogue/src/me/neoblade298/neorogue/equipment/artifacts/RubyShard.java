@@ -31,6 +31,6 @@ public class RubyShard extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.REDSTONE, "<gray>Increases max health by <yellow>" + max);
+		item = createItem(Material.REDSTONE, "Increases max health by <white>" + max + "</white>.");
 	}
 }

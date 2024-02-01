@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 
 
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.session.fight.DamageType;
@@ -52,6 +53,6 @@ public class EarthenLeatherGauntlets extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LEATHER, "Applies <yellow>" + concuss + "</stamina> concussed for every 3rd hit.");
+		item = createItem(Material.LEATHER, "Applies <white>" + concuss + "</white> " + GlossaryTag.CONCUSSED.tag(this) + " for every 3rd hit.");
 	}
 }

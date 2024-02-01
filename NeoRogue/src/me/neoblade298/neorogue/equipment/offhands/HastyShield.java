@@ -8,9 +8,13 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.DamageMeta.BuffOrigin;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
 
 public class HastyShield extends Equipment {
 	private int reduction, amount;
@@ -40,6 +44,8 @@ public class HastyShield extends Equipment {
 			long now = System.currentTimeMillis();
 			if (now <= nextUsable) return TriggerResult.keep();
 			
+			ReceivedDamageEvent ev = (ReceivedDamageEvent) inputs;
+			ev.getMeta().addBuff(BuffType.GENERAL, new Buff(p.getUniqueId(), reduction, 0), BuffOrigin.SHIELD, false);
 			nextUsable = now + 5000L; // 5s
 			p.playSound(p, Sound.ITEM_SHIELD_BLOCK, 1F, 1F);
 			data.addMana(amount);
@@ -50,7 +56,7 @@ public class HastyShield extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.SHIELD, "When raised, reduce the next hit taken by <yellow>" + reduction + "</yellow>"
-				+ " and grant <yellow>" + amount + " </yellow>mana and stamina. 5 second cooldown.");
+		item = createItem(Material.SHIELD, "When raised, reduce the next hit taken by <white>" + reduction + "</white>"
+				+ " and grant <white>" + amount + " </white>mana and stamina. 5 second cooldown.");
 	}
 }

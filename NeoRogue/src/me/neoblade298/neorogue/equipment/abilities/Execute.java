@@ -12,6 +12,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -60,7 +61,7 @@ public class Execute extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FLINT,
-				"On cast, your next basic attack while in the air deals <yellow>" + damage + " </yellow>piercing damage. If the enemy is"
-						+ " below <gold>50%</gold> health, deal an additional <yellow>" + execute + "</yellow> piercing damage.");
+				"On cast, your next basic attack while in the air deals <white>" + damage + "</white> " + GlossaryTag.PIERCING.tag(this) + " damage. If the enemy is"
+						+ " below <white>50%</white> health, deal an additional <white>" + execute + "</white> " + GlossaryTag.PIERCING.tag(this) + " damage.");
 	}
 }

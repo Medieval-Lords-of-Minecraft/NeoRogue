@@ -1,52 +1,97 @@
 package me.neoblade298.neorogue.player.inventory;
 
-import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Map.Entry;
-import java.util.TreeMap;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
+
+import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
-import me.neoblade298.neorogue.session.fight.Mob;
-import me.neoblade298.neorogue.session.fight.MobModifier;
+import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.equipment.Equipment;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class GlossaryInventory extends CoreInventory {
-	public GlossaryInventory(Player viewer, TreeMap<Mob, ArrayList<MobModifier>> mobs) {
-		super(viewer, Bukkit.createInventory(viewer, mobs.size() + (9 - mobs.size() % 9) + 9, Component.text("Fight Info", NamedTextColor.BLUE)));
-
-		ItemStack[] contents = inv.getContents();
+	private CoreInventory prev;
+	private boolean openOther = true;
+	
+	private static final int BASIC = 0, UPGRADED = 9, REFORGE = 3;
+	public GlossaryInventory(Player viewer, Equipment eq, CoreInventory prev) {
+		super(viewer, Bukkit.createInventory(viewer, calculateSize(eq), Component.text("Glossary: ").append(eq.getUnupgraded().getDisplay())));
+		this.prev = prev;
+		Util.playSound(viewer, Sound.ITEM_BOOK_PAGE_TURN, false);
 		
-		int pos = 0;
-		for (Entry<Mob, ArrayList<MobModifier>> ent : mobs.entrySet()) {
-			contents[pos++] = ent.getKey().getItemDisplay(ent.getValue());
+		ItemStack[] contents = inv.getContents();
+		contents[BASIC] = eq.getUnupgraded().getItem();
+		contents[UPGRADED] = eq.getUpgraded().getItem();
+		
+		// Glossary tags
+		Iterator<GlossaryTag> iter = eq.getTags().iterator();
+		for (int row = (eq.hasUpgrade() ? 2 : 1); row < 6; row++) {
+			for (int col = 0; col < 5; col++) {
+				if (!iter.hasNext()) break;
+				contents[(row * 9) + col] = iter.next().getIcon();
+			}
 		}
 		
+		// Reforge options
+		if (eq.getReforgeOptions().isEmpty()) {
+			contents[REFORGE] = CoreInventory.createButton(Material.BARRIER, Component.text("No reforge options", NamedTextColor.RED));
+		}
+		else {
+			contents[REFORGE] = CoreInventory.createButton(Material.GOLD_BLOCK, Component.text("Reforge Options:", NamedTextColor.YELLOW));
+			int row = 0;
+			for (Entry<String, String[]> ent : eq.getReforgeOptions().entrySet()) {
+				int col = REFORGE + 1;
+				contents[(row * 9) + col++] = Equipment.get(ent.getKey(), false).getItem();
+				for (String reforgeOption : ent.getValue()) {
+					contents[(row * 9) + col++] = Equipment.get(reforgeOption, false).getItem();
+				}
+			}
+		}
 		inv.setContents(contents);
+	}
+	
+	private static int calculateSize(Equipment eq) {
+		int leftHeight = (eq.hasUpgrade() ? 2 : 1) + ((eq.getTags().size() + 3) / 4);
+		int rightHeight = eq.getReforgeOptions().size();
+		return 9 * Math.max(leftHeight, rightHeight);
 	}
 	
 	@Override
 	public void handleInventoryClick(InventoryClickEvent e) {
 		e.setCancelled(true);
+		if (!e.isRightClick()) return;
+		if (e.getCurrentItem() == null) return;
+		NBTItem nbti = new NBTItem(e.getCurrentItem());
+		if (!nbti.getKeys().contains("equipId")) return;
+		openOther = false;
+		new GlossaryInventory(p, Equipment.get(nbti.getString("equipId"), false), prev);
 	}
 	
 	@Override
 	public void handleInventoryClose(InventoryCloseEvent e) {
-		
+		if (openOther) {
+			new BukkitRunnable() {
+				public void run() {
+					prev.openInventory();
+				}
+			}.runTaskLater(NeoRogue.inst(), 1L);
+		}
 	}
 	
 	@Override
 	public void handleInventoryDrag(InventoryDragEvent e) {
 		e.setCancelled(true);
 	}
-	
-	/*
-	 * - Damage sources
-	 * - Status types
-	 */
 }

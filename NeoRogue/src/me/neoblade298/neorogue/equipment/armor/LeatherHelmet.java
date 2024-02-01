@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
@@ -24,6 +25,6 @@ public class LeatherHelmet extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LEATHER_HELMET, "Start every fight with <yellow>" + shields + " </yellow>shields.");
+		item = createItem(Material.LEATHER_HELMET, "Start every fight with <white>" + shields + " </white>" + GlossaryTag.SHIELDS.tag(this) + ".");
 	}
 }

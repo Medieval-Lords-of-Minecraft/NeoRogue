@@ -10,6 +10,7 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.GenericStatusType;
 import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
@@ -29,13 +30,15 @@ public class Bide extends Equipment {
 		berserk = isUpgraded ? 3 : 2;
 		pc.count(10).spread(0.5, 0.5).speed(0.2);
 		bpc.count(20).spread(0.5, 0.5).speed(0.1);
+		
+		addTags(GlossaryTag.SHIELDS, GlossaryTag.BERSERK);
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FLINT,
-				"On cast, gain <yellow>" + shields + " </yellow>shields for " + duration + " seconds. During this time, "
-						+ "taking damage grants you <yellow>" + berserk + "</yellow> berserk stacks.");
+				"On cast, gain <white>" + shields + "</white> " + GlossaryTag.SHIELDS.tag(this) + " for " + duration + " seconds. During this time, "
+						+ "taking damage grants you <white>" + berserk + "</white> " + GlossaryTag.BERSERK.tag(this) + " stacks.");
 	}
 
 	@Override

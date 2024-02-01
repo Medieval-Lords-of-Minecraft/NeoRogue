@@ -11,9 +11,13 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.DamageMeta.BuffOrigin;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -60,6 +64,7 @@ public class Parry extends Equipment {
 			Util.playSound(p, Sound.ENTITY_BLAZE_SHOOT, 1F, 1F, false);
 			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
 				BasicAttackEvent ev = (BasicAttackEvent) in;
+				ev.getMeta().addBuff(BuffType.GENERAL, new Buff(p.getUniqueId(), damage, 0), BuffOrigin.NORMAL, true);
 				FightInstance.dealDamage(data, DamageType.SLASHING, damage, ev.getTarget());
 				hit.spawn(ev.getTarget().getLocation());
 				Util.playSound(p, Sound.BLOCK_ANVIL_LAND, 1F, 1F, false);
@@ -72,7 +77,7 @@ public class Parry extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FLINT,
-				"On cast, gain <yellow>" + shields + " </yellow>shields for 2 seconds. Taking damage during this "
-						+ "increases your next basic attack's damage by <yellow>" + damage + "</yellow>.");
+				"On cast, gain <white>" + shields + " </white>" + GlossaryTag.SHIELDS.tag(this) + " for <white>2</white> seconds. Taking damage during this "
+						+ "increases your next basic attack's damage by <white>" + damage + "</white>.");
 	}
 }

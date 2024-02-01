@@ -15,6 +15,7 @@ import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
@@ -50,8 +51,8 @@ public class WindSlash extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FLINT,
-				"On cast, fire <yellow>" + amount + " </yellow>projectiles in a cone in front of you that deal "
-						+ "<yellow>" + damage + " </yellow>.");
+				"On cast, fire <white>" + amount + " </white>projectiles in a cone in front of you that deal "
+						+ "<white>" + damage + " </white>" + GlossaryTag.SLASHING.tag(this) + " damage.");
 	}
 	
 	private class WindSlashProjectile extends Projectile {

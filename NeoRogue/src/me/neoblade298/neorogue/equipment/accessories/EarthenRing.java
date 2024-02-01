@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -27,13 +28,13 @@ public class EarthenRing extends Equipment {
 		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
 			BasicAttackEvent ev = (BasicAttackEvent) in;
 			LivingEntity target = ev.getTarget();
-			FightInstance.dealDamage(data, DamageType.EARTH, damage, target);
+			FightInstance.dealDamage(data, DamageType.EARTHEN, damage, target);
 			return TriggerResult.keep();
 		});
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.GOLD_NUGGET, "Basic attacks additionally deal <yellow>" + damage + "</yellow> earthen damage.");
+		item = createItem(Material.CACTUS, "Basic attacks additionally deal <white>" + damage + "</white> " + GlossaryTag.EARTHEN.tag(this) + " damage.");
 	}
 }

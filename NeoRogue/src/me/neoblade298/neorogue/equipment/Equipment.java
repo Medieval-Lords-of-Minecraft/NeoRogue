@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -23,6 +24,7 @@ import me.neoblade298.neorogue.equipment.armor.*;
 import me.neoblade298.neorogue.equipment.artifacts.*;
 import me.neoblade298.neorogue.equipment.offhands.*;
 import me.neoblade298.neorogue.equipment.weapons.*;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.equipment.cursed.*;
 import me.neoblade298.neorogue.equipment.consumables.*;
 import me.neoblade298.neorogue.equipment.materials.*;
@@ -59,6 +61,7 @@ public abstract class Equipment {
 	protected EquipmentType type;
 	protected EquipmentProperties properties;
 	protected int cooldown = 0;
+	protected TreeSet<GlossaryTag> tags = new TreeSet<GlossaryTag>();
 	
 	public static void load() {
 		equipment.clear();
@@ -242,6 +245,10 @@ public abstract class Equipment {
 	
 	public abstract void setupItem();
 	
+	public boolean hasUpgrade() {
+		return upgraded.containsKey(id);
+	}
+	
 	public void setupDroptable() {
 		int value = rarity.getValue() + (isUpgraded ? 1 : 0);
 		if (!canDrop) return;
@@ -259,12 +266,22 @@ public abstract class Equipment {
 		}
 	}
 	
+	public void addTags(GlossaryTag... tags) {
+		for (GlossaryTag tag : tags) {
+			this.tags.add(tag);
+		}
+	}
+	
 	// Run at the start of a fight to initialize Fight Data
 	public abstract void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot);
 	
 	// Run at the end of a fight if needed
 	public void cleanup(Player p, PlayerFightData data) {
 		
+	}
+	
+	public TreeSet<GlossaryTag> getTags() {
+		return tags;
 	}
 	
 	public String getId() {
@@ -363,7 +380,7 @@ public abstract class Equipment {
 		else {
 			loreItalicized.add(rarity.getDisplay(true).append(Component.text(" " + type.getDisplay())));
 		}
-		loreItalicized.addAll(properties.generateLore());
+		loreItalicized.addAll(properties.generateLore(this));
 		if (preLoreLine != null) {
 			for (String l : preLoreLine) {
 				loreItalicized.add(NeoCore.miniMessage().deserialize(l));

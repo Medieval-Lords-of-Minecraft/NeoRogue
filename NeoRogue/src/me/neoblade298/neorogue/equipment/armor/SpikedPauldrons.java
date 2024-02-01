@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -25,6 +26,6 @@ public class SpikedPauldrons extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.ARMOR_STAND, "Start every fight with <yellow>" + thorns + " </yellow>thorns.");
+		item = createItem(Material.ARMOR_STAND, "Start every fight with <white>" + thorns + " </white>" + GlossaryTag.THORNS.tag(this) + ".");
 	}
 }

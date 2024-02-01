@@ -186,6 +186,12 @@ public class PlayerSessionInventory extends CoreInventory {
 		Inventory iclicked = e.getClickedInventory();
 		NBTItem nclicked = clicked != null ? new NBTItem(clicked) : null;
 		boolean onChest = iclicked != null && e.getClickedInventory().getType() == InventoryType.CHEST;
+		
+		// If right click with empty hand, open glossary
+		if (e.isRightClick() && nclicked.hasTag("equipId") && cursor.getType().isAir()) {
+			new GlossaryInventory(p, Equipment.get(nclicked.getString("equipId"), false), this);
+			return;
+		}
 
 		if (cursor.getType().isAir() && clicked != null) {
 			// Only allow picking up equipment

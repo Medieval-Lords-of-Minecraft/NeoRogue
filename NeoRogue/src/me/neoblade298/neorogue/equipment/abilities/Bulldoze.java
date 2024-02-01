@@ -19,6 +19,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -95,7 +96,7 @@ public class Bulldoze extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE,
-				"On cast, gain speed for 3 seconds, dealing <yellow>" + damage + "</yellow> damage to enemies you touch"
+				"On cast, gain speed for 3 seconds, dealing <white>" + damage + "</white> " + GlossaryTag.BLUNT.tag(this) + " damage to enemies you touch"
 						+ " and knock them back, once per enemy.");
 	}
 }

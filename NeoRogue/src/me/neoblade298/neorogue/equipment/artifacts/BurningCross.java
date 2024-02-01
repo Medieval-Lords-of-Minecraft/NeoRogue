@@ -7,6 +7,7 @@ import me.neoblade298.neorogue.equipment.Artifact;
 
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageType;
@@ -54,6 +55,7 @@ public class BurningCross extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.NETHER_STAR, 
-				"For each stack of sanctified you apply, also deal <yellow>" + damage + "</yellow> fire damage.");
+				"For each stack of " + GlossaryTag.SANCTIFIED.tag(this) + " you apply, also deal <white>" + damage + "</white> " +
+						GlossaryTag.FIRE.tag(this) + " damage.");
 	}
 }

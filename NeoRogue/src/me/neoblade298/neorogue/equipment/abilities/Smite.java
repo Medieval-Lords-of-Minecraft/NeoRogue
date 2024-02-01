@@ -12,6 +12,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -53,7 +54,7 @@ public class Smite extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FLINT,
-				"On cast, deal <yellow>" + damage + "</yellow> slashing damage in a cone in front of you and "
-						+ "apply <yellow>" + sanctified + "</yellow> sanctified.");
+				"On cast, deal <white>" + damage + "</white> " + GlossaryTag.SLASHING.tag(this) + " damage in a cone in front of you and "
+						+ "apply <white>" + sanctified + "</white> " + GlossaryTag.SANCTIFIED.tag(this) + ".");
 	}
 }

@@ -11,6 +11,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -24,6 +25,8 @@ public class Brace2 extends Equipment {
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 10, 15, 0));
 		shields = isUpgraded ? 50 : 35;
 		pc.count(10).spread(0.5, 0.5).speed(0.2);
+
+		tags.add(GlossaryTag.SHIELDS);
 	}
 
 	@Override
@@ -39,6 +42,6 @@ public class Brace2 extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FLINT,
-				"On cast, gain <yellow>" + shields + " </yellow>shields for 10 seconds.");
+				"On cast, gain <white>" + shields + "</white> " + GlossaryTag.SHIELDS.tag(this) + " for 10 seconds.");
 	}
 }

@@ -75,7 +75,7 @@ public class PracticeDummy extends Artifact {
 	public void setupItem() {
 		int pct = (int) (damageMult * 100);
 		item = createItem(Material.TARGET, 
-				"Landing <yellow>" + num + "</yellow> basic attacks in a row with the same weapon will empower that weapon to do <yellow>" + pct + "%</yellow> bonus "
+				"Landing <white>" + num + "</white> basic attacks in a row with the same weapon will empower that weapon to do <white>" + pct + "%</white> bonus "
 				+ "damage on basic attacks until you use a different weapon.");
 	}
 }
