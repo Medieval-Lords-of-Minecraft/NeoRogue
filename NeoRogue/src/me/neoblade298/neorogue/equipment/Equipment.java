@@ -450,11 +450,11 @@ public abstract class Equipment {
 	}
 	
 	public static Equipment getDrop(int value, EquipmentClass... ec) {
-		return getDrops(value, 1, ec).get(0);
+		return getDrop(value, 1, ec).get(0);
 	}
 	
 	public static Consumable getConsumable(int value, EquipmentClass... ec) {
-		return getConsumables(value, 1, ec).get(0);
+		return getConsumable(value, 1, ec).get(0);
 	}
 	
 	public Component getDisplay() {

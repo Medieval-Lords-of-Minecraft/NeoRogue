@@ -22,6 +22,8 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.CastUsableEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.*;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
@@ -317,6 +319,7 @@ public class PlayerFightData extends FightData {
 	private void updateStamina() {
 		this.stamina = Math.min(this.stamina, this.maxStamina);
 		p.setFoodLevel((int) (this.stamina * 14 / sessdata.getMaxStamina()) + 6);
+		updateActionBar();
 	}
 	
 	public void addHealth(double amount) {
@@ -358,9 +361,15 @@ public class PlayerFightData extends FightData {
 	
 	private void updateMana() {
 		this.mana = Math.min(this.mana, this.maxMana);
-		p.setLevel((int) this.maxMana);
-		float fraction = (float) (this.mana / this.maxMana);
-		p.setExp(fraction);
+		updateActionBar();
+	}
+	
+	private void updateActionBar() {
+		p.sendActionBar(
+			Component.text("Mana: " + (int)mana + " / " + (int)maxMana, NamedTextColor.BLUE)
+			.append(Component.text("  |  ", NamedTextColor.GRAY))
+			.append(Component.text("Stamina: " + (int)stamina + " / " + (int)maxStamina, NamedTextColor.GREEN))
+		);
 	}
 	
 	private class PlayerUpdateTickAction extends TickAction {
