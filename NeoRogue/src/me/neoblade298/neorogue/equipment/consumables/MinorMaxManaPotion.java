@@ -17,7 +17,7 @@ public class MinorMaxManaPotion extends Consumable {
 	private double mana;
 	
 	public MinorMaxManaPotion(boolean isUpgraded) {
-		super("minorMaxManaPotion", "Minor Max Mana Potion", Rarity.COMMON, EquipmentClass.CLASSLESS);
+		super("minorMaxManaPotion", "Minor Max Mana Potion", isUpgraded, Rarity.COMMON, EquipmentClass.CLASSLESS);
 		this.mana = isUpgraded ? 50 : 35;
 	}
 

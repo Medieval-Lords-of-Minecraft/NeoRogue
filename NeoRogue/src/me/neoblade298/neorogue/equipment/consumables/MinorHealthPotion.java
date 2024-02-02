@@ -17,7 +17,7 @@ public class MinorHealthPotion extends Consumable {
 	private double health;
 	
 	public MinorHealthPotion(boolean isUpgraded) {
-		super("minorHealthPotion", "Minor Health Potion", Rarity.RARE, EquipmentClass.CLASSLESS);
+		super("minorHealthPotion", "Minor Health Potion", isUpgraded, Rarity.RARE, EquipmentClass.CLASSLESS);
 		this.health = isUpgraded ? 30 : 20;
 	}
 

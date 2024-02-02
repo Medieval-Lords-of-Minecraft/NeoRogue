@@ -17,7 +17,7 @@ public class MinorMaxStaminaPotion extends Consumable {
 	private double stamina;
 	
 	public MinorMaxStaminaPotion(boolean isUpgraded) {
-		super("minorMaxStaminaPotion", "Minor Max Stamina Potion", Rarity.COMMON, EquipmentClass.CLASSLESS);
+		super("minorMaxStaminaPotion", "Minor Max Stamina Potion", isUpgraded, Rarity.COMMON, EquipmentClass.CLASSLESS);
 		this.stamina = isUpgraded ? 50 : 35;
 	}
 

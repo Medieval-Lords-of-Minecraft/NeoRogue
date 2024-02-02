@@ -192,7 +192,6 @@ public abstract class Equipment {
 		// Just make sure not to close any of the tags in display string or the upgraded sign will break it
 		this.display = rarity.applyDecorations(SharedUtil.color(display + (isUpgraded ? "+" : "")));
 		
-
 		if (equipment.containsKey(id) && !isUpgraded) {
 			Bukkit.getLogger().warning("[NeoRogue] Duplicate id of " + id + " found while loading equipment");
 		}
