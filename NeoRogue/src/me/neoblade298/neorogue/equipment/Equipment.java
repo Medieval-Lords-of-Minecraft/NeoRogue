@@ -132,6 +132,9 @@ public abstract class Equipment {
 			new MinorHealthPotion(b);
 			new MinorStaminaPotion(b);
 			new MinorManaPotion(b);
+			new MinorMaxHealthPotion(b);
+			new MinorMaxManaPotion(b);
+			new MinorMaxStaminaPotion(b);
 		}
 		
 		// Artifacts

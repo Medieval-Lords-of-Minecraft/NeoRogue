@@ -147,7 +147,7 @@ public class StandardFightInstance extends FightInstance {
 			list.add(new EquipmentChoiceReward(equipDrops));
 			
 			if (NeoRogue.gen.nextInt(100) < s.getPotionChance()) {
-				list.add(new EquipmentReward(Equipment.getConsumable(value, ec)));
+				list.add(new EquipmentReward(Equipment.getConsumable(value, ec, EquipmentClass.CLASSLESS)));
 				s.addPotionChance(-25);
 			}
 			else {

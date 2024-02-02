@@ -11,6 +11,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.ItemStack;
 
+import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neorogue.session.fight.Mob;
 import me.neoblade298.neorogue.session.fight.MobModifier;
@@ -45,6 +46,14 @@ public class FightInfoInventory extends CoreInventory {
 	@Override
 	public void handleInventoryClick(InventoryClickEvent e) {
 		e.setCancelled(true);
+		if (e.isRightClick() && e.getCurrentItem() != null) {
+			NBTItem nbti = new NBTItem(e.getCurrentItem());
+			if (!nbti.getKeys().contains("mobId")) return;
+			
+			Mob mob = Mob.get(nbti.getString("mobId"));
+			if (mob.getTags().isEmpty()) return;
+			new GlossaryInventory(p, mob, this);
+		}
 	}
 	
 	@Override

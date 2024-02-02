@@ -20,7 +20,7 @@ public enum DamageType {
 	LIGHTNING("Lightning", DamageCategory.MAGICAL, "<yellow>Lightning</yellow>",
 			new BuffType[] { BuffType.LIGHTNING, BuffType.MAGICAL, BuffType.GENERAL }),
 	EARTHEN("Earthen", DamageCategory.MAGICAL, "<dark_green>Earthen</dark_green>",
-			new BuffType[] { BuffType.EARTH, BuffType.MAGICAL, BuffType.GENERAL }),
+			new BuffType[] { BuffType.EARTHEN, BuffType.MAGICAL, BuffType.GENERAL }),
 	DARK("Dark", DamageCategory.MAGICAL, "<dark_purple>Dark</dark_purple>",
 			 new BuffType[] { BuffType.DARK, BuffType.MAGICAL, BuffType.GENERAL }),
 	LIGHT("Light", DamageCategory.MAGICAL, "<white>Light</white>",

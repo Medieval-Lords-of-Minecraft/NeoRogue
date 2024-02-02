@@ -12,6 +12,7 @@
 	<classpathentry kind="lib" path="src/paper-api-1.20.4-R0.1-20231230.235934-47.jar"/>
 	<classpathentry kind="lib" path="src/spigot-api-1.20.4-R0.1-SNAPSHOT-shaded.jar"/>
 	<classpathentry kind="lib" path="src/LibsDisguises.jar"/>
+	<classpathentry kind="lib" path="src/adventure-text-serializer-legacy-4.15.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
 		<attributes>
 			<attribute name="module" value="true"/>

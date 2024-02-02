@@ -3,13 +3,18 @@ package me.neoblade298.neorogue.session.fight;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import de.tr7zw.nbtapi.NBTItem;
 import io.lumine.mythic.api.mobs.MythicMob;
 import io.lumine.mythic.api.mobs.entities.MythicEntityType;
 import me.neoblade298.neocore.bukkit.NeoCore;
@@ -17,6 +22,7 @@ import me.neoblade298.neocore.bukkit.util.SkullUtil;
 import me.neoblade298.neocore.shared.io.Section;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -27,6 +33,7 @@ import net.kyori.adventure.text.format.TextDecoration.State;
 public class Mob implements Comparable<Mob> {
 	private static ArrayList<BuffType> typeOrder = new ArrayList<BuffType>();
 	private static HashMap<String, Mob> mobs = new HashMap<String, Mob>();
+	private static final Pattern glossaryPattern = Pattern.compile("%[a-zA-Z]+%");
 	
 	private MobType type;
 	private String id, base64;
@@ -36,6 +43,7 @@ public class Mob implements Comparable<Mob> {
 	private Material mat;
 	private HashMap<BuffType, Integer> resistances = new HashMap<BuffType, Integer>();
 	private HashMap<BuffType, Amount> damageTypes = new HashMap<BuffType, Amount>();
+	private HashSet<GlossaryTag> tags = new HashSet<GlossaryTag>();
 	private List<String> summons;
 	private ArrayList<TextComponent> lore = new ArrayList<TextComponent>();
 	
@@ -48,7 +56,7 @@ public class Mob implements Comparable<Mob> {
 		typeOrder.add(BuffType.FIRE);
 		typeOrder.add(BuffType.ICE);
 		typeOrder.add(BuffType.LIGHTNING);
-		typeOrder.add(BuffType.EARTH);
+		typeOrder.add(BuffType.EARTHEN);
 		typeOrder.add(BuffType.LIGHT);
 		typeOrder.add(BuffType.DARK);
 		typeOrder.add(BuffType.BLEED);
@@ -79,19 +87,45 @@ public class Mob implements Comparable<Mob> {
 		if (resSec != null) {
 			for (String key : resSec.getKeys()) {
 				int pct = resSec.getInt(key);
-				resistances.put(BuffType.valueOf(key), pct);
+				BuffType bt = BuffType.valueOf(key);
+				resistances.put(bt, pct);
+				GlossaryTag tag = BuffType.toGlossary(bt);
+				if (tag != null) tags.add(tag);
 			}
 		}
 		
 		Section dmgSec = sec.getSection("damagetypes");
 		if (dmgSec != null) {
 			for (String key : dmgSec.getKeys()) {
-				damageTypes.put(BuffType.valueOf(key), Amount.valueOf(dmgSec.getString(key)));
+				BuffType bt = BuffType.valueOf(key);
+				damageTypes.put(bt, Amount.valueOf(dmgSec.getString(key)));
+				GlossaryTag tag = BuffType.toGlossary(bt);
+				if (tag != null) tags.add(tag);
 			}
 		}
 		
+		String desc = sec.getString("description");
+		StringBuilder sb = new StringBuilder();
+		Matcher m = glossaryPattern.matcher(desc);
+		while (m.find()) {
+			String toParse = m.group();
+			if (toParse.length() <= 2) continue;
+			toParse = toParse.substring(1, toParse.length() - 1).toUpperCase();
+			try {
+				GlossaryTag tag = GlossaryTag.valueOf(toParse);
+				tags.add(tag);
+				m.appendReplacement(sb, tag.tag);
+			}
+			catch (IllegalArgumentException ex) {
+				Bukkit.getLogger().warning("[NeoRogue] Failed to parse mob glossary tag " + toParse + " for mob " + id);
+				continue;
+			}
+		}
+		m.appendTail(sb);
+		desc = sb.toString();
+		
 		ArrayList<TextComponent> italicizedLore = SharedUtil.addLineBreaks(
-				(TextComponent) SharedUtil.color(sec.getString("description")).colorIfAbsent(NamedTextColor.GRAY), 250);
+				(TextComponent) SharedUtil.color(desc).colorIfAbsent(NamedTextColor.GRAY), 250);
 		for (TextComponent tc : italicizedLore) {
 			lore.add((TextComponent) tc.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
 		}
@@ -106,6 +140,10 @@ public class Mob implements Comparable<Mob> {
 	
 	public HashMap<BuffType, Integer> getResistances() {
 		return resistances;
+	}
+	
+	public HashSet<GlossaryTag> getTags() {
+		return tags;
 	}
 	
 	public MobType getType() {
@@ -146,7 +184,9 @@ public class Mob implements Comparable<Mob> {
 		lore.addAll(this.lore);
 		meta.lore(lore);
 		item.setItemMeta(meta);
-		return item;
+		NBTItem nbti = new NBTItem(item);
+		nbti.setString("mobId", id);
+		return nbti.getItem();
 	}
 
 	@Override
@@ -192,5 +232,24 @@ public class Mob implements Comparable<Mob> {
 		NORMAL,
 		MINIBOSS,
 		BOSS;
+	}
+	
+	public enum Amount {
+		NONE(NamedTextColor.GRAY, "None"),
+		LIGHT(NamedTextColor.YELLOW, "Light"),
+		MEDIUM(NamedTextColor.GOLD, "Medium"),
+		HEAVY(NamedTextColor.RED, "Heavy");
+		
+		private NamedTextColor color;
+		private String display;
+		private Amount(NamedTextColor color, String display) {
+			this.color = color;
+			this.display = display;
+		}
+		
+		public Component getDisplay(boolean hasColor) {
+			Component c = Component.text(display);
+			return hasColor ? c.color(color) : c;
+		}
 	}
 }

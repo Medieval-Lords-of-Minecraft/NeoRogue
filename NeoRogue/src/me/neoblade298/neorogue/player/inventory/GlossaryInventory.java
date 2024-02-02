@@ -18,14 +18,34 @@ import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.session.fight.Mob;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 public class GlossaryInventory extends CoreInventory {
 	private CoreInventory prev;
 	private boolean openOther = true;
 	
 	private static final int BASIC = 0, UPGRADED = 9, REFORGE = 3;
+	public GlossaryInventory(Player viewer, Mob mob, CoreInventory prev) {
+		super(viewer, Bukkit.createInventory(viewer, calculateSize(mob.getTags().size()),
+				Component.text("Glossary: ").append(LegacyComponentSerializer.legacyAmpersand()
+						.deserialize(NeoRogue.mythicApi.getMythicMob(mob.getId()).getDisplayName().get()))));
+		this.prev = prev;
+		Util.playSound(viewer, Sound.ITEM_BOOK_PAGE_TURN, false);
+		
+		// Glossary tags
+		ItemStack[] contents = inv.getContents();
+		Iterator<GlossaryTag> iter = mob.getTags().iterator();
+		for (int row = 0; row < 6; row++) {
+			for (int col = 0; col < 9; col++) {
+				if (!iter.hasNext()) break;
+				contents[(row * 9) + col] = iter.next().getIcon();
+			}
+		}
+		inv.setContents(contents);
+	}
 	public GlossaryInventory(Player viewer, Equipment eq, CoreInventory prev) {
 		super(viewer, Bukkit.createInventory(viewer, calculateSize(eq), Component.text("Glossary: ").append(eq.getUnupgraded().getDisplay())));
 		this.prev = prev;
@@ -60,6 +80,10 @@ public class GlossaryInventory extends CoreInventory {
 			}
 		}
 		inv.setContents(contents);
+	}
+	
+	private static int calculateSize(int numTags) {
+		return numTags + (9 - numTags % 9);
 	}
 	
 	private static int calculateSize(Equipment eq) {

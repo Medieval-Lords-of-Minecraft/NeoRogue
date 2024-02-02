@@ -41,7 +41,13 @@ public class EquipmentChoiceInventory extends CoreInventory {
 		if (e.getCurrentItem() == null) return;
 		
 		int slot = e.getSlot();
+		
 		if (slot < equips.size()) {
+			if (e.isRightClick()) {
+				new GlossaryInventory(p, equips.get(slot), this);
+				return;
+			}
+			
 			p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1F, 1F);
 			Equipment eq = equips.get(slot);
 			data.giveEquipment(eq);

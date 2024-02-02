@@ -35,7 +35,7 @@ public enum GlossaryTag {
 			"A type of magical damage."),
 	EARTHEN(Material.DIRT, DamageType.EARTHEN.tag,
 			"A type of magical damage."),
-	DARK(Material.NETHER_PORTAL, DamageType.DARK.tag,
+	DARK(Material.OBSIDIAN, DamageType.DARK.tag,
 			"A type of magical damage."),
 	LIGHT(Material.END_ROD, DamageType.LIGHT.tag,
 			"A type of magical damage."),
@@ -73,7 +73,7 @@ public enum GlossaryTag {
 			"Certain abilities become stronger upon reaching a certain threshold of these stacks.");
 	
 	private ItemStack icon;
-	private String tag;
+	public String tag;
 	private Component ctag;
 	private GlossaryTag(Material mat, String display, String lore) {
 		icon = new ItemStack(mat);
