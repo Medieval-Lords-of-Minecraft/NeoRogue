@@ -24,7 +24,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class RewardInstance extends EditInventoryInstance {
-	private static final double SPAWN_X = Session.REWARDS_X + 4.5, SPAWN_Z = Session.REWARDS_Z + 2.5;
+	private static final double SPAWN_X = Session.REWARDS_X + 7.5, SPAWN_Z = Session.REWARDS_Z + 3.5;
 	private HashMap<UUID, ArrayList<Reward>> rewards = new HashMap<UUID, ArrayList<Reward>>();
 	private boolean busy = false;
 	
@@ -56,7 +56,7 @@ public class RewardInstance extends EditInventoryInstance {
 
 	@Override
 	public void handleInteractEvent(PlayerInteractEvent e) {
-		if (e.getAction() != Action.RIGHT_CLICK_BLOCK || e.getClickedBlock().getType() != Material.CHEST) return;
+		if (e.getAction() != Action.RIGHT_CLICK_BLOCK || e.getClickedBlock().getType() != Material.ENDER_CHEST) return;
 		if (e.getHand() != EquipmentSlot.HAND) return;
 		e.setCancelled(true);
 		

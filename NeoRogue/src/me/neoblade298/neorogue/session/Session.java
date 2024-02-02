@@ -58,17 +58,17 @@ public class Session {
 	// Session coordinates
 	public static final int LOBBY_X = 0, LOBBY_Z = 0, LOBBY_WIDTH = 15,
 			AREA_X = 0, AREA_Z = LOBBY_Z + LOBBY_WIDTH, AREA_WIDTH = 81,
-			REWARDS_X = 0, REWARDS_Z = AREA_Z + AREA_WIDTH, REWARDS_WIDTH = 6,
+			REWARDS_X = 0, REWARDS_Z = AREA_Z + AREA_WIDTH, REWARDS_WIDTH = 19,
 			SHRINE_X = 0, SHRINE_Z = REWARDS_Z + REWARDS_WIDTH, SHRINE_WIDTH = 13,
 			SHOP_X = 0, SHOP_Z = SHRINE_Z + SHRINE_WIDTH, SHOP_WIDTH = 12,
-			CHANCE_X = 0, CHANCE_Z = SHOP_Z + SHOP_WIDTH, CHANCE_WIDTH = 9,
+			CHANCE_X = 0, CHANCE_Z = SHOP_Z + SHOP_WIDTH, CHANCE_WIDTH = 12,
 			LOSE_X = 0, LOSE_Z = CHANCE_Z + CHANCE_WIDTH;
 	
 	private static Clipboard classSelect, nodeSelect, rewardsRoom, shrine, shop, chance, lose;
 	static {
 		classSelect = loadClipboard("classselect.schem");
 		nodeSelect = loadClipboard("nodeselect.schem");
-		rewardsRoom = loadClipboard("rewardsroom.schem");
+		rewardsRoom = loadClipboard("rewards.schem");
 		shrine = loadClipboard("shrine.schem");
 		shop = loadClipboard("shop.schem");
 		chance = loadClipboard("chance.schem");
