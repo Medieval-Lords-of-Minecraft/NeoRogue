@@ -162,7 +162,7 @@ public class PlayerSessionInventory extends CoreInventory {
 			p.openInventory(Bukkit.createInventory(p, 27, Component.text("Trash Can", NamedTextColor.RED)));
 			return;
 		}
-		if (slot == ARTIFACTS) {
+		if (slot == ARTIFACTS && !data.getArtifacts().isEmpty()) {
 			e.setCancelled(true);
 			new ArtifactsInventory(data);
 			return;
