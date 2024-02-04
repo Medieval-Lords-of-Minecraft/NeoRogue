@@ -106,7 +106,6 @@ public class NeoRogue extends JavaPlugin {
 	private void debugInitialize() {
 		Player p = Bukkit.getPlayer("Ascheladd");
 		if (p == null) return;
-		System.out.println(Equipment.getConsumable(1, EquipmentClass.CLASSLESS));
 		
 		Session s = SessionManager.createSession(p, "test", 1);
 		s.generateArea(AreaType.LOW_DISTRICT);

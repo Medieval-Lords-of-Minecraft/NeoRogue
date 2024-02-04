@@ -27,7 +27,7 @@ public class GlossaryInventory extends CoreInventory {
 	private CoreInventory prev;
 	private boolean openOther = true;
 	
-	private static final int BASIC = 0, UPGRADED = 9, REFORGE = 3;
+	private static final int BASIC = 0, UPGRADED = 1, REFORGE = 3;
 	public GlossaryInventory(Player viewer, Mob mob, CoreInventory prev) {
 		super(viewer, Bukkit.createInventory(viewer, calculateSize(mob.getTags().size()),
 				Component.text("Glossary: ").append(LegacyComponentSerializer.legacyAmpersand()
@@ -57,7 +57,7 @@ public class GlossaryInventory extends CoreInventory {
 		
 		// Glossary tags
 		Iterator<GlossaryTag> iter = eq.getTags().iterator();
-		for (int row = (eq.hasUpgrade() ? 2 : 1); row < 6; row++) {
+		for (int row = 1; row < 6; row++) {
 			for (int col = 0; col < 5; col++) {
 				if (!iter.hasNext()) break;
 				contents[(row * 9) + col] = iter.next().getIcon();
@@ -87,7 +87,7 @@ public class GlossaryInventory extends CoreInventory {
 	}
 	
 	private static int calculateSize(Equipment eq) {
-		int leftHeight = (eq.hasUpgrade() ? 2 : 1) + ((eq.getTags().size() + 3) / 4);
+		int leftHeight = 1 + ((eq.getTags().size() + 3) / 4);
 		int rightHeight = eq.getReforgeOptions().size();
 		return 9 * Math.max(leftHeight, rightHeight);
 	}

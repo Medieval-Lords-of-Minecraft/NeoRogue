@@ -50,6 +50,7 @@ public class PlayerSessionInventory extends CoreInventory {
 	public PlayerSessionInventory(PlayerSessionData data) {
 		super(data.getPlayer(), Bukkit.createInventory(data.getPlayer(), 36, Component.text("Equipment", NamedTextColor.BLUE)));
 		this.data = data;
+		p.playSound(p, Sound.BLOCK_CHEST_OPEN, 1F, 1F);
 		ItemStack[] contents = inv.getContents();
 
 		// Import data from session data

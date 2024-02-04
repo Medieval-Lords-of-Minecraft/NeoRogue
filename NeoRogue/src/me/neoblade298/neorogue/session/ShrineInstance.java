@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -30,7 +31,7 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 public class ShrineInstance extends EditInventoryInstance {
 	private static final ParticleContainer part = new ParticleContainer(Particle.FIREWORKS_SPARK).count(50).spread(2, 2).speed(0.1);
 	private static final double SPAWN_X = Session.SHRINE_X + 5.5, SPAWN_Z = Session.SHRINE_Z + 2.5,
-			HOLO_X = 5.5, HOLO_Y = 2, HOLO_Z = 9.5;
+			HOLO_X = 0, HOLO_Y = 3, HOLO_Z = 7;
 	private static final int INIT_STATE = 0, REST_STATE = 1, UPGRADE_STATE = 2, RETURN_STATE = 3, RETURN_FAIL_STATE = 4;
 	private int state = 0;
 	private Block blockBottom, blockMiddle, blockTop;
@@ -65,7 +66,8 @@ public class ShrineInstance extends EditInventoryInstance {
 
 		// Setup hologram
 		ArrayList<String> lines = new ArrayList<String>();
-		lines.add("Right click the emerald blocks!");
+		lines.add("Right click the");
+		lines.add("§aemerald blocks§f!");
 		Plot plot = s.getPlot();
 		holo = DHAPI.createHologram(plot.getXOffset() + "-" + plot.getZOffset() + "-shrine", spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), lines);
 	}
@@ -113,7 +115,9 @@ public class ShrineInstance extends EditInventoryInstance {
 		part.spawn(blockMiddle.getLocation());
 		s.broadcastSound(Sound.ENTITY_FIREWORK_ROCKET_BLAST);
 		s.broadcastSound(Sound.ENTITY_ARROW_HIT_PLAYER);
-		
+
+		Location loc = holo.getLocation();
+		holo.delete();
 		if (rest) {
 			blockBottom.setType(Material.LODESTONE);
 			blockMiddle.setType(Material.DIORITE_WALL);
@@ -128,6 +132,7 @@ public class ShrineInstance extends EditInventoryInstance {
 				data.healPercent(0.25);
 			}
 			
+			
 			returnToNodes();
 		}
 		else {
@@ -137,6 +142,12 @@ public class ShrineInstance extends EditInventoryInstance {
 			anvil.setFacing(BlockFace.EAST);
 			blockMiddle.setBlockData(anvil);
 			blockTop.setType(Material.WITHER_SKELETON_SKULL);
+
+			ArrayList<String> lines = new ArrayList<String>();
+			loc.add(0, 1, 0);
+			lines.add("Use the anvil!");
+			Plot plot = s.getPlot();
+			holo = DHAPI.createHologram(plot.getXOffset() + "-" + plot.getZOffset() + "-shrineanvil", spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), lines);
 		}
 	}
 	

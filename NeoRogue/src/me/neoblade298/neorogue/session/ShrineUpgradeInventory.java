@@ -42,6 +42,7 @@ public class ShrineUpgradeInventory extends CoreInventory {
 		int slot = e.getSlot();
 		
 		if (slot == 0) {
+			p.playSound(p, Sound.ITEM_ARMOR_EQUIP_DIAMOND, 1F, 1F);
 			new BukkitRunnable() {
 				public void run() {
 					updateOutput();
@@ -56,7 +57,6 @@ public class ShrineUpgradeInventory extends CoreInventory {
 		}
 		else {
 			e.setCancelled(true);
-			inv.setItem(0, null);
 			ItemStack item = e.getCurrentItem();
 			NBTItem nbti = new NBTItem(item);
 			String id = nbti.getString("equipId");
@@ -64,7 +64,9 @@ public class ShrineUpgradeInventory extends CoreInventory {
 				Util.displayError(p, "Invalid upgrade!");
 				return;
 			}
-			
+
+			p.playSound(p, Sound.ITEM_ARMOR_EQUIP_DIAMOND, 1F, 1F);
+			inv.setItem(0, null);
 			p.getInventory().addItem(Equipment.get(id, true).getItem());
 			p.playSound(p, Sound.BLOCK_ANVIL_USE, 1F, 1F);
 			inst.useUpgrade(p.getUniqueId());

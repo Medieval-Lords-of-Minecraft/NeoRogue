@@ -99,8 +99,8 @@ public class PlayerSessionData {
 		// If you ever use abilities equipped, need to initialize it to 1 here
 		switch (this.pc) {
 		case WARRIOR:
-			hotbar[0] = Equipment.get("woodenSword", false);
-			hotbar[1] = Equipment.get("empoweredEdge", false);
+			hotbar[0] = Equipment.get("woodenSword", true);
+			hotbar[1] = Equipment.get("empoweredEdge", true);
 			break;
 		case THIEF:
 			hotbar[0] = Equipment.get("woodenSword", false);
@@ -135,6 +135,10 @@ public class PlayerSessionData {
 	public void setupEditInventory() {
 		updateCoinsBar();
 		getPlayer().setSaturation(20);
+	}
+	
+	public HashMap<EquipSlot, HashSet<Integer>> getEquipment(boolean upgraded) {
+		return upgraded ? this.upgraded : this.upgradable;
 	}
 
 	public void setupInventory() {

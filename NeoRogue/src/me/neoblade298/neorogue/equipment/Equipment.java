@@ -8,6 +8,7 @@ import java.util.TreeSet;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
@@ -409,8 +410,13 @@ public abstract class Equipment {
 		}
 		meta.lore(lore);
 		
+		if (isUpgraded) {
+			meta.addEnchant(Enchantment.LUCK, 1, true);
+		}
+		
 		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 		meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 		meta.setUnbreakable(true);
 		properties.modifyItemMeta(item, meta);
 		item.setItemMeta(meta);

@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.block.Block;
 import org.bukkit.block.data.type.Candle;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
@@ -31,7 +32,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 public class ChanceInstance extends EditInventoryInstance {
 	private static final double SPAWN_X = Session.CHANCE_X + 6.5, SPAWN_Z = Session.CHANCE_Z + 1.5,
-			HOLO_X = 6.5, HOLO_Y = 1, HOLO_Z = 4.5;
+			HOLO_X = 0, HOLO_Y = 2, HOLO_Z = 3;
 	private static ParticleContainer part = new ParticleContainer(Particle.FLAME).count(25).speed(0.1).spread(0.2, 0.2);
 
 	private ChanceSet set;
@@ -158,8 +159,10 @@ public class ChanceInstance extends EditInventoryInstance {
 		if (returning) return;
 		s.broadcastSound(Sound.ENTITY_BLAZE_SHOOT);
 		part.spawn(holo.getLocation());
-		Candle candle = (Candle) holo.getLocation().getBlock().getBlockData();
+		Block b = holo.getLocation().add(0, -1, 0).getBlock();
+		Candle candle = (Candle) b.getBlockData();
 		candle.setLit(true);
+		b.setBlockData(candle);
 		returning = true;
 		new BukkitRunnable() {
 			public void run() {
