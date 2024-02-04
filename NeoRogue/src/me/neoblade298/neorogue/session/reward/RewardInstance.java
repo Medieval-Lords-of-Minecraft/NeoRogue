@@ -14,18 +14,23 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import eu.decentsoftware.holograms.api.DHAPI;
+import eu.decentsoftware.holograms.api.holograms.Hologram;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.EditInventoryInstance;
 import me.neoblade298.neorogue.session.NodeSelectInstance;
+import me.neoblade298.neorogue.session.Plot;
 import me.neoblade298.neorogue.session.Session;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class RewardInstance extends EditInventoryInstance {
-	private static final double SPAWN_X = Session.REWARDS_X + 7.5, SPAWN_Z = Session.REWARDS_Z + 3.5;
+	private static final double SPAWN_X = Session.REWARDS_X + 7.5, SPAWN_Z = Session.REWARDS_Z + 3.5,
+			HOLO_X = 7.5, HOLO_Y = 1, HOLO_Z = 9.5;
 	private HashMap<UUID, ArrayList<Reward>> rewards = new HashMap<UUID, ArrayList<Reward>>();
+	private Hologram holo;
 	private boolean busy = false;
 	
 	public RewardInstance(Session s, HashMap<UUID, ArrayList<Reward>> rewards) {
@@ -47,11 +52,18 @@ public class RewardInstance extends EditInventoryInstance {
 			p.playSound(p, Sound.ENTITY_PLAYER_LEVELUP, 1F, 1F);
 			p.teleport(spawn);
 		}
+		
+		// Setup hologram
+		ArrayList<String> lines = new ArrayList<String>();
+		lines.add("Open the enderchest and");
+		lines.add("collect your reward!");
+		Plot plot = s.getPlot();
+		holo = DHAPI.createHologram(plot.getXOffset() + "-" + plot.getZOffset() + "-rewards", spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), lines);
 	}
 
 	@Override
 	public void cleanup() {
-		
+		holo.delete();
 	}
 
 	@Override

@@ -1,18 +1,24 @@
 package me.neoblade298.neorogue.session.chance;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.block.data.type.Candle;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import eu.decentsoftware.holograms.api.DHAPI;
+import eu.decentsoftware.holograms.api.holograms.Hologram;
+import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.NeoRogue;
@@ -24,12 +30,15 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class ChanceInstance extends EditInventoryInstance {
-	private static final double SPAWN_X = Session.CHANCE_X + 6.5, SPAWN_Z = Session.CHANCE_Z + 3.5;
+	private static final double SPAWN_X = Session.CHANCE_X + 6.5, SPAWN_Z = Session.CHANCE_Z + 1.5,
+			HOLO_X = 6.5, HOLO_Y = 1, HOLO_Z = 4.5;
+	private static ParticleContainer part = new ParticleContainer(Particle.FLAME).count(25).speed(0.1).spread(0.2, 0.2);
 
 	private ChanceSet set;
 	private HashMap<UUID, ChanceStage> stage = new HashMap<UUID, ChanceStage>();
 	private Instance nextInstance; // For taking you directly from this instance to another
 	private boolean returning;
+	private Hologram holo;
 
 	public ChanceInstance(Session s) {
 		super(s, SPAWN_X, SPAWN_Z);
@@ -62,7 +71,6 @@ public class ChanceInstance extends EditInventoryInstance {
 
 	@Override
 	public void start() {
-
 		// Pick a random chance set if not already picked
 		if (set == null) {
 			set = ChanceSet.getSet(s.getArea().getType());
@@ -73,11 +81,17 @@ public class ChanceInstance extends EditInventoryInstance {
 			data.getPlayer().teleport(spawn);
 			stage.put(data.getPlayer().getUniqueId(), set.getInitialStage());
 		}
+
+		// Setup hologram
+		ArrayList<String> lines = new ArrayList<String>();
+		lines.add("Right click the pillar below!");
+		Plot plot = s.getPlot();
+		holo = DHAPI.createHologram(plot.getXOffset() + "-" + plot.getZOffset() + "-shop", spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), lines);
 	}
 
 	@Override
 	public void cleanup() {
-
+		holo.delete();
 	}
 
 	@Override
@@ -142,7 +156,10 @@ public class ChanceInstance extends EditInventoryInstance {
 	
 	private void returnPlayers() {
 		if (returning) return;
-		s.broadcastSound(Sound.ENTITY_ARROW_HIT_PLAYER);
+		s.broadcastSound(Sound.ENTITY_BLAZE_SHOOT);
+		part.spawn(holo.getLocation());
+		Candle candle = (Candle) holo.getLocation().getBlock().getBlockData();
+		candle.setLit(true);
 		returning = true;
 		new BukkitRunnable() {
 			public void run() {

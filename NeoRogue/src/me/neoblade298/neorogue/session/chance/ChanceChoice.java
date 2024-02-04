@@ -81,10 +81,10 @@ public class ChanceChoice {
 	}
 	
 	public String choose(Session s, ChanceInstance inst, PlayerSessionData data) {
-		if (inst.getSet().isIndividual()) {
+		if (!inst.getSet().isIndividual()) {
 			s.broadcastSound(Sound.ENTITY_ARROW_HIT_PLAYER);
-			for (Player player : s.getOnlinePlayers()) {
-				player.closeInventory();
+			for (Player p : s.getOnlinePlayers()) {
+				p.closeInventory();
 			}
 		}
 		else {

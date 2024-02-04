@@ -24,7 +24,7 @@ public class PoisonStatus extends DurationStatus {
 	@Override
 	public void apply(UUID applier, int stacks, int seconds) {
 		if (data instanceof PlayerFightData) {
-			data.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.POISON, 0, seconds * 20));
+			data.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.POISON, seconds * 20, 0));
 		}
 		super.apply(applier, stacks, seconds);
 	}

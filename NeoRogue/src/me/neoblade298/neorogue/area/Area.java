@@ -547,7 +547,7 @@ public class Area {
 			case 0:
 				table.add(NodeType.CHANCE, 30);
 				table.add(NodeType.FIGHT, 50);
-				table.add(NodeType.MINIBOSS, 5);
+				table.add(NodeType.MINIBOSS, 2);
 				table.add(NodeType.SHOP, 5);
 				table.add(NodeType.SHRINE, 5);
 				break;

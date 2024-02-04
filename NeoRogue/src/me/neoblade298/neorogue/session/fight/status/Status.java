@@ -70,8 +70,8 @@ public abstract class Status {
 		BURN("<gold>Burn</gold>"),
 		FROST("<blue>Frost</blue>"),
 		ELECTRIFIED("<yellow>Electrified</yellow>"),
-		CONCUSSED("<dark_green>Concussed</dark_green"),
-		INSANITY("<dark_purple>Insanity</dark_purple"),
+		CONCUSSED("<dark_green>Concussed</dark_green>"),
+		INSANITY("<dark_purple>Insanity</dark_purple>"),
 		SANCTIFIED("<white>Sanctified</white>"),
 		THORNS("<gold>Thorns</gold>"),
 		REFLECT("<purple>Reflect</purple>");

@@ -1,9 +1,11 @@
 package me.neoblade298.neorogue.session;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -18,6 +20,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import eu.decentsoftware.holograms.api.DHAPI;
+import eu.decentsoftware.holograms.api.holograms.Hologram;
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
@@ -25,11 +29,13 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 
 public class ShrineInstance extends EditInventoryInstance {
 	private static final ParticleContainer part = new ParticleContainer(Particle.FIREWORKS_SPARK).count(50).spread(2, 2).speed(0.1);
-	private static final double SPAWN_X = Session.SHRINE_X + 5.5, SPAWN_Z = Session.SHRINE_Z + 2.5;
+	private static final double SPAWN_X = Session.SHRINE_X + 5.5, SPAWN_Z = Session.SHRINE_Z + 2.5,
+			HOLO_X = 5.5, HOLO_Y = 2, HOLO_Z = 9.5;
 	private static final int INIT_STATE = 0, REST_STATE = 1, UPGRADE_STATE = 2, RETURN_STATE = 3, RETURN_FAIL_STATE = 4;
 	private int state = 0;
 	private Block blockBottom, blockMiddle, blockTop;
 	private HashSet<UUID> notUsed = new HashSet<UUID>();
+	private Hologram holo;
 	
 	public ShrineInstance(Session s) {
 		super(s, SPAWN_X, SPAWN_Z);
@@ -56,6 +62,12 @@ public class ShrineInstance extends EditInventoryInstance {
 			notUsed.add(p.getUniqueId());
 			p.teleport(spawn);
 		}
+
+		// Setup hologram
+		ArrayList<String> lines = new ArrayList<String>();
+		lines.add("Right click the emerald blocks!");
+		Plot plot = s.getPlot();
+		holo = DHAPI.createHologram(plot.getXOffset() + "-" + plot.getZOffset() + "-shrine", spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), lines);
 	}
 
 	@Override
@@ -63,6 +75,7 @@ public class ShrineInstance extends EditInventoryInstance {
 		blockBottom.setType(Material.EMERALD_BLOCK);
 		blockMiddle.setType(Material.EMERALD_BLOCK);
 		blockTop.setType(Material.AIR);
+		holo.delete();
 	}
 
 	@Override

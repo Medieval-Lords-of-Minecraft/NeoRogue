@@ -13,6 +13,8 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import eu.decentsoftware.holograms.api.DHAPI;
+import eu.decentsoftware.holograms.api.holograms.Hologram;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -20,11 +22,13 @@ import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 
 public class ShopInstance extends EditInventoryInstance {
-	private static final double SPAWN_X = Session.SHOP_X + 4.5, SPAWN_Z = Session.SHOP_Z + 4.5;
+	private static final double SPAWN_X = Session.SHOP_X + 4.5, SPAWN_Z = Session.SHOP_Z + 4.5,
+			HOLO_X = 4.5, HOLO_Y = 2, HOLO_Z = 8.5;
 	static final int NUM_ITEMS = 10;
 	
 	private HashMap<UUID, ArrayList<ShopItem>> shops = new HashMap<UUID, ArrayList<ShopItem>>();
 	private HashSet<UUID> ready = new HashSet<UUID>();
+	private Hologram holo;
 	
 	public ShopInstance(Session s) {
 		super(s, SPAWN_X, SPAWN_Z);
@@ -62,11 +66,18 @@ public class ShopInstance extends EditInventoryInstance {
 			}
 			shops.put(p.getUniqueId(), shopItems);
 		}
+
+		// Setup hologram
+		ArrayList<String> lines = new ArrayList<String>();
+		lines.add("Open the chest, then click the");
+		lines.add("stone button when you're ready!");
+		Plot plot = s.getPlot();
+		holo = DHAPI.createHologram(plot.getXOffset() + "-" + plot.getZOffset() + "-shop", spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), lines);
 	}
 
 	@Override
 	public void cleanup() {
-		
+		holo.delete();
 	}
 
 	@Override

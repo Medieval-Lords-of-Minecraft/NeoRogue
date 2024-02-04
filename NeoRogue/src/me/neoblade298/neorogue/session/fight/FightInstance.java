@@ -142,11 +142,14 @@ public abstract class FightInstance extends Instance {
 		if (!userData.containsKey(pu)) return;
 		PlayerFightData data = userData.get(pu);
 		FightInstance fi = data.getInstance();
+		Session s = fi.getSession();
 
 		new BukkitRunnable() {
 			public void run() {
+				s.broadcast("<red>" + p.getName() + " died!");
 				data.setDeath(true);
 				data.getStats().addDeath();
+				
 				if (p != null) {
 					p.spigot().respawn();
 					p.teleport(prev);
@@ -797,7 +800,7 @@ public abstract class FightInstance extends Instance {
 			corpseDisplay = w.spawnEntity(loc, EntityType.ARMOR_STAND);
 			PlayerDisguise dis = new PlayerDisguise(p);
 			dis.getWatcher().setSleeping(true);
-			dis.setName(p.getName() + "'s Corpse");
+			dis.setName(p.getName() + " (Right click to Revive)");
 			dis.setEntity(corpseDisplay);
 			dis.getWatcher().setGlowing(true);
 			dis.startDisguise();
