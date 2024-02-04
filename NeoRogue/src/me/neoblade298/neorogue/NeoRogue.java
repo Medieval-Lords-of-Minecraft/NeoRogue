@@ -25,7 +25,6 @@ import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.session.NodeSelectInstance;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
-import me.neoblade298.neorogue.session.ShopInstance;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
 import me.neoblade298.neorogue.session.fight.Mob;
 import me.neoblade298.neorogue.session.fight.mythicbukkit.MythicLoader;

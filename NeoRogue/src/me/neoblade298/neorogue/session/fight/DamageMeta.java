@@ -281,12 +281,10 @@ public class DamageMeta {
 			ShieldHolder shields = recipient.getShields();
 			double damageBeforeShields = damage;
 			damage = Math.max(0, shields.useShields(damage));
-			if (recipient instanceof PlayerFightData) {
-				System.out.println("Before " + damageBeforeShields + " " + damage);
-				((PlayerFightData) recipient).getStats().addDamageShielded(damageBeforeShields - damage);
-			}
 			
 			// Update shield after if damage was dealt through shield
+			// Shouldn't need to do this since shieldholder should do it automatically?
+			/*
 			if (damage > 0 || ignoreShieldsDamage > 0) {
 				new BukkitRunnable() {
 					public void run() {
@@ -294,6 +292,7 @@ public class DamageMeta {
 					}
 				}.runTask(NeoRogue.inst());
 			}
+			*/
 		}
 		
 		final double finalDamage = damage + ignoreShieldsDamage + target.getAbsorptionAmount();
@@ -304,7 +303,7 @@ public class DamageMeta {
 			}
 		}
 		else {
-			target.damage(0);
+			target.damage(0.1);
 		}
 		
 		// Return damage

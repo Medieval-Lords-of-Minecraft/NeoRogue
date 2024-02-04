@@ -51,7 +51,7 @@ public class ShieldHolder {
 		return damage;
 	}
 	
-	public void update() {
+	protected void update() {
 		double pct = 0;
 		Attributable entity = (Attributable) data.getEntity();
 		if (max > entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()) {

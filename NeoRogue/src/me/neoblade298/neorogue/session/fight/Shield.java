@@ -50,11 +50,20 @@ public class Shield {
 		if (fd instanceof PlayerFightData) {
 			((PlayerFightData) fd).getStats().addDamageShielded(original - amount);
 		}
+		new BukkitRunnable() {
+			public void run() {
+				shieldHolder.update();
+			}
+		}.runTask(NeoRogue.inst());
 		return this.amount > 0 ? 0 : damage - original;
 	}
 	
 	public boolean isUsable() {
 		return this.amount > 0;
+	}
+	
+	public double getAmount() {
+		return amount;
 	}
 	
 	public double getTotal() {
