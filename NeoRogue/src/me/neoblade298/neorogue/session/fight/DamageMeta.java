@@ -282,6 +282,7 @@ public class DamageMeta {
 			double damageBeforeShields = damage;
 			damage = Math.max(0, shields.useShields(damage));
 			if (recipient instanceof PlayerFightData) {
+				System.out.println("Before " + damageBeforeShields + " " + damage);
 				((PlayerFightData) recipient).getStats().addDamageShielded(damageBeforeShields - damage);
 			}
 			

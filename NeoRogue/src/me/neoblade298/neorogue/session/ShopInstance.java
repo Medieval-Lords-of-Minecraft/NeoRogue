@@ -22,8 +22,8 @@ import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 
 public class ShopInstance extends EditInventoryInstance {
-	private static final double SPAWN_X = Session.SHOP_X + 4.5, SPAWN_Z = Session.SHOP_Z + 4.5,
-			HOLO_X = 0, HOLO_Y = 2.5, HOLO_Z = 4;
+	private static final double SPAWN_X = Session.SHOP_X + 5.5, SPAWN_Z = Session.SHOP_Z + 2.5,
+			HOLO_X = 0, HOLO_Y = 1, HOLO_Z = 4;
 	static final int NUM_ITEMS = 10;
 	
 	private HashMap<UUID, ArrayList<ShopItem>> shops = new HashMap<UUID, ArrayList<ShopItem>>();

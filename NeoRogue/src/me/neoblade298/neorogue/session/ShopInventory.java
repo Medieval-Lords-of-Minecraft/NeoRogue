@@ -50,15 +50,17 @@ public class ShopInventory extends CoreInventory {
 		if (iclicked == null || iclicked.getType() != InventoryType.CHEST) return;
 		e.setCancelled(true);
 		if (e.getCurrentItem() == null) return; // Must have clicked on an item in the inv
+		if (e.getCurrentItem().getType() == Material.BARRIER) {
+			Util.displayError(p, "You've already purchased this item!");
+			return;
+		}
 		int slot = e.getSlot();
 
 		if (slot < 18) {
 			ShopItem shopItem = null;
-			int shopItemSlot = -1;
 			for (int i = 0 ; i < SLOT_ORDER.length; i++) {
 				if (SLOT_ORDER[i] == slot) {
 					shopItem = shopItems.get(i);
-					shopItemSlot = i;
 					break;
 				}
 			}
@@ -67,7 +69,7 @@ public class ShopInventory extends CoreInventory {
 				Util.displayError(p, "You don't have enough coins! You need " + (price - data.getCoins()) + " more.");
 				return;
 			}
-			shopItems.remove(shopItemSlot);
+			shopItem.setPurchased(true);
 			
 			data.addCoins(-price);
 			p.getInventory().addItem(e.getCurrentItem());
@@ -75,7 +77,7 @@ public class ShopInventory extends CoreInventory {
 			p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1F, 1F);
 			
 			ItemStack[] contents = inv.getContents();
-			contents[slot] = null;
+			contents[slot] = shopItem.getItem(data);
 			for (ShopItem si : shopItems) {
 				si.updateLore(data, contents[si.getSlot()], false);
 			}

@@ -48,7 +48,7 @@ public class PlayerSessionData {
 	private Equipment[] storage = new Equipment[STORAGE_SIZE];
 	private Equipment[] otherBinds = new Equipment[8];
 	private TreeMap<String, ArtifactInstance> artifacts = new TreeMap<String, ArtifactInstance>();
-	private int abilitiesEquipped = 1, maxAbilities = 5, maxStorage = 9, coins = 50;
+	private int abilitiesEquipped = 1, maxAbilities = 5, maxStorage = 9, coins = 1000;
 	private HashMap<EquipSlot, HashSet<Integer>> upgradable = new HashMap<EquipSlot, HashSet<Integer>>(),
 			upgraded = new HashMap<EquipSlot, HashSet<Integer>>();
 	private String instanceData;
@@ -101,6 +101,7 @@ public class PlayerSessionData {
 		case WARRIOR:
 			hotbar[0] = Equipment.get("woodenSword", true);
 			hotbar[1] = Equipment.get("empoweredEdge", true);
+			hotbar[2] = Equipment.get("leatherHelmet", true);
 			break;
 		case THIEF:
 			hotbar[0] = Equipment.get("woodenSword", false);
