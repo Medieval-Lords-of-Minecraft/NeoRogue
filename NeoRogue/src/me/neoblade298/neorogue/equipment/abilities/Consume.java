@@ -31,7 +31,7 @@ public class Consume extends Equipment {
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 15, isUpgraded ? 5 : 7, 0));
 		damage = 45;
 		execute = 150;
-		heal = isUpgraded ? 3 : 2;
+		heal = isUpgraded ? 6 : 4;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		hit.count(50).spread(0.5, 0.5);
 	}
@@ -70,6 +70,6 @@ public class Consume extends Equipment {
 		item = createItem(Material.FLINT,
 				"On cast, your next basic attack while in the air deals <white>" + damage + "</white> " + GlossaryTag.PIERCING.tag(this)
 				+ " damage. If the enemy is below <white>50%</white> health, deal an additional <white>" + execute + "</white> " +
-				GlossaryTag.PIERCING.tag(this) + " damage. If the enemy is killed with this damage, heal for <white>" + heal + "</white>.");
+				GlossaryTag.PIERCING.tag(this) + " damage. If the enemy is killed with this damage, heal for <yellow>" + heal + "</yellow>.");
 	}
 }

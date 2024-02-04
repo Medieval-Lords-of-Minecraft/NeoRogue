@@ -21,7 +21,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
 public class RecklessSwing extends Equipment {
 	private int damage;
-	private static int HEALTH_COST;
+	private static int HEALTH_COST = 1;
 	private ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
 			hit = new ParticleContainer(Particle.REDSTONE);
 	

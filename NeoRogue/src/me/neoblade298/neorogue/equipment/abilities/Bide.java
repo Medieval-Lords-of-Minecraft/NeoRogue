@@ -38,7 +38,7 @@ public class Bide extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.FLINT,
 				"On cast, gain <white>" + shields + "</white> " + GlossaryTag.SHIELDS.tag(this) + " for " + duration + " seconds. During this time, "
-						+ "taking damage grants you <white>" + berserk + "</white> " + GlossaryTag.BERSERK.tag(this) + " stacks.");
+						+ "taking damage grants you <yellow>" + berserk + "</yellow> " + GlossaryTag.BERSERK.tag(this) + " stacks.");
 	}
 
 	@Override

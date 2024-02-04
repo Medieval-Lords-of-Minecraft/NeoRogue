@@ -25,7 +25,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Cleave extends Equipment {
 	private int amount, damage;
-	private static final ParticleContainer part = new ParticleContainer(Particle.SWEEP_ATTACK).offsetForward(2).count(10).spread(4, 0.2);
+	private static final ParticleContainer part = new ParticleContainer(Particle.SWEEP_ATTACK).offsetForward(2).count(10).spread(2.5, 0.2);
 	private static final TargetProperties tp = TargetProperties.cone(90, 5, false, TargetType.ENEMY);
 	
 	public Cleave(boolean isUpgraded) {
@@ -52,6 +52,6 @@ public class Cleave extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FLINT,
-				"On cast, deal <white>" + damage + "</white> " + GlossaryTag.SLASHING.tag(this) + " damage in a cone in front of you.");
+				"On cast, deal <yellow>" + damage + "</yellow> " + GlossaryTag.SLASHING.tag(this) + " damage in a cone in front of you.");
 	}
 }

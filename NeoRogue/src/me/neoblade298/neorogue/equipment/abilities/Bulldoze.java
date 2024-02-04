@@ -96,7 +96,7 @@ public class Bulldoze extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE,
-				"On cast, gain speed for 3 seconds, dealing <white>" + damage + "</white> " + GlossaryTag.BLUNT.tag(this) + " damage to enemies you touch"
+				"On cast, gain speed for 3 seconds, dealing <yellow>" + damage + "</yellow> " + GlossaryTag.BLUNT.tag(this) + " damage to enemies you touch"
 						+ " and knock them back, once per enemy.");
 	}
 }

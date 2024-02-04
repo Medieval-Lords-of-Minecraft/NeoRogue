@@ -73,23 +73,30 @@ public abstract class Equipment {
 		for (boolean b : new boolean[] {false, true}) {
 			// Abilities
 			new BattleCry(b);
-			new DarkPact(b);
 			new Bide(b);
 			new BlessedEdge(b);
 			new Brace(b);
 			new Brace2(b);
 			new Bulldoze(b);
 			new Cleave(b);
+			new Consume(b);
+			new ControlledExecute(b);
+			new DarkPact(b);
 			new EarthenTackle(b);
 			new EarthenWall(b);
 			new EmpoweredEdge(b);
+			new Execute(b);
+			new Fortify(b);
 			new Fury(b);
 			new Glare(b);
 			new Parry(b);
 			new Provoke(b);
+			new Quake(b);
 			new RecklessSwing(b);
 			new SavageCry(b);
+			new Smite(b);
 			new Tackle(b);
+			new WindSlash(b);
 			
 			// Accessories
 			new EarthenRing(b);

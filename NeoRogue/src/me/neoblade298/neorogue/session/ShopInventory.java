@@ -14,6 +14,7 @@ import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.player.inventory.GlossaryInventory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -65,6 +66,12 @@ public class ShopInventory extends CoreInventory {
 				}
 			}
 			int price = shopItem.getPrice();
+			
+			if (e.isRightClick()) {
+				new GlossaryInventory(p, shopItem.getEquipment(), this);
+				return;
+			}
+			
 			if (!data.hasCoins(price)) {
 				Util.displayError(p, "You don't have enough coins! You need " + (price - data.getCoins()) + " more.");
 				return;

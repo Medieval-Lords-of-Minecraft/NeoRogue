@@ -28,7 +28,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 public class RewardInstance extends EditInventoryInstance {
 	private static final double SPAWN_X = Session.REWARDS_X + 7.5, SPAWN_Z = Session.REWARDS_Z + 3.5,
-			HOLO_X = 0, HOLO_Y = 1.5, HOLO_Z = 9.5;
+			HOLO_X = 0, HOLO_Y = 2, HOLO_Z = 6;
 	private HashMap<UUID, ArrayList<Reward>> rewards = new HashMap<UUID, ArrayList<Reward>>();
 	private Hologram holo;
 	private boolean busy = false;

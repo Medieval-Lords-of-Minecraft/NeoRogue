@@ -49,9 +49,7 @@ public class FightStatistics {
 	}
 	
 	public void addDamageShielded(double amount) {
-		System.out.println("Added: " + amount);
 		this.damageShielded += amount;
-		System.out.println("New damage shielded: " + this.damageShielded);
 	}
 	
 	public void addDefenseBuffed(double amount) {

@@ -34,7 +34,7 @@ public class BattleCry extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE,
-				"On cast, give yourself <white>" + strength + " </white>bonus " + GlossaryTag.PHYSICAL.tag(this) + " damage for <white>10</white> seconds.");
+				"On cast, give yourself <yellow>" + strength + " </yellow>bonus " + GlossaryTag.PHYSICAL.tag(this) + " damage for <white>10</white> seconds.");
 	}
 
 	@Override

@@ -54,6 +54,6 @@ public class DarkPact extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.REDSTONE,
 				"Passive. Increase your " + GlossaryTag.PHYSICAL.tag(this) + " damage by 2 every 3 basic attacks. In exchange, take "
-				+ "<white>50%</white> increased damage for the first <white>" + seconds + "s</white> of a fight.");
+				+ "<white>50%</white> increased damage for the first <yellow>" + seconds + "s</yellow> of a fight.");
 	}
 }

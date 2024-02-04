@@ -33,7 +33,7 @@ public class TargetHelper {
 	}
 	
 	public static LinkedList<LivingEntity> getEntitiesInCone(LivingEntity source, TargetProperties props) {
-		return TargetUtil.getEntitiesInCone(source, props.arc, props.range);
+		return TargetUtil.getEntitiesInCone(source, props.arc, props.range, new TargetFilter(source, props));
 	}
 	
 	public static class TargetProperties {
@@ -108,7 +108,7 @@ public class TargetHelper {
 		}
 
 		RayTraceResult rt = loc1.getWorld().rayTraceBlocks(loc1, loc2.toVector().subtract(loc1.toVector()), loc1.distance(loc2));
-		return rt.getHitBlock() != null;
+		return rt != null && rt.getHitBlock() != null;
 	}
 
 	static boolean isValidTarget(final LivingEntity source, final LivingEntity target,

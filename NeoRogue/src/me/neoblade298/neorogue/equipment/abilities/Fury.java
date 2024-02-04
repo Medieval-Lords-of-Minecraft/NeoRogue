@@ -21,7 +21,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
 public class Fury extends Equipment {
-	private int damage, berserk;
+	private int damage, berserk, heal, berserkHeal;
 	private ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
 			hit = new ParticleContainer(Particle.REDSTONE),
 			explode = new ParticleContainer(Particle.EXPLOSION_NORMAL);
@@ -31,6 +31,8 @@ public class Fury extends Equipment {
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 25, 5, 0));
 		damage = 125;
 		berserk = isUpgraded ? 10 : 15;
+		heal = 2;
+		berserkHeal = isUpgraded ? 4 : 3;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		hit.count(50).spread(0.5, 0.5);
 		explode.count(25).spread(0.5, 0.5).speed(0.1);
@@ -58,6 +60,10 @@ public class Fury extends Equipment {
 					if (isBerserk) {
 						Util.playSound(p, target.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1F, 1F, false);
 						explode.spawn(target.getLocation());
+						data.addHealth(berserkHeal);
+					}
+					else {
+						data.addHealth(heal);
 					}
 					return TriggerResult.remove();
 				});
@@ -83,8 +89,10 @@ public class Fury extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FLINT,
-				"On cast, your next basic attack deals <white>" + damage + " </white>" + GlossaryTag.SLASHING.tag(this) + " damage and grants"
+				"On cast, your next basic attack deals <white>" + damage + " </white>" + GlossaryTag.SLASHING.tag(this) + " damage, heals for <white>"
+				+ heal + "</white>, and grants"
 						+ " a stack of " + GlossaryTag.BERSERK.tag(this) + ". " +
-				"At <white>" + berserk + " </white>stacks, the cooldown of this skill is halved and the cost is removed.");
+				"At <white>" + berserk + " </white>stacks, the cooldown of this skill is halved and the cost is removed. The heal is increased to <white>"
+				+ berserkHeal + "</white>");
 	}
 }

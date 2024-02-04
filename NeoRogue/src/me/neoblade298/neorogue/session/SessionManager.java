@@ -207,8 +207,10 @@ public class SessionManager implements Listener {
 	// Only handles player left click
 	@EventHandler
 	public void onDamageByEntity(EntityDamageByEntityEvent e) {
+		//System.out.println(e.getCause());
 		if (e.getDamager().getType() != EntityType.PLAYER) {
 			// Don't cancel damage, but set it to 0 so the ~onAttack mythicmob trigger still goes
+			//System.out.println("Here");
 			if (e.getEntity() instanceof Player) e.setDamage(0);
 			return;
 		}

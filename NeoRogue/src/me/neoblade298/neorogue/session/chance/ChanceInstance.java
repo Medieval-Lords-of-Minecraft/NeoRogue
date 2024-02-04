@@ -40,6 +40,7 @@ public class ChanceInstance extends EditInventoryInstance {
 	private Instance nextInstance; // For taking you directly from this instance to another
 	private boolean returning;
 	private Hologram holo;
+	private Block candleBlock;
 
 	public ChanceInstance(Session s) {
 		super(s, SPAWN_X, SPAWN_Z);
@@ -88,10 +89,14 @@ public class ChanceInstance extends EditInventoryInstance {
 		lines.add("Right click the pillar below!");
 		Plot plot = s.getPlot();
 		holo = DHAPI.createHologram(plot.getXOffset() + "-" + plot.getZOffset() + "-shop", spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), lines);
+		candleBlock = holo.getLocation().add(0, -1, 0).getBlock();
 	}
 
 	@Override
 	public void cleanup() {
+		Candle candle = (Candle) candleBlock.getBlockData();
+		candle.setLit(false);
+		candleBlock.setBlockData(candle);
 		holo.delete();
 	}
 
@@ -159,10 +164,9 @@ public class ChanceInstance extends EditInventoryInstance {
 		if (returning) return;
 		s.broadcastSound(Sound.ENTITY_BLAZE_SHOOT);
 		part.spawn(holo.getLocation());
-		Block b = holo.getLocation().add(0, -1, 0).getBlock();
-		Candle candle = (Candle) b.getBlockData();
+		Candle candle = (Candle) candleBlock.getBlockData();
 		candle.setLit(true);
-		b.setBlockData(candle);
+		candleBlock.setBlockData(candle);
 		returning = true;
 		new BukkitRunnable() {
 			public void run() {

@@ -8,7 +8,6 @@ import java.util.Map.Entry;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
@@ -279,20 +278,7 @@ public class DamageMeta {
 		// Calculate damage to shields
 		if (recipient.getShields() != null && !recipient.getShields().isEmpty()) {
 			ShieldHolder shields = recipient.getShields();
-			double damageBeforeShields = damage;
 			damage = Math.max(0, shields.useShields(damage));
-			
-			// Update shield after if damage was dealt through shield
-			// Shouldn't need to do this since shieldholder should do it automatically?
-			/*
-			if (damage > 0 || ignoreShieldsDamage > 0) {
-				new BukkitRunnable() {
-					public void run() {
-						shields.update();
-					}
-				}.runTask(NeoRogue.inst());
-			}
-			*/
 		}
 		
 		final double finalDamage = damage + ignoreShieldsDamage + target.getAbsorptionAmount();
