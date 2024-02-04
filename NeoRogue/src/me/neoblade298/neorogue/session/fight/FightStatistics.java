@@ -131,26 +131,21 @@ public class FightStatistics {
 				.append(Component.text(")", NamedTextColor.GRAY))
 				.hoverEvent(HoverEvent.showText(getNameHoverComponent())))
 		.append(Component.text(" - ", NamedTextColor.GRAY).hoverEvent(null))
-		.append(getTypedComponent(damageDealt, NamedTextColor.RED)).append(separator)
-		.append(getTypedComponent(damageTaken, NamedTextColor.DARK_RED)).append(separator)
-		.append(getTypedComponent(damageBuffed, NamedTextColor.BLUE)).append(separator)
-		.append(getTypedComponent(damageMitigated, NamedTextColor.GOLD));
+		.append(getTypedComponent(damageDealt, NamedTextColor.RED, "Damage dealt post buff and mitigation:")).append(separator)
+		.append(getTypedComponent(damageTaken, NamedTextColor.DARK_RED, "Damage taken post buff and mitigation, before shields:")).append(separator)
+		.append(getTypedComponent(damageBuffed, NamedTextColor.BLUE, "Damage buffed for self and allies:")).append(separator)
+		.append(getTypedComponent(damageMitigated, NamedTextColor.GOLD, "Damage mitigated, excluding shields:"));
 	}
 	
-	public Component getTypedComponent(HashMap<DamageType, Double> map, NamedTextColor color) {
+	public Component getTypedComponent(HashMap<DamageType, Double> map, NamedTextColor color, String preamble) {
 		if (map.isEmpty()) {
 			return Component.text("0", color).hoverEvent(null);
 		}
 		else {
-			Component hover = null;
+			Component hover = Component.text(preamble, NamedTextColor.GRAY);
 			double total = 0;
 			for (Entry<DamageType, Double> ent : map.entrySet()) {
-				if (hover == null) {
-					hover = getStatPiece(ent.getKey(), map);
-				}
-				else {
-					hover = hover.appendNewline().append(getStatPiece(ent.getKey(), map));
-				}
+				hover = hover.appendNewline().append(getStatPiece(ent.getKey(), map));
 				total += ent.getValue();
 			}
 			return Component.text("" + df.format(total), color).hoverEvent(HoverEvent.showText(hover));
