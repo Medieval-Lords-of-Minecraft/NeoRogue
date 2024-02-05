@@ -8,12 +8,12 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
-import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
@@ -40,7 +40,7 @@ public class Challenge extends Equipment {
 			data.addShield(p.getUniqueId(), shield, true, 100, 100, 0, 1);
 			for (LivingEntity ent : TargetHelper.getEntitiesInSight(p, tp)) {
 				ent.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20, 0));
-				FightInstance.addThreat(p, ent, threat);
+				NeoRogue.mythicApi.addThreat(ent, p, threat);
 				taunt.spawn(ent);
 			}
 			return TriggerResult.keep();

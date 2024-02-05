@@ -272,7 +272,7 @@ public class DamageMeta {
 		
 		// Threat
 		if (NeoRogue.mythicApi.isMythicMob(target)) {
-			FightInstance.addThreat(owner.getEntity(), target, damage + ignoreShieldsDamage);
+			NeoRogue.mythicApi.addThreat(target, owner.getEntity(), damage + ignoreShieldsDamage);
 		}
 
 		// Calculate damage to shields
