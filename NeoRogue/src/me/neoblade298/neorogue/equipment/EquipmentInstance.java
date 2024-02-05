@@ -42,10 +42,11 @@ public class EquipmentInstance extends PriorityAction {
 	}
 	
 	public EquipmentInstance(Player p, Equipment eq, int slot, EquipSlot es) {
+		super(eq.id);
 		this.p = p;
 		this.eq = eq;
 		this.manaCost = eq.getProperties().get(PropertyType.MANA_COST);
-		this.staminaCost = eq.getProperties().get(PropertyType.MANA_COST);
+		this.staminaCost = eq.getProperties().get(PropertyType.STAMINA_COST);
 		this.cooldown = eq.getProperties().get(PropertyType.COOLDOWN);
 		this.slot = slot;
 		this.es = es;

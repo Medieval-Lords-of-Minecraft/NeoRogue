@@ -20,7 +20,7 @@ import net.kyori.adventure.text.format.TextDecoration.State;
 
 public class ShopItem {
 	private static final Component saleCmp = Component.text(" [On Sale]", NamedTextColor.DARK_GREEN, TextDecoration.BOLD, TextDecoration.ITALIC);
-	private static final ItemStack PURCHASED = CoreInventory.createButton(Material.BARRIER, (TextComponent) SharedUtil.color("<red>Purchased!</red>)"));
+	private static final ItemStack PURCHASED = CoreInventory.createButton(Material.BARRIER, (TextComponent) SharedUtil.color("<red>Purchased!</red>"));
 	
 	private int price, slot;
 	private boolean sale;

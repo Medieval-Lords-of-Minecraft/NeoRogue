@@ -51,7 +51,7 @@ public class Provoke extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE_TORCH,
-				"On cast, " + GlossaryTag.THREATEN.tag(this) + " all enemies you're looking at for <white>" + threat + "</white> "
+				"On cast, " + GlossaryTag.THREATEN.tag(this) + " all enemies you're looking at for <white>" + threat + "</white>"
 						+ ", slow them for <white>1s</white>, and gain a shield of <yellow>" 
 						+ shield + "</yellow> for <white>5</white> seconds.");
 	}

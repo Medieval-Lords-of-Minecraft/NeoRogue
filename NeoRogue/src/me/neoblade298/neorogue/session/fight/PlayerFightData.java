@@ -239,7 +239,7 @@ public class PlayerFightData extends FightData {
 	}
 	
 	public void addSlotBasedTrigger(String id, int slot, Trigger trigger, TriggerAction action) {
-		addSlotBasedTrigger(id, slot, trigger, new PriorityAction(action));
+		addSlotBasedTrigger(id, slot, trigger, new PriorityAction(id, action));
 	}
 	
 	public void addSlotBasedTrigger(String id, int slot, Trigger trigger, PriorityAction action) {
@@ -253,7 +253,7 @@ public class PlayerFightData extends FightData {
 	}
 
 	public void addTrigger(String id, Trigger trigger, TriggerAction action) {
-		addTrigger(id, trigger, new PriorityAction(action));
+		addTrigger(id, trigger, new PriorityAction(id, action));
 	}
 
 	public void addTrigger(String id, Trigger trigger, PriorityAction action) {
@@ -264,7 +264,9 @@ public class PlayerFightData extends FightData {
 	}
 	
 	private void addTrigger(String id, TreeMultiset<PriorityAction> actions, PriorityAction action) {
+		System.out.println("Added action: " + action);
 		actions.add(action);
+		System.out.println(actions);
 		
 		if (action instanceof Listener) {
 			Listener l = (Listener) action;

@@ -43,18 +43,18 @@ public class Bide extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new PriorityAction((fd, in) -> {
+		data.addTrigger(id, bind, new PriorityAction(id, (fd, in) -> {
 			data.addShield(p.getUniqueId(), shields, true, duration * 20, 100, 0, 1);
 			Util.playSound(p, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1F, 1F, false);
-			data.addTrigger(id, Trigger.RECEIVED_DAMAGE, new BideInstance(p));
+			data.addTrigger(id, Trigger.RECEIVED_DAMAGE, new BideInstance(p, id));
 			return TriggerResult.keep();
 		}));
 	}
 	
 	private class BideInstance extends PriorityAction {
 		private long createTime;
-		public BideInstance(Player p) {
-			super();
+		public BideInstance(Player p, String id) {
+			super(id);
 			createTime = System.currentTimeMillis();
 			action = (data, inputs) -> {
 				if (System.currentTimeMillis() - createTime > 5000) return TriggerResult.remove();
