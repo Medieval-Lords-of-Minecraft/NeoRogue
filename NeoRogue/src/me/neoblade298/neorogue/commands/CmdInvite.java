@@ -37,7 +37,7 @@ public class CmdInvite extends Subcommand {
 		LobbyInstance li = (LobbyInstance) inst;
 		if (args[0].equalsIgnoreCase("all")) {
 			for (Player on : Bukkit.getOnlinePlayers()) {
-				if (on == p) continue;
+				if (SessionManager.getSession(on) != null) continue;
 				li.invitePlayer(p, on.getName());
 			}
 		}

@@ -23,7 +23,7 @@ public class ShrineChoiceInventory extends CoreInventory {
 		ItemStack[] contents = inv.getContents();
 		for (int i = 0; i < 4; i++) {
 			contents[i] = CoreInventory.createButton(Material.SOUL_LANTERN, Component.text("Rest", NamedTextColor.GREEN), 
-					"Everyone in the party heals for 25% of their max health.", 250, NamedTextColor.GRAY);
+					"Everyone in the party heals for 35% of their max health.", 250, NamedTextColor.GRAY);
 			contents[5 + i] = CoreInventory.createButton(Material.ANVIL, Component.text("Upgrade", NamedTextColor.GOLD), 
 					"Everyone in the party gets to upgrade 1 equipment.", 250, NamedTextColor.GRAY);
 		}

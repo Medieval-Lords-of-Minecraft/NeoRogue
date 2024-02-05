@@ -129,7 +129,7 @@ public class ShrineInstance extends EditInventoryInstance {
 			notUsed.clear();
 			
 			for (PlayerSessionData data : s.getParty().values()) {
-				data.healPercent(0.25);
+				data.healPercent(0.35);
 			}
 			
 			

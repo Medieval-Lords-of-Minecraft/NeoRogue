@@ -89,12 +89,10 @@ public abstract class Equipment {
 			new Execute(b);
 			new Fortify(b);
 			new Fury(b);
-			new Glare(b);
 			new Parry(b);
 			new Provoke(b);
 			new Quake(b);
 			new RecklessSwing(b);
-			new SavageCry(b);
 			new Smite(b);
 			new Tackle(b);
 			new WindSlash(b);

@@ -1,5 +1,6 @@
 package me.neoblade298.neorogue.session;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
@@ -16,6 +17,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import eu.decentsoftware.holograms.api.DHAPI;
+import eu.decentsoftware.holograms.api.holograms.Hologram;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
@@ -28,7 +31,8 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 public class LobbyInstance extends Instance {
 	private static final int MAX_SIZE = 4;
-	private static final double SPAWN_X = Session.LOBBY_X + 6.5, SPAWN_Z = Session.LOBBY_Z + 3.5;
+	private static final double SPAWN_X = Session.LOBBY_X + 6.5, SPAWN_Z = Session.LOBBY_Z + 3.5,
+			HOLO_X = 0, HOLO_Y = 4, HOLO_Z = 10;
 
 	private String name;
 	private static String invPrefix = "<dark_gray>[<green><click:run_command:'/nr join ",
@@ -39,6 +43,7 @@ public class LobbyInstance extends Instance {
 	private boolean busy = false;
 	private Component partyInfoHeader;
 	private HashSet<UUID> ready = new HashSet<UUID>();
+	private Hologram holo;
 
 	// Static error messages
 	private static final TextComponent hostOnlyInvite = Component.text("Only the host may invite other players!",
@@ -66,6 +71,15 @@ public class LobbyInstance extends Instance {
 		partyInfoHeader = Component.text().content("<< ( ").color(NamedTextColor.GRAY)
 				.append(Component.text(name, NamedTextColor.RED)).append(Component.text(" ) >>"))
 				.append(Component.text("\nPlayers:")).build();
+		
+
+		// Setup hologram
+		ArrayList<String> lines = new ArrayList<String>();
+		lines.add("Invite players with /nr invite {name/all}");
+		lines.add("Choose a class then hit the button");
+		lines.add("when you're ready!");
+		Plot plot = s.getPlot();
+		holo = DHAPI.createHologram(plot.getXOffset() + "-" + plot.getZOffset() + "-lobby", spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), lines);
 	}
 
 	public void invitePlayer(Player inviter, String username) {
@@ -82,6 +96,12 @@ public class LobbyInstance extends Instance {
 		Player recipient = Bukkit.getPlayer(username);
 		if (recipient == null) {
 			Util.msgRaw(inviter, playerNotOnline);
+			return;
+		}
+
+		
+		if (SessionManager.getSession(recipient) != null) {
+			Util.msg(inviter, "<red>That player is already in a session!");
 			return;
 		}
 		
@@ -273,7 +293,7 @@ public class LobbyInstance extends Instance {
 
 	@Override
 	public void cleanup() {
-
+		holo.delete();
 	}
 
 	@Override
