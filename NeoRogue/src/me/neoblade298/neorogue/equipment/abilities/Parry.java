@@ -30,7 +30,7 @@ public class Parry extends Equipment {
 			hit = new ParticleContainer(Particle.REDSTONE);
 	
 	public Parry(boolean isUpgraded) {
-		super("parry", "Parry", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
+		super("parry", "Parry", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 5, 5, 0));
 		shields = 30;
 		damage = isUpgraded ? 100 : 70;

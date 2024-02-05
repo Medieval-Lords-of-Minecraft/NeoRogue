@@ -23,7 +23,7 @@ public class Bide extends Equipment {
 			bpc = new ParticleContainer(Particle.FLAME);
 	
 	public Bide(boolean isUpgraded) {
-		super("bide", "Bide", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR, 
+		super("bide", "Bide", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR, 
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 20, 10, 0));
 		shields = 50;
 		duration = 5;

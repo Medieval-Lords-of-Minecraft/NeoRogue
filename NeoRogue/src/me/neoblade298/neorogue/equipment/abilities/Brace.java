@@ -26,6 +26,7 @@ public class Brace extends Equipment {
 		shields = isUpgraded ? 30 : 20;
 		pc.count(10).spread(0.5, 0.5).speed(0.2);
 		addReforgeOption("brace", new String[] {"brace2", "parry", "bide"});
+		addReforgeOption("provoke", "challenge");
 		
 		tags.add(GlossaryTag.SHIELDS);
 	}

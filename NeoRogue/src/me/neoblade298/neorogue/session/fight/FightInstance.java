@@ -638,6 +638,7 @@ public abstract class FightInstance extends Instance {
 			if (pdata != null) {
 				pdata.cleanup();
 				if (pdata.getPlayer() != null) {
+					pdata.getPlayer().removePotionEffect(PotionEffectType.ABSORPTION);
 					s.broadcast(pdata.getStats().getStatLine());
 					if (pdata.isDead()) {
 						pdata.setDeath(false);
