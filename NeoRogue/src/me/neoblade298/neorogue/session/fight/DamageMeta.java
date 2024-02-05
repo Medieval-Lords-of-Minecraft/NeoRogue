@@ -287,6 +287,10 @@ public class DamageMeta {
 			if (!(target instanceof Player)) {
 				NeoRogue.mythicApi.castSkill(target, "UpdateHealthbar");
 			}
+			else {
+				PlayerFightData data = FightInstance.getUserData(target.getUniqueId());
+				data.getInstance().cancelRevives((Player) target);
+			}
 		}
 		else {
 			target.damage(0.1);

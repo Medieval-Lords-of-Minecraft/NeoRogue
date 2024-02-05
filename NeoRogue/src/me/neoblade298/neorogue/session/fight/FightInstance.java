@@ -84,7 +84,7 @@ public abstract class FightInstance extends Instance {
 	private static final int KILLS_TO_SCALE = 8; // number of mobs to kill before increasing total mobs by 1
 
 	protected LinkedList<Corpse> corpses = new LinkedList<Corpse>();
-	protected HashMap<UUID, Player> revivers = new HashMap<UUID, Player>();
+	protected HashMap<Player, Corpse> revivers = new HashMap<Player, Corpse>();
 	protected HashSet<UUID> party = new HashSet<UUID>();
 	protected Map map;
 	protected ArrayList<MapSpawnerInstance> spawners = new ArrayList<MapSpawnerInstance>(),
@@ -236,13 +236,16 @@ public abstract class FightInstance extends Instance {
 		if (data == null || data.isDead()) return;
 		for (Corpse c : fi.corpses) {
 			if (c.hitCorpse(e.getRightClicked())) {
-				if (fi.revivers.containsKey(c.data.getUniqueId())) {
-					if (!fi.revivers.get(c.data.getUniqueId()).getUniqueId().equals(p.getUniqueId())) {
-						Util.displayError(p, "Someone is already reviving this player!");
-					}
+				if (fi.revivers.containsKey(p)) {
+					Util.displayError(p, "You're already reviving someone!");
 					return;
 				}
-				fi.startRevive(p, c);
+				
+				if (c.reviver != null) {
+					Util.displayError(p, "Someone is already reviving this player!");
+					return;
+				}
+				fi.startRevive(data, c);
 			}
 		}
 	}
@@ -256,15 +259,22 @@ public abstract class FightInstance extends Instance {
 		trigger(p, Trigger.RIGHT_CLICK_HIT, new RightClickHitEvent((LivingEntity) e.getRightClicked()));
 	}
 	
-	private void startRevive(Player p, Corpse corpse) {
+	public void cancelRevives(Player p) {
+		if (!revivers.containsKey(p)) return;
+		cancelRevive(revivers.get(p), p);
+	}
+	
+	private void startRevive(PlayerFightData data, Corpse corpse) {
 		UUID deadId = corpse.data.getUniqueId();
+		Player p = data.getPlayer();
 		Player dead = Bukkit.getPlayer(deadId);
 		if (dead == null) {
 			Util.displayError(p, "Offline dead players cannot be revived!");
 			return;
 		}
 		
-		revivers.put(deadId, p);
+		revivers.put(p, corpse);
+		corpse.reviver = data;
 		Util.msg(p, "You started reviving <yellow>" + dead.getName() + "</yellow>. Stay near their body for 5 seconds!");
 		Util.msg(dead, "You are being revived by <yellow>" + p.getName());
 		dead.teleport(corpse.corpseDisplay);
@@ -272,20 +282,20 @@ public abstract class FightInstance extends Instance {
 		BossBar reviveBar = Bukkit.createBossBar("Reviving: §e" + dead.getName(), BarColor.BLUE, BarStyle.SOLID);
 		reviveBar.addPlayer(p);
 		reviveBar.addPlayer(dead);
+		corpse.bar = reviveBar;
 		cleanupTasks.add(new BukkitRunnable() {
 			public void run() {
 				reviveBar.removeAll();
 			}
 		});
 		
-		LinkedList<BukkitTask> tasks = new LinkedList<BukkitTask>();
 		for (int i = 0; i < 5; i++) {
 			final int count = i;
 			final double progress = 0.2 * (i + 1);
-			tasks.add(new BukkitRunnable() {
+			corpse.tasks.add(new BukkitRunnable() {
 				public void run() {
 					if (!canRevive(corpse, p, dead)) {
-						cancelRevive(corpse, p, dead, tasks, reviveBar);
+						cancelRevive(corpse, p);
 						return;
 					}
 					
@@ -296,7 +306,7 @@ public abstract class FightInstance extends Instance {
 					
 					// Revive not complete
 					if (count == 4) {
-						completeRevive(p, dead, corpse, reviveBar);
+						completeRevive(p, corpse);
 					}
 				}
 			}.runTaskLater(NeoRogue.inst(), 20 * i));
@@ -317,21 +327,27 @@ public abstract class FightInstance extends Instance {
 		return true;
 	}
 	
-	private void cancelRevive(Corpse corpse, Player p, Player dead, LinkedList<BukkitTask> tasks, BossBar reviveBar) {
-		Util.msg(dead, "<red>Revival failed!");
+	private void cancelRevive(Corpse corpse, Player p) {
+		Player dead = corpse.data.getPlayer();
+		if (dead != null) {
+			Util.msg(dead, "<red>Revival failed!");
+			Util.playSound(dead, Sound.BLOCK_NOTE_BLOCK_BASS, 1, 0.7F, false);
+		}
+		Util.msg(p, "<red>Revival failed!");
 		Util.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1, 0.7F, false);
-		Util.playSound(dead, Sound.BLOCK_NOTE_BLOCK_BASS, 1, 0.7F, false);
-		revivers.remove(corpse.data.getUniqueId());
-		reviveBar.removeAll();
-		for (BukkitTask task : tasks) {
+		revivers.remove(p);
+		corpse.reviver = null;
+		corpse.bar.removeAll();
+		for (BukkitTask task : corpse.tasks) {
 			task.cancel();
 		}
 	}
 	
-	private void completeRevive(Player p, Player dead, Corpse corpse, BossBar reviveBar) {
+	private void completeRevive(Player p, Corpse corpse) {
+		Player dead = corpse.data.getPlayer();
 		Util.playSound(dead, Sound.ENTITY_PLAYER_LEVELUP, true);
 		revivePart.spawn(p);
-		revivers.remove(corpse.data.getUniqueId());
+		revivers.remove(p);
 		corpses.remove(corpse);
 		dead.teleport(corpse.corpseDisplay);
 		corpse.remove();
@@ -341,7 +357,7 @@ public abstract class FightInstance extends Instance {
 		userData.get(p.getUniqueId()).getStats().addRevive();
 		new BukkitRunnable() {
 			public void run() {
-				reviveBar.removeAll();
+				corpse.bar.removeAll();
 			}
 		}.runTaskLater(NeoRogue.inst(), 20L);
 	}
@@ -795,6 +811,7 @@ public abstract class FightInstance extends Instance {
 		protected BossBar bar;
 		protected Entity corpseDisplay;
 		protected LinkedList<Entity> hitbox = new LinkedList<Entity>();
+		protected LinkedList<BukkitTask> tasks = new LinkedList<BukkitTask>();
 		protected ItemStack[] inv;
 		public Corpse(PlayerFightData data) {
 			this.data = data;
@@ -829,6 +846,7 @@ public abstract class FightInstance extends Instance {
 			for (Entity ent : hitbox) {
 				ent.remove();
 			}
+			bar.removeAll();
 		}
 		
 		public boolean hitCorpse(Entity e) {
