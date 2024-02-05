@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.attribute.Attribute;
@@ -128,6 +129,7 @@ public class LobbyInstance extends Instance {
 		}
 
 		invited.remove(p.getUniqueId());
+		p.setGameMode(GameMode.ADVENTURE);
 		players.put(p.getUniqueId(), EquipmentClass.WARRIOR);
 		SessionManager.addToSession(p.getUniqueId(), this.s);
 		p.teleport(spawn);
