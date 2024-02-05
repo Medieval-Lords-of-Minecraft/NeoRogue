@@ -264,9 +264,7 @@ public class PlayerFightData extends FightData {
 	}
 	
 	private void addTrigger(String id, TreeMultiset<PriorityAction> actions, PriorityAction action) {
-		System.out.println("Added action: " + action);
 		actions.add(action);
-		System.out.println(actions);
 		
 		if (action instanceof Listener) {
 			Listener l = (Listener) action;

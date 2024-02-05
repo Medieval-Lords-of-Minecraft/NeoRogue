@@ -34,12 +34,10 @@ public class PriorityAction implements TriggerAction, Comparable<PriorityAction>
 		result = prime * result + ((action == null) ? 0 : action.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + priority;
-		System.out.println("Check hashcode " + result);
 		return result;
 	}
 	@Override
 	public boolean equals(Object obj) {
-		System.out.println("Check equality " + id);
 		if (this == obj) return true;
 		if (obj == null) return false;
 		if (getClass() != obj.getClass()) return false;
@@ -53,7 +51,6 @@ public class PriorityAction implements TriggerAction, Comparable<PriorityAction>
 		}
 		else if (!id.equals(other.id)) return false;
 		if (priority != other.priority) return false;
-		System.out.println("true");
 		return true;
 	}
 	@Override

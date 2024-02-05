@@ -405,6 +405,16 @@ public abstract class FightInstance extends Instance {
 		data.getInstance().handleRespawn(data, id, false);
 		data.getInstance().handleMobKill(id);
 	}
+	
+	public static void addThreat(Entity threatener, Entity target, double amount) {
+		if (!NeoRogue.mythicApi.isMythicMob(target)) return;
+		NeoRogue.mythicApi.getMythicMobInstance(target).getThreatTable().threatGain(BukkitAdapter.adapt(threatener), amount);
+	}
+	
+	public static void removeThreat(Entity threatener, Entity target, double amount) {
+		if (!NeoRogue.mythicApi.isMythicMob(target)) return;
+		NeoRogue.mythicApi.getMythicMobInstance(target).getThreatTable().threatLoss(BukkitAdapter.adapt(threatener), amount);
+	}
 
 	public abstract void handleMobKill(String id);
 
