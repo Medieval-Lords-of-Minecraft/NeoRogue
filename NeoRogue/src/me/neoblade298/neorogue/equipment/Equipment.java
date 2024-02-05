@@ -631,12 +631,21 @@ public abstract class Equipment {
 	}
 	
 	public static enum EquipSlot {
-		ARMOR,
-		ACCESSORY,
-		OFFHAND,
-		HOTBAR,
-		KEYBIND, // Hotbar + other binds
-		STORAGE;
+		ARMOR("Armor"),
+		ACCESSORY("Accessory"),
+		OFFHAND("Offhand"),
+		HOTBAR("Hotbar"),
+		KEYBIND("Keybind"), // Hotbar + other binds
+		STORAGE("Storage");
+		
+		private String display;
+		private EquipSlot(String display) {
+			this.display = display;
+		}
+		
+		public String getDisplay() {
+			return display;
+		}
 	}
 	
 	private static class DropTableSet<E> {

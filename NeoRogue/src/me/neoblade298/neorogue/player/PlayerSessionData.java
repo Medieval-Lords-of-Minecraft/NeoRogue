@@ -48,7 +48,7 @@ public class PlayerSessionData {
 	private Equipment[] storage = new Equipment[STORAGE_SIZE];
 	private Equipment[] otherBinds = new Equipment[8];
 	private TreeMap<String, ArtifactInstance> artifacts = new TreeMap<String, ArtifactInstance>();
-	private int abilitiesEquipped = 1, maxAbilities = 5, maxStorage = 9, coins = 50;
+	private int abilitiesEquipped = 1, maxAbilities = 9, maxStorage = 9, coins = 50;
 	private HashMap<EquipSlot, HashSet<Integer>> upgradable = new HashMap<EquipSlot, HashSet<Integer>>(),
 			upgraded = new HashMap<EquipSlot, HashSet<Integer>>();
 	private String instanceData;
@@ -99,8 +99,8 @@ public class PlayerSessionData {
 		// If you ever use abilities equipped, need to initialize it to 1 here
 		switch (this.pc) {
 		case WARRIOR:
-			hotbar[0] = Equipment.get("woodenSword", true);
-			hotbar[1] = Equipment.get("empoweredEdge", true);
+			hotbar[0] = Equipment.get("woodenSword", false);
+			hotbar[1] = Equipment.get("empoweredEdge", false);
 			break;
 		case THIEF:
 			hotbar[0] = Equipment.get("woodenSword", false);
@@ -290,22 +290,50 @@ public class PlayerSessionData {
 
 	public void giveEquipment(Equipment eq) {
 		Player p = getPlayer();
-		Util.msg(p, SharedUtil.color("You received ").append(eq.getDisplay()));
 		Util.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, false);
 
 		if (eq instanceof Artifact) {
 			giveArtifact((Artifact) eq);
 		}
 		else {
-			HashMap<Integer, ItemStack> overflow = p.getInventory().addItem(eq.getItem());
-			if (!overflow.isEmpty()) {
-				for (ItemStack item : overflow.values()) {
-					Util.msg(p, SharedUtil.color("<red>Your inventory is full! ").append(eq.getDisplay())
-							.append(Component.text(" was dropped on the ground.")));
-					p.getWorld().dropItem(p.getLocation(), item);
+			// First try to auto-equip
+			boolean success = false;
+			EquipSlot es = null;
+			for (EquipSlot eqs : eq.getType().getSlots()) {
+				success = tryEquip(eqs, eq);
+				if (success) {
+					es = eqs;
+					break;
+				}
+			}
+			
+			if (success) {
+				Util.msg(p, SharedUtil.color("You received ").append(eq.getDisplay())
+						.append(SharedUtil.color(", it was auto-equipped to " + es.getDisplay() + ".")));
+			}
+			else {
+				HashMap<Integer, ItemStack> overflow = p.getInventory().addItem(eq.getItem());
+				Util.msg(p, SharedUtil.color("You received ").append(eq.getDisplay()));
+				if (!overflow.isEmpty()) {
+					for (ItemStack item : overflow.values()) {
+						Util.msg(p, SharedUtil.color("<red>Your inventory is full! ").append(eq.getDisplay())
+								.append(Component.text(" was dropped on the ground.")));
+						p.getWorld().dropItem(p.getLocation(), item);
+					}
 				}
 			}
 		}
+	}
+	
+	private boolean tryEquip(EquipSlot es, Equipment eq) {
+		Equipment[] arr = getArrayFromEquipSlot(es);
+		for (int i = 0; i < arr.length; i++) {
+			if (arr[i] == null) {
+				setEquipment(es, i, eq);
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public PlayerSlot getRandomEquipment() {

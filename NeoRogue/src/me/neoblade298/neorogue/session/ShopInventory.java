@@ -79,7 +79,7 @@ public class ShopInventory extends CoreInventory {
 			shopItem.setPurchased(true);
 			
 			data.addCoins(-price);
-			p.getInventory().addItem(e.getCurrentItem());
+			data.giveEquipment(shopItem.getEquipment());
 			p.playSound(p, Sound.ENTITY_WANDERING_TRADER_YES, 1F, 1F);
 			p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1F, 1F);
 			

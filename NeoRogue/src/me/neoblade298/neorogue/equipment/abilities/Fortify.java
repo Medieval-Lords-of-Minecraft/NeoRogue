@@ -62,7 +62,8 @@ public class Fortify extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.FLINT,
 				"On cast, your next basic attack while in the air deals <white>" + damage + " </white>" + GlossaryTag.PIERCING.tag(this) + " damage. If the enemy is"
-						+ " below <white>50%</white> health, gain <yellow>" + fortitude + "</yellow> stacks of fortitude and a shield with "
+						+ " below <white>50%</white> health, deal <white>" + execute + "</white> more damage and "
+								+ "gain <yellow>" + fortitude + "</yellow> stacks of fortitude and a shield with "
 						+ "the number of stacks of fortitude you have.");
 	}
 }
