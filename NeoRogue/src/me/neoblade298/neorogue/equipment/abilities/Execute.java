@@ -27,7 +27,7 @@ public class Execute extends Equipment {
 	
 	public Execute(boolean isUpgraded) {
 		super("execute", "Execute", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 15, isUpgraded ? 5 : 7, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 15, 7, 0));
 		damage = isUpgraded ? 45 : 30;
 		execute = isUpgraded ? 150 : 100;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
@@ -61,7 +61,7 @@ public class Execute extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FLINT,
-				"On cast, your next basic attack while in the air deals <white>" + damage + "</white> " + GlossaryTag.PIERCING.tag(this) + " damage. If the enemy is"
-						+ " below <white>50%</white> health, deal an additional <white>" + execute + "</white> " + GlossaryTag.PIERCING.tag(this) + " damage.");
+				"On cast, your next basic attack while in the air deals <yellow>" + damage + "</yellow> " + GlossaryTag.PIERCING.tag(this) + " damage. If the enemy is"
+						+ " below <white>50%</white> health, deal an additional <yellow>" + execute + "</yellow> " + GlossaryTag.PIERCING.tag(this) + " damage.");
 	}
 }

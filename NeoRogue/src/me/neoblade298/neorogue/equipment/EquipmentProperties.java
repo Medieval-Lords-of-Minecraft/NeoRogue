@@ -1,6 +1,7 @@
 package me.neoblade298.neorogue.equipment;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.UUID;
 
 import org.bukkit.Sound;
@@ -19,23 +20,28 @@ import net.kyori.adventure.text.Component;
 public class EquipmentProperties {
 	private static final EquipmentProperties NONE = new EquipmentProperties(0,0,0,0,0,0,0, null, null);
 	private ArrayList<Component> lore;
-	private double manaCost, staminaCost, cooldown, range, damage, attackSpeed, knockback;
+	private HashMap<PropertyType, Property> properties = new HashMap<PropertyType, Property>();
 	private DamageType type;
 	private SoundContainer swingSound;
 	
 	private EquipmentProperties(double manaCost, double staminaCost, double cooldown, double range, double damage, double attackSpeed,
 			double knockback, DamageType type, SoundContainer swingSound) {
-		this.manaCost = manaCost;
-		this.staminaCost = staminaCost;
-		this.cooldown = cooldown;
-		this.range = range;
-		this.damage = damage;
-		this.attackSpeed = attackSpeed;
+		setupProperty(PropertyType.MANA_COST, manaCost);
+		setupProperty(PropertyType.STAMINA_COST, staminaCost);
+		setupProperty(PropertyType.COOLDOWN, cooldown);
+		setupProperty(PropertyType.RANGE, range);
+		setupProperty(PropertyType.DAMAGE, damage);
+		setupProperty(PropertyType.KNOCKBACK, knockback);
+		setupProperty(PropertyType.ATTACK_SPEED, attackSpeed);
 		this.type = type;
 		this.swingSound = swingSound;
 	}
 	
 	public static EquipmentProperties ofWeapon(double damage, double attackSpeed, DamageType type, Sound swingSound) {
+		return new EquipmentProperties(0, 0, 0, 0, damage, attackSpeed, 0, type, new SoundContainer(swingSound));
+	}
+	
+	public static EquipmentProperties ofWeapon(double manaCost, double staminaCost, double damage, double attackSpeed, DamageType type, Sound swingSound) {
 		return new EquipmentProperties(0, 0, 0, 0, damage, attackSpeed, 0, type, new SoundContainer(swingSound));
 	}
 	
@@ -59,69 +65,37 @@ public class EquipmentProperties {
 		return NONE;
 	}
 	
+	private void setupProperty(PropertyType type, double amount) {
+		if (amount == 0) return;
+		properties.put(type, new Property(amount));
+	}
+	
 	public ArrayList<Component> generateLore(Equipment eq) {
 		if (lore != null) return lore;
 		ArrayList<Component> lore = new ArrayList<Component>();
-		if (manaCost > 0) lore.add(SharedUtil.color("<gold>Mana Cost: <white>" + manaCost));
-		if (staminaCost > 0) lore.add(SharedUtil.color("<gold>Stamina Cost: <white>" + staminaCost));
-		if (range > 0) lore.add(SharedUtil.color("<gold>Range: <white>" + range));
-		if (cooldown > 0) lore.add(SharedUtil.color("<gold>Cooldown: <white>" + cooldown));
-		if (damage > 0) lore.add(SharedUtil.color("<gold>Damage: <white>" + damage));
-		if (knockback > 0) lore.add(SharedUtil.color("<gold>Knockback: <white>" + knockback));
+		for (PropertyType type : PropertyType.values()) {
+			if (!properties.containsKey(type)) continue;
+			lore.add(generateLoreLine(type));
+		}
 		if (type != null) {
 			lore.add(SharedUtil.color("<gold>Damage Type: <white>" + type));
 			eq.addTags(DamageType.toGlossary(type));
 		}
-		if (attackSpeed > 0) lore.add(SharedUtil.color("<gold>Attack Speed: <white>" + attackSpeed + "/s"));
 		return lore;
 	}
 	
-	public double getManaCost() {
-		return manaCost;
+	private Component generateLoreLine(PropertyType type) {
+		Property prop = properties.get(type);
+		String color = prop.canUpgrade ? "<yellow>" : "<white>";
+		return SharedUtil.color("<gold>" + type.label + color + prop.amount);
 	}
-
-	public void setManaCost(double manaCost) {
-		this.manaCost = manaCost;
+	
+	public boolean contains(PropertyType type) {
+		return properties.containsKey(type);
 	}
-
-	public double getStaminaCost() {
-		return staminaCost;
-	}
-
-	public void setStaminaCost(double staminaCost) {
-		this.staminaCost = staminaCost;
-	}
-
-	public double getCooldown() {
-		return cooldown;
-	}
-
-	public void setCooldown(double cooldown) {
-		this.cooldown = cooldown;
-	}
-
-	public double getRange() {
-		return range;
-	}
-
-	public void setRange(double range) {
-		this.range = range;
-	}
-
-	public double getDamage() {
-		return damage;
-	}
-
-	public void setDamage(double damage) {
-		this.damage = damage;
-	}
-
-	public double getAttackSpeed() {
-		return attackSpeed;
-	}
-
-	public void setAttackSpeed(double attackSpeed) {
-		this.attackSpeed = attackSpeed;
+	
+	public double get(PropertyType type) {
+		return properties.containsKey(type) ? properties.get(type).amount : 0;
 	}
 
 	public DamageType getType() {
@@ -130,14 +104,6 @@ public class EquipmentProperties {
 
 	public void setType(DamageType type) {
 		this.type = type;
-	}
-
-	public double getKnockback() {
-		return knockback;
-	}
-
-	public void setKnockback(double knockback) {
-		this.knockback = knockback;
 	}
 
 	public SoundContainer getSwingSound() {
@@ -150,8 +116,38 @@ public class EquipmentProperties {
 
 	public void modifyItemMeta(ItemStack item, ItemMeta meta) {
 		String name = item.getType().name();
+		double attackSpeed = properties.containsKey(PropertyType.ATTACK_SPEED) ? properties.get(PropertyType.ATTACK_SPEED).amount : 0;
 		if (name.endsWith("SWORD") || name.endsWith("AXE") || name.endsWith("HOE") || name.endsWith("SHOVEL")) {
 			meta.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED, new AttributeModifier(UUID.randomUUID(), "neorogue_attackspeed", attackSpeed - 4, Operation.ADD_NUMBER, EquipmentSlot.HAND));
+		}
+	}
+	
+	public void addUpgrades(PropertyType... types) {
+		for (PropertyType type : types) {
+			properties.get(type).canUpgrade = true;
+		}
+	}
+	
+	public enum PropertyType {
+		MANA_COST("Mana Cost: "),
+		STAMINA_COST("Stamina Cost: "),
+		RANGE("Range: "),
+		COOLDOWN("Cooldown: "),
+		DAMAGE("Damage: "),
+		KNOCKBACK("Knockback: "),
+		ATTACK_SPEED("Attack Speed: ");
+		
+		private String label;
+		private PropertyType(String label) {
+			this.label = label;
+		}
+	}
+	
+	private class Property {
+		private double amount;
+		private boolean canUpgrade;
+		protected Property(double amount) {
+			this.amount = amount;
 		}
 	}
 }

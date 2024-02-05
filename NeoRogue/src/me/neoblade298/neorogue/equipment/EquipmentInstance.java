@@ -10,6 +10,7 @@ import org.bukkit.inventory.PlayerInventory;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
@@ -43,9 +44,9 @@ public class EquipmentInstance extends PriorityAction {
 	public EquipmentInstance(Player p, Equipment eq, int slot, EquipSlot es) {
 		this.p = p;
 		this.eq = eq;
-		this.manaCost = eq.getProperties().getManaCost();
-		this.staminaCost = eq.getProperties().getStaminaCost();
-		this.cooldown = eq.getProperties().getCooldown();
+		this.manaCost = eq.getProperties().get(PropertyType.MANA_COST);
+		this.staminaCost = eq.getProperties().get(PropertyType.MANA_COST);
+		this.cooldown = eq.getProperties().get(PropertyType.COOLDOWN);
 		this.slot = slot;
 		this.es = es;
 	}

@@ -19,6 +19,7 @@ import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.shared.droptables.DropTable;
 import me.neoblade298.neocore.shared.util.SharedUtil;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.abilities.*;
 import me.neoblade298.neorogue.equipment.accessories.*;
 import me.neoblade298.neorogue.equipment.armor.*;
@@ -525,11 +526,11 @@ public abstract class Equipment {
 	}
 	
 	public void weaponDamage(Player p, PlayerFightData data, LivingEntity target) {
-		weaponDamage(p, data, target, properties.getDamage(), properties.getKnockback());
+		weaponDamage(p, data, target, properties.get(PropertyType.DAMAGE), properties.get(PropertyType.KNOCKBACK));
 	}
 	
 	public void weaponDamage(Player p, PlayerFightData data, LivingEntity target, double damage) {
-		weaponDamage(p, data, target, damage, properties.getKnockback());
+		weaponDamage(p, data, target, damage, properties.get(PropertyType.KNOCKBACK));
 	}
 	
 	public void weaponDamage(Player p, PlayerFightData data, LivingEntity target, double damage, double knockback) {
@@ -548,18 +549,18 @@ public abstract class Equipment {
 	
 	public void weaponDamageProjectile(LivingEntity target, ProjectileInstance proj, Barrier hitBarrier) {
 		PlayerFightData data = (PlayerFightData) proj.getOwner();
-		DamageMeta dm = new DamageMeta(data, properties.getDamage(), properties.getType());
+		DamageMeta dm = new DamageMeta(data, properties.get(PropertyType.DAMAGE), properties.getType());
 		if (!proj.getBuffs().isEmpty()) {
 			dm.addBuffs(proj.getBuffs(), BuffOrigin.PROJECTILE, true);
 		}
 		if (hitBarrier != null) {
 			dm.addBuffs(hitBarrier.getBuffs(), BuffOrigin.BARRIER, false);
 		}
-		BasicAttackEvent ev = new BasicAttackEvent(target, dm, properties.getKnockback(), this, null);
+		BasicAttackEvent ev = new BasicAttackEvent(target, dm, properties.get(PropertyType.KNOCKBACK), this, null);
 		data.runActions(data, Trigger.BASIC_ATTACK, ev);
 		FightInstance.dealDamage(dm, target);
-		if (properties.getKnockback() != 0) {
-			FightInstance.knockback(proj.getVector(), target, properties.getKnockback());
+		if (properties.contains(PropertyType.KNOCKBACK)) {
+			FightInstance.knockback(proj.getVector(), target, properties.get(PropertyType.KNOCKBACK));
 		}
 	}
 

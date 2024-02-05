@@ -26,6 +26,6 @@ public class SpikedPauldrons extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.ARMOR_STAND, "Start every fight with <white>" + thorns + " </white>" + GlossaryTag.THORNS.tag(this) + ".");
+		item = createItem(Material.ARMOR_STAND, "Start every fight with <yellow>" + thorns + " </yellow>" + GlossaryTag.THORNS.tag(this) + ".");
 	}
 }

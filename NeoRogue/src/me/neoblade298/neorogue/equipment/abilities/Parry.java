@@ -78,6 +78,6 @@ public class Parry extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.FLINT,
 				"On cast, gain <white>" + shields + " </white>" + GlossaryTag.SHIELDS.tag(this) + " for <white>2</white> seconds. Taking damage during this "
-						+ "increases your next basic attack's damage by <white>" + damage + "</white>.");
+						+ "increases your next basic attack's damage by <yellow>" + damage + "</yellow>.");
 	}
 }

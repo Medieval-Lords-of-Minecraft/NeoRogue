@@ -11,6 +11,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
@@ -51,13 +52,13 @@ public class WindSlash extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FLINT,
-				"On cast, fire <white>" + amount + " </white>projectiles in a cone in front of you that deal "
-						+ "<white>" + damage + " </white>" + GlossaryTag.SLASHING.tag(this) + " damage.");
+				"On cast, fire <yellow>" + amount + " </yellow>projectiles in a cone in front of you that deal "
+						+ "<yellow>" + damage + " </yellow>" + GlossaryTag.SLASHING.tag(this) + " damage.");
 	}
 	
 	private class WindSlashProjectile extends Projectile {
 		public WindSlashProjectile(int i, int center) {
-			super(0.5, properties.getRange(), 2);
+			super(0.5, properties.get(PropertyType.RANGE), 2);
 			this.size(1, 1);
 			int iter = i - center;
 			this.rotation(iter * 45);

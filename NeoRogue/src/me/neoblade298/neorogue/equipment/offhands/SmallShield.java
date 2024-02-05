@@ -38,6 +38,6 @@ public class SmallShield extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.SHIELD, "When raised, reduce all damage taken by <white>" + reduction + "</white>.");
+		item = createItem(Material.SHIELD, "When raised, reduce all damage taken by <yellow>" + reduction + "</yellow>.");
 	}
 }

@@ -92,7 +92,7 @@ public class Fury extends Equipment {
 				"On cast, your next basic attack deals <white>" + damage + " </white>" + GlossaryTag.SLASHING.tag(this) + " damage, heals for <white>"
 				+ heal + "</white>, and grants"
 						+ " a stack of " + GlossaryTag.BERSERK.tag(this) + ". " +
-				"At <white>" + berserk + " </white>stacks, the cooldown of this skill is halved and the cost is removed. The heal is increased to <white>"
-				+ berserkHeal + "</white>");
+				"At <yellow>" + berserk + " </yellow>stacks, the cooldown of this skill is halved and the cost is removed. The heal is increased to <yellow>"
+				+ berserkHeal + "</yellow>");
 	}
 }

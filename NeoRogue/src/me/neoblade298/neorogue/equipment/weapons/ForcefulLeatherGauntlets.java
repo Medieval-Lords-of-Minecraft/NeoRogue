@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 
 
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.session.fight.DamageType;
@@ -19,7 +20,8 @@ public class ForcefulLeatherGauntlets extends Equipment {
 	public ForcefulLeatherGauntlets(boolean isUpgraded) {
 		super("forcefulLeatherGauntlets", "Forceful Leather Gauntlets", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(isUpgraded ? 50 : 40, 2, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_CRIT));
+				EquipmentProperties.ofWeapon(isUpgraded ? 50 : 40, 1.75, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_CRIT));
+		properties.addUpgrades(PropertyType.DAMAGE);
 		item = createItem(Material.LEATHER, null, null);
 	}
 

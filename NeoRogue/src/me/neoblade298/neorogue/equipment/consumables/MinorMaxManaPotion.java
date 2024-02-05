@@ -33,7 +33,7 @@ public class MinorMaxManaPotion extends Consumable {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.POTION, "Increases your max mana by <white>" + mana + "</white> for the duration of the fight. Consumed on first use.");
+		item = createItem(Material.POTION, "Increases your max mana by <yellow>" + mana + "</yellow> for the duration of the fight. Consumed on first use.");
 		PotionMeta meta = (PotionMeta) item.getItemMeta();
 		meta.setColor(Color.fromRGB(0, 0, 127));
 		item.setItemMeta(meta);

@@ -54,7 +54,7 @@ public class Smite extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FLINT,
-				"On cast, deal <white>" + damage + "</white> " + GlossaryTag.SLASHING.tag(this) + " damage in a cone in front of you and "
-						+ "apply <white>" + sanctified + "</white> " + GlossaryTag.SANCTIFIED.tag(this) + ".");
+				"On cast, deal <yellow>" + damage + "</yellow> " + GlossaryTag.SLASHING.tag(this) + " damage in a cone in front of you and "
+						+ "apply <yellow>" + sanctified + "</yellow> " + GlossaryTag.SANCTIFIED.tag(this) + ".");
 	}
 }

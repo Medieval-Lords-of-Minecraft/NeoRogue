@@ -38,7 +38,7 @@ public class Tackle extends Equipment {
 	
 	public Tackle(boolean isUpgraded) {
 		super("tackle", "Tackle", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 10, 25, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 10, 20, 0));
 		damage = isUpgraded ? 150 : 100;
 		
 		pc.count(25).spread(0.5, 0.5);
@@ -105,8 +105,8 @@ public class Tackle extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.REDSTONE, new String[] { "<gold>Area of Effect: <yellow>2" },
-				"On cast, dash forward, stopping at the first enemy hit and dealing <white>" + damage + "</white> " + GlossaryTag.BLUNT.tag(this) +
+		item = createItem(Material.REDSTONE, new String[] { "<gold>Area of Effect: <white>2" },
+				"On cast, dash forward, stopping at the first enemy hit and dealing <yellow>" + damage + "</yellow> " + GlossaryTag.BLUNT.tag(this) +
 				" damage in a small area. "
 						+ "If an enemy is hit, reduce this ability's cooldown by <white>10</white>.");
 	}

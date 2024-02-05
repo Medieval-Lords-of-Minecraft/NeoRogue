@@ -35,6 +35,6 @@ public class EarthenRing extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.CACTUS, "Basic attacks additionally deal <white>" + damage + "</white> " + GlossaryTag.EARTHEN.tag(this) + " damage.");
+		item = createItem(Material.CACTUS, "Basic attacks additionally deal <yellow>" + damage + "</yellow> " + GlossaryTag.EARTHEN.tag(this) + " damage.");
 	}
 }

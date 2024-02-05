@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 
 
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -24,13 +25,14 @@ public class StoneAxe extends Equipment {
 	public StoneAxe(boolean isUpgraded) {
 		super("stoneAxe", "Stone Axe", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(isUpgraded ? 115 : 70, 0.5, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_CRIT));
+				EquipmentProperties.ofWeapon(isUpgraded ? 130 : 90, 0.5, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_CRIT));
+		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		double damage = properties.getDamage();
-		double kb = properties.getKnockback();
+		double damage = properties.get(PropertyType.DAMAGE);
+		double kb = properties.get(PropertyType.KNOCKBACK);
 		DamageType type = properties.getType();
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;

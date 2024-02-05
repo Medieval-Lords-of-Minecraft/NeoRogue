@@ -47,6 +47,6 @@ public class LeatherBracer extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LEATHER, "Prevents the first <white>" + instances + "</white> instances of taking damage in a fight.");
+		item = createItem(Material.LEATHER, "Prevents the first <yellow>" + instances + "</yellow> instances of taking damage in a fight.");
 	}
 }

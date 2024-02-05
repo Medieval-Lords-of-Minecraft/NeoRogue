@@ -57,6 +57,6 @@ public class HastyShield extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SHIELD, "When raised, reduce the next hit taken by <white>" + reduction + "</white>"
-				+ " and grant <white>" + amount + " </white>mana and stamina. 5 second cooldown.");
+				+ " and grant <yellow>" + amount + " </yellow>mana and stamina. 5 second cooldown.");
 	}
 }

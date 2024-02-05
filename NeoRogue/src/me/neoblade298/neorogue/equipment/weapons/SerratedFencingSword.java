@@ -43,7 +43,7 @@ public class SerratedFencingSword extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STONE_SWORD, "On hit, grant yourself <white>" + shields + "</white> " + GlossaryTag.SHIELDS.tag(this) + ". Apply <white>" + bleed
-				+ " </white>" + GlossaryTag.BLEED.tag(this) + " every 2 hits.");
+		item = createItem(Material.STONE_SWORD, "On hit, grant yourself <white>" + shields + "</white> " + GlossaryTag.SHIELDS.tag(this) + ". Apply <yellow>" + bleed
+				+ " </yellow>" + GlossaryTag.BLEED.tag(this) + " every 2 hits.");
 	}
 }

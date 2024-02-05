@@ -24,6 +24,6 @@ public class MinorStaminaRelic extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.GOLD_NUGGET, "Increases stamina regen by <white>" + regen + "</white>.");
+		item = createItem(Material.GOLD_NUGGET, "Increases stamina regen by <yellow>" + regen + "</yellow>.");
 	}
 }

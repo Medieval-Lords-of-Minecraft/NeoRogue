@@ -26,6 +26,6 @@ public class NullMagicMantle extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.RABBIT_HIDE, "Decrease all " + GlossaryTag.MAGICAL.tag(this) + " damage by <white>" + damageReduction + "</white>.");
+		item = createItem(Material.RABBIT_HIDE, "Decrease all " + GlossaryTag.MAGICAL.tag(this) + " damage by <yellow>" + damageReduction + "</yellow>.");
 	}
 }

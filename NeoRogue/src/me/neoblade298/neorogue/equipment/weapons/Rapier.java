@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 
 
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -22,6 +23,7 @@ public class Rapier extends Equipment {
 		super("rapier", "Rapier", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(isUpgraded ? 80 : 60, 1, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_CRIT));
+		properties.addUpgrades(PropertyType.DAMAGE);
 		shields = isUpgraded ? 10 : 7;
 	}
 
@@ -37,6 +39,6 @@ public class Rapier extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STONE_SWORD, "On hit, grant yourself <white>" + shields + "</white> " + GlossaryTag.SHIELDS.tag(this) + ".");
+		item = createItem(Material.STONE_SWORD, "On hit, grant yourself <yellow>" + shields + "</yellow> " + GlossaryTag.SHIELDS.tag(this) + ".");
 	}
 }

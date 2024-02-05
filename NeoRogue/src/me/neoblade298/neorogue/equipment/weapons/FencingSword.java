@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 
 
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -22,6 +23,7 @@ public class FencingSword extends Equipment {
 		super("fencingSword", "Fencing Sword", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(isUpgraded ? 45 : 30, 1, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_CRIT));
+		properties.addUpgrades(PropertyType.DAMAGE);
 		shields = isUpgraded ? 4 : 2;
 		addReforgeOption("fencingSword", new String[] {"rapier", "serratedFencingSword"});
 	}

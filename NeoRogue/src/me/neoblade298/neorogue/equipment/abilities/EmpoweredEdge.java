@@ -11,6 +11,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -27,6 +28,7 @@ public class EmpoweredEdge extends Equipment {
 	public EmpoweredEdge(boolean isUpgraded) {
 		super("empoweredEdge", "Empowered Edge", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 15, isUpgraded ? 5 : 7, 0));
+		properties.addUpgrades(PropertyType.COOLDOWN);
 		damage = isUpgraded ? 105 : 75;
 		heal = isUpgraded ? 2 : 1;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
@@ -54,7 +56,7 @@ public class EmpoweredEdge extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FLINT,
-				"On cast, your next basic attack deals <white>" + damage + "</white> " + GlossaryTag.PIERCING.tag(this) + " damage and"
-						+ " heals for <white>" + heal + "</white>.");
+				"On cast, your next basic attack deals <yellow>" + damage + "</yellow> " + GlossaryTag.PIERCING.tag(this) + " damage and"
+						+ " heals for <yellow>" + heal + "</yellow>.");
 	}
 }

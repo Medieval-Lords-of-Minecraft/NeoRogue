@@ -33,7 +33,7 @@ public class MinorHealthPotion extends Consumable {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.POTION, "Restores <white>" + health + "</white> health. Consumed on first use.");
+		item = createItem(Material.POTION, "Restores <yellow>" + health + "</yellow> health. Consumed on first use.");
 		PotionMeta meta = (PotionMeta) item.getItemMeta();
 		meta.setColor(Color.fromRGB(255, 0, 0));
 		item.setItemMeta(meta);

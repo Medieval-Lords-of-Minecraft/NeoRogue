@@ -28,6 +28,6 @@ public class ClothBindings extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.WHITE_DYE, "Winning a fight heals you for <white>" + health + "</white>.");
+		item = createItem(Material.WHITE_DYE, "Winning a fight heals you for <yellow>" + health + "</yellow>.");
 	}
 }

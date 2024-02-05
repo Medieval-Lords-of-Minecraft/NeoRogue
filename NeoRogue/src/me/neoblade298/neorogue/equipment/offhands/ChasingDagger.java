@@ -5,6 +5,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.session.fight.DamageType;
@@ -16,7 +17,8 @@ import me.neoblade298.neorogue.session.fight.trigger.event.RightClickHitEvent;
 public class ChasingDagger extends Equipment {
 	public ChasingDagger(boolean isUpgraded) {
 		super("chasingDagger", "Chasing Dagger", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.OFFHAND, EquipmentProperties.ofWeapon(25, 1, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
+				EquipmentType.OFFHAND, EquipmentProperties.ofWeapon(isUpgraded ? 35 : 25, 1, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
+		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 
 	@Override

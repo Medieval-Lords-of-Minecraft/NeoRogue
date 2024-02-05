@@ -48,6 +48,6 @@ public class CaptainsTowerShield extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SHIELD, "When raised, creates a " + GlossaryTag.BARRIER.tag(this) + " in front of you of size <white>4x3</white>."
-				+ " Projectiles that hit the barrier have their damage reduced by <white>" + reduction + "</white>.");
+				+ " Projectiles that hit the barrier have their damage reduced by <yellow>" + reduction + "</yellow>.");
 	}
 }

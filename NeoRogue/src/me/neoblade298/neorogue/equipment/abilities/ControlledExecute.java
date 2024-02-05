@@ -12,6 +12,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -29,6 +30,7 @@ public class ControlledExecute extends Equipment {
 	public ControlledExecute(boolean isUpgraded) {
 		super("controlledExecute", "Controlled Execute", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, stamina, isUpgraded ? 5 : 7, 0));
+		properties.addUpgrades(PropertyType.COOLDOWN);
 		damage = 45;
 		execute = 150;
 		cdr = isUpgraded ? 5 : 3;

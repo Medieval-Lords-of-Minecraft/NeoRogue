@@ -26,6 +26,6 @@ public class MinorStrengthRelic extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.REDSTONE, "Increases " + GlossaryTag.PHYSICAL.tag(this) + " damage by <white>" + str + "</white>.");
+		item = createItem(Material.REDSTONE, "Increases " + GlossaryTag.PHYSICAL.tag(this) + " damage by <yellow>" + str + "</yellow>.");
 	}
 }

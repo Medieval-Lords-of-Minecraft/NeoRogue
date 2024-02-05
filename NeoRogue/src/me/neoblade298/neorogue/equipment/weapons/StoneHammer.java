@@ -19,6 +19,7 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.session.fight.DamageType;
@@ -54,6 +55,7 @@ public class StoneHammer extends Equipment {
 		super("stoneHammer", "Stone Hammer", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(isUpgraded ? 100 : 70, 0.5, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
+		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 
 	@Override
@@ -85,7 +87,7 @@ public class StoneHammer extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STONE_SHOVEL, null, "Deals damage to enemies in a small circle in front of you. Only the closest enemy"
+		item = createItem(Material.STONE_SHOVEL, "Deals damage to enemies in a small circle in front of you. Only the closest enemy"
 				+ " to the center of the circle is affected by on-hit effects.");
 	}
 }

@@ -10,6 +10,7 @@ import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
@@ -34,8 +35,8 @@ public class WoodenWand extends Equipment {
 	public WoodenWand(boolean isUpgraded) {
 		super("woodenWand", "Wooden Wand", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(isUpgraded ? 75 : 50, 0.5, DamageType.FIRE, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
-		properties.setManaCost(5);
+				EquipmentProperties.ofWeapon(5, 0, isUpgraded ? 75 : 50, 0.5, DamageType.FIRE, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
+		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 
 	@Override

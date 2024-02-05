@@ -61,7 +61,7 @@ public class RecklessSwing extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FLINT,
-				"On cast, your next basic attack deals <white>" + damage + " </white>" + GlossaryTag.SLASHING.tag(this) +
+				"On cast, your next basic attack deals <yellow>" + damage + " </yellow>" + GlossaryTag.SLASHING.tag(this) +
 				" damage at the cost of <white>" + HEALTH_COST
 						+ "</white> health.");
 	}

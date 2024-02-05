@@ -25,6 +25,6 @@ public class LeatherHelmet extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LEATHER_HELMET, "Start every fight with <white>" + shields + " </white>" + GlossaryTag.SHIELDS.tag(this) + ".");
+		item = createItem(Material.LEATHER_HELMET, "Start every fight with <yellow>" + shields + " </yellow>" + GlossaryTag.SHIELDS.tag(this) + ".");
 	}
 }
