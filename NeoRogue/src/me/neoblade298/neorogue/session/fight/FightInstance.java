@@ -84,7 +84,7 @@ public abstract class FightInstance extends Instance {
 	private static final int KILLS_TO_SCALE = 8; // number of mobs to kill before increasing total mobs by 1
 
 	protected LinkedList<Corpse> corpses = new LinkedList<Corpse>();
-	protected HashMap<Player, UUID> revivers = new HashMap<Player, UUID>();
+	protected HashMap<UUID, Player> revivers = new HashMap<UUID, Player>();
 	protected HashSet<UUID> party = new HashSet<UUID>();
 	protected Map map;
 	protected ArrayList<MapSpawnerInstance> spawners = new ArrayList<MapSpawnerInstance>(),
@@ -234,9 +234,14 @@ public abstract class FightInstance extends Instance {
 		FightInstance fi = data.getInstance();
 		e.setCancelled(true);
 		if (data == null || data.isDead()) return;
-		if (fi.revivers.containsKey(p)) return;
 		for (Corpse c : fi.corpses) {
 			if (c.hitCorpse(e.getRightClicked())) {
+				if (fi.revivers.containsKey(c.data.getUniqueId())) {
+					if (!fi.revivers.get(c.data.getUniqueId()).getUniqueId().equals(p.getUniqueId())) {
+						Util.displayError(p, "Someone is already reviving this player!");
+					}
+					return;
+				}
 				fi.startRevive(p, c);
 			}
 		}
@@ -259,7 +264,7 @@ public abstract class FightInstance extends Instance {
 			return;
 		}
 		
-		revivers.put(p, deadId);
+		revivers.put(deadId, p);
 		Util.msg(p, "You started reviving <yellow>" + dead.getName() + "</yellow>. Stay near their body for 5 seconds!");
 		Util.msg(dead, "You are being revived by <yellow>" + p.getName());
 		dead.teleport(corpse.corpseDisplay);
@@ -316,7 +321,7 @@ public abstract class FightInstance extends Instance {
 		Util.msg(dead, "<red>Revival failed!");
 		Util.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1, 0.7F, false);
 		Util.playSound(dead, Sound.BLOCK_NOTE_BLOCK_BASS, 1, 0.7F, false);
-		revivers.remove(p);
+		revivers.remove(corpse.data.getUniqueId());
 		reviveBar.removeAll();
 		for (BukkitTask task : tasks) {
 			task.cancel();
@@ -326,7 +331,7 @@ public abstract class FightInstance extends Instance {
 	private void completeRevive(Player p, Player dead, Corpse corpse, BossBar reviveBar) {
 		Util.playSound(dead, Sound.ENTITY_PLAYER_LEVELUP, true);
 		revivePart.spawn(p);
-		revivers.remove(p);
+		revivers.remove(corpse.data.getUniqueId());
 		corpses.remove(corpse);
 		dead.teleport(corpse.corpseDisplay);
 		corpse.remove();
@@ -786,6 +791,8 @@ public abstract class FightInstance extends Instance {
 	
 	private static class Corpse {
 		protected PlayerFightData data;
+		protected PlayerFightData reviver;
+		protected BossBar bar;
 		protected Entity corpseDisplay;
 		protected LinkedList<Entity> hitbox = new LinkedList<Entity>();
 		protected ItemStack[] inv;
