@@ -25,7 +25,7 @@ public class ArtifactInstance implements Comparable<ArtifactInstance> {
 		return artifact;
 	}
 	public void add(int amount) {
-		amount++;
+		this.amount+= amount;
 	}
 	public int getAmount() {
 		return amount;

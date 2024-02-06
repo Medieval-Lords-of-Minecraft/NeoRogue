@@ -10,9 +10,12 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+
+import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.GlossaryInventory;
 import net.kyori.adventure.text.Component;
@@ -21,7 +24,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 public class ShopInventory extends CoreInventory {
 	public static final int[] SLOT_ORDER = new int[] {0, 2, 4, 6, 8, 9, 11, 13, 15, 17};
-	private static final int SELL_PRICE = 10;
+	private static final int SELL_PRICE = 10, REMOVE_CURSE_PRICE = 50;
 	private PlayerSessionData data;
 	private ArrayList<ShopItem> shopItems;
 	
@@ -40,6 +43,9 @@ public class ShopInventory extends CoreInventory {
 		contents[18] = CoreInventory.createButton(Material.GOLD_NUGGET, Component.text("Sell Items", NamedTextColor.RED),
 				(TextComponent) NeoCore.miniMessage().deserialize("Drag equipment here to sell it " +
 						"for <yellow>" + SELL_PRICE + " coins</yellow>."), 250, NamedTextColor.GRAY);
+		contents[19] = CoreInventory.createButton(Material.SUGAR, Component.text("Remove Curses", NamedTextColor.RED),
+				(TextComponent) NeoCore.miniMessage().deserialize("Drag cursed equipment here to remove it " +
+						"in exchange for <yellow>" + REMOVE_CURSE_PRICE + " coins</yellow>."), 250, NamedTextColor.GRAY);
 		inv.setContents(contents);
 	}
 	
@@ -48,7 +54,17 @@ public class ShopInventory extends CoreInventory {
 	@Override
 	public void handleInventoryClick(InventoryClickEvent e) {
 		Inventory iclicked = e.getClickedInventory();
-		if (iclicked == null || iclicked.getType() != InventoryType.CHEST) return;
+		if (iclicked == null) return;
+		if (iclicked.getType() != InventoryType.CHEST) {
+			if (e.getCurrentItem() == null) return;
+			ItemStack item = e.getCurrentItem();
+			NBTItem nbti = new NBTItem(item);
+			// Only allow picking up equipment
+			if (!nbti.getKeys().contains("equipId")) {
+				e.setCancelled(true);
+			}
+			return;
+		}
 		e.setCancelled(true);
 		if (e.getCurrentItem() == null) return; // Must have clicked on an item in the inv
 		if (e.getCurrentItem().getType() == Material.BARRIER) {
@@ -93,9 +109,37 @@ public class ShopInventory extends CoreInventory {
 		}
 		else {
 			if (slot == 18 && e.getCursor() != null) {
+				if (!data.hasCoins(REMOVE_CURSE_PRICE)) {
+					Util.displayError(p, "You don't have enough coins! You need " + (REMOVE_CURSE_PRICE - data.getCoins()) + " more.");
+					return;
+				}
+
+				data.addCoins(-REMOVE_CURSE_PRICE);
+				NBTItem nbti = new NBTItem(e.getCursor());
+				Equipment eq = Equipment.get(nbti.getString("equipId"), false);
+				if (eq.isCursed()) {
+					Util.displayError(p, "Curses cannot be sold, they must be removed!");
+					return;
+				}
 				data.addCoins(SELL_PRICE);
 				inv.setItem(22, CoreInventory.createButton(Material.GOLD_NUGGET,
 						Component.text("You have " + data.getCoins() + " coins", NamedTextColor.YELLOW)));
+				p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1F, 1F);
+				p.setItemOnCursor(null);
+				
+				ItemStack[] contents = inv.getContents();
+				for (ShopItem si : shopItems) {
+					si.updateLore(data, contents[si.getSlot()], false);
+				}
+				inv.setContents(contents);
+			}
+			else if (slot == 19 && e.getCursor() != null) {
+				NBTItem nbti = new NBTItem(e.getCursor());
+				Equipment eq = Equipment.get(nbti.getString("equipId"), false);
+				if (!eq.isCursed()) {
+					Util.displayError(p, "Only cursed items may be removed this way!");
+					return;
+				}
 				p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1F, 1F);
 				p.setItemOnCursor(null);
 			}

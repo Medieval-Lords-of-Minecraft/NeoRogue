@@ -174,10 +174,10 @@ public class PlayerSessionInventory extends CoreInventory {
 		// First check for specific cases: Trash and Artifact view
 		if (slot == TRASH) {
 			e.setCancelled(true);
-			p.openInventory(Bukkit.createInventory(p, 27, Component.text("Trash Can", NamedTextColor.RED)));
+			new TrashInventory(data.getPlayer());
 			return;
 		}
-		if (slot == ARTIFACTS && !data.getArtifacts().isEmpty()) {
+		if (slot == ARTIFACTS) {
 			e.setCancelled(true);
 			new ArtifactsInventory(data);
 			return;
