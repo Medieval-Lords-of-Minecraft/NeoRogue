@@ -108,13 +108,8 @@ public class ShopInventory extends CoreInventory {
 			inv.setContents(contents);
 		}
 		else {
-			if (slot == 18 && e.getCursor() != null) {
-				if (!data.hasCoins(REMOVE_CURSE_PRICE)) {
-					Util.displayError(p, "You don't have enough coins! You need " + (REMOVE_CURSE_PRICE - data.getCoins()) + " more.");
-					return;
-				}
-
-				data.addCoins(-REMOVE_CURSE_PRICE);
+			if (e.getCursor().getType().isAir()) return;
+			if (slot == 18) {
 				NBTItem nbti = new NBTItem(e.getCursor());
 				Equipment eq = Equipment.get(nbti.getString("equipId"), false);
 				if (eq.isCursed()) {
@@ -133,7 +128,13 @@ public class ShopInventory extends CoreInventory {
 				}
 				inv.setContents(contents);
 			}
-			else if (slot == 19 && e.getCursor() != null) {
+			else if (slot == 19) {
+				if (!data.hasCoins(REMOVE_CURSE_PRICE)) {
+					Util.displayError(p, "You don't have enough coins! You need " + (REMOVE_CURSE_PRICE - data.getCoins()) + " more.");
+					return;
+				}
+
+				data.addCoins(-REMOVE_CURSE_PRICE);
 				NBTItem nbti = new NBTItem(e.getCursor());
 				Equipment eq = Equipment.get(nbti.getString("equipId"), false);
 				if (!eq.isCursed()) {
