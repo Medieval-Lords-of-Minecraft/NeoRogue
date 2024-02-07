@@ -28,7 +28,8 @@ public class CmdAdminTestMiniboss extends Subcommand {
 			}
 		}
 		this.enableTabComplete();
-		args.add(new Arg("miniboss map ID").setTabOptions(minibossSet));
+		args.add(new Arg("miniboss map ID").setTabOptions(minibossSet),
+				new Arg("level", false));
 	}
 
 	@Override
@@ -41,7 +42,9 @@ public class CmdAdminTestMiniboss extends Subcommand {
 		}
 		sess.generateArea(AreaType.LOW_DISTRICT);
 		sess.setNode(sess.getArea().getNodes()[0][2]);
-		sess.setNodesVisited(7);
+		if (args.length > 1) {
+			sess.setNodesVisited(Integer.parseInt(args[1]));
+		}
 		MinibossFightInstance inst = new MinibossFightInstance(sess, sess.getParty().keySet(), Map.generate(AreaType.LOW_DISTRICT, 0, MapPiece.get(args[0])));
 		sess.setInstance(inst);
 	}

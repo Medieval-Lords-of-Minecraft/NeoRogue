@@ -28,7 +28,8 @@ public class CmdAdminTestBoss extends Subcommand {
 			}
 		}
 		this.enableTabComplete();
-		args.add(new Arg("boss map ID").setTabOptions(bossSet));
+		args.add(new Arg("boss map ID").setTabOptions(bossSet),
+				new Arg("level", false));
 	}
 
 	@Override
@@ -41,7 +42,9 @@ public class CmdAdminTestBoss extends Subcommand {
 		}
 		sess.generateArea(AreaType.LOW_DISTRICT);
 		sess.setNode(sess.getArea().getNodes()[0][2]);
-		sess.setNodesVisited(7);
+		if (args.length > 1) {
+			sess.setNodesVisited(Integer.parseInt(args[1]));
+		}
 		BossFightInstance inst = new BossFightInstance(sess, sess.getParty().keySet(), Map.generate(AreaType.LOW_DISTRICT, 0, MapPiece.get(args[0])));
 		sess.setInstance(inst);
 	}
