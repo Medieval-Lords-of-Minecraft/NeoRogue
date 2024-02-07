@@ -1,9 +1,12 @@
 package me.neoblade298.neorogue.equipment.weapons;
 
+import java.util.LinkedList;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 
@@ -15,6 +18,7 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
+import me.neoblade298.neocore.bukkit.util.TargetUtil;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -33,7 +37,7 @@ public class StoneSpear extends Equipment {
 	public StoneSpear(boolean isUpgraded) {
 		super("stoneSpear", "Stone Spear", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(isUpgraded ? 45 : 35, 1, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_CRIT));
+				EquipmentProperties.ofWeapon(isUpgraded ? 45 : 35, 0.75, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_CRIT));
 		properties.addUpgrades(PropertyType.DAMAGE);
 		
 		throwDamage = isUpgraded ? 120 : 90;
@@ -46,6 +50,13 @@ public class StoneSpear extends Equipment {
 			if (!inst.canTrigger(p, data)) return TriggerResult.keep();
 			LeftClickHitEvent ev = (LeftClickHitEvent) in;
 			weaponSwingAndDamage(p, data, ev.getTarget());
+			return TriggerResult.keep();
+		});
+		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_NO_HIT, (pdata, in) -> {
+			if (!inst.canTrigger(p, data)) return TriggerResult.keep();
+			LinkedList<LivingEntity> targets = TargetUtil.getEntitiesInSight(p, 4, 1);
+			if (targets.isEmpty()) return TriggerResult.keep();
+			weaponSwingAndDamage(p, data, targets.getFirst());
 			return TriggerResult.keep();
 		});
 		data.addSlotBasedTrigger(id, slot, Trigger.THROW_TRIDENT, inst);
@@ -77,9 +88,8 @@ public class StoneSpear extends Equipment {
 	private class StoneSpearProjectile extends Projectile {
 		private Player p;
 		public StoneSpearProjectile(Player p) {
-			super(3, 10, 2);
-			this.size(0.5, 0.5).pierce();
-			this.pierce();
+			super(1, 15, 1);
+			this.size(0.5, 0.5).pierce().gravity(0.1).initialY(0.5);
 			this.p = p;
 		}
 
@@ -108,7 +118,7 @@ public class StoneSpear extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.TRIDENT, "Can be thrown to deal <yellow>" + throwDamage + "</yellow> " + GlossaryTag.PIERCING.tag(this) + " "
-				+ "damage, but disabling the weapon for <white>5</white> seconds.");
+		item = createItem(Material.TRIDENT, "Melee range +1. Can be thrown to deal <yellow>" + throwDamage + "</yellow> " + GlossaryTag.PIERCING.tag(this) + " "
+				+ "damage to all enemies hit, but disabling the weapon for <white>5</white> seconds.");
 	}
 }

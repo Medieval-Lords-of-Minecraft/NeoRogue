@@ -3,7 +3,7 @@ package me.neoblade298.neorogue.equipment.mechanics;
 import me.neoblade298.neorogue.session.fight.FightData;
 
 public abstract class Projectile {
-	private double gravity, yRotate, blocksPerTick;
+	private double gravity, yRotate, blocksPerTick, initialY;
 	private boolean pierce, ignoreBarriers, ignoreBlocks, ignoreEntities;
 	private double width = 0.2, height = 0.2;
 	private int maxTicks, tickSpeed;
@@ -35,6 +35,11 @@ public abstract class Projectile {
 	
 	public double getRotation() {
 		return yRotate;
+	}
+	
+	public Projectile initialY(double initialY) {
+		this.initialY = initialY;
+		return this;
 	}
 	
 	public Projectile rotation(double yRotate) {
@@ -71,6 +76,10 @@ public abstract class Projectile {
 	
 	public double getGravity() {
 		return gravity;
+	}
+	
+	public double initialY() {
+		return initialY;
 	}
 
 	public boolean isIgnoreBarriers() {

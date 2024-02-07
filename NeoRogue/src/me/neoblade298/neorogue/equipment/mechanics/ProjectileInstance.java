@@ -41,9 +41,9 @@ public class ProjectileInstance {
 		LivingEntity origin = owner.getEntity();
 		final ProjectileInstance proj = this;
 		
-		v = origin.getEyeLocation().getDirection().rotateAroundY(Math.toRadians(settings.getRotation()));
+		v = origin.getLocation().getDirection().rotateAroundY(Math.toRadians(settings.getRotation())).add(new Vector(0, settings.initialY(), 0));
 		v.multiply(settings.getBlocksPerTick());
-		loc = origin.getEyeLocation();
+		loc = origin.getLocation().add(0, 1, 0);
 		bounds = BoundingBox.of(loc, settings.getWidth(), settings.getHeight(), settings.getWidth());
 		
 		task = new BukkitRunnable() {
@@ -62,9 +62,6 @@ public class ProjectileInstance {
 	
 	// True to cancel runnable
 	private boolean tick() {
-		loc.add(v);
-		bounds.shift(v);
-		
 		// Check for collision with shields
 		if (!settings.isIgnoreBarriers()) {
 			for (Barrier b : inst.getEnemyBarriers().values()) {
@@ -118,6 +115,9 @@ public class ProjectileInstance {
 		if (settings.getGravity() != 0) {
 			v.setY(v.getY() - settings.getGravity());
 		}
+
+		loc.add(v);
+		bounds.shift(v);
 		return false;
 	}
 	
