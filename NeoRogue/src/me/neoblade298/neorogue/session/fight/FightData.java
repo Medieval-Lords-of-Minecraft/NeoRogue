@@ -30,6 +30,7 @@ import me.neoblade298.neorogue.map.MapSpawnerInstance;
 
 public class FightData {
 	protected FightInstance inst;
+	protected UUID uuid;
 	protected HashMap<String, Status> statuses = new HashMap<String, Status>();
 
 	protected HashMap<String, BukkitTask> tasks = new HashMap<String, BukkitTask>();
@@ -59,6 +60,7 @@ public class FightData {
 		this.inst = inst;
 		this.entity = p;
 		this.shields = new ShieldHolder(this);
+		this.uuid = p.getUniqueId();
 	}
 
 	public FightData(LivingEntity e, MapSpawnerInstance spawner) {
@@ -70,10 +72,11 @@ public class FightData {
 		this.entity = e;
 		this.shields = new ShieldHolder(this);
 		this.spawner = spawner;
+		this.uuid = e.getUniqueId();
 	}
 	
 	public UUID getUniqueId() {
-		return entity.getUniqueId();
+		return uuid;
 	}
 
 	public FightInstance getInstance() {

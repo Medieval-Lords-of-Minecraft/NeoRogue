@@ -618,7 +618,12 @@ public abstract class FightInstance extends Instance {
 					Iterator<UUID> iter = toTick.iterator();
 					while (iter.hasNext()) {
 						FightData data = fightData.get(iter.next());
-						if (data == null || data.runTickActions() == TickResult.REMOVE) iter.remove();
+						if (data == null) iter.remove();
+						if (data.getEntity() == null) {
+							iter.remove();
+							FightInstance.removeFightData(data.getUniqueId());
+						}
+						if (data.runTickActions() == TickResult.REMOVE) iter.remove();
 					}
 				}
 
