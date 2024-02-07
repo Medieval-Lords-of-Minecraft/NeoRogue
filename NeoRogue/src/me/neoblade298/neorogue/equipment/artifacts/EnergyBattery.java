@@ -44,10 +44,8 @@ public class EnergyBattery extends Artifact {
 				Util.playSound(data.getPlayer(), Sound.ENTITY_ARROW_HIT_PLAYER, false);
 				part.spawn(p);
 				EquipmentInstance eqi = ev.getInstance();
-				EquipmentInstance replace = new EquipmentInstance(p, eqi.getEquipment(), eqi.getSlot(), eqi.getEquipSlot(), eqi.getAction());
-				replace.setManaCost(0);
-				replace.setStaminaCost(0);
-				ev.setInstance(replace);
+				eqi.setTempManaCost(0);
+				eqi.setTempStaminaCost(0);
 				return TriggerResult.keep();
 			}
 			return TriggerResult.remove();

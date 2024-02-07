@@ -75,6 +75,11 @@ public class WoodenWand extends Equipment {
 			Util.playSound(p, loc, Sound.ENTITY_GENERIC_EXPLODE, 1F, 1F, true);
 			explode.spawn(loc);
 		}
+
+		@Override
+		public void onStart(ProjectileInstance proj) {
+			
+		}
 	}
 
 	@Override

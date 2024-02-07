@@ -80,6 +80,7 @@ public abstract class Equipment {
 			new Brace(b);
 			new Brace2(b);
 			new Bulldoze(b);
+			new Challenge(b);
 			new Cleave(b);
 			new Consume(b);
 			new ControlledExecute(b);
@@ -130,7 +131,7 @@ public abstract class Equipment {
 			new Rapier(b);
 			new SerratedFencingSword(b);
 			new StoneAxe(b);
-			new StoneDagger(b);
+			new StoneSpear(b);
 			new StoneHammer(b);
 			new StoneSword(b);
 			new WoodenSword(b);

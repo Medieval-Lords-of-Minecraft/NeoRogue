@@ -26,8 +26,8 @@ public class EquipmentInstance extends PriorityAction {
 	protected int slot;
 	protected Equipment eq;
 	protected EquipSlot es;
-	protected double staminaCost, manaCost, cooldown;
-	private long lastUsed = 0L;
+	protected double staminaCost, manaCost, tempStaminaCost = -1, tempManaCost = -1, cooldown;
+	protected long nextUsable = 0L;
 	
 	static {
 		COOLDOWN_MATERIALS.put(0, Material.RED_CANDLE);
@@ -73,9 +73,11 @@ public class EquipmentInstance extends PriorityAction {
 	
 	@Override
 	public TriggerResult trigger(PlayerFightData data, Object inputs) {
-		lastUsed = System.currentTimeMillis();
-		data.addMana(-manaCost);
-		data.addStamina(-staminaCost);
+		nextUsable = (long) (System.currentTimeMillis() + (cooldown * 1000));
+		data.addMana(tempManaCost != -1 ? -tempManaCost : -manaCost);
+		data.addStamina(tempStaminaCost != -1 ? -tempStaminaCost : -staminaCost);
+		tempStaminaCost = -1;
+		tempManaCost = -1;
 		return action.trigger(data, inputs);
 	}
 	
@@ -84,16 +86,16 @@ public class EquipmentInstance extends PriorityAction {
 	}
 	
 	public boolean canTrigger(Player p, PlayerFightData data) {
-		if (lastUsed + (cooldown * 1000) >= System.currentTimeMillis()) {
+		if (nextUsable >= System.currentTimeMillis()) {
 			sendCooldownMessage(p);
 			return false;
 		}
-		if (data.getMana() <= manaCost) {
+		if (data.getMana() <= (tempManaCost != -1 ? tempManaCost : manaCost)) {
 			Util.displayError(data.getPlayer(), "Not enough mana!");
 			return false;
 		}
 		
-		if (data.getStamina() <= staminaCost) {
+		if (data.getStamina() <= (tempStaminaCost != -1 ? tempStaminaCost : staminaCost)) {
 			Util.displayError(data.getPlayer(), "Not enough stamina!");
 			return false;
 		}
@@ -107,22 +109,34 @@ public class EquipmentInstance extends PriorityAction {
 		Util.msgRaw(p, eq.display.append(NeoCore.miniMessage().deserialize(" <red>cooldown: </red><yellow>" + getCooldownSeconds() + "s")));
 	}
 	
-	public void updateSlot(Player p, PlayerInventory inv) {
+	public static void updateSlot(Player p, PlayerInventory inv, EquipmentInstance inst) {
+		updateSlot(p, inv, inst.es, inst.slot, inst.getCooldownSeconds());
+	}
+	
+	public static void updateSlot(Player p, PlayerInventory inv, EquipSlot es, int slot, int cooldownSeconds) {
 		if (es != EquipSlot.HOTBAR) return;
 		Material mat = COOLDOWN_MATERIALS.get(slot);
 		inv.setItem(slot, new ItemStack(mat));
-		p.setCooldown(mat, getCooldownTicks());
+		p.setCooldown(mat, cooldownSeconds * 20);
+	}
+	
+	public void addCooldown(int seconds) {
+		nextUsable += seconds * 1000;
+		updateSlot(p, p.getInventory(), es, slot, getCooldownSeconds());
+	}
+	
+	public void setCooldown(int seconds) {
+		nextUsable = System.currentTimeMillis() + (seconds * 1000);
+		updateSlot(p, p.getInventory(), es, slot, seconds);
 	}
 	
 	public void reduceCooldown(int seconds) {
-		lastUsed -= seconds * 1000;
-		updateSlot(p, p.getInventory());
+		nextUsable -= seconds * 1000;
+		updateSlot(p, p.getInventory(), es, slot, getCooldownSeconds());
 	}
 	
 	public int getCooldownSeconds() {
-		int nextUse = (int) ((lastUsed / 1000) + cooldown);
-		int now = (int) (System.currentTimeMillis() / 1000);
-		return Math.max(0, nextUse - now);
+		return (int) (Math.max(0, nextUsable - System.currentTimeMillis()) / 1000);
 	}
 	
 	public int getCooldownTicks() {
@@ -131,6 +145,14 @@ public class EquipmentInstance extends PriorityAction {
 	
 	public void setStaminaCost(double stamina) {
 		this.staminaCost = stamina;
+	}
+	
+	public void setTempStaminaCost(double stamina) {
+		this.tempStaminaCost = stamina;
+	}
+	
+	public void setTempManaCost(double mana) {
+		this.tempManaCost = mana;
 	}
 	
 	public double getStaminaCost() {

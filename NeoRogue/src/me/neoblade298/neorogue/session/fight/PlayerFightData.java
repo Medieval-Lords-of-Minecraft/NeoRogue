@@ -212,7 +212,7 @@ public class PlayerFightData extends FightData {
 						continue;
 					}
 					tr = ei.trigger(data, inputs);
-					ei.updateSlot(p, inv);
+					EquipmentInstance.updateSlot(p, inv, ei);
 				}
 				else {
 					tr = inst.trigger(data, inputs);
@@ -380,14 +380,32 @@ public class PlayerFightData extends FightData {
 			// Get the usable instances to tie cooldowns to
 			for (int i = 0 ; i < 8; i++) {
 				Trigger t = Trigger.getFromHotbarSlot(i);
-				if (!triggers.containsKey(t)) continue;
-				TreeMultiset<PriorityAction> actions = triggers.get(t);
-				for (PriorityAction action : actions) {
-					// Only the first valid usable instance is used as the cooldown
-					if (action instanceof EquipmentInstance) {
-						insts.put(i, (EquipmentInstance) action);
-						break;
+				boolean found = false;
+				
+				// First look for hotbar castable skills
+				if (triggers.containsKey(t)) {
+					TreeMultiset<PriorityAction> actions = triggers.get(t);
+					for (PriorityAction action : actions) {
+						// Only the first valid usable instance is used as the cooldown
+						if (action instanceof EquipmentInstance) {
+							insts.put(i, (EquipmentInstance) action);
+							found = true;
+							break;
+						}
 					}
+				}
+				
+				// Next look for any slot-based triggers (so far only thrown tridents) that can have cooldowns
+				if (found || !slotBasedTriggers.containsKey(i)) continue;
+				for (TreeMultiset<PriorityAction> slotActions : slotBasedTriggers.get(i).values()) {
+					for (PriorityAction slotAction : slotActions) {
+						if (slotAction instanceof EquipmentInstance) {
+							insts.put(i, (EquipmentInstance) slotAction);
+							found = true;
+							break;
+						}
+					}
+					if (found) break;
 				}
 			}
 		}

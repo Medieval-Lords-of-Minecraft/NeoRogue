@@ -22,6 +22,7 @@ import me.neoblade298.neorogue.session.fight.status.Status.GenericStatusType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.GrantShieldsEvent;
 import me.neoblade298.neocore.bukkit.particles.ParticleAnimation;
 import me.neoblade298.neocore.bukkit.particles.ParticleAnimation.ParticleAnimationInstance;
 import me.neoblade298.neorogue.NeoRogue;
@@ -179,7 +180,16 @@ public class FightData {
 	}
 	
 	public void addShield(UUID applier, double amt, boolean decayPercent, double decayDelay, double decayAmount, double decayPeriod, int decayRepetitions) {
-		shields.addShield(new Shield(this, applier, amt, decayPercent, decayDelay, decayAmount, decayPeriod, decayRepetitions));
+		PlayerFightData applierData = FightInstance.getUserData(applier);
+		Shield shield = new Shield(this, applier, amt, decayPercent, decayDelay, decayAmount, decayPeriod, decayRepetitions);
+		GrantShieldsEvent ev = new GrantShieldsEvent(applierData, this, shield);
+		if (applierData != null) {
+			FightInstance.trigger(applierData.getPlayer(), Trigger.GRANT_SHIELDS, ev);
+		}
+		if (this instanceof PlayerFightData) {
+			FightInstance.trigger(((PlayerFightData) this).getPlayer(), Trigger.RECEIVE_SHIELDS, ev);
+		}
+		shields.addShield(shield);
 	}
 	
 	public void addTickAction(TickAction action) {

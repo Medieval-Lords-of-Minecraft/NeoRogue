@@ -15,6 +15,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Trident;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -22,6 +23,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -56,6 +58,7 @@ import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.SessionSnapshot;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
 import me.neoblade298.neorogue.session.fight.*;
+import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -169,6 +172,17 @@ public class SessionManager implements Listener {
 			else if (s.getInstance() instanceof FightInstance) {
 				FightInstance.handleOffhandSwap(e);
 			}
+		}
+	}
+	
+	@EventHandler
+	public void onThrow(ProjectileLaunchEvent e) {
+		if (!(e.getEntity().getShooter() instanceof Player)) return;
+		Player p = (Player) e.getEntity().getShooter();
+		
+		e.setCancelled(true);
+		if (e.getEntity() instanceof Trident) {
+			FightInstance.trigger(p, Trigger.THROW_TRIDENT, e);
 		}
 	}
 

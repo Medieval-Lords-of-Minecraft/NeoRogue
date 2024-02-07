@@ -33,9 +33,12 @@ public enum Trigger {
 	WIN_FIGHT,
 	APPLY_STATUS,
 	LAUNCH_PROJECTILE_GROUP,
+	GRANT_SHIELDS,
+	RECEIVE_SHIELDS,
+	THROW_TRIDENT,
 	RECEIVED_DAMAGE; // Cancellable
 	
-	private boolean isSlotDependent = this.name().startsWith("LEFT_CLICK");
+	private boolean isSlotDependent = this.name().startsWith("LEFT_CLICK") || this.name().startsWith("THROW");
 	
 	public boolean isSlotDependent() {
 		return isSlotDependent;

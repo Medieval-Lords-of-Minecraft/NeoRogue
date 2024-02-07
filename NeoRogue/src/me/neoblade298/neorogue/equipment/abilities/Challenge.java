@@ -13,6 +13,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
@@ -28,7 +29,8 @@ public class Challenge extends Equipment {
 	
 	public Challenge(boolean isUpgraded) {
 		super("challenge", "challenge", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 20, isUpgraded ? 5 : 10, tp.range));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 20, isUpgraded ? 8 : 10, tp.range));
+		properties.addUpgrades(PropertyType.COOLDOWN);
 		threat = 1000;
 		shield = isUpgraded ? 40 : 30;
 		taunt.count(50).spread(0.5, 0.5).speed(0.2);

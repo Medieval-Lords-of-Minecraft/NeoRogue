@@ -33,62 +33,65 @@ public abstract class Projectile {
 		return maxTicks;
 	}
 	
-	protected double getRotation() {
+	public double getRotation() {
 		return yRotate;
 	}
 	
-	protected Projectile rotation(double yRotate) {
+	public Projectile rotation(double yRotate) {
 		this.yRotate = yRotate;
 		return this;
 	}
 	
-	protected Projectile gravity(double gravity) {
+	public Projectile gravity(double gravity) {
 		this.gravity = gravity;
 		return this;
 	}
 	
-	protected Projectile pierce() {
+	public Projectile pierce() {
 		this.pierce = true;
 		return this;
 	}
 	
-	protected Projectile ignore(boolean barriers, boolean blocks, boolean entities) {
+	public Projectile ignore(boolean barriers, boolean blocks, boolean entities) {
 		this.ignoreBarriers = barriers;
 		this.ignoreBlocks = blocks;
 		this.ignoreEntities = entities;
 		return this;
 	}
 	
-	protected Projectile size(double width, double height) {
+	public Projectile size(double width, double height) {
 		this.width = width;
 		this.height = height;
 		return this;
 	}
 	
-	protected boolean isPiercing() {
+	public boolean isPiercing() {
 		return pierce;
 	}
 	
-	protected double getGravity() {
+	public double getGravity() {
 		return gravity;
 	}
 
-	protected boolean isIgnoreBarriers() {
+	public boolean isIgnoreBarriers() {
 		return ignoreBarriers;
 	}
 
-	protected boolean isIgnoreBlocks() {
+	public boolean isIgnoreBlocks() {
 		return ignoreBlocks;
 	}
 
-	protected boolean isIgnoreEntities() {
+	public boolean isIgnoreEntities() {
 		return ignoreEntities;
 	}
 
 	// Can only be run by ProjectileGroup
 	protected ProjectileInstance start(FightData owner) {
-		return new ProjectileInstance(this, owner);
+		ProjectileInstance proj = new ProjectileInstance(this, owner);
+		onStart(proj);
+		return proj;
 	}
+	public abstract void onStart(ProjectileInstance proj);
 	public abstract void onTick(ProjectileInstance proj);
 	public abstract void onEnd(ProjectileInstance proj);
 	public abstract void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj);
