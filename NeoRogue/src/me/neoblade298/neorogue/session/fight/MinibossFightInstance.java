@@ -68,7 +68,7 @@ public class MinibossFightInstance extends FightInstance {
 			list.add(new EquipmentChoiceReward(equipDrops));
 			
 			equipDrops = new ArrayList<Equipment>(3);
-			equipDrops.addAll(Equipment.getArtifact(value + 2, 3, ec, EquipmentClass.CLASSLESS));
+			equipDrops.addAll(Equipment.getArtifact(data.getArtifactDroptable(), value + 2, 3, ec, EquipmentClass.CLASSLESS));
 			list.add(new EquipmentChoiceReward(equipDrops));
 			
 			equipDrops = new ArrayList<Equipment>(3);

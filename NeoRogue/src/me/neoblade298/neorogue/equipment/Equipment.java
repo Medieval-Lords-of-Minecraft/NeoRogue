@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -145,6 +146,7 @@ public abstract class Equipment {
 		}
 		
 		// Artifacts
+		new AvalonianAnchor();
 		new BurningCross();
 		new CharmOfGallus();
 		new EmeraldCluster();
@@ -152,6 +154,8 @@ public abstract class Equipment {
 		new EmeraldShard();
 		new EnergyBattery();
 		new FaerieCirclet();
+		new GlacialHammer();
+		new GrendelsCrystalMirror();
 		new PracticeDummy();
 		new RubyCluster();
 		new RubyGem();
@@ -464,8 +468,8 @@ public abstract class Equipment {
 		return eq.id.equals(this.id);
 	}
 	
-	public static ArrayList<Artifact> getArtifact(int value, int numDrops, EquipmentClass... ec) {
-		return artifacts.getMultiple(value, numDrops, ec);
+	public static ArrayList<Artifact> getArtifact(DropTableSet<Artifact> set, int value, int numDrops, EquipmentClass... ec) {
+		return set.getMultiple(value, numDrops, ec);
 	}
 	
 	public static ArrayList<Consumable> getConsumable(int value, int numDrops, EquipmentClass... ec) {
@@ -630,6 +634,10 @@ public abstract class Equipment {
 		}
 	}
 	
+	public static DropTableSet<Artifact> copyArtifactsDropSet(EquipmentClass... ecs) {
+		return artifacts.clone(ecs);
+	}
+	
 	public static enum EquipSlot {
 		ARMOR("Armor"),
 		ACCESSORY("Accessory"),
@@ -648,12 +656,27 @@ public abstract class Equipment {
 		}
 	}
 	
-	private static class DropTableSet<E> {
-		private HashMap<EquipmentClass, HashMap<Integer, DropTable<E>>> droptables =
+	public static class DropTableSet<E> {
+		protected HashMap<EquipmentClass, HashMap<Integer, DropTable<E>>> droptables =
 				new HashMap<EquipmentClass, HashMap<Integer, DropTable<E>>>();
 		
 		public DropTableSet() {
 			reload();
+		}
+		
+		private DropTableSet(DropTableSet<E> original, EquipmentClass... ecs) {
+			for (EquipmentClass ec : ecs) {
+				if (!original.droptables.containsKey(ec)) continue;
+				HashMap<Integer, DropTable<E>> map = new HashMap<Integer, DropTable<E>>();
+				for (Entry<Integer, DropTable<E>> ent2 : original.droptables.get(ec).entrySet()) {
+					map.put(ent2.getKey(), ent2.getValue().clone());
+				}
+				droptables.put(ec, map);
+			}
+		}
+		
+		public DropTableSet<E> clone(EquipmentClass... ecs) {
+			return new DropTableSet<E>(this, ecs);
 		}
 		
 		public void reload() {
@@ -663,6 +686,14 @@ public abstract class Equipment {
 					tables.put(i, new DropTable<E>());
 				}
 				droptables.put(ec, tables);
+			}
+		}
+		
+		public void remove(E drop) {
+			for (HashMap<Integer, DropTable<E>> map : droptables.values()) {
+				for (DropTable<E> table : map.values()) {
+					table.remove(drop);
+				}
 			}
 		}
 		
@@ -713,6 +744,11 @@ public abstract class Equipment {
 				list.add(table.get());
 			}
 			return list;
+		}
+		
+		@Override
+		public String toString() {
+			return droptables.toString();
 		}
 	}
 }

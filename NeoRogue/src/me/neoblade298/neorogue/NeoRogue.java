@@ -1,6 +1,7 @@
 package me.neoblade298.neorogue;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
@@ -18,10 +19,12 @@ import me.neoblade298.neocore.shared.commands.SubcommandRunner;
 import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.commands.*;
+import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.player.PlayerManager;
+import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.*;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
 import me.neoblade298.neorogue.session.fight.Mob;
@@ -115,7 +118,13 @@ public class NeoRogue extends JavaPlugin {
 			SessionManager.addToSession(alt.getUniqueId(), s);
 		}
 		s.setNode(s.getArea().getNodes()[0][2]);
-		s.setInstance(new ShopInstance(s));
+		s.setInstance(new NodeSelectInstance(s));
+		
+		PlayerSessionData data = s.getParty().get(p.getUniqueId());
+		for (int i = 0; i < 4; i++) {
+			ArrayList<Artifact> test = data.getArtifactDroptable().getMultiple(1, 1, EquipmentClass.WARRIOR, EquipmentClass.CLASSLESS);
+			data.giveEquipment(test.get(0));
+		}
 		// s.setInstance(new ChanceInstance());
 
 		//Map map = Map.generate(AreaType.LOW_DISTRICT, 8);

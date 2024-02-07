@@ -27,6 +27,7 @@ import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder.SQLAction;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.*;
+import me.neoblade298.neorogue.equipment.Equipment.DropTableSet;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
@@ -39,7 +40,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 public class PlayerSessionData {
 	private PlayerData data;
 	private Session s;
-	private EquipmentClass pc;
+	private EquipmentClass ec;
 	private double maxHealth, maxMana, maxStamina, health, startingMana, startingStamina, manaRegen, staminaRegen;
 	private Equipment[] hotbar = new Equipment[9];
 	private Equipment[] armors = new Equipment[3];
@@ -52,6 +53,7 @@ public class PlayerSessionData {
 	private HashMap<EquipSlot, HashSet<Integer>> upgradable = new HashMap<EquipSlot, HashSet<Integer>>(),
 			upgraded = new HashMap<EquipSlot, HashSet<Integer>>();
 	private String instanceData;
+	private DropTableSet<Artifact> personalArtifacts;
 
 	private static final ParticleContainer heal = new ParticleContainer(Particle.VILLAGER_HAPPY).count(50)
 			.spread(0.5, 1).speed(0.1).ignoreSettings(true);
@@ -61,7 +63,7 @@ public class PlayerSessionData {
 		data = PlayerManager.getPlayerData(uuid);
 		this.s = s;
 
-		this.pc = EquipmentClass.valueOf(rs.getString("playerClass"));
+		this.ec = EquipmentClass.valueOf(rs.getString("playerClass"));
 		this.maxHealth = rs.getDouble("maxHealth");
 		this.maxMana = rs.getDouble("maxMana");
 		this.maxStamina = rs.getDouble("maxStamina");
@@ -81,9 +83,10 @@ public class PlayerSessionData {
 		this.maxStorage = rs.getInt("maxStorage");
 		this.coins = rs.getInt("coins");
 		this.instanceData = rs.getString("instanceData");
+		setupArtifacts();
 	}
 
-	public PlayerSessionData(UUID uuid, EquipmentClass pc, Session s) {
+	public PlayerSessionData(UUID uuid, EquipmentClass ec, Session s) {
 		data = PlayerManager.getPlayerData(uuid);
 		this.s = s;
 		health = 100;
@@ -93,11 +96,11 @@ public class PlayerSessionData {
 		manaRegen = 2;
 		staminaRegen = 2;
 		health = maxHealth;
-		this.pc = pc;
+		this.ec = ec;
 
 		// Starting equipment
 		// If you ever use abilities equipped, need to initialize it to 1 here
-		switch (this.pc) {
+		switch (this.ec) {
 		case WARRIOR:
 			hotbar[0] = Equipment.get("woodenSword", false);
 			hotbar[1] = Equipment.get("empoweredEdge", false);
@@ -127,10 +130,18 @@ public class PlayerSessionData {
 		upgradable.get(EquipSlot.HOTBAR).add(1);
 
 		setupInventory();
+		setupArtifacts();
 
 		data.getPlayer().setHealthScaled(true);
 		data.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHealth);
 		data.initialize(s, this);
+	}
+	
+	private void setupArtifacts() {
+		personalArtifacts = Equipment.copyArtifactsDropSet(ec, EquipmentClass.CLASSLESS);
+		for (ArtifactInstance ai : artifacts.values()) {
+			personalArtifacts.remove(ai.getArtifact());
+		}
 	}
 	
 	public void setupEditInventory() {
@@ -278,6 +289,7 @@ public class PlayerSessionData {
 
 	private void giveArtifact(Artifact artifact) {
 		ArtifactInstance inst;
+		Util.msg(data.getPlayer(), SharedUtil.color("You received ").append(artifact.getDisplay()));
 		if (artifacts.containsKey(artifact.getId())) {
 			inst = artifacts.get(artifact.getId());
 			inst.add(1);
@@ -285,6 +297,7 @@ public class PlayerSessionData {
 		else {
 			inst = new ArtifactInstance(artifact);
 			artifacts.put(artifact.getId(), inst);
+			personalArtifacts.remove(artifact);
 		}
 		inst.getArtifact().onAcquire(this);
 	}
@@ -445,7 +458,7 @@ public class PlayerSessionData {
 	}
 
 	public EquipmentClass getPlayerClass() {
-		return pc;
+		return ec;
 	}
 
 	public void addMaxHealth(int amount) {
@@ -527,6 +540,10 @@ public class PlayerSessionData {
 	public String getInstanceData() {
 		return instanceData;
 	}
+	
+	public DropTableSet<Artifact> getArtifactDroptable() {
+		return personalArtifacts;
+	}
 
 	public void save(Statement stmt) {
 		UUID host = s.getHost();
@@ -535,7 +552,7 @@ public class PlayerSessionData {
 		try {
 			SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_playersessiondata")
 					.addString(host.toString()).addValue(saveSlot).addString(uuid)
-					.addString(((TextComponent) data.getPlayer().displayName()).content()).addString(pc.name())
+					.addString(((TextComponent) data.getPlayer().displayName()).content()).addString(ec.name())
 					.addValue(maxHealth).addValue(maxMana).addValue(maxStamina).addValue(health)
 					.addValue(startingMana).addValue(startingStamina).addValue(manaRegen)
 					.addValue(staminaRegen).addString(Equipment.serialize(hotbar))

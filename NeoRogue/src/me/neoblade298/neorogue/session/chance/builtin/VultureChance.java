@@ -5,6 +5,7 @@ import org.bukkit.Material;
 
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.AreaType;
+import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.PlayerSessionData;
@@ -104,7 +105,8 @@ public class VultureChance extends ChanceSet {
 	private enum ItemFound {
 		ARTIFACT("You find an artifact for your troubles!", (s) -> {
 			for (PlayerSessionData data : s.getParty().values()) {
-				data.giveEquipment(Equipment.getArtifact(s.getAreasCompleted() + 1, 1, data.getPlayerClass(), EquipmentClass.CLASSLESS).get(0));
+				Artifact drop = Equipment.getArtifact(data.getArtifactDroptable(), s.getAreasCompleted() + 1, 1, data.getPlayerClass(), EquipmentClass.CLASSLESS).get(0);
+				data.giveEquipment(drop);
 			}
 		}),
 		HEAL("You get healed for <yellow>25%</yellow> of your max health!", (s) -> {
