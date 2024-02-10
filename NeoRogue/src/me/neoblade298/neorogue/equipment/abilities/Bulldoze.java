@@ -48,13 +48,15 @@ public class Bulldoze extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(p, this, slot, es, (pdata, inputs) -> {
+		EquipmentInstance inst = new EquipmentInstance(p, this, slot, es);
+		inst.setAction((pdata, inputs) -> {
 			Util.playSound(p, Sound.ENTITY_ENDER_DRAGON_AMBIENT, false);
 			start.spawn(p);
 			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 60, 0));
 			new BulldozeHitChecker(p, data);
 			return TriggerResult.keep();
-		}));
+		});
+		data.addTrigger(id, bind, inst);
 	}
 	
 	private class BulldozeHitChecker {
@@ -75,7 +77,7 @@ public class Bulldoze extends Equipment {
 						Util.playSound(p, Sound.ENTITY_GENERIC_EXPLODE, false);
 						for (LivingEntity ent : hit) {
 							pc.spawn(ent);
-							FightInstance.dealDamage(data, DamageType.BLUNT, damage, ent);
+							FightInstance.dealDamage(data, DamageType.BLUNT, damage + (data.getShields() != null ? data.getShields().getAmount() : 0), ent);
 							FightInstance.knockback(p, ent, 2);
 						}
 					}
@@ -95,8 +97,8 @@ public class Bulldoze extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.REDSTONE,
-				"On cast, gain speed for 3 seconds, dealing <yellow>" + damage + "</yellow> " + GlossaryTag.BLUNT.tag(this) + " damage to enemies you touch"
-						+ " and knock them back, once per enemy.");
+		item = createItem(Material.IRON_CHESTPLATE,
+				"On cast, gain speed for 3 seconds, dealing <yellow>" + damage + "</yellow> " + GlossaryTag.BLUNT.tag(this) + " damage plus any "
+						+ GlossaryTag.SHIELDS.tag(this) + " you have to enemies you touch and knock them back, once per enemy.");
 	}
 }

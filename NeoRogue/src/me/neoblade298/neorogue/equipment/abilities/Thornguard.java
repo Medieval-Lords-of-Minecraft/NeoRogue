@@ -23,7 +23,7 @@ public class Thornguard extends Equipment {
 	
 	public Thornguard(boolean isUpgraded) {
 		super("thornguard", "Thornguard", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(isUpgraded ? 50 : 30, isUpgraded ? 65 : 40, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(isUpgraded ? 50 : 20, isUpgraded ? 65 : 30, 0, 0));
 		properties.addUpgrades(PropertyType.MANA_COST, PropertyType.STAMINA_COST);
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 	}

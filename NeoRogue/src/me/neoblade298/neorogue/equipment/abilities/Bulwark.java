@@ -11,25 +11,22 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class Sturdy extends Equipment {
+public class Bulwark extends Equipment {
 	private static final int HEAL_COUNT = 3;
 	private ParticleContainer pc = new ParticleContainer(Particle.VILLAGER_HAPPY).count(15).spread(0.5, 0.5);
-	private int heal;
+	private int heal, shield;
 	
-	public Sturdy(boolean isUpgraded) {
-		super("sturdy", "Sturdy", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
+	public Bulwark(boolean isUpgraded) {
+		super("bulwark", "Bulwark", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.none());
 		
-		heal = isUpgraded ? 3 : 2;
-		
-		addReforgeOption("sturdy", "graniteShield", "bulwark", "endure");
-		// Granite shield concusses enemies that hit you
-		// Bulwark also grants shields
-		// Endure stores damage and converts them to berserk stacks
+		heal = 3;
+		shield = isUpgraded ? 6 : 3;
 	}
 
 	@Override
@@ -45,8 +42,9 @@ public class Sturdy extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.GREEN_DYE,
-				"Passive. Heal for <yellow>" + heal + "</yellow> for every " + HEAL_COUNT + " consecutive seconds you keep a shield raised.");
+		item = createItem(Material.SHIELD,
+				"Passive. Heal for <white>" + heal + "</white> and gain a " +
+						GlossaryTag.SHIELDS.tag(this) + " of <yellow>" + shield + "</yellow> for every " + HEAL_COUNT + " consecutive seconds you keep a shield raised.");
 	}
 	
 	private class SturdyInstance extends EquipmentInstance {
@@ -58,6 +56,7 @@ public class Sturdy extends Equipment {
 				if (++count < HEAL_COUNT) return TriggerResult.keep();
 				pc.spawn(p);
 				Util.playSound(p, Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1F, 1F, false);
+				pdata.addShield(p.getUniqueId(), shield, true, 100D, 1, 0, 1);
 				pdata.addHealth(heal);
 				count = 0;
 				return TriggerResult.keep();

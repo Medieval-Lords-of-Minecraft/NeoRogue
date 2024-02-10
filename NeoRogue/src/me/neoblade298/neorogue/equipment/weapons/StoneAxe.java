@@ -10,17 +10,19 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
-import me.neoblade298.neorogue.session.fight.DamageMeta;
-import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.TargetHelper;
+import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
+import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class StoneAxe extends Equipment {
+	private static final int BERSERK_THRESHOLD = 20;
+	private static final TargetProperties tp = TargetProperties.cone(90, 4, false, TargetType.ENEMY);
 	
 	public StoneAxe(boolean isUpgraded) {
 		super("stoneAxe", "Stone Axe", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
@@ -31,30 +33,31 @@ public class StoneAxe extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		double damage = properties.get(PropertyType.DAMAGE);
-		double kb = properties.get(PropertyType.KNOCKBACK);
-		DamageType type = properties.getType();
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
+			if (data.hasStatus("BERSERK") && data.getStatus("BERSERK").getStacks() >= BERSERK_THRESHOLD) TriggerResult.remove();
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
-			weaponSwing(p, pdata);
-			DamageMeta dm = new DamageMeta(data, damage, type);
-			dm.addDamageSlice(new DamageSlice(data.getUniqueId(), 0, type));
-			dm.addDamageSlice(new DamageSlice(data.getUniqueId(), 0, type));
-			// All 3 damage slices are affected by physical increase
-			
-			BasicAttackEvent basicEv = new BasicAttackEvent(ev.getTarget(), dm, kb, this, null);
-			data.runActions(data, Trigger.BASIC_ATTACK, basicEv);
-			FightInstance.dealDamage(dm, ev.getTarget());
-			if (kb != 0) {
-				FightInstance.knockback(p, ev.getTarget(), kb);
-			}
+			weaponSwingAndDamage(p, pdata, ev.getTarget());
+			return TriggerResult.keep();
+		});
+		
+		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
+			if (!data.hasStatus("BERSERK") || data.getStatus("BERSERK").getStacks() < BERSERK_THRESHOLD) TriggerResult.keep();
+			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
+			weaponSwingAndDamage(p, pdata, ev.getTarget());
+			FightInstance.dealDamage(properties.getDamageMeta(data), TargetHelper.getEntitiesInCone(p, tp));
+			return TriggerResult.keep();
+		});
+		
+		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_NO_HIT, (pdata, inputs) -> {
+			if (!data.hasStatus("BERSERK") || data.getStatus("BERSERK").getStacks() < BERSERK_THRESHOLD) TriggerResult.keep();
+			FightInstance.dealDamage(properties.getDamageMeta(data), TargetHelper.getEntitiesInCone(p, tp));
 			return TriggerResult.keep();
 		});
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STONE_AXE, "Non-multiplicative " + GlossaryTag.PHYSICAL.tag(this) + " damage buffs "
-				+ "are <white>3x</white> as effective with this weapon.");
+		item = createItem(Material.STONE_AXE, "At 20 stacks of " + GlossaryTag.BERSERK.tag(this) + ", left clicks deal damage in a cone."
+				+ " Only the closest target is affected by on-hit effects.");
 	}
 }

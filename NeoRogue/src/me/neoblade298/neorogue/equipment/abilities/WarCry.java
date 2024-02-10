@@ -19,24 +19,22 @@ import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class BattleCry extends Equipment {
+public class WarCry extends Equipment {
 	private ParticleContainer pc = new ParticleContainer(Particle.REDSTONE);
 	private int strength;
 	
-	public BattleCry(boolean isUpgraded) {
-		super("battleCry", "Battle Cry", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 5, 15, 0));
-		strength = isUpgraded ? 20 : 14;
+	public WarCry(boolean isUpgraded) {
+		super("warCry", "War Cry", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 75, 15, 0));
+		strength = isUpgraded ? 15 : 10;
 		
 		pc.count(50).spread(0.5, 0.5).dustOptions(new DustOptions(Color.RED, 1F));
-		
-		addReforgeOption("battleCry", "warCry", "command");
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE,
-				"On cast, give yourself <yellow>" + strength + " </yellow>bonus " + GlossaryTag.PHYSICAL.tag(this) + " damage for <white>10</white> seconds.");
+				"On cast, give yourself <yellow>" + strength + " </yellow>bonus " + GlossaryTag.PHYSICAL.tag(this) + " damage.");
 	}
 
 	@Override
@@ -44,7 +42,7 @@ public class BattleCry extends Equipment {
 		data.addTrigger(id, bind, new EquipmentInstance(p, this, slot, es, (pdata, inputs) -> {
 			Util.playSound(p, Sound.ENTITY_BLAZE_DEATH, 1F, 1F, false);
 			pc.spawn(p);
-			data.addBuff(p.getUniqueId(), id, true, false, BuffType.PHYSICAL, strength, 10);
+			data.addBuff(p.getUniqueId(), id, true, false, BuffType.PHYSICAL, strength, -1);
 			return TriggerResult.keep();
 		}));
 	}

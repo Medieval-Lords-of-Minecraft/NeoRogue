@@ -82,7 +82,7 @@ public class Tackle extends Equipment {
 						v = v.setY(Math.min(0.3, v.getY())).normalize(); // Limit how high a tackle can take you
 						p.setVelocity(v.multiply(0.5));
 						cancelTasks();
-						inst.reduceCooldown(10);
+						inst.reduceCooldown(data.getShields().getAmount() > 0 ? 15 : 10);
 						Util.playSound(p, Sound.ENTITY_GENERIC_EXPLODE, false);
 						for (LivingEntity ent : hit) {
 							pc.spawn(p);
@@ -108,6 +108,7 @@ public class Tackle extends Equipment {
 		item = createItem(Material.REDSTONE, new String[] { "<gold>Area of Effect: <white>2" },
 				"On cast, dash forward, stopping at the first enemy hit and dealing <yellow>" + damage + "</yellow> " + GlossaryTag.BLUNT.tag(this) +
 				" damage in a small area. "
-						+ "If an enemy is hit, reduce this ability's cooldown by <white>10</white>.");
+						+ "If an enemy is hit, reduce this ability's cooldown by <white>10</white>. If you have any " + GlossaryTag.SHIELDS.tag(this) + 
+						" on hit, further reduce this ability's cooldown by <white>5</white>.");
 	}
 }

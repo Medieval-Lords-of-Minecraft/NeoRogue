@@ -75,6 +75,7 @@ public abstract class Equipment {
 		for (boolean b : new boolean[] {false, true}) {
 			// Abilities
 			new BattleCry(b);
+			new BerserkersCall(b);
 			new Bide(b);
 			new BlessedEdge(b);
 			new Brace(b);
@@ -86,23 +87,28 @@ public abstract class Equipment {
 			new ControlledExecute(b);
 			new DarkPact(b);
 			new EarthenTackle(b);
-			new EarthenWall(b);
 			new EmpoweredEdge(b);
+			new Endurance(b);
 			new Execute(b);
 			new Fortify(b);
 			new Fury(b);
+			new GraniteShield(b);
 			new Parry(b);
 			new Provoke(b);
 			new Quake(b);
 			new RecklessSwing(b);
 			new Smite(b);
+			new Sturdy(b);
 			new Tackle(b);
+			new Thornguard(b);
+			new WarCry(b);
 			new WindSlash(b);
 			
 			// Accessories
 			new EarthenRing(b);
 			new MinorStaminaRelic(b);
 			new MinorStrengthRelic(b);
+			new RingOfAnger(b);
 			
 			// Armor
 			new ClothBindings(b);

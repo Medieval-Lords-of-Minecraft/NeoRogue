@@ -121,6 +121,7 @@ public class FightData {
 	}
 
 	public void addTask(String id, BukkitTask task) {
+		while (tasks.containsKey(id)) id += "1";
 		tasks.put(id, task);
 	}
 	

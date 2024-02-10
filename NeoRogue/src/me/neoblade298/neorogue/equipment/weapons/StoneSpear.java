@@ -24,6 +24,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -105,7 +106,10 @@ public class StoneSpear extends Equipment {
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
-			damageProjectile(hit.getEntity(), proj, new DamageMeta(proj.getOwner(), throwDamage, DamageType.PIERCING), hitBarrier);
+			DamageMeta dm = new DamageMeta(proj.getOwner(), throwDamage, DamageType.PIERCING);
+			dm.addDamageSlice(new DamageSlice(p.getUniqueId(), 0, DamageType.PIERCING));
+			dm.addDamageSlice(new DamageSlice(p.getUniqueId(), 0, DamageType.PIERCING));
+			damageProjectile(hit.getEntity(), proj, dm, hitBarrier);
 			Location loc = hit.getEntity().getLocation();
 			Util.playSound(p, loc, Sound.ENTITY_GENERIC_EXPLODE, 1F, 1F, false);
 		}
@@ -119,6 +123,6 @@ public class StoneSpear extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.TRIDENT, "Melee range +1. Can be thrown to deal <yellow>" + throwDamage + "</yellow> " + GlossaryTag.PIERCING.tag(this) + " "
-				+ "damage to all enemies hit, but disabling the weapon for <white>5</white> seconds.");
+				+ "damage to all enemies hit, but disabling the weapon for <white>5</white> seconds. Throw damage is affected by buffs <white>3x</white>.");
 	}
 }

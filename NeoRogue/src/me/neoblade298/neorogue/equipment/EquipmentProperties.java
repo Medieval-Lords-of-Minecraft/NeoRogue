@@ -14,7 +14,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import me.neoblade298.neocore.bukkit.util.SoundContainer;
 import me.neoblade298.neocore.shared.util.SharedUtil;
+import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageType;
+import me.neoblade298.neorogue.session.fight.FightData;
 import net.kyori.adventure.text.Component;
 
 public class EquipmentProperties {
@@ -82,6 +84,10 @@ public class EquipmentProperties {
 			eq.addTags(DamageType.toGlossary(type));
 		}
 		return lore;
+	}
+	
+	public DamageMeta getDamageMeta(FightData owner) {
+		return new DamageMeta(owner, get(PropertyType.DAMAGE), type);
 	}
 	
 	private Component generateLoreLine(PropertyType type) {
