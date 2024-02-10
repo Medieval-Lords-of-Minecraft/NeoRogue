@@ -18,7 +18,7 @@ public class RingOfAnger extends Equipment {
 	public RingOfAnger(boolean isUpgraded) {
 		super("ringOfAnger", "Ring of Anger", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ACCESSORY);
-		seconds = isUpgraded ? 3 : 5;
+		seconds = isUpgraded ? 5 : 3;
 	}
 
 	@Override

@@ -106,6 +106,7 @@ public abstract class Equipment {
 			
 			// Accessories
 			new EarthenRing(b);
+			new MinorShieldingRelic(b);
 			new MinorStaminaRelic(b);
 			new MinorStrengthRelic(b);
 			new RingOfAnger(b);
@@ -156,14 +157,16 @@ public abstract class Equipment {
 		new AvalonianAnchor();
 		new BurningCross();
 		new CharmOfGallus();
-		new EmeraldCluster();
-		new EmeraldGem();
-		new EmeraldShard();
 		new EnergyBattery();
 		new FaerieCirclet();
 		new GlacialHammer();
 		new GrendelsCrystalMirror();
 		new PracticeDummy();
+		
+		// Levelup artifacts
+		new EmeraldCluster();
+		new EmeraldGem();
+		new EmeraldShard();
 		new RubyCluster();
 		new RubyGem();
 		new RubyShard();

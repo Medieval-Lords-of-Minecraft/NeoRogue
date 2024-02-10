@@ -104,7 +104,7 @@ public class Barrier {
 			if (center.distanceSquared(loc) > 200) return false;
 		}
 
-		if (center.getWorld().equals(loc.getWorld())) {
+		if (!center.getWorld().equals(loc.getWorld())) {
 			Bukkit.getLogger().warning("[NeoRogue] Barrier and projectile in different worlds: " + center.getWorld() + " and " + loc.getWorld());
 			return false;
 		}
