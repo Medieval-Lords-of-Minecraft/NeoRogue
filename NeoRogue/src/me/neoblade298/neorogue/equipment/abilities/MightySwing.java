@@ -12,6 +12,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -20,34 +21,36 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
-public class Execute extends Equipment {
-	private int damage, execute;
+public class MightySwing extends Equipment {
+	private int damage;
 	private ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
 			hit = new ParticleContainer(Particle.REDSTONE);
 	
-	public Execute(boolean isUpgraded) {
-		super("execute", "Execute", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 15, 7, 0));
-		damage = isUpgraded ? 45 : 30;
-		execute = isUpgraded ? 150 : 100;
+	public MightySwing(boolean isUpgraded) {
+		super("mightySwing", "Mighty Swing", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, isUpgraded ? 25 : 35, 10, 0));
+		properties.addUpgrades(PropertyType.COOLDOWN);
+		damage = isUpgraded ? 200 : 150;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		hit.count(50).spread(0.5, 0.5);
-		addReforgeOption("execute", "controlledExecute", "consume");
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(p, this, slot, es, (pdata, inputs) -> {
+		EquipmentInstance eqi = new EquipmentInstance(p, this, slot, es);
+		data.addTrigger(id, bind, eqi);
+		eqi.setAction((pdata, inputs) -> {
 			Util.playSound(p, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1F, 1F, false);
 			pc.spawn(p);
 			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in) -> {
+				if (p.isOnGround()) return TriggerResult.keep();
 				BasicAttackEvent ev = (BasicAttackEvent) in;
 				double pct = ev.getTarget().getHealth() / ev.getTarget().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
 				Util.playSound(p, Sound.BLOCK_ANVIL_LAND, 1F, 1F, false);
 				hit.spawn(ev.getTarget().getLocation());
-				if (pct < 0.5) {
-					FightInstance.dealDamage(data, DamageType.PIERCING, damage + execute, ev.getTarget());
+				if (pct > 0.5) {
+					eqi.reduceCooldown(4);
 					Util.playSound(p, Sound.ENTITY_BLAZE_SHOOT, 1F, 1F, false);
 				}
 				else {
@@ -56,13 +59,13 @@ public class Execute extends Equipment {
 				return TriggerResult.remove();
 			});
 			return TriggerResult.keep();
-		}));
+		});
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FLINT,
 				"On cast, your next basic attack while in the air deals <yellow>" + damage + "</yellow> " + GlossaryTag.PIERCING.tag(this) + " damage. If the enemy is"
-						+ " below <white>50%</white> health, deal an additional <yellow>" + execute + "</yellow> " + GlossaryTag.PIERCING.tag(this) + " damage.");
+						+ " above <white>50%</white> health, reduce the ability's cooldown by <white>4</white>.");
 	}
 }

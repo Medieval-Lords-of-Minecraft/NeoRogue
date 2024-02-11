@@ -18,7 +18,7 @@ public class MinorStaminaPotion extends Consumable {
 	
 	public MinorStaminaPotion(boolean isUpgraded) {
 		super("minorStaminaPotion", "Minor Stamina Potion", isUpgraded, Rarity.COMMON, EquipmentClass.CLASSLESS);
-		this.stamina = isUpgraded ? 105 : 75;
+		this.stamina = isUpgraded ? 3 : 2;
 	}
 
 	@Override
@@ -26,14 +26,14 @@ public class MinorStaminaPotion extends Consumable {
 		data.addTrigger(id, bind, (pdata, in) -> {
 			Util.playSound(p, Sound.ENTITY_WITCH_DRINK, false);
 			data.getSessionData().removeEquipment(es, slot);
-			data.addStamina(stamina);
+			data.addStaminaRegen(stamina);
 			return TriggerResult.remove();
 		});
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.POTION, "Restores <yellow>" + stamina + "</yellow> stamina. Consumed on first use.");
+		item = createItem(Material.POTION, "Increases your stamina regen by <yellow>" + stamina + "</yellow> for the fight. Consumed on first use.");
 		PotionMeta meta = (PotionMeta) item.getItemMeta();
 		meta.setColor(Color.fromRGB(0, 255, 0));
 		item.setItemMeta(meta);

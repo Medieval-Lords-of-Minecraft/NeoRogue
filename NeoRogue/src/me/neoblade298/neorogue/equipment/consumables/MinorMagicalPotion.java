@@ -6,19 +6,21 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.PotionMeta;
 
-import me.neoblade298.neorogue.equipment.Consumable;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.equipment.Consumable;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class MinorMaxManaPotion extends Consumable {
-	private double mana;
+public class MinorMagicalPotion extends Consumable {
+	private double intel;
 	
-	public MinorMaxManaPotion(boolean isUpgraded) {
-		super("minorMaxManaPotion", "Minor Max Mana Potion", isUpgraded, Rarity.COMMON, EquipmentClass.CLASSLESS);
-		this.mana = isUpgraded ? 50 : 35;
+	public MinorMagicalPotion(boolean isUpgraded) {
+		super("minorMagicalPotion", "Minor Magical Potion", isUpgraded, Rarity.COMMON, EquipmentClass.CLASSLESS);
+		this.intel = isUpgraded ? 30 : 20;
 	}
 
 	@Override
@@ -26,16 +28,17 @@ public class MinorMaxManaPotion extends Consumable {
 		data.addTrigger(id, bind, (pdata, in) -> {
 			Util.playSound(p, Sound.ENTITY_WITCH_DRINK, false);
 			data.getSessionData().removeEquipment(es, slot);
-			data.addMaxMana(mana);
+			data.addBuff(p.getUniqueId(), true, false, BuffType.MAGICAL, intel);
 			return TriggerResult.remove();
 		});
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.POTION, "Increases your max mana by <yellow>" + mana + "</yellow> for the duration of the fight. Consumed on first use.");
+		item = createItem(Material.POTION, "Increases your " + GlossaryTag.MAGICAL.tag(this)
+		+ "by <yellow>" + intel + "</yellow> for the fight. Consumed on first use.");
 		PotionMeta meta = (PotionMeta) item.getItemMeta();
-		meta.setColor(Color.fromRGB(0, 0, 127));
+		meta.setColor(Color.fromRGB(0, 0, 255));
 		item.setItemMeta(meta);
 	}
 }

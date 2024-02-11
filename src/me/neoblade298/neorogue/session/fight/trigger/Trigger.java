@@ -26,6 +26,7 @@ public enum Trigger {
 	RIGHT_CLICK_HIT,
 	RAISE_SHIELD,
 	SHIELD_TICK, // Ticks while you have your shield up
+	PLAYER_TICK, // Tick after default player tick (stamina/mana regen and sprinting check)
 	LOWER_SHIELD,
 	RECEIVED_DAMAGE_BARRIER,
 	DEALT_DAMAGE,
@@ -36,7 +37,8 @@ public enum Trigger {
 	GRANT_SHIELDS,
 	RECEIVE_SHIELDS,
 	THROW_TRIDENT,
-	RECEIVED_DAMAGE; // Cancellable
+	RECEIVED_DAMAGE, // Cancellable
+	RECEIVED_HEALTH_DAMAGE; // Cancellable, only occurs if the player is due to lose health, TOO LATE to apply buffs
 	
 	private boolean isSlotDependent = this.name().startsWith("LEFT_CLICK") || this.name().startsWith("THROW");
 	

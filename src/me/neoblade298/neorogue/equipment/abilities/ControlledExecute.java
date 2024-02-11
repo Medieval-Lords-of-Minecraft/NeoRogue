@@ -45,6 +45,7 @@ public class ControlledExecute extends Equipment {
 	
 	private class ControlledExecuteInstance extends EquipmentInstance {
 
+		@SuppressWarnings("deprecation")
 		public ControlledExecuteInstance(Player p, Equipment eq, int slot, EquipSlot es) {
 			super(p, eq, slot, es);
 			action = (pdata, inputs) -> {

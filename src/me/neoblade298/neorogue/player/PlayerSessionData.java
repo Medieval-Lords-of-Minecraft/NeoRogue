@@ -49,7 +49,7 @@ public class PlayerSessionData {
 	private Equipment[] storage = new Equipment[STORAGE_SIZE];
 	private Equipment[] otherBinds = new Equipment[8];
 	private TreeMap<String, ArtifactInstance> artifacts = new TreeMap<String, ArtifactInstance>();
-	private int abilitiesEquipped = 1, maxAbilities = 9, maxStorage = 9, coins = 50;
+	private int abilitiesEquipped, maxAbilities = 4, maxStorage = 9, coins = 50;
 	private HashMap<EquipSlot, HashSet<Integer>> upgradable = new HashMap<EquipSlot, HashSet<Integer>>(),
 			upgraded = new HashMap<EquipSlot, HashSet<Integer>>();
 	private String instanceData;
@@ -104,22 +104,29 @@ public class PlayerSessionData {
 		case WARRIOR:
 			hotbar[0] = Equipment.get("woodenSword", false);
 			hotbar[1] = Equipment.get("empoweredEdge", false);
-			hotbar[2] = Equipment.get("stoneSpear", false);
+			abilitiesEquipped = 1;
 			break;
 		case THIEF:
 			hotbar[0] = Equipment.get("woodenSword", false);
 			hotbar[1] = Equipment.get("empoweredEdge", false);
+			abilitiesEquipped = 1;
 			break;
 		case ARCHER:
 			hotbar[0] = Equipment.get("woodenSword", false);
 			hotbar[1] = Equipment.get("empoweredEdge", false);
+			abilitiesEquipped = 1;
 			break;
 		case MAGE:
 			hotbar[0] = Equipment.get("woodenSword", false);
 			hotbar[1] = Equipment.get("empoweredEdge", false);
+			abilitiesEquipped = 1;
 			break;
 		default:
 			break;
+		}
+
+		for (int i = 2; i < accessories.length; i++) {
+			accessories[i] = Equipment.get("curseOfInexperience", false);
 		}
 
 		for (EquipSlot es : EquipSlot.values()) {
@@ -140,6 +147,7 @@ public class PlayerSessionData {
 	private void setupArtifacts() {
 		personalArtifacts = Equipment.copyArtifactsDropSet(ec, EquipmentClass.CLASSLESS);
 		for (ArtifactInstance ai : artifacts.values()) {
+			if (ai.getArtifact().canStack()) continue;
 			personalArtifacts.remove(ai.getArtifact());
 		}
 	}
@@ -297,7 +305,7 @@ public class PlayerSessionData {
 		else {
 			inst = new ArtifactInstance(artifact);
 			artifacts.put(artifact.getId(), inst);
-			personalArtifacts.remove(artifact);
+			if (!artifact.canStack()) personalArtifacts.remove(artifact);
 		}
 		inst.getArtifact().onAcquire(this);
 	}
@@ -459,6 +467,10 @@ public class PlayerSessionData {
 
 	public EquipmentClass getPlayerClass() {
 		return ec;
+	}
+	
+	public void increaseAbilityLimit(int amount) {
+		this.abilitiesEquipped += amount;
 	}
 
 	public void addMaxHealth(int amount) {

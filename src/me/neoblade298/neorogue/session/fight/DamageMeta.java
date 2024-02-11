@@ -19,6 +19,7 @@ import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedHealthDamageEvent;
 
 public class DamageMeta {
 	private FightData owner;
@@ -281,8 +282,18 @@ public class DamageMeta {
 			damage = Math.max(0, shields.useShields(damage));
 		}
 		
+		// trigger received health damage
+		if (recipient instanceof PlayerFightData) {
+			PlayerFightData pdata = (PlayerFightData) recipient;
+			ReceivedHealthDamageEvent ev = new ReceivedHealthDamageEvent(damager, this);
+			if (pdata.runActions(pdata, Trigger.RECEIVED_HEALTH_DAMAGE, ev)) {
+				damage = 0;
+				ignoreShieldsDamage = 0;
+			}
+		}
+		
 		final double finalDamage = damage + ignoreShieldsDamage + target.getAbsorptionAmount();
-		if (finalDamage >= 0) {
+		if (finalDamage > target.getAbsorptionAmount()) {
 			target.damage(finalDamage);
 			if (!(target instanceof Player)) {
 				NeoRogue.mythicApi.castSkill(target, "UpdateHealthbar");
