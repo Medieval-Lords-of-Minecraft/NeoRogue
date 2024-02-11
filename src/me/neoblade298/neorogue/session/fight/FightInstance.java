@@ -421,7 +421,7 @@ public abstract class FightInstance extends Instance {
 
 	public static void handleMythicDeath(MythicMobDeathEvent e) {
 		FightData data = removeFightData(e.getEntity().getUniqueId());
-		if (data == null) return;
+		if (data == null || data.getInstance() == null) return;
 		String id = e.getMobType().getInternalName();
 		data.getInstance().handleRespawn(data, id, false);
 		data.getInstance().handleMobKill(id);

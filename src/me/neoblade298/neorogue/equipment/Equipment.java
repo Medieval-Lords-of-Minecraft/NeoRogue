@@ -72,12 +72,6 @@ public abstract class Equipment {
 		droptables.reload();
 		artifacts.reload();
 		
-		/* Todo:
-		 * Add reforge options for Adrenaline
-		 * Rework the other 2 executes to better match strategies
-		 * Add Titan ability, passive that decreases stamina cost of abilities >25 stamina cost by 5
-		 */
-		
 		for (boolean b : new boolean[] {false, true}) {
 			// Abilities
 			new Adrenaline(b);
@@ -90,8 +84,7 @@ public abstract class Equipment {
 			new Bulldoze(b);
 			new Challenge(b);
 			new Cleave(b);
-			new Consume(b);
-			new ControlledExecute(b);
+			new SiphoningStrike(b);
 			new DarkPact(b);
 			new EarthenTackle(b);
 			new EmpoweredEdge(b);

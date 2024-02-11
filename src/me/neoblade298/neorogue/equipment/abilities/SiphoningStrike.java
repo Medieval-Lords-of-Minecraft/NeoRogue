@@ -17,23 +17,23 @@ import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
-public class ControlledExecute extends Equipment {
-	private int damage, execute, cdr;
-	private static int stamina = 15;
+public class SiphoningStrike extends Equipment {
+	private int damage, execute, buff;
 	private ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
 			hit = new ParticleContainer(Particle.REDSTONE);
 	
-	public ControlledExecute(boolean isUpgraded) {
-		super("controlledExecute", "Controlled Execute", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, stamina, isUpgraded ? 5 : 7, 0));
+	public SiphoningStrike(boolean isUpgraded) {
+		super("siphoningStrike", "Siphoning Strike", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 25, 12, 0));
 		properties.addUpgrades(PropertyType.COOLDOWN);
 		damage = 45;
 		execute = 150;
-		cdr = isUpgraded ? 5 : 3;
+		buff = isUpgraded ? 5 : 3;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		hit.count(50).spread(0.5, 0.5);
 	}
@@ -66,8 +66,7 @@ public class ControlledExecute extends Equipment {
 					}
 					
 					if (ev.getTarget().getHealth() <= 0) {
-						this.reduceCooldown(cdr);
-						pdata.addStamina(stamina);
+						pdata.addBuff(p.getUniqueId(), true, false, BuffType.PHYSICAL, buff);
 						Util.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, false);
 					}
 					return TriggerResult.remove();
@@ -83,7 +82,7 @@ public class ControlledExecute extends Equipment {
 		item = createItem(Material.FLINT,
 				"On cast, your next basic attack while in the air deals <white>" + damage + "</white> " + GlossaryTag.PIERCING.tag(this)
 				+ "damage. If the enemy is below <white>50%</white> health, deal an additional <white>" + execute + "</white> "
-				+ GlossaryTag.PIERCING.tag(this) + " damage. If the enemy is killed with this damage, refund stamina "
-						+ "cost and reduce cooldown by <white>" + cdr + "</white>.");
+				+ GlossaryTag.PIERCING.tag(this) + " damage. If the enemy is killed with this damage, increase " + GlossaryTag.PHYSICAL.tag(this) + 
+				" damage by <yellow>" + buff + "</yellow>.");
 	}
 }

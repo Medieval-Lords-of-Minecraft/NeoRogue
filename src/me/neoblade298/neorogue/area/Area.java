@@ -201,11 +201,16 @@ public class Area {
 				node.addDestination(nodes[MAX_POSITIONS - 2][2]);
 			}
 		}
-
-		// Generate guaranteed paths
-		nodes[MAX_POSITIONS - 2][CENTER_LANE - 1].addDestination(nodes[MAX_POSITIONS - 1][CENTER_LANE]);
-		nodes[MAX_POSITIONS - 2][CENTER_LANE].addDestination(nodes[MAX_POSITIONS - 1][CENTER_LANE]);
-		nodes[MAX_POSITIONS - 2][CENTER_LANE + 1].addDestination(nodes[MAX_POSITIONS - 1][CENTER_LANE]);
+		
+		// Connect campfires to boss
+		for (int i = 1; i < 3; i++) {
+			Node node = nodes[MAX_POSITIONS - 2][i];
+			if (node.getSources().size() > 0) {
+				nodes[MAX_POSITIONS - 2][i] = null;
+				continue;
+			}
+			nodes[MAX_POSITIONS - 2][i].addDestination(nodes[MAX_POSITIONS - 1][CENTER_LANE]);
+		}
 	}
 	
 	public String getBoss() {
