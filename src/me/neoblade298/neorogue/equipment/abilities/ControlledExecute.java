@@ -52,6 +52,7 @@ public class ControlledExecute extends Equipment {
 				Util.playSound(p, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1F, 1F, false);
 				pc.spawn(p);
 				pdata.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in) -> {
+					if (p.isOnGround()) return TriggerResult.keep();
 					BasicAttackEvent ev = (BasicAttackEvent) in;
 					double pct = ev.getTarget().getHealth() / ev.getTarget().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
 					Util.playSound(p, Sound.BLOCK_ANVIL_LAND, 1F, 1F, false);
