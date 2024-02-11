@@ -18,7 +18,7 @@ public class MinorManaPotion extends Consumable {
 	
 	public MinorManaPotion(boolean isUpgraded) {
 		super("minorManaPotion", "Minor Mana Potion", isUpgraded, Rarity.COMMON, EquipmentClass.CLASSLESS);
-		this.mana = isUpgraded ? 105 : 75;
+		this.mana = isUpgraded ? 3 : 2;
 	}
 
 	@Override
@@ -26,14 +26,14 @@ public class MinorManaPotion extends Consumable {
 		data.addTrigger(id, bind, (pdata, in) -> {
 			Util.playSound(p, Sound.ENTITY_WITCH_DRINK, false);
 			data.getSessionData().removeEquipment(es, slot);
-			data.addMana(mana);
+			data.addManaRegen(mana);
 			return TriggerResult.remove();
 		});
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.POTION, "Restores <yellow>" + mana + "</yellow> mana. Consumed on first use.");
+		item = createItem(Material.POTION, "Increases your mana regen by <yellow>" + mana + "</yellow> for the fight. Consumed on first use.");
 		PotionMeta meta = (PotionMeta) item.getItemMeta();
 		meta.setColor(Color.fromRGB(0, 0, 255));
 		item.setItemMeta(meta);

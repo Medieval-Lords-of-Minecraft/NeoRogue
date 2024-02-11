@@ -414,6 +414,8 @@ public class PlayerFightData extends FightData {
 			addMana(manaRegen);
 			addStamina(p.isSprinting() ? -4 : staminaRegen);
 			
+			FightInstance.trigger(p, Trigger.PLAYER_TICK, null);
+			
 			// Update hotbar cooldowns
 			PlayerInventory inv = p.getInventory();
 			for (Entry<Integer, EquipmentInstance> ent : insts.entrySet()) {

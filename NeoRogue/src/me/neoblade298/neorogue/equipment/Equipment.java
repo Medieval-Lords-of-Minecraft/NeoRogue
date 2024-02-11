@@ -72,8 +72,15 @@ public abstract class Equipment {
 		droptables.reload();
 		artifacts.reload();
 		
+		/* Todo:
+		 * Add reforge options for Adrenaline
+		 * Rework the other 2 executes to better match strategies
+		 * Add Titan ability, passive that decreases stamina cost of abilities >25 stamina cost by 5
+		 */
+		
 		for (boolean b : new boolean[] {false, true}) {
 			// Abilities
+			new Adrenaline(b);
 			new BattleCry(b);
 			new BerserkersCall(b);
 			new Bide(b);
@@ -93,6 +100,7 @@ public abstract class Equipment {
 			new Fortify(b);
 			new Fury(b);
 			new GraniteShield(b);
+			new MightySwing(b);
 			new Parry(b);
 			new Provoke(b);
 			new Quake(b);
@@ -106,6 +114,7 @@ public abstract class Equipment {
 			
 			// Accessories
 			new EarthenRing(b);
+			new GripGloves(b);
 			new MinorShieldingRelic(b);
 			new MinorStaminaRelic(b);
 			new MinorStrengthRelic(b);
@@ -148,9 +157,9 @@ public abstract class Equipment {
 			new MinorHealthPotion(b);
 			new MinorStaminaPotion(b);
 			new MinorManaPotion(b);
-			new MinorMaxHealthPotion(b);
-			new MinorMaxManaPotion(b);
-			new MinorMaxStaminaPotion(b);
+			new MinorShieldsPotion(b);
+			new MinorPhysicalPotion(b);
+			new MinorMagicalPotion(b);
 		}
 		
 		// Artifacts
@@ -162,6 +171,8 @@ public abstract class Equipment {
 		new GlacialHammer();
 		new GrendelsCrystalMirror();
 		new PracticeDummy();
+		new TomeOfWisdom();
+		new MercenaryHeadband();
 		
 		// Levelup artifacts
 		new EmeraldCluster();

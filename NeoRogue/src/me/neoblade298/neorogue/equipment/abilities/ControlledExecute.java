@@ -45,12 +45,14 @@ public class ControlledExecute extends Equipment {
 	
 	private class ControlledExecuteInstance extends EquipmentInstance {
 
+		@SuppressWarnings("deprecation")
 		public ControlledExecuteInstance(Player p, Equipment eq, int slot, EquipSlot es) {
 			super(p, eq, slot, es);
 			action = (pdata, inputs) -> {
 				Util.playSound(p, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1F, 1F, false);
 				pc.spawn(p);
 				pdata.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in) -> {
+					if (p.isOnGround()) return TriggerResult.keep();
 					BasicAttackEvent ev = (BasicAttackEvent) in;
 					double pct = ev.getTarget().getHealth() / ev.getTarget().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
 					Util.playSound(p, Sound.BLOCK_ANVIL_LAND, 1F, 1F, false);
@@ -76,12 +78,13 @@ public class ControlledExecute extends Equipment {
 		
 	}
 
+	// Needs rework, doesn't fit any strategies
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FLINT,
 				"On cast, your next basic attack while in the air deals <white>" + damage + "</white> " + GlossaryTag.PIERCING.tag(this)
 				+ "damage. If the enemy is below <white>50%</white> health, deal an additional <white>" + execute + "</white> "
 				+ GlossaryTag.PIERCING.tag(this) + " damage. If the enemy is killed with this damage, refund stamina "
-						+ "cost and reduce cooldown by <white>" + cdr + "</white>.");
+						+ "cost.");
 	}
 }

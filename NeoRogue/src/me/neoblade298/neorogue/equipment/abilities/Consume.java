@@ -36,12 +36,14 @@ public class Consume extends Equipment {
 		hit.count(50).spread(0.5, 0.5);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(p, this, slot, es, (pdata, inputs) -> {
 			Util.playSound(p, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1F, 1F, false);
 			pc.spawn(p);
 			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in) -> {
+				if (p.isOnGround()) return TriggerResult.keep();
 				BasicAttackEvent ev = (BasicAttackEvent) in;
 				double pct = ev.getTarget().getHealth() / ev.getTarget().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
 				Util.playSound(p, Sound.BLOCK_ANVIL_LAND, 1F, 1F, false);
@@ -65,6 +67,7 @@ public class Consume extends Equipment {
 		}));
 	}
 
+	// maybe rework
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FLINT,

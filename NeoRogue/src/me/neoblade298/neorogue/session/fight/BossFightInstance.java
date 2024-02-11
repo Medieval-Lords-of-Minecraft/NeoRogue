@@ -14,6 +14,7 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.reward.CoinsReward;
 import me.neoblade298.neorogue.session.reward.EquipmentChoiceReward;
+import me.neoblade298.neorogue.session.reward.EquipmentReward;
 import me.neoblade298.neorogue.session.reward.Reward;
 import me.neoblade298.neorogue.session.reward.RewardInstance;
 
@@ -76,6 +77,7 @@ public class BossFightInstance extends FightInstance {
 			equipDrops.add(Equipment.get("emeraldGem", false));
 			equipDrops.add(Equipment.get("sapphireGem", false));
 			list.add(new EquipmentChoiceReward(equipDrops));
+			list.add(new EquipmentReward(Equipment.get("tomeOfWisdom", false)));
 			rewards.put(uuid, list);
 		}
 		return rewards;
