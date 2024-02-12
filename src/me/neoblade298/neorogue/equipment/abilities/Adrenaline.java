@@ -26,7 +26,10 @@ public class Adrenaline extends Equipment {
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 5, 0));
 		pc.count(50).spread(0.5, 0.5).dustOptions(new DustOptions(Color.RED, 1F));
 		
-		addReforgeOption("battleCry", "warCry", "command");
+		addReforgeOption("adrenaline", "discipline", "burst", "adrenaline2");
+		// Tempered Breathing (increases max stamina and is repeatable)
+		// Burst (Increased strength and stamina for a short period, stamina is reduced after)
+		// Adrenaline II (grants stacks of berserk somehow)
 	}
 
 	@Override

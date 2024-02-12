@@ -82,14 +82,17 @@ public abstract class Equipment {
 			new Brace(b);
 			new Brace2(b);
 			new Bulldoze(b);
+			new Burst(b);
 			new Challenge(b);
 			new Cleave(b);
 			new SiphoningStrike(b);
 			new DarkPact(b);
+			new Discipline(b);
 			new EarthenTackle(b);
 			new EmpoweredEdge(b);
 			new Endurance(b);
 			new Execute(b);
+			new Ferocity(b);
 			new Fortify(b);
 			new Fury(b);
 			new GraniteShield(b);
