@@ -32,7 +32,7 @@ public class MechanicDamage implements ITargetedEntitySkill {
     public SkillResult castAtEntity(SkillMetadata data, AbstractEntity target) {
 		try {
 			double level = data.getCaster().getLevel();
-			final double fAmount = amount * (1 + (level / 5));
+			final double fAmount = amount * (1 + (level / 10));
 			FightData fd = FightInstance.getFightData(data.getCaster().getEntity().getUniqueId());
 			DamageMeta meta = new DamageMeta(fd, fAmount, type);
 			meta.setHitBarrier(hitBarrier);

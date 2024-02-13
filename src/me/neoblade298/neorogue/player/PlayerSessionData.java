@@ -313,6 +313,7 @@ public class PlayerSessionData {
 	public void giveEquipment(Equipment eq) {
 		Player p = getPlayer();
 		Util.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, false);
+		s.broadcastOthers(SharedUtil.color("<yellow>" + p.getName() + "</yellow> received ").append(eq.getDisplay()), p);
 
 		if (eq instanceof Artifact) {
 			giveArtifact((Artifact) eq);

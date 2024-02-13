@@ -23,7 +23,7 @@ public class Thornguard extends Equipment {
 	
 	public Thornguard(boolean isUpgraded) {
 		super("thornguard", "Thornguard", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(isUpgraded ? 50 : 20, isUpgraded ? 65 : 30, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(isUpgraded ? 20 : 50, isUpgraded ? 30 : 65, 0, 0));
 		properties.addUpgrades(PropertyType.MANA_COST, PropertyType.STAMINA_COST);
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 	}
@@ -46,6 +46,6 @@ public class Thornguard extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.DEAD_BUSH,
 				"On cast, for the rest of the fight, any time " + GlossaryTag.SHIELDS.tag + " are granted to you, gain <white>1</white>"
-						+ " stack of thorns.");
+						+ " stack of " + GlossaryTag.THORNS.tag(this) + ".");
 	}
 }

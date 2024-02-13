@@ -181,18 +181,26 @@ public class FightData {
 	}
 	
 	// No decay
-	public void addSimpleShield(UUID applier, double amt, long decayDelayTicks) {
-		addShield(applier, amt, true, decayDelayTicks, 100, 0, 1);
+	public Shield addSimpleShield(UUID applier, double amt, long decayDelayTicks, boolean isSecondary) {
+		return addShield(applier, amt, true, decayDelayTicks, 100, 0, 1, isSecondary);
+	}
+	// No decay
+	public Shield addSimpleShield(UUID applier, double amt, long decayDelayTicks) {
+		return addShield(applier, amt, true, decayDelayTicks, 100, 0, 1, false);
 	}
 	
-	public void addPermanentShield(UUID applier, double amt) {
-		addShield(applier, amt, true, 0, 0, 0, 0);
+	public Shield addPermanentShield(UUID applier, double amt, boolean isSecondary) {
+		return addShield(applier, amt, true, 0, 0, 0, 0, isSecondary);
 	}
 	
-	public void addShield(UUID applier, double amt, boolean decayPercent, long decayDelayTicks, double decayAmount, long decayPeriodTicks, int decayRepetitions) {
+	public Shield addPermanentShield(UUID applier, double amt) {
+		return addShield(applier, amt, true, 0, 0, 0, 0, false);
+	}
+	
+	public Shield addShield(UUID applier, double amt, boolean decayPercent, long decayDelayTicks, double decayAmount, long decayPeriodTicks, int decayRepetitions, boolean isSecondary) {
 		PlayerFightData applierData = FightInstance.getUserData(applier);
 		Shield shield = new Shield(this, applier, amt, decayPercent, decayDelayTicks, decayAmount, decayPeriodTicks, decayRepetitions);
-		GrantShieldsEvent ev = new GrantShieldsEvent(applierData, this, shield);
+		GrantShieldsEvent ev = new GrantShieldsEvent(applierData, this, shield, isSecondary);
 		if (applierData != null) {
 			FightInstance.trigger(applierData.getPlayer(), Trigger.GRANT_SHIELDS, ev);
 		}
@@ -200,6 +208,7 @@ public class FightData {
 			FightInstance.trigger(((PlayerFightData) this).getPlayer(), Trigger.RECEIVE_SHIELDS, ev);
 		}
 		shields.addShield(shield);
+		return shield;
 	}
 	
 	public void addTickAction(TickAction action) {

@@ -1,5 +1,6 @@
 package me.neoblade298.neorogue.commands;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import me.neoblade298.neocore.bukkit.commands.Subcommand;
@@ -33,7 +34,7 @@ public class CmdKick extends Subcommand {
 			li.kickPlayer(p, args[0]);
 		}
 		else {
-			sess.kickPlayer(p);
+			sess.kickPlayer(p, Bukkit.getOfflinePlayer(args[0]));
 		}
 		
 	}

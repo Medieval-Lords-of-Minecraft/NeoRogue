@@ -14,6 +14,7 @@ import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -219,6 +220,20 @@ public class Session {
 		}
 	}
 
+	public void broadcastOthers(String msg, Player ignore) {
+		for (Player p : getOnlinePlayers()) {
+			if (p == ignore) continue;
+			Util.msgRaw(p, NeoCore.miniMessage().deserialize(msg).colorIfAbsent(NamedTextColor.GRAY));
+		}
+	}
+
+	public void broadcastOthers(Component msg, Player ignore) {
+		for (Player p : getOnlinePlayers()) {
+			if (p == ignore) continue;
+			Util.msgRaw(p, msg);
+		}
+	}
+
 	public void broadcast(String msg) {
 		for (Player p : getOnlinePlayers()) {
 			Util.msgRaw(p, NeoCore.miniMessage().deserialize(msg).colorIfAbsent(NamedTextColor.GRAY));
@@ -401,15 +416,15 @@ public class Session {
 		}
 	}
 	
-	public void kickPlayer(Player p) {
+	public void kickPlayer(Player p, OfflinePlayer target) {
 		UUID uuid = p.getUniqueId();
 		if (!uuid.equals(host)) {
 			Util.displayError(p, "Only the host may kick players");
 		}
 		else {
-			broadcast("<yellow>" + p.getName() + " <gray>was kicked from the party!");
-			party.remove(p.getUniqueId());
-			SessionManager.removeFromSession(p.getUniqueId());
+			broadcast("<yellow>" + target.getName() + " <gray>was kicked from the party!");
+			party.remove(target.getUniqueId());
+			SessionManager.removeFromSession(target.getUniqueId());
 		}
 	}
 	

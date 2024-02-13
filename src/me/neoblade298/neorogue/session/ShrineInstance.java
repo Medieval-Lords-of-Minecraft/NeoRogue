@@ -159,7 +159,7 @@ public class ShrineInstance extends EditInventoryInstance {
 	}
 	
 	public void returnToNodes() {
-		if (state == UPGRADE_STATE) s.broadcast("Everyone is ready! Returning you to node select...");
+		s.broadcast("Everyone is ready! Returning you to node select...");
 		state = RETURN_STATE;
 		new BukkitRunnable() {
 			public void run() {

@@ -8,6 +8,7 @@ import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.GrantShieldsEvent;
 
 public class MinorShieldingRelic extends Equipment {
 	private double shields;
@@ -21,7 +22,9 @@ public class MinorShieldingRelic extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.RECEIVE_SHIELDS, (pdata, in) -> {
-			data.addSimpleShield(p.getUniqueId(), shields, 40L);
+			GrantShieldsEvent ev = (GrantShieldsEvent) in;
+			if (ev.isSecondary()) return TriggerResult.keep();
+			data.addSimpleShield(p.getUniqueId(), shields, 40L, true);
 			return TriggerResult.keep();
 		});
 	}

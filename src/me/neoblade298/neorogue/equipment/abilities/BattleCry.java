@@ -30,7 +30,7 @@ public class BattleCry extends Equipment {
 		
 		pc.count(50).spread(0.5, 0.5).dustOptions(new DustOptions(Color.RED, 1F));
 		
-		addReforgeOption("battleCry", "warCry", "command");
+		addReforgeOption("battleCry", "warCry", "berserkersCall");
 	}
 
 	@Override

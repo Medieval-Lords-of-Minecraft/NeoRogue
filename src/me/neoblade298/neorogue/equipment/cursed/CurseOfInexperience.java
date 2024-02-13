@@ -10,7 +10,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 public class CurseOfInexperience extends Equipment {
 	
 	public CurseOfInexperience() {
-		super("curseOfInexperience", "Curse Of Inexperience", EquipmentType.ABILITY);
+		super("curseOfInexperience", "Curse Of Inexperience", EquipmentType.ACCESSORY);
 	}
 
 	@Override
