@@ -31,7 +31,7 @@ public class Bulwark extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		SturdyInstance inst = new SturdyInstance(p, this, slot, es);
+		BulwarkInstance inst = new BulwarkInstance(p, this, slot, es);
 		data.addTrigger(id, bind, inst);
 		
 		data.addTrigger(id, Trigger.LOWER_SHIELD, (pdata, in) -> {
@@ -47,16 +47,16 @@ public class Bulwark extends Equipment {
 						GlossaryTag.SHIELDS.tag(this) + " of <yellow>" + shield + "</yellow> for every " + HEAL_COUNT + " consecutive seconds you keep a shield raised.");
 	}
 	
-	private class SturdyInstance extends EquipmentInstance {
+	private class BulwarkInstance extends EquipmentInstance {
 		private int count = 0;
-		public SturdyInstance(Player p, Equipment eq, int slot, EquipSlot es) {
+		public BulwarkInstance(Player p, Equipment eq, int slot, EquipSlot es) {
 			super(p, eq, slot, es);
 			
 			action = (pdata, inputs) -> {
 				if (++count < HEAL_COUNT) return TriggerResult.keep();
 				pc.spawn(p);
 				Util.playSound(p, Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1F, 1F, false);
-				pdata.addShield(p.getUniqueId(), shield, true, 100D, 1, 0, 1);
+				pdata.addSimpleShield(p.getUniqueId(), shield, 100);
 				pdata.addHealth(heal);
 				count = 0;
 				return TriggerResult.keep();

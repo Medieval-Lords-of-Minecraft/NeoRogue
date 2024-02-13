@@ -180,9 +180,18 @@ public class FightData {
 		return shields;
 	}
 	
-	public void addShield(UUID applier, double amt, boolean decayPercent, double decayDelay, double decayAmount, double decayPeriod, int decayRepetitions) {
+	// No decay
+	public void addSimpleShield(UUID applier, double amt, long decayDelayTicks) {
+		addShield(applier, amt, true, decayDelayTicks, 100, 0, 1);
+	}
+	
+	public void addPermanentShield(UUID applier, double amt) {
+		addShield(applier, amt, true, 0, 0, 0, 0);
+	}
+	
+	public void addShield(UUID applier, double amt, boolean decayPercent, long decayDelayTicks, double decayAmount, long decayPeriodTicks, int decayRepetitions) {
 		PlayerFightData applierData = FightInstance.getUserData(applier);
-		Shield shield = new Shield(this, applier, amt, decayPercent, decayDelay, decayAmount, decayPeriod, decayRepetitions);
+		Shield shield = new Shield(this, applier, amt, decayPercent, decayDelayTicks, decayAmount, decayPeriodTicks, decayRepetitions);
 		GrantShieldsEvent ev = new GrantShieldsEvent(applierData, this, shield);
 		if (applierData != null) {
 			FightInstance.trigger(applierData.getPlayer(), Trigger.GRANT_SHIELDS, ev);

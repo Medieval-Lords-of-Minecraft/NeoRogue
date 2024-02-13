@@ -36,7 +36,7 @@ public class SerratedFencingSword extends Equipment {
 			LivingEntity target = ev.getTarget();
 			weaponSwingAndDamage(p, data, target);
 			FightInstance.getFightData(target.getUniqueId()).applyStatus(StatusType.BLEED, p.getUniqueId(), bleed, 0);
-			data.addShield(p.getUniqueId(), shields, true, 1, 100, 1, 1);
+			data.addSimpleShield(p.getUniqueId(), shields, 100);
 			return TriggerResult.keep();
 		});
 	}

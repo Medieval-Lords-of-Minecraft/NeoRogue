@@ -35,7 +35,7 @@ public class Brace extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(p, this, slot, es, (pdata, inputs) -> {
 			pc.spawn(p);
-			data.addShield(p.getUniqueId(), shields, true, 100, 100, 0, 1);
+			data.addSimpleShield(p.getUniqueId(), shields, 100);
 			Util.playSound(p, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1F, 1F, false);
 			return TriggerResult.keep();
 		}));

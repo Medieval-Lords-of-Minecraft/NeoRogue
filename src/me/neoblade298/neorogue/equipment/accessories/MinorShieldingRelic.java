@@ -21,7 +21,7 @@ public class MinorShieldingRelic extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.RECEIVE_SHIELDS, (pdata, in) -> {
-			data.addShield(p.getUniqueId(), shields, true, 40L, 100, 0, 1);
+			data.addSimpleShield(p.getUniqueId(), shields, 40L);
 			return TriggerResult.keep();
 		});
 	}

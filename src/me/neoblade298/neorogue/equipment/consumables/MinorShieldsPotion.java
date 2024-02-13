@@ -27,7 +27,7 @@ public class MinorShieldsPotion extends Consumable {
 		data.addTrigger(id, bind, (pdata, in) -> {
 			Util.playSound(p, Sound.ENTITY_WITCH_DRINK, false);
 			data.getSessionData().removeEquipment(es, slot);
-			data.addShield(p.getUniqueId(), shields, true, 0, 0, 0, 0);
+			data.addPermanentShield(p.getUniqueId(), shields);
 			return TriggerResult.remove();
 		});
 	}

@@ -82,10 +82,10 @@ public abstract class Equipment {
 			new Brace(b);
 			new Brace2(b);
 			new Bulldoze(b);
+			new Bulwark(b);
 			new Burst(b);
 			new Challenge(b);
 			new Cleave(b);
-			new SiphoningStrike(b);
 			new DarkPact(b);
 			new Discipline(b);
 			new EarthenTackle(b);
@@ -101,10 +101,12 @@ public abstract class Equipment {
 			new Provoke(b);
 			new Quake(b);
 			new RecklessSwing(b);
+			new SiphoningStrike(b);
 			new Smite(b);
 			new Sturdy(b);
 			new Tackle(b);
 			new Thornguard(b);
+			new Titan(b);
 			new WarCry(b);
 			new WindSlash(b);
 			

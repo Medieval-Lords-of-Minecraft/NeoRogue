@@ -11,11 +11,14 @@ public class Shield {
 	private double total;
 	private ShieldHolder shieldHolder;
 	private UUID applier;
-	public Shield(FightData data, UUID applier, double amt, boolean decayPercent, double decayDelay, double decayAmount, double decayPeriod, int decayRepetitions) {
+	public Shield(FightData data, UUID applier, double amt, boolean isPercent, long decayDelayTicks, double decayAmount, long decayPeriodTicks, int decayRepetitions) {
 		this.total = amt;
 		this.amount = amt;
 		this.applier = applier;
 		this.shieldHolder = data.getShields();
+		
+		if (decayRepetitions == 0) return;
+		
 		new BukkitRunnable() {
 			int reps = decayRepetitions;
 			double total = amt;
@@ -24,7 +27,7 @@ public class Shield {
 					return;
 				}
 				boolean outOfShield = false;
-				if (decayPercent) {
+				if (isPercent) {
 					outOfShield = decayAmount(total * decayAmount * 0.01);
 				}
 				else {
@@ -35,7 +38,11 @@ public class Shield {
 				}
 				shieldHolder.update();
 			}
-		}.runTaskTimer(NeoRogue.inst(), (long) (decayDelay * 20), (long) (decayPeriod * 20));
+		}.runTaskTimer(NeoRogue.inst(), decayDelayTicks * 20, decayPeriodTicks * 20);
+	}
+	
+	public Shield(FightData data, UUID applier, double amt) {
+		this(data, applier, amt, true, 0, 0, 0, 0);
 	}
 	
 	// Returns leftover damage
