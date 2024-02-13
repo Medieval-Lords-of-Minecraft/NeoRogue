@@ -422,6 +422,7 @@ public abstract class FightInstance extends Instance {
 	public static void handleMythicDeath(MythicMobDeathEvent e) {
 		FightData data = removeFightData(e.getEntity().getUniqueId());
 		if (data == null || data.getInstance() == null) return;
+		data.cleanup();
 		String id = e.getMobType().getInternalName();
 		data.getInstance().handleRespawn(data, id, false);
 		data.getInstance().handleMobKill(id);
@@ -729,7 +730,7 @@ public abstract class FightInstance extends Instance {
 			public void run() {
 				barriers.remove(uuid);
 			}
-		}, duration * 20);
+		}, duration);
 	}
 
 	public Location getMythicLocation(String key) {

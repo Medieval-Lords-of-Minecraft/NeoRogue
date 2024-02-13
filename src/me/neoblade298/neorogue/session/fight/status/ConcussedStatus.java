@@ -15,7 +15,7 @@ public class ConcussedStatus extends DecrementStackStatus {
 	@Override
 	public void apply(UUID applier, int stacks, int seconds) {
 		super.apply(applier, stacks, seconds);
-		data.addBuff(applier, true, false, BuffType.PHYSICAL, -1);
+		data.addBuff(applier, true, false, BuffType.PHYSICAL, -stacks);
 	}
 	
 	@Override

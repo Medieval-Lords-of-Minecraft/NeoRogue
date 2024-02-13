@@ -75,7 +75,7 @@ public class MechanicBarrier implements ITargetedEntitySkill {
 			LivingEntity ent = (LivingEntity) data.getCaster().getEntity().getBukkitEntity();
 			Barrier b = Barrier.centered(ent, width, forward, height, forwardOffset, buffs);
 			fd.getInstance().addBarrier(fd, b, duration, false);
-			barrierIds.put(id, b.getUniqueId());
+			if (id != null) barrierIds.put(id, b.getUniqueId());
 			return SkillResult.SUCCESS;
 		} catch (Exception e) {
 			e.printStackTrace();
