@@ -172,7 +172,7 @@ public class SessionManager implements Listener {
 		if (sessions.containsKey(uuid)) {
 			Session s = sessions.get(uuid);
 
-			if (s.getInstance() instanceof EditInventoryInstance && InventoryListener.getCoreInventory(p) != null) {
+			if (s.getInstance() instanceof EditInventoryInstance && InventoryListener.getCoreInventory(p) == null) {
 				e.setCancelled(true);
 				p.setItemOnCursor(null);
 				if (s.isSpectator(uuid)) {
