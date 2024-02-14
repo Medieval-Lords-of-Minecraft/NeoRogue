@@ -449,7 +449,9 @@ public class SessionManager implements Listener {
 				li.leavePlayer(p);
 			}
 			else {
-				if (s.getOnlinePlayers().isEmpty()) {
+				// Must be <= 1 since the last player isn't offline until after event
+				if (s.getOnlinePlayers().size() <= 1) {
+					s.broadcast("Everyone logged off, so the game has ended!");
 					endSession(s);
 					return;
 				}
