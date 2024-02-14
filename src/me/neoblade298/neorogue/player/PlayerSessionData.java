@@ -321,28 +321,29 @@ public class PlayerSessionData {
 		else {
 			// First try to auto-equip
 			boolean success = false;
-			EquipSlot es = null;
-			for (EquipSlot eqs : eq.getType().getSlots()) {
-				success = tryEquip(eqs, eq);
+			if (eq.getType() != EquipmentType.ABILITY || canEquipAbility()) {
+				EquipSlot es = null;
+				for (EquipSlot eqs : eq.getType().getSlots()) {
+					success = tryEquip(eqs, eq);
+					if (success) {
+						es = eqs;
+						break;
+					}
+				}
 				if (success) {
-					es = eqs;
-					break;
+					Util.msg(p, SharedUtil.color("You received ").append(eq.getDisplay())
+							.append(SharedUtil.color(", it was auto-equipped to " + es.getDisplay() + ".")));
+					return;
 				}
 			}
 			
-			if (success) {
-				Util.msg(p, SharedUtil.color("You received ").append(eq.getDisplay())
-						.append(SharedUtil.color(", it was auto-equipped to " + es.getDisplay() + ".")));
-			}
-			else {
-				HashMap<Integer, ItemStack> overflow = p.getInventory().addItem(eq.getItem());
-				Util.msg(p, SharedUtil.color("You received ").append(eq.getDisplay()));
-				if (!overflow.isEmpty()) {
-					for (ItemStack item : overflow.values()) {
-						Util.msg(p, SharedUtil.color("<red>Your inventory is full! ").append(eq.getDisplay())
-								.append(Component.text(" was dropped on the ground.")));
-						p.getWorld().dropItem(p.getLocation(), item);
-					}
+			HashMap<Integer, ItemStack> overflow = p.getInventory().addItem(eq.getItem());
+			Util.msg(p, SharedUtil.color("You received ").append(eq.getDisplay()));
+			if (!overflow.isEmpty()) {
+				for (ItemStack item : overflow.values()) {
+					Util.msg(p, SharedUtil.color("<red>Your inventory is full! ").append(eq.getDisplay())
+							.append(Component.text(" was dropped on the ground.")));
+					p.getWorld().dropItem(p.getLocation(), item);
 				}
 			}
 		}

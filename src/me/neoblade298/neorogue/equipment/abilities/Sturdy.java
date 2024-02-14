@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Sturdy extends Equipment {
 	private static final int HEAL_COUNT = 3;
-	private ParticleContainer pc = new ParticleContainer(Particle.VILLAGER_HAPPY).count(15).spread(0.5, 0.5);
+	private ParticleContainer pc = new ParticleContainer(Particle.VILLAGER_HAPPY).count(15).spread(0.5, 0.5).offsetY(2);
 	private int heal;
 	
 	public Sturdy(boolean isUpgraded) {
