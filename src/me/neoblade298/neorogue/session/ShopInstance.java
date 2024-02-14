@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.UUID;
 import java.util.Map.Entry;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -65,6 +66,10 @@ public class ShopInstance extends EditInventoryInstance {
 				shopItems.add(new ShopItem(equips.get(i), ShopInventory.SLOT_ORDER[i], i >= NUM_ITEMS / 2, saleSlots.contains(i)));
 			}
 			shops.put(p.getUniqueId(), shopItems);
+		}
+		for (UUID uuid : s.getSpectators()) {
+			Player p = Bukkit.getPlayer(uuid);
+			p.teleport(spawn);
 		}
 
 		// Setup hologram

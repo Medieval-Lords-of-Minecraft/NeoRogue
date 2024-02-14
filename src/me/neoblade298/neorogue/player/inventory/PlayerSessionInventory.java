@@ -7,6 +7,7 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -48,6 +49,7 @@ public class PlayerSessionInventory extends CoreInventory {
 	private static final TextComponent statsText = Component.text("Your stats:", NamedTextColor.GOLD);
 
 	private HashSet<Integer> highlighted = new HashSet<Integer>();
+	private Player spectator;
 	private boolean addItem = true;
 	private PlayerSessionData data;
 
@@ -110,6 +112,11 @@ public class PlayerSessionInventory extends CoreInventory {
 				0);
 		inv.setContents(contents);
 	}
+	
+	public PlayerSessionInventory(PlayerSessionData data, Player spectator) {
+		this(data);
+		this.spectator = spectator;
+	}
 
 	private static ItemStack createArmorIcon(int dataSlot) {
 		return addNbt(CoreInventory.createButton(Material.YELLOW_STAINED_GLASS_PANE,
@@ -166,14 +173,24 @@ public class PlayerSessionInventory extends CoreInventory {
 
 	@Override
 	public void handleInventoryClick(InventoryClickEvent e) {
+		Inventory iclicked = e.getClickedInventory();
+		boolean onChest = iclicked != null && e.getClickedInventory().getType() == InventoryType.CHEST;
+		if (spectator != null) {
+			e.setCancelled(true);
+			// Only allow spectator to view artifacts menu and nothing else
+			if (e.getSlot() == ARTIFACTS && onChest) {
+				new ArtifactsInventory(data);
+			}
+			return;
+		}
+		
+		
 		ItemStack cursor = e.getCursor();
 		ItemStack clicked = e.getCurrentItem();
 		if (cursor.getType().isAir() && clicked == null) return;
 
 		NBTItem ncursor = !cursor.getType().isAir() ? new NBTItem(cursor) : null;
-		Inventory iclicked = e.getClickedInventory();
 		NBTItem nclicked = clicked != null ? new NBTItem(clicked) : null;
-		boolean onChest = iclicked != null && e.getClickedInventory().getType() == InventoryType.CHEST;
 
 		int slot = e.getRawSlot();
 		if (slot == TRASH && clicked != null) {

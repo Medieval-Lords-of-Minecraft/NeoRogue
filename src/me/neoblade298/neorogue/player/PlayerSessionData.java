@@ -39,6 +39,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 public class PlayerSessionData {
 	private PlayerData data;
+	private UUID uuid;
 	private Session s;
 	private EquipmentClass ec;
 	private double maxHealth, maxMana, maxStamina, health, startingMana, startingStamina, manaRegen, staminaRegen;
@@ -60,6 +61,7 @@ public class PlayerSessionData {
 	private static final int STORAGE_SIZE = 9;
 
 	public PlayerSessionData(UUID uuid, Session s, ResultSet rs) throws SQLException {
+		this.uuid = uuid;
 		data = PlayerManager.getPlayerData(uuid);
 		this.s = s;
 
@@ -87,6 +89,7 @@ public class PlayerSessionData {
 	}
 
 	public PlayerSessionData(UUID uuid, EquipmentClass ec, Session s) {
+		this.uuid = uuid;
 		data = PlayerManager.getPlayerData(uuid);
 		this.s = s;
 		health = 100;
@@ -142,6 +145,10 @@ public class PlayerSessionData {
 		data.getPlayer().setHealthScaled(true);
 		data.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHealth);
 		data.initialize(s, this);
+	}
+	
+	public UUID getUniqueId() {
+		return uuid;
 	}
 	
 	private void setupArtifacts() {

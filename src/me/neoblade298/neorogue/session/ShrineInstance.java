@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -63,6 +64,10 @@ public class ShrineInstance extends EditInventoryInstance {
 			notUsed.add(p.getUniqueId());
 			p.teleport(spawn);
 		}
+		for (UUID uuid : s.getSpectators()) {
+			Player p = Bukkit.getPlayer(uuid);
+			p.teleport(spawn);
+		}
 
 		// Setup hologram
 		ArrayList<String> lines = new ArrayList<String>();
@@ -105,7 +110,7 @@ public class ShrineInstance extends EditInventoryInstance {
 		}
 
 		if (e.getClickedBlock().getType() == Material.ANVIL && notUsed.contains(uuid) && state == UPGRADE_STATE) {
-			new ShrineUpgradeInventory(p, this);
+			new ShrineUpgradeInventory(p, s.getData(p.getUniqueId()), this);
 		}
 	}
 

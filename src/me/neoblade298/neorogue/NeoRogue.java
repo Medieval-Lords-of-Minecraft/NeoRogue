@@ -81,6 +81,7 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdLeave("leave", "Leave your session", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdKick("kick", "Kick a player from your party", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdJoin("join", "Join an existing party", null, SubcommandRunner.BOTH));
+		mngr.register(new CmdSpectate("spectate", "Spectate a player's session", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdInfo("info", "View session info", null, SubcommandRunner.BOTH));
 		mngr.registerCommandList("");
 		

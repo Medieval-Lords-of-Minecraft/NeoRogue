@@ -83,6 +83,10 @@ public class ChanceInstance extends EditInventoryInstance {
 			data.getPlayer().teleport(spawn);
 			stage.put(data.getPlayer().getUniqueId(), set.getInitialStage());
 		}
+		for (UUID uuid : s.getSpectators()) {
+			Player p = Bukkit.getPlayer(uuid);
+			p.teleport(spawn);
+		}
 
 		// Setup hologram
 		ArrayList<String> lines = new ArrayList<String>();
