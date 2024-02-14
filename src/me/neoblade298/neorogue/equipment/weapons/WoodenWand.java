@@ -52,13 +52,13 @@ public class WoodenWand extends Equipment {
 	private class WoodenWandProjectile extends Projectile {
 		private Player p;
 		public WoodenWandProjectile(Player p) {
-			super(2, 10, 3);
+			super(0.5, 10, 3);
 			this.size(0.5, 0.5);
 			this.p = p;
 		}
 
 		@Override
-		public void onTick(ProjectileInstance proj) {
+		public void onTick(ProjectileInstance proj, boolean interpolation) {
 			tick.spawn(proj.getLocation());
 			Util.playSound(p, proj.getLocation(), Sound.ENTITY_BLAZE_SHOOT, 1F, 1F, true);
 		}

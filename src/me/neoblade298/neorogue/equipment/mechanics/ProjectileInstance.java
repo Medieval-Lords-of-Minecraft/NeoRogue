@@ -32,7 +32,7 @@ public class ProjectileInstance {
 	private Location loc;
 	private BoundingBox bounds;
 	private HashMap<BuffType, Buff> buffs = new HashMap<BuffType, Buff>();
-	private int tick;
+	private int tick, interpolationPoints;
 	
 	public ProjectileInstance(Projectile settings, FightData owner) {
 		this.inst = owner.getInstance();
@@ -42,7 +42,12 @@ public class ProjectileInstance {
 		final ProjectileInstance proj = this;
 		
 		v = origin.getLocation().getDirection().rotateAroundY(Math.toRadians(settings.getRotation())).add(new Vector(0, settings.initialY(), 0));
-		v.multiply(settings.getBlocksPerTick());
+		v.multiply(settings.getBlocksPerTick() * settings.getTickSpeed());
+		double len = v.length();
+		if (len > 1) {
+			interpolationPoints = (int) len; // One point for every block that's skipped
+			v.multiply(1 / (double) interpolationPoints);
+		}
 		loc = origin.getLocation().add(0, 1, 0);
 		bounds = BoundingBox.of(loc, settings.getWidth(), settings.getHeight(), settings.getWidth());
 		
@@ -62,62 +67,68 @@ public class ProjectileInstance {
 	
 	// True to cancel runnable
 	private boolean tick() {
-		// Check for collision with shields
-		if (!settings.isIgnoreBarriers()) {
-			for (Barrier b : inst.getEnemyBarriers().values()) {
-				if (b.collides(loc)) {
-					settings.onHit(FightInstance.getFightData(b.getOwner().getUniqueId()), b, this);
-					Player p = owner.getEntity() instanceof Player ? (Player) owner.getEntity() : null;
-					Util.playSound(p, Sound.ITEM_SHIELD_BLOCK, 1F, 1F, true);
-					return true;
-				}
-			}
-		}
-		
-		// Check for collision with mobs
-		if (!settings.isIgnoreEntities()) {
-			for (Entity ent : loc.getWorld().getNearbyEntities(bounds)) {
-				if (ent instanceof Player) continue;
-				if (!(ent instanceof LivingEntity)) continue;
-				
-				UUID uuid = ent.getUniqueId();
-				FightData hit = FightInstance.getFightData(uuid);
-				if (targetsHit.contains(uuid)) continue;
-				targetsHit.add(uuid);
-				
-				if (!settings.isPiercing()) {
-					settings.onHit(hit, null, this);
-					return true;
-				}
-				else {
-					settings.onHit(hit, null, this);
-				}
-			}
-		}
-		
-		// Check for collision with blocks
-		if (!settings.isIgnoreBlocks()) {
-			Block b = loc.getBlock();
-			if (!b.isPassable()) {
-				for (BoundingBox block : loc.getBlock().getCollisionShape().getBoundingBoxes()) {
-					block.shift(b.getLocation());
-					if (bounds.overlaps(block)) {
+		for (int i = 0; i < interpolationPoints; i++) {
+			// Check for collision with shields
+			if (!settings.isIgnoreBarriers()) {
+				for (Barrier b : inst.getEnemyBarriers().values()) {
+					if (b.collides(loc)) {
+						settings.onHit(FightInstance.getFightData(b.getOwner().getUniqueId()), b, this);
+						Player p = owner.getEntity() instanceof Player ? (Player) owner.getEntity() : null;
+						Util.playSound(p, Sound.ITEM_SHIELD_BLOCK, 1F, 1F, true);
 						return true;
 					}
 				}
 			}
+			
+			// Check for collision with mobs
+			if (!settings.isIgnoreEntities()) {
+				for (Entity ent : loc.getWorld().getNearbyEntities(bounds)) {
+					if (ent instanceof Player) continue;
+					if (!(ent instanceof LivingEntity)) continue;
+					
+					UUID uuid = ent.getUniqueId();
+					FightData hit = FightInstance.getFightData(uuid);
+					if (targetsHit.contains(uuid)) continue;
+					targetsHit.add(uuid);
+					
+					if (!settings.isPiercing()) {
+						settings.onHit(hit, null, this);
+						return true;
+					}
+					else {
+						settings.onHit(hit, null, this);
+					}
+				}
+			}
+			
+			// Check for collision with blocks
+			if (!settings.isIgnoreBlocks()) {
+				Block b = loc.getBlock();
+				if (!b.isPassable()) {
+					for (BoundingBox block : loc.getBlock().getCollisionShape().getBoundingBoxes()) {
+						block.shift(b.getLocation());
+						if (bounds.overlaps(block)) {
+							return true;
+						}
+					}
+				}
+			}
+
+			settings.onTick(this, true);
+			loc.add(v);
+			bounds.shift(v);
 		}
 		
 		// Tick after making sure there's no collisions
-		settings.onTick(this);
+		settings.onTick(this, false);
 		
 		// Gravity
 		if (settings.getGravity() != 0) {
 			v.setY(v.getY() - settings.getGravity());
 		}
-
 		loc.add(v);
 		bounds.shift(v);
+
 		return false;
 	}
 	

@@ -98,7 +98,7 @@ public class StoneSpear extends Equipment {
 		}
 
 		@Override
-		public void onTick(ProjectileInstance proj) {
+		public void onTick(ProjectileInstance proj, boolean interpolation) {
 			throwPart.spawn(proj.getLocation());
 		}
 

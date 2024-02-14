@@ -58,14 +58,14 @@ public class WindSlash extends Equipment {
 	
 	private class WindSlashProjectile extends Projectile {
 		public WindSlashProjectile(int i, int center) {
-			super(0.5, properties.get(PropertyType.RANGE), 2);
+			super(0.25, properties.get(PropertyType.RANGE), 2);
 			this.size(1, 1);
 			int iter = i - center;
 			this.rotation(iter * 45);
 		}
 
 		@Override
-		public void onTick(ProjectileInstance proj) {
+		public void onTick(ProjectileInstance proj, boolean interpolation) {
 			if (proj.getTick() % 3 == 0) Util.playSound((Player) proj.getOwner().getEntity(), proj.getLocation(), Sound.ENTITY_ENDER_DRAGON_FLAP, false);
 			part.spawn(proj.getLocation());
 		}
