@@ -12,6 +12,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -32,7 +33,7 @@ public class Bulwark extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		BulwarkInstance inst = new BulwarkInstance(p, this, slot, es);
-		data.addTrigger(id, bind, inst);
+		data.addTrigger(id, Trigger.SHIELD_TICK, inst);
 		
 		data.addTrigger(id, Trigger.LOWER_SHIELD, (pdata, in) -> {
 			inst.resetCount();
@@ -57,7 +58,7 @@ public class Bulwark extends Equipment {
 				pc.spawn(p);
 				Util.playSound(p, Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1F, 1F, false);
 				pdata.addSimpleShield(p.getUniqueId(), shield, 100);
-				pdata.addHealth(heal);
+				FightInstance.giveHeal(p, heal, p);
 				count = 0;
 				return TriggerResult.keep();
 			};

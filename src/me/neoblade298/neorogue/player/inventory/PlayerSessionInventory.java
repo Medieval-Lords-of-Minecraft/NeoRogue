@@ -174,11 +174,13 @@ public class PlayerSessionInventory extends CoreInventory {
 		// First check for specific cases: Trash and Artifact view
 		if (slot == TRASH) {
 			e.setCancelled(true);
+			addItem = false;
 			new TrashInventory(data.getPlayer());
 			return;
 		}
 		if (slot == ARTIFACTS) {
 			e.setCancelled(true);
+			addItem = false;
 			new ArtifactsInventory(data);
 			return;
 		}

@@ -373,6 +373,9 @@ public class SessionManager implements Listener {
 		}
 		else {
 			p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
+			p.setInvisible(false);
+			p.setInvulnerable(false);
+			if (!p.hasPermission("essentials.fly")) p.setFlying(false);
 		}
 	}
 

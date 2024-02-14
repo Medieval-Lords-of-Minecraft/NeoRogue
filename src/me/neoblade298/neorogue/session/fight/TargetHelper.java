@@ -46,6 +46,12 @@ public class TargetHelper {
 			this.stickToGround = stickToGround;
 		}
 		
+		private TargetProperties(double range, double tolerance, TargetType type) {
+			this.range = range;
+			this.tolerance = tolerance;
+			this.type = type;
+		}
+		
 		private TargetProperties(double range, boolean throughWall, TargetType type) {
 			this.range = range;
 			this.throughWall = throughWall;
@@ -66,6 +72,10 @@ public class TargetHelper {
 		
 		public static TargetProperties radius(double range, boolean throughWall, TargetType type) {
 			return new TargetProperties(range, throughWall, type);
+		}
+		
+		public static TargetProperties line(double range, double tolerance, TargetType type) {
+			return new TargetProperties(range, tolerance, type);
 		}
 		
 		public static TargetProperties cone(double arc, double range, boolean throughWall, TargetType type) {

@@ -12,6 +12,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -34,7 +35,7 @@ public class GraniteShield extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		SturdyInstance inst = new SturdyInstance(p, this, slot, es);
-		data.addTrigger(id, bind, inst);
+		data.addTrigger(id, Trigger.SHIELD_TICK, inst);
 		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, (pdata, in) -> {
 			if (inst.getCount() < HEAL_COUNT) return TriggerResult.keep();
 			ReceivedDamageEvent ev = (ReceivedDamageEvent) in;
@@ -65,7 +66,7 @@ public class GraniteShield extends Equipment {
 				if (++count < HEAL_COUNT) return TriggerResult.keep();
 				pc.spawn(p);
 				Util.playSound(p, Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1F, 1F, false);
-				pdata.addHealth(heal);
+				FightInstance.giveHeal(p, heal, p);
 				count = 0;
 				return TriggerResult.keep();
 			};

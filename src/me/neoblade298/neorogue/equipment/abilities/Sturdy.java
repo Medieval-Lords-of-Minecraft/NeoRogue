@@ -11,6 +11,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -27,15 +28,12 @@ public class Sturdy extends Equipment {
 		heal = isUpgraded ? 3 : 2;
 		
 		addReforgeOption("sturdy", "graniteShield", "bulwark", "endure");
-		// Granite shield concusses enemies that hit you
-		// Bulwark also grants shields
-		// Endure stores damage and converts them to berserk stacks
 	}
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		SturdyInstance inst = new SturdyInstance(p, this, slot, es);
-		data.addTrigger(id, bind, inst);
+		data.addTrigger(id, Trigger.SHIELD_TICK, inst);
 		
 		data.addTrigger(id, Trigger.LOWER_SHIELD, (pdata, in) -> {
 			inst.resetCount();
@@ -58,7 +56,7 @@ public class Sturdy extends Equipment {
 				if (++count < HEAL_COUNT) return TriggerResult.keep();
 				pc.spawn(p);
 				Util.playSound(p, Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1F, 1F, false);
-				pdata.addHealth(heal);
+				FightInstance.giveHeal(p, heal, p);
 				count = 0;
 				return TriggerResult.keep();
 			};

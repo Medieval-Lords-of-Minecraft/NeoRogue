@@ -18,7 +18,6 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
-import me.neoblade298.neocore.bukkit.util.TargetUtil;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -28,6 +27,9 @@ import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.TargetHelper;
+import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
+import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
@@ -35,6 +37,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 public class StoneSpear extends Equipment {
 	private int throwDamage, throwCooldown = 5;
 	private static final ParticleContainer throwPart = new ParticleContainer(Particle.CLOUD).count(25).spread(0.1, 0.1);
+	private static final TargetProperties spearHit = TargetProperties.line(4, 1, TargetType.ENEMY);
 	public StoneSpear(boolean isUpgraded) {
 		super("stoneSpear", "Stone Spear", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
@@ -55,7 +58,7 @@ public class StoneSpear extends Equipment {
 		});
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_NO_HIT, (pdata, in) -> {
 			if (!inst.canTrigger(p, data)) return TriggerResult.keep();
-			LinkedList<LivingEntity> targets = TargetUtil.getEntitiesInSight(p, 4, 1);
+			LinkedList<LivingEntity> targets = TargetHelper.getEntitiesInSight(p, spearHit);
 			if (targets.isEmpty()) return TriggerResult.keep();
 			weaponSwingAndDamage(p, data, targets.getFirst());
 			return TriggerResult.keep();

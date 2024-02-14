@@ -9,6 +9,7 @@ import org.bukkit.inventory.meta.PotionMeta;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Consumable;
+import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -26,7 +27,7 @@ public class MinorHealthPotion extends Consumable {
 		data.addTrigger(id, bind, (pdata, in) -> {
 			Util.playSound(p, Sound.ENTITY_WITCH_DRINK, false);
 			data.getSessionData().removeEquipment(es, slot);
-			data.addHealth(health);
+			FightInstance.giveHeal(p, health, p);
 			return TriggerResult.remove();
 		});
 	}

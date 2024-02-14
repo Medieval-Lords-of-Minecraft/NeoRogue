@@ -56,6 +56,7 @@ public class NodeSelectInstance extends EditInventoryInstance {
 		
 		for (Player p : s.getOnlinePlayers()) {
 			p.teleport(spawn);
+			p.setFlying(true);
 		}
 		task = new BukkitRunnable() {
 			public void run() {

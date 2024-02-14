@@ -21,7 +21,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
 public class EmpoweredEdge extends Equipment {
-	private int damage, heal;
+	private int damage, shields;
 	private ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
 			hit = new ParticleContainer(Particle.REDSTONE);
 	
@@ -30,7 +30,7 @@ public class EmpoweredEdge extends Equipment {
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 15, isUpgraded ? 5 : 7, 0));
 		properties.addUpgrades(PropertyType.COOLDOWN);
 		damage = isUpgraded ? 105 : 75;
-		heal = isUpgraded ? 2 : 1;
+		shields = isUpgraded ? 3 : 2;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		hit.count(50).spread(0.5, 0.5);
 		addReforgeOption("empoweredEdge", "recklessSwing", "blessedEdge", "fury");
@@ -44,7 +44,7 @@ public class EmpoweredEdge extends Equipment {
 			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in) -> {
 				BasicAttackEvent ev = (BasicAttackEvent) in;
 				FightInstance.dealDamage(data, DamageType.SLASHING, damage, ev.getTarget());
-				data.addHealth(heal);
+				data.addSimpleShield(p.getUniqueId(), shields, 40L);
 				hit.spawn(ev.getTarget().getLocation());
 				Util.playSound(p, Sound.BLOCK_ANVIL_LAND, 1F, 1F, false);
 				return TriggerResult.remove();
@@ -57,6 +57,6 @@ public class EmpoweredEdge extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.FLINT,
 				"On cast, your next basic attack deals <yellow>" + damage + "</yellow> " + GlossaryTag.PIERCING.tag(this) + " damage and"
-						+ " heals for <yellow>" + heal + "</yellow>.");
+						+ " grants <yellow>" + shields + "</yellow> " + GlossaryTag.SHIELDS.tag(this) + " for <white>2</white> seconds.");
 	}
 }

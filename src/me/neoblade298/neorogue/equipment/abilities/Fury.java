@@ -60,10 +60,10 @@ public class Fury extends Equipment {
 					if (isBerserk) {
 						Util.playSound(p, target.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1F, 1F, false);
 						explode.spawn(target.getLocation());
-						data.addHealth(berserkHeal);
+						FightInstance.giveHeal(p, berserkHeal, p);
 					}
 					else {
-						data.addHealth(heal);
+						FightInstance.giveHeal(p, heal, p);
 					}
 					return TriggerResult.remove();
 				});

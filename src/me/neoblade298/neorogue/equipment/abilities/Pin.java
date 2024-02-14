@@ -2,7 +2,6 @@ package me.neoblade298.neorogue.equipment.abilities;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedList;
 
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -37,8 +36,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class Pin extends Equipment {
 	private ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION_LARGE),
 			start = new ParticleContainer(Particle.CLOUD);
-	private static final TargetProperties hc = TargetProperties.radius(1.5, true, TargetType.ENEMY),
-			aoe = TargetProperties.radius(2, true, TargetType.ENEMY);
+	private static final TargetProperties aoe = TargetProperties.radius(2, true, TargetType.ENEMY);
 	private int damage, reduction;
 	
 	public Pin(boolean isUpgraded) {
@@ -50,7 +48,6 @@ public class Pin extends Equipment {
 		start.count(25).spread(0.5, 0);
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		TackleInstance inst = new TackleInstance(p, this, slot, es);
@@ -61,6 +58,7 @@ public class Pin extends Equipment {
 		private HashSet<LivingEntity> hit = new HashSet<LivingEntity>();
 		private boolean posX, posZ; // Which direction is the tackle going
 
+		@SuppressWarnings("deprecation")
 		public TackleInstance(Player p, Equipment eq, int slot, EquipSlot es) {
 			super(p, eq, slot, es);
 			
@@ -146,8 +144,8 @@ public class Pin extends Equipment {
 				// Check diagonal blocks
 				Block diag = zb.getRelative(inst.posX ? BlockFace.EAST : BlockFace.WEST);
 				for (int i = 0; i < 2; i++) {
-					if (zb.isCollidable()) return true;
-					zb = zb.getRelative(BlockFace.DOWN);
+					if (diag.isCollidable()) return true;
+					diag = zb.getRelative(BlockFace.DOWN);
 				}
 			}
 			

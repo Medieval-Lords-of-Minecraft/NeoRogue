@@ -149,13 +149,6 @@ public abstract class FightInstance extends Instance {
 				s.broadcast("<red>" + p.getName() + " died!");
 				data.setDeath(true);
 				data.getStats().addDeath();
-				
-				if (p != null) {
-					p.spigot().respawn();
-					p.teleport(prev);
-					p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 60, 0));
-					fi.corpses.add(new Corpse(data));
-				}
 
 				// If that's the last player alive, send them to lose instance
 				boolean lose = true;
@@ -173,6 +166,16 @@ public abstract class FightInstance extends Instance {
 					sess.setInstance(new LoseInstance(sess));
 				}
 				else {
+					if (p != null) {
+						fi.corpses.add(new Corpse(data));
+						new BukkitRunnable() {
+							public void run() {
+								p.spigot().respawn();
+								p.teleport(prev);
+								p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 60, 0));
+							}
+						}.runTaskLater(NeoRogue.inst(), 5L);
+					}
 				}
 			}
 		}.runTaskLater(NeoRogue.inst(), 5L);

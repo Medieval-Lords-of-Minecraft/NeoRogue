@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -21,7 +22,7 @@ public class ClothBindings extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.WIN_FIGHT, (pdata, in) -> {
-			data.addHealth(health);
+			FightInstance.giveHeal(p, health, p);
 			return TriggerResult.keep();
 		});
 	}
