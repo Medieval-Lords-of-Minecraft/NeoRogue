@@ -90,12 +90,12 @@ public class EquipmentInstance extends PriorityAction {
 			sendCooldownMessage(p);
 			return false;
 		}
-		if (data.getMana() <= (tempManaCost != -1 ? tempManaCost : manaCost)) {
+		if (data.getMana() < (tempManaCost != -1 ? tempManaCost : manaCost)) {
 			Util.displayError(data.getPlayer(), "Not enough mana!");
 			return false;
 		}
 		
-		if (data.getStamina() <= (tempStaminaCost != -1 ? tempStaminaCost : staminaCost)) {
+		if (data.getStamina() < (tempStaminaCost != -1 ? tempStaminaCost : staminaCost)) {
 			Util.displayError(data.getPlayer(), "Not enough stamina!");
 			return false;
 		}

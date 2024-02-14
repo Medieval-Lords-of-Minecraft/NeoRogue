@@ -38,6 +38,10 @@ public abstract class Instance {
 		p.teleport(spawn);
 	}
 	
+	public Location getSpawn() {
+		return spawn;
+	}
+	
 	public static Instance deserialize(Session s, ResultSet row, HashMap<UUID, PlayerSessionData> party) throws SQLException {
 		String data = row.getString("instanceData");
 		

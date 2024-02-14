@@ -162,12 +162,14 @@ public abstract class FightInstance extends Instance {
 
 				// End game as a loss
 				if (lose) {
+					p.spigot().respawn();
 					Session sess = data.getInstance().getSession();
 					sess.setInstance(new LoseInstance(sess));
 				}
 				else {
 					if (p != null) {
 						fi.corpses.add(new Corpse(data));
+						// Have a wait time so that mythicmobs can handle deaths
 						new BukkitRunnable() {
 							public void run() {
 								p.spigot().respawn();
@@ -881,7 +883,8 @@ public abstract class FightInstance extends Instance {
 			for (Entity ent : hitbox) {
 				ent.remove();
 			}
-			bar.removeAll();
+			
+			if (bar != null) bar.removeAll();
 		}
 		
 		public boolean hitCorpse(Entity e) {
