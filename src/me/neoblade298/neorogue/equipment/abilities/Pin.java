@@ -41,10 +41,10 @@ public class Pin extends Equipment {
 	
 	public Pin(boolean isUpgraded) {
 		super("pin", "Pin", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 10, 20, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 1, 0));
 		damage = isUpgraded ? 150 : 100;
 		
-		pc.count(25).spread(0.5, 0.5);
+		pc.count(25).spread(1, 1);
 		start.count(25).spread(0.5, 0);
 	}
 
@@ -65,7 +65,7 @@ public class Pin extends Equipment {
 			action = (pdata, in) -> {
 				Util.playSound(p, Sound.ENTITY_SHULKER_SHOOT, false);
 				start.spawn(p);
-				Vector v = p.getEyeLocation().getDirection().setY(0).normalize().setY(0.3);
+				Vector v = p.getEyeLocation().getDirection().setY(0).normalize().multiply(1.2).setY(0.3);
 				if (p.isOnGround()) {
 					p.teleport(p.getLocation().add(0, 0.2, 0));
 				}
@@ -82,12 +82,17 @@ public class Pin extends Equipment {
 				ent.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 100, 0));
 			}
 			
-			if (!hitWall) return;
+			if (!hitWall) {
+				hit.clear();
+				return;
+			}
+			
 			Util.playSound(p, Sound.ENTITY_GENERIC_EXPLODE, false);
+			pc.spawn(p);
 			for (LivingEntity ent : hit) {
-				pc.spawn(p);
 				FightInstance.dealDamage(FightInstance.getFightData(ent.getUniqueId()), DamageType.BLUNT, damage, ent);
 			}
+			hit.clear();
 		}
 	}
 	
@@ -95,13 +100,11 @@ public class Pin extends Equipment {
 		private ArrayList<BukkitTask> tasks = new ArrayList<BukkitTask>();
 		private PlayerFightData data;
 		private TackleInstance inst;
-		private double vectorLen;
 		
 		protected TackleHitChecker(Player p, PlayerFightData data, TackleInstance inst) {
 			this.data = data;
 			this.inst = inst;
-			this.vectorLen = p.getVelocity().lengthSquared();
-			for (long delay = 1; delay <= 10; delay++) {
+			for (long delay = 1; delay <= 12; delay++) {
 				final long d = delay;
 				tasks.add(new BukkitRunnable() {
 					public void run() {
@@ -109,7 +112,13 @@ public class Pin extends Equipment {
 							inst.hit.add(ent);
 						}
 						
-						// Check for hit wall
+						for (LivingEntity ent : inst.hit) {
+							ent.teleport(p);
+						}
+						
+						if (d < 5) return;
+						
+						// Check for hit wall only after the first few ticks
 						if (hitWall(p)) {
 							cancelTasks();
 							inst.onEnd(true);
@@ -125,31 +134,27 @@ public class Pin extends Equipment {
 		}
 		
 		private boolean hitWall(Player p) {
-			double currLen = p.getVelocity().lengthSquared();
-			if (vectorLen - currLen > 0.2) {
-				// Check x-dir blocks
-				Block xb = p.getLocation().getBlock().getRelative(inst.posX ? BlockFace.EAST : BlockFace.WEST);
-				for (int i = 0; i < 2; i++) {
-					if (xb.isCollidable()) return true;
-					xb = xb.getRelative(BlockFace.UP);
-				}
-				
-				// Check z-dir blocks
-				Block zb = p.getLocation().getBlock().getRelative(inst.posZ ? BlockFace.NORTH : BlockFace.SOUTH);
-				for (int i = 0; i < 2; i++) {
-					if (zb.isCollidable()) return true;
-					zb = zb.getRelative(BlockFace.UP);
-				}
-				
-				// Check diagonal blocks
-				Block diag = zb.getRelative(inst.posX ? BlockFace.EAST : BlockFace.WEST);
-				for (int i = 0; i < 2; i++) {
-					if (diag.isCollidable()) return true;
-					diag = zb.getRelative(BlockFace.DOWN);
-				}
+			// Check x-dir blocks
+			Block xb = p.getLocation().getBlock().getRelative(inst.posX ? BlockFace.EAST : BlockFace.WEST);
+			for (int i = 0; i < 2; i++) {
+				if (xb.isCollidable()) return true;
+				xb = xb.getRelative(BlockFace.UP);
 			}
 			
-			vectorLen = currLen;
+			// Check z-dir blocks
+			Block zb = p.getLocation().getBlock().getRelative(inst.posZ ? BlockFace.NORTH : BlockFace.SOUTH);
+			for (int i = 0; i < 2; i++) {
+				if (zb.isCollidable()) return true;
+				zb = zb.getRelative(BlockFace.UP);
+			}
+			
+			// Check diagonal blocks
+			Block diag = zb.getRelative(inst.posX ? BlockFace.EAST : BlockFace.WEST);
+			for (int i = 0; i < 2; i++) {
+				if (diag.isCollidable()) return true;
+				diag = zb.getRelative(BlockFace.DOWN);
+			}
+			
 			return false;
 		}
 		

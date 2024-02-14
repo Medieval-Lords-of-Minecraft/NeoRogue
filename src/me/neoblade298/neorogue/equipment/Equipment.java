@@ -80,7 +80,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new EmpoweredEdge(b).addSelfReforge(new RecklessSwing(b), new BlessedEdge(b), new Fury(b));
 			new Execute(b).addSelfReforge(new SiphoningStrike(b), new MightySwing(b), new Fortify(b));
 			new Sturdy(b).addReforge(new GraniteShield(b), new Bulwark(b), new Endurance(b));
-			new Tackle(b).addReforge(new EarthenTackle(b), new Bulldoze(b));
+			new Tackle(b).addReforge(new EarthenTackle(b), new Bulldoze(b), new Pin(b));
 			new Thornguard(b);
 			new Titan(b);
 
