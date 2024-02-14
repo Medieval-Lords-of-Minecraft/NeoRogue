@@ -26,8 +26,6 @@ public class Sturdy extends Equipment {
 				EquipmentType.ABILITY, EquipmentProperties.none());
 		
 		heal = isUpgraded ? 3 : 2;
-		
-		addReforgeOption("sturdy", "graniteShield", "bulwark", "endure");
 	}
 
 	@Override

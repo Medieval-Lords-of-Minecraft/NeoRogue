@@ -170,12 +170,20 @@ public class PlayerSessionInventory extends CoreInventory {
 		ItemStack clicked = e.getCurrentItem();
 		if (cursor.getType().isAir() && clicked == null) return;
 
+		NBTItem ncursor = !cursor.getType().isAir() ? new NBTItem(cursor) : null;
+		Inventory iclicked = e.getClickedInventory();
+		NBTItem nclicked = clicked != null ? new NBTItem(clicked) : null;
+		boolean onChest = iclicked != null && e.getClickedInventory().getType() == InventoryType.CHEST;
+
 		int slot = e.getRawSlot();
-		// First check for specific cases: Trash and Artifact view
-		if (slot == TRASH) {
+		if (slot == TRASH && clicked != null) {
 			e.setCancelled(true);
-			addItem = false;
-			new TrashInventory(data.getPlayer());
+			if (Equipment.get(ncursor.getString("equipId"), false).isCursed()) {
+				Util.displayError(p, "You can't trash cursed items!");
+				return;
+			}
+			p.playSound(p, Sound.ENTITY_BLAZE_SHOOT, 1F, 1F);
+			p.setItemOnCursor(null);
 			return;
 		}
 		if (slot == ARTIFACTS) {
@@ -198,11 +206,6 @@ public class PlayerSessionInventory extends CoreInventory {
 			e.setCancelled(true);
 			return;
 		}
-
-		NBTItem ncursor = !cursor.getType().isAir() ? new NBTItem(cursor) : null;
-		Inventory iclicked = e.getClickedInventory();
-		NBTItem nclicked = clicked != null ? new NBTItem(clicked) : null;
-		boolean onChest = iclicked != null && e.getClickedInventory().getType() == InventoryType.CHEST;
 
 		// If right click with empty hand, open glossary
 		if (e.isRightClick() && nclicked.hasTag("equipId") && cursor.getType().isAir()) {
@@ -241,7 +244,7 @@ public class PlayerSessionInventory extends CoreInventory {
 			Equipment eqed = Equipment.get(eqedId, nclicked.getBoolean("isUpgraded"));
 
 			// Reforged item check
-			if (eq.getReforgeOptions().containsKey(eqedId)) {
+			if (eq.containsReforgeOption(eqedId)) {
 				if (!eq.isUpgraded() && !eqed.isUpgraded()) {
 					addItem = false;
 					displayError("At least one of the items must be upgraded to reforge!", true);
@@ -252,7 +255,7 @@ public class PlayerSessionInventory extends CoreInventory {
 						nclicked.getInteger("dataSlot"), eq, eqed, cursor);
 				return;
 			}
-			else if (eqed != null && eqed.getReforgeOptions().containsKey(eqId)) {
+			else if (eqed != null && eqed.containsReforgeOption(eqId)) {
 				p.setItemOnCursor(null);
 				if (!eq.isUpgraded() && !eqed.isUpgraded()) {
 					addItem = false;

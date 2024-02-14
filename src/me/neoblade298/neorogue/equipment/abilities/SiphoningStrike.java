@@ -81,7 +81,7 @@ public class SiphoningStrike extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.FLINT,
 				"On cast, your next basic attack while in the air deals <white>" + damage + "</white> " + GlossaryTag.PIERCING.tag(this)
-				+ "damage. If the enemy is below <white>50%</white> health, deal an additional <white>" + execute + "</white> "
+				+ " damage. If the enemy is below <white>50%</white> health, deal an additional <white>" + execute + "</white> "
 				+ GlossaryTag.PIERCING.tag(this) + " damage. If the enemy is killed with this damage, increase " + GlossaryTag.PHYSICAL.tag(this) + 
 				" damage by <yellow>" + buff + "</yellow>.");
 	}

@@ -32,7 +32,6 @@ public class Execute extends Equipment {
 		execute = isUpgraded ? 150 : 100;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		hit.count(50).spread(0.5, 0.5);
-		addReforgeOption("execute", "siphoningStrike", "fortify", "mightySwing");
 	}
 
 	@SuppressWarnings("deprecation")

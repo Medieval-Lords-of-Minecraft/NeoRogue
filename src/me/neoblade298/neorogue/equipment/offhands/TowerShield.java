@@ -23,7 +23,6 @@ public class TowerShield extends Equipment {
 		super("towerShield", "Tower Shield", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.OFFHAND);
 		reduction = isUpgraded ? 6 : 4;
-		addReforgeOption("towerShield", "captainsTowerShield");
 	}
 
 	@Override

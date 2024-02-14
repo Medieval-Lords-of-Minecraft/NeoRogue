@@ -71,11 +71,11 @@ public class GlossaryInventory extends CoreInventory {
 		else {
 			contents[REFORGE] = CoreInventory.createButton(Material.GOLD_BLOCK, Component.text("Reforge Options:", NamedTextColor.YELLOW));
 			int row = 0;
-			for (Entry<String, String[]> ent : eq.getReforgeOptions().entrySet()) {
+			for (Entry<Equipment, Equipment[]> ent : eq.getReforgeOptions().entrySet()) {
 				int col = REFORGE + 1;
-				contents[(row * 9) + col++] = Equipment.get(ent.getKey(), false).getItem();
-				for (String reforgeOption : ent.getValue()) {
-					contents[(row * 9) + col++] = Equipment.get(reforgeOption, false).getItem();
+				contents[(row * 9) + col++] =ent.getKey().getItem();
+				for (Equipment option : ent.getValue()) {
+					contents[(row * 9) + col++] = option.getItem();
 				}
 			}
 		}

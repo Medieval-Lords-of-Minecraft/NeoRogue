@@ -25,8 +25,6 @@ public class Adrenaline extends Equipment {
 		super("adrenaline", "Adrenaline", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 5, 0));
 		pc.count(50).spread(0.5, 0.5).dustOptions(new DustOptions(Color.RED, 1F));
-		
-		addReforgeOption("adrenaline", "discipline", "burst", "ferocity");
 	}
 
 	@Override

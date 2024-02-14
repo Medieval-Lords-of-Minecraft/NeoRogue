@@ -25,7 +25,6 @@ public class FencingSword extends Equipment {
 				EquipmentProperties.ofWeapon(isUpgraded ? 45 : 30, 1, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_CRIT));
 		properties.addUpgrades(PropertyType.DAMAGE);
 		shields = isUpgraded ? 4 : 2;
-		addReforgeOption("fencingSword", new String[] {"rapier", "serratedFencingSword"});
 	}
 
 	@Override

@@ -22,7 +22,6 @@ public class SmallShield extends Equipment {
 		super("smallShield", "Small Shield", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.OFFHAND);
 		reduction = isUpgraded ? 5 : 3;
-		addReforgeOption("smallShield", "hastyShield", "spikyShield");
 	}
 
 	@Override

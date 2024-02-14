@@ -34,7 +34,6 @@ public class Cleave extends Equipment {
 		
 		amount = isUpgraded ? 5 : 3;
 		damage = isUpgraded ? 60 : 40;
-		addReforgeOption("cleave", "quake", "smite", "windSlash");
 	}
 
 	@Override

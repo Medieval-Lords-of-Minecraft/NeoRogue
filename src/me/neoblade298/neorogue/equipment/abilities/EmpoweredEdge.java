@@ -33,7 +33,6 @@ public class EmpoweredEdge extends Equipment {
 		shields = isUpgraded ? 3 : 2;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		hit.count(50).spread(0.5, 0.5);
-		addReforgeOption("empoweredEdge", "recklessSwing", "blessedEdge", "fury");
 	}
 
 	@Override

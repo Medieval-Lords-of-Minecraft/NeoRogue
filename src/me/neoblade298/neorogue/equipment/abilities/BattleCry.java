@@ -29,8 +29,6 @@ public class BattleCry extends Equipment {
 		strength = isUpgraded ? 20 : 14;
 		
 		pc.count(50).spread(0.5, 0.5).dustOptions(new DustOptions(Color.RED, 1F));
-		
-		addReforgeOption("battleCry", "warCry", "berserkersCall");
 	}
 
 	@Override

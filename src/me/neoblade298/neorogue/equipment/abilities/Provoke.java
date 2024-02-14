@@ -32,7 +32,6 @@ public class Provoke extends Equipment {
 		threat = 500;
 		shield = isUpgraded ? 15 : 8;
 		taunt.count(50).spread(0.5, 0.5).speed(0.2);
-		addReforgeOption("brace", "challenge");
 	}
 
 	@Override

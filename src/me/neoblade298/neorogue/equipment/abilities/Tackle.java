@@ -43,8 +43,6 @@ public class Tackle extends Equipment {
 		
 		pc.count(25).spread(0.5, 0.5);
 		start.count(25).spread(0.5, 0);
-		
-		addReforgeOption("tackle", "bulldoze", "earthenTackle");
 	}
 
 	@SuppressWarnings("deprecation")
