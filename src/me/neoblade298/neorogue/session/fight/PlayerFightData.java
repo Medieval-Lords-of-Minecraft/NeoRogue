@@ -52,6 +52,18 @@ public class PlayerFightData extends FightData {
 		
 		this.inst = inst;
 		this.sessdata = data;
+		
+		// Setup mana and hunger bar
+		this.maxStamina = sessdata.getMaxStamina();
+		this.maxMana = sessdata.getMaxMana();
+		this.maxHealth = sessdata.getMaxHealth();
+		this.mana = sessdata.getStartingMana();
+		this.stamina = sessdata.getStartingStamina();
+		this.staminaRegen = sessdata.getStaminaRegen();
+		this.manaRegen = sessdata.getManaRegen();
+		updateStamina();
+		updateMana();
+		addTickAction(new PlayerUpdateTickAction());
 
 		// Initialize fight data
 		int i = 0;
@@ -99,18 +111,6 @@ public class PlayerFightData extends FightData {
 		inv.setContents(contents);
 		
 		if (offhand != null) inv.setItemInOffHand(offhand.getItem());
-		
-		// Setup mana and hunger bar
-		this.maxStamina = sessdata.getMaxStamina();
-		this.maxMana = sessdata.getMaxMana();
-		this.maxHealth = sessdata.getMaxHealth();
-		this.mana = sessdata.getStartingMana();
-		this.stamina = sessdata.getStartingStamina();
-		updateStamina();
-		updateMana();
-		this.staminaRegen = sessdata.getStaminaRegen();
-		this.manaRegen = sessdata.getManaRegen();
-		addTickAction(new PlayerUpdateTickAction());
 	}
 	
 	@Override
