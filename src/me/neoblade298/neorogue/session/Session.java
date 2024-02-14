@@ -395,10 +395,6 @@ public class Session {
 		return saveSlot;
 	}
 	
-	public void teleportToInstance(Player p) {
-		inst.teleportPlayer(p);
-	}
-	
 	public void cleanup() {
 		inst.cleanup();
 	}

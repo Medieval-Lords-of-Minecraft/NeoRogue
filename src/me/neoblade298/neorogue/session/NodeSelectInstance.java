@@ -56,13 +56,23 @@ public class NodeSelectInstance extends EditInventoryInstance {
 		
 		for (Player p : s.getOnlinePlayers()) {
 			p.teleport(spawn);
-			p.setFlying(true);
+			p.setAllowFlight(true);
 		}
 		task = new BukkitRunnable() {
 			public void run() {
 				area.tickParticles(s.getNode());
 			}
 		}.runTaskTimer(NeoRogue.inst(), 0L, 20L);
+	}
+	
+	@Override
+	public void handlePlayerRejoin(Player p) {
+		p.setAllowFlight(true);
+	}
+	
+	@Override
+	public void handlePlayerLeave(Player p) {
+		p.setAllowFlight(false);
 	}
 	
 	public void createHologram(Location loc, Node dest) {

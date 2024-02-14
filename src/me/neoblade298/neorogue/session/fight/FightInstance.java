@@ -180,6 +180,28 @@ public abstract class FightInstance extends Instance {
 			}
 		}.runTaskLater(NeoRogue.inst(), 5L);
 	}
+	
+	@Override
+	public void handlePlayerLeave(Player p) {
+		p.setInvulnerable(false);
+		p.setInvisible(false);
+	}
+	
+	@Override
+	public void handlePlayerRejoin(Player p) {
+		// If player rejoins fight, don't tp them, it'll still be the same fight
+		// If the fight already ended, another instance will handle their tp anyway
+		PlayerFightData pdata = getUserData(p.getUniqueId());
+		if (pdata == null) {
+			Bukkit.getLogger().warning("[NeoRogue] Failed to get player fight data on rejoin for " + p.getName());
+			return;
+		}
+		
+		if (pdata.isDead()) {
+			p.setInvulnerable(true);
+			p.setInvisible(true);
+		}
+	}
 
 	// This handles basic left click and/or enemy damage
 	public static void handleDamage(EntityDamageByEntityEvent e) {

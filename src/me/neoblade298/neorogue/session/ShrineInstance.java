@@ -176,10 +176,4 @@ public class ShrineInstance extends EditInventoryInstance {
 		}
 		return "CAMPFIRE:" + state;
 	}
-
-	@Override
-	public void teleportPlayer(Player p) {
-		p.teleport(spawn);
-		returnToNodes();
-	}
 }

@@ -115,7 +115,7 @@ public class NeoRogue extends JavaPlugin {
 			SessionManager.addToSession(alt.getUniqueId(), s);
 		}
 		s.setNode(s.getArea().getNodes()[0][2]);
-		s.setInstance(new ShopInstance(s));
+		s.setInstance(new NodeSelectInstance(s));
 		// s.setInstance(new ChanceInstance());
 
 		//Map map = Map.generate(AreaType.LOW_DISTRICT, 8);

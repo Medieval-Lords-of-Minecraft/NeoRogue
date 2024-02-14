@@ -368,14 +368,11 @@ public class SessionManager implements Listener {
 		Player p = e.getPlayer();
 		if (sessions.containsKey(p.getUniqueId())) {
 			Session s = sessions.get(p.getUniqueId());
-			s.teleportToInstance(p);
 			s.getData(p.getUniqueId()).syncHealth();
+			s.getInstance().handlePlayerRejoin(p);
 		}
 		else {
 			p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
-			p.setInvisible(false);
-			p.setInvulnerable(false);
-			if (!p.hasPermission("essentials.fly")) p.setFlying(false);
 		}
 	}
 
@@ -388,9 +385,11 @@ public class SessionManager implements Listener {
 				li.leavePlayer(p);
 			}
 			else {
-				if (s.getOnlinePlayers().size() <= 1) {
+				if (s.getOnlinePlayers().isEmpty()) {
 					endSession(s);
+					return;
 				}
+				s.getInstance().handlePlayerLeave(p);
 			}
 		}
 	}

@@ -351,9 +351,4 @@ public class LobbyInstance extends Instance {
 		Bukkit.getLogger().warning("[NeoRogue] LobbyInstance attempted to save, this should never happen");
 		return null;
 	}
-
-	@Override
-	public void teleportPlayer(Player p) {
-		p.teleport(spawn);
-	}
 }

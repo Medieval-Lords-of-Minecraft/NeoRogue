@@ -73,14 +73,12 @@ public abstract class Equipment implements Comparable<Equipment> {
 			// Abilities
 			new Adrenaline(b).addSelfReforge(new Burst(b), new Discipline(b), new Ferocity(b));
 			new BattleCry(b).addSelfReforge(new WarCry(b), new BerserkersCall(b));
-			new BlessedEdge(b);
 			new Brace(b).addSelfReforge(new Brace2(b), new Parry(b), new Bide(b)).addReforge(new Provoke(b),
 					new Challenge(b));
 			new Cleave(b).addSelfReforge(new Quake(b), new Smite(b), new WindSlash(b));
 			new DarkPact(b);
 			new EmpoweredEdge(b).addSelfReforge(new RecklessSwing(b), new BlessedEdge(b), new Fury(b));
 			new Execute(b).addSelfReforge(new SiphoningStrike(b), new MightySwing(b), new Fortify(b));
-			new Provoke(b);
 			new Sturdy(b).addReforge(new GraniteShield(b), new Bulwark(b), new Endurance(b));
 			new Tackle(b).addReforge(new EarthenTackle(b), new Bulldoze(b));
 			new Thornguard(b);

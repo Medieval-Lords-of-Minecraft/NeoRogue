@@ -170,7 +170,7 @@ public class Area {
 		int[] arr = new int[] {0, 1, 2, 3, 4};
 		shuffleArray(arr);
 		for (int i = 0; i < NeoCore.gen.nextInt(2, 6); i++) { // 5 is exclusive
-			nodes[1][arr[i]] = generateNode(nodes[0][CENTER_LANE], GenerationType.INITIAL, 1, arr[i]);
+			nodes[1][arr[i]] = generateNode(GenerationType.INITIAL, 1, arr[i], nodes[0][CENTER_LANE]);
 		}
 		
 		nodes[MAX_POSITIONS - 2][CENTER_LANE - 1] = new Node(NodeType.SHRINE, MAX_POSITIONS - 2, CENTER_LANE - 1);
@@ -203,9 +203,9 @@ public class Area {
 		}
 		
 		// Connect campfires to boss
-		for (int i = 1; i < 3; i++) {
+		for (int i = 1; i < 4; i++) {
 			Node node = nodes[MAX_POSITIONS - 2][i];
-			if (node.getSources().size() > 0) {
+			if (node.getSources().isEmpty()) {
 				nodes[MAX_POSITIONS - 2][i] = null;
 				continue;
 			}
@@ -327,7 +327,7 @@ public class Area {
 		int destsToGenerate = twoDests ? 2 : 1;
 		while (destsToGenerate > from.getDestinations().size() && potential.size() > 0) {
 			int newLane = potential.removeFirst();
-			curr[newLane] = generateNode(from, type, pos, newLane);
+			curr[newLane] = generateNode(type, pos, newLane, from);
 		}
 	}
 	
@@ -343,7 +343,7 @@ public class Area {
 		
 		Collections.shuffle(potential);
 		int newLane = potential.removeFirst();
-		curr[newLane] = generateNode(from, type, pos, newLane);
+		curr[newLane] = generateNode(type, pos, newLane, from);
 	}
 	
 	private void generateFewerDestinations(Node from1, Node from2, GenerationType type,  Node[] curr, Node[] prev) {
@@ -351,21 +351,29 @@ public class Area {
 		// If they're 2 apart, destination must be in the middle
 		// If 1 apart, it can be in two places
 		int newLane = (from2.getLane() - from1.getLane() == 2) ? from2.getLane() - 1 : (NeoCore.gen.nextBoolean() ? from2.getLane() : from1.getLane());
-		curr[newLane] = generateNode(from1, type, from1.getPosition() + 1, newLane);
-		from2.addDestination(curr[newLane]);
+		curr[newLane] = generateNode(type, from1.getPosition() + 1, newLane, from1, from2);
 	}
 
-	private Node generateNode(Node from, GenerationType type, int pos, int lane) {
+	private Node generateNode(GenerationType type, int pos, int lane, Node... from) {
 		NodeType nodeType = type.table.get();
-		// Don't allow two of the same node type in a row
-		while (nodeType != NodeType.FIGHT && nodeType != NodeType.CHANCE && from.getType() == nodeType) {
+		// Don't allow two of the same node type in a row, unless they're fight or chance nodes
+		while (nodeType != NodeType.FIGHT && nodeType != NodeType.CHANCE && !isNodeValid(nodeType, from)) {
 			nodeType = type.table.get();
 		}
 		Node node = new Node(nodeType, pos, lane);
 		if (from != null) {
-			from.addDestination(node);
+			for (Node n : from) {
+				n.addDestination(node);
+			}
 		}
 		return node;
+	}
+	
+	private boolean isNodeValid(NodeType newType, Node[] from) {
+		for (Node n : from) {
+			if (n.getType() == newType) return false;
+		}
+		return true;
 	}
 
 	public AreaType getType() {

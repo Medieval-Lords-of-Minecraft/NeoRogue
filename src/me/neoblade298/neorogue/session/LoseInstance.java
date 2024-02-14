@@ -3,7 +3,6 @@ package me.neoblade298.neorogue.session;
 import java.util.HashMap;
 import java.util.UUID;
 
-import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import me.neoblade298.neorogue.player.PlayerManager;
@@ -37,11 +36,6 @@ public class LoseInstance extends EditInventoryInstance {
 	@Override
 	public String serialize(HashMap<UUID, PlayerSessionData> party) {
 		return null;
-	}
-
-	@Override
-	public void teleportPlayer(Player p) {
-		p.teleport(spawn);
 	}
 
 	@Override
