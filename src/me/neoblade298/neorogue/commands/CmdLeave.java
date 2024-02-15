@@ -25,6 +25,11 @@ public class CmdLeave extends Subcommand {
 			return;
 		}
 		
+		if (sess.isSpectator(p.getUniqueId())) {
+			sess.removeSpectator(p);
+			return;
+		}
+		
 		Instance inst = sess.getInstance();
 		if (inst instanceof LobbyInstance) {
 			LobbyInstance li = (LobbyInstance) inst;

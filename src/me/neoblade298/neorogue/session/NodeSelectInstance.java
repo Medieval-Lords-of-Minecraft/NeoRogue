@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.UUID;
 import java.util.Map.Entry;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Tag;
@@ -57,6 +58,10 @@ public class NodeSelectInstance extends EditInventoryInstance {
 		for (Player p : s.getOnlinePlayers()) {
 			p.teleport(spawn);
 			p.setAllowFlight(true);
+		}
+		for (UUID uuid : s.getSpectators()) {
+			Player p = Bukkit.getPlayer(uuid);
+			p.teleport(spawn);
 		}
 		task = new BukkitRunnable() {
 			public void run() {

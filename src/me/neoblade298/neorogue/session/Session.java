@@ -10,10 +10,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -32,6 +34,7 @@ import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.session.ClipboardHolder;
 
 import me.neoblade298.neocore.bukkit.NeoCore;
+import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.io.SQLManager;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder;
@@ -50,6 +53,7 @@ public class Session {
 	private Area area;
 	private UUID host;
 	private HashMap<UUID, PlayerSessionData> party = new HashMap<UUID, PlayerSessionData>();
+	private HashSet<UUID> spectators = new HashSet<UUID>();
 	private Instance inst;
 	private Node curr;
 	private SessionStatistics stats;
@@ -212,9 +216,44 @@ public class Session {
 	public void addPlayer(UUID uuid, EquipmentClass pc) {
 		party.put(uuid, new PlayerSessionData(uuid, pc, this));
 	}
+	
+	public void addSpectator(Player p) {
+		this.spectators.add(p.getUniqueId());
+		SessionManager.addToSession(p.getUniqueId(), this);
+		broadcast("<yellow>" + p.getName() + "</yellow> started spectating!");
+		p.teleport(inst.spawn);
+		p.setInvulnerable(true);
+		p.setInvisible(true);
+		
+		if (inst instanceof EditInventoryInstance) {
+			setupSpectatorInventory(p);
+		}
+	}
+	
+	public void removeSpectator(Player p) {
+		broadcast("<yellow>" + p.getName() + " <gray>has stopped specating!");
+		spectators.remove(p.getUniqueId());
+		p.setInvisible(false);
+		p.setInvulnerable(false);
+		SessionManager.removeFromSession(p.getUniqueId());
+	}
+	
+	public HashSet<UUID> getSpectators() {
+		return spectators;
+	}
+	
+	public boolean isSpectator(UUID uuid) {
+		return spectators.contains(uuid);
+	}
 
 	public void broadcastError(String msg) {
 		for (Player p : getOnlinePlayers()) {
+			Util.msgRaw(p, NeoCore.miniMessage().deserialize(msg).colorIfAbsent(NamedTextColor.RED));
+			Util.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1F, 0.7F, false);
+		}
+		
+		for (UUID uuid : spectators) {
+			Player p = Bukkit.getPlayer(uuid);
 			Util.msgRaw(p, NeoCore.miniMessage().deserialize(msg).colorIfAbsent(NamedTextColor.RED));
 			Util.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1F, 0.7F, false);
 		}
@@ -225,11 +264,20 @@ public class Session {
 			if (p == ignore) continue;
 			Util.msgRaw(p, NeoCore.miniMessage().deserialize(msg).colorIfAbsent(NamedTextColor.GRAY));
 		}
+
+		for (UUID uuid : spectators) {
+			Player p = Bukkit.getPlayer(uuid);
+			Util.msgRaw(p, NeoCore.miniMessage().deserialize(msg).colorIfAbsent(NamedTextColor.GRAY));
+		}
 	}
 
 	public void broadcastOthers(Component msg, Player ignore) {
 		for (Player p : getOnlinePlayers()) {
 			if (p == ignore) continue;
+			Util.msgRaw(p, msg);
+		}
+		for (UUID uuid : spectators) {
+			Player p = Bukkit.getPlayer(uuid);
 			Util.msgRaw(p, msg);
 		}
 	}
@@ -238,16 +286,29 @@ public class Session {
 		for (Player p : getOnlinePlayers()) {
 			Util.msgRaw(p, NeoCore.miniMessage().deserialize(msg).colorIfAbsent(NamedTextColor.GRAY));
 		}
+		for (UUID uuid : spectators) {
+			Player p = Bukkit.getPlayer(uuid);
+			Util.msgRaw(p, NeoCore.miniMessage().deserialize(msg).colorIfAbsent(NamedTextColor.GRAY));
+		}
 	}
 
 	public void broadcast(Component msg) {
 		for (Player p : getOnlinePlayers()) {
 			Util.msgRaw(p, msg.colorIfAbsent(NamedTextColor.GRAY));
 		}
+		for (UUID uuid : spectators) {
+			Player p = Bukkit.getPlayer(uuid);
+			Util.msgRaw(p, msg.colorIfAbsent(NamedTextColor.GRAY));
+		}
 	}
 	
 	public void broadcastSound(Sound s) {
 		for (Player p : getOnlinePlayers()) {
+			p.playSound(p, s, 1F, 1F);
+		}
+
+		for (UUID uuid : spectators) {
+			Player p = Bukkit.getPlayer(uuid);
 			p.playSound(p, s, 1F, 1F);
 		}
 	}
@@ -278,6 +339,14 @@ public class Session {
 		this.potionChance = Math.max(0, Math.min(100, potionChance + amount));
 	}
 	
+	private void setupSpectatorInventory(Player p) {
+		p.getInventory().clear();
+		p.getInventory().setItem(4, (CoreInventory.createButton(Material.ENDER_CHEST,
+				Component.text("Left/right click to open spectator menu", NamedTextColor.YELLOW),
+				Component.text("You can also swap hands or click anywhere in your inventory."), 200,
+				NamedTextColor.GRAY)));
+	}
+	
 	public void setInstance(Instance inst) {
 		boolean firstLoad = this.inst == null;
 		if (!firstLoad) {
@@ -300,6 +369,11 @@ public class Session {
 			for (PlayerSessionData data : party.values()) {
 				data.setupInventory();
 				data.setupEditInventory(); // hunger and exp bar
+			}
+			
+			for (UUID uuid : spectators) {
+				Player p = Bukkit.getPlayer(uuid);
+				setupSpectatorInventory(p);
 			}
 		}
 		
@@ -418,6 +492,10 @@ public class Session {
 			Util.displayError(p, "Only the host may kick players");
 		}
 		else {
+			if (party.containsKey(target.getUniqueId())) {
+				Util.displayError(p, "That player isn't in your party!");
+				return;
+			}
 			broadcast("<yellow>" + target.getName() + " <gray>was kicked from the party!");
 			party.remove(target.getUniqueId());
 			SessionManager.removeFromSession(target.getUniqueId());

@@ -187,6 +187,7 @@ public abstract class FightInstance extends Instance {
 	public void handlePlayerLeave(Player p) {
 		p.setInvulnerable(false);
 		p.setInvisible(false);
+		p.removePotionEffect(PotionEffectType.ABSORPTION);
 	}
 	
 	@Override
@@ -619,6 +620,10 @@ public abstract class FightInstance extends Instance {
 				for (Player p : s.getOnlinePlayers()) {
 					p.teleport(spawn);
 				}
+				for (UUID uuid : s.getSpectators()) {
+					Player p = Bukkit.getPlayer(uuid);
+					p.teleport(spawn);
+				}
 
 				for (FightRunnable runnable : initialTasks) {
 					runnable.run(fi, fdata);
@@ -693,30 +698,36 @@ public abstract class FightInstance extends Instance {
 		s.broadcast(statsHeader);
 		for (UUID uuid : s.getParty().keySet()) {
 			PlayerFightData pdata = userData.remove(uuid);
+			PlayerSessionData data = pdata.getSessionData();
+			Player p = pdata.getPlayer();
 			if (pdata != null) {
 				pdata.cleanup();
-				if (pdata.getPlayer() != null) {
-					pdata.getPlayer().removePotionEffect(PotionEffectType.ABSORPTION);
-					s.broadcast(pdata.getStats().getStatLine());
+				if (p != null) {
 					if (pdata.isDead()) {
 						pdata.setDeath(false);
 					}
+					data.updateHealth();
+					data.syncHealth();
+					p.setFoodLevel(20);
+					data.revertMaxHealth();
+					data.updateCoinsBar();
+					s.broadcast(pdata.getStats().getStatLine());
 				}
 			}
 			FightData fdata = fightData.remove(uuid);
 			if (fdata != null) fdata.cleanup();
-			
-			PlayerSessionData data = s.getParty().get(uuid);
-			data.updateHealth();
-
-			Player p = Bukkit.getPlayer(uuid);
-			if (p != null) {
-				data.syncHealth();
-				p.setFoodLevel(20);
-				data.revertMaxHealth();
-				data.updateCoinsBar();
-			}
 		}
+
+		// Delay potion effects after the fight ends to catch effects done right as the last kill happens
+		new BukkitRunnable() {
+			public void run() {
+				for (UUID uuid : s.getParty().keySet()) {
+					Player p = Bukkit.getPlayer(uuid);
+					if (p == null) return;
+					p.clearActivePotionEffects();
+				}
+			}
+		}.runTaskLater(NeoRogue.inst(), 1L);
 		
 		for (Corpse c : corpses) {
 			c.remove();

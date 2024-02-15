@@ -208,6 +208,7 @@ public class FightData {
 			FightInstance.trigger(((PlayerFightData) this).getPlayer(), Trigger.RECEIVE_SHIELDS, ev);
 		}
 		shields.addShield(shield);
+		if (shield.getTask() != null) tasks.put(UUID.randomUUID().toString(), shield.getTask());
 		return shield;
 	}
 	

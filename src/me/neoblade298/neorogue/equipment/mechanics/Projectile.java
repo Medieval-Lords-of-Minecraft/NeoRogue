@@ -8,9 +8,9 @@ public abstract class Projectile {
 	private double width = 0.2, height = 0.2;
 	private int maxTicks, tickSpeed;
 	public Projectile(double blocksPerTick, double maxRange, int tickSpeed) {
-		this.blocksPerTick = blocksPerTick;
+		this.blocksPerTick = blocksPerTick; // Per in-game tick, not projectile tick
 		this.tickSpeed = tickSpeed;
-		this.maxTicks = (int) (maxRange / blocksPerTick) + 1;
+		this.maxTicks = (int) (maxRange / (blocksPerTick * tickSpeed)) + 1;
 	}
 	
 	public double getWidth() {
@@ -101,7 +101,7 @@ public abstract class Projectile {
 		return proj;
 	}
 	public abstract void onStart(ProjectileInstance proj);
-	public abstract void onTick(ProjectileInstance proj);
+	public abstract void onTick(ProjectileInstance proj, boolean interpolation);
 	public abstract void onEnd(ProjectileInstance proj);
 	public abstract void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj);
 }

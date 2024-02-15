@@ -24,8 +24,11 @@ import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.session.*;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
+import me.neoblade298.neorogue.session.fight.FightScore;
 import me.neoblade298.neorogue.session.fight.Mob;
+import me.neoblade298.neorogue.session.fight.StandardFightInstance;
 import me.neoblade298.neorogue.session.fight.mythicbukkit.MythicLoader;
+import me.neoblade298.neorogue.session.reward.RewardInstance;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class NeoRogue extends JavaPlugin {
@@ -81,6 +84,7 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdLeave("leave", "Leave your session", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdKick("kick", "Kick a player from your party", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdJoin("join", "Join an existing party", null, SubcommandRunner.BOTH));
+		mngr.register(new CmdSpectate("spectate", "Spectate a player's session", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdInfo("info", "View session info", null, SubcommandRunner.BOTH));
 		mngr.registerCommandList("");
 		
@@ -93,6 +97,7 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdAdminTestMap("testmap", "Generates and pastes a map", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminTestChance("testchance", "Tests a chance event", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminTestMiniboss("testminiboss", "Tests a miniboss fight", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdAdminTestEquipment("testequip", "Gives the player an equipment", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminTestBoss("testboss", "Tests a boss fight", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.registerCommandList("");
 	}
@@ -115,7 +120,7 @@ public class NeoRogue extends JavaPlugin {
 			SessionManager.addToSession(alt.getUniqueId(), s);
 		}
 		s.setNode(s.getArea().getNodes()[0][2]);
-		s.setInstance(new NodeSelectInstance(s));
+		s.setInstance(new RewardInstance(s, StandardFightInstance.generateRewards(s, FightScore.S)));
 		// s.setInstance(new ChanceInstance());
 
 		//Map map = Map.generate(AreaType.LOW_DISTRICT, 8);

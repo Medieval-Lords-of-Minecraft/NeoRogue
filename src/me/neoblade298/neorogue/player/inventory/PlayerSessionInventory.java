@@ -7,6 +7,7 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -36,10 +37,7 @@ public class PlayerSessionInventory extends CoreInventory {
 	private static final int[] HOTBAR = new int[] { 18, 19, 20, 21, 22, 23, 24, 25, 26 };
 	private static final int[] FILLER = new int[] { 16, 28, 29, 30, 32, 33, 34 };
 	private static final int[] KEYBINDS = new int[] { 9, 10, 11, 12, 13, 14, 15 };
-	private static final int STATS = 27;
-	private static final int TRASH = 35;
-	private static final int OFFHAND = 17;
-	private static final int ARTIFACTS = 31;
+	private static final int STATS = 27, TRASH = 35, OFFHAND = 17, ARTIFACTS = 31, SEE_OTHERS = 28;
 	private static HashMap<Integer, EquipSlot> slotTypes = new HashMap<Integer, EquipSlot>();
 
 	private static final TextComponent instruct = Component.text("Drag a weapon, ability, or consumable",
@@ -48,6 +46,7 @@ public class PlayerSessionInventory extends CoreInventory {
 	private static final TextComponent statsText = Component.text("Your stats:", NamedTextColor.GOLD);
 
 	private HashSet<Integer> highlighted = new HashSet<Integer>();
+	private Player spectator;
 	private boolean addItem = true;
 	private PlayerSessionData data;
 
@@ -55,6 +54,18 @@ public class PlayerSessionInventory extends CoreInventory {
 		super(data.getPlayer(),
 				Bukkit.createInventory(data.getPlayer(), 36, Component.text("Equipment", NamedTextColor.BLUE)));
 		this.data = data;
+		setupInventory();
+	}
+	
+	public PlayerSessionInventory(PlayerSessionData data, Player spectator) {
+		super(spectator,
+				Bukkit.createInventory(spectator, 36, Component.text(data.getData().getDisplay() + "'s Equipment", NamedTextColor.BLUE)));
+		this.data = data;
+		this.spectator = spectator;
+		setupInventory();
+	}
+	
+	private void setupInventory() {
 		p.playSound(p, Sound.BLOCK_CHEST_OPEN, 1F, 1F);
 		ItemStack[] contents = inv.getContents();
 
@@ -101,13 +112,15 @@ public class PlayerSessionInventory extends CoreInventory {
 
 		contents[STATS] = createStatsIcon();
 		contents[TRASH] = addNbt(CoreInventory.createButton(Material.HOPPER,
-				Component.text("Trash", NamedTextColor.GOLD), "Click to open a trash can!", 250, NamedTextColor.GRAY),
+				Component.text("Trash", NamedTextColor.GOLD), "Drag items here to trash them!", 250, NamedTextColor.GRAY),
 				0);
 
 		contents[ARTIFACTS] = addNbt(
 				CoreInventory.createButton(Material.NETHER_STAR, Component.text("Artifacts", NamedTextColor.GOLD),
 						"Click here to view all your artifacts!", 250, NamedTextColor.GRAY),
 				0);
+		if (data.getSession().getParty().size() > 1)
+			contents[SEE_OTHERS] = CoreInventory.createButton(Material.SPYGLASS, Component.text("View other players", NamedTextColor.GOLD));
 		inv.setContents(contents);
 	}
 
@@ -159,21 +172,39 @@ public class PlayerSessionInventory extends CoreInventory {
 				.append(Component.text(data.getMaxMana(), NamedTextColor.WHITE));
 		TextComponent stamina = Component.text("Max Stamina: ", NamedTextColor.GOLD)
 				.append(Component.text(data.getMaxStamina(), NamedTextColor.WHITE));
+		TextComponent mr = Component.text("Mana Regen: ", NamedTextColor.GOLD)
+				.append(Component.text(data.getManaRegen(), NamedTextColor.WHITE));
+		TextComponent sr = Component.text("Stamina Regen: ", NamedTextColor.GOLD)
+				.append(Component.text(data.getStaminaRegen(), NamedTextColor.WHITE));
 		TextComponent coins = Component.text("Coins: ", NamedTextColor.GOLD)
 				.append(Component.text(data.getCoins(), NamedTextColor.WHITE));
-		return CoreInventory.createButton(Material.ARMOR_STAND, statsText, health, mana, stamina, coins);
+		return CoreInventory.createButton(Material.ARMOR_STAND, statsText, health, mana, stamina, mr, sr, coins);
 	}
 
 	@Override
 	public void handleInventoryClick(InventoryClickEvent e) {
+		Inventory iclicked = e.getClickedInventory();
+		boolean onChest = iclicked != null && e.getClickedInventory().getType() == InventoryType.CHEST;
+		if (spectator != null) {
+			e.setCancelled(true);
+			// Only allow spectator to view artifacts menu and spectate menu and nothing else
+			if (!onChest) return;
+			if (e.getSlot() == ARTIFACTS) {
+				new ArtifactsInventory(data, spectator);
+			}
+			else if (e.getSlot() == SEE_OTHERS) {
+				new SpectateSelectInventory(data.getSession(), spectator, false);
+			}
+			return;
+		}
+		
+		
 		ItemStack cursor = e.getCursor();
 		ItemStack clicked = e.getCurrentItem();
 		if (cursor.getType().isAir() && clicked == null) return;
 
 		NBTItem ncursor = !cursor.getType().isAir() ? new NBTItem(cursor) : null;
-		Inventory iclicked = e.getClickedInventory();
 		NBTItem nclicked = clicked != null ? new NBTItem(clicked) : null;
-		boolean onChest = iclicked != null && e.getClickedInventory().getType() == InventoryType.CHEST;
 
 		int slot = e.getRawSlot();
 		if (slot == TRASH && clicked != null) {
@@ -190,6 +221,12 @@ public class PlayerSessionInventory extends CoreInventory {
 			e.setCancelled(true);
 			addItem = false;
 			new ArtifactsInventory(data);
+			return;
+		}
+		else if (slot == SEE_OTHERS) {
+			e.setCancelled(true);
+			addItem = false;
+			new SpectateSelectInventory(data.getSession(), p, false);
 			return;
 		}
 
@@ -485,7 +522,7 @@ public class PlayerSessionInventory extends CoreInventory {
 	
 	private ItemStack iconFromEquipSlot(EquipSlot es, int slot) {
 		switch (es) {
-		case ACCESSORY: return createAccessoryIcon(slot - 9);
+		case ACCESSORY: return createAccessoryIcon(slot);
 		case ARMOR: return createArmorIcon(slot);
 		case HOTBAR: return createHotbarIcon(slot - 18);
 		case KEYBIND: KeyBind bind = KeyBind.getBindFromSlot(slot);

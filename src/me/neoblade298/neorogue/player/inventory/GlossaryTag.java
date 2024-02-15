@@ -40,7 +40,7 @@ public enum GlossaryTag {
 	LIGHT(Material.END_ROD, DamageType.LIGHT.tag,
 			"A type of magical damage."),
 	POISON(Material.GREEN_DYE, StatusType.POISON.tag,
-			"Deals 1 poison damage per stack applied to the holder every second, ignoring shields, for its entire duration. Anytime poison is " +
+			"Deals 0.2 poison damage per stack applied to the holder every second, ignoring shields, for its entire duration. Anytime poison is " +
 			"reapplied, the status duration is set to whichever is longer: the current status or the new applying source."),
 	BLEED(Material.REDSTONE, StatusType.BLEED.tag,
 			"Deals 1 bleed damage per stack applied to the holder and removes 1 stack every second, ignoring shields."),

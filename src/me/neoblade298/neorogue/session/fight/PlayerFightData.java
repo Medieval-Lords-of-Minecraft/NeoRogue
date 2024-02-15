@@ -367,9 +367,11 @@ public class PlayerFightData extends FightData {
 	
 	private void updateActionBar() {
 		p.sendActionBar(
-			Component.text("Mana: " + (int)mana + " / " + (int)maxMana, NamedTextColor.BLUE)
+			Component.text("HP: " + (int)getPlayer().getHealth() + " / " + (int)maxHealth, NamedTextColor.RED)
 			.append(Component.text("  |  ", NamedTextColor.GRAY))
-			.append(Component.text("Stamina: " + (int)stamina + " / " + (int)maxStamina, NamedTextColor.GREEN))
+			.append(Component.text("MP: " + (int)mana + " / " + (int)maxMana, NamedTextColor.BLUE))
+			.append(Component.text("  |  ", NamedTextColor.GRAY))
+			.append(Component.text("SP: " + (int)stamina + " / " + (int)maxStamina, NamedTextColor.GREEN))
 		);
 	}
 	

@@ -24,6 +24,7 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.player.inventory.SpectateSelectInventory;
 import me.neoblade298.neorogue.session.*;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.reward.RewardInstance;
@@ -83,6 +84,10 @@ public class ChanceInstance extends EditInventoryInstance {
 			data.getPlayer().teleport(spawn);
 			stage.put(data.getPlayer().getUniqueId(), set.getInitialStage());
 		}
+		for (UUID uuid : s.getSpectators()) {
+			Player p = Bukkit.getPlayer(uuid);
+			p.teleport(spawn);
+		}
 
 		// Setup hologram
 		ArrayList<String> lines = new ArrayList<String>();
@@ -98,6 +103,23 @@ public class ChanceInstance extends EditInventoryInstance {
 		candle.setLit(false);
 		candleBlock.setBlockData(candle);
 		holo.delete();
+	}
+	
+	@Override
+	public void handleSpectatorInteractEvent(PlayerInteractEvent e) {
+		e.setCancelled(true);
+		if (e.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+		if (e.getHand() != EquipmentSlot.HAND) return;
+
+		Player p = e.getPlayer();
+		if (e.getClickedBlock().getType() == Material.QUARTZ_PILLAR || e.getClickedBlock().getType() == Material.LIGHT_GRAY_CANDLE) {
+			if (set.isIndividual()) {
+				new SpectateSelectInventory(s, p, true);
+			}
+			else {
+				spectatePlayer(p, s.getHost());
+			}
+		}
 	}
 
 	@Override
@@ -130,6 +152,10 @@ public class ChanceInstance extends EditInventoryInstance {
 
 	public Session getSession() {
 		return s;
+	}
+	
+	public void spectatePlayer(Player spectator, UUID uuid) {
+		new ChanceInventory(spectator, this, set, stage.get(uuid), true);
 	}
 
 	public void advanceStage(UUID uuid, ChanceStage stage) {

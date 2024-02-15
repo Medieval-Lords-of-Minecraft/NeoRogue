@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.session.fight;
 import java.util.UUID;
 
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import me.neoblade298.neorogue.NeoRogue;
 
@@ -11,6 +12,7 @@ public class Shield {
 	private double total;
 	private ShieldHolder shieldHolder;
 	private UUID applier;
+	private BukkitTask task;
 	public Shield(FightData data, UUID applier, double amt, boolean isPercent, long decayDelayTicks, double decayAmount, long decayPeriodTicks, int decayRepetitions) {
 		this.total = amt;
 		this.amount = amt;
@@ -19,7 +21,7 @@ public class Shield {
 		
 		if (decayRepetitions == 0) return;
 		
-		new BukkitRunnable() {
+		task = new BukkitRunnable() {
 			int reps = decayRepetitions;
 			double total = amt;
 			public void run() {
@@ -38,7 +40,11 @@ public class Shield {
 				}
 				shieldHolder.update();
 			}
-		}.runTaskTimer(NeoRogue.inst(), decayDelayTicks * 20, decayPeriodTicks * 20);
+		}.runTaskTimer(NeoRogue.inst(), decayDelayTicks, decayPeriodTicks);
+	}
+	
+	public BukkitTask getTask() {
+		return task;
 	}
 	
 	public Shield(FightData data, UUID applier, double amt) {

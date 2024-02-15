@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.UUID;
 import java.util.Map.Entry;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -20,6 +21,7 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.player.inventory.SpectateSelectInventory;
 
 public class ShopInstance extends EditInventoryInstance {
 	private static final double SPAWN_X = Session.SHOP_X + 5.5, SPAWN_Z = Session.SHOP_Z + 2.5,
@@ -29,6 +31,7 @@ public class ShopInstance extends EditInventoryInstance {
 	private HashMap<UUID, ArrayList<ShopItem>> shops = new HashMap<UUID, ArrayList<ShopItem>>();
 	private HashSet<UUID> ready = new HashSet<UUID>();
 	private Hologram holo;
+	private boolean busy;
 	
 	public ShopInstance(Session s) {
 		super(s, SPAWN_X, SPAWN_Z);
@@ -66,6 +69,10 @@ public class ShopInstance extends EditInventoryInstance {
 			}
 			shops.put(p.getUniqueId(), shopItems);
 		}
+		for (UUID uuid : s.getSpectators()) {
+			Player p = Bukkit.getPlayer(uuid);
+			p.teleport(spawn);
+		}
 
 		// Setup hologram
 		ArrayList<String> lines = new ArrayList<String>();
@@ -78,6 +85,15 @@ public class ShopInstance extends EditInventoryInstance {
 	@Override
 	public void cleanup() {
 		holo.delete();
+	}
+
+	@Override
+	public void handleSpectatorInteractEvent(PlayerInteractEvent e) {
+		Player p = e.getPlayer();
+		e.setCancelled(true);
+		if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock().getType() == Material.CHEST) {
+			new SpectateSelectInventory(s, p, true);
+		}
 	}
 
 	@Override
@@ -105,8 +121,13 @@ public class ShopInstance extends EditInventoryInstance {
 		}
 	}
 	
+	public void spectateShop(Player spectator, UUID uuid) {
+		new ShopInventory(s.getParty().get(uuid), shops.get(uuid), spectator);
+	}
+	
 	public void handleReady(Player p) {
 		UUID uuid = p.getUniqueId();
+		if (busy) return;
 		if (!ready.contains(uuid)) {
 			s.broadcast("<yellow>" + p.getName() + " <gray>is <green>ready</green>!");
 			ready.add(uuid);
@@ -114,9 +135,11 @@ public class ShopInstance extends EditInventoryInstance {
 			if (ready.size() == s.getParty().size()) {
 				s.broadcast("Everyone is ready! Teleporting back to node select...");
 				s.broadcastSound(Sound.ENTITY_PLAYER_LEVELUP);
+				busy = true;
 				new BukkitRunnable() {
 					public void run() {
 						s.setInstance(new NodeSelectInstance(s));
+						busy = false;
 					}
 				}.runTaskLater(NeoRogue.inst(), 60L);
 			}

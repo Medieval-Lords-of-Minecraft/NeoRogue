@@ -30,12 +30,16 @@ public abstract class Instance {
 		spawn = new Location(Bukkit.getWorld(Area.WORLD_NAME), -(s.getXOff() + spawnX), 64, s.getZOff() + spawnZ);
 	}
 	
-	public void handlePlayerLeave(Player p) {
+	public void handleSpectatorInteractEvent(PlayerInteractEvent e) {
 		
 	}
 	
 	public void handlePlayerRejoin(Player p) {
 		p.teleport(spawn);
+	}
+	
+	public void handlePlayerLeave(Player p) {
+		
 	}
 	
 	public Location getSpawn() {

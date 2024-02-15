@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -79,8 +80,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new DarkPact(b);
 			new EmpoweredEdge(b).addSelfReforge(new RecklessSwing(b), new BlessedEdge(b), new Fury(b));
 			new Execute(b).addSelfReforge(new SiphoningStrike(b), new MightySwing(b), new Fortify(b));
-			new Sturdy(b).addReforge(new GraniteShield(b), new Bulwark(b), new Endurance(b));
-			new Tackle(b).addReforge(new EarthenTackle(b), new Bulldoze(b), new Pin(b));
+			new Sturdy(b).addSelfReforge(new GraniteShield(b), new Bulwark(b), new Endurance(b));
+			new Tackle(b).addSelfReforge(new EarthenTackle(b), new Bulldoze(b), new Pin(b));
 			new Thornguard(b);
 			new Titan(b);
 
@@ -450,9 +451,9 @@ public abstract class Equipment implements Comparable<Equipment> {
 			options[i].setReforged();
 			unupgraded[i] = options[i].getUnupgraded();
 		}
-		reforgeOptions.put(combineWith.getUnupgraded(), unupgraded);
-		if (!this.equals(combineWith)) {
-			combineWith.reforgeOptions.put(this, unupgraded);
+		this.reforgeOptions.put(combineWith.getUnupgraded(), unupgraded);
+		if (!this.id.equals(combineWith.id)) {
+			combineWith.reforgeOptions.put(this.getUnupgraded(), unupgraded);
 		}
 		return this;
 	}
@@ -595,6 +596,11 @@ public abstract class Equipment implements Comparable<Equipment> {
 
 	public boolean isCursed() {
 		return isCursed;
+	}
+	
+	@Override
+	public String toString() {
+		return id + (isUpgraded ? "+" : "");
 	}
 
 	public static enum EquipmentClass {
@@ -773,5 +779,9 @@ public abstract class Equipment implements Comparable<Equipment> {
 		int comp = this.id.compareTo(o.id);
 		if (comp != 0) return comp;
 		return Boolean.compare(this.isUpgraded, o.isUpgraded);
+	}
+	
+	public static Set<String> getEquipmentIds() {
+		return equipment.keySet();
 	}
 }

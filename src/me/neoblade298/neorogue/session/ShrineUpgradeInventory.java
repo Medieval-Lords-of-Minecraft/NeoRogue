@@ -18,16 +18,19 @@ import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.player.PlayerSessionData;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class ShrineUpgradeInventory extends CoreInventory {
 	private ShrineInstance inst;
+	private PlayerSessionData data;
 	
-	public ShrineUpgradeInventory(Player p, ShrineInstance inst) {
+	public ShrineUpgradeInventory(Player p, PlayerSessionData data, ShrineInstance inst) {
 		super(p, Bukkit.createInventory(p, InventoryType.SMITHING, Component.text("Upgrade Equipment", NamedTextColor.BLUE)));
 		this.inst = inst;
+		this.data = data;
 		ItemStack[] contents = inv.getContents();
 		contents[1] = CoreInventory.createButton(Material.PAPER, Component.text("Upgrade", NamedTextColor.BLUE),
 				(TextComponent) NeoCore.miniMessage().deserialize("<gray>Place an item on the left to see what it upgrades into. "
@@ -67,7 +70,7 @@ public class ShrineUpgradeInventory extends CoreInventory {
 
 			p.playSound(p, Sound.ITEM_ARMOR_EQUIP_DIAMOND, 1F, 1F);
 			inv.setItem(0, null);
-			p.getInventory().addItem(Equipment.get(id, true).getItem());
+			data.giveEquipment(Equipment.get(id, true));
 			p.playSound(p, Sound.BLOCK_ANVIL_USE, 1F, 1F);
 			inst.useUpgrade(p.getUniqueId());
 			p.closeInventory();

@@ -4,6 +4,8 @@ import java.util.Iterator;
 import java.util.TreeMap;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
@@ -29,8 +31,15 @@ public class ArtifactsInventory extends CoreInventory {
 		
 		setupInventory();
 	}
+	public ArtifactsInventory(PlayerSessionData data, Player spectator) {
+		super(spectator, Bukkit.createInventory(spectator, calculateInventorySize(data), Component.text("Artifacts", NamedTextColor.BLUE)));
+		this.data = data;
+		
+		setupInventory();
+	}
 	
 	private void setupInventory() {
+		p.playSound(p, Sound.ITEM_BOOK_PAGE_TURN, 1F, 1F);
 		ItemStack[] contents = inv.getContents();
 		TreeMap<String, ArtifactInstance> arts = data.getArtifacts();
 		

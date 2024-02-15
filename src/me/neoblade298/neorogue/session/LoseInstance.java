@@ -3,6 +3,8 @@ package me.neoblade298.neorogue.session;
 import java.util.HashMap;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import me.neoblade298.neorogue.player.PlayerManager;
@@ -21,6 +23,10 @@ public class LoseInstance extends EditInventoryInstance {
 	public void start() {
 		for (PlayerSessionData data : s.getParty().values()) {
 			data.getPlayer().teleport(spawn);
+		}
+		for (UUID uuid : s.getSpectators()) {
+			Player p = Bukkit.getPlayer(uuid);
+			p.teleport(spawn);
 		}
 
 		s.broadcast(Component.text("You lost!", NamedTextColor.RED));

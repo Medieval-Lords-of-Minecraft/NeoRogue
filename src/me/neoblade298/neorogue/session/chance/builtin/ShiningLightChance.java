@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.player.PlayerSessionData.PlayerSlot;
@@ -39,6 +40,7 @@ public class ShiningLightChance extends ChanceSet {
 						data.upgradeEquipment(ps.getEquipSlot(), ps.getSlot());
 						Equipment eq = data.getEquipment(ps.getEquipSlot())[ps.getSlot()];
 						Util.msg(p, Component.text("You upgraded your ").append(eq.getDisplay()));
+						s.broadcastOthers(SharedUtil.color("<yellow>" + p.getName() + " upgraded their ").append(eq.getDisplay()), p);
 					}
 					return null;
 				}));
@@ -46,7 +48,9 @@ public class ShiningLightChance extends ChanceSet {
 		stage.addChoice(new ChanceChoice(Material.LEATHER_BOOTS, "Find another way",
 				"Looks dangerous. I'd rather not.",
 				(s, inst, data) -> {
-					Util.msg(data.getPlayer(), "No way, that's too bright, it's bad for my skin.");
+					Player p = data.getPlayer();
+					Util.msg(p, "No way, that's too bright, it's bad for my skin.");
+					s.broadcastOthers("<yellow>" + p.getName() + " decided not to enter the light!", p);
 					return null;
 				}));
 	}

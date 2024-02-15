@@ -20,23 +20,23 @@ public class GreedChance extends ChanceSet {
 				+ " You'll take damage if you reach into it, but the extra coins may be worth the effort.");
 
 		ChanceChoice choice = new ChanceChoice(Material.GOLD_BLOCK, "Be Logical",
-				"The highest HP party member takes <red>10 </red>damage and gets everyone <yellow>25 coins</yellow>.",
+				"The highest HP party member takes <red>10 </red>damage and gets everyone <yellow>50 coins</yellow>.",
 				"Nobody has enough health to do this!", (s, inst, unused) -> {
 					return getHighestHealth(s).getHealth() >= 10;
 				}, (s, inst, unused) -> {
 					PlayerSessionData data = getHighestHealth(s);
 					data.setHealth(data.getHealth() - 10);
 					s.broadcast("<yellow>" + data.getData().getDisplay() + "</yellow><gray> reaches in, losing <red>10 </red>health but "
-							+ "netting everybody <yellow>25 coins</yellow>!");
+							+ "netting everybody <yellow>50 coins</yellow>!");
 					for (PlayerSessionData pd : s.getParty().values()) {
-						pd.addCoins(25);
+						pd.addCoins(50);
 					}
 					return null;
 				});
 		stage.addChoice(choice);
 		
 		choice = new ChanceChoice(Material.EMERALD_BLOCK, "Be Democratic",
-				"Everyone takes an equal portion of <red>10 </red>damage rounded up, and everyone gains <yellow>25 coins</yellow>.",
+				"Everyone takes an equal portion of <red>10 </red>damage rounded up, and everyone gains <yellow>50 coins</yellow>.",
 				"Somebody lacks the health to do this!", (s, inst, unused) -> {
 					final int HEALTH_LOSS = (int) Math.ceil(10D / s.getParty().size());
 					for (PlayerSessionData pd : s.getParty().values()) {
@@ -48,9 +48,9 @@ public class GreedChance extends ChanceSet {
 					final int HEALTH_LOSS = (int) Math.ceil(10D / s.getParty().size());
 					for (PlayerSessionData pd : s.getParty().values()) {
 						pd.setHealth(pd.getHealth() - HEALTH_LOSS);
-						pd.addCoins(25);
+						pd.addCoins(50);
 					}
-					s.broadcast("Everyone takes a little damage, but they're all <yellow>25 coins </yellow>richer.");
+					s.broadcast("Everyone takes a little damage, but they're all <yellow>50 coins </yellow>richer.");
 					return null;
 				});
 		stage.addChoice(choice);

@@ -52,7 +52,7 @@ public class GraniteShield extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GRANITE_SLAB,
-				"Passive. Heal for <white>" + heal + "</white> and apply <yellow>" + concuss + " " +
+				"Passive. Heal for <white>" + heal + "</white> and apply <yellow>" + concuss + "</yellow> " +
 						GlossaryTag.CONCUSSED.tag(this) + " to enemies that damage you after <white>3</white> consecutive seconds "
 								+ "of keeping your shield raised.");
 	}
