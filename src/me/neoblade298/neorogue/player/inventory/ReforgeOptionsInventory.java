@@ -43,8 +43,7 @@ public class ReforgeOptionsInventory extends CoreInventory {
 		this.reforgeWith = reforgeWith;
 
 		ItemStack[] contents = inv.getContents();
-		
-		Equipment[] options = toReforge.getReforgeOptions().get(reforgeWith);
+		Equipment[] options = toReforge.getReforgeOptions().get(reforgeWith.getUnupgraded());
 		int offset = options.length - 5; // -5 for middle of inv, -1 for 0 offset at size 2
 		contents[3] = toReforge.getItem();
 		contents[5] = reforgeWith.getItem();

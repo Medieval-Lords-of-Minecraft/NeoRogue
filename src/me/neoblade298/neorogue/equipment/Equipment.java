@@ -597,6 +597,11 @@ public abstract class Equipment implements Comparable<Equipment> {
 	public boolean isCursed() {
 		return isCursed;
 	}
+	
+	@Override
+	public String toString() {
+		return id + (isUpgraded ? "+" : "");
+	}
 
 	public static enum EquipmentClass {
 		WARRIOR("Warrior"), THIEF("Thief"), ARCHER("Archer"), MAGE("Mage"), SHOP("Shop"), CLASSLESS("Classless");

@@ -16,18 +16,25 @@ public class CmdAdminTestEquipment extends Subcommand {
 	public CmdAdminTestEquipment(String key, String desc, String perm, SubcommandRunner runner) {
 		super(key, desc, perm, runner);
 		this.enableTabComplete();
-		ArrayList<String> tf = new ArrayList<String>(2);
-		tf.add("T");
-		tf.add("F");
-		args.add(new Arg("id").setTabOptions(new ArrayList<String>(Equipment.getEquipmentIds())),
-				new Arg("upgraded (T/F)", false).setTabOptions(tf));
+		ArrayList<String> tab = new ArrayList<String>(Equipment.getEquipmentIds().size() * 2);
+		for (String id : Equipment.getEquipmentIds()) {
+			tab.add(id);
+			tab.add(id + "+");
+		}
+		args.add(new Arg("id").setTabOptions(new ArrayList<String>(tab)));
 	}
 
 	@Override
 	public void run(CommandSender s, String[] args) {
 		Player p = (Player) s;
 		Session sess = SessionManager.getSession(p);
-		Equipment eq = Equipment.get(args[0], args.length > 1 ? args[1].equalsIgnoreCase("t") : false);
+		String id = args[0];
+		boolean upgrade = false;
+		if (id.endsWith("+")) {
+			id = id.substring(0, id.length() - 1);
+			upgrade = true;
+		}
+		Equipment eq = Equipment.get(id, upgrade);
 		if (sess == null) {
 			p.getInventory().addItem(eq.getItem());
 		}

@@ -698,28 +698,24 @@ public abstract class FightInstance extends Instance {
 		s.broadcast(statsHeader);
 		for (UUID uuid : s.getParty().keySet()) {
 			PlayerFightData pdata = userData.remove(uuid);
+			PlayerSessionData data = pdata.getSessionData();
+			Player p = pdata.getPlayer();
 			if (pdata != null) {
 				pdata.cleanup();
-				if (pdata.getPlayer() != null) {
-					s.broadcast(pdata.getStats().getStatLine());
+				if (p != null) {
 					if (pdata.isDead()) {
 						pdata.setDeath(false);
 					}
+					data.updateHealth();
+					data.syncHealth();
+					p.setFoodLevel(20);
+					data.revertMaxHealth();
+					data.updateCoinsBar();
+					s.broadcast(pdata.getStats().getStatLine());
 				}
 			}
 			FightData fdata = fightData.remove(uuid);
 			if (fdata != null) fdata.cleanup();
-			
-			PlayerSessionData data = s.getParty().get(uuid);
-			data.updateHealth();
-
-			Player p = Bukkit.getPlayer(uuid);
-			if (p != null) {
-				data.syncHealth();
-				p.setFoodLevel(20);
-				data.revertMaxHealth();
-				data.updateCoinsBar();
-			}
 		}
 
 		// Delay potion effects after the fight ends to catch effects done right as the last kill happens
