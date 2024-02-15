@@ -19,16 +19,15 @@ import eu.decentsoftware.holograms.api.holograms.Hologram;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.player.inventory.SpectateSelectInventory;
 import me.neoblade298.neorogue.session.EditInventoryInstance;
 import me.neoblade298.neorogue.session.NodeSelectInstance;
 import me.neoblade298.neorogue.session.Plot;
 import me.neoblade298.neorogue.session.Session;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 
 public class RewardInstance extends EditInventoryInstance {
 	private static final double SPAWN_X = Session.REWARDS_X + 7.5, SPAWN_Z = Session.REWARDS_Z + 3.5,
-			HOLO_X = 0, HOLO_Y = 2, HOLO_Z = 6;
+			HOLO_X = 0, HOLO_Y = 3, HOLO_Z = 6;
 	private HashMap<UUID, ArrayList<Reward>> rewards = new HashMap<UUID, ArrayList<Reward>>();
 	private Hologram holo;
 	private boolean busy = false;
@@ -53,6 +52,11 @@ public class RewardInstance extends EditInventoryInstance {
 			p.teleport(spawn);
 		}
 		
+		for (UUID uuid : s.getSpectators()) {
+			Player p = Bukkit.getPlayer(uuid);
+			p.teleport(spawn);
+		}
+		
 		// Setup hologram
 		ArrayList<String> lines = new ArrayList<String>();
 		lines.add("Open the enderchest and");
@@ -67,11 +71,18 @@ public class RewardInstance extends EditInventoryInstance {
 	}
 
 	@Override
+	public void handleSpectatorInteractEvent(PlayerInteractEvent e) {
+		e.setCancelled(true);
+		if (e.getAction() != Action.RIGHT_CLICK_BLOCK || e.getClickedBlock().getType() != Material.ENDER_CHEST) return;
+		if (e.getHand() != EquipmentSlot.HAND) return;
+		new SpectateSelectInventory(s, e.getPlayer(), true);
+	}
+
+	@Override
 	public void handleInteractEvent(PlayerInteractEvent e) {
 		if (e.getAction() != Action.RIGHT_CLICK_BLOCK || e.getClickedBlock().getType() != Material.ENDER_CHEST) return;
 		if (e.getHand() != EquipmentSlot.HAND) return;
 		e.setCancelled(true);
-		
 		
 		Player p = e.getPlayer();
 		UUID uuid = p.getUniqueId();
@@ -83,7 +94,11 @@ public class RewardInstance extends EditInventoryInstance {
 		}
 		p.playSound(p, Sound.BLOCK_ENDER_CHEST_OPEN, 1F, 1F);
 		
-		new RewardInventory(s.getParty().get(uuid), Bukkit.createInventory(p, 9, Component.text("Rewards", NamedTextColor.BLUE)), rewards.get(uuid));
+		new RewardInventory(s.getParty().get(uuid), rewards.get(uuid));
+	}
+	
+	public void spectateRewards(Player spectator, UUID viewed) {
+		new RewardInventory(s.getParty().get(viewed), rewards.get(viewed), spectator);
 	}
 	
 	public boolean onRewardClaim() {

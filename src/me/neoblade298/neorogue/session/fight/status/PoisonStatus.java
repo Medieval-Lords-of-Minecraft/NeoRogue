@@ -36,7 +36,7 @@ public class PoisonStatus extends DurationStatus {
 		DamageMeta meta = new DamageMeta(owner);
 		meta.isSecondary(true);
 		for (Entry<UUID, Integer> ent : slices.getSliceOwners().entrySet()) {
-			meta.addDamageSlice(new DamageSlice(ent.getKey(), ent.getValue(), DamageType.POISON, true));
+			meta.addDamageSlice(new DamageSlice(ent.getKey(), ent.getValue() * 0.2, DamageType.POISON, true));
 		}
 		FightInstance.dealDamage(meta, data.getEntity());
 	}

@@ -24,8 +24,11 @@ import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.session.*;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
+import me.neoblade298.neorogue.session.fight.FightScore;
 import me.neoblade298.neorogue.session.fight.Mob;
+import me.neoblade298.neorogue.session.fight.StandardFightInstance;
 import me.neoblade298.neorogue.session.fight.mythicbukkit.MythicLoader;
+import me.neoblade298.neorogue.session.reward.RewardInstance;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class NeoRogue extends JavaPlugin {
@@ -116,7 +119,7 @@ public class NeoRogue extends JavaPlugin {
 			SessionManager.addToSession(alt.getUniqueId(), s);
 		}
 		s.setNode(s.getArea().getNodes()[0][2]);
-		s.setInstance(new NodeSelectInstance(s));
+		s.setInstance(new RewardInstance(s, StandardFightInstance.generateRewards(s, FightScore.S)));
 		// s.setInstance(new ChanceInstance());
 
 		//Map map = Map.generate(AreaType.LOW_DISTRICT, 8);

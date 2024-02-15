@@ -600,10 +600,6 @@ public abstract class FightInstance extends Instance {
 		for (Player p : s.getOnlinePlayers()) {
 			fdata.add(setup(p, s.getData(p.getUniqueId())));
 		}
-		for (UUID uuid : s.getSpectators()) {
-			Player p = Bukkit.getPlayer(uuid);
-			p.teleport(spawn);
-		}
 		setupInstance(s);
 		FightInstance fi = this;
 
@@ -621,6 +617,10 @@ public abstract class FightInstance extends Instance {
 				spawn.setX(-spawn.getX());
 
 				for (Player p : s.getOnlinePlayers()) {
+					p.teleport(spawn);
+				}
+				for (UUID uuid : s.getSpectators()) {
+					Player p = Bukkit.getPlayer(uuid);
 					p.teleport(spawn);
 				}
 

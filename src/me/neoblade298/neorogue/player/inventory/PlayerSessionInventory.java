@@ -112,14 +112,15 @@ public class PlayerSessionInventory extends CoreInventory {
 
 		contents[STATS] = createStatsIcon();
 		contents[TRASH] = addNbt(CoreInventory.createButton(Material.HOPPER,
-				Component.text("Trash", NamedTextColor.GOLD), "Click to open a trash can!", 250, NamedTextColor.GRAY),
+				Component.text("Trash", NamedTextColor.GOLD), "Drag items here to trash them!", 250, NamedTextColor.GRAY),
 				0);
 
 		contents[ARTIFACTS] = addNbt(
 				CoreInventory.createButton(Material.NETHER_STAR, Component.text("Artifacts", NamedTextColor.GOLD),
 						"Click here to view all your artifacts!", 250, NamedTextColor.GRAY),
 				0);
-		contents[SEE_OTHERS] = CoreInventory.createButton(Material.SPYGLASS, Component.text("View other players", NamedTextColor.GOLD));
+		if (data.getSession().getParty().size() > 1)
+			contents[SEE_OTHERS] = CoreInventory.createButton(Material.SPYGLASS, Component.text("View other players", NamedTextColor.GOLD));
 		inv.setContents(contents);
 	}
 
@@ -192,7 +193,7 @@ public class PlayerSessionInventory extends CoreInventory {
 				new ArtifactsInventory(data, spectator);
 			}
 			else if (e.getSlot() == SEE_OTHERS) {
-				new SpectateSelectInventory(data.getSession(), spectator);
+				new SpectateSelectInventory(data.getSession(), spectator, false);
 			}
 			return;
 		}
@@ -225,7 +226,7 @@ public class PlayerSessionInventory extends CoreInventory {
 		else if (slot == SEE_OTHERS) {
 			e.setCancelled(true);
 			addItem = false;
-			new SpectateSelectInventory(data.getSession(), p);
+			new SpectateSelectInventory(data.getSession(), p, false);
 			return;
 		}
 

@@ -21,6 +21,7 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.player.inventory.SpectateSelectInventory;
 
 public class ShopInstance extends EditInventoryInstance {
 	private static final double SPAWN_X = Session.SHOP_X + 5.5, SPAWN_Z = Session.SHOP_Z + 2.5,
@@ -86,6 +87,15 @@ public class ShopInstance extends EditInventoryInstance {
 	}
 
 	@Override
+	public void handleSpectatorInteractEvent(PlayerInteractEvent e) {
+		Player p = e.getPlayer();
+		e.setCancelled(true);
+		if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock().getType() == Material.CHEST) {
+			new SpectateSelectInventory(s, p, true);
+		}
+	}
+
+	@Override
 	public void handleInteractEvent(PlayerInteractEvent e) {
 		Player p = e.getPlayer();
 		UUID uuid = p.getUniqueId();
@@ -108,6 +118,10 @@ public class ShopInstance extends EditInventoryInstance {
 		else if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock().getType() == Material.STONE_BUTTON) {
 			handleReady(p);
 		}
+	}
+	
+	public void spectateShop(Player spectator, UUID uuid) {
+		new ShopInventory(s.getParty().get(uuid), shops.get(uuid), spectator);
 	}
 	
 	public void handleReady(Player p) {

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
@@ -18,6 +19,7 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.GlossaryInventory;
+import me.neoblade298.neorogue.player.inventory.SpectateSelectInventory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -27,17 +29,27 @@ public class ShopInventory extends CoreInventory {
 	private static final int SELL_PRICE = 10, REMOVE_CURSE_PRICE = 50;
 	private PlayerSessionData data;
 	private ArrayList<ShopItem> shopItems;
+	private Player spectator;
 	
 	public ShopInventory(PlayerSessionData data, ArrayList<ShopItem> items) {
 		super(data.getPlayer(), Bukkit.createInventory(data.getPlayer(), 27, Component.text("Shop", NamedTextColor.BLUE)));
-		
 		this.data = data;
 		this.shopItems = items;
+		setupInventory();
+	}
+	
+	public ShopInventory(PlayerSessionData data, ArrayList<ShopItem> items, Player spectator) {
+		super(spectator, Bukkit.createInventory(data.getPlayer(), 27, Component.text(data.getData().getDisplay() + "'s Shop", NamedTextColor.BLUE)));
+		this.data = data;
+		this.shopItems = items;
+		this.spectator = spectator;
+		setupInventory();
+	}
+	
+	private void setupInventory() {
 		ItemStack[] contents = inv.getContents();
-		
-		
-		for (int i = 0; i < items.size(); i++) {
-			contents[SLOT_ORDER[i]] = items.get(i).getItem(data);
+		for (int i = 0; i < shopItems.size(); i++) {
+			contents[SLOT_ORDER[i]] = shopItems.get(i).getItem(data);
 		}
 		contents[22] = CoreInventory.createButton(Material.GOLD_NUGGET, Component.text("You have " + data.getCoins() + " coins", NamedTextColor.YELLOW));
 		contents[18] = CoreInventory.createButton(Material.GOLD_NUGGET, Component.text("Sell Items", NamedTextColor.RED),
@@ -46,14 +58,19 @@ public class ShopInventory extends CoreInventory {
 		contents[19] = CoreInventory.createButton(Material.SUGAR, Component.text("Remove Curses", NamedTextColor.RED),
 				(TextComponent) NeoCore.miniMessage().deserialize("Drag cursed equipment here to remove it " +
 						"in exchange for <yellow>" + REMOVE_CURSE_PRICE + " coins</yellow>."), 250, NamedTextColor.GRAY);
+		if (data.getSession().getParty().size() > 1) 
+			contents[20] = CoreInventory.createButton(Material.SPYGLASS, Component.text("View other players' rewards", NamedTextColor.GOLD));
 		inv.setContents(contents);
 	}
-	
 	
 
 	@Override
 	public void handleInventoryClick(InventoryClickEvent e) {
 		Inventory iclicked = e.getClickedInventory();
+		if (spectator != null) {
+			e.setCancelled(true);
+			return;
+		}
 		if (iclicked == null) return;
 		if (iclicked.getType() != InventoryType.CHEST) {
 			if (e.getCurrentItem() == null) return;
@@ -108,6 +125,10 @@ public class ShopInventory extends CoreInventory {
 			inv.setContents(contents);
 		}
 		else {
+			if (slot == 20 && e.getCurrentItem() != null) {
+				new SpectateSelectInventory(data.getSession(), p, true);
+				return;
+			}
 			if (e.getCursor().getType().isAir()) return;
 			if (slot == 18) {
 				NBTItem nbti = new NBTItem(e.getCursor());

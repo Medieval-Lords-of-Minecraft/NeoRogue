@@ -176,7 +176,7 @@ public class SessionManager implements Listener {
 				e.setCancelled(true);
 				p.setItemOnCursor(null);
 				if (s.isSpectator(uuid)) {
-					new SpectateSelectInventory(s, p);
+					new SpectateSelectInventory(s, p, false);
 				}
 				else {
 					new PlayerSessionInventory(s.getData(uuid));
@@ -196,7 +196,7 @@ public class SessionManager implements Listener {
 
 			if (s.getInstance() instanceof EditInventoryInstance) {
 				if (s.isSpectator(uuid)) {
-					new SpectateSelectInventory(s, p);
+					new SpectateSelectInventory(s, p, false);
 					return;
 				}
 				new PlayerSessionInventory(s.getData(uuid));
@@ -332,7 +332,7 @@ public class SessionManager implements Listener {
 			if (s.getInstance() instanceof EditInventoryInstance && hand.getType() == Material.ENDER_CHEST) {
 				e.setCancelled(true);
 				if (s.isSpectator(uuid)) {
-					new SpectateSelectInventory(s, p);
+					new SpectateSelectInventory(s, p, false);
 					return;
 				}
 				new PlayerSessionInventory(s.getData(uuid));
