@@ -32,7 +32,7 @@ public class ProjectileInstance {
 	private Location loc;
 	private BoundingBox bounds;
 	private HashMap<BuffType, Buff> buffs = new HashMap<BuffType, Buff>();
-	private int tick, interpolationPoints;
+	private int tick, numHit, interpolationPoints;
 	
 	public ProjectileInstance(Projectile settings, FightData owner) {
 		this.inst = owner.getInstance();
@@ -72,6 +72,7 @@ public class ProjectileInstance {
 			if (!settings.isIgnoreBarriers()) {
 				for (Barrier b : inst.getEnemyBarriers().values()) {
 					if (b.collides(loc)) {
+						numHit++;
 						settings.onHit(FightInstance.getFightData(b.getOwner().getUniqueId()), b, this);
 						Player p = owner.getEntity() instanceof Player ? (Player) owner.getEntity() : null;
 						Util.playSound(p, Sound.ITEM_SHIELD_BLOCK, 1F, 1F, true);
@@ -92,10 +93,12 @@ public class ProjectileInstance {
 					targetsHit.add(uuid);
 					
 					if (!settings.isPiercing()) {
+						numHit++;
 						settings.onHit(hit, null, this);
 						return true;
 					}
 					else {
+						numHit++;
 						settings.onHit(hit, null, this);
 					}
 				}
@@ -151,5 +154,9 @@ public class ProjectileInstance {
 	
 	public Location getLocation() {
 		return loc;
+	}
+	
+	public int getNumHit() {
+		return numHit;
 	}
 }
