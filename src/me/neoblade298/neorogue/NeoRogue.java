@@ -24,11 +24,8 @@ import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.session.*;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
-import me.neoblade298.neorogue.session.fight.FightScore;
 import me.neoblade298.neorogue.session.fight.Mob;
-import me.neoblade298.neorogue.session.fight.StandardFightInstance;
 import me.neoblade298.neorogue.session.fight.mythicbukkit.MythicLoader;
-import me.neoblade298.neorogue.session.reward.RewardInstance;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class NeoRogue extends JavaPlugin {
@@ -78,14 +75,15 @@ public class NeoRogue extends JavaPlugin {
 	
 	private void initCommands() {
 		SubcommandManager mngr = new SubcommandManager("nr", "neorogue.general", NamedTextColor.DARK_RED, this);
-		mngr.register(new CmdNew("new", "Create a new game", null, SubcommandRunner.BOTH));
-		mngr.register(new CmdLoad("load", "Load an existing game", null, SubcommandRunner.BOTH));
-		mngr.register(new CmdInvite("invite", "Invite a player to your party", null, SubcommandRunner.BOTH));
-		mngr.register(new CmdLeave("leave", "Leave your session", null, SubcommandRunner.BOTH));
-		mngr.register(new CmdKick("kick", "Kick a player from your party", null, SubcommandRunner.BOTH));
-		mngr.register(new CmdJoin("join", "Join an existing party", null, SubcommandRunner.BOTH));
-		mngr.register(new CmdSpectate("spectate", "Spectate a player's session", null, SubcommandRunner.BOTH));
-		mngr.register(new CmdInfo("info", "View session info", null, SubcommandRunner.BOTH));
+		mngr.register(new CmdNew("new", "Create a new game", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdLoad("load", "Load an existing game", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdInvite("invite", "Invite a player to your party", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdLeave("leave", "Leave your session", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdKick("kick", "Kick a player from your party", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdJoin("join", "Join an existing party", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdSpectate("spectate", "Spectate a player's session", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdInfo("info", "View session info", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdGlossary("glossary", "View glossary", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.registerCommandList("");
 		
 		mngr = new SubcommandManager("nradmin", "neorogue.admin", NamedTextColor.DARK_RED, this);
@@ -120,7 +118,7 @@ public class NeoRogue extends JavaPlugin {
 			SessionManager.addToSession(alt.getUniqueId(), s);
 		}
 		s.setNode(s.getArea().getNodes()[0][2]);
-		s.setInstance(new RewardInstance(s, StandardFightInstance.generateRewards(s, FightScore.S)));
+		s.setInstance(new ShopInstance(s));
 		// s.setInstance(new ChanceInstance());
 
 		//Map map = Map.generate(AreaType.LOW_DISTRICT, 8);

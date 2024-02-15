@@ -316,11 +316,12 @@ public class PlayerSessionData {
 		}
 		inst.getArtifact().onAcquire(this);
 	}
-
-	public void giveEquipment(Equipment eq) {
+	
+	public void giveEquipment(Equipment eq, Component toSelf, Component toOthers) {
 		Player p = getPlayer();
 		Util.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, false);
-		s.broadcastOthers(SharedUtil.color("<yellow>" + p.getName() + "</yellow> received ").append(eq.getDisplay()), p);
+		s.broadcastOthers(toOthers.append(eq.getHoverable()).append(Component.text(".")), p);
+		toSelf = toSelf.append(eq.getHoverable());
 
 		if (eq instanceof Artifact) {
 			giveArtifact((Artifact) eq);
@@ -338,14 +339,13 @@ public class PlayerSessionData {
 					}
 				}
 				if (success) {
-					Util.msg(p, SharedUtil.color("You received ").append(eq.getDisplay())
-							.append(SharedUtil.color(", it was auto-equipped to " + es.getDisplay() + ".")));
+					Util.msg(p, toSelf.append(SharedUtil.color(", it was auto-equipped to " + es.getDisplay() + ".")));
 					return;
 				}
 			}
 			
 			HashMap<Integer, ItemStack> overflow = p.getInventory().addItem(eq.getItem());
-			Util.msg(p, SharedUtil.color("You received ").append(eq.getDisplay()));
+			Util.msg(p, toSelf.append(Component.text(".")));
 			if (!overflow.isEmpty()) {
 				for (ItemStack item : overflow.values()) {
 					Util.msg(p, SharedUtil.color("<red>Your inventory is full! ").append(eq.getDisplay())
@@ -354,6 +354,13 @@ public class PlayerSessionData {
 				}
 			}
 		}
+	}
+
+	public void giveEquipment(Equipment eq) {
+		giveEquipment(eq,
+				SharedUtil.color("You received "),
+				SharedUtil.color("<yellow>" + data.getDisplay() + "</yellow> received ")
+				);
 	}
 	
 	private boolean tryEquip(EquipSlot es, Equipment eq) {

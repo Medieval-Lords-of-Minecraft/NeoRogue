@@ -105,10 +105,11 @@ public class GlossaryInventory extends CoreInventory {
 	
 	@Override
 	public void handleInventoryClose(InventoryCloseEvent e) {
+		// Don't open the previous inventory if we're opening another glossary page
 		if (openOther) {
 			new BukkitRunnable() {
 				public void run() {
-					prev.openInventory();
+					if (prev != null) prev.openInventory();
 				}
 			}.runTaskLater(NeoRogue.inst(), 1L);
 		}

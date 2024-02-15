@@ -39,8 +39,8 @@ public class ShiningLightChance extends ChanceSet {
 						}
 						data.upgradeEquipment(ps.getEquipSlot(), ps.getSlot());
 						Equipment eq = data.getEquipment(ps.getEquipSlot())[ps.getSlot()];
-						Util.msg(p, Component.text("You upgraded your ").append(eq.getDisplay()));
-						s.broadcastOthers(SharedUtil.color("<yellow>" + p.getName() + " upgraded their ").append(eq.getDisplay()), p);
+						Util.msg(p, Component.text("You upgraded your ").append(eq.getHoverable()));
+						s.broadcastOthers(SharedUtil.color("<yellow>" + p.getName() + "</yellow> upgraded their ").append(eq.getHoverable()), p);
 					}
 					return null;
 				}));
@@ -50,7 +50,7 @@ public class ShiningLightChance extends ChanceSet {
 				(s, inst, data) -> {
 					Player p = data.getPlayer();
 					Util.msg(p, "No way, that's too bright, it's bad for my skin.");
-					s.broadcastOthers("<yellow>" + p.getName() + " decided not to enter the light!", p);
+					s.broadcastOthers("<yellow>" + p.getName() + "</yellow> decided not to enter the light!", p);
 					return null;
 				}));
 	}

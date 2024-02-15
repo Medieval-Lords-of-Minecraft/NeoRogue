@@ -24,7 +24,7 @@ public class ThiefsCacheChance extends ChanceSet {
 				"Maybe this can come in handy reforging an old weapon.", (s, inst, data) -> {
 					Player p = data.getPlayer();
 					Util.msg(p, "You pick up the dull gem, hoping it'll come in handy in the future.");
-					s.broadcastOthers("<yellow>" + p.getName() + " decided to pick up the dull gem!", p);
+					s.broadcastOthers("<yellow>" + p.getName() + "</yellow> decided to pick up the dull gem!", p);
 					data.giveEquipment(relic);
 					return null;
 				});
@@ -37,7 +37,7 @@ public class ThiefsCacheChance extends ChanceSet {
 					Equipment eq = Equipment.getDrop(s.getAreasCompleted(), data.getPlayerClass());
 					Util.msg(p, Component.text("You pick up a(n) ").append(eq.getDisplay())
 							.append(Component.text(" and go on your way.")));
-					s.broadcastOthers("<yellow>" + p.getName() + " decided to receive a random piece of equipment!", p);
+					s.broadcastOthers("<yellow>" + p.getName() + "</yellow> decided to receive a random piece of equipment!", p);
 					data.giveEquipment(eq);
 					return null;
 				});
@@ -47,7 +47,7 @@ public class ThiefsCacheChance extends ChanceSet {
 				"Receive <yellow>100 coins</yellow>.", (s, inst, data) -> {
 					Player p = data.getPlayer();
 					Util.msg(p, "You pick up <yellow>100 coins</yellow> and go on your way.");
-					s.broadcastOthers("<yellow>" + p.getName() + " decided to pick up the <yellow>100 coins</yellow>!", p);
+					s.broadcastOthers("<yellow>" + p.getName() + "</yellow> decided to pick up the <yellow>100 coins</yellow>!", p);
 					data.addCoins(100);
 					return null;
 				});

@@ -16,6 +16,7 @@ import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.GlossaryInventory;
@@ -112,7 +113,9 @@ public class ShopInventory extends CoreInventory {
 			shopItem.setPurchased(true);
 			
 			data.addCoins(-price);
-			data.giveEquipment(shopItem.getEquipment());
+			data.giveEquipment(shopItem.getEquipment(),
+					SharedUtil.color("<red>" + p.getName() + " spent <yellow>" + price + " coins</yellow> to purchase a(n) "),
+					SharedUtil.color("You spent <yellow>" + price + " coins</yellow> to purchase a(n) "));
 			p.playSound(p, Sound.ENTITY_WANDERING_TRADER_YES, 1F, 1F);
 			p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1F, 1F);
 			

@@ -41,6 +41,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextDecoration.State;
@@ -232,7 +233,6 @@ public abstract class Equipment implements Comparable<Equipment> {
 		this.ec = ec;
 		this.type = EquipmentType.MATERIAL;
 		this.display = rarity.applyDecorations(SharedUtil.color(display));
-		this.hoverable = this.display;
 		this.properties = EquipmentProperties.none();
 		this.canDrop = false;
 		
@@ -421,9 +421,14 @@ public abstract class Equipment implements Comparable<Equipment> {
 		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 		meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
 		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+		meta.addItemFlags(ItemFlag.HIDE_DYE);
+		meta.addItemFlags(ItemFlag.HIDE_ITEM_SPECIFICS);
 		meta.setUnbreakable(true);
 		properties.modifyItemMeta(item, meta);
 		item.setItemMeta(meta);
+		
+		this.hoverable = this.display.decorate(TextDecoration.UNDERLINED)
+				.hoverEvent(item.asHoverEvent()).clickEvent(ClickEvent.runCommand("/nr glossary " + this.id));
 		
 		NBTItem nbti = new NBTItem(item);
 		nbti.setString("equipId", id);
@@ -507,6 +512,10 @@ public abstract class Equipment implements Comparable<Equipment> {
 	
 	public Component getDisplay() {
 		return display;
+	}
+	
+	public Component getHoverable() {
+		return hoverable;
 	}
 	
 	public int getCooldown() {

@@ -16,6 +16,7 @@ import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
@@ -70,7 +71,10 @@ public class ShrineUpgradeInventory extends CoreInventory {
 
 			p.playSound(p, Sound.ITEM_ARMOR_EQUIP_DIAMOND, 1F, 1F);
 			inv.setItem(0, null);
-			data.giveEquipment(Equipment.get(id, true));
+			Equipment eq = Equipment.get(id, true);
+			data.giveEquipment(eq,
+					SharedUtil.color("<red>" + p.getName() + " upgraded to a(n) "),
+					SharedUtil.color("You upgraded to a(n) "));
 			p.playSound(p, Sound.BLOCK_ANVIL_USE, 1F, 1F);
 			inst.useUpgrade(p.getUniqueId());
 			p.closeInventory();
