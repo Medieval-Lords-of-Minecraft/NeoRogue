@@ -451,6 +451,7 @@ public class Area {
 				b.setBlockData(dir);
 
 				Sign sign = (Sign) b.getState();
+				sign.setWaxed(true);
 				SignSide side = sign.getSide(Side.FRONT);
 				sign.getSide(Side.FRONT).line(1, Component.text(node.getType().toString(), null, TextDecoration.BOLD));
 				side.setGlowingText(true);
