@@ -66,11 +66,11 @@ public class RewardInventory extends CoreInventory {
 			Reward reward = rewards.get(slot);
 			
 			if (reward.claim(data, slot, this)) {
-				playSound = false; // Don't play close inventory sound effect if opening another inv
+				playSound = false;
 				if (!claimReward(slot)) {
-					p.closeInventory(); // TODO need to see if this actually works lol
+					playSound = true;
+					p.closeInventory();
 				}
-				playSound = true;
 			}
 		}
 		else if (slot == 7 && data.getSession().getParty().size() > 1) {
