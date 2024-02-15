@@ -55,7 +55,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 	private TreeMap<Equipment, Equipment[]> reforgeOptions = new TreeMap<Equipment, Equipment[]>();
 
 	protected String id;
-	protected Component display;
+	protected Component display, hoverable;
 	protected boolean isUpgraded, canDrop = true, isCursed, isReforged;
 	protected ItemStack item;
 	protected Rarity rarity;
@@ -235,6 +235,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		this.ec = ec;
 		this.type = EquipmentType.MATERIAL;
 		this.display = rarity.applyDecorations(SharedUtil.color(display));
+		this.hoverable = this.display;
 		this.properties = EquipmentProperties.none();
 		this.canDrop = false;
 
