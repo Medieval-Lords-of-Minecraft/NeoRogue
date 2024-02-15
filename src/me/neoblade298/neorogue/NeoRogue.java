@@ -97,6 +97,7 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdAdminTestMap("testmap", "Generates and pastes a map", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminTestChance("testchance", "Tests a chance event", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminTestMiniboss("testminiboss", "Tests a miniboss fight", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdAdminTestEquipment("testequip", "Gives the player an equipment", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminTestBoss("testboss", "Tests a boss fight", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.registerCommandList("");
 	}

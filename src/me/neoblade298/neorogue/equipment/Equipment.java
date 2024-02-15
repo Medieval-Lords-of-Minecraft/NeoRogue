@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -773,5 +774,9 @@ public abstract class Equipment implements Comparable<Equipment> {
 		int comp = this.id.compareTo(o.id);
 		if (comp != 0) return comp;
 		return Boolean.compare(this.isUpgraded, o.isUpgraded);
+	}
+	
+	public static Set<String> getEquipmentIds() {
+		return equipment.keySet();
 	}
 }
