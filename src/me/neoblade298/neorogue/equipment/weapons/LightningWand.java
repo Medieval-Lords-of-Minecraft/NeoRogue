@@ -22,68 +22,73 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class WoodenWand extends Equipment {
+public class LightningWand extends Equipment {
 	private static ParticleContainer tick;
-	
+
 	static {
-		tick = new ParticleContainer(Particle.END_ROD);
-		tick.count(4).spread(0.1, 0.1).speed(0.01);
-	}
-	
-	public WoodenWand(boolean isUpgraded) {
-		super(
-				"woodenWand", "Wooden Wand", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(5, 0, isUpgraded ? 50 : 25, isUpgraded ? 1 : 0.5, DamageType.LIGHT, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
-		);
-		properties.addUpgrades(PropertyType.DAMAGE);
-		properties.addUpgrades(PropertyType.ATTACK_SPEED);
+		tick = new ParticleContainer(Particle.GLOW);
+		tick.count(1).spread(0.1, 0.1).speed(0.01);
 	}
 
+	public LightningWand(boolean isUpgraded) {
+		super(
+				"lightningWand", "Lightning Wand", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
+				EquipmentProperties.ofWeapon(5, 0, isUpgraded ? 30 : 20, 0.4, DamageType.LIGHTNING, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
+		);
+		properties.addUpgrades(PropertyType.DAMAGE);
+	}
+	
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ProjectileGroup proj = new ProjectileGroup(new WoodenWandProjectile(p));
+		ProjectileGroup proj = new ProjectileGroup(new LightningWandProjectile(p));
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (d, inputs) -> {
 			weaponSwing(p, data);
 			proj.start(data);
 			return TriggerResult.keep();
 		});
 	}
-	
-	private class WoodenWandProjectile extends Projectile {
+
+	private class LightningWandProjectile extends Projectile {
 		private Player p;
-
-		public WoodenWandProjectile(Player p) {
-			super(0.5, 10, 3);
-			this.size(0.5, 0.5);
+		private int piercesLeft;
+		
+		public LightningWandProjectile(Player p) {
+			super(4, 12, 1);
+			this.size(0.5, 0.5).pierce();
 			this.p = p;
+			this.piercesLeft = 3;
 		}
-
+		
 		@Override
 		public void onTick(ProjectileInstance proj, boolean interpolation) {
 			tick.spawn(proj.getLocation());
-			Util.playSound(p, proj.getLocation(), Sound.BLOCK_AMETHYST_BLOCK_BREAK, 1F, 1F, true);
 		}
-
+		
 		@Override
 		public void onEnd(ProjectileInstance proj) {
 			
 		}
-
+		
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
 			weaponDamageProjectile(hit.getEntity(), proj, hitBarrier);
 			Location loc = hit.getEntity().getLocation();
-			Util.playSound(p, loc, Sound.BLOCK_CHAIN_PLACE, 1F, 1F, true);
+			if (--piercesLeft > 0) {
+				Util.playSound(p, loc, Sound.ENTITY_LIGHTNING_BOLT_IMPACT, 1F, 1F, true);
+			} else {
+				Util.playSound(p, loc, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 1F, 1F, true);
+				proj.cancel(true);
+			}
 		}
-
+		
 		@Override
 		public void onStart(ProjectileInstance proj) {
 			
 		}
 	}
-
+	
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STICK);
+		item = createItem(Material.STICK, "Pierces the first 3 enemies hit.");
 	}
 }
