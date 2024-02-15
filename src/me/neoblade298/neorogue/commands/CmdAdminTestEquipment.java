@@ -9,6 +9,8 @@ import me.neoblade298.neocore.bukkit.commands.Subcommand;
 import me.neoblade298.neocore.shared.commands.Arg;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.SessionManager;
 
 public class CmdAdminTestEquipment extends Subcommand {
 	public CmdAdminTestEquipment(String key, String desc, String perm, SubcommandRunner runner) {
@@ -20,7 +22,14 @@ public class CmdAdminTestEquipment extends Subcommand {
 
 	@Override
 	public void run(CommandSender s, String[] args) {
-		Player host = (Player) s;
-		host.getInventory().addItem(Equipment.get(args[0], args.length > 1 ? args[1].equalsIgnoreCase("t") : false).getItem());
+		Player p = (Player) s;
+		Session sess = SessionManager.getSession(p);
+		Equipment eq = Equipment.get(args[0], args.length > 1 ? args[1].equalsIgnoreCase("t") : false);
+		if (sess == null) {
+			p.getInventory().addItem(eq.getItem());
+		}
+		else {
+			sess.getParty().get(p.getUniqueId()).giveEquipment(eq);
+		}
 	}
 }
