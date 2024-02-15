@@ -24,12 +24,12 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class LightningWand extends Equipment {
 	private static ParticleContainer tick;
-
+	
 	static {
 		tick = new ParticleContainer(Particle.GLOW);
 		tick.count(1).spread(0.1, 0.1).speed(0.01);
 	}
-
+	
 	public LightningWand(boolean isUpgraded) {
 		super(
 				"lightningWand", "Lightning Wand", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
@@ -37,7 +37,7 @@ public class LightningWand extends Equipment {
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
 	}
-	
+
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ProjectileGroup proj = new ProjectileGroup(new LightningWandProjectile(p));
@@ -47,28 +47,28 @@ public class LightningWand extends Equipment {
 			return TriggerResult.keep();
 		});
 	}
-
+	
 	private class LightningWandProjectile extends Projectile {
 		private Player p;
 		private int piercesLeft;
-		
+
 		public LightningWandProjectile(Player p) {
 			super(4, 12, 1);
 			this.size(0.5, 0.5).pierce();
 			this.p = p;
 			this.piercesLeft = 3;
 		}
-		
+
 		@Override
-		public void onTick(ProjectileInstance proj) {
+		public void onTick(ProjectileInstance proj, boolean interpolation) {
 			tick.spawn(proj.getLocation());
 		}
-		
+
 		@Override
 		public void onEnd(ProjectileInstance proj) {
-			
+
 		}
-		
+
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
 			weaponDamageProjectile(hit.getEntity(), proj, hitBarrier);
@@ -80,13 +80,13 @@ public class LightningWand extends Equipment {
 				proj.cancel(true);
 			}
 		}
-		
+
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			
+
 		}
 	}
-	
+
 	@Override
 	public void setupItem() {
 		item = createItem(Material.STICK);
