@@ -115,8 +115,10 @@ public class EquipmentInstance extends PriorityAction {
 	
 	public static void updateSlot(Player p, PlayerInventory inv, EquipSlot es, int slot, int cooldownSeconds) {
 		if (es != EquipSlot.HOTBAR) return;
+		if (cooldownSeconds <= 0) return;
 		Material mat = COOLDOWN_MATERIALS.get(slot);
 		inv.setItem(slot, new ItemStack(mat));
+		
 		p.setCooldown(mat, cooldownSeconds * 20);
 	}
 	

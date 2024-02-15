@@ -80,8 +80,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new DarkPact(b);
 			new EmpoweredEdge(b).addSelfReforge(new RecklessSwing(b), new BlessedEdge(b), new Fury(b));
 			new Execute(b).addSelfReforge(new SiphoningStrike(b), new MightySwing(b), new Fortify(b));
-			new Sturdy(b).addReforge(new GraniteShield(b), new Bulwark(b), new Endurance(b));
-			new Tackle(b).addReforge(new EarthenTackle(b), new Bulldoze(b), new Pin(b));
+			new Sturdy(b).addSelfReforge(new GraniteShield(b), new Bulwark(b), new Endurance(b));
+			new Tackle(b).addSelfReforge(new EarthenTackle(b), new Bulldoze(b), new Pin(b));
 			new Thornguard(b);
 			new Titan(b);
 
@@ -451,9 +451,9 @@ public abstract class Equipment implements Comparable<Equipment> {
 			options[i].setReforged();
 			unupgraded[i] = options[i].getUnupgraded();
 		}
-		reforgeOptions.put(combineWith.getUnupgraded(), unupgraded);
-		if (!this.equals(combineWith)) {
-			combineWith.reforgeOptions.put(this, unupgraded);
+		this.reforgeOptions.put(combineWith.getUnupgraded(), unupgraded);
+		if (!this.id.equals(combineWith.id)) {
+			combineWith.reforgeOptions.put(this.getUnupgraded(), unupgraded);
 		}
 		return this;
 	}

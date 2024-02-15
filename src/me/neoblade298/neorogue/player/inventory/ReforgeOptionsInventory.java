@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
+import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
@@ -24,6 +25,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 public class ReforgeOptionsInventory extends CoreInventory {
 	private int slot, dataSlot;
 	private boolean isEquipSlot;
+	private Equipment toReforge, reforgeWith;
 	private PlayerSessionInventory prev;
 	private ItemStack hostage;
 	private EquipSlot type;
@@ -37,6 +39,8 @@ public class ReforgeOptionsInventory extends CoreInventory {
 		this.prev = prev;
 		this.type = type;
 		this.dataSlot = dataSlot;
+		this.toReforge = toReforge;
+		this.reforgeWith = reforgeWith;
 
 		ItemStack[] contents = inv.getContents();
 		
@@ -78,6 +82,10 @@ public class ReforgeOptionsInventory extends CoreInventory {
 		else {
 			Equipment reforged = getFromSlot(e.getSlot());
 			p.playSound(p, Sound.BLOCK_ANVIL_USE, 1F, 1F);
+			Component cmp = SharedUtil.color("<yellow>" + p.getName() + "</yellow> reforged their ").append(toReforge.getUnupgraded().getDisplay());
+			if (!toReforge.getId().equals(reforgeWith.getId())) cmp = cmp.append(Component.text(", ").append(reforgeWith.getUnupgraded().getDisplay()));
+			cmp = cmp.append(Component.text(" into a(n) ").append(reforged.getDisplay().append(Component.text("!"))));
+			prev.getData().getSession().broadcast(cmp);
 			
 			if (isEquipSlot) {
 				prev.getData().setEquipment(type, dataSlot, Equipment.get(reforged.getId(), false));

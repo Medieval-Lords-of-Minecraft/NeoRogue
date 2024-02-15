@@ -522,7 +522,7 @@ public class PlayerSessionInventory extends CoreInventory {
 	
 	private ItemStack iconFromEquipSlot(EquipSlot es, int slot) {
 		switch (es) {
-		case ACCESSORY: return createAccessoryIcon(slot - 9);
+		case ACCESSORY: return createAccessoryIcon(slot);
 		case ARMOR: return createArmorIcon(slot);
 		case HOTBAR: return createHotbarIcon(slot - 18);
 		case KEYBIND: KeyBind bind = KeyBind.getBindFromSlot(slot);

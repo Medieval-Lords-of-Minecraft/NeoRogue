@@ -16,8 +16,11 @@ public class CmdAdminTestEquipment extends Subcommand {
 	public CmdAdminTestEquipment(String key, String desc, String perm, SubcommandRunner runner) {
 		super(key, desc, perm, runner);
 		this.enableTabComplete();
+		ArrayList<String> tf = new ArrayList<String>(2);
+		tf.add("T");
+		tf.add("F");
 		args.add(new Arg("id").setTabOptions(new ArrayList<String>(Equipment.getEquipmentIds())),
-				new Arg("upgraded (T/F)", false));
+				new Arg("upgraded (T/F)", false).setTabOptions(tf));
 	}
 
 	@Override

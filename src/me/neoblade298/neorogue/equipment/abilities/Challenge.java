@@ -28,7 +28,7 @@ public class Challenge extends Equipment {
 	private ParticleContainer taunt = new ParticleContainer(Particle.VILLAGER_ANGRY).count(15).spread(0.1, 0.1).offsetY(2);
 	
 	public Challenge(boolean isUpgraded) {
-		super("challenge", "challenge", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+		super("challenge", "Challenge", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 20, isUpgraded ? 8 : 10, tp.range));
 		properties.addUpgrades(PropertyType.COOLDOWN);
 		threat = 1000;
@@ -52,7 +52,7 @@ public class Challenge extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE_TORCH,
-				"On cast, " + GlossaryTag.THREATEN.tag(this) + " all enemies you're looking at for <white>" + threat + "</white> "
+				"On cast, " + GlossaryTag.THREATEN.tag(this) + " all enemies you're looking at for <white>" + threat + "</white>"
 						+ ", slow them for <white>1s</white>, and gain a shield of <yellow>" 
 						+ shield + "</yellow> for <white>10</white> seconds.");
 	}

@@ -93,6 +93,6 @@ public class Fury extends Equipment {
 				+ heal + "</white>, and grants"
 						+ " a stack of " + GlossaryTag.BERSERK.tag(this) + ". " +
 				"At <yellow>" + berserk + " </yellow>stacks, the cooldown of this skill is halved and the cost is removed. The heal is increased to <yellow>"
-				+ berserkHeal + "</yellow>");
+				+ berserkHeal + "</yellow>.");
 	}
 }

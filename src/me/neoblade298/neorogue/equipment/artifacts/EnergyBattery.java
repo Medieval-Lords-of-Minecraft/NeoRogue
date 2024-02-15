@@ -46,6 +46,7 @@ public class EnergyBattery extends Artifact {
 				EquipmentInstance eqi = ev.getInstance();
 				eqi.setTempManaCost(0);
 				eqi.setTempStaminaCost(0);
+				eqi.setCooldown(-1);
 				return TriggerResult.keep();
 			}
 			return TriggerResult.remove();

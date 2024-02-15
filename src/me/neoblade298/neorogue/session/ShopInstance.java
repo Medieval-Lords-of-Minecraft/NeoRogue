@@ -31,6 +31,7 @@ public class ShopInstance extends EditInventoryInstance {
 	private HashMap<UUID, ArrayList<ShopItem>> shops = new HashMap<UUID, ArrayList<ShopItem>>();
 	private HashSet<UUID> ready = new HashSet<UUID>();
 	private Hologram holo;
+	private boolean busy;
 	
 	public ShopInstance(Session s) {
 		super(s, SPAWN_X, SPAWN_Z);
@@ -126,6 +127,7 @@ public class ShopInstance extends EditInventoryInstance {
 	
 	public void handleReady(Player p) {
 		UUID uuid = p.getUniqueId();
+		if (busy) return;
 		if (!ready.contains(uuid)) {
 			s.broadcast("<yellow>" + p.getName() + " <gray>is <green>ready</green>!");
 			ready.add(uuid);
@@ -133,9 +135,11 @@ public class ShopInstance extends EditInventoryInstance {
 			if (ready.size() == s.getParty().size()) {
 				s.broadcast("Everyone is ready! Teleporting back to node select...");
 				s.broadcastSound(Sound.ENTITY_PLAYER_LEVELUP);
+				busy = true;
 				new BukkitRunnable() {
 					public void run() {
 						s.setInstance(new NodeSelectInstance(s));
+						busy = false;
 					}
 				}.runTaskLater(NeoRogue.inst(), 60L);
 			}
