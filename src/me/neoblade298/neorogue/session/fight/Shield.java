@@ -38,7 +38,7 @@ public class Shield {
 				}
 				shieldHolder.update();
 			}
-		}.runTaskTimer(NeoRogue.inst(), decayDelayTicks * 20, decayPeriodTicks * 20);
+		}.runTaskTimer(NeoRogue.inst(), decayDelayTicks, decayPeriodTicks);
 	}
 	
 	public Shield(FightData data, UUID applier, double amt) {
