@@ -701,7 +701,6 @@ public abstract class FightInstance extends Instance {
 			if (pdata != null) {
 				pdata.cleanup();
 				if (pdata.getPlayer() != null) {
-					pdata.getPlayer().removePotionEffect(PotionEffectType.ABSORPTION);
 					s.broadcast(pdata.getStats().getStatLine());
 					if (pdata.isDead()) {
 						pdata.setDeath(false);
@@ -722,6 +721,17 @@ public abstract class FightInstance extends Instance {
 				data.updateCoinsBar();
 			}
 		}
+
+		// Delay potion effects after the fight ends to catch effects done right as the last kill happens
+		new BukkitRunnable() {
+			public void run() {
+				for (UUID uuid : s.getParty().keySet()) {
+					Player p = Bukkit.getPlayer(uuid);
+					if (p == null) return;
+					p.clearActivePotionEffects();
+				}
+			}
+		}.runTaskLater(NeoRogue.inst(), 1L);
 		
 		for (Corpse c : corpses) {
 			c.remove();
