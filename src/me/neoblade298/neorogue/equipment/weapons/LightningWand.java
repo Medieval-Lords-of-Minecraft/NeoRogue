@@ -27,7 +27,7 @@ public class LightningWand extends Equipment {
 
 	static {
 		tick = new ParticleContainer(Particle.GLOW);
-		tick.count(1).spread(0.1, 0.1).speed(0.01);
+		tick.count(3).spread(0.1, 0.1).speed(0.01);
 	}
 
 	public LightningWand(boolean isUpgraded) {
@@ -50,13 +50,11 @@ public class LightningWand extends Equipment {
 
 	private class LightningWandProjectile extends Projectile {
 		private Player p;
-		private int piercesLeft;
 		
 		public LightningWandProjectile(Player p) {
-			super(4, 12, 1);
+			super(2.5, 12, 1);
 			this.size(0.5, 0.5).pierce();
 			this.p = p;
-			this.piercesLeft = 3;
 		}
 		
 		@Override
@@ -73,12 +71,9 @@ public class LightningWand extends Equipment {
 		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
 			weaponDamageProjectile(hit.getEntity(), proj, hitBarrier);
 			Location loc = hit.getEntity().getLocation();
-			if (--piercesLeft > 0) {
-				Util.playSound(p, loc, Sound.ENTITY_LIGHTNING_BOLT_IMPACT, 1F, 1F, true);
-			} else {
-				Util.playSound(p, loc, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 1F, 1F, true);
+			Util.playSound(p, loc, Sound.ENTITY_LIGHTNING_BOLT_IMPACT, 1F, 1F, true);
+			if (proj.getNumHit() >= 3)
 				proj.cancel(true);
-			}
 		}
 		
 		@Override
