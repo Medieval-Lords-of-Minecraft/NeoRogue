@@ -55,6 +55,7 @@ public class PlayerSessionData {
 			upgraded = new HashMap<EquipSlot, HashSet<Integer>>();
 	private String instanceData;
 	private DropTableSet<Artifact> personalArtifacts;
+	private ArrayList<String> boardLines;
 
 	private static final ParticleContainer heal = new ParticleContainer(Particle.VILLAGER_HAPPY).count(50)
 			.spread(0.5, 1).speed(0.1).ignoreSettings(true);
@@ -86,6 +87,7 @@ public class PlayerSessionData {
 		this.coins = rs.getInt("coins");
 		this.instanceData = rs.getString("instanceData");
 		setupArtifacts();
+		updateBoardLines();
 	}
 
 	public PlayerSessionData(UUID uuid, EquipmentClass ec, Session s) {
@@ -141,6 +143,7 @@ public class PlayerSessionData {
 
 		setupInventory();
 		setupArtifacts();
+		updateBoardLines();
 
 		data.getPlayer().setHealthScaled(true);
 		data.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHealth);
@@ -571,6 +574,24 @@ public class PlayerSessionData {
 	
 	public DropTableSet<Artifact> getArtifactDroptable() {
 		return personalArtifacts;
+	}
+	
+	public void updateBoardLines() {
+		boardLines = new ArrayList<String>();
+		boardLines.add("HP: " + health);
+		boardLines.add("Max MP: " + maxMana);
+		boardLines.add("Max SP: " + maxStamina);
+		boardLines.add("Coins: " + coins);
+		if (s.getParty().size() <= 1) return;
+		boardLines.add("---");
+		for (PlayerSessionData psd : s.getParty().values()) {
+			if (psd == this) continue;
+			boardLines.add(psd.getData().getDisplay() + ": " + Math.round(psd.getHealth()));
+		}
+	}
+	
+	public ArrayList<String> getBoardLines() {
+		return boardLines;
 	}
 
 	public void save(Statement stmt) {

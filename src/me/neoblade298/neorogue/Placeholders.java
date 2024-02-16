@@ -2,13 +2,12 @@ package me.neoblade298.neorogue;
 
 import java.util.ArrayList;
 
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
-import me.neoblade298.neorogue.session.fight.FightInstance;
-import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.player.PlayerData;
+import me.neoblade298.neorogue.player.PlayerManager;
 
 public class Placeholders extends PlaceholderExpansion {
 	
@@ -25,7 +24,7 @@ public class Placeholders extends PlaceholderExpansion {
 
 	@Override
 	public String getAuthor() {
-		return "Neoblade298";
+		return "Ascheladd";
 	}
 	
     @Override
@@ -52,12 +51,11 @@ public class Placeholders extends PlaceholderExpansion {
 	public String onPlaceholderRequest(Player p, String identifier) {
 		if (p == null) return "N/A";
 		if (identifier.length() > 1) return "Placeholder error A";
-		if (!StringUtils.isNumeric(identifier)) return "Placeholder error B";
+		PlayerData data = PlayerManager.getPlayerData(p.getUniqueId());
+		if (data == null) return "Placeholder error C";
 		int i = Integer.parseInt(identifier);
-		
-		PlayerFightData data = FightInstance.getUserData(p.getUniqueId());
-		if (data == null) return "";
 		ArrayList<String> lines = data.getBoardLines();
-		return lines.size() > i ? lines.get(i) : "";
+		if (lines == null) return "";
+		return lines.size() > i ? lines.get(i) : "-";
 	}
 }

@@ -53,6 +53,7 @@ public class PlayerFightData extends FightData {
 	private HashMap<String, EquipmentInstance> equips = new HashMap<String, EquipmentInstance>(); // Useful for modifying cooldowns
 	private HashMap<Integer, HashMap<Trigger, TreeMultiset<PriorityAction>>> slotBasedTriggers = new HashMap<Integer, HashMap<Trigger, TreeMultiset<PriorityAction>>>();
 	private LinkedList<Listener> listeners = new LinkedList<Listener>();
+	private ArrayList<String> boardLines;
 	private Player p;
 	private long nextAttack, nextOffAttack;
 
@@ -78,8 +79,6 @@ public class PlayerFightData extends FightData {
 		this.stamina = sessdata.getStartingStamina();
 		this.staminaRegen = sessdata.getStaminaRegen();
 		this.manaRegen = sessdata.getManaRegen();
-		updateStamina();
-		updateMana();
 
 		// Initialize fight data
 		int i = 0;
@@ -128,6 +127,10 @@ public class PlayerFightData extends FightData {
 		
 		if (offhand != null) inv.setItemInOffHand(offhand.getItem());
 		addTickAction(new PlayerUpdateTickAction());
+
+		updateStamina();
+		updateMana();
+		updateBoardLines();
 	}
 	
 	@Override
@@ -141,8 +144,12 @@ public class PlayerFightData extends FightData {
 	}
 	
 	public ArrayList<String> getBoardLines() {
+		return boardLines;
+	}
+	
+	public void updateBoardLines() {
 		int lineSize = 9;
-		ArrayList<String> lines = new ArrayList<String>(lineSize);
+		boardLines = new ArrayList<String>(lineSize);
 		
 		TreeSet<Status> statuses = new TreeSet<Status>(stackComparator);
 		for (Status s : this.statuses.values()) {
@@ -152,16 +159,16 @@ public class PlayerFightData extends FightData {
 		ArrayList<Player> online = sessdata.getSession().getOnlinePlayers();
 		int players = online.size();
 		Iterator<Status> iter = statuses.descendingIterator();
-		while (iter.hasNext() && lines.size() < lineSize - players) {
+		while (iter.hasNext() && boardLines.size() < lineSize - players - 1) {
 			Status s = iter.next();
-			lines.add(s.getId() + ": " + s.getStacks());
+			boardLines.add(s.getId() + ": " + s.getStacks());
 		}
-		if (!lines.isEmpty()) lines.add("---");
+		if (!boardLines.isEmpty()) boardLines.add("---");
 		
 		for (Player p : online) {
-			lines.add(p.getName() + ": " + p.getHealth());
+			if (p == this.p) continue;
+			boardLines.add(p.getName() + ": " + Math.round(p.getHealth()));
 		}
-		return lines;
 	}
 
 	// Used when the player dies or revived
@@ -459,6 +466,7 @@ public class PlayerFightData extends FightData {
 		public TickResult run() {
 			addMana(manaRegen);
 			addStamina(p.isSprinting() ? staminaRegen - 4 : staminaRegen);
+			updateBoardLines();
 			
 			FightInstance.trigger(p, Trigger.PLAYER_TICK, null);
 			
