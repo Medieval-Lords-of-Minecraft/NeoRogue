@@ -187,6 +187,7 @@ public abstract class FightInstance extends Instance {
 	public void handlePlayerLeave(Player p) {
 		p.setInvulnerable(false);
 		p.setInvisible(false);
+		p.setNoDamageTicks(10);
 		p.removePotionEffect(PotionEffectType.ABSORPTION);
 	}
 	
