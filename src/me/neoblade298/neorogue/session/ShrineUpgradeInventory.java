@@ -42,11 +42,41 @@ public class ShrineUpgradeInventory extends CoreInventory {
 	@Override
 	public void handleInventoryClick(InventoryClickEvent e) {
 		Inventory iclicked = e.getClickedInventory();
-		if (iclicked == null || iclicked.getType() != InventoryType.SMITHING) return;
+		
+		// Got item from player inventory
+		if (iclicked == null || iclicked.getType() != InventoryType.SMITHING) {
+			if (e.getCurrentItem() == null) return;
+			p.playSound(p, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1F, 1F);
+			NBTItem nbti = new NBTItem(e.getCurrentItem());
+			if (!nbti.getKeys().contains("equipId")) return;
+			
+			if (e.isShiftClick()) {
+				e.setCancelled(true);
+				if (e.getInventory().getItem(0) != null) {
+					iclicked.addItem(inv.getItem(0));
+				}
+				inv.setItem(0, e.getCurrentItem());
+				iclicked.setItem(e.getSlot(), null);
+			}
+			updateOutput();
+			return;
+		}
 		int slot = e.getSlot();
 		
 		if (slot == 0) {
+			if (e.isShiftClick()) {
+				if (e.getCurrentItem() == null) return;
+				p.playSound(p, Sound.ITEM_ARMOR_EQUIP_DIAMOND, 1F, 1F);
+				e.setCancelled(true);
+				p.getInventory().addItem(e.getCurrentItem());
+				inv.setItem(0, null);
+				updateOutput();
+				return;
+			}
+
+			if (e.getCurrentItem() == null && e.getCursor() == null) return;
 			p.playSound(p, Sound.ITEM_ARMOR_EQUIP_DIAMOND, 1F, 1F);
+			// Has to be done with runnable to avoid manually coding swap cases and such
 			new BukkitRunnable() {
 				public void run() {
 					updateOutput();
@@ -55,7 +85,7 @@ public class ShrineUpgradeInventory extends CoreInventory {
 		}
 		else if (slot == 1) {
 			e.setCancelled(true);
-			if (e.getClick().isShiftClick()) {
+			if (e.isShiftClick()) {
 				inst.useUpgrade(p.getUniqueId());
 			}
 		}
