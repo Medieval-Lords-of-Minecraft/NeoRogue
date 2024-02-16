@@ -1,5 +1,8 @@
 package me.neoblade298.neorogue.equipment.weapons;
 
+import java.util.LinkedList;
+
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -7,6 +10,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
+import me.neoblade298.neocore.bukkit.particles.ParticleUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
@@ -20,15 +24,17 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class ChainLightningWand extends Equipment {
-	private static final TargetProperties hitScan = TargetProperties.cone(12, 10, false, TargetType.ENEMY);
+	private static final TargetProperties hitScan = TargetProperties.cone(12, 8, false, TargetType.ENEMY);
+	private static final TargetProperties chainScan = TargetProperties.cone(45, 4, false, TargetType.ENEMY);
 	
 	private static ParticleContainer tick;
+	private LinkedList<Player> drawCache;
 	
 	private int chainAmount;
 	
 	static {
 		tick = new ParticleContainer(Particle.GLOW);
-		tick.count(3).spread(0.1, 0.1).speed(0.01);
+		tick.count(2).spread(0.1, 0.1).speed(0.01);
 	}
 	
 	public ChainLightningWand(boolean isUpgraded) {
@@ -45,7 +51,10 @@ public class ChainLightningWand extends Equipment {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (d, inputs) -> {
 			LivingEntity target = TargetHelper.getEntitiesInCone(p, hitScan).pollFirst();
 			if (target != null) {
-				// TODO: chain hits
+				weaponDamage(p, data, target);
+				drawCache = ParticleUtil.calculateCache(p.getLocation());
+				drawChains(p.getLocation(), target.getLocation());
+				chainHit(p, data, target, chainAmount);
 			}
 			
 			weaponSwing(p, data);
@@ -56,5 +65,33 @@ public class ChainLightningWand extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.STICK, "Lightning chain hits through <yellow>" + chainAmount + "</yellow> enemies.");
+	}
+	
+	// returns chains remaining
+	private int chainHit(Player p, PlayerFightData data, LivingEntity chainSource, int chainsRemaining) {
+		if (chainsRemaining <= 0)
+			return 0;
+
+		LinkedList<LivingEntity> targets = TargetHelper.getEntitiesInCone(chainSource, p.getLocation().getDirection(), chainScan);
+
+		for (LivingEntity target : targets) {
+			drawChains(chainSource.getLocation(), target.getLocation());
+			weaponDamage(p, data, target);
+			chainsRemaining--;
+			if (chainsRemaining <= 0)
+				break;
+		}
+		
+		for (LivingEntity target : targets) {
+			chainsRemaining = chainHit(p, data, target, chainsRemaining);
+			if (chainsRemaining <= 0)
+				break;
+		}
+
+		return chainsRemaining;
+	}
+	
+	private void drawChains(Location pos1, Location pos2) {
+		ParticleUtil.drawLineWithCache(drawCache, tick, pos1, pos2, 0.4);
 	}
 }
