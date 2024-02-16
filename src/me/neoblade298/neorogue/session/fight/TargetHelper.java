@@ -5,6 +5,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.RayTraceResult;
+import org.bukkit.util.Vector;
 
 import java.util.LinkedList;
 import java.util.function.Predicate;
@@ -15,9 +16,16 @@ public class TargetHelper {
 	public static LivingEntity getNearestInSight(LivingEntity source, TargetProperties props) {
 		return TargetUtil.getEntitiesInSight(source, props.range, props.tolerance, new TargetFilter(source, props)).peekFirst();
 	}
+	public static LivingEntity getNearestInSight(LivingEntity source, Vector direction, TargetProperties props) {
+		return TargetUtil.getEntitiesInSight(source, direction, props.range, props.tolerance, new TargetFilter(source, props)).peekFirst();
+	}
 	
 	public static LinkedList<LivingEntity> getEntitiesInSight(LivingEntity source, TargetProperties props) {
 		return TargetUtil.getEntitiesInSight(source, props.range, props.tolerance, new TargetFilter(source, props));
+	}
+	
+	public static LinkedList<LivingEntity> getEntitiesInSight(LivingEntity source, Vector direction, TargetProperties props) {
+		return TargetUtil.getEntitiesInSight(source, direction, props.range, props.tolerance, new TargetFilter(source, props));
 	}
 
 	public static LinkedList<LivingEntity> getEntitiesInRadius(LivingEntity source, Location loc, TargetProperties props) {
@@ -30,6 +38,10 @@ public class TargetHelper {
 
 	public static LivingEntity getNearest(LivingEntity source, TargetProperties props) {
 		return getEntitiesInRadius(source, props).peekFirst();
+	}
+	
+	public static LinkedList<LivingEntity> getEntitiesInCone(LivingEntity source, Vector direction, TargetProperties props) {
+		return TargetUtil.getEntitiesInCone(source, direction, props.arc, props.range, new TargetFilter(source, props));
 	}
 	
 	public static LinkedList<LivingEntity> getEntitiesInCone(LivingEntity source, TargetProperties props) {

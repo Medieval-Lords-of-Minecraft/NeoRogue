@@ -377,6 +377,7 @@ public class PlayerFightData extends FightData {
 	
 	private class PlayerUpdateTickAction extends TickAction {
 		HashMap<Integer, EquipmentInstance> insts = new HashMap<Integer, EquipmentInstance>();
+		LinkedList<Integer> toRemove = new LinkedList<Integer>();
 		
 		public PlayerUpdateTickAction() {
 			// Get the usable instances to tie cooldowns to
@@ -414,7 +415,7 @@ public class PlayerFightData extends FightData {
 		@Override
 		public TickResult run() {
 			addMana(manaRegen);
-			addStamina(p.isSprinting() ? -4 : staminaRegen);
+			addStamina(p.isSprinting() ? staminaRegen - 4 : staminaRegen);
 			
 			FightInstance.trigger(p, Trigger.PLAYER_TICK, null);
 			
@@ -422,12 +423,22 @@ public class PlayerFightData extends FightData {
 			PlayerInventory inv = p.getInventory();
 			for (Entry<Integer, EquipmentInstance> ent : insts.entrySet()) {
 				// Check if cooldown is over
-				if (inv.getItem(ent.getKey()).getType().name().endsWith("CANDLE") &&
+				ItemStack item = inv.getItem(ent.getKey());
+				if (item == null) {
+					toRemove.add(ent.getKey());
+					continue;
+				}
+				if (item.getType().name().endsWith("CANDLE") &&
 						ent.getValue().getCooldownSeconds() == 0) {
 					inv.setItem(ent.getKey(), ent.getValue().getEquipment().getItem());
 				}
 			}
 			p.updateInventory();
+			
+			for (int i : toRemove) {
+				insts.remove(i);
+			}
+			toRemove.clear();
 			return TickResult.KEEP;
 		}
 	}

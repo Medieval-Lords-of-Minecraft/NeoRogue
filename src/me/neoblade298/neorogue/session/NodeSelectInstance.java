@@ -92,6 +92,10 @@ public class NodeSelectInstance extends EditInventoryInstance {
 	public void cleanup() {
 		task.cancel();
 		
+		for (Player p : s.getOnlinePlayers()) {
+			p.setAllowFlight(false);
+		}
+		
 		for (Hologram holo : holograms) {
 			holo.delete();
 		}
