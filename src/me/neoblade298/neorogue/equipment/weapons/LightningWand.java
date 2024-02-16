@@ -29,13 +29,13 @@ public class LightningWand extends Equipment {
 
 	static {
 		tick = new ParticleContainer(Particle.GLOW);
-		tick.count(3).spread(0.1, 0.1).speed(0.01);
+		tick.count(3).spread(0.1, 0.1).speed(0);
 	}
 
 	public LightningWand(boolean isUpgraded) {
 		super(
 				"lightningWand", "Lightning Wand", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(5, 0, isUpgraded ? 30 : 20, 0.4, DamageType.LIGHTNING, Sound.ITEM_AXE_SCRAPE)
+				EquipmentProperties.ofWeapon(5, 0, isUpgraded ? 30 : 20, 0.75, DamageType.LIGHTNING, Sound.ITEM_AXE_SCRAPE)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
 		pierceAmount = isUpgraded ? 3 : 1;

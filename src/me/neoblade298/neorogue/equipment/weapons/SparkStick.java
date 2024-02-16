@@ -29,13 +29,13 @@ public class SparkStick extends Equipment {
 	
 	static {
 		tick = new ParticleContainer(Particle.GLOW);
-		tick.count(3).spread(0.1, 0.1).speed(0.01);
+		tick.count(3).spread(0.1, 0.1).speed(0);
 	}
 
 	public SparkStick(boolean isUpgraded) {
 		super(
 				"sparkStick", "Spark Stick", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(isUpgraded ? 1 : 2, 0, 5, 0.1, DamageType.LIGHTNING, Sound.ITEM_AXE_SCRAPE)
+				EquipmentProperties.ofWeapon(isUpgraded ? 1 : 2, 0, 5, 4, DamageType.LIGHTNING, Sound.ITEM_AXE_SCRAPE)
 		);
 		properties.addUpgrades(PropertyType.MANA_COST);
 		pierceAmount = 1;
@@ -88,6 +88,8 @@ public class SparkStick extends Equipment {
 	
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STICK, "Pierces the first <white>" + pierceAmount + "</white> enemy hit. Also grants <white>3</white> mana per enemy hit.");
+		item = createItem(
+				Material.STICK, "Pierces through the first <white>" + pierceAmount + "</white> enemy hit. Also grants <white>3</white> mana per enemy hit."
+		);
 	}
 }
