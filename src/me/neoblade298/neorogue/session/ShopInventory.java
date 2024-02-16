@@ -114,8 +114,8 @@ public class ShopInventory extends CoreInventory {
 			
 			data.addCoins(-price);
 			data.giveEquipment(shopItem.getEquipment(),
-					SharedUtil.color("<red>" + p.getName() + " spent <yellow>" + price + " coins</yellow> to purchase a(n) "),
-					SharedUtil.color("You spent <yellow>" + price + " coins</yellow> to purchase a(n) "));
+					SharedUtil.color("You spent <yellow>" + price + " coins</yellow> to purchase a(n) "),
+					SharedUtil.color("<red>" + p.getName() + "</red> spent <yellow>" + price + " coins</yellow> to purchase a(n) "));
 			p.playSound(p, Sound.ENTITY_WANDERING_TRADER_YES, 1F, 1F);
 			p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1F, 1F);
 			

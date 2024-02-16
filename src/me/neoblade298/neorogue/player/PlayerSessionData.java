@@ -304,7 +304,6 @@ public class PlayerSessionData {
 
 	private void giveArtifact(Artifact artifact) {
 		ArtifactInstance inst;
-		Util.msg(data.getPlayer(), SharedUtil.color("You received ").append(artifact.getDisplay()));
 		if (artifacts.containsKey(artifact.getId())) {
 			inst = artifacts.get(artifact.getId());
 			inst.add(1);
@@ -324,6 +323,7 @@ public class PlayerSessionData {
 		toSelf = toSelf.append(eq.getHoverable());
 
 		if (eq instanceof Artifact) {
+			Util.msg(p, toSelf.append(Component.text(".")));
 			giveArtifact((Artifact) eq);
 		}
 		else {

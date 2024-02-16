@@ -67,7 +67,7 @@ public class ShieldHolder {
 		if (data.getEntity() instanceof Player) {
 			Player p = (Player) data.getEntity();
 			if (!p.hasPotionEffect(PotionEffectType.ABSORPTION)) {
-				p.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, PotionEffect.INFINITE_DURATION, 0, false, false, false));
+				p.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, PotionEffect.INFINITE_DURATION, 4, false, false, false));
 			}
 		}
 		data.getEntity().setAbsorptionAmount(absorb);
