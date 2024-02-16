@@ -145,6 +145,8 @@ public class ShopInventory extends CoreInventory {
 						Component.text("You have " + data.getCoins() + " coins", NamedTextColor.YELLOW)));
 				p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1F, 1F);
 				p.setItemOnCursor(null);
+				data.getSession().broadcast(SharedUtil.color("<yellow>" + p.getName() + " </yellow>sold their ")
+						.append(eq.getHoverable()).append(Component.text(".")));
 				
 				ItemStack[] contents = inv.getContents();
 				for (ShopItem si : shopItems) {
@@ -165,6 +167,8 @@ public class ShopInventory extends CoreInventory {
 					Util.displayError(p, "Only cursed items may be removed this way!");
 					return;
 				}
+				data.getSession().broadcast(SharedUtil.color("<yellow>" + p.getName() + " </yellow>purified their ")
+						.append(eq.getHoverable()).append(Component.text(".")));
 				p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1F, 1F);
 				p.setItemOnCursor(null);
 			}

@@ -66,6 +66,7 @@ public class FightData {
 
 	public FightData(LivingEntity e, MapSpawnerInstance spawner) {
 		// Only use this for mobs
+		if (e == null) return; // Sometimes gets called when a dead mob's poison ticks
 		Plot p = Plot.locationToPlot(e.getLocation());
 		Session s = SessionManager.getSession(p);
 		if (s == null || !(s.getInstance() instanceof FightInstance)) return;

@@ -63,7 +63,6 @@ public class PlayerFightData extends FightData {
 		this.manaRegen = sessdata.getManaRegen();
 		updateStamina();
 		updateMana();
-		addTickAction(new PlayerUpdateTickAction());
 
 		// Initialize fight data
 		int i = 0;
@@ -111,6 +110,7 @@ public class PlayerFightData extends FightData {
 		inv.setContents(contents);
 		
 		if (offhand != null) inv.setItemInOffHand(offhand.getItem());
+		addTickAction(new PlayerUpdateTickAction());
 	}
 	
 	@Override
