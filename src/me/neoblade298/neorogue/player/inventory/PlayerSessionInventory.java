@@ -262,12 +262,18 @@ public class PlayerSessionInventory extends CoreInventory {
 					EquipSlot type = slotTypes.get(slot);
 					removeEquipment(type, nclicked.getInteger("dataSlot"), slot, e.getClickedInventory());
 					if (isBindable(type)) clicked = removeBindLore(clicked);
-					p.setItemOnCursor(clicked);
+					if (e.isShiftClick()) {
+						p.getInventory().addItem(clicked);
+						e.setCancelled(false);
+					}
+					else {
+						p.setItemOnCursor(clicked);
+						Equipment eq = Equipment.get(nclicked.getString("equipId"), false);
+						setHighlights(eq.getType());
+					}
 				}
 				// Highlight slots where the item can be equipped
 				p.playSound(p, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1F);
-				Equipment eq = Equipment.get(nclicked.getString("equipId"), false);
-				setHighlights(eq.getType());
 			}
 		}
 
@@ -315,6 +321,13 @@ public class PlayerSessionInventory extends CoreInventory {
 				}
 
 				EquipSlot type = slotTypes.get(slot);
+				if (e.isShiftClick()) {
+					if (isBindable(type)) clicked = removeBindLore(clicked);
+					data.removeEquipment(type, nclicked.getInteger("dataSlot"));
+					e.setCancelled(false);
+					return;
+				}
+
 				if (!eq.canEquip(type)) {
 					displayError("You can't equip this item in this slot!", false);
 					return;
