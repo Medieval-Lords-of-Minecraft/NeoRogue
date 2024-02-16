@@ -16,6 +16,7 @@ import com.google.common.collect.TreeMultiset;
 
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.TickAction.TickResult;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.KeyBind;
 import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -130,6 +131,8 @@ public class PlayerFightData extends FightData {
 		if (isDead) {
 			p.setInvulnerable(true);
 			p.setInvisible(true);
+			clearStatus(StatusType.POISON);
+			clearStatus(StatusType.BLEED);
 		}
 		else {
 			p.setInvulnerable(false);

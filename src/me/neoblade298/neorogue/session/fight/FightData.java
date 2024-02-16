@@ -248,6 +248,14 @@ public class FightData {
 		return statuses.get(type.name());
 	}
 	
+	public void clearStatus(String id) {
+		statuses.remove(id);
+	}
+	
+	public void clearStatus(StatusType type) {
+		statuses.remove(type.name());
+	}
+	
 	public void applyStatus(StatusType type, UUID applier, int stacks, int seconds) {
 		applyStatus(type, applier, stacks, seconds, null);
 	}
