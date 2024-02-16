@@ -268,6 +268,7 @@ public class SessionManager implements Listener {
 			return;
 		}
 		if (!(s.getInstance() instanceof FightInstance)) return;
+		if (e.getEntity() instanceof Player) return;
 		if (!playerDamager) {
 			// Don't cancel damage, but set it to 0 so the ~onAttack mythicmob trigger still goes
 			e.setDamage(0);
