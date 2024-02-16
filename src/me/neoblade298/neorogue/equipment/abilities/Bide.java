@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -43,7 +44,7 @@ public class Bide extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new PriorityAction(id, (fd, in) -> {
+		data.addTrigger(id, bind, new EquipmentInstance(p, this, slot, es, (fd, in) -> {
 			data.addSimpleShield(p.getUniqueId(), shields, duration * 20);
 			Util.playSound(p, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1F, 1F, false);
 			data.addTrigger(id, Trigger.RECEIVED_DAMAGE, new BideInstance(p, id));

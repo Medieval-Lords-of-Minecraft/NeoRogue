@@ -1,9 +1,12 @@
 package me.neoblade298.neorogue.session.fight;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map.Entry;
+import java.util.TreeSet;
 
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
@@ -16,6 +19,7 @@ import com.google.common.collect.TreeMultiset;
 
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.TickAction.TickResult;
+import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.KeyBind;
 import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
@@ -31,6 +35,18 @@ import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 
 public class PlayerFightData extends FightData {
+	
+	private static final Comparator<Status> stackComparator = new Comparator<Status>() {
+		@Override
+		public int compare(Status s1, Status s2) {
+			// First priority: stacks
+			int comp = Integer.compare(s1.getStacks(), s2.getStacks());
+			if (comp != 0) return comp;
+			
+			// Next priority: id
+			return s1.getId().compareTo(s2.getId());
+		}
+	};
 	
 	private PlayerSessionData sessdata;
 	private HashMap<Trigger, TreeMultiset<PriorityAction>> triggers = new HashMap<Trigger, TreeMultiset<PriorityAction>>();
@@ -122,6 +138,30 @@ public class PlayerFightData extends FightData {
 	
 	public PlayerSessionData getSessionData() {
 		return sessdata;
+	}
+	
+	public ArrayList<String> getBoardLines() {
+		int lineSize = 9;
+		ArrayList<String> lines = new ArrayList<String>(lineSize);
+		
+		TreeSet<Status> statuses = new TreeSet<Status>(stackComparator);
+		for (Status s : this.statuses.values()) {
+			statuses.add(s);
+		}
+		
+		ArrayList<Player> online = sessdata.getSession().getOnlinePlayers();
+		int players = online.size();
+		Iterator<Status> iter = statuses.descendingIterator();
+		while (iter.hasNext() && lines.size() < lineSize - players) {
+			Status s = iter.next();
+			lines.add(s.getId() + ": " + s.getStacks());
+		}
+		if (!lines.isEmpty()) lines.add("---");
+		
+		for (Player p : online) {
+			lines.add(p.getName() + ": " + p.getHealth());
+		}
+		return lines;
 	}
 
 	// Used when the player dies or revived

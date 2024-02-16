@@ -270,7 +270,7 @@ public class FightData {
 	}
 	
 	public void applyStatus(GenericStatusType type, String id, UUID applier, int stacks, int seconds, DamageMeta meta) {
-		Status s = statuses.getOrDefault(type.name(), Status.createByGenericType(type, id, applier, this));
+		Status s = statuses.getOrDefault(id, Status.createByGenericType(type, id, applier, this));
 		applyStatus(s, applier, stacks, seconds, meta);
 	}
 	
