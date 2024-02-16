@@ -17,9 +17,11 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.GrantShieldsEvent;
 
 public class Thornguard extends Equipment {
 	private ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
+	private static final int CUTOFF = 10;
 	
 	public Thornguard(boolean isUpgraded) {
 		super("thornguard", "Thornguard", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
@@ -30,22 +32,34 @@ public class Thornguard extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(p, this, slot, es, (pdata, inputs) -> {
-			pc.spawn(p);
-			Util.playSound(p, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1F, 1F, false);
-			p.getInventory().setItem(slot, null);
-			data.addTrigger(id, Trigger.RECEIVE_SHIELDS, (pdata2, inputs2) -> {
-				data.applyStatus(StatusType.THORNS, p.getUniqueId(), 1, -1);
-				return TriggerResult.keep();
-			});
-			return TriggerResult.remove();
-		}));
+		data.addTrigger(id, bind, new ThornguardInstance(p, this, slot, es));
+	}
+	
+	private class ThornguardInstance extends EquipmentInstance {
+		private int count = 0;
+		public ThornguardInstance(Player p, Equipment eq, int slot, EquipSlot es) {
+			super(p, eq, slot, es);
+			action = (pdata, inputs) -> {
+				pc.spawn(p);
+				Util.playSound(p, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1F, 1F, false);
+				p.getInventory().setItem(slot, null);
+				pdata.addTrigger(id, Trigger.RECEIVE_SHIELDS, (pdata2, inputs2) -> {
+					GrantShieldsEvent ev = (GrantShieldsEvent) inputs2;
+					count += ev.getShield().getAmount();
+					pdata.applyStatus(StatusType.THORNS, p.getUniqueId(), count / CUTOFF, -1);
+					count = count % CUTOFF;
+					return TriggerResult.keep();
+				});
+				return TriggerResult.remove();
+			};
+		}
+		
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.DEAD_BUSH,
-				"On cast, for the rest of the fight, any time " + GlossaryTag.SHIELDS.tag + " are granted to you, gain <white>1</white>"
+				"On cast, for the rest of the fight, for every <white>" + CUTOFF +"</white> " + GlossaryTag.SHIELDS.tag + " that are granted to you, gain <white>1</white>"
 						+ " stack of " + GlossaryTag.THORNS.tag(this) + ".");
 	}
 }
