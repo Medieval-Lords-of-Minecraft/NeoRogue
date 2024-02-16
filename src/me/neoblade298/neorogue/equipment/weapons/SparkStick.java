@@ -22,28 +22,28 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class LightningWand extends Equipment {
+public class SparkStick extends Equipment {
 	private static ParticleContainer tick;
-	
-	private int pierceAmount;
 
+	private int pierceAmount;
+	
 	static {
 		tick = new ParticleContainer(Particle.GLOW);
 		tick.count(3).spread(0.1, 0.1).speed(0.01);
 	}
 
-	public LightningWand(boolean isUpgraded) {
+	public SparkStick(boolean isUpgraded) {
 		super(
-				"lightningWand", "Lightning Wand", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(5, 0, isUpgraded ? 30 : 20, 0.4, DamageType.LIGHTNING, Sound.ITEM_AXE_SCRAPE)
+				"sparkStick", "Spark Stick", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
+				EquipmentProperties.ofWeapon(isUpgraded ? 1 : 2, 0, 5, 0.1, DamageType.LIGHTNING, Sound.ITEM_AXE_SCRAPE)
 		);
-		properties.addUpgrades(PropertyType.DAMAGE);
-		pierceAmount = isUpgraded ? 3 : 1;
+		properties.addUpgrades(PropertyType.MANA_COST);
+		pierceAmount = 1;
 	}
 	
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ProjectileGroup proj = new ProjectileGroup(new LightningWandProjectile(p));
+		ProjectileGroup proj = new ProjectileGroup(new SparkStickProjectile(p));
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (d, inputs) -> {
 			weaponSwing(p, data);
 			proj.start(data);
@@ -51,11 +51,12 @@ public class LightningWand extends Equipment {
 		});
 	}
 
-	private class LightningWandProjectile extends Projectile {
+	private class SparkStickProjectile extends Projectile {
 		private Player p;
+		private int pierceAmount;
 		
-		public LightningWandProjectile(Player p) {
-			super(2.5, 12, 1);
+		public SparkStickProjectile(Player p) {
+			super(2.5, 10, 1);
 			this.size(0.5, 0.5).pierce();
 			this.p = p;
 		}
@@ -87,6 +88,6 @@ public class LightningWand extends Equipment {
 	
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STICK, "Pierces the first <yellow>" + pierceAmount + "</yellow> enemies hit.");
+		item = createItem(Material.STICK, "Pierces the first <white>" + pierceAmount + "</white> enemy hit. Also grants <white>3</white> mana per enemy hit.");
 	}
 }
