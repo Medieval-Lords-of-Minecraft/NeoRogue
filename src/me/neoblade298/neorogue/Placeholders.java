@@ -52,7 +52,7 @@ public class Placeholders extends PlaceholderExpansion {
 		if (p == null) return "N/A";
 		if (identifier.length() > 1) return "Placeholder error A";
 		PlayerData data = PlayerManager.getPlayerData(p.getUniqueId());
-		if (data == null) return "Placeholder error C";
+		if (data == null) return "Loading...";
 		int i = Integer.parseInt(identifier);
 		ArrayList<String> lines = data.getBoardLines();
 		if (lines == null) return "";

@@ -37,7 +37,7 @@ public class Tackle extends Equipment {
 	private int damage;
 	
 	public Tackle(boolean isUpgraded) {
-		super("tackle", "Tackle", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+		super("tackle", "Tackle", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 10, 20, 0));
 		damage = isUpgraded ? 150 : 100;
 		

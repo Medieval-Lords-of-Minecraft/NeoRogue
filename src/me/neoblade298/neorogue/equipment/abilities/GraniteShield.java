@@ -28,7 +28,7 @@ public class GraniteShield extends Equipment {
 		super("graniteShield", "Granite Shield", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.none());
 		
-		heal = 3;
+		heal = 8;
 		concuss = isUpgraded ? 9 : 6;
 	}
 
@@ -52,9 +52,9 @@ public class GraniteShield extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GRANITE_SLAB,
-				"Passive. Heal for <white>" + heal + "</white> and apply <yellow>" + concuss + "</yellow> " +
-						GlossaryTag.CONCUSSED.tag(this) + " to enemies that damage you after <white>3</white> consecutive seconds "
-								+ "of keeping your shield raised.");
+				"Passive. Heal for <white>" + heal + "</white> after <white>3</white> consecutive seconds of keeping your shield raised. "
+						+ "Afterwards, apply <yellow>" + concuss + "</yellow> " +
+						GlossaryTag.CONCUSSED.tag(this) + " to enemies that damage you.");
 	}
 	
 	private class SturdyInstance extends EquipmentInstance {
@@ -65,9 +65,10 @@ public class GraniteShield extends Equipment {
 			action = (pdata, inputs) -> {
 				if (++count < HEAL_COUNT) return TriggerResult.keep();
 				pc.spawn(p);
-				Util.playSound(p, Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1F, 1F, false);
-				FightInstance.giveHeal(p, heal, p);
-				count = 0;
+				if (count == HEAL_COUNT) {
+					Util.playSound(p, Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1F, 1F, false);
+					FightInstance.giveHeal(p, heal, p);
+				}
 				return TriggerResult.keep();
 			};
 		}

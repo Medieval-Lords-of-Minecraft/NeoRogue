@@ -25,7 +25,7 @@ public class Sturdy extends Equipment {
 		super("sturdy", "Sturdy", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.none());
 		
-		heal = isUpgraded ? 3 : 2;
+		heal = isUpgraded ? 6 : 4;
 	}
 
 	@Override
@@ -42,7 +42,7 @@ public class Sturdy extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GREEN_DYE,
-				"Passive. Heal for <yellow>" + heal + "</yellow> for every " + HEAL_COUNT + " consecutive seconds you keep a shield raised.");
+				"Passive. Heal for <yellow>" + heal + "</yellow> after holding your shield up for " + HEAL_COUNT + " consecutive seconds.");
 	}
 	
 	private class SturdyInstance extends EquipmentInstance {
@@ -51,11 +51,10 @@ public class Sturdy extends Equipment {
 			super(p, eq, slot, es);
 			
 			action = (pdata, inputs) -> {
-				if (++count < HEAL_COUNT) return TriggerResult.keep();
+				if (++count != HEAL_COUNT) return TriggerResult.keep();
 				pc.spawn(p);
 				Util.playSound(p, Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1F, 1F, false);
 				FightInstance.giveHeal(p, heal, p);
-				count = 0;
 				return TriggerResult.keep();
 			};
 		}

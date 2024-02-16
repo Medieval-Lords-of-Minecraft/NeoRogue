@@ -25,8 +25,8 @@ public class SerratedFencingSword extends Equipment {
 		super("serratedFencingSword", "Serrated Fencing Sword", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(60, 1, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_CRIT));
-		shields = 4;
-		bleed = isUpgraded ? 6 : 3;
+		shields = 2;
+		bleed = isUpgraded ? 6 : 4;
 	}
 
 	@Override
@@ -36,14 +36,15 @@ public class SerratedFencingSword extends Equipment {
 			LivingEntity target = ev.getTarget();
 			weaponSwingAndDamage(p, data, target);
 			FightInstance.getFightData(target.getUniqueId()).applyStatus(StatusType.BLEED, p.getUniqueId(), bleed, 0);
-			data.addSimpleShield(p.getUniqueId(), shields, 100);
+			data.addSimpleShield(p.getUniqueId(), shields, 40);
 			return TriggerResult.keep();
 		});
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STONE_SWORD, "On hit, grant yourself <white>" + shields + "</white> " + GlossaryTag.SHIELDS.tag(this) + ". Apply <yellow>" + bleed
+		item = createItem(Material.STONE_SWORD, "On hit, grant yourself <white>" + shields + "</white> " + GlossaryTag.SHIELDS.tag(this) + 
+				" for <white>2</white> seconds. Apply <yellow>" + bleed
 				+ " </yellow>" + GlossaryTag.BLEED.tag(this) + " every 2 hits.");
 	}
 }

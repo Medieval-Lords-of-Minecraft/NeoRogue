@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
-import me.neoblade298.neorogue.session.fight.status.Status.GenericStatusType;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
@@ -58,7 +58,7 @@ public class Fury extends Equipment {
 					FightInstance.dealDamage(data, DamageType.SLASHING, damage, target);
 					hit.spawn(target.getLocation());
 					Util.playSound(p, Sound.BLOCK_ANVIL_LAND, 1F, 1F, false);
-					data.applyStatus(GenericStatusType.BASIC, "BERSERK", p.getUniqueId(), 1, -1);
+					data.applyStatus(StatusType.BERSERK, p.getUniqueId(), 1, -1);
 					if (isBerserk) {
 						Util.playSound(p, target.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1F, 1F, false);
 						explode.spawn(target.getLocation());
@@ -75,7 +75,7 @@ public class Fury extends Equipment {
 		
 		@Override
 		public boolean canTrigger(Player p, PlayerFightData data) {
-			boolean isBerserkAfter = data.hasStatus("BERSERK") && data.getStatus("BERSERK").getStacks() >= berserk;
+			boolean isBerserkAfter = data.hasStatus(StatusType.BERSERK) && data.getStatus(StatusType.BERSERK).getStacks() >= berserk;
 			if (!isBerserk && isBerserkAfter) {
 				this.cooldown = 2.5;
 				this.staminaCost = 0;

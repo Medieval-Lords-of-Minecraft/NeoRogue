@@ -3,7 +3,6 @@ package me.neoblade298.neorogue.equipment.abilities;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
@@ -16,20 +15,21 @@ import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
 public class Execute extends Equipment {
-	private int damage, execute;
+	private int damage, strength;
 	private ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
 			hit = new ParticleContainer(Particle.REDSTONE);
 	
 	public Execute(boolean isUpgraded) {
 		super("execute", "Execute", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 15, 7, 0));
-		damage = isUpgraded ? 45 : 30;
-		execute = isUpgraded ? 150 : 100;
+		damage = isUpgraded ? 150 : 100;
+		strength = isUpgraded ? 12 : 8;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		hit.count(50).spread(0.5, 0.5);
 	}
@@ -43,16 +43,14 @@ public class Execute extends Equipment {
 			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in) -> {
 				if (p.isOnGround()) return TriggerResult.keep();
 				BasicAttackEvent ev = (BasicAttackEvent) in;
-				double pct = ev.getTarget().getHealth() / ev.getTarget().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+				FightInstance.dealDamage(data, DamageType.PIERCING, damage, ev.getTarget());
 				Util.playSound(p, Sound.BLOCK_ANVIL_LAND, 1F, 1F, false);
 				hit.spawn(ev.getTarget().getLocation());
-				if (pct < 0.5) {
-					FightInstance.dealDamage(data, DamageType.PIERCING, damage + execute, ev.getTarget());
-					Util.playSound(p, Sound.ENTITY_BLAZE_SHOOT, 1F, 1F, false);
+				if (ev.getTarget().getHealth() <= 0) {
+					Util.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, false);
+					data.applyStatus(StatusType.STRENGTH, p.getUniqueId(), strength, 10);
 				}
-				else {
-					FightInstance.dealDamage(data, DamageType.PIERCING, damage, ev.getTarget());
-				}
+				
 				return TriggerResult.remove();
 			});
 			return TriggerResult.keep();
@@ -63,6 +61,6 @@ public class Execute extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.FLINT,
 				"On cast, your next basic attack while in the air deals <yellow>" + damage + "</yellow> " + GlossaryTag.PIERCING.tag(this) + " damage. If the enemy is"
-						+ " below <white>50%</white> health, deal an additional <yellow>" + execute + "</yellow> " + GlossaryTag.PIERCING.tag(this) + " damage.");
+						+ " killed by this attack, gain <yellow>" + strength + "</yellow> " + GlossaryTag.STRENGTH.tag(this) + " for <white>5</white> seconds.");
 	}
 }

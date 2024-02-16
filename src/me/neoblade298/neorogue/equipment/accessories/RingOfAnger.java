@@ -9,16 +9,16 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
-import me.neoblade298.neorogue.session.fight.status.Status.GenericStatusType;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class RingOfAnger extends Equipment {
-	private double seconds;
+	private int seconds;
 	
 	public RingOfAnger(boolean isUpgraded) {
 		super("ringOfAnger", "Ring of Anger", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ACCESSORY);
-		seconds = isUpgraded ? 3 : 5;
+		seconds = isUpgraded ? 5 : 8;
 	}
 
 	@Override
@@ -28,7 +28,7 @@ public class RingOfAnger extends Equipment {
 			public void run() {
 				if (++count < seconds) return;
 				count = 0;
-				data.applyStatus(GenericStatusType.BASIC, "BERSERK", data.getUniqueId(), 1, -1);
+				data.applyStatus(StatusType.BERSERK, data.getUniqueId(), 1, -1);
 				return;
 			}
 		}.runTaskTimer(NeoRogue.inst(), 20L, 20L));

@@ -39,7 +39,7 @@ public class EarthenTackle extends Equipment {
 	private int damage, concussed;
 	
 	public EarthenTackle(boolean isUpgraded) {
-		super("earthenTackle", "Earthen Tackle", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
+		super("earthenTackle", "Earthen Tackle", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 15, 25, 0));
 		damage = isUpgraded ? 200 : 150;
 		concussed = isUpgraded? 35 : 25;

@@ -15,7 +15,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
@@ -34,7 +34,7 @@ public class WarCry extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE,
-				"On cast, give yourself <yellow>" + strength + " </yellow>bonus " + GlossaryTag.PHYSICAL.tag(this) + " damage.");
+				"On cast, give yourself <yellow>" + strength + "</yellow> " + GlossaryTag.STRENGTH.tag(this) + " damage.");
 	}
 
 	@Override
@@ -42,7 +42,7 @@ public class WarCry extends Equipment {
 		data.addTrigger(id, bind, new EquipmentInstance(p, this, slot, es, (pdata, inputs) -> {
 			Util.playSound(p, Sound.ENTITY_BLAZE_DEATH, 1F, 1F, false);
 			pc.spawn(p);
-			data.addBuff(p.getUniqueId(), id, true, false, BuffType.PHYSICAL, strength, -1);
+			data.applyStatus(StatusType.STRENGTH, p.getUniqueId(), strength, -1);
 			return TriggerResult.keep();
 		}));
 	}

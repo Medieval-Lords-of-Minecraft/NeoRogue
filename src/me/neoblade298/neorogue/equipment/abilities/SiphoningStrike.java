@@ -3,7 +3,6 @@ package me.neoblade298.neorogue.equipment.abilities;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
@@ -17,13 +16,13 @@ import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
 public class SiphoningStrike extends Equipment {
-	private int damage, execute, buff;
+	private int damage, buff;
 	private ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
 			hit = new ParticleContainer(Particle.REDSTONE);
 	
@@ -31,9 +30,8 @@ public class SiphoningStrike extends Equipment {
 		super("siphoningStrike", "Siphoning Strike", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 25, 12, 0));
 		properties.addUpgrades(PropertyType.COOLDOWN);
-		damage = 45;
-		execute = 150;
-		buff = isUpgraded ? 5 : 3;
+		damage = 150;
+		buff = isUpgraded ? 8 : 5;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		hit.count(50).spread(0.5, 0.5);
 	}
@@ -54,19 +52,12 @@ public class SiphoningStrike extends Equipment {
 				pdata.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in) -> {
 					if (p.isOnGround()) return TriggerResult.keep();
 					BasicAttackEvent ev = (BasicAttackEvent) in;
-					double pct = ev.getTarget().getHealth() / ev.getTarget().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
 					Util.playSound(p, Sound.BLOCK_ANVIL_LAND, 1F, 1F, false);
 					hit.spawn(ev.getTarget().getLocation());
-					if (pct < 0.5) {
-						FightInstance.dealDamage(pdata, DamageType.PIERCING, damage + execute, ev.getTarget());
-						Util.playSound(p, Sound.ENTITY_BLAZE_SHOOT, 1F, 1F, false);
-					}
-					else {
-						FightInstance.dealDamage(pdata, DamageType.PIERCING, damage, ev.getTarget());
-					}
+					FightInstance.dealDamage(pdata, DamageType.PIERCING, damage, ev.getTarget());
 					
 					if (ev.getTarget().getHealth() <= 0) {
-						pdata.addBuff(p.getUniqueId(), true, false, BuffType.PHYSICAL, buff);
+						pdata.applyStatus(StatusType.STRENGTH, p.getUniqueId(), buff, -1);
 						Util.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, false);
 					}
 					return TriggerResult.remove();
@@ -81,8 +72,7 @@ public class SiphoningStrike extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.FLINT,
 				"On cast, your next basic attack while in the air deals <white>" + damage + "</white> " + GlossaryTag.PIERCING.tag(this)
-				+ " damage. If the enemy is below <white>50%</white> health, deal an additional <white>" + execute + "</white> "
-				+ GlossaryTag.PIERCING.tag(this) + " damage. If the enemy is killed with this damage, increase " + GlossaryTag.PHYSICAL.tag(this) + 
-				" damage by <yellow>" + buff + "</yellow>.");
+				+ " damage. If the enemy is killed with this damage, increase " + GlossaryTag.STRENGTH.tag(this) + 
+				" by <yellow>" + buff + "</yellow>.");
 	}
 }

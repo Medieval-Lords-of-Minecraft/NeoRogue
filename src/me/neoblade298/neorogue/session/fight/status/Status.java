@@ -2,6 +2,8 @@ package me.neoblade298.neorogue.session.fight.status;
 
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
+
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.TickAction;
@@ -35,8 +37,11 @@ public abstract class Status {
 		case SANCTIFIED: return new DecrementStackStatus(id.name(), target);
 		case THORNS: return new BasicStatus(id.name(), target);
 		case REFLECT: return new BasicStatus(id.name(), target);
-		default: return null;
+		case BERSERK: return new BasicStatus(id.name(), target);
+		case STRENGTH: return new StrengthStatus(target);
 		}
+		Bukkit.getLogger().warning("[NeoRogue] Failed to create status type " + id);
+		return new BasicStatus(id.name(), target);
 	}
 	
 	public static Status createByGenericType(GenericStatusType type, String id, UUID applier, FightData target) {
@@ -74,7 +79,9 @@ public abstract class Status {
 		INSANITY("<dark_purple>Insanity</dark_purple>"),
 		SANCTIFIED("<white>Sanctified</white>"),
 		THORNS("<gold>Thorns</gold>"),
-		REFLECT("<purple>Reflect</purple>");
+		REFLECT("<purple>Reflect</purple>"),
+		BERSERK("<dark_red>Berserk</dark_red>"),
+		STRENGTH("<red>Strength</red>");
 		public String tag;
 		public Component ctag;
 		private StatusType(String tag) {

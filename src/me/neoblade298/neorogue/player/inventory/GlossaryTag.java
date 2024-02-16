@@ -58,7 +58,7 @@ public enum GlossaryTag {
 	INSANITY(Material.NETHER_PORTAL, StatusType.INSANITY.tag,
 			"Increases the holder's magic damage by 1% per stack. Remove 1 stack every second."),
 	SANCTIFIED(Material.END_ROD, StatusType.SANCTIFIED.tag,
-			"Upon the holder taking damage, heals the damager for 0.2 per stack applied. 1 stack is removed every second."),
+			"Upon the holder taking damage, heals the damager for 0.2 per stack applied. 1 stack is removed every second and when the holder takes damage."),
 	THORNS(Material.DEAD_BUSH, StatusType.THORNS.tag,
 			"Upon the holder receiving physical damage, even if it is absorbed by shields, return 1 thorns damage per stack."),
 	REFLECT(Material.GLASS_PANE, StatusType.REFLECT.tag,
@@ -68,9 +68,11 @@ public enum GlossaryTag {
 	BARRIER(Material.SHIELD, "<gold>Barrier</gold>",
 			"Intercepts projectiles, dealing the damage to you directly, usually with mitigation."),
 	THREATEN(Material.REDSTONE_TORCH, "<dark_red>Threaten</dark_red>",
-			"Increases your threat towards an enemy. Enemies prioritize players with the highest threat. Dealing damage also increases threat at a 1:1 scale."),
-	BERSERK(Material.BLAZE_POWDER, "<dark_red>Berserk</dark_red>",
-			"Certain abilities become stronger upon reaching a certain threshold of these stacks.");
+			"Increases your threat towards an enemy. Enemies prioritize players with the highest threat. Dealing damage also increases threat at a 1:1 ratio post-mitigation."),
+	BERSERK(Material.BLAZE_POWDER, StatusType.BERSERK.tag,
+			"Certain abilities become stronger upon reaching a certain threshold of these stacks."),
+	STRENGTH(Material.IRON_SWORD, StatusType.STRENGTH.tag,
+			"Buffs all physical (slashing, piercing, blunt) damage by 1 per stack.");
 	
 	private ItemStack icon;
 	public String tag;

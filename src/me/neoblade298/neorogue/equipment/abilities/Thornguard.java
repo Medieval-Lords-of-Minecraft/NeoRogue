@@ -21,13 +21,16 @@ import me.neoblade298.neorogue.session.fight.trigger.event.GrantShieldsEvent;
 
 public class Thornguard extends Equipment {
 	private ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
-	private static final int CUTOFF = 10;
+	private static final int CUTOFF = 5;
+	private int thorns;
 	
 	public Thornguard(boolean isUpgraded) {
 		super("thornguard", "Thornguard", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(isUpgraded ? 20 : 50, isUpgraded ? 30 : 65, 0, 0));
 		properties.addUpgrades(PropertyType.MANA_COST, PropertyType.STAMINA_COST);
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
+		
+		thorns = isUpgraded ? 5 : 3;
 	}
 
 	@Override
@@ -46,10 +49,8 @@ public class Thornguard extends Equipment {
 				pdata.addTrigger(id, Trigger.RECEIVE_SHIELDS, (pdata2, inputs2) -> {
 					GrantShieldsEvent ev = (GrantShieldsEvent) inputs2;
 					count += ev.getShield().getAmount();
-					System.out.println("Giving thorns " + (count / CUTOFF));
 					pdata.applyStatus(StatusType.THORNS, p.getUniqueId(), count / CUTOFF, -1);
 					count = count % CUTOFF;
-					System.out.println("Leftover " + count);
 					return TriggerResult.keep();
 				});
 				return TriggerResult.remove();
@@ -61,7 +62,7 @@ public class Thornguard extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.DEAD_BUSH,
-				"On cast, for the rest of the fight, for every <white>" + CUTOFF +"</white> " + GlossaryTag.SHIELDS.tag + " that are granted to you, gain <white>1</white>"
-						+ " stack of " + GlossaryTag.THORNS.tag(this) + ".");
+				"On cast, for the rest of the fight, for every <white>" + CUTOFF +"</white> " + GlossaryTag.SHIELDS.tag + " that are granted to you, "
+						+ "gain <yellow>" + thorns + "</yellow> stacks of " + GlossaryTag.THORNS.tag(this) + ".");
 	}
 }

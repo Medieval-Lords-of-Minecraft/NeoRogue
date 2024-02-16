@@ -186,6 +186,7 @@ public class PlayerData {
 	public ArrayList<String> getBoardLines() {
 		Session s = SessionManager.getSession(p);
 		if (s == null) return null;
+		if (s.isSpectator(p.getUniqueId())) return null;
 		if (s.getInstance() instanceof FightInstance) {
 			PlayerFightData pfd = FightInstance.getUserData(p.getUniqueId());
 			return pfd.getBoardLines();

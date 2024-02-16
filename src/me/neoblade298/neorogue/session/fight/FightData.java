@@ -121,6 +121,10 @@ public class FightData {
 		return damageBuff ? damageBuffs : defenseBuffs;
 	}
 
+	public void addTask(BukkitTask task) {
+		tasks.put(UUID.randomUUID().toString(), task);
+	}
+
 	public void addTask(String id, BukkitTask task) {
 		while (tasks.containsKey(id)) id += "1";
 		tasks.put(id, task);

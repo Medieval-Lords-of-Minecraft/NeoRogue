@@ -16,7 +16,7 @@ public class SpikedPauldrons extends Equipment {
 	public SpikedPauldrons(boolean isUpgraded) {
 		super("spikedPauldrons", "Spiked Pauldrons", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ARMOR);
-		thorns = isUpgraded ? 6 : 4;
+		thorns = isUpgraded ? 30 : 20;
 	}
 
 	@Override
