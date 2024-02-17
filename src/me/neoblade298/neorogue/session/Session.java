@@ -472,6 +472,12 @@ public class Session {
 	
 	public void cleanup() {
 		inst.cleanup();
+		
+		for (UUID uuid : spectators) {
+			Player p = Bukkit.getPlayer(uuid);
+			p.setInvisible(false);
+			p.setInvulnerable(false);
+		}
 	}
 	
 	public void leavePlayer(Player p) {
@@ -486,7 +492,7 @@ public class Session {
 			SessionManager.removeFromSession(p.getUniqueId());
 			
 			if (inst instanceof FightInstance) {
-				
+				((FightInstance) inst).handlePlayerLeaveParty();
 			}
 		}
 	}
