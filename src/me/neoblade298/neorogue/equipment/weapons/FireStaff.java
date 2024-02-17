@@ -56,7 +56,7 @@ public class FireStaff extends Equipment {
 				public void run() {
 					proj.start(data);
 				}
-			}.runTaskLater(NeoRogue.inst(), 7));
+			}.runTaskLater(NeoRogue.inst(), 5));
 			return TriggerResult.keep();
 		});
 	}
@@ -82,7 +82,6 @@ public class FireStaff extends Equipment {
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
-			weaponDamageProjectile(hit.getEntity(), proj, hitBarrier);
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, proj.getLocation(), props)) {
 				weaponDamageProjectile(ent, proj);
 			}
