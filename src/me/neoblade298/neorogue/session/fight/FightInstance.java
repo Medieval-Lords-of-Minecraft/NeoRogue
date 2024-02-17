@@ -183,6 +183,21 @@ public abstract class FightInstance extends Instance {
 		}.runTaskLater(NeoRogue.inst(), 5L);
 	}
 	
+	public void handlePlayerLeaveParty() {
+		boolean lose = true;
+		for (UUID uuid : this.getParty()) {
+			PlayerFightData fdata = userData.get(uuid);
+			if (fdata != null && fdata.isActive()) {
+				lose = false;
+				break;
+			}
+		}
+		
+		if (lose) {
+			s.setInstance(new LoseInstance(s));
+		}
+	}
+	
 	@Override
 	public void handlePlayerLeave(Player p) {
 		p.setInvulnerable(false);

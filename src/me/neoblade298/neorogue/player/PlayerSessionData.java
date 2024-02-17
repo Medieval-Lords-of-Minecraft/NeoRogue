@@ -481,6 +481,7 @@ public class PlayerSessionData {
 		String symbol = amount > 0 ? "+" : "";
 		Util.msg(getPlayer(), "<yellow>" + symbol + amount + " coins </yellow>(<gold>" + coins + "</gold>)");
 		updateCoinsBar();
+		updateBoardLines();
 	}
 
 	public int getCoins() {
@@ -502,10 +503,12 @@ public class PlayerSessionData {
 
 	public void addMaxStamina(int amount) {
 		this.maxStamina += amount;
+		updateBoardLines();
 	}
 
 	public void addMaxMana(int amount) {
 		this.maxMana += amount;
+		updateBoardLines();
 	}
 
 	public void addStartingStamina(int amount) {
@@ -554,6 +557,7 @@ public class PlayerSessionData {
 		if (this.health > health) getPlayer().damage(0.1);
 		this.health = Math.min(health, maxHealth);
 		getPlayer().setHealth(this.health);
+		updateBoardLines();
 	}
 
 	public void healPercent(double percent) {

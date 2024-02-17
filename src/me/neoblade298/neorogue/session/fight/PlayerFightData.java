@@ -172,6 +172,10 @@ public class PlayerFightData extends FightData {
 	}
 	
 	private static String createHealthBar(Player p) {
+		PlayerFightData pfd = FightInstance.getUserData(p.getUniqueId());
+		if (pfd != null && pfd.isDead) {
+			return "&c&m" + p.getName();
+		}
 		double percenthp = p.getHealth() / p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
 		percenthp *= 100;
 		int php = (int) percenthp;
@@ -397,6 +401,7 @@ public class PlayerFightData extends FightData {
 		this.stamina = Math.min(this.stamina, this.maxStamina);
 		p.setFoodLevel((int) (this.stamina * 14 / sessdata.getMaxStamina()) + 6);
 		updateActionBar();
+		updateBoardLines();
 	}
 	
 	public void addHealth(double amount) {
@@ -439,6 +444,7 @@ public class PlayerFightData extends FightData {
 	private void updateMana() {
 		this.mana = Math.min(this.mana, this.maxMana);
 		updateActionBar();
+		updateBoardLines();
 	}
 	
 	private void updateActionBar() {
