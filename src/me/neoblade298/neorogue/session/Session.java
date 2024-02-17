@@ -497,7 +497,7 @@ public class Session {
 			Util.displayError(p, "Only the host may kick players");
 		}
 		else {
-			if (party.containsKey(target.getUniqueId())) {
+			if (!party.containsKey(target.getUniqueId())) {
 				Util.displayError(p, "That player isn't in your party!");
 				return;
 			}
