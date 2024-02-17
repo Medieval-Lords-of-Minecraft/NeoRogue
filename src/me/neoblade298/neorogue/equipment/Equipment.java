@@ -19,6 +19,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.bukkit.NeoCore;
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.droptables.DropTable;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
@@ -531,8 +532,23 @@ public abstract class Equipment implements Comparable<Equipment> {
 		return type.canEquip(es);
 	}
 	
+	public boolean canUseWeapon(PlayerFightData data) {
+		if (data.getMana() < properties.get(PropertyType.MANA_COST)) {
+			Util.displayError(data.getPlayer(), "Not enough mana!");
+			return false;
+		}
+		
+		if (data.getStamina() < properties.get(PropertyType.STAMINA_COST)) {
+			Util.displayError(data.getPlayer(), "Not enough stamina!");
+			return false;
+		}
+		return true;
+	}
+	
 	// Used for weapons that start cooldown on swing, not hit
 	public void weaponSwing(Player p, PlayerFightData data) {
+		if (properties.has(PropertyType.MANA_COST)) data.addMana(-properties.get(PropertyType.MANA_COST));
+		if (properties.has(PropertyType.STAMINA_COST)) data.addStamina(-properties.get(PropertyType.STAMINA_COST));
 		properties.getSwingSound().play(p);
 		data.setBasicAttackCooldown(type.getSlots()[0], properties);
 		if (type.getSlots()[0] == EquipSlot.OFFHAND)
