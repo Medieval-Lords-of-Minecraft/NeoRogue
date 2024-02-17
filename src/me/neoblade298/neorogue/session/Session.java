@@ -484,6 +484,10 @@ public class Session {
 			broadcast("<yellow>" + p.getName() + " <gray>has left the party!");
 			party.remove(p.getUniqueId());
 			SessionManager.removeFromSession(p.getUniqueId());
+			
+			if (inst instanceof FightInstance) {
+				
+			}
 		}
 	}
 	
