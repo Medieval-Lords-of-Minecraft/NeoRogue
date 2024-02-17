@@ -30,7 +30,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class IceWand extends Equipment {
-	private static final TargetProperties props = TargetProperties.radius(0.5, true, TargetType.ENEMY);
+	private static final TargetProperties props = TargetProperties.radius(0.75, true, TargetType.ENEMY);
 	private static final PotionEffect slow = new PotionEffect(PotionEffectType.SLOW, 60, 1, false, false, false);
 
 	private static ParticleContainer tick;
@@ -84,7 +84,8 @@ public class IceWand extends Equipment {
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
-			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, proj.getLocation(), props)) {
+			weaponDamageProjectile(hit.getEntity(), proj);
+			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, hit.getEntity().getLocation(), props)) {
 				weaponDamageProjectile(ent, proj);
 				ent.addPotionEffect(slow);
 				proj.getOwner().addSimpleShield(p.getUniqueId(), shieldAmount, 40);
