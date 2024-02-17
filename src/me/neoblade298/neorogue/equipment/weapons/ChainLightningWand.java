@@ -49,7 +49,7 @@ public class ChainLightningWand extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (d, inputs) -> {
-			LivingEntity target = TargetHelper.getEntitiesInCone(p, hitScan).pollFirst();
+			LivingEntity target = TargetHelper.getNearestInSight(p, hitScan);
 			if (target != null) {
 				weaponDamage(p, data, target);
 				drawCache = ParticleUtil.calculateCache(p.getLocation());

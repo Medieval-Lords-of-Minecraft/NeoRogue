@@ -66,7 +66,7 @@ public class FireStaff extends Equipment {
 		
 		public FireStaffProjectile(Player p) {
 			super(0.5, 15, 2);
-			this.size(1, 1).gravity(0.15).initialY(0.6);
+			this.size(1, 1).gravity(0.125).initialY(0.65);
 			this.p = p;
 		}
 		
