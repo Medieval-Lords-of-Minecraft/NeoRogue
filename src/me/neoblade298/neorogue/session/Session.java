@@ -369,6 +369,7 @@ public class Session {
 			for (PlayerSessionData data : party.values()) {
 				data.setupInventory();
 				data.setupEditInventory(); // hunger and exp bar
+				data.updateBoardLines();
 			}
 			
 			for (UUID uuid : spectators) {

@@ -192,7 +192,7 @@ public class PlayerSessionInventory extends CoreInventory {
 			if (e.getSlot() == ARTIFACTS) {
 				new ArtifactsInventory(data, spectator);
 			}
-			else if (e.getSlot() == SEE_OTHERS) {
+			else if (e.getSlot() == SEE_OTHERS && data.getSession().getParty().size() > 1) {
 				new SpectateSelectInventory(data.getSession(), spectator, false);
 			}
 			return;
@@ -257,6 +257,8 @@ public class PlayerSessionInventory extends CoreInventory {
 			}
 			// Remove gear
 			else {
+				Equipment eq = Equipment.get(nclicked.getString("equipId"), false);
+				p.playSound(p, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1F);
 				if (onChest) {
 					e.setCancelled(true);
 					EquipSlot type = slotTypes.get(slot);
@@ -264,16 +266,30 @@ public class PlayerSessionInventory extends CoreInventory {
 					if (isBindable(type)) clicked = removeBindLore(clicked);
 					if (e.isShiftClick()) {
 						p.getInventory().addItem(clicked);
-						e.setCancelled(false);
 					}
 					else {
-						p.setItemOnCursor(clicked);
-						Equipment eq = Equipment.get(nclicked.getString("equipId"), false);
 						setHighlights(eq.getType());
+						p.setItemOnCursor(clicked);
 					}
 				}
-				// Highlight slots where the item can be equipped
-				p.playSound(p, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1F);
+				else {
+					if (!e.isShiftClick()) return;
+					e.setCancelled(true);
+					if (eq.getType() == EquipmentType.ABILITY && !data.canEquipAbility()) {
+						displayError("You can only equip " + data.getMaxAbilities() + " abilities!", true);
+						return;
+					}
+					AutoEquipResult attempt = attemptAutoEquip(eq.getType());
+					if (attempt == null) return;
+					ItemStack autoItem = inv.getItem(attempt.slot);
+					NBTItem nauto = new NBTItem(autoItem);
+					data.setEquipment(attempt.es, nauto.getInteger("dataSlot"), eq);
+					p.playSound(p, Sound.ITEM_ARMOR_EQUIP_DIAMOND, 1F, 1F);
+					if (isBindable(attempt.es)) clicked = addBindLore(clicked, attempt.slot, nauto.getInteger("dataSlot"));
+					inv.setItem(attempt.slot, addNbt(clicked, nauto.getInteger("dataSlot")));
+					e.getClickedInventory().setItem(e.getSlot(), null);
+					return;
+				}
 			}
 		}
 
@@ -322,9 +338,12 @@ public class PlayerSessionInventory extends CoreInventory {
 
 				EquipSlot type = slotTypes.get(slot);
 				if (e.isShiftClick()) {
+					if (!nclicked.hasTag("equipId")) return;
 					if (isBindable(type)) clicked = removeBindLore(clicked);
-					data.removeEquipment(type, nclicked.getInteger("dataSlot"));
-					e.setCancelled(false);
+					removeEquipment(type, nclicked.getInteger("dataSlot"), slot, e.getClickedInventory());
+					setHighlights(eq.getType()); // Reset the highlights since if I don't the old colored glass panes show up
+					p.getInventory().addItem(clicked);
+					p.playSound(p, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1F);
 					return;
 				}
 
@@ -385,6 +404,30 @@ public class PlayerSessionInventory extends CoreInventory {
 			}
 		}
 		inv.setContents(contents);
+	}
+	
+	private AutoEquipResult attemptAutoEquip(EquipmentType type) {
+		ItemStack[] contents = inv.getContents();
+		int equipSlotIdx = 0;
+		for (int[] slots : arrayFromEquipSlot(type)) {
+			for (int s : slots) {
+				ItemStack iter = contents[s];
+				if (iter.getType().name().endsWith("PANE")) {
+					return new AutoEquipResult(type.getSlots()[equipSlotIdx], s);
+				}
+			}
+			equipSlotIdx++;
+		}
+		return null;
+	}
+	
+	private class AutoEquipResult {
+		protected int slot;
+		protected EquipSlot es;
+		protected AutoEquipResult(EquipSlot es, int slot) {
+			this.slot = slot;
+			this.es = es;
+		}
 	}
 
 	private void handleInventorySwap(InventoryClickEvent e) {

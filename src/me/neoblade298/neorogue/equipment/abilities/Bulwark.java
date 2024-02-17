@@ -26,8 +26,8 @@ public class Bulwark extends Equipment {
 		super("bulwark", "Bulwark", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.none());
 		
-		heal = 3;
-		shield = isUpgraded ? 6 : 3;
+		heal = 8;
+		shield = isUpgraded ? 12 : 8;
 	}
 
 	@Override
@@ -44,8 +44,8 @@ public class Bulwark extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SHIELD,
-				"Passive. Heal for <white>" + heal + "</white> and gain a " +
-						GlossaryTag.SHIELDS.tag(this) + " of <yellow>" + shield + "</yellow> for every " + HEAL_COUNT + " consecutive seconds you keep a shield raised.");
+				"Passive. Heal for <white>" + heal + "</white> and gain <yellow>" + shield + "</yellow> " +
+						GlossaryTag.SHIELDS.tag(this) + " after " + HEAL_COUNT + " consecutive seconds you keep a shield raised.");
 	}
 	
 	private class BulwarkInstance extends EquipmentInstance {

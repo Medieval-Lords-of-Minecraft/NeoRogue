@@ -32,7 +32,7 @@ public class Discipline extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION,
-				"On cast, give yourself <white>" + stamina + " </white> stamina and <yellow>" + staminaGain + "</yellow> max stamina.");
+				"On cast, give yourself <white>" + stamina + "</white> stamina and <yellow>" + staminaGain + "</yellow> max stamina.");
 	}
 
 	@Override

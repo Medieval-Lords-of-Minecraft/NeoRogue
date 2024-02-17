@@ -37,7 +37,7 @@ public class Bulldoze extends Equipment {
 	private int damage;
 	
 	public Bulldoze(boolean isUpgraded) {
-		super("bulldoze", "Bulldoze", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
+		super("bulldoze", "Bulldoze", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 20, 20, 0));
 		damage = isUpgraded ? 250 : 200;
 		

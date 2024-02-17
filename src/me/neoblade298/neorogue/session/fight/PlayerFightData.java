@@ -1,9 +1,12 @@
 package me.neoblade298.neorogue.session.fight;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map.Entry;
+import java.util.TreeSet;
 
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
@@ -16,6 +19,8 @@ import com.google.common.collect.TreeMultiset;
 
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.TickAction.TickResult;
+import me.neoblade298.neorogue.session.fight.status.Status;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.KeyBind;
 import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -31,11 +36,24 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 
 public class PlayerFightData extends FightData {
 	
+	private static final Comparator<Status> stackComparator = new Comparator<Status>() {
+		@Override
+		public int compare(Status s1, Status s2) {
+			// First priority: stacks
+			int comp = Integer.compare(s1.getStacks(), s2.getStacks());
+			if (comp != 0) return comp;
+			
+			// Next priority: id
+			return s1.getId().compareTo(s2.getId());
+		}
+	};
+	
 	private PlayerSessionData sessdata;
 	private HashMap<Trigger, TreeMultiset<PriorityAction>> triggers = new HashMap<Trigger, TreeMultiset<PriorityAction>>();
 	private HashMap<String, EquipmentInstance> equips = new HashMap<String, EquipmentInstance>(); // Useful for modifying cooldowns
 	private HashMap<Integer, HashMap<Trigger, TreeMultiset<PriorityAction>>> slotBasedTriggers = new HashMap<Integer, HashMap<Trigger, TreeMultiset<PriorityAction>>>();
 	private LinkedList<Listener> listeners = new LinkedList<Listener>();
+	private ArrayList<String> boardLines;
 	private Player p;
 	private long nextAttack, nextOffAttack;
 
@@ -61,8 +79,6 @@ public class PlayerFightData extends FightData {
 		this.stamina = sessdata.getStartingStamina();
 		this.staminaRegen = sessdata.getStaminaRegen();
 		this.manaRegen = sessdata.getManaRegen();
-		updateStamina();
-		updateMana();
 
 		// Initialize fight data
 		int i = 0;
@@ -111,6 +127,10 @@ public class PlayerFightData extends FightData {
 		
 		if (offhand != null) inv.setItemInOffHand(offhand.getItem());
 		addTickAction(new PlayerUpdateTickAction());
+
+		updateStamina();
+		updateMana();
+		updateBoardLines();
 	}
 	
 	@Override
@@ -122,6 +142,60 @@ public class PlayerFightData extends FightData {
 	public PlayerSessionData getSessionData() {
 		return sessdata;
 	}
+	
+	public ArrayList<String> getBoardLines() {
+		return boardLines;
+	}
+	
+	public void updateBoardLines() {
+		int lineSize = 9;
+		boardLines = new ArrayList<String>(lineSize);
+		
+		TreeSet<Status> statuses = new TreeSet<Status>(stackComparator);
+		for (Status s : this.statuses.values()) {
+			statuses.add(s);
+		}
+		
+		ArrayList<Player> online = sessdata.getSession().getOnlinePlayers();
+		int players = online.size();
+		Iterator<Status> iter = statuses.descendingIterator();
+		while (iter.hasNext() && boardLines.size() < lineSize - players - 1) {
+			Status s = iter.next();
+			boardLines.add(s.getBoardDisplay());
+		}
+		if (!boardLines.isEmpty()) boardLines.add("§8§m-----");
+		
+		for (Player p : online) {
+			if (p == this.p) continue;
+			boardLines.add(createHealthBar(p));
+		}
+	}
+	
+	private static String createHealthBar(Player p) {
+		double percenthp = p.getHealth() / p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+		percenthp *= 100;
+		int php = (int) percenthp;
+		String color = "§a";
+		if (php < 50 && php >= 25) {
+			color = "§e";
+		}
+		else if (php < 25) {
+			color = "§c";
+		}
+
+		String bar = "" + color;
+		// Add 5 so 25% is still 3/10 on the health bar
+		int phpmod = (php + 5) / 10;
+		for (int i = 0; i < phpmod; i++) {
+			bar += "|";
+		}
+		bar += "§7";
+		for (int i = 0; i < (10 - phpmod); i++) {
+			bar += "|";
+		}
+		
+		return color + p.getName() + " " + bar;
+	}
 
 	// Used when the player dies or revived
 	public void setDeath(boolean isDead) {
@@ -130,6 +204,8 @@ public class PlayerFightData extends FightData {
 		if (isDead) {
 			p.setInvulnerable(true);
 			p.setInvisible(true);
+			clearStatus(StatusType.POISON);
+			clearStatus(StatusType.BLEED);
 		}
 		else {
 			p.setInvulnerable(false);
@@ -416,6 +492,7 @@ public class PlayerFightData extends FightData {
 		public TickResult run() {
 			addMana(manaRegen);
 			addStamina(p.isSprinting() ? staminaRegen - 4 : staminaRegen);
+			updateBoardLines();
 			
 			FightInstance.trigger(p, Trigger.PLAYER_TICK, null);
 			

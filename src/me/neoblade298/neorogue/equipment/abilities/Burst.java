@@ -17,7 +17,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
@@ -38,7 +38,7 @@ public class Burst extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.POTION,
 				"On cast, give yourself <white>" + stamina + "</white> stamina and <yellow>" + buff +
-				"</yellow> bonus " + GlossaryTag.PHYSICAL.tag(this) + " damage for <white>" + seconds + "</white> seconds. Afterwards,"
+				"</yellow> " + GlossaryTag.STRENGTH.tag(this) + " damage for <white>" + seconds + "</white> seconds. Afterwards,"
 						+ " <white>" + stamina + "</white> stamina is removed.");
 	}
 
@@ -48,7 +48,7 @@ public class Burst extends Equipment {
 			Util.playSound(p, Sound.ENTITY_BLAZE_DEATH, 1F, 1F, false);
 			pc.spawn(p);
 			pdata.addStamina(stamina);
-			pdata.addBuff(p.getUniqueId(), id, true, false, BuffType.PHYSICAL, buff, seconds);
+			data.applyStatus(StatusType.STRENGTH, p.getUniqueId(), buff, seconds);
 			
 			data.addTask(id, new BukkitRunnable() {
 				public void run() {

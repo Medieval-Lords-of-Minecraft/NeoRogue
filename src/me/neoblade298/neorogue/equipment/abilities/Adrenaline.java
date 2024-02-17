@@ -31,7 +31,7 @@ public class Adrenaline extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.POTION,
 				"On cast, give yourself <white>" + stamina + "</white> stamina. Can be cast <yellow>" +
-					(isUpgraded ? "once" : "twice") + "</yellow> per fight.");
+					(isUpgraded ? "twice" : "once") + "</yellow> per fight.");
 	}
 
 	@Override

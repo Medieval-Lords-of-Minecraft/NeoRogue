@@ -110,6 +110,14 @@ public class StandardFightInstance extends FightInstance {
 	
 	public static HashMap<UUID, ArrayList<Reward>> generateRewards(Session s, FightScore fightScore) {
 		HashMap<UUID, ArrayList<Reward>> rewards = new HashMap<UUID, ArrayList<Reward>>();
+		boolean dropPotion = false;
+		if (NeoRogue.gen.nextInt(100) < s.getPotionChance()) {
+			s.addPotionChance(-25);
+			dropPotion = true;
+		}
+		else {
+			s.addPotionChance(10);
+		}
 		for (UUID uuid : s.getParty().keySet()) {
 			PlayerSessionData data = s.getParty().get(uuid);
 			ArrayList<Reward> list = new ArrayList<Reward>();
@@ -145,14 +153,8 @@ public class StandardFightInstance extends FightInstance {
 			equipDrops.add(Equipment.get("emeraldShard", false));
 			equipDrops.add(Equipment.get("sapphireShard", false));
 			list.add(new EquipmentChoiceReward(equipDrops));
+			if (dropPotion) list.add(new EquipmentReward(Equipment.getConsumable(value, ec, EquipmentClass.CLASSLESS)));
 			
-			if (NeoRogue.gen.nextInt(100) < s.getPotionChance()) {
-				list.add(new EquipmentReward(Equipment.getConsumable(value, ec, EquipmentClass.CLASSLESS)));
-				s.addPotionChance(-25);
-			}
-			else {
-				s.addPotionChance(10);
-			}
 			rewards.put(uuid, list);
 		}
 		return rewards;

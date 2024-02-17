@@ -1,6 +1,7 @@
 package me.neoblade298.neorogue.equipment;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -850,5 +851,9 @@ public abstract class Equipment implements Comparable<Equipment> {
 	
 	public static Set<String> getEquipmentIds() {
 		return equipment.keySet();
+	}
+	
+	public static Collection<Equipment> getAll() {
+		return equipment.values();
 	}
 }

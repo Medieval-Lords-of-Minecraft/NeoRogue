@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -17,6 +18,9 @@ import me.neoblade298.neocore.shared.util.SQLInsertBuilder;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder.SQLAction;
 import me.neoblade298.neorogue.ascension.Upgrade;
 import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.SessionManager;
+import me.neoblade298.neorogue.session.fight.FightInstance;
+import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -176,6 +180,21 @@ public class PlayerData {
 	public void initialize(Session s, PlayerSessionData data) {
 		for (Upgrade up : upgrades.values()) {
 			up.initialize(s, data);
+		}
+	}
+	
+	public ArrayList<String> getBoardLines() {
+		Session s = SessionManager.getSession(p);
+		if (s == null) return null;
+		if (s.isSpectator(p.getUniqueId())) return null;
+		if (s.getInstance() instanceof FightInstance) {
+			PlayerFightData pfd = FightInstance.getUserData(p.getUniqueId());
+			return pfd.getBoardLines();
+		}
+		else {
+			PlayerSessionData psd = s.getParty().get(p.getUniqueId());
+			if (psd == null) return null;
+			return psd.getBoardLines();
 		}
 	}
 }

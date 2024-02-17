@@ -159,10 +159,12 @@ public class DamageMeta {
 			}
 
 			if (recipient.hasStatus(StatusType.SANCTIFIED)) {
-				int stacks = recipient.getStatus(StatusType.SANCTIFIED).getStacks();
+				Status s = recipient.getStatus(StatusType.SANCTIFIED);
+				int stacks = s.getStacks();
 				for (Entry<UUID, Integer> slice : recipient.getStatus(StatusType.SANCTIFIED).getSlices().getSliceOwners().entrySet()) {
 					FightInstance.giveHeal(Bukkit.getPlayer(slice.getKey()), stacks * 0.2, damager);
 				}
+				s.apply(owner.getUniqueId(), -1, -1);
 			}
 			
 			if (owner.hasStatus(StatusType.FROST)) {
@@ -300,6 +302,11 @@ public class DamageMeta {
 			}
 			else {
 				PlayerFightData data = FightInstance.getUserData(target.getUniqueId());
+				if (data == null) {
+					Bukkit.getLogger().warning("[NeoRogue] Failed to find data for " + target.getUniqueId());
+					System.out.println(FightInstance.getUserData().keySet());
+					return;
+				}
 				data.getInstance().cancelRevives((Player) target);
 			}
 		}

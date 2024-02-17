@@ -24,7 +24,7 @@ public class Rapier extends Equipment {
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(isUpgraded ? 80 : 60, 1, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_CRIT));
 		properties.addUpgrades(PropertyType.DAMAGE);
-		shields = isUpgraded ? 10 : 7;
+		shields = isUpgraded ? 5 : 3;
 	}
 
 	@Override
@@ -32,13 +32,14 @@ public class Rapier extends Equipment {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
 			weaponSwingAndDamage(p, data, ev.getTarget());
-			data.addSimpleShield(p.getUniqueId(), shields, 100);
+			data.addSimpleShield(p.getUniqueId(), shields, 40);
 			return TriggerResult.keep();
 		});
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STONE_SWORD, "On hit, grant yourself <yellow>" + shields + "</yellow> " + GlossaryTag.SHIELDS.tag(this) + ".");
+		item = createItem(Material.STONE_SWORD, "On hit, grant yourself <yellow>" + shields + "</yellow> " + GlossaryTag.SHIELDS.tag(this) + 
+				"for <white>2</white> seconds.");
 	}
 }

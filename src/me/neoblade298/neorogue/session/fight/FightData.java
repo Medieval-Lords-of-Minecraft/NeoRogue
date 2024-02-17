@@ -121,6 +121,10 @@ public class FightData {
 		return damageBuff ? damageBuffs : defenseBuffs;
 	}
 
+	public void addTask(BukkitTask task) {
+		tasks.put(UUID.randomUUID().toString(), task);
+	}
+
 	public void addTask(String id, BukkitTask task) {
 		while (tasks.containsKey(id)) id += "1";
 		tasks.put(id, task);
@@ -248,6 +252,14 @@ public class FightData {
 		return statuses.get(type.name());
 	}
 	
+	public void clearStatus(String id) {
+		statuses.remove(id);
+	}
+	
+	public void clearStatus(StatusType type) {
+		statuses.remove(type.name());
+	}
+	
 	public void applyStatus(StatusType type, UUID applier, int stacks, int seconds) {
 		applyStatus(type, applier, stacks, seconds, null);
 	}
@@ -262,7 +274,7 @@ public class FightData {
 	}
 	
 	public void applyStatus(GenericStatusType type, String id, UUID applier, int stacks, int seconds, DamageMeta meta) {
-		Status s = statuses.getOrDefault(type.name(), Status.createByGenericType(type, id, applier, this));
+		Status s = statuses.getOrDefault(id, Status.createByGenericType(type, id, applier, this));
 		applyStatus(s, applier, stacks, seconds, meta);
 	}
 	

@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -97,6 +98,7 @@ public abstract class FightInstance extends Instance {
 	protected LinkedList<FightRunnable> initialTasks = new LinkedList<FightRunnable>();
 	protected double spawnCounter; // Holds a value between 0 and 1, when above 1, a mob spawns
 	protected double totalSpawnValue; // Keeps track of total mob spawns, to handle scaling of spawning
+	private long startTime;
 
 	private static final Circle reviveCircle = new Circle(5);
 	private static final ParticleContainer reviveCirclePart = new ParticleContainer(Particle.END_ROD).count(1);
@@ -105,8 +107,6 @@ public abstract class FightInstance extends Instance {
 			{ new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1F), new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1.059463F),
 				new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1.122462F), new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1.189207F),
 				new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1.259921F)};
-	private static final Component statsHeader = SharedUtil.color("<gray>Fight Statistics (Hover for more info!)\n=====\n"
-			+ "[<yellow>Name</yellow> (<green>Health</green>) - <red>Damage Dealt </red>/ <dark_red>Received </dark_red>/ <blue>Buffed</blue> / <gold>Mitigated</gold>]");
 
 	public FightInstance(Session s, Set<UUID> players) {
 		super(s);
@@ -187,6 +187,7 @@ public abstract class FightInstance extends Instance {
 	public void handlePlayerLeave(Player p) {
 		p.setInvulnerable(false);
 		p.setInvisible(false);
+		p.setNoDamageTicks(10);
 		p.removePotionEffect(PotionEffectType.ABSORPTION);
 	}
 	
@@ -634,6 +635,7 @@ public abstract class FightInstance extends Instance {
 		new BukkitRunnable() {
 			public void run() {
 				activateSpawner(2 + (s.getNodesVisited() / 5) + s.getParty().size());
+				startTime = System.currentTimeMillis();
 				for (MapSpawnerInstance inst : fi.initialSpawns) {
 					inst.spawnMob();
 				}
@@ -695,6 +697,15 @@ public abstract class FightInstance extends Instance {
 
 	@Override
 	public void cleanup() {
+		long time = System.currentTimeMillis() - startTime;
+		final long hr = TimeUnit.MILLISECONDS.toHours(time);
+        final long min = TimeUnit.MILLISECONDS.toMinutes(time - TimeUnit.HOURS.toMillis(hr));
+        final long sec = TimeUnit.MILLISECONDS.toSeconds(time - TimeUnit.HOURS.toMillis(hr) - TimeUnit.MINUTES.toMillis(min));
+        final long ms = TimeUnit.MILLISECONDS.toMillis(time - TimeUnit.HOURS.toMillis(hr) - TimeUnit.MINUTES.toMillis(min) - TimeUnit.SECONDS.toMillis(sec));
+        String timer = String.format("%d:%02d.%03d", min, sec, ms);
+        
+		Component statsHeader = SharedUtil.color("<gray>Fight Statistics [<white>" + timer + "</white>] (Hover for more info!)\n=====\n"
+			+ "[<yellow>Name</yellow> (<green>Health</green>) - <red>Damage Dealt </red>/ <dark_red>Received </dark_red>/ <blue>Buffed</blue> / <gold>Mitigated</gold>]");
 		s.broadcast(statsHeader);
 		for (UUID uuid : s.getParty().keySet()) {
 			PlayerFightData pdata = userData.remove(uuid);

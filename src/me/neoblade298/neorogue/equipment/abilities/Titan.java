@@ -22,7 +22,7 @@ public class Titan extends Equipment {
 		super("titan", "Titan", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.none());
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
-		staminaReduction = isUpgraded ? 10 : 5;
+		staminaReduction = isUpgraded ? 15 : 10;
 	}
 
 	@Override

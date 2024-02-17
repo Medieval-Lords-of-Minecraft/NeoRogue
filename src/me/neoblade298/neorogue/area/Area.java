@@ -173,7 +173,6 @@ public class Area {
 			nodes[1][arr[i]] = generateNode(GenerationType.INITIAL, 1, arr[i], nodes[0][CENTER_LANE]);
 		}
 		
-		nodes[MAX_POSITIONS - 2][CENTER_LANE - 1] = new Node(NodeType.SHRINE, MAX_POSITIONS - 2, CENTER_LANE - 1);
 		nodes[MAX_POSITIONS - 2][CENTER_LANE] = new Node(NodeType.SHRINE, MAX_POSITIONS - 2, CENTER_LANE);
 		nodes[MAX_POSITIONS - 2][CENTER_LANE + 1] = new Node(NodeType.SHRINE, MAX_POSITIONS - 2, CENTER_LANE + 1);
 		nodes[MAX_POSITIONS - 1][CENTER_LANE] = new Node(NodeType.BOSS, MAX_POSITIONS - 1, CENTER_LANE);

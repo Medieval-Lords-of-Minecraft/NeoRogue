@@ -41,7 +41,8 @@ public class ProjectileInstance {
 		LivingEntity origin = owner.getEntity();
 		final ProjectileInstance proj = this;
 		
-		v = origin.getLocation().getDirection().rotateAroundY(Math.toRadians(settings.getRotation())).add(new Vector(0, settings.initialY(), 0));
+		v = origin.getLocation().getDirection().rotateAroundY(Math.toRadians(settings.getRotation()));
+		if (settings.initialY() != 0) v = v.add(new Vector(0, settings.initialY(), 0)).normalize();
 		v.multiply(settings.getBlocksPerTick() * settings.getTickSpeed());
 		double len = v.length();
 		if (len > 1) {

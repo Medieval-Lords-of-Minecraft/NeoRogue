@@ -16,7 +16,7 @@ public class MinorStrengthRelic extends Equipment {
 	public MinorStrengthRelic(boolean isUpgraded) {
 		super("minorStrengthRelic", "Minor Strength Relic", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ACCESSORY);
-		str = isUpgraded ? 6 : 4;
+		str = isUpgraded ? 8 : 5;
 	}
 
 	@Override
@@ -26,6 +26,6 @@ public class MinorStrengthRelic extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.REDSTONE, "Increases " + GlossaryTag.PHYSICAL.tag(this) + " damage by <yellow>" + str + "</yellow>.");
+		item = createItem(Material.REDSTONE, "Increases " + GlossaryTag.STRENGTH.tag(this) + " by <yellow>" + str + "</yellow>.");
 	}
 }

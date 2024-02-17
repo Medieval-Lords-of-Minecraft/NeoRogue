@@ -15,7 +15,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
-import me.neoblade298.neorogue.session.fight.status.Status.GenericStatusType;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
@@ -45,8 +45,8 @@ public class Ferocity extends Equipment {
 		data.addTrigger(id, bind, new EquipmentInstance(p, this, slot, es, (pdata, in) -> {
 			Util.playSound(p, Sound.ENTITY_BLAZE_DEATH, 1F, 1F, false);
 			pc.spawn(p);
-			pdata.applyStatus(GenericStatusType.BASIC, "BERSERK", p.getUniqueId(), berserk, -1);
-			if (pdata.getStatus("BERSERK").getStacks() >= cutoff) {
+			pdata.applyStatus(StatusType.BERSERK, p.getUniqueId(), berserk, -1);
+			if (pdata.getStatus(StatusType.BERSERK).getStacks() >= cutoff) {
 				Util.playSound(p, Sound.ENTITY_ENDER_DRAGON_AMBIENT, 1F, 1F, false);
 				p.getInventory().setItem(slot, null);
 				return TriggerResult.remove();

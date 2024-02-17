@@ -22,7 +22,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
 public class MightySwing extends Equipment {
-	private int damage;
+	private int damage, cdr;
 	private ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
 			hit = new ParticleContainer(Particle.REDSTONE);
 	
@@ -50,7 +50,7 @@ public class MightySwing extends Equipment {
 				Util.playSound(p, Sound.BLOCK_ANVIL_LAND, 1F, 1F, false);
 				hit.spawn(ev.getTarget().getLocation());
 				if (pct > 0.5) {
-					eqi.reduceCooldown(4);
+					eqi.reduceCooldown(cdr);
 					Util.playSound(p, Sound.ENTITY_BLAZE_SHOOT, 1F, 1F, false);
 				}
 				else {
@@ -66,6 +66,6 @@ public class MightySwing extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.FLINT,
 				"On cast, your next basic attack while in the air deals <yellow>" + damage + "</yellow> " + GlossaryTag.PIERCING.tag(this) + " damage. If the enemy is"
-						+ " above <white>50%</white> health, reduce the ability's cooldown by <white>4</white>.");
+						+ " above <white>50%</white> health, reduce the ability's cooldown by <yellow>" + cdr + "</yellow>.");
 	}
 }

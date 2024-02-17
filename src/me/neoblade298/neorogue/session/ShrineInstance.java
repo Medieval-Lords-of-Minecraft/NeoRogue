@@ -149,8 +149,10 @@ public class ShrineInstance extends EditInventoryInstance {
 			blockTop.setType(Material.WITHER_SKELETON_SKULL);
 
 			ArrayList<String> lines = new ArrayList<String>();
-			loc.add(0, 1, 0);
+			loc.add(0, 1.5, 0);
 			lines.add("Use the anvil!");
+			lines.add("To skip upgrading,");
+			lines.add("shift click the paper!");
 			Plot plot = s.getPlot();
 			holo = DHAPI.createHologram(plot.getXOffset() + "-" + plot.getZOffset() + "-shrineanvil", spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), lines);
 		}

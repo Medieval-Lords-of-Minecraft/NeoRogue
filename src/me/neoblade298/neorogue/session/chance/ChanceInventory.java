@@ -39,8 +39,8 @@ public class ChanceInventory extends CoreInventory {
 		setupInventory(inst.getSession().getData(p.getUniqueId()));
 	}
 
-	public ChanceInventory(Player p, ChanceInstance inst, ChanceSet set, ChanceStage stage, boolean asSpectator) {
-		super(p, Bukkit.createInventory(p, 18, Component.text(p.getName() + "'s Chance Event", NamedTextColor.BLUE)));
+	public ChanceInventory(PlayerSessionData data, ChanceInstance inst, ChanceSet set, ChanceStage stage, boolean asSpectator) {
+		super(data.getPlayer(), Bukkit.createInventory(data.getPlayer(), 18, Component.text(data.getData().getDisplay() + "'s Chance Event", NamedTextColor.BLUE)));
 		this.set = set;
 		this.inst = inst;
 		this.s = inst.getSession();

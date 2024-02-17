@@ -24,7 +24,7 @@ public class FencingSword extends Equipment {
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(isUpgraded ? 45 : 30, 1, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_CRIT));
 		properties.addUpgrades(PropertyType.DAMAGE);
-		shields = isUpgraded ? 4 : 2;
+		shields = isUpgraded ? 2 : 1;
 	}
 
 	@Override
@@ -32,13 +32,14 @@ public class FencingSword extends Equipment {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
 			weaponSwingAndDamage(p, data, ev.getTarget());
-			data.addSimpleShield(p.getUniqueId(), shields, 100);
+			data.addSimpleShield(p.getUniqueId(), shields, 40);
 			return TriggerResult.keep();
 		});
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STONE_SWORD, "On hit, grant yourself <white>" + shields + "</white> " + GlossaryTag.SHIELDS.tag(this) + ".");
+		item = createItem(Material.STONE_SWORD, "On hit, grant yourself <white>" + shields + "</white> " + GlossaryTag.SHIELDS.tag(this) +
+				" for <white>2</white> seconds.");
 	}
 }

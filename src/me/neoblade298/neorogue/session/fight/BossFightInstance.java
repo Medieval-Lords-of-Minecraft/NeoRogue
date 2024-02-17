@@ -70,12 +70,12 @@ public class BossFightInstance extends FightInstance {
 			EquipmentClass ec = data.getPlayerClass();
 			int value = s.getAreasCompleted();
 			equipDrops.addAll(Equipment.getDrop(value + 3, 3, ec, EquipmentClass.CLASSLESS));
+			list.add(new EquipmentChoiceReward(equipDrops));
 			
 			equipDrops = new ArrayList<Equipment>(3);
 			equipDrops.addAll(Equipment.getArtifact(data.getArtifactDroptable(), value + 2, 3, ec, EquipmentClass.CLASSLESS));
 			list.add(new EquipmentChoiceReward(equipDrops));
 			
-			list.add(new EquipmentChoiceReward(equipDrops));
 			equipDrops = new ArrayList<Equipment>(3);
 			equipDrops.add(Equipment.get("rubyGem", false));
 			equipDrops.add(Equipment.get("emeraldGem", false));

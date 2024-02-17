@@ -46,10 +46,10 @@ public class NeoRogue extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new MythicLoader(), this);
 		reload();
 		initCommands(); // Must load commands AFTER map pieces due to command suggestion
+		new Placeholders().register();
 
 		// Strictly for debug usage
 		debugInitialize();
-		
 	}
 	
 	public static void reload() {

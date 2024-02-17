@@ -268,6 +268,7 @@ public class SessionManager implements Listener {
 			return;
 		}
 		if (!(s.getInstance() instanceof FightInstance)) return;
+		if (e.getEntity() instanceof Player) return;
 		if (!playerDamager) {
 			// Don't cancel damage, but set it to 0 so the ~onAttack mythicmob trigger still goes
 			e.setDamage(0);
@@ -399,6 +400,7 @@ public class SessionManager implements Listener {
 			FightData fd = new FightData((LivingEntity) ent, (MapSpawnerInstance) null);
 			FightInstance.putFightData(uuid, fd);
 			if (e.getSpawnReason() == SpawnReason.SUMMON) {
+				if (fd.getInstance() == null) return;
 				MythicMob mythicMob = e.getMobType();
 				FightInstance.scaleMob(fd.getInstance().getSession(), Mob.get(mythicMob.getInternalName()), mythicMob, e.getMob());
 			}

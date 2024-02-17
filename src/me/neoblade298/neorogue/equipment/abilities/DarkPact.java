@@ -12,6 +12,7 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.BuffType;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -43,7 +44,7 @@ public class DarkPact extends Equipment {
 				Player p = data.getPlayer();
 				p.playSound(p, Sound.ENTITY_BLAZE_SHOOT, 1F, 1F);
 				pc.spawn(p);
-				data.addBuff(p.getUniqueId(), true, false, BuffType.PHYSICAL, 2);
+				data.applyStatus(StatusType.STRENGTH, p.getUniqueId(), 2, -1);
 				count = 0;
 			}
 			return TriggerResult.keep();
@@ -53,7 +54,7 @@ public class DarkPact extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE,
-				"Passive. Increase your " + GlossaryTag.PHYSICAL.tag(this) + " damage by 2 every 3 basic attacks. In exchange, take "
+				"Passive. Increase your " + GlossaryTag.STRENGTH.tag(this) + " by 2 every 3 basic attacks. In exchange, take "
 				+ "<white>50%</white> increased damage for the first <yellow>" + seconds + "s</yellow> of a fight.");
 	}
 }

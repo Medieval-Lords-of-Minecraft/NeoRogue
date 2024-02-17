@@ -2,6 +2,8 @@ package me.neoblade298.neorogue.session.fight.status;
 
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
+
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.TickAction;
@@ -35,8 +37,11 @@ public abstract class Status {
 		case SANCTIFIED: return new DecrementStackStatus(id.name(), target);
 		case THORNS: return new BasicStatus(id.name(), target);
 		case REFLECT: return new BasicStatus(id.name(), target);
-		default: return null;
+		case BERSERK: return new BasicStatus(id.name(), target);
+		case STRENGTH: return new StrengthStatus(target);
 		}
+		Bukkit.getLogger().warning("[NeoRogue] Failed to create status type " + id);
+		return new BasicStatus(id.name(), target);
 	}
 	
 	public static Status createByGenericType(GenericStatusType type, String id, UUID applier, FightData target) {
@@ -45,6 +50,15 @@ public abstract class Status {
 		case BASIC: return new BasicStatus(id, target);
 		case DURATION: return new DurationStatus(id, target);
 		default: return null;
+		}
+	}
+	
+	public String getBoardDisplay() {
+		try {
+			return StatusType.valueOf(id).boardLine + "§7: §f" + stacks;
+		}
+		catch (IllegalArgumentException ex) {
+			return "§f" + id + "§7: §f" + stacks;
 		}
 	}
 	
@@ -65,21 +79,25 @@ public abstract class Status {
 	}
 	
 	public enum StatusType {
-		POISON("<dark_green>Poison</dark_green>"),
-		BLEED("<red>Bleed</red>"),
-		BURN("<gold>Burn</gold>"),
-		FROST("<blue>Frost</blue>"),
-		ELECTRIFIED("<yellow>Electrified</yellow>"),
-		CONCUSSED("<dark_green>Concussed</dark_green>"),
-		INSANITY("<dark_purple>Insanity</dark_purple>"),
-		SANCTIFIED("<white>Sanctified</white>"),
-		THORNS("<gold>Thorns</gold>"),
-		REFLECT("<purple>Reflect</purple>");
+		POISON("<dark_green>Poison</dark_green>", "&2Poison"),
+		BLEED("<red>Bleed</red>", "&cBleed"),
+		BURN("<gold>Burn</gold>", "&6Burn"),
+		FROST("<blue>Frost</blue>", "&9Frost"),
+		ELECTRIFIED("<yellow>Electrified</yellow>", "&eElectrified"),
+		CONCUSSED("<dark_green>Concussed</dark_green>", "&2Concussed"),
+		INSANITY("<dark_purple>Insanity</dark_purple>", "&5Insanity"),
+		SANCTIFIED("<white>Sanctified</white>", "&fSanctified"),
+		THORNS("<gold>Thorns</gold>", "&6Thorns"),
+		REFLECT("<purple>Reflect</purple>", "&dReflect"),
+		BERSERK("<dark_red>Berserk</dark_red>", "&4Berserk"),
+		STRENGTH("<red>Strength</red>", "&cStrength");
 		public String tag;
 		public Component ctag;
-		private StatusType(String tag) {
+		public String boardLine;
+		private StatusType(String tag, String boardLine) {
 			this.tag = tag;
 			this.ctag = SharedUtil.color(tag);
+			this.boardLine = boardLine.replaceAll("&", "§");
 		}
 	}
 	public enum GenericStatusType {
