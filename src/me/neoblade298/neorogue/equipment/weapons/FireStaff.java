@@ -30,14 +30,14 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class FireStaff extends Equipment {
 	private static final TargetProperties props = TargetProperties.radius(1, true, TargetType.ENEMY);
-
-	private static ParticleContainer tick;
 	
+	private static ParticleContainer tick;
+
 	static {
 		tick = new ParticleContainer(Particle.FLAME);
 		tick.count(5).spread(0.1, 0.1).speed(0.01);
 	}
-	
+
 	public FireStaff(boolean isUpgraded) {
 		super(
 				"fireStaff", "Fire Staff", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
@@ -45,7 +45,7 @@ public class FireStaff extends Equipment {
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
 	}
-
+	
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ProjectileGroup proj = new ProjectileGroup(new FireStaffProjectile(p));
@@ -60,42 +60,42 @@ public class FireStaff extends Equipment {
 			return TriggerResult.keep();
 		});
 	}
-	
+
 	private class FireStaffProjectile extends Projectile {
 		private Player p;
-
+		
 		public FireStaffProjectile(Player p) {
 			super(0.5, 15, 2);
 			this.size(1, 1).gravity(0.15).initialY(0.6);
 			this.p = p;
 		}
-
+		
 		@Override
 		public void onTick(ProjectileInstance proj, boolean interpolation) {
 			tick.spawn(proj.getLocation());
 		}
-
+		
 		@Override
 		public void onEnd(ProjectileInstance proj) {
-			
-		}
 
+		}
+		
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, proj.getLocation(), props)) {
 				weaponDamageProjectile(ent, proj);
 			}
-			
+
 			Location loc = hit.getEntity().getLocation();
 			Util.playSound(p, loc, Sound.BLOCK_CHAIN_PLACE, 1F, 1F, true);
 		}
-
+		
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			
+
 		}
 	}
-
+	
 	@Override
 	public void setupItem() {
 		item = createItem(Material.STICK, "Lobs a small fireball exploding on hit.");
