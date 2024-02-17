@@ -16,7 +16,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import eu.decentsoftware.holograms.api.DHAPI;
 import eu.decentsoftware.holograms.api.holograms.Hologram;
-import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.SpectateSelectInventory;
@@ -88,7 +87,7 @@ public class RewardInstance extends EditInventoryInstance {
 		UUID uuid = p.getUniqueId();
 		if (rewards.get(uuid).isEmpty()) {
 			if (!onRewardClaim()) {
-				Util.displayError(p, "You don't have any rewards remaining!");
+				new SpectateSelectInventory(s, e.getPlayer(), true);
 			}
 			return;
 		}
