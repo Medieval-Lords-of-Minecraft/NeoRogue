@@ -44,11 +44,7 @@ public class ProjectileInstance {
 		v = origin.getLocation().getDirection().rotateAroundY(Math.toRadians(settings.getRotation()));
 		if (settings.initialY() != 0) v = v.add(new Vector(0, settings.initialY(), 0)).normalize();
 		v.multiply(settings.getBlocksPerTick() * settings.getTickSpeed());
-		double len = v.length();
-		if (len > 1) {
-			interpolationPoints = (int) len; // One point for every block that's skipped
-			v.multiply(1 / (double) interpolationPoints);
-		}
+		interpolationPoints = (int) v.length() + 1;
 		loc = origin.getLocation().add(0, 1, 0);
 		bounds = BoundingBox.of(loc, settings.getWidth(), settings.getHeight(), settings.getWidth());
 		
@@ -118,20 +114,15 @@ public class ProjectileInstance {
 				}
 			}
 
-			settings.onTick(this, true);
+			settings.onTick(this, i == interpolationPoints - 1);
 			loc.add(v);
 			bounds.shift(v);
 		}
-		
-		// Tick after making sure there's no collisions
-		settings.onTick(this, false);
 		
 		// Gravity
 		if (settings.getGravity() != 0) {
 			v.setY(v.getY() - settings.getGravity());
 		}
-		loc.add(v);
-		bounds.shift(v);
 
 		return false;
 	}
