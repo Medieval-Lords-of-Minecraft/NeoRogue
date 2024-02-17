@@ -480,26 +480,30 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 					loc.setZ(entz + 15);
 					for (double tempx = entx - 6; tempx > entx - 10; tempx--) {
 						loc.setX(tempx);
-						loc.getBlock().setType(Material.RED_CONCRETE);
+						Block b = loc.getBlock();
+						b.setType(b.isSolid() ? Material.RED_CONCRETE : Material.RED_STAINED_GLASS);
 					}
 					break;
 				case SOUTH:
 					for (double tempx = entx - 6; tempx > entx - 10; tempx--) {
 						loc.setX(tempx);
-						loc.getBlock().setType(Material.RED_CONCRETE);
+						Block b = loc.getBlock();
+						b.setType(b.isSolid() ? Material.RED_CONCRETE : Material.RED_STAINED_GLASS);
 					}
 					break;
 				case EAST:
 					loc.setX(entx - 15);
 					for (double tempz = entz + 6; tempz < entz + 10; tempz++) {
 						loc.setZ(tempz);
-						loc.getBlock().setType(Material.RED_CONCRETE);
+						Block b = loc.getBlock();
+						b.setType(b.isSolid() ? Material.RED_CONCRETE : Material.RED_STAINED_GLASS);
 					}
 					break;
 				case WEST:
 					for (double tempz = entz + 6; tempz < entz + 10; tempz++) {
 						loc.setZ(tempz);
-						loc.getBlock().setType(Material.RED_CONCRETE);
+						Block b = loc.getBlock();
+						b.setType(b.isSolid() ? Material.RED_CONCRETE : Material.RED_STAINED_GLASS);
 					}
 					break;
 				}

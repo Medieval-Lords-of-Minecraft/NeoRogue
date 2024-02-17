@@ -385,30 +385,31 @@ public class Map {
 						switch (coords.getDirection()) {
 						case NORTH:
 							x -= 5;
-							z += 15;
-							xp = x - 4;
+							z += 16;
+							xp = x - 5;
 							zp = z;
 							break;
 						case SOUTH:
 							x -= 5;
-							xp = x - 4;
+							xp = x - 5;
 							z -= 1;
 							zp = z;
 							break;
 						case EAST:
 							z += 5;
-							x -= 15;
-							zp = z + 4;
+							x -= 16;
+							zp = z + 5;
 							xp = x;
 							break;
 						case WEST:
+							x += 1;
 							z += 5;
-							zp = z + 4;
+							zp = z + 5;
 							break;
 						}
-						
+
 						for (int i = x; i >= xp; i--) {
-							for (int j = y; j < y + 4; j++) {
+							for (int j = y - 1; j < y + 5; j++) {
 								for (int k = z; k <= zp; k++) {
 									Block b = new Location(w, i, j, k).getBlock();
 									if (!b.getType().isOccluding()) b.setType(Material.BLACK_CONCRETE);
