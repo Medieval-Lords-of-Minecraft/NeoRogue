@@ -75,12 +75,17 @@ public class ShopInventory extends CoreInventory {
 		if (iclicked == null) return;
 		if (iclicked.getType() != InventoryType.CHEST) {
 			if (e.getCurrentItem() == null) return;
+			if (e.isShiftClick()) {
+				e.setCancelled(true);
+				return;
+			}
 			ItemStack item = e.getCurrentItem();
 			NBTItem nbti = new NBTItem(item);
 			// Only allow picking up equipment
 			if (!nbti.getKeys().contains("equipId")) {
 				e.setCancelled(true);
 			}
+			p.playSound(p, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1F);
 			return;
 		}
 		e.setCancelled(true);
