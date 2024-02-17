@@ -53,6 +53,15 @@ public abstract class Status {
 		}
 	}
 	
+	public String getBoardDisplay() {
+		try {
+			return StatusType.valueOf(id).boardLine + "§7: §f" + stacks;
+		}
+		catch (IllegalArgumentException ex) {
+			return "§f" + id + "§7: §f" + stacks;
+		}
+	}
+	
 	public void cleanup() {
 		if (action != null) action.setCancelled(true);
 	}
@@ -70,23 +79,25 @@ public abstract class Status {
 	}
 	
 	public enum StatusType {
-		POISON("<dark_green>Poison</dark_green>"),
-		BLEED("<red>Bleed</red>"),
-		BURN("<gold>Burn</gold>"),
-		FROST("<blue>Frost</blue>"),
-		ELECTRIFIED("<yellow>Electrified</yellow>"),
-		CONCUSSED("<dark_green>Concussed</dark_green>"),
-		INSANITY("<dark_purple>Insanity</dark_purple>"),
-		SANCTIFIED("<white>Sanctified</white>"),
-		THORNS("<gold>Thorns</gold>"),
-		REFLECT("<purple>Reflect</purple>"),
-		BERSERK("<dark_red>Berserk</dark_red>"),
-		STRENGTH("<red>Strength</red>");
+		POISON("<dark_green>Poison</dark_green>", "&2Poison"),
+		BLEED("<red>Bleed</red>", "&cBleed"),
+		BURN("<gold>Burn</gold>", "&6Burn"),
+		FROST("<blue>Frost</blue>", "&9Frost"),
+		ELECTRIFIED("<yellow>Electrified</yellow>", "&eElectrified"),
+		CONCUSSED("<dark_green>Concussed</dark_green>", "&2Concussed"),
+		INSANITY("<dark_purple>Insanity</dark_purple>", "&5Insanity"),
+		SANCTIFIED("<white>Sanctified</white>", "&fSanctified"),
+		THORNS("<gold>Thorns</gold>", "&6Thorns"),
+		REFLECT("<purple>Reflect</purple>", "&dReflect"),
+		BERSERK("<dark_red>Berserk</dark_red>", "&4Berserk"),
+		STRENGTH("<red>Strength</red>", "&cStrength");
 		public String tag;
 		public Component ctag;
-		private StatusType(String tag) {
+		public String boardLine;
+		private StatusType(String tag, String boardLine) {
 			this.tag = tag;
 			this.ctag = SharedUtil.color(tag);
+			this.boardLine = boardLine.replaceAll("&", "§");
 		}
 	}
 	public enum GenericStatusType {

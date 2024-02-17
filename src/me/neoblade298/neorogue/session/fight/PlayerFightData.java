@@ -161,14 +161,40 @@ public class PlayerFightData extends FightData {
 		Iterator<Status> iter = statuses.descendingIterator();
 		while (iter.hasNext() && boardLines.size() < lineSize - players - 1) {
 			Status s = iter.next();
-			boardLines.add(s.getId() + ": " + s.getStacks());
+			boardLines.add(s.getBoardDisplay());
 		}
-		if (!boardLines.isEmpty()) boardLines.add("---");
+		if (!boardLines.isEmpty()) boardLines.add("§8§m-----");
 		
 		for (Player p : online) {
 			if (p == this.p) continue;
-			boardLines.add(p.getName() + ": " + Math.round(p.getHealth()));
+			boardLines.add(createHealthBar(p));
 		}
+	}
+	
+	private static String createHealthBar(Player p) {
+		double percenthp = p.getHealth() / p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+		percenthp *= 100;
+		int php = (int) percenthp;
+		String color = "§a";
+		if (php < 50 && php >= 25) {
+			color = "§e";
+		}
+		else if (php < 25) {
+			color = "§c";
+		}
+
+		String bar = "" + color;
+		// Add 5 so 25% is still 3/10 on the health bar
+		int phpmod = (php + 5) / 10;
+		for (int i = 0; i < phpmod; i++) {
+			bar += "|";
+		}
+		bar += "§7";
+		for (int i = 0; i < (10 - phpmod); i++) {
+			bar += "|";
+		}
+		
+		return color + p.getName() + " " + bar;
 	}
 
 	// Used when the player dies or revived

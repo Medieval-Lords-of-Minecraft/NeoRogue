@@ -56,6 +56,6 @@ public class Placeholders extends PlaceholderExpansion {
 		int i = Integer.parseInt(identifier);
 		ArrayList<String> lines = data.getBoardLines();
 		if (lines == null) return "";
-		return lines.size() > i ? lines.get(i) : "-";
+		return lines.size() > i ? lines.get(i) : "§8-";
 	}
 }

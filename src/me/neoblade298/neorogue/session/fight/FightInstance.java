@@ -702,9 +702,10 @@ public abstract class FightInstance extends Instance {
         final long min = TimeUnit.MILLISECONDS.toMinutes(time - TimeUnit.HOURS.toMillis(hr));
         final long sec = TimeUnit.MILLISECONDS.toSeconds(time - TimeUnit.HOURS.toMillis(hr) - TimeUnit.MINUTES.toMillis(min));
         final long ms = TimeUnit.MILLISECONDS.toMillis(time - TimeUnit.HOURS.toMillis(hr) - TimeUnit.MINUTES.toMillis(min) - TimeUnit.SECONDS.toMillis(sec));
-        String timer = String.format("%2d:%02d.%03d", min, sec, ms);
+        String timer = String.format("%d:%02d.%03d", min, sec, ms);
         
-		Component statsHeader = SharedUtil.color("<gray>Fight Statistics [<white>" + timer +"</white>](Hover for more info!)\n=====\n"
+        System.out.println("Here:" + timer);
+		Component statsHeader = SharedUtil.color("<gray>Fight Statistics [<white>" + timer + "</white>] (Hover for more info!)\n=====\n"
 			+ "[<yellow>Name</yellow> (<green>Health</green>) - <red>Damage Dealt </red>/ <dark_red>Received </dark_red>/ <blue>Buffed</blue> / <gold>Mitigated</gold>]");
 		s.broadcast(statsHeader);
 		for (UUID uuid : s.getParty().keySet()) {
