@@ -400,6 +400,7 @@ public class SessionManager implements Listener {
 			FightData fd = new FightData((LivingEntity) ent, (MapSpawnerInstance) null);
 			FightInstance.putFightData(uuid, fd);
 			if (e.getSpawnReason() == SpawnReason.SUMMON) {
+				if (fd.getInstance() == null) return;
 				MythicMob mythicMob = e.getMobType();
 				FightInstance.scaleMob(fd.getInstance().getSession(), Mob.get(mythicMob.getInternalName()), mythicMob, e.getMob());
 			}
