@@ -103,6 +103,10 @@ public class EquipmentProperties {
 	public double get(PropertyType type) {
 		return properties.containsKey(type) ? properties.get(type).amount : 0;
 	}
+	
+	public boolean has(PropertyType type) {
+		return properties.containsKey(type);
+	}
 
 	public DamageType getType() {
 		return type;
