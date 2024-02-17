@@ -265,7 +265,6 @@ public class DamageMeta {
 				ignoreShieldsDamage += sliceDamage;
 			}
 
-
 			// Return damage
 			if (recipient.hasStatus(StatusType.THORNS) && slice.getType().containsBuffType(BuffType.PHYSICAL)) {
 				returnDamage.addDamageSlice(new DamageSlice(recipient.getUniqueId(), recipient.getStatus(StatusType.THORNS).getStacks(), DamageType.THORNS));
@@ -310,6 +309,7 @@ public class DamageMeta {
 					return;
 				}
 				data.getInstance().cancelRevives((Player) target);
+				if (data.shields.getAmount() > 0 && ignoreShieldsDamage > 0) data.shields.update();
 			}
 		}
 		else {
