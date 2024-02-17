@@ -221,13 +221,6 @@ public class Map {
 	
 	private void place(MapPieceInstance inst, boolean deserializing) {
 		MapShape shape = inst.getPiece().getShape();
-		/*
-		 * Unsure what this piece of code does, it doesn't actually remove anything
-		 * from the entrances list, so removing for now until something breaks
-		if (!deserializing && inst.getAvailableEntrance() != null) {
-			entrances.remove(inst.getAvailableEntrance());
-		}
-		*/
 		shape.applySettings(inst);
 		for (int i = 0; i < shape.getLength(); i++) {
 			for (int j = 0; j < shape.getHeight(); j++) {
@@ -403,6 +396,7 @@ public class Map {
 							break;
 						case WEST:
 							x += 1;
+							xp += 1;
 							z += 5;
 							zp = z + 5;
 							break;
