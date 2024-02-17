@@ -49,6 +49,8 @@ public class ChainLightningWand extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (d, inputs) -> {
+			if (!canUseWeapon(data))
+				return TriggerResult.keep();
 			LivingEntity target = TargetHelper.getNearestInSight(p, hitScan);
 			if (target != null) {
 				weaponDamage(p, data, target);

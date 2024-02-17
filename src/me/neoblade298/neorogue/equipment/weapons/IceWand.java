@@ -55,6 +55,8 @@ public class IceWand extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ProjectileGroup proj = new ProjectileGroup(new IceWandProjectile(p));
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (d, inputs) -> {
+			if (!canUseWeapon(data))
+				return TriggerResult.keep();
 			weaponSwing(p, data);
 			proj.start(data);
 			return TriggerResult.keep();
