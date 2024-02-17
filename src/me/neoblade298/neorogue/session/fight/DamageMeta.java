@@ -302,6 +302,11 @@ public class DamageMeta {
 			}
 			else {
 				PlayerFightData data = FightInstance.getUserData(target.getUniqueId());
+				if (data == null) {
+					Bukkit.getLogger().warning("[NeoRogue] Failed to find data for " + target.getUniqueId());
+					System.out.println(FightInstance.getUserData().keySet());
+					return;
+				}
 				data.getInstance().cancelRevives((Player) target);
 			}
 		}
