@@ -48,6 +48,8 @@ public class DamageMeta {
 		this.owner = original.owner;
 		this.hitBarrier = original.hitBarrier;
  		this.slices = new LinkedList<DamageSlice>(original.slices);
+		this.hitBarrier = original.hitBarrier;
+		this.isSecondary = original.isSecondary;
  		
  		// These are deep clones
 		this.damageBuffs = cloneBuffMap(original.damageBuffs);
