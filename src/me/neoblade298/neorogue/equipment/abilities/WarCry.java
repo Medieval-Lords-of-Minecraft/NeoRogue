@@ -21,12 +21,13 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class WarCry extends Equipment {
 	private ParticleContainer pc = new ParticleContainer(Particle.REDSTONE);
-	private int strength;
+	private int strength, shields;
 	
 	public WarCry(boolean isUpgraded) {
 		super("warCry", "War Cry", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 75, 15, 0));
 		strength = isUpgraded ? 15 : 10;
+		shields = isUpgraded ? 15 : 10;
 		
 		pc.count(50).spread(0.5, 0.5).dustOptions(new DustOptions(Color.RED, 1F));
 	}
@@ -34,7 +35,8 @@ public class WarCry extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE,
-				"On cast, give yourself <yellow>" + strength + "</yellow> " + GlossaryTag.STRENGTH.tag(this) + " damage.");
+				"On cast, give yourself <yellow>" + strength + "</yellow> " + GlossaryTag.STRENGTH.tag(this) + " and <yellow>"
+						+ strength + "</yellow> " + GlossaryTag.SHIELDS.tag(this) + " that last <white>5</white> seconds.");
 	}
 
 	@Override
@@ -43,6 +45,7 @@ public class WarCry extends Equipment {
 			Util.playSound(p, Sound.ENTITY_BLAZE_DEATH, 1F, 1F, false);
 			pc.spawn(p);
 			data.applyStatus(StatusType.STRENGTH, p.getUniqueId(), strength, -1);
+			data.addSimpleShield(p.getUniqueId(), shields, 100L);
 			return TriggerResult.keep();
 		}));
 	}

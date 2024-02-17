@@ -28,8 +28,8 @@ public class BerserkersCall extends Equipment {
 	public BerserkersCall(boolean isUpgraded) {
 		super("berserkersCall", "Berserker's Call", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 75, 15, 0));
-		strength = 20;
-		berserkStrength = isUpgraded ? 40 : 30;
+		strength = 4;
+		berserkStrength = isUpgraded ? 20 : 12;
 		
 		pc.count(50).spread(0.5, 0.5).dustOptions(new DustOptions(Color.RED, 1F));
 	}
