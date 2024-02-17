@@ -138,7 +138,7 @@ public class EquipmentInstance extends PriorityAction {
 	}
 	
 	public int getCooldownSeconds() {
-		return (int) (Math.max(0, (nextUsable - System.currentTimeMillis()) / 1000) + 1);
+		return (int) (Math.max(0, (nextUsable - System.currentTimeMillis() + 1000) / 1000));
 	}
 	
 	public int getCooldownTicks() {
