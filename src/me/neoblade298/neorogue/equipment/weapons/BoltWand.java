@@ -26,14 +26,14 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class BoltWand extends Equipment {
 	private static ParticleContainer tick;
-	
-	private int pierceAmount;
 
+	private int pierceAmount;
+	
 	static {
 		tick = new ParticleContainer(Particle.GLOW);
 		tick.count(3).spread(0.1, 0.1).speed(0);
 	}
-
+	
 	public BoltWand(boolean isUpgraded) {
 		super(
 				"boltWand", "Bolt Wand", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
@@ -42,7 +42,7 @@ public class BoltWand extends Equipment {
 		properties.addUpgrades(PropertyType.DAMAGE);
 		pierceAmount = 3;
 	}
-	
+
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ProjectileGroup proj = new ProjectileGroup(new BoltWandProjectile(p));
@@ -54,26 +54,21 @@ public class BoltWand extends Equipment {
 			return TriggerResult.keep();
 		});
 	}
-
+	
 	private class BoltWandProjectile extends Projectile {
 		private Player p;
-		
+
 		public BoltWandProjectile(Player p) {
 			super(2.5, 12, 1);
 			this.size(0.5, 0.5).pierce();
 			this.p = p;
 		}
-		
+
 		@Override
 		public void onTick(ProjectileInstance proj, boolean interpolation) {
 			tick.spawn(proj.getLocation());
 		}
-		
-		@Override
-		public void onEnd(ProjectileInstance proj) {
-			
-		}
-		
+
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
 			weaponDamageProjectile(hit.getEntity(), proj, hitBarrier);
@@ -81,15 +76,15 @@ public class BoltWand extends Equipment {
 			Location loc = hit.getEntity().getLocation();
 			Util.playSound(p, loc, Sound.ENTITY_LIGHTNING_BOLT_IMPACT, 1F, 1F, true);
 			if (proj.getNumHit() >= pierceAmount)
-				proj.cancel(true);
+				proj.cancel();
 		}
-		
+
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			
+
 		}
 	}
-	
+
 	@Override
 	public void setupItem() {
 		item = createItem(

@@ -32,16 +32,16 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class IceWand extends Equipment {
 	private static final TargetProperties props = TargetProperties.radius(0.75, true, TargetType.ENEMY);
 	private static final PotionEffect slow = new PotionEffect(PotionEffectType.SLOW, 60, 1, false, false, false);
-
+	
 	private static ParticleContainer tick;
-	
+
 	private int shieldAmount;
-	
+
 	static {
 		tick = new ParticleContainer(Particle.GLOW);
 		tick.count(5).spread(0.1, 0.1).speed(0.01);
 	}
-	
+
 	public IceWand(boolean isUpgraded) {
 		super(
 				"iceWand", "Ice Wand", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
@@ -50,7 +50,7 @@ public class IceWand extends Equipment {
 		properties.addUpgrades(PropertyType.DAMAGE);
 		shieldAmount = isUpgraded ? 3 : 2;
 	}
-
+	
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ProjectileGroup proj = new ProjectileGroup(new IceWandProjectile(p));
@@ -62,26 +62,21 @@ public class IceWand extends Equipment {
 			return TriggerResult.keep();
 		});
 	}
-	
+
 	private class IceWandProjectile extends Projectile {
 		private Player p;
-
+		
 		public IceWandProjectile(Player p) {
 			super(0.4, 8, 3);
 			this.size(1, 1);
 			this.p = p;
 		}
-
+		
 		@Override
 		public void onTick(ProjectileInstance proj, boolean interpolation) {
 			tick.spawn(proj.getLocation());
 		}
-
-		@Override
-		public void onEnd(ProjectileInstance proj) {
-			
-		}
-
+		
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
 			weaponDamageProjectile(hit.getEntity(), proj);
@@ -90,17 +85,17 @@ public class IceWand extends Equipment {
 				ent.addPotionEffect(slow);
 				proj.getOwner().addSimpleShield(p.getUniqueId(), shieldAmount, 40);
 			}
-			
+
 			Location loc = hit.getEntity().getLocation();
 			Util.playSound(p, loc, Sound.BLOCK_CHAIN_PLACE, 1F, 1F, true);
 		}
-
+		
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			
+
 		}
 	}
-
+	
 	@Override
 	public void setupItem() {
 		item = createItem(
