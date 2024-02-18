@@ -124,10 +124,10 @@ public class ProjectileInstance {
 			if (!settings.isIgnoreBlocks()) {
 				Block b = loc.getBlock();
 				if (!b.isPassable()) {
-					for (BoundingBox block : loc.getBlock().getCollisionShape().getBoundingBoxes()) {
-						block.shift(b.getLocation());
-						if (bounds.overlaps(block)) {
-							settings.onHitBlock(this);
+					for (BoundingBox hitbox : loc.getBlock().getCollisionShape().getBoundingBoxes()) {
+						hitbox.shift(b.getLocation());
+						if (bounds.overlaps(hitbox)) {
+							settings.onHitBlock(this, b);
 							return true;
 						}
 					}

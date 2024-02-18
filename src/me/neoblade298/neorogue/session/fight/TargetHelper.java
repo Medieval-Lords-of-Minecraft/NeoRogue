@@ -48,6 +48,14 @@ public class TargetHelper {
 		return TargetUtil.getEntitiesInCone(source, props.arc, props.range, new TargetFilter(source, props));
 	}
 	
+	public static Location getSightLocation(LivingEntity source, TargetProperties props) {
+		return TargetUtil.getSightLocation(source, props.range, props.stickToGround);
+	}
+	
+	public static Location getSightLocation(Location source, Vector direction, TargetProperties props) {
+		return TargetUtil.getSightLocation(source, direction, props.range, props.stickToGround);
+	}
+	
 	public static class TargetProperties {
 		public double range, tolerance = 4, arc;
 		public boolean throughWall, stickToGround;
