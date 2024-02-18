@@ -65,11 +65,6 @@ public class WoodenWand extends Equipment {
 		}
 
 		@Override
-		public void onEnd(ProjectileInstance proj) {
-			
-		}
-
-		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
 			weaponDamageProjectile(hit.getEntity(), proj, hitBarrier);
 			Location loc = hit.getEntity().getLocation();

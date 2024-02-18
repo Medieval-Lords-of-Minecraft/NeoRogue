@@ -103,11 +103,6 @@ public class StoneSpear extends Equipment {
 		}
 
 		@Override
-		public void onEnd(ProjectileInstance proj) {
-			
-		}
-
-		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
 			DamageMeta dm = new DamageMeta(proj.getOwner(), throwDamage, DamageType.PIERCING);
 			dm.addDamageSlice(new DamageSlice(p.getUniqueId(), 0, DamageType.PIERCING));

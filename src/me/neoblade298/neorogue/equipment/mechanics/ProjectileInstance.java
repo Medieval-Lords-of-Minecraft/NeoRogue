@@ -39,7 +39,6 @@ public class ProjectileInstance {
 		this.owner = owner;
 		this.settings = settings;
 		LivingEntity origin = owner.getEntity();
-		final ProjectileInstance proj = this;
 		
 		v = origin.getLocation().getDirection().rotateAroundY(Math.toRadians(settings.getRotation()));
 		if (settings.initialY() != 0) v = v.add(new Vector(0, settings.initialY(), 0)).normalize();
@@ -50,8 +49,7 @@ public class ProjectileInstance {
 		
 		task = new BukkitRunnable() {
 			public void run() {
-				if (tick() || ++tick > settings.getMaxTicks()) {
-					settings.onEnd(proj);
+				if (tick()) {
 					cancel();
 				}
 			}
@@ -108,6 +106,7 @@ public class ProjectileInstance {
 					for (BoundingBox block : loc.getBlock().getCollisionShape().getBoundingBoxes()) {
 						block.shift(b.getLocation());
 						if (bounds.overlaps(block)) {
+							settings.onHitBlock(this);
 							return true;
 						}
 					}
@@ -123,13 +122,17 @@ public class ProjectileInstance {
 		if (settings.getGravity() != 0) {
 			v.setY(v.getY() - settings.getGravity());
 		}
+		
+		if (++tick > settings.getMaxTicks()) {
+			settings.onFizzle(this);
+			return true;
+		}
 
 		return false;
 	}
 	
-	public void cancel(boolean useOnEnd) {
+	public void cancel() {
 		task.cancel();
-		if (useOnEnd) settings.onEnd(this);
 	}
 	
 	public Vector getVector() {

@@ -71,9 +71,6 @@ public class WindSlash extends Equipment {
 		}
 
 		@Override
-		public void onEnd(ProjectileInstance proj) {}
-
-		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
 			damageProjectile(hit.getEntity(), proj, new DamageMeta(proj.getOwner(), damage, DamageType.SLASHING), hitBarrier);
 		}
