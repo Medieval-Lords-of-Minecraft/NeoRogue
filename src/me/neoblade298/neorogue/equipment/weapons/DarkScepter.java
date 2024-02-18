@@ -26,12 +26,12 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class DarkScepter extends Equipment {
 	private static final int hitScanRange = 12;
 	private static ParticleContainer tick;
-	
+
 	static {
 		tick = new ParticleContainer(Particle.GLOW);
 		tick.count(5).spread(0.1, 0.1).speed(0.01);
 	}
-	
+
 	public DarkScepter(boolean isUpgraded) {
 		super(
 				"darkScepter", "Dark Scepter", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
@@ -39,7 +39,7 @@ public class DarkScepter extends Equipment {
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
 	}
-
+	
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ProjectileGroup proj = new ProjectileGroup(new DarkRay(p));
@@ -47,7 +47,7 @@ public class DarkScepter extends Equipment {
 			if (!canUseWeapon(data))
 				return TriggerResult.keep();
 			weaponSwing(p, data);
-
+			
 			RayTraceResult result = p.rayTraceBlocks(hitScanRange);
 			if (result != null) {
 				Location spawnLoc = result.getHitBlock().getLocation().add(0.5, -0.5, 0.5);
@@ -55,34 +55,34 @@ public class DarkScepter extends Equipment {
 				spawnLoc = spawnLoc.add(spawnVec.multiply(0.75));
 				proj.start(data, spawnLoc, spawnVec);
 			}
-
+			
 			return TriggerResult.keep();
 		});
 	}
-	
+
 	private class DarkRay extends Projectile {
 		public DarkRay(Player p) {
 			super(0.5, 2, 1);
 			this.size(1.25, 1.25).pierce();
 		}
-
+		
 		@Override
 		public void onTick(ProjectileInstance proj, boolean interpolation) {
 			tick.spawn(proj.getLocation());
 		}
-
+		
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
 			weaponDamageProjectile(hit.getEntity(), proj, hitBarrier);
 		}
-
+		
 		@Override
 		public void onStart(ProjectileInstance proj) {
 		}
 	}
-
+	
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STICK, "Dark rays shoot out of the targeted surface.");
+		item = createItem(Material.NETHERITE_HOE, "Dark rays shoot out of the targeted surface.");
 	}
 }
