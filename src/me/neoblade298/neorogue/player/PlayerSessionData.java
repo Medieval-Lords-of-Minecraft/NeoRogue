@@ -204,6 +204,7 @@ public class PlayerSessionData {
 	}
 
 	public void setEquipment(EquipSlot es, int slot, Equipment eq) {
+		System.out.println("Setting equipment for " + es + " to slot " + slot);
 		Equipment[] slots = getArrayFromEquipSlot(es);
 		if (slots[slot] != null) removeEquipment(es, slot);
 		if (eq.isUpgraded())
