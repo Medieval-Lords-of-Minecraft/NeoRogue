@@ -208,8 +208,8 @@ public class PlayerFightData extends FightData {
 		if (isDead) {
 			p.setInvulnerable(true);
 			p.setInvisible(true);
-			clearStatus(StatusType.POISON);
-			clearStatus(StatusType.BLEED);
+			removeStatus(StatusType.POISON);
+			removeStatus(StatusType.BLEED);
 		}
 		else {
 			p.setInvulnerable(false);

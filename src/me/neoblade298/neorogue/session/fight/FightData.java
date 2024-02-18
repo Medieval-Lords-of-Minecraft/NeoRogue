@@ -231,6 +231,11 @@ public class FightData {
 		return tickActions.isEmpty() ? TickResult.REMOVE : TickResult.KEEP;
 	}
 	
+	public void removeStatus(StatusType type) {
+		Status s = statuses.remove(type.name());
+		if (s != null) s.cleanup();
+	}
+	
 	public void removeStatus(String id) {
 		Status s = statuses.remove(id);
 		if (s != null) s.cleanup();
@@ -250,14 +255,6 @@ public class FightData {
 	
 	public Status getStatus(StatusType type) {
 		return statuses.get(type.name());
-	}
-	
-	public void clearStatus(String id) {
-		statuses.remove(id);
-	}
-	
-	public void clearStatus(StatusType type) {
-		statuses.remove(type.name());
 	}
 	
 	public void applyStatus(StatusType type, UUID applier, int stacks, int seconds) {
