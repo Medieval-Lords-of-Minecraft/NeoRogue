@@ -1,6 +1,7 @@
 package me.neoblade298.neorogue.equipment.mechanics;
 
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.util.Vector;
 
 import me.neoblade298.neorogue.session.fight.FightData;
@@ -112,7 +113,7 @@ public abstract class Projectile {
 	}
 	public void onStart(ProjectileInstance proj) {}
 	public abstract void onTick(ProjectileInstance proj, boolean interpolation);
-	public void onHitBlock(ProjectileInstance proj) {}
+	public void onHitBlock(ProjectileInstance proj, Block b) {}
 	public void onFizzle(ProjectileInstance proj) {}
 	public abstract void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj);
 }
