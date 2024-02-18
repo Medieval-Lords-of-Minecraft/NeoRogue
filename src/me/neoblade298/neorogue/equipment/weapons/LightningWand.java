@@ -68,17 +68,12 @@ public class LightningWand extends Equipment {
 		}
 		
 		@Override
-		public void onEnd(ProjectileInstance proj) {
-			
-		}
-		
-		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
 			weaponDamageProjectile(hit.getEntity(), proj, hitBarrier);
 			Location loc = hit.getEntity().getLocation();
 			Util.playSound(p, loc, Sound.ENTITY_LIGHTNING_BOLT_IMPACT, 1F, 1F, true);
 			if (proj.getNumHit() >= pierceAmount)
-				proj.cancel(true);
+				proj.cancel();
 		}
 		
 		@Override

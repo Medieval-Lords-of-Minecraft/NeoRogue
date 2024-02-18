@@ -102,6 +102,7 @@ public abstract class Projectile {
 	}
 	public abstract void onStart(ProjectileInstance proj);
 	public abstract void onTick(ProjectileInstance proj, boolean interpolation);
-	public abstract void onEnd(ProjectileInstance proj);
+	public void onHitBlock(ProjectileInstance proj) {}
+	public void onFizzle(ProjectileInstance proj) {}
 	public abstract void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj);
 }

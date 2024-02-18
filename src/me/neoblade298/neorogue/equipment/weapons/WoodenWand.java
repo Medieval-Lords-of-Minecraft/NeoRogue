@@ -24,12 +24,12 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class WoodenWand extends Equipment {
 	private static ParticleContainer tick;
-
+	
 	static {
 		tick = new ParticleContainer(Particle.END_ROD);
 		tick.count(4).spread(0.1, 0.1).speed(0.01);
 	}
-
+	
 	public WoodenWand(boolean isUpgraded) {
 		super(
 				"woodenWand", "Wooden Wand", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
@@ -38,7 +38,7 @@ public class WoodenWand extends Equipment {
 		properties.addUpgrades(PropertyType.DAMAGE);
 		properties.addUpgrades(PropertyType.ATTACK_SPEED);
 	}
-	
+
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ProjectileGroup proj = new ProjectileGroup(new WoodenWandProjectile(p));
@@ -50,40 +50,35 @@ public class WoodenWand extends Equipment {
 			return TriggerResult.keep();
 		});
 	}
-
+	
 	private class WoodenWandProjectile extends Projectile {
 		private Player p;
-		
+
 		public WoodenWandProjectile(Player p) {
 			super(0.5, 10, 3);
 			this.size(0.5, 0.5);
 			this.p = p;
 		}
-		
+
 		@Override
 		public void onTick(ProjectileInstance proj, boolean interpolation) {
 			tick.spawn(proj.getLocation());
 			Util.playSound(p, proj.getLocation(), Sound.BLOCK_AMETHYST_BLOCK_BREAK, 1F, 1F, true);
 		}
-		
-		@Override
-		public void onEnd(ProjectileInstance proj) {
 
-		}
-		
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
 			weaponDamageProjectile(hit.getEntity(), proj, hitBarrier);
 			Location loc = hit.getEntity().getLocation();
 			Util.playSound(p, loc, Sound.BLOCK_CHAIN_PLACE, 1F, 1F, true);
 		}
-		
+
 		@Override
 		public void onStart(ProjectileInstance proj) {
-
+			
 		}
 	}
-	
+
 	@Override
 	public void setupItem() {
 		item = createItem(Material.STICK);

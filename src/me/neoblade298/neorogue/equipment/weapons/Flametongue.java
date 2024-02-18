@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neocore.bukkit.util.SoundContainer;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
@@ -24,7 +25,7 @@ public class Flametongue extends Equipment {
 	public Flametongue(boolean isUpgraded) {
 		super("flametongue", "Flametongue", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(isUpgraded ? 55 : 40, 1, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
+				EquipmentProperties.ofWeapon(isUpgraded ? 55 : 40, 1, DamageType.SLASHING, new SoundContainer(Sound.ENTITY_BLAZE_SHOOT, 0.5F)));
 		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 

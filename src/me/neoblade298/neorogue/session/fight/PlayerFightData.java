@@ -208,8 +208,8 @@ public class PlayerFightData extends FightData {
 		if (isDead) {
 			p.setInvulnerable(true);
 			p.setInvisible(true);
-			clearStatus(StatusType.POISON);
-			clearStatus(StatusType.BLEED);
+			removeStatus(StatusType.POISON);
+			removeStatus(StatusType.BLEED);
 		}
 		else {
 			p.setInvulnerable(false);
@@ -463,7 +463,7 @@ public class PlayerFightData extends FightData {
 		
 		public PlayerUpdateTickAction() {
 			// Get the usable instances to tie cooldowns to
-			for (int i = 0 ; i < 8; i++) {
+			for (int i = 0 ; i < 9; i++) {
 				Trigger t = Trigger.getFromHotbarSlot(i);
 				boolean found = false;
 				
