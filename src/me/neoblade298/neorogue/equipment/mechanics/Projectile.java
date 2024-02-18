@@ -1,5 +1,8 @@
 package me.neoblade298.neorogue.equipment.mechanics;
 
+import org.bukkit.Location;
+import org.bukkit.util.Vector;
+
 import me.neoblade298.neorogue.session.fight.FightData;
 
 public abstract class Projectile {
@@ -100,7 +103,14 @@ public abstract class Projectile {
 		onStart(proj);
 		return proj;
 	}
-	public abstract void onStart(ProjectileInstance proj);
+	
+	// Can only be run by ProjectileGroup
+	protected ProjectileInstance start(FightData owner, Location source, Vector direction) {
+		ProjectileInstance proj = new ProjectileInstance(this, owner, source, direction);
+		onStart(proj);
+		return proj;
+	}
+	public void onStart(ProjectileInstance proj) {}
 	public abstract void onTick(ProjectileInstance proj, boolean interpolation);
 	public void onHitBlock(ProjectileInstance proj) {}
 	public void onFizzle(ProjectileInstance proj) {}

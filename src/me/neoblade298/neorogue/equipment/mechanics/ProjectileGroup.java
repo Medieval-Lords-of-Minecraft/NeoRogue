@@ -2,7 +2,9 @@ package me.neoblade298.neorogue.equipment.mechanics;
 
 import java.util.LinkedList;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -32,10 +34,31 @@ public class ProjectileGroup {
 		return projs;
 	}
 	
+	public LinkedList<ProjectileInstance> startWithoutEvent(FightData owner, Location origin, Vector direction) {
+		LinkedList<ProjectileInstance> projs = new LinkedList<ProjectileInstance>();
+		for (Projectile proj : group) {
+			projs.add(proj.start(owner, origin, direction));
+		}
+		return projs;
+	}
+	
 	public LinkedList<ProjectileInstance> start(FightData owner) {
 		LinkedList<ProjectileInstance> projs = new LinkedList<ProjectileInstance>();
 		for (Projectile proj : group) {
 			projs.add(proj.start(owner));
+		}
+		if (owner.getEntity() instanceof Player) {
+			Player p = (Player) owner.getEntity();
+			FightInstance.trigger(p, Trigger.LAUNCH_PROJECTILE_GROUP, new LaunchProjectileGroupEvent(this, projs));
+		}
+		return projs;
+	}
+	
+	// Direction should be normalized for consistent behavior
+	public LinkedList<ProjectileInstance> start(FightData owner, Location origin, Vector direction) {
+		LinkedList<ProjectileInstance> projs = new LinkedList<ProjectileInstance>();
+		for (Projectile proj : group) {
+			projs.add(proj.start(owner, origin, direction));
 		}
 		if (owner.getEntity() instanceof Player) {
 			Player p = (Player) owner.getEntity();

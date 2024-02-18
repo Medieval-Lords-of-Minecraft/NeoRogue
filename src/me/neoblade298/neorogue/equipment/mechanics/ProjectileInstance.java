@@ -34,7 +34,7 @@ public class ProjectileInstance {
 	private HashMap<BuffType, Buff> buffs = new HashMap<BuffType, Buff>();
 	private int tick, numHit, interpolationPoints;
 	
-	public ProjectileInstance(Projectile settings, FightData owner) {
+	protected ProjectileInstance(Projectile settings, FightData owner) {
 		this.inst = owner.getInstance();
 		this.owner = owner;
 		this.settings = settings;
@@ -45,6 +45,27 @@ public class ProjectileInstance {
 		v.multiply(settings.getBlocksPerTick() * settings.getTickSpeed());
 		interpolationPoints = (int) v.length() + 1;
 		loc = origin.getLocation().add(0, 1, 0);
+		bounds = BoundingBox.of(loc, settings.getWidth(), settings.getHeight(), settings.getWidth());
+		
+		task = new BukkitRunnable() {
+			public void run() {
+				if (tick()) {
+					cancel();
+				}
+			}
+		}.runTaskTimer(NeoRogue.inst(), settings.getTickSpeed(), settings.getTickSpeed());
+	}
+	
+	protected ProjectileInstance(Projectile settings, FightData owner, Location origin, Vector direction) {
+		this.inst = owner.getInstance();
+		this.owner = owner;
+		this.settings = settings;
+		
+		v = direction.rotateAroundY(Math.toRadians(settings.getRotation()));
+		if (settings.initialY() != 0) v = v.add(new Vector(0, settings.initialY(), 0)).normalize();
+		v.multiply(settings.getBlocksPerTick() * settings.getTickSpeed());
+		interpolationPoints = (int) v.length() + 1;
+		loc = origin.add(0, 1, 0);
 		bounds = BoundingBox.of(loc, settings.getWidth(), settings.getHeight(), settings.getWidth());
 		
 		task = new BukkitRunnable() {
