@@ -22,7 +22,9 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageType;
+import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
@@ -78,10 +80,18 @@ public class StoneHammer extends Equipment {
 		hitShape.draw(StoneHammer.edge, hit, LocalAxes.xz(), StoneHammer.fill);
 		LinkedList<LivingEntity> enemies = TargetHelper.getEntitiesInRadius(p, hit, props);
 		if (enemies.isEmpty()) return;
+		boolean first = true;
 		for (LivingEntity ent : enemies) {
-			weaponDamage(p, data, ent);
-			Vector v = ent.getVelocity();
-			ent.setVelocity(v.setY(v.getY() + 0.5));
+			if (first) {
+				weaponDamage(p, data, ent);
+				Vector v = ent.getVelocity();
+				ent.setVelocity(v.setY(v.getY() + 0.5));
+				first = false;
+			}
+			else {
+				DamageMeta dm = new DamageMeta(data, properties.get(PropertyType.DAMAGE), properties.getType());
+				FightInstance.dealDamage(dm, ent);
+			}
 		}
 	}
 
