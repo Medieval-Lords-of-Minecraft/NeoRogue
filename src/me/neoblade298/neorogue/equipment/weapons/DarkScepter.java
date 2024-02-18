@@ -38,46 +38,20 @@ public class DarkScepter extends Equipment {
 	
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ProjectileGroup proj = new ProjectileGroup(new DarkScepterProjectile(p));
+		ProjectileGroup proj = new ProjectileGroup(new DarkRay(p));
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (d, inputs) -> {
 			if (!canUseWeapon(data))
 				return TriggerResult.keep();
 			weaponSwing(p, data);
-			proj.start(data);
+			
+			//
+			
 			return TriggerResult.keep();
 		});
 	}
 
-	private class DarkScepterProjectile extends Projectile {
-		private Player p;
-		
-		public DarkScepterProjectile(Player p) {
-			super(4, 15, 1);
-			this.size(0.5, 0.5).ignore(false, false, true);
-			this.p = p;
-		}
-		
-		@Override
-		public void onTick(ProjectileInstance proj, boolean interpolation) {
-		}
-
-		@Override
-		public void onHitBlock(ProjectileInstance proj) {
-			new ProjectileGroup(new DarkRayProjectile(p)).start(proj.getOwner());
-			// TODO: need to start ray projectile where scepter projectile ended (i.e. at hit block)
-		}
-		
-		@Override
-		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
-		}
-		
-		@Override
-		public void onStart(ProjectileInstance proj) {
-		}
-	}
-
-	private class DarkRayProjectile extends Projectile {
-		public DarkRayProjectile(Player p) {
+	private class DarkRay extends Projectile {
+		public DarkRay(Player p) {
 			super(0.5, 2.5, 1);
 			this.size(1.25, 1.25).pierce();
 		}
