@@ -376,6 +376,9 @@ public class PlayerSessionInventory extends CoreInventory {
 				setHighlights(Equipment.get(nclicked.getString("equipId"), false).getType());
 			}
 		}
+		else {
+			p.playSound(p, Sound.ITEM_ARMOR_EQUIP_DIAMOND, 1F, 1F);
+		}
 		
 		if (!onChest && clicked == null && cursor != null) {
 			clearHighlights();
@@ -578,7 +581,7 @@ public class PlayerSessionInventory extends CoreInventory {
 	
 	private ItemStack iconFromEquipSlot(EquipSlot es, int slot) {
 		switch (es) {
-		case ACCESSORY: return createAccessoryIcon(slot);
+		case ACCESSORY: return createAccessoryIcon(slot - 3);
 		case ARMOR: return createArmorIcon(slot);
 		case HOTBAR: return createHotbarIcon(slot - 18);
 		case KEYBIND: KeyBind bind = KeyBind.getBindFromSlot(slot);
