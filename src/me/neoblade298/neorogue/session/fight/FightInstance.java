@@ -635,6 +635,7 @@ public abstract class FightInstance extends Instance {
 
 				for (Player p : s.getOnlinePlayers()) {
 					p.teleport(spawn);
+					p.setAllowFlight(false);
 				}
 				for (UUID uuid : s.getSpectators()) {
 					Player p = Bukkit.getPlayer(uuid);

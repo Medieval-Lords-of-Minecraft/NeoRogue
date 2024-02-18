@@ -91,11 +91,6 @@ public class NodeSelectInstance extends EditInventoryInstance {
 	public void cleanup() {
 		task.cancel();
 		
-		for (Player p : s.getOnlinePlayers()) {
-			p.setAllowFlight(false);
-			groundPlayer(p);
-		}
-		
 		for (Hologram holo : holograms) {
 			holo.delete();
 		}
@@ -117,6 +112,12 @@ public class NodeSelectInstance extends EditInventoryInstance {
 			Node node = s.getArea().getNodeFromLocation(e.getClickedBlock().getLocation());
 			s.visitNode(node);
 			s.setInstance(node.getInstance());
+			if (!(node.getInstance() instanceof FightInstance)) {
+				for (Player pl : s.getOnlinePlayers()) {
+					pl.setAllowFlight(false);
+				}
+			}
+			// Fight instances set allow flight to false after the teleport
 			return;
 		}
 		else if (e.getClickedBlock().getType() == Material.LECTERN) {
@@ -125,15 +126,6 @@ public class NodeSelectInstance extends EditInventoryInstance {
 			FightInstance inst = (FightInstance) n.getInstance();
 			new FightInfoInventory(e.getPlayer(), inst.getMap().getMobs());
 		}
-	}
-	
-	private void groundPlayer(Player p) {
-		Location loc = p.getLocation();
-		while (loc.getBlock().getType().isAir()) {
-			loc.add(0, -1, 0);
-		}
-		loc.add(0, 1, 0);
-		p.teleport(loc);
 	}
 
 	@Override
