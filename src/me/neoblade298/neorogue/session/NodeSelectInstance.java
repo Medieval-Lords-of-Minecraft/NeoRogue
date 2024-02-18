@@ -3,7 +3,6 @@ package me.neoblade298.neorogue.session;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
-import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -94,6 +93,7 @@ public class NodeSelectInstance extends EditInventoryInstance {
 		
 		for (Player p : s.getOnlinePlayers()) {
 			p.setAllowFlight(false);
+			groundPlayer(p);
 		}
 		
 		for (Hologram holo : holograms) {
@@ -113,15 +113,6 @@ public class NodeSelectInstance extends EditInventoryInstance {
 			}
 			
 			// Validation
-			for (Entry<UUID, PlayerSessionData> ent : s.getParty().entrySet()) {
-				Player member = ent.getValue().getPlayer();
-				if (member == null) {
-					for (Player online : s.getOnlinePlayers()) {
-						Util.displayError(online, "At least one party member (" + ent.getValue().getData().getDisplay() + ") is not online!");
-					}
-					return;
-				}
-			}
 			if (!s.isEveryoneOnline()) return;
 			Node node = s.getArea().getNodeFromLocation(e.getClickedBlock().getLocation());
 			s.visitNode(node);
@@ -134,6 +125,15 @@ public class NodeSelectInstance extends EditInventoryInstance {
 			FightInstance inst = (FightInstance) n.getInstance();
 			new FightInfoInventory(e.getPlayer(), inst.getMap().getMobs());
 		}
+	}
+	
+	private void groundPlayer(Player p) {
+		Location loc = p.getLocation();
+		while (loc.getBlock().getType().isAir()) {
+			loc.add(0, -1, 0);
+		}
+		loc.add(0, 1, 0);
+		p.teleport(loc);
 	}
 
 	@Override
