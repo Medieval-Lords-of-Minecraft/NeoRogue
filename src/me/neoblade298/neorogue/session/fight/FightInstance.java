@@ -737,23 +737,13 @@ public abstract class FightInstance extends Instance {
 					p.setFoodLevel(20);
 					data.revertMaxHealth();
 					data.updateCoinsBar();
+					p.clearActivePotionEffects();
 					s.broadcast(pdata.getStats().getStatLine());
 				}
 			}
 			FightData fdata = fightData.remove(uuid);
 			if (fdata != null) fdata.cleanup();
 		}
-
-		// Delay potion effects after the fight ends to catch effects done right as the last kill happens
-		new BukkitRunnable() {
-			public void run() {
-				for (UUID uuid : s.getParty().keySet()) {
-					Player p = Bukkit.getPlayer(uuid);
-					if (p == null) return;
-					p.clearActivePotionEffects();
-				}
-			}
-		}.runTaskLater(NeoRogue.inst(), 1L);
 		
 		for (Corpse c : corpses) {
 			c.remove();

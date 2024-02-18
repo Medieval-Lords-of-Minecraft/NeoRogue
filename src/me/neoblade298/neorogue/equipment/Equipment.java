@@ -174,6 +174,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			
 			// Weapons
 			new FencingSword(b).addSelfReforge(new Rapier(b), new SerratedFencingSword(b));
+			new Flametongue(b);
 			new LeatherGauntlets(b).addSelfReforge(new ForcefulLeatherGauntlets(b), new LightLeatherGauntlets(b), new EarthenLeatherGauntlets(b));
 			new StoneHammer(b);
 			new WoodenSword(b).addSelfReforge(new StoneSword(b), new StoneSpear(b), new StoneAxe(b));
@@ -641,6 +642,16 @@ public abstract class Equipment implements Comparable<Equipment> {
 	
 	public void weaponDamage(Player p, PlayerFightData data, LivingEntity target, double damage, double knockback) {
 		DamageMeta dm = new DamageMeta(data, damage, properties.getType());
+		BasicAttackEvent ev = new BasicAttackEvent(target, dm, knockback, this, null);
+		data.runActions(data, Trigger.BASIC_ATTACK, ev);
+		FightInstance.dealDamage(dm, target);
+		if (knockback != 0) {
+			FightInstance.knockback(p, target, knockback);
+		}
+	}
+	
+	public void weaponDamage(Player p, PlayerFightData data, LivingEntity target, DamageMeta dm) {
+		double knockback = properties.get(PropertyType.KNOCKBACK);
 		BasicAttackEvent ev = new BasicAttackEvent(target, dm, knockback, this, null);
 		data.runActions(data, Trigger.BASIC_ATTACK, ev);
 		FightInstance.dealDamage(dm, target);
