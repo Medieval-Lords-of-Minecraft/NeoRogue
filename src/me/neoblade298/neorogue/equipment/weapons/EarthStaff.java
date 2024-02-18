@@ -31,14 +31,14 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class EarthStaff extends Equipment {
 	// TODO: dont just hit in 3d radius, need to focus on enemies on floor
-
+	
 	private static final double innerRadius = 1.5, outerRadius = 4;
 	private static final Circle innerRing = new Circle(innerRadius), outerRing = new Circle(outerRadius);
 	private static final ParticleContainer aoe = new ParticleContainer(Particle.GLOW).count(1).spread(0.1, 0.1).speed(0);
-
+	
 	private static final TargetProperties innerProps = TargetProperties.radius(innerRadius, true, TargetType.ENEMY);
 	private static final TargetProperties outerProps = TargetProperties.radius(outerRadius, true, TargetType.ENEMY);
-
+	
 	public EarthStaff(boolean isUpgraded) {
 		super(
 				"earthStaff", "Earth Staff", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
@@ -46,7 +46,7 @@ public class EarthStaff extends Equipment {
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
@@ -67,7 +67,7 @@ public class EarthStaff extends Equipment {
 						weaponDamage(p, data, ent);
 						FightInstance.getFightData(ent.getUniqueId()).applyStatus(StatusType.CONCUSSED, p.getUniqueId(), 3, 0);
 					}
-					
+
 					data.addTask(id, new BukkitRunnable() {
 						@Override
 						public void run() {
@@ -80,13 +80,13 @@ public class EarthStaff extends Equipment {
 								FightInstance.getFightData(ent.getUniqueId()).applyStatus(StatusType.CONCUSSED, p.getUniqueId(), 3, 0);
 							}
 						}
-					}.runTaskLater(NeoRogue.inst(), 3));
+					}.runTaskLater(NeoRogue.inst(), 5));
 				}
 			}.runTaskLater(NeoRogue.inst(), 12));
 			return TriggerResult.keep();
 		});
 	}
-	
+
 	@Override
 	public void setupItem() {
 		item = createItem(
