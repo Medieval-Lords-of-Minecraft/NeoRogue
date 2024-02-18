@@ -22,18 +22,87 @@ import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.droptables.DropTable;
 import me.neoblade298.neocore.shared.util.SharedUtil;
+import me.neoblade298.neorogue.equipment.Equipment.DropTableSet;
+import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
+import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.abilities.*;
-import me.neoblade298.neorogue.equipment.accessories.*;
-import me.neoblade298.neorogue.equipment.armor.*;
-import me.neoblade298.neorogue.equipment.artifacts.*;
-import me.neoblade298.neorogue.equipment.consumables.*;
-import me.neoblade298.neorogue.equipment.cursed.*;
-import me.neoblade298.neorogue.equipment.materials.*;
+import me.neoblade298.neorogue.equipment.accessories.EarthenRing;
+import me.neoblade298.neorogue.equipment.accessories.GripGloves;
+import me.neoblade298.neorogue.equipment.accessories.MinorManaRelic;
+import me.neoblade298.neorogue.equipment.accessories.MinorShieldingRelic;
+import me.neoblade298.neorogue.equipment.accessories.MinorStaminaRelic;
+import me.neoblade298.neorogue.equipment.accessories.MinorStrengthRelic;
+import me.neoblade298.neorogue.equipment.accessories.RingOfAnger;
+import me.neoblade298.neorogue.equipment.armor.ClothBindings;
+import me.neoblade298.neorogue.equipment.armor.Footpads;
+import me.neoblade298.neorogue.equipment.armor.LeatherChestplate;
+import me.neoblade298.neorogue.equipment.armor.LeatherHelmet;
+import me.neoblade298.neorogue.equipment.armor.NullMagicMantle;
+import me.neoblade298.neorogue.equipment.armor.SpikedPauldrons;
+import me.neoblade298.neorogue.equipment.artifacts.AvalonianAnchor;
+import me.neoblade298.neorogue.equipment.artifacts.BurningCross;
+import me.neoblade298.neorogue.equipment.artifacts.CharmOfGallus;
+import me.neoblade298.neorogue.equipment.artifacts.EmeraldCluster;
+import me.neoblade298.neorogue.equipment.artifacts.EmeraldGem;
+import me.neoblade298.neorogue.equipment.artifacts.EmeraldShard;
+import me.neoblade298.neorogue.equipment.artifacts.EnergyBattery;
+import me.neoblade298.neorogue.equipment.artifacts.FaerieCirclet;
+import me.neoblade298.neorogue.equipment.artifacts.GlacialHammer;
+import me.neoblade298.neorogue.equipment.artifacts.GrendelsCrystalMirror;
+import me.neoblade298.neorogue.equipment.artifacts.MercenaryHeadband;
+import me.neoblade298.neorogue.equipment.artifacts.PracticeDummy;
+import me.neoblade298.neorogue.equipment.artifacts.RubyCluster;
+import me.neoblade298.neorogue.equipment.artifacts.RubyGem;
+import me.neoblade298.neorogue.equipment.artifacts.RubyShard;
+import me.neoblade298.neorogue.equipment.artifacts.SapphireCluster;
+import me.neoblade298.neorogue.equipment.artifacts.SapphireGem;
+import me.neoblade298.neorogue.equipment.artifacts.SapphireShard;
+import me.neoblade298.neorogue.equipment.artifacts.TomeOfWisdom;
+import me.neoblade298.neorogue.equipment.consumables.MinorHealthPotion;
+import me.neoblade298.neorogue.equipment.consumables.MinorMagicalPotion;
+import me.neoblade298.neorogue.equipment.consumables.MinorManaPotion;
+import me.neoblade298.neorogue.equipment.consumables.MinorPhysicalPotion;
+import me.neoblade298.neorogue.equipment.consumables.MinorShieldsPotion;
+import me.neoblade298.neorogue.equipment.consumables.MinorStaminaPotion;
+import me.neoblade298.neorogue.equipment.cursed.CurseOfInexperience;
+import me.neoblade298.neorogue.equipment.cursed.DullDagger;
+import me.neoblade298.neorogue.equipment.cursed.GnarledWand;
+import me.neoblade298.neorogue.equipment.cursed.MangledBow;
+import me.neoblade298.neorogue.equipment.cursed.RustySword;
+import me.neoblade298.neorogue.equipment.materials.DullGem;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
-import me.neoblade298.neorogue.equipment.offhands.*;
-import me.neoblade298.neorogue.equipment.weapons.*;
+import me.neoblade298.neorogue.equipment.offhands.CaptainsTowerShield;
+import me.neoblade298.neorogue.equipment.offhands.ChasingDagger;
+import me.neoblade298.neorogue.equipment.offhands.HastyShield;
+import me.neoblade298.neorogue.equipment.offhands.LeatherBracer;
+import me.neoblade298.neorogue.equipment.offhands.SmallShield;
+import me.neoblade298.neorogue.equipment.offhands.SpikyShield;
+import me.neoblade298.neorogue.equipment.offhands.TowerShield;
+import me.neoblade298.neorogue.equipment.offhands.WristBlade;
+import me.neoblade298.neorogue.equipment.weapons.BoltWand;
+import me.neoblade298.neorogue.equipment.weapons.ChainLightningWand;
+import me.neoblade298.neorogue.equipment.weapons.DarkScepter;
+import me.neoblade298.neorogue.equipment.weapons.EarthStaff;
+import me.neoblade298.neorogue.equipment.weapons.EarthenLeatherGauntlets;
+import me.neoblade298.neorogue.equipment.weapons.FencingSword;
+import me.neoblade298.neorogue.equipment.weapons.FireStaff;
+import me.neoblade298.neorogue.equipment.weapons.Flametongue;
+import me.neoblade298.neorogue.equipment.weapons.ForcefulLeatherGauntlets;
+import me.neoblade298.neorogue.equipment.weapons.IceWand;
+import me.neoblade298.neorogue.equipment.weapons.LeatherGauntlets;
+import me.neoblade298.neorogue.equipment.weapons.LightLeatherGauntlets;
+import me.neoblade298.neorogue.equipment.weapons.LightningWand;
+import me.neoblade298.neorogue.equipment.weapons.Rapier;
+import me.neoblade298.neorogue.equipment.weapons.SerratedFencingSword;
+import me.neoblade298.neorogue.equipment.weapons.SparkStick;
+import me.neoblade298.neorogue.equipment.weapons.StoneAxe;
+import me.neoblade298.neorogue.equipment.weapons.StoneHammer;
+import me.neoblade298.neorogue.equipment.weapons.StoneSpear;
+import me.neoblade298.neorogue.equipment.weapons.StoneSword;
+import me.neoblade298.neorogue.equipment.weapons.WoodenSword;
+import me.neoblade298.neorogue.equipment.weapons.WoodenWand;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageMeta.BuffOrigin;
@@ -94,6 +163,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new MinorStaminaRelic(b);
 			new MinorStrengthRelic(b);
 			new RingOfAnger(b);
+			new MinorManaRelic(b);
 			
 			// Armor
 			new ClothBindings(b);
@@ -117,7 +187,11 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new StoneHammer(b);
 			new WoodenSword(b).addSelfReforge(new StoneSword(b), new StoneSpear(b), new StoneAxe(b));
 			new WoodenWand(b);
-			new LightningWand(b);
+			new LightningWand(b).addSelfReforge(new SparkStick(b), new ChainLightningWand(b), new BoltWand(b));
+			new FireStaff(b);
+			new IceWand(b);
+			new EarthStaff(b);
+			new DarkScepter(b);
 			
 			// Consumables
 			new MinorHealthPotion(b);
@@ -431,8 +505,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 		properties.modifyItemMeta(item, meta);
 		item.setItemMeta(meta);
 		
-		this.hoverable = this.display.decorate(TextDecoration.UNDERLINED)
-				.hoverEvent(item.asHoverEvent()).clickEvent(ClickEvent.runCommand("/nr glossary " + this.id));
+		this.hoverable = this.display.decorate(TextDecoration.UNDERLINED).hoverEvent(item.asHoverEvent())
+				.clickEvent(ClickEvent.runCommand("/nr glossary " + this.id));
 		
 		NBTItem nbti = new NBTItem(item);
 		nbti.setString("equipId", id);
@@ -549,8 +623,10 @@ public abstract class Equipment implements Comparable<Equipment> {
 	
 	// Used for weapons that start cooldown on swing, not hit
 	public void weaponSwing(Player p, PlayerFightData data) {
-		if (properties.has(PropertyType.MANA_COST)) data.addMana(-properties.get(PropertyType.MANA_COST));
-		if (properties.has(PropertyType.STAMINA_COST)) data.addStamina(-properties.get(PropertyType.STAMINA_COST));
+		if (properties.has(PropertyType.MANA_COST))
+			data.addMana(-properties.get(PropertyType.MANA_COST));
+		if (properties.has(PropertyType.STAMINA_COST))
+			data.addStamina(-properties.get(PropertyType.STAMINA_COST));
 		properties.getSwingSound().play(p);
 		data.setBasicAttackCooldown(type.getSlots()[0], properties);
 		if (type.getSlots()[0] == EquipSlot.OFFHAND)
@@ -821,7 +897,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 	public static Set<String> getEquipmentIds() {
 		return equipment.keySet();
 	}
-	
+
 	public static Collection<Equipment> getAll() {
 		return equipment.values();
 	}

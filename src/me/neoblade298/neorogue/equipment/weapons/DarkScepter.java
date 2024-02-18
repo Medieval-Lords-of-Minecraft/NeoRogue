@@ -5,9 +5,10 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.util.RayTraceResult;
+import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
-import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
@@ -22,44 +23,47 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class LightningWand extends Equipment {
+public class DarkScepter extends Equipment {
+	private static final int hitScanRange = 12;
 	private static ParticleContainer tick;
-	
-	private int pierceAmount;
 
 	static {
 		tick = new ParticleContainer(Particle.GLOW);
-		tick.count(3).spread(0.1, 0.1).speed(0);
+		tick.count(5).spread(0.1, 0.1).speed(0.01);
 	}
 
-	public LightningWand(boolean isUpgraded) {
+	public DarkScepter(boolean isUpgraded) {
 		super(
-				"lightningWand", "Lightning Wand", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(5, 0, isUpgraded ? 30 : 20, 0.75, DamageType.LIGHTNING, Sound.ITEM_AXE_SCRAPE)
+				"darkScepter", "Dark Scepter", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
+				EquipmentProperties.ofWeapon(6, 0, isUpgraded ? 50 : 25, 0.65, DamageType.DARK, Sound.ITEM_AXE_SCRAPE)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
-		pierceAmount = isUpgraded ? 3 : 1;
 	}
 	
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ProjectileGroup proj = new ProjectileGroup(new LightningWandProjectile(p));
+		ProjectileGroup proj = new ProjectileGroup(new DarkRay(p));
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (d, inputs) -> {
 			if (!canUseWeapon(data))
 				return TriggerResult.keep();
 			weaponSwing(p, data);
-			proj.start(data);
+			
+			RayTraceResult result = p.rayTraceBlocks(hitScanRange);
+			if (result != null) {
+				Location spawnLoc = result.getHitBlock().getLocation().add(0.5, -0.5, 0.5);
+				Vector spawnVec = result.getHitBlockFace().getDirection();
+				spawnLoc = spawnLoc.add(spawnVec.multiply(0.75));
+				proj.start(data, spawnLoc, spawnVec);
+			}
+			
 			return TriggerResult.keep();
 		});
 	}
 
-	private class LightningWandProjectile extends Projectile {
-		private Player p;
-		
-		public LightningWandProjectile(Player p) {
-			super(2.5, 12, 1);
-			this.size(0.5, 0.5).pierce();
-			this.p = p;
+	private class DarkRay extends Projectile {
+		public DarkRay(Player p) {
+			super(0.5, 2, 1);
+			this.size(1.25, 1.25).pierce();
 		}
 		
 		@Override
@@ -70,20 +74,15 @@ public class LightningWand extends Equipment {
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
 			weaponDamageProjectile(hit.getEntity(), proj, hitBarrier);
-			Location loc = hit.getEntity().getLocation();
-			Util.playSound(p, loc, Sound.ENTITY_LIGHTNING_BOLT_IMPACT, 1F, 1F, true);
-			if (proj.getNumHit() >= pierceAmount)
-				proj.cancel();
 		}
 		
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			
 		}
 	}
 	
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STICK, "Pierces the first <yellow>" + pierceAmount + "</yellow> enemies hit.");
+		item = createItem(Material.NETHERITE_HOE, "Dark rays shoot out of the targeted surface.");
 	}
 }
