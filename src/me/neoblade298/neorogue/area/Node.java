@@ -1,6 +1,8 @@
 package me.neoblade298.neorogue.area;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import me.neoblade298.neorogue.session.*;
 import me.neoblade298.neorogue.session.chance.ChanceInstance;
@@ -11,6 +13,12 @@ import me.neoblade298.neorogue.session.fight.StandardFightInstance;
 
 public class Node {
 	private static int MAX_DESTS = 3;
+	private static final Comparator<Node> destinationSorter = new Comparator<Node>() {
+		@Override
+		public int compare(Node o1, Node o2) {
+			return Integer.compare(o1.lane, o2.lane);
+		}
+	};
 
 	private ArrayList<Node> dests = new ArrayList<Node>(MAX_DESTS);
 	private ArrayList<Node> srcs = new ArrayList<Node>(MAX_DESTS);
@@ -27,6 +35,11 @@ public class Node {
 	public void addDestination(Node node) {
 		dests.add(node);
 		node.addSource(this);
+	}
+	
+	// Basically only used by nodemapinventory
+	public void sortDestinations() {
+		Collections.sort(dests, destinationSorter);
 	}
 
 	public void addSource(Node node) {
