@@ -226,7 +226,7 @@ public class DamageMeta {
 				}
 			}
 
-			for (BuffType bt : slice.getType().getBuffTypes()) {
+			for (BuffType bt : slice.getPostBuffType().getBuffTypes()) {
 				if (!defenseBuffs.containsKey(bt)) continue;
 				for (BuffMeta bm : defenseBuffs.get(bt)) {
 					Buff b = bm.buff;
@@ -243,7 +243,7 @@ public class DamageMeta {
 								buffOwner.getStats().addDamageBarriered(amt);
 								break;
 							default:
-								buffOwner.getStats().addDamageMitigated(slice.getType(), amt);
+								buffOwner.getStats().addDamageMitigated(slice.getPostBuffType(), amt);
 								break;
 							}
 						}
@@ -252,10 +252,10 @@ public class DamageMeta {
 			}
 			double sliceDamage = Math.max(0, (slice.getDamage() * (mult + 1)) + increase);
 			if (owner instanceof PlayerFightData) {
-				((PlayerFightData) owner).getStats().addDamageDealt(slice.getType(), sliceDamage);
+				((PlayerFightData) owner).getStats().addDamageDealt(slice.getPostBuffType(), sliceDamage);
 			}
 			if (recipient instanceof PlayerFightData) {
-				((PlayerFightData) recipient).getStats().addDamageTaken(slice.getType(), sliceDamage);
+				((PlayerFightData) recipient).getStats().addDamageTaken(slice.getPostBuffType(), sliceDamage);
 			}
 			
 			if (!slice.isIgnoreShields()) {
@@ -266,10 +266,10 @@ public class DamageMeta {
 			}
 
 			// Return damage
-			if (recipient.hasStatus(StatusType.THORNS) && slice.getType().containsBuffType(BuffType.PHYSICAL)) {
+			if (recipient.hasStatus(StatusType.THORNS) && slice.getPostBuffType().containsBuffType(BuffType.PHYSICAL)) {
 				returnDamage.addDamageSlice(new DamageSlice(recipient.getUniqueId(), recipient.getStatus(StatusType.THORNS).getStacks(), DamageType.THORNS));
 			}
-			if (recipient.hasStatus(StatusType.REFLECT) && slice.getType().containsBuffType(BuffType.MAGICAL)) {
+			if (recipient.hasStatus(StatusType.REFLECT) && slice.getPostBuffType().containsBuffType(BuffType.MAGICAL)) {
 				returnDamage.addDamageSlice(new DamageSlice(recipient.getUniqueId(), recipient.getStatus(StatusType.REFLECT).getStacks(), DamageType.REFLECT));
 			}
 		}
