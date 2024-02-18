@@ -4,11 +4,14 @@ import org.bukkit.Material;
 
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.AreaType;
+import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.ShrineInstance;
 import me.neoblade298.neorogue.session.chance.ChanceChoice;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
 import me.neoblade298.neorogue.session.chance.ChanceStage;
+import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.StandardFightInstance;
+import me.neoblade298.neorogue.session.fight.buff.BuffType;
 
 public class ForkInTheRoadChance extends ChanceSet {
 
@@ -23,7 +26,7 @@ public class ForkInTheRoadChance extends ChanceSet {
 		fight.addChoice(new ChanceChoice(Material.GREEN_WOOL, "<green>Welp, but green"));
 
 		ChanceChoice choice = new ChanceChoice(Material.COBBLESTONE, "Let's risk it",
-				"<gray><yellow>50% </yellow>chance to arrive at a shrine, <yellow>50% </yellow>chance to encounter a fight",
+				"<gray><yellow>50% </yellow>chance to arrive at a shrine, <yellow>50% </yellow>chance to encounter a fight and start it with 10% reduced damage debuff.",
 				(s, inst, data) -> {
 					boolean isShrine = NeoRogue.gen.nextBoolean();
 					if (isShrine) {
@@ -32,8 +35,15 @@ public class ForkInTheRoadChance extends ChanceSet {
 						return null;
 					}
 					else {
-						s.broadcast("Looks like the path was made by enemies, and you just walked straight into their lair.");
-						inst.setNextInstance(new StandardFightInstance(s, s.getParty().keySet(), s.getArea().getType(), s.getNodesVisited()));
+						PlayerSessionData psd = inst.chooseRandomPartyMember();
+						s.broadcast("You follow <yellow>" + psd.getData().getDisplay() + "'s</yellow> bold instructions to walk along the path straight into an enemy lair.");
+						StandardFightInstance sfi = new StandardFightInstance(s, s.getParty().keySet(), s.getArea().getType(), s.getNodesVisited());
+						sfi.addInitialTask((fi, fdata) -> {
+							for (PlayerFightData pfdata : fdata) {
+								pfdata.addBuff(pfdata.getUniqueId(), true, true, BuffType.GENERAL, -0.2);
+							}
+						});
+						inst.setNextInstance(sfi);
 						return fight.getId();
 					}
 				});

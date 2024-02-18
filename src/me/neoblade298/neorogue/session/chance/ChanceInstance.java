@@ -1,6 +1,7 @@
 package me.neoblade298.neorogue.session.chance;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.UUID;
@@ -184,6 +185,11 @@ public class ChanceInstance extends EditInventoryInstance {
 				this.stage.put(uuid, stage);
 			}
 		}
+	}
+	
+	public PlayerSessionData chooseRandomPartyMember() {
+		Collection<PlayerSessionData> party = s.getParty().values();
+		return (PlayerSessionData) party.toArray()[NeoRogue.gen.nextInt(party.size())];
 	}
 	
 	private void returnPlayers() {

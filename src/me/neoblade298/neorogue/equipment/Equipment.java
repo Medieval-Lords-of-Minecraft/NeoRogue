@@ -152,6 +152,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new SapphireShard();
 		
 		// Curses
+		new CurseOfBurden();
 		new CurseOfInexperience();
 		new DullDagger();
 		new GnarledWand();

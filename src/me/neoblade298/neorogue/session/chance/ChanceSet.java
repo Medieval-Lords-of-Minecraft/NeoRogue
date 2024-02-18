@@ -43,6 +43,7 @@ public class ChanceSet {
 		new AmbushChance();
 		new ForkInTheRoadChance();
 		new GreedChance();
+		new LabChance();
 		new LostRelicChance();
 		new ShiningLightChance();
 		new ThiefsCacheChance();

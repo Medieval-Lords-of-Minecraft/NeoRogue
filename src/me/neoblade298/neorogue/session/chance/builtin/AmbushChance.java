@@ -16,6 +16,7 @@ import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.FightScore;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.StandardFightInstance;
+import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.reward.RewardInstance;
 
 public class AmbushChance extends ChanceSet {
@@ -45,7 +46,7 @@ public class AmbushChance extends ChanceSet {
 				}));
 		
 		stage.addChoice(new ChanceChoice(Material.FLINT, "Steal from them",
-				"<yellow>50%</yellow> chance you get an S tier reward, <yellow>50%</yellow> chance a normal fight starts.",
+				"<yellow>50%</yellow> chance you get an S tier reward, <yellow>50%</yellow> chance you start a fight dealing 20% reduced damage.",
 				(s, inst, unused) -> {
 					if (NeoRogue.gen.nextBoolean()) {
 						inst.setNextInstance(new RewardInstance(s, StandardFightInstance.generateRewards(s, FightScore.S)));
@@ -56,6 +57,11 @@ public class AmbushChance extends ChanceSet {
 						PlayerSessionData data = (PlayerSessionData) party.toArray()[NeoRogue.gen.nextInt(party.size())];
 						s.broadcast("They spot you as <yellow>" + data.getData().getDisplay() +
 								"</yellow> lumbers over and snaps a few twigs. You groan and prepare to fight.");
+						((FightInstance) inst.getNextInstance()).addInitialTask((fi, fdata) -> {
+							for (PlayerFightData pfdata : fdata) {
+								pfdata.addBuff(pfdata.getUniqueId(), true, true, BuffType.GENERAL, -0.2);
+							}
+						});
 					}
 					return null;
 				}));

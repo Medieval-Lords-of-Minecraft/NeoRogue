@@ -109,6 +109,8 @@ public class PlayerSessionData {
 		case WARRIOR:
 			hotbar[0] = Equipment.get("woodenSword", false);
 			hotbar[1] = Equipment.get("empoweredEdge", false);
+			upgradable.get(EquipSlot.HOTBAR).add(0);
+			upgradable.get(EquipSlot.HOTBAR).add(1);
 			abilitiesEquipped = 1;
 			break;
 		case THIEF:
@@ -133,13 +135,14 @@ public class PlayerSessionData {
 		for (int i = 2; i < accessories.length; i++) {
 			accessories[i] = Equipment.get("curseOfInexperience", false);
 		}
+		for (int i = 1; i < armors.length; i++) {
+			armors[i] = Equipment.get("curseOfBurden", false);
+		}
 
 		for (EquipSlot es : EquipSlot.values()) {
 			upgradable.put(es, new HashSet<Integer>());
 			upgraded.put(es, new HashSet<Integer>());
 		}
-		upgradable.get(EquipSlot.HOTBAR).add(0);
-		upgradable.get(EquipSlot.HOTBAR).add(1);
 
 		setupInventory();
 		setupArtifacts();
@@ -368,6 +371,13 @@ public class PlayerSessionData {
 	public void giveEquipment(Equipment eq) {
 		giveEquipment(eq, SharedUtil.color("You received "),
 				SharedUtil.color("<yellow>" + data.getDisplay() + "</yellow> received "));
+	}
+
+	public void giveEquipment(ArrayList<? extends Equipment> eqs) {
+		for (Equipment eq : eqs) {
+			giveEquipment(eq, SharedUtil.color("You received "),
+					SharedUtil.color("<yellow>" + data.getDisplay() + "</yellow> received "));
+		}
 	}
 
 	private boolean tryEquip(EquipSlot es, Equipment eq) {
