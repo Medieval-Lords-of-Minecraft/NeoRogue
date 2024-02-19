@@ -21,7 +21,7 @@ public class LabChance extends ChanceSet {
 		ChanceStage stage = new ChanceStage(this, INIT_ID, "You stumble upon a makeshift lab that has an array of potions brewing.");
 
 		ChanceChoice choice = new ChanceChoice(Material.GOLD_BLOCK, "Grab what you can",
-				"Everyone receives <white>3</white> consumables, but with a <white>25%</white> chance to acquire a <red>curse</red that reduces your armor slots by <white>1</white>.",
+				"Everyone receives <white>3</white> consumables, but with a <white>25%</white> chance to acquire a <red>curse</red> that reduces your armor slots by <white>1</white>.",
 				(s, inst, unused) -> {
 					for (PlayerSessionData data : s.getParty().values()) {
 						data.giveEquipment(Equipment.getConsumable(s.getAreasCompleted() * 2, 3, data.getPlayerClass(), EquipmentClass.CLASSLESS));
@@ -72,7 +72,7 @@ public class LabChance extends ChanceSet {
 						for (PlayerSessionData pd : s.getParty().values()) {
 							pd.giveEquipment(Equipment.getArtifact(pd.getArtifactDroptable(), s.getAreasCompleted() * 2, 1, EquipmentClass.CLASSLESS, pd.getPlayerClass()));
 						}
-						s.broadcast("Somehow you all make it out alive as <yellow>" + data.getData().getDisplay() + " wildly and maniacally mixes potions. You left the disgusting"
+						s.broadcast("Somehow you all make it out alive as <yellow>" + data.getData().getDisplay() + "</yellow> wildly and maniacally mixes potions. You left the disgusting"
 								+ " mix at the lab, but in the progress found an artifact on the table behind one of the potions they took.");
 					}
 					return null;

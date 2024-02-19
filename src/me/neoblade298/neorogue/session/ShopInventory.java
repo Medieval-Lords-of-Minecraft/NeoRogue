@@ -60,7 +60,7 @@ public class ShopInventory extends CoreInventory {
 				(TextComponent) NeoCore.miniMessage().deserialize("Drag cursed equipment here to remove it " +
 						"in exchange for <yellow>" + REMOVE_CURSE_PRICE + " coins</yellow>."), 250, NamedTextColor.GRAY);
 		if (data.getSession().getParty().size() > 1) 
-			contents[20] = CoreInventory.createButton(Material.SPYGLASS, Component.text("View other players' rewards", NamedTextColor.GOLD));
+			contents[20] = CoreInventory.createButton(Material.SPYGLASS, Component.text("View other players' shops", NamedTextColor.GOLD));
 		inv.setContents(contents);
 	}
 	

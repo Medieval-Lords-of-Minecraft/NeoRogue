@@ -21,12 +21,14 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextDecoration.State;
 
 public class NodeMapInventory extends CoreInventory {
-	private static final int BACK2 = 47, BACK = 48, FORWARD = 50, FORWARD2 = 51;
+	private static final int BACK2 = 2, BACK = 3, FORWARD = 5, FORWARD2 = 6;
 	
-	private static final String ARROW_FORWARD = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDU0MmQwYzc0MjkzODc5NDhjZjk5ZThjYjhjNTU1OWU3MzNmYzdkYmZiMTg0YzJjMGI3ZDllZmQ4MjlmZiJ9fX0=",
-			ARROW_FORWARD2 = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmEwYmI3Nzc3MzhmMDVjNDQxNDhkYzQ3NDUzZmNlNzdlMTJhYTQxYTEwYjExODk1YmJlN2UyNDY5ODI3MzEifX19",
-			ARROW_BACK = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmU4ZjQyNGUzNjk3YmE0YWViZmU2NzgwNTcxOTczOTU2NWQ1MzY4NjY1YWIyMWFmOWNlMmViZGRkODk0NWM4In19fQ==",
-			ARROW_BACK2 = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjM0OTM5ZDI2NDQ0YTU3MzI3ZjA2NGMzOTI4ZGE2MWYzNmNhZjYyMmRlYmU3NGMzM2Y4ZjhhMzZkYTIyIn19fQ==";
+	private static final String ARROW_DOWN = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDhhYWI2ZDlhMGJkYjA3YzEzNWM5Nzg2MmU0ZWRmMzYzMTk0Mzg1MWVmYzU0NTQ2M2Q2OGU3OTNhYjQ1YTNkMyJ9fX0=",
+			ARROW_UP = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGIyMjFjYjk2MDdjOGE5YmYwMmZlZjVkNzYxNGUzZWIxNjljYzIxOWJmNDI1MGZkNTcxNWQ1ZDJkNjA0NWY3In19fQ==",
+			ARROW_UPLEFT = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTJiOGUzZWFlYTU1OGY4NmFlYmEzMjI5NjlkNGVlYjZiOTY5NDM0ZjVhZDc5MjY2ZDVkOTY4YjI4ZDkxOTJlIn19fQ==",
+			ARROW_UPRIGHT = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzgzMGU4N2JiNDQ3N2QyMTM2ZWQ0MzcxNzg0OTUzN2Y0ZDUxOWI0NGQ4ZmQ2ZTliNGMyZWJlNTJmYThmIn19fQ==",
+			ARROW_DOWN2 = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjBkMWRmODA0NmYwYjVkOTM0YzNlMDU3OThlYWNmZWVhNmQ3YjU5NWRiZTI2ZGViZjdkYjlhY2M4YzRmYTc5OCJ9fX0=",
+			ARROW_UP2 = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjJmYzIzODY2NTIzY2FhYThhOTUzNDU2NjEyN2E2ZjgzODlhZjNlNzZiOGUzYzMzYzI0NzNjYmE2ODg5YzQifX19";
 	
 	private int currentPos;
 	private Node[][] nodes;
@@ -40,22 +42,22 @@ public class NodeMapInventory extends CoreInventory {
 		p.playSound(p, Sound.ITEM_BOOK_PAGE_TURN, 1F, 1F);
 		
 		setupInventory();
-		inv.setItem(BACK2, CoreInventory.createButton(ARROW_BACK2, Component.text("Back 5 positions")));
-		inv.setItem(BACK, CoreInventory.createButton(ARROW_BACK, Component.text("Back 1 position")));
-		inv.setItem(FORWARD, CoreInventory.createButton(ARROW_FORWARD, Component.text("Forward 1 position")));
-		inv.setItem(FORWARD2, CoreInventory.createButton(ARROW_FORWARD2, Component.text("Forward 5 positions")));
+		inv.setItem(BACK2, CoreInventory.createButton(ARROW_DOWN2, Component.text("Down 3 positions")));
+		inv.setItem(BACK, CoreInventory.createButton(ARROW_DOWN, Component.text("Down 1 position")));
+		inv.setItem(FORWARD, CoreInventory.createButton(ARROW_UP, Component.text("Up 1 position")));
+		inv.setItem(FORWARD2, CoreInventory.createButton(ARROW_UP2, Component.text("Up 3 positions")));
 	}
 	
 	private void setupInventory() {
 		ItemStack[] contents = inv.getContents();
 		
 		// Clear existing nodes if any
-		for (int i = 0; i < 45; i++) {
+		for (int i = 9; i < 54; i++) {
 			contents[i] = null;
 		}
 		
 		// Place down nodes
-		for (int pos = currentPos; pos < currentPos + 5 && pos < nodes.length; pos++) {
+		for (int pos = currentPos; pos < currentPos + 3 && pos < nodes.length; pos++) {
 			for (int lane = 0; lane < 5; lane++) {
 				Node node = nodes[pos][lane];
 				if (node == null) continue;
@@ -71,10 +73,22 @@ public class NodeMapInventory extends CoreInventory {
 					contents[slot] = CoreInventory.createButton(node.getType().getBlock(), Component.text("Lane " + lane + " " + node.getType().name()));
 				}
 				ArrayList<Component> lore = new ArrayList<Component>(1 + node.getDestinations().size());
-				lore.add(Component.text("Connects to:", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, State.FALSE));
+				if (!node.getDestinations().isEmpty()) lore.add(Component.text("Connects to:", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, State.FALSE));
 				node.sortDestinations();
 				for (Node dest : node.getDestinations()) {
 					lore.add(Component.text("- Lane " + dest.getLane() + " " + dest.getType() , NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, State.FALSE));
+					// Only add arrows to next if the node shows up on the inventory
+					if (slot > 18) {
+						if (dest.getLane() > lane) {
+							contents[slot - 8] = CoreInventory.createButton(ARROW_UPRIGHT, Component.text(" "));
+						}
+						else if (dest.getLane() < lane) {
+							contents[slot - 10] = CoreInventory.createButton(ARROW_UPLEFT, Component.text(" "));
+						}
+						else {
+							contents[slot - 9] = CoreInventory.createButton(ARROW_UP, Component.text(" "));
+						}
+					}
 				}
 				contents[slot].lore(lore);
 			}
@@ -83,7 +97,7 @@ public class NodeMapInventory extends CoreInventory {
 	}
 	
 	private int nodeToSlot(Node node) {
-		return (node.getLane() * 9) + ((node.getPosition() - currentPos) * 2);
+		return (node.getLane() * 2) + ((2 - node.getPosition() + currentPos) * 18) + 9;
 	}
 
 	@Override
@@ -93,7 +107,7 @@ public class NodeMapInventory extends CoreInventory {
 		if (e.getClickedInventory() != inv) return;
 		int slot = e.getSlot();
 		if (slot == BACK2) {
-			turnPage(-5);
+			turnPage(-3);
 		}
 		else if (slot == BACK) {
 			turnPage(-1);
@@ -102,7 +116,7 @@ public class NodeMapInventory extends CoreInventory {
 			turnPage(1);
 		}
 		else if (slot == FORWARD2) {
-			turnPage(5);
+			turnPage(3);
 		}
 	}
 	

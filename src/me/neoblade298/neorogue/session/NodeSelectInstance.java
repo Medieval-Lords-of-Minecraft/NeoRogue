@@ -61,6 +61,7 @@ public class NodeSelectInstance extends EditInventoryInstance {
 		for (UUID uuid : s.getSpectators()) {
 			Player p = Bukkit.getPlayer(uuid);
 			p.teleport(spawn);
+			p.setAllowFlight(true);
 		}
 		task = new BukkitRunnable() {
 			public void run() {
@@ -90,6 +91,11 @@ public class NodeSelectInstance extends EditInventoryInstance {
 	@Override
 	public void cleanup() {
 		task.cancel();
+
+		// Regular players have flight removed when fight starts, spectatrs don't need this since they're invulnerable
+		for (UUID uuid : s.getSpectators()) {
+			Bukkit.getPlayer(uuid).setAllowFlight(false);
+		}
 		
 		for (Hologram holo : holograms) {
 			holo.delete();
@@ -115,6 +121,10 @@ public class NodeSelectInstance extends EditInventoryInstance {
 			if (!(node.getInstance() instanceof FightInstance)) {
 				for (Player pl : s.getOnlinePlayers()) {
 					pl.setAllowFlight(false);
+				}
+				
+				for (UUID uuid : s.getSpectators()) {
+					Bukkit.getPlayer(uuid).setAllowFlight(false);
 				}
 			}
 			// Fight instances set allow flight to false after the teleport

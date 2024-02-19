@@ -137,7 +137,6 @@ public class ShrineInstance extends EditInventoryInstance {
 				data.healPercent(0.35);
 			}
 			
-			
 			returnToNodes();
 		}
 		else {
@@ -149,7 +148,7 @@ public class ShrineInstance extends EditInventoryInstance {
 			blockTop.setType(Material.WITHER_SKELETON_SKULL);
 
 			ArrayList<String> lines = new ArrayList<String>();
-			loc.add(0, 1.5, 0);
+			loc.add(0, 2, 0);
 			lines.add("Use the anvil!");
 			lines.add("To skip upgrading,");
 			lines.add("shift click the paper!");

@@ -24,7 +24,7 @@ public class SpikyShield extends Equipment {
 		super("spikyShield", "Spiky Shield", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.OFFHAND);
 		reduction = 8;
-		amount = isUpgraded ? 6 : 4;
+		amount = isUpgraded ? 25 : 15;
 	}
 
 	@Override

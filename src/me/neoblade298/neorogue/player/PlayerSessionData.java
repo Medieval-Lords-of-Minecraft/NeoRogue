@@ -103,6 +103,11 @@ public class PlayerSessionData {
 		health = maxHealth;
 		this.ec = ec;
 
+
+		for (EquipSlot es : EquipSlot.values()) {
+			upgradable.put(es, new HashSet<Integer>());
+			upgraded.put(es, new HashSet<Integer>());
+		}
 		// Starting equipment
 		// If you ever use abilities equipped, need to initialize it to 1 here
 		switch (this.ec) {
@@ -137,11 +142,6 @@ public class PlayerSessionData {
 		}
 		for (int i = 1; i < armors.length; i++) {
 			armors[i] = Equipment.get("curseOfBurden", false);
-		}
-
-		for (EquipSlot es : EquipSlot.values()) {
-			upgradable.put(es, new HashSet<Integer>());
-			upgraded.put(es, new HashSet<Integer>());
 		}
 
 		setupInventory();
