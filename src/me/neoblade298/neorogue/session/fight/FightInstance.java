@@ -902,7 +902,7 @@ public abstract class FightInstance extends Instance {
 	}
 	
 	public static ActiveMob scaleMob(Session s, Mob mob, MythicMob mythicMob, ActiveMob am) {
-		double lvl = s.getLevel();
+		double lvl = s.getLevel() - 1;
 		am.setLevel(lvl);
 		if (mythicMob.getHealth() == null) return am; // Some summoned mobs don't have health
 		
