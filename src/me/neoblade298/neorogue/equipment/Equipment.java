@@ -37,6 +37,7 @@ import me.neoblade298.neorogue.equipment.armor.LeatherChestplate;
 import me.neoblade298.neorogue.equipment.armor.LeatherHelmet;
 import me.neoblade298.neorogue.equipment.armor.NullMagicMantle;
 import me.neoblade298.neorogue.equipment.armor.SpikedPauldrons;
+import me.neoblade298.neorogue.equipment.artifacts.AmuletOfOffering;
 import me.neoblade298.neorogue.equipment.artifacts.AvalonianAnchor;
 import me.neoblade298.neorogue.equipment.artifacts.BurningCross;
 import me.neoblade298.neorogue.equipment.artifacts.CharmOfGallus;
@@ -47,6 +48,7 @@ import me.neoblade298.neorogue.equipment.artifacts.EnergyBattery;
 import me.neoblade298.neorogue.equipment.artifacts.FaerieCirclet;
 import me.neoblade298.neorogue.equipment.artifacts.GlacialHammer;
 import me.neoblade298.neorogue.equipment.artifacts.GrendelsCrystalMirror;
+import me.neoblade298.neorogue.equipment.artifacts.HermesBoots;
 import me.neoblade298.neorogue.equipment.artifacts.MercenaryHeadband;
 import me.neoblade298.neorogue.equipment.artifacts.PracticeDummy;
 import me.neoblade298.neorogue.equipment.artifacts.RubyCluster;
@@ -201,6 +203,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		}
 		
 		// Artifacts
+		new AmuletOfOffering();
 		new AvalonianAnchor();
 		new BurningCross();
 		new CharmOfGallus();
@@ -208,6 +211,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new FaerieCirclet();
 		new GlacialHammer();
 		new GrendelsCrystalMirror();
+		new HermesBoots();
 		new PracticeDummy();
 		new TomeOfWisdom();
 		new MercenaryHeadband();

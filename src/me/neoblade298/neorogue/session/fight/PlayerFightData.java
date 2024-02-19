@@ -60,6 +60,7 @@ public class PlayerFightData extends FightData {
 	private double stamina, mana;
 	private double maxStamina, maxMana, maxHealth;
 	private double staminaRegen, manaRegen;
+	private double sprintCost = 4;
 	private boolean isDead;
 	
 	private FightStatistics stats = new FightStatistics(this);
@@ -441,6 +442,10 @@ public class PlayerFightData extends FightData {
 		this.manaRegen += amount;
 	}
 	
+	public void addSprintCost(double amount) {
+		this.sprintCost += amount;
+	}
+	
 	private void updateMana() {
 		this.mana = Math.min(this.mana, this.maxMana);
 		updateActionBar();
@@ -494,12 +499,12 @@ public class PlayerFightData extends FightData {
 				}
 			}
 		}
+		
 		@Override
 		public TickResult run() {
 			addMana(manaRegen);
-			addStamina(p.isSprinting() ? staminaRegen - 4 : staminaRegen);
+			addStamina(p.isSprinting() ? staminaRegen - sprintCost : staminaRegen);
 			updateBoardLines();
-			
 			FightInstance.trigger(p, Trigger.PLAYER_TICK, null);
 			
 			// Update hotbar cooldowns
