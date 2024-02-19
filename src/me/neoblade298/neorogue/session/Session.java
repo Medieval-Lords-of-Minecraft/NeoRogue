@@ -417,7 +417,7 @@ public class Session {
 	
 	// Can be changed in the future for different scaling setups
 	public int getLevel() {
-		return nodesVisited;
+		return nodesVisited - 1;
 	}
 	
 	public void setNodesVisited(int nodesVisited) {
