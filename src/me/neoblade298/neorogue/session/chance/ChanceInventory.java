@@ -39,12 +39,13 @@ public class ChanceInventory extends CoreInventory {
 		setupInventory(inst.getSession().getData(p.getUniqueId()));
 	}
 
-	public ChanceInventory(PlayerSessionData data, ChanceInstance inst, ChanceSet set, ChanceStage stage, boolean asSpectator) {
-		super(data.getPlayer(), Bukkit.createInventory(data.getPlayer(), 18, Component.text(data.getData().getDisplay() + "'s Chance Event", NamedTextColor.BLUE)));
+	public ChanceInventory(PlayerSessionData data, ChanceInstance inst, ChanceSet set, ChanceStage stage, Player spectator) {
+		super(spectator, Bukkit.createInventory(data.getPlayer(), 18, Component.text(data.getData().getDisplay() + "'s Chance Event", NamedTextColor.BLUE)));
 		this.set = set;
 		this.inst = inst;
 		this.s = inst.getSession();
 		this.stage = stage;
+		this.asSpectator = true;
 		setupInventory(inst.getSession().getData(p.getUniqueId()));
 	}
 	
@@ -104,7 +105,13 @@ public class ChanceInventory extends CoreInventory {
 			Util.displayError(p, "Only the host may make choices for this event!");
 			return;
 		}
-		ChanceStage next = set.getStage(stage.choices.get(num - 1).choose(s, inst, s.getData(uuid)));
+		ChanceChoice choice = stage.choices.get(num - 1);
+		if (!choice.canChoose(s, inst, s.getData(uuid))) {
+			Util.displayError(p, "You aren't eligible for this option!");
+			return;
+		}
+		
+		ChanceStage next = set.getStage(choice.choose(s, inst, s.getData(uuid)));
 		inst.advanceStage(uuid, next);
 		p.closeInventory();
 	}

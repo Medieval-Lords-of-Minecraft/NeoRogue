@@ -172,7 +172,7 @@ public class LobbyInstance extends Instance {
 		}
 
 		if (p.getUniqueId().equals(host)) {
-			SessionManager.removeSession(this.s);
+			SessionManager.endSession(s);
 			TextComponent tc = Component.text().content(p.getName()).color(NamedTextColor.YELLOW)
 					.append(Component.text(" disbanded the lobby!", NamedTextColor.GRAY)).build();
 			broadcast(tc);

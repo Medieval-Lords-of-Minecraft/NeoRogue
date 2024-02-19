@@ -156,7 +156,7 @@ public class ChanceInstance extends EditInventoryInstance {
 	}
 	
 	public void spectatePlayer(Player spectator, UUID uuid) {
-		new ChanceInventory(s.getParty().get(uuid), this, set, stage.get(uuid), true);
+		new ChanceInventory(s.getParty().get(uuid), this, set, stage.get(uuid), spectator);
 	}
 
 	public void advanceStage(UUID uuid, ChanceStage stage) {

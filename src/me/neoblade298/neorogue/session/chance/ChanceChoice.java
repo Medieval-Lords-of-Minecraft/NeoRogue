@@ -29,7 +29,8 @@ public class ChanceChoice {
 	public ChanceChoice(Material mat, String title, String description, String prereqFail, ChanceRequirement req, ChanceAction action) {
 		this(mat, title, description, action);
 		this.req = req;
-		this.reqFail = SharedUtil.addLineBreaks((TextComponent) NeoCore.miniMessage().deserialize(prereqFail), 250);
+		this.reqFail = SharedUtil.addLineBreaks((TextComponent) NeoCore.miniMessage().
+				deserialize(prereqFail).colorIfAbsent(NamedTextColor.RED).decoration(TextDecoration.ITALIC, State.FALSE), 250);
 	}
 	
 	public ChanceChoice(Material mat, String title, String description, ChanceAction action) {
@@ -78,6 +79,10 @@ public class ChanceChoice {
 		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 		item.setItemMeta(meta);
 		return item;
+	}
+	
+	public boolean canChoose(Session s, ChanceInstance inst, PlayerSessionData data) {
+		return req == null || req.check(s, inst, data);
 	}
 	
 	public String choose(Session s, ChanceInstance inst, PlayerSessionData data) {

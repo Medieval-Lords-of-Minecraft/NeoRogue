@@ -103,6 +103,18 @@ public class NodeSelectInstance extends EditInventoryInstance {
 	}
 	
 	@Override
+	public void handleSpectatorInteractEvent(PlayerInteractEvent e) {
+		if (e.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+		if (e.getHand() != EquipmentSlot.HAND) return;
+		if (e.getClickedBlock().getType() == Material.LECTERN) {
+			e.setCancelled(true);
+			Node n = s.getArea().getNodeFromLocation(e.getClickedBlock().getLocation().add(0, 2, 1));
+			FightInstance inst = (FightInstance) n.getInstance();
+			new FightInfoInventory(e.getPlayer(), inst.getMap().getMobs());
+		}
+	}
+	
+	@Override
 	public void handleInteractEvent(PlayerInteractEvent e) {
 		if (e.getAction() != Action.RIGHT_CLICK_BLOCK) return;
 		if (e.getHand() != EquipmentSlot.HAND) return;
