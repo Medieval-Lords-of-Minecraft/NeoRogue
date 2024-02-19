@@ -303,11 +303,7 @@ public class DamageMeta {
 			}
 			else {
 				PlayerFightData data = FightInstance.getUserData(target.getUniqueId());
-				if (data == null) {
-					Bukkit.getLogger().warning("[NeoRogue] Failed to find data for " + target.getUniqueId());
-					Bukkit.getLogger().warning("[NeoRogue] UUID keyset: " + FightInstance.getUserData().keySet());
-					return;
-				}
+				if (data == null) return;
 				data.getInstance().cancelRevives((Player) target);
 				if (data.shields.getAmount() > 0 && ignoreShieldsDamage > 0) data.shields.update();
 			}
