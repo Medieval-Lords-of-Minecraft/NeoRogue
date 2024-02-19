@@ -99,6 +99,7 @@ public abstract class FightInstance extends Instance {
 	protected double spawnCounter; // Holds a value between 0 and 1, when above 1, a mob spawns
 	protected double totalSpawnValue; // Keeps track of total mob spawns, to handle scaling of spawning
 	private long startTime;
+	private ArrayList<String> spectatorLines;
 
 	private static final Circle reviveCircle = new Circle(5);
 	private static final ParticleContainer reviveCirclePart = new ParticleContainer(Particle.END_ROD).count(1);
@@ -131,6 +132,50 @@ public abstract class FightInstance extends Instance {
 
 	public HashSet<UUID> getParty() {
 		return party;
+	}
+	
+	public void updateSpectatorLines() {
+		spectatorLines = new ArrayList<String>(9);
+		for (PlayerFightData pdata : userData.values()) {
+			spectatorLines.add(createHealthBar(pdata));
+		}
+	}
+	
+	public ArrayList<String> getSpectatorLines() {
+		return spectatorLines;
+	}
+	
+	private static String createHealthBar(PlayerFightData pfd) {
+		if (pfd != null && pfd.isDead()) {
+			return "&c&m" + pfd.getSessionData().getData().getDisplay();
+		}
+		if (pfd.getPlayer() == null) {
+			return "&7&m" + pfd.getSessionData().getData().getDisplay();
+		}
+		Player p = pfd.getPlayer();
+		double percenthp = p.getHealth() / p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+		percenthp *= 100;
+		int php = (int) percenthp;
+		String color = "§a";
+		if (php < 50 && php >= 25) {
+			color = "§e";
+		}
+		else if (php < 25) {
+			color = "§c";
+		}
+
+		String bar = "" + color;
+		// Add 5 so 25% is still 3/10 on the health bar
+		int phpmod = (php + 5) / 10;
+		for (int i = 0; i < phpmod; i++) {
+			bar += "|";
+		}
+		bar += "§7";
+		for (int i = 0; i < (10 - phpmod); i++) {
+			bar += "|";
+		}
+		
+		return color + p.getName() + " " + bar;
 	}
 
 	public static void handleDeath(PlayerDeathEvent e) {
@@ -666,6 +711,8 @@ public abstract class FightInstance extends Instance {
 
 				// Every 20 ticks
 				if (alternate && !toTick.isEmpty()) {
+					updateSpectatorLines();
+					
 					Iterator<UUID> iter = toTick.iterator();
 					while (iter.hasNext()) {
 						FightData data = fightData.get(iter.next());

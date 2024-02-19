@@ -186,12 +186,15 @@ public class PlayerData {
 	public ArrayList<String> getBoardLines() {
 		Session s = SessionManager.getSession(p);
 		if (s == null) return null;
-		if (s.isSpectator(p.getUniqueId())) return null;
 		if (s.getInstance() instanceof FightInstance) {
+			if (s.isSpectator(p.getUniqueId())) {
+				return ((FightInstance) s.getInstance()).getSpectatorLines();
+			}
 			PlayerFightData pfd = FightInstance.getUserData(p.getUniqueId());
 			return pfd.getBoardLines();
 		}
 		else {
+			if (s.isSpectator(p.getUniqueId())) return null;
 			PlayerSessionData psd = s.getParty().get(p.getUniqueId());
 			if (psd == null) return null;
 			return psd.getBoardLines();
