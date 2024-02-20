@@ -31,6 +31,7 @@ public class MightySwing extends Equipment {
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, isUpgraded ? 25 : 35, 10, 0));
 		properties.addUpgrades(PropertyType.COOLDOWN);
 		damage = isUpgraded ? 200 : 150;
+		cdr = isUpgraded ? 4 : 3;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		hit.count(50).spread(0.5, 0.5);
 	}
