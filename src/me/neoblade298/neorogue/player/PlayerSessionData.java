@@ -5,10 +5,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -25,7 +24,6 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder.SQLAction;
-import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.*;
 import me.neoblade298.neorogue.equipment.Equipment.DropTableSet;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
@@ -49,10 +47,9 @@ public class PlayerSessionData {
 	private Equipment[] accessories = new Equipment[6];
 	private Equipment[] storage = new Equipment[STORAGE_SIZE];
 	private Equipment[] otherBinds = new Equipment[8];
+	private Equipment[][] allEquips = new Equipment[][] { hotbar, armors, offhand, accessories, storage, otherBinds };
 	private TreeMap<String, ArtifactInstance> artifacts = new TreeMap<String, ArtifactInstance>();
 	private int abilitiesEquipped, maxAbilities = 4, maxStorage = 9, coins = 50;
-	private HashMap<EquipSlot, HashSet<Integer>> upgradable = new HashMap<EquipSlot, HashSet<Integer>>(),
-			upgraded = new HashMap<EquipSlot, HashSet<Integer>>();
 	private String instanceData;
 	private DropTableSet<Artifact> personalArtifacts;
 	private ArrayList<String> boardLines;
@@ -102,20 +99,13 @@ public class PlayerSessionData {
 		staminaRegen = 2;
 		health = maxHealth;
 		this.ec = ec;
-
-
-		for (EquipSlot es : EquipSlot.values()) {
-			upgradable.put(es, new HashSet<Integer>());
-			upgraded.put(es, new HashSet<Integer>());
-		}
+		
 		// Starting equipment
 		// If you ever use abilities equipped, need to initialize it to 1 here
 		switch (this.ec) {
 		case WARRIOR:
 			hotbar[0] = Equipment.get("woodenSword", false);
 			hotbar[1] = Equipment.get("empoweredEdge", false);
-			upgradable.get(EquipSlot.HOTBAR).add(0);
-			upgradable.get(EquipSlot.HOTBAR).add(1);
 			abilitiesEquipped = 1;
 			break;
 		case THIEF:
@@ -170,10 +160,6 @@ public class PlayerSessionData {
 		getPlayer().setSaturation(20);
 	}
 
-	public HashMap<EquipSlot, HashSet<Integer>> getEquipment(boolean upgraded) {
-		return upgraded ? this.upgraded : this.upgradable;
-	}
-
 	public void setupInventory() {
 		Player p = data.getPlayer();
 		PlayerInventory inv = p.getInventory();
@@ -200,19 +186,21 @@ public class PlayerSessionData {
 	}
 
 	public void upgradeEquipment(EquipSlot es, int slot) {
-		Equipment[] slots = getArrayFromEquipSlot(es);
-		slots[slot] = slots[slot].getUpgraded();
-		upgradable.get(es).remove(slot);
-		upgraded.get(es).add(slot);
+		if (es != EquipSlot.STORAGE) {
+			Equipment[] slots = getArrayFromEquipSlot(es);
+			slots[slot] = slots[slot].getUpgraded();
+		}
+		else {
+			PlayerInventory inv = data.getPlayer().getInventory();
+			ItemStack item = inv.getItem(slot);
+			NBTItem nbti = new NBTItem(item);
+			inv.setItem(slot, Equipment.get(nbti.getString("equipId"), true).getItem());
+		}
 	}
 
 	public void setEquipment(EquipSlot es, int slot, Equipment eq) {
 		Equipment[] slots = getArrayFromEquipSlot(es);
 		if (slots[slot] != null) removeEquipment(es, slot);
-		if (eq.isUpgraded())
-			upgraded.get(es).add(slot);
-		else
-			upgradable.get(es).add(slot);
 		slots[slot] = eq;
 		if (eq.getType() == EquipmentType.ABILITY) abilitiesEquipped++;
 	}
@@ -220,10 +208,6 @@ public class PlayerSessionData {
 	public void removeEquipment(EquipSlot es, int slot) {
 		Equipment[] slots = getArrayFromEquipSlot(es);
 		Equipment eq = slots[slot];
-		if (eq.isUpgraded())
-			upgraded.get(es).remove(slot);
-		else
-			upgradable.get(es).remove(slot);
 		slots[slot] = null;
 		if (eq.getType() == EquipmentType.ABILITY) abilitiesEquipped--;
 	}
@@ -389,45 +373,54 @@ public class PlayerSessionData {
 		}
 		return false;
 	}
-
-	public PlayerSlot getRandomEquipment() {
-		return getRandomEquipment(NeoRogue.gen.nextBoolean());
+	
+	public ArrayList<EquipmentMetadata> aggregateEquipment(Predicate<Equipment> filter) {
+		ArrayList<EquipmentMetadata> list = new ArrayList<EquipmentMetadata>();
+		EquipSlot[] es = new EquipSlot[] { EquipSlot.HOTBAR, EquipSlot.ARMOR, EquipSlot.OFFHAND, EquipSlot.ACCESSORY, EquipSlot.STORAGE, EquipSlot.KEYBIND };
+		
+		int esIdx = -1;
+		for (Equipment[] arr : allEquips) {
+			esIdx++;
+			if (es[esIdx] == EquipSlot.STORAGE) continue;
+			int slot = -1;
+			for (Equipment eq : arr) {
+				slot++;
+				if (eq == null) continue;
+				if (filter.test(eq)) list.add(new EquipmentMetadata(eq, slot, es[esIdx]));
+			}
+		}
+		
+		// Manually get equipment in storage since it's dynamic
+		ItemStack[] contents = data.getPlayer().getInventory().getStorageContents();
+		for (int i = 0; i < contents.length; i++) {
+			if (contents[i] == null) continue;
+			ItemStack item = contents[i];
+			NBTItem nbti = new NBTItem(item);
+			if (!nbti.getKeys().contains("equipId")) continue;
+			Equipment eq = Equipment.get(nbti.getString("equipId"), nbti.getBoolean("isUpgraded"));
+			if (filter.test(eq)) list.add(new EquipmentMetadata(eq, i, EquipSlot.STORAGE));
+		}
+		return list;
 	}
-
-	public PlayerSlot getRandomEquipment(boolean upgraded) {
-		HashMap<EquipSlot, HashSet<Integer>> pool = upgraded ? this.upgraded : this.upgradable;
-		// First randomly roll equipment slot and try to find a non-empty one
-		EquipSlot es = null;
-		for (int i = 0; i < 20; i++) {
-			EquipSlot temp = EquipSlot.values()[NeoRogue.gen.nextInt(EquipSlot.values().length)];
-			if (pool.get(temp).size() > 0) {
-				es = temp;
-				break;
-			}
+	
+	public class EquipmentMetadata {
+		private Equipment eq;
+		private int slot;
+		private EquipSlot es;
+		public EquipmentMetadata(Equipment eq, int slot, EquipSlot es) {
+			this.eq = eq;
+			this.slot = slot;
+			this.es = es;
 		}
-
-		// If randomly rolling failed, just manually look through
-		if (es == null) {
-			for (EquipSlot temp : EquipSlot.values()) {
-				if (pool.get(temp).size() > 0) {
-					es = temp;
-					break;
-				}
-			}
-
-			// Player has nothing equipped
-			if (es == null) {
-				return null;
-			}
+		public Equipment getEquipment() {
+			return eq;
 		}
-
-		HashSet<Integer> slots = pool.get(es);
-		Iterator<Integer> iter = slots.iterator();
-		int slot = iter.next();
-		for (int i = 0; i < NeoRogue.gen.nextInt(slots.size()); i++) {
-			slot = iter.next();
+		public int getSlot() {
+			return slot;
 		}
-		return new PlayerSlot(es, slot);
+		public EquipSlot getEquipSlot() {
+			return es;
+		}
 	}
 
 	public boolean saveStorage() {
@@ -446,9 +439,10 @@ public class PlayerSessionData {
 			return false;
 		}
 
-		storage = new Equipment[maxStorage];
-		upgradable.get(EquipSlot.STORAGE).clear();
-		upgraded.get(EquipSlot.STORAGE).clear();
+		for (int i = 0; i < storage.length; i++) {
+			storage[i] = null;
+		}
+		
 		int i = 0;
 		for (ItemStack item : toSave) {
 			NBTItem nbti = new NBTItem(item);
@@ -469,13 +463,6 @@ public class PlayerSessionData {
 			if (eq.isCursed()) {
 				Util.displayError(p, "All cursed items must be equipped before continuing!");
 				return false;
-			}
-
-			if (eq.isUpgraded()) {
-				upgraded.get(EquipSlot.STORAGE).add(i);
-			}
-			else {
-				upgradable.get(EquipSlot.STORAGE).add(i);
 			}
 			storage[i++] = eq;
 		}

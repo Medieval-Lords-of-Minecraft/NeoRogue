@@ -281,7 +281,10 @@ public class PlayerSessionInventory extends CoreInventory {
 					}
 				}
 				else {
-					if (!e.isShiftClick()) return;
+					if (!e.isShiftClick()) {
+						setHighlights(eq.getType());
+						return;
+					}
 					e.setCancelled(true);
 					if (eq.getType() == EquipmentType.ABILITY && !data.canEquipAbility()) {
 						displayError("You can only equip " + data.getMaxAbilities() + " abilities!", true);

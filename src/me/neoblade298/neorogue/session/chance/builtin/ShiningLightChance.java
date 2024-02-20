@@ -1,13 +1,15 @@
 package me.neoblade298.neorogue.session.chance.builtin;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.area.AreaType;
-import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.player.PlayerSessionData.PlayerSlot;
+import me.neoblade298.neorogue.player.PlayerSessionData.EquipmentMetadata;
 import me.neoblade298.neorogue.session.chance.ChanceChoice;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
 import me.neoblade298.neorogue.session.chance.ChanceStage;
@@ -31,16 +33,18 @@ public class ShiningLightChance extends ChanceSet {
 					Util.msg(p, "You are engulfed by the light. You feel a sharp pain, but you can tell your equipment has absorbed some power.");
 					
 					data.damagePercent(0.2);
+					ArrayList<EquipmentMetadata> list = data.aggregateEquipment((eq) -> { return !eq.isUpgraded() && eq.canUpgrade(); });
+					Collections.shuffle(list);
 					for (int i = 0; i < 2; i++) {
-						PlayerSlot ps = data.getRandomEquipment(false);
-						if (ps == null) {
+						if (i >= list.size()) {
 							Util.msg(p, "You had nothing else to upgrade!");
-							continue;
+							break;
 						}
-						data.upgradeEquipment(ps.getEquipSlot(), ps.getSlot());
-						Equipment eq = data.getEquipment(ps.getEquipSlot())[ps.getSlot()];
-						Util.msg(p, Component.text("You upgraded your ").append(eq.getHoverable()));
-						s.broadcastOthers(SharedUtil.color("<yellow>" + p.getName() + "</yellow> upgraded their ").append(eq.getHoverable()), p);
+						EquipmentMetadata meta = list.get(i);
+						System.out.println("Upgrading " + meta.getEquipment() + " " + meta.getEquipSlot() + " " + meta.getSlot());
+						data.upgradeEquipment(meta.getEquipSlot(), meta.getSlot());
+						Util.msg(p, Component.text("You upgraded your ").append(meta.getEquipment().getHoverable()));
+						s.broadcastOthers(SharedUtil.color("<yellow>" + p.getName() + "</yellow> upgraded their ").append(meta.getEquipment().getHoverable()), p);
 					}
 					return null;
 				}));

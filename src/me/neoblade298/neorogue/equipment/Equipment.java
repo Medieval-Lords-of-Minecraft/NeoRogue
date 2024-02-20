@@ -329,7 +329,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 	
 	public abstract void setupItem();
 	
-	public boolean hasUpgrade() {
+	public boolean canUpgrade() {
 		return upgraded.containsKey(id);
 	}
 	
