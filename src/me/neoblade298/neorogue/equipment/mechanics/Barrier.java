@@ -46,6 +46,7 @@ public class Barrier {
 		this.forward = forward;
 		this.buffs = buffs;
 		this.rect = new Rectangle(length, height, METERS_PER_PARTICLE);
+		calculateLocation();
 		
 		if (part == null) {
 			this.part = DEFAULT_SHIELD_PARTICLE;
@@ -89,11 +90,15 @@ public class Barrier {
 			mem.draw(mem.calculateCache(), part, part);
 		}
 		else {
-			axes = LocalAxes.usingEyeLocation(owner);
-			center = owner.getLocation().add(axes.forward().multiply((FORWARD_OFFSET + forward) / 2)).add(axes.up().multiply(height / 2));
-			rectcenter = center.clone().add(axes.forward().multiply((FORWARD_OFFSET + forward) / 2));
+			calculateLocation();
 			rect.draw(part, rectcenter, axes, part);
 		}
+	}
+	
+	private void calculateLocation() {
+		axes = LocalAxes.usingEyeLocation(owner);
+		center = owner.getLocation().add(axes.forward().multiply((FORWARD_OFFSET + forward) / 2)).add(axes.up().multiply(height / 2));
+		rectcenter = center.clone().add(axes.forward().multiply((FORWARD_OFFSET + forward) / 2));
 	}
 	
 	public boolean collides(Location loc) {

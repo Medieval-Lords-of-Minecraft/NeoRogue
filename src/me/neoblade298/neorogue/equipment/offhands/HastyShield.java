@@ -3,7 +3,7 @@ package me.neoblade298.neorogue.equipment.offhands;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-
+import org.bukkit.inventory.EquipmentSlot;
 
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -40,7 +40,7 @@ public class HastyShield extends Equipment {
 		
 		@Override
 		public TriggerResult trigger(PlayerFightData data, Object inputs) {
-			if (!p.isHandRaised()) return TriggerResult.keep();
+			if (p.getHandRaised() != EquipmentSlot.OFF_HAND) return TriggerResult.keep();
 			long now = System.currentTimeMillis();
 			if (now <= nextUsable) return TriggerResult.keep();
 			

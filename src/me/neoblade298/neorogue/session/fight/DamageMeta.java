@@ -27,6 +27,7 @@ public class DamageMeta {
 	private LinkedList<DamageSlice> slices = new  LinkedList<DamageSlice>();
 	private HashMap<BuffType, LinkedList<BuffMeta>> damageBuffs = new HashMap<BuffType, LinkedList<BuffMeta>>(),
 			defenseBuffs = new HashMap<BuffType, LinkedList<BuffMeta>>();
+	private DamageMeta returnDamage;
 	
 	public DamageMeta(FightData data) {
 		this.owner = data;
@@ -129,6 +130,8 @@ public class DamageMeta {
 		addBuffs(recipient.getBuffs(false), BuffOrigin.NORMAL, false);
 		double damage = 0;
 		double ignoreShieldsDamage = 0;
+		returnDamage = new DamageMeta(recipient);
+		returnDamage.isSecondary = true;
 		
 		// See if any of our effects cancel damage first
 		if (recipient instanceof PlayerFightData) {
@@ -146,8 +149,6 @@ public class DamageMeta {
 		}
 
 		// Status effects
-		DamageMeta returnDamage = new DamageMeta(recipient);
-		returnDamage.isSecondary = true;
 		if (!isSecondary) {
 			if (recipient.hasStatus(StatusType.BURN)) {
 				for (Entry<UUID, Integer> ent : recipient.getStatus(StatusType.BURN).getSlices().getSliceOwners().entrySet()) {
@@ -312,6 +313,10 @@ public class DamageMeta {
 		
 		// Return damage
 		FightInstance.dealDamage(returnDamage, owner.getEntity());
+	}
+	
+	public DamageMeta getReturnDamage() {
+		return returnDamage;
 	}
 	
 	private class BuffMeta {

@@ -73,7 +73,7 @@ import me.neoblade298.neorogue.equipment.cursed.RustySword;
 import me.neoblade298.neorogue.equipment.materials.DullGem;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
-import me.neoblade298.neorogue.equipment.offhands.CaptainsTowerShield;
+import me.neoblade298.neorogue.equipment.offhands.PaladinsShield;
 import me.neoblade298.neorogue.equipment.offhands.ChasingDagger;
 import me.neoblade298.neorogue.equipment.offhands.HastyShield;
 import me.neoblade298.neorogue.equipment.offhands.LeatherBracer;
@@ -176,8 +176,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 			// Offhands
 			new ChasingDagger(b);
 			new LeatherBracer(b);
-			new SmallShield(b).addSelfReforge(new HastyShield(b), new SpikyShield(b));
-			new TowerShield(b).addSelfReforge(new CaptainsTowerShield(b));
+			new SmallShield(b).addSelfReforge(new HastyShield(b), new SpikyShield(b))
+				.addReforge(new TowerShield(b), new PaladinsShield(b));
 			new WristBlade(b);
 			
 			// Weapons
