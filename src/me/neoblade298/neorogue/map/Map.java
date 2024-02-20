@@ -109,7 +109,7 @@ public class Map {
 	
 	public static Map generate(AreaType type, int numPieces, MapPiece requiredPiece) {
 		Map map = new Map();
-		map.placeFirst(requiredPiece, true);
+		map.place(requiredPiece);
 		return generate(map, type, numPieces);
 	}
 	
@@ -173,6 +173,9 @@ public class Map {
 	
 	public boolean place(MapPiece piece) {
 		// Special case, first piece being placed
+		addTargets(piece.getTargets());
+		System.out.println("Adding targets " + piece.getTargets());
+		System.out.println("New targets: " + targets);
 		if (pieces.size() == 0) {
 			placeFirst(piece, true);
 		}
@@ -204,7 +207,6 @@ public class Map {
 			MapPieceInstance best = potentialPlacements.first();
 			place(best, false);
 		}
-		addTargets(piece.getTargets());
 		return true;
 	}
 	
