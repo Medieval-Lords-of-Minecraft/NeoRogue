@@ -4,11 +4,10 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.equipment.Artifact;
-import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
@@ -22,7 +21,7 @@ public class HermesBoots extends Artifact {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addSprintCost(-4);
-		data.addTrigger(id, Trigger.CAST_USABLE, new HermesBootsInstance(p, this, slot, es));
+		data.addTrigger(id, Trigger.CAST_USABLE, new HermesBootsInstance(id));
 	}
 
 	@Override
@@ -36,12 +35,11 @@ public class HermesBoots extends Artifact {
 				"Sprinting has no stamina cost until you cast <white>" + num + "</white> abilities.");
 	}
 	
-	private class HermesBootsInstance extends EquipmentInstance {
+	private class HermesBootsInstance extends PriorityAction {
 		private int count = 0;
 
-		public HermesBootsInstance(Player p, Equipment eq, int slot, EquipSlot es) {
-			super(p, eq, slot, es);
-			
+		public HermesBootsInstance(String id) {
+			super(id);
 			action = (pdata, in) -> {
 				if (++count >= num) {
 					pdata.addSprintCost(4);

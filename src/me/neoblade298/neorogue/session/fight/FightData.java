@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.UUID;
 
 import org.bukkit.Location;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -146,6 +147,12 @@ public class FightData {
 				inst.cancel();
 			}
 		});
+	}
+	
+	public void addHealth(double amount) {
+		double curr = entity.getHealth();
+		double after = Math.min(entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue(), curr + amount);
+		entity.setHealth(after);
 	}
 	
 	public void addCleanupTask(String id, Runnable runnable) {

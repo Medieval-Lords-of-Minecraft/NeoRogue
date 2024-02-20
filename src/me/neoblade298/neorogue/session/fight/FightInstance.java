@@ -695,7 +695,7 @@ public abstract class FightInstance extends Instance {
 
 		new BukkitRunnable() {
 			public void run() {
-				activateSpawner(2 + (s.getNodesVisited() / 5));
+				activateSpawner(4);
 				startTime = System.currentTimeMillis();
 				for (MapSpawnerInstance inst : fi.initialSpawns) {
 					inst.spawnMob();

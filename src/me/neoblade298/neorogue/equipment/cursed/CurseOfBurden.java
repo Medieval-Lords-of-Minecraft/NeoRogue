@@ -10,7 +10,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 public class CurseOfBurden extends Equipment {
 	
 	public CurseOfBurden() {
-		super("CurseOfBurden", "Curse Of Burden", EquipmentType.ARMOR);
+		super("curseOfBurden", "Curse Of Burden", EquipmentType.ARMOR);
 	}
 
 	@Override

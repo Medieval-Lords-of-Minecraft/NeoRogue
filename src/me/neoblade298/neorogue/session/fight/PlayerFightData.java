@@ -405,6 +405,7 @@ public class PlayerFightData extends FightData {
 		updateBoardLines();
 	}
 	
+	@Override
 	public void addHealth(double amount) {
 		double curr = p.getHealth();
 		double after = Math.min(this.maxHealth, curr + amount);

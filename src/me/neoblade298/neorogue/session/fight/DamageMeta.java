@@ -113,6 +113,15 @@ public class DamageMeta {
 		buffs.putIfAbsent(type, list);
 	}
 	
+	private boolean containsType(BuffType type) {
+		for (DamageSlice slice : slices) {
+			for (BuffType bt : slice.getType().getBuffTypes()) { 
+				if (bt == type) return true;
+			}
+		}
+		return false;
+	}
+	
 	public void dealDamage(LivingEntity target) {
 		if (slices.isEmpty()) return;
 		FightData recipient = FightInstance.getFightData(target.getUniqueId());
@@ -166,41 +175,30 @@ public class DamageMeta {
 				for (Entry<UUID, Integer> slice : recipient.getStatus(StatusType.SANCTIFIED).getSlices().getSliceOwners().entrySet()) {
 					FightInstance.giveHeal(Bukkit.getPlayer(slice.getKey()), stacks * 0.2, damager);
 				}
-				s.apply(owner.getUniqueId(), -1, -1);
+				s.apply(owner.getUniqueId(), (int) (-stacks * 0.1), -1);
+			}
+
+			if (recipient.hasStatus(StatusType.SANCTIFIED)) {
+				Status status = recipient.getStatus(StatusType.SANCTIFIED);
+				int stacks = status.getStacks();
+				int toRemove = (int) (-stacks * 0.25);
+				status.apply(owner.getUniqueId(), toRemove, 0); // Remove 25% of stacks
+				slices.add(new DamageSlice(recipient.getUniqueId(), toRemove, DamageType.LIGHT));
+				owner.addHealth(toRemove);
 			}
 			
-			if (owner.hasStatus(StatusType.FROST)) {
-				HashMap<BuffType, Buff> frostBuffs = new HashMap<BuffType, Buff>();
-				HashMap<UUID, BuffSlice> buffSlices = new HashMap<UUID, BuffSlice>();
+			if (owner.hasStatus(StatusType.FROST) && containsType(BuffType.MAGICAL)) {
 				Status status = owner.getStatus(StatusType.FROST);
 				int stacks = status.getStacks();
-				// Transfer status slices into buff slices
-				for (Entry<UUID, Integer> ent : status.getSlices().getSliceOwners().entrySet()) {
-					BuffSlice bs = buffSlices.getOrDefault(ent.getKey(), new BuffSlice());
-					bs.addMultiplier(ent.getValue() * 0.01);
-					buffSlices.putIfAbsent(ent.getKey(), bs);
-				}
-				frostBuffs.put(BuffType.MAGICAL, new Buff(0, stacks * 0.01, buffSlices));
-				addBuffs(frostBuffs, BuffOrigin.STATUS, true);
 				int toRemove = (int) (-stacks * 0.1);
 				status.apply(owner.getUniqueId(), toRemove, 0); // Remove 10% of frost stacks
 				returnDamage.addDamageSlice(new DamageSlice(recipient.getUniqueId(), toRemove, DamageType.ICE));
 			}
 
-			if (owner.hasStatus(StatusType.CONCUSSED)) {
-				HashMap<BuffType, Buff> concussedBuffs = new HashMap<BuffType, Buff>();
-				HashMap<UUID, BuffSlice> buffSlices = new HashMap<UUID, BuffSlice>();
+			if (owner.hasStatus(StatusType.CONCUSSED) && containsType(BuffType.PHYSICAL)) {
 				Status status = owner.getStatus(StatusType.CONCUSSED);
 				int stacks = status.getStacks();
-				// Transfer status slices into buff slices
-				for (Entry<UUID, Integer> ent : status.getSlices().getSliceOwners().entrySet()) {
-					BuffSlice bs = buffSlices.getOrDefault(ent.getKey(), new BuffSlice());
-					bs.addMultiplier(ent.getValue() * 0.01);
-					buffSlices.putIfAbsent(ent.getKey(), bs);
-				}
-				concussedBuffs.put(BuffType.PHYSICAL, new Buff(0, stacks * 0.01, buffSlices));
-				addBuffs(concussedBuffs, BuffOrigin.STATUS, false);
-				int toRemove = (int) (-stacks * 0.1);
+				int toRemove = (int) (-stacks * 0.25);
 				status.apply(owner.getUniqueId(), toRemove, 0); // Remove 10% of earth stacks
 				returnDamage.addDamageSlice(new DamageSlice(recipient.getUniqueId(), toRemove, DamageType.EARTHEN));
 			}

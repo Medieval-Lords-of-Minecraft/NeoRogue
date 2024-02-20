@@ -47,18 +47,19 @@ public enum GlossaryTag {
 	BURN(Material.BLAZE_POWDER, StatusType.BURN.tag,
 			"Upon the holder taking damage, deals 1 fire damage per stack applied. 1 stack is removed every second."),
 	FROST(Material.PACKED_ICE, StatusType.FROST.tag,
-			"Decreases the holder's magic damage by 1% per stack. Upon dealing magic damage, remove 10% of the stacks and " +
+			"Decreases the holder's magic damage by 1% per stack. Upon the holder dealing magical damage, remove 10% of the stacks and " +
 			"deal that much damage to the holder. 1 stack is removed every second."),
 	ELECTRIFIED(Material.LIGHTNING_ROD, StatusType.ELECTRIFIED.tag,
 			"Upon the holder taking damage, deals 1 lightning damage per stack applied to nearby enemies in a radius of 5. "
 			+ " 1 stack is removed every second."),
 	CONCUSSED(Material.DIRT, StatusType.CONCUSSED.tag,
-			"Decreases the holder's physical damage by 1% per stack. Upon dealing physical damage, remove 10% of the stacks and " +
-			"deal that much damage to the holder. 1 stack is removed every second."),
+			"Decreases the holder's physical damage by 1% per stack. Upon the holder dealing physical damage, remove 25% of the stacks and " +
+			"deal that much Earthen damage to the holder. 1 stack is removed every second."),
 	INSANITY(Material.NETHER_PORTAL, StatusType.INSANITY.tag,
 			"Increases the holder's magic damage by 1% per stack. Remove 1 stack every second."),
 	SANCTIFIED(Material.END_ROD, StatusType.SANCTIFIED.tag,
-			"Upon the holder taking damage, heals the damager for 0.2 per stack applied. 1 stack is removed every second and when the holder takes damage."),
+			"Upon the holder receiving magic damage, remove 25% of the stacks and " +
+			"deal that much Light damage to the holder while healing that much to the damager. 1 stack is removed every second."),
 	THORNS(Material.DEAD_BUSH, StatusType.THORNS.tag,
 			"Upon the holder receiving physical damage, even if it is absorbed by shields, return 1 thorns damage per stack."),
 	REFLECT(Material.GLASS_PANE, StatusType.REFLECT.tag,
