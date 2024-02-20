@@ -174,8 +174,6 @@ public class Map {
 	public boolean place(MapPiece piece) {
 		// Special case, first piece being placed
 		addTargets(piece.getTargets());
-		System.out.println("Adding targets " + piece.getTargets());
-		System.out.println("New targets: " + targets);
 		if (pieces.size() == 0) {
 			placeFirst(piece, true);
 		}

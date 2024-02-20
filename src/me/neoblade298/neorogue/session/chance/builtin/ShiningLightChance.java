@@ -41,7 +41,6 @@ public class ShiningLightChance extends ChanceSet {
 							break;
 						}
 						EquipmentMetadata meta = list.get(i);
-						System.out.println("Upgrading " + meta.getEquipment() + " " + meta.getEquipSlot() + " " + meta.getSlot());
 						data.upgradeEquipment(meta.getEquipSlot(), meta.getSlot());
 						Util.msg(p, Component.text("You upgraded your ").append(meta.getEquipment().getHoverable()));
 						s.broadcastOthers(SharedUtil.color("<yellow>" + p.getName() + "</yellow> upgraded their ").append(meta.getEquipment().getHoverable()), p);

@@ -15,6 +15,8 @@ import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.map.MapPiece;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
+import me.neoblade298.neorogue.session.chance.ChanceInstance;
+import me.neoblade298.neorogue.session.chance.builtin.TestChance;
 import me.neoblade298.neorogue.session.fight.MinibossFightInstance;
 
 public class CmdAdminTestMiniboss extends Subcommand {
@@ -46,6 +48,6 @@ public class CmdAdminTestMiniboss extends Subcommand {
 			sess.setNodesVisited(Integer.parseInt(args[1]));
 		}
 		MinibossFightInstance inst = new MinibossFightInstance(sess, sess.getParty().keySet(), Map.generate(AreaType.LOW_DISTRICT, 0, MapPiece.get(args[0])));
-		sess.setInstance(inst);
+		sess.setInstance(new ChanceInstance(sess, new TestChance(inst)));
 	}
 }

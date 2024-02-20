@@ -52,6 +52,11 @@ public class ChanceInstance extends EditInventoryInstance {
 		this(s);
 		this.set = ChanceSet.get(setId);
 	}
+	
+	public ChanceInstance(Session s, ChanceSet set) {
+		this(s);
+		this.set = set;
+	}
 
 	public ChanceInstance(Session s, String data, HashMap<UUID, PlayerSessionData> party) {
 		this(s);
