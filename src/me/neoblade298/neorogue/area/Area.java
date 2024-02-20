@@ -80,22 +80,22 @@ public class Area {
 		
 		paths = new DropTable<Integer>();
 		paths.add(2, 1);
-		paths.add(3, 6);
-		paths.add(4, 1);
-		paths.add(5, 1);
+		paths.add(3, 4);
+		paths.add(4, 3);
+		paths.add(5, 2);
 		pathChances.put(3, paths);
 		
 		paths = new DropTable<Integer>();
 		paths.add(2, 1);
 		paths.add(3, 4);
-		paths.add(4, 4);
-		paths.add(5, 1);
+		paths.add(4, 3);
+		paths.add(5, 2);
 		pathChances.put(4, paths);
 		
 		paths = new DropTable<Integer>();
-		paths.add(3, 5);
+		paths.add(3, 4);
 		paths.add(4, 4);
-		paths.add(5, 1);
+		paths.add(5, 2);
 		pathChances.put(5, paths);
 	}
 	
