@@ -85,15 +85,15 @@ public class ChanceInventory extends CoreInventory {
 	@Override
 	public void handleInventoryClick(InventoryClickEvent e) {
 		e.setCancelled(true);
+		if (e.getRawSlot() == 0 && e.getCurrentItem() != null) {
+			new FightInfoInventory(p, ((FightInstance) inst.getNextInstance()).getMap().getMobs());
+		}
 		if (asSpectator) return;
 		Player p = (Player) e.getWhoClicked();
 		UUID uuid = p.getUniqueId();
 		Inventory inv = e.getClickedInventory();
 		if (inv == null || inv.getType() != InventoryType.CHEST) return;
 		
-		if (e.getRawSlot() == 0 && e.getCurrentItem() != null) {
-			new FightInfoInventory(p, ((FightInstance) inst.getNextInstance()).getMap().getMobs());
-		}
 		
 		ItemStack item = e.getCurrentItem();
 		if (item == null) return;
