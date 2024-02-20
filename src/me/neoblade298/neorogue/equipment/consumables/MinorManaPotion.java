@@ -2,16 +2,12 @@ package me.neoblade298.neorogue.equipment.consumables;
 
 import org.bukkit.Color;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.PotionMeta;
 
 import me.neoblade298.neorogue.equipment.Consumable;
 import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
-import me.neoblade298.neorogue.session.fight.trigger.Trigger;
-import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class MinorManaPotion extends Consumable {
 	private double mana;
@@ -20,15 +16,10 @@ public class MinorManaPotion extends Consumable {
 		super("minorManaPotion", "Minor Mana Potion", isUpgraded, Rarity.COMMON, EquipmentClass.CLASSLESS);
 		this.mana = isUpgraded ? 3 : 2;
 	}
-
+	
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, (pdata, in) -> {
-			Util.playSound(p, Sound.ENTITY_WITCH_DRINK, false);
-			data.getSessionData().removeEquipment(es, slot);
-			data.addManaRegen(mana);
-			return TriggerResult.remove();
-		});
+	public void runConsumableEffects(Player p, PlayerFightData data) {
+		data.addManaRegen(mana);
 	}
 
 	@Override

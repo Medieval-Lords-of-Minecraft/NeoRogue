@@ -37,6 +37,7 @@ import me.neoblade298.neorogue.equipment.armor.LeatherChestplate;
 import me.neoblade298.neorogue.equipment.armor.LeatherHelmet;
 import me.neoblade298.neorogue.equipment.armor.NullMagicMantle;
 import me.neoblade298.neorogue.equipment.armor.SpikedPauldrons;
+import me.neoblade298.neorogue.equipment.artifacts.AlchemistBag;
 import me.neoblade298.neorogue.equipment.artifacts.AmuletOfOffering;
 import me.neoblade298.neorogue.equipment.artifacts.AvalonianAnchor;
 import me.neoblade298.neorogue.equipment.artifacts.BurningCross;
@@ -203,6 +204,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		}
 		
 		// Artifacts
+		new AlchemistBag();
 		new AmuletOfOffering();
 		new AvalonianAnchor();
 		new BurningCross();

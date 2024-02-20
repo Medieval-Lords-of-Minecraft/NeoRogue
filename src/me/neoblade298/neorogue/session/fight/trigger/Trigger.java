@@ -37,6 +37,7 @@ public enum Trigger {
 	GRANT_SHIELDS,
 	RECEIVE_SHIELDS,
 	THROW_TRIDENT,
+	USE_CONSUMABLE,
 	RECEIVED_DAMAGE, // Cancellable
 	RECEIVED_HEALTH_DAMAGE; // Cancellable, only occurs if the player is due to lose health, TOO LATE to apply buffs
 	
