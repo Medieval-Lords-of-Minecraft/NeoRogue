@@ -47,7 +47,7 @@ public class PlayerSessionInventory extends CoreInventory {
 
 	private HashSet<Integer> highlighted = new HashSet<Integer>();
 	private Player spectator;
-	private boolean addItem = true;
+	private boolean addItem = false;
 	private PlayerSessionData data;
 
 	public PlayerSessionInventory(PlayerSessionData data) {
@@ -214,6 +214,7 @@ public class PlayerSessionInventory extends CoreInventory {
 				Util.displayError(p, "You can't trash cursed items!");
 				return;
 			}
+			clearHighlights();
 			p.playSound(p, Sound.ENTITY_BLAZE_SHOOT, 1F, 1F);
 			p.setItemOnCursor(null);
 			return;
@@ -324,9 +325,7 @@ public class PlayerSessionInventory extends CoreInventory {
 			else if (eqed != null && eqed.containsReforgeOption(eqId)) {
 				p.setItemOnCursor(null);
 				if (!eq.isUpgraded() && !eqed.isUpgraded()) {
-					addItem = false;
 					displayError("At least one of the items must be upgraded to reforge!", true);
-					p.closeInventory();
 					return;
 				}
 				p.setItemOnCursor(null);
@@ -575,6 +574,7 @@ public class PlayerSessionInventory extends CoreInventory {
 	private void displayError(String error, boolean closeInventory) {
 		p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1F, 0.7F);
 		Util.msg(p, error);
+		addItem = false;
 		if (closeInventory) p.closeInventory();
 	}
 
