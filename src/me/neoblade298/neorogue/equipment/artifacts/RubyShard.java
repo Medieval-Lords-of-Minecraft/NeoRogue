@@ -30,6 +30,11 @@ public class RubyShard extends Artifact {
 	}
 
 	@Override
+	public void onInitializeSession(PlayerSessionData data) {
+		
+	}
+
+	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE, "Increases max health by <white>" + max + "</white>.");
 	}

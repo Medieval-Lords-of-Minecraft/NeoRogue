@@ -36,6 +36,11 @@ public class MercenaryHeadband extends Artifact {
 	}
 
 	@Override
+	public void onInitializeSession(PlayerSessionData data) {
+		
+	}
+
+	@Override
 	public void setupItem() {
 		item = createItem(Material.RESPAWN_ANCHOR,
 				"Reaching max stamina in a fight increases your stamina regen by <white>" + regen + "</white>"

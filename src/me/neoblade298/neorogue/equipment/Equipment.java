@@ -48,6 +48,7 @@ import me.neoblade298.neorogue.equipment.artifacts.EmeraldShard;
 import me.neoblade298.neorogue.equipment.artifacts.EnergyBattery;
 import me.neoblade298.neorogue.equipment.artifacts.FaerieCirclet;
 import me.neoblade298.neorogue.equipment.artifacts.GlacialHammer;
+import me.neoblade298.neorogue.equipment.artifacts.GoldIngot;
 import me.neoblade298.neorogue.equipment.artifacts.GrendelsCrystalMirror;
 import me.neoblade298.neorogue.equipment.artifacts.HermesBoots;
 import me.neoblade298.neorogue.equipment.artifacts.MercenaryHeadband;
@@ -212,6 +213,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new EnergyBattery();
 		new FaerieCirclet();
 		new GlacialHammer();
+		new GoldIngot();
 		new GrendelsCrystalMirror();
 		new HermesBoots();
 		new PracticeDummy();

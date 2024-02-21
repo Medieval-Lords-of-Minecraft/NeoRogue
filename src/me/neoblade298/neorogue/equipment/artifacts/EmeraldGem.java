@@ -11,13 +11,14 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class EmeraldGem extends Artifact {
-	private int max, starting;
+	private int max;
+	private double regen;
 
 	public EmeraldGem() {
 		super("emeraldGem", "Emerald Gem", Rarity.EPIC, EquipmentClass.CLASSLESS);
 		canDrop = false;
 		max = 50;
-		starting = 10;
+		regen = 0.5;
 	}
 
 	@Override
@@ -28,11 +29,16 @@ public class EmeraldGem extends Artifact {
 	@Override
 	public void onAcquire(PlayerSessionData data) {
 		data.addMaxStamina(max);
-		data.addStartingStamina(starting);
+		data.addStaminaRegen(regen);
+	}
+
+	@Override
+	public void onInitializeSession(PlayerSessionData data) {
+		
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.EMERALD, "Increases max stamina by <white>" + max + "</white> and starting stamina by <white>" + starting + "</white>.");
+		item = createItem(Material.EMERALD, "Increases max stamina by <white>" + max + "</white> and starting stamina by <white>" + regen + "</white>.");
 	}
 }

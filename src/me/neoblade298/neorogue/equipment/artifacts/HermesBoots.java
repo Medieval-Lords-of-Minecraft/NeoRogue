@@ -30,6 +30,11 @@ public class HermesBoots extends Artifact {
 	}
 
 	@Override
+	public void onInitializeSession(PlayerSessionData data) {
+		
+	}
+
+	@Override
 	public void setupItem() {
 		item = createItem(Material.TARGET, 
 				"Sprinting has no stamina cost until you cast <white>" + num + "</white> abilities.");

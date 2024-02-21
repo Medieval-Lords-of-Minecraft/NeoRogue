@@ -28,6 +28,11 @@ public class FaerieCirclet extends Artifact {
 	public void onAcquire(PlayerSessionData data) {
 		
 	}
+
+	@Override
+	public void onInitializeSession(PlayerSessionData data) {
+		
+	}
 	
 	@Override
 	public void cleanup(Player p, PlayerFightData data) {

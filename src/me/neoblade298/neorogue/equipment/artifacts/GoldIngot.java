@@ -4,19 +4,17 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.equipment.Artifact;
-
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.session.event.RewardGoldEvent;
+import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
-public class RubyCluster extends Artifact {
-	private int max;
+public class GoldIngot extends Artifact {
 
-	public RubyCluster() {
-		super("rubyCluster", "Ruby Cluster", Rarity.RARE, EquipmentClass.CLASSLESS);
-		canDrop = false;
-		max = 25;
+	public GoldIngot() {
+		super("goldIngot", "Gold Ingot", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
 	}
 
 	@Override
@@ -26,16 +24,20 @@ public class RubyCluster extends Artifact {
 
 	@Override
 	public void onAcquire(PlayerSessionData data) {
-		data.addMaxHealth(max);
+		
 	}
-
+	
 	@Override
 	public void onInitializeSession(PlayerSessionData data) {
-		
+		data.addTrigger(id, SessionTrigger.REWARD_GOLD, (pdata, in) -> {
+			RewardGoldEvent ev = (RewardGoldEvent) in;
+			ev.setAmount(ev.getAmount() + 5);
+		});
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.REDSTONE, "Increases max health by <white>" + max + "</white>.");
+		item = createItem(Material.GOLD_NUGGET, 
+				"Increases gold earned from fights by <white>5</white>.");
 	}
 }

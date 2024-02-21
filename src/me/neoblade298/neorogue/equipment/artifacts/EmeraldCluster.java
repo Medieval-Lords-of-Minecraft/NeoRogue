@@ -11,13 +11,14 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class EmeraldCluster extends Artifact {
-	private int max, starting;
+	private int max;
+	private double regen;
 
 	public EmeraldCluster() {
 		super("emeraldCluster", "Emerald Cluster", Rarity.RARE, EquipmentClass.CLASSLESS);
 		canDrop = false;
 		max = 25;
-		starting = 5;
+		regen = 0.25;
 	}
 
 	@Override
@@ -28,11 +29,16 @@ public class EmeraldCluster extends Artifact {
 	@Override
 	public void onAcquire(PlayerSessionData data) {
 		data.addMaxStamina(max);
-		data.addStartingStamina(starting);
+		data.addStaminaRegen(regen);
+	}
+
+	@Override
+	public void onInitializeSession(PlayerSessionData data) {
+		
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.EMERALD, "<gray>Increases max stamina by <white>" + max + "</white> and starting stamina by <white>" + starting +"</white>.");
+		item = createItem(Material.EMERALD, "<gray>Increases max stamina by <white>" + max + "</white> and starting stamina by <white>" + regen +"</white>.");
 	}
 }

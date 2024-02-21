@@ -54,6 +54,11 @@ public class CharmOfGallus extends Artifact {
 	}
 
 	@Override
+	public void onInitializeSession(PlayerSessionData data) {
+		
+	}
+
+	@Override
 	public void setupItem() {
 		item = createItem(Material.GOLD_NUGGET, 
 				"The first 5 skills you cast have their stamina cost reduced by <white>" + stamina + "</white>. If the resulting cost is negative, you gain stamina.");

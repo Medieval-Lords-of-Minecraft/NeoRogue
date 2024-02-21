@@ -60,6 +60,11 @@ public class EnergyBattery extends Artifact {
 	}
 
 	@Override
+	public void onInitializeSession(PlayerSessionData data) {
+		
+	}
+
+	@Override
 	public void setupItem() {
 		item = createItem(Material.COPPER_BULB, 
 				"Your first <white>" + num + "</white> skills are free to cast and have no cooldown.");

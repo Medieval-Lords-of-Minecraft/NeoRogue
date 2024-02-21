@@ -17,6 +17,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+
 import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
@@ -30,6 +31,8 @@ import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
 import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.event.SessionAction;
+import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.fight.trigger.KeyBind;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -49,6 +52,7 @@ public class PlayerSessionData {
 	private Equipment[] otherBinds = new Equipment[8];
 	private Equipment[][] allEquips = new Equipment[][] { hotbar, armors, offhand, accessories, storage, otherBinds };
 	private TreeMap<String, ArtifactInstance> artifacts = new TreeMap<String, ArtifactInstance>();
+	private HashMap<SessionTrigger, ArrayList<SessionAction>> triggers = new HashMap<SessionTrigger, ArrayList<SessionAction>>();
 	private int abilitiesEquipped, maxAbilities = 4, maxStorage = 9, coins = 50;
 	private String instanceData;
 	private DropTableSet<Artifact> personalArtifacts;
@@ -150,6 +154,7 @@ public class PlayerSessionData {
 	private void setupArtifacts() {
 		personalArtifacts = Equipment.copyArtifactsDropSet(ec, EquipmentClass.CLASSLESS);
 		for (ArtifactInstance ai : artifacts.values()) {
+			ai.getArtifact().onInitializeSession(this);
 			if (ai.getArtifact().canStack()) continue;
 			personalArtifacts.remove(ai.getArtifact());
 		}
@@ -292,9 +297,32 @@ public class PlayerSessionData {
 	public double getManaRegen() {
 		return manaRegen;
 	}
+	
+	public void addManaRegen(double amount) {
+		this.manaRegen += amount;
+	}
 
 	public double getStaminaRegen() {
 		return staminaRegen;
+	}
+	
+	public void addStaminaRegen(double amount) {
+		this.staminaRegen += amount;
+	}
+
+	public void addTrigger(String id, SessionTrigger trigger, SessionAction action) {
+		ArrayList<SessionAction> actions = triggers.containsKey(trigger) ? triggers.get(trigger)
+				: new ArrayList<SessionAction>();
+		actions.add(action);
+		triggers.putIfAbsent(trigger, actions);
+	}
+	
+	public void trigger(SessionTrigger trigger, Object inputs) {
+		if (!triggers.containsKey(trigger)) return;
+		
+		for (SessionAction action : triggers.get(trigger)) {
+			action.trigger(this, inputs);
+		}
 	}
 
 	private void giveArtifact(Artifact artifact) {
@@ -309,6 +337,7 @@ public class PlayerSessionData {
 			if (!artifact.canStack()) personalArtifacts.remove(artifact);
 		}
 		inst.getArtifact().onAcquire(this);
+		inst.getArtifact().onInitializeSession(this);
 	}
 
 	public void giveEquipment(Equipment eq, Component toSelf, Component toOthers) {

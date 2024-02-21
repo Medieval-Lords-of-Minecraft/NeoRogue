@@ -12,6 +12,8 @@ import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.event.RewardGoldEvent;
+import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.reward.CoinsReward;
 import me.neoblade298.neorogue.session.reward.EquipmentChoiceReward;
 import me.neoblade298.neorogue.session.reward.Reward;
@@ -59,7 +61,9 @@ public class MinibossFightInstance extends FightInstance {
 		for (UUID uuid : s.getParty().keySet()) {
 			PlayerSessionData data = s.getParty().get(uuid);
 			ArrayList<Reward> list = new ArrayList<Reward>();
-			list.add(new CoinsReward(50));
+			RewardGoldEvent ev = new RewardGoldEvent(50);
+			data.trigger(SessionTrigger.REWARD_GOLD, ev);
+			list.add(new CoinsReward(ev.getAmount()));
 			
 			ArrayList<Equipment> equipDrops = new ArrayList<Equipment>();
 			EquipmentClass ec = data.getPlayerClass();

@@ -72,6 +72,11 @@ public class PracticeDummy extends Artifact {
 	}
 
 	@Override
+	public void onInitializeSession(PlayerSessionData data) {
+		
+	}
+
+	@Override
 	public void setupItem() {
 		int pct = (int) (damageMult * 100);
 		item = createItem(Material.TARGET, 

@@ -29,6 +29,11 @@ public class TomeOfWisdom extends Artifact {
 	}
 
 	@Override
+	public void onInitializeSession(PlayerSessionData data) {
+		
+	}
+
+	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE, "Increases the number of abilities you can equip by <white>1</white>.");
 	}

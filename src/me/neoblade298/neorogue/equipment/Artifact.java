@@ -12,4 +12,5 @@ public abstract class Artifact extends Equipment {
 		return canStack;
 	}
 	public abstract void onAcquire(PlayerSessionData data);
+	public abstract void onInitializeSession(PlayerSessionData data);
 }

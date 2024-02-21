@@ -37,6 +37,11 @@ public class GlacialHammer extends Artifact {
 	}
 
 	@Override
+	public void onInitializeSession(PlayerSessionData data) {
+		
+	}
+
+	@Override
 	public void setupItem() {
 		item = createItem(Material.GOLDEN_SHOVEL, 
 				"Landing a basic attack when you're above <white>50%</white> mana slows the enemy and costs <white>1</white> mana.");
