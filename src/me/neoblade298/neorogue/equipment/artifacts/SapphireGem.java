@@ -18,7 +18,7 @@ public class SapphireGem extends Artifact {
 		super("sapphireGem", "Sapphire Gem", Rarity.EPIC, EquipmentClass.CLASSLESS);
 		canDrop = false;
 		max = 50;
-		regen = 0.5;
+		regen = 1;
 	}
 
 	@Override
@@ -39,6 +39,6 @@ public class SapphireGem extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LAPIS_LAZULI, "Increases max mana by <white>" + max + "</white> and starting mana by <white>" + regen + "</white>.");
+		item = createItem(Material.LAPIS_LAZULI, "Increases max mana by <white>" + max + "</white> and mana regen by <white>" + regen + "</white>.");
 	}
 }

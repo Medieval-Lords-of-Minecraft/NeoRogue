@@ -61,10 +61,8 @@ public class Bulldoze extends Equipment {
 	
 	private class BulldozeHitChecker {
 		private ArrayList<BukkitTask> tasks = new ArrayList<BukkitTask>();
-		private PlayerFightData data;
 		
 		protected BulldozeHitChecker(Player p, PlayerFightData data) {
-			this.data = data;
 			for (long delay = 2; delay <= 60; delay+= 2) {
 				boolean spawnParticle = delay % 4 == 0;
 				tasks.add(new BukkitRunnable() {
@@ -82,15 +80,6 @@ public class Bulldoze extends Equipment {
 						}
 					}
 				}.runTaskLater(NeoRogue.inst(), delay));
-			}
-			
-			data.addCleanupTask(id, () -> { cancelTasks(); });
-		}
-		
-		private void cancelTasks() {
-			data.removeCleanupTask(id);
-			for (BukkitTask task : tasks) {
-				task.cancel();
 			}
 		}
 	}

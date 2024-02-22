@@ -18,7 +18,7 @@ public class SapphireCluster extends Artifact {
 		super("sapphireCluster", "Sapphire Cluster", Rarity.RARE, EquipmentClass.CLASSLESS);
 		canDrop = false;
 		max = 25;
-		regen = 0.25;
+		regen = 0.5;
 	}
 
 	@Override
@@ -39,6 +39,6 @@ public class SapphireCluster extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LAPIS_LAZULI, "Increases max mana by <white>" + max + "</white> and starting mana by <white>" + regen + "</white>.");
+		item = createItem(Material.LAPIS_LAZULI, "Increases max mana by <white>" + max + "</white> and mana regen by <white>" + regen + "</white>.");
 	}
 }

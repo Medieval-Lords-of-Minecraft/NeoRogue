@@ -24,7 +24,6 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
@@ -279,13 +278,11 @@ public class SessionManager implements Listener {
 	
 	@EventHandler
 	public void onDamage(EntityDamageEvent e) {
+		if (e instanceof EntityDamageByEntityEvent) return;
 		UUID uuid = e.getEntity().getUniqueId();
 		if (e.getEntity().getType() != EntityType.PLAYER) return;
 		if (!sessions.containsKey(uuid)) return;
-		if (e.getCause() == DamageCause.POISON || e.getCause() == DamageCause.WITHER ||
-				e.getCause() == DamageCause.STARVATION) {
-			e.setCancelled(true);
-		}
+		FightInstance.handleEnvironmentDamage(e);
 	}
 
 	@EventHandler

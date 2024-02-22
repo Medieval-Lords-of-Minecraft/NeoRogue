@@ -18,7 +18,7 @@ public class EmeraldGem extends Artifact {
 		super("emeraldGem", "Emerald Gem", Rarity.EPIC, EquipmentClass.CLASSLESS);
 		canDrop = false;
 		max = 50;
-		regen = 0.5;
+		regen = 1;
 	}
 
 	@Override
@@ -39,6 +39,6 @@ public class EmeraldGem extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.EMERALD, "Increases max stamina by <white>" + max + "</white> and starting stamina by <white>" + regen + "</white>.");
+		item = createItem(Material.EMERALD, "Increases max stamina by <white>" + max + "</white> and stamina regen by <white>" + regen + "</white>.");
 	}
 }

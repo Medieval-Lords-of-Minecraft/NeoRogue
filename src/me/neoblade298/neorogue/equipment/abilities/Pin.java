@@ -43,6 +43,7 @@ public class Pin extends Equipment {
 		super("pin", "Pin", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 1, 0));
 		damage = isUpgraded ? 150 : 100;
+		reduction = isUpgraded ? 15 : 10;
 		
 		pc.count(25).spread(1, 1);
 		start.count(25).spread(0.5, 0);
@@ -77,7 +78,8 @@ public class Pin extends Equipment {
 			};
 		}
 		
-		protected void onEnd(boolean hitWall) {
+		protected void onEnd(PlayerFightData data, boolean hitWall) {
+			data.removeCleanupTask(id);
 			for (LivingEntity ent : hit) {
 				ent.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 100, 0));
 			}
@@ -98,11 +100,9 @@ public class Pin extends Equipment {
 	
 	private class TackleHitChecker {
 		private ArrayList<BukkitTask> tasks = new ArrayList<BukkitTask>();
-		private PlayerFightData data;
 		private TackleInstance inst;
 		
 		protected TackleHitChecker(Player p, PlayerFightData data, TackleInstance inst) {
-			this.data = data;
 			this.inst = inst;
 			for (long delay = 1; delay <= 12; delay++) {
 				final long d = delay;
@@ -121,10 +121,10 @@ public class Pin extends Equipment {
 						// Check for hit wall only after the first few ticks
 						if (hitWall(p)) {
 							cancelTasks();
-							inst.onEnd(true);
+							inst.onEnd(data, true);
 						}
 						else if (d == 10) {
-							inst.onEnd(false);
+							inst.onEnd(data, false);
 						}
 					}
 				}.runTaskLater(NeoRogue.inst(), delay));
@@ -159,7 +159,6 @@ public class Pin extends Equipment {
 		}
 		
 		private void cancelTasks() {
-			data.removeCleanupTask(id);
 			for (BukkitTask task : tasks) {
 				task.cancel();
 			}

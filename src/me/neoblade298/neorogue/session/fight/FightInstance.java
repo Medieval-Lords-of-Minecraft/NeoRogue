@@ -27,7 +27,9 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
@@ -277,6 +279,13 @@ public abstract class FightInstance extends Instance {
 
 		trigger(p, Trigger.LEFT_CLICK, null);
 		trigger(p, Trigger.LEFT_CLICK_HIT, new LeftClickHitEvent((LivingEntity) e.getEntity()));
+	}
+	
+	public static void handleEnvironmentDamage(EntityDamageEvent e) {
+		if (e.getCause() == DamageCause.POISON || e.getCause() == DamageCause.WITHER ||
+				e.getCause() == DamageCause.STARVATION) {
+			e.setCancelled(true);
+		}
 	}
 
 	public static void handleWin() {

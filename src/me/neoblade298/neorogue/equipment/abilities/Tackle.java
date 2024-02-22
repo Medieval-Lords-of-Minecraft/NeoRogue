@@ -65,20 +65,21 @@ public class Tackle extends Equipment {
 	
 	private class TackleHitChecker {
 		private ArrayList<BukkitTask> tasks = new ArrayList<BukkitTask>();
-		private PlayerFightData data;
 		
 		protected TackleHitChecker(Player p, PlayerFightData data, EquipmentInstance inst) {
-			this.data = data;
 			for (long delay = 1; delay <= 10; delay++) {
+				final boolean last = delay == 10;
 				tasks.add(new BukkitRunnable() {
 					public void run() {
 						LivingEntity first = TargetHelper.getNearest(p, hc);
+						if (last) data.removeCleanupTask(id);
 						if (first == null) return;
 
 						LinkedList<LivingEntity> hit = TargetHelper.getEntitiesInRadius(p, aoe);
 						Vector v = p.getLocation().subtract(hit.getFirst().getLocation()).toVector();
 						v = v.setY(Math.min(0.3, v.getY())).normalize(); // Limit how high a tackle can take you
 						p.setVelocity(v.multiply(0.5));
+						data.removeCleanupTask(id);
 						cancelTasks();
 						inst.reduceCooldown(data.getShields().getAmount() > 0 ? 15 : 10);
 						Util.playSound(p, Sound.ENTITY_GENERIC_EXPLODE, false);
@@ -94,7 +95,6 @@ public class Tackle extends Equipment {
 		}
 		
 		private void cancelTasks() {
-			data.removeCleanupTask(id);
 			for (BukkitTask task : tasks) {
 				task.cancel();
 			}

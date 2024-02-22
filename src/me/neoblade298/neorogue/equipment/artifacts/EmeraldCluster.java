@@ -18,7 +18,7 @@ public class EmeraldCluster extends Artifact {
 		super("emeraldCluster", "Emerald Cluster", Rarity.RARE, EquipmentClass.CLASSLESS);
 		canDrop = false;
 		max = 25;
-		regen = 0.25;
+		regen = 0.5;
 	}
 
 	@Override
@@ -39,6 +39,6 @@ public class EmeraldCluster extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.EMERALD, "<gray>Increases max stamina by <white>" + max + "</white> and starting stamina by <white>" + regen +"</white>.");
+		item = createItem(Material.EMERALD, "<gray>Increases max stamina by <white>" + max + "</white> and stamina regen by <white>" + regen +"</white>.");
 	}
 }

@@ -434,6 +434,9 @@ public class PlayerFightData extends FightData {
 	public double getMaxMana() {
 		return maxMana;
 	}
+	public double getMaxHealth() {
+		return maxHealth;
+	}
 	
 	public void addStaminaRegen(double amount) {
 		this.staminaRegen += amount;

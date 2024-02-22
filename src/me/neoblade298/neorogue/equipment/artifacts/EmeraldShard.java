@@ -18,7 +18,7 @@ public class EmeraldShard extends Artifact {
 		super("emeraldShard", "Emerald Shard", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
 		canDrop = false;
 		max = 10;
-		regen = 0.1;
+		regen = 0.2;
 	}
 
 	@Override
@@ -39,6 +39,6 @@ public class EmeraldShard extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.EMERALD, "Increases max stamina by <white>" + max + "</white> and starting stamina by <white>" + regen + "</white>.");
+		item = createItem(Material.EMERALD, "Increases max stamina by <white>" + max + "</white> and stamina regen by <white>" + regen + "</white>.");
 	}
 }

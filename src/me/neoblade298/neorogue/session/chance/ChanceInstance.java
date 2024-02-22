@@ -82,8 +82,7 @@ public class ChanceInstance extends EditInventoryInstance {
 	public void start() {
 		// Pick a random chance set if not already picked
 		if (set == null) {
-			//set = ChanceSet.getSet(s.getArea().getType());
-			set = ChanceSet.get("ShiningLight");
+			set = ChanceSet.getSet(s.getArea().getType());
 		}
 		set.initialize(s, this);
 

@@ -18,7 +18,7 @@ public class SapphireShard extends Artifact {
 		super("sapphireShard", "Sapphire Shard", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
 		canDrop = false;
 		max = 10;
-		regen = 0.1;
+		regen = 0.2;
 	}
 
 	@Override
@@ -39,6 +39,6 @@ public class SapphireShard extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LAPIS_LAZULI, "Increases max mana by <white>" + max + "</white> and starting mana by <white>" + regen + "</white>.");
+		item = createItem(Material.LAPIS_LAZULI, "Increases max mana by <white>" + max + "</white> and mana regen by <white>" + regen + "</white>.");
 	}
 }

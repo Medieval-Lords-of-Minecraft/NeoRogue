@@ -45,7 +45,7 @@ public class EarthenTackle extends Equipment {
 		concussed = isUpgraded? 35 : 25;
 		
 		pc.count(25).spread(0.5, 0.5);
-		start.count(25).spread(0.5, 0).blockData(Material.DIRT.createBlockData());
+		start.count(25).spread(0.5, 0).offsetY(1).blockData(Material.DIRT.createBlockData());
 		dirt = start.clone().spread(0.5, 0.5);
 	}
 
@@ -69,13 +69,13 @@ public class EarthenTackle extends Equipment {
 	
 	private class EarthenTackleHitChecker {
 		private ArrayList<BukkitTask> tasks = new ArrayList<BukkitTask>();
-		private PlayerFightData data;
 		
 		protected EarthenTackleHitChecker(Player p, PlayerFightData data, EquipmentInstance inst) {
-			this.data = data;
 			for (long delay = 1; delay <= 10; delay++) {
+				final boolean last = delay == 10;
 				tasks.add(new BukkitRunnable() {
 					public void run() {
+						if (last) data.removeCleanupTask(id);
 						LivingEntity first = TargetHelper.getNearest(p, hc);
 						if (first == null) return;
 
@@ -100,7 +100,6 @@ public class EarthenTackle extends Equipment {
 		}
 		
 		private void cancelTasks() {
-			data.removeCleanupTask(id);
 			for (BukkitTask task : tasks) {
 				task.cancel();
 			}

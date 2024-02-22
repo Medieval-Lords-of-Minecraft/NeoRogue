@@ -42,6 +42,7 @@ import me.neoblade298.neorogue.equipment.artifacts.AmuletOfOffering;
 import me.neoblade298.neorogue.equipment.artifacts.AvalonianAnchor;
 import me.neoblade298.neorogue.equipment.artifacts.BurningCross;
 import me.neoblade298.neorogue.equipment.artifacts.CharmOfGallus;
+import me.neoblade298.neorogue.equipment.artifacts.CrystallineFlask;
 import me.neoblade298.neorogue.equipment.artifacts.EmeraldCluster;
 import me.neoblade298.neorogue.equipment.artifacts.EmeraldGem;
 import me.neoblade298.neorogue.equipment.artifacts.EmeraldShard;
@@ -210,6 +211,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new AvalonianAnchor();
 		new BurningCross();
 		new CharmOfGallus();
+		new CrystallineFlask();
 		new EnergyBattery();
 		new FaerieCirclet();
 		new GlacialHammer();

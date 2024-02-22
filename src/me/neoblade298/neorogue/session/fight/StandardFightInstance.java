@@ -38,7 +38,7 @@ public class StandardFightInstance extends FightInstance {
 	private FightScore fightScore = FightScore.S;
 	
 	static {
-		SCORE_REQUIRED.put(1, 15D);
+		SCORE_REQUIRED.put(1, 2D);
 		SCORE_REQUIRED.put(2, 25D);
 		SCORE_REQUIRED.put(3, 35D);
 		SCORE_REQUIRED.put(4, 50D);
