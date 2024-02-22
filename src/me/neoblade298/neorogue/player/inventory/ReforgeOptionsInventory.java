@@ -79,6 +79,10 @@ public class ReforgeOptionsInventory extends CoreInventory {
 			p.closeInventory();
 		}
 		else {
+			if (e.isRightClick()) {
+				new GlossaryInventory(p, getFromSlot(e.getSlot()), this);
+				return;
+			}
 			Equipment reforged = getFromSlot(e.getSlot());
 			p.playSound(p, Sound.BLOCK_ANVIL_USE, 1F, 1F);
 			Component cmp = SharedUtil.color("<yellow>" + p.getName() + "</yellow> reforged their ").append(toReforge.getHoverable());

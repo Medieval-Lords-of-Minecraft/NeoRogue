@@ -1,5 +1,6 @@
 package me.neoblade298.neorogue.player.inventory;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -39,6 +40,7 @@ public class PlayerSessionInventory extends CoreInventory {
 	private static final int[] KEYBINDS = new int[] { 9, 10, 11, 12, 13, 14, 15 };
 	private static final int STATS = 27, TRASH = 35, OFFHAND = 17, ARTIFACTS = 31, SEE_OTHERS = 28, MAP = 29;
 	private static HashMap<Integer, EquipSlot> slotTypes = new HashMap<Integer, EquipSlot>();
+	private static final DecimalFormat df = new DecimalFormat("#.##");
 
 	private static final TextComponent instruct = Component.text("Drag a weapon, ability, or consumable",
 			NamedTextColor.GRAY);
@@ -168,15 +170,15 @@ public class PlayerSessionInventory extends CoreInventory {
 
 	private ItemStack createStatsIcon() {
 		TextComponent health = Component.text("Health: ", NamedTextColor.GOLD)
-				.append(Component.text(data.getHealth() + " / " + data.getMaxHealth(), NamedTextColor.WHITE));
+				.append(Component.text(df.format(data.getHealth()) + " / " + data.getMaxHealth(), NamedTextColor.WHITE));
 		TextComponent mana = Component.text("Max Mana: ", NamedTextColor.GOLD)
-				.append(Component.text(data.getMaxMana(), NamedTextColor.WHITE));
+				.append(Component.text(df.format(data.getMaxMana()), NamedTextColor.WHITE));
 		TextComponent stamina = Component.text("Max Stamina: ", NamedTextColor.GOLD)
-				.append(Component.text(data.getMaxStamina(), NamedTextColor.WHITE));
+				.append(Component.text(df.format(data.getMaxStamina()), NamedTextColor.WHITE));
 		TextComponent mr = Component.text("Mana Regen: ", NamedTextColor.GOLD)
-				.append(Component.text(data.getManaRegen(), NamedTextColor.WHITE));
+				.append(Component.text(df.format(data.getManaRegen()), NamedTextColor.WHITE));
 		TextComponent sr = Component.text("Stamina Regen: ", NamedTextColor.GOLD)
-				.append(Component.text(data.getStaminaRegen(), NamedTextColor.WHITE));
+				.append(Component.text(df.format(data.getStaminaRegen()), NamedTextColor.WHITE));
 		TextComponent coins = Component.text("Coins: ", NamedTextColor.GOLD)
 				.append(Component.text(data.getCoins(), NamedTextColor.WHITE));
 		return CoreInventory.createButton(Material.ARMOR_STAND, statsText, health, mana, stamina, mr, sr, coins);

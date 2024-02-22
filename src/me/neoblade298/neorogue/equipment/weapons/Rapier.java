@@ -40,6 +40,6 @@ public class Rapier extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.STONE_SWORD, "On hit, grant yourself <yellow>" + shields + "</yellow> " + GlossaryTag.SHIELDS.tag(this) + 
-				"for <white>2</white> seconds.");
+				" for <white>2</white> seconds.");
 	}
 }

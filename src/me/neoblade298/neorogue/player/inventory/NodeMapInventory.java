@@ -23,12 +23,13 @@ import net.kyori.adventure.text.format.TextDecoration.State;
 public class NodeMapInventory extends CoreInventory {
 	private static final int BACK2 = 2, BACK = 3, FORWARD = 5, FORWARD2 = 6;
 	
-	private static final String ARROW_DOWN = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDhhYWI2ZDlhMGJkYjA3YzEzNWM5Nzg2MmU0ZWRmMzYzMTk0Mzg1MWVmYzU0NTQ2M2Q2OGU3OTNhYjQ1YTNkMyJ9fX0=",
-			ARROW_UP = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGIyMjFjYjk2MDdjOGE5YmYwMmZlZjVkNzYxNGUzZWIxNjljYzIxOWJmNDI1MGZkNTcxNWQ1ZDJkNjA0NWY3In19fQ==",
+	private static final String ARROW_UP = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGIyMjFjYjk2MDdjOGE5YmYwMmZlZjVkNzYxNGUzZWIxNjljYzIxOWJmNDI1MGZkNTcxNWQ1ZDJkNjA0NWY3In19fQ==",
 			ARROW_UPLEFT = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTJiOGUzZWFlYTU1OGY4NmFlYmEzMjI5NjlkNGVlYjZiOTY5NDM0ZjVhZDc5MjY2ZDVkOTY4YjI4ZDkxOTJlIn19fQ==",
 			ARROW_UPRIGHT = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzgzMGU4N2JiNDQ3N2QyMTM2ZWQ0MzcxNzg0OTUzN2Y0ZDUxOWI0NGQ4ZmQ2ZTliNGMyZWJlNTJmYThmIn19fQ==",
-			ARROW_DOWN2 = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjBkMWRmODA0NmYwYjVkOTM0YzNlMDU3OThlYWNmZWVhNmQ3YjU5NWRiZTI2ZGViZjdkYjlhY2M4YzRmYTc5OCJ9fX0=",
-			ARROW_UP2 = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjJmYzIzODY2NTIzY2FhYThhOTUzNDU2NjEyN2E2ZjgzODlhZjNlNzZiOGUzYzMzYzI0NzNjYmE2ODg5YzQifX19";
+			ARROW_UP1 = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGZlYjM5ZDcxZWY4ZTZhNDI2NDY1OTMzOTNhNTc1M2NlMjZhMWJlZTI3YTBjYThhMzJjYjYzN2IxZmZhZSJ9fX0=",
+			ARROW_DOWN1 = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTllOTM4MTgxZDhjOTZiNGY1OGY2MzMyZDNkZDIzM2VjNWZiODUxYjVhODQwNDM4ZWFjZGJiNjE5YTNmNWYifX19",
+			ARROW_UP2 = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2Q2OTVkMzM1ZTZiZThjYjJhMzRlMDVlMThlYTJkMTJjM2IxN2I4MTY2YmE2MmQ2OTgyYTY0M2RmNzFmZmFjNSJ9fX0=",
+			ARROW_DOWN2 = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDM3ODYyY2RjMTU5OTk4ZWQ2YjZmZGNjYWFhNDY3NTg2N2Q0NDg0ZGI1MTJhODRjMzY3ZmFiZjRjYWY2MCJ9fX0=";
 	
 	private int currentPos;
 	private Node[][] nodes;
@@ -43,8 +44,8 @@ public class NodeMapInventory extends CoreInventory {
 		
 		setupInventory();
 		inv.setItem(BACK2, CoreInventory.createButton(ARROW_DOWN2, Component.text("Down 3 positions")));
-		inv.setItem(BACK, CoreInventory.createButton(ARROW_DOWN, Component.text("Down 1 position")));
-		inv.setItem(FORWARD, CoreInventory.createButton(ARROW_UP, Component.text("Up 1 position")));
+		inv.setItem(BACK, CoreInventory.createButton(ARROW_DOWN1, Component.text("Down 1 position")));
+		inv.setItem(FORWARD, CoreInventory.createButton(ARROW_UP1, Component.text("Up 1 position")));
 		inv.setItem(FORWARD2, CoreInventory.createButton(ARROW_UP2, Component.text("Up 3 positions")));
 	}
 	
