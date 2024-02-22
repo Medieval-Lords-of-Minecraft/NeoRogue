@@ -25,7 +25,7 @@ public class WarCry extends Equipment {
 	
 	public WarCry(boolean isUpgraded) {
 		super("warCry", "War Cry", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 30, 15, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 40, 15, 0));
 		strength = isUpgraded ? 15 : 10;
 		shields = isUpgraded ? 15 : 10;
 		

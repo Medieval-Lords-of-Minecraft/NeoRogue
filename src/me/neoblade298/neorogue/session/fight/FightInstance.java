@@ -285,6 +285,14 @@ public abstract class FightInstance extends Instance {
 		if (e.getCause() == DamageCause.POISON || e.getCause() == DamageCause.WITHER ||
 				e.getCause() == DamageCause.STARVATION) {
 			e.setCancelled(true);
+			return;
+		}
+		
+		if (e.getEntityType() != EntityType.PLAYER) return;
+		Player p = (Player) e.getEntity();
+		if (e.getCause() == DamageCause.FALL) {
+			e.setCancelled(trigger(p, Trigger.FALL_DAMAGE, e));
+			return;
 		}
 	}
 

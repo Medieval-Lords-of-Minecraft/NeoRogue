@@ -17,6 +17,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.CastUsableEvent;
 public class Titan extends Equipment {
 	private ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
 	private int staminaReduction;
+	private static final int CUTOFF = 40;
 	
 	public Titan(boolean isUpgraded) {
 		super("titan", "Titan", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
@@ -30,7 +31,7 @@ public class Titan extends Equipment {
 		data.addTrigger(id, Trigger.CAST_USABLE, (pdata, in) -> {
 			CastUsableEvent ev = (CastUsableEvent) in;
 			EquipmentInstance inst = ev.getInstance();
-			if (inst.getStaminaCost() < 25) return TriggerResult.keep();
+			if (inst.getStaminaCost() < CUTOFF) return TriggerResult.keep();
 			inst.setTempStaminaCost(inst.getStaminaCost() - staminaReduction);
 			return TriggerResult.keep();
 		});
@@ -39,6 +40,6 @@ public class Titan extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.DEAD_BUSH,
-				"Passive. Abilities that cost at least <white>25</white> stamina have their stamina cost reduced by <yellow>" + staminaReduction + "</yellow>.");
+				"Passive. Abilities that cost at least <white>" + CUTOFF + "</white> stamina have their stamina cost reduced by <yellow>" + staminaReduction + "</yellow>.");
 	}
 }

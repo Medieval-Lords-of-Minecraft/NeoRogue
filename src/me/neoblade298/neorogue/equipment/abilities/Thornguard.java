@@ -21,16 +21,16 @@ import me.neoblade298.neorogue.session.fight.trigger.event.GrantShieldsEvent;
 
 public class Thornguard extends Equipment {
 	private ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
-	private static final int CUTOFF = 5;
+	private static final int CUTOFF = 3;
 	private int thorns;
 	
 	public Thornguard(boolean isUpgraded) {
 		super("thornguard", "Thornguard", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(isUpgraded ? 20 : 50, isUpgraded ? 30 : 65, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(isUpgraded ? 15 : 25, isUpgraded ? 60 : 90, 0, 0));
 		properties.addUpgrades(PropertyType.MANA_COST, PropertyType.STAMINA_COST);
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		
-		thorns = isUpgraded ? 5 : 3;
+		thorns = isUpgraded ? 6 : 4;
 	}
 
 	@Override

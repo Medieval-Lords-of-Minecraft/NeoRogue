@@ -29,7 +29,7 @@ public class Fury extends Equipment {
 	
 	public Fury(boolean isUpgraded) {
 		super("fury", "Fury", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 25, 5, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 35, 5, 0));
 		damage = 125;
 		berserk = isUpgraded ? 10 : 15;
 		heal = 2;

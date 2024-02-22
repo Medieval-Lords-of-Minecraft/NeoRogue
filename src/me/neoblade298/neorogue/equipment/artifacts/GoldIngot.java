@@ -37,7 +37,7 @@ public class GoldIngot extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.GOLD_NUGGET, 
+		item = createItem(Material.GOLD_INGOT, 
 				"Increases gold earned from fights by <white>5</white>.");
 	}
 }

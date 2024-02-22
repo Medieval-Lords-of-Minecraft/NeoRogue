@@ -28,7 +28,7 @@ public class SiphoningStrike extends Equipment {
 	
 	public SiphoningStrike(boolean isUpgraded) {
 		super("siphoningStrike", "Siphoning Strike", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 25, 12, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 40, 12, 0));
 		properties.addUpgrades(PropertyType.COOLDOWN);
 		damage = 150;
 		buff = isUpgraded ? 8 : 5;

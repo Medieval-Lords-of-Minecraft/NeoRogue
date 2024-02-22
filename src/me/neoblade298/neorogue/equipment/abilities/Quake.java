@@ -31,7 +31,7 @@ public class Quake extends Equipment {
 	
 	public Quake(boolean isUpgraded) {
 		super("quake", "Quake", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 10, 10, tp.range));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 30, 10, tp.range));
 		
 		concussed = isUpgraded ? 16 : 12;
 		damage = isUpgraded ? 60 : 40;

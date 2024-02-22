@@ -31,9 +31,9 @@ public class Parry extends Equipment {
 	
 	public Parry(boolean isUpgraded) {
 		super("parry", "Parry", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 5, 5, 0));
-		shields = 30;
-		damage = isUpgraded ? 100 : 70;
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 40, 5, 0));
+		shields = 15;
+		damage = isUpgraded ? 60 : 40;
 		pc.count(10).spread(0.5, 0.5).speed(0.2);
 		bpc.count(20).spread(0.5, 0.5).speed(0.1);
 		hit.count(50).spread(0.5, 0.5);
@@ -78,6 +78,6 @@ public class Parry extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.FLINT,
 				"On cast, gain <white>" + shields + " </white>" + GlossaryTag.SHIELDS.tag(this) + " for <white>2</white> seconds. Taking damage during this "
-						+ "increases your next basic attack's damage by <yellow>" + damage + "</yellow>.");
+						+ "increases your next basic attack's damage by <yellow>" + damage + "</yellow> once per cast.");
 	}
 }

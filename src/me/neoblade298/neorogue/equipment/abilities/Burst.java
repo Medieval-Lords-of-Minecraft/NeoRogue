@@ -24,7 +24,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class Burst extends Equipment {
 	private ParticleContainer pc = new ParticleContainer(Particle.REDSTONE);
 	private int stamina, buff;
-	private static final int seconds = 2;
+	private static final int seconds = 5;
 	
 	public Burst(boolean isUpgraded) {
 		super("burst", "Burst", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,

@@ -26,8 +26,8 @@ public class Fortify extends Equipment {
 			hit = new ParticleContainer(Particle.REDSTONE);
 	
 	public Fortify(boolean isUpgraded) {
-		super("fortify", "Fortify", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 15, isUpgraded ? 5 : 7, 0));
+		super("fortify", "Fortify", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 50, isUpgraded ? 5 : 7, 0));
 		damage = 120;
 		fortitude = isUpgraded ? 2 : 1;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);

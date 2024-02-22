@@ -1,7 +1,9 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.UUID;
 
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -38,7 +40,7 @@ public class Bulldoze extends Equipment {
 	
 	public Bulldoze(boolean isUpgraded) {
 		super("bulldoze", "Bulldoze", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 20, 20, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 35, 20, 0));
 		damage = isUpgraded ? 250 : 200;
 		
 		pc.count(25).spread(0.5, 0.5);
@@ -61,6 +63,7 @@ public class Bulldoze extends Equipment {
 	
 	private class BulldozeHitChecker {
 		private ArrayList<BukkitTask> tasks = new ArrayList<BukkitTask>();
+		private HashSet<UUID> hitList = new HashSet<UUID>();
 		
 		protected BulldozeHitChecker(Player p, PlayerFightData data) {
 			for (long delay = 2; delay <= 60; delay+= 2) {
@@ -74,6 +77,8 @@ public class Bulldoze extends Equipment {
 
 						Util.playSound(p, Sound.ENTITY_GENERIC_EXPLODE, false);
 						for (LivingEntity ent : hit) {
+							if (hitList.contains(ent.getUniqueId())) continue;
+							hitList.add(ent.getUniqueId());
 							pc.spawn(ent);
 							FightInstance.dealDamage(data, DamageType.BLUNT, damage + (data.getShields() != null ? data.getShields().getAmount() : 0), ent);
 							FightInstance.knockback(p, ent, 2);

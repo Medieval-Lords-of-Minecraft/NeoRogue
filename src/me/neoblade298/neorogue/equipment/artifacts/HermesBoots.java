@@ -36,7 +36,7 @@ public class HermesBoots extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.TARGET, 
+		item = createItem(Material.GOLDEN_BOOTS, 
 				"Sprinting has no stamina cost until you cast <white>" + num + "</white> abilities.");
 	}
 	

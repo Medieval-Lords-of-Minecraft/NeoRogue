@@ -24,16 +24,15 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Cleave extends Equipment {
-	private int amount, damage;
+	private int damage;
 	private static final ParticleContainer part = new ParticleContainer(Particle.SWEEP_ATTACK).offsetForward(2).count(10).spread(2.5, 0.2);
 	private static final TargetProperties tp = TargetProperties.cone(90, 5, false, TargetType.ENEMY);
 	
 	public Cleave(boolean isUpgraded) {
 		super("cleave", "Cleave", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 10, 10, 7));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 10, 5, 7));
 		
-		amount = isUpgraded ? 5 : 3;
-		damage = isUpgraded ? 60 : 40;
+		damage = isUpgraded ? 100 : 70;
 	}
 
 	@Override
@@ -42,7 +41,7 @@ public class Cleave extends Equipment {
 			Util.playSound(p, Sound.ENTITY_PLAYER_ATTACK_SWEEP, false);
 			part.spawn(p);
 			for (LivingEntity ent : TargetHelper.getEntitiesInCone(p, tp)) {
-				FightInstance.dealDamage(new DamageMeta(data, amount, DamageType.SLASHING), ent);
+				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.SLASHING), ent);
 			}
 			return TriggerResult.keep();
 		}));
