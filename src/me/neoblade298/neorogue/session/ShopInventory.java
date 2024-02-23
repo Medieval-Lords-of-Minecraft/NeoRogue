@@ -176,6 +176,11 @@ public class ShopInventory extends CoreInventory {
 						.append(eq.getHoverable()).append(Component.text(".")));
 				p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1F, 1F);
 				p.setItemOnCursor(null);
+				ItemStack[] contents = inv.getContents();
+				for (ShopItem si : shopItems) {
+					si.updateLore(data, contents[si.getSlot()], false);
+				}
+				inv.setContents(contents);
 			}
 		}
 	}

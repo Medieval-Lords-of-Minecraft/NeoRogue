@@ -31,7 +31,7 @@ public class Smite extends Equipment {
 	
 	public Smite(boolean isUpgraded) {
 		super("smite", "Smite", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 30, 8, 7));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 20, 8, 7));
 		
 		sanctified = isUpgraded ? 12 : 8;
 		damage = isUpgraded ? 130 : 100;

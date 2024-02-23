@@ -4,24 +4,25 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.equipment.Artifact;
-
+import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
-import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class RubyShard extends Artifact {
-	private int max;
+	private int max, shields;
 
 	public RubyShard() {
 		super("rubyShard", "Ruby Shard", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
 		canDrop = false;
-		max = isUpgraded ? 15 : 10;
+		max = 10;
+		shields = 2;
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		
+	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
+		data.addPermanentShield(p.getUniqueId(), ai.getAmount() * shields);
 	}
 
 	@Override
@@ -36,6 +37,7 @@ public class RubyShard extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.REDSTONE, "Increases max health by <white>" + max + "</white>.");
+		item = createItem(Material.REDSTONE, "Increases max health by <white>" + max + "</white> and grants " +
+				GlossaryTag.SHIELDS.tag(this, shields, false) + " at the start of a fight.");
 	}
 }

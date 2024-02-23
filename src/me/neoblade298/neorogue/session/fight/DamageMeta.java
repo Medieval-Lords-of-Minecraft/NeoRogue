@@ -182,8 +182,8 @@ public class DamageMeta {
 			if (recipient.hasStatus(StatusType.SANCTIFIED)) {
 				Status status = recipient.getStatus(StatusType.SANCTIFIED);
 				int stacks = status.getStacks();
-				int toRemove = (int) (-stacks * 0.25);
-				status.apply(owner.getUniqueId(), toRemove, 0); // Remove 25% of stacks
+				int toRemove = (int) (stacks * 0.25);
+				status.apply(owner.getUniqueId(), -toRemove, 0); // Remove 25% of stacks
 				slices.add(new DamageSlice(recipient.getUniqueId(), toRemove, DamageType.LIGHT));
 				owner.addHealth(toRemove);
 			}

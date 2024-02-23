@@ -62,7 +62,7 @@ public class Endurance extends Equipment {
 			action = (pdata, inputs) -> {
 				if (++count < HEAL_COUNT) return TriggerResult.keep();
 				pc.spawn(p);
-				if (count == HEAL_COUNT) {
+				if (count % HEAL_COUNT == 0) {
 					Util.playSound(p, Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1F, 1F, false);
 					FightInstance.giveHeal(p, heal, p);
 				}

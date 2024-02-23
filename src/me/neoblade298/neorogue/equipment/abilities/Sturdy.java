@@ -51,7 +51,7 @@ public class Sturdy extends Equipment {
 			super(p, eq, slot, es);
 			
 			action = (pdata, inputs) -> {
-				if (++count % HEAL_COUNT != 0) return TriggerResult.keep();
+				if (++count % HEAL_COUNT == 0) return TriggerResult.keep();
 				pc.spawn(p);
 				Util.playSound(p, Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1F, 1F, false);
 				FightInstance.giveHeal(p, heal, p);

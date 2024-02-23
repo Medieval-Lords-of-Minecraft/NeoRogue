@@ -6,6 +6,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import me.neoblade298.neorogue.equipment.Artifact;
+import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -20,7 +21,7 @@ public class GlacialHammer extends Artifact {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
 		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
 			if (data.getMana() > data.getMaxMana() * 0.5) {
 				BasicAttackEvent ev = (BasicAttackEvent) in;

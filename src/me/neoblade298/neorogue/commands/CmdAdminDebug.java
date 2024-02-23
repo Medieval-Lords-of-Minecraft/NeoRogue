@@ -37,25 +37,20 @@ public class CmdAdminDebug extends Subcommand {
 			int count = 0;
 			public void run() {
 				if (++count >= 10) {
-					System.out.println("Cancel 1");
 					this.cancel();
 				}
 				if (p.getVelocity().lengthSquared() == 0) {
-					System.out.println("Cancel 2");
 					this.cancel();
 					return;
 				}
-				System.out.println(p.getVelocity().length());
 				RayTraceResult rtr = w.rayTrace(p.getLocation(), p.getVelocity(), 2, FluidCollisionMode.NEVER, true, 0.5, null);
 				RayTraceResult rtr2 = w.rayTrace(p.getEyeLocation(), p.getVelocity(), 2, FluidCollisionMode.NEVER, true, 0.5, null);
 				if (rtr.getHitBlock() != null && rtr.getHitBlockFace() != BlockFace.UP) {
 					p.setVelocity(rtr.getHitBlockFace().getDirection());
-					System.out.println("Cancel 3");
 					this.cancel();
 				}
 				if (rtr2.getHitBlock() != null && rtr2.getHitBlockFace() != BlockFace.UP) {
 					p.setVelocity(rtr.getHitBlockFace().getDirection());
-					System.out.println("Cancel 4");
 					this.cancel();
 				}
 			}

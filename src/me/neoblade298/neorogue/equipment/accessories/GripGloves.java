@@ -18,9 +18,9 @@ public class GripGloves extends Equipment {
 	private double cutoffPct;
 	
 	public GripGloves(boolean isUpgraded) {
-		super("gripGloves", "Grip Gloves", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
+		super("gripGloves", "Grip Gloves", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ACCESSORY);
-		cutoffPct = isUpgraded ? 0.35 : 0.5;
+		cutoffPct = isUpgraded ? 0.4 : 0.6;
 		cutoff = (int) (cutoffPct * 100);
 	}
 

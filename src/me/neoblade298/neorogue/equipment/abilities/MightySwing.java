@@ -28,7 +28,7 @@ public class MightySwing extends Equipment {
 	
 	public MightySwing(boolean isUpgraded) {
 		super("mightySwing", "Mighty Swing", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, isUpgraded ? 45 : 60, 10, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, isUpgraded ? 25 : 35, 10, 0));
 		properties.addUpgrades(PropertyType.COOLDOWN);
 		damage = 130;
 		cdr = isUpgraded ? 4 : 3;

@@ -27,7 +27,7 @@ public class Execute extends Equipment {
 	
 	public Execute(boolean isUpgraded) {
 		super("execute", "Execute", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 40, 7, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 15, 7, 0));
 		damage = isUpgraded ? 120 : 80;
 		strength = isUpgraded ? 12 : 8;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);

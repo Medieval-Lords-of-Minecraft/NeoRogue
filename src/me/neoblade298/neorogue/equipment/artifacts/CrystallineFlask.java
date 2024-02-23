@@ -6,11 +6,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.PotionMeta;
 
 import me.neoblade298.neorogue.equipment.Artifact;
+import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.StandardFightInstance;
-import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class CrystallineFlask extends Artifact {
 	private int healthPercent = 10;
@@ -19,7 +19,7 @@ public class CrystallineFlask extends Artifact {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
 		if (data.getInstance() instanceof StandardFightInstance) return;
 		data.addHealth(data.getMaxHealth() * 0.01 * healthPercent);
 	}

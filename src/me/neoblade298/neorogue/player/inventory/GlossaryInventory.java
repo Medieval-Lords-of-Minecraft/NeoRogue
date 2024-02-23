@@ -49,6 +49,7 @@ public class GlossaryInventory extends CoreInventory {
 	public GlossaryInventory(Player viewer, Equipment eq, CoreInventory prev) {
 		super(viewer, Bukkit.createInventory(viewer, calculateSize(eq), Component.text("Glossary: ").append(eq.getUnupgraded().getDisplay())));
 		this.prev = prev;
+		eq = eq.getUnupgraded();
 		Util.playSound(viewer, Sound.ITEM_BOOK_PAGE_TURN, false);
 		
 		ItemStack[] contents = inv.getContents();

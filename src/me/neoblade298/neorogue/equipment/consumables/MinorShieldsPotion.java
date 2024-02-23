@@ -28,7 +28,7 @@ public class MinorShieldsPotion extends Consumable {
 		item = createItem(Material.POTION, "Applies <yellow>" + shields + "</yellow> " + GlossaryTag.SHIELDS.tag(this) +
 				". Consumed on first use.");
 		PotionMeta meta = (PotionMeta) item.getItemMeta();
-		meta.setColor(Color.fromRGB(0, 0, 255));
+		meta.setColor(Color.fromRGB(255, 250, 205));
 		item.setItemMeta(meta);
 	}
 }

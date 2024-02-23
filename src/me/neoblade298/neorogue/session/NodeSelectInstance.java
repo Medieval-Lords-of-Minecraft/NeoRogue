@@ -128,8 +128,7 @@ public class NodeSelectInstance extends EditInventoryInstance {
 			// Validation
 			if (!s.isEveryoneOnline()) return;
 			Node node = s.getArea().getNodeFromLocation(e.getClickedBlock().getLocation());
-			s.visitNode(node);
-			s.setInstance(node.getInstance());
+			if (s.setInstance(node.getInstance())) s.visitNode(node);
 			if (!(node.getInstance() instanceof FightInstance)) {
 				for (Player pl : s.getOnlinePlayers()) {
 					pl.setAllowFlight(false);

@@ -25,7 +25,7 @@ public class Bide extends Equipment {
 	
 	public Bide(boolean isUpgraded) {
 		super("bide", "Bide", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR, 
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 40, 10, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 25, 10, 0));
 		shields = 50;
 		duration = 5;
 		berserk = isUpgraded ? 3 : 2;

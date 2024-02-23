@@ -347,20 +347,21 @@ public class Session {
 				NamedTextColor.GRAY)));
 	}
 	
-	public void setInstance(Instance inst) {
+	// False if set instance fails
+	public boolean setInstance(Instance inst) {
 		boolean firstLoad = this.inst == null;
 		if (!firstLoad) {
 			if (!(this.inst instanceof FightInstance)) {
 				for (UUID uuid : party.keySet()) {
 					if (Bukkit.getPlayer(uuid) == null) {
 						broadcast("<red>You can't move on until every member in your party is online!");
-						return;
+						return false;
 					}
 				}
 			}
 			
 			// Save player's storage
-			if (this.inst instanceof EditInventoryInstance && !EditInventoryInstance.isValid(this)) return;
+			if (this.inst instanceof EditInventoryInstance && !EditInventoryInstance.isValid(this)) return false;
 			this.inst.cleanup();
 		}
 		this.inst = inst;
@@ -379,7 +380,7 @@ public class Session {
 		}
 		
 		// Auto-save
-		if (firstLoad) return;
+		if (firstLoad) return true;
 		new BukkitRunnable() {
 			public void run() {
 				try (Connection con = SQLManager.getConnection("NeoRogue");
@@ -392,6 +393,7 @@ public class Session {
 				}
 			}
 		}.runTaskAsynchronously(NeoRogue.inst());
+		return true;
 	}
 	
 	public PlayerSessionData getData(UUID uuid) {

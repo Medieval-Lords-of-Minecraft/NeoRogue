@@ -31,7 +31,7 @@ public class WindSlash extends Equipment {
 	
 	public WindSlash(boolean isUpgraded) {
 		super("windSlash", "Wind Slash", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 45, 10, 8));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 25, 10, 8));
 		
 		amount = isUpgraded ? 5 : 3;
 		damage = isUpgraded ? 180 : 140;

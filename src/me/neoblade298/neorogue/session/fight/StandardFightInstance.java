@@ -69,6 +69,12 @@ public class StandardFightInstance extends FightInstance {
 			scoreBar.addPlayer(p);
 		}
 		
+		for (UUID uuid : s.getSpectators()) {
+			Player p = Bukkit.getPlayer(uuid);
+			timeBar.addPlayer(p);
+			scoreBar.addPlayer(p);
+		}
+		
 		time = fightScore.getThreshold();
 		
 		tasks.add(new BukkitRunnable() {

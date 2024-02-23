@@ -16,7 +16,7 @@ public class LeatherChestplate extends Equipment {
 	public LeatherChestplate(boolean isUpgraded) {
 		super("leatherChestplate", "Leather Chestplate", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ARMOR);
-		damageReduction = isUpgraded ? 2 : 1;
+		damageReduction = isUpgraded ? 5 : 3;
 	}
 
 	@Override

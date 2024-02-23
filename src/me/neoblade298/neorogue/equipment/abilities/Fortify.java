@@ -27,7 +27,7 @@ public class Fortify extends Equipment {
 	
 	public Fortify(boolean isUpgraded) {
 		super("fortify", "Fortify", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 50, isUpgraded ? 5 : 7, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 30, isUpgraded ? 5 : 7, 0));
 		damage = 100;
 		fortitude = isUpgraded ? 2 : 1;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);

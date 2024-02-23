@@ -36,7 +36,7 @@ public class ArtifactInstance implements Comparable<ArtifactInstance> {
 		return item;
 	}
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		this.artifact.initialize(p, data, bind, es, slot);
+		this.artifact.initialize(p, data, this);
 	}
 	public void cleanup(Player p, PlayerFightData data) {
 		this.artifact.cleanup(p, data);
