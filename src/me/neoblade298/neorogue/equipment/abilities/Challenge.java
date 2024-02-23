@@ -29,7 +29,7 @@ public class Challenge extends Equipment {
 	
 	public Challenge(boolean isUpgraded) {
 		super("challenge", "Challenge", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 20, isUpgraded ? 8 : 10, tp.range));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 40, isUpgraded ? 6 : 8, tp.range));
 		properties.addUpgrades(PropertyType.COOLDOWN);
 		threat = 1000;
 		shield = isUpgraded ? 40 : 30;

@@ -30,7 +30,7 @@ public class SiphoningStrike extends Equipment {
 		super("siphoningStrike", "Siphoning Strike", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 40, 12, 0));
 		properties.addUpgrades(PropertyType.COOLDOWN);
-		damage = 150;
+		damage = 120;
 		buff = isUpgraded ? 8 : 5;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		hit.count(50).spread(0.5, 0.5);

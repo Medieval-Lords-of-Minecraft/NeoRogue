@@ -14,6 +14,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
@@ -30,7 +31,7 @@ public class Adrenaline extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION,
-				"On cast, give yourself <white>" + stamina + "</white> stamina. Can be cast <yellow>" +
+				"On cast, give yourself <white>" + stamina + "</white> stamina and take <white>5</white> less damage for <white>10</white> seconds. Can be cast <yellow>" +
 					(isUpgraded ? "twice" : "once") + "</yellow> per fight.");
 	}
 
@@ -50,6 +51,7 @@ public class Adrenaline extends Equipment {
 				Util.playSound(p, Sound.ENTITY_BLAZE_DEATH, 1F, 1F, false);
 				pc.spawn(p);
 				pdata.addStamina(stamina);
+				pdata.addBuff(p.getUniqueId(), false, false, BuffType.GENERAL, 5);
 				if (count < max) return TriggerResult.keep();
 
 				if (es == EquipSlot.HOTBAR) p.getInventory().setItem(slot, null);

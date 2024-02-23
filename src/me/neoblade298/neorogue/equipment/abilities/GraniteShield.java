@@ -52,9 +52,9 @@ public class GraniteShield extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GRANITE_SLAB,
-				"Passive. Heal for <white>" + heal + "</white> after <white>3</white> consecutive seconds of keeping your shield raised. "
-						+ "Afterwards, apply <yellow>" + concuss + "</yellow> " +
-						GlossaryTag.CONCUSSED.tag(this) + " to enemies that damage you.");
+				"Passive. Heal for <white>" + heal + "</white> every <white>3</white> consecutive seconds of keeping your shield raised. "
+						+ "Apply <yellow>" + concuss + "</yellow> " +
+						GlossaryTag.CONCUSSED.tag(this) + " to enemies that damage you while your shield is raised for at least 3 seconds.");
 	}
 	
 	private class SturdyInstance extends EquipmentInstance {
@@ -63,9 +63,8 @@ public class GraniteShield extends Equipment {
 			super(p, eq, slot, es);
 			
 			action = (pdata, inputs) -> {
-				if (++count < HEAL_COUNT) return TriggerResult.keep();
-				pc.spawn(p);
-				if (count == HEAL_COUNT) {
+				if (++count % HEAL_COUNT == 0) {
+					pc.spawn(p);
 					Util.playSound(p, Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1F, 1F, false);
 					FightInstance.giveHeal(p, heal, p);
 				}

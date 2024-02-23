@@ -51,8 +51,8 @@ public class Endurance extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.GRANITE_SLAB,
 				"Passive. Heal for <white>" + heal + "</white> after <white>3</white> consecutive seconds of keeping your shield raised. " +
-				"Afterwards, gain <yellow>" + berserk + "</yellow> " + GlossaryTag.BERSERK.tag(this) + " "
-						+ "for every time you receive damage.");
+				"Gain <yellow>" + berserk + "</yellow> " + GlossaryTag.BERSERK.tag(this) + " "
+						+ "for every time you receive damage after holding your shield up for <white>3</white> seconds.");
 	}
 	
 	private class EnduranceInstance extends EquipmentInstance {

@@ -33,13 +33,13 @@ public class Tackle extends Equipment {
 	private ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION_LARGE),
 			start = new ParticleContainer(Particle.CLOUD);
 	private static final TargetProperties hc = TargetProperties.radius(1.5, true, TargetType.ENEMY),
-			aoe = TargetProperties.radius(2, true, TargetType.ENEMY);
+			aoe = TargetProperties.radius(2.5, true, TargetType.ENEMY);
 	private int damage;
 	
 	public Tackle(boolean isUpgraded) {
 		super("tackle", "Tackle", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 10, 20, 0));
-		damage = isUpgraded ? 150 : 100;
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 15, 20, 0));
+		damage = isUpgraded ? 130 : 100;
 		
 		pc.count(25).spread(0.5, 0.5);
 		start.count(25).spread(0.5, 0);

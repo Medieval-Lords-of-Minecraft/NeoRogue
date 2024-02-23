@@ -14,6 +14,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
@@ -32,7 +33,8 @@ public class Discipline extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION,
-				"On cast, give yourself <white>" + stamina + "</white> stamina and <yellow>" + staminaGain + "</yellow> max stamina.");
+				"On cast, give yourself <white>" + stamina + "</white> stamina, <yellow>" + staminaGain + "</yellow> max stamina, and"
+						+ " take <white>7</white> less damage for <white>10</white> seconds.");
 	}
 
 	@Override
@@ -42,6 +44,7 @@ public class Discipline extends Equipment {
 			pc.spawn(p);
 			pdata.addMaxStamina(staminaGain);
 			pdata.addStamina(stamina);
+			data.addBuff(p.getUniqueId(), false, false, BuffType.GENERAL, 7);
 			return TriggerResult.keep();
 		}));
 	}

@@ -25,6 +25,7 @@ public class ChasingDagger extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.RIGHT_CLICK_HIT, (pdata, inputs) -> {
 			RightClickHitEvent ev = (RightClickHitEvent) inputs;
+			if (ev.getTarget() instanceof Player) return TriggerResult.keep();
 			weaponSwingAndDamage(p, data, ev.getTarget());
 			return TriggerResult.keep();
 		});

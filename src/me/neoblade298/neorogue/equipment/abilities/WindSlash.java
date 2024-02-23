@@ -31,10 +31,10 @@ public class WindSlash extends Equipment {
 	
 	public WindSlash(boolean isUpgraded) {
 		super("windSlash", "Wind Slash", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 30, 10, 9));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 45, 10, 8));
 		
 		amount = isUpgraded ? 5 : 3;
-		damage = isUpgraded ? 150 : 100;
+		damage = isUpgraded ? 180 : 140;
 		for (int i = 0; i < amount; i++) {
 			projs.add(new WindSlashProjectile(i, amount / 2));
 		}

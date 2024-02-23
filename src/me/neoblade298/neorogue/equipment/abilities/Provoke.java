@@ -28,7 +28,7 @@ public class Provoke extends Equipment {
 	
 	public Provoke(boolean isUpgraded) {
 		super("provoke", "Provoke", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 20, isUpgraded ? 5 : 10, tp.range));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 10, isUpgraded ? 7 : 10, tp.range));
 		threat = 500;
 		shield = isUpgraded ? 15 : 8;
 		taunt.count(50).spread(0.5, 0.5).speed(0.2);

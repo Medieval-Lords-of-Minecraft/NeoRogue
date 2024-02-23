@@ -42,7 +42,7 @@ public class Pin extends Equipment {
 	public Pin(boolean isUpgraded) {
 		super("pin", "Pin", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 60, 15, 0));
-		damage = isUpgraded ? 150 : 100;
+		damage = isUpgraded ? 160 : 130;
 		reduction = isUpgraded ? 15 : 10;
 		
 		pc.count(25).spread(1, 1);

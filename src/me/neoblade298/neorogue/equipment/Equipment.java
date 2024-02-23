@@ -631,12 +631,15 @@ public abstract class Equipment implements Comparable<Equipment> {
 	
 	// Used for weapons that start cooldown on swing, not hit
 	public void weaponSwing(Player p, PlayerFightData data) {
+		weaponSwing(p, data, properties.get(PropertyType.ATTACK_SPEED));
+	}
+	public void weaponSwing(Player p, PlayerFightData data, double attackSpeed) {
 		if (properties.has(PropertyType.MANA_COST))
 			data.addMana(-properties.get(PropertyType.MANA_COST));
 		if (properties.has(PropertyType.STAMINA_COST))
 			data.addStamina(-properties.get(PropertyType.STAMINA_COST));
 		properties.getSwingSound().play(p);
-		data.setBasicAttackCooldown(type.getSlots()[0], properties);
+		data.setBasicAttackCooldown(type.getSlots()[0], attackSpeed);
 		if (type.getSlots()[0] == EquipSlot.OFFHAND)
 			p.swingOffHand();
 	}

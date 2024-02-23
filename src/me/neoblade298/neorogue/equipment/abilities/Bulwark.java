@@ -45,7 +45,7 @@ public class Bulwark extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.SHIELD,
 				"Passive. Heal for <white>" + heal + "</white> and gain <yellow>" + shield + "</yellow> " +
-						GlossaryTag.SHIELDS.tag(this) + " after " + HEAL_COUNT + " consecutive seconds you keep a shield raised.");
+						GlossaryTag.SHIELDS.tag(this) + " every " + HEAL_COUNT + " consecutive seconds you keep a shield raised.");
 	}
 	
 	private class BulwarkInstance extends EquipmentInstance {
@@ -54,7 +54,7 @@ public class Bulwark extends Equipment {
 			super(p, eq, slot, es);
 			
 			action = (pdata, inputs) -> {
-				if (++count < HEAL_COUNT) return TriggerResult.keep();
+				if (++count % HEAL_COUNT == 0) return TriggerResult.keep();
 				pc.spawn(p);
 				Util.playSound(p, Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1F, 1F, false);
 				pdata.addSimpleShield(p.getUniqueId(), shield, 100);

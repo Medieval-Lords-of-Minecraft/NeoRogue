@@ -40,8 +40,8 @@ public class EarthenTackle extends Equipment {
 	
 	public EarthenTackle(boolean isUpgraded) {
 		super("earthenTackle", "Earthen Tackle", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 40, 25, 0));
-		damage = isUpgraded ? 200 : 150;
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 40, 20, 0));
+		damage = isUpgraded ? 200 : 160;
 		concussed = isUpgraded? 35 : 25;
 		
 		pc.count(25).spread(0.5, 0.5);

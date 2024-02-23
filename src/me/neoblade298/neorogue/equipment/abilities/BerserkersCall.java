@@ -23,13 +23,13 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class BerserkersCall extends Equipment {
 	private ParticleContainer pc = new ParticleContainer(Particle.REDSTONE);
 	private int strength, berserkStrength;
-	private static final int BERSERK_CUTOFF = 20;
+	private static final int BERSERK_CUTOFF = 16;
 	
 	public BerserkersCall(boolean isUpgraded) {
 		super("berserkersCall", "Berserker's Call", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 45, 15, 0));
 		strength = 4;
-		berserkStrength = isUpgraded ? 20 : 12;
+		berserkStrength = isUpgraded ? 16 : 12;
 		
 		pc.count(50).spread(0.5, 0.5).dustOptions(new DustOptions(Color.RED, 1F));
 	}
@@ -37,7 +37,7 @@ public class BerserkersCall extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE,
-				"On cast, give yourself <white>" + strength + " </white> " + GlossaryTag.STRENGTH.tag(this) + " damage and <white>1</white>"
+				"On cast, give yourself <white>" + strength + "</white> " + GlossaryTag.STRENGTH.tag(this) + " damage and <white>1</white>"
 						+ " stack of " + GlossaryTag.BERSERK.tag(this) + ". At <white>" + BERSERK_CUTOFF + "</white> stacks, instead give yourself <yellow>" + berserkStrength + 
 						"</yellow> " + GlossaryTag.STRENGTH.tag + " damage.");
 	}

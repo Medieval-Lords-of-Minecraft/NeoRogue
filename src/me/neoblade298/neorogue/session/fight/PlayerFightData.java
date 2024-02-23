@@ -32,7 +32,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.*;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
-import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 
 public class PlayerFightData extends FightData {
 	
@@ -215,7 +214,7 @@ public class PlayerFightData extends FightData {
 		else {
 			p.setInvulnerable(false);
 			p.setInvisible(false);
-			p.setHealth(Math.round(this.maxHealth * 0.25));
+			p.setHealth(Math.round(this.maxHealth * 0.05));
 		}
 	}
 
@@ -539,8 +538,8 @@ public class PlayerFightData extends FightData {
 		return nextAttack <= System.currentTimeMillis();
 	}
 	
-	public void setBasicAttackCooldown(EquipSlot slot, EquipmentProperties props) {
-		long attackCooldown = (long) (1000 / props.get(PropertyType.ATTACK_SPEED)) - 50; // Subtract 50 for tick differentials
+	public void setBasicAttackCooldown(EquipSlot slot, double attackSpeed) {
+		long attackCooldown = (long) (1000 / attackSpeed) - 50; // Subtract 50 for tick differentials
 		
 		if (slot == EquipSlot.HOTBAR) this.nextAttack = System.currentTimeMillis() + attackCooldown;
 		else this.nextOffAttack = System.currentTimeMillis() + attackCooldown;
