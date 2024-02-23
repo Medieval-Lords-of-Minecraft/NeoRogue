@@ -2,17 +2,20 @@ package me.neoblade298.neorogue.commands;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.UUID;
-
 import org.bukkit.Bukkit;
+import org.bukkit.FluidCollisionMode;
+import org.bukkit.World;
+import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.RayTraceResult;
+import org.bukkit.util.Vector;
+
 import me.neoblade298.neocore.bukkit.commands.Subcommand;
 import me.neoblade298.neocore.shared.commands.Arg;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
-import me.neoblade298.neorogue.session.fight.DamageMeta;
-import me.neoblade298.neorogue.session.fight.DamageType;
-import me.neoblade298.neorogue.session.fight.FightInstance;
-import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
+import me.neoblade298.neorogue.NeoRogue;
 
 public class CmdAdminDebug extends Subcommand {
 	HashMap<String, HashMap<String, Integer>> results = new HashMap<String, HashMap<String, Integer>>();
@@ -26,12 +29,36 @@ public class CmdAdminDebug extends Subcommand {
 
 	@Override
 	public void run(CommandSender s, String[] args) {
-		UUID uuid = Bukkit.getPlayerUniqueId("Ascheladd");
-		if (args.length == 1) {
-			FightInstance.getFightData(uuid).applyStatus(StatusType.POISON, uuid, 10, 5);
-		}
-		else {
-			new DamageMeta(FightInstance.getFightData(uuid), 5, DamageType.SLASHING).dealDamage(Bukkit.getPlayer("Ascheladd"));
-		}
+		Player p = Bukkit.getPlayer("Ascheladd");
+		p.setVelocity(p.getLocation().getDirection().add(new Vector(0, 0.15, 0)).multiply(2));
+		World w = p.getWorld();
+		
+		new BukkitRunnable() {
+			int count = 0;
+			public void run() {
+				if (++count >= 10) {
+					System.out.println("Cancel 1");
+					this.cancel();
+				}
+				if (p.getVelocity().lengthSquared() == 0) {
+					System.out.println("Cancel 2");
+					this.cancel();
+					return;
+				}
+				System.out.println(p.getVelocity().length());
+				RayTraceResult rtr = w.rayTrace(p.getLocation(), p.getVelocity(), 2, FluidCollisionMode.NEVER, true, 0.5, null);
+				RayTraceResult rtr2 = w.rayTrace(p.getEyeLocation(), p.getVelocity(), 2, FluidCollisionMode.NEVER, true, 0.5, null);
+				if (rtr.getHitBlock() != null && rtr.getHitBlockFace() != BlockFace.UP) {
+					p.setVelocity(rtr.getHitBlockFace().getDirection());
+					System.out.println("Cancel 3");
+					this.cancel();
+				}
+				if (rtr2.getHitBlock() != null && rtr2.getHitBlockFace() != BlockFace.UP) {
+					p.setVelocity(rtr.getHitBlockFace().getDirection());
+					System.out.println("Cancel 4");
+					this.cancel();
+				}
+			}
+		}.runTaskTimer(NeoRogue.inst(), 1L, 1L);
 	}
 }
