@@ -28,6 +28,7 @@ public class ChanceInventory extends CoreInventory {
 	private ChanceInstance inst;
 	private ChanceSet set;
 	private ChanceStage stage;
+	private PlayerSessionData data;
 	private boolean asSpectator;
 
 	public ChanceInventory(Player p, ChanceInstance inst, ChanceSet set, ChanceStage stage) {
@@ -43,6 +44,7 @@ public class ChanceInventory extends CoreInventory {
 		super(spectator, Bukkit.createInventory(data.getPlayer(), 18, Component.text(data.getData().getDisplay() + "'s Chance Event", NamedTextColor.BLUE)));
 		this.set = set;
 		this.inst = inst;
+		this.data = data;
 		this.s = inst.getSession();
 		this.stage = stage;
 		this.asSpectator = true;
@@ -63,15 +65,15 @@ public class ChanceInventory extends CoreInventory {
 		int offset = 4 - (size / 2);
 		if (stage.choices.size() % 2 == 0) {
 			for (int i = 0; i < size / 2; i++) {
-				contents[offset + i + 9] = getChoiceItem(i, data);
+				contents[offset + i + 9] = getChoiceItem(i);
 			}
 			for (int i = (size / 2); i < size; i++) {
-				contents[offset + i + 10] = getChoiceItem(i, data);
+				contents[offset + i + 10] = getChoiceItem(i);
 			}
 		}
 		else {
 			for (int i = 0; i < size; i++) {
-				contents[offset + i + 9] = getChoiceItem(i, data);
+				contents[offset + i + 9] = getChoiceItem(i);
 			}
 		}
 		
@@ -111,7 +113,7 @@ public class ChanceInventory extends CoreInventory {
 			return;
 		}
 		
-		ChanceStage next = set.getStage(choice.choose(s, inst, s.getData(uuid)));
+		ChanceStage next = set.getStage(choice.choose(s, inst, data));
 		inst.advanceStage(uuid, next);
 		p.closeInventory();
 	}
@@ -126,7 +128,7 @@ public class ChanceInventory extends CoreInventory {
 		e.setCancelled(true);
 	}
 
-	private ItemStack getChoiceItem(int num, PlayerSessionData data) {
+	private ItemStack getChoiceItem(int num) {
 		ItemStack item = stage.choices.get(num).getItem(s, data);
 		NBTItem nbti = new NBTItem(item);
 		nbti.setInteger("choice", num + 1);
