@@ -222,11 +222,12 @@ public class Map {
 	private void place(MapPieceInstance inst, boolean deserializing) {
 		MapShape shape = inst.getPiece().getShape();
 		shape.applySettings(inst);
+		System.out.println("Adding shape " + inst.getPiece().getId() + " " + inst.getNumRotations() + " " + inst.isFlipX() + " " + inst.isFlipZ());
 		for (int i = 0; i < shape.getLength(); i++) {
 			for (int j = 0; j < shape.getHeight(); j++) {
 				boolean b = shape.get(i, j);
 				
-				// Only do things if we're placing a tangible piece
+				// Place 1 chunk of the shape
 				if (b) {
 					this.shape[inst.getX() + i][inst.getZ() + j] = shape.get(i, j);
 
@@ -253,14 +254,17 @@ public class Map {
 			if (inst.getPiece().getEntrances() != null) {
 				for (Coordinates entrance : inst.getPiece().getEntrances()) {
 					Coordinates coords = entrance.clone().applySettings(inst);
-					if (coords.getXFacing() > MAP_SIZE - 1 || coords.getXFacing() < 0 || coords.getZFacing() > MAP_SIZE - 1 || coords.getZFacing() < 0)
-						continue;
+					// This stops entrances being placed on map edges, but the black concrete doesn't get put there so...
+					//if (coords.getXFacing() > MAP_SIZE - 1 || coords.getXFacing() < 0 || coords.getZFacing() > MAP_SIZE - 1 || coords.getZFacing() < 0)
+					//	continue;
 					
 					 // Don't add entrance if it's already blocked
 					if (this.shape[(int) coords.getXFacing()][(int) coords.getZFacing()]) {
+						System.out.println("Blocked entrance " + coords.getXFacing() + " " + coords.getZFacing());
 						blockedEntrances.add(entrance);
 						continue;
 					}
+					System.out.println("Adding entrance " + coords);
 					entrances.add(coords);
 				}
 			}
@@ -402,6 +406,7 @@ public class Map {
 							break;
 						}
 
+						System.out.println("Filling in " + coords + " at coords " + x + " " + y + " " + z);
 						for (int i = x; i >= xp; i--) {
 							for (int j = y - 1; j < y + 5; j++) {
 								for (int k = z; k <= zp; k++) {

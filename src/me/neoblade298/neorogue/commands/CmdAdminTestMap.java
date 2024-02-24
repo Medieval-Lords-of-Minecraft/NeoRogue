@@ -1,7 +1,5 @@
 package me.neoblade298.neorogue.commands;
 
-import java.util.LinkedList;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -32,17 +30,11 @@ public class CmdAdminTestMap extends Subcommand {
 	public void run(CommandSender s, String[] args) {
 		int numPieces = args.length > 1 ? Integer.parseInt(args[1]) : 5;
 		AreaType type = args.length > 0 ? AreaType.valueOf(args[0]) : AreaType.LOW_DISTRICT;
-		LinkedList<MapPiece> pieces = Map.getPieces(type);
 		Player p = (Player) s;
 
 		MapPiece piece = null;
 		if (args.length > 2) {
-			for (MapPiece temp : pieces) {
-				if (temp.getId().equalsIgnoreCase(args[2])) {
-					piece = temp;
-					break;
-				}
-			}
+			piece = Map.getAllPieces().get(args[2]);
 			
 			if (piece == null) {
 				Util.displayError(p, "Couldn't find a map piece with that name!");
@@ -55,6 +47,7 @@ public class CmdAdminTestMap extends Subcommand {
 		Util.msg(p, "Successfully generated map");
 		int xOff = 0, zOff = 0;
 		map.instantiate(null, xOff, zOff);
+		map.display();
 		
 		// Mark down spawn location blocks
 		for (MapPieceInstance mpi : map.getPieces()) {
