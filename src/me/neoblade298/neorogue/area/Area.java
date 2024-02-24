@@ -10,6 +10,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -53,11 +54,13 @@ public class Area {
 	private static final int X_EDGE_PADDING = 14, Z_EDGE_PADDING = 11, NODE_DIST_BETWEEN = 4;
 	private static final int[] GENERATE_ORDER = new int[] { 0, 4, 1, 3, 2 };
 	private static final double EXTRA_PATH_CHANCE = 0.2;
+	private static final int MAX_CHAIN_LENGTH = 4;
+	
 	private static ParticleContainer red = new ParticleContainer(Particle.REDSTONE), black;
 	private static HashMap<Integer, DropTable<Integer>> pathChances = new HashMap<Integer, DropTable<Integer>>();
 
 	private AreaType type;
-	private Node[][] nodes = new Node[MAX_POSITIONS][MAX_LANES];
+	private Node[][] nodes;
 	private Session s;
 	private String boss;
 
@@ -182,15 +185,23 @@ public class Area {
 	}
 
 	private void generateNodes() {
+		do {
+			nodes = new Node[MAX_POSITIONS][MAX_LANES];
+			tryGenerateNodes();
+		} while (!verifyChainLength());
+
+		BossFightInstance bi = (BossFightInstance) nodes[MAX_POSITIONS - 1][CENTER_LANE].generateInstance(s, type); // generate boss
+		boss = bi.getBossDisplay();
+	}
+
+	private void tryGenerateNodes() {
 		// Static nodes
 		createNode(NodeType.START, 0, CENTER_LANE);
 		createNode(NodeType.SHRINE, MAX_POSITIONS - 2, CENTER_LANE - 1);
 		createNode(NodeType.SHRINE, MAX_POSITIONS - 2, CENTER_LANE);
 		createNode(NodeType.SHRINE, MAX_POSITIONS - 2, CENTER_LANE + 1);
-		Node bossNode = createNode(NodeType.BOSS, MAX_POSITIONS - 1, CENTER_LANE);
-		BossFightInstance bi = (BossFightInstance) bossNode.generateInstance(s, type); // generate boss
-		boss = bi.getBossDisplay();
-
+		createNode(NodeType.BOSS, MAX_POSITIONS - 1, CENTER_LANE);
+		
 		// Generate starting positions
 		List<Integer> initList = Arrays.asList(0, 1, 2, 3, 4);
 		Collections.shuffle(initList);
@@ -198,7 +209,7 @@ public class Area {
 		for (int i = 0; i < numInit; i++) {
 			nodes[1][initList.get(i)] = generateNode(GenerationType.INITIAL, 1, initList.get(i), nodes[0][CENTER_LANE]);
 		}
-
+		
 		// Start generating by position
 		for (int pos = 2; pos < MAX_POSITIONS - 2; pos++) {
 			GenerationType type = (pos >= 5 && pos <= 7) || (pos >= 11 && pos <= 13) ? GenerationType.SPECIAL : GenerationType.NORMAL;
@@ -237,6 +248,34 @@ public class Area {
 	
 	public String getBoss() {
 		return boss;
+	}
+
+	private boolean verifyChainLength() {
+		Map<Node, Integer> nodeChainLengths = new HashMap<>();
+		calcChainLength(nodeChainLengths, nodes[0][CENTER_LANE]);
+		for (int len : nodeChainLengths.values()) { // cringe
+			if (len > MAX_CHAIN_LENGTH)
+				return false;
+		}
+		return true;
+	}
+
+	private int calcChainLength(Map<Node, Integer> allLengths, Node currNode) {
+		if (allLengths.containsKey(currNode))
+			return allLengths.get(currNode);
+		
+		int myLength;
+		if (currNode.getDestinations().size() == 1) {
+			myLength = 1 + calcChainLength(allLengths, currNode.getDestinations().get(0));
+		} else {
+			myLength = 0;
+			for (Node dest : currNode.getDestinations()) {
+				calcChainLength(allLengths, dest);
+			}
+		}
+
+		allLengths.put(currNode, myLength);
+		return myLength;
 	}
 	
 	// for nodes with 1 path out, tries to connect to nodes with 1 path in
