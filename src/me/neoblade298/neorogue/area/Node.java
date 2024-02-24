@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-import me.neoblade298.neorogue.session.*;
+import me.neoblade298.neorogue.session.Instance;
+import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.ShopInstance;
+import me.neoblade298.neorogue.session.ShrineInstance;
 import me.neoblade298.neorogue.session.chance.ChanceInstance;
 import me.neoblade298.neorogue.session.fight.BossFightInstance;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -19,88 +22,89 @@ public class Node {
 			return Integer.compare(o1.lane, o2.lane);
 		}
 	};
-
+	
 	private ArrayList<Node> dests = new ArrayList<Node>(MAX_DESTS);
 	private ArrayList<Node> srcs = new ArrayList<Node>(MAX_DESTS);
 	private NodeType type;
 	private Instance inst;
 	private int pos, lane;
-
+	
 	public Node(NodeType type, int pos, int lane) {
 		this.type = type;
 		this.pos = pos;
 		this.lane = lane;
 	}
-
+	
 	public void addDestination(Node node) {
 		dests.add(node);
 		node.addSource(this);
 	}
-	
-	// Basically only used by nodemapinventory
+
+	// Basically only used by NodeMapInventory
 	public void sortDestinations() {
 		Collections.sort(dests, destinationSorter);
 	}
-
-	public void addSource(Node node) {
+	
+	private void addSource(Node node) {
 		srcs.add(node);
 	}
-
+	
 	public ArrayList<Node> getDestinations() {
 		return dests;
 	}
-
+	
 	public ArrayList<Node> getSources() {
 		return srcs;
 	}
-
+	
 	public void removeSource(Node node) {
 		srcs.remove(node);
 	}
-
+	
 	public int getPosition() {
 		return pos;
 	}
-
+	
 	public int getLane() {
 		return lane;
 	}
-
+	
 	@Override
 	public String toString() {
 		return type.name();
 	}
-
+	
 	public String serializePosition() {
 		return pos + "," + lane;
 	}
-	
+
 	public void deserializeInstance(Session s, String data) {
 		if (!data.isBlank()) {
 			inst = FightInstance.deserializeInstanceData(s, s.getParty(), data);
 		}
 	}
-	
+
 	public String serializeInstanceData() {
 		if (inst instanceof FightInstance) {
 			return ((FightInstance) inst).serializeInstanceData();
 		}
 		return "";
 	}
-
+	
 	public String serializeDestinations() {
-		if (dests.isEmpty()) return "";
+		if (dests.isEmpty())
+			return "";
 		String str = dests.get(0).serializePosition();
 		for (int i = 1; i < dests.size(); i++) {
 			str += " " + dests.get(i).serializePosition();
 		}
 		return str;
 	}
-
+	
 	public NodeType getType() {
 		return type;
 	}
-
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof Node) {
@@ -109,10 +113,11 @@ public class Node {
 		}
 		return false;
 	}
+	
+	public Instance generateInstance(Session s, AreaType area) {
+		if (inst != null)
+			return inst;
 
-	public void generateInstance(Session s, AreaType area) {
-		if (inst != null) return;
-		
 		switch (type) {
 		case FIGHT:
 			inst = new StandardFightInstance(s, s.getParty().keySet(), area, s.getNodesVisited());
@@ -134,8 +139,10 @@ public class Node {
 		default:
 			break;
 		}
-	}
 
+		return inst;
+	}
+	
 	public Instance getInstance() {
 		return inst;
 	}
