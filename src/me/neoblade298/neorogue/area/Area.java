@@ -82,29 +82,31 @@ public class Area {
 		
 		// Load path chances
 		DropTable<Integer> paths = new DropTable<Integer>();
-		paths.add(2, 1);
-		paths.add(3, 7);
-		paths.add(4, 2);
+		paths.add(2, 9);
+		paths.add(3, 66);
+		paths.add(4, 25);
+		paths.add(5, 0);
 		pathChances.put(2, paths);
 		
 		paths = new DropTable<Integer>();
-		paths.add(2, 1);
-		paths.add(3, 4);
-		paths.add(4, 3);
-		paths.add(5, 2);
+		paths.add(2, 12);
+		paths.add(3, 50);
+		paths.add(4, 30);
+		paths.add(5, 8);
 		pathChances.put(3, paths);
 		
 		paths = new DropTable<Integer>();
-		paths.add(2, 1);
-		paths.add(3, 4);
-		paths.add(4, 3);
-		paths.add(5, 2);
+		paths.add(2, 8);
+		paths.add(3, 24);
+		paths.add(4, 52);
+		paths.add(5, 16);
 		pathChances.put(4, paths);
 		
 		paths = new DropTable<Integer>();
-		paths.add(3, 4);
-		paths.add(4, 4);
-		paths.add(5, 2);
+		paths.add(2, 0);
+		paths.add(3, 21);
+		paths.add(4, 54);
+		paths.add(5, 25);
 		pathChances.put(5, paths);
 
 		initialized = true;
@@ -764,18 +766,18 @@ public class Area {
 		private GenerationType(int num) {
 			switch (num) {
 			case 0:
-				table.add(NodeType.CHANCE, 30);
 				table.add(NodeType.FIGHT, 50);
-				table.add(NodeType.MINIBOSS, 2);
+				table.add(NodeType.CHANCE, 30);
 				table.add(NodeType.SHOP, 5);
+				table.add(NodeType.MINIBOSS, 2);
 				table.add(NodeType.SHRINE, 5);
 				break;
 			case 1:
+				table.add(NodeType.FIGHT, 5);
+				table.add(NodeType.CHANCE, 5);
+				table.add(NodeType.SHOP, 15);
 				table.add(NodeType.MINIBOSS, 20);
 				table.add(NodeType.SHRINE, 15);
-				table.add(NodeType.SHOP, 15);
-				table.add(NodeType.CHANCE, 5);
-				table.add(NodeType.FIGHT, 5);
 				break;
 			case 2:
 				table.add(NodeType.FIGHT, 50);
