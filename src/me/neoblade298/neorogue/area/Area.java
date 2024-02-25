@@ -55,7 +55,7 @@ public class Area {
 	private static final int[] GENERATE_ORDER = new int[] { 0, 4, 1, 3, 2 };
 	private static final double EXTRA_PATH_CHANCE = 0.2;
 	private static final int MAX_CHAIN_LENGTH = 4;
-	private static final int MIN_SHOP_DISTANCE = 3; // min # of PATHS
+	private static final int MIN_SHOP_DISTANCE = 3; // min # of PATHS not NODES
 
 	private static ParticleContainer red = new ParticleContainer(Particle.REDSTONE), black;
 	private static HashMap<Integer, DropTable<Integer>> pathChances = new HashMap<Integer, DropTable<Integer>>();
@@ -128,8 +128,7 @@ public class Area {
 		
 		generateNodes();
 		
-		// Should only save all nodes at first, on auto-save only save nodes within
-		// reach (for instance data)
+		// Should only save all nodes at first, on auto-save only save nodes within reach (for instance data)
 		new BukkitRunnable() {
 			@Override
 			public void run() {
@@ -179,12 +178,6 @@ public class Area {
 				node.addDestination(nodes[pos][lane]);
 			}
 		}
-	}
-
-	private Node createNode(NodeType type, int pos, int lane) {
-		Node n = new Node(type, pos, lane);
-		nodes[pos][lane] = n;
-		return n;
 	}
 	
 	private void generateNodes() {
@@ -255,16 +248,6 @@ public class Area {
 		return boss;
 	}
 	
-	private boolean verifyChainLength() {
-		Map<Node, Integer> nodeChainLengths = new HashMap<>();
-		calcChainLength(nodeChainLengths, nodes[0][CENTER_LANE]);
-		for (int len : nodeChainLengths.values()) { // cringe
-			if (len > MAX_CHAIN_LENGTH)
-				return false;
-		}
-		return true;
-	}
-	
 	private boolean verifyRequiredMiniboss() {
 		return verifyRequiredMiniboss(nodes[0][CENTER_LANE], nodes[MAX_POSITIONS - 1][CENTER_LANE]);
 	}
@@ -281,6 +264,16 @@ public class Area {
 		}
 		// possible long-term todo: cache nodes so they aren't checked multiple times
 		
+		return true;
+	}
+
+	private boolean verifyChainLength() {
+		Map<Node, Integer> nodeChainLengths = new HashMap<>();
+		calcChainLength(nodeChainLengths, nodes[0][CENTER_LANE]);
+		for (int len : nodeChainLengths.values()) { // cringe
+			if (len > MAX_CHAIN_LENGTH)
+				return false;
+		}
 		return true;
 	}
 	
@@ -539,7 +532,7 @@ public class Area {
 							continue;
 						}
 						// Node A is too far to combine with neighbor
-						if (i - nodeA.getLane() > 2) {
+						if (nodeA.getLane() - i > 2) {
 							generateDestination(nodeA, type, newPos, prevPos);
 							nodeA = prevPos[i];
 							continue;
@@ -654,6 +647,12 @@ public class Area {
 		return true;
 	}
 	
+	private Node createNode(NodeType type, int pos, int lane) {
+		Node n = new Node(type, pos, lane);
+		nodes[pos][lane] = n;
+		return n;
+	}
+
 	public AreaType getType() {
 		return type;
 	}
