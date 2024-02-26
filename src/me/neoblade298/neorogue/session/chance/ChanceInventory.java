@@ -37,7 +37,8 @@ public class ChanceInventory extends CoreInventory {
 		this.inst = inst;
 		this.s = inst.getSession();
 		this.stage = stage;
-		setupInventory(inst.getSession().getData(p.getUniqueId()));
+		this.data = inst.getSession().getData(p.getUniqueId());
+		setupInventory();
 	}
 
 	public ChanceInventory(PlayerSessionData data, ChanceInstance inst, ChanceSet set, ChanceStage stage, Player spectator) {
@@ -48,10 +49,10 @@ public class ChanceInventory extends CoreInventory {
 		this.s = inst.getSession();
 		this.stage = stage;
 		this.asSpectator = true;
-		setupInventory(inst.getSession().getData(p.getUniqueId()));
+		setupInventory();
 	}
 	
-	private void setupInventory(PlayerSessionData data) {
+	private void setupInventory() {
 		// Create title
 		ItemStack[] contents = new ItemStack[18];
 		ItemStack title = CoreInventory.createButton(set.getMaterial(), set.getDisplay());
