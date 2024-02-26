@@ -24,6 +24,7 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
@@ -246,6 +247,7 @@ public class SessionManager implements Listener {
 	// Only handles player left click
 	@EventHandler
 	public void onDamageByEntity(EntityDamageByEntityEvent e) {
+		System.out.println("Damage 2");
 		Player p = null;
 		boolean playerDamager = false;
 		if (sessions.containsKey(e.getDamager().getUniqueId())) {
@@ -280,6 +282,11 @@ public class SessionManager implements Listener {
 	public void onDamage(EntityDamageEvent e) {
 		if (e instanceof EntityDamageByEntityEvent) return;
 		UUID uuid = e.getEntity().getUniqueId();
+		if (e.getCause() == DamageCause.POISON || e.getCause() == DamageCause.WITHER ||
+				e.getCause() == DamageCause.STARVATION) {
+			e.setCancelled(true);
+			return;
+		}
 		if (e.getEntity().getType() != EntityType.PLAYER) return;
 		if (!sessions.containsKey(uuid)) return;
 		FightInstance.handleEnvironmentDamage(e);

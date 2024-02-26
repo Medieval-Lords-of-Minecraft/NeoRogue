@@ -282,12 +282,6 @@ public abstract class FightInstance extends Instance {
 	}
 	
 	public static void handleEnvironmentDamage(EntityDamageEvent e) {
-		if (e.getCause() == DamageCause.POISON || e.getCause() == DamageCause.WITHER ||
-				e.getCause() == DamageCause.STARVATION) {
-			e.setCancelled(true);
-			return;
-		}
-		
 		if (e.getEntityType() != EntityType.PLAYER) return;
 		Player p = (Player) e.getEntity();
 		if (e.getCause() == DamageCause.FALL) {

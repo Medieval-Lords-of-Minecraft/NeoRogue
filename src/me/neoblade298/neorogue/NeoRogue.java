@@ -38,6 +38,10 @@ public class NeoRogue extends JavaPlugin {
 	
 	public static Location spawn;
 	
+	public static void main(String[] args) {
+		
+	}
+	
 	public void onEnable() {
 		Bukkit.getServer().getLogger().info("NeoRogue Enabled");
 		inst = this;
