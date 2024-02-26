@@ -56,6 +56,10 @@ public class TargetHelper {
 		return TargetUtil.getSightLocation(source, direction, props.range, props.stickToGround);
 	}
 	
+	public static LinkedList<LivingEntity> getEntitiesInLine(Location start, Location end, TargetProperties props) {
+		return null; // Todo
+	}
+	
 	public static class TargetProperties {
 		public double range, tolerance = 4, arc;
 		public boolean throughWall, stickToGround;
