@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-import me.neoblade298.neorogue.session.*;
+import me.neoblade298.neorogue.session.Instance;
+import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.ShopInstance;
+import me.neoblade298.neorogue.session.ShrineInstance;
 import me.neoblade298.neorogue.session.chance.ChanceInstance;
 import me.neoblade298.neorogue.session.fight.BossFightInstance;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -37,12 +40,12 @@ public class Node {
 		node.addSource(this);
 	}
 	
-	// Basically only used by nodemapinventory
+	// Basically only used by NodeMapInventory
 	public void sortDestinations() {
 		Collections.sort(dests, destinationSorter);
 	}
 
-	public void addSource(Node node) {
+	private void addSource(Node node) {
 		srcs.add(node);
 	}
 
@@ -89,7 +92,8 @@ public class Node {
 	}
 
 	public String serializeDestinations() {
-		if (dests.isEmpty()) return "";
+		if (dests.isEmpty())
+			return "";
 		String str = dests.get(0).serializePosition();
 		for (int i = 1; i < dests.size(); i++) {
 			str += " " + dests.get(i).serializePosition();
@@ -101,6 +105,10 @@ public class Node {
 		return type;
 	}
 
+	public void setType(NodeType type) {
+		this.type = type;
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof Node) {
@@ -110,8 +118,9 @@ public class Node {
 		return false;
 	}
 
-	public void generateInstance(Session s, AreaType area) {
-		if (inst != null) return;
+	public Instance generateInstance(Session s, AreaType area) {
+		if (inst != null)
+			return inst;
 		
 		switch (type) {
 		case FIGHT:
@@ -134,6 +143,8 @@ public class Node {
 		default:
 			break;
 		}
+		
+		return inst;
 	}
 
 	public Instance getInstance() {
