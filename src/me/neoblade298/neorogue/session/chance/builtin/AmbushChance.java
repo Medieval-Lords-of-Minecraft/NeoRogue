@@ -7,6 +7,7 @@ import org.bukkit.Material;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.session.NodeSelectInstance;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.chance.ChanceChoice;
 import me.neoblade298.neorogue.session.chance.ChanceInstance;
@@ -42,6 +43,7 @@ public class AmbushChance extends ChanceSet {
 				"Skip the fight entirely.",
 				(s, inst, data) -> {
 					s.broadcast("You sneak around the group without issue.");
+					inst.setNextInstance(new NodeSelectInstance(s));
 					return null;
 				}));
 		
