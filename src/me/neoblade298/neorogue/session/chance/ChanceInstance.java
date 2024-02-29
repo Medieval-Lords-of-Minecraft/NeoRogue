@@ -144,11 +144,11 @@ public class ChanceInstance extends EditInventoryInstance {
 			
 			if (!stage.containsKey(p.getUniqueId())) {
 				Util.playSound(p, Sound.BLOCK_NOTE_BLOCK_PLING, false);
-				Util.msg(p, "You've already completed the chance event! You're waiting for:");
+				Util.msgRaw(p, "You've already completed the chance event! You're waiting for:");
 				for (UUID uuid : stage.keySet()) {
 					Player waiting = Bukkit.getPlayer(uuid);
 					Component c = waiting != null ? waiting.displayName() : Component.text("(Offline) " + uuid);
-					Util.msg(p, SharedUtil.color("- ").append(c.color(NamedTextColor.RED)));
+					Util.msgRaw(p, SharedUtil.color("- ").append(c.color(NamedTextColor.RED)));
 				}
 				return;
 			}

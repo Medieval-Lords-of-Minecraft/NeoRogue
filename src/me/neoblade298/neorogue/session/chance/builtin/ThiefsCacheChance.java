@@ -23,7 +23,7 @@ public class ThiefsCacheChance extends ChanceSet {
 		ChanceChoice choice = new ChanceChoice(Material.PRISMARINE_SHARD, "Pick up the dull gem",
 				"Maybe this can come in handy reforging an old weapon.", (s, inst, data) -> {
 					Player p = data.getPlayer();
-					Util.msg(p, "You pick up the dull gem, hoping it'll come in handy in the future.");
+					Util.msgRaw(p, "You pick up the dull gem, hoping it'll come in handy in the future.");
 					s.broadcastOthers("<yellow>" + p.getName() + "</yellow> decided to pick up the dull gem!", p);
 					data.giveEquipment(relic);
 					return null;
@@ -35,7 +35,7 @@ public class ThiefsCacheChance extends ChanceSet {
 				(s, inst, data) -> {
 					Player p = data.getPlayer();
 					Equipment eq = Equipment.getDrop(s.getAreasCompleted(), data.getPlayerClass());
-					Util.msg(p, Component.text("You pick up a(n) ").append(eq.getDisplay())
+					Util.msgRaw(p, Component.text("You pick up a(n) ").append(eq.getDisplay())
 							.append(Component.text(" and go on your way.")));
 					s.broadcastOthers("<yellow>" + p.getName() + "</yellow> decided to receive a random piece of equipment!", p);
 					data.giveEquipment(eq);
@@ -46,7 +46,7 @@ public class ThiefsCacheChance extends ChanceSet {
 		choice = new ChanceChoice(Material.GOLD_NUGGET, "Pick up the gold",
 				"Receive <yellow>100 coins</yellow>.", (s, inst, data) -> {
 					Player p = data.getPlayer();
-					Util.msg(p, "You pick up <yellow>100 coins</yellow> and go on your way.");
+					Util.msgRaw(p, "You pick up <yellow>100 coins</yellow> and go on your way.");
 					s.broadcastOthers("<yellow>" + p.getName() + "</yellow> decided to pick up the <yellow>100 coins</yellow>!", p);
 					data.addCoins(100);
 					return null;

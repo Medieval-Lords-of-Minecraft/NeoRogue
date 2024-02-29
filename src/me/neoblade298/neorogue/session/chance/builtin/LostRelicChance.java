@@ -34,7 +34,7 @@ public class LostRelicChance extends ChanceSet {
 					Player p = data.getPlayer();
 					p.getInventory().addItem(items.get(data.getPlayerClass()).getItem());
 					data.addCoins(50);
-					Util.msg(p, "You pick up the old weapon and go on your way. It's a little heavy.");
+					Util.msgRaw(p, "You pick up the old weapon and go on your way. It's a little heavy.");
 					s.broadcastOthers("<yellow>" + p.getName() + "</yellow> decided to take the old weapon!", p);
 					return null;
 				}));
@@ -43,7 +43,7 @@ public class LostRelicChance extends ChanceSet {
 				"Doesn't look worth the extra weight.",
 				(s, inst, data) -> {
 					Player p = data.getPlayer();
-					Util.msg(data.getPlayer(), "Hard pass. It looks ugly too.");
+					Util.msgRaw(data.getPlayer(), "Hard pass. It looks ugly too.");
 					s.broadcastOthers("<yellow>" + p.getName() + "</yellow> decided to skip the old weapon!", p);
 					return null;
 				}));

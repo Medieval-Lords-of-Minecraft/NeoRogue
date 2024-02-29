@@ -30,19 +30,19 @@ public class ShiningLightChance extends ChanceSet {
 				},
 				(s, inst, data) -> {
 					Player p = data.getPlayer();
-					Util.msg(p, "You are engulfed by the light. You feel a sharp pain, but you can tell your equipment has absorbed some power.");
+					Util.msgRaw(p, "You are engulfed by the light. You feel a sharp pain, but you can tell your equipment has absorbed some power.");
 					
 					data.damagePercent(0.2);
 					ArrayList<EquipmentMetadata> list = data.aggregateEquipment((eq) -> { return !eq.isUpgraded() && eq.canUpgrade(); });
 					Collections.shuffle(list);
 					for (int i = 0; i < 2; i++) {
 						if (i >= list.size()) {
-							Util.msg(p, "You had nothing else to upgrade!");
+							Util.msgRaw(p, "You had nothing else to upgrade!");
 							break;
 						}
 						EquipmentMetadata meta = list.get(i);
 						data.upgradeEquipment(meta.getEquipSlot(), meta.getSlot());
-						Util.msg(p, Component.text("You upgraded your ").append(meta.getEquipment().getHoverable()));
+						Util.msgRaw(p, Component.text("You upgraded your ").append(meta.getEquipment().getHoverable()));
 						s.broadcastOthers(SharedUtil.color("<yellow>" + p.getName() + "</yellow> upgraded their ").append(meta.getEquipment().getHoverable()), p);
 					}
 					return null;
@@ -52,7 +52,7 @@ public class ShiningLightChance extends ChanceSet {
 				"Looks dangerous. I'd rather not.",
 				(s, inst, data) -> {
 					Player p = data.getPlayer();
-					Util.msg(p, "No way, that's too bright, it's bad for my skin.");
+					Util.msgRaw(p, "No way, that's too bright, it's bad for my skin.");
 					s.broadcastOthers("<yellow>" + p.getName() + "</yellow> decided not to enter the light!", p);
 					return null;
 				}));
