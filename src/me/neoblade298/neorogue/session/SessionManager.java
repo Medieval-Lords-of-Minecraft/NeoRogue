@@ -247,7 +247,6 @@ public class SessionManager implements Listener {
 	// Only handles player left click
 	@EventHandler
 	public void onDamageByEntity(EntityDamageByEntityEvent e) {
-		System.out.println("Damage 2");
 		Player p = null;
 		boolean playerDamager = false;
 		if (sessions.containsKey(e.getDamager().getUniqueId())) {

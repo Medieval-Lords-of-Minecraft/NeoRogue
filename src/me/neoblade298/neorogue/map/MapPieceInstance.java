@@ -69,7 +69,7 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 	
 	protected MapPieceInstance(MapPiece piece, Coordinates available, Coordinates toAttach) {
 		this(piece);
-		this.available = available.clone().applySettings(this);
+		this.available = available.clone();
 		this.entrance = toAttach.clone().applySettings(this);
 	}
 	

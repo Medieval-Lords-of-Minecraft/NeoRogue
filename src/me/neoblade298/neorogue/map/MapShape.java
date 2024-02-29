@@ -31,16 +31,6 @@ public class MapShape extends Rotatable {
 	public boolean get(int x, int z) {
 		int[] coords = getCoordinates(x, z);
 		return shape[coords[0]][coords[1]];
-		/*int newX = reverseX ? (!swapAxes ? zlen : xlen) - x : x;
-		int newZ = reverseZ ? (!swapAxes ? xlen : zlen) - z : z;
-		
-		try {
-			return swapAxes ? shape[newX][newZ] : shape[newZ][newX]; // X is swapped with y because of how arrays are
-		}
-		catch (Exception e) {
-			Bukkit.getLogger().warning("[NeoRogue] Failed to retrieve coordinates " + x + "," + z + " from MapShape");
-		}
-		return false;*/
 	}
 	
 	// returns in x, z form
@@ -52,30 +42,56 @@ public class MapShape extends Rotatable {
 		return new int[] {newX, newZ};
 	}
 	
-	
-	/* This must be reversed because we're rotating where we're getting the coordinates from,
-	 * not where the coordinates are. To make an object on camera rotate right, we must rotate
-	 * the camera left.
-	 */
-	@Override
-	public void setRotations(int amount) {
-		super.setRotations((4 - amount) % 4);
-	}
-	
 	@Override
 	public Rotatable applySettings(MapPieceInstance settings) {
-		this.numRotations = 4 - (settings.numRotations % 4);
-		this.flipX = settings.flipZ;
-		this.flipZ = settings.flipX;
-		update();
+		this.setRotations(settings.numRotations);
+		this.setFlip(settings.flipX, settings.flipZ);
 		return this;
 	}
 	
+	// Needs a special update because we're rotating the camera instead of the actual coords
 	@Override
-	public void setFlip(boolean flipX, boolean flipZ) {
-		this.flipX = flipZ;
-		this.flipZ = flipX;
-		update();
+	protected void update() {
+		if (flipX && flipZ) {
+			flipX = false;
+			flipZ = false;
+			numRotations = (numRotations + 2) % 4;
+			update();
+			return;
+		}
+		
+		swapAxes = numRotations % 2 == 1;
+		switch (numRotations) {
+		case 0: reverseX = false;
+		reverseZ = false;
+		break;
+		case 1: reverseX = true;
+		reverseZ = false;
+		break;
+		case 2: reverseX = true;
+		reverseZ = true;
+		break;
+		case 3: reverseX = false;
+		reverseZ = true;
+		break;
+		}
+		
+		if (flipZ) {
+			if (numRotations % 2 == 0) {
+				reverseX = !reverseX;
+			}
+			else {
+				reverseZ = !reverseZ;
+			}
+		}
+		else if (flipX) {
+			if (numRotations % 2 == 0) {
+				reverseZ = !reverseZ;
+			}
+			else {
+				reverseX = !reverseX;
+			}
+		}
 	}
 	
 	public void display() {

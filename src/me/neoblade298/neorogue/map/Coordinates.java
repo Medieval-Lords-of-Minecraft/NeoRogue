@@ -32,10 +32,10 @@ public class Coordinates extends Rotatable {
 	}
 	
 	public Coordinates(double x, double y, double z, double xlen, double zlen) {
-		this(x, y, z, xlen, zlen, Direction.NORTH);
+		this(x, y, z, xlen, zlen, Direction.NORTH, Direction.NORTH);
 	}
 	
-	public Coordinates(double x, double y, double z, double xlen, double zlen, Direction dir) {
+	public Coordinates(double x, double y, double z, double xlen, double zlen, Direction ogDir, Direction dir) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -43,12 +43,21 @@ public class Coordinates extends Rotatable {
 		this.zlen = zlen;
 		this.xp = xlen - x;
 		this.zp = zlen - z;
-		this.ogDir = dir;
+		this.ogDir = ogDir;
 		this.dir = dir;
 	}
 	
+	public Coordinates(double x, double y, double z, double xlen, double zlen, Direction ogDir, Direction dir, double xOff, double yOff, double zOff, int numRotations,
+			boolean flipX, boolean flipZ) {
+		this(x, y, z, xlen, zlen, ogDir, dir);
+		this.xOff = xOff;
+		this.yOff = yOff;
+		this.zOff = zOff;
+		update();
+	}
+	
 	public Coordinates clone() {
-		return new Coordinates(x, y, z, xlen, zlen, ogDir);
+		return new Coordinates(x, y, z, xlen, zlen, ogDir, dir, xOff, yOff, zOff, numRotations, flipX, flipZ);
 	}
 	
 	public Direction getOriginalDirection() {
@@ -146,6 +155,11 @@ public class Coordinates extends Rotatable {
 	public boolean isFacing(Coordinates coords) {
 		return getX() == coords.getXFacing() && getZ() == coords.getZFacing() && getXFacing() == coords.getX() && getZFacing() == coords.getZ();
 	}
+	
+	public boolean canConnect(Coordinates other) {
+		if (other.getY() != getY()) return false;
+		return isFacing(other) && dir.equals(other.dir.invert());
+	}
 
 	@Override
 	public int hashCode() {
@@ -178,7 +192,7 @@ public class Coordinates extends Rotatable {
 		if (obj == null) return false;
 		if (getClass() != obj.getClass()) return false;
 		Coordinates other = (Coordinates) obj;
-		if (ogDir != other.ogDir) return false;
+		if (dir != other.dir) return false;
 		if (Double.doubleToLongBits(x) != Double.doubleToLongBits(other.x)) return false;
 		if (Double.doubleToLongBits(xOff) != Double.doubleToLongBits(other.xOff)) return false;
 		if (Double.doubleToLongBits(xlen) != Double.doubleToLongBits(other.xlen)) return false;

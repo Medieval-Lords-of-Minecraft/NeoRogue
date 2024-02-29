@@ -30,6 +30,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 public class NeoRogue extends JavaPlugin {
 	private static NeoRogue inst;
+	private static final boolean DEBUGGER = false;
 	public static Random gen = new Random();
 	public static BukkitAPIHelper mythicApi;
 	public static MobManager mythicMobs;
@@ -37,10 +38,6 @@ public class NeoRogue extends JavaPlugin {
 	public static File SCHEMATIC_FOLDER = new File("/home/MLMC/Dev/plugins/WorldEdit/schematics");
 	
 	public static Location spawn;
-	
-	public static void main(String[] args) {
-		
-	}
 	
 	public void onEnable() {
 		Bukkit.getServer().getLogger().info("NeoRogue Enabled");
@@ -109,6 +106,7 @@ public class NeoRogue extends JavaPlugin {
 	}
 	
 	private void debugInitialize() {
+		if (!DEBUGGER) return;
 		Player p = Bukkit.getPlayer("Ascheladd");
 		if (p == null) return;
 		

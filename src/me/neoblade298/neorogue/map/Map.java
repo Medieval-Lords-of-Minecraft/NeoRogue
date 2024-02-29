@@ -222,31 +222,26 @@ public class Map {
 	private void place(MapPieceInstance inst, boolean deserializing) {
 		MapShape shape = inst.getPiece().getShape();
 		shape.applySettings(inst);
-		System.out.println("Adding shape " + inst.getPiece().getId() + " " + inst.getNumRotations() + " " + inst.isFlipX() + " " + inst.isFlipZ());
+		ArrayList<Coordinates> obstructed = new ArrayList<Coordinates>();
 		for (int i = 0; i < shape.getLength(); i++) {
 			for (int j = 0; j < shape.getHeight(); j++) {
-				boolean b = shape.get(i, j);
+				// Place 1 chunk of the shape, skip if it's not a used chunk
+				if (!shape.get(i, j)) continue;
 				
-				// Place 1 chunk of the shape
-				if (b) {
-					this.shape[inst.getX() + i][inst.getZ() + j] = shape.get(i, j);
+				this.shape[inst.getX() + i][inst.getZ() + j] = shape.get(i, j);
 
-					// Remove any entrances at this location, may need to save them to properly block them
-					if (!deserializing) {
-						Iterator<Coordinates> iter = entrances.iterator();
-						while (iter.hasNext()) {
-							Coordinates entrance = iter.next();
-							// TODO: May need to have an additional check for if the entrance is the one we're connecting to
-							// or not. If it is, it's not a blocked entrance.
-							// As it is right now, all entrances facing this shape are not filled with black concrete, even the ones
-							// that aren't actually used.
-							if (entrance.getXFacing() == inst.getX() + i && entrance.getZFacing() == inst.getZ() + j) {
-								blockedEntrances.add(entrance);
-								iter.remove();
-							}
+				// Make note of obstructed entrances on the map
+				if (!deserializing) {
+					Iterator<Coordinates> iter = entrances.iterator();
+					while (iter.hasNext()) {
+						Coordinates entrance = iter.next();
+						if (entrance.getXFacing() == inst.getX() + i && entrance.getZFacing() == inst.getZ() + j) {
+							obstructed.add(entrance);
+							iter.remove();
 						}
 					}
 				}
+				
 			}
 		}
 		
@@ -254,19 +249,31 @@ public class Map {
 			if (inst.getPiece().getEntrances() != null) {
 				for (Coordinates entrance : inst.getPiece().getEntrances()) {
 					Coordinates coords = entrance.clone().applySettings(inst);
-					// This stops entrances being placed on map edges, but the black concrete doesn't get put there so...
-					//if (coords.getXFacing() > MAP_SIZE - 1 || coords.getXFacing() < 0 || coords.getZFacing() > MAP_SIZE - 1 || coords.getZFacing() < 0)
-					//	continue;
 					
-					 // Don't add entrance if it's already blocked
-					if (this.shape[(int) coords.getXFacing()][(int) coords.getZFacing()]) {
-						System.out.println("Blocked entrance " + coords.getXFacing() + " " + coords.getZFacing());
-						blockedEntrances.add(entrance);
-						continue;
+					// Don't add entrance if it's connecting with another entrance
+					Iterator<Coordinates> iter = obstructed.iterator();
+					boolean isAvailable = true;
+					while (iter.hasNext()) {
+						Coordinates other = iter.next();
+						if (coords.canConnect(other)) {
+							isAvailable = false;
+							iter.remove();
+						}
 					}
-					System.out.println("Adding entrance " + coords);
-					entrances.add(coords);
+					if (!isAvailable) continue;
+					
+					if (this.shape.length <= (int) coords.getXFacing() || this.shape[0].length <= (int) coords.getZFacing() || 
+							this.shape[(int) coords.getXFacing()][(int) coords.getZFacing()]) {
+						blockedEntrances.add(coords);
+					}
+					else {
+						entrances.add(coords);
+					}
 				}
+			}
+			
+			for (Coordinates ent : obstructed) {
+				blockedEntrances.add(ent);
 			}
 		}
 
@@ -317,12 +324,13 @@ public class Map {
 			}
 		}
 		
+		// Remove connected entrances
 		for (MapPieceInstance inst : pieces) {
 			if (inst.getPiece().getEntrances() != null) {
 				for (Coordinates ent : inst.getPiece().getEntrances()) {
 					Coordinates toRemove = null;
 					for (Coordinates otherEnt : entrances) {
-						if (ent.isFacing(otherEnt)) {
+						if (ent.canConnect(otherEnt)) {
 							toRemove = otherEnt;
 							break;
 						}
@@ -373,51 +381,62 @@ public class Map {
 					// Block off all unused entrances
 					World w = Bukkit.getWorld(Area.WORLD_NAME);
 					for (Coordinates coords : entrances) {
-						int x = (int) -(xOff + MapPieceInstance.X_FIGHT_OFFSET + (coords.getX() * 16));
-						int y = (int) (MapPieceInstance.Y_OFFSET + coords.getY());
-						int z = (int) (MapPieceInstance.Z_FIGHT_OFFSET + zOff + (coords.getZ() * 16));
-						int xp = x, zp = z;
-					    
-					    // Remember that entrance directions are inverted due to how they're constructed
-						switch (coords.getDirection()) {
-						case NORTH:
-							x -= 5;
-							z += 16;
-							xp = x - 5;
-							zp = z;
-							break;
-						case SOUTH:
-							x -= 5;
-							xp = x - 5;
-							z -= 1;
-							zp = z;
-							break;
-						case EAST:
-							z += 5;
-							x -= 16;
-							zp = z + 5;
-							xp = x;
-							break;
-						case WEST:
-							x += 1;
-							xp += 1;
-							z += 5;
-							zp = z + 5;
-							break;
-						}
-
-						System.out.println("Filling in " + coords + " at coords " + x + " " + y + " " + z);
-						for (int i = x; i >= xp; i--) {
-							for (int j = y - 1; j < y + 5; j++) {
-								for (int k = z; k <= zp; k++) {
-									Block b = new Location(w, i, j, k).getBlock();
-									if (!b.getType().isOccluding()) b.setType(Material.BLACK_CONCRETE);
-								}
-							}
-						}
+						blockEntrance(coords, w, xOff, zOff);
+					}
+					for (Coordinates coords : blockedEntrances) {
+						blockEntrance(coords, w, xOff, zOff);
 					}
 		    	}
 		    }.runTaskLater(NeoRogue.inst(), 10L);
+		}
+	}
+	
+	private void blockEntrance(Coordinates coords, World w, int xOff, int zOff) {
+		int x = (int) -(xOff + MapPieceInstance.X_FIGHT_OFFSET + (coords.getX() * 16));
+		int y = (int) (MapPieceInstance.Y_OFFSET + coords.getY());
+		int z = (int) (MapPieceInstance.Z_FIGHT_OFFSET + zOff + (coords.getZ() * 16));
+		int xp = x, zp = z;
+	    
+	    // Remember that entrance directions are inverted due to how they're constructed
+		switch (coords.getDirection()) {
+		case NORTH:
+			x -= 5;
+			z += 16;
+			xp = x - 5;
+			zp = z;
+			break;
+		case SOUTH:
+			x -= 5;
+			xp = x - 5;
+			z -= 1;
+			zp = z;
+			break;
+		case EAST:
+			z += 5;
+			x -= 16;
+			zp = z + 5;
+			xp = x;
+			break;
+		case WEST:
+			x += 1;
+			xp += 1;
+			z += 5;
+			zp = z + 5;
+			break;
+		}
+
+		for (int i = x; i >= xp; i--) {
+			for (int j = y - 1; j < y + 5; j++) {
+				for (int k = z; k <= zp; k++) {
+					Block b = new Location(w, i, j, k).getBlock();
+					if (!b.getType().isOccluding()) {
+						b.setType(Material.BLACK_CONCRETE);
+					}
+					else {
+						b.setType(Material.RED_CONCRETE);
+					}
+				}
+			}
 		}
 	}
 	
@@ -453,9 +472,21 @@ public class Map {
 	public void display() {
 		System.out.println("X left/right, Z up/down");
 		for (int z = shape[0].length - 1; z >= 0; z--) {
-			System.out.print(z + ": ");
+			char zc = Character.forDigit(z, 10);
+			if (z == 10) zc = 'A';
+			if (z == 11) zc = 'B';
+			System.out.print(zc + ": ");
+			
+			
 			for (int x = 0; x < shape.length; x++) {
-				System.out.print(shape[x][z] ? "X" : ".");
+				char symbol = '.';
+				for (Coordinates entrance : entrances) {
+					if (entrance.getXFacing() == x && entrance.getZFacing() == z) {
+						symbol = 'E';
+					}
+				}
+				if (shape[x][z]) symbol = 'X';
+				System.out.print(symbol);
 			}
 			System.out.println();
 		}
