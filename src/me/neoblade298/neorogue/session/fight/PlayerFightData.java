@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 import java.util.TreeSet;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
@@ -215,7 +216,16 @@ public class PlayerFightData extends FightData {
 			p.setInvulnerable(false);
 			p.setInvisible(false);
 			p.setHealth(Math.round(this.maxHealth * 0.05));
+			// This one's more reliable, sometimes statuses may be applied when player is dead
+			removeStatus(StatusType.POISON);
+			removeStatus(StatusType.BLEED);
 		}
+	}
+	
+	@Override
+	protected void applyStatus(Status s, UUID applier, int stacks, int seconds, DamageMeta meta) {
+		if (isDead) return;
+		super.applyStatus(s, applier, stacks, seconds, meta);
 	}
 
 	public boolean isDead() {

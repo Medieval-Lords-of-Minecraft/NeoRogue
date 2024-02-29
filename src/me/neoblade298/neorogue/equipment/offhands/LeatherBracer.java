@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.offhands;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
 
 import me.neoblade298.neocore.bukkit.util.Util;
 
@@ -36,9 +37,10 @@ public class LeatherBracer extends Equipment {
 
 		@Override
 		public TriggerResult trigger(PlayerFightData data, Object inputs) {
-			Util.playSound(p, Sound.ITEM_SHIELD_BREAK, 1F, 1F, false);
+			Util.playSound(p, Sound.ITEM_SHIELD_BLOCK, 1F, 1F, false);
 			if (--count <= 0) {
-				Util.msgRaw(p, "<red>Leather Bracer broke!");
+				Util.playSound(p, Sound.ITEM_SHIELD_BREAK, 1F, 1F, false);
+				p.getInventory().setItem(EquipmentSlot.OFF_HAND, null);
 				return TriggerResult.of(true, true);
 			}
 			return TriggerResult.of(false, true);

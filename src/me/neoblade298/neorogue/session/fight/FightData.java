@@ -282,7 +282,7 @@ public class FightData {
 		applyStatus(s, applier, stacks, seconds, meta);
 	}
 	
-	private void applyStatus(Status s, UUID applier, int stacks, int seconds, DamageMeta meta) {
+	protected void applyStatus(Status s, UUID applier, int stacks, int seconds, DamageMeta meta) {
 		String id = s.getId();
 		if (FightInstance.getUserData().containsKey(applier)) {
 			PlayerFightData data = FightInstance.getUserData(applier);
