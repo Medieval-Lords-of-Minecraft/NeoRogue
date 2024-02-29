@@ -98,13 +98,13 @@ public enum GlossaryTag {
 	public String tag(Equipment eq, int amt, boolean upgradable) {
 		eq.addTags(this);
 		String color = upgradable ? "yellow" : "white";
-		return "<" + color + ">" + this.tag + "</" + color + ">";
+		return "<" + color + ">" + amt + "</" + color + ">" + this.tag;
 	}
 	
 	public String tag(Equipment eq, double amt, boolean upgradable) {
 		eq.addTags(this);
 		String color = upgradable ? "yellow" : "white";
-		return "<" + color + ">" + this.tag + "</" + color + ">";
+		return "<" + color + ">" + amt + "</" + color + ">" + this.tag;
 	}
 	
 	public ItemStack getIcon() {
