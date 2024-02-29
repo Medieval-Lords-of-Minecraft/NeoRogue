@@ -15,6 +15,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.CastUsableEvent;
 
 public class CharmOfGallus extends Artifact {
 	private static final ParticleContainer part = new ParticleContainer(Particle.FIREWORKS_SPARK).count(10).speed(0.1).spread(0.5, 0.5);
@@ -37,6 +38,8 @@ public class CharmOfGallus extends Artifact {
 		@Override
 		public TriggerResult trigger(PlayerFightData data, Object inputs) {
 			if (count < 5) {
+				CastUsableEvent ev = (CastUsableEvent) inputs;
+				if (!ev.getInstance().canTrigger(data.getPlayer(), data)) return TriggerResult.keep();
 				count++;
 				Player p = data.getPlayer();
 				Util.playSound(data.getPlayer(), Sound.ENTITY_ARROW_HIT_PLAYER, false);

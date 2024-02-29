@@ -42,7 +42,7 @@ public class Sturdy extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GREEN_DYE,
-				"Passive. Heal for <yellow>" + heal + "</yellow> every " + HEAL_COUNT + " consecutive seconds you keep your shield up.");
+				"Passive. Heal for <yellow>" + heal + "</yellow> every <white>" + HEAL_COUNT + "</white> consecutive seconds you keep your shield up.");
 	}
 	
 	private class SturdyInstance extends EquipmentInstance {

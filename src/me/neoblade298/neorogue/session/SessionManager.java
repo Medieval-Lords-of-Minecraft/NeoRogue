@@ -282,12 +282,15 @@ public class SessionManager implements Listener {
 		if (e instanceof EntityDamageByEntityEvent) return;
 		UUID uuid = e.getEntity().getUniqueId();
 		if (e.getCause() == DamageCause.POISON || e.getCause() == DamageCause.WITHER ||
-				e.getCause() == DamageCause.STARVATION) {
+				e.getCause() == DamageCause.STARVATION || e.getCause() == DamageCause.DROWNING) {
 			e.setCancelled(true);
 			return;
 		}
 		if (e.getEntity().getType() != EntityType.PLAYER) return;
 		if (!sessions.containsKey(uuid)) return;
+		if (!(sessions.get(uuid).getInstance() instanceof FightInstance) && e.getCause() == DamageCause.FALL) {
+			e.setCancelled(true);
+		}
 		FightInstance.handleEnvironmentDamage(e);
 	}
 

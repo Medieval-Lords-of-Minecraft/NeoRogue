@@ -17,7 +17,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.CastUsableEvent;
 public class Titan extends Equipment {
 	private ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
 	private int staminaReduction;
-	private static final int CUTOFF = 40;
+	private static final int CUTOFF = 20;
 	
 	public Titan(boolean isUpgraded) {
 		super("titan", "Titan", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
