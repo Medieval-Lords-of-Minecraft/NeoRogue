@@ -1,6 +1,7 @@
 package me.neoblade298.neorogue;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
@@ -8,6 +9,9 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import eu.decentsoftware.holograms.api.DHAPI;
+import eu.decentsoftware.holograms.api.holograms.Hologram;
 import io.lumine.mythic.api.mobs.MobManager;
 import io.lumine.mythic.bukkit.BukkitAPIHelper;
 import io.lumine.mythic.bukkit.MythicBukkit;
@@ -125,6 +129,16 @@ public class NeoRogue extends JavaPlugin {
 
 		//Map map = Map.generate(AreaType.LOW_DISTRICT, 8);
 		//map.instantiate(null, 0, 0);
+	}
+	
+	public static Hologram createHologram(String name, Location loc, ArrayList<String> lines) {
+		try {
+			return DHAPI.createHologram(name, loc, lines);
+		}
+		catch (IllegalArgumentException e) {
+			DHAPI.removeHologram(name);
+			return DHAPI.createHologram(name, loc, lines);
+		}
 	}
 	
 	@EventHandler

@@ -14,7 +14,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import eu.decentsoftware.holograms.api.DHAPI;
 import eu.decentsoftware.holograms.api.holograms.Hologram;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
@@ -31,7 +30,6 @@ public class ShopInstance extends EditInventoryInstance {
 	private HashMap<UUID, ArrayList<ShopItem>> shops = new HashMap<UUID, ArrayList<ShopItem>>();
 	private HashSet<UUID> ready = new HashSet<UUID>();
 	private Hologram holo;
-	private boolean busy;
 	
 	public ShopInstance(Session s) {
 		super(s, SPAWN_X, SPAWN_Z);
@@ -79,7 +77,7 @@ public class ShopInstance extends EditInventoryInstance {
 		lines.add("Open the chest, then click the");
 		lines.add("stone button when you're ready!");
 		Plot plot = s.getPlot();
-		holo = DHAPI.createHologram(plot.getXOffset() + "-" + plot.getZOffset() + "-shop", spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), lines);
+		holo = NeoRogue.createHologram(plot.getXOffset() + "-" + plot.getZOffset() + "-shop", spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), lines);
 	}
 
 	@Override
@@ -127,7 +125,7 @@ public class ShopInstance extends EditInventoryInstance {
 	
 	public void handleReady(Player p) {
 		UUID uuid = p.getUniqueId();
-		if (busy) return;
+		if (s.isBusy()) return;
 		if (!ready.contains(uuid)) {
 			s.broadcast("<yellow>" + p.getName() + " <gray>is <green>ready</green>!");
 			ready.add(uuid);
@@ -135,11 +133,11 @@ public class ShopInstance extends EditInventoryInstance {
 			if (ready.size() == s.getParty().size()) {
 				s.broadcast("Everyone is ready! Teleporting back to node select...");
 				s.broadcastSound(Sound.ENTITY_PLAYER_LEVELUP);
-				busy = true;
+				s.setBusy(true);
 				new BukkitRunnable() {
 					public void run() {
 						s.setInstance(new NodeSelectInstance(s));
-						busy = false;
+						s.setBusy(false);
 					}
 				}.runTaskLater(NeoRogue.inst(), 60L);
 			}

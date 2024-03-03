@@ -27,6 +27,10 @@ public class CmdKick extends Subcommand {
 			Util.displayError(p, "You're not in a session!");
 			return;
 		}
+		if (sess.isBusy()) {
+			Util.displayError(p, "You can't do that while the session is loading!");
+			return;
+		}
 		
 		Instance inst = sess.getInstance();
 		if (inst instanceof LobbyInstance) {

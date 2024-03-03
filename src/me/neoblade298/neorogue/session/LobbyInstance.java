@@ -18,7 +18,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import eu.decentsoftware.holograms.api.DHAPI;
 import eu.decentsoftware.holograms.api.holograms.Hologram;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.util.Util;
@@ -41,7 +40,6 @@ public class LobbyInstance extends Instance {
 	private HashSet<UUID> invited = new HashSet<UUID>();
 	private HashMap<UUID, EquipmentClass> players = new HashMap<UUID, EquipmentClass>();
 	private UUID host;
-	private boolean busy = false;
 	private Component partyInfoHeader;
 	private HashSet<UUID> ready = new HashSet<UUID>();
 	private Hologram holo;
@@ -80,7 +78,7 @@ public class LobbyInstance extends Instance {
 		lines.add("Choose a class then hit the button");
 		lines.add("when you're ready!");
 		Plot plot = s.getPlot();
-		holo = DHAPI.createHologram(plot.getXOffset() + "-" + plot.getZOffset() + "-lobby", spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), lines);
+		holo = NeoRogue.createHologram(plot.getXOffset() + "-" + plot.getZOffset() + "-lobby", spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), lines);
 	}
 
 	public void invitePlayer(Player inviter, String username) {
@@ -89,7 +87,7 @@ public class LobbyInstance extends Instance {
 			return;
 		}
 
-		if (busy) {
+		if (s.isBusy()) {
 			Util.msgRaw(inviter, gameGenerating);
 			return;
 		}
@@ -123,7 +121,7 @@ public class LobbyInstance extends Instance {
 			Util.msgRaw(p, maxSizeError);
 		}
 
-		if (busy) {
+		if (s.isBusy()) {
 			Util.msgRaw(p, gameGenerating);
 			return;
 		}
@@ -145,7 +143,7 @@ public class LobbyInstance extends Instance {
 			return;
 		}
 
-		if (busy) {
+		if (this.s.isBusy()) {
 			Util.msgRaw(s, gameGenerating);
 			return;
 		}
@@ -166,7 +164,7 @@ public class LobbyInstance extends Instance {
 	}
 
 	public void leavePlayer(Player p) {
-		if (busy) {
+		if (s.isBusy()) {
 			Util.msgRaw(p, gameGenerating);
 			return;
 		}
@@ -254,7 +252,7 @@ public class LobbyInstance extends Instance {
 	}
 
 	public void startGame() {
-		busy = true;
+		s.setBusy(true);
 		s.addPlayers(players);
 		s.broadcast("Generating your game...");
 		s.generateArea(AreaType.LOW_DISTRICT);
@@ -277,7 +275,7 @@ public class LobbyInstance extends Instance {
 			return;
 		}
 
-		if (busy) {
+		if (s.isBusy()) {
 			Util.msgRaw(Bukkit.getPlayer(uuid), gameGenerating);
 			return;
 		}
@@ -332,7 +330,7 @@ public class LobbyInstance extends Instance {
 
 	private void readyPlayer(Player p) {
 		UUID uuid = p.getUniqueId();
-		if (busy) return;
+		if (s.isBusy()) return;
 		if (!ready.contains(uuid)) {
 			ready.add(uuid);
 			broadcast("<yellow>" + p.getName() + "</yellow> is ready!");

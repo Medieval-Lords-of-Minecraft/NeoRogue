@@ -24,6 +24,10 @@ public class CmdLeave extends Subcommand {
 			Util.displayError(p, "You're not in a session!");
 			return;
 		}
+		if (sess.isBusy()) {
+			Util.displayError(p, "You can't do that while the session is loading!");
+			return;
+		}
 		
 		if (sess.isSpectator(p.getUniqueId())) {
 			sess.removeSpectator(p);

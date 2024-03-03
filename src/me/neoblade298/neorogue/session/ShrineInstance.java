@@ -22,7 +22,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import eu.decentsoftware.holograms.api.DHAPI;
 import eu.decentsoftware.holograms.api.holograms.Hologram;
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
@@ -74,7 +73,7 @@ public class ShrineInstance extends EditInventoryInstance {
 		lines.add("Right click the");
 		lines.add("§aemerald blocks§f!");
 		Plot plot = s.getPlot();
-		holo = DHAPI.createHologram(plot.getXOffset() + "-" + plot.getZOffset() + "-shrine", spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), lines);
+		holo = NeoRogue.createHologram(plot.getXOffset() + "-" + plot.getZOffset() + "-shrine", spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), lines);
 	}
 
 	@Override
@@ -153,7 +152,7 @@ public class ShrineInstance extends EditInventoryInstance {
 			lines.add("To skip upgrading,");
 			lines.add("shift click the paper!");
 			Plot plot = s.getPlot();
-			holo = DHAPI.createHologram(plot.getXOffset() + "-" + plot.getZOffset() + "-shrineanvil", spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), lines);
+			holo = NeoRogue.createHologram(plot.getXOffset() + "-" + plot.getZOffset() + "-shrineanvil", spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), lines);
 		}
 	}
 	

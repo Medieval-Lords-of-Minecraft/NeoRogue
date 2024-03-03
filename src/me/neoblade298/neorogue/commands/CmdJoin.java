@@ -27,6 +27,10 @@ public class CmdJoin extends Subcommand {
 		
 		for (Session sess : SessionManager.getSessions()) {
 			if (sess.getInstance() instanceof LobbyInstance) {
+				if (sess.isBusy()) {
+					Util.displayError(p, "You can't do that while the session is loading!");
+					return;
+				}
 				LobbyInstance li = (LobbyInstance) sess.getInstance();
 				if (li.getName().equals(args[0])) {
 					if (!li.getInvited().contains(p.getUniqueId())) {

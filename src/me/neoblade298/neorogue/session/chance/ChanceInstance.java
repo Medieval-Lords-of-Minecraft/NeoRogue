@@ -18,7 +18,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import eu.decentsoftware.holograms.api.DHAPI;
 import eu.decentsoftware.holograms.api.holograms.Hologram;
 import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
@@ -99,7 +98,7 @@ public class ChanceInstance extends EditInventoryInstance {
 		ArrayList<String> lines = new ArrayList<String>();
 		lines.add("Right click the pillar below!");
 		Plot plot = s.getPlot();
-		holo = DHAPI.createHologram(plot.getXOffset() + "-" + plot.getZOffset() + "-shop", spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), lines);
+		holo = NeoRogue.createHologram(plot.getXOffset() + "-" + plot.getZOffset() + "-shop", spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), lines);
 		candleBlock = holo.getLocation().add(0, -1, 0).getBlock();
 	}
 

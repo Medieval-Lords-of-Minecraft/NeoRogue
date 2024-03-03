@@ -35,6 +35,10 @@ public class CmdSpectate extends Subcommand {
 			Util.displayError(p, "That player isn't in a session!");
 			return;
 		}
+		if (sess.isBusy()) {
+			Util.displayError(p, "You can't do that while the session is loading!");
+			return;
+		}
 		sess.addSpectator(p);
 	}
 }

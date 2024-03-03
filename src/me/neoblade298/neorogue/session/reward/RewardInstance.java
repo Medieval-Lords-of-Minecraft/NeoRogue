@@ -14,7 +14,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import eu.decentsoftware.holograms.api.DHAPI;
 import eu.decentsoftware.holograms.api.holograms.Hologram;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.player.PlayerSessionData;
@@ -29,7 +28,6 @@ public class RewardInstance extends EditInventoryInstance {
 			HOLO_X = 0, HOLO_Y = 3, HOLO_Z = 6;
 	private HashMap<UUID, ArrayList<Reward>> rewards = new HashMap<UUID, ArrayList<Reward>>();
 	private Hologram holo;
-	private boolean busy = false;
 	
 	public RewardInstance(Session s, HashMap<UUID, ArrayList<Reward>> rewards) {
 		super(s, SPAWN_X, SPAWN_Z);
@@ -61,7 +59,7 @@ public class RewardInstance extends EditInventoryInstance {
 		lines.add("Open the enderchest and");
 		lines.add("collect your reward!");
 		Plot plot = s.getPlot();
-		holo = DHAPI.createHologram(plot.getXOffset() + "-" + plot.getZOffset() + "-rewards", spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), lines);
+		holo = NeoRogue.createHologram(plot.getXOffset() + "-" + plot.getZOffset() + "-rewards", spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), lines);
 	}
 
 	@Override
@@ -104,12 +102,12 @@ public class RewardInstance extends EditInventoryInstance {
 		for (ArrayList<Reward> rewards : this.rewards.values()) {
 			if (!rewards.isEmpty()) return false;
 		}
-		if (!busy) {
+		if (!s.isBusy()) {
 			s.broadcast("Everyone's finished claiming rewards! Returning to node select...");
-			busy = true;
+			s.setBusy(true);
 			new BukkitRunnable() {
 				public void run() {
-					busy = false;
+					s.setBusy(false);
 					s.setInstance(new NodeSelectInstance(s));
 				}
 			}.runTaskLater(NeoRogue.inst(), 40L);

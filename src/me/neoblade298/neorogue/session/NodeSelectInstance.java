@@ -15,7 +15,6 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import eu.decentsoftware.holograms.api.DHAPI;
 import eu.decentsoftware.holograms.api.holograms.Hologram;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
@@ -52,7 +51,7 @@ public class NodeSelectInstance extends EditInventoryInstance {
 		lines.add("§f§lBoss: §4§l" + area.getBoss());
 		Plot plot = s.getPlot();
 		Location loc = spawn.clone().add(0, 3, 4);
-		Hologram holo = DHAPI.createHologram(plot.getXOffset() + "-" + plot.getZOffset() + "-bossdisplay", loc, lines);
+		Hologram holo = NeoRogue.createHologram(plot.getXOffset() + "-" + plot.getZOffset() + "-bossdisplay", loc, lines);
 		holograms.add(holo);
 
 		for (Player p : s.getOnlinePlayers()) {
@@ -86,7 +85,7 @@ public class NodeSelectInstance extends EditInventoryInstance {
 		ArrayList<String> lines = new ArrayList<String>();
 		lines.add("§f§l" + dest.getType() + " Node");
 		Plot plot = s.getPlot();
-		Hologram holo = DHAPI.createHologram(plot.getXOffset() + "-" + plot.getZOffset() + "-" + dest.getPosition() + "-" + dest.getLane(), loc, lines);
+		Hologram holo = NeoRogue.createHologram(plot.getXOffset() + "-" + plot.getZOffset() + "-" + dest.getPosition() + "-" + dest.getLane(), loc, lines);
 		holograms.add(holo);
 	}
 	

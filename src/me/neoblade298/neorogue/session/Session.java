@@ -59,6 +59,7 @@ public class Session {
 	private SessionStatistics stats;
 	private int saveSlot, xOff, zOff, nodesVisited, areasCompleted, potionChance = 25;
 	private Plot plot;
+	private boolean busy;
 	
 	// Session coordinates
 	public static final int LOBBY_X = 0, LOBBY_Z = 0, LOBBY_WIDTH = 15,
@@ -215,6 +216,14 @@ public class Session {
 	
 	public void addPlayer(UUID uuid, EquipmentClass pc) {
 		party.put(uuid, new PlayerSessionData(uuid, pc, this));
+	}
+	
+	public void setBusy(boolean busy) {
+		this.busy = busy;
+	}
+	
+	public boolean isBusy() {
+		return busy;
 	}
 	
 	public void addSpectator(Player p) {

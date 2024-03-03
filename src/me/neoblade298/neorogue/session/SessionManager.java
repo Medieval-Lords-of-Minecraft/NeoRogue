@@ -166,14 +166,14 @@ public class SessionManager implements Listener {
 	private void handlePlayerInventoryInteract(InventoryInteractEvent e) {
 		Player p = (Player) e.getWhoClicked();
 
-		if (e.getView().getTopInventory().getType() != InventoryType.CRAFTING) return;
 
-		// If the inventory type is normal player inventory, open up a player session inventory
 		UUID uuid = p.getUniqueId();
 		if (sessions.containsKey(uuid)) {
 			Session s = sessions.get(uuid);
 
-			if (s.getInstance() instanceof EditInventoryInstance && InventoryListener.getCoreInventory(p) == null) {
+			// If the inventory type is normal player inventory, open up a player session inventory
+			if (s.getInstance() instanceof EditInventoryInstance && InventoryListener.getCoreInventory(p) == null &&
+					e.getView().getTopInventory().getType() != InventoryType.CRAFTING) {
 				e.setCancelled(true);
 				p.setItemOnCursor(null);
 				if (s.isSpectator(uuid)) {
@@ -182,6 +182,10 @@ public class SessionManager implements Listener {
 				else {
 					new PlayerSessionInventory(s.getData(uuid));
 				}
+			}
+			
+			else if (s.getInstance() instanceof FightInstance) {
+				e.setCancelled(true);
 			}
 		}
 	}
