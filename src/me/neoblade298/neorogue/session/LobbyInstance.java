@@ -265,6 +265,7 @@ public class LobbyInstance extends Instance {
 					p.setHealth(p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
 				}
 				s.setInstance(new NodeSelectInstance(s));
+				s.setBusy(false);
 			}
 		}.runTaskLater(NeoRogue.inst(), 20L);
 	}

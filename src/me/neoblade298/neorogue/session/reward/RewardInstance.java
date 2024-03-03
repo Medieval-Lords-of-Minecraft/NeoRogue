@@ -107,8 +107,8 @@ public class RewardInstance extends EditInventoryInstance {
 			s.setBusy(true);
 			new BukkitRunnable() {
 				public void run() {
-					s.setBusy(false);
 					s.setInstance(new NodeSelectInstance(s));
+					s.setBusy(false);
 				}
 			}.runTaskLater(NeoRogue.inst(), 40L);
 		}
