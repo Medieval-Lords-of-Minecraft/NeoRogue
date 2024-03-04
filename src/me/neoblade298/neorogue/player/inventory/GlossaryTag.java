@@ -43,22 +43,22 @@ public enum GlossaryTag {
 			"Deals 0.2 poison damage per stack applied to the holder every second, ignoring shields, for its entire duration. Anytime poison is " +
 			"reapplied, the status duration is set to whichever is longer: the current status or the new applying source."),
 	BLEED(Material.REDSTONE, StatusType.BLEED.tag,
-			"Deals 1 bleed damage per stack applied to the holder and removes 1 stack every second, ignoring shields."),
+			"Deals 0.2 bleed damage per stack applied to the holder and removes 1 stack every second, ignoring shields."),
 	BURN(Material.BLAZE_POWDER, StatusType.BURN.tag,
 			"Upon the holder taking damage, deals 1 fire damage per stack applied. 1 stack is removed every second."),
 	FROST(Material.PACKED_ICE, StatusType.FROST.tag,
-			"Decreases the holder's magic damage by 1% per stack. Upon the holder dealing magical damage, remove 10% of the stacks and " +
+			"Decreases the holder's magic damage by 0.2 per stack. Upon the holder dealing magical damage, remove 10% of the stacks and " +
 			"deal that much damage to the holder. 1 stack is removed every second."),
 	ELECTRIFIED(Material.LIGHTNING_ROD, StatusType.ELECTRIFIED.tag,
-			"Upon the holder taking damage, deals 1 lightning damage per stack applied to nearby enemies in a radius of 5. "
+			"Upon the holder taking damage, deals 0.2 lightning damage per stack applied to nearby enemies in a radius of 5. "
 			+ " 1 stack is removed every second."),
 	CONCUSSED(Material.DIRT, StatusType.CONCUSSED.tag,
-			"Decreases the holder's physical damage by 1% per stack. Upon the holder dealing physical damage, remove 25% of the stacks and " +
+			"Decreases the holder's physical damage by 0.2 per stack. Upon the holder dealing physical damage, remove 25% of the stacks and " +
 			"deal that much Earthen damage to the holder. 1 stack is removed every second."),
 	INSANITY(Material.NETHER_PORTAL, StatusType.INSANITY.tag,
-			"Increases the holder's magic damage by 1% per stack. Remove 1 stack every second."),
+			"Increases the holder's magic damage by 0.2 per stack. Remove 1 stack every second."),
 	SANCTIFIED(Material.END_ROD, StatusType.SANCTIFIED.tag,
-			"Upon the holder receiving magic damage, remove 25% of the stacks and " +
+			"Upon the holder dealing damage, remove 25% of the stacks and " +
 			"deal that much Light damage to the holder while healing that much to the damager. 1 stack is removed every second."),
 	THORNS(Material.DEAD_BUSH, StatusType.THORNS.tag,
 			"Upon the holder receiving physical damage, even if it is absorbed by shields, return 1 thorns damage per stack."),

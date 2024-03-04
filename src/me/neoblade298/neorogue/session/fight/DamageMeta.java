@@ -191,8 +191,8 @@ public class DamageMeta {
 			if (owner.hasStatus(StatusType.FROST) && containsType(BuffType.MAGICAL)) {
 				Status status = owner.getStatus(StatusType.FROST);
 				int stacks = status.getStacks();
-				int toRemove = (int) (-stacks * 0.1);
-				status.apply(owner.getUniqueId(), toRemove, 0); // Remove 10% of frost stacks
+				int toRemove = (int) (-stacks * 0.2);
+				status.apply(owner.getUniqueId(), toRemove, 0);
 				returnDamage.addDamageSlice(new DamageSlice(recipient.getUniqueId(), toRemove, DamageType.ICE));
 			}
 
@@ -200,7 +200,7 @@ public class DamageMeta {
 				Status status = owner.getStatus(StatusType.CONCUSSED);
 				int stacks = status.getStacks();
 				int toRemove = (int) (-stacks * 0.25);
-				status.apply(owner.getUniqueId(), toRemove, 0); // Remove 10% of earth stacks
+				status.apply(owner.getUniqueId(), toRemove, 0);
 				returnDamage.addDamageSlice(new DamageSlice(recipient.getUniqueId(), toRemove, DamageType.EARTHEN));
 			}
 		}

@@ -15,11 +15,11 @@ public class FrostStatus extends DecrementStackStatus {
 	@Override
 	public void apply(UUID applier, int stacks, int seconds) {
 		super.apply(applier, stacks, seconds);
-		data.addBuff(applier, true, true, BuffType.MAGICAL, -stacks * 0.01);
+		data.addBuff(applier, true, false, BuffType.MAGICAL, -stacks * 0.2);
 	}
 	
 	@Override
 	public void onTickAction() {
-		data.addBuff(slices.first().getUniqueId(), true, true, BuffType.MAGICAL, 0.01);
+		data.addBuff(slices.first().getUniqueId(), true, false, BuffType.MAGICAL, 0.2);
 	}
 }
