@@ -93,6 +93,7 @@ import me.neoblade298.neorogue.equipment.weapons.FencingSword;
 import me.neoblade298.neorogue.equipment.weapons.FireStaff;
 import me.neoblade298.neorogue.equipment.weapons.Flametongue;
 import me.neoblade298.neorogue.equipment.weapons.ForcefulLeatherGauntlets;
+import me.neoblade298.neorogue.equipment.weapons.Fracturer;
 import me.neoblade298.neorogue.equipment.weapons.IceWand;
 import me.neoblade298.neorogue.equipment.weapons.LeatherGauntlets;
 import me.neoblade298.neorogue.equipment.weapons.LightLeatherGauntlets;
@@ -187,7 +188,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new FencingSword(b).addSelfReforge(new Rapier(b), new SerratedFencingSword(b));
 			new Flametongue(b);
 			new LeatherGauntlets(b).addSelfReforge(new ForcefulLeatherGauntlets(b), new LightLeatherGauntlets(b), new EarthenLeatherGauntlets(b));
-			new StoneHammer(b);
+			new StoneHammer(b).addSelfReforge(new Fracturer(b));
 			new WoodenSword(b).addSelfReforge(new StoneSword(b), new StoneSpear(b), new StoneAxe(b));
 			new WoodenWand(b);
 			new LightningWand(b).addSelfReforge(new SparkStick(b), new ChainLightningWand(b), new BoltWand(b));

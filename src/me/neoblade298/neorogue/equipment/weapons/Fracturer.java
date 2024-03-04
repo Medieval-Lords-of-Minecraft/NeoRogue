@@ -61,7 +61,7 @@ public class Fracturer extends Equipment {
 	}
 	
 	public Fracturer(boolean isUpgraded) {
-		super("stoneHammer", "Stone Hammer", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+		super("fracturer", "Fracturer", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(isUpgraded ? 130 : 100, 0.5, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
 		properties.addUpgrades(PropertyType.DAMAGE);
@@ -93,7 +93,6 @@ public class Fracturer extends Equipment {
 		}
 		
 		private void hitArea(Player p, PlayerFightData data) {
-			count++;
 			Location hit = p.getLocation().add(p.getLocation().getDirection().setY(0).normalize().multiply(DISTANCE));
 			Util.playSound(p, Sound.ENTITY_GENERIC_EXPLODE, false);
 			hitShape.draw(Fracturer.edge, hit, LocalAxes.xz(), Fracturer.fill);
