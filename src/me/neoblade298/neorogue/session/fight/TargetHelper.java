@@ -16,16 +16,9 @@ public class TargetHelper {
 	public static LivingEntity getNearestInSight(LivingEntity source, TargetProperties props) {
 		return TargetUtil.getEntitiesInSight(source, props.range, props.tolerance, new TargetFilter(source, props)).peekFirst();
 	}
-	public static LivingEntity getNearestInSight(LivingEntity source, Vector direction, TargetProperties props) {
-		return TargetUtil.getEntitiesInSight(source, direction, props.range, props.tolerance, new TargetFilter(source, props)).peekFirst();
-	}
 	
 	public static LinkedList<LivingEntity> getEntitiesInSight(LivingEntity source, TargetProperties props) {
 		return TargetUtil.getEntitiesInSight(source, props.range, props.tolerance, new TargetFilter(source, props));
-	}
-	
-	public static LinkedList<LivingEntity> getEntitiesInSight(LivingEntity source, Vector direction, TargetProperties props) {
-		return TargetUtil.getEntitiesInSight(source, direction, props.range, props.tolerance, new TargetFilter(source, props));
 	}
 
 	public static LinkedList<LivingEntity> getEntitiesInRadius(LivingEntity source, Location loc, TargetProperties props) {
@@ -55,9 +48,16 @@ public class TargetHelper {
 	public static Location getSightLocation(Location source, Vector direction, TargetProperties props) {
 		return TargetUtil.getSightLocation(source, direction, props.range, props.stickToGround);
 	}
+
+	// Source is used to calculate ally and enemy
+	public static LinkedList<LivingEntity> getEntitiesInLine(LivingEntity source, Location start, Vector direction, TargetProperties props) {
+		return TargetUtil.getEntitiesInLine(start, direction, props.range, props.tolerance, new TargetFilter(source, props));
+	}
 	
-	public static LinkedList<LivingEntity> getEntitiesInLine(Location start, Location end, TargetProperties props) {
-		return null; // Todo
+	public static LinkedList<LivingEntity> getEntitiesInLine(LivingEntity source, Location start, Location end, TargetProperties props) {
+		Vector v = end.clone().subtract(start).toVector();
+		double range = v.length();
+		return TargetUtil.getEntitiesInLine(start, v.normalize(), range, props.tolerance, new TargetFilter(source, props));
 	}
 	
 	public static class TargetProperties {

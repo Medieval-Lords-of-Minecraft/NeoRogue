@@ -116,7 +116,7 @@ public class Fracturer extends Equipment {
 				// Test to see if this works between blocks
 				Location start = p.getLocation().add(0, 0.5, 0);
 				ParticleUtil.drawLine(p, linePart, start, hit, 0.25);
-				LinkedList<LivingEntity> lineHit =  TargetHelper.getEntitiesInLine(start, hit, line);
+				LinkedList<LivingEntity> lineHit =  TargetHelper.getEntitiesInLine(p, start, hit, line);
 				FightInstance.dealDamage(new DamageMeta(data, earth, DamageType.EARTHEN), lineHit);
 				for (LivingEntity ent : lineHit) {
 					FightInstance.getFightData(ent.getUniqueId()).applyStatus(StatusType.CONCUSSED, p.getUniqueId(), concussed, -1);
