@@ -488,7 +488,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			}
 		}
 		if (isCursed) {
-			loreItalicized.add(Component.text("This item is cursed. It must be equipped continue.", NamedTextColor.DARK_RED));
+			loreItalicized.add(Component.text("This item is cursed. It must be equipped to continue.", NamedTextColor.DARK_RED));
 		}
 		if (!reforgeOptions.isEmpty()) {
 			loreItalicized.add(Component.text("Reforgeable with:", NamedTextColor.GOLD));

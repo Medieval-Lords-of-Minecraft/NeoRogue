@@ -806,10 +806,9 @@ public class Area {
 		for (int pos = curr.getPosition() + 1; pos < MAX_POSITIONS; pos++) {
 			for (int lane = 0; lane < MAX_LANES; lane++) {
 				Node node = nodes[pos][lane];
-				cache = Effect.calculateCache(nodeToLocation(node, 0));
 				if (node == null)
 					continue;
-				
+				cache = Effect.calculateCache(nodeToLocation(node, 0));
 				for (Node dest : node.getDestinations()) {
 					ParticleUtil.drawLineWithCache(cache, black, nodeToLocation(node, 0.5), nodeToLocation(dest, 0.5), 0.5);
 				}

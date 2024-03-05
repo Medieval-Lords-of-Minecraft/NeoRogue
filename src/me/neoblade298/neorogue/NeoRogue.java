@@ -34,7 +34,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 public class NeoRogue extends JavaPlugin {
 	private static NeoRogue inst;
-	private static final boolean DEBUGGER = false;
+	private static final boolean DEBUGGER = true;
 	public static Random gen = new Random();
 	public static BukkitAPIHelper mythicApi;
 	public static MobManager mythicMobs;
