@@ -9,11 +9,12 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import me.neoblade298.neocore.bukkit.particles.Circle;
-import me.neoblade298.neocore.bukkit.particles.LocalAxes;
-import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
+import me.neoblade298.neocore.bukkit.effects.Circle;
+import me.neoblade298.neocore.bukkit.effects.LocalAxes;
+import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
@@ -60,8 +61,8 @@ public class EarthStaff extends Equipment {
 			data.addTask(id, new BukkitRunnable() {
 				@Override
 				public void run() {
-					Util.playSound(p, Sound.ENTITY_GENERIC_EXPLODE, true);
-					innerRing.draw(aoe, p.getLocation(), LocalAxes.xz(), aoe);
+					Sounds.explode.play(p, p);
+					innerRing.play(aoe, p.getLocation(), LocalAxes.xz(), aoe);
 					LinkedList<LivingEntity> closeEnemies = TargetHelper.getEntitiesInRadius(p, innerProps);
 					for (LivingEntity ent : closeEnemies) {
 						weaponDamage(p, data, ent);
@@ -71,8 +72,8 @@ public class EarthStaff extends Equipment {
 					data.addTask(id, new BukkitRunnable() {
 						@Override
 						public void run() {
-							Util.playSound(p, Sound.ENTITY_GENERIC_EXPLODE, true);
-							outerRing.draw(aoe, p.getLocation(), LocalAxes.xz(), aoe);
+							Sounds.explode.play(p, p);
+							outerRing.play(aoe, p.getLocation(), LocalAxes.xz(), aoe);
 							LinkedList<LivingEntity> farEnemies = TargetHelper.getEntitiesInRadius(p, outerProps);
 							farEnemies.removeAll(closeEnemies);
 							for (LivingEntity ent : farEnemies) {

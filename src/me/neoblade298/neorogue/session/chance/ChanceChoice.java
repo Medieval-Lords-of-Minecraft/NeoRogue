@@ -1,6 +1,7 @@
 package me.neoblade298.neorogue.session.chance;
 
 import java.util.ArrayList;
+
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -9,8 +10,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import me.neoblade298.neocore.bukkit.NeoCore;
-import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neocore.bukkit.effects.Audience;
 import me.neoblade298.neocore.shared.util.SharedUtil;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
 import net.kyori.adventure.text.Component;
@@ -93,7 +95,8 @@ public class ChanceChoice {
 			}
 		}
 		else {
-			Util.playSound(data.getPlayer(), Sound.ENTITY_ARROW_HIT_PLAYER, false);
+			Player p = data.getPlayer();
+			Sounds.success.play(p, p, Audience.ORIGIN);
 		}
 		
 		if (action != null) {

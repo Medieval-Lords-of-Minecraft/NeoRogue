@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
+import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -25,7 +25,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class Challenge extends Equipment {
 	private static final TargetProperties tp = TargetProperties.radius(15, false, TargetType.ENEMY);
 	private int threat, shield;
-	private ParticleContainer taunt = new ParticleContainer(Particle.VILLAGER_ANGRY).count(15).spread(0.1, 0.1).offsetY(2);
+	private static final ParticleContainer taunt = new ParticleContainer(Particle.VILLAGER_ANGRY).count(15).spread(0.1, 0.1).offsetY(2);
 	
 	public Challenge(boolean isUpgraded) {
 		super("challenge", "Challenge", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
@@ -43,7 +43,7 @@ public class Challenge extends Equipment {
 			for (LivingEntity ent : TargetHelper.getEntitiesInSight(p, tp)) {
 				ent.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20, 0));
 				NeoRogue.mythicApi.addThreat(ent, p, threat);
-				taunt.spawn(ent);
+				taunt.play(p, ent);
 			}
 			return TriggerResult.keep();
 		}));

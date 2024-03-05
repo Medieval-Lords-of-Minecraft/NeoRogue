@@ -2,16 +2,15 @@ package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
-import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
-import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
+import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -22,7 +21,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
 public class EmpoweredEdge extends Equipment {
 	private int damage, shields;
-	private ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
+	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
 			hit = new ParticleContainer(Particle.REDSTONE);
 	
 	public EmpoweredEdge(boolean isUpgraded) {
@@ -38,14 +37,14 @@ public class EmpoweredEdge extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(p, this, slot, es, (pdata, inputs) -> {
-			Util.playSound(p, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1F, 1F, false);
-			pc.spawn(p);
+			Sounds.equip.play(p, p);
+			pc.play(p, p);
 			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in) -> {
 				BasicAttackEvent ev = (BasicAttackEvent) in;
 				FightInstance.dealDamage(data, DamageType.SLASHING, damage, ev.getTarget());
 				data.addSimpleShield(p.getUniqueId(), shields, 40L);
-				hit.spawn(ev.getTarget().getLocation());
-				Util.playSound(p, Sound.BLOCK_ANVIL_LAND, 1F, 1F, false);
+				hit.play(p, ev.getTarget());
+				Sounds.anvil.play(p, ev.getTarget());
 				return TriggerResult.remove();
 			});
 			return TriggerResult.keep();

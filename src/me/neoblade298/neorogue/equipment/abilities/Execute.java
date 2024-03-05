@@ -2,11 +2,10 @@ package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
-import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -22,7 +21,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
 public class Execute extends Equipment {
 	private int damage, strength;
-	private ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
+	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
 			hit = new ParticleContainer(Particle.REDSTONE);
 	
 	public Execute(boolean isUpgraded) {
@@ -38,16 +37,16 @@ public class Execute extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(p, this, slot, es, (pdata, inputs) -> {
-			Util.playSound(p, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1F, 1F, false);
-			pc.spawn(p);
+			Sounds.enchant.play(p, p);
+			pc.play(p, p);
 			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in) -> {
 				if (p.isOnGround()) return TriggerResult.keep();
 				BasicAttackEvent ev = (BasicAttackEvent) in;
 				FightInstance.dealDamage(data, DamageType.PIERCING, damage, ev.getTarget());
-				Util.playSound(p, Sound.BLOCK_ANVIL_LAND, 1F, 1F, false);
-				hit.spawn(ev.getTarget().getLocation());
+				Sounds.anvil.play(p, ev.getTarget());
+				hit.play(p, ev.getTarget());
 				if (ev.getTarget().getHealth() <= 0) {
-					Util.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, false);
+					Sounds.success.play(p, p);
 					data.applyStatus(StatusType.STRENGTH, p.getUniqueId(), strength, 10);
 				}
 				

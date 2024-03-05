@@ -6,8 +6,8 @@ import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
-import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -23,8 +23,10 @@ import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
 public class BlessedEdge extends Equipment {
 	private int damage, sanct;
-	private ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
+	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
 			hit = new ParticleContainer(Particle.FIREWORKS_SPARK);
+	private static final SoundContainer equip = new SoundContainer(Sound.ITEM_ARMOR_EQUIP_CHAIN),
+			hitSound = new SoundContainer(Sound.BLOCK_ANVIL_LAND);
 	
 	public BlessedEdge(boolean isUpgraded) {
 		super("blessedEdge", "Blessed Edge", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
@@ -39,15 +41,15 @@ public class BlessedEdge extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(p, this, slot, es, (pdata, inputs) -> {
-			Util.playSound(p, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1F, 1F, false);
-			pc.spawn(p);
+			equip.play(p, p);
+			pc.play(p, p);
 			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in) -> {
 				BasicAttackEvent ev = (BasicAttackEvent) in;
 				LivingEntity target = ev.getTarget();
 				FightInstance.getFightData(target.getUniqueId()).applyStatus(StatusType.SANCTIFIED, p.getUniqueId(), sanct, -1);
 				FightInstance.dealDamage(data, DamageType.SLASHING, damage, target);
-				hit.spawn(target.getLocation());
-				Util.playSound(p, Sound.BLOCK_ANVIL_LAND, 1F, 1F, false);
+				hit.play(p, target.getLocation());
+				hitSound.play(p, target.getLocation());
 				return TriggerResult.remove();
 			});
 			return TriggerResult.keep();

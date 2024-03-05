@@ -50,13 +50,15 @@ import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
 import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
 import io.lumine.mythic.core.mobs.ActiveMob;
 import me.libraryaddict.disguise.disguisetypes.PlayerDisguise;
-import me.neoblade298.neocore.bukkit.particles.Circle;
-import me.neoblade298.neocore.bukkit.particles.LocalAxes;
-import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
-import me.neoblade298.neocore.bukkit.util.SoundContainer;
+import me.neoblade298.neocore.bukkit.effects.Audience;
+import me.neoblade298.neocore.bukkit.effects.Circle;
+import me.neoblade298.neocore.bukkit.effects.LocalAxes;
+import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.map.Coordinates;
@@ -105,7 +107,7 @@ public abstract class FightInstance extends Instance {
 
 	private static final Circle reviveCircle = new Circle(5);
 	private static final ParticleContainer reviveCirclePart = new ParticleContainer(Particle.END_ROD).count(1);
-	private static final ParticleContainer revivePart = new ParticleContainer(Particle.FIREWORKS_SPARK).ignoreSettings(true).count(50).spread(2, 2).speed(0.1);
+	private static final ParticleContainer revivePart = new ParticleContainer(Particle.FIREWORKS_SPARK).forceVisible(Audience.ALL).count(50).spread(2, 2).speed(0.1);
 	private static final SoundContainer[] reviveSounds = new SoundContainer[]
 			{ new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1F), new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1.059463F),
 				new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1.122462F), new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1.189207F),
@@ -400,9 +402,9 @@ public abstract class FightInstance extends Instance {
 					}
 					
 					reviveBar.setProgress(progress);
-					reviveSounds[count].play(p);
-					reviveSounds[count].play(dead);
-					reviveCircle.draw(reviveCirclePart, corpse.corpseDisplay.getLocation(), LocalAxes.xz(), null);
+					reviveSounds[count].play(p, p, Audience.ORIGIN);
+					reviveSounds[count].play(dead, dead, Audience.ORIGIN);
+					reviveCircle.play(reviveCirclePart, corpse.corpseDisplay.getLocation(), LocalAxes.xz(), null);
 					
 					// Revive not complete
 					if (count == 4) {
@@ -431,10 +433,10 @@ public abstract class FightInstance extends Instance {
 		Player dead = corpse.data.getPlayer();
 		if (dead != null) {
 			Util.msg(dead, "<red>Revival failed!");
-			Util.playSound(dead, Sound.BLOCK_NOTE_BLOCK_BASS, 1, 0.7F, false);
+			Sounds.error.play(dead, dead, Audience.ORIGIN);
 		}
 		Util.msg(p, "<red>Revival failed!");
-		Util.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1, 0.7F, false);
+		Sounds.error.play(p, p, Audience.ORIGIN);
 		revivers.remove(p);
 		corpse.reviver = null;
 		corpse.bar.removeAll();
@@ -445,8 +447,8 @@ public abstract class FightInstance extends Instance {
 	
 	private void completeRevive(Player p, Corpse corpse) {
 		Player dead = corpse.data.getPlayer();
-		Util.playSound(dead, Sound.ENTITY_PLAYER_LEVELUP, true);
-		revivePart.spawn(p);
+		Sounds.levelup.play(dead, dead);
+		revivePart.play(p, p);
 		revivers.remove(p);
 		corpses.remove(corpse);
 		dead.teleport(corpse.corpseDisplay);
@@ -564,6 +566,10 @@ public abstract class FightInstance extends Instance {
 			data.runSlotBasedActions(data, trigger, p.getInventory().getHeldItemSlot(), obj);
 		}
 		return data.runActions(data, trigger, obj);
+	}
+	
+	public static FightData getFightData(Entity ent) {
+		return getFightData(ent.getUniqueId());
 	}
 
 	public static FightData getFightData(UUID uuid) {

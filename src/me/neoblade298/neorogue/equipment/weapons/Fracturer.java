@@ -11,14 +11,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import me.neoblade298.neocore.bukkit.particles.Circle;
-import me.neoblade298.neocore.bukkit.particles.LocalAxes;
-import me.neoblade298.neocore.bukkit.particles.ParticleAnimation;
-import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
-import me.neoblade298.neocore.bukkit.particles.ParticleUtil;
-import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neocore.bukkit.effects.Circle;
+import me.neoblade298.neocore.bukkit.effects.LocalAxes;
+import me.neoblade298.neocore.bukkit.effects.ParticleAnimation;
+import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.effects.ParticleUtil;
 import me.neoblade298.neorogue.NeoRogue;
-
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -82,7 +81,7 @@ public class Fracturer extends Equipment {
 			action = (data, in) -> {
 				Player p = data.getPlayer();
 				weaponSwing(p, data);
-				data.runAnimation(id, swing, p);
+				data.runAnimation(id, p, swing, p);
 				data.addTask(id, new BukkitRunnable() {
 					public void run() {
 						hitArea(p, data);
@@ -94,8 +93,8 @@ public class Fracturer extends Equipment {
 		
 		private void hitArea(Player p, PlayerFightData data) {
 			Location hit = p.getLocation().add(p.getLocation().getDirection().setY(0).normalize().multiply(DISTANCE));
-			Util.playSound(p, Sound.ENTITY_GENERIC_EXPLODE, false);
-			hitShape.draw(Fracturer.edge, hit, LocalAxes.xz(), Fracturer.fill);
+			Sounds.explode.play(p, hit);
+			hitShape.play(Fracturer.edge, hit, LocalAxes.xz(), Fracturer.fill);
 			LinkedList<LivingEntity> enemies = TargetHelper.getEntitiesInRadius(p, hit, props);
 			if (!enemies.isEmpty()) {
 				boolean first = true;
@@ -116,7 +115,7 @@ public class Fracturer extends Equipment {
 				count = 0;
 				// Test to see if this works between blocks
 				Location start = p.getLocation().add(0, 0.5, 0);
-				ParticleUtil.drawLine(linePart, start, hit, 0.25);
+				ParticleUtil.drawLine(p, linePart, start, hit, 0.25);
 				LinkedList<LivingEntity> lineHit =  TargetHelper.getEntitiesInLine(start, hit, line);
 				FightInstance.dealDamage(new DamageMeta(data, earth, DamageType.EARTHEN), lineHit);
 				for (LivingEntity ent : lineHit) {

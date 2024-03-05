@@ -5,16 +5,15 @@ import java.util.LinkedList;
 
 import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
-import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
-import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -31,9 +30,9 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class EarthenTackle extends Equipment {
-	private ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION_LARGE),
+	private static final ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION_LARGE),
 			start = new ParticleContainer(Particle.BLOCK_CRACK),
-			dirt = new ParticleContainer(Particle.BLOCK_CRACK);
+			dirt = start.clone().spread(0.5, 0.5);
 	private static final TargetProperties hc = TargetProperties.radius(1.5, true, TargetType.ENEMY),
 			aoe = TargetProperties.radius(4, true, TargetType.ENEMY);
 	private int damage, concussed;
@@ -46,7 +45,6 @@ public class EarthenTackle extends Equipment {
 		
 		pc.count(25).spread(0.5, 0.5);
 		start.count(25).spread(0.5, 0).offsetY(1).blockData(Material.DIRT.createBlockData());
-		dirt = start.clone().spread(0.5, 0.5);
 	}
 
 	@SuppressWarnings("deprecation")
@@ -54,8 +52,8 @@ public class EarthenTackle extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		final EquipmentInstance inst = new EquipmentInstance(p, this, slot, es);
 		inst.setAction((pdata, inputs) -> {
-			Util.playSound(p, Sound.ENTITY_SHULKER_SHOOT, false);
-			start.spawn(p);
+			Sounds.jump.play(p, p);
+			start.play(p, p);
 			Vector v = p.getEyeLocation().getDirection();
 			if (p.isOnGround()) {
 				p.teleport(p.getLocation().add(0, 0.2, 0));
@@ -85,10 +83,10 @@ public class EarthenTackle extends Equipment {
 						p.setVelocity(v.multiply(0.5));
 						cancelTasks();
 						inst.reduceCooldown(10);
-						Util.playSound(p, Sound.ENTITY_GENERIC_EXPLODE, false);
+						Sounds.explode.play(p, p);
 						for (LivingEntity ent : hit) {
-							pc.spawn(ent);
-							dirt.spawn(ent);
+							pc.play(p, ent);
+							dirt.play(p, ent);
 							FightInstance.dealDamage(data, DamageType.BLUNT, damage, ent);
 							FightInstance.applyStatus(ent, StatusType.CONCUSSED, p, concussed, -1);
 						}

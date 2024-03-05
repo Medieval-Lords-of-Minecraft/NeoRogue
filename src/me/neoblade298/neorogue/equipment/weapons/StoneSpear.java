@@ -9,8 +9,8 @@ import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
-import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -105,7 +105,7 @@ public class StoneSpear extends Equipment {
 
 		@Override
 		public void onTick(ProjectileInstance proj, boolean interpolation) {
-			throwPart.spawn(proj.getLocation());
+			throwPart.play(p, proj.getLocation());
 		}
 
 		@Override
@@ -115,12 +115,12 @@ public class StoneSpear extends Equipment {
 			dm.addDamageSlice(new DamageSlice(p.getUniqueId(), 0, DamageType.PIERCING));
 			damageProjectile(hit.getEntity(), proj, dm, hitBarrier);
 			Location loc = hit.getEntity().getLocation();
-			Util.playSound(p, loc, Sound.ENTITY_GENERIC_EXPLODE, 1F, 1F, false);
+			Sounds.explode.play(p, loc);
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			Util.playSound(p, Sound.ENTITY_PLAYER_ATTACK_STRONG, 1F, 0.5F, false);
+			Sounds.threw.play(p, p);
 		}
 	}
 

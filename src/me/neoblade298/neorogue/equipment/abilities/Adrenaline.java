@@ -7,8 +7,8 @@ import org.bukkit.Particle.DustOptions;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
-import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -19,7 +19,8 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Adrenaline extends Equipment {
-	private ParticleContainer pc = new ParticleContainer(Particle.REDSTONE);
+	private static final ParticleContainer pc = new ParticleContainer(Particle.REDSTONE);
+	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_BLAZE_DEATH);
 	private static final int stamina = 100;
 	
 	public Adrenaline(boolean isUpgraded) {
@@ -48,8 +49,8 @@ public class Adrenaline extends Equipment {
 			max = isUpgraded ? 2 : 1;
 			action = (pdata, in) -> {
 				count++;
-				Util.playSound(p, Sound.ENTITY_BLAZE_DEATH, 1F, 1F, false);
-				pc.spawn(p);
+				sc.play(p, p);
+				pc.play(p, p);
 				pdata.addStamina(stamina);
 				pdata.addBuff(p.getUniqueId(), false, false, BuffType.GENERAL, 5);
 				if (count < max) return TriggerResult.keep();

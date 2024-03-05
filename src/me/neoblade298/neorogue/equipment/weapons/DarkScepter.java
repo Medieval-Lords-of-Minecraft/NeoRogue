@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
-import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
+import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
@@ -25,7 +25,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class DarkScepter extends Equipment {
 	private static final int hitScanRange = 12;
-	private static ParticleContainer tick;
+	private static final ParticleContainer tick;
 
 	static {
 		tick = new ParticleContainer(Particle.GLOW);
@@ -61,14 +61,16 @@ public class DarkScepter extends Equipment {
 	}
 
 	private class DarkRay extends Projectile {
+		private Player p;
 		public DarkRay(Player p) {
 			super(0.5, 2, 1);
 			this.size(1.25, 1.25).pierce();
+			this.p = p;
 		}
 		
 		@Override
 		public void onTick(ProjectileInstance proj, boolean interpolation) {
-			tick.spawn(proj.getLocation());
+			tick.play(p, proj.getLocation());
 		}
 		
 		@Override

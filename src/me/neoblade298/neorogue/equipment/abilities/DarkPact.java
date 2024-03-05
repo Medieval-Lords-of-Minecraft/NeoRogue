@@ -5,7 +5,7 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
+import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class DarkPact extends Equipment {
-	private ParticleContainer pc = new ParticleContainer(Particle.FLAME);
+	private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME);
 	private int seconds;
 	
 	public DarkPact(boolean isUpgraded) {
@@ -43,7 +43,7 @@ public class DarkPact extends Equipment {
 			if (count >= 3) {
 				Player p = data.getPlayer();
 				p.playSound(p, Sound.ENTITY_BLAZE_SHOOT, 1F, 1F);
-				pc.spawn(p);
+				pc.play(p, p);
 				data.applyStatus(StatusType.STRENGTH, p.getUniqueId(), 2, -1);
 				count = 0;
 			}

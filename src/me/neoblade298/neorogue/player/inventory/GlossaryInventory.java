@@ -5,7 +5,6 @@ import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -15,8 +14,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
-import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.session.fight.Mob;
 import net.kyori.adventure.text.Component;
@@ -33,7 +32,7 @@ public class GlossaryInventory extends CoreInventory {
 				Component.text("Glossary: ").append(LegacyComponentSerializer.legacyAmpersand()
 						.deserialize(NeoRogue.mythicApi.getMythicMob(mob.getId()).getDisplayName().get()))));
 		this.prev = prev;
-		Util.playSound(viewer, Sound.ITEM_BOOK_PAGE_TURN, false);
+		Sounds.turnPage.play(p, p);
 		
 		// Glossary tags
 		ItemStack[] contents = inv.getContents();
@@ -50,7 +49,7 @@ public class GlossaryInventory extends CoreInventory {
 		super(viewer, Bukkit.createInventory(viewer, calculateSize(eq), Component.text("Glossary: ").append(eq.getUnupgraded().getDisplay())));
 		this.prev = prev;
 		eq = eq.getUnupgraded();
-		Util.playSound(viewer, Sound.ITEM_BOOK_PAGE_TURN, false);
+		Sounds.turnPage.play(p, p);
 		
 		ItemStack[] contents = inv.getContents();
 		contents[BASIC] = eq.getUnupgraded().getItem();

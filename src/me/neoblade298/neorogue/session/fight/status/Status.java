@@ -39,6 +39,7 @@ public abstract class Status {
 		case REFLECT: return new BasicStatus(id.name(), target);
 		case BERSERK: return new BasicStatus(id.name(), target);
 		case STRENGTH: return new StrengthStatus(target);
+		case INTELLECT: return new IntellectStatus(target);
 		}
 		Bukkit.getLogger().warning("[NeoRogue] Failed to create status type " + id);
 		return new BasicStatus(id.name(), target);
@@ -90,7 +91,8 @@ public abstract class Status {
 		THORNS("<gold>Thorns</gold>", "&6Thorns"),
 		REFLECT("<purple>Reflect</purple>", "&dReflect"),
 		BERSERK("<dark_red>Berserk</dark_red>", "&4Berserk"),
-		STRENGTH("<red>Strength</red>", "&cStrength");
+		STRENGTH("<red>Strength</red>", "&cStrength"),
+		INTELLECT("<blue>Intellect</blue>", "&9Intellect");
 		public String tag;
 		public Component ctag;
 		public String boardLine;

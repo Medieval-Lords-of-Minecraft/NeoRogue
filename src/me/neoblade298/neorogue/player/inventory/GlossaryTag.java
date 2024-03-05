@@ -73,7 +73,9 @@ public enum GlossaryTag {
 	BERSERK(Material.BLAZE_POWDER, StatusType.BERSERK.tag,
 			"Certain abilities become stronger upon reaching a certain threshold of these stacks."),
 	STRENGTH(Material.IRON_SWORD, StatusType.STRENGTH.tag,
-			"Buffs all physical (slashing, piercing, blunt) damage by 1 per stack.");
+			"Buffs all physical damage by 1 per stack."),
+	INTELLECT(Material.BLAZE_ROD, StatusType.INTELLECT.tag,
+			"Buffs all magical damage by 1 per stack.");
 	
 	private ItemStack icon;
 	public String tag;

@@ -8,13 +8,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
 
-import me.neoblade298.neocore.bukkit.particles.LocalAxes;
-import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
-import me.neoblade298.neocore.bukkit.particles.ParticleShapeMemory;
-import me.neoblade298.neocore.bukkit.particles.Rectangle;
+import me.neoblade298.neocore.bukkit.effects.LocalAxes;
+import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.effects.ParticleShapeMemory;
+import me.neoblade298.neocore.bukkit.effects.Rectangle;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffType;
 
@@ -87,11 +88,21 @@ public class Barrier {
 	public void tick() {
 		// Static tick
 		if (mem != null) {
-			mem.draw(mem.calculateCache(), part, part);
+			if (owner instanceof Player) {
+				mem.play((Player) owner, part, part);
+			}
+			else {
+				mem.play(part, part);
+			}
 		}
 		else {
 			calculateLocation();
-			rect.draw(part, rectcenter, axes, part);
+			if (owner instanceof Player) {
+				rect.play((Player) owner, part, center, axes, part);
+			}
+			else {
+				rect.play(part, rectcenter, axes, part);
+			}
 		}
 	}
 	

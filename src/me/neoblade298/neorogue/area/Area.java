@@ -37,8 +37,10 @@ import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.world.World;
 
 import me.neoblade298.neocore.bukkit.NeoCore;
-import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
-import me.neoblade298.neocore.bukkit.particles.ParticleUtil;
+import me.neoblade298.neocore.bukkit.effects.Audience;
+import me.neoblade298.neocore.bukkit.effects.Effect;
+import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.effects.ParticleUtil;
 import me.neoblade298.neocore.shared.droptables.DropTable;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder.SQLAction;
@@ -78,7 +80,7 @@ public class Area {
 		world = BukkitAdapter.adapt(Bukkit.getWorld(WORLD_NAME));
 		
 		// Load particles
-		red.count(3).spread(0.1, 0.1).ignoreSettings(true).dustOptions(new DustOptions(Color.RED, 1F));
+		red.count(3).spread(0.1, 0.1).forceVisible(Audience.ALL).dustOptions(new DustOptions(Color.RED, 1F));
 		black = red.clone().dustOptions(new DustOptions(Color.BLACK, 1F));
 
 		// Load path chances
@@ -794,7 +796,7 @@ public class Area {
 	}
 	
 	public void tickParticles(Node curr) {
-		LinkedList<Player> cache = ParticleUtil.calculateCache(nodeToLocation(curr, 0));
+		LinkedList<Player> cache = Effect.calculateCache(nodeToLocation(curr, 0));
 		// Draw red lines for any locations that can immediately be visited
 		for (Node dest : curr.getDestinations()) {
 			ParticleUtil.drawLineWithCache(cache, red, nodeToLocation(curr, 0.5), nodeToLocation(dest, 0.5), 0.5);
@@ -804,11 +806,12 @@ public class Area {
 		for (int pos = curr.getPosition() + 1; pos < MAX_POSITIONS; pos++) {
 			for (int lane = 0; lane < MAX_LANES; lane++) {
 				Node node = nodes[pos][lane];
+				cache = Effect.calculateCache(nodeToLocation(node, 0));
 				if (node == null)
 					continue;
 				
 				for (Node dest : node.getDestinations()) {
-					ParticleUtil.drawLine(black, nodeToLocation(node, 0.5), nodeToLocation(dest, 0.5), 0.5);
+					ParticleUtil.drawLineWithCache(cache, black, nodeToLocation(node, 0.5), nodeToLocation(dest, 0.5), 0.5);
 				}
 			}
 		}

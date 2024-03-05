@@ -34,12 +34,14 @@ import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.session.ClipboardHolder;
 
 import me.neoblade298.neocore.bukkit.NeoCore;
+import me.neoblade298.neocore.bukkit.effects.Audience;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.io.SQLManager;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder.SQLAction;
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.area.Node;
@@ -258,13 +260,13 @@ public class Session {
 	public void broadcastError(String msg) {
 		for (Player p : getOnlinePlayers()) {
 			Util.msgRaw(p, NeoCore.miniMessage().deserialize(msg).colorIfAbsent(NamedTextColor.RED));
-			Util.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1F, 0.7F, false);
+			Sounds.error.play(p, p, Audience.ORIGIN);
 		}
 		
 		for (UUID uuid : spectators) {
 			Player p = Bukkit.getPlayer(uuid);
 			Util.msgRaw(p, NeoCore.miniMessage().deserialize(msg).colorIfAbsent(NamedTextColor.RED));
-			Util.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1F, 0.7F, false);
+			Sounds.error.play(p, p, Audience.ORIGIN);
 		}
 	}
 

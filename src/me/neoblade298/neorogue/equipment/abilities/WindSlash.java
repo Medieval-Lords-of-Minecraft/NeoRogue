@@ -2,11 +2,10 @@ package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
-import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -43,7 +42,7 @@ public class WindSlash extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(p, this, slot, es, (pd, in) -> {
-			Util.playSound(p, Sound.ENTITY_PLAYER_ATTACK_SWEEP, false);
+			Sounds.attackSweep.play(p, p);
 			projs.start(data);
 			return TriggerResult.keep();
 		}));
@@ -66,8 +65,9 @@ public class WindSlash extends Equipment {
 
 		@Override
 		public void onTick(ProjectileInstance proj, boolean interpolation) {
-			if (proj.getTick() % 3 == 0) Util.playSound((Player) proj.getOwner().getEntity(), proj.getLocation(), Sound.ENTITY_ENDER_DRAGON_FLAP, false);
-			part.spawn(proj.getLocation());
+			Player p = (Player) proj.getOwner().getEntity();
+			if (proj.getTick() % 3 == 0) Sounds.flap.play(p, proj.getLocation());
+			part.play(p, proj.getLocation());
 		}
 
 		@Override

@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.UUID;
 
 import org.bukkit.Location;
-import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -15,8 +14,8 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
-import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
@@ -91,7 +90,7 @@ public class ProjectileInstance {
 						numHit++;
 						settings.onHit(FightInstance.getFightData(b.getOwner().getUniqueId()), b, this);
 						Player p = owner.getEntity() instanceof Player ? (Player) owner.getEntity() : null;
-						Util.playSound(p, Sound.ITEM_SHIELD_BLOCK, 1F, 1F, true);
+						Sounds.block.play(p, loc);
 						return true;
 					}
 				}

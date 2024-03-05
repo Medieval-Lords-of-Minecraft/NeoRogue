@@ -2,11 +2,10 @@ package me.neoblade298.neorogue.equipment.artifacts;
 
 import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
-import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -42,8 +41,8 @@ public class EnergyBattery extends Artifact {
 				count++;
 				CastUsableEvent ev = (CastUsableEvent) inputs;
 				Player p = data.getPlayer();
-				Util.playSound(data.getPlayer(), Sound.ENTITY_ARROW_HIT_PLAYER, false);
-				part.spawn(p);
+				Sounds.success.play(p, p);
+				part.play(p, p);
 				EquipmentInstance eqi = ev.getInstance();
 				eqi.setTempManaCost(0);
 				eqi.setTempStaminaCost(0);

@@ -12,20 +12,23 @@ import java.util.function.Predicate;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 import de.tr7zw.nbtapi.NBTItem;
+import me.neoblade298.neocore.bukkit.effects.Audience;
+import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
-import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder;
-import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder.SQLAction;
-import me.neoblade298.neorogue.equipment.*;
+import me.neoblade298.neocore.shared.util.SharedUtil;
+import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.equipment.Artifact;
+import me.neoblade298.neorogue.equipment.ArtifactInstance;
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.DropTableSet;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
@@ -59,7 +62,7 @@ public class PlayerSessionData {
 	private ArrayList<String> boardLines;
 
 	private static final ParticleContainer heal = new ParticleContainer(Particle.VILLAGER_HAPPY).count(50)
-			.spread(0.5, 1).speed(0.1).ignoreSettings(true);
+			.spread(0.5, 1).speed(0.1).forceVisible(Audience.ALL);
 	private static final int STORAGE_SIZE = 9;
 
 	public PlayerSessionData(UUID uuid, Session s, ResultSet rs) throws SQLException {
@@ -342,7 +345,7 @@ public class PlayerSessionData {
 
 	public void giveEquipment(Equipment eq, Component toSelf, Component toOthers) {
 		Player p = getPlayer();
-		Util.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, false);
+		Sounds.success.play(p, p);
 		s.broadcastOthers(toOthers.append(eq.getHoverable()).append(Component.text(".")), p);
 		toSelf = toSelf.append(eq.getHoverable());
 
@@ -589,8 +592,8 @@ public class PlayerSessionData {
 	public void healPercent(double percent) {
 		Player p = getPlayer();
 		setHealth(this.health + (percent * maxHealth));
-		heal.spawn(p);
-		Util.playSound(p, Sound.ENTITY_PLAYER_LEVELUP, false);
+		heal.play(p, p);
+		Sounds.levelup.play(p, p);
 	}
 
 	public void damagePercent(double percent) {

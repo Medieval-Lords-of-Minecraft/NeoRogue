@@ -2,11 +2,10 @@ package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
-import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -21,7 +20,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
 
 public class GraniteShield extends Equipment {
 	private static final int HEAL_COUNT = 3;
-	private ParticleContainer pc = new ParticleContainer(Particle.VILLAGER_HAPPY).count(15).spread(0.5, 0.5).offsetY(2);;
+	private static final ParticleContainer pc = new ParticleContainer(Particle.VILLAGER_HAPPY).count(15).spread(0.5, 0.5).offsetY(2);;
 	private int heal, concuss;
 	
 	public GraniteShield(boolean isUpgraded) {
@@ -64,8 +63,8 @@ public class GraniteShield extends Equipment {
 			
 			action = (pdata, inputs) -> {
 				if (++count % HEAL_COUNT == 0) {
-					pc.spawn(p);
-					Util.playSound(p, Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1F, 1F, false);
+					pc.play(p, p);
+					Sounds.enchant.play(p, p);
 					FightInstance.giveHeal(p, heal, p);
 				}
 				return TriggerResult.keep();

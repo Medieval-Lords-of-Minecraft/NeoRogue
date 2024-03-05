@@ -53,6 +53,7 @@ import me.neoblade298.neorogue.equipment.artifacts.GoldIngot;
 import me.neoblade298.neorogue.equipment.artifacts.GrendelsCrystalMirror;
 import me.neoblade298.neorogue.equipment.artifacts.HermesBoots;
 import me.neoblade298.neorogue.equipment.artifacts.MercenaryHeadband;
+import me.neoblade298.neorogue.equipment.artifacts.NoxianBlight;
 import me.neoblade298.neorogue.equipment.artifacts.PracticeDummy;
 import me.neoblade298.neorogue.equipment.artifacts.RubyCluster;
 import me.neoblade298.neorogue.equipment.artifacts.RubyGem;
@@ -76,16 +77,17 @@ import me.neoblade298.neorogue.equipment.cursed.RustySword;
 import me.neoblade298.neorogue.equipment.materials.DullGem;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
-import me.neoblade298.neorogue.equipment.offhands.PaladinsShield;
 import me.neoblade298.neorogue.equipment.offhands.ChasingDagger;
 import me.neoblade298.neorogue.equipment.offhands.HastyShield;
 import me.neoblade298.neorogue.equipment.offhands.LeatherBracer;
+import me.neoblade298.neorogue.equipment.offhands.PaladinsShield;
 import me.neoblade298.neorogue.equipment.offhands.SmallShield;
 import me.neoblade298.neorogue.equipment.offhands.SpikyShield;
 import me.neoblade298.neorogue.equipment.offhands.TowerShield;
 import me.neoblade298.neorogue.equipment.offhands.WristBlade;
 import me.neoblade298.neorogue.equipment.weapons.BoltWand;
 import me.neoblade298.neorogue.equipment.weapons.ChainLightningWand;
+import me.neoblade298.neorogue.equipment.weapons.CripplingFencingSword;
 import me.neoblade298.neorogue.equipment.weapons.DarkScepter;
 import me.neoblade298.neorogue.equipment.weapons.EarthStaff;
 import me.neoblade298.neorogue.equipment.weapons.EarthenLeatherGauntlets;
@@ -99,7 +101,7 @@ import me.neoblade298.neorogue.equipment.weapons.LeatherGauntlets;
 import me.neoblade298.neorogue.equipment.weapons.LightLeatherGauntlets;
 import me.neoblade298.neorogue.equipment.weapons.LightningWand;
 import me.neoblade298.neorogue.equipment.weapons.Rapier;
-import me.neoblade298.neorogue.equipment.weapons.SerratedFencingSword;
+import me.neoblade298.neorogue.equipment.weapons.RighteousHammer;
 import me.neoblade298.neorogue.equipment.weapons.SparkStick;
 import me.neoblade298.neorogue.equipment.weapons.StoneAxe;
 import me.neoblade298.neorogue.equipment.weapons.StoneHammer;
@@ -155,10 +157,14 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new DarkPact(b);
 			new EmpoweredEdge(b).addSelfReforge(new RecklessSwing(b), new BlessedEdge(b), new Fury(b));
 			new Execute(b).addSelfReforge(new SiphoningStrike(b), new MightySwing(b), new Fortify(b));
+			new Prayer(b);
+			new Skirmisher(b);
+			new SpiritOfTheDragoon(b);
 			new Sturdy(b).addSelfReforge(new GraniteShield(b), new Bulwark(b), new Endurance(b));
 			new Tackle(b).addSelfReforge(new EarthenTackle(b), new Bulldoze(b), new Pin(b));
 			new Thornguard(b);
 			new Titan(b);
+			new Windcutter(b);
 			
 			// Accessories
 			new EarthenRing(b);
@@ -185,10 +191,10 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new WristBlade(b);
 			
 			// Weapons
-			new FencingSword(b).addSelfReforge(new Rapier(b), new SerratedFencingSword(b));
+			new FencingSword(b).addSelfReforge(new Rapier(b), new CripplingFencingSword(b));
 			new Flametongue(b);
 			new LeatherGauntlets(b).addSelfReforge(new ForcefulLeatherGauntlets(b), new LightLeatherGauntlets(b), new EarthenLeatherGauntlets(b));
-			new StoneHammer(b).addSelfReforge(new Fracturer(b));
+			new StoneHammer(b).addSelfReforge(new Fracturer(b), new RighteousHammer(b));
 			new WoodenSword(b).addSelfReforge(new StoneSword(b), new StoneSpear(b), new StoneAxe(b));
 			new WoodenWand(b);
 			new LightningWand(b).addSelfReforge(new SparkStick(b), new ChainLightningWand(b), new BoltWand(b));
@@ -220,8 +226,9 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new GrendelsCrystalMirror();
 		new HermesBoots();
 		new PracticeDummy();
-		new TomeOfWisdom();
 		new MercenaryHeadband();
+		new NoxianBlight();
+		new TomeOfWisdom();
 		
 		// Levelup artifacts
 		new EmeraldCluster();
@@ -639,7 +646,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			data.addMana(-properties.get(PropertyType.MANA_COST));
 		if (properties.has(PropertyType.STAMINA_COST))
 			data.addStamina(-properties.get(PropertyType.STAMINA_COST));
-		properties.getSwingSound().play(p);
+		properties.getSwingSound().play(p, p);
 		data.setBasicAttackCooldown(type.getSlots()[0], attackSpeed);
 		if (type.getSlots()[0] == EquipSlot.OFFHAND)
 			p.swingOffHand();

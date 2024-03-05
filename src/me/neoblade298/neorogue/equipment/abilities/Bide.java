@@ -5,8 +5,8 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
-import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -20,8 +20,10 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Bide extends Equipment {
 	private int shields, berserk, duration;
-	private ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
+	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
 			bpc = new ParticleContainer(Particle.FLAME);
+	private static final SoundContainer sc = new SoundContainer(Sound.ITEM_ARMOR_EQUIP_CHAIN),
+			strengthGain = new SoundContainer(Sound.ENTITY_BLAZE_SHOOT);
 	
 	public Bide(boolean isUpgraded) {
 		super("bide", "Bide", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR, 
@@ -46,7 +48,7 @@ public class Bide extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(p, this, slot, es, (fd, in) -> {
 			data.addSimpleShield(p.getUniqueId(), shields, duration * 20);
-			Util.playSound(p, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1F, 1F, false);
+			sc.play(p, p);
 			data.addTrigger(id, Trigger.RECEIVED_DAMAGE, new BideInstance(p, id));
 			return TriggerResult.keep();
 		}));
@@ -59,9 +61,9 @@ public class Bide extends Equipment {
 			createTime = System.currentTimeMillis();
 			action = (data, inputs) -> {
 				if (System.currentTimeMillis() - createTime > 5000) return TriggerResult.remove();
-				bpc.spawn(p);
+				bpc.play(p, p);
 				data.applyStatus(StatusType.BERSERK, p.getUniqueId(), berserk, -1);
-				Util.playSound(p, Sound.ENTITY_BLAZE_SHOOT, 1F, 1F, false);
+				strengthGain.play(p, p);
 				return TriggerResult.keep();
 			};
 		}

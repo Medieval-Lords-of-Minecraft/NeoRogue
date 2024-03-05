@@ -7,16 +7,16 @@ import java.util.UUID;
 
 import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
-import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
-import me.neoblade298.neocore.bukkit.util.Util;
+
+import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -32,7 +32,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Bulldoze extends Equipment {
-	private ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION_LARGE),
+	private static final ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION_LARGE),
 			start = new ParticleContainer(Particle.CLOUD),
 			wake = new ParticleContainer(Particle.EXPLOSION_NORMAL);
 	private static final TargetProperties hc = TargetProperties.radius(2, true, TargetType.ENEMY);
@@ -52,8 +52,8 @@ public class Bulldoze extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		EquipmentInstance inst = new EquipmentInstance(p, this, slot, es);
 		inst.setAction((pdata, inputs) -> {
-			Util.playSound(p, Sound.ENTITY_ENDER_DRAGON_AMBIENT, false);
-			start.spawn(p);
+			Sounds.roar.play(p, p);
+			start.play(p, p);
 			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 60, 0));
 			new BulldozeHitChecker(p, data);
 			return TriggerResult.keep();
@@ -70,16 +70,16 @@ public class Bulldoze extends Equipment {
 				boolean spawnParticle = delay % 4 == 0;
 				tasks.add(new BukkitRunnable() {
 					public void run() {
-						if (spawnParticle) wake.spawn(p);
+						if (spawnParticle) wake.play(p, p);
 						
 						LinkedList<LivingEntity> hit = TargetHelper.getEntitiesInRadius(p, hc);
 						if (hit.size() == 0) return;
 
-						Util.playSound(p, Sound.ENTITY_GENERIC_EXPLODE, false);
+						Sounds.explode.play(p, p);
 						for (LivingEntity ent : hit) {
 							if (hitList.contains(ent.getUniqueId())) continue;
 							hitList.add(ent.getUniqueId());
-							pc.spawn(ent);
+							pc.play(p, ent);
 							FightInstance.dealDamage(data, DamageType.BLUNT, damage + (data.getShields() != null ? data.getShields().getAmount() : 0), ent);
 							FightInstance.knockback(p, ent, 2);
 						}

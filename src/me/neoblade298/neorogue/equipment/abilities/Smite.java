@@ -6,8 +6,9 @@ import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
-import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.effects.SoundContainer;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -27,6 +28,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class Smite extends Equipment {
 	private int sanctified, damage;
 	private static final ParticleContainer part = new ParticleContainer(Particle.FIREWORKS_SPARK).offsetForward(2).count(30).spread(4, 0.2);
+	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_FIREWORK_ROCKET_TWINKLE);
 	private static final TargetProperties tp = TargetProperties.cone(90, 5, false, TargetType.ENEMY);
 	
 	public Smite(boolean isUpgraded) {
@@ -40,9 +42,9 @@ public class Smite extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(p, this, slot, es, (pd, in) -> {
-			Util.playSound(p, Sound.ENTITY_PLAYER_ATTACK_SWEEP, false);
-			Util.playSound(p, Sound.ENTITY_FIREWORK_ROCKET_TWINKLE, false);
-			part.spawn(p);
+			Sounds.attackSweep.play(p, p);
+			sc.play(p, p);
+			part.play(p, p);
 			for (LivingEntity ent : TargetHelper.getEntitiesInCone(p, tp)) {
 				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.SLASHING), ent);
 				FightInstance.applyStatus(ent, StatusType.SANCTIFIED, p, sanctified, -1);

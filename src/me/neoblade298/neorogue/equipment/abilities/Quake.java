@@ -6,8 +6,8 @@ import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
-import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -28,6 +28,7 @@ public class Quake extends Equipment {
 	private static final TargetProperties tp = TargetProperties.radius(5, true, TargetType.ENEMY);
 	private int concussed, damage;
 	private static final ParticleContainer part = new ParticleContainer(Particle.CLOUD).spread(tp.range, 0.2).count(50);
+	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_WARDEN_ATTACK_IMPACT);
 	
 	public Quake(boolean isUpgraded) {
 		super("quake", "Quake", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
@@ -40,8 +41,8 @@ public class Quake extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(p, this, slot, es, (pd, in) -> {
-			Util.playSound(p, Sound.ENTITY_WARDEN_ATTACK_IMPACT, false);
-			part.spawn(p);
+			sc.play(p, p);
+			part.play(p, p);
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
 				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.EARTHEN), ent);
 				FightInstance.applyStatus(ent, StatusType.CONCUSSED, p, concussed, -1);

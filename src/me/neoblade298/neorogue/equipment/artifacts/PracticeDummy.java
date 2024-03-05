@@ -2,11 +2,11 @@ package me.neoblade298.neorogue.equipment.artifacts;
 
 import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
+import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -54,8 +54,8 @@ public class PracticeDummy extends Artifact {
 			Player p = data.getPlayer();
 			count++;
 			if (count == num) {
-				Util.playSound(data.getPlayer(), Sound.ENTITY_ARROW_HIT_PLAYER, false);
-				part.spawn(p);
+				Sounds.success.play(p, p);
+				part.play(p, p);
 				Util.msg(p, "<red>Practice Dummy</red> was activated");
 			}
 			if (count > num) {

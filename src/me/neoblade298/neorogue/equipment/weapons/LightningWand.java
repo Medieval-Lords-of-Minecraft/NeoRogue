@@ -6,8 +6,8 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
-import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
@@ -23,7 +23,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class LightningWand extends Equipment {
-	private static ParticleContainer tick;
+	private static final ParticleContainer tick;
 	
 	private int pierceAmount;
 
@@ -64,14 +64,14 @@ public class LightningWand extends Equipment {
 		
 		@Override
 		public void onTick(ProjectileInstance proj, boolean interpolation) {
-			tick.spawn(proj.getLocation());
+			tick.play(p, proj.getLocation());
 		}
 		
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
 			weaponDamageProjectile(hit.getEntity(), proj, hitBarrier);
 			Location loc = hit.getEntity().getLocation();
-			Util.playSound(p, loc, Sound.ENTITY_LIGHTNING_BOLT_IMPACT, 1F, 1F, true);
+			Sounds.explode.play(p, loc);
 			if (proj.getNumHit() >= pierceAmount)
 				proj.cancel();
 		}

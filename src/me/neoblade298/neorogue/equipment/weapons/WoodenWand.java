@@ -6,8 +6,8 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
-import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
@@ -23,7 +23,9 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class WoodenWand extends Equipment {
-	private static ParticleContainer tick;
+	private static final ParticleContainer tick;
+	private static final SoundContainer tickSound = new SoundContainer(Sound.BLOCK_AMETHYST_BLOCK_BREAK),
+			hit = new SoundContainer(Sound.BLOCK_CHAIN_PLACE);
 	
 	static {
 		tick = new ParticleContainer(Particle.END_ROD);
@@ -62,15 +64,15 @@ public class WoodenWand extends Equipment {
 
 		@Override
 		public void onTick(ProjectileInstance proj, boolean interpolation) {
-			tick.spawn(proj.getLocation());
-			Util.playSound(p, proj.getLocation(), Sound.BLOCK_AMETHYST_BLOCK_BREAK, 1F, 1F, true);
+			tick.play(p, proj.getLocation());
+			tickSound.play(p, proj.getLocation());
 		}
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
 			weaponDamageProjectile(hit.getEntity(), proj, hitBarrier);
 			Location loc = hit.getEntity().getLocation();
-			Util.playSound(p, loc, Sound.BLOCK_CHAIN_PLACE, 1F, 1F, true);
+			WoodenWand.hit.play(p, loc);
 		}
 
 		@Override

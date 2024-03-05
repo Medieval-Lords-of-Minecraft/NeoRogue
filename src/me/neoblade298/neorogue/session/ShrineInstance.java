@@ -23,7 +23,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import eu.decentsoftware.holograms.api.holograms.Hologram;
-import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
+import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.player.PlayerSessionData;
@@ -116,7 +116,7 @@ public class ShrineInstance extends EditInventoryInstance {
 	public void chooseState(boolean rest) {
 		state = rest ? REST_STATE : UPGRADE_STATE;
 		s.broadcast("The host has chosen to <yellow>" + (rest ? "rest" : "upgrade"));
-		part.spawn(blockMiddle.getLocation());
+		part.play(blockMiddle.getLocation());
 		s.broadcastSound(Sound.ENTITY_FIREWORK_ROCKET_BLAST);
 		s.broadcastSound(Sound.ENTITY_ARROW_HIT_PLAYER);
 

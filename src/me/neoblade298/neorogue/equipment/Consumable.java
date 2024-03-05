@@ -3,13 +3,14 @@ package me.neoblade298.neorogue.equipment;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.UseConsumableEvent;
 
 public abstract class Consumable extends Equipment {
+	private SoundContainer drink = new SoundContainer(Sound.ENTITY_WITCH_DRINK);
 	public Consumable(String id, String display, boolean isUpgraded, Rarity rarity, EquipmentClass ec) {
 		super(id, display, isUpgraded, rarity, ec, EquipmentType.CONSUMABLE, EquipmentProperties.none());
 	}
@@ -17,7 +18,7 @@ public abstract class Consumable extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, (pdata, in) -> {
-			Util.playSound(p, Sound.ENTITY_WITCH_DRINK, false);
+			drink.play(p, p);
 			data.getSessionData().removeEquipment(es, slot);
 			data.runActions(data, Trigger.USE_CONSUMABLE, new UseConsumableEvent(this));
 			runConsumableEffects(p, data);

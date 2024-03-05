@@ -158,7 +158,7 @@ public class EquipmentInstance extends PriorityAction {
 	}
 	
 	public double getStaminaCost() {
-		return staminaCost;
+		return tempStaminaCost == -1 ? staminaCost : tempStaminaCost;
 	}
 	
 	public void setManaCost(double mana) {
@@ -166,7 +166,7 @@ public class EquipmentInstance extends PriorityAction {
 	}
 
 	public double getManaCost() {
-		return manaCost;
+		return tempManaCost == -1 ? manaCost : tempManaCost;
 	}
 	
 	public Equipment getEquipment() {

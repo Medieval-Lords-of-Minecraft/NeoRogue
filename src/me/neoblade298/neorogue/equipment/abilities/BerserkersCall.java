@@ -7,8 +7,8 @@ import org.bukkit.Particle.DustOptions;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
-import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -21,7 +21,8 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class BerserkersCall extends Equipment {
-	private ParticleContainer pc = new ParticleContainer(Particle.REDSTONE);
+	private static final ParticleContainer pc = new ParticleContainer(Particle.REDSTONE);
+	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_BLAZE_DEATH);
 	private int strength, berserkStrength;
 	private static final int BERSERK_CUTOFF = 16;
 	
@@ -45,8 +46,8 @@ public class BerserkersCall extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(p, this, slot, es, (pdata, inputs) -> {
-			Util.playSound(p, Sound.ENTITY_BLAZE_DEATH, 1F, 1F, false);
-			pc.spawn(p);
+			sc.play(p, p);
+			pc.play(p, p);
 			data.applyStatus(StatusType.BERSERK, p.getUniqueId(), 1, -1);
 			Status s = data.getStatus(StatusType.BERSERK);
 			if (s != null && s.getStacks() >= BERSERK_CUTOFF) {

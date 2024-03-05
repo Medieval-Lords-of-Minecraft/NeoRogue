@@ -8,8 +8,8 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
-import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -31,7 +31,8 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class FireStaff extends Equipment {
 	private static final TargetProperties props = TargetProperties.radius(1.2, true, TargetType.ENEMY);
 	
-	private static ParticleContainer tick;
+	private static final ParticleContainer tick;
+	private static final SoundContainer sc = new SoundContainer(Sound.BLOCK_CHAIN_PLACE);
 
 	static {
 		tick = new ParticleContainer(Particle.FLAME);
@@ -74,7 +75,7 @@ public class FireStaff extends Equipment {
 		
 		@Override
 		public void onTick(ProjectileInstance proj, boolean interpolation) {
-			tick.spawn(proj.getLocation());
+			tick.play(p, proj.getLocation());
 		}
 		
 		@Override
@@ -84,7 +85,7 @@ public class FireStaff extends Equipment {
 			}
 
 			Location loc = hit.getEntity().getLocation();
-			Util.playSound(p, loc, Sound.BLOCK_CHAIN_PLACE, 1F, 1F, true);
+			sc.play(p, loc);
 		}
 		
 		@Override

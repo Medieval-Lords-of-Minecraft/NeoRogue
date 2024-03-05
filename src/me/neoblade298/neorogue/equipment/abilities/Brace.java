@@ -5,8 +5,8 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
-import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -18,7 +18,8 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Brace extends Equipment {
 	private int shields;
-	private ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
+	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
+	private static final SoundContainer equip = new SoundContainer(Sound.ITEM_ARMOR_EQUIP_CHAIN);
 	
 	public Brace(boolean isUpgraded) {
 		super("brace", "Brace", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
@@ -32,9 +33,9 @@ public class Brace extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(p, this, slot, es, (pdata, inputs) -> {
-			pc.spawn(p);
+			pc.play(p, p);
 			data.addSimpleShield(p.getUniqueId(), shields, 100);
-			Util.playSound(p, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1F, 1F, false);
+			equip.play(p, p);
 			return TriggerResult.keep();
 		}));
 	}

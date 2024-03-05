@@ -9,8 +9,10 @@ import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
-import me.neoblade298.neocore.bukkit.particles.ParticleUtil;
+import me.neoblade298.neocore.bukkit.effects.Audience;
+import me.neoblade298.neocore.bukkit.effects.Effect;
+import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.effects.ParticleUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
@@ -27,7 +29,7 @@ public class ChainLightningWand extends Equipment {
 	private static final TargetProperties hitScan = TargetProperties.cone(9, 10, false, TargetType.ENEMY);
 	private static final TargetProperties chainScan = TargetProperties.cone(60, 5, false, TargetType.ENEMY);
 
-	private static ParticleContainer tick;
+	private static final ParticleContainer tick;
 	private LinkedList<Player> drawCache;
 
 	private int chainAmount;
@@ -54,7 +56,7 @@ public class ChainLightningWand extends Equipment {
 			LivingEntity target = TargetHelper.getNearestInSight(p, hitScan);
 			if (target != null) {
 				weaponDamage(p, data, target);
-				drawCache = ParticleUtil.calculateCache(p.getLocation());
+				drawCache = Effect.calculateCache(p, p.getLocation(), Audience.NONE, ParticleContainer.HIDE_TAG);
 				drawChains(p.getLocation(), target.getLocation());
 				chainHit(p, data, target, chainAmount);
 			}

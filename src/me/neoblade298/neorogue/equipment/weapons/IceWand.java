@@ -9,8 +9,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
-import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
@@ -33,7 +33,8 @@ public class IceWand extends Equipment {
 	private static final TargetProperties props = TargetProperties.radius(0.75, true, TargetType.ENEMY);
 	private static final PotionEffect slow = new PotionEffect(PotionEffectType.SLOW, 60, 1, false, false, false);
 	
-	private static ParticleContainer tick;
+	private static final ParticleContainer tick;
+	private static final SoundContainer sc = new SoundContainer(Sound.BLOCK_CHAIN_PLACE);
 
 	private int shieldAmount;
 
@@ -74,7 +75,7 @@ public class IceWand extends Equipment {
 		
 		@Override
 		public void onTick(ProjectileInstance proj, boolean interpolation) {
-			tick.spawn(proj.getLocation());
+			tick.play(p, proj.getLocation());
 		}
 		
 		@Override
@@ -87,7 +88,7 @@ public class IceWand extends Equipment {
 			}
 
 			Location loc = hit.getEntity().getLocation();
-			Util.playSound(p, loc, Sound.BLOCK_CHAIN_PLACE, 1F, 1F, true);
+			sc.play(p, loc);
 		}
 		
 		@Override

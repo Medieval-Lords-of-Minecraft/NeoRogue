@@ -19,7 +19,9 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import eu.decentsoftware.holograms.api.holograms.Hologram;
-import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
+import me.neoblade298.neocore.bukkit.effects.Audience;
+import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.NeoRogue;
@@ -34,7 +36,8 @@ import net.kyori.adventure.text.format.NamedTextColor;
 public class ChanceInstance extends EditInventoryInstance {
 	private static final double SPAWN_X = Session.CHANCE_X + 6.5, SPAWN_Z = Session.CHANCE_Z + 1.5,
 			HOLO_X = 0, HOLO_Y = 2, HOLO_Z = 3;
-	private static ParticleContainer part = new ParticleContainer(Particle.FLAME).count(25).speed(0.1).spread(0.2, 0.2);
+	private static final ParticleContainer part = new ParticleContainer(Particle.FLAME).count(25).speed(0.1).spread(0.2, 0.2);
+	private static final SoundContainer sc = new SoundContainer(Sound.BLOCK_NOTE_BLOCK_PLING);
 
 	private ChanceSet set;
 	private HashMap<UUID, ChanceStage> stage = new HashMap<UUID, ChanceStage>();
@@ -142,7 +145,7 @@ public class ChanceInstance extends EditInventoryInstance {
 			}
 			
 			if (!stage.containsKey(p.getUniqueId())) {
-				Util.playSound(p, Sound.BLOCK_NOTE_BLOCK_PLING, false);
+				sc.play(p, p, Audience.ORIGIN);
 				Util.msgRaw(p, "You've already completed the chance event! You're waiting for:");
 				for (UUID uuid : stage.keySet()) {
 					Player waiting = Bukkit.getPlayer(uuid);
@@ -199,7 +202,7 @@ public class ChanceInstance extends EditInventoryInstance {
 	private void returnPlayers() {
 		if (returning) return;
 		s.broadcastSound(Sound.ENTITY_BLAZE_SHOOT);
-		part.spawn(holo.getLocation());
+		part.play(holo.getLocation());
 		Candle candle = (Candle) candleBlock.getBlockData();
 		candle.setLit(true);
 		candleBlock.setBlockData(candle);

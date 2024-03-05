@@ -2,11 +2,10 @@ package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
-import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -20,7 +19,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Endurance extends Equipment {
 	private static final int HEAL_COUNT = 3;
-	private ParticleContainer pc = new ParticleContainer(Particle.VILLAGER_HAPPY).count(15).spread(0.5, 0.5).offsetY(2);;
+	private static final ParticleContainer pc = new ParticleContainer(Particle.VILLAGER_HAPPY).count(15).spread(0.5, 0.5).offsetY(2);;
 	private int heal, berserk;
 	
 	public Endurance(boolean isUpgraded) {
@@ -61,9 +60,9 @@ public class Endurance extends Equipment {
 			super(pd.getPlayer(), eq, slot, es);
 			action = (pdata, inputs) -> {
 				if (++count < HEAL_COUNT) return TriggerResult.keep();
-				pc.spawn(p);
+				pc.play(p, p);
 				if (count % HEAL_COUNT == 0) {
-					Util.playSound(p, Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1F, 1F, false);
+					Sounds.enchant.play(p, p);
 					FightInstance.giveHeal(p, heal, p);
 				}
 				

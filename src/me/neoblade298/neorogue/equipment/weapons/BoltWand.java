@@ -1,4 +1,4 @@
-package me.neoblade298.neorogue.equipment.weapons;
+	package me.neoblade298.neorogue.equipment.weapons;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -6,8 +6,8 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
-import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
@@ -25,7 +25,8 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class BoltWand extends Equipment {
-	private static ParticleContainer tick;
+	private static final ParticleContainer tick;
+	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_LIGHTNING_BOLT_IMPACT);
 
 	private int pierceAmount;
 	
@@ -66,7 +67,7 @@ public class BoltWand extends Equipment {
 
 		@Override
 		public void onTick(ProjectileInstance proj, boolean interpolation) {
-			tick.spawn(proj.getLocation());
+			tick.play((Player) proj.getOwner().getEntity(), proj.getLocation());
 		}
 
 		@Override
@@ -74,7 +75,7 @@ public class BoltWand extends Equipment {
 			weaponDamageProjectile(hit.getEntity(), proj, hitBarrier);
 			hit.applyStatus(StatusType.ELECTRIFIED, p.getUniqueId(), 5, 0);
 			Location loc = hit.getEntity().getLocation();
-			Util.playSound(p, loc, Sound.ENTITY_LIGHTNING_BOLT_IMPACT, 1F, 1F, true);
+			sc.play(p, loc);
 			if (proj.getNumHit() >= pierceAmount)
 				proj.cancel();
 		}

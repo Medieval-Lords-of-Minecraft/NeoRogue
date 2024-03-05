@@ -5,16 +5,15 @@ import java.util.LinkedList;
 
 import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
-import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
-import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -30,7 +29,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Tackle extends Equipment {
-	private ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION_LARGE),
+	private static final ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION_LARGE),
 			start = new ParticleContainer(Particle.CLOUD);
 	private static final TargetProperties hc = TargetProperties.radius(1.5, true, TargetType.ENEMY),
 			aoe = TargetProperties.radius(2.5, true, TargetType.ENEMY);
@@ -50,8 +49,8 @@ public class Tackle extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		EquipmentInstance inst = new EquipmentInstance(p, this, slot, es);
 		inst.setAction((pdata, in) -> {
-			Util.playSound(p, Sound.ENTITY_SHULKER_SHOOT, false);
-			start.spawn(p);
+			Sounds.jump.play(p, p);
+			start.play(p, p);
 			Vector v = p.getEyeLocation().getDirection();
 			if (p.isOnGround()) {
 				p.teleport(p.getLocation().add(0, 0.2, 0));
@@ -82,9 +81,9 @@ public class Tackle extends Equipment {
 						data.removeCleanupTask(id);
 						cancelTasks();
 						inst.reduceCooldown(data.getShields().getAmount() > 0 ? 15 : 10);
-						Util.playSound(p, Sound.ENTITY_GENERIC_EXPLODE, false);
+						Sounds.explode.play(p, p);
 						for (LivingEntity ent : hit) {
-							pc.spawn(p);
+							pc.play(p, p);
 							FightInstance.dealDamage(data, DamageType.BLUNT, damage, ent);
 						}
 					}

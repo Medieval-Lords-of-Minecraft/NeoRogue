@@ -2,12 +2,11 @@ package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
-import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -23,7 +22,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
 public class Fury extends Equipment {
 	private int damage, berserk, heal, berserkHeal;
-	private ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
+	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
 			hit = new ParticleContainer(Particle.REDSTONE),
 			explode = new ParticleContainer(Particle.EXPLOSION_NORMAL);
 	
@@ -50,18 +49,18 @@ public class Fury extends Equipment {
 			super(p, eq, slot, es);
 			
 			this.action = (data, in) -> {
-				Util.playSound(p, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1F, 1F, false);
-				pc.spawn(p);
+				Sounds.equip.play(p, p);
+				pc.play(p, p);
 				data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in2) -> {
 					BasicAttackEvent ev = (BasicAttackEvent) in2;
 					LivingEntity target = ev.getTarget();
 					FightInstance.dealDamage(data, DamageType.SLASHING, damage, target);
-					hit.spawn(target.getLocation());
-					Util.playSound(p, Sound.BLOCK_ANVIL_LAND, 1F, 1F, false);
+					hit.play(p, target);
+					Sounds.anvil.play(p, target);
 					data.applyStatus(StatusType.BERSERK, p.getUniqueId(), 1, -1);
 					if (isBerserk) {
-						Util.playSound(p, target.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1F, 1F, false);
-						explode.spawn(target.getLocation());
+						Sounds.explode.play(p, target);
+						explode.play(p, target);
 						FightInstance.giveHeal(p, berserkHeal, p);
 					}
 					else {

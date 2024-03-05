@@ -5,7 +5,6 @@ import java.util.HashSet;
 
 import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.LivingEntity;
@@ -16,9 +15,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
-import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
-import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -34,7 +33,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Pin extends Equipment {
-	private ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION_LARGE),
+	private static final ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION_LARGE),
 			start = new ParticleContainer(Particle.CLOUD);
 	private static final TargetProperties aoe = TargetProperties.radius(2, true, TargetType.ENEMY);
 	private int damage, reduction;
@@ -64,8 +63,8 @@ public class Pin extends Equipment {
 			super(p, eq, slot, es);
 			
 			action = (pdata, in) -> {
-				Util.playSound(p, Sound.ENTITY_SHULKER_SHOOT, false);
-				start.spawn(p);
+				Sounds.jump.play(p, p);
+				start.play(p, p);
 				Vector v = p.getEyeLocation().getDirection().setY(0).normalize().multiply(1.2).setY(0.3);
 				if (p.isOnGround()) {
 					p.teleport(p.getLocation().add(0, 0.2, 0));
@@ -89,8 +88,8 @@ public class Pin extends Equipment {
 				return;
 			}
 			
-			Util.playSound(p, Sound.ENTITY_GENERIC_EXPLODE, false);
-			pc.spawn(p);
+			Sounds.explode.play(p, p);
+			pc.play(p, p);
 			for (LivingEntity ent : hit) {
 				FightInstance.dealDamage(FightInstance.getFightData(ent.getUniqueId()), DamageType.BLUNT, damage, ent);
 			}

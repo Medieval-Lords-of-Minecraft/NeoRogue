@@ -2,20 +2,19 @@ package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-import me.neoblade298.neocore.bukkit.particles.ParticleContainer;
-import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageMeta.BuffOrigin;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
-import me.neoblade298.neorogue.session.fight.DamageMeta.BuffOrigin;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -25,7 +24,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
 public class Parry extends Equipment {
 	private int shields, damage;
-	private ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
+	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
 			bpc = new ParticleContainer(Particle.FLAME),
 			hit = new ParticleContainer(Particle.REDSTONE);
 	
@@ -42,9 +41,9 @@ public class Parry extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(p, this, slot, es, (pdata, in) -> {
-			pc.spawn(p);
+			pc.play(p, p);
 			data.addSimpleShield(p.getUniqueId(), shields, 100);
-			Util.playSound(p, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1F, 1F, false);
+			Sounds.equip.play(p, p);
 			data.addTrigger(id, Trigger.RECEIVED_DAMAGE, new ParryBlock(p));
 			return TriggerResult.keep();
 		}));
@@ -60,14 +59,14 @@ public class Parry extends Equipment {
 		@Override
 		public TriggerResult trigger(PlayerFightData data, Object inputs) {
 			if (System.currentTimeMillis() - createTime > 5000) return TriggerResult.remove();
-			bpc.spawn(p);
-			Util.playSound(p, Sound.ENTITY_BLAZE_SHOOT, 1F, 1F, false);
+			bpc.play(p, p);
+			Sounds.fire.play(p, p);
 			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
 				BasicAttackEvent ev = (BasicAttackEvent) in;
 				ev.getMeta().addBuff(BuffType.GENERAL, new Buff(p.getUniqueId(), damage, 0), BuffOrigin.NORMAL, true);
 				FightInstance.dealDamage(data, DamageType.SLASHING, damage, ev.getTarget());
-				hit.spawn(ev.getTarget().getLocation());
-				Util.playSound(p, Sound.BLOCK_ANVIL_LAND, 1F, 1F, false);
+				hit.play(p, ev.getTarget().getLocation());
+				Sounds.anvil.play(p, p);
 				return TriggerResult.remove();
 			});
 			return TriggerResult.keep();
