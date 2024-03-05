@@ -36,6 +36,7 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -328,6 +329,10 @@ public abstract class FightInstance extends Instance {
 		else if (a == Action.RIGHT_CLICK_AIR || a == Action.RIGHT_CLICK_BLOCK) {
 			handleRightClickGeneral(e);
 		}
+	}
+	
+	public void handleToggleSprintEvent(PlayerToggleSprintEvent e) {
+		trigger(e.getPlayer(), Trigger.TOGGLE_SPRINT, e);
 	}
 	
 	public static void handleRightClickArmorStand(PlayerInteractAtEntityEvent e) {

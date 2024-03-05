@@ -114,8 +114,10 @@ import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageMeta.BuffOrigin;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.WeaponSwingEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -153,10 +155,12 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Adrenaline(b).addSelfReforge(new Burst(b), new Discipline(b), new Ferocity(b));
 			new BattleCry(b).addSelfReforge(new WarCry(b), new BerserkersCall(b));
 			new Brace(b).addSelfReforge(new Brace2(b), new Parry(b), new Bide(b)).addReforge(new Provoke(b), new Challenge(b));
+			new Charge(b);
 			new Cleave(b).addSelfReforge(new Quake(b), new Smite(b), new WindSlash(b));
 			new DarkPact(b);
 			new EmpoweredEdge(b).addSelfReforge(new Embolden(b), new BlessedEdge(b), new Fury(b));
 			new Execute(b).addSelfReforge(new SiphoningStrike(b), new MightySwing(b), new Fortify(b));
+			new Flurry(b);
 			new Prayer(b);
 			new Skirmisher(b);
 			new SpiritOfTheDragoon(b);
@@ -647,7 +651,12 @@ public abstract class Equipment implements Comparable<Equipment> {
 		if (properties.has(PropertyType.STAMINA_COST))
 			data.addStamina(-properties.get(PropertyType.STAMINA_COST));
 		properties.getSwingSound().play(p, p);
+		WeaponSwingEvent ev = new WeaponSwingEvent(this, attackSpeed);
+		FightInstance.trigger(p, Trigger.WEAPON_SWING, ev);
+		Buff b = ev.getAttackSpeedBuff();
+		attackSpeed = (attackSpeed * (1 + b.getMultiplier())) + b.getIncrease();
 		data.setBasicAttackCooldown(type.getSlots()[0], attackSpeed);
+		System.out.println("Attack speed after " + attackSpeed);
 		if (type.getSlots()[0] == EquipSlot.OFFHAND)
 			p.swingOffHand();
 	}

@@ -17,6 +17,7 @@ public enum Trigger {
 	HOTBAR_7,
 	HOTBAR_8,
 	HOTBAR_9,
+	WEAPON_SWING, // Sets weapon attack cooldown
 	BASIC_ATTACK,
 	CAST_USABLE,
 	LEFT_CLICK,
@@ -39,6 +40,7 @@ public enum Trigger {
 	RECEIVE_SHIELDS,
 	THROW_TRIDENT,
 	USE_CONSUMABLE,
+	TOGGLE_SPRINT,
 	RECEIVED_DAMAGE, // Cancellable
 	RECEIVED_HEALTH_DAMAGE; // Cancellable, only occurs if the player is due to lose health, TOO LATE to apply buffs
 	

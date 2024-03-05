@@ -45,6 +45,7 @@ public class EmpoweredEdge extends Equipment {
 				data.addSimpleShield(p.getUniqueId(), shields, 40L);
 				hit.play(p, ev.getTarget());
 				Sounds.anvil.play(p, ev.getTarget());
+				System.out.println("Test");
 				return TriggerResult.remove();
 			});
 			return TriggerResult.keep();

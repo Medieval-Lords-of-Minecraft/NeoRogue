@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.commands.Subcommand;
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.commands.Arg;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -37,6 +38,9 @@ public class CmdAdminTestEquipment extends Subcommand {
 			upgrade = true;
 		}
 		Equipment eq = Equipment.get(id, upgrade);
+		if (eq == null) {
+			Util.displayError(p, "That equipment doesn't exist!");
+		}
 		if (sess == null) {
 			p.getInventory().addItem(eq.getItem());
 		}
