@@ -25,7 +25,7 @@ public class Flametongue extends Equipment {
 	public Flametongue(boolean isUpgraded) {
 		super("flametongue", "Flametongue", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(isUpgraded ? 55 : 40, 1, DamageType.SLASHING, new SoundContainer(Sound.ENTITY_BLAZE_SHOOT, 0.5F)));
+				EquipmentProperties.ofWeapon(isUpgraded ? 60 : 45, 1, 0.7, DamageType.SLASHING, new SoundContainer(Sound.ENTITY_BLAZE_SHOOT, 0.5F)));
 		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 

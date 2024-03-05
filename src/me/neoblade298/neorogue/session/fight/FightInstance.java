@@ -647,7 +647,7 @@ public abstract class FightInstance extends Instance {
 	}
 
 	public static void knockback(Location src, Entity trg, double force) {
-		Vector v = src.subtract(trg.getLocation()).toVector().normalize().multiply(force);
+		Vector v = trg.getLocation().subtract(src).toVector().setY(0).normalize().multiply(force).setY(0.5);
 		knockback(v, trg, force);
 	}
 

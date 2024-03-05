@@ -41,7 +41,7 @@ public class StoneSpear extends Equipment {
 	public StoneSpear(boolean isUpgraded) {
 		super(
 				"stoneSpear", "Stone Spear", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR, EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(isUpgraded ? 50 : 40, 0.75, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_CRIT)
+				EquipmentProperties.ofWeapon(isUpgraded ? 50 : 40, 0.75, 0.5, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_CRIT)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
 		
@@ -64,7 +64,11 @@ public class StoneSpear extends Equipment {
 			LinkedList<LivingEntity> targets = TargetHelper.getEntitiesInSight(p, spearHit);
 			if (targets.isEmpty())
 				return TriggerResult.keep();
-			weaponSwingAndDamage(p, data, targets.getFirst());
+			weaponSwing(p, data);
+			DamageMeta dm = new DamageMeta(data, throwDamage, DamageType.PIERCING);
+			dm.addDamageSlice(new DamageSlice(p.getUniqueId(), 0, DamageType.PIERCING));
+			dm.addDamageSlice(new DamageSlice(p.getUniqueId(), 0, DamageType.PIERCING));
+			weaponDamage(p, data, targets.getFirst(), dm);
 			return TriggerResult.keep();
 		});
 		data.addSlotBasedTrigger(id, slot, Trigger.THROW_TRIDENT, inst);
@@ -129,7 +133,8 @@ public class StoneSpear extends Equipment {
 		item = createItem(
 				Material.TRIDENT,
 				"Melee range +1. Can be thrown to deal <yellow>" + throwDamage + "</yellow> " + GlossaryTag.PIERCING.tag(this) + " "
-						+ "damage to all enemies hit, but disabling the weapon for <white>5</white> seconds. Throw damage is affected by buffs <white>3x</white>."
+						+ "damage to all enemies hit, but disabling the weapon for <white>5</white> seconds. "
+						+ "Basic attacks and throw damage are affected by strength <white>3x</white>."
 		);
 	}
 }

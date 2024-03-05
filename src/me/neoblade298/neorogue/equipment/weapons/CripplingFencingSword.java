@@ -23,7 +23,7 @@ public class CripplingFencingSword extends Equipment {
 	public CripplingFencingSword(boolean isUpgraded) {
 		super("cripplingFencingSword", "Crippling Fencing Sword", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(60, 1, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_CRIT));
+				EquipmentProperties.ofWeapon(45, 1, 0.9, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_CRIT));
 		shields = 2;
 		concussed = isUpgraded ? 6 : 4;
 	}

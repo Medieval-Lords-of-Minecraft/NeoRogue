@@ -80,7 +80,7 @@ public class Bulldoze extends Equipment {
 							if (hitList.contains(ent.getUniqueId())) continue;
 							hitList.add(ent.getUniqueId());
 							pc.play(p, ent);
-							FightInstance.dealDamage(data, DamageType.BLUNT, damage + (data.getShields() != null ? data.getShields().getAmount() : 0), ent);
+							FightInstance.dealDamage(data, DamageType.BLUNT, damage + data.getShields().getAmount(), ent);
 							FightInstance.knockback(p, ent, 2);
 						}
 					}

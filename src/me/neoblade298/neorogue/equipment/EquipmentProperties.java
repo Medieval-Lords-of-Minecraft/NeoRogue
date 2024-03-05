@@ -34,7 +34,7 @@ public class EquipmentProperties {
 		setupProperty(PropertyType.RANGE, range);
 		setupProperty(PropertyType.DAMAGE, damage);
 		setupProperty(PropertyType.KNOCKBACK, knockback);
-		setupProperty(PropertyType.ATTACK_SPEED, attackSpeed);
+		setupProperty(PropertyType.ATTACK_COOLDOWN, attackSpeed);
 		this.type = type;
 		this.swingSound = swingSound;
 	}
@@ -126,7 +126,7 @@ public class EquipmentProperties {
 
 	public void modifyItemMeta(ItemStack item, ItemMeta meta) {
 		String name = item.getType().name();
-		double attackSpeed = properties.containsKey(PropertyType.ATTACK_SPEED) ? properties.get(PropertyType.ATTACK_SPEED).amount : 0;
+		double attackSpeed = properties.containsKey(PropertyType.ATTACK_COOLDOWN) ? properties.get(PropertyType.ATTACK_COOLDOWN).amount : 0;
 		if (name.endsWith("SWORD") || name.endsWith("AXE") || name.endsWith("HOE") || name.endsWith("SHOVEL")) {
 			meta.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED, new AttributeModifier(UUID.randomUUID(), "neorogue_attackspeed", attackSpeed - 4, Operation.ADD_NUMBER, EquipmentSlot.HAND));
 		}
@@ -145,7 +145,7 @@ public class EquipmentProperties {
 		COOLDOWN("Cooldown: "),
 		DAMAGE("Damage: "),
 		KNOCKBACK("Knockback: "),
-		ATTACK_SPEED("Attack Speed: ");
+		ATTACK_COOLDOWN("Attack Cooldown: ");
 		
 		private String label;
 		private PropertyType(String label) {

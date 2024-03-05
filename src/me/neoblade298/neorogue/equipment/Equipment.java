@@ -155,7 +155,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Brace(b).addSelfReforge(new Brace2(b), new Parry(b), new Bide(b)).addReforge(new Provoke(b), new Challenge(b));
 			new Cleave(b).addSelfReforge(new Quake(b), new Smite(b), new WindSlash(b));
 			new DarkPact(b);
-			new EmpoweredEdge(b).addSelfReforge(new RecklessSwing(b), new BlessedEdge(b), new Fury(b));
+			new EmpoweredEdge(b).addSelfReforge(new Embolden(b), new BlessedEdge(b), new Fury(b));
 			new Execute(b).addSelfReforge(new SiphoningStrike(b), new MightySwing(b), new Fortify(b));
 			new Prayer(b);
 			new Skirmisher(b);
@@ -639,7 +639,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 	
 	// Used for weapons that start cooldown on swing, not hit
 	public void weaponSwing(Player p, PlayerFightData data) {
-		weaponSwing(p, data, properties.get(PropertyType.ATTACK_SPEED));
+		weaponSwing(p, data, properties.get(PropertyType.ATTACK_COOLDOWN));
 	}
 	public void weaponSwing(Player p, PlayerFightData data, double attackSpeed) {
 		if (properties.has(PropertyType.MANA_COST))
@@ -676,20 +676,20 @@ public abstract class Equipment implements Comparable<Equipment> {
 		DamageMeta dm = new DamageMeta(data, damage, properties.getType());
 		BasicAttackEvent ev = new BasicAttackEvent(target, dm, knockback, this, null);
 		data.runActions(data, Trigger.BASIC_ATTACK, ev);
-		FightInstance.dealDamage(dm, target);
 		if (knockback != 0) {
 			FightInstance.knockback(p, target, knockback);
 		}
+		FightInstance.dealDamage(dm, target);
 	}
 	
 	public void weaponDamage(Player p, PlayerFightData data, LivingEntity target, DamageMeta dm) {
 		double knockback = properties.get(PropertyType.KNOCKBACK);
 		BasicAttackEvent ev = new BasicAttackEvent(target, dm, knockback, this, null);
 		data.runActions(data, Trigger.BASIC_ATTACK, ev);
-		FightInstance.dealDamage(dm, target);
 		if (knockback != 0) {
 			FightInstance.knockback(p, target, knockback);
 		}
+		FightInstance.dealDamage(dm, target);
 	}
 	
 	public void weaponDamageProjectile(LivingEntity target, ProjectileInstance proj) {
@@ -707,10 +707,10 @@ public abstract class Equipment implements Comparable<Equipment> {
 		}
 		BasicAttackEvent ev = new BasicAttackEvent(target, dm, properties.get(PropertyType.KNOCKBACK), this, null);
 		data.runActions(data, Trigger.BASIC_ATTACK, ev);
-		FightInstance.dealDamage(dm, target);
 		if (properties.contains(PropertyType.KNOCKBACK)) {
 			FightInstance.knockback(proj.getVector(), target, properties.get(PropertyType.KNOCKBACK));
 		}
+		FightInstance.dealDamage(dm, target);
 	}
 	
 	public void damageProjectile(LivingEntity target, ProjectileInstance proj, DamageMeta meta) {

@@ -40,7 +40,7 @@ public class FightData {
 	protected HashMap<String, Runnable> cleanupTasks = new HashMap<String, Runnable>();
 	
 	protected Barrier barrier = null;
-	protected ShieldHolder shields = null;
+	protected ShieldHolder shields; // Never null
 	protected LivingEntity entity = null;
 	protected LinkedList<TickAction> tickActions = new LinkedList<TickAction>(); // Every 20 ticks
 	protected MapSpawnerInstance spawner;
