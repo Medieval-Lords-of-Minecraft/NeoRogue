@@ -116,7 +116,7 @@ public class VultureChance extends ChanceSet {
 		}),
 		EQUIPMENT("You find some equipment for your troubles!", (s) -> {
 			for (PlayerSessionData data : s.getParty().values()) {
-				data.giveEquipment(Equipment.getDrop(s.getAreasCompleted() + 1, 1, data.getPlayerClass()).get(0));
+				data.giveEquipment(Equipment.getDrop(s.getAreasCompleted() + 1, 1, data.getPlayerClass(), EquipmentClass.CLASSLESS).get(0));
 			}
 		});
 		private String desc;

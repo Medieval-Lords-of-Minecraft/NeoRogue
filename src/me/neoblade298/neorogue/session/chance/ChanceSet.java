@@ -41,6 +41,7 @@ public class ChanceSet {
 		}
 		
 		new AmbushChance();
+		new Stockpile();
 		new ForkInTheRoadChance();
 		new GreedChance();
 		new LabChance();
