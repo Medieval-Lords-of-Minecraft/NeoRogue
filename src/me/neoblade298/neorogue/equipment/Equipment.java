@@ -656,7 +656,6 @@ public abstract class Equipment implements Comparable<Equipment> {
 		Buff b = ev.getAttackSpeedBuff();
 		attackSpeed = (attackSpeed * (1 + b.getMultiplier())) + b.getIncrease();
 		data.setBasicAttackCooldown(type.getSlots()[0], attackSpeed);
-		System.out.println("Attack speed after " + attackSpeed);
 		if (type.getSlots()[0] == EquipSlot.OFFHAND)
 			p.swingOffHand();
 	}
