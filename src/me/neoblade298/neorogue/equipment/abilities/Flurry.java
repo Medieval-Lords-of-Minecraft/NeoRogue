@@ -9,7 +9,6 @@ import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
-import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
@@ -23,8 +22,7 @@ public class Flurry extends Equipment {
 	
 	public Flurry(boolean isUpgraded) {
 		super("flurry", "Flurry", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 15, isUpgraded ? 5 : 7, 0));
-		properties.addUpgrades(PropertyType.COOLDOWN);
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 35, 10, 0));
 		cutoff = isUpgraded ? 6 : 4;
 	}
 

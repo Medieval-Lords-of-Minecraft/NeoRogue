@@ -317,7 +317,7 @@ public class PlayerSessionInventory extends CoreInventory {
 
 			// Reforged item check
 			if (eq.containsReforgeOption(eqedId)) {
-				if (!eq.isUpgraded() && !eqed.isUpgraded()) {
+				if (!canReforge(eq, eqed)) {
 					addItem = false;
 					displayError("At least one of the items must be upgraded to reforge!", true);
 					return;
@@ -329,7 +329,7 @@ public class PlayerSessionInventory extends CoreInventory {
 			}
 			else if (eqed != null && eqed.containsReforgeOption(eqId)) {
 				p.setItemOnCursor(null);
-				if (!eq.isUpgraded() && !eqed.isUpgraded()) {
+				if (!canReforge(eq, eqed)) {
 					displayError("At least one of the items must be upgraded to reforge!", true);
 					return;
 				}
@@ -394,6 +394,12 @@ public class PlayerSessionInventory extends CoreInventory {
 		if (!onChest && clicked == null && cursor != null) {
 			clearHighlights();
 		}
+	}
+	
+	private boolean canReforge(Equipment eq, Equipment eqed) {
+		boolean hasUpgrade = eq.isUpgraded() || eqed.isUpgraded();
+		boolean hasCurse = eq.isCursed() || eqed.isCursed();
+		return hasUpgrade || hasCurse;
 	}
 	
 	private void clearHighlights() {

@@ -102,6 +102,7 @@ import me.neoblade298.neorogue.equipment.weapons.LightLeatherGauntlets;
 import me.neoblade298.neorogue.equipment.weapons.LightningWand;
 import me.neoblade298.neorogue.equipment.weapons.Rapier;
 import me.neoblade298.neorogue.equipment.weapons.RighteousHammer;
+import me.neoblade298.neorogue.equipment.weapons.SilverFang;
 import me.neoblade298.neorogue.equipment.weapons.SparkStick;
 import me.neoblade298.neorogue.equipment.weapons.StoneAxe;
 import me.neoblade298.neorogue.equipment.weapons.StoneHammer;
@@ -161,6 +162,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new EmpoweredEdge(b).addSelfReforge(new Embolden(b), new BlessedEdge(b), new Fury(b));
 			new Execute(b).addSelfReforge(new SiphoningStrike(b), new MightySwing(b), new Fortify(b));
 			new Flurry(b);
+			new Ironskin(b);
 			new Prayer(b);
 			new Skirmisher(b);
 			new SpiritOfTheDragoon(b);
@@ -206,6 +208,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new IceWand(b);
 			new EarthStaff(b);
 			new DarkScepter(b);
+			new SilverFang(b);
 			
 			// Consumables
 			new MinorHealthPotion(b);
@@ -251,10 +254,9 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new DullDagger();
 		new GnarledWand();
 		new MangledBow();
-		new RustySword();
+		new RustySword().addReforge(new DullGem(), Equipment.get("silverFang", false));
 		
 		// Materials
-		new DullGem();
 		
 		HashMap<EquipmentType, Integer> counts = new HashMap<EquipmentType, Integer>();
 		for (EquipmentType type : EquipmentType.values()) {
@@ -497,7 +499,12 @@ public abstract class Equipment implements Comparable<Equipment> {
 		if (!reforgeOptions.isEmpty()) {
 			loreItalicized.add(Component.text("Reforgeable with:", NamedTextColor.GOLD));
 			for (Equipment eq : reforgeOptions.keySet()) {
-				loreItalicized.add(Component.text("- ", NamedTextColor.GOLD).append(eq.getDisplay().append(Component.text(isUpgraded ? "(+)" : "+"))));
+				boolean noPostfix = isCursed || eq.isCursed;
+				String postfix = "";
+				if (!noPostfix) {
+					postfix = isUpgraded ? "(+)" : "+";
+				}
+				loreItalicized.add(Component.text("- ", NamedTextColor.GOLD).append(eq.getDisplay().append(Component.text(postfix))));
 			}
 		}
 		if (loreLine != null) {

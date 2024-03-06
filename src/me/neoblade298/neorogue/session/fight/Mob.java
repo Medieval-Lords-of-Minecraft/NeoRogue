@@ -155,6 +155,8 @@ public class Mob implements Comparable<Mob> {
 		ItemMeta meta = item.getItemMeta();
 		meta.displayName(display);
 		ArrayList<Component> lore = new ArrayList<Component>();
+		Component value = Component.text("Value: ", NamedTextColor.GOLD).append(Component.text("" + this.value, NamedTextColor.YELLOW));
+		lore.add(value.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
 		if (!resistances.isEmpty()) {
 			Component header = Component.text("Resistances:", NamedTextColor.GOLD);
 			lore.add(header.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
