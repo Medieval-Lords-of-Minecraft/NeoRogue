@@ -53,7 +53,7 @@ public class GlossaryInventory extends CoreInventory {
 		
 		ItemStack[] contents = inv.getContents();
 		contents[BASIC] = eq.getUnupgraded().getItem();
-		contents[UPGRADED] = eq.getUpgraded().getItem();
+		contents[UPGRADED] = eq.canUpgrade() ? eq.getUpgraded().getItem() : null;
 		
 		// Glossary tags
 		Iterator<GlossaryTag> iter = eq.getTags().iterator();
