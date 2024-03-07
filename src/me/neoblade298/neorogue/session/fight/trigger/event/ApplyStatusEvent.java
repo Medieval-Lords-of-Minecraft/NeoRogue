@@ -4,24 +4,23 @@ import javax.annotation.Nullable;
 
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.FightData;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
 
 public class ApplyStatusEvent {
 	// FightData target, Status ID, stacks, duration
 	private FightData target;
 	private String statusId;
-	private int stacks, duration;
 	private DamageMeta meta;
+	private int stacks, seconds;
+	private Buff stackBuff = new Buff(), durationBuff = new Buff();
 	public ApplyStatusEvent(FightData target, String statusId, int stacks, int duration) {
 		this.target = target;
 		this.statusId = statusId;
 		this.stacks = stacks;
-		this.duration = duration;
+		this.seconds = duration;
 	}
 	public ApplyStatusEvent(FightData target, String statusId, int stacks, int duration, @Nullable DamageMeta meta) {
-		this.target = target;
-		this.statusId = statusId;
-		this.stacks = stacks;
-		this.duration = duration;
+		this(target, statusId, stacks, duration);
 		this.meta = meta;
 	}
 	public FightData getTarget() {
@@ -33,25 +32,19 @@ public class ApplyStatusEvent {
 	public String getStatusId() {
 		return statusId;
 	}
-	public void setStatusId(String statusId) {
-		this.statusId = statusId;
+	public DamageMeta getMeta() {
+		return meta;
+	}
+	public Buff getStacksBuff() {
+		return stackBuff;
+	}
+	public Buff getDurationBuff() {
+		return durationBuff;
 	}
 	public int getStacks() {
 		return stacks;
 	}
-	public void setStacks(int stacks) {
-		this.stacks = stacks;
-	}
-	public int getDuration() {
-		return duration;
-	}
-	public void setDuration(int duration) {
-		this.duration = duration;
-	}
-	public DamageMeta getMeta() {
-		return meta;
-	}
-	public void setMeta(DamageMeta meta) {
-		this.meta = meta;
+	public int getSeconds() {
+		return seconds;
 	}
 }

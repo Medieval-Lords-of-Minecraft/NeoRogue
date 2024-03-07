@@ -285,16 +285,17 @@ public class FightData {
 	
 	protected void applyStatus(Status s, UUID applier, int stacks, int seconds, DamageMeta meta) {
 		String id = s.getId();
+		ApplyStatusEvent ev = new ApplyStatusEvent(this, id, stacks, seconds, meta);
 		if (FightInstance.getUserData().containsKey(applier)) {
 			PlayerFightData data = FightInstance.getUserData(applier);
-			FightInstance.trigger(data.getPlayer(), Trigger.APPLY_STATUS, new ApplyStatusEvent(this, id, stacks, seconds, meta));
+			FightInstance.trigger(data.getPlayer(), Trigger.APPLY_STATUS, ev);
 		}
 		if (this instanceof PlayerFightData) {
 			PlayerFightData data = (PlayerFightData) this;
 			data.updateBoardLines();
-			FightInstance.trigger(data.getPlayer(), Trigger.APPLY_STATUS, new ApplyStatusEvent(this, id, stacks, seconds, meta));
+			FightInstance.trigger(data.getPlayer(), Trigger.APPLY_STATUS, ev);
 		}
-		s.apply(applier, stacks, seconds);
+		s.apply(applier, (int) Math.ceil(ev.getStacksBuff().apply(stacks)), (int) Math.ceil(ev.getDurationBuff().apply(seconds)));
 		statuses.put(id, s);
 	}
 	

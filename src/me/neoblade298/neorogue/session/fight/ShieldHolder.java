@@ -21,7 +21,7 @@ public class ShieldHolder {
 	}
 	
 	public boolean isEmpty() {
-		return shields.isEmpty();
+		return shields.isEmpty() || amount == 0;
 	}
 	
 	public void addShield(Shield shield) {
