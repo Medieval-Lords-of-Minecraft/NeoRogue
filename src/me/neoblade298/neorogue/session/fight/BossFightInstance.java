@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
@@ -62,6 +63,14 @@ public class BossFightInstance extends FightInstance {
 	}
 	
 	private HashMap<UUID, ArrayList<Reward>> generateRewards() {
+		boolean dropPotion = false;
+		if (NeoRogue.gen.nextInt(100) < s.getPotionChance()) {
+			s.addPotionChance(-25);
+			dropPotion = true;
+		}
+		else {
+			s.addPotionChance(10);
+		}
 		HashMap<UUID, ArrayList<Reward>> rewards = new HashMap<UUID, ArrayList<Reward>>();
 		for (UUID uuid : s.getParty().keySet()) {
 			PlayerSessionData data = s.getParty().get(uuid);
@@ -72,12 +81,12 @@ public class BossFightInstance extends FightInstance {
 			
 			ArrayList<Equipment> equipDrops = new ArrayList<Equipment>();
 			EquipmentClass ec = data.getPlayerClass();
-			int value = s.getAreasCompleted();
-			equipDrops.addAll(Equipment.getDrop(value + 3, 3, ec, EquipmentClass.CLASSLESS));
+			int value = s.getAreasCompleted() + 3;
+			equipDrops.addAll(Equipment.getDrop(value, 3, ec, EquipmentClass.CLASSLESS));
 			list.add(new EquipmentChoiceReward(equipDrops));
 			
 			equipDrops = new ArrayList<Equipment>(3);
-			equipDrops.addAll(Equipment.getArtifact(data.getArtifactDroptable(), value + 2, 4, ec, EquipmentClass.CLASSLESS));
+			equipDrops.addAll(Equipment.getArtifact(data.getArtifactDroptable(), value, 4, ec, EquipmentClass.CLASSLESS));
 			list.add(new EquipmentChoiceReward(equipDrops));
 			
 			equipDrops = new ArrayList<Equipment>(3);
@@ -86,6 +95,7 @@ public class BossFightInstance extends FightInstance {
 			equipDrops.add(Equipment.get("sapphireGem", false));
 			list.add(new EquipmentChoiceReward(equipDrops));
 			list.add(new EquipmentReward(Equipment.get("tomeOfWisdom", false)));
+			if (dropPotion) list.add(new EquipmentReward(Equipment.getConsumable(value, ec, EquipmentClass.CLASSLESS)));
 			rewards.put(uuid, list);
 		}
 		return rewards;
