@@ -653,6 +653,13 @@ public abstract class FightInstance extends Instance {
 	}
 
 	public static void knockback(Vector v, Entity trg, double force) {
+		if (NeoRogue.mythicApi.isMythicMob(trg)) {
+			MythicMob type = NeoRogue.mythicApi.getMythicMobInstance(trg).getType();
+			Mob m = Mob.get(type.getInternalName());
+			if (m != null) {
+				v = v.multiply(m.getKnockbackMultiplier());
+			}
+		}
 		trg.setVelocity(trg.getVelocity().add(v.multiply(force)));
 	}
 

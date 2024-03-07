@@ -39,7 +39,7 @@ public class Mob implements Comparable<Mob> {
 	private String id, base64;
 	private TextComponent display;
 	private int amount;
-	private double value;
+	private double value, knockbackMultiplier;
 	private Material mat;
 	private HashMap<BuffType, Integer> resistances = new HashMap<BuffType, Integer>();
 	private HashMap<BuffType, Amount> damageTypes = new HashMap<BuffType, Amount>();
@@ -82,6 +82,7 @@ public class Mob implements Comparable<Mob> {
 		Optional<MythicMob> opt = NeoRogue.mythicMobs.getMythicMob(id);
 		display = Component.text(opt.isPresent() ? opt.get().getDisplayName().get() : "Mob Not Loaded");
 		type = MobType.valueOf(sec.getString("type", "NORMAL").toUpperCase());
+		knockbackMultiplier = sec.getDouble("knockback-multiplier", 1);
 		
 		Section resSec = sec.getSection("resistances");
 		if (resSec != null) {
@@ -148,6 +149,10 @@ public class Mob implements Comparable<Mob> {
 	
 	public MobType getType() {
 		return type;
+	}
+	
+	public double getKnockbackMultiplier() {
+		return knockbackMultiplier;
 	}
 	
 	public ItemStack getItemDisplay(ArrayList<MobModifier> modifiers) {
