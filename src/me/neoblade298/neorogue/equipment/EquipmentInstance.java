@@ -73,8 +73,8 @@ public class EquipmentInstance extends PriorityAction {
 	@Override
 	public TriggerResult trigger(PlayerFightData data, Object inputs) {
 		nextUsable = (long) (System.currentTimeMillis() + (getEffectiveCooldown() * 1000));
-		data.addMana(getEffectiveManaCost());
-		data.addStamina(getEffectiveStaminaCost());
+		data.addMana(-getEffectiveManaCost());
+		data.addStamina(-getEffectiveStaminaCost());
 		return action.trigger(data, inputs);
 	}
 	
@@ -88,12 +88,12 @@ public class EquipmentInstance extends PriorityAction {
 			return false;
 		}
 		if (data.getMana() < getEffectiveManaCost()) {
-			Util.displayError(data.getPlayer(), "Not enough mana!");
+			Util.displayError(data.getPlayer(), "You need " + (getEffectiveManaCost() - data.getMana()) + " more mana!");
 			return false;
 		}
 		
 		if (data.getStamina() < getEffectiveStaminaCost()) {
-			Util.displayError(data.getPlayer(), "Not enough stamina!");
+			Util.displayError(data.getPlayer(), "You need " + (getEffectiveStaminaCost() - data.getStamina()) + " more stamina!");
 			return false;
 		}
 		if (condition != null) {

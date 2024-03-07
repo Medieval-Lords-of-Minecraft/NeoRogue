@@ -300,13 +300,13 @@ public class PlayerFightData extends FightData {
 					CastUsableEvent ev = new CastUsableEvent(ei);
 					runActions(data, Trigger.PRE_CAST_USABLE, ev);
 					
-					// Buff mana costs
+					// Buff mana costs, cannot go below 0
 					Buff b = ev.getBuff(PropertyType.MANA_COST);
-					if (!b.isEmpty()) ei.setTempManaCost(b.applyNegative(ei.getManaCost()));
-					// Buff stamina costs
+					if (!b.isEmpty()) ei.setTempManaCost(Math.max(0, b.applyNegative(ei.getManaCost())));
+					// Buff stamina costs, cannot go below 0
 					b = ev.getBuff(PropertyType.STAMINA_COST);
-					if (!b.isEmpty()) ei.setTempStaminaCost(b.applyNegative(ei.getStaminaCost()));
-					// Buff cooldowns
+					if (!b.isEmpty()) ei.setTempStaminaCost(Math.max(0, b.applyNegative(ei.getStaminaCost())));
+					// Buff cooldowns, doesn't matter if it goes below 0
 					b = ev.getBuff(PropertyType.COOLDOWN);
 					if (!b.isEmpty()) ei.setTempCooldown(b.applyNegative(ei.getBaseCooldown()));
 					
