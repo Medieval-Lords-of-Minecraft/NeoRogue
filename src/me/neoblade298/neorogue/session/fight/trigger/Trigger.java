@@ -19,6 +19,7 @@ public enum Trigger {
 	HOTBAR_9,
 	WEAPON_SWING, // Sets weapon attack cooldown
 	BASIC_ATTACK,
+	PRE_CAST_USABLE,
 	CAST_USABLE,
 	LEFT_CLICK,
 	LEFT_CLICK_NO_HIT,
@@ -34,6 +35,7 @@ public enum Trigger {
 	DEALT_DAMAGE_MULTIPLE,
 	WIN_FIGHT,
 	APPLY_STATUS,
+	RECEIVE_STATUS,
 	LAUNCH_PROJECTILE_GROUP,
 	GRANT_SHIELDS,
 	FALL_DAMAGE, // Cancellable

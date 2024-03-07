@@ -68,6 +68,18 @@ public class Buff {
 		return multiplier;
 	}
 	
+	public double apply(double original) {
+		return (original * (1 + multiplier)) + increase;
+	}
+	
+	public double applyNegative(double original) {
+		return (original * (1 - multiplier)) - increase;
+	}
+	
+	public boolean isEmpty() {
+		return increase == 0 && multiplier == 0;
+	}
+	
 	@Override
 	public String toString() {
 		return increase + "," + multiplier;

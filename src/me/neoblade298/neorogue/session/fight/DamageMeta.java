@@ -305,6 +305,7 @@ public class DamageMeta {
 				if (data == null) return;
 				data.getInstance().cancelRevives((Player) target);
 				if (data.shields.getAmount() > 0 && ignoreShieldsDamage > 0) data.shields.update();
+				data.updateActionBar();
 			}
 		}
 		else {

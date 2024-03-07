@@ -41,15 +41,6 @@ public class StoneAxe extends Equipment {
 			return TriggerResult.keep();
 		});
 		
-		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
-			if (!data.hasStatus(StatusType.BERSERK) || data.getStatus(StatusType.BERSERK).getStacks() < BERSERK_THRESHOLD) TriggerResult.keep();
-			if (pdata.canBasicAttack(EquipSlot.HOTBAR)) return TriggerResult.keep();
-			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
-			weaponSwingAndDamage(p, pdata, ev.getTarget());
-			FightInstance.dealDamage(properties.getDamageMeta(data), TargetHelper.getEntitiesInCone(p, tp));
-			return TriggerResult.keep();
-		});
-		
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_NO_HIT, (pdata, inputs) -> {
 			if (!data.hasStatus(StatusType.BERSERK) || data.getStatus(StatusType.BERSERK).getStacks() < BERSERK_THRESHOLD) TriggerResult.keep();
 			if (pdata.canBasicAttack(EquipSlot.HOTBAR)) return TriggerResult.keep();

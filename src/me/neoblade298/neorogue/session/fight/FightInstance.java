@@ -552,12 +552,8 @@ public abstract class FightInstance extends Instance {
 				totalSpawnValue -= KILLS_TO_SCALE;
 			}
 		}
-
-		spawnCounter += mob.getValue();
-		while (spawnCounter >= 1) {
-			spawnCounter--;
-			data.getInstance().activateSpawner(1);
-		}
+		
+		spawnCounter = data.getInstance().activateSpawner(spawnCounter + mob.getValue());
 	}
 
 	// Method that's called by all listeners and is directly connected to events
@@ -884,15 +880,20 @@ public abstract class FightInstance extends Instance {
 		mythicLocations.put(key, loc);
 	}
 
-	protected void activateSpawner(int num) {
-		if (spawners.isEmpty()) return;
-		for (int i = 0; i < num; i++) {
+	// Returns attempted - actual spawns
+	protected double activateSpawner(double value) {
+		double current = 0;
+		if (spawners.isEmpty()) return value;
+		if (value <= 0) return value;
+		while (current < value) {
 			MapSpawnerInstance spawner = spawners.get(NeoRogue.gen.nextInt(spawners.size()));
 			if (!spawner.canSpawn()) {
 				spawner = unlimitedSpawners.get(NeoRogue.gen.nextInt(unlimitedSpawners.size()));
 			}
 			spawner.spawnMob();
+			current += spawner.getMob().getValue();
 		}
+		return value - current;
 	}
 
 	@Override

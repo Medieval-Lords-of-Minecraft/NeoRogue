@@ -12,6 +12,7 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
+import me.neoblade298.neorogue.session.fight.Mob;
 import me.neoblade298.neorogue.session.fight.buff.BuffType;
 
 public class MapSpawnerInstance {
@@ -45,6 +46,10 @@ public class MapSpawnerInstance {
 	
 	public MythicMob getMythicMob() {
 		return origin.getMythicMob();
+	}
+	
+	public Mob getMob() {
+		return origin.getMob();
 	}
 	
 	public void spawnMob() {

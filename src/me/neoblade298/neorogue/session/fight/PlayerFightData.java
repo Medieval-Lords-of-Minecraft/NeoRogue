@@ -20,6 +20,7 @@ import com.google.common.collect.TreeMultiset;
 
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.TickAction.TickResult;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.KeyBind;
@@ -33,6 +34,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.*;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 
 public class PlayerFightData extends FightData {
 	
@@ -296,12 +298,25 @@ public class PlayerFightData extends FightData {
 				if (inst instanceof EquipmentInstance) {
 					EquipmentInstance ei = (EquipmentInstance) inst;
 					CastUsableEvent ev = new CastUsableEvent(ei);
-					runActions(data, Trigger.CAST_USABLE, ev);
-					ei = ev.getInstance();
+					runActions(data, Trigger.PRE_CAST_USABLE, ev);
+					
+					// Buff mana costs
+					Buff b = ev.getBuff(PropertyType.MANA_COST);
+					if (!b.isEmpty()) ei.setTempManaCost(b.applyNegative(ei.getManaCost()));
+					// Buff stamina costs
+					b = ev.getBuff(PropertyType.STAMINA_COST);
+					if (!b.isEmpty()) ei.setTempStaminaCost(b.applyNegative(ei.getStaminaCost()));
+					// Buff cooldowns
+					b = ev.getBuff(PropertyType.COOLDOWN);
+					if (!b.isEmpty()) ei.setTempCooldown(b.applyNegative(ei.getBaseCooldown()));
+					
 					if (!ei.canTrigger(p, data)) {
+						ei.resetTempCosts();
 						continue;
 					}
+					runActions(data, Trigger.CAST_USABLE, ev);
 					tr = ei.trigger(data, inputs);
+					ei.resetTempCosts();
 					EquipmentInstance.updateSlot(p, inv, ei);
 				}
 				else {
@@ -465,14 +480,17 @@ public class PlayerFightData extends FightData {
 		updateBoardLines();
 	}
 	
-	private void updateActionBar() {
-		p.sendActionBar(
-			Component.text("HP: " + (int)getPlayer().getHealth() + " / " + (int)maxHealth, NamedTextColor.RED)
-			.append(Component.text("  |  ", NamedTextColor.GRAY))
-			.append(Component.text("MP: " + (int)mana + " / " + (int)maxMana, NamedTextColor.BLUE))
-			.append(Component.text("  |  ", NamedTextColor.GRAY))
-			.append(Component.text("SP: " + (int)stamina + " / " + (int)maxStamina, NamedTextColor.GREEN))
-		);
+	public void updateActionBar() {
+		Component bar = Component.text("HP: " + (int)getPlayer().getHealth(), NamedTextColor.RED);
+		if (shields.getAmount() > 0) {
+			bar = bar.append(Component.text("+" + (int)getShields().getAmount(), NamedTextColor.YELLOW));
+		}
+		bar = bar.append(Component.text(" / " + (int)maxHealth, NamedTextColor.RED))
+		.append(Component.text("  |  ", NamedTextColor.GRAY))
+		.append(Component.text("MP: " + (int)mana + " / " + (int)maxMana, NamedTextColor.BLUE))
+		.append(Component.text("  |  ", NamedTextColor.GRAY))
+		.append(Component.text("SP: " + (int)stamina + " / " + (int)maxStamina, NamedTextColor.GREEN));
+		p.sendActionBar(bar);
 	}
 	
 	private class PlayerUpdateTickAction extends TickAction {

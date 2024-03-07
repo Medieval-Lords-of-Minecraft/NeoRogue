@@ -8,6 +8,7 @@ import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -28,11 +29,11 @@ public class Titan extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.CAST_USABLE, (pdata, in) -> {
+		data.addTrigger(id, Trigger.PRE_CAST_USABLE, (pdata, in) -> {
 			CastUsableEvent ev = (CastUsableEvent) in;
 			EquipmentInstance inst = ev.getInstance();
 			if (inst.getStaminaCost() < CUTOFF) return TriggerResult.keep();
-			inst.setTempStaminaCost(inst.getStaminaCost() - staminaReduction);
+			ev.addBuff(PropertyType.STAMINA_COST, p.getUniqueId(), id, staminaReduction, false);
 			return TriggerResult.keep();
 		});
 	}

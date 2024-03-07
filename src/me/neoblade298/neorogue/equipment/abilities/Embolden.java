@@ -54,7 +54,7 @@ public class Embolden extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.FLINT,
 				"On cast, gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + ". "+
-						" Your next basic attack additionally deals <yellow>" + damage + " </yellow>" + GlossaryTag.SLASHING.tag(this) +
+						"Your next basic attack additionally deals <white>" + damage + " </white>" + GlossaryTag.SLASHING.tag(this) +
 				" damage.");
 	}
 }

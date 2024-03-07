@@ -28,7 +28,7 @@ public class CharmOfGallus extends Artifact {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
-		data.addTrigger(id, Trigger.CAST_USABLE, new CharmOfGallusInstance());
+		data.addTrigger(id, Trigger.PRE_CAST_USABLE, new CharmOfGallusInstance());
 	}
 	
 	public class CharmOfGallusInstance implements TriggerAction {

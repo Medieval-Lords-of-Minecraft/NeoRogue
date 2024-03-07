@@ -64,7 +64,7 @@ public class Prayer extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE_TORCH,
-				"On cast, Add up " + GlossaryTag.SANCTIFIED.tag(this) + " stacks of all enemies in range, and heal"
-				+ " the party for <yellow>" + healPct + "%</yellow> of all stacks, split evenly amonst party members.");
+				"On cast, add up " + GlossaryTag.SANCTIFIED.tag(this) + " stacks of all enemies in range, and heal"
+				+ " the party for <yellow>" + heal + "%</yellow> of all stacks, split evenly amonst party members.");
 	}
 }

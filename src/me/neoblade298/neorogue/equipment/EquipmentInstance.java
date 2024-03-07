@@ -4,7 +4,6 @@ import java.util.HashMap;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 import me.neoblade298.neocore.bukkit.NeoCore;
@@ -26,7 +25,7 @@ public class EquipmentInstance extends PriorityAction {
 	protected int slot;
 	protected Equipment eq;
 	protected EquipSlot es;
-	protected double staminaCost, manaCost, tempStaminaCost = -1, tempManaCost = -1, cooldown;
+	protected double staminaCost, manaCost, tempStaminaCost = -1, tempManaCost = -1, cooldown, tempCooldown = -1;
 	protected long nextUsable = 0L;
 	
 	static {
@@ -73,11 +72,9 @@ public class EquipmentInstance extends PriorityAction {
 	
 	@Override
 	public TriggerResult trigger(PlayerFightData data, Object inputs) {
-		nextUsable = (long) (System.currentTimeMillis() + (cooldown * 1000));
-		data.addMana(tempManaCost != -1 ? -tempManaCost : -manaCost);
-		data.addStamina(tempStaminaCost != -1 ? -tempStaminaCost : -staminaCost);
-		tempStaminaCost = -1;
-		tempManaCost = -1;
+		nextUsable = (long) (System.currentTimeMillis() + (getEffectiveCooldown() * 1000));
+		data.addMana(getEffectiveManaCost());
+		data.addStamina(getEffectiveStaminaCost());
 		return action.trigger(data, inputs);
 	}
 	
@@ -90,12 +87,12 @@ public class EquipmentInstance extends PriorityAction {
 			sendCooldownMessage(p);
 			return false;
 		}
-		if (data.getMana() < (tempManaCost != -1 ? tempManaCost : manaCost)) {
+		if (data.getMana() < getEffectiveManaCost()) {
 			Util.displayError(data.getPlayer(), "Not enough mana!");
 			return false;
 		}
 		
-		if (data.getStamina() < (tempStaminaCost != -1 ? tempStaminaCost : staminaCost)) {
+		if (data.getStamina() < getEffectiveStaminaCost()) {
 			Util.displayError(data.getPlayer(), "Not enough stamina!");
 			return false;
 		}
@@ -117,9 +114,17 @@ public class EquipmentInstance extends PriorityAction {
 		if (es != EquipSlot.HOTBAR) return;
 		if (cooldownSeconds <= 0) return;
 		Material mat = COOLDOWN_MATERIALS.get(slot);
-		inv.setItem(slot, new ItemStack(mat));
+		inv.getItem(slot).setType(mat);
 		
 		p.setCooldown(mat, cooldownSeconds * 20);
+	}
+	
+	public double getBaseCooldown() {
+		return cooldown;
+	}
+	
+	public void setTempCooldown(double cooldown) {
+		this.tempCooldown = cooldown;
 	}
 	
 	public void addCooldown(int seconds) {
@@ -145,10 +150,6 @@ public class EquipmentInstance extends PriorityAction {
 		return getCooldownSeconds() * 20;
 	}
 	
-	public void setStaminaCost(double stamina) {
-		this.staminaCost = stamina;
-	}
-	
 	public void setTempStaminaCost(double stamina) {
 		this.tempStaminaCost = stamina;
 	}
@@ -158,15 +159,23 @@ public class EquipmentInstance extends PriorityAction {
 	}
 	
 	public double getStaminaCost() {
-		return tempStaminaCost == -1 ? staminaCost : tempStaminaCost;
+		return this.staminaCost;
 	}
 	
-	public void setManaCost(double mana) {
-		this.manaCost = mana;
+	public double getEffectiveStaminaCost() {
+		return tempStaminaCost == -1 ? staminaCost : tempStaminaCost;
 	}
 
 	public double getManaCost() {
+		return this.manaCost;
+	}
+	
+	public double getEffectiveManaCost() {
 		return tempManaCost == -1 ? manaCost : tempManaCost;
+	}
+	
+	public double getEffectiveCooldown() {
+		return tempCooldown == -1 ? cooldown : tempCooldown;
 	}
 	
 	public Equipment getEquipment() {
@@ -179,5 +188,11 @@ public class EquipmentInstance extends PriorityAction {
 	
 	public int getSlot() {
 		return slot;
+	}
+	
+	public void resetTempCosts() {
+		tempStaminaCost = -1;
+		tempManaCost = -1;
+		tempCooldown = -1;
 	}
 }

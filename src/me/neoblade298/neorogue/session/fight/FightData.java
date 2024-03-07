@@ -7,12 +7,17 @@ import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Entity;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import me.neoblade298.neocore.bukkit.effects.ParticleAnimation;
+import me.neoblade298.neocore.bukkit.effects.ParticleAnimation.ParticleAnimationInstance;
+import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.equipment.mechanics.Barrier;
+import me.neoblade298.neorogue.map.MapSpawnerInstance;
 import me.neoblade298.neorogue.session.Plot;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
@@ -25,11 +30,6 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.GrantShieldsEvent;
-import me.neoblade298.neocore.bukkit.effects.ParticleAnimation;
-import me.neoblade298.neocore.bukkit.effects.ParticleAnimation.ParticleAnimationInstance;
-import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.equipment.mechanics.Barrier;
-import me.neoblade298.neorogue.map.MapSpawnerInstance;
 
 public class FightData {
 	protected FightInstance inst;
@@ -287,6 +287,11 @@ public class FightData {
 		String id = s.getId();
 		if (FightInstance.getUserData().containsKey(applier)) {
 			PlayerFightData data = FightInstance.getUserData(applier);
+			FightInstance.trigger(data.getPlayer(), Trigger.APPLY_STATUS, new ApplyStatusEvent(this, id, stacks, seconds, meta));
+		}
+		if (this instanceof PlayerFightData) {
+			PlayerFightData data = (PlayerFightData) this;
+			data.updateBoardLines();
 			FightInstance.trigger(data.getPlayer(), Trigger.APPLY_STATUS, new ApplyStatusEvent(this, id, stacks, seconds, meta));
 		}
 		s.apply(applier, stacks, seconds);

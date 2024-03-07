@@ -115,7 +115,6 @@ import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageMeta.BuffOrigin;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
-import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.WeaponSwingEvent;
@@ -650,7 +649,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 	
 	// Used for weapons that start cooldown on swing, not hit
 	public void weaponSwing(Player p, PlayerFightData data) {
-		weaponSwing(p, data, properties.get(PropertyType.ATTACK_COOLDOWN));
+		weaponSwing(p, data, properties.get(PropertyType.ATTACK_SPEED));
 	}
 	public void weaponSwing(Player p, PlayerFightData data, double attackSpeed) {
 		if (properties.has(PropertyType.MANA_COST))
@@ -660,9 +659,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		properties.getSwingSound().play(p, p);
 		WeaponSwingEvent ev = new WeaponSwingEvent(this, attackSpeed);
 		FightInstance.trigger(p, Trigger.WEAPON_SWING, ev);
-		Buff b = ev.getAttackSpeedBuff();
-		attackSpeed = (attackSpeed * (1 + b.getMultiplier())) + b.getIncrease();
-		data.setBasicAttackCooldown(type.getSlots()[0], attackSpeed);
+		data.setBasicAttackCooldown(type.getSlots()[0], ev.getAttackSpeedBuff().apply(attackSpeed));
 		if (type.getSlots()[0] == EquipSlot.OFFHAND)
 			p.swingOffHand();
 	}
