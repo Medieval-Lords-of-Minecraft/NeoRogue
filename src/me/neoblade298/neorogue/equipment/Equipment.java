@@ -31,6 +31,7 @@ import me.neoblade298.neorogue.equipment.accessories.MinorShieldingRelic;
 import me.neoblade298.neorogue.equipment.accessories.MinorStaminaRelic;
 import me.neoblade298.neorogue.equipment.accessories.MinorStrengthRelic;
 import me.neoblade298.neorogue.equipment.accessories.RingOfAnger;
+import me.neoblade298.neorogue.equipment.accessories.RingOfFortitude;
 import me.neoblade298.neorogue.equipment.armor.ClothBindings;
 import me.neoblade298.neorogue.equipment.armor.Footpads;
 import me.neoblade298.neorogue.equipment.armor.LeatherChestplate;
@@ -178,6 +179,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new MinorStaminaRelic(b);
 			new MinorStrengthRelic(b);
 			new RingOfAnger(b);
+			new RingOfFortitude(b);
 			new MinorManaRelic(b);
 			
 			// Armor

@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.player;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeMap;
@@ -64,6 +65,7 @@ public class PlayerSessionData {
 	private static final ParticleContainer heal = new ParticleContainer(Particle.VILLAGER_HAPPY).count(50)
 			.spread(0.5, 1).speed(0.1).forceVisible(Audience.ALL);
 	private static final int STORAGE_SIZE = 9;
+	private static final DecimalFormat df = new DecimalFormat("#.##");
 
 	public PlayerSessionData(UUID uuid, Session s, ResultSet rs) throws SQLException {
 		this.uuid = uuid;
@@ -615,8 +617,8 @@ public class PlayerSessionData {
 	public void updateBoardLines() {
 		boardLines = new ArrayList<String>();
 		boardLines.add("§cHP§7: §f" + health);
-		boardLines.add("§9Max MP§7: §f" + maxMana);
-		boardLines.add("§aMax SP§7: §f" + maxStamina);
+		boardLines.add("§9MP§7: §f" + maxMana + " §7| §f" + df.format(manaRegen) + "/s");
+		boardLines.add("§aSP§7: §f" + maxStamina + " §7| §f" + df.format(staminaRegen) + "/s");
 		boardLines.add("§eCoins§7: §f" + coins);
 		if (s.getParty().size() <= 1) return;
 		boardLines.add("§8§m-----");
