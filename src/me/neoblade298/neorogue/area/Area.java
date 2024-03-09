@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -186,7 +187,7 @@ public class Area {
 		do {
 			nodes = new Node[MAX_POSITIONS][MAX_LANES];
 			tryGenerateNodes();
-		} while (!verifyChainLength() || !verifyRequiredMiniboss());
+		} while (!verifyChainLength() || !verifyRequiredMiniboss() || !verifyNoSplitGroups());
 		
 		trimShops();
 		
@@ -212,7 +213,16 @@ public class Area {
 
 		// Start generating by position
 		for (int pos = 2; pos < MAX_POSITIONS - 2; pos++) {
-			GenerationType type = (pos >= 5 && pos <= 7) || (pos >= 11 && pos <= 13) ? GenerationType.SPECIAL : GenerationType.NORMAL;
+			GenerationType type;
+			if (pos == 5 || pos == 6 || pos == 11 || pos == 12) {
+				type = GenerationType.SPECIAL;
+			} else if (pos == 13) {
+				type = GenerationType.FINAL;
+			} else if (pos == 2 || pos == 3) {
+				type = GenerationType.EARLY;
+			} else {
+				type = GenerationType.NORMAL;
+			}
 			nodes[pos] = generatePosition(type, nodes[pos - 1]);
 		}
 
@@ -267,6 +277,42 @@ public class Area {
 		// possible long-term todo: cache nodes so they aren't checked multiple times
 		
 		return true;
+	}
+	
+	// returns true if the first node in the rightmost lane has a path to a node
+	//   in the leftmode lane, and then from there back to a node in the rightmost lane
+	private boolean verifyNoSplitGroups() {
+		for (int pos = 1; pos < MAX_POSITIONS; pos++) {
+			if (nodes[pos][MAX_LANES - 1] != null) {
+				return hasPathToLeft(nodes[pos][MAX_LANES - 1]);
+			}
+		}
+
+		return false;
+	}
+
+	private boolean hasPathToLeft(Node node) {
+		if (node.getLane() == 0)
+			return hasPathToRight(node);
+		
+		for (Node dest : node.getDestinations()) {
+			if (hasPathToLeft(dest))
+				return true;
+		}
+		
+		return false;
+	}
+
+	private boolean hasPathToRight(Node node) {
+		if (node.getLane() == MAX_LANES - 1)
+			return true;
+
+		for (Node dest : node.getDestinations()) {
+			if (hasPathToRight(dest))
+				return true;
+		}
+		
+		return false;
 	}
 
 	private boolean verifyChainLength() {
@@ -549,7 +595,30 @@ public class Area {
 			}
 		}
 
+		cleanLongDiagonals(newPos);
+
 		return newPos;
+	}
+
+	private void cleanLongDiagonals(Node[] pos) {
+		for (int lane = 0; lane < MAX_LANES; lane++) {
+			Node curr = pos[lane];
+			if (curr == null)
+				continue;
+			for (Node source : curr.getSources()) {
+				if (source.getLane() == lane + 2) { // need to shift curr node right 1
+					pos[lane + 1] = curr;
+					pos[lane] = null;
+					curr.setLane(lane + 1);
+					break;
+				} else if (source.getLane() == lane - 2) { // need to shift curr node left 1
+					pos[lane - 1] = curr;
+					pos[lane] = null;
+					curr.setLane(lane - 1);
+					break;
+				}
+			}
+		}
 	}
 
 	private void generateMoreDestinations(Node from, GenerationType type, Node[] newPos, Node[] prevPos, boolean twoDests) {
@@ -795,24 +864,27 @@ public class Area {
 		}
 	}
 	
+	HashSet<Node> ticked = new HashSet<>();
+
 	public void tickParticles(Node curr) {
+		ticked.clear();
 		LinkedList<Player> cache = Effect.calculateCache(nodeToLocation(curr, 0));
 		// Draw red lines for any locations that can immediately be visited
 		for (Node dest : curr.getDestinations()) {
 			ParticleUtil.drawLineWithCache(cache, red, nodeToLocation(curr, 0.5), nodeToLocation(dest, 0.5), 0.5);
+			tickFuturePaths(dest); // Draw black lines for locations past the immediate nodes
 		}
+	}
+	
+	private void tickFuturePaths(Node curr) {
+		if (ticked.contains(curr))
+			return;
+		ticked.add(curr);
 		
-		// Draw black lines for locations past the immediate nodes
-		for (int pos = curr.getPosition() + 1; pos < MAX_POSITIONS; pos++) {
-			for (int lane = 0; lane < MAX_LANES; lane++) {
-				Node node = nodes[pos][lane];
-				if (node == null)
-					continue;
-				cache = Effect.calculateCache(nodeToLocation(node, 0));
-				for (Node dest : node.getDestinations()) {
-					ParticleUtil.drawLineWithCache(cache, black, nodeToLocation(node, 0.5), nodeToLocation(dest, 0.5), 0.5);
-				}
-			}
+		LinkedList<Player> cache = Effect.calculateCache(nodeToLocation(curr, 0));
+		for (Node dest : curr.getDestinations()) {
+			ParticleUtil.drawLineWithCache(cache, black, nodeToLocation(curr, 0.5), nodeToLocation(dest, 0.5), 0.5);
+			tickFuturePaths(dest);
 		}
 	}
 	
@@ -822,7 +894,7 @@ public class Area {
 	}
 	
 	public enum GenerationType {
-		NORMAL(0), SPECIAL(1), INITIAL(2);
+		NORMAL(0), SPECIAL(1), INITIAL(2), FINAL(3), EARLY(4);
 		
 		protected DropTable<NodeType> table = new DropTable<NodeType>();
 		
@@ -830,21 +902,32 @@ public class Area {
 			switch (num) {
 			case 0:
 				table.add(NodeType.FIGHT, 57);
-				table.add(NodeType.CHANCE, 29);
-				table.add(NodeType.SHOP, 7);
+				table.add(NodeType.CHANCE, 31);
+				table.add(NodeType.SHOP, 6);
 				table.add(NodeType.MINIBOSS, 3);
-				table.add(NodeType.SHRINE, 4);
+				table.add(NodeType.SHRINE, 3);
 				break;
 			case 1:
 				table.add(NodeType.FIGHT, 9);
 				table.add(NodeType.CHANCE, 8);
-				table.add(NodeType.SHOP, 20);
-				table.add(NodeType.MINIBOSS, 38);
+				table.add(NodeType.SHOP, 18);
+				table.add(NodeType.MINIBOSS, 40);
 				table.add(NodeType.SHRINE, 25);
 				break;
 			case 2:
 				table.add(NodeType.FIGHT, 65);
 				table.add(NodeType.CHANCE, 35);
+				break;
+			case 3:
+				table.add(NodeType.FIGHT, 53);
+				table.add(NodeType.CHANCE, 35);
+				table.add(NodeType.SHOP, 12);
+				break;
+			case 4:
+				table.add(NodeType.FIGHT, 61);
+				table.add(NodeType.CHANCE, 35);
+				table.add(NodeType.MINIBOSS, 2);
+				table.add(NodeType.SHRINE, 2);
 				break;
 			}
 		}
