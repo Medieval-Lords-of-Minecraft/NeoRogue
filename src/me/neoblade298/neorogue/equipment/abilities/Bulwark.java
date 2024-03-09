@@ -53,7 +53,7 @@ public class Bulwark extends Equipment {
 			super(p, eq, slot, es);
 			
 			action = (pdata, inputs) -> {
-				if (++count % HEAL_COUNT == 0) return TriggerResult.keep();
+				if (++count % HEAL_COUNT == 0 && count > 0) return TriggerResult.keep();
 				pc.play(p, p);
 				Sounds.enchant.play(p, p);
 				pdata.addSimpleShield(p.getUniqueId(), shield, 100);

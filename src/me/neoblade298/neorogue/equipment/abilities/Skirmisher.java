@@ -13,6 +13,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
@@ -48,8 +49,8 @@ public class Skirmisher extends Equipment {
 					p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 60, 0));
 					data.addSimpleShield(p.getUniqueId(), shields, 100);
 					for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, props)) {
-						Vector v = ent.getLocation().subtract(p.getLocation()).toVector().setY(0).normalize().multiply(1.5).setY(0.5);
-						ent.setVelocity(v);
+						Vector v = ent.getLocation().subtract(p.getLocation()).toVector().setY(0).normalize().multiply(0.4).setY(0.3);
+						FightInstance.knockback(ent, v);
 					}
 				}
 				return TriggerResult.keep();

@@ -223,6 +223,9 @@ public class ChanceInstance extends EditInventoryInstance {
 					else if (nextInstance instanceof ShopInstance) {
 						instDisplay = "shop";
 					}
+					else if (nextInstance instanceof NodeSelectInstance) {
+						instDisplay = "node select";
+					}
 					s.broadcast(Component.text("Sending you to " + instDisplay + "..."));
 				}
 				else {

@@ -7,11 +7,11 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
@@ -29,7 +29,7 @@ public class Sturdy extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		SturdyInstance inst = new SturdyInstance(p, this, slot, es);
+		SturdyInstance inst = new SturdyInstance(id, p);
 		data.addTrigger(id, Trigger.SHIELD_TICK, inst);
 		
 		data.addTrigger(id, Trigger.LOWER_SHIELD, (pdata, in) -> {
@@ -44,13 +44,12 @@ public class Sturdy extends Equipment {
 				"Passive. Heal for <yellow>" + heal + "</yellow> every <white>" + HEAL_COUNT + "</white> consecutive seconds you keep your shield up.");
 	}
 	
-	private class SturdyInstance extends EquipmentInstance {
+	private class SturdyInstance extends PriorityAction {
 		private int count = 0;
-		public SturdyInstance(Player p, Equipment eq, int slot, EquipSlot es) {
-			super(p, eq, slot, es);
-			
+		public SturdyInstance(String id, Player p) {
+			super(id);
 			action = (pdata, inputs) -> {
-				if (++count % HEAL_COUNT == 0) return TriggerResult.keep();
+				if (++count % HEAL_COUNT != 0 || count < HEAL_COUNT) return TriggerResult.keep();
 				pc.play(p, p);
 				Sounds.enchant.play(p, p);
 				FightInstance.giveHeal(p, heal, p);

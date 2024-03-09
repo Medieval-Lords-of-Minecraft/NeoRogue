@@ -649,10 +649,10 @@ public abstract class FightInstance extends Instance {
 
 	public static void knockback(Location src, Entity trg, double force) {
 		Vector v = trg.getLocation().subtract(src).toVector().setY(0).normalize().multiply(force).setY(0.5);
-		knockback(v, trg, force);
+		knockback(trg, v);
 	}
 
-	public static void knockback(Vector v, Entity trg, double force) {
+	public static void knockback(Entity trg, Vector v) {
 		if (NeoRogue.mythicApi.isMythicMob(trg)) {
 			MythicMob type = NeoRogue.mythicApi.getMythicMobInstance(trg).getType();
 			Mob m = Mob.get(type.getInternalName());
@@ -660,7 +660,7 @@ public abstract class FightInstance extends Instance {
 				v = v.multiply(m.getKnockbackMultiplier());
 			}
 		}
-		trg.setVelocity(trg.getVelocity().add(v.multiply(force)));
+		trg.setVelocity(trg.getVelocity().add(v));
 	}
 
 	public static void dealDamage(DamageMeta meta, Collection<LivingEntity> targets) {

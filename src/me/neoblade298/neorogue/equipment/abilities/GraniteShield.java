@@ -62,7 +62,7 @@ public class GraniteShield extends Equipment {
 			super(p, eq, slot, es);
 			
 			action = (pdata, inputs) -> {
-				if (++count % HEAL_COUNT == 0) {
+				if (++count % HEAL_COUNT == 0 && count > 0) {
 					pc.play(p, p);
 					Sounds.enchant.play(p, p);
 					FightInstance.giveHeal(p, heal, p);

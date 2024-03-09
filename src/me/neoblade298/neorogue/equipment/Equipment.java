@@ -722,7 +722,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		BasicAttackEvent ev = new BasicAttackEvent(target, dm, properties.get(PropertyType.KNOCKBACK), this, null);
 		data.runActions(data, Trigger.BASIC_ATTACK, ev);
 		if (properties.contains(PropertyType.KNOCKBACK)) {
-			FightInstance.knockback(proj.getVector(), target, properties.get(PropertyType.KNOCKBACK));
+			FightInstance.knockback(target, proj.getVector().normalize().multiply(properties.get(PropertyType.KNOCKBACK)));
 		}
 		FightInstance.dealDamage(dm, target);
 	}

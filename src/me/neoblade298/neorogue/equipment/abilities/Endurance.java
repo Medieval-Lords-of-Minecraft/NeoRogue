@@ -59,7 +59,7 @@ public class Endurance extends Equipment {
 		public EnduranceInstance(PlayerFightData pd, Equipment eq, int slot, EquipSlot es) {
 			super(pd.getPlayer(), eq, slot, es);
 			action = (pdata, inputs) -> {
-				if (++count < HEAL_COUNT) return TriggerResult.keep();
+				if (++count < HEAL_COUNT || count == 0) return TriggerResult.keep();
 				pc.play(p, p);
 				if (count % HEAL_COUNT == 0) {
 					Sounds.enchant.play(p, p);
