@@ -61,17 +61,16 @@ public class PlayerSessionData {
 	private String instanceData;
 	private DropTableSet<Artifact> personalArtifacts;
 	private ArrayList<String> boardLines;
-
-	private static final ParticleContainer heal = new ParticleContainer(Particle.VILLAGER_HAPPY).count(50)
-			.spread(0.5, 1).speed(0.1).forceVisible(Audience.ALL);
+	
+	private static final ParticleContainer heal = new ParticleContainer(Particle.VILLAGER_HAPPY).count(50).spread(0.5, 1).speed(0.1).forceVisible(Audience.ALL);
 	private static final int STORAGE_SIZE = 9;
 	private static final DecimalFormat df = new DecimalFormat("#.##");
-
+	
 	public PlayerSessionData(UUID uuid, Session s, ResultSet rs) throws SQLException {
 		this.uuid = uuid;
 		data = PlayerManager.getPlayerData(uuid);
 		this.s = s;
-
+		
 		this.ec = EquipmentClass.valueOf(rs.getString("playerClass"));
 		this.maxHealth = rs.getDouble("maxHealth");
 		this.maxMana = rs.getDouble("maxMana");
@@ -95,7 +94,7 @@ public class PlayerSessionData {
 		setupArtifacts();
 		updateBoardLines();
 	}
-
+	
 	public PlayerSessionData(UUID uuid, EquipmentClass ec, Session s) {
 		this.uuid = uuid;
 		data = PlayerManager.getPlayerData(uuid);
@@ -108,7 +107,7 @@ public class PlayerSessionData {
 		staminaRegen = 2;
 		health = maxHealth;
 		this.ec = ec;
-		
+
 		// Starting equipment
 		// If you ever use abilities equipped, need to initialize it to 1 here
 		switch (this.ec) {
@@ -128,100 +127,105 @@ public class PlayerSessionData {
 			abilitiesEquipped = 1;
 			break;
 		case MAGE:
-			hotbar[0] = Equipment.get("woodenSword", false);
-			hotbar[1] = Equipment.get("empoweredEdge", false);
-			abilitiesEquipped = 1;
+			hotbar[0] = Equipment.get("woodenWand", false);
+			offhand[0] = Equipment.get("magicOrb", false);
 			break;
 		default:
 			break;
 		}
-
+		
 		for (int i = 2; i < accessories.length; i++) {
 			accessories[i] = Equipment.get("curseOfInexperience", false);
 		}
 		for (int i = 1; i < armors.length; i++) {
 			armors[i] = Equipment.get("curseOfBurden", false);
 		}
-
+		
 		setupInventory();
 		setupArtifacts();
 		updateBoardLines();
-
+		
 		data.getPlayer().setHealthScaled(true);
 		data.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHealth);
 		data.initialize(s, this);
 	}
-
+	
 	public UUID getUniqueId() {
 		return uuid;
 	}
-
+	
 	private void setupArtifacts() {
 		personalArtifacts = Equipment.copyArtifactsDropSet(ec, EquipmentClass.CLASSLESS);
 		for (ArtifactInstance ai : artifacts.values()) {
 			ai.getArtifact().onInitializeSession(this);
-			if (ai.getArtifact().canStack()) continue;
+			if (ai.getArtifact().canStack())
+				continue;
 			personalArtifacts.remove(ai.getArtifact());
 		}
 	}
-
+	
 	public void setupEditInventory() {
 		updateCoinsBar();
 		getPlayer().setSaturation(20);
 	}
-
+	
 	public void setupInventory() {
 		Player p = data.getPlayer();
 		PlayerInventory inv = p.getInventory();
 		inv.clear();
-		inv.setItem(4,
-				(CoreInventory.createButton(Material.ENDER_CHEST,
-						Component.text("Left/right click to open inventory", NamedTextColor.YELLOW),
-						Component.text("You can also swap hands or click anywhere in your inventory."), 200,
-						NamedTextColor.GRAY)));
-
+		inv.setItem(
+				4,
+				(CoreInventory.createButton(
+						Material.ENDER_CHEST, Component.text("Left/right click to open inventory", NamedTextColor.YELLOW),
+						Component.text("You can also swap hands or click anywhere in your inventory."), 200, NamedTextColor.GRAY
+				))
+		);
+		
 		for (int i = 0; i < storage.length; i++) {
 			Equipment eq = storage[i];
-			if (eq == null) continue;
+			if (eq == null)
+				continue;
 			inv.setItem(i, eq.getItem());
 		}
 	}
-
+	
 	public Player getPlayer() {
 		return data.getPlayer();
 	}
-
+	
 	public Equipment[] getEquipment(EquipSlot es) {
 		return getArrayFromEquipSlot(es);
 	}
-
+	
 	public void upgradeEquipment(EquipSlot es, int slot) {
 		if (es != EquipSlot.STORAGE) {
 			Equipment[] slots = getArrayFromEquipSlot(es);
 			slots[slot] = slots[slot].getUpgraded();
-		}
-		else {
+		} else {
 			PlayerInventory inv = data.getPlayer().getInventory();
 			ItemStack item = inv.getItem(slot);
 			NBTItem nbti = new NBTItem(item);
 			inv.setItem(slot, Equipment.get(nbti.getString("equipId"), true).getItem());
 		}
 	}
-
+	
 	public void setEquipment(EquipSlot es, int slot, Equipment eq) {
 		Equipment[] slots = getArrayFromEquipSlot(es);
-		if (slots[slot] != null) removeEquipment(es, slot);
+		if (slots[slot] != null)
+			removeEquipment(es, slot);
 		slots[slot] = eq;
-		if (eq.getType() == EquipmentType.ABILITY) abilitiesEquipped++;
+		if (eq.getType() == EquipmentType.ABILITY)
+			abilitiesEquipped++;
 	}
-
+	
 	public void removeEquipment(EquipSlot es, int slot) {
 		Equipment[] slots = getArrayFromEquipSlot(es);
 		Equipment eq = slots[slot];
 		slots[slot] = null;
-		if (eq.getType() == EquipmentType.ABILITY) abilitiesEquipped--;
+		if (eq.getType() == EquipmentType.ABILITY)
+			abilitiesEquipped--;
 	}
-
+	
 	private Equipment[] getArrayFromEquipSlot(EquipSlot es) {
 		Equipment[] slots = null;
 		switch (es) {
@@ -246,116 +250,115 @@ public class PlayerSessionData {
 		}
 		return slots;
 	}
-
+	
 	public Equipment[] getStorage() {
 		return storage;
 	}
-
+	
 	public void setOffhand(Equipment offhand) {
 		this.offhand[0] = offhand;
 	}
-
+	
 	public Equipment[] getOtherBinds() {
 		return otherBinds;
 	}
-
+	
 	public Equipment getOtherBind(KeyBind bind) {
 		return otherBinds[bind.getDataSlot()];
 	}
-
+	
 	public boolean canEquipAbility() {
 		return abilitiesEquipped < maxAbilities;
 	}
-
+	
 	public int getMaxAbilities() {
 		return maxAbilities;
 	}
-
+	
 	public void addAbilityEquipped(int num) {
 		abilitiesEquipped += num;
 	}
-
+	
 	public PlayerData getData() {
 		return data;
 	}
-
+	
 	public double getMaxHealth() {
 		return maxHealth;
 	}
-
+	
 	public double getMaxMana() {
 		return maxMana;
 	}
-
+	
 	public double getMaxStamina() {
 		return maxStamina;
 	}
-
+	
 	public TreeMap<String, ArtifactInstance> getArtifacts() {
 		return artifacts;
 	}
-
+	
 	public int getMaxStorage() {
 		return maxStorage;
 	}
-
+	
 	public double getManaRegen() {
 		return manaRegen;
 	}
-	
+
 	public void addManaRegen(double amount) {
 		this.manaRegen += amount;
 	}
-
+	
 	public double getStaminaRegen() {
 		return staminaRegen;
 	}
-	
+
 	public void addStaminaRegen(double amount) {
 		this.staminaRegen += amount;
 	}
-
+	
 	public void addTrigger(String id, SessionTrigger trigger, SessionAction action) {
-		ArrayList<SessionAction> actions = triggers.containsKey(trigger) ? triggers.get(trigger)
-				: new ArrayList<SessionAction>();
+		ArrayList<SessionAction> actions = triggers.containsKey(trigger) ? triggers.get(trigger) : new ArrayList<SessionAction>();
 		actions.add(action);
 		triggers.putIfAbsent(trigger, actions);
 	}
-	
+
 	public void trigger(SessionTrigger trigger, Object inputs) {
-		if (!triggers.containsKey(trigger)) return;
-		
+		if (!triggers.containsKey(trigger))
+			return;
+
 		for (SessionAction action : triggers.get(trigger)) {
 			action.trigger(this, inputs);
 		}
 	}
-
+	
 	private void giveArtifact(Artifact artifact) {
 		ArtifactInstance inst;
 		if (artifacts.containsKey(artifact.getId())) {
 			inst = artifacts.get(artifact.getId());
 			inst.add(1);
-		}
-		else {
+		} else {
 			inst = new ArtifactInstance(artifact);
 			artifacts.put(artifact.getId(), inst);
-			if (!artifact.canStack()) personalArtifacts.remove(artifact);
+			if (!artifact.canStack())
+				personalArtifacts.remove(artifact);
 		}
 		inst.getArtifact().onAcquire(this);
 		inst.getArtifact().onInitializeSession(this);
 	}
-
+	
 	public void giveEquipment(Equipment eq, Component toSelf, Component toOthers) {
 		Player p = getPlayer();
 		Sounds.success.play(p, p);
 		s.broadcastOthers(toOthers.append(eq.getHoverable()).append(Component.text(".")), p);
 		toSelf = toSelf.append(eq.getHoverable());
-
+		
 		if (eq instanceof Artifact) {
 			Util.msg(p, toSelf.append(Component.text(".")));
 			giveArtifact((Artifact) eq);
-		}
-		else {
+		} else {
 			// First try to auto-equip
 			boolean success = false;
 			if (eq.getType() != EquipmentType.ABILITY || canEquipAbility()) {
@@ -372,31 +375,30 @@ public class PlayerSessionData {
 					return;
 				}
 			}
-
+			
 			HashMap<Integer, ItemStack> overflow = p.getInventory().addItem(eq.getItem());
 			Util.msg(p, toSelf.append(Component.text(".")));
 			if (!overflow.isEmpty()) {
 				for (ItemStack item : overflow.values()) {
-					Util.msg(p, SharedUtil.color("<red>Your inventory is full! ").append(eq.getDisplay())
-							.append(Component.text(" was dropped on the ground.")));
+					Util.msg(
+							p, SharedUtil.color("<red>Your inventory is full! ").append(eq.getDisplay()).append(Component.text(" was dropped on the ground."))
+					);
 					p.getWorld().dropItem(p.getLocation(), item);
 				}
 			}
 		}
 	}
-
+	
 	public void giveEquipment(Equipment eq) {
-		giveEquipment(eq, SharedUtil.color("You received "),
-				SharedUtil.color("<yellow>" + data.getDisplay() + "</yellow> received "));
+		giveEquipment(eq, SharedUtil.color("You received "), SharedUtil.color("<yellow>" + data.getDisplay() + "</yellow> received "));
 	}
-
+	
 	public void giveEquipment(ArrayList<? extends Equipment> eqs) {
 		for (Equipment eq : eqs) {
-			giveEquipment(eq, SharedUtil.color("You received "),
-					SharedUtil.color("<yellow>" + data.getDisplay() + "</yellow> received "));
+			giveEquipment(eq, SharedUtil.color("You received "), SharedUtil.color("<yellow>" + data.getDisplay() + "</yellow> received "));
 		}
 	}
-
+	
 	private boolean tryEquip(EquipSlot es, Equipment eq) {
 		Equipment[] arr = getArrayFromEquipSlot(es);
 		for (int i = 0; i < arr.length; i++) {
@@ -407,76 +409,87 @@ public class PlayerSessionData {
 		}
 		return false;
 	}
-	
+
 	public ArrayList<EquipmentMetadata> aggregateEquipment(Predicate<Equipment> filter) {
 		ArrayList<EquipmentMetadata> list = new ArrayList<EquipmentMetadata>();
 		EquipSlot[] es = new EquipSlot[] { EquipSlot.HOTBAR, EquipSlot.ARMOR, EquipSlot.OFFHAND, EquipSlot.ACCESSORY, EquipSlot.STORAGE, EquipSlot.KEYBIND };
-		
+
 		int esIdx = -1;
 		for (Equipment[] arr : allEquips) {
 			esIdx++;
-			if (es[esIdx] == EquipSlot.STORAGE) continue;
+			if (es[esIdx] == EquipSlot.STORAGE)
+				continue;
 			int slot = -1;
 			for (Equipment eq : arr) {
 				slot++;
-				if (eq == null) continue;
-				if (filter.test(eq)) list.add(new EquipmentMetadata(eq, slot, es[esIdx]));
+				if (eq == null)
+					continue;
+				if (filter.test(eq))
+					list.add(new EquipmentMetadata(eq, slot, es[esIdx]));
 			}
 		}
-		
+
 		// Manually get equipment in storage since it's dynamic
 		ItemStack[] contents = data.getPlayer().getInventory().getStorageContents();
 		for (int i = 0; i < contents.length; i++) {
-			if (contents[i] == null) continue;
+			if (contents[i] == null)
+				continue;
 			ItemStack item = contents[i];
 			NBTItem nbti = new NBTItem(item);
-			if (!nbti.getKeys().contains("equipId")) continue;
+			if (!nbti.getKeys().contains("equipId"))
+				continue;
 			Equipment eq = Equipment.get(nbti.getString("equipId"), nbti.getBoolean("isUpgraded"));
-			if (filter.test(eq)) list.add(new EquipmentMetadata(eq, i, EquipSlot.STORAGE));
+			if (filter.test(eq))
+				list.add(new EquipmentMetadata(eq, i, EquipSlot.STORAGE));
 		}
 		return list;
 	}
-	
+
 	public class EquipmentMetadata {
 		private Equipment eq;
 		private int slot;
 		private EquipSlot es;
+		
 		public EquipmentMetadata(Equipment eq, int slot, EquipSlot es) {
 			this.eq = eq;
 			this.slot = slot;
 			this.es = es;
 		}
+		
 		public Equipment getEquipment() {
 			return eq;
 		}
+		
 		public int getSlot() {
 			return slot;
 		}
+		
 		public EquipSlot getEquipSlot() {
 			return es;
 		}
 	}
-
+	
 	public boolean saveStorage() {
 		Player p = data.getPlayer();
 		int max = maxStorage;
 		ArrayList<ItemStack> toSave = new ArrayList<ItemStack>(max);
 		p.getInventory().setItemInOffHand(null);
 		for (ItemStack item : p.getInventory().getContents()) {
-			if (item == null) continue;
-
+			if (item == null)
+				continue;
+			
 			toSave.add(item);
 		}
-
+		
 		if (toSave.size() > max) {
 			Util.displayError(p, "You have too many items in storage! Drop or sell some!");
 			return false;
 		}
-
+		
 		for (int i = 0; i < storage.length; i++) {
 			storage[i] = null;
 		}
-		
+
 		int i = 0;
 		for (ItemStack item : toSave) {
 			NBTItem nbti = new NBTItem(item);
@@ -486,11 +499,9 @@ public class PlayerSessionData {
 			// Hard coded so that the enderchest doesn't give an error
 			if (eq == null) {
 				if (item.getType() != Material.ENDER_CHEST) {
-					String display = item.hasItemMeta() && item.getItemMeta().hasDisplayName()
-							? ((TextComponent) item.getItemMeta().displayName()).content()
+					String display = item.hasItemMeta() && item.getItemMeta().hasDisplayName() ? ((TextComponent) item.getItemMeta().displayName()).content()
 							: item.getType().name();
-					Bukkit.getLogger()
-							.warning("[NeoRogue] " + p.getName() + " could not save " + display + " to their storage");
+					Bukkit.getLogger().warning("[NeoRogue] " + p.getName() + " could not save " + display + " to their storage");
 				}
 				continue;
 			}
@@ -502,11 +513,11 @@ public class PlayerSessionData {
 		}
 		return true;
 	}
-
+	
 	public boolean hasCoins(int amount) {
 		return coins >= amount;
 	}
-
+	
 	public void addCoins(int amount) {
 		coins += amount;
 		String symbol = amount > 0 ? "+" : "";
@@ -514,160 +525,159 @@ public class PlayerSessionData {
 		updateCoinsBar();
 		updateBoardLines();
 	}
-
+	
 	public int getCoins() {
 		return coins;
 	}
-
+	
 	public EquipmentClass getPlayerClass() {
 		return ec;
 	}
-
+	
 	public void increaseAbilityLimit(int amount) {
 		this.abilitiesEquipped += amount;
 	}
-
+	
 	public void addMaxHealth(int amount) {
 		this.maxHealth += amount;
 		this.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHealth);
 	}
-
+	
 	public void addMaxStamina(int amount) {
 		this.maxStamina += amount;
 		updateBoardLines();
 	}
-
+	
 	public void addMaxMana(int amount) {
 		this.maxMana += amount;
 		updateBoardLines();
 	}
-
+	
 	public void addStartingStamina(int amount) {
 		this.startingStamina += amount;
 	}
-
+	
 	public void addStartingMana(int amount) {
 		this.startingMana += amount;
 	}
-
+	
 	public Session getSession() {
 		return s;
 	}
-
+	
 	public double getStartingMana() {
 		return startingMana;
 	}
-
+	
 	public double getStartingStamina() {
 		return startingStamina;
 	}
-
+	
 	public double getHealth() {
 		return health;
 	}
-
+	
 	public void updateHealth() {
 		health = Math.round(Math.min(this.maxHealth, getPlayer().getHealth()));
 	}
-
+	
 	public void revertMaxHealth() {
 		getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(this.maxHealth);
 	}
-
+	
 	public void updateCoinsBar() {
 		Player p = getPlayer();
 		p.setLevel(coins);
 		p.setExp(0);
 	}
-
+	
 	public void syncHealth() {
 		getPlayer().setHealth(this.health);
 	}
-
+	
 	public void setHealth(double health) {
-		if (this.health > health) getPlayer().damage(0.1);
+		if (this.health > health)
+			getPlayer().damage(0.1);
 		this.health = Math.min(health, maxHealth);
 		getPlayer().setHealth(this.health);
 		updateBoardLines();
 	}
-
+	
 	public void healPercent(double percent) {
 		Player p = getPlayer();
 		setHealth(this.health + (percent * maxHealth));
 		heal.play(p, p);
 		Sounds.levelup.play(p, p);
 	}
-
+	
 	public void damagePercent(double percent) {
 		setHealth(this.health - (percent * maxHealth));
 	}
-
+	
 	public void setInstanceData(String str) {
 		this.instanceData = str;
 	}
-
+	
 	public String getInstanceData() {
 		return instanceData;
 	}
-
+	
 	public DropTableSet<Artifact> getArtifactDroptable() {
 		return personalArtifacts;
 	}
-
+	
 	public void updateBoardLines() {
 		boardLines = new ArrayList<String>();
 		boardLines.add("§cHP§7: §f" + health);
 		boardLines.add("§9MP§7: §f" + maxMana + " §7| §f" + df.format(manaRegen) + "/s");
 		boardLines.add("§aSP§7: §f" + maxStamina + " §7| §f" + df.format(staminaRegen) + "/s");
 		boardLines.add("§eCoins§7: §f" + coins);
-		if (s.getParty().size() <= 1) return;
+		if (s.getParty().size() <= 1)
+			return;
 		boardLines.add("§8§m-----");
 		for (PlayerSessionData psd : s.getParty().values()) {
-			if (psd == this) continue;
+			if (psd == this)
+				continue;
 			boardLines.add("§e" + psd.getData().getDisplay() + "§7: §f" + Math.round(psd.getHealth()));
 		}
 	}
-
+	
 	public ArrayList<String> getBoardLines() {
 		return boardLines;
 	}
-
+	
 	public void save(Statement stmt) {
 		UUID host = s.getHost();
 		String uuid = data.getPlayer().getUniqueId().toString();
 		int saveSlot = s.getSaveSlot();
 		try {
-			SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_playersessiondata")
-					.addString(host.toString()).addValue(saveSlot).addString(uuid)
-					.addString(((TextComponent) data.getPlayer().displayName()).content()).addString(ec.name())
-					.addValue(maxHealth).addValue(maxMana).addValue(maxStamina).addValue(health).addValue(startingMana)
-					.addValue(startingStamina).addValue(manaRegen).addValue(staminaRegen)
-					.addString(Equipment.serialize(hotbar)).addString(Equipment.serialize(armors))
-					.addString(Equipment.serialize(offhand)).addString(Equipment.serialize(accessories))
-					.addString(Equipment.serialize(storage)).addString(Equipment.serialize(otherBinds))
-					.addString(ArtifactInstance.serialize(artifacts)).addValue(maxAbilities).addValue(maxStorage)
+			SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_playersessiondata").addString(host.toString()).addValue(saveSlot)
+					.addString(uuid).addString(((TextComponent) data.getPlayer().displayName()).content()).addString(ec.name()).addValue(maxHealth)
+					.addValue(maxMana).addValue(maxStamina).addValue(health).addValue(startingMana).addValue(startingStamina).addValue(manaRegen)
+					.addValue(staminaRegen).addString(Equipment.serialize(hotbar)).addString(Equipment.serialize(armors))
+					.addString(Equipment.serialize(offhand)).addString(Equipment.serialize(accessories)).addString(Equipment.serialize(storage))
+					.addString(Equipment.serialize(otherBinds)).addString(ArtifactInstance.serialize(artifacts)).addValue(maxAbilities).addValue(maxStorage)
 					.addValue(coins).addString(instanceData);
 			stmt.execute(sql.build());
 		} catch (SQLException ex) {
-			Bukkit.getLogger().warning("[NeoRogue] Failed to save player session data for " + uuid + " hosted by "
-					+ host + " to slot " + saveSlot);
+			Bukkit.getLogger().warning("[NeoRogue] Failed to save player session data for " + uuid + " hosted by " + host + " to slot " + saveSlot);
 			ex.printStackTrace();
 		}
 	}
-
+	
 	public class PlayerSlot {
 		private int slot;
 		private EquipSlot es;
-
+		
 		public PlayerSlot(EquipSlot es, int slot) {
 			this.slot = slot;
 			this.es = es;
 		}
-
+		
 		public int getSlot() {
 			return slot;
 		}
-
+		
 		public EquipSlot getEquipSlot() {
 			return es;
 		}
