@@ -20,16 +20,16 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
@@ -93,8 +93,7 @@ public abstract class FightInstance extends Instance {
 	protected HashMap<Player, Corpse> revivers = new HashMap<Player, Corpse>();
 	protected HashSet<UUID> party = new HashSet<UUID>();
 	protected Map map;
-	protected ArrayList<MapSpawnerInstance> spawners = new ArrayList<MapSpawnerInstance>(),
-			unlimitedSpawners = new ArrayList<MapSpawnerInstance>(),
+	protected ArrayList<MapSpawnerInstance> spawners = new ArrayList<MapSpawnerInstance>(), unlimitedSpawners = new ArrayList<MapSpawnerInstance>(),
 			initialSpawns = new ArrayList<MapSpawnerInstance>();
 	private HashMap<String, Location> mythicLocations = new HashMap<String, Location>();
 	protected HashMap<UUID, Barrier> enemyBarriers = new HashMap<UUID, Barrier>();
@@ -108,11 +107,11 @@ public abstract class FightInstance extends Instance {
 
 	private static final Circle reviveCircle = new Circle(5);
 	private static final ParticleContainer reviveCirclePart = new ParticleContainer(Particle.END_ROD).count(1);
-	private static final ParticleContainer revivePart = new ParticleContainer(Particle.FIREWORKS_SPARK).forceVisible(Audience.ALL).count(50).spread(2, 2).speed(0.1);
-	private static final SoundContainer[] reviveSounds = new SoundContainer[]
-			{ new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1F), new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1.059463F),
-				new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1.122462F), new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1.189207F),
-				new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1.259921F)};
+	private static final ParticleContainer revivePart = new ParticleContainer(Particle.FIREWORKS_SPARK).forceVisible(Audience.ALL).count(50).spread(2, 2)
+			.speed(0.1);
+	private static final SoundContainer[] reviveSounds = new SoundContainer[] { new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1F),
+			new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1.059463F), new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1.122462F),
+			new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1.189207F), new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1.259921F) };
 
 	public FightInstance(Session s, Set<UUID> players) {
 		super(s);
@@ -164,8 +163,7 @@ public abstract class FightInstance extends Instance {
 		String color = "§a";
 		if (php < 50 && php >= 25) {
 			color = "§e";
-		}
-		else if (php < 25) {
+		} else if (php < 25) {
 			color = "§c";
 		}
 
@@ -189,12 +187,14 @@ public abstract class FightInstance extends Instance {
 
 		// Remove the player's abilities from the fight
 		UUID pu = p.getUniqueId();
-		if (!userData.containsKey(pu)) return;
+		if (!userData.containsKey(pu))
+			return;
 		PlayerFightData data = userData.get(pu);
 		FightInstance fi = data.getInstance();
 		Session s = fi.getSession();
 
 		new BukkitRunnable() {
+			@Override
 			public void run() {
 				s.broadcast("<red>" + p.getName() + " died!");
 				data.setDeath(true);
@@ -215,12 +215,12 @@ public abstract class FightInstance extends Instance {
 					p.spigot().respawn();
 					Session sess = data.getInstance().getSession();
 					sess.setInstance(new LoseInstance(sess));
-				}
-				else {
+				} else {
 					if (p != null) {
 						fi.corpses.add(new Corpse(data));
 						// Have a wait time so that mythicmobs can handle deaths
 						new BukkitRunnable() {
+							@Override
 							public void run() {
 								p.spigot().respawn();
 								p.teleport(prev);
@@ -277,15 +277,18 @@ public abstract class FightInstance extends Instance {
 		Player p = (Player) e.getDamager();
 		e.setCancelled(true);
 		PlayerFightData data = userData.get(p.getUniqueId());
-		if (!data.canBasicAttack()) return;
-		if (!(e.getEntity() instanceof LivingEntity)) return;
+		if (!data.canBasicAttack())
+			return;
+		if (!(e.getEntity() instanceof LivingEntity))
+			return;
 
 		trigger(p, Trigger.LEFT_CLICK, null);
 		trigger(p, Trigger.LEFT_CLICK_HIT, new LeftClickHitEvent((LivingEntity) e.getEntity()));
 	}
 	
 	public static void handleEnvironmentDamage(EntityDamageEvent e) {
-		if (e.getEntityType() != EntityType.PLAYER) return;
+		if (e.getEntityType() != EntityType.PLAYER)
+			return;
 		Player p = (Player) e.getEntity();
 		if (e.getCause() == DamageCause.FALL) {
 			e.setCancelled(trigger(p, Trigger.FALL_DAMAGE, e));
@@ -321,12 +324,12 @@ public abstract class FightInstance extends Instance {
 		trigger(p, p.isSneaking() ? Trigger.SHIFT_DROP : Trigger.DROP, null);
 	}
 
+	@Override
 	public void handleInteractEvent(PlayerInteractEvent e) {
 		Action a = e.getAction();
 		if (a == Action.LEFT_CLICK_AIR || a == Action.LEFT_CLICK_BLOCK) {
 			handleLeftClick(e);
-		}
-		else if (a == Action.RIGHT_CLICK_AIR || a == Action.RIGHT_CLICK_BLOCK) {
+		} else if (a == Action.RIGHT_CLICK_AIR || a == Action.RIGHT_CLICK_BLOCK) {
 			handleRightClickGeneral(e);
 		}
 	}
@@ -336,11 +339,12 @@ public abstract class FightInstance extends Instance {
 	}
 	
 	public static void handleRightClickArmorStand(PlayerInteractAtEntityEvent e) {
-		Player p = (Player) e.getPlayer();
+		Player p = e.getPlayer();
 		PlayerFightData data = userData.get(p.getUniqueId());
 		FightInstance fi = data.getInstance();
 		e.setCancelled(true);
-		if (data == null || data.isDead()) return;
+		if (data == null || data.isDead())
+			return;
 		for (Corpse c : fi.corpses) {
 			if (c.hitCorpse(e.getRightClicked())) {
 				if (fi.revivers.containsKey(p)) {
@@ -358,16 +362,20 @@ public abstract class FightInstance extends Instance {
 	}
 
 	public static void handleRightClickEntity(PlayerInteractEntityEvent e) {
-		Player p = (Player) e.getPlayer();
+		Player p = e.getPlayer();
 		PlayerFightData data = userData.get(p.getUniqueId());
-		if (data == null) return;
-		if (!data.canBasicAttack(EquipSlot.OFFHAND)) return;
-		if (!(e.getRightClicked() instanceof LivingEntity)) return;
+		if (data == null)
+			return;
+		if (!data.canBasicAttack(EquipSlot.OFFHAND))
+			return;
+		if (!(e.getRightClicked() instanceof LivingEntity))
+			return;
 		trigger(p, Trigger.RIGHT_CLICK_HIT, new RightClickHitEvent((LivingEntity) e.getRightClicked()));
 	}
 	
 	public void cancelRevives(Player p) {
-		if (!revivers.containsKey(p)) return;
+		if (!revivers.containsKey(p))
+			return;
 		cancelRevive(revivers.get(p), p);
 	}
 	
@@ -391,6 +399,7 @@ public abstract class FightInstance extends Instance {
 		reviveBar.addPlayer(dead);
 		corpse.bar = reviveBar;
 		cleanupTasks.add(new BukkitRunnable() {
+			@Override
 			public void run() {
 				reviveBar.removeAll();
 			}
@@ -400,6 +409,7 @@ public abstract class FightInstance extends Instance {
 			final int count = i;
 			final double progress = 0.2 * (i + 1);
 			corpse.tasks.add(new BukkitRunnable() {
+				@Override
 				public void run() {
 					if (!canRevive(corpse, p, dead)) {
 						cancelRevive(corpse, p);
@@ -463,6 +473,7 @@ public abstract class FightInstance extends Instance {
 		dead.getInventory().setContents(corpse.inv);
 		userData.get(p.getUniqueId()).getStats().addRevive();
 		new BukkitRunnable() {
+			@Override
 			public void run() {
 				corpse.bar.removeAll();
 			}
@@ -482,19 +493,18 @@ public abstract class FightInstance extends Instance {
 			}
 
 			blockTasks.put(uuid, new BukkitRunnable() {
+				@Override
 				public void run() {
 					if (p == null || !p.isBlocking()) {
 						this.cancel();
 						trigger(p, Trigger.LOWER_SHIELD, null);
 						blockTasks.remove(uuid);
-					}
-					else {
+					} else {
 						trigger(p, Trigger.SHIELD_TICK, null);
 					}
 				}
 			}.runTaskTimer(NeoRogue.inst(), 10L, 10L));
-		}
-		else {
+		} else {
 			double y = p.getEyeLocation().getDirection().normalize().getY();
 			if (p.isSneaking()) {
 				trigger(p, Trigger.SHIFT_RCLICK, null);
@@ -502,19 +512,21 @@ public abstract class FightInstance extends Instance {
 
 			if (y > 1) {
 				trigger(p, Trigger.UP_RCLICK, null);
-			}
-			else if (y < -1){
+			} else if (y < -1) {
 				trigger(p, Trigger.DOWN_RCLICK, null);
 			}
 		}
 	}
 
 	public static void handleLeftClick(PlayerInteractEvent e) {
-		if (e.getHand() != EquipmentSlot.HAND) return;
+		if (e.getHand() != EquipmentSlot.HAND)
+			return;
 		Player p = e.getPlayer();
 		PlayerFightData data = userData.get(p.getUniqueId());
-		if (data == null) return;
-		if (!data.canBasicAttack()) return;
+		if (data == null)
+			return;
+		if (!data.canBasicAttack())
+			return;
 
 		trigger(e.getPlayer(), Trigger.LEFT_CLICK, null);
 		trigger(e.getPlayer(), Trigger.LEFT_CLICK_NO_HIT, null);
@@ -522,13 +534,15 @@ public abstract class FightInstance extends Instance {
 
 	public static void handleMythicDespawn(MythicMobDespawnEvent e) {
 		FightData data = removeFightData(e.getEntity().getUniqueId());
-		if (data == null || data.getInstance() == null) return;
+		if (data == null || data.getInstance() == null)
+			return;
 		data.getInstance().handleRespawn(data, e.getMobType().getInternalName(), true);
 	}
 
 	public static void handleMythicDeath(MythicMobDeathEvent e) {
 		FightData data = removeFightData(e.getEntity().getUniqueId());
-		if (data == null || data.getInstance() == null) return;
+		if (data == null || data.getInstance() == null)
+			return;
 		data.cleanup();
 		String id = e.getMobType().getInternalName();
 		data.getInstance().handleRespawn(data, id, false);
@@ -539,7 +553,8 @@ public abstract class FightInstance extends Instance {
 
 	public void handleRespawn(FightData data, String id, boolean isDespawn) {
 		Mob mob = Mob.get(id);
-		if (mob == null) return;
+		if (mob == null)
+			return;
 
 		if (data.getSpawner() != null) {
 			data.getSpawner().subtractActiveMobs();
@@ -560,8 +575,10 @@ public abstract class FightInstance extends Instance {
 	// Returns true if the event should be cancelled
 	public static boolean trigger(Player p, Trigger trigger, Object obj) {
 		PlayerFightData data = userData.get(p.getUniqueId());
-		if (data == null) return false;
-		if (data.isDead()) return false;
+		if (data == null)
+			return false;
+		if (data.isDead())
+			return false;
 		if (trigger.isSlotDependent()) {
 			// Run triggers that change based on slot (anything that starts with left click)
 			data.runSlotBasedActions(data, trigger, p.getInventory().getHeldItemSlot(), obj);
@@ -591,20 +608,19 @@ public abstract class FightInstance extends Instance {
 
 	public static void giveHeal(LivingEntity caster, double amount, LivingEntity... targets) {
 		for (LivingEntity target : targets) {
-			if (!(target instanceof Attributable)) continue;
+			if (!(target instanceof Attributable))
+				continue;
 			PlayerFightData cfd = FightInstance.getUserData(caster.getUniqueId());
 			PlayerFightData tfd = FightInstance.getUserData(target.getUniqueId());
 			
-			double toSet = Math.min(caster.getHealth() + amount,
-					((Attributable) caster).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+			double toSet = Math.min(caster.getHealth() + amount, ((Attributable) caster).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
 			double actual = toSet - caster.getHealth();
 			
-			if(caster == target) {
+			if (caster == target) {
 				if (cfd != null) {
 					cfd.getStats().addSelfHealing(actual);
 				}
-			}
-			else {
+			} else {
 				if (cfd != null) {
 					cfd.getStats().addHealingGiven(actual);
 				}
@@ -633,8 +649,7 @@ public abstract class FightInstance extends Instance {
 		data.applyStatus(type, applier.getUniqueId(), stacks, seconds);
 	}
 
-	public static void applyStatus(Entity target, GenericStatusType type, String id, Entity applier, int stacks,
-			int seconds) {
+	public static void applyStatus(Entity target, GenericStatusType type, String id, Entity applier, int stacks, int seconds) {
 		FightData data = getFightData(target.getUniqueId());
 		data.applyStatus(type, id, applier.getUniqueId(), stacks, seconds);
 	}
@@ -691,16 +706,15 @@ public abstract class FightInstance extends Instance {
 		FightInstance fi = this;
 
 		new BukkitRunnable() {
+			@Override
 			public void run() {
 				// Choose random teleport location
 				int rand = NeoRogue.gen.nextInt(map.getPieces().size());
 				MapPieceInstance inst = map.getPieces().get(rand);
 				Coordinates[] spawns = inst.getSpawns();
 
-				spawn = spawns[spawns.length > 1 ? NeoRogue.gen.nextInt(spawns.length) : 0].clone().applySettings(inst)
-						.toLocation();
-				spawn.add(s.getXOff() + MapPieceInstance.X_FIGHT_OFFSET, MapPieceInstance.Y_OFFSET,
-						MapPieceInstance.Z_FIGHT_OFFSET + s.getZOff());
+				spawn = spawns[spawns.length > 1 ? NeoRogue.gen.nextInt(spawns.length) : 0].clone().applySettings(inst).toLocation();
+				spawn.add(s.getXOff() + MapPieceInstance.X_FIGHT_OFFSET, MapPieceInstance.Y_OFFSET, MapPieceInstance.Z_FIGHT_OFFSET + s.getZOff());
 				spawn.setX(-spawn.getX());
 
 				for (Player p : s.getOnlinePlayers()) {
@@ -719,8 +733,9 @@ public abstract class FightInstance extends Instance {
 		}.runTaskLater(NeoRogue.inst(), 20L);
 
 		new BukkitRunnable() {
+			@Override
 			public void run() {
-				activateSpawner(4);
+				activateSpawner(4 + map.getPieces().size() / 2);
 				startTime = System.currentTimeMillis();
 				for (MapSpawnerInstance inst : fi.initialSpawns) {
 					inst.spawnMob();
@@ -731,6 +746,7 @@ public abstract class FightInstance extends Instance {
 		tasks.add(new BukkitRunnable() {
 			boolean alternate = false;
 
+			@Override
 			public void run() {
 				alternate = !alternate;
 
@@ -750,13 +766,15 @@ public abstract class FightInstance extends Instance {
 							FightInstance.removeFightData(data.getUniqueId());
 							continue;
 						}
-						if (data.runTickActions() == TickResult.REMOVE) iter.remove();
+						if (data.runTickActions() == TickResult.REMOVE)
+							iter.remove();
 					}
 				}
 
 				// Every 10 ticks
 				for (Session s : SessionManager.getSessions()) {
-					if (!(s.getInstance() instanceof FightInstance)) continue;
+					if (!(s.getInstance() instanceof FightInstance))
+						continue;
 					for (Barrier b : ((FightInstance) s.getInstance()).getEnemyBarriers().values()) {
 						b.tick();
 					}
@@ -787,13 +805,15 @@ public abstract class FightInstance extends Instance {
 	public void cleanup() {
 		long time = System.currentTimeMillis() - startTime;
 		final long hr = TimeUnit.MILLISECONDS.toHours(time);
-        final long min = TimeUnit.MILLISECONDS.toMinutes(time - TimeUnit.HOURS.toMillis(hr));
-        final long sec = TimeUnit.MILLISECONDS.toSeconds(time - TimeUnit.HOURS.toMillis(hr) - TimeUnit.MINUTES.toMillis(min));
-        final long ms = TimeUnit.MILLISECONDS.toMillis(time - TimeUnit.HOURS.toMillis(hr) - TimeUnit.MINUTES.toMillis(min) - TimeUnit.SECONDS.toMillis(sec));
-        String timer = String.format("%d:%02d.%03d", min, sec, ms);
-        
-		Component statsHeader = SharedUtil.color("<gray>Fight Statistics [<white>" + timer + "</white>] (Hover for more info!)\n=====\n"
-			+ "[<yellow>Name</yellow> (<green>Health</green>) - <red>Damage Dealt </red>/ <dark_red>Received </dark_red>/ <blue>Buffed</blue> / <gold>Mitigated</gold>]");
+		final long min = TimeUnit.MILLISECONDS.toMinutes(time - TimeUnit.HOURS.toMillis(hr));
+		final long sec = TimeUnit.MILLISECONDS.toSeconds(time - TimeUnit.HOURS.toMillis(hr) - TimeUnit.MINUTES.toMillis(min));
+		final long ms = TimeUnit.MILLISECONDS.toMillis(time - TimeUnit.HOURS.toMillis(hr) - TimeUnit.MINUTES.toMillis(min) - TimeUnit.SECONDS.toMillis(sec));
+		String timer = String.format("%d:%02d.%03d", min, sec, ms);
+
+		Component statsHeader = SharedUtil.color(
+				"<gray>Fight Statistics [<white>" + timer + "</white>] (Hover for more info!)\n=====\n"
+						+ "[<yellow>Name</yellow> (<green>Health</green>) - <red>Damage Dealt </red>/ <dark_red>Received </dark_red>/ <blue>Buffed</blue> / <gold>Mitigated</gold>]"
+		);
 		s.broadcast(statsHeader);
 		for (UUID uuid : s.getParty().keySet()) {
 			PlayerFightData pdata = userData.remove(uuid);
@@ -815,7 +835,8 @@ public abstract class FightInstance extends Instance {
 				}
 			}
 			FightData fdata = fightData.remove(uuid);
-			if (fdata != null) fdata.cleanup();
+			if (fdata != null)
+				fdata.cleanup();
 		}
 		
 		for (Corpse c : corpses) {
@@ -854,6 +875,7 @@ public abstract class FightInstance extends Instance {
 		UUID uuid = b.getUniqueId();
 		barriers.put(uuid, b);
 		owner.addGuaranteedTask(uuid, new Runnable() {
+			@Override
 			public void run() {
 				barriers.remove(uuid);
 			}
@@ -890,8 +912,10 @@ public abstract class FightInstance extends Instance {
 	// Returns attempted - actual spawns
 	protected double activateSpawner(double value) {
 		double current = 0;
-		if (spawners.isEmpty()) return value;
-		if (value <= 0) return value;
+		if (spawners.isEmpty())
+			return value;
+		if (value <= 0)
+			return value;
 		while (current < value) {
 			MapSpawnerInstance spawner = spawners.get(NeoRogue.gen.nextInt(spawners.size()));
 			if (!spawner.canSpawn()) {
@@ -914,11 +938,9 @@ public abstract class FightInstance extends Instance {
 	public static FightInstance deserializeInstanceData(Session s, HashMap<UUID, PlayerSessionData> party, String str) {
 		if (str.startsWith("STANDARD")) {
 			return new StandardFightInstance(s, party.keySet(), Map.deserialize(str.substring("STANDARD:".length())));
-		}
-		else if (str.startsWith("MINIBOSS")) {
+		} else if (str.startsWith("MINIBOSS")) {
 			return new MinibossFightInstance(s, party.keySet(), Map.deserialize(str.substring("MINIBOSS:".length())));
-		}
-		else {
+		} else {
 			return new BossFightInstance(s, party.keySet(), Map.deserialize(str.substring("BOSS:".length())));
 		}
 	}
@@ -934,8 +956,9 @@ public abstract class FightInstance extends Instance {
 	public static ActiveMob scaleMob(Session s, Mob mob, MythicMob mythicMob, ActiveMob am) {
 		double lvl = s.getLevel();
 		am.setLevel(lvl);
-		if (mythicMob.getHealth() == null) return am; // Some summoned mobs don't have health
-		
+		if (mythicMob.getHealth() == null)
+			return am; // Some summoned mobs don't have health
+
 		double mhealth = mythicMob.getHealth().get();
 		// Bosses scale with number of players too
 		if (mob != null && mob.getType() != MobType.NORMAL) {
@@ -955,6 +978,7 @@ public abstract class FightInstance extends Instance {
 		protected LinkedList<Entity> hitbox = new LinkedList<Entity>();
 		protected LinkedList<BukkitTask> tasks = new LinkedList<BukkitTask>();
 		protected ItemStack[] inv;
+
 		public Corpse(PlayerFightData data) {
 			this.data = data;
 			Player p = data.getPlayer();
@@ -989,13 +1013,16 @@ public abstract class FightInstance extends Instance {
 				ent.remove();
 			}
 			
-			if (bar != null) bar.removeAll();
+			if (bar != null)
+				bar.removeAll();
 		}
 		
 		public boolean hitCorpse(Entity e) {
-			if (e.getLocation().distanceSquared(corpseDisplay.getLocation()) > 9) return false;
+			if (e.getLocation().distanceSquared(corpseDisplay.getLocation()) > 9)
+				return false;
 			for (Entity hit : hitbox) {
-				if (e == hit) return true;
+				if (e == hit)
+					return true;
 			}
 			return false;
 		}

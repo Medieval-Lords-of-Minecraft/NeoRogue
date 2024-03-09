@@ -27,15 +27,20 @@ import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.SpectateSelectInventory;
-import me.neoblade298.neorogue.session.*;
+import me.neoblade298.neorogue.session.EditInventoryInstance;
+import me.neoblade298.neorogue.session.Instance;
+import me.neoblade298.neorogue.session.NodeSelectInstance;
+import me.neoblade298.neorogue.session.Plot;
+import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.ShopInstance;
+import me.neoblade298.neorogue.session.ShrineInstance;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.reward.RewardInstance;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class ChanceInstance extends EditInventoryInstance {
-	private static final double SPAWN_X = Session.CHANCE_X + 6.5, SPAWN_Z = Session.CHANCE_Z + 1.5,
-			HOLO_X = 0, HOLO_Y = 2, HOLO_Z = 3;
+	private static final double SPAWN_X = Session.CHANCE_X + 6.5, SPAWN_Z = Session.CHANCE_Z + 1.5, HOLO_X = 0, HOLO_Y = 2, HOLO_Z = 3;
 	private static final ParticleContainer part = new ParticleContainer(Particle.FLAME).count(25).speed(0.1).spread(0.2, 0.2);
 	private static final SoundContainer sc = new SoundContainer(Sound.BLOCK_NOTE_BLOCK_PLING);
 
@@ -67,7 +72,8 @@ public class ChanceInstance extends EditInventoryInstance {
 		set = ChanceSet.get(split[0]);
 		for (Entry<UUID, PlayerSessionData> ent : party.entrySet()) {
 			String id = ent.getValue().getInstanceData();
-			if (id == null) continue;
+			if (id == null)
+				continue;
 			stage.put(ent.getKey(), set.getStage(id));
 		}
 		
@@ -116,15 +122,16 @@ public class ChanceInstance extends EditInventoryInstance {
 	@Override
 	public void handleSpectatorInteractEvent(PlayerInteractEvent e) {
 		e.setCancelled(true);
-		if (e.getAction() != Action.RIGHT_CLICK_BLOCK) return;
-		if (e.getHand() != EquipmentSlot.HAND) return;
+		if (e.getAction() != Action.RIGHT_CLICK_BLOCK)
+			return;
+		if (e.getHand() != EquipmentSlot.HAND)
+			return;
 
 		Player p = e.getPlayer();
 		if (e.getClickedBlock().getType() == Material.QUARTZ_PILLAR || e.getClickedBlock().getType() == Material.LIGHT_GRAY_CANDLE) {
 			if (set.isIndividual()) {
 				new SpectateSelectInventory(s, p, true);
-			}
-			else {
+			} else {
 				spectatePlayer(p, s.getHost());
 			}
 		}
@@ -132,8 +139,10 @@ public class ChanceInstance extends EditInventoryInstance {
 
 	@Override
 	public void handleInteractEvent(PlayerInteractEvent e) {
-		if (e.getAction() != Action.RIGHT_CLICK_BLOCK) return;
-		if (e.getHand() != EquipmentSlot.HAND) return;
+		if (e.getAction() != Action.RIGHT_CLICK_BLOCK)
+			return;
+		if (e.getHand() != EquipmentSlot.HAND)
+			return;
 		e.setCancelled(true);
 
 		Player p = e.getPlayer();
@@ -172,8 +181,7 @@ public class ChanceInstance extends EditInventoryInstance {
 			if (!set.isIndividual()) {
 				this.stage.clear();
 				returnPlayers();
-			}
-			else {
+			} else {
 				this.stage.remove(uuid);
 				if (this.stage.isEmpty()) {
 					returnPlayers();
@@ -187,8 +195,7 @@ public class ChanceInstance extends EditInventoryInstance {
 				for (UUID id : this.stage.keySet()) {
 					this.stage.put(id, stage);
 				}
-			}
-			else {
+			} else {
 				this.stage.put(uuid, stage);
 			}
 		}
@@ -200,7 +207,8 @@ public class ChanceInstance extends EditInventoryInstance {
 	}
 	
 	private void returnPlayers() {
-		if (returning) return;
+		if (returning)
+			return;
 		s.broadcastSound(Sound.ENTITY_BLAZE_SHOOT);
 		part.play(holo.getLocation());
 		Candle candle = (Candle) candleBlock.getBlockData();
@@ -208,33 +216,31 @@ public class ChanceInstance extends EditInventoryInstance {
 		candleBlock.setBlockData(candle);
 		returning = true;
 		new BukkitRunnable() {
+			@Override
 			public void run() {
 				if (nextInstance != null) {
 					String instDisplay = null;
 					if (nextInstance instanceof FightInstance) {
 						instDisplay = "fight";
-					}
-					else if (nextInstance instanceof ShrineInstance) {
+					} else if (nextInstance instanceof ShrineInstance) {
 						instDisplay = "shrine";
-					}
-					else if (nextInstance instanceof RewardInstance) {
+					} else if (nextInstance instanceof RewardInstance) {
 						instDisplay = "claim rewards";
-					}
-					else if (nextInstance instanceof ShopInstance) {
+					} else if (nextInstance instanceof ShopInstance) {
 						instDisplay = "shop";
 					}
 					else if (nextInstance instanceof NodeSelectInstance) {
 						instDisplay = "node select";
 					}
 					s.broadcast(Component.text("Sending you to " + instDisplay + "..."));
-				}
-				else {
+				} else {
 					s.broadcast(Component.text("Sending you back to node select..."));
 				}
 			}
 		}.runTaskLater(NeoRogue.inst(), 20L);
 
 		new BukkitRunnable() {
+			@Override
 			public void run() {
 				returning = false;
 				s.setInstance(nextInstance == null ? new NodeSelectInstance(s) : nextInstance);
