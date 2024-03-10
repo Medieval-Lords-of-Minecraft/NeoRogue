@@ -14,10 +14,11 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
 public class RingOfFortitude extends Equipment {
+	private double mult;
 	public RingOfFortitude(boolean isUpgraded) {
 		super("ringOfFortitude", "Ring Of Fortitude", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ACCESSORY);
-		
+		mult = isUpgraded ? 1.2 : 0.8;
 	}
 
 	@Override
@@ -33,6 +34,6 @@ public class RingOfFortitude extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE, "Your basic attacks additionally deal your current " + GlossaryTag.SHIELDS.tag(this)
-				+ " as " + GlossaryTag.BLUNT.tag(this) + " damage.");
+				+ " multipled by <yellow>" + mult + "</yellow> as " + GlossaryTag.BLUNT.tag(this) + " damage.");
 	}
 }

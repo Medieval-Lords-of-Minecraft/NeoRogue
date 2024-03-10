@@ -524,7 +524,7 @@ public class PlayerSessionData {
 	}
 
 	public void increaseAbilityLimit(int amount) {
-		this.abilitiesEquipped += amount;
+		this.maxAbilities += amount;
 	}
 
 	public void addMaxHealth(int amount) {

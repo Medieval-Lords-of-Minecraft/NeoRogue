@@ -252,7 +252,7 @@ public abstract class FightInstance extends Instance {
 	public void handlePlayerLeave(Player p) {
 		p.setInvulnerable(false);
 		p.setInvisible(false);
-		p.setNoDamageTicks(10);
+		p.setMaximumNoDamageTicks(20);
 		p.removePotionEffect(PotionEffectType.ABSORPTION);
 	}
 	
@@ -261,6 +261,7 @@ public abstract class FightInstance extends Instance {
 		// If player rejoins fight, don't tp them, it'll still be the same fight
 		// If the fight already ended, another instance will handle their tp anyway
 		PlayerFightData pdata = getUserData(p.getUniqueId());
+		p.setMaximumNoDamageTicks(0);
 		if (pdata == null) {
 			Bukkit.getLogger().warning("[NeoRogue] Failed to get player fight data on rejoin for " + p.getName());
 			return;
@@ -720,6 +721,7 @@ public abstract class FightInstance extends Instance {
 				for (Player p : s.getOnlinePlayers()) {
 					p.teleport(spawn);
 					p.setAllowFlight(false);
+					p.setMaximumNoDamageTicks(0);
 				}
 				for (UUID uuid : s.getSpectators()) {
 					Player p = Bukkit.getPlayer(uuid);
@@ -812,7 +814,8 @@ public abstract class FightInstance extends Instance {
 
 		Component statsHeader = SharedUtil.color(
 				"<gray>Fight Statistics [<white>" + timer + "</white>] (Hover for more info!)\n=====\n"
-						+ "[<yellow>Name</yellow> (<green>Health</green>) - <red>Damage Dealt </red>/ <dark_red>Received </dark_red>/ <blue>Buffed</blue> / <gold>Mitigated</gold>]"
+						+ "[<yellow>Name</yellow> (<green>HP</green>) - <red>Damage Dealt </red>/ <dark_red>Received "
+						+ "<gray>(</gray>HP<gray>)</gray> </dark_red>/ <blue>Buffed</blue> / <gold>Mitigated</gold>]"
 		);
 		s.broadcast(statsHeader);
 		for (UUID uuid : s.getParty().keySet()) {

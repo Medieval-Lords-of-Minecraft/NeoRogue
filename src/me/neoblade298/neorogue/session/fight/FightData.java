@@ -258,11 +258,11 @@ public class FightData {
 	}
 	
 	public Status getStatus(String id) {
-		return statuses.get(id);
+		return statuses.getOrDefault(id, Status.EMPTY);
 	}
 	
 	public Status getStatus(StatusType type) {
-		return statuses.get(type.name());
+		return statuses.getOrDefault(type.name(), Status.EMPTY);
 	}
 	
 	public void applyStatus(StatusType type, UUID applier, int stacks, int seconds) {

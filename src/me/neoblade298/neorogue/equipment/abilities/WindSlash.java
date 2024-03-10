@@ -57,10 +57,10 @@ public class WindSlash extends Equipment {
 	
 	private class WindSlashProjectile extends Projectile {
 		public WindSlashProjectile(int i, int center) {
-			super(0.25, properties.get(PropertyType.RANGE), 2);
+			super(0.5, properties.get(PropertyType.RANGE), 2);
 			this.size(1, 1);
 			int iter = i - center;
-			this.rotation(iter * 45);
+			this.rotation(iter * 25);
 		}
 
 		@Override

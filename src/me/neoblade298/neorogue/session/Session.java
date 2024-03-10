@@ -503,6 +503,7 @@ public class Session {
 			broadcast("<yellow>" + p.getName() + " <gray>has left the party!");
 			party.remove(p.getUniqueId());
 			SessionManager.removeFromSession(p.getUniqueId());
+			p.setMaximumNoDamageTicks(20);
 			
 			if (inst instanceof FightInstance) {
 				((FightInstance) inst).handlePlayerLeaveParty();

@@ -287,7 +287,7 @@ public class DamageMeta {
 		// trigger received health damage
 		if (recipient instanceof PlayerFightData && (damage > 0 || ignoreShieldsDamage > 0)) {
 			PlayerFightData pdata = (PlayerFightData) recipient;
-			ReceivedHealthDamageEvent ev = new ReceivedHealthDamageEvent(damager, this);
+			ReceivedHealthDamageEvent ev = new ReceivedHealthDamageEvent(damager, this, damage, ignoreShieldsDamage);
 			if (pdata.runActions(pdata, Trigger.RECEIVED_HEALTH_DAMAGE, ev)) {
 				damage = 0;
 				ignoreShieldsDamage = 0;

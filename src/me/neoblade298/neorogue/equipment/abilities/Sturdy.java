@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Sturdy extends Equipment {
-	private static final int HEAL_COUNT = 3;
+	private static final int HEAL_COUNT = 6;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.VILLAGER_HAPPY).count(15).spread(0.5, 0.5).offsetY(2);
 	private int heal;
 	
@@ -41,7 +41,7 @@ public class Sturdy extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GREEN_DYE,
-				"Passive. Heal for <yellow>" + heal + "</yellow> every <white>" + HEAL_COUNT + "</white> consecutive seconds you keep your shield up.");
+				"Passive. Heal for <yellow>" + heal + "</yellow> every <white>" + HEAL_COUNT + "</white> consecutive seconds you keep a shield raised.");
 	}
 	
 	private class SturdyInstance extends PriorityAction {

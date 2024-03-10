@@ -35,7 +35,7 @@ public class Windcutter extends Equipment {
 	
 	public Windcutter(boolean isUpgraded) {
 		super("windcutter", "Windcutter", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 5));
 		damage = isUpgraded ? 50 : 30;
 		for (int i = 0; i < PROJECTILE_AMOUNT; i++) {
 			projs.add(new WindcutterProjectile(i, PROJECTILE_AMOUNT / 2));
@@ -54,7 +54,8 @@ public class Windcutter extends Equipment {
 			action = (pdata, in) -> {
 				if (++count >= 3) {
 					sound.play(p, p);
-					projs.start(data);
+					projs.start(data, p.getLocation().add(0, 1, 0), p.getLocation().getDirection().setY(0).normalize());
+					count = 0;
 				}
 				return TriggerResult.keep();
 			};
@@ -71,10 +72,10 @@ public class Windcutter extends Equipment {
 	
 	private class WindcutterProjectile extends Projectile {
 		public WindcutterProjectile(int i, int center) {
-			super(0.25, properties.get(PropertyType.RANGE), 2);
+			super(0.5, properties.get(PropertyType.RANGE), 2);
 			this.size(1, 1).pierce();
 			int iter = i - center;
-			this.rotation(iter * 45);
+			this.rotation(iter * 25);
 		}
 
 		@Override

@@ -10,6 +10,7 @@ import me.neoblade298.neorogue.session.fight.TickAction;
 import net.kyori.adventure.text.Component;
 
 public abstract class Status {
+	public static final Status EMPTY = new BasicStatus("EMPTY", null);
 	protected String id;
 	protected int stacks;
 	protected TickAction action;

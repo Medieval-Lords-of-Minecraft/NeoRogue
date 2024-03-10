@@ -53,6 +53,6 @@ public class Flurry extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.AMETHYST_SHARD,
-				"On cast, your next <yellow>" + cutoff + "</yellow> basic attacks have their attack cooldown reduced by <white>50%</white>.");
+				"On cast, your next <yellow>" + cutoff + "</yellow> basic attacks have their attack speed increased by <white>1.0</white>.");
 	}
 }

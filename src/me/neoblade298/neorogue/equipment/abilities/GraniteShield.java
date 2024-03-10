@@ -7,19 +7,19 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
+import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
 
 public class GraniteShield extends Equipment {
-	private static final int HEAL_COUNT = 3;
+	private static final int HEAL_COUNT = 6;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.VILLAGER_HAPPY).count(15).spread(0.5, 0.5).offsetY(2);;
 	private int heal, concuss;
 	
@@ -33,7 +33,7 @@ public class GraniteShield extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		SturdyInstance inst = new SturdyInstance(p, this, slot, es);
+		GraniteShieldInstance inst = new GraniteShieldInstance(p, id);
 		data.addTrigger(id, Trigger.SHIELD_TICK, inst);
 		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, (pdata, in) -> {
 			if (inst.getCount() < HEAL_COUNT) return TriggerResult.keep();
@@ -56,10 +56,10 @@ public class GraniteShield extends Equipment {
 						GlossaryTag.CONCUSSED.tag(this) + " to enemies that damage you while your shield is raised for at least 3 seconds.");
 	}
 	
-	private class SturdyInstance extends EquipmentInstance {
+	private class GraniteShieldInstance extends PriorityAction {
 		private int count = 0;
-		public SturdyInstance(Player p, Equipment eq, int slot, EquipSlot es) {
-			super(p, eq, slot, es);
+		public GraniteShieldInstance(Player p, String id) {
+			super(id);
 			
 			action = (pdata, inputs) -> {
 				if (++count % HEAL_COUNT == 0 && count > 0) {

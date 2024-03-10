@@ -17,6 +17,8 @@ public class FightStatistics {
 	private double healingGiven, healingReceived, selfHealing, damageBarriered, damageShielded, defenseBuffed;
 	private int deaths, revives;
 	
+	private double totalDamageTaken; // Only used for caching once calculated
+	
 	private static final DecimalFormat df = new DecimalFormat("#.##");
 	private static final Component separator = Component.text(" / ", NamedTextColor.GRAY).hoverEvent(null);
 	
@@ -132,7 +134,10 @@ public class FightStatistics {
 				.hoverEvent(HoverEvent.showText(getNameHoverComponent())))
 		.append(Component.text(" - ", NamedTextColor.GRAY).hoverEvent(null))
 		.append(getTypedComponent(damageDealt, NamedTextColor.RED, "Damage dealt post buff and mitigation:")).append(separator)
-		.append(getTypedComponent(damageTaken, NamedTextColor.DARK_RED, "Damage taken post buff and mitigation, before shields:")).append(separator)
+		.append(getTypedComponent(damageTaken, NamedTextColor.DARK_RED, "Damage taken post buff and mitigation, before shields:")
+			.append(Component.text(" (", NamedTextColor.GRAY))
+			.append(Component.text(df.format(totalDamageTaken - damageShielded)))
+			.append(Component.text(")", NamedTextColor.GRAY)).append(separator))
 		.append(getTypedComponent(damageBuffed, NamedTextColor.BLUE, "Damage buffed for self and allies:")).append(separator)
 		.append(getTypedComponent(damageMitigated, NamedTextColor.GOLD, "Damage mitigated, excluding shields:"));
 	}
@@ -148,6 +153,7 @@ public class FightStatistics {
 				hover = hover.appendNewline().append(getStatPiece(ent.getKey(), map));
 				total += ent.getValue();
 			}
+			if (map == damageTaken) totalDamageTaken = total;
 			return Component.text("" + df.format(total), color).hoverEvent(HoverEvent.showText(hover));
 		}
 	}
