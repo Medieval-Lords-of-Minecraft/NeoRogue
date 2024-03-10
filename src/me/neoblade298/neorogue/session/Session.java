@@ -350,7 +350,7 @@ public class Session {
 		this.potionChance = Math.max(0, Math.min(100, potionChance + amount));
 	}
 	
-	private void setupSpectatorInventory(Player p) {
+	public void setupSpectatorInventory(Player p) {
 		p.getInventory().clear();
 		p.getInventory().setItem(4, (CoreInventory.createButton(Material.ENDER_CHEST,
 				Component.text("Left/right click to open spectator menu", NamedTextColor.YELLOW),
@@ -377,18 +377,6 @@ public class Session {
 		}
 		this.inst = inst;
 		inst.start();
-		if (inst instanceof EditInventoryInstance) {
-			for (PlayerSessionData data : party.values()) {
-				data.setupInventory();
-				data.setupEditInventory(); // hunger and exp bar
-				data.updateBoardLines();
-			}
-			
-			for (UUID uuid : spectators) {
-				Player p = Bukkit.getPlayer(uuid);
-				setupSpectatorInventory(p);
-			}
-		}
 		
 		// Auto-save
 		if (firstLoad) return true;

@@ -31,8 +31,8 @@ public class ReforgeOptionsInventory extends CoreInventory {
 	private EquipSlot type;
 	private ArrayList<Equipment> reforgeOptions = new ArrayList<Equipment>();
 	public ReforgeOptionsInventory(PlayerSessionInventory prev, int slot, boolean isEquipSlot, EquipSlot type, int dataSlot, Equipment toReforge, Equipment reforgeWith, ItemStack hostage) {
-		super(prev.getPlayer(), Bukkit.createInventory(prev.getPlayer(), 18, Component.text("Reforge Options", NamedTextColor.BLUE)));
-		
+		super(null, Bukkit.createInventory(null, 18, Component.text("Reforge Options", NamedTextColor.BLUE)));
+		// TODO Fix constructor for new inv system
 		this.slot = slot;
 		this.isEquipSlot = isEquipSlot;
 		this.hostage = hostage;

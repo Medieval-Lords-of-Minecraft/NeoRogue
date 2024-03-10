@@ -21,7 +21,6 @@ import org.bukkit.inventory.PlayerInventory;
 import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.bukkit.effects.Audience;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
-import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder.SQLAction;
@@ -34,13 +33,13 @@ import me.neoblade298.neorogue.equipment.Equipment.DropTableSet;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
+import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.event.SessionAction;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.fight.trigger.KeyBind;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.format.NamedTextColor;
 
 public class PlayerSessionData {
 	private PlayerData data;
@@ -165,26 +164,12 @@ public class PlayerSessionData {
 		}
 	}
 
-	public void setupEditInventory() {
-		updateCoinsBar();
-		getPlayer().setSaturation(20);
-	}
-
 	public void setupInventory() {
 		Player p = data.getPlayer();
-		PlayerInventory inv = p.getInventory();
-		inv.clear();
-		inv.setItem(4,
-				(CoreInventory.createButton(Material.ENDER_CHEST,
-						Component.text("Left/right click to open inventory", NamedTextColor.YELLOW),
-						Component.text("You can also swap hands or click anywhere in your inventory."), 200,
-						NamedTextColor.GRAY)));
-
-		for (int i = 0; i < storage.length; i++) {
-			Equipment eq = storage[i];
-			if (eq == null) continue;
-			inv.setItem(i, eq.getItem());
-		}
+		p.getInventory().clear();
+		PlayerSessionInventory.setupInventory(this);
+		updateCoinsBar();
+		getPlayer().setSaturation(20);
 	}
 
 	public Player getPlayer() {

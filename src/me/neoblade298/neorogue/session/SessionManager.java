@@ -28,7 +28,6 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
@@ -158,38 +157,31 @@ public class SessionManager implements Listener {
 
 	@EventHandler
 	public void onInventoryDrag(InventoryDragEvent e) {
-		handlePlayerInventoryInteract(e);
+		Player p = (Player) e.getWhoClicked();
+		UUID uuid = p.getUniqueId();
+		if (!sessions.containsKey(uuid)) return;
+		Session s = sessions.get(uuid);
+		if (s.getInstance() instanceof EditInventoryInstance && !InventoryListener.hasOpenCoreInventory(p)
+				&& e.getView().getTopInventory().getType() == InventoryType.CRAFTING) {
+			new PlayerSessionInventory(s.getData(uuid)).handleInventoryDrag(e);; // Register core player inventory when inv is opened
+		}
+		else if (s.getInstance() instanceof FightInstance) {
+			e.setCancelled(true);
+		}
 	}
 
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent e) {
-		handlePlayerInventoryInteract(e);
-	}
-
-	private void handlePlayerInventoryInteract(InventoryInteractEvent e) {
 		Player p = (Player) e.getWhoClicked();
-
-
 		UUID uuid = p.getUniqueId();
-		if (sessions.containsKey(uuid)) {
-			Session s = sessions.get(uuid);
-
-			// If the inventory type is normal player inventory, open up a player session inventory
-			if (s.getInstance() instanceof EditInventoryInstance && InventoryListener.getCoreInventory(p) == null &&
-					e.getView().getTopInventory().getType() == InventoryType.CRAFTING) {
-				e.setCancelled(true);
-				p.setItemOnCursor(null);
-				if (s.isSpectator(uuid)) {
-					new SpectateSelectInventory(s, p, false);
-				}
-				else {
-					new PlayerSessionInventory(s.getData(uuid));
-				}
-			}
-			
-			else if (s.getInstance() instanceof FightInstance) {
-				e.setCancelled(true);
-			}
+		if (!sessions.containsKey(uuid)) return;
+		Session s = sessions.get(uuid);
+		if (s.getInstance() instanceof EditInventoryInstance && !InventoryListener.hasOpenCoreInventory(p)
+				&& e.getView().getTopInventory().getType() == InventoryType.CRAFTING) {
+			new PlayerSessionInventory(s.getData(uuid)).handleInventoryClick(e);
+		}
+		else if (s.getInstance() instanceof FightInstance) {
+			e.setCancelled(true);
 		}
 	}
 
@@ -322,7 +314,7 @@ public class SessionManager implements Listener {
 		if (s.getInstance() instanceof EditInventoryInstance && e.getRightClicked() instanceof Player) {
 			Player viewed = (Player) e.getRightClicked();
 			if (s.getParty().containsKey(viewed.getUniqueId())) {
-				new PlayerSessionInventory(s.getParty().get(viewed.getUniqueId()), p);
+				// TODO Replace with new spectator inventorynew PlayerSessionInventoryListener(s.getParty().get(viewed.getUniqueId()), p);
 			}
 			return;
 		}

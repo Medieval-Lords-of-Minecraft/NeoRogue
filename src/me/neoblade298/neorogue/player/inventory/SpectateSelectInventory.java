@@ -70,7 +70,7 @@ public class SpectateSelectInventory extends CoreInventory {
 		
 		Instance inst = s.getInstance();
 		if (!selectUnique && inst instanceof EditInventoryInstance) {
-			new PlayerSessionInventory(players.get(e.getSlot()), p);
+			// TODO new PlayerSessionInventoryListener(players.get(e.getSlot()), p);
 			return;
 		}
 		
