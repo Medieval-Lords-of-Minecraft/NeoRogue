@@ -329,15 +329,24 @@ public class PlayerSessionData {
 		inst.getArtifact().onAcquire(this);
 		inst.getArtifact().onInitializeSession(this);
 	}
+	
+	public void giveEquipmentSilent(Equipment eq) {
+		giveEquipment(eq, null, null);
+	}
 
+	// If components null, no broadcast
 	public void giveEquipment(Equipment eq, Component toSelf, Component toOthers) {
 		Player p = getPlayer();
-		Sounds.success.play(p, p);
-		s.broadcastOthers(toOthers.append(eq.getHoverable()).append(Component.text(".")), p);
-		toSelf = toSelf.append(eq.getHoverable());
+		if (toSelf != null) {
+			Sounds.success.play(p, p);
+			s.broadcastOthers(toOthers.append(eq.getHoverable()).append(Component.text(".")), p);
+			toSelf = toSelf.append(eq.getHoverable());
+		}
 
 		if (eq instanceof Artifact) {
-			Util.msg(p, toSelf.append(Component.text(".")));
+			if (toSelf != null) {
+				Util.msg(p, toSelf.append(Component.text(".")));
+			}
 			giveArtifact((Artifact) eq);
 		}
 		else {
@@ -353,7 +362,7 @@ public class PlayerSessionData {
 					}
 				}
 				if (success) {
-					Util.msg(p, toSelf.append(SharedUtil.color(", it was auto-equipped to " + es.getDisplay() + ".")));
+					if (toSelf != null) Util.msg(p, toSelf.append(SharedUtil.color(", it was auto-equipped to " + es.getDisplay() + ".")));
 					PlayerSessionInventory.setupInventory(this);
 					return;
 				}
@@ -363,6 +372,7 @@ public class PlayerSessionData {
 				if (storage[i] == null) {
 					storage[i] = eq;
 					success = true;
+					return;
 				}
 			}
 			

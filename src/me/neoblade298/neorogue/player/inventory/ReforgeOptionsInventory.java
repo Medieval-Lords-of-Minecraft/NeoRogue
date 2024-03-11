@@ -1,7 +1,6 @@
 package me.neoblade298.neorogue.player.inventory;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -16,26 +15,17 @@ import org.bukkit.inventory.ItemStack;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class ReforgeOptionsInventory extends CoreInventory {
 	private PlayerSessionData data;
-	private int dataSlot;
-	private boolean isEquipSlot;
 	private Equipment toReforge, reforgeWith;
-	private ItemStack hostage;
-	private EquipSlot type;
 	private ArrayList<Equipment> reforgeOptions = new ArrayList<Equipment>();
-	public ReforgeOptionsInventory(PlayerSessionData data, boolean isEquipSlot, EquipSlot type, int dataSlot, Equipment toReforge, Equipment reforgeWith, ItemStack hostage) {
+	public ReforgeOptionsInventory(PlayerSessionData data, Equipment toReforge, Equipment reforgeWith) {
 		super(data.getPlayer(), Bukkit.createInventory(data.getPlayer(), 18, Component.text("Reforge Options", NamedTextColor.BLUE)));
 		this.data = data;
-		this.isEquipSlot = isEquipSlot;
-		this.hostage = hostage;
-		this.type = type;
-		this.dataSlot = dataSlot;
 		this.toReforge = toReforge;
 		this.reforgeWith = reforgeWith;
 
@@ -87,22 +77,19 @@ public class ReforgeOptionsInventory extends CoreInventory {
 			cmp = cmp.append(Component.text(" into a(n) ").append(reforged.getHoverable().append(Component.text("!"))));
 			data.getSession().broadcast(cmp);
 			
-			if (isEquipSlot) {
-				data.setEquipment(type, dataSlot, reforged);
-			}
-			else {
-				data.giveEquipment(reforged);	
-			}
-			hostage = null;
+			data.giveEquipment(reforged);	
+			toReforge = null;
+			reforgeWith = null;
+			System.out.println("Reforge null");
 			p.closeInventory();
 		}
 	}
 	
 	@Override
 	public void handleInventoryClose(InventoryCloseEvent e) {
-		if (hostage != null) {
-			HashMap<Integer, ItemStack> failed = p.getInventory().addItem(hostage);
-			if (!failed.isEmpty()) p.getWorld().dropItem(p.getLocation(), hostage);
+		if (toReforge != null) {
+			data.giveEquipment(toReforge, null, null);
+			data.giveEquipment(reforgeWith, null, null);
 		}
 	}
 	

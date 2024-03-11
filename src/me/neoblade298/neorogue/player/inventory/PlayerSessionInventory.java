@@ -205,6 +205,7 @@ public class PlayerSessionInventory extends CorePlayerInventory {
 			e.setCancelled(true);
 			new BukkitRunnable() {
 				public void run() {
+					handleInventoryClose();
 					new ArtifactsInventory(data);
 				}
 			}.runTask(NeoRogue.inst());
@@ -214,6 +215,7 @@ public class PlayerSessionInventory extends CorePlayerInventory {
 			e.setCancelled(true);
 			new BukkitRunnable() {
 				public void run() {
+					handleInventoryClose();
 					new SpectateSelectInventory(data.getSession(), p, false);
 				}
 			}.runTask(NeoRogue.inst());
@@ -223,6 +225,7 @@ public class PlayerSessionInventory extends CorePlayerInventory {
 			e.setCancelled(true);
 			new BukkitRunnable() {
 				public void run() {
+					handleInventoryClose();
 					new NodeMapInventory(p, data.getSession());
 				}
 			}.runTask(NeoRogue.inst());
@@ -248,6 +251,7 @@ public class PlayerSessionInventory extends CorePlayerInventory {
 			e.setCancelled(true);
 			new BukkitRunnable() {
 				public void run() {
+					handleInventoryClose();
 					new GlossaryInventory(p, Equipment.get(nclicked.getString("equipId"), false), null);
 				}
 			}.runTask(NeoRogue.inst());
@@ -287,20 +291,33 @@ public class PlayerSessionInventory extends CorePlayerInventory {
 					displayError("At least one of the items must be upgraded to reforge!", true);
 					return;
 				}
-				p.setItemOnCursor(null);
-				new ReforgeOptionsInventory(data, true, slotTypes.get(e.getSlot()),
-						nclicked.getInteger("dataSlot"), eq, eqed, cursor);
+				new BukkitRunnable() {
+					public void run() {
+						p.setItemOnCursor(null);
+						EquipSlot type = slotTypes.get(slot);
+						removeEquipment(type, nclicked.getInteger("dataSlot"), slot, e.getClickedInventory());
+						inv.setItem(slot, iconFromEquipSlot(type, slot));
+						handleInventoryClose();
+						new ReforgeOptionsInventory(data, eq, eqed);
+					}
+				}.runTask(NeoRogue.inst());
 				return;
 			}
 			else if (eqed != null && eqed.containsReforgeOption(eqId)) {
-				p.setItemOnCursor(null);
 				if (!canReforge(eq, eqed)) {
 					displayError("At least one of the items must be upgraded to reforge!", true);
 					return;
 				}
-				p.setItemOnCursor(null);
-				new ReforgeOptionsInventory(data, true, slotTypes.get(e.getSlot()),
-						nclicked.getInteger("dataSlot"), eqed, eq, cursor);
+				new BukkitRunnable() {
+					public void run() {
+						p.setItemOnCursor(null);
+						EquipSlot type = slotTypes.get(slot);
+						removeEquipment(type, nclicked.getInteger("dataSlot"), slot, e.getClickedInventory());
+						inv.setItem(slot, iconFromEquipSlot(type, slot));
+						handleInventoryClose();
+						new ReforgeOptionsInventory(data, eqed, eq);
+					}
+				}.runTask(NeoRogue.inst());
 				return;
 			}
 
@@ -477,8 +494,17 @@ public class PlayerSessionInventory extends CorePlayerInventory {
 
 	@Override
 	public void handleInventoryClose(InventoryCloseEvent e) {
+		handleInventoryClose();
+	}
+	
+	public void handleInventoryClose() {
+		clearHighlights();
 		if (p.getItemOnCursor().getType().isAir()) return;
-		p.updateInventory();
+		ItemStack clicked = p.getItemOnCursor();
+		NBTItem nclicked = new NBTItem(clicked);
+		// Silent
+		data.giveEquipment(Equipment.get(nclicked.getString("equipId"), nclicked.getBoolean("isUpgraded")), null, null);
+		p.setItemOnCursor(null);
 	}
 
 	@Override
