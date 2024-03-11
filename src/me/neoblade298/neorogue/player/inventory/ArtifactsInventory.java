@@ -78,6 +78,7 @@ public class ArtifactsInventory extends CoreInventory {
 		
 		int slot = e.getRawSlot();
 		if (e.getCurrentItem() == null) return;
+		if (inv.getSize() == 9) return;
 		if (slot == inv.getSize() - 9 + NEXT) {
 			inv.clear();
 			page++;

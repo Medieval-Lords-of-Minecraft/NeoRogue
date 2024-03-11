@@ -101,7 +101,11 @@ public class GlossaryInventory extends CoreInventory {
 		NBTItem nbti = new NBTItem(e.getCurrentItem());
 		if (!nbti.getKeys().contains("equipId")) return;
 		openOther = false;
-		new GlossaryInventory(p, Equipment.get(nbti.getString("equipId"), false), prev);
+		new BukkitRunnable() {
+			public void run() {
+				new GlossaryInventory(p, Equipment.get(nbti.getString("equipId"), false), prev);
+			}
+		}.runTask(NeoRogue.inst());
 	}
 	
 	@Override
@@ -112,7 +116,7 @@ public class GlossaryInventory extends CoreInventory {
 				public void run() {
 					if (prev != null) prev.openInventory();
 				}
-			}.runTaskLater(NeoRogue.inst(), 1L);
+			}.runTask(NeoRogue.inst());
 		}
 	}
 	

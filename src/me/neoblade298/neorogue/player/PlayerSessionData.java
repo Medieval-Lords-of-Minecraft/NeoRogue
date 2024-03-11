@@ -354,18 +354,20 @@ public class PlayerSessionData {
 				}
 				if (success) {
 					Util.msg(p, toSelf.append(SharedUtil.color(", it was auto-equipped to " + es.getDisplay() + ".")));
+					PlayerSessionInventory.setupInventory(this);
 					return;
 				}
 			}
-
-			HashMap<Integer, ItemStack> overflow = p.getInventory().addItem(eq.getItem());
-			Util.msg(p, toSelf.append(Component.text(".")));
-			if (!overflow.isEmpty()) {
-				for (ItemStack item : overflow.values()) {
-					Util.msg(p, SharedUtil.color("<red>Your inventory is full! ").append(eq.getDisplay())
-							.append(Component.text(" was dropped on the ground.")));
-					p.getWorld().dropItem(p.getLocation(), item);
+			success = false;
+			for (int i = 0; i < storage.length; i++) {
+				if (storage[i] == null) {
+					storage[i] = eq;
+					success = true;
 				}
+			}
+			
+			if (!success) {
+				Util.displayError(p, "Your storage is full!");
 			}
 		}
 	}

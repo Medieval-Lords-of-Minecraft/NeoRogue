@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.Map.Entry;
 import java.util.UUID;
 
@@ -18,6 +19,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Trident;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -161,6 +163,11 @@ public class SessionManager implements Listener {
 		UUID uuid = p.getUniqueId();
 		if (!sessions.containsKey(uuid)) return;
 		Session s = sessions.get(uuid);
+		Set<Integer> slots = e.getRawSlots();
+		if (e.getView().getTopInventory().getType() == InventoryType.CRAFTING && slots.contains(0) || slots.contains(1) || slots.contains(2) || slots.contains(3)) {
+			e.setCancelled(true);
+			return;
+		}
 		if (s.getInstance() instanceof EditInventoryInstance && !InventoryListener.hasOpenCoreInventory(p)
 				&& e.getView().getTopInventory().getType() == InventoryType.CRAFTING) {
 			new PlayerSessionInventory(s.getData(uuid)).handleInventoryDrag(e);; // Register core player inventory when inv is opened
@@ -176,11 +183,23 @@ public class SessionManager implements Listener {
 		UUID uuid = p.getUniqueId();
 		if (!sessions.containsKey(uuid)) return;
 		Session s = sessions.get(uuid);
+		if (e.getClickedInventory() == null) return;
+		if (e.getClickedInventory().getType() == InventoryType.CRAFTING) {
+			e.setCancelled(true);
+			return;
+		}
 		if (s.getInstance() instanceof EditInventoryInstance && !InventoryListener.hasOpenCoreInventory(p)
 				&& e.getView().getTopInventory().getType() == InventoryType.CRAFTING) {
 			new PlayerSessionInventory(s.getData(uuid)).handleInventoryClick(e);
 		}
 		else if (s.getInstance() instanceof FightInstance) {
+			e.setCancelled(true);
+		}
+	}
+	
+	@EventHandler
+	public void onBuild(BlockPlaceEvent e) {
+		if (sessions.containsKey(e.getPlayer().getUniqueId())) {
 			e.setCancelled(true);
 		}
 	}

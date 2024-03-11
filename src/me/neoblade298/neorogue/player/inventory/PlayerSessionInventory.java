@@ -16,11 +16,13 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.inventories.CorePlayerInventory;
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
@@ -48,7 +50,6 @@ public class PlayerSessionInventory extends CorePlayerInventory {
 	private static final TextComponent statsText = Component.text("Your stats:", NamedTextColor.GOLD);
 
 	private HashSet<Integer> highlighted = new HashSet<Integer>();
-	private boolean addItem = false;
 	private PlayerSessionData data;
 
 	public PlayerSessionInventory(PlayerSessionData data) {
@@ -132,7 +133,8 @@ public class PlayerSessionInventory extends CorePlayerInventory {
 		case HOTBAR:
 			return createHotbarIcon(dataSlot);
 		case KEYBIND:
-			return KeyBind.getBindFromSlot(dataSlot).getItem();
+			KeyBind kb = KeyBind.getBindFromSlot(dataSlot);
+			return addNbt(kb.getItem(), kb.getDataSlot());
 		case OFFHAND:
 			return createOffhandIcon();
 		default:
@@ -178,12 +180,16 @@ public class PlayerSessionInventory extends CorePlayerInventory {
 	public void handleInventoryClick(InventoryClickEvent e) {
 		ItemStack cursor = e.getCursor();
 		ItemStack clicked = e.getCurrentItem();
+		int slot = e.getSlot();
+		if (slot >= 36) {
+			e.setCancelled(true);
+			return;
+		}
 		if (cursor.getType().isAir() && clicked == null) return;
 
 		NBTItem ncursor = !cursor.getType().isAir() ? new NBTItem(cursor) : null;
 		NBTItem nclicked = clicked != null ? new NBTItem(clicked) : null;
 
-		int slot = e.getSlot();
 		if (slot == TRASH && clicked != null) {
 			e.setCancelled(true);
 			if (Equipment.get(ncursor.getString("equipId"), false).isCursed()) {
@@ -197,26 +203,35 @@ public class PlayerSessionInventory extends CorePlayerInventory {
 		}
 		if (slot == ARTIFACTS) {
 			e.setCancelled(true);
-			addItem = false;
-			new ArtifactsInventory(data);
+			new BukkitRunnable() {
+				public void run() {
+					new ArtifactsInventory(data);
+				}
+			}.runTask(NeoRogue.inst());
 			return;
 		}
-		else if (slot == SEE_OTHERS) {
+		else if (slot == SEE_OTHERS && data.getSession().getParty().size() > 1) {
 			e.setCancelled(true);
-			addItem = false;
-			new SpectateSelectInventory(data.getSession(), p, false);
+			new BukkitRunnable() {
+				public void run() {
+					new SpectateSelectInventory(data.getSession(), p, false);
+				}
+			}.runTask(NeoRogue.inst());
 			return;
 		}
 		else if (slot == MAP) {
 			e.setCancelled(true);
-			addItem = false;
-			new NodeMapInventory(p, data.getSession());
+			new BukkitRunnable() {
+				public void run() {
+					new NodeMapInventory(p, data.getSession());
+				}
+			}.runTask(NeoRogue.inst());
 			return;
 		}
 
 		InventoryAction action = e.getAction();
 		if (action == InventoryAction.HOTBAR_SWAP || action == InventoryAction.HOTBAR_MOVE_AND_READD) {
-			handleInventorySwap(e);
+			e.setCancelled(true);
 			return;
 		}
 		else if (action == InventoryAction.DROP_ONE_SLOT || action == InventoryAction.DROP_ALL_SLOT) {
@@ -230,7 +245,12 @@ public class PlayerSessionInventory extends CorePlayerInventory {
 
 		// If right click with empty hand, open glossary
 		if (e.isRightClick() && nclicked.hasTag("equipId") && cursor.getType().isAir()) {
-			new GlossaryInventory(p, Equipment.get(nclicked.getString("equipId"), false), null);
+			e.setCancelled(true);
+			new BukkitRunnable() {
+				public void run() {
+					new GlossaryInventory(p, Equipment.get(nclicked.getString("equipId"), false), null);
+				}
+			}.runTask(NeoRogue.inst());
 			return;
 		}
 
@@ -245,7 +265,6 @@ public class PlayerSessionInventory extends CorePlayerInventory {
 				p.playSound(p, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1F);
 				e.setCancelled(true);
 				EquipSlot type = slotTypes.get(slot);
-				System.out.println("Slot: " + slot);
 				removeEquipment(type, nclicked.getInteger("dataSlot"), slot, e.getClickedInventory());
 				if (isBindable(type)) clicked = removeBindLore(clicked);
 				setHighlights(eq.getType());
@@ -265,12 +284,11 @@ public class PlayerSessionInventory extends CorePlayerInventory {
 			// Reforged item check
 			if (eq.containsReforgeOption(eqedId)) {
 				if (!canReforge(eq, eqed)) {
-					addItem = false;
 					displayError("At least one of the items must be upgraded to reforge!", true);
 					return;
 				}
 				p.setItemOnCursor(null);
-				new ReforgeOptionsInventory(this, e.getSlot(), true, slotTypes.get(e.getSlot()),
+				new ReforgeOptionsInventory(data, true, slotTypes.get(e.getSlot()),
 						nclicked.getInteger("dataSlot"), eq, eqed, cursor);
 				return;
 			}
@@ -281,7 +299,7 @@ public class PlayerSessionInventory extends CorePlayerInventory {
 					return;
 				}
 				p.setItemOnCursor(null);
-				new ReforgeOptionsInventory(this, e.getSlot(), true, slotTypes.get(e.getSlot()),
+				new ReforgeOptionsInventory(data, true, slotTypes.get(e.getSlot()),
 						nclicked.getInteger("dataSlot"), eqed, eq, cursor);
 				return;
 			}
@@ -385,17 +403,16 @@ public class PlayerSessionInventory extends CorePlayerInventory {
 		}
 	}
 
+	/* Too lazy to fix, if someone actually uses this I will fix it
 	private void handleInventorySwap(InventoryClickEvent e) {
 		int swapNum = e.getHotbarButton();
-		int slot = e.getRawSlot();
+		int slot = e.getSlot();
 		ItemStack swapped = p.getInventory().getContents()[swapNum];
 		ItemStack clicked = e.getCurrentItem();
 		NBTItem nswapped = swapped != null ? new NBTItem(swapped) : null;
 		NBTItem nclicked = clicked != null ? new NBTItem(clicked) : null;
-		Inventory iclicked = e.getClickedInventory();
-		boolean onChest = iclicked != null && iclicked.getType() == InventoryType.CHEST;
 
-		if (clicked != null && onChest) {
+		if (clicked != null) {
 			e.setCancelled(true);
 			if (swapped == null) {
 				if (!nclicked.hasTag("equipId")) return;
@@ -433,6 +450,7 @@ public class PlayerSessionInventory extends CorePlayerInventory {
 			}
 		}
 	}
+	*/
 
 	private void handleInventoryDrop(InventoryClickEvent e) {
 		ItemStack clicked = e.getCurrentItem();
@@ -460,7 +478,6 @@ public class PlayerSessionInventory extends CorePlayerInventory {
 	@Override
 	public void handleInventoryClose(InventoryCloseEvent e) {
 		if (p.getItemOnCursor().getType().isAir()) return;
-		if (addItem) p.getInventory().addItem(p.getItemOnCursor());
 		p.updateInventory();
 	}
 
@@ -484,7 +501,6 @@ public class PlayerSessionInventory extends CorePlayerInventory {
 	}
 
 	private void removeEquipment(EquipSlot type, int dataSlot, int invSlot, Inventory inv) {
-		System.out.println(dataSlot + " " + slotTypes);
 		ItemStack icon = createIcon(type, dataSlot);
 		data.removeEquipment(type, dataSlot);
 		inv.setItem(invSlot, icon);
@@ -521,7 +537,6 @@ public class PlayerSessionInventory extends CorePlayerInventory {
 	private void displayError(String error, boolean closeInventory) {
 		p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1F, 0.7F);
 		Util.msg(p, error);
-		addItem = false;
 		if (closeInventory) p.closeInventory();
 	}
 
@@ -535,9 +550,9 @@ public class PlayerSessionInventory extends CorePlayerInventory {
 	
 	private ItemStack iconFromEquipSlot(EquipSlot es, int slot) {
 		switch (es) {
-		case ACCESSORY: return createAccessoryIcon(slot - 3);
-		case ARMOR: return createArmorIcon(slot);
-		case HOTBAR: return createHotbarIcon(slot - 18);
+		case ACCESSORY: return createAccessoryIcon(slot - 21);
+		case ARMOR: return createArmorIcon(slot - 18);
+		case HOTBAR: return createHotbarIcon(slot);
 		case KEYBIND: KeyBind bind = KeyBind.getBindFromSlot(slot);
 			return addNbt(bind.getItem(), bind.getDataSlot());
 		case OFFHAND: return createOffhandIcon();

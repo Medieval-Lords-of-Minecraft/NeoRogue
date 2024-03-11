@@ -12,31 +12,28 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.shared.util.SharedUtil;
-import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
+import me.neoblade298.neorogue.player.PlayerSessionData;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class ReforgeOptionsInventory extends CoreInventory {
-	private int slot, dataSlot;
+	private PlayerSessionData data;
+	private int dataSlot;
 	private boolean isEquipSlot;
 	private Equipment toReforge, reforgeWith;
-	private PlayerSessionInventory prev;
 	private ItemStack hostage;
 	private EquipSlot type;
 	private ArrayList<Equipment> reforgeOptions = new ArrayList<Equipment>();
-	public ReforgeOptionsInventory(PlayerSessionInventory prev, int slot, boolean isEquipSlot, EquipSlot type, int dataSlot, Equipment toReforge, Equipment reforgeWith, ItemStack hostage) {
-		super(null, Bukkit.createInventory(null, 18, Component.text("Reforge Options", NamedTextColor.BLUE)));
-		// TODO Fix constructor for new inv system
-		this.slot = slot;
+	public ReforgeOptionsInventory(PlayerSessionData data, boolean isEquipSlot, EquipSlot type, int dataSlot, Equipment toReforge, Equipment reforgeWith, ItemStack hostage) {
+		super(data.getPlayer(), Bukkit.createInventory(data.getPlayer(), 18, Component.text("Reforge Options", NamedTextColor.BLUE)));
+		this.data = data;
 		this.isEquipSlot = isEquipSlot;
 		this.hostage = hostage;
-		this.prev = prev;
 		this.type = type;
 		this.dataSlot = dataSlot;
 		this.toReforge = toReforge;
@@ -88,13 +85,13 @@ public class ReforgeOptionsInventory extends CoreInventory {
 			Component cmp = SharedUtil.color("<yellow>" + p.getName() + "</yellow> reforged their ").append(toReforge.getHoverable());
 			if (!toReforge.getId().equals(reforgeWith.getId())) cmp = cmp.append(Component.text(", ").append(reforgeWith.getHoverable()));
 			cmp = cmp.append(Component.text(" into a(n) ").append(reforged.getHoverable().append(Component.text("!"))));
-			prev.getData().getSession().broadcast(cmp);
+			data.getSession().broadcast(cmp);
 			
 			if (isEquipSlot) {
-				prev.getData().setEquipment(type, dataSlot, Equipment.get(reforged.getId(), false));
+				data.setEquipment(type, dataSlot, reforged);
 			}
 			else {
-				p.getInventory().setItem(slot, reforged.getItem());
+				data.giveEquipment(reforged);	
 			}
 			hostage = null;
 			p.closeInventory();
@@ -107,11 +104,6 @@ public class ReforgeOptionsInventory extends CoreInventory {
 			HashMap<Integer, ItemStack> failed = p.getInventory().addItem(hostage);
 			if (!failed.isEmpty()) p.getWorld().dropItem(p.getLocation(), hostage);
 		}
-		new BukkitRunnable() {
-			public void run() {
-				new PlayerSessionInventory(prev.getData());
-			}
-		}.runTaskLater(NeoRogue.inst(), 5L);
 	}
 	
 	@Override
