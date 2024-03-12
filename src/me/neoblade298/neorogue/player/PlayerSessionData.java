@@ -62,7 +62,7 @@ public class PlayerSessionData {
 
 	private static final ParticleContainer heal = new ParticleContainer(Particle.VILLAGER_HAPPY).count(50)
 			.spread(0.5, 1).speed(0.1).forceVisible(Audience.ALL);
-	public static final int MAX_STORAGE_SIZE = 18;
+	public static final int MAX_STORAGE_SIZE = 27;
 	private static final DecimalFormat df = new DecimalFormat("#.##");
 
 	public PlayerSessionData(UUID uuid, Session s, ResultSet rs) throws SQLException {
@@ -468,6 +468,20 @@ public class PlayerSessionData {
 				Util.displayError(p, "All cursed items must be equipped before continuing!");
 				return true;
 			}
+		}
+		return false;
+	}
+	
+	public boolean exceedsStorageLimit() {
+		Player p = data.getPlayer();
+		int size = 0;
+		for (int i = 0; i < storage.length; i++) {
+			if (storage[i] == null) continue;
+			size++;
+		}
+		if (size > maxStorage) {
+			Util.displayError(p, "Your storage exceeds the maximum storage limit! You must remove some items before you can continue!");
+			return true;
 		}
 		return false;
 	}

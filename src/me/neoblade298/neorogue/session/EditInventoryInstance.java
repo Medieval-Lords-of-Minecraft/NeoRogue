@@ -33,9 +33,13 @@ public abstract class EditInventoryInstance extends Instance {
 				s.broadcastError(data.getData().getDisplay() + " must equip all their curses before continuing!");
 				return false;
 			}
+			if (data.exceedsStorageLimit()) {
+				s.broadcastError(data.getData().getDisplay() + " must remove some equipment before continuing!");
+				return false;
+			}
 			
 			if (data.getPlayer() != null && InventoryListener.hasOpenCoreInventory(p)) {
-				s.broadcastError(data.getData().getDisplay() + " is editing their inventory! Close the inventory to move on.");
+				s.broadcastError(data.getData().getDisplay() + " must close their inventory before continuing!");
 				return false;
 			}
 		}
