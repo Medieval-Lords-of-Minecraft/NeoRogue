@@ -1,5 +1,6 @@
 package me.neoblade298.neorogue.equipment;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 
 import org.bukkit.Material;
@@ -18,6 +19,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class EquipmentInstance extends PriorityAction {
 	private static HashMap<Integer, Material> COOLDOWN_MATERIALS = new HashMap<Integer, Material>();
+	private static final DecimalFormat df = new DecimalFormat("##.#");
 	
 	protected Player p;
 	protected TriggerAction action;
@@ -88,12 +90,12 @@ public class EquipmentInstance extends PriorityAction {
 			return false;
 		}
 		if (data.getMana() < getEffectiveManaCost()) {
-			Util.displayError(data.getPlayer(), "You need " + (getEffectiveManaCost() - data.getMana()) + " more mana!");
+			Util.displayError(data.getPlayer(), "You need " + df.format(getEffectiveManaCost() - data.getMana()) + " more mana!");
 			return false;
 		}
 		
 		if (data.getStamina() < getEffectiveStaminaCost()) {
-			Util.displayError(data.getPlayer(), "You need " + (getEffectiveStaminaCost() - data.getStamina()) + " more stamina!");
+			Util.displayError(data.getPlayer(), "You need " + df.format(getEffectiveStaminaCost() - data.getStamina()) + " more stamina!");
 			return false;
 		}
 		if (condition != null) {
