@@ -10,18 +10,21 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
+import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
+import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.Mob;
 import me.neoblade298.neorogue.session.fight.MobModifier;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class FightInfoInventory extends CoreInventory {
-	public FightInfoInventory(Player viewer, AbstractMap<Mob, ArrayList<MobModifier>> mobs) {
+	public FightInfoInventory(Player viewer, @Nullable PlayerSessionData data, AbstractMap<Mob, ArrayList<MobModifier>> mobs) {
 		super(viewer, Bukkit.createInventory(viewer, mobs.size() + (9 - mobs.size() % 9) + 9, Component.text("Fight Info", NamedTextColor.BLUE)));
-
+		if (data != null) InventoryListener.registerPlayerInventory(p, new PlayerSessionInventory(data));
 		ItemStack[] contents = inv.getContents();
 		
 		int pos = 0;

@@ -15,9 +15,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
+import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.FightInfoInventory;
+import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import net.kyori.adventure.text.Component;
@@ -38,6 +40,7 @@ public class ChanceInventory extends CoreInventory {
 		this.s = inst.getSession();
 		this.stage = stage;
 		this.data = inst.getSession().getData(p.getUniqueId());
+		InventoryListener.registerPlayerInventory(p, new PlayerSessionInventory(data));
 		setupInventory();
 	}
 
@@ -89,7 +92,7 @@ public class ChanceInventory extends CoreInventory {
 	public void handleInventoryClick(InventoryClickEvent e) {
 		e.setCancelled(true);
 		if (e.getRawSlot() == 0 && e.getCurrentItem() != null) {
-			new FightInfoInventory(p, ((FightInstance) inst.getNextInstance()).getMap().getMobs());
+			new FightInfoInventory(p, data, ((FightInstance) inst.getNextInstance()).getMap().getMobs());
 		}
 		if (asSpectator) return;
 		Player p = (Player) e.getWhoClicked();

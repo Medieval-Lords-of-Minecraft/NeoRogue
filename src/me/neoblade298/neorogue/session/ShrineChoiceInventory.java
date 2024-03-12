@@ -9,17 +9,22 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
+import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
+import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class ShrineChoiceInventory extends CoreInventory {
 	private ShrineInstance inst;
 
-	public ShrineChoiceInventory(Player p, ShrineInstance inst) {
+	public ShrineChoiceInventory(Player p, @Nullable PlayerSessionData data, ShrineInstance inst) {
 		super(p, Bukkit.createInventory(p, 9, Component.text("Choose", NamedTextColor.BLUE)));
 		this.inst = inst;
+		if (data != null) InventoryListener.registerPlayerInventory(p, new PlayerSessionInventory(data));
 		ItemStack[] contents = inv.getContents();
 		for (int i = 0; i < 4; i++) {
 			contents[i] = CoreInventory.createButton(Material.SOUL_LANTERN, Component.text("Rest", NamedTextColor.GREEN), 

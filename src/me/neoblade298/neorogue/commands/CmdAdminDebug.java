@@ -26,7 +26,6 @@ public class CmdAdminDebug extends Subcommand {
 	@Override
 	public void run(CommandSender s, String[] args) {
 		Player p = Bukkit.getPlayer("Ascheladd");
-		System.out.println("No damage ticks " + p.getMaximumNoDamageTicks());
 		new BukkitRunnable() {
 			int count = 0;
 			public void run() {

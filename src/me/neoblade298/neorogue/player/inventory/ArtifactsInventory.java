@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.player.inventory;
 
 import java.util.Iterator;
 import java.util.TreeMap;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -15,6 +16,7 @@ import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.session.Session;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -28,6 +30,8 @@ public class ArtifactsInventory extends CoreInventory {
 	public ArtifactsInventory(PlayerSessionData data) {
 		super(data.getPlayer(), Bukkit.createInventory(data.getPlayer(), calculateInventorySize(data), Component.text("Artifacts", NamedTextColor.BLUE)));
 		this.data = data;
+		Session s = data.getSession();
+		if (s.getParty().containsKey(p.getUniqueId())) new PlayerSessionInventory(s.getParty().get(p.getUniqueId()));
 		
 		setupInventory();
 	}

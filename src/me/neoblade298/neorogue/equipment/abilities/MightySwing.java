@@ -26,7 +26,7 @@ public class MightySwing extends Equipment {
 			hit = new ParticleContainer(Particle.REDSTONE);
 	
 	public MightySwing(boolean isUpgraded) {
-		super("mightySwing", "Mighty Swing", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+		super("mightySwing", "Mighty Swing", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, isUpgraded ? 25 : 35, 10, 0));
 		properties.addUpgrades(PropertyType.COOLDOWN);
 		damage = 130;

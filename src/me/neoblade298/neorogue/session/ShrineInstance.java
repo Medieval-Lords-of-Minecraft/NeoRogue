@@ -67,6 +67,7 @@ public class ShrineInstance extends EditInventoryInstance {
 			Player p = Bukkit.getPlayer(uuid);
 			p.teleport(spawn);
 		}
+		super.start();
 
 		// Setup hologram
 		ArrayList<String> lines = new ArrayList<String>();
@@ -103,8 +104,7 @@ public class ShrineInstance extends EditInventoryInstance {
 				return;
 			}
 			
-			// open host inventory
-			new ShrineChoiceInventory(p, this);
+			new ShrineChoiceInventory(p, s.getParty().get(p.getUniqueId()), this);
 			return;
 		}
 

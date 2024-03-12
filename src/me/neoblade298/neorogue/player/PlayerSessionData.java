@@ -11,7 +11,6 @@ import java.util.UUID;
 import java.util.function.Predicate;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
@@ -51,7 +50,7 @@ public class PlayerSessionData {
 	private Equipment[] armors = new Equipment[3];
 	private Equipment[] offhand = new Equipment[1];
 	private Equipment[] accessories = new Equipment[6];
-	private Equipment[] storage = new Equipment[STORAGE_SIZE];
+	private Equipment[] storage = new Equipment[MAX_STORAGE_SIZE];
 	private Equipment[] otherBinds = new Equipment[8];
 	private Equipment[][] allEquips = new Equipment[][] { hotbar, armors, offhand, accessories, storage, otherBinds };
 	private TreeMap<String, ArtifactInstance> artifacts = new TreeMap<String, ArtifactInstance>();
@@ -63,7 +62,7 @@ public class PlayerSessionData {
 
 	private static final ParticleContainer heal = new ParticleContainer(Particle.VILLAGER_HAPPY).count(50)
 			.spread(0.5, 1).speed(0.1).forceVisible(Audience.ALL);
-	private static final int STORAGE_SIZE = 9;
+	public static final int MAX_STORAGE_SIZE = 18;
 	private static final DecimalFormat df = new DecimalFormat("#.##");
 
 	public PlayerSessionData(UUID uuid, Session s, ResultSet rs) throws SQLException {
@@ -235,6 +234,10 @@ public class PlayerSessionData {
 	public Equipment[] getStorage() {
 		return storage;
 	}
+	
+	public void setStorage(Equipment[] storage) {
+		this.storage = storage;
+	}
 
 	public void setOffhand(Equipment offhand) {
 		this.offhand[0] = offhand;
@@ -372,6 +375,7 @@ public class PlayerSessionData {
 				if (storage[i] == null) {
 					storage[i] = eq;
 					success = true;
+					if (toSelf != null) Util.msg(p, toSelf.append(SharedUtil.color(", it was sent to storage.")));
 					return;
 				}
 			}
@@ -454,50 +458,18 @@ public class PlayerSessionData {
 		}
 	}
 
-	public boolean saveStorage() {
+	public boolean hasUnequippedCurses() {
 		Player p = data.getPlayer();
-		int max = maxStorage;
-		ArrayList<ItemStack> toSave = new ArrayList<ItemStack>(max);
-		p.getInventory().setItemInOffHand(null);
-		for (ItemStack item : p.getInventory().getContents()) {
-			if (item == null) continue;
-
-			toSave.add(item);
-		}
-
-		if (toSave.size() > max) {
-			Util.displayError(p, "You have too many items in storage! Drop or sell some!");
-			return false;
-		}
 
 		for (int i = 0; i < storage.length; i++) {
-			storage[i] = null;
-		}
-		
-		int i = 0;
-		for (ItemStack item : toSave) {
-			NBTItem nbti = new NBTItem(item);
-			String id = nbti.getString("equipId");
-			boolean isUpgraded = nbti.getBoolean("isUpgraded");
-			Equipment eq = Equipment.get(id, isUpgraded);
-			// Hard coded so that the enderchest doesn't give an error
-			if (eq == null) {
-				if (item.getType() != Material.ENDER_CHEST) {
-					String display = item.hasItemMeta() && item.getItemMeta().hasDisplayName()
-							? ((TextComponent) item.getItemMeta().displayName()).content()
-							: item.getType().name();
-					Bukkit.getLogger()
-							.warning("[NeoRogue] " + p.getName() + " could not save " + display + " to their storage");
-				}
-				continue;
-			}
+			if (storage[i] == null) continue;
+			Equipment eq = storage[i];
 			if (eq.isCursed()) {
 				Util.displayError(p, "All cursed items must be equipped before continuing!");
-				return false;
+				return true;
 			}
-			storage[i++] = eq;
 		}
-		return true;
+		return false;
 	}
 
 	public boolean hasCoins(int amount) {

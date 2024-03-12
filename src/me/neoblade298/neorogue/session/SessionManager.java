@@ -5,12 +5,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -61,7 +60,7 @@ import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.SessionSnapshot;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
-import me.neoblade298.neorogue.player.inventory.SpectateSelectInventory;
+import me.neoblade298.neorogue.player.inventory.PlayerSessionSpectateInventory;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.Mob;
@@ -212,15 +211,8 @@ public class SessionManager implements Listener {
 			Session s = sessions.get(uuid);
 			e.setCancelled(true);
 			if (s.isSpectator(uuid)) return;
-
-			if (s.getInstance() instanceof EditInventoryInstance) {
-				if (s.isSpectator(uuid)) {
-					new SpectateSelectInventory(s, p, false);
-					return;
-				}
-				new PlayerSessionInventory(s.getData(uuid));
-			}
-			else if (s.getInstance() instanceof FightInstance) {
+			
+			if (s.getInstance() instanceof FightInstance) {
 				FightInstance.handleOffhandSwap(e);
 			}
 		}
@@ -333,7 +325,7 @@ public class SessionManager implements Listener {
 		if (s.getInstance() instanceof EditInventoryInstance && e.getRightClicked() instanceof Player) {
 			Player viewed = (Player) e.getRightClicked();
 			if (s.getParty().containsKey(viewed.getUniqueId())) {
-				// TODO Replace with new spectator inventorynew PlayerSessionInventoryListener(s.getParty().get(viewed.getUniqueId()), p);
+				new PlayerSessionSpectateInventory(s.getParty().get(viewed.getUniqueId()), p);
 			}
 			return;
 		}
@@ -378,17 +370,6 @@ public class SessionManager implements Listener {
 			EquipmentSlot slot = canEquip(hand);
 			if (slot != null && inv.getItem(slot).getType().isAir()) {
 				e.setCancelled(true);
-			}
-			
-			// Open inventory
-			if (s.getInstance() instanceof EditInventoryInstance && hand.getType() == Material.ENDER_CHEST) {
-				e.setCancelled(true);
-				if (s.isSpectator(uuid)) {
-					new SpectateSelectInventory(s, p, false);
-					return;
-				}
-				new PlayerSessionInventory(s.getData(uuid));
-				return;
 			}
 		}
 
@@ -511,6 +492,15 @@ public class SessionManager implements Listener {
 				s.getInstance().handlePlayerLeave(p);
 			}
 		}
+	}
+	
+	public static void resetPlayer(Player p) {
+		if (p == null) return;
+		p.getInventory().clear();
+		p.setMaximumNoDamageTicks(20);
+		p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
+		p.setInvulnerable(false);
+		p.setInvisible(false);
 	}
 	
 	public static void endSession(Session s) {

@@ -21,12 +21,14 @@ import org.bukkit.scheduler.BukkitRunnable;
 import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.inventories.CorePlayerInventory;
+import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.session.ShrineUpgradeInventory;
 import me.neoblade298.neorogue.session.fight.trigger.KeyBind;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -216,7 +218,7 @@ public class PlayerSessionInventory extends CorePlayerInventory {
 			new BukkitRunnable() {
 				public void run() {
 					handleInventoryClose();
-					new SpectateSelectInventory(data.getSession(), p, false);
+					new SpectateSelectInventory(data.getSession(), p, data, false);
 				}
 			}.runTask(NeoRogue.inst());
 			return;
@@ -227,6 +229,16 @@ public class PlayerSessionInventory extends CorePlayerInventory {
 				public void run() {
 					handleInventoryClose();
 					new NodeMapInventory(p, data.getSession());
+				}
+			}.runTask(NeoRogue.inst());
+			return;
+		}
+		else if (slot == STORAGE) {
+			e.setCancelled(true);
+			new BukkitRunnable() {
+				public void run() {
+					handleInventoryClose();
+					new StorageInventory(data);
 				}
 			}.runTask(NeoRogue.inst());
 			return;
@@ -255,6 +267,29 @@ public class PlayerSessionInventory extends CorePlayerInventory {
 					new GlossaryInventory(p, Equipment.get(nclicked.getString("equipId"), false), null);
 				}
 			}.runTask(NeoRogue.inst());
+			return;
+		}
+		
+		// Shift click logic
+		if (e.isShiftClick() && clicked != null) {
+			EquipSlot type = slotTypes.get(slot);
+			e.setCancelled(true);
+			if (!nclicked.hasTag("equipId")) return;
+			CoreInventory upper = InventoryListener.getUpperInventory(p);
+			if (upper == null) return;
+			if (upper instanceof ShrineUpgradeInventory) {
+				if (!((ShrineUpgradeInventory) upper).canShiftClickIn()) return;
+				if (isBindable(type)) clicked = removeBindLore(clicked);
+				removeEquipment(type, nclicked.getInteger("dataSlot"), slot, e.getClickedInventory());
+				((ShrineUpgradeInventory) upper).handleShiftClickIn(clicked);
+			}
+			else if (upper instanceof StorageInventory) {
+				if (!((StorageInventory) upper).canShiftClickIn()) return;
+				if (isBindable(type)) clicked = removeBindLore(clicked);
+				removeEquipment(type, nclicked.getInteger("dataSlot"), slot, e.getClickedInventory());
+				((StorageInventory) upper).handleShiftClickIn(clicked);
+			}
+			p.playSound(p, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1F);
 			return;
 		}
 
@@ -329,16 +364,6 @@ public class PlayerSessionInventory extends CorePlayerInventory {
 			}
 
 			EquipSlot type = slotTypes.get(slot);
-			if (e.isShiftClick()) {
-				if (!nclicked.hasTag("equipId")) return;
-				if (isBindable(type)) clicked = removeBindLore(clicked);
-				removeEquipment(type, nclicked.getInteger("dataSlot"), slot, e.getClickedInventory());
-				setHighlights(eq.getType()); // Reset the highlights since if I don't the old colored glass panes show up
-				p.getInventory().addItem(clicked);
-				p.playSound(p, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1F);
-				return;
-			}
-
 			if (!eq.canEquip(type)) {
 				displayError("You can't equip this item in this slot!", false);
 				return;
@@ -418,6 +443,20 @@ public class PlayerSessionInventory extends CorePlayerInventory {
 			this.slot = slot;
 			this.es = es;
 		}
+	}
+	
+	public boolean handleShiftClickIn(ItemStack item) {
+		NBTItem nbti = new NBTItem(item);
+		Equipment eq = Equipment.get(nbti.getString("equipId"), nbti.getBoolean("isUpgraded"));
+		AutoEquipResult result = attemptAutoEquip(eq.getType());
+		if (result == null) return false;
+		ItemStack autoItem = inv.getItem(result.slot);
+		NBTItem nauto = new NBTItem(autoItem);
+		data.setEquipment(result.es, nauto.getInteger("dataSlot"), eq);
+		p.playSound(p, Sound.ITEM_ARMOR_EQUIP_DIAMOND, 1F, 1F);
+		if (isBindable(result.es)) item = addBindLore(item, result.slot, nauto.getInteger("dataSlot"));
+		inv.setItem(result.slot, addNbt(item, nauto.getInteger("dataSlot")));
+		return true;
 	}
 
 	/* Too lazy to fix, if someone actually uses this I will fix it
@@ -499,11 +538,12 @@ public class PlayerSessionInventory extends CorePlayerInventory {
 	
 	public void handleInventoryClose() {
 		clearHighlights();
+		InventoryListener.unregisterPlayerInventory(p);
+		
 		if (p.getItemOnCursor().getType().isAir()) return;
 		ItemStack clicked = p.getItemOnCursor();
 		NBTItem nclicked = new NBTItem(clicked);
-		// Silent
-		data.giveEquipment(Equipment.get(nclicked.getString("equipId"), nclicked.getBoolean("isUpgraded")), null, null);
+		data.giveEquipmentSilent(Equipment.get(nclicked.getString("equipId"), nclicked.getBoolean("isUpgraded")));
 		p.setItemOnCursor(null);
 	}
 

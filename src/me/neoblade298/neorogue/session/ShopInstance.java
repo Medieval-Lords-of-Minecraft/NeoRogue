@@ -51,8 +51,8 @@ public class ShopInstance extends EditInventoryInstance {
 			
 			// Create shop contents
 			ArrayList<Equipment> equips = new ArrayList<Equipment>();
+			equips.addAll(Equipment.getDrop(s.getAreasCompleted() + 0, NUM_ITEMS / 2, ec, EquipmentClass.SHOP));
 			equips.addAll(Equipment.getDrop(s.getAreasCompleted() + 1, NUM_ITEMS / 2, ec, EquipmentClass.SHOP));
-			equips.addAll(Equipment.getDrop(s.getAreasCompleted() + 2, NUM_ITEMS / 2, ec, EquipmentClass.SHOP));
 			
 			// Generate 2 random unique sale slots
 			HashSet<Integer> saleSlots = new HashSet<Integer>(2);
@@ -71,6 +71,7 @@ public class ShopInstance extends EditInventoryInstance {
 			Player p = Bukkit.getPlayer(uuid);
 			p.teleport(spawn);
 		}
+		super.start();
 
 		// Setup hologram
 		ArrayList<String> lines = new ArrayList<String>();
@@ -90,7 +91,7 @@ public class ShopInstance extends EditInventoryInstance {
 		Player p = e.getPlayer();
 		e.setCancelled(true);
 		if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock().getType() == Material.CHEST) {
-			new SpectateSelectInventory(s, p, true);
+			new SpectateSelectInventory(s, p, null, true);
 		}
 	}
 

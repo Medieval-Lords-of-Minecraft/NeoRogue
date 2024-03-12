@@ -41,6 +41,7 @@ public class NodeMapInventory extends CoreInventory {
 		currentPos = s.getNode().getPosition();
 		curr = s.getNode();
 		p.playSound(p, Sound.ITEM_BOOK_PAGE_TURN, 1F, 1F);
+		if (s.getParty().containsKey(p.getUniqueId())) new PlayerSessionInventory(s.getParty().get(p.getUniqueId()));
 		
 		setupInventory();
 		inv.setItem(BACK2, CoreInventory.createButton(ARROW_DOWN2, Component.text("Down 3 positions")));

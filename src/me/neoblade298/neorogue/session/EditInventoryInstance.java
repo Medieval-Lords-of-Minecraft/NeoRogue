@@ -29,9 +29,8 @@ public abstract class EditInventoryInstance extends Instance {
 	public static boolean isValid(Session s) {
 		for (PlayerSessionData data : s.getParty().values()) {
 			Player p = data.getPlayer();
-			if (!data.saveStorage()) {
-				s.broadcastError(data.getData().getDisplay() + " has too many items in their inventory! They must drop or equip some "
-							+ "to satisfy their storage limit!");
+			if (data.hasUnequippedCurses()) {
+				s.broadcastError(data.getData().getDisplay() + " must equip all their curses before continuing!");
 				return false;
 			}
 			

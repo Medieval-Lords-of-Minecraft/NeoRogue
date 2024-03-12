@@ -8,18 +8,19 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
+import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -32,6 +33,7 @@ public class ShrineUpgradeInventory extends CoreInventory {
 		super(p, Bukkit.createInventory(p, InventoryType.SMITHING, Component.text("Upgrade Equipment", NamedTextColor.BLUE)));
 		this.inst = inst;
 		this.data = data;
+		InventoryListener.registerPlayerInventory(p, new PlayerSessionInventory(data));
 		ItemStack[] contents = inv.getContents();
 		contents[1] = CoreInventory.createButton(Material.PAPER, Component.text("Upgrade", NamedTextColor.BLUE),
 				(TextComponent) NeoCore.miniMessage().deserialize("<gray>Place an item on the left to see what it upgrades into. "
@@ -41,34 +43,15 @@ public class ShrineUpgradeInventory extends CoreInventory {
 
 	@Override
 	public void handleInventoryClick(InventoryClickEvent e) {
-		Inventory iclicked = e.getClickedInventory();
-		
-		// Got item from player inventory
-		if (iclicked == null || iclicked.getType() != InventoryType.SMITHING) {
-			if (e.getCurrentItem() == null) return;
-			p.playSound(p, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1F, 1F);
-			NBTItem nbti = new NBTItem(e.getCurrentItem());
-			if (!nbti.getKeys().contains("equipId")) return;
-			
-			if (e.isShiftClick()) {
-				e.setCancelled(true);
-				if (e.getInventory().getItem(0) != null) {
-					iclicked.addItem(inv.getItem(0));
-				}
-				inv.setItem(0, e.getCurrentItem());
-				iclicked.setItem(e.getSlot(), null);
-			}
-			updateOutput();
-			return;
-		}
 		int slot = e.getSlot();
 		
 		if (slot == 0) {
 			if (e.isShiftClick()) {
 				if (e.getCurrentItem() == null) return;
+				PlayerSessionInventory pinv = (PlayerSessionInventory) InventoryListener.getLowerInventory(p);
+				if (!pinv.handleShiftClickIn(inv.getItem(0))) return;
 				p.playSound(p, Sound.ITEM_ARMOR_EQUIP_DIAMOND, 1F, 1F);
 				e.setCancelled(true);
-				p.getInventory().addItem(e.getCurrentItem());
 				inv.setItem(0, null);
 				updateOutput();
 				return;
@@ -114,13 +97,24 @@ public class ShrineUpgradeInventory extends CoreInventory {
 	@Override
 	public void handleInventoryClose(InventoryCloseEvent e) {
 		if (inv.getItem(0) != null) {
-			p.getInventory().addItem(inv.getItem(0));
+			NBTItem nbti = new NBTItem(inv.getItem(0));
+			Equipment eq = Equipment.get(nbti.getString("equipId"), nbti.getBoolean("isUpgraded"));
+			data.giveEquipmentSilent(eq);
 		}
 	}
 
 	@Override
 	public void handleInventoryDrag(InventoryDragEvent e) {
 		e.setCancelled(true);
+	}
+	
+	public boolean canShiftClickIn() {
+		return inv.getItem(0) == null;
+	}
+	
+	public void handleShiftClickIn(ItemStack item) {
+		inv.setItem(0, item);
+		updateOutput();
 	}
 
 	public void updateOutput() {

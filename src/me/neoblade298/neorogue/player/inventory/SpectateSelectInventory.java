@@ -13,10 +13,15 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.jetbrains.annotations.Nullable;
 
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
+import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
 import me.neoblade298.neorogue.player.PlayerSessionData;
-import me.neoblade298.neorogue.session.*;
+import me.neoblade298.neorogue.session.EditInventoryInstance;
+import me.neoblade298.neorogue.session.Instance;
+import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.ShopInstance;
 import me.neoblade298.neorogue.session.chance.ChanceInstance;
 import me.neoblade298.neorogue.session.reward.RewardInstance;
 import net.kyori.adventure.text.Component;
@@ -29,18 +34,19 @@ public class SpectateSelectInventory extends CoreInventory {
 	private Session s;
 	private boolean selectUnique;
 
-	public SpectateSelectInventory(Session s, Player p, boolean selectUnique) {
-		super(p, Bukkit.createInventory(p, 9, Component.text("Choose a player", NamedTextColor.BLUE)));
+	public SpectateSelectInventory(Session s, Player spectator, @Nullable PlayerSessionData pdata, boolean selectUnique) {
+		super(spectator, Bukkit.createInventory(spectator, 9, Component.text("Choose a player", NamedTextColor.BLUE)));
 		this.s = s;
 		this.selectUnique = selectUnique;
-		p.playSound(p, Sound.ITEM_BOOK_PAGE_TURN, 1F, 1F);
+		if (pdata != null) InventoryListener.registerPlayerInventory(spectator, new PlayerSessionInventory(pdata));
+		spectator.playSound(spectator, Sound.ITEM_BOOK_PAGE_TURN, 1F, 1F);
 		int partySize = s.getParty().size();
-		if (s.getParty().containsKey(p.getUniqueId())) partySize--;
+		if (s.getParty().containsKey(spectator.getUniqueId())) partySize--;
 		int idx = 5 - partySize;
 		
 		// Display all players that aren't you
 		for (PlayerSessionData data : s.getParty().values()) {
-			if (p.getUniqueId().equals(data.getUniqueId())) continue;
+			if (spectator.getUniqueId().equals(data.getUniqueId())) continue;
 	        ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
 	        SkullMeta meta = (SkullMeta) skull.getItemMeta();
 	        meta.setOwningPlayer(data.getPlayer() != null ? data.getPlayer() : Bukkit.getOfflinePlayer(data.getUniqueId()));
@@ -70,7 +76,7 @@ public class SpectateSelectInventory extends CoreInventory {
 		
 		Instance inst = s.getInstance();
 		if (!selectUnique && inst instanceof EditInventoryInstance) {
-			// TODO new PlayerSessionInventoryListener(players.get(e.getSlot()), p);
+			new PlayerSessionSpectateInventory(players.get(e.getSlot()), p);
 			return;
 		}
 		

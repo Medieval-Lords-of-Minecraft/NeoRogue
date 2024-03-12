@@ -28,6 +28,7 @@ public class LoseInstance extends EditInventoryInstance {
 			Player p = Bukkit.getPlayer(uuid);
 			p.teleport(spawn);
 		}
+		super.start();
 
 		s.broadcast(Component.text("You lost!", NamedTextColor.RED));
 		PlayerManager.getPlayerData(s.getHost()).removeSnapshot(s.getSaveSlot());

@@ -226,6 +226,7 @@ public class FightData {
 	}
 	
 	public void addTickAction(TickAction action) {
+		if (entity == null) return;
 		FightInstance.addToTickList(entity.getUniqueId());
 		tickActions.add(action);
 	}

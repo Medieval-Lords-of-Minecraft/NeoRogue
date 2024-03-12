@@ -102,6 +102,7 @@ public class ChanceInstance extends EditInventoryInstance {
 			Player p = Bukkit.getPlayer(uuid);
 			p.teleport(spawn);
 		}
+		super.start();
 
 		// Setup hologram
 		ArrayList<String> lines = new ArrayList<String>();
@@ -130,7 +131,7 @@ public class ChanceInstance extends EditInventoryInstance {
 		Player p = e.getPlayer();
 		if (e.getClickedBlock().getType() == Material.QUARTZ_PILLAR || e.getClickedBlock().getType() == Material.LIGHT_GRAY_CANDLE) {
 			if (set.isIndividual()) {
-				new SpectateSelectInventory(s, p, true);
+				new SpectateSelectInventory(s, p, null, true);
 			} else {
 				spectatePlayer(p, s.getHost());
 			}

@@ -80,7 +80,6 @@ public class ReforgeOptionsInventory extends CoreInventory {
 			data.giveEquipment(reforged);	
 			toReforge = null;
 			reforgeWith = null;
-			System.out.println("Reforge null");
 			p.closeInventory();
 		}
 	}
