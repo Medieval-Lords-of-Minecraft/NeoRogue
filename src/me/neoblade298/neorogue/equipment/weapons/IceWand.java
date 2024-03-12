@@ -46,7 +46,7 @@ public class IceWand extends Equipment {
 	public IceWand(boolean isUpgraded) {
 		super(
 				"iceWand", "Ice Wand", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(6, 0, isUpgraded ? 30 : 20, 0.65, DamageType.ICE, Sound.ITEM_AXE_SCRAPE)
+				EquipmentProperties.ofWeapon(6, 0, isUpgraded ? 30 : 20, 0.4, DamageType.ICE, Sound.ITEM_AXE_SCRAPE)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
 		shieldAmount = isUpgraded ? 3 : 2;

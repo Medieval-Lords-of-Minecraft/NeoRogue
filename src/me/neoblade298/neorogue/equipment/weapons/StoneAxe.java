@@ -28,7 +28,7 @@ public class StoneAxe extends Equipment {
 	public StoneAxe(boolean isUpgraded) {
 		super("stoneAxe", "Stone Axe", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(isUpgraded ? 100 : 80, 0.5, 1, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_CRIT));
+				EquipmentProperties.ofWeapon(isUpgraded ? 100 : 80, 0.2, 1, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_CRIT));
 		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 

@@ -87,7 +87,7 @@ public class RighteousHammer extends Equipment {
 			if (first) {
 				weaponDamage(p, data, ent);
 				Vector v = ent.getVelocity();
-				ent.setVelocity(v.setY(v.getY() + 0.5));
+				FightInstance.knockback(ent, v.setY(v.getY() + 0.5));
 				first = false;
 			}
 			else {

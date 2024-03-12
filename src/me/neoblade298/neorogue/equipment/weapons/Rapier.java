@@ -22,7 +22,7 @@ public class Rapier extends Equipment {
 	public Rapier(boolean isUpgraded) {
 		super("rapier", "Rapier", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(isUpgraded ? 55 : 45, 1, 0.9, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_CRIT));
+				EquipmentProperties.ofWeapon(isUpgraded ? 55 : 45, 1, 0.3, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_CRIT));
 		properties.addUpgrades(PropertyType.DAMAGE);
 		shields = isUpgraded ? 5 : 3;
 	}

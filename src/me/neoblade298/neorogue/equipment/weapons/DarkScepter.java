@@ -35,7 +35,7 @@ public class DarkScepter extends Equipment {
 	public DarkScepter(boolean isUpgraded) {
 		super(
 				"darkScepter", "Dark Scepter", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(6, 0, isUpgraded ? 50 : 25, 0.65, DamageType.DARK, Sound.ITEM_AXE_SCRAPE)
+				EquipmentProperties.ofWeapon(6, 0, isUpgraded ? 50 : 25, 0.35, DamageType.DARK, Sound.ITEM_AXE_SCRAPE)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
 	}

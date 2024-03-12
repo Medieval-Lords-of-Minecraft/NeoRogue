@@ -42,7 +42,7 @@ public class ChainLightningWand extends Equipment {
 	public ChainLightningWand(boolean isUpgraded) {
 		super(
 				"chainLightningWand", "Chain Lightning Wand", isUpgraded, Rarity.RARE, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(10, 0, isUpgraded ? 40 : 30, 0.75, DamageType.LIGHTNING, Sound.ITEM_AXE_SCRAPE)
+				EquipmentProperties.ofWeapon(10, 0, isUpgraded ? 40 : 30, 0.5, DamageType.LIGHTNING, Sound.ITEM_AXE_SCRAPE)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
 		chainAmount = isUpgraded ? 5 : 3;
