@@ -15,11 +15,13 @@ import org.bukkit.inventory.ItemStack;
 import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
+import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.GlossaryInventory;
+import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
 import me.neoblade298.neorogue.player.inventory.SpectateSelectInventory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -36,6 +38,7 @@ public class ShopInventory extends CoreInventory {
 		super(data.getPlayer(), Bukkit.createInventory(data.getPlayer(), 27, Component.text("Shop", NamedTextColor.BLUE)));
 		this.data = data;
 		this.shopItems = items;
+		InventoryListener.registerPlayerInventory(p, new PlayerSessionInventory(data));
 		setupInventory();
 	}
 	
@@ -134,7 +137,7 @@ public class ShopInventory extends CoreInventory {
 		}
 		else {
 			if (slot == 20 && e.getCurrentItem() != null) {
-				new SpectateSelectInventory(data.getSession(), p, true);
+				new SpectateSelectInventory(data.getSession(), p, data, true);
 				return;
 			}
 			if (e.getCursor().getType().isAir()) return;

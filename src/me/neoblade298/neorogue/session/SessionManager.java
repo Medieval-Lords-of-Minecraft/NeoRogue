@@ -6,10 +6,10 @@ import java.sql.Statement;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -18,6 +18,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Trident;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -28,7 +29,6 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
@@ -60,7 +60,7 @@ import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.SessionSnapshot;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
-import me.neoblade298.neorogue.player.inventory.SpectateSelectInventory;
+import me.neoblade298.neorogue.player.inventory.PlayerSessionSpectateInventory;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.Mob;
@@ -158,38 +158,48 @@ public class SessionManager implements Listener {
 
 	@EventHandler
 	public void onInventoryDrag(InventoryDragEvent e) {
-		handlePlayerInventoryInteract(e);
+		Player p = (Player) e.getWhoClicked();
+		UUID uuid = p.getUniqueId();
+		if (!sessions.containsKey(uuid)) return;
+		Session s = sessions.get(uuid);
+		Set<Integer> slots = e.getRawSlots();
+		if (e.getView().getTopInventory().getType() == InventoryType.CRAFTING && slots.contains(0) || slots.contains(1) || slots.contains(2) || slots.contains(3)) {
+			e.setCancelled(true);
+			return;
+		}
+		if (s.getInstance() instanceof EditInventoryInstance && !InventoryListener.hasOpenCoreInventory(p)
+				&& e.getView().getTopInventory().getType() == InventoryType.CRAFTING) {
+			new PlayerSessionInventory(s.getData(uuid)).handleInventoryDrag(e);; // Register core player inventory when inv is opened
+		}
+		else if (s.getInstance() instanceof FightInstance) {
+			e.setCancelled(true);
+		}
 	}
 
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent e) {
-		handlePlayerInventoryInteract(e);
-	}
-
-	private void handlePlayerInventoryInteract(InventoryInteractEvent e) {
 		Player p = (Player) e.getWhoClicked();
-
-
 		UUID uuid = p.getUniqueId();
-		if (sessions.containsKey(uuid)) {
-			Session s = sessions.get(uuid);
-
-			// If the inventory type is normal player inventory, open up a player session inventory
-			if (s.getInstance() instanceof EditInventoryInstance && InventoryListener.getCoreInventory(p) == null &&
-					e.getView().getTopInventory().getType() == InventoryType.CRAFTING) {
-				e.setCancelled(true);
-				p.setItemOnCursor(null);
-				if (s.isSpectator(uuid)) {
-					new SpectateSelectInventory(s, p, false);
-				}
-				else {
-					new PlayerSessionInventory(s.getData(uuid));
-				}
-			}
-			
-			else if (s.getInstance() instanceof FightInstance) {
-				e.setCancelled(true);
-			}
+		if (!sessions.containsKey(uuid)) return;
+		Session s = sessions.get(uuid);
+		if (e.getClickedInventory() == null) return;
+		if (e.getClickedInventory().getType() == InventoryType.CRAFTING) {
+			e.setCancelled(true);
+			return;
+		}
+		if (s.getInstance() instanceof EditInventoryInstance && !InventoryListener.hasOpenCoreInventory(p)
+				&& e.getView().getTopInventory().getType() == InventoryType.CRAFTING) {
+			new PlayerSessionInventory(s.getData(uuid)).handleInventoryClick(e);
+		}
+		else if (s.getInstance() instanceof FightInstance) {
+			e.setCancelled(true);
+		}
+	}
+	
+	@EventHandler
+	public void onBuild(BlockPlaceEvent e) {
+		if (sessions.containsKey(e.getPlayer().getUniqueId())) {
+			e.setCancelled(true);
 		}
 	}
 
@@ -201,15 +211,8 @@ public class SessionManager implements Listener {
 			Session s = sessions.get(uuid);
 			e.setCancelled(true);
 			if (s.isSpectator(uuid)) return;
-
-			if (s.getInstance() instanceof EditInventoryInstance) {
-				if (s.isSpectator(uuid)) {
-					new SpectateSelectInventory(s, p, false);
-					return;
-				}
-				new PlayerSessionInventory(s.getData(uuid));
-			}
-			else if (s.getInstance() instanceof FightInstance) {
+			
+			if (s.getInstance() instanceof FightInstance) {
 				FightInstance.handleOffhandSwap(e);
 			}
 		}
@@ -322,7 +325,7 @@ public class SessionManager implements Listener {
 		if (s.getInstance() instanceof EditInventoryInstance && e.getRightClicked() instanceof Player) {
 			Player viewed = (Player) e.getRightClicked();
 			if (s.getParty().containsKey(viewed.getUniqueId())) {
-				new PlayerSessionInventory(s.getParty().get(viewed.getUniqueId()), p);
+				new PlayerSessionSpectateInventory(s.getParty().get(viewed.getUniqueId()), p);
 			}
 			return;
 		}
@@ -367,17 +370,6 @@ public class SessionManager implements Listener {
 			EquipmentSlot slot = canEquip(hand);
 			if (slot != null && inv.getItem(slot).getType().isAir()) {
 				e.setCancelled(true);
-			}
-			
-			// Open inventory
-			if (s.getInstance() instanceof EditInventoryInstance && hand.getType() == Material.ENDER_CHEST) {
-				e.setCancelled(true);
-				if (s.isSpectator(uuid)) {
-					new SpectateSelectInventory(s, p, false);
-					return;
-				}
-				new PlayerSessionInventory(s.getData(uuid));
-				return;
 			}
 		}
 
@@ -500,6 +492,15 @@ public class SessionManager implements Listener {
 				s.getInstance().handlePlayerLeave(p);
 			}
 		}
+	}
+	
+	public static void resetPlayer(Player p) {
+		if (p == null) return;
+		p.getInventory().clear();
+		p.setMaximumNoDamageTicks(20);
+		p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
+		p.setInvulnerable(false);
+		p.setInvisible(false);
 	}
 	
 	public static void endSession(Session s) {

@@ -32,7 +32,7 @@ public class LostRelicChance extends ChanceSet {
 				"Acquire a <red>cursed item</red> that cannot be unequipped or used, but gain <yellow>50 coins</yellow>.",
 				(s, inst, data) -> {
 					Player p = data.getPlayer();
-					p.getInventory().addItem(items.get(data.getPlayerClass()).getItem());
+					data.giveEquipment(items.get(data.getPlayerClass()));
 					data.addCoins(50);
 					Util.msgRaw(p, "You pick up the old weapon and go on your way. It's a little heavy.");
 					s.broadcastOthers("<yellow>" + p.getName() + "</yellow> decided to take the old weapon!", p);

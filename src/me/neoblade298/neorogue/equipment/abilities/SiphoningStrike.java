@@ -26,7 +26,7 @@ public class SiphoningStrike extends Equipment {
 			hit = new ParticleContainer(Particle.REDSTONE);
 	
 	public SiphoningStrike(boolean isUpgraded) {
-		super("siphoningStrike", "Siphoning Strike", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+		super("siphoningStrike", "Siphoning Strike", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 25, 12, 0));
 		properties.addUpgrades(PropertyType.COOLDOWN);
 		damage = 120;

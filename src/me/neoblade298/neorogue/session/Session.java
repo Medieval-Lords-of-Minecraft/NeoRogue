@@ -15,7 +15,6 @@ import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -35,7 +34,6 @@ import com.sk89q.worldedit.session.ClipboardHolder;
 
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.effects.Audience;
-import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.io.SQLManager;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder;
@@ -350,12 +348,8 @@ public class Session {
 		this.potionChance = Math.max(0, Math.min(100, potionChance + amount));
 	}
 	
-	private void setupSpectatorInventory(Player p) {
+	public void setupSpectatorInventory(Player p) {
 		p.getInventory().clear();
-		p.getInventory().setItem(4, (CoreInventory.createButton(Material.ENDER_CHEST,
-				Component.text("Left/right click to open spectator menu", NamedTextColor.YELLOW),
-				Component.text("You can also swap hands or click anywhere in your inventory."), 200,
-				NamedTextColor.GRAY)));
 	}
 	
 	// False if set instance fails
@@ -377,18 +371,6 @@ public class Session {
 		}
 		this.inst = inst;
 		inst.start();
-		if (inst instanceof EditInventoryInstance) {
-			for (PlayerSessionData data : party.values()) {
-				data.setupInventory();
-				data.setupEditInventory(); // hunger and exp bar
-				data.updateBoardLines();
-			}
-			
-			for (UUID uuid : spectators) {
-				Player p = Bukkit.getPlayer(uuid);
-				setupSpectatorInventory(p);
-			}
-		}
 		
 		// Auto-save
 		if (firstLoad) return true;
@@ -486,10 +468,14 @@ public class Session {
 	public void cleanup() {
 		inst.cleanup();
 		
+		for (UUID uuid : party.keySet()) {
+			Player p = Bukkit.getPlayer(uuid);
+			SessionManager.resetPlayer(p);
+		}
+		
 		for (UUID uuid : spectators) {
 			Player p = Bukkit.getPlayer(uuid);
-			p.setInvisible(false);
-			p.setInvulnerable(false);
+			SessionManager.resetPlayer(p);
 		}
 	}
 	
@@ -502,8 +488,8 @@ public class Session {
 		else {
 			broadcast("<yellow>" + p.getName() + " <gray>has left the party!");
 			party.remove(p.getUniqueId());
+			SessionManager.resetPlayer(p);
 			SessionManager.removeFromSession(p.getUniqueId());
-			p.setMaximumNoDamageTicks(20);
 			
 			if (inst instanceof FightInstance) {
 				((FightInstance) inst).handlePlayerLeaveParty();

@@ -14,7 +14,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
+import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
 import me.neoblade298.neorogue.player.inventory.SpectateSelectInventory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -30,6 +32,7 @@ public class RewardInventory extends CoreInventory {
 		
 		this.data = data;
 		this.rewards = rewards;
+		InventoryListener.registerPlayerInventory(p, new PlayerSessionInventory(data));
 		setupInventory();
 	}
 	public RewardInventory(PlayerSessionData data, ArrayList<Reward> rewards, Player spectator) {
@@ -74,7 +77,7 @@ public class RewardInventory extends CoreInventory {
 			}
 		}
 		else if (slot == 7 && data.getSession().getParty().size() > 1) {
-			new SpectateSelectInventory(data.getSession(), p, true);
+			new SpectateSelectInventory(data.getSession(), p, data, true);
 		}
 		else if (slot == 8) {
 			rewards.clear();

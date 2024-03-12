@@ -63,6 +63,7 @@ public class NodeSelectInstance extends EditInventoryInstance {
 			p.teleport(spawn);
 			p.setAllowFlight(true);
 		}
+		super.start();
 		task = new BukkitRunnable() {
 			@Override
 			public void run() {
@@ -113,7 +114,7 @@ public class NodeSelectInstance extends EditInventoryInstance {
 			e.setCancelled(true);
 			Node n = s.getArea().getNodeFromLocation(e.getClickedBlock().getLocation().add(0, 2, 1));
 			FightInstance inst = (FightInstance) n.getInstance();
-			new FightInfoInventory(e.getPlayer(), inst.getMap().getMobs());
+			new FightInfoInventory(e.getPlayer(), null, inst.getMap().getMobs());
 		}
 	}
 
@@ -151,7 +152,7 @@ public class NodeSelectInstance extends EditInventoryInstance {
 			e.setCancelled(true);
 			Node n = s.getArea().getNodeFromLocation(e.getClickedBlock().getLocation().add(0, 2, 1));
 			FightInstance inst = (FightInstance) n.getInstance();
-			new FightInfoInventory(e.getPlayer(), inst.getMap().getMobs());
+			new FightInfoInventory(e.getPlayer(), s.getParty().get(p.getUniqueId()), inst.getMap().getMobs());
 		}
 	}
 	

@@ -11,7 +11,6 @@ import java.util.UUID;
 import java.util.function.Predicate;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
@@ -21,7 +20,6 @@ import org.bukkit.inventory.PlayerInventory;
 import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.bukkit.effects.Audience;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
-import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder.SQLAction;
@@ -34,13 +32,13 @@ import me.neoblade298.neorogue.equipment.Equipment.DropTableSet;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
+import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.event.SessionAction;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.fight.trigger.KeyBind;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.format.NamedTextColor;
 
 public class PlayerSessionData {
 	private PlayerData data;
@@ -52,7 +50,7 @@ public class PlayerSessionData {
 	private Equipment[] armors = new Equipment[3];
 	private Equipment[] offhand = new Equipment[1];
 	private Equipment[] accessories = new Equipment[6];
-	private Equipment[] storage = new Equipment[STORAGE_SIZE];
+	private Equipment[] storage = new Equipment[MAX_STORAGE_SIZE];
 	private Equipment[] otherBinds = new Equipment[8];
 	private Equipment[][] allEquips = new Equipment[][] { hotbar, armors, offhand, accessories, storage, otherBinds };
 	private TreeMap<String, ArtifactInstance> artifacts = new TreeMap<String, ArtifactInstance>();
@@ -64,7 +62,7 @@ public class PlayerSessionData {
 
 	private static final ParticleContainer heal = new ParticleContainer(Particle.VILLAGER_HAPPY).count(50)
 			.spread(0.5, 1).speed(0.1).forceVisible(Audience.ALL);
-	private static final int STORAGE_SIZE = 9;
+	public static final int MAX_STORAGE_SIZE = 18;
 	private static final DecimalFormat df = new DecimalFormat("#.##");
 
 	public PlayerSessionData(UUID uuid, Session s, ResultSet rs) throws SQLException {
@@ -165,26 +163,12 @@ public class PlayerSessionData {
 		}
 	}
 
-	public void setupEditInventory() {
-		updateCoinsBar();
-		getPlayer().setSaturation(20);
-	}
-
 	public void setupInventory() {
 		Player p = data.getPlayer();
-		PlayerInventory inv = p.getInventory();
-		inv.clear();
-		inv.setItem(4,
-				(CoreInventory.createButton(Material.ENDER_CHEST,
-						Component.text("Left/right click to open inventory", NamedTextColor.YELLOW),
-						Component.text("You can also swap hands or click anywhere in your inventory."), 200,
-						NamedTextColor.GRAY)));
-
-		for (int i = 0; i < storage.length; i++) {
-			Equipment eq = storage[i];
-			if (eq == null) continue;
-			inv.setItem(i, eq.getItem());
-		}
+		p.getInventory().clear();
+		PlayerSessionInventory.setupInventory(this);
+		updateCoinsBar();
+		getPlayer().setSaturation(20);
 	}
 
 	public Player getPlayer() {
@@ -249,6 +233,10 @@ public class PlayerSessionData {
 
 	public Equipment[] getStorage() {
 		return storage;
+	}
+	
+	public void setStorage(Equipment[] storage) {
+		this.storage = storage;
 	}
 
 	public void setOffhand(Equipment offhand) {
@@ -344,15 +332,24 @@ public class PlayerSessionData {
 		inst.getArtifact().onAcquire(this);
 		inst.getArtifact().onInitializeSession(this);
 	}
+	
+	public void giveEquipmentSilent(Equipment eq) {
+		giveEquipment(eq, null, null);
+	}
 
+	// If components null, no broadcast
 	public void giveEquipment(Equipment eq, Component toSelf, Component toOthers) {
 		Player p = getPlayer();
-		Sounds.success.play(p, p);
-		s.broadcastOthers(toOthers.append(eq.getHoverable()).append(Component.text(".")), p);
-		toSelf = toSelf.append(eq.getHoverable());
+		if (toSelf != null) {
+			Sounds.success.play(p, p);
+			s.broadcastOthers(toOthers.append(eq.getHoverable()).append(Component.text(".")), p);
+			toSelf = toSelf.append(eq.getHoverable());
+		}
 
 		if (eq instanceof Artifact) {
-			Util.msg(p, toSelf.append(Component.text(".")));
+			if (toSelf != null) {
+				Util.msg(p, toSelf.append(Component.text(".")));
+			}
 			giveArtifact((Artifact) eq);
 		}
 		else {
@@ -368,19 +365,23 @@ public class PlayerSessionData {
 					}
 				}
 				if (success) {
-					Util.msg(p, toSelf.append(SharedUtil.color(", it was auto-equipped to " + es.getDisplay() + ".")));
+					if (toSelf != null) Util.msg(p, toSelf.append(SharedUtil.color(", it was auto-equipped to " + es.getDisplay() + ".")));
+					PlayerSessionInventory.setupInventory(this);
 					return;
 				}
 			}
-
-			HashMap<Integer, ItemStack> overflow = p.getInventory().addItem(eq.getItem());
-			Util.msg(p, toSelf.append(Component.text(".")));
-			if (!overflow.isEmpty()) {
-				for (ItemStack item : overflow.values()) {
-					Util.msg(p, SharedUtil.color("<red>Your inventory is full! ").append(eq.getDisplay())
-							.append(Component.text(" was dropped on the ground.")));
-					p.getWorld().dropItem(p.getLocation(), item);
+			success = false;
+			for (int i = 0; i < storage.length; i++) {
+				if (storage[i] == null) {
+					storage[i] = eq;
+					success = true;
+					if (toSelf != null) Util.msg(p, toSelf.append(SharedUtil.color(", it was sent to storage.")));
+					return;
 				}
+			}
+			
+			if (!success) {
+				Util.displayError(p, "Your storage is full!");
 			}
 		}
 	}
@@ -457,50 +458,18 @@ public class PlayerSessionData {
 		}
 	}
 
-	public boolean saveStorage() {
+	public boolean hasUnequippedCurses() {
 		Player p = data.getPlayer();
-		int max = maxStorage;
-		ArrayList<ItemStack> toSave = new ArrayList<ItemStack>(max);
-		p.getInventory().setItemInOffHand(null);
-		for (ItemStack item : p.getInventory().getContents()) {
-			if (item == null) continue;
-
-			toSave.add(item);
-		}
-
-		if (toSave.size() > max) {
-			Util.displayError(p, "You have too many items in storage! Drop or sell some!");
-			return false;
-		}
 
 		for (int i = 0; i < storage.length; i++) {
-			storage[i] = null;
-		}
-		
-		int i = 0;
-		for (ItemStack item : toSave) {
-			NBTItem nbti = new NBTItem(item);
-			String id = nbti.getString("equipId");
-			boolean isUpgraded = nbti.getBoolean("isUpgraded");
-			Equipment eq = Equipment.get(id, isUpgraded);
-			// Hard coded so that the enderchest doesn't give an error
-			if (eq == null) {
-				if (item.getType() != Material.ENDER_CHEST) {
-					String display = item.hasItemMeta() && item.getItemMeta().hasDisplayName()
-							? ((TextComponent) item.getItemMeta().displayName()).content()
-							: item.getType().name();
-					Bukkit.getLogger()
-							.warning("[NeoRogue] " + p.getName() + " could not save " + display + " to their storage");
-				}
-				continue;
-			}
+			if (storage[i] == null) continue;
+			Equipment eq = storage[i];
 			if (eq.isCursed()) {
 				Util.displayError(p, "All cursed items must be equipped before continuing!");
-				return false;
+				return true;
 			}
-			storage[i++] = eq;
 		}
-		return true;
+		return false;
 	}
 
 	public boolean hasCoins(int amount) {
