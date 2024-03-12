@@ -183,7 +183,7 @@ public class PlayerSessionInventory extends CorePlayerInventory {
 		ItemStack cursor = e.getCursor();
 		ItemStack clicked = e.getCurrentItem();
 		int slot = e.getSlot();
-		if (slot >= 36) {
+		if (slot >= 36 || slot < 0) {
 			e.setCancelled(true);
 			return;
 		}
@@ -203,7 +203,7 @@ public class PlayerSessionInventory extends CorePlayerInventory {
 			p.setItemOnCursor(null);
 			return;
 		}
-		if (slot == ARTIFACTS) {
+		else if (slot == ARTIFACTS) {
 			e.setCancelled(true);
 			new BukkitRunnable() {
 				public void run() {
@@ -397,7 +397,7 @@ public class PlayerSessionInventory extends CorePlayerInventory {
 		return hasUpgrade || hasCurse;
 	}
 	
-	private void clearHighlights() {
+	public void clearHighlights() {
 		ItemStack[] contents = inv.getContents();
 		for (int i : highlighted) {
 			if (contents[i].getType() != Material.GLASS_PANE) continue;
@@ -407,7 +407,7 @@ public class PlayerSessionInventory extends CorePlayerInventory {
 		inv.setContents(contents);
 	}
 	
-	private void setHighlights(EquipmentType type) {
+	public void setHighlights(EquipmentType type) {
 		ItemStack[] contents = inv.getContents();
 		for (int[] slots : arrayFromEquipSlot(type)) {
 			for (int s : slots) {

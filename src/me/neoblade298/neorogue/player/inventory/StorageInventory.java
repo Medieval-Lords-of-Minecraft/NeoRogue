@@ -50,15 +50,23 @@ public class StorageInventory extends CoreInventory {
 		if (spectator != null) {
 			e.setCancelled(true);
 		}
-		if (e.getCurrentItem() == null) return;
+		PlayerSessionInventory pinv = (PlayerSessionInventory) InventoryListener.getLowerInventory(p);
 		if (e.isShiftClick()) {
+			if (e.getCurrentItem() == null) return;
 			e.setCancelled(true);
-			PlayerSessionInventory pinv = (PlayerSessionInventory) InventoryListener.getLowerInventory(p);
 			if (!pinv.handleShiftClickIn(e.getCurrentItem())) return;
 			e.setCurrentItem(null);
 			p.playSound(p, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1F);
 		}
 		else {
+			if (e.getCursor() != null) {
+				pinv.clearHighlights();
+			}
+			if (e.getCurrentItem() != null) {
+				NBTItem nbti = new NBTItem(e.getCurrentItem());
+				Equipment eq = Equipment.get(nbti.getString("equipId"), false);
+				pinv.setHighlights(eq.getType());
+			}
 			p.playSound(p, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1F);
 		}
 	}

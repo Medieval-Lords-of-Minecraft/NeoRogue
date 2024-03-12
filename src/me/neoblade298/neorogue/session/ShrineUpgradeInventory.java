@@ -46,9 +46,9 @@ public class ShrineUpgradeInventory extends CoreInventory {
 		int slot = e.getSlot();
 		
 		if (slot == 0) {
+			PlayerSessionInventory pinv = (PlayerSessionInventory) InventoryListener.getLowerInventory(p);
 			if (e.isShiftClick()) {
 				if (e.getCurrentItem() == null) return;
-				PlayerSessionInventory pinv = (PlayerSessionInventory) InventoryListener.getLowerInventory(p);
 				if (!pinv.handleShiftClickIn(inv.getItem(0))) return;
 				p.playSound(p, Sound.ITEM_ARMOR_EQUIP_DIAMOND, 1F, 1F);
 				e.setCancelled(true);
@@ -58,6 +58,15 @@ public class ShrineUpgradeInventory extends CoreInventory {
 			}
 
 			if (e.getCurrentItem() == null && e.getCursor() == null) return;
+			
+			if (e.getCursor() != null) {
+				pinv.clearHighlights();
+			}
+			if (e.getCurrentItem() != null) {
+				NBTItem nbti = new NBTItem(e.getCurrentItem());
+				Equipment eq = Equipment.get(nbti.getString("equipId"), false);
+				pinv.setHighlights(eq.getType());
+			}
 			p.playSound(p, Sound.ITEM_ARMOR_EQUIP_DIAMOND, 1F, 1F);
 			// Has to be done with runnable to avoid manually coding swap cases and such
 			new BukkitRunnable() {
