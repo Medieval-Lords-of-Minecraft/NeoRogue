@@ -24,6 +24,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class DarkScepter extends Equipment {
+	private static final String ID = "darkScepter";
 	private static final int hitScanRange = 12;
 	private static final ParticleContainer tick;
 
@@ -34,10 +35,14 @@ public class DarkScepter extends Equipment {
 
 	public DarkScepter(boolean isUpgraded) {
 		super(
-				"darkScepter", "Dark Scepter", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
+				ID, "Dark Scepter", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(6, 0, isUpgraded ? 50 : 25, 0.35, DamageType.DARK, Sound.ITEM_AXE_SCRAPE)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 	
 	@Override

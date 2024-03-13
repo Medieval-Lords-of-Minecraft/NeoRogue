@@ -11,12 +11,17 @@ import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class MinorStrengthRelic extends Equipment {
+	private static final String ID = "minorStrengthRelic";
 	private double str;
 	
 	public MinorStrengthRelic(boolean isUpgraded) {
-		super("minorStrengthRelic", "Minor Strength Relic", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
+		super(ID, "Minor Strength Relic", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ACCESSORY);
 		str = isUpgraded ? 8 : 5;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

@@ -25,6 +25,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class BoltWand extends Equipment {
+	private static final String ID = "boltWand";
 	private static final ParticleContainer tick;
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_LIGHTNING_BOLT_IMPACT);
 
@@ -37,11 +38,15 @@ public class BoltWand extends Equipment {
 	
 	public BoltWand(boolean isUpgraded) {
 		super(
-				"boltWand", "Bolt Wand", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
+				ID, "Bolt Wand", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(5, 0, isUpgraded ? 30 : 20, 0.35, DamageType.LIGHTNING, Sound.ITEM_AXE_SCRAPE)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
 		pierceAmount = 3;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

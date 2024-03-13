@@ -11,12 +11,17 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.GrantShieldsEvent;
 
 public class MinorShieldingRelic extends Equipment {
+	private static final String ID = "minorShieldingRelic";
 	private double shields;
 	
 	public MinorShieldingRelic(boolean isUpgraded) {
-		super("minorShieldingRelic", "Minor Shielding Relic", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
+		super(ID, "Minor Shielding Relic", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ACCESSORY);
 		shields = isUpgraded ? 3 : 2;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

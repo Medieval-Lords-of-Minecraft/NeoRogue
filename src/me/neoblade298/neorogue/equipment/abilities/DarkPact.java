@@ -18,14 +18,19 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class DarkPact extends Equipment {
+	private static final String ID = "darkPact";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME);
 	private int seconds;
 	
 	public DarkPact(boolean isUpgraded) {
-		super("darkPact", "Dark Pact", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
+		super(ID, "Dark Pact", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.none());
 		seconds = isUpgraded ? 25 : 40;
 		pc.count(25).spread(0.5, 0.5).speed(0.1);
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

@@ -7,6 +7,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -15,9 +16,14 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
 public class GlacialHammer extends Artifact {
+	private static final String ID = "glacialHammer";
 
 	public GlacialHammer() {
-		super("glacialHammer", "Glacial Hammer", Rarity.RARE, EquipmentClass.CLASSLESS);
+		super(ID, "Glacial Hammer", Rarity.RARE, EquipmentClass.CLASSLESS);
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

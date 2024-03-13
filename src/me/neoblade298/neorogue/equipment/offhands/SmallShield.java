@@ -16,12 +16,17 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
 
 public class SmallShield extends Equipment {
+	private static final String ID = "smallShield";
 	private int reduction;
 	
 	public SmallShield(boolean isUpgraded) {
-		super("smallShield", "Small Shield", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
+		super(ID, "Small Shield", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.OFFHAND);
 		reduction = isUpgraded ? 5 : 3;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

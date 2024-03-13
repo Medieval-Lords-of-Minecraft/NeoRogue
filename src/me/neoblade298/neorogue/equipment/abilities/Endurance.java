@@ -18,16 +18,21 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Endurance extends Equipment {
+	private static final String ID = "endurance";
 	private static final int HEAL_COUNT = 6;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.VILLAGER_HAPPY).count(15).spread(0.5, 0.5).offsetY(2);;
 	private int heal, berserk;
 	
 	public Endurance(boolean isUpgraded) {
-		super("endurance", "Endurance", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+		super(ID, "Endurance", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.none());
 		
 		heal = 8;
 		berserk = isUpgraded ? 3 : 2;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

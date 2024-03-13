@@ -13,12 +13,17 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class LeatherBracer extends Equipment {
+	private static final String ID = "leatherBracer";
 	private int instances;
 	
 	public LeatherBracer(boolean isUpgraded) {
-		super("leatherBracer", "Leather Bracer", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
+		super(ID, "Leather Bracer", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.OFFHAND);
 		instances = isUpgraded ? 6 : 4;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

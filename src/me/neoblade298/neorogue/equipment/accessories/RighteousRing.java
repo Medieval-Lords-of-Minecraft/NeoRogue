@@ -14,12 +14,17 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
 public class RighteousRing extends Equipment {
+	private static final String ID = "righteousRing";
 	private int sanct;
 	
 	public RighteousRing(boolean isUpgraded) {
-		super("righteousRing", "Righteous Ring", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
+		super(ID, "Righteous Ring", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ACCESSORY);
 		sanct = isUpgraded ? 6 : 4;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

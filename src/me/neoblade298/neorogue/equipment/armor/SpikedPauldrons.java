@@ -11,12 +11,17 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class SpikedPauldrons extends Equipment {
+	private static final String ID = "spikedPauldrons";
 	private int thorns;
 	
 	public SpikedPauldrons(boolean isUpgraded) {
-		super("spikedPauldrons", "Spiked Pauldrons", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
+		super(ID, "Spiked Pauldrons", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ARMOR);
 		thorns = isUpgraded ? 30 : 20;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

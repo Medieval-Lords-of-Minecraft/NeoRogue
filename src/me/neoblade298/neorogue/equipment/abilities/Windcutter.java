@@ -26,6 +26,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Windcutter extends Equipment {
+	private static final String ID = "windcutter";
 	private static final SoundContainer sound = new SoundContainer(Sound.ENTITY_ELDER_GUARDIAN_DEATH, 2F);
 	private static final ParticleContainer part = new ParticleContainer(Particle.SWEEP_ATTACK);
 	private static final int PROJECTILE_AMOUNT = 5;
@@ -34,12 +35,16 @@ public class Windcutter extends Equipment {
 	private int damage;
 	
 	public Windcutter(boolean isUpgraded) {
-		super("windcutter", "Windcutter", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+		super(ID, "Windcutter", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 5));
 		damage = isUpgraded ? 50 : 30;
 		for (int i = 0; i < PROJECTILE_AMOUNT; i++) {
 			projs.add(new WindcutterProjectile(i, PROJECTILE_AMOUNT / 2));
 		}
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

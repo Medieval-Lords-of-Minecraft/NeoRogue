@@ -21,18 +21,23 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
 public class SiphoningStrike extends Equipment {
+	private static final String ID = "siphoningStrike";
 	private int damage, buff;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
 			hit = new ParticleContainer(Particle.REDSTONE);
 	
 	public SiphoningStrike(boolean isUpgraded) {
-		super("siphoningStrike", "Siphoning Strike", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
+		super(ID, "Siphoning Strike", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 25, 12, 0));
 		properties.addUpgrades(PropertyType.COOLDOWN);
 		damage = 120;
 		buff = isUpgraded ? 8 : 5;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		hit.count(50).spread(0.5, 0.5);
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

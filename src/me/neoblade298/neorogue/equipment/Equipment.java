@@ -262,6 +262,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 			counts.put(type, 0);
 		}
 		
+		// Reforges
+		
 		// Setup equipment
 		for (Equipment eq : equipment.values()) {
 			eq.setupDroptable();

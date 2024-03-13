@@ -32,6 +32,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Bulldoze extends Equipment {
+	private static final String ID = "bulldoze";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION_LARGE),
 			start = new ParticleContainer(Particle.CLOUD),
 			wake = new ParticleContainer(Particle.EXPLOSION_NORMAL);
@@ -39,13 +40,17 @@ public class Bulldoze extends Equipment {
 	private int damage;
 	
 	public Bulldoze(boolean isUpgraded) {
-		super("bulldoze", "Bulldoze", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+		super(ID, "Bulldoze", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 25, 20, 0));
 		damage = isUpgraded ? 130 : 100;
 		
 		pc.count(25).spread(0.5, 0.5);
 		start.count(25).spread(0.5, 0);
 		wake.count(25).spread(0.5, 0).offsetForward(2);
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

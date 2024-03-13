@@ -14,10 +14,11 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Charge extends Equipment {
+	private static final String ID = "charge";
 	private int shields;
 	
 	public Charge(boolean isUpgraded) {
-		super("charge", "Charge", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+		super(ID, "Charge", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.none());
 		shields = isUpgraded ? 10 : 7;
 	}
@@ -27,6 +28,10 @@ public class Charge extends Equipment {
 		item = createItem(Material.IRON_BOOTS,
 				"Passive. Sprinting costs <white>1</white> additional stamina per second, but grants you " + GlossaryTag.SHIELDS.tag(this, shields, true) +
 				" that lasts 3 seconds for every second you sprint.");
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

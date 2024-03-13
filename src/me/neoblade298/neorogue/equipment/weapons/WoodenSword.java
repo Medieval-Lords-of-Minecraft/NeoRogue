@@ -16,12 +16,17 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class WoodenSword extends Equipment {
+	private static final String ID = "woodenSword";
 	
 	public WoodenSword(boolean isUpgraded) {
-		super("woodenSword", "Wooden Sword", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
+		super(ID, "Wooden Sword", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(isUpgraded ? 35 : 25, 1, 0.4, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
 		properties.addUpgrades(PropertyType.DAMAGE);
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

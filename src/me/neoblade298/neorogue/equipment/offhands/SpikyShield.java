@@ -18,13 +18,18 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
 
 public class SpikyShield extends Equipment {
+	private static final String ID = "spikyShield";
 	private int reduction, amount;
 	
 	public SpikyShield(boolean isUpgraded) {
-		super("spikyShield", "Spiky Shield", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+		super(ID, "Spiky Shield", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.OFFHAND);
 		reduction = 8;
 		amount = isUpgraded ? 25 : 15;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

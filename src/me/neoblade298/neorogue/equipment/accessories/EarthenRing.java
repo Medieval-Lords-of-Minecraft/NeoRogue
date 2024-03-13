@@ -14,12 +14,17 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
 public class EarthenRing extends Equipment {
+	private static final String ID = "earthenRing";
 	private int damage;
 	
 	public EarthenRing(boolean isUpgraded) {
-		super("earthenRing", "Earthen Ring", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
+		super(ID, "Earthen Ring", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ACCESSORY);
 		damage = isUpgraded ? 12 : 8;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

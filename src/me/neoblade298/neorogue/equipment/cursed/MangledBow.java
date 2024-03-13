@@ -8,9 +8,14 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class MangledBow extends Equipment {
+	private static final String ID = "mangledBow";
 	
 	public MangledBow() {
-		super("mangledBow", "Mangled Bow", EquipmentType.WEAPON);
+		super(ID, "Mangled Bow", EquipmentType.WEAPON);
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

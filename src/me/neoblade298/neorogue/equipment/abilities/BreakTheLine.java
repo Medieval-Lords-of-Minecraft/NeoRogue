@@ -17,13 +17,18 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class BreakTheLine extends Equipment {
+	private static final String ID = "breakTheLine";
 	private int shields;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
 	
 	public BreakTheLine(boolean isUpgraded) {
-		super("breakTheLine", "Break the Line", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+		super(ID, "Break the Line", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 35, 15, 0));
 		pc.count(10).spread(0.5, 0.5).speed(0.2);
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

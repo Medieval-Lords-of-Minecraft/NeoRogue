@@ -34,18 +34,23 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class StoneSpear extends Equipment {
+	private static final String ID = "stoneSpear";
 	private int throwDamage, throwCooldown = 5;
 	private static final ParticleContainer throwPart = new ParticleContainer(Particle.CLOUD).count(25).spread(0.1, 0.1);
 	private static final TargetProperties spearHit = TargetProperties.line(4, 1, TargetType.ENEMY);
 
 	public StoneSpear(boolean isUpgraded) {
 		super(
-				"stoneSpear", "Stone Spear", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR, EquipmentType.WEAPON,
+				ID, "Stone Spear", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR, EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(isUpgraded ? 50 : 40, 0.5, 0.5, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_CRIT)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
 		
 		throwDamage = isUpgraded ? 120 : 90;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

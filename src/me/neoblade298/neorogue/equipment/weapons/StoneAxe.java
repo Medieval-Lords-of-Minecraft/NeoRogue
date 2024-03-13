@@ -22,14 +22,19 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class StoneAxe extends Equipment {
+	private static final String ID = "stoneAxe";
 	private static final int BERSERK_THRESHOLD = 10;
 	private static final TargetProperties tp = TargetProperties.cone(90, 4, false, TargetType.ENEMY);
 	
 	public StoneAxe(boolean isUpgraded) {
-		super("stoneAxe", "Stone Axe", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+		super(ID, "Stone Axe", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(isUpgraded ? 100 : 80, 0.2, 1, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_CRIT));
 		properties.addUpgrades(PropertyType.DAMAGE);
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

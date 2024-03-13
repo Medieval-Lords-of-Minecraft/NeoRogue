@@ -18,16 +18,21 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class StoneSword extends Equipment {
+	private static final String ID = "stoneSword";
 	private int shields, shieldsBonus;
 	
 	public StoneSword(boolean isUpgraded) {
-		super("stoneSword", "Stone Sword", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+		super(ID, "Stone Sword", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(isUpgraded ? 55 : 45, 1, 0.4, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
 		properties.addUpgrades(PropertyType.DAMAGE);
 		
 		shields = isUpgraded ? 25 : 15;
 		shieldsBonus = isUpgraded ? 10 : 5;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

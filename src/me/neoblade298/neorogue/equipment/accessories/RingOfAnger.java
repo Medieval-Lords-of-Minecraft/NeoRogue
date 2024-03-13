@@ -13,12 +13,17 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class RingOfAnger extends Equipment {
+	private static final String ID = "ringOfAnger";
 	private int seconds;
 	
 	public RingOfAnger(boolean isUpgraded) {
-		super("ringOfAnger", "Ring of Anger", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
+		super(ID, "Ring of Anger", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ACCESSORY);
 		seconds = isUpgraded ? 5 : 8;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

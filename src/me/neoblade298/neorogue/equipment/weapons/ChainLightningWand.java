@@ -26,6 +26,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class ChainLightningWand extends Equipment {
+	private static final String ID = "chainLightningWand";
 	private static final TargetProperties hitScan = TargetProperties.cone(9, 10, false, TargetType.ENEMY);
 	private static final TargetProperties chainScan = TargetProperties.cone(60, 5, false, TargetType.ENEMY);
 
@@ -41,11 +42,15 @@ public class ChainLightningWand extends Equipment {
 
 	public ChainLightningWand(boolean isUpgraded) {
 		super(
-				"chainLightningWand", "Chain Lightning Wand", isUpgraded, Rarity.RARE, EquipmentClass.MAGE, EquipmentType.WEAPON,
+				ID, "Chain Lightning Wand", isUpgraded, Rarity.RARE, EquipmentClass.MAGE, EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(10, 0, isUpgraded ? 40 : 30, 0.5, DamageType.LIGHTNING, Sound.ITEM_AXE_SCRAPE)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
 		chainAmount = isUpgraded ? 5 : 3;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 	
 	@Override

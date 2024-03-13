@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -19,10 +20,15 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class NoxianBlight extends Artifact {
+	private static final String ID = "noxianBlight";
 	private static final int stamina = 25, mana = 25;
 
 	public NoxianBlight() {
-		super("noxianBlight", "Noxian Blight", Rarity.RARE, EquipmentClass.WARRIOR);
+		super(ID, "Noxian Blight", Rarity.RARE, EquipmentClass.WARRIOR);
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

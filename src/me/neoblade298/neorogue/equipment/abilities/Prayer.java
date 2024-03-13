@@ -26,16 +26,21 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Prayer extends Equipment {
+	private static final String ID = "prayer";
 	private static final TargetProperties tp = TargetProperties.radius(15, false, TargetType.ENEMY);
 	private static final ParticleContainer healPart = new ParticleContainer(Particle.VILLAGER_HAPPY).count(25).spread(0.5, 0.5);
 	private int heal;
 	private double healPct;
 	
 	public Prayer(boolean isUpgraded) {
-		super("prayer", "Prayer", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+		super(ID, "Prayer", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 10, 25, tp.range));
 		heal = isUpgraded ? 15 : 10;
 		healPct = heal * 0.01;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

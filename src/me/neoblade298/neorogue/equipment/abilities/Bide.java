@@ -19,6 +19,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Bide extends Equipment {
+	private static final String ID = "bide";
 	private int shields, berserk, duration;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
 			bpc = new ParticleContainer(Particle.FLAME);
@@ -26,7 +27,7 @@ public class Bide extends Equipment {
 			strengthGain = new SoundContainer(Sound.ENTITY_BLAZE_SHOOT);
 	
 	public Bide(boolean isUpgraded) {
-		super("bide", "Bide", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR, 
+		super(ID, "Bide", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR, 
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 25, 10, 0));
 		shields = 50;
 		duration = 5;
@@ -35,6 +36,10 @@ public class Bide extends Equipment {
 		bpc.count(20).spread(0.5, 0.5).speed(0.1);
 		
 		addTags(GlossaryTag.SHIELDS, GlossaryTag.BERSERK);
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

@@ -17,13 +17,18 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
 
 public class HastyShield extends Equipment {
+	private static final String ID = "hastyShield";
 	private int reduction, amount;
 	
 	public HastyShield(boolean isUpgraded) {
-		super("hastyShield", "Hasty Shield", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
+		super(ID, "Hasty Shield", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.OFFHAND);
 		reduction = 15;
 		amount = isUpgraded ? 25 : 18;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

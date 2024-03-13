@@ -23,13 +23,18 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
 
 public class PaladinsShield extends Equipment {
+	private static final String ID = "paladinsShield";
 	private int reduction, sanct;
 	
 	public PaladinsShield(boolean isUpgraded) {
-		super("paladinsShield", "Paladin's Shield", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+		super(ID, "Paladin's Shield", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.OFFHAND);
 		reduction = isUpgraded ? 7 : 5;
 		sanct = isUpgraded ? 6 : 4;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -15,10 +16,15 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class AlchemistBag extends Artifact {
+	private static final String ID = "alchemistBag";
 	private static final int heal = 15;
 
 	public AlchemistBag() {
-		super("alchemistBag", "Alchemist Bag", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
+		super(ID, "Alchemist Bag", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

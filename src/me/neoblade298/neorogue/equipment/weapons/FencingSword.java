@@ -17,14 +17,19 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class FencingSword extends Equipment {
+	private static final String ID = "fencingSword";
 	private int shields;
 	
 	public FencingSword(boolean isUpgraded) {
-		super("fencingSword", "Fencing Sword", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
+		super(ID, "Fencing Sword", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(isUpgraded ? 40 : 30, 1, 0.3, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_CRIT));
 		properties.addUpgrades(PropertyType.DAMAGE);
 		shields = isUpgraded ? 2 : 1;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

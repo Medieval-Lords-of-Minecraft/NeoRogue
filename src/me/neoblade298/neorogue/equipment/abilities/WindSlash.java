@@ -24,12 +24,13 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class WindSlash extends Equipment {
+	private static final String ID = "windSlash";
 	private int amount, damage;
 	private ProjectileGroup projs = new ProjectileGroup();
 	private static final ParticleContainer part = new ParticleContainer(Particle.SWEEP_ATTACK);
 	
 	public WindSlash(boolean isUpgraded) {
-		super("windSlash", "Wind Slash", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+		super(ID, "Wind Slash", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 25, 10, 8));
 		
 		amount = isUpgraded ? 5 : 3;
@@ -37,6 +38,10 @@ public class WindSlash extends Equipment {
 		for (int i = 0; i < amount; i++) {
 			projs.add(new WindSlashProjectile(i, amount / 2));
 		}
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

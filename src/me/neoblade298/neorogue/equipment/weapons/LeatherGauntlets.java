@@ -16,12 +16,17 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class LeatherGauntlets extends Equipment {
+	private static final String ID = "leatherGauntlets";
 	
 	public LeatherGauntlets(boolean isUpgraded) {
-		super("leatherGauntlets", "Leather Gauntlets", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
+		super(ID, "Leather Gauntlets", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(isUpgraded ? 25 : 20, 1.5, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_CRIT));
 		properties.addUpgrades(PropertyType.DAMAGE);
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

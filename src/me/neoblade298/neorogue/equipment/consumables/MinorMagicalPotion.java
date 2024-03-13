@@ -8,15 +8,21 @@ import org.bukkit.inventory.meta.PotionMeta;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.equipment.Consumable;
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.BuffType;
 
 public class MinorMagicalPotion extends Consumable {
+	private static final String ID = "minorMagicalPotion";
 	private double intel;
 	
 	public MinorMagicalPotion(boolean isUpgraded) {
-		super("minorMagicalPotion", "Minor Magical Potion", isUpgraded, Rarity.COMMON, EquipmentClass.CLASSLESS);
+		super(ID, "Minor Magical Potion", isUpgraded, Rarity.COMMON, EquipmentClass.CLASSLESS);
 		this.intel = isUpgraded ? 30 : 20;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 	
 	@Override

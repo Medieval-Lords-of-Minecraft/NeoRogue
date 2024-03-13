@@ -33,6 +33,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class RighteousHammer extends Equipment {
+	private static final String ID = "righteousHammer";
 	private static final int DISTANCE = 4, RADIUS = 2;
 	private static final TargetProperties props = TargetProperties.radius(RADIUS, true, TargetType.ENEMY);
 	private static final ParticleContainer swingPart = new ParticleContainer(Particle.CLOUD).count(5).spread(0.1, 0.1),
@@ -56,10 +57,14 @@ public class RighteousHammer extends Equipment {
 	}
 	
 	public RighteousHammer(boolean isUpgraded) {
-		super("righteousHammer", "Righteous Hammer", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
+		super(ID, "Righteous Hammer", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(110, 0.5, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
 		sanct = isUpgraded ? 6 : 4;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

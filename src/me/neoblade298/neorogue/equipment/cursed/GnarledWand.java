@@ -8,9 +8,14 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class GnarledWand extends Equipment {
+	private static final String ID = "gnarledWand";
 	
 	public GnarledWand() {
-		super("gnarledWand", "Gnarled Wand", EquipmentType.WEAPON);
+		super(ID, "Gnarled Wand", EquipmentType.WEAPON);
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

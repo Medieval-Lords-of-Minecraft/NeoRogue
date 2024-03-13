@@ -18,15 +18,20 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Discipline extends Equipment {
+	private static final String ID = "discipline";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.REDSTONE);
 	private static final int stamina = 50;
 	private int staminaGain;
 	
 	public Discipline(boolean isUpgraded) {
-		super("discipline", "Discipline", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+		super(ID, "Discipline", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 15, 0));
 		pc.count(50).spread(0.5, 0.5).dustOptions(new DustOptions(Color.RED, 1F));
 		staminaGain = isUpgraded ? 15 : 10;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

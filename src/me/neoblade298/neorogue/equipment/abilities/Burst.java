@@ -21,16 +21,21 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Burst extends Equipment {
+	private static final String ID = "burst";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.REDSTONE);
 	private int stamina, buff;
 	private static final int seconds = 10;
 	
 	public Burst(boolean isUpgraded) {
-		super("burst", "Burst", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+		super(ID, "Burst", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 15, 0));
 		pc.count(50).spread(0.5, 0.5).dustOptions(new DustOptions(Color.RED, 1F));
 		buff = isUpgraded ? 30 : 20;
 		stamina = isUpgraded ? 80 : 50;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

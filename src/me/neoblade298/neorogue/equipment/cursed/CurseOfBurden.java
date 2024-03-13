@@ -8,9 +8,14 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class CurseOfBurden extends Equipment {
+	private static final String ID = "curseOfBurden";
 	
 	public CurseOfBurden() {
-		super("curseOfBurden", "Curse Of Burden", EquipmentType.ARMOR);
+		super(ID, "Curse Of Burden", EquipmentType.ARMOR);
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

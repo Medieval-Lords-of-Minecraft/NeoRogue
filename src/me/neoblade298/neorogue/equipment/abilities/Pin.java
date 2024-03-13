@@ -33,19 +33,24 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Pin extends Equipment {
+	private static final String ID = "pin";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION_LARGE),
 			start = new ParticleContainer(Particle.CLOUD);
 	private static final TargetProperties aoe = TargetProperties.radius(2, true, TargetType.ENEMY);
 	private int damage, reduction;
 	
 	public Pin(boolean isUpgraded) {
-		super("pin", "Pin", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+		super(ID, "Pin", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 30, 15, 0));
 		damage = isUpgraded ? 160 : 130;
 		reduction = isUpgraded ? 15 : 10;
 		
 		pc.count(25).spread(1, 1);
 		start.count(25).spread(0.5, 0);
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

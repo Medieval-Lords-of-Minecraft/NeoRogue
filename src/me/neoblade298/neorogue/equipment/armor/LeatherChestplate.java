@@ -11,12 +11,17 @@ import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class LeatherChestplate extends Equipment {
+	private static final String ID = "leatherChestplate";
 	private double damageReduction;
 	
 	public LeatherChestplate(boolean isUpgraded) {
-		super("leatherChestplate", "Leather Chestplate", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+		super(ID, "Leather Chestplate", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ARMOR);
 		damageReduction = isUpgraded ? 5 : 3;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

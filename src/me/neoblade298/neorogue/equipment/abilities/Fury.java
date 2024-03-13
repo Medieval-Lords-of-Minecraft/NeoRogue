@@ -21,13 +21,14 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
 public class Fury extends Equipment {
+	private static final String ID = "fury";
 	private int damage, berserk, heal, berserkHeal;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
 			hit = new ParticleContainer(Particle.REDSTONE),
 			explode = new ParticleContainer(Particle.EXPLOSION_NORMAL);
 	
 	public Fury(boolean isUpgraded) {
-		super("fury", "Fury", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
+		super(ID, "Fury", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 30, 5, 0));
 		damage = 125;
 		berserk = isUpgraded ? 10 : 15;
@@ -36,6 +37,10 @@ public class Fury extends Equipment {
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		hit.count(50).spread(0.5, 0.5);
 		explode.count(25).spread(0.5, 0.5).speed(0.1);
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

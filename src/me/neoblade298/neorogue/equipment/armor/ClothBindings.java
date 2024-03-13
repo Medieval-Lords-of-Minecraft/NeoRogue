@@ -11,12 +11,17 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class ClothBindings extends Equipment {
+	private static final String ID = "clothBindings";
 	private double health;
 	
 	public ClothBindings(boolean isUpgraded) {
-		super("clothBindings", "Cloth Bindings", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
+		super(ID, "Cloth Bindings", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ARMOR);
 		health = isUpgraded ? 15 : 10;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

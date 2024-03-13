@@ -17,12 +17,17 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class TowerShield extends Equipment {
+	private static final String ID = "towerShield";
 	private int reduction;
 	
 	public TowerShield(boolean isUpgraded) {
-		super("towerShield", "Tower Shield", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
+		super(ID, "Tower Shield", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.OFFHAND);
 		reduction = isUpgraded ? 6 : 4;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

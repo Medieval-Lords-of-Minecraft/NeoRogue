@@ -9,9 +9,14 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class DullGem extends Equipment {
+	private static final String ID = "dullGem";
 	
 	public DullGem() {
-		super("dullGem", "Dull Gem", Rarity.COMMON, EquipmentClass.CLASSLESS);
+		super(ID, "Dull Gem", Rarity.COMMON, EquipmentClass.CLASSLESS);
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

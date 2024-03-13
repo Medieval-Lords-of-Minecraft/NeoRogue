@@ -23,14 +23,19 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Skirmisher extends Equipment {
+	private static final String ID = "skirmisher";
 	private static final TargetProperties props = TargetProperties.radius(5, false, TargetType.ENEMY);
 	private static final SoundContainer sound = new SoundContainer(Sound.ENTITY_ALLAY_HURT, 0.8F);
 	private int shields;
 	
 	public Skirmisher(boolean isUpgraded) {
-		super("skirmisher", "Skirmisher", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+		super(ID, "Skirmisher", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.none());
 		shields = isUpgraded ? 10 : 6;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

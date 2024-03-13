@@ -19,16 +19,21 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
 
 public class GraniteShield extends Equipment {
+	private static final String ID = "graniteShield";
 	private static final int HEAL_COUNT = 6;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.VILLAGER_HAPPY).count(15).spread(0.5, 0.5).offsetY(2);;
 	private int heal, concuss;
 	
 	public GraniteShield(boolean isUpgraded) {
-		super("graniteShield", "Granite Shield", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+		super(ID, "Granite Shield", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.none());
 		
 		heal = 8;
 		concuss = isUpgraded ? 9 : 6;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

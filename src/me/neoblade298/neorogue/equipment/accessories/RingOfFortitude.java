@@ -14,11 +14,16 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
 public class RingOfFortitude extends Equipment {
+	private static final String ID = "ringOfFortitude";
 	private double mult;
 	public RingOfFortitude(boolean isUpgraded) {
-		super("ringOfFortitude", "Ring Of Fortitude", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+		super(ID, "Ring Of Fortitude", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ACCESSORY);
 		mult = isUpgraded ? 1.2 : 0.8;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

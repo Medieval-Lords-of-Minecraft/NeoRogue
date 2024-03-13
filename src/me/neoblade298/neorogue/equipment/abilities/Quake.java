@@ -25,17 +25,22 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Quake extends Equipment {
+	private static final String ID = "quake";
 	private static final TargetProperties tp = TargetProperties.radius(5, true, TargetType.ENEMY);
 	private int concussed, damage;
 	private static final ParticleContainer part = new ParticleContainer(Particle.CLOUD).spread(tp.range, 0.2).count(50);
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_WARDEN_ATTACK_IMPACT);
 	
 	public Quake(boolean isUpgraded) {
-		super("quake", "Quake", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+		super(ID, "Quake", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 20, 8, tp.range));
 		
 		concussed = isUpgraded ? 16 : 12;
 		damage = isUpgraded ? 130 : 100;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

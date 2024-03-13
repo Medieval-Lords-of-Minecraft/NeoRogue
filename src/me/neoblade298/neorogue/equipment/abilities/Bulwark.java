@@ -17,16 +17,21 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Bulwark extends Equipment {
+	private static final String ID = "bulwark";
 	private static final int HEAL_COUNT = 6;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.VILLAGER_HAPPY).count(15).spread(0.5, 0.5).offsetY(2);;
 	private int heal, shield;
 	
 	public Bulwark(boolean isUpgraded) {
-		super("bulwark", "Bulwark", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+		super(ID, "Bulwark", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.none());
 		
 		heal = 8;
 		shield = isUpgraded ? 12 : 8;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

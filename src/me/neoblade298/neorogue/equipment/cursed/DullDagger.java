@@ -8,10 +8,14 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class DullDagger extends Equipment {
+	private static final String ID = "dullDagger";
 	
 	public DullDagger() {
-		super("dullDagger", "Dull Dagger", EquipmentType.WEAPON);
-		// addReforgeOption("leatherGauntlets", new String[] {"forcefulLeatherGauntlets", "earthenLeatherGauntlets", "lightLeatherGauntlets"});
+		super(ID, "Dull Dagger", EquipmentType.WEAPON);
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

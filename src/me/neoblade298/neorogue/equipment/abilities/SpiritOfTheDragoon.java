@@ -18,14 +18,19 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class SpiritOfTheDragoon extends Equipment {
+	private static final String ID = "spiritOfTheDragoon";
 	private int strength, shield;
 	private static final ParticleContainer strPart = new ParticleContainer(Particle.FLAME).count(25).spread(0.5, 0.5).offsetY(1).speed(0.1);
 	
 	public SpiritOfTheDragoon(boolean isUpgraded) {
-		super("spiritOfTheDragoon", "Spirit of the Dragoon", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+		super(ID, "Spirit of the Dragoon", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 30, 15, 0));
 		shield = isUpgraded ? 20 : 15;
 		strength = isUpgraded ? 5 : 3;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

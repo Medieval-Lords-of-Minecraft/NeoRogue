@@ -9,11 +9,16 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class MinorManaRelic extends Equipment {
+	private static final String ID = "minorManaRelic";
 	private double regen;
 	
 	public MinorManaRelic(boolean isUpgraded) {
-		super("minorManaRelic", "Minor Mana Relic", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ACCESSORY);
+		super(ID, "Minor Mana Relic", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ACCESSORY);
 		regen = isUpgraded ? 2 : 1;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

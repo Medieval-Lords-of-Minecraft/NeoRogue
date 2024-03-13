@@ -5,19 +5,25 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 
 public class RubyGem extends Artifact {
+	private static final String ID = "rubyGem";
 	private int max, shields;
 
 	public RubyGem() {
-		super("rubyGem", "Ruby Gem", Rarity.EPIC, EquipmentClass.CLASSLESS);
+		super(ID, "Ruby Gem", Rarity.EPIC, EquipmentClass.CLASSLESS);
 		canDrop = false;
 		max = 50;
 		shields = 10;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

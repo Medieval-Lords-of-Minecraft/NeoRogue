@@ -23,15 +23,20 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class SilverFang extends Equipment {
+	private static final String ID = "silverFang";
 	private int sanct;
 	
 	public SilverFang(boolean isUpgraded) {
-		super("silverFang", "Silver Fang", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
+		super(ID, "Silver Fang", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(isUpgraded ? 70 : 55, 1, 0.3, DamageType.SLASHING, new SoundContainer(Sound.ENTITY_ALLAY_HURT, 0.8F)));
 		properties.addUpgrades(PropertyType.DAMAGE);
 		
 		sanct = isUpgraded ? 3 : 2;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

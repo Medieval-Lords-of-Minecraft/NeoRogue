@@ -10,12 +10,17 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Footpads extends Equipment {
+	private static final String ID = "footpads";
 	private double stamina;
 	
 	public Footpads(boolean isUpgraded) {
-		super("footpads", "Footpads", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
+		super(ID, "Footpads", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ARMOR);
 		stamina = isUpgraded ? 15 : 10;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override
