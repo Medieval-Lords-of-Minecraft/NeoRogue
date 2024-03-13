@@ -4,6 +4,8 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.weapons.SilverFang;
+import me.neoblade298.neorogue.player.inventory.CustomGlossaryIcon;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
@@ -24,5 +26,10 @@ public class RustySword extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BARRIER);
+	}
+	
+	@Override
+	public void postSetup() {
+		tags.add(new CustomGlossaryIcon("silverFang", SilverFang.get().getItem()));
 	}
 }

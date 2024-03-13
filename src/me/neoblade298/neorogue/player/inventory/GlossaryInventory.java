@@ -36,7 +36,7 @@ public class GlossaryInventory extends CoreInventory {
 		
 		// Glossary tags
 		ItemStack[] contents = inv.getContents();
-		Iterator<GlossaryTag> iter = mob.getTags().iterator();
+		Iterator<GlossaryIcon> iter = mob.getTags().iterator();
 		for (int row = 0; row < 6; row++) {
 			for (int col = 0; col < 9; col++) {
 				if (!iter.hasNext()) break;
@@ -56,7 +56,7 @@ public class GlossaryInventory extends CoreInventory {
 		contents[UPGRADED] = eq.canUpgrade() ? eq.getUpgraded().getItem() : null;
 		
 		// Glossary tags
-		Iterator<GlossaryTag> iter = eq.getTags().iterator();
+		Iterator<GlossaryIcon> iter = eq.getTags().iterator();
 		for (int row = 1; row < 6; row++) {
 			for (int col = 0; col < 5; col++) {
 				if (!iter.hasNext()) break;

@@ -15,7 +15,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextDecoration.State;
 
-public enum GlossaryTag {
+public enum GlossaryTag implements GlossaryIcon {
 	PHYSICAL(Material.DIAMOND_SWORD, "<red>Physical</red>",
 			"A type of damage. Subtypes are " + DamageType.SLASHING.tag + ", " + DamageType.PIERCING.tag + ", " + DamageType.BLUNT.tag + "."),
 	MAGICAL(Material.DIAMOND_SWORD, "<blue>Magical</blue>",
@@ -109,6 +109,12 @@ public enum GlossaryTag {
 		return "<" + color + ">" + amt + "</" + color + "> " + this.tag;
 	}
 	
+	@Override
+	public String getId() {
+		return this.name();
+	}
+	
+	@Override
 	public ItemStack getIcon() {
 		return icon;
 	}

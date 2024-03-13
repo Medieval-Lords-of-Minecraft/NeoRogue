@@ -3,9 +3,9 @@ package me.neoblade298.neorogue.session.fight;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,6 +22,7 @@ import me.neoblade298.neocore.bukkit.util.SkullUtil;
 import me.neoblade298.neocore.shared.io.Section;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.player.inventory.GlossaryIcon;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import net.kyori.adventure.text.Component;
@@ -43,7 +44,7 @@ public class Mob implements Comparable<Mob> {
 	private Material mat;
 	private HashMap<BuffType, Integer> resistances = new HashMap<BuffType, Integer>();
 	private HashMap<BuffType, Amount> damageTypes = new HashMap<BuffType, Amount>();
-	private HashSet<GlossaryTag> tags = new HashSet<GlossaryTag>();
+	private TreeSet<GlossaryIcon> tags = new TreeSet<GlossaryIcon>(GlossaryIcon.comparator);
 	private List<String> summons;
 	private ArrayList<TextComponent> lore = new ArrayList<TextComponent>();
 	
@@ -143,7 +144,7 @@ public class Mob implements Comparable<Mob> {
 		return resistances;
 	}
 	
-	public HashSet<GlossaryTag> getTags() {
+	public TreeSet<GlossaryIcon> getTags() {
 		return tags;
 	}
 	
