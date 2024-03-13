@@ -27,9 +27,9 @@ public class SilverFang extends Equipment {
 	private int sanct;
 	
 	public SilverFang(boolean isUpgraded) {
-		super(ID, "Silver Fang", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
+		super(ID, "Silver Fang", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(isUpgraded ? 70 : 55, 1, 0.3, DamageType.SLASHING, new SoundContainer(Sound.ENTITY_ALLAY_HURT, 0.8F)));
+				EquipmentProperties.ofWeapon(isUpgraded ? 55 : 45, 1, 0.3, DamageType.SLASHING, new SoundContainer(Sound.ENTITY_ALLAY_HURT, 0.8F)));
 		properties.addUpgrades(PropertyType.DAMAGE);
 		
 		sanct = isUpgraded ? 3 : 2;

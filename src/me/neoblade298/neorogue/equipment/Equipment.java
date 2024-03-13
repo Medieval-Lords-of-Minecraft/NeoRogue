@@ -109,6 +109,7 @@ import me.neoblade298.neorogue.equipment.weapons.StoneSpear;
 import me.neoblade298.neorogue.equipment.weapons.StoneSword;
 import me.neoblade298.neorogue.equipment.weapons.WoodenSword;
 import me.neoblade298.neorogue.equipment.weapons.WoodenWand;
+import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.GlossaryIcon;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
@@ -805,6 +806,9 @@ public abstract class Equipment implements Comparable<Equipment> {
 	public boolean isCursed() {
 		return isCursed;
 	}
+	
+	// Only happens for curses at shops
+	public void onPurify(PlayerSessionData data) {}
 
 	@Override
 	public String toString() {

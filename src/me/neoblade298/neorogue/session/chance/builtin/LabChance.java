@@ -33,7 +33,7 @@ public class LabChance extends ChanceSet {
 				},
 				(s, inst, unused) -> {
 					for (PlayerSessionData data : s.getParty().values()) {
-						data.giveEquipment(Equipment.getConsumable(s.getAreasCompleted() * 2, 3, data.getPlayerClass(), EquipmentClass.CLASSLESS));
+						data.giveEquipment(Equipment.getConsumable(s.getAreasCompleted(), 3, data.getPlayerClass(), EquipmentClass.CLASSLESS));
 					}
 					if (NeoRogue.gen.nextDouble() < 0.25) {
 						for (PlayerSessionData data : s.getParty().values()) {
@@ -52,7 +52,7 @@ public class LabChance extends ChanceSet {
 				"Everyone receives <white>1</white> consumable.",
 				(s, inst, unused) -> {
 					for (PlayerSessionData data : s.getParty().values()) {
-						data.giveEquipment(Equipment.getConsumable(s.getAreasCompleted() * 2, data.getPlayerClass(), EquipmentClass.CLASSLESS));
+						data.giveEquipment(Equipment.getConsumable(s.getAreasCompleted() + 1, data.getPlayerClass(), EquipmentClass.CLASSLESS));
 					}
 					s.broadcast("Everyone carefully peruses before choosing the coolest-looking potion and booking it.");
 					return null;
@@ -79,7 +79,7 @@ public class LabChance extends ChanceSet {
 					}
 					else {
 						for (PlayerSessionData pd : s.getParty().values()) {
-							pd.giveEquipment(Equipment.getArtifact(pd.getArtifactDroptable(), s.getAreasCompleted() * 2, 1, EquipmentClass.CLASSLESS, pd.getPlayerClass()));
+							pd.giveEquipment(Equipment.getArtifact(pd.getArtifactDroptable(), s.getAreasCompleted(), 1, EquipmentClass.CLASSLESS, pd.getPlayerClass()));
 						}
 						s.broadcast("Somehow you all make it out alive as <yellow>" + data.getData().getDisplay() + "</yellow> wildly and maniacally mixes potions. You left the disgusting"
 								+ " mix at the lab, but in the progress found an artifact on the table behind one of the potions they took.");

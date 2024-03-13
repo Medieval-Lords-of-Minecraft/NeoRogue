@@ -6,26 +6,24 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.session.chance.ChanceChoice;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
 import me.neoblade298.neorogue.session.chance.ChanceStage;
 import net.kyori.adventure.text.Component;
 
 public class ThiefsCacheChance extends ChanceSet {
-	private static final Equipment relic = Equipment.get("dullGem", false);
-
 	public ThiefsCacheChance() {
 		super(AreaType.LOW_DISTRICT, Material.GOLD_INGOT, "ThiefsCache", "Thief's Cache", true);
-		ChanceStage stage = new ChanceStage(this, INIT_ID, "You come across a thief’s cache that has some gold, equipment, and a gem lying around. "
-				+ "There's also a note seemingly written by the thief pondering about the existence of some lost relic to \"complete the set\", "
-				+ "but its meaning is lost to you. Suddenly you hear noise behind you. The thief is coming and you’ll have to act fast.");
+		ChanceStage stage = new ChanceStage(this, INIT_ID, "You come across a thief’s cache that has some gold, equipment, and potions lying around. "
+				+ "Suddenly you hear noise behind you. The thief is coming and you’ll have to act fast.");
 
-		ChanceChoice choice = new ChanceChoice(Material.PRISMARINE_SHARD, "Pick up the dull gem",
-				"Maybe this can come in handy reforging an old weapon.", (s, inst, data) -> {
+		ChanceChoice choice = new ChanceChoice(Material.PRISMARINE_SHARD, "Pick up the potions",
+				"Can't go wrong with potions!", (s, inst, data) -> {
 					Player p = data.getPlayer();
-					Util.msgRaw(p, "You pick up the dull gem, hoping it'll come in handy in the future.");
-					s.broadcastOthers("<yellow>" + p.getName() + "</yellow> decided to pick up the dull gem!", p);
-					data.giveEquipment(relic);
+					Util.msgRaw(p, "You pick up the potions and leave with haste.");
+					s.broadcastOthers("<yellow>" + p.getName() + "</yellow> decided to pick up the potions!", p);
+					data.giveEquipment(Equipment.getConsumable(s.getAreasCompleted(), 2, data.getPlayerClass(), EquipmentClass.CLASSLESS));
 					return null;
 				});
 		stage.addChoice(choice);

@@ -11,7 +11,7 @@ public class DullDagger extends Equipment {
 	private static final String ID = "dullDagger";
 	
 	public DullDagger() {
-		super(ID, "Dull Dagger", EquipmentType.WEAPON);
+		super(ID, "Dull Dagger", EquipmentType.ACCESSORY);
 	}
 	
 	public static Equipment get() {

@@ -17,6 +17,7 @@ import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.session.chance.ChanceChoice;
 import me.neoblade298.neorogue.session.fight.Mob;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -37,6 +38,23 @@ public class GlossaryInventory extends CoreInventory {
 		// Glossary tags
 		ItemStack[] contents = inv.getContents();
 		Iterator<GlossaryIcon> iter = mob.getTags().iterator();
+		for (int row = 0; row < 6; row++) {
+			for (int col = 0; col < 9; col++) {
+				if (!iter.hasNext()) break;
+				contents[(row * 9) + col] = iter.next().getIcon();
+			}
+		}
+		inv.setContents(contents);
+	}
+	public GlossaryInventory(Player viewer, ChanceChoice choice, CoreInventory prev) {
+		super(viewer, Bukkit.createInventory(viewer, calculateSize(choice.getTags().size()),
+				Component.text("Glossary: ", NamedTextColor.GOLD).append(choice.getItemWithoutConditions().displayName())));
+		this.prev = prev;
+		Sounds.turnPage.play(p, p);
+		
+		// Glossary tags
+		ItemStack[] contents = inv.getContents();
+		Iterator<GlossaryIcon> iter = choice.getTags().iterator();
 		for (int row = 0; row < 6; row++) {
 			for (int col = 0; col < 9; col++) {
 				if (!iter.hasNext()) break;

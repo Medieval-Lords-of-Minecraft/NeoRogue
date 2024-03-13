@@ -12,13 +12,16 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.FightInfoInventory;
+import me.neoblade298.neorogue.player.inventory.GlossaryInventory;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -94,7 +97,6 @@ public class ChanceInventory extends CoreInventory {
 		if (e.getRawSlot() == 0 && e.getCurrentItem() != null) {
 			new FightInfoInventory(p, data, ((FightInstance) inst.getNextInstance()).getMap().getMobs());
 		}
-		if (asSpectator) return;
 		Player p = (Player) e.getWhoClicked();
 		UUID uuid = p.getUniqueId();
 		Inventory inv = e.getClickedInventory();
@@ -106,12 +108,23 @@ public class ChanceInventory extends CoreInventory {
 		NBTItem nbti = new NBTItem(item);
 		int num = nbti.getInteger("choice");
 		if (num == 0) return;
+		ChanceChoice choice = stage.choices.get(num - 1);
+		ChanceInventory ci = this;
+
+		if (e.isRightClick() && !choice.getTags().isEmpty()) {
+			new BukkitRunnable() {
+				public void run() {
+					new GlossaryInventory(p, choice, ci);
+				}
+			}.runTask(NeoRogue.inst());
+			return;
+		}
+		if (asSpectator) return;
 		
 		if (!set.isIndividual() && !uuid.equals(s.getHost())) {
 			Util.displayError(p, "Only the host may make choices for this event!");
 			return;
 		}
-		ChanceChoice choice = stage.choices.get(num - 1);
 		if (!choice.canChoose(s, inst, s.getData(uuid))) {
 			Util.displayError(p, "You aren't eligible for this option!");
 			return;

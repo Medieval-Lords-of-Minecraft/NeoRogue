@@ -11,7 +11,7 @@ public class GnarledWand extends Equipment {
 	private static final String ID = "gnarledWand";
 	
 	public GnarledWand() {
-		super(ID, "Gnarled Wand", EquipmentType.WEAPON);
+		super(ID, "Gnarled Wand", EquipmentType.ACCESSORY);
 	}
 	
 	public static Equipment get() {

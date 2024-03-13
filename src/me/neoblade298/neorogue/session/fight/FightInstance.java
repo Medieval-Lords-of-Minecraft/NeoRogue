@@ -297,7 +297,6 @@ public abstract class FightInstance extends Instance {
 			// Cancel fall damage if trigger returns true
 			if (!trigger(p, Trigger.FALL_DAMAGE, e)) {
 				DamageMeta meta = new DamageMeta(FightInstance.getUserData(p.getUniqueId()), e.getFinalDamage(), DamageType.FALL);
-				System.out.println("Triggered fall damage " + e.getDamage());
 				meta.dealDamage(p);
 			}
 			return;

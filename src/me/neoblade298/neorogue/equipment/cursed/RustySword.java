@@ -3,8 +3,10 @@ package me.neoblade298.neorogue.equipment.cursed;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.weapons.SilverFang;
+import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.CustomGlossaryIcon;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -13,7 +15,7 @@ public class RustySword extends Equipment {
 	private static final String ID = "rustySword";
 	
 	public RustySword() {
-		super(ID, "Rusty Sword", EquipmentType.WEAPON);
+		super(ID, "Rusty Sword", EquipmentType.ACCESSORY);
 	}
 	
 	public static Equipment get() {
@@ -25,11 +27,17 @@ public class RustySword extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BARRIER);
+		item = createItem(Material.BARRIER, "When purified at a shop, you receive a " + NeoCore.miniMessage().serialize(SilverFang.get().getDisplay()) +
+				"<gray>. Right click for more info.");
 	}
 	
 	@Override
 	public void postSetup() {
 		tags.add(new CustomGlossaryIcon("silverFang", SilverFang.get().getItem()));
+	}
+	
+	@Override
+	public void onPurify(PlayerSessionData data) {
+		data.giveEquipment(SilverFang.get());
 	}
 }

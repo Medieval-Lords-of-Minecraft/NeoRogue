@@ -177,6 +177,7 @@ public class ShopInventory extends CoreInventory {
 				}
 				data.getSession().broadcast(SharedUtil.color("<yellow>" + p.getName() + " </yellow>purified their ")
 						.append(eq.getHoverable()).append(Component.text(".")));
+				eq.onPurify(data);
 				p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1F, 1F);
 				p.setItemOnCursor(null);
 				ItemStack[] contents = inv.getContents();
