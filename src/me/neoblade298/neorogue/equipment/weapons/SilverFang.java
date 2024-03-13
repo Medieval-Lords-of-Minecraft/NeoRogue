@@ -55,6 +55,6 @@ public class SilverFang extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.IRON_SWORD, "This weapon converts its damage into " + GlossaryTag.LIGHT.tag(this) + " damage after buffs are applied and "
-				+ "applies " + GlossaryTag.SANCTIFIED.tag(this, sanct, true));
+				+ "applies " + GlossaryTag.SANCTIFIED.tag(this, sanct, true) + ".");
 	}
 }
