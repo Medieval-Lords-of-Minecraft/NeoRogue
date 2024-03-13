@@ -146,7 +146,10 @@ public class NodeSelectInstance extends EditInventoryInstance {
 					Bukkit.getPlayer(uuid).setAllowFlight(false);
 				}
 			}
-			// Fight instances set allow flight to false after the teleport
+			else {
+				s.setBusy(true);
+			}
+			// Fight instances set allow flight to false and set busy to false on start
 			return;
 		} else if (e.getClickedBlock().getType() == Material.LECTERN) {
 			e.setCancelled(true);

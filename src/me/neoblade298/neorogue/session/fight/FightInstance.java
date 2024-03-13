@@ -731,6 +731,7 @@ public abstract class FightInstance extends Instance {
 				for (FightRunnable runnable : initialTasks) {
 					runnable.run(fi, fdata);
 				}
+				s.setBusy(false);
 			}
 		}.runTaskLater(NeoRogue.inst(), 20L);
 

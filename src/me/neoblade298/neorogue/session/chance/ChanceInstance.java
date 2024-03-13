@@ -90,7 +90,8 @@ public class ChanceInstance extends EditInventoryInstance {
 	public void start() {
 		// Pick a random chance set if not already picked
 		if (set == null) {
-			set = ChanceSet.getSet(s.getArea().getType());
+			//set = ChanceSet.getSet(s.getArea().getType());
+			set = ChanceSet.get("LostRelic");
 		}
 		set.initialize(s, this);
 

@@ -9,6 +9,12 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
+import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
+import me.neoblade298.neorogue.equipment.cursed.DullDagger;
+import me.neoblade298.neorogue.equipment.cursed.GnarledWand;
+import me.neoblade298.neorogue.equipment.cursed.MangledBow;
+import me.neoblade298.neorogue.equipment.cursed.RustySword;
+import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.chance.ChanceChoice;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
 import me.neoblade298.neorogue.session.chance.ChanceStage;
@@ -17,10 +23,10 @@ public class LostRelicChance extends ChanceSet {
 	private static final HashMap<EquipmentClass, Equipment> items = new HashMap<EquipmentClass, Equipment>();
 	
 	static {
-		items.put(EquipmentClass.ARCHER, Equipment.get("mangledBow", false));
-		items.put(EquipmentClass.THIEF, Equipment.get("dullDagger", false));
-		items.put(EquipmentClass.WARRIOR, Equipment.get("rustySword", false));
-		items.put(EquipmentClass.MAGE, Equipment.get("gnarledWand", false));
+		items.put(EquipmentClass.ARCHER, MangledBow.get());
+		items.put(EquipmentClass.THIEF, DullDagger.get());
+		items.put(EquipmentClass.WARRIOR, RustySword.get());
+		items.put(EquipmentClass.MAGE, GnarledWand.get());
 	}
 
 	public LostRelicChance() {
@@ -29,11 +35,16 @@ public class LostRelicChance extends ChanceSet {
 				+ "but something makes you think it’s worth keeping around.");
 
 		stage.addChoice(new ChanceChoice(Material.COPPER_INGOT, "Take the old weapon",
-				"Acquire a <red>cursed item</red> that cannot be unequipped or used, but gain <yellow>50 coins</yellow>.",
+				"Acquire a <red>cursed accessory</red> that cannot be unequipped or used, but becomes a strong weapon when purified at a shop.",
+				"You don't have an accessory slot available",
+				(s, inst, pdata) -> {
+					int numCurses = pdata.aggregateEquipment((eq) -> { return eq.getType() == EquipmentType.ACCESSORY && eq.isCursed(); }).size();
+					if (numCurses >= PlayerSessionData.ACCESSORY_SIZE) return false;
+					return true;
+				},
 				(s, inst, data) -> {
 					Player p = data.getPlayer();
 					data.giveEquipment(items.get(data.getPlayerClass()));
-					data.addCoins(50);
 					Util.msgRaw(p, "You pick up the old weapon and go on your way. It's a little heavy.");
 					s.broadcastOthers("<yellow>" + p.getName() + "</yellow> decided to take the old weapon!", p);
 					return null;

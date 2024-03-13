@@ -8,6 +8,7 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
+import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.chance.ChanceChoice;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
@@ -22,6 +23,14 @@ public class LabChance extends ChanceSet {
 
 		ChanceChoice choice = new ChanceChoice(Material.GOLD_BLOCK, "Grab what you can",
 				"Everyone receives <white>3</white> consumables, but with a <white>25%</white> chance to acquire a <red>curse</red> that reduces your armor slots by <white>1</white>.",
+				"At least one player doesn't have an armor slot available!",
+				(s, inst, unused) -> {
+					for (PlayerSessionData data : s.getParty().values()) {
+						int numCurses = data.aggregateEquipment((eq) -> { return eq.getType() == EquipmentType.ARMOR && eq.isCursed(); }).size();
+						if (numCurses >= PlayerSessionData.ARMOR_SIZE) return false;
+					}
+					return true;
+				},
 				(s, inst, unused) -> {
 					for (PlayerSessionData data : s.getParty().values()) {
 						data.giveEquipment(Equipment.getConsumable(s.getAreasCompleted() * 2, 3, data.getPlayerClass(), EquipmentClass.CLASSLESS));

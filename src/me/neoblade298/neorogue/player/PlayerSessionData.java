@@ -62,7 +62,7 @@ public class PlayerSessionData {
 
 	private static final ParticleContainer heal = new ParticleContainer(Particle.VILLAGER_HAPPY).count(50)
 			.spread(0.5, 1).speed(0.1).forceVisible(Audience.ALL);
-	public static final int MAX_STORAGE_SIZE = 27;
+	public static final int MAX_STORAGE_SIZE = 27, ARMOR_SIZE = 3, ACCESSORY_SIZE = 6;
 	private static final DecimalFormat df = new DecimalFormat("#.##");
 
 	public PlayerSessionData(UUID uuid, Session s, ResultSet rs) throws SQLException {
@@ -417,24 +417,12 @@ public class PlayerSessionData {
 		int esIdx = -1;
 		for (Equipment[] arr : allEquips) {
 			esIdx++;
-			if (es[esIdx] == EquipSlot.STORAGE) continue;
 			int slot = -1;
 			for (Equipment eq : arr) {
 				slot++;
 				if (eq == null) continue;
 				if (filter.test(eq)) list.add(new EquipmentMetadata(eq, slot, es[esIdx]));
 			}
-		}
-		
-		// Manually get equipment in storage since it's dynamic
-		ItemStack[] contents = data.getPlayer().getInventory().getStorageContents();
-		for (int i = 0; i < contents.length; i++) {
-			if (contents[i] == null) continue;
-			ItemStack item = contents[i];
-			NBTItem nbti = new NBTItem(item);
-			if (!nbti.getKeys().contains("equipId")) continue;
-			Equipment eq = Equipment.get(nbti.getString("equipId"), nbti.getBoolean("isUpgraded"));
-			if (filter.test(eq)) list.add(new EquipmentMetadata(eq, i, EquipSlot.STORAGE));
 		}
 		return list;
 	}
