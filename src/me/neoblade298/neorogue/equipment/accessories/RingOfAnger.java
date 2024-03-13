@@ -34,6 +34,7 @@ public class RingOfAnger extends Equipment {
 				if (++count < seconds) return;
 				count = 0;
 				data.applyStatus(StatusType.BERSERK, data.getUniqueId(), 1, -1);
+				if (data.getStatus(StatusType.BERSERK).getStacks() >= 8) data.applyStatus(StatusType.STRENGTH, p.getUniqueId(), 5, -1 );
 				return;
 			}
 		}.runTaskTimer(NeoRogue.inst(), 20L, 20L));
@@ -41,6 +42,7 @@ public class RingOfAnger extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.REDSTONE, "Gain a stack of " + GlossaryTag.BERSERK.tag(this) +" every <yellow>" + seconds + "</yellow> seconds.");
+		item = createItem(Material.REDSTONE, "Gain a stack of " + GlossaryTag.BERSERK.tag(this) +" every <yellow>" + seconds + "</yellow> seconds."
+				+ " If you have at least <white>8</white> stacks after you gain a stack from the ring, gain <white>5</white> strength.");
 	}
 }
