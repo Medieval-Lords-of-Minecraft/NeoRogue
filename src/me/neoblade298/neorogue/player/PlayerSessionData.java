@@ -183,6 +183,7 @@ public class PlayerSessionData {
 		if (es != EquipSlot.STORAGE) {
 			Equipment[] slots = getArrayFromEquipSlot(es);
 			slots[slot] = slots[slot].getUpgraded();
+			PlayerSessionInventory.setupInventory(this);
 		}
 		else {
 			PlayerInventory inv = data.getPlayer().getInventory();
