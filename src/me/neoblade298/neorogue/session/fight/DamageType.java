@@ -32,7 +32,9 @@ public enum DamageType {
 	THORNS("Thorns", DamageCategory.STATUS, StatusType.THORNS.tag,
 			 new BuffType[] { BuffType.STATUS }),
 	REFLECT("Reflect", DamageCategory.STATUS, StatusType.REFLECT.tag,
-			 new BuffType[] { BuffType.STATUS });
+			 new BuffType[] { BuffType.STATUS }),
+	FALL("Fall", DamageCategory.OTHER, "<white>Fall</white>",
+			new BuffType[0]);
 	
 	public String tag;
 	public Component ctag;
@@ -81,6 +83,7 @@ public enum DamageType {
 		case REFLECT: return GlossaryTag.REFLECT;
 		case SLASHING: return GlossaryTag.SLASHING;
 		case THORNS: return GlossaryTag.THORNS;
+		case FALL: return null; // Should never need this as a glossary tag
 		}
 		return null;
 	}

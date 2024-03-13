@@ -292,7 +292,14 @@ public abstract class FightInstance extends Instance {
 			return;
 		Player p = (Player) e.getEntity();
 		if (e.getCause() == DamageCause.FALL) {
-			e.setCancelled(trigger(p, Trigger.FALL_DAMAGE, e));
+			e.setCancelled(true);
+			
+			// Cancel fall damage if trigger returns true
+			if (!trigger(p, Trigger.FALL_DAMAGE, e)) {
+				DamageMeta meta = new DamageMeta(FightInstance.getUserData(p.getUniqueId()), e.getFinalDamage(), DamageType.FALL);
+				System.out.println("Triggered fall damage " + e.getDamage());
+				meta.dealDamage(p);
+			}
 			return;
 		}
 	}
