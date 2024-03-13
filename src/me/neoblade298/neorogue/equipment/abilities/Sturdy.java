@@ -27,6 +27,11 @@ public class Sturdy extends Equipment {
 		
 		heal = isUpgraded ? 6 : 4;
 	}
+
+	@Override
+	public void setupReforges() {
+		addSelfReforge(GraniteShield.get(), Bulwark.get(), Endurance.get());
+	}
 	
 	public static Equipment get() {
 		return Equipment.get(ID, false);

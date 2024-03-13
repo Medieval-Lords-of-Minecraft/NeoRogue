@@ -4,11 +4,10 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-
-import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
+import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -27,6 +26,11 @@ public class LeatherGauntlets extends Equipment {
 	
 	public static Equipment get() {
 		return Equipment.get(ID, false);
+	}
+
+	@Override
+	public void setupReforges() {
+		addSelfReforge(ForcefulLeatherGauntlets.get(), LightLeatherGauntlets.get(), EarthenLeatherGauntlets.get());
 	}
 
 	@Override

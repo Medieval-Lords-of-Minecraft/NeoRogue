@@ -26,7 +26,7 @@ public class GlossaryInventory extends CoreInventory {
 	private CoreInventory prev;
 	private boolean openOther = true;
 	
-	private static final int BASIC = 0, UPGRADED = 1, REFORGE = 3;
+	private static final int BASIC = 0, UPGRADED = 1, REFORGE_OFFSET = 3;
 	public GlossaryInventory(Player viewer, Mob mob, CoreInventory prev) {
 		super(viewer, Bukkit.createInventory(viewer, calculateSize(mob.getTags().size()),
 				Component.text("Glossary: ").append(LegacyComponentSerializer.legacyAmpersand()
@@ -64,15 +64,25 @@ public class GlossaryInventory extends CoreInventory {
 			}
 		}
 		
+		int reforgeLabel = REFORGE_OFFSET;
+		if (!eq.getReforgeParents().isEmpty()) {
+			reforgeLabel += 9;
+			contents[REFORGE_OFFSET] = CoreInventory.createButton(Material.IRON_BLOCK, Component.text("Reforge Parents:", NamedTextColor.YELLOW));
+			int idx = 0;
+			for (Equipment parent : eq.getReforgeParents()) {
+				contents[REFORGE_OFFSET + ++idx] = parent.getItem();
+			}
+		}
+		
 		// Reforge options
 		if (eq.getReforgeOptions().isEmpty()) {
-			contents[REFORGE] = CoreInventory.createButton(Material.BARRIER, Component.text("No reforge options", NamedTextColor.RED));
+			contents[reforgeLabel] = CoreInventory.createButton(Material.BARRIER, Component.text("No reforge options", NamedTextColor.RED));
 		}
 		else {
-			contents[REFORGE] = CoreInventory.createButton(Material.GOLD_BLOCK, Component.text("Reforge Options:", NamedTextColor.YELLOW));
+			contents[reforgeLabel] = CoreInventory.createButton(Material.GOLD_BLOCK, Component.text("Reforge Options:", NamedTextColor.YELLOW));
 			int row = 0;
 			for (Entry<Equipment, Equipment[]> ent : eq.getReforgeOptions().entrySet()) {
-				int col = REFORGE + 1;
+				int col = reforgeLabel + 1;
 				contents[(row * 9) + col++] = ent.getKey().getItem();
 				for (Equipment option : ent.getValue()) {
 					contents[(row * 9) + col++] = option.getItem();
@@ -89,7 +99,7 @@ public class GlossaryInventory extends CoreInventory {
 	
 	private static int calculateSize(Equipment eq) {
 		int leftHeight = 1 + ((eq.getTags().size() + 3) / 4);
-		int rightHeight = eq.getReforgeOptions().size();
+		int rightHeight = eq.getReforgeOptions().size() + (!eq.getReforgeParents().isEmpty() ? 1 : 0);
 		return 9 * Math.max(leftHeight, rightHeight);
 	}
 	

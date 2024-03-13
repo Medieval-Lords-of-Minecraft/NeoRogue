@@ -4,11 +4,10 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-
-import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.DamageMeta.BuffOrigin;
+import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -23,6 +22,12 @@ public class SmallShield extends Equipment {
 		super(ID, "Small Shield", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.OFFHAND);
 		reduction = isUpgraded ? 5 : 3;
+	}
+
+	@Override
+	public void setupReforges() {
+		addSelfReforge(HastyShield.get(), SpikyShield.get());
+		addReforge(TowerShield.get(), PaladinsShield.get());
 	}
 	
 	public static Equipment get() {

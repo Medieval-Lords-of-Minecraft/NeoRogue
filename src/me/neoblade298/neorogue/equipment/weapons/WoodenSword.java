@@ -4,11 +4,10 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-
-import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
+import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -23,6 +22,11 @@ public class WoodenSword extends Equipment {
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(isUpgraded ? 35 : 25, 1, 0.4, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
 		properties.addUpgrades(PropertyType.DAMAGE);
+	}
+
+	@Override
+	public void setupReforges() {
+		addSelfReforge(StoneSword.get(), StoneSpear.get(), StoneAxe.get());
 	}
 	
 	public static Equipment get() {

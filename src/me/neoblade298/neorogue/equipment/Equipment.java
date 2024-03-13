@@ -74,7 +74,6 @@ import me.neoblade298.neorogue.equipment.cursed.DullDagger;
 import me.neoblade298.neorogue.equipment.cursed.GnarledWand;
 import me.neoblade298.neorogue.equipment.cursed.MangledBow;
 import me.neoblade298.neorogue.equipment.cursed.RustySword;
-import me.neoblade298.neorogue.equipment.materials.DullGem;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.equipment.offhands.ChasingDagger;
@@ -132,11 +131,12 @@ public abstract class Equipment implements Comparable<Equipment> {
 	private static DropTableSet<Artifact> artifacts = new DropTableSet<Artifact>();
 	private static DropTableSet<Consumable> consumables = new DropTableSet<Consumable>();
 	
+	private ArrayList<Equipment> reforgeParents = new ArrayList<Equipment>();
 	private TreeMap<Equipment, Equipment[]> reforgeOptions = new TreeMap<Equipment, Equipment[]>();
 	
 	protected String id;
 	protected Component display, hoverable;
-	protected boolean isUpgraded, canDrop = true, isCursed, isReforged;
+	protected boolean isUpgraded, canDrop = true, isCursed;
 	protected ItemStack item;
 	protected Rarity rarity;
 	protected EquipmentClass ec;
@@ -152,24 +152,49 @@ public abstract class Equipment implements Comparable<Equipment> {
 		artifacts.reload();
 		for (boolean b : new boolean[] { false, true }) {
 			// Abilities
-			new Adrenaline(b).addSelfReforge(new Burst(b), new Discipline(b), new Ferocity(b));
-			new BattleCry(b).addSelfReforge(new WarCry(b), new BerserkersCall(b));
-			new Brace(b).addSelfReforge(new Brace2(b), new Parry(b), new Bide(b)).addReforge(new Provoke(b), new Challenge(b));
+			new Adrenaline(b);
+			new BattleCry(b);
+			new BerserkersCall(b);
+			new BlessedEdge(b);
+			new Bide(b);
+			new Brace(b);
+			new Brace2(b);
+			new Bulldoze(b);
+			new Bulwark(b);
+			new Burst(b);
+			new Challenge(b);
 			new Charge(b);
-			new Cleave(b).addSelfReforge(new Quake(b), new Smite(b), new WindSlash(b));
+			new Cleave(b);
 			new DarkPact(b);
-			new EmpoweredEdge(b).addSelfReforge(new Embolden(b), new BlessedEdge(b), new Fury(b));
-			new Execute(b).addSelfReforge(new SiphoningStrike(b), new MightySwing(b), new Fortify(b));
+			new Discipline(b);
+			new EarthenTackle(b);
+			new Endurance(b);
+			new Embolden(b);
+			new EmpoweredEdge(b);
+			new Execute(b);
+			new Ferocity(b);
 			new Flurry(b);
+			new Fortify(b);
+			new Fury(b);
+			new GraniteShield(b);
 			new Ironskin(b);
+			new MightySwing(b);
+			new Parry(b);
+			new Pin(b);
 			new Prayer(b);
+			new Provoke(b);
+			new Quake(b);
+			new SiphoningStrike(b);
 			new Skirmisher(b);
+			new Smite(b);
 			new SpiritOfTheDragoon(b);
-			new Sturdy(b).addSelfReforge(new GraniteShield(b), new Bulwark(b), new Endurance(b));
-			new Tackle(b).addSelfReforge(new EarthenTackle(b), new Bulldoze(b), new Pin(b));
+			new Sturdy(b);
+			new Tackle(b);
 			new Thornguard(b);
 			new Titan(b);
+			new WarCry(b);
 			new Windcutter(b);
+			new WindSlash(b);
 			
 			// Accessories
 			new EarthenRing(b);
@@ -191,24 +216,40 @@ public abstract class Equipment implements Comparable<Equipment> {
 			
 			// Offhands
 			new ChasingDagger(b);
+			new HastyShield(b);
 			new LeatherBracer(b);
-			new SmallShield(b).addSelfReforge(new HastyShield(b), new SpikyShield(b))
-				.addReforge(new TowerShield(b), new PaladinsShield(b));
+			new PaladinsShield(b);
+			new SmallShield(b);
+			new SpikyShield(b);
+			new TowerShield(b);
 			new WristBlade(b);
 			
 			// Weapons
-			new FencingSword(b).addSelfReforge(new Rapier(b), new CripplingFencingSword(b));
-			new Flametongue(b);
-			new LeatherGauntlets(b).addSelfReforge(new ForcefulLeatherGauntlets(b), new LightLeatherGauntlets(b), new EarthenLeatherGauntlets(b));
-			new StoneHammer(b).addSelfReforge(new Fracturer(b), new RighteousHammer(b));
-			new WoodenSword(b).addSelfReforge(new StoneSword(b), new StoneSpear(b), new StoneAxe(b));
-			new WoodenWand(b);
-			new LightningWand(b).addSelfReforge(new SparkStick(b), new ChainLightningWand(b), new BoltWand(b));
-			new FireStaff(b);
-			new IceWand(b);
-			new EarthStaff(b);
+			new BoltWand(b);
+			new ChainLightningWand(b);
+			new CripplingFencingSword(b);
 			new DarkScepter(b);
+			new EarthStaff(b);
+			new EarthenLeatherGauntlets(b);
+			new FencingSword(b);
+			new FireStaff(b);
+			new Flametongue(b);
+			new ForcefulLeatherGauntlets(b);
+			new Fracturer(b);
+			new IceWand(b);
+			new LeatherGauntlets(b);
+			new StoneHammer(b);
+			new WoodenSword(b);
+			new WoodenWand(b);
+			new LightLeatherGauntlets(b);
+			new LightningWand(b);
+			new Rapier(b);
+			new RighteousHammer(b);
 			new SilverFang(b);
+			new SparkStick(b);
+			new StoneAxe(b);
+			new StoneSpear(b);
+			new StoneSword(b);
 			
 			// Consumables
 			new MinorHealthPotion(b);
@@ -253,7 +294,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new DullDagger();
 		new GnarledWand();
 		new MangledBow();
-		new RustySword().addReforge(new DullGem(), Equipment.get("silverFang", false));
+		new RustySword();
 		
 		// Materials
 		
@@ -266,14 +307,12 @@ public abstract class Equipment implements Comparable<Equipment> {
 		
 		// Setup equipment
 		for (Equipment eq : equipment.values()) {
-			eq.setupDroptable();
-			eq.setupItem();
-			counts.put(eq.getType(), counts.get(eq.getType()) + 1);
+			eq.setup();
 			Equipment up = eq.getUpgraded();
 			if (up != null) {
-				up.setupDroptable();
-				up.setupItem();
+				up.setup();
 			}
+			counts.put(eq.getType(), counts.get(eq.getType()) + 1);
 		}
 		
 		for (EquipmentType type : EquipmentType.values()) {
@@ -349,16 +388,27 @@ public abstract class Equipment implements Comparable<Equipment> {
 	}
 	
 	public abstract void setupItem();
+	public void setupReforges() {}
+	private void setup() {
+		if (isUpgraded) {
+			Equipment base = getUnupgraded();
+			reforgeParents = base.getReforgeParents();
+			reforgeOptions = base.getReforgeOptions();
+		}
+		setupDroptable();
+		setupReforges();
+		setupItem();
+	}
 	
 	public boolean canUpgrade() {
 		return upgraded.containsKey(id);
 	}
 	
-	public void setupDroptable() {
+	private void setupDroptable() {
 		int value = rarity.getValue() + (isUpgraded ? 1 : 0);
 		if (!canDrop)
 			return;
-		if (isReforged)
+		if (!reforgeParents.isEmpty())
 			return;
 		
 		// Artifacts and consumables get their own special droptable with special weight
@@ -555,21 +605,23 @@ public abstract class Equipment implements Comparable<Equipment> {
 		return false;
 	}
 	
-	protected Equipment addReforge(Equipment combineWith, Equipment... options) {
-		Equipment[] unupgraded = new Equipment[options.length];
-		for (int i = 0; i < options.length; i++) {
-			options[i].setReforged();
-			unupgraded[i] = options[i].getUnupgraded();
+	// Should only ever be called with unupgraded parameters
+	protected void addReforge(Equipment combineWith, Equipment... options) {
+		if (!isUpgraded) {
+			// For every option, add the components as parents and place options
+			for (int i = 0; i < options.length; i++) {
+				options[i].addReforgeParent(combineWith);
+				if (this != combineWith) options[i].addReforgeParent(this);
+			}
+			
+			// Set item into reforge options
+			this.reforgeOptions.put(combineWith, options);
+			if (this != combineWith) combineWith.reforgeOptions.put(this, options);
 		}
-		this.reforgeOptions.put(combineWith.getUnupgraded(), unupgraded);
-		if (!this.id.equals(combineWith.id)) {
-			combineWith.reforgeOptions.put(this.getUnupgraded(), unupgraded);
-		}
-		return this;
 	}
 	
-	protected Equipment addSelfReforge(Equipment... options) {
-		return addReforge(this.getUnupgraded(), options);
+	protected void addSelfReforge(Equipment... options) {
+		addReforge(this.getUnupgraded(), options);
 	}
 	
 	public Equipment getUnupgraded() {
@@ -612,8 +664,12 @@ public abstract class Equipment implements Comparable<Equipment> {
 		return getConsumable(value, 1, ec).get(0);
 	}
 	
-	private void setReforged() {
-		this.isReforged = true;
+	private void addReforgeParent(Equipment reforgeParent) {
+		this.reforgeParents.add(reforgeParent);
+	}
+	
+	public ArrayList<Equipment> getReforgeParents() {
+		return reforgeParents;
 	}
 	
 	public Component getDisplay() {

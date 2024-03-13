@@ -59,6 +59,11 @@ public class StoneHammer extends Equipment {
 				EquipmentProperties.ofWeapon(isUpgraded ? 100 : 70, 0.5, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
 		properties.addUpgrades(PropertyType.DAMAGE);
 	}
+
+	@Override
+	public void setupReforges() {
+		addSelfReforge(RighteousHammer.get(), Fracturer.get());
+	}
 	
 	public static Equipment get() {
 		return Equipment.get(ID, false);

@@ -33,6 +33,11 @@ public class Adrenaline extends Equipment {
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
+	
+	@Override
+	public void setupReforges() {
+		addSelfReforge(Burst.get(), Discipline.get(), Ferocity.get());
+	}
 
 	@Override
 	public void setupItem() {

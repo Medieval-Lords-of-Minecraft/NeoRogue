@@ -44,6 +44,11 @@ public class Tackle extends Equipment {
 		pc.count(25).spread(0.5, 0.5);
 		start.count(25).spread(0.5, 0);
 	}
+
+	@Override
+	public void setupReforges() {
+		addSelfReforge(EarthenTackle.get(), Bulldoze.get(), Pin.get());
+	}
 	
 	public static Equipment get() {
 		return Equipment.get(ID, false);

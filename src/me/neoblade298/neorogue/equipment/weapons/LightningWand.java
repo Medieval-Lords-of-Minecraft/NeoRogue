@@ -41,6 +41,11 @@ public class LightningWand extends Equipment {
 		properties.addUpgrades(PropertyType.DAMAGE);
 		pierceAmount = isUpgraded ? 3 : 1;
 	}
+
+	@Override
+	public void setupReforges() {
+		addSelfReforge(SparkStick.get(), ChainLightningWand.get(), BoltWand.get());
+	}
 	
 	public static Equipment get() {
 		return Equipment.get(ID, false);

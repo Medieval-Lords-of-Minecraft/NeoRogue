@@ -31,6 +31,12 @@ public class Brace extends Equipment {
 		tags.add(GlossaryTag.SHIELDS);
 	}
 	
+	@Override
+	public void setupReforges() {
+		addSelfReforge(Brace2.get(), Bide.get(), Parry.get());
+		addReforge(Provoke.get(), Challenge.get());
+	}
+	
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}

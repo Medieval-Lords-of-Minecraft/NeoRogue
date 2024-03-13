@@ -38,6 +38,11 @@ public class Cleave extends Equipment {
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
+	
+	@Override
+	public void setupReforges() {
+		addSelfReforge(Quake.get(), Smite.get(), WindSlash.get());
+	}
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {

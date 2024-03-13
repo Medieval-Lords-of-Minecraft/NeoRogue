@@ -33,6 +33,11 @@ public class Execute extends Equipment {
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		hit.count(50).spread(0.5, 0.5);
 	}
+
+	@Override
+	public void setupReforges() {
+		addSelfReforge(SiphoningStrike.get(), Fortify.get(), MightySwing.get());
+	}
 	
 	public static Equipment get() {
 		return Equipment.get(ID, false);

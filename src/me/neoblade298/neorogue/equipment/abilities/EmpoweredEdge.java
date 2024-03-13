@@ -34,6 +34,11 @@ public class EmpoweredEdge extends Equipment {
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		hit.count(50).spread(0.5, 0.5);
 	}
+
+	@Override
+	public void setupReforges() {
+		addSelfReforge(Embolden.get(), Fury.get(), BlessedEdge.get());
+	}
 	
 	public static Equipment get() {
 		return Equipment.get(ID, false);

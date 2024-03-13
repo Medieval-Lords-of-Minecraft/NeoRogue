@@ -4,12 +4,11 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-
-import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
-import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
+import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -26,6 +25,11 @@ public class FencingSword extends Equipment {
 				EquipmentProperties.ofWeapon(isUpgraded ? 40 : 30, 1, 0.3, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_CRIT));
 		properties.addUpgrades(PropertyType.DAMAGE);
 		shields = isUpgraded ? 2 : 1;
+	}
+
+	@Override
+	public void setupReforges() {
+		addSelfReforge(Rapier.get(), CripplingFencingSword.get());
 	}
 	
 	public static Equipment get() {

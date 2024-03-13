@@ -33,6 +33,11 @@ public class BattleCry extends Equipment {
 		pc.count(50).spread(0.5, 0.5).dustOptions(new DustOptions(Color.RED, 1F));
 	}
 	
+	@Override
+	public void setupReforges() {
+		addSelfReforge(BerserkersCall.get(), WarCry.get());
+	}
+	
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
