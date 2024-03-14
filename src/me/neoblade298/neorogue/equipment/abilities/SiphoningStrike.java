@@ -74,7 +74,7 @@ public class SiphoningStrike extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.FLINT,
+		item = createItem(Material.BROWN_DYE,
 				"On cast, your next basic attack while in the air deals <white>" + damage + "</white> " + GlossaryTag.PIERCING.tag(this)
 				+ " damage. If the enemy is killed with this damage, increase " + GlossaryTag.STRENGTH.tag(this) + 
 				" by <yellow>" + buff + "</yellow>.");

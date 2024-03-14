@@ -114,7 +114,7 @@ public class DamageMeta {
 		buffs.putIfAbsent(type, list);
 	}
 	
-	private boolean containsType(BuffType type) {
+	public boolean containsType(BuffType type) {
 		for (DamageSlice slice : slices) {
 			for (BuffType bt : slice.getType().getBuffTypes()) { 
 				if (bt == type) return true;

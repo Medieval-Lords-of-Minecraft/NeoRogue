@@ -94,7 +94,7 @@ public class Fury extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.FLINT,
+		item = createItem(Material.BLAZE_ROD,
 				"On cast, your next basic attack deals <white>" + damage + " </white>" + GlossaryTag.SLASHING.tag(this) + " damage, heals for <white>"
 				+ heal + "</white>, and grants"
 						+ " a stack of " + GlossaryTag.BERSERK.tag(this) + ". " +

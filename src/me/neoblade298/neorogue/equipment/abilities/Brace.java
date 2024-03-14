@@ -53,7 +53,7 @@ public class Brace extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.FLINT,
+		item = createItem(Material.SHIELD,
 				"On cast, gain <yellow>" + shields + "</yellow> " + GlossaryTag.SHIELDS.tag(this) + " for 5 seconds.");
 	}
 }

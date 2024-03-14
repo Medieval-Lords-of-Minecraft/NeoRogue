@@ -69,7 +69,7 @@ public class MightySwing extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.FLINT,
+		item = createItem(Material.RED_DYE,
 				"On cast, your next basic attack while in the air deals <yellow>" + damage + "</yellow> " + GlossaryTag.PIERCING.tag(this) + " damage. If the enemy is"
 						+ " above <white>50%</white> health, reduce the ability's cooldown by <yellow>" + cdr + "</yellow>.");
 	}

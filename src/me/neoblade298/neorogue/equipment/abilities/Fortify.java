@@ -58,7 +58,7 @@ public class Fortify extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.FLINT,
+		item = createItem(Material.PHANTOM_MEMBRANE,
 				"On cast, your next basic attack while in the air deals <white>" + damage + " </white>" + GlossaryTag.PIERCING.tag(this) + " damage, "
 								+ "gain <yellow>" + fortitude + "</yellow> stacks of fortitude, a shield that lasts <white>2</white> seconds with "
 						+ "the number of stacks of fortitude you have.");

@@ -58,7 +58,7 @@ public class Quake extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.FLINT,
+		item = createItem(Material.DIRT,
 				"On cast, deal <yellow>" + damage + "</yellow> " + GlossaryTag.EARTHEN.tag(this) + " damage to all "
 						+ "enemies in the radius and apply <yellow>" + concussed + "</yellow> " + GlossaryTag.CONCUSSED.tag(this) + ".");
 	}

@@ -82,7 +82,6 @@ import me.neoblade298.neorogue.equipment.offhands.LeatherBracer;
 import me.neoblade298.neorogue.equipment.offhands.PaladinsShield;
 import me.neoblade298.neorogue.equipment.offhands.SmallShield;
 import me.neoblade298.neorogue.equipment.offhands.SpikyShield;
-import me.neoblade298.neorogue.equipment.offhands.TowerShield;
 import me.neoblade298.neorogue.equipment.offhands.WristBlade;
 import me.neoblade298.neorogue.equipment.weapons.BoltWand;
 import me.neoblade298.neorogue.equipment.weapons.ChainLightningWand;
@@ -161,6 +160,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Bide(b);
 			new Brace(b);
 			new Brace2(b);
+			new BreakTheLine(b);
 			new Bulldoze(b);
 			new Bulwark(b);
 			new Burst(b);
@@ -223,7 +223,6 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new PaladinsShield(b);
 			new SmallShield(b);
 			new SpikyShield(b);
-			new TowerShield(b);
 			new WristBlade(b);
 
 			// Weapons

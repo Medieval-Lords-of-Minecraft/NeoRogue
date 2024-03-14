@@ -80,7 +80,7 @@ public class Parry extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.FLINT,
+		item = createItem(Material.NETHER_QUARTZ_ORE,
 				"On cast, gain <white>" + shields + " </white>" + GlossaryTag.SHIELDS.tag(this) + " for <white>2</white> seconds. Taking damage during this "
 						+ "increases your next basic attack's damage by <yellow>" + damage + "</yellow> once per cast.");
 	}
