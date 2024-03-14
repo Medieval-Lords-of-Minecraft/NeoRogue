@@ -85,6 +85,7 @@ import me.neoblade298.neorogue.equipment.offhands.SpikyShield;
 import me.neoblade298.neorogue.equipment.offhands.WristBlade;
 import me.neoblade298.neorogue.equipment.weapons.BoltWand;
 import me.neoblade298.neorogue.equipment.weapons.ChainLightningWand;
+import me.neoblade298.neorogue.equipment.weapons.CrimsonBlade;
 import me.neoblade298.neorogue.equipment.weapons.CripplingFencingSword;
 import me.neoblade298.neorogue.equipment.weapons.DarkScepter;
 import me.neoblade298.neorogue.equipment.weapons.EarthStaff;
@@ -94,12 +95,14 @@ import me.neoblade298.neorogue.equipment.weapons.FireStaff;
 import me.neoblade298.neorogue.equipment.weapons.Flametongue;
 import me.neoblade298.neorogue.equipment.weapons.ForcefulLeatherGauntlets;
 import me.neoblade298.neorogue.equipment.weapons.Fracturer;
+import me.neoblade298.neorogue.equipment.weapons.Harpoon;
 import me.neoblade298.neorogue.equipment.weapons.IceWand;
 import me.neoblade298.neorogue.equipment.weapons.LeatherGauntlets;
 import me.neoblade298.neorogue.equipment.weapons.LightLeatherGauntlets;
 import me.neoblade298.neorogue.equipment.weapons.LightningWand;
 import me.neoblade298.neorogue.equipment.weapons.Rapier;
 import me.neoblade298.neorogue.equipment.weapons.RighteousHammer;
+import me.neoblade298.neorogue.equipment.weapons.ShieldPike;
 import me.neoblade298.neorogue.equipment.weapons.SilverFang;
 import me.neoblade298.neorogue.equipment.weapons.SparkStick;
 import me.neoblade298.neorogue.equipment.weapons.StoneAxe;
@@ -175,6 +178,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new EmpoweredEdge(b);
 			new Execute(b);
 			new Ferocity(b);
+			new Fissure(b);
 			new Flurry(b);
 			new Fortify(b);
 			new Fury(b);
@@ -229,6 +233,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			// Weapons
 			new BoltWand(b);
 			new ChainLightningWand(b);
+			new CrimsonBlade(b);
 			new CripplingFencingSword(b);
 			new DarkScepter(b);
 			new EarthStaff(b);
@@ -238,6 +243,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Flametongue(b);
 			new ForcefulLeatherGauntlets(b);
 			new Fracturer(b);
+			new Harpoon(b);
 			new IceWand(b);
 			new LeatherGauntlets(b);
 			new StoneHammer(b);
@@ -248,6 +254,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Rapier(b);
 			new RighteousHammer(b);
 			new SilverFang(b);
+			new ShieldPike(b);
 			new SparkStick(b);
 			new StoneAxe(b);
 			new StoneSpear(b);

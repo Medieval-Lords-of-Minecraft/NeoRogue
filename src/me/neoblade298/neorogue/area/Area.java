@@ -116,10 +116,6 @@ public class Area {
 
 		initialized = true;
 	}
-	
-	@SuppressWarnings("unused") // fuck off
-	private Area() {
-	}
 
 	public Area(AreaType type, int xOff, int zOff, Session s) {
 		if (!initialized)

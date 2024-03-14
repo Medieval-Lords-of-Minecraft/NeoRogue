@@ -60,7 +60,11 @@ public class StoneSpear extends Equipment {
 			if (!inst.canTrigger(p, data))
 				return TriggerResult.keep();
 			LeftClickHitEvent ev = (LeftClickHitEvent) in;
-			weaponSwingAndDamage(p, data, ev.getTarget());
+			weaponSwing(p, data);
+			DamageMeta dm = new DamageMeta(data, throwDamage, DamageType.PIERCING);
+			dm.addDamageSlice(new DamageSlice(p.getUniqueId(), 0, DamageType.PIERCING));
+			dm.addDamageSlice(new DamageSlice(p.getUniqueId(), 0, DamageType.PIERCING));
+			weaponDamage(p, data, ev.getTarget(), dm);
 			return TriggerResult.keep();
 		});
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_NO_HIT, (pdata, in) -> {
