@@ -183,6 +183,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Fortify(b);
 			new Fury(b);
 			new GraniteShield(b);
+			new HoldTheLine(b);
 			new Ironskin(b);
 			new MightySwing(b);
 			new Parry(b);
@@ -323,7 +324,13 @@ public abstract class Equipment implements Comparable<Equipment> {
 		}
 		
 		for (Equipment eq : equipment.values()) {
+			eq.setupDroptable();
 			eq.postSetup();
+			Equipment up = eq.getUpgraded();
+			if (up != null) {
+				up.setupDroptable();
+				up.postSetup();
+			}
 		}
 
 		for (EquipmentType type : EquipmentType.values()) {
@@ -410,7 +417,6 @@ public abstract class Equipment implements Comparable<Equipment> {
 			reforgeParents = base.getReforgeParents();
 			reforgeOptions = base.getReforgeOptions();
 		}
-		setupDroptable();
 		setupReforges();
 		setupItem();
 	}
@@ -944,9 +950,9 @@ public abstract class Equipment implements Comparable<Equipment> {
 				table.get(value - 2).add(drop, 1);
 			}
 			if (value >= 1) {
-				table.get(value - 1).add(drop, 3);
+				table.get(value - 1).add(drop, 4);
 			}
-			table.get(value).add(drop, 8);
+			table.get(value).add(drop, 10);
 		}
 
 		public void addLenientWeight(EquipmentClass ec, int value, E drop) {

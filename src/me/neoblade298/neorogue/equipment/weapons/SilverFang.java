@@ -31,6 +31,7 @@ public class SilverFang extends Equipment {
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(isUpgraded ? 55 : 45, 1, 0.3, DamageType.SLASHING, new SoundContainer(Sound.ENTITY_ALLAY_HURT, 0.8F)));
 		properties.addUpgrades(PropertyType.DAMAGE);
+		canDrop = false;
 		
 		sanct = isUpgraded ? 3 : 2;
 	}

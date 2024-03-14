@@ -81,7 +81,7 @@ public class PlayerSessionSpectateInventory extends CoreInventory {
 		for (KeyBind bind : KeyBind.values()) {
 			slotTypes.put(bind.getInventorySlot(), EquipSlot.KEYBIND);
 			Equipment a = data.getEquipment(EquipSlot.KEYBIND)[bind.getDataSlot()];
-			contents[bind.getInventorySlot()] = a != null
+			contents[bind.getInventorySlot() - 18] = a != null
 					? addNbt(addBindLore(a.getItem(), bind.getInventorySlot(), bind.getDataSlot()), a.getId(),
 							a.isUpgraded(), bind.getDataSlot())
 					: addNbt(bind.getItem(), bind.getDataSlot());

@@ -10,6 +10,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.DamageType;
+import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -45,7 +46,7 @@ public class CrimsonBlade extends Equipment {
 				LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
 				weaponSwingAndDamage(p, pdata, ev.getTarget());
 				if (++count > 5) {
-					pdata.addHealth(heal);
+					FightInstance.giveHeal(p, heal, p);
 					Sounds.enchant.play(p, p);
 					count = 0;
 				}
