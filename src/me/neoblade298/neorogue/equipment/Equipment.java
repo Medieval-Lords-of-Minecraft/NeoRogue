@@ -195,6 +195,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Thornguard(b);
 			new Titan(b);
 			new WarCry(b);
+			new WeaponEnchantmentHoly(b);
 			new Windcutter(b);
 			new WindSlash(b);
 
