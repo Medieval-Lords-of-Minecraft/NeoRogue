@@ -2,14 +2,13 @@ package me.neoblade298.neorogue.session.fight;
 
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.UUID;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-import io.lumine.mythic.core.mobs.ActiveMob;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
@@ -299,8 +298,7 @@ public class DamageMeta {
 		if (finalDamage > target.getAbsorptionAmount()) {
 			target.damage(finalDamage);
 			if (!(target instanceof Player)) {
-				ActiveMob am = NeoRogue.mythicApi.getMythicMobInstance(target);
-				am.setDisplayName(recipient.getDisplayHologram());
+				recipient.updateDisplayName();
 			}
 			else {
 				PlayerFightData data = FightInstance.getUserData(target.getUniqueId());

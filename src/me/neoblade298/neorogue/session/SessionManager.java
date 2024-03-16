@@ -21,7 +21,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
@@ -45,7 +44,6 @@ import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import io.lumine.mythic.api.mobs.MythicMob;
@@ -202,14 +200,6 @@ public class SessionManager implements Listener {
 	public void onBuild(BlockPlaceEvent e) {
 		if (sessions.containsKey(e.getPlayer().getUniqueId())) {
 			e.setCancelled(true);
-		}
-	}
-	
-	@EventHandler
-	public void onPotion(EntityPotionEffectEvent e) {
-		if (e.getNewEffect() == null) return;
-		if (e.getNewEffect().getType() == PotionEffectType.INVISIBILITY) {
-			FightInstance.handleInvisibility(e);
 		}
 	}
 
@@ -431,7 +421,7 @@ public class SessionManager implements Listener {
 		UUID uuid = ent.getUniqueId();
 		if (ent instanceof LivingEntity) {
 			FightData fd = new FightData((LivingEntity) ent,
-					NeoRogue.mythicApi.getMythicMobInstance(ent).getType(), (MapSpawnerInstance) null);
+					NeoRogue.mythicApi.getMythicMobInstance(ent), (MapSpawnerInstance) null);
 			FightInstance.putFightData(uuid, fd);
 			if (e.getSpawnReason() == SpawnReason.SUMMON) {
 				if (fd.getInstance() == null) return;

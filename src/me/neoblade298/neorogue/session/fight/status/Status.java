@@ -75,7 +75,7 @@ public abstract class Status {
 	}
 	
 	public String getHologramLine() {
-		return "&e" + id + "&f: " + id + (seconds > 0 ? ", " + seconds + "s" : "");
+		return "&e" + id + "&f: " + stacks + (seconds > 0 ? ", " + seconds + "s" : "");
 	}
 	
 	public void cleanup() {
