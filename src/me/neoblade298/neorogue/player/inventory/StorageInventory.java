@@ -7,10 +7,13 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
+import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import net.kyori.adventure.text.Component;
@@ -67,12 +70,57 @@ public class StorageInventory extends CoreInventory {
 				Equipment eq = Equipment.get(nbti.getString("equipId"), false);
 				pinv.setHighlights(eq.getType());
 			}
+			
+			if (e.getCursor() != null && e.getCurrentItem() != null) {
+				NBTItem ncursor = new NBTItem(e.getCursor());
+				NBTItem nclicked = new NBTItem(e.getCurrentItem());
+				String eqId = ncursor.getString("equipId");
+				String eqedId = nclicked.getString("equipId");
+				Equipment eq = Equipment.get(eqId, ncursor.getBoolean("isUpgraded"));
+				Equipment eqed = Equipment.get(eqedId, nclicked.getBoolean("isUpgraded"));
+				// Reforged item check
+				if (eq.containsReforgeOption(eqedId)) {
+					if (!Equipment.canReforge(eq, eqed)) {
+						displayError("At least one of the items must be upgraded to reforge!", true);
+						return;
+					}
+					new BukkitRunnable() {
+						public void run() {
+							p.setItemOnCursor(null);
+							inv.setItem(e.getSlot(), null);
+							handleInventoryClose();
+							new ReforgeOptionsInventory(data, eq, eqed);
+						}
+					}.runTask(NeoRogue.inst());
+					return;
+				}
+				else if (eqed != null && eqed.containsReforgeOption(eqId)) {
+					if (!Equipment.canReforge(eq, eqed)) {
+						displayError("At least one of the items must be upgraded to reforge!", true);
+						return;
+					}
+					new BukkitRunnable() {
+						public void run() {
+							p.setItemOnCursor(null);
+							inv.setItem(e.getSlot(), null);
+							handleInventoryClose();
+							new ReforgeOptionsInventory(data, eqed, eq);
+						}
+					}.runTask(NeoRogue.inst());
+					return;
+				}
+			}
 			p.playSound(p, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1F);
 		}
 	}
 
-	@Override
-	public void handleInventoryClose(InventoryCloseEvent e) {
+	private void displayError(String error, boolean closeInventory) {
+		p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1F, 0.7F);
+		Util.msg(p, error);
+		if (closeInventory) p.closeInventory();
+	}
+	
+	public void handleInventoryClose() {
 		if (spectator != null) return;
 		// Save storage
 		Equipment[] newSave = new Equipment[PlayerSessionData.MAX_STORAGE_SIZE];
@@ -88,6 +136,11 @@ public class StorageInventory extends CoreInventory {
 			newSave[iter++] = eq;
 		}
 		data.setStorage(newSave);
+	}
+
+	@Override
+	public void handleInventoryClose(InventoryCloseEvent e) {
+		handleInventoryClose();
 	}
 
 	@Override

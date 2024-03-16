@@ -398,6 +398,12 @@ public abstract class Equipment implements Comparable<Equipment> {
 
 		equipment.put(id, this);
 	}
+	
+	public static boolean canReforge(Equipment eq, Equipment eqed) {
+		boolean hasUpgrade = eq.isUpgraded() || eqed.isUpgraded();
+		boolean hasCurse = eq.isCursed() || eqed.isCursed();
+		return hasUpgrade || hasCurse;
+	}
 
 	public EquipmentProperties getProperties() {
 		return properties;

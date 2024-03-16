@@ -322,7 +322,7 @@ public class PlayerSessionInventory extends CorePlayerInventory {
 
 			// Reforged item check
 			if (eq.containsReforgeOption(eqedId)) {
-				if (!canReforge(eq, eqed)) {
+				if (!Equipment.canReforge(eq, eqed)) {
 					displayError("At least one of the items must be upgraded to reforge!", true);
 					return;
 				}
@@ -339,7 +339,7 @@ public class PlayerSessionInventory extends CorePlayerInventory {
 				return;
 			}
 			else if (eqed != null && eqed.containsReforgeOption(eqId)) {
-				if (!canReforge(eq, eqed)) {
+				if (!Equipment.canReforge(eq, eqed)) {
 					displayError("At least one of the items must be upgraded to reforge!", true);
 					return;
 				}
@@ -389,12 +389,6 @@ public class PlayerSessionInventory extends CorePlayerInventory {
 		else {
 			p.playSound(p, Sound.ITEM_ARMOR_EQUIP_DIAMOND, 1F, 1F);
 		}
-	}
-	
-	private boolean canReforge(Equipment eq, Equipment eqed) {
-		boolean hasUpgrade = eq.isUpgraded() || eqed.isUpgraded();
-		boolean hasCurse = eq.isCursed() || eqed.isCursed();
-		return hasUpgrade || hasCurse;
 	}
 	
 	public void clearHighlights() {
