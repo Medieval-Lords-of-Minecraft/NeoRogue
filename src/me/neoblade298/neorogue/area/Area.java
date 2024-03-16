@@ -910,16 +910,16 @@ public class Area {
 			case 0:
 				table.add(NodeType.FIGHT, 57);
 				table.add(NodeType.CHANCE, 31);
-				table.add(NodeType.SHOP, 6);
+				table.add(NodeType.SHOP, 3);
 				table.add(NodeType.MINIBOSS, 3);
-				table.add(NodeType.SHRINE, 3);
+				table.add(NodeType.SHRINE, 6);
 				break;
 			case 1:
 				table.add(NodeType.FIGHT, 9);
 				table.add(NodeType.CHANCE, 8);
-				table.add(NodeType.SHOP, 18);
+				table.add(NodeType.SHOP, 15);
 				table.add(NodeType.MINIBOSS, 40);
-				table.add(NodeType.SHRINE, 25);
+				table.add(NodeType.SHRINE, 28);
 				break;
 			case 2:
 				table.add(NodeType.FIGHT, 65);

@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+import io.lumine.mythic.core.mobs.ActiveMob;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
@@ -207,7 +208,7 @@ public class DamageMeta {
 		
 		// Calculate buffs for every slice of damage
 		for (DamageSlice slice : slices) {
-			double increase = 0, mult = 0;
+			double increase = 0, mult = 1;
 			for (BuffType bt : slice.getType().getBuffTypes()) {
 				if (!damageBuffs.containsKey(bt)) continue;
 				for (BuffMeta bm : damageBuffs.get(bt)) {
@@ -249,7 +250,7 @@ public class DamageMeta {
 					}
 				}
 			}
-			double sliceDamage = Math.max(0, (slice.getDamage() * (mult + 1)) + increase);
+			double sliceDamage = Math.max(0, (slice.getDamage() * mult) + increase);
 			if (owner instanceof PlayerFightData) {
 				((PlayerFightData) owner).getStats().addDamageDealt(slice.getPostBuffType(), sliceDamage);
 			}
@@ -298,7 +299,8 @@ public class DamageMeta {
 		if (finalDamage > target.getAbsorptionAmount()) {
 			target.damage(finalDamage);
 			if (!(target instanceof Player)) {
-				NeoRogue.mythicApi.castSkill(target, "UpdateHealthbar");
+				ActiveMob am = NeoRogue.mythicApi.getMythicMobInstance(target);
+				am.setDisplayName(recipient.getDisplayHologram());
 			}
 			else {
 				PlayerFightData data = FightInstance.getUserData(target.getUniqueId());

@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.session.fight;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -7,12 +9,18 @@ import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Display.Billboard;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.TextDisplay;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import io.lumine.mythic.api.mobs.MythicMob;
 import me.neoblade298.neocore.bukkit.effects.ParticleAnimation;
 import me.neoblade298.neocore.bukkit.effects.ParticleAnimation.ParticleAnimationInstance;
 import me.neoblade298.neorogue.NeoRogue;
@@ -33,8 +41,10 @@ import me.neoblade298.neorogue.session.fight.trigger.event.GrantShieldsEvent;
 
 public class FightData {
 	protected FightInstance inst;
+	protected String mobDisplay;
 	protected UUID uuid;
 	protected HashMap<String, Status> statuses = new HashMap<String, Status>();
+	protected ArrayList<Entity> holograms = new ArrayList<Entity>();
 
 	protected HashMap<String, BukkitTask> tasks = new HashMap<String, BukkitTask>();
 	protected HashMap<String, Runnable> cleanupTasks = new HashMap<String, Runnable>();
@@ -56,6 +66,20 @@ public class FightData {
 		for (BukkitTask task : tasks.values()) {
 			task.cancel();
 		}
+		for (TickAction tickAction : tickActions) {
+			tickAction.setCancelled(true);
+		}
+		for (Entity ent : holograms) {
+			new BukkitRunnable() {
+				public void run() {
+					ent.remove();
+				}
+			}.runTask(NeoRogue.inst());
+		}
+	}
+	
+	public FightData() {
+		// Empty for null entities
 	}
 
 	public FightData(LivingEntity p, FightInstance inst) {
@@ -66,7 +90,7 @@ public class FightData {
 		this.uuid = p.getUniqueId();
 	}
 
-	public FightData(LivingEntity e, MapSpawnerInstance spawner) {
+	public FightData(LivingEntity e, MythicMob mm, MapSpawnerInstance spawner) {
 		// Only use this for mobs
 		if (e == null) return; // Sometimes gets called when a dead mob's poison ticks
 		Plot p = Plot.locationToPlot(e.getLocation());
@@ -77,6 +101,7 @@ public class FightData {
 		this.shields = new ShieldHolder(this);
 		this.spawner = spawner;
 		this.uuid = e.getUniqueId();
+		this.mobDisplay = mm.getDisplayName().get();
 	}
 	
 	public UUID getUniqueId() {
@@ -130,6 +155,33 @@ public class FightData {
 	public void addTask(String id, BukkitTask task) {
 		while (tasks.containsKey(id)) id += "1";
 		tasks.put(id, task);
+	}
+	
+	public String getDisplayHologram() {
+		double healthPct = entity.getHealth() / entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+		String healthColor;
+		if (healthPct < 0.33) {
+			healthColor = "&c";
+		}
+		else if (healthPct < 0.67) {
+			healthColor = "&e";
+		}
+		else {
+			healthColor = "&a";
+		}
+		
+		String bottomLine = healthColor + (int) entity.getHealth() + "&f/" + healthColor + (int) entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+		bottomLine += " " + mobDisplay;
+		
+		ArrayList<Status> list = new ArrayList<Status>(statuses.values());
+		Collections.sort(list, Status.comp);
+		String statuses = "";
+		for (int i = 0; i < list.size() && i < 5; i++) {
+			statuses += list.get(i).getHologramLine() + "\\n";
+		}
+		
+		System.out.println(statuses + "\\n" + bottomLine);
+		return list.isEmpty() ? bottomLine : statuses + "\\n" + bottomLine;
 	}
 	
 	public void runAnimation(String id, Player origin, ParticleAnimation anim, Location loc) {
@@ -234,7 +286,12 @@ public class FightData {
 	public TickResult runTickActions() {
 		Iterator<TickAction> iter = tickActions.iterator();
 		while (iter.hasNext()) {
-			TickResult tr = iter.next().run();
+			TickAction ta = iter.next();
+			if (ta.isCancelled()) {
+				iter.remove();
+				continue;
+			}
+			TickResult tr = ta.run();
 			if (tr == TickResult.REMOVE) iter.remove();
 		}
 		return tickActions.isEmpty() ? TickResult.REMOVE : TickResult.KEEP;
@@ -285,6 +342,7 @@ public class FightData {
 	}
 	
 	protected void applyStatus(Status s, UUID applier, int stacks, int seconds, DamageMeta meta) {
+		if (!entity.isValid()) return;
 		String id = s.getId();
 		ApplyStatusEvent ev = new ApplyStatusEvent(this, id, stacks, seconds, meta);
 		if (FightInstance.getUserData().containsKey(applier)) {
@@ -297,7 +355,82 @@ public class FightData {
 			FightInstance.trigger(data.getPlayer(), Trigger.APPLY_STATUS, ev);
 		}
 		s.apply(applier, (int) Math.ceil(ev.getStacksBuff().apply(stacks)), (int) Math.ceil(ev.getDurationBuff().apply(seconds)));
+		
+		if (statuses.isEmpty() && !(this instanceof PlayerFightData)) {
+			addTickAction(new StatusUpdateTickAction());
+		}
 		statuses.put(id, s);
+		
+		updateStatusHologram();
+	}
+	
+	private void removeStatusHologram() {
+		ArrayList<Entity> toDelete = new ArrayList<Entity>(2);
+		Entity top = entity;
+		while (!top.getPassengers().isEmpty()) {
+			top = top.getPassengers().get(0);
+			if (EntityType.ARMOR_STAND == top.getType() || EntityType.TEXT_DISPLAY == top.getType()) toDelete.add(top);
+		}
+		for (Entity ent : toDelete) {
+			ent.remove();
+		}
+	}
+	
+	public void updateStatusHologram() {
+		// Add status on top of mob displayname
+		if (this instanceof PlayerFightData || statuses.isEmpty()) return;
+		if (entity.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
+			removeStatusHologram();
+			return;
+		}
+		TextDisplay tag = createOrGetStatusEntity();
+		
+	}
+	
+	private boolean areStatusesEmpty() {
+		for (Status s : statuses.values()) {
+			if (s.getStacks() > 0) return false;
+		}
+		return true;
+	}
+
+	private class StatusUpdateTickAction extends TickAction {
+		@Override
+		public TickResult run() {
+			if (!entity.isValid()) return TickResult.REMOVE;
+			if (areStatusesEmpty()) {
+				removeStatusHologram();
+				statuses.clear();
+				return TickResult.REMOVE;
+			}
+			updateStatusHologram();
+			return TickResult.KEEP;
+		}
+	}
+	
+	private TextDisplay createOrGetStatusEntity() {
+		Entity top = entity;
+		while (!top.getPassengers().isEmpty()) {
+			top = top.getPassengers().get(0);
+		}
+		
+		if (top.getType() != EntityType.TEXT_DISPLAY) {
+			ArmorStand as = (ArmorStand) entity.getWorld().spawnEntity(entity.getLocation(), EntityType.ARMOR_STAND);
+			as.setSmall(true);
+			as.setInvisible(true);
+			as.setInvulnerable(true);
+			as.setMarker(true);
+			entity.addPassenger(as);
+			TextDisplay txt = (TextDisplay) entity.getWorld().spawnEntity(entity.getLocation(), EntityType.TEXT_DISPLAY);
+			txt.setBillboard(Billboard.CENTER);
+			as.addPassenger(txt);
+			holograms.add(as);
+			holograms.add(txt);
+			return txt;
+		}
+		else {
+			return (TextDisplay) top;
+		}
 	}
 	
 	public MapSpawnerInstance getSpawner() {

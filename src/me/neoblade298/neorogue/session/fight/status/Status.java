@@ -1,5 +1,6 @@
 package me.neoblade298.neorogue.session.fight.status;
 
+import java.util.Comparator;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -17,6 +18,15 @@ public abstract class Status {
 	protected FightData data;
 	protected StatusSliceHolder slices = new StatusSliceHolder();
 	protected int seconds;
+	
+	public static final Comparator<Status> comp = new Comparator<Status>() {
+		@Override
+		public int compare(Status o1, Status o2) {
+			int comp = Integer.compare(o1.stacks, o2.stacks);
+			if (comp != 0) return comp;
+			return o1.getId().compareTo(o2.getId());
+		}
+	};
 	
 	public Status(String id, FightData data) {
 		this.id = id;
@@ -62,6 +72,10 @@ public abstract class Status {
 		catch (IllegalArgumentException ex) {
 			return "§f" + id + "§7: §f" + stacks;
 		}
+	}
+	
+	public String getHologramLine() {
+		return "&e" + id + "&f: " + id + (seconds > 0 ? ", " + seconds + "s" : "");
 	}
 	
 	public void cleanup() {

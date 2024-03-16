@@ -29,6 +29,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
@@ -89,6 +90,7 @@ public class RighteousHammer extends Equipment {
 		if (enemies.isEmpty()) return;
 		boolean first = true;
 		for (LivingEntity ent : enemies) {
+			FightInstance.applyStatus(ent, StatusType.SANCTIFIED, p, sanct, -1);
 			if (first) {
 				weaponDamage(p, data, ent);
 				Vector v = ent.getVelocity();

@@ -5,7 +5,12 @@ import java.util.HashSet;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.TextDisplay;
+import org.bukkit.entity.Display.Billboard;
+import org.bukkit.entity.Entity;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.commands.Subcommand;
@@ -26,15 +31,22 @@ public class CmdAdminDebug extends Subcommand {
 	@Override
 	public void run(CommandSender s, String[] args) {
 		Player p = Bukkit.getPlayer("Ascheladd");
+		Entity ent = p.getWorld().spawnEntity(p.getLocation(), EntityType.COW);
+		ArmorStand as = (ArmorStand) p.getWorld().spawnEntity(p.getLocation(), EntityType.ARMOR_STAND);
+		as.setSmall(true);
+		as.setInvisible(false);
+		as.setInvulnerable(false);
+		as.setMarker(false);
+		TextDisplay txt = (TextDisplay) p.getWorld().spawnEntity(p.getLocation(), EntityType.TEXT_DISPLAY);
+		txt.setBillboard(Billboard.CENTER);
+		ent.addPassenger(as);
+		as.addPassenger(txt);
+		
 		new BukkitRunnable() {
-			int count = 0;
 			public void run() {
-				p.damage(1);
-				count++;
-				if (count > 5) {
-					cancel();
-				}
+				as.remove();
+				txt.remove();
 			}
-		}.runTaskTimer(NeoRogue.inst(), 10l, 2l);
+		}.runTaskLater(NeoRogue.inst(), 60L);
 	}
 }

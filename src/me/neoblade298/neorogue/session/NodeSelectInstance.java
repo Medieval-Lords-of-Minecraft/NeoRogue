@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.Tag;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
@@ -16,13 +17,14 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import eu.decentsoftware.holograms.api.holograms.Hologram;
-import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.area.Node;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.FightInfoInventory;
 import me.neoblade298.neorogue.session.fight.FightInstance;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class NodeSelectInstance extends EditInventoryInstance {
 	private static final double SPAWN_X = Session.AREA_X + 21.5, SPAWN_Z = Session.AREA_Z + 6.5;
@@ -125,16 +127,37 @@ public class NodeSelectInstance extends EditInventoryInstance {
 		if (e.getHand() != EquipmentSlot.HAND)
 			return;
 		Player p = e.getPlayer();
+		Node node = s.getArea().getNodeFromLocation(e.getClickedBlock().getLocation());
 		if (Tag.BUTTONS.isTagged(e.getClickedBlock().getType())) {
 			if (!p.getUniqueId().equals(s.getHost())) {
-				Util.displayError(p, "Only the host may choose the next node to visit!");
+				if (!s.canSuggest()) return;
+				s.setSuggestCooldown();
+				String laneString;
+				switch (node.getLane()) {
+				case 0: laneString = " on the far left.";
+				break;
+				case 1: laneString = " on the middle left.";
+				break;
+				case 2: laneString = " in the middle.";
+				break;
+				case 3: laneString = " on the middle right.";
+				break;
+				default: laneString = " on the far right.";
+				break;
+				}
+				s.broadcast(
+						p.name().color(NamedTextColor.YELLOW)
+						.append(Component.text(" suggests the ", NamedTextColor.GRAY))
+						.append(Component.text(node.getType() + " Node", NamedTextColor.YELLOW))
+						.append(Component.text(laneString, NamedTextColor.GRAY))
+					);
+					s.broadcastSound(Sound.ENTITY_ARROW_HIT_PLAYER);
 				return;
 			}
 
 			// Validation
 			if (!s.isEveryoneOnline())
 				return;
-			Node node = s.getArea().getNodeFromLocation(e.getClickedBlock().getLocation());
 			if (s.setInstance(node.getInstance()))
 				s.visitNode(node);
 			if (!(node.getInstance() instanceof FightInstance)) {

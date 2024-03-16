@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -122,7 +123,19 @@ public class ChanceInventory extends CoreInventory {
 		if (asSpectator) return;
 		
 		if (!set.isIndividual() && !uuid.equals(s.getHost())) {
-			Util.displayError(p, "Only the host may make choices for this event!");
+			if (!s.canSuggest()) return;
+			s.setSuggestCooldown();
+			s.broadcast(
+				p.name().color(NamedTextColor.YELLOW)
+				.append(Component.text(" suggests the choice ", NamedTextColor.GRAY))
+				.append(choice.getItemWithoutConditions().displayName())
+			);
+			s.broadcastSound(Sound.ENTITY_ARROW_HIT_PLAYER);
+			new BukkitRunnable() {
+				public void run() {
+					p.closeInventory();
+				}
+			}.runTask(NeoRogue.inst());
 			return;
 		}
 		if (!choice.canChoose(s, inst, s.getData(uuid))) {
@@ -132,7 +145,11 @@ public class ChanceInventory extends CoreInventory {
 		
 		ChanceStage next = set.getStage(choice.choose(s, inst, data));
 		inst.advanceStage(uuid, next);
-		p.closeInventory();
+		new BukkitRunnable() {
+			public void run() {
+				p.closeInventory();
+			}
+		}.runTask(NeoRogue.inst());
 	}
 
 	@Override

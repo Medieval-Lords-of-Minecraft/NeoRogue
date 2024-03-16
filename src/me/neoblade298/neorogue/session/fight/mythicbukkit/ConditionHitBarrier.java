@@ -17,6 +17,7 @@ import io.lumine.mythic.core.skills.mechanics.ProjectileMechanic.ProjectileMecha
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
+import me.neoblade298.neorogue.session.fight.PlayerFightData;
 
 public class ConditionHitBarrier implements ISkillMetaComparisonCondition {
 	protected Skill skill;
@@ -32,38 +33,47 @@ public class ConditionHitBarrier implements ISkillMetaComparisonCondition {
 	public boolean check(SkillMetadata data, AbstractEntity ent) {
 		ProjectileMechanicTracker tracker = (ProjectileMechanicTracker) data.getCallingEvent();
 		Location loc = BukkitAdapter.adapt(tracker.getCurrentLocation());
-		FightData barrierOwner = null;
-		for (FightData fd : FightInstance.getUserData().values()) {
+		boolean foundBarrier = false;
+		for (PlayerFightData fd : FightInstance.getUserData().values()) {
 			Barrier b = fd.getBarrier();
-			checkBarrier(data, b, tracker, loc, barrierOwner);
+			if (checkBarrier(data, b, tracker, loc, fd)) {
+				foundBarrier = true;
+				break;
+			}
 		}
-		for (Barrier b : FightInstance.getUserBarriers().values()) {
-			checkBarrier(data, b, tracker, loc);
+		if (foundBarrier) {
+			for (Barrier b : FightInstance.getUserBarriers().values()) {
+				if (checkBarrier(data, b, tracker, loc)) break;
+			}
 		}
 		return true;
 	}
 	
-	private void checkBarrier(SkillMetadata data, Barrier b, ProjectileMechanicTracker tracker, Location loc) {
-		if (b.getOwner() == null) checkBarrier(data, b, tracker, loc, null);
-		checkBarrier(data, b, tracker, loc, FightInstance.getFightData(b.getOwner().getUniqueId()));
+	private boolean checkBarrier(SkillMetadata data, Barrier b, ProjectileMechanicTracker tracker, Location loc) {
+		if (b.getOwner() == null) return checkBarrier(data, b, tracker, loc, null);
+		return checkBarrier(data, b, tracker, loc, FightInstance.getFightData(b.getOwner().getUniqueId()));
 	}
 	
-	private void checkBarrier(SkillMetadata data, Barrier b, ProjectileMechanicTracker tracker, Location loc, FightData barrierOwner) {
-		if (b == null) return;
+	private boolean checkBarrier(SkillMetadata data, Barrier b, ProjectileMechanicTracker tracker, Location loc, FightData barrierOwner) {
+		if (b == null) return false;
 		
 		if (b.collides(loc)) {
 			tracker.projectileEnd();
 			tracker.setCancelled();
 			loc.getWorld().playSound(loc, Sound.ITEM_SHIELD_BLOCK, 1F, 1F);
 		}
+		else {
+			return false;
+		}
 		
-		if (barrierOwner == null) return;
+		if (barrierOwner == null) return true;
 		
 		HashSet<AbstractEntity> targets = new HashSet<AbstractEntity>();
 		targets.add(BukkitAdapter.adapt(barrierOwner.getEntity()));
 		
-		if (skill == null) return;
+		if (skill == null) return true;
 		skill.execute(SkillTrigger.get("API"), data.getCaster(), data.getTrigger(),
 				data.getCaster().getLocation(), targets, null, 1F);
+		return true;
 	}
 }

@@ -13,7 +13,6 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageType;
-import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
@@ -48,16 +47,17 @@ public class ShieldPike extends Equipment {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, in) -> {
 			LeftClickHitEvent ev = (LeftClickHitEvent) in;
 			double damage = hasShield ? properties.get(PropertyType.DAMAGE) * 2 : properties.get(PropertyType.DAMAGE);
-			FightInstance.getFightData(ev.getTarget()).applyStatus(StatusType.THORNS, p.getUniqueId(), thorns, -1);
+			data.applyStatus(StatusType.THORNS, p.getUniqueId(), thorns, -1);
 			weaponSwingAndDamage(p, data, ev.getTarget(), damage);
 			return TriggerResult.keep();
 		});
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_NO_HIT, (pdata, in) -> {
+			if (data.canBasicAttack()) return TriggerResult.keep();
 			LinkedList<LivingEntity> targets = TargetHelper.getEntitiesInSight(p, spearHit);
 			if (targets.isEmpty())
 				return TriggerResult.keep();
 			double damage = hasShield ? properties.get(PropertyType.DAMAGE) * 2 : properties.get(PropertyType.DAMAGE);
-			FightInstance.getFightData(targets.getFirst()).applyStatus(StatusType.THORNS, p.getUniqueId(), thorns, -1);
+			data.applyStatus(StatusType.THORNS, p.getUniqueId(), thorns, -1);
 			weaponSwingAndDamage(p, data, targets.getFirst(), damage);
 			return TriggerResult.keep();
 		});

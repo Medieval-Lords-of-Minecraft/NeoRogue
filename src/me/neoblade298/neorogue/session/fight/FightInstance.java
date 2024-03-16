@@ -28,6 +28,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -278,13 +279,19 @@ public abstract class FightInstance extends Instance {
 		Player p = (Player) e.getDamager();
 		e.setCancelled(true);
 		PlayerFightData data = userData.get(p.getUniqueId());
-		if (!data.canBasicAttack())
-			return;
 		if (!(e.getEntity() instanceof LivingEntity))
 			return;
-
 		trigger(p, Trigger.LEFT_CLICK, null);
+		if (!data.canBasicAttack())
+			return;
 		trigger(p, Trigger.LEFT_CLICK_HIT, new LeftClickHitEvent((LivingEntity) e.getEntity()));
+	}
+	
+	public static void handleInvisibility(EntityPotionEffectEvent e) {
+		if (e.getEntity().getType() == EntityType.PLAYER) return;
+		FightData fd = fightData.get(e.getEntity().getUniqueId());
+		if (fd == null) return;
+		fd.updateStatusHologram();
 	}
 	
 	public static void handleEnvironmentDamage(EntityDamageEvent e) {
@@ -532,25 +539,24 @@ public abstract class FightInstance extends Instance {
 		PlayerFightData data = userData.get(p.getUniqueId());
 		if (data == null)
 			return;
-		if (!data.canBasicAttack())
-			return;
-
-		trigger(e.getPlayer(), Trigger.LEFT_CLICK, null);
 		trigger(e.getPlayer(), Trigger.LEFT_CLICK_NO_HIT, null);
+		trigger(e.getPlayer(), Trigger.LEFT_CLICK, null);
 	}
 
 	public static void handleMythicDespawn(MythicMobDespawnEvent e) {
 		FightData data = removeFightData(e.getEntity().getUniqueId());
-		if (data == null || data.getInstance() == null)
-			return;
+		if (data == null) return;
+		data.cleanup();
+		if (data.getInstance() == null) return;
 		data.getInstance().handleRespawn(data, e.getMobType().getInternalName(), true);
 	}
 
 	public static void handleMythicDeath(MythicMobDeathEvent e) {
 		FightData data = removeFightData(e.getEntity().getUniqueId());
-		if (data == null || data.getInstance() == null)
-			return;
+		if (data == null) return;
 		data.cleanup();
+		
+		if (data.getInstance() == null) return;
 		String id = e.getMobType().getInternalName();
 		data.getInstance().handleRespawn(data, id, false);
 		data.getInstance().handleMobKill(id);
@@ -599,7 +605,10 @@ public abstract class FightInstance extends Instance {
 
 	public static FightData getFightData(UUID uuid) {
 		if (!fightData.containsKey(uuid)) {
-			FightData fd = new FightData((LivingEntity) Bukkit.getEntity(uuid), (MapSpawnerInstance) null);
+			LivingEntity ent = (LivingEntity) Bukkit.getEntity(uuid);
+			if (ent == null) return new FightData();
+			FightData fd = new FightData(ent,
+							NeoRogue.mythicApi.getMythicMobInstance(ent).getType(), (MapSpawnerInstance) null);
 			fightData.put(uuid, fd);
 		}
 		return fightData.get(uuid);

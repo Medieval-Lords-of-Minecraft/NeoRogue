@@ -165,7 +165,6 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Brace2(b);
 			new BreakTheLine(b);
 			new Bulldoze(b);
-			new Bulwark(b);
 			new Burst(b);
 			new Challenge(b);
 			new Charge(b);
@@ -173,7 +172,6 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new DarkPact(b);
 			new Discipline(b);
 			new EarthenTackle(b);
-			new Endurance(b);
 			new Embolden(b);
 			new EmpoweredEdge(b);
 			new Execute(b);
@@ -182,7 +180,6 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Flurry(b);
 			new Fortify(b);
 			new Fury(b);
-			new GraniteShield(b);
 			new HoldTheLine(b);
 			new Ironskin(b);
 			new MightySwing(b);
@@ -195,7 +192,6 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Skirmisher(b);
 			new Smite(b);
 			new SpiritOfTheDragoon(b);
-			new Sturdy(b);
 			new Tackle(b);
 			new Thornguard(b);
 			new Titan(b);
@@ -950,9 +946,9 @@ public abstract class Equipment implements Comparable<Equipment> {
 				table.get(value - 2).add(drop, 1);
 			}
 			if (value >= 1) {
-				table.get(value - 1).add(drop, 4);
+				table.get(value - 1).add(drop, 8);
 			}
-			table.get(value).add(drop, 10);
+			table.get(value).add(drop, 32);
 		}
 
 		public void addLenientWeight(EquipmentClass ec, int value, E drop) {

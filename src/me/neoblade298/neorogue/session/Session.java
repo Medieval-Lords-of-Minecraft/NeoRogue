@@ -60,6 +60,7 @@ public class Session {
 	private int saveSlot, xOff, zOff, nodesVisited, areasCompleted, potionChance = 25;
 	private Plot plot;
 	private boolean busy;
+	private long nextSuggest = 0L;
 	
 	// Session coordinates
 	public static final int LOBBY_X = 0, LOBBY_Z = 0, LOBBY_WIDTH = 15,
@@ -266,6 +267,14 @@ public class Session {
 			Util.msgRaw(p, NeoCore.miniMessage().deserialize(msg).colorIfAbsent(NamedTextColor.RED));
 			Sounds.error.play(p, p, Audience.ORIGIN);
 		}
+	}
+	
+	public void setSuggestCooldown() {
+		this.nextSuggest = System.currentTimeMillis() + 1000L;
+	}
+	
+	public boolean canSuggest() {
+		return System.currentTimeMillis() > nextSuggest;
 	}
 
 	public void broadcastOthers(String msg, Player ignore) {

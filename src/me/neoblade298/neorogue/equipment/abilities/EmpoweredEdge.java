@@ -48,7 +48,7 @@ public class EmpoweredEdge extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(p, this, slot, es, (pdata, inputs) -> {
 			Sounds.equip.play(p, p);
-			data.addSimpleShield(p.getUniqueId(), shields, 40L);
+			data.addSimpleShield(p.getUniqueId(), shields, 100L);
 			pc.play(p, p);
 			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in) -> {
 				BasicAttackEvent ev = (BasicAttackEvent) in;
@@ -64,7 +64,7 @@ public class EmpoweredEdge extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FLINT,
-				"On cast, grant yourself " + GlossaryTag.SHIELDS.tag(this, 2, false) + ". "
+				"On cast, grant yourself " + GlossaryTag.SHIELDS.tag(this, shields, true) + " for <white>5</white> seconds. "
 						+ "Your next basic attack deals " + GlossaryTag.PIERCING.tag(this, damage, true) + ".");
 	}
 }

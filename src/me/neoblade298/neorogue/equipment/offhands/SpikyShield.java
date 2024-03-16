@@ -1,11 +1,14 @@
 package me.neoblade298.neorogue.equipment.offhands;
 
+import java.util.HashMap;
+
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -42,11 +45,26 @@ public class SpikyShield extends Equipment {
 			p.playSound(p, Sound.ITEM_SHIELD_BLOCK, 1F, 1F);
 			return TriggerResult.keep();
 		});
+		data.addTrigger(id, Trigger.RAISE_SHIELD, (pdata, inputs) -> {
+			data.setBarrier(Barrier.centered(p, 3, 2, 2, 0, new HashMap<BuffType, Buff>()));
+			return TriggerResult.keep();
+		});
+
+		data.addTrigger(id, Trigger.SHIELD_TICK, (pdata, inputs) -> {
+			data.getBarrier().tick();
+			return TriggerResult.keep();
+		});
+		
+		data.addTrigger(id, Trigger.LOWER_SHIELD, (pdata, inputs) -> {
+			data.setBarrier(null);
+			return TriggerResult.keep();
+		});
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.SHIELD, "When raised, reduce all damage taken by <white>" + reduction + "</white>."
-				+ " Also grants <yellow>" + amount + "</yellow> " + GlossaryTag.THORNS.tag(this) + " at the start of combat.");
+		item = createItem(Material.SHIELD, "When raised, creates a " + GlossaryTag.BARRIER.tag(this) + " of size <white>3x2</white>."
+				+ " Reduce all damage by <yellow>" + reduction + "</yellow>. "
+				+ "Also grants <yellow>" + amount + "</yellow> " + GlossaryTag.THORNS.tag(this) + " at the start of combat.");
 	}
 }

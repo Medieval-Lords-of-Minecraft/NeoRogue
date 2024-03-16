@@ -4,11 +4,9 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
-import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -20,7 +18,9 @@ import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
+import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -47,13 +47,13 @@ public class WeaponEnchantmentHoly extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.BASIC_ATTACK, new WeaponEnchantmentHolyInstance(id));
+		data.addTrigger(id, Trigger.LEFT_CLICK, new WeaponEnchantmentHolyInstance(id));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.NETHER_STAR,
-				"Passive. Your basic attacks fire a projectile after <white>0.5</white> seconds that deals " + GlossaryTag.LIGHT.tag(this, damage, true)
+				"Passive. Your basic attacks fire a projectile that deals " + GlossaryTag.LIGHT.tag(this, damage, true)
 				+ " damage and applies " + GlossaryTag.SANCTIFIED.tag(this, sanct, true) + ".");
 	}
 	
@@ -64,11 +64,7 @@ public class WeaponEnchantmentHoly extends Equipment {
 			action = (pdata, in) -> {
 				if (System.currentTimeMillis() > nextCastTime) {
 					nextCastTime = System.currentTimeMillis() + 3000L;
-					pdata.addTask(new BukkitRunnable() {
-						public void run() {
-							projs.start(pdata);
-						}
-					}.runTaskLater(NeoRogue.inst(), 10L));
+					projs.start(pdata);
 				}
 				return TriggerResult.keep();
 			};
@@ -89,6 +85,7 @@ public class WeaponEnchantmentHoly extends Equipment {
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
 			damageProjectile(hit.getEntity(), proj, new DamageMeta(proj.getOwner(), damage, DamageType.LIGHT), hitBarrier);
+			FightInstance.getFightData(hit.getEntity()).applyStatus(StatusType.SANCTIFIED, proj.getOwner().getUniqueId(), sanct, -1);
 			scHit.play((Player) proj.getOwner().getEntity(), hit.getEntity());
 		}
 
