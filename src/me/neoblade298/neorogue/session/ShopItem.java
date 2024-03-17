@@ -19,19 +19,23 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextDecoration.State;
 
 public class ShopItem {
-	private static final Component saleCmp = Component.text(" [On Sale]", NamedTextColor.DARK_GREEN, TextDecoration.BOLD, TextDecoration.ITALIC);
-	private static final ItemStack PURCHASED = CoreInventory.createButton(Material.BARRIER, (TextComponent) SharedUtil.color("<red>Purchased!</red>"));
+	private static final Component saleCmp = Component
+			.text(" [On Sale]", NamedTextColor.DARK_GREEN, TextDecoration.BOLD, TextDecoration.ITALIC);
+	private static final ItemStack PURCHASED = CoreInventory
+			.createButton(Material.BARRIER, (TextComponent) SharedUtil.color("<red>Purchased!</red>"));
 	
 	private int price, slot;
 	private boolean sale;
 	private boolean isPurchased;
 	private Equipment eq;
+
 	public ShopItem(Equipment eq, int slot, boolean expensive, boolean sale) {
 		this.eq = eq;
 		this.sale = sale;
 		this.slot = slot;
-		price = expensive ? NeoRogue.gen.nextInt(100, 180) : NeoRogue.gen.nextInt(70, 130);
-		if (sale) price /= 2;
+		price = expensive ? NeoRogue.gen.nextInt(100, 150) : NeoRogue.gen.nextInt(75, 125);
+		if (sale)
+			price = (int) (price * NeoRogue.gen.nextDouble(0.4, 0.8));
 	}
 	
 	// For deserialization
@@ -72,8 +76,10 @@ public class ShopItem {
 	}
 	
 	public void updateLore(PlayerSessionData data, ItemStack item, boolean firstLoad) {
-		if (item == null) return;
-		if (item.getType() == Material.BARRIER) return; // Purchased item
+		if (item == null)
+			return;
+		if (item.getType() == Material.BARRIER)
+			return; // Purchased item
 		ItemMeta meta = item.getItemMeta();
 		List<Component> lore = meta.lore();
 		NamedTextColor color = data.hasCoins(price) ? NamedTextColor.GREEN : NamedTextColor.RED;
@@ -84,8 +90,7 @@ public class ShopItem {
 		
 		if (firstLoad) {
 			lore.add(0, cmp);
-		}
-		else {
+		} else {
 			lore.set(0, cmp);
 		}
 		meta.lore(lore);
@@ -93,7 +98,8 @@ public class ShopItem {
 	}
 	
 	public String serialize() {
-		if (isPurchased) return "purchased";
+		if (isPurchased)
+			return "purchased";
 		return eq.serialize() + ":" + price + ":" + slot + ":" + (sale ? 1 : 0) + ":" + (isPurchased ? 1 : 0);
 	}
 	
