@@ -35,9 +35,9 @@ public class Fissure extends Equipment {
 	private int damage, concussed;
 	
 	public Fissure(boolean isUpgraded) {
-		super(ID, "Fissure", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
+		super(ID, "Fissure", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 30, isUpgraded ? 11 : 14, 0));
-		damage = isUpgraded ? 140 : 120;
+		damage = isUpgraded ? 220 : 180;
 		concussed = isUpgraded ? 12 : 10;
 	}
 	

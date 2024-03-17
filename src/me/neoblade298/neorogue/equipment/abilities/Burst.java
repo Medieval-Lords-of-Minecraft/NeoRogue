@@ -24,11 +24,11 @@ public class Burst extends Equipment {
 	private static final String ID = "burst";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.REDSTONE);
 	private int stamina, buff;
-	private static final int seconds = 10;
+	private static final int seconds = 15;
 	
 	public Burst(boolean isUpgraded) {
 		super(ID, "Burst", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 15, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 25, 0));
 		pc.count(50).spread(0.5, 0.5).dustOptions(new DustOptions(Color.RED, 1F));
 		buff = isUpgraded ? 30 : 20;
 		stamina = isUpgraded ? 80 : 50;
@@ -42,8 +42,7 @@ public class Burst extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.POTION,
 				"On cast, give yourself <white>" + stamina + "</white> stamina and <yellow>" + buff +
-				"</yellow> " + GlossaryTag.STRENGTH.tag(this) + " damage for <white>" + seconds + "</white> seconds. Afterwards,"
-						+ " <white>" + stamina + "</white> stamina is removed.");
+				"</yellow> " + GlossaryTag.STRENGTH.tag(this) + " damage for <white>" + seconds + "</white> seconds.");
 	}
 
 	@Override

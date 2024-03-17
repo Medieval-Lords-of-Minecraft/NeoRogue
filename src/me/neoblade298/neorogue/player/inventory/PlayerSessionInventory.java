@@ -543,7 +543,7 @@ public class PlayerSessionInventory extends CorePlayerInventory {
 
 	@Override
 	public void handleInventoryDrag(InventoryDragEvent e) {
-
+		e.setCancelled(true);
 	}
 
 	private static ItemStack addNbt(ItemStack item, int dataSlot) {

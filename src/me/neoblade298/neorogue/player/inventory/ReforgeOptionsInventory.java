@@ -11,9 +11,11 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.shared.util.SharedUtil;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import net.kyori.adventure.text.Component;
@@ -67,7 +69,12 @@ public class ReforgeOptionsInventory extends CoreInventory {
 		}
 		else {
 			if (e.isRightClick()) {
-				new GlossaryInventory(p, getFromSlot(e.getSlot()), this);
+				new BukkitRunnable() {
+					public void run() {
+						// Intentionally null so you can't return to reforge options inv after you get the items back
+						new GlossaryInventory(p, getFromSlot(e.getSlot()), null);
+					}
+				}.runTask(NeoRogue.inst());
 				return;
 			}
 			Equipment reforged = getFromSlot(e.getSlot());
@@ -80,7 +87,11 @@ public class ReforgeOptionsInventory extends CoreInventory {
 			data.giveEquipmentSilent(reforged);
 			toReforge = null;
 			reforgeWith = null;
-			p.closeInventory();
+			new BukkitRunnable() {
+				public void run() {
+					p.closeInventory();
+				}
+			}.runTask(NeoRogue.inst());
 		}
 	}
 	

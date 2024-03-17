@@ -25,7 +25,7 @@ public class Ferocity extends Equipment {
 	
 	public Ferocity(boolean isUpgraded) {
 		super(ID, "Ferocity", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 50, 15, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 15, 0));
 		pc.count(50).spread(0.5, 0.5).dustOptions(new DustOptions(Color.RED, 1F));
 		staminaGain = isUpgraded ? 4 : 3;
 		cutoff = isUpgraded ? 14 : 20;
