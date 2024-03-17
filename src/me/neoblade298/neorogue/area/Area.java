@@ -235,15 +235,28 @@ public class Area {
 		// Start generating by position
 		for (int pos = 2; pos < MAX_POSITIONS - 2; pos++) {
 			GenerationType type;
-			if (pos == 5 || pos == 6 || pos == 11 || pos == 12) {
-				type = GenerationType.SPECIAL;
-			} else if (pos == 13) {
-				type = GenerationType.FINAL;
-			} else if (pos == 2 || pos == 3) {
+			
+			switch (pos) {
+			case 2:
 				type = GenerationType.EARLY;
-			} else {
+				break;
+			case 6:
+			case 7:
+			case 11:
+			case 12:
+				type = GenerationType.SPECIAL;
+				break;
+			case 8:
+			case 9:
+				type = GenerationType.MIDDLE;
+				break;
+			case 13:
+				type = GenerationType.FINAL;
+				break;
+			default:
 				type = GenerationType.NORMAL;
 			}
+			
 			nodes[pos] = generatePosition(type, nodes[pos - 1]);
 		}
 		
@@ -453,7 +466,7 @@ public class Area {
 		}
 		centerOfMass /= div;
 		
-		double idealCenterOfMass = (MAX_LANES - 1) / 2.0;
+		final double idealCenterOfMass = (MAX_LANES - 1) / 2.0;
 		if (laneCounts[0] == 0 && centerOfMass > idealCenterOfMass + 0.5) {
 			for (int pos = 1; pos < MAX_POSITIONS - 2; pos++) {
 				for (int lane = 1; lane < MAX_LANES; lane++) {
@@ -1021,23 +1034,23 @@ public class Area {
 	}
 
 	public enum GenerationType {
-		NORMAL(0), SPECIAL(1), INITIAL(2), FINAL(3), EARLY(4);
+		NORMAL(0), SPECIAL(1), INITIAL(2), FINAL(3), EARLY(4), MIDDLE(5);
 
 		protected DropTable<NodeType> table = new DropTable<NodeType>();
 
 		private GenerationType(int num) {
 			switch (num) {
 			case 0:
-				table.add(NodeType.FIGHT, 55);
+				table.add(NodeType.FIGHT, 54);
 				table.add(NodeType.CHANCE, 30);
-				table.add(NodeType.SHOP, 5);
-				table.add(NodeType.MINIBOSS, 3);
-				table.add(NodeType.SHRINE, 7);
+				table.add(NodeType.SHOP, 6);
+				table.add(NodeType.MINIBOSS, 2);
+				table.add(NodeType.SHRINE, 8);
 				break;
 			case 1:
 				table.add(NodeType.FIGHT, 7);
-				table.add(NodeType.CHANCE, 10);
-				table.add(NodeType.SHOP, 15);
+				table.add(NodeType.CHANCE, 11);
+				table.add(NodeType.SHOP, 14);
 				table.add(NodeType.MINIBOSS, 40);
 				table.add(NodeType.SHRINE, 28);
 				break;
@@ -1055,6 +1068,13 @@ public class Area {
 				table.add(NodeType.CHANCE, 32);
 				table.add(NodeType.MINIBOSS, 2);
 				table.add(NodeType.SHRINE, 2);
+				break;
+			case 5:
+				table.add(NodeType.FIGHT, 11);
+				table.add(NodeType.CHANCE, 24);
+				table.add(NodeType.SHOP, 36);
+				table.add(NodeType.MINIBOSS, 3);
+				table.add(NodeType.SHRINE, 26);
 				break;
 			}
 		}
