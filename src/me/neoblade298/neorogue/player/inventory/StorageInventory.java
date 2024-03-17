@@ -62,7 +62,9 @@ public class StorageInventory extends CoreInventory {
 			p.playSound(p, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1F);
 		}
 		else {
-			if (e.getCursor() != null) {
+			if (!e.getCursor().getType().isAir() || e.getCurrentItem() != null) 
+				p.playSound(p, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1F);
+			if (!e.getCursor().getType().isAir()) {
 				pinv.clearHighlights();
 			}
 			if (e.getCurrentItem() != null) {
@@ -71,7 +73,7 @@ public class StorageInventory extends CoreInventory {
 				pinv.setHighlights(eq.getType());
 			}
 			
-			if (e.getCursor() != null && e.getCurrentItem() != null) {
+			if (!e.getCursor().getType().isAir() && e.getCurrentItem() != null) {
 				NBTItem ncursor = new NBTItem(e.getCursor());
 				NBTItem nclicked = new NBTItem(e.getCurrentItem());
 				String eqId = ncursor.getString("equipId");
@@ -110,7 +112,6 @@ public class StorageInventory extends CoreInventory {
 					return;
 				}
 			}
-			p.playSound(p, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1F);
 		}
 	}
 

@@ -117,7 +117,7 @@ public class GlossaryInventory extends CoreInventory {
 	
 	private static int calculateSize(Equipment eq) {
 		int leftHeight = 1 + ((eq.getTags().size() + 3) / 4);
-		int rightHeight = eq.getReforgeOptions().size() + (!eq.getReforgeParents().isEmpty() ? 1 : 0);
+		int rightHeight =  + (!eq.getReforgeParents().isEmpty() ? 1 : 0) + (eq.getReforgeOptions().isEmpty() ? 1 : eq.getReforgeOptions().size());
 		return 9 * Math.max(leftHeight, rightHeight);
 	}
 	

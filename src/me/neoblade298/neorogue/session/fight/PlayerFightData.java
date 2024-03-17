@@ -150,6 +150,9 @@ public class PlayerFightData extends FightData {
 		return boardLines;
 	}
 	
+	@Override
+	public void updateDisplayName() {}
+	
 	public void updateBoardLines() {
 		int lineSize = 9;
 		boardLines = new ArrayList<String>(lineSize);

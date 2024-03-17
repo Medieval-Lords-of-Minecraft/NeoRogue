@@ -116,6 +116,7 @@ public class EquipmentInstance extends PriorityAction {
 		if (es != EquipSlot.HOTBAR) return;
 		if (cooldownSeconds <= 0) return;
 		Material mat = COOLDOWN_MATERIALS.get(slot);
+		if (inv.getItem(slot) == null) return;
 		inv.getItem(slot).setType(mat);
 		
 		p.setCooldown(mat, cooldownSeconds * 20);
