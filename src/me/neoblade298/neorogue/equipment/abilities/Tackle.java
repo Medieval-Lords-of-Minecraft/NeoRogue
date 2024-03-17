@@ -29,6 +29,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Tackle extends Equipment {
+	private static final String ID = "tackle";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION_LARGE),
 			start = new ParticleContainer(Particle.CLOUD);
 	private static final TargetProperties hc = TargetProperties.radius(1.5, true, TargetType.ENEMY),
@@ -36,12 +37,21 @@ public class Tackle extends Equipment {
 	private int damage;
 	
 	public Tackle(boolean isUpgraded) {
-		super("tackle", "Tackle", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
+		super(ID, "Tackle", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 15, 20, 0));
 		damage = isUpgraded ? 130 : 100;
 		
 		pc.count(25).spread(0.5, 0.5);
 		start.count(25).spread(0.5, 0);
+	}
+
+	@Override
+	public void setupReforges() {
+		addSelfReforge(EarthenTackle.get(), Bulldoze.get(), Pin.get());
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@SuppressWarnings("deprecation")

@@ -5,19 +5,25 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 
 public class RubyCluster extends Artifact {
+	private static final String ID = "rubyCluster";
 	private int max, shields;
 
 	public RubyCluster() {
-		super("rubyCluster", "Ruby Cluster", Rarity.RARE, EquipmentClass.CLASSLESS);
+		super(ID, "Ruby Cluster", Rarity.RARE, EquipmentClass.CLASSLESS);
 		canDrop = false;
 		max = 25;
 		shields = 5;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

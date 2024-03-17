@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -13,10 +14,15 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class HermesBoots extends Artifact {
+	private static final String ID = "hermesBoots";
 	private static int num = 5;
 
 	public HermesBoots() {
-		super("hermesBoots", "Hermes Boots", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
+		super(ID, "Hermes Boots", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

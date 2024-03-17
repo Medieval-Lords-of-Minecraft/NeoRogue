@@ -19,17 +19,22 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.GrantShieldsEvent;
 
 public class Thornguard extends Equipment {
+	private static final String ID = "thornguard";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
 	private static final int CUTOFF = 3;
 	private int thorns;
 	
 	public Thornguard(boolean isUpgraded) {
-		super("thornguard", "Thornguard", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+		super(ID, "Thornguard", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(isUpgraded ? 15 : 25, isUpgraded ? 40 : 70, 0, 0));
 		properties.addUpgrades(PropertyType.MANA_COST, PropertyType.STAMINA_COST);
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		
 		thorns = isUpgraded ? 6 : 4;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override
@@ -48,7 +53,7 @@ public class Thornguard extends Equipment {
 				pdata.addTrigger(id, Trigger.RECEIVE_SHIELDS, (pdata2, inputs2) -> {
 					GrantShieldsEvent ev = (GrantShieldsEvent) inputs2;
 					count += ev.getShield().getAmount();
-					pdata.applyStatus(StatusType.THORNS, p.getUniqueId(), count / CUTOFF, -1);
+					pdata.applyStatus(StatusType.THORNS, p.getUniqueId(), thorns * (count / CUTOFF), -1);
 					count = count % CUTOFF;
 					return TriggerResult.keep();
 				});

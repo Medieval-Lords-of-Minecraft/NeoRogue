@@ -214,7 +214,11 @@ public abstract class FightInstance extends Instance {
 				if (lose) {
 					p.spigot().respawn();
 					Session sess = data.getInstance().getSession();
-					sess.setInstance(new LoseInstance(sess));
+					new BukkitRunnable() {
+						public void run() {
+							sess.setInstance(new LoseInstance(sess));
+						}
+					}.runTask(NeoRogue.inst());
 				} else {
 					if (p != null) {
 						fi.corpses.add(new Corpse(data));
@@ -226,7 +230,7 @@ public abstract class FightInstance extends Instance {
 								p.teleport(prev);
 								p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 60, 0));
 							}
-						}.runTaskLater(NeoRogue.inst(), 5L);
+						}.runTask(NeoRogue.inst());
 					}
 				}
 			}
@@ -252,7 +256,7 @@ public abstract class FightInstance extends Instance {
 	public void handlePlayerLeave(Player p) {
 		p.setInvulnerable(false);
 		p.setInvisible(false);
-		p.setNoDamageTicks(10);
+		p.setMaximumNoDamageTicks(20);
 		p.removePotionEffect(PotionEffectType.ABSORPTION);
 	}
 	
@@ -261,6 +265,7 @@ public abstract class FightInstance extends Instance {
 		// If player rejoins fight, don't tp them, it'll still be the same fight
 		// If the fight already ended, another instance will handle their tp anyway
 		PlayerFightData pdata = getUserData(p.getUniqueId());
+		p.setMaximumNoDamageTicks(0);
 		if (pdata == null) {
 			Bukkit.getLogger().warning("[NeoRogue] Failed to get player fight data on rejoin for " + p.getName());
 			return;
@@ -277,12 +282,11 @@ public abstract class FightInstance extends Instance {
 		Player p = (Player) e.getDamager();
 		e.setCancelled(true);
 		PlayerFightData data = userData.get(p.getUniqueId());
-		if (!data.canBasicAttack())
-			return;
 		if (!(e.getEntity() instanceof LivingEntity))
 			return;
-
 		trigger(p, Trigger.LEFT_CLICK, null);
+		if (!data.canBasicAttack())
+			return;
 		trigger(p, Trigger.LEFT_CLICK_HIT, new LeftClickHitEvent((LivingEntity) e.getEntity()));
 	}
 	
@@ -291,7 +295,13 @@ public abstract class FightInstance extends Instance {
 			return;
 		Player p = (Player) e.getEntity();
 		if (e.getCause() == DamageCause.FALL) {
-			e.setCancelled(trigger(p, Trigger.FALL_DAMAGE, e));
+			e.setCancelled(true);
+			
+			// Cancel fall damage if trigger returns true
+			if (!trigger(p, Trigger.FALL_DAMAGE, e)) {
+				DamageMeta meta = new DamageMeta(FightInstance.getUserData(p.getUniqueId()), e.getFinalDamage(), DamageType.FALL);
+				meta.dealDamage(p);
+			}
 			return;
 		}
 	}
@@ -525,25 +535,24 @@ public abstract class FightInstance extends Instance {
 		PlayerFightData data = userData.get(p.getUniqueId());
 		if (data == null)
 			return;
-		if (!data.canBasicAttack())
-			return;
-
-		trigger(e.getPlayer(), Trigger.LEFT_CLICK, null);
 		trigger(e.getPlayer(), Trigger.LEFT_CLICK_NO_HIT, null);
+		trigger(e.getPlayer(), Trigger.LEFT_CLICK, null);
 	}
 
 	public static void handleMythicDespawn(MythicMobDespawnEvent e) {
 		FightData data = removeFightData(e.getEntity().getUniqueId());
-		if (data == null || data.getInstance() == null)
-			return;
+		if (data == null) return;
+		data.cleanup();
+		if (data.getInstance() == null) return;
 		data.getInstance().handleRespawn(data, e.getMobType().getInternalName(), true);
 	}
 
 	public static void handleMythicDeath(MythicMobDeathEvent e) {
 		FightData data = removeFightData(e.getEntity().getUniqueId());
-		if (data == null || data.getInstance() == null)
-			return;
+		if (data == null) return;
 		data.cleanup();
+		
+		if (data.getInstance() == null) return;
 		String id = e.getMobType().getInternalName();
 		data.getInstance().handleRespawn(data, id, false);
 		data.getInstance().handleMobKill(id);
@@ -592,7 +601,9 @@ public abstract class FightInstance extends Instance {
 
 	public static FightData getFightData(UUID uuid) {
 		if (!fightData.containsKey(uuid)) {
-			FightData fd = new FightData((LivingEntity) Bukkit.getEntity(uuid), (MapSpawnerInstance) null);
+			LivingEntity ent = (LivingEntity) Bukkit.getEntity(uuid);
+			FightData fd = new FightData(ent,
+							NeoRogue.mythicApi.getMythicMobInstance(ent), (MapSpawnerInstance) null);
 			fightData.put(uuid, fd);
 		}
 		return fightData.get(uuid);
@@ -720,6 +731,7 @@ public abstract class FightInstance extends Instance {
 				for (Player p : s.getOnlinePlayers()) {
 					p.teleport(spawn);
 					p.setAllowFlight(false);
+					p.setMaximumNoDamageTicks(0);
 				}
 				for (UUID uuid : s.getSpectators()) {
 					Player p = Bukkit.getPlayer(uuid);
@@ -729,6 +741,7 @@ public abstract class FightInstance extends Instance {
 				for (FightRunnable runnable : initialTasks) {
 					runnable.run(fi, fdata);
 				}
+				s.setBusy(false);
 			}
 		}.runTaskLater(NeoRogue.inst(), 20L);
 
@@ -812,7 +825,8 @@ public abstract class FightInstance extends Instance {
 
 		Component statsHeader = SharedUtil.color(
 				"<gray>Fight Statistics [<white>" + timer + "</white>] (Hover for more info!)\n=====\n"
-						+ "[<yellow>Name</yellow> (<green>Health</green>) - <red>Damage Dealt </red>/ <dark_red>Received </dark_red>/ <blue>Buffed</blue> / <gold>Mitigated</gold>]"
+						+ "[<yellow>Name</yellow> (<green>HP</green>) - <red>Damage Dealt </red>/ <dark_red>Received "
+						+ "<gray>(</gray>HP<gray>)</gray> </dark_red>/ <blue>Buffed</blue> / <gold>Mitigated</gold>]"
 		);
 		s.broadcast(statsHeader);
 		for (UUID uuid : s.getParty().keySet()) {

@@ -19,6 +19,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Bide extends Equipment {
+	private static final String ID = "bide";
 	private int shields, berserk, duration;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
 			bpc = new ParticleContainer(Particle.FLAME);
@@ -26,7 +27,7 @@ public class Bide extends Equipment {
 			strengthGain = new SoundContainer(Sound.ENTITY_BLAZE_SHOOT);
 	
 	public Bide(boolean isUpgraded) {
-		super("bide", "Bide", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR, 
+		super(ID, "Bide", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR, 
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 25, 10, 0));
 		shields = 50;
 		duration = 5;
@@ -36,10 +37,14 @@ public class Bide extends Equipment {
 		
 		addTags(GlossaryTag.SHIELDS, GlossaryTag.BERSERK);
 	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
+	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.FLINT,
+		item = createItem(Material.BLAZE_POWDER,
 				"On cast, gain <white>" + shields + "</white> " + GlossaryTag.SHIELDS.tag(this) + " for " + duration + " seconds. During this time, "
 						+ "taking damage grants you <yellow>" + berserk + "</yellow> " + GlossaryTag.BERSERK.tag(this) + " stacks.");
 	}

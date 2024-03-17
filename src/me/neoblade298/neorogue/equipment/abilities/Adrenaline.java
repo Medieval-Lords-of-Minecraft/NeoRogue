@@ -19,14 +19,24 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Adrenaline extends Equipment {
+	private static final String ID = "adrenaline";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.REDSTONE);
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_BLAZE_DEATH);
 	private static final int stamina = 100;
 	
 	public Adrenaline(boolean isUpgraded) {
-		super("adrenaline", "Adrenaline", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
+		super(ID, "Adrenaline", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 5, 0));
 		pc.count(50).spread(0.5, 0.5).dustOptions(new DustOptions(Color.RED, 1F));
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
+	}
+	
+	@Override
+	public void setupReforges() {
+		addSelfReforge(Burst.get(), Discipline.get(), Ferocity.get());
 	}
 
 	@Override

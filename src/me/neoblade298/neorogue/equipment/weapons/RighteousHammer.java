@@ -29,10 +29,12 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class RighteousHammer extends Equipment {
+	private static final String ID = "righteousHammer";
 	private static final int DISTANCE = 4, RADIUS = 2;
 	private static final TargetProperties props = TargetProperties.radius(RADIUS, true, TargetType.ENEMY);
 	private static final ParticleContainer swingPart = new ParticleContainer(Particle.CLOUD).count(5).spread(0.1, 0.1),
@@ -56,10 +58,14 @@ public class RighteousHammer extends Equipment {
 	}
 	
 	public RighteousHammer(boolean isUpgraded) {
-		super("righteousHammer", "Righteous Hammer", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
+		super(ID, "Righteous Hammer", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(110, 0.5, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
 		sanct = isUpgraded ? 6 : 4;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override
@@ -84,10 +90,11 @@ public class RighteousHammer extends Equipment {
 		if (enemies.isEmpty()) return;
 		boolean first = true;
 		for (LivingEntity ent : enemies) {
+			FightInstance.applyStatus(ent, StatusType.SANCTIFIED, p, sanct, -1);
 			if (first) {
 				weaponDamage(p, data, ent);
 				Vector v = ent.getVelocity();
-				ent.setVelocity(v.setY(v.getY() + 0.5));
+				FightInstance.knockback(ent, v.setY(v.getY() + 0.5));
 				first = false;
 			}
 			else {

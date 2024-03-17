@@ -19,16 +19,21 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Ferocity extends Equipment {
+	private static final String ID = "ferocity";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.REDSTONE);
 	private int staminaGain, cutoff, berserk;
 	
 	public Ferocity(boolean isUpgraded) {
-		super("ferocity", "Ferocity", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+		super(ID, "Ferocity", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 50, 15, 0));
 		pc.count(50).spread(0.5, 0.5).dustOptions(new DustOptions(Color.RED, 1F));
 		staminaGain = isUpgraded ? 4 : 3;
 		cutoff = isUpgraded ? 14 : 20;
 		berserk = 3;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

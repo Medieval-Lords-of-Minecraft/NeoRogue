@@ -11,6 +11,7 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
@@ -23,13 +24,18 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class EnergyBattery extends Artifact {
+	private static final String ID = "energyBattery";
 	private static final ParticleContainer part = new ParticleContainer(Particle.FIREWORKS_SPARK).count(10).speed(0.1).spread(0.5, 0.5);
 	private int num;
 
 	public EnergyBattery() {
-		super("energyBattery", "Energy Battery", Rarity.RARE, EquipmentClass.CLASSLESS);
+		super(ID, "Energy Battery", Rarity.RARE, EquipmentClass.CLASSLESS);
 
 		num = 2;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

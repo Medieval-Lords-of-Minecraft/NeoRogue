@@ -29,6 +29,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class FireStaff extends Equipment {
+	private static final String ID = "fireStaff";
 	private static final TargetProperties props = TargetProperties.radius(1.2, true, TargetType.ENEMY);
 	
 	private static final ParticleContainer tick;
@@ -41,10 +42,14 @@ public class FireStaff extends Equipment {
 
 	public FireStaff(boolean isUpgraded) {
 		super(
-				"fireStaff", "Fire Staff", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(8, 0, isUpgraded ? 40 : 20, 0.35, DamageType.FIRE, Sound.ITEM_AXE_SCRAPE)
+				ID, "Fire Staff", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
+				EquipmentProperties.ofWeapon(8, 0, isUpgraded ? 40 : 20, 0.2, DamageType.FIRE, Sound.ITEM_AXE_SCRAPE)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 	
 	@Override

@@ -23,17 +23,22 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Challenge extends Equipment {
+	private static final String ID = "challenge";
 	private static final TargetProperties tp = TargetProperties.radius(15, false, TargetType.ENEMY);
 	private int threat, shield;
 	private static final ParticleContainer taunt = new ParticleContainer(Particle.VILLAGER_ANGRY).count(15).spread(0.1, 0.1).offsetY(2);
 	
 	public Challenge(boolean isUpgraded) {
-		super("challenge", "Challenge", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+		super(ID, "Challenge", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 25, isUpgraded ? 6 : 8, tp.range));
 		properties.addUpgrades(PropertyType.COOLDOWN);
 		threat = 1000;
 		shield = isUpgraded ? 40 : 30;
 		taunt.count(50).spread(0.5, 0.5).speed(0.2);
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

@@ -263,6 +263,7 @@ public class LobbyInstance extends Instance {
 				for (UUID uuid : players.keySet()) {
 					Player p = Bukkit.getPlayer(uuid);
 					p.setHealth(p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+					p.setMaximumNoDamageTicks(0);
 				}
 				s.setInstance(new NodeSelectInstance(s));
 				s.setBusy(false);

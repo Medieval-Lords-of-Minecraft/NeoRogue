@@ -19,16 +19,21 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class WarCry extends Equipment {
+	private static final String ID = "warCry";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.REDSTONE);
 	private int strength, shields;
 	
 	public WarCry(boolean isUpgraded) {
-		super("warCry", "War Cry", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+		super(ID, "War Cry", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 25, 15, 0));
 		strength = isUpgraded ? 15 : 10;
 		shields = isUpgraded ? 15 : 10;
 		
 		pc.count(50).spread(0.5, 0.5).dustOptions(new DustOptions(Color.RED, 1F));
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

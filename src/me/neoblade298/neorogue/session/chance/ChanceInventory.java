@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -12,12 +13,17 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
+import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.FightInfoInventory;
+import me.neoblade298.neorogue.player.inventory.GlossaryInventory;
+import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import net.kyori.adventure.text.Component;
@@ -38,6 +44,7 @@ public class ChanceInventory extends CoreInventory {
 		this.s = inst.getSession();
 		this.stage = stage;
 		this.data = inst.getSession().getData(p.getUniqueId());
+		InventoryListener.registerPlayerInventory(p, new PlayerSessionInventory(data));
 		setupInventory();
 	}
 
@@ -89,9 +96,8 @@ public class ChanceInventory extends CoreInventory {
 	public void handleInventoryClick(InventoryClickEvent e) {
 		e.setCancelled(true);
 		if (e.getRawSlot() == 0 && e.getCurrentItem() != null) {
-			new FightInfoInventory(p, ((FightInstance) inst.getNextInstance()).getMap().getMobs());
+			new FightInfoInventory(p, data, ((FightInstance) inst.getNextInstance()).getMap().getMobs());
 		}
-		if (asSpectator) return;
 		Player p = (Player) e.getWhoClicked();
 		UUID uuid = p.getUniqueId();
 		Inventory inv = e.getClickedInventory();
@@ -103,12 +109,35 @@ public class ChanceInventory extends CoreInventory {
 		NBTItem nbti = new NBTItem(item);
 		int num = nbti.getInteger("choice");
 		if (num == 0) return;
-		
-		if (!set.isIndividual() && !uuid.equals(s.getHost())) {
-			Util.displayError(p, "Only the host may make choices for this event!");
+		ChanceChoice choice = stage.choices.get(num - 1);
+		ChanceInventory ci = this;
+
+		if (e.isRightClick() && !choice.getTags().isEmpty()) {
+			new BukkitRunnable() {
+				public void run() {
+					new GlossaryInventory(p, choice, ci);
+				}
+			}.runTask(NeoRogue.inst());
 			return;
 		}
-		ChanceChoice choice = stage.choices.get(num - 1);
+		if (asSpectator) return;
+		
+		if (!set.isIndividual() && !uuid.equals(s.getHost())) {
+			if (!s.canSuggest()) return;
+			s.setSuggestCooldown();
+			s.broadcast(
+				p.name().color(NamedTextColor.YELLOW)
+				.append(Component.text(" suggests the choice ", NamedTextColor.GRAY))
+				.append(choice.getItemWithoutConditions().displayName())
+			);
+			s.broadcastSound(Sound.ENTITY_ARROW_HIT_PLAYER);
+			new BukkitRunnable() {
+				public void run() {
+					p.closeInventory();
+				}
+			}.runTask(NeoRogue.inst());
+			return;
+		}
 		if (!choice.canChoose(s, inst, s.getData(uuid))) {
 			Util.displayError(p, "You aren't eligible for this option!");
 			return;
@@ -116,7 +145,11 @@ public class ChanceInventory extends CoreInventory {
 		
 		ChanceStage next = set.getStage(choice.choose(s, inst, data));
 		inst.advanceStage(uuid, next);
-		p.closeInventory();
+		new BukkitRunnable() {
+			public void run() {
+				p.closeInventory();
+			}
+		}.runTask(NeoRogue.inst());
 	}
 
 	@Override

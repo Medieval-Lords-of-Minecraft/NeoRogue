@@ -26,17 +26,22 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Smite extends Equipment {
+	private static final String ID = "smite";
 	private int sanctified, damage;
 	private static final ParticleContainer part = new ParticleContainer(Particle.FIREWORKS_SPARK).offsetForward(2).count(30).spread(4, 0.2);
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_FIREWORK_ROCKET_TWINKLE);
 	private static final TargetProperties tp = TargetProperties.cone(90, 5, false, TargetType.ENEMY);
 	
 	public Smite(boolean isUpgraded) {
-		super("smite", "Smite", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+		super(ID, "Smite", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 20, 8, 7));
 		
 		sanctified = isUpgraded ? 12 : 8;
 		damage = isUpgraded ? 130 : 100;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override
@@ -55,7 +60,7 @@ public class Smite extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.FLINT,
+		item = createItem(Material.NETHER_STAR,
 				"On cast, deal <yellow>" + damage + "</yellow> " + GlossaryTag.SLASHING.tag(this) + " damage in a cone in front of you and "
 						+ "apply <yellow>" + sanctified + "</yellow> " + GlossaryTag.SANCTIFIED.tag(this) + ".");
 	}

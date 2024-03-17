@@ -26,6 +26,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Windcutter extends Equipment {
+	private static final String ID = "windcutter";
 	private static final SoundContainer sound = new SoundContainer(Sound.ENTITY_ELDER_GUARDIAN_DEATH, 2F);
 	private static final ParticleContainer part = new ParticleContainer(Particle.SWEEP_ATTACK);
 	private static final int PROJECTILE_AMOUNT = 5;
@@ -34,12 +35,16 @@ public class Windcutter extends Equipment {
 	private int damage;
 	
 	public Windcutter(boolean isUpgraded) {
-		super("windcutter", "Windcutter", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+		super(ID, "Windcutter", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 5));
 		damage = isUpgraded ? 50 : 30;
 		for (int i = 0; i < PROJECTILE_AMOUNT; i++) {
 			projs.add(new WindcutterProjectile(i, PROJECTILE_AMOUNT / 2));
 		}
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override
@@ -52,9 +57,11 @@ public class Windcutter extends Equipment {
 		public WindcutterInstance(String id, Player p, PlayerFightData data) {
 			super(id);
 			action = (pdata, in) -> {
-				if (++count >= 3) {
+				if (++count >= 3 && (data.getStamina() / data.getMaxStamina()) > 0.5) {
 					sound.play(p, p);
-					projs.start(data);
+					projs.start(data, p.getLocation().add(0, 1, 0), p.getLocation().getDirection().setY(0).normalize());
+					data.addStamina(-10);
+					count = 0;
 				}
 				return TriggerResult.keep();
 			};
@@ -65,16 +72,16 @@ public class Windcutter extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BAMBOO,
-				"Passive. Every third basic attack fires five piercing projectiles in a cone that deal " + GlossaryTag.SLASHING.tag(this, damage, true) +
-				" damage.");
+				"Passive. When above 50% max stamina, every third basic attack fires five piercing projectiles in a cone that deal " + GlossaryTag.SLASHING.tag(this, damage, true) +
+				" damage and costs <white>10</white> stamina. Unaffected by stamina cost reduction.");
 	}
 	
 	private class WindcutterProjectile extends Projectile {
 		public WindcutterProjectile(int i, int center) {
-			super(0.25, properties.get(PropertyType.RANGE), 2);
+			super(0.5, properties.get(PropertyType.RANGE), 2);
 			this.size(1, 1).pierce();
 			int iter = i - center;
-			this.rotation(iter * 45);
+			this.rotation(iter * 25);
 		}
 
 		@Override

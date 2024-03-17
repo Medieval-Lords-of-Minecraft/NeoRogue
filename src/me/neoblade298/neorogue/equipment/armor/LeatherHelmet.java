@@ -10,12 +10,17 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class LeatherHelmet extends Equipment {
+	private static final String ID = "leatherHelmet";
 	private double shields;
 	
 	public LeatherHelmet(boolean isUpgraded) {
-		super("leatherHelmet", "Leather Helmet", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
+		super(ID, "Leather Helmet", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ARMOR);
 		shields = isUpgraded ? 30 : 20;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

@@ -1,7 +1,6 @@
 package me.neoblade298.neorogue.player.inventory;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -12,33 +11,21 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.shared.util.SharedUtil;
-import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
+import me.neoblade298.neorogue.player.PlayerSessionData;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class ReforgeOptionsInventory extends CoreInventory {
-	private int slot, dataSlot;
-	private boolean isEquipSlot;
+	private PlayerSessionData data;
 	private Equipment toReforge, reforgeWith;
-	private PlayerSessionInventory prev;
-	private ItemStack hostage;
-	private EquipSlot type;
 	private ArrayList<Equipment> reforgeOptions = new ArrayList<Equipment>();
-	public ReforgeOptionsInventory(PlayerSessionInventory prev, int slot, boolean isEquipSlot, EquipSlot type, int dataSlot, Equipment toReforge, Equipment reforgeWith, ItemStack hostage) {
-		super(prev.getPlayer(), Bukkit.createInventory(prev.getPlayer(), 18, Component.text("Reforge Options", NamedTextColor.BLUE)));
-		
-		this.slot = slot;
-		this.isEquipSlot = isEquipSlot;
-		this.hostage = hostage;
-		this.prev = prev;
-		this.type = type;
-		this.dataSlot = dataSlot;
+	public ReforgeOptionsInventory(PlayerSessionData data, Equipment toReforge, Equipment reforgeWith) {
+		super(data.getPlayer(), Bukkit.createInventory(data.getPlayer(), 18, Component.text("Reforge Options", NamedTextColor.BLUE)));
+		this.data = data;
 		this.toReforge = toReforge;
 		this.reforgeWith = reforgeWith;
 
@@ -85,33 +72,24 @@ public class ReforgeOptionsInventory extends CoreInventory {
 			}
 			Equipment reforged = getFromSlot(e.getSlot());
 			p.playSound(p, Sound.BLOCK_ANVIL_USE, 1F, 1F);
-			Component cmp = SharedUtil.color("<yellow>" + p.getName() + "</yellow> reforged their ").append(toReforge.getHoverable());
+			Component cmp = SharedUtil.color("<yellow>" + p.getName() + "</yellow> reforged their ").append(toReforge.getUnupgraded().getHoverable());
 			if (!toReforge.getId().equals(reforgeWith.getId())) cmp = cmp.append(Component.text(", ").append(reforgeWith.getHoverable()));
 			cmp = cmp.append(Component.text(" into a(n) ").append(reforged.getHoverable().append(Component.text("!"))));
-			prev.getData().getSession().broadcast(cmp);
+			data.getSession().broadcast(cmp);
 			
-			if (isEquipSlot) {
-				prev.getData().setEquipment(type, dataSlot, Equipment.get(reforged.getId(), false));
-			}
-			else {
-				p.getInventory().setItem(slot, reforged.getItem());
-			}
-			hostage = null;
+			data.giveEquipmentSilent(reforged);
+			toReforge = null;
+			reforgeWith = null;
 			p.closeInventory();
 		}
 	}
 	
 	@Override
 	public void handleInventoryClose(InventoryCloseEvent e) {
-		if (hostage != null) {
-			HashMap<Integer, ItemStack> failed = p.getInventory().addItem(hostage);
-			if (!failed.isEmpty()) p.getWorld().dropItem(p.getLocation(), hostage);
+		if (toReforge != null) {
+			data.giveEquipment(toReforge, null, null);
+			data.giveEquipment(reforgeWith, null, null);
 		}
-		new BukkitRunnable() {
-			public void run() {
-				new PlayerSessionInventory(prev.getData());
-			}
-		}.runTaskLater(NeoRogue.inst(), 5L);
 	}
 	
 	@Override

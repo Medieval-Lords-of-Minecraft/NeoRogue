@@ -10,6 +10,7 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.commands.Arg;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.session.LobbyInstance;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
 
@@ -41,7 +42,7 @@ public class CmdAdminTestEquipment extends Subcommand {
 		if (eq == null) {
 			Util.displayError(p, "That equipment doesn't exist!");
 		}
-		if (sess == null) {
+		if (sess == null || sess.getInstance() instanceof LobbyInstance) {
 			p.getInventory().addItem(eq.getItem());
 		}
 		else {

@@ -17,13 +17,18 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.WeaponSwingEvent;
 
 public class Flurry extends Equipment {
+	private static final String ID = "flurry";
 	private int cutoff;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
 	
 	public Flurry(boolean isUpgraded) {
-		super("flurry", "Flurry", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+		super(ID, "Flurry", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 35, 10, 0));
 		cutoff = isUpgraded ? 6 : 4;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override
@@ -53,6 +58,6 @@ public class Flurry extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.AMETHYST_SHARD,
-				"On cast, your next <yellow>" + cutoff + "</yellow> basic attacks have their attack cooldown reduced by <white>50%</white>.");
+				"On cast, your next <yellow>" + cutoff + "</yellow> basic attacks have their attack speed increased by <white>1.0</white>.");
 	}
 }

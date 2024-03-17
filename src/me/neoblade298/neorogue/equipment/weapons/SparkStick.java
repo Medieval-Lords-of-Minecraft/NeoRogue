@@ -23,6 +23,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class SparkStick extends Equipment {
+	private static final String ID = "sparkStick";
 	private static final ParticleContainer tick;
 	
 	private int pierceAmount;
@@ -34,11 +35,15 @@ public class SparkStick extends Equipment {
 	
 	public SparkStick(boolean isUpgraded) {
 		super(
-				"sparkStick", "Spark Stick", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
+				ID, "Spark Stick", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(isUpgraded ? 1 : 2, 0, 5, 4, DamageType.LIGHTNING, Sound.ITEM_AXE_SCRAPE)
 		);
 		properties.addUpgrades(PropertyType.MANA_COST);
 		pierceAmount = 1;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

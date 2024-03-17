@@ -23,15 +23,21 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class SilverFang extends Equipment {
+	private static final String ID = "silverFang";
 	private int sanct;
 	
 	public SilverFang(boolean isUpgraded) {
-		super("silverFang", "Silver Fang", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
+		super(ID, "Silver Fang", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(isUpgraded ? 70 : 55, 1, 0.7, DamageType.SLASHING, new SoundContainer(Sound.ENTITY_ALLAY_HURT, 0.8F)));
+				EquipmentProperties.ofWeapon(isUpgraded ? 55 : 45, 1, 0.3, DamageType.SLASHING, new SoundContainer(Sound.ENTITY_ALLAY_HURT, 0.8F)));
 		properties.addUpgrades(PropertyType.DAMAGE);
+		canDrop = false;
 		
 		sanct = isUpgraded ? 3 : 2;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override
@@ -50,6 +56,6 @@ public class SilverFang extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.IRON_SWORD, "This weapon converts its damage into " + GlossaryTag.LIGHT.tag(this) + " damage after buffs are applied and "
-				+ "applies " + GlossaryTag.SANCTIFIED.tag(this, sanct, true));
+				+ "applies " + GlossaryTag.SANCTIFIED.tag(this, sanct, true) + ".");
 	}
 }

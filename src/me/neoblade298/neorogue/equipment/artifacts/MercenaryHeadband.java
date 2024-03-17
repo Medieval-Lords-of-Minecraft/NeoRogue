@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -15,9 +16,14 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class MercenaryHeadband extends Artifact {
+	private static final String ID = "mercenaryHeadband";
 	private static final int regen = 2;
 	public MercenaryHeadband() {
-		super("mercenaryHeadband", "Mercenary Headband", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
+		super(ID, "Mercenary Headband", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

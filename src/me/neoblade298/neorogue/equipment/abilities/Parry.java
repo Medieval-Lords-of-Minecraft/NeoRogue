@@ -23,19 +23,24 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
 public class Parry extends Equipment {
+	private static final String ID = "parry";
 	private int shields, damage;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
 			bpc = new ParticleContainer(Particle.FLAME),
 			hit = new ParticleContainer(Particle.REDSTONE);
 	
 	public Parry(boolean isUpgraded) {
-		super("parry", "Parry", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+		super(ID, "Parry", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 25, 5, 0));
 		shields = 15;
 		damage = isUpgraded ? 60 : 40;
 		pc.count(10).spread(0.5, 0.5).speed(0.2);
 		bpc.count(20).spread(0.5, 0.5).speed(0.1);
 		hit.count(50).spread(0.5, 0.5);
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override
@@ -75,7 +80,7 @@ public class Parry extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.FLINT,
+		item = createItem(Material.NETHER_QUARTZ_ORE,
 				"On cast, gain <white>" + shields + " </white>" + GlossaryTag.SHIELDS.tag(this) + " for <white>2</white> seconds. Taking damage during this "
 						+ "increases your next basic attack's damage by <yellow>" + damage + "</yellow> once per cast.");
 	}

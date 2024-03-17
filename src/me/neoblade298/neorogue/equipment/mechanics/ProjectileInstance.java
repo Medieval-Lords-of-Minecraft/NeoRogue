@@ -34,25 +34,7 @@ public class ProjectileInstance {
 	private int tick, numHit, interpolationPoints;
 	
 	protected ProjectileInstance(Projectile settings, FightData owner) {
-		this.inst = owner.getInstance();
-		this.owner = owner;
-		this.settings = settings;
-		LivingEntity origin = owner.getEntity();
-		
-		v = origin.getLocation().getDirection().rotateAroundY(Math.toRadians(settings.getRotation()));
-		if (settings.initialY() != 0) v = v.add(new Vector(0, settings.initialY(), 0)).normalize();
-		v.multiply(settings.getBlocksPerTick() * settings.getTickSpeed());
-		interpolationPoints = (int) v.length() + 1;
-		loc = origin.getLocation().add(0, 1, 0);
-		bounds = BoundingBox.of(loc, settings.getWidth(), settings.getHeight(), settings.getWidth());
-		
-		task = new BukkitRunnable() {
-			public void run() {
-				if (tick()) {
-					cancel();
-				}
-			}
-		}.runTaskTimer(NeoRogue.inst(), settings.getTickSpeed(), settings.getTickSpeed());
+		this(settings, owner, owner.getEntity().getLocation().add(0, 1, 0), owner.getEntity().getLocation().getDirection());
 	}
 	
 	protected ProjectileInstance(Projectile settings, FightData owner, Location origin, Vector direction) {
@@ -60,11 +42,11 @@ public class ProjectileInstance {
 		this.owner = owner;
 		this.settings = settings;
 		
-		v = direction.rotateAroundY(Math.toRadians(settings.getRotation()));
+		v = direction.clone().rotateAroundY(Math.toRadians(settings.getRotation()));
 		if (settings.initialY() != 0) v = v.add(new Vector(0, settings.initialY(), 0)).normalize();
 		v.multiply(settings.getBlocksPerTick() * settings.getTickSpeed());
 		interpolationPoints = (int) v.length() + 1;
-		loc = origin.add(0, 1, 0);
+		loc = origin.clone();
 		bounds = BoundingBox.of(loc, settings.getWidth(), settings.getHeight(), settings.getWidth());
 		
 		task = new BukkitRunnable() {

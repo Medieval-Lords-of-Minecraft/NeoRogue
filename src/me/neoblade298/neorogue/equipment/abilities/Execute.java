@@ -20,17 +20,27 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
 public class Execute extends Equipment {
+	private static final String ID = "execute";
 	private int damage, strength;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
 			hit = new ParticleContainer(Particle.REDSTONE);
 	
 	public Execute(boolean isUpgraded) {
-		super("execute", "Execute", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+		super(ID, "Execute", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 15, 7, 0));
 		damage = isUpgraded ? 120 : 80;
 		strength = isUpgraded ? 12 : 8;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		hit.count(50).spread(0.5, 0.5);
+	}
+
+	@Override
+	public void setupReforges() {
+		addSelfReforge(SiphoningStrike.get(), Fortify.get(), MightySwing.get());
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@SuppressWarnings("deprecation")
@@ -58,7 +68,7 @@ public class Execute extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.FLINT,
+		item = createItem(Material.SKULL_POTTERY_SHERD,
 				"On cast, your next basic attack while in the air deals <yellow>" + damage + "</yellow> " + GlossaryTag.PIERCING.tag(this) + " damage. If the enemy is"
 						+ " killed by this attack, gain <yellow>" + strength + "</yellow> " + GlossaryTag.STRENGTH.tag(this) + " for <white>10</white> seconds.");
 	}

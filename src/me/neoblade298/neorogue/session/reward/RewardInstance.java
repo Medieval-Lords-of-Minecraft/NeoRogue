@@ -53,6 +53,7 @@ public class RewardInstance extends EditInventoryInstance {
 			Player p = Bukkit.getPlayer(uuid);
 			p.teleport(spawn);
 		}
+		super.start();
 		
 		// Setup hologram
 		ArrayList<String> lines = new ArrayList<String>();
@@ -72,7 +73,7 @@ public class RewardInstance extends EditInventoryInstance {
 		e.setCancelled(true);
 		if (e.getAction() != Action.RIGHT_CLICK_BLOCK || e.getClickedBlock().getType() != Material.ENDER_CHEST) return;
 		if (e.getHand() != EquipmentSlot.HAND) return;
-		new SpectateSelectInventory(s, e.getPlayer(), true);
+		new SpectateSelectInventory(s, e.getPlayer(), null, true);
 	}
 
 	@Override
@@ -85,7 +86,7 @@ public class RewardInstance extends EditInventoryInstance {
 		UUID uuid = p.getUniqueId();
 		if (rewards.get(uuid).isEmpty()) {
 			if (!onRewardClaim()) {
-				new SpectateSelectInventory(s, e.getPlayer(), true);
+				new SpectateSelectInventory(s, e.getPlayer(), s.getParty().get(uuid), true);
 			}
 			return;
 		}

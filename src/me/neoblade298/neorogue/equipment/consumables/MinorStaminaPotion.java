@@ -6,15 +6,21 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.PotionMeta;
 
 import me.neoblade298.neorogue.equipment.Consumable;
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 
 public class MinorStaminaPotion extends Consumable {
+	private static final String ID = "minorStaminaPotion";
 	private double stamina;
 	
 	public MinorStaminaPotion(boolean isUpgraded) {
-		super("minorStaminaPotion", "Minor Stamina Potion", isUpgraded, Rarity.COMMON, EquipmentClass.CLASSLESS);
+		super(ID, "Minor Stamina Potion", isUpgraded, Rarity.COMMON, EquipmentClass.CLASSLESS);
 		this.stamina = isUpgraded ? 3 : 2;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 	
 	@Override

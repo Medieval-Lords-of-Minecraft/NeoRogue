@@ -22,6 +22,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
 public class BlessedEdge extends Equipment {
+	private static final String ID = "blessedEdge";
 	private int damage, sanct;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
 			hit = new ParticleContainer(Particle.FIREWORKS_SPARK);
@@ -29,13 +30,17 @@ public class BlessedEdge extends Equipment {
 			hitSound = new SoundContainer(Sound.BLOCK_ANVIL_LAND);
 	
 	public BlessedEdge(boolean isUpgraded) {
-		super("blessedEdge", "Blessed Edge", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
+		super(ID, "Blessed Edge", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 25, 5, 0));
 		damage = 125;
 		sanct = isUpgraded ? 9 : 6;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		hit.count(50).spread(0.5, 0.5);
 		addTags(GlossaryTag.SANCTIFIED, GlossaryTag.SLASHING);
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override
@@ -58,7 +63,7 @@ public class BlessedEdge extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.FLINT,
+		item = createItem(Material.GLOWSTONE_DUST,
 				"On cast, your next basic attack deals <white>" + damage + " </white>" + GlossaryTag.SLASHING.tag(this) + " damage and applies <yellow>" + sanct +
 				"</yellow> " + GlossaryTag.SANCTIFIED.tag(this) + ".");
 	}

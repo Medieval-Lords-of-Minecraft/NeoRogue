@@ -16,15 +16,20 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.CastUsableEvent;
 
 public class Titan extends Equipment {
+	private static final String ID = "titan";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
 	private int staminaReduction;
 	private static final int CUTOFF = 20;
 	
 	public Titan(boolean isUpgraded) {
-		super("titan", "Titan", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+		super(ID, "Titan", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.none());
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		staminaReduction = isUpgraded ? 15 : 10;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

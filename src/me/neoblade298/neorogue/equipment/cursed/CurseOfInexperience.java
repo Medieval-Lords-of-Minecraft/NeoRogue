@@ -8,9 +8,14 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class CurseOfInexperience extends Equipment {
+	private static final String ID = "curseOfInexperience";
 	
 	public CurseOfInexperience() {
-		super("curseOfInexperience", "Curse Of Inexperience", EquipmentType.ACCESSORY);
+		super(ID, "Curse Of Inexperience", EquipmentType.ACCESSORY);
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

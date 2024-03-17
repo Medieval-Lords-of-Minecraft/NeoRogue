@@ -23,6 +23,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class LightningWand extends Equipment {
+	private static final String ID = "lightningWand";
 	private static final ParticleContainer tick;
 	
 	private int pierceAmount;
@@ -34,11 +35,20 @@ public class LightningWand extends Equipment {
 
 	public LightningWand(boolean isUpgraded) {
 		super(
-				"lightningWand", "Lightning Wand", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(5, 0, isUpgraded ? 30 : 20, 0.75, DamageType.LIGHTNING, Sound.ITEM_AXE_SCRAPE)
+				ID, "Lightning Wand", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
+				EquipmentProperties.ofWeapon(5, 0, isUpgraded ? 30 : 20, 0.45, DamageType.LIGHTNING, Sound.ITEM_AXE_SCRAPE)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
 		pierceAmount = isUpgraded ? 3 : 1;
+	}
+
+	@Override
+	public void setupReforges() {
+		addSelfReforge(SparkStick.get(), ChainLightningWand.get(), BoltWand.get());
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 	
 	@Override

@@ -11,12 +11,17 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class WristBlade extends Equipment {
+	private static final String ID = "wristBlade";
 	private int hits;
 	
 	public WristBlade(boolean isUpgraded) {
-		super("wristBlade", "Wrist Blade", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
+		super(ID, "Wrist Blade", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.OFFHAND);
 		hits = isUpgraded ? 3 : 2;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

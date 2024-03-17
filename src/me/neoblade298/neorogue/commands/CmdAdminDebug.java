@@ -2,15 +2,16 @@ package me.neoblade298.neorogue.commands;
 
 import java.util.HashMap;
 import java.util.HashSet;
+
 import org.bukkit.Bukkit;
-import org.bukkit.FluidCollisionMode;
-import org.bukkit.World;
-import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.TextDisplay;
+import org.bukkit.entity.Display.Billboard;
+import org.bukkit.entity.Entity;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.RayTraceResult;
-import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.commands.Subcommand;
 import me.neoblade298.neocore.shared.commands.Arg;
@@ -30,30 +31,22 @@ public class CmdAdminDebug extends Subcommand {
 	@Override
 	public void run(CommandSender s, String[] args) {
 		Player p = Bukkit.getPlayer("Ascheladd");
-		p.setVelocity(p.getLocation().getDirection().add(new Vector(0, 0.15, 0)).multiply(2));
-		World w = p.getWorld();
+		Entity ent = p.getWorld().spawnEntity(p.getLocation(), EntityType.COW);
+		ArmorStand as = (ArmorStand) p.getWorld().spawnEntity(p.getLocation(), EntityType.ARMOR_STAND);
+		as.setSmall(true);
+		as.setInvisible(false);
+		as.setInvulnerable(false);
+		as.setMarker(false);
+		TextDisplay txt = (TextDisplay) p.getWorld().spawnEntity(p.getLocation(), EntityType.TEXT_DISPLAY);
+		txt.setBillboard(Billboard.CENTER);
+		ent.addPassenger(as);
+		as.addPassenger(txt);
 		
 		new BukkitRunnable() {
-			int count = 0;
 			public void run() {
-				if (++count >= 10) {
-					this.cancel();
-				}
-				if (p.getVelocity().lengthSquared() == 0) {
-					this.cancel();
-					return;
-				}
-				RayTraceResult rtr = w.rayTrace(p.getLocation(), p.getVelocity(), 2, FluidCollisionMode.NEVER, true, 0.5, null);
-				RayTraceResult rtr2 = w.rayTrace(p.getEyeLocation(), p.getVelocity(), 2, FluidCollisionMode.NEVER, true, 0.5, null);
-				if (rtr.getHitBlock() != null && rtr.getHitBlockFace() != BlockFace.UP) {
-					p.setVelocity(rtr.getHitBlockFace().getDirection());
-					this.cancel();
-				}
-				if (rtr2.getHitBlock() != null && rtr2.getHitBlockFace() != BlockFace.UP) {
-					p.setVelocity(rtr.getHitBlockFace().getDirection());
-					this.cancel();
-				}
+				as.remove();
+				txt.remove();
 			}
-		}.runTaskTimer(NeoRogue.inst(), 1L, 1L);
+		}.runTaskLater(NeoRogue.inst(), 60L);
 	}
 }

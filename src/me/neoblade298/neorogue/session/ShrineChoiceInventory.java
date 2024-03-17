@@ -9,17 +9,26 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.Nullable;
 
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
+import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
+import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class ShrineChoiceInventory extends CoreInventory {
 	private ShrineInstance inst;
+	private boolean isHost;
 
-	public ShrineChoiceInventory(Player p, ShrineInstance inst) {
+	public ShrineChoiceInventory(Player p, @Nullable PlayerSessionData data, ShrineInstance inst, boolean isHost) {
 		super(p, Bukkit.createInventory(p, 9, Component.text("Choose", NamedTextColor.BLUE)));
 		this.inst = inst;
+		this.isHost = isHost;
+		if (data != null) InventoryListener.registerPlayerInventory(p, new PlayerSessionInventory(data));
 		ItemStack[] contents = inv.getContents();
 		for (int i = 0; i < 4; i++) {
 			contents[i] = CoreInventory.createButton(Material.SOUL_LANTERN, Component.text("Rest", NamedTextColor.GREEN), 
@@ -39,12 +48,42 @@ public class ShrineChoiceInventory extends CoreInventory {
 		
 		int slot = e.getSlot();
 		if (slot < 4) {
-			inst.chooseState(true);
-			p.closeInventory();
+			if (isHost) {
+				inst.chooseState(true);
+				new BukkitRunnable() {
+					public void run() {
+						p.closeInventory();
+					}
+				}.runTask(NeoRogue.inst());
+			}
+			else {
+				if (inst.suggestState(p, true)) {
+					new BukkitRunnable() {
+						public void run() {
+							p.closeInventory();
+						}
+					}.runTask(NeoRogue.inst());
+				}
+			}
 		}
 		else if (slot > 4) {
-			inst.chooseState(false);
-			p.closeInventory();
+			if (isHost) {
+				inst.chooseState(false);
+				new BukkitRunnable() {
+					public void run() {
+						p.closeInventory();
+					}
+				}.runTask(NeoRogue.inst());
+			}
+			else {
+				if (inst.suggestState(p, false)) {
+					new BukkitRunnable() {
+						public void run() {
+							p.closeInventory();
+						}
+					}.runTask(NeoRogue.inst());
+				}
+			}
 		}
 	}
 

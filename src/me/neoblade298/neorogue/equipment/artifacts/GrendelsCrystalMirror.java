@@ -9,6 +9,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -18,8 +19,13 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroupEvent;
 
 public class GrendelsCrystalMirror extends Artifact {
+	private static final String ID = "grendelsCrystalMirror";
 	public GrendelsCrystalMirror() {
-		super("grendelsCrystalMirror", "Grendel's Crystal Mirror", Rarity.RARE, EquipmentClass.CLASSLESS);
+		super(ID, "Grendel's Crystal Mirror", Rarity.RARE, EquipmentClass.CLASSLESS);
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

@@ -31,6 +31,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class EarthStaff extends Equipment {
+	private static final String ID = "earthStaff";
 	// TODO: dont just hit in 3d radius, need to focus on enemies on floor
 	
 	private static final double innerRadius = 1.5, outerRadius = 4;
@@ -42,10 +43,14 @@ public class EarthStaff extends Equipment {
 	
 	public EarthStaff(boolean isUpgraded) {
 		super(
-				"earthStaff", "Earth Staff", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(10, 0, isUpgraded ? 75 : 50, 0.25, DamageType.EARTHEN, Sound.ITEM_AXE_SCRAPE)
+				ID, "Earth Staff", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
+				EquipmentProperties.ofWeapon(10, 0, isUpgraded ? 75 : 50, 0.2, DamageType.EARTHEN, Sound.ITEM_AXE_SCRAPE)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@SuppressWarnings("deprecation")

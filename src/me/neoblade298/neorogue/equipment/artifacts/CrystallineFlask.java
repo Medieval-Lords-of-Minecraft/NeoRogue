@@ -7,15 +7,21 @@ import org.bukkit.inventory.meta.PotionMeta;
 
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.StandardFightInstance;
 
 public class CrystallineFlask extends Artifact {
+	private static final String ID = "crystallineFlask";
 	private int healthPercent = 10;
 	public CrystallineFlask() {
-		super("crystallineFlask", "Crystalline Flask", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
+		super(ID, "Crystalline Flask", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

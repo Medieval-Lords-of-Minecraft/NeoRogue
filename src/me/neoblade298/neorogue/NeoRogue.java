@@ -21,12 +21,31 @@ import me.neoblade298.neocore.bukkit.commands.SubcommandManager;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
 import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.area.AreaType;
-import me.neoblade298.neorogue.commands.*;
+import me.neoblade298.neorogue.commands.CmdAdminDebug;
+import me.neoblade298.neorogue.commands.CmdAdminReload;
+import me.neoblade298.neorogue.commands.CmdAdminTestBoss;
+import me.neoblade298.neorogue.commands.CmdAdminTestChance;
+import me.neoblade298.neorogue.commands.CmdAdminTestEquipment;
+import me.neoblade298.neorogue.commands.CmdAdminTestMap;
+import me.neoblade298.neorogue.commands.CmdAdminTestMiniboss;
+import me.neoblade298.neorogue.commands.CmdAdminTestPiece;
+import me.neoblade298.neorogue.commands.CmdAdminTestPieceSettings;
+import me.neoblade298.neorogue.commands.CmdGlossary;
+import me.neoblade298.neorogue.commands.CmdInfo;
+import me.neoblade298.neorogue.commands.CmdInvite;
+import me.neoblade298.neorogue.commands.CmdJoin;
+import me.neoblade298.neorogue.commands.CmdKick;
+import me.neoblade298.neorogue.commands.CmdLeave;
+import me.neoblade298.neorogue.commands.CmdLoad;
+import me.neoblade298.neorogue.commands.CmdNew;
+import me.neoblade298.neorogue.commands.CmdSpectate;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.player.PlayerManager;
-import me.neoblade298.neorogue.session.*;
+import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.SessionManager;
+import me.neoblade298.neorogue.session.ShrineInstance;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
 import me.neoblade298.neorogue.session.fight.Mob;
 import me.neoblade298.neorogue.session.fight.mythicbukkit.MythicLoader;
@@ -113,6 +132,7 @@ public class NeoRogue extends JavaPlugin {
 		if (!DEBUGGER) return;
 		Player p = Bukkit.getPlayer("Ascheladd");
 		if (p == null) return;
+		p.setMaximumNoDamageTicks(0);
 		
 		Session s = SessionManager.createSession(p, "test", 1);
 		s.generateArea(AreaType.LOW_DISTRICT);
@@ -122,9 +142,10 @@ public class NeoRogue extends JavaPlugin {
 		if (alt != null) {
 			s.addPlayer(alt.getUniqueId(), EquipmentClass.WARRIOR);
 			SessionManager.addToSession(alt.getUniqueId(), s);
+			alt.setMaximumNoDamageTicks(0);
 		}
 		s.setNode(s.getArea().getNodes()[0][2]);
-		s.setInstance(new NodeSelectInstance(s));
+		s.setInstance(new ShrineInstance(s));
 		// s.setInstance(new ChanceInstance());
 
 		//Map map = Map.generate(AreaType.LOW_DISTRICT, 8);

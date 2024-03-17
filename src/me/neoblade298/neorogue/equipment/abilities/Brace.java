@@ -17,17 +17,28 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Brace extends Equipment {
+	private static final String ID = "brace";
 	private int shields;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
 	private static final SoundContainer equip = new SoundContainer(Sound.ITEM_ARMOR_EQUIP_CHAIN);
 	
 	public Brace(boolean isUpgraded) {
-		super("brace", "Brace", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
+		super(ID, "Brace", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 15, 10, 0));
 		shields = isUpgraded ? 30 : 20;
 		pc.count(10).spread(0.5, 0.5).speed(0.2);
 		
 		tags.add(GlossaryTag.SHIELDS);
+	}
+	
+	@Override
+	public void setupReforges() {
+		addSelfReforge(Brace2.get(), Bide.get(), Parry.get());
+		addReforge(Provoke.get(), Challenge.get());
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override
@@ -42,7 +53,7 @@ public class Brace extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.FLINT,
+		item = createItem(Material.SHIELD,
 				"On cast, gain <yellow>" + shields + "</yellow> " + GlossaryTag.SHIELDS.tag(this) + " for 5 seconds.");
 	}
 }

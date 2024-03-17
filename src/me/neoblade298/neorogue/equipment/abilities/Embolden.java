@@ -19,17 +19,22 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
 public class Embolden extends Equipment {
+	private static final String ID = "embolden";
 	private int damage, shields;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
 			hit = new ParticleContainer(Particle.REDSTONE);
 	
 	public Embolden(boolean isUpgraded) {
-		super("embolden", "Embolden", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
+		super(ID, "Embolden", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 20, 10, 0));
 		damage = 105;
 		shields = isUpgraded ? 5 : 3;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		hit.count(50).spread(0.5, 0.5);
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override
@@ -52,7 +57,7 @@ public class Embolden extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.FLINT,
+		item = createItem(Material.SOUL_TORCH,
 				"On cast, gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + ". "+
 						"Your next basic attack additionally deals <white>" + damage + " </white>" + GlossaryTag.SLASHING.tag(this) +
 				" damage.");

@@ -5,19 +5,25 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 
 public class SapphireShard extends Artifact {
+	private static final String ID = "sapphireShard";
 	private int max;
 	private double regen;
 
 	public SapphireShard() {
-		super("sapphireShard", "Sapphire Shard", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
+		super(ID, "Sapphire Shard", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
 		canDrop = false;
 		max = 10;
 		regen = 0.2;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

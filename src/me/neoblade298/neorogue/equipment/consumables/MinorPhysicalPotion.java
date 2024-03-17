@@ -8,15 +8,21 @@ import org.bukkit.inventory.meta.PotionMeta;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.equipment.Consumable;
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 
 public class MinorPhysicalPotion extends Consumable {
+	private static final String ID = "minorPhysicalPotion";
 	private int strength;
 	
 	public MinorPhysicalPotion(boolean isUpgraded) {
-		super("minorPhysicalPotion", "Minor Physical Potion", isUpgraded, Rarity.COMMON, EquipmentClass.CLASSLESS);
+		super(ID, "Minor Physical Potion", isUpgraded, Rarity.COMMON, EquipmentClass.CLASSLESS);
 		this.strength = isUpgraded ? 15 : 10;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 	
 	@Override

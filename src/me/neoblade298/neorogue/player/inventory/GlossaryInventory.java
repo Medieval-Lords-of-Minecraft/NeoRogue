@@ -17,6 +17,7 @@ import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.session.chance.ChanceChoice;
 import me.neoblade298.neorogue.session.fight.Mob;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -26,7 +27,7 @@ public class GlossaryInventory extends CoreInventory {
 	private CoreInventory prev;
 	private boolean openOther = true;
 	
-	private static final int BASIC = 0, UPGRADED = 1, REFORGE = 3;
+	private static final int BASIC = 0, UPGRADED = 1, REFORGE_OFFSET = 3;
 	public GlossaryInventory(Player viewer, Mob mob, CoreInventory prev) {
 		super(viewer, Bukkit.createInventory(viewer, calculateSize(mob.getTags().size()),
 				Component.text("Glossary: ").append(LegacyComponentSerializer.legacyAmpersand()
@@ -36,7 +37,24 @@ public class GlossaryInventory extends CoreInventory {
 		
 		// Glossary tags
 		ItemStack[] contents = inv.getContents();
-		Iterator<GlossaryTag> iter = mob.getTags().iterator();
+		Iterator<GlossaryIcon> iter = mob.getTags().iterator();
+		for (int row = 0; row < 6; row++) {
+			for (int col = 0; col < 9; col++) {
+				if (!iter.hasNext()) break;
+				contents[(row * 9) + col] = iter.next().getIcon();
+			}
+		}
+		inv.setContents(contents);
+	}
+	public GlossaryInventory(Player viewer, ChanceChoice choice, CoreInventory prev) {
+		super(viewer, Bukkit.createInventory(viewer, calculateSize(choice.getTags().size()),
+				Component.text("Glossary: ", NamedTextColor.GOLD).append(choice.getItemWithoutConditions().displayName())));
+		this.prev = prev;
+		Sounds.turnPage.play(p, p);
+		
+		// Glossary tags
+		ItemStack[] contents = inv.getContents();
+		Iterator<GlossaryIcon> iter = choice.getTags().iterator();
 		for (int row = 0; row < 6; row++) {
 			for (int col = 0; col < 9; col++) {
 				if (!iter.hasNext()) break;
@@ -56,7 +74,7 @@ public class GlossaryInventory extends CoreInventory {
 		contents[UPGRADED] = eq.canUpgrade() ? eq.getUpgraded().getItem() : null;
 		
 		// Glossary tags
-		Iterator<GlossaryTag> iter = eq.getTags().iterator();
+		Iterator<GlossaryIcon> iter = eq.getTags().iterator();
 		for (int row = 1; row < 6; row++) {
 			for (int col = 0; col < 5; col++) {
 				if (!iter.hasNext()) break;
@@ -64,15 +82,25 @@ public class GlossaryInventory extends CoreInventory {
 			}
 		}
 		
+		int reforgeLabel = REFORGE_OFFSET;
+		if (!eq.getReforgeParents().isEmpty()) {
+			reforgeLabel += 9;
+			contents[REFORGE_OFFSET] = CoreInventory.createButton(Material.IRON_BLOCK, Component.text("Reforge Parents:", NamedTextColor.YELLOW));
+			int idx = 0;
+			for (Equipment parent : eq.getReforgeParents()) {
+				contents[REFORGE_OFFSET + ++idx] = parent.getItem();
+			}
+		}
+		
 		// Reforge options
 		if (eq.getReforgeOptions().isEmpty()) {
-			contents[REFORGE] = CoreInventory.createButton(Material.BARRIER, Component.text("No reforge options", NamedTextColor.RED));
+			contents[reforgeLabel] = CoreInventory.createButton(Material.BARRIER, Component.text("No reforge options", NamedTextColor.RED));
 		}
 		else {
-			contents[REFORGE] = CoreInventory.createButton(Material.GOLD_BLOCK, Component.text("Reforge Options:", NamedTextColor.YELLOW));
+			contents[reforgeLabel] = CoreInventory.createButton(Material.GOLD_BLOCK, Component.text("Reforge Options:", NamedTextColor.YELLOW));
 			int row = 0;
 			for (Entry<Equipment, Equipment[]> ent : eq.getReforgeOptions().entrySet()) {
-				int col = REFORGE + 1;
+				int col = reforgeLabel + 1;
 				contents[(row * 9) + col++] = ent.getKey().getItem();
 				for (Equipment option : ent.getValue()) {
 					contents[(row * 9) + col++] = option.getItem();
@@ -89,7 +117,7 @@ public class GlossaryInventory extends CoreInventory {
 	
 	private static int calculateSize(Equipment eq) {
 		int leftHeight = 1 + ((eq.getTags().size() + 3) / 4);
-		int rightHeight = eq.getReforgeOptions().size();
+		int rightHeight =  + (!eq.getReforgeParents().isEmpty() ? 1 : 0) + (eq.getReforgeOptions().isEmpty() ? 1 : eq.getReforgeOptions().size());
 		return 9 * Math.max(leftHeight, rightHeight);
 	}
 	
@@ -101,7 +129,11 @@ public class GlossaryInventory extends CoreInventory {
 		NBTItem nbti = new NBTItem(e.getCurrentItem());
 		if (!nbti.getKeys().contains("equipId")) return;
 		openOther = false;
-		new GlossaryInventory(p, Equipment.get(nbti.getString("equipId"), false), prev);
+		new BukkitRunnable() {
+			public void run() {
+				new GlossaryInventory(p, Equipment.get(nbti.getString("equipId"), false), prev);
+			}
+		}.runTask(NeoRogue.inst());
 	}
 	
 	@Override
@@ -112,7 +144,7 @@ public class GlossaryInventory extends CoreInventory {
 				public void run() {
 					if (prev != null) prev.openInventory();
 				}
-			}.runTaskLater(NeoRogue.inst(), 1L);
+			}.runTask(NeoRogue.inst());
 		}
 	}
 	

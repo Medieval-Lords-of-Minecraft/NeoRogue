@@ -9,12 +9,17 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class MinorStaminaRelic extends Equipment {
+	private static final String ID = "minorStaminaRelic";
 	private double regen;
 	
 	public MinorStaminaRelic(boolean isUpgraded) {
-		super("minorStaminaRelic", "Minor Stamina Relic", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
+		super(ID, "Minor Stamina Relic", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ACCESSORY);
 		regen = isUpgraded ? 1.5 : 1;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

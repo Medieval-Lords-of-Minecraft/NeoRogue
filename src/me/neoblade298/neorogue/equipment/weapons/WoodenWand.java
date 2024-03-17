@@ -23,6 +23,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class WoodenWand extends Equipment {
+	private static final String ID = "woodenWand";
 	private static final ParticleContainer tick;
 	private static final SoundContainer tickSound = new SoundContainer(Sound.BLOCK_AMETHYST_BLOCK_BREAK),
 			hit = new SoundContainer(Sound.BLOCK_CHAIN_PLACE);
@@ -34,11 +35,15 @@ public class WoodenWand extends Equipment {
 	
 	public WoodenWand(boolean isUpgraded) {
 		super(
-				"woodenWand", "Wooden Wand", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
+				ID , "Wooden Wand", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(5, 0, isUpgraded ? 50 : 25, isUpgraded ? 1 : 0.5, DamageType.LIGHT, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
 		properties.addUpgrades(PropertyType.ATTACK_SPEED);
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

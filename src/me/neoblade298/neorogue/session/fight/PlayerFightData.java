@@ -150,6 +150,9 @@ public class PlayerFightData extends FightData {
 		return boardLines;
 	}
 	
+	@Override
+	public void updateDisplayName() {}
+	
 	public void updateBoardLines() {
 		int lineSize = 9;
 		boardLines = new ArrayList<String>(lineSize);
@@ -433,6 +436,7 @@ public class PlayerFightData extends FightData {
 	public void addHealth(double amount) {
 		double curr = p.getHealth();
 		double after = Math.min(this.maxHealth, curr + amount);
+		stats.addSelfHealing(after - curr);
 		p.setHealth(after);
 	}
 	

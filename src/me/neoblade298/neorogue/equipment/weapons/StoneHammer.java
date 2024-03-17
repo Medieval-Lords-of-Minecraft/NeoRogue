@@ -32,6 +32,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class StoneHammer extends Equipment {
+	private static final String ID = "stoneHammer";
 	private static final int DISTANCE = 4, RADIUS = 2;
 	private static final TargetProperties props = TargetProperties.radius(RADIUS, true, TargetType.ENEMY);
 	private static final ParticleContainer swingPart = new ParticleContainer(Particle.CLOUD).count(5).spread(0.1, 0.1),
@@ -53,10 +54,19 @@ public class StoneHammer extends Equipment {
 	}
 	
 	public StoneHammer(boolean isUpgraded) {
-		super("stoneHammer", "Stone Hammer", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+		super(ID, "Stone Hammer", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(isUpgraded ? 100 : 70, 0.5, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
 		properties.addUpgrades(PropertyType.DAMAGE);
+	}
+
+	@Override
+	public void setupReforges() {
+		addSelfReforge(RighteousHammer.get(), Fracturer.get());
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override
@@ -84,7 +94,7 @@ public class StoneHammer extends Equipment {
 			if (first) {
 				weaponDamage(p, data, ent);
 				Vector v = ent.getVelocity();
-				ent.setVelocity(v.setY(v.getY() + 0.5));
+				FightInstance.knockback(ent, v.setY(v.getY() + 0.5));
 				first = false;
 			}
 			else {

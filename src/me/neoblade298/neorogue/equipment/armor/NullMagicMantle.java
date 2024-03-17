@@ -11,12 +11,17 @@ import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class NullMagicMantle extends Equipment {
+	private static final String ID = "nullMagicMantle";
 	private double damageReduction;
 	
 	public NullMagicMantle(boolean isUpgraded) {
-		super("nullMagicMantle", "Null Magic Mantle", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+		super(ID, "Null Magic Mantle", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ARMOR);
 		damageReduction = isUpgraded ? 5 : 3;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

@@ -8,6 +8,7 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
+import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.chance.ChanceChoice;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
@@ -22,9 +23,17 @@ public class LabChance extends ChanceSet {
 
 		ChanceChoice choice = new ChanceChoice(Material.GOLD_BLOCK, "Grab what you can",
 				"Everyone receives <white>3</white> consumables, but with a <white>25%</white> chance to acquire a <red>curse</red> that reduces your armor slots by <white>1</white>.",
+				"At least one player doesn't have an armor slot available!",
 				(s, inst, unused) -> {
 					for (PlayerSessionData data : s.getParty().values()) {
-						data.giveEquipment(Equipment.getConsumable(s.getAreasCompleted() * 2, 3, data.getPlayerClass(), EquipmentClass.CLASSLESS));
+						int numCurses = data.aggregateEquipment((eq) -> { return eq.getType() == EquipmentType.ARMOR && eq.isCursed(); }).size();
+						if (numCurses >= PlayerSessionData.ARMOR_SIZE) return false;
+					}
+					return true;
+				},
+				(s, inst, unused) -> {
+					for (PlayerSessionData data : s.getParty().values()) {
+						data.giveEquipment(Equipment.getConsumable(s.getAreasCompleted(), 3, data.getPlayerClass(), EquipmentClass.CLASSLESS));
 					}
 					if (NeoRogue.gen.nextDouble() < 0.25) {
 						for (PlayerSessionData data : s.getParty().values()) {
@@ -43,7 +52,7 @@ public class LabChance extends ChanceSet {
 				"Everyone receives <white>1</white> consumable.",
 				(s, inst, unused) -> {
 					for (PlayerSessionData data : s.getParty().values()) {
-						data.giveEquipment(Equipment.getConsumable(s.getAreasCompleted() * 2, data.getPlayerClass(), EquipmentClass.CLASSLESS));
+						data.giveEquipment(Equipment.getConsumable(s.getAreasCompleted() + 1, data.getPlayerClass(), EquipmentClass.CLASSLESS));
 					}
 					s.broadcast("Everyone carefully peruses before choosing the coolest-looking potion and booking it.");
 					return null;
@@ -70,7 +79,7 @@ public class LabChance extends ChanceSet {
 					}
 					else {
 						for (PlayerSessionData pd : s.getParty().values()) {
-							pd.giveEquipment(Equipment.getArtifact(pd.getArtifactDroptable(), s.getAreasCompleted() * 2, 1, EquipmentClass.CLASSLESS, pd.getPlayerClass()));
+							pd.giveEquipment(Equipment.getArtifact(pd.getArtifactDroptable(), s.getAreasCompleted(), 1, EquipmentClass.CLASSLESS, pd.getPlayerClass()));
 						}
 						s.broadcast("Somehow you all make it out alive as <yellow>" + data.getData().getDisplay() + "</yellow> wildly and maniacally mixes potions. You left the disgusting"
 								+ " mix at the lab, but in the progress found an artifact on the table behind one of the potions they took.");

@@ -20,17 +20,22 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
 public class Fortify extends Equipment {
+	private static final String ID = "fortify";
 	private int damage, fortitude;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
 			hit = new ParticleContainer(Particle.REDSTONE);
 	
 	public Fortify(boolean isUpgraded) {
-		super("fortify", "Fortify", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
+		super(ID, "Fortify", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 30, isUpgraded ? 5 : 7, 0));
 		damage = 100;
 		fortitude = isUpgraded ? 2 : 1;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		hit.count(50).spread(0.5, 0.5);
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override
@@ -53,7 +58,7 @@ public class Fortify extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.FLINT,
+		item = createItem(Material.PHANTOM_MEMBRANE,
 				"On cast, your next basic attack while in the air deals <white>" + damage + " </white>" + GlossaryTag.PIERCING.tag(this) + " damage, "
 								+ "gain <yellow>" + fortitude + "</yellow> stacks of fortitude, a shield that lasts <white>2</white> seconds with "
 						+ "the number of stacks of fortitude you have.");

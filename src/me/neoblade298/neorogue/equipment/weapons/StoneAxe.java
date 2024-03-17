@@ -22,14 +22,19 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class StoneAxe extends Equipment {
+	private static final String ID = "stoneAxe";
 	private static final int BERSERK_THRESHOLD = 10;
 	private static final TargetProperties tp = TargetProperties.cone(90, 4, false, TargetType.ENEMY);
 	
 	public StoneAxe(boolean isUpgraded) {
-		super("stoneAxe", "Stone Axe", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+		super(ID, "Stone Axe", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(isUpgraded ? 100 : 80, 0.5, 1, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_CRIT));
+				EquipmentProperties.ofWeapon(isUpgraded ? 100 : 80, 0.2, 1, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_CRIT));
 		properties.addUpgrades(PropertyType.DAMAGE);
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override
@@ -42,6 +47,7 @@ public class StoneAxe extends Equipment {
 		});
 		
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_NO_HIT, (pdata, inputs) -> {
+			if (data.canBasicAttack()) return TriggerResult.keep();
 			if (!data.hasStatus(StatusType.BERSERK) || data.getStatus(StatusType.BERSERK).getStacks() < BERSERK_THRESHOLD) TriggerResult.keep();
 			if (pdata.canBasicAttack(EquipSlot.HOTBAR)) return TriggerResult.keep();
 			FightInstance.dealDamage(properties.getDamageMeta(data), TargetHelper.getEntitiesInCone(p, tp));

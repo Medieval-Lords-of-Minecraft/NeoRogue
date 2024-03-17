@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.area.AreaType;
+import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
 import me.neoblade298.neorogue.player.PlayerSessionData.EquipmentMetadata;
 import me.neoblade298.neorogue.session.chance.ChanceChoice;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
@@ -33,7 +34,7 @@ public class ShiningLightChance extends ChanceSet {
 					Util.msgRaw(p, "You are engulfed by the light. You feel a sharp pain, but you can tell your equipment has absorbed some power.");
 					
 					data.damagePercent(0.2);
-					ArrayList<EquipmentMetadata> list = data.aggregateEquipment((eq) -> { return !eq.isUpgraded() && eq.canUpgrade(); });
+					ArrayList<EquipmentMetadata> list = data.aggregateEquipment((eq) -> { return !eq.isUpgraded() && eq.canUpgrade() && eq.getType() != EquipmentType.CONSUMABLE; });
 					Collections.shuffle(list);
 					for (int i = 0; i < 2; i++) {
 						if (i >= list.size()) {

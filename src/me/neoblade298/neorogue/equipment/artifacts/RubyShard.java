@@ -5,19 +5,25 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 
 public class RubyShard extends Artifact {
+	private static final String ID = "rubyShard";
 	private int max, shields;
 
 	public RubyShard() {
-		super("rubyShard", "Ruby Shard", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
+		super(ID, "Ruby Shard", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
 		canDrop = false;
 		max = 10;
 		shields = 2;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

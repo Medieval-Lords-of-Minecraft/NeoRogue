@@ -24,9 +24,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import eu.decentsoftware.holograms.api.holograms.Hologram;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
-import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class ShrineInstance extends EditInventoryInstance {
 	private static final ParticleContainer part = new ParticleContainer(Particle.FIREWORKS_SPARK).count(50).spread(2, 2).speed(0.1);
@@ -67,6 +68,7 @@ public class ShrineInstance extends EditInventoryInstance {
 			Player p = Bukkit.getPlayer(uuid);
 			p.teleport(spawn);
 		}
+		super.start();
 
 		// Setup hologram
 		ArrayList<String> lines = new ArrayList<String>();
@@ -98,19 +100,27 @@ public class ShrineInstance extends EditInventoryInstance {
 		}
 		
 		if (e.getClickedBlock().getType() == Material.EMERALD_BLOCK && state == INIT_STATE) {
-			if (!s.getHost().equals(uuid)) {
-				Util.displayError(p, "The host must first choose what to do!");
-				return;
-			}
-			
-			// open host inventory
-			new ShrineChoiceInventory(p, this);
+			new ShrineChoiceInventory(p, s.getParty().get(p.getUniqueId()), this, s.getHost().equals(uuid));
 			return;
 		}
 
 		if (e.getClickedBlock().getType() == Material.ANVIL && notUsed.contains(uuid) && state == UPGRADE_STATE) {
 			new ShrineUpgradeInventory(p, s.getData(p.getUniqueId()), this);
 		}
+	}
+	
+	// True if close inventory after suggesting
+	public boolean suggestState(Player p, boolean rest) {
+		if (!s.canSuggest()) return false;
+		String suggestion = rest ? "resting" : "upgrading";
+		s.setSuggestCooldown();
+		s.broadcast(
+			p.name().color(NamedTextColor.YELLOW)
+			.append(Component.text(" suggests ", NamedTextColor.GRAY))
+			.append(Component.text(suggestion, NamedTextColor.YELLOW))
+			.append(Component.text("!"))
+		);
+		return true;
 	}
 
 	public void chooseState(boolean rest) {

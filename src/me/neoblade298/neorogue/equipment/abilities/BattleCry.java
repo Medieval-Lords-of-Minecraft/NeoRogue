@@ -20,16 +20,26 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class BattleCry extends Equipment {
+	private static final String ID = "battleCry";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.REDSTONE);
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_BLAZE_DEATH);
 	private int strength;
 	
 	public BattleCry(boolean isUpgraded) {
-		super("battleCry", "Battle Cry", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
+		super(ID, "Battle Cry", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 20, 15, 0));
 		strength = isUpgraded ? 20 : 14;
 		
 		pc.count(50).spread(0.5, 0.5).dustOptions(new DustOptions(Color.RED, 1F));
+	}
+	
+	@Override
+	public void setupReforges() {
+		addSelfReforge(BerserkersCall.get(), WarCry.get());
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

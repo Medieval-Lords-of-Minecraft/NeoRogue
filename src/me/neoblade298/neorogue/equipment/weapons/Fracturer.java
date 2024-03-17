@@ -36,6 +36,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Fracturer extends Equipment {
+	private static final String ID = "fracturer";
 	private static final int DISTANCE = 4, RADIUS = 2;
 	private static final TargetProperties props = TargetProperties.radius(RADIUS, true, TargetType.ENEMY),
 			line = TargetProperties.line(5, 2, TargetType.ENEMY);
@@ -60,12 +61,16 @@ public class Fracturer extends Equipment {
 	}
 	
 	public Fracturer(boolean isUpgraded) {
-		super("fracturer", "Fracturer", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+		super(ID, "Fracturer", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(isUpgraded ? 130 : 100, 0.5, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
 		properties.addUpgrades(PropertyType.DAMAGE);
 		earth = isUpgraded ? 60 : 40;
 		concussed = isUpgraded ? 18 : 12;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override
@@ -102,7 +107,7 @@ public class Fracturer extends Equipment {
 					if (first) {
 						weaponDamage(p, data, ent);
 						Vector v = ent.getVelocity();
-						ent.setVelocity(v.setY(v.getY() + 0.5));
+						FightInstance.knockback(ent, v.setY(v.getY() + 0.5));
 						first = false;
 					}
 					else {

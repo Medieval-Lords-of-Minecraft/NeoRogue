@@ -2,8 +2,8 @@ package me.neoblade298.neorogue.session.fight;
 
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.UUID;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
@@ -114,7 +114,7 @@ public class DamageMeta {
 		buffs.putIfAbsent(type, list);
 	}
 	
-	private boolean containsType(BuffType type) {
+	public boolean containsType(BuffType type) {
 		for (DamageSlice slice : slices) {
 			for (BuffType bt : slice.getType().getBuffTypes()) { 
 				if (bt == type) return true;
@@ -207,7 +207,7 @@ public class DamageMeta {
 		
 		// Calculate buffs for every slice of damage
 		for (DamageSlice slice : slices) {
-			double increase = 0, mult = 0;
+			double increase = 0, mult = 1;
 			for (BuffType bt : slice.getType().getBuffTypes()) {
 				if (!damageBuffs.containsKey(bt)) continue;
 				for (BuffMeta bm : damageBuffs.get(bt)) {
@@ -249,7 +249,7 @@ public class DamageMeta {
 					}
 				}
 			}
-			double sliceDamage = Math.max(0, (slice.getDamage() * (mult + 1)) + increase);
+			double sliceDamage = Math.max(0, (slice.getDamage() * mult) + increase);
 			if (owner instanceof PlayerFightData) {
 				((PlayerFightData) owner).getStats().addDamageDealt(slice.getPostBuffType(), sliceDamage);
 			}
@@ -287,7 +287,7 @@ public class DamageMeta {
 		// trigger received health damage
 		if (recipient instanceof PlayerFightData && (damage > 0 || ignoreShieldsDamage > 0)) {
 			PlayerFightData pdata = (PlayerFightData) recipient;
-			ReceivedHealthDamageEvent ev = new ReceivedHealthDamageEvent(damager, this);
+			ReceivedHealthDamageEvent ev = new ReceivedHealthDamageEvent(damager, this, damage, ignoreShieldsDamage);
 			if (pdata.runActions(pdata, Trigger.RECEIVED_HEALTH_DAMAGE, ev)) {
 				damage = 0;
 				ignoreShieldsDamage = 0;
@@ -298,7 +298,7 @@ public class DamageMeta {
 		if (finalDamage > target.getAbsorptionAmount()) {
 			target.damage(finalDamage);
 			if (!(target instanceof Player)) {
-				NeoRogue.mythicApi.castSkill(target, "UpdateHealthbar");
+				recipient.updateDisplayName();
 			}
 			else {
 				PlayerFightData data = FightInstance.getUserData(target.getUniqueId());

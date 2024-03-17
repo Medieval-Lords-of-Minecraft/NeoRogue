@@ -5,19 +5,25 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 
 public class EmeraldCluster extends Artifact {
+	private static final String ID = "emeraldCluster";
 	private int max;
 	private double regen;
 
 	public EmeraldCluster() {
-		super("emeraldCluster", "Emerald Cluster", Rarity.RARE, EquipmentClass.CLASSLESS);
+		super(ID, "Emerald Cluster", Rarity.RARE, EquipmentClass.CLASSLESS);
 		canDrop = false;
 		max = 25;
 		regen = 0.5;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 
 	@Override

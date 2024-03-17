@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.session.fight;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -13,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import io.lumine.mythic.core.mobs.ActiveMob;
 import me.neoblade298.neocore.bukkit.effects.ParticleAnimation;
 import me.neoblade298.neocore.bukkit.effects.ParticleAnimation.ParticleAnimationInstance;
 import me.neoblade298.neorogue.NeoRogue;
@@ -33,8 +36,11 @@ import me.neoblade298.neorogue.session.fight.trigger.event.GrantShieldsEvent;
 
 public class FightData {
 	protected FightInstance inst;
+	protected String mobDisplay;
+	protected ActiveMob am;
 	protected UUID uuid;
 	protected HashMap<String, Status> statuses = new HashMap<String, Status>();
+	protected ArrayList<Entity> holograms = new ArrayList<Entity>();
 
 	protected HashMap<String, BukkitTask> tasks = new HashMap<String, BukkitTask>();
 	protected HashMap<String, Runnable> cleanupTasks = new HashMap<String, Runnable>();
@@ -56,6 +62,20 @@ public class FightData {
 		for (BukkitTask task : tasks.values()) {
 			task.cancel();
 		}
+		for (TickAction tickAction : tickActions) {
+			tickAction.setCancelled(true);
+		}
+		for (Entity ent : holograms) {
+			new BukkitRunnable() {
+				public void run() {
+					ent.remove();
+				}
+			}.runTask(NeoRogue.inst());
+		}
+	}
+	
+	public FightData() {
+		// Empty for null entities
 	}
 
 	public FightData(LivingEntity p, FightInstance inst) {
@@ -66,7 +86,7 @@ public class FightData {
 		this.uuid = p.getUniqueId();
 	}
 
-	public FightData(LivingEntity e, MapSpawnerInstance spawner) {
+	public FightData(LivingEntity e, ActiveMob am, MapSpawnerInstance spawner) {
 		// Only use this for mobs
 		if (e == null) return; // Sometimes gets called when a dead mob's poison ticks
 		Plot p = Plot.locationToPlot(e.getLocation());
@@ -77,6 +97,8 @@ public class FightData {
 		this.shields = new ShieldHolder(this);
 		this.spawner = spawner;
 		this.uuid = e.getUniqueId();
+		if (am.getType().getDisplayName() != null && am.getType().getDisplayName().isPresent()) this.mobDisplay = am.getType().getDisplayName().get();
+		this.am = am;
 	}
 	
 	public UUID getUniqueId() {
@@ -130,6 +152,31 @@ public class FightData {
 	public void addTask(String id, BukkitTask task) {
 		while (tasks.containsKey(id)) id += "1";
 		tasks.put(id, task);
+	}
+	
+	public void updateDisplayName() {
+		double healthPct = entity.getHealth() / entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+		String healthColor;
+		if (healthPct < 0.33) {
+			healthColor = "&c";
+		}
+		else if (healthPct < 0.67) {
+			healthColor = "&e";
+		}
+		else {
+			healthColor = "&a";
+		}
+		
+		String bottomLine = healthColor + (int) entity.getHealth() + "&f/" + healthColor + (int) entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+		bottomLine += " " + mobDisplay;
+		
+		ArrayList<Status> list = new ArrayList<Status>(statuses.values());
+		Collections.sort(list, Status.comp);
+		String statuses = "";
+		for (int i = 0; i < list.size() && i < 5; i++) {
+			statuses += list.get(i).getHologramLine() + "\\n";
+		}
+		am.setDisplayName(list.isEmpty() ? bottomLine : statuses + bottomLine);
 	}
 	
 	public void runAnimation(String id, Player origin, ParticleAnimation anim, Location loc) {
@@ -226,6 +273,7 @@ public class FightData {
 	}
 	
 	public void addTickAction(TickAction action) {
+		if (entity == null) return;
 		FightInstance.addToTickList(entity.getUniqueId());
 		tickActions.add(action);
 	}
@@ -233,7 +281,12 @@ public class FightData {
 	public TickResult runTickActions() {
 		Iterator<TickAction> iter = tickActions.iterator();
 		while (iter.hasNext()) {
-			TickResult tr = iter.next().run();
+			TickAction ta = iter.next();
+			if (ta.isCancelled()) {
+				iter.remove();
+				continue;
+			}
+			TickResult tr = ta.run();
 			if (tr == TickResult.REMOVE) iter.remove();
 		}
 		return tickActions.isEmpty() ? TickResult.REMOVE : TickResult.KEEP;
@@ -258,11 +311,11 @@ public class FightData {
 	}
 	
 	public Status getStatus(String id) {
-		return statuses.get(id);
+		return statuses.getOrDefault(id, Status.EMPTY);
 	}
 	
 	public Status getStatus(StatusType type) {
-		return statuses.get(type.name());
+		return statuses.getOrDefault(type.name(), Status.EMPTY);
 	}
 	
 	public void applyStatus(StatusType type, UUID applier, int stacks, int seconds) {
@@ -284,6 +337,7 @@ public class FightData {
 	}
 	
 	protected void applyStatus(Status s, UUID applier, int stacks, int seconds, DamageMeta meta) {
+		if (!entity.isValid()) return;
 		String id = s.getId();
 		ApplyStatusEvent ev = new ApplyStatusEvent(this, id, stacks, seconds, meta);
 		if (FightInstance.getUserData().containsKey(applier)) {
@@ -296,7 +350,36 @@ public class FightData {
 			FightInstance.trigger(data.getPlayer(), Trigger.APPLY_STATUS, ev);
 		}
 		s.apply(applier, (int) Math.ceil(ev.getStacksBuff().apply(stacks)), (int) Math.ceil(ev.getDurationBuff().apply(seconds)));
+		
+		if (statuses.isEmpty()) {
+			addTickAction(new StatusUpdateTickAction());
+		}
 		statuses.put(id, s);
+		updateDisplayName();
+	}
+
+
+	private class StatusUpdateTickAction extends TickAction {
+		@Override
+		public TickResult run() {
+			if (!entity.isValid()) return TickResult.REMOVE;
+			if (areStatusesEmpty()) {
+				updateDisplayName();
+				statuses.clear();
+				return TickResult.REMOVE;
+			}
+			updateDisplayName();
+			return TickResult.KEEP;
+		}
+	}
+	
+	private boolean areStatusesEmpty() {
+		for (Status s : statuses.values()) {
+			if (s.getStacks() > 0) return false;
+			
+			statuses.remove(s.getId());
+		}
+		return true;
 	}
 	
 	public MapSpawnerInstance getSpawner() {

@@ -30,6 +30,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class IceWand extends Equipment {
+	private static final String ID = "iceWand";
 	private static final TargetProperties props = TargetProperties.radius(0.75, true, TargetType.ENEMY);
 	private static final PotionEffect slow = new PotionEffect(PotionEffectType.SLOW, 60, 1, false, false, false);
 	
@@ -45,11 +46,15 @@ public class IceWand extends Equipment {
 
 	public IceWand(boolean isUpgraded) {
 		super(
-				"iceWand", "Ice Wand", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(6, 0, isUpgraded ? 30 : 20, 0.65, DamageType.ICE, Sound.ITEM_AXE_SCRAPE)
+				ID, "Ice Wand", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
+				EquipmentProperties.ofWeapon(6, 0, isUpgraded ? 30 : 20, 0.4, DamageType.ICE, Sound.ITEM_AXE_SCRAPE)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
 		shieldAmount = isUpgraded ? 3 : 2;
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 	
 	@Override
