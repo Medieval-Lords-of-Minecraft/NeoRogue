@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -55,11 +56,12 @@ import net.kyori.adventure.text.format.TextDecoration;
 public class Area {
 	private static final int MAX_LANES = 5, MAX_POSITIONS = 16, CENTER_LANE = MAX_LANES / 2;
 	private static final int X_EDGE_PADDING = 14, Z_EDGE_PADDING = 11, NODE_DIST_BETWEEN = 4;
-	private static final int[] GENERATE_ORDER = new int[] { 0, 4, 1, 3, 2 };
 	private static final double EXTRA_PATH_CHANCE = 0.175;
 	private static final double EXTRA_PATH_CHANCE_SQ = EXTRA_PATH_CHANCE * EXTRA_PATH_CHANCE;
 	private static final int MAX_CHAIN_LENGTH = 4;
 	private static final int MIN_SHOP_DISTANCE = 3; // min # of PATHS not NODES
+
+	private static int[] generate_order;
 	
 	private static ParticleContainer red = new ParticleContainer(Particle.REDSTONE), black;
 	private HashSet<Node> blackTicks = new HashSet<>();
@@ -95,24 +97,24 @@ public class Area {
 		pathChances.put(2, paths);
 		
 		paths = new DropTable<Integer>();
-		paths.add(2, 12);
-		paths.add(3, 50);
-		paths.add(4, 30);
-		paths.add(5, 8);
+		paths.add(2, 13);
+		paths.add(3, 52);
+		paths.add(4, 28);
+		paths.add(5, 7);
 		pathChances.put(3, paths);
 		
 		paths = new DropTable<Integer>();
 		paths.add(2, 8);
-		paths.add(3, 24);
-		paths.add(4, 52);
-		paths.add(5, 16);
+		paths.add(3, 28);
+		paths.add(4, 51);
+		paths.add(5, 13);
 		pathChances.put(4, paths);
 		
 		paths = new DropTable<Integer>();
 		paths.add(2, 0);
-		paths.add(3, 21);
+		paths.add(3, 22);
 		paths.add(4, 54);
-		paths.add(5, 25);
+		paths.add(5, 24);
 		pathChances.put(5, paths);
 
 		initialized = true;
@@ -127,6 +129,7 @@ public class Area {
 		this.zOff = zOff + Session.AREA_Z;
 		this.s = s;
 
+		createGenOrder();
 		generateNodes();
 
 		// Should only save all nodes at first, on auto-save only save nodes within reach (for instance data)
@@ -183,6 +186,23 @@ public class Area {
 		}
 	}
 
+	private void createGenOrder() {
+		generate_order = new int[MAX_LANES];
+		Set<Integer> used = new HashSet<Integer>();
+		
+		for (int i = 0; i < MAX_LANES; i++) {
+			int gen = NeoCore.gen.nextInt(MAX_LANES);
+
+			for (int attempts = 0; used.contains(gen)
+					|| (attempts < 10 && (used.contains(gen - 1) || used.contains(gen + 1))); attempts++) {
+				gen = NeoCore.gen.nextInt(MAX_LANES);
+			}
+
+			used.add(gen);
+			generate_order[i] = gen;
+		}
+	}
+
 	private void generateNodes() {
 		do {
 			nodes = new Node[MAX_POSITIONS][MAX_LANES];
@@ -206,7 +226,7 @@ public class Area {
 		// Generate starting positions
 		List<Integer> initList = Arrays.asList(0, 1, 2, 3, 4);
 		Collections.shuffle(initList);
-		int numInit = NeoCore.gen.nextInt(2, 6); // in range [2,5]
+		int numInit = NeoCore.gen.nextInt(3, 6); // in range [3,5]
 		for (int i = 0; i < numInit; i++) {
 			nodes[1][initList.get(i)] = generateNode(GenerationType.INITIAL, 1, initList.get(i), nodes[0][CENTER_LANE]);
 		}
@@ -543,7 +563,7 @@ public class Area {
 			}
 
 			int nodesWithTwoDests = 0;
-			for (int i : GENERATE_ORDER) {
+			for (int i : generate_order) {
 				if (prevPos[i] == null)
 					continue;
 				boolean isChosen = prevNodeLanes.remove((Object) i);
@@ -950,15 +970,15 @@ public class Area {
 		private GenerationType(int num) {
 			switch (num) {
 			case 0:
-				table.add(NodeType.FIGHT, 57);
-				table.add(NodeType.CHANCE, 31);
-				table.add(NodeType.SHOP, 3);
+				table.add(NodeType.FIGHT, 55);
+				table.add(NodeType.CHANCE, 30);
+				table.add(NodeType.SHOP, 5);
 				table.add(NodeType.MINIBOSS, 3);
-				table.add(NodeType.SHRINE, 6);
+				table.add(NodeType.SHRINE, 7);
 				break;
 			case 1:
-				table.add(NodeType.FIGHT, 9);
-				table.add(NodeType.CHANCE, 8);
+				table.add(NodeType.FIGHT, 7);
+				table.add(NodeType.CHANCE, 10);
 				table.add(NodeType.SHOP, 15);
 				table.add(NodeType.MINIBOSS, 40);
 				table.add(NodeType.SHRINE, 28);
@@ -968,13 +988,13 @@ public class Area {
 				table.add(NodeType.CHANCE, 35);
 				break;
 			case 3:
-				table.add(NodeType.FIGHT, 53);
+				table.add(NodeType.FIGHT, 55);
 				table.add(NodeType.CHANCE, 35);
-				table.add(NodeType.SHOP, 12);
+				table.add(NodeType.SHOP, 10);
 				break;
 			case 4:
-				table.add(NodeType.FIGHT, 61);
-				table.add(NodeType.CHANCE, 35);
+				table.add(NodeType.FIGHT, 64);
+				table.add(NodeType.CHANCE, 32);
 				table.add(NodeType.MINIBOSS, 2);
 				table.add(NodeType.SHRINE, 2);
 				break;
