@@ -144,13 +144,15 @@ public class Area {
 	}
 
 	// Deserialize
-	public Area(AreaType type, int xOff, int zOff, UUID uuid, int saveSlot, Session s, Statement stmt) throws SQLException {
+	public Area(AreaType type, int xOff, int zOff, UUID uuid, int saveSlot, Session s, Statement stmt)
+			throws SQLException {
 		this.type = type;
 		this.xOff = xOff;
 		this.zOff = zOff + Session.AREA_Z;
 		this.s = s;
 
-		ResultSet rs = stmt.executeQuery("SELECT * FROM neorogue_nodes WHERE host = '" + uuid + "' AND slot = " + saveSlot + ";");
+		ResultSet rs = stmt
+				.executeQuery("SELECT * FROM neorogue_nodes WHERE host = '" + uuid + "' AND slot = " + saveSlot + ";");
 		// First load the nodes themselves
 		while (rs.next()) {
 			int pos = rs.getInt("position");
@@ -276,36 +278,45 @@ public class Area {
 		return true;
 	}
 
-	// returns true if the first node in the rightmost lane has a path to a node
-	//   in the leftmode lane, and then from there back to a node in the rightmost lane
+	// returns true if the first node in the rightmost lane has a path to a node in the leftmost lane,
+	//           and if the first node in the lefttmost lane has a path to a node in the rightmost lane,
+	//           and if a node in the rightmost lane has a path to the last node in the leftmost lane,
+	//           and if a node in the lefttmost lane has a path to the last node in the rightmost lane
 	private boolean verifyNoSplitGroups() {
+		Node bottomLeft = null;
+		Node bottomRight = null;
+		Node topLeft = null;
+		Node topRight = null;
+
 		for (int pos = 1; pos < MAX_POSITIONS; pos++) {
-			if (nodes[pos][MAX_LANES - 1] != null) {
-				return hasPathToLeft(nodes[pos][MAX_LANES - 1]);
+			if (bottomLeft == null && nodes[pos][0] != null) {
+				bottomLeft = nodes[pos][0];
+			}
+			if (bottomRight == null && nodes[pos][MAX_LANES - 1] != null) {
+				bottomRight = nodes[pos][MAX_LANES - 1];
+			}
+			if (topLeft == null && nodes[MAX_POSITIONS - pos - 2][0] != null) {
+				topLeft = nodes[MAX_POSITIONS - pos - 2][0];
+			}
+			if (topRight == null && nodes[MAX_POSITIONS - pos - 2][MAX_LANES - 1] != null) {
+				topRight = nodes[MAX_POSITIONS - pos - 2][MAX_LANES - 1];
 			}
 		}
 		
-		return false;
+		return hasPath(bottomLeft, MAX_LANES - 1, true) && hasPath(bottomRight, 0, true)
+				&& hasPath(topLeft, MAX_LANES - 1, false) && hasPath(topRight, 0, false);
 	}
 	
-	private boolean hasPathToLeft(Node node) {
-		if (node.getLane() == 0)
-			return hasPathToRight(node);
+	// if forward is true, node is source; else node is destination
+	private boolean hasPath(Node node, int lane, boolean forward) {
+		if (node == null)
+			return false;
 
-		for (Node dest : node.getDestinations()) {
-			if (hasPathToLeft(dest))
-				return true;
-		}
-
-		return false;
-	}
-	
-	private boolean hasPathToRight(Node node) {
-		if (node.getLane() == MAX_LANES - 1)
+		if (node.getLane() == lane)
 			return true;
-		
-		for (Node dest : node.getDestinations()) {
-			if (hasPathToRight(dest))
+
+		for (Node dest : forward ? node.getDestinations() : node.getSources()) {
+			if (hasPath(dest, lane, forward))
 				return true;
 		}
 
@@ -429,7 +440,8 @@ public class Area {
 		
 		// also need to check new path doesn't cross existing one
 		Node sideNode = nodes[node.getPosition()][node.getLane() - 1];
-		if (sideNode != null && sideNode.getDestinations().stream().map(Node::getLane).anyMatch(x -> x == node.getLane()))
+		if (sideNode != null
+				&& sideNode.getDestinations().stream().map(Node::getLane).anyMatch(x -> x == node.getLane()))
 			return false;
 		
 		node.addDestination(leftNode);
@@ -473,7 +485,8 @@ public class Area {
 
 		// also need to check new path doesn't cross existing one
 		Node sideNode = nodes[node.getPosition()][node.getLane() + 1];
-		if (sideNode != null && sideNode.getDestinations().stream().map(Node::getLane).anyMatch(x -> x == node.getLane()))
+		if (sideNode != null
+				&& sideNode.getDestinations().stream().map(Node::getLane).anyMatch(x -> x == node.getLane()))
 			return false;
 		
 		node.addDestination(rightNode);
@@ -497,11 +510,13 @@ public class Area {
 				prevNodeLanes.remove(1);
 			}
 			// Edge case 123->4, cannot choose middle
-			else if (prevNodeLanes.size() == 3 && prevNodeLanes.getFirst() == 1 && prevNodeLanes.getLast() == 3 && toGenerate == 4) {
+			else if (prevNodeLanes.size() == 3 && prevNodeLanes.getFirst() == 1 && prevNodeLanes.getLast() == 3
+					&& toGenerate == 4) {
 				prevNodeLanes.remove(1);
 			}
 			// Edge case 0123->5 and 1234->5
-			else if (prevNodeLanes.size() == 4 && prevNodeLanes.getLast() - prevNodeLanes.getFirst() == 3 && toGenerate == 5) {
+			else if (prevNodeLanes.size() == 4 && prevNodeLanes.getLast() - prevNodeLanes.getFirst() == 3
+					&& toGenerate == 5) {
 				if (prevNodeLanes.getFirst() == 0) {
 					prevNodeLanes.clear();
 					prevNodeLanes.add(3);
@@ -521,7 +536,10 @@ public class Area {
 				if (prevPos[i] == null)
 					continue;
 				boolean isChosen = prevNodeLanes.remove((Object) i);
-				generateMoreDestinations(prevPos[i], type, newPos, prevPos, isChosen || (prevNodeLanes.size() == 0 && nodeDiff > nodesWithTwoDests));
+				generateMoreDestinations(
+						prevPos[i], type, newPos, prevPos,
+						isChosen || (prevNodeLanes.size() == 0 && nodeDiff > nodesWithTwoDests)
+				);
 				if (prevPos[i].getDestinations().size() == 2)
 					nodesWithTwoDests++;
 			}
@@ -618,7 +636,9 @@ public class Area {
 		}
 	}
 	
-	private void generateMoreDestinations(Node from, GenerationType type, Node[] newPos, Node[] prevPos, boolean twoDests) {
+	private void generateMoreDestinations(
+			Node from, GenerationType type, Node[] newPos, Node[] prevPos, boolean twoDests
+	) {
 		int pos = from.getPosition() + 1, lane = from.getLane();
 		// Check available destinations
 		LinkedList<Integer> potential = new LinkedList<Integer>();
@@ -739,9 +759,10 @@ public class Area {
 					Node node = nodes[pos][lane];
 					if (node == null)
 						continue;
-					SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.INSERT, "neorogue_nodes").addString(host.toString()).addValue(saveSlot)
-							.addString(node.toString()).addValue(node.getPosition()).addValue(node.getLane()).addString(node.serializeDestinations())
-							.addString(node.serializeInstanceData());
+					SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.INSERT, "neorogue_nodes")
+							.addString(host.toString()).addValue(saveSlot).addString(node.toString())
+							.addValue(node.getPosition()).addValue(node.getLane())
+							.addString(node.serializeDestinations()).addString(node.serializeInstanceData());
 					insert.addBatch(sql.build());
 				}
 			}
@@ -758,19 +779,24 @@ public class Area {
 		UUID host = s.getHost();
 		try {
 			int pos = s.getNode().getPosition() + 1;
-			delete.execute("DELETE FROM neorogue_nodes WHERE host = '" + host + "' AND slot = " + saveSlot + " AND position = " + pos + ";");
+			delete.execute(
+					"DELETE FROM neorogue_nodes WHERE host = '" + host + "' AND slot = " + saveSlot + " AND position = "
+							+ pos + ";"
+			);
 			for (int lane = 0; lane < MAX_LANES; lane++) {
 				Node node = nodes[pos][lane];
 				if (node == null)
 					continue;
-				SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.INSERT, "neorogue_nodes").addString(host.toString()).addValue(saveSlot)
-						.addString(node.toString()).addValue(node.getPosition()).addValue(node.getLane()).addString(node.serializeDestinations())
+				SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.INSERT, "neorogue_nodes")
+						.addString(host.toString()).addValue(saveSlot).addString(node.toString())
+						.addValue(node.getPosition()).addValue(node.getLane()).addString(node.serializeDestinations())
 						.addString(node.serializeInstanceData());
 				insert.addBatch(sql.build());
 			}
 			insert.executeBatch();
 		} catch (SQLException ex) {
-			Bukkit.getLogger().warning("[NeoRogue] Failed to save relevant nodes for host " + host + " to slot " + saveSlot);
+			Bukkit.getLogger()
+					.warning("[NeoRogue] Failed to save relevant nodes for host " + host + " to slot " + saveSlot);
 			ex.printStackTrace();
 		}
 	}
@@ -785,7 +811,8 @@ public class Area {
 					continue;
 
 				Location loc = new Location(
-						w, -(xOff + X_EDGE_PADDING + (lane * NODE_DIST_BETWEEN)), NODE_Y, zOff + Z_EDGE_PADDING + (pos * NODE_DIST_BETWEEN)
+						w, -(xOff + X_EDGE_PADDING + (lane * NODE_DIST_BETWEEN)), NODE_Y,
+						zOff + Z_EDGE_PADDING + (pos * NODE_DIST_BETWEEN)
 				);
 				loc.getBlock().setType(node.getType().getBlock());
 				loc.add(0, 0, -1);
@@ -843,7 +870,8 @@ public class Area {
 			inst.createHologram(loc, dest);
 
 			// Fight nodes
-			if (dest.getType() == NodeType.FIGHT || dest.getType() == NodeType.MINIBOSS || dest.getType() == NodeType.BOSS) {
+			if (dest.getType() == NodeType.FIGHT || dest.getType() == NodeType.MINIBOSS
+					|| dest.getType() == NodeType.BOSS) {
 				loc.add(0, -4, -1);
 				Block b = loc.getBlock();
 				b.setType(Material.LECTERN);
@@ -897,7 +925,10 @@ public class Area {
 	
 	public Location nodeToLocation(Node node, double yOff) {
 		org.bukkit.World w = Bukkit.getWorld(WORLD_NAME);
-		return new Location(w, -(xOff + X_EDGE_PADDING - 0.5 + (node.getLane() * 4)), NODE_Y + yOff, zOff + Z_EDGE_PADDING + 0.5 + (node.getPosition() * 4));
+		return new Location(
+				w, -(xOff + X_EDGE_PADDING - 0.5 + (node.getLane() * 4)), NODE_Y + yOff,
+				zOff + Z_EDGE_PADDING + 0.5 + (node.getPosition() * 4)
+		);
 	}
 
 	public enum GenerationType {
