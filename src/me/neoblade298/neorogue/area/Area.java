@@ -190,11 +190,11 @@ public class Area {
 		Set<Integer> used = new HashSet<Integer>();
 		
 		for (int i = 0; i < MAX_LANES; i++) {
-			int gen = NeoCore.gen.nextInt(MAX_LANES);
+			int gen = NeoRogue.gen.nextInt(MAX_LANES);
 
 			for (int attempts = 0; used.contains(gen)
 					|| (attempts < 10 && (used.contains(gen - 1) || used.contains(gen + 1))); attempts++) {
-				gen = NeoCore.gen.nextInt(MAX_LANES);
+				gen = NeoRogue.gen.nextInt(MAX_LANES);
 			}
 
 			used.add(gen);
@@ -227,7 +227,7 @@ public class Area {
 		// Generate starting positions
 		List<Integer> initList = Arrays.asList(0, 1, 2, 3, 4);
 		Collections.shuffle(initList);
-		int numInit = NeoCore.gen.nextInt(2, 4); // in range [3,5]
+		int numInit = NeoRogue.gen.nextInt(2, 4); // in range [3,5]
 		for (int i = 0; i < numInit; i++) {
 			nodes[1][initList.get(i)] = generateNode(GenerationType.INITIAL, 1, initList.get(i), nodes[0][CENTER_LANE]);
 		}
@@ -498,14 +498,14 @@ public class Area {
 				continue;
 			
 			if (node.getDestinations().size() == 1) { // small chance to add dest if already has 1
-				if (NeoCore.gen.nextDouble() >= EXTRA_PATH_CHANCE)
+				if (NeoRogue.gen.nextDouble() >= EXTRA_PATH_CHANCE)
 					continue;
 			} else if (node.getDestinations().size() == 2) { // very small chance to add dest if already has 2
-				if (NeoCore.gen.nextDouble() >= EXTRA_PATH_CHANCE_SQ)
+				if (NeoRogue.gen.nextDouble() >= EXTRA_PATH_CHANCE_SQ)
 					continue;
 			} // add no new dests if already has >=3
 
-			if (NeoCore.gen.nextBoolean()) { // randomly look left or right first
+			if (NeoRogue.gen.nextBoolean()) { // randomly look left or right first
 				if (tryAddExtraPathLeft(node))
 					continue;
 				if (tryAddExtraPathRight(node))
@@ -646,7 +646,7 @@ public class Area {
 					nodesWithTwoDests++;
 			}
 		} else if (nodeDiff == 0) {
-			if (NeoCore.gen.nextBoolean()) { // 50/50 between gen'ing left-right vs right-left
+			if (NeoRogue.gen.nextBoolean()) { // 50/50 between gen'ing left-right vs right-left
 				for (int i = 0; i < MAX_LANES; i++) {
 					if (prevPos[i] != null)
 						generateDestination(prevPos[i], type, newPos, prevPos);
@@ -663,7 +663,7 @@ public class Area {
 			int nodesCombined = 0;
 			Node nodeA = null;
 
-			if (NeoCore.gen.nextBoolean()) { // 50/50 between gen'ing left-right vs right-left
+			if (NeoRogue.gen.nextBoolean()) { // 50/50 between gen'ing left-right vs right-left
 				for (int i = 0; i < MAX_LANES; i++) {
 					if (prevPos[i] == null)
 						continue;
@@ -770,7 +770,7 @@ public class Area {
 					return 1;
 
 				// If none of these: Random
-				return NeoCore.gen.nextBoolean() ? 1 : -1;
+				return NeoRogue.gen.nextBoolean() ? 1 : -1;
 			}
 		});
 		
@@ -806,7 +806,7 @@ public class Area {
 		if (from2.getLane() - from1.getLane() == 2)
 			newLane = from2.getLane() - 1;
 		else
-			newLane = NeoCore.gen.nextBoolean() ? from2.getLane() : from1.getLane();
+			newLane = NeoRogue.gen.nextBoolean() ? from2.getLane() : from1.getLane();
 		
 		newPos[newLane] = generateNode(type, from1.getPosition() + 1, newLane, from1, from2);
 	}
