@@ -51,6 +51,7 @@ import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
 import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
 import io.lumine.mythic.core.mobs.ActiveMob;
 import me.libraryaddict.disguise.disguisetypes.PlayerDisguise;
+import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.effects.Audience;
 import me.neoblade298.neocore.bukkit.effects.Circle;
 import me.neoblade298.neocore.bukkit.effects.LocalAxes;
@@ -93,7 +94,8 @@ public abstract class FightInstance extends Instance {
 	protected HashMap<Player, Corpse> revivers = new HashMap<Player, Corpse>();
 	protected HashSet<UUID> party = new HashSet<UUID>();
 	protected Map map;
-	protected ArrayList<MapSpawnerInstance> spawners = new ArrayList<MapSpawnerInstance>(), unlimitedSpawners = new ArrayList<MapSpawnerInstance>(),
+	protected ArrayList<MapSpawnerInstance> spawners = new ArrayList<MapSpawnerInstance>(),
+			unlimitedSpawners = new ArrayList<MapSpawnerInstance>(),
 			initialSpawns = new ArrayList<MapSpawnerInstance>();
 	private HashMap<String, Location> mythicLocations = new HashMap<String, Location>();
 	protected HashMap<UUID, Barrier> enemyBarriers = new HashMap<UUID, Barrier>();
@@ -107,11 +109,14 @@ public abstract class FightInstance extends Instance {
 
 	private static final Circle reviveCircle = new Circle(5);
 	private static final ParticleContainer reviveCirclePart = new ParticleContainer(Particle.END_ROD).count(1);
-	private static final ParticleContainer revivePart = new ParticleContainer(Particle.FIREWORKS_SPARK).forceVisible(Audience.ALL).count(50).spread(2, 2)
-			.speed(0.1);
-	private static final SoundContainer[] reviveSounds = new SoundContainer[] { new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1F),
-			new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1.059463F), new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1.122462F),
-			new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1.189207F), new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1.259921F) };
+	private static final ParticleContainer revivePart = new ParticleContainer(Particle.FIREWORKS_SPARK)
+			.forceVisible(Audience.ALL).count(50).spread(2, 2).speed(0.1);
+	private static final SoundContainer[] reviveSounds = new SoundContainer[] {
+			new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1F),
+			new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1.059463F),
+			new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1.122462F),
+			new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1.189207F),
+			new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1.259921F) };
 
 	public FightInstance(Session s, Set<UUID> players) {
 		super(s);
@@ -215,6 +220,7 @@ public abstract class FightInstance extends Instance {
 					p.spigot().respawn();
 					Session sess = data.getInstance().getSession();
 					new BukkitRunnable() {
+						@Override
 						public void run() {
 							sess.setInstance(new LoseInstance(sess));
 						}
@@ -299,7 +305,9 @@ public abstract class FightInstance extends Instance {
 			
 			// Cancel fall damage if trigger returns true
 			if (!trigger(p, Trigger.FALL_DAMAGE, e)) {
-				DamageMeta meta = new DamageMeta(FightInstance.getUserData(p.getUniqueId()), e.getFinalDamage(), DamageType.FALL);
+				DamageMeta meta = new DamageMeta(
+						FightInstance.getUserData(p.getUniqueId()), e.getFinalDamage(), DamageType.FALL
+				);
 				meta.dealDamage(p);
 			}
 			return;
@@ -400,7 +408,9 @@ public abstract class FightInstance extends Instance {
 		
 		revivers.put(p, corpse);
 		corpse.reviver = data;
-		Util.msg(p, "You started reviving <yellow>" + dead.getName() + "</yellow>. Stay near their body for 5 seconds!");
+		Util.msg(
+				p, "You started reviving <yellow>" + dead.getName() + "</yellow>. Stay near their body for 5 seconds!"
+		);
 		Util.msg(dead, "You are being revived by <yellow>" + p.getName());
 		dead.teleport(corpse.corpseDisplay);
 		
@@ -541,18 +551,22 @@ public abstract class FightInstance extends Instance {
 
 	public static void handleMythicDespawn(MythicMobDespawnEvent e) {
 		FightData data = removeFightData(e.getEntity().getUniqueId());
-		if (data == null) return;
+		if (data == null)
+			return;
 		data.cleanup();
-		if (data.getInstance() == null) return;
+		if (data.getInstance() == null)
+			return;
 		data.getInstance().handleRespawn(data, e.getMobType().getInternalName(), true);
 	}
 
 	public static void handleMythicDeath(MythicMobDeathEvent e) {
 		FightData data = removeFightData(e.getEntity().getUniqueId());
-		if (data == null) return;
+		if (data == null)
+			return;
 		data.cleanup();
 		
-		if (data.getInstance() == null) return;
+		if (data.getInstance() == null)
+			return;
 		String id = e.getMobType().getInternalName();
 		data.getInstance().handleRespawn(data, id, false);
 		data.getInstance().handleMobKill(id);
@@ -602,8 +616,7 @@ public abstract class FightInstance extends Instance {
 	public static FightData getFightData(UUID uuid) {
 		if (!fightData.containsKey(uuid)) {
 			LivingEntity ent = (LivingEntity) Bukkit.getEntity(uuid);
-			FightData fd = new FightData(ent,
-							NeoRogue.mythicApi.getMythicMobInstance(ent), (MapSpawnerInstance) null);
+			FightData fd = new FightData(ent, NeoRogue.mythicApi.getMythicMobInstance(ent), (MapSpawnerInstance) null);
 			fightData.put(uuid, fd);
 		}
 		return fightData.get(uuid);
@@ -624,7 +637,10 @@ public abstract class FightInstance extends Instance {
 			PlayerFightData cfd = FightInstance.getUserData(caster.getUniqueId());
 			PlayerFightData tfd = FightInstance.getUserData(target.getUniqueId());
 			
-			double toSet = Math.min(caster.getHealth() + amount, ((Attributable) caster).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+			double toSet = Math.min(
+					caster.getHealth() + amount,
+					((Attributable) caster).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()
+			);
 			double actual = toSet - caster.getHealth();
 			
 			if (caster == target) {
@@ -660,7 +676,9 @@ public abstract class FightInstance extends Instance {
 		data.applyStatus(type, applier.getUniqueId(), stacks, seconds);
 	}
 
-	public static void applyStatus(Entity target, GenericStatusType type, String id, Entity applier, int stacks, int seconds) {
+	public static void applyStatus(
+			Entity target, GenericStatusType type, String id, Entity applier, int stacks, int seconds
+	) {
 		FightData data = getFightData(target.getUniqueId());
 		data.applyStatus(type, id, applier.getUniqueId(), stacks, seconds);
 	}
@@ -724,8 +742,12 @@ public abstract class FightInstance extends Instance {
 				MapPieceInstance inst = map.getPieces().get(rand);
 				Coordinates[] spawns = inst.getSpawns();
 
-				spawn = spawns[spawns.length > 1 ? NeoRogue.gen.nextInt(spawns.length) : 0].clone().applySettings(inst).toLocation();
-				spawn.add(s.getXOff() + MapPieceInstance.X_FIGHT_OFFSET, MapPieceInstance.Y_OFFSET, MapPieceInstance.Z_FIGHT_OFFSET + s.getZOff());
+				spawn = spawns[spawns.length > 1 ? NeoRogue.gen.nextInt(spawns.length) : 0].clone().applySettings(inst)
+						.toLocation();
+				spawn.add(
+						s.getXOff() + MapPieceInstance.X_FIGHT_OFFSET, MapPieceInstance.Y_OFFSET,
+						MapPieceInstance.Z_FIGHT_OFFSET + s.getZOff()
+				);
 				spawn.setX(-spawn.getX());
 
 				for (Player p : s.getOnlinePlayers()) {
@@ -748,7 +770,15 @@ public abstract class FightInstance extends Instance {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				activateSpawner(4 + map.getPieces().size() / 2);
+				int sumChunkCount = map.getPieces().stream().mapToInt(x -> x.getPiece().getShape().getChunkCount())
+						.sum();
+				int bonus = NeoCore.gen.nextInt(3);
+				if (NeoCore.gen.nextDouble() < 0.01)
+					bonus += 20; // meme
+
+				double toActivate = bonus + 3 + sumChunkCount / 8.0 + map.getPieces().size() / 4.0;
+				activateSpawner(toActivate);
+				
 				startTime = System.currentTimeMillis();
 				for (MapSpawnerInstance inst : fi.initialSpawns) {
 					inst.spawnMob();
@@ -819,8 +849,11 @@ public abstract class FightInstance extends Instance {
 		long time = System.currentTimeMillis() - startTime;
 		final long hr = TimeUnit.MILLISECONDS.toHours(time);
 		final long min = TimeUnit.MILLISECONDS.toMinutes(time - TimeUnit.HOURS.toMillis(hr));
-		final long sec = TimeUnit.MILLISECONDS.toSeconds(time - TimeUnit.HOURS.toMillis(hr) - TimeUnit.MINUTES.toMillis(min));
-		final long ms = TimeUnit.MILLISECONDS.toMillis(time - TimeUnit.HOURS.toMillis(hr) - TimeUnit.MINUTES.toMillis(min) - TimeUnit.SECONDS.toMillis(sec));
+		final long sec = TimeUnit.MILLISECONDS
+				.toSeconds(time - TimeUnit.HOURS.toMillis(hr) - TimeUnit.MINUTES.toMillis(min));
+		final long ms = TimeUnit.MILLISECONDS.toMillis(
+				time - TimeUnit.HOURS.toMillis(hr) - TimeUnit.MINUTES.toMillis(min) - TimeUnit.SECONDS.toMillis(sec)
+		);
 		String timer = String.format("%d:%02d.%03d", min, sec, ms);
 
 		Component statsHeader = SharedUtil.color(
@@ -964,7 +997,10 @@ public abstract class FightInstance extends Instance {
 	}
 
 	public static ActiveMob spawnScaledMob(Session s, Location loc, MythicMob mythicMob) {
-		return scaleMob(s, Mob.get(mythicMob.getInternalName()), mythicMob, mythicMob.spawn(BukkitAdapter.adapt(loc), s.getLevel()));
+		return scaleMob(
+				s, Mob.get(mythicMob.getInternalName()), mythicMob,
+				mythicMob.spawn(BukkitAdapter.adapt(loc), s.getLevel())
+		);
 	}
 	
 	public static ActiveMob scaleMob(Session s, Mob mob, MythicMob mythicMob, ActiveMob am) {

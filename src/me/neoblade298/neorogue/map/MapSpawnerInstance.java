@@ -25,9 +25,10 @@ public class MapSpawnerInstance {
 		this.s = s;
 		this.origin = original;
 		this.loc = original.getCoordinates().clone().applySettings(inst).toLocation();
-		this.loc.add(MapPieceInstance.X_FIGHT_OFFSET + xOff,
-				MapPieceInstance.Y_OFFSET,
-				MapPieceInstance.Z_FIGHT_OFFSET + zOff + 0.5);
+		this.loc.add(
+				MapPieceInstance.X_FIGHT_OFFSET + xOff, MapPieceInstance.Y_OFFSET,
+				MapPieceInstance.Z_FIGHT_OFFSET + zOff + 0.5
+		);
 		this.loc.setX(-this.loc.getX() + 0.5);
 		this.maxMobs = original.getMaxMobs();
 	}
@@ -57,7 +58,8 @@ public class MapSpawnerInstance {
 			Location loc = this.loc;
 			if (origin.getRadius() > 0) {
 				double radius = origin.getRadius();
-				loc = loc.clone().add(NeoRogue.gen.nextDouble(-radius, radius), 0, NeoRogue.gen.nextDouble(-radius, radius));
+				loc = loc.clone()
+						.add(NeoRogue.gen.nextDouble(-radius, radius), 0, NeoRogue.gen.nextDouble(-radius, radius));
 			}
 			ActiveMob am = FightInstance.spawnScaledMob(s, loc, origin.getMythicMob());
 			
