@@ -106,12 +106,17 @@ public class StandardFightInstance extends FightInstance {
 		score += mob.getValue();
 		scoreBar.setProgress(Math.min(1, score / scoreRequired));
 		if (score >= scoreRequired) {
-			FightInstance.handleWin();
-			timeBar.removeAll();
-			scoreBar.removeAll();
-			s.broadcast(Component.text("You completed the fight with a score of ", NamedTextColor.GRAY)
-					.append(fightScore.getComponentDisplay()).append(Component.text("!")));
-			s.setInstance(new RewardInstance(s, generateRewards(s, fightScore)));
+			// Have a time lag so the ability that ended the fight has time to complete
+			new BukkitRunnable() {
+				public void run() {
+					FightInstance.handleWin();
+					timeBar.removeAll();
+					scoreBar.removeAll();
+					s.broadcast(Component.text("You completed the fight with a score of ", NamedTextColor.GRAY)
+							.append(fightScore.getComponentDisplay()).append(Component.text("!")));
+					s.setInstance(new RewardInstance(s, generateRewards(s, fightScore)));
+				}
+			}.runTask(NeoRogue.inst());
 			return;
 		}
 	}

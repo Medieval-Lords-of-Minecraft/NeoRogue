@@ -214,7 +214,11 @@ public abstract class FightInstance extends Instance {
 				if (lose) {
 					p.spigot().respawn();
 					Session sess = data.getInstance().getSession();
-					sess.setInstance(new LoseInstance(sess));
+					new BukkitRunnable() {
+						public void run() {
+							sess.setInstance(new LoseInstance(sess));
+						}
+					}.runTask(NeoRogue.inst());
 				} else {
 					if (p != null) {
 						fi.corpses.add(new Corpse(data));
@@ -226,7 +230,7 @@ public abstract class FightInstance extends Instance {
 								p.teleport(prev);
 								p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 60, 0));
 							}
-						}.runTaskLater(NeoRogue.inst(), 5L);
+						}.runTask(NeoRogue.inst());
 					}
 				}
 			}

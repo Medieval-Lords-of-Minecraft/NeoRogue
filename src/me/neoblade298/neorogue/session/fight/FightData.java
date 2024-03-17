@@ -97,7 +97,7 @@ public class FightData {
 		this.shields = new ShieldHolder(this);
 		this.spawner = spawner;
 		this.uuid = e.getUniqueId();
-		if (am.getType().getDisplayName().isPresent()) this.mobDisplay = am.getType().getDisplayName().get();
+		if (am.getType().getDisplayName() != null && am.getType().getDisplayName().isPresent()) this.mobDisplay = am.getType().getDisplayName().get();
 		this.am = am;
 	}
 	

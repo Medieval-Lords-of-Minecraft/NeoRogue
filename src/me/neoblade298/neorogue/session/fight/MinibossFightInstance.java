@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import org.bukkit.scheduler.BukkitRunnable;
+
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -51,9 +53,13 @@ public class MinibossFightInstance extends FightInstance {
 		}
 		
 		if (targets.isEmpty()) {
-			FightInstance.handleWin();
-			s.broadcast("You beat the miniboss!");
-			s.setInstance(new RewardInstance(s, generateRewards()));
+			new BukkitRunnable() {
+				public void run() {
+					FightInstance.handleWin();
+					s.broadcast("You beat the miniboss!");
+					s.setInstance(new RewardInstance(s, generateRewards()));
+				}
+			}.runTask(NeoRogue.inst());
 			return;
 		}
 	}
