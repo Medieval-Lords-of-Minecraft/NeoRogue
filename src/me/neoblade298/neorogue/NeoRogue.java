@@ -123,7 +123,7 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdAdminMiniboss("miniboss", "Tests a miniboss fight", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminEquipment("equip", "Gives the player an equipment", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminCoins("coins", "Gives the player coins", null, SubcommandRunner.PLAYER_ONLY));
-		mngr.register(new CmdAdminTrash("trash", "Opens up an admin trash inventory", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdAdminTrash("trash", "Opens up an admin trash inventory for the player", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminBoss("boss", "Tests a boss fight", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.registerCommandList("");
 	}

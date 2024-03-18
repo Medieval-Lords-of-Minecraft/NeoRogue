@@ -167,7 +167,7 @@ public class FightData {
 			healthColor = "&a";
 		}
 		
-		String bottomLine = healthColor + (int) entity.getHealth() + "&f/" + healthColor + (int) entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+		String bottomLine = healthColor + (int) Math.ceil(entity.getHealth()) + "&f/" + healthColor + (int) entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
 		bottomLine += " " + mobDisplay;
 		
 		ArrayList<Status> list = new ArrayList<Status>(statuses.values());

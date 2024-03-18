@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.player.inventory;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
@@ -16,9 +17,17 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class TrashInventory extends CoreInventory implements ShiftClickableInventory {
-	public TrashInventory(PlayerSessionData data) {
-		super(data.getPlayer(), Bukkit.createInventory(data.getPlayer(), 9, Component.text("Trash", NamedTextColor.RED)));
-		new PlayerSessionInventory(data);
+	private PlayerSessionData data;
+	private ItemStack[] cache;
+	public TrashInventory(Player p, PlayerSessionData data) {
+		super(p, Bukkit.createInventory(p, 9, Component.text("Trash", NamedTextColor.RED)));
+		new PlayerSessionInventory(p, data);
+		this.data = data;
+		
+		if (p != data.getPlayer()) {
+			cache = p.getInventory().getContents();
+			PlayerSessionInventory.setupInventory(p, data);
+		}
 	}
 
 	@Override
@@ -47,7 +56,12 @@ public class TrashInventory extends CoreInventory implements ShiftClickableInven
 	}
 
 	@Override
-	public void handleInventoryClose(InventoryCloseEvent e) {}
+	public void handleInventoryClose(InventoryCloseEvent e) {
+		if (p != data.getPlayer()) {
+			PlayerSessionInventory.setupInventory(data);
+			p.getInventory().setContents(cache);
+		}
+	}
 
 	@Override
 	public void handleInventoryDrag(InventoryDragEvent e) {

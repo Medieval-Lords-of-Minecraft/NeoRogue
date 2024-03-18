@@ -57,9 +57,17 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		super(data.getPlayer());
 		this.data = data;
 	}
+
+	public PlayerSessionInventory(Player viewer, PlayerSessionData data) {
+		super(viewer);
+		this.data = data;
+	}
 	
 	public static void setupInventory(PlayerSessionData data) {
-		Player p = data.getPlayer();
+		setupInventory(data.getPlayer(), data);
+	}
+	
+	public static void setupInventory(Player p, PlayerSessionData data) {
 		ItemStack[] contents = p.getInventory().getContents();
 
 		// Import data from session data
