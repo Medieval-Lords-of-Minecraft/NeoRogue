@@ -71,6 +71,7 @@ public class ShopInventory extends CoreInventory {
 	@Override
 	public void handleInventoryClick(InventoryClickEvent e) {
 		Inventory iclicked = e.getClickedInventory();
+		PlayerSessionInventory pinv = (PlayerSessionInventory) InventoryListener.getLowerInventory(p);
 		if (spectator != null) {
 			e.setCancelled(true);
 			return;
@@ -161,6 +162,7 @@ public class ShopInventory extends CoreInventory {
 					si.updateLore(data, contents[si.getSlot()], false);
 				}
 				inv.setContents(contents);
+				pinv.clearHighlights();
 			}
 			else if (slot == 19) {
 				if (!data.hasCoins(REMOVE_CURSE_PRICE)) {
@@ -185,6 +187,7 @@ public class ShopInventory extends CoreInventory {
 					si.updateLore(data, contents[si.getSlot()], false);
 				}
 				inv.setContents(contents);
+				pinv.clearHighlights();
 			}
 		}
 	}

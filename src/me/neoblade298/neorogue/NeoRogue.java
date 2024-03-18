@@ -47,7 +47,7 @@ import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
-import me.neoblade298.neorogue.session.ShrineInstance;
+import me.neoblade298.neorogue.session.ShopInstance;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
 import me.neoblade298.neorogue.session.fight.Mob;
 import me.neoblade298.neorogue.session.fight.mythicbukkit.MythicLoader;
@@ -149,7 +149,7 @@ public class NeoRogue extends JavaPlugin {
 			alt.setMaximumNoDamageTicks(0);
 		}
 		s.setNode(s.getArea().getNodes()[0][2]);
-		s.setInstance(new ShrineInstance(s));
+		s.setInstance(new ShopInstance(s));
 		// s.setInstance(new ChanceInstance());
 
 		//Map map = Map.generate(AreaType.LOW_DISTRICT, 8);
