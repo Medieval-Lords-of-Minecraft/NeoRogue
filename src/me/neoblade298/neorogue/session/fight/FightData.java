@@ -259,7 +259,7 @@ public class FightData {
 	
 	public Shield addShield(UUID applier, double amt, boolean decayPercent, long decayDelayTicks, double decayAmount, long decayPeriodTicks, int decayRepetitions, boolean isSecondary) {
 		PlayerFightData applierData = FightInstance.getUserData(applier);
-		Shield shield = new Shield(this, applier, amt, decayPercent, decayDelayTicks, decayAmount, decayPeriodTicks, decayRepetitions);
+		Shield shield = new Shield(applier, amt, decayPercent, decayDelayTicks, decayAmount, decayPeriodTicks, decayRepetitions);
 		GrantShieldsEvent ev = new GrantShieldsEvent(applierData, this, shield, isSecondary);
 		if (applierData != null) {
 			FightInstance.trigger(applierData.getPlayer(), Trigger.GRANT_SHIELDS, ev);
@@ -267,6 +267,7 @@ public class FightData {
 		if (this instanceof PlayerFightData) {
 			FightInstance.trigger(((PlayerFightData) this).getPlayer(), Trigger.RECEIVE_SHIELDS, ev);
 		}
+		shield.applyBuff(ev.getBuff());
 		shields.addShield(shield);
 		if (shield.getTask() != null) tasks.put(UUID.randomUUID().toString(), shield.getTask());
 		return shield;

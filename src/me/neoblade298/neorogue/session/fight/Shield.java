@@ -6,24 +6,48 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
 
 public class Shield {
-	private double amount;
-	private double total;
+	private double amount, total, decayAmount;
+	private long decayDelayTicks, decayPeriodTicks;
+	private boolean isPercent;
+	private int decayRepetitions;
 	private ShieldHolder shieldHolder;
 	private UUID applier;
 	private BukkitTask task;
-	public Shield(FightData data, UUID applier, double amt, boolean isPercent, long decayDelayTicks, double decayAmount, long decayPeriodTicks, int decayRepetitions) {
+	public Shield(UUID applier, double amt, boolean isPercent, long decayDelayTicks, double decayAmount, long decayPeriodTicks, int decayRepetitions) {
 		this.total = amt;
 		this.amount = amt;
 		this.applier = applier;
+		this.decayDelayTicks = decayDelayTicks;
+		this.decayAmount = decayAmount;
+		this.decayPeriodTicks = decayPeriodTicks;
+		this.decayRepetitions = decayRepetitions;
+		this.isPercent = isPercent;
+	}
+	
+	public BukkitTask getTask() {
+		return task;
+	}
+	
+	public Shield(FightData data, UUID applier, double amt) {
+		this(applier, amt, true, 0, 0, 0, 0);
+	}
+	
+	// Should only be called before a shield is applied, or else it'll refill the shield and break stuff
+	public void applyBuff(Buff b) {
+		this.amount = b.apply(amount);
+		this.total = b.apply(total);
+	}
+	
+	public void initialize(FightData data) {
 		this.shieldHolder = data.getShields();
-		
 		if (decayRepetitions == 0) return;
 		
 		task = new BukkitRunnable() {
 			int reps = decayRepetitions;
-			double total = amt;
+			double total = amount;
 			public void run() {
 				if (!isUsable()) {
 					return;
@@ -41,14 +65,6 @@ public class Shield {
 				shieldHolder.update();
 			}
 		}.runTaskTimer(NeoRogue.inst(), decayDelayTicks, decayPeriodTicks);
-	}
-	
-	public BukkitTask getTask() {
-		return task;
-	}
-	
-	public Shield(FightData data, UUID applier, double amt) {
-		this(data, applier, amt, true, 0, 0, 0, 0);
 	}
 	
 	// Returns leftover damage
