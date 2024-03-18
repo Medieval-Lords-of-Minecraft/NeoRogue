@@ -44,7 +44,9 @@ public enum Trigger {
 	USE_CONSUMABLE,
 	TOGGLE_SPRINT,
 	RECEIVED_DAMAGE, // Cancellable
-	RECEIVED_HEALTH_DAMAGE; // Cancellable, only occurs if the player is due to lose health, TOO LATE to apply buffs
+	RECEIVED_HEALTH_DAMAGE, // Cancellable, only occurs if the player is due to lose health, TOO LATE to apply buffs
+	STAMINA_CHANGE,
+	MANA_CHANGE;
 	
 	private boolean isSlotDependent = this.name().startsWith("LEFT_CLICK") || this.name().startsWith("THROW");
 	

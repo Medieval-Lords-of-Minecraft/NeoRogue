@@ -342,7 +342,6 @@ public class PlayerSessionData {
 	public void giveEquipment(Equipment eq, Component toSelf, Component toOthers) {
 		Player p = getPlayer();
 		if (toSelf != null) {
-			Sounds.success.play(p, p);
 			s.broadcastOthers(toOthers.append(eq.getHoverable()).append(Component.text(".")), p);
 			toSelf = toSelf.append(eq.getHoverable());
 		}

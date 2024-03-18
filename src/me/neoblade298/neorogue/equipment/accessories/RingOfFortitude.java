@@ -19,7 +19,7 @@ public class RingOfFortitude extends Equipment {
 	public RingOfFortitude(boolean isUpgraded) {
 		super(ID, "Ring Of Fortitude", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ACCESSORY);
-		mult = isUpgraded ? 1.2 : 0.8;
+		mult = isUpgraded ? 0.8 : 0.5;
 	}
 	
 	public static Equipment get() {
@@ -38,7 +38,7 @@ public class RingOfFortitude extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.REDSTONE, "Your basic attacks additionally deal your current " + GlossaryTag.SHIELDS.tag(this)
-				+ " multipled by <yellow>" + mult + "</yellow> as " + GlossaryTag.BLUNT.tag(this) + " damage.");
+		item = createItem(Material.IRON_NUGGET, "Your basic attacks additionally deal your current " + GlossaryTag.SHIELDS.tag(this)
+				+ " multiplied by <yellow>" + mult + "</yellow> as " + GlossaryTag.BLUNT.tag(this) + " damage.");
 	}
 }

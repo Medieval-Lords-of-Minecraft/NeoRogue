@@ -29,6 +29,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.CastUsableEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.StaminaChangeEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import me.neoblade298.neorogue.NeoRogue;
@@ -403,7 +404,9 @@ public class PlayerFightData extends FightData {
 	}
 	
 	public void addStamina(double amount) {
-		this.stamina += amount;
+		StaminaChangeEvent ev = new StaminaChangeEvent(amount);
+		FightInstance.trigger(p, Trigger.STAMINA_CHANGE, ev);
+		this.stamina += ev.getChange();
 		updateStamina();
 	}
 	
@@ -441,6 +444,8 @@ public class PlayerFightData extends FightData {
 	}
 	
 	public void addMana(double amount) {
+		StaminaChangeEvent ev = new StaminaChangeEvent(amount);
+		FightInstance.trigger(p, Trigger.MANA_CHANGE, ev);
 		this.mana += amount;
 		updateMana();
 	}
