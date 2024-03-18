@@ -28,7 +28,6 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
 import me.neoblade298.neorogue.player.PlayerSessionData;
-import me.neoblade298.neorogue.session.ShrineUpgradeInventory;
 import me.neoblade298.neorogue.session.fight.trigger.KeyBind;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -36,7 +35,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextDecoration.State;
 
-public class PlayerSessionInventory extends CorePlayerInventory {
+public class PlayerSessionInventory extends CorePlayerInventory implements ShiftClickableInventory {
 	private static final int[] ARMOR = new int[] { 18, 19, 20 };
 	private static final int[] ACCESSORIES = new int[] { 21, 22, 23, 24, 25, 26 };
 	private static final int[] HOTBAR = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
@@ -277,17 +276,12 @@ public class PlayerSessionInventory extends CorePlayerInventory {
 			if (!nclicked.hasTag("equipId")) return;
 			CoreInventory upper = InventoryListener.getUpperInventory(p);
 			if (upper == null) return;
-			if (upper instanceof ShrineUpgradeInventory) {
-				if (!((ShrineUpgradeInventory) upper).canShiftClickIn()) return;
+			if (upper instanceof ShiftClickableInventory) {
+				ShiftClickableInventory sci = (ShiftClickableInventory) upper;
+				if (!sci.canShiftClickIn(clicked)) return;
 				if (isBindable(type)) clicked = removeBindLore(clicked);
 				removeEquipment(type, nclicked.getInteger("dataSlot"), slot, e.getClickedInventory());
-				((ShrineUpgradeInventory) upper).handleShiftClickIn(clicked);
-			}
-			else if (upper instanceof StorageInventory) {
-				if (!((StorageInventory) upper).canShiftClickIn()) return;
-				if (isBindable(type)) clicked = removeBindLore(clicked);
-				removeEquipment(type, nclicked.getInteger("dataSlot"), slot, e.getClickedInventory());
-				((StorageInventory) upper).handleShiftClickIn(clicked);
+				sci.handleShiftClickIn(clicked);
 			}
 			p.playSound(p, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1F);
 			return;
@@ -439,18 +433,25 @@ public class PlayerSessionInventory extends CorePlayerInventory {
 		}
 	}
 	
-	public boolean handleShiftClickIn(ItemStack item) {
+	@Override
+	public void handleShiftClickIn(ItemStack item) {
 		NBTItem nbti = new NBTItem(item);
 		Equipment eq = Equipment.get(nbti.getString("equipId"), nbti.getBoolean("isUpgraded"));
 		AutoEquipResult result = attemptAutoEquip(eq.getType());
-		if (result == null) return false;
 		ItemStack autoItem = inv.getItem(result.slot);
 		NBTItem nauto = new NBTItem(autoItem);
 		data.setEquipment(result.es, nauto.getInteger("dataSlot"), eq);
 		p.playSound(p, Sound.ITEM_ARMOR_EQUIP_DIAMOND, 1F, 1F);
 		if (isBindable(result.es)) item = addBindLore(item, result.slot, nauto.getInteger("dataSlot"));
 		inv.setItem(result.slot, addNbt(item, nauto.getInteger("dataSlot")));
-		return true;
+	}
+	
+	@Override
+	public boolean canShiftClickIn(ItemStack item) {
+		NBTItem nbti = new NBTItem(item);
+		Equipment eq = Equipment.get(nbti.getString("equipId"), nbti.getBoolean("isUpgraded"));
+		AutoEquipResult result = attemptAutoEquip(eq.getType());
+		return result != null;
 	}
 
 	/* Too lazy to fix, if someone actually uses this I will fix it

@@ -25,9 +25,9 @@ import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.map.MapPiece;
 import me.neoblade298.neorogue.map.MapPieceInstance;
 
-public class CmdAdminTestPieceSettings extends Subcommand {
+public class CmdAdminPieceSettings extends Subcommand {
 
-	public CmdAdminTestPieceSettings(String key, String desc, String perm, SubcommandRunner runner) {
+	public CmdAdminPieceSettings(String key, String desc, String perm, SubcommandRunner runner) {
 		super(key, desc, perm, runner);
 		this.enableTabComplete();
 		args.add(new Arg("Piece").setTabOptions(new ArrayList<String>(Map.getAllPieces().keySet())),
