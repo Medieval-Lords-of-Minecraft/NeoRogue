@@ -30,12 +30,15 @@ public class RingOfAnger extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTask(id, new BukkitRunnable() {
 			private int count = 0;
+			private boolean addedStrength = false;
 			public void run() {
 				if (++count < seconds) return;
 				count = 0;
 				data.applyStatus(StatusType.BERSERK, data.getUniqueId(), 1, -1);
-				if (data.getStatus(StatusType.BERSERK).getStacks() >= 8) data.applyStatus(StatusType.STRENGTH, p.getUniqueId(), 5, -1 );
-				return;
+				if (!addedStrength && data.getStatus(StatusType.BERSERK).getStacks() >= 8) {
+					data.applyStatus(StatusType.STRENGTH, p.getUniqueId(), 5, -1 );
+					addedStrength = true;
+				}
 			}
 		}.runTaskTimer(NeoRogue.inst(), 20L, 20L));
 	}

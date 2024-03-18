@@ -13,9 +13,9 @@ import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
 import me.neoblade298.neorogue.session.chance.ChanceInstance;
 
-public class CmdAdminTestChance extends Subcommand {
+public class CmdAdminChance extends Subcommand {
 
-	public CmdAdminTestChance(String key, String desc, String perm, SubcommandRunner runner) {
+	public CmdAdminChance(String key, String desc, String perm, SubcommandRunner runner) {
 		super(key, desc, perm, runner);
 		args.add(new Arg("Chance ID"));
 	}

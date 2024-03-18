@@ -342,7 +342,6 @@ public class PlayerSessionData {
 	public void giveEquipment(Equipment eq, Component toSelf, Component toOthers) {
 		Player p = getPlayer();
 		if (toSelf != null) {
-			Sounds.success.play(p, p);
 			s.broadcastOthers(toOthers.append(eq.getHoverable()).append(Component.text(".")), p);
 			toSelf = toSelf.append(eq.getHoverable());
 		}
@@ -588,7 +587,7 @@ public class PlayerSessionData {
 
 	public void updateBoardLines() {
 		boardLines = new ArrayList<String>();
-		boardLines.add("§cHP§7: §f" + health);
+		boardLines.add("§cHP§7: §f" + (int) health + "§7 / §f" + (int) maxHealth);
 		boardLines.add("§9MP§7: §f" + maxMana + " §7| §f" + df.format(manaRegen) + "/s");
 		boardLines.add("§aSP§7: §f" + maxStamina + " §7| §f" + df.format(staminaRegen) + "/s");
 		boardLines.add("§eCoins§7: §f" + coins);

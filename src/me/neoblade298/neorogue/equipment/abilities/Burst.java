@@ -5,10 +5,8 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Particle.DustOptions;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
-import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -41,7 +39,7 @@ public class Burst extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION,
-				"On cast, give yourself <white>" + stamina + "</white> stamina and <yellow>" + buff +
+				"On cast, give yourself <yellow>" + stamina + "</yellow> stamina and <yellow>" + buff +
 				"</yellow> " + GlossaryTag.STRENGTH.tag(this) + " damage for <white>" + seconds + "</white> seconds.");
 	}
 
@@ -52,12 +50,6 @@ public class Burst extends Equipment {
 			pc.play(p, p);
 			pdata.addStamina(stamina);
 			data.applyStatus(StatusType.STRENGTH, p.getUniqueId(), buff, seconds);
-			
-			data.addTask(id, new BukkitRunnable() {
-				public void run() {
-					pdata.addStamina(-stamina);
-				}
-			}.runTaskLater(NeoRogue.inst(), seconds * 20L));
 			return TriggerResult.keep();
 		}));
 	}

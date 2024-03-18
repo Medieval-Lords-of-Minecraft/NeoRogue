@@ -17,20 +17,20 @@ import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
 import me.neoblade298.neorogue.session.chance.ChanceInstance;
 import me.neoblade298.neorogue.session.chance.builtin.TestChance;
-import me.neoblade298.neorogue.session.fight.BossFightInstance;
+import me.neoblade298.neorogue.session.fight.MinibossFightInstance;
 
-public class CmdAdminTestBoss extends Subcommand {
-	private ArrayList<String> bossSet = new ArrayList<String>();
+public class CmdAdminMiniboss extends Subcommand {
+	private ArrayList<String> minibossSet = new ArrayList<String>();
 
-	public CmdAdminTestBoss(String key, String desc, String perm, SubcommandRunner runner) {
+	public CmdAdminMiniboss(String key, String desc, String perm, SubcommandRunner runner) {
 		super(key, desc, perm, runner);
-		for (ArrayList<MapPiece> pieces : Map.getBossPieces().values()) {
+		for (ArrayList<MapPiece> pieces : Map.getMinibossPieces().values()) {
 			for (MapPiece piece : pieces) {
-				bossSet.add(piece.getId());
+				minibossSet.add(piece.getId());
 			}
 		}
 		this.enableTabComplete();
-		args.add(new Arg("boss map ID").setTabOptions(bossSet),
+		args.add(new Arg("miniboss map ID").setTabOptions(minibossSet),
 				new Arg("level", false));
 	}
 
@@ -47,7 +47,7 @@ public class CmdAdminTestBoss extends Subcommand {
 		if (args.length > 1) {
 			sess.setNodesVisited(Integer.parseInt(args[1]));
 		}
-		BossFightInstance inst = new BossFightInstance(sess, sess.getParty().keySet(), Map.generate(AreaType.LOW_DISTRICT, 0, MapPiece.get(args[0])));
+		MinibossFightInstance inst = new MinibossFightInstance(sess, sess.getParty().keySet(), Map.generate(AreaType.LOW_DISTRICT, 0, MapPiece.get(args[0])));
 		sess.setInstance(new ChanceInstance(sess, new TestChance(inst)));
 	}
 }

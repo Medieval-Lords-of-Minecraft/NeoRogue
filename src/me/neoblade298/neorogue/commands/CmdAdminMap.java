@@ -19,9 +19,9 @@ import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.map.MapPiece;
 import me.neoblade298.neorogue.map.MapPieceInstance;
 
-public class CmdAdminTestMap extends Subcommand {
+public class CmdAdminMap extends Subcommand {
 
-	public CmdAdminTestMap(String key, String desc, String perm, SubcommandRunner runner) {
+	public CmdAdminMap(String key, String desc, String perm, SubcommandRunner runner) {
 		super(key, desc, perm, runner);
 		args.add(new Arg("AreaType", false), new Arg("NumPieces", false), new Arg("RequiredPiece", false));
 	}

@@ -12,6 +12,7 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.StaminaChangeEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -28,8 +29,8 @@ public class MercenaryHeadband extends Artifact {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
-		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
-			if (data.getStamina() < data.getMaxStamina()) return TriggerResult.keep();
+		data.addTrigger(id, Trigger.STAMINA_CHANGE, (pdata, in) -> {
+			if (data.getStamina() + ((StaminaChangeEvent) in).getChange() < data.getMaxStamina()) return TriggerResult.keep();
 			
 			data.addStaminaRegen(regen);
 			Util.msg(p, this.display.append(Component.text(" was activated", NamedTextColor.GRAY)));
@@ -50,7 +51,7 @@ public class MercenaryHeadband extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.RESPAWN_ANCHOR,
-				"Reaching max stamina in a fight increases your stamina regen by <white>" + regen + "</white>"
+				"Reaching <white>100</white> stamina in a fight increases your stamina regen by <white>" + regen + "</white>"
 						+ " for the remainder of the fight.");
 	}
 }

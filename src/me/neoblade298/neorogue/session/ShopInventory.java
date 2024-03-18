@@ -34,7 +34,7 @@ public class ShopInventory extends CoreInventory {
 	private PlayerSessionData data;
 	private ArrayList<ShopItem> shopItems;
 	private Player spectator;
-
+	
 	public ShopInventory(PlayerSessionData data, ArrayList<ShopItem> items) {
 		super(
 				data.getPlayer(),
@@ -45,7 +45,7 @@ public class ShopInventory extends CoreInventory {
 		InventoryListener.registerPlayerInventory(p, new PlayerSessionInventory(data));
 		setupInventory();
 	}
-
+	
 	public ShopInventory(PlayerSessionData data, ArrayList<ShopItem> items, Player spectator) {
 		super(
 				spectator,
@@ -59,7 +59,7 @@ public class ShopInventory extends CoreInventory {
 		this.spectator = spectator;
 		setupInventory();
 	}
-
+	
 	private void setupInventory() {
 		ItemStack[] contents = inv.getContents();
 		for (int i = 0; i < shopItems.size(); i++) {
@@ -86,10 +86,11 @@ public class ShopInventory extends CoreInventory {
 					.createButton(Material.SPYGLASS, Component.text("View other players' shops", NamedTextColor.GOLD));
 		inv.setContents(contents);
 	}
-	
+
 	@Override
 	public void handleInventoryClick(InventoryClickEvent e) {
 		Inventory iclicked = e.getClickedInventory();
+		PlayerSessionInventory pinv = (PlayerSessionInventory) InventoryListener.getLowerInventory(p);
 		if (spectator != null) {
 			e.setCancelled(true);
 			return;
@@ -120,7 +121,7 @@ public class ShopInventory extends CoreInventory {
 			return;
 		}
 		int slot = e.getSlot();
-		
+
 		if (slot < 18) {
 			ShopItem shopItem = null;
 			for (int i = 0; i < SLOT_ORDER.length; i++) {
@@ -130,18 +131,18 @@ public class ShopInventory extends CoreInventory {
 				}
 			}
 			int price = shopItem.getPrice();
-
+			
 			if (e.isRightClick()) {
 				new GlossaryInventory(p, shopItem.getEquipment(), this);
 				return;
 			}
-
+			
 			if (!data.hasCoins(price)) {
 				Util.displayError(p, "You don't have enough coins! You need " + (price - data.getCoins()) + " more.");
 				return;
 			}
 			shopItem.setPurchased(true);
-
+			
 			data.addCoins(-price);
 			data.giveEquipment(
 					shopItem.getEquipment(),
@@ -153,7 +154,7 @@ public class ShopInventory extends CoreInventory {
 			);
 			p.playSound(p, Sound.ENTITY_WANDERING_TRADER_YES, 1F, 1F);
 			p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1F, 1F);
-
+			
 			ItemStack[] contents = inv.getContents();
 			contents[slot] = shopItem.getItem(data);
 			for (ShopItem si : shopItems) {
@@ -192,12 +193,13 @@ public class ShopInventory extends CoreInventory {
 						SharedUtil.color("<yellow>" + p.getName() + " </yellow>sold their ").append(eq.getHoverable())
 								.append(Component.text("."))
 				);
-
+				
 				ItemStack[] contents = inv.getContents();
 				for (ShopItem si : shopItems) {
 					si.updateLore(data, contents[si.getSlot()], false);
 				}
 				inv.setContents(contents);
+				pinv.clearHighlights();
 			} else if (slot == 19) {
 				if (!data.hasCoins(REMOVE_CURSE_PRICE)) {
 					Util.displayError(
@@ -206,7 +208,7 @@ public class ShopInventory extends CoreInventory {
 					);
 					return;
 				}
-				
+
 				data.addCoins(-REMOVE_CURSE_PRICE);
 				NBTItem nbti = new NBTItem(e.getCursor());
 				Equipment eq = Equipment.get(nbti.getString("equipId"), false);
@@ -226,15 +228,16 @@ public class ShopInventory extends CoreInventory {
 					si.updateLore(data, contents[si.getSlot()], false);
 				}
 				inv.setContents(contents);
+				pinv.clearHighlights();
 			}
 		}
 	}
-	
+
 	@Override
 	public void handleInventoryClose(InventoryCloseEvent e) {
 		p.playSound(p, Sound.BLOCK_CHEST_CLOSE, 1F, 1F);
 	}
-	
+
 	@Override
 	public void handleInventoryDrag(InventoryDragEvent e) {
 		e.setCancelled(true);

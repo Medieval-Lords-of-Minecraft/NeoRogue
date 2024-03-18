@@ -26,6 +26,7 @@ public class ShieldHolder {
 	
 	public void addShield(Shield shield) {
 		shields.add(shield);
+		shield.initialize(data);
 		if (amount <= 0) {
 			max = shield.getTotal();
 			amount = shield.getTotal();

@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.commands;
 
 import java.util.ArrayList;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -14,8 +15,8 @@ import me.neoblade298.neorogue.session.LobbyInstance;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
 
-public class CmdAdminTestEquipment extends Subcommand {
-	public CmdAdminTestEquipment(String key, String desc, String perm, SubcommandRunner runner) {
+public class CmdAdminEquipment extends Subcommand {
+	public CmdAdminEquipment(String key, String desc, String perm, SubcommandRunner runner) {
 		super(key, desc, perm, runner);
 		this.enableTabComplete();
 		ArrayList<String> tab = new ArrayList<String>(Equipment.getEquipmentIds().size() * 2);
@@ -26,11 +27,16 @@ public class CmdAdminTestEquipment extends Subcommand {
 			}
 		}
 		args.add(new Arg("id").setTabOptions(new ArrayList<String>(tab)));
+		args.add(new Arg("player", false));
 	}
 
 	@Override
 	public void run(CommandSender s, String[] args) {
-		Player p = (Player) s;
+		Player p = args.length > 1 ? Bukkit.getPlayer(args[1]) : (Player) s;
+		if (p == null) {
+			Util.msg(s, "<red>That player isn't online!");
+			return;
+		}
 		Session sess = SessionManager.getSession(p);
 		String id = args[0];
 		boolean upgrade = false;
@@ -41,6 +47,7 @@ public class CmdAdminTestEquipment extends Subcommand {
 		Equipment eq = Equipment.get(id, upgrade);
 		if (eq == null) {
 			Util.displayError(p, "That equipment doesn't exist!");
+			return;
 		}
 		if (sess == null || sess.getInstance() instanceof LobbyInstance) {
 			p.getInventory().addItem(eq.getItem());

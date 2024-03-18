@@ -45,7 +45,7 @@ public class CrimsonBlade extends Equipment {
 			action = (pdata, inputs) -> {
 				LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
 				weaponSwingAndDamage(p, pdata, ev.getTarget());
-				if (++count > 5) {
+				if (++count >= 5) {
 					FightInstance.giveHeal(p, heal, p);
 					Sounds.enchant.play(p, p);
 					count = 0;
