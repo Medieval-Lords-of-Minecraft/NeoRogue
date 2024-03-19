@@ -18,24 +18,26 @@ import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 public class FencingSword extends Equipment {
 	private static final String ID = "fencingSword";
 	private int shields;
-	
-	public FencingSword(boolean isUpgraded) {
-		super(ID, "Fencing Sword", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
-				EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(isUpgraded ? 40 : 30, 1, 0.3, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_CRIT));
-		properties.addUpgrades(PropertyType.DAMAGE);
-		shields = isUpgraded ? 2 : 1;
-	}
 
+	public FencingSword(boolean isUpgraded) {
+		super(
+				ID, "Fencing Sword", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR, EquipmentType.WEAPON,
+				EquipmentProperties
+						.ofWeapon(isUpgraded ? 40 : 30, 1, 0.3, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_CRIT)
+		);
+		properties.addUpgrades(PropertyType.DAMAGE);
+		shields = isUpgraded ? 3 : 2;
+	}
+	
 	@Override
 	public void setupReforges() {
 		addSelfReforge(Rapier.get(), CripplingFencingSword.get());
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
-
+	
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
@@ -45,10 +47,13 @@ public class FencingSword extends Equipment {
 			return TriggerResult.keep();
 		});
 	}
-
+	
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STONE_SWORD, "On hit, grant yourself <white>" + shields + "</white> " + GlossaryTag.SHIELDS.tag(this) +
-				" for <white>2</white> seconds.");
+		item = createItem(
+				Material.STONE_SWORD,
+				"On hit, grant yourself <yellow>" + shields + "</yellow> " + GlossaryTag.SHIELDS.tag(this)
+						+ " for <yellow>" + shields + "</yellow> seconds."
+		);
 	}
 }

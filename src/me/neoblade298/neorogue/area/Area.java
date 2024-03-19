@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -55,10 +56,12 @@ import net.kyori.adventure.text.format.TextDecoration;
 public class Area {
 	private static final int MAX_LANES = 5, MAX_POSITIONS = 16, CENTER_LANE = MAX_LANES / 2;
 	private static final int X_EDGE_PADDING = 14, Z_EDGE_PADDING = 11, NODE_DIST_BETWEEN = 4;
-	private static final int[] GENERATE_ORDER = new int[] { 0, 4, 1, 3, 2 };
-	private static final double EXTRA_PATH_CHANCE = 0.2;
+	private static final double EXTRA_PATH_CHANCE = 0.175;
+	private static final double EXTRA_PATH_CHANCE_SQ = EXTRA_PATH_CHANCE * EXTRA_PATH_CHANCE;
 	private static final int MAX_CHAIN_LENGTH = 4;
 	private static final int MIN_SHOP_DISTANCE = 3; // min # of PATHS not NODES
+
+	private static int[] generate_order;
 	
 	private static ParticleContainer red = new ParticleContainer(Particle.REDSTONE), black;
 	private HashSet<Node> blackTicks = new HashSet<>();
@@ -94,24 +97,24 @@ public class Area {
 		pathChances.put(2, paths);
 		
 		paths = new DropTable<Integer>();
-		paths.add(2, 12);
-		paths.add(3, 50);
-		paths.add(4, 30);
-		paths.add(5, 8);
+		paths.add(2, 13);
+		paths.add(3, 52);
+		paths.add(4, 28);
+		paths.add(5, 7);
 		pathChances.put(3, paths);
 		
 		paths = new DropTable<Integer>();
 		paths.add(2, 8);
-		paths.add(3, 24);
-		paths.add(4, 52);
-		paths.add(5, 16);
+		paths.add(3, 28);
+		paths.add(4, 51);
+		paths.add(5, 13);
 		pathChances.put(4, paths);
 		
 		paths = new DropTable<Integer>();
 		paths.add(2, 0);
-		paths.add(3, 21);
+		paths.add(3, 22);
 		paths.add(4, 54);
-		paths.add(5, 25);
+		paths.add(5, 24);
 		pathChances.put(5, paths);
 
 		initialized = true;
@@ -144,13 +147,15 @@ public class Area {
 	}
 
 	// Deserialize
-	public Area(AreaType type, int xOff, int zOff, UUID uuid, int saveSlot, Session s, Statement stmt) throws SQLException {
+	public Area(AreaType type, int xOff, int zOff, UUID uuid, int saveSlot, Session s, Statement stmt)
+			throws SQLException {
 		this.type = type;
 		this.xOff = xOff;
 		this.zOff = zOff + Session.AREA_Z;
 		this.s = s;
 
-		ResultSet rs = stmt.executeQuery("SELECT * FROM neorogue_nodes WHERE host = '" + uuid + "' AND slot = " + saveSlot + ";");
+		ResultSet rs = stmt
+				.executeQuery("SELECT * FROM neorogue_nodes WHERE host = '" + uuid + "' AND slot = " + saveSlot + ";");
 		// First load the nodes themselves
 		while (rs.next()) {
 			int pos = rs.getInt("position");
@@ -180,13 +185,32 @@ public class Area {
 		}
 	}
 
+	private void createGenOrder() {
+		generate_order = new int[MAX_LANES];
+		Set<Integer> used = new HashSet<Integer>();
+		
+		for (int i = 0; i < MAX_LANES; i++) {
+			int gen = NeoRogue.gen.nextInt(MAX_LANES);
+
+			for (int attempts = 0; used.contains(gen)
+					|| (attempts < 10 && (used.contains(gen - 1) || used.contains(gen + 1))); attempts++) {
+				gen = NeoRogue.gen.nextInt(MAX_LANES);
+			}
+
+			used.add(gen);
+			generate_order[i] = gen;
+		}
+	}
+
 	private void generateNodes() {
 		do {
 			nodes = new Node[MAX_POSITIONS][MAX_LANES];
+			createGenOrder();
 			tryGenerateNodes();
 		} while (!verifyChainLength() || !verifyRequiredMiniboss() || !verifyNoSplitGroups());
 
 		trimShops();
+		centralize();
 
 		BossFightInstance bi = (BossFightInstance) nodes[MAX_POSITIONS - 1][CENTER_LANE].generateInstance(s, type); // generate boss
 		boss = bi.getBossDisplay();
@@ -203,7 +227,7 @@ public class Area {
 		// Generate starting positions
 		List<Integer> initList = Arrays.asList(0, 1, 2, 3, 4);
 		Collections.shuffle(initList);
-		int numInit = NeoCore.gen.nextInt(2, 6); // in range [2,5]
+		int numInit = NeoRogue.gen.nextInt(2, 4); // in range [3,5]
 		for (int i = 0; i < numInit; i++) {
 			nodes[1][initList.get(i)] = generateNode(GenerationType.INITIAL, 1, initList.get(i), nodes[0][CENTER_LANE]);
 		}
@@ -211,15 +235,28 @@ public class Area {
 		// Start generating by position
 		for (int pos = 2; pos < MAX_POSITIONS - 2; pos++) {
 			GenerationType type;
-			if (pos == 5 || pos == 6 || pos == 11 || pos == 12) {
-				type = GenerationType.SPECIAL;
-			} else if (pos == 13) {
-				type = GenerationType.FINAL;
-			} else if (pos == 2 || pos == 3) {
+			
+			switch (pos) {
+			case 2:
 				type = GenerationType.EARLY;
-			} else {
+				break;
+			case 6:
+			case 7:
+			case 11:
+			case 12:
+				type = GenerationType.SPECIAL;
+				break;
+			case 8:
+			case 9:
+				type = GenerationType.MIDDLE;
+				break;
+			case 13:
+				type = GenerationType.FINAL;
+				break;
+			default:
 				type = GenerationType.NORMAL;
 			}
+			
 			nodes[pos] = generatePosition(type, nodes[pos - 1]);
 		}
 		
@@ -264,8 +301,10 @@ public class Area {
 	// returns true if all paths from start to end contain at least one miniboss node
 	// assumes at least one path from start to end exists
 	private boolean verifyRequiredMiniboss(Node start, Node end) {
-		if (start.getType() == NodeType.MINIBOSS || start.equals(end))
+		if (start.getType() == NodeType.MINIBOSS)
 			return true;
+		if (start.equals(end))
+			return false;
 
 		for (Node dest : start.getDestinations()) {
 			if (!verifyRequiredMiniboss(dest, end))
@@ -276,36 +315,64 @@ public class Area {
 		return true;
 	}
 
-	// returns true if the first node in the rightmost lane has a path to a node
-	//   in the leftmode lane, and then from there back to a node in the rightmost lane
+	// returns true if the first node in the rightmost lane has a path to a node in the leftmost lane,
+	//           and if the first node in the lefttmost lane has a path to a node in the rightmost lane,
+	//           and if a node in the rightmost lane has a path to the last node in the leftmost lane,
+	//           and if a node in the lefttmost lane has a path to the last node in the rightmost lane
 	private boolean verifyNoSplitGroups() {
-		for (int pos = 1; pos < MAX_POSITIONS; pos++) {
-			if (nodes[pos][MAX_LANES - 1] != null) {
-				return hasPathToLeft(nodes[pos][MAX_LANES - 1]);
+		Node bottomLeft = null, bottomRight = null, topLeft = null, topRight = null;
+
+		for (int pos = 1; pos < MAX_POSITIONS - 1; pos++) {
+			if (bottomLeft == null) {
+				if (nodes[pos][0] != null) {
+					bottomLeft = nodes[pos][0];
+				} else if (nodes[pos][1] != null) {
+					bottomLeft = nodes[pos][1];
+				}
+			}
+
+			if (bottomRight == null) {
+				if (nodes[pos][MAX_LANES - 1] != null) {
+					bottomRight = nodes[pos][MAX_LANES - 1];
+				} else if (nodes[pos][MAX_LANES - 2] != null) {
+					bottomRight = nodes[pos][MAX_LANES - 2];
+				}
+			}
+
+			if (topLeft == null) {
+				if (nodes[MAX_POSITIONS - pos - 2][0] != null) {
+					topLeft = nodes[MAX_POSITIONS - pos - 2][0];
+				} else if (nodes[MAX_POSITIONS - pos - 2][1] != null) {
+					topLeft = nodes[MAX_POSITIONS - pos - 2][1];
+				}
+			}
+
+			if (topRight == null) {
+				if (nodes[MAX_POSITIONS - pos - 2][MAX_LANES - 1] != null) {
+					topRight = nodes[MAX_POSITIONS - pos - 2][MAX_LANES - 1];
+				} else if (nodes[MAX_POSITIONS - pos - 2][MAX_LANES - 2] != null) {
+					topRight = nodes[MAX_POSITIONS - pos - 2][MAX_LANES - 2];
+				}
 			}
 		}
 		
-		return false;
+		return (bottomLeft == null || hasPath(bottomLeft, bottomLeft.getLane() + 3, MAX_LANES * 2, true))
+				&& (bottomRight == null || hasPath(bottomRight, bottomRight.getLane() - 3, MAX_LANES * 2, true))
+				&& (topLeft == null || hasPath(topLeft, topLeft.getLane() + 3, MAX_LANES * 2, false))
+				&& (topRight == null || hasPath(topRight, topRight.getLane() - 3, MAX_LANES * 2, false));
 	}
 	
-	private boolean hasPathToLeft(Node node) {
-		if (node.getLane() == 0)
-			return hasPathToRight(node);
-
-		for (Node dest : node.getDestinations()) {
-			if (hasPathToLeft(dest))
-				return true;
-		}
-
-		return false;
-	}
-	
-	private boolean hasPathToRight(Node node) {
-		if (node.getLane() == MAX_LANES - 1)
+	// returns true if the given node connects to a node in the given lane
+	// if forward is true, node is source; else node is destination
+	private boolean hasPath(Node node, int lane, int posLimit, boolean forward) {
+		if (node.getLane() == lane)
 			return true;
-		
-		for (Node dest : node.getDestinations()) {
-			if (hasPathToRight(dest))
+
+		if (posLimit == 0)
+			return false;
+
+		for (Node link : forward ? node.getDestinations() : node.getSources()) {
+			if (hasPath(link, lane, posLimit - 1, forward))
 				return true;
 		}
 
@@ -379,20 +446,112 @@ public class Area {
 		}
 		return false;
 	}
+
+	// shifts the whole area left/right so the center of mass is in the center lane if possible
+	private void centralize() {
+		int[] laneCounts = new int[MAX_LANES];
+		
+		for (int pos = 1; pos < MAX_POSITIONS - 2; pos++) {
+			for (int lane = 0; lane < MAX_LANES; lane++) {
+				if (nodes[pos][lane] != null)
+					laneCounts[lane]++;
+			}
+		}
+
+		double centerOfMass = 0;
+		int div = 0;
+		for (int lane = 0; lane < MAX_LANES; lane++) {
+			centerOfMass += lane * laneCounts[lane];
+			div += laneCounts[lane];
+		}
+		centerOfMass /= div;
+		
+		final double idealCenterOfMass = (MAX_LANES - 1) / 2.0;
+		if (laneCounts[0] == 0 && centerOfMass > idealCenterOfMass + 0.5) {
+			for (int pos = 1; pos < MAX_POSITIONS - 2; pos++) {
+				shiftPosLeft(pos);
+			}
+		} else if (laneCounts[MAX_LANES - 1] == 0 && centerOfMass < idealCenterOfMass - 0.5) {
+			for (int pos = 1; pos < MAX_POSITIONS - 2; pos++) {
+				shiftPosRight(pos);
+			}
+		}
+
+		// also shift indiv. rows to help when the whole area can't shift
+		for (int pos = 1; pos < MAX_POSITIONS - 2; pos++) {
+			if (nodes[pos][0] == null && nodes[pos][1] == null && nodes[pos][MAX_LANES - 1] != null) {
+				boolean canShiftLeft = true;
+				for (int lane = 0; lane < MAX_LANES; lane++) {
+					if (nodes[pos][lane] == null)
+						continue;
+					for (Node dest : nodes[pos][lane].getDestinations()) {
+						if (dest.getLane() == lane + 1)
+							canShiftLeft = false;
+					}
+					for (Node dest : nodes[pos][lane].getSources()) {
+						if (dest.getLane() == lane + 1)
+							canShiftLeft = false;
+					}
+				}
+				if (canShiftLeft)
+					shiftPosLeft(pos);
+			} else if (nodes[pos][MAX_LANES - 1] == null && nodes[pos][MAX_LANES - 2] == null
+					&& nodes[pos][0] != null) {
+				boolean canShiftRight = true;
+				for (int lane = 0; lane < MAX_LANES; lane++) {
+					if (nodes[pos][lane] == null)
+						continue;
+					for (Node dest : nodes[pos][lane].getDestinations()) {
+						if (dest.getLane() == lane - 1)
+							canShiftRight = false;
+					}
+					for (Node dest : nodes[pos][lane].getSources()) {
+						if (dest.getLane() == lane - 1)
+							canShiftRight = false;
+					}
+				}
+				if (canShiftRight)
+					shiftPosRight(pos);
+			}
+		}
+	}
 	
-	// for nodes with 1 path out, tries to connect to nodes with 1 path in
+	private void shiftPosLeft(int pos) {
+		for (int lane = 1; lane < MAX_LANES; lane++) {
+			nodes[pos][lane - 1] = nodes[pos][lane];
+			if (nodes[pos][lane] != null)
+				nodes[pos][lane].setLane(lane - 1);
+		}
+		nodes[pos][MAX_LANES - 1] = null;
+	}
+	
+	private void shiftPosRight(int pos) {
+		for (int lane = MAX_LANES - 2; lane >= 0; lane--) {
+			nodes[pos][lane + 1] = nodes[pos][lane];
+			if (nodes[pos][lane] != null)
+				nodes[pos][lane].setLane(lane + 1);
+		}
+		nodes[pos][0] = null;
+	}
+	
+	// for nodes with 1 or 2 paths out, tries to connect to nodes with 1 path in
 	private void tryAddExtraPaths(int currPos) {
 		List<Integer> lanes = Arrays.asList(0, 1, 2, 3, 4);
 		Collections.shuffle(lanes);
 		for (int lane : lanes) {
-			if (NeoCore.gen.nextDouble() >= EXTRA_PATH_CHANCE)
-				continue; // rng fail to thin out a bit
-				
 			Node node = nodes[currPos][lane];
-			if (node == null || node.getDestinations().size() != 1)
+			if (node == null)
 				continue;
+			
+			if (node.getDestinations().size() == 1) { // small chance to add dest if already has 1
+				if (NeoRogue.gen.nextDouble() >= EXTRA_PATH_CHANCE)
+					continue;
+			} else if (node.getDestinations().size() == 2) { // very small chance to add dest if already has 2
+				if (NeoRogue.gen.nextDouble() >= EXTRA_PATH_CHANCE_SQ)
+					continue;
+			} // add no new dests if already has >=3
 
-			if (NeoCore.gen.nextBoolean()) { // randomly look left or right first
+			if (NeoRogue.gen.nextBoolean()) { // randomly look left or right first
 				if (tryAddExtraPathLeft(node))
 					continue;
 				if (tryAddExtraPathRight(node))
@@ -429,7 +588,8 @@ public class Area {
 		
 		// also need to check new path doesn't cross existing one
 		Node sideNode = nodes[node.getPosition()][node.getLane() - 1];
-		if (sideNode != null && sideNode.getDestinations().stream().map(Node::getLane).anyMatch(x -> x == node.getLane()))
+		if (sideNode != null
+				&& sideNode.getDestinations().stream().map(Node::getLane).anyMatch(x -> x == node.getLane()))
 			return false;
 		
 		node.addDestination(leftNode);
@@ -473,7 +633,8 @@ public class Area {
 
 		// also need to check new path doesn't cross existing one
 		Node sideNode = nodes[node.getPosition()][node.getLane() + 1];
-		if (sideNode != null && sideNode.getDestinations().stream().map(Node::getLane).anyMatch(x -> x == node.getLane()))
+		if (sideNode != null
+				&& sideNode.getDestinations().stream().map(Node::getLane).anyMatch(x -> x == node.getLane()))
 			return false;
 		
 		node.addDestination(rightNode);
@@ -497,11 +658,13 @@ public class Area {
 				prevNodeLanes.remove(1);
 			}
 			// Edge case 123->4, cannot choose middle
-			else if (prevNodeLanes.size() == 3 && prevNodeLanes.getFirst() == 1 && prevNodeLanes.getLast() == 3 && toGenerate == 4) {
+			else if (prevNodeLanes.size() == 3 && prevNodeLanes.getFirst() == 1 && prevNodeLanes.getLast() == 3
+					&& toGenerate == 4) {
 				prevNodeLanes.remove(1);
 			}
 			// Edge case 0123->5 and 1234->5
-			else if (prevNodeLanes.size() == 4 && prevNodeLanes.getLast() - prevNodeLanes.getFirst() == 3 && toGenerate == 5) {
+			else if (prevNodeLanes.size() == 4 && prevNodeLanes.getLast() - prevNodeLanes.getFirst() == 3
+					&& toGenerate == 5) {
 				if (prevNodeLanes.getFirst() == 0) {
 					prevNodeLanes.clear();
 					prevNodeLanes.add(3);
@@ -517,16 +680,19 @@ public class Area {
 			}
 
 			int nodesWithTwoDests = 0;
-			for (int i : GENERATE_ORDER) {
+			for (int i : generate_order) {
 				if (prevPos[i] == null)
 					continue;
 				boolean isChosen = prevNodeLanes.remove((Object) i);
-				generateMoreDestinations(prevPos[i], type, newPos, prevPos, isChosen || (prevNodeLanes.size() == 0 && nodeDiff > nodesWithTwoDests));
+				generateMoreDestinations(
+						prevPos[i], type, newPos, prevPos,
+						isChosen || (prevNodeLanes.size() == 0 && nodeDiff > nodesWithTwoDests)
+				);
 				if (prevPos[i].getDestinations().size() == 2)
 					nodesWithTwoDests++;
 			}
 		} else if (nodeDiff == 0) {
-			if (NeoCore.gen.nextBoolean()) { // 50/50 between gen'ing left-right vs right-left
+			if (NeoRogue.gen.nextBoolean()) { // 50/50 between gen'ing left-right vs right-left
 				for (int i = 0; i < MAX_LANES; i++) {
 					if (prevPos[i] != null)
 						generateDestination(prevPos[i], type, newPos, prevPos);
@@ -543,7 +709,7 @@ public class Area {
 			int nodesCombined = 0;
 			Node nodeA = null;
 
-			if (NeoCore.gen.nextBoolean()) { // 50/50 between gen'ing left-right vs right-left
+			if (NeoRogue.gen.nextBoolean()) { // 50/50 between gen'ing left-right vs right-left
 				for (int i = 0; i < MAX_LANES; i++) {
 					if (prevPos[i] == null)
 						continue;
@@ -618,7 +784,9 @@ public class Area {
 		}
 	}
 	
-	private void generateMoreDestinations(Node from, GenerationType type, Node[] newPos, Node[] prevPos, boolean twoDests) {
+	private void generateMoreDestinations(
+			Node from, GenerationType type, Node[] newPos, Node[] prevPos, boolean twoDests
+	) {
 		int pos = from.getPosition() + 1, lane = from.getLane();
 		// Check available destinations
 		LinkedList<Integer> potential = new LinkedList<Integer>();
@@ -648,7 +816,7 @@ public class Area {
 					return 1;
 
 				// If none of these: Random
-				return NeoCore.gen.nextBoolean() ? 1 : -1;
+				return NeoRogue.gen.nextBoolean() ? 1 : -1;
 			}
 		});
 		
@@ -684,7 +852,7 @@ public class Area {
 		if (from2.getLane() - from1.getLane() == 2)
 			newLane = from2.getLane() - 1;
 		else
-			newLane = NeoCore.gen.nextBoolean() ? from2.getLane() : from1.getLane();
+			newLane = NeoRogue.gen.nextBoolean() ? from2.getLane() : from1.getLane();
 		
 		newPos[newLane] = generateNode(type, from1.getPosition() + 1, newLane, from1, from2);
 	}
@@ -739,9 +907,10 @@ public class Area {
 					Node node = nodes[pos][lane];
 					if (node == null)
 						continue;
-					SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.INSERT, "neorogue_nodes").addString(host.toString()).addValue(saveSlot)
-							.addString(node.toString()).addValue(node.getPosition()).addValue(node.getLane()).addString(node.serializeDestinations())
-							.addString(node.serializeInstanceData());
+					SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.INSERT, "neorogue_nodes")
+							.addString(host.toString()).addValue(saveSlot).addString(node.toString())
+							.addValue(node.getPosition()).addValue(node.getLane())
+							.addString(node.serializeDestinations()).addString(node.serializeInstanceData());
 					insert.addBatch(sql.build());
 				}
 			}
@@ -758,19 +927,24 @@ public class Area {
 		UUID host = s.getHost();
 		try {
 			int pos = s.getNode().getPosition() + 1;
-			delete.execute("DELETE FROM neorogue_nodes WHERE host = '" + host + "' AND slot = " + saveSlot + " AND position = " + pos + ";");
+			delete.execute(
+					"DELETE FROM neorogue_nodes WHERE host = '" + host + "' AND slot = " + saveSlot + " AND position = "
+							+ pos + ";"
+			);
 			for (int lane = 0; lane < MAX_LANES; lane++) {
 				Node node = nodes[pos][lane];
 				if (node == null)
 					continue;
-				SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.INSERT, "neorogue_nodes").addString(host.toString()).addValue(saveSlot)
-						.addString(node.toString()).addValue(node.getPosition()).addValue(node.getLane()).addString(node.serializeDestinations())
+				SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.INSERT, "neorogue_nodes")
+						.addString(host.toString()).addValue(saveSlot).addString(node.toString())
+						.addValue(node.getPosition()).addValue(node.getLane()).addString(node.serializeDestinations())
 						.addString(node.serializeInstanceData());
 				insert.addBatch(sql.build());
 			}
 			insert.executeBatch();
 		} catch (SQLException ex) {
-			Bukkit.getLogger().warning("[NeoRogue] Failed to save relevant nodes for host " + host + " to slot " + saveSlot);
+			Bukkit.getLogger()
+					.warning("[NeoRogue] Failed to save relevant nodes for host " + host + " to slot " + saveSlot);
 			ex.printStackTrace();
 		}
 	}
@@ -785,7 +959,8 @@ public class Area {
 					continue;
 
 				Location loc = new Location(
-						w, -(xOff + X_EDGE_PADDING + (lane * NODE_DIST_BETWEEN)), NODE_Y, zOff + Z_EDGE_PADDING + (pos * NODE_DIST_BETWEEN)
+						w, -(xOff + X_EDGE_PADDING + (lane * NODE_DIST_BETWEEN)), NODE_Y,
+						zOff + Z_EDGE_PADDING + (pos * NODE_DIST_BETWEEN)
 				);
 				loc.getBlock().setType(node.getType().getBlock());
 				loc.add(0, 0, -1);
@@ -843,7 +1018,8 @@ public class Area {
 			inst.createHologram(loc, dest);
 
 			// Fight nodes
-			if (dest.getType() == NodeType.FIGHT || dest.getType() == NodeType.MINIBOSS || dest.getType() == NodeType.BOSS) {
+			if (dest.getType() == NodeType.FIGHT || dest.getType() == NodeType.MINIBOSS
+					|| dest.getType() == NodeType.BOSS) {
 				loc.add(0, -4, -1);
 				Block b = loc.getBlock();
 				b.setType(Material.LECTERN);
@@ -897,44 +1073,54 @@ public class Area {
 	
 	public Location nodeToLocation(Node node, double yOff) {
 		org.bukkit.World w = Bukkit.getWorld(WORLD_NAME);
-		return new Location(w, -(xOff + X_EDGE_PADDING - 0.5 + (node.getLane() * 4)), NODE_Y + yOff, zOff + Z_EDGE_PADDING + 0.5 + (node.getPosition() * 4));
+		return new Location(
+				w, -(xOff + X_EDGE_PADDING - 0.5 + (node.getLane() * 4)), NODE_Y + yOff,
+				zOff + Z_EDGE_PADDING + 0.5 + (node.getPosition() * 4)
+		);
 	}
 
 	public enum GenerationType {
-		NORMAL(0), SPECIAL(1), INITIAL(2), FINAL(3), EARLY(4);
+		NORMAL(0), SPECIAL(1), INITIAL(2), FINAL(3), EARLY(4), MIDDLE(5);
 
 		protected DropTable<NodeType> table = new DropTable<NodeType>();
 
 		private GenerationType(int num) {
 			switch (num) {
 			case 0:
-				table.add(NodeType.FIGHT, 57);
-				table.add(NodeType.CHANCE, 31);
-				table.add(NodeType.SHOP, 3);
-				table.add(NodeType.MINIBOSS, 3);
+				table.add(NodeType.FIGHT, 60);
+				table.add(NodeType.CHANCE, 27);
+				table.add(NodeType.SHOP, 5);
+				table.add(NodeType.MINIBOSS, 2);
 				table.add(NodeType.SHRINE, 6);
 				break;
 			case 1:
-				table.add(NodeType.FIGHT, 9);
-				table.add(NodeType.CHANCE, 8);
-				table.add(NodeType.SHOP, 15);
+				table.add(NodeType.FIGHT, 10);
+				table.add(NodeType.CHANCE, 10);
+				table.add(NodeType.SHOP, 13);
 				table.add(NodeType.MINIBOSS, 40);
-				table.add(NodeType.SHRINE, 28);
+				table.add(NodeType.SHRINE, 27);
 				break;
 			case 2:
-				table.add(NodeType.FIGHT, 65);
-				table.add(NodeType.CHANCE, 35);
+				table.add(NodeType.FIGHT, 69);
+				table.add(NodeType.CHANCE, 31);
 				break;
 			case 3:
-				table.add(NodeType.FIGHT, 53);
-				table.add(NodeType.CHANCE, 35);
-				table.add(NodeType.SHOP, 12);
+				table.add(NodeType.FIGHT, 59);
+				table.add(NodeType.CHANCE, 31);
+				table.add(NodeType.SHOP, 10);
 				break;
 			case 4:
-				table.add(NodeType.FIGHT, 61);
-				table.add(NodeType.CHANCE, 35);
+				table.add(NodeType.FIGHT, 65);
+				table.add(NodeType.CHANCE, 31);
 				table.add(NodeType.MINIBOSS, 2);
 				table.add(NodeType.SHRINE, 2);
+				break;
+			case 5:
+				table.add(NodeType.FIGHT, 24);
+				table.add(NodeType.CHANCE, 14);
+				table.add(NodeType.SHOP, 31);
+				table.add(NodeType.MINIBOSS, 5);
+				table.add(NodeType.SHRINE, 26);
 				break;
 			}
 		}
