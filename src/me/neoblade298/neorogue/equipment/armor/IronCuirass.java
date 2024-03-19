@@ -17,7 +17,7 @@ public class IronCuirass extends Equipment {
 	public IronCuirass(boolean isUpgraded) {
 		super(ID, "Iron Cuirass", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ARMOR);
-		damageReduction = isUpgraded ? 14 : 10;
+		damageReduction = isUpgraded ? 8 : 5;
 	}
 	
 	public static Equipment get() {

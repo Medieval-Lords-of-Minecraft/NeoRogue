@@ -8,7 +8,7 @@ import org.bukkit.scheduler.BukkitTask;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 
-public class Shield {
+public class Shield implements Comparable<Shield> {
 	private double amount, total, decayAmount;
 	private long decayDelayTicks, decayPeriodTicks;
 	private boolean isPercent;
@@ -111,5 +111,19 @@ public class Shield {
 		this.amount = Math.max(this.amount - amount, 0);
 		shieldHolder.subtractShields(original - this.amount);
 		return this.amount <= 0;
+	}
+	
+	private int getMaxDecayTime() {
+		if (decayRepetitions == 0) return Integer.MAX_VALUE;
+		return (int) (decayDelayTicks + decayPeriodTicks * decayRepetitions);
+	}
+
+	@Override
+	public int compareTo(Shield o) {
+		// Prioritize shields that decay sooner
+		int comp = Integer.compare(getMaxDecayTime(), o.getMaxDecayTime());
+		if (comp != 0) return comp;
+		// Prioritize smaller shields
+		return Double.compare(total, o.total);
 	}
 }

@@ -1,7 +1,7 @@
 package me.neoblade298.neorogue.session.fight;
 
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.TreeSet;
+
 import org.bukkit.attribute.Attributable;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
@@ -9,7 +9,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class ShieldHolder {
-	private Queue<Shield> shields = new LinkedList<Shield>();
+	private TreeSet<Shield> shields = new TreeSet<Shield>();
 	private double max;
 	private double amount;
 	private FightData data;
@@ -43,10 +43,10 @@ public class ShieldHolder {
 	
 	public double useShields(double damage) {
 		while (!shields.isEmpty() && damage > 0) {
-			Shield curr = shields.peek();
+			Shield curr = shields.first();
 			damage = curr.useShield(damage);
 			if (!curr.isUsable()) {
-				shields.poll();
+				shields.pollFirst();
 			}
 		}
 		return damage;
