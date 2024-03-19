@@ -30,6 +30,21 @@ public class NodeSelectInstance extends EditInventoryInstance {
 	private static final double SPAWN_X = Session.AREA_X + 21.5, SPAWN_Z = Session.AREA_Z + 6.5;
 	private BukkitTask task;
 	private ArrayList<Hologram> holograms = new ArrayList<Hologram>();
+	
+	private static final ArrayList<ArrayList<String>> tips = new ArrayList<ArrayList<String>>();
+	
+	static {
+		ArrayList<String> tip = new ArrayList<String>();
+		tip.add("Shrines can be used to heal");
+		tip.add("or upgrade one or your equipment!");
+		tips.add(tip);
+
+		tip = new ArrayList<String>();
+		tip.add("Keep an eye out for equipment");
+		tip.add("that can be reforged with your");
+		tip.add("existing equipment to get even stronger!");
+		tips.add(tip);
+	}
 
 	public NodeSelectInstance(Session s) {
 		super(s, SPAWN_X, SPAWN_Z);
@@ -48,11 +63,12 @@ public class NodeSelectInstance extends EditInventoryInstance {
 			spawn = area.nodeToLocation(s.getNode(), 1);
 		area.update(s.getNode(), this);
 
-		// Set up boss hologram
+		// Set up boss hologram and tips
 		ArrayList<String> lines = new ArrayList<String>();
 		lines.add("§f§lBoss: §4§l" + area.getBoss());
+		lines.addAll(tips.get(NeoRogue.gen.nextInt(tips.size())));
 		Plot plot = s.getPlot();
-		Location loc = spawn.clone().add(0, 3, 4);
+		Location loc = spawn.clone().add(0, 2.5 + (lines.size() * 0.3), 4);
 		Hologram holo = NeoRogue.createHologram(plot.getXOffset() + "-" + plot.getZOffset() + "-bossdisplay", loc, lines);
 		holograms.add(holo);
 

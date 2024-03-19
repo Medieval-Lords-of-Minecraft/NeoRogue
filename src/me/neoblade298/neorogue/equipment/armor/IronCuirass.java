@@ -10,14 +10,14 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
-public class LeatherChestplate extends Equipment {
-	private static final String ID = "leatherChestplate";
+public class IronCuirass extends Equipment {
+	private static final String ID = "ironCuirass";
 	private int damageReduction;
 	
-	public LeatherChestplate(boolean isUpgraded) {
-		super(ID, "Leather Chestplate", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
+	public IronCuirass(boolean isUpgraded) {
+		super(ID, "Iron Cuirass", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ARMOR);
-		damageReduction = isUpgraded ? 5 : 3;
+		damageReduction = isUpgraded ? 14 : 10;
 	}
 	
 	public static Equipment get() {

@@ -32,8 +32,10 @@ import me.neoblade298.neorogue.equipment.accessories.MinorStaminaRelic;
 import me.neoblade298.neorogue.equipment.accessories.MinorStrengthRelic;
 import me.neoblade298.neorogue.equipment.accessories.RingOfAnger;
 import me.neoblade298.neorogue.equipment.accessories.RingOfFortitude;
+import me.neoblade298.neorogue.equipment.armor.Brightcrown;
 import me.neoblade298.neorogue.equipment.armor.ClothBindings;
 import me.neoblade298.neorogue.equipment.armor.Footpads;
+import me.neoblade298.neorogue.equipment.armor.IronCuirass;
 import me.neoblade298.neorogue.equipment.armor.LeatherChestplate;
 import me.neoblade298.neorogue.equipment.armor.LeatherHelmet;
 import me.neoblade298.neorogue.equipment.armor.NullMagicMantle;
@@ -164,6 +166,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Brace(b);
 			new Brace2(b);
 			new BreakTheLine(b);
+			new Brightcrown(b);
 			new Bulldoze(b);
 			new Bulwark(b);
 			new Burst(b);
@@ -177,6 +180,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new EmpoweredEdge(b);
 			new Endure(b);
 			new Execute(b);
+			new ExploitWeakness(b);
 			new Ferocity(b);
 			new Fissure(b);
 			new Flurry(b);
@@ -184,6 +188,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Fury(b);
 			new GraniteShield(b);
 			new HoldTheLine(b);
+			new IronCuirass(b);
 			new Ironskin(b);
 			new MightySwing(b);
 			new Parry(b);
