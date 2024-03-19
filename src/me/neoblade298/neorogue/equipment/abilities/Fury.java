@@ -62,7 +62,7 @@ public class Fury extends Equipment {
 					FightInstance.dealDamage(data, DamageType.SLASHING, damage, target);
 					hit.play(p, target);
 					Sounds.anvil.play(p, target);
-					data.applyStatus(StatusType.BERSERK, p.getUniqueId(), 1, -1);
+					data.applyStatus(StatusType.BERSERK, data, 1, -1);
 					if (isBerserk) {
 						Sounds.explode.play(p, target);
 						explode.play(p, target);

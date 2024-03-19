@@ -29,7 +29,7 @@ public class MinorShieldingRelic extends Equipment {
 		data.addTrigger(id, Trigger.RECEIVE_SHIELDS, (pdata, in) -> {
 			GrantShieldsEvent ev = (GrantShieldsEvent) in;
 			if (ev.isSecondary()) return TriggerResult.keep();
-			ev.getBuff().addIncrease(p.getUniqueId(), shields);
+			ev.getBuff().addIncrease(data, shields);
 			return TriggerResult.keep();
 		});
 	}

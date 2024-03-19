@@ -58,7 +58,7 @@ public class SmallShield extends Equipment {
 		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, (pdata, inputs) -> {
 			if (p.getHandRaised() != EquipmentSlot.OFF_HAND) return TriggerResult.keep();
 			ReceivedDamageEvent ev = (ReceivedDamageEvent) inputs;
-			ev.getMeta().addBuff(BuffType.GENERAL, new Buff(p.getUniqueId(), reduction, 0), BuffOrigin.SHIELD, false);
+			ev.getMeta().addBuff(BuffType.GENERAL, new Buff(pdata, reduction, 0), BuffOrigin.SHIELD, false);
 			if (ev.getMeta().containsType(BuffType.GENERAL)) p.playSound(p, Sound.ITEM_SHIELD_BLOCK, 1F, 1F);
 			return TriggerResult.keep();
 		});

@@ -48,7 +48,7 @@ public class Flurry extends Equipment {
 			action = (pdata, in) -> {
 				if (++count > cutoff) return TriggerResult.remove();
 				WeaponSwingEvent ev = (WeaponSwingEvent) in;
-				ev.getAttackSpeedBuff().addMultiplier(p.getUniqueId(), 1);
+				ev.getAttackSpeedBuff().addMultiplier(pdata, 1);
 				return TriggerResult.keep();
 			};
 		}

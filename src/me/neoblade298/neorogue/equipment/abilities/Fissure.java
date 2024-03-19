@@ -58,7 +58,7 @@ public class Fissure extends Equipment {
 					
 					for (LivingEntity ent : TargetHelper.getEntitiesInLine(p, p.getLocation(), end, tp)) {
 						FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.BLUNT), ent);
-						FightInstance.getFightData(ent.getUniqueId()).applyStatus(StatusType.CONCUSSED, p.getUniqueId(), concussed, -1);
+						FightInstance.getFightData(ent.getUniqueId()).applyStatus(StatusType.CONCUSSED, data, concussed, -1);
 						FightInstance.knockback(ent, new Vector(0, 0.2, 0));
 					}
 				}

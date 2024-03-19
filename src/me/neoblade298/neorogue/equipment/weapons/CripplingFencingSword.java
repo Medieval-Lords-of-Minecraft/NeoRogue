@@ -42,7 +42,7 @@ public class CripplingFencingSword extends Equipment {
 			LivingEntity target = ev.getTarget();
 			weaponSwingAndDamage(p, data, target);
 			FightInstance.getFightData(target.getUniqueId())
-					.applyStatus(StatusType.CONCUSSED, p.getUniqueId(), concussed, 0);
+					.applyStatus(StatusType.CONCUSSED, data, concussed, 0);
 			data.addSimpleShield(p.getUniqueId(), shields, 40);
 			return TriggerResult.keep();
 		});

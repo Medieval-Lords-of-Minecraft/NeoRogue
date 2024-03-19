@@ -31,7 +31,7 @@ public class RingOfFortitude extends Equipment {
 		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
 			if (data.getShields().isEmpty()) return TriggerResult.keep();
 			BasicAttackEvent ev = (BasicAttackEvent) in;
-			ev.getMeta().addDamageSlice(new DamageSlice(p.getUniqueId(), data.getShields().getAmount(), DamageType.BLUNT));
+			ev.getMeta().addDamageSlice(new DamageSlice(data, data.getShields().getAmount(), DamageType.BLUNT));
 			return TriggerResult.keep();
 		});
 	}

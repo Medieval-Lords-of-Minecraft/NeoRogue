@@ -35,7 +35,7 @@ public class DarkPact extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addBuff(p.getUniqueId(), id, false, true, BuffType.GENERAL, 1, seconds);
+		data.addBuff(data, id, false, true, BuffType.GENERAL, 1, seconds);
 		data.addTrigger(id, Trigger.BASIC_ATTACK, new DarkPactTriggerAction());
 	}
 	
@@ -49,7 +49,7 @@ public class DarkPact extends Equipment {
 				Player p = data.getPlayer();
 				p.playSound(p, Sound.ENTITY_BLAZE_SHOOT, 1F, 1F);
 				pc.play(p, p);
-				data.applyStatus(StatusType.STRENGTH, p.getUniqueId(), 2, -1);
+				data.applyStatus(StatusType.STRENGTH, data, 2, -1);
 				count = 0;
 			}
 			return TriggerResult.keep();

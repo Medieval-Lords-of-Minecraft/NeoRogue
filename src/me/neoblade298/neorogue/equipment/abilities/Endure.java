@@ -44,7 +44,7 @@ public class Endure extends Equipment {
 		
 		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, (pdata, in) -> {
 			if (p.getHandRaised() != EquipmentSlot.OFF_HAND) return TriggerResult.keep();
-			data.applyStatus(StatusType.BERSERK, p.getUniqueId(), berserk, -1);
+			data.applyStatus(StatusType.BERSERK, data, berserk, -1);
 			return TriggerResult.keep();
 		});
 	}

@@ -2,11 +2,13 @@ package me.neoblade298.neorogue.session.fight.status;
 
 import java.util.UUID;
 
+import me.neoblade298.neorogue.session.fight.FightData;
+
 public class StatusSlice {
-	private UUID uuid;
+	private FightData fd;
 	private int stacks;
-	public StatusSlice(UUID uuid, int stacks) {
-		this.uuid = uuid;
+	public StatusSlice(FightData fd, int stacks) {
+		this.fd = fd;
 		this.stacks = stacks;
 	}
 	
@@ -17,8 +19,11 @@ public class StatusSlice {
 	public int getStacks() {
 		return stacks;
 	}
+	public FightData getFightData() {
+		return fd;
+	}
 	
 	public UUID getUniqueId() {
-		return uuid;
+		return fd.getUniqueId();
 	}
 }

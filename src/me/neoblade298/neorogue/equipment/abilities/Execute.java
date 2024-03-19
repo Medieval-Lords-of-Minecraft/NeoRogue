@@ -57,7 +57,7 @@ public class Execute extends Equipment {
 				hit.play(p, ev.getTarget());
 				if (ev.getTarget().getHealth() <= 0) {
 					Sounds.success.play(p, p);
-					data.applyStatus(StatusType.STRENGTH, p.getUniqueId(), strength, 10);
+					data.applyStatus(StatusType.STRENGTH, data, strength, 10);
 				}
 				
 				return TriggerResult.remove();

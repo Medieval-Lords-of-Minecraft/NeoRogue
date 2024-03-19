@@ -39,7 +39,7 @@ public class Flametongue extends Equipment {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
 			DamageMeta dm = new DamageMeta(pdata);
-			dm.addDamageSlice(new DamageSlice(p.getUniqueId(), properties.get(PropertyType.DAMAGE), properties.getType(), DamageType.FIRE));
+			dm.addDamageSlice(new DamageSlice(data, properties.get(PropertyType.DAMAGE), properties.getType(), DamageType.FIRE));
 			weaponSwing(p, data);
 			weaponDamage(p, data, ev.getTarget(), dm);
 			return TriggerResult.keep();

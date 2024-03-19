@@ -67,7 +67,7 @@ public class Bide extends Equipment {
 			action = (data, inputs) -> {
 				if (System.currentTimeMillis() - createTime > 5000) return TriggerResult.remove();
 				bpc.play(p, p);
-				data.applyStatus(StatusType.BERSERK, p.getUniqueId(), berserk, -1);
+				data.applyStatus(StatusType.BERSERK, data, berserk, -1);
 				strengthGain.play(p, p);
 				return TriggerResult.keep();
 			};

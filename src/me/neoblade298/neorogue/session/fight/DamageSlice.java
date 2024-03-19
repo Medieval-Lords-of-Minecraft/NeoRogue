@@ -1,26 +1,24 @@
 package me.neoblade298.neorogue.session.fight;
 
-import java.util.UUID;
-
 public class DamageSlice {
-	private UUID owner;
+	private FightData owner;
 	private double damage;
 	private DamageType type, postBuffType;
 	private boolean ignoreShields;
-	public DamageSlice(UUID owner, double damage, DamageType type) {
+	public DamageSlice(FightData owner, double damage, DamageType type) {
 		super();
 		this.owner = owner;
 		this.damage = damage;
 		this.type = type;
 	}
-	public DamageSlice(UUID owner, double damage, DamageType type, DamageType postBuffType) {
+	public DamageSlice(FightData owner, double damage, DamageType type, DamageType postBuffType) {
 		super();
 		this.owner = owner;
 		this.damage = damage;
 		this.type = type;
 		this.postBuffType = postBuffType;
 	}
-	public DamageSlice(UUID owner, double damage, DamageType type, boolean ignoreShields) {
+	public DamageSlice(FightData owner, double damage, DamageType type, boolean ignoreShields) {
 		super();
 		this.owner = owner;
 		this.damage = damage;
@@ -43,9 +41,9 @@ public class DamageSlice {
 		return ignoreShields;
 	}
 	public boolean isPlayerOwner() {
-		return FightInstance.getUserData().containsKey(owner);
+		return owner instanceof PlayerFightData;
 	}
 	public PlayerFightData getOwner() {
-		return FightInstance.getUserData(owner);
+		return (PlayerFightData) owner;
 	}
 }

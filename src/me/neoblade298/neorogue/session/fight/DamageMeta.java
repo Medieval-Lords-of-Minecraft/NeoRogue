@@ -3,9 +3,7 @@ package me.neoblade298.neorogue.session.fight;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map.Entry;
-import java.util.UUID;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -36,7 +34,7 @@ public class DamageMeta {
 	
 	public DamageMeta(FightData data, double damage, DamageType type) {
 		this(data);
-		this.slices.add(new DamageSlice(data.getUniqueId(), damage, type));
+		this.slices.add(new DamageSlice(data, damage, type));
 	}
 	
 	public DamageMeta(FightData data, double baseDamage, DamageType type, boolean hitBarrier, boolean isSecondary) {
@@ -151,7 +149,7 @@ public class DamageMeta {
 		// Status effects
 		if (!isSecondary) {
 			if (recipient.hasStatus(StatusType.BURN)) {
-				for (Entry<UUID, Integer> ent : recipient.getStatus(StatusType.BURN).getSlices().getSliceOwners().entrySet()) {
+				for (Entry<FightData, Integer> ent : recipient.getStatus(StatusType.BURN).getSlices().getSliceOwners().entrySet()) {
 					slices.add(new DamageSlice(ent.getKey(), ent.getValue() * 0.1, DamageType.FIRE));
 				}
 			}
@@ -166,25 +164,16 @@ public class DamageMeta {
 			if (owner.hasStatus(StatusType.INSANITY)) {
 				HashMap<BuffType, Buff> insanityBuffs = new HashMap<BuffType, Buff>();
 				int stacks = owner.getStatus(StatusType.INSANITY).getStacks();
-				insanityBuffs.put(BuffType.MAGICAL, new Buff(owner.getUniqueId(), 0, stacks * 0.01));
+				insanityBuffs.put(BuffType.MAGICAL, new Buff(owner, 0, stacks * 0.01));
 				addBuffs(insanityBuffs, BuffOrigin.STATUS, true);
-			}
-
-			if (recipient.hasStatus(StatusType.SANCTIFIED)) {
-				Status s = recipient.getStatus(StatusType.SANCTIFIED);
-				int stacks = s.getStacks();
-				for (Entry<UUID, Integer> slice : recipient.getStatus(StatusType.SANCTIFIED).getSlices().getSliceOwners().entrySet()) {
-					FightInstance.giveHeal(Bukkit.getPlayer(slice.getKey()), stacks * 0.2, damager);
-				}
-				s.apply(owner.getUniqueId(), (int) (-stacks * 0.1), -1);
 			}
 
 			if (recipient.hasStatus(StatusType.SANCTIFIED)) {
 				Status status = recipient.getStatus(StatusType.SANCTIFIED);
 				int stacks = status.getStacks();
 				int toRemove = (int) (stacks * 0.25);
-				status.apply(owner.getUniqueId(), -toRemove, 0); // Remove 25% of stacks
-				slices.add(new DamageSlice(recipient.getUniqueId(), toRemove, DamageType.LIGHT));
+				status.apply(owner, -toRemove, 0); // Remove 25% of stacks
+				slices.add(new DamageSlice(recipient, toRemove, DamageType.LIGHT));
 				owner.addHealth(toRemove);
 			}
 			
@@ -192,16 +181,16 @@ public class DamageMeta {
 				Status status = owner.getStatus(StatusType.FROST);
 				int stacks = status.getStacks();
 				int toRemove = (int) (-stacks * 0.2);
-				status.apply(owner.getUniqueId(), toRemove, 0);
-				returnDamage.addDamageSlice(new DamageSlice(recipient.getUniqueId(), toRemove, DamageType.ICE));
+				status.apply(owner, toRemove, 0);
+				returnDamage.addDamageSlice(new DamageSlice(recipient, toRemove, DamageType.ICE));
 			}
 
 			if (owner.hasStatus(StatusType.CONCUSSED) && containsType(BuffType.PHYSICAL)) {
 				Status status = owner.getStatus(StatusType.CONCUSSED);
 				int stacks = status.getStacks();
 				int toRemove = (int) (-stacks * 0.25);
-				status.apply(owner.getUniqueId(), toRemove, 0);
-				returnDamage.addDamageSlice(new DamageSlice(recipient.getUniqueId(), toRemove, DamageType.EARTHEN));
+				status.apply(owner, toRemove, 0);
+				returnDamage.addDamageSlice(new DamageSlice(recipient, toRemove, DamageType.EARTHEN));
 			}
 		}
 		
@@ -215,11 +204,10 @@ public class DamageMeta {
 					increase += b.getIncrease();
 					mult += b.getMultiplier();
 					if (!(owner instanceof PlayerFightData)) continue; // Don't need stats for non-player damager
-					for (Entry<UUID, BuffSlice> ent : b.getSlices().entrySet()) {
+					for (Entry<FightData, BuffSlice> ent : b.getSlices().entrySet()) {
 						BuffSlice bs = ent.getValue();
-						PlayerFightData buffOwner = FightInstance.getUserData(ent.getKey());
-						if (buffOwner != null) {
-							buffOwner.getStats().addDamageBuffed(slice.getType(), bs.getIncrease() + (bs.getMultiplier() * slice.getDamage()));
+						if (ent.getKey() instanceof PlayerFightData) {
+							((PlayerFightData) ent.getKey()).getStats().addDamageBuffed(slice.getType(), bs.getIncrease() + (bs.getMultiplier() * slice.getDamage()));
 						}
 					}
 				}
@@ -232,10 +220,10 @@ public class DamageMeta {
 					increase -= b.getIncrease();
 					mult -= b.getMultiplier();
 					if (!(recipient instanceof PlayerFightData)) continue; // Don't need stats for non-player mitigation
-					for (Entry<UUID, BuffSlice> ent : b.getSlices().entrySet()) {
+					for (Entry<FightData, BuffSlice> ent : b.getSlices().entrySet()) {
 						BuffSlice bs = ent.getValue();
-						PlayerFightData buffOwner = FightInstance.getUserData(ent.getKey());
-						if (buffOwner != null) {
+						if (ent.getKey() instanceof PlayerFightData) {
+							PlayerFightData buffOwner = (PlayerFightData) ent.getKey();
 							double amt = bs.getIncrease() + (bs.getMultiplier() * slice.getDamage());
 							switch (bm.origin) {
 							case BARRIER:
@@ -266,10 +254,10 @@ public class DamageMeta {
 
 			// Return damage
 			if (recipient.hasStatus(StatusType.THORNS) && slice.getPostBuffType().containsBuffType(BuffType.PHYSICAL)) {
-				returnDamage.addDamageSlice(new DamageSlice(recipient.getUniqueId(), recipient.getStatus(StatusType.THORNS).getStacks(), DamageType.THORNS));
+				returnDamage.addDamageSlice(new DamageSlice(recipient, recipient.getStatus(StatusType.THORNS).getStacks(), DamageType.THORNS));
 			}
 			if (recipient.hasStatus(StatusType.REFLECT) && slice.getPostBuffType().containsBuffType(BuffType.MAGICAL)) {
-				returnDamage.addDamageSlice(new DamageSlice(recipient.getUniqueId(), recipient.getStatus(StatusType.REFLECT).getStacks(), DamageType.REFLECT));
+				returnDamage.addDamageSlice(new DamageSlice(recipient, recipient.getStatus(StatusType.REFLECT).getStacks(), DamageType.REFLECT));
 			}
 		}
 		

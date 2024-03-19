@@ -70,7 +70,7 @@ public class MechanicBarrier implements ITargetedEntitySkill {
 			if (fd == null) return SkillResult.INVALID_TARGET;
 			HashMap<BuffType, Buff> buffs = new HashMap<BuffType, Buff>();
 			for (Entry<BuffType, Double> ent : this.buffs.entrySet()) {
-				buffs.put(ent.getKey(), new Buff(owner.getUniqueId(), 0, ent.getValue()));
+				buffs.put(ent.getKey(), new Buff(fd, 0, ent.getValue()));
 			}
 			LivingEntity ent = (LivingEntity) data.getCaster().getEntity().getBukkitEntity();
 			Barrier b = Barrier.centered(ent, width, forward, height, forwardOffset, buffs);

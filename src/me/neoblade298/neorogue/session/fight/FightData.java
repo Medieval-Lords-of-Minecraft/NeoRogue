@@ -113,7 +113,7 @@ public class FightData {
 		return entity;
 	}
 
-	public void addBuff(UUID applier, boolean damageBuff, boolean multiplier, BuffType type, double amount) {
+	public void addBuff(FightData applier, boolean damageBuff, boolean multiplier, BuffType type, double amount) {
 		Buff b = damageBuff ? damageBuffs.getOrDefault(type, new Buff()) : defenseBuffs.getOrDefault(type, new Buff());
 		if (multiplier)
 			b.addMultiplier(applier, amount);
@@ -124,7 +124,7 @@ public class FightData {
 		else defenseBuffs.put(type, b);
 	}
 
-	public void addBuff(UUID applier, String id, boolean damageBuff, boolean multiplier, BuffType type, double amount, int seconds) {
+	public void addBuff(FightData applier, String id, boolean damageBuff, boolean multiplier, BuffType type, double amount, int seconds) {
 		addBuff(applier, damageBuff, multiplier, type, amount);
 
 		if (seconds > 0) {
@@ -319,31 +319,30 @@ public class FightData {
 		return statuses.getOrDefault(type.name(), Status.EMPTY);
 	}
 	
-	public void applyStatus(StatusType type, UUID applier, int stacks, int seconds) {
+	public void applyStatus(StatusType type, FightData applier, int stacks, int seconds) {
 		applyStatus(type, applier, stacks, seconds, null);
 	}
 	
-	public void applyStatus(StatusType type, UUID applier, int stacks, int seconds, DamageMeta meta) {
-		Status s = statuses.getOrDefault(type.name(), Status.createByType(type, applier, this));
+	public void applyStatus(StatusType type, FightData applier, int stacks, int seconds, DamageMeta meta) {
+		Status s = statuses.getOrDefault(type.name(), Status.createByType(type, this));
 		applyStatus(s, applier, stacks, seconds, meta);
 	}
 	
-	public void applyStatus(GenericStatusType type, String id, UUID applier, int stacks, int seconds) {
+	public void applyStatus(GenericStatusType type, String id, FightData applier, int stacks, int seconds) {
 		applyStatus(type, id, applier, stacks, seconds, null);
 	}
 	
-	public void applyStatus(GenericStatusType type, String id, UUID applier, int stacks, int seconds, DamageMeta meta) {
-		Status s = statuses.getOrDefault(id, Status.createByGenericType(type, id, applier, this));
+	public void applyStatus(GenericStatusType type, String id, FightData applier, int stacks, int seconds, DamageMeta meta) {
+		Status s = statuses.getOrDefault(id, Status.createByGenericType(type, id, this));
 		applyStatus(s, applier, stacks, seconds, meta);
 	}
 	
-	protected void applyStatus(Status s, UUID applier, int stacks, int seconds, DamageMeta meta) {
+	protected void applyStatus(Status s, FightData applier, int stacks, int seconds, DamageMeta meta) {
 		if (!entity.isValid()) return;
 		String id = s.getId();
 		ApplyStatusEvent ev = new ApplyStatusEvent(this, id, stacks, seconds, meta);
-		if (FightInstance.getUserData().containsKey(applier)) {
-			PlayerFightData data = FightInstance.getUserData(applier);
-			FightInstance.trigger(data.getPlayer(), Trigger.APPLY_STATUS, ev);
+		if (applier instanceof PlayerFightData) {
+			FightInstance.trigger(((PlayerFightData) applier).getPlayer(), Trigger.APPLY_STATUS, ev);
 		}
 		if (this instanceof PlayerFightData) {
 			PlayerFightData data = (PlayerFightData) this;

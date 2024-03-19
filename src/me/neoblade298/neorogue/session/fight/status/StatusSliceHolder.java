@@ -2,15 +2,16 @@ package me.neoblade298.neorogue.session.fight.status;
 
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.UUID;
+
+import me.neoblade298.neorogue.session.fight.FightData;
 
 public class StatusSliceHolder {
 	private LinkedList<StatusSlice> slices = new LinkedList<StatusSlice>();
-	private HashMap<UUID, Integer> sliceOwners = new HashMap<UUID, Integer>();
+	private HashMap<FightData, Integer> sliceOwners = new HashMap<FightData, Integer>();
 	
-	public void add(UUID applier, int amount) {
+	public void add(FightData applier, int amount) {
 		StatusSlice last = slices.peekLast();
-		if (last != null && last.getUniqueId().equals(applier)) {
+		if (last != null && last.getUniqueId().equals(applier.getUniqueId())) {
 			last.addStacks(amount);
 		}
 		else {
@@ -28,14 +29,14 @@ public class StatusSliceHolder {
 		while (amount > 0) {
 			StatusSlice slice = front ? slices.getFirst() : slices.getLast();
 			int stacks = slice.getStacks();
-			UUID uuid = slice.getUniqueId();
+			FightData fd = slice.getFightData();
 			if (stacks > amount) {
 				slice.addStacks(-amount);
-				sliceOwners.put(uuid, sliceOwners.get(uuid) - amount);
+				sliceOwners.put(fd, sliceOwners.get(fd) - amount);
 				amount = 0;
 			}
 			else {
-				sliceOwners.put(uuid, sliceOwners.get(uuid) - stacks);
+				sliceOwners.put(fd, sliceOwners.get(fd) - stacks);
 				amount -= stacks;
 				if (front) slices.removeFirst();
 				else slices.removeLast();
@@ -47,7 +48,7 @@ public class StatusSliceHolder {
 		return slices.getFirst();
 	}
 	
-	public HashMap<UUID, Integer> getSliceOwners() {
+	public HashMap<FightData, Integer> getSliceOwners() {
 		return sliceOwners;
 	}
 }

@@ -48,7 +48,7 @@ public class Discipline extends Equipment {
 			pc.play(p, p);
 			pdata.addMaxStamina(staminaGain);
 			pdata.addStamina(stamina);
-			data.addBuff(p.getUniqueId(), false, false, BuffType.GENERAL, 7);
+			data.addBuff(data, false, false, BuffType.GENERAL, 7);
 			return TriggerResult.keep();
 		}));
 	}

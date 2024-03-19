@@ -1,7 +1,5 @@
 package me.neoblade298.neorogue.session.fight.status;
 
-import java.util.UUID;
-
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.TickAction;
 
@@ -11,7 +9,7 @@ public class DurationStatus extends Status {
 	}
 
 	@Override
-	public void apply(UUID applier, int stacks, int seconds) {
+	public void apply(FightData applier, int stacks, int seconds) {
 		this.seconds = seconds > 0 ? Math.max(this.seconds, seconds) : this.seconds + seconds;
 		this.stacks += stacks;
 		

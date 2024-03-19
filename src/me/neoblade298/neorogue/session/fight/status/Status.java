@@ -1,7 +1,6 @@
 package me.neoblade298.neorogue.session.fight.status;
 
 import java.util.Comparator;
-import java.util.UUID;
 
 import org.bukkit.Bukkit;
 
@@ -34,9 +33,9 @@ public abstract class Status {
 	}
 	
 	// Setting stacks or status to 0 means they will be untouched
-	public abstract void apply(UUID applier, int stacks, int seconds);
+	public abstract void apply(FightData applier, int stacks, int seconds);
 	
-	public static Status createByType(StatusType id, UUID applier, FightData target) {
+	public static Status createByType(StatusType id, FightData target) {
 		switch (id) {
 		case POISON: return new PoisonStatus(target);
 		case BLEED: return new BleedStatus(target);
@@ -58,7 +57,7 @@ public abstract class Status {
 		return new BasicStatus(id.name(), target);
 	}
 	
-	public static Status createByGenericType(GenericStatusType type, String id, UUID applier, FightData target) {
+	public static Status createByGenericType(GenericStatusType type, String id, FightData target) {
 		switch (type) {
 		case DECREMENT_STACK: return new DecrementStackStatus(id, target);
 		case BASIC: return new BasicStatus(id, target);

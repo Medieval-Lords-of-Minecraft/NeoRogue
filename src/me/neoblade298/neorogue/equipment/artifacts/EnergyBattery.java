@@ -59,7 +59,7 @@ public class EnergyBattery extends Artifact {
 				Sounds.success.play(p, p);
 				part.play(p, p);
 				for (PropertyType type : new PropertyType[] { PropertyType.MANA_COST, PropertyType.STAMINA_COST, PropertyType.COOLDOWN }) {
-					ev.addBuff(type, p.getUniqueId(), uuid, 1, true);
+					ev.addBuff(type, data, uuid, 1, true);
 				}
 				return TriggerResult.keep();
 			}

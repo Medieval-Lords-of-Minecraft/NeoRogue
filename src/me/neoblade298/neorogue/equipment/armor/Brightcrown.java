@@ -30,11 +30,11 @@ public class Brightcrown extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addBuff(p.getUniqueId(), false, false, BuffType.MAGICAL, def);
+		data.addBuff(data, false, false, BuffType.MAGICAL, def);
 		data.addTrigger(ID, Trigger.RECEIVED_DAMAGE, (pdata, in) -> {
 			ReceivedDamageEvent ev = (ReceivedDamageEvent) in;
 			if (!ev.getMeta().containsType(BuffType.MAGICAL)) return TriggerResult.keep();
-			ev.getDamager().applyStatus(StatusType.SANCTIFIED, p.getUniqueId(), sanct, -1);
+			ev.getDamager().applyStatus(StatusType.SANCTIFIED, data, sanct, -1);
 			return TriggerResult.keep();
 		});
 	}

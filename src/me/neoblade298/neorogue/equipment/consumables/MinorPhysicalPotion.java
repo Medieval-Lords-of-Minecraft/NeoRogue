@@ -27,7 +27,7 @@ public class MinorPhysicalPotion extends Consumable {
 	
 	@Override
 	public void runConsumableEffects(Player p, PlayerFightData data) {
-		data.applyStatus(StatusType.STRENGTH, p.getUniqueId(), strength, -1);
+		data.applyStatus(StatusType.STRENGTH, data, strength, -1);
 	}
 
 	@Override

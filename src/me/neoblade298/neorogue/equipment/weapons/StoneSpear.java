@@ -62,8 +62,8 @@ public class StoneSpear extends Equipment {
 			LeftClickHitEvent ev = (LeftClickHitEvent) in;
 			weaponSwing(p, data);
 			DamageMeta dm = new DamageMeta(data, throwDamage, DamageType.PIERCING);
-			dm.addDamageSlice(new DamageSlice(p.getUniqueId(), 0, DamageType.PIERCING));
-			dm.addDamageSlice(new DamageSlice(p.getUniqueId(), 0, DamageType.PIERCING));
+			dm.addDamageSlice(new DamageSlice(data, 0, DamageType.PIERCING));
+			dm.addDamageSlice(new DamageSlice(data, 0, DamageType.PIERCING));
 			weaponDamage(p, data, ev.getTarget(), dm);
 			return TriggerResult.keep();
 		});
@@ -76,8 +76,8 @@ public class StoneSpear extends Equipment {
 				return TriggerResult.keep();
 			weaponSwing(p, data);
 			DamageMeta dm = new DamageMeta(data, throwDamage, DamageType.PIERCING);
-			dm.addDamageSlice(new DamageSlice(p.getUniqueId(), 0, DamageType.PIERCING));
-			dm.addDamageSlice(new DamageSlice(p.getUniqueId(), 0, DamageType.PIERCING));
+			dm.addDamageSlice(new DamageSlice(data, 0, DamageType.PIERCING));
+			dm.addDamageSlice(new DamageSlice(data, 0, DamageType.PIERCING));
 			weaponDamage(p, data, targets.getFirst(), dm);
 			return TriggerResult.keep();
 		});
@@ -125,8 +125,8 @@ public class StoneSpear extends Equipment {
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
 			DamageMeta dm = new DamageMeta(proj.getOwner(), throwDamage, DamageType.PIERCING);
-			dm.addDamageSlice(new DamageSlice(p.getUniqueId(), 0, DamageType.PIERCING));
-			dm.addDamageSlice(new DamageSlice(p.getUniqueId(), 0, DamageType.PIERCING));
+			dm.addDamageSlice(new DamageSlice(proj.getOwner(), 0, DamageType.PIERCING));
+			dm.addDamageSlice(new DamageSlice(proj.getOwner(), 0, DamageType.PIERCING));
 			damageProjectile(hit.getEntity(), proj, dm, hitBarrier);
 			Location loc = hit.getEntity().getLocation();
 			Sounds.explode.play(p, loc);

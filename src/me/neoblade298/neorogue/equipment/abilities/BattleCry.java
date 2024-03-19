@@ -53,7 +53,7 @@ public class BattleCry extends Equipment {
 		data.addTrigger(id, bind, new EquipmentInstance(p, this, slot, es, (pdata, inputs) -> {
 			sc.play(p, p);
 			pc.play(p, p);
-			data.applyStatus(StatusType.STRENGTH, p.getUniqueId(), strength, 10);
+			data.applyStatus(StatusType.STRENGTH, data, strength, 10);
 			return TriggerResult.keep();
 		}));
 	}

@@ -66,7 +66,7 @@ public class MapSpawnerInstance {
 			UUID uuid = am.getEntity().getUniqueId();
 			FightData fd = new FightData((LivingEntity) am.getEntity().getBukkitEntity(), am, this);
 			for (Entry<BuffType, Integer> ent : origin.getMob().getResistances().entrySet()) {
-				fd.addBuff(uuid, false, true, ent.getKey(), (double) ent.getValue() / 100);
+				fd.addBuff(fd, false, true, ent.getKey(), (double) ent.getValue() / 100);
 			}
 			FightInstance.putFightData(uuid, fd);
 			activeMobs += origin.getMob().getAmount();

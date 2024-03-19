@@ -661,25 +661,26 @@ public abstract class FightInstance extends Instance {
 	
 	public static void applyStatus(Entity target, String id, Entity applier, int stacks, int seconds) {
 		FightData data = getFightData(target.getUniqueId());
+		FightData fdApplier = getFightData(applier.getUniqueId());
 		for (StatusType st : StatusType.values()) {
 			if (st.name().equals(id)) {
-				data.applyStatus(st, applier.getUniqueId(), stacks, seconds);
+				data.applyStatus(st, fdApplier, stacks, seconds);
 				return;
 			}
 		}
-		data.applyStatus(GenericStatusType.BASIC, id, applier.getUniqueId(), stacks, seconds);
+		data.applyStatus(GenericStatusType.BASIC, id, fdApplier, stacks, seconds);
 	}
 	
 	public static void applyStatus(Entity target, StatusType type, Entity applier, int stacks, int seconds) {
 		FightData data = getFightData(target.getUniqueId());
-		data.applyStatus(type, applier.getUniqueId(), stacks, seconds);
+		FightData fdApplier = getFightData(applier.getUniqueId());
+		data.applyStatus(type, fdApplier, stacks, seconds);
 	}
 	
-	public static void applyStatus(
-			Entity target, GenericStatusType type, String id, Entity applier, int stacks, int seconds
-	) {
+	public static void applyStatus(Entity target, GenericStatusType type, String id, Entity applier, int stacks, int seconds) {
 		FightData data = getFightData(target.getUniqueId());
-		data.applyStatus(type, id, applier.getUniqueId(), stacks, seconds);
+		FightData fdApplier = getFightData(applier.getUniqueId());
+		data.applyStatus(type, id, fdApplier, stacks, seconds);
 	}
 	
 	public static void dealDamage(FightData owner, DamageType type, double amount, LivingEntity target) {

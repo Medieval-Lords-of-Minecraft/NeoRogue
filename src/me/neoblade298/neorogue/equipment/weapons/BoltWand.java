@@ -78,7 +78,7 @@ public class BoltWand extends Equipment {
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
 			weaponDamageProjectile(hit.getEntity(), proj, hitBarrier);
-			hit.applyStatus(StatusType.ELECTRIFIED, p.getUniqueId(), 5, 0);
+			hit.applyStatus(StatusType.ELECTRIFIED, proj.getOwner(), 5, 0);
 			Location loc = hit.getEntity().getLocation();
 			sc.play(p, loc);
 			if (proj.getNumHit() >= pierceAmount)

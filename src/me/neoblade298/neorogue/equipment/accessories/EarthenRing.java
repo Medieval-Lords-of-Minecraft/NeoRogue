@@ -31,7 +31,7 @@ public class EarthenRing extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
 			BasicAttackEvent ev = (BasicAttackEvent) in;
-			ev.getMeta().addDamageSlice(new DamageSlice(p.getUniqueId(), damage, DamageType.EARTHEN));
+			ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.EARTHEN));
 			return TriggerResult.keep();
 		});
 	}

@@ -26,7 +26,7 @@ public class IronCuirass extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addBuff(p.getUniqueId(), false, false, BuffType.PHYSICAL, damageReduction);
+		data.addBuff(data, false, false, BuffType.PHYSICAL, damageReduction);
 	}
 
 	@Override

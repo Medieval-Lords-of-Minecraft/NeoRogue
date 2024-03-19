@@ -31,7 +31,7 @@ public class AmuletOfOffering extends Artifact {
 		data.addTrigger(id, Trigger.RECEIVED_HEALTH_DAMAGE, (pdata, in) -> {
 			data.addMana(1000);
 			data.addStamina(1000);
-			data.addBuff(p.getUniqueId(), id, true, true, BuffType.GENERAL, 0.5, 5);
+			data.addBuff(data, id, true, true, BuffType.GENERAL, 0.5, 5);
 			Util.msg(p, this.display.append(Component.text(" was activated", NamedTextColor.GRAY)));
 			return TriggerResult.remove();
 		});

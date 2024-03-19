@@ -49,7 +49,7 @@ public class Burst extends Equipment {
 			Sounds.blazeDeath.play(p, p);
 			pc.play(p, p);
 			pdata.addStamina(stamina);
-			data.applyStatus(StatusType.STRENGTH, p.getUniqueId(), buff, seconds);
+			data.applyStatus(StatusType.STRENGTH, data, buff, seconds);
 			return TriggerResult.keep();
 		}));
 	}

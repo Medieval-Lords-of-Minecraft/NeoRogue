@@ -26,7 +26,7 @@ public class NullMagicMantle extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addBuff(p.getUniqueId(), false, false, BuffType.MAGICAL, damageReduction);
+		data.addBuff(data, false, false, BuffType.MAGICAL, damageReduction);
 	}
 
 	@Override

@@ -48,7 +48,7 @@ public class Fortify extends Equipment {
 				Sounds.anvil.play(p, ev.getTarget());
 				hit.play(p, ev.getTarget());
 				FightInstance.dealDamage(data, DamageType.PIERCING, damage, ev.getTarget());
-				data.applyStatus(GenericStatusType.BASIC, "Fortitude", p.getUniqueId(), fortitude, -1);
+				data.applyStatus(GenericStatusType.BASIC, "Fortitude", data, fortitude, -1);
 				data.addSimpleShield(p.getUniqueId(), data.getStatus("Fortitude").getStacks(), 40);
 				return TriggerResult.remove();
 			});

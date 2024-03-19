@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 import java.util.TreeSet;
-import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
@@ -16,8 +15,15 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+
 import com.google.common.collect.TreeMultiset;
 
+import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.equipment.ArtifactInstance;
+import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.TickAction.TickResult;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
@@ -32,10 +38,6 @@ import me.neoblade298.neorogue.session.fight.trigger.event.CastUsableEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.StaminaChangeEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.equipment.*;
-import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
-import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 
 public class PlayerFightData extends FightData {
 	
@@ -229,7 +231,7 @@ public class PlayerFightData extends FightData {
 	}
 	
 	@Override
-	protected void applyStatus(Status s, UUID applier, int stacks, int seconds, DamageMeta meta) {
+	protected void applyStatus(Status s, FightData applier, int stacks, int seconds, DamageMeta meta) {
 		if (isDead) return;
 		super.applyStatus(s, applier, stacks, seconds, meta);
 	}

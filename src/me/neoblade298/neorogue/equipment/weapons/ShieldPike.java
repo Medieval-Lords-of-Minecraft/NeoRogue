@@ -47,7 +47,7 @@ public class ShieldPike extends Equipment {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, in) -> {
 			LeftClickHitEvent ev = (LeftClickHitEvent) in;
 			double damage = hasShield ? properties.get(PropertyType.DAMAGE) * 2 : properties.get(PropertyType.DAMAGE);
-			data.applyStatus(StatusType.THORNS, p.getUniqueId(), thorns, -1);
+			data.applyStatus(StatusType.THORNS, data, thorns, -1);
 			weaponSwingAndDamage(p, data, ev.getTarget(), damage);
 			return TriggerResult.keep();
 		});
@@ -57,7 +57,7 @@ public class ShieldPike extends Equipment {
 			if (targets.isEmpty())
 				return TriggerResult.keep();
 			double damage = hasShield ? properties.get(PropertyType.DAMAGE) * 2 : properties.get(PropertyType.DAMAGE);
-			data.applyStatus(StatusType.THORNS, p.getUniqueId(), thorns, -1);
+			data.applyStatus(StatusType.THORNS, data, thorns, -1);
 			weaponSwingAndDamage(p, data, targets.getFirst(), damage);
 			return TriggerResult.keep();
 		});

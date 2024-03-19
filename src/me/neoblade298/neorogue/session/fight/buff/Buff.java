@@ -2,35 +2,36 @@ package me.neoblade298.neorogue.session.fight.buff;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
-import java.util.UUID;
+
+import me.neoblade298.neorogue.session.fight.FightData;
 
 public class Buff {
 	private double increase, multiplier;
-	private HashMap<UUID, BuffSlice> slices = new HashMap<UUID, BuffSlice>();
+	private HashMap<FightData, BuffSlice> slices = new HashMap<FightData, BuffSlice>();
 	
 	public Buff() {}
 	
-	public Buff(UUID applier, double increase, double multiplier) {
+	public Buff(FightData applier, double increase, double multiplier) {
 		this.increase = increase;
 		this.multiplier = multiplier;
 		slices.put(applier, new BuffSlice(increase, multiplier));
 	}
 	
-	public Buff(double increase, double multiplier, HashMap<UUID, BuffSlice> slices) {
+	public Buff(double increase, double multiplier, HashMap<FightData, BuffSlice> slices) {
 		this.increase = increase;
 		this.multiplier = multiplier;
 		this.slices = slices;
 	}
 	
 	public Buff clone() {
-		HashMap<UUID, BuffSlice> newSlices = new HashMap<UUID, BuffSlice>();
-		for (Entry<UUID, BuffSlice> ent : slices.entrySet()) {
+		HashMap<FightData, BuffSlice> newSlices = new HashMap<FightData, BuffSlice>();
+		for (Entry<FightData, BuffSlice> ent : slices.entrySet()) {
 			newSlices.put(ent.getKey(), ent.getValue().clone());
 		}
 		return new Buff(increase, multiplier, newSlices);
 	}
 	
-	public void addIncrease(UUID applier, double increase) {
+	public void addIncrease(FightData applier, double increase) {
 		this.increase += increase;
 		BuffSlice slice = slices.getOrDefault(applier, new BuffSlice());
 		slice.addIncrease(increase);
@@ -43,7 +44,7 @@ public class Buff {
 		}
 	}
 	
-	public void addMultiplier(UUID applier, double multiplier) {
+	public void addMultiplier(FightData applier, double multiplier) {
 		this.multiplier += multiplier;
 		BuffSlice slice = slices.getOrDefault(applier, new BuffSlice());
 		slice.addMultiplier(multiplier);
@@ -56,7 +57,7 @@ public class Buff {
 		}
 	}
 	
-	public HashMap<UUID, BuffSlice> getSlices() {
+	public HashMap<FightData, BuffSlice> getSlices() {
 		return slices;
 	}
 	
