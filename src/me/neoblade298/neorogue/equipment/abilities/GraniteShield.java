@@ -1,17 +1,16 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
 
-import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
-import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
-import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.Shield;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -20,16 +19,15 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
 
 public class GraniteShield extends Equipment {
 	private static final String ID = "graniteShield";
-	private static final int HEAL_COUNT = 6;
-	private static final ParticleContainer pc = new ParticleContainer(Particle.VILLAGER_HAPPY).count(15).spread(0.5, 0.5).offsetY(2);;
-	private int heal, concuss;
+	private int shields, cd, conc;
 	
 	public GraniteShield(boolean isUpgraded) {
 		super(ID, "Granite Shield", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 5, 0));
 		
-		heal = 8;
-		concuss = isUpgraded ? 9 : 6;
+		shields = 15;
+		cd = (int) properties.get(PropertyType.COOLDOWN);
+		conc = isUpgraded ? 6 : 4;
 	}
 	
 	public static Equipment get() {
@@ -38,17 +36,18 @@ public class GraniteShield extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		GraniteShieldInstance inst = new GraniteShieldInstance(p, id);
-		data.addTrigger(id, Trigger.SHIELD_TICK, inst);
-		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, (pdata, in) -> {
-			if (inst.getCount() < HEAL_COUNT) return TriggerResult.keep();
-			ReceivedDamageEvent ev = (ReceivedDamageEvent) in;
-			ev.getMeta().getOwner().applyStatus(StatusType.CONCUSSED, p.getUniqueId(), concuss, -1);
+		GraniteShieldInstance inst = new GraniteShieldInstance(id, p);
+		data.addTrigger(id, Trigger.RAISE_SHIELD, inst);
+		
+		data.addTrigger(id, Trigger.LOWER_SHIELD, (pdata, in) -> {
+			if (inst.s != null) inst.s.remove();
 			return TriggerResult.keep();
 		});
 		
-		data.addTrigger(id, Trigger.LOWER_SHIELD, (pdata, in) -> {
-			inst.resetCount();
+		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, (pdata, in) -> {
+			if (p.getHandRaised() != EquipmentSlot.OFF_HAND) return TriggerResult.keep();
+			ReceivedDamageEvent ev = (ReceivedDamageEvent) in;
+			ev.getDamager().applyStatus(StatusType.CONCUSSED, p.getUniqueId(), conc, -1);
 			return TriggerResult.keep();
 		});
 	}
@@ -56,32 +55,22 @@ public class GraniteShield extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GRANITE_SLAB,
-				"Passive. Heal for <white>" + heal + "</white> every <white>3</white> consecutive seconds of keeping your shield raised. "
-						+ "Apply <yellow>" + concuss + "</yellow> " +
-						GlossaryTag.CONCUSSED.tag(this) + " to enemies that damage you while your shield is raised for at least 3 seconds.");
+				"Passive. Raising a shield grants " + GlossaryTag.SHIELDS.tag(this, shields, false) + " until "
+				+ "you lower your shield again. Apply " +
+						GlossaryTag.CONCUSSED.tag(this, conc, true) + " to enemies that damage you while your shield is raised.");
 	}
 	
 	private class GraniteShieldInstance extends PriorityAction {
-		private int count = 0;
-		public GraniteShieldInstance(Player p, String id) {
+		private Shield s;
+		private long nextUse;
+		public GraniteShieldInstance(String id, Player p) {
 			super(id);
-			
 			action = (pdata, inputs) -> {
-				if (++count % HEAL_COUNT == 0 && count > 0) {
-					pc.play(p, p);
-					Sounds.enchant.play(p, p);
-					FightInstance.giveHeal(p, heal, p);
-				}
+				if (System.currentTimeMillis() < nextUse) return TriggerResult.keep();
+				s = pdata.addPermanentShield(p.getUniqueId(), shields);
+				nextUse = System.currentTimeMillis() + (cd * 1000);
 				return TriggerResult.keep();
 			};
-		}
-		
-		public int getCount() {
-			return count;
-		}
-		
-		public void resetCount() {
-			count = 0;
 		}
 	}
 }

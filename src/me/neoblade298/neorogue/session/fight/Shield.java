@@ -87,6 +87,12 @@ public class Shield {
 		return this.amount > 0 ? 0 : damage - original;
 	}
 	
+	public void remove() {
+		shieldHolder.subtractShields(amount);
+		this.amount = 0;
+		shieldHolder.update();
+	}
+	
 	public boolean isUsable() {
 		return this.amount > 0;
 	}

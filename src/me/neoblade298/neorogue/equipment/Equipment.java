@@ -547,6 +547,14 @@ public abstract class Equipment implements Comparable<Equipment> {
 	}
 
 	public ItemStack createItem(Material mat, String[] preLoreLine, String loreLine) {
+		// Spell check
+		char prev = 0;
+		for (char c : loreLine.toCharArray()) {
+			if (c == ' ' && prev == ' ') {
+				Bukkit.getLogger().warning("[NeoRogue] Duplicate space found in equipment " + id);
+			}
+			prev = c;
+		}
 		ItemStack item = new ItemStack(mat);
 		ItemMeta meta = item.getItemMeta();
 

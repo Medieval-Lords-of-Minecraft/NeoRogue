@@ -136,7 +136,7 @@ public class DamageMeta {
 		// See if any of our effects cancel damage first
 		if (recipient instanceof PlayerFightData) {
 			PlayerFightData pdata = (PlayerFightData) recipient;
-			ReceivedDamageEvent ev = new ReceivedDamageEvent(damager, this);
+			ReceivedDamageEvent ev = new ReceivedDamageEvent(recipient, this);
 			if (pdata.runActions(pdata, Trigger.RECEIVED_DAMAGE, ev)) {
 				slices.clear();
 			}
