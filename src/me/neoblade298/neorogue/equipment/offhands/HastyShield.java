@@ -45,7 +45,7 @@ public class HastyShield extends Equipment {
 		
 		@Override
 		public TriggerResult trigger(PlayerFightData data, Object inputs) {
-			if (p.getHandRaised() != EquipmentSlot.OFF_HAND) return TriggerResult.keep();
+			if (p.getHandRaised() != EquipmentSlot.OFF_HAND && p.isHandRaised()) return TriggerResult.keep();
 			long now = System.currentTimeMillis();
 			if (now <= nextUsable) return TriggerResult.keep();
 			

@@ -34,7 +34,7 @@ public class PoolOfLight extends Equipment {
 	private static final TargetProperties tp = TargetProperties.radius(5, true, TargetType.ENEMY);
 	
 	public PoolOfLight(boolean isUpgraded) {
-		super(ID, "Empowered Edge", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+		super(ID, "Pool of Light", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 10, 20, 0));
 		properties.addUpgrades(PropertyType.COOLDOWN);
 		sanct = isUpgraded ? 3 : 2;

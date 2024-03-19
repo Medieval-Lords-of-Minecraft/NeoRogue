@@ -193,6 +193,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new MightySwing(b);
 			new Parry(b);
 			new Pin(b);
+			new PoolOfLight(b);
 			new Prayer(b);
 			new Provoke(b);
 			new Quake(b);
@@ -314,6 +315,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		// Materials
 
 		HashMap<EquipmentType, Integer> counts = new HashMap<EquipmentType, Integer>();
+		int cursed = 0;
 		for (EquipmentType type : EquipmentType.values()) {
 			counts.put(type, 0);
 		}
@@ -325,7 +327,13 @@ public abstract class Equipment implements Comparable<Equipment> {
 			if (up != null) {
 				up.setup();
 			}
-			counts.put(eq.getType(), counts.get(eq.getType()) + 1);
+			
+			if (eq.isCursed) {
+				cursed++;
+			}
+			else {
+				counts.put(eq.getType(), counts.get(eq.getType()) + 1);
+			}
 		}
 		
 		for (Equipment eq : equipment.values()) {
@@ -341,6 +349,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		for (EquipmentType type : EquipmentType.values()) {
 			Bukkit.getLogger().info("[NeoRogue] Loaded " + counts.get(type) + " " + type.getDisplay());
 		}
+		Bukkit.getLogger().info("[NeoRogue] Loaded " + cursed + " Cursed");
 	}
 
 	public Equipment(String id, String display, boolean isUpgraded, Rarity rarity, EquipmentClass ec,

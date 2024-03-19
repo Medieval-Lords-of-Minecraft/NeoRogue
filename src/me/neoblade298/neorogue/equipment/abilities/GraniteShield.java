@@ -45,7 +45,7 @@ public class GraniteShield extends Equipment {
 		});
 		
 		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, (pdata, in) -> {
-			if (p.getHandRaised() != EquipmentSlot.OFF_HAND) return TriggerResult.keep();
+			if (p.getHandRaised() != EquipmentSlot.OFF_HAND && p.isHandRaised()) return TriggerResult.keep();
 			ReceivedDamageEvent ev = (ReceivedDamageEvent) in;
 			ev.getDamager().applyStatus(StatusType.CONCUSSED, data, conc, -1);
 			return TriggerResult.keep();

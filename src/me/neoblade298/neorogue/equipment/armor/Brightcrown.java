@@ -41,7 +41,7 @@ public class Brightcrown extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.GOLDEN_HELMET, "Decrease " + GlossaryTag.MAGICAL.tag(this) + " by <yellow>" + def + "</yellow>. Taking " + GlossaryTag.MAGICAL.tag(this)
-				+ " applies " + GlossaryTag.SANCTIFIED.tag(this, sanct, true) + " to the damager.");
+		item = createItem(Material.GOLDEN_HELMET, "Decrease " + GlossaryTag.MAGICAL.tag(this) + " damage by <yellow>" + def + "</yellow>. Taking " + GlossaryTag.MAGICAL.tag(this)
+				+ " damage applies " + GlossaryTag.SANCTIFIED.tag(this, sanct, true) + " to the damager.");
 	}
 }
