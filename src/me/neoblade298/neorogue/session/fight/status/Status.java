@@ -51,6 +51,8 @@ public abstract class Status {
 		case BERSERK: return new BasicStatus(id.name(), target);
 		case STRENGTH: return new StrengthStatus(target);
 		case INTELLECT: return new IntellectStatus(target);
+		case PROTECT: return new ProtectStatus(target);
+		case SHELL: return new ShellStatus(target);
 		}
 		Bukkit.getLogger().warning("[NeoRogue] Failed to create status type " + id);
 		return new BasicStatus(id.name(), target);
@@ -65,17 +67,13 @@ public abstract class Status {
 		}
 	}
 	
-	public String getBoardDisplay() {
+	public String getDisplay() {
 		try {
 			return StatusType.valueOf(id).boardLine + "§7: §f" + stacks;
 		}
 		catch (IllegalArgumentException ex) {
 			return "§f" + id + "§7: §f" + stacks;
 		}
-	}
-	
-	public String getHologramLine() {
-		return "&e" + id + "&f: " + stacks + (seconds > 0 ? ", " + seconds + "s" : "");
 	}
 	
 	public void cleanup() {

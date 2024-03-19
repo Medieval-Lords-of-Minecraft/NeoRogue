@@ -589,7 +589,7 @@ public abstract class FightInstance extends Instance {
 				totalSpawnValue -= KILLS_TO_SCALE;
 			}
 		}
-
+		System.out.println("Spawncounter activated at " + (spawnCounter + mob.getValue()));
 		spawnCounter = data.getInstance().activateSpawner(spawnCounter + mob.getValue());
 	}
 	
@@ -969,7 +969,9 @@ public abstract class FightInstance extends Instance {
 			}
 			spawner.spawnMob();
 			current += spawner.getMob().getValue();
+			System.out.println("Spawncounter spawned mob " + spawner.getMob().getId() + " and current is now " + current);
 		}
+		System.out.println("Spawncounter now at " + (value - current));
 		return value - current;
 	}
 	

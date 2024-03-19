@@ -75,7 +75,11 @@ public enum GlossaryTag implements GlossaryIcon {
 	STRENGTH(Material.IRON_SWORD, StatusType.STRENGTH.tag,
 			"Buffs all physical damage by 1 per stack."),
 	INTELLECT(Material.BLAZE_ROD, StatusType.INTELLECT.tag,
-			"Buffs all magical damage by 1 per stack.");
+			"Buffs all magical damage by 1 per stack."),
+	PROTECT(Material.TURTLE_HELMET, StatusType.PROTECT.tag,
+			"Buffs all physical defense by 1 per stack."),
+	SHELL(Material.PRISMARINE_CRYSTALS, StatusType.SHELL.tag,
+			"Buffs all magical defense by 1 per stack.");
 	
 	private ItemStack icon;
 	public String tag;

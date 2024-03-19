@@ -39,9 +39,6 @@ public class ShieldHolder {
 			amount += shield.getTotal();
 		}
 		update();
-		if (data instanceof PlayerFightData) {
-			((PlayerFightData) data).updateActionBar();
-		}
 	}
 	
 	public double useShields(double damage) {
@@ -75,6 +72,9 @@ public class ShieldHolder {
 			}
 		}
 		data.getEntity().setAbsorptionAmount(absorb);
+		if (data instanceof PlayerFightData) {
+			((PlayerFightData) data).updateActionBar();
+		}
 	}
 	
 	public double getMax() {

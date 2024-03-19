@@ -165,6 +165,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Brace2(b);
 			new BreakTheLine(b);
 			new Bulldoze(b);
+			new Bulwark(b);
 			new Burst(b);
 			new Challenge(b);
 			new Charge(b);
@@ -174,12 +175,14 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new EarthenTackle(b);
 			new Embolden(b);
 			new EmpoweredEdge(b);
+			new Endure(b);
 			new Execute(b);
 			new Ferocity(b);
 			new Fissure(b);
 			new Flurry(b);
 			new Fortify(b);
 			new Fury(b);
+			new GraniteShield(b);
 			new HoldTheLine(b);
 			new Ironskin(b);
 			new MightySwing(b);
@@ -192,6 +195,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Skirmisher(b);
 			new Smite(b);
 			new SpiritOfTheDragoon(b);
+			new Sturdy(b);
 			new Tackle(b);
 			new Thornguard(b);
 			new Titan(b);
@@ -549,11 +553,13 @@ public abstract class Equipment implements Comparable<Equipment> {
 	public ItemStack createItem(Material mat, String[] preLoreLine, String loreLine) {
 		// Spell check
 		char prev = 0;
-		for (char c : loreLine.toCharArray()) {
-			if (c == ' ' && prev == ' ') {
-				Bukkit.getLogger().warning("[NeoRogue] Duplicate space found in equipment " + id);
+		if (loreLine != null) {
+			for (char c : loreLine.toCharArray()) {
+				if (c == ' ' && prev == ' ') {
+					Bukkit.getLogger().warning("[NeoRogue] Duplicate space found in equipment " + id);
+				}
+				prev = c;
 			}
-			prev = c;
 		}
 		ItemStack item = new ItemStack(mat);
 		ItemMeta meta = item.getItemMeta();

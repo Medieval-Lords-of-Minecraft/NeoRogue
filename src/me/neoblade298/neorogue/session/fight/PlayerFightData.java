@@ -168,7 +168,7 @@ public class PlayerFightData extends FightData {
 		Iterator<Status> iter = statuses.descendingIterator();
 		while (iter.hasNext() && boardLines.size() < lineSize - players - 1) {
 			Status s = iter.next();
-			boardLines.add(s.getBoardDisplay());
+			boardLines.add(s.getDisplay());
 		}
 		if (!boardLines.isEmpty()) boardLines.add("§8§m-----");
 		
