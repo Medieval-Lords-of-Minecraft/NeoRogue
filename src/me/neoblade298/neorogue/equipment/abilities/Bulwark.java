@@ -43,7 +43,7 @@ public class Bulwark extends Equipment {
 		});
 		
 		data.addTrigger(id, Trigger.SHIELD_TICK, (pdata, in) -> {
-			if (p.getHandRaised() != EquipmentSlot.OFF_HAND && p.isHandRaised()) return TriggerResult.keep();
+			if (p.getHandRaised() != EquipmentSlot.OFF_HAND || !p.isHandRaised()) return TriggerResult.keep();
 			data.applyStatus(StatusType.PROTECT, data, prot, 3);
 			data.applyStatus(StatusType.SHELL, data, prot, 3);
 			return TriggerResult.keep();

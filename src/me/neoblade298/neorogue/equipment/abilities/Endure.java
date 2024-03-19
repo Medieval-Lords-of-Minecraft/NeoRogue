@@ -43,7 +43,7 @@ public class Endure extends Equipment {
 		});
 		
 		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, (pdata, in) -> {
-			if (p.getHandRaised() != EquipmentSlot.OFF_HAND && p.isHandRaised()) return TriggerResult.keep();
+			if (p.getHandRaised() != EquipmentSlot.OFF_HAND || !p.isHandRaised()) return TriggerResult.keep();
 			data.applyStatus(StatusType.BERSERK, data, berserk, -1);
 			return TriggerResult.keep();
 		});
