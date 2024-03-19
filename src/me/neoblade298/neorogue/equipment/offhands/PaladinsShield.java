@@ -64,8 +64,8 @@ public class PaladinsShield extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.SHIELD, "When raised, creates a " + GlossaryTag.BARRIER.tag(this) + " of size <white>4x3</white>."
-				+ " Reduce all damage by <yellow>" + reduction + "</yellow>, apply <yellow>" + sanct + "</yellow> " + GlossaryTag.SANCTIFIED.tag(this)
+		item = createItem(Material.SHIELD, "When raised, creates a " + GlossaryTag.BARRIER.tag(this) + " of size <white>4x3</white>"
+				+ " and reduce all damage by <yellow>" + reduction + "</yellow>, apply <yellow>" + sanct + "</yellow> " + GlossaryTag.SANCTIFIED.tag(this)
 				+ " to damagers.");
 	}
 }
