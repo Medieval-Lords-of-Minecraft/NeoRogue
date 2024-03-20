@@ -22,20 +22,20 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
-import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class StoneSpear extends Equipment {
 	private static final String ID = "stoneSpear";
-	private int throwDamage, throwCooldown = 5;
+	private int damage, throwDamage, throwCooldown = 5;
 	private static final ParticleContainer throwPart = new ParticleContainer(Particle.CLOUD).count(25).spread(0.1, 0.1);
 	private static final TargetProperties spearHit = TargetProperties.line(4, 1, TargetType.ENEMY);
 
@@ -46,6 +46,7 @@ public class StoneSpear extends Equipment {
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
 		
+		damage = (int) properties.get(PropertyType.DAMAGE);
 		throwDamage = isUpgraded ? 120 : 90;
 	}
 	
@@ -61,9 +62,7 @@ public class StoneSpear extends Equipment {
 				return TriggerResult.keep();
 			LeftClickHitEvent ev = (LeftClickHitEvent) in;
 			weaponSwing(p, data);
-			DamageMeta dm = new DamageMeta(data, throwDamage, DamageType.PIERCING);
-			dm.addDamageSlice(new DamageSlice(data, 0, DamageType.PIERCING));
-			dm.addDamageSlice(new DamageSlice(data, 0, DamageType.PIERCING));
+			DamageMeta dm = new DamageMeta(data, damage + data.getStatus(StatusType.STRENGTH).getStacks() * 2, DamageType.PIERCING);
 			weaponDamage(p, data, ev.getTarget(), dm);
 			return TriggerResult.keep();
 		});
@@ -75,9 +74,7 @@ public class StoneSpear extends Equipment {
 			if (targets.isEmpty())
 				return TriggerResult.keep();
 			weaponSwing(p, data);
-			DamageMeta dm = new DamageMeta(data, throwDamage, DamageType.PIERCING);
-			dm.addDamageSlice(new DamageSlice(data, 0, DamageType.PIERCING));
-			dm.addDamageSlice(new DamageSlice(data, 0, DamageType.PIERCING));
+			DamageMeta dm = new DamageMeta(data, damage + data.getStatus(StatusType.STRENGTH).getStacks() * 2, DamageType.PIERCING);
 			weaponDamage(p, data, targets.getFirst(), dm);
 			return TriggerResult.keep();
 		});
@@ -124,9 +121,7 @@ public class StoneSpear extends Equipment {
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
-			DamageMeta dm = new DamageMeta(proj.getOwner(), throwDamage, DamageType.PIERCING);
-			dm.addDamageSlice(new DamageSlice(proj.getOwner(), 0, DamageType.PIERCING));
-			dm.addDamageSlice(new DamageSlice(proj.getOwner(), 0, DamageType.PIERCING));
+			DamageMeta dm = new DamageMeta(proj.getOwner(), throwDamage + proj.getOwner().getStatus(StatusType.STRENGTH).getStacks() * 2, DamageType.PIERCING);
 			damageProjectile(hit.getEntity(), proj, dm, hitBarrier);
 			Location loc = hit.getEntity().getLocation();
 			Sounds.explode.play(p, loc);

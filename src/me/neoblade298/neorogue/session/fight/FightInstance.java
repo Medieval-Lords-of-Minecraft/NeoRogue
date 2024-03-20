@@ -691,6 +691,7 @@ public abstract class FightInstance extends Instance {
 		knockback(src.getLocation(), trg, force);
 	}
 	
+	// Limits +y velocity
 	public static void knockback(Location src, Entity trg, double force) {
 		Vector v = trg.getLocation().subtract(src).toVector().setY(0).normalize().multiply(force).setY(0.5);
 		knockback(trg, v);
@@ -704,7 +705,9 @@ public abstract class FightInstance extends Instance {
 				v = v.multiply(m.getKnockbackMultiplier());
 			}
 		}
-		trg.setVelocity(trg.getVelocity().add(v));
+		v = trg.getVelocity().add(v);
+		v = v.setY(Math.max(v.getY(), 0.5));
+		trg.setVelocity(v);
 	}
 	
 	public static void dealDamage(DamageMeta meta, Collection<LivingEntity> targets) {

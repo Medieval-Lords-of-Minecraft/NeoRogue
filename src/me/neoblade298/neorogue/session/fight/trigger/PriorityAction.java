@@ -27,6 +27,10 @@ public class PriorityAction implements TriggerAction, Comparable<PriorityAction>
 		return id.compareTo(o.id);
 	}
 	
+	public void setAction(TriggerAction action) {
+		this.action = action;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

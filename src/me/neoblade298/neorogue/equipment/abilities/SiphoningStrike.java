@@ -28,7 +28,7 @@ public class SiphoningStrike extends Equipment {
 	
 	public SiphoningStrike(boolean isUpgraded) {
 		super(ID, "Siphoning Strike", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 25, 12, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 30, 12, 0));
 		properties.addUpgrades(PropertyType.COOLDOWN);
 		damage = 120;
 		buff = isUpgraded ? 8 : 5;
@@ -40,17 +40,12 @@ public class SiphoningStrike extends Equipment {
 		return Equipment.get(ID, false);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new ControlledExecuteInstance(p, this, slot, es));
-	}
-	
-	private class ControlledExecuteInstance extends EquipmentInstance {
-
-		@SuppressWarnings("deprecation")
-		public ControlledExecuteInstance(Player p, Equipment eq, int slot, EquipSlot es) {
-			super(p, eq, slot, es);
-			action = (pdata, inputs) -> {
+		EquipmentInstance inst = new EquipmentInstance(p, this, slot, es);
+		data.addTrigger(id, bind, inst);
+		inst.setAction((pdata, inputs) -> {
 				Sounds.equip.play(p, p);
 				pc.play(p, p);
 				pdata.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in) -> {
@@ -63,13 +58,12 @@ public class SiphoningStrike extends Equipment {
 					if (ev.getTarget().getHealth() <= 0) {
 						pdata.applyStatus(StatusType.STRENGTH, pdata, buff, -1);
 						Sounds.success.play(p, p);
+						inst.reduceCooldown(6);
 					}
 					return TriggerResult.remove();
 				});
 				return TriggerResult.keep();
-			};
-		}
-		
+		});
 	}
 
 	@Override
@@ -77,6 +71,6 @@ public class SiphoningStrike extends Equipment {
 		item = createItem(Material.BROWN_DYE,
 				"On cast, your next basic attack while in the air deals <white>" + damage + "</white> " + GlossaryTag.PIERCING.tag(this)
 				+ " damage. If the enemy is killed with this damage, increase " + GlossaryTag.STRENGTH.tag(this) + 
-				" by <yellow>" + buff + "</yellow>.");
+				" by <yellow>" + buff + "</yellow> and halve the ability cooldown.");
 	}
 }

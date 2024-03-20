@@ -285,6 +285,9 @@ public class DamageMeta {
 		final double finalDamage = damage + ignoreShieldsDamage + target.getAbsorptionAmount();
 		if (finalDamage > target.getAbsorptionAmount()) {
 			target.damage(finalDamage);
+			if (target.getHealth() <= 0 && owner instanceof PlayerFightData) {
+				FightInstance.trigger((Player) owner.getEntity(), Trigger.KILL, null);
+			}
 			if (!(target instanceof Player)) {
 				recipient.updateDisplayName();
 			}

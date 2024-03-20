@@ -43,6 +43,10 @@ public class EquipmentProperties {
 		return new EquipmentProperties(0, 0, 0, 0, damage, attackSpeed, 0, type, new SoundContainer(swingSound));
 	}
 	
+	public static EquipmentProperties ofWeapon(double manaCost, double staminaCost, double damage, double attackSpeed, double knockbac, DamageType type, Sound swingSound) {
+		return new EquipmentProperties(manaCost, staminaCost, 0, 0, damage, attackSpeed, 0, type, new SoundContainer(swingSound));
+	}
+	
 	public static EquipmentProperties ofWeapon(double manaCost, double staminaCost, double damage, double attackSpeed, DamageType type, Sound swingSound) {
 		return new EquipmentProperties(manaCost, staminaCost, 0, 0, damage, attackSpeed, 0, type, new SoundContainer(swingSound));
 	}
