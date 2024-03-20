@@ -160,6 +160,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Fissure(b);
 			new Flurry(b);
 			new Fortify(b);
+			new Frenzy(b);
 			new Fury(b);
 			new GraniteShield(b);
 			new HoldTheLine(b);
@@ -171,6 +172,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new PoolOfLight(b);
 			new Prayer(b);
 			new Provoke(b);
+			new Revenge(b);
+			new Roar(b);
 			new Quake(b);
 			new SiphoningStrike(b);
 			new Skirmisher(b);

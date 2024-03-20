@@ -589,7 +589,6 @@ public abstract class FightInstance extends Instance {
 				totalSpawnValue -= KILLS_TO_SCALE;
 			}
 		}
-		System.out.println("Spawncounter activated at " + (spawnCounter + mob.getValue()));
 		spawnCounter = data.getInstance().activateSpawner(spawnCounter + mob.getValue());
 	}
 	
@@ -698,6 +697,8 @@ public abstract class FightInstance extends Instance {
 	}
 	
 	public static void knockback(Entity trg, Vector v) {
+		v = trg.getVelocity().add(v);
+		v = v.setY(Math.min(v.getY(), 0.5));
 		if (NeoRogue.mythicApi.isMythicMob(trg)) {
 			MythicMob type = NeoRogue.mythicApi.getMythicMobInstance(trg).getType();
 			Mob m = Mob.get(type.getInternalName());
@@ -705,8 +706,6 @@ public abstract class FightInstance extends Instance {
 				v = v.multiply(m.getKnockbackMultiplier());
 			}
 		}
-		v = trg.getVelocity().add(v);
-		v = v.setY(Math.max(v.getY(), 0.5));
 		trg.setVelocity(v);
 	}
 	
@@ -779,7 +778,7 @@ public abstract class FightInstance extends Instance {
 				if (NeoRogue.gen.nextDouble() < 0.01)
 					bonus += 20; // meme
 					
-				double toActivate = bonus + 3 + sumChunkCount / 8.0 + map.getPieces().size() / 4.0;
+				double toActivate = bonus + 2 + sumChunkCount / 8.0 + map.getPieces().size() / 4.0;
 				activateSpawner(toActivate);
 
 				startTime = System.currentTimeMillis();
@@ -973,9 +972,7 @@ public abstract class FightInstance extends Instance {
 			}
 			spawner.spawnMob();
 			current += spawner.getMob().getValue();
-			System.out.println("Spawncounter spawned mob " + spawner.getMob().getId() + " and current is now " + current);
 		}
-		System.out.println("Spawncounter now at " + (value - current));
 		return value - current;
 	}
 	

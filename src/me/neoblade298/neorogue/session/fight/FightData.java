@@ -304,11 +304,11 @@ public class FightData {
 	}
 	
 	public boolean hasStatus(String id) {
-		return statuses.containsKey(id);
+		return statuses.containsKey(id) && statuses.get(id).getStacks() != 0;
 	}
 	
 	public boolean hasStatus(StatusType type) {
-		return statuses.containsKey(type.name());
+		return statuses.containsKey(type.name()) && statuses.get(type.name()).getStacks() != 0;
 	}
 	
 	public Status getStatus(String id) {
@@ -355,7 +355,9 @@ public class FightData {
 			addTickAction(new StatusUpdateTickAction());
 		}
 		statuses.put(id, s);
-		updateDisplayName();
+		if (am != null) {
+			updateDisplayName();
+		}
 	}
 
 

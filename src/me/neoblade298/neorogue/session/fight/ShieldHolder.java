@@ -44,7 +44,9 @@ public class ShieldHolder {
 	public double useShields(double damage) {
 		while (!shields.isEmpty() && damage > 0) {
 			Shield curr = shields.first();
+			System.out.println("First shield: " + curr.getAmount() + ", damage: " + damage);
 			damage = curr.useShield(damage);
+			System.out.println("Damage after: " + damage + ", shield usable " + curr.isUsable());
 			if (!curr.isUsable()) {
 				shields.pollFirst();
 			}
