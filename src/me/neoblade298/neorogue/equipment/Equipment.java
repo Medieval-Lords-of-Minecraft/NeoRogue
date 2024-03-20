@@ -965,6 +965,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 				table.get(value - 1).add(drop, 8);
 			}
 			table.get(value).add(drop, 32);
+			table.get(value + 1).add(drop, 8);
+			table.get(value + 2).add(drop, 1);
 		}
 
 		public void addLenientWeight(EquipmentClass ec, int value, E drop) {
@@ -982,6 +984,10 @@ public abstract class Equipment implements Comparable<Equipment> {
 				table.get(value - 1).add(drop, 4);
 			}
 			table.get(value).add(drop, 5);
+			table.get(value + 1).add(drop, 4);
+			table.get(value + 2).add(drop, 3);
+			table.get(value + 3).add(drop, 2);
+			table.get(value + 4).add(drop, 1);
 		}
 
 		public ArrayList<E> getMultiple(int value, int numDrops, EquipmentClass... ec) {

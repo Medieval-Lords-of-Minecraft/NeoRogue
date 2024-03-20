@@ -19,7 +19,7 @@ public class Bloodlust extends Equipment {
 	private static final String ID = "bloodlust";
 	private int strength;
 	private static final int CUTOFF = 15;
-	private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME).count(20).speed(0.01);
+	private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME).count(20).speed(0.01).offsetY(1);
 	
 	public Bloodlust(boolean isUpgraded) {
 		super(ID, "Bloodlust", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
