@@ -101,7 +101,7 @@ public abstract class Status {
 		INSANITY("<dark_purple>Insanity</dark_purple>", "&5Insanity"),
 		SANCTIFIED("<white>Sanctified</white>", "&fSanctified"),
 		THORNS("<gold>Thorns</gold>", "&6Thorns"),
-		REFLECT("<purple>Reflect</purple>", "&dReflect"),
+		REFLECT("<light_purple>Reflect</light_purple>", "&dReflect"),
 		BERSERK("<dark_red>Berserk</dark_red>", "&4Berserk"),
 		STRENGTH("<red>Strength</red>", "&cStrength"),
 		INTELLECT("<blue>Intellect</blue>", "&9Intellect"),

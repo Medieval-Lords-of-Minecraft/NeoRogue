@@ -30,7 +30,7 @@ public class MercenaryHeadband extends Artifact {
 	@Override
 	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
 		data.addTrigger(id, Trigger.STAMINA_CHANGE, (pdata, in) -> {
-			if (data.getStamina() + ((StaminaChangeEvent) in).getChange() < data.getMaxStamina()) return TriggerResult.keep();
+			if (data.getStamina() + ((StaminaChangeEvent) in).getChange() < 100) return TriggerResult.keep();
 			
 			data.addStaminaRegen(regen);
 			Util.msg(p, this.display.append(Component.text(" was activated", NamedTextColor.GRAY)));

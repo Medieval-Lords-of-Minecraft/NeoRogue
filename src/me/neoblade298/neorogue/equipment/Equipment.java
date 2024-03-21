@@ -154,6 +154,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Embolden(b);
 			new EmpoweredEdge(b);
 			new Endure(b);
+			new Enlighten(b);
 			new Execute(b);
 			new ExploitWeakness(b);
 			new Ferocity(b);
@@ -167,6 +168,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new IronCuirass(b);
 			new Ironskin(b);
 			new MightySwing(b);
+			new MortalEngine(b);
 			new Parry(b);
 			new Pin(b);
 			new PoolOfLight(b);
@@ -183,6 +185,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Tackle(b);
 			new Thornguard(b);
 			new Titan(b);
+			new TreeTrunk(b);
 			new WarCry(b);
 			new WeaponEnchantmentHoly(b);
 			new Windcutter(b);

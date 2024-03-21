@@ -9,22 +9,20 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 
-public class ExploitWeakness extends Equipment {
-	private static final String ID = "exploitWeakness";
-	private int strength;
-	private static final int CUTOFF = 10;
+public class PowerThrough extends Equipment {
+	private static final String ID = "powerThrough";
+	private int cutoff;
 	
-	public ExploitWeakness(boolean isUpgraded) {
-		super(ID, "Exploit Weakness", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+	public PowerThrough(boolean isUpgraded) {
+		super(ID, "Power Through", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.none());
 		
-		strength = isUpgraded ? 3 : 2;
+		cutoff = isUpgraded ? 3 : 4;
 	}
 	
 	public static Equipment get() {
@@ -36,12 +34,12 @@ public class ExploitWeakness extends Equipment {
 		StandardPriorityAction inst = new StandardPriorityAction(ID);
 		inst.setAction((pdata, in) -> {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
-			if (!ev.getStatusId().equals(StatusType.CONCUSSED.name())) return TriggerResult.keep();
+			if (!ev.getStatusId().equals(StatusType.BERSERK.name())) return TriggerResult.keep();
 			inst.addCount(ev.getStacks());
 			
-			int num = inst.getCount() / CUTOFF;
-			data.addBuff(data, true, true, BuffType.PHYSICAL, strength * num);
-			inst.setCount(inst.getCount() % CUTOFF);
+			int num = inst.getCount() / cutoff;
+			data.applyStatus(StatusType.REFLECT, data, num, -1);
+			inst.setCount(inst.getCount() % cutoff);
 			return TriggerResult.keep();
 		});
 		data.addTrigger(id, Trigger.APPLY_STATUS, inst);
@@ -49,8 +47,7 @@ public class ExploitWeakness extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.SPYGLASS,
-				"Passive. For every " + GlossaryTag.CONCUSSED.tag(this, CUTOFF, false) + " you apply, increase your " + GlossaryTag.PHYSICAL.tag(this) +
-				" damage by <yellow>" + strength + "%</yellow>.");
+		item = createItem(Material.SEA_LANTERN,
+				"Passive. For every " + GlossaryTag.BERSERK.tag(this, cutoff, true) + " you acquire, apply " + GlossaryTag.PROTECT.tag(this, 1, false) + " to yourself.");
 	}
 }

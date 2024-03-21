@@ -20,7 +20,7 @@ public class Frenzy extends Equipment {
 	
 	public Frenzy(boolean isUpgraded) {
 		super(ID, "Frenzy", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 2, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 		atkSpeed = isUpgraded ? 10 : 7;
 	}
 	

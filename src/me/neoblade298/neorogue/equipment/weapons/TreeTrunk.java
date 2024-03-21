@@ -11,9 +11,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+import me.neoblade298.neocore.bukkit.effects.Circle;
+import me.neoblade298.neocore.bukkit.effects.LocalAxes;
 import me.neoblade298.neocore.bukkit.effects.ParticleAnimation;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.ParticleUtil;
+import me.neoblade298.neocore.bukkit.effects.SoundContainer;
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -28,24 +32,26 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class TreeTrunk extends Equipment {
 	private static final String ID = "treeTrunk";
-	private static final int CUTOFF = 20;
-	private double damage, conc;
+	private static final int CUTOFF = 1;
+	private double conc;
+	private static final Circle hitShape = new Circle(4);
 	private static final ParticleAnimation swing = StoneHammer.swing;
-	private static final ParticleContainer hitLine = new ParticleContainer(Particle.CLOUD).count(25).spread(2, 0.1);
+	private static final ParticleContainer hitLine = new ParticleContainer(Particle.BLOCK_CRACK).blockData(Material.OAK_LOG.createBlockData()).count(10).spread(0.4, 0.1),
+			circle = new ParticleContainer(Particle.REDSTONE).count(20).spread(0.1, 0.7).offsetY(1);
 	private static final TargetProperties left = TargetProperties.line(4, 2, TargetType.ENEMY),
 			right = TargetProperties.radius(4, false, TargetType.ENEMY);
 	
 	public TreeTrunk(boolean isUpgraded) {
 		super(ID, "Tree Trunk", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofRangedWeapon(isUpgraded ? 140 : 110, 0.5, 0, left.range, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_CRIT));
+				EquipmentProperties.ofRangedWeapon(isUpgraded ? 140 : 110, 0.5, 0, left.range, DamageType.BLUNT, new SoundContainer(Sound.ENTITY_PLAYER_ATTACK_SWEEP, 0.5F)));
 		properties.addUpgrades(PropertyType.DAMAGE);
-		damage = properties.get(PropertyType.DAMAGE);
 		conc = isUpgraded ? 14 : 10;
 	}
 	
@@ -55,6 +61,11 @@ public class TreeTrunk extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		if (data.getSessionData().getEquipment(EquipSlot.OFFHAND)[0] != null) {
+			Util.displayError(p, "Tree Trunk couldn't be equipped as you have equipment in your offhand!");
+			p.getInventory().setItem(slot, null);
+			return;
+		}
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (pdata, inputs) -> {
 			if (!data.canBasicAttack()) return TriggerResult.keep();
 			data.runAnimation(id, p, swing, p);
@@ -68,6 +79,7 @@ public class TreeTrunk extends Equipment {
 		});
 		
 		data.addSlotBasedTrigger(id, slot, Trigger.RIGHT_CLICK, (pdata, inputs) -> {
+			if (data.getStatus(StatusType.BERSERK).getStacks() < CUTOFF) return TriggerResult.keep();
 			if (!data.canBasicAttack()) return TriggerResult.keep();
 			weaponSwing(p, data, 0.25);
 			rightHit(p, data);
@@ -77,8 +89,8 @@ public class TreeTrunk extends Equipment {
 	
 	private void leftHit(Player p, PlayerFightData data) {
 		Location hit = p.getLocation().add(p.getLocation().getDirection().setY(0).normalize().multiply(left.range));
-		Sounds.explode.play(p, hit);
-		ParticleUtil.drawLine(p, hitLine, p.getLocation(), hit, 1);
+		Sounds.explode.play(p, p);
+		ParticleUtil.drawLine(p, hitLine, p.getLocation(), hit, 0.5);
 		LinkedList<LivingEntity> enemies = TargetHelper.getEntitiesInLine(p, p.getLocation(), hit, left);
 		if (enemies.isEmpty()) return;
 		boolean first = true;
@@ -97,10 +109,9 @@ public class TreeTrunk extends Equipment {
 	}
 	
 	private void rightHit(Player p, PlayerFightData data) {
-		Location hit = p.getLocation().add(p.getLocation().getDirection().setY(0).normalize().multiply(left.range));
-		Sounds.explode.play(p, hit);
-		ParticleUtil.drawLine(p, hitLine, p.getLocation(), hit, 1);
-		LinkedList<LivingEntity> enemies = TargetHelper.getEntitiesInLine(p, p.getLocation(), hit, left);
+		Sounds.explode.play(p, p);
+		hitShape.play(circle, p.getLocation(), LocalAxes.xz(), null);
+		LinkedList<LivingEntity> enemies = TargetHelper.getEntitiesInRadius(p, right);
 		if (enemies.isEmpty()) return;
 		boolean first = true;
 		Vector v = new Vector(0, 0.5, 0);

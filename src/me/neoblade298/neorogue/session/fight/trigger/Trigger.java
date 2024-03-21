@@ -49,12 +49,6 @@ public enum Trigger {
 	MANA_CHANGE,
 	KILL;
 	
-	private boolean isSlotDependent = this.name().startsWith("LEFT_CLICK") || this.name().startsWith("THROW");
-	
-	public boolean isSlotDependent() {
-		return isSlotDependent;
-	}
-	
 	public static Trigger getFromHotbarSlot(int hotbar) {
 		switch (hotbar) {
 		case 0: return Trigger.HOTBAR_1;

@@ -85,6 +85,19 @@ public class PlayerFightData extends FightData {
 		this.stamina = sessdata.getStartingStamina();
 		this.staminaRegen = sessdata.getStaminaRegen();
 		this.manaRegen = sessdata.getManaRegen();
+		
+		// Setup inventory
+		PlayerInventory inv = p.getInventory();
+		ItemStack[] contents = inv.getContents();
+
+		for (int i = 0; i < 9; i++) {
+			if (data.getEquipment(EquipSlot.HOTBAR)[i] == null) {
+				contents[i] = null;
+				continue;
+			}
+			contents[i] = data.getEquipment(EquipSlot.HOTBAR)[i].getItem();
+		}
+		inv.setContents(contents);
 
 		// Initialize fight data
 		int i = 0;
@@ -119,17 +132,6 @@ public class PlayerFightData extends FightData {
 		if (offhand != null) {
 			offhand.initialize(p, this, null, EquipSlot.OFFHAND, 0);
 		}
-		
-		// Setup inventory
-		PlayerInventory inv = p.getInventory();
-		inv.clear();
-		ItemStack[] contents = inv.getContents();
-
-		for (i = 0; i < 9; i++) {
-			if (data.getEquipment(EquipSlot.HOTBAR)[i] == null) continue;
-			contents[i] = data.getEquipment(EquipSlot.HOTBAR)[i].getItem();
-		}
-		inv.setContents(contents);
 		
 		if (offhand != null) inv.setItemInOffHand(offhand.getItem());
 		addTickAction(new PlayerUpdateTickAction());

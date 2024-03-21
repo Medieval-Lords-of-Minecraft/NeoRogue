@@ -155,6 +155,7 @@ public class FightData {
 	}
 	
 	public void updateDisplayName() {
+		if (am == null || entity == null) return;
 		double healthPct = entity.getHealth() / entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
 		String healthColor;
 		if (healthPct < 0.33) {

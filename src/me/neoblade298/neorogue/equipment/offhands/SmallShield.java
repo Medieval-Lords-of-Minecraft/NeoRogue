@@ -67,6 +67,6 @@ public class SmallShield extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SHIELD, "When raised, creates a " + GlossaryTag.BARRIER.tag(this) + " of size <white>3x2</white>"
-				+ " and educe all damage by <yellow>" + reduction + "</yellow>.");
+				+ " and reduce all damage by <yellow>" + reduction + "</yellow>.");
 	}
 }

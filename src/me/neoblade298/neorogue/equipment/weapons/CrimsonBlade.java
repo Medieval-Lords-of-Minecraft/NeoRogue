@@ -26,7 +26,7 @@ public class CrimsonBlade extends Equipment {
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(isUpgraded ? 40 : 35, 1, 0.4, DamageType.SLASHING, Sounds.attackSweep));
 		properties.addUpgrades(PropertyType.DAMAGE);
-		heal = isUpgraded ? 5 : 3;
+		heal = isUpgraded ? 3 : 2;
 	}
 	
 	public static Equipment get() {

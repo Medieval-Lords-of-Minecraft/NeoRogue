@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.World;
@@ -39,6 +40,7 @@ import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -502,37 +504,41 @@ public abstract class FightInstance extends Instance {
 	public static void handleRightClickGeneral(PlayerInteractEvent e) {
 		Player p = e.getPlayer();
 		UUID uuid = p.getUniqueId();
+		PlayerInventory pinv = p.getInventory();
+		boolean hasShield = pinv.getItemInOffHand() != null && pinv.getItemInOffHand().getType() == Material.SHIELD;
 
+		trigger(p, Trigger.RIGHT_CLICK, null);
+
+		double y = p.getEyeLocation().getDirection().normalize().getY();
+		if (p.isSneaking()) {
+			trigger(p, Trigger.SHIFT_RCLICK, null);
+		}
+		
+		if (y > 1) {
+			trigger(p, Trigger.UP_RCLICK, null);
+		} else if (y < -1) {
+			trigger(p, Trigger.DOWN_RCLICK, null);
+		}
+		
 		if (e.getHand() == EquipmentSlot.OFF_HAND) {
-			trigger(p, Trigger.RAISE_SHIELD, null);
-			trigger(p, Trigger.RIGHT_CLICK, null);
-			
-			if (blockTasks.containsKey(uuid)) {
-				blockTasks.get(uuid).cancel();
-			}
-			
-			blockTasks.put(uuid, new BukkitRunnable() {
-				@Override
-				public void run() {
-					if (p == null || !p.isBlocking()) {
-						this.cancel();
-						trigger(p, Trigger.LOWER_SHIELD, null);
-						blockTasks.remove(uuid);
-					} else {
-						trigger(p, Trigger.SHIELD_TICK, null);
-					}
+			if (hasShield) {
+				trigger(p, Trigger.RAISE_SHIELD, null);
+				if (blockTasks.containsKey(uuid)) {
+					blockTasks.get(uuid).cancel();
 				}
-			}.runTaskTimer(NeoRogue.inst(), 10L, 10L));
-		} else {
-			double y = p.getEyeLocation().getDirection().normalize().getY();
-			if (p.isSneaking()) {
-				trigger(p, Trigger.SHIFT_RCLICK, null);
-			}
-			
-			if (y > 1) {
-				trigger(p, Trigger.UP_RCLICK, null);
-			} else if (y < -1) {
-				trigger(p, Trigger.DOWN_RCLICK, null);
+				
+				blockTasks.put(uuid, new BukkitRunnable() {
+					@Override
+					public void run() {
+						if (p == null || !p.isBlocking()) {
+							this.cancel();
+							trigger(p, Trigger.LOWER_SHIELD, null);
+							blockTasks.remove(uuid);
+						} else {
+							trigger(p, Trigger.SHIELD_TICK, null);
+						}
+					}
+				}.runTaskTimer(NeoRogue.inst(), 10L, 10L));
 			}
 		}
 	}
@@ -604,11 +610,9 @@ public abstract class FightInstance extends Instance {
 			return false;
 		if (data.isDead())
 			return false;
-		if (trigger.isSlotDependent()) {
-			// Run triggers that change based on slot (anything that starts with left click)
-			data.runSlotBasedActions(data, trigger, p.getInventory().getHeldItemSlot(), obj);
-		}
-		return data.runActions(data, trigger, obj);
+		
+		boolean cancel = data.runSlotBasedActions(data, trigger, p.getInventory().getHeldItemSlot(), obj);
+		return data.runActions(data, trigger, obj) || cancel; // Either slot-based or non-slotbased can cancel the event
 	}
 
 	public static FightData getFightData(Entity ent) {
@@ -779,8 +783,6 @@ public abstract class FightInstance extends Instance {
 				int sumChunkCount = map.getPieces().stream().mapToInt(x -> x.getPiece().getShape().getChunkCount())
 						.sum();
 				int bonus = NeoRogue.gen.nextInt(3);
-				if (NeoRogue.gen.nextDouble() < 0.01)
-					bonus += 20; // meme
 					
 				double toActivate = bonus + 2 + sumChunkCount / 8.0 + map.getPieces().size() / 4.0;
 				activateSpawner(toActivate);

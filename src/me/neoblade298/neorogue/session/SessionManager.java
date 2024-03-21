@@ -424,6 +424,7 @@ public class SessionManager implements Listener {
 				if (fd.getInstance() == null) return;
 				MythicMob mythicMob = e.getMobType();
 				Mob mob = Mob.get(mythicMob.getInternalName());
+				if (mob == null) return;
 				FightInstance.scaleMob(fd.getInstance().getSession(), mob, mythicMob, e.getMob());
 				fd.getInstance().addSpawnCounter(mob.getValue());
 			}
