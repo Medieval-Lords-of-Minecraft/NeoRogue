@@ -88,9 +88,7 @@ public class Shield implements Comparable<Shield> {
 	}
 	
 	public void remove() {
-		shieldHolder.subtractShields(amount);
-		this.amount = 0;
-		shieldHolder.update();
+		shieldHolder.subtractShields(this.amount);
 	}
 	
 	public boolean isUsable() {
@@ -125,5 +123,10 @@ public class Shield implements Comparable<Shield> {
 		if (comp != 0) return comp;
 		// Prioritize smaller shields
 		return Double.compare(total, o.total);
+	}
+	
+	@Override
+	public String toString() {
+		return amount + "/" + total + "-" + decayDelayTicks;
 	}
 }

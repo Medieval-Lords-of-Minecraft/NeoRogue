@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class CrescentAxe extends Equipment {
-	private static final String ID = "stoneAxe";
+	private static final String ID = "crescentAxe";
 	private double damage;
 	
 	public CrescentAxe(boolean isUpgraded) {

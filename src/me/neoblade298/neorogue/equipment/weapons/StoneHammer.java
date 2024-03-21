@@ -72,6 +72,7 @@ public class StoneHammer extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (pdata, inputs) -> {
+			if (!data.canBasicAttack()) return TriggerResult.keep();
 			weaponSwing(p, data);
 			data.runAnimation(id, p, swing, p);
 			data.addTask(id, new BukkitRunnable() {

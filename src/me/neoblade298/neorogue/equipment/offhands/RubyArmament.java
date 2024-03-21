@@ -74,7 +74,7 @@ public class RubyArmament extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE_BLOCK, "Right clicking switches stances between <white>Power</white> and <white>Patience</white>."
-				+ " While in <white>Patience</white>, your basic attack damage is decreased by <white>" + damageDec + " </white> and grant <yellow>" + stamina + "</yellow> stamina."
+				+ " While in <white>Patience</white>, your basic attack damage is decreased by <white>" + damageDec + "</white> and grant <yellow>" + stamina + "</yellow> stamina."
 				+ " While in <white>Power</white>, your basic attack damage is increased by <yellow>" + damage + "</yellow> and cost <white>" + stamCost + "</white>"
 				+ " stamina.");
 	}

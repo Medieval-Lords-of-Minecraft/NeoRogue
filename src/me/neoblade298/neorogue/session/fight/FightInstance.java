@@ -101,7 +101,7 @@ public abstract class FightInstance extends Instance {
 	protected LinkedList<BukkitTask> tasks = new LinkedList<BukkitTask>();
 	protected LinkedList<BukkitRunnable> cleanupTasks = new LinkedList<BukkitRunnable>();
 	protected LinkedList<FightRunnable> initialTasks = new LinkedList<FightRunnable>();
-	protected double spawnCounter; // Holds a value between 0 and 1, when above 1, a mob spawns
+	protected double spawnCounter; // When above 1, a mob spawns
 	protected double totalSpawnValue; // Keeps track of total mob spawns, to handle scaling of spawning
 	private long startTime;
 	private ArrayList<String> spectatorLines;
@@ -590,6 +590,10 @@ public abstract class FightInstance extends Instance {
 			}
 		}
 		spawnCounter = data.getInstance().activateSpawner(spawnCounter + mob.getValue());
+	}
+	
+	public void addSpawnCounter(double amount) {
+		this.spawnCounter += amount;
 	}
 	
 	// Method that's called by all listeners and is directly connected to events
