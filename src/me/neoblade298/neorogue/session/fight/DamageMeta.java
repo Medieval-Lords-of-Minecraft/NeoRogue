@@ -168,13 +168,13 @@ public class DamageMeta {
 				addBuffs(insanityBuffs, BuffOrigin.STATUS, true);
 			}
 
-			if (recipient.hasStatus(StatusType.SANCTIFIED)) {
-				Status status = recipient.getStatus(StatusType.SANCTIFIED);
+			if (owner.hasStatus(StatusType.SANCTIFIED)) {
+				Status status = owner.getStatus(StatusType.SANCTIFIED);
 				int stacks = status.getStacks();
 				int toRemove = (int) (stacks * 0.25);
 				status.apply(owner, -toRemove, 0); // Remove 25% of stacks
-				slices.add(new DamageSlice(recipient, toRemove, DamageType.LIGHT));
-				owner.addHealth(toRemove);
+				slices.add(new DamageSlice(owner, toRemove, DamageType.LIGHT));
+				recipient.addHealth(toRemove);
 			}
 			
 			if (owner.hasStatus(StatusType.FROST) && containsType(BuffType.MAGICAL)) {

@@ -178,6 +178,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Revenge(b);
 			new Roar(b);
 			new Quake(b);
+			new ShadowWalk(b);
 			new SiphoningStrike(b);
 			new Skirmisher(b);
 			new Smite(b);
@@ -250,6 +251,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new StoneSword(b);
 			new StoneHammer(b);
 			new RighteousHammer(b);
+			new WoodenDagger(b);
 			new WoodenSword(b);
 			new WoodenWand(b);
 

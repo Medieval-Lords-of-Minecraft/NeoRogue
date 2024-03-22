@@ -23,5 +23,6 @@ public class Sounds {
 			threw = new SoundContainer(Sound.ENTITY_PLAYER_ATTACK_STRONG),
 			turnPage = new SoundContainer(Sound.ITEM_BOOK_PAGE_TURN),
 			enchant = new SoundContainer(Sound.BLOCK_ENCHANTMENT_TABLE_USE),
-			firework = new SoundContainer(Sound.ENTITY_FIREWORK_ROCKET_BLAST);
+			firework = new SoundContainer(Sound.ENTITY_FIREWORK_ROCKET_BLAST),
+			teleport = new SoundContainer(Sound.ENTITY_ENDERMAN_TELEPORT);
 }
