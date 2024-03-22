@@ -92,7 +92,7 @@ public class EarthenTackle extends Equipment {
 						for (LivingEntity ent : hit) {
 							pc.play(p, ent);
 							dirt.play(p, ent);
-							FightInstance.dealDamage(data, DamageType.BLUNT, damage, ent);
+							FightInstance.dealDamage(data, DamageType.EARTHEN, damage, ent);
 							FightInstance.applyStatus(ent, StatusType.CONCUSSED, p, concussed, -1);
 						}
 					}
@@ -112,7 +112,7 @@ public class EarthenTackle extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE, new String[] { "<gold>Area of Effect: <white>4" },
-				"On cast, dash forward, stopping at the first enemy hit and dealing <yellow>" + damage + "</yellow> " + GlossaryTag.BLUNT.tag(this) +
+				"On cast, dash forward, stopping at the first enemy hit and dealing <yellow>" + damage + "</yellow> " + GlossaryTag.EARTHEN.tag(this) +
 				" damage in an area "
 						+ "and applies <yellow>" + concussed + "</yellow> " + GlossaryTag.CONCUSSED.tag(this) + ". "
 						+ "If an enemy is hit, reduce this ability's cooldown by <white>10</white>.");

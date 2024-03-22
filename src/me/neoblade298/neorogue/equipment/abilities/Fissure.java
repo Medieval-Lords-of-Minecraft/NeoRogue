@@ -57,7 +57,7 @@ public class Fissure extends Equipment {
 					ParticleUtil.drawLine(p, part, p.getLocation(), end, 0.5);
 					
 					for (LivingEntity ent : TargetHelper.getEntitiesInLine(p, p.getLocation(), end, tp)) {
-						FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.BLUNT), ent);
+						FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.EARTHEN), ent);
 						FightInstance.getFightData(ent.getUniqueId()).applyStatus(StatusType.CONCUSSED, data, concussed, -1);
 						FightInstance.knockback(ent, new Vector(0, 0.2, 0));
 					}
@@ -70,7 +70,7 @@ public class Fissure extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.COAL,
-				"On cast, charge for <white>1</white> second, then deal " + GlossaryTag.BLUNT.tag(this, damage, true) + " damage and knock up in a line."
+				"On cast, charge for <white>1</white> second, then deal " + GlossaryTag.EARTHEN.tag(this, damage, true) + " damage and knock up in a line."
 				+ " All enemies damaged are given " + GlossaryTag.CONCUSSED.tag(this, concussed, true) + ".");
 	}
 }

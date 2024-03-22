@@ -25,9 +25,9 @@ public class Embolden extends Equipment {
 			hit = new ParticleContainer(Particle.REDSTONE);
 	
 	public Embolden(boolean isUpgraded) {
-		super(ID, "Embolden", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
+		super(ID, "Embolden", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 20, 10, 0));
-		damage = 105;
+		damage = 70;
 		shields = isUpgraded ? 5 : 3;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		hit.count(50).spread(0.5, 0.5);

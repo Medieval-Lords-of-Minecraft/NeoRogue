@@ -58,7 +58,7 @@ public class BreakTheLine extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.TNT,
-				"On cast, leap in the air and slam down. All nearby enemies will take " + GlossaryTag.BLUNT.tag(this, damage, false) + ", get knocked back," +
+				"On cast, leap in the air and slam down. All nearby enemies will take " + GlossaryTag.EARTHEN.tag(this, damage, false) + ", get knocked back," +
 				" given slowness <white>1</white> for <white>3</white> seconds, and get " + GlossaryTag.CONCUSSED.tag(this, conc, true) + ".");
 	}
 	
@@ -85,7 +85,7 @@ public class BreakTheLine extends Equipment {
 						for (LivingEntity ent : targets) {
 							FightInstance.knockback(p, ent, 0.9);
 							ent.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 60, 0));
-							FightInstance.dealDamage(new DamageMeta(pdata, damage, DamageType.BLUNT), ent);
+							FightInstance.dealDamage(new DamageMeta(pdata, damage, DamageType.EARTHEN), ent);
 							FightInstance.applyStatus(ent, StatusType.CONCUSSED, p, conc, -1);
 						}
 

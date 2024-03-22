@@ -133,6 +133,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		for (boolean b : new boolean[] { false, true }) {
 			// Abilities
 			new Adrenaline(b);
+			new Atone(b);
 			new BattleCry(b);
 			new BerserkersCall(b);
 			new BlessedEdge(b);

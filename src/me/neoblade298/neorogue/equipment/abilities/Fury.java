@@ -28,12 +28,12 @@ public class Fury extends Equipment {
 			explode = new ParticleContainer(Particle.EXPLOSION_NORMAL);
 	
 	public Fury(boolean isUpgraded) {
-		super(ID, "Fury", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
+		super(ID, "Fury", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 30, 5, 0));
-		damage = 125;
+		damage = 90;
 		berserk = isUpgraded ? 10 : 15;
-		heal = 2;
-		berserkHeal = isUpgraded ? 4 : 3;
+		heal = 1;
+		berserkHeal = isUpgraded ? 3 : 2;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		hit.count(50).spread(0.5, 0.5);
 		explode.count(25).spread(0.5, 0.5).speed(0.1);

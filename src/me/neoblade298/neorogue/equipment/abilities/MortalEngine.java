@@ -21,7 +21,7 @@ public class MortalEngine extends Equipment {
 		super(ID, "Mortal Engine", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.none());
 		
-		cutoff = isUpgraded ? 25 : 15;
+		cutoff = isUpgraded ? 15 : 25;
 		reduc = isUpgraded ? 2 : 1;
 	}
 	
