@@ -320,28 +320,28 @@ public class FightData {
 		return statuses.getOrDefault(type.name(), Status.EMPTY);
 	}
 	
-	public void applyStatus(StatusType type, FightData applier, int stacks, int seconds) {
-		applyStatus(type, applier, stacks, seconds, null);
+	public void applyStatus(StatusType type, FightData applier, int stacks, int ticks) {
+		applyStatus(type, applier, stacks, ticks, null);
 	}
 	
-	public void applyStatus(StatusType type, FightData applier, int stacks, int seconds, DamageMeta meta) {
+	public void applyStatus(StatusType type, FightData applier, int stacks, int ticks, DamageMeta meta) {
 		Status s = statuses.getOrDefault(type.name(), Status.createByType(type, this));
-		applyStatus(s, applier, stacks, seconds, meta);
+		applyStatus(s, applier, stacks, ticks, meta);
 	}
 	
-	public void applyStatus(GenericStatusType type, String id, FightData applier, int stacks, int seconds) {
-		applyStatus(type, id, applier, stacks, seconds, null);
+	public void applyStatus(GenericStatusType type, String id, FightData applier, int stacks, int ticks) {
+		applyStatus(type, id, applier, stacks, ticks, null);
 	}
 	
-	public void applyStatus(GenericStatusType type, String id, FightData applier, int stacks, int seconds, DamageMeta meta) {
+	public void applyStatus(GenericStatusType type, String id, FightData applier, int stacks, int ticks, DamageMeta meta) {
 		Status s = statuses.getOrDefault(id, Status.createByGenericType(type, id, this));
-		applyStatus(s, applier, stacks, seconds, meta);
+		applyStatus(s, applier, stacks, ticks, meta);
 	}
 	
-	protected void applyStatus(Status s, FightData applier, int stacks, int seconds, DamageMeta meta) {
+	protected void applyStatus(Status s, FightData applier, int stacks, int ticks, DamageMeta meta) {
 		if (!entity.isValid()) return;
 		String id = s.getId();
-		ApplyStatusEvent ev = new ApplyStatusEvent(this, id, stacks, seconds, meta);
+		ApplyStatusEvent ev = new ApplyStatusEvent(this, id, stacks, ticks, meta);
 		if (applier instanceof PlayerFightData) {
 			FightInstance.trigger(((PlayerFightData) applier).getPlayer(), Trigger.APPLY_STATUS, ev);
 		}
@@ -350,7 +350,7 @@ public class FightData {
 			data.updateBoardLines();
 			FightInstance.trigger(data.getPlayer(), Trigger.APPLY_STATUS, ev);
 		}
-		s.apply(applier, (int) Math.ceil(ev.getStacksBuff().apply(stacks)), (int) Math.ceil(ev.getDurationBuff().apply(seconds)));
+		s.apply(applier, (int) Math.ceil(ev.getStacksBuff().apply(stacks)), (int) Math.ceil(ev.getDurationBuff().apply(ticks)));
 		
 		if (statuses.isEmpty()) {
 			addTickAction(new StatusUpdateTickAction());

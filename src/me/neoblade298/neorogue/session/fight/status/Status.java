@@ -52,6 +52,7 @@ public abstract class Status {
 		case INTELLECT: return new IntellectStatus(target);
 		case PROTECT: return new ProtectStatus(target);
 		case SHELL: return new ShellStatus(target);
+		case INVISIBLE: return null;
 		}
 		Bukkit.getLogger().warning("[NeoRogue] Failed to create status type " + id);
 		return new BasicStatus(id.name(), target);
@@ -106,7 +107,8 @@ public abstract class Status {
 		STRENGTH("<red>Strength</red>", "&cStrength"),
 		INTELLECT("<blue>Intellect</blue>", "&9Intellect"),
 		PROTECT("<green>Protect</green>", "&aProtect"),
-		SHELL("<aqua>Shell</aqua>", "&3Shell");
+		SHELL("<aqua>Shell</aqua>", "&3Shell"),
+		INVISIBLE("<dark_purple>Invisible</dark_purple>", "&5Invisible");
 		public String tag;
 		public Component ctag;
 		public String boardLine;

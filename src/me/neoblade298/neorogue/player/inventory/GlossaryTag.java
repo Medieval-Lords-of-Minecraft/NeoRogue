@@ -79,7 +79,9 @@ public enum GlossaryTag implements GlossaryIcon {
 	PROTECT(Material.TURTLE_HELMET, StatusType.PROTECT.tag,
 			"Buffs all physical defense by 1 per stack."),
 	SHELL(Material.PRISMARINE_CRYSTALS, StatusType.SHELL.tag,
-			"Buffs all magical defense by 1 per stack.");
+			"Buffs all magical defense by 1 per stack."),
+	INVISIBLE(Material.NETHER_STAR, StatusType.INVISIBLE.tag,
+			"Certain abilities become stronger when this status is applied.");
 	
 	private ItemStack icon;
 	public String tag;

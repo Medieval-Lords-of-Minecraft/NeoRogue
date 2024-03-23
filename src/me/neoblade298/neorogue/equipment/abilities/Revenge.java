@@ -40,13 +40,13 @@ public class Revenge extends Equipment {
 		StandardPriorityAction inst = new StandardPriorityAction(id);
 		inst.setAction((pdata, in) -> {
 			if (!inst.canUse()) return TriggerResult.keep();
-			data.applyStatus(StatusType.STRENGTH, data, strength, 10);
+			data.applyStatus(StatusType.STRENGTH, data, strength, 200);
 			inst.setNextUse(System.currentTimeMillis() + 2000);
 			if (data.getStatus(StatusType.BERSERK).getStacks() < CUTOFF) {
 				data.applyStatus(StatusType.BERSERK, data, 1, -1);
 			}
 			else {
-				data.applyStatus(GenericStatusType.BASIC, "Revenge", data, 1, 10);
+				data.applyStatus(GenericStatusType.BASIC, "Revenge", data, 1, 200);
 				Sounds.fire.play(p, p);
 				pc.play(p, p);
 				return TriggerResult.keep();

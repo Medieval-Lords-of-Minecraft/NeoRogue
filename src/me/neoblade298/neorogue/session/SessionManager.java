@@ -21,6 +21,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
@@ -333,6 +334,11 @@ public class SessionManager implements Listener {
 		}
 		
 		FightInstance.handleRightClickEntity(e);
+	}
+	
+	@EventHandler
+	public void onPotion(EntityPotionEffectEvent e) {
+		FightInstance.handlePotionEffect(e);
 	}
 	
 	@EventHandler

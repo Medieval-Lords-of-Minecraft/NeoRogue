@@ -30,6 +30,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
@@ -380,6 +381,15 @@ public abstract class FightInstance extends Instance {
 		}
 	}
 	
+	public static void handlePotionEffect(EntityPotionEffectEvent e) {
+		if (e.getEntityType() != EntityType.PLAYER) return;
+		Player p = (Player) e.getEntity();
+		PlayerFightData data = userData.get(p.getUniqueId());
+		if (data == null)
+			return;
+		trigger(p, Trigger.RECEIVE_POTION, e);
+	}
+	
 	public static void handleRightClickEntity(PlayerInteractEntityEvent e) {
 		Player p = e.getPlayer();
 		PlayerFightData data = userData.get(p.getUniqueId());
@@ -682,6 +692,11 @@ public abstract class FightInstance extends Instance {
 		FightData data = getFightData(target.getUniqueId());
 		FightData fdApplier = getFightData(applier.getUniqueId());
 		data.applyStatus(type, fdApplier, stacks, seconds);
+	}
+	
+	public static void applyStatus(Entity target, StatusType type, FightData applier, int stacks, int seconds) {
+		FightData data = getFightData(target.getUniqueId());
+		data.applyStatus(type, applier, stacks, seconds);
 	}
 	
 	public static void applyStatus(Entity target, GenericStatusType type, String id, Entity applier, int stacks, int seconds) {

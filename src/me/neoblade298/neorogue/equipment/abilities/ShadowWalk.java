@@ -16,6 +16,7 @@ import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
@@ -53,7 +54,7 @@ public class ShadowWalk extends Equipment {
 			Sounds.teleport.play(p, p);
 			pc.play(p, p);
 			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 60, 0));
-			p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 60, 0));
+			data.applyStatus(StatusType.INVISIBLE, data, 1, 60);
 			data.addSimpleShield(p.getUniqueId(), shields, 60);
 			inst.addCount(1);
 			return TriggerResult.keep();
