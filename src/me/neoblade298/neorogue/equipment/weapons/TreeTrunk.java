@@ -132,6 +132,6 @@ public class TreeTrunk extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.OAK_LOG, "Can only be used without an offhand. Left click deals damage in a line,"
 				+ " right click can only be used with " + GlossaryTag.BERSERK.tag(this, CUTOFF, false) + ", deals damage in a circle and "
-				+ " applies " + GlossaryTag.CONCUSSED.tag(this, conc, true) + ", but at half the attack speed.");
+				+ "applies " + GlossaryTag.CONCUSSED.tag(this, conc, true) + ", but at half the attack speed.");
 	}
 }

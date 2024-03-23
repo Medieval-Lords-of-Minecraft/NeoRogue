@@ -149,6 +149,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Challenge(b);
 			new Charge(b);
 			new Cleave(b);
+			new Cripple(b);
 			new DarkPact(b);
 			new Discipline(b);
 			new EarthenTackle(b);

@@ -105,8 +105,8 @@ public abstract class Status {
 		BERSERK("<dark_red>Berserk</dark_red>", "&4Berserk"),
 		STRENGTH("<red>Strength</red>", "&cStrength"),
 		INTELLECT("<blue>Intellect</blue>", "&9Intellect"),
-		PROTECT("<light_green>Protect</light_green>", "&aProtect"),
-		SHELL("<light_blue>Shell</light_blue>", "&3Shell");
+		PROTECT("<green>Protect</green>", "&aProtect"),
+		SHELL("<aqua>Shell</aqua>", "&3Shell");
 		public String tag;
 		public Component ctag;
 		public String boardLine;

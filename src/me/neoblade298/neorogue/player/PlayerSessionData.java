@@ -595,6 +595,7 @@ public class PlayerSessionData {
 		boardLines.add("§9MP§7: §f" + maxMana + " §7| §f" + df.format(manaRegen) + "/s");
 		boardLines.add("§aSP§7: §f" + maxStamina + " §7| §f" + df.format(staminaRegen) + "/s");
 		boardLines.add("§eCoins§7: §f" + coins);
+		s.updateSpectatorLines();
 		if (s.getParty().size() <= 1) return;
 		boardLines.add("§8§m-----");
 		for (PlayerSessionData psd : s.getParty().values()) {

@@ -95,6 +95,6 @@ public class Atone extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.BLADE_POTTERY_SHERD,
 				"On cast, charge for <white>1</white> second before dealing " + GlossaryTag.LIGHT.tag(this, damage, true) + " to nearby enemies. "
-				+ " Increase damage dealt by number of " + GlossaryTag.SANCTIFIED.tag(this) + " stacks on the enemy multiplied by <yellow>" + sanct + "</yellow>.");
+				+ "Increase damage dealt by number of " + GlossaryTag.SANCTIFIED.tag(this) + " stacks on the enemy multiplied by <yellow>" + sanct + "</yellow>.");
 	}
 }
