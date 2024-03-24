@@ -4,10 +4,12 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
@@ -138,6 +140,13 @@ public class DamageMeta {
 			if (pdata.runActions(pdata, Trigger.RECEIVED_DAMAGE, ev)) {
 				slices.clear();
 			}
+		}
+		
+		// If the first slice isn't a status, evade it
+		if (recipient.hasStatus(StatusType.EVADE) && !slices.peekFirst().getPostBuffType().containsBuffType(BuffType.STATUS)) {
+			if (recipient.getEntity().getType() == EntityType.PLAYER) Sounds.attackSweep.play((Player) recipient.getEntity(), recipient.getEntity());
+			slices.clear();
+			recipient.getStatus(StatusType.EVADE).apply(recipient, -1, -1);
 		}
 		
 		// Reduce damage from barriers, used only for players blocking projectiles
@@ -299,7 +308,8 @@ public class DamageMeta {
 				data.updateActionBar();
 			}
 		}
-		else {
+		// Only do damage if we haven't canceled the damage
+		else if (!slices.isEmpty()) {
 			target.damage(0.1);
 		}
 		

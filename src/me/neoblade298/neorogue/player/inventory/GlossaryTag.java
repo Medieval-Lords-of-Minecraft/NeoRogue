@@ -81,7 +81,9 @@ public enum GlossaryTag implements GlossaryIcon {
 	SHELL(Material.PRISMARINE_CRYSTALS, StatusType.SHELL.tag,
 			"Buffs all magical defense by 1 per stack."),
 	INVISIBLE(Material.NETHER_STAR, StatusType.INVISIBLE.tag,
-			"Certain abilities become stronger when this status is applied.");
+			"Certain abilities become stronger when this status is applied."),
+	EVADE(Material.PHANTOM_MEMBRANE, StatusType.EVADE.tag,
+			"Nullifies 1 instance of non-status damage.");
 	
 	private ItemStack icon;
 	public String tag;

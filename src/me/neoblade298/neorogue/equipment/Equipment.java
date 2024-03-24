@@ -164,6 +164,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Ferocity(b);
 			new Fissure(b);
 			new Flurry(b);
+			new Focus(b);
 			new Fortify(b);
 			new Frenzy(b);
 			new Fury(b);
