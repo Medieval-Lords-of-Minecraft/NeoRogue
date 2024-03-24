@@ -55,6 +55,7 @@ public class EnergyBattery extends Artifact {
 		public TriggerResult trigger(PlayerFightData data, Object inputs) {
 			if (count < num) {
 				CastUsableEvent ev = (CastUsableEvent) inputs;
+				if (ev.getInstance().getEffectiveStaminaCost() == 0 && ev.getInstance().getEffectiveManaCost() == 0) return TriggerResult.keep();
 				if (ev.getBuff(PropertyType.STAMINA_COST).apply(ev.getInstance().getStaminaCost()) <= 0) return TriggerResult.keep();
 				Player p = data.getPlayer();
 				part.play(p, p);

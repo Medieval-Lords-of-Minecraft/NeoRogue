@@ -59,7 +59,7 @@ public class Envenom extends Equipment {
 		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in) -> {
 			if (inst.getCount() == 0) return TriggerResult.keep();
 			BasicAttackEvent ev = (BasicAttackEvent) in;
-			FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, poison, -1);
+			FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, poison, 100);
 			return TriggerResult.keep();
 		});
 	}
@@ -67,6 +67,7 @@ public class Envenom extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GREEN_DYE,
-				"On cast, your basic attacks apply " + GlossaryTag.POISON.tag(this, poison, true) + " for <white>8</white> seconds.");
+				"On cast, your basic attacks apply " + GlossaryTag.POISON.tag(this, poison, true) + " for <white>8</white> seconds. The " + GlossaryTag.POISON.tag(this)
+				+ " lasts for <white>5</white> seconds.");
 	}
 }

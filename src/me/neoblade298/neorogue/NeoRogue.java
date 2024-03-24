@@ -148,6 +148,8 @@ public class NeoRogue extends JavaPlugin {
 			SessionManager.addToSession(alt.getUniqueId(), s);
 			alt.setMaximumNoDamageTicks(0);
 		}
+		s.getParty().get(p.getUniqueId()).addManaRegen(10);
+		s.getParty().get(p.getUniqueId()).addStaminaRegen(10);
 		s.setNode(s.getArea().getNodes()[0][2]);
 		s.setInstance(new NodeSelectInstance(s));
 		// s.setInstance(new ChanceInstance());

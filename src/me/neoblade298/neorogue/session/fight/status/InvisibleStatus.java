@@ -13,8 +13,8 @@ public class InvisibleStatus extends DurationStatus {
 	}
 
 	@Override
-	public void apply(FightData applier, int stacks, int seconds) {
-		data.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, seconds * 20, 0));
-		super.apply(applier, stacks, seconds);
+	public void apply(FightData applier, int stacks, int ticks) {
+		data.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, ticks, 0));
+		super.apply(applier, stacks, ticks);
 	}
 }

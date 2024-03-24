@@ -20,6 +20,8 @@ public class SilentSteps extends Equipment {
 	public SilentSteps(boolean isUpgraded) {
 		super(ID, "Silent Steps", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.none());
+		duration = isUpgraded ? 2 : 1;
+		reduc = isUpgraded ? 3 : 2;
 	}
 	
 	public static Equipment get() {

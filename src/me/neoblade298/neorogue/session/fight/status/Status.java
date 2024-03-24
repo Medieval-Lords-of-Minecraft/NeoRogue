@@ -16,7 +16,7 @@ public abstract class Status {
 	protected TickAction action;
 	protected FightData data;
 	protected StatusSliceHolder slices = new StatusSliceHolder();
-	protected int seconds;
+	protected int ticks;
 	
 	public static final Comparator<Status> comp = new Comparator<Status>() {
 		@Override
@@ -52,7 +52,7 @@ public abstract class Status {
 		case INTELLECT: return new IntellectStatus(target);
 		case PROTECT: return new ProtectStatus(target);
 		case SHELL: return new ShellStatus(target);
-		case INVISIBLE: return null;
+		case INVISIBLE: return new InvisibleStatus(target);
 		}
 		Bukkit.getLogger().warning("[NeoRogue] Failed to create status type " + id);
 		return new BasicStatus(id.name(), target);

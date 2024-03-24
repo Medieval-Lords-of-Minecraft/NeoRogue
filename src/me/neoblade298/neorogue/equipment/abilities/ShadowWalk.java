@@ -42,7 +42,8 @@ public class ShadowWalk extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.RABBIT_FOOT,
-				"On cast, Grant speed <white>1</white>, invisibility, and " + GlossaryTag.SHIELDS.tag(this, shields, true) + " for <white>3</white> seconds. "
+				"On cast, Grant speed <white>1</white>, " + GlossaryTag.INVISIBLE.tag(this) + ", and " + GlossaryTag.SHIELDS.tag(this, shields, true) +
+				" for <white>3</white> seconds. "
 				+ "Your next basic attack deals an additional " + GlossaryTag.PIERCING.tag(this, damage, false) + " damage. Basic attacks decrease the cooldown"
 						+ " of this ability by <yellow>" + cdr + "</yellow> second(s).");
 	}
