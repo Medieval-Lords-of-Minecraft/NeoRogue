@@ -5,9 +5,12 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.session.fight.DamageMeta.BuffOrigin;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
@@ -18,7 +21,7 @@ public class RingOfOrder extends Equipment {
 	private DamageType lastDamageType;
 
 	public RingOfOrder(boolean isUpgraded) {
-		super(ID, "Ring Of Order", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.ACCESSORY);
+		super(ID, "Ring Of Order", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ACCESSORY);
 		buffPercent = isUpgraded ? 30 : 15;
 		lastDamageType = null;
 	}
@@ -31,14 +34,21 @@ public class RingOfOrder extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.DEALT_DAMAGE, (pdata, in) -> {
 			DealtDamageEvent ev = (DealtDamageEvent) in;
-			// todo: get dmg dealt and dmg type thank you neo
-			int dmgDealt = -1;
-			DamageType type = null;
-
-			if (lastDamageType == null || lastDamageType == type) {
-				ev.getMeta().addDamageSlice(new DamageSlice(data, dmgDealt * buffPercent / 100.0, type));
+			
+			DamageType primaryType = null;
+			double primaryDmg = 0;
+			for (DamageSlice slice : ev.getMeta().getSlices()) {
+				if (slice.getDamage() > primaryDmg) {
+					primaryType = slice.getPostBuffType();
+					primaryDmg = slice.getDamage();
+				}
 			}
-			lastDamageType = type;
+
+			if (lastDamageType == null || primaryType == lastDamageType) {
+				ev.getMeta().addBuff(BuffType.MAGICAL, new Buff(data, 0, buffPercent / 100.0), BuffOrigin.NORMAL, true);
+			}
+			
+			lastDamageType = primaryType;
 
 			return TriggerResult.keep();
 		});
@@ -48,7 +58,7 @@ public class RingOfOrder extends Equipment {
 	public void setupItem() {
 		item = createItem(
 				Material.GOLD_NUGGET,
-				"Whenever you deal magic damage, if it's the same type as the last time you dealt damage, buff this damage by <yellow>"
+				"Whenever you deal magic damage, if it's the same as the primary type used last, buff this damage by <yellow>"
 						+ buffPercent + "%</yellow>."
 		);
 	}

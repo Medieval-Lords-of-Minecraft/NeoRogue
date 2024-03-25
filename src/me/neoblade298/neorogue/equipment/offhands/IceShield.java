@@ -10,6 +10,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -18,16 +19,16 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
 public class IceShield extends Equipment {
 	private static final String ID = "iceShield";
 	private int shieldPercent;
-
+	
 	public IceShield(boolean isUpgraded) {
 		super(ID, "Ice Shield", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.OFFHAND);
 		shieldPercent = isUpgraded ? 50 : 30;
 	}
-
+	
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
-	
+
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.RAISE_SHIELD, (pdata, inputs) -> {
@@ -38,22 +39,27 @@ public class IceShield extends Equipment {
 			p.removePotionEffect(PotionEffectType.SLOW); // todo: mitigate players spamming to avoid slow
 			return TriggerResult.keep();
 		});
-		
+
 		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, (pdata, inputs) -> {
 			if (!p.isHandRaised())
 				return TriggerResult.keep();
-			
+
 			ReceivedDamageEvent ev = (ReceivedDamageEvent) inputs;
 			DamageMeta meta = ev.getMeta();
 			if (meta.isSecondary())
 				return TriggerResult.keep();
-			
-			//data.addSimpleShield(p.getUniqueId(), TODO getDmg() here * shieldPercent / 100.0, 200);
+
+			double dmg = 0;
+			for (DamageSlice slice : meta.getSlices()) {
+				dmg += slice.getDamage();
+			}
+
+			data.addSimpleShield(p.getUniqueId(), dmg * shieldPercent / 100.0, 200);
 			p.playSound(p, Sound.ITEM_SHIELD_BLOCK, 1F, 1F);
 			return TriggerResult.keep();
 		});
 	}
-	
+
 	@Override
 	public void setupItem() {
 		item = createItem(
