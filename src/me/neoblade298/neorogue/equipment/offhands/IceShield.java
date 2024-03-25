@@ -16,11 +16,16 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
 
 public class IceShield extends Equipment {
+	private static final String ID = "iceShield";
 	private int shieldPercent;
 
 	public IceShield(boolean isUpgraded) {
-		super("iceShield", "Ice Shield", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.OFFHAND);
+		super(ID, "Ice Shield", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.OFFHAND);
 		shieldPercent = isUpgraded ? 50 : 30;
+	}
+
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 	
 	@Override

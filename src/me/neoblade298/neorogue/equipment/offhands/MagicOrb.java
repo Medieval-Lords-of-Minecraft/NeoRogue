@@ -15,11 +15,16 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.CastUsableEvent;
 
 public class MagicOrb extends Equipment {
+	private static final String ID = "magicOrb";
 	private int percentDmgBuff;
 	
 	public MagicOrb(boolean isUpgraded) {
-		super("magicOrb", "Magic Orb", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.OFFHAND);
+		super(ID, "Magic Orb", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.OFFHAND);
 		percentDmgBuff = isUpgraded ? 20 : 10;
+	}
+
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 	
 	@Override

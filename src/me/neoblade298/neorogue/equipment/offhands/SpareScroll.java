@@ -19,8 +19,14 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class SpareScroll extends Equipment {
+	private static final String ID = "spareScroll";
+	
 	public SpareScroll(boolean isUpgraded) {
-		super("spareScroll", "Spare Scroll", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.OFFHAND);
+		super(ID, "Spare Scroll", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.OFFHAND);
+	}
+
+	public static Equipment get() {
+		return Equipment.get(ID, false);
 	}
 	
 	@Override
