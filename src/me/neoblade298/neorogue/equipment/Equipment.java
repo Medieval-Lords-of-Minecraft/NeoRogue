@@ -30,6 +30,7 @@ import me.neoblade298.neorogue.equipment.accessories.MinorManaRelic;
 import me.neoblade298.neorogue.equipment.accessories.MinorShieldingRelic;
 import me.neoblade298.neorogue.equipment.accessories.MinorStaminaRelic;
 import me.neoblade298.neorogue.equipment.accessories.MinorStrengthRelic;
+import me.neoblade298.neorogue.equipment.accessories.NullField;
 import me.neoblade298.neorogue.equipment.accessories.RingOfAnger;
 import me.neoblade298.neorogue.equipment.accessories.RingOfFortitude;
 import me.neoblade298.neorogue.equipment.armor.Brightcrown;
@@ -39,6 +40,7 @@ import me.neoblade298.neorogue.equipment.armor.IronCuirass;
 import me.neoblade298.neorogue.equipment.armor.LeatherChestplate;
 import me.neoblade298.neorogue.equipment.armor.LeatherHelmet;
 import me.neoblade298.neorogue.equipment.armor.NullMagicMantle;
+import me.neoblade298.neorogue.equipment.armor.ScaleCape;
 import me.neoblade298.neorogue.equipment.armor.SpikedPauldrons;
 import me.neoblade298.neorogue.equipment.artifacts.AlchemistBag;
 import me.neoblade298.neorogue.equipment.artifacts.AmuletOfOffering;
@@ -208,6 +210,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new MinorShieldingRelic(b);
 			new MinorStaminaRelic(b);
 			new MinorStrengthRelic(b);
+			new NullField(b);
 			new RingOfAnger(b);
 			new RingOfFortitude(b);
 			new MinorManaRelic(b);
@@ -218,6 +221,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new LeatherChestplate(b);
 			new LeatherHelmet(b);
 			new NullMagicMantle(b);
+			new ScaleCape(b);
 			new SpikedPauldrons(b);
 			
 			// Offhands
