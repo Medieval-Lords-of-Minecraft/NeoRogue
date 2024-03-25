@@ -12,10 +12,10 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class LeatherChestplate extends Equipment {
 	private static final String ID = "leatherChestplate";
-	private double damageReduction;
+	private int damageReduction;
 	
 	public LeatherChestplate(boolean isUpgraded) {
-		super(ID, "Leather Chestplate", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+		super(ID, "Leather Chestplate", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ARMOR);
 		damageReduction = isUpgraded ? 5 : 3;
 	}
@@ -26,7 +26,7 @@ public class LeatherChestplate extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addBuff(p.getUniqueId(), false, false, BuffType.PHYSICAL, damageReduction);
+		data.addBuff(data, false, false, BuffType.PHYSICAL, damageReduction);
 	}
 
 	@Override

@@ -50,7 +50,7 @@ public class EarthenLeatherGauntlets extends Equipment {
 			weaponSwingAndDamage(p, data, ev.getTarget());
 			if (++count >= 3) {
 				count = 0;
-				FightInstance.getFightData(ev.getTarget().getUniqueId()).applyStatus(StatusType.CONCUSSED, p.getUniqueId(), concuss, 0);
+				FightInstance.getFightData(ev.getTarget().getUniqueId()).applyStatus(StatusType.CONCUSSED, data, concuss, 0);
 			}
 			return TriggerResult.keep();
 		}

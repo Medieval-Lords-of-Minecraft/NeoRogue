@@ -53,7 +53,7 @@ public class Thornguard extends Equipment {
 				pdata.addTrigger(id, Trigger.RECEIVE_SHIELDS, (pdata2, inputs2) -> {
 					GrantShieldsEvent ev = (GrantShieldsEvent) inputs2;
 					count += ev.getShield().getAmount();
-					pdata.applyStatus(StatusType.THORNS, p.getUniqueId(), thorns * (count / CUTOFF), -1);
+					pdata.applyStatus(StatusType.THORNS, pdata, thorns * (count / CUTOFF), -1);
 					count = count % CUTOFF;
 					return TriggerResult.keep();
 				});

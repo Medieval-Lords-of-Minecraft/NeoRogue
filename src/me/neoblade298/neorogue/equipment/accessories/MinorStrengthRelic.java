@@ -26,7 +26,7 @@ public class MinorStrengthRelic extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addBuff(p.getUniqueId(), true, false, BuffType.PHYSICAL, str);
+		data.addBuff(data, true, false, BuffType.PHYSICAL, str);
 	}
 
 	@Override

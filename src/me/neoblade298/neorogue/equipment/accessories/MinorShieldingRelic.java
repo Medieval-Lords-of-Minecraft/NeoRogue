@@ -12,12 +12,12 @@ import me.neoblade298.neorogue.session.fight.trigger.event.GrantShieldsEvent;
 
 public class MinorShieldingRelic extends Equipment {
 	private static final String ID = "minorShieldingRelic";
-	private double shields;
+	private int shields;
 	
 	public MinorShieldingRelic(boolean isUpgraded) {
 		super(ID, "Minor Shielding Relic", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ACCESSORY);
-		shields = isUpgraded ? 3 : 2;
+		shields = isUpgraded ? 5 : 3;
 	}
 	
 	public static Equipment get() {
@@ -29,14 +29,14 @@ public class MinorShieldingRelic extends Equipment {
 		data.addTrigger(id, Trigger.RECEIVE_SHIELDS, (pdata, in) -> {
 			GrantShieldsEvent ev = (GrantShieldsEvent) in;
 			if (ev.isSecondary()) return TriggerResult.keep();
-			data.addSimpleShield(p.getUniqueId(), shields, 40L, true);
+			ev.getBuff().addIncrease(data, shields);
 			return TriggerResult.keep();
 		});
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.REDSTONE, "Whenever you gain " + GlossaryTag.SHIELDS.tag(this) + ", gain <yellow>"
-				+ shields + "</yellow> bonus " + GlossaryTag.SHIELDS.tag(this) +" for <white>2</white> seconds.");
+		item = createItem(Material.IRON_NUGGET, "Whenever you gain " + GlossaryTag.SHIELDS.tag(this) + ", increase the amount gained by"
+				+ " <yellow>" + shields + "</yellow>.");
 	}
 }

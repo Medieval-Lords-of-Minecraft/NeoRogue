@@ -30,7 +30,7 @@ public class Cleave extends Equipment {
 	
 	public Cleave(boolean isUpgraded) {
 		super(ID, "Cleave", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 10, 5, 7));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 10, 5, tp.range));
 		
 		damage = isUpgraded ? 100 : 70;
 	}

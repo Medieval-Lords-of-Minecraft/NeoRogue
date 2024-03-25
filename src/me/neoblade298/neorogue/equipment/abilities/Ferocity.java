@@ -25,7 +25,7 @@ public class Ferocity extends Equipment {
 	
 	public Ferocity(boolean isUpgraded) {
 		super(ID, "Ferocity", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 50, 15, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 15, 0));
 		pc.count(50).spread(0.5, 0.5).dustOptions(new DustOptions(Color.RED, 1F));
 		staminaGain = isUpgraded ? 4 : 3;
 		cutoff = isUpgraded ? 14 : 20;
@@ -49,7 +49,7 @@ public class Ferocity extends Equipment {
 		data.addTrigger(id, bind, new EquipmentInstance(p, this, slot, es, (pdata, in) -> {
 			Sounds.blazeDeath.play(p, p);
 			pc.play(p, p);
-			pdata.applyStatus(StatusType.BERSERK, p.getUniqueId(), berserk, -1);
+			pdata.applyStatus(StatusType.BERSERK, data, berserk, -1);
 			if (pdata.getStatus(StatusType.BERSERK).getStacks() >= cutoff) {
 				Sounds.roar.play(p, p);
 				p.getInventory().setItem(slot, null);

@@ -39,11 +39,11 @@ public class NoxianBlight extends Artifact {
 			boolean activated = false;
 			if (ev.getInstance().getManaCost() >= 25) {
 				activated = true;
-				data.applyStatus(StatusType.INTELLECT, p.getUniqueId(), 1, -1);
+				data.applyStatus(StatusType.INTELLECT, data, 1, -1);
 			}
 			if (ev.getInstance().getStaminaCost() >= 25) {
 				activated = true;
-				data.applyStatus(StatusType.STRENGTH, p.getUniqueId(), 1, -1);
+				data.applyStatus(StatusType.STRENGTH, data, 1, -1);
 			}
 			
 			if (activated) {
@@ -68,7 +68,7 @@ public class NoxianBlight extends Artifact {
 	public void setupItem() {
 		item = createItem(Material.MAGMA_CREAM, 
 				"For every skill you cast that at base costs over <white>" + stamina + "</white> stamina, gain 1 " + GlossaryTag.STRENGTH.tag(this) +
-				". For every skill you cast that at base costs over"
+				". For every skill you cast that at base costs at least"
 				+ " <white>" + mana + "</white> mana, gain 1 " + GlossaryTag.INTELLECT.tag(this) + ".");
 	}
 }

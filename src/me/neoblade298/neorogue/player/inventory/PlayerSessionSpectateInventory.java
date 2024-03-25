@@ -291,7 +291,7 @@ public class PlayerSessionSpectateInventory extends CoreInventory {
 							.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
 		}
 		else if (slotType == EquipSlot.HOTBAR) {
-			lore.add(1, Component.text("Bound to Hotbar #" + (dataSlot + 1), NamedTextColor.YELLOW)
+			lore.add(1, Component.text("Bound to Hotbar #" + (dataSlot - 17), NamedTextColor.YELLOW)
 					.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
 		}
 		meta.lore(lore);

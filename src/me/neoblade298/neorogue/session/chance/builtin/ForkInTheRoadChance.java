@@ -40,7 +40,7 @@ public class ForkInTheRoadChance extends ChanceSet {
 						StandardFightInstance sfi = new StandardFightInstance(s, s.getParty().keySet(), s.getArea().getType(), s.getNodesVisited());
 						sfi.addInitialTask((fi, fdata) -> {
 							for (PlayerFightData pfdata : fdata) {
-								pfdata.addBuff(pfdata.getUniqueId(), true, true, BuffType.GENERAL, -0.2);
+								pfdata.addBuff(pfdata, true, true, BuffType.GENERAL, -0.2);
 							}
 						});
 						inst.setNextInstance(sfi);

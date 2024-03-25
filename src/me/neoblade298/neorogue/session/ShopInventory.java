@@ -1,6 +1,7 @@
 package me.neoblade298.neorogue.session;
 
 import java.util.ArrayList;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -28,14 +29,17 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class ShopInventory extends CoreInventory {
-	public static final int[] SLOT_ORDER = new int[] {0, 2, 4, 6, 8, 9, 11, 13, 15, 17};
-	private static final int SELL_PRICE = 10, REMOVE_CURSE_PRICE = 100;
+	public static final int[] SLOT_ORDER = new int[] { 0, 2, 4, 6, 8, 9, 11, 13, 15, 17 };
+	private static final int SELL_PRICE = 20, REMOVE_CURSE_PRICE = 100;
 	private PlayerSessionData data;
 	private ArrayList<ShopItem> shopItems;
 	private Player spectator;
 	
 	public ShopInventory(PlayerSessionData data, ArrayList<ShopItem> items) {
-		super(data.getPlayer(), Bukkit.createInventory(data.getPlayer(), 27, Component.text("Shop", NamedTextColor.BLUE)));
+		super(
+				data.getPlayer(),
+				Bukkit.createInventory(data.getPlayer(), 27, Component.text("Shop", NamedTextColor.BLUE))
+		);
 		this.data = data;
 		this.shopItems = items;
 		InventoryListener.registerPlayerInventory(p, new PlayerSessionInventory(data));
@@ -43,7 +47,13 @@ public class ShopInventory extends CoreInventory {
 	}
 	
 	public ShopInventory(PlayerSessionData data, ArrayList<ShopItem> items, Player spectator) {
-		super(spectator, Bukkit.createInventory(data.getPlayer(), 27, Component.text(data.getData().getDisplay() + "'s Shop", NamedTextColor.BLUE)));
+		super(
+				spectator,
+				Bukkit.createInventory(
+						data.getPlayer(), 27,
+						Component.text(data.getData().getDisplay() + "'s Shop", NamedTextColor.BLUE)
+				)
+		);
 		this.data = data;
 		this.shopItems = items;
 		this.spectator = spectator;
@@ -55,29 +65,41 @@ public class ShopInventory extends CoreInventory {
 		for (int i = 0; i < shopItems.size(); i++) {
 			contents[SLOT_ORDER[i]] = shopItems.get(i).getItem(data);
 		}
-		contents[22] = CoreInventory.createButton(Material.GOLD_NUGGET, Component.text("You have " + data.getCoins() + " coins", NamedTextColor.YELLOW));
-		contents[18] = CoreInventory.createButton(Material.GOLD_NUGGET, Component.text("Sell Items", NamedTextColor.RED),
-				(TextComponent) NeoCore.miniMessage().deserialize("Drag equipment here to sell it " +
-						"for <yellow>" + SELL_PRICE + " coins</yellow>."), 250, NamedTextColor.GRAY);
-		contents[19] = CoreInventory.createButton(Material.SUGAR, Component.text("Remove Curses", NamedTextColor.RED),
-				(TextComponent) NeoCore.miniMessage().deserialize("Drag cursed equipment here to remove it " +
-						"in exchange for <yellow>" + REMOVE_CURSE_PRICE + " coins</yellow>."), 250, NamedTextColor.GRAY);
-		if (data.getSession().getParty().size() > 1) 
-			contents[20] = CoreInventory.createButton(Material.SPYGLASS, Component.text("View other players' shops", NamedTextColor.GOLD));
+		contents[22] = CoreInventory.createButton(
+				Material.GOLD_NUGGET, Component.text("You have " + data.getCoins() + " coins", NamedTextColor.YELLOW)
+		);
+		contents[18] = CoreInventory.createButton(
+				Material.GOLD_NUGGET, Component.text("Sell Items", NamedTextColor.RED),
+				(TextComponent) NeoCore.miniMessage().deserialize(
+						"Drag equipment here to sell it " + "for <yellow>" + SELL_PRICE + " coins</yellow>."
+				), 250, NamedTextColor.GRAY
+		);
+		contents[19] = CoreInventory.createButton(
+				Material.SUGAR, Component.text("Remove Curses", NamedTextColor.RED),
+				(TextComponent) NeoCore.miniMessage().deserialize(
+						"Drag cursed equipment here to remove it " + "in exchange for <yellow>" + REMOVE_CURSE_PRICE
+								+ " coins</yellow>."
+				), 250, NamedTextColor.GRAY
+		);
+		if (data.getSession().getParty().size() > 1)
+			contents[20] = CoreInventory
+					.createButton(Material.SPYGLASS, Component.text("View other players' shops", NamedTextColor.GOLD));
 		inv.setContents(contents);
 	}
-	
 
 	@Override
 	public void handleInventoryClick(InventoryClickEvent e) {
 		Inventory iclicked = e.getClickedInventory();
+		PlayerSessionInventory pinv = (PlayerSessionInventory) InventoryListener.getLowerInventory(p);
 		if (spectator != null) {
 			e.setCancelled(true);
 			return;
 		}
-		if (iclicked == null) return;
+		if (iclicked == null)
+			return;
 		if (iclicked.getType() != InventoryType.CHEST) {
-			if (e.getCurrentItem() == null) return;
+			if (e.getCurrentItem() == null)
+				return;
 			if (e.isShiftClick()) {
 				e.setCancelled(true);
 				return;
@@ -92,7 +114,8 @@ public class ShopInventory extends CoreInventory {
 			return;
 		}
 		e.setCancelled(true);
-		if (e.getCurrentItem() == null) return; // Must have clicked on an item in the inv
+		if (e.getCurrentItem() == null)
+			return; // Must have clicked on an item in the inv
 		if (e.getCurrentItem().getType() == Material.BARRIER) {
 			Util.displayError(p, "You've already purchased this item!");
 			return;
@@ -101,7 +124,7 @@ public class ShopInventory extends CoreInventory {
 
 		if (slot < 18) {
 			ShopItem shopItem = null;
-			for (int i = 0 ; i < SLOT_ORDER.length; i++) {
+			for (int i = 0; i < SLOT_ORDER.length; i++) {
 				if (SLOT_ORDER[i] == slot) {
 					shopItem = shopItems.get(i);
 					break;
@@ -121,9 +144,14 @@ public class ShopInventory extends CoreInventory {
 			shopItem.setPurchased(true);
 			
 			data.addCoins(-price);
-			data.giveEquipment(shopItem.getEquipment(),
+			data.giveEquipment(
+					shopItem.getEquipment(),
 					SharedUtil.color("You spent <yellow>" + price + " coins</yellow> to purchase a(n) "),
-					SharedUtil.color("<red>" + p.getName() + "</red> spent <yellow>" + price + " coins</yellow> to purchase a(n) "));
+					SharedUtil.color(
+							"<red>" + p.getName() + "</red> spent <yellow>" + price
+									+ " coins</yellow> to purchase a(n) "
+					)
+			);
 			p.playSound(p, Sound.ENTITY_WANDERING_TRADER_YES, 1F, 1F);
 			p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1F, 1F);
 			
@@ -132,15 +160,18 @@ public class ShopInventory extends CoreInventory {
 			for (ShopItem si : shopItems) {
 				si.updateLore(data, contents[si.getSlot()], false);
 			}
-			contents[22] = CoreInventory.createButton(Material.GOLD_NUGGET, Component.text("You have " + data.getCoins() + " coins", NamedTextColor.YELLOW));
+			contents[22] = CoreInventory.createButton(
+					Material.GOLD_NUGGET,
+					Component.text("You have " + data.getCoins() + " coins", NamedTextColor.YELLOW)
+			);
 			inv.setContents(contents);
-		}
-		else {
+		} else {
 			if (slot == 20 && e.getCurrentItem() != null) {
 				new SpectateSelectInventory(data.getSession(), p, data, true);
 				return;
 			}
-			if (e.getCursor().getType().isAir()) return;
+			if (e.getCursor().getType().isAir())
+				return;
 			if (slot == 18) {
 				NBTItem nbti = new NBTItem(e.getCursor());
 				Equipment eq = Equipment.get(nbti.getString("equipId"), false);
@@ -149,22 +180,32 @@ public class ShopInventory extends CoreInventory {
 					return;
 				}
 				data.addCoins(SELL_PRICE);
-				inv.setItem(22, CoreInventory.createButton(Material.GOLD_NUGGET,
-						Component.text("You have " + data.getCoins() + " coins", NamedTextColor.YELLOW)));
+				inv.setItem(
+						22,
+						CoreInventory.createButton(
+								Material.GOLD_NUGGET,
+								Component.text("You have " + data.getCoins() + " coins", NamedTextColor.YELLOW)
+						)
+				);
 				p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1F, 1F);
 				p.setItemOnCursor(null);
-				data.getSession().broadcast(SharedUtil.color("<yellow>" + p.getName() + " </yellow>sold their ")
-						.append(eq.getHoverable()).append(Component.text(".")));
+				data.getSession().broadcast(
+						SharedUtil.color("<yellow>" + p.getName() + " </yellow>sold their ").append(eq.getHoverable())
+								.append(Component.text("."))
+				);
 				
 				ItemStack[] contents = inv.getContents();
 				for (ShopItem si : shopItems) {
 					si.updateLore(data, contents[si.getSlot()], false);
 				}
 				inv.setContents(contents);
-			}
-			else if (slot == 19) {
+				pinv.clearHighlights();
+			} else if (slot == 19) {
 				if (!data.hasCoins(REMOVE_CURSE_PRICE)) {
-					Util.displayError(p, "You don't have enough coins! You need " + (REMOVE_CURSE_PRICE - data.getCoins()) + " more.");
+					Util.displayError(
+							p,
+							"You don't have enough coins! You need " + (REMOVE_CURSE_PRICE - data.getCoins()) + " more."
+					);
 					return;
 				}
 
@@ -175,8 +216,10 @@ public class ShopInventory extends CoreInventory {
 					Util.displayError(p, "Only cursed items may be removed this way!");
 					return;
 				}
-				data.getSession().broadcast(SharedUtil.color("<yellow>" + p.getName() + " </yellow>purified their ")
-						.append(eq.getHoverable()).append(Component.text(".")));
+				data.getSession().broadcast(
+						SharedUtil.color("<yellow>" + p.getName() + " </yellow>purified their ")
+								.append(eq.getHoverable()).append(Component.text("."))
+				);
 				eq.onPurify(data);
 				p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1F, 1F);
 				p.setItemOnCursor(null);
@@ -185,6 +228,7 @@ public class ShopInventory extends CoreInventory {
 					si.updateLore(data, contents[si.getSlot()], false);
 				}
 				inv.setContents(contents);
+				pinv.clearHighlights();
 			}
 		}
 	}

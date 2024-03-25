@@ -21,11 +21,12 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
+import me.neoblade298.neorogue.player.inventory.ShiftClickableInventory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-public class ShrineUpgradeInventory extends CoreInventory {
+public class ShrineUpgradeInventory extends CoreInventory implements ShiftClickableInventory {
 	private ShrineInstance inst;
 	private PlayerSessionData data;
 	
@@ -49,7 +50,8 @@ public class ShrineUpgradeInventory extends CoreInventory {
 			PlayerSessionInventory pinv = (PlayerSessionInventory) InventoryListener.getLowerInventory(p);
 			if (e.isShiftClick()) {
 				if (e.getCurrentItem() == null) return;
-				if (!pinv.handleShiftClickIn(inv.getItem(0))) return;
+				if (!pinv.canShiftClickIn(inv.getItem(0))) return;
+				pinv.handleShiftClickIn(inv.getItem(0));
 				p.playSound(p, Sound.ITEM_ARMOR_EQUIP_DIAMOND, 1F, 1F);
 				e.setCancelled(true);
 				inv.setItem(0, null);
@@ -117,10 +119,12 @@ public class ShrineUpgradeInventory extends CoreInventory {
 		e.setCancelled(true);
 	}
 	
-	public boolean canShiftClickIn() {
+	@Override
+	public boolean canShiftClickIn(ItemStack item) {
 		return inv.getItem(0) == null;
 	}
-	
+
+	@Override
 	public void handleShiftClickIn(ItemStack item) {
 		inv.setItem(0, item);
 		updateOutput();

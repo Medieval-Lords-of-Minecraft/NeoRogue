@@ -6,7 +6,6 @@ import java.sql.Statement;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -22,6 +21,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
@@ -162,14 +162,11 @@ public class SessionManager implements Listener {
 		UUID uuid = p.getUniqueId();
 		if (!sessions.containsKey(uuid)) return;
 		Session s = sessions.get(uuid);
-		Set<Integer> slots = e.getRawSlots();
-		if (e.getView().getTopInventory().getType() == InventoryType.CRAFTING && slots.contains(0) || slots.contains(1) || slots.contains(2) || slots.contains(3)) {
-			e.setCancelled(true);
-			return;
-		}
-		if (s.getInstance() instanceof EditInventoryInstance && !InventoryListener.hasOpenCoreInventory(p)
+		e.setCancelled(true);
+		if (InventoryListener.hasOpenCoreInventory(p)) return;
+		if (s.getInstance() instanceof EditInventoryInstance
 				&& e.getView().getTopInventory().getType() == InventoryType.CRAFTING) {
-			new PlayerSessionInventory(s.getData(uuid)).handleInventoryDrag(e);; // Register core player inventory when inv is opened
+			new PlayerSessionInventory(s.getData(uuid)).handleInventoryDrag(e); // Register core player inventory when inv is opened
 		}
 		else if (s.getInstance() instanceof FightInstance) {
 			e.setCancelled(true);
@@ -187,7 +184,8 @@ public class SessionManager implements Listener {
 			e.setCancelled(true);
 			return;
 		}
-		if (s.getInstance() instanceof EditInventoryInstance && !InventoryListener.hasOpenCoreInventory(p)
+		if (InventoryListener.hasOpenCoreInventory(p)) return;
+		if (s.getInstance() instanceof EditInventoryInstance
 				&& e.getView().getTopInventory().getType() == InventoryType.CRAFTING) {
 			new PlayerSessionInventory(s.getData(uuid)).handleInventoryClick(e);
 		}
@@ -339,6 +337,11 @@ public class SessionManager implements Listener {
 	}
 	
 	@EventHandler
+	public void onPotion(EntityPotionEffectEvent e) {
+		FightInstance.handlePotionEffect(e);
+	}
+	
+	@EventHandler
 	public void onConsume(PlayerItemConsumeEvent e) {
 		Player p = e.getPlayer();
 		UUID uuid = p.getUniqueId();
@@ -426,7 +429,10 @@ public class SessionManager implements Listener {
 			if (e.getSpawnReason() == SpawnReason.SUMMON) {
 				if (fd.getInstance() == null) return;
 				MythicMob mythicMob = e.getMobType();
-				FightInstance.scaleMob(fd.getInstance().getSession(), Mob.get(mythicMob.getInternalName()), mythicMob, e.getMob());
+				Mob mob = Mob.get(mythicMob.getInternalName());
+				if (mob == null) return;
+				FightInstance.scaleMob(fd.getInstance().getSession(), mob, mythicMob, e.getMob());
+				fd.getInstance().addSpawnCounter(mob.getValue());
 			}
 		}
 	}

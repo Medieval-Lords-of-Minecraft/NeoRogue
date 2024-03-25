@@ -26,19 +26,20 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class BreakTheLine extends Equipment {
 	private static final String ID = "breakTheLine";
-	private int shields, damage = 50;
+	private int conc, damage = 220;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION_LARGE).count(15).spread(3, 0);
 	private static final TargetProperties tp = TargetProperties.radius(4, true, TargetType.ENEMY);
 	
 	public BreakTheLine(boolean isUpgraded) {
 		super(ID, "Break the Line", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 40, 15, tp.range));
-		shields = isUpgraded ? 6 : 4;
+		conc = isUpgraded ? 12 : 8;
 	}
 	
 	public static Equipment get() {
@@ -57,8 +58,8 @@ public class BreakTheLine extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.TNT,
-				"On cast, leap in the air and slam down. All nearby enemies will take " + GlossaryTag.BLUNT.tag(this, damage, false) + ", get knocked back, and" +
-				" given slowness <white>1</white> for <white>3</white> seconds. You gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " for every enemy affected.");
+				"On cast, leap in the air and slam down. All nearby enemies will take " + GlossaryTag.EARTHEN.tag(this, damage, false) + ", get knocked back," +
+				" given slowness <white>1</white> for <white>3</white> seconds, and get " + GlossaryTag.CONCUSSED.tag(this, conc, true) + ".");
 	}
 	
 	private class BreakTheLineInstance extends EquipmentInstance {
@@ -66,7 +67,6 @@ public class BreakTheLine extends Equipment {
 		public BreakTheLineInstance(Player p, Equipment eq, int slot, EquipSlot es) {
 			super(p, eq, slot, es);
 			action = (pdata, inputs) -> {
-				pc.play(p, p);
 				Sounds.jump.play(p, p);
 				p.setVelocity(p.getVelocity().add(new Vector(0, 1, 0)));
 				inAir = true;
@@ -85,9 +85,10 @@ public class BreakTheLine extends Equipment {
 						for (LivingEntity ent : targets) {
 							FightInstance.knockback(p, ent, 0.9);
 							ent.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 60, 0));
-							FightInstance.dealDamage(new DamageMeta(pdata, damage, DamageType.BLUNT), ent);
+							FightInstance.dealDamage(new DamageMeta(pdata, damage, DamageType.EARTHEN), ent);
+							FightInstance.applyStatus(ent, StatusType.CONCUSSED, p, conc, -1);
 						}
-						pdata.addPermanentShield(p.getUniqueId(), targets.size() * shields);
+
 					}
 				}.runTaskLater(NeoRogue.inst(), 15L));
 				

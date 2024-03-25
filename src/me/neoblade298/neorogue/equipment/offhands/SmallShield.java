@@ -56,9 +56,9 @@ public class SmallShield extends Equipment {
 		});
 		
 		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, (pdata, inputs) -> {
-			if (p.getHandRaised() != EquipmentSlot.OFF_HAND) return TriggerResult.keep();
+			if (p.getHandRaised() != EquipmentSlot.OFF_HAND || !p.isHandRaised()) return TriggerResult.keep();
 			ReceivedDamageEvent ev = (ReceivedDamageEvent) inputs;
-			ev.getMeta().addBuff(BuffType.GENERAL, new Buff(p.getUniqueId(), reduction, 0), BuffOrigin.SHIELD, false);
+			ev.getMeta().addBuff(BuffType.GENERAL, new Buff(pdata, reduction, 0), BuffOrigin.SHIELD, false);
 			if (ev.getMeta().containsType(BuffType.GENERAL)) p.playSound(p, Sound.ITEM_SHIELD_BLOCK, 1F, 1F);
 			return TriggerResult.keep();
 		});
@@ -66,7 +66,7 @@ public class SmallShield extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.SHIELD, "When raised, creates a " + GlossaryTag.BARRIER.tag(this) + " of size <white>3x2</white>."
-				+ " Reduce all damage by <yellow>" + reduction + "</yellow>.");
+		item = createItem(Material.SHIELD, "When raised, creates a " + GlossaryTag.BARRIER.tag(this) + " of size <white>3x2</white>"
+				+ " and reduce all damage by <yellow>" + reduction + "</yellow>.");
 	}
 }

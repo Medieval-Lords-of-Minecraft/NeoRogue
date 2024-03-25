@@ -25,7 +25,7 @@ public class Discipline extends Equipment {
 	
 	public Discipline(boolean isUpgraded) {
 		super(ID, "Discipline", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 15, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 25, 0));
 		pc.count(50).spread(0.5, 0.5).dustOptions(new DustOptions(Color.RED, 1F));
 		staminaGain = isUpgraded ? 15 : 10;
 	}
@@ -48,7 +48,7 @@ public class Discipline extends Equipment {
 			pc.play(p, p);
 			pdata.addMaxStamina(staminaGain);
 			pdata.addStamina(stamina);
-			data.addBuff(p.getUniqueId(), false, false, BuffType.GENERAL, 7);
+			data.addBuff(data, false, false, BuffType.GENERAL, 7);
 			return TriggerResult.keep();
 		}));
 	}

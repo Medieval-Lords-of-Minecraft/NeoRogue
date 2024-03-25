@@ -1,7 +1,8 @@
 package me.neoblade298.neorogue.session.fight;
 
+import java.util.Collections;
 import java.util.LinkedList;
-import java.util.Queue;
+
 import org.bukkit.attribute.Attributable;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
@@ -9,7 +10,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class ShieldHolder {
-	private Queue<Shield> shields = new LinkedList<Shield>();
+	private LinkedList<Shield> shields = new LinkedList<Shield>();
 	private double max;
 	private double amount;
 	private FightData data;
@@ -25,7 +26,9 @@ public class ShieldHolder {
 	}
 	
 	public void addShield(Shield shield) {
+		shield.initialize(data);
 		shields.add(shield);
+		Collections.sort(shields);
 		if (amount <= 0) {
 			max = shield.getTotal();
 			amount = shield.getTotal();
@@ -38,17 +41,14 @@ public class ShieldHolder {
 			amount += shield.getTotal();
 		}
 		update();
-		if (data instanceof PlayerFightData) {
-			((PlayerFightData) data).updateActionBar();
-		}
 	}
 	
 	public double useShields(double damage) {
 		while (!shields.isEmpty() && damage > 0) {
-			Shield curr = shields.peek();
+			Shield curr = shields.getFirst();
 			damage = curr.useShield(damage);
 			if (!curr.isUsable()) {
-				shields.poll();
+				shields.pollFirst();
 			}
 		}
 		return damage;
@@ -74,6 +74,9 @@ public class ShieldHolder {
 			}
 		}
 		data.getEntity().setAbsorptionAmount(absorb);
+		if (data instanceof PlayerFightData) {
+			((PlayerFightData) data).updateActionBar();
+		}
 	}
 	
 	public double getMax() {

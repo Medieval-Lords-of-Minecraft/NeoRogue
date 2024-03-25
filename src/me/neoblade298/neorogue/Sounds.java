@@ -22,5 +22,7 @@ public class Sounds {
 			flap = new SoundContainer(Sound.ENTITY_ENDER_DRAGON_FLAP),
 			threw = new SoundContainer(Sound.ENTITY_PLAYER_ATTACK_STRONG),
 			turnPage = new SoundContainer(Sound.ITEM_BOOK_PAGE_TURN),
-			enchant = new SoundContainer(Sound.BLOCK_ENCHANTMENT_TABLE_USE);
+			enchant = new SoundContainer(Sound.BLOCK_ENCHANTMENT_TABLE_USE),
+			firework = new SoundContainer(Sound.ENTITY_FIREWORK_ROCKET_BLAST),
+			teleport = new SoundContainer(Sound.ENTITY_ENDERMAN_TELEPORT);
 }

@@ -1,7 +1,6 @@
 package me.neoblade298.neorogue.session.fight.status;
 
 import java.util.Comparator;
-import java.util.UUID;
 
 import org.bukkit.Bukkit;
 
@@ -17,7 +16,7 @@ public abstract class Status {
 	protected TickAction action;
 	protected FightData data;
 	protected StatusSliceHolder slices = new StatusSliceHolder();
-	protected int seconds;
+	protected int ticks;
 	
 	public static final Comparator<Status> comp = new Comparator<Status>() {
 		@Override
@@ -34,9 +33,9 @@ public abstract class Status {
 	}
 	
 	// Setting stacks or status to 0 means they will be untouched
-	public abstract void apply(UUID applier, int stacks, int seconds);
+	public abstract void apply(FightData applier, int stacks, int seconds);
 	
-	public static Status createByType(StatusType id, UUID applier, FightData target) {
+	public static Status createByType(StatusType id, FightData target) {
 		switch (id) {
 		case POISON: return new PoisonStatus(target);
 		case BLEED: return new BleedStatus(target);
@@ -51,12 +50,16 @@ public abstract class Status {
 		case BERSERK: return new BasicStatus(id.name(), target);
 		case STRENGTH: return new StrengthStatus(target);
 		case INTELLECT: return new IntellectStatus(target);
+		case PROTECT: return new ProtectStatus(target);
+		case SHELL: return new ShellStatus(target);
+		case INVISIBLE: return new InvisibleStatus(target);
+		case EVADE: return new BasicStatus(id.name(), target);
 		}
 		Bukkit.getLogger().warning("[NeoRogue] Failed to create status type " + id);
 		return new BasicStatus(id.name(), target);
 	}
 	
-	public static Status createByGenericType(GenericStatusType type, String id, UUID applier, FightData target) {
+	public static Status createByGenericType(GenericStatusType type, String id, FightData target) {
 		switch (type) {
 		case DECREMENT_STACK: return new DecrementStackStatus(id, target);
 		case BASIC: return new BasicStatus(id, target);
@@ -65,17 +68,13 @@ public abstract class Status {
 		}
 	}
 	
-	public String getBoardDisplay() {
+	public String getDisplay() {
 		try {
 			return StatusType.valueOf(id).boardLine + "§7: §f" + stacks;
 		}
 		catch (IllegalArgumentException ex) {
 			return "§f" + id + "§7: §f" + stacks;
 		}
-	}
-	
-	public String getHologramLine() {
-		return "&e" + id + "&f: " + stacks + (seconds > 0 ? ", " + seconds + "s" : "");
 	}
 	
 	public void cleanup() {
@@ -104,10 +103,14 @@ public abstract class Status {
 		INSANITY("<dark_purple>Insanity</dark_purple>", "&5Insanity"),
 		SANCTIFIED("<white>Sanctified</white>", "&fSanctified"),
 		THORNS("<gold>Thorns</gold>", "&6Thorns"),
-		REFLECT("<purple>Reflect</purple>", "&dReflect"),
+		REFLECT("<light_purple>Reflect</light_purple>", "&dReflect"),
 		BERSERK("<dark_red>Berserk</dark_red>", "&4Berserk"),
 		STRENGTH("<red>Strength</red>", "&cStrength"),
-		INTELLECT("<blue>Intellect</blue>", "&9Intellect");
+		INTELLECT("<blue>Intellect</blue>", "&9Intellect"),
+		PROTECT("<green>Protect</green>", "&aProtect"),
+		SHELL("<aqua>Shell</aqua>", "&3Shell"),
+		INVISIBLE("<dark_purple>Invisible</dark_purple>", "&5Invisible"),
+		EVADE("<aqua>Evade</aqua>", "&3Evade");
 		public String tag;
 		public Component ctag;
 		public String boardLine;

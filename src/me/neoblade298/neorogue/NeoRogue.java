@@ -21,15 +21,17 @@ import me.neoblade298.neocore.bukkit.commands.SubcommandManager;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
 import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.area.AreaType;
+import me.neoblade298.neorogue.commands.CmdAdminBoss;
+import me.neoblade298.neorogue.commands.CmdAdminChance;
+import me.neoblade298.neorogue.commands.CmdAdminCoins;
 import me.neoblade298.neorogue.commands.CmdAdminDebug;
+import me.neoblade298.neorogue.commands.CmdAdminEquipment;
+import me.neoblade298.neorogue.commands.CmdAdminMap;
+import me.neoblade298.neorogue.commands.CmdAdminMiniboss;
+import me.neoblade298.neorogue.commands.CmdAdminPiece;
+import me.neoblade298.neorogue.commands.CmdAdminPieceSettings;
 import me.neoblade298.neorogue.commands.CmdAdminReload;
-import me.neoblade298.neorogue.commands.CmdAdminTestBoss;
-import me.neoblade298.neorogue.commands.CmdAdminTestChance;
-import me.neoblade298.neorogue.commands.CmdAdminTestEquipment;
-import me.neoblade298.neorogue.commands.CmdAdminTestMap;
-import me.neoblade298.neorogue.commands.CmdAdminTestMiniboss;
-import me.neoblade298.neorogue.commands.CmdAdminTestPiece;
-import me.neoblade298.neorogue.commands.CmdAdminTestPieceSettings;
+import me.neoblade298.neorogue.commands.CmdAdminTrash;
 import me.neoblade298.neorogue.commands.CmdGlossary;
 import me.neoblade298.neorogue.commands.CmdInfo;
 import me.neoblade298.neorogue.commands.CmdInvite;
@@ -43,9 +45,9 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.player.PlayerManager;
+import me.neoblade298.neorogue.session.NodeSelectInstance;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
-import me.neoblade298.neorogue.session.ShrineInstance;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
 import me.neoblade298.neorogue.session.fight.Mob;
 import me.neoblade298.neorogue.session.fight.mythicbukkit.MythicLoader;
@@ -114,13 +116,15 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdAdminReload("reload", "Reloads everything", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminReload("reloadmythic", "Reloads mythicmobs safely", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminDebug("debug", "Testing", null, SubcommandRunner.BOTH));
-		mngr.register(new CmdAdminTestPiece("testpiece", "Pastes a map piece at 0,0 for ease of setting up spawners with coords", null, SubcommandRunner.PLAYER_ONLY));
-		mngr.register(new CmdAdminTestPieceSettings("testpiecesettings", "Pastes map piece to show how it looks rotated and flipped", null, SubcommandRunner.PLAYER_ONLY));
-		mngr.register(new CmdAdminTestMap("testmap", "Generates and pastes a map", null, SubcommandRunner.PLAYER_ONLY));
-		mngr.register(new CmdAdminTestChance("testchance", "Tests a chance event", null, SubcommandRunner.PLAYER_ONLY));
-		mngr.register(new CmdAdminTestMiniboss("testminiboss", "Tests a miniboss fight", null, SubcommandRunner.PLAYER_ONLY));
-		mngr.register(new CmdAdminTestEquipment("testequip", "Gives the player an equipment", null, SubcommandRunner.PLAYER_ONLY));
-		mngr.register(new CmdAdminTestBoss("testboss", "Tests a boss fight", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdAdminPiece("piece", "Pastes a map piece at 0,0 for ease of setting up spawners with coords", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdAdminPieceSettings("piecesettings", "Pastes map piece to show how it looks rotated and flipped", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdAdminMap("map", "Generates and pastes a map", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdAdminChance("chance", "Tests a chance event", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdAdminMiniboss("miniboss", "Tests a miniboss fight", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdAdminEquipment("equip", "Gives the player an equipment", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdAdminCoins("coins", "Gives the player coins", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdAdminTrash("trash", "Opens up an admin trash inventory for the player", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdAdminBoss("boss", "Tests a boss fight", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.registerCommandList("");
 	}
 	
@@ -136,16 +140,18 @@ public class NeoRogue extends JavaPlugin {
 		
 		Session s = SessionManager.createSession(p, "test", 1);
 		s.generateArea(AreaType.LOW_DISTRICT);
-		s.addPlayer(p.getUniqueId(), EquipmentClass.WARRIOR);
+		s.addPlayer(p.getUniqueId(), EquipmentClass.THIEF);
 		SessionManager.addToSession(p.getUniqueId(), s);
 		Player alt = Bukkit.getPlayer("SuaveGentleman");
 		if (alt != null) {
-			s.addPlayer(alt.getUniqueId(), EquipmentClass.WARRIOR);
+			s.addPlayer(alt.getUniqueId(), EquipmentClass.THIEF);
 			SessionManager.addToSession(alt.getUniqueId(), s);
 			alt.setMaximumNoDamageTicks(0);
 		}
+		s.getParty().get(p.getUniqueId()).addManaRegen(10);
+		s.getParty().get(p.getUniqueId()).addStaminaRegen(10);
 		s.setNode(s.getArea().getNodes()[0][2]);
-		s.setInstance(new ShrineInstance(s));
+		s.setInstance(new NodeSelectInstance(s));
 		// s.setInstance(new ChanceInstance());
 
 		//Map map = Map.generate(AreaType.LOW_DISTRICT, 8);

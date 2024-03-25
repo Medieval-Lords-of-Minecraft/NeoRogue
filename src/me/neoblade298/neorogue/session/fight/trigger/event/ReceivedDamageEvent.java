@@ -1,17 +1,13 @@
 package me.neoblade298.neorogue.session.fight.trigger.event;
 
-import org.bukkit.entity.LivingEntity;
-
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.FightData;
 
 public class ReceivedDamageEvent {
-	private LivingEntity damager;
+	private FightData damager;
 	private DamageMeta meta;
-	public LivingEntity getDamager() {
+	public FightData getDamager() {
 		return damager;
-	}
-	public void setDamager(LivingEntity damager) {
-		this.damager = damager;
 	}
 	public DamageMeta getMeta() {
 		return meta;
@@ -19,7 +15,7 @@ public class ReceivedDamageEvent {
 	public void setMeta(DamageMeta meta) {
 		this.meta = meta;
 	}
-	public ReceivedDamageEvent(LivingEntity damager, DamageMeta meta) {
+	public ReceivedDamageEvent(FightData damager, DamageMeta meta) {
 		super();
 		this.damager = damager;
 		this.meta = meta;

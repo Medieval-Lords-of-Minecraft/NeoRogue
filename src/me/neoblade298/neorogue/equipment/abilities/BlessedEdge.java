@@ -30,13 +30,12 @@ public class BlessedEdge extends Equipment {
 			hitSound = new SoundContainer(Sound.BLOCK_ANVIL_LAND);
 	
 	public BlessedEdge(boolean isUpgraded) {
-		super(ID, "Blessed Edge", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
+		super(ID, "Blessed Edge", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 25, 5, 0));
-		damage = 125;
+		damage = 70;
 		sanct = isUpgraded ? 9 : 6;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		hit.count(50).spread(0.5, 0.5);
-		addTags(GlossaryTag.SANCTIFIED, GlossaryTag.SLASHING);
 	}
 	
 	public static Equipment get() {
@@ -51,7 +50,7 @@ public class BlessedEdge extends Equipment {
 			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in) -> {
 				BasicAttackEvent ev = (BasicAttackEvent) in;
 				LivingEntity target = ev.getTarget();
-				FightInstance.getFightData(target.getUniqueId()).applyStatus(StatusType.SANCTIFIED, p.getUniqueId(), sanct, -1);
+				FightInstance.getFightData(target.getUniqueId()).applyStatus(StatusType.SANCTIFIED, data, sanct, -1);
 				FightInstance.dealDamage(data, DamageType.SLASHING, damage, target);
 				hit.play(p, target.getLocation());
 				hitSound.play(p, target.getLocation());

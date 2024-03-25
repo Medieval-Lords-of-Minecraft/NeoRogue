@@ -5,15 +5,20 @@ import java.util.List;
 public class MapShape extends Rotatable {
 	private boolean[][] shape;
 	private int xlen, zlen;
+	private int chunkCount;
 	
 	public MapShape(List<String> lines) {
 		xlen = lines.get(0).length() - 1;
 		zlen = lines.size() - 1;
+		chunkCount = 0;
 		this.shape = new boolean[xlen + 1][zlen + 1];
 		for (int z = 0; z <= zlen; z++) {
 			String line = lines.get(lines.size() - z - 1);
 			for (int x = 0; x <= xlen; x++) {
-				shape[x][z] = line.charAt(x) == 'X';
+				if (line.charAt(x) == 'X') {
+					shape[x][z] = true;
+					chunkCount++;
+				}
 			}
 		}
 	}
@@ -22,8 +27,16 @@ public class MapShape extends Rotatable {
 		this.shape = shape;
 		xlen = shape.length - 1;
 		zlen = shape[0].length - 1;
+		
+		for (int x = 0; x <= xlen; x++) {
+			for (int z = 0; z <= zlen; z++) {
+				if (shape[x][z])
+					chunkCount++;
+			}
+		}
 	}
 	
+	@Override
 	public MapShape clone() {
 		return new MapShape(this.shape);
 	}
@@ -39,7 +52,7 @@ public class MapShape extends Rotatable {
 		int newX = swapAxes ? (reverseX ? zp : z) : (reverseX ? xp : x);
 		int newZ = swapAxes ? (reverseZ ? xp : x) : (reverseZ ? zp : z);
 		
-		return new int[] {newX, newZ};
+		return new int[] { newX, newZ };
 	}
 	
 	@Override
@@ -62,33 +75,34 @@ public class MapShape extends Rotatable {
 		
 		swapAxes = numRotations % 2 == 1;
 		switch (numRotations) {
-		case 0: reverseX = false;
-		reverseZ = false;
-		break;
-		case 1: reverseX = true;
-		reverseZ = false;
-		break;
-		case 2: reverseX = true;
-		reverseZ = true;
-		break;
-		case 3: reverseX = false;
-		reverseZ = true;
-		break;
+		case 0:
+			reverseX = false;
+			reverseZ = false;
+			break;
+		case 1:
+			reverseX = true;
+			reverseZ = false;
+			break;
+		case 2:
+			reverseX = true;
+			reverseZ = true;
+			break;
+		case 3:
+			reverseX = false;
+			reverseZ = true;
+			break;
 		}
 		
 		if (flipZ) {
 			if (numRotations % 2 == 0) {
 				reverseX = !reverseX;
-			}
-			else {
+			} else {
 				reverseZ = !reverseZ;
 			}
-		}
-		else if (flipX) {
+		} else if (flipX) {
 			if (numRotations % 2 == 0) {
 				reverseZ = !reverseZ;
-			}
-			else {
+			} else {
 				reverseX = !reverseX;
 			}
 		}
@@ -98,7 +112,7 @@ public class MapShape extends Rotatable {
 		for (int z = getHeight() - 1; z >= 0; z--) {
 			for (int x = 0; x < getLength(); x++) {
 				System.out.print((get(x, z) ? 'X' : '_'));
-				get(x,z);
+				get(x, z);
 			}
 			System.out.println();
 		}
@@ -118,5 +132,9 @@ public class MapShape extends Rotatable {
 	
 	public int getBaseLength() {
 		return shape.length;
+	}
+
+	public int getChunkCount() {
+		return chunkCount;
 	}
 }

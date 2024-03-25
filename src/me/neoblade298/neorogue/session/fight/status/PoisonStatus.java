@@ -12,8 +12,6 @@ import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 
-import java.util.UUID;
-
 public class PoisonStatus extends DurationStatus {
 	private static String id = "POISON";
 
@@ -22,20 +20,20 @@ public class PoisonStatus extends DurationStatus {
 	}
 
 	@Override
-	public void apply(UUID applier, int stacks, int seconds) {
+	public void apply(FightData applier, int stacks, int ticks) {
 		if (data instanceof PlayerFightData) {
-			data.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.POISON, seconds * 20, 0));
+			data.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.POISON, ticks, 0));
 		}
-		super.apply(applier, stacks, seconds);
+		super.apply(applier, stacks, ticks);
 	}
 	
 	@Override
 	public void onTickAction() {
 		// Owner is arbitrarily first slice of damage
-		FightData owner = FightInstance.getFightData(slices.getSliceOwners().entrySet().iterator().next().getKey());
+		FightData owner = slices.getSliceOwners().entrySet().iterator().next().getKey();
 		DamageMeta meta = new DamageMeta(owner);
 		meta.isSecondary(true);
-		for (Entry<UUID, Integer> ent : slices.getSliceOwners().entrySet()) {
+		for (Entry<FightData, Integer> ent : slices.getSliceOwners().entrySet()) {
 			meta.addDamageSlice(new DamageSlice(ent.getKey(), ent.getValue() * 0.2, DamageType.POISON, true));
 		}
 		FightInstance.dealDamage(meta, data.getEntity());

@@ -22,32 +22,37 @@ public class SpareScroll extends Equipment {
 	public SpareScroll(boolean isUpgraded) {
 		super("spareScroll", "Spare Scroll", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.OFFHAND);
 	}
-
+	
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger Bind, EquipSlot es, int slot) {
 		SpareScrollInstance inst = new SpareScrollInstance();
 		data.addTrigger(id, Trigger.PRE_CAST_USABLE, inst);
 		data.addTrigger(id, Trigger.CAST_USABLE, (pdata, in) -> inst.checkUsed(p, (CastUsableEvent) in));
 	}
-	
+
 	public class SpareScrollInstance implements TriggerAction {
 		private boolean used = false;
 		private String uuid = UUID.randomUUID().toString();
-
+		
 		@Override
 		public TriggerResult trigger(PlayerFightData data, Object inputs) {
 			if (!used) {
 				CastUsableEvent ev = (CastUsableEvent) inputs;
-				Player p = data.getPlayer();
-				ev.addBuff(PropertyType.MANA_COST, p.getUniqueId(), uuid, Integer.MAX_VALUE, false);
-				ev.addBuff(PropertyType.STAMINA_COST, p.getUniqueId(), uuid, Integer.MAX_VALUE, false);
+				if (ev.getInstance().getEffectiveStaminaCost() == 0 && ev.getInstance().getEffectiveManaCost() == 0)
+					return TriggerResult.keep();
+				if (ev.getBuff(PropertyType.STAMINA_COST).apply(ev.getInstance().getStaminaCost()) <= 0)
+					return TriggerResult.keep();
+
+				ev.addBuff(PropertyType.MANA_COST, data, uuid, 1, true);
+				ev.addBuff(PropertyType.STAMINA_COST, data, uuid, 1, true);
 				if (isUpgraded)
-					ev.addBuff(PropertyType.COOLDOWN, p.getUniqueId(), uuid, 0.5, true);
+					ev.addBuff(PropertyType.COOLDOWN, data, uuid, 0.5, true);
+
 				return TriggerResult.keep();
 			}
 			return TriggerResult.remove();
 		}
-		
+
 		private TriggerResult checkUsed(Player p, CastUsableEvent ev) {
 			if (ev.hasId(uuid)) {
 				Sounds.turnPage.play(p, p);
@@ -58,12 +63,13 @@ public class SpareScroll extends Equipment {
 			return TriggerResult.keep();
 		}
 	}
-
+	
 	@Override
 	public void setupItem() {
 		item = createItem(
 				Material.MOJANG_BANNER_PATTERN,
-				isUpgraded ? "The first skill you cast is free." : "The first skill you cast is free and goes on half the cooldown."
+				isUpgraded ? "The first skill you cast is free."
+						: "The first skill you cast is free and goes on half the cooldown."
 		);
 	}
 }

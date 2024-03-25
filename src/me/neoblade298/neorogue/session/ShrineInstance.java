@@ -118,7 +118,7 @@ public class ShrineInstance extends EditInventoryInstance {
 			p.name().color(NamedTextColor.YELLOW)
 			.append(Component.text(" suggests ", NamedTextColor.GRAY))
 			.append(Component.text(suggestion, NamedTextColor.YELLOW))
-			.append(Component.text("!"))
+			.append(Component.text("!", NamedTextColor.GRAY))
 		);
 		return true;
 	}

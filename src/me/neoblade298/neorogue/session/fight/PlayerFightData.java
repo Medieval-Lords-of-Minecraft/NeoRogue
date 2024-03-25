@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 import java.util.TreeSet;
-import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
@@ -16,8 +15,15 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+
 import com.google.common.collect.TreeMultiset;
 
+import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.equipment.ArtifactInstance;
+import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.TickAction.TickResult;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
@@ -29,12 +35,9 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.CastUsableEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.StaminaChangeEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.equipment.*;
-import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
-import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 
 public class PlayerFightData extends FightData {
 	
@@ -82,6 +85,19 @@ public class PlayerFightData extends FightData {
 		this.stamina = sessdata.getStartingStamina();
 		this.staminaRegen = sessdata.getStaminaRegen();
 		this.manaRegen = sessdata.getManaRegen();
+		
+		// Setup inventory
+		PlayerInventory inv = p.getInventory();
+		ItemStack[] contents = inv.getContents();
+
+		for (int i = 0; i < 9; i++) {
+			if (data.getEquipment(EquipSlot.HOTBAR)[i] == null) {
+				contents[i] = null;
+				continue;
+			}
+			contents[i] = data.getEquipment(EquipSlot.HOTBAR)[i].getItem();
+		}
+		inv.setContents(contents);
 
 		// Initialize fight data
 		int i = 0;
@@ -116,17 +132,6 @@ public class PlayerFightData extends FightData {
 		if (offhand != null) {
 			offhand.initialize(p, this, null, EquipSlot.OFFHAND, 0);
 		}
-		
-		// Setup inventory
-		PlayerInventory inv = p.getInventory();
-		inv.clear();
-		ItemStack[] contents = inv.getContents();
-
-		for (i = 0; i < 9; i++) {
-			if (data.getEquipment(EquipSlot.HOTBAR)[i] == null) continue;
-			contents[i] = data.getEquipment(EquipSlot.HOTBAR)[i].getItem();
-		}
-		inv.setContents(contents);
 		
 		if (offhand != null) inv.setItemInOffHand(offhand.getItem());
 		addTickAction(new PlayerUpdateTickAction());
@@ -167,7 +172,7 @@ public class PlayerFightData extends FightData {
 		Iterator<Status> iter = statuses.descendingIterator();
 		while (iter.hasNext() && boardLines.size() < lineSize - players - 1) {
 			Status s = iter.next();
-			boardLines.add(s.getBoardDisplay());
+			boardLines.add(s.getDisplay());
 		}
 		if (!boardLines.isEmpty()) boardLines.add("§8§m-----");
 		
@@ -228,7 +233,7 @@ public class PlayerFightData extends FightData {
 	}
 	
 	@Override
-	protected void applyStatus(Status s, UUID applier, int stacks, int seconds, DamageMeta meta) {
+	protected void applyStatus(Status s, FightData applier, int stacks, int seconds, DamageMeta meta) {
 		if (isDead) return;
 		super.applyStatus(s, applier, stacks, seconds, meta);
 	}
@@ -303,12 +308,12 @@ public class PlayerFightData extends FightData {
 					CastUsableEvent ev = new CastUsableEvent(ei);
 					runActions(data, Trigger.PRE_CAST_USABLE, ev);
 					
-					// Buff mana costs, cannot go below 0
+					// Buff mana costs, cannot go below 0, uses temp mana/stamina cost if it exists first (Escape Plan)
 					Buff b = ev.getBuff(PropertyType.MANA_COST);
-					if (!b.isEmpty()) ei.setTempManaCost(Math.max(0, b.applyNegative(ei.getManaCost())));
+					if (!b.isEmpty() && ei.getEffectiveManaCost() == -1) ei.setTempManaCost(Math.max(0, b.applyNegative(ei.getManaCost())));
 					// Buff stamina costs, cannot go below 0
 					b = ev.getBuff(PropertyType.STAMINA_COST);
-					if (!b.isEmpty()) ei.setTempStaminaCost(Math.max(0, b.applyNegative(ei.getStaminaCost())));
+					if (!b.isEmpty() && ei.getEffectiveStaminaCost() == -1) ei.setTempStaminaCost(Math.max(0, b.applyNegative(ei.getStaminaCost())));
 					// Buff cooldowns, doesn't matter if it goes below 0
 					b = ev.getBuff(PropertyType.COOLDOWN);
 					if (!b.isEmpty()) ei.setTempCooldown(b.applyNegative(ei.getBaseCooldown()));
@@ -403,7 +408,9 @@ public class PlayerFightData extends FightData {
 	}
 	
 	public void addStamina(double amount) {
-		this.stamina += amount;
+		StaminaChangeEvent ev = new StaminaChangeEvent(amount);
+		FightInstance.trigger(p, Trigger.STAMINA_CHANGE, ev);
+		this.stamina += ev.getChange();
 		updateStamina();
 	}
 	
@@ -441,6 +448,8 @@ public class PlayerFightData extends FightData {
 	}
 	
 	public void addMana(double amount) {
+		StaminaChangeEvent ev = new StaminaChangeEvent(amount);
+		FightInstance.trigger(p, Trigger.MANA_CHANGE, ev);
 		this.mana += amount;
 		updateMana();
 	}

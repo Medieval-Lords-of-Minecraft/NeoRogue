@@ -31,7 +31,7 @@ public class RighteousRing extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
 			BasicAttackEvent ev = (BasicAttackEvent) in;
-			FightInstance.getFightData(ev.getTarget().getUniqueId()).applyStatus(StatusType.SANCTIFIED, p.getUniqueId(), sanct, -1);
+			FightInstance.getFightData(ev.getTarget().getUniqueId()).applyStatus(StatusType.SANCTIFIED, data, sanct, -1);
 			return TriggerResult.keep();
 		});
 	}

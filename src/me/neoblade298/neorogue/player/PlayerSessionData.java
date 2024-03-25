@@ -32,6 +32,10 @@ import me.neoblade298.neorogue.equipment.Equipment.DropTableSet;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
+import me.neoblade298.neorogue.equipment.abilities.EmpoweredEdge;
+import me.neoblade298.neorogue.equipment.abilities.ShadowWalk;
+import me.neoblade298.neorogue.equipment.weapons.WoodenDagger;
+import me.neoblade298.neorogue.equipment.weapons.WoodenSword;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.event.SessionAction;
@@ -63,12 +67,12 @@ public class PlayerSessionData {
 			.spread(0.5, 1).speed(0.1).forceVisible(Audience.ALL);
 	public static final int MAX_STORAGE_SIZE = 27, ARMOR_SIZE = 3, ACCESSORY_SIZE = 6;
 	private static final DecimalFormat df = new DecimalFormat("#.##");
-
+	
 	public PlayerSessionData(UUID uuid, Session s, ResultSet rs) throws SQLException {
 		this.uuid = uuid;
 		data = PlayerManager.getPlayerData(uuid);
 		this.s = s;
-
+		
 		this.ec = EquipmentClass.valueOf(rs.getString("playerClass"));
 		this.maxHealth = rs.getDouble("maxHealth");
 		this.maxMana = rs.getDouble("maxMana");
@@ -92,7 +96,7 @@ public class PlayerSessionData {
 		setupArtifacts();
 		updateBoardLines();
 	}
-
+	
 	public PlayerSessionData(UUID uuid, EquipmentClass ec, Session s) {
 		this.uuid = uuid;
 		data = PlayerManager.getPlayerData(uuid);
@@ -105,18 +109,18 @@ public class PlayerSessionData {
 		staminaRegen = 2;
 		health = maxHealth;
 		this.ec = ec;
-		
+
 		// Starting equipment
 		// If you ever use abilities equipped, need to initialize it to 1 here
 		switch (this.ec) {
 		case WARRIOR:
-			hotbar[0] = Equipment.get("woodenSword", false);
-			hotbar[1] = Equipment.get("empoweredEdge", false);
+			hotbar[0] = WoodenSword.get();
+			hotbar[1] = EmpoweredEdge.get();
 			abilitiesEquipped = 1;
 			break;
 		case THIEF:
-			hotbar[0] = Equipment.get("woodenSword", false);
-			hotbar[1] = Equipment.get("empoweredEdge", false);
+			hotbar[0] = WoodenDagger.get();
+			hotbar[1] = ShadowWalk.get();
 			abilitiesEquipped = 1;
 			break;
 		case ARCHER:
@@ -131,27 +135,27 @@ public class PlayerSessionData {
 		default:
 			break;
 		}
-
+		
 		for (int i = 2; i < accessories.length; i++) {
 			accessories[i] = Equipment.get("curseOfInexperience", false);
 		}
 		for (int i = 1; i < armors.length; i++) {
 			armors[i] = Equipment.get("curseOfBurden", false);
 		}
-
+		
 		setupInventory();
 		setupArtifacts();
 		updateBoardLines();
-
+		
 		data.getPlayer().setHealthScaled(true);
 		data.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHealth);
 		data.initialize(s, this);
 	}
-
+	
 	public UUID getUniqueId() {
 		return uuid;
 	}
-
+	
 	private void setupArtifacts() {
 		personalArtifacts = Equipment.copyArtifactsDropSet(ec, EquipmentClass.CLASSLESS);
 		for (ArtifactInstance ai : artifacts.values()) {
@@ -161,7 +165,7 @@ public class PlayerSessionData {
 			personalArtifacts.remove(ai.getArtifact());
 		}
 	}
-	
+
 	public void setupInventory() {
 		Player p = data.getPlayer();
 		p.getInventory().clear();
@@ -169,15 +173,15 @@ public class PlayerSessionData {
 		updateCoinsBar();
 		getPlayer().setSaturation(20);
 	}
-
+	
 	public Player getPlayer() {
 		return data.getPlayer();
 	}
-
+	
 	public Equipment[] getEquipment(EquipSlot es) {
 		return getArrayFromEquipSlot(es);
 	}
-
+	
 	public void upgradeEquipment(EquipSlot es, int slot) {
 		if (es != EquipSlot.STORAGE) {
 			Equipment[] slots = getArrayFromEquipSlot(es);
@@ -190,7 +194,7 @@ public class PlayerSessionData {
 			inv.setItem(slot, Equipment.get(nbti.getString("equipId"), true).getItem());
 		}
 	}
-
+	
 	public void setEquipment(EquipSlot es, int slot, Equipment eq) {
 		Equipment[] slots = getArrayFromEquipSlot(es);
 		if (slots[slot] != null)
@@ -199,7 +203,7 @@ public class PlayerSessionData {
 		if (eq.getType() == EquipmentType.ABILITY)
 			abilitiesEquipped++;
 	}
-
+	
 	public void removeEquipment(EquipSlot es, int slot) {
 		Equipment[] slots = getArrayFromEquipSlot(es);
 		Equipment eq = slots[slot];
@@ -207,7 +211,7 @@ public class PlayerSessionData {
 		if (eq.getType() == EquipmentType.ABILITY)
 			abilitiesEquipped--;
 	}
-
+	
 	private Equipment[] getArrayFromEquipSlot(EquipSlot es) {
 		Equipment[] slots = null;
 		switch (es) {
@@ -232,95 +236,95 @@ public class PlayerSessionData {
 		}
 		return slots;
 	}
-
+	
 	public Equipment[] getStorage() {
 		return storage;
 	}
-
+	
 	public void setStorage(Equipment[] storage) {
 		this.storage = storage;
 	}
-	
+
 	public void setOffhand(Equipment offhand) {
 		this.offhand[0] = offhand;
 	}
-
+	
 	public Equipment[] getOtherBinds() {
 		return otherBinds;
 	}
-
+	
 	public Equipment getOtherBind(KeyBind bind) {
 		return otherBinds[bind.getDataSlot()];
 	}
-
+	
 	public boolean canEquipAbility() {
 		return abilitiesEquipped < maxAbilities;
 	}
-
+	
 	public int getMaxAbilities() {
 		return maxAbilities;
 	}
-
+	
 	public void addAbilityEquipped(int num) {
 		abilitiesEquipped += num;
 	}
-
+	
 	public PlayerData getData() {
 		return data;
 	}
-
+	
 	public double getMaxHealth() {
 		return maxHealth;
 	}
-
+	
 	public double getMaxMana() {
 		return maxMana;
 	}
-
+	
 	public double getMaxStamina() {
 		return maxStamina;
 	}
-
+	
 	public TreeMap<String, ArtifactInstance> getArtifacts() {
 		return artifacts;
 	}
-
+	
 	public int getMaxStorage() {
 		return maxStorage;
 	}
-
+	
 	public double getManaRegen() {
 		return manaRegen;
 	}
-	
+
 	public void addManaRegen(double amount) {
 		this.manaRegen += amount;
 	}
-
+	
 	public double getStaminaRegen() {
 		return staminaRegen;
 	}
-	
+
 	public void addStaminaRegen(double amount) {
 		this.staminaRegen += amount;
 	}
-
+	
 	public void addTrigger(String id, SessionTrigger trigger, SessionAction action) {
 		ArrayList<SessionAction> actions = triggers.containsKey(trigger) ? triggers.get(trigger)
 				: new ArrayList<SessionAction>();
 		actions.add(action);
 		triggers.putIfAbsent(trigger, actions);
 	}
-	
+
 	public void trigger(SessionTrigger trigger, Object inputs) {
 		if (!triggers.containsKey(trigger))
 			return;
-		
+
 		for (SessionAction action : triggers.get(trigger)) {
 			action.trigger(this, inputs);
 		}
 	}
-
+	
 	private void giveArtifact(Artifact artifact) {
 		ArtifactInstance inst;
 		if (artifacts.containsKey(artifact.getId())) {
@@ -335,20 +339,19 @@ public class PlayerSessionData {
 		inst.getArtifact().onAcquire(this);
 		inst.getArtifact().onInitializeSession(this);
 	}
-
+	
 	public void giveEquipmentSilent(Equipment eq) {
 		giveEquipment(eq, null, null);
 	}
-	
+
 	// If components null, no broadcast
 	public void giveEquipment(Equipment eq, Component toSelf, Component toOthers) {
 		Player p = getPlayer();
 		if (toSelf != null) {
-			Sounds.success.play(p, p);
 			s.broadcastOthers(toOthers.append(eq.getHoverable()).append(Component.text(".")), p);
 			toSelf = toSelf.append(eq.getHoverable());
 		}
-		
+
 		if (eq instanceof Artifact) {
 			if (toSelf != null) {
 				Util.msg(p, toSelf.append(Component.text(".")));
@@ -375,7 +378,7 @@ public class PlayerSessionData {
 					return;
 				}
 			}
-			
+
 			success = false;
 			for (int i = 0; i < storage.length; i++) {
 				if (storage[i] == null) {
@@ -386,20 +389,20 @@ public class PlayerSessionData {
 					return;
 				}
 			}
-
+			
 			if (!success) {
 				Util.displayError(p, "Your storage is full!");
 			}
 		}
 	}
-
+	
 	public void giveEquipment(Equipment eq) {
 		giveEquipment(
 				eq, SharedUtil.color("You received "),
 				SharedUtil.color("<yellow>" + data.getDisplay() + "</yellow> received ")
 		);
 	}
-
+	
 	public void giveEquipment(ArrayList<? extends Equipment> eqs) {
 		for (Equipment eq : eqs) {
 			giveEquipment(
@@ -408,7 +411,7 @@ public class PlayerSessionData {
 			);
 		}
 	}
-
+	
 	private boolean tryEquip(EquipSlot es, Equipment eq) {
 		Equipment[] arr = getArrayFromEquipSlot(es);
 		for (int i = 0; i < arr.length; i++) {
@@ -419,12 +422,12 @@ public class PlayerSessionData {
 		}
 		return false;
 	}
-	
+
 	public ArrayList<EquipmentMetadata> aggregateEquipment(Predicate<Equipment> filter) {
 		ArrayList<EquipmentMetadata> list = new ArrayList<EquipmentMetadata>();
 		EquipSlot[] es = new EquipSlot[] { EquipSlot.HOTBAR, EquipSlot.ARMOR, EquipSlot.OFFHAND, EquipSlot.ACCESSORY,
 				EquipSlot.STORAGE, EquipSlot.KEYBIND };
-		
+
 		int esIdx = -1;
 		for (Equipment[] arr : allEquips) {
 			esIdx++;
@@ -437,37 +440,37 @@ public class PlayerSessionData {
 					list.add(new EquipmentMetadata(eq, slot, es[esIdx]));
 			}
 		}
-		
+
 		return list;
 	}
-	
+
 	public class EquipmentMetadata {
 		private Equipment eq;
 		private int slot;
 		private EquipSlot es;
-
+		
 		public EquipmentMetadata(Equipment eq, int slot, EquipSlot es) {
 			this.eq = eq;
 			this.slot = slot;
 			this.es = es;
 		}
-
+		
 		public Equipment getEquipment() {
 			return eq;
 		}
-
+		
 		public int getSlot() {
 			return slot;
 		}
-
+		
 		public EquipSlot getEquipSlot() {
 			return es;
 		}
 	}
-	
+
 	public boolean hasUnequippedCurses() {
 		Player p = data.getPlayer();
-		
+
 		for (int i = 0; i < storage.length; i++) {
 			if (storage[i] == null)
 				continue;
@@ -479,7 +482,7 @@ public class PlayerSessionData {
 		}
 		return false;
 	}
-
+	
 	public boolean exceedsStorageLimit() {
 		Player p = data.getPlayer();
 		int size = 0;
@@ -497,11 +500,11 @@ public class PlayerSessionData {
 		}
 		return false;
 	}
-
+	
 	public boolean hasCoins(int amount) {
 		return coins >= amount;
 	}
-
+	
 	public void addCoins(int amount) {
 		coins += amount;
 		String symbol = amount > 0 ? "+" : "";
@@ -509,76 +512,76 @@ public class PlayerSessionData {
 		updateCoinsBar();
 		updateBoardLines();
 	}
-
+	
 	public int getCoins() {
 		return coins;
 	}
-
+	
 	public EquipmentClass getPlayerClass() {
 		return ec;
 	}
-
+	
 	public void increaseAbilityLimit(int amount) {
 		this.maxAbilities += amount;
 	}
-
+	
 	public void addMaxHealth(int amount) {
 		this.maxHealth += amount;
 		this.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHealth);
 	}
-
+	
 	public void addMaxStamina(int amount) {
 		this.maxStamina += amount;
 		updateBoardLines();
 	}
-
+	
 	public void addMaxMana(int amount) {
 		this.maxMana += amount;
 		updateBoardLines();
 	}
-
+	
 	public void addStartingStamina(int amount) {
 		this.startingStamina += amount;
 	}
-
+	
 	public void addStartingMana(int amount) {
 		this.startingMana += amount;
 	}
-
+	
 	public Session getSession() {
 		return s;
 	}
-
+	
 	public double getStartingMana() {
 		return startingMana;
 	}
-
+	
 	public double getStartingStamina() {
 		return startingStamina;
 	}
-
+	
 	public double getHealth() {
 		return health;
 	}
-
+	
 	public void updateHealth() {
 		health = Math.round(Math.min(this.maxHealth, getPlayer().getHealth()));
 	}
-
+	
 	public void revertMaxHealth() {
 		getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(this.maxHealth);
 	}
-
+	
 	public void updateCoinsBar() {
 		Player p = getPlayer();
 		p.setLevel(coins);
 		p.setExp(0);
 	}
-
+	
 	public void syncHealth() {
 		getPlayer().setHealth(this.health);
 	}
-
+	
 	public void setHealth(double health) {
 		if (this.health > health)
 			getPlayer().damage(0.1);
@@ -586,36 +589,37 @@ public class PlayerSessionData {
 		getPlayer().setHealth(this.health);
 		updateBoardLines();
 	}
-
+	
 	public void healPercent(double percent) {
 		Player p = getPlayer();
 		setHealth(this.health + (percent * maxHealth));
 		heal.play(p, p);
 		Sounds.levelup.play(p, p);
 	}
-
+	
 	public void damagePercent(double percent) {
 		setHealth(this.health - (percent * maxHealth));
 	}
-
+	
 	public void setInstanceData(String str) {
 		this.instanceData = str;
 	}
-
+	
 	public String getInstanceData() {
 		return instanceData;
 	}
-
+	
 	public DropTableSet<Artifact> getArtifactDroptable() {
 		return personalArtifacts;
 	}
-
+	
 	public void updateBoardLines() {
 		boardLines = new ArrayList<String>();
-		boardLines.add("§cHP§7: §f" + health);
+		boardLines.add("§cHP§7: §f" + (int) health + "§7 / §f" + (int) maxHealth);
 		boardLines.add("§9MP§7: §f" + maxMana + " §7| §f" + df.format(manaRegen) + "/s");
 		boardLines.add("§aSP§7: §f" + maxStamina + " §7| §f" + df.format(staminaRegen) + "/s");
 		boardLines.add("§eCoins§7: §f" + coins);
+		s.updateSpectatorLines();
 		if (s.getParty().size() <= 1)
 			return;
 		boardLines.add("§8§m-----");
@@ -625,11 +629,11 @@ public class PlayerSessionData {
 			boardLines.add("§e" + psd.getData().getDisplay() + "§7: §f" + Math.round(psd.getHealth()));
 		}
 	}
-
+	
 	public ArrayList<String> getBoardLines() {
 		return boardLines;
 	}
-
+	
 	public void save(Statement stmt) {
 		UUID host = s.getHost();
 		String uuid = data.getPlayer().getUniqueId().toString();
@@ -654,20 +658,20 @@ public class PlayerSessionData {
 			ex.printStackTrace();
 		}
 	}
-
+	
 	public class PlayerSlot {
 		private int slot;
 		private EquipSlot es;
-
+		
 		public PlayerSlot(EquipSlot es, int slot) {
 			this.slot = slot;
 			this.es = es;
 		}
-
+		
 		public int getSlot() {
 			return slot;
 		}
-
+		
 		public EquipSlot getEquipSlot() {
 			return es;
 		}

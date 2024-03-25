@@ -41,7 +41,7 @@ public class SpiritOfTheDragoon extends Equipment {
 		data.addTrigger(id, Trigger.FALL_DAMAGE, (pdata, in) -> {
 			strPart.play(p, p);
 			Sounds.fire.play(p, p);
-			data.applyStatus(StatusType.STRENGTH, p.getUniqueId(), strength, -1);
+			data.applyStatus(StatusType.STRENGTH, data, strength, -1);
 			
 			return TriggerResult.of(false, System.currentTimeMillis() - inst.lastCast < 5000);
 		});

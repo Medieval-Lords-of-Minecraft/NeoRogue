@@ -36,6 +36,7 @@ public enum Trigger {
 	WIN_FIGHT,
 	APPLY_STATUS,
 	RECEIVE_STATUS,
+	RECEIVE_POTION,
 	LAUNCH_PROJECTILE_GROUP,
 	GRANT_SHIELDS,
 	FALL_DAMAGE, // Cancellable
@@ -44,13 +45,10 @@ public enum Trigger {
 	USE_CONSUMABLE,
 	TOGGLE_SPRINT,
 	RECEIVED_DAMAGE, // Cancellable
-	RECEIVED_HEALTH_DAMAGE; // Cancellable, only occurs if the player is due to lose health, TOO LATE to apply buffs
-	
-	private boolean isSlotDependent = this.name().startsWith("LEFT_CLICK") || this.name().startsWith("THROW");
-	
-	public boolean isSlotDependent() {
-		return isSlotDependent;
-	}
+	RECEIVED_HEALTH_DAMAGE, // Cancellable, only occurs if the player is due to lose health, TOO LATE to apply buffs
+	STAMINA_CHANGE,
+	MANA_CHANGE,
+	KILL;
 	
 	public static Trigger getFromHotbarSlot(int hotbar) {
 		switch (hotbar) {

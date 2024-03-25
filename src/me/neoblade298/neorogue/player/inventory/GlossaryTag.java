@@ -59,7 +59,7 @@ public enum GlossaryTag implements GlossaryIcon {
 			"Increases the holder's magic damage by 0.2 per stack. Remove 1 stack every second."),
 	SANCTIFIED(Material.END_ROD, StatusType.SANCTIFIED.tag,
 			"Upon the holder dealing damage, remove 25% of the stacks and " +
-			"deal that much Light damage to the holder while healing that much to the damager. 1 stack is removed every second."),
+			"deal that much Light damage to the holder while healing that much to the damaged. 1 stack is removed every second."),
 	THORNS(Material.DEAD_BUSH, StatusType.THORNS.tag,
 			"Upon the holder receiving physical damage, even if it is absorbed by shields, return 1 thorns damage per stack."),
 	REFLECT(Material.GLASS_PANE, StatusType.REFLECT.tag,
@@ -75,7 +75,15 @@ public enum GlossaryTag implements GlossaryIcon {
 	STRENGTH(Material.IRON_SWORD, StatusType.STRENGTH.tag,
 			"Buffs all physical damage by 1 per stack."),
 	INTELLECT(Material.BLAZE_ROD, StatusType.INTELLECT.tag,
-			"Buffs all magical damage by 1 per stack.");
+			"Buffs all magical damage by 1 per stack."),
+	PROTECT(Material.TURTLE_HELMET, StatusType.PROTECT.tag,
+			"Buffs all physical defense by 1 per stack."),
+	SHELL(Material.PRISMARINE_CRYSTALS, StatusType.SHELL.tag,
+			"Buffs all magical defense by 1 per stack."),
+	INVISIBLE(Material.NETHER_STAR, StatusType.INVISIBLE.tag,
+			"Certain abilities become stronger when this status is applied."),
+	EVADE(Material.PHANTOM_MEMBRANE, StatusType.EVADE.tag,
+			"Nullifies 1 instance of non-status damage.");
 	
 	private ItemStack icon;
 	public String tag;

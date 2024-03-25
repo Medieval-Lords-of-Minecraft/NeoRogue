@@ -1,33 +1,31 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
 
-import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
-import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
-import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.Shield;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Bulwark extends Equipment {
 	private static final String ID = "bulwark";
-	private static final int HEAL_COUNT = 6;
-	private static final ParticleContainer pc = new ParticleContainer(Particle.VILLAGER_HAPPY).count(15).spread(0.5, 0.5).offsetY(2);;
-	private int heal, shield;
+	private int shields, prot, cd;
 	
 	public Bulwark(boolean isUpgraded) {
 		super(ID, "Bulwark", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.none());
-		
-		heal = 8;
-		shield = isUpgraded ? 12 : 8;
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 5, 0));
+		shields = 15;
+		prot = isUpgraded ? 3 : 2;
+		cd = (int) properties.get(PropertyType.COOLDOWN);
 	}
 	
 	public static Equipment get() {
@@ -36,40 +34,41 @@ public class Bulwark extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		BulwarkInstance inst = new BulwarkInstance(p, id);
-		data.addTrigger(id, Trigger.SHIELD_TICK, inst);
+		BulwarkInstance inst = new BulwarkInstance(id, p);
+		data.addTrigger(id, Trigger.RAISE_SHIELD, inst);
 		
 		data.addTrigger(id, Trigger.LOWER_SHIELD, (pdata, in) -> {
-			inst.resetCount();
+			if (inst.s != null) inst.s.remove();
+			return TriggerResult.keep();
+		});
+		
+		data.addTrigger(id, Trigger.SHIELD_TICK, (pdata, in) -> {
+			if (p.getHandRaised() != EquipmentSlot.OFF_HAND || !p.isHandRaised()) return TriggerResult.keep();
+			data.applyStatus(StatusType.PROTECT, data, prot, 60);
+			data.applyStatus(StatusType.SHELL, data, prot, 60);
 			return TriggerResult.keep();
 		});
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.SHIELD,
-				"Passive. Heal for <white>" + heal + "</white> and gain <yellow>" + shield + "</yellow> " +
-						GlossaryTag.SHIELDS.tag(this) + " every " + HEAL_COUNT + " consecutive seconds you keep a shield raised.");
+		item = createItem(Material.NETHER_STAR,
+				"Passive. Raising a shield grants " + GlossaryTag.SHIELDS.tag(this, shields, false) + " until "
+				+ "you lower your shield again. For every second the shield remains raised, grant " + GlossaryTag.PROTECT.tag(this, prot, true) +
+				" and " + GlossaryTag.SHELL.tag(this, prot, true) + " for <white>3</white> seconds.");
 	}
 	
 	private class BulwarkInstance extends PriorityAction {
-		private int count = 0;
-		public BulwarkInstance(Player p, String id) {
+		private Shield s;
+		private long nextUse;
+		public BulwarkInstance(String id, Player p) {
 			super(id);
-			
 			action = (pdata, inputs) -> {
-				if (++count % HEAL_COUNT == 0 && count > 0) return TriggerResult.keep();
-				pc.play(p, p);
-				Sounds.enchant.play(p, p);
-				pdata.addSimpleShield(p.getUniqueId(), shield, 100);
-				FightInstance.giveHeal(p, heal, p);
-				count = 0;
+				if (System.currentTimeMillis() < nextUse) return TriggerResult.keep();
+				s = pdata.addPermanentShield(p.getUniqueId(), shields);
+				nextUse = System.currentTimeMillis() + (cd * 1000);
 				return TriggerResult.keep();
 			};
-		}
-		
-		public void resetCount() {
-			count = 0;
 		}
 	}
 }

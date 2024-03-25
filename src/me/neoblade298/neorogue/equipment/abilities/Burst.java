@@ -5,10 +5,8 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Particle.DustOptions;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
-import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -24,11 +22,11 @@ public class Burst extends Equipment {
 	private static final String ID = "burst";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.REDSTONE);
 	private int stamina, buff;
-	private static final int seconds = 10;
+	private static final int seconds = 15;
 	
 	public Burst(boolean isUpgraded) {
 		super(ID, "Burst", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 15, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 25, 0));
 		pc.count(50).spread(0.5, 0.5).dustOptions(new DustOptions(Color.RED, 1F));
 		buff = isUpgraded ? 30 : 20;
 		stamina = isUpgraded ? 80 : 50;
@@ -41,9 +39,8 @@ public class Burst extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION,
-				"On cast, give yourself <white>" + stamina + "</white> stamina and <yellow>" + buff +
-				"</yellow> " + GlossaryTag.STRENGTH.tag(this) + " damage for <white>" + seconds + "</white> seconds. Afterwards,"
-						+ " <white>" + stamina + "</white> stamina is removed.");
+				"On cast, give yourself <yellow>" + stamina + "</yellow> stamina and <yellow>" + buff +
+				"</yellow> " + GlossaryTag.STRENGTH.tag(this) + " damage for <white>" + seconds + "</white> seconds.");
 	}
 
 	@Override
@@ -52,13 +49,7 @@ public class Burst extends Equipment {
 			Sounds.blazeDeath.play(p, p);
 			pc.play(p, p);
 			pdata.addStamina(stamina);
-			data.applyStatus(StatusType.STRENGTH, p.getUniqueId(), buff, seconds);
-			
-			data.addTask(id, new BukkitRunnable() {
-				public void run() {
-					pdata.addStamina(-stamina);
-				}
-			}.runTaskLater(NeoRogue.inst(), seconds * 20L));
+			data.applyStatus(StatusType.STRENGTH, data, buff, seconds * 20);
 			return TriggerResult.keep();
 		}));
 	}

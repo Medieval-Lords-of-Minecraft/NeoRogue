@@ -45,12 +45,12 @@ public class HastyShield extends Equipment {
 		
 		@Override
 		public TriggerResult trigger(PlayerFightData data, Object inputs) {
-			if (p.getHandRaised() != EquipmentSlot.OFF_HAND) return TriggerResult.keep();
+			if (p.getHandRaised() != EquipmentSlot.OFF_HAND || !p.isHandRaised()) return TriggerResult.keep();
 			long now = System.currentTimeMillis();
 			if (now <= nextUsable) return TriggerResult.keep();
 			
 			ReceivedDamageEvent ev = (ReceivedDamageEvent) inputs;
-			ev.getMeta().addBuff(BuffType.GENERAL, new Buff(p.getUniqueId(), reduction, 0), BuffOrigin.SHIELD, false);
+			ev.getMeta().addBuff(BuffType.GENERAL, new Buff(data, reduction, 0), BuffOrigin.SHIELD, false);
 			nextUsable = now + 5000L; // 5s
 			p.playSound(p, Sound.ITEM_SHIELD_BLOCK, 1F, 1F);
 			data.addMana(amount);

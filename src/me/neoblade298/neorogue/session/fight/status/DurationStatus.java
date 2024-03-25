@@ -1,7 +1,5 @@
 package me.neoblade298.neorogue.session.fight.status;
 
-import java.util.UUID;
-
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.TickAction;
 
@@ -11,18 +9,18 @@ public class DurationStatus extends Status {
 	}
 
 	@Override
-	public void apply(UUID applier, int stacks, int seconds) {
-		this.seconds = seconds > 0 ? Math.max(this.seconds, seconds) : this.seconds + seconds;
+	public void apply(FightData applier, int stacks, int ticks) {
+		this.ticks = ticks > 0 ? Math.max(this.ticks, ticks) : this.ticks + ticks;
 		this.stacks += stacks;
 		
-		if (this.stacks > 0 && this.seconds > 0) {
+		if (this.stacks > 0 && this.ticks > 0) {
 			if (action == null) {
 				action = new DurationTickAction();
 				data.addTickAction(action);
 			}
 		}
 
-		if (this.stacks <= 0 || this.seconds <= 0) {
+		if (this.stacks <= 0 || this.ticks <= 0) {
 			data.removeStatus(id);
 			return;
 		}
@@ -35,10 +33,11 @@ public class DurationStatus extends Status {
 		@Override
 		public TickResult run() {
 			if (action.isCancelled()) return TickResult.REMOVE;
-			if (seconds <= 0) return TickResult.REMOVE; // If seconds was set below 0 with an apply
+			if (ticks <= 0) return TickResult.REMOVE; // If ticks was set below 0 with an apply
 			onRun();
 			
-			if (--seconds <= 0) {
+			ticks = ticks - 20;
+			if (ticks <= 0) {
 				data.removeStatus(id);
 				return TickResult.REMOVE;
 			}

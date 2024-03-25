@@ -35,9 +35,9 @@ public class Fissure extends Equipment {
 	private int damage, concussed;
 	
 	public Fissure(boolean isUpgraded) {
-		super(ID, "Fissure", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
+		super(ID, "Fissure", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 30, isUpgraded ? 11 : 14, 0));
-		damage = isUpgraded ? 140 : 120;
+		damage = isUpgraded ? 220 : 180;
 		concussed = isUpgraded ? 12 : 10;
 	}
 	
@@ -57,8 +57,8 @@ public class Fissure extends Equipment {
 					ParticleUtil.drawLine(p, part, p.getLocation(), end, 0.5);
 					
 					for (LivingEntity ent : TargetHelper.getEntitiesInLine(p, p.getLocation(), end, tp)) {
-						FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.BLUNT), ent);
-						FightInstance.getFightData(ent.getUniqueId()).applyStatus(StatusType.CONCUSSED, p.getUniqueId(), concussed, -1);
+						FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.EARTHEN), ent);
+						FightInstance.getFightData(ent.getUniqueId()).applyStatus(StatusType.CONCUSSED, data, concussed, -1);
 						FightInstance.knockback(ent, new Vector(0, 0.2, 0));
 					}
 				}
@@ -70,7 +70,7 @@ public class Fissure extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.COAL,
-				"On cast, charge for <white>1</white> second, then deal " + GlossaryTag.BLUNT.tag(this, damage, true) + " damage and knock up in a line."
+				"On cast, charge for <white>1</white> second, then deal " + GlossaryTag.EARTHEN.tag(this, damage, true) + " damage and knock up in a line."
 				+ " All enemies damaged are given " + GlossaryTag.CONCUSSED.tag(this, concussed, true) + ".");
 	}
 }

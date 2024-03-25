@@ -55,8 +55,9 @@ public class CharmOfGallus extends Artifact {
 		public TriggerResult trigger(PlayerFightData data, Object inputs) {
 			if (count < 5) {
 				CastUsableEvent ev = (CastUsableEvent) inputs;
-				Player p = data.getPlayer();
-				ev.addBuff(PropertyType.STAMINA_COST, p.getUniqueId(), uuid, stamina, false);
+				if (ev.getInstance().getEffectiveStaminaCost() == 0) return TriggerResult.keep();
+				if (ev.getBuff(PropertyType.STAMINA_COST).apply(ev.getInstance().getStaminaCost()) <= 0) return TriggerResult.keep();
+				ev.addBuff(PropertyType.STAMINA_COST, data, uuid, stamina, false);
 				return TriggerResult.keep();
 			}
 			return TriggerResult.remove();

@@ -27,8 +27,8 @@ public class SpikyShield extends Equipment {
 	public SpikyShield(boolean isUpgraded) {
 		super(ID, "Spiky Shield", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.OFFHAND);
-		reduction = 8;
-		amount = isUpgraded ? 25 : 15;
+		reduction = 10;
+		amount = isUpgraded ? 75 : 50;
 	}
 	
 	public static Equipment get() {
@@ -37,11 +37,11 @@ public class SpikyShield extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.applyStatus(StatusType.THORNS, p.getUniqueId(), amount, -1);
+		data.applyStatus(StatusType.THORNS, data, amount, -1);
 		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, (pdata, inputs) -> {
 			if (!p.isHandRaised()) return TriggerResult.keep();
 			ReceivedDamageEvent ev = (ReceivedDamageEvent) inputs;
-			ev.getMeta().addBuff(BuffType.GENERAL, new Buff(p.getUniqueId(), reduction, 0), BuffOrigin.SHIELD, false);
+			ev.getMeta().addBuff(BuffType.GENERAL, new Buff(data, reduction, 0), BuffOrigin.SHIELD, false);
 			p.playSound(p, Sound.ITEM_SHIELD_BLOCK, 1F, 1F);
 			return TriggerResult.keep();
 		});
@@ -63,8 +63,8 @@ public class SpikyShield extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.SHIELD, "When raised, creates a " + GlossaryTag.BARRIER.tag(this) + " of size <white>3x2</white>."
-				+ " Reduce all damage by <yellow>" + reduction + "</yellow>. "
+		item = createItem(Material.SHIELD, "When raised, creates a " + GlossaryTag.BARRIER.tag(this) + " of size <white>3x2</white>"
+				+ " and reduce all damage by <yellow>" + reduction + "</yellow>. "
 				+ "Also grants <yellow>" + amount + "</yellow> " + GlossaryTag.THORNS.tag(this) + " at the start of combat.");
 	}
 }

@@ -38,7 +38,7 @@ public class Titan extends Equipment {
 			CastUsableEvent ev = (CastUsableEvent) in;
 			EquipmentInstance inst = ev.getInstance();
 			if (inst.getStaminaCost() < CUTOFF) return TriggerResult.keep();
-			ev.addBuff(PropertyType.STAMINA_COST, p.getUniqueId(), id, staminaReduction, false);
+			ev.addBuff(PropertyType.STAMINA_COST, data, id, staminaReduction, false);
 			return TriggerResult.keep();
 		});
 	}

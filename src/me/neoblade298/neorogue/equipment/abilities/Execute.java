@@ -29,7 +29,7 @@ public class Execute extends Equipment {
 		super(ID, "Execute", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 15, 7, 0));
 		damage = isUpgraded ? 120 : 80;
-		strength = isUpgraded ? 12 : 8;
+		strength = isUpgraded ? 5 : 3;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		hit.count(50).spread(0.5, 0.5);
 	}
@@ -57,7 +57,7 @@ public class Execute extends Equipment {
 				hit.play(p, ev.getTarget());
 				if (ev.getTarget().getHealth() <= 0) {
 					Sounds.success.play(p, p);
-					data.applyStatus(StatusType.STRENGTH, p.getUniqueId(), strength, 10);
+					data.applyStatus(StatusType.STRENGTH, data, strength, -1);
 				}
 				
 				return TriggerResult.remove();
@@ -70,6 +70,6 @@ public class Execute extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.SKULL_POTTERY_SHERD,
 				"On cast, your next basic attack while in the air deals <yellow>" + damage + "</yellow> " + GlossaryTag.PIERCING.tag(this) + " damage. If the enemy is"
-						+ " killed by this attack, gain <yellow>" + strength + "</yellow> " + GlossaryTag.STRENGTH.tag(this) + " for <white>10</white> seconds.");
+						+ " killed by this attack, gain <yellow>" + strength + "</yellow> " + GlossaryTag.STRENGTH.tag(this) + ".");
 	}
 }

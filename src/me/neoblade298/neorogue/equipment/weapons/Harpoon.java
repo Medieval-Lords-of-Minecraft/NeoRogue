@@ -52,7 +52,7 @@ public class Harpoon extends Equipment {
 			return TriggerResult.keep();
 		});
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_NO_HIT, (pdata, in) -> {
-			if (data.canBasicAttack()) return TriggerResult.keep();
+			if (!data.canBasicAttack()) return TriggerResult.keep();
 			LinkedList<LivingEntity> targets = TargetHelper.getEntitiesInSight(p, regHit);
 			if (targets.isEmpty())
 				return TriggerResult.keep();

@@ -43,7 +43,7 @@ public class BerserkersCall extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE,
-				"On cast, give yourself <white>" + strength + "</white> " + GlossaryTag.STRENGTH.tag(this) + " damage and <white>1</white>"
+				"On cast, give yourself <white>" + strength + "</white> " + GlossaryTag.STRENGTH.tag(this) + " and <white>1</white>"
 						+ " stack of " + GlossaryTag.BERSERK.tag(this) + ". At <white>" + BERSERK_CUTOFF + "</white> stacks, instead give yourself <yellow>" + berserkStrength + 
 						"</yellow> " + GlossaryTag.STRENGTH.tag + " damage.");
 	}
@@ -53,13 +53,13 @@ public class BerserkersCall extends Equipment {
 		data.addTrigger(id, bind, new EquipmentInstance(p, this, slot, es, (pdata, inputs) -> {
 			sc.play(p, p);
 			pc.play(p, p);
-			data.applyStatus(StatusType.BERSERK, p.getUniqueId(), 1, -1);
+			data.applyStatus(StatusType.BERSERK, data, 1, -1);
 			Status s = data.getStatus(StatusType.BERSERK);
 			if (s != null && s.getStacks() >= BERSERK_CUTOFF) {
-				data.applyStatus(StatusType.STRENGTH, p.getUniqueId(), berserkStrength, -1);
+				data.applyStatus(StatusType.STRENGTH, data, berserkStrength, -1);
 			}
 			else {
-				data.applyStatus(StatusType.STRENGTH, p.getUniqueId(), strength, -1);
+				data.applyStatus(StatusType.STRENGTH, data, strength, -1);
 			}
 			return TriggerResult.keep();
 		}));

@@ -27,7 +27,7 @@ public class EquipmentInstance extends PriorityAction {
 	protected int slot;
 	protected Equipment eq;
 	protected EquipSlot es;
-	protected double staminaCost, manaCost, tempStaminaCost = -1, tempManaCost = -1, cooldown, tempCooldown = -1;
+	protected double staminaCost, manaCost, tempStaminaCost = -1, tempManaCost = -1, nextStaminaCost = -1, nextManaCost = -1, cooldown, tempCooldown = -1;
 	protected long nextUsable = 0L;
 	
 	static {
@@ -161,6 +161,14 @@ public class EquipmentInstance extends PriorityAction {
 		this.tempManaCost = mana;
 	}
 	
+	public void setNextStaminaCost(double stamina) {
+		this.nextStaminaCost = stamina;
+	}
+	
+	public void setNextManaCost(double mana) {
+		this.nextManaCost = mana;
+	}
+	
 	public double getStaminaCost() {
 		return this.staminaCost;
 	}
@@ -194,8 +202,10 @@ public class EquipmentInstance extends PriorityAction {
 	}
 	
 	public void resetTempCosts() {
-		tempStaminaCost = -1;
-		tempManaCost = -1;
+		tempStaminaCost = nextStaminaCost;
+		tempManaCost = nextManaCost;
 		tempCooldown = -1;
+		nextStaminaCost = -1;
+		nextManaCost = -1;
 	}
 }

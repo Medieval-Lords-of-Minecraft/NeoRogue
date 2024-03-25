@@ -19,7 +19,7 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-public class StorageInventory extends CoreInventory {
+public class StorageInventory extends CoreInventory implements ShiftClickableInventory {
 	private Player spectator;
 	private PlayerSessionData data;
 
@@ -57,7 +57,8 @@ public class StorageInventory extends CoreInventory {
 		if (e.isShiftClick()) {
 			if (e.getCurrentItem() == null) return;
 			e.setCancelled(true);
-			if (!pinv.handleShiftClickIn(e.getCurrentItem())) return;
+			if (!pinv.canShiftClickIn(inv.getItem(0))) return;
+			pinv.handleShiftClickIn(inv.getItem(0));
 			e.setCurrentItem(null);
 			p.playSound(p, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1F);
 		}
@@ -148,11 +149,13 @@ public class StorageInventory extends CoreInventory {
 	public void handleInventoryDrag(InventoryDragEvent e) {
 		e.setCancelled(true);
 	}
-	
-	public boolean canShiftClickIn() {
+
+	@Override
+	public boolean canShiftClickIn(ItemStack item) {
 		return inv.firstEmpty() != -1;
 	}
 
+	@Override
 	public void handleShiftClickIn(ItemStack item) {
 		inv.addItem(item);
 	}

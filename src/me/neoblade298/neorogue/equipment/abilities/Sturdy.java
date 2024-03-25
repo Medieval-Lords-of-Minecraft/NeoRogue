@@ -1,36 +1,33 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
-import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
-import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.session.fight.FightInstance;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.Shield;
 import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Sturdy extends Equipment {
 	private static final String ID = "sturdy";
-	private static final int HEAL_COUNT = 6, HEAL_SECONDS = HEAL_COUNT / 2, HEAL_LIMIT = 10;
-	private static final ParticleContainer pc = new ParticleContainer(Particle.VILLAGER_HAPPY).count(15).spread(0.5, 0.5).offsetY(2);
-	private int heal;
+	private int shields, cd;
 	
 	public Sturdy(boolean isUpgraded) {
 		super(ID, "Sturdy", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.none());
-		
-		heal = isUpgraded ? 6 : 4;
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 5, 0));
+		cd = (int) properties.get(PropertyType.COOLDOWN);
+		shields = isUpgraded ? 12 : 8;
 	}
 
 	@Override
 	public void setupReforges() {
-		addSelfReforge(GraniteShield.get(), Bulwark.get(), Endurance.get());
+		addSelfReforge(GraniteShield.get(), Bulwark.get(), Endure.get());
 	}
 	
 	public static Equipment get() {
@@ -40,10 +37,10 @@ public class Sturdy extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		SturdyInstance inst = new SturdyInstance(id, p);
-		data.addTrigger(id, Trigger.SHIELD_TICK, inst);
+		data.addTrigger(id, Trigger.RAISE_SHIELD, inst);
 		
 		data.addTrigger(id, Trigger.LOWER_SHIELD, (pdata, in) -> {
-			inst.resetCount();
+			if (inst.s != null) inst.s.remove();
 			return TriggerResult.keep();
 		});
 	}
@@ -51,28 +48,21 @@ public class Sturdy extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GREEN_DYE,
-				"Passive. Heal for <yellow>" + heal + "</yellow> every <white>" + HEAL_SECONDS + "</white> consecutive seconds you keep a shield raised."
-						+ " Heals up to <white>" + HEAL_LIMIT + "</white> times per fight.");
+				"Passive. Raising a shield grants " + GlossaryTag.SHIELDS.tag(this, shields, true) + " until "
+				+ "you lower your shield again.");
 	}
 	
 	private class SturdyInstance extends PriorityAction {
-		private int count = 0;
-		private int heals = 0;
+		private Shield s;
+		private long nextUse;
 		public SturdyInstance(String id, Player p) {
 			super(id);
 			action = (pdata, inputs) -> {
-				if (heals >= HEAL_LIMIT) return TriggerResult.remove();
-				if (++count % HEAL_COUNT != 0 || count < HEAL_COUNT) return TriggerResult.keep();
-				pc.play(p, p);
-				Sounds.enchant.play(p, p);
-				FightInstance.giveHeal(p, heal, p);
-				heals++;
+				if (System.currentTimeMillis() < nextUse) return TriggerResult.keep();
+				s = pdata.addPermanentShield(p.getUniqueId(), shields);
+				nextUse = System.currentTimeMillis() + (cd * 1000);
 				return TriggerResult.keep();
 			};
-		}
-		
-		public void resetCount() {
-			count = 0;
 		}
 	}
 }

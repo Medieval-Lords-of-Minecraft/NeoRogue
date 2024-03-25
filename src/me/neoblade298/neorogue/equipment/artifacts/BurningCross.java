@@ -46,7 +46,7 @@ public class BurningCross extends Artifact {
 					FightInstance.dealDamage(new DamageMeta(data, stacks * damage, DamageType.FIRE), fd.getEntity());
 				}
 				else {
-					ev.getMeta().addDamageSlice(new DamageSlice(data.getUniqueId(), stacks * damage, DamageType.FIRE));
+					ev.getMeta().addDamageSlice(new DamageSlice(data, stacks * damage, DamageType.FIRE));
 				}
 			}
 			return TriggerResult.keep();

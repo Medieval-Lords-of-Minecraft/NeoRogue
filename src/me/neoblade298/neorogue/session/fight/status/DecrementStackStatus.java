@@ -1,7 +1,5 @@
 package me.neoblade298.neorogue.session.fight.status;
 
-import java.util.UUID;
-
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.TickAction;
 
@@ -12,7 +10,7 @@ public class DecrementStackStatus extends Status {
 	}
 
 	@Override
-	public void apply(UUID applier, int stacks, int seconds) {
+	public void apply(FightData fd, int stacks, int seconds) {
 		this.stacks += stacks;
 		
 		if (this.stacks > 0) {
@@ -26,7 +24,7 @@ public class DecrementStackStatus extends Status {
 			return;
 		}
 
-		slices.add(applier, stacks);
+		slices.add(fd, stacks);
 	}
 	
 	private class DecrementStackTickAction extends TickAction {

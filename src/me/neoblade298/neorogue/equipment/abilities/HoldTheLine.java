@@ -25,7 +25,7 @@ public class HoldTheLine extends Equipment {
 	public HoldTheLine(boolean isUpgraded) {
 		super(ID, "Hold the Line", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 25, 15, 0));
-		shields = isUpgraded ? 30 : 20;
+		shields = isUpgraded ? 15 : 10;
 		concussed = isUpgraded ? 5 : 3;
 	}
 	
@@ -41,7 +41,7 @@ public class HoldTheLine extends Equipment {
 			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in) -> {
 				if (endTime < System.currentTimeMillis()) return TriggerResult.remove();
 				BasicAttackEvent ev = (BasicAttackEvent) in;
-				FightInstance.getFightData(ev.getTarget()).applyStatus(StatusType.CONCUSSED, p.getUniqueId(), concussed, -1);
+				FightInstance.getFightData(ev.getTarget()).applyStatus(StatusType.CONCUSSED, data, concussed, -1);
 				hit.play(p, p);
 				return TriggerResult.keep();
 			});

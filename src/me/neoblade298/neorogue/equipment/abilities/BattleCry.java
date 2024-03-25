@@ -35,7 +35,7 @@ public class BattleCry extends Equipment {
 	
 	@Override
 	public void setupReforges() {
-		addSelfReforge(BerserkersCall.get(), WarCry.get());
+		addSelfReforge(BerserkersCall.get(), WarCry.get(), Roar.get());
 	}
 	
 	public static Equipment get() {
@@ -53,7 +53,7 @@ public class BattleCry extends Equipment {
 		data.addTrigger(id, bind, new EquipmentInstance(p, this, slot, es, (pdata, inputs) -> {
 			sc.play(p, p);
 			pc.play(p, p);
-			data.applyStatus(StatusType.STRENGTH, p.getUniqueId(), strength, 10);
+			data.applyStatus(StatusType.STRENGTH, data, strength, 200);
 			return TriggerResult.keep();
 		}));
 	}

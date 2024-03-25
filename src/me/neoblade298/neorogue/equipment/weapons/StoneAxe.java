@@ -29,7 +29,7 @@ public class StoneAxe extends Equipment {
 	public StoneAxe(boolean isUpgraded) {
 		super(ID, "Stone Axe", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(isUpgraded ? 100 : 80, 0.2, 1, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_CRIT));
+				EquipmentProperties.ofWeapon(isUpgraded ? 100 : 80, 0.5, 0.4, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_CRIT));
 		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 	
@@ -40,15 +40,15 @@ public class StoneAxe extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
-			if (data.hasStatus(StatusType.BERSERK) && data.getStatus(StatusType.BERSERK).getStacks() >= BERSERK_THRESHOLD) TriggerResult.remove();
+			if (data.hasStatus(StatusType.BERSERK) && data.getStatus(StatusType.BERSERK).getStacks() >= BERSERK_THRESHOLD) return TriggerResult.remove();
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
 			weaponSwingAndDamage(p, pdata, ev.getTarget());
 			return TriggerResult.keep();
 		});
 		
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_NO_HIT, (pdata, inputs) -> {
-			if (data.canBasicAttack()) return TriggerResult.keep();
-			if (!data.hasStatus(StatusType.BERSERK) || data.getStatus(StatusType.BERSERK).getStacks() < BERSERK_THRESHOLD) TriggerResult.keep();
+			if (!data.canBasicAttack()) return TriggerResult.keep();
+			if (!data.hasStatus(StatusType.BERSERK) || data.getStatus(StatusType.BERSERK).getStacks() < BERSERK_THRESHOLD) return TriggerResult.keep();
 			if (pdata.canBasicAttack(EquipSlot.HOTBAR)) return TriggerResult.keep();
 			FightInstance.dealDamage(properties.getDamageMeta(data), TargetHelper.getEntitiesInCone(p, tp));
 			return TriggerResult.keep();

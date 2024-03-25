@@ -61,6 +61,7 @@ public class Session {
 	private Plot plot;
 	private boolean busy;
 	private long nextSuggest = 0L;
+	private ArrayList<String> spectatorLines = new ArrayList<String>();
 	
 	// Session coordinates
 	public static final int LOBBY_X = 0, LOBBY_Z = 0, LOBBY_WIDTH = 15,
@@ -154,6 +155,7 @@ public class Session {
 						public void run() {
 							area.instantiate();
 							setInstance(inst);
+							s.updateSpectatorLines();
 							Util.msgRaw(p, Component.text("Finished loading.", NamedTextColor.GRAY));
 						}
 					}.runTask(NeoRogue.inst());
@@ -162,6 +164,17 @@ public class Session {
 				}
 			}
 		}.runTaskAsynchronously(NeoRogue.inst());
+	}
+	
+	public ArrayList<String> getSpectatorLines() {
+		return spectatorLines;
+	}
+	
+	public void updateSpectatorLines() {
+		spectatorLines = new ArrayList<String>(9);
+		for (PlayerSessionData psd : party.values()) {
+			spectatorLines.add("§e" + psd.getData().getDisplay() + "§7: §f" + Math.round(psd.getHealth()));
+		}
 	}
 	
 	private void generateInterstitials() {

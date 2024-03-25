@@ -29,17 +29,20 @@ public class MagicOrb extends Equipment {
 	}
 
 	public class SpareScrollInstance implements TriggerAction {
+		private String uuid = UUID.randomUUID().toString();
+		
 		@Override
 		public TriggerResult trigger(PlayerFightData data, Object inputs) {
 			CastUsableEvent ev = (CastUsableEvent) inputs;
-			Player p = data.getPlayer();
-			ev.addBuff(PropertyType.DAMAGE, p.getUniqueId(), UUID.randomUUID().toString(), percentDmgBuff / 100.0, true);
+			ev.addBuff(PropertyType.DAMAGE, data, uuid, percentDmgBuff / 100.0, true);
 			return TriggerResult.keep();
 		}
 	}
 	
 	@Override
 	public void setupItem() {
-		item = createItem(Material.ENDER_PEARL, "Deal <yellow>" + percentDmgBuff + "%</yellow> increased damage with skills.");
+		item = createItem(
+				Material.ENDER_PEARL, "Deal <yellow>" + percentDmgBuff + "%</yellow> increased damage with skills."
+		);
 	}
 }

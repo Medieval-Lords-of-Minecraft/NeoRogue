@@ -97,7 +97,7 @@ public class FightData {
 		this.shields = new ShieldHolder(this);
 		this.spawner = spawner;
 		this.uuid = e.getUniqueId();
-		if (am.getType().getDisplayName() != null && am.getType().getDisplayName().isPresent()) this.mobDisplay = am.getType().getDisplayName().get();
+		if (am != null && am.getType().getDisplayName() != null && am.getType().getDisplayName().isPresent()) this.mobDisplay = am.getType().getDisplayName().get();
 		this.am = am;
 	}
 	
@@ -113,7 +113,7 @@ public class FightData {
 		return entity;
 	}
 
-	public void addBuff(UUID applier, boolean damageBuff, boolean multiplier, BuffType type, double amount) {
+	public void addBuff(FightData applier, boolean damageBuff, boolean multiplier, BuffType type, double amount) {
 		Buff b = damageBuff ? damageBuffs.getOrDefault(type, new Buff()) : defenseBuffs.getOrDefault(type, new Buff());
 		if (multiplier)
 			b.addMultiplier(applier, amount);
@@ -124,7 +124,7 @@ public class FightData {
 		else defenseBuffs.put(type, b);
 	}
 
-	public void addBuff(UUID applier, String id, boolean damageBuff, boolean multiplier, BuffType type, double amount, int seconds) {
+	public void addBuff(FightData applier, String id, boolean damageBuff, boolean multiplier, BuffType type, double amount, int seconds) {
 		addBuff(applier, damageBuff, multiplier, type, amount);
 
 		if (seconds > 0) {
@@ -155,6 +155,7 @@ public class FightData {
 	}
 	
 	public void updateDisplayName() {
+		if (am == null || entity == null) return;
 		double healthPct = entity.getHealth() / entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
 		String healthColor;
 		if (healthPct < 0.33) {
@@ -167,14 +168,14 @@ public class FightData {
 			healthColor = "&a";
 		}
 		
-		String bottomLine = healthColor + (int) entity.getHealth() + "&f/" + healthColor + (int) entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+		String bottomLine = healthColor + (int) Math.ceil(entity.getHealth()) + "&f/" + healthColor + (int) entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
 		bottomLine += " " + mobDisplay;
 		
 		ArrayList<Status> list = new ArrayList<Status>(statuses.values());
 		Collections.sort(list, Status.comp);
 		String statuses = "";
 		for (int i = 0; i < list.size() && i < 5; i++) {
-			statuses += list.get(i).getHologramLine() + "\\n";
+			statuses += list.get(i).getDisplay() + "\\n";
 		}
 		am.setDisplayName(list.isEmpty() ? bottomLine : statuses + bottomLine);
 	}
@@ -259,7 +260,7 @@ public class FightData {
 	
 	public Shield addShield(UUID applier, double amt, boolean decayPercent, long decayDelayTicks, double decayAmount, long decayPeriodTicks, int decayRepetitions, boolean isSecondary) {
 		PlayerFightData applierData = FightInstance.getUserData(applier);
-		Shield shield = new Shield(this, applier, amt, decayPercent, decayDelayTicks, decayAmount, decayPeriodTicks, decayRepetitions);
+		Shield shield = new Shield(applier, amt, decayPercent, decayDelayTicks, decayAmount, decayPeriodTicks, decayRepetitions);
 		GrantShieldsEvent ev = new GrantShieldsEvent(applierData, this, shield, isSecondary);
 		if (applierData != null) {
 			FightInstance.trigger(applierData.getPlayer(), Trigger.GRANT_SHIELDS, ev);
@@ -267,6 +268,7 @@ public class FightData {
 		if (this instanceof PlayerFightData) {
 			FightInstance.trigger(((PlayerFightData) this).getPlayer(), Trigger.RECEIVE_SHIELDS, ev);
 		}
+		shield.applyBuff(ev.getBuff());
 		shields.addShield(shield);
 		if (shield.getTask() != null) tasks.put(UUID.randomUUID().toString(), shield.getTask());
 		return shield;
@@ -303,11 +305,11 @@ public class FightData {
 	}
 	
 	public boolean hasStatus(String id) {
-		return statuses.containsKey(id);
+		return statuses.containsKey(id) && statuses.get(id).getStacks() != 0;
 	}
 	
 	public boolean hasStatus(StatusType type) {
-		return statuses.containsKey(type.name());
+		return statuses.containsKey(type.name()) && statuses.get(type.name()).getStacks() != 0;
 	}
 	
 	public Status getStatus(String id) {
@@ -318,44 +320,45 @@ public class FightData {
 		return statuses.getOrDefault(type.name(), Status.EMPTY);
 	}
 	
-	public void applyStatus(StatusType type, UUID applier, int stacks, int seconds) {
-		applyStatus(type, applier, stacks, seconds, null);
+	public void applyStatus(StatusType type, FightData applier, int stacks, int ticks) {
+		applyStatus(type, applier, stacks, ticks, null);
 	}
 	
-	public void applyStatus(StatusType type, UUID applier, int stacks, int seconds, DamageMeta meta) {
-		Status s = statuses.getOrDefault(type.name(), Status.createByType(type, applier, this));
-		applyStatus(s, applier, stacks, seconds, meta);
+	public void applyStatus(StatusType type, FightData applier, int stacks, int ticks, DamageMeta meta) {
+		Status s = statuses.getOrDefault(type.name(), Status.createByType(type, this));
+		applyStatus(s, applier, stacks, ticks, meta);
 	}
 	
-	public void applyStatus(GenericStatusType type, String id, UUID applier, int stacks, int seconds) {
-		applyStatus(type, id, applier, stacks, seconds, null);
+	public void applyStatus(GenericStatusType type, String id, FightData applier, int stacks, int ticks) {
+		applyStatus(type, id, applier, stacks, ticks, null);
 	}
 	
-	public void applyStatus(GenericStatusType type, String id, UUID applier, int stacks, int seconds, DamageMeta meta) {
-		Status s = statuses.getOrDefault(id, Status.createByGenericType(type, id, applier, this));
-		applyStatus(s, applier, stacks, seconds, meta);
+	public void applyStatus(GenericStatusType type, String id, FightData applier, int stacks, int ticks, DamageMeta meta) {
+		Status s = statuses.getOrDefault(id, Status.createByGenericType(type, id, this));
+		applyStatus(s, applier, stacks, ticks, meta);
 	}
 	
-	protected void applyStatus(Status s, UUID applier, int stacks, int seconds, DamageMeta meta) {
+	protected void applyStatus(Status s, FightData applier, int stacks, int ticks, DamageMeta meta) {
 		if (!entity.isValid()) return;
 		String id = s.getId();
-		ApplyStatusEvent ev = new ApplyStatusEvent(this, id, stacks, seconds, meta);
-		if (FightInstance.getUserData().containsKey(applier)) {
-			PlayerFightData data = FightInstance.getUserData(applier);
-			FightInstance.trigger(data.getPlayer(), Trigger.APPLY_STATUS, ev);
+		ApplyStatusEvent ev = new ApplyStatusEvent(this, id, stacks, ticks, meta);
+		if (applier instanceof PlayerFightData) {
+			FightInstance.trigger(((PlayerFightData) applier).getPlayer(), Trigger.APPLY_STATUS, ev);
 		}
 		if (this instanceof PlayerFightData) {
 			PlayerFightData data = (PlayerFightData) this;
 			data.updateBoardLines();
 			FightInstance.trigger(data.getPlayer(), Trigger.APPLY_STATUS, ev);
 		}
-		s.apply(applier, (int) Math.ceil(ev.getStacksBuff().apply(stacks)), (int) Math.ceil(ev.getDurationBuff().apply(seconds)));
+		s.apply(applier, (int) Math.ceil(ev.getStacksBuff().apply(stacks)), (int) Math.ceil(ev.getDurationBuff().apply(ticks)));
 		
 		if (statuses.isEmpty()) {
 			addTickAction(new StatusUpdateTickAction());
 		}
 		statuses.put(id, s);
-		updateDisplayName();
+		if (am != null) {
+			updateDisplayName();
+		}
 	}
 
 

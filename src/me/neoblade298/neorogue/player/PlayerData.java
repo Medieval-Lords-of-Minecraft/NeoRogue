@@ -194,7 +194,7 @@ public class PlayerData {
 			return pfd.getBoardLines();
 		}
 		else {
-			if (s.isSpectator(p.getUniqueId())) return null;
+			if (s.isSpectator(p.getUniqueId())) return s.getSpectatorLines();
 			PlayerSessionData psd = s.getParty().get(p.getUniqueId());
 			if (psd == null) return null;
 			return psd.getBoardLines();

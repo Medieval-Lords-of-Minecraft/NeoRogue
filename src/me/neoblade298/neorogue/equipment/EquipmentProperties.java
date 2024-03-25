@@ -43,6 +43,10 @@ public class EquipmentProperties {
 		return new EquipmentProperties(0, 0, 0, 0, damage, attackSpeed, 0, type, new SoundContainer(swingSound));
 	}
 	
+	public static EquipmentProperties ofWeapon(double manaCost, double staminaCost, double damage, double attackSpeed, double knockbac, DamageType type, Sound swingSound) {
+		return new EquipmentProperties(manaCost, staminaCost, 0, 0, damage, attackSpeed, 0, type, new SoundContainer(swingSound));
+	}
+	
 	public static EquipmentProperties ofWeapon(double manaCost, double staminaCost, double damage, double attackSpeed, DamageType type, Sound swingSound) {
 		return new EquipmentProperties(manaCost, staminaCost, 0, 0, damage, attackSpeed, 0, type, new SoundContainer(swingSound));
 	}
@@ -57,6 +61,19 @@ public class EquipmentProperties {
 	
 	public static EquipmentProperties ofWeapon(double damage, double attackSpeed, double knockback, DamageType type, SoundContainer swingSound) {
 		return new EquipmentProperties(0, 0, 0, 0, damage, attackSpeed, knockback, type, swingSound);
+	}
+	
+	public static EquipmentProperties ofRangedWeapon(double damage, double attackSpeed, double knockback, double range, DamageType type, Sound swingSound) {
+		return new EquipmentProperties(0, 0, 0, range, damage, attackSpeed, knockback, type, new SoundContainer(swingSound));
+	}
+	
+	public static EquipmentProperties ofRangedWeapon(double damage, double attackSpeed, double knockback, double range, DamageType type, SoundContainer swingSound) {
+		return new EquipmentProperties(0, 0, 0, range, damage, attackSpeed, knockback, type, swingSound);
+	}
+	
+	public static EquipmentProperties custom(double manaCost, double staminaCost, double cooldown, double range, double damage, double attackSpeed,
+			double knockback, DamageType type, SoundContainer swingSound) {
+		return new EquipmentProperties(manaCost, staminaCost, cooldown, range, damage, attackSpeed, knockback, type, swingSound);
 	}
 	
 	public static EquipmentProperties ofUsable(double manaCost, double staminaCost, double cooldown, double range) {

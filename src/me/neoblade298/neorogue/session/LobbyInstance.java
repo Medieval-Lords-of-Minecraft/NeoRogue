@@ -65,6 +65,7 @@ public class LobbyInstance extends Instance {
 		super(session, SPAWN_X, SPAWN_Z);
 		this.name = name;
 		this.host = host.getUniqueId();
+		host.setGameMode(GameMode.ADVENTURE);
 		players.put(host.getUniqueId(), EquipmentClass.WARRIOR);
 		host.teleport(spawn);
 		partyInfoHeader = Component.text().content("<< ( ").color(NamedTextColor.GRAY)

@@ -39,7 +39,7 @@ public class StoneHammer extends Equipment {
 			edge = new ParticleContainer(Particle.CLOUD).count(1).spread(0, 0),
 			fill = new ParticleContainer(Particle.CLOUD).count(1).spread(0.1, 0);
 	private static final Circle hitShape = new Circle(RADIUS);
-	private static final ParticleAnimation swing;
+	public static final ParticleAnimation swing;
 	
 	static {
 		swing = new ParticleAnimation(swingPart, (loc, tick) -> {
@@ -72,6 +72,7 @@ public class StoneHammer extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (pdata, inputs) -> {
+			if (!data.canBasicAttack()) return TriggerResult.keep();
 			weaponSwing(p, data);
 			data.runAnimation(id, p, swing, p);
 			data.addTask(id, new BukkitRunnable() {
@@ -90,17 +91,17 @@ public class StoneHammer extends Equipment {
 		LinkedList<LivingEntity> enemies = TargetHelper.getEntitiesInRadius(p, hit, props);
 		if (enemies.isEmpty()) return;
 		boolean first = true;
+		Vector v = new Vector(0, 0.5, 0);
 		for (LivingEntity ent : enemies) {
 			if (first) {
 				weaponDamage(p, data, ent);
-				Vector v = ent.getVelocity();
-				FightInstance.knockback(ent, v.setY(v.getY() + 0.5));
 				first = false;
 			}
 			else {
 				DamageMeta dm = new DamageMeta(data, properties.get(PropertyType.DAMAGE), properties.getType());
 				FightInstance.dealDamage(dm, ent);
 			}
+			FightInstance.knockback(ent, v);
 		}
 	}
 

@@ -64,7 +64,7 @@ public class PracticeDummy extends Artifact {
 				Util.msg(p, "<red>Practice Dummy</red> was activated");
 			}
 			if (count > num) {
-				ev.getMeta().addBuff(BuffType.GENERAL, new Buff(p.getUniqueId(), 0, 0.5), BuffOrigin.NORMAL, true);
+				ev.getMeta().addBuff(BuffType.GENERAL, new Buff(data, 0, 0.5), BuffOrigin.NORMAL, true);
 				return TriggerResult.keep();
 			}
 			return TriggerResult.remove();
