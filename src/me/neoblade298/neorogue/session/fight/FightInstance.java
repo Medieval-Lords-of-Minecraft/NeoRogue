@@ -752,16 +752,18 @@ public abstract class FightInstance extends Instance {
 	public void start() {
 		instantiate();
 		s.broadcast("Commencing fight...");
-		ArrayList<PlayerFightData> fdata = new ArrayList<PlayerFightData>();
-		for (Player p : s.getOnlinePlayers()) {
-			fdata.add(setup(p, s.getData(p.getUniqueId())));
-		}
 		setupInstance(s);
 		FightInstance fi = this;
 		
 		new BukkitRunnable() {
 			@Override
 			public void run() {
+				// Setup triggers
+				ArrayList<PlayerFightData> fdata = new ArrayList<PlayerFightData>();
+				for (Player p : s.getOnlinePlayers()) {
+					fdata.add(setup(p, s.getData(p.getUniqueId())));
+				}
+				
 				// Choose random teleport location
 				int rand = NeoRogue.gen.nextInt(map.getPieces().size());
 				MapPieceInstance inst = map.getPieces().get(rand);

@@ -15,6 +15,7 @@ import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -244,12 +245,16 @@ public class Session {
 		this.spectators.add(p.getUniqueId());
 		SessionManager.addToSession(p.getUniqueId(), this);
 		broadcast("<yellow>" + p.getName() + "</yellow> started spectating!");
+		p.setGameMode(GameMode.ADVENTURE);
 		p.teleport(inst.spawn);
 		p.setInvulnerable(true);
 		p.setInvisible(true);
 		
 		if (inst instanceof EditInventoryInstance) {
 			setupSpectatorInventory(p);
+		}
+		if (inst instanceof NodeSelectInstance) {
+			p.setAllowFlight(true);
 		}
 	}
 	

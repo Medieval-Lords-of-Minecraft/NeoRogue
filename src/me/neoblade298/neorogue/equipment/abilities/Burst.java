@@ -40,7 +40,7 @@ public class Burst extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.POTION,
 				"On cast, give yourself <yellow>" + stamina + "</yellow> stamina and <yellow>" + buff +
-				"</yellow> " + GlossaryTag.STRENGTH.tag(this) + " damage for <white>" + seconds + "</white> seconds.");
+				"</yellow> " + GlossaryTag.STRENGTH.tag(this) + " for <white>" + seconds + "</white> seconds.");
 	}
 
 	@Override

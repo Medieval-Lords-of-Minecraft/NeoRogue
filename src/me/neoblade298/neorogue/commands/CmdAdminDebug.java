@@ -4,10 +4,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.commands.Subcommand;
 import me.neoblade298.neocore.shared.commands.Arg;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
+import me.neoblade298.neorogue.Sounds;
 
 public class CmdAdminDebug extends Subcommand {
 	HashMap<String, HashMap<String, Integer>> results = new HashMap<String, HashMap<String, Integer>>();
@@ -21,5 +23,7 @@ public class CmdAdminDebug extends Subcommand {
 
 	@Override
 	public void run(CommandSender s, String[] args) {
+		Player p = (Player) s;
+		Sounds.equip.play(p, p);
 	}
 }
