@@ -191,6 +191,7 @@ public class PlayerData {
 				return ((FightInstance) s.getInstance()).getSpectatorLines();
 			}
 			PlayerFightData pfd = FightInstance.getUserData(p.getUniqueId());
+			if (pfd == null) return null; // Will happen for a second as fight loads
 			return pfd.getBoardLines();
 		}
 		else {

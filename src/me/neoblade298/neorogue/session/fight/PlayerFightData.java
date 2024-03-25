@@ -1,6 +1,7 @@
 package me.neoblade298.neorogue.session.fight;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -15,8 +16,6 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-
-import com.google.common.collect.TreeMultiset;
 
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
@@ -54,9 +53,9 @@ public class PlayerFightData extends FightData {
 	};
 	
 	private PlayerSessionData sessdata;
-	private HashMap<Trigger, TreeMultiset<PriorityAction>> triggers = new HashMap<Trigger, TreeMultiset<PriorityAction>>();
+	private HashMap<Trigger, ArrayList<PriorityAction>> triggers = new HashMap<Trigger, ArrayList<PriorityAction>>();
 	private HashMap<String, EquipmentInstance> equips = new HashMap<String, EquipmentInstance>(); // Useful for modifying cooldowns
-	private HashMap<Integer, HashMap<Trigger, TreeMultiset<PriorityAction>>> slotBasedTriggers = new HashMap<Integer, HashMap<Trigger, TreeMultiset<PriorityAction>>>();
+	private HashMap<Integer, HashMap<Trigger, ArrayList<PriorityAction>>> slotBasedTriggers = new HashMap<Integer, HashMap<Trigger, ArrayList<PriorityAction>>>();
 	private LinkedList<Listener> listeners = new LinkedList<Listener>();
 	private ArrayList<String> boardLines;
 	private Player p;
@@ -133,6 +132,16 @@ public class PlayerFightData extends FightData {
 			offhand.initialize(p, this, null, EquipSlot.OFFHAND, 0);
 		}
 		
+		// Sort triggers by priority
+		for (ArrayList<PriorityAction> list : triggers.values()) {
+			Collections.sort(list);
+		}
+		for (HashMap<Trigger, ArrayList<PriorityAction>> map : slotBasedTriggers.values()) {
+			for (ArrayList<PriorityAction> list : map.values()) {
+				Collections.sort(list);
+			}
+		}
+		
 		if (offhand != null) inv.setItemInOffHand(offhand.getItem());
 		addTickAction(new PlayerUpdateTickAction());
 
@@ -184,28 +193,43 @@ public class PlayerFightData extends FightData {
 	
 	private static String createHealthBar(Player p) {
 		PlayerFightData pfd = FightInstance.getUserData(p.getUniqueId());
+		if (pfd == null) {
+			return "";
+		}
 		if (pfd != null && pfd.isDead) {
 			return "&c&m" + p.getName();
 		}
 		double percenthp = p.getHealth() / p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+		double percentShield = pfd.getShields().getAmount() / p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
 		percenthp *= 100;
+		percentShield *= 100;
 		int php = (int) percenthp;
+		int psh = (int) percentShield;
 		String color = "§a";
 		if (php < 50 && php >= 25) {
-			color = "§e";
+			color = "§6";
 		}
 		else if (php < 25) {
 			color = "§c";
 		}
 
-		String bar = "" + color;
 		// Add 5 so 25% is still 3/10 on the health bar
 		int phpmod = (php + 5) / 10;
-		for (int i = 0; i < phpmod; i++) {
-			bar += "|";
-		}
-		bar += "§7";
-		for (int i = 0; i < (10 - phpmod); i++) {
+		int pshmod = (psh + 5) / 10;
+		String bar = "" + color + (pshmod > 0 ? "§n" : "");
+		for (int i = 0; i < 10; i++) {
+			// If you have more shields than health, make the bars gray but keep the underline
+			if (i == phpmod) {
+				bar += "§7";
+				if (pshmod > i) {
+					bar += "§n";
+				}
+			}
+			
+			// If you have less shields than health, remove the underline
+			else if (pshmod > 0 && i == pshmod) {
+				bar += color;
+			}
 			bar += "|";
 		}
 		
@@ -290,11 +314,11 @@ public class PlayerFightData extends FightData {
 	// Must be separate due to the same trigger doing a different thing based on slot (like weapons)
 	public boolean runSlotBasedActions(PlayerFightData data, Trigger trigger, int slot, Object inputs) {
 		if (!slotBasedTriggers.containsKey(slot)) return false;
-		HashMap<Trigger, TreeMultiset<PriorityAction>> triggers = slotBasedTriggers.get(slot);
+		HashMap<Trigger, ArrayList<PriorityAction>> triggers = slotBasedTriggers.get(slot);
 		return runActions(data, triggers, trigger, inputs);
 	}
 	
-	private boolean runActions(PlayerFightData data, HashMap<Trigger, TreeMultiset<PriorityAction>> triggers, Trigger trigger, Object inputs) {
+	private boolean runActions(PlayerFightData data, HashMap<Trigger, ArrayList<PriorityAction>> triggers, Trigger trigger, Object inputs) {
 		if (triggers.containsKey(trigger)) {
 			boolean cancel = false;
 			Iterator<PriorityAction> iter = triggers.get(trigger).iterator();
@@ -356,13 +380,12 @@ public class PlayerFightData extends FightData {
 	}
 	
 	public void addSlotBasedTrigger(String id, int slot, Trigger trigger, PriorityAction action) {
-		HashMap<Trigger, TreeMultiset<PriorityAction>> triggers = slotBasedTriggers.getOrDefault(slot, 
-				new HashMap<Trigger, TreeMultiset<PriorityAction>>());
+		HashMap<Trigger, ArrayList<PriorityAction>> triggers = slotBasedTriggers.getOrDefault(slot, 
+				new HashMap<Trigger, ArrayList<PriorityAction>>());
 		slotBasedTriggers.put(slot, triggers);
-		TreeMultiset<PriorityAction> actions = triggers.getOrDefault(trigger, TreeMultiset.create());
+		ArrayList<PriorityAction> actions = triggers.getOrDefault(trigger, new ArrayList<PriorityAction>());
 		triggers.put(trigger, actions);
 		addTrigger(id, actions, action);
-		TreeMultiset.create();
 	}
 
 	public void addTrigger(String id, Trigger trigger, TriggerAction action) {
@@ -370,13 +393,13 @@ public class PlayerFightData extends FightData {
 	}
 
 	public void addTrigger(String id, Trigger trigger, PriorityAction action) {
-		TreeMultiset<PriorityAction> actions = triggers.containsKey(trigger) ? triggers.get(trigger)
-				: TreeMultiset.create();
+		ArrayList<PriorityAction> actions = triggers.containsKey(trigger) ? triggers.get(trigger)
+				: new ArrayList<PriorityAction>();
 		triggers.put(trigger, actions);
 		addTrigger(id, actions, action);
 	}
 	
-	private void addTrigger(String id, TreeMultiset<PriorityAction> actions, PriorityAction action) {
+	private void addTrigger(String id, ArrayList<PriorityAction> actions, PriorityAction action) {
 		actions.add(action);
 		
 		if (action instanceof Listener) {
@@ -518,7 +541,7 @@ public class PlayerFightData extends FightData {
 				
 				// First look for hotbar castable skills
 				if (triggers.containsKey(t)) {
-					TreeMultiset<PriorityAction> actions = triggers.get(t);
+					ArrayList<PriorityAction> actions = triggers.get(t);
 					for (PriorityAction action : actions) {
 						// Only the first valid usable instance is used as the cooldown
 						if (action instanceof EquipmentInstance) {
@@ -531,7 +554,7 @@ public class PlayerFightData extends FightData {
 				
 				// Next look for any slot-based triggers (so far only thrown tridents) that can have cooldowns
 				if (found || !slotBasedTriggers.containsKey(i)) continue;
-				for (TreeMultiset<PriorityAction> slotActions : slotBasedTriggers.get(i).values()) {
+				for (ArrayList<PriorityAction> slotActions : slotBasedTriggers.get(i).values()) {
 					for (PriorityAction slotAction : slotActions) {
 						if (slotAction instanceof EquipmentInstance) {
 							insts.put(i, (EquipmentInstance) slotAction);
