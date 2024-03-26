@@ -24,6 +24,7 @@ import me.neoblade298.neocore.shared.droptables.DropTable;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.abilities.*;
+import me.neoblade298.neorogue.equipment.accessories.BlackRing;
 import me.neoblade298.neorogue.equipment.accessories.EarthenRing;
 import me.neoblade298.neorogue.equipment.accessories.GripGloves;
 import me.neoblade298.neorogue.equipment.accessories.MinorManaRelic;
@@ -68,6 +69,7 @@ import me.neoblade298.neorogue.equipment.artifacts.RubyShard;
 import me.neoblade298.neorogue.equipment.artifacts.SapphireCluster;
 import me.neoblade298.neorogue.equipment.artifacts.SapphireGem;
 import me.neoblade298.neorogue.equipment.artifacts.SapphireShard;
+import me.neoblade298.neorogue.equipment.artifacts.SoulCarton;
 import me.neoblade298.neorogue.equipment.artifacts.TomeOfWisdom;
 import me.neoblade298.neorogue.equipment.consumables.MinorHealthPotion;
 import me.neoblade298.neorogue.equipment.consumables.MinorMagicalPotion;
@@ -208,6 +210,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new WindSlash(b);
 			
 			// Accessories
+			new BlackRing(b);
 			new EarthenRing(b);
 			new GripGloves(b);
 			new MinorShieldingRelic(b);
@@ -302,6 +305,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new MercenaryHeadband();
 		new NoxianBlight();
 		new TomeOfWisdom();
+		new SoulCarton();
 		
 		// Levelup artifacts
 		new EmeraldCluster();
