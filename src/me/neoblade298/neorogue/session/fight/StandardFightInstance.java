@@ -36,6 +36,7 @@ public class StandardFightInstance extends FightInstance {
 	private BossBar timeBar, scoreBar;
 	private double time, score, scoreRequired;
 	private FightScore fightScore = FightScore.S;
+	private boolean isActive = true;
 	
 	static {
 		SCORE_REQUIRED.put(1, 15D);
@@ -109,6 +110,8 @@ public class StandardFightInstance extends FightInstance {
 			// Have a time lag so the ability that ended the fight has time to complete
 			new BukkitRunnable() {
 				public void run() {
+					if (!isActive) return;
+					isActive = false;
 					FightInstance.handleWin();
 					timeBar.removeAll();
 					scoreBar.removeAll();
