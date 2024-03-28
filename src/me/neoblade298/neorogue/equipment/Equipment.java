@@ -255,6 +255,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new StoneSpear(b);
 			new StoneSword(b);
 			new StoneHammer(b);
+			new TargetAcquisition(b);
 			new RighteousHammer(b);
 			new WoodenDagger(b);
 			new WoodenSword(b);
@@ -337,6 +338,11 @@ public abstract class Equipment implements Comparable<Equipment> {
 				up.setupDroptable();
 				up.postSetup();
 			}
+			/*
+			if (eq.ec == EquipmentClass.THIEF && eq.rarity == Rarity.COMMON && eq.type == EquipmentType.ABILITY) {
+				System.out.println("Equip: " + eq.id);
+			}
+			*/
 		}
 
 		for (EquipmentType type : EquipmentType.values()) {
