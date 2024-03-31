@@ -170,13 +170,6 @@ public class DamageMeta {
 						TargetHelper.getEntitiesInRadius(recipient.getEntity(), tp));
 			}
 
-			if (owner.hasStatus(StatusType.INSANITY)) {
-				HashMap<BuffType, Buff> insanityBuffs = new HashMap<BuffType, Buff>();
-				int stacks = owner.getStatus(StatusType.INSANITY).getStacks();
-				insanityBuffs.put(BuffType.MAGICAL, new Buff(owner, 0, stacks * 0.01));
-				addBuffs(insanityBuffs, BuffOrigin.STATUS, true);
-			}
-
 			if (owner.hasStatus(StatusType.SANCTIFIED)) {
 				Status status = owner.getStatus(StatusType.SANCTIFIED);
 				int stacks = status.getStacks();

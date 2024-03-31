@@ -18,7 +18,7 @@ public class ThiefsCacheChance extends ChanceSet {
 		ChanceStage stage = new ChanceStage(this, INIT_ID, "You come across a thief’s cache that has some gold, equipment, and potions lying around. "
 				+ "Suddenly you hear noise behind you. The thief is coming and you’ll have to act fast.");
 
-		ChanceChoice choice = new ChanceChoice(Material.PRISMARINE_SHARD, "Pick up the potions",
+		ChanceChoice choice = new ChanceChoice(Material.PRISMARINE_SHARD, "Pick up two potions",
 				"Can't go wrong with potions!", (s, inst, data) -> {
 					Player p = data.getPlayer();
 					Util.msgRaw(p, "You pick up the potions and leave with haste.");

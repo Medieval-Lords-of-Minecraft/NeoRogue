@@ -56,7 +56,7 @@ public enum GlossaryTag implements GlossaryIcon {
 			"Decreases the holder's physical damage by 0.2 per stack. Upon the holder dealing physical damage, remove 25% of the stacks and " +
 			"deal that much Earthen damage to the holder. 1 stack is removed every second."),
 	INSANITY(Material.NETHER_PORTAL, StatusType.INSANITY.tag,
-			"Increases the holder's magic damage by 0.2 per stack. Remove 1 stack every second."),
+			"Increases the holder's magic damage taken by 0.2 per stack. Remove 1 stack every second."),
 	SANCTIFIED(Material.END_ROD, StatusType.SANCTIFIED.tag,
 			"Upon the holder dealing damage, remove 25% of the stacks and " +
 			"deal that much Light damage to the holder while healing that much to the damaged. 1 stack is removed every second."),
