@@ -647,6 +647,10 @@ public abstract class Equipment implements Comparable<Equipment> {
 	public TreeMap<Equipment, Equipment[]> getReforgeOptions() {
 		return reforgeOptions;
 	}
+	
+	public EquipmentClass getEquipmentClass() {
+		return ec;
+	}
 
 	public boolean containsReforgeOption(String id) {
 		for (Equipment option : reforgeOptions.keySet()) {
