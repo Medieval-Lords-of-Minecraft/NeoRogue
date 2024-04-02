@@ -89,9 +89,15 @@ public class CmdList extends Subcommand {
 	}
 	
 	private enum ReforgeType {
-		PARENT,
-		CHILD,
-		NONE;
+		PARENT((eq) -> {
+			return true;
+		}),
+		CHILD((eq) -> {
+			return true;
+		}),
+		NONE((eq) -> {
+			return true;
+		});
 		
 		private Predicate<Equipment> filter;
 		private ReforgeType(Predicate<Equipment> filter) {
