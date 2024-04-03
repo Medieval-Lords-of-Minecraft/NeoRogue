@@ -1,6 +1,7 @@
 package me.neoblade298.neorogue.commands;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -23,6 +24,15 @@ public class CmdList extends Subcommand {
 			ecs = new ArrayList<String>(), types = new ArrayList<String>(),
 			rarities = new ArrayList<String>(), reforgeFilters = new ArrayList<String>(),
 			tags = new ArrayList<String>();
+	
+	private static Comparator<Equipment> sorter = new Comparator<Equipment>() {
+		@Override
+		public int compare(Equipment o1, Equipment o2) {
+			int comp = Integer.compare(o1.getRarity().getValue(), o2.getRarity().getValue());
+			if (comp != 0) return comp;
+			return o1.getId().compareTo(o2.getId());
+		}
+	};
 
 	public CmdList(String key, String desc, String perm, SubcommandRunner runner) {
 		super(key, desc, perm, runner);
@@ -155,7 +165,7 @@ public class CmdList extends Subcommand {
 			}
 		}
 		
-		stream.forEach((eq) -> {
+		stream.sorted(sorter).forEach((eq) -> {
 			Util.msgRaw(s, Component.text("- ", NamedTextColor.GRAY).append(eq.getHoverable()));
 		});
 	}
