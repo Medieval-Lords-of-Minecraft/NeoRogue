@@ -38,6 +38,7 @@ import me.neoblade298.neorogue.commands.CmdInvite;
 import me.neoblade298.neorogue.commands.CmdJoin;
 import me.neoblade298.neorogue.commands.CmdKick;
 import me.neoblade298.neorogue.commands.CmdLeave;
+import me.neoblade298.neorogue.commands.CmdList;
 import me.neoblade298.neorogue.commands.CmdLoad;
 import me.neoblade298.neorogue.commands.CmdNew;
 import me.neoblade298.neorogue.commands.CmdSpectate;
@@ -109,6 +110,7 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdJoin("join", "Join an existing party", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdSpectate("spectate", "Spectate a player's session", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdInfo("info", "View session info", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdList("list", "View a filtered list of equipment", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdGlossary("glossary", "View glossary", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.registerCommandList("");
 		
