@@ -31,9 +31,11 @@ public class CmdList extends Subcommand {
 				+ " {--reforge Parent/Child/None}");
 		args.setMax(-1);
 		
-		for (FilterType ft : FilterType.values()) {
-			filterTypes.add(ft.name());
-		}
+		filterTypes.add("--type");
+		filterTypes.add("--rarity");
+		filterTypes.add("--class");
+		filterTypes.add("--tags");
+		filterTypes.add("--reforge");
 		for (EquipmentClass ec : EquipmentClass.values()) {
 			ecs.add(ec.name());
 		}
@@ -53,25 +55,21 @@ public class CmdList extends Subcommand {
 	
 	@Override
 	public List<String> getTabOptions(CommandSender s, String[] args) {
-		System.out.println("Getting tab options");
-		if (args.length <= 1) {
+		if (args.length <= 2) {
 			return filterTypes;
 		}
 		
-		try {
-			FilterType ft = FilterType.valueOf(args[args.length - 1]);
-			switch (ft) {
-			case EQUIPMENT_CLASS: return ecs;
-			case EQUIPMENT_TYPE: return types;
-			case RARITY: return rarities;
-			case REFORGE: return reforgeFilters;
-			case TAGS: return tags;
-			}
-		}
-		catch (IllegalArgumentException ex) {
+		FilterType ft = FilterType.fromString(args[args.length - 2]);
+		if (ft == null) {
 			return filterTypes;
 		}
-		System.out.println("Returning null");
+		switch (ft) {
+		case EQUIPMENT_CLASS: return ecs;
+		case EQUIPMENT_TYPE: return types;
+		case RARITY: return rarities;
+		case REFORGE: return reforgeFilters;
+		case TAGS: return tags;
+		}
 		return null;
 	}
 

@@ -339,11 +339,6 @@ public abstract class Equipment implements Comparable<Equipment> {
 				up.setupDroptable();
 				up.postSetup();
 			}
-			/*
-			if (eq.ec == EquipmentClass.THIEF && eq.rarity == Rarity.COMMON && eq.type == EquipmentType.ABILITY) {
-				System.out.println("Equip: " + eq.id);
-			}
-			*/
 		}
 
 		for (EquipmentType type : EquipmentType.values()) {
