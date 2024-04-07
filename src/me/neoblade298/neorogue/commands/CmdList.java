@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.bukkit.command.CommandSender;
@@ -110,7 +111,10 @@ public class CmdList extends Subcommand {
 					try {
 						EquipmentClass ec = EquipmentClass.valueOf(str.toUpperCase());
 						stream = stream.filter((eq) -> {
-							return eq.getEquipmentClass() == ec;
+							for (EquipmentClass eqc : eq.getEquipmentClasses()) {
+								if (eqc == ec) return true;
+							}
+							return false;
 						});
 					}
 					catch (IllegalArgumentException ex) {
@@ -164,10 +168,12 @@ public class CmdList extends Subcommand {
 				filter = null;
 			}
 		}
-		
-		stream.sorted(sorter).forEach((eq) -> {
+
+		List<Equipment> list = stream.sorted(sorter).collect(Collectors.toList());
+		for (Equipment eq : list) {
 			Util.msgRaw(s, Component.text("- ", NamedTextColor.GRAY).append(eq.getHoverable()));
-		});
+		};
+		Util.msgRaw(s, "Found <yellow>" + list.size() + " matches");
 	}
 	
 	private enum FilterType {

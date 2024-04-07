@@ -119,7 +119,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 	protected boolean isUpgraded, canDrop = true, isCursed;
 	protected ItemStack item;
 	protected Rarity rarity;
-	protected EquipmentClass ec;
+	protected EquipmentClass[] ecs;
 	protected EquipmentType type;
 	protected EquipmentProperties properties;
 	protected int cooldown = 0;
@@ -349,10 +349,15 @@ public abstract class Equipment implements Comparable<Equipment> {
 
 	public Equipment(String id, String display, boolean isUpgraded, Rarity rarity, EquipmentClass ec,
 			EquipmentType type, EquipmentProperties props) {
+		this(id, display, isUpgraded, rarity, new EquipmentClass[] {ec}, type, props);
+	}
+
+	public Equipment(String id, String display, boolean isUpgraded, Rarity rarity, EquipmentClass[] ecs,
+			EquipmentType type, EquipmentProperties props) {
 		this.id = id;
 		this.rarity = rarity;
 		this.isUpgraded = isUpgraded;
-		this.ec = ec;
+		this.ecs = ecs;
 		this.type = type;
 		this.properties = props;
 
@@ -380,7 +385,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		this.id = id;
 		this.rarity = Rarity.COMMON;
 		this.isUpgraded = false;
-		this.ec = EquipmentClass.CLASSLESS;
+		this.ecs = new EquipmentClass[] {EquipmentClass.CLASSLESS};
 		this.type = type;
 		this.display = SharedUtil.color("<red>" + display);
 		this.properties = EquipmentProperties.none();
@@ -399,7 +404,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		this.id = id;
 		this.rarity = rarity;
 		this.isUpgraded = false;
-		this.ec = ec;
+		this.ecs = new EquipmentClass[] {ec};
 		this.type = EquipmentType.MATERIAL;
 		this.display = rarity.applyDecorations(SharedUtil.color(display));
 		this.properties = EquipmentProperties.none();
@@ -448,13 +453,13 @@ public abstract class Equipment implements Comparable<Equipment> {
 		// Artifacts and consumables get their own special droptable with special weight
 		// due to reduced amount
 		if (this instanceof Artifact) {
-			artifacts.addLenientWeight(ec, value, (Artifact) this);
+			artifacts.addLenientWeight(ecs, value, (Artifact) this);
 		}
 		else if (this instanceof Consumable) {
-			consumables.addLenientWeight(ec, value, (Consumable) this);
+			consumables.addLenientWeight(ecs, value, (Consumable) this);
 		}
 		else {
-			droptables.add(ec, value, this);
+			droptables.add(ecs, value, this);
 		}
 	}
 
@@ -643,8 +648,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 		return reforgeOptions;
 	}
 	
-	public EquipmentClass getEquipmentClass() {
-		return ec;
+	public EquipmentClass[] getEquipmentClasses() {
+		return ecs;
 	}
 
 	public boolean containsReforgeOption(String id) {
@@ -976,38 +981,42 @@ public abstract class Equipment implements Comparable<Equipment> {
 			}
 		}
 
-		public void add(EquipmentClass ec, int value, E drop) {
-			HashMap<Integer, DropTable<E>> table = droptables.get(ec);
-			if (value >= 2) {
-				table.get(value - 2).add(drop, 1);
+		public void add(EquipmentClass[] ecs, int value, E drop) {
+			for (EquipmentClass ec : ecs) {
+				HashMap<Integer, DropTable<E>> table = droptables.get(ec);
+				if (value >= 2) {
+					table.get(value - 2).add(drop, 1);
+				}
+				if (value >= 1) {
+					table.get(value - 1).add(drop, 8);
+				}
+				table.get(value).add(drop, 32);
+				table.get(value + 1).add(drop, 8);
+				table.get(value + 2).add(drop, 1);
 			}
-			if (value >= 1) {
-				table.get(value - 1).add(drop, 8);
-			}
-			table.get(value).add(drop, 32);
-			table.get(value + 1).add(drop, 8);
-			table.get(value + 2).add(drop, 1);
 		}
 
-		public void addLenientWeight(EquipmentClass ec, int value, E drop) {
-			HashMap<Integer, DropTable<E>> table = droptables.get(ec);
-			if (value >= 4) {
-				table.get(value - 4).add(drop, 1);
+		public void addLenientWeight(EquipmentClass[] ecs, int value, E drop) {
+			for (EquipmentClass ec : ecs) {
+				HashMap<Integer, DropTable<E>> table = droptables.get(ec);
+				if (value >= 4) {
+					table.get(value - 4).add(drop, 1);
+				}
+				if (value >= 3) {
+					table.get(value - 3).add(drop, 2);
+				}
+				if (value >= 2) {
+					table.get(value - 2).add(drop, 3);
+				}
+				if (value >= 1) {
+					table.get(value - 1).add(drop, 4);
+				}
+				table.get(value).add(drop, 5);
+				table.get(value + 1).add(drop, 4);
+				table.get(value + 2).add(drop, 3);
+				table.get(value + 3).add(drop, 2);
+				table.get(value + 4).add(drop, 1);
 			}
-			if (value >= 3) {
-				table.get(value - 3).add(drop, 2);
-			}
-			if (value >= 2) {
-				table.get(value - 2).add(drop, 3);
-			}
-			if (value >= 1) {
-				table.get(value - 1).add(drop, 4);
-			}
-			table.get(value).add(drop, 5);
-			table.get(value + 1).add(drop, 4);
-			table.get(value + 2).add(drop, 3);
-			table.get(value + 3).add(drop, 2);
-			table.get(value + 4).add(drop, 1);
 		}
 
 		public ArrayList<E> getMultiple(int value, int numDrops, EquipmentClass... ec) {
