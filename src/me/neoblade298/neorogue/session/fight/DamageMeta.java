@@ -142,13 +142,6 @@ public class DamageMeta {
 			}
 		}
 		
-		// If the first slice isn't a status, evade it
-		if (recipient.hasStatus(StatusType.EVADE) && !slices.peekFirst().getPostBuffType().containsBuffType(BuffType.STATUS)) {
-			if (recipient.getEntity().getType() == EntityType.PLAYER) Sounds.attackSweep.play((Player) recipient.getEntity(), recipient.getEntity());
-			slices.clear();
-			recipient.getStatus(StatusType.EVADE).apply(recipient, -1, -1);
-		}
-		
 		// Reduce damage from barriers, used only for players blocking projectiles
 		// For mobs blocking projectiles, go to damageProjectile
 		if (hitBarrier && recipient.getBarrier() != null) {
@@ -239,6 +232,7 @@ public class DamageMeta {
 					}
 				}
 			}
+			
 			double sliceDamage = Math.max(0, (slice.getDamage() * mult) + increase);
 			if (owner instanceof PlayerFightData) {
 				((PlayerFightData) owner).getStats().addDamageDealt(slice.getPostBuffType(), sliceDamage);
@@ -261,6 +255,31 @@ public class DamageMeta {
 			if (recipient.hasStatus(StatusType.REFLECT) && slice.getPostBuffType().containsBuffType(BuffType.MAGICAL)) {
 				returnDamage.addDamageSlice(new DamageSlice(recipient, recipient.getStatus(StatusType.REFLECT).getStacks(), DamageType.REFLECT));
 			}
+		}
+		
+		// If the first slice isn't a status, evade it
+		if (recipient.hasStatus(StatusType.EVADE) && !slices.peekFirst().getPostBuffType().containsBuffType(BuffType.STATUS)) {
+			if (recipient.getEntity().getType() == EntityType.PLAYER) Sounds.attackSweep.play((Player) recipient.getEntity(), recipient.getEntity());
+			PlayerFightData pl = (PlayerFightData) recipient; // Only players can have evade status
+			if (damage > pl.getStamina()) {
+				damage -= pl.getStamina();
+				pl.setStamina(0);
+			}
+			else {
+				pl.addStamina(-damage);
+				damage = 0;
+			}
+			
+			if (ignoreShieldsDamage > pl.getStamina()) {
+				ignoreShieldsDamage -= pl.getStamina();
+				pl.setStamina(0);
+			}
+			else {
+				pl.addStamina(-ignoreShieldsDamage);
+				ignoreShieldsDamage = 0;
+			}
+			
+			recipient.getStatus(StatusType.EVADE).apply(recipient, -1, -1);
 		}
 		
 		// Threat

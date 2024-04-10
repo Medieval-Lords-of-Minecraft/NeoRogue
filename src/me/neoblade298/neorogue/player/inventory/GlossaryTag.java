@@ -83,7 +83,7 @@ public enum GlossaryTag implements GlossaryIcon {
 	INVISIBLE(Material.NETHER_STAR, StatusType.INVISIBLE.tag,
 			"Certain abilities become stronger when this status is applied."),
 	EVADE(Material.PHANTOM_MEMBRANE, StatusType.EVADE.tag,
-			"Nullifies 1 instance of non-status damage.");
+			"When the holder takes damage, damage dealt is first subtracted from stamina. One stack is lost per damage instance. ");
 	
 	private ItemStack icon;
 	public String tag;
