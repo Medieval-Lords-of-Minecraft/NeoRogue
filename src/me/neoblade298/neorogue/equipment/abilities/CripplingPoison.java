@@ -14,31 +14,29 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.buff.BuffType;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class Cripple extends Equipment {
-	private static final String ID = "cripple";
-	private int reduc;
+public class CripplingPoison extends Equipment {
+	private static final String ID = "cripplingPoison";
+	private int reduc, poisonThreshold;
 	private static final ParticleContainer part = new ParticleContainer(Particle.CRIT).offsetForward(2).count(10).spread(2.5, 0.2);
 	private static final TargetProperties tp = TargetProperties.cone(90, 5, false, TargetType.ENEMY);
 	
-	public Cripple(boolean isUpgraded) {
-		super(ID, "Cripple", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 10, 15, tp.range));
+	public CripplingPoison(boolean isUpgraded) {
+		super(ID, "Crippling Poison", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 20, 15, tp.range));
 		
-		reduc = isUpgraded ? 8 : 5;
-	}
-
-	@Override
-	public void setupReforges() {
-		addSelfReforge(CripplingPoison.get(), Disorient.get(), Maim.get());
+		reduc = 8;
+		poisonThreshold = isUpgraded ? 7 : 10;
 	}
 	
 	public static Equipment get() {
@@ -51,7 +49,9 @@ public class Cripple extends Equipment {
 			Sounds.attackSweep.play(p, p);
 			part.play(p, p);
 			for (LivingEntity ent : TargetHelper.getEntitiesInCone(p, tp)) {
-				FightInstance.getFightData(ent).addBuff(data, UUID.randomUUID().toString(), true, false, BuffType.PHYSICAL, -reduc, 10);
+				FightData fd = FightInstance.getFightData(ent);
+				int add = fd.getStatus(StatusType.POISON).getStacks() / poisonThreshold;
+				fd.addBuff(data, UUID.randomUUID().toString(), true, false, BuffType.PHYSICAL, -reduc - add, 10);
 			}
 			return TriggerResult.keep();
 		}));

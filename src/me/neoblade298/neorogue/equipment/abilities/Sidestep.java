@@ -21,18 +21,18 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
-public class ShadowWalk extends Equipment {
-	private static final String ID = "shadowWalk";
+public class Sidestep extends Equipment {
+	private static final String ID = "sidestep";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.PORTAL),
 			hit = new ParticleContainer(Particle.REDSTONE).count(50).spread(0.5, 0.5);
-	private int shields, damage = 50, cdr;
+	private int damage = 80, cdr, evade;
 	
-	public ShadowWalk(boolean isUpgraded) {
-		super(ID, "Shadow Walk", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(5, 10, 15, 0));
+	public Sidestep(boolean isUpgraded) {
+		super(ID, "Night Shade", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 20, 15, 0));
 		pc.count(50).spread(0.5, 0.5).offsetY(1);
-		shields = isUpgraded ? 3 : 2;
-		cdr = isUpgraded ? 3 : 2;
+		cdr = 3;
+		evade = isUpgraded ? 3 : 2;
 	}
 	
 	public static Equipment get() {
@@ -40,17 +40,13 @@ public class ShadowWalk extends Equipment {
 	}
 
 	@Override
-	public void setupReforges() {
-		addSelfReforge(NightShade.get(), Sidestep.get(), Contaminate.get());
-	}
-
-	@Override
 	public void setupItem() {
-		item = createItem(Material.RABBIT_FOOT,
-				"On cast, Grant speed <white>1</white>, " + GlossaryTag.INVISIBLE.tag(this) + ", and " + GlossaryTag.SHIELDS.tag(this, shields, true) +
-				" for <white>3</white> seconds. "
-				+ "Your next basic attack deals an additional " + GlossaryTag.PIERCING.tag(this, damage, false) + " damage. Basic attacks decrease the cooldown"
-						+ " of this ability by <yellow>" + cdr + "</yellow> second(s).");
+		item = createItem(Material.OBSIDIAN,
+				"On cast, Grant speed <white>1</white> and " + GlossaryTag.INVISIBLE.tag(this) + " for <white>3</white> seconds. "
+				+ "Also grant " + GlossaryTag.EVADE.tag(this, 1, true) + ". "
+				+ "Your next basic attack deals an additional " + GlossaryTag.PIERCING.tag(this, damage, false) + " damage. "
+						+ "Basic attacks decrease the cooldown"
+						+ " of this ability by <white>" + cdr + "</white> second(s).");
 	}
 
 	@Override
@@ -61,7 +57,7 @@ public class ShadowWalk extends Equipment {
 			pc.play(p, p);
 			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 60, 0));
 			data.applyStatus(StatusType.INVISIBLE, data, 1, 60);
-			data.addSimpleShield(p.getUniqueId(), shields, 60);
+			data.applyStatus(StatusType.EVADE, data, evade, -1);
 			inst.addCount(1);
 			return TriggerResult.keep();
 		});

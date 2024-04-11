@@ -15,24 +15,26 @@ import me.neoblade298.neorogue.equipment.StandardEquipmentInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageType;
+import me.neoblade298.neorogue.session.fight.FightData;
+import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
-public class ShadowWalk extends Equipment {
-	private static final String ID = "shadowWalk";
+public class Contaminate extends Equipment {
+	private static final String ID = "contaminate";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.PORTAL),
 			hit = new ParticleContainer(Particle.REDSTONE).count(50).spread(0.5, 0.5);
-	private int shields, damage = 50, cdr;
+	private int damage = 80;
+	private double mult;
 	
-	public ShadowWalk(boolean isUpgraded) {
-		super(ID, "Shadow Walk", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(5, 10, 15, 0));
+	public Contaminate(boolean isUpgraded) {
+		super(ID, "Contaminate", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 20, 15, 0));
 		pc.count(50).spread(0.5, 0.5).offsetY(1);
-		shields = isUpgraded ? 3 : 2;
-		cdr = isUpgraded ? 3 : 2;
+		mult = isUpgraded ? 2 : 1.5;
 	}
 	
 	public static Equipment get() {
@@ -40,17 +42,11 @@ public class ShadowWalk extends Equipment {
 	}
 
 	@Override
-	public void setupReforges() {
-		addSelfReforge(NightShade.get(), Sidestep.get(), Contaminate.get());
-	}
-
-	@Override
 	public void setupItem() {
-		item = createItem(Material.RABBIT_FOOT,
-				"On cast, Grant speed <white>1</white>, " + GlossaryTag.INVISIBLE.tag(this) + ", and " + GlossaryTag.SHIELDS.tag(this, shields, true) +
-				" for <white>3</white> seconds. "
-				+ "Your next basic attack deals an additional " + GlossaryTag.PIERCING.tag(this, damage, false) + " damage. Basic attacks decrease the cooldown"
-						+ " of this ability by <yellow>" + cdr + "</yellow> second(s).");
+		item = createItem(Material.POISONOUS_POTATO,
+				"On cast, Grant speed <white>1</white> and " + GlossaryTag.INVISIBLE.tag(this) + " for <white>3</white> seconds. "
+				+ "Your next basic attack deals an additional " + GlossaryTag.PIERCING.tag(this, damage, false) + " damage and multiplies existing stacks of "
+				+ GlossaryTag.POISON.tag(this) + " on the enemy hit by <yellow>" + mult + "</yellow>, rounded down.");
 	}
 
 	@Override
@@ -61,20 +57,22 @@ public class ShadowWalk extends Equipment {
 			pc.play(p, p);
 			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 60, 0));
 			data.applyStatus(StatusType.INVISIBLE, data, 1, 60);
-			data.addSimpleShield(p.getUniqueId(), shields, 60);
 			inst.addCount(1);
 			return TriggerResult.keep();
 		});
 		
 		data.addTrigger(ID, bind, inst);
 		data.addTrigger(ID, Trigger.BASIC_ATTACK, (pdata, in) -> {
-			inst.reduceCooldown(cdr);
 			if (inst.getCount() > 0) {
 				inst.addCount(-1);
 				BasicAttackEvent ev = (BasicAttackEvent) in;
 				hit.play(p, p);
 				Sounds.anvil.play(p, p);
 				ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.PIERCING));
+				FightData fd = FightInstance.getFightData(ev.getTarget());
+				int toAdd = (int) (fd.getStatus(StatusType.POISON).getStacks() * (mult - 1));
+				if (toAdd <= 0) return TriggerResult.keep();
+				fd.applyStatus(StatusType.POISON, data, toAdd, -1);
 			}
 			return TriggerResult.keep();
 		});

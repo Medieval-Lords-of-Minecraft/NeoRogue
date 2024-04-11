@@ -15,24 +15,26 @@ import me.neoblade298.neorogue.equipment.StandardEquipmentInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageType;
+import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
-public class ShadowWalk extends Equipment {
-	private static final String ID = "shadowWalk";
+public class NightShade extends Equipment {
+	private static final String ID = "nightShade";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.PORTAL),
 			hit = new ParticleContainer(Particle.REDSTONE).count(50).spread(0.5, 0.5);
-	private int shields, damage = 50, cdr;
+	private int shields, damage = 80, cdr, insanity;
 	
-	public ShadowWalk(boolean isUpgraded) {
-		super(ID, "Shadow Walk", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(5, 10, 15, 0));
+	public NightShade(boolean isUpgraded) {
+		super(ID, "Night Shade", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 20, 15, 0));
 		pc.count(50).spread(0.5, 0.5).offsetY(1);
-		shields = isUpgraded ? 3 : 2;
-		cdr = isUpgraded ? 3 : 2;
+		shields = 3;
+		cdr = 3;
+		insanity = isUpgraded ? 9 : 6;
 	}
 	
 	public static Equipment get() {
@@ -40,17 +42,13 @@ public class ShadowWalk extends Equipment {
 	}
 
 	@Override
-	public void setupReforges() {
-		addSelfReforge(NightShade.get(), Sidestep.get(), Contaminate.get());
-	}
-
-	@Override
 	public void setupItem() {
-		item = createItem(Material.RABBIT_FOOT,
-				"On cast, Grant speed <white>1</white>, " + GlossaryTag.INVISIBLE.tag(this) + ", and " + GlossaryTag.SHIELDS.tag(this, shields, true) +
+		item = createItem(Material.OBSIDIAN,
+				"On cast, Grant speed <white>1</white>, " + GlossaryTag.INVISIBLE.tag(this) + ", and " + GlossaryTag.SHIELDS.tag(this, shields, false) +
 				" for <white>3</white> seconds. "
-				+ "Your next basic attack deals an additional " + GlossaryTag.PIERCING.tag(this, damage, false) + " damage. Basic attacks decrease the cooldown"
-						+ " of this ability by <yellow>" + cdr + "</yellow> second(s).");
+				+ "Your next basic attack deals an additional " + GlossaryTag.DARK.tag(this, damage, false) + " damage and applies " +
+				GlossaryTag.INSANITY.tag(this, insanity, true) + ". Basic attacks decrease the cooldown"
+						+ " of this ability by <white>" + cdr + "</white> second(s).");
 	}
 
 	@Override
@@ -74,7 +72,8 @@ public class ShadowWalk extends Equipment {
 				BasicAttackEvent ev = (BasicAttackEvent) in;
 				hit.play(p, p);
 				Sounds.anvil.play(p, p);
-				ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.PIERCING));
+				ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.DARK));
+				FightInstance.applyStatus(ev.getTarget(), StatusType.INSANITY, p, insanity, -1);
 			}
 			return TriggerResult.keep();
 		});

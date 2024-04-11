@@ -14,31 +14,31 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageType;
+import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.buff.BuffType;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class Cripple extends Equipment {
-	private static final String ID = "cripple";
-	private int reduc;
-	private static final ParticleContainer part = new ParticleContainer(Particle.CRIT).offsetForward(2).count(10).spread(2.5, 0.2);
+public class Disorient extends Equipment {
+	private static final String ID = "disorient";
+	private int reduc, damage, insanity;
+	private static final ParticleContainer part = new ParticleContainer(Particle.PORTAL).offsetForward(2).count(10).spread(2.5, 0.2);
 	private static final TargetProperties tp = TargetProperties.cone(90, 5, false, TargetType.ENEMY);
 	
-	public Cripple(boolean isUpgraded) {
-		super(ID, "Cripple", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 10, 15, tp.range));
+	public Disorient(boolean isUpgraded) {
+		super(ID, "Disorient", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 0, 15, tp.range));
 		
-		reduc = isUpgraded ? 8 : 5;
-	}
-
-	@Override
-	public void setupReforges() {
-		addSelfReforge(CripplingPoison.get(), Disorient.get(), Maim.get());
+		reduc = 8;
+		damage = isUpgraded ? 60 : 40;
+		insanity = isUpgraded ? 5 : 3;
 	}
 	
 	public static Equipment get() {
@@ -51,7 +51,10 @@ public class Cripple extends Equipment {
 			Sounds.attackSweep.play(p, p);
 			part.play(p, p);
 			for (LivingEntity ent : TargetHelper.getEntitiesInCone(p, tp)) {
-				FightInstance.getFightData(ent).addBuff(data, UUID.randomUUID().toString(), true, false, BuffType.PHYSICAL, -reduc, 10);
+				FightData fd = FightInstance.getFightData(ent);
+				fd.addBuff(data, UUID.randomUUID().toString(), true, false, BuffType.PHYSICAL, -reduc, 10);
+				fd.applyStatus(StatusType.INSANITY, data, insanity, -1);
+				FightInstance.dealDamage(fd, DamageType.DARK, damage, ent);
 			}
 			return TriggerResult.keep();
 		}));
@@ -61,6 +64,7 @@ public class Cripple extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.ARMOR_STAND,
 				"On cast, reduce the " + GlossaryTag.PHYSICAL.tag(this) + " damage of enemies in a cone in front of you by <yellow>" + reduc + "</yellow>"
-						+ " for <white>10</white> seconds.");
+						+ " for <white>10</white> seconds. Also deal " + GlossaryTag.DARK.tag(this, damage, true) + " damage and apply " +
+						GlossaryTag.INSANITY.tag(this, insanity, true) + ".");
 	}
 }
