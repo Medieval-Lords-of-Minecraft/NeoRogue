@@ -23,10 +23,74 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.droptables.DropTable;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
-import me.neoblade298.neorogue.equipment.abilities.*;
+import me.neoblade298.neorogue.equipment.abilities.Adrenaline;
+import me.neoblade298.neorogue.equipment.abilities.Atone;
+import me.neoblade298.neorogue.equipment.abilities.BattleCry;
+import me.neoblade298.neorogue.equipment.abilities.BerserkersCall;
+import me.neoblade298.neorogue.equipment.abilities.Bide;
+import me.neoblade298.neorogue.equipment.abilities.BlessedEdge;
+import me.neoblade298.neorogue.equipment.abilities.Bloodlust;
+import me.neoblade298.neorogue.equipment.abilities.Brace;
+import me.neoblade298.neorogue.equipment.abilities.Brace2;
+import me.neoblade298.neorogue.equipment.abilities.BreakTheLine;
+import me.neoblade298.neorogue.equipment.abilities.Bulldoze;
+import me.neoblade298.neorogue.equipment.abilities.Bulwark;
+import me.neoblade298.neorogue.equipment.abilities.Burst;
+import me.neoblade298.neorogue.equipment.abilities.Challenge;
+import me.neoblade298.neorogue.equipment.abilities.Charge;
+import me.neoblade298.neorogue.equipment.abilities.Cleave;
+import me.neoblade298.neorogue.equipment.abilities.Cripple;
+import me.neoblade298.neorogue.equipment.abilities.DarkPact;
+import me.neoblade298.neorogue.equipment.abilities.Discipline;
+import me.neoblade298.neorogue.equipment.abilities.EarthenTackle;
+import me.neoblade298.neorogue.equipment.abilities.Embolden;
+import me.neoblade298.neorogue.equipment.abilities.EmpoweredEdge;
+import me.neoblade298.neorogue.equipment.abilities.Endure;
+import me.neoblade298.neorogue.equipment.abilities.Enlighten;
+import me.neoblade298.neorogue.equipment.abilities.Envenom;
+import me.neoblade298.neorogue.equipment.abilities.EscapePlan;
+import me.neoblade298.neorogue.equipment.abilities.Execute;
+import me.neoblade298.neorogue.equipment.abilities.ExploitWeakness;
+import me.neoblade298.neorogue.equipment.abilities.Ferocity;
+import me.neoblade298.neorogue.equipment.abilities.Fissure;
+import me.neoblade298.neorogue.equipment.abilities.Flurry;
+import me.neoblade298.neorogue.equipment.abilities.Focus;
+import me.neoblade298.neorogue.equipment.abilities.Fortify;
+import me.neoblade298.neorogue.equipment.abilities.Frenzy;
+import me.neoblade298.neorogue.equipment.abilities.Fury;
+import me.neoblade298.neorogue.equipment.abilities.GraniteShield;
+import me.neoblade298.neorogue.equipment.abilities.HoldTheLine;
+import me.neoblade298.neorogue.equipment.abilities.Ironskin;
+import me.neoblade298.neorogue.equipment.abilities.MightySwing;
+import me.neoblade298.neorogue.equipment.abilities.MortalEngine;
+import me.neoblade298.neorogue.equipment.abilities.Parry;
+import me.neoblade298.neorogue.equipment.abilities.Pin;
+import me.neoblade298.neorogue.equipment.abilities.PoolOfLight;
+import me.neoblade298.neorogue.equipment.abilities.Prayer;
+import me.neoblade298.neorogue.equipment.abilities.Provoke;
+import me.neoblade298.neorogue.equipment.abilities.Quake;
+import me.neoblade298.neorogue.equipment.abilities.Revenge;
+import me.neoblade298.neorogue.equipment.abilities.Roar;
+import me.neoblade298.neorogue.equipment.abilities.ShadowWalk;
+import me.neoblade298.neorogue.equipment.abilities.SilentSteps;
+import me.neoblade298.neorogue.equipment.abilities.SiphoningStrike;
+import me.neoblade298.neorogue.equipment.abilities.Skirmisher;
+import me.neoblade298.neorogue.equipment.abilities.Smite;
+import me.neoblade298.neorogue.equipment.abilities.SmokeBomb;
+import me.neoblade298.neorogue.equipment.abilities.SpiritOfTheDragoon;
+import me.neoblade298.neorogue.equipment.abilities.Sturdy;
+import me.neoblade298.neorogue.equipment.abilities.Tackle;
+import me.neoblade298.neorogue.equipment.abilities.TargetAcquisition;
+import me.neoblade298.neorogue.equipment.abilities.Thornguard;
+import me.neoblade298.neorogue.equipment.abilities.Titan;
+import me.neoblade298.neorogue.equipment.abilities.WarCry;
+import me.neoblade298.neorogue.equipment.abilities.WeaponEnchantmentHoly;
+import me.neoblade298.neorogue.equipment.abilities.WindSlash;
+import me.neoblade298.neorogue.equipment.abilities.Windcutter;
 import me.neoblade298.neorogue.equipment.accessories.EarthenRing;
 import me.neoblade298.neorogue.equipment.accessories.GripGloves;
 import me.neoblade298.neorogue.equipment.accessories.MinorManaRelic;
+import me.neoblade298.neorogue.equipment.accessories.MinorPoisonRelic;
 import me.neoblade298.neorogue.equipment.accessories.MinorShieldingRelic;
 import me.neoblade298.neorogue.equipment.accessories.MinorStaminaRelic;
 import me.neoblade298.neorogue.equipment.accessories.MinorStrengthRelic;
@@ -86,7 +150,39 @@ import me.neoblade298.neorogue.equipment.offhands.RubyArmament;
 import me.neoblade298.neorogue.equipment.offhands.SmallShield;
 import me.neoblade298.neorogue.equipment.offhands.SpikyShield;
 import me.neoblade298.neorogue.equipment.offhands.WristBlade;
-import me.neoblade298.neorogue.equipment.weapons.*;
+import me.neoblade298.neorogue.equipment.weapons.BoltWand;
+import me.neoblade298.neorogue.equipment.weapons.ChainLightningWand;
+import me.neoblade298.neorogue.equipment.weapons.CrescentAxe;
+import me.neoblade298.neorogue.equipment.weapons.CrimsonBlade;
+import me.neoblade298.neorogue.equipment.weapons.CripplingFencingSword;
+import me.neoblade298.neorogue.equipment.weapons.DarkScepter;
+import me.neoblade298.neorogue.equipment.weapons.EarthStaff;
+import me.neoblade298.neorogue.equipment.weapons.EarthenLeatherGauntlets;
+import me.neoblade298.neorogue.equipment.weapons.FencingSword;
+import me.neoblade298.neorogue.equipment.weapons.FireStaff;
+import me.neoblade298.neorogue.equipment.weapons.Flametongue;
+import me.neoblade298.neorogue.equipment.weapons.ForcefulLeatherGauntlets;
+import me.neoblade298.neorogue.equipment.weapons.Fracturer;
+import me.neoblade298.neorogue.equipment.weapons.Harpoon;
+import me.neoblade298.neorogue.equipment.weapons.IceWand;
+import me.neoblade298.neorogue.equipment.weapons.LeatherGauntlets;
+import me.neoblade298.neorogue.equipment.weapons.LightLeatherGauntlets;
+import me.neoblade298.neorogue.equipment.weapons.LightningWand;
+import me.neoblade298.neorogue.equipment.weapons.MassiveHalberd;
+import me.neoblade298.neorogue.equipment.weapons.Rapier;
+import me.neoblade298.neorogue.equipment.weapons.RighteousHammer;
+import me.neoblade298.neorogue.equipment.weapons.ShieldPike;
+import me.neoblade298.neorogue.equipment.weapons.SilverFang;
+import me.neoblade298.neorogue.equipment.weapons.SparkStick;
+import me.neoblade298.neorogue.equipment.weapons.StoneAxe;
+import me.neoblade298.neorogue.equipment.weapons.StoneHammer;
+import me.neoblade298.neorogue.equipment.weapons.StoneMace;
+import me.neoblade298.neorogue.equipment.weapons.StoneSpear;
+import me.neoblade298.neorogue.equipment.weapons.StoneSword;
+import me.neoblade298.neorogue.equipment.weapons.TreeTrunk;
+import me.neoblade298.neorogue.equipment.weapons.WoodenDagger;
+import me.neoblade298.neorogue.equipment.weapons.WoodenSword;
+import me.neoblade298.neorogue.equipment.weapons.WoodenWand;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.GlossaryIcon;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -119,7 +215,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 	protected boolean isUpgraded, canDrop = true, isCursed;
 	protected ItemStack item;
 	protected Rarity rarity;
-	protected EquipmentClass ec;
+	protected EquipmentClass[] ecs;
 	protected EquipmentType type;
 	protected EquipmentProperties properties;
 	protected int cooldown = 0;
@@ -201,6 +297,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			// Accessories
 			new EarthenRing(b);
 			new GripGloves(b);
+			new MinorPoisonRelic(b);
 			new MinorShieldingRelic(b);
 			new MinorStaminaRelic(b);
 			new MinorStrengthRelic(b);
@@ -352,10 +449,15 @@ public abstract class Equipment implements Comparable<Equipment> {
 
 	public Equipment(String id, String display, boolean isUpgraded, Rarity rarity, EquipmentClass ec,
 			EquipmentType type, EquipmentProperties props) {
+		this(id, display, isUpgraded, rarity, new EquipmentClass[] {ec}, type, props);
+	}
+
+	public Equipment(String id, String display, boolean isUpgraded, Rarity rarity, EquipmentClass[] ecs,
+			EquipmentType type, EquipmentProperties props) {
 		this.id = id;
 		this.rarity = rarity;
 		this.isUpgraded = isUpgraded;
-		this.ec = ec;
+		this.ecs = ecs;
 		this.type = type;
 		this.properties = props;
 
@@ -375,7 +477,12 @@ public abstract class Equipment implements Comparable<Equipment> {
 
 	public Equipment(String id, String display, boolean isUpgraded, Rarity rarity, EquipmentClass ec,
 			EquipmentType type) {
-		this(id, display, isUpgraded, rarity, ec, type, EquipmentProperties.none());
+		this(id, display, isUpgraded, rarity, new EquipmentClass[] {ec}, type, EquipmentProperties.none());
+	}
+
+	public Equipment(String id, String display, boolean isUpgraded, Rarity rarity, EquipmentClass[] ecs,
+			EquipmentType type) {
+		this(id, display, isUpgraded, rarity, ecs, type, EquipmentProperties.none());
 	}
 
 	// For curses
@@ -383,7 +490,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		this.id = id;
 		this.rarity = Rarity.COMMON;
 		this.isUpgraded = false;
-		this.ec = EquipmentClass.CLASSLESS;
+		this.ecs = new EquipmentClass[] {EquipmentClass.CLASSLESS};
 		this.type = type;
 		this.display = SharedUtil.color("<red>" + display);
 		this.properties = EquipmentProperties.none();
@@ -402,7 +509,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		this.id = id;
 		this.rarity = rarity;
 		this.isUpgraded = false;
-		this.ec = ec;
+		this.ecs = new EquipmentClass[] {ec};
 		this.type = EquipmentType.MATERIAL;
 		this.display = rarity.applyDecorations(SharedUtil.color(display));
 		this.properties = EquipmentProperties.none();
@@ -451,13 +558,13 @@ public abstract class Equipment implements Comparable<Equipment> {
 		// Artifacts and consumables get their own special droptable with special weight
 		// due to reduced amount
 		if (this instanceof Artifact) {
-			artifacts.addLenientWeight(ec, value, (Artifact) this);
+			artifacts.addLenientWeight(ecs, value, (Artifact) this);
 		}
 		else if (this instanceof Consumable) {
-			consumables.addLenientWeight(ec, value, (Consumable) this);
+			consumables.addLenientWeight(ecs, value, (Consumable) this);
 		}
 		else {
-			droptables.add(ec, value, this);
+			droptables.add(ecs, value, this);
 		}
 	}
 
@@ -646,8 +753,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 		return reforgeOptions;
 	}
 	
-	public EquipmentClass getEquipmentClass() {
-		return ec;
+	public EquipmentClass[] getEquipmentClasses() {
+		return ecs;
 	}
 
 	public boolean containsReforgeOption(String id) {
@@ -979,38 +1086,42 @@ public abstract class Equipment implements Comparable<Equipment> {
 			}
 		}
 
-		public void add(EquipmentClass ec, int value, E drop) {
-			HashMap<Integer, DropTable<E>> table = droptables.get(ec);
-			if (value >= 2) {
-				table.get(value - 2).add(drop, 1);
+		public void add(EquipmentClass[] ecs, int value, E drop) {
+			for (EquipmentClass ec : ecs) {
+				HashMap<Integer, DropTable<E>> table = droptables.get(ec);
+				if (value >= 2) {
+					table.get(value - 2).add(drop, 1);
+				}
+				if (value >= 1) {
+					table.get(value - 1).add(drop, 8);
+				}
+				table.get(value).add(drop, 32);
+				table.get(value + 1).add(drop, 8);
+				table.get(value + 2).add(drop, 1);
 			}
-			if (value >= 1) {
-				table.get(value - 1).add(drop, 8);
-			}
-			table.get(value).add(drop, 32);
-			table.get(value + 1).add(drop, 8);
-			table.get(value + 2).add(drop, 1);
 		}
 
-		public void addLenientWeight(EquipmentClass ec, int value, E drop) {
-			HashMap<Integer, DropTable<E>> table = droptables.get(ec);
-			if (value >= 4) {
-				table.get(value - 4).add(drop, 1);
+		public void addLenientWeight(EquipmentClass[] ecs, int value, E drop) {
+			for (EquipmentClass ec : ecs) {
+				HashMap<Integer, DropTable<E>> table = droptables.get(ec);
+				if (value >= 4) {
+					table.get(value - 4).add(drop, 1);
+				}
+				if (value >= 3) {
+					table.get(value - 3).add(drop, 2);
+				}
+				if (value >= 2) {
+					table.get(value - 2).add(drop, 3);
+				}
+				if (value >= 1) {
+					table.get(value - 1).add(drop, 4);
+				}
+				table.get(value).add(drop, 5);
+				table.get(value + 1).add(drop, 4);
+				table.get(value + 2).add(drop, 3);
+				table.get(value + 3).add(drop, 2);
+				table.get(value + 4).add(drop, 1);
 			}
-			if (value >= 3) {
-				table.get(value - 3).add(drop, 2);
-			}
-			if (value >= 2) {
-				table.get(value - 2).add(drop, 3);
-			}
-			if (value >= 1) {
-				table.get(value - 1).add(drop, 4);
-			}
-			table.get(value).add(drop, 5);
-			table.get(value + 1).add(drop, 4);
-			table.get(value + 2).add(drop, 3);
-			table.get(value + 3).add(drop, 2);
-			table.get(value + 4).add(drop, 1);
 		}
 
 		public ArrayList<E> getMultiple(int value, int numDrops, EquipmentClass... ec) {
