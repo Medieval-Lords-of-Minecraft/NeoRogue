@@ -17,6 +17,9 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardEquipmentInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageType;
+import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
@@ -24,22 +27,19 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
-public class Envenom extends Equipment {
-	private static final String ID = "envenom";
-	private int poison;
+public class PiercingVenom extends Equipment {
+	private static final String ID = "piercingVenom";
+	private int poison, dur, threshold;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.REDSTONE).dustOptions(new DustOptions(Color.GREEN, 1)).count(50).spread(0.5, 0.5).speed(0.2);
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_GENERIC_SWIM);
 	
-	public Envenom(boolean isUpgraded) {
-		super(ID, "Envenom", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
+	public PiercingVenom(boolean isUpgraded) {
+		super(ID, "Piercing Venom", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 10, 12, 0));
 		properties.addUpgrades(PropertyType.COOLDOWN);
-		poison = isUpgraded ? 5 : 3;
-	}
-
-	@Override
-	public void setupReforges() {
-		addSelfReforge(EndlessVenom.get(), PiercingVenom.get(), Envenom2.get());
+		poison = 5;
+		dur = 3;
+		threshold = isUpgraded ? 3 : 2;
 	}
 	
 	public static Equipment get() {
@@ -64,7 +64,10 @@ public class Envenom extends Equipment {
 		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in) -> {
 			if (inst.getCount() == 0) return TriggerResult.keep();
 			BasicAttackEvent ev = (BasicAttackEvent) in;
-			FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, poison, 60);
+			FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, poison, 20 * dur);
+			FightData fd = FightInstance.getFightData(ev.getTarget());
+			int damage = fd.getStatus(StatusType.POISON).getStacks() / threshold;
+			ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.PIERCING));
 			return TriggerResult.keep();
 		});
 	}
@@ -72,6 +75,7 @@ public class Envenom extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GREEN_DYE,
-				"On cast, your basic attacks apply " + GlossaryTag.POISON.tag(this, poison, true) + " for <white>3</white> seconds.");
+				"On cast, your basic attacks apply " + GlossaryTag.POISON.tag(this, poison, true) + " for <yellow>" + dur + "</yellow> seconds and deal <white>1</white> additional "
+						+ GlossaryTag.PIERCING.tag(this) + " damage for every <yellow>" + threshold + "</yellow> stacks of poison the enemy has.");
 	}
 }

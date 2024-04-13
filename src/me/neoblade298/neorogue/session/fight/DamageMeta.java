@@ -333,6 +333,14 @@ public class DamageMeta {
 		return returnDamage;
 	}
 	
+	public DamageSlice getPrimarySlice() {
+		return slices.getFirst();
+	}
+	
+	public LinkedList<DamageSlice> getSlices() {
+		return slices;
+	}
+	
 	private class BuffMeta {
 		protected Buff buff;
 		protected BuffOrigin origin;

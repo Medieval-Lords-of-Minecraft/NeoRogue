@@ -734,16 +734,16 @@ public abstract class FightInstance extends Instance {
 	
 	public static void dealDamage(DamageMeta meta, Collection<LivingEntity> targets) {
 		if (meta.getOwner() instanceof PlayerFightData) {
-			trigger((Player) meta.getOwner().getEntity(), Trigger.DEALT_DAMAGE_MULTIPLE, new DealtDamageEvent(meta));
+			trigger((Player) meta.getOwner().getEntity(), Trigger.DEALT_DAMAGE_MULTIPLE, new DealtDamageEvent(meta, targets));
 		}
 		for (LivingEntity target : targets) {
-			meta.clone().dealDamage(target);
+			dealDamage(meta.clone(), target);
 		}
 	}
 	
 	public static void dealDamage(DamageMeta meta, LivingEntity target) {
 		if (meta.getOwner() instanceof PlayerFightData) {
-			trigger((Player) meta.getOwner().getEntity(), Trigger.DEALT_DAMAGE, new DealtDamageEvent(meta));
+			trigger((Player) meta.getOwner().getEntity(), Trigger.DEALT_DAMAGE, new DealtDamageEvent(meta, target));
 		}
 		meta.dealDamage(target);
 	}

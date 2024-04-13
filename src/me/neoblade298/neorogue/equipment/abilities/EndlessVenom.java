@@ -24,22 +24,18 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
-public class Envenom extends Equipment {
-	private static final String ID = "envenom";
-	private int poison;
+public class EndlessVenom extends Equipment {
+	private static final String ID = "endlessVenom";
+	private int poison, dur;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.REDSTONE).dustOptions(new DustOptions(Color.GREEN, 1)).count(50).spread(0.5, 0.5).speed(0.2);
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_GENERIC_SWIM);
 	
-	public Envenom(boolean isUpgraded) {
-		super(ID, "Envenom", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
+	public EndlessVenom(boolean isUpgraded) {
+		super(ID, "Endless Venom", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 10, 12, 0));
 		properties.addUpgrades(PropertyType.COOLDOWN);
-		poison = isUpgraded ? 5 : 3;
-	}
-
-	@Override
-	public void setupReforges() {
-		addSelfReforge(EndlessVenom.get(), PiercingVenom.get(), Envenom2.get());
+		poison = 5;
+		dur = isUpgraded ? 7 : 5;
 	}
 	
 	public static Equipment get() {
@@ -64,7 +60,7 @@ public class Envenom extends Equipment {
 		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in) -> {
 			if (inst.getCount() == 0) return TriggerResult.keep();
 			BasicAttackEvent ev = (BasicAttackEvent) in;
-			FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, poison, 60);
+			FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, poison, 20 * dur);
 			return TriggerResult.keep();
 		});
 	}
@@ -72,6 +68,6 @@ public class Envenom extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GREEN_DYE,
-				"On cast, your basic attacks apply " + GlossaryTag.POISON.tag(this, poison, true) + " for <white>3</white> seconds.");
+				"On cast, your basic attacks apply " + GlossaryTag.POISON.tag(this, poison, true) + " for <yellow>" + dur + "</yellow> seconds.");
 	}
 }

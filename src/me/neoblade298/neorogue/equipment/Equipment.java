@@ -161,7 +161,9 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new EmpoweredEdge(b);
 			new Endure(b);
 			new Enlighten(b);
+			new EndlessVenom(b);
 			new Envenom(b);
+			new Envenom2(b);
 			new EscapePlan(b);
 			new Execute(b);
 			new ExploitWeakness(b);
@@ -181,6 +183,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new MortalEngine(b);
 			new NightShade(b);
 			new Parry(b);
+			new PiercingVenom(b);
 			new Pin(b);
 			new PoolOfLight(b);
 			new Prayer(b);
