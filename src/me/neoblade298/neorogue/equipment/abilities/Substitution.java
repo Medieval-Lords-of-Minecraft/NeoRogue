@@ -24,21 +24,16 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
-public class EscapePlan extends Equipment {
-	private static final String ID = "escapePlan";
+public class Substitution extends Equipment {
+	private static final String ID = "substitution";
 	private int damage;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD).count(50).spread(0.5, 0);
 	
-	public EscapePlan(boolean isUpgraded) {
-		super(ID, "Escape Plan", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
+	public Substitution(boolean isUpgraded) {
+		super(ID, "Substitution", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 25, 15, 0));
 		properties.addUpgrades(PropertyType.COOLDOWN);
 		damage = isUpgraded ? 100 : 70;
-	}
-
-	@Override
-	public void setupReforges() {
-		addSelfReforge(Substitution.get(), Preparation.get());
 	}
 	
 	public static Equipment get() {
@@ -59,9 +54,16 @@ public class EscapePlan extends Equipment {
 		data.addTrigger(ID, Trigger.BASIC_ATTACK, (pdata, in) -> {
 			if (!inst.basicAttack) return TriggerResult.keep();
 			BasicAttackEvent ev = (BasicAttackEvent) in;
-			ev.getMeta().addDamageSlice(new DamageSlice(pdata, damage, DamageType.SLASHING));
+			ev.getMeta().addDamageSlice(new DamageSlice(pdata, damage, DamageType.PIERCING));
 			Sounds.anvil.play(p, p);
 			inst.basicAttack = false;
+			return TriggerResult.keep();
+		});
+		data.addTrigger(ID, Trigger.RECEIVED_DAMAGE, (pdata, in) -> {
+			if (inst.active) {
+				inst.activeCast(pdata);
+				return TriggerResult.of(false, true);
+			}
 			return TriggerResult.keep();
 		});
 	}
@@ -109,7 +111,8 @@ public class EscapePlan extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLAZE_POWDER,
-				"On cast, drop a marker on the ground that you can teleport to on re-cast. Your next basic attack deals an additional " + GlossaryTag.SLASHING.tag(this, damage, true)
-						+ " damage. Becoming " + GlossaryTag.INVISIBLE.tag(this) + " reduces the cooldown of this ability by <white>3</white>.");
+				"On cast, drop a marker on the ground that you can teleport to on re-cast. Your next basic attack deals an additional " + GlossaryTag.PIERCING.tag(this, damage, true)
+						+ " damage. Becoming " + GlossaryTag.INVISIBLE.tag(this) + " reduces the cooldown of this ability by <white>3</white>. "
+						+ "Taking damage while the marker is active will automatically cancel the damage and re-cast the ability.");
 	}
 }

@@ -1,0 +1,79 @@
+package me.neoblade298.neorogue.equipment.abilities;
+
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
+
+import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
+import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.StandardPriorityAction;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageType;
+import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.trigger.Trigger;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
+
+public class Preparation extends Equipment {
+	private static final String ID = "preparation";
+	private int damage, shields;
+	
+	public Preparation(boolean isUpgraded) {
+		super(ID, "Preparation", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 25, 25, 0));
+		properties.addUpgrades(PropertyType.COOLDOWN);
+		damage = isUpgraded ? 100 : 70;
+		shields = isUpgraded ? 15 : 10;
+	}
+
+	@Override
+	public void setupReforges() {
+		addSelfReforge(Substitution.get());
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
+	}
+
+	@Override
+	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		StandardPriorityAction inst = new StandardPriorityAction(ID);
+		data.addTrigger(ID, bind, (pdata, in) -> {
+			Sounds.equip.play(p, p);
+			p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 100, 0));
+			data.addTask(new BukkitRunnable() {
+				public void run() {
+					inst.setCount(1);
+					data.addTask(new BukkitRunnable() {
+						public void run() {
+							inst.setCount(0);
+						}
+					}.runTaskLater(NeoRogue.inst(), 200L));
+				}
+			}.runTaskLater(NeoRogue.inst(), 100L));
+			return TriggerResult.keep();
+		});
+		
+		inst.setAction((pdata, in) -> {
+			if (inst.getCount() == 0) return TriggerResult.keep();
+			BasicAttackEvent ev = (BasicAttackEvent) in;
+			ev.getMeta().addDamageSlice(new DamageSlice(pdata, damage, DamageType.SLASHING));
+			Sounds.anvil.play(p, p);
+			return TriggerResult.keep();
+		});
+	}
+
+	@Override
+	public void setupItem() {
+		item = createItem(Material.BLAZE_POWDER,
+				"On cast, charge for <white>5</white> seconds before gaining " + GlossaryTag.SHIELDS.tag(this, shields, true) + " and deal "
+				+ GlossaryTag.SLASHING.tag(this, damage, true) + " damage on basic attacks for <white>10</white> seconds.");
+	}
+}

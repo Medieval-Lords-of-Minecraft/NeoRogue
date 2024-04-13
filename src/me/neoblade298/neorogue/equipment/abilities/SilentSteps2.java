@@ -13,20 +13,15 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 
-public class SilentSteps extends Equipment {
-	private static final String ID = "silentSteps";
+public class SilentSteps2 extends Equipment {
+	private static final String ID = "silentSteps2";
 	private int duration, reduc;
 	
-	public SilentSteps(boolean isUpgraded) {
-		super(ID, "Silent Steps", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
+	public SilentSteps2(boolean isUpgraded) {
+		super(ID, "Silent Steps II", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.none());
-		duration = isUpgraded ? 2 : 1;
-		reduc = isUpgraded ? 3 : 2;
-	}
-
-	@Override
-	public void setupReforges() {
-		addSelfReforge(Flicker.get(), Vanish.get(), SilentSteps2.get());
+		duration = 2;
+		reduc = isUpgraded ? 9 : 6;
 	}
 	
 	public static Equipment get() {
@@ -38,7 +33,7 @@ public class SilentSteps extends Equipment {
 		data.addTrigger(ID,  Trigger.RECEIVE_STATUS, (pdata, in) -> {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
 			if (!ev.getStatusId().equals(StatusType.INVISIBLE.name())) return TriggerResult.keep();
-			ev.getDurationBuff().addIncrease(data, 20);
+			ev.getDurationBuff().addIncrease(data, duration);
 			return TriggerResult.keep();
 		});
 	}

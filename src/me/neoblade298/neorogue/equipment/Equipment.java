@@ -169,6 +169,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new ExploitWeakness(b);
 			new Ferocity(b);
 			new Fissure(b);
+			new Flicker(b);
 			new Flurry(b);
 			new Focus(b);
 			new Fortify(b);
@@ -194,6 +195,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new ShadowWalk(b);
 			new Sidestep(b);
 			new SilentSteps(b);
+			new SilentSteps2(b);
 			new SiphoningStrike(b);
 			new Skirmisher(b);
 			new Smite(b);
@@ -203,6 +205,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Thornguard(b);
 			new Titan(b);
 			new TreeTrunk(b);
+			new Vanish(b);
 			new WarCry(b);
 			new WeaponEnchantmentHoly(b);
 			new Windcutter(b);
