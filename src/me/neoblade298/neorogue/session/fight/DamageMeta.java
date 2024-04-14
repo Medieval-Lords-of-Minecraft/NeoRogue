@@ -190,6 +190,11 @@ public class DamageMeta {
 		}
 		
 		// Calculate buffs for every slice of damage
+		boolean evading = recipient.hasStatus(StatusType.EVADE) && 
+				(slices.isEmpty() ? false : slices.getFirst().getPostBuffType().containsBuffType(BuffType.GENERAL));
+		if (evading) {
+			recipient.getStatus(StatusType.EVADE).apply(recipient, -1, -1);
+		}
 		for (DamageSlice slice : slices) {
 			double increase = 0, mult = 1;
 			for (BuffType bt : slice.getType().getBuffTypes()) {
@@ -234,13 +239,29 @@ public class DamageMeta {
 			}
 			
 			double sliceDamage = Math.max(0, (slice.getDamage() * mult) + increase);
+			// If the first slice isn't a status, evade it
+			if (evading) {
+				if (recipient.getEntity().getType() == EntityType.PLAYER) Sounds.attackSweep.play((Player) recipient.getEntity(), recipient.getEntity());
+				PlayerFightData pl = (PlayerFightData) recipient; // Only players can have evade status
+				if (sliceDamage > pl.getStamina()) {
+					sliceDamage -= pl.getStamina();
+					pl.getStats().addDamageMitigated(slice.getPostBuffType(), pl.getStamina());
+					pl.setStamina(0);
+				}
+				else {
+					pl.addStamina(-sliceDamage);
+					pl.getStats().addDamageMitigated(slice.getPostBuffType(), sliceDamage);
+					sliceDamage = 0;
+				}
+			}
+			
 			if (owner instanceof PlayerFightData) {
 				((PlayerFightData) owner).getStats().addDamageDealt(slice.getPostBuffType(), sliceDamage);
 			}
 			if (recipient instanceof PlayerFightData) {
 				((PlayerFightData) recipient).getStats().addDamageTaken(slice.getPostBuffType(), sliceDamage);
 			}
-			
+
 			if (!slice.isIgnoreShields()) {
 				damage += sliceDamage;
 			}
@@ -255,31 +276,6 @@ public class DamageMeta {
 			if (recipient.hasStatus(StatusType.REFLECT) && slice.getPostBuffType().containsBuffType(BuffType.MAGICAL)) {
 				returnDamage.addDamageSlice(new DamageSlice(recipient, recipient.getStatus(StatusType.REFLECT).getStacks(), DamageType.REFLECT));
 			}
-		}
-		
-		// If the first slice isn't a status, evade it
-		if (recipient.hasStatus(StatusType.EVADE) && !slices.peekFirst().getPostBuffType().containsBuffType(BuffType.STATUS)) {
-			if (recipient.getEntity().getType() == EntityType.PLAYER) Sounds.attackSweep.play((Player) recipient.getEntity(), recipient.getEntity());
-			PlayerFightData pl = (PlayerFightData) recipient; // Only players can have evade status
-			if (damage > pl.getStamina()) {
-				damage -= pl.getStamina();
-				pl.setStamina(0);
-			}
-			else {
-				pl.addStamina(-damage);
-				damage = 0;
-			}
-			
-			if (ignoreShieldsDamage > pl.getStamina()) {
-				ignoreShieldsDamage -= pl.getStamina();
-				pl.setStamina(0);
-			}
-			else {
-				pl.addStamina(-ignoreShieldsDamage);
-				ignoreShieldsDamage = 0;
-			}
-			
-			recipient.getStatus(StatusType.EVADE).apply(recipient, -1, -1);
 		}
 		
 		// Threat

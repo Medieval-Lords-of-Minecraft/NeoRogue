@@ -28,7 +28,7 @@ public class Sidestep extends Equipment {
 	private int damage = 80, cdr, evade;
 	
 	public Sidestep(boolean isUpgraded) {
-		super(ID, "Night Shade", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
+		super(ID, "Sidestep", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 20, 15, 0));
 		pc.count(50).spread(0.5, 0.5).offsetY(1);
 		cdr = 3;
@@ -43,7 +43,7 @@ public class Sidestep extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.OBSIDIAN,
 				"On cast, Grant speed <white>1</white> and " + GlossaryTag.INVISIBLE.tag(this) + " for <white>3</white> seconds. "
-				+ "Also grant " + GlossaryTag.EVADE.tag(this, 1, true) + ". "
+				+ "Also grant " + GlossaryTag.EVADE.tag(this, 1, true) + " for <white>10</white> seconds. "
 				+ "Your next basic attack deals an additional " + GlossaryTag.PIERCING.tag(this, damage, false) + " damage. "
 						+ "Basic attacks decrease the cooldown"
 						+ " of this ability by <white>" + cdr + "</white> second(s).");
@@ -57,7 +57,7 @@ public class Sidestep extends Equipment {
 			pc.play(p, p);
 			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 60, 0));
 			data.applyStatus(StatusType.INVISIBLE, data, 1, 60);
-			data.applyStatus(StatusType.EVADE, data, evade, -1);
+			data.applyStatus(StatusType.EVADE, data, evade, 200);
 			inst.addCount(1);
 			return TriggerResult.keep();
 		});

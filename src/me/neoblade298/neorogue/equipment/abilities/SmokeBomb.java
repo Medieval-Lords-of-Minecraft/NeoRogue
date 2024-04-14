@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import java.util.UUID;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -30,6 +32,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class SmokeBomb extends Equipment {
 	private static final String ID = "smokeBomb";
 	private int damage;
+	private double dmgPct;
 	private static final ParticleContainer placePart = new ParticleContainer(Particle.CLOUD).count(10).spread(0.1, 0.1),
 			smoke = new ParticleContainer(Particle.CLOUD).count(50).spread(2.5, 2.5).offsetY(1.5);
 	private static final SoundContainer place = new SoundContainer(Sound.ENTITY_CREEPER_PRIMED);
@@ -38,6 +41,8 @@ public class SmokeBomb extends Equipment {
 	public SmokeBomb(boolean isUpgraded) {
 		super(ID, "Smoke Bomb", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 15, 10, 0));
+		damage = isUpgraded ? 30 : 20;
+		dmgPct = damage * 0.1;
 	}
 	
 	public static Equipment get() {
@@ -60,7 +65,7 @@ public class SmokeBomb extends Equipment {
 					}
 					
 					for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, tp)) {
-						FightInstance.getFightData(ent).addBuff(data, false, true, BuffType.GENERAL, -0.2);
+						FightInstance.getFightData(ent).addBuff(data, UUID.randomUUID().toString(), false, true, BuffType.GENERAL, -dmgPct, 200);
 					}
 				}
 			}.runTaskLater(NeoRogue.inst(), 60L));
@@ -73,6 +78,6 @@ public class SmokeBomb extends Equipment {
 		item = createItem(Material.SHIELD,
 				"On cast, drop a smoke bomb that detonates after <white>3</white> seconds. On detonation, all enemies in the radius"
 				+ " take <yellow>" + damage + "%</yellow> additional damage for <white>10</white> seconds. If you're also in the radius,"
-						+ " apply " + GlossaryTag.INVISIBLE.tag(this) + " to yourself for <white>5</white>seconds.");
+						+ " apply " + GlossaryTag.INVISIBLE.tag(this) + " to yourself for <white>5</white> seconds.");
 	}
 }

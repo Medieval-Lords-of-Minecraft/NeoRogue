@@ -38,7 +38,7 @@ public class MinorPoisonRelic extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.IRON_NUGGET, "Whenever you apply " + GlossaryTag.POISON.tag(this) + ", increase the stacks by"
-				+ " <yellow>.");
+		item = createItem(Material.IRON_NUGGET, "Whenever you apply " + GlossaryTag.POISON.tag(this) + ", increase the stacks by <yellow>"
+				+ increase + "</yellow>.");
 	}
 }

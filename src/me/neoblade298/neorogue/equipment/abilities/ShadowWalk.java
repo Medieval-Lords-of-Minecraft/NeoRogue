@@ -29,7 +29,7 @@ public class ShadowWalk extends Equipment {
 	
 	public ShadowWalk(boolean isUpgraded) {
 		super(ID, "Shadow Walk", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(5, 10, 15, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(5, 10, 10, 0));
 		pc.count(50).spread(0.5, 0.5).offsetY(1);
 		shields = isUpgraded ? 3 : 2;
 		cdr = isUpgraded ? 3 : 2;

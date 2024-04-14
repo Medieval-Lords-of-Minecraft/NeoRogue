@@ -784,7 +784,6 @@ public abstract class Equipment implements Comparable<Equipment> {
 		return true;
 	}
 
-	// Used for weapons that start cooldown on swing, not hit
 	public void weaponSwing(Player p, PlayerFightData data) {
 		weaponSwing(p, data, properties.get(PropertyType.ATTACK_SPEED));
 	}
