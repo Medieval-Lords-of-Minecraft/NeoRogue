@@ -32,7 +32,7 @@ public class CripplingPoison extends Equipment {
 	private static final TargetProperties tp = TargetProperties.cone(90, 5, false, TargetType.ENEMY);
 	
 	public CripplingPoison(boolean isUpgraded) {
-		super(ID, "Crippling Poison", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
+		super(ID, "Crippling Poison", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 20, 15, tp.range));
 		
 		reduc = 8;

@@ -12,7 +12,6 @@ import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
-import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
@@ -32,13 +31,12 @@ public class EscapePlan extends Equipment {
 	public EscapePlan(boolean isUpgraded) {
 		super(ID, "Escape Plan", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 25, 15, 0));
-		properties.addUpgrades(PropertyType.COOLDOWN);
 		damage = isUpgraded ? 100 : 70;
 	}
 
 	@Override
 	public void setupReforges() {
-		addSelfReforge(Substitution.get(), Preparation.get());
+		addSelfReforge(Substitution.get(), Preparation.get(), Darkness.get());
 	}
 	
 	public static Equipment get() {
@@ -61,7 +59,6 @@ public class EscapePlan extends Equipment {
 			BasicAttackEvent ev = (BasicAttackEvent) in;
 			ev.getMeta().addDamageSlice(new DamageSlice(pdata, damage, DamageType.SLASHING));
 			Sounds.anvil.play(p, p);
-			inst.basicAttack = false;
 			return TriggerResult.keep();
 		});
 	}
@@ -85,12 +82,15 @@ public class EscapePlan extends Equipment {
 		private void inactiveCast(PlayerFightData pdata) {
 			active = true;
 			Sounds.equip.play(p, p);
-			basicAttack = true;
 			loc = p.getLocation();
+			basicAttack = true;
 			pdata.addTask(new BukkitRunnable() {
 				private int count;
 				public void run() {
-					if (++count > 10) this.cancel();
+					if (++count > 10) {
+						this.cancel();
+						basicAttack = false;
+					}
 					pc.play(p, loc);
 				}
 			}.runTaskTimer(NeoRogue.inst(), 20L, 20L));
@@ -109,7 +109,8 @@ public class EscapePlan extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLAZE_POWDER,
-				"On cast, drop a marker on the ground that you can teleport to on re-cast. Your next basic attack deals an additional " + GlossaryTag.SLASHING.tag(this, damage, true)
+				"On cast, drop a marker on the ground that you can teleport to and deactivate on re-cast. It stays active <white>10</white> seconds."
+				+ " While active, basic attacks deal an additional " + GlossaryTag.SLASHING.tag(this, damage, true)
 						+ " damage. Becoming " + GlossaryTag.INVISIBLE.tag(this) + " reduces the cooldown of this ability by <white>3</white>.");
 	}
 }

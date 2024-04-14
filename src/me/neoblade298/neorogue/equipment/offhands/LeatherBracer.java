@@ -17,7 +17,7 @@ public class LeatherBracer extends Equipment {
 	private int instances;
 	
 	public LeatherBracer(boolean isUpgraded) {
-		super(ID, "Leather Bracer", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
+		super(ID, "Leather Bracer", isUpgraded, Rarity.COMMON, EquipmentClass.CLASSLESS,
 				EquipmentType.OFFHAND);
 		instances = isUpgraded ? 6 : 4;
 	}

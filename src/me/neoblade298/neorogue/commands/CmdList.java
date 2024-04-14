@@ -173,7 +173,7 @@ public class CmdList extends Subcommand {
 		for (Equipment eq : list) {
 			Util.msgRaw(s, Component.text("- ", NamedTextColor.GRAY).append(eq.getHoverable()));
 		};
-		Util.msgRaw(s, "Found <yellow>" + list.size() + " matches");
+		Util.msgRaw(s, "Found <yellow>" + list.size() + "</yellow> matches");
 	}
 	
 	private enum FilterType {

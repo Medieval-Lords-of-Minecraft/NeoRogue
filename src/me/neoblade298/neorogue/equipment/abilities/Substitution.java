@@ -54,7 +54,7 @@ public class Substitution extends Equipment {
 		data.addTrigger(ID, Trigger.BASIC_ATTACK, (pdata, in) -> {
 			if (!inst.basicAttack) return TriggerResult.keep();
 			BasicAttackEvent ev = (BasicAttackEvent) in;
-			ev.getMeta().addDamageSlice(new DamageSlice(pdata, damage, DamageType.PIERCING));
+			ev.getMeta().addDamageSlice(new DamageSlice(pdata, damage, DamageType.SLASHING));
 			Sounds.anvil.play(p, p);
 			inst.basicAttack = false;
 			return TriggerResult.keep();
@@ -111,7 +111,8 @@ public class Substitution extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLAZE_POWDER,
-				"On cast, drop a marker on the ground that you can teleport to on re-cast. Your next basic attack deals an additional " + GlossaryTag.PIERCING.tag(this, damage, true)
+				"On cast, drop a marker on the ground that you can teleport to and deactivate on re-cast. It stays active <white>10</white> seconds."
+				+ " While active, your basic attacks deal an additional " + GlossaryTag.SLASHING.tag(this, damage, true)
 						+ " damage. Becoming " + GlossaryTag.INVISIBLE.tag(this) + " reduces the cooldown of this ability by <white>3</white>. "
 						+ "Taking damage while the marker is active will automatically cancel the damage and re-cast the ability.");
 	}

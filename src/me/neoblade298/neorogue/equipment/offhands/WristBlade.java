@@ -17,7 +17,7 @@ public class WristBlade extends Equipment {
 	public WristBlade(boolean isUpgraded) {
 		super(ID, "Wrist Blade", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.OFFHAND);
-		hits = isUpgraded ? 3 : 2;
+		hits = isUpgraded ? 2 : 3;
 	}
 	
 	public static Equipment get() {

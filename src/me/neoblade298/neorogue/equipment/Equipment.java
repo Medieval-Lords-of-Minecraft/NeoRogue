@@ -153,6 +153,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Contaminate(b);
 			new Cripple(b);
 			new CripplingPoison(b);
+			new Darkness(b);
 			new DarkPact(b);
 			new Discipline(b);
 			new Disorient(b);
@@ -188,6 +189,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Pin(b);
 			new PoolOfLight(b);
 			new Prayer(b);
+			new Preparation(b);
 			new Provoke(b);
 			new Revenge(b);
 			new Roar(b);
@@ -201,6 +203,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Smite(b);
 			new SpiritOfTheDragoon(b);
 			new Sturdy(b);
+			new Substitution(b);
 			new Tackle(b);
 			new Thornguard(b);
 			new Titan(b);
