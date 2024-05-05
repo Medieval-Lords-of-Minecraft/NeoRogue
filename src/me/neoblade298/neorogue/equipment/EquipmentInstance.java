@@ -130,7 +130,7 @@ public class EquipmentInstance extends PriorityAction {
 		this.tempCooldown = cooldown;
 	}
 	
-	public void addCooldown(int seconds) {
+	public void addCooldown(double seconds) {
 		nextUsable += seconds * 1000;
 		updateSlot(p, p.getInventory(), es, slot, getCooldownSeconds());
 	}
@@ -140,7 +140,7 @@ public class EquipmentInstance extends PriorityAction {
 		updateSlot(p, p.getInventory(), es, slot, seconds);
 	}
 	
-	public void reduceCooldown(int seconds) {
+	public void reduceCooldown(double seconds) {
 		nextUsable -= seconds * 1000;
 		updateSlot(p, p.getInventory(), es, slot, getCooldownSeconds());
 	}

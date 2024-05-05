@@ -72,6 +72,6 @@ public class Envenom extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GREEN_DYE,
-				"On cast, your basic attacks apply " + GlossaryTag.POISON.tag(this, poison, true) + " for <white>3</white> seconds.");
+				"On cast, for <white>7</white> seconds your basic attacks apply " + GlossaryTag.POISON.tag(this, poison, true) + " [<white>3s</white>].");
 	}
 }

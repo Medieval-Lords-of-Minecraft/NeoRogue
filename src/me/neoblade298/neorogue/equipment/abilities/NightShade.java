@@ -17,6 +17,9 @@ import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.TargetHelper;
+import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
+import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -24,6 +27,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
 public class NightShade extends Equipment {
 	private static final String ID = "nightShade";
+	private static final TargetProperties tp = TargetProperties.radius(5, true, TargetType.ENEMY);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.PORTAL),
 			hit = new ParticleContainer(Particle.REDSTONE).count(50).spread(0.5, 0.5);
 	private int shields, damage = 80, cdr, insanity;
@@ -47,8 +51,9 @@ public class NightShade extends Equipment {
 				"On cast, Grant speed <white>1</white>, " + GlossaryTag.INVISIBLE.tag(this) + ", and " + GlossaryTag.SHIELDS.tag(this, shields, false) +
 				" for <white>3</white> seconds. "
 				+ "Your next basic attack deals an additional " + GlossaryTag.DARK.tag(this, damage, false) + " damage and applies " +
-				GlossaryTag.INSANITY.tag(this, insanity, true) + ". Basic attacks decrease the cooldown"
-						+ " of this ability by <white>" + cdr + "</white> second(s).");
+				GlossaryTag.INSANITY.tag(this, insanity, true) + ". Not being within "
+				+ "<white>5m</white> of an enemy decreases the cooldown"
+				+ " of this ability by <yellow>" + cdr + "</yellow> second(s).");
 	}
 
 	@Override
@@ -66,7 +71,6 @@ public class NightShade extends Equipment {
 		
 		data.addTrigger(ID, bind, inst);
 		data.addTrigger(ID, Trigger.BASIC_ATTACK, (pdata, in) -> {
-			inst.reduceCooldown(cdr);
 			if (inst.getCount() > 0) {
 				inst.addCount(-1);
 				BasicAttackEvent ev = (BasicAttackEvent) in;
@@ -75,6 +79,12 @@ public class NightShade extends Equipment {
 				ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.DARK));
 				FightInstance.applyStatus(ev.getTarget(), StatusType.INSANITY, p, insanity, -1);
 			}
+			return TriggerResult.keep();
+		});
+		
+		data.addTrigger(ID, Trigger.PLAYER_TICK, (pdata, in) -> {
+			if (!TargetHelper.getEntitiesInRadius(p, tp).isEmpty()) return TriggerResult.keep();
+			inst.reduceCooldown(cdr);
 			return TriggerResult.keep();
 		});
 	}

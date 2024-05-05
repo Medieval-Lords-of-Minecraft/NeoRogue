@@ -19,13 +19,13 @@ import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class StoneDagger extends Equipment {
 	private static final String ID = "stoneDagger";
-	private static int damage, base = 15;
+	private static int damage;
 	
 	public StoneDagger(boolean isUpgraded) {
 		super(ID, "Stone Dagger", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(base, 1.5, 0.2, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
-		damage = isUpgraded ? 25 : 15;
+				EquipmentProperties.ofWeapon(isUpgraded ? 20 : 15, 1.5, 0.2, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
+		damage = isUpgraded ? 15 : 10;
 	}
 	
 	public static Equipment get() {
@@ -35,7 +35,7 @@ public class StoneDagger extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
-			DamageMeta dm = new DamageMeta(data, base, DamageType.SLASHING);
+			DamageMeta dm = new DamageMeta(data, damage, DamageType.SLASHING);
 			if (data.hasStatus(StatusType.INVISIBLE)) dm.addDamageSlice(new DamageSlice(data, damage, DamageType.DARK));
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
 			weaponSwingAndDamage(p, data, ev.getTarget(), dm);

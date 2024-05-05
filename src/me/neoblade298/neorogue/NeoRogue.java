@@ -9,6 +9,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import eu.decentsoftware.holograms.api.DHAPI;
 import eu.decentsoftware.holograms.api.holograms.Hologram;
@@ -153,11 +154,18 @@ public class NeoRogue extends JavaPlugin {
 		s.getParty().get(p.getUniqueId()).addManaRegen(10);
 		s.getParty().get(p.getUniqueId()).addStaminaRegen(10);
 		s.setNode(s.getArea().getNodes()[0][2]);
-		s.setInstance(new NodeSelectInstance(s));
-		// s.setInstance(new ChanceInstance());
+		
+		
+		// Required to have delay otherwise the startup save and auto-save happen simultaneously and conflict
+		new BukkitRunnable() {
+			public void run() {
+				s.setInstance(new NodeSelectInstance(s));
+				// s.setInstance(new ChanceInstance());
 
-		//Map map = Map.generate(AreaType.LOW_DISTRICT, 8);
-		//map.instantiate(null, 0, 0);
+				//Map map = Map.generate(AreaType.LOW_DISTRICT, 8);
+				//map.instantiate(null, 0, 0);
+			}
+		}.runTaskLater(this, 1L);
 	}
 	
 	public static Hologram createHologram(String name, Location loc, ArrayList<String> lines) {

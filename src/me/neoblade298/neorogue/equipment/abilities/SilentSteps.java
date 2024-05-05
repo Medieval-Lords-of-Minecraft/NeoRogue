@@ -8,10 +8,14 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.DamageMeta.BuffOrigin;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
 
 public class SilentSteps extends Equipment {
 	private static final String ID = "silentSteps";
@@ -39,6 +43,13 @@ public class SilentSteps extends Equipment {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
 			if (!ev.getStatusId().equals(StatusType.INVISIBLE.name())) return TriggerResult.keep();
 			ev.getDurationBuff().addIncrease(data, 20);
+			return TriggerResult.keep();
+		});
+		
+		data.addTrigger(ID, Trigger.RECEIVED_DAMAGE, (pdata, in) -> {
+			if (!pdata.hasStatus(StatusType.INVISIBLE)) return TriggerResult.keep();
+			ReceivedDamageEvent ev = (ReceivedDamageEvent) in;
+			ev.getMeta().addBuff(BuffType.GENERAL, new Buff(pdata, 3, 0), BuffOrigin.NORMAL, false);
 			return TriggerResult.keep();
 		});
 	}

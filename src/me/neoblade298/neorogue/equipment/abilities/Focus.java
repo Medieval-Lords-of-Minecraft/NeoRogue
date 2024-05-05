@@ -9,6 +9,7 @@ import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -19,22 +20,23 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Focus extends Equipment {
 	private static final String ID = "focus";
-	private static final ParticleContainer pc = new ParticleContainer(Particle.FIREWORKS_SPARK).count(25).spread(0.5, 0.5).offsetY(1).speed(0.01);
+	private static final ParticleContainer pc = new ParticleContainer(Particle.FIREWORKS_SPARK).count(25)
+			.spread(0.5, 0.5).offsetY(1).speed(0.01);
 	private int ev;
-	
+
 	public Focus(boolean isUpgraded) {
-		super(ID, "Focus", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 25, 15, 0));
+		super(ID, "Focus", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF, EquipmentType.ABILITY,
+				EquipmentProperties.ofUsable(20, 25, 15, 0));
 		ev = isUpgraded ? 3 : 2;
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(ID, bind, (pdata, in) -> {
+		data.addTrigger(ID, bind, new EquipmentInstance(p, this, slot, es, (pdata, in) -> {
 			Sounds.equip.play(p, p);
 			data.addTask(new BukkitRunnable() {
 				public void run() {
@@ -44,7 +46,7 @@ public class Focus extends Equipment {
 				}
 			}.runTaskLater(NeoRogue.inst(), 40L));
 			return TriggerResult.keep();
-		});
+		}));
 	}
 
 	@Override

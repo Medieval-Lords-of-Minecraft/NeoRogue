@@ -70,10 +70,10 @@ public abstract class Status {
 	
 	public String getDisplay() {
 		try {
-			return StatusType.valueOf(id).boardLine + "§7: §f" + stacks;
+			return StatusType.valueOf(id).boardLine + "§7: §f" + stacks + (ticks > 0 ? " [" + (ticks / 20) + "s]" : "");
 		}
 		catch (IllegalArgumentException ex) {
-			return "§f" + id + "§7: §f" + stacks;
+			return "§f" + id + "§7: §f" + stacks + (ticks > 0 ? " [" + (ticks / 20) + "s]" : "");
 		}
 	}
 	

@@ -11,15 +11,17 @@ public class BasicStatus extends Status {
 	}
 
 	@Override
-	public void apply(FightData data, int stacks, int seconds) {
+	public void apply(FightData data, int stacks, int ticks) {
+		System.out.println("Applying " + id + " " + stacks);
 		onApply(data, stacks);
 		
-		if (seconds <= 0) return;
+		if (ticks <= 0) return;
 		data.addTask(new BukkitRunnable() { 
 			public void run() {
+				System.out.println("Deapplying " + id + " " + stacks);
 				onApply(data, -stacks);
 			}
-		}.runTaskLater(NeoRogue.inst(), seconds * 20));
+		}.runTaskLater(NeoRogue.inst(), ticks * 20));
 	}
 	
 	public void onApply(FightData applier, int stacks) {

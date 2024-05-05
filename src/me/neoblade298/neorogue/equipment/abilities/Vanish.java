@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.StandardPriorityAction;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
@@ -31,14 +32,23 @@ public class Vanish extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(ID,  Trigger.RECEIVE_STATUS, (pdata, in) -> {
+		StandardPriorityAction inst = new StandardPriorityAction(ID);
+		inst.setAction((pdata, in) -> {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
+			System.out.println("Receive status " + ev.getStatusId());
 			if (!ev.getStatusId().equals(StatusType.INVISIBLE.name())) return TriggerResult.keep();
+			inst.addCount(1);
+			System.out.println("Adding 1 to count " + inst.getCount());
 			ev.getDurationBuff().addIncrease(data, duration);
-			data.applyStatus(StatusType.EVADE, data, 1, -1);
-			data.addStamina(5);
+			
+			if (inst.getCount() >= threshold) {
+				data.applyStatus(StatusType.EVADE, data, 1, -1);
+				data.addStamina(5);
+			}
 			return TriggerResult.keep();
 		});
+		
+		data.addTrigger(ID, Trigger.RECEIVE_STATUS, inst);
 	}
 
 	@Override

@@ -348,7 +348,7 @@ public class FightData {
 		if (this instanceof PlayerFightData) {
 			PlayerFightData data = (PlayerFightData) this;
 			data.updateBoardLines();
-			FightInstance.trigger(data.getPlayer(), Trigger.APPLY_STATUS, ev);
+			FightInstance.trigger(data.getPlayer(), Trigger.RECEIVE_STATUS, ev);
 		}
 		s.apply(applier, (int) Math.ceil(ev.getStacksBuff().apply(stacks)), (int) Math.ceil(ev.getDurationBuff().apply(ticks)));
 		
