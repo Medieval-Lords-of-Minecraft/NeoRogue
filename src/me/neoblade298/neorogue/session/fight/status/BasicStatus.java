@@ -12,7 +12,7 @@ public class BasicStatus extends Status {
 
 	@Override
 	public void apply(FightData data, int stacks, int ticks) {
-		System.out.println("Applying " + id + " " + stacks);
+		System.out.println("Applying " + id + " " + stacks + " " + ticks);
 		onApply(data, stacks);
 		
 		if (ticks <= 0) return;
@@ -21,7 +21,7 @@ public class BasicStatus extends Status {
 				System.out.println("Deapplying " + id + " " + stacks);
 				onApply(data, -stacks);
 			}
-		}.runTaskLater(NeoRogue.inst(), ticks * 20));
+		}.runTaskLater(NeoRogue.inst(), ticks));
 	}
 	
 	public void onApply(FightData applier, int stacks) {
