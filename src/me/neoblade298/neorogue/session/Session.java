@@ -256,6 +256,9 @@ public class Session {
 		if (inst instanceof NodeSelectInstance) {
 			p.setAllowFlight(true);
 		}
+		if (inst instanceof FightInstance) {
+			((FightInstance) inst).addSpectator(p);
+		}
 	}
 	
 	public void removeSpectator(Player p) {

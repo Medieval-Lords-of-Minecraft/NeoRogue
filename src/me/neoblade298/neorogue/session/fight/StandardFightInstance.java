@@ -188,4 +188,10 @@ public class StandardFightInstance extends FightInstance {
 	public String serializeInstanceData() {
 		return "STANDARD:" + map.serialize();
 	}
+
+	@Override
+	public void addSpectator(Player p) {
+		timeBar.addPlayer(p);
+		scoreBar.addPlayer(p);
+	}
 }
