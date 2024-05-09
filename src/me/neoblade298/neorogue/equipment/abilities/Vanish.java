@@ -35,10 +35,8 @@ public class Vanish extends Equipment {
 		StandardPriorityAction inst = new StandardPriorityAction(ID);
 		inst.setAction((pdata, in) -> {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
-			System.out.println("Receive status " + ev.getStatusId());
 			if (!ev.getStatusId().equals(StatusType.INVISIBLE.name())) return TriggerResult.keep();
 			inst.addCount(1);
-			System.out.println("Adding 1 to count " + inst.getCount());
 			ev.getDurationBuff().addIncrease(data, duration);
 			
 			if (inst.getCount() >= threshold) {

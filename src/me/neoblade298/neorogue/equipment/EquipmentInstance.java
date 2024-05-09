@@ -173,12 +173,20 @@ public class EquipmentInstance extends PriorityAction {
 		return this.staminaCost;
 	}
 	
+	public double getTempStaminaCost() {
+		return tempStaminaCost;
+	}
+	
 	public double getEffectiveStaminaCost() {
 		return tempStaminaCost == -1 ? staminaCost : tempStaminaCost;
 	}
 
 	public double getManaCost() {
 		return this.manaCost;
+	}
+	
+	public double getTempManaCost() {
+		return tempManaCost;
 	}
 	
 	public double getEffectiveManaCost() {

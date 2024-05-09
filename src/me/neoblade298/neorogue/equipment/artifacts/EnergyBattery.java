@@ -57,6 +57,7 @@ public class EnergyBattery extends Artifact {
 				CastUsableEvent ev = (CastUsableEvent) inputs;
 				if (ev.getInstance().getEffectiveStaminaCost() == 0 && ev.getInstance().getEffectiveManaCost() == 0) return TriggerResult.keep();
 				if (ev.getBuff(PropertyType.STAMINA_COST).apply(ev.getInstance().getStaminaCost()) <= 0) return TriggerResult.keep();
+				if (ev.getBuff(PropertyType.MANA_COST).apply(ev.getInstance().getManaCost()) <= 0) return TriggerResult.keep();
 				Player p = data.getPlayer();
 				part.play(p, p);
 				for (PropertyType type : new PropertyType[] { PropertyType.MANA_COST, PropertyType.STAMINA_COST, PropertyType.COOLDOWN }) {

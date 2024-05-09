@@ -12,13 +12,11 @@ public class BasicStatus extends Status {
 
 	@Override
 	public void apply(FightData data, int stacks, int ticks) {
-		System.out.println("Applying " + id + " " + stacks + " " + ticks);
 		onApply(data, stacks);
 		
 		if (ticks <= 0) return;
 		data.addTask(new BukkitRunnable() { 
 			public void run() {
-				System.out.println("Deapplying " + id + " " + stacks);
 				onApply(data, -stacks);
 			}
 		}.runTaskLater(NeoRogue.inst(), ticks));
