@@ -175,6 +175,10 @@ public class FightData {
 		Collections.sort(list, Status.comp);
 		String statuses = "";
 		for (int i = 0; i < list.size() && i < 5; i++) {
+			if (list.get(i).isHidden()) {
+				i--;
+				continue;
+			}
 			statuses += list.get(i).getDisplay() + "\\n";
 		}
 		am.setDisplayName(list.isEmpty() ? bottomLine : statuses + bottomLine);

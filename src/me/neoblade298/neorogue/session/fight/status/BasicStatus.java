@@ -9,6 +9,10 @@ public class BasicStatus extends Status {
 	public BasicStatus(String id, FightData target) {
 		super(id, target);
 	}
+	
+	public BasicStatus(String id, FightData target, boolean hidden) {
+		super(id, target, hidden);
+	}
 
 	@Override
 	public void apply(FightData data, int stacks, int ticks) {

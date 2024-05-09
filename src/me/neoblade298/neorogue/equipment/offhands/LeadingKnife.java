@@ -1,0 +1,95 @@
+package me.neoblade298.neorogue.equipment.offhands;
+
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
+import org.bukkit.entity.Player;
+
+import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
+import me.neoblade298.neorogue.equipment.mechanics.Barrier;
+import me.neoblade298.neorogue.equipment.mechanics.Projectile;
+import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
+import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
+import me.neoblade298.neorogue.equipment.weapons.StoneThrowingKnife;
+import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.effects.SoundContainer;
+import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.session.fight.DamageType;
+import me.neoblade298.neorogue.session.fight.FightData;
+import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
+import me.neoblade298.neorogue.session.fight.trigger.Trigger;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.RightClickHitEvent;
+
+public class LeadingKnife extends Equipment {
+	private static final String ID = "leadingKnife";
+	private static final ParticleContainer tick = new ParticleContainer(Particle.CRIT).count(3).speed(0.01).spread(0.1, 0.1);
+	private static final SoundContainer hit = new SoundContainer(Sound.ENTITY_ITEM_BREAK);
+	public LeadingKnife(boolean isUpgraded) {
+		super(ID, "Leading Knife", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
+				EquipmentType.OFFHAND, EquipmentProperties.ofWeapon(10, 1, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
+		properties.addUpgrades(PropertyType.DAMAGE);
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
+	}
+
+	@Override
+	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		ProjectileGroup proj = new ProjectileGroup(new LeadingKnifeProjectile(p));
+		LeadingKnifeInstance inst = new LeadingKnifeInstance(ID, proj);
+	}
+
+	@Override
+	public void setupItem() {
+		item = createItem(Material.STONE_SWORD, "Right click to throw a knife. If an enemy is hit, they are marked for <yellow>2</yellow> seconds."
+				+ ". Dealing damage to them grants you"
+				+ " <yellow>" + stamina + "</yellow> stamina and consumes the mark.");
+	}
+	
+	private class LeadingKnifeInstance extends PriorityAction {
+
+		public LeadingKnifeInstance(String id, ProjectileGroup proj) {
+			super(id);
+			
+			action = (pdata, in) -> {
+				Player p = pdata.getPlayer();
+				weaponSwing(p, pdata);
+				proj.start(pdata);
+				return TriggerResult.keep();
+			};
+		}
+	}
+	
+	private class LeadingKnifeProjectile extends Projectile {
+		private Player p;
+
+		public LeadingKnifeProjectile(Player p) {
+			super(0.5, 10, 3);
+			this.size(0.5, 0.5);
+			this.p = p;
+		}
+
+		@Override
+		public void onTick(ProjectileInstance proj, boolean interpolation) {
+			tick.play(p, proj.getLocation());
+		}
+
+		@Override
+		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
+			weaponDamageProjectile(hit.getEntity(), proj, hitBarrier);
+			Location loc = hit.getEntity().getLocation();
+			LeadingKnife.hit.play(p, loc);
+		}
+
+		@Override
+		public void onStart(ProjectileInstance proj) {
+			
+		}
+	}
+}

@@ -17,6 +17,7 @@ public abstract class Status {
 	protected FightData data;
 	protected StatusSliceHolder slices = new StatusSliceHolder();
 	protected int ticks;
+	protected boolean hidden;
 	
 	public static final Comparator<Status> comp = new Comparator<Status>() {
 		@Override
@@ -30,6 +31,12 @@ public abstract class Status {
 	public Status(String id, FightData data) {
 		this.id = id;
 		this.data = data;
+	}
+	
+	public Status(String id, FightData data, boolean hidden) {
+		this.id = id;
+		this.data = data;
+		this.hidden = hidden;
 	}
 	
 	// Setting stacks or status to 0 means they will be untouched
@@ -91,6 +98,10 @@ public abstract class Status {
 	
 	public int getStacks() {
 		return stacks;
+	}
+	
+	public boolean isHidden() {
+		return hidden;
 	}
 	
 	public enum StatusType {
