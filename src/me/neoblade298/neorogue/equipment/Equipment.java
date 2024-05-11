@@ -38,6 +38,7 @@ import me.neoblade298.neorogue.equipment.armor.ClothBindings;
 import me.neoblade298.neorogue.equipment.armor.Footpads;
 import me.neoblade298.neorogue.equipment.armor.IronCuirass;
 import me.neoblade298.neorogue.equipment.armor.LeatherChestplate;
+import me.neoblade298.neorogue.equipment.armor.LeatherCowl;
 import me.neoblade298.neorogue.equipment.armor.LeatherHelmet;
 import me.neoblade298.neorogue.equipment.armor.NullMagicMantle;
 import me.neoblade298.neorogue.equipment.armor.SpikedPauldrons;
@@ -81,6 +82,7 @@ import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.equipment.offhands.ChasingDagger;
 import me.neoblade298.neorogue.equipment.offhands.HastyShield;
+import me.neoblade298.neorogue.equipment.offhands.LeadingKnife;
 import me.neoblade298.neorogue.equipment.offhands.LeatherBracer;
 import me.neoblade298.neorogue.equipment.offhands.PaladinsShield;
 import me.neoblade298.neorogue.equipment.offhands.RubyArmament;
@@ -180,6 +182,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new HoldTheLine(b);
 			new IronCuirass(b);
 			new Ironskin(b);
+			new LeadingKnife(b);
 			new Maim(b);
 			new MightySwing(b);
 			new MortalEngine(b);
@@ -228,6 +231,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			// Armor
 			new ClothBindings(b);
 			new Footpads(b);
+			new LeatherCowl(b);
 			new LeatherChestplate(b);
 			new LeatherHelmet(b);
 			new NullMagicMantle(b);
