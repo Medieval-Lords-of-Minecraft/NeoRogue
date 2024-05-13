@@ -5,8 +5,8 @@ import me.neoblade298.neorogue.session.fight.TickAction;
 
 public class DecrementStackStatus extends Status {
 
-	public DecrementStackStatus(String id, FightData target) {
-		super(id, target);
+	public DecrementStackStatus(String id, FightData target, StatusClass sc) {
+		super(id, target, sc);
 	}
 
 	@Override

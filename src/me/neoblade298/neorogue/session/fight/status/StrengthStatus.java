@@ -5,7 +5,7 @@ import me.neoblade298.neorogue.session.fight.buff.BuffType;
 
 public class StrengthStatus extends BasicStatus {
 	public StrengthStatus(FightData target) {
-		super("STRENGTH", target);
+		super("STRENGTH", target, StatusClass.POSITIVE);
 	}
 
 	@Override

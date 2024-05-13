@@ -6,12 +6,12 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.session.fight.FightData;
 
 public class BasicStatus extends Status {
-	public BasicStatus(String id, FightData target) {
-		super(id, target);
+	public BasicStatus(String id, FightData target, StatusClass sc) {
+		super(id, target, sc);
 	}
 	
-	public BasicStatus(String id, FightData target, boolean hidden) {
-		super(id, target, hidden);
+	public BasicStatus(String id, FightData target, StatusClass sc, boolean hidden) {
+		super(id, target, sc, hidden);
 	}
 
 	@Override

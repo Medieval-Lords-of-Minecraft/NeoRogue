@@ -5,7 +5,7 @@ import me.neoblade298.neorogue.session.fight.buff.BuffType;
 
 public class ProtectStatus extends BasicStatus {
 	public ProtectStatus(FightData target) {
-		super("PROTECT", target);
+		super("PROTECT", target, StatusClass.POSITIVE);
 	}
 	
 	@Override

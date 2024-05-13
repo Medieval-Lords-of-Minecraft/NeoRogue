@@ -7,7 +7,7 @@ public class ConcussedStatus extends DecrementStackStatus {
 	private static String id = "CONCUSSED";
 	
 	public ConcussedStatus(FightData data) {
-		super(id, data);
+		super(id, data, StatusClass.NEGATIVE);
 	}
 	
 	@Override

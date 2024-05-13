@@ -50,8 +50,8 @@ public enum GlossaryTag implements GlossaryIcon {
 			"Decreases the holder's magic damage by 0.2 per stack. Upon the holder dealing magical damage, remove 10% of the stacks and " +
 			"deal that much damage to the holder. 1 stack is removed every second."),
 	ELECTRIFIED(Material.LIGHTNING_ROD, StatusType.ELECTRIFIED.tag,
-			"Upon the holder taking damage, deals 0.2 lightning damage per stack applied to nearby enemies in a radius of 5. "
-			+ " 1 stack is removed every second."),
+			"Fires a projectile that deals 0.2 lightning damage per stack applied to the nearest enemy in a radius of 5. "
+			+ "1 stack is removed and one projectile fired per second."),
 	CONCUSSED(Material.DIRT, StatusType.CONCUSSED.tag,
 			"Decreases the holder's physical damage by 0.2 per stack. Upon the holder dealing physical damage, remove 25% of the stacks and " +
 			"deal that much Earthen damage to the holder. 1 stack is removed every second."),

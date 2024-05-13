@@ -9,7 +9,7 @@ public class InvisibleStatus extends DurationStatus {
 	private static String id = "INVISIBLE";
 
 	public InvisibleStatus(FightData data) {
-		super(id, data);
+		super(id, data, StatusClass.POSITIVE);
 	}
 
 	@Override

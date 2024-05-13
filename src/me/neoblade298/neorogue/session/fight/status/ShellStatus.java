@@ -5,7 +5,7 @@ import me.neoblade298.neorogue.session.fight.buff.BuffType;
 
 public class ShellStatus extends BasicStatus {
 	public ShellStatus(FightData target) {
-		super("SHELL", target);
+		super("SHELL", target, StatusClass.POSITIVE);
 	}
 	
 	@Override

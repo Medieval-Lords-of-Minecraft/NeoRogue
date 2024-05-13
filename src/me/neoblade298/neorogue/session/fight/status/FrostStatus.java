@@ -7,7 +7,7 @@ public class FrostStatus extends DecrementStackStatus {
 	private static String id = "FROST";
 	
 	public FrostStatus(FightData data) {
-		super(id, data);
+		super(id, data, StatusClass.NEGATIVE);
 	}
 	
 	@Override

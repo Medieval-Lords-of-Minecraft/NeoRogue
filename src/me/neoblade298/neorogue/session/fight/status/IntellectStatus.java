@@ -5,7 +5,7 @@ import me.neoblade298.neorogue.session.fight.buff.BuffType;
 
 public class IntellectStatus extends BasicStatus {
 	public IntellectStatus(FightData target) {
-		super("INTELLECT", target);
+		super("INTELLECT", target, StatusClass.POSITIVE);
 	}
 
 	@Override

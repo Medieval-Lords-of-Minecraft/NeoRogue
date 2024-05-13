@@ -12,7 +12,7 @@ public class BleedStatus extends DecrementStackStatus {
 	private static String id = "BLEED";
 
 	public BleedStatus(FightData data) {
-		super(id, data);
+		super(id, data, StatusClass.NEGATIVE);
 	}
 	
 	@Override

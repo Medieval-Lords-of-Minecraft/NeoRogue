@@ -10,7 +10,7 @@ import me.neoblade298.neorogue.session.fight.TickAction;
 import net.kyori.adventure.text.Component;
 
 public abstract class Status {
-	public static final Status EMPTY = new BasicStatus("EMPTY", null);
+	public static final Status EMPTY = new BasicStatus("EMPTY", null, StatusClass.NONE);
 	protected String id;
 	protected int stacks;
 	protected TickAction action;
@@ -18,6 +18,7 @@ public abstract class Status {
 	protected StatusSliceHolder slices = new StatusSliceHolder();
 	protected int ticks;
 	protected boolean hidden;
+	protected StatusClass sc;
 	
 	public static final Comparator<Status> comp = new Comparator<Status>() {
 		@Override
@@ -28,15 +29,17 @@ public abstract class Status {
 		}
 	};
 	
-	public Status(String id, FightData data) {
+	public Status(String id, FightData data, StatusClass sc) {
 		this.id = id;
 		this.data = data;
+		this.sc = sc;
 	}
 	
-	public Status(String id, FightData data, boolean hidden) {
+	public Status(String id, FightData data, StatusClass sc, boolean hidden) {
 		this.id = id;
 		this.data = data;
 		this.hidden = hidden;
+		this.sc = sc;
 	}
 	
 	// Setting stacks or status to 0 means they will be untouched
@@ -46,31 +49,31 @@ public abstract class Status {
 		switch (id) {
 		case POISON: return new PoisonStatus(target);
 		case BLEED: return new BleedStatus(target);
-		case BURN: return new DecrementStackStatus(id.name(), target);
+		case BURN: return new DecrementStackStatus(id.name(), target, StatusClass.NEGATIVE);
 		case FROST: return new FrostStatus(target);
-		case ELECTRIFIED: return new DecrementStackStatus(id.name(), target);
+		case ELECTRIFIED: return new DecrementStackStatus(id.name(), target, StatusClass.NEGATIVE);
 		case CONCUSSED: return new ConcussedStatus(target);
 		case INSANITY: return new InsanityStatus(target);
-		case SANCTIFIED: return new DecrementStackStatus(id.name(), target);
-		case THORNS: return new BasicStatus(id.name(), target);
-		case REFLECT: return new BasicStatus(id.name(), target);
-		case BERSERK: return new BasicStatus(id.name(), target);
+		case SANCTIFIED: return new DecrementStackStatus(id.name(), target, StatusClass.NEGATIVE);
+		case THORNS: return new BasicStatus(id.name(), target, StatusClass.POSITIVE);
+		case REFLECT: return new BasicStatus(id.name(), target, StatusClass.POSITIVE);
+		case BERSERK: return new BasicStatus(id.name(), target, StatusClass.POSITIVE);
 		case STRENGTH: return new StrengthStatus(target);
 		case INTELLECT: return new IntellectStatus(target);
 		case PROTECT: return new ProtectStatus(target);
 		case SHELL: return new ShellStatus(target);
 		case INVISIBLE: return new InvisibleStatus(target);
-		case EVADE: return new BasicStatus(id.name(), target);
+		case EVADE: return new BasicStatus(id.name(), target, StatusClass.POSITIVE);
 		}
 		Bukkit.getLogger().warning("[NeoRogue] Failed to create status type " + id);
-		return new BasicStatus(id.name(), target);
+		return new BasicStatus(id.name(), target, StatusClass.NONE);
 	}
 	
 	public static Status createByGenericType(GenericStatusType type, String id, FightData target) {
 		switch (type) {
-		case DECREMENT_STACK: return new DecrementStackStatus(id, target);
-		case BASIC: return new BasicStatus(id, target);
-		case DURATION: return new DurationStatus(id, target);
+		case DECREMENT_STACK: return new DecrementStackStatus(id, target, StatusClass.NONE);
+		case BASIC: return new BasicStatus(id, target, StatusClass.NONE);
+		case DURATION: return new DurationStatus(id, target, StatusClass.NONE);
 		default: return null;
 		}
 	}
@@ -133,5 +136,9 @@ public abstract class Status {
 	}
 	public enum GenericStatusType {
 		DECREMENT_STACK, BASIC, DURATION;
+	}
+	
+	public enum StatusClass {
+		POSITIVE, NEGATIVE, NONE;
 	}
 }

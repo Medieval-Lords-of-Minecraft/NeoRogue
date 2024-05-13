@@ -4,8 +4,8 @@ import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.TickAction;
 
 public class DurationStatus extends Status {
-	public DurationStatus(String id, FightData target) {
-		super(id, target);
+	public DurationStatus(String id, FightData target, StatusClass sc) {
+		super(id, target, sc);
 	}
 
 	@Override

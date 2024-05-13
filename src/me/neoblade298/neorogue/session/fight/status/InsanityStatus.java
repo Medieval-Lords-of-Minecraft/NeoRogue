@@ -7,7 +7,7 @@ public class InsanityStatus extends DecrementStackStatus {
 	private static String id = "INSANITY";
 	
 	public InsanityStatus(FightData data) {
-		super(id, data);
+		super(id, data, StatusClass.NEGATIVE);
 	}
 	
 	@Override
