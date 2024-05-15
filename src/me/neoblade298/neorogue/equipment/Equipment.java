@@ -208,6 +208,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Sturdy(b);
 			new Substitution(b);
 			new Tackle(b);
+			new ThrowPoison(b);
 			new Thornguard(b);
 			new Titan(b);
 			new TreeTrunk(b);

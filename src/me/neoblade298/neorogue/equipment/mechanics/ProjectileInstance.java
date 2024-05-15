@@ -21,7 +21,7 @@ import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffType;
 
-public class ProjectileInstance {
+public class ProjectileInstance extends IProjectileInstance {
 	private FightInstance inst;
 	private FightData owner;
 	private HashSet<UUID> targetsHit = new HashSet<UUID>();

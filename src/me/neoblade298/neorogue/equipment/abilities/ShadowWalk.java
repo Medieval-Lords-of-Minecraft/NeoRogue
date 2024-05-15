@@ -26,7 +26,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
 public class ShadowWalk extends Equipment {
 	private static final String ID = "shadowWalk";
-	private static final TargetProperties tp = TargetProperties.radius(5, true, TargetType.ENEMY);
+	private static final TargetProperties tp = TargetProperties.radius(3, true, TargetType.ENEMY);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.PORTAL),
 			hit = new ParticleContainer(Particle.REDSTONE).count(50).spread(0.5, 0.5);
 	private int shields, damage = 50, cdr;
@@ -54,7 +54,7 @@ public class ShadowWalk extends Equipment {
 				"On cast, Grant speed <white>1</white>, " + GlossaryTag.INVISIBLE.tag(this) + ", and " + GlossaryTag.SHIELDS.tag(this, shields, true) +
 				" for <white>3</white> seconds. "
 				+ "Your next basic attack deals an additional " + GlossaryTag.PIERCING.tag(this, damage, false) + " damage. Not being within "
-						+ "<white>5m</white> of an enemy decreases the cooldown"
+						+ "<white>3m</white> of an enemy decreases the cooldown"
 						+ " of this ability by <yellow>" + cdr + "</yellow> second(s).");
 	}
 

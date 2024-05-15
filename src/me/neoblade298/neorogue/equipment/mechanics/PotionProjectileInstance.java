@@ -11,6 +11,7 @@ import org.bukkit.entity.ThrownPotion;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.potion.PotionType;
 
 import me.neoblade298.neorogue.NeoRogue;
 
@@ -27,10 +28,11 @@ public class PotionProjectileInstance extends IProjectileInstance {
 
         ItemStack item = new ItemStack(Material.POTION);
         PotionMeta pm = (PotionMeta) item.getItemMeta();
-        pm.setBasePotionType(potion.type);
+        pm.setBasePotionType(PotionType.AWKWARD);
+        pm.setColor(potion.color);
         item.setItemMeta(pm);
         thrown.setItem(item);
-        thrown.setMetadata("uuid", new FixedMetadataValue(NeoRogue.inst(), uuid.toString()));
+        thrown.setMetadata("uuid", new FixedMetadataValue(NeoRogue.inst(), uuid));
 	}
 	
 	public static PotionProjectileInstance get(UUID uuid) {

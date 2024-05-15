@@ -26,7 +26,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
 public class Sidestep extends Equipment {
 	private static final String ID = "sidestep";
-	private static final TargetProperties tp = TargetProperties.radius(5, true, TargetType.ENEMY);
+	private static final TargetProperties tp = TargetProperties.radius(3, true, TargetType.ENEMY);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.PORTAL),
 			hit = new ParticleContainer(Particle.REDSTONE).count(50).spread(0.5, 0.5);
 	private int damage = 80, cdr, evade;
@@ -50,7 +50,7 @@ public class Sidestep extends Equipment {
 				+ "Also grant " + GlossaryTag.EVADE.tag(this, evade, true) + " for <white>10</white> seconds. "
 				+ "Your next basic attack deals an additional " + GlossaryTag.PIERCING.tag(this, damage, false) + " damage. "
 				+ "Not being within "
-				+ "<white>5m</white> of an enemy decreases the cooldown"
+				+ "<white>3m</white> of an enemy decreases the cooldown"
 				+ " of this ability by <yellow>" + cdr + "</yellow> second(s).");
 	}
 

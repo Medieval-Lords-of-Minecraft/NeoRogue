@@ -27,7 +27,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
 public class NightShade extends Equipment {
 	private static final String ID = "nightShade";
-	private static final TargetProperties tp = TargetProperties.radius(5, true, TargetType.ENEMY);
+	private static final TargetProperties tp = TargetProperties.radius(3, true, TargetType.ENEMY);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.PORTAL),
 			hit = new ParticleContainer(Particle.REDSTONE).count(50).spread(0.5, 0.5);
 	private int shields, damage = 80, cdr, insanity;
@@ -52,7 +52,7 @@ public class NightShade extends Equipment {
 				" for <white>3</white> seconds. "
 				+ "Your next basic attack deals an additional " + GlossaryTag.DARK.tag(this, damage, false) + " damage and applies " +
 				GlossaryTag.INSANITY.tag(this, insanity, true) + ". Not being within "
-				+ "<white>5m</white> of an enemy decreases the cooldown"
+				+ "<white>3m</white> of an enemy decreases the cooldown"
 				+ " of this ability by <yellow>" + cdr + "</yellow> second(s).");
 	}
 

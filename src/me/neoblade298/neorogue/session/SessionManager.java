@@ -257,10 +257,9 @@ public class SessionManager implements Listener {
 	@EventHandler
 	public void onPotionSplash(PotionSplashEvent e) {
 		if (e.getEntity().hasMetadata("uuid")) {
-			UUID uuid = UUID.fromString(e.getEntity().getMetadata("uuid").get(0).toString());
+			UUID uuid = (UUID) e.getEntity().getMetadata("uuid").get(0).value();
 			PotionProjectileInstance inst = PotionProjectileInstance.get(uuid);
 			if (inst == null) return;
-			e.setCancelled(true);
 			inst.callback(e.getPotion().getLocation(), e.getAffectedEntities());
 			PotionProjectileInstance.remove(uuid);
 		}

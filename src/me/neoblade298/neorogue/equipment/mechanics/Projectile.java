@@ -6,7 +6,7 @@ import org.bukkit.util.Vector;
 
 import me.neoblade298.neorogue.session.fight.FightData;
 
-public abstract class Projectile {
+public abstract class Projectile extends IProjectile {
 	private double gravity, yRotate, blocksPerTick, initialY;
 	private boolean pierce, ignoreBarriers, ignoreBlocks, ignoreEntities;
 	private double width = 0.2, height = 0.2;
@@ -99,14 +99,14 @@ public abstract class Projectile {
 	}
 
 	// Can only be run by ProjectileGroup
-	protected ProjectileInstance start(FightData owner) {
+	protected IProjectileInstance start(FightData owner) {
 		ProjectileInstance proj = new ProjectileInstance(this, owner);
 		onStart(proj);
 		return proj;
 	}
 	
 	// Can only be run by ProjectileGroup
-	protected ProjectileInstance start(FightData owner, Location source, Vector direction) {
+	protected IProjectileInstance start(FightData owner, Location source, Vector direction) {
 		ProjectileInstance proj = new ProjectileInstance(this, owner, source, direction);
 		onStart(proj);
 		return proj;

@@ -61,7 +61,7 @@ public class LeadingKnife extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.STONE_SWORD, "Right click to throw a knife. If an enemy is hit, they are marked for <yellow>2</yellow> seconds."
-				+ ". Dealing damage to them grants you"
+				+ " Dealing damage to them grants you"
 				+ " <yellow>" + stamina + "</yellow> stamina and consumes the mark.");
 	}
 	
