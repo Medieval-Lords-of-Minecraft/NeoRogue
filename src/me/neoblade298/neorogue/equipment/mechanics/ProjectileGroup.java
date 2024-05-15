@@ -54,8 +54,8 @@ public class ProjectileGroup {
 		return projs;
 	}
 	
-	// Direction should be normalized for consistent behavior
 	public LinkedList<ProjectileInstance> start(FightData owner, Location origin, Vector direction) {
+		direction.normalize();
 		LinkedList<ProjectileInstance> projs = new LinkedList<ProjectileInstance>();
 		for (Projectile proj : group) {
 			projs.add(proj.start(owner, origin, direction));

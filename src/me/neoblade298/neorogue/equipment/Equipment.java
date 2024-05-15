@@ -271,6 +271,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new SilverFang(b);
 			new ShieldPike(b);
 			new SmokeBomb(b);
+			new SparkKnife(b);
 			new SparkStick(b);
 			new StoneAxe(b);
 			new StoneDagger(b);

@@ -10,8 +10,6 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
-import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
-import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffSlice;
 import me.neoblade298.neorogue.session.fight.buff.BuffType;
@@ -154,13 +152,6 @@ public class DamageMeta {
 				for (Entry<FightData, Integer> ent : recipient.getStatus(StatusType.BURN).getSlices().getSliceOwners().entrySet()) {
 					slices.add(new DamageSlice(ent.getKey(), ent.getValue() * 0.1, DamageType.FIRE));
 				}
-			}
-
-			if (recipient.hasStatus(StatusType.ELECTRIFIED)) {
-				TargetProperties tp = TargetProperties.radius(5, true, owner instanceof PlayerFightData ? TargetType.ENEMY : TargetType.ALLY);
-				FightInstance.dealDamage(
-						new DamageMeta(owner, recipient.getStatus(StatusType.ELECTRIFIED).getStacks() * 0.1, DamageType.LIGHTNING, false, true),
-						TargetHelper.getEntitiesInRadius(recipient.getEntity(), tp));
 			}
 
 			if (owner.hasStatus(StatusType.SANCTIFIED)) {
