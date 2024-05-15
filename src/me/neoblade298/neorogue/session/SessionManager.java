@@ -26,6 +26,7 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
@@ -55,6 +56,7 @@ import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.equipment.mechanics.PotionProjectileInstance;
 import me.neoblade298.neorogue.map.MapSpawnerInstance;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
@@ -250,6 +252,18 @@ public class SessionManager implements Listener {
 			return;
 		}
 		FightInstance.handleDeath(e);
+	}
+	
+	@EventHandler
+	public void onPotionSplash(PotionSplashEvent e) {
+		if (e.getEntity().hasMetadata("uuid")) {
+			UUID uuid = UUID.fromString(e.getEntity().getMetadata("uuid").get(0).toString());
+			PotionProjectileInstance inst = PotionProjectileInstance.get(uuid);
+			if (inst == null) return;
+			e.setCancelled(true);
+			inst.callback(e.getPotion().getLocation(), e.getAffectedEntities());
+			PotionProjectileInstance.remove(uuid);
+		}
 	}
 	
 	// Only handles player left click

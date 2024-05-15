@@ -20,7 +20,7 @@ public class Sounds {
 			levelup = new SoundContainer(Sound.ENTITY_PLAYER_LEVELUP),
 			error = new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BASS, 0.7F),
 			flap = new SoundContainer(Sound.ENTITY_ENDER_DRAGON_FLAP),
-			threw = new SoundContainer(Sound.ENTITY_PLAYER_ATTACK_STRONG),
+			threw = new SoundContainer(Sound.ENTITY_SNOWBALL_THROW),
 			turnPage = new SoundContainer(Sound.ITEM_BOOK_PAGE_TURN),
 			enchant = new SoundContainer(Sound.BLOCK_ENCHANTMENT_TABLE_USE),
 			firework = new SoundContainer(Sound.ENTITY_FIREWORK_ROCKET_BLAST),
