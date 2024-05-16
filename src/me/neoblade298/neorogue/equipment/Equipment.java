@@ -40,6 +40,7 @@ import me.neoblade298.neorogue.equipment.armor.IronCuirass;
 import me.neoblade298.neorogue.equipment.armor.LeatherChestplate;
 import me.neoblade298.neorogue.equipment.armor.LeatherCowl;
 import me.neoblade298.neorogue.equipment.armor.LeatherHelmet;
+import me.neoblade298.neorogue.equipment.armor.LeatherHood;
 import me.neoblade298.neorogue.equipment.armor.NullMagicMantle;
 import me.neoblade298.neorogue.equipment.armor.SpikedPauldrons;
 import me.neoblade298.neorogue.equipment.artifacts.AlchemistBag;
@@ -235,6 +236,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new LeatherCowl(b);
 			new LeatherChestplate(b);
 			new LeatherHelmet(b);
+			new LeatherHood(b);
 			new NullMagicMantle(b);
 			new SpikedPauldrons(b);
 

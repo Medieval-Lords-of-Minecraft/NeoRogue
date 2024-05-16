@@ -16,9 +16,6 @@ import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
-import me.neoblade298.neorogue.session.fight.TargetHelper;
-import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
-import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -26,16 +23,14 @@ import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
 public class Sidestep extends Equipment {
 	private static final String ID = "sidestep";
-	private static final TargetProperties tp = TargetProperties.radius(3, true, TargetType.ENEMY);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.PORTAL),
 			hit = new ParticleContainer(Particle.REDSTONE).count(50).spread(0.5, 0.5);
-	private int damage = 80, cdr, evade;
+	private int damage = 80, evade;
 	
 	public Sidestep(boolean isUpgraded) {
 		super(ID, "Sidestep", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 20, 15, 0));
 		pc.count(50).spread(0.5, 0.5).offsetY(1);
-		cdr = 3;
 		evade = isUpgraded ? 3 : 2;
 	}
 	
@@ -47,11 +42,10 @@ public class Sidestep extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.OBSIDIAN,
 				"On cast, Grant speed <white>1</white> and " + GlossaryTag.INVISIBLE.tag(this) + " for <white>3</white> seconds. "
-				+ "Also grant " + GlossaryTag.EVADE.tag(this, evade, true) + " for <white>10</white> seconds. "
+				+ "Also grant " + GlossaryTag.EVADE.tag(this, evade, true) + " for <white>5</white> seconds. "
 				+ "Your next basic attack deals an additional " + GlossaryTag.PIERCING.tag(this, damage, false) + " damage. "
-				+ "Not being within "
-				+ "<white>3m</white> of an enemy decreases the cooldown"
-				+ " of this ability by <yellow>" + cdr + "</yellow> second(s).");
+				+ "The cooldown of this ability is reduced by your " + GlossaryTag.INVISIBLE.tag(this)
+				+ " stacks every second.");
 	}
 
 	@Override
@@ -80,8 +74,8 @@ public class Sidestep extends Equipment {
 		});
 		
 		data.addTrigger(ID, Trigger.PLAYER_TICK, (pdata, in) -> {
-			if (!TargetHelper.getEntitiesInRadius(p, tp).isEmpty()) return TriggerResult.keep();
-			inst.reduceCooldown(cdr);
+			if (data.hasStatus(StatusType.INVISIBLE)) return TriggerResult.keep();
+			inst.reduceCooldown(data.getStatus(StatusType.INVISIBLE).getStacks());
 			return TriggerResult.keep();
 		});
 	}
