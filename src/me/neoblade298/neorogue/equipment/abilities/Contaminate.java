@@ -27,7 +27,7 @@ public class Contaminate extends Equipment {
 	private static final String ID = "contaminate";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.PORTAL),
 			hit = new ParticleContainer(Particle.REDSTONE).count(50).spread(0.5, 0.5);
-	private int damage = 80;
+	private int damage = 100;
 	private double mult;
 	
 	public Contaminate(boolean isUpgraded) {

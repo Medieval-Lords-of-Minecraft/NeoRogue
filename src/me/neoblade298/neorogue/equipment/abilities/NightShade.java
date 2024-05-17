@@ -26,11 +26,11 @@ public class NightShade extends Equipment {
 	private static final String ID = "nightShade";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.PORTAL),
 			hit = new ParticleContainer(Particle.REDSTONE).count(50).spread(0.5, 0.5);
-	private int damage = 80, insanity;
+	private int damage = 100, insanity;
 	
 	public NightShade(boolean isUpgraded) {
 		super(ID, "Night Shade", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 20, 15, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 20, 6, 0));
 		pc.count(50).spread(0.5, 0.5).offsetY(1);
 		insanity = isUpgraded ? 9 : 6;
 	}
