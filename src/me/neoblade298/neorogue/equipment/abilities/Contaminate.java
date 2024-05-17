@@ -72,7 +72,7 @@ public class Contaminate extends Equipment {
 				FightData fd = FightInstance.getFightData(ev.getTarget());
 				int toAdd = (int) (fd.getStatus(StatusType.POISON).getStacks() * (mult - 1));
 				if (toAdd <= 0) return TriggerResult.keep();
-				fd.applyStatus(StatusType.POISON, data, toAdd, -1);
+				fd.applyStatus(StatusType.POISON, data, toAdd, 100);
 			}
 			return TriggerResult.keep();
 		});

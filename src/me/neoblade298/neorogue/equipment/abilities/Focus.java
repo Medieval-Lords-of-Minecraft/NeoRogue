@@ -27,7 +27,7 @@ public class Focus extends Equipment {
 	public Focus(boolean isUpgraded) {
 		super(ID, "Focus", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(20, 25, 15, 0));
-		ev = isUpgraded ? 3 : 2;
+		ev = isUpgraded ? 2 : 1;
 	}
 
 	public static Equipment get() {
@@ -52,6 +52,6 @@ public class Focus extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.CYAN_DYE,
-				"Charge for <white>2</white> seconds before gaining " + GlossaryTag.EVADE.tag(this, ev, true) + ".");
+				"On cast, charge for <white>2</white> seconds before gaining " + GlossaryTag.EVADE.tag(this, ev, true) + ".");
 	}
 }

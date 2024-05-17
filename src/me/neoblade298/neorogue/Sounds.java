@@ -24,5 +24,7 @@ public class Sounds {
 			turnPage = new SoundContainer(Sound.ITEM_BOOK_PAGE_TURN),
 			enchant = new SoundContainer(Sound.BLOCK_ENCHANTMENT_TABLE_USE),
 			firework = new SoundContainer(Sound.ENTITY_FIREWORK_ROCKET_BLAST),
+			water = new SoundContainer(Sound.ENTITY_GENERIC_SWIM),
+			extinguish = new SoundContainer(Sound.BLOCK_FIRE_EXTINGUISH),
 			teleport = new SoundContainer(Sound.ENTITY_ENDERMAN_TELEPORT);
 }

@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class StoneShiv extends Equipment {
 	private static final String ID = "stoneShiv";
-	private static int stamina;
+	private int stamina;
 	
 	public StoneShiv(boolean isUpgraded) {
 		super(ID, "Stone Shiv", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,

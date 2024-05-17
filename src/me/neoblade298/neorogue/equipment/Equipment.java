@@ -153,6 +153,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Challenge(b);
 			new Charge(b);
 			new Cleave(b);
+			new Concoct(b);
 			new Contaminate(b);
 			new Cripple(b);
 			new CripplingPoison(b);
@@ -215,6 +216,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new TreeTrunk(b);
 			new Vanish(b);
 			new WarCry(b);
+			new Warmup(b);
 			new WeaponEnchantmentHoly(b);
 			new Windcutter(b);
 			new WindSlash(b);

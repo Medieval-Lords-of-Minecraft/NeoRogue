@@ -34,7 +34,7 @@ public class LeatherHood extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LEATHER_HELMET, "Start every fight with " + GlossaryTag.INVISIBLE.tag(this, 1, false)
-		+ " [<yellow>" + dur +"</yellow>].");
+		+ " [<yellow>" + dur +"s</yellow>].");
 		
 		LeatherArmorMeta dye = (LeatherArmorMeta) item.getItemMeta();
 		dye.setColor(Color.BLACK);

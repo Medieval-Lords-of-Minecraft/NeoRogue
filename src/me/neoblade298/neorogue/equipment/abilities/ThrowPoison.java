@@ -27,7 +27,7 @@ public class ThrowPoison extends Equipment {
 	public ThrowPoison(boolean isUpgraded) {
 		super(ID, "Throw Poison", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 15, 10, 0));
-		poison = isUpgraded ? 15 : 10;
+		poison = isUpgraded ? 90 : 60;
 	}
 	
 	public static Equipment get() {
@@ -38,7 +38,8 @@ public class ThrowPoison extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		PotionProjectile pot = new PotionProjectile((loc, hit) -> {
 			for (LivingEntity ent : hit) {
-				FightInstance.applyStatus(ent, StatusType.POISON, data, poison, -1);
+				if (ent instanceof Player || !(ent instanceof LivingEntity)) continue;
+				FightInstance.applyStatus(ent, StatusType.POISON, data, poison, 100);
 			}
 		});
 		ProjectileGroup grp = new ProjectileGroup(pot);
@@ -52,7 +53,7 @@ public class ThrowPoison extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION,
-				"On cast, gain " + GlossaryTag.POISON.tag(this, poison, true) + " for 5 seconds.");
+				"On cast, throw a potion that applies " + GlossaryTag.POISON.tag(this, poison, true) + " [<white>5s</white>].");
 		PotionMeta pm = (PotionMeta) item.getItemMeta();
 		pm.setColor(Color.LIME);
 		item.setItemMeta(pm);

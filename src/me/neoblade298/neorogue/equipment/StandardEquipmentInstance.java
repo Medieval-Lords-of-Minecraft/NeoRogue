@@ -7,7 +7,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerCondition;
 
 // For most common use cases of having a counter and cooldown
 public class StandardEquipmentInstance extends EquipmentInstance {
-	private long nextUse;
+	private long time;
 	private int count;
 
 	public StandardEquipmentInstance(Player p, Equipment eq, int slot, EquipSlot es) {
@@ -34,11 +34,11 @@ public class StandardEquipmentInstance extends EquipmentInstance {
 		return count;
 	}
 	
-	public void setNextUse(long next) {
-		this.nextUse = next;
+	public void setTime(long time) {
+		this.time = time;
 	}
 	
-	public boolean canUse() {
-		return System.currentTimeMillis() >= nextUse;
+	public long getTime() {
+		return time;
 	}
 }

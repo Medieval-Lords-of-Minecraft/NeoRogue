@@ -12,6 +12,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardEquipmentInstance;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageType;
@@ -25,11 +26,12 @@ public class ShadowWalk extends Equipment {
 	private static final String ID = "shadowWalk";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.PORTAL),
 			hit = new ParticleContainer(Particle.REDSTONE).count(50).spread(0.5, 0.5);
-	private int damage = 50;
+	private int damage = 100;
 	
 	public ShadowWalk(boolean isUpgraded) {
 		super(ID, "Shadow Walk", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(5, 10, 10, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(5, 10, isUpgraded ? 6 : 8, 0));
+		properties.addUpgrades(PropertyType.COOLDOWN);
 		pc.count(50).spread(0.5, 0.5).offsetY(1);
 	}
 	
@@ -77,7 +79,7 @@ public class ShadowWalk extends Equipment {
 		});
 		
 		data.addTrigger(ID, Trigger.PLAYER_TICK, (pdata, in) -> {
-			if (data.hasStatus(StatusType.INVISIBLE)) return TriggerResult.keep();
+			if (!data.hasStatus(StatusType.INVISIBLE)) return TriggerResult.keep();
 			inst.reduceCooldown(data.getStatus(StatusType.INVISIBLE).getStacks());
 			return TriggerResult.keep();
 		});
