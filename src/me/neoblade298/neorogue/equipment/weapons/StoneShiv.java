@@ -21,7 +21,7 @@ public class StoneShiv extends Equipment {
 	public StoneShiv(boolean isUpgraded) {
 		super(ID, "Stone Shiv", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(15, 1.5, 0.2, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
+				EquipmentProperties.ofWeapon(20, 1.5, 0.2, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
 		stamina = isUpgraded ? 6 : 4;
 	}
 	

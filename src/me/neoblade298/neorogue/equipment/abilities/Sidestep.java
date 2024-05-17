@@ -74,7 +74,7 @@ public class Sidestep extends Equipment {
 		});
 		
 		data.addTrigger(ID, Trigger.PLAYER_TICK, (pdata, in) -> {
-			if (data.hasStatus(StatusType.INVISIBLE)) return TriggerResult.keep();
+			if (!data.hasStatus(StatusType.INVISIBLE)) return TriggerResult.keep();
 			inst.reduceCooldown(data.getStatus(StatusType.INVISIBLE).getStacks());
 			return TriggerResult.keep();
 		});

@@ -1089,38 +1089,38 @@ public class Area {
 			case 0:
 				table.add(NodeType.FIGHT, 60);
 				table.add(NodeType.CHANCE, 27);
-				table.add(NodeType.SHOP, 5);
-				table.add(NodeType.MINIBOSS, 2);
+				table.add(NodeType.SHOP, 2);
+				table.add(NodeType.MINIBOSS, 5);
 				table.add(NodeType.SHRINE, 6);
 				break;
 			case 1:
 				table.add(NodeType.FIGHT, 10);
 				table.add(NodeType.CHANCE, 10);
-				table.add(NodeType.SHOP, 13);
+				table.add(NodeType.SHOP, 8);
 				table.add(NodeType.MINIBOSS, 40);
-				table.add(NodeType.SHRINE, 27);
+				table.add(NodeType.SHRINE, 32);
 				break;
 			case 2:
 				table.add(NodeType.FIGHT, 69);
 				table.add(NodeType.CHANCE, 31);
 				break;
 			case 3:
-				table.add(NodeType.FIGHT, 59);
+				table.add(NodeType.FIGHT, 64);
 				table.add(NodeType.CHANCE, 31);
-				table.add(NodeType.SHOP, 10);
+				table.add(NodeType.SHOP, 5);
 				break;
 			case 4:
-				table.add(NodeType.FIGHT, 65);
+				table.add(NodeType.FIGHT, 57);
 				table.add(NodeType.CHANCE, 31);
 				table.add(NodeType.MINIBOSS, 2);
-				table.add(NodeType.SHRINE, 2);
+				table.add(NodeType.SHRINE, 10);
 				break;
 			case 5:
 				table.add(NodeType.FIGHT, 24);
 				table.add(NodeType.CHANCE, 14);
-				table.add(NodeType.SHOP, 31);
+				table.add(NodeType.SHOP, 15);
 				table.add(NodeType.MINIBOSS, 5);
-				table.add(NodeType.SHRINE, 26);
+				table.add(NodeType.SHRINE, 42);
 				break;
 			}
 		}

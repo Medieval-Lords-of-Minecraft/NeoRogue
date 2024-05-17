@@ -31,7 +31,7 @@ public class StoneThrowingKnife extends Equipment {
 	public StoneThrowingKnife(boolean isUpgraded) {
 		super(ID, "Stone Throwing Knife", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofRangedWeapon(10, 1.25, 0, isUpgraded ? 5 : 3, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
+				EquipmentProperties.ofRangedWeapon(20, 1.25, 0, isUpgraded ? 5 : 3, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
 		properties.addUpgrades(PropertyType.RANGE);
 	}
 	

@@ -33,7 +33,7 @@ public class ShopItem {
 		this.eq = eq;
 		this.sale = sale;
 		this.slot = slot;
-		price = expensive ? NeoRogue.gen.nextInt(100, 150) : NeoRogue.gen.nextInt(75, 125);
+		price = expensive ? NeoRogue.gen.nextInt(150, 200) : NeoRogue.gen.nextInt(100, 150);
 		if (sale)
 			price = (int) (price * NeoRogue.gen.nextDouble(0.4, 0.8));
 	}

@@ -5,9 +5,11 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -65,11 +67,15 @@ public class TargetAcquisition extends Equipment {
 		public TargetAcquisitionInstance(String id) {
 			super(id);
 			action = (pdata, in) -> {
-				Player p = pdata.getPlayer();
-				trg = TargetHelper.getNearest(p, tp);
-				if (trg == null) return TriggerResult.keep();
-				sc.play(p, trg);
-				part.play(p, trg);
+				pdata.addTask(new BukkitRunnable() {
+					public void run() {
+						Player p = pdata.getPlayer();
+						trg = TargetHelper.getNearest(p, tp);
+						if (trg == null) return;
+						sc.play(p, trg);
+						part.play(p, trg);
+					}
+				}.runTaskLater(NeoRogue.inst(), 1L));
 				return TriggerResult.keep();
 			};
 		}

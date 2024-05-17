@@ -46,7 +46,8 @@ public class Contaminate extends Equipment {
 		item = createItem(Material.POISONOUS_POTATO,
 				"On cast, Grant speed <white>1</white> and " + GlossaryTag.INVISIBLE.tag(this) + " for <white>3</white> seconds. "
 				+ "Your next basic attack deals an additional " + GlossaryTag.PIERCING.tag(this, damage, false) + " damage and multiplies existing stacks of "
-				+ GlossaryTag.POISON.tag(this) + " on the enemy hit by <yellow>" + mult + "</yellow>, rounded down.");
+				+ GlossaryTag.POISON.tag(this) + " on the enemy hit by <yellow>" + mult + "</yellow>, rounded down. "
+				+ GlossaryTag.POISON.tag(this) + " duration is refreshed by <white>3s</white>.");
 	}
 
 	@Override

@@ -20,8 +20,8 @@ public class WoodenDagger extends Equipment {
 	public WoodenDagger(boolean isUpgraded) {
 		super(ID, "Wooden Dagger", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(10, isUpgraded ? 1.5 : 1.25, 0.2, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
-		properties.addUpgrades(PropertyType.ATTACK_SPEED);
+				EquipmentProperties.ofWeapon(isUpgraded ? 20 : 15, 1.25, 0.2, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
+		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 
 	@Override
