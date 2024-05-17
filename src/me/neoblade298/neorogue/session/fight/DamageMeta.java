@@ -205,9 +205,7 @@ public class DamageMeta {
 			}
 
 			for (BuffType bt : slice.getPostBuffType().getBuffTypes()) {
-				System.out.println("Bufftype " + bt);
 				if (!defenseBuffs.containsKey(bt)) continue;
-				System.out.println("1 " + defenseBuffs);
 				for (BuffMeta bm : defenseBuffs.get(bt)) {
 					Buff b = bm.buff;
 					increase -= b.getIncrease();
