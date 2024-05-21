@@ -75,6 +75,7 @@ public class LeadingKnife extends Equipment {
 		
 		private void initialize(ProjectileGroup proj) {
 			action = (pdata, in) -> {
+				if (!pdata.canBasicAttack(EquipSlot.OFFHAND)) return TriggerResult.keep();
 				Player p = pdata.getPlayer();
 				weaponSwing(p, pdata);
 				proj.start(pdata);

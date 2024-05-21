@@ -30,7 +30,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 public class ShopInventory extends CoreInventory {
 	public static final int[] SLOT_ORDER = new int[] { 0, 2, 4, 6, 8, 9, 11, 13, 15, 17 };
-	private static final int SELL_PRICE = 25, REMOVE_CURSE_PRICE = 150;
+	private static final int SELL_PRICE = 25, REMOVE_CURSE_PRICE = 100;
 	private PlayerSessionData data;
 	private ArrayList<ShopItem> shopItems;
 	private Player spectator;

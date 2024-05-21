@@ -40,9 +40,7 @@ public class SmokeBomb extends Equipment {
 	
 	public SmokeBomb(boolean isUpgraded) {
 		super(ID, "Smoke Bomb", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 15, 10, 0));
-		damage = isUpgraded ? 30 : 20;
-		dmgPct = damage * 0.1;
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 0, 10, 0));
 	}
 	
 	public static Equipment get() {
@@ -76,8 +74,7 @@ public class SmokeBomb extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SHIELD,
-				"On cast, drop a smoke bomb that detonates after <white>3</white> seconds. On detonation, all enemies in the radius"
-				+ " take <yellow>" + damage + "%</yellow> additional damage for <white>10</white> seconds. If you're also in the radius,"
-						+ " apply " + GlossaryTag.INVISIBLE.tag(this) + " to yourself for <white>5</white> seconds.");
+				"On cast, drop a smoke bomb that detonates after <white>3</white> seconds. After detonation, for <white>5</white> seconds,"
+				+ " standing within the radius grants " + GlossaryTag.INVISIBLE.tag(this, 1, false) + " [<white>1s</white]."));
 	}
 }
