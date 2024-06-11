@@ -13,7 +13,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class LoseInstance extends EditInventoryInstance {
-	private static final double SPAWN_X = Session.LOSE_X + 2.5, SPAWN_Z = Session.LOSE_Z + 2.5;
+	private static final double SPAWN_X = Session.LOSE_X + 8.5, SPAWN_Z = Session.LOSE_Z + 7.5;
 	
 	public LoseInstance(Session s) {
 		super(s, SPAWN_X, SPAWN_Z);

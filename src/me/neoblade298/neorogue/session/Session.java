@@ -81,7 +81,7 @@ public class Session {
 		shrine = loadClipboard("shrine.schem");
 		shop = loadClipboard("shop.schem");
 		chance = loadClipboard("chance.schem");
-		lose = loadClipboard("lose.schem");
+		lose = loadClipboard("graveyard.schem");
 	}
 	
 	private static Clipboard loadClipboard(String schematic) {
@@ -98,15 +98,23 @@ public class Session {
 	}
 
 	private static void pasteSchematic(Clipboard clipboard, EditSession editSession, Session session, int xOff,
-			int zOff) {
+			int yOff, int zOff) {
 		Operation operation = new ClipboardHolder(clipboard).createPaste(editSession)
-				.to(BlockVector3.at(-(session.getXOff() + xOff + 1), 64, session.getZOff() + zOff))
+				.to(BlockVector3.at(-(session.getXOff() + xOff + 1), 64 + yOff, session.getZOff() + zOff))
 				.ignoreAirBlocks(false).build();
 		try {
 			Operations.complete(operation);
 		} catch (WorldEditException e) {
 			e.printStackTrace();
 		}
+	}
+
+	private static void pasteSchematic(Clipboard clipboard, EditSession editSession, Session session, int zOff) {
+		pasteSchematic(clipboard, editSession, session, 0, 0, zOff);
+	}
+
+	private static void pasteSchematic(Clipboard clipboard, EditSession editSession, Session session, int yOff, int zOff) {
+		pasteSchematic(clipboard, editSession, session, 0, yOff, zOff);
 	}
 	
 	public Session(Player p, Plot plot, String lobby, int saveSlot) {
@@ -181,13 +189,13 @@ public class Session {
 	private void generateInterstitials() {
 		// Generate the lobby and add the host there
 		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Area.world)) {
-			pasteSchematic(classSelect, editSession, this, 0, Session.LOBBY_Z);
-			pasteSchematic(nodeSelect, editSession, this, 0, Session.AREA_Z);
-			pasteSchematic(rewardsRoom, editSession, this, 0, Session.REWARDS_Z);
-			pasteSchematic(shrine, editSession, this, 0, Session.SHRINE_Z);
-			pasteSchematic(shop, editSession, this, 0, Session.SHOP_Z);
-			pasteSchematic(chance, editSession, this, 0, Session.CHANCE_Z);
-			pasteSchematic(lose, editSession, this, 0, Session.LOSE_Z);
+			pasteSchematic(classSelect, editSession, this, Session.LOBBY_Z);
+			pasteSchematic(nodeSelect, editSession, this, Session.AREA_Z);
+			pasteSchematic(rewardsRoom, editSession, this, Session.REWARDS_Z);
+			pasteSchematic(shrine, editSession, this, Session.SHRINE_Z);
+			pasteSchematic(shop, editSession, this, Session.SHOP_Z);
+			pasteSchematic(chance, editSession, this, Session.CHANCE_Z);
+			pasteSchematic(lose, editSession, this, -1, Session.LOSE_Z);
 		}
 	}
 	
