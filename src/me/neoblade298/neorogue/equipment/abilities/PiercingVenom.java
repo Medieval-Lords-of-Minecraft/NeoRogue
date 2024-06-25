@@ -39,7 +39,7 @@ public class PiercingVenom extends Equipment {
 		properties.addUpgrades(PropertyType.COOLDOWN);
 		poison = 5;
 		dur = 3;
-		threshold = isUpgraded ? 3 : 2;
+		threshold = isUpgraded ? 2 : 3;
 	}
 	
 	public static Equipment get() {

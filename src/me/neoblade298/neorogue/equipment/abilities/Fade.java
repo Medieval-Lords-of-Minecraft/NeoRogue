@@ -5,32 +5,27 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.StandardPriorityAction;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
-import me.neoblade298.neorogue.session.fight.DamageMeta.BuffOrigin;
-import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
-import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
 
-public class SilentSteps extends Equipment {
-	private static final String ID = "silentSteps";
-	private int duration, reduc;
+public class Fade extends Equipment {
+	private static final String ID = "fade";
+	private int duration, reduc, cooldown;
 	
-	public SilentSteps(boolean isUpgraded) {
-		super(ID, "Silent Steps", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.none());
-		duration = isUpgraded ? 2 : 1;
-		reduc = isUpgraded ? 3 : 2;
-	}
-
-	@Override
-	public void setupReforges() {
-		addSelfReforge(Fade.get(), Vanish.get(), SilentSteps2.get());
+	public Fade(boolean isUpgraded) {
+		super(ID, "Fade", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, isUpgraded ? 10 : 7, 0));
+		properties.addUpgrades(PropertyType.COOLDOWN);
+		duration = 2;
+		reduc = 3;
+		cooldown = (int) properties.get(PropertyType.COOLDOWN);
 	}
 	
 	public static Equipment get() {
@@ -42,22 +37,25 @@ public class SilentSteps extends Equipment {
 		data.addTrigger(ID,  Trigger.RECEIVE_STATUS, (pdata, in) -> {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
 			if (!ev.getStatusId().equals(StatusType.INVISIBLE.name())) return TriggerResult.keep();
-			ev.getDurationBuff().addIncrease(data, 20);
+			ev.getDurationBuff().addIncrease(data, duration);
 			return TriggerResult.keep();
 		});
 		
-		data.addTrigger(ID, Trigger.RECEIVED_DAMAGE, (pdata, in) -> {
-			if (!pdata.hasStatus(StatusType.INVISIBLE)) return TriggerResult.keep();
-			ReceivedDamageEvent ev = (ReceivedDamageEvent) in;
-			ev.getMeta().addBuff(BuffType.GENERAL, new Buff(pdata, 3, 0), BuffOrigin.NORMAL, false);
+		StandardPriorityAction inst = new StandardPriorityAction(ID);
+		inst.setAction((pdata, in) -> {
+			if (!inst.canUse()) return TriggerResult.keep();
+			inst.setNextUse(System.currentTimeMillis() + (1000 * cooldown));
+			data.applyStatus(StatusType.INVISIBLE, data, 1, 60);
 			return TriggerResult.keep();
 		});
+		data.addTrigger(ID, Trigger.BASIC_ATTACK, inst);
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LEATHER_BOOTS,
+		item = createItem(Material.REDSTONE_TORCH,
 				"Passive. Whenever you become " + GlossaryTag.INVISIBLE.tag(this) + ", increase its duration by <yellow>" + duration + "</yellow>." +
-				" Damage received is reduced by <yellow>" + reduc + "</yellow> while " + GlossaryTag.INVISIBLE.tag(this) +".");
+				" Damage received is reduced by <yellow>" + reduc + "</yellow> while " + GlossaryTag.INVISIBLE.tag(this) + ". "
+				+ "Basic attacks additionally grant you " + GlossaryTag.INVISIBLE.tag(this, 1, false) + " for <white>3</white> seconds.");
 	}
 }

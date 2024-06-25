@@ -19,7 +19,6 @@ import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
-import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
@@ -27,20 +26,19 @@ import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 public class Preparation extends Equipment {
 	private static final String ID = "preparation";
 	private static final ParticleContainer part = new ParticleContainer(Particle.FLAME).count(25).spread(0.5, 0.5).speed(0.1).offsetY(1);
-	private int damage, evade, stamina;
+	private int damage, shields;
 	
 	public Preparation(boolean isUpgraded) {
 		super(ID, "Preparation", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 25, 25, 0));
 		properties.addUpgrades(PropertyType.COOLDOWN);
 		damage = isUpgraded ? 100 : 70;
-		evade = isUpgraded ? 4 : 3;
-		stamina = isUpgraded ? 40 : 30;
+		shields = isUpgraded ? 15 : 10;
 	}
 
 	@Override
 	public void setupReforges() {
-		addSelfReforge(Substitution.get());
+		addSelfReforge(Flicker.get());
 	}
 	
 	public static Equipment get() {
@@ -57,12 +55,11 @@ public class Preparation extends Equipment {
 				public void run() {
 					Sounds.success.play(p, p);
 					part.play(p, p);
-					data.applyStatus(StatusType.EVADE, data, evade, -1);
-					data.addStamina(stamina);
+					data.addSimpleShield(p.getUniqueId(), shields, 200L);
 					inst.setCount(1);
 					data.addTask(new BukkitRunnable() {
 						public void run() {
-							inst.setCount(0);
+							inst.setCount(2);
 						}
 					}.runTaskLater(NeoRogue.inst(), 200L));
 				}
@@ -72,6 +69,7 @@ public class Preparation extends Equipment {
 		
 		inst.setAction((pdata, in) -> {
 			if (inst.getCount() == 0) return TriggerResult.keep();
+			if (inst.getCount() == 2) return TriggerResult.remove();
 			BasicAttackEvent ev = (BasicAttackEvent) in;
 			ev.getMeta().addDamageSlice(new DamageSlice(pdata, damage, DamageType.SLASHING));
 			Sounds.anvil.play(p, p);
@@ -82,8 +80,8 @@ public class Preparation extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLAZE_POWDER,
-				"On cast, charge for <white>5</white> seconds before gaining " + GlossaryTag.EVADE.tag(this, evade, true) + ", "
-				+ "<yellow>" + stamina + "</yellow> stamina, and deal "
+				"On cast, charge for <white>5</white> seconds before gaining " + GlossaryTag.SHIELDS.tag(this, shields, true) + " "
+				+ "and dealing an additional"
 				+ GlossaryTag.SLASHING.tag(this, damage, true) + " damage on basic attacks for <white>10</white> seconds.");
 	}
 }

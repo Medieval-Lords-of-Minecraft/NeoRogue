@@ -30,7 +30,6 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
 public class Darkness extends Equipment {
@@ -52,7 +51,7 @@ public class Darkness extends Equipment {
 
 	@Override
 	public void setupReforges() {
-		addSelfReforge(Substitution.get(), Preparation.get());
+		addSelfReforge(Flicker.get(), Preparation.get());
 	}
 	
 	public static Equipment get() {
@@ -63,13 +62,6 @@ public class Darkness extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		DarknessInstance inst = new DarknessInstance(p, this, slot, es);
 		data.addTrigger(id, bind, inst);
-		data.addTrigger(ID, Trigger.RECEIVE_STATUS, (pdata, in) -> {
-			ApplyStatusEvent ev = (ApplyStatusEvent) in;
-			if (ev.getStatusId().equals(StatusType.INVISIBLE.name())) {
-				inst.reduceCooldown(3);
-			}
-			return TriggerResult.keep();
-		});
 		data.addTrigger(ID, Trigger.BASIC_ATTACK, (pdata, in) -> {
 			if (!inst.basicAttack) return TriggerResult.keep();
 			BasicAttackEvent ev = (BasicAttackEvent) in;
@@ -116,8 +108,7 @@ public class Darkness extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLAZE_POWDER,
-				"On cast, drop a marker on the ground that deals " + GlossaryTag.DARK.tag(this, dark, true) + " damage per second for <white>5</white> seconds."
-				+ " During this time, your basic attacks apply " + GlossaryTag.INSANITY.tag(this, insanity, true) + "."
-				+ " Becoming " + GlossaryTag.INVISIBLE.tag(this) + " reduces the cooldown of this ability by <white>3</white>.");
+				"On cast, drop a bomb on the ground that deals " + GlossaryTag.DARK.tag(this, dark, true) + " damage per second for <white>5</white> seconds."
+				+ " During this time, your basic attacks apply " + GlossaryTag.INSANITY.tag(this, insanity, true) + ".");
 	}
 }

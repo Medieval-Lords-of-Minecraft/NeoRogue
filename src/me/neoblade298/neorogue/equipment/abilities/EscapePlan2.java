@@ -24,13 +24,13 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
 
-public class EscapePlan extends Equipment {
-	private static final String ID = "escapePlan";
+public class EscapePlan2 extends Equipment {
+	private static final String ID = "escapePlanII";
 	private int damage;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD).count(50).spread(0.5, 0);
 	
-	public EscapePlan(boolean isUpgraded) {
-		super(ID, "Escape Plan", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
+	public EscapePlan2(boolean isUpgraded) {
+		super(ID, "Escape Plan II", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 25, 15, 0));
 		damage = isUpgraded ? 100 : 70;
 	}

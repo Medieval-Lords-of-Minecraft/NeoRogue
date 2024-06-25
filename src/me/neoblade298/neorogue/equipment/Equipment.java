@@ -174,7 +174,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new ExploitWeakness(b);
 			new Ferocity(b);
 			new Fissure(b);
-			new Flicker(b);
+			new Fade(b);
 			new Flurry(b);
 			new Focus(b);
 			new Fortify(b);
@@ -208,7 +208,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Smite(b);
 			new SpiritOfTheDragoon(b);
 			new Sturdy(b);
-			new Substitution(b);
+			new Flicker(b);
 			new Tackle(b);
 			new ThrowPoison(b);
 			new Thornguard(b);

@@ -38,6 +38,11 @@ public class SmokeBomb extends Equipment {
 		super(ID, "Smoke Bomb", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 0, 10, 0));
 	}
+
+	@Override
+	public void setupReforges() {
+		addSelfReforge(Darkness.get());
+	}
 	
 	public static Equipment get() {
 		return Equipment.get(ID, false);
