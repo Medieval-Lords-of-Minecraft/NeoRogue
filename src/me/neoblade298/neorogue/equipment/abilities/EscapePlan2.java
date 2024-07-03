@@ -22,22 +22,19 @@ import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
 
 public class EscapePlan2 extends Equipment {
 	private static final String ID = "escapePlanII";
-	private int damage;
+	private int activateDamage, basicAttackDamage;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD).count(50).spread(0.5, 0);
 	
 	public EscapePlan2(boolean isUpgraded) {
-		super(ID, "Escape Plan II", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
+		super(ID, "Escape Plan II", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 25, 15, 0));
-		damage = isUpgraded ? 100 : 70;
-	}
-
-	@Override
-	public void setupReforges() {
-		addSelfReforge(Flicker.get(), Preparation.get(), Darkness.get());
+		basicAttackDamage = isUpgraded ? 50 : 30;
+		activateDamage = isUpgraded ? 100 : 70;
 	}
 	
 	public static Equipment get() {
@@ -73,16 +70,24 @@ public class EscapePlan2 extends Equipment {
 					public void run() {
 						active = false;
 					}
-				}, 100L);
+				}, 200L);
 				
 				pdata1.addTrigger(ID, Trigger.RECEIVED_DAMAGE, (pdata2, in2) -> {
 					ReceivedDamageEvent ev = (ReceivedDamageEvent) in2;
-					DamageMeta dm = new DamageMeta(pdata1, damage, DamageType.PIERCING);
+					DamageMeta dm = new DamageMeta(pdata1, activateDamage, DamageType.PIERCING);
 					FightInstance.dealDamage(dm, ev.getDamager().getEntity());
 					Sounds.teleport.play(p, p);
 					active = false;
 					p.teleport(loc);
 					return TriggerResult.of(true, true);
+				});
+				
+				pdata1.addTrigger(ID, Trigger.BASIC_ATTACK, (pdata2, in2) -> {
+					if (!active) return TriggerResult.remove();
+					BasicAttackEvent ev = (BasicAttackEvent) in2;
+					DamageMeta dm = new DamageMeta(pdata1, basicAttackDamage, DamageType.PIERCING);
+					FightInstance.dealDamage(dm, ev.getTarget());
+					return TriggerResult.keep();
 				});
 				return TriggerResult.keep();
 			};
@@ -92,8 +97,10 @@ public class EscapePlan2 extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLAZE_POWDER,
-				"On cast, drop a marker on the ground. It stays active <white>5</white> seconds."
-				+ " If you take damage while it's active, negate the damage, deal " + GlossaryTag.PIERCING.tag(this, damage, true) +
-				" damage to the attacker, teleport to the marker, and deactivate it.");
+				"On cast, drop a marker on the ground. It stays active <white>10</white> seconds."
+				+ " If you take damage while it's active, negate the damage, deal " + GlossaryTag.PIERCING.tag(this, activateDamage, true) +
+				" damage to the attacker, teleport to the marker, and deactivate it."
+				+ " While the marker remains active and you are " + GlossaryTag.INVISIBLE.tag(this) + ","
+				+ " deal " + GlossaryTag.PIERCING.tag(this, basicAttackDamage, true) + " additional damage on basic attacks.");
 	}
 }
