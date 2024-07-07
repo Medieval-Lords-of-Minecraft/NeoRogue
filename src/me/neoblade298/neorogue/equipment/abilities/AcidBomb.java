@@ -1,10 +1,14 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.Particle.DustOptions;
 import org.bukkit.Sound;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.Circle;
@@ -19,29 +23,28 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class SmokeBomb extends Equipment {
-	private static final String ID = "smokeBomb";
+public class AcidBomb extends Equipment {
+	private static final String ID = "acidBomb";
 	private static final ParticleContainer placePart = new ParticleContainer(Particle.CLOUD).count(10).spread(0.1, 0.1),
-			smoke = new ParticleContainer(Particle.CLOUD).count(50).spread(2.5, 2.5).offsetY(1.5),
-			smokeEdge = new ParticleContainer(Particle.CLOUD).count(2).spread(0.1, 0);
+			smoke = new ParticleContainer(Particle.REDSTONE).count(50).spread(2.5, 2.5).offsetY(1.5).dustOptions(new DustOptions(Color.LIME, 1F)),
+			smokeEdge = new ParticleContainer(Particle.REDSTONE).count(2).spread(0.1, 0).dustOptions(new DustOptions(Color.LIME, 1F));
 	private static final Circle circ = new Circle(5);
 	private static final SoundContainer place = new SoundContainer(Sound.ENTITY_CREEPER_PRIMED);
 	private static final TargetProperties tp = TargetProperties.radius(5, true, TargetType.ENEMY);
 	
-	public SmokeBomb(boolean isUpgraded) {
-		super(ID, "Smoke Bomb", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
+	private int poison;
+	
+	public AcidBomb(boolean isUpgraded) {
+		super(ID, "Acid Bomb", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 0, 10, 0));
-	}
-
-	@Override
-	public void setupReforges() {
-		addSelfReforge(Darkness.get(), AcidBomb.get());
+		poison = isUpgraded ? 45 : 30;
 	}
 	
 	public static Equipment get() {
@@ -62,8 +65,8 @@ public class SmokeBomb extends Equipment {
 						public void run() {
 							smoke.play(p, loc);
 							circ.play(smokeEdge, loc, LocalAxes.xz(), null);
-							if (p.getLocation().distanceSquared(loc) <= tp.range * tp.range) {
-								data.applyStatus(StatusType.INVISIBLE, data, 1, 20);
+							for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, tp)) {
+								data.applyStatus(StatusType.POISON, data, poison, 60);
 							}
 						}
 					}.runTaskTimer(NeoRogue.inst(), 0L, 20L));
@@ -76,8 +79,11 @@ public class SmokeBomb extends Equipment {
 	// add effects
 	@Override
 	public void setupItem() {
-		item = createItem(Material.SHIELD,
-				"On cast, drop a smoke bomb that detonates after <white>3</white> seconds. After detonation, for <white>5</white> seconds,"
-				+ " standing within the radius grants " + GlossaryTag.INVISIBLE.tag(this, 1, false) + " [<white>1s</white].");
+		item = createItem(Material.POTION,
+				"On cast, drop an acid bomb that detonates after <white>3</white> seconds. After detonation, for <white>5</white> seconds,"
+				+ " enemies within the radius get " + GlossaryTag.POISON.tag(this, poison, false) + " [<white>3s</white].");
+		PotionMeta pm = (PotionMeta) item.getItemMeta();
+		pm.setColor(Color.LIME);
+		item.setItemMeta(pm);
 	}
 }

@@ -94,7 +94,6 @@ public class Darkness extends Equipment {
 						basicAttack = false;
 					}
 					
-					
 					circle.play(pc, loc, LocalAxes.xz(), null);
 					darkSound.play(p, loc);
 					for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, tp)) {
