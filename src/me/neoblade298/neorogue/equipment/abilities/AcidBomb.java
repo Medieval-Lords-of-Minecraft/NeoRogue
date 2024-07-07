@@ -22,6 +22,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
@@ -62,12 +63,16 @@ public class AcidBomb extends Equipment {
 				public void run() {
 					Sounds.explode.play(p, loc);
 					data.addTask(new BukkitRunnable() {
+						private static final int TICKS = 5;
+						private int tick = 0;
 						public void run() {
 							smoke.play(p, loc);
 							circ.play(smokeEdge, loc, LocalAxes.xz(), null);
 							for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, tp)) {
-								data.applyStatus(StatusType.POISON, data, poison, 60);
+								FightInstance.applyStatus(ent, StatusType.POISON, data, poison, 60);
 							}
+							
+							if (++tick == TICKS) this.cancel();
 						}
 					}.runTaskTimer(NeoRogue.inst(), 0L, 20L));
 				}

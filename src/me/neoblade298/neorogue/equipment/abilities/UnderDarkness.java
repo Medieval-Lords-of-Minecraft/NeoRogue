@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import java.util.UUID;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -21,12 +23,13 @@ import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
+import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class SmokeBomb extends Equipment {
-	private static final String ID = "smokeBomb";
+public class UnderDarkness extends Equipment {
+	private static final String ID = "underDarkness";
 	private static final ParticleContainer placePart = new ParticleContainer(Particle.CLOUD).count(10).spread(0.1, 0.1),
 			smoke = new ParticleContainer(Particle.CLOUD).count(50).spread(2.5, 2.5).offsetY(1.5),
 			smokeEdge = new ParticleContainer(Particle.CLOUD).count(2).spread(0.1, 0);
@@ -34,8 +37,10 @@ public class SmokeBomb extends Equipment {
 	private static final SoundContainer place = new SoundContainer(Sound.ENTITY_CREEPER_PRIMED);
 	private static final TargetProperties tp = TargetProperties.radius(5, true, TargetType.ENEMY);
 	
-	public SmokeBomb(boolean isUpgraded) {
-		super(ID, "Smoke Bomb", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
+	private int damage;
+	
+	public UnderDarkness(boolean isUpgraded) {
+		super(ID, "Under Darkness", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 0, 10, 0));
 	}
 
@@ -59,14 +64,16 @@ public class SmokeBomb extends Equipment {
 				public void run() {
 					Sounds.explode.play(p, loc);
 					data.addTask(new BukkitRunnable() {
-						private static final int TICKS = 5;
+						private static final int TICKS = 8;
 						private int tick = 0;
 						public void run() {
 							smoke.play(p, loc);
 							circ.play(smokeEdge, loc, LocalAxes.xz(), null);
 							if (p.getLocation().distanceSquared(loc) <= tp.range * tp.range) {
 								data.applyStatus(StatusType.INVISIBLE, data, 1, 20);
+								data.addBuff(data, UUID.randomUUID().toString(), true, false, BuffType.GENERAL, damage, 20);
 							}
+							
 							if (++tick == TICKS) this.cancel();
 						}
 					}.runTaskTimer(NeoRogue.inst(), 0L, 20L));
@@ -80,7 +87,8 @@ public class SmokeBomb extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SHIELD,
-				"On cast, drop a smoke bomb that detonates after <white>3</white> seconds. After detonation, for <white>5</white> seconds,"
-				+ " standing within the radius grants " + GlossaryTag.INVISIBLE.tag(this, 1, false) + " [<white>1s</white].");
+				"On cast, drop a smoke bomb that detonates after <white>3</white> seconds. After detonation, for <white>8</white> seconds,"
+				+ " standing within the radius grants " + GlossaryTag.INVISIBLE.tag(this, 1, false) + " [<white>1s</white] and buffs"
+						+ " your damage by <yellow>" + damage + "</yellow>.");
 	}
 }

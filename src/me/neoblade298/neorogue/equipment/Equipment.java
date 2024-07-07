@@ -137,6 +137,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		for (boolean b : new boolean[] { false, true }) {
 			// Abilities
 			new Adrenaline(b);
+			new AcidBomb(b);
 			new Atone(b);
 			new BattleCry(b);
 			new BerserkersCall(b);
@@ -170,6 +171,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Envenom(b);
 			new Envenom2(b);
 			new EscapePlan(b);
+			new EscapePlan2(b);
 			new Execute(b);
 			new ExploitWeakness(b);
 			new Ferocity(b);

@@ -124,16 +124,16 @@ public class FightData {
 		else defenseBuffs.put(type, b);
 	}
 
-	public void addBuff(FightData applier, String id, boolean damageBuff, boolean multiplier, BuffType type, double amount, int seconds) {
+	public void addBuff(FightData applier, String id, boolean damageBuff, boolean multiplier, BuffType type, double amount, int ticks) {
 		addBuff(applier, damageBuff, multiplier, type, amount);
 
-		if (seconds > 0) {
+		if (ticks > 0) {
 			addTask(id, new BukkitRunnable() {
 				public void run() {
 					addBuff(applier, damageBuff, multiplier, type, -amount);
 					tasks.remove(id);
 				}
-			}.runTaskLater(NeoRogue.inst(), seconds * 20));
+			}.runTaskLater(NeoRogue.inst(), ticks * 20));
 		}
 	}
 
