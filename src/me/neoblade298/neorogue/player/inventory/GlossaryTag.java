@@ -80,7 +80,7 @@ public enum GlossaryTag implements GlossaryIcon {
 			"Buffs all physical defense by 1 per stack."),
 	SHELL(Material.PRISMARINE_CRYSTALS, StatusType.SHELL.tag,
 			"Buffs all magical defense by 1 per stack."),
-	INVISIBLE(Material.NETHER_STAR, StatusType.INVISIBLE.tag,
+	STEALTH(Material.NETHER_STAR, StatusType.STEALTH.tag,
 			"Certain abilities become stronger when this status is applied."),
 	EVADE(Material.PHANTOM_MEMBRANE, StatusType.EVADE.tag,
 			"When the holder takes damage, damage dealt is first subtracted from stamina. One stack is lost per damage instance. ");

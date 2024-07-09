@@ -47,10 +47,10 @@ public class ShadowWalk extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.RABBIT_FOOT,
-				"On cast, Grant speed <white>1</white> and " + GlossaryTag.INVISIBLE.tag(this) +
+				"On cast, Grant speed <white>1</white> and " + GlossaryTag.STEALTH.tag(this) +
 				" for <white>3</white> seconds. "
 				+ "Your next basic attack deals an additional " + GlossaryTag.PIERCING.tag(this, damage, false) + " damage. "
-				+ "The cooldown of this ability is reduced by your " + GlossaryTag.INVISIBLE.tag(this)
+				+ "The cooldown of this ability is reduced by your " + GlossaryTag.STEALTH.tag(this)
 				+ " stacks every second.");
 	}
 
@@ -61,7 +61,7 @@ public class ShadowWalk extends Equipment {
 			Sounds.teleport.play(p, p);
 			pc.play(p, p);
 			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 60, 0));
-			data.applyStatus(StatusType.INVISIBLE, data, 1, 60);
+			data.applyStatus(StatusType.STEALTH, data, 1, 60);
 			inst.addCount(1);
 			return TriggerResult.keep();
 		});
@@ -79,8 +79,8 @@ public class ShadowWalk extends Equipment {
 		});
 		
 		data.addTrigger(ID, Trigger.PLAYER_TICK, (pdata, in) -> {
-			if (!data.hasStatus(StatusType.INVISIBLE)) return TriggerResult.keep();
-			inst.reduceCooldown(data.getStatus(StatusType.INVISIBLE).getStacks());
+			if (!data.hasStatus(StatusType.STEALTH)) return TriggerResult.keep();
+			inst.reduceCooldown(data.getStatus(StatusType.STEALTH).getStacks());
 			return TriggerResult.keep();
 		});
 	}

@@ -100,7 +100,7 @@ public class EscapePlan2 extends Equipment {
 				"On cast, drop a marker on the ground. It stays active <white>10</white> seconds."
 				+ " If you take damage while it's active, negate the damage, deal " + GlossaryTag.PIERCING.tag(this, activateDamage, true) +
 				" damage to the attacker, teleport to the marker, and deactivate it."
-				+ " While the marker remains active and you are " + GlossaryTag.INVISIBLE.tag(this) + ","
+				+ " While the marker remains active and you are " + GlossaryTag.STEALTH.tag(this) + ","
 				+ " deal " + GlossaryTag.PIERCING.tag(this, basicAttackDamage, true) + " additional damage on basic attacks.");
 	}
 }

@@ -44,7 +44,7 @@ public class Contaminate extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POISONOUS_POTATO,
-				"On cast, Grant speed <white>1</white> and " + GlossaryTag.INVISIBLE.tag(this) + " for <white>3</white> seconds. "
+				"On cast, Grant speed <white>1</white> and " + GlossaryTag.STEALTH.tag(this) + " for <white>3</white> seconds. "
 				+ "Your next basic attack deals an additional " + GlossaryTag.PIERCING.tag(this, damage, false) + " damage and multiplies existing stacks of "
 				+ GlossaryTag.POISON.tag(this) + " on the enemy hit by <yellow>" + mult + "</yellow>, rounded down. "
 				+ GlossaryTag.POISON.tag(this) + " duration is refreshed by <white>3s</white>.");
@@ -57,7 +57,7 @@ public class Contaminate extends Equipment {
 			Sounds.teleport.play(p, p);
 			pc.play(p, p);
 			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 60, 0));
-			data.applyStatus(StatusType.INVISIBLE, data, 1, 60);
+			data.applyStatus(StatusType.STEALTH, data, 1, 60);
 			inst.addCount(1);
 			return TriggerResult.keep();
 		});

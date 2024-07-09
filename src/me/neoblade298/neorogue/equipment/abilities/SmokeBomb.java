@@ -65,7 +65,7 @@ public class SmokeBomb extends Equipment {
 							smoke.play(p, loc);
 							circ.play(smokeEdge, loc, LocalAxes.xz(), null);
 							if (p.getLocation().distanceSquared(loc) <= tp.range * tp.range) {
-								data.applyStatus(StatusType.INVISIBLE, data, 1, 20);
+								data.applyStatus(StatusType.STEALTH, data, 1, 20);
 							}
 							if (++tick == TICKS) this.cancel();
 						}
@@ -81,6 +81,6 @@ public class SmokeBomb extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.SHIELD,
 				"On cast, drop a smoke bomb that detonates after <white>3</white> seconds. After detonation, for <white>5</white> seconds,"
-				+ " standing within the radius grants " + GlossaryTag.INVISIBLE.tag(this, 1, false) + " [<white>1s</white].");
+				+ " standing within the radius grants " + GlossaryTag.STEALTH.tag(this, 1, false) + " [<white>1s</white].");
 	}
 }
