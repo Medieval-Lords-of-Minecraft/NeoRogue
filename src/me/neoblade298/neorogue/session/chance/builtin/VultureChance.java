@@ -13,7 +13,10 @@ import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.chance.ChanceChoice;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
 import me.neoblade298.neorogue.session.chance.ChanceStage;
+import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.MinibossFightInstance;
+import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.buff.BuffType;
 
 public class VultureChance extends ChanceSet {
 	private ChanceStage fightMiniboss;
@@ -50,11 +53,16 @@ public class VultureChance extends ChanceSet {
 						+ "looks to have had some useful items on them." : "You successfully loot some items from the adventurer.");
 
 		ChanceChoice stay = new ChanceChoice(Material.FLINT, "Steal from the dead adventurer",
-				"<yellow>" + failPercent + "%</yellow> chance you will fail and be forced to fight a Miniboss.",
+				"<yellow>" + failPercent + "%</yellow> chance you will fail and be forced to fight a Miniboss dealing 20% reduced damage.",
 				(s, inst, unused) -> {
 					if (NeoRogue.gen.nextInt(100) < failPercent) {
 						s.broadcast("<red>As you loot the body, the enemy returns!");
 						inst.setNextInstance(new MinibossFightInstance(s, s.getParty().keySet(), s.getArea().getType()));
+						((FightInstance) inst.getNextInstance()).addInitialTask((fi, fdata) -> {
+							for (PlayerFightData pfdata : fdata) {
+								pfdata.addBuff(pfdata, true, true, BuffType.GENERAL, -0.2);
+							}
+						});
 						return "miniboss";
 					}
 					else {

@@ -112,7 +112,8 @@ public class LobbyInstance extends Instance {
 				.append(Component.text(" was invited to the lobby!", NamedTextColor.GRAY)).build();
 		broadcast(tc);
 		Util.msg(recipient, Component.text("You've been invited to the ")
-				.append(Component.text(name, NamedTextColor.YELLOW)).append(Component.text(" party!")));
+				.append(Component.text(name, NamedTextColor.YELLOW)).append(Component.text(" party by "))
+				.append(Component.text(inviter.getName(), NamedTextColor.YELLOW)).append(Component.text("!")));
 
 		Util.msg(recipient, NeoCore.miniMessage().deserialize(invPrefix + name + invSuffix));
 	}

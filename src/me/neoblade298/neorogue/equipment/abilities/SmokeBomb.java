@@ -81,6 +81,6 @@ public class SmokeBomb extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.SHIELD,
 				"On cast, drop a smoke bomb that detonates after <white>3</white> seconds. After detonation, for <white>5</white> seconds,"
-				+ " standing within the radius grants " + GlossaryTag.STEALTH.tag(this, 1, false) + " [<white>1s</white].");
+				+ " standing within the radius grants " + GlossaryTag.STEALTH.tag(this, 1, false) + " [<white>1s</white>].");
 	}
 }

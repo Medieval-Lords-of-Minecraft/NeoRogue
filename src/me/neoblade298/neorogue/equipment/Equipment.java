@@ -174,9 +174,10 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new EscapePlan2(b);
 			new Execute(b);
 			new ExploitWeakness(b);
+			new Fade(b);
 			new Ferocity(b);
 			new Fissure(b);
-			new Fade(b);
+			new FivePointStrike(b);
 			new Flurry(b);
 			new Focus(b);
 			new Fortify(b);
