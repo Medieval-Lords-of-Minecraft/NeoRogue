@@ -585,6 +585,7 @@ public abstract class FightInstance extends Instance {
 		if (data.getInstance() == null)
 			return;
 		String id = e.getMobType().getInternalName();
+		System.out.println("Test: " + e.getKiller());
 		data.getInstance().handleRespawn(data, id, false);
 		data.getInstance().handleMobKill(id);
 	}
