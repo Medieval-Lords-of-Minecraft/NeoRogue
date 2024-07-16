@@ -120,6 +120,7 @@ public class ShrineInstance extends EditInventoryInstance {
 			.append(Component.text(suggestion, NamedTextColor.YELLOW))
 			.append(Component.text("!", NamedTextColor.GRAY))
 		);
+		s.broadcastSound(Sound.ENTITY_ARROW_HIT_PLAYER);
 		return true;
 	}
 

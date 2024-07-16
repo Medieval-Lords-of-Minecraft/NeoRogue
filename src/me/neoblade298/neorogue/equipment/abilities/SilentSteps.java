@@ -41,13 +41,13 @@ public class SilentSteps extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(ID,  Trigger.RECEIVE_STATUS, (pdata, in) -> {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
-			if (!ev.getStatusId().equals(StatusType.INVISIBLE.name())) return TriggerResult.keep();
+			if (!ev.getStatusId().equals(StatusType.STEALTH.name())) return TriggerResult.keep();
 			ev.getDurationBuff().addIncrease(data, 20);
 			return TriggerResult.keep();
 		});
 		
 		data.addTrigger(ID, Trigger.RECEIVED_DAMAGE, (pdata, in) -> {
-			if (!pdata.hasStatus(StatusType.INVISIBLE)) return TriggerResult.keep();
+			if (!pdata.hasStatus(StatusType.STEALTH)) return TriggerResult.keep();
 			ReceivedDamageEvent ev = (ReceivedDamageEvent) in;
 			ev.getMeta().addBuff(BuffType.GENERAL, new Buff(pdata, 3, 0), BuffOrigin.NORMAL, false);
 			return TriggerResult.keep();
@@ -57,7 +57,7 @@ public class SilentSteps extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LEATHER_BOOTS,
-				"Passive. Whenever you become " + GlossaryTag.INVISIBLE.tag(this) + ", increase its duration by <yellow>" + duration + "</yellow>." +
-				" Damage received is reduced by <yellow>" + reduc + "</yellow> while " + GlossaryTag.INVISIBLE.tag(this) +".");
+				"Passive. Whenever you become " + GlossaryTag.STEALTH.tag(this) + ", increase its duration by <yellow>" + duration + "</yellow>." +
+				" Damage received is reduced by <yellow>" + reduc + "</yellow> while " + GlossaryTag.STEALTH.tag(this) +".");
 	}
 }

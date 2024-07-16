@@ -36,7 +36,7 @@ public class Fade extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(ID,  Trigger.RECEIVE_STATUS, (pdata, in) -> {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
-			if (!ev.getStatusId().equals(StatusType.INVISIBLE.name())) return TriggerResult.keep();
+			if (!ev.getStatusId().equals(StatusType.STEALTH.name())) return TriggerResult.keep();
 			ev.getDurationBuff().addIncrease(data, duration);
 			return TriggerResult.keep();
 		});
@@ -45,7 +45,7 @@ public class Fade extends Equipment {
 		inst.setAction((pdata, in) -> {
 			if (!inst.canUse()) return TriggerResult.keep();
 			inst.setNextUse(System.currentTimeMillis() + (1000 * cooldown));
-			data.applyStatus(StatusType.INVISIBLE, data, 1, 60);
+			data.applyStatus(StatusType.STEALTH, data, 1, 60);
 			return TriggerResult.keep();
 		});
 		data.addTrigger(ID, Trigger.BASIC_ATTACK, inst);
@@ -54,8 +54,8 @@ public class Fade extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE_TORCH,
-				"Passive. Whenever you become " + GlossaryTag.INVISIBLE.tag(this) + ", increase its duration by <yellow>" + duration + "</yellow>." +
-				" Damage received is reduced by <yellow>" + reduc + "</yellow> while " + GlossaryTag.INVISIBLE.tag(this) + ". "
-				+ "Basic attacks additionally grant you " + GlossaryTag.INVISIBLE.tag(this, 1, false) + " for <white>3</white> seconds.");
+				"Passive. Whenever you become " + GlossaryTag.STEALTH.tag(this) + ", increase its duration by <yellow>" + duration + "</yellow>." +
+				" Damage received is reduced by <yellow>" + reduc + "</yellow> while " + GlossaryTag.STEALTH.tag(this) + ". "
+				+ "Basic attacks additionally grant you " + GlossaryTag.STEALTH.tag(this, 1, false) + " for <white>3</white> seconds.");
 	}
 }

@@ -38,7 +38,7 @@ public class StoneDagger extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
 			DamageMeta dm = new DamageMeta(data, damage, DamageType.SLASHING);
-			if (data.hasStatus(StatusType.INVISIBLE)) dm.addDamageSlice(new DamageSlice(data, damage, DamageType.DARK));
+			if (data.hasStatus(StatusType.STEALTH)) dm.addDamageSlice(new DamageSlice(data, damage, DamageType.DARK));
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
 			weaponSwingAndDamage(p, data, ev.getTarget(), dm);
 			return TriggerResult.keep();
@@ -47,6 +47,7 @@ public class StoneDagger extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STONE_SWORD, "Deal an additional " + GlossaryTag.DARK.tag(this, damage, true) + " when invisible.");
+		item = createItem(Material.STONE_SWORD, "Deal an additional " + GlossaryTag.DARK.tag(this, damage, true) + " when in "
+				+ GlossaryTag.STEALTH.tag(this) + ".");
 	}
 }

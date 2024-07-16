@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 
+import org.bukkit.damage.DamageSource;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -291,8 +292,9 @@ public class DamageMeta {
 		}
 		
 		final double finalDamage = damage + ignoreShieldsDamage + target.getAbsorptionAmount();
+		DamageSource src = DamageSource.builder(org.bukkit.damage.DamageType.GENERIC).withDirectEntity(owner.getEntity()).build();
 		if (finalDamage > target.getAbsorptionAmount()) {
-			target.damage(finalDamage);
+			target.damage(finalDamage, src);
 			if (target.getHealth() <= 0 && owner instanceof PlayerFightData) {
 				FightInstance.trigger((Player) owner.getEntity(), Trigger.KILL, null);
 			}
@@ -309,7 +311,7 @@ public class DamageMeta {
 		}
 		// Only do damage if we haven't canceled the damage
 		else if (!slices.isEmpty()) {
-			target.damage(0.1);
+			target.damage(0.1, src);
 		}
 		
 		// Return damage

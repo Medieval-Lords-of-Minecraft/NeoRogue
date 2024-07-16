@@ -28,12 +28,12 @@ public class LeatherHood extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.applyStatus(StatusType.INVISIBLE, data, 1, dur);
+		data.applyStatus(StatusType.STEALTH, data, 1, dur);
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LEATHER_HELMET, "Start every fight with " + GlossaryTag.INVISIBLE.tag(this, 1, false)
+		item = createItem(Material.LEATHER_HELMET, "Start every fight with " + GlossaryTag.STEALTH.tag(this, 1, false)
 		+ " [<yellow>" + dur +"s</yellow>].");
 		
 		LeatherArmorMeta dye = (LeatherArmorMeta) item.getItemMeta();

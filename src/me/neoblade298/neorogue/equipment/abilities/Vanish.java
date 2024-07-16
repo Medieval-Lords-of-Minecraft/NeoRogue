@@ -35,7 +35,7 @@ public class Vanish extends Equipment {
 		StandardPriorityAction inst = new StandardPriorityAction(ID);
 		inst.setAction((pdata, in) -> {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
-			if (!ev.getStatusId().equals(StatusType.INVISIBLE.name())) return TriggerResult.keep();
+			if (!ev.getStatusId().equals(StatusType.STEALTH.name())) return TriggerResult.keep();
 			inst.addCount(1);
 			ev.getDurationBuff().addIncrease(data, duration);
 			
@@ -52,9 +52,9 @@ public class Vanish extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LEATHER_BOOTS,
-				"Passive. Whenever you become " + GlossaryTag.INVISIBLE.tag(this) + ", increase its duration by <yellow>" + duration + "</yellow>." +
-				" Every <yellow>" + threshold + "</yellow> times you become " + GlossaryTag.INVISIBLE.tag(this) + ", gain " + GlossaryTag.EVADE.tag(this, 1, false) +
+				"Passive. Whenever you become " + GlossaryTag.STEALTH.tag(this) + ", increase its duration by <yellow>" + duration + "</yellow>." +
+				" Every <yellow>" + threshold + "</yellow> times you become " + GlossaryTag.STEALTH.tag(this) + ", gain " + GlossaryTag.EVADE.tag(this, 1, false) +
 				" and <white>5</white> stamina." +
-				" Damage received is reduced by <yellow>" + reduc + "</yellow> while " + GlossaryTag.INVISIBLE.tag(this) +".");
+				" Damage received is reduced by <yellow>" + reduc + "</yellow> while " + GlossaryTag.STEALTH.tag(this) +".");
 	}
 }

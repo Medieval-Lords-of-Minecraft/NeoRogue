@@ -70,7 +70,7 @@ public class UnderDarkness extends Equipment {
 							smoke.play(p, loc);
 							circ.play(smokeEdge, loc, LocalAxes.xz(), null);
 							if (p.getLocation().distanceSquared(loc) <= tp.range * tp.range) {
-								data.applyStatus(StatusType.INVISIBLE, data, 1, 20);
+								data.applyStatus(StatusType.STEALTH, data, 1, 20);
 								data.addBuff(data, UUID.randomUUID().toString(), true, false, BuffType.GENERAL, damage, 20);
 							}
 							
@@ -88,7 +88,7 @@ public class UnderDarkness extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.SHIELD,
 				"On cast, drop a smoke bomb that detonates after <white>3</white> seconds. After detonation, for <white>8</white> seconds,"
-				+ " standing within the radius grants " + GlossaryTag.INVISIBLE.tag(this, 1, false) + " [<white>1s</white] and buffs"
+				+ " standing within the radius grants " + GlossaryTag.STEALTH.tag(this, 1, false) + " [<white>1s</white] and buffs"
 						+ " your damage by <yellow>" + damage + "</yellow>.");
 	}
 }

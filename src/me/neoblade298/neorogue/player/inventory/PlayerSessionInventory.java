@@ -242,12 +242,18 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		}
 		else if (slot == STORAGE) {
 			e.setCancelled(true);
-			new BukkitRunnable() {
-				public void run() {
-					handleInventoryClose();
-					new StorageInventory(data);
-				}
-			}.runTask(NeoRogue.inst());
+			
+			if (cursor.getType().isAir()) {
+				new BukkitRunnable() {
+					public void run() {
+						handleInventoryClose();
+						new StorageInventory(data);
+					}
+				}.runTask(NeoRogue.inst());
+			}
+			else {
+				// TODO: Add way to add directly to storage inventory
+			}
 			return;
 		}
 
