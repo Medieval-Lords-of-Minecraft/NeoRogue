@@ -374,20 +374,25 @@ public class PlayerSessionData {
 					return;
 				}
 			}
-			success = false;
-			for (int i = 0; i < storage.length; i++) {
-				if (storage[i] == null) {
-					storage[i] = eq;
-					success = true;
-					if (toSelf != null) Util.msg(p, toSelf.append(SharedUtil.color(", it was sent to storage.")));
-					return;
-				}
-			}
 			
-			if (!success) {
+			// If unable to, send it to storage
+			if (sendToStorage(eq)) {
+				if (toSelf != null) Util.msg(p, toSelf.append(SharedUtil.color(", it was sent to storage.")));
+			}
+			else {
 				Util.displayError(p, "Your storage is full!");
 			}
 		}
+	}
+	
+	public boolean sendToStorage(Equipment eq) {
+		for (int i = 0; i < storage.length; i++) {
+			if (storage[i] == null) {
+				storage[i] = eq;
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public void giveEquipment(Equipment eq) {

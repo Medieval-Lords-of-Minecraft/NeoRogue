@@ -9,7 +9,9 @@ import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -381,10 +383,16 @@ public class SessionManager implements Listener {
 		
 		PlayerInventory inv = p.getInventory();
 		ItemStack hand = e.getItem();
+		Block b = e.getClickedBlock();
 		if (hand != null) {
 			// Make sure you can't equip armor with right click
 			EquipmentSlot slot = canEquip(hand);
 			if (slot != null && inv.getItem(slot).getType().isAir()) {
+				e.setCancelled(true);
+			}
+			
+			// Make sure you can't put items into clay pots
+			if (b != null && b.getType() == Material.DECORATED_POT) {
 				e.setCancelled(true);
 			}
 		}

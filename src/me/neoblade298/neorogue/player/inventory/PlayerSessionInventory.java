@@ -252,7 +252,10 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 				}.runTask(NeoRogue.inst());
 			}
 			else {
-				// TODO: Add way to add directly to storage inventory
+				Equipment eq = Equipment.get(ncursor.getString("equipId"), ncursor.getBoolean("isUpgraded"));
+				p.setItemOnCursor(null);
+				data.sendToStorage(eq);
+				p.playSound(p, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1F, 1F);
 			}
 			return;
 		}
