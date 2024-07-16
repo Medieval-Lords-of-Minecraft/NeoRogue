@@ -36,11 +36,12 @@ public class LifeThief extends Equipment {
 		StandardPriorityAction inst = new StandardPriorityAction(id);
 		inst.setAction((pdata, in) -> {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
-			if (!ev.getStatusId().equals(StatusType.INVISIBLE.name())) return TriggerResult.keep();
+			if (!ev.getStatusId().equals(StatusType.STEALTH.name())) return TriggerResult.keep();
 			inst.addCount(1);
 			if (inst.getCount() == cutoff) {
 				Util.msg(p, this.display.append(Component.text(" was activated", NamedTextColor.GRAY)));
 			}
+			return TriggerResult.keep();
 		});
 		data.addTrigger(id, Trigger.RECEIVE_STATUS, inst);
 		
@@ -48,12 +49,13 @@ public class LifeThief extends Equipment {
 			if (inst.getCount() < cutoff) return TriggerResult.keep();
 			Sounds.fire.play(p, p);
 			data.addHealth(heal);
+			return TriggerResult.keep();
 		});
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.RABBIT_FOOT, "Passive. Upon gaining <yellow>" + cutoff + " </yellow>stacks of " + GlossaryTag.INVISIBLE.tag(this) + ","
+		item = createItem(Material.RABBIT_FOOT, "Passive. Upon gaining <yellow>" + cutoff + " </yellow>stacks of " + GlossaryTag.STEALTH.tag(this) + ","
 				+ " your next basic attack heals you for <yellow>" + heal + "</yellow>. Once per fight.");
 	}
 }
