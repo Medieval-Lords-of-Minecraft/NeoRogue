@@ -6,6 +6,7 @@ import me.neoblade298.neocore.bukkit.commands.Subcommand;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.commands.Arg;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
+import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.session.SessionManager;
 
@@ -24,11 +25,17 @@ public class CmdNew extends Subcommand {
 			return;
 		}
 		
+		PlayerData pd = PlayerManager.getPlayerData(p.getUniqueId());
 		if (args.length == 0) {
-			PlayerManager.getPlayerData(p.getUniqueId()).displayNewButtons(s);
+			pd.displayNewButtons(s);
 		}
 		else if (args.length == 2) {
-			SessionManager.createSession(p, args[1], Integer.parseInt(args[0])); 
+			int slot = Integer.parseInt(args[0]);
+			if (slot <= 0 || slot > pd.getSlots()) {
+				Util.displayError(p, "Invalid save slot! You only have " + pd.getSlots() + " slot(s)!");
+				return;
+			}
+			SessionManager.createSession(p, args[1], slot); 
 		}
 		else {
 			Util.displayError(p, "Your command is missing an argument!");

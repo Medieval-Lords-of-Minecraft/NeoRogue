@@ -111,6 +111,10 @@ public class PlayerData {
 		return exp;
 	}
 	
+	public int getSlots() {
+		return slotsAvailable;
+	}
+	
 	public void updateSnapshot(Session s, int saveSlot) {
 		snapshots.put(saveSlot, new SessionSnapshot(s));
 	}
