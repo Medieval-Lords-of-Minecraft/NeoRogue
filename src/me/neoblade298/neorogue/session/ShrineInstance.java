@@ -196,4 +196,12 @@ public class ShrineInstance extends EditInventoryInstance {
 		}
 		return "CAMPFIRE:" + state;
 	}
+
+	@Override
+	public void handlePlayerKickEvent(Player kicked) {
+		notUsed.remove(kicked.getUniqueId());
+		if (notUsed.isEmpty()) {
+			returnToNodes();
+		}
+	}
 }

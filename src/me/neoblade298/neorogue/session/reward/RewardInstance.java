@@ -129,4 +129,10 @@ public class RewardInstance extends EditInventoryInstance {
 		}
 		return "REWARD";
 	}
+
+	@Override
+	public void handlePlayerKickEvent(Player kicked) {
+		rewards.remove(kicked.getUniqueId());
+		onRewardClaim();
+	}
 }

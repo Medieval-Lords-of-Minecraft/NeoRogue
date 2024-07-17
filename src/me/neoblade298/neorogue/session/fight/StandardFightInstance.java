@@ -195,4 +195,9 @@ public class StandardFightInstance extends FightInstance {
 		timeBar.addPlayer(p);
 		scoreBar.addPlayer(p);
 	}
+
+	@Override
+	public void handlePlayerKickEvent(Player kicked) {
+		
+	}
 }

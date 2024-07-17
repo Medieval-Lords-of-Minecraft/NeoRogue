@@ -270,4 +270,9 @@ public class ChanceInstance extends EditInventoryInstance {
 		String next = nextInstance instanceof FightInstance ? "-" + ((FightInstance) nextInstance).serializeInstanceData() : "";
 		return "CHANCE:" + set.getId() + next;
 	}
+
+	@Override
+	public void handlePlayerKickEvent(Player kicked) {
+		stage.remove(kicked.getUniqueId());
+	}
 }

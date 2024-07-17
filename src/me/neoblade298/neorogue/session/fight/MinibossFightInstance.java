@@ -117,4 +117,9 @@ public class MinibossFightInstance extends FightInstance {
 	public void addSpectator(Player p) {
 		
 	}
+
+	@Override
+	public void handlePlayerKickEvent(Player kicked) {
+		
+	}
 }

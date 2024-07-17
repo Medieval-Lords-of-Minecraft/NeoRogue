@@ -202,4 +202,9 @@ public class NodeSelectInstance extends EditInventoryInstance {
 	public String serialize(HashMap<UUID, PlayerSessionData> party) {
 		return "NODESELECT";
 	}
+
+	@Override
+	public void handlePlayerKickEvent(Player kicked) {
+		
+	}
 }

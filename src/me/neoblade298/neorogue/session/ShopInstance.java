@@ -157,4 +157,19 @@ public class ShopInstance extends EditInventoryInstance {
 		}
 		return "SHOP:";
 	}
+
+	@Override
+	public void handlePlayerKickEvent(Player kicked) {
+		if (ready.size() == s.getParty().size()) {
+			s.broadcast("Everyone is ready! Teleporting back to node select...");
+			s.broadcastSound(Sound.ENTITY_PLAYER_LEVELUP);
+			s.setBusy(true);
+			new BukkitRunnable() {
+				public void run() {
+					s.setInstance(new NodeSelectInstance(s));
+					s.setBusy(false);
+				}
+			}.runTaskLater(NeoRogue.inst(), 60L);
+		}
+	}
 }

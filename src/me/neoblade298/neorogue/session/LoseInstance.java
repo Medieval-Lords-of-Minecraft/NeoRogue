@@ -49,4 +49,9 @@ public class LoseInstance extends EditInventoryInstance {
 	public void handleInteractEvent(PlayerInteractEvent e) {
 		e.setCancelled(true);
 	}
+
+	@Override
+	public void handlePlayerKickEvent(Player kicked) {
+		
+	}
 }
