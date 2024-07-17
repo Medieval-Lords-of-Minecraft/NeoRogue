@@ -27,7 +27,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
@@ -53,6 +52,7 @@ import io.lumine.mythic.bukkit.BukkitAdapter;
 import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
 import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
 import io.lumine.mythic.core.mobs.ActiveMob;
+import io.papermc.paper.event.player.PrePlayerAttackEntityEvent;
 import me.libraryaddict.disguise.disguisetypes.PlayerDisguise;
 import me.neoblade298.neocore.bukkit.effects.Audience;
 import me.neoblade298.neocore.bukkit.effects.Circle;
@@ -287,17 +287,16 @@ public abstract class FightInstance extends Instance {
 		}
 	}
 	
-	// This handles basic left click and/or enemy damage
-	public static void handleDamage(EntityDamageByEntityEvent e) {
-		Player p = (Player) e.getDamager();
+	public static void handlePlayerAttack(PrePlayerAttackEntityEvent e) {
+		Player p = e.getPlayer();
 		e.setCancelled(true);
 		PlayerFightData data = userData.get(p.getUniqueId());
-		if (!(e.getEntity() instanceof LivingEntity))
+		if (!(e.getAttacked() instanceof LivingEntity))
 			return;
 		trigger(p, Trigger.LEFT_CLICK, null);
 		if (!data.canBasicAttack())
 			return;
-		trigger(p, Trigger.LEFT_CLICK_HIT, new LeftClickHitEvent((LivingEntity) e.getEntity()));
+		trigger(p, Trigger.LEFT_CLICK_HIT, new LeftClickHitEvent((LivingEntity) e.getAttacked()));
 	}
 
 	public static void handleEnvironmentDamage(EntityDamageEvent e) {
@@ -584,13 +583,15 @@ public abstract class FightInstance extends Instance {
 
 		if (data.getInstance() == null)
 			return;
+		
+		// Make sure killer was an entity and not something like suffocation
+		boolean playerKill = e.getEntity().getLastDamageCause().getDamageSource().getCausingEntity() instanceof Player;
 		String id = e.getMobType().getInternalName();
-		System.out.println("Test: " + e.getKiller());
 		data.getInstance().handleRespawn(data, id, false);
-		data.getInstance().handleMobKill(id);
+		data.getInstance().handleMobKill(id, playerKill);
 	}
 	
-	public abstract void handleMobKill(String id);
+	public abstract void handleMobKill(String id, boolean playerKill);
 	
 	public void handleRespawn(FightData data, String id, boolean isDespawn) {
 		Mob mob = Mob.get(id);

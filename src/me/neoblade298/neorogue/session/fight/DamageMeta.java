@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 
-import org.bukkit.damage.DamageSource;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -290,11 +289,18 @@ public class DamageMeta {
 				ignoreShieldsDamage = 0;
 			}
 		}
-		
 		final double finalDamage = damage + ignoreShieldsDamage + target.getAbsorptionAmount();
-		DamageSource src = DamageSource.builder(org.bukkit.damage.DamageType.GENERIC).withDirectEntity(owner.getEntity()).build();
 		if (finalDamage > target.getAbsorptionAmount()) {
-			target.damage(finalDamage, src);
+			
+			// Mobs shouldn't have a source of damage because they'll infinitely re-trigger ~OnAttack
+			// Players must have a source of damage to get credit for kills, otherwise mobs that suicide give points
+			if (owner instanceof Player) {
+				target.damage(finalDamage, owner.getEntity());
+			}
+			else {
+				target.damage(finalDamage);
+			}
+			
 			if (target.getHealth() <= 0 && owner instanceof PlayerFightData) {
 				FightInstance.trigger((Player) owner.getEntity(), Trigger.KILL, null);
 			}
@@ -311,7 +317,7 @@ public class DamageMeta {
 		}
 		// Only do damage if we haven't canceled the damage
 		else if (!slices.isEmpty()) {
-			target.damage(0.1, src);
+			target.damage(0.001);
 		}
 		
 		// Return damage

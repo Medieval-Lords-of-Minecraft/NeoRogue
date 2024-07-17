@@ -49,7 +49,7 @@ public class BossFightInstance extends FightInstance {
 	}
 	
 	@Override
-	public void handleMobKill(String id) {
+	public void handleMobKill(String id, boolean playerKill) {
 		Mob mob = Mob.get(id);
 		if (mob == null) return;
 		

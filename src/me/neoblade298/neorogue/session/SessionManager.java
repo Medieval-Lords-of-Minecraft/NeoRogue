@@ -12,6 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
+import org.bukkit.damage.DamageType;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -54,6 +55,7 @@ import io.lumine.mythic.api.mobs.entities.SpawnReason;
 import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
 import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
 import io.lumine.mythic.bukkit.events.MythicMobSpawnEvent;
+import io.papermc.paper.event.player.PrePlayerAttackEntityEvent;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
 import me.neoblade298.neocore.bukkit.util.Util;
@@ -267,11 +269,23 @@ public class SessionManager implements Listener {
 		}
 	}
 	
-	// Only handles player left click
+	// Stops players from being able to vanilla damage mobs
+	@EventHandler
+	public void onPlayerAttack(PrePlayerAttackEntityEvent e) {
+		Player p = e.getPlayer();
+		UUID uuid = p.getUniqueId();
+		if (!sessions.containsKey(uuid)) return;
+		FightInstance.handlePlayerAttack(e);
+	}
+	
+	// Stops mobs from being able to melee players, but allows custom damage 
 	@EventHandler
 	public void onDamageByEntity(EntityDamageByEntityEvent e) {
 		Player p = null;
 		boolean playerDamager = false;
+		
+		// Our plugin uses magic damage type
+		if (e.getDamageSource().getDamageType() == DamageType.MAGIC) return;
 		if (sessions.containsKey(e.getDamager().getUniqueId())) {
 			p = (Player) e.getDamager();
 			playerDamager = true;
@@ -282,7 +296,7 @@ public class SessionManager implements Listener {
 		else {
 			return;
 		}
-		
+
 		// Either damager or target are a player at this point
 		UUID uuid = p.getUniqueId();
 		Session s = sessions.get(uuid);
@@ -291,13 +305,12 @@ public class SessionManager implements Listener {
 			return;
 		}
 		if (!(s.getInstance() instanceof FightInstance)) return;
-		if (e.getEntity() instanceof Player) return;
 		if (!playerDamager) {
 			// Don't cancel damage, but set it to 0 so the ~onAttack mythicmob trigger still goes
 			e.setDamage(0);
 			return;
 		}
-		FightInstance.handleDamage(e);
+		
 	}
 	
 	@EventHandler

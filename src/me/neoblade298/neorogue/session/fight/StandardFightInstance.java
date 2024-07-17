@@ -98,9 +98,10 @@ public class StandardFightInstance extends FightInstance {
 	}
 	
 	@Override
-	public void handleMobKill(String id) {
+	public void handleMobKill(String id, boolean playerKill) {
 		Mob mob = Mob.get(id);
 		if (mob == null) return;
+		if (!playerKill) return;
 		
 		if (s.getInstance() != this) return; // If we've moved on to reward instance don't spam the user
 		
