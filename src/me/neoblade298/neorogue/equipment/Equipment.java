@@ -163,6 +163,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Discipline(b);
 			new Disorient(b);
 			new DodgeRoll(b);
+			new DoubleStrike(b);
 			new EarthenTackle(b);
 			new EtherealKnife(b);
 			new Embolden(b);
@@ -213,6 +214,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Smite(b);
 			new SpiritOfTheDragoon(b);
 			new Sturdy(b);
+			new FirstStrike(b);
 			new Flicker(b);
 			new Tackle(b);
 			new ThrowPoison(b);
