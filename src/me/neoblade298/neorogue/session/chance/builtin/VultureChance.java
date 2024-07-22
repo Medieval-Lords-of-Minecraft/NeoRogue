@@ -53,7 +53,7 @@ public class VultureChance extends ChanceSet {
 						+ "looks to have had some useful items on them." : "You successfully loot some items from the adventurer.");
 
 		ChanceChoice stay = new ChanceChoice(Material.FLINT, "Steal from the dead adventurer",
-				"<yellow>" + failPercent + "%</yellow> chance you will fail and be forced to fight a Miniboss dealing 20% reduced damage.",
+				"<yellow>" + failPercent + "%</yellow> chance you will fail and be forced to fight a Miniboss dealing <white>20%</white> reduced damage.",
 				(s, inst, unused) -> {
 					if (NeoRogue.gen.nextInt(100) < failPercent) {
 						s.broadcast("<red>As you loot the body, the enemy returns!");

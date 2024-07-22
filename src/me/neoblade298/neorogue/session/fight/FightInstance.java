@@ -76,6 +76,7 @@ import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
 import me.neoblade298.neorogue.session.fight.Mob.MobType;
 import me.neoblade298.neorogue.session.fight.TickAction.TickResult;
+import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.GenericStatusType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -105,7 +106,7 @@ public abstract class FightInstance extends Instance {
 	protected LinkedList<BukkitRunnable> cleanupTasks = new LinkedList<BukkitRunnable>();
 	protected LinkedList<FightRunnable> initialTasks = new LinkedList<FightRunnable>();
 	protected double spawnCounter; // When above 1, a mob spawns
-	protected double totalSpawnValue; // Keeps track of total mob spawns, to handle scaling of spawning
+	protected double totalKillValue; // Keeps track of total mob spawns, to handle scaling of spawning
 	private long startTime;
 	private ArrayList<String> spectatorLines;
 	
@@ -293,6 +294,7 @@ public abstract class FightInstance extends Instance {
 		PlayerFightData data = userData.get(p.getUniqueId());
 		if (!(e.getAttacked() instanceof LivingEntity))
 			return;
+		if (e.getAttacked() instanceof Player) return;
 		trigger(p, Trigger.LEFT_CLICK, null);
 		if (!data.canBasicAttack())
 			return;
@@ -501,9 +503,12 @@ public abstract class FightInstance extends Instance {
 		dead.teleport(corpse.corpseDisplay);
 		corpse.remove();
 		s.broadcast("<yellow>" + p.getName() + " </yellow>has revived <yellow>" + dead.getName());
-		userData.get(dead.getUniqueId()).setDeath(false);
+		PlayerFightData deadData = userData.get(dead.getUniqueId());
+		PlayerFightData reviverData = userData.get(p.getUniqueId());
+		deadData.setDeath(false);
+		deadData.addBuff(reviverData, UUID.randomUUID().toString(), false, true, BuffType.ALL, 1, 20);
 		dead.getInventory().setContents(corpse.inv);
-		userData.get(p.getUniqueId()).getStats().addRevive();
+		reviverData.getStats().addRevive();
 		new BukkitRunnable() {
 			@Override
 			public void run() {
@@ -572,7 +577,7 @@ public abstract class FightInstance extends Instance {
 		data.cleanup();
 		if (data.getInstance() == null)
 			return;
-		data.getInstance().handleRespawn(data, e.getMobType().getInternalName(), true);
+		data.getInstance().handleRespawn(data, e.getMobType().getInternalName(), true, false);
 	}
 	
 	public static void handleMythicDeath(MythicMobDeathEvent e) {
@@ -587,13 +592,13 @@ public abstract class FightInstance extends Instance {
 		// Make sure killer was an entity and not something like suffocation
 		boolean playerKill = e.getEntity().getLastDamageCause().getDamageSource().getCausingEntity() instanceof Player;
 		String id = e.getMobType().getInternalName();
-		data.getInstance().handleRespawn(data, id, false);
+		data.getInstance().handleRespawn(data, id, false, playerKill);
 		data.getInstance().handleMobKill(id, playerKill);
 	}
 	
 	public abstract void handleMobKill(String id, boolean playerKill);
 	
-	public void handleRespawn(FightData data, String id, boolean isDespawn) {
+	public void handleRespawn(FightData data, String id, boolean isDespawn, boolean playerKill) {
 		Mob mob = Mob.get(id);
 		if (mob == null)
 			return;
@@ -602,14 +607,14 @@ public abstract class FightInstance extends Instance {
 			data.getSpawner().subtractActiveMobs();
 		}
 		
-		if (!isDespawn) {
-			totalSpawnValue += mob.getValue();
-			if (totalSpawnValue > KILLS_TO_SCALE) {
+		if (!isDespawn && playerKill) {
+			totalKillValue += mob.getKillValue();
+			if (totalKillValue > KILLS_TO_SCALE) {
 				spawnCounter++;
-				totalSpawnValue -= KILLS_TO_SCALE;
+				totalKillValue -= KILLS_TO_SCALE;
 			}
 		}
-		spawnCounter = data.getInstance().activateSpawner(spawnCounter + mob.getValue());
+		spawnCounter = data.getInstance().activateSpawner(spawnCounter + mob.getKillValue());
 	}
 	
 	public void addSpawnCounter(double amount) {
@@ -998,7 +1003,7 @@ public abstract class FightInstance extends Instance {
 				spawner = unlimitedSpawners.get(NeoRogue.gen.nextInt(unlimitedSpawners.size()));
 			}
 			spawner.spawnMob();
-			current += spawner.getMob().getValue();
+			current += spawner.getMob().getSpawnValue();
 		}
 		return value - current;
 	}

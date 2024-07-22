@@ -18,7 +18,8 @@ public enum BuffType {
 	GENERAL("General"),
 	SHIELD("Shield"),
 	BLEED("Bleed"),
-	POISON("Poison");
+	POISON("Poison"),
+	ALL("All");
 	
 	private String display;
 	private BuffType(String display) {

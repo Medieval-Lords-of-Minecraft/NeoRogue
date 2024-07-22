@@ -26,7 +26,7 @@ public class Focus extends Equipment {
 
 	public Focus(boolean isUpgraded) {
 		super(ID, "Focus", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(20, 25, 15, 0));
+				EquipmentProperties.ofUsable(20, 25, 20, 0));
 		ev = isUpgraded ? 2 : 1;
 	}
 
@@ -44,7 +44,7 @@ public class Focus extends Equipment {
 					pc.play(p, p);
 					data.applyStatus(StatusType.EVADE, data, ev, -1);
 				}
-			}.runTaskLater(NeoRogue.inst(), 40L));
+			}.runTaskLater(NeoRogue.inst(), 100L));
 			return TriggerResult.keep();
 		}));
 	}
@@ -52,6 +52,6 @@ public class Focus extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.CYAN_DYE,
-				"On cast, charge for <white>2</white> seconds before gaining " + GlossaryTag.EVADE.tag(this, ev, true) + ".");
+				"On cast, charge for <white>5</white> seconds before gaining " + GlossaryTag.EVADE.tag(this, ev, true) + ".");
 	}
 }

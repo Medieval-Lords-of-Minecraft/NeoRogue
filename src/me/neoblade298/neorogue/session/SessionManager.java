@@ -466,7 +466,7 @@ public class SessionManager implements Listener {
 				Mob mob = Mob.get(mythicMob.getInternalName());
 				if (mob == null) return;
 				FightInstance.scaleMob(fd.getInstance().getSession(), mob, mythicMob, e.getMob());
-				fd.getInstance().addSpawnCounter(mob.getValue());
+				fd.getInstance().addSpawnCounter(mob.getSpawnValue());
 			}
 		}
 	}
@@ -540,6 +540,7 @@ public class SessionManager implements Listener {
 		p.getInventory().clear();
 		p.setMaximumNoDamageTicks(20);
 		p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
+		p.setHealth(20);
 		p.setInvulnerable(false);
 		p.setInvisible(false);
 	}

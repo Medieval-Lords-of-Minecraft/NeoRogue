@@ -53,19 +53,19 @@ public class SessionSnapshot {
 	}
 	
 	public void displayNewButton(CommandSender s, int saveSlot) {
-		Component text = Component.text().content("[1] ").color(NamedTextColor.GRAY)
+		Component text = Component.text().content("[" + saveSlot + "] ").color(NamedTextColor.GRAY)
 				.decorate(TextDecoration.BOLD)
 				.append(Component.text(new Date(lastSaved).toString(), NamedTextColor.GRAY)).build();
-		text = text.clickEvent(ClickEvent.suggestCommand("/nr new " + saveSlot + " partyname"))
+		text = text.clickEvent(ClickEvent.suggestCommand("/nr new " + saveSlot + " " + s.getName() + "Party"))
 		.hoverEvent(HoverEvent.showText(createHoverText()));
 		Util.msg(s, text);
 	}
 	
 	public static void displayEmptyNewButton(CommandSender s, int saveSlot) {
-		Component text = Component.text().content("[1] ").color(NamedTextColor.GRAY)
+		Component text = Component.text().content("[" + saveSlot + "] ").color(NamedTextColor.GRAY)
 				.decorate(TextDecoration.BOLD)
 				.append(Component.text("Empty", NamedTextColor.GRAY)).build();
-		text = text.clickEvent(ClickEvent.suggestCommand("/nr new " + saveSlot + " partyname"))
+		text = text.clickEvent(ClickEvent.suggestCommand("/nr new " + saveSlot + " " + s.getName() + "Party"))
 		.hoverEvent(HoverEvent.showText(Component.text("Click to start a new game on this slot!")));
 		Util.msg(s, text);
 	}

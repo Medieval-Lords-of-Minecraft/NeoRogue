@@ -25,20 +25,20 @@ import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class WeaponEnchantmentHoly extends Equipment {
-	private static final String ID = "weaponEnchantmentHoly";
-	private ProjectileGroup projs = new ProjectileGroup(new WeaponEnchantmentHolyProjectile());
-	private int damage, sanct;
+public class WeaponEnchantmentElectrified extends Equipment {
+	private static final String ID = "weaponEnchantmentElectrified";
+	private ProjectileGroup projs = new ProjectileGroup(new WeaponEnchantmentElectrifiedProjectile());
+	private int damage, elec;
 	private static final int RANGE = 8;
 	private static final SoundContainer sc = new SoundContainer(Sound.BLOCK_AMETHYST_BLOCK_BREAK),
 			scHit = new SoundContainer(Sound.BLOCK_GLASS_BREAK);
 	private static final ParticleContainer tick = new ParticleContainer(Particle.FIREWORKS_SPARK).count(5).speed(0.02);
 	
-	public WeaponEnchantmentHoly(boolean isUpgraded) {
-		super(ID, "Weapon Enchantment: Holy", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+	public WeaponEnchantmentElectrified(boolean isUpgraded) {
+		super(ID, "Weapon Enchantment: Electrified", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 3, RANGE));
 		damage = isUpgraded ? 60 : 40;
-		sanct = isUpgraded ? 6 : 4;
+		elec = isUpgraded ? 12 : 8;
 	}
 	
 	public static Equipment get() {
@@ -47,19 +47,19 @@ public class WeaponEnchantmentHoly extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.LEFT_CLICK, new WeaponEnchantmentHolyInstance(id));
+		data.addTrigger(id, Trigger.LEFT_CLICK, new WeaponEnchantmentElectrifiedInstance(id));
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.NETHER_STAR,
-				"Passive. Your left clicks fire a projectile that deals " + GlossaryTag.LIGHT.tag(this, damage, true)
-				+ " damage and applies " + GlossaryTag.SANCTIFIED.tag(this, sanct, true) + ".");
+		item = createItem(Material.LIGHTNING_ROD,
+				"Passive. Your left clicks fire a projectile that deals " + GlossaryTag.LIGHTNING.tag(this, damage, true)
+				+ " damage and applies " + GlossaryTag.ELECTRIFIED.tag(this, elec, true) + ".");
 	}
 	
-	private class WeaponEnchantmentHolyInstance extends PriorityAction {
+	private class WeaponEnchantmentElectrifiedInstance extends PriorityAction {
 		private long nextCastTime = 0L;
-		public WeaponEnchantmentHolyInstance(String id) {
+		public WeaponEnchantmentElectrifiedInstance(String id) {
 			super(id);
 			action = (pdata, in) -> {
 				if (System.currentTimeMillis() > nextCastTime) {
@@ -71,9 +71,9 @@ public class WeaponEnchantmentHoly extends Equipment {
 		}
 	}
 	
-	private class WeaponEnchantmentHolyProjectile extends Projectile {
-		public WeaponEnchantmentHolyProjectile() {
-			super(0.5, RANGE, 2);
+	private class WeaponEnchantmentElectrifiedProjectile extends Projectile {
+		public WeaponEnchantmentElectrifiedProjectile() {
+			super(0.8, RANGE, 2);
 		}
 
 		@Override
@@ -84,8 +84,8 @@ public class WeaponEnchantmentHoly extends Equipment {
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
-			damageProjectile(hit.getEntity(), proj, new DamageMeta(proj.getOwner(), damage, DamageType.LIGHT), hitBarrier);
-			FightInstance.getFightData(hit.getEntity()).applyStatus(StatusType.SANCTIFIED, proj.getOwner(), sanct, -1);
+			damageProjectile(hit.getEntity(), proj, new DamageMeta(proj.getOwner(), damage, DamageType.LIGHTNING), hitBarrier);
+			FightInstance.getFightData(hit.getEntity()).applyStatus(StatusType.ELECTRIFIED, proj.getOwner(), elec, -1);
 			scHit.play((Player) proj.getOwner().getEntity(), hit.getEntity());
 		}
 

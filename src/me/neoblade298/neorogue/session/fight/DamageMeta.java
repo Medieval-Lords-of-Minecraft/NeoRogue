@@ -134,7 +134,7 @@ public class DamageMeta {
 		// See if any of our effects cancel damage first
 		if (recipient instanceof PlayerFightData) {
 			PlayerFightData pdata = (PlayerFightData) recipient;
-			ReceivedDamageEvent ev = new ReceivedDamageEvent(recipient, this);
+			ReceivedDamageEvent ev = new ReceivedDamageEvent(owner, this);
 			if (pdata.runActions(pdata, Trigger.RECEIVED_DAMAGE, ev)) {
 				slices.clear();
 			}
@@ -294,7 +294,7 @@ public class DamageMeta {
 			
 			// Mobs shouldn't have a source of damage because they'll infinitely re-trigger ~OnAttack
 			// Players must have a source of damage to get credit for kills, otherwise mobs that suicide give points
-			if (owner instanceof Player) {
+			if (owner instanceof PlayerFightData) {
 				target.damage(finalDamage, owner.getEntity());
 			}
 			else {

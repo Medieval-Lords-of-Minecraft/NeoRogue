@@ -162,7 +162,9 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new DarkPact(b);
 			new Discipline(b);
 			new Disorient(b);
+			new DodgeRoll(b);
 			new EarthenTackle(b);
+			new EtherealKnife(b);
 			new Embolden(b);
 			new EmpoweredEdge(b);
 			new Endure(b);
@@ -220,6 +222,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Vanish(b);
 			new WarCry(b);
 			new Warmup(b);
+			new WeaponEnchantmentElectrified(b);
 			new WeaponEnchantmentHoly(b);
 			new Windcutter(b);
 			new WindSlash(b);
@@ -290,6 +293,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new StoneSword(b);
 			new StoneThrowingKnife(b);
 			new TargetAcquisition(b);
+			new UnderDarkness(b);
 			new RighteousHammer(b);
 			new WoodenDagger(b);
 			new WoodenSword(b);

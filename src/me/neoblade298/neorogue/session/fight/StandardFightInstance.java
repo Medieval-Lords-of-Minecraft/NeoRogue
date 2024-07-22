@@ -105,7 +105,7 @@ public class StandardFightInstance extends FightInstance {
 		
 		if (s.getInstance() != this) return; // If we've moved on to reward instance don't spam the user
 		
-		score += mob.getValue();
+		score += mob.getKillValue();
 		scoreBar.setProgress(Math.min(1, score / scoreRequired));
 		if (score >= scoreRequired) {
 			// Have a time lag so the ability that ended the fight has time to complete

@@ -21,7 +21,7 @@ public class Fade extends Equipment {
 	
 	public Fade(boolean isUpgraded) {
 		super(ID, "Fade", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, isUpgraded ? 10 : 7, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, isUpgraded ? 7 : 10, 0));
 		properties.addUpgrades(PropertyType.COOLDOWN);
 		duration = 2;
 		reduc = 3;

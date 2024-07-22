@@ -32,6 +32,7 @@ import me.neoblade298.neorogue.commands.CmdAdminMiniboss;
 import me.neoblade298.neorogue.commands.CmdAdminPiece;
 import me.neoblade298.neorogue.commands.CmdAdminPieceSettings;
 import me.neoblade298.neorogue.commands.CmdAdminReload;
+import me.neoblade298.neorogue.commands.CmdAdminReloadMythic;
 import me.neoblade298.neorogue.commands.CmdAdminTrash;
 import me.neoblade298.neorogue.commands.CmdGlossary;
 import me.neoblade298.neorogue.commands.CmdInfo;
@@ -117,7 +118,7 @@ public class NeoRogue extends JavaPlugin {
 		
 		mngr = new SubcommandManager("nradmin", "neorogue.admin", NamedTextColor.DARK_RED, this);
 		mngr.register(new CmdAdminReload("reload", "Reloads everything", null, SubcommandRunner.BOTH));
-		mngr.register(new CmdAdminReload("reloadmythic", "Reloads mythicmobs safely", null, SubcommandRunner.BOTH));
+		mngr.register(new CmdAdminReloadMythic("reloadmythic", "Reloads mythicmobs safely", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminDebug("debug", "Testing", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminPiece("piece", "Pastes a map piece at 0,0 for ease of setting up spawners with coords", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminPieceSettings("piecesettings", "Pastes map piece to show how it looks rotated and flipped", null, SubcommandRunner.PLAYER_ONLY));

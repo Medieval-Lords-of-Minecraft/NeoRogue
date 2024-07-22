@@ -26,7 +26,7 @@ public class SparkKnife extends Equipment {
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(isUpgraded ? 40 : 30, 0.5, 0.2, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
 		properties.addUpgrades(PropertyType.DAMAGE);
-		elec = isUpgraded ? 5 : 3;
+		elec = isUpgraded ? 15 : 9;
 	}
 	
 	public static Equipment get() {

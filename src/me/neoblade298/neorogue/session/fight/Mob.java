@@ -16,7 +16,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import de.tr7zw.nbtapi.NBTItem;
 import io.lumine.mythic.api.mobs.MythicMob;
-import io.lumine.mythic.api.mobs.entities.MythicEntityType;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.util.SkullUtil;
 import me.neoblade298.neocore.shared.io.Section;
@@ -40,7 +39,7 @@ public class Mob implements Comparable<Mob> {
 	private String id, base64;
 	private TextComponent display;
 	private int amount;
-	private double value, knockbackMultiplier;
+	private double spawnValue, killValue, knockbackMultiplier;
 	private Material mat;
 	private HashMap<BuffType, Integer> resistances = new HashMap<BuffType, Integer>();
 	private HashMap<BuffType, Amount> damageTypes = new HashMap<BuffType, Amount>();
@@ -70,6 +69,10 @@ public class Mob implements Comparable<Mob> {
 				Section sec = yml.getSection(key);
 				Mob mob = new Mob(sec);
 				mobs.put(key, mob);
+			}
+			
+			for (Mob mob : mobs.values()) {
+				mob.resolveSpawnValue();
 			}
 		});
 	}
@@ -133,10 +136,9 @@ public class Mob implements Comparable<Mob> {
 		}
 		mat = sec.contains("material") ? Material.valueOf(sec.getString("material")) : null;
 		amount = sec.getInt("amount", 1);
-		value = sec.getDouble("value", (double) 1 / (double) amount);
+		killValue = sec.getDouble("value", (double) 1 / (double) amount);
+		spawnValue = killValue;
 		summons = sec.getStringList("summons");
-
-		if (opt.isPresent() && opt.get().getEntityType() == MythicEntityType.SLIME) value /= 2; // Slime's death event is called twice so this must happen
 		base64 = sec.getString("base64");
 	}
 	
@@ -161,7 +163,7 @@ public class Mob implements Comparable<Mob> {
 		ItemMeta meta = item.getItemMeta();
 		meta.displayName(display);
 		ArrayList<Component> lore = new ArrayList<Component>();
-		Component value = Component.text("Value: ", NamedTextColor.GOLD).append(Component.text("" + this.value, NamedTextColor.YELLOW));
+		Component value = Component.text("Value: ", NamedTextColor.GOLD).append(Component.text("" + this.spawnValue, NamedTextColor.YELLOW));
 		lore.add(value.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
 		if (!resistances.isEmpty()) {
 			Component header = Component.text("Resistances:", NamedTextColor.GOLD);
@@ -220,8 +222,19 @@ public class Mob implements Comparable<Mob> {
 		return this.id.compareTo(o.id);
 	}
 	
-	public double getValue() {
-		return value;
+	public double getSpawnValue() {
+		return spawnValue;
+	}
+	
+	public double getKillValue() {
+		return killValue;
+	}
+	
+	public void resolveSpawnValue() {
+		if (summons == null) return;
+		for (String summon : summons) {
+			spawnValue += Mob.get(summon).getSpawnValue();
+		}
 	}
 
 	public int getAmount() {
