@@ -15,17 +15,17 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
-import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
 
 public class SilentSteps extends Equipment {
 	private static final String ID = "silentSteps";
-	private int duration, reduc;
+	private int duration, damage;
 	
 	public SilentSteps(boolean isUpgraded) {
 		super(ID, "Silent Steps", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.none());
 		duration = isUpgraded ? 2 : 1;
-		reduc = isUpgraded ? 3 : 2;
+		damage = isUpgraded ? 25 : 15;
 	}
 
 	@Override
@@ -46,10 +46,11 @@ public class SilentSteps extends Equipment {
 			return TriggerResult.keep();
 		});
 		
-		data.addTrigger(ID, Trigger.RECEIVED_DAMAGE, (pdata, in) -> {
+		data.addTrigger(ID, Trigger.DEALT_DAMAGE, (pdata, in) -> {
 			if (!pdata.hasStatus(StatusType.STEALTH)) return TriggerResult.keep();
-			ReceivedDamageEvent ev = (ReceivedDamageEvent) in;
-			ev.getMeta().addBuff(BuffType.GENERAL, new Buff(pdata, 3, 0), BuffOrigin.NORMAL, false);
+			DealtDamageEvent ev = (DealtDamageEvent) in;
+			ev.getMeta().addBuff(BuffType.GENERAL,
+					new Buff(pdata, damage * pdata.getStatus(StatusType.STEALTH).getStacks(), 0), BuffOrigin.NORMAL, true);
 			return TriggerResult.keep();
 		});
 	}
@@ -58,6 +59,6 @@ public class SilentSteps extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.LEATHER_BOOTS,
 				"Passive. Whenever you become " + GlossaryTag.STEALTH.tag(this) + ", increase its duration by <yellow>" + duration + "</yellow>." +
-				" Damage received is reduced by <yellow>" + reduc + "</yellow> while you have " + GlossaryTag.STEALTH.tag(this) +".");
+				" Damage dealt is increased by <yellow>" + damage + "</yellow> per stack of " + GlossaryTag.STEALTH.tag(this) +".");
 	}
 }

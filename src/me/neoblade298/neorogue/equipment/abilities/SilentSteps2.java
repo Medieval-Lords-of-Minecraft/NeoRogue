@@ -15,13 +15,13 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 
 public class SilentSteps2 extends Equipment {
 	private static final String ID = "silentSteps2";
-	private int duration, reduc;
+	private int duration, damage;
 	
 	public SilentSteps2(boolean isUpgraded) {
 		super(ID, "Silent Steps II", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.none());
-		duration = 2;
-		reduc = isUpgraded ? 9 : 6;
+		duration = 3;
+		damage = isUpgraded ? 30 : 25;
 	}
 	
 	public static Equipment get() {
@@ -34,6 +34,7 @@ public class SilentSteps2 extends Equipment {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
 			if (!ev.getStatusId().equals(StatusType.STEALTH.name())) return TriggerResult.keep();
 			ev.getDurationBuff().addIncrease(data, duration);
+			ev.getStacksBuff().addIncrease(data, 1);
 			return TriggerResult.keep();
 		});
 	}
@@ -41,7 +42,8 @@ public class SilentSteps2 extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LEATHER_BOOTS,
-				"Passive. Whenever you become " + GlossaryTag.STEALTH.tag(this) + ", increase its duration by <yellow>" + duration + "</yellow>." +
-				" Damage received is reduced by <yellow>" + reduc + "</yellow> while in " + GlossaryTag.STEALTH.tag(this) +".");
+				"Passive. Whenever you become " + GlossaryTag.STEALTH.tag(this) + ", increase its duration by <yellow>" + duration + "</yellow>"
+						+ " and its stacks by <white>1</white>" +
+						" Damage dealt is increased by <yellow>" + damage + "</yellow> per stack of " + GlossaryTag.STEALTH.tag(this) +".");
 	}
 }

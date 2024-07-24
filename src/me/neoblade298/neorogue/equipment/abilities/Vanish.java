@@ -16,14 +16,13 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 
 public class Vanish extends Equipment {
 	private static final String ID = "vanish";
-	private int duration, reduc, threshold;
+	private int duration, threshold;
 	
 	public Vanish(boolean isUpgraded) {
 		super(ID, "Vanish", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.none());
 		duration = 2;
-		reduc = 3;
-		threshold = isUpgraded ? 3 : 2;
+		threshold = isUpgraded ? 5 : 3;
 	}
 	
 	public static Equipment get() {
@@ -54,7 +53,6 @@ public class Vanish extends Equipment {
 		item = createItem(Material.LEATHER_BOOTS,
 				"Passive. Whenever you become " + GlossaryTag.STEALTH.tag(this) + ", increase its duration by <yellow>" + duration + "</yellow>." +
 				" Every <yellow>" + threshold + "</yellow> times you become " + GlossaryTag.STEALTH.tag(this) + ", gain " + GlossaryTag.EVADE.tag(this, 1, false) +
-				" and <white>5</white> stamina." +
-				" Damage received is reduced by <yellow>" + reduc + "</yellow> while " + GlossaryTag.STEALTH.tag(this) +".");
+				" and <white>5</white> stamina.");
 	}
 }

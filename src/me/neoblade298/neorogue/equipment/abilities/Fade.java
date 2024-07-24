@@ -17,14 +17,13 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 
 public class Fade extends Equipment {
 	private static final String ID = "fade";
-	private int duration, reduc, cooldown;
+	private int duration, cooldown;
 	
 	public Fade(boolean isUpgraded) {
 		super(ID, "Fade", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, isUpgraded ? 7 : 10, 0));
 		properties.addUpgrades(PropertyType.COOLDOWN);
 		duration = 2;
-		reduc = 3;
 		cooldown = (int) properties.get(PropertyType.COOLDOWN);
 	}
 	
@@ -54,8 +53,7 @@ public class Fade extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE_TORCH,
-				"Passive. Whenever you become " + GlossaryTag.STEALTH.tag(this) + ", increase its duration by <yellow>" + duration + "</yellow>." +
-				" Damage received is reduced by <yellow>" + reduc + "</yellow> while " + GlossaryTag.STEALTH.tag(this) + ". "
+				"Passive. Whenever you become " + GlossaryTag.STEALTH.tag(this) + ", increase its duration by <yellow>" + duration + "</yellow>."
 				+ "Basic attacks additionally grant you " + GlossaryTag.STEALTH.tag(this, 1, false) + " for <white>3</white> seconds.");
 	}
 }
