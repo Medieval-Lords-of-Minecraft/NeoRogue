@@ -16,6 +16,7 @@ import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
+import me.neoblade298.neorogue.session.fight.trigger.event.KillEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedHealthDamageEvent;
 
@@ -302,7 +303,7 @@ public class DamageMeta {
 			}
 			
 			if (target.getHealth() <= 0 && owner instanceof PlayerFightData) {
-				FightInstance.trigger((Player) owner.getEntity(), Trigger.KILL, null);
+				FightInstance.trigger((Player) owner.getEntity(), Trigger.KILL, new KillEvent(target));
 			}
 			if (!(target instanceof Player)) {
 				recipient.updateDisplayName();

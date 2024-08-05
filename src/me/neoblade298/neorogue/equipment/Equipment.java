@@ -195,6 +195,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new MightySwing(b);
 			new MortalEngine(b);
 			new NightShade(b);
+			new Overload(b);
 			new Parry(b);
 			new PiercingVenom(b);
 			new Pin(b);

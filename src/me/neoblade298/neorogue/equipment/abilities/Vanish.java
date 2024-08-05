@@ -39,7 +39,7 @@ public class Vanish extends Equipment {
 			ev.getDurationBuff().addIncrease(data, duration);
 			
 			if (inst.getCount() >= threshold) {
-				data.applyStatus(StatusType.EVADE, data, 1, -1);
+				data.applyStatus(StatusType.EVADE, data, 1, 100);
 				data.addStamina(5);
 			}
 			return TriggerResult.keep();
@@ -53,6 +53,6 @@ public class Vanish extends Equipment {
 		item = createItem(Material.LEATHER_BOOTS,
 				"Passive. Whenever you become " + GlossaryTag.STEALTH.tag(this) + ", increase its duration by <yellow>" + duration + "</yellow>." +
 				" Every <yellow>" + threshold + "</yellow> times you become " + GlossaryTag.STEALTH.tag(this) + ", gain " + GlossaryTag.EVADE.tag(this, 1, false) +
-				" and <white>5</white> stamina.");
+				" [<white>5s</white>]and <white>5</white> stamina.");
 	}
 }
