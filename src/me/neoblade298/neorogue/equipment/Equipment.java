@@ -37,7 +37,9 @@ import me.neoblade298.neorogue.equipment.armor.BlindingCloak;
 import me.neoblade298.neorogue.equipment.armor.Brightcrown;
 import me.neoblade298.neorogue.equipment.armor.ClothBindings;
 import me.neoblade298.neorogue.equipment.armor.Footpads;
+import me.neoblade298.neorogue.equipment.armor.Gauze;
 import me.neoblade298.neorogue.equipment.armor.IronCuirass;
+import me.neoblade298.neorogue.equipment.armor.LeatherArmguard;
 import me.neoblade298.neorogue.equipment.armor.LeatherChestplate;
 import me.neoblade298.neorogue.equipment.armor.LeatherCowl;
 import me.neoblade298.neorogue.equipment.armor.LeatherHelmet;
@@ -249,6 +251,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new BlindingCloak(b);
 			new ClothBindings(b);
 			new Footpads(b);
+			new Gauze(b);
+			new LeatherArmguard(b);
 			new LeatherCowl(b);
 			new LeatherChestplate(b);
 			new LeatherHelmet(b);

@@ -43,23 +43,49 @@ public class PocketWatch extends Equipment {
 	}
 	
 	private class PocketWatchInstance implements TriggerAction {
-		private Location loc;
-		private double health, mana, stamina;
+		private Snapshot[] snapshots = new Snapshot[3];
 		private boolean active = true;
 		private int numUses = 0;
 
 		@Override
 		public TriggerResult trigger(PlayerFightData data, Object in) {
 			if (!active) return TriggerResult.remove();
+			snapshots[2] = snapshots[1];
+			snapshots[1] = snapshots[2];
+			snapshots[0] = new Snapshot(data);
+			return TriggerResult.keep();
+		}
+		
+		public TriggerResult useWatch(PlayerFightData data) {
+			Player p = data.getPlayer();
+			snapshots[2].load(data);
+			if (++numUses >= uses) {
+				Sounds.breaks.play(p, p);
+				p.getInventory().setItem(EquipmentSlot.OFF_HAND, null);
+				active = false;
+				return TriggerResult.remove();
+			}
+			return TriggerResult.keep();
+		}
+	}
+	
+	private class Snapshot {
+		private Location loc;
+		private double health, mana, stamina;
+		
+		public Snapshot(PlayerFightData data) {
+			save(data);
+		}
+		
+		public void save(PlayerFightData data) {
 			Player p = data.getPlayer();
 			loc = p.getLocation();
 			health = p.getHealth();
 			mana = data.getMana();
 			stamina = data.getStamina();
-			return TriggerResult.keep();
 		}
 		
-		public TriggerResult useWatch(PlayerFightData data) {
+		public void load(PlayerFightData data) {
 			Player p = data.getPlayer();
 			p.teleport(loc);
 			sc.play(p, p);
@@ -68,13 +94,6 @@ public class PocketWatch extends Equipment {
 			p.setHealth(health);
 			data.setMana(mana);
 			data.setStamina(stamina);
-			if (++numUses >= uses) {
-				Sounds.breaks.play(p, p);
-				p.getInventory().setItem(EquipmentSlot.OFF_HAND, null);
-				active = false;
-				return TriggerResult.remove();
-			}
-			return TriggerResult.keep();
 		}
 	}
 

@@ -23,6 +23,9 @@ public class ReceivedHealthDamageEvent {
 		this.damager = damager;
 		this.meta = meta;
 	}
+	public double getTotalDamage() {
+		return damage + ignoreShieldsDamage;
+	}
 	public double getDamage() {
 		return damage;
 	}

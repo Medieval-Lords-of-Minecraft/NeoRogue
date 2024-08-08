@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 
 public class ApplyStatusEvent {
 	// FightData target, Status ID, stacks, duration
@@ -46,5 +47,11 @@ public class ApplyStatusEvent {
 	}
 	public int getSeconds() {
 		return seconds;
+	}
+	public boolean isStatus(StatusType type) {
+		return statusId.equals(type.name());
+	}
+	public boolean isStatus(String id) {
+		return statusId.equals(id);
 	}
 }
