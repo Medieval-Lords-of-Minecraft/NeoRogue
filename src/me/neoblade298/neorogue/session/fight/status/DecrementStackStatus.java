@@ -9,6 +9,10 @@ public class DecrementStackStatus extends Status {
 		super(id, target, sc);
 	}
 
+	public DecrementStackStatus(String id, FightData target, StatusClass sc, boolean hidden) {
+		super(id, target, sc, hidden);
+	}
+
 	@Override
 	public void apply(FightData fd, int stacks, int seconds) {
 		this.stacks += stacks;

@@ -324,6 +324,10 @@ public class FightData {
 		return statuses.getOrDefault(type.name(), Status.EMPTY);
 	}
 	
+	public void applyStatus(Status s, FightData applier, int stacks, int ticks) {
+		applyStatus(s, applier, stacks, ticks);
+	}
+	
 	public void applyStatus(StatusType type, FightData applier, int stacks, int ticks) {
 		applyStatus(type, applier, stacks, ticks, null);
 	}

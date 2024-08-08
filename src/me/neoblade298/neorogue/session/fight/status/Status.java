@@ -70,10 +70,14 @@ public abstract class Status {
 	}
 	
 	public static Status createByGenericType(GenericStatusType type, String id, FightData target) {
+		return createByGenericType(type, id, target, false);
+	}
+	
+	public static Status createByGenericType(GenericStatusType type, String id, FightData target, boolean hidden) {
 		switch (type) {
-		case DECREMENT_STACK: return new DecrementStackStatus(id, target, StatusClass.NONE);
-		case BASIC: return new BasicStatus(id, target, StatusClass.NONE);
-		case DURATION: return new DurationStatus(id, target, StatusClass.NONE);
+		case DECREMENT_STACK: return new DecrementStackStatus(id, target, StatusClass.NONE, hidden);
+		case BASIC: return new BasicStatus(id, target, StatusClass.NONE, hidden);
+		case DURATION: return new DurationStatus(id, target, StatusClass.NONE, hidden);
 		default: return null;
 		}
 	}

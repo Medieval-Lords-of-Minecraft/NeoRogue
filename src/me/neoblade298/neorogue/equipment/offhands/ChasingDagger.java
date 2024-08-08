@@ -17,8 +17,8 @@ import me.neoblade298.neorogue.session.fight.trigger.event.RightClickHitEvent;
 public class ChasingDagger extends Equipment {
 	private static final String ID = "chasingDagger";
 	public ChasingDagger(boolean isUpgraded) {
-		super(ID, "Chasing Dagger", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.OFFHAND, EquipmentProperties.ofWeapon(isUpgraded ? 35 : 25, 1, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
+		super(ID, "Chasing Dagger", isUpgraded, Rarity.UNCOMMON, new EquipmentClass[] {EquipmentClass.WARRIOR, EquipmentClass.THIEF},
+				EquipmentType.OFFHAND, EquipmentProperties.ofWeapon(isUpgraded ? 35 : 25, 1, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
 		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 	

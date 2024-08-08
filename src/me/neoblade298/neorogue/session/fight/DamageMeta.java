@@ -337,6 +337,13 @@ public class DamageMeta {
 		return slices;
 	}
 	
+	public boolean containsType(DamageType type) {
+		for (DamageSlice slice : slices) {
+			if (slice.getPostBuffType() == type) return true;
+		}
+		return false;
+	}
+	
 	private class BuffMeta {
 		protected Buff buff;
 		protected BuffOrigin origin;

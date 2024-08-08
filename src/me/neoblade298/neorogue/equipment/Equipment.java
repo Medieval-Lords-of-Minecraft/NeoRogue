@@ -33,6 +33,7 @@ import me.neoblade298.neorogue.equipment.accessories.MinorStaminaRelic;
 import me.neoblade298.neorogue.equipment.accessories.MinorStrengthRelic;
 import me.neoblade298.neorogue.equipment.accessories.RingOfAnger;
 import me.neoblade298.neorogue.equipment.accessories.RingOfFortitude;
+import me.neoblade298.neorogue.equipment.armor.BlindingCloak;
 import me.neoblade298.neorogue.equipment.armor.Brightcrown;
 import me.neoblade298.neorogue.equipment.armor.ClothBindings;
 import me.neoblade298.neorogue.equipment.armor.Footpads;
@@ -86,6 +87,7 @@ import me.neoblade298.neorogue.equipment.offhands.HastyShield;
 import me.neoblade298.neorogue.equipment.offhands.LeadingKnife;
 import me.neoblade298.neorogue.equipment.offhands.LeatherBracer;
 import me.neoblade298.neorogue.equipment.offhands.PaladinsShield;
+import me.neoblade298.neorogue.equipment.offhands.PocketWatch;
 import me.neoblade298.neorogue.equipment.offhands.RubyArmament;
 import me.neoblade298.neorogue.equipment.offhands.SmallShield;
 import me.neoblade298.neorogue.equipment.offhands.SpikyShield;
@@ -171,6 +173,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Endure(b);
 			new Enlighten(b);
 			new EndlessVenom(b);
+			new Energize(b);
 			new Envenom(b);
 			new Envenom2(b);
 			new EscapePlan(b);
@@ -188,6 +191,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Fury(b);
 			new GraniteShield(b);
 			new HoldTheLine(b);
+			new Initiator(b);
 			new IronCuirass(b);
 			new Ironskin(b);
 			new LeadingKnife(b);
@@ -242,6 +246,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new MinorManaRelic(b);
 
 			// Armor
+			new BlindingCloak(b);
 			new ClothBindings(b);
 			new Footpads(b);
 			new LeatherCowl(b);
@@ -256,6 +261,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new HastyShield(b);
 			new LeatherBracer(b);
 			new PaladinsShield(b);
+			new PocketWatch(b);
 			new RubyArmament(b);
 			new SmallShield(b);
 			new SpikyShield(b);

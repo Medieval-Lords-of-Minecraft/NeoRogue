@@ -7,6 +7,9 @@ public class DurationStatus extends Status {
 	public DurationStatus(String id, FightData target, StatusClass sc) {
 		super(id, target, sc);
 	}
+	public DurationStatus(String id, FightData target, StatusClass sc, boolean hidden) {
+		super(id, target, sc, hidden);
+	}
 
 	@Override
 	public void apply(FightData applier, int stacks, int ticks) {
