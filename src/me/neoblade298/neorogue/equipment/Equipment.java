@@ -33,6 +33,9 @@ import me.neoblade298.neorogue.equipment.accessories.MinorStaminaRelic;
 import me.neoblade298.neorogue.equipment.accessories.MinorStrengthRelic;
 import me.neoblade298.neorogue.equipment.accessories.RingOfAnger;
 import me.neoblade298.neorogue.equipment.accessories.RingOfFortitude;
+import me.neoblade298.neorogue.equipment.accessories.RingOfMentalism;
+import me.neoblade298.neorogue.equipment.accessories.RingOfSharpness;
+import me.neoblade298.neorogue.equipment.accessories.TopazRing;
 import me.neoblade298.neorogue.equipment.armor.BlindingCloak;
 import me.neoblade298.neorogue.equipment.armor.Brightcrown;
 import me.neoblade298.neorogue.equipment.armor.ClothBindings;
@@ -86,10 +89,12 @@ import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.equipment.offhands.ChasingDagger;
 import me.neoblade298.neorogue.equipment.offhands.HastyShield;
+import me.neoblade298.neorogue.equipment.offhands.InsanityPowder;
 import me.neoblade298.neorogue.equipment.offhands.LeadingKnife;
 import me.neoblade298.neorogue.equipment.offhands.LeatherBracer;
 import me.neoblade298.neorogue.equipment.offhands.PaladinsShield;
 import me.neoblade298.neorogue.equipment.offhands.PocketWatch;
+import me.neoblade298.neorogue.equipment.offhands.PoisonPowder;
 import me.neoblade298.neorogue.equipment.offhands.RubyArmament;
 import me.neoblade298.neorogue.equipment.offhands.SmallShield;
 import me.neoblade298.neorogue.equipment.offhands.SpikyShield;
@@ -239,13 +244,16 @@ public abstract class Equipment implements Comparable<Equipment> {
 			// Accessories
 			new EarthenRing(b);
 			new GripGloves(b);
+			new MinorManaRelic(b);
 			new MinorPoisonRelic(b);
 			new MinorShieldingRelic(b);
 			new MinorStaminaRelic(b);
 			new MinorStrengthRelic(b);
 			new RingOfAnger(b);
 			new RingOfFortitude(b);
-			new MinorManaRelic(b);
+			new RingOfMentalism(b);
+			new RingOfSharpness(b);
+			new TopazRing(b);
 
 			// Armor
 			new BlindingCloak(b);
@@ -263,9 +271,11 @@ public abstract class Equipment implements Comparable<Equipment> {
 			// Offhands
 			new ChasingDagger(b);
 			new HastyShield(b);
+			new InsanityPowder(b);
 			new LeatherBracer(b);
 			new PaladinsShield(b);
 			new PocketWatch(b);
+			new PoisonPowder(b);
 			new RubyArmament(b);
 			new SmallShield(b);
 			new SpikyShield(b);
