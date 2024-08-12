@@ -202,6 +202,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new IronCuirass(b);
 			new Ironskin(b);
 			new LeadingKnife(b);
+			new LightningRush(b);
 			new Maim(b);
 			new MightySwing(b);
 			new MortalEngine(b);
@@ -315,6 +316,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new StoneSpear(b);
 			new StoneSword(b);
 			new StoneThrowingKnife(b);
+			new TacticiansDagger(b);
 			new TargetAcquisition(b);
 			new UnderDarkness(b);
 			new RighteousHammer(b);
