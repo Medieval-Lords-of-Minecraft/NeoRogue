@@ -193,6 +193,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new FivePointStrike(b);
 			new Flurry(b);
 			new Focus(b);
+			new FormAPlan(b);
 			new Fortify(b);
 			new Frenzy(b);
 			new Fury(b);
@@ -234,6 +235,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Thornguard(b);
 			new Titan(b);
 			new TreeTrunk(b);
+			new TwinShiv(b);
 			new Vanish(b);
 			new WarCry(b);
 			new Warmup(b);
@@ -890,6 +892,23 @@ public abstract class Equipment implements Comparable<Equipment> {
 	public void weaponDamageProjectile(LivingEntity target, ProjectileInstance proj, Barrier hitBarrier) {
 		PlayerFightData data = (PlayerFightData) proj.getOwner();
 		DamageMeta dm = new DamageMeta(data, properties.get(PropertyType.DAMAGE), properties.getType());
+		if (!proj.getBuffs().isEmpty()) {
+			dm.addBuffs(proj.getBuffs(), BuffOrigin.PROJECTILE, true);
+		}
+		if (hitBarrier != null) {
+			dm.addBuffs(hitBarrier.getBuffs(), BuffOrigin.BARRIER, false);
+		}
+		BasicAttackEvent ev = new BasicAttackEvent(target, dm, properties.get(PropertyType.KNOCKBACK), this, null);
+		data.runActions(data, Trigger.BASIC_ATTACK, ev);
+		if (properties.contains(PropertyType.KNOCKBACK)) {
+			FightInstance.knockback(target,
+					proj.getVector().normalize().multiply(properties.get(PropertyType.KNOCKBACK)));
+		}
+		FightInstance.dealDamage(dm, target);
+	}
+
+	public void weaponDamageProjectile(LivingEntity target, ProjectileInstance proj, DamageMeta dm, Barrier hitBarrier) {
+		PlayerFightData data = (PlayerFightData) proj.getOwner();
 		if (!proj.getBuffs().isEmpty()) {
 			dm.addBuffs(proj.getBuffs(), BuffOrigin.PROJECTILE, true);
 		}
