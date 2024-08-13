@@ -750,11 +750,11 @@ public abstract class FightInstance extends Instance {
 		}
 	}
 	
-	public static void dealDamage(DamageMeta meta, LivingEntity target) {
+	public static double dealDamage(DamageMeta meta, LivingEntity target) {
 		if (meta.getOwner() instanceof PlayerFightData) {
 			trigger((Player) meta.getOwner().getEntity(), Trigger.DEALT_DAMAGE, new DealtDamageEvent(meta, target));
 		}
-		meta.dealDamage(target);
+		return meta.dealDamage(target);
 	}
 	
 	@Override

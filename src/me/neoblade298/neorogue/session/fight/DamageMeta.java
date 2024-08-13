@@ -122,8 +122,8 @@ public class DamageMeta {
 		return false;
 	}
 	
-	public void dealDamage(LivingEntity target) {
-		if (slices.isEmpty()) return;
+	public double dealDamage(LivingEntity target) {
+		if (slices.isEmpty()) return 0;
 		FightData recipient = FightInstance.getFightData(target.getUniqueId());
 		LivingEntity damager = owner.getEntity();
 		addBuffs(recipient.getBuffs(false), BuffOrigin.NORMAL, false);
@@ -291,7 +291,7 @@ public class DamageMeta {
 			}
 		}
 		final double finalDamage = damage + ignoreShieldsDamage + target.getAbsorptionAmount();
-		if (finalDamage > target.getAbsorptionAmount()) {
+		if (damage + ignoreShieldsDamage > 0) {
 			
 			// Mobs shouldn't have a source of damage because they'll infinitely re-trigger ~OnAttack
 			// Players must have a source of damage to get credit for kills, otherwise mobs that suicide give points
@@ -310,7 +310,7 @@ public class DamageMeta {
 			}
 			else {
 				PlayerFightData data = FightInstance.getUserData(target.getUniqueId());
-				if (data == null) return;
+				if (data == null) return damage + ignoreShieldsDamage; // Should hopefully never happen
 				data.getInstance().cancelRevives((Player) target);
 				if (data.shields.getAmount() > 0 && ignoreShieldsDamage > 0) data.shields.update();
 				data.updateActionBar();
@@ -323,6 +323,7 @@ public class DamageMeta {
 		
 		// Return damage
 		FightInstance.dealDamage(returnDamage, owner.getEntity());
+		return damage + ignoreShieldsDamage;
 	}
 	
 	public DamageMeta getReturnDamage() {
