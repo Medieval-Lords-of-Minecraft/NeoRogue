@@ -111,6 +111,10 @@ public abstract class Status {
 		return hidden;
 	}
 	
+	public StatusClass getStatusClass() {
+		return sc;
+	}
+	
 	public enum StatusType {
 		POISON("<dark_green>Poison</dark_green>", "&2Poison"),
 		BLEED("<red>Bleed</red>", "&cBleed"),

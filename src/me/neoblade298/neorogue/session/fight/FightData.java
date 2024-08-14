@@ -349,7 +349,7 @@ public class FightData {
 	protected void applyStatus(Status s, FightData applier, int stacks, int ticks, DamageMeta meta) {
 		if (!entity.isValid()) return;
 		String id = s.getId();
-		ApplyStatusEvent ev = new ApplyStatusEvent(this, id, stacks, ticks, meta);
+		ApplyStatusEvent ev = new ApplyStatusEvent(this, id, stacks, ticks, s.getStatusClass(), meta);
 		if (applier instanceof PlayerFightData) {
 			FightInstance.trigger(((PlayerFightData) applier).getPlayer(), Trigger.APPLY_STATUS, ev);
 		}
