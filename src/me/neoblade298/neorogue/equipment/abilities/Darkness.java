@@ -48,11 +48,6 @@ public class Darkness extends Equipment {
 		dark = isUpgraded ? 15 : 10;
 		insanity = isUpgraded ? 3 : 2;
 	}
-
-	@Override
-	public void setupReforges() {
-		addSelfReforge(Flicker.get(), Preparation.get());
-	}
 	
 	public static Equipment get() {
 		return Equipment.get(ID, false);

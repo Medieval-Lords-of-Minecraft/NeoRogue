@@ -38,6 +38,6 @@ public class LeatherArmguard extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.WHITE_DYE, "Decrease " + GlossaryTag.GENERAL.tag(this) + " damage received by <yellow>" + def + "</yellow>, increased to"
-				+ " <yellow>" + spdef + " </yellow> when in " + GlossaryTag.STEALTH.tag(this) + ".");
+				+ " <yellow>" + spdef + " </yellow>when in " + GlossaryTag.STEALTH.tag(this) + ".");
 	}
 }

@@ -30,14 +30,11 @@ public class TwinShiv extends Equipment {
 	private static final ParticleContainer tick = new ParticleContainer(Particle.CRIT).count(3).speed(0.01).spread(0.1, 0.1);
 	
 	public TwinShiv(boolean isUpgraded) {
-		super(ID, "twinShiv", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
+		super(ID, "Twin Shiv", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 15, 10, 0));
-	}
-	
-	@Override
-	public void setupReforges() {
-		addSelfReforge(Brace2.get(), Bide.get(), Parry.get());
-		addReforge(Provoke.get(), Challenge.get());
+		
+		damage = isUpgraded ? 40 : 30;
+		bonus = isUpgraded ? 40 : 30;
 	}
 	
 	public static Equipment get() {

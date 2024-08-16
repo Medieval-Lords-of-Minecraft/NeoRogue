@@ -28,7 +28,7 @@ public class FormAPlan extends Equipment {
 	private int buff;
 	
 	public FormAPlan(boolean isUpgraded) {
-		super(ID, "Form A Plan", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
+		super(ID, "Form a Plan", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.none());
 		buff = isUpgraded ? 50 : 30;
 	}

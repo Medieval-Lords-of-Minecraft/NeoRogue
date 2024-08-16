@@ -31,7 +31,7 @@ public class AmuletOfOffering extends Artifact {
 		data.addTrigger(id, Trigger.RECEIVED_HEALTH_DAMAGE, (pdata, in) -> {
 			data.addMana(1000);
 			data.addStamina(1000);
-			data.addBuff(data, id, true, true, BuffType.GENERAL, 0.5, 5);
+			data.addBuff(data, id, true, true, BuffType.GENERAL, 0.5, 300);
 			Util.msg(p, this.display.append(Component.text(" was activated", NamedTextColor.GRAY)));
 			return TriggerResult.remove();
 		});
@@ -50,6 +50,6 @@ public class AmuletOfOffering extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SWEET_BERRIES, 
-				"The first time you take health damage in a fight, max out your stamina and mana, and gain <white>50%</white> bonus damage for <white>5</white> seconds.");
+				"The first time you take health damage in a fight, max out your stamina and mana, and gain <white>50%</white> bonus damage for <white>15</white> seconds.");
 	}
 }

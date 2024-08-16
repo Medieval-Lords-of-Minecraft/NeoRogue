@@ -33,7 +33,7 @@ public class Energize extends Equipment {
 	
 	public Energize(boolean isUpgraded) {
 		super(ID, "Energize", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 0, 20, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 0, 20, 0));
 		damage = isUpgraded ? 50 : 30;
 		elec = isUpgraded ? 6 : 4;
 	}
@@ -51,7 +51,7 @@ public class Energize extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.POTION,
 				"On cast, your next basic attack deals an additional " + GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage " +
-		" and marks the enemy. For the next <white>5</white> seconds, the marked enemy gains " + GlossaryTag.ELECTRIFIED.tag(this, elec, true)
+		"and marks the enemy. For the next <white>5</white> seconds, the marked enemy gains " + GlossaryTag.ELECTRIFIED.tag(this, elec, true)
 		+ " each time you deal " + GlossaryTag.LIGHTNING.tag(this) + " damage to any enemy, including this ability.");
 	}
 

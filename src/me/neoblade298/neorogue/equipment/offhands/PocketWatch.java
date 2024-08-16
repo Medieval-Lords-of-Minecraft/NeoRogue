@@ -99,7 +99,7 @@ public class PocketWatch extends Equipment {
 
 	@Override
 	public void setupItem() {
-		String usesString = isUpgraded ? "twice" : "once";
+		String usesString = isUpgraded ? "Twice" : "Once";
 		item = createItem(Material.PRISMARINE_SHARD, "<yellow>" + usesString + "</yellow> per fight, right click to " +
 				" set your health, mana, and stamina to what it was <white>2</white> seconds ago.");
 	}

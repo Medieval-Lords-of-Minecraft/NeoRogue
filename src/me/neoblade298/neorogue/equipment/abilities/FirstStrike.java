@@ -65,6 +65,7 @@ public class FirstStrike extends Equipment {
 			return TriggerResult.keep();
 		});
 		
+		data.addTrigger(ID, bind, inst);
 		data.addTrigger(ID, Trigger.RECEIVE_STATUS, (pdata, in) -> {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
 			if (ev.getStatusId().equals(StatusType.EVADE.name()) || ev.getStatusId().equals(StatusType.STEALTH.name())) {

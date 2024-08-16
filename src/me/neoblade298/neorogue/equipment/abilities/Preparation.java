@@ -35,11 +35,6 @@ public class Preparation extends Equipment {
 		damage = isUpgraded ? 100 : 70;
 		shields = isUpgraded ? 15 : 10;
 	}
-
-	@Override
-	public void setupReforges() {
-		addSelfReforge(Flicker.get());
-	}
 	
 	public static Equipment get() {
 		return Equipment.get(ID, false);
@@ -81,7 +76,7 @@ public class Preparation extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.BLAZE_POWDER,
 				"On cast, charge for <white>5</white> seconds before gaining " + GlossaryTag.SHIELDS.tag(this, shields, true) + " "
-				+ "and dealing an additional"
+				+ "and dealing an additional "
 				+ GlossaryTag.SLASHING.tag(this, damage, true) + " damage on basic attacks for <white>10</white> seconds.");
 	}
 }
