@@ -1,6 +1,7 @@
 package me.neoblade298.neorogue.player.inventory;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -10,23 +11,32 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import de.tr7zw.nbtapi.NBTItem;
+import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.session.ShopInstance;
+import me.neoblade298.neorogue.session.ShopInventory;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class StorageInventory extends CoreInventory implements ShiftClickableInventory {
 	private Player spectator;
 	private PlayerSessionData data;
+	private boolean isShop;
+	
+	private static final int SELL = 8;
 
 	public StorageInventory(PlayerSessionData data) {
 		super(data.getPlayer(), Bukkit.createInventory(data.getPlayer(), data.getMaxStorage() <= 9 ? 9 : 18, Component.text("Storage", NamedTextColor.GOLD)));
 		new PlayerSessionInventory(data);
 		this.data = data;
+		isShop = data.getSession().getInstance() instanceof ShopInstance;
 		setupInventory();
 	}
 	
@@ -45,6 +55,15 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 			if (storage[i] == null) continue;
 			contents[i] = storage[i].getItem();
 		}
+		
+		if (isShop) {
+			contents[SELL] = CoreInventory.createButton(
+					Material.GOLD_NUGGET, Component.text("Sell Items", NamedTextColor.RED),
+					(TextComponent) NeoCore.miniMessage().deserialize(
+							"Drag equipment here to sell it " + "for <yellow>" + ShopInventory.SELL_PRICE + " coins</yellow>."
+					), 250, NamedTextColor.GRAY
+			);
+		}
 		inv.setContents(contents);
 	}
 
@@ -54,6 +73,26 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 			e.setCancelled(true);
 		}
 		PlayerSessionInventory pinv = (PlayerSessionInventory) InventoryListener.getLowerInventory(p);
+		
+		// First check for sells
+		if (e.getSlot() == SELL) {
+			e.setCancelled(true);
+			if (e.getCurrentItem() == null) return;
+			NBTItem nbti = new NBTItem(e.getCursor());
+			Equipment eq = Equipment.get(nbti.getString("equipId"), false);
+			if (eq.isCursed()) {
+				Util.displayError(p, "Curses cannot be sold, they must be removed!");
+				return;
+			}
+			data.addCoins(ShopInventory.SELL_PRICE);
+			p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1F, 1F);
+			p.setItemOnCursor(null);
+			data.getSession().broadcast(
+					SharedUtil.color("<yellow>" + p.getName() + " </yellow>sold their ").append(eq.getHoverable())
+							.append(Component.text("."))
+			);
+		}
+		
 		if (e.isShiftClick()) {
 			if (e.getCurrentItem() == null) return;
 			e.setCancelled(true);
