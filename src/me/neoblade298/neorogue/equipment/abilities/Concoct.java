@@ -44,6 +44,10 @@ public class Concoct extends Equipment {
 				int count = 0;
 				float[] pitches = new float[] {1F, 1.0594F, 1.1224F, 1.1892F, 1.2599F};
 				public void run() {
+					if (inst.getTime() == -1) {
+						this.cancel();
+						return;
+					}
 					p.playSound(p, Sound.BLOCK_NOTE_BLOCK_PLING, 1F, pitches[count]);
 					if (++count >= 5) this.cancel();
 				}
