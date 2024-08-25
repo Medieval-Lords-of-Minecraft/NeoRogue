@@ -22,7 +22,7 @@ public class LightningCutter extends Equipment {
 	private static final String ID = "lightningCutter";
 	
 	public LightningCutter(boolean isUpgraded) {
-		super(ID, "Lightning Cutter", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+		super(ID, "Lightning Cutter", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(isUpgraded ? 60 : 45, 1, 0.2, DamageType.PIERCING, Sounds.firework));
 		properties.addUpgrades(PropertyType.DAMAGE);

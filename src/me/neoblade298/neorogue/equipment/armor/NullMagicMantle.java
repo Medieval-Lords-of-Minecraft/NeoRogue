@@ -15,7 +15,7 @@ public class NullMagicMantle extends Equipment {
 	private int damageReduction;
 	
 	public NullMagicMantle(boolean isUpgraded) {
-		super(ID, "Null Magic Mantle", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
+		super(ID, "Null Magic Mantle", isUpgraded, Rarity.COMMON, EquipmentClass.CLASSLESS,
 				EquipmentType.ARMOR);
 		damageReduction = isUpgraded ? 5 : 3;
 	}

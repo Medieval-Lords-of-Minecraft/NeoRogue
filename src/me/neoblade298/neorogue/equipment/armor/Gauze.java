@@ -19,7 +19,7 @@ public class Gauze extends Equipment {
 	private int pct, max;
 	
 	public Gauze(boolean isUpgraded) {
-		super(ID, "Gauze", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+		super(ID, "Gauze", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ARMOR);
 		pct = isUpgraded ? 60 : 30;
 		max = isUpgraded ? 8 : 5;
@@ -43,7 +43,7 @@ public class Gauze extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.IRON_CHESTPLATE, "Gaining " + GlossaryTag.STEALTH.tag(this) + " within <white>2</white> seconds of "
+		item = createItem(Material.WHITE_CARPET, "Gaining " + GlossaryTag.STEALTH.tag(this) + " within <white>2</white> seconds of "
 				+ "taking health damage heals back <yellow>" + pct + "%</yellow> of the last damage taken, with a maximum heal of "
 						+ "<yellow>" + max + "</yellow>.");
 	}

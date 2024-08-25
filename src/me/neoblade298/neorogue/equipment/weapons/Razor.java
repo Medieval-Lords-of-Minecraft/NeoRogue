@@ -28,7 +28,7 @@ public class Razor extends Equipment {
 
 	@Override
 	public void setupReforges() {
-		addSelfReforge(SerratedRazor.get());
+		addSelfReforge(SerratedRazor.get(), EnergizedRazor.get(), HiddenRazor.get());
 	}
 	
 	public static Equipment get() {

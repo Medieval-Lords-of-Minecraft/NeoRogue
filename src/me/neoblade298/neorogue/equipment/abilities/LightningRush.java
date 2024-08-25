@@ -37,7 +37,7 @@ public class LightningRush extends Equipment {
 			.dustOptions(new DustOptions(Color.YELLOW, 1F)).count(50).spread(1, 2).offsetY(1);
 	
 	public LightningRush(boolean isUpgraded) {
-		super(ID, "Lightning Rush", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR, 
+		super(ID, "Lightning Rush", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF, 
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 10, 15, 0));
 		damage = isUpgraded ? 30 : 20;
 		elec = isUpgraded ? 15 : 10;

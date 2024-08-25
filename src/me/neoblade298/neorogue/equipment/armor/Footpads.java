@@ -14,7 +14,7 @@ public class Footpads extends Equipment {
 	private double stamina;
 	
 	public Footpads(boolean isUpgraded) {
-		super(ID, "Footpads", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
+		super(ID, "Footpads", isUpgraded, Rarity.COMMON, new EquipmentClass[] { EquipmentClass.WARRIOR, EquipmentClass.THIEF },
 				EquipmentType.ARMOR);
 		stamina = isUpgraded ? 15 : 10;
 	}
