@@ -1,14 +1,14 @@
 package me.neoblade298.neorogue.equipment.weapons;
 
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
-import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -17,21 +17,16 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
-public class SparkKnife extends Equipment {
-	private static final String ID = "sparkKnife";
-	private static int	elec;
+public class Irritant extends Equipment {
+	private static final String ID = "irritant";
+	private static int base = 20;
+	private int dmg;
 	
-	public SparkKnife(boolean isUpgraded) {
-		super(ID, "Spark Knife", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
+	public Irritant(boolean isUpgraded) {
+		super(ID, "Irritant", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(isUpgraded ? 30 : 20, 0.5, 0.2, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
-		properties.addUpgrades(PropertyType.DAMAGE);
-		elec = isUpgraded ? 15 : 9;
-	}
-
-	@Override
-	public void setupReforges() {
-		addSelfReforge(SparkdrainKnife.get(), ElectromagneticKnife.get(), LightningCutter.get());
+				EquipmentProperties.ofWeapon(base, 1.25, 0.2, DamageType.PIERCING, Sounds.extinguish));
+		dmg = isUpgraded ? 30 : 20;
 	}
 	
 	public static Equipment get() {
@@ -42,14 +37,15 @@ public class SparkKnife extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
-			weaponSwingAndDamage(p, data, ev.getTarget());
-			FightInstance.applyStatus(ev.getTarget(), StatusType.ELECTRIFIED, data, elec, -1);
+			boolean hasStatus = FightInstance.getFightData(ev.getTarget()).hasStatus(StatusType.POISON);
+			DamageMeta dm = new DamageMeta(data, base + (hasStatus ? dmg : 0), DamageType.PIERCING);
+			weaponSwingAndDamage(p, data, ev.getTarget(), dm);
 			return TriggerResult.keep();
 		});
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STONE_SWORD, "Every basic attack applies " + GlossaryTag.ELECTRIFIED.tag(this, elec, true) + ".");
+		item = createItem(Material.BLAZE_ROD, "Deals an additional <yellow>" + dmg + "</yellow> damage to enemies with " + GlossaryTag.POISON.tag(this));
 	}
 }

@@ -180,6 +180,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new IronCuirass(b);
 			new Ironskin(b);
 			new LeadingKnife(b);
+			new LightningCutter(b);
 			new LightningRush(b);
 			new Maim(b);
 			new MightySwing(b);
@@ -203,6 +204,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new SiphoningStrike(b);
 			new Skirmisher(b);
 			new Smite(b);
+			new SmokeBomb(b);
 			new SpiritOfTheDragoon(b);
 			new Sturdy(b);
 			new FirstStrike(b);
@@ -263,6 +265,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 
 			// Weapons
 			new BoltWand(b);
+			new ButterflyKnife(b);
+			new ButterflyKnife2(b);
 			new ChainLightningWand(b);
 			new CrescentAxe(b);
 			new CrimsonBlade(b);
@@ -270,25 +274,33 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new DarkScepter(b);
 			new EarthStaff(b);
 			new EarthenLeatherGauntlets(b);
+			new ElectromagneticKnife(b);
+			new EnergizedRazor(b);
+			new EvasiveKnife(b);
 			new FencingSword(b);
 			new FireStaff(b);
 			new Flametongue(b);
 			new ForcefulLeatherGauntlets(b);
 			new Fracturer(b);
 			new Harpoon(b);
+			new HiddenRazor(b);
 			new IceWand(b);
+			new Irritant(b);
 			new LeatherGauntlets(b);
 			new LightLeatherGauntlets(b);
 			new LightningWand(b);
 			new MassiveHalberd(b);
 			new Rapier(b);
+			new Razor(b);
 			new SilverFang(b);
+			new ShadowyDagger(b);
 			new ShieldPike(b);
-			new SmokeBomb(b);
+			new SparkdrainKnife(b);
 			new SparkKnife(b);
 			new SparkStick(b);
 			new StoneAxe(b);
 			new StoneDagger(b);
+			new StoneDriver(b);
 			new StoneHammer(b);
 			new StoneMace(b);
 			new StoneShiv(b);
@@ -618,12 +630,12 @@ public abstract class Equipment implements Comparable<Equipment> {
 	}
 
 	public ItemStack createItem(Material mat, String[] preLoreLine, String loreLine) {
-		// Spell check
-		char prev = 0;
+		// Spell check only needs to happen with unupgraded
 		if (loreLine != null) {
+			char prev = 0;
 			for (char c : loreLine.toCharArray()) {
 				if (c == ' ' && prev == ' ') {
-					Bukkit.getLogger().warning("[NeoRogue] Duplicate space found in equipment " + id);
+					Bukkit.getLogger().warning("[NeoRogue] Duplicate space found in equipment " + id + (isUpgraded ? "+" : ""));
 				}
 				prev = c;
 			}

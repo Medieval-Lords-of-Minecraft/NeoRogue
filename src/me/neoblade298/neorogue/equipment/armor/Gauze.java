@@ -44,7 +44,7 @@ public class Gauze extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.IRON_CHESTPLATE, "Gaining " + GlossaryTag.STEALTH.tag(this) + " within <white>2</white> seconds of "
-				+ " taking health damage heals back <yellow>" + pct + "%</yellow> of the last damage taken, with a maximum heal of "
+				+ "taking health damage heals back <yellow>" + pct + "%</yellow> of the last damage taken, with a maximum heal of "
 						+ "<yellow>" + max + "</yellow>.");
 	}
 	
