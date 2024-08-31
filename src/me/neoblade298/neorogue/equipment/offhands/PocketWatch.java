@@ -51,13 +51,14 @@ public class PocketWatch extends Equipment {
 		public TriggerResult trigger(PlayerFightData data, Object in) {
 			if (!active) return TriggerResult.remove();
 			snapshots[2] = snapshots[1];
-			snapshots[1] = snapshots[2];
+			snapshots[1] = snapshots[0];
 			snapshots[0] = new Snapshot(data);
 			return TriggerResult.keep();
 		}
 		
 		public TriggerResult useWatch(PlayerFightData data) {
 			Player p = data.getPlayer();
+			if (snapshots[2] == null) return TriggerResult.keep();
 			snapshots[2].load(data);
 			if (++numUses >= uses) {
 				Sounds.breaks.play(p, p);
@@ -100,7 +101,7 @@ public class PocketWatch extends Equipment {
 	@Override
 	public void setupItem() {
 		String usesString = isUpgraded ? "Twice" : "Once";
-		item = createItem(Material.PRISMARINE_SHARD, "<yellow>" + usesString + "</yellow> per fight, right click to" +
+		item = createItem(Material.CLOCK, "<yellow>" + usesString + "</yellow> per fight, right click to" +
 				" set your health, mana, and stamina to what it was <white>2</white> seconds ago.");
 	}
 }

@@ -543,7 +543,7 @@ public class PlayerFightData extends FightData {
 				if (triggers.containsKey(t)) {
 					ArrayList<PriorityAction> actions = triggers.get(t);
 					for (PriorityAction action : actions) {
-						// Only the first valid usable instance is used as the cooldown
+						// Only the first valid usable instance is used as the cooldown per hotbar slot
 						if (action instanceof EquipmentInstance) {
 							insts.put(i, (EquipmentInstance) action);
 							found = true;
@@ -552,10 +552,11 @@ public class PlayerFightData extends FightData {
 					}
 				}
 				
-				// Next look for any slot-based triggers (so far only thrown tridents) that can have cooldowns
+				// Next look for any slot-based triggers (thrown tridents, tacticians dagger) that can have cooldowns
 				if (found || !slotBasedTriggers.containsKey(i)) continue;
 				for (ArrayList<PriorityAction> slotActions : slotBasedTriggers.get(i).values()) {
 					for (PriorityAction slotAction : slotActions) {
+						System.out.println("Found " + slotAction + " in slot + " + i + " , is " + (slotAction instanceof EquipmentInstance));
 						if (slotAction instanceof EquipmentInstance) {
 							insts.put(i, (EquipmentInstance) slotAction);
 							found = true;

@@ -292,10 +292,11 @@ public abstract class FightInstance extends Instance {
 		Player p = e.getPlayer();
 		e.setCancelled(true);
 		PlayerFightData data = userData.get(p.getUniqueId());
+		trigger(p, Trigger.LEFT_CLICK, null);
 		if (!(e.getAttacked() instanceof LivingEntity))
 			return;
 		if (e.getAttacked() instanceof Player) return;
-		trigger(p, Trigger.LEFT_CLICK, null);
+		if (!e.getAttacked().isValid()) return;
 		if (!data.canBasicAttack())
 			return;
 		trigger(p, Trigger.LEFT_CLICK_HIT, new LeftClickHitEvent((LivingEntity) e.getAttacked()));
@@ -402,6 +403,7 @@ public abstract class FightInstance extends Instance {
 			return;
 		if (!(e.getRightClicked() instanceof LivingEntity))
 			return;
+		if (!((LivingEntity) e.getRightClicked()).isValid()) return;
 		trigger(p, Trigger.RIGHT_CLICK_HIT, new RightClickHitEvent((LivingEntity) e.getRightClicked()));
 	}
 
@@ -523,17 +525,23 @@ public abstract class FightInstance extends Instance {
 		PlayerInventory pinv = p.getInventory();
 		boolean hasShield = pinv.getItemInOffHand() != null && pinv.getItemInOffHand().getType() == Material.SHIELD;
 
-		trigger(p, Trigger.RIGHT_CLICK, null);
-
-		double y = p.getEyeLocation().getDirection().normalize().getY();
-		if (p.isSneaking()) {
-			trigger(p, Trigger.SHIFT_RCLICK, null);
-		}
 		
-		if (y > 1) {
-			trigger(p, Trigger.UP_RCLICK, null);
-		} else if (y < -1) {
-			trigger(p, Trigger.DOWN_RCLICK, null);
+		// Trigger case 1. Right click mainhand with something in it
+		// Trigger case 2. Right click offhand when mainhand has nothing in it
+		if ((p.getInventory().getItemInMainHand() != null && e.getHand() == EquipmentSlot.HAND) ||
+				p.getInventory().getItemInMainHand() == null && e.getHand() == EquipmentSlot.OFF_HAND) {
+			trigger(p, Trigger.RIGHT_CLICK, null);
+
+			double y = p.getEyeLocation().getDirection().normalize().getY();
+			if (p.isSneaking()) {
+				trigger(p, Trigger.SHIFT_RCLICK, null);
+			}
+			
+			if (y > 1) {
+				trigger(p, Trigger.UP_RCLICK, null);
+			} else if (y < -1) {
+				trigger(p, Trigger.DOWN_RCLICK, null);
+			}
 		}
 		
 		if (e.getHand() == EquipmentSlot.OFF_HAND) {

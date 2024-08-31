@@ -8,6 +8,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardEquipmentInstance;
+import me.neoblade298.neorogue.equipment.StandardPriorityAction;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageType;
@@ -33,17 +34,19 @@ public class TacticiansDagger extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		StandardPriorityAction timer = new StandardPriorityAction(ID);
 		StandardEquipmentInstance inst = new StandardEquipmentInstance(p, this, slot, es);
-		inst.setAction((pdata, in) -> {
-			inst.setTime(System.currentTimeMillis());
+		timer.setAction((pdata, in) -> {
+			timer.setTime(System.currentTimeMillis());
+			inst.setCooldown(3);
 			return TriggerResult.keep();
 		});
-		data.addTrigger(ID, Trigger.DEALT_DAMAGE, inst);
+		data.addTrigger(ID, Trigger.DEALT_DAMAGE, timer);
 		
-		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
+		inst.setAction((pdata, inputs) -> {
 			DamageMeta dm;
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
-			if (inst.getTime() + 2000 >= System.currentTimeMillis()) {
+			if (timer.getTime() + 3000 >= System.currentTimeMillis()) {
 				dm = new DamageMeta(data, 20, DamageType.PIERCING);
 			}
 			else {
@@ -52,11 +55,13 @@ public class TacticiansDagger extends Equipment {
 			weaponSwingAndDamage(p, data, ev.getTarget(), dm);
 			return TriggerResult.keep();
 		});
+
+		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, inst);
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GOLDEN_SWORD, "Deal an additional " + GlossaryTag.PIERCING.tag(this, damage, true) + " if "
-				+ "you haven't dealt " + GlossaryTag.GENERAL.tag(this) + " damage in <white>2</white> seconds.");
+				+ "you haven't dealt " + GlossaryTag.GENERAL.tag(this) + " damage in <white>3</white> seconds.");
 	}
 }

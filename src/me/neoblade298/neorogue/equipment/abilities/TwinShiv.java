@@ -33,8 +33,8 @@ public class TwinShiv extends Equipment {
 		super(ID, "Twin Shiv", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 15, 10, 0));
 		
-		damage = isUpgraded ? 40 : 30;
-		bonus = isUpgraded ? 40 : 30;
+		damage = isUpgraded ? 100 : 80;
+		bonus = isUpgraded ? 80 : 50;
 	}
 	
 	public static Equipment get() {

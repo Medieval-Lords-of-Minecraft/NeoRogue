@@ -33,7 +33,7 @@ public class MinorMagicalPotion extends Consumable {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION, "Increases your " + GlossaryTag.MAGICAL.tag(this)
-		+ " by <yellow>" + intel + "</yellow> for the fight. Consumed on first use.");
+		+ " damage by <yellow>" + intel + "</yellow> for the fight. Consumed on first use.");
 		PotionMeta meta = (PotionMeta) item.getItemMeta();
 		meta.setColor(Color.fromRGB(0, 0, 255));
 		item.setItemMeta(meta);

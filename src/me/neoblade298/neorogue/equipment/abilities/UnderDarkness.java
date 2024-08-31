@@ -44,11 +44,6 @@ public class UnderDarkness extends Equipment {
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 0, 10, 0));
 		damage = isUpgraded ? 10 : 6;
 	}
-
-	@Override
-	public void setupReforges() {
-		addSelfReforge(Darkness.get(), AcidBomb.get());
-	}
 	
 	public static Equipment get() {
 		return Equipment.get(ID, false);

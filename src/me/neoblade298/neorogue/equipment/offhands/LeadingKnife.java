@@ -102,7 +102,7 @@ public class LeadingKnife extends Equipment {
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
-			weaponDamageProjectile(hit.getEntity(), proj, hitBarrier);
+			weaponDamageProjectile(hit.getEntity(), proj, hitBarrier, false);
 			Location loc = hit.getEntity().getLocation();
 			LeadingKnife.hit.play(p, loc);
 			inst.marked = hit.getEntity();

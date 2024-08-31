@@ -12,7 +12,7 @@ public class StandardPriorityAction extends PriorityAction {
 	public StandardPriorityAction(String id, TriggerAction action) {
 		super(id, action);
 	}
-	private long nextUse;
+	private long nextUse, time;
 	private int count;
 	
 	public void setCount(int count) {
@@ -33,5 +33,13 @@ public class StandardPriorityAction extends PriorityAction {
 	
 	public boolean canUse() {
 		return System.currentTimeMillis() >= nextUse;
+	}
+
+	public void setTime(long time) {
+		this.time = time;
+	}
+	
+	public long getTime() {
+		return time;
 	}
 }

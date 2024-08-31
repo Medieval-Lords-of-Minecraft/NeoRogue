@@ -25,7 +25,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Cripple extends Equipment {
 	private static final String ID = "cripple";
-	private int reduc;
+	private int inc;
 	private static final ParticleContainer part = new ParticleContainer(Particle.CRIT).offsetForward(2).count(10).spread(2.5, 0.2);
 	private static final TargetProperties tp = TargetProperties.cone(90, 5, false, TargetType.ENEMY);
 	
@@ -33,7 +33,7 @@ public class Cripple extends Equipment {
 		super(ID, "Cripple", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 10, 15, tp.range));
 		
-		reduc = isUpgraded ? 8 : 5;
+		inc = isUpgraded ? 21 : 14;
 	}
 
 	@Override
@@ -51,7 +51,7 @@ public class Cripple extends Equipment {
 			Sounds.attackSweep.play(p, p);
 			part.play(p, p);
 			for (LivingEntity ent : TargetHelper.getEntitiesInCone(p, tp)) {
-				FightInstance.getFightData(ent).addBuff(data, UUID.randomUUID().toString(), true, false, BuffType.PHYSICAL, -reduc, 10);
+				FightInstance.getFightData(ent).addBuff(data, UUID.randomUUID().toString(), true, false, BuffType.PHYSICAL, inc, 100);
 			}
 			return TriggerResult.keep();
 		}));
@@ -60,7 +60,7 @@ public class Cripple extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ARMOR_STAND,
-				"On cast, reduce the " + GlossaryTag.PHYSICAL.tag(this) + " damage of enemies in a cone in front of you by <yellow>" + reduc + "</yellow>"
-						+ " for <white>10</white> seconds.");
+				"On cast, increase the " + GlossaryTag.PHYSICAL.tag(this) + " damage taken of enemies in a cone in front of you by <yellow>" + inc + "</yellow>"
+						+ " for <white>5</white> seconds.");
 	}
 }

@@ -57,7 +57,7 @@ public class Overload extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GLOWSTONE_DUST,
-				"On kill, deal " + GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage + the number of "
+				"Passive. On kill, deal " + GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage + the number of "
 				+ GlossaryTag.ELECTRIFIED.tag(this) + " stacks the killed enemy has multiplied by <white>5</white> in an area.");
 	}
 }

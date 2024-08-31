@@ -78,11 +78,11 @@ public class LabChance extends ChanceSet {
 						}
 					}
 					else {
+						s.broadcast("Somehow you all make it out alive as <yellow>" + data.getData().getDisplay() + "</yellow> wildly and maniacally mixes potions. You left the disgusting"
+								+ " mix at the lab, but in the progress found an artifact on the table behind one of the potions they took.");
 						for (PlayerSessionData pd : s.getParty().values()) {
 							pd.giveEquipment(Equipment.getArtifact(pd.getArtifactDroptable(), s.getAreasCompleted(), 1, EquipmentClass.CLASSLESS, pd.getPlayerClass()));
 						}
-						s.broadcast("Somehow you all make it out alive as <yellow>" + data.getData().getDisplay() + "</yellow> wildly and maniacally mixes potions. You left the disgusting"
-								+ " mix at the lab, but in the progress found an artifact on the table behind one of the potions they took.");
 					}
 					return null;
 				});

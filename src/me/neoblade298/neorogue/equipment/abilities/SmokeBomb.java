@@ -41,7 +41,7 @@ public class SmokeBomb extends Equipment {
 
 	@Override
 	public void setupReforges() {
-		addSelfReforge(Darkness.get(), AcidBomb.get());
+		addSelfReforge(Darkness.get(), AcidBomb.get(), UnderDarkness.get());
 	}
 	
 	public static Equipment get() {
