@@ -14,7 +14,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 
 public class BlindingCloak extends Equipment {
 	private static final String ID = "blindingCloak";
-	private double shields;
+	private int shields;
 	
 	public BlindingCloak(boolean isUpgraded) {
 		super(ID, "Blinding Cloak", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,

@@ -35,6 +35,8 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class TreeTrunk extends Equipment {
 	private static final String ID = "treeTrunk";
@@ -62,7 +64,7 @@ public class TreeTrunk extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		if (data.getSessionData().getEquipment(EquipSlot.OFFHAND)[0] != null) {
-			Util.displayError(p, "Tree Trunk couldn't be equipped as you have equipment in your offhand!");
+			Util.msg(p, display.append(Component.text("  couldn't be equipped as you have equipment in your offhand!", NamedTextColor.RED)));
 			p.getInventory().setItem(slot, null);
 			return;
 		}

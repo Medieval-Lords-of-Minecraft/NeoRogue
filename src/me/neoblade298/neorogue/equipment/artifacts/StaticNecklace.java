@@ -57,7 +57,7 @@ public class StaticNecklace extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LEAD, 
-				GlossaryTag.LIGHTNING.tag(this) + " is increased by <white>0.1</white> for each stack of " + 
+				GlossaryTag.LIGHTNING.tag(this) + " damage is increased by <white>0.1</white> for each stack of " + 
 				GlossaryTag.ELECTRIFIED.tag(this) + " on the target.");
 	}
 }

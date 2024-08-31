@@ -47,6 +47,7 @@ import me.neoblade298.neorogue.equipment.armor.LeatherChestplate;
 import me.neoblade298.neorogue.equipment.armor.LeatherCowl;
 import me.neoblade298.neorogue.equipment.armor.LeatherHelmet;
 import me.neoblade298.neorogue.equipment.armor.LeatherHood;
+import me.neoblade298.neorogue.equipment.armor.LightningCloak;
 import me.neoblade298.neorogue.equipment.armor.NullMagicMantle;
 import me.neoblade298.neorogue.equipment.armor.SpikedPauldrons;
 import me.neoblade298.neorogue.equipment.artifacts.*;
@@ -124,7 +125,9 @@ public abstract class Equipment implements Comparable<Equipment> {
 			// Abilities
 			new Adrenaline(b);
 			new AcidBomb(b);
+			new Assassinate(b);
 			new Atone(b);
+			new Atrophy(b);
 			new BattleCry(b);
 			new BerserkersCall(b);
 			new BlessedEdge(b);
@@ -164,22 +167,28 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new EscapePlan2(b);
 			new Execute(b);
 			new ExploitWeakness(b);
+			new Expunge(b);
 			new Fade(b);
 			new Ferocity(b);
 			new Fissure(b);
 			new FivePointStrike(b);
+			new FlowState(b);
+			new FlowState2(b);
 			new Flurry(b);
 			new Focus(b);
 			new FormAPlan(b);
 			new Fortify(b);
 			new Frenzy(b);
 			new Fury(b);
+			new GatheringShadows(b);
+			new GatheringShadows2(b);
 			new GraniteShield(b);
 			new HoldTheLine(b);
 			new Initiator(b);
+			new ShadowImbuement(b);
 			new IronCuirass(b);
 			new Ironskin(b);
-			new LeadingKnife(b);
+			new Lethality(b);
 			new LightningCutter(b);
 			new LightningRush(b);
 			new Maim(b);
@@ -196,6 +205,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Provoke(b);
 			new Revenge(b);
 			new Roar(b);
+			new Rushdown(b);
 			new Quake(b);
 			new ShadowWalk(b);
 			new Sidestep(b);
@@ -216,6 +226,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new TreeTrunk(b);
 			new TwinShiv(b);
 			new Vanish(b);
+			new VitalPierce(b);
 			new WarCry(b);
 			new Warmup(b);
 			new WeaponEnchantmentElectrified(b);
@@ -247,6 +258,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new LeatherChestplate(b);
 			new LeatherHelmet(b);
 			new LeatherHood(b);
+			new LightningCloak(b);
 			new NullMagicMantle(b);
 			new SpikedPauldrons(b);
 
@@ -254,6 +266,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new ChasingDagger(b);
 			new HastyShield(b);
 			new InsanityPowder(b);
+			new LeadingKnife(b);
 			new LeatherBracer(b);
 			new PaladinsShield(b);
 			new PocketWatch(b);
@@ -290,6 +303,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new LightLeatherGauntlets(b);
 			new LightningWand(b);
 			new MassiveHalberd(b);
+			new MirrorSickle(b);
 			new Rapier(b);
 			new Razor(b);
 			new SerratedRazor(b);

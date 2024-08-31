@@ -35,7 +35,7 @@ public class WeaponEnchantmentElectrified extends Equipment {
 	private static final ParticleContainer tick = new ParticleContainer(Particle.FIREWORKS_SPARK).count(5).speed(0.02);
 	
 	public WeaponEnchantmentElectrified(boolean isUpgraded) {
-		super(ID, "Weapon Enchantment: Electrified", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
+		super(ID, "Weapon Enchantment: Electrified", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 3, RANGE));
 		damage = isUpgraded ? 60 : 40;
 		elec = isUpgraded ? 12 : 8;

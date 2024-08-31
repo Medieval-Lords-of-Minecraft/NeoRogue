@@ -45,7 +45,7 @@ public class EvasiveKnife extends Equipment {
 		StandardPriorityAction act = new StandardPriorityAction(id);
 		act.setAction((pdata, in) -> {
 			LeftClickHitEvent ev = (LeftClickHitEvent) in;
-			DamageMeta dm = new DamageMeta(pdata, base + (data.getStamina() >= stam ? dmg : 0), null);
+			DamageMeta dm = new DamageMeta(pdata, base + (data.getStamina() >= stam ? dmg : 0), DamageType.SLASHING);
 			weaponSwingAndDamage(p, data, ev.getTarget(), dm);
 			
 			act.addCount(1);
@@ -61,7 +61,7 @@ public class EvasiveKnife extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.STONE_SWORD, "Deal an additional <yellow>" + dmg + "</yellow> damage if above "
-				+ "<yellow>" + stam + "</yellow> stamina. Additionally, every <yellow>" + hits + " basic attacks grants "
+				+ "<yellow>" + stam + "</yellow> stamina. Additionally, every <yellow>" + hits + " </yellow>basic attacks grants "
 				+ GlossaryTag.EVADE.tag(this, 1, false) + " [<white>3s</white>].");
 	}
 }

@@ -46,7 +46,7 @@ public class HiddenRazor extends Equipment {
 				LeftClickHitEvent ev = (LeftClickHitEvent) in;
 				if (!data.hasStatus(StatusType.STEALTH)) return TriggerResult.keep();
 				weaponSwingAndDamage(p, data, ev.getTarget());
-				if (++count >= 5) {
+				if (++count >= 3) {
 					data.applyStatus(StatusType.STEALTH, data, -1, -1);
 					Sounds.extinguish.play(p, p);
 					count = 0;
@@ -60,6 +60,6 @@ public class HiddenRazor extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.STONE_HOE, "Requires " + GlossaryTag.STEALTH.tag(this) + " to be used. Reduces your "
-				+ GlossaryTag.STEALTH.tag(this) + " by <white>1</white> every <white>5th</white> hit.");
+				+ GlossaryTag.STEALTH.tag(this) + " by <white>1</white> every <white>3rd</white> hit.");
 	}
 }

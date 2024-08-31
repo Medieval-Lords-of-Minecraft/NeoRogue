@@ -16,7 +16,7 @@ public class MinorStaminaRelic extends Equipment {
 		super(ID, "Minor Stamina Relic", isUpgraded, Rarity.COMMON, 
 				new EquipmentClass[] {EquipmentClass.WARRIOR, EquipmentClass.THIEF},
 				EquipmentType.ACCESSORY);
-		regen = isUpgraded ? 1.5 : 1;
+		regen = isUpgraded ? 0.8 : 0.5;
 	}
 	
 	public static Equipment get() {

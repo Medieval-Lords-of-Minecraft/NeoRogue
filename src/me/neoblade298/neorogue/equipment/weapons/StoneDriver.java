@@ -15,7 +15,6 @@ import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class StoneDriver extends Equipment {
 	private static final String ID = "stoneDriver";
-	private int stam;
 	public StoneDriver(boolean isUpgraded) {
 		super(ID, "Stone Driver", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
@@ -44,6 +43,6 @@ public class StoneDriver extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STONE_SWORD, "Costs <yellow>" + stam + "</yellow> stamina to use.");
+		item = createItem(Material.STONE_SWORD);
 	}
 }

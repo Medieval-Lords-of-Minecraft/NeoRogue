@@ -32,9 +32,9 @@ public class Contaminate extends Equipment {
 	
 	public Contaminate(boolean isUpgraded) {
 		super(ID, "Contaminate", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 20, 15, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 40, 18, 0));
 		pc.count(50).spread(0.5, 0.5).offsetY(1);
-		mult = isUpgraded ? 2 : 1.5;
+		mult = isUpgraded ? 1.5 : 1.2;
 	}
 	
 	public static Equipment get() {
@@ -44,8 +44,9 @@ public class Contaminate extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POISONOUS_POTATO,
-				"On cast, Grant speed <white>1</white> and " + GlossaryTag.STEALTH.tag(this) + " for <white>3</white> seconds. "
-				+ "Your next basic attack deals an additional " + GlossaryTag.PIERCING.tag(this, damage, false) + " damage and multiplies existing stacks of "
+				"On cast, Grant speed <white>1</white> and " + GlossaryTag.STEALTH.tag(this) +
+				" [<white>5s</white>]. "
+				+ "Your next <white>3</white> basic attacks deal an additional " + GlossaryTag.PIERCING.tag(this, damage, false) + " damage and multiply existing stacks of "
 				+ GlossaryTag.POISON.tag(this) + " on the enemy hit by <yellow>" + mult + "</yellow>, rounded down. "
 				+ GlossaryTag.POISON.tag(this) + " duration is refreshed by <white>3s</white>.");
 	}
@@ -58,7 +59,7 @@ public class Contaminate extends Equipment {
 			pc.play(p, p);
 			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 60, 0));
 			data.applyStatus(StatusType.STEALTH, data, 1, 60);
-			inst.addCount(1);
+			inst.addCount(3);
 			return TriggerResult.keep();
 		});
 		

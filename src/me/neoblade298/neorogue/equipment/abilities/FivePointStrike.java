@@ -33,7 +33,7 @@ public class FivePointStrike extends Equipment {
 		super(ID, "Five Point Strike", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 25, 10, 4));
 		
-		damage = isUpgraded ? 180 : 140;
+		damage = isUpgraded ? 60 : 40;
 		for (int i = 0; i < 5; i++) {
 			projs.add(new FivePointStrikeProjectile(i));
 		}

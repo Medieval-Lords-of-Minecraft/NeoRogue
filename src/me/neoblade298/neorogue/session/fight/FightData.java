@@ -175,10 +175,7 @@ public class FightData {
 		Collections.sort(list, Status.comp);
 		String statuses = "";
 		for (int i = 0; i < list.size() && i < 5; i++) {
-			if (list.get(i).isHidden()) {
-				i--;
-				continue;
-			}
+			if (list.get(i).isHidden()) continue;
 			statuses += list.get(i).getDisplay() + "\\n";
 		}
 		am.setDisplayName(list.isEmpty() ? bottomLine : statuses + bottomLine);
@@ -325,7 +322,7 @@ public class FightData {
 	}
 	
 	public void applyStatus(Status s, FightData applier, int stacks, int ticks) {
-		applyStatus(s, applier, stacks, ticks);
+		applyStatus(s, applier, stacks, ticks, null);
 	}
 	
 	public void applyStatus(StatusType type, FightData applier, int stacks, int ticks) {
@@ -346,7 +343,7 @@ public class FightData {
 		applyStatus(s, applier, stacks, ticks, meta);
 	}
 	
-	protected void applyStatus(Status s, FightData applier, int stacks, int ticks, DamageMeta meta) {
+	public void applyStatus(Status s, FightData applier, int stacks, int ticks, DamageMeta meta) {
 		if (!entity.isValid()) return;
 		String id = s.getId();
 		ApplyStatusEvent ev = new ApplyStatusEvent(this, id, stacks, ticks, s.getStatusClass(), meta);

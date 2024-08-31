@@ -33,8 +33,8 @@ public class LeadingKnife extends Equipment {
 	// Todo: Check if I need additional conditions for attack cooldown, add stamina mark
 	public LeadingKnife(boolean isUpgraded) {
 		super(ID, "Leading Knife", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
-				EquipmentType.OFFHAND, EquipmentProperties.ofWeapon(10, 0.5, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
-		stamina = isUpgraded ? 5 : 3;
+				EquipmentType.OFFHAND, EquipmentProperties.ofRangedWeapon(10, 0.5, 0, 10, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
+		stamina = isUpgraded ? 6 : 4;
 	}
 	
 	public static Equipment get() {

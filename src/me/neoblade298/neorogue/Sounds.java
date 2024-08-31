@@ -14,6 +14,7 @@ public class Sounds {
 			blazeDeath = new SoundContainer(Sound.ENTITY_BLAZE_DEATH),
 			attackSweep = new SoundContainer(Sound.ENTITY_PLAYER_ATTACK_SWEEP),
 			equip = new SoundContainer(Sound.ITEM_ARMOR_EQUIP_CHAIN),
+			infect = new SoundContainer(Sound.ENTITY_ZOMBIE_INFECT),
 			jump = new SoundContainer(Sound.ENTITY_SHULKER_SHOOT),
 			success = new SoundContainer(Sound.ENTITY_ARROW_HIT_PLAYER),
 			fire = new SoundContainer(Sound.ENTITY_BLAZE_SHOOT),

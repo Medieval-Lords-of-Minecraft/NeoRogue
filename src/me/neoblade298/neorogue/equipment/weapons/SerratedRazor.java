@@ -22,14 +22,14 @@ import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class SerratedRazor extends Equipment {
 	private static final String ID = "serratedRazor";
-	private static int base = 12;
+	private static int base = 15;
 	private int bonus;
 	
 	public SerratedRazor(boolean isUpgraded) {
 		super(ID, "Serrated Razor", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(base, 3, 0.2, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
-		bonus = isUpgraded ? 50 : 30;
+		bonus = isUpgraded ? 80 : 50;
 	}
 	
 	public static Equipment get() {
@@ -49,7 +49,7 @@ public class SerratedRazor extends Equipment {
 			action = (data, in) -> {
 				Player p = data.getPlayer();
 				LeftClickHitEvent ev = (LeftClickHitEvent) in;
-				if (++count >= 5) {
+				if (++count >= 3) {
 					FightData fd = FightInstance.getFightData(ev.getTarget());
 					boolean canBonus = fd.hasStatus(StatusType.POISON) || fd.hasStatus(StatusType.INSANITY);
 					DamageMeta dm = new DamageMeta(data, base + (canBonus ? bonus : 0), DamageType.PIERCING);
@@ -69,7 +69,7 @@ public class SerratedRazor extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.WOODEN_HOE, "Every <white>5</white> basic attacks, deal an additional <yellow>" + bonus + "</yellow"
+		item = createItem(Material.WOODEN_HOE, "Every <white>3</white> basic attacks, deal an additional <yellow>" + bonus + "</yellow>"
 				+ " damage if the target has " + GlossaryTag.POISON.tag(this) + " or " + GlossaryTag.INSANITY.tag(this) + ", and "
 						+ "your attack cooldown is set to <white>3</white> seconds.");
 	}

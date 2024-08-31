@@ -27,7 +27,7 @@ public class StoneDagger extends Equipment {
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(isUpgraded ? 30 : 25, 1.5, 0.2, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
 		properties.addUpgrades(PropertyType.DAMAGE);
-		damage = isUpgraded ? 30 : 25;
+		damage = isUpgraded ? 10 : 6;
 	}
 	
 	public static Equipment get() {

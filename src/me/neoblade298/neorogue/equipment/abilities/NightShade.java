@@ -30,9 +30,9 @@ public class NightShade extends Equipment {
 	
 	public NightShade(boolean isUpgraded) {
 		super(ID, "Night Shade", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 20, 6, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 45, 12, 0));
 		pc.count(50).spread(0.5, 0.5).offsetY(1);
-		insanity = isUpgraded ? 9 : 6;
+		insanity = isUpgraded ? 50 : 30;
 	}
 	
 	public static Equipment get() {
@@ -43,8 +43,8 @@ public class NightShade extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.OBSIDIAN,
 				"On cast, Grant speed <white>1</white> and " + GlossaryTag.STEALTH.tag(this) +
-				" for <white>3</white> seconds. "
-				+ "Your next basic attack deals an additional " + GlossaryTag.DARK.tag(this, damage, false) + " damage and applies " +
+				" [<white>5s</white>]. "
+				+ "Your next <white>3</white> basic attacks deals an additional " + GlossaryTag.DARK.tag(this, damage, false) + " damage and applies " +
 				GlossaryTag.INSANITY.tag(this, insanity, true) + ". "
 				+ "The cooldown of this ability is reduced by your " + GlossaryTag.STEALTH.tag(this)
 				+ " stacks every second.");
@@ -56,9 +56,9 @@ public class NightShade extends Equipment {
 		inst.setAction((pdata, in) -> {
 			Sounds.teleport.play(p, p);
 			pc.play(p, p);
-			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 60, 0));
-			data.applyStatus(StatusType.STEALTH, data, 1, 60);
-			inst.addCount(1);
+			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 100, 0));
+			data.applyStatus(StatusType.STEALTH, data, 1, 100);
+			inst.addCount(3);
 			return TriggerResult.keep();
 		});
 		

@@ -32,7 +32,7 @@ public class Overload extends Equipment {
 	
 	public Overload(boolean isUpgraded) {
 		super(ID, "Overload", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, tp.range));
 		
 		damage = isUpgraded ? 40 : 30;
 	}
@@ -58,6 +58,6 @@ public class Overload extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.GLOWSTONE_DUST,
 				"On kill, deal " + GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage + the number of "
-				+ GlossaryTag.ELECTRIFIED.tag(this) + " stacks the killed enemy has multiplied by <white>5</white>.");
+				+ GlossaryTag.ELECTRIFIED.tag(this) + " stacks the killed enemy has multiplied by <white>5</white> in an area.");
 	}
 }

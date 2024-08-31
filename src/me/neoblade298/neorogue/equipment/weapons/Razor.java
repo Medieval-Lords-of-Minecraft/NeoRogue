@@ -22,7 +22,7 @@ public class Razor extends Equipment {
 	public Razor(boolean isUpgraded) {
 		super(ID, "Razor", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(isUpgraded ? 10 : 7, 3, 0.2, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
+				EquipmentProperties.ofWeapon(isUpgraded ? 15 : 10, 3, 0.2, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
 		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 
@@ -49,7 +49,7 @@ public class Razor extends Equipment {
 				Player p = data.getPlayer();
 				LeftClickHitEvent ev = (LeftClickHitEvent) in;
 				weaponSwingAndDamage(p, data, ev.getTarget());
-				if (++count >= 5) {
+				if (++count >= 3) {
 					data.setBasicAttackCooldown(EquipSlot.HOTBAR, 3000L);
 					Sounds.extinguish.play(p, p);
 					count = 0;
@@ -62,6 +62,6 @@ public class Razor extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.WOODEN_HOE, "Every <white>5</white> basic attacks, your attack cooldown is set to <white>3</white> seconds.");
+		item = createItem(Material.WOODEN_HOE, "Every <white>3</white> basic attacks, your attack cooldown is set to <white>3</white> seconds.");
 	}
 }

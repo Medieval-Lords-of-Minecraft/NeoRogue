@@ -32,7 +32,7 @@ public class HiddenBlade extends Artifact {
 		data.addTrigger(id, Trigger.RECEIVE_STATUS, (pdata, in) -> {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
 			if (!ev.isStatus(StatusType.STEALTH)) return TriggerResult.keep();
-			data.addBuff(data, ID, true, true, BuffType.GENERAL, 0.25, 60);
+			data.addBuff(data, ID, true, true, BuffType.GENERAL, 0.15, 40);
 			return TriggerResult.keep();
 		});
 	}
@@ -50,6 +50,6 @@ public class HiddenBlade extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.IRON_SHOVEL, 
-				"Going into " + GlossaryTag.STEALTH.tag(this) + " grants <white>25%</white> damage for <white>3s</white>.");
+				"Going into " + GlossaryTag.STEALTH.tag(this) + " grants <white>15%</white> damage for <white>2s</white>.");
 	}
 }

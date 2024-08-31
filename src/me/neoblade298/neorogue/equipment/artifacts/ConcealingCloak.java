@@ -82,7 +82,7 @@ public class ConcealingCloak extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION, 
-				"Not taking or dealing damage for <white>2<white> seconds increases your "
+				"Not taking or dealing damage for <white>2</white> seconds increases your "
 				+ "mana and stamina regen by <white>20%</white> of their base.");
 	}
 }

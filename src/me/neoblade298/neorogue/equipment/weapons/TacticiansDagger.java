@@ -23,8 +23,8 @@ public class TacticiansDagger extends Equipment {
 	public TacticiansDagger(boolean isUpgraded) {
 		super(ID, "Tactician's Dagger", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(20, 1, 0.2, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
-		damage = isUpgraded ? 60 : 40;
+				EquipmentProperties.ofWeapon(30, 1, 0.2, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
+		damage = isUpgraded ? 120 : 80;
 	}
 	
 	public static Equipment get() {
@@ -43,7 +43,7 @@ public class TacticiansDagger extends Equipment {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
 			DamageMeta dm;
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
-			if (inst.getTime() + 3000 >= System.currentTimeMillis()) {
+			if (inst.getTime() + 2000 >= System.currentTimeMillis()) {
 				dm = new DamageMeta(data, 20, DamageType.PIERCING);
 			}
 			else {
@@ -57,6 +57,6 @@ public class TacticiansDagger extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GOLDEN_SWORD, "Deal an additional " + GlossaryTag.PIERCING.tag(this, damage, true) + " if "
-				+ "you haven't dealt " + GlossaryTag.GENERAL.tag(this) + " damage in <white>3</white> seconds.");
+				+ "you haven't dealt " + GlossaryTag.GENERAL.tag(this) + " damage in <white>2</white> seconds.");
 	}
 }

@@ -24,7 +24,7 @@ public class ButterflyKnife2 extends Equipment {
 				EquipmentProperties.ofWeapon(base, 1.25, 0.2, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
 		
 		dmg = isUpgraded ? 40 : 25;
-		stam = isUpgraded ? 50 : 40;
+		stam = isUpgraded ? 40 : 50;
 	}
 	
 	public static Equipment get() {
@@ -35,7 +35,7 @@ public class ButterflyKnife2 extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
-			DamageMeta dm = new DamageMeta(pdata, base + (data.getStamina() >= stam ? dmg : 0), null);
+			DamageMeta dm = new DamageMeta(pdata, base + (data.getStamina() >= stam ? dmg : 0), DamageType.SLASHING);
 			weaponSwingAndDamage(p, data, ev.getTarget(), dm);
 			return TriggerResult.keep();
 		});

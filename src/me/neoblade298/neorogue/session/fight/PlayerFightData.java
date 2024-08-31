@@ -257,7 +257,7 @@ public class PlayerFightData extends FightData {
 	}
 	
 	@Override
-	protected void applyStatus(Status s, FightData applier, int stacks, int seconds, DamageMeta meta) {
+	public void applyStatus(Status s, FightData applier, int stacks, int seconds, DamageMeta meta) {
 		if (isDead) return;
 		super.applyStatus(s, applier, stacks, seconds, meta);
 	}

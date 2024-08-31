@@ -29,7 +29,7 @@ public class Sidestep extends Equipment {
 	
 	public Sidestep(boolean isUpgraded) {
 		super(ID, "Sidestep", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 20, 15, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 50, 15, 0));
 		pc.count(50).spread(0.5, 0.5).offsetY(1);
 		evade = isUpgraded ? 2 : 1;
 	}
@@ -41,9 +41,9 @@ public class Sidestep extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.OBSIDIAN,
-				"On cast, Grant speed <white>1</white> and " + GlossaryTag.STEALTH.tag(this) + " for <white>3</white> seconds. "
-				+ "Also grant " + GlossaryTag.EVADE.tag(this, evade, true) + " for <white>5</white> seconds. "
-				+ "Your next basic attack deals an additional " + GlossaryTag.PIERCING.tag(this, damage, false) + " damage. "
+				"On cast, Grant speed <white>1</white> and " + GlossaryTag.STEALTH.tag(this) +
+				" [<white>5s</white>], and " + GlossaryTag.EVADE.tag(this, evade, true) + " [<white>10s</white>]. "
+				+ "Your next <white>3</white> basic attacks deal an additional " + GlossaryTag.PIERCING.tag(this, damage, false) + " damage. "
 				+ "The cooldown of this ability is reduced by your " + GlossaryTag.STEALTH.tag(this)
 				+ " stacks every second.");
 	}
@@ -54,10 +54,10 @@ public class Sidestep extends Equipment {
 		inst.setAction((pdata, in) -> {
 			Sounds.teleport.play(p, p);
 			pc.play(p, p);
-			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 60, 0));
-			data.applyStatus(StatusType.STEALTH, data, 1, 60);
+			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 100, 0));
+			data.applyStatus(StatusType.STEALTH, data, 1, 100);
 			data.applyStatus(StatusType.EVADE, data, evade, 200);
-			inst.addCount(1);
+			inst.addCount(3);
 			return TriggerResult.keep();
 		});
 		

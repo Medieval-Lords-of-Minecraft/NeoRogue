@@ -30,7 +30,7 @@ public class ShadowWalk extends Equipment {
 	
 	public ShadowWalk(boolean isUpgraded) {
 		super(ID, "Shadow Walk", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(5, 10, isUpgraded ? 6 : 8, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 20, isUpgraded ? 12 : 15, 0));
 		properties.addUpgrades(PropertyType.COOLDOWN);
 		pc.count(50).spread(0.5, 0.5).offsetY(1);
 	}
@@ -48,8 +48,8 @@ public class ShadowWalk extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.RABBIT_FOOT,
 				"On cast, Grant speed <white>1</white> and " + GlossaryTag.STEALTH.tag(this) +
-				" for <white>3</white> seconds. "
-				+ "Your next basic attack deals an additional " + GlossaryTag.PIERCING.tag(this, damage, false) + " damage. "
+				" [<white>5s</white>]. "
+				+ "Your next <white>3</white> basic attacks deal an additional " + GlossaryTag.PIERCING.tag(this, damage, false) + " damage. "
 				+ "The cooldown of this ability is reduced by your " + GlossaryTag.STEALTH.tag(this)
 				+ " stacks every second.");
 	}
@@ -60,9 +60,9 @@ public class ShadowWalk extends Equipment {
 		inst.setAction((pdata, in) -> {
 			Sounds.teleport.play(p, p);
 			pc.play(p, p);
-			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 60, 0));
-			data.applyStatus(StatusType.STEALTH, data, 1, 60);
-			inst.addCount(1);
+			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 100, 0));
+			data.applyStatus(StatusType.STEALTH, data, 1, 100);
+			inst.addCount(3);
 			return TriggerResult.keep();
 		});
 		
