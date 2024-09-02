@@ -429,7 +429,8 @@ public class SessionManager implements Listener {
 		}
 		if (!(s.getInstance() instanceof FightInstance)) return;
 		
-		FightInstance.handleRightClickArmorStand(e);
+		e.setCancelled(true);
+		FightInstance.handleClickArmorStand(p, e.getRightClicked());
 	}
 	
 	private static EquipmentSlot canEquip(ItemStack item) {

@@ -605,7 +605,7 @@ public class PlayerSessionData {
 		boardLines.add("§8§m-----");
 		for (PlayerSessionData psd : s.getParty().values()) {
 			if (psd == this) continue;
-			boardLines.add("§e" + psd.getData().getDisplay() + "§7: §f" + Math.round(psd.getHealth()));
+			boardLines.add("§e" + psd.getData().getDisplay() + "§7: §f" + Math.round(psd.getHealth()) + "§c♥");
 		}
 	}
 

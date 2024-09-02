@@ -11,7 +11,7 @@ import me.neoblade298.neorogue.session.fight.FightInstance;
 
 public class MechanicStatus implements ITargetedEntitySkill {
 	protected final String id;
-	protected final int stacks, seconds;
+	protected final int stacks, ticks;
 
     @Override
     public ThreadSafetyLevel getThreadSafetyLevel() {
@@ -21,13 +21,13 @@ public class MechanicStatus implements ITargetedEntitySkill {
 	public MechanicStatus(MythicLineConfig config) {
 		this.id = config.getString("id");
         this.stacks = config.getInteger(new String[] { "a", "amount" }, 0);
-        this.seconds = config.getInteger(new String[] { "s", "seconds" }, 0);
+        this.ticks = config.getInteger(new String[] { "t", "ticks" }, 0);
 	}
 
 	@Override
     public SkillResult castAtEntity(SkillMetadata data, AbstractEntity target) {
 		try {
-			FightInstance.applyStatus((LivingEntity) target.getBukkitEntity(), id, (LivingEntity) data.getCaster().getEntity().getBukkitEntity(), stacks, seconds);
+			FightInstance.applyStatus((LivingEntity) target.getBukkitEntity(), id, (LivingEntity) data.getCaster().getEntity().getBukkitEntity(), stacks, ticks);
 			return SkillResult.SUCCESS;
 		} catch (Exception e) {
 			e.printStackTrace();

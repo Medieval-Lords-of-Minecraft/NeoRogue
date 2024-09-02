@@ -161,6 +161,8 @@ public class PlayerSessionSpectateInventory extends CoreInventory {
 	}
 
 	private static ItemStack createStatsIcon(PlayerSessionData data) {
+		TextComponent cls = Component.text("Class: ", NamedTextColor.GOLD)
+				.append(Component.text(data.getPlayerClass().getDisplay(), NamedTextColor.WHITE));
 		TextComponent health = Component.text("Health: ", NamedTextColor.GOLD)
 				.append(Component.text(df.format(data.getHealth()) + " / " + data.getMaxHealth(), NamedTextColor.WHITE));
 		TextComponent mana = Component.text("Max Mana: ", NamedTextColor.GOLD)
@@ -173,7 +175,7 @@ public class PlayerSessionSpectateInventory extends CoreInventory {
 				.append(Component.text(df.format(data.getStaminaRegen()), NamedTextColor.WHITE));
 		TextComponent coins = Component.text("Coins: ", NamedTextColor.GOLD)
 				.append(Component.text(data.getCoins(), NamedTextColor.WHITE));
-		return CoreInventory.createButton(Material.ARMOR_STAND, statsText, health, mana, stamina, mr, sr, coins);
+		return CoreInventory.createButton(Material.ARMOR_STAND, statsText, cls, health, mana, stamina, mr, sr, coins);
 	}
 
 	@Override

@@ -32,7 +32,6 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
@@ -297,6 +296,13 @@ public abstract class FightInstance extends Instance {
 			return;
 		if (e.getAttacked() instanceof Player) return;
 		if (!e.getAttacked().isValid()) return;
+		
+		// Revive logic
+		if (e.getAttacked().getType() == EntityType.ARMOR_STAND) {
+			FightInstance.handleClickArmorStand(p, e.getAttacked());
+			return;
+		}
+		
 		if (!data.canBasicAttack())
 			return;
 		trigger(p, Trigger.LEFT_CLICK_HIT, new LeftClickHitEvent((LivingEntity) e.getAttacked()));
@@ -362,15 +368,13 @@ public abstract class FightInstance extends Instance {
 		trigger(e.getPlayer(), Trigger.TOGGLE_SPRINT, e);
 	}
 
-	public static void handleRightClickArmorStand(PlayerInteractAtEntityEvent e) {
-		Player p = e.getPlayer();
+	public static void handleClickArmorStand(Player p, Entity armorStand) {
 		PlayerFightData data = userData.get(p.getUniqueId());
 		FightInstance fi = data.getInstance();
-		e.setCancelled(true);
 		if (data == null || data.isDead())
 			return;
 		for (Corpse c : fi.corpses) {
-			if (c.hitCorpse(e.getRightClicked())) {
+			if (c.hitCorpse(armorStand)) {
 				if (fi.revivers.containsKey(p)) {
 					Util.displayError(p, "You're already reviving someone!");
 					return;
@@ -428,11 +432,17 @@ public abstract class FightInstance extends Instance {
 				p, "You started reviving <yellow>" + dead.getName() + "</yellow>. Stay near their body for 5 seconds!"
 		);
 		Util.msg(dead, "You are being revived by <yellow>" + p.getName());
+		s.broadcastOthers(SharedUtil.color("<yellow>" + p.getName() + "</yellow> is reviving <yellow>" + dead.getName() + "</yellow>!"), p);
 		dead.teleport(corpse.corpseDisplay);
 
-		BossBar reviveBar = Bukkit.createBossBar("Reviving: §e" + dead.getName(), BarColor.BLUE, BarStyle.SOLID);
-		reviveBar.addPlayer(p);
-		reviveBar.addPlayer(dead);
+		BossBar reviveBar = Bukkit.createBossBar("§e" + p.getName() + " &fReviving §e" + dead.getName(), BarColor.BLUE, BarStyle.SOLID);
+		for (Player party : s.getOnlinePlayers()) {
+			reviveBar.addPlayer(party);
+		}
+		for (UUID uuid : s.getSpectators()) {
+			Player spec = Bukkit.getPlayer(uuid);
+			if (p != null) reviveBar.addPlayer(spec);
+		}
 		corpse.bar = reviveBar;
 		cleanupTasks.add(new BukkitRunnable() {
 			@Override
@@ -1083,7 +1093,7 @@ public abstract class FightInstance extends Instance {
 			corpseDisplay = w.spawnEntity(loc, EntityType.ARMOR_STAND);
 			PlayerDisguise dis = new PlayerDisguise(p);
 			dis.getWatcher().setSleeping(true);
-			dis.setName(p.getName() + " (Right click to Revive)");
+			dis.setName(p.getName() + " (Click to Revive)");
 			dis.setEntity(corpseDisplay);
 			dis.getWatcher().setGlowing(true);
 			dis.startDisguise();

@@ -329,6 +329,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new WoodenDagger(b);
 			new WoodenSword(b);
 			new WoodenWand(b);
+			
+			new Neoblade(b);
 
 			// Consumables
 			new MinorHealthPotion(b);

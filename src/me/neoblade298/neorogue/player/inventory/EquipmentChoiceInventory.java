@@ -25,6 +25,16 @@ public class EquipmentChoiceInventory extends CoreInventory {
 
 	public EquipmentChoiceInventory(PlayerSessionData data, Inventory inv, ArrayList<Equipment> equips, RewardInventory prev, int prevSlot) {
 		super(data.getPlayer(), inv);
+		setup(data, inv, equips, prev, prevSlot);
+	}
+
+	public EquipmentChoiceInventory(PlayerSessionData data, Inventory inv, ArrayList<Equipment> equips, RewardInventory prev, int prevSlot, Player spectator) {
+		super(spectator, inv);
+		setup(data, inv, equips, prev, prevSlot);
+		this.spectator = spectator;
+	}
+	
+	private void setup(PlayerSessionData data, Inventory inv, ArrayList<Equipment> equips, RewardInventory prev, int prevSlot) {
 		this.data = data;
 		this.prev = prev;
 		this.prevSlot = prevSlot;
@@ -35,12 +45,6 @@ public class EquipmentChoiceInventory extends CoreInventory {
 		}
 		inv.setContents(contents);
 	}
-
-	public EquipmentChoiceInventory(PlayerSessionData data, Inventory inv, ArrayList<Equipment> equips, RewardInventory prev, int prevSlot, Player spectator) {
-		this(data, inv, equips, prev, prevSlot);
-		this.spectator = spectator;
-	}
-
 	@Override
 	public void handleInventoryClick(InventoryClickEvent e) {
 		e.setCancelled(true);

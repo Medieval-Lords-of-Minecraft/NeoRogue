@@ -44,7 +44,7 @@ public class AcidBomb extends Equipment {
 	
 	public AcidBomb(boolean isUpgraded) {
 		super(ID, "Acid Bomb", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 0, 10, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 0, 12, 0));
 		poison = isUpgraded ? 45 : 30;
 	}
 	

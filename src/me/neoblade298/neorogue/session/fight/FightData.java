@@ -12,6 +12,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -156,6 +157,13 @@ public class FightData {
 	
 	public void updateDisplayName() {
 		if (am == null || entity == null) return;
+		
+		if (entity.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
+			am.setShowCustomNameplate(false);
+			return;
+		}
+		
+		am.setShowCustomNameplate(true);
 		double healthPct = entity.getHealth() / entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
 		String healthColor;
 		if (healthPct < 0.33) {

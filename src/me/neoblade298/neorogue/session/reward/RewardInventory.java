@@ -68,8 +68,11 @@ public class RewardInventory extends CoreInventory {
 			Reward reward = rewards.get(slot);
 			
 			// Special spectator behavior
-			if (spectator != null && reward instanceof EquipmentChoiceReward) {
-				
+			if (spectator != null) {
+				if (reward instanceof EquipmentChoiceReward) {
+					((EquipmentChoiceReward) reward).spectate(data, slot, this, spectator);
+				}
+				return;
 			}
 			
 			if (reward.claim(data, slot, this)) {

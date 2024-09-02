@@ -17,6 +17,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
@@ -34,9 +35,13 @@ public class SmokeBomb extends Equipment {
 	private static final SoundContainer place = new SoundContainer(Sound.ENTITY_CREEPER_PRIMED);
 	private static final TargetProperties tp = TargetProperties.radius(5, true, TargetType.ENEMY);
 	
+	private int delay;
+	
 	public SmokeBomb(boolean isUpgraded) {
 		super(ID, "Smoke Bomb", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 0, 10, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(isUpgraded ? 20 : 10, 0, 12, 0));
+		properties.addUpgrades(PropertyType.MANA_COST);
+		delay = isUpgraded ? 3 : 1;
 	}
 
 	@Override
@@ -80,7 +85,8 @@ public class SmokeBomb extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SHIELD,
-				"On cast, drop a smoke bomb that detonates after <white>3</white> seconds. After detonation, for <white>5</white> seconds,"
+				"On cast, drop a smoke bomb that detonates after <yellow>" + delay
+				+ "</yellow> second(s). After detonation, for <white>5</white> seconds,"
 				+ " standing within the radius grants " + GlossaryTag.STEALTH.tag(this, 1, false) + " [<white>1s</white>].");
 	}
 }

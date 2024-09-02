@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -31,6 +32,10 @@ public class EquipmentChoiceReward implements Reward {
 		return false;
 	}
 
+	public void spectate(PlayerSessionData data, int slot, RewardInventory inv, Player spectator) {
+		new EquipmentChoiceInventory(data, Bukkit.createInventory(data.getPlayer(), 9, Component.text("Choose one!", NamedTextColor.BLUE)),
+				equips, inv, slot, spectator);
+	}
 	@Override
 	public ItemStack getIcon() {
 		ItemStack item = new ItemStack(Material.LEATHER_CHESTPLATE);

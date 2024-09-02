@@ -182,7 +182,7 @@ public class Session {
 	public void updateSpectatorLines() {
 		spectatorLines = new ArrayList<String>(9);
 		for (PlayerSessionData psd : party.values()) {
-			spectatorLines.add("§e" + psd.getData().getDisplay() + "§7: §f" + Math.round(psd.getHealth()));
+			spectatorLines.add("§e" + psd.getData().getDisplay() + "§7: §f" + Math.round(psd.getHealth()) + "§c♥");
 		}
 	}
 	

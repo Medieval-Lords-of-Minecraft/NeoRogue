@@ -41,8 +41,8 @@ public class UnderDarkness extends Equipment {
 	
 	public UnderDarkness(boolean isUpgraded) {
 		super(ID, "Under Darkness", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 0, 10, 0));
-		damage = isUpgraded ? 10 : 6;
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 0, 12, 0));
+		damage = isUpgraded ? 15 : 10;
 	}
 	
 	public static Equipment get() {
@@ -83,7 +83,7 @@ public class UnderDarkness extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SHIELD,
-				"On cast, drop a smoke bomb that detonates after <white>3</white> seconds. After detonation, for <white>5</white> seconds,"
+				"On cast, drop a smoke bomb that detonates after <white>1</white> second. After detonation, for <white>5</white> seconds,"
 				+ " standing within the radius grants " + GlossaryTag.STEALTH.tag(this, 1, false) + " [<white>1s</white>] and buffs"
 						+ " your damage by <yellow>" + damage + "</yellow>.");
 	}
