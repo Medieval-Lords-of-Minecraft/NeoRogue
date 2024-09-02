@@ -47,24 +47,25 @@ public class TwinShiv extends Equipment {
 	}
 	
 	private class TwinShivInstance extends EquipmentInstance {
-		private UUID firstHit;
-		private boolean isFirstProj = true;
+		public UUID firstHit;
+		public boolean isFirstProj = true;
 
 		public TwinShivInstance(Player p, Equipment eq, int slot, EquipSlot es) {
 			super(p, eq, slot, es);
 
 			ProjectileGroup proj = new ProjectileGroup(new TwinShivProjectile(p, this));
 			action = (pdata, in) -> {
-				if (firstHit == null) {
-					isFirstProj = true;
+				if (isFirstProj) {
+					firstHit = null;
 					this.setCooldown(1);
 					this.setTempStaminaCost(0);
 					this.setTempManaCost(0);
 					proj.start(pdata);
+					isFirstProj = false;
 				}
 				else {
-					isFirstProj = false;
 					proj.start(pdata);
+					isFirstProj = true;
 				}
 				return TriggerResult.keep();
 			};
@@ -80,6 +81,7 @@ public class TwinShiv extends Equipment {
 			super(0.5, 10, 3);
 			this.size(0.5, 0.5);
 			this.p = p;
+			this.inst = inst;
 		}
 
 		@Override
@@ -90,7 +92,8 @@ public class TwinShiv extends Equipment {
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
 			double finalDmg = 0;
-			if (inst.isFirstProj) {
+			if (Boolean.getBoolean(proj.getTag()) || inst.firstHit == null) {
+				inst.firstHit = hit.getUniqueId();
 				finalDmg = damage;
 			}
 			else {
@@ -105,12 +108,13 @@ public class TwinShiv extends Equipment {
 		@Override
 		public void onStart(ProjectileInstance proj) {
 			Sounds.attackSweep.play(p, p);
+			proj.setTag("" + inst.isFirstProj);
 		}
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.SHIELD,
+		item = createItem(Material.IRON_NUGGET,
 				"On cast, fire a projectile that deals " + GlossaryTag.PIERCING.tag(this, damage, true) + " damage. Recast to fire " +
 				"a second projectile that does the same. If both hit the same target, deal " + GlossaryTag.PIERCING.tag(this, bonus, true)
 				+ " additional damage.");

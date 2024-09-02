@@ -59,7 +59,6 @@ public class RewardInventory extends CoreInventory {
 	@Override
 	public void handleInventoryClick(InventoryClickEvent e) {
 		e.setCancelled(true);
-		if (spectator != null) return;
 		Inventory iclicked = e.getClickedInventory();
 		if (iclicked == null || iclicked.getType() != InventoryType.CHEST) return;
 		if (e.getCurrentItem() == null) return;
@@ -67,6 +66,11 @@ public class RewardInventory extends CoreInventory {
 		int slot = e.getSlot();
 		if (slot < rewards.size()) {
 			Reward reward = rewards.get(slot);
+			
+			// Special spectator behavior
+			if (spectator != null && reward instanceof EquipmentChoiceReward) {
+				
+			}
 			
 			if (reward.claim(data, slot, this)) {
 				playSound = false;
@@ -77,9 +81,11 @@ public class RewardInventory extends CoreInventory {
 			}
 		}
 		else if (slot == 7 && data.getSession().getParty().size() > 1) {
+			if (spectator != null) return;
 			new SpectateSelectInventory(data.getSession(), p, data, true);
 		}
 		else if (slot == 8) {
+			if (spectator != null) return;
 			rewards.clear();
 			((RewardInstance) data.getSession().getInstance()).onRewardClaim();
 			p.closeInventory();

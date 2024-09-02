@@ -27,7 +27,7 @@ public class RustySword extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BARRIER, "When purified at a shop, you receive a " + NeoCore.miniMessage().serialize(SilverFang.get().getDisplay()) +
+		item = createItem(Material.DANGER_POTTERY_SHERD, "When purified at a shop, you receive a " + NeoCore.miniMessage().serialize(SilverFang.get().getDisplay()) +
 				"<gray>. Right click for more info.");
 	}
 	

@@ -189,7 +189,6 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new IronCuirass(b);
 			new Ironskin(b);
 			new Lethality(b);
-			new LightningCutter(b);
 			new LightningRush(b);
 			new Maim(b);
 			new MightySwing(b);
@@ -301,6 +300,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Irritant(b);
 			new LeatherGauntlets(b);
 			new LightLeatherGauntlets(b);
+			new LightningCutter(b);
 			new LightningWand(b);
 			new MassiveHalberd(b);
 			new MirrorSickle(b);

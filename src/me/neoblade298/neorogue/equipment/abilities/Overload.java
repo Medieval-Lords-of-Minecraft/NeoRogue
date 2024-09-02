@@ -46,7 +46,7 @@ public class Overload extends Equipment {
 		data.addTrigger(id, Trigger.KILL, new EquipmentInstance(p, this, slot, es, (pd, in) -> {
 			KillEvent ev = (KillEvent) in;
 			int stacks = FightInstance.getFightData(ev.getTarget()).getStatus(StatusType.ELECTRIFIED).getStacks();
-			for (LivingEntity ent : TargetHelper.getEntitiesInCone(ev.getTarget(), tp)) {
+			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(ev.getTarget(), tp)) {
 				FightInstance.dealDamage(new DamageMeta(data, damage + (stacks * 5), DamageType.LIGHTNING), ent);
 				part.play(p, ent);
 			}

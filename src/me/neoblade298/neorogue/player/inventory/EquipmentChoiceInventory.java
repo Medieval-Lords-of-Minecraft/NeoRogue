@@ -1,7 +1,9 @@
 package me.neoblade298.neorogue.player.inventory;
 
 import java.util.ArrayList;
+
 import org.bukkit.Sound;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
@@ -19,6 +21,7 @@ public class EquipmentChoiceInventory extends CoreInventory {
 	private ArrayList<Equipment> equips;
 	private int prevSlot;
 	private PlayerSessionData data;
+	private Player spectator;
 
 	public EquipmentChoiceInventory(PlayerSessionData data, Inventory inv, ArrayList<Equipment> equips, RewardInventory prev, int prevSlot) {
 		super(data.getPlayer(), inv);
@@ -33,10 +36,16 @@ public class EquipmentChoiceInventory extends CoreInventory {
 		inv.setContents(contents);
 	}
 
+	public EquipmentChoiceInventory(PlayerSessionData data, Inventory inv, ArrayList<Equipment> equips, RewardInventory prev, int prevSlot, Player spectator) {
+		this(data, inv, equips, prev, prevSlot);
+		this.spectator = spectator;
+	}
+
 	@Override
 	public void handleInventoryClick(InventoryClickEvent e) {
 		e.setCancelled(true);
 		Inventory iclicked = e.getClickedInventory();
+		if (spectator != null) return;
 		if (iclicked == null || iclicked.getType() != InventoryType.CHEST) return;
 		if (e.getCurrentItem() == null) return;
 		

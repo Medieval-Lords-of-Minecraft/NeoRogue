@@ -21,7 +21,7 @@ public class Brightcrown extends Equipment {
 		super(ID, "Brightcrown", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ARMOR);
 		def = isUpgraded ? 5 : 3;
-		sanct = isUpgraded ? 10 : 7;
+		sanct = isUpgraded ? 25 : 18;
 	}
 	
 	public static Equipment get() {

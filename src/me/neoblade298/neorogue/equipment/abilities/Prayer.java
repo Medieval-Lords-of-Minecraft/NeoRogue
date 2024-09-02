@@ -26,7 +26,7 @@ public class Prayer extends Equipment {
 	public Prayer(boolean isUpgraded) {
 		super(ID, "Prayer", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.none());
-		heal = isUpgraded ? 8 : 5;
+		heal = isUpgraded ? 6 : 4;
 		healPct = heal * 0.01;
 	}
 	

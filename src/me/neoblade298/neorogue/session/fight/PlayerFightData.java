@@ -556,7 +556,6 @@ public class PlayerFightData extends FightData {
 				if (found || !slotBasedTriggers.containsKey(i)) continue;
 				for (ArrayList<PriorityAction> slotActions : slotBasedTriggers.get(i).values()) {
 					for (PriorityAction slotAction : slotActions) {
-						System.out.println("Found " + slotAction + " in slot + " + i + " , is " + (slotAction instanceof EquipmentInstance));
 						if (slotAction instanceof EquipmentInstance) {
 							insts.put(i, (EquipmentInstance) slotAction);
 							found = true;

@@ -33,7 +33,7 @@ public class SilverFang extends Equipment {
 		properties.addUpgrades(PropertyType.DAMAGE);
 		canDrop = false;
 		
-		sanct = isUpgraded ? 3 : 2;
+		sanct = isUpgraded ? 6 : 4;
 	}
 	
 	public static Equipment get() {

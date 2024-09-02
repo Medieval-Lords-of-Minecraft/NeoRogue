@@ -27,7 +27,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class CripplingPoison extends Equipment {
 	private static final String ID = "cripplingPoison";
-	private int reduc, poisonThreshold;
+	private int inc, poisonThreshold;
 	private static final ParticleContainer part = new ParticleContainer(Particle.CRIT).offsetForward(2).count(10).spread(2.5, 0.2);
 	private static final TargetProperties tp = TargetProperties.cone(90, 5, false, TargetType.ENEMY);
 	
@@ -35,8 +35,8 @@ public class CripplingPoison extends Equipment {
 		super(ID, "Crippling Poison", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 20, 15, tp.range));
 		
-		reduc = 8;
-		poisonThreshold = isUpgraded ? 7 : 10;
+		inc = 8;
+		poisonThreshold = isUpgraded ? 20 : 30;
 	}
 	
 	public static Equipment get() {
@@ -51,7 +51,7 @@ public class CripplingPoison extends Equipment {
 			for (LivingEntity ent : TargetHelper.getEntitiesInCone(p, tp)) {
 				FightData fd = FightInstance.getFightData(ent);
 				int add = fd.getStatus(StatusType.POISON).getStacks() / poisonThreshold;
-				fd.addBuff(data, UUID.randomUUID().toString(), true, false, BuffType.PHYSICAL, -reduc - add, 10);
+				fd.addBuff(data, UUID.randomUUID().toString(), false, false, BuffType.PHYSICAL, -inc - add, 100);
 			}
 			return TriggerResult.keep();
 		}));
@@ -60,7 +60,8 @@ public class CripplingPoison extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ARMOR_STAND,
-				"On cast, reduce the " + GlossaryTag.PHYSICAL.tag(this) + " damage of enemies in a cone in front of you by <yellow>" + reduc + "</yellow>"
-						+ " for <white>10</white> seconds.");
+				"On cast, increase the " + GlossaryTag.PHYSICAL.tag(this) + " damage of enemies in a cone in front of you by <yellow>" + inc + "</yellow>"
+						+ " [<white>5s</white>], further increased by <white>1</white> for every <yellow>" + poisonThreshold
+						+ "</yellow> stacks of " + GlossaryTag.POISON.tag(this) + " on the enemy.");
 	}
 }

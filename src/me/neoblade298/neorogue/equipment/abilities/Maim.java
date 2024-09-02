@@ -26,7 +26,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
 public class Maim extends Equipment {
 	private static final String ID = "maim";
-	private int reduc, damage;
+	private int inc, damage;
 	private static final ParticleContainer part = new ParticleContainer(Particle.CRIT).count(10).spread(0.5, 0.5);
 	private static final SoundContainer hit = new SoundContainer(Sound.BLOCK_BAMBOO_WOOD_TRAPDOOR_CLOSE);
 	
@@ -34,7 +34,7 @@ public class Maim extends Equipment {
 		super(ID, "Maim", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 20, 15, 0));
 		
-		reduc = isUpgraded ? 15 : 10;
+		inc = isUpgraded ? 30 : 20;
 		damage = isUpgraded ? 90 : 60;
 	}
 	
@@ -59,7 +59,7 @@ public class Maim extends Equipment {
 				part.play(p, ev.getTarget());
 				hit.play(p, ev.getTarget());
 				ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.PIERCING));
-				FightInstance.getFightData(ev.getTarget()).addBuff(data, UUID.randomUUID().toString(), true, false, BuffType.PHYSICAL, -reduc, 10);
+				FightInstance.getFightData(ev.getTarget()).addBuff(data, UUID.randomUUID().toString(), false, false, BuffType.PHYSICAL, -inc, 200);
 			}
 			return TriggerResult.keep();
 		});
@@ -69,7 +69,7 @@ public class Maim extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.BLAZE_ROD,
 				"On cast, your next basic attack deals an additional " + GlossaryTag.BLUNT.tag(this, damage, true) + " damage"
-						+ " and reduces " + GlossaryTag.PHYSICAL.tag(this) + " damage of the enemy hit by <yellow>" + reduc + "</yellow>"
+						+ " and increases " + GlossaryTag.PHYSICAL.tag(this) + " damage dealt to the enemy hit by <yellow>" + inc + "</yellow>"
 						+ " for <white>10</white> seconds.");
 	}
 }

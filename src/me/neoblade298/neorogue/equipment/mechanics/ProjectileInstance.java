@@ -32,6 +32,7 @@ public class ProjectileInstance extends IProjectileInstance {
 	private BoundingBox bounds;
 	private HashMap<BuffType, Buff> buffs = new HashMap<BuffType, Buff>();
 	private int tick, numHit, interpolationPoints;
+	private String tag; // Used for metadata, like with twinShiv
 	
 	protected ProjectileInstance(Projectile settings, FightData owner) {
 		this(settings, owner, owner.getEntity().getLocation().add(0, 1, 0), owner.getEntity().getLocation().getDirection());
@@ -155,5 +156,13 @@ public class ProjectileInstance extends IProjectileInstance {
 	
 	public int getNumHit() {
 		return numHit;
+	}
+	
+	public void setTag(String tag) {
+		this.tag = tag;
+	}
+	
+	public String getTag() {
+		return this.tag;
 	}
 }

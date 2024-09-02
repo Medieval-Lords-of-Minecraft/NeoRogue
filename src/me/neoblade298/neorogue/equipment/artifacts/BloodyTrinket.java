@@ -54,6 +54,6 @@ public class BloodyTrinket extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GOLD_NUGGET, 
-				"Being below <white>50%</white> health grants <white>10</white> " + GlossaryTag.STRENGTH.tag(this, 10, false) + ".");
+				"Being below <white>50%</white> health grants " + GlossaryTag.STRENGTH.tag(this, 10, false) + ".");
 	}
 }

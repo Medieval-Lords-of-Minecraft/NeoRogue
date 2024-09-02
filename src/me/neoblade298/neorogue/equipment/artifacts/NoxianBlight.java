@@ -67,7 +67,7 @@ public class NoxianBlight extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.MAGMA_CREAM, 
-				"For every skill you cast that at base costs over <white>" + stamina + "</white> stamina, gain 1 " + GlossaryTag.STRENGTH.tag(this) +
+				"For every skill you cast that at base costs at least <white>" + stamina + "</white> stamina, gain 1 " + GlossaryTag.STRENGTH.tag(this) +
 				". For every skill you cast that at base costs at least"
 				+ " <white>" + mana + "</white> mana, gain 1 " + GlossaryTag.INTELLECT.tag(this) + ".");
 	}

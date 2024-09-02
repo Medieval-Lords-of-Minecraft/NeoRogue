@@ -31,7 +31,7 @@ public class GlacialHammer extends Artifact {
 		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
 			if (data.getMana() > data.getMaxMana() * 0.5) {
 				BasicAttackEvent ev = (BasicAttackEvent) in;
-				data.addMana(-5);
+				data.addMana(-3);
 				ev.getTarget().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20, 0));
 			}
 			return TriggerResult.keep();
@@ -51,6 +51,7 @@ public class GlacialHammer extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GOLDEN_SHOVEL, 
-				"Landing a basic attack when you're above <white>50%</white> mana slows the enemy and costs <white>5</white> mana.");
+				"Landing a basic attack when you're above <white>50%</white> mana gives the enemy slowness <white>1</white>"
+				+ " [<white>1s</white>] the enemy and costs <white>3</white> mana.");
 	}
 }

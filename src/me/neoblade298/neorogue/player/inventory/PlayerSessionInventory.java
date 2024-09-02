@@ -631,7 +631,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		case ACCESSORY: return createAccessoryIcon(slot - 21);
 		case ARMOR: return createArmorIcon(slot - 18);
 		case HOTBAR: return createHotbarIcon(slot);
-		case KEYBIND: KeyBind bind = KeyBind.getBindFromSlot(slot);
+		case KEYBIND: KeyBind bind = KeyBind.getBindFromSlot(slot - 18);
 			return addNbt(bind.getItem(), bind.getDataSlot());
 		case OFFHAND: return createOffhandIcon();
 		default: return null; // should never happen

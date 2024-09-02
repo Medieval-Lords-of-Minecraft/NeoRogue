@@ -28,7 +28,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Disorient extends Equipment {
 	private static final String ID = "disorient";
-	private int reduc, damage, insanity;
+	private int inc, damage, insanity;
 	private static final ParticleContainer part = new ParticleContainer(Particle.PORTAL).offsetForward(2).count(10).spread(2.5, 0.2);
 	private static final TargetProperties tp = TargetProperties.cone(90, 5, false, TargetType.ENEMY);
 	
@@ -36,7 +36,7 @@ public class Disorient extends Equipment {
 		super(ID, "Disorient", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 0, 15, tp.range));
 		
-		reduc = 8;
+		inc = 21;
 		damage = isUpgraded ? 60 : 40;
 		insanity = isUpgraded ? 5 : 3;
 	}
@@ -52,7 +52,7 @@ public class Disorient extends Equipment {
 			part.play(p, p);
 			for (LivingEntity ent : TargetHelper.getEntitiesInCone(p, tp)) {
 				FightData fd = FightInstance.getFightData(ent);
-				fd.addBuff(data, UUID.randomUUID().toString(), true, false, BuffType.PHYSICAL, -reduc, 10);
+				fd.addBuff(data, UUID.randomUUID().toString(), false, false, BuffType.PHYSICAL, -inc, 200);
 				fd.applyStatus(StatusType.INSANITY, data, insanity, -1);
 				FightInstance.dealDamage(fd, DamageType.DARK, damage, ent);
 			}
@@ -63,8 +63,8 @@ public class Disorient extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ARMOR_STAND,
-				"On cast, reduce the " + GlossaryTag.PHYSICAL.tag(this) + " damage of enemies in a cone in front of you by <yellow>" + reduc + "</yellow>"
-						+ " for <white>10</white> seconds. Also deal " + GlossaryTag.DARK.tag(this, damage, true) + " damage and apply " +
+				"On cast, reduce the " + GlossaryTag.PHYSICAL.tag(this) + " damage of enemies in a cone in front of you by <yellow>" + inc + "</yellow>"
+						+ " [<white>10s</white>]. Also deal " + GlossaryTag.DARK.tag(this, damage, true) + " damage and apply " +
 						GlossaryTag.INSANITY.tag(this, insanity, true) + ".");
 	}
 }

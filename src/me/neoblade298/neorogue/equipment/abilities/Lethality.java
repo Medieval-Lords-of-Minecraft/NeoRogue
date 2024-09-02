@@ -22,7 +22,7 @@ public class Lethality extends Equipment {
 	public Lethality(boolean isUpgraded) {
 		super(ID, "Lethality", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.none());
-		thres = isUpgraded ? 40 : 30;
+		thres = isUpgraded ? 30 : 40;
 		inc = isUpgraded ? 40 : 25;
 	}
 	
@@ -35,7 +35,7 @@ public class Lethality extends Equipment {
 		data.addTrigger(ID, Trigger.DEALT_DAMAGE, (pdata, in) -> {
 			if (data.getStamina() < thres) return TriggerResult.keep();
 			DealtDamageEvent ev = (DealtDamageEvent) in;
-			ev.getMeta().addBuff(BuffType.PIERCING, new Buff(data, inc, 0), BuffOrigin.NORMAL, true);
+			ev.getMeta().addBuff(BuffType.PHYSICAL, new Buff(data, inc, 0), BuffOrigin.NORMAL, true);
 			return TriggerResult.keep();
 		});
 	}
@@ -43,7 +43,7 @@ public class Lethality extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.PRISMARINE_CRYSTALS,
-				"Passive. Increase " + GlossaryTag.PIERCING.tag(this) + " damage by <yellow>" + inc + "</yellow>"
+				"Passive. Increase " + GlossaryTag.PHYSICAL.tag(this) + " damage by <yellow>" + inc + "</yellow>"
 				+ " while above <yellow>" + thres + "</yellow> stamina.");
 	}
 }

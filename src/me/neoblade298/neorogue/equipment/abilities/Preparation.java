@@ -66,7 +66,7 @@ public class Preparation extends Equipment {
 			if (inst.getCount() == 0) return TriggerResult.keep();
 			if (inst.getCount() == 2) return TriggerResult.remove();
 			BasicAttackEvent ev = (BasicAttackEvent) in;
-			ev.getMeta().addDamageSlice(new DamageSlice(pdata, damage, DamageType.SLASHING));
+			ev.getMeta().addDamageSlice(new DamageSlice(pdata, damage, DamageType.PIERCING));
 			Sounds.anvil.play(p, p);
 			return TriggerResult.keep();
 		});
@@ -77,6 +77,6 @@ public class Preparation extends Equipment {
 		item = createItem(Material.BLAZE_POWDER,
 				"On cast, charge for <white>5</white> seconds before gaining " + GlossaryTag.SHIELDS.tag(this, shields, true) + " "
 				+ "and dealing an additional "
-				+ GlossaryTag.SLASHING.tag(this, damage, true) + " damage on basic attacks for <white>10</white> seconds.");
+				+ GlossaryTag.PIERCING.tag(this, damage, true) + " damage on basic attacks for <white>10</white> seconds.");
 	}
 }

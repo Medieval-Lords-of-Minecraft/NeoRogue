@@ -51,7 +51,7 @@ public class Cripple extends Equipment {
 			Sounds.attackSweep.play(p, p);
 			part.play(p, p);
 			for (LivingEntity ent : TargetHelper.getEntitiesInCone(p, tp)) {
-				FightInstance.getFightData(ent).addBuff(data, UUID.randomUUID().toString(), true, false, BuffType.PHYSICAL, inc, 100);
+				FightInstance.getFightData(ent).addBuff(data, UUID.randomUUID().toString(), false, false, BuffType.PHYSICAL, -inc, 100);
 			}
 			return TriggerResult.keep();
 		}));
