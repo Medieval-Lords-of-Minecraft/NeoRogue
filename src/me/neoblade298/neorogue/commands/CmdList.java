@@ -74,74 +74,119 @@ public class CmdList extends Subcommand {
 		if (ft == null) {
 			return filterTypes;
 		}
+		String currArg = args[args.length - 1];
+		int lastComma = currArg.lastIndexOf(',');
+		String currArgSnip = lastComma == -1 ? currArg : currArg.substring(lastComma + 1);
+		String currArgPrefix = lastComma == -1 ? currArg : currArg.substring(0, lastComma);
+		
+		ArrayList<String> list = null;
 		switch (ft) {
-		case EQUIPMENT_CLASS: return ecs;
-		case EQUIPMENT_TYPE: return types;
-		case RARITY: return rarities;
-		case REFORGE: return reforgeFilters;
-		case TAGS: return tags;
+		case EQUIPMENT_CLASS: list = ecs;
+		case EQUIPMENT_TYPE: list = types;
+		case RARITY: list = rarities;
+		case REFORGE: list = reforgeFilters;
+		case TAGS: list = tags;
 		}
-		return null;
+		if (list == null) return null;
+		return list.stream().filter(str -> { return str.startsWith(currArgSnip);})
+				.map(str -> currArgPrefix + str + ",").collect(Collectors.toList());
 	}
 
 	@Override
 	public void run(CommandSender s, String[] args) {
+		if (args.length > 14) {
+			Util.msg(s, "<red>Too many arguments! Try using commas instead.");
+			return;
+		}
 		Stream<Equipment> stream = Equipment.getAll().stream();
 		
 		FilterType filter = null;
 		for (String str : args) {
+			if (str.endsWith(",")) str.substring(0, str.length() - 1);
 			if (filter == null) {
 				filter = FilterType.fromString(str);
 			}
 			else {
 				switch (filter) {
 				case EQUIPMENT_TYPE: 
-					try {
-						EquipmentType type = EquipmentType.valueOf(str.toUpperCase());
+						String[] typeStr = str.toUpperCase().split(",");
+						EquipmentType[] types = new EquipmentType[typeStr.length];
+						for (int i = 0; i < typeStr.length; i++) {
+							try {
+								types[i] = EquipmentType.valueOf(typeStr[i]);
+							}
+							catch (IllegalArgumentException ex) {
+								Util.msg(s, "<red>Could not find equipment type " + str);
+								return;
+							}
+						}
+						EquipmentType.valueOf(str.toUpperCase());
 						stream = stream.filter((eq) -> {
-							return eq.getType() == type;
-						});
-					}
-					catch (IllegalArgumentException ex) {
-						Util.msg(s, "<red>Could not find equipment type " + str);
-						return;
-					}
-					break;
-				case EQUIPMENT_CLASS:
-					try {
-						EquipmentClass ec = EquipmentClass.valueOf(str.toUpperCase());
-						stream = stream.filter((eq) -> {
-							for (EquipmentClass eqc : eq.getEquipmentClasses()) {
-								if (eqc == ec) return true;
+							for (EquipmentType type : types) {
+								if (eq.getType() == type) return true;
 							}
 							return false;
 						});
+					break;
+				case EQUIPMENT_CLASS:
+					String[] clsStr = str.toUpperCase().split(",");
+					EquipmentClass[] clsses = new EquipmentClass[clsStr.length];
+					for (int i = 0; i < clsStr.length; i++) {
+						try {
+							clsses[i] = EquipmentClass.valueOf(clsStr[i]);
+						}
+						catch (IllegalArgumentException ex) {
+							Util.msg(s, "<red>Could not find equipment class " + str);
+							return;
+						}
 					}
-					catch (IllegalArgumentException ex) {
-						Util.msg(s, "<red>Could not find equipment class " + str);
-						return;
-					}
+					stream = stream.filter((eq) -> {
+						for (EquipmentClass ec : clsses) {
+							for (EquipmentClass eqc : eq.getEquipmentClasses()) {
+								if (eqc == ec) return true;
+							}
+						}
+						return false;
+					});
 					break;
 				case RARITY:
-					try {
-						Rarity rarity = Rarity.valueOf(str.toUpperCase());
-						stream = stream.filter((eq) -> {
-							return eq.getRarity() == rarity;
-						});
+					String[] rarStr = str.toUpperCase().split(",");
+					Rarity[] rarities = new Rarity[rarStr.length];
+					for (int i = 0; i < rarStr.length; i++) {
+						try {
+							rarities[i] = Rarity.valueOf(rarStr[i]);
+						}
+						catch (IllegalArgumentException ex) {
+							Util.msg(s, "<red>Could not find rarity " + str);
+							return;
+						}
 					}
-					catch (IllegalArgumentException ex) {
-						Util.msg(s, "<red>Could not find rarity " + str);
-						return;
-					}
+					stream = stream.filter((eq) -> {
+						for (Rarity rar : rarities) {
+							if (eq.getRarity() == rar) return true;
+						}
+						return false;
+					});
 					break;
 				case REFORGE:
-					try {
-						stream = stream.filter(ReforgeType.valueOf(str.toUpperCase()).filter);
+					String[] refStr = str.toUpperCase().split(",");
+					ReforgeType[] reforgeTypes = new ReforgeType[refStr.length];
+					for (int i = 0; i < refStr.length; i++) {
+						try {
+							reforgeTypes[i] = ReforgeType.valueOf(refStr[i]);
+						}
+						catch (IllegalArgumentException ex) {
+							Util.msg(s, "<red>Could not find reforge type " + refStr[i]);
+							return;
+						}
 					}
-					catch (IllegalArgumentException ex) {
-						Util.msg(s, "<red>Could not find reforge type " + str);
-						return;
+					
+					// TODO
+					Predicate<Equipment> check = reforgeTypes[0].filter;
+					for (int i = 1; i < reforgeTypes.length; i++) {
+						check.and(reforgeTypes[i].filter);
 					}
+					stream = stream.filter(check);
 					break;
 				case TAGS:
 					String[] tags = str.toUpperCase().split(",");
