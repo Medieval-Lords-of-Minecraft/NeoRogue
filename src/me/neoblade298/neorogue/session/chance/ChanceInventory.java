@@ -56,7 +56,7 @@ public class ChanceInventory extends CoreInventory {
 		this.s = inst.getSession();
 		this.stage = stage;
 		this.asSpectator = true;
-		setupInventory();
+		if (stage != null) setupInventory();
 	}
 	
 	private void setupInventory() {

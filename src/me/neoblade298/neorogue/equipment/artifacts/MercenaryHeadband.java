@@ -30,7 +30,7 @@ public class MercenaryHeadband extends Artifact {
 	@Override
 	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
 		data.addTrigger(id, Trigger.STAMINA_CHANGE, (pdata, in) -> {
-			if (data.getStamina() + ((StaminaChangeEvent) in).getChange() < 100) return TriggerResult.keep();
+			if (data.getStamina() + ((StaminaChangeEvent) in).getChange() < 50) return TriggerResult.keep();
 			
 			data.addStaminaRegen(regen);
 			Util.msg(p, this.display.append(Component.text(" was activated", NamedTextColor.GRAY)));
@@ -51,7 +51,7 @@ public class MercenaryHeadband extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.RESPAWN_ANCHOR,
-				"Reaching <white>100</white> stamina in a fight increases your stamina regen by <white>" + regen + "</white>"
+				"Reaching <white>50</white> stamina in a fight increases your stamina regen by <white>" + regen + "</white>"
 						+ " for the remainder of the fight.");
 	}
 }

@@ -8,8 +8,8 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
+import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
-import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedHealthDamageEvent;
@@ -31,7 +31,7 @@ public class Gauze extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		GauzeInstance inst = new GauzeInstance();
+		GauzeInstance inst = new GauzeInstance(ID);
 		data.addTrigger(ID, Trigger.RECEIVED_HEALTH_DAMAGE, inst);
 		data.addTrigger(ID, Trigger.RECEIVE_STATUS, (pdata, in) -> {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
@@ -48,19 +48,24 @@ public class Gauze extends Equipment {
 						+ "<yellow>" + max + "</yellow>.");
 	}
 	
-	private class GauzeInstance implements TriggerAction {
+	private class GauzeInstance extends PriorityAction {
+		public GauzeInstance(String id) {
+			super(id);
+			action = (pdata, in) -> {
+				ReceivedHealthDamageEvent ev = (ReceivedHealthDamageEvent) in;
+				damage = ev.getTotalDamage();
+				timestamp = System.currentTimeMillis();
+				return TriggerResult.keep();
+			};
+		}
+
 		private double damage;
 		private long timestamp;
-		@Override
-		public TriggerResult trigger(PlayerFightData data, Object in) {
-			ReceivedHealthDamageEvent ev = (ReceivedHealthDamageEvent) in;
-			damage = ev.getTotalDamage();
-			timestamp = System.currentTimeMillis();
-			return TriggerResult.keep();
-		}
 		
 		public void use(PlayerFightData data) {
+			System.out.println("Attempt " + System.currentTimeMillis());
 			if (timestamp + 2000 >= System.currentTimeMillis()) {
+				System.out.println("Use " + Math.min(max, damage * pct * 0.01));
 				data.addHealth(Math.min(max, damage * pct * 0.01));
 				damage = 0;
 				timestamp = 0;
