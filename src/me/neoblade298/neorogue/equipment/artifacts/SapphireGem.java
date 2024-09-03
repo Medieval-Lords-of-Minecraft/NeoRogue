@@ -18,7 +18,7 @@ public class SapphireGem extends Artifact {
 	public SapphireGem() {
 		super(ID, "Sapphire Gem", Rarity.EPIC, EquipmentClass.CLASSLESS);
 		canDrop = false;
-		max = 50;
+		max = 25;
 		regen = 1;
 	}
 	

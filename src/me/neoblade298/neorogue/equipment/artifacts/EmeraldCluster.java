@@ -18,8 +18,8 @@ public class EmeraldCluster extends Artifact {
 	public EmeraldCluster() {
 		super(ID, "Emerald Cluster", Rarity.RARE, EquipmentClass.CLASSLESS);
 		canDrop = false;
-		max = 25;
-		regen = 0.5;
+		max = 10;
+		regen = 0.4;
 	}
 	
 	public static Equipment get() {

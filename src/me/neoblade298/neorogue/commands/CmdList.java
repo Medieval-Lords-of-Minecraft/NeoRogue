@@ -38,7 +38,7 @@ public class CmdList extends Subcommand {
 	public CmdList(String key, String desc, String perm, SubcommandRunner runner) {
 		super(key, desc, perm, runner);
 		this.overrideTabHandler();
-		args.setOverride("{--type EquipmentType} {--rarity Rarity} {--class EquipmentClass} {--tags GlossaryTag1,Tag2...}"
+		args.setOverride("{--type EquipmentType1,2...} {--rarity Rarity1,2...} {--class EquipmentClass1,2...} {--tags GlossaryTag1,2...}"
 				+ " {--reforge Parent/Child/None}");
 		args.setMax(-1);
 		
@@ -76,20 +76,26 @@ public class CmdList extends Subcommand {
 		}
 		String currArg = args[args.length - 1];
 		int lastComma = currArg.lastIndexOf(',');
-		String currArgSnip = lastComma == -1 ? currArg : currArg.substring(lastComma + 1);
-		String currArgPrefix = lastComma == -1 ? currArg : currArg.substring(0, lastComma);
+		boolean hasCommas = lastComma != -1;
+		String currArgSnip = hasCommas ? currArg.substring(lastComma + 1) : currArg;
+		String currArgPrefix = hasCommas ? currArg.substring(0, lastComma + 1) : currArg;
 		
 		ArrayList<String> list = null;
 		switch (ft) {
 		case EQUIPMENT_CLASS: list = ecs;
+		break;
 		case EQUIPMENT_TYPE: list = types;
+		break;
 		case RARITY: list = rarities;
+		break;
 		case REFORGE: list = reforgeFilters;
+		break;
 		case TAGS: list = tags;
+		break;
 		}
 		if (list == null) return null;
 		return list.stream().filter(str -> { return str.startsWith(currArgSnip);})
-				.map(str -> currArgPrefix + str + ",").collect(Collectors.toList());
+				.map(str -> (hasCommas ? currArgPrefix : "") + str + ",").collect(Collectors.toList());
 	}
 
 	@Override
@@ -102,6 +108,10 @@ public class CmdList extends Subcommand {
 		
 		FilterType filter = null;
 		for (String str : args) {
+			if (str.length() > 40) {
+				Util.msg(s, "<red>Argument is too long! Try reducing the argument size.");
+				return;
+			}
 			if (str.endsWith(",")) str.substring(0, str.length() - 1);
 			if (filter == null) {
 				filter = FilterType.fromString(str);

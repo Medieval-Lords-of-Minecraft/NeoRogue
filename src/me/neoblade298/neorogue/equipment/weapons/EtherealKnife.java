@@ -22,7 +22,7 @@ public class EtherealKnife extends Equipment {
 	public EtherealKnife(boolean isUpgraded) {
 		super(ID, "Ethereal Knife", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(100, 0.5, 0.2, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
+				EquipmentProperties.ofWeapon(100, 0.5, 0.2, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
 		durability = isUpgraded ? 10 : 5;
 	}
 	

@@ -21,7 +21,7 @@ public class ButterflyKnife2 extends Equipment {
 	public ButterflyKnife2(boolean isUpgraded) {
 		super(ID, "Butterfly Knife II", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(base, 1.25, 0.2, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
+				EquipmentProperties.ofWeapon(base, 1.25, 0.2, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
 		
 		dmg = isUpgraded ? 40 : 25;
 		stam = isUpgraded ? 40 : 50;

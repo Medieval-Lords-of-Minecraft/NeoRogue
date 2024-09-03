@@ -18,7 +18,7 @@ public class RubyShard extends Artifact {
 	public RubyShard() {
 		super(ID, "Ruby Shard", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
 		canDrop = false;
-		max = 10;
+		max = 5;
 		shields = 2;
 	}
 	

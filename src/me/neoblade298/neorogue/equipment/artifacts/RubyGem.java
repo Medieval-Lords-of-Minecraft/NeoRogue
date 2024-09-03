@@ -18,7 +18,7 @@ public class RubyGem extends Artifact {
 	public RubyGem() {
 		super(ID, "Ruby Gem", Rarity.EPIC, EquipmentClass.CLASSLESS);
 		canDrop = false;
-		max = 50;
+		max = 25;
 		shields = 10;
 	}
 	

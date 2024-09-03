@@ -24,7 +24,7 @@ public class EvasiveKnife extends Equipment {
 	public EvasiveKnife(boolean isUpgraded) {
 		super(ID, "Evasive Knife", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(base, 1.25, 0.2, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
+				EquipmentProperties.ofWeapon(base, 1.25, 0.2, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
 		
 		dmg = 5;
 		stam = 25;

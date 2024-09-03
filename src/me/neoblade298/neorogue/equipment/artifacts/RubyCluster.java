@@ -18,8 +18,8 @@ public class RubyCluster extends Artifact {
 	public RubyCluster() {
 		super(ID, "Ruby Cluster", Rarity.RARE, EquipmentClass.CLASSLESS);
 		canDrop = false;
-		max = 25;
-		shields = 5;
+		max = 10;
+		shields = 4;
 	}
 	
 	public static Equipment get() {
