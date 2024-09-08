@@ -18,7 +18,7 @@ import me.neoblade298.neocore.shared.io.Section;
 import me.neoblade298.neorogue.NeoRogue;
 
 public class MapPiece {
-
+	public static MapPiece HARVESTBORDER;
 	private static HashMap<String, MapPiece> pieces = new HashMap<String, MapPiece>();
 	private String id, display;
 	private MapShape shape;
@@ -106,6 +106,11 @@ public class MapPiece {
 		this.customInfoOrder = (ArrayList<String>) cfg.getStringList("fightinfomobs");
 		
 		pieces.put(id, this);
+		setupSpecialPiece();
+	}
+	
+	private void setupSpecialPiece() {
+		if (id.equals("HarvestFieldsBorder")) HARVESTBORDER = this;
 	}
 	
 	public void reloadMythicMobs() {

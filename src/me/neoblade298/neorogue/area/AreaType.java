@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.area;
 
+import java.util.HashMap;
+
 public enum AreaType {
 	LOW_DISTRICT("Low District"),
 	HARVEST_FIELDS("Harvest Fields"),
@@ -9,6 +11,12 @@ public enum AreaType {
 	OUTER_ADMIRATIO("Outer Admiratio"),
 	DEADMANS_MARSH("Deadman's Marsh"),
 	OAKHELM("Oakhelm");
+
+	private static HashMap<AreaType, AreaType> nextArea = new HashMap<AreaType, AreaType>();
+	static {
+		nextArea.put(LOW_DISTRICT, HARVEST_FIELDS);
+		nextArea.put(HARVEST_FIELDS, FROZEN_WASTES);
+	}
 	
 	private String display;
 	private AreaType(String display) {
@@ -17,5 +25,9 @@ public enum AreaType {
 	
 	public String getDisplay() {
 		return display;
+	}
+	
+	public static AreaType getNextArea(AreaType type) {
+		return nextArea.get(type);
 	}
 }

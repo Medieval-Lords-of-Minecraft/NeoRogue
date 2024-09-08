@@ -10,9 +10,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -29,6 +29,7 @@ import com.sk89q.worldedit.function.mask.ExistingBlockMask;
 import com.sk89q.worldedit.function.mask.Mask;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
+
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.shared.io.Section;
 import me.neoblade298.neorogue.NeoRogue;
@@ -46,13 +47,18 @@ public class Map {
 			bossPieces = new HashMap<AreaType, ArrayList<MapPiece>>();
 	private static final int MAP_SIZE = 12;
 	
+	private AreaType type;
 	private ArrayList<MapPieceInstance> pieces = new ArrayList<MapPieceInstance>();
 	private LinkedList<Coordinates> entrances = new LinkedList<Coordinates>(),
-			blockedEntrances = new LinkedList<Coordinates>();
+			obstructedEntrances = new LinkedList<Coordinates>();
 	private TreeMap<Mob, ArrayList<MobModifier>> mobs = new TreeMap<Mob, ArrayList<MobModifier>>();
 	private LinkedHashMap<Mob, ArrayList<MobModifier>> customMobs = new LinkedHashMap<Mob, ArrayList<MobModifier>>();
 	private HashSet<String> targets = new HashSet<String>();
 	private boolean[][] shape = new boolean[MAP_SIZE][MAP_SIZE];
+	
+	public Map(AreaType type) {
+		this.type = type;
+	}
 	
 	public static void load() {
 		for (AreaType type : AreaType.values()) {
@@ -73,7 +79,7 @@ public class Map {
 					allPieces.put(key, piece);
 					if (type.equals("BOSS")) bossPieces.get(area).add(piece);
 					else if (type.equals("MINIBOSS")) minibossPieces.get(area).add(piece);
-					else standardPieces.get(area).add(piece);
+					else if (type.equals("STANDARD")) standardPieces.get(area).add(piece);
 				}
 				catch (Exception e) {
 					e.printStackTrace();
@@ -104,11 +110,11 @@ public class Map {
 	}
 	
 	public static Map generate(AreaType type, int numPieces) {
-		return generate(new Map(), type, numPieces);
+		return generate(new Map(type), type, numPieces);
 	}
 	
 	public static Map generate(AreaType type, int numPieces, MapPiece requiredPiece) {
-		Map map = new Map();
+		Map map = new Map(type);
 		map.place(requiredPiece);
 		return generate(map, type, numPieces);
 	}
@@ -127,7 +133,7 @@ public class Map {
 				
 				if (attempts++ > totalAttempts) {
 					Bukkit.getLogger().warning("[NeoRogue] Ran out of valid pieces to place. Returning map as is.");
-					return map;
+					break;
 				}
 			}
 			/* Skip to another piece if
@@ -140,13 +146,56 @@ public class Map {
 			
 			if (piece == null) {
 				Bukkit.getLogger().warning("[NeoRogue] Failed to find piece for generation. Returning map as is.");
-				return map;
+				break;
+			}
+		}
+		
+		// Fill in any spots adjacent to pieces with border pieces
+		if (type == AreaType.HARVEST_FIELDS) {
+			boolean[][] shape = map.shape;
+			HashSet<Pair> set = new HashSet<Pair>();
+			for (int i = 0; i < shape.length; i++) {
+				for (int j = 0; j < shape[0].length; j++) {
+					if (!shape[i][j]) continue;
+					for (int x = -1; x <= 1; x++) {
+						for (int z = -1; z <= 1; z++) {
+							int ip = x + i, jp = z + j;
+							if (ip < 0 || ip >= shape.length) continue;
+							if (jp < 0 || jp >= shape.length) continue;
+							if (shape[ip][jp]) continue;
+							set.add(new Pair(ip, jp));
+						}
+					}
+				}
+			}
+			
+			for (Pair coords : set) {
+				MapPieceInstance inst = MapPiece.HARVESTBORDER.getInstance();
+				MapShape ms = inst.getPiece().getShape();
+				
+				// Randomly rotate the piece
+				inst.setRotations(NeoRogue.gen.nextInt(4));
+				int rand = NeoRogue.gen.nextInt(3);
+				if (rand == 1) inst.setFlip(true, false);
+				else if (rand == 2) inst.setFlip(false, true);
+				ms.applySettings(inst);
+				inst.setX(coords.i);
+				inst.setY(0);
+				inst.setZ(coords.j);
+				map.place(inst, false);
 			}
 		}
 		
 		return map;
 	}
 	
+	private static class Pair {
+		private int i, j;
+		public Pair(int i, int j) {
+			this.i = i;
+			this.j = j;
+		}
+	}
 	
 	public void placeFirst(MapPiece piece, boolean randomizeOrientation) {
 		MapPieceInstance inst = piece.getInstance();
@@ -241,7 +290,6 @@ public class Map {
 						}
 					}
 				}
-				
 			}
 		}
 		
@@ -262,10 +310,12 @@ public class Map {
 					}
 					if (!isAvailable) continue;
 					
+					// An entrance that cannot be used because another piece is in the way but doesn't have a corresponding entrance
 					if (this.shape.length <= (int) coords.getXFacing() || this.shape[0].length <= (int) coords.getZFacing() || 
 							this.shape[(int) coords.getXFacing()][(int) coords.getZFacing()]) {
-						blockedEntrances.add(coords);
+						obstructedEntrances.add(coords);
 					}
+					// An available entrance to use
 					else {
 						entrances.add(coords);
 					}
@@ -273,7 +323,7 @@ public class Map {
 			}
 			
 			for (Coordinates ent : obstructed) {
-				blockedEntrances.add(ent);
+				obstructedEntrances.add(ent);
 			}
 		}
 
@@ -381,17 +431,23 @@ public class Map {
 					// Block off all unused entrances
 					World w = Bukkit.getWorld(Area.WORLD_NAME);
 					for (Coordinates coords : entrances) {
-						blockEntrance(coords, w, xOff, zOff);
+						handleUnusedEntrance(coords, w, xOff, zOff);
 					}
-					for (Coordinates coords : blockedEntrances) {
-						blockEntrance(coords, w, xOff, zOff);
+					for (Coordinates coords : obstructedEntrances) {
+						handleObstructedEntrance(coords, w, xOff, zOff);
 					}
 		    	}
 		    }.runTaskLater(NeoRogue.inst(), 10L);
 		}
 	}
 	
-	private void blockEntrance(Coordinates coords, World w, int xOff, int zOff) {
+	private void handleUnusedEntrance(Coordinates coords, World w, int xOff, int zOff) {
+		if (type == AreaType.HARVEST_FIELDS) return;
+		handleObstructedEntrance(coords, w, xOff, zOff);
+	}
+	
+	private void handleObstructedEntrance(Coordinates coords, World w, int xOff, int zOff) {
+		if (type == AreaType.HARVEST_FIELDS) return;
 		int x = (int) -(xOff + MapPieceInstance.X_FIGHT_OFFSET + (coords.getX() * 16));
 		int y = (int) (MapPieceInstance.Y_OFFSET + coords.getY());
 		int z = (int) (MapPieceInstance.Z_FIGHT_OFFSET + zOff + (coords.getZ() * 16));
@@ -502,7 +558,7 @@ public class Map {
 	}
 	
 	public String serialize() {
-		String str = "";
+		String str = type + "-";
 		for (MapPieceInstance mpi : pieces) {
 			str += mpi.serialize() + ";";
 		}
@@ -510,7 +566,9 @@ public class Map {
 	}
 	
 	public static Map deserialize(String str) {
-		Map map = new Map();
+		AreaType type = AreaType.valueOf(str.substring(0, str.indexOf("-")));
+		Map map = new Map(type);
+		str = str.substring(str.indexOf("-") + 1);
 		String[] pieces = str.split(";");
 		for (String piece : pieces) {
 			map.place(MapPieceInstance.deserialize(piece), true);

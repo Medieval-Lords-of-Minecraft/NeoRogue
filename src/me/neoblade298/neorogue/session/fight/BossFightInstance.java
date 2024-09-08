@@ -63,6 +63,10 @@ public class BossFightInstance extends FightInstance {
 					FightInstance.handleWin();
 					s.broadcast("You beat the boss!");
 					s.setInstance(new RewardInstance(s, generateRewards()));
+					
+					// Set up next area
+					s.generateNextArea();
+					s.setNode(s.getArea().getNodes()[0][2]);
 				}
 			}.runTask(NeoRogue.inst());
 			return;

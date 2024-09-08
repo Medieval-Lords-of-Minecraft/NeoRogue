@@ -22,7 +22,6 @@ import eu.decentsoftware.holograms.api.holograms.Hologram;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import net.kyori.adventure.text.Component;
@@ -257,7 +256,7 @@ public class LobbyInstance extends Instance {
 		s.setBusy(true);
 		s.addPlayers(players);
 		s.broadcast("Generating your game...");
-		s.generateArea(AreaType.LOW_DISTRICT);
+		s.generateNextArea();
 		s.setNode(s.getArea().getNodes()[0][2]);
 
 		new BukkitRunnable() {

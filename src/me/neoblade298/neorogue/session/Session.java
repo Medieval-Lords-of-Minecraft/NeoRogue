@@ -474,6 +474,10 @@ public class Session {
 		area.instantiate();
 	}
 	
+	public void generateNextArea() {
+		generateArea(AreaType.getNextArea(area.getType()));
+	}
+	
 	public Node getNode() {
 		return curr;
 	}

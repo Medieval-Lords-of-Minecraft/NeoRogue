@@ -24,11 +24,6 @@ public class Neoblade extends Equipment {
 		properties.addUpgrades(PropertyType.DAMAGE);
 		this.canDrop = false;
 	}
-
-	@Override
-	public void setupReforges() {
-		addSelfReforge(StoneSword.get(), StoneSpear.get(), StoneAxe.get());
-	}
 	
 	public static Equipment get() {
 		return Equipment.get(ID, false);
