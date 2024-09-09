@@ -39,6 +39,8 @@ public class FightData {
 	protected FightInstance inst;
 	protected String mobDisplay;
 	protected ActiveMob am;
+	protected Mob mob;
+	protected double knockbackMult;
 	protected UUID uuid;
 	protected HashMap<String, Status> statuses = new HashMap<String, Status>();
 	protected ArrayList<Entity> holograms = new ArrayList<Entity>();
@@ -87,7 +89,7 @@ public class FightData {
 		this.uuid = p.getUniqueId();
 	}
 
-	public FightData(LivingEntity e, ActiveMob am, MapSpawnerInstance spawner) {
+	public FightData(LivingEntity e, ActiveMob am, Mob mob, MapSpawnerInstance spawner) {
 		// Only use this for mobs
 		if (e == null) return; // Sometimes gets called when a dead mob's poison ticks
 		Plot p = Plot.locationToPlot(e.getLocation());
@@ -98,6 +100,7 @@ public class FightData {
 		this.shields = new ShieldHolder(this);
 		this.spawner = spawner;
 		this.uuid = e.getUniqueId();
+		this.knockbackMult = mob != null ? mob.getKnockbackMultiplier() : 1;
 		if (am != null && am.getType().getDisplayName() != null && am.getType().getDisplayName().isPresent()) this.mobDisplay = am.getType().getDisplayName().get();
 		this.am = am;
 	}
@@ -112,6 +115,14 @@ public class FightData {
 	
 	public LivingEntity getEntity() {
 		return entity;
+	}
+	
+	public void setKnockbackMultiplier(double amt) {
+		this.knockbackMult = amt;
+	}
+	
+	public Mob getMob() {
+		return this.mob;
 	}
 
 	public void addBuff(FightData applier, boolean damageBuff, boolean multiplier, BuffType type, double amount) {
@@ -374,6 +385,9 @@ public class FightData {
 		}
 	}
 
+	public double getKnockbackMultiplier() {
+		return knockbackMult;
+	}
 
 	private class StatusUpdateTickAction extends TickAction {
 		@Override

@@ -18,7 +18,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 public class MercenaryHeadband extends Artifact {
 	private static final String ID = "mercenaryHeadband";
-	private static final int regen = 2;
+	private static final double regen = 0.5;
 	public MercenaryHeadband() {
 		super(ID, "Mercenary Headband", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
 	}

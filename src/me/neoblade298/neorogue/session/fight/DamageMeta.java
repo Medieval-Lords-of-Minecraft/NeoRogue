@@ -1,6 +1,7 @@
 package me.neoblade298.neorogue.session.fight;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 
@@ -21,12 +22,24 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedHealthDamageEvent;
 
 public class DamageMeta {
+	private static HashSet<EntityType> armoredEntities = new HashSet<EntityType>();
+	
 	private FightData owner;
 	private boolean hitBarrier, isSecondary;
 	private LinkedList<DamageSlice> slices = new  LinkedList<DamageSlice>();
 	private HashMap<BuffType, LinkedList<BuffMeta>> damageBuffs = new HashMap<BuffType, LinkedList<BuffMeta>>(),
 			defenseBuffs = new HashMap<BuffType, LinkedList<BuffMeta>>();
 	private DamageMeta returnDamage;
+	
+	static {
+		armoredEntities.add(EntityType.ZOMBIE);
+		armoredEntities.add(EntityType.HUSK);
+		armoredEntities.add(EntityType.SKELETON);
+		armoredEntities.add(EntityType.STRAY);
+		armoredEntities.add(EntityType.WITHER_SKELETON);
+		armoredEntities.add(EntityType.DROWNED);
+		armoredEntities.add(EntityType.GUARDIAN);
+	}
 	
 	public DamageMeta(FightData data) {
 		this.owner = data;
@@ -290,12 +303,13 @@ public class DamageMeta {
 				ignoreShieldsDamage = 0;
 			}
 		}
-		final double finalDamage = damage + ignoreShieldsDamage + target.getAbsorptionAmount();
+		double finalDamage = damage + ignoreShieldsDamage + target.getAbsorptionAmount();
 		if (damage + ignoreShieldsDamage > 0) {
 			
 			// Mobs shouldn't have a source of damage because they'll infinitely re-trigger ~OnAttack
 			// Players must have a source of damage to get credit for kills, otherwise mobs that suicide give points
 			if (owner instanceof PlayerFightData) {
+				if (armoredEntities.contains(target.getType())) finalDamage *= 1.08696;
 				target.damage(finalDamage, owner.getEntity());
 			}
 			else {

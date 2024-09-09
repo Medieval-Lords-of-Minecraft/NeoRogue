@@ -10,6 +10,7 @@ import me.neoblade298.neocore.shared.commands.Arg;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryInventory;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 
 public class CmdGlossary extends Subcommand {
 
@@ -17,7 +18,10 @@ public class CmdGlossary extends Subcommand {
 		super(key, desc, perm, runner);
 		this.enableTabComplete();
 		ArrayList<String> tab = new ArrayList<String>(Equipment.getEquipmentIds());
-		args.add(new Arg("item id", false).setTabOptions(tab));
+		for (GlossaryTag tag : GlossaryTag.values()) {
+			tab.add(tag.getId());
+		}
+		args.add(new Arg("id", false).setTabOptions(tab));
 	}
 
 	@Override
@@ -34,6 +38,15 @@ public class CmdGlossary extends Subcommand {
 			return;
 		}
 		
-		Util.displayError(p, "Couldn't find an equipment with that name!");
+		try {
+			GlossaryTag tag = GlossaryTag.valueOf(args[0]);
+			new GlossaryInventory(p, tag, null);
+			return;
+		}
+		catch (IllegalArgumentException ex) {
+			
+		}
+		
+		Util.displayError(p, "Couldn't find an equipment or glossary tag with that name!");
 	}
 }

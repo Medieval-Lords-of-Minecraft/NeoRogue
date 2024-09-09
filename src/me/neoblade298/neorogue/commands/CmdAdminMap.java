@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.commands;
 
+import java.util.ArrayList;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -50,7 +52,9 @@ public class CmdAdminMap extends Subcommand {
 		map.display();
 		
 		// Mark down spawn location blocks
+		ArrayList<Location> potentialSpawns = new ArrayList<Location>();
 		for (MapPieceInstance mpi : map.getPieces()) {
+			if (mpi.getSpawns() == null) break;
 			for (Coordinates c : mpi.getSpawns()) {
 				Location l = c.clone().applySettings(mpi).toLocation();
 				l.add(0 + MapPieceInstance.X_FIGHT_OFFSET,
@@ -73,18 +77,12 @@ public class CmdAdminMap extends Subcommand {
 	            case WEST: bmeta.setFacing(BlockFace.EAST);
 	            }
 	            b.setBlockData(bmeta);
+	            potentialSpawns.add(l);
 			}
 		}
 		
 		// Choose random teleport location
-		int rand = NeoRogue.gen.nextInt(map.getPieces().size());
-		MapPieceInstance inst = map.getPieces().get(rand);
-		Coordinates[] spawns = inst.getSpawns();
-		Location spawn = spawns[spawns.length > 1 ? NeoRogue.gen.nextInt(spawns.length) : 0].clone().applySettings(inst).toLocation();
-		spawn.add(xOff + MapPieceInstance.X_FIGHT_OFFSET,
-				MapPieceInstance.Y_OFFSET,
-				MapPieceInstance.Z_FIGHT_OFFSET + zOff);
-		spawn.setX(-spawn.getX());
-		p.teleport(spawn);
+		int rand = NeoRogue.gen.nextInt(potentialSpawns.size());
+		p.teleport(potentialSpawns.get(rand));
 	}
 }

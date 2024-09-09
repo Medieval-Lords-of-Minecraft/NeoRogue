@@ -51,6 +51,7 @@ public class Map {
 	private ArrayList<MapPieceInstance> pieces = new ArrayList<MapPieceInstance>();
 	private LinkedList<Coordinates> entrances = new LinkedList<Coordinates>(),
 			obstructedEntrances = new LinkedList<Coordinates>();
+	private ArrayList<Coordinates> spawns = new ArrayList<Coordinates>();
 	private TreeMap<Mob, ArrayList<MobModifier>> mobs = new TreeMap<Mob, ArrayList<MobModifier>>();
 	private LinkedHashMap<Mob, ArrayList<MobModifier>> customMobs = new LinkedHashMap<Mob, ArrayList<MobModifier>>();
 	private HashSet<String> targets = new HashSet<String>();
@@ -100,7 +101,7 @@ public class Map {
 	}
 	
 	public static Map generateBoss(AreaType type, int numPieces) {
-		MapPiece piece = bossPieces.get(type).get(NeoRogue.gen.nextInt(bossPieces.get(type).size()));
+		MapPiece piece = bossPieces.get(type).get(bossPieces.get(type).size() > 1 ? NeoRogue.gen.nextInt(bossPieces.get(type).size()) : 0);
 		return generate(type, numPieces, piece);
 	}
 	
@@ -359,6 +360,13 @@ public class Map {
 				}
 			}
 		}
+		
+		// Add spawns
+		if (inst.getSpawns() != null) {
+			for (Coordinates coords : inst.getSpawns()) {
+				spawns.add(coords.clone().applySettings(inst));
+			}
+		}
 
 		pieces.add(inst);
 	}
@@ -563,6 +571,11 @@ public class Map {
 			str += mpi.serialize() + ";";
 		}
 		return str;
+	}
+	
+	public Coordinates getRandomSpawn() {
+		int rand = NeoRogue.gen.nextInt(spawns.size());
+		return spawns.get(rand);
 	}
 	
 	public static Map deserialize(String str) {

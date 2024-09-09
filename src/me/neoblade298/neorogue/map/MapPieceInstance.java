@@ -52,10 +52,12 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		schematic = new ClipboardHolder(piece.clipboard);
 		spawnerIdx = piece.chooseSpawners();
 		
-		spawns = new Coordinates[piece.spawns.length];
-		int i = 0;
-		for (Coordinates coords : piece.spawns) {
-			spawns[i++] = coords.clone();
+		if (piece.spawns != null) {
+			spawns = new Coordinates[piece.spawns.length];
+			int i = 0;
+			for (Coordinates coords : piece.spawns) {
+				spawns[i++] = coords.clone();
+			}
 		}
 		
 		for (Entry<String, Coordinates> ent : piece.mythicLocations.entrySet()) {
@@ -137,8 +139,10 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		numRotations = amount % 4;
 		if (entrance != null) entrance.setRotations(numRotations);
 		
-		for (Coordinates coords : spawns) {
-			coords.setRotations(amount);
+		if (spawns != null) {
+			for (Coordinates coords : spawns) {
+				coords.setRotations(amount);
+			}
 		}
 		
 		for (Coordinates coords : mythicLocations.values()) {
@@ -160,8 +164,11 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		if (entrance != null) {
 			entrance.setFlip(flipX, flipZ);
 		}
-		for (Coordinates coords : spawns) {
-			coords.setFlip(flipX, flipZ);
+		
+		if (spawns != null) {
+			for (Coordinates coords : spawns) {
+				coords.setFlip(flipX, flipZ);
+			}
 		}
 		
 		for (Coordinates coords : mythicLocations.values()) {

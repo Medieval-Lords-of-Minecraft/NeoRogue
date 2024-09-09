@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -15,7 +16,6 @@ import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
-import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
@@ -28,7 +28,7 @@ public class SerratedRazor extends Equipment {
 	public SerratedRazor(boolean isUpgraded) {
 		super(ID, "Serrated Razor", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(base, 3, 0.2, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
+				EquipmentProperties.ofWeapon(base, 3, 0, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
 		bonus = isUpgraded ? 80 : 50;
 	}
 	
@@ -38,16 +38,15 @@ public class SerratedRazor extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, new RazorInstance(id));
+		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, new RazorInstance(p, this, slot, es));
 	}
-	
-	private class RazorInstance extends PriorityAction {
+
+	private class RazorInstance extends EquipmentInstance {
 		private int count = 0;
 
-		public RazorInstance(String id) {
-			super(id);
+		public RazorInstance(Player p, Equipment eq, int slot, EquipSlot es) {
+			super(p, eq, slot, es);
 			action = (data, in) -> {
-				Player p = data.getPlayer();
 				LeftClickHitEvent ev = (LeftClickHitEvent) in;
 				if (++count >= 3) {
 					FightData fd = FightInstance.getFightData(ev.getTarget());
@@ -57,6 +56,7 @@ public class SerratedRazor extends Equipment {
 					data.setBasicAttackCooldown(EquipSlot.HOTBAR, 3000L);
 					Sounds.extinguish.play(p, p);
 					count = 0;
+					this.setCooldown(3);
 				}
 				else {
 					weaponSwingAndDamage(p, data, ev.getTarget());

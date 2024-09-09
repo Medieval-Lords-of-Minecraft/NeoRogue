@@ -64,7 +64,6 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
-import me.neoblade298.neorogue.map.Coordinates;
 import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.map.MapPieceInstance;
 import me.neoblade298.neorogue.map.MapSpawnerInstance;
@@ -659,7 +658,9 @@ public abstract class FightInstance extends Instance {
 	public static FightData getFightData(UUID uuid) {
 		if (!fightData.containsKey(uuid)) {
 			LivingEntity ent = (LivingEntity) Bukkit.getEntity(uuid);
-			FightData fd = new FightData(ent, NeoRogue.mythicApi.getMythicMobInstance(ent), (MapSpawnerInstance) null);
+			ActiveMob am = NeoRogue.mythicApi.getMythicMobInstance(ent);
+			Mob mob = Mob.get(am.getType().getInternalName());
+			FightData fd = new FightData(ent, am, mob, (MapSpawnerInstance) null);
 			fightData.put(uuid, fd);
 		}
 		return fightData.get(uuid);
@@ -749,12 +750,9 @@ public abstract class FightInstance extends Instance {
 	public static void knockback(Entity trg, Vector v) {
 		v = trg.getVelocity().add(v);
 		v = v.setY(Math.min(v.getY(), 0.5));
-		if (NeoRogue.mythicApi.isMythicMob(trg)) {
-			MythicMob type = NeoRogue.mythicApi.getMythicMobInstance(trg).getType();
-			Mob m = Mob.get(type.getInternalName());
-			if (m != null) {
-				v = v.multiply(m.getKnockbackMultiplier());
-			}
+		FightData fd = FightInstance.getFightData(trg);
+		if (fd != null) {
+			v = v.multiply(fd.getKnockbackMultiplier());
 		}
 		trg.setVelocity(v);
 	}
@@ -792,12 +790,7 @@ public abstract class FightInstance extends Instance {
 				}
 				
 				// Choose random teleport location
-				int rand = NeoRogue.gen.nextInt(map.getPieces().size());
-				MapPieceInstance inst = map.getPieces().get(rand);
-				Coordinates[] spawns = inst.getSpawns();
-				
-				spawn = spawns[spawns.length > 1 ? NeoRogue.gen.nextInt(spawns.length) : 0].clone().applySettings(inst)
-						.toLocation();
+				spawn = map.getRandomSpawn().toLocation();
 				spawn.add(
 						s.getXOff() + MapPieceInstance.X_FIGHT_OFFSET, MapPieceInstance.Y_OFFSET,
 						MapPieceInstance.Z_FIGHT_OFFSET + s.getZOff()

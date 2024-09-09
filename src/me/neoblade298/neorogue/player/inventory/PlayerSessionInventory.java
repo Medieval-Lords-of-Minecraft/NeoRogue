@@ -164,7 +164,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 	}
 
 	private static ItemStack createHotbarIcon(int dataSlot) {
-		TextComponent bound = Component.text("Bound to hotbar #" + (dataSlot + 1), NamedTextColor.YELLOW);
+		TextComponent bound = Component.text("Bound to Hotbar #" + (dataSlot + 1), NamedTextColor.YELLOW);
 		return addNbt(CoreInventory.createButton(Material.RED_STAINED_GLASS_PANE,
 				Component.text("Hotbar Slot", NamedTextColor.RED), bound, instruct, instruct2), dataSlot);
 	}

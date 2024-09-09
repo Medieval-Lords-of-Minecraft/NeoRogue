@@ -28,6 +28,7 @@ public class Nightmare extends Equipment {
 				EquipmentProperties.ofWeapon(isUpgraded ? 50 : 45, 1.5, 0.2, DamageType.PIERCING, Sounds.attackSweep));
 		properties.addUpgrades(PropertyType.DAMAGE);
 		stacks = isUpgraded ? 12 : 8;
+		canDrop = false;
 	}
 	
 	public static Equipment get() {
@@ -46,6 +47,6 @@ public class Nightmare extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.GOLDEN_SWORD, "Applies " + GlossaryTag.INSANITY.tag(this, stacks, true) + " insanity on hit.");
+		item = createItem(Material.GOLDEN_SWORD, "Applies " + GlossaryTag.INSANITY.tag(this, stacks, true) + " on hit.");
 	}
 }

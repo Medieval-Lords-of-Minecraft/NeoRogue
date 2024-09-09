@@ -30,11 +30,6 @@ public class EvasiveKnife extends Equipment {
 		stam = 25;
 		hits = isUpgraded ? 5 : 3;
 	}
-
-	@Override
-	public void setupReforges() {
-		addSelfReforge(ButterflyKnife2.get(), StoneDriver.get());
-	}
 	
 	public static Equipment get() {
 		return Equipment.get(ID, false);

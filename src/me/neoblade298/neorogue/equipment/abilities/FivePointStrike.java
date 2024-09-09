@@ -61,9 +61,10 @@ public class FivePointStrike extends Equipment {
 	
 	private class FivePointStrikeProjectile extends Projectile {
 		public FivePointStrikeProjectile(int i) {
-			super(1, properties.get(PropertyType.RANGE), 2);
+			super(1, properties.get(PropertyType.RANGE), 1);
 			int iter = i - 2;
-			this.rotation(iter * 25);
+			this.rotation(iter * 15);
+			this.size(1, 1);
 		}
 
 		@Override

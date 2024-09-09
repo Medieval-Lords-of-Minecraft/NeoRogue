@@ -24,7 +24,7 @@ public class HiddenRazor extends Equipment {
 	public HiddenRazor(boolean isUpgraded) {
 		super(ID, "Hidden Razor", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(base, 3, 0.2, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
+				EquipmentProperties.ofWeapon(base, 3, 0, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
 	}
 	
 	public static Equipment get() {

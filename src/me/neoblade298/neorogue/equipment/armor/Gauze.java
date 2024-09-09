@@ -63,9 +63,7 @@ public class Gauze extends Equipment {
 		private long timestamp;
 		
 		public void use(PlayerFightData data) {
-			System.out.println("Attempt " + System.currentTimeMillis());
 			if (timestamp + 2000 >= System.currentTimeMillis()) {
-				System.out.println("Use " + Math.min(max, damage * pct * 0.01));
 				data.addHealth(Math.min(max, damage * pct * 0.01));
 				damage = 0;
 				timestamp = 0;

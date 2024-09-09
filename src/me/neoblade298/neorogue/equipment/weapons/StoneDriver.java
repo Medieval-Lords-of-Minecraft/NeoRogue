@@ -21,11 +21,6 @@ public class StoneDriver extends Equipment {
 				EquipmentProperties.ofWeapon(0, isUpgraded ? 6 : 10, isUpgraded ? 75 : 60, 1.25, 0.2, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_CRIT));
 		
 	}
-
-	@Override
-	public void setupReforges() {
-		addSelfReforge(ButterflyKnife2.get());
-	}
 	
 	public static Equipment get() {
 		return Equipment.get(ID, false);

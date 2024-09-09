@@ -110,7 +110,12 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 			if (e.getCurrentItem() != null) {
 				NBTItem nbti = new NBTItem(e.getCurrentItem());
 				Equipment eq = Equipment.get(nbti.getString("equipId"), false);
-				pinv.setHighlights(eq.getType());
+				if (e.getSlot() == SELL) {
+					pinv.clearHighlights();
+				}
+				else {
+					pinv.setHighlights(eq.getType());
+				}
 			}
 			
 			if (!e.getCursor().getType().isAir() && e.getCurrentItem() != null) {
@@ -151,6 +156,10 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 					}.runTask(NeoRogue.inst());
 					return;
 				}
+				// Prevent stacking
+				else if (e.getCursor().isSimilar(e.getCurrentItem())) {
+					e.setCancelled(true);
+				}
 			}
 		}
 	}
@@ -166,7 +175,11 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 		// Save storage
 		Equipment[] newSave = new Equipment[PlayerSessionData.MAX_STORAGE_SIZE];
 		int iter = 0;
-		for (ItemStack item : inv.getContents()) {
+		ItemStack[] contents = inv.getContents();
+		
+		// Ignores the sell slot
+		for (int i = 0; i < contents.length - 1; i++) {
+			ItemStack item = contents[i];
 			if (item == null) continue;
 			NBTItem nbti = new NBTItem(item);
 			Equipment eq = Equipment.get(nbti.getString("equipId"), nbti.getBoolean("isUpgraded"));

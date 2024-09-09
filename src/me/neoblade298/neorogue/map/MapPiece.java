@@ -83,11 +83,13 @@ public class MapPiece {
 		}
 		
 		List<String> spawns = cfg.getStringList("spawns");
-		this.spawns = new Coordinates[spawns.size()];
-		i = 0;
-		for (String line : spawns) {
-			this.spawns[i] = new Coordinates(this, line, true);
-			i++;
+		if (spawns != null) {
+			this.spawns = new Coordinates[spawns.size()];
+			i = 0;
+			for (String line : spawns) {
+				this.spawns[i] = new Coordinates(this, line, true);
+				i++;
+			}
 		}
 
 		sec = cfg.getSection("mythiclocations");

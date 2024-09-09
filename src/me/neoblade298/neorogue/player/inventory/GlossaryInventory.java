@@ -63,6 +63,7 @@ public class GlossaryInventory extends CoreInventory {
 		}
 		inv.setContents(contents);
 	}
+	
 	public GlossaryInventory(Player viewer, Equipment eq, CoreInventory prev) {
 		super(viewer, Bukkit.createInventory(viewer, calculateSize(eq), Component.text("Glossary: ").append(eq.getUnupgraded().getDisplay())));
 		this.prev = prev;
@@ -108,6 +109,15 @@ public class GlossaryInventory extends CoreInventory {
 				row++;
 			}
 		}
+		inv.setContents(contents);
+	}
+	
+	public GlossaryInventory(Player viewer, GlossaryTag tag, CoreInventory prev) {
+		super(viewer, Bukkit.createInventory(viewer, 9, Component.text("Glossary: ").append(Component.text(tag.getId()))));
+		Sounds.turnPage.play(p, p);
+		
+		ItemStack[] contents = inv.getContents();
+		contents[0] = tag.getIcon();
 		inv.setContents(contents);
 	}
 	

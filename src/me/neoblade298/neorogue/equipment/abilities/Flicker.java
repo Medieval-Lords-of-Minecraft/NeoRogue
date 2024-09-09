@@ -30,7 +30,7 @@ public class Flicker extends Equipment {
 	private int damage;
 	
 	public Flicker(boolean isUpgraded) {
-		super(ID, "Substitution", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
+		super(ID, "Flicker", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 25, 15, 0));
 		properties.addUpgrades(PropertyType.COOLDOWN);
 		damage = isUpgraded ? 100 : 70;
@@ -48,8 +48,8 @@ public class Flicker extends Equipment {
 			if (!inst.active) return TriggerResult.keep();
 			DealtDamageEvent ev = (DealtDamageEvent) in;
 			LivingEntity trg = ev.getTarget();
-			if (inst.marks.containsKey(trg)) {
-				inst.marks.put(trg, inst.marks.get(trg) + 1);
+			if (!inst.marks.containsKey(trg)) {
+				inst.marks.put(trg, inst.marks.getOrDefault(trg, 0) + 1);
 			}
 			else {
 				inst.marks.put(trg, 1);
@@ -60,11 +60,12 @@ public class Flicker extends Equipment {
 	
 	private class FlickerInstance extends EquipmentInstance {
 		private Location loc;
-		private boolean active = true;
+		private boolean active = false;
 		private HashMap<LivingEntity, Integer> marks = new HashMap<LivingEntity, Integer>();
 		public FlickerInstance(Player p, Equipment eq, int slot, EquipSlot es) {
 			super(p, eq, slot, es);
 			action = (pdata, in) -> {
+				active = true;
 				Sounds.equip.play(p, p);
 				loc = p.getLocation();
 				pdata.addTask(new BukkitRunnable() {

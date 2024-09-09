@@ -16,6 +16,8 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -475,6 +477,26 @@ public class Session {
 	}
 	
 	public void generateNextArea() {
+		// Erase old nodes
+		Node[][] nodes = area.getNodes();
+		for (int i = 0; i < nodes.length; i++) {
+			for (int j = 0; j < nodes[i].length; j++) {
+				Node n = nodes[i][j];
+				if (n == null) continue;
+				Location loc = area.nodeToLocation(n, 0);
+				loc.getBlock().setType(Material.AIR); // Remove node block
+				// Remove boss stuff
+				if (i == 15 && j == 2) {
+					loc.add(0, 1, 0);
+					loc.getBlock().setType(Material.AIR); // Remove button
+					loc.add(0, -1, -1);
+					loc.getBlock().setType(Material.AIR); // Remove sign
+					loc.add(0, -1, 0);
+					loc.getBlock().setType(Material.CRYING_OBSIDIAN); // Remove boss lectern
+				}
+			}
+		}
+		
 		generateArea(AreaType.getNextArea(area.getType()));
 	}
 	

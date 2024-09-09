@@ -28,7 +28,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class CripplingPoison extends Equipment {
 	private static final String ID = "cripplingPoison";
 	private int inc, poisonThreshold;
-	private static final ParticleContainer part = new ParticleContainer(Particle.CRIT).offsetForward(2).count(10).spread(2.5, 0.2);
+	private static final ParticleContainer part = new ParticleContainer(Particle.CRIT).count(50).spread(0.5, 0.5);
 	private static final TargetProperties tp = TargetProperties.cone(90, 5, false, TargetType.ENEMY);
 	
 	public CripplingPoison(boolean isUpgraded) {
@@ -47,8 +47,8 @@ public class CripplingPoison extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(p, this, slot, es, (pd, in) -> {
 			Sounds.attackSweep.play(p, p);
-			part.play(p, p);
 			for (LivingEntity ent : TargetHelper.getEntitiesInCone(p, tp)) {
+				part.play(p, ent);
 				FightData fd = FightInstance.getFightData(ent);
 				int add = fd.getStatus(StatusType.POISON).getStacks() / poisonThreshold;
 				fd.addBuff(data, UUID.randomUUID().toString(), false, false, BuffType.PHYSICAL, -inc - add, 100);

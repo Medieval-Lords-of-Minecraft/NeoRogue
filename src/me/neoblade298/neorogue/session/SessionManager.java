@@ -458,14 +458,14 @@ public class SessionManager implements Listener {
 		Entity ent = e.getEntity();
 		UUID uuid = ent.getUniqueId();
 		if (ent instanceof LivingEntity) {
+			MythicMob mythicMob = e.getMobType();
+			Mob mob = Mob.get(mythicMob.getInternalName());
+			if (mob == null) return;
 			FightData fd = new FightData((LivingEntity) ent,
-					NeoRogue.mythicApi.getMythicMobInstance(ent), (MapSpawnerInstance) null);
+					NeoRogue.mythicApi.getMythicMobInstance(ent), mob, (MapSpawnerInstance) null);
 			FightInstance.putFightData(uuid, fd);
 			if (e.getSpawnReason() == SpawnReason.SUMMON) {
 				if (fd.getInstance() == null) return;
-				MythicMob mythicMob = e.getMobType();
-				Mob mob = Mob.get(mythicMob.getInternalName());
-				if (mob == null) return;
 				FightInstance.scaleMob(fd.getInstance().getSession(), mob, mythicMob, e.getMob());
 				fd.getInstance().addSpawnCounter(mob.getSpawnValue());
 			}

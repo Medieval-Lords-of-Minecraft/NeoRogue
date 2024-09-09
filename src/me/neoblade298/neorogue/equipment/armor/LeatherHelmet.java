@@ -16,7 +16,7 @@ public class LeatherHelmet extends Equipment {
 	public LeatherHelmet(boolean isUpgraded) {
 		super(ID, "Leather Helmet", isUpgraded, Rarity.COMMON, EquipmentClass.CLASSLESS,
 				EquipmentType.ARMOR);
-		shields = isUpgraded ? 30 : 20;
+		shields = isUpgraded ? 15 : 10;
 	}
 	
 	public static Equipment get() {
