@@ -170,6 +170,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Expunge(b);
 			new Fade(b);
 			new Ferocity(b);
+			new Finale(b);
 			new Fissure(b);
 			new FivePointStrike(b);
 			new FlowState(b);

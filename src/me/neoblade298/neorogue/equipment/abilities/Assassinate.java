@@ -27,7 +27,7 @@ public class Assassinate extends Equipment {
 	
 	public Assassinate(boolean isUpgraded) {
 		super(ID, "Assassinate", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, isUpgraded ? 40 : 30, 9, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, isUpgraded ? 40 : 30, 12, 0));
 		properties.addUpgrades(PropertyType.STAMINA_COST);
 		damage = 180;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
