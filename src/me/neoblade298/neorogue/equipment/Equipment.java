@@ -144,11 +144,15 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Charge(b);
 			new Cleave(b);
 			new Concoct(b);
+			new ConfidenceKill(b);
 			new Contaminate(b);
 			new Cripple(b);
 			new CripplingPoison(b);
+			new CurseMark(b);
+			new DarkLance(b);
 			new Darkness(b);
 			new DarkPact(b);
+			new DarkPulse(b);
 			new Discipline(b);
 			new Disorient(b);
 			new DodgeRoll(b);
@@ -169,6 +173,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new ExploitWeakness(b);
 			new Expunge(b);
 			new Fade(b);
+			new Farewell(b);
 			new Ferocity(b);
 			new Finale(b);
 			new Fissure(b);
@@ -185,6 +190,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new GatheringShadows2(b);
 			new GraniteShield(b);
 			new HoldTheLine(b);
+			new InducePanic(b);
+			new InducePanic2(b);
 			new Initiator(b);
 			new ShadowImbuement(b);
 			new IronCuirass(b);
@@ -197,12 +204,15 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new NightShade(b);
 			new Overload(b);
 			new Parry(b);
+			new PartingGift(b);
 			new PiercingVenom(b);
 			new Pin(b);
+			new Plague(b);
 			new PoolOfLight(b);
 			new Prayer(b);
 			new Preparation(b);
 			new Provoke(b);
+			new RainOfSteel(b);
 			new Revenge(b);
 			new Roar(b);
 			new Rushdown(b);

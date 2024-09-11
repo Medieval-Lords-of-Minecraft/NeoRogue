@@ -79,6 +79,7 @@ import me.neoblade298.neorogue.session.fight.status.Status.GenericStatusType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageMultipleEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.RightClickHitEvent;
 import net.kyori.adventure.text.Component;
@@ -759,7 +760,7 @@ public abstract class FightInstance extends Instance {
 	
 	public static void dealDamage(DamageMeta meta, Collection<LivingEntity> targets) {
 		if (meta.getOwner() instanceof PlayerFightData) {
-			trigger((Player) meta.getOwner().getEntity(), Trigger.DEALT_DAMAGE_MULTIPLE, new DealtDamageEvent(meta, targets));
+			trigger((Player) meta.getOwner().getEntity(), Trigger.DEALT_DAMAGE_MULTIPLE, new DealtDamageMultipleEvent(meta, targets));
 		}
 		for (LivingEntity target : targets) {
 			dealDamage(meta.clone(), target);
@@ -767,9 +768,6 @@ public abstract class FightInstance extends Instance {
 	}
 	
 	public static double dealDamage(DamageMeta meta, LivingEntity target) {
-		if (meta.getOwner() instanceof PlayerFightData) {
-			trigger((Player) meta.getOwner().getEntity(), Trigger.DEALT_DAMAGE, new DealtDamageEvent(meta, target));
-		}
 		return meta.dealDamage(target);
 	}
 	

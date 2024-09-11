@@ -191,7 +191,6 @@ public class CmdList extends Subcommand {
 						}
 					}
 					
-					// TODO
 					Predicate<Equipment> check = reforgeTypes[0].filter;
 					for (int i = 1; i < reforgeTypes.length; i++) {
 						check.and(reforgeTypes[i].filter);

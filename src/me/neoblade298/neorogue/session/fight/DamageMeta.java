@@ -17,6 +17,7 @@ import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
+import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.KillEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedHealthDamageEvent;
@@ -310,6 +311,7 @@ public class DamageMeta {
 			// Players must have a source of damage to get credit for kills, otherwise mobs that suicide give points
 			if (owner instanceof PlayerFightData) {
 				if (armoredEntities.contains(target.getType())) finalDamage *= 1.08696;
+				FightInstance.trigger((Player) owner.getEntity(), Trigger.DEALT_DAMAGE, new DealtDamageEvent(this, target, damage, ignoreShieldsDamage));
 				target.damage(finalDamage, owner.getEntity());
 			}
 			else {

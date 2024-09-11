@@ -32,7 +32,6 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class EarthStaff extends Equipment {
 	private static final String ID = "earthStaff";
-	// TODO: dont just hit in 3d radius, need to focus on enemies on floor
 	
 	private static final double innerRadius = 1.5, outerRadius = 4;
 	private static final Circle innerRing = new Circle(innerRadius), outerRing = new Circle(outerRadius);
