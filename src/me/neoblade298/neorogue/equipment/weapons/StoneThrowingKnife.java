@@ -55,7 +55,7 @@ public class StoneThrowingKnife extends Equipment {
 		private Player p;
 
 		public StoneThrowingKnifeProjectile(Player p) {
-			super(0.5, 10, 3);
+			super(0.5, 10, 1);
 			this.size(0.5, 0.5);
 			this.p = p;
 		}

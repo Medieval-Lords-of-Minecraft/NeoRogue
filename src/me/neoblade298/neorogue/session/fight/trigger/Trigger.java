@@ -26,6 +26,7 @@ public enum Trigger {
 	LEFT_CLICK_HIT,
 	RIGHT_CLICK,
 	RIGHT_CLICK_HIT,
+	VANILLA_PROJECTILE,
 	RAISE_SHIELD,
 	SHIELD_TICK, // Ticks while you have your shield up
 	PLAYER_TICK, // Tick after default player tick (stamina/mana regen and sprinting check)

@@ -16,6 +16,7 @@ public class Sounds {
 			equip = new SoundContainer(Sound.ITEM_ARMOR_EQUIP_CHAIN),
 			infect = new SoundContainer(Sound.ENTITY_ZOMBIE_INFECT),
 			jump = new SoundContainer(Sound.ENTITY_SHULKER_SHOOT),
+			shoot = new SoundContainer(Sound.ENTITY_ARROW_SHOOT),
 			success = new SoundContainer(Sound.ENTITY_ARROW_HIT_PLAYER),
 			fire = new SoundContainer(Sound.ENTITY_BLAZE_SHOOT),
 			levelup = new SoundContainer(Sound.ENTITY_PLAYER_LEVELUP),

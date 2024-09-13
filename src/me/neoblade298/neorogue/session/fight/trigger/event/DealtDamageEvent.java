@@ -1,7 +1,5 @@
 package me.neoblade298.neorogue.session.fight.trigger.event;
 
-import java.util.Collection;
-
 import org.bukkit.entity.LivingEntity;
 
 import me.neoblade298.neorogue.session.fight.DamageMeta;

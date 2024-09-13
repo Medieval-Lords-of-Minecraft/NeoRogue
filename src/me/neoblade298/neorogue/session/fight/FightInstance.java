@@ -31,6 +31,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -78,7 +79,6 @@ import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.GenericStatusType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
-import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageMultipleEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.RightClickHitEvent;
@@ -362,6 +362,10 @@ public abstract class FightInstance extends Instance {
 		} else if (a == Action.RIGHT_CLICK_AIR || a == Action.RIGHT_CLICK_BLOCK) {
 			handleRightClickGeneral(e);
 		}
+	}
+
+	public static void handleProjectileEvent(Player p, ProjectileLaunchEvent e) {
+		trigger(p, Trigger.VANILLA_PROJECTILE, e);
 	}
 
 	public void handleToggleSprintEvent(PlayerToggleSprintEvent e) {

@@ -34,6 +34,8 @@ import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
 import me.neoblade298.neorogue.equipment.abilities.EmpoweredEdge;
 import me.neoblade298.neorogue.equipment.abilities.ShadowWalk;
+import me.neoblade298.neorogue.equipment.weapons.BasicArrow;
+import me.neoblade298.neorogue.equipment.weapons.BasicBow;
 import me.neoblade298.neorogue.equipment.weapons.WoodenDagger;
 import me.neoblade298.neorogue.equipment.weapons.WoodenSword;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
@@ -125,8 +127,8 @@ public class PlayerSessionData {
 			abilitiesEquipped = 1;
 			break;
 		case ARCHER:
-			hotbar[0] = Equipment.get("woodenSword", false);
-			hotbar[1] = Equipment.get("empoweredEdge", false);
+			hotbar[0] = BasicBow.get();
+			hotbar[1] = BasicArrow.get();
 			abilitiesEquipped = 1;
 			break;
 		case MAGE:

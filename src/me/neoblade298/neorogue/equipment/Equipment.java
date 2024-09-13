@@ -287,6 +287,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new WristBlade(b);
 
 			// Weapons
+			new BasicBow(b);
+			new BasicArrow(b);
 			new BoltWand(b);
 			new ButterflyKnife(b);
 			new ButterflyKnife2(b);
@@ -938,8 +940,12 @@ public abstract class Equipment implements Comparable<Equipment> {
 		}
 		FightInstance.dealDamage(dm, target);
 	}
-
+	
 	public void weaponDamageProjectile(LivingEntity target, ProjectileInstance proj, DamageMeta dm, Barrier hitBarrier) {
+		weaponDamageProjectile(target, proj, dm, hitBarrier, true);
+	}
+
+	public void weaponDamageProjectile(LivingEntity target, ProjectileInstance proj, DamageMeta dm, Barrier hitBarrier, boolean basicAttack) {
 		PlayerFightData data = (PlayerFightData) proj.getOwner();
 		if (!proj.getBuffs().isEmpty()) {
 			dm.addBuffs(proj.getBuffs(), BuffOrigin.PROJECTILE, true);
@@ -947,8 +953,10 @@ public abstract class Equipment implements Comparable<Equipment> {
 		if (hitBarrier != null) {
 			dm.addBuffs(hitBarrier.getBuffs(), BuffOrigin.BARRIER, false);
 		}
-		BasicAttackEvent ev = new BasicAttackEvent(target, dm, properties.get(PropertyType.KNOCKBACK), this, null);
-		data.runActions(data, Trigger.BASIC_ATTACK, ev);
+		if (basicAttack) {
+			BasicAttackEvent ev = new BasicAttackEvent(target, dm, properties.get(PropertyType.KNOCKBACK), this, null);
+			data.runActions(data, Trigger.BASIC_ATTACK, ev);
+		}
 		if (properties.contains(PropertyType.KNOCKBACK)) {
 			FightInstance.knockback(target,
 					proj.getVector().normalize().multiply(properties.get(PropertyType.KNOCKBACK)));

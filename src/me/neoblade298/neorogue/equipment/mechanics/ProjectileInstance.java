@@ -35,7 +35,7 @@ public class ProjectileInstance extends IProjectileInstance {
 	private String tag; // Used for metadata, like with twinShiv
 	
 	protected ProjectileInstance(Projectile settings, FightData owner) {
-		this(settings, owner, owner.getEntity().getLocation().add(0, 1, 0), owner.getEntity().getLocation().getDirection());
+		this(settings, owner, owner.getEntity().getLocation().add(0, 1.65, 0), owner.getEntity().getLocation().getDirection());
 	}
 	
 	protected ProjectileInstance(Projectile settings, FightData owner, Location origin, Vector direction) {
@@ -44,7 +44,7 @@ public class ProjectileInstance extends IProjectileInstance {
 		this.settings = settings;
 		
 		v = direction.clone().rotateAroundY(Math.toRadians(settings.getRotation()));
-		if (settings.initialY() != 0) v = v.add(new Vector(0, settings.initialY(), 0)).normalize();
+		if (settings.initialY() != 0) origin.add(0, settings.initialY(), 0);
 		v.multiply(settings.getBlocksPerTick() * settings.getTickSpeed());
 		interpolationPoints = (int) v.length() + 1;
 		loc = origin.clone();
@@ -56,7 +56,7 @@ public class ProjectileInstance extends IProjectileInstance {
 					cancel();
 				}
 			}
-		}.runTaskTimer(NeoRogue.inst(), settings.getTickSpeed(), settings.getTickSpeed());
+		}.runTaskTimer(NeoRogue.inst(), 0L, settings.getTickSpeed());
 	}
 	
 	public int getTick() {

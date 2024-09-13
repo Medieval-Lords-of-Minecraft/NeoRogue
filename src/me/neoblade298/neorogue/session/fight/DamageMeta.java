@@ -310,7 +310,7 @@ public class DamageMeta {
 			// Mobs shouldn't have a source of damage because they'll infinitely re-trigger ~OnAttack
 			// Players must have a source of damage to get credit for kills, otherwise mobs that suicide give points
 			if (owner instanceof PlayerFightData) {
-				if (armoredEntities.contains(target.getType())) finalDamage *= 1.08696;
+				if (armoredEntities.contains(target.getType())) finalDamage *= 1.09; // To deal with minecraft vanilla armor, rounded up for inconsistency
 				FightInstance.trigger((Player) owner.getEntity(), Trigger.DEALT_DAMAGE, new DealtDamageEvent(this, target, damage, ignoreShieldsDamage));
 				target.damage(finalDamage, owner.getEntity());
 			}

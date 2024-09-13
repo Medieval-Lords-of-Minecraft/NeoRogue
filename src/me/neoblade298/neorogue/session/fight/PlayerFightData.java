@@ -18,6 +18,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.equipment.Ammunition;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
@@ -66,6 +67,7 @@ public class PlayerFightData extends FightData {
 	private double staminaRegen, manaRegen;
 	private double sprintCost = 4;
 	private boolean isDead;
+	private Ammunition ammo = null;
 	
 	private FightStatistics stats = new FightStatistics(this);
 
@@ -369,6 +371,14 @@ public class PlayerFightData extends FightData {
 			return cancel;
 		}
 		return false;
+	}
+
+	public void setAmmunition(Ammunition ammo) {
+		this.ammo = ammo;
+	}
+
+	public Ammunition getAmmunition() {
+		return ammo;
 	}
 	
 	public boolean hasTriggerAction(Trigger trigger) {

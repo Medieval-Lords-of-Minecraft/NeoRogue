@@ -1,0 +1,30 @@
+package me.neoblade298.neorogue.equipment.weapons;
+
+import org.bukkit.Material;
+
+import me.neoblade298.neorogue.equipment.Ammunition;
+import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
+import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.session.fight.DamageType;
+
+public class BasicArrow extends Ammunition {
+	private static final String ID = "basicArrow";
+	
+	public BasicArrow(boolean isUpgraded) {
+		super(ID, "Basic Arrow", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
+				EquipmentType.WEAPON,
+				EquipmentProperties.ofAmmunition(isUpgraded ? 22 : 15, 0.1, DamageType.PIERCING));
+		properties.addUpgrades(PropertyType.DAMAGE);
+	}
+	
+	public static Equipment get() {
+		return Equipment.get(ID, false);
+	}
+
+	@Override
+	public void setupItem() {
+		item = createItem(Material.ARROW);
+	}
+}

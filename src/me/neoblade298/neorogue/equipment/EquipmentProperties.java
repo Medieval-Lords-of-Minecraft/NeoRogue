@@ -55,6 +55,10 @@ public class EquipmentProperties {
 		return new EquipmentProperties(0, 0, 0, 0, damage, attackSpeed, 0, type, swingSound);
 	}
 	
+	public static EquipmentProperties ofWeapon(double damage, double attackSpeed, double knockback, DamageType type) {
+		return new EquipmentProperties(0, 0, 0, 0, damage, attackSpeed, knockback, type, null);
+	}
+	
 	public static EquipmentProperties ofWeapon(double damage, double attackSpeed, double knockback, DamageType type, Sound swingSound) {
 		return new EquipmentProperties(0, 0, 0, 0, damage, attackSpeed, knockback, type, new SoundContainer(swingSound));
 	}
@@ -71,6 +75,14 @@ public class EquipmentProperties {
 		return new EquipmentProperties(0, 0, 0, range, damage, attackSpeed, knockback, type, swingSound);
 	}
 	
+	public static EquipmentProperties ofRangedWeapon(double damage, double attackSpeed, double knockback, double range, DamageType type) {
+		return new EquipmentProperties(0, 0, 0, range, damage, attackSpeed, knockback, type, null);
+	}
+	
+	public static EquipmentProperties ofBow(double damage, double attackSpeed, double knockback, double range) {
+		return new EquipmentProperties(0, 0, 0, range, damage, attackSpeed, knockback, null, null);
+	}
+	
 	public static EquipmentProperties custom(double manaCost, double staminaCost, double cooldown, double range, double damage, double attackSpeed,
 			double knockback, DamageType type, SoundContainer swingSound) {
 		return new EquipmentProperties(manaCost, staminaCost, cooldown, range, damage, attackSpeed, knockback, type, swingSound);
@@ -78,6 +90,10 @@ public class EquipmentProperties {
 	
 	public static EquipmentProperties ofUsable(double manaCost, double staminaCost, double cooldown, double range) {
 		return new EquipmentProperties(manaCost, staminaCost, cooldown, range, 0, 0, 0, null, null);
+	}
+
+	public static EquipmentProperties ofAmmunition(double damage, double knockback, DamageType type) {
+		return new EquipmentProperties(0, 0, 0, 0, damage, 0, knockback, type, null);
 	}
 	
 	public static EquipmentProperties none() {
