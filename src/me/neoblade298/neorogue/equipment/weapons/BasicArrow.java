@@ -15,7 +15,7 @@ public class BasicArrow extends Ammunition {
 	public BasicArrow(boolean isUpgraded) {
 		super(ID, "Basic Arrow", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofAmmunition(isUpgraded ? 22 : 15, 0.1, DamageType.PIERCING));
+				EquipmentProperties.ofAmmunition(isUpgraded ? 12 : 2, 0.1, DamageType.PIERCING));
 		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 	

@@ -25,6 +25,7 @@ public class EquipmentProperties {
 	private HashMap<PropertyType, Property> properties = new HashMap<PropertyType, Property>();
 	private DamageType type;
 	private SoundContainer swingSound;
+	private boolean isBow;
 	
 	private EquipmentProperties(double manaCost, double staminaCost, double cooldown, double range, double damage, double attackSpeed,
 			double knockback, DamageType type, SoundContainer swingSound) {
@@ -80,7 +81,9 @@ public class EquipmentProperties {
 	}
 	
 	public static EquipmentProperties ofBow(double damage, double attackSpeed, double knockback, double range) {
-		return new EquipmentProperties(0, 0, 0, range, damage, attackSpeed, knockback, null, null);
+		EquipmentProperties props = new EquipmentProperties(0, 0, 0, range, damage, attackSpeed, knockback, null, null);
+		props.setBow(true);
+		return props;
 	}
 	
 	public static EquipmentProperties custom(double manaCost, double staminaCost, double cooldown, double range, double damage, double attackSpeed,
@@ -104,6 +107,10 @@ public class EquipmentProperties {
 		if (amount == 0) return;
 		properties.put(type, new Property(amount));
 	}
+
+	private void setBow(boolean isBow) {
+		this.isBow = isBow;
+	}
 	
 	public ArrayList<Component> generateLore(Equipment eq) {
 		if (lore != null) return lore;
@@ -126,7 +133,8 @@ public class EquipmentProperties {
 	private Component generateLoreLine(PropertyType type) {
 		Property prop = properties.get(type);
 		String color = prop.canUpgrade ? "<yellow>" : "<white>";
-		return SharedUtil.color("<gold>" + type.label + color + prop.amount + (type == PropertyType.ATTACK_SPEED ? "/s" : ""));
+		return SharedUtil.color("<gold>" + type.label + color + prop.amount + (type == PropertyType.ATTACK_SPEED ? 
+			(isBow ? "x Arrow Speed" : "/s") : ""));
 	}
 	
 	public boolean contains(PropertyType type) {
