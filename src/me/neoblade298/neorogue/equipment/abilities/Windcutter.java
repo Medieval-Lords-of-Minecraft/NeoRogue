@@ -79,7 +79,7 @@ public class Windcutter extends Equipment {
 	private class WindcutterProjectile extends Projectile {
 		public WindcutterProjectile(int i, int center) {
 			super(0.5, properties.get(PropertyType.RANGE), 2);
-			this.size(1, 1).pierce();
+			this.size(1, 1).pierce(-1);
 			int iter = i - center;
 			this.rotation(iter * 25);
 		}

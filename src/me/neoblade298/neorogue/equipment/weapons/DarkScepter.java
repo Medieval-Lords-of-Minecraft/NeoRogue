@@ -69,7 +69,7 @@ public class DarkScepter extends Equipment {
 		private Player p;
 		public DarkRay(Player p) {
 			super(0.5, 2, 1);
-			this.size(1.25, 1.25).pierce();
+			this.size(1.25, 1.25).pierce(-1);
 			this.p = p;
 		}
 		

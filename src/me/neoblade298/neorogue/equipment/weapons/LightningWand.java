@@ -68,7 +68,7 @@ public class LightningWand extends Equipment {
 		
 		public LightningWandProjectile(Player p) {
 			super(2.5, 12, 1);
-			this.size(0.5, 0.5).pierce();
+			this.size(0.5, 0.5).pierce(pierceAmount);
 			this.p = p;
 		}
 		
@@ -82,8 +82,6 @@ public class LightningWand extends Equipment {
 			weaponDamageProjectile(hit.getEntity(), proj, hitBarrier);
 			Location loc = hit.getEntity().getLocation();
 			Sounds.explode.play(p, loc);
-			if (proj.getNumHit() >= pierceAmount)
-				proj.cancel();
 		}
 		
 		@Override

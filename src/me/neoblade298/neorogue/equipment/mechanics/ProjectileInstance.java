@@ -16,6 +16,7 @@ import org.bukkit.util.Vector;
 
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
@@ -33,6 +34,7 @@ public class ProjectileInstance extends IProjectileInstance {
 	private HashMap<BuffType, Buff> buffs = new HashMap<BuffType, Buff>();
 	private int tick, numHit, interpolationPoints;
 	private String tag; // Used for metadata, like with twinShiv
+	private DamageMeta meta;
 	
 	protected ProjectileInstance(Projectile settings, FightData owner) {
 		this(settings, owner, owner.getEntity().getLocation().add(0, 1.65, 0), owner.getEntity().getLocation().getDirection());
@@ -42,6 +44,7 @@ public class ProjectileInstance extends IProjectileInstance {
 		this.inst = owner.getInstance();
 		this.owner = owner;
 		this.settings = settings;
+		this.meta = new DamageMeta(owner);
 		
 		v = direction.clone().rotateAroundY(Math.toRadians(settings.getRotation()));
 		if (settings.initialY() != 0) origin.add(0, settings.initialY(), 0);
@@ -57,6 +60,14 @@ public class ProjectileInstance extends IProjectileInstance {
 				}
 			}
 		}.runTaskTimer(NeoRogue.inst(), 0L, settings.getTickSpeed());
+	}
+
+	public DamageMeta getMeta() {
+		return meta;
+	}
+
+	public IProjectile getParent() {
+		return this.settings;
 	}
 	
 	public int getTick() {
@@ -89,16 +100,11 @@ public class ProjectileInstance extends IProjectileInstance {
 					FightData hit = FightInstance.getFightData(uuid);
 					if (targetsHit.contains(uuid)) continue;
 					targetsHit.add(uuid);
+					settings.onHit(hit, null, this);
+					numHit++;
 					
-					if (!settings.isPiercing()) {
-						numHit++;
-						settings.onHit(hit, null, this);
-						return true;
-					}
-					else {
-						numHit++;
-						settings.onHit(hit, null, this);
-					}
+					int limit = settings.getPierceLimit();
+					if (limit != -1 && numHit >= settings.getPierceLimit()) return true;
 				}
 			}
 			

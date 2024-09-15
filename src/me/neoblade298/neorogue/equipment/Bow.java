@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment;
 
+import java.util.HashMap;
+
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -9,8 +11,12 @@ import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageMeta.BuffOrigin;
+import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.BuffSlice;
+import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
@@ -32,28 +38,11 @@ public abstract class Bow extends Equipment {
 	}
 
 	public void bowDamageProjectile(LivingEntity target, ProjectileInstance proj, Barrier hitBarrier, Ammunition ammo, double initialVelocity, boolean basicAttack) {
-		DamageMeta dm = new DamageMeta((PlayerFightData) proj.getOwner(),
-			(properties.get(PropertyType.DAMAGE) + ammo.getProperties().get(PropertyType.DAMAGE)) * (initialVelocity / 3), ammo.getProperties().getType());
+		DamageMeta dm = proj.getMeta();
 		PlayerFightData data = (PlayerFightData) proj.getOwner();
-		if (!proj.getBuffs().isEmpty()) {
-			dm.addBuffs(proj.getBuffs(), BuffOrigin.PROJECTILE, true);
-		}
-		if (hitBarrier != null) {
-			dm.addBuffs(hitBarrier.getBuffs(), BuffOrigin.BARRIER, false);
-		}
-		if (basicAttack) {
-			BasicAttackEvent ev = new BasicAttackEvent(target, dm, properties.get(PropertyType.KNOCKBACK), this, null);
-			data.runActions(data, Trigger.BASIC_ATTACK, ev);
-		}
-		if (properties.contains(PropertyType.KNOCKBACK)) {
-			FightInstance.knockback(target,
-					proj.getVector().normalize().multiply(properties.get(PropertyType.KNOCKBACK) + ammo.getProperties().get(PropertyType.KNOCKBACK)));
-		}
-		FightInstance.dealDamage(dm, target);
-	}
 
-	public void bowDamageProjectile(LivingEntity target, ProjectileInstance proj, DamageMeta dm, Barrier hitBarrier, Ammunition ammo, boolean basicAttack) {
-		PlayerFightData data = (PlayerFightData) proj.getOwner();
+		// Multiply damage by the initial velocity of the projectile
+		dm.addBuff(BuffType.GENERAL, new Buff(0, (initialVelocity / 3) - 1, new HashMap<FightData, BuffSlice>()), BuffOrigin.INITIAL_VELOCITY, true);
 		if (!proj.getBuffs().isEmpty()) {
 			dm.addBuffs(proj.getBuffs(), BuffOrigin.PROJECTILE, true);
 		}

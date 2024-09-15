@@ -34,6 +34,10 @@ public class PotionProjectileInstance extends IProjectileInstance {
         thrown.setItem(item);
         thrown.setMetadata("uuid", new FixedMetadataValue(NeoRogue.inst(), uuid));
 	}
+
+	public IProjectile getParent() {
+		return this.potion;
+	}
 	
 	public static PotionProjectileInstance get(UUID uuid) {
 		return insts.get(uuid);

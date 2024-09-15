@@ -360,6 +360,15 @@ public class DamageMeta {
 		}
 		return false;
 	}
+
+	@Override
+	public String toString() {
+		String str = "";
+		for (DamageSlice slice : slices) {
+			str += slice.toString() + ", ";
+		}
+		return str;
+	}
 	
 	private class BuffMeta {
 		protected Buff buff;
@@ -380,6 +389,7 @@ public class DamageMeta {
 		STATUS,
 		SHIELD,
 		PROJECTILE,
+		INITIAL_VELOCITY, // Multiplier of initial projectile velocity
 		NORMAL;
 	}
 }

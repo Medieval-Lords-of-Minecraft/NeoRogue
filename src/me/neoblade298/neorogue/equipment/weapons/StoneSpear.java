@@ -110,7 +110,7 @@ public class StoneSpear extends Equipment {
 
 		public StoneSpearProjectile(Player p) {
 			super(1, 15, 1);
-			this.size(0.5, 0.5).pierce().gravity(0.1).initialY(0.5);
+			this.size(0.5, 0.5).pierce(-1).gravity(0.1).initialY(0.5);
 			this.p = p;
 		}
 

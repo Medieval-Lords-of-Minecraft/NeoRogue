@@ -46,4 +46,9 @@ public class DamageSlice {
 	public PlayerFightData getOwner() {
 		return (PlayerFightData) owner;
 	}
+
+	@Override
+	public String toString() {
+		return type.getDisplay() + "-" + damage;
+	}
 }

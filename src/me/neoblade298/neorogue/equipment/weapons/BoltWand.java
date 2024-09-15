@@ -66,7 +66,7 @@ public class BoltWand extends Equipment {
 
 		public BoltWandProjectile(Player p) {
 			super(2.5, 12, 1);
-			this.size(0.5, 0.5).pierce();
+			this.size(0.5, 0.5).pierce(pierceAmount);
 			this.p = p;
 		}
 
@@ -81,8 +81,6 @@ public class BoltWand extends Equipment {
 			hit.applyStatus(StatusType.ELECTRIFIED, proj.getOwner(), 5, -1);
 			Location loc = hit.getEntity().getLocation();
 			sc.play(p, loc);
-			if (proj.getNumHit() >= pierceAmount)
-				proj.cancel();
 		}
 
 		@Override
@@ -94,7 +92,7 @@ public class BoltWand extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(
-				Material.STICK, "Pierces the first <white>3</white> enemies hit, and applies <white>5</white> " + GlossaryTag.ELECTRIFIED.tag(this) + " to all."
+				Material.STICK, "Pierces the first <white>" + pierceAmount + "</white> enemies hit, and applies <white>5</white> " + GlossaryTag.ELECTRIFIED.tag(this) + " to all."
 		);
 	}
 }

@@ -33,6 +33,7 @@ import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
 import me.neoblade298.neorogue.equipment.abilities.EmpoweredEdge;
+import me.neoblade298.neorogue.equipment.abilities.PiercingShot;
 import me.neoblade298.neorogue.equipment.abilities.ShadowWalk;
 import me.neoblade298.neorogue.equipment.weapons.BasicArrow;
 import me.neoblade298.neorogue.equipment.weapons.BasicBow;
@@ -128,7 +129,8 @@ public class PlayerSessionData {
 			break;
 		case ARCHER:
 			hotbar[0] = BasicBow.get();
-			hotbar[1] = BasicArrow.get();
+			hotbar[1] = PiercingShot.get();
+			hotbar[8] = BasicArrow.get();
 			abilitiesEquipped = 1;
 			break;
 		case MAGE:

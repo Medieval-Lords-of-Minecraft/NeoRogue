@@ -8,9 +8,10 @@ import me.neoblade298.neorogue.session.fight.FightData;
 
 public abstract class Projectile extends IProjectile {
 	private double gravity, yRotate, blocksPerTick, initialY;
-	private boolean pierce, ignoreBarriers, ignoreBlocks, ignoreEntities;
+	private boolean ignoreBarriers, ignoreBlocks, ignoreEntities;
 	private double width = 0.2, height = 0.2;
-	private int maxTicks, tickSpeed;
+	private int maxTicks, tickSpeed, pierce = 1;
+
 	public Projectile(double blocksPerTick, double maxRange, int tickSpeed) {
 		this.blocksPerTick = blocksPerTick; // Per in-game tick, not projectile tick
 		this.tickSpeed = tickSpeed;
@@ -56,8 +57,8 @@ public abstract class Projectile extends IProjectile {
 		return this;
 	}
 	
-	public Projectile pierce() {
-		this.pierce = true;
+	public Projectile pierce(int num) {
+		this.pierce = num;
 		return this;
 	}
 	
@@ -74,7 +75,7 @@ public abstract class Projectile extends IProjectile {
 		return this;
 	}
 	
-	public boolean isPiercing() {
+	public int getPierceLimit() {
 		return pierce;
 	}
 	
