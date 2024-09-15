@@ -19,8 +19,8 @@ public enum Trigger {
 	HOTBAR_9,
 	WEAPON_SWING, // Sets weapon attack cooldown
 	BASIC_ATTACK,
-	PRE_CAST_USABLE,
-	CAST_USABLE,
+	PRE_CAST_USABLE, // Use this event for actual buffs
+	CAST_USABLE, // Use this event to check if the buffs were used (e.g. energy battery)
 	LEFT_CLICK,
 	LEFT_CLICK_NO_HIT,
 	LEFT_CLICK_HIT,

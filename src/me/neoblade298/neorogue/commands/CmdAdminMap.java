@@ -22,10 +22,14 @@ import me.neoblade298.neorogue.map.MapPiece;
 import me.neoblade298.neorogue.map.MapPieceInstance;
 
 public class CmdAdminMap extends Subcommand {
-
 	public CmdAdminMap(String key, String desc, String perm, SubcommandRunner runner) {
 		super(key, desc, perm, runner);
-		args.add(new Arg("AreaType", false), new Arg("NumPieces", false), new Arg("RequiredPiece", false));
+		this.enableTabComplete();
+		ArrayList<String> tab = new ArrayList<String>();
+		for (AreaType type : AreaType.values()) {
+			tab.add(type.toString());
+		}
+		args.add(new Arg("AreaType", false).setTabOptions(tab), new Arg("NumPieces", false), new Arg("RequiredPiece", false));
 	}
 
 	@Override

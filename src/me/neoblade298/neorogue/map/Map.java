@@ -181,7 +181,7 @@ public class Map {
 				else if (rand == 2) inst.setFlip(false, true);
 				ms.applySettings(inst);
 				inst.setX(coords.i);
-				inst.setY(0);
+				inst.setY(1);
 				inst.setZ(coords.j);
 				map.place(inst, false);
 			}

@@ -360,6 +360,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new AlchemistBag();
 		new AmuletOfOffering();
 		new AvalonianAnchor();
+		new AzureCutter();
 		new BloodyTrinket();
 		new BurningCross();
 		new Brightfeather();
@@ -377,6 +378,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new MercenaryHeadband();
 		new NoxianBlight();
 		new NoxianSkull();
+		new OpalHourglass();
 		new StaticNecklace();
 		new TomeOfWisdom();
 
