@@ -111,6 +111,12 @@ public class DamageMeta {
 	}
 	
 	public void addDamageSlice(DamageSlice slice) {
+		for (DamageSlice ds : slices) {
+			if (ds.isSimilar(slice)) {
+				ds.add(slice);
+				return;
+			}
+		}
 		this.slices.add(slice);
 	}
 	

@@ -21,7 +21,7 @@ public class WoodenArrow extends Ammunition {
 
 	@Override
 	public void setupReforges() {
-		addSelfReforge(StoneArrow.get(), LitArrow.get());
+		addSelfReforge(StoneArrow.get(), LitArrow.get(), SerratedArrow.get());
 	}
 	
 	public static Equipment get() {

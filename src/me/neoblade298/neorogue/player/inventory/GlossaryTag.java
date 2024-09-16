@@ -46,6 +46,8 @@ public enum GlossaryTag implements GlossaryIcon {
 			"reapplied, the status duration is set to whichever is longer: the current status or the new applying source."),
 	BLEED(Material.REDSTONE, StatusType.BLEED.tag,
 			"Deals 0.2 bleed damage per stack applied to the holder and removes 1 stack every second, ignoring shields."),
+	REND(Material.NETHERITE_SCRAP, StatusType.REND.tag,
+			"Certain abilities become stronger with more stacks of these applied to enemies."),
 	BURN(Material.BLAZE_POWDER, StatusType.BURN.tag,
 			"Upon the holder taking damage, deals 1 fire damage per stack applied. 1 stack is removed every second."),
 	FROST(Material.PACKED_ICE, StatusType.FROST.tag,

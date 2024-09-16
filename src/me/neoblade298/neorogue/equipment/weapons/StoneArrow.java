@@ -1,6 +1,7 @@
 package me.neoblade298.neorogue.equipment.weapons;
 
 import org.bukkit.Material;
+import org.bukkit.entity.LivingEntity;
 
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Ammunition;
@@ -31,7 +32,7 @@ public class StoneArrow extends Ammunition {
 	}
 
 	@Override
-	public void onHit(ProjectileInstance inst) {
+	public void onHit(ProjectileInstance inst, LivingEntity trg) {
 		DamageMeta meta = inst.getMeta();
 		if (inst.getOrigin().distanceSquared(inst.getLocation()) >= (thres * thres)) {
 			meta.addDamageSlice(new DamageSlice(inst.getOwner(), damage, DamageType.PIERCING));
@@ -40,6 +41,6 @@ public class StoneArrow extends Ammunition {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.ARROW, "Deals an additional " + GlossaryTag.PIERCING.tag(this, damage, true) + " if it travels at least " + DescUtil.white(thres) + " blocks.");
+		item = createItem(Material.ARROW, "Deals an additional " + GlossaryTag.PIERCING.tag(this, damage, true) + " damage if it travels at least " + DescUtil.white(thres) + " blocks.");
 	}
 }

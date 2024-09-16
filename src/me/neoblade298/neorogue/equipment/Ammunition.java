@@ -1,5 +1,6 @@
 package me.neoblade298.neorogue.equipment;
 
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.util.Util;
@@ -17,7 +18,7 @@ public abstract class Ammunition extends Equipment {
 		super(id, display, isUpgraded, rarity, ec, type, props);
 	}
 	public void onTick(Player p, ProjectileInstance proj, boolean interpolation) {}
-	public void onHit(ProjectileInstance inst) {}
+	public void onHit(ProjectileInstance inst, LivingEntity target) {}
 	public void modifyDamage(DamageMeta meta) {}
 	public double modifyVelocity(double velocity) { return velocity; }
 
