@@ -98,16 +98,9 @@ public abstract class Projectile extends IProjectile {
 	public boolean isIgnoreEntities() {
 		return ignoreEntities;
 	}
-
-	// Can only be run by ProjectileGroup
-	protected IProjectileInstance start(FightData owner) {
-		ProjectileInstance proj = new ProjectileInstance(this, owner);
-		onStart(proj);
-		return proj;
-	}
 	
-	// Can only be run by ProjectileGroup
-	protected IProjectileInstance start(FightData owner, Location source, Vector direction) {
+	@Override
+	protected IProjectileInstance onStart(FightData owner, Location source, Vector direction) {
 		ProjectileInstance proj = new ProjectileInstance(this, owner, source, direction);
 		onStart(proj);
 		return proj;

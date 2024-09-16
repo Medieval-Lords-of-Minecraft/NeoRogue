@@ -9,19 +9,14 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.DamageType;
 
-public class WoodenArrow extends Ammunition {
-	private static final String ID = "woodenArrow";
+public class LitArrow extends Ammunition {
+	private static final String ID = "litArrow";
 	
-	public WoodenArrow(boolean isUpgraded) {
-		super(ID, "Wooden Arrow", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
+	public LitArrow(boolean isUpgraded) {
+		super(ID, "Lit Arrow", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofAmmunition(isUpgraded ? 7 : 2, 0.1, DamageType.PIERCING));
+				EquipmentProperties.ofAmmunition(isUpgraded ? 13 : 8, 0.1, DamageType.FIRE));
 		properties.addUpgrades(PropertyType.DAMAGE);
-	}
-
-	@Override
-	public void setupReforges() {
-		addSelfReforge(StoneArrow.get(), LitArrow.get());
 	}
 	
 	public static Equipment get() {

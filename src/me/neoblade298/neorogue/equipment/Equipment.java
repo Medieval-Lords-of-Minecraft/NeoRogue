@@ -316,6 +316,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new LightLeatherGauntlets(b);
 			new LightningCutter(b);
 			new LightningWand(b);
+			new LitArrow(b);
 			new MassiveHalberd(b);
 			new MirrorSickle(b);
 			new Nightmare(b);
@@ -328,6 +329,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new SparkdrainKnife(b);
 			new SparkKnife(b);
 			new SparkStick(b);
+			new StoneArrow(b);
 			new StoneAxe(b);
 			new StoneDagger(b);
 			new StoneDriver(b);

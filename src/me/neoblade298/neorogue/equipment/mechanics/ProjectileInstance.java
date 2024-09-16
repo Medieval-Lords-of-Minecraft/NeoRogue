@@ -41,6 +41,7 @@ public class ProjectileInstance extends IProjectileInstance {
 	}
 	
 	protected ProjectileInstance(Projectile settings, FightData owner, Location origin, Vector direction) {
+		super(origin);
 		this.inst = owner.getInstance();
 		this.owner = owner;
 		this.settings = settings;

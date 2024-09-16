@@ -17,6 +17,7 @@ public abstract class Ammunition extends Equipment {
 		super(id, display, isUpgraded, rarity, ec, type, props);
 	}
 	public void onTick(Player p, ProjectileInstance proj, boolean interpolation) {}
+	public void onHit(ProjectileInstance inst) {}
 	public void modifyDamage(DamageMeta meta) {}
 	public double modifyVelocity(double velocity) { return velocity; }
 

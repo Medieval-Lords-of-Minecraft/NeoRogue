@@ -41,6 +41,9 @@ public abstract class Bow extends Equipment {
 		DamageMeta dm = proj.getMeta();
 		PlayerFightData data = (PlayerFightData) proj.getOwner();
 
+		// Apply any ammo changes
+		ammo
+
 		// Multiply damage by the initial velocity of the projectile
 		dm.addBuff(BuffType.GENERAL, new Buff(0, (initialVelocity / 3) - 1, new HashMap<FightData, BuffSlice>()), BuffOrigin.INITIAL_VELOCITY, true);
 		if (!proj.getBuffs().isEmpty()) {

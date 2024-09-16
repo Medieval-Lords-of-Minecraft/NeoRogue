@@ -21,7 +21,8 @@ public class PotionProjectileInstance extends IProjectileInstance {
 	private PotionProjectile potion;
 	private UUID uuid;
 	
-	public PotionProjectileInstance(PotionProjectile potion, ThrownPotion thrown) {
+	public PotionProjectileInstance(PotionProjectile potion, ThrownPotion thrown, Location origin) {
+		super(origin);
 		uuid = UUID.randomUUID();
 		insts.put(uuid, this);
 		this.potion = potion;

@@ -7,7 +7,10 @@ import me.neoblade298.neorogue.equipment.Ammunition;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageType;
 
 public class StoneArrow extends Ammunition {
@@ -17,14 +20,22 @@ public class StoneArrow extends Ammunition {
 	private int damage;
 	
 	public StoneArrow(boolean isUpgraded) {
-		super(ID, "Stone Arrow", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
+		super(ID, "Stone Arrow", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofAmmunition(15, 0.1, DamageType.PIERCING));
+				EquipmentProperties.ofAmmunition(8, 0.1, DamageType.PIERCING));
 				damage = isUpgraded ? 15 : 10;
 	}
 	
 	public static Equipment get() {
 		return Equipment.get(ID, false);
+	}
+
+	@Override
+	public void onHit(ProjectileInstance inst) {
+		DamageMeta meta = inst.getMeta();
+		if (inst.getOrigin().distanceSquared(inst.getLocation()) >= (thres * thres)) {
+			meta.addDamageSlice(new DamageSlice(inst.getOwner(), damage, DamageType.PIERCING));
+		}
 	}
 
 	@Override

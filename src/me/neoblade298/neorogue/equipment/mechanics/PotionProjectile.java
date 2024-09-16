@@ -23,10 +23,11 @@ public class PotionProjectile extends IProjectile {
 	}
 	
 	@Override
-	protected PotionProjectileInstance start(FightData owner, Location source, Vector direction) {
+	protected PotionProjectileInstance onStart(FightData owner, Location source, Vector direction) {
 		LivingEntity ent = owner.getEntity();
-		ThrownPotion thrown = (ThrownPotion) ent.getWorld().spawnEntity(ent.getLocation().add(0, 1.25, 0), EntityType.SPLASH_POTION);
-		thrown.setVelocity(owner.getEntity().getEyeLocation().getDirection());
-		return new PotionProjectileInstance(this, thrown);
+		source = source.add(0, 1.25, 0);
+		ThrownPotion thrown = (ThrownPotion) ent.getWorld().spawnEntity(source, EntityType.SPLASH_POTION);
+		thrown.setVelocity(direction);
+		return new PotionProjectileInstance(this, thrown, source);
 	}
 }
