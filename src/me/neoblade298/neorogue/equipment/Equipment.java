@@ -289,7 +289,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 
 			// Weapons
 			new BasicBow(b);
-			new BasicArrow(b);
+			new WoodenArrow(b);
 			new BoltWand(b);
 			new ButterflyKnife(b);
 			new ButterflyKnife2(b);

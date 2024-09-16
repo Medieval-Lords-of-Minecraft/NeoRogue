@@ -18,14 +18,14 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class BasicBow extends Bow {
-	private static final String ID = "basicBow";
+public class HuntersBow extends Bow {
+	private static final String ID = "huntersBow";
 	private static final ParticleContainer tick = new ParticleContainer(Particle.CRIT).count(10).speed(0.01).spread(0.1, 0.1);
 	
-	public BasicBow(boolean isUpgraded) {
-		super(ID, "Basic Bow", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
+	public HuntersBow(boolean isUpgraded) {
+		super(ID, "Hunter's Bow", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofBow(30, isUpgraded ? 1.5 : 1, 0, 7));
+				EquipmentProperties.ofBow(isUpgraded ? 70 : 50, 1, 0, 10));
 		properties.addUpgrades(PropertyType.ATTACK_SPEED);
 	}
 
@@ -48,6 +48,7 @@ public class BasicBow extends Bow {
 		data.addSlotBasedTrigger(id, slot, Trigger.VANILLA_PROJECTILE, (pdata, in) -> {
 			if (!canShoot(data)) return TriggerResult.keep();
 			ProjectileLaunchEvent ev = (ProjectileLaunchEvent) in;
+			if (ev.getEntity().getVelocity().length() < 3) return TriggerResult.keep();
 			ProjectileGroup proj = new ProjectileGroup(new BowProjectile(data, ev.getEntity().getVelocity(), this));
 			proj.start(data);
 			return TriggerResult.keep();
@@ -56,6 +57,6 @@ public class BasicBow extends Bow {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BOW);
+		item = createItem(Material.BOW, "Can only be fired at max draw.");
 	}
 }

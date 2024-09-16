@@ -153,6 +153,7 @@ public class Map {
 		
 		// Fill in any spots adjacent to pieces with border pieces
 		if (type == AreaType.HARVEST_FIELDS) {
+			int y = (int) map.getPieces().getFirst().getPiece().getEntrances()[0].getY();
 			boolean[][] shape = map.shape;
 			HashSet<Pair> set = new HashSet<Pair>();
 			for (int i = 0; i < shape.length; i++) {
@@ -181,7 +182,7 @@ public class Map {
 				else if (rand == 2) inst.setFlip(false, true);
 				ms.applySettings(inst);
 				inst.setX(coords.i);
-				inst.setY(1);
+				inst.setY(y);
 				inst.setZ(coords.j);
 				map.place(inst, false);
 			}
@@ -222,9 +223,9 @@ public class Map {
 	}
 	
 	public boolean place(MapPiece piece) {
-		// Special case, first piece being placed
 		addTargets(piece.getTargets());
 		if (pieces.size() == 0) {
+			// Special case, first piece being placed
 			placeFirst(piece, true);
 		}
 		// Standard case, find an existing entrance and try to put the piece on
