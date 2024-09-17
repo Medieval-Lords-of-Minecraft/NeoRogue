@@ -312,6 +312,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new HiddenRazor(b);
 			new IceWand(b);
 			new Irritant(b);
+			new LayTrap(b);
 			new LeatherGauntlets(b);
 			new LightLeatherGauntlets(b);
 			new LightningCutter(b);
@@ -942,7 +943,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		}
 		if (properties.contains(PropertyType.KNOCKBACK)) {
 			FightInstance.knockback(target,
-					proj.getVector().normalize().multiply(properties.get(PropertyType.KNOCKBACK)));
+					proj.getVelocity().normalize().multiply(properties.get(PropertyType.KNOCKBACK)));
 		}
 		FightInstance.dealDamage(dm, target);
 	}
@@ -965,7 +966,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		}
 		if (properties.contains(PropertyType.KNOCKBACK)) {
 			FightInstance.knockback(target,
-					proj.getVector().normalize().multiply(properties.get(PropertyType.KNOCKBACK)));
+					proj.getVelocity().normalize().multiply(properties.get(PropertyType.KNOCKBACK)));
 		}
 		FightInstance.dealDamage(dm, target);
 	}

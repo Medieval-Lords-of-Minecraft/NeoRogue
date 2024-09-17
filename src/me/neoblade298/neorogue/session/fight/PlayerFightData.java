@@ -16,6 +16,8 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Ammunition;
@@ -150,6 +152,15 @@ public class PlayerFightData extends FightData {
 		updateStamina();
 		updateMana();
 		updateBoardLines();
+	}
+
+	public boolean isChanneling() {
+		return statuses.containsKey(StatusType.CHANNELING.name());
+	}
+
+	public void channel(int ticks) {
+		applyStatus(StatusType.CHANNELING, this, 1, ticks);
+		entity.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, ticks, 1));
 	}
 	
 	@Override
@@ -330,6 +341,7 @@ public class PlayerFightData extends FightData {
 				TriggerResult tr;
 
 				if (inst instanceof EquipmentInstance) {
+					if (data.isChanneling()) return false;
 					EquipmentInstance ei = (EquipmentInstance) inst;
 					CastUsableEvent ev = new CastUsableEvent(ei);
 					runActions(data, Trigger.PRE_CAST_USABLE, ev);

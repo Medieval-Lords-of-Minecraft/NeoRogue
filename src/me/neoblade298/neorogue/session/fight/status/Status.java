@@ -65,6 +65,8 @@ public abstract class Status {
 		case SHELL: return new ShellStatus(target);
 		case STEALTH: return new DurationStatus(id.name(), target, StatusClass.POSITIVE);
 		case EVADE: return new BasicStatus(id.name(), target, StatusClass.POSITIVE);
+		case SILENCED: return new BasicStatus(id.name(), target, StatusClass.NEGATIVE, true);
+		case CHANNELING: return new BasicStatus(id.name(), target, StatusClass.NONE, true);
 		}
 		Bukkit.getLogger().warning("[NeoRogue] Failed to create status type " + id);
 		return new BasicStatus(id.name(), target, StatusClass.NONE);
@@ -134,7 +136,9 @@ public abstract class Status {
 		PROTECT("<green>Protect</green>", "&aProtect"),
 		SHELL("<aqua>Shell</aqua>", "&3Shell"),
 		STEALTH("<dark_purple>Stealth</dark_purple>", "&5Stealth"),
-		EVADE("<aqua>Evade</aqua>", "&3Evade");
+		EVADE("<aqua>Evade</aqua>", "&3Evade"),
+		SILENCED("<dark_gray>Silenced</dark_gray>", "&8Silenced"), // Hidden
+		CHANNELING("<dark_red>Channeling</dark_red>", "&4Channeling"); // Hidden
 		public String tag;
 		public Component ctag;
 		public String boardLine;

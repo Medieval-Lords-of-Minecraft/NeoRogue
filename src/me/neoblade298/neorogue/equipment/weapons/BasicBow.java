@@ -45,10 +45,10 @@ public class BasicBow extends Bow {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		ProjectileGroup proj = new ProjectileGroup(new BowProjectile(data, ev.getEntity().getVelocity(), this));
 		data.addSlotBasedTrigger(id, slot, Trigger.VANILLA_PROJECTILE, (pdata, in) -> {
 			if (!canShoot(data)) return TriggerResult.keep();
 			ProjectileLaunchEvent ev = (ProjectileLaunchEvent) in;
-			ProjectileGroup proj = new ProjectileGroup(new BowProjectile(data, ev.getEntity().getVelocity(), this));
 			proj.start(data);
 			return TriggerResult.keep();
 		});

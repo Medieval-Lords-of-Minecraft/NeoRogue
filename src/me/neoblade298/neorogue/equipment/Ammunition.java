@@ -6,7 +6,6 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
-import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -19,8 +18,7 @@ public abstract class Ammunition extends Equipment {
 	}
 	public void onTick(Player p, ProjectileInstance proj, boolean interpolation) {}
 	public void onHit(ProjectileInstance inst, LivingEntity target) {}
-	public void modifyDamage(DamageMeta meta) {}
-	public double modifyVelocity(double velocity) { return velocity; }
+	public void onStart(ProjectileInstance inst) {}
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {

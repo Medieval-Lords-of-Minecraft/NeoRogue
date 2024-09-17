@@ -87,7 +87,7 @@ public class ElectrifiedStatus extends DecrementStackStatus {
 				dm.addBuffs(hitBarrier.getBuffs(), BuffOrigin.BARRIER, false);
 			}
 			FightInstance.knockback(target,
-					proj.getVector().normalize().multiply(0.2));
+					proj.getVelocity().normalize().multiply(0.2));
 			FightInstance.dealDamage(dm, target);
 		}
 

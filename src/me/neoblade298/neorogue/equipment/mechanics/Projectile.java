@@ -100,7 +100,7 @@ public abstract class Projectile extends IProjectile {
 	}
 	
 	@Override
-	protected IProjectileInstance onStart(FightData owner, Location source, Vector direction) {
+	protected ProjectileInstance create(FightData owner, Location source, Vector direction) {
 		ProjectileInstance proj = new ProjectileInstance(this, owner, source, direction);
 		onStart(proj);
 		return proj;

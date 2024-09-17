@@ -1,12 +1,17 @@
 package me.neoblade298.neorogue.equipment;
 
-import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
 import java.util.ArrayList;
 
+import org.bukkit.Location;
+import org.bukkit.Particle;
+import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
+
+import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
+import me.neoblade298.neorogue.equipment.mechanics.IProjectileInstance;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileTickAction;
@@ -16,25 +21,19 @@ import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 
 public class BowProjectile extends Projectile {
+	public static ParticleContainer bowTick = new ParticleContainer(Particle.CRIT).count(10).speed(0.01).spread(0.1, 0.1);
+	
 	private PlayerFightData data;
 	private Player p;
-	private Bow bow;
-	private EquipmentProperties props;
-	private Ammunition ammo;
-	private double initialVelocity;
 	private ArrayList<ProjectileTickAction> tickActions = new ArrayList<ProjectileTickAction>();
 
 	// Vector is non-normalized velocity of the vanilla projectile being fired
 	public BowProjectile(PlayerFightData data, Vector v, Bow bow) {
-		super(data.getAmmunition().modifyVelocity(v.length() * bow.getProperties().get(PropertyType.ATTACK_SPEED)), bow.getProperties().get(PropertyType.RANGE), 1);
+		super(1, bow.getProperties().get(PropertyType.RANGE), 1);
 		this.gravity(0.2);
 		this.size(1, 0.1);
 		this.data = data;
 		this.p = data.getPlayer();
-		this.bow = bow;
-		this.props = bow.getProperties();
-		this.ammo = data.getAmmunition();
-		this.initialVelocity = v.length();
 	}
 
 	public void addProjectileTickAction(ProjectileTickAction action) {
@@ -43,6 +42,7 @@ public class BowProjectile extends Projectile {
 
 	@Override
 	public void onTick(ProjectileInstance proj, boolean interpolation) {
+		BowProjectileInstance bproj = (BowProjectileInstance) proj;
 		bow.onTick(p, proj, interpolation);
 		ammo.onTick(p, proj, interpolation);
 		for (ProjectileTickAction action : tickActions) {
@@ -56,12 +56,20 @@ public class BowProjectile extends Projectile {
 	}
 
 	@Override
+	protected IProjectileInstance create(FightData owner, Location source, Vector direction) {
+		PlayerFightData data = (PlayerFightData) owner;
+		BowProjectileInstance proj = new BowProjectileInstance(data, direction, this, bow, ammo, initialVelocity);
+		onStart(proj);
+		return proj;
+	}
+
+	@Override
 	public void onStart(ProjectileInstance proj) {
 		Sounds.shoot.play(p, p);
 		DamageMeta dm = proj.getMeta();
 		EquipmentProperties ammoProps = ammo.getProperties();
 		double dmg = ammoProps.get(PropertyType.DAMAGE) + props.get(PropertyType.DAMAGE);
 		dm.addDamageSlice(new DamageSlice(data, dmg, ammoProps.getType()));
-		ammo.modifyDamage(dm);
+		ammo.onStart(proj);
 	}
 }

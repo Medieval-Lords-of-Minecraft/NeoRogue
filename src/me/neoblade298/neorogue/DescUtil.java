@@ -19,4 +19,8 @@ public class DescUtil {
 	public static String white(double txt) {
 		return "<white>" + txt + "</white>";
 	}
+
+	public static String potion(String txt, int potency, int seconds) {
+		return txt + " " + white(potency) + "[" + white(seconds) + "s]";
+	}
 }

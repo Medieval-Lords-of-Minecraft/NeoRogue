@@ -87,7 +87,11 @@ public enum GlossaryTag implements GlossaryIcon {
 	STEALTH(Material.NETHER_STAR, StatusType.STEALTH.tag,
 			"Certain abilities become stronger when this status is applied."),
 	EVADE(Material.PHANTOM_MEMBRANE, StatusType.EVADE.tag,
-			"When the holder takes damage, damage dealt is first subtracted from stamina. One stack is lost per damage instance. ");
+			"When the holder takes damage, damage dealt is first subtracted from stamina. One stack is lost per damage instance. "),
+	CHARGE(Material.BLAZE_ROD, "<gold>Charge</gold>",
+			"Apply slowness <white>1</white> to yourself. You cannot use other abilities during this time."),
+	CHANNEL(Material.CLOCK, "<red>Channel</red>",
+			"Become unable to move. You cannot use other abilities during this time.");
 	
 	private ItemStack icon;
 	public String tag;

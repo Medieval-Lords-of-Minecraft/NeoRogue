@@ -29,6 +29,10 @@ public class TargetHelper {
 		return TargetUtil.getEntitiesInRadius(source, props.range, new TargetFilter(source, props));
 	}
 
+	public static LivingEntity getNearest(LivingEntity source, Location loc, TargetProperties props) {
+		return getEntitiesInRadius(source, loc, props).peekFirst();
+	}
+
 	public static LivingEntity getNearest(LivingEntity source, TargetProperties props) {
 		return getEntitiesInRadius(source, props).peekFirst();
 	}

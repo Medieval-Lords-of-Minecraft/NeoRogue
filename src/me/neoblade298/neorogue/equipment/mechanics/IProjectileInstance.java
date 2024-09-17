@@ -7,7 +7,6 @@ public abstract class IProjectileInstance {
     public IProjectileInstance(Location origin) {
         this.origin = origin;
     }
-    public abstract IProjectile getParent();
     public Location getOrigin() {
         return origin;
     }

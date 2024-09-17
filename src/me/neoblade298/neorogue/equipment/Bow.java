@@ -58,7 +58,7 @@ public abstract class Bow extends Equipment {
 		}
 		if (properties.contains(PropertyType.KNOCKBACK)) {
 			FightInstance.knockback(target,
-					proj.getVector().normalize().multiply(properties.get(PropertyType.KNOCKBACK) + ammo.getProperties().get(PropertyType.KNOCKBACK)));
+					proj.getVelocity().normalize().multiply(properties.get(PropertyType.KNOCKBACK) + ammo.getProperties().get(PropertyType.KNOCKBACK)));
 		}
 		FightInstance.dealDamage(dm, target);
 	}
