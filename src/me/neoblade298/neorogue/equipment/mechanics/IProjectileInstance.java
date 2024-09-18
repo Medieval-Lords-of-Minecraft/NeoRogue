@@ -4,6 +4,7 @@ import org.bukkit.Location;
 
 public abstract class IProjectileInstance {
     private Location origin;
+    public abstract IProjectile getParent();
     public IProjectileInstance(Location origin) {
         this.origin = origin;
     }

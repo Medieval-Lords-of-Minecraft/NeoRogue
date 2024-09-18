@@ -17,6 +17,10 @@ public abstract class Projectile extends IProjectile {
 		this.tickSpeed = tickSpeed;
 		this.maxTicks = (int) (maxRange / (blocksPerTick * tickSpeed)) + 1;
 	}
+
+	public Projectile(double maxRange, int tickSpeed) {
+		this(1, maxRange, tickSpeed);
+	}
 	
 	public double getWidth() {
 		return width;
@@ -40,6 +44,11 @@ public abstract class Projectile extends IProjectile {
 	
 	public double getRotation() {
 		return yRotate;
+	}
+
+	public Projectile blocksPerTick(double blocksPerTick) {
+		this.blocksPerTick = blocksPerTick;
+		return this;
 	}
 	
 	public Projectile initialY(double initialY) {

@@ -45,7 +45,7 @@ public class ProjectileGroup {
 	public LinkedList<IProjectileInstance> start(FightData owner) {
 		LinkedList<IProjectileInstance> projs = new LinkedList<IProjectileInstance>();
 		for (IProjectile proj : group) {
-			projs.add(proj.start(owner));
+			projs.add(proj.startWithoutEvent(owner));
 		}
 		if (owner.getEntity() instanceof Player) {
 			Player p = (Player) owner.getEntity();
@@ -58,7 +58,7 @@ public class ProjectileGroup {
 		direction.normalize();
 		LinkedList<IProjectileInstance> projs = new LinkedList<IProjectileInstance>();
 		for (IProjectile proj : group) {
-			projs.add(proj.start(owner, origin, direction));
+			projs.add(proj.startWithoutEvent(owner, origin, direction));
 		}
 		if (owner.getEntity() instanceof Player) {
 			Player p = (Player) owner.getEntity();

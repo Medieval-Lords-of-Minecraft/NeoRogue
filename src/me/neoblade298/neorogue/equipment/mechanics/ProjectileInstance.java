@@ -40,7 +40,6 @@ public class ProjectileInstance extends IProjectileInstance {
 		this(settings, owner, owner.getEntity().getLocation().add(0, 1.65, 0), owner.getEntity().getLocation().getDirection());
 	}
 	
-	// Direction can be used to directly give speed, doesn't need to be normalized
 	protected ProjectileInstance(Projectile settings, FightData owner, Location origin, Vector direction) {
 		super(origin);
 		this.inst = owner.getInstance();
@@ -68,6 +67,7 @@ public class ProjectileInstance extends IProjectileInstance {
 		return meta;
 	}
 
+	@Override
 	public Projectile getParent() {
 		return this.settings;
 	}
