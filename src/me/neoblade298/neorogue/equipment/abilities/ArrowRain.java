@@ -10,6 +10,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
@@ -21,6 +22,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
+import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -39,12 +41,13 @@ public class ArrowRain extends Equipment {
 	private static final String ID = "arrowRain";
 	private static TargetProperties tp = TargetProperties.block(7, true),
 			hitTp = TargetProperties.radius(2, false, TargetType.ENEMY);
-	private static ParticleContainer hit = new ParticleContainer(Particle.EXPLOSION_NORMAL).count(50).spread(1, 0.1).speed(0.1);
+	private static ParticleContainer hit = new ParticleContainer(Particle.EXPLOSION_NORMAL).count(50).spread(1, 0.1).speed(0.1),
+			targeter = new ParticleContainer(Particle.REDSTONE).count(10).offsetY(1).spread(0.3, 0);
 	private int damage, reps;
 	
 	public ArrowRain(boolean isUpgraded) {
 		super(ID, "Arrow Rain", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 5, 15, tp.range));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 5, 1, tp.range));
 				reps = isUpgraded ? 4 : 3;
 				damage = 40;
 	}
@@ -55,15 +58,15 @@ public class ArrowRain extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ProjectileGroup projs = new ProjectileGroup(new ArrowRainProjectile(p, p.getLocation(), data));
 		data.addTrigger(id, bind, new AmmoEquipmentInstance(p, this, slot, es, (pd, in) -> {
 			Sounds.equip.play(p, p);
 			data.channel(20);
+			ProjectileGroup projs = new ProjectileGroup(new ArrowRainProjectile(p, p.getLocation(), data));
 			data.addTask(new BukkitRunnable() {
 				public void run() {
 					initRain(p, data, projs);
 				}
-			}.runTaskLater(NeoRogue.inst(), 40L));
+			}.runTaskLater(NeoRogue.inst(), 20L));
 			return TriggerResult.keep();
 		}));
 	}
@@ -75,10 +78,11 @@ public class ArrowRain extends Equipment {
 			public void run() {
 				Sounds.shoot.play(p, p);
 				Location block = TargetHelper.getSightLocation(p, tp);
+				targeter.play(p, block);
 				if (block != null) {
 					dropRain(p, block, data, projs, ammo);
 				}
-				if (++tick >= 5) {
+				if (++tick >= reps) {
 					this.cancel();
 				}
 			}
@@ -97,13 +101,13 @@ public class ArrowRain extends Equipment {
 		}.runTaskLater(NeoRogue.inst(), 20L));
 	}
 	
-	private class ArrowRainProjectile extends BowProjectile {
+	private class ArrowRainProjectile extends Projectile {
 		private Player p;
 		private PlayerFightData data;
 		private Ammunition ammo;
 
 		public ArrowRainProjectile(Player p, Location trg, PlayerFightData data) {
-			super(0.5, 10, 1);
+			super(0.5, 6, 1);
 			this.p = p;
 			this.data = data;
 			this.ammo = data.getAmmunition();
@@ -134,6 +138,11 @@ public class ArrowRain extends Equipment {
 			hitAnimation(hit.getEntity().getLocation());
 			ammo.onHit(proj, hit.getEntity());
 			FightInstance.dealDamage(proj.getMeta(), hit.getEntity());
+		}
+
+		@Override
+		public void onTick(ProjectileInstance proj, boolean interpolation) {
+			BowProjectile.bowTick.play(p, proj.getLocation());
 		}
 
 		private void hitAnimation(Location loc) {

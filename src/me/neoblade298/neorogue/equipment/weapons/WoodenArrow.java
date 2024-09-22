@@ -13,7 +13,7 @@ public class WoodenArrow extends Ammunition {
 	private static final String ID = "woodenArrow";
 	
 	public WoodenArrow(boolean isUpgraded) {
-		super(ID, "Wooden Arrow", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
+		super(ID, "Wooden Arrow", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofAmmunition(isUpgraded ? 7 : 2, 0.1, DamageType.PIERCING));
 		properties.addUpgrades(PropertyType.DAMAGE);

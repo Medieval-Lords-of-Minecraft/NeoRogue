@@ -47,7 +47,7 @@ public class ProjectileInstance extends IProjectileInstance {
 		this.settings = settings;
 		this.meta = new DamageMeta(owner);
 		
-		v = direction.clone().rotateAroundY(Math.toRadians(settings.getRotation()));
+		v = direction.clone().normalize().rotateAroundY(Math.toRadians(settings.getRotation()));
 		if (settings.initialY() != 0) origin.add(0, settings.initialY(), 0);
 		v.multiply(settings.getBlocksPerTick() * settings.getTickSpeed());
 		interpolationPoints = (int) v.length() + 1;
@@ -61,6 +61,7 @@ public class ProjectileInstance extends IProjectileInstance {
 				}
 			}
 		}.runTaskTimer(NeoRogue.inst(), 0L, settings.getTickSpeed());
+		owner.addTask(task);
 	}
 
 	public DamageMeta getMeta() {

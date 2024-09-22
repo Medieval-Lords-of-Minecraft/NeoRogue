@@ -37,9 +37,11 @@ public class BowProjectile extends Projectile {
 		this.data = data;
 		this.p = data.getPlayer();
 		this.bow = bow;
+		this.ammo = data.getAmmunition();
+		this.props = bow.getProperties();
 		initialVelocity = v.length();
 
-		blocksPerTick(bow.getProperties().get(PropertyType.ATTACK_SPEED));
+		blocksPerTick(initialVelocity * bow.getProperties().get(PropertyType.ATTACK_SPEED));
 	}
 
 	public void addProjectileTickAction(ProjectileTickAction action) {
@@ -57,7 +59,7 @@ public class BowProjectile extends Projectile {
 
 	@Override
 	public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
-		bow.bowDamageProjectile(p, proj, hitBarrier, ammo, initialVelocity, true);
+		bow.bowDamageProjectile(hit.getEntity(), proj, hitBarrier, ammo, initialVelocity, true);
 	}
 
 	@Override

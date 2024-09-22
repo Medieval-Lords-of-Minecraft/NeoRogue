@@ -126,6 +126,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Adrenaline(b);
 			new AcidBomb(b);
 			new Assassinate(b);
+			new ArrowRain(b);
 			new Atone(b);
 			new Atrophy(b);
 			new BattleCry(b);

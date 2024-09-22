@@ -336,6 +336,7 @@ public abstract class FightInstance extends Instance {
 		// Only cancel swap if something is bound to the trigger
 		Player p = e.getPlayer();
 		PlayerFightData data = userData.get(p.getUniqueId());
+		if (data == null) return;
 		e.setCancelled(data.hasTriggerAction(Trigger.getFromHotbarSlot(e.getNewSlot())));
 		trigger(e.getPlayer(), Trigger.getFromHotbarSlot(e.getNewSlot()), null);
 	}
