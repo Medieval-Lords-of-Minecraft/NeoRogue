@@ -33,7 +33,7 @@ public class BowProjectile extends Projectile {
 	public BowProjectile(PlayerFightData data, Vector v, Bow bow) {
 		super(bow.getProperties().get(PropertyType.RANGE), 1);
 		this.gravity(0.2);
-		this.size(1, 0.1);
+		this.size(1, 1);
 		this.data = data;
 		this.p = data.getPlayer();
 		this.bow = bow;

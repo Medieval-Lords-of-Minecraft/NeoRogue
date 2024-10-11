@@ -65,6 +65,8 @@ public abstract class Status {
 		case SHELL: return new ShellStatus(target);
 		case STEALTH: return new DurationStatus(id.name(), target, StatusClass.POSITIVE);
 		case EVADE: return new BasicStatus(id.name(), target, StatusClass.POSITIVE);
+		case FOCUS: return new BasicStatus(id.name(), target, StatusClass.POSITIVE);
+		case INJURY: return new DecrementStackStatus(id.name(), target, StatusClass.NEGATIVE);
 		case SILENCED: return new BasicStatus(id.name(), target, StatusClass.NEGATIVE, true);
 		case CHANNELING: return new BasicStatus(id.name(), target, StatusClass.NONE, true);
 		}
@@ -137,6 +139,8 @@ public abstract class Status {
 		SHELL("<aqua>Shell</aqua>", "&3Shell"),
 		STEALTH("<dark_purple>Stealth</dark_purple>", "&5Stealth"),
 		EVADE("<aqua>Evade</aqua>", "&3Evade"),
+		FOCUS("<aqua>Focus</aqua>", "&3Focus"),
+		INJURY("<dark_red>Injury</dark_red>", "&4Injury"),
 		SILENCED("<dark_gray>Silenced</dark_gray>", "&8Silenced"), // Hidden
 		CHANNELING("<dark_red>Channeling</dark_red>", "&4Channeling"); // Hidden
 		public String tag;

@@ -129,6 +129,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new ArrowRain(b);
 			new Atone(b);
 			new Atrophy(b);
+			new BasicFireMastery(b);
+			new BasicIceMastery(b);
 			new BattleCry(b);
 			new BerserkersCall(b);
 			new BlessedEdge(b);
@@ -154,6 +156,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Darkness(b);
 			new DarkPact(b);
 			new DarkPulse(b);
+			new Deliberation(b);
 			new Discipline(b);
 			new Disorient(b);
 			new DodgeRoll(b);
@@ -182,7 +185,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new FlowState(b);
 			new FlowState2(b);
 			new Flurry(b);
-			new Focus(b);
+			new FocusedShot(b);
 			new FormAPlan(b);
 			new Fortify(b);
 			new Frenzy(b);
@@ -190,6 +193,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new GatheringShadows(b);
 			new GatheringShadows2(b);
 			new GraniteShield(b);
+			new Grit(b);
 			new HoldTheLine(b);
 			new InducePanic(b);
 			new InducePanic2(b);
@@ -219,6 +223,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Roar(b);
 			new Rushdown(b);
 			new Quake(b);
+			new QuickFeet(b);
+			new Quickfire(b);
 			new ShadowWalk(b);
 			new Sidestep(b);
 			new SilentSteps(b);
@@ -290,6 +296,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 
 			// Weapons
 			new BasicBow(b);
+			new BasicShotbow(b);
+			new ColdArrow(b);
 			new WoodenArrow(b);
 			new BoltWand(b);
 			new ButterflyKnife(b);
@@ -929,6 +937,10 @@ public abstract class Equipment implements Comparable<Equipment> {
 	}
 
 	public void weaponDamageProjectile(LivingEntity target, ProjectileInstance proj, Barrier hitBarrier, boolean basicAttack) {
+		weaponDamageProjectile(target, proj, hitBarrier, true, properties.get(PropertyType.KNOCKBACK));
+	}
+
+	public void weaponDamageProjectile(LivingEntity target, ProjectileInstance proj, Barrier hitBarrier, boolean basicAttack, double knockback) {
 		PlayerFightData data = (PlayerFightData) proj.getOwner();
 		DamageMeta dm = new DamageMeta(data, properties.get(PropertyType.DAMAGE), properties.getType());
 		if (!proj.getBuffs().isEmpty()) {
@@ -939,12 +951,12 @@ public abstract class Equipment implements Comparable<Equipment> {
 		}
 		
 		if (basicAttack) {
-			BasicAttackEvent ev = new BasicAttackEvent(target, dm, properties.get(PropertyType.KNOCKBACK), this, null);
+			BasicAttackEvent ev = new BasicAttackEvent(target, dm, knockback, this, null);
 			data.runActions(data, Trigger.BASIC_ATTACK, ev);
 		}
 		if (properties.contains(PropertyType.KNOCKBACK)) {
 			FightInstance.knockback(target,
-					proj.getVelocity().normalize().multiply(properties.get(PropertyType.KNOCKBACK)));
+					proj.getVelocity().normalize().multiply(knockback));
 		}
 		FightInstance.dealDamage(dm, target);
 	}

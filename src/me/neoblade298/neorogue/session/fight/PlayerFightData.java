@@ -35,6 +35,7 @@ import me.neoblade298.neorogue.session.fight.trigger.KeyBind;
 import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerCondition;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.CastUsableEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.StaminaChangeEvent;
@@ -159,6 +160,11 @@ public class PlayerFightData extends FightData {
 	}
 
 	public void channel(int ticks) {
+		applyStatus(StatusType.CHANNELING, this, 1, ticks);
+		entity.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, ticks, 1));
+	}
+
+	public void charge(int ticks) {
 		applyStatus(StatusType.CHANNELING, this, 1, ticks);
 		entity.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, ticks, 1));
 	}
@@ -366,6 +372,9 @@ public class PlayerFightData extends FightData {
 					EquipmentInstance.updateSlot(p, inv, ei);
 				}
 				else {
+					if (!inst.canTrigger(p, data)) {
+						continue;
+					}
 					tr = inst.trigger(data, inputs);
 				}
 				
@@ -399,6 +408,10 @@ public class PlayerFightData extends FightData {
 	
 	public void addSlotBasedTrigger(String id, int slot, Trigger trigger, TriggerAction action) {
 		addSlotBasedTrigger(id, slot, trigger, new PriorityAction(id, action));
+	}
+	
+	public void addSlotBasedTrigger(String id, int slot, Trigger trigger, TriggerAction action, TriggerCondition cond) {
+		addSlotBasedTrigger(id, slot, trigger, new PriorityAction(id, action, cond));
 	}
 	
 	public void addSlotBasedTrigger(String id, int slot, Trigger trigger, PriorityAction action) {

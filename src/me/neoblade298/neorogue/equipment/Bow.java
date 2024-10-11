@@ -18,9 +18,17 @@ import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffSlice;
 import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerCondition;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
 public abstract class Bow extends Equipment {
+	public static TriggerCondition needsAmmo = (p, data) -> {
+		if (data.getAmmunition() == null) {
+			Util.displayError(data.getPlayer(), "You don't have any ammunition equipped!");
+			return false;
+		}
+		return true;
+	};
 
 	// Vector is non-normalized velocity of the vanilla projectile being fired
 	public Bow(String id, String display, boolean isUpgraded, Rarity rarity, EquipmentClass ec, EquipmentType type, EquipmentProperties props) {

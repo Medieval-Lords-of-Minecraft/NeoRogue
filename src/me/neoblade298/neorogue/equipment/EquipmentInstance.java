@@ -22,8 +22,6 @@ public class EquipmentInstance extends PriorityAction {
 	private static final DecimalFormat df = new DecimalFormat("##.#");
 	
 	protected Player p;
-	protected TriggerAction action;
-	protected TriggerCondition condition;
 	protected int slot;
 	protected Equipment eq;
 	protected EquipSlot es;
@@ -44,6 +42,20 @@ public class EquipmentInstance extends PriorityAction {
 	
 	public EquipmentInstance(Player p, Equipment eq, int slot, EquipSlot es) {
 		super(eq.id);
+		init(p, eq, slot, es);
+	}
+	
+	public EquipmentInstance(Player p, Equipment eq, int slot, EquipSlot es, TriggerAction action) {
+		super(eq.id, action);
+		init(p, eq, slot, es);
+	}
+	
+	public EquipmentInstance(Player p, Equipment eq, int slot, EquipSlot es, TriggerAction action, TriggerCondition condition) {
+		super(eq.id, action, condition);
+		init(p, eq, slot, es);
+	}
+
+	private void init(Player p, Equipment eq, int slot, EquipSlot es) {
 		this.p = p;
 		this.eq = eq;
 		this.manaCost = eq.getProperties().get(PropertyType.MANA_COST);
@@ -51,16 +63,6 @@ public class EquipmentInstance extends PriorityAction {
 		this.cooldown = eq.getProperties().get(PropertyType.COOLDOWN);
 		this.slot = slot;
 		this.es = es;
-	}
-	
-	public EquipmentInstance(Player p, Equipment eq, int slot, EquipSlot es, TriggerAction action) {
-		this(p, eq, slot, es);
-		this.action = action;
-	}
-	
-	public EquipmentInstance(Player p, Equipment eq, int slot, EquipSlot es, TriggerAction action, TriggerCondition condition) {
-		this(p, eq, slot, es, action);
-		this.condition = condition;
 	}
 	
 	public EquipSlot getEquipSlot() {
@@ -84,6 +86,7 @@ public class EquipmentInstance extends PriorityAction {
 		return p;
 	}
 	
+	@Override
 	public boolean canTrigger(Player p, PlayerFightData data) {
 		if (nextUsable >= System.currentTimeMillis()) {
 			sendCooldownMessage(p);

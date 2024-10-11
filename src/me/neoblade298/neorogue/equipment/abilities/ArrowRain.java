@@ -10,7 +10,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
-import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
@@ -60,7 +59,7 @@ public class ArrowRain extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new AmmoEquipmentInstance(p, this, slot, es, (pd, in) -> {
 			Sounds.equip.play(p, p);
-			data.channel(20);
+			data.charge(20);
 			ProjectileGroup projs = new ProjectileGroup(new ArrowRainProjectile(p, p.getLocation(), data));
 			data.addTask(new BukkitRunnable() {
 				public void run() {
@@ -154,7 +153,7 @@ public class ArrowRain extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FLINT,
-				"On cast, " + GlossaryTag.CHARGE.tag(this) + " for <white>1s</white>. Afterwards, shoot " + DescUtil.yellow(reps) + " arrows at the blocks you're "
-				+ "looking at. They land after <white>1s</white> and deal " + GlossaryTag.PIERCING.tag(this, damage, true) + " damage. Requires arrows.");
+				"On cast, " + GlossaryTag.CHARGE.tag(this) + " for <white>1s</white>. Afterwards, shoot " + DescUtil.yellow(reps) + " of your equipped arrow at the blocks you're "
+				+ "looking at. They land after <white>1s</white> and deal " + GlossaryTag.PIERCING.tag(this, damage, true) + " damage.");
 	}
 }

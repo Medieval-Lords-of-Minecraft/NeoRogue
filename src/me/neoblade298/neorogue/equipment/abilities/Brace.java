@@ -27,8 +27,6 @@ public class Brace extends Equipment {
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 15, 10, 0));
 		shields = isUpgraded ? 30 : 20;
 		pc.count(10).spread(0.5, 0.5).speed(0.2);
-		
-		tags.add(GlossaryTag.SHIELDS);
 	}
 	
 	@Override
@@ -54,6 +52,6 @@ public class Brace extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SHIELD,
-				"On cast, gain <yellow>" + shields + "</yellow> " + GlossaryTag.SHIELDS.tag(this) + " for 5 seconds.");
+				"On cast, gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " for 5 seconds.");
 	}
 }

@@ -266,6 +266,21 @@ public class DamageMeta {
 					sliceDamage = 0;
 				}
 			}
+
+			// Handle injury
+			while (recipient.hasStatus(StatusType.INJURY) || sliceDamage > 0) {
+				Status injury = recipient.getStatus(StatusType.INJURY);
+				int stacks = injury.getStacks();
+				if (stacks * 0.2 >= sliceDamage) {
+					int toRemove = (int) (sliceDamage / 0.2);
+					sliceDamage = 0;
+					injury.apply(owner, -toRemove, -1);
+				}
+				else {
+					sliceDamage -= stacks * 0.2;
+					injury.apply(owner, -stacks, -1);
+				}
+			}
 			
 			if (owner instanceof PlayerFightData) {
 				((PlayerFightData) owner).getStats().addDamageDealt(slice.getPostBuffType(), sliceDamage);

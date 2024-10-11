@@ -1,11 +1,14 @@
 package me.neoblade298.neorogue.session.fight.trigger;
 
+import org.bukkit.entity.Player;
+
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 
 public class PriorityAction implements TriggerAction, Comparable<PriorityAction> {
 	protected String id;
 	protected int priority = 0;
 	protected TriggerAction action;
+	protected TriggerCondition condition;
 	public PriorityAction(String id) {
 		this.id = id;
 	}
@@ -13,9 +16,18 @@ public class PriorityAction implements TriggerAction, Comparable<PriorityAction>
 		this.id = id;
 		this.action = action;
 	}
+	public PriorityAction(String id, TriggerAction action, TriggerCondition condition) {
+		this.id = id;
+		this.action = action;
+		this.condition = condition;
+	}
 	@Override
 	public TriggerResult trigger(PlayerFightData data, Object inputs) {
 		return action.trigger(data, inputs);
+	}
+	public boolean canTrigger(Player p, PlayerFightData data) {
+		if (condition == null) return true;
+		return condition.canTrigger(p, data);
 	}
 	public int getPriority() {
 		return priority;
