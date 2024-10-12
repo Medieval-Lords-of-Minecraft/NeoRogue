@@ -27,6 +27,7 @@ public class DamageMeta {
 	
 	private FightData owner;
 	private boolean hitBarrier, isSecondary;
+	private DamageOrigin origin;
 	private LinkedList<DamageSlice> slices = new  LinkedList<DamageSlice>();
 	private HashMap<BuffType, LinkedList<BuffMeta>> damageBuffs = new HashMap<BuffType, LinkedList<BuffMeta>>(),
 			defenseBuffs = new HashMap<BuffType, LinkedList<BuffMeta>>();
@@ -52,8 +53,15 @@ public class DamageMeta {
 		this.slices.add(new DamageSlice(data, damage, type));
 	}
 	
-	public DamageMeta(FightData data, double baseDamage, DamageType type, boolean hitBarrier, boolean isSecondary) {
+	public DamageMeta(FightData data, double damage, DamageType type, DamageOrigin origin) {
+		this(data);
+		this.slices.add(new DamageSlice(data, damage, type));
+		this.origin = origin;
+	}
+	
+	public DamageMeta(FightData data, double baseDamage, DamageType type, DamageOrigin origin, boolean hitBarrier, boolean isSecondary) {
 		this(data, baseDamage, type);
+		this.origin = origin;
 		this.hitBarrier = hitBarrier;
 		this.isSecondary = isSecondary;
 	}
@@ -412,5 +420,10 @@ public class DamageMeta {
 		PROJECTILE,
 		INITIAL_VELOCITY, // Multiplier of initial projectile velocity
 		NORMAL;
+	}
+
+	public static enum DamageOrigin {
+		NORMAL,
+		TRAP;
 	}
 }

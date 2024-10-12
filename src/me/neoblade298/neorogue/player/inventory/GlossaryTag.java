@@ -76,6 +76,8 @@ public enum GlossaryTag implements GlossaryIcon {
 			"Increases your threat towards an enemy. Enemies prioritize players with the highest threat. Dealing damage also increases threat at a 1:1 ratio post-mitigation."),
 	BERSERK(Material.BLAZE_POWDER, StatusType.BERSERK.tag,
 			"Certain abilities become stronger upon reaching a certain threshold of these stacks."),
+	TRAP(Material.OAK_TRAPDOOR, "<blue>Trap</blue>",
+			"Placed at a set location. Other abilities may interact with these."),
 	STRENGTH(Material.IRON_SWORD, StatusType.STRENGTH.tag,
 			"Buffs all physical damage by 1 per stack."),
 	INTELLECT(Material.BLAZE_ROD, StatusType.INTELLECT.tag,
@@ -116,6 +118,13 @@ public enum GlossaryTag implements GlossaryIcon {
 		eq.addTags(this);
 		// If you ever want to nest tags within tags, add switch case here
 		return this.tag;
+	}
+
+	public String tagPlural(Equipment eq) {
+		eq.addTags(this);
+		String prefix = this.tag.substring(0, this.tag.indexOf("</"));
+		String suffix = this.tag.substring(this.tag.indexOf("</"));
+		return prefix + "s" + suffix;
 	}
 	
 	public String tag(Equipment eq, int amt, boolean upgradable) {

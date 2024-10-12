@@ -3,20 +3,17 @@ package me.neoblade298.neorogue.equipment.abilities;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
-import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
@@ -31,19 +28,16 @@ import me.neoblade298.neorogue.session.fight.Trap;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class LayTrap extends Equipment {
-	private static final String ID = "layTrap";
+public class SpikeTrap extends Equipment {
+	private static final String ID = "spikeTrap";
 	private static TargetProperties tp = TargetProperties.radius(2, false, TargetType.ENEMY);
-	private static ParticleContainer trap = new ParticleContainer(Particle.CRIT).count(50).spread(1, 0.2),
-		hit = new ParticleContainer(Particle.CRIT).count(50).spread(1, 1);
-	private int damage, secs;
+	private static ParticleContainer spike = new ParticleContainer(Particle.FIREWORKS_SPARK).count(50).spread(1, 0.4);
+	private int damage = 25;
 	
-	public LayTrap(boolean isUpgraded) {
-		super(ID, "Lay Trap", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 5, 15, 0));
-		
-		damage = isUpgraded ? 150 : 120;
-		secs = 2;
+	public SpikeTrap(boolean isUpgraded) {
+		super(ID, "Spike Trap", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 0, isUpgraded ? 10 : 13, tp.range));
+		properties.addUpgrades(PropertyType.COOLDOWN);
 	}
 	
 	public static Equipment get() {
@@ -52,9 +46,8 @@ public class LayTrap extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(p, this, slot, es, (pd, in) -> {
-			Sounds.equip.play(p, p);
-			data.channel(40);
+		data.addTrigger(id, bind, new EquipmentInstance(p, this, slot, es, (pdata, inputs) -> {
+			data.charge(40);
 			data.addTask(new BukkitRunnable() {
 				public void run() {
 					data.addTask(initTrap(p, data));
@@ -65,36 +58,27 @@ public class LayTrap extends Equipment {
 	}
 
 	private BukkitTask initTrap(Player p, PlayerFightData data) {
+		Sounds.equip.play(p, p);
+		Location loc = p.getLocation();
+		Trap tr = data.addTrap(loc);
 		return new BukkitRunnable() {
-			Location loc = p.getLocation();
-			private int tick = 0;
-			Trap tr = data.addTrap(loc);
+			int ticks = 0;
 			public void run() {
-				trap.play(p, loc);
-				LivingEntity trg = TargetHelper.getNearest(p, loc, tp);
-				if (trg != null) {
-					Sounds.breaks.play(p, trg);
-					hit.play(p, trg);
-					DamageMeta dm = new DamageMeta(data, damage, DamageType.BLUNT, DamageOrigin.TRAP);
-					FightInstance.dealDamage(dm, trg);
-					trg.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, secs * 20, 2));
-					data.removeTrap(tr);
-					this.cancel();
-				}
-				if (++tick >= 20) {
+				spike.play(p, loc);
+				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.PIERCING, DamageOrigin.TRAP), TargetHelper.getEntitiesInRadius(p, loc, tp));
+				if (++ticks >= 20) {
 					data.removeTrap(tr);
 					this.cancel();
 				}
 			}
-		}.runTaskTimer(NeoRogue.inst(), 0L, 10L);
+		}.runTaskTimer(NeoRogue.inst(), 20L, 20L);
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.OAK_TRAPDOOR,
-				"On cast, " + GlossaryTag.CHARGE.tag(this) + " for <white>2s</white>. Afterwards, drop a " + GlossaryTag.TRAP.tag(this) + 
-				" that lasts for " + DescUtil.white("10s") +
-				". If an enemy steps on the trap, they take " + GlossaryTag.BLUNT.tag(this, damage, true) +
-				" damage, receive " + DescUtil.potion("Slowness", 3, secs) + ", and deactivate the trap.");
+				"On cast, " + GlossaryTag.CHARGE.tag(this) + " for <white>2s</white>. Then drop a " + GlossaryTag.TRAP.tag(this) + 
+				" that repeatedly deals " + GlossaryTag.PIERCING.tag(this, damage, false) +
+				" damage to enemies on it every second for <white>20s</white>.");
 	}
 }

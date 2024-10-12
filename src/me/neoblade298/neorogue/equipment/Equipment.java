@@ -198,12 +198,14 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new InducePanic(b);
 			new InducePanic2(b);
 			new Initiator(b);
-			new ShadowImbuement(b);
 			new IronCuirass(b);
 			new Ironskin(b);
+			new LayTrap(b);
 			new Lethality(b);
 			new LightningRush(b);
 			new Maim(b);
+			new ManaInfusion(b);
+			new MarkTarget(b);
 			new MightySwing(b);
 			new MortalEngine(b);
 			new NightShade(b);
@@ -225,6 +227,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Quake(b);
 			new QuickFeet(b);
 			new Quickfire(b);
+			new ShadowImbuement(b);
 			new ShadowWalk(b);
 			new Sidestep(b);
 			new SilentSteps(b);
@@ -233,6 +236,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Skirmisher(b);
 			new Smite(b);
 			new SmokeBomb(b);
+			new SpikeTrap(b);
 			new SpiritOfTheDragoon(b);
 			new Sturdy(b);
 			new FirstStrike(b);
@@ -296,6 +300,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 
 			// Weapons
 			new BasicBow(b);
+			new BasicCrossbow(b);
 			new BasicShotbow(b);
 			new ColdArrow(b);
 			new WoodenArrow(b);
@@ -321,7 +326,6 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new HiddenRazor(b);
 			new IceWand(b);
 			new Irritant(b);
-			new LayTrap(b);
 			new LeatherGauntlets(b);
 			new LightLeatherGauntlets(b);
 			new LightningCutter(b);

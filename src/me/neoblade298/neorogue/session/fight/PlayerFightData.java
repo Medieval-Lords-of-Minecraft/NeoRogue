@@ -8,8 +8,10 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 import java.util.TreeSet;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -61,6 +63,7 @@ public class PlayerFightData extends FightData {
 	private HashMap<String, EquipmentInstance> equips = new HashMap<String, EquipmentInstance>(); // Useful for modifying cooldowns
 	private HashMap<Integer, HashMap<Trigger, ArrayList<PriorityAction>>> slotBasedTriggers = new HashMap<Integer, HashMap<Trigger, ArrayList<PriorityAction>>>();
 	private LinkedList<Listener> listeners = new LinkedList<Listener>();
+	private HashMap<UUID, Trap> traps = new HashMap<UUID, Trap>();
 	private ArrayList<String> boardLines;
 	private Player p;
 	private long nextAttack, nextOffAttack;
@@ -562,6 +565,20 @@ public class PlayerFightData extends FightData {
 		.append(Component.text("  |  ", NamedTextColor.GRAY))
 		.append(Component.text("SP: " + (int)stamina + " / " + (int)maxStamina, NamedTextColor.GREEN));
 		p.sendActionBar(bar);
+	}
+
+	public Trap addTrap(Location loc) {
+		Trap trap = new Trap(loc);
+		traps.put(trap.getUniqueId(), trap);
+		return trap;
+	}
+
+	public void removeTrap(Trap trap) {
+		traps.remove(trap.getUniqueId());
+	}
+
+	public HashMap<UUID, Trap> getTraps() {
+		return traps;
 	}
 	
 	private class PlayerUpdateTickAction extends TickAction {

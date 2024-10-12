@@ -48,11 +48,6 @@ public class Farewell extends Equipment {
 		damage = isUpgraded ? 100 : 60;
 		execute = isUpgraded ? 200 : 150;
 	}
-
-	@Override
-	public void setupReforges() {
-		addSelfReforge(Darkness.get(), AcidBomb.get(), UnderDarkness.get());
-	}
 	
 	public static Equipment get() {
 		return Equipment.get(ID, false);
