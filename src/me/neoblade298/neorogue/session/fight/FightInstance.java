@@ -89,7 +89,8 @@ public abstract class FightInstance extends Instance {
 	private static HashMap<UUID, Barrier> userBarriers = new HashMap<UUID, Barrier>();
 	private static HashMap<UUID, FightData> fightData = new HashMap<UUID, FightData>();
 	private static HashMap<UUID, BukkitTask> blockTasks = new HashMap<UUID, BukkitTask>();
-	private static HashSet<UUID> toTick = new HashSet<UUID>();
+	private static HashSet<UUID> toTick = new HashSet<UUID>(),
+		indicators = new HashSet<UUID>();
 	private static final int KILLS_TO_SCALE = 8; // number of mobs to kill before increasing total mobs by 1
 	
 	protected LinkedList<Corpse> corpses = new LinkedList<Corpse>();
@@ -260,6 +261,28 @@ public abstract class FightInstance extends Instance {
 		if (lose) {
 			s.setInstance(new LoseInstance(s));
 		}
+	}
+
+	public void createIndicator(Component txt, LivingEntity src) {
+		createIndicator(txt, src.getEyeLocation());
+	}
+
+	public void createIndicator(Component txt, Location src) {
+		ArmorStand as = (ArmorStand) src.getWorld().spawnEntity(src, EntityType.ARMOR_STAND);
+		as.setInvisible(true);
+		as.setInvulnerable(true);
+		as.setSmall(true);
+		as.setGravity(true);
+		as.setCustomNameVisible(true);
+		as.customName(txt);
+		as.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 60, 0));
+		indicators.add(as.getUniqueId());
+		new BukkitRunnable() {
+			public void run() {
+				as.remove();
+				indicators.remove(as.getUniqueId());
+			}
+		}.runTaskLater(NeoRogue.inst(), 40L);
 	}
 
 	@Override
@@ -936,6 +959,11 @@ public abstract class FightInstance extends Instance {
 
 		for (Corpse c : corpses) {
 			c.remove();
+		}
+
+		for (UUID ind : indicators) {
+			Entity ent = Bukkit.getEntity(ind);
+			if (ent != null) ent.remove();
 		}
 
 		for (BukkitRunnable cleanupTask : cleanupTasks) {

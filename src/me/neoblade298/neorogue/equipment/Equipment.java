@@ -134,6 +134,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new BattleCry(b);
 			new BerserkersCall(b);
 			new BlessedEdge(b);
+			new Blind(b);
 			new Bloodlust(b);
 			new Bide(b);
 			new Brace(b);
@@ -179,6 +180,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Fade(b);
 			new Farewell(b);
 			new Ferocity(b);
+			new Firebomb(b);
 			new Finale(b);
 			new Fissure(b);
 			new FivePointStrike(b);

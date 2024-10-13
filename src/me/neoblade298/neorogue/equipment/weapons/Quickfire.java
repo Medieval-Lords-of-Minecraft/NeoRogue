@@ -87,7 +87,7 @@ public class Quickfire extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.FIREWORK_ROCKET, "Instantly fire a projectile that deals " + GlossaryTag.PIERCING.tag(this, damage, true) + " damage using your "
-			+ " current ammunition.");
+		item = createItem(Material.FIREWORK_ROCKET, "Instantly fire a projectile that deals " + GlossaryTag.PIERCING.tag(this, damage, true) + " damage using "
+			+ "your current ammunition.");
 	}
 }

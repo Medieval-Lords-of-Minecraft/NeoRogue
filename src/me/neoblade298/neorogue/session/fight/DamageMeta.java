@@ -21,6 +21,8 @@ import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.KillEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedHealthDamageEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class DamageMeta {
 	private static HashSet<EntityType> armoredEntities = new HashSet<EntityType>();
@@ -116,6 +118,10 @@ public class DamageMeta {
 	
 	public void setHitBarrier(boolean hitBarrier) {
 		this.hitBarrier = hitBarrier;
+	}
+
+	public DamageOrigin getOrigin() {
+		return origin;
 	}
 	
 	public void addDamageSlice(DamageSlice slice) {
@@ -276,7 +282,7 @@ public class DamageMeta {
 			}
 
 			// Handle injury
-			while (recipient.hasStatus(StatusType.INJURY) || sliceDamage > 0) {
+			while (recipient.hasStatus(StatusType.INJURY) && sliceDamage > 0) {
 				Status injury = recipient.getStatus(StatusType.INJURY);
 				int stacks = injury.getStacks();
 				if (stacks * 0.2 >= sliceDamage) {
@@ -352,6 +358,7 @@ public class DamageMeta {
 			}
 			if (!(target instanceof Player)) {
 				recipient.updateDisplayName();
+				recipient.getInstance().createIndicator(Component.text((int) (damage + ignoreShieldsDamage), NamedTextColor.RED), target);
 			}
 			else {
 				PlayerFightData data = FightInstance.getUserData(target.getUniqueId());
