@@ -60,7 +60,7 @@ public class MarkTarget extends Equipment {
 			if (!fd.hasStatus(StatusType.REND)) return TriggerResult.keep();
 			ev.getMeta().addDamageSlice(new DamageSlice(data, damage * fd.getStatus(StatusType.REND).getStacks(), DamageType.SLASHING));
 			return TriggerResult.keep();
-		})
+		});
 	}
 
 	@Override

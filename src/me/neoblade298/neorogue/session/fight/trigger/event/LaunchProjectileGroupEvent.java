@@ -22,6 +22,7 @@ public class LaunchProjectileGroupEvent {
 	public LinkedList<IProjectileInstance> getInstances() {
 		return insts;
 	}
+	// Should only be true if used as a basic attack
 	public boolean isBowProjectile() {
 		return insts.getFirst().getParent() instanceof BowProjectile;
 	}

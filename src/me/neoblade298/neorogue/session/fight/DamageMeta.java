@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.equipment.mechanics.IProjectileInstance;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffSlice;
 import me.neoblade298.neorogue.session.fight.buff.BuffType;
@@ -28,6 +29,7 @@ public class DamageMeta {
 	private FightData owner;
 	private boolean hitBarrier, isSecondary;
 	private DamageOrigin origin;
+	private IProjectileInstance proj; // If the damage originated from projectile
 	private LinkedList<DamageSlice> slices = new  LinkedList<DamageSlice>();
 	private HashMap<BuffType, LinkedList<BuffMeta>> damageBuffs = new HashMap<BuffType, LinkedList<BuffMeta>>(),
 			defenseBuffs = new HashMap<BuffType, LinkedList<BuffMeta>>();
@@ -57,6 +59,13 @@ public class DamageMeta {
 		this(data);
 		this.slices.add(new DamageSlice(data, damage, type));
 		this.origin = origin;
+	}
+	
+	public DamageMeta(FightData data, double damage, DamageType type, DamageOrigin origin, IProjectileInstance proj) {
+		this(data);
+		this.slices.add(new DamageSlice(data, damage, type));
+		this.origin = origin;
+		this.proj = proj;
 	}
 	
 	public DamageMeta(FightData data, double baseDamage, DamageType type, DamageOrigin origin, boolean hitBarrier, boolean isSecondary) {
@@ -92,6 +101,14 @@ public class DamageMeta {
 			clone.add(meta.clone());
 		}
 		return clone;
+	}
+
+	public DamageOrigin getOrigin() {
+		return origin;
+	}
+
+	public IProjectileInstance getProjectile() {
+		return proj;
 	}
 	
 	public DamageMeta clone() {
@@ -424,6 +441,7 @@ public class DamageMeta {
 
 	public static enum DamageOrigin {
 		NORMAL,
+		PROJECTILE,
 		TRAP;
 	}
 }
