@@ -48,6 +48,10 @@ public class BowProjectile extends Projectile {
 		tickActions.add(action);
 	}
 
+	public double getInitialVelocity() {
+		return initialVelocity;
+	}
+
 	@Override
 	public void onTick(ProjectileInstance proj, boolean interpolation) {
 		bow.onTick(p, proj, interpolation);
