@@ -76,7 +76,7 @@ public class EquipmentInstance extends PriorityAction {
 	
 	@Override
 	public TriggerResult trigger(PlayerFightData data, Object inputs) {
-		nextUsable = (long) (System.currentTimeMillis() + (getEffectiveCooldown() * 1000));
+		if (!data.isIgnoreCooldowns()) nextUsable = (long) (System.currentTimeMillis() + (getEffectiveCooldown() * 1000));
 		data.addMana(-getEffectiveManaCost());
 		data.addStamina(-getEffectiveStaminaCost());
 		return action.trigger(data, inputs);

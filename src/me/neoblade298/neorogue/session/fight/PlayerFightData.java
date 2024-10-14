@@ -72,7 +72,7 @@ public class PlayerFightData extends FightData {
 	private double maxStamina, maxMana, maxHealth;
 	private double staminaRegen, manaRegen;
 	private double sprintCost = 4;
-	private boolean isDead;
+	private boolean isDead, ignoreCooldowns;
 	private Ammunition ammo = null;
 	
 	private FightStatistics stats = new FightStatistics(this);
@@ -184,6 +184,14 @@ public class PlayerFightData extends FightData {
 	
 	public ArrayList<String> getBoardLines() {
 		return boardLines;
+	}
+
+	public void ignoreCooldowns(boolean ignore) {
+		this.ignoreCooldowns = ignore;
+	}
+
+	public boolean isIgnoreCooldowns() {
+		return ignoreCooldowns;
 	}
 	
 	@Override
@@ -535,9 +543,17 @@ public class PlayerFightData extends FightData {
 	public double getMaxHealth() {
 		return maxHealth;
 	}
+
+	public void setStaminaRegen(double amount) {
+		this.staminaRegen = amount;
+	}
 	
 	public void addStaminaRegen(double amount) {
 		this.staminaRegen += amount;
+	}
+	
+	public void setManaRegen(double amount) {
+		this.manaRegen = amount;
 	}
 	
 	public void addManaRegen(double amount) {

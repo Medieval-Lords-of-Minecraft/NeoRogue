@@ -92,7 +92,7 @@ public enum GlossaryTag implements GlossaryIcon {
 			"When the holder takes damage, damage dealt is first subtracted from stamina. One stack is lost per damage instance."),
 	FOCUS(Material.SPYGLASS, StatusType.FOCUS.tag,
 			"Certain abilities become stronger upon reaching a certain threshold of these stacks."),
-	INJURY(Material.MUSIC_DISC_11, StatusType.INJURY.tag,
+	INJURY(Material.BONE, StatusType.INJURY.tag,
 			"When the holder deals damage, a stack of injury is used to reduce 0.2 damage dealt post-buff until there are no stacks or no damage remaining. " +
 			"1 stack is removed every second."),
 	CHARGE(Material.BLAZE_ROD, "<gold>Charge</gold>",
