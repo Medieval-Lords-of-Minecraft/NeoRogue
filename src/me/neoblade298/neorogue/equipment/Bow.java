@@ -23,7 +23,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
 public abstract class Bow extends Equipment {
 	public static TriggerCondition needsAmmo = (p, data) -> {
-		if (data.getAmmunition() == null) {
+		if (data.getAmmoInstance() == null) {
 			Util.displayError(data.getPlayer(), "You don't have any ammunition equipped!");
 			return false;
 		}
@@ -38,14 +38,14 @@ public abstract class Bow extends Equipment {
 	public abstract void onTick(Player p, ProjectileInstance proj, boolean interpolation);
 
 	public boolean canShoot(PlayerFightData data) {
-		if (data.getAmmunition() == null) { 
+		if (data.getAmmoInstance() == null) { 
 			Util.displayError(data.getPlayer(), "You don't have any ammunition equipped!");
 			return false;
 		}
 		return true;
 	}
 
-	public void bowDamageProjectile(LivingEntity target, ProjectileInstance proj, Barrier hitBarrier, Ammunition ammo, double initialVelocity, boolean basicAttack) {
+	public void bowDamageProjectile(LivingEntity target, ProjectileInstance proj, Barrier hitBarrier, AmmunitionInstance ammo, double initialVelocity, boolean basicAttack) {
 		DamageMeta dm = proj.getMeta();
 		PlayerFightData data = (PlayerFightData) proj.getOwner();
 

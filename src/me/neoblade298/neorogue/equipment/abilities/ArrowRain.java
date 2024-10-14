@@ -14,7 +14,7 @@ import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.AmmoEquipmentInstance;
-import me.neoblade298.neorogue.equipment.Ammunition;
+import me.neoblade298.neorogue.equipment.AmmunitionInstance;
 import me.neoblade298.neorogue.equipment.BowProjectile;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -60,26 +60,27 @@ public class ArrowRain extends Equipment {
 		data.addTrigger(id, bind, new AmmoEquipmentInstance(p, this, slot, es, (pd, in) -> {
 			Sounds.equip.play(p, p);
 			data.charge(20);
-			ProjectileGroup projs = new ProjectileGroup(new ArrowRainProjectile(p, p.getLocation(), data));
 			data.addTask(new BukkitRunnable() {
 				public void run() {
-					initRain(p, data, projs);
+					initRain(p, data);
 				}
 			}.runTaskLater(NeoRogue.inst(), 20L));
 			return TriggerResult.keep();
 		}));
 	}
 
-	private void initRain(Player p, PlayerFightData data, ProjectileGroup projs) {
-		Ammunition ammo = data.getAmmunition();
+	private void initRain(Player p, PlayerFightData data) {
 		data.addTask(new BukkitRunnable() {
 			private int tick = 0;
 			public void run() {
-				Sounds.shoot.play(p, p);
-				Location block = TargetHelper.getSightLocation(p, tp);
-				targeter.play(p, block);
-				if (block != null) {
-					dropRain(p, block, data, projs, ammo);
+				if (data.getAmmoInstance() != null) { 
+					Sounds.shoot.play(p, p);
+					ProjectileGroup projs = new ProjectileGroup(new ArrowRainProjectile(p, p.getLocation(), data));
+					Location block = TargetHelper.getSightLocation(p, tp);
+					targeter.play(p, block);
+					if (block != null) {
+						dropRain(p, block, data, projs);
+					}
 				}
 				if (++tick >= reps) {
 					this.cancel();
@@ -88,7 +89,7 @@ public class ArrowRain extends Equipment {
 		}.runTaskTimer(NeoRogue.inst(), 0L, 5L));
 	}
 
-	private void dropRain(Player p, Location block, PlayerFightData data, ProjectileGroup projs, Ammunition ammo) {
+	private void dropRain(Player p, Location block, PlayerFightData data, ProjectileGroup projs) {
 		data.addTask(new BukkitRunnable() {
 			public void run() {
 				Location loc = block.add(0, 4, 0);
@@ -103,13 +104,14 @@ public class ArrowRain extends Equipment {
 	private class ArrowRainProjectile extends Projectile {
 		private Player p;
 		private PlayerFightData data;
-		private Ammunition ammo;
+		private AmmunitionInstance ammo;
 
 		public ArrowRainProjectile(Player p, Location trg, PlayerFightData data) {
 			super(0.5, 6, 1);
 			this.p = p;
 			this.data = data;
-			this.ammo = data.getAmmunition();
+			this.ammo = data.getAmmoInstance();
+			ammo.use();
 		}
 
 		@Override
@@ -119,6 +121,7 @@ public class ArrowRain extends Equipment {
 			EquipmentProperties ammoProps = ammo.getProperties();
 			double dmg = damage + ammoProps.get(PropertyType.DAMAGE);
 			dm.addDamageSlice(new DamageSlice(data, dmg, ammoProps.getType()));
+			ammo.onStart(proj, false);
 		}
 
 		@Override

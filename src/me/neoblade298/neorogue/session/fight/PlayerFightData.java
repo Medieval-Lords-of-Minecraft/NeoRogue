@@ -22,7 +22,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.equipment.Ammunition;
+import me.neoblade298.neorogue.equipment.AmmunitionInstance;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
@@ -74,7 +74,7 @@ public class PlayerFightData extends FightData {
 	private double staminaRegen, manaRegen;
 	private double sprintCost = 4;
 	private boolean isDead, ignoreCooldowns;
-	private Ammunition ammo = null;
+	private AmmunitionInstance ammo = null;
 	
 	private FightStatistics stats = new FightStatistics(this);
 
@@ -407,11 +407,11 @@ public class PlayerFightData extends FightData {
 		return false;
 	}
 
-	public void setAmmunition(Ammunition ammo) {
+	public void setAmmoInstance(AmmunitionInstance ammo) {
 		this.ammo = ammo;
 	}
 
-	public Ammunition getAmmunition() {
+	public AmmunitionInstance getAmmoInstance() {
 		return ammo;
 	}
 	

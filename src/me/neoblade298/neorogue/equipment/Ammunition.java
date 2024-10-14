@@ -22,18 +22,18 @@ public abstract class Ammunition extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		if (data.getAmmunition() == null) {
-			equip(p, data);
+		if (data.getAmmoInstance() == null) {
+			equip(p, data, new AmmunitionInstance(data, this));
 		}
 
 		data.addTrigger(id, bind, (pdata, in) -> {
-			equip(p, data);
+			equip(p, data, new AmmunitionInstance(data, this));
 			return TriggerResult.keep();
 		});
 	}
 
-	private void equip(Player p, PlayerFightData data) {
-		data.setAmmunition(this);
+	protected void equip(Player p, PlayerFightData data, AmmunitionInstance ammo) {
+		data.setAmmoInstance(ammo);
 		Sounds.equip.play(p, p);
 		Util.msg(p, Component.text("You equipped ", NamedTextColor.GRAY).append(this.getDisplay()));
 	}

@@ -4,7 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.Sounds;
-import me.neoblade298.neorogue.equipment.Ammunition;
+import me.neoblade298.neorogue.equipment.AmmunitionInstance;
 import me.neoblade298.neorogue.equipment.Bow;
 import me.neoblade298.neorogue.equipment.BowProjectile;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -52,7 +52,7 @@ public class Quickfire extends Equipment {
 	private class QuickfireProjectile extends Projectile {
 		private PlayerFightData data;
 		private Player p;
-		private Ammunition ammo;
+		private AmmunitionInstance ammo;
 
 		// Vector is non-normalized velocity of the vanilla projectile being fired
 		public QuickfireProjectile(PlayerFightData data) {
@@ -61,7 +61,7 @@ public class Quickfire extends Equipment {
 			this.size(1, 1);
 			this.data = data;
 			this.p = data.getPlayer();
-			this.ammo = data.getAmmunition();
+			this.ammo = data.getAmmoInstance();
 
 			blocksPerTick(2);
 		}

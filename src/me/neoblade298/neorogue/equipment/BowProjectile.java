@@ -25,7 +25,7 @@ public class BowProjectile extends Projectile {
 	private Player p;
 	private Bow bow;
 	private EquipmentProperties props;
-	private Ammunition ammo;
+	private AmmunitionInstance ammo;
 	private double initialVelocity;
 	private ArrayList<ProjectileTickAction> tickActions = new ArrayList<ProjectileTickAction>();
 
@@ -37,7 +37,7 @@ public class BowProjectile extends Projectile {
 		this.data = data;
 		this.p = data.getPlayer();
 		this.bow = bow;
-		this.ammo = data.getAmmunition();
+		this.ammo = data.getAmmoInstance();
 		this.props = bow.getProperties();
 		initialVelocity = v.length();
 

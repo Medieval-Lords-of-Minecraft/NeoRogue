@@ -132,6 +132,7 @@ import me.neoblade298.neorogue.equipment.weapons.FireStaff;
 import me.neoblade298.neorogue.equipment.weapons.Flametongue;
 import me.neoblade298.neorogue.equipment.weapons.ForcefulLeatherGauntlets;
 import me.neoblade298.neorogue.equipment.weapons.Fracturer;
+import me.neoblade298.neorogue.equipment.weapons.GlassArrow;
 import me.neoblade298.neorogue.equipment.weapons.Harpoon;
 import me.neoblade298.neorogue.equipment.weapons.HiddenRazor;
 import me.neoblade298.neorogue.equipment.weapons.IceWand;
@@ -422,6 +423,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Flametongue(b);
 			new ForcefulLeatherGauntlets(b);
 			new Fracturer(b);
+			new GlassArrow(b);
 			new Harpoon(b);
 			new HiddenRazor(b);
 			new IceWand(b);
