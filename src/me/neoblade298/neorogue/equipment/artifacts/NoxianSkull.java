@@ -15,7 +15,7 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusClass;
 import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
 
 public class NoxianSkull extends Artifact {
 	private static final String ID = "noxianSkull";
@@ -30,7 +30,7 @@ public class NoxianSkull extends Artifact {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
-		data.addTrigger(ID, Trigger.APPLY_STATUS, new NoxianSkullInstance(ID));
+		data.addTrigger(ID, Trigger.PRE_APPLY_STATUS, new NoxianSkullInstance(ID));
 	}
 	
 	private class NoxianSkullInstance extends PriorityAction {
@@ -40,7 +40,7 @@ public class NoxianSkull extends Artifact {
 			super(id);
 			
 			action = (pdata, in) -> {
-				ApplyStatusEvent ev = (ApplyStatusEvent) in;
+				PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
 				if (ev.getStatusClass() == StatusClass.NEGATIVE) {
 					int total = map.getOrDefault(ev.getStatusId(), 0) + ev.getStacks();
 					int extra = total / 10;

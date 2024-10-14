@@ -34,6 +34,7 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.GrantShieldsEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
 
 public class FightData {
 	protected FightInstance inst;
@@ -365,16 +366,22 @@ public class FightData {
 	public void applyStatus(Status s, FightData applier, int stacks, int ticks, DamageMeta meta) {
 		if (!entity.isValid()) return;
 		String id = s.getId();
-		ApplyStatusEvent ev = new ApplyStatusEvent(this, id, stacks, ticks, s.getStatusClass(), meta);
+		PreApplyStatusEvent ev = new PreApplyStatusEvent(this, id, stacks, ticks, s.getStatusClass(), meta);
 		if (applier instanceof PlayerFightData) {
-			FightInstance.trigger(((PlayerFightData) applier).getPlayer(), Trigger.APPLY_STATUS, ev);
+			FightInstance.trigger(((PlayerFightData) applier).getPlayer(), Trigger.PRE_APPLY_STATUS, ev);
 		}
 		if (this instanceof PlayerFightData) {
 			PlayerFightData data = (PlayerFightData) this;
 			data.updateBoardLines();
 			FightInstance.trigger(data.getPlayer(), Trigger.RECEIVE_STATUS, ev);
 		}
-		s.apply(applier, (int) Math.ceil(ev.getStacksBuff().apply(stacks)), (int) Math.ceil(ev.getDurationBuff().apply(ticks)));
+		int finalStacks = (int) Math.ceil(ev.getStacksBuff().apply(stacks));
+		int finalDuration = (int) Math.ceil(ev.getDurationBuff().apply(ticks);
+		s.apply(applier, finalStacks, finalDuration);
+		ApplyStatusEvent ev2 = new ApplyStatusEvent(this, id, finalStacks, finalDuration, s.getStatusClass(), meta);
+		if (applier instanceof PlayerFightData) {
+			FightInstance.trigger(((PlayerFightData) applier).getPlayer(), Trigger.APPLY_STATUS, ev2);
+		}
 		
 		if (statuses.isEmpty()) {
 			addTickAction(new StatusUpdateTickAction());

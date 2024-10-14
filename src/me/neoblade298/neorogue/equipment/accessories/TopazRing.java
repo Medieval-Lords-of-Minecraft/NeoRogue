@@ -10,7 +10,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
 
 public class TopazRing extends Equipment {
 	private static final String ID = "topazRing";
@@ -28,8 +28,8 @@ public class TopazRing extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
-			ApplyStatusEvent ev = (ApplyStatusEvent) in;
+		data.addTrigger(id, Trigger.PRE_APPLY_STATUS, (pdata, in) -> {
+			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
 			if (!ev.isStatus(StatusType.ELECTRIFIED)) return TriggerResult.keep();
 			ev.getStacksBuff().addIncrease(data, stacks);
 			return TriggerResult.keep();

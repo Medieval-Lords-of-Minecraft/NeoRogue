@@ -30,7 +30,7 @@ public class RingOfMentalism extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(ID, Trigger.APPLY_STATUS, (pdata, in) -> {
+		data.addTrigger(ID, Trigger.DEALT_DAMAGE, (pdata, in) -> {
 			DealtDamageEvent ev = (DealtDamageEvent) in;
 			if (!ev.getMeta().containsType(BuffType.MAGICAL)) return TriggerResult.keep();
 			FightInstance.applyStatus(ev.getTarget(), StatusType.INSANITY, data, stacks, -1);

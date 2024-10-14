@@ -12,7 +12,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
 
 public class Enlighten extends Equipment {
 	private static final String ID = "enlighten";
@@ -33,7 +33,7 @@ public class Enlighten extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		StandardPriorityAction inst = new StandardPriorityAction(ID);
 		inst.setAction((pdata, in) -> {
-			ApplyStatusEvent ev = (ApplyStatusEvent) in;
+			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
 			if (!ev.getStatusId().equals(StatusType.SANCTIFIED.name())) return TriggerResult.keep();
 			inst.addCount(ev.getStacks());
 			
@@ -42,7 +42,7 @@ public class Enlighten extends Equipment {
 			inst.setCount(inst.getCount() % 5);
 			return TriggerResult.keep();
 		});
-		data.addTrigger(id, Trigger.APPLY_STATUS, inst);
+		data.addTrigger(id, Trigger.PRE_APPLY_STATUS, inst);
 	}
 
 	@Override

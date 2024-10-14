@@ -8,6 +8,7 @@ import me.neoblade298.neorogue.equipment.Ammunition;
 import me.neoblade298.neorogue.equipment.Bow;
 import me.neoblade298.neorogue.equipment.BowProjectile;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -41,11 +42,11 @@ public class Quickfire extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, (d, inputs) -> {
+		data.addTrigger(id, bind, new EquipmentInstance(p, this, slot, es, (d, inputs) -> {
 			ProjectileGroup proj = new ProjectileGroup(new QuickfireProjectile(data));
 			proj.start(data);
 			return TriggerResult.keep();
-		}, Bow.needsAmmo);
+		}), Bow.needsAmmo);
 	}
 	
 	private class QuickfireProjectile extends Projectile {
@@ -73,7 +74,7 @@ public class Quickfire extends Equipment {
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
-			weaponDamageProjectile(p, proj, hitBarrier, false, 0.2);
+			damageProjectile(hit.getEntity(), proj, hitBarrier);
 		}
 
 		@Override
@@ -82,7 +83,6 @@ public class Quickfire extends Equipment {
 			DamageMeta dm = proj.getMeta();
 			EquipmentProperties ammoProps = ammo.getProperties();
 			double dmg = ammoProps.get(PropertyType.DAMAGE) + damage;
-			System.out.println("type: " + ammoProps.getType());
 			dm.addDamageSlice(new DamageSlice(data, dmg, ammoProps.getType()));
 			ammo.onStart(proj);
 		}

@@ -5,9 +5,11 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 
+import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
@@ -146,7 +148,6 @@ public class DamageMeta {
 			}
 		}
 		this.slices.add(slice);
-		System.out.println("Slices: " + slices);
 	}
 	
 	public void addBuffs(HashMap<BuffType, Buff> buffs, BuffOrigin origin, boolean damageBuff) {
@@ -238,7 +239,6 @@ public class DamageMeta {
 			recipient.getStatus(StatusType.EVADE).apply(recipient, -1, -1);
 		}
 		for (DamageSlice slice : slices) {
-			System.out.println("Curr: " + slice);
 			double increase = 0, mult = 1;
 			for (BuffType bt : slice.getType().getBuffTypes()) {
 				if (!damageBuffs.containsKey(bt)) continue;
@@ -375,7 +375,12 @@ public class DamageMeta {
 			}
 			if (!(target instanceof Player)) {
 				recipient.updateDisplayName();
-				recipient.getInstance().createIndicator(Component.text((int) (damage + ignoreShieldsDamage), NamedTextColor.RED), target);
+				Location loc = target.getLocation();
+				Vector btwn = owner.getEntity().getLocation().subtract(loc).toVector();
+				btwn.setY(0);
+				btwn.normalize();
+				loc = loc.add(btwn);
+				recipient.getInstance().createIndicator(Component.text((int) (damage + ignoreShieldsDamage), NamedTextColor.RED), loc);
 			}
 			else {
 				PlayerFightData data = FightInstance.getUserData(target.getUniqueId());

@@ -263,10 +263,6 @@ public abstract class FightInstance extends Instance {
 		}
 	}
 
-	public void createIndicator(Component txt, LivingEntity src) {
-		createIndicator(txt, src.getLocation().add(0, 1, 0));
-	}
-
 	public void createIndicator(Component txt, Location src) {
 		ArmorStand as = (ArmorStand) src.getWorld().spawnEntity(src, EntityType.ARMOR_STAND);
 		as.setInvisible(true);
