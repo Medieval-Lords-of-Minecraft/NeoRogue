@@ -23,7 +23,7 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
 
 public class FirstStrike extends Equipment {
 	private static final String ID = "firstStrike";
@@ -66,8 +66,8 @@ public class FirstStrike extends Equipment {
 		});
 		
 		data.addTrigger(ID, bind, inst);
-		data.addTrigger(ID, Trigger.RECEIVE_STATUS, (pdata, in) -> {
-			ApplyStatusEvent ev = (ApplyStatusEvent) in;
+		data.addTrigger(ID, Trigger.PRE_RECEIVE_STATUS, (pdata, in) -> {
+			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
 			if (ev.getStatusId().equals(StatusType.EVADE.name()) || ev.getStatusId().equals(StatusType.STEALTH.name())) {
 				inst.setCooldown(0);
 			}

@@ -29,7 +29,7 @@ public class BowProjectile extends Projectile {
 	private double initialVelocity;
 	private ArrayList<ProjectileTickAction> tickActions = new ArrayList<ProjectileTickAction>();
 
-	// Vector is non-normalized velocity of the vanilla projectile being fired
+	// Vector is non-normalized velocity of the vanilla projectile being fired, can be rotated
 	public BowProjectile(PlayerFightData data, Vector v, Bow bow) {
 		super(bow.getProperties().get(PropertyType.RANGE), 1);
 		this.gravity(0.2);

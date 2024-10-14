@@ -48,8 +48,8 @@ public class BasicShotbow extends Bow {
 			act.addCount(1);
 			if (act.getCount() >= 3) {
 				act.setCount(0);
-				proj.add(new BowProjectile(data, v.clone().rotateAroundY(Math.toRadians(-15)), this));
-				proj.add(new BowProjectile(data, v.clone().rotateAroundY(Math.toRadians(15)), this));
+				proj.add(new BowProjectile(data, v, this).rotation(-15));
+				proj.add(new BowProjectile(data, v, this).rotation(15));
 			}
 			proj.start(data);
 			return TriggerResult.keep();

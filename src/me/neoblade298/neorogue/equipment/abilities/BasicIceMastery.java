@@ -12,7 +12,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
 
 public class BasicIceMastery extends Equipment {
 	private static final String ID = "basicIceMastery";
@@ -32,7 +32,7 @@ public class BasicIceMastery extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addPermanentShield(p.getUniqueId(), 5, false);
 		data.addTrigger(id, Trigger.PRE_APPLY_STATUS, new EquipmentInstance(p, this, slot, es, (pdata, in) -> {
-			ApplyStatusEvent ev = (ApplyStatusEvent) in;
+			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
 			if (!ev.isStatus(StatusType.FROST)) return TriggerResult.keep();
 			ev.getStacksBuff().addIncrease(data, 1);
 			data.addSimpleShield(p.getUniqueId(), shields, 60);

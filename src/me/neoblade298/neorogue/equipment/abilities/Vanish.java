@@ -12,7 +12,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
 
 public class Vanish extends Equipment {
 	private static final String ID = "vanish";
@@ -33,7 +33,7 @@ public class Vanish extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		StandardPriorityAction inst = new StandardPriorityAction(ID);
 		inst.setAction((pdata, in) -> {
-			ApplyStatusEvent ev = (ApplyStatusEvent) in;
+			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
 			if (!ev.getStatusId().equals(StatusType.STEALTH.name())) return TriggerResult.keep();
 			inst.addCount(1);
 			ev.getDurationBuff().addIncrease(data, duration);
@@ -45,7 +45,7 @@ public class Vanish extends Equipment {
 			return TriggerResult.keep();
 		});
 		
-		data.addTrigger(ID, Trigger.RECEIVE_STATUS, inst);
+		data.addTrigger(ID, Trigger.PRE_RECEIVE_STATUS, inst);
 	}
 
 	@Override

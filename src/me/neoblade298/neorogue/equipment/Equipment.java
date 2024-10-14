@@ -229,6 +229,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new BasicIceMastery(b);
 			new BattleCry(b);
 			new BerserkersCall(b);
+			new BitterCold(b);
 			new BlessedEdge(b);
 			new Blind(b);
 			new Bloodlust(b);
