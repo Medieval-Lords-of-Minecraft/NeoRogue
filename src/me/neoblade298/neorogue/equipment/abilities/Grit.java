@@ -17,8 +17,8 @@ import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.KillEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreDealtDamageEvent;
 
 public class Grit extends Equipment {
 	private static final String ID = "grit";
@@ -31,7 +31,7 @@ public class Grit extends Equipment {
 				EquipmentType.ABILITY, EquipmentProperties.none());
 		shields = isUpgraded ? 6 : 4;
 		inc = isUpgraded ? 25 : 15;
-		pc.count(10).spread(0.5, 0.5).speed(0.2);
+		pc.count(30).spread(0.5, 0.5).speed(0.2).offsetY(1);
 	}
 	
 	public static Equipment get() {
@@ -40,14 +40,11 @@ public class Grit extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(ID, Trigger.DEALT_DAMAGE, (pdata, in) -> {
-			DealtDamageEvent ev = (DealtDamageEvent) in;
+		data.addTrigger(ID, Trigger.PRE_DEALT_DAMAGE, (pdata, in) -> {
+			PreDealtDamageEvent ev = (PreDealtDamageEvent) in;
 			double dist = ev.getTarget().getLocation().distanceSquared(p.getLocation());
 			if (dist <= 16) {
 				ev.getMeta().addBuff(BuffType.GENERAL, new Buff(data, 0, inc * 0.01), BuffOrigin.NORMAL, true);
-				pc.play(p, p);
-				data.addSimpleShield(p.getUniqueId(), shields, 60);
-				equip.play(p, p);
 			}
 			return TriggerResult.keep();
 		});

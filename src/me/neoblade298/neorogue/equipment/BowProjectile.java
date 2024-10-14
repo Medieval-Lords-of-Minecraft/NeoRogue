@@ -19,7 +19,7 @@ import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 
 public class BowProjectile extends Projectile {
-	public static ParticleContainer bowTick = new ParticleContainer(Particle.CRIT).count(10).speed(0.01).spread(0.1, 0.1);
+	public static ParticleContainer tick = new ParticleContainer(Particle.CRIT).count(10).speed(0.01).spread(0.1, 0.1);
 	
 	private PlayerFightData data;
 	private Player p;

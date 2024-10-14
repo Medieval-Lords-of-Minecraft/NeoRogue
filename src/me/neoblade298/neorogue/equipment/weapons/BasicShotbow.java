@@ -30,7 +30,7 @@ public class BasicShotbow extends Bow {
 
 	@Override
 	public void onTick(Player p, ProjectileInstance proj, boolean interpolation) {
-		BowProjectile.bowTick.play(p, proj.getLocation());
+		BowProjectile.tick.play(p, proj.getLocation());
 	}
 	
 	public static Equipment get() {

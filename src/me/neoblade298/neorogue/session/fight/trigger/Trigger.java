@@ -32,6 +32,7 @@ public enum Trigger {
 	PLAYER_TICK, // Tick after default player tick (stamina/mana regen and sprinting check)
 	LOWER_SHIELD,
 	RECEIVED_DAMAGE_BARRIER,
+	PRE_DEALT_DAMAGE,
 	DEALT_DAMAGE,
 	DEALT_DAMAGE_MULTIPLE,
 	WIN_FIGHT,

@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreDealtDamageEvent;
 
 public class StaticNecklace extends Artifact {
 	private static final String ID = "staticNecklace";
@@ -33,8 +33,8 @@ public class StaticNecklace extends Artifact {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
-		data.addTrigger(ID, Trigger.DEALT_DAMAGE, (pdata, in) -> {
-			DealtDamageEvent ev = (DealtDamageEvent) in;
+		data.addTrigger(ID, Trigger.PRE_DEALT_DAMAGE, (pdata, in) -> {
+			PreDealtDamageEvent ev = (PreDealtDamageEvent) in;
 			FightData fd = FightInstance.getFightData(ev.getTarget());
 			if (!fd.hasStatus(StatusType.ELECTRIFIED)) return TriggerResult.keep();
 			

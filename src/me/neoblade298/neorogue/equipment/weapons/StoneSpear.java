@@ -2,7 +2,6 @@ package me.neoblade298.neorogue.equipment.weapons;
 
 import java.util.LinkedList;
 
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -22,6 +21,7 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -121,15 +121,14 @@ public class StoneSpear extends Equipment {
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
-			DamageMeta dm = new DamageMeta(proj.getOwner(), throwDamage + proj.getOwner().getStatus(StatusType.STRENGTH).getStacks() * 2, DamageType.PIERCING);
-			damageProjectile(hit.getEntity(), proj, dm, hitBarrier);
-			Location loc = hit.getEntity().getLocation();
-			Sounds.explode.play(p, loc);
+			damageProjectile(hit.getEntity(), proj, hitBarrier);
+			Sounds.explode.play(p, hit.getEntity().getLocation());
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
 			Sounds.threw.play(p, p);
+			proj.getMeta().addDamageSlice(new DamageSlice(proj.getOwner(), throwDamage + proj.getOwner().getStatus(StatusType.STRENGTH).getStacks() * 2, DamageType.PIERCING));
 		}
 	}
 

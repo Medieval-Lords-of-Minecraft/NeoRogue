@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Ammunition;
 import me.neoblade298.neorogue.equipment.Bow;
+import me.neoblade298.neorogue.equipment.BowProjectile;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
@@ -28,7 +29,7 @@ public class Quickfire extends Equipment {
 	
 	public Quickfire(boolean isUpgraded) {
 		super(ID, "Quickfire", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
-				EquipmentType.WEAPON,
+				EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(5, 5, 8, 6));
 		properties.addUpgrades(PropertyType.RANGE);
 		damage = isUpgraded ? 60 : 40;
@@ -40,8 +41,8 @@ public class Quickfire extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ProjectileGroup proj = new ProjectileGroup(new QuickfireProjectile(data));
-		data.addSlotBasedTrigger(id, slot, bind, (d, inputs) -> {
+		data.addTrigger(id, bind, (d, inputs) -> {
+			ProjectileGroup proj = new ProjectileGroup(new QuickfireProjectile(data));
 			proj.start(data);
 			return TriggerResult.keep();
 		}, Bow.needsAmmo);
@@ -66,6 +67,7 @@ public class Quickfire extends Equipment {
 
 		@Override
 		public void onTick(ProjectileInstance proj, boolean interpolation) {
+			BowProjectile.tick.play(p, proj.getLocation());
 			ammo.onTick(p, proj, interpolation);
 		}
 
@@ -80,6 +82,7 @@ public class Quickfire extends Equipment {
 			DamageMeta dm = proj.getMeta();
 			EquipmentProperties ammoProps = ammo.getProperties();
 			double dmg = ammoProps.get(PropertyType.DAMAGE) + damage;
+			System.out.println("type: " + ammoProps.getType());
 			dm.addDamageSlice(new DamageSlice(data, dmg, ammoProps.getType()));
 			ammo.onStart(proj);
 		}

@@ -21,6 +21,6 @@ public class DescUtil {
 	}
 
 	public static String potion(String txt, int potency, int seconds) {
-		return txt + " " + white(potency) + "[" + white(seconds) + "s]";
+		return txt + " " + white(potency) + " [" + white(seconds + "s") + "]";
 	}
 }

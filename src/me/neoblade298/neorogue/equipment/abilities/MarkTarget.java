@@ -23,7 +23,7 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreDealtDamageEvent;
 
 public class MarkTarget extends Equipment {
 	private static final String ID = "markTarget";
@@ -35,8 +35,8 @@ public class MarkTarget extends Equipment {
 	public MarkTarget(boolean isUpgraded) {
 		super(ID, "Mark Target", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 0, 12, tp.range));
-		rend = isUpgraded ? 10 : 7;
-		damage = isUpgraded ? 0.3 : 0.2;
+		rend = isUpgraded ? 15 : 10;
+		damage = isUpgraded ? 0.4 : 0.3;
 	}
 	
 	public static Equipment get() {
@@ -54,8 +54,8 @@ public class MarkTarget extends Equipment {
 			return TriggerResult.keep();
 		}));
 
-		data.addTrigger(id, Trigger.DEALT_DAMAGE, (pdata, in) -> {
-			DealtDamageEvent ev = (DealtDamageEvent) in;
+		data.addTrigger(id, Trigger.PRE_DEALT_DAMAGE, (pdata, in) -> {
+			PreDealtDamageEvent ev = (PreDealtDamageEvent) in;
 			FightData fd = FightInstance.getFightData(ev.getTarget());
 			if (!fd.hasStatus(StatusType.REND)) return TriggerResult.keep();
 			ev.getMeta().addDamageSlice(new DamageSlice(data, damage * fd.getStatus(StatusType.REND).getStacks(), DamageType.SLASHING));

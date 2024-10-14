@@ -13,7 +13,7 @@ import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreDealtDamageEvent;
 
 public class Lethality extends Equipment {
 	private static final String ID = "lethality";
@@ -32,9 +32,9 @@ public class Lethality extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(ID, Trigger.DEALT_DAMAGE, (pdata, in) -> {
+		data.addTrigger(ID, Trigger.PRE_DEALT_DAMAGE, (pdata, in) -> {
 			if (data.getStamina() < thres) return TriggerResult.keep();
-			DealtDamageEvent ev = (DealtDamageEvent) in;
+			PreDealtDamageEvent ev = (PreDealtDamageEvent) in;
 			ev.getMeta().addBuff(BuffType.PIERCING, new Buff(data, inc, 0), BuffOrigin.NORMAL, true);
 			return TriggerResult.keep();
 		});

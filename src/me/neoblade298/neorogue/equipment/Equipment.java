@@ -1087,11 +1087,12 @@ public abstract class Equipment implements Comparable<Equipment> {
 		FightInstance.dealDamage(dm, target);
 	}
 
-	public void damageProjectile(LivingEntity target, ProjectileInstance proj, DamageMeta meta) {
-		damageProjectile(target, proj, meta, null);
+	public void damageProjectile(LivingEntity target, ProjectileInstance proj) {
+		damageProjectile(target, proj, null);
 	}
 
-	public void damageProjectile(LivingEntity target, ProjectileInstance proj, DamageMeta meta, Barrier hitBarrier) {
+	public void damageProjectile(LivingEntity target, ProjectileInstance proj, Barrier hitBarrier) {
+		DamageMeta meta = proj.getMeta();
 		if (!proj.getBuffs().isEmpty()) {
 			meta.addBuffs(proj.getBuffs(), BuffOrigin.PROJECTILE, true);
 		}

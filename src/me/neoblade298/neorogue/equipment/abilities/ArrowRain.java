@@ -141,7 +141,7 @@ public class ArrowRain extends Equipment {
 
 		@Override
 		public void onTick(ProjectileInstance proj, boolean interpolation) {
-			BowProjectile.bowTick.play(p, proj.getLocation());
+			BowProjectile.tick.play(p, proj.getLocation());
 		}
 
 		private void hitAnimation(Location loc) {

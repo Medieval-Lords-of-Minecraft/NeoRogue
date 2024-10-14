@@ -15,7 +15,7 @@ import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreDealtDamageEvent;
 
 public class BasicFireMastery extends Equipment {
 	private static final String ID = "basicFireMastery";
@@ -34,8 +34,8 @@ public class BasicFireMastery extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addBuff(data, true, false, BuffType.GENERAL, 5);
-		data.addTrigger(id, Trigger.DEALT_DAMAGE, new EquipmentInstance(p, this, slot, es, (pdata, in) -> {
-			DealtDamageEvent ev = (DealtDamageEvent) in;
+		data.addTrigger(id, Trigger.PRE_DEALT_DAMAGE, new EquipmentInstance(p, this, slot, es, (pdata, in) -> {
+			PreDealtDamageEvent ev = (PreDealtDamageEvent) in;
 			if (!ev.getMeta().containsType(DamageType.FIRE)) return TriggerResult.keep();
 			FightInstance.applyStatus(ev.getTarget(), StatusType.BURN, data, burn, -1);
 			return TriggerResult.keep();

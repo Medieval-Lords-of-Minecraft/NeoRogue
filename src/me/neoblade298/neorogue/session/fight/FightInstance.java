@@ -79,8 +79,8 @@ import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.GenericStatusType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
-import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageMultipleEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreDealtDamageMultipleEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.RightClickHitEvent;
 import net.kyori.adventure.text.Component;
 
@@ -264,12 +264,13 @@ public abstract class FightInstance extends Instance {
 	}
 
 	public void createIndicator(Component txt, LivingEntity src) {
-		createIndicator(txt, src.getEyeLocation());
+		createIndicator(txt, src.getLocation().add(0, 1, 0));
 	}
 
 	public void createIndicator(Component txt, Location src) {
 		ArmorStand as = (ArmorStand) src.getWorld().spawnEntity(src, EntityType.ARMOR_STAND);
 		as.setInvisible(true);
+		as.setVelocity(new Vector(0, 0.1, 0));
 		as.setInvulnerable(true);
 		as.setSmall(true);
 		as.setGravity(true);
@@ -788,7 +789,7 @@ public abstract class FightInstance extends Instance {
 	
 	public static void dealDamage(DamageMeta meta, Collection<LivingEntity> targets) {
 		if (meta.getOwner() instanceof PlayerFightData) {
-			trigger((Player) meta.getOwner().getEntity(), Trigger.DEALT_DAMAGE_MULTIPLE, new DealtDamageMultipleEvent(meta, targets));
+			trigger((Player) meta.getOwner().getEntity(), Trigger.DEALT_DAMAGE_MULTIPLE, new PreDealtDamageMultipleEvent(meta, targets));
 		}
 		for (LivingEntity target : targets) {
 			dealDamage(meta.clone(), target);

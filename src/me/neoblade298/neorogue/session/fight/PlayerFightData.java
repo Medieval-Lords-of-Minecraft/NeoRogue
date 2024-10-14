@@ -62,6 +62,7 @@ public class PlayerFightData extends FightData {
 	private HashMap<Trigger, ArrayList<PriorityAction>> triggers = new HashMap<Trigger, ArrayList<PriorityAction>>();
 	private HashMap<String, EquipmentInstance> equips = new HashMap<String, EquipmentInstance>(); // Useful for modifying cooldowns
 	private HashMap<Integer, HashMap<Trigger, ArrayList<PriorityAction>>> slotBasedTriggers = new HashMap<Integer, HashMap<Trigger, ArrayList<PriorityAction>>>();
+	private HashMap<Integer, ItemStack> icons = new HashMap<Integer, ItemStack>();
 	private LinkedList<Listener> listeners = new LinkedList<Listener>();
 	private HashMap<UUID, Trap> traps = new HashMap<UUID, Trap>();
 	private ArrayList<String> boardLines;
@@ -438,6 +439,10 @@ public class PlayerFightData extends FightData {
 		addTrigger(id, trigger, new PriorityAction(id, action));
 	}
 
+	public void addTrigger(String id, Trigger trigger, TriggerAction action, TriggerCondition cond) {
+		addTrigger(id, trigger, new PriorityAction(id, action, cond));
+	}
+
 	public void addTrigger(String id, Trigger trigger, PriorityAction action) {
 		ArrayList<PriorityAction> actions = triggers.containsKey(trigger) ? triggers.get(trigger)
 				: new ArrayList<PriorityAction>();
@@ -653,7 +658,7 @@ public class PlayerFightData extends FightData {
 				}
 				if (item.getType().name().endsWith("CANDLE") &&
 						ent.getValue().getCooldownSeconds() == 0) {
-					inv.setItem(ent.getKey(), ent.getValue().getEquipment().getItem());
+					inv.setItem(ent.getKey(), icons.getOrDefault(ent.getKey(), ent.getValue().getEquipment().getItem()));
 				}
 			}
 			p.updateInventory();
@@ -664,6 +669,15 @@ public class PlayerFightData extends FightData {
 			toRemove.clear();
 			return TickResult.KEEP;
 		}
+	}
+
+	// Currently this only works for hotbar since it's simple
+	public void setIcon(int i, ItemStack item) {
+		icons.put(i, item);
+	}
+
+	public void removeIcon(int i) {
+		icons.remove(i);
 	}
 	
 	public boolean canBasicAttack() {

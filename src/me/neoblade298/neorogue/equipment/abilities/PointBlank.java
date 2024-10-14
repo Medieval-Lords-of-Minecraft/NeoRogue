@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreDealtDamageEvent;
 
 public class PointBlank extends Equipment {
 	private static final String ID = "pointBlank";
@@ -35,8 +35,8 @@ public class PointBlank extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.DEALT_DAMAGE, (pdata, in) -> {
-			DealtDamageEvent ev = (DealtDamageEvent) in;
+		data.addTrigger(id, Trigger.PRE_DEALT_DAMAGE, (pdata, in) -> {
+			PreDealtDamageEvent ev = (PreDealtDamageEvent) in;
 			DamageMeta dm = ev.getMeta();
 			if (dm.getOrigin() != DamageOrigin.PROJECTILE) return TriggerResult.keep();
 			IProjectileInstance ip = dm.getProjectile();

@@ -20,6 +20,7 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.KillEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreDealtDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedHealthDamageEvent;
 import net.kyori.adventure.text.Component;
@@ -145,6 +146,7 @@ public class DamageMeta {
 			}
 		}
 		this.slices.add(slice);
+		System.out.println("Slices: " + slices);
 	}
 	
 	public void addBuffs(HashMap<BuffType, Buff> buffs, BuffOrigin origin, boolean damageBuff) {
@@ -178,6 +180,7 @@ public class DamageMeta {
 		double ignoreShieldsDamage = 0;
 		returnDamage = new DamageMeta(recipient);
 		returnDamage.isSecondary = true;
+		FightInstance.trigger((Player) owner.getEntity(), Trigger.PRE_DEALT_DAMAGE, new PreDealtDamageEvent(this, target));
 		
 		// See if any of our effects cancel damage first
 		if (recipient instanceof PlayerFightData) {
@@ -235,6 +238,7 @@ public class DamageMeta {
 			recipient.getStatus(StatusType.EVADE).apply(recipient, -1, -1);
 		}
 		for (DamageSlice slice : slices) {
+			System.out.println("Curr: " + slice);
 			double increase = 0, mult = 1;
 			for (BuffType bt : slice.getType().getBuffTypes()) {
 				if (!damageBuffs.containsKey(bt)) continue;

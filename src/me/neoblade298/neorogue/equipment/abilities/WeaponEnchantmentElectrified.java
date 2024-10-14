@@ -15,7 +15,7 @@ import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
-import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -84,7 +84,7 @@ public class WeaponEnchantmentElectrified extends Equipment {
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
-			damageProjectile(hit.getEntity(), proj, new DamageMeta(proj.getOwner(), damage, DamageType.LIGHTNING), hitBarrier);
+			damageProjectile(hit.getEntity(), proj, hitBarrier);
 			FightInstance.getFightData(hit.getEntity()).applyStatus(StatusType.ELECTRIFIED, proj.getOwner(), elec, -1);
 			scHit.play((Player) proj.getOwner().getEntity(), hit.getEntity());
 		}
@@ -92,6 +92,7 @@ public class WeaponEnchantmentElectrified extends Equipment {
 		@Override
 		public void onStart(ProjectileInstance proj) {
 			sc.play((Player) proj.getOwner().getEntity(), proj.getOwner().getEntity());
+			proj.getMeta().addDamageSlice(new DamageSlice(proj.getOwner(), damage, DamageType.LIGHTNING));
 		}
 	}
 }
