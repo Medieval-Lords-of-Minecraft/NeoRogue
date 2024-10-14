@@ -105,10 +105,6 @@ public class DamageMeta {
 		return clone;
 	}
 
-	public DamageOrigin getOrigin() {
-		return origin;
-	}
-
 	public IProjectileInstance getProjectile() {
 		return proj;
 	}

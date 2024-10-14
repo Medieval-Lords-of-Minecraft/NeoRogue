@@ -1,10 +1,8 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
-import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -23,7 +21,6 @@ import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
 public class PointBlank extends Equipment {
 	private static final String ID = "pointBlank";
 	private int thres, damage;
-	private static final ParticleContainer pc = new ParticleContainer(Particle.ENCHANTMENT_TABLE).count(25).spread(1, 1);
 	
 	public PointBlank(boolean isUpgraded) {
 		super(ID, "Point Blank", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
