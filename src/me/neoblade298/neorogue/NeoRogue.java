@@ -35,7 +35,7 @@ import me.neoblade298.neorogue.commands.CmdAdminPieceSettings;
 import me.neoblade298.neorogue.commands.CmdAdminReload;
 import me.neoblade298.neorogue.commands.CmdAdminReloadMythic;
 import me.neoblade298.neorogue.commands.CmdAdminSet;
-import me.neoblade298.neorogue.commands.CmdAdminSetStatus;
+import me.neoblade298.neorogue.commands.CmdAdminStatus;
 import me.neoblade298.neorogue.commands.CmdAdminTrash;
 import me.neoblade298.neorogue.commands.CmdGlossary;
 import me.neoblade298.neorogue.commands.CmdInfo;
@@ -134,7 +134,7 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdAdminBoss("boss", "Tests a boss fight", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminGod("god", "Maxes out your health, mana, stamina, and ignores cooldowns in a fight", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminSet("set", "Set your stats mid-fight", null, SubcommandRunner.PLAYER_ONLY));
-		mngr.register(new CmdAdminSetStatus("setstatus", "Apply statuses mid-fight", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdAdminStatus("status", "Add/remove statuses mid-fight", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.registerCommandList("");
 	}
 	

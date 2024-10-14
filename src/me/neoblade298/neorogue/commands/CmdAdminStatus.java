@@ -16,8 +16,8 @@ import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 
-public class CmdAdminSetStatus extends Subcommand {
-	public CmdAdminSetStatus(String key, String desc, String perm, SubcommandRunner runner) {
+public class CmdAdminStatus extends Subcommand {
+	public CmdAdminStatus(String key, String desc, String perm, SubcommandRunner runner) {
 		super(key, desc, perm, runner);
 		ArrayList<String> tab = new ArrayList<String>(StatusType.values().length);
 		for (StatusType type : StatusType.values()) {

@@ -326,11 +326,11 @@ public class FightData {
 	}
 	
 	public boolean hasStatus(String id) {
-		return statuses.containsKey(id) && statuses.get(id).getStacks() >= 0;
+		return statuses.containsKey(id) && statuses.get(id).getStacks() > 0;
 	}
 	
 	public boolean hasStatus(StatusType type) {
-		return statuses.containsKey(type.name()) && statuses.get(type.name()).getStacks() >= 0;
+		return statuses.containsKey(type.name()) && statuses.get(type.name()).getStacks() > 0;
 	}
 	
 	public Status getStatus(String id) {
@@ -376,7 +376,7 @@ public class FightData {
 			FightInstance.trigger(data.getPlayer(), Trigger.PRE_RECEIVE_STATUS, ev);
 		}
 		int finalStacks = (int) Math.ceil(ev.getStacksBuff().apply(stacks));
-		int finalDuration = (int) Math.ceil(ev.getDurationBuff().apply(ticks);
+		int finalDuration = (int) Math.ceil(ev.getDurationBuff().apply(ticks));
 		s.apply(applier, finalStacks, finalDuration);
 		ApplyStatusEvent ev2 = new ApplyStatusEvent(this, id, finalStacks, finalDuration, s.getStatusClass(), meta);
 		if (applier instanceof PlayerFightData) {

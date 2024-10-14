@@ -48,9 +48,9 @@ public class FocusedShot extends Equipment {
 					Sounds.enchant.play(p, p);
 					pc.play(p, p);
 					primeShot(p, data);
+					inst.reduceCooldown(data.getStatus(StatusType.FOCUS).getStacks());
 				}
 			}.runTaskLater(NeoRogue.inst(), 20L));
-			inst.reduceCooldown(data.getStatus(StatusType.FOCUS).getStacks());
 			return TriggerResult.keep();
 		});
 		data.addTrigger(id, bind, inst);
@@ -67,7 +67,7 @@ public class FocusedShot extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.SHIELD,
+		item = createItem(Material.CYAN_DYE,
 				"On cast, " + GlossaryTag.CHARGE.tag(this) + " for <white>1s</white>. Afterwards, your next basic attack " + 
 				"has its damage increased by <yellow>" + damage + "%</yellow>. This skill's cooldown is decreased by stacks of " + GlossaryTag.FOCUS.tag(this) + " you have.");
 	}

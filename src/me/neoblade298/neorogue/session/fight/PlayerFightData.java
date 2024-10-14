@@ -160,12 +160,12 @@ public class PlayerFightData extends FightData {
 	}
 
 	public boolean isChanneling() {
-		return statuses.containsKey(StatusType.CHANNELING.name());
+		return hasStatus(StatusType.CHANNELING);
 	}
 
 	public void channel(int ticks) {
 		applyStatus(StatusType.CHANNELING, this, 1, ticks);
-		entity.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, ticks, 1));
+		entity.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, ticks, 3));
 	}
 
 	public void charge(int ticks) {
@@ -212,6 +212,7 @@ public class PlayerFightData extends FightData {
 		Iterator<Status> iter = statuses.descendingIterator();
 		while (iter.hasNext() && boardLines.size() < lineSize - players - 1) {
 			Status s = iter.next();
+			if (s.isHidden()) continue;
 			boardLines.add(s.getDisplay());
 		}
 		if (!boardLines.isEmpty()) boardLines.add("§8§m-----");
