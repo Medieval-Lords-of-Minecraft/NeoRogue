@@ -35,7 +35,7 @@ public abstract class Bow extends Equipment {
 		super(id, display, isUpgraded, rarity, ec, type, props);
 	}
 
-	public abstract void onTick(Player p, ProjectileInstance proj, boolean interpolation);
+	public abstract void onTick(Player p, ProjectileInstance proj, int interpolation);
 
 	public boolean canShoot(PlayerFightData data) {
 		if (data.getAmmoInstance() == null) { 

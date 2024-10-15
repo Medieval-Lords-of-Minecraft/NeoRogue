@@ -16,7 +16,7 @@ public abstract class Ammunition extends Equipment {
 	public Ammunition(String id, String display, boolean isUpgraded, Rarity rarity, EquipmentClass ec, EquipmentType type, EquipmentProperties props) {
 		super(id, display, isUpgraded, rarity, ec, type, props);
 	}
-	public void onTick(Player p, ProjectileInstance proj, boolean interpolation) {}
+	public void onTick(Player p, ProjectileInstance proj, int interpolation) {}
 	public void onHit(ProjectileInstance inst, LivingEntity target) {}
 	public void onStart(ProjectileInstance inst) {}
 

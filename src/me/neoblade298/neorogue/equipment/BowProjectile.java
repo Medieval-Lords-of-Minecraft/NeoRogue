@@ -53,7 +53,7 @@ public class BowProjectile extends Projectile {
 	}
 
 	@Override
-	public void onTick(ProjectileInstance proj, boolean interpolation) {
+	public void onTick(ProjectileInstance proj, int interpolation) {
 		bow.onTick(p, proj, interpolation);
 		ammo.onTick(p, proj, interpolation);
 		for (ProjectileTickAction act : tickActions) {

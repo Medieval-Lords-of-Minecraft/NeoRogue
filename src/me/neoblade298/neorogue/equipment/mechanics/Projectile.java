@@ -115,7 +115,7 @@ public abstract class Projectile extends IProjectile {
 		return proj;
 	}
 	public void onStart(ProjectileInstance proj) {}
-	public abstract void onTick(ProjectileInstance proj, boolean interpolation);
+	public abstract void onTick(ProjectileInstance proj, int interpolation); // interpolation 0 == baseline, every number after is interpolation
 	public void onHitBlock(ProjectileInstance proj, Block b) {}
 	public void onFizzle(ProjectileInstance proj) {}
 	public abstract void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj);

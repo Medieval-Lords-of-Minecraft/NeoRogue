@@ -65,7 +65,7 @@ public class ElectrifiedStatus extends DecrementStackStatus {
 		}
 
 		@Override
-		public void onTick(ProjectileInstance proj, boolean interpolation) {
+		public void onTick(ProjectileInstance proj, int interpolation) {
 			tick.play(p, proj.getLocation());
 		}
 

@@ -77,7 +77,7 @@ public class WeaponEnchantmentElectrified extends Equipment {
 		}
 
 		@Override
-		public void onTick(ProjectileInstance proj, boolean interpolation) {
+		public void onTick(ProjectileInstance proj, int interpolation) {
 			Player p = (Player) proj.getOwner().getEntity();
 			tick.play(p, proj.getLocation());
 		}

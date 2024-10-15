@@ -27,7 +27,7 @@ public class BasicCrossbow extends Bow {
 	}
 
 	@Override
-	public void onTick(Player p, ProjectileInstance proj, boolean interpolation) {
+	public void onTick(Player p, ProjectileInstance proj, int interpolation) {
 		BowProjectile.tick.play(p, proj.getLocation());
 	}
 

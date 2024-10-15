@@ -70,7 +70,7 @@ public class AzureCutter extends Artifact {
 		}
 
 		@Override
-		public void onTick(ProjectileInstance proj, boolean interpolation) {
+		public void onTick(ProjectileInstance proj, int interpolation) {
 			part.play(p, proj.getLocation());
 		}
 

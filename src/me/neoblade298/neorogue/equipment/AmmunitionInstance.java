@@ -44,7 +44,7 @@ public class AmmunitionInstance {
 		ammo.onStart(inst);
 		if (useAmmo) use();
 	}
-	public void onTick(Player p, ProjectileInstance proj, boolean interpolation) {
+	public void onTick(Player p, ProjectileInstance proj, int interpolation) {
 		ammo.onTick(p, proj, interpolation);
 	}
 	public void onHit(ProjectileInstance inst, LivingEntity target) {

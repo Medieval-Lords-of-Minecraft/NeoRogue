@@ -69,7 +69,7 @@ public class WindSlash extends Equipment {
 		}
 
 		@Override
-		public void onTick(ProjectileInstance proj, boolean interpolation) {
+		public void onTick(ProjectileInstance proj, int interpolation) {
 			Player p = (Player) proj.getOwner().getEntity();
 			if (proj.getTick() % 3 == 0) Sounds.flap.play(p, proj.getLocation());
 			part.play(p, proj.getLocation());

@@ -1,11 +1,9 @@
 package me.neoblade298.neorogue.equipment.weapons;
 
 import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 
-import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.equipment.Bow;
 import me.neoblade298.neorogue.equipment.BowProjectile;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -29,7 +27,7 @@ public class BasicBow extends Bow {
 	}
 
 	@Override
-	public void onTick(Player p, ProjectileInstance proj, boolean interpolation) {
+	public void onTick(Player p, ProjectileInstance proj, int interpolation) {
 		BowProjectile.tick.play(p, proj.getLocation());
 	}
 

@@ -79,7 +79,7 @@ public class IceWand extends Equipment {
 		}
 		
 		@Override
-		public void onTick(ProjectileInstance proj, boolean interpolation) {
+		public void onTick(ProjectileInstance proj, int interpolation) {
 			tick.play(p, proj.getLocation());
 		}
 		

@@ -80,7 +80,7 @@ public class FivePointStrike extends Equipment {
 		}
 
 		@Override
-		public void onTick(ProjectileInstance proj, boolean interpolation) {
+		public void onTick(ProjectileInstance proj, int interpolation) {
 			Player p = (Player) proj.getOwner().getEntity();
 			part.play(p, proj.getLocation());
 		}

@@ -30,7 +30,7 @@ public class HuntersBow extends Bow {
 	}
 
 	@Override
-	public void onTick(Player p, ProjectileInstance proj, boolean interpolation) {
+	public void onTick(Player p, ProjectileInstance proj, int interpolation) {
 		tick.play(p, proj.getLocation());
 	}
 

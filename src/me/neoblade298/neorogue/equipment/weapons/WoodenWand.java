@@ -68,7 +68,7 @@ public class WoodenWand extends Equipment {
 		}
 
 		@Override
-		public void onTick(ProjectileInstance proj, boolean interpolation) {
+		public void onTick(ProjectileInstance proj, int interpolation) {
 			tick.play(p, proj.getLocation());
 			tickSound.play(p, proj.getLocation());
 		}

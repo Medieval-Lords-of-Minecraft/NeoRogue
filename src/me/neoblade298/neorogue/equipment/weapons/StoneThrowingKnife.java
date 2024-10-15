@@ -25,7 +25,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class StoneThrowingKnife extends Equipment {
 	private static final String ID = "stoneThrowingKnife";
 	
-	private static final ParticleContainer tick = new ParticleContainer(Particle.CRIT).count(3).speed(0.01).spread(0.1, 0.1);
+	private static final ParticleContainer tick = new ParticleContainer(Particle.CRIT).count(1);
 	private static final SoundContainer hit = new SoundContainer(Sound.ENTITY_ITEM_BREAK);
 	
 	public StoneThrowingKnife(boolean isUpgraded) {
@@ -55,13 +55,13 @@ public class StoneThrowingKnife extends Equipment {
 		private Player p;
 
 		public StoneThrowingKnifeProjectile(Player p) {
-			super(0.5, 10, 1);
+			super(0.5, isUpgraded ? 5 : 3, 1);
 			this.size(0.5, 0.5);
 			this.p = p;
 		}
 
 		@Override
-		public void onTick(ProjectileInstance proj, boolean interpolation) {
+		public void onTick(ProjectileInstance proj, int interpolation) {
 			tick.play(p, proj.getLocation());
 		}
 

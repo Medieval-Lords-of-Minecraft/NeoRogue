@@ -50,8 +50,8 @@ public class ProjectileInstance extends IProjectileInstance {
 		
 		v = direction.clone().normalize().rotateAroundY(Math.toRadians(settings.getRotation()));
 		if (settings.initialY() != 0) origin.add(0, settings.initialY(), 0);
-		v = v.multiply(settings.getBlocksPerTick() * settings.getTickSpeed());
-		interpolationPoints = (int) v.length() + 1;
+		v = v.multiply(settings.getBlocksPerTick() / settings.getTickSpeed());
+		interpolationPoints = (int) ((v.length() + 1) / Math.min(settings.getWidth(), settings.getHeight()));
 		v = v.multiply(1D / interpolationPoints);
 		loc = origin.clone();
 		bounds = BoundingBox.of(loc, settings.getWidth(), settings.getHeight(), settings.getWidth());
@@ -127,7 +127,7 @@ public class ProjectileInstance extends IProjectileInstance {
 				}
 			}
 
-			settings.onTick(this, i == interpolationPoints - 1);
+			settings.onTick(this, i);
 			loc.add(v);
 			bounds.shift(v);
 		}

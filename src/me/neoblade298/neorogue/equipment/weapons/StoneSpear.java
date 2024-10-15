@@ -110,13 +110,14 @@ public class StoneSpear extends Equipment {
 
 		public StoneSpearProjectile(Player p) {
 			super(1, 15, 1);
-			this.size(0.5, 0.5).pierce(-1).gravity(0.02).initialY(0.5);
+			this.size(0.5, 0.5).pierce(-1).gravity(0.02).initialY(1);
 			this.p = p;
 		}
 
 		@Override
-		public void onTick(ProjectileInstance proj, boolean interpolation) {
+		public void onTick(ProjectileInstance proj, int interpolation) {
 			throwPart.play(p, proj.getLocation());
+			System.out.println("test");
 		}
 
 		@Override

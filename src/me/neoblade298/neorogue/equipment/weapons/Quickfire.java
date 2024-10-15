@@ -67,7 +67,7 @@ public class Quickfire extends Equipment {
 		}
 
 		@Override
-		public void onTick(ProjectileInstance proj, boolean interpolation) {
+		public void onTick(ProjectileInstance proj, int interpolation) {
 			BowProjectile.tick.play(p, proj.getLocation());
 			ammo.onTick(p, proj, interpolation);
 		}
