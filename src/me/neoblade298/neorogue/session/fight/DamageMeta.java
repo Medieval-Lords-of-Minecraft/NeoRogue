@@ -181,7 +181,10 @@ public class DamageMeta {
 		double ignoreShieldsDamage = 0;
 		returnDamage = new DamageMeta(recipient);
 		returnDamage.isSecondary = true;
-		FightInstance.trigger((Player) owner.getEntity(), Trigger.PRE_DEALT_DAMAGE, new PreDealtDamageEvent(this, target));
+
+		if (owner instanceof Player) {
+			FightInstance.trigger((Player) owner.getEntity(), Trigger.PRE_DEALT_DAMAGE, new PreDealtDamageEvent(this, target));
+		}
 		
 		// See if any of our effects cancel damage first
 		if (recipient instanceof PlayerFightData) {

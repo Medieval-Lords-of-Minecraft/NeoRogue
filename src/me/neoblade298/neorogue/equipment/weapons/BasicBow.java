@@ -20,7 +20,6 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class BasicBow extends Bow {
 	private static final String ID = "basicBow";
-	private static final ParticleContainer tick = new ParticleContainer(Particle.CRIT).count(10).speed(0.01).spread(0.1, 0.1);
 	
 	public BasicBow(boolean isUpgraded) {
 		super(ID, "Basic Bow", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
@@ -31,7 +30,7 @@ public class BasicBow extends Bow {
 
 	@Override
 	public void onTick(Player p, ProjectileInstance proj, boolean interpolation) {
-		tick.play(p, proj.getLocation());
+		BowProjectile.tick.play(p, proj.getLocation());
 	}
 
 	@Override

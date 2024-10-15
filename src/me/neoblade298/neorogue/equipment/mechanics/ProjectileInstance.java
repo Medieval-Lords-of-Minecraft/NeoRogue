@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -37,7 +38,7 @@ public class ProjectileInstance extends IProjectileInstance {
 	private DamageMeta meta;
 	
 	protected ProjectileInstance(Projectile settings, FightData owner) {
-		this(settings, owner, owner.getEntity().getLocation().add(0, 1.65, 0), owner.getEntity().getLocation().getDirection());
+		this(settings, owner, owner.getEntity().getLocation().add(0, 1.5, 0), owner.getEntity().getLocation().getDirection());
 	}
 	
 	protected ProjectileInstance(Projectile settings, FightData owner, Location origin, Vector direction) {
@@ -49,8 +50,9 @@ public class ProjectileInstance extends IProjectileInstance {
 		
 		v = direction.clone().normalize().rotateAroundY(Math.toRadians(settings.getRotation()));
 		if (settings.initialY() != 0) origin.add(0, settings.initialY(), 0);
-		v.multiply(settings.getBlocksPerTick() * settings.getTickSpeed());
+		v = v.multiply(settings.getBlocksPerTick() * settings.getTickSpeed());
 		interpolationPoints = (int) v.length() + 1;
+		v = v.multiply(1D / interpolationPoints);
 		loc = origin.clone();
 		bounds = BoundingBox.of(loc, settings.getWidth(), settings.getHeight(), settings.getWidth());
 		
@@ -96,7 +98,7 @@ public class ProjectileInstance extends IProjectileInstance {
 			// Check for collision with mobs
 			if (!settings.isIgnoreEntities()) {
 				for (Entity ent : loc.getWorld().getNearbyEntities(bounds)) {
-					if (ent instanceof Player) continue;
+					if (ent instanceof Player || ent.getType() == EntityType.ARMOR_STAND) continue;
 					if (!(ent instanceof LivingEntity)) continue;
 					
 					UUID uuid = ent.getUniqueId();

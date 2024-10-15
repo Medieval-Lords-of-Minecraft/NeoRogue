@@ -36,7 +36,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 public class StoneSpear extends Equipment {
 	private static final String ID = "stoneSpear";
 	private int damage, throwDamage, throwCooldown = 5;
-	private static final ParticleContainer throwPart = new ParticleContainer(Particle.CLOUD).count(25).spread(0.1, 0.1);
+	private static final ParticleContainer throwPart = new ParticleContainer(Particle.CLOUD);
 	private static final TargetProperties spearHit = TargetProperties.line(4, 1, TargetType.ENEMY);
 
 	public StoneSpear(boolean isUpgraded) {
@@ -110,7 +110,7 @@ public class StoneSpear extends Equipment {
 
 		public StoneSpearProjectile(Player p) {
 			super(1, 15, 1);
-			this.size(0.5, 0.5).pierce(-1).gravity(0.1).initialY(0.5);
+			this.size(0.5, 0.5).pierce(-1).gravity(0.02).initialY(0.5);
 			this.p = p;
 		}
 

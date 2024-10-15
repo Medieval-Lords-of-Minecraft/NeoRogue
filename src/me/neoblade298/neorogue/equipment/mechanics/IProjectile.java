@@ -16,7 +16,7 @@ public abstract class IProjectile {
 		return create(owner, source.clone(), direction);
 	}
 	protected IProjectileInstance startWithoutEvent(FightData owner) {
-		return startWithoutEvent(owner, owner.getEntity().getLocation().add(0, 1.65, 0), owner.getEntity().getEyeLocation().getDirection());
+		return startWithoutEvent(owner, owner.getEntity().getLocation().add(0, 1.5, 0), owner.getEntity().getEyeLocation().getDirection());
 	}
 	public IProjectileInstance start(FightData owner, Location source, Vector direction) {
 		ProjectileGroup projs = new ProjectileGroup(this);
@@ -28,7 +28,7 @@ public abstract class IProjectile {
 		return inst;
 	}
 	public IProjectileInstance start(FightData owner) {
-		return start(owner, owner.getEntity().getLocation().add(0, 1.65, 0), owner.getEntity().getEyeLocation().getDirection());
+		return start(owner, owner.getEntity().getLocation().add(0, 1.5, 0), owner.getEntity().getEyeLocation().getDirection());
 	}
 	protected abstract IProjectileInstance create(FightData owner, Location source, Vector direction);
 }

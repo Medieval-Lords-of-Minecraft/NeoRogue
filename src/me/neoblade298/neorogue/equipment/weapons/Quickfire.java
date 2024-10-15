@@ -57,7 +57,7 @@ public class Quickfire extends Equipment {
 		// Vector is non-normalized velocity of the vanilla projectile being fired
 		public QuickfireProjectile(PlayerFightData data) {
 			super(properties.get(PropertyType.RANGE), 1);
-			this.gravity(0.2);
+			this.gravity(0.03);
 			this.size(1, 1);
 			this.data = data;
 			this.p = data.getPlayer();
