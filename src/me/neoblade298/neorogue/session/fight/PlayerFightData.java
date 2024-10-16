@@ -93,19 +93,6 @@ public class PlayerFightData extends FightData {
 		this.stamina = sessdata.getStartingStamina();
 		this.staminaRegen = sessdata.getStaminaRegen();
 		this.manaRegen = sessdata.getManaRegen();
-		
-		// Setup inventory
-		PlayerInventory inv = p.getInventory();
-		ItemStack[] contents = inv.getContents();
-
-		for (int i = 0; i < 9; i++) {
-			if (data.getEquipment(EquipSlot.HOTBAR)[i] == null) {
-				contents[i] = null;
-				continue;
-			}
-			contents[i] = data.getEquipment(EquipSlot.HOTBAR)[i].getItem();
-		}
-		inv.setContents(contents);
 
 		// Initialize fight data
 		int i = 0;
@@ -140,6 +127,19 @@ public class PlayerFightData extends FightData {
 		if (offhand != null) {
 			offhand.initialize(p, this, null, EquipSlot.OFFHAND, 0);
 		}
+		
+		// Setup inventory after initializing equipment so icons get put in
+		PlayerInventory inv = p.getInventory();
+		ItemStack[] contents = inv.getContents();
+
+		for (i = 0; i < 9; i++) {
+			if (data.getEquipment(EquipSlot.HOTBAR)[i] == null) {
+				contents[i] = null;
+				continue;
+			}
+			contents[i] = icons.getOrDefault(i, data.getEquipment(EquipSlot.HOTBAR)[i].getItem());
+		}
+		inv.setContents(contents);
 		
 		// Sort triggers by priority
 		for (ArrayList<PriorityAction> list : triggers.values()) {
@@ -675,6 +675,10 @@ public class PlayerFightData extends FightData {
 	// Currently this only works for hotbar since it's simple
 	public void setIcon(int i, ItemStack item) {
 		icons.put(i, item);
+		PlayerInventory inv = p.getInventory();
+		if (!inv.getItem(i).getType().name().endsWith("CANDLE")) {
+			inv.setItem(i, item);
+		}
 	}
 
 	public void removeIcon(int i) {

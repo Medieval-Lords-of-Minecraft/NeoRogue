@@ -2,7 +2,9 @@ package me.neoblade298.neorogue.equipment.weapons;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.AmmunitionInstance;
 import me.neoblade298.neorogue.equipment.Bow;
@@ -24,16 +26,17 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class Quickfire extends Equipment {
-	private static final String ID = "quickfire";
+public class Volley extends Equipment {
+	private static final String ID = "volley";
+	private static final int[] rotations = new int[] { 0, -15, 15, -30, 30 };
 	private int damage;
 	
-	public Quickfire(boolean isUpgraded) {
-		super(ID, "Quickfire", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
+	public Volley(boolean isUpgraded) {
+		super(ID, "Volley", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(5, 5, 8, 6));
+				EquipmentProperties.ofUsable(15, 5, 12, 7));
 		properties.addUpgrades(PropertyType.RANGE);
-		damage = isUpgraded ? 60 : 40;
+		damage = isUpgraded ? 40 : 30;
 	}
 	
 	public static Equipment get() {
@@ -43,22 +46,33 @@ public class Quickfire extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(p, this, slot, es, (d, inputs) -> {
-			ProjectileGroup proj = new ProjectileGroup(new QuickfireProjectile(data));
-			proj.start(data);
+			data.channel(20);
+			data.addTask(new BukkitRunnable() {
+				public void run() {
+					ProjectileGroup proj = new ProjectileGroup();
+					for (int i : rotations) {
+						if (data.getAmmoInstance() != null) {
+							proj.add(new VolleyProjectile(data, i));
+							data.getAmmoInstance().use();
+						}
+					}
+				}
+			}.runTaskLater(NeoRogue.inst(), 20L));
 			return TriggerResult.keep();
 		}, Bow.needsAmmo));
 	}
 	
-	private class QuickfireProjectile extends Projectile {
+	private class VolleyProjectile extends Projectile {
 		private PlayerFightData data;
 		private Player p;
 		private AmmunitionInstance ammo;
 
 		// Vector is non-normalized velocity of the vanilla projectile being fired
-		public QuickfireProjectile(PlayerFightData data) {
+		public VolleyProjectile(PlayerFightData data, int rotation) {
 			super(properties.get(PropertyType.RANGE), 1);
 			this.gravity(0.03);
 			this.size(1, 1);
+			this.rotation(rotation);
 			this.data = data;
 			this.p = data.getPlayer();
 			this.ammo = data.getAmmoInstance();
@@ -84,13 +98,15 @@ public class Quickfire extends Equipment {
 			EquipmentProperties ammoProps = ammo.getProperties();
 			double dmg = ammoProps.get(PropertyType.DAMAGE) + damage;
 			dm.addDamageSlice(new DamageSlice(data, dmg, ammoProps.getType()));
-			ammo.onStart(proj);
+			ammo.onStart(proj, false);
 		}
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.FIREWORK_ROCKET, "On cast, fire a projectile that deals " + GlossaryTag.PIERCING.tag(this, damage, true) + " damage using "
-			+ "your current ammunition.");
+		item = createItem(Material.FIREWORK_ROCKET, "On cast, " + GlossaryTag.CHARGE.tag(this) + " for <white>1s</white> before firing " +
+			"<white>5</white> projectiles in a <white>60 degree</white> cone " +
+		 	"that deal " + GlossaryTag.PIERCING.tag(this, damage, true) + " damage using " +
+			"your current ammunition.");
 	}
 }

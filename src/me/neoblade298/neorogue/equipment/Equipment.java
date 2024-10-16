@@ -147,6 +147,7 @@ import me.neoblade298.neorogue.equipment.weapons.MirrorSickle;
 import me.neoblade298.neorogue.equipment.weapons.Neoblade;
 import me.neoblade298.neorogue.equipment.weapons.Nightmare;
 import me.neoblade298.neorogue.equipment.weapons.Quickfire;
+import me.neoblade298.neorogue.equipment.weapons.RapidFire;
 import me.neoblade298.neorogue.equipment.weapons.Rapier;
 import me.neoblade298.neorogue.equipment.weapons.Razor;
 import me.neoblade298.neorogue.equipment.weapons.RighteousHammer;
@@ -170,6 +171,7 @@ import me.neoblade298.neorogue.equipment.weapons.StoneSword;
 import me.neoblade298.neorogue.equipment.weapons.StoneThrowingKnife;
 import me.neoblade298.neorogue.equipment.weapons.TacticiansDagger;
 import me.neoblade298.neorogue.equipment.weapons.TreeTrunk;
+import me.neoblade298.neorogue.equipment.weapons.Volley;
 import me.neoblade298.neorogue.equipment.weapons.WoodenArrow;
 import me.neoblade298.neorogue.equipment.weapons.WoodenDagger;
 import me.neoblade298.neorogue.equipment.weapons.WoodenSword;
@@ -226,6 +228,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new ArrowRain(b);
 			new Atone(b);
 			new Atrophy(b);
+			new Backstep(b);
 			new BasicFireMastery(b);
 			new BasicIceMastery(b);
 			new BattleCry(b);
@@ -290,6 +293,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Fortify(b);
 			new Frenzy(b);
 			new Fury(b);
+			new Gambit(b);
 			new GatheringShadows(b);
 			new GatheringShadows2(b);
 			new GetCentered(b);
@@ -322,6 +326,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Preparation(b);
 			new Provoke(b);
 			new RainOfSteel(b);
+			new RapidFire(b);
 			new Revenge(b);
 			new Roar(b);
 			new Rushdown(b);
@@ -340,6 +345,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new SpikeTrap(b);
 			new SpiritOfTheDragoon(b);
 			new Sturdy(b);
+			new SunderingShot(b);
 			new FirstStrike(b);
 			new Flicker(b);
 			new Tackle(b);
@@ -350,6 +356,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new TwinShiv(b);
 			new Vanish(b);
 			new VitalPierce(b);
+			new Volley(b);
 			new WarCry(b);
 			new Warmup(b);
 			new WeaponEnchantmentElectrified(b);

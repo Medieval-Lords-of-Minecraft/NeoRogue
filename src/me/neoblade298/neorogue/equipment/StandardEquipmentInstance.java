@@ -9,6 +9,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerCondition;
 public class StandardEquipmentInstance extends EquipmentInstance {
 	private long time;
 	private int count;
+	private boolean bool;
 
 	public StandardEquipmentInstance(Player p, Equipment eq, int slot, EquipSlot es) {
 		super(p, eq, slot, es);
@@ -28,6 +29,14 @@ public class StandardEquipmentInstance extends EquipmentInstance {
 	
 	public void addCount(int count) {
 		this.count += count;
+	}
+
+	public void setBool(boolean bool) {
+		this.bool = bool;
+	}
+
+	public boolean getBool() {
+		return bool;
 	}
 	
 	public int getCount() {

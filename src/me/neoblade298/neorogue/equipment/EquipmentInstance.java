@@ -73,6 +73,10 @@ public class EquipmentInstance extends PriorityAction {
 	public void setAction(TriggerAction action) {
 		this.action = action;
 	}
+
+	public void setCondition(TriggerCondition cond) {
+		this.condition = cond;
+	}
 	
 	@Override
 	public TriggerResult trigger(PlayerFightData data, Object inputs) {
@@ -121,6 +125,7 @@ public class EquipmentInstance extends PriorityAction {
 		Material mat = COOLDOWN_MATERIALS.get(slot);
 		if (inv.getItem(slot) == null) return;
 		inv.getItem(slot).setType(mat);
+		inv.getItem(slot).setAmount(1);
 		
 		p.setCooldown(mat, cooldownSeconds * 20);
 	}

@@ -67,7 +67,7 @@ public class StoneSpear extends Equipment {
 			return TriggerResult.keep();
 		});
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_NO_HIT, (pdata, in) -> {
-			if (data.canBasicAttack()) return TriggerResult.keep();
+			if (!data.canBasicAttack()) return TriggerResult.keep();
 			if (!inst.canTrigger(p, data))
 				return TriggerResult.keep();
 			LinkedList<LivingEntity> targets = TargetHelper.getEntitiesInSight(p, spearHit);
@@ -117,7 +117,6 @@ public class StoneSpear extends Equipment {
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
 			throwPart.play(p, proj.getLocation());
-			System.out.println("test");
 		}
 
 		@Override

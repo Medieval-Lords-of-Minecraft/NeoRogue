@@ -2,16 +2,20 @@ package me.neoblade298.neorogue.equipment.weapons;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
+import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.AmmunitionInstance;
 import me.neoblade298.neorogue.equipment.Bow;
 import me.neoblade298.neorogue.equipment.BowProjectile;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.StandardEquipmentInstance;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
@@ -21,19 +25,23 @@ import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 
-public class Quickfire extends Equipment {
-	private static final String ID = "quickfire";
-	private int damage;
+public class RapidFire extends Equipment {
+	private static final String ID = "rapidFire";
+	private int thres, damage;
+	private static final int MAX = 6;
 	
-	public Quickfire(boolean isUpgraded) {
-		super(ID, "Quickfire", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
+	public RapidFire(boolean isUpgraded) {
+		super(ID, "Rapid Fire", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(5, 5, 8, 6));
+				EquipmentProperties.ofUsable(20, 5, 13, 8));
 		properties.addUpgrades(PropertyType.RANGE);
-		damage = isUpgraded ? 60 : 40;
+		thres = isUpgraded ? 7 : 10;
+		damage = 10;
 	}
 	
 	public static Equipment get() {
@@ -42,20 +50,40 @@ public class Quickfire extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(p, this, slot, es, (d, inputs) -> {
-			ProjectileGroup proj = new ProjectileGroup(new QuickfireProjectile(data));
-			proj.start(data);
+		StandardEquipmentInstance inst = new StandardEquipmentInstance(p, this, slot, es);
+		inst.setAction((pdata, in) -> {
+			ProjectileGroup proj = new ProjectileGroup(new RapidFireProjectile(data));
+			for (int i = 0; i * thres <= inst.getCount() && i < MAX; i++) {
+				data.addTask(new BukkitRunnable() {
+					public void run() {
+						if (data.getAmmoInstance() != null) proj.start(data);
+					}
+				}.runTaskLater(NeoRogue.inst(), i * 5));
+			}
 			return TriggerResult.keep();
-		}, Bow.needsAmmo));
+		});
+		inst.setCondition(Bow.needsAmmo);
+		data.addTrigger(id, bind, inst);
+
+		ItemStack icon = item.clone();
+		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
+			ApplyStatusEvent ev = (ApplyStatusEvent) in;
+			if (!ev.isStatus(StatusType.REND)) return TriggerResult.keep();
+			inst.addCount(ev.getStacks());
+			icon.setAmount(Math.min(MAX, (inst.getCount() / thres) + 1));
+			data.setIcon(slot, icon);
+			if (inst.getCount() >= MAX * thres) return TriggerResult.remove();
+			return TriggerResult.keep();
+		});
 	}
 	
-	private class QuickfireProjectile extends Projectile {
+	private class RapidFireProjectile extends Projectile {
 		private PlayerFightData data;
 		private Player p;
 		private AmmunitionInstance ammo;
 
 		// Vector is non-normalized velocity of the vanilla projectile being fired
-		public QuickfireProjectile(PlayerFightData data) {
+		public RapidFireProjectile(PlayerFightData data) {
 			super(properties.get(PropertyType.RANGE), 1);
 			this.gravity(0.03);
 			this.size(1, 1);
@@ -90,7 +118,7 @@ public class Quickfire extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.FIREWORK_ROCKET, "On cast, fire a projectile that deals " + GlossaryTag.PIERCING.tag(this, damage, true) + " damage using "
-			+ "your current ammunition.");
+		item = createItem(Material.FIREWORK_ROCKET, "On cast, fire a projectile for every " + GlossaryTag.REND.tag(this, thres, true) + " you've applied +1, " +
+			"up to <white>6</white>. Each projectile deals " + DescUtil.white(damage) + " damage using your current ammunition.");
 	}
 }
