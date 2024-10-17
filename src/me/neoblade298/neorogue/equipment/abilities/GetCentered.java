@@ -31,8 +31,8 @@ public class GetCentered extends Equipment {
 	
 	public GetCentered(boolean isUpgraded) {
 		super(ID, "Get Centered", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 15, 10, 0));
-		thres = isUpgraded ? 10 : 7;
+				EquipmentType.ABILITY, EquipmentProperties.none());
+		thres = isUpgraded ? 7 : 10;
 		damage = isUpgraded ? 15 : 10;
 	}
 	
@@ -47,7 +47,7 @@ public class GetCentered extends Equipment {
 			LaunchProjectileGroupEvent ev = (LaunchProjectileGroupEvent) in;
 			if (!ev.isBowProjectile()) return TriggerResult.keep();
 			BowProjectile bp = (BowProjectile) ev.getInstances().getFirst().getParent();
-			if (bp.getInitialVelocity() < 3)  return TriggerResult.keep();
+			if (bp.getInitialVelocity() < 2.9)  return TriggerResult.keep();
 			
 			inst.addCount(1);
 			if (inst.getCount() >= thres) {

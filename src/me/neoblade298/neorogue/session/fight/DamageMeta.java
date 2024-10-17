@@ -55,6 +55,12 @@ public class DamageMeta {
 		addBuffs(owner.getBuffs(true), BuffOrigin.NORMAL, true);
 	}
 	
+	public DamageMeta(FightData data, DamageOrigin origin) {
+		this.owner = data;
+		this.origin = origin;
+		addBuffs(owner.getBuffs(true), BuffOrigin.NORMAL, true);
+	}
+	
 	public DamageMeta(FightData data, double damage, DamageType type) {
 		this(data);
 		this.slices.add(new DamageSlice(data, damage, type));
@@ -90,6 +96,10 @@ public class DamageMeta {
  		// These are deep clones
 		this.damageBuffs = cloneBuffMap(original.damageBuffs);
 		this.defenseBuffs = cloneBuffMap(original.defenseBuffs);
+	}
+
+	public void setProjectileInstance(IProjectileInstance inst) {
+		this.proj = inst;
 	}
 	
 	private HashMap<BuffType, LinkedList<BuffMeta>> cloneBuffMap(HashMap<BuffType, LinkedList<BuffMeta>> map) {
@@ -182,7 +192,7 @@ public class DamageMeta {
 		returnDamage = new DamageMeta(recipient);
 		returnDamage.isSecondary = true;
 
-		if (owner instanceof Player) {
+		if (owner instanceof PlayerFightData) {
 			FightInstance.trigger((Player) owner.getEntity(), Trigger.PRE_DEALT_DAMAGE, new PreDealtDamageEvent(this, target));
 		}
 		
@@ -302,8 +312,8 @@ public class DamageMeta {
 			}
 
 			// Handle injury
-			while (recipient.hasStatus(StatusType.INJURY) && sliceDamage > 0) {
-				Status injury = recipient.getStatus(StatusType.INJURY);
+			while (owner.hasStatus(StatusType.INJURY) && sliceDamage > 0) {
+				Status injury = owner.getStatus(StatusType.INJURY);
 				int stacks = injury.getStacks();
 				if (stacks * 0.2 >= sliceDamage) {
 					int toRemove = (int) (sliceDamage / 0.2);

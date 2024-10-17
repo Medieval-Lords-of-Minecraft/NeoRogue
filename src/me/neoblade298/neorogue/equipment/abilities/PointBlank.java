@@ -40,7 +40,7 @@ public class PointBlank extends Equipment {
 			DamageMeta dm = ev.getMeta();
 			if (dm.getOrigin() != DamageOrigin.PROJECTILE) return TriggerResult.keep();
 			IProjectileInstance ip = dm.getProjectile();
-			if (ip.getOrigin().distanceSquared(ev.getTarget().getLocation()) >= thres * thres) return TriggerResult.keep();
+			if (ip.getOrigin().distanceSquared(ev.getTarget().getLocation()) > thres * thres) return TriggerResult.keep();
 			dm.addBuff(BuffType.GENERAL, new Buff(data, damage, 0), BuffOrigin.NORMAL, true);
 			return TriggerResult.keep();
 		});
@@ -48,7 +48,7 @@ public class PointBlank extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.CANDLE,
+		item = createItem(Material.BLACKSTONE_SLAB,
 				"Passive. Dealing damage via projectile from at most " + DescUtil.yellow(thres) + " blocks away increases damage by " +
 				DescUtil.yellow(damage) + ".");
 	}

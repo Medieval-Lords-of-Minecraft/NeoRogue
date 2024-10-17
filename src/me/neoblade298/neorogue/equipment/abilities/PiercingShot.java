@@ -30,7 +30,7 @@ public class PiercingShot extends Equipment {
 	public PiercingShot(boolean isUpgraded) {
 		super(ID, "Piercing Shot", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 5, 10, 8));
-		damage = isUpgraded ? 70 : 50;
+		damage = isUpgraded ? 30 : 15;
 	}
 	
 	public static Equipment get() {

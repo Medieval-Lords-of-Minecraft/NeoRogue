@@ -29,7 +29,7 @@ public class ManaInfusion extends Equipment {
 		super(ID, "Mana Infusion", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 2, 0));
 				damage = isUpgraded ? 10 : 5;
-				drain = isUpgraded ? 12 : 8;
+				drain = isUpgraded ? 4 : 2;
 	}
 	
 	public static Equipment get() {

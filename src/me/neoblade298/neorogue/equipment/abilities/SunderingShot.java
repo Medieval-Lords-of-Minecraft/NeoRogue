@@ -106,7 +106,8 @@ public class SunderingShot extends Equipment {
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
 			Sounds.explode.play(p, hit.getEntity());
-			damageProjectile(hit.getEntity(), proj, hitBarrier);
+			damageProjectile(hit.getEntity(), proj, hitBarrier); 
+			ammo.onHit(proj, hit.getEntity());
 		}
 
 		@Override

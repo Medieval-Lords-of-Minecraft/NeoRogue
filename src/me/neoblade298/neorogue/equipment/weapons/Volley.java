@@ -49,11 +49,11 @@ public class Volley extends Equipment {
 			data.channel(20);
 			data.addTask(new BukkitRunnable() {
 				public void run() {
-					ProjectileGroup proj = new ProjectileGroup();
 					for (int i : rotations) {
 						if (data.getAmmoInstance() != null) {
-							proj.add(new VolleyProjectile(data, i));
+							ProjectileGroup proj = new ProjectileGroup(new VolleyProjectile(data, i));
 							data.getAmmoInstance().use();
+							proj.start(data);
 						}
 					}
 				}
@@ -89,6 +89,7 @@ public class Volley extends Equipment {
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
 			damageProjectile(hit.getEntity(), proj, hitBarrier);
+			ammo.onHit(proj, hit.getEntity());
 		}
 
 		@Override

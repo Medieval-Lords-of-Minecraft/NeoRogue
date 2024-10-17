@@ -248,6 +248,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Burst(b);
 			new Challenge(b);
 			new Charge(b);
+			new Chill(b);
 			new Cleave(b);
 			new Concoct(b);
 			new ConfidenceKill(b);
@@ -322,6 +323,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new PiercingVenom(b);
 			new Pin(b);
 			new Plague(b);
+			new PointBlank(b);
 			new PoolOfLight(b);
 			new Prayer(b);
 			new Preparation(b);
@@ -1107,6 +1109,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 
 	public void damageProjectile(LivingEntity target, ProjectileInstance proj, Barrier hitBarrier) {
 		DamageMeta meta = proj.getMeta();
+		meta.setProjectileInstance(proj);
 		if (!proj.getBuffs().isEmpty()) {
 			meta.addBuffs(proj.getBuffs(), BuffOrigin.PROJECTILE, true);
 		}

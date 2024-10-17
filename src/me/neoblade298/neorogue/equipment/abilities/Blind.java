@@ -77,7 +77,7 @@ public class Blind extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION,
-				"On cast, throw an orb of light that applies Slowness I [<white>3s]. During this time, dealing damage to enemies hit " +
+				"On cast, throw an orb of light that applies Slowness 1 [<white>3s</white>]. During this time, dealing damage to enemies hit " +
 				"applies " + GlossaryTag.INJURY.tag(this, injure, true) + ".");
 		PotionMeta pm = (PotionMeta) item.getItemMeta();
 		pm.setColor(Color.WHITE);

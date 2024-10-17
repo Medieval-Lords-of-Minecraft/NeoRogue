@@ -21,6 +21,7 @@ import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
+import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffType;
 
@@ -50,7 +51,7 @@ public class ProjectileInstance extends IProjectileInstance {
 		this.inst = owner.getInstance();
 		this.owner = owner;
 		this.settings = settings;
-		this.meta = new DamageMeta(owner);
+		this.meta = new DamageMeta(owner, DamageOrigin.PROJECTILE);
 		
 		v = direction.clone().normalize().rotateAroundY(Math.toRadians(settings.getRotation()));
 		if (settings.initialY() != 0) origin.add(0, settings.initialY(), 0);

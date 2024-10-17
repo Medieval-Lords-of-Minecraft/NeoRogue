@@ -25,7 +25,7 @@ public class Backstep extends Equipment {
 	private int damage;
 	
 	public Backstep(boolean isUpgraded) {
-		super(ID, "Backstep", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
+		super(ID, "Backstep", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, isUpgraded ? 5 : 1, 8, 0));
 		properties.addUpgrades(PropertyType.STAMINA_COST);
 		damage = isUpgraded ? 10 : 5;

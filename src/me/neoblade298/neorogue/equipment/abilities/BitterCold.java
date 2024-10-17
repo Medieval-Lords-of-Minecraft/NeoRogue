@@ -57,7 +57,7 @@ public class BitterCold extends Equipment {
 			if (!ev.isStatus(StatusType.FROST)) return TriggerResult.keep();
 			FightData fd = ev.getTarget();
 			if (fd.getStatus(StatusType.FROST).getStacks() < 50) return TriggerResult.keep();
-			if (!fd.hasStatus(p.getName() + "-bitterCold")) return TriggerResult.keep();
+			if (fd.hasStatus(p.getName() + "-bitterCold")) return TriggerResult.keep();
 			Status s = new BasicStatus(p.getName() + "-bitterCold", data, StatusClass.NONE, true);
 			fd.applyStatus(s, data, 1, -1);
 			FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.ICE), fd.getEntity());
@@ -70,7 +70,7 @@ public class BitterCold extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.PACKED_ICE,
-				"Passive. All applications of " + GlossaryTag.FROST.tag(this) + " are increased by " + DescUtil.yellow(cooldown) + ". Once per enemy, applying " +
+				"Passive. All applications of " + GlossaryTag.FROST.tag(this) + " are increased by " + DescUtil.yellow(stacks) + ". Once per enemy, applying " +
 				GlossaryTag.FROST.tag(this, 50, false) + " to them will deal " + GlossaryTag.ICE.tag(this, damage, true) + " damage to them.");
 	}
 }

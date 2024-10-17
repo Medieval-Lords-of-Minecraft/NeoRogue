@@ -47,6 +47,7 @@ public abstract class Bow extends Equipment {
 
 	public void bowDamageProjectile(LivingEntity target, ProjectileInstance proj, Barrier hitBarrier, AmmunitionInstance ammo, double initialVelocity, boolean basicAttack) {
 		DamageMeta dm = proj.getMeta();
+		dm.setProjectileInstance(proj);
 		PlayerFightData data = (PlayerFightData) proj.getOwner();
 
 		// Apply any ammo changes

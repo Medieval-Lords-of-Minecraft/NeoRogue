@@ -15,7 +15,7 @@ public class GlassArrow extends LimitedAmmunition {
 	public GlassArrow(boolean isUpgraded) {
 		super(ID, "Glass Arrow", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofAmmunition(40, 0.2, DamageType.PIERCING), isUpgraded ? 40 : 30);
+				EquipmentProperties.ofAmmunition(40, 0.2, DamageType.PIERCING), isUpgraded ? 15 : 10);
 	}
 
 	public static Equipment get() {

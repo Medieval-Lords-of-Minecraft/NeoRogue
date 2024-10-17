@@ -50,6 +50,7 @@ public class Gambit extends Equipment {
 		inst.setAction((pdata, inputs) -> {
 			Sounds.equip.play(p, p);
 			inst.setBool(true);
+			inst.setCount(0);
 			data.addTask(new BukkitRunnable() {
 				public void run() {
 					inst.setBool(false);
@@ -63,7 +64,7 @@ public class Gambit extends Equipment {
 		data.addTrigger(id, Trigger.KILL, (pdata, in) -> {
 			if (inst.getBool()) {
 				inst.addCount(1);
-				if (inst.getCount() == 2) {
+				if (inst.getCount() >= 2) {
 					inst.setBool(false);
 					inst.setCount(0);
 					Sounds.roar.play(p, p);
@@ -78,7 +79,7 @@ public class Gambit extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.DRAGON_HEAD,
-				"Requires " + GlossaryTag.FOCUS.tag(this) + ". On cast, lose " + GlossaryTag.FOCUS.tag(this, 1, false) + ". If you kill <white>2</white>" +
+				"Requires " + GlossaryTag.FOCUS.tag(this) + ". On cast, lose " + GlossaryTag.FOCUS.tag(this, 1, false) + ". If you kill <white>2</white> " +
 				"enemies within <white>3s</white>, permanently increase your damage by " + DescUtil.yellow(damage) + ".");
 	}
 }
