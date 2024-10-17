@@ -25,6 +25,7 @@ import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.commands.CmdAdminBoss;
 import me.neoblade298.neorogue.commands.CmdAdminChance;
 import me.neoblade298.neorogue.commands.CmdAdminCoins;
+import me.neoblade298.neorogue.commands.CmdAdminDamage;
 import me.neoblade298.neorogue.commands.CmdAdminDebug;
 import me.neoblade298.neorogue.commands.CmdAdminEquipment;
 import me.neoblade298.neorogue.commands.CmdAdminGod;
@@ -135,6 +136,7 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdAdminGod("god", "Maxes out your health, mana, stamina, and ignores cooldowns in a fight", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminSet("set", "Set your stats mid-fight", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminStatus("status", "Add/remove statuses mid-fight", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdAdminDamage("damage", "Deal damage to yourself for testing purposes", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.registerCommandList("");
 	}
 	

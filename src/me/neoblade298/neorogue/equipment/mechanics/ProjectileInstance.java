@@ -1,5 +1,6 @@
 package me.neoblade298.neorogue.equipment.mechanics;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
@@ -36,6 +37,9 @@ public class ProjectileInstance extends IProjectileInstance {
 	private int tick, numHit, interpolationPoints;
 	private String tag; // Used for metadata, like with twinShiv
 	private DamageMeta meta;
+
+	private ArrayList<HitBlockAction> hitBlockActions = new ArrayList<HitBlockAction>();
+	private ArrayList<HitAction> hitActions = new ArrayList<HitAction>();
 	
 	protected ProjectileInstance(Projectile settings, FightData owner) {
 		this(settings, owner, owner.getEntity().getLocation().add(0, 1.5, 0), owner.getEntity().getLocation().getDirection());
@@ -68,6 +72,14 @@ public class ProjectileInstance extends IProjectileInstance {
 
 	public DamageMeta getMeta() {
 		return meta;
+	}
+
+	public void addHitBlockAction(HitBlockAction action) {
+		hitBlockActions.add(action);
+	}
+
+	public void addHitAction(HitAction action) {
+		hitActions.add(action);
 	}
 
 	@Override
@@ -106,6 +118,9 @@ public class ProjectileInstance extends IProjectileInstance {
 					if (targetsHit.contains(uuid)) continue;
 					targetsHit.add(uuid);
 					settings.onHit(hit, null, this);
+					for (HitAction act : hitActions) {
+						act.onHit(hit, null, this);
+					}
 					numHit++;
 					
 					int limit = settings.getPierceLimit();
@@ -121,6 +136,10 @@ public class ProjectileInstance extends IProjectileInstance {
 						hitbox.shift(b.getLocation());
 						if (bounds.overlaps(hitbox)) {
 							settings.onHitBlock(this, b);
+							
+							for (HitBlockAction act : hitBlockActions) {
+								act.onHitBlock(this, b);
+							}
 							return true;
 						}
 					}
@@ -175,5 +194,13 @@ public class ProjectileInstance extends IProjectileInstance {
 	
 	public String getTag() {
 		return this.tag;
+	}
+	
+	public interface HitBlockAction {
+		public void onHitBlock(ProjectileInstance proj, Block b);
+	}
+	
+	public interface HitAction {
+		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj);
 	}
 }

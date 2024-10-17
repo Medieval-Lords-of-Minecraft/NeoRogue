@@ -28,5 +28,6 @@ public class Sounds {
 			firework = new SoundContainer(Sound.ENTITY_FIREWORK_ROCKET_BLAST),
 			water = new SoundContainer(Sound.ENTITY_GENERIC_SWIM),
 			extinguish = new SoundContainer(Sound.BLOCK_FIRE_EXTINGUISH),
+			ice = new SoundContainer(Sound.BLOCK_GLASS_BREAK),
 			teleport = new SoundContainer(Sound.ENTITY_ENDERMAN_TELEPORT);
 }

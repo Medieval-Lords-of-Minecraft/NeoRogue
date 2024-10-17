@@ -41,6 +41,7 @@ import me.neoblade298.neorogue.equipment.armor.Brightcrown;
 import me.neoblade298.neorogue.equipment.armor.ClothBindings;
 import me.neoblade298.neorogue.equipment.armor.Footpads;
 import me.neoblade298.neorogue.equipment.armor.Gauze;
+import me.neoblade298.neorogue.equipment.armor.IcyArmguard;
 import me.neoblade298.neorogue.equipment.armor.IronCuirass;
 import me.neoblade298.neorogue.equipment.armor.LeatherArmguard;
 import me.neoblade298.neorogue.equipment.armor.LeatherChestplate;
@@ -335,6 +336,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Quickfire(b);
 			new ShadowImbuement(b);
 			new ShadowWalk(b);
+			new ShoulderBash(b);
+			new Sear(b);
 			new Sidestep(b);
 			new SilentSteps(b);
 			new SilentSteps2(b);
@@ -383,6 +386,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new ClothBindings(b);
 			new Footpads(b);
 			new Gauze(b);
+			new IcyArmguard(b);
 			new LeatherArmguard(b);
 			new LeatherCowl(b);
 			new LeatherChestplate(b);
