@@ -41,7 +41,7 @@ public class RainOfSteel extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(ID, bind, new EquipmentInstance(p, this, slot, es, (pdata, in) -> {
+		data.addTrigger(ID, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			pdata.addTask(new BukkitRunnable() {
 				int count = 0;
 				public void run() {

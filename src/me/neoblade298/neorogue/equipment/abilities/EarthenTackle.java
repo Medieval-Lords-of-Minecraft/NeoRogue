@@ -55,7 +55,7 @@ public class EarthenTackle extends Equipment {
 	@SuppressWarnings("deprecation")
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		final EquipmentInstance inst = new EquipmentInstance(p, this, slot, es);
+		final EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
 		inst.setAction((pdata, inputs) -> {
 			Sounds.jump.play(p, p);
 			start.play(p, p);

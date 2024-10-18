@@ -49,7 +49,7 @@ public class Sear extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ProjectileGroup proj = new ProjectileGroup(new SearProjectile(data));
-		data.addTrigger(id, bind, new EquipmentInstance(p, this, slot, es, (pdata, in) -> {
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			data.charge(20);
 			data.addTask(new BukkitRunnable() {
 				public void run() {

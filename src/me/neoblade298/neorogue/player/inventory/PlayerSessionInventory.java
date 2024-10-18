@@ -593,7 +593,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		if (slotType == EquipSlot.KEYBIND) {
 			lore.add(1,
 					Component.text("Bound to ", NamedTextColor.YELLOW)
-							.append(KeyBind.getBindFromSlot(invSlot).getDisplay())
+							.append(KeyBind.getBindFromSlot(invSlot - 18).getDisplay())
 							.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
 		}
 		else if (slotType == EquipSlot.HOTBAR) {

@@ -43,7 +43,7 @@ public class ShoulderBash extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.LEFT_CLICK_HIT, new EquipmentInstance(p, this, slot, es, (pdata, in) -> {
+		data.addTrigger(id, Trigger.LEFT_CLICK_HIT, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			LeftClickHitEvent ev = (LeftClickHitEvent) in;
 			sc.play(p, p);
 			pc.play(p, p);

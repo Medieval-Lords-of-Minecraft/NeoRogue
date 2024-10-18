@@ -43,7 +43,7 @@ public class Overload extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.KILL, new EquipmentInstance(p, this, slot, es, (pd, in) -> {
+		data.addTrigger(id, Trigger.KILL, new EquipmentInstance(data, this, slot, es, (pd, in) -> {
 			KillEvent ev = (KillEvent) in;
 			int stacks = FightInstance.getFightData(ev.getTarget()).getStatus(StatusType.ELECTRIFIED).getStacks();
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(ev.getTarget(), tp)) {

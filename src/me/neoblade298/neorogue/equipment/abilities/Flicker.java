@@ -42,7 +42,7 @@ public class Flicker extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		FlickerInstance inst = new FlickerInstance(p, this, slot, es);
+		FlickerInstance inst = new FlickerInstance(data, this, slot, es);
 		data.addTrigger(id, bind, inst);
 		data.addTrigger(ID, Trigger.DEALT_DAMAGE, (pdata, in) -> {
 			if (!inst.active) return TriggerResult.keep();
@@ -62,9 +62,10 @@ public class Flicker extends Equipment {
 		private Location loc;
 		private boolean active = false;
 		private HashMap<LivingEntity, Integer> marks = new HashMap<LivingEntity, Integer>();
-		public FlickerInstance(Player p, Equipment eq, int slot, EquipSlot es) {
-			super(p, eq, slot, es);
+		public FlickerInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
+			super(data, eq, slot, es);
 			action = (pdata, in) -> {
+				Player p = data.getPlayer();
 				active = true;
 				Sounds.equip.play(p, p);
 				loc = p.getLocation();

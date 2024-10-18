@@ -44,7 +44,7 @@ public class Atrophy extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		AtrophyInstance inst = new AtrophyInstance(p, this, slot, es);
+		AtrophyInstance inst = new AtrophyInstance(data, this, slot, es);
 		data.addTrigger(ID, Trigger.PRE_DEALT_DAMAGE, (pdata, in) -> {
 			PreDealtDamageEvent ev = (PreDealtDamageEvent) in;
 			if (!ev.getTarget().equals(inst.trg)) return TriggerResult.keep();
@@ -68,9 +68,10 @@ public class Atrophy extends Equipment {
 	private class AtrophyInstance extends EquipmentInstance {
 		private LivingEntity trg;
 		
-		public AtrophyInstance(Player p, Equipment eq, int slot, EquipSlot es) {
-			super(p, eq, slot, es);
+		public AtrophyInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
+			super(data, eq, slot, es);
 			action = (pdata, in) -> {
+				Player p = data.getPlayer();
 				trg = TargetHelper.getNearestInSight(p, Atrophy.tp);
 				if (trg == null) return TriggerResult.keep();
 				Sounds.infect.play(p, trg);

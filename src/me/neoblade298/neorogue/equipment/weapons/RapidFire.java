@@ -50,7 +50,7 @@ public class RapidFire extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		StandardEquipmentInstance inst = new StandardEquipmentInstance(p, this, slot, es);
+		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, this, slot, es);
 		inst.setAction((pdata, in) -> {
 			ProjectileGroup proj = new ProjectileGroup(new RapidFireProjectile(data));
 			for (int i = 0; i * thres <= inst.getCount() && i < MAX; i++) {
@@ -71,7 +71,7 @@ public class RapidFire extends Equipment {
 			if (!ev.isStatus(StatusType.REND)) return TriggerResult.keep();
 			inst.addCount(ev.getStacks());
 			icon.setAmount(Math.min(MAX, (inst.getCount() / thres) + 1));
-			data.setIcon(slot, icon);
+			inst.setIcon(icon);
 			if (inst.getCount() >= MAX * thres) return TriggerResult.remove();
 			return TriggerResult.keep();
 		});
@@ -85,13 +85,10 @@ public class RapidFire extends Equipment {
 		// Vector is non-normalized velocity of the vanilla projectile being fired
 		public RapidFireProjectile(PlayerFightData data) {
 			super(properties.get(PropertyType.RANGE), 1);
-			this.gravity(0.03);
-			this.size(1, 1);
+			setBowDefaults();
 			this.data = data;
 			this.p = data.getPlayer();
 			this.ammo = data.getAmmoInstance();
-
-			blocksPerTick(2);
 		}
 
 		@Override

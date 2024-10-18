@@ -39,13 +39,13 @@ public class Thornguard extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new ThornguardInstance(p, this, slot, es));
+		data.addTrigger(id, bind, new ThornguardInstance(data, this, slot, es));
 	}
 	
 	private class ThornguardInstance extends EquipmentInstance {
 		private int count = 0;
-		public ThornguardInstance(Player p, Equipment eq, int slot, EquipSlot es) {
-			super(p, eq, slot, es);
+		public ThornguardInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
+			super(data, eq, slot, es);
 			action = (pdata, inputs) -> {
 				pc.play(p, p);
 				Sounds.equip.play(p, p);

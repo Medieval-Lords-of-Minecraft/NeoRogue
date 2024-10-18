@@ -85,7 +85,7 @@ public class StoneSpear extends Equipment {
 		private ProjectileGroup projs;
 
 		public StoneSpearInstance(PlayerFightData pdata, Equipment eq, int slot, EquipSlot es) {
-			super(pdata.getPlayer(), eq, slot, es);
+			super(pdata, eq, slot, es);
 			projs = new ProjectileGroup(new StoneSpearProjectile(p));
 			
 			action = (pdata2, in) -> {

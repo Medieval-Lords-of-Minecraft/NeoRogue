@@ -36,7 +36,7 @@ public class QuickFeet extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(ID, bind, new EquipmentInstance(p, this, slot, es, (pdata, in) -> {
+		data.addTrigger(ID, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			Sounds.equip.play(p, p);
 			data.addTask(new BukkitRunnable() {
 				public void run() {

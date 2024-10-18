@@ -67,12 +67,14 @@ public class DarkPulse extends Equipment {
 	}
 
 	private class DarkPulseInstance extends EquipmentInstance {
+		private Player p;
 		private PlayerFightData data;
 		private boolean active = false;
 		private Location loc;
 		private int dealt = 0;
 		public DarkPulseInstance(Player p, PlayerFightData data, Equipment eq, EquipSlot es, int slot) {
-			super(p, eq, slot, es);
+			super(data, eq, slot, es);
+			this.p = p;
 			this.data = data;
 
 			action = (pdata, in) -> {

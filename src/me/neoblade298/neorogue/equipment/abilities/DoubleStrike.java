@@ -41,7 +41,7 @@ public class DoubleStrike extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(p, this, slot, es, (pdata, inputs) -> {
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, inputs) -> {
 			sc.play(p, p);
 			pc.play(p, p);
 			data.resetBasicAttackCooldown(EquipSlot.HOTBAR);

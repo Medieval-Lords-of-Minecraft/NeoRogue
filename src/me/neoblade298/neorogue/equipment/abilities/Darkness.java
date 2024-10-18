@@ -55,7 +55,7 @@ public class Darkness extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		DarknessInstance inst = new DarknessInstance(p, this, slot, es);
+		DarknessInstance inst = new DarknessInstance(data, this, slot, es);
 		data.addTrigger(id, bind, inst);
 		data.addTrigger(ID, Trigger.BASIC_ATTACK, (pdata, in) -> {
 			if (!inst.basicAttack) return TriggerResult.keep();
@@ -69,8 +69,8 @@ public class Darkness extends Equipment {
 	private class DarknessInstance extends EquipmentInstance {
 		private Location loc;
 		private boolean basicAttack = false;
-		public DarknessInstance(Player p, Equipment eq, int slot, EquipSlot es) {
-			super(p, eq, slot, es);
+		public DarknessInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
+			super(data, eq, slot, es);
 			action = (pdata, in) -> {
 				cast(pdata);
 				return TriggerResult.keep();
@@ -78,6 +78,7 @@ public class Darkness extends Equipment {
 		}
 		
 		private void cast(PlayerFightData pdata) {
+			Player p = data.getPlayer();
 			Sounds.equip.play(p, p);
 			basicAttack = true;
 			loc = p.getLocation();

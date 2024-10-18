@@ -2,13 +2,18 @@ package me.neoblade298.neorogue.equipment;
 
 import java.text.DecimalFormat;
 import java.util.HashMap;
+import java.util.UUID;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -21,12 +26,16 @@ public class EquipmentInstance extends PriorityAction {
 	private static HashMap<Integer, Material> COOLDOWN_MATERIALS = new HashMap<Integer, Material>();
 	private static final DecimalFormat df = new DecimalFormat("##.#");
 	
+	protected ItemStack icon;
 	protected Player p;
-	protected int slot;
+	protected PlayerFightData data;
+	protected int slot, invSlot;
 	protected Equipment eq;
 	protected EquipSlot es;
 	protected double staminaCost, manaCost, tempStaminaCost = -1, tempManaCost = -1, nextStaminaCost = -1, nextManaCost = -1, cooldown, tempCooldown = -1;
 	protected long nextUsable = 0L;
+	protected BukkitTask cooldownTask;
+	protected String cooldownTaskId;
 	
 	static {
 		COOLDOWN_MATERIALS.put(0, Material.RED_CANDLE);
@@ -35,34 +44,59 @@ public class EquipmentInstance extends PriorityAction {
 		COOLDOWN_MATERIALS.put(3, Material.LIME_CANDLE);
 		COOLDOWN_MATERIALS.put(4, Material.GREEN_CANDLE);
 		COOLDOWN_MATERIALS.put(5, Material.CYAN_CANDLE);
-		COOLDOWN_MATERIALS.put(6, Material.BLUE_CANDLE);
-		COOLDOWN_MATERIALS.put(7, Material.PURPLE_CANDLE);
-		COOLDOWN_MATERIALS.put(8, Material.MAGENTA_CANDLE);
+		COOLDOWN_MATERIALS.put(6, Material.LIGHT_BLUE_CANDLE);
+		COOLDOWN_MATERIALS.put(7, Material.BLUE_CANDLE);
+		COOLDOWN_MATERIALS.put(8, Material.PURPLE_CANDLE);
+		COOLDOWN_MATERIALS.put(27, Material.MAGENTA_CANDLE);
+		COOLDOWN_MATERIALS.put(28, Material.PINK_CANDLE);
+		COOLDOWN_MATERIALS.put(29, Material.WHITE_CANDLE);
+		COOLDOWN_MATERIALS.put(30, Material.LIGHT_GRAY_CANDLE);
+		COOLDOWN_MATERIALS.put(31, Material.GRAY_CANDLE);
+		COOLDOWN_MATERIALS.put(32, Material.BLACK_CANDLE);
+		COOLDOWN_MATERIALS.put(33, Material.BROWN_CANDLE);
 	}
 	
-	public EquipmentInstance(Player p, Equipment eq, int slot, EquipSlot es) {
+	public EquipmentInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
 		super(eq.id);
-		init(p, eq, slot, es);
+		init(data, eq, slot, es);
 	}
 	
-	public EquipmentInstance(Player p, Equipment eq, int slot, EquipSlot es, TriggerAction action) {
+	public EquipmentInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es, TriggerAction action) {
 		super(eq.id, action);
-		init(p, eq, slot, es);
+		init(data, eq, slot, es);
 	}
 	
-	public EquipmentInstance(Player p, Equipment eq, int slot, EquipSlot es, TriggerAction action, TriggerCondition condition) {
+	public EquipmentInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es, TriggerAction action, TriggerCondition condition) {
 		super(eq.id, action, condition);
-		init(p, eq, slot, es);
+		init(data, eq, slot, es);
 	}
 
-	private void init(Player p, Equipment eq, int slot, EquipSlot es) {
-		this.p = p;
+	private void init(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
+		this.data = data;
 		this.eq = eq;
 		this.manaCost = eq.getProperties().get(PropertyType.MANA_COST);
 		this.staminaCost = eq.getProperties().get(PropertyType.STAMINA_COST);
 		this.cooldown = eq.getProperties().get(PropertyType.COOLDOWN);
 		this.slot = slot;
+		switch (es) {
+			case ACCESSORY: this.invSlot = slot + 21; break;
+			case ARMOR: this.invSlot = slot + 18; break;
+			case HOTBAR: this.invSlot = slot; break;
+			case KEYBIND: this.invSlot = slot + 27; break;
+			case OFFHAND: this.invSlot = 40; break;
+			default:
+				break;
+		}
 		this.es = es;
+		this.p = data.getPlayer();
+		this.icon = eq.getItem();
+		System.out.println("Set inv slot of " + eq + " " + es + " to " + invSlot + " | " + slot);
+		updateIcon();
+	}
+
+	public void setIcon(ItemStack icon) {
+		this.icon = icon;
+		updateIcon();
 	}
 	
 	public EquipSlot getEquipSlot() {
@@ -87,7 +121,7 @@ public class EquipmentInstance extends PriorityAction {
 	}
 	
 	public Player getPlayer() {
-		return p;
+		return data.getPlayer();
 	}
 	
 	@Override
@@ -115,19 +149,35 @@ public class EquipmentInstance extends PriorityAction {
 		Util.msgRaw(p, eq.display.append(NeoCore.miniMessage().deserialize(" <red>cooldown: </red><yellow>" + getCooldownSeconds() + "s")));
 	}
 	
-	public static void updateSlot(Player p, PlayerInventory inv, EquipmentInstance inst) {
-		updateSlot(p, inv, inst.es, inst.slot, inst.getCooldownSeconds());
-	}
-	
-	public static void updateSlot(Player p, PlayerInventory inv, EquipSlot es, int slot, int cooldownSeconds) {
-		if (es != EquipSlot.HOTBAR) return;
-		if (cooldownSeconds <= 0) return;
-		Material mat = COOLDOWN_MATERIALS.get(slot);
-		if (inv.getItem(slot) == null) return;
-		inv.getItem(slot).setType(mat);
-		inv.getItem(slot).setAmount(1);
+	public void updateIcon() {
+		int cooldownSeconds = getCooldownSeconds();
+		PlayerInventory inv = p.getInventory();
+		if (cooldownSeconds <= 0) {	// For setting icon when not on cooldown
+			p.getInventory().setItem(invSlot, icon);
+			return;
+		}
+		Material mat = COOLDOWN_MATERIALS.get(invSlot);
+		if (inv.getItem(invSlot) == null) return;
+		inv.getItem(invSlot).setType(mat);
+		inv.getItem(invSlot).setAmount(1);
 		
 		p.setCooldown(mat, cooldownSeconds * 20);
+
+		if (cooldownTaskId != null) {
+			cooldownTask.cancel();
+			data.removeTask(cooldownTaskId);
+		}
+		
+		cooldownTaskId = UUID.randomUUID().toString();
+		cooldownTask = new BukkitRunnable() {
+			public void run() {
+				inv.setItem(invSlot, icon);
+				System.out.println("Setting " + invSlot + " for " + eq);
+				cooldownTaskId = null;
+				cooldownTask = null;
+			}
+		}.runTaskLater(NeoRogue.inst(), cooldownSeconds * 20);
+		data.addTask(cooldownTaskId, cooldownTask);
 	}
 	
 	public double getBaseCooldown() {
@@ -140,17 +190,17 @@ public class EquipmentInstance extends PriorityAction {
 	
 	public void addCooldown(double seconds) {
 		nextUsable += seconds * 1000;
-		updateSlot(p, p.getInventory(), es, slot, getCooldownSeconds());
+		updateIcon();
 	}
 	
 	public void setCooldown(int seconds) {
 		nextUsable = System.currentTimeMillis() + (seconds * 1000);
-		updateSlot(p, p.getInventory(), es, slot, seconds);
+		updateIcon();
 	}
 	
 	public void reduceCooldown(double seconds) {
 		nextUsable -= seconds * 1000;
-		updateSlot(p, p.getInventory(), es, slot, getCooldownSeconds());
+		updateIcon();
 	}
 	
 	public int getCooldownSeconds() {

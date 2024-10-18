@@ -43,7 +43,7 @@ public class ThrowPoison extends Equipment {
 			}
 		});
 		ProjectileGroup grp = new ProjectileGroup(pot);
-		data.addTrigger(id, bind, new EquipmentInstance(p, this, slot, es, (pdata, inputs) -> {
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, inputs) -> {
 			Sounds.threw.play(p, p);
 			grp.start(data);
 			return TriggerResult.keep();

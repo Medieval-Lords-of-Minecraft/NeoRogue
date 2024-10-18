@@ -61,7 +61,7 @@ public class LightningRush extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		LightningRushInstance inst = new LightningRushInstance(p, this, slot, es);
+		LightningRushInstance inst = new LightningRushInstance(data, this, slot, es);
 		data.addTrigger(id, bind, inst);
 		data.addTrigger(ID, Trigger.BASIC_ATTACK, (pdata, in) -> {
 			if (!inst.active) return TriggerResult.keep();
@@ -85,8 +85,8 @@ public class LightningRush extends Equipment {
 		private boolean active = false;
 		private int timer;
 		
-		public LightningRushInstance(Player p, Equipment eq, int slot, EquipSlot es) {
-			super(p, eq, slot, es);
+		public LightningRushInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
+			super(data, eq, slot, es);
 			action = (pdata, in) -> {
 				active = true;
 				timer = 3;

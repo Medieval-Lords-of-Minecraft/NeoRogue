@@ -43,15 +43,15 @@ public class TwinShiv extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new TwinShivInstance(p, this, slot, es));
+		data.addTrigger(id, bind, new TwinShivInstance(data, this, slot, es));
 	}
 	
 	private class TwinShivInstance extends EquipmentInstance {
 		public UUID firstHit;
 		public boolean isFirstProj = true;
 
-		public TwinShivInstance(Player p, Equipment eq, int slot, EquipSlot es) {
-			super(p, eq, slot, es);
+		public TwinShivInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
+			super(data, eq, slot, es);
 
 			ProjectileGroup proj = new ProjectileGroup(new TwinShivProjectile(p, this));
 			action = (pdata, in) -> {

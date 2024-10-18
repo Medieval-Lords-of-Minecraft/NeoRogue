@@ -48,7 +48,7 @@ public class ConfidenceKill extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		InducePanicInstance inst = new InducePanicInstance(p, this, slot, es);
+		InducePanicInstance inst = new InducePanicInstance(data, this, slot, es);
 		data.addTrigger(ID, Trigger.DEALT_DAMAGE, (pdata, in) -> {
 			if (inst.mark == null) return TriggerResult.keep();
 			DealtDamageEvent ev = (DealtDamageEvent) in;
@@ -70,13 +70,14 @@ public class ConfidenceKill extends Equipment {
 
 	private class InducePanicInstance extends EquipmentInstance	{
 		private LivingEntity mark, toKill;
-		public InducePanicInstance(Player p, Equipment eq, int slot, EquipSlot es) {
-			super(p, eq, slot, es);
+		public InducePanicInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
+			super(data, eq, slot, es);
 			InducePanicInstance inst = this;
 			action = (pdata, in) -> {
 				pdata.addTask(new BukkitRunnable() {
 					public void run() {
 						if (inst.mark == null) return;
+						Player p = data.getPlayer();
 						FightInstance.applyStatus(inst.mark, StatusType.INSANITY, pdata, stacks, -1);
 						pc.play(p, inst.mark);
 						Sounds.infect.play(p, inst.mark);

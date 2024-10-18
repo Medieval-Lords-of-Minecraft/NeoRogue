@@ -43,7 +43,7 @@ public class MightySwing extends Equipment {
 	@SuppressWarnings("deprecation")
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		EquipmentInstance eqi = new EquipmentInstance(p, this, slot, es);
+		EquipmentInstance eqi = new EquipmentInstance(data, this, slot, es);
 		data.addTrigger(id, bind, eqi);
 		eqi.setAction((pdata, inputs) -> {
 			Sounds.equip.play(p, p);

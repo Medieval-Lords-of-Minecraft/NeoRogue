@@ -46,7 +46,7 @@ public class Gambit extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		StandardEquipmentInstance inst = new StandardEquipmentInstance(p, this, slot, es);
+		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, this, slot, es);
 		inst.setAction((pdata, inputs) -> {
 			Sounds.equip.play(p, p);
 			inst.setBool(true);

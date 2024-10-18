@@ -6,7 +6,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Map.Entry;
 import java.util.TreeSet;
 import java.util.UUID;
 
@@ -62,7 +61,6 @@ public class PlayerFightData extends FightData {
 	private HashMap<Trigger, ArrayList<PriorityAction>> triggers = new HashMap<Trigger, ArrayList<PriorityAction>>();
 	private HashMap<String, EquipmentInstance> equips = new HashMap<String, EquipmentInstance>(); // Useful for modifying cooldowns
 	private HashMap<Integer, HashMap<Trigger, ArrayList<PriorityAction>>> slotBasedTriggers = new HashMap<Integer, HashMap<Trigger, ArrayList<PriorityAction>>>();
-	private HashMap<Integer, ItemStack> icons = new HashMap<Integer, ItemStack>();
 	private LinkedList<Listener> listeners = new LinkedList<Listener>();
 	private HashMap<UUID, Trap> traps = new HashMap<UUID, Trap>();
 	private ArrayList<String> boardLines;
@@ -95,6 +93,7 @@ public class PlayerFightData extends FightData {
 		this.manaRegen = sessdata.getManaRegen();
 
 		// Initialize fight data
+		PlayerInventory inv = p.getInventory();
 		int i = 0;
 		for (Equipment acc : data.getEquipment(EquipSlot.ACCESSORY)) {
 			if (acc == null) continue;
@@ -108,8 +107,12 @@ public class PlayerFightData extends FightData {
 		i = -1;
 		for (Equipment hotbar : data.getEquipment(EquipSlot.HOTBAR)) {
 			i++;
-			if (hotbar == null) continue;
-			hotbar.initialize(p, this, Trigger.getFromHotbarSlot(i), EquipSlot.HOTBAR, i);
+			if (hotbar == null) {
+				inv.setItem(i, null);
+			}
+			else {
+				hotbar.initialize(p, this, Trigger.getFromHotbarSlot(i), EquipSlot.HOTBAR, i);
+			}
 		}
 		i = -1;
 		for (Equipment other : data.getEquipment(EquipSlot.KEYBIND)) {
@@ -128,19 +131,6 @@ public class PlayerFightData extends FightData {
 			offhand.initialize(p, this, null, EquipSlot.OFFHAND, 0);
 		}
 		
-		// Setup inventory after initializing equipment so icons get put in
-		PlayerInventory inv = p.getInventory();
-		ItemStack[] contents = inv.getContents();
-
-		for (i = 0; i < 9; i++) {
-			if (data.getEquipment(EquipSlot.HOTBAR)[i] == null) {
-				contents[i] = null;
-				continue;
-			}
-			contents[i] = icons.getOrDefault(i, data.getEquipment(EquipSlot.HOTBAR)[i].getItem());
-		}
-		inv.setContents(contents);
-		
 		// Sort triggers by priority
 		for (ArrayList<PriorityAction> list : triggers.values()) {
 			Collections.sort(list);
@@ -150,8 +140,6 @@ public class PlayerFightData extends FightData {
 				Collections.sort(list);
 			}
 		}
-		
-		if (offhand != null) inv.setItemInOffHand(offhand.getItem());
 		addTickAction(new PlayerUpdateTickAction());
 
 		updateStamina();
@@ -354,7 +342,6 @@ public class PlayerFightData extends FightData {
 		if (triggers.containsKey(trigger)) {
 			boolean cancel = false;
 			Iterator<PriorityAction> iter = triggers.get(trigger).iterator();
-			PlayerInventory inv = p.getInventory();
 			while (iter.hasNext()) {
 				PriorityAction inst = iter.next();
 				TriggerResult tr;
@@ -382,7 +369,7 @@ public class PlayerFightData extends FightData {
 					runActions(data, Trigger.CAST_USABLE, ev);
 					tr = ei.trigger(data, inputs);
 					ei.resetTempCosts();
-					EquipmentInstance.updateSlot(p, inv, ei);
+					ei.updateIcon();
 				}
 				else {
 					if (!inst.canTrigger(p, data)) {
@@ -604,85 +591,14 @@ public class PlayerFightData extends FightData {
 	}
 	
 	private class PlayerUpdateTickAction extends TickAction {
-		HashMap<Integer, EquipmentInstance> insts = new HashMap<Integer, EquipmentInstance>();
-		LinkedList<Integer> toRemove = new LinkedList<Integer>();
-		
-		public PlayerUpdateTickAction() {
-			// Get the usable instances to tie cooldowns to
-			for (int i = 0 ; i < 9; i++) {
-				Trigger t = Trigger.getFromHotbarSlot(i);
-				boolean found = false;
-				
-				// First look for hotbar castable skills
-				if (triggers.containsKey(t)) {
-					ArrayList<PriorityAction> actions = triggers.get(t);
-					for (PriorityAction action : actions) {
-						// Only the first valid usable instance is used as the cooldown per hotbar slot
-						if (action instanceof EquipmentInstance) {
-							insts.put(i, (EquipmentInstance) action);
-							found = true;
-							break;
-						}
-					}
-				}
-				
-				// Next look for any slot-based triggers (thrown tridents, tacticians dagger) that can have cooldowns
-				if (found || !slotBasedTriggers.containsKey(i)) continue;
-				for (ArrayList<PriorityAction> slotActions : slotBasedTriggers.get(i).values()) {
-					for (PriorityAction slotAction : slotActions) {
-						if (slotAction instanceof EquipmentInstance) {
-							insts.put(i, (EquipmentInstance) slotAction);
-							found = true;
-							break;
-						}
-					}
-					if (found) break;
-				}
-			}
-		}
-		
 		@Override
 		public TickResult run() {
 			addMana(manaRegen);
 			addStamina(p.isSprinting() ? staminaRegen - sprintCost : staminaRegen);
 			updateBoardLines();
 			FightInstance.trigger(p, Trigger.PLAYER_TICK, null);
-			
-			// Update hotbar cooldowns
-			PlayerInventory inv = p.getInventory();
-			for (Entry<Integer, EquipmentInstance> ent : insts.entrySet()) {
-				// Check if cooldown is over
-				ItemStack item = inv.getItem(ent.getKey());
-				if (item == null) {
-					toRemove.add(ent.getKey());
-					continue;
-				}
-				if (item.getType().name().endsWith("CANDLE") &&
-						ent.getValue().getCooldownSeconds() == 0) {
-					inv.setItem(ent.getKey(), icons.getOrDefault(ent.getKey(), ent.getValue().getEquipment().getItem()));
-				}
-			}
-			p.updateInventory();
-			
-			for (int i : toRemove) {
-				insts.remove(i);
-			}
-			toRemove.clear();
 			return TickResult.KEEP;
 		}
-	}
-
-	// Currently this only works for hotbar since it's simple
-	public void setIcon(int i, ItemStack item) {
-		icons.put(i, item);
-		PlayerInventory inv = p.getInventory();
-		if (!inv.getItem(i).getType().name().endsWith("CANDLE")) {
-			inv.setItem(i, item);
-		}
-	}
-
-	public void removeIcon(int i) {
-		icons.remove(i);
 	}
 	
 	public boolean canBasicAttack() {

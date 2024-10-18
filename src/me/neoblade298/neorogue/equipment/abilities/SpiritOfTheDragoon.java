@@ -35,7 +35,7 @@ public class SpiritOfTheDragoon extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		SpiritOfTheDragoonInstance inst = new SpiritOfTheDragoonInstance(p, this, slot, es);
+		SpiritOfTheDragoonInstance inst = new SpiritOfTheDragoonInstance(data, this, slot, es);
 		data.addTrigger(id, bind, inst);
 		
 		data.addTrigger(id, Trigger.FALL_DAMAGE, (pdata, in) -> {
@@ -49,8 +49,8 @@ public class SpiritOfTheDragoon extends Equipment {
 	
 	private class SpiritOfTheDragoonInstance extends EquipmentInstance {
 		private long lastCast = -1;
-		public SpiritOfTheDragoonInstance(Player p, Equipment eq, int slot, EquipSlot es) {
-			super(p, eq, slot, es);
+		public SpiritOfTheDragoonInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
+			super(data, eq, slot, es);
 			action = (pdata, in) -> {
 				pdata.addSimpleShield(p.getUniqueId(), shield, 100);
 				p.setVelocity(p.getVelocity().add(new Vector(0, 1, 0)));

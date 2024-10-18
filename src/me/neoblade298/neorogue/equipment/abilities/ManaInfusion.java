@@ -38,16 +38,16 @@ public class ManaInfusion extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		StandardEquipmentInstance inst = new StandardEquipmentInstance(p, this, slot, es);
+		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, this, slot, es);
 		inst.setAction((pdata, in) -> {
 			if (inst.getCount() == 0) {
 				inst.setCount(1);
 				Sounds.equip.play(p, p);
-				data.setIcon(slot, activeIcon);
+				inst.setIcon(activeIcon);
 			}
 			else {
 				inst.setCount(0);
-				data.removeIcon(slot);
+				inst.setIcon(item);
 			}
 			return TriggerResult.keep();
 		});

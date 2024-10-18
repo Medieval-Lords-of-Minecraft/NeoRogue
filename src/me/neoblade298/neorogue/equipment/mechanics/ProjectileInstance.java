@@ -38,6 +38,7 @@ public class ProjectileInstance extends IProjectileInstance {
 	private int tick, numHit, interpolationPoints;
 	private String tag; // Used for metadata, like with twinShiv
 	private DamageMeta meta;
+	private double distance = 0; // Estimated distance traveled, not exact, doesn't factor in gravity
 
 	private ArrayList<HitBlockAction> hitBlockActions = new ArrayList<HitBlockAction>();
 	private ArrayList<HitAction> hitActions = new ArrayList<HitAction>();
@@ -55,10 +56,17 @@ public class ProjectileInstance extends IProjectileInstance {
 		
 		v = direction.clone().normalize().rotateAroundY(Math.toRadians(settings.getRotation()));
 		if (settings.initialY() != 0) origin.add(0, settings.initialY(), 0);
-		v = v.multiply(settings.getBlocksPerTick() / settings.getTickSpeed());
-		interpolationPoints = (int) (Math.ceil(v.length() / settings.getWidth()));
-		v = v.multiply(1D / interpolationPoints);
-		loc = origin.clone().add(v); // Start slightly offset forward to avoid hitting behind
+
+		// Slow projectile, no interpolation needed
+		if (settings.getWidth() > settings.getBlocksPerTick() * settings.getTickSpeed()) {
+			v = v.multiply(settings.getBlocksPerTick() * settings.getTickSpeed());
+		}
+		// Fast projectile, need interpolation
+		else {
+			v = v.multiply(settings.getWidth());
+			interpolationPoints = (int) (settings.getBlocksPerTick() / settings.getWidth()) + 1;
+		}
+		loc = origin.clone().add(v.clone().multiply(0.5)); // Start slightly offset forward to avoid hitting behind
 		bounds = BoundingBox.of(loc, settings.getWidth(), settings.getHeight(), settings.getWidth());
 		
 		task = new BukkitRunnable() {
@@ -118,11 +126,15 @@ public class ProjectileInstance extends IProjectileInstance {
 					FightData hit = FightInstance.getFightData(uuid);
 					if (targetsHit.contains(uuid)) continue;
 					targetsHit.add(uuid);
+
+					// Make sure to never use the same damage meta twice
+					DamageMeta clone = meta.clone();
 					settings.onHit(hit, null, this);
 					for (HitAction act : hitActions) {
 						act.onHit(hit, null, this);
 					}
 					numHit++;
+					meta = clone;
 					
 					int limit = settings.getPierceLimit();
 					if (limit != -1 && numHit >= settings.getPierceLimit()) return true;
@@ -150,16 +162,16 @@ public class ProjectileInstance extends IProjectileInstance {
 			settings.onTick(this, i);
 			loc.add(v);
 			bounds.shift(v);
+			distance += settings.getWidth();
+			if (distance >= settings.getMaxRange()) {
+				settings.onFizzle(this);
+				return true;
+			}
 		}
 		
 		// Gravity
 		if (settings.getGravity() != 0) {
 			v.setY(v.getY() - settings.getGravity());
-		}
-		
-		if (++tick > settings.getMaxTicks()) {
-			settings.onFizzle(this);
-			return true;
 		}
 
 		return false;

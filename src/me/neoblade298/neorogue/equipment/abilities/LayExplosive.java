@@ -59,7 +59,7 @@ public class LayExplosive extends Equipment {
 		private Trap tr;
 		
 		public LayExplosiveInstance(PlayerFightData data, Equipment e, int slot, EquipSlot es) {
-			super(data.getPlayer(), e, slot, es);
+			super(data, e, slot, es);
 			action = (pd, in) -> {
 				if (!active) {
 					cast(data);
@@ -74,6 +74,7 @@ public class LayExplosive extends Equipment {
 		private void cast(PlayerFightData data) {
 			active = true;
 			data.channel(40);
+			Player p = data.getPlayer();
 			LayExplosiveInstance inst = this;
 			data.addTask(new BukkitRunnable() {
 				public void run() {

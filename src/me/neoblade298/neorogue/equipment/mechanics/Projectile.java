@@ -7,19 +7,30 @@ import org.bukkit.util.Vector;
 import me.neoblade298.neorogue.session.fight.FightData;
 
 public abstract class Projectile extends IProjectile {
-	private double gravity, yRotate, blocksPerTick, initialY;
+	private double gravity, yRotate, blocksPerTick, initialY, maxRange;
 	private boolean ignoreBarriers, ignoreBlocks, ignoreEntities;
 	private double width = 0.2, height = 0.2;
-	private int maxTicks, tickSpeed, pierce = 1;
+	private int tickSpeed, pierce = 1;
 
 	public Projectile(double blocksPerTick, double maxRange, int tickSpeed) {
 		this.blocksPerTick = blocksPerTick; // Per in-game tick, not projectile tick
 		this.tickSpeed = tickSpeed;
-		this.maxTicks = (int) (maxRange / (blocksPerTick * tickSpeed)) + 1;
+		this.maxRange = maxRange;
 	}
 
 	public Projectile(double maxRange, int tickSpeed) {
 		this(1, maxRange, tickSpeed);
+	}
+
+	public void setBowDefaults() {
+		this.gravity = 0.03;
+		this.width = 0.5;
+		this.height = 0.5;
+		this.blocksPerTick = 3;
+	}
+
+	public double getMaxRange() {
+		return maxRange;
 	}
 	
 	public double getWidth() {
@@ -36,10 +47,6 @@ public abstract class Projectile extends IProjectile {
 	
 	public double getBlocksPerTick() {
 		return blocksPerTick;
-	}
-	
-	public int getMaxTicks() {
-		return maxTicks;
 	}
 	
 	public double getRotation() {

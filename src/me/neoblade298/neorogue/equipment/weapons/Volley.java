@@ -45,7 +45,7 @@ public class Volley extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(p, this, slot, es, (d, inputs) -> {
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (d, inputs) -> {
 			data.channel(20);
 			data.addTask(new BukkitRunnable() {
 				public void run() {
@@ -70,14 +70,11 @@ public class Volley extends Equipment {
 		// Vector is non-normalized velocity of the vanilla projectile being fired
 		public VolleyProjectile(PlayerFightData data, int rotation) {
 			super(properties.get(PropertyType.RANGE), 1);
-			this.gravity(0.03);
-			this.size(1, 1);
+			setBowDefaults();
 			this.rotation(rotation);
 			this.data = data;
 			this.p = data.getPlayer();
 			this.ammo = data.getAmmoInstance();
-
-			blocksPerTick(2);
 		}
 
 		@Override

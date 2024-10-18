@@ -48,14 +48,15 @@ public class Adrenaline extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new AdrenalineInstance(p, this, slot, es));
+		data.addTrigger(id, bind, new AdrenalineInstance(data, this, slot, es));
 	}
 	
 	private class AdrenalineInstance extends EquipmentInstance {
 		private int count = 0;
 		private int max;
-		public AdrenalineInstance(Player p, Equipment eq, int slot, EquipSlot es) {
-			super(p, eq, slot, es);
+		public AdrenalineInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
+			super(data, eq, slot, es);
+			Player p = data.getPlayer();
 			max = isUpgraded ? 2 : 1;
 			action = (pdata, in) -> {
 				count++;

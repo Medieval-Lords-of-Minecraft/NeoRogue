@@ -45,18 +45,19 @@ public class Fury extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new FuryInstance(this, p, damage, bind, slot, es));
+		data.addTrigger(id, bind, new FuryInstance(this, data, damage, bind, slot, es));
 	}
 	
 	private class FuryInstance extends EquipmentInstance {
 		private boolean isBerserk;
-		public FuryInstance(Equipment eq, Player p, int damage, Trigger bind, int slot, EquipSlot es) {
-			super(p, eq, slot, es);
+		public FuryInstance(Equipment eq, PlayerFightData data, int damage, Trigger bind, int slot, EquipSlot es) {
+			super(data, eq, slot, es);
 			
-			this.action = (data, in) -> {
+			this.action = (pdata, in) -> {
+				Player p = data.getPlayer();
 				Sounds.equip.play(p, p);
 				pc.play(p, p);
-				data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in2) -> {
+				data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in2) -> {
 					BasicAttackEvent ev = (BasicAttackEvent) in2;
 					LivingEntity target = ev.getTarget();
 					FightInstance.dealDamage(data, DamageType.SLASHING, damage, target);

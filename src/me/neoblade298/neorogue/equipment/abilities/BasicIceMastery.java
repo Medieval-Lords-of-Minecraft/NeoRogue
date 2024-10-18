@@ -31,7 +31,7 @@ public class BasicIceMastery extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addPermanentShield(p.getUniqueId(), 5, false);
-		data.addTrigger(id, Trigger.PRE_APPLY_STATUS, new EquipmentInstance(p, this, slot, es, (pdata, in) -> {
+		data.addTrigger(id, Trigger.PRE_APPLY_STATUS, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
 			if (!ev.isStatus(StatusType.FROST)) return TriggerResult.keep();
 			ev.getStacksBuff().addIncrease(data, 1);

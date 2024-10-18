@@ -32,8 +32,7 @@ public class BowProjectile extends Projectile {
 	// Vector is non-normalized velocity of the vanilla projectile being fired, can be rotated
 	public BowProjectile(PlayerFightData data, Vector v, Bow bow) {
 		super(bow.getProperties().get(PropertyType.RANGE), 1);
-		this.gravity(0.03);
-		this.size(1, 1);
+		setBowDefaults();
 		this.data = data;
 		this.p = data.getPlayer();
 		this.bow = bow;

@@ -57,7 +57,7 @@ public class Energize extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		EnergizeInstance inst = new EnergizeInstance(p, this, slot, es);
+		EnergizeInstance inst = new EnergizeInstance(data, this, slot, es);
 		data.addTrigger(id, bind, inst);
 		
 		data.addTrigger(ID, Trigger.DEALT_DAMAGE, (pdata, in) -> {
@@ -71,10 +71,11 @@ public class Energize extends Equipment {
 	
 	private class EnergizeInstance extends EquipmentInstance {
 		private LivingEntity mark;
-		public EnergizeInstance(Player p, Equipment eq, int slot, EquipSlot es) {
-			super(p, eq, slot, es);
+		public EnergizeInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
+			super(data, eq, slot, es);
 			action = (pdata, in) -> {
 				pdata.addTrigger(ID, Trigger.BASIC_ATTACK, (pdata2, in2) -> {
+					Player p = data.getPlayer();
 					BasicAttackEvent ev2 = (BasicAttackEvent) in2;
 					mark = ev2.getTarget();
 					ev2.getMeta().addDamageSlice(new DamageSlice(pdata, damage, DamageType.LIGHTNING));

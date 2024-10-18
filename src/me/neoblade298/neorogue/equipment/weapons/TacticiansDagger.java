@@ -35,7 +35,7 @@ public class TacticiansDagger extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		StandardPriorityAction timer = new StandardPriorityAction(ID);
-		StandardEquipmentInstance inst = new StandardEquipmentInstance(p, this, slot, es);
+		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, this, slot, es);
 		timer.setAction((pdata, in) -> {
 			timer.setTime(System.currentTimeMillis());
 			inst.setCooldown(3);

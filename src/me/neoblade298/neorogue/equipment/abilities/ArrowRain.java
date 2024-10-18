@@ -57,7 +57,7 @@ public class ArrowRain extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new AmmoEquipmentInstance(p, this, slot, es, (pd, in) -> {
+		data.addTrigger(id, bind, new AmmoEquipmentInstance(data, this, slot, es, (pd, in) -> {
 			Sounds.equip.play(p, p);
 			data.charge(20);
 			data.addTask(new BukkitRunnable() {

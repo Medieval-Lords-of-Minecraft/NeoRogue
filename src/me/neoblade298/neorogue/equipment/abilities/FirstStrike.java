@@ -51,7 +51,7 @@ public class FirstStrike extends Equipment {
 	@SuppressWarnings("deprecation")
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		EquipmentInstance inst = new EquipmentInstance(p, this, slot, es);
+		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
 		inst.setAction((pdata, in) -> {
 			Sounds.flap.play(p, p);
 			DamageMeta dm = new DamageMeta(data, damage, DamageType.PIERCING);

@@ -43,15 +43,16 @@ public class EscapePlan2 extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		EscapePlanInstance inst = new EscapePlanInstance(p, this, slot, es);
+		EscapePlanInstance inst = new EscapePlanInstance(data, this, slot, es);
 		data.addTrigger(id, bind, inst);
 	}
 	
 	private class EscapePlanInstance extends EquipmentInstance {
 		boolean active = true;
-		public EscapePlanInstance(Player p, Equipment eq, int slot, EquipSlot es) {
-			super(p, eq, slot, es);
+		public EscapePlanInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
+			super(data, eq, slot, es);
 			action = (pdata1, in1) -> {
+				Player p = data.getPlayer();
 				Sounds.equip.play(p, p);
 				Location loc = p.getLocation();
 				

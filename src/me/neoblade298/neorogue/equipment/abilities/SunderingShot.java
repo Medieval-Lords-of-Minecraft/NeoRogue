@@ -49,7 +49,7 @@ public class SunderingShot extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ItemStack icon = item.clone();
-		StandardEquipmentInstance inst = new StandardEquipmentInstance(p, this, slot, es);
+		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, this, slot, es);
 		inst.setAction((pdata, in) -> {
 			data.charge(40);
 			data.addTask(new BukkitRunnable() {
@@ -59,7 +59,7 @@ public class SunderingShot extends Equipment {
 					ProjectileGroup projs = new ProjectileGroup(new SunderingShotProjectile(data, inst.getCount()));
 					inst.setCount(0);
 					icon.setAmount(1);
-					data.setIcon(slot, icon);
+					inst.setIcon(icon);
 					projs.start(data);
 				}
 			}.runTaskLater(NeoRogue.inst(), 40L));
@@ -73,7 +73,7 @@ public class SunderingShot extends Equipment {
 			inst.addCount(ev.getStacks());
 			Sounds.fire.play(p, p);
 			icon.setAmount(inst.getCount());
-			data.setIcon(slot, icon);
+			inst.setIcon(icon);
 			return TriggerResult.keep();
 		});
 	}

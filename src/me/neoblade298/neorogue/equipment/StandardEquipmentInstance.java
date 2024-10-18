@@ -1,7 +1,7 @@
 package me.neoblade298.neorogue.equipment;
 
-import org.bukkit.entity.Player;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
+import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerCondition;
 
@@ -11,16 +11,16 @@ public class StandardEquipmentInstance extends EquipmentInstance {
 	private int count;
 	private boolean bool;
 
-	public StandardEquipmentInstance(Player p, Equipment eq, int slot, EquipSlot es) {
-		super(p, eq, slot, es);
+	public StandardEquipmentInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
+		super(data, eq, slot, es);
 	}
 
-	public StandardEquipmentInstance(Player p, Equipment eq, int slot, EquipSlot es, TriggerAction action) {
-		super(p, eq, slot, es, action);
+	public StandardEquipmentInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es, TriggerAction action) {
+		super(data, eq, slot, es, action);
 	}
 	
-	public StandardEquipmentInstance(Player p, Equipment eq, int slot, EquipSlot es, TriggerAction action, TriggerCondition condition) {
-		super(p, eq, slot, es, action, condition);
+	public StandardEquipmentInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es, TriggerAction action, TriggerCondition condition) {
+		super(data, eq, slot, es, action, condition);
 	}
 	
 	public void setCount(int count) {
