@@ -12,7 +12,6 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.equipment.mechanics.IProjectileInstance;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
@@ -45,15 +44,14 @@ public class PiercingShot extends Equipment {
 				LaunchProjectileGroupEvent ev = (LaunchProjectileGroupEvent) in;
 				if (!ev.isBowProjectile()) return TriggerResult.keep();
 				Sounds.fire.play(p, p);
-				for (IProjectileInstance inst : ev.getInstances()) {
-					ProjectileInstance pi = (ProjectileInstance) inst;
-					pi.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.PIERCING));
-					BowProjectile settings = (BowProjectile) inst.getParent();
-					settings.pierce(3);
-					settings.addProjectileTickAction((p2, proj, interpolation) -> {
-						pc.play(p2, proj.getLocation());
-					});
-				}
+				ProjectileInstance inst = (ProjectileInstance) ev.getInstances().getFirst();
+				ProjectileInstance pi = (ProjectileInstance) inst;
+				pi.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.PIERCING));
+				BowProjectile settings = (BowProjectile) inst.getParent();
+				settings.pierce(3);
+				settings.addProjectileTickAction((p2, proj, interpolation) -> {
+					pc.play(p2, proj.getLocation());
+				});
 				return TriggerResult.remove();
 			});
 			return TriggerResult.keep();
@@ -63,7 +61,7 @@ public class PiercingShot extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLAZE_ROD,
-				"On cast, your next bow shot deals up to an additional " + GlossaryTag.PIERCING.tag(this, damage, true) + " and pierces up to " +
+				"On cast, your next basic attack deals up to an additional " + GlossaryTag.PIERCING.tag(this, damage, true) + " and pierces up to " +
 				DescUtil.white(3) + " enemies.");
 	}
 }

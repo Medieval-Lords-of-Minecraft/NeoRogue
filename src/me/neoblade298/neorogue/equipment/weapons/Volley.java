@@ -49,13 +49,17 @@ public class Volley extends Equipment {
 			data.channel(20);
 			data.addTask(new BukkitRunnable() {
 				public void run() {
+					ProjectileGroup proj = new ProjectileGroup();
 					for (int i : rotations) {
 						if (data.getAmmoInstance() != null) {
-							ProjectileGroup proj = new ProjectileGroup(new VolleyProjectile(data, i));
+							new VolleyProjectile(data, i);
 							data.getAmmoInstance().use();
-							proj.start(data);
+						}
+						else {
+							break;
 						}
 					}
+					proj.start(data);
 				}
 			}.runTaskLater(NeoRogue.inst(), 20L));
 			return TriggerResult.keep();
