@@ -56,9 +56,9 @@ public class ProjectileInstance extends IProjectileInstance {
 		v = direction.clone().normalize().rotateAroundY(Math.toRadians(settings.getRotation()));
 		if (settings.initialY() != 0) origin.add(0, settings.initialY(), 0);
 		v = v.multiply(settings.getBlocksPerTick() / settings.getTickSpeed());
-		interpolationPoints = (int) ((v.length() + 1) / Math.min(settings.getWidth(), settings.getHeight()));
+		interpolationPoints = (int) (Math.ceil(v.length() / settings.getWidth()));
 		v = v.multiply(1D / interpolationPoints);
-		loc = origin.clone();
+		loc = origin.clone().add(v); // Start slightly offset forward to avoid hitting behind
 		bounds = BoundingBox.of(loc, settings.getWidth(), settings.getHeight(), settings.getWidth());
 		
 		task = new BukkitRunnable() {
