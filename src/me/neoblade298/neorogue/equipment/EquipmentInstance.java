@@ -90,7 +90,6 @@ public class EquipmentInstance extends PriorityAction {
 		this.es = es;
 		this.p = data.getPlayer();
 		this.icon = eq.getItem();
-		System.out.println("Set inv slot of " + eq + " " + es + " to " + invSlot + " | " + slot);
 		updateIcon();
 	}
 
@@ -172,7 +171,6 @@ public class EquipmentInstance extends PriorityAction {
 		cooldownTask = new BukkitRunnable() {
 			public void run() {
 				inv.setItem(invSlot, icon);
-				System.out.println("Setting " + invSlot + " for " + eq);
 				cooldownTaskId = null;
 				cooldownTask = null;
 			}

@@ -52,7 +52,7 @@ public class Volley extends Equipment {
 					ProjectileGroup proj = new ProjectileGroup();
 					for (int i : rotations) {
 						if (data.getAmmoInstance() != null) {
-							new VolleyProjectile(data, i);
+							proj.add(new VolleyProjectile(data, i));
 							data.getAmmoInstance().use();
 						}
 						else {

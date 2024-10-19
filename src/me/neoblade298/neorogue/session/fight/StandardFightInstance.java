@@ -64,6 +64,8 @@ public class StandardFightInstance extends FightInstance {
 		scoreBar = Bukkit.createBossBar("Objective: Kill Enemies", BarColor.RED, BarStyle.SEGMENTED_6);
 		timeBar = Bukkit.createBossBar("Current Rating: " + fightScore.getDisplay(), BarColor.WHITE, BarStyle.SOLID);
 		timeBar.addFlag(BarFlag.CREATE_FOG);
+		bars.add(scoreBar);
+		bars.add(timeBar);
 		scoreBar.setProgress(0);
 		
 		for (Player p : s.getOnlinePlayers()) {

@@ -556,7 +556,7 @@ public class Session {
 			SessionManager.removeFromSession(p.getUniqueId());
 			
 			if (inst instanceof FightInstance) {
-				((FightInstance) inst).handlePlayerLeaveParty();
+				((FightInstance) inst).handlePlayerLeaveParty(p);
 			}
 		}
 	}

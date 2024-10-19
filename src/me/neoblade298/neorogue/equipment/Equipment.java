@@ -136,6 +136,7 @@ import me.neoblade298.neorogue.equipment.weapons.Fracturer;
 import me.neoblade298.neorogue.equipment.weapons.GlassArrow;
 import me.neoblade298.neorogue.equipment.weapons.Harpoon;
 import me.neoblade298.neorogue.equipment.weapons.HiddenRazor;
+import me.neoblade298.neorogue.equipment.weapons.HuntersBow;
 import me.neoblade298.neorogue.equipment.weapons.IceWand;
 import me.neoblade298.neorogue.equipment.weapons.Irritant;
 import me.neoblade298.neorogue.equipment.weapons.LeatherGauntlets;
@@ -439,6 +440,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new GlassArrow(b);
 			new Harpoon(b);
 			new HiddenRazor(b);
+			new HuntersBow(b);
 			new IceWand(b);
 			new Irritant(b);
 			new LeatherGauntlets(b);

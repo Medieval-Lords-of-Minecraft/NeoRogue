@@ -25,7 +25,7 @@ public class HuntersBow extends Bow {
 	public HuntersBow(boolean isUpgraded) {
 		super(ID, "Hunter's Bow", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofBow(isUpgraded ? 70 : 50, 1, 0, 10));
+				EquipmentProperties.ofBow(isUpgraded ? 70 : 50, 1, 0, 12, 0, 1));
 		properties.addUpgrades(PropertyType.ATTACK_SPEED);
 	}
 
@@ -47,8 +47,9 @@ public class HuntersBow extends Bow {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addSlotBasedTrigger(id, slot, Trigger.VANILLA_PROJECTILE, (pdata, in) -> {
 			if (!canShoot(data)) return TriggerResult.keep();
+			useBow(data);
 			ProjectileLaunchEvent ev = (ProjectileLaunchEvent) in;
-			if (ev.getEntity().getVelocity().length() < 3) return TriggerResult.keep();
+			if (ev.getEntity().getVelocity().length() < 2.9) return TriggerResult.keep();
 			ProjectileGroup proj = new ProjectileGroup(new BowProjectile(data, ev.getEntity().getVelocity(), this));
 			proj.start(data);
 			return TriggerResult.keep();

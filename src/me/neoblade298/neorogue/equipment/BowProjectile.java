@@ -27,9 +27,15 @@ public class BowProjectile extends Projectile {
 	private EquipmentProperties props;
 	private AmmunitionInstance ammo;
 	private double initialVelocity;
+	private boolean isBasicAttack;
 	private ArrayList<ProjectileTickAction> tickActions = new ArrayList<ProjectileTickAction>();
 
-	// Vector is non-normalized velocity of the vanilla projectile being fired, can be rotated
+	public BowProjectile(PlayerFightData data, Vector v, Bow bow, boolean isBasicAttack) {
+		super(bow.getProperties().get(PropertyType.RANGE), 1);
+		this.isBasicAttack = isBasicAttack;
+	}
+
+	// Vector is non-normalized velocity of the vanilla projectile being fired
 	public BowProjectile(PlayerFightData data, Vector v, Bow bow) {
 		super(bow.getProperties().get(PropertyType.RANGE), 1);
 		setBowDefaults();
@@ -51,6 +57,10 @@ public class BowProjectile extends Projectile {
 		return initialVelocity;
 	}
 
+	public boolean isBasicAttack() {
+		return isBasicAttack;
+	}
+
 	@Override
 	public void onTick(ProjectileInstance proj, int interpolation) {
 		bow.onTick(p, proj, interpolation);
@@ -62,7 +72,7 @@ public class BowProjectile extends Projectile {
 
 	@Override
 	public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
-		bow.bowDamageProjectile(hit.getEntity(), proj, hitBarrier, ammo, initialVelocity, true);
+		bow.bowDamageProjectile(hit.getEntity(), proj, hitBarrier, ammo, isBasicAttack);
 	}
 
 	@Override

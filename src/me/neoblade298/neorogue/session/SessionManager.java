@@ -56,6 +56,7 @@ import io.lumine.mythic.api.mobs.entities.SpawnReason;
 import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
 import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
 import io.lumine.mythic.bukkit.events.MythicMobSpawnEvent;
+import io.papermc.paper.event.entity.EntityLoadCrossbowEvent;
 import io.papermc.paper.event.player.PrePlayerAttackEntityEvent;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
@@ -343,6 +344,18 @@ public class SessionManager implements Listener {
 
 		if (!(s.getInstance() instanceof FightInstance)) return;
 		FightInstance.handleHotbarSwap(e);
+	}
+
+	@EventHandler
+	public void onLoadCrossbow(EntityLoadCrossbowEvent e) {
+		if (e.getEntityType() != EntityType.PLAYER) return;
+		UUID uuid = e.getEntity().getUniqueId();
+		if (!sessions.containsKey(uuid)) return;
+		Session s = sessions.get(uuid);
+		if (s.isSpectator(uuid)) return;
+
+		if (!(s.getInstance() instanceof FightInstance)) return;
+		FightInstance.handleCrossbowLoad(e);
 	}
 
 	@EventHandler(ignoreCancelled = false)

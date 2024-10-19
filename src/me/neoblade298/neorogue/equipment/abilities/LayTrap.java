@@ -42,8 +42,8 @@ public class LayTrap extends Equipment {
 		super(ID, "Lay Trap", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 5, 15, 0));
 		
-		damage = isUpgraded ? 150 : 120;
-		secs = 2;
+		damage = 120;
+		secs = isUpgraded ? 3 : 2;
 	}
 	
 	public static Equipment get() {
@@ -95,6 +95,6 @@ public class LayTrap extends Equipment {
 				"On cast, " + GlossaryTag.CHARGE.tag(this) + " for <white>2s</white>. Afterwards, drop a " + GlossaryTag.TRAP.tag(this) + 
 				" that lasts for " + DescUtil.white("10s") +
 				". If an enemy steps on the trap, they take " + GlossaryTag.BLUNT.tag(this, damage, true) +
-				" damage, receive " + DescUtil.potion("Slowness", 3, secs) + ", and deactivate the trap.");
+				" damage, receive " + DescUtil.potionUp("Slowness", 3, secs) + ", and deactivate the trap.");
 	}
 }

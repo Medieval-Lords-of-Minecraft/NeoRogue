@@ -37,6 +37,8 @@ public abstract class Instance {
 	
 	public void handlePlayerRejoin(Player p) {
 		p.teleport(spawn);
+		p.setMaximumNoDamageTicks(0);
+		p.setHealthScaled(true);
 	}
 	
 	public void handlePlayerLeave(Player p) {

@@ -11,6 +11,9 @@ public abstract class Artifact extends Equipment {
 	public Artifact(String id, String display, Rarity rarity, EquipmentClass ec) {
 		super(id, display, false, rarity, ec, EquipmentType.ARTIFACT, EquipmentProperties.none());
 	}
+	public Artifact(String id, String display, Rarity rarity, EquipmentClass[] ecs) {
+		super(id, display, false, rarity, ecs, EquipmentType.ARTIFACT, EquipmentProperties.none());
+	}
 
 	public boolean canStack() {
 		return canStack;

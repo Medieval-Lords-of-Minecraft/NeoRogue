@@ -24,7 +24,7 @@ public class BasicShotbow extends Bow {
 	public BasicShotbow(boolean isUpgraded) {
 		super(ID, "Basic Shotbow", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofBow(30, isUpgraded ? 1.5 : 1, 0, 5));
+				EquipmentProperties.ofBow(30, isUpgraded ? 1.5 : 1, 0, 10, 0, 1.5));
 		properties.addUpgrades(PropertyType.ATTACK_SPEED);
 	}
 
@@ -42,6 +42,7 @@ public class BasicShotbow extends Bow {
 		StandardPriorityAction act = new StandardPriorityAction(id);
 		act.setAction((pdata, in) -> {
 			if (!canShoot(data)) return TriggerResult.keep();
+			useBow(data);
 			ProjectileLaunchEvent ev = (ProjectileLaunchEvent) in;
 			Vector v = ev.getEntity().getVelocity();
 			ProjectileGroup proj = new ProjectileGroup(new BowProjectile(data, v, this));

@@ -23,7 +23,7 @@ public class AvalonianAnchor extends Artifact {
 	private static final String ID = "avalonianAnchor";
 	private static final ParticleContainer part = new ParticleContainer(Particle.CRIT).count(10).spread(0.5, 0.5).speed(0.1);
 	public AvalonianAnchor() {
-		super(ID, "Avalonian Anchor", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
+		super(ID, "Avalonian Anchor", Rarity.UNCOMMON, new EquipmentClass[] { EquipmentClass.WARRIOR, EquipmentClass.THIEF });
 	}
 	
 	public static Equipment get() {

@@ -22,7 +22,7 @@ public class BasicCrossbow extends Bow {
 	public BasicCrossbow(boolean isUpgraded) {
 		super(ID, "Basic Crossbow", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofBow(isUpgraded ? 130 : 90, 1, 0, 7));
+				EquipmentProperties.ofBow(isUpgraded ? 100 : 75, 1, 0, 12, 0, 3));
 		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 
@@ -44,6 +44,7 @@ public class BasicCrossbow extends Bow {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addSlotBasedTrigger(id, slot, Trigger.VANILLA_PROJECTILE, (pdata, in) -> {
 			if (!canShoot(data)) return TriggerResult.keep();
+			useBow(data);
 			ProjectileLaunchEvent ev = (ProjectileLaunchEvent) in;
 			ProjectileGroup proj = new ProjectileGroup(new BowProjectile(data, ev.getEntity().getVelocity(), this));
 			proj.start(data);
@@ -53,6 +54,6 @@ public class BasicCrossbow extends Bow {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BOW);
+		item = createItem(Material.CROSSBOW);
 	}
 }

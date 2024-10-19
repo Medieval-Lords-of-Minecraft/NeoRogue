@@ -22,8 +22,8 @@ public class BasicBow extends Bow {
 	public BasicBow(boolean isUpgraded) {
 		super(ID, "Basic Bow", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofBow(30, isUpgraded ? 1.5 : 1, 0, 10));
-		properties.addUpgrades(PropertyType.ATTACK_SPEED);
+				EquipmentProperties.ofBow(isUpgraded ? 25 : 20, 1, 0, 12, 0, 1.5));
+		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 
 	@Override
@@ -44,6 +44,8 @@ public class BasicBow extends Bow {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addSlotBasedTrigger(id, slot, Trigger.VANILLA_PROJECTILE, (pdata, in) -> {
 			if (!canShoot(data)) return TriggerResult.keep();
+			useBow(data);
+
 			ProjectileLaunchEvent ev = (ProjectileLaunchEvent) in;
 			ProjectileGroup proj = new ProjectileGroup(new BowProjectile(data, ev.getEntity().getVelocity(), this));
 			proj.start(data);

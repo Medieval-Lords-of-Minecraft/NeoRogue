@@ -28,8 +28,8 @@ public class PiercingShot extends Equipment {
 	
 	public PiercingShot(boolean isUpgraded) {
 		super(ID, "Piercing Shot", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 5, 10, 8));
-		damage = isUpgraded ? 30 : 15;
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 15, 8, 8));
+		damage = isUpgraded ? 35 : 25;
 	}
 	
 	public static Equipment get() {
@@ -48,7 +48,7 @@ public class PiercingShot extends Equipment {
 				ProjectileInstance pi = (ProjectileInstance) inst;
 				pi.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.PIERCING));
 				BowProjectile settings = (BowProjectile) inst.getParent();
-				settings.pierce(3);
+				settings.pierce(2);
 				settings.addProjectileTickAction((p2, proj, interpolation) -> {
 					pc.play(p2, proj.getLocation());
 				});
@@ -62,6 +62,6 @@ public class PiercingShot extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.BLAZE_ROD,
 				"On cast, your next basic attack deals up to an additional " + GlossaryTag.PIERCING.tag(this, damage, true) + " and pierces up to " +
-				DescUtil.white(3) + " enemies.");
+				DescUtil.white(2) + " enemies.");
 	}
 }

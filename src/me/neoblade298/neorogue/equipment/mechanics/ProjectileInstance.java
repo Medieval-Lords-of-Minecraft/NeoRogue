@@ -124,6 +124,7 @@ public class ProjectileInstance extends IProjectileInstance {
 					
 					UUID uuid = ent.getUniqueId();
 					FightData hit = FightInstance.getFightData(uuid);
+					if (hit == null) continue;
 					if (targetsHit.contains(uuid)) continue;
 					targetsHit.add(uuid);
 

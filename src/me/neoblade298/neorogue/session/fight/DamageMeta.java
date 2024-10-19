@@ -392,7 +392,8 @@ public class DamageMeta {
 				Vector btwn = owner.getEntity().getLocation().subtract(loc).toVector();
 				btwn.setY(0);
 				btwn.normalize();
-				loc = loc.add(btwn);
+				double x = NeoRogue.gen.nextDouble(0.5), y = NeoRogue.gen.nextDouble(0.5), z = NeoRogue.gen.nextDouble(0.5);
+				loc = loc.add(btwn).add(x, y, z);
 				recipient.getInstance().createIndicator(Component.text((int) (damage + ignoreShieldsDamage), NamedTextColor.RED), loc);
 			}
 			else {

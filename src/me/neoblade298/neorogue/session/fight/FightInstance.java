@@ -52,6 +52,7 @@ import io.lumine.mythic.bukkit.BukkitAdapter;
 import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
 import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
 import io.lumine.mythic.core.mobs.ActiveMob;
+import io.papermc.paper.event.entity.EntityLoadCrossbowEvent;
 import io.papermc.paper.event.player.PrePlayerAttackEntityEvent;
 import me.libraryaddict.disguise.disguisetypes.PlayerDisguise;
 import me.neoblade298.neocore.bukkit.effects.Audience;
@@ -109,6 +110,7 @@ public abstract class FightInstance extends Instance {
 	protected double totalKillValue; // Keeps track of total mob spawns, to handle scaling of spawning
 	private long startTime;
 	private ArrayList<String> spectatorLines;
+	protected ArrayList<BossBar> bars = new ArrayList<BossBar>();
 	
 	private static final Circle reviveCircle = new Circle(5);
 	private static final ParticleContainer reviveCirclePart = new ParticleContainer(Particle.END_ROD).count(1);
@@ -248,7 +250,14 @@ public abstract class FightInstance extends Instance {
 		}.runTaskLater(NeoRogue.inst(), 5L);
 	}
 
-	public void handlePlayerLeaveParty() {
+	public void handlePlayerLeaveParty(Player p) {
+		for (BossBar bar : bars) {
+			bar.removePlayer(p);
+		}
+		checkInstanceDead();
+	}
+
+	private void checkInstanceDead() {
 		boolean lose = true;
 		for (UUID uuid : this.getParty()) {
 			PlayerFightData fdata = userData.get(uuid);
@@ -288,14 +297,16 @@ public abstract class FightInstance extends Instance {
 		p.setInvisible(false);
 		p.setMaximumNoDamageTicks(20);
 		p.removePotionEffect(PotionEffectType.ABSORPTION);
+		checkInstanceDead();
 	}
 
 	@Override
 	public void handlePlayerRejoin(Player p) {
+		p.setMaximumNoDamageTicks(0);
+		p.setHealthScaled(true);
 		// If player rejoins fight, don't tp them, it'll still be the same fight
 		// If the fight already ended, another instance will handle their tp anyway
 		PlayerFightData pdata = getUserData(p.getUniqueId());
-		p.setMaximumNoDamageTicks(0);
 		if (pdata == null) {
 			Bukkit.getLogger().warning("[NeoRogue] Failed to get player fight data on rejoin for " + p.getName());
 			return;
@@ -359,6 +370,10 @@ public abstract class FightInstance extends Instance {
 		if (data == null) return;
 		e.setCancelled(data.hasTriggerAction(Trigger.getFromHotbarSlot(e.getNewSlot())));
 		trigger(e.getPlayer(), Trigger.getFromHotbarSlot(e.getNewSlot()), null);
+	}
+	
+	public static void handleCrossbowLoad(EntityLoadCrossbowEvent e) {
+		e.setConsumeItem(false);
 	}
 	
 	public static void handleOffhandSwap(PlayerSwapHandItemsEvent e) {
@@ -461,6 +476,7 @@ public abstract class FightInstance extends Instance {
 		dead.teleport(corpse.corpseDisplay);
 
 		BossBar reviveBar = Bukkit.createBossBar("§e" + p.getName() + " &fReviving §e" + dead.getName(), BarColor.BLUE, BarStyle.SOLID);
+		bars.add(reviveBar);
 		for (Player party : s.getOnlinePlayers()) {
 			reviveBar.addPlayer(party);
 		}
@@ -473,6 +489,7 @@ public abstract class FightInstance extends Instance {
 			@Override
 			public void run() {
 				reviveBar.removeAll();
+				bars.remove(reviveBar);
 			}
 		});
 
@@ -1091,6 +1108,14 @@ public abstract class FightInstance extends Instance {
 		am.getEntity().setMaxHealth(Math.round(mhealth));
 		am.getEntity().setHealth(Math.round(mhealth));
 		return am;
+	}
+
+	public void addBar(BossBar bar) {
+		bars.add(bar);
+	}
+
+	public ArrayList<BossBar> getBars() {
+		return bars;
 	}
 
 	private static class Corpse {

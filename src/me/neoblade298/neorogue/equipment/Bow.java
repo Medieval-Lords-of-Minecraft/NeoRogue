@@ -1,7 +1,5 @@
 package me.neoblade298.neorogue.equipment;
 
-import java.util.HashMap;
-
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -11,12 +9,8 @@ import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageMeta.BuffOrigin;
-import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
-import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.BuffSlice;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerCondition;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
@@ -42,19 +36,35 @@ public abstract class Bow extends Equipment {
 			Util.displayError(data.getPlayer(), "You don't have any ammunition equipped!");
 			return false;
 		}
+		if (data.getMana() < properties.get(PropertyType.MANA_COST)) {
+			Util.displayError(data.getPlayer(), "Not enough mana!");
+			return false;
+		}
+
+		if (data.getStamina() < properties.get(PropertyType.STAMINA_COST)) {
+			Util.displayError(data.getPlayer(), "Not enough stamina!");
+			return false;
+		}
+
+		if (!data.canBasicAttack(EquipSlot.HOTBAR)) {
+			return false;
+		}
 		return true;
 	}
 
-	public void bowDamageProjectile(LivingEntity target, ProjectileInstance proj, Barrier hitBarrier, AmmunitionInstance ammo, double initialVelocity, boolean basicAttack) {
+	public void useBow(PlayerFightData data) {
+		if (properties.has(PropertyType.MANA_COST)) data.addMana(-properties.get(PropertyType.MANA_COST));
+		if (properties.has(PropertyType.STAMINA_COST)) data.addStamina(-properties.get(PropertyType.STAMINA_COST));
+		data.setBasicAttackCooldown(EquipSlot.HOTBAR, properties.get(PropertyType.ATTACK_SPEED));
+	}
+
+	public void bowDamageProjectile(LivingEntity target, ProjectileInstance proj, Barrier hitBarrier, AmmunitionInstance ammo, boolean basicAttack) {
 		DamageMeta dm = proj.getMeta();
 		dm.setProjectileInstance(proj);
 		PlayerFightData data = (PlayerFightData) proj.getOwner();
 
 		// Apply any ammo changes
 		ammo.onHit(proj, target);
-
-		// Multiply damage by the initial velocity of the projectile
-		dm.addBuff(BuffType.GENERAL, new Buff(0, (initialVelocity / 3) - 1, new HashMap<FightData, BuffSlice>()), BuffOrigin.INITIAL_VELOCITY, true);
 		if (!proj.getBuffs().isEmpty()) {
 			dm.addBuffs(proj.getBuffs(), BuffOrigin.PROJECTILE, true);
 		}

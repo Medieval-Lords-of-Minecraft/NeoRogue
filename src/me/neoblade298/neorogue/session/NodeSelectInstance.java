@@ -92,6 +92,7 @@ public class NodeSelectInstance extends EditInventoryInstance {
 
 	@Override
 	public void handlePlayerRejoin(Player p) {
+		super.handlePlayerRejoin(p);
 		p.setAllowFlight(true);
 	}
 
