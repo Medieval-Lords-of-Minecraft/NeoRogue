@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.abilities;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -46,7 +47,7 @@ public class Advantage extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SPYGLASS,
-				"Passive. For every <white>thres</white> stacks of " + GlossaryTag.INJURY.tag(this) + " you apply, " +
-				" gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + ".");
+				"Passive. For every " + DescUtil.white(thres) + " stacks of " + GlossaryTag.INJURY.tag(this) + " you apply, " +
+				"gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + ".");
 	}
 }

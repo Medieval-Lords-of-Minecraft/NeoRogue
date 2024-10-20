@@ -25,6 +25,7 @@ public class BasicEngineering extends Equipment {
 		super(ID, "Basic Engineering", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.none());
 				damage = isUpgraded ? 30 : 20;
+				shields = 5;
 	}
 	
 	public static Equipment get() {
@@ -33,8 +34,8 @@ public class BasicEngineering extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addPermanentShield(p.getUniqueId(), shields, false);
-		data.addTrigger(id, Trigger.DEALT_DAMAGE, (pdata, in) -> {
+		data.addPermanentShield(p.getUniqueId(), shields);
+		data.addTrigger(id, Trigger.PRE_DEALT_DAMAGE, (pdata, in) -> {
 			PreDealtDamageEvent ev = (PreDealtDamageEvent) in;
 			if (ev.getMeta().getOrigin() != DamageOrigin.TRAP) return TriggerResult.keep();
 			ev.getMeta().addBuff(BuffType.GENERAL, new Buff(data, 0, damage), BuffOrigin.NORMAL, true);
@@ -44,7 +45,7 @@ public class BasicEngineering extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.PACKED_ICE,
+		item = createItem(Material.PISTON,
 				"Passive. Start fights with " + GlossaryTag.SHIELDS.tag(this, shields, false) + ". Damage from " + GlossaryTag.TRAP.tagPlural(this) +
 				" is increased by " + DescUtil.yellow(damage + "%") + ".");
 	}

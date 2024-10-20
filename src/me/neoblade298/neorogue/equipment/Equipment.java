@@ -269,6 +269,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new DarkPulse(b);
 			new Deliberation(b);
 			new Discipline(b);
+			new Dismantle(b);
 			new Disorient(b);
 			new DodgeRoll(b);
 			new DoubleStrike(b);
