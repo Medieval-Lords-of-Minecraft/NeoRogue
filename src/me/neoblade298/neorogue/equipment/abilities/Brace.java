@@ -2,11 +2,10 @@ package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
-import me.neoblade298.neocore.bukkit.effects.SoundContainer;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -20,7 +19,6 @@ public class Brace extends Equipment {
 	private static final String ID = "brace";
 	private int shields;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
-	private static final SoundContainer equip = new SoundContainer(Sound.ITEM_ARMOR_EQUIP_CHAIN);
 	
 	public Brace(boolean isUpgraded) {
 		super(ID, "Brace", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
@@ -42,9 +40,9 @@ public class Brace extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(p, p);
 			pc.play(p, p);
 			data.addSimpleShield(p.getUniqueId(), shields, 100);
-			equip.play(p, p);
 			return TriggerResult.keep();
 		}));
 	}

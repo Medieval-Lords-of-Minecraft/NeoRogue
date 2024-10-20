@@ -72,7 +72,7 @@ public abstract class Bow extends Equipment {
 			dm.addBuffs(hitBarrier.getBuffs(), BuffOrigin.BARRIER, false);
 		}
 		if (basicAttack) {
-			BasicAttackEvent ev = new BasicAttackEvent(target, dm, properties.get(PropertyType.KNOCKBACK), this, null);
+			BasicAttackEvent ev = new BasicAttackEvent(target, dm, properties.get(PropertyType.KNOCKBACK), this, proj);
 			data.runActions(data, Trigger.BASIC_ATTACK, ev);
 		}
 		if (properties.contains(PropertyType.KNOCKBACK)) {

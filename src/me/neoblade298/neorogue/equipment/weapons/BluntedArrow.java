@@ -14,15 +14,15 @@ import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 
-public class ColdArrow extends Ammunition {
-	private static final String ID = "coldArrow";
-	private int frost;
+public class BluntedArrow extends Ammunition {
+	private static final String ID = "bluntedArrow";
+	private int stacks;
 	
-	public ColdArrow(boolean isUpgraded) {
-		super(ID, "Cold Arrow", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
+	public BluntedArrow(boolean isUpgraded) {
+		super(ID, "Blunted Arrow", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofAmmunition(5, 0.1, DamageType.PIERCING));
-				frost = isUpgraded ? 3 : 2;
+				EquipmentProperties.ofAmmunition(5, 0.1, DamageType.BLUNT));
+				stacks = isUpgraded ? 3 : 2;
 	}
 	
 	public static Equipment get() {
@@ -32,12 +32,12 @@ public class ColdArrow extends Ammunition {
 	@Override
 	public void onHit(ProjectileInstance inst, LivingEntity trg) {
 		FightData fd = FightInstance.getFightData(trg);
-		fd.applyStatus(StatusType.FROST, inst.getOwner(), frost, -1);
+		fd.applyStatus(StatusType.INJURY, inst.getOwner(), stacks, -1);
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ARROW,
-				"Applies " + GlossaryTag.FROST.tag(this, frost, true) + " on hit.");
+				"Applies " + GlossaryTag.INJURY.tag(this, stacks, true) + " on hit.");
 	}
 }

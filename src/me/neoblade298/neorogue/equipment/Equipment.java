@@ -24,6 +24,7 @@ import me.neoblade298.neocore.shared.droptables.DropTable;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.abilities.*;
+import me.neoblade298.neorogue.equipment.accessories.EagleFeather;
 import me.neoblade298.neorogue.equipment.accessories.EarthenRing;
 import me.neoblade298.neorogue.equipment.accessories.GripGloves;
 import me.neoblade298.neorogue.equipment.accessories.MinorManaRelic;
@@ -39,6 +40,7 @@ import me.neoblade298.neorogue.equipment.accessories.TopazRing;
 import me.neoblade298.neorogue.equipment.armor.BlindingCloak;
 import me.neoblade298.neorogue.equipment.armor.Brightcrown;
 import me.neoblade298.neorogue.equipment.armor.ClothBindings;
+import me.neoblade298.neorogue.equipment.armor.ElbowBrace;
 import me.neoblade298.neorogue.equipment.armor.Footpads;
 import me.neoblade298.neorogue.equipment.armor.Gauze;
 import me.neoblade298.neorogue.equipment.armor.IcyArmguard;
@@ -113,6 +115,7 @@ import me.neoblade298.neorogue.equipment.offhands.WristBlade;
 import me.neoblade298.neorogue.equipment.weapons.BasicBow;
 import me.neoblade298.neorogue.equipment.weapons.BasicCrossbow;
 import me.neoblade298.neorogue.equipment.weapons.BasicShotbow;
+import me.neoblade298.neorogue.equipment.weapons.BluntedArrow;
 import me.neoblade298.neorogue.equipment.weapons.BoltWand;
 import me.neoblade298.neorogue.equipment.weapons.ButterflyKnife;
 import me.neoblade298.neorogue.equipment.weapons.ButterflyKnife2;
@@ -138,6 +141,7 @@ import me.neoblade298.neorogue.equipment.weapons.Harpoon;
 import me.neoblade298.neorogue.equipment.weapons.HiddenRazor;
 import me.neoblade298.neorogue.equipment.weapons.HuntersBow;
 import me.neoblade298.neorogue.equipment.weapons.IceWand;
+import me.neoblade298.neorogue.equipment.weapons.Inflame;
 import me.neoblade298.neorogue.equipment.weapons.Irritant;
 import me.neoblade298.neorogue.equipment.weapons.LeatherGauntlets;
 import me.neoblade298.neorogue.equipment.weapons.LightLeatherGauntlets;
@@ -225,12 +229,14 @@ public abstract class Equipment implements Comparable<Equipment> {
 		for (boolean b : new boolean[] { false, true }) {
 			// Abilities
 			new Adrenaline(b);
+			new Advantage(b);
 			new AcidBomb(b);
 			new Assassinate(b);
 			new ArrowRain(b);
 			new Atone(b);
 			new Atrophy(b);
 			new Backstep(b);
+			new BasicEngineering(b);
 			new BasicFireMastery(b);
 			new BasicIceMastery(b);
 			new BattleCry(b);
@@ -295,6 +301,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new FormAPlan(b);
 			new Fortify(b);
 			new Frenzy(b);
+			new FrostTrap(b);
+			new Frostwalker(b);
 			new Fury(b);
 			new Gambit(b);
 			new GatheringShadows(b);
@@ -302,9 +310,11 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new GetCentered(b);
 			new GraniteShield(b);
 			new Grit(b);
+			new HailCloak(b);
 			new HoldTheLine(b);
 			new InducePanic(b);
 			new InducePanic2(b);
+			new Inflame(b);
 			new Initiator(b);
 			new IronCuirass(b);
 			new Ironskin(b);
@@ -326,6 +336,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Plague(b);
 			new PointBlank(b);
 			new PoolOfLight(b);
+			new Posturing(b);
 			new Prayer(b);
 			new Preparation(b);
 			new Provoke(b);
@@ -369,8 +380,10 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new WeaponEnchantmentHoly(b);
 			new Windcutter(b);
 			new WindSlash(b);
+			new Wound(b);
 
 			// Accessories
+			new EagleFeather(b);
 			new EarthenRing(b);
 			new GripGloves(b);
 			new MinorManaRelic(b);
@@ -387,6 +400,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			// Armor
 			new BlindingCloak(b);
 			new ClothBindings(b);
+			new ElbowBrace(b);
 			new Footpads(b);
 			new Gauze(b);
 			new IcyArmguard(b);
@@ -417,6 +431,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new BasicBow(b);
 			new BasicCrossbow(b);
 			new BasicShotbow(b);
+			new BluntedArrow(b);
 			new ColdArrow(b);
 			new WoodenArrow(b);
 			new BoltWand(b);

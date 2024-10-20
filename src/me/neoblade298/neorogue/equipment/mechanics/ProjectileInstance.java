@@ -38,7 +38,8 @@ public class ProjectileInstance extends IProjectileInstance {
 	private int tick, numHit, interpolationPoints;
 	private String tag; // Used for metadata, like with twinShiv
 	private DamageMeta meta;
-	private double distance = 0; // Estimated distance traveled, not exact, doesn't factor in gravity
+	private double distance = 0, distancePerPoint; // Estimated distance traveled, not exact, doesn't factor in gravity
+	private int maxRangeMod;
 
 	private ArrayList<HitBlockAction> hitBlockActions = new ArrayList<HitBlockAction>();
 	private ArrayList<HitAction> hitActions = new ArrayList<HitAction>();
@@ -66,6 +67,7 @@ public class ProjectileInstance extends IProjectileInstance {
 			v = v.multiply(settings.getWidth());
 			interpolationPoints = (int) (settings.getBlocksPerTick() / settings.getWidth()) + 1;
 		}
+		distancePerPoint = v.length();
 		loc = origin.clone().add(v.clone().multiply(0.5)); // Start slightly offset forward to avoid hitting behind
 		bounds = BoundingBox.of(loc, settings.getWidth(), settings.getHeight(), settings.getWidth());
 		
@@ -163,8 +165,8 @@ public class ProjectileInstance extends IProjectileInstance {
 			settings.onTick(this, i);
 			loc.add(v);
 			bounds.shift(v);
-			distance += settings.getWidth();
-			if (distance >= settings.getMaxRange()) {
+			distance += distancePerPoint;
+			if (distance >= settings.getMaxRange() + maxRangeMod) {
 				settings.onFizzle(this);
 				return true;
 			}
@@ -216,5 +218,9 @@ public class ProjectileInstance extends IProjectileInstance {
 	
 	public interface HitAction {
 		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj);
+	}
+
+	public void addMaxRange(int range) {
+		this.maxRangeMod += range;
 	}
 }

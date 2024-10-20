@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.session.fight.trigger.event;
 import java.util.LinkedList;
 
 import me.neoblade298.neorogue.equipment.BowProjectile;
+import me.neoblade298.neorogue.equipment.mechanics.IProjectile;
 import me.neoblade298.neorogue.equipment.mechanics.IProjectileInstance;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 
@@ -22,8 +23,12 @@ public class LaunchProjectileGroupEvent {
 	public LinkedList<IProjectileInstance> getInstances() {
 		return insts;
 	}
-	// Should only be true if used as a basic attack
 	public boolean isBowProjectile() {
 		return insts.getFirst().getParent() instanceof BowProjectile;
+	}
+
+	public boolean isBasicAttack() {
+		IProjectile proj = insts.getFirst().getParent();
+		return proj instanceof BowProjectile && ((BowProjectile) proj).isBasicAttack();
 	}
 }

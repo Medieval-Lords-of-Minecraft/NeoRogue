@@ -215,7 +215,7 @@ public class DamageMeta {
 		if (!isSecondary) {
 			if (recipient.hasStatus(StatusType.BURN)) {
 				for (Entry<FightData, Integer> ent : recipient.getStatus(StatusType.BURN).getSlices().getSliceOwners().entrySet()) {
-					slices.add(new DamageSlice(ent.getKey(), ent.getValue() * 0.1, DamageType.FIRE));
+					slices.add(new DamageSlice(ent.getKey(), ent.getValue() * 0.2, DamageType.FIRE));
 				}
 			}
 
@@ -231,7 +231,7 @@ public class DamageMeta {
 			if (owner.hasStatus(StatusType.FROST) && containsType(BuffType.MAGICAL)) {
 				Status status = owner.getStatus(StatusType.FROST);
 				int stacks = status.getStacks();
-				int toRemove = (int) (-stacks * 0.2);
+				int toRemove = (int) (-stacks * 0.25);
 				status.apply(owner, toRemove, 0);
 				returnDamage.addDamageSlice(new DamageSlice(recipient, toRemove, DamageType.ICE));
 			}
