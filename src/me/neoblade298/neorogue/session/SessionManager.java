@@ -351,11 +351,7 @@ public class SessionManager implements Listener {
 		if (e.getEntityType() != EntityType.PLAYER) return;
 		UUID uuid = e.getEntity().getUniqueId();
 		if (!sessions.containsKey(uuid)) return;
-		Session s = sessions.get(uuid);
-		if (s.isSpectator(uuid)) return;
-
-		if (!(s.getInstance() instanceof FightInstance)) return;
-		FightInstance.handleCrossbowLoad(e);
+		e.setCancelled(true);
 	}
 
 	@EventHandler(ignoreCancelled = false)

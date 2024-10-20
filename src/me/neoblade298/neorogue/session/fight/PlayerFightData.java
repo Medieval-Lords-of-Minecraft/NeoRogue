@@ -453,7 +453,7 @@ public class PlayerFightData extends FightData {
 	}
 	
 	public boolean isActive() {
-		return !isDead && getPlayer() != null; // Not dead and online
+		return !isDead && getPlayer().isOnline(); // Not dead and online
 	}
 
 	public FightInstance getInstance() {

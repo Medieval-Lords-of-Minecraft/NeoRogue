@@ -146,7 +146,7 @@ public class FightData {
 					addBuff(applier, damageBuff, multiplier, type, -amount);
 					tasks.remove(id);
 				}
-			}.runTaskLater(NeoRogue.inst(), ticks * 20));
+			}.runTaskLater(NeoRogue.inst(), ticks));
 		}
 	}
 

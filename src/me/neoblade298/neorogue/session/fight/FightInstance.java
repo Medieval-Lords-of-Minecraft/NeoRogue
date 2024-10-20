@@ -52,7 +52,6 @@ import io.lumine.mythic.bukkit.BukkitAdapter;
 import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
 import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
 import io.lumine.mythic.core.mobs.ActiveMob;
-import io.papermc.paper.event.entity.EntityLoadCrossbowEvent;
 import io.papermc.paper.event.player.PrePlayerAttackEntityEvent;
 import me.libraryaddict.disguise.disguisetypes.PlayerDisguise;
 import me.neoblade298.neocore.bukkit.effects.Audience;
@@ -254,12 +253,13 @@ public abstract class FightInstance extends Instance {
 		for (BossBar bar : bars) {
 			bar.removePlayer(p);
 		}
-		checkInstanceDead();
+		checkInstanceDead(p);
 	}
 
-	private void checkInstanceDead() {
+	private void checkInstanceDead(Player leaver) {
 		boolean lose = true;
 		for (UUID uuid : this.getParty()) {
+			if (leaver.getUniqueId().equals(uuid)) continue;
 			PlayerFightData fdata = userData.get(uuid);
 			if (fdata != null && fdata.isActive()) {
 				lose = false;
@@ -297,7 +297,7 @@ public abstract class FightInstance extends Instance {
 		p.setInvisible(false);
 		p.setMaximumNoDamageTicks(20);
 		p.removePotionEffect(PotionEffectType.ABSORPTION);
-		checkInstanceDead();
+		checkInstanceDead(p);
 	}
 
 	@Override
@@ -370,10 +370,6 @@ public abstract class FightInstance extends Instance {
 		if (data == null) return;
 		e.setCancelled(data.hasTriggerAction(Trigger.getFromHotbarSlot(e.getNewSlot())));
 		trigger(e.getPlayer(), Trigger.getFromHotbarSlot(e.getNewSlot()), null);
-	}
-	
-	public static void handleCrossbowLoad(EntityLoadCrossbowEvent e) {
-		e.setConsumeItem(false);
 	}
 	
 	public static void handleOffhandSwap(PlayerSwapHandItemsEvent e) {
