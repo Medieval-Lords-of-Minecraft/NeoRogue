@@ -10,7 +10,9 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.weapons.Quickfire;
 import me.neoblade298.neorogue.equipment.weapons.RapidFire;
+import me.neoblade298.neorogue.equipment.weapons.SerratedArrow;
 import me.neoblade298.neorogue.equipment.weapons.Volley;
+import me.neoblade298.neorogue.equipment.weapons.WoodenArrow;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -36,6 +38,7 @@ public class AgilityTraining extends Equipment {
 		addReforge(PointBlank.get(), Grit.get());
 		addSelfReforge(ShoulderBash.get());
 		addReforge(Quickfire.get(), Volley.get(), RapidFire.get());
+		addReforge(WoodenArrow.get(), SerratedArrow.get());
 	}
 	
 	public static Equipment get() {

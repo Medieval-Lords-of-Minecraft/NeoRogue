@@ -22,18 +22,13 @@ public class BasicBow extends Bow {
 	public BasicBow(boolean isUpgraded) {
 		super(ID, "Basic Bow", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofBow(isUpgraded ? 25 : 20, 1, 0, 12, 0, 1.5));
+				EquipmentProperties.ofBow(isUpgraded ? 35 : 25, 1, 0, 12, 0, 1.2));
 		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 
 	@Override
 	public void onTick(Player p, ProjectileInstance proj, int interpolation) {
 		BowProjectile.tick.play(p, proj.getLocation());
-	}
-
-	@Override
-	public void setupReforges() {
-		addSelfReforge(HuntersBow.get());
 	}
 	
 	public static Equipment get() {

@@ -22,7 +22,7 @@ public class BluntedArrow extends Ammunition {
 		super(ID, "Blunted Arrow", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofAmmunition(5, 0.1, DamageType.BLUNT));
-				stacks = isUpgraded ? 3 : 2;
+				stacks = isUpgraded ? 4 : 3;
 	}
 	
 	public static Equipment get() {

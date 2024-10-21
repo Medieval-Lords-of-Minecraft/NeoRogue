@@ -32,7 +32,7 @@ public class IcyArmguard extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addBuff(data, false, false, BuffType.PHYSICAL, damageReduction);
+		data.addBuff(data, false, false, BuffType.MAGICAL, damageReduction);
 
 		StandardPriorityAction act = new StandardPriorityAction(id);
 		act.setAction((pdata, in) -> {
@@ -50,7 +50,7 @@ public class IcyArmguard extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.RABBIT_HIDE, "Decrease all " + GlossaryTag.PHYSICAL.tag(this) + " damage by <yellow>" + damageReduction + "</yellow>. " +
+		item = createItem(Material.RABBIT_HIDE, "Decrease all " + GlossaryTag.MAGICAL.tag(this) + " damage by <yellow>" + damageReduction + "</yellow>. " +
 				"Also grants " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>5s</white>] for every " +
 				GlossaryTag.FROST.tag(this, thres, true) + " you apply.");
 	}

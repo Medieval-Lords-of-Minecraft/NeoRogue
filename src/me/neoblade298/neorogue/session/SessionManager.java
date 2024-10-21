@@ -351,7 +351,7 @@ public class SessionManager implements Listener {
 		if (e.getEntityType() != EntityType.PLAYER) return;
 		UUID uuid = e.getEntity().getUniqueId();
 		if (!sessions.containsKey(uuid)) return;
-		e.setCancelled(true);
+		e.setConsumeItem(false);
 	}
 
 	@EventHandler(ignoreCancelled = false)

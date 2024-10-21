@@ -23,7 +23,7 @@ public abstract class Projectile extends IProjectile {
 	}
 
 	public void setBowDefaults() {
-		this.gravity = 0.02;
+		this.gravity = 0.005;
 		this.width = 0.2;
 		this.height = 0.2;
 		this.blocksPerTick = 3;

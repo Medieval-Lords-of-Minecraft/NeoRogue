@@ -46,7 +46,7 @@ public class BowProjectile extends Projectile {
 		this.props = bow.getProperties();
 		initialVelocity = v.length();
 
-		blocksPerTick(initialVelocity * bow.getProperties().get(PropertyType.ATTACK_SPEED));
+		blocksPerTick(initialVelocity);
 	}
 
 	public void addProjectileTickAction(ProjectileTickAction action) {

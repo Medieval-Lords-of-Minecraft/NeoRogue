@@ -7,6 +7,8 @@ import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.weapons.BasicBow;
+import me.neoblade298.neorogue.equipment.weapons.HuntersBow;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta.BuffOrigin;
 import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
@@ -35,6 +37,7 @@ public class KeenSenses extends Equipment {
 		addReforge(LayTrap.get(), SpikeTrap.get());
 		addReforge(BasicElementMastery.get(), FrostTrap.get());
 		addReforge(FocusedShot.get(), SunderingShot.get(), GetCentered.get());
+		addReforge(BasicBow.get(), HuntersBow.get());
 	}
 	
 	public static Equipment get() {

@@ -33,13 +33,16 @@ import me.neoblade298.neorogue.equipment.accessories.MinorPoisonRelic;
 import me.neoblade298.neorogue.equipment.accessories.MinorShieldingRelic;
 import me.neoblade298.neorogue.equipment.accessories.MinorStaminaRelic;
 import me.neoblade298.neorogue.equipment.accessories.MinorStrengthRelic;
+import me.neoblade298.neorogue.equipment.accessories.RedRing;
 import me.neoblade298.neorogue.equipment.accessories.RingOfAnger;
 import me.neoblade298.neorogue.equipment.accessories.RingOfFortitude;
 import me.neoblade298.neorogue.equipment.accessories.RingOfMentalism;
 import me.neoblade298.neorogue.equipment.accessories.RingOfSharpness;
+import me.neoblade298.neorogue.equipment.accessories.SaboteursRing;
 import me.neoblade298.neorogue.equipment.accessories.TopazRing;
 import me.neoblade298.neorogue.equipment.armor.BlindingCloak;
 import me.neoblade298.neorogue.equipment.armor.Brightcrown;
+import me.neoblade298.neorogue.equipment.armor.CalmingHood;
 import me.neoblade298.neorogue.equipment.armor.ClothBindings;
 import me.neoblade298.neorogue.equipment.armor.ElbowBrace;
 import me.neoblade298.neorogue.equipment.armor.Footpads;
@@ -395,14 +398,17 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new MinorShieldingRelic(b);
 			new MinorStaminaRelic(b);
 			new MinorStrengthRelic(b);
+			new RedRing(b);
 			new RingOfAnger(b);
 			new RingOfFortitude(b);
 			new RingOfMentalism(b);
 			new RingOfSharpness(b);
+			new SaboteursRing(b);
 			new TopazRing(b);
 
 			// Armor
 			new BlindingCloak(b);
+			new CalmingHood(b);
 			new ClothBindings(b);
 			new ElbowBrace(b);
 			new Footpads(b);

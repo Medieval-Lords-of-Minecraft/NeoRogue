@@ -18,6 +18,11 @@ public class WoodenArrow extends Ammunition {
 				EquipmentProperties.ofAmmunition(isUpgraded ? 7 : 2, 0.1, DamageType.PIERCING));
 		properties.addUpgrades(PropertyType.DAMAGE);
 	}
+
+	@Override
+	public void setupReforges() {
+		addSelfReforge(StoneArrow.get());
+	}
 	
 	public static Equipment get() {
 		return Equipment.get(ID, false);

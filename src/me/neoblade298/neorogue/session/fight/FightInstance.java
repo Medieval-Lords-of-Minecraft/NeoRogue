@@ -471,7 +471,7 @@ public abstract class FightInstance extends Instance {
 		s.broadcastOthers(SharedUtil.color("<yellow>" + p.getName() + "</yellow> is reviving <yellow>" + dead.getName() + "</yellow>!"), p);
 		dead.teleport(corpse.corpseDisplay);
 
-		BossBar reviveBar = Bukkit.createBossBar("§e" + p.getName() + " &fReviving §e" + dead.getName(), BarColor.BLUE, BarStyle.SOLID);
+		BossBar reviveBar = Bukkit.createBossBar("§e" + p.getName() + " §fReviving §e" + dead.getName(), BarColor.BLUE, BarStyle.SOLID);
 		bars.add(reviveBar);
 		for (Player party : s.getOnlinePlayers()) {
 			reviveBar.addPlayer(party);
