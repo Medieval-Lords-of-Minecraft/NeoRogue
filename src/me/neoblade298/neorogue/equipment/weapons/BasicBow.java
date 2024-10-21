@@ -33,7 +33,7 @@ public class BasicBow extends Bow {
 
 	@Override
 	public void setupReforges() {
-		
+		addSelfReforge(HuntersBow.get());
 	}
 	
 	public static Equipment get() {

@@ -10,22 +10,30 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta.BuffOrigin;
 import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
+import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffType;
-import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealtDamageEvent;
 
-public class BasicEngineering extends Equipment {
-	private static final String ID = "basicEngineering";
+public class KeenSenses extends Equipment {
+	private static final String ID = "keenSenses";
 	private int shields, damage;
 	
-	public BasicEngineering(boolean isUpgraded) {
-		super(ID, "Basic Engineering", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
+	public KeenSenses(boolean isUpgraded) {
+		super(ID, "Keen Senses", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.none());
 				damage = isUpgraded ? 30 : 20;
 				shields = 5;
+	}
+
+	@Override
+	public void setupReforges() {
+		addSelfReforge(SpikeTrap.get());
+		addReforge(LayTrap.get(), SpikeTrap.get());
+		addReforge(BasicElementMastery.get(), FrostTrap.get());
 	}
 	
 	public static Equipment get() {
@@ -35,6 +43,7 @@ public class BasicEngineering extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addPermanentShield(p.getUniqueId(), shields);
+		data.applyStatus(StatusType.FOCUS, data, 1, -1);
 		data.addTrigger(id, Trigger.PRE_DEALT_DAMAGE, (pdata, in) -> {
 			PreDealtDamageEvent ev = (PreDealtDamageEvent) in;
 			if (ev.getMeta().getOrigin() != DamageOrigin.TRAP) return TriggerResult.keep();
@@ -46,7 +55,8 @@ public class BasicEngineering extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.PISTON,
-				"Passive. Start fights with " + GlossaryTag.SHIELDS.tag(this, shields, false) + ". Damage from " + GlossaryTag.TRAP.tagPlural(this) +
+				"Passive. Start fights with " + GlossaryTag.SHIELDS.tag(this, shields, false) + 
+				" and " + GlossaryTag.FOCUS.tag(this, 1, false) + ". Damage from " + GlossaryTag.TRAP.tagPlural(this) +
 				" is increased by " + DescUtil.yellow(damage + "%") + ".");
 	}
 }

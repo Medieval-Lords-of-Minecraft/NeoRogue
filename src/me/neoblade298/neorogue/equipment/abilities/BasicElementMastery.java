@@ -8,20 +8,24 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageType;
+import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreDealtDamageEvent;
 
-public class BasicIceMastery extends Equipment {
+public class BasicElementMastery extends Equipment {
 	private static final String ID = "basicIceMastery";
-	private int shields;
+	private int shields, burn;
 	
-	public BasicIceMastery(boolean isUpgraded) {
-		super(ID, "Basic Ice Mastery", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
+	public BasicElementMastery(boolean isUpgraded) {
+		super(ID, "Basic Element Mastery", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.none());
 				shields = isUpgraded ? 5 : 3;
+				burn = isUpgraded ? 5 : 3;
 	}
 	
 	public static Equipment get() {
@@ -38,12 +42,19 @@ public class BasicIceMastery extends Equipment {
 			data.addSimpleShield(p.getUniqueId(), shields, 60);
 			return TriggerResult.keep();
 		}));
+		data.addTrigger(id, Trigger.PRE_DEALT_DAMAGE, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			PreDealtDamageEvent ev = (PreDealtDamageEvent) in;
+			if (!ev.getMeta().containsType(DamageType.FIRE)) return TriggerResult.keep();
+			FightInstance.applyStatus(ev.getTarget(), StatusType.BURN, data, burn, -1);
+			return TriggerResult.keep();
+		}));
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.PACKED_ICE,
+		item = createItem(Material.MAGMA_CREAM,
 				"Passive. Start fights with " + GlossaryTag.SHIELDS.tag(this, 5, false) + ". Increase application of " + GlossaryTag.FROST.tag(this) +
-				" by <white>1</white>, and gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>3s</white>] upon applying it.");
+				" by <white>1</white>. Dealing " + GlossaryTag.FIRE.tag(this) + " damage additionally applies "
+				+ GlossaryTag.BURN.tag(this, burn, true) + ".");
 	}
 }

@@ -23,10 +23,10 @@ public class HuntersBow extends Bow {
 	private static final ParticleContainer tick = new ParticleContainer(Particle.CRIT).count(10).speed(0.01).spread(0.1, 0.1);
 	
 	public HuntersBow(boolean isUpgraded) {
-		super(ID, "Hunter's Bow", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
+		super(ID, "Hunter's Bow", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofBow(isUpgraded ? 70 : 50, 1, 0, 12, 0, 1));
-		properties.addUpgrades(PropertyType.ATTACK_SPEED);
+				EquipmentProperties.ofBow(isUpgraded ? 45 : 35, 1, 0, 12, 0, 1));
+		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 
 	@Override
@@ -36,7 +36,7 @@ public class HuntersBow extends Bow {
 
 	@Override
 	public void setupReforges() {
-		
+		overrideReforgeDrop = true;
 	}
 	
 	public static Equipment get() {

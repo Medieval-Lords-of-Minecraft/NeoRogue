@@ -212,7 +212,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 
 	protected String id;
 	protected Component display, hoverable;
-	protected boolean isUpgraded, canDrop = true, isCursed;
+	protected boolean isUpgraded, canDrop = true, isCursed, overrideReforgeDrop;
 	protected ItemStack item;
 	protected Rarity rarity;
 	protected EquipmentClass[] ecs;
@@ -236,9 +236,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Atone(b);
 			new Atrophy(b);
 			new Backstep(b);
-			new BasicEngineering(b);
-			new BasicFireMastery(b);
-			new BasicIceMastery(b);
+			new KeenSenses(b);
+			new BasicElementMastery(b);
 			new BattleCry(b);
 			new BerserkersCall(b);
 			new BitterCold(b);
@@ -697,7 +696,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 	private void setupDroptable() {
 		int value = rarity.getValue() + (isUpgraded ? 1 : 0);
 		if (!canDrop) return;
-		if (!reforgeParents.isEmpty()) return;
+		if (!reforgeParents.isEmpty() && !overrideReforgeDrop) return;
 
 		// Artifacts and consumables get their own special droptable with special weight
 		// due to reduced amount

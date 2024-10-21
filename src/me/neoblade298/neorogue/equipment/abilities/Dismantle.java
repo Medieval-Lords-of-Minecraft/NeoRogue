@@ -1,8 +1,8 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import java.util.UUID;
 
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -36,17 +36,17 @@ public class Dismantle extends Equipment {
 	}
 
 	private class DismantleInstance extends EquipmentInstance {
-		private LivingEntity target;
+		private UUID target;
 		public DismantleInstance(PlayerFightData data, Equipment equip, int slot, EquipSlot es) {
 			super(data, equip, slot, es);
 
 			action = (pdata, in) -> {
 				DealtDamageEvent ev = (DealtDamageEvent) in;
-				if (target == ev.getTarget()) {
-					FightInstance.applyStatus(target, StatusType.INJURY, data, stacks, -1);
+				if (ev.getTarget().getUniqueId().equals(target)) {
+					FightInstance.applyStatus(ev.getTarget(), StatusType.INJURY, data, stacks, -1);
 				}
 				else {
-					target = ev.getTarget();
+					target = ev.getTarget().getUniqueId();
 				}
 				return TriggerResult.keep();
 			};

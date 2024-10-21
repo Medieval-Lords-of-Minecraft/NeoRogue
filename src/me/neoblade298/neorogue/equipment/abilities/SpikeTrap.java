@@ -32,10 +32,10 @@ public class SpikeTrap extends Equipment {
 	private static final String ID = "spikeTrap";
 	private static TargetProperties tp = TargetProperties.radius(2, false, TargetType.ENEMY);
 	private static ParticleContainer spike = new ParticleContainer(Particle.FIREWORKS_SPARK).count(50).spread(1, 0.4);
-	private int damage = 25;
+	private int damage = 40;
 	
 	public SpikeTrap(boolean isUpgraded) {
-		super(ID, "Spike Trap", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
+		super(ID, "Spike Trap", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 0, isUpgraded ? 10 : 13, tp.range));
 		properties.addUpgrades(PropertyType.COOLDOWN);
 	}
