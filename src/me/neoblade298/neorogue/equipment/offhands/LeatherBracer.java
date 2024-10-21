@@ -19,7 +19,7 @@ public class LeatherBracer extends Equipment {
 	public LeatherBracer(boolean isUpgraded) {
 		super(ID, "Leather Bracer", isUpgraded, Rarity.COMMON, EquipmentClass.CLASSLESS,
 				EquipmentType.OFFHAND);
-		instances = isUpgraded ? 4 : 2;
+		instances = isUpgraded ? 2 : 1;
 	}
 	
 	public static Equipment get() {

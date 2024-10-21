@@ -26,6 +26,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.abilities.*;
 import me.neoblade298.neorogue.equipment.accessories.EagleFeather;
 import me.neoblade298.neorogue.equipment.accessories.EarthenRing;
+import me.neoblade298.neorogue.equipment.accessories.FlintPendant;
 import me.neoblade298.neorogue.equipment.accessories.GripGloves;
 import me.neoblade298.neorogue.equipment.accessories.MinorManaRelic;
 import me.neoblade298.neorogue.equipment.accessories.MinorPoisonRelic;
@@ -86,6 +87,7 @@ import me.neoblade298.neorogue.equipment.artifacts.SapphireGem;
 import me.neoblade298.neorogue.equipment.artifacts.SapphireShard;
 import me.neoblade298.neorogue.equipment.artifacts.StaticNecklace;
 import me.neoblade298.neorogue.equipment.artifacts.TomeOfWisdom;
+import me.neoblade298.neorogue.equipment.artifacts.TrickstersSigil;
 import me.neoblade298.neorogue.equipment.consumables.MinorHealthPotion;
 import me.neoblade298.neorogue.equipment.consumables.MinorMagicalPotion;
 import me.neoblade298.neorogue.equipment.consumables.MinorManaPotion;
@@ -228,9 +230,10 @@ public abstract class Equipment implements Comparable<Equipment> {
 		artifacts.reload();
 		for (boolean b : new boolean[] { false, true }) {
 			// Abilities
+			new AcidBomb(b);
 			new Adrenaline(b);
 			new Advantage(b);
-			new AcidBomb(b);
+			new AgilityTraining(b);
 			new Assassinate(b);
 			new ArrowRain(b);
 			new Atone(b);
@@ -385,6 +388,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			// Accessories
 			new EagleFeather(b);
 			new EarthenRing(b);
+			new FlintPendant(b);
 			new GripGloves(b);
 			new MinorManaRelic(b);
 			new MinorPoisonRelic(b);
@@ -530,6 +534,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new OpalHourglass();
 		new StaticNecklace();
 		new TomeOfWisdom();
+		new TrickstersSigil();
 
 		// Levelup artifacts
 		new EmeraldCluster();
@@ -715,6 +720,10 @@ public abstract class Equipment implements Comparable<Equipment> {
 		for (GlossaryTag tag : tags) {
 			this.tags.add(tag);
 		}
+	}
+
+	public boolean overridesReforgeDrop() {
+		return overrideReforgeDrop;
 	}
 
 	// Run at the start of a fight to initialize Fight Data
@@ -992,6 +1001,10 @@ public abstract class Equipment implements Comparable<Equipment> {
 
 	public boolean canEquip(EquipSlot es) {
 		return type.canEquip(es);
+	}
+
+	public boolean canDrop() {
+		return canDrop;
 	}
 
 	public boolean canUseWeapon(PlayerFightData data) {

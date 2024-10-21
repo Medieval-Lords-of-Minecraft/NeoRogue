@@ -24,7 +24,7 @@ public class CmdList extends Subcommand {
 	private static final ArrayList<String> filterTypes = new ArrayList<String>(),
 			ecs = new ArrayList<String>(), types = new ArrayList<String>(),
 			rarities = new ArrayList<String>(), reforgeFilters = new ArrayList<String>(),
-			tags = new ArrayList<String>();
+			tags = new ArrayList<String>(), droppable = new ArrayList<String>();
 	
 	private static Comparator<Equipment> sorter = new Comparator<Equipment>() {
 		@Override
@@ -47,6 +47,7 @@ public class CmdList extends Subcommand {
 		filterTypes.add("--class");
 		filterTypes.add("--tags");
 		filterTypes.add("--reforge");
+		filterTypes.add("--droppable");
 		for (EquipmentClass ec : EquipmentClass.values()) {
 			ecs.add(ec.name());
 		}
@@ -62,6 +63,8 @@ public class CmdList extends Subcommand {
 		for (GlossaryTag gt : GlossaryTag.values()) {
 			tags.add(gt.name());
 		}
+		droppable.add("true");
+		droppable.add("false");
 	}
 	
 	@Override
@@ -92,10 +95,13 @@ public class CmdList extends Subcommand {
 		break;
 		case TAGS: list = tags;
 		break;
+		// This one doesn't need commas appended
+		case DROPPABLE: list = droppable;
+		return list.stream().filter(str -> { return str.startsWith(currArgSnip);}).collect(Collectors.toList());
 		}
 		if (list == null) return null;
 		return list.stream().filter(str -> { return str.startsWith(currArgSnip);})
-				.map(str -> (hasCommas ? currArgPrefix : "") + str + ",").collect(Collectors.toList());
+		.map(str -> (hasCommas ? currArgPrefix : "") + str + ",").collect(Collectors.toList());
 	}
 
 	@Override
@@ -178,6 +184,11 @@ public class CmdList extends Subcommand {
 						return false;
 					});
 					break;
+				case DROPPABLE:
+					stream = stream.filter((eq) -> {
+						return !Boolean.parseBoolean(str) ^ (eq.canDrop() && (eq.getReforgeParents().isEmpty() || eq.overridesReforgeDrop()));
+					});
+					break;
 				case REFORGE:
 					String[] refStr = str.toUpperCase().split(",");
 					ReforgeType[] reforgeTypes = new ReforgeType[refStr.length];
@@ -235,7 +246,8 @@ public class CmdList extends Subcommand {
 		RARITY,
 		EQUIPMENT_CLASS,
 		TAGS,
-		REFORGE;
+		REFORGE,
+		DROPPABLE;
 		
 		public static FilterType fromString(String str) {
 			switch (str) {
@@ -244,6 +256,7 @@ public class CmdList extends Subcommand {
 			case "--class": return EQUIPMENT_CLASS;
 			case "--tags": return TAGS;
 			case "--reforge": return REFORGE;
+			case "--droppable": return DROPPABLE;
 			}
 			return null;
 		}

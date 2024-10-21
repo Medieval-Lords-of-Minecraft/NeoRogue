@@ -36,10 +36,10 @@ public class Firebomb extends Equipment {
 	private int burn, damage;
 	
 	public Firebomb(boolean isUpgraded) {
-		super(ID, "Firebomb", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
+		super(ID, "Firebomb", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 0, 15, 0));
-		burn = isUpgraded ? 15 : 10;
-		damage = 120;
+		burn = isUpgraded ? 20 : 15;
+		damage = 150;
 	}
 	
 	public static Equipment get() {

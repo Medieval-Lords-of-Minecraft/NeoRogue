@@ -30,7 +30,7 @@ public class GetCentered extends Equipment {
 	private static final ParticleContainer pc = new ParticleContainer(Particle.ENCHANTMENT_TABLE).count(25).spread(1, 1);
 	
 	public GetCentered(boolean isUpgraded) {
-		super(ID, "Get Centered", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
+		super(ID, "Get Centered", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.none());
 		thres = isUpgraded ? 7 : 10;
 		damage = isUpgraded ? 15 : 10;

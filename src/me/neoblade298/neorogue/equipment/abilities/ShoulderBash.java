@@ -31,7 +31,7 @@ public class ShoulderBash extends Equipment {
 	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST_PLUME).count(20).spread(0.5, 0.5);
 	
 	public ShoulderBash(boolean isUpgraded) {
-		super(ID, "Shoulder Bash", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
+		super(ID, "Shoulder Bash", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 5, 5, 0));
 		damage = 20;
 		inc = isUpgraded ? 20 : 10;
@@ -57,7 +57,7 @@ public class ShoulderBash extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POPPED_CHORUS_FRUIT,
-				"Passive. Left clicking an enemy deals " + GlossaryTag.BLUNT.tag(this, damage, true) + " damage and knocks them back. They take an additional " +
+				"Passive. Left clicking an enemy deals " + GlossaryTag.BLUNT.tag(this, damage, false) + " damage and knocks them back. They take an additional " +
 					DescUtil.yellow(inc) + " damage for <white>5s</white>.");
 	}
 }

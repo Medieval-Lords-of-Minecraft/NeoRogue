@@ -33,7 +33,7 @@ public class BitterCold extends Equipment {
 	private static final SoundContainer sc = new SoundContainer(Sound.BLOCK_GLASS_BREAK);
 	
 	public BitterCold(boolean isUpgraded) {
-		super(ID, "Bitter Cold", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
+		super(ID, "Bitter Cold", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.none());
 		stacks = isUpgraded ? 5 : 3;
 		damage = isUpgraded ? 300 : 200;

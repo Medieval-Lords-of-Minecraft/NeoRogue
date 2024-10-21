@@ -7,6 +7,9 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.weapons.ColdArrow;
+import me.neoblade298.neorogue.equipment.weapons.LitArrow;
+import me.neoblade298.neorogue.equipment.weapons.WoodenArrow;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -18,7 +21,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealtDamageEvent;
 
 public class BasicElementMastery extends Equipment {
-	private static final String ID = "basicIceMastery";
+	private static final String ID = "basicElementMastery";
 	private int shields, burn;
 	
 	public BasicElementMastery(boolean isUpgraded) {
@@ -26,6 +29,14 @@ public class BasicElementMastery extends Equipment {
 				EquipmentType.ABILITY, EquipmentProperties.none());
 				shields = isUpgraded ? 5 : 3;
 				burn = isUpgraded ? 5 : 3;
+	}
+
+	@Override
+	public void setupReforges() {
+		addReforge(WoodenArrow.get(), ColdArrow.get(), LitArrow.get());
+		addSelfReforge(Firebomb.get());
+		addReforge(Sear.get(), Firebomb.get());
+		addReforge(AgilityTraining.get(), Blind.get());
 	}
 	
 	public static Equipment get() {

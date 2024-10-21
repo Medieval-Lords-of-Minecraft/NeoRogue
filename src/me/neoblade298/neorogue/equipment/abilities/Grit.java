@@ -27,10 +27,10 @@ public class Grit extends Equipment {
 	private static final SoundContainer equip = new SoundContainer(Sound.ITEM_ARMOR_EQUIP_CHAIN);
 	
 	public Grit(boolean isUpgraded) {
-		super(ID, "Grit", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
+		super(ID, "Grit", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.none());
 		shields = isUpgraded ? 6 : 4;
-		inc = isUpgraded ? 25 : 15;
+		inc = isUpgraded ? 35 : 25;
 		pc.count(30).spread(0.5, 0.5).speed(0.2).offsetY(1);
 	}
 	
@@ -43,8 +43,8 @@ public class Grit extends Equipment {
 		data.addTrigger(ID, Trigger.PRE_DEALT_DAMAGE, (pdata, in) -> {
 			PreDealtDamageEvent ev = (PreDealtDamageEvent) in;
 			double dist = ev.getTarget().getLocation().distanceSquared(p.getLocation());
-			if (dist <= 16) {
-				ev.getMeta().addBuff(BuffType.GENERAL, new Buff(data, 0, inc * 0.01), BuffOrigin.NORMAL, true);
+			if (dist <= 25) {
+				ev.getMeta().addBuff(BuffType.GENERAL, new Buff(data, inc, 0), BuffOrigin.NORMAL, true);
 			}
 			return TriggerResult.keep();
 		});
@@ -52,7 +52,7 @@ public class Grit extends Equipment {
 		data.addTrigger(ID, Trigger.KILL, (pdata, in) -> {
 			KillEvent ev = (KillEvent) in;
 			double dist = ev.getTarget().getLocation().distanceSquared(p.getLocation());
-			if (dist <= 16) {
+			if (dist <= 25) {
 				pc.play(p, p);
 				data.addSimpleShield(p.getUniqueId(), shields, 60);
 				equip.play(p, p);
@@ -64,7 +64,7 @@ public class Grit extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SHIELD,
-				"Passive. Killing an enemy within <white>4</white> blocks of you grants " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>3s</white>]. " +
-				"Damage at this range is also increased by <yellow>" + inc + "%</yellow>.");
+				"Passive. Killing an enemy within <white>5</white> blocks of you grants " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>3s</white>]. " +
+				"Damage at this range is also increased by <yellow>" + inc + "</yellow>.");
 	}
 }

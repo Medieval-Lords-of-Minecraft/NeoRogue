@@ -27,7 +27,7 @@ public class BowProjectile extends Projectile {
 	private EquipmentProperties props;
 	private AmmunitionInstance ammo;
 	private double initialVelocity;
-	private boolean isBasicAttack;
+	private boolean isBasicAttack = true;
 	private ArrayList<ProjectileTickAction> tickActions = new ArrayList<ProjectileTickAction>();
 
 	public BowProjectile(PlayerFightData data, Vector v, Bow bow, boolean isBasicAttack) {

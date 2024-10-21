@@ -36,6 +36,7 @@ public class Posturing extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		StandardPriorityAction act = new StandardPriorityAction(id);
 		act.setAction((pdata, in) -> {
+			if (!p.isSneaking()) return TriggerResult.keep();
 			act.addCount(1);
 			if (act.getCount() >= time) {
 				pc.play(p, p);

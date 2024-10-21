@@ -32,11 +32,11 @@ public class Volley extends Equipment {
 	private int damage;
 	
 	public Volley(boolean isUpgraded) {
-		super(ID, "Volley", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
+		super(ID, "Volley", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(15, 5, 12, 7));
+				EquipmentProperties.ofUsable(10, 20, 12, 7));
 		properties.addUpgrades(PropertyType.RANGE);
-		damage = isUpgraded ? 40 : 30;
+		damage = isUpgraded ? 100 : 75;
 	}
 	
 	public static Equipment get() {

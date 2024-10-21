@@ -39,8 +39,8 @@ public class HailCloak extends Equipment {
 	private int damage, stacks;
 	
 	public HailCloak(boolean isUpgraded) {
-		super(ID, "Hail Cloak", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 5, 12, 5));
+		super(ID, "Hail Cloak", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 5, 12, 5));
 		damage = isUpgraded ? 30 : 20;
 		stacks = isUpgraded ? 3 : 2;
 	}
@@ -83,8 +83,8 @@ public class HailCloak extends Equipment {
 			return new BukkitRunnable() {
 				int tick = 0;
 				public void run() {
+					runEffect(p.getLocation());
 					if (++tick >= 5) {
-						runEffect(p.getLocation());
 						active = false;
 						cancel();
 					}
@@ -105,6 +105,6 @@ public class HailCloak extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.PACKED_ICE,
 				"On cast, after channeling for <white>1s</white>, for the next <white>5s</white>, you deal " + GlossaryTag.ICE.tag(this, damage, true) + " and apply " +
-				GlossaryTag.FROST.tag(this, stacks, true) + " to all enemies near you every second. Your projectiles also apply this once to enemies hit.");
+				GlossaryTag.FROST.tag(this, stacks, true) + " to all enemies near you every second. Your projectiles also do this on hit while active.");
 	}
 }

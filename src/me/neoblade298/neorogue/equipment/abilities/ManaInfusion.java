@@ -22,11 +22,11 @@ import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroup
 
 public class ManaInfusion extends Equipment {
 	private static final String ID = "manaInfusion";
-	private int damage, drain, mana = 3;
+	private int damage, drain, mana = 4;
 	private ItemStack activeIcon;
 	
 	public ManaInfusion(boolean isUpgraded) {
-		super(ID, "Mana Infusion", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
+		super(ID, "Mana Infusion", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 2, 0));
 				damage = isUpgraded ? 10 : 5;
 				drain = isUpgraded ? 4 : 2;

@@ -34,6 +34,7 @@ public class KeenSenses extends Equipment {
 		addSelfReforge(SpikeTrap.get());
 		addReforge(LayTrap.get(), SpikeTrap.get());
 		addReforge(BasicElementMastery.get(), FrostTrap.get());
+		addReforge(FocusedShot.get(), SunderingShot.get(), GetCentered.get());
 	}
 	
 	public static Equipment get() {
@@ -46,8 +47,9 @@ public class KeenSenses extends Equipment {
 		data.applyStatus(StatusType.FOCUS, data, 1, -1);
 		data.addTrigger(id, Trigger.PRE_DEALT_DAMAGE, (pdata, in) -> {
 			PreDealtDamageEvent ev = (PreDealtDamageEvent) in;
+			System.out.println(ev.getMeta().getOrigin());
 			if (ev.getMeta().getOrigin() != DamageOrigin.TRAP) return TriggerResult.keep();
-			ev.getMeta().addBuff(BuffType.GENERAL, new Buff(data, 0, damage), BuffOrigin.NORMAL, true);
+			ev.getMeta().addBuff(BuffType.GENERAL, new Buff(data, 0, damage * 0.01), BuffOrigin.NORMAL, true);
 			return TriggerResult.keep();
 		});
 	}

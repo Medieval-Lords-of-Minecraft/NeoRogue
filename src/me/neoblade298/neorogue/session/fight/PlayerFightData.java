@@ -159,6 +159,10 @@ public class PlayerFightData extends FightData {
 		applyStatus(StatusType.CHANNELING, this, 1, ticks);
 		entity.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, ticks, 1));
 	}
+
+	public HashMap<String, EquipmentInstance> getActiveEquipment() {
+	return equips;
+	}
 	
 	@Override
 	public TickResult runTickActions() {

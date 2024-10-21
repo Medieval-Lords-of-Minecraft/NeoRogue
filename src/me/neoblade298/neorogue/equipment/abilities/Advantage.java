@@ -20,7 +20,7 @@ public class Advantage extends Equipment {
 	private int shields, thres = 25;
 	
 	public Advantage(boolean isUpgraded) {
-		super(ID, "Advantage", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
+		super(ID, "Advantage", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.none());
 		shields = isUpgraded ? 3 : 2;
 	}
@@ -32,7 +32,7 @@ public class Advantage extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		StandardPriorityAction act = new StandardPriorityAction(id);
-		data.addTrigger(id, bind, (pdata, in) -> {
+		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
 			if (!ev.isStatus(StatusType.INJURY)) return TriggerResult.keep();
 			act.addCount(ev.getStacks());
