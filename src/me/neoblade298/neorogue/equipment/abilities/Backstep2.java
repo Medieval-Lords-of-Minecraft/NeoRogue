@@ -1,7 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
-import java.util.UUID;
-
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -11,13 +9,23 @@ import org.bukkit.util.Vector;
 
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.equipment.BowProjectile;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardEquipmentInstance;
+import me.neoblade298.neorogue.equipment.StandardPriorityAction;
+import me.neoblade298.neorogue.equipment.mechanics.Barrier;
+import me.neoblade298.neorogue.equipment.mechanics.Projectile;
+import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
+import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageType;
+import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -25,11 +33,12 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 
 public class Backstep2 extends Equipment {
 	private static final String ID = "backstep2";
+	private static final int[] ROTATIONS = { 0, -15, 15 };
 	private int thres, damage, rend;
 	
 	public Backstep2(boolean isUpgraded) {
 		super(ID, "Backstep II", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 10, 1, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 10, 1, 12));
 		damage = isUpgraded ? 20 : 10;
 		rend = 10;
 		thres = isUpgraded ? 60 : 45;
@@ -52,10 +61,15 @@ public class Backstep2 extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ItemStack icon = item.clone();
 		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, this, slot, es);
+		updateIcon(inst, icon);
+		ProjectileGroup projs = new ProjectileGroup();
+		for (int i : ROTATIONS) {
+			projs.add(new Backstep2Projectile(data, i));
+		}
+
 		inst.setAction((pdata, in) -> {
 			inst.addCount(-1);
-			icon.setAmount(Math.min(1, inst.getCount()));
-			inst.setIcon(icon);
+			updateIcon(inst, icon);
 			Vector v = p.getEyeLocation().getDirection();
 			if (p.isOnGround()) {
 				p.teleport(p.getLocation().add(0, 0.2, 0));
@@ -63,27 +77,71 @@ public class Backstep2 extends Equipment {
 			p.setVelocity(v.setY(0).setX(-v.getX()).setZ(-v.getZ()).normalize().multiply(0.7).setY(0.3));
 			Sounds.jump.play(p, p);
 			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 60, 0));
-			data.addBuff(data, UUID.randomUUID().toString(), true, false, BuffType.GENERAL, damage, 100);
+			projs.start(data);
 			return TriggerResult.keep();
 		});
 		inst.setCondition((pl, pdata) -> {
-			return inst.getCount() >= 0;
+			return inst.getCount() > 0;
 		});
 		data.addTrigger(id, bind, inst);
 
-		StandardEquipmentInstance counter = new StandardEquipmentInstance(data, this, slot, es);
+		StandardPriorityAction counter = new StandardPriorityAction(id);
 		counter.setAction((pdata, in) -> {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
 			if (!ev.isStatus(StatusType.REND)) return TriggerResult.keep();
 			counter.addCount(ev.getStacks());
 			if (counter.getCount() >= thres) {
-				inst.addCount(inst.getCount() / thres);
-				icon.setAmount(inst.getCount());
-				inst.setIcon(icon);
-				counter.setCount(inst.getCount() % thres);
+				inst.addCount(counter.getCount() / thres);
+				updateIcon(inst, icon);
+				counter.setCount(counter.getCount() % thres);
 			}
 			return TriggerResult.keep();
 		});
 		data.addTrigger(id, Trigger.APPLY_STATUS, counter);
+	}
+
+	private void updateIcon(StandardEquipmentInstance inst, ItemStack icon) {
+		int count = inst.getCount();
+		if (count == 0) {
+			icon.setType(Material.BARRIER);
+			icon.setAmount(1);
+		}
+		else {
+			icon.setType(Material.IRON_BOOTS);
+			icon.setAmount(count);
+		}
+		inst.setIcon(icon);
+	}
+	
+	private class Backstep2Projectile extends Projectile {
+		private PlayerFightData data;
+		private Player p;
+
+		// Vector is non-normalized velocity of the vanilla projectile being fired
+		public Backstep2Projectile(PlayerFightData data, int rotation) {
+			super(properties.get(PropertyType.RANGE), 1);
+			this.blocksPerTick(3);
+			this.rotation(rotation);
+			this.data = data;
+			this.p = data.getPlayer();
+		}
+
+		@Override
+		public void onTick(ProjectileInstance proj, int interpolation) {
+			BowProjectile.tick.play(p, proj.getLocation());
+		}
+
+		@Override
+		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
+			damageProjectile(hit.getEntity(), proj, hitBarrier);
+			hit.applyStatus(StatusType.REND, data, rend, -1);
+		}
+
+		@Override
+		public void onStart(ProjectileInstance proj) {
+			Sounds.shoot.play(p, p);
+			DamageMeta dm = proj.getMeta();
+			dm.addDamageSlice(new DamageSlice(data, damage, DamageType.PIERCING));
+		}
 	}
 }

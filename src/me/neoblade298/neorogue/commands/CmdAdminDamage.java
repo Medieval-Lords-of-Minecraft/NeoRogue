@@ -16,7 +16,6 @@ import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
-import me.neoblade298.neorogue.session.fight.PlayerFightData;
 
 public class CmdAdminDamage extends Subcommand {
 	public CmdAdminDamage(String key, String desc, String perm, SubcommandRunner runner) {

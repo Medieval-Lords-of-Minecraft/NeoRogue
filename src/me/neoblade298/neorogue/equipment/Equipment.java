@@ -82,6 +82,7 @@ import me.neoblade298.neorogue.equipment.artifacts.GoldIngot;
 import me.neoblade298.neorogue.equipment.artifacts.GrendelsCrystalMirror;
 import me.neoblade298.neorogue.equipment.artifacts.HermesBoots;
 import me.neoblade298.neorogue.equipment.artifacts.HiddenBlade;
+import me.neoblade298.neorogue.equipment.artifacts.ManaHaze;
 import me.neoblade298.neorogue.equipment.artifacts.ManaflowBand;
 import me.neoblade298.neorogue.equipment.artifacts.MercenaryHeadband;
 import me.neoblade298.neorogue.equipment.artifacts.NoxianBlight;
@@ -190,6 +191,7 @@ import me.neoblade298.neorogue.equipment.weapons.StoneThrowingKnife;
 import me.neoblade298.neorogue.equipment.weapons.TacticiansDagger;
 import me.neoblade298.neorogue.equipment.weapons.TreeTrunk;
 import me.neoblade298.neorogue.equipment.weapons.Volley;
+import me.neoblade298.neorogue.equipment.weapons.WarningShot;
 import me.neoblade298.neorogue.equipment.weapons.WoodenArrow;
 import me.neoblade298.neorogue.equipment.weapons.WoodenDagger;
 import me.neoblade298.neorogue.equipment.weapons.WoodenSword;
@@ -392,6 +394,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Volley(b);
 			new WarCry(b);
 			new Warmup(b);
+			new WarningShot(b);
 			new WeaponEnchantmentElectrified(b);
 			new WeaponEnchantmentHoly(b);
 			new Windcutter(b);
@@ -459,8 +462,6 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new BasicShotbow(b);
 			new BluntedArrow(b);
 			new ColdArrow(b);
-			new CompositeBow(b);
-			new WoodenArrow(b);
 			new BoltWand(b);
 			new ButterflyKnife(b);
 			new ButterflyKnife2(b);
@@ -518,6 +519,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new TargetAcquisition(b);
 			new UnderDarkness(b);
 			new RighteousHammer(b);
+			new WoodenArrow(b);
 			new WoodenDagger(b);
 			new WoodenSword(b);
 			new WoodenWand(b);
@@ -552,6 +554,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new HiddenBlade();
 		new PracticeDummy();
 		new ManaflowBand();
+		new ManaHaze();
 		new MercenaryHeadband();
 		new NoxianBlight();
 		new NoxianSkull();

@@ -42,7 +42,7 @@ public class Initiator extends Equipment {
 			FightData fd = FightInstance.getFightData(ev.getTarget());
 			if (fd.hasStatus(p.getName() + "-INITIATOR")) return TriggerResult.keep();
 			fd.applyStatus(Status.createByGenericType(GenericStatusType.BASIC, p.getName() + "-INITIATOR",
-					fd, true), data, 1, -1, ev.getMeta());
+					fd, true), data, 1, -1, ev.getMeta(), false);
 			ev.getMeta().addBuff(BuffType.GENERAL, new Buff(data, 0, damage * 0.01), BuffOrigin.NORMAL, true);
 			return TriggerResult.keep();
 		});

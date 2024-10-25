@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusClass;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 
@@ -13,22 +14,29 @@ public class PreApplyStatusEvent {
 	private FightData target;
 	private String statusId;
 	private DamageMeta meta;
-	private int stacks, seconds;
+	private int stacks, ticks;
 	private Buff stackBuff = new Buff(), durationBuff = new Buff();
+	private boolean isSecondary;
 	private StatusClass sc;
-	public PreApplyStatusEvent(FightData target, String statusId, int stacks, int duration, StatusClass sc) {
+	private Status s;
+	public PreApplyStatusEvent(FightData target, Status s, int stacks, int ticks, boolean isSecondary) {
 		this.target = target;
-		this.statusId = statusId;
+		this.statusId = s.getId();
 		this.stacks = stacks;
-		this.seconds = duration;
-		this.sc = sc;
+		this.ticks = ticks;
+		this.sc = s.getStatusClass();
+		this.s = s;
 	}
-	public PreApplyStatusEvent(FightData target, String statusId, int stacks, int duration, StatusClass sc, @Nullable DamageMeta meta) {
-		this(target, statusId, stacks, duration, sc);
+	public PreApplyStatusEvent(FightData target, Status s, int stacks, int ticks, boolean isSecondary, @Nullable DamageMeta meta) {
+		this(target, s, stacks, ticks, isSecondary);
 		this.meta = meta;
 	}
 	public FightData getTarget() {
 		return target;
+	}
+	// Should only ever be used if you need a copy of a status, like with Mana Haze
+	public Status getStatus() {
+		return s;
 	}
 	public void setTarget(FightData target) {
 		this.target = target;
@@ -48,11 +56,15 @@ public class PreApplyStatusEvent {
 	public StatusClass getStatusClass() {
 		return sc;
 	}
+
+	public boolean isSecondary() {
+		return isSecondary;
+	}
 	public int getStacks() {
 		return stacks;
 	}
-	public int getSeconds() {
-		return seconds;
+	public int getTicks() {
+		return ticks;
 	}
 	public boolean isStatus(StatusType type) {
 		return statusId.equals(type.name());

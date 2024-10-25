@@ -20,90 +20,92 @@ import me.neoblade298.neorogue.session.fight.FightData;
 import net.kyori.adventure.text.Component;
 
 public class EquipmentProperties {
-	private static final EquipmentProperties NONE = new EquipmentProperties(0,0,0,0,0,0,0, null, null);
+	private static final EquipmentProperties NONE = new EquipmentProperties(0,0,0,0,0,0,0,0, null, null);
 	private ArrayList<Component> lore;
 	private HashMap<PropertyType, Property> properties = new HashMap<PropertyType, Property>();
 	private DamageType type;
 	private SoundContainer swingSound;
 	
 	private EquipmentProperties(double manaCost, double staminaCost, double cooldown, double range, double damage, double attackSpeed,
-			double knockback, DamageType type, SoundContainer swingSound) {
-		setupProperty(PropertyType.MANA_COST, manaCost);
-		setupProperty(PropertyType.STAMINA_COST, staminaCost);
-		setupProperty(PropertyType.COOLDOWN, cooldown);
-		setupProperty(PropertyType.RANGE, range);
-		setupProperty(PropertyType.DAMAGE, damage);
-		setupProperty(PropertyType.KNOCKBACK, knockback);
-		setupProperty(PropertyType.ATTACK_SPEED, attackSpeed);
+			double knockback, double area, DamageType type, SoundContainer swingSound) {
+		add(PropertyType.MANA_COST, manaCost);
+		add(PropertyType.STAMINA_COST, staminaCost);
+		add(PropertyType.COOLDOWN, cooldown);
+		add(PropertyType.RANGE, range);
+		add(PropertyType.DAMAGE, damage);
+		add(PropertyType.KNOCKBACK, knockback);
+		add(PropertyType.ATTACK_SPEED, attackSpeed);
+		add(PropertyType.AREA_OF_EFFECT, area);
 		this.type = type;
 		this.swingSound = swingSound;
 	}
 	
 	public static EquipmentProperties ofWeapon(double damage, double attackSpeed, DamageType type, Sound swingSound) {
-		return new EquipmentProperties(0, 0, 0, 0, damage, attackSpeed, 0, type, new SoundContainer(swingSound));
+		return new EquipmentProperties(0, 0, 0, 0, damage, attackSpeed, 0, 0, type, new SoundContainer(swingSound));
 	}
 	
 	public static EquipmentProperties ofWeapon(double manaCost, double staminaCost, double damage, double attackSpeed, double knockbac, DamageType type, Sound swingSound) {
-		return new EquipmentProperties(manaCost, staminaCost, 0, 0, damage, attackSpeed, 0, type, new SoundContainer(swingSound));
+		return new EquipmentProperties(manaCost, staminaCost, 0, 0, damage, attackSpeed, 0, 0, type, new SoundContainer(swingSound));
 	}
 	
 	public static EquipmentProperties ofWeapon(double manaCost, double staminaCost, double damage, double attackSpeed, DamageType type, Sound swingSound) {
-		return new EquipmentProperties(manaCost, staminaCost, 0, 0, damage, attackSpeed, 0, type, new SoundContainer(swingSound));
+		return new EquipmentProperties(manaCost, staminaCost, 0, 0, damage, attackSpeed, 0, 0, type, new SoundContainer(swingSound));
 	}
 	
 	public static EquipmentProperties ofWeapon(double damage, double attackSpeed, DamageType type, SoundContainer swingSound) {
-		return new EquipmentProperties(0, 0, 0, 0, damage, attackSpeed, 0, type, swingSound);
+		return new EquipmentProperties(0, 0, 0, 0, damage, attackSpeed, 0, 0, type, swingSound);
 	}
 	
 	public static EquipmentProperties ofWeapon(double damage, double attackSpeed, double knockback, DamageType type) {
-		return new EquipmentProperties(0, 0, 0, 0, damage, attackSpeed, knockback, type, null);
+		return new EquipmentProperties(0, 0, 0, 0, damage, attackSpeed, knockback, 0, type, null);
 	}
 	
 	public static EquipmentProperties ofWeapon(double damage, double attackSpeed, double knockback, DamageType type, Sound swingSound) {
-		return new EquipmentProperties(0, 0, 0, 0, damage, attackSpeed, knockback, type, new SoundContainer(swingSound));
+		return new EquipmentProperties(0, 0, 0, 0, damage, attackSpeed, knockback, 0, type, new SoundContainer(swingSound));
 	}
 	
 	public static EquipmentProperties ofWeapon(double damage, double attackSpeed, double knockback, DamageType type, SoundContainer swingSound) {
-		return new EquipmentProperties(0, 0, 0, 0, damage, attackSpeed, knockback, type, swingSound);
+		return new EquipmentProperties(0, 0, 0, 0, damage, attackSpeed, knockback, 0, type, swingSound);
 	}
 	
 	public static EquipmentProperties ofRangedWeapon(double damage, double attackSpeed, double knockback, double range, DamageType type, Sound swingSound) {
-		return new EquipmentProperties(0, 0, 0, range, damage, attackSpeed, knockback, type, new SoundContainer(swingSound));
+		return new EquipmentProperties(0, 0, 0, range, damage, attackSpeed, knockback, 0, type, new SoundContainer(swingSound));
 	}
 	
 	public static EquipmentProperties ofRangedWeapon(double damage, double attackSpeed, double knockback, double range, DamageType type, SoundContainer swingSound) {
-		return new EquipmentProperties(0, 0, 0, range, damage, attackSpeed, knockback, type, swingSound);
+		return new EquipmentProperties(0, 0, 0, range, damage, attackSpeed, knockback, 0, type, swingSound);
 	}
 	
 	public static EquipmentProperties ofRangedWeapon(double damage, double attackSpeed, double knockback, double range, DamageType type) {
-		return new EquipmentProperties(0, 0, 0, range, damage, attackSpeed, knockback, type, null);
+		return new EquipmentProperties(0, 0, 0, range, damage, attackSpeed, knockback, 0, type, null);
 	}
 	
 	public static EquipmentProperties ofBow(double damage, double attackSpeed, double knockback, double range, double manaCost, double staminaCost) {
-		EquipmentProperties props = new EquipmentProperties(manaCost, staminaCost, 0, range, damage, attackSpeed, knockback, null, null);
+		EquipmentProperties props = new EquipmentProperties(manaCost, staminaCost, 0, range, damage, attackSpeed, knockback, 0, null, null);
 		return props;
 	}
 	
 	public static EquipmentProperties custom(double manaCost, double staminaCost, double cooldown, double range, double damage, double attackSpeed,
 			double knockback, DamageType type, SoundContainer swingSound) {
-		return new EquipmentProperties(manaCost, staminaCost, cooldown, range, damage, attackSpeed, knockback, type, swingSound);
+		return new EquipmentProperties(manaCost, staminaCost, cooldown, range, damage, attackSpeed, knockback, 0, type, swingSound);
 	}
 	
 	public static EquipmentProperties ofUsable(double manaCost, double staminaCost, double cooldown, double range) {
-		return new EquipmentProperties(manaCost, staminaCost, cooldown, range, 0, 0, 0, null, null);
+		return new EquipmentProperties(manaCost, staminaCost, cooldown, range, 0, 0, 0, 0, null, null);
 	}
 
 	public static EquipmentProperties ofAmmunition(double damage, double knockback, DamageType type) {
-		return new EquipmentProperties(0, 0, 0, 0, damage, 0, knockback, type, null);
+		return new EquipmentProperties(0, 0, 0, 0, damage, 0, knockback, 0, type, null);
 	}
 	
 	public static EquipmentProperties none() {
 		return NONE;
 	}
 	
-	private void setupProperty(PropertyType type, double amount) {
-		if (amount == 0) return;
+	public EquipmentProperties add(PropertyType type, double amount) {
+		if (amount == 0) return this;
 		properties.put(type, new Property(amount));
+		return this;
 	}
 	
 	public ArrayList<Component> generateLore(Equipment eq) {
@@ -179,6 +181,7 @@ public class EquipmentProperties {
 		COOLDOWN("Cooldown: "),
 		DAMAGE("Damage: "),
 		KNOCKBACK("Knockback: "),
+		AREA_OF_EFFECT("Area of Effect:"),
 		ATTACK_SPEED("Attack Speed: ");
 		
 		private String label;

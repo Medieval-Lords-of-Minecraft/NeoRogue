@@ -76,6 +76,7 @@ import me.neoblade298.neorogue.session.SessionManager;
 import me.neoblade298.neorogue.session.fight.Mob.MobType;
 import me.neoblade298.neorogue.session.fight.TickAction.TickResult;
 import me.neoblade298.neorogue.session.fight.buff.BuffType;
+import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.GenericStatusType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -753,6 +754,11 @@ public abstract class FightInstance extends Instance {
 			}
 		}
 		data.applyStatus(GenericStatusType.BASIC, id, fdApplier, stacks, seconds);
+	}
+	
+	public static void applyStatus(Entity target, Status s, int stacks, int ticks, FightData applier) {
+		FightData data = getFightData(target.getUniqueId());
+		data.applyStatus(s, applier, stacks, ticks);
 	}
 	
 	public static void applyStatus(Entity target, StatusType type, Entity applier, int stacks, int ticks) {

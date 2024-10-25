@@ -342,31 +342,32 @@ public class FightData {
 	}
 	
 	public void applyStatus(Status s, FightData applier, int stacks, int ticks) {
-		applyStatus(s, applier, stacks, ticks, null);
+		applyStatus(s, applier, stacks, ticks, null, false);
 	}
 	
 	public void applyStatus(StatusType type, FightData applier, int stacks, int ticks) {
-		applyStatus(type, applier, stacks, ticks, null);
+		applyStatus(type, applier, stacks, ticks, null, false);
 	}
 	
-	public void applyStatus(StatusType type, FightData applier, int stacks, int ticks, DamageMeta meta) {
+	public void applyStatus(StatusType type, FightData applier, int stacks, int ticks, DamageMeta meta, boolean isSecondary) {
 		Status s = statuses.getOrDefault(type.name(), Status.createByType(type, this));
-		applyStatus(s, applier, stacks, ticks, meta);
+		applyStatus(s, applier, stacks, ticks, meta, isSecondary);
 	}
 	
 	public void applyStatus(GenericStatusType type, String id, FightData applier, int stacks, int ticks) {
-		applyStatus(type, id, applier, stacks, ticks, null);
+		applyStatus(type, id, applier, stacks, ticks, null, false);
 	}
 	
-	public void applyStatus(GenericStatusType type, String id, FightData applier, int stacks, int ticks, DamageMeta meta) {
+	public void applyStatus(GenericStatusType type, String id, FightData applier, int stacks, int ticks, DamageMeta meta, boolean isSecondary) {
 		Status s = statuses.getOrDefault(id, Status.createByGenericType(type, id, this));
-		applyStatus(s, applier, stacks, ticks, meta);
+		applyStatus(s, applier, stacks, ticks, meta, isSecondary);
 	}
 	
-	public void applyStatus(Status s, FightData applier, int stacks, int ticks, DamageMeta meta) {
+	public void applyStatus(Status s, FightData applier, int stacks, int ticks, DamageMeta meta, boolean isSecondary) {
 		if (!entity.isValid()) return;
 		String id = s.getId();
-		PreApplyStatusEvent ev = new PreApplyStatusEvent(this, id, stacks, ticks, s.getStatusClass(), meta);
+		
+		PreApplyStatusEvent ev = new PreApplyStatusEvent(this, s, stacks, ticks, isSecondary, meta);
 		if (applier instanceof PlayerFightData) {
 			FightInstance.trigger(((PlayerFightData) applier).getPlayer(), Trigger.PRE_APPLY_STATUS, ev);
 		}
@@ -378,7 +379,7 @@ public class FightData {
 		int finalStacks = (int) Math.ceil(ev.getStacksBuff().apply(stacks));
 		int finalDuration = (int) Math.ceil(ev.getDurationBuff().apply(ticks));
 		s.apply(applier, finalStacks, finalDuration);
-		ApplyStatusEvent ev2 = new ApplyStatusEvent(this, id, finalStacks, finalDuration, s.getStatusClass(), meta);
+		ApplyStatusEvent ev2 = new ApplyStatusEvent(this, s, finalStacks, finalDuration, isSecondary, meta);
 		if (applier instanceof PlayerFightData) {
 			FightInstance.trigger(((PlayerFightData) applier).getPlayer(), Trigger.APPLY_STATUS, ev2);
 		}
