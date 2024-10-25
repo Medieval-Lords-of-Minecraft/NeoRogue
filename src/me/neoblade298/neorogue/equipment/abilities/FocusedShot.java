@@ -30,7 +30,7 @@ public class FocusedShot extends Equipment {
 	public FocusedShot(boolean isUpgraded) {
 		super(ID, "Focused Shot", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 10, 15, 0));
-		damage = isUpgraded ? 30 : 15;
+		damage = isUpgraded ? 100 : 60;
 	}
 	
 	public static Equipment get() {

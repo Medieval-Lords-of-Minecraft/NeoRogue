@@ -249,6 +249,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Atone(b);
 			new Atrophy(b);
 			new Backstep(b);
+			new Backstep2(b);
 			new KeenSenses(b);
 			new BasicElementMastery(b);
 			new BattleCry(b);
@@ -355,6 +356,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Provoke(b);
 			new RainOfSteel(b);
 			new RapidFire(b);
+			new RecklessApproach(b);
 			new Revenge(b);
 			new Roar(b);
 			new Rushdown(b);
@@ -376,6 +378,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new SpiritOfTheDragoon(b);
 			new Sturdy(b);
 			new SunderingShot(b);
+			new Surprise(b);
 			new FirstStrike(b);
 			new Flicker(b);
 			new Tackle(b);

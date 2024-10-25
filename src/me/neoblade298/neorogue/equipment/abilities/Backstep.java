@@ -37,6 +37,10 @@ public class Backstep extends Equipment {
 				"On cast, jump backwards and gain " + DescUtil.potion("Speed", 0, 3) + " and increase all damage dealt by "
 				+ DescUtil.yellow(damage) + " for <white>5</white> seconds.");
 	}
+
+	public void setupReforges() {
+		addReforge(AgilityTraining.get(), RecklessApproach.get(), Surprise.get(), Backstep2.get());
+	}
 	
 	public static Equipment get() {
 		return Equipment.get(ID, false);

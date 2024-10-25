@@ -14,6 +14,7 @@ import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageType;
+import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 
@@ -43,9 +44,8 @@ public class CmdAdminDamage extends Subcommand {
 			Util.displayError(p, "You're not currently in a fight!");
 			return;
 		}
-		PlayerFightData data = FightInstance.getUserData(p.getUniqueId());
 		DamageType type = DamageType.valueOf(args[0].toUpperCase());
-		DamageMeta dm = new DamageMeta(data, Integer.parseInt(args[1]), type);
+		DamageMeta dm = new DamageMeta(new FightData(), Integer.parseInt(args[1]), type);
 		dm.dealDamage(p);
 		Util.msg(s, "Dealt " + args[1] + " " + type + " damage");
 	}
