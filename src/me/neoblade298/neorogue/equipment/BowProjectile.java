@@ -26,7 +26,7 @@ public class BowProjectile extends Projectile {
 	private Bow bow;
 	private EquipmentProperties props;
 	private AmmunitionInstance ammo;
-	private double initialVelocity;
+	private double initialVelocity, damageBonus;
 	private boolean isBasicAttack = true;
 	private ArrayList<ProjectileTickAction> tickActions = new ArrayList<ProjectileTickAction>();
 
@@ -70,6 +70,12 @@ public class BowProjectile extends Projectile {
 		}
 	}
 
+	// Sometimes useful for modifying bow damage, like with Composite Bow
+	public BowProjectile setDamageBonus(double damageBonus) {
+		this.damageBonus = damageBonus;
+		return this;
+	}
+
 	@Override
 	public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
 		bow.bowDamageProjectile(hit.getEntity(), proj, hitBarrier, ammo, isBasicAttack);
@@ -80,7 +86,7 @@ public class BowProjectile extends Projectile {
 		Sounds.shoot.play(p, p);
 		DamageMeta dm = proj.getMeta();
 		EquipmentProperties ammoProps = ammo.getProperties();
-		double dmg = ammoProps.get(PropertyType.DAMAGE) + props.get(PropertyType.DAMAGE);
+		double dmg = ammoProps.get(PropertyType.DAMAGE) + props.get(PropertyType.DAMAGE) + damageBonus;
 		dm.addDamageSlice(new DamageSlice(data, dmg, ammoProps.getType()));
 		ammo.onStart(proj);
 	}

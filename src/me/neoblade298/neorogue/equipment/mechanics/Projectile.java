@@ -7,7 +7,7 @@ import org.bukkit.util.Vector;
 import me.neoblade298.neorogue.session.fight.FightData;
 
 public abstract class Projectile extends IProjectile {
-	private double gravity, yRotate, blocksPerTick, initialY, maxRange;
+	private double gravity, yRotate, blocksPerTick, initialY, maxRange, homing;
 	private boolean ignoreBarriers, ignoreBlocks, ignoreEntities;
 	private double width = 0.2, height = 0.2;
 	private int tickSpeed, pierce = 1;
@@ -72,6 +72,11 @@ public abstract class Projectile extends IProjectile {
 		this.gravity = gravity;
 		return this;
 	}
+
+	public Projectile homing(double homing) {
+		this.homing = homing;
+		return this;
+	}
 	
 	public Projectile pierce(int num) {
 		this.pierce = num;
@@ -97,6 +102,10 @@ public abstract class Projectile extends IProjectile {
 	
 	public double getGravity() {
 		return gravity;
+	}
+
+	public double getHoming() {
+		return homing;
 	}
 	
 	public double initialY() {

@@ -6,7 +6,6 @@ import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.DescUtil;
@@ -56,36 +55,26 @@ public class FrostTrap extends Equipment {
 			data.channel(40);
 			data.addTask(new BukkitRunnable() {
 				public void run() {
-					data.addTask(initTrap(p, data));
+					Location loc = p.getLocation();
+					data.addTrap(new Trap(data, loc, 200) {
+						@Override
+						public void tick() {
+							trap.play(p, loc);
+							LivingEntity trg = TargetHelper.getNearest(p, loc, tp);
+							if (trg != null) {
+								Sounds.breaks.play(p, trg);
+								hit.play(p, trg);
+								DamageMeta dm = new DamageMeta(data, damage, DamageType.ICE, DamageOrigin.TRAP);
+								FightInstance.dealDamage(dm, trg);
+								FightInstance.applyStatus(trg, StatusType.FROST, data, frost, -1);
+								data.removeTrap(this);
+							}
+						}
+					});
 				}
 			}.runTaskLater(NeoRogue.inst(), 40L));
 			return TriggerResult.keep();
 		}));
-	}
-
-	private BukkitTask initTrap(Player p, PlayerFightData data) {
-		return new BukkitRunnable() {
-			Location loc = p.getLocation();
-			private int tick = 0;
-			Trap tr = data.addTrap(loc);
-			public void run() {
-				trap.play(p, loc);
-				LivingEntity trg = TargetHelper.getNearest(p, loc, tp);
-				if (trg != null) {
-					Sounds.breaks.play(p, trg);
-					hit.play(p, trg);
-					DamageMeta dm = new DamageMeta(data, damage, DamageType.ICE, DamageOrigin.TRAP);
-					FightInstance.dealDamage(dm, trg);
-					FightInstance.applyStatus(trg, StatusType.FROST, data, frost, -1);
-					data.removeTrap(tr);
-					this.cancel();
-				}
-				if (++tick >= 20) {
-					data.removeTrap(tr);
-					this.cancel();
-				}
-			}
-		}.runTaskTimer(NeoRogue.inst(), 0L, 10L);
 	}
 
 	@Override

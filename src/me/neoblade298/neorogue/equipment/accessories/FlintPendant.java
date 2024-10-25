@@ -18,7 +18,7 @@ public class FlintPendant extends Equipment {
 	private int thres, stamina;
 	
 	public FlintPendant(boolean isUpgraded) {
-		super(ID, "Flint Pendant", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
+		super(ID, "Flint Pendant", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.ACCESSORY);
 		thres = isUpgraded ? 6 : 4;
 		stamina = isUpgraded ? 5 : 3;

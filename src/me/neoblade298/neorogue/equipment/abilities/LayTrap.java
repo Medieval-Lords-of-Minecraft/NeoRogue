@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.DescUtil;
@@ -57,19 +56,18 @@ public class LayTrap extends Equipment {
 			data.channel(40);
 			data.addTask(new BukkitRunnable() {
 				public void run() {
-					data.addTask(initTrap(p, data));
+					initTrap(p, data);
 				}
-			}.runTaskLater(NeoRogue.inst(), 40L));
+		}.runTaskLater(NeoRogue.inst(), 40L));
 			return TriggerResult.keep();
 		}));
 	}
 
-	private BukkitTask initTrap(Player p, PlayerFightData data) {
-		return new BukkitRunnable() {
-			Location loc = p.getLocation();
-			private int tick = 0;
-			Trap tr = data.addTrap(loc);
-			public void run() {
+	private void initTrap(Player p, PlayerFightData data) {
+		Location loc = p.getLocation();
+		data.addTrap(new Trap(data, loc, 200) {
+			@Override
+			public void tick() {
 				trap.play(p, loc);
 				LivingEntity trg = TargetHelper.getNearest(p, loc, tp);
 				if (trg != null) {
@@ -78,15 +76,10 @@ public class LayTrap extends Equipment {
 					DamageMeta dm = new DamageMeta(data, damage, DamageType.BLUNT, DamageOrigin.TRAP);
 					FightInstance.dealDamage(dm, trg);
 					trg.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, secs * 20, 2));
-					data.removeTrap(tr);
-					this.cancel();
-				}
-				if (++tick >= 20) {
-					data.removeTrap(tr);
-					this.cancel();
+					data.removeTrap(this);
 				}
 			}
-		}.runTaskTimer(NeoRogue.inst(), 0L, 10L);
+		});
 	}
 
 	@Override

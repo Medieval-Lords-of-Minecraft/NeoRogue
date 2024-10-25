@@ -21,7 +21,10 @@ import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
+import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
+import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
+import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffType;
 
@@ -40,6 +43,7 @@ public class ProjectileInstance extends IProjectileInstance {
 	private DamageMeta meta;
 	private double distance = 0, distancePerPoint; // Estimated distance traveled, not exact, doesn't factor in gravity
 	private int maxRangeMod;
+	private LivingEntity homingTarget;
 
 	private ArrayList<HitBlockAction> hitBlockActions = new ArrayList<HitBlockAction>();
 	private ArrayList<HitAction> hitActions = new ArrayList<HitAction>();
@@ -70,6 +74,9 @@ public class ProjectileInstance extends IProjectileInstance {
 		distancePerPoint = v.length();
 		loc = origin.clone().add(v.clone().multiply(0.5)); // Start slightly offset forward to avoid hitting behind
 		bounds = BoundingBox.of(loc, settings.getWidth(), settings.getHeight(), settings.getWidth());
+
+		if (settings.getHoming() != 0) 
+			homingTarget = TargetHelper.getNearest(owner.getEntity(), loc, TargetProperties.radius(settings.getMaxRange() + 5, false, TargetType.ENEMY));
 		
 		task = new BukkitRunnable() {
 			public void run() {
@@ -100,6 +107,10 @@ public class ProjectileInstance extends IProjectileInstance {
 	
 	public int getTick() {
 		return tick;
+	}
+
+	public void setHomingTarget(LivingEntity target) {
+		this.homingTarget = target;
 	}
 	
 	// True to cancel runnable
@@ -175,6 +186,12 @@ public class ProjectileInstance extends IProjectileInstance {
 		// Gravity
 		if (settings.getGravity() != 0) {
 			v.setY(v.getY() - settings.getGravity());
+		}
+		
+		// Homing
+		if (settings.getHoming() != 0 && homingTarget != null) {
+			Vector between = homingTarget.getEyeLocation().toVector().subtract(loc.toVector()).normalize();
+			v = v.add(between.multiply(settings.getHoming())).normalize().multiply(distancePerPoint);
 		}
 
 		return false;

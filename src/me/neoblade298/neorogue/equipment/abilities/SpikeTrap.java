@@ -5,7 +5,6 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.NeoRogue;
@@ -50,28 +49,23 @@ public class SpikeTrap extends Equipment {
 			data.charge(40);
 			data.addTask(new BukkitRunnable() {
 				public void run() {
-					data.addTask(initTrap(p, data));
+					initTrap(p, data);
 				}
 			}.runTaskLater(NeoRogue.inst(), 40L));
 			return TriggerResult.keep();
 		}));
 	}
 
-	private BukkitTask initTrap(Player p, PlayerFightData data) {
+	private void initTrap(Player p, PlayerFightData data) {
 		Sounds.equip.play(p, p);
 		Location loc = p.getLocation();
-		Trap tr = data.addTrap(loc);
-		return new BukkitRunnable() {
-			int ticks = 0;
-			public void run() {
+		data.addTrap(new Trap(data, loc, 400) {
+			@Override
+			public void tick() {
 				spike.play(p, loc);
 				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.PIERCING, DamageOrigin.TRAP), TargetHelper.getEntitiesInRadius(p, loc, tp));
-				if (++ticks >= 20) {
-					data.removeTrap(tr);
-					this.cancel();
-				}
 			}
-		}.runTaskTimer(NeoRogue.inst(), 20L, 20L);
+		});
 	}
 
 	@Override

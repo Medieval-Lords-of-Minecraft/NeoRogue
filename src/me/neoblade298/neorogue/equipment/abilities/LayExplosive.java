@@ -6,7 +6,6 @@ import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.NeoRogue;
@@ -78,7 +77,18 @@ public class LayExplosive extends Equipment {
 			LayExplosiveInstance inst = this;
 			data.addTask(new BukkitRunnable() {
 				public void run() {
-					data.addTask(initTrap(p, data, inst));
+					Sounds.equip.play(p, p);
+					loc = p.getLocation();
+					tr = new Trap(data, loc, -1) {
+						@Override
+						public void tick() {
+							trap.play(p, loc);
+							if (inst.ticks < 5) {
+								inst.ticks++;
+							}
+						}
+					};
+					data.addTrap(tr);
 				}
 			}.runTaskLater(NeoRogue.inst(), 40L));
 		}
@@ -92,21 +102,6 @@ public class LayExplosive extends Equipment {
 				FightInstance.dealDamage(new DamageMeta(data, damage * ticks, DamageType.BLUNT, DamageOrigin.TRAP), ent);
 			}
 			data.removeTrap(tr);
-		}
-
-		private BukkitTask initTrap(Player p, PlayerFightData data, LayExplosiveInstance inst) {
-			Sounds.equip.play(p, p);
-			loc = p.getLocation();
-			tr = data.addTrap(loc);
-
-			return new BukkitRunnable() {
-				public void run() {
-					trap.play(p, loc);
-					if (inst.ticks < 5) {
-						inst.ticks++;
-					}
-				}
-			}.runTaskTimer(NeoRogue.inst(), 20L, 20L);
 		}
 	}
 

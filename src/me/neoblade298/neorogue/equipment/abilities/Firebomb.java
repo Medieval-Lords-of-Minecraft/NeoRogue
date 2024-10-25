@@ -54,6 +54,7 @@ public class Firebomb extends Equipment {
 				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE), ent);
 			}
 
+			Sounds.explode.play(p, loc);
 			data.addTask(new BukkitRunnable() {
 				int tick = 0;
 				public void run() {
@@ -63,7 +64,7 @@ public class Firebomb extends Equipment {
 					}
 					if (++tick >= 3) cancel();
 				}
-			}.runTaskTimer(NeoRogue.inst(), 20L, 20L));
+			}.runTaskTimer(NeoRogue.inst(), 0L, 20L));
 		});
 		ProjectileGroup grp = new ProjectileGroup(pot);
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, inputs) -> {

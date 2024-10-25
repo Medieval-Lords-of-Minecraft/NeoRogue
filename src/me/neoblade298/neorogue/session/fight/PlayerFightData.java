@@ -10,7 +10,6 @@ import java.util.TreeSet;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -38,6 +37,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerCondition;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.CastUsableEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.LayTrapEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.StaminaChangeEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -404,6 +404,9 @@ public class PlayerFightData extends FightData {
 	public AmmunitionInstance getAmmoInstance() {
 		return ammo;
 	}
+	public boolean hasAmmoInstance() {
+		return ammo != null;
+	}
 	
 	public boolean hasTriggerAction(Trigger trigger) {
 		return triggers.containsKey(trigger);
@@ -579,14 +582,17 @@ public class PlayerFightData extends FightData {
 		p.sendActionBar(bar);
 	}
 
-	public Trap addTrap(Location loc) {
-		Trap trap = new Trap(loc);
+	public void addTrap(Trap trap) {
 		traps.put(trap.getUniqueId(), trap);
-		return trap;
+		LayTrapEvent ev = new LayTrapEvent(trap);
+		runActions(this, Trigger.LAY_TRAP, ev);
+		trap.setDuration((int) ev.getDurationBuff().apply(trap.getDuration()));
+		trap.activate();
 	}
 
 	public void removeTrap(Trap trap) {
-		traps.remove(trap.getUniqueId());
+		trap.deactivate();
+		traps.remove(uuid);
 	}
 
 	public HashMap<UUID, Trap> getTraps() {
