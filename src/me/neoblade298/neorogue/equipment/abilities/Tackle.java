@@ -18,6 +18,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -38,7 +39,7 @@ public class Tackle extends Equipment {
 	
 	public Tackle(boolean isUpgraded) {
 		super(ID, "Tackle", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 15, 20, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 15, 20, 0).add(PropertyType.AREA_OF_EFFECT, 2));
 		damage = isUpgraded ? 130 : 100;
 		
 		pc.count(25).spread(0.5, 0.5);
@@ -112,7 +113,7 @@ public class Tackle extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.REDSTONE, new String[] { "<gold>Area of Effect: <white>2" },
+		item = createItem(Material.REDSTONE,
 				"On cast, dash forward, stopping at the first enemy hit and dealing <yellow>" + damage + "</yellow> " + GlossaryTag.BLUNT.tag(this) +
 				" damage in a small area. "
 						+ "If an enemy is hit, reduce this ability's cooldown by <white>10</white>. If you have any " + GlossaryTag.SHIELDS.tag(this) + 

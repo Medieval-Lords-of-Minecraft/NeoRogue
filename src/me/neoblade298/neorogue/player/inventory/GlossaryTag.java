@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.player.inventory;
 
+import java.util.ArrayList;
+
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -102,6 +104,7 @@ public enum GlossaryTag implements GlossaryIcon {
 	
 	private ItemStack icon;
 	public String tag;
+	private ArrayList<TextComponent> loreComp;
 	private Component ctag;
 	private GlossaryTag(Material mat, String display, String lore) {
 		icon = new ItemStack(mat);
@@ -109,9 +112,18 @@ public enum GlossaryTag implements GlossaryIcon {
 		this.tag = display;
 		this.ctag = SharedUtil.color(display).decoration(TextDecoration.ITALIC, State.FALSE);
 		meta.displayName(ctag);
-		meta.lore(SharedUtil.addLineBreaks((TextComponent) SharedUtil.color(lore).colorIfAbsent(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, State.FALSE)));
+		this.loreComp = SharedUtil.addLineBreaks((TextComponent) SharedUtil.color(lore).colorIfAbsent(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, State.FALSE));
+		meta.lore(loreComp);
 		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 		icon.setItemMeta(meta);
+	}
+
+	public Component getTag() {
+		return ctag;
+	}
+
+	public ArrayList<TextComponent> getLore() {
+		return loreComp;
 	}
 	
 	public String tag(Equipment eq) {

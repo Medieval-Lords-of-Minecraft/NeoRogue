@@ -75,6 +75,6 @@ public class ManaHaze extends Artifact {
 	public void setupItem() {
 		item = createItem(Material.BREWER_POTTERY_SHERD, 
 				"Every " + DescUtil.white(thres) + " stacks of negative statuses you apply, your next negative status applied to a target will also be applied to "
-					+ " the nearest enemy to the target.");
+					+ "the nearest enemy to the target.");
 	}
 }

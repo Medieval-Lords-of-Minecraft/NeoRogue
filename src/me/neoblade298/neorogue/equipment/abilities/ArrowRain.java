@@ -92,11 +92,8 @@ public class ArrowRain extends Equipment {
 	private void dropRain(Player p, Location block, PlayerFightData data, ProjectileGroup projs) {
 		data.addTask(new BukkitRunnable() {
 			public void run() {
-				Location loc = block.add(0, 4, 0);
-				Vector btwn = p.getLocation().toVector().subtract(loc.toVector()).setY(0).normalize().multiply(2);
-				Vector dir = btwn.clone().add(new Vector(0,-4,0)).normalize();
-				loc = loc.add(btwn);
-				projs.start(data, loc, dir);
+				Location loc = block.clone().add(0, 4, 0);
+				projs.start(data, loc, new Vector(0, -1, 0));
 			}
 		}.runTaskLater(NeoRogue.inst(), 20L));
 	}

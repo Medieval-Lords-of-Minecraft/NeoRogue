@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
 import me.neoblade298.neocore.bukkit.commands.Subcommand;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.commands.Arg;
@@ -11,6 +12,7 @@ import me.neoblade298.neocore.shared.commands.SubcommandRunner;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryInventory;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import net.kyori.adventure.text.Component;
 
 public class CmdGlossary extends Subcommand {
 
@@ -40,7 +42,10 @@ public class CmdGlossary extends Subcommand {
 		
 		try {
 			GlossaryTag tag = GlossaryTag.valueOf(args[0]);
-			new GlossaryInventory(p, tag, null);
+			Util.msgRaw(p, tag.getTag());
+			for (Component comp : tag.getLore()) {
+				Util.msgRaw(p, comp);
+			}
 			return;
 		}
 		catch (IllegalArgumentException ex) {

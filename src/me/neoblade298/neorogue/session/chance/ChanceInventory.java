@@ -38,7 +38,7 @@ public class ChanceInventory extends CoreInventory {
 	private boolean asSpectator;
 
 	public ChanceInventory(Player p, ChanceInstance inst, ChanceSet set, ChanceStage stage) {
-		super(p, Bukkit.createInventory(p, 18, Component.text("Chance Event", NamedTextColor.BLUE)));
+		super(p, Bukkit.createInventory(p, 27, Component.text("Chance Event", NamedTextColor.BLUE)));
 		this.set = set;
 		this.inst = inst;
 		this.s = inst.getSession();
@@ -49,7 +49,7 @@ public class ChanceInventory extends CoreInventory {
 	}
 
 	public ChanceInventory(PlayerSessionData data, ChanceInstance inst, ChanceSet set, ChanceStage stage, Player spectator) {
-		super(spectator, Bukkit.createInventory(data.getPlayer(), 18, Component.text(data.getData().getDisplay() + "'s Chance Event", NamedTextColor.BLUE)));
+		super(spectator, Bukkit.createInventory(data.getPlayer(), 27, Component.text(data.getData().getDisplay() + "'s Chance Event", NamedTextColor.BLUE)));
 		this.set = set;
 		this.inst = inst;
 		this.data = data;
@@ -61,16 +61,20 @@ public class ChanceInventory extends CoreInventory {
 	
 	private void setupInventory() {
 		// Create title
-		ItemStack[] contents = new ItemStack[18];
+		ItemStack[] contents = inv.getContents();
 		ItemStack title = CoreInventory.createButton(set.getMaterial(), set.getDisplay());
 		ItemMeta meta = title.getItemMeta();
 		meta.lore(stage.description);
 		title.setItemMeta(meta);
+
 		contents[4] = title;
+		for (int i = 9; i < 18; i++) {
+			contents[i] = CoreInventory.createButton(Material.BLACK_STAINED_GLASS_PANE, Component.text(" "));
+		}
 		
 		// Setup choices (currently only supports up to 9)
 		int size = stage.choices.size();
-		int offset = 4 - (size / 2);
+		int offset = 13 - (size / 2);
 		if (stage.choices.size() % 2 == 0) {
 			for (int i = 0; i < size / 2; i++) {
 				contents[offset + i + 9] = getChoiceItem(i);

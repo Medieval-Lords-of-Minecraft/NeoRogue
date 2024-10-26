@@ -46,9 +46,17 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
+import org.bukkit.event.server.MapInitializeEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.map.MapCanvas;
+import org.bukkit.map.MapCursor;
+import org.bukkit.map.MapCursorCollection;
+import org.bukkit.map.MapRenderer;
+import org.bukkit.map.MapView;
+import org.bukkit.map.MapView.Scale;
+import org.bukkit.map.MinecraftFont;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import io.lumine.mythic.api.mobs.MythicMob;
@@ -375,6 +383,32 @@ public class SessionManager implements Listener {
 		}
 		
 		FightInstance.handleRightClickEntity(e);
+	}
+
+	@EventHandler
+	public void onMapRender(MapInitializeEvent e) {
+		// Make this only happen with maps within a session somehow
+		MapView map = e.getMap();
+		map.setUnlimitedTracking(false);
+		map.setScale(Scale.FARTHEST);
+		map.setCenterX(-10000);
+		map.setCenterZ(-10000);
+		map.getRenderers().clear();
+		map.addRenderer(new TestRenderer());
+	}
+
+	private class TestRenderer extends MapRenderer {
+		MapCursorCollection col = new MapCursorCollection();
+
+		public TestRenderer() {
+			MapCursor curs = new MapCursor((byte) 50, (byte) 50, (byte) 0, MapCursor.Type.BANNER_BLACK, true, Component.text("Test Node"));
+			col.addCursor(curs);
+		}
+		@Override
+		public void render(MapView view, MapCanvas canvas, Player player) {
+			canvas.setCursors(col);
+			canvas.drawText(50, 50, MinecraftFont.Font, "SHOP");
+		}
 	}
 	
 	@EventHandler

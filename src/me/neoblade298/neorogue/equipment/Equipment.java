@@ -864,6 +864,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 
 		meta.displayName(display.decoration(TextDecoration.ITALIC, State.FALSE));
 		ArrayList<Component> loreItalicized = new ArrayList<Component>();
+		loreItalicized.add(Component.text("Right click for additional info", NamedTextColor.GRAY));
 		if (isCursed) {
 			loreItalicized.add(Component.text("Cursed " + type.getDisplay(), NamedTextColor.RED));
 		}
@@ -949,7 +950,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			// For every option, add the components as parents and place options
 			for (int i = 0; i < options.length; i++) {
 				options[i].addReforgeParent(combineWith);
-				if (this != combineWith) options[i].addReforgeParent(this);
+				options[i].addReforgeParent(this);
 			}
 
 			// Set item into reforge options
