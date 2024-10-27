@@ -65,7 +65,7 @@ public class PiercingShot extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BLAZE_ROD,
+		item = createItem(Material.MAP,
 				"On cast, your next basic attack deals up to an additional " + GlossaryTag.PIERCING.tag(this, damage, true) + " and pierces up to " +
 				DescUtil.white(2) + " enemies.");
 	}

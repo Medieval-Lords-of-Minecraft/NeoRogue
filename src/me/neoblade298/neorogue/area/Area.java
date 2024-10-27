@@ -54,7 +54,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 
 public class Area {
-	private static final int MAX_LANES = 5, MAX_POSITIONS = 16, CENTER_LANE = MAX_LANES / 2;
+	public static final int MAX_LANES = 5, MAX_POSITIONS = 16, CENTER_LANE = MAX_LANES / 2;
 	private static final int X_EDGE_PADDING = 14, Z_EDGE_PADDING = 11, NODE_DIST_BETWEEN = 4;
 	private static final double EXTRA_PATH_CHANCE = 0.175;
 	private static final double EXTRA_PATH_CHANCE_SQ = EXTRA_PATH_CHANCE * EXTRA_PATH_CHANCE;

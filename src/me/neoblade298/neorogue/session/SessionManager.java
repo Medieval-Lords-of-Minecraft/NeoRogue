@@ -70,10 +70,13 @@ import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.area.Area;
+import me.neoblade298.neorogue.area.Node;
 import me.neoblade298.neorogue.equipment.mechanics.PotionProjectileInstance;
 import me.neoblade298.neorogue.map.MapSpawnerInstance;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
+import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.SessionSnapshot;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionSpectateInventory;
@@ -394,20 +397,40 @@ public class SessionManager implements Listener {
 		map.setCenterX(-10000);
 		map.setCenterZ(-10000);
 		map.getRenderers().clear();
-		map.addRenderer(new TestRenderer());
+		map.addRenderer(new NodeMapRenderer());
 	}
 
-	private class TestRenderer extends MapRenderer {
-		MapCursorCollection col = new MapCursorCollection();
+	private class NodeMapRenderer extends MapRenderer {
+		private boolean isRendered = false;
+		private static final int MAP_X_SLOTS[] = new int[] {-100, -50, 0, 50, 100},
+			MAP_Y_SLOTS[] = new int[] {100, 60, 20, -20, -60, -100};
 
-		public TestRenderer() {
-			MapCursor curs = new MapCursor((byte) 50, (byte) 50, (byte) 0, MapCursor.Type.BANNER_BLACK, true, Component.text("Test Node"));
-			col.addCursor(curs);
+		public NodeMapRenderer() {
+			super(true);
 		}
+
 		@Override
-		public void render(MapView view, MapCanvas canvas, Player player) {
-			canvas.setCursors(col);
-			canvas.drawText(50, 50, MinecraftFont.Font, "SHOP");
+		public void render(MapView view, MapCanvas canvas, Player p) {
+			if (!isRendered) {
+				isRendered = true;
+				MapCursorCollection col = new MapCursorCollection();
+				Session s = sessions.get(p.getUniqueId());
+				PlayerSessionData psd = s.getData(p.getUniqueId());
+				Area a = s.getArea();
+				int mapPos = 0; // TODO: Store this in player session data
+				Node[][] nodes = a.getNodes();
+				for (int lane = 0; lane < Area.MAX_LANES; lane++) {
+					for (int pos = mapPos; pos < Area.MAX_POSITIONS && pos < MAP_Y_SLOTS.length; pos++) {
+						Node n = nodes[pos][lane];
+						if (n == null) continue;
+						MapCursor curs = new MapCursor((byte) MAP_X_SLOTS[lane],
+							(byte) MAP_Y_SLOTS[pos], (byte) 0, n.getType().getCursor(), true, Component.text(n.getType().name()));
+						col.addCursor(curs);
+					}
+				}
+				canvas.setCursors(col);
+				canvas.drawText(0, 0, MinecraftFont.Font, "Left/Right click to scroll");
+			}
 		}
 	}
 	
