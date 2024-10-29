@@ -73,7 +73,7 @@ public class StandardFightInstance extends FightInstance {
 			scoreBar.addPlayer(p);
 		}
 		
-		for (UUID uuid : s.getSpectators()) {
+		for (UUID uuid : s.getSpectators().keySet()) {
 			Player p = Bukkit.getPlayer(uuid);
 			timeBar.addPlayer(p);
 			scoreBar.addPlayer(p);

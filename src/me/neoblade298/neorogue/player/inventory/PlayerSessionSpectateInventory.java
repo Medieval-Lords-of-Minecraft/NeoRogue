@@ -34,9 +34,9 @@ public class PlayerSessionSpectateInventory extends CoreInventory {
 	private static final int[] ARMOR = new int[] { 0, 1, 2 };
 	private static final int[] ACCESSORIES = new int[] { 3, 4, 5, 6, 7, 8 };
 	private static final int[] HOTBAR = new int[] { 18, 19, 20, 21, 22, 23, 24, 25, 26 };
-	private static final int[] FILLER = new int[] { 16, 28, 29, 30, 32, 33, 34 };
+	private static final int[] FILLER = new int[] { 16, 27, 28, 29, 30, 32, 33, 34 };
 	private static final int[] KEYBINDS = new int[] { 9, 10, 11, 12, 13, 14, 15 };
-	private static final int STATS = 27, TRASH = 35, OFFHAND = 17, ARTIFACTS = 31, SEE_OTHERS = 28, MAP = 29, STORAGE = 30;
+	private static final int STATS = 27, TRASH = 35, OFFHAND = 17, ARTIFACTS = 31, SEE_OTHERS = 28, STORAGE = 30;
 	private static HashMap<Integer, EquipSlot> slotTypes = new HashMap<Integer, EquipSlot>();
 	private static final DecimalFormat df = new DecimalFormat("#.##");
 
@@ -114,7 +114,6 @@ public class PlayerSessionSpectateInventory extends CoreInventory {
 				0);
 		if (data.getSession().getParty().size() > 1)
 			contents[SEE_OTHERS] = CoreInventory.createButton(Material.SPYGLASS, Component.text("View other players", NamedTextColor.GOLD));
-		contents[MAP] = CoreInventory.createButton(Material.FILLED_MAP, Component.text("Node Map", NamedTextColor.GOLD));
 		inv.setContents(contents);
 	}
 
@@ -200,15 +199,6 @@ public class PlayerSessionSpectateInventory extends CoreInventory {
 			new BukkitRunnable() {
 				public void run() {
 					new SpectateSelectInventory(data.getSession(), spectator, null, false);
-				}
-			}.runTask(NeoRogue.inst());
-			return;
-		}
-		else if (slot == MAP) {
-			e.setCancelled(true);
-			new BukkitRunnable() {
-				public void run() {
-					new NodeMapInventory(p, data.getSession());
 				}
 			}.runTask(NeoRogue.inst());
 			return;

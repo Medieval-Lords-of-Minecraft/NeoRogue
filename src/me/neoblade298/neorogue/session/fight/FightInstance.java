@@ -477,7 +477,7 @@ public abstract class FightInstance extends Instance {
 		for (Player party : s.getOnlinePlayers()) {
 			reviveBar.addPlayer(party);
 		}
-		for (UUID uuid : s.getSpectators()) {
+		for (UUID uuid : s.getSpectators().keySet()) {
 			Player spec = Bukkit.getPlayer(uuid);
 			if (p != null) reviveBar.addPlayer(spec);
 		}
@@ -844,7 +844,7 @@ public abstract class FightInstance extends Instance {
 					p.setAllowFlight(false);
 					p.setMaximumNoDamageTicks(0);
 				}
-				for (UUID uuid : s.getSpectators()) {
+				for (UUID uuid : s.getSpectators().keySet()) {
 					Player p = Bukkit.getPlayer(uuid);
 					p.teleport(spawn);
 				}

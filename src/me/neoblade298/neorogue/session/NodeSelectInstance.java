@@ -76,7 +76,7 @@ public class NodeSelectInstance extends EditInventoryInstance {
 			p.teleport(spawn);
 			p.setAllowFlight(true);
 		}
-		for (UUID uuid : s.getSpectators()) {
+		for (UUID uuid : s.getSpectators().keySet()) {
 			Player p = Bukkit.getPlayer(uuid);
 			p.teleport(spawn);
 			p.setAllowFlight(true);
@@ -111,10 +111,11 @@ public class NodeSelectInstance extends EditInventoryInstance {
 	
 	@Override
 	public void cleanup() {
+		super.cleanup();
 		task.cancel();
 		
 		// Regular players have flight removed when fight starts, spectatrs don't need this since they're invulnerable
-		for (UUID uuid : s.getSpectators()) {
+		for (UUID uuid : s.getSpectators().keySet()) {
 			Bukkit.getPlayer(uuid).setAllowFlight(false);
 		}
 
@@ -125,27 +126,28 @@ public class NodeSelectInstance extends EditInventoryInstance {
 
 	@Override
 	public void handleSpectatorInteractEvent(PlayerInteractEvent e) {
-		if (e.getAction() != Action.RIGHT_CLICK_BLOCK)
-			return;
 		if (e.getHand() != EquipmentSlot.HAND)
 			return;
-		if (e.getClickedBlock().getType() == Material.LECTERN) {
+		if (e.getAction() != Action.RIGHT_CLICK_BLOCK && e.getClickedBlock().getType() == Material.LECTERN) {
 			e.setCancelled(true);
 			Node n = s.getArea().getNodeFromLocation(e.getClickedBlock().getLocation().add(0, 2, 1));
 			FightInstance inst = (FightInstance) n.getInstance();
 			new FightInfoInventory(e.getPlayer(), null, inst.getMap().getMobs());
 		}
+		else {
+			super.handleSpectatorInteractEvent(e);
+		}
 	}
 
 	@Override
 	public void handleInteractEvent(PlayerInteractEvent e) {
-		if (e.getAction() != Action.RIGHT_CLICK_BLOCK)
-			return;
 		if (e.getHand() != EquipmentSlot.HAND)
 			return;
+
 		Player p = e.getPlayer();
-		Node node = s.getArea().getNodeFromLocation(e.getClickedBlock().getLocation());
-		if (Tag.BUTTONS.isTagged(e.getClickedBlock().getType())) {
+		if (e.getAction() == Action.RIGHT_CLICK_BLOCK && Tag.BUTTONS.isTagged(e.getClickedBlock().getType())) {
+			Node node = s.getArea().getNodeFromLocation(e.getClickedBlock().getLocation());
+			if (node == null) return;
 			if (!p.getUniqueId().equals(s.getHost())) {
 				if (!s.canSuggest()) return;
 				s.setSuggestCooldown();
@@ -182,7 +184,7 @@ public class NodeSelectInstance extends EditInventoryInstance {
 					pl.setAllowFlight(false);
 				}
 
-				for (UUID uuid : s.getSpectators()) {
+				for (UUID uuid : s.getSpectators().keySet()) {
 					Bukkit.getPlayer(uuid).setAllowFlight(false);
 				}
 			}
@@ -191,11 +193,14 @@ public class NodeSelectInstance extends EditInventoryInstance {
 			}
 			// Fight instances set allow flight to false and set busy to false on start
 			return;
-		} else if (e.getClickedBlock().getType() == Material.LECTERN) {
+		} else if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock().getType() == Material.LECTERN) {
 			e.setCancelled(true);
 			Node n = s.getArea().getNodeFromLocation(e.getClickedBlock().getLocation().add(0, 2, 1));
 			FightInstance inst = (FightInstance) n.getInstance();
 			new FightInfoInventory(e.getPlayer(), s.getParty().get(p.getUniqueId()), inst.getMap().getMobs());
+		}
+		else {
+			super.handleInteractEvent(e);
 		}
 	}
 	

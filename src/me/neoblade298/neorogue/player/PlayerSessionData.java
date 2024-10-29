@@ -35,8 +35,8 @@ import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
 import me.neoblade298.neorogue.equipment.abilities.EmpoweredEdge;
 import me.neoblade298.neorogue.equipment.abilities.PiercingShot;
 import me.neoblade298.neorogue.equipment.abilities.ShadowWalk;
-import me.neoblade298.neorogue.equipment.weapons.WoodenArrow;
 import me.neoblade298.neorogue.equipment.weapons.BasicBow;
+import me.neoblade298.neorogue.equipment.weapons.WoodenArrow;
 import me.neoblade298.neorogue.equipment.weapons.WoodenDagger;
 import me.neoblade298.neorogue.equipment.weapons.WoodenSword;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
@@ -47,10 +47,8 @@ import me.neoblade298.neorogue.session.fight.trigger.KeyBind;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 
-public class PlayerSessionData {
+public class PlayerSessionData extends MapViewer {
 	private PlayerData data;
-	private UUID uuid;
-	private Session s;
 	private EquipmentClass ec;
 	private double maxHealth, maxMana, maxStamina, health, startingMana, startingStamina, manaRegen, staminaRegen;
 	private Equipment[] hotbar = new Equipment[9];
@@ -73,9 +71,8 @@ public class PlayerSessionData {
 	private static final DecimalFormat df = new DecimalFormat("#.##");
 
 	public PlayerSessionData(UUID uuid, Session s, ResultSet rs) throws SQLException {
-		this.uuid = uuid;
+		super(s, uuid);
 		data = PlayerManager.getPlayerData(uuid);
-		this.s = s;
 
 		this.ec = EquipmentClass.valueOf(rs.getString("playerClass"));
 		this.maxHealth = rs.getDouble("maxHealth");
@@ -102,9 +99,8 @@ public class PlayerSessionData {
 	}
 
 	public PlayerSessionData(UUID uuid, EquipmentClass ec, Session s) {
-		this.uuid = uuid;
+		super(s, uuid);
 		data = PlayerManager.getPlayerData(uuid);
-		this.s = s;
 		health = 100;
 		maxHealth = 100;
 		maxMana = 50;
@@ -149,10 +145,7 @@ public class PlayerSessionData {
 			armors[i] = Equipment.get("curseOfBurden", false);
 		}
 
-		setupInventory();
 		setupArtifacts();
-		updateBoardLines();
-
 		data.getPlayer().setHealthScaled(true);
 		data.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHealth);
 		data.initialize(s, this);

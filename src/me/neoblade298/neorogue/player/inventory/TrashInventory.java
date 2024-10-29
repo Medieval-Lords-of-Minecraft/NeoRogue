@@ -26,7 +26,7 @@ public class TrashInventory extends CoreInventory implements ShiftClickableInven
 		
 		if (p != data.getPlayer()) {
 			cache = p.getInventory().getContents();
-			PlayerSessionInventory.setupInventory(p, data);
+			PlayerSessionInventory.setupInventory(data);
 		}
 	}
 

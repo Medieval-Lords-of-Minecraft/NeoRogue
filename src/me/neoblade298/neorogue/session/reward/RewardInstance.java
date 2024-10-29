@@ -49,7 +49,7 @@ public class RewardInstance extends EditInventoryInstance {
 			p.teleport(spawn);
 		}
 		
-		for (UUID uuid : s.getSpectators()) {
+		for (UUID uuid : s.getSpectators().keySet()) {
 			Player p = Bukkit.getPlayer(uuid);
 			p.teleport(spawn);
 		}
@@ -65,34 +65,43 @@ public class RewardInstance extends EditInventoryInstance {
 
 	@Override
 	public void cleanup() {
+		super.cleanup();
 		holo.delete();
 	}
 
 	@Override
 	public void handleSpectatorInteractEvent(PlayerInteractEvent e) {
 		e.setCancelled(true);
-		if (e.getAction() != Action.RIGHT_CLICK_BLOCK || e.getClickedBlock().getType() != Material.ENDER_CHEST) return;
 		if (e.getHand() != EquipmentSlot.HAND) return;
-		new SpectateSelectInventory(s, e.getPlayer(), null, true);
+		if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock().getType() == Material.ENDER_CHEST) {
+			new SpectateSelectInventory(s, e.getPlayer(), null, true);
+		}
+		else {
+			super.handleSpectatorInteractEvent(e);
+		}
 	}
 
 	@Override
 	public void handleInteractEvent(PlayerInteractEvent e) {
-		if (e.getAction() != Action.RIGHT_CLICK_BLOCK || e.getClickedBlock().getType() != Material.ENDER_CHEST) return;
 		if (e.getHand() != EquipmentSlot.HAND) return;
 		e.setCancelled(true);
 		
-		Player p = e.getPlayer();
-		UUID uuid = p.getUniqueId();
-		if (rewards.get(uuid).isEmpty()) {
-			if (!onRewardClaim()) {
-				new SpectateSelectInventory(s, e.getPlayer(), s.getParty().get(uuid), true);
-			}
-			return;
-		}
-		p.playSound(p, Sound.BLOCK_ENDER_CHEST_OPEN, 1F, 1F);
 		
-		new RewardInventory(s.getParty().get(uuid), rewards.get(uuid));
+		if (e.getAction() != Action.RIGHT_CLICK_BLOCK || e.getClickedBlock().getType() != Material.ENDER_CHEST) {
+			Player p = e.getPlayer();
+			UUID uuid = p.getUniqueId();
+			if (rewards.get(uuid).isEmpty()) {
+				if (!onRewardClaim()) {
+					new SpectateSelectInventory(s, e.getPlayer(), s.getParty().get(uuid), true);
+				}
+				return;
+			}
+			p.playSound(p, Sound.BLOCK_ENDER_CHEST_OPEN, 1F, 1F);
+			new RewardInventory(s.getParty().get(uuid), rewards.get(uuid));
+		}
+		else {
+			super.handleInteractEvent(e);
+		}
 	}
 	
 	public void spectateRewards(Player spectator, UUID viewed) {

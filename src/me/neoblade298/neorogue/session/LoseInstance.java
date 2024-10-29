@@ -24,7 +24,7 @@ public class LoseInstance extends EditInventoryInstance {
 		for (PlayerSessionData data : s.getParty().values()) {
 			data.getPlayer().teleport(spawn);
 		}
-		for (UUID uuid : s.getSpectators()) {
+		for (UUID uuid : s.getSpectators().keySet()) {
 			Player p = Bukkit.getPlayer(uuid);
 			p.teleport(spawn);
 		}
@@ -37,7 +37,7 @@ public class LoseInstance extends EditInventoryInstance {
 
 	@Override
 	public void cleanup() {
-		
+		super.cleanup();
 	}
 
 	@Override
@@ -48,6 +48,7 @@ public class LoseInstance extends EditInventoryInstance {
 	@Override
 	public void handleInteractEvent(PlayerInteractEvent e) {
 		e.setCancelled(true);
+		super.handleInteractEvent(e);
 	}
 
 	@Override

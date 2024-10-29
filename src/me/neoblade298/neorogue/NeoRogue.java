@@ -8,6 +8,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.map.MapRenderer;
+import org.bukkit.map.MapView;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -52,6 +54,8 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.player.PlayerManager;
+import me.neoblade298.neorogue.session.EditInventoryInstance;
+import me.neoblade298.neorogue.session.EditInventoryInstance.NodeMapRenderer;
 import me.neoblade298.neorogue.session.NodeSelectInstance;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
@@ -80,6 +84,14 @@ public class NeoRogue extends JavaPlugin {
 		reload();
 		initCommands(); // Must load commands AFTER map pieces due to command suggestion
 		new Placeholders().register();
+
+		// Load map renderer for node map
+		MapView map = Bukkit.getMap(EditInventoryInstance.MAP_ID);
+		while (!map.getRenderers().isEmpty()) {
+			MapRenderer rend = map.getRenderers().get(0);
+			map.removeRenderer(rend);
+		}
+		map.addRenderer(new NodeMapRenderer());
 
 		// Strictly for debug usage
 		debugInitialize();

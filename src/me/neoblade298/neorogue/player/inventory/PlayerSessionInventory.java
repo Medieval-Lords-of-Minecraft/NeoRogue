@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -16,6 +17,8 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.MapMeta;
+import org.bukkit.map.MapView;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import de.tr7zw.nbtapi.NBTItem;
@@ -28,6 +31,8 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.session.EditInventoryInstance;
+import me.neoblade298.neorogue.session.NodeSelectInstance;
 import me.neoblade298.neorogue.session.fight.trigger.KeyBind;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -39,9 +44,9 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 	private static final int[] ARMOR = new int[] { 18, 19, 20 };
 	private static final int[] ACCESSORIES = new int[] { 21, 22, 23, 24, 25, 26 };
 	private static final int[] HOTBAR = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
-	private static final int[] FILLER = new int[] { 11, 14, 15, 16, 17, 34 };
+	private static final int[] FILLER = new int[] { 11, 12, 14, 15, 16, 17, 34 };
 	private static final int[] KEYBINDS = new int[] { 27, 28, 29, 30, 31, 32, 33 };
-	private static final int STATS = 9, TRASH = 17, STORAGE = 10, OFFHAND = 35, ARTIFACTS = 13, SEE_OTHERS = 11, MAP = 12;
+	private static final int STATS = 9, TRASH = 17, STORAGE = 10, OFFHAND = 35, ARTIFACTS = 13, SEE_OTHERS = 11, MAP = 40;
 	private static HashMap<Integer, EquipSlot> slotTypes = new HashMap<Integer, EquipSlot>();
 	private static final DecimalFormat df = new DecimalFormat("#.##");
 
@@ -56,6 +61,11 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 	public PlayerSessionInventory(PlayerSessionData data) {
 		super(data.getPlayer());
 		this.data = data;
+
+		// If you open your inv and try to pick the map up, put map back into offhand
+		if (data.isViewingMap()) {
+			data.stopViewingMap();
+		}
 	}
 
 	public PlayerSessionInventory(Player viewer, PlayerSessionData data) {
@@ -64,10 +74,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 	}
 	
 	public static void setupInventory(PlayerSessionData data) {
-		setupInventory(data.getPlayer(), data);
-	}
-	
-	public static void setupInventory(Player p, PlayerSessionData data) {
+		Player p = data.getPlayer();
 		ItemStack[] contents = p.getInventory().getContents();
 
 		// Import data from session data
@@ -123,7 +130,14 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 				0);
 		if (data.getSession().getParty().size() > 1)
 			contents[SEE_OTHERS] = CoreInventory.createButton(Material.SPYGLASS, Component.text("View other players", NamedTextColor.GOLD));
-		contents[MAP] = CoreInventory.createButton(Material.FILLED_MAP, Component.text("Node Map", NamedTextColor.GOLD));
+
+		if (!(data.getSession().getInstance() instanceof NodeSelectInstance)) {
+			contents[MAP] = CoreInventory.createButton(Material.FILLED_MAP, Component.text("Node Map", NamedTextColor.GOLD));
+			MapMeta meta = (MapMeta) contents[MAP].getItemMeta();
+			MapView map = Bukkit.getMap(EditInventoryInstance.MAP_ID);
+			meta.setMapView(map);
+			contents[MAP].setItemMeta(meta);
+		}
 		p.getInventory().setContents(contents);
 	}
 

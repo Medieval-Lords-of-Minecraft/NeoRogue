@@ -64,7 +64,7 @@ public class ShrineInstance extends EditInventoryInstance {
 			notUsed.add(p.getUniqueId());
 			p.teleport(spawn);
 		}
-		for (UUID uuid : s.getSpectators()) {
+		for (UUID uuid : s.getSpectators().keySet()) {
 			Player p = Bukkit.getPlayer(uuid);
 			p.teleport(spawn);
 		}
@@ -80,6 +80,7 @@ public class ShrineInstance extends EditInventoryInstance {
 
 	@Override
 	public void cleanup() {
+		super.cleanup();
 		blockBottom.setType(Material.EMERALD_BLOCK);
 		blockMiddle.setType(Material.EMERALD_BLOCK);
 		blockTop.setType(Material.AIR);
@@ -88,24 +89,32 @@ public class ShrineInstance extends EditInventoryInstance {
 
 	@Override
 	public void handleInteractEvent(PlayerInteractEvent e) {
-		if (e.getAction() != Action.RIGHT_CLICK_BLOCK) return;
 		if (e.getHand() != EquipmentSlot.HAND) return;
 		e.setCancelled(true);
 
-		Player p = e.getPlayer();
-		UUID uuid = p.getUniqueId();
-		if (state == RETURN_FAIL_STATE) {
-			returnToNodes();
-			return;
-		}
 		
-		if (e.getClickedBlock().getType() == Material.EMERALD_BLOCK && state == INIT_STATE) {
-			new ShrineChoiceInventory(p, s.getParty().get(p.getUniqueId()), this, s.getHost().equals(uuid));
-			return;
-		}
+		if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+			Player p = e.getPlayer();
+			UUID uuid = p.getUniqueId();
+			if (state == RETURN_FAIL_STATE) {
+				returnToNodes();
+				return;
+			}
+			
+			if (e.getClickedBlock().getType() == Material.EMERALD_BLOCK && state == INIT_STATE) {
+				new ShrineChoiceInventory(p, s.getParty().get(p.getUniqueId()), this, s.getHost().equals(uuid));
+				return;
+			}
 
-		if (e.getClickedBlock().getType() == Material.ANVIL && notUsed.contains(uuid) && state == UPGRADE_STATE) {
-			new ShrineUpgradeInventory(p, s.getData(p.getUniqueId()), this);
+			if (e.getClickedBlock().getType() == Material.ANVIL && notUsed.contains(uuid) && state == UPGRADE_STATE) {
+				new ShrineUpgradeInventory(p, s.getData(p.getUniqueId()), this);
+			}
+			else {
+				super.handleInteractEvent(e);
+			}
+		}
+		else {
+			super.handleInteractEvent(e);
 		}
 	}
 	

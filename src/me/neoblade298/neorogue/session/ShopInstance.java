@@ -67,7 +67,7 @@ public class ShopInstance extends EditInventoryInstance {
 			}
 			shops.put(p.getUniqueId(), shopItems);
 		}
-		for (UUID uuid : s.getSpectators()) {
+		for (UUID uuid : s.getSpectators().keySet()) {
 			Player p = Bukkit.getPlayer(uuid);
 			p.teleport(spawn);
 		}
@@ -83,6 +83,7 @@ public class ShopInstance extends EditInventoryInstance {
 
 	@Override
 	public void cleanup() {
+		super.cleanup();
 		holo.delete();
 	}
 
@@ -92,6 +93,9 @@ public class ShopInstance extends EditInventoryInstance {
 		e.setCancelled(true);
 		if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock().getType() == Material.CHEST) {
 			new SpectateSelectInventory(s, p, null, true);
+		}
+		else {
+			super.handleSpectatorInteractEvent(e);
 		}
 	}
 
@@ -117,6 +121,10 @@ public class ShopInstance extends EditInventoryInstance {
 
 		else if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock().getType() == Material.STONE_BUTTON) {
 			handleReady(p);
+		}
+
+		else {
+			super.handleInteractEvent(e);
 		}
 	}
 	

@@ -14,6 +14,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -125,6 +126,7 @@ public class PlayerFightData extends FightData {
 			art.initialize(p, this, null, null, i++);
 		}
 		
+		inv.setItem(EquipmentSlot.OFF_HAND, null); // Remove map from offhand
 		Equipment offhand = data.getEquipment(EquipSlot.OFFHAND)[0];
 		if (offhand != null) {
 			offhand.initialize(p, this, null, EquipSlot.OFFHAND, 0);

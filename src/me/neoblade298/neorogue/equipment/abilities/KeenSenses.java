@@ -50,7 +50,6 @@ public class KeenSenses extends Equipment {
 		data.applyStatus(StatusType.FOCUS, data, 1, -1);
 		data.addTrigger(id, Trigger.PRE_DEALT_DAMAGE, (pdata, in) -> {
 			PreDealtDamageEvent ev = (PreDealtDamageEvent) in;
-			System.out.println(ev.getMeta().getOrigin());
 			if (ev.getMeta().getOrigin() != DamageOrigin.TRAP) return TriggerResult.keep();
 			ev.getMeta().addBuff(BuffType.GENERAL, new Buff(data, 0, damage * 0.01), BuffOrigin.NORMAL, true);
 			return TriggerResult.keep();

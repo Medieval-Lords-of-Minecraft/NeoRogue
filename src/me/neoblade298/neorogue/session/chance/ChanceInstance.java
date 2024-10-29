@@ -98,7 +98,7 @@ public class ChanceInstance extends EditInventoryInstance {
 			data.getPlayer().teleport(spawn);
 			stage.put(data.getPlayer().getUniqueId(), set.getInitialStage());
 		}
-		for (UUID uuid : s.getSpectators()) {
+		for (UUID uuid : s.getSpectators().keySet()) {
 			Player p = Bukkit.getPlayer(uuid);
 			p.teleport(spawn);
 		}
@@ -114,6 +114,7 @@ public class ChanceInstance extends EditInventoryInstance {
 
 	@Override
 	public void cleanup() {
+		super.cleanup();
 		Candle candle = (Candle) candleBlock.getBlockData();
 		candle.setLit(false);
 		candleBlock.setBlockData(candle);
@@ -123,31 +124,31 @@ public class ChanceInstance extends EditInventoryInstance {
 	@Override
 	public void handleSpectatorInteractEvent(PlayerInteractEvent e) {
 		e.setCancelled(true);
-		if (e.getAction() != Action.RIGHT_CLICK_BLOCK)
-			return;
 		if (e.getHand() != EquipmentSlot.HAND)
 			return;
 
 		Player p = e.getPlayer();
-		if (e.getClickedBlock().getType() == Material.QUARTZ_PILLAR || e.getClickedBlock().getType() == Material.LIGHT_GRAY_CANDLE) {
+		if (e.getAction() == Action.RIGHT_CLICK_BLOCK && (e.getClickedBlock().getType() == Material.QUARTZ_PILLAR || e.getClickedBlock().getType() == Material.LIGHT_GRAY_CANDLE)) {
 			if (set.isIndividual()) {
 				new SpectateSelectInventory(s, p, null, true);
 			} else {
 				spectatePlayer(p, s.getHost());
 			}
 		}
+		else {
+			super.handleSpectatorInteractEvent(e);
+		}
 	}
 
 	@Override
 	public void handleInteractEvent(PlayerInteractEvent e) {
-		if (e.getAction() != Action.RIGHT_CLICK_BLOCK)
-			return;
 		if (e.getHand() != EquipmentSlot.HAND)
 			return;
 		e.setCancelled(true);
 
 		Player p = e.getPlayer();
-		if (e.getClickedBlock().getType() == Material.QUARTZ_PILLAR || e.getClickedBlock().getType() == Material.LIGHT_GRAY_CANDLE) {
+		if (e.getAction() == Action.RIGHT_CLICK_BLOCK && 
+				e.getClickedBlock().getType() == Material.QUARTZ_PILLAR || e.getClickedBlock().getType() == Material.LIGHT_GRAY_CANDLE) {
 			// If we're stuck in chance event due to someone's inventory full or cursed
 			if (stage.isEmpty()) {
 				returnPlayers();
@@ -165,6 +166,9 @@ public class ChanceInstance extends EditInventoryInstance {
 				return;
 			}
 			new ChanceInventory(p, this, set, stage.get(p.getUniqueId()));
+		}
+		else {
+			super.handleInteractEvent(e);
 		}
 	}
 

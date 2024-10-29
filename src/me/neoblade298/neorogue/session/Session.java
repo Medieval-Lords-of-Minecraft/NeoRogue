@@ -10,7 +10,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.UUID;
 
@@ -21,6 +20,9 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.MapMeta;
+import org.bukkit.map.MapView;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.sk89q.worldedit.EditSession;
@@ -37,6 +39,7 @@ import com.sk89q.worldedit.session.ClipboardHolder;
 
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.effects.Audience;
+import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.io.SQLManager;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder;
@@ -47,6 +50,7 @@ import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.area.Node;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
+import me.neoblade298.neorogue.player.MapViewer;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import net.kyori.adventure.text.Component;
@@ -56,7 +60,7 @@ public class Session {
 	private Area area;
 	private UUID host;
 	private HashMap<UUID, PlayerSessionData> party = new HashMap<UUID, PlayerSessionData>();
-	private HashSet<UUID> spectators = new HashSet<UUID>();
+	private HashMap<UUID, MapViewer> spectators = new HashMap<UUID, MapViewer>();
 	private Instance inst;
 	private Node curr;
 	private SessionStatistics stats;
@@ -180,6 +184,10 @@ public class Session {
 	public ArrayList<String> getSpectatorLines() {
 		return spectatorLines;
 	}
+
+	public MapViewer getSpectator(UUID uuid) {
+		return spectators.get(uuid);
+	}
 	
 	public void updateSpectatorLines() {
 		spectatorLines = new ArrayList<String>(9);
@@ -252,7 +260,7 @@ public class Session {
 	}
 	
 	public void addSpectator(Player p) {
-		this.spectators.add(p.getUniqueId());
+		this.spectators.put(p.getUniqueId(), new MapViewer(this, p.getUniqueId()));
 		SessionManager.addToSession(p.getUniqueId(), this);
 		broadcast("<yellow>" + p.getName() + "</yellow> started spectating!");
 		p.setGameMode(GameMode.ADVENTURE);
@@ -279,12 +287,12 @@ public class Session {
 		SessionManager.removeFromSession(p.getUniqueId());
 	}
 	
-	public HashSet<UUID> getSpectators() {
+	public HashMap<UUID, MapViewer> getSpectators() {
 		return spectators;
 	}
 	
 	public boolean isSpectator(UUID uuid) {
-		return spectators.contains(uuid);
+		return spectators.containsKey(uuid);
 	}
 
 	public void broadcastError(String msg) {
@@ -293,7 +301,7 @@ public class Session {
 			Sounds.error.play(p, p, Audience.ORIGIN);
 		}
 		
-		for (UUID uuid : spectators) {
+		for (UUID uuid : spectators.keySet()) {
 			Player p = Bukkit.getPlayer(uuid);
 			Util.msgRaw(p, NeoCore.miniMessage().deserialize(msg).colorIfAbsent(NamedTextColor.RED));
 			Sounds.error.play(p, p, Audience.ORIGIN);
@@ -314,7 +322,7 @@ public class Session {
 			Util.msgRaw(p, NeoCore.miniMessage().deserialize(msg).colorIfAbsent(NamedTextColor.GRAY));
 		}
 
-		for (UUID uuid : spectators) {
+		for (UUID uuid : spectators.keySet()) {
 			Player p = Bukkit.getPlayer(uuid);
 			Util.msgRaw(p, NeoCore.miniMessage().deserialize(msg).colorIfAbsent(NamedTextColor.GRAY));
 		}
@@ -325,7 +333,7 @@ public class Session {
 			if (p == ignore) continue;
 			Util.msgRaw(p, msg);
 		}
-		for (UUID uuid : spectators) {
+		for (UUID uuid : spectators.keySet()) {
 			Player p = Bukkit.getPlayer(uuid);
 			Util.msgRaw(p, msg);
 		}
@@ -335,7 +343,7 @@ public class Session {
 		for (Player p : getOnlinePlayers()) {
 			Util.msgRaw(p, NeoCore.miniMessage().deserialize(msg).colorIfAbsent(NamedTextColor.GRAY));
 		}
-		for (UUID uuid : spectators) {
+		for (UUID uuid : spectators.keySet()) {
 			Player p = Bukkit.getPlayer(uuid);
 			Util.msgRaw(p, NeoCore.miniMessage().deserialize(msg).colorIfAbsent(NamedTextColor.GRAY));
 		}
@@ -345,7 +353,7 @@ public class Session {
 		for (Player p : getOnlinePlayers()) {
 			Util.msgRaw(p, msg.colorIfAbsent(NamedTextColor.GRAY));
 		}
-		for (UUID uuid : spectators) {
+		for (UUID uuid : spectators.keySet()) {
 			Player p = Bukkit.getPlayer(uuid);
 			Util.msgRaw(p, msg.colorIfAbsent(NamedTextColor.GRAY));
 		}
@@ -356,7 +364,7 @@ public class Session {
 			p.playSound(p, s, 1F, 1F);
 		}
 
-		for (UUID uuid : spectators) {
+		for (UUID uuid : spectators.keySet()) {
 			Player p = Bukkit.getPlayer(uuid);
 			p.playSound(p, s, 1F, 1F);
 		}
@@ -390,6 +398,13 @@ public class Session {
 	
 	public void setupSpectatorInventory(Player p) {
 		p.getInventory().clear();
+		if (inst instanceof NodeSelectInstance) return;
+		ItemStack item = CoreInventory.createButton(Material.FILLED_MAP, Component.text("Node Map", NamedTextColor.GOLD));
+		MapMeta meta = (MapMeta) item.getItemMeta();
+		MapView map = Bukkit.getMap(EditInventoryInstance.MAP_ID);
+		meta.setMapView(map);
+		item.setItemMeta(meta);
+		p.getInventory().setItem(0, item);
 	}
 	
 	// False if set instance fails
@@ -509,6 +524,14 @@ public class Session {
 	}
 	
 	public void visitNode(Node node) {
+		for (PlayerSessionData psd : party.values()) {
+			psd.setMapPosition(node.getPosition());
+			psd.setShouldMapRender(true);
+		}
+		for (MapViewer viewer : spectators.values()) {
+			viewer.setMapPosition(node.getPosition());
+			viewer.setShouldMapRender(true);
+		}
 		this.curr = node;
 		nodesVisited++;
 	}
@@ -537,7 +560,7 @@ public class Session {
 			SessionManager.resetPlayer(p);
 		}
 		
-		for (UUID uuid : spectators) {
+		for (UUID uuid : spectators.keySet()) {
 			Player p = Bukkit.getPlayer(uuid);
 			SessionManager.resetPlayer(p);
 		}

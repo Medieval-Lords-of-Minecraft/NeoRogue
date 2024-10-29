@@ -46,17 +46,9 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
-import org.bukkit.event.server.MapInitializeEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.map.MapCanvas;
-import org.bukkit.map.MapCursor;
-import org.bukkit.map.MapCursorCollection;
-import org.bukkit.map.MapRenderer;
-import org.bukkit.map.MapView;
-import org.bukkit.map.MapView.Scale;
-import org.bukkit.map.MinecraftFont;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import io.lumine.mythic.api.mobs.MythicMob;
@@ -70,13 +62,10 @@ import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.area.Area;
-import me.neoblade298.neorogue.area.Node;
 import me.neoblade298.neorogue.equipment.mechanics.PotionProjectileInstance;
 import me.neoblade298.neorogue.map.MapSpawnerInstance;
 import me.neoblade298.neorogue.player.PlayerData;
 import me.neoblade298.neorogue.player.PlayerManager;
-import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.SessionSnapshot;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionSpectateInventory;
@@ -153,7 +142,7 @@ public class SessionManager implements Listener {
 				removeFromSession(uuid);
 			}
 		}
-		for (UUID uuid : s.getSpectators()) {
+		for (UUID uuid : s.getSpectators().keySet()) {
 			removeFromSession(uuid);
 		}
 		sessionPlots.remove(s.getPlot());
@@ -231,6 +220,10 @@ public class SessionManager implements Listener {
 			
 			if (s.getInstance() instanceof FightInstance) {
 				FightInstance.handleOffhandSwap(e);
+			}
+			else if (s.getInstance() instanceof EditInventoryInstance) {
+				EditInventoryInstance.handleSwapHand(e);
+				e.setCancelled(false);
 			}
 		}
 	}
@@ -353,8 +346,12 @@ public class SessionManager implements Listener {
 		Session s = sessions.get(uuid);
 		if (s.isSpectator(uuid)) return;
 
-		if (!(s.getInstance() instanceof FightInstance)) return;
-		FightInstance.handleHotbarSwap(e);
+		if (s.getInstance() instanceof FightInstance) {
+			FightInstance.handleHotbarSwap(e);
+		}
+		else if (s.getInstance() instanceof EditInventoryInstance) {
+			EditInventoryInstance.handleHotbarSwap(e);
+		}
 	}
 
 	@EventHandler
@@ -386,52 +383,6 @@ public class SessionManager implements Listener {
 		}
 		
 		FightInstance.handleRightClickEntity(e);
-	}
-
-	@EventHandler
-	public void onMapRender(MapInitializeEvent e) {
-		// Make this only happen with maps within a session somehow
-		MapView map = e.getMap();
-		map.setUnlimitedTracking(false);
-		map.setScale(Scale.FARTHEST);
-		map.setCenterX(-10000);
-		map.setCenterZ(-10000);
-		map.getRenderers().clear();
-		map.addRenderer(new NodeMapRenderer());
-	}
-
-	private class NodeMapRenderer extends MapRenderer {
-		private boolean isRendered = false;
-		private static final int MAP_X_SLOTS[] = new int[] {-100, -50, 0, 50, 100},
-			MAP_Y_SLOTS[] = new int[] {100, 60, 20, -20, -60, -100};
-
-		public NodeMapRenderer() {
-			super(true);
-		}
-
-		@Override
-		public void render(MapView view, MapCanvas canvas, Player p) {
-			if (!isRendered) {
-				isRendered = true;
-				MapCursorCollection col = new MapCursorCollection();
-				Session s = sessions.get(p.getUniqueId());
-				PlayerSessionData psd = s.getData(p.getUniqueId());
-				Area a = s.getArea();
-				int mapPos = 0; // TODO: Store this in player session data
-				Node[][] nodes = a.getNodes();
-				for (int lane = 0; lane < Area.MAX_LANES; lane++) {
-					for (int pos = mapPos; pos < Area.MAX_POSITIONS && pos < MAP_Y_SLOTS.length; pos++) {
-						Node n = nodes[pos][lane];
-						if (n == null) continue;
-						MapCursor curs = new MapCursor((byte) MAP_X_SLOTS[lane],
-							(byte) MAP_Y_SLOTS[pos], (byte) 0, n.getType().getCursor(), true, Component.text(n.getType().name()));
-						col.addCursor(curs);
-					}
-				}
-				canvas.setCursors(col);
-				canvas.drawText(0, 0, MinecraftFont.Font, "Left/Right click to scroll");
-			}
-		}
 	}
 	
 	@EventHandler
