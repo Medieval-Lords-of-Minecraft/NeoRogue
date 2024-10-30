@@ -11,10 +11,14 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
+import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.shared.util.SharedUtil;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
 import net.kyori.adventure.text.Component;
@@ -82,6 +86,20 @@ public class ArtifactsInventory extends CoreInventory {
 		
 		int slot = e.getRawSlot();
 		if (e.getCurrentItem() == null) return;
+		
+		ItemStack item = e.getCurrentItem();
+		NBTItem nclicked = new NBTItem(item);
+		System.out.println("Clicked " + nclicked.getString("equipId"));
+		if (e.isRightClick() && nclicked.hasTag("equipId") && e.getCursor().getType().isAir()) {
+			e.setCancelled(true);
+			new BukkitRunnable() {
+				public void run() {
+					new GlossaryInventory(p, Equipment.get(nclicked.getString("equipId"), false), null);
+				}
+			}.runTask(NeoRogue.inst());
+			return;
+		}
+
 		if (inv.getSize() == 9) return;
 		if (slot == inv.getSize() - 9 + NEXT) {
 			inv.clear();

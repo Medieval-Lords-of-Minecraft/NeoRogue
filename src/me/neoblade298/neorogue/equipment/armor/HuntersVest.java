@@ -36,7 +36,7 @@ public class HuntersVest extends Equipment {
 			ReceivedDamageEvent ev = (ReceivedDamageEvent) in;
 			if (!data.hasStatus(StatusType.FOCUS)) return TriggerResult.keep();
 			if (!ev.getMeta().containsType(BuffType.PHYSICAL)) return TriggerResult.keep();
-			ev.getMeta().addBuff(BuffType.PHYSICAL, new Buff(data, reduc * data.getStatus(StatusType.FOCUS).getStacks(), 0), BuffOrigin.NORMAL, false);
+			ev.getMeta().addBuff(BuffType.PHYSICAL, new Buff(data, reduc * Math.min(3, data.getStatus(StatusType.FOCUS).getStacks()), 0), BuffOrigin.NORMAL, false);
 			return TriggerResult.keep();
 		});
 	}

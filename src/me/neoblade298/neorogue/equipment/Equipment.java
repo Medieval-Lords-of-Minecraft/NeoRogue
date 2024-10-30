@@ -864,7 +864,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 
 		meta.displayName(display.decoration(TextDecoration.ITALIC, State.FALSE));
 		ArrayList<Component> loreItalicized = new ArrayList<Component>();
-		loreItalicized.add(Component.text("Right click for additional info", NamedTextColor.GRAY));
+		loreItalicized.add(Component.text("Right click for glossary", NamedTextColor.GRAY));
 		if (isCursed) {
 			loreItalicized.add(Component.text("Cursed " + type.getDisplay(), NamedTextColor.RED));
 		}

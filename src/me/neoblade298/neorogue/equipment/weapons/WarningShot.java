@@ -10,11 +10,13 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.Circle;
 import me.neoblade298.neocore.bukkit.effects.LocalAxes;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Bow;
 import me.neoblade298.neorogue.equipment.BowProjectile;
@@ -61,7 +63,12 @@ public class WarningShot extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ProjectileGroup proj = new ProjectileGroup(new WarningShotProjectile(data));
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (d, inputs) -> {
-			proj.start(data);
+			data.charge(20);
+			data.addTask(new BukkitRunnable() {
+				public void run() {
+					proj.start(data);
+				}
+			}.runTaskLater(NeoRogue.inst(), 20));
 			return TriggerResult.keep();
 		}, Bow.needsAmmo));
 	}
@@ -115,7 +122,7 @@ public class WarningShot extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE_TORCH, "On cast, charge <white>1s</white> before firing a projectile. If that projectile hits a block, "
-			+ "apply " + DescUtil.potion("Slowness", 0, 3) + " to all enemies in a radius of " + DescUtil.white(tp.range) + ", increase damage by "
+			+ "apply " + DescUtil.potion("Slowness", 0, 3) + " to all enemies in a radius, increase damage by "
 			+ DescUtil.yellow(damage) + " [<white>8s</white>] per enemy slowed, and gain " + GlossaryTag.FOCUS.tag(this, focus, true) + " if at least one enemy was slowed.");
 	}
 }

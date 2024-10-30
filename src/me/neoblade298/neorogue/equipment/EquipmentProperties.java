@@ -181,7 +181,7 @@ public class EquipmentProperties {
 		COOLDOWN("Cooldown: "),
 		DAMAGE("Damage: "),
 		KNOCKBACK("Knockback: "),
-		AREA_OF_EFFECT("Area of Effect:"),
+		AREA_OF_EFFECT("Area of Effect: "),
 		ATTACK_SPEED("Attack Speed: ");
 		
 		private String label;

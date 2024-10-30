@@ -119,7 +119,12 @@ public class GlossaryInventory extends CoreInventory {
 			lore.addAll(tag.getLore());
 			lore.add(Component.text("-----", NamedTextColor.DARK_GRAY));
 		}
-		lore.removeLast();
+		if (!lore.isEmpty()) {
+			lore.removeLast();
+		}
+		else {
+			lore.add(Component.text("None", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, State.FALSE));
+		}
 		item.lore(lore);
 		return item;
 	}

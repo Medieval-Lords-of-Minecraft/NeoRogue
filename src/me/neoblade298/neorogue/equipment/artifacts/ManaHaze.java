@@ -58,13 +58,15 @@ public class ManaHaze extends Artifact {
 				if (ev.getStatusClass() != StatusClass.NEGATIVE) return TriggerResult.keep();
 				if (ev.isSecondary()) return TriggerResult.keep();
 				if (stacks >= thres) {
+					System.out.println("1");
 					LivingEntity trg = TargetHelper.getNearest(ev.getTarget().getEntity(), tp);
 					if (trg != null) {
+						System.out.println("2");
 						stacks -= thres;
 						FightInstance.applyStatus(trg, ev.getStatus(), ev.getStacks(), ev.getTicks(), pdata);
 					}
-					stacks += ev.getStacks();
 				}
+				stacks += ev.getStacks();
 				return TriggerResult.keep();
 			};
 		}
