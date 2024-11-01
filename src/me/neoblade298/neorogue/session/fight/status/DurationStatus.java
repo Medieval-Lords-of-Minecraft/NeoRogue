@@ -19,12 +19,12 @@ public class DurationStatus extends Status {
 		if (this.stacks > 0 && this.ticks > 0) {
 			if (action == null) {
 				action = new DurationTickAction();
-				data.addTickAction(action);
+				owner.addTickAction(action);
 			}
 		}
 
 		if (this.stacks <= 0 || this.ticks <= 0) {
-			data.removeStatus(id);
+			owner.removeStatus(id);
 			return;
 		}
 
@@ -41,7 +41,7 @@ public class DurationStatus extends Status {
 			
 			ticks = ticks - 20;
 			if (ticks <= 0) {
-				data.removeStatus(id);
+				owner.removeStatus(id);
 				return TickResult.REMOVE;
 			}
 			return TickResult.KEEP;

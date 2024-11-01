@@ -20,9 +20,8 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
-import me.neoblade298.neorogue.session.fight.DamageType;
+import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.FightData;
-import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
@@ -75,8 +74,7 @@ public class AzureCutter extends Artifact {
 		}
 
 		@Override
-		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
-			FightInstance.dealDamage(proj.getOwner(), DamageType.PIERCING, damage, hit.getEntity());
+		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			Sounds.breaks.play(p, hit.getEntity());
 		}
 

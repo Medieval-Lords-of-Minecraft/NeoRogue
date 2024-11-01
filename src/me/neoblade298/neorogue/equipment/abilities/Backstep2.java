@@ -132,8 +132,7 @@ public class Backstep2 extends Equipment {
 		}
 
 		@Override
-		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
-			damageProjectile(hit.getEntity(), proj, hitBarrier);
+		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			hit.applyStatus(StatusType.REND, data, rend, -1);
 		}
 

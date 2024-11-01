@@ -16,6 +16,7 @@ import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
+import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -41,7 +42,7 @@ public class StoneThrowingKnife extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ProjectileGroup proj = new ProjectileGroup(new StoneThrowingKnifeProjectile(p));
+		ProjectileGroup proj = new ProjectileGroup(new StoneThrowingKnifeProjectile(data));
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (d, inputs) -> {
 			if (!canUseWeapon(data)) return TriggerResult.keep();
 			if (!data.canBasicAttack()) return TriggerResult.keep();
@@ -52,12 +53,14 @@ public class StoneThrowingKnife extends Equipment {
 	}
 	
 	private class StoneThrowingKnifeProjectile extends Projectile {
+		private PlayerFightData data;
 		private Player p;
 
-		public StoneThrowingKnifeProjectile(Player p) {
+		public StoneThrowingKnifeProjectile(PlayerFightData data) {
 			super(0.5, isUpgraded ? 5 : 3, 1);
 			this.size(0.5, 0.5);
-			this.p = p;
+			this.data = data;
+			this.p = data.getPlayer();
 		}
 
 		@Override
@@ -66,15 +69,14 @@ public class StoneThrowingKnife extends Equipment {
 		}
 
 		@Override
-		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
-			weaponDamageProjectile(hit.getEntity(), proj, hitBarrier);
+		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			Location loc = hit.getEntity().getLocation();
 			StoneThrowingKnife.hit.play(p, loc);
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			
+			proj.applyProperties(data, properties);
 		}
 	}
 

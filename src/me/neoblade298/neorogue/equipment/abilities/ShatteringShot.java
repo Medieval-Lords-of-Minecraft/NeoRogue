@@ -17,26 +17,20 @@ import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroupEvent;
 
-public class PiercingShot extends Equipment {
-	private static final String ID = "piercingShot";
+public class ShatteringShot extends Equipment {
+	private static final String ID = "shatteringShot";
 	private int damage;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.REDSTONE).spread(0.2, 0.2).count(10);
 	
-	public PiercingShot(boolean isUpgraded) {
-		super(ID, "Piercing Shot", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 15, 8, 0));
-		damage = isUpgraded ? 55 : 35;
-	}
-
-	@Override
-	public void setupReforges() {
-		addReforge(FocusedShot.get(), SunderingShot.get());
-		addReforge(BasicElementMastery.get(), ShatteringShot.get());
-		addReforge(KeenSenses.get(), PiercingShot2.get());
+	public ShatteringShot(boolean isUpgraded) {
+		super(ID, "Shattering Shot", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 10, 8, 0));
+		damage = isUpgraded ? 90 : 60;
 	}
 	
 	public static Equipment get() {
@@ -49,7 +43,7 @@ public class PiercingShot extends Equipment {
 			Sounds.equip.play(p, p);
 			data.addTrigger(ID, Trigger.LAUNCH_PROJECTILE_GROUP, (pdata2, in) -> {
 				LaunchProjectileGroupEvent ev = (LaunchProjectileGroupEvent) in;
-				if (!ev.isBasicAttack()) return TriggerResult.keep();
+				if (!ev.isBowProjectile()) return TriggerResult.keep();
 				Sounds.fire.play(p, p);
 				ProjectileInstance inst = (ProjectileInstance) ev.getInstances().getFirst();
 				inst.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.PIERCING));
@@ -58,6 +52,13 @@ public class PiercingShot extends Equipment {
 				settings.addProjectileTickAction((p2, proj, interpolation) -> {
 					pc.play(p2, proj.getLocation());
 				});
+				inst.addHitAction((hit, hitBarrier, meta, proj) -> {
+					if (hit.hasStatus(StatusType.FROST)) {
+						proj.addPierce(1);
+						proj.addMaxRange(2);
+					}
+				});
+
 				return TriggerResult.remove();
 			});
 			return TriggerResult.keep();
@@ -66,8 +67,9 @@ public class PiercingShot extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BLAZE_ROD,
-				"On cast, your next basic attack deals an additional " + GlossaryTag.PIERCING.tag(this, damage, true) + " and pierces up to " +
-				DescUtil.white(2) + " enemies.");
+		item = createItem(Material.POWDER_SNOW_BUCKET,
+				"On cast, your next basic attack deals an additional " + GlossaryTag.ICE.tag(this, damage, true) + " and pierces " +
+				DescUtil.white(2) + " enemies. Targets hit with " + GlossaryTag.FROST.tag(this) + " will always be pierced, increase the projectile's range by " +
+				DescUtil.white(2) + ", and take an additional " + GlossaryTag.ICE.tag(this, 0.2, true) + " per stack of " + GlossaryTag.FROST.tag(this) + ".");
 	}
 }

@@ -138,6 +138,7 @@ import me.neoblade298.neorogue.equipment.weapons.CrescentAxe;
 import me.neoblade298.neorogue.equipment.weapons.CrimsonBlade;
 import me.neoblade298.neorogue.equipment.weapons.CripplingFencingSword;
 import me.neoblade298.neorogue.equipment.weapons.DarkScepter;
+import me.neoblade298.neorogue.equipment.weapons.DoubleTap;
 import me.neoblade298.neorogue.equipment.weapons.EarthStaff;
 import me.neoblade298.neorogue.equipment.weapons.EarthenLeatherGauntlets;
 import me.neoblade298.neorogue.equipment.weapons.ElectromagneticKnife;
@@ -163,6 +164,7 @@ import me.neoblade298.neorogue.equipment.weapons.LightningWand;
 import me.neoblade298.neorogue.equipment.weapons.LitArrow;
 import me.neoblade298.neorogue.equipment.weapons.MassiveHalberd;
 import me.neoblade298.neorogue.equipment.weapons.MirrorSickle;
+import me.neoblade298.neorogue.equipment.weapons.MultiCrossbow;
 import me.neoblade298.neorogue.equipment.weapons.Neoblade;
 import me.neoblade298.neorogue.equipment.weapons.Nightmare;
 import me.neoblade298.neorogue.equipment.weapons.Quickfire;
@@ -261,6 +263,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Blind(b);
 			new Bloodlust(b);
 			new Bide(b);
+			new BowTrap(b);
 			new Brace(b);
 			new Brace2(b);
 			new BreakTheLine(b);
@@ -347,6 +350,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Parry(b);
 			new PartingGift(b);
 			new PiercingShot(b);
+			new PiercingShot2(b);
 			new PiercingVenom(b);
 			new Pin(b);
 			new Plague(b);
@@ -367,6 +371,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Quickfire(b);
 			new ShadowImbuement(b);
 			new ShadowWalk(b);
+			new ShatteringShot(b);
 			new ShoulderBash(b);
 			new Sear(b);
 			new Sidestep(b);
@@ -461,16 +466,17 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new BasicCrossbow(b);
 			new BasicShotbow(b);
 			new BluntedArrow(b);
-			new ColdArrow(b);
 			new BoltWand(b);
 			new ButterflyKnife(b);
 			new ButterflyKnife2(b);
 			new ChainLightningWand(b);
+			new ColdArrow(b);
 			new CompositeBow(b);
 			new CrescentAxe(b);
 			new CrimsonBlade(b);
 			new CripplingFencingSword(b);
 			new DarkScepter(b);
+			new DoubleTap(b);
 			new EarthStaff(b);
 			new EarthenLeatherGauntlets(b);
 			new ElectromagneticKnife(b);
@@ -494,6 +500,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new LitArrow(b);
 			new MassiveHalberd(b);
 			new MirrorSickle(b);
+			new MultiCrossbow(b);
 			new Nightmare(b);
 			new Rapier(b);
 			new Razor(b);
@@ -1105,19 +1112,19 @@ public abstract class Equipment implements Comparable<Equipment> {
 		FightInstance.dealDamage(dm, target);
 	}
 
-	public void weaponDamageProjectile(LivingEntity target, ProjectileInstance proj) {
-		weaponDamageProjectile(target, proj, null, true);
+	public void applyProjectileOnHit(LivingEntity target, ProjectileInstance proj) {
+		applyProjectileOnHit(target, proj, null, true);
 	}
 
-	public void weaponDamageProjectile(LivingEntity target, ProjectileInstance proj, Barrier hitBarrier) {
-		weaponDamageProjectile(target, proj, hitBarrier, true);
+	public void applyProjectileOnHit(LivingEntity target, ProjectileInstance proj, Barrier hitBarrier) {
+		applyProjectileOnHit(target, proj, hitBarrier, true);
 	}
 
-	public void weaponDamageProjectile(LivingEntity target, ProjectileInstance proj, Barrier hitBarrier, boolean basicAttack) {
-		weaponDamageProjectile(target, proj, hitBarrier, true, properties.get(PropertyType.KNOCKBACK));
+	public void applyProjectileOnHit(LivingEntity target, ProjectileInstance proj, Barrier hitBarrier, boolean basicAttack) {
+		applyProjectileOnHit(target, proj, hitBarrier, true, properties.get(PropertyType.KNOCKBACK));
 	}
 
-	public void weaponDamageProjectile(LivingEntity target, ProjectileInstance proj, Barrier hitBarrier, boolean basicAttack, double knockback) {
+	public void applyProjectileOnHit(LivingEntity target, ProjectileInstance proj, Barrier hitBarrier, boolean basicAttack, double knockback) {
 		PlayerFightData data = (PlayerFightData) proj.getOwner();
 		DamageMeta dm = new DamageMeta(data, properties.get(PropertyType.DAMAGE), properties.getType(), DamageOrigin.PROJECTILE, proj);
 		if (!proj.getBuffs().isEmpty()) {
@@ -1138,11 +1145,11 @@ public abstract class Equipment implements Comparable<Equipment> {
 		FightInstance.dealDamage(dm, target);
 	}
 	
-	public void weaponDamageProjectile(LivingEntity target, ProjectileInstance proj, DamageMeta dm, Barrier hitBarrier) {
-		weaponDamageProjectile(target, proj, dm, hitBarrier, true);
+	public void applyProjectileOnHit(LivingEntity target, ProjectileInstance proj, DamageMeta dm, Barrier hitBarrier) {
+		applyProjectileOnHit(target, proj, dm, hitBarrier, true);
 	}
 
-	public void weaponDamageProjectile(LivingEntity target, ProjectileInstance proj, DamageMeta dm, Barrier hitBarrier, boolean basicAttack) {
+	public void applyProjectileOnHit(LivingEntity target, ProjectileInstance proj, DamageMeta dm, Barrier hitBarrier, boolean basicAttack) {
 		PlayerFightData data = (PlayerFightData) proj.getOwner();
 		if (!proj.getBuffs().isEmpty()) {
 			dm.addBuffs(proj.getBuffs(), BuffOrigin.PROJECTILE, true);
@@ -1159,22 +1166,6 @@ public abstract class Equipment implements Comparable<Equipment> {
 					proj.getVelocity().normalize().multiply(properties.get(PropertyType.KNOCKBACK)));
 		}
 		FightInstance.dealDamage(dm, target);
-	}
-
-	public void damageProjectile(LivingEntity target, ProjectileInstance proj) {
-		damageProjectile(target, proj, null);
-	}
-
-	public void damageProjectile(LivingEntity target, ProjectileInstance proj, Barrier hitBarrier) {
-		DamageMeta meta = proj.getMeta();
-		meta.setProjectileInstance(proj);
-		if (!proj.getBuffs().isEmpty()) {
-			meta.addBuffs(proj.getBuffs(), BuffOrigin.PROJECTILE, true);
-		}
-		if (hitBarrier != null) {
-			meta.addBuffs(hitBarrier.getBuffs(), BuffOrigin.BARRIER, false);
-		}
-		FightInstance.dealDamage(meta, target);
 	}
 
 	public boolean isCursed() {

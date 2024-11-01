@@ -120,8 +120,7 @@ public class StoneSpear extends Equipment {
 		}
 
 		@Override
-		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
-			damageProjectile(hit.getEntity(), proj, hitBarrier);
+		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			Sounds.explode.play(p, hit.getEntity().getLocation());
 		}
 

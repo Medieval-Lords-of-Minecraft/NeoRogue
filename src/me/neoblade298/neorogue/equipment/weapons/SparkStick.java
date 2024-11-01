@@ -16,6 +16,7 @@ import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
+import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -48,7 +49,7 @@ public class SparkStick extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ProjectileGroup proj = new ProjectileGroup(new SparkStickProjectile(p));
+		ProjectileGroup proj = new ProjectileGroup(new SparkStickProjectile(data));
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (d, inputs) -> {
 			if (!canUseWeapon(data))
 				return TriggerResult.keep();
@@ -60,12 +61,14 @@ public class SparkStick extends Equipment {
 	
 	private class SparkStickProjectile extends Projectile {
 		private Player p;
+		private PlayerFightData data;
 		private int pierceAmount;
 
-		public SparkStickProjectile(Player p) {
+		public SparkStickProjectile(PlayerFightData data) {
 			super(2.5, 10, 1);
 			this.size(0.5, 0.5).pierce(pierceAmount);
-			this.p = p;
+			this.data = data;
+			this.p = data.getPlayer();
 		}
 
 		@Override
@@ -74,15 +77,14 @@ public class SparkStick extends Equipment {
 		}
 
 		@Override
-		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
-			weaponDamageProjectile(hit.getEntity(), proj, hitBarrier);
+		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			Location loc = hit.getEntity().getLocation();
 			Sounds.explode.play(p, loc);
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-
+			proj.applyProperties(data, properties);
 		}
 	}
 

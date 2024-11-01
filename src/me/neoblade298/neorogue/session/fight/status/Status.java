@@ -14,7 +14,7 @@ public abstract class Status {
 	protected String id;
 	protected int stacks;
 	protected TickAction action;
-	protected FightData data;
+	protected FightData owner;
 	protected StatusSliceHolder slices = new StatusSliceHolder();
 	protected int ticks;
 	protected boolean hidden;
@@ -29,17 +29,35 @@ public abstract class Status {
 		}
 	};
 	
-	public Status(String id, FightData data, StatusClass sc) {
+	public Status(String id, FightData owner, StatusClass sc) {
 		this.id = id;
-		this.data = data;
+		this.owner = owner;
 		this.sc = sc;
 	}
 	
-	public Status(String id, FightData data, StatusClass sc, boolean hidden) {
+	public Status(String id, FightData owner, StatusClass sc, boolean hidden) {
 		this.id = id;
-		this.data = data;
+		this.owner = owner;
 		this.hidden = hidden;
 		this.sc = sc;
+	}
+
+	// Cloning will produce a shell of the same status, it will not bring over stacks or duration
+	public Status clone(FightData target) {
+		try {
+			return createByType(StatusType.valueOf(id), target);
+		}
+		catch (IllegalArgumentException ex) {
+			if (this instanceof DecrementStackStatus) {
+				return new DecrementStackStatus(id, target, sc, hidden);
+			}
+			else if (this instanceof DurationStatus) {
+				return new DurationStatus(id, target, sc, hidden);
+			}
+			else {
+				return new BasicStatus(id, target, sc, hidden);
+			}
+		}
 	}
 	
 	// Setting stacks or status to 0 means they will be untouched
@@ -152,6 +170,7 @@ public abstract class Status {
 			this.boardLine = boardLine.replaceAll("&", "§");
 		}
 	}
+	
 	public enum GenericStatusType {
 		DECREMENT_STACK, BASIC, DURATION;
 	}

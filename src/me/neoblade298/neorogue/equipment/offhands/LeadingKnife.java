@@ -1,6 +1,5 @@
 package me.neoblade298.neorogue.equipment.offhands;
 
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -16,6 +15,7 @@ import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
+import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -44,7 +44,7 @@ public class LeadingKnife extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		LeadingKnifeInstance inst = new LeadingKnifeInstance(ID);
-		ProjectileGroup proj = new ProjectileGroup(new LeadingKnifeProjectile(p, inst));
+		ProjectileGroup proj = new ProjectileGroup(new LeadingKnifeProjectile(data, inst));
 		inst.initialize(proj);
 		
 		data.addTrigger(ID, Trigger.RIGHT_CLICK, inst);
@@ -86,12 +86,14 @@ public class LeadingKnife extends Equipment {
 	
 	private class LeadingKnifeProjectile extends Projectile {
 		private Player p;
+		private PlayerFightData data;
 		private LeadingKnifeInstance inst;
 
-		public LeadingKnifeProjectile(Player p, LeadingKnifeInstance inst) {
-			super(0.5, 10, 3);
+		public LeadingKnifeProjectile(PlayerFightData data, LeadingKnifeInstance inst) {
+			super(1.5, 10, 1);
 			this.size(0.5, 0.5);
-			this.p = p;
+			this.data = data;
+			this.p = data.getPlayer();
 			this.inst = inst;
 		}
 
@@ -101,17 +103,15 @@ public class LeadingKnife extends Equipment {
 		}
 
 		@Override
-		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
-			weaponDamageProjectile(hit.getEntity(), proj, hitBarrier, false);
-			Location loc = hit.getEntity().getLocation();
-			LeadingKnife.hit.play(p, loc);
+		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
+			LeadingKnife.hit.play(p, hit.getEntity());
 			inst.marked = hit.getEntity();
 			inst.hitTime = System.currentTimeMillis();
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			
+			proj.applyProperties(data, getProperties());
 		}
 	}
 }

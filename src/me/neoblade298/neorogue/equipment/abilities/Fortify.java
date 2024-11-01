@@ -14,6 +14,7 @@ import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.GenericStatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -48,7 +49,7 @@ public class Fortify extends Equipment {
 				Sounds.anvil.play(p, ev.getTarget());
 				hit.play(p, ev.getTarget());
 				FightInstance.dealDamage(data, DamageType.PIERCING, damage, ev.getTarget());
-				data.applyStatus(GenericStatusType.BASIC, "Fortitude", data, fortitude, -1);
+				data.applyStatus(Status.createByGenericType(GenericStatusType.BASIC, "Fortitude", data), data, fortitude, -1);
 				data.addSimpleShield(p.getUniqueId(), data.getStatus("Fortitude").getStacks(), 40);
 				return TriggerResult.remove();
 			});

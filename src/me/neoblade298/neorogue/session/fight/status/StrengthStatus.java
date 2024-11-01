@@ -11,6 +11,6 @@ public class StrengthStatus extends BasicStatus {
 	@Override
 	public void onApply(FightData applier, int stacks) {
 		super.onApply(applier, stacks);
-		data.addBuff(applier, true, false, BuffType.PHYSICAL, stacks);
+		owner.addBuff(applier, true, false, BuffType.PHYSICAL, stacks);
 	}
 }

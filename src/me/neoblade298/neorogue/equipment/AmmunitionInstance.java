@@ -6,6 +6,7 @@ import org.bukkit.inventory.ItemStack;
 
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
+import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -47,10 +48,13 @@ public class AmmunitionInstance {
 	public void onTick(Player p, ProjectileInstance proj, int interpolation) {
 		ammo.onTick(p, proj, interpolation);
 	}
-	public void onHit(ProjectileInstance inst, LivingEntity target) {
-		ammo.onHit(inst, target);
+	public void onHit(ProjectileInstance inst, DamageMeta meta, LivingEntity target) {
+		ammo.onHit(inst, meta, target);
 	}
 	public EquipmentProperties getProperties() {
 		return ammo.getProperties();
+	}
+	public int getRemaining() {
+		return ammo instanceof LimitedAmmunition ? ((LimitedAmmunition) ammo).uses : -1;
 	}
 }

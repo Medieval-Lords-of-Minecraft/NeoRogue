@@ -753,7 +753,7 @@ public abstract class FightInstance extends Instance {
 				return;
 			}
 		}
-		data.applyStatus(GenericStatusType.BASIC, id, fdApplier, stacks, seconds);
+		data.applyStatus(Status.createByGenericType(GenericStatusType.BASIC, id, data), fdApplier, stacks, seconds);
 	}
 	
 	public static void applyStatus(Entity target, Status s, int stacks, int ticks, FightData applier) {
@@ -775,7 +775,7 @@ public abstract class FightInstance extends Instance {
 	public static void applyStatus(Entity target, GenericStatusType type, String id, Entity applier, int stacks, int ticks) {
 		FightData data = getFightData(target.getUniqueId());
 		FightData fdApplier = getFightData(applier.getUniqueId());
-		data.applyStatus(type, id, fdApplier, stacks, ticks);
+		data.applyStatus(Status.createByGenericType(type, id, data), fdApplier, stacks, ticks);
 	}
 	
 	public static void dealDamage(FightData owner, DamageType type, double amount, LivingEntity target) {

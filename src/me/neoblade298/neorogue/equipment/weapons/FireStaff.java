@@ -19,8 +19,10 @@ import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
+import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
+import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
@@ -84,13 +86,13 @@ public class FireStaff extends Equipment {
 		}
 		
 		@Override
-		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
-			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, hit.getEntity().getLocation(), props)) {
-				weaponDamageProjectile(ent, proj);
-			}
-
+		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			Location loc = hit.getEntity().getLocation();
 			sc.play(p, loc);
+			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(hit.getEntity(), props)) {
+				DamageMeta clone = proj.getMeta();
+				FightInstance.dealDamage(clone, ent);
+			}
 		}
 		
 		@Override

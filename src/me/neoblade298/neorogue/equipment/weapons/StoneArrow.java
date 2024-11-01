@@ -32,8 +32,7 @@ public class StoneArrow extends Ammunition {
 	}
 
 	@Override
-	public void onHit(ProjectileInstance inst, LivingEntity trg) {
-		DamageMeta meta = inst.getMeta();
+	public void onHit(ProjectileInstance inst, DamageMeta meta, LivingEntity trg) {
 		if (inst.getOrigin().distanceSquared(inst.getLocation()) >= (thres * thres)) {
 			meta.addDamageSlice(new DamageSlice(inst.getOwner(), damage, DamageType.PIERCING));
 		}

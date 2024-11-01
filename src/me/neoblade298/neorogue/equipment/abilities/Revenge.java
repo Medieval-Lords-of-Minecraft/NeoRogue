@@ -13,6 +13,7 @@ import me.neoblade298.neorogue.equipment.StandardPriorityAction;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.GenericStatusType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -46,7 +47,7 @@ public class Revenge extends Equipment {
 				data.applyStatus(StatusType.BERSERK, data, 1, -1);
 			}
 			else {
-				data.applyStatus(GenericStatusType.BASIC, "Revenge", data, 1, 200);
+				data.applyStatus(Status.createByGenericType(GenericStatusType.BASIC, "Revenge", data), data, 1, 200);
 				Sounds.fire.play(p, p);
 				pc.play(p, p);
 				return TriggerResult.keep();

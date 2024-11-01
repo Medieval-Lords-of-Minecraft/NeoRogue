@@ -19,6 +19,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardEquipmentInstance;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
 import me.neoblade298.neorogue.session.fight.DamageType;
@@ -42,7 +43,7 @@ public class RecklessApproach extends Equipment {
 	
 	public RecklessApproach(boolean isUpgraded) {
 		super(ID, "RecklessApproach", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(5, 25, 14, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(5, 25, 14, 0).add(PropertyType.AREA_OF_EFFECT, 2));
 		damage = isUpgraded ? 160 : 120;
 		shields = isUpgraded ? 8 : 5;
 		inc = isUpgraded ? 20 : 15;
@@ -68,6 +69,7 @@ public class RecklessApproach extends Equipment {
 				p.teleport(p.getLocation().add(0, 0.2, 0));
 			}
 			p.setVelocity(v.setY(0).normalize().setY(0.3));
+			data.addBuff(data, ID, true, false, BuffType.GENERAL, inc, 100);
 			new RecklessApproachHitbox(p, data, inst);
 			return TriggerResult.keep();
 		});
@@ -79,7 +81,6 @@ public class RecklessApproach extends Equipment {
 			DealtDamageEvent ev = (DealtDamageEvent) in;
 			if (ev.getMeta().getOrigin() != DamageOrigin.PROJECTILE) return TriggerResult.keep();
 			if (ev.getMeta().getProjectile().getOrigin().distanceSquared(ev.getTarget().getLocation()) >= thresSq) return TriggerResult.keep();
-			data.addBuff(data, true, false, BuffType.GENERAL, inc);
 			return TriggerResult.keep();
 		});
 	}
@@ -130,7 +131,7 @@ public class RecklessApproach extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.REDSTONE_TORCH, new String[] { "<gold>Area of Effect: <white>2" },
+		item = createItem(Material.REDSTONE_TORCH,
 				"On cast, dash forward, stopping at the first enemy hit and dealing <yellow>" + damage + "</yellow> " + GlossaryTag.BLUNT.tag(this) +
 				" damage in a small area. If an enemy is hit, gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>5s</white>]. " +
 				"Increase projectile damage from at most " + DescUtil.white(thres) + " blocks away by " + DescUtil.yellow(inc) + " [<white>5s</white>].");

@@ -13,11 +13,11 @@ public class InsanityStatus extends DecrementStackStatus {
 	@Override
 	public void apply(FightData applier, int stacks, int seconds) {
 		super.apply(applier, stacks, seconds);
-		data.addBuff(applier, false, false, BuffType.MAGICAL, stacks * 0.2);
+		owner.addBuff(applier, false, false, BuffType.MAGICAL, stacks * 0.2);
 	}
 	
 	@Override
 	public void onTickAction() {
-		data.addBuff(slices.first().getFightData(), true, false, BuffType.MAGICAL, -0.2);
+		owner.addBuff(slices.first().getFightData(), true, false, BuffType.MAGICAL, -0.2);
 	}
 }

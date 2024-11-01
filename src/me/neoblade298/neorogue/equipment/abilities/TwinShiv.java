@@ -18,6 +18,7 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -53,7 +54,7 @@ public class TwinShiv extends Equipment {
 		public TwinShivInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
 			super(data, eq, slot, es);
 
-			ProjectileGroup proj = new ProjectileGroup(new TwinShivProjectile(p, this));
+			ProjectileGroup proj = new ProjectileGroup(new TwinShivProjectile(data, this));
 			action = (pdata, in) -> {
 				if (isFirstProj) {
 					firstHit = null;
@@ -76,11 +77,13 @@ public class TwinShiv extends Equipment {
 	private class TwinShivProjectile extends Projectile {
 		private TwinShivInstance inst;
 		private Player p;
+		private PlayerFightData data;
 
-		public TwinShivProjectile(Player p, TwinShivInstance inst) {
+		public TwinShivProjectile(PlayerFightData data, TwinShivInstance inst) {
 			super(0.5, 10, 3);
 			this.size(0.5, 0.5);
-			this.p = p;
+			this.data = data;
+			this.p = data.getPlayer();
 			this.inst = inst;
 		}
 
@@ -90,23 +93,22 @@ public class TwinShiv extends Equipment {
 		}
 
 		@Override
-		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
-			double finalDmg = 0;
+		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			if (Boolean.getBoolean(proj.getTag()) || inst.firstHit == null) {
 				inst.firstHit = hit.getUniqueId();
-				finalDmg = damage;
 			}
 			else {
-				finalDmg = damage + (inst.firstHit.equals(hit.getUniqueId()) ? bonus : 0);
-				Sounds.anvil.play(p, hit.getEntity());
+				if (inst.firstHit.equals(hit.getUniqueId())) {
+					meta.addDamageSlice(new DamageSlice(data, bonus, DamageType.PIERCING));
+					Sounds.anvil.play(p, hit.getEntity());
+				}
 			}
-			DamageMeta dm = new DamageMeta(proj.getOwner(), finalDmg, DamageType.PIERCING);
-			weaponDamageProjectile(hit.getEntity(), proj, dm, hitBarrier);
 			Sounds.breaks.play(p, hit.getEntity());
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
+			proj.applyProperties(data, getProperties());
 			Sounds.attackSweep.play(p, p);
 			proj.setTag("" + inst.isFirstProj);
 		}

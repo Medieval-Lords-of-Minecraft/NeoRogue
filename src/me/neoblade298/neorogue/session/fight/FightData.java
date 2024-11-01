@@ -29,7 +29,6 @@ import me.neoblade298.neorogue.session.fight.TickAction.TickResult;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.status.Status;
-import me.neoblade298.neorogue.session.fight.status.Status.GenericStatusType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
@@ -341,33 +340,24 @@ public class FightData {
 		return statuses.getOrDefault(type.name(), Status.EMPTY);
 	}
 	
-	public void applyStatus(Status s, FightData applier, int stacks, int ticks) {
-		applyStatus(s, applier, stacks, ticks, null, false);
-	}
-	
 	public void applyStatus(StatusType type, FightData applier, int stacks, int ticks) {
-		applyStatus(type, applier, stacks, ticks, null, false);
+		applyStatus(Status.createByType(type, this), applier, stacks, ticks, null, false);
 	}
 	
 	public void applyStatus(StatusType type, FightData applier, int stacks, int ticks, DamageMeta meta, boolean isSecondary) {
-		Status s = statuses.getOrDefault(type.name(), Status.createByType(type, this));
-		applyStatus(s, applier, stacks, ticks, meta, isSecondary);
+		applyStatus(Status.createByType(type, this), applier, stacks, ticks, meta, isSecondary);
 	}
 	
-	public void applyStatus(GenericStatusType type, String id, FightData applier, int stacks, int ticks) {
-		applyStatus(type, id, applier, stacks, ticks, null, false);
+	public void applyStatus(Status status, FightData applier, int stacks, int ticks) {
+		applyStatus(status, applier, stacks, ticks, null, false);
 	}
 	
-	public void applyStatus(GenericStatusType type, String id, FightData applier, int stacks, int ticks, DamageMeta meta, boolean isSecondary) {
-		Status s = statuses.getOrDefault(id, Status.createByGenericType(type, id, this));
-		applyStatus(s, applier, stacks, ticks, meta, isSecondary);
-	}
-	
-	public void applyStatus(Status s, FightData applier, int stacks, int ticks, DamageMeta meta, boolean isSecondary) {
+	public void applyStatus(Status status, FightData applier, int stacks, int ticks, DamageMeta meta, boolean isSecondary) {
 		if (!entity.isValid()) return;
-		String id = s.getId();
-		
-		PreApplyStatusEvent ev = new PreApplyStatusEvent(this, s, stacks, ticks, isSecondary, meta);
+		String id = status.getId();
+		status = statuses.getOrDefault(id, status); // If status exists, use that, otherwise add the new one
+
+		PreApplyStatusEvent ev = new PreApplyStatusEvent(this, status, stacks, ticks, isSecondary, meta);
 		if (applier instanceof PlayerFightData) {
 			FightInstance.trigger(((PlayerFightData) applier).getPlayer(), Trigger.PRE_APPLY_STATUS, ev);
 		}
@@ -378,8 +368,8 @@ public class FightData {
 		}
 		int finalStacks = (int) Math.ceil(ev.getStacksBuff().apply(stacks));
 		int finalDuration = (int) Math.ceil(ev.getDurationBuff().apply(ticks));
-		s.apply(applier, finalStacks, finalDuration);
-		ApplyStatusEvent ev2 = new ApplyStatusEvent(this, s, finalStacks, finalDuration, isSecondary, meta);
+		status.apply(applier, finalStacks, finalDuration);
+		ApplyStatusEvent ev2 = new ApplyStatusEvent(this, status, finalStacks, finalDuration, isSecondary, meta);
 		if (applier instanceof PlayerFightData) {
 			FightInstance.trigger(((PlayerFightData) applier).getPlayer(), Trigger.APPLY_STATUS, ev2);
 		}
@@ -387,7 +377,7 @@ public class FightData {
 		if (statuses.isEmpty()) {
 			addTickAction(new StatusUpdateTickAction());
 		}
-		statuses.put(id, s);
+		statuses.put(id, status);
 		if (am != null) {
 			updateDisplayName();
 		}

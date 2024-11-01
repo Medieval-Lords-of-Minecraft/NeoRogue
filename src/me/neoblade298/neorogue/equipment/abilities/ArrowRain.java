@@ -128,15 +128,14 @@ public class ArrowRain extends Equipment {
 			LivingEntity trg = TargetHelper.getNearest(p, block, hitTp);
 			if (trg == null) return;
 			DamageMeta dm = proj.getMeta();
-			ammo.onHit(proj, trg);
+			ammo.onHit(proj, dm, trg);
 			FightInstance.dealDamage(dm, trg);
 		}
 
 		@Override
-		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
+		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			hitAnimation(hit.getEntity().getLocation());
-			ammo.onHit(proj, hit.getEntity());
-			FightInstance.dealDamage(proj.getMeta(), hit.getEntity());
+			ammo.onHit(proj, meta, hit.getEntity());
 		}
 
 		@Override

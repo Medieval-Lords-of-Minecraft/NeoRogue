@@ -60,7 +60,7 @@ public class Chill extends Equipment {
 			proj.addHitBlockAction((proj2, block) -> {
 				chillHit(p, data, block.getLocation().add(0, 1, 0));
 			});
-			proj.addHitAction((hit, hitBarrier, proj2) -> {
+			proj.addHitAction((hit, hitBarrier, meta, proj2) -> {
 				chillHit(p, data, hit.getEntity().getLocation().add(0, 1, 0));
 			});
 			return TriggerResult.remove();

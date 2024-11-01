@@ -24,7 +24,6 @@ import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
-import me.neoblade298.neorogue.session.fight.DamageMeta.BuffOrigin;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 
@@ -46,13 +45,13 @@ public class ElectrifiedStatus extends DecrementStackStatus {
 		PlayerFightData owner = (PlayerFightData) slices.getSliceOwners().entrySet().iterator().next().getKey();
 		ProjectileGroup proj = new ProjectileGroup(new ElectrifiedProjectile(owner.getPlayer()));
 		
-		LinkedList<LivingEntity> list = TargetHelper.getEntitiesInRadius(data.getEntity(), tp);
+		LinkedList<LivingEntity> list = TargetHelper.getEntitiesInRadius(owner.getEntity(), tp);
 		if (list.isEmpty()) return;
 		
 		Collections.shuffle(list);
 		LivingEntity target = list.peekFirst();
-		Vector v = target.getLocation().subtract(0, 2, 0).subtract(data.getEntity().getLocation()).toVector();
-		proj.start(owner, data.getEntity().getLocation().add(0, 4, 0), v);
+		Vector v = target.getLocation().subtract(0, 2, 0).subtract(owner.getEntity().getLocation()).toVector();
+		proj.start(owner, owner.getEntity().getLocation().add(0, 4, 0), v);
 	}
 	
 	private class ElectrifiedProjectile extends Projectile {
@@ -70,30 +69,22 @@ public class ElectrifiedStatus extends DecrementStackStatus {
 		}
 
 		@Override
-		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
+		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			Location loc = hit.getEntity().getLocation();
 			LivingEntity target = hit.getEntity();
 			ElectrifiedStatus.hit.play(p, loc);
-			
-			DamageMeta dm = new DamageMeta(proj.getOwner());
-			dm.isSecondary(true);
-			for (Entry<FightData, Integer> ent : slices.getSliceOwners().entrySet()) {
-				dm.addDamageSlice(new DamageSlice(ent.getKey(), ent.getValue() * 0.2, DamageType.LIGHTNING, true));
-			}
-			if (!proj.getBuffs().isEmpty()) {
-				dm.addBuffs(proj.getBuffs(), BuffOrigin.PROJECTILE, true);
-			}
-			if (hitBarrier != null) {
-				dm.addBuffs(hitBarrier.getBuffs(), BuffOrigin.BARRIER, false);
-			}
 			FightInstance.knockback(target,
 					proj.getVelocity().normalize().multiply(0.2));
-			FightInstance.dealDamage(dm, target);
+			FightInstance.dealDamage(meta, target);
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			
+			DamageMeta dm = proj.getMeta();
+			dm.isSecondary(true);
+			for (Entry<FightData, Integer> ent : slices.getSliceOwners().entrySet()) {
+				dm.addDamageSlice(new DamageSlice(ent.getKey(), ent.getValue() * 0.2, DamageType.LIGHTNING, true));
+			}
 		}
 	}
 }

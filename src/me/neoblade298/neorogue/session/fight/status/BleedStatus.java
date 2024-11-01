@@ -24,6 +24,6 @@ public class BleedStatus extends DecrementStackStatus {
 		for (Entry<FightData, Integer> ent : slices.getSliceOwners().entrySet()) {
 			meta.addDamageSlice(new DamageSlice(ent.getKey(), ent.getValue() * 0.2, DamageType.BLEED, true));
 		}
-		FightInstance.dealDamage(meta, data.getEntity());
+		FightInstance.dealDamage(meta, owner.getEntity());
 	}
 }

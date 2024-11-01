@@ -19,6 +19,7 @@ public class ApplyStatusEvent {
 	private StatusClass sc;
 	public ApplyStatusEvent(FightData target, Status s, int stacks, int ticks, boolean isSecondary) {
 		this.target = target;
+		this.s = s;
 		this.statusId = s.getId();
 		this.stacks = stacks;
 		this.ticks = ticks;

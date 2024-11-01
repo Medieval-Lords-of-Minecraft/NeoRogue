@@ -22,7 +22,6 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
-import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
@@ -98,18 +97,14 @@ public class RapidFire extends Equipment {
 		}
 
 		@Override
-		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
-			damageProjectile(hit.getEntity(), proj, hitBarrier);
-			ammo.onHit(proj, hit.getEntity());
+		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
+			ammo.onHit(proj, meta, hit.getEntity());
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
 			Sounds.shoot.play(p, p);
-			DamageMeta dm = proj.getMeta();
-			EquipmentProperties ammoProps = ammo.getProperties();
-			double dmg = ammoProps.get(PropertyType.DAMAGE) + damage;
-			dm.addDamageSlice(new DamageSlice(data, dmg, ammoProps.getType()));
+			proj.applyBowAndAmmo(data, properties, ammo);
 			ammo.onStart(proj);
 		}
 	}

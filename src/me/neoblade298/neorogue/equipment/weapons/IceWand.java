@@ -20,6 +20,7 @@ import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -59,7 +60,7 @@ public class IceWand extends Equipment {
 	
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ProjectileGroup proj = new ProjectileGroup(new IceWandProjectile(p));
+		ProjectileGroup proj = new ProjectileGroup(new IceWandProjectile(data));
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (d, inputs) -> {
 			if (!canUseWeapon(data))
 				return TriggerResult.keep();
@@ -71,11 +72,13 @@ public class IceWand extends Equipment {
 
 	private class IceWandProjectile extends Projectile {
 		private Player p;
+		private PlayerFightData data;
 		
-		public IceWandProjectile(Player p) {
+		public IceWandProjectile(PlayerFightData data) {
 			super(0.4, 8, 3);
 			this.size(1, 1);
-			this.p = p;
+			this.data = data;
+			this.p = data.getPlayer();
 		}
 		
 		@Override
@@ -84,10 +87,8 @@ public class IceWand extends Equipment {
 		}
 		
 		@Override
-		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
-			weaponDamageProjectile(hit.getEntity(), proj);
-			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, hit.getEntity().getLocation(), props)) {
-				weaponDamageProjectile(ent, proj);
+		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
+			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(hit.getEntity(), props)) {
 				ent.addPotionEffect(slow);
 				proj.getOwner().addSimpleShield(p.getUniqueId(), shieldAmount, 40);
 			}
@@ -98,7 +99,7 @@ public class IceWand extends Equipment {
 		
 		@Override
 		public void onStart(ProjectileInstance proj) {
-
+			proj.applyProperties(data, properties);
 		}
 	}
 	

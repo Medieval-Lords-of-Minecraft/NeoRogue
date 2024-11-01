@@ -17,6 +17,7 @@ import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
+import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -47,7 +48,7 @@ public class DarkScepter extends Equipment {
 	
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ProjectileGroup proj = new ProjectileGroup(new DarkRay(p));
+		ProjectileGroup proj = new ProjectileGroup(new DarkRay(data));
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (d, inputs) -> {
 			if (!canUseWeapon(data))
 				return TriggerResult.keep();
@@ -67,10 +68,12 @@ public class DarkScepter extends Equipment {
 
 	private class DarkRay extends Projectile {
 		private Player p;
-		public DarkRay(Player p) {
+		private PlayerFightData data;
+		public DarkRay(PlayerFightData data) {
 			super(0.5, 2, 1);
 			this.size(1.25, 1.25).pierce(-1);
-			this.p = p;
+			this.data = data;
+			this.p = data.getPlayer();
 		}
 		
 		@Override
@@ -79,12 +82,13 @@ public class DarkScepter extends Equipment {
 		}
 		
 		@Override
-		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
-			weaponDamageProjectile(hit.getEntity(), proj, hitBarrier);
+		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
+			
 		}
 		
 		@Override
 		public void onStart(ProjectileInstance proj) {
+			proj.applyProperties(data, properties);
 		}
 	}
 	

@@ -9,6 +9,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -30,7 +31,7 @@ public class BluntedArrow extends Ammunition {
 	}
 
 	@Override
-	public void onHit(ProjectileInstance inst, LivingEntity trg) {
+	public void onHit(ProjectileInstance inst, DamageMeta meta, LivingEntity trg) {
 		FightData fd = FightInstance.getFightData(trg);
 		fd.applyStatus(StatusType.INJURY, inst.getOwner(), stacks, -1);
 	}

@@ -11,6 +11,6 @@ public class IntellectStatus extends BasicStatus {
 	@Override
 	public void onApply(FightData applier, int stacks) {
 		super.onApply(applier, stacks);
-		data.addBuff(applier, true, false, BuffType.MAGICAL, stacks);
+		owner.addBuff(applier, true, false, BuffType.MAGICAL, stacks);
 	}
 }

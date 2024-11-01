@@ -94,9 +94,8 @@ public class MagicQuiver extends Equipment {
 		}
 
 		@Override
-		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
-			ammo.onHit(proj, hit.getEntity());
-			damageProjectile(hit.getEntity(), proj, hitBarrier);
+		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
+			ammo.onHit(proj, meta, hit.getEntity());
 		}
 
 		@Override

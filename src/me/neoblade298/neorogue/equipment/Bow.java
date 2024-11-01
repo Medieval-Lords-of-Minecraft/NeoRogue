@@ -8,7 +8,6 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
-import me.neoblade298.neorogue.session.fight.DamageMeta.BuffOrigin;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -58,19 +57,10 @@ public abstract class Bow extends Equipment {
 		data.setBasicAttackCooldown(EquipSlot.HOTBAR, properties.get(PropertyType.ATTACK_SPEED));
 	}
 
-	public void bowDamageProjectile(LivingEntity target, ProjectileInstance proj, Barrier hitBarrier, AmmunitionInstance ammo, boolean basicAttack) {
-		DamageMeta dm = proj.getMeta();
-		dm.setProjectileInstance(proj);
+	public void bowProjectileOnHit(LivingEntity target, ProjectileInstance proj, Barrier hitBarrier, DamageMeta dm, AmmunitionInstance ammo, boolean basicAttack) {
 		PlayerFightData data = (PlayerFightData) proj.getOwner();
 
 		// Apply any ammo changes
-		ammo.onHit(proj, target);
-		if (!proj.getBuffs().isEmpty()) {
-			dm.addBuffs(proj.getBuffs(), BuffOrigin.PROJECTILE, true);
-		}
-		if (hitBarrier != null) {
-			dm.addBuffs(hitBarrier.getBuffs(), BuffOrigin.BARRIER, false);
-		}
 		if (basicAttack) {
 			BasicAttackEvent ev = new BasicAttackEvent(target, dm, properties.get(PropertyType.KNOCKBACK), this, proj);
 			data.runActions(data, Trigger.BASIC_ATTACK, ev);
@@ -79,6 +69,5 @@ public abstract class Bow extends Equipment {
 			FightInstance.knockback(target,
 					proj.getVelocity().normalize().multiply(properties.get(PropertyType.KNOCKBACK) + ammo.getProperties().get(PropertyType.KNOCKBACK)));
 		}
-		FightInstance.dealDamage(dm, target);
 	}
 }

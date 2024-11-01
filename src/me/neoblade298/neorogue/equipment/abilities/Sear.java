@@ -86,9 +86,8 @@ public class Sear extends Equipment {
 		}
 
 		@Override
-		public void onHit(FightData hit, Barrier hitBarrier, ProjectileInstance proj) {
+		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			Sounds.extinguish.play(p, hit.getEntity());
-			damageProjectile(hit.getEntity(), proj, hitBarrier);
 			if (!hit.hasStatus(StatusType.BURN)) {
 				hit.applyStatus(StatusType.BURN, data, burn, -1);
 			}
