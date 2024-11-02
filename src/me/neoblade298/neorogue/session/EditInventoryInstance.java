@@ -64,6 +64,7 @@ public abstract class EditInventoryInstance extends Instance {
 	public static void handleHotbarSwap(PlayerItemHeldEvent e) {
 		Player p = e.getPlayer();
 		Session s = SessionManager.getSession(p);
+		if (s.getInstance() instanceof NodeSelectInstance) return;
 		PlayerSessionData psd = s.getData(p.getUniqueId());
 		if (psd.isViewingMap()) {
 			psd.stopViewingMap();
@@ -73,7 +74,10 @@ public abstract class EditInventoryInstance extends Instance {
 	public static void handleSwapHand(PlayerSwapHandItemsEvent e) {
 		Player p = e.getPlayer();
 		Session s = SessionManager.getSession(p);
-		if (s.isBusy()) return;
+		if (s.isBusy() || s.getInstance() instanceof NodeSelectInstance) {
+			e.setCancelled(true);
+			return;
+		}
 		PlayerSessionData psd = s.getData(p.getUniqueId());
 		if (psd.isViewingMap()) {
 			// Can't use data.stopViewingMap() because the event overrides inventory changes
@@ -101,6 +105,7 @@ public abstract class EditInventoryInstance extends Instance {
 
 	@Override
 	public void handleSpectatorInteractEvent(PlayerInteractEvent e) {
+		if (this instanceof NodeSelectInstance) return;
 		if (e.getAction().isLeftClick()) {
 			s.getSpectator(e.getPlayer().getUniqueId()).scrollMapDown();
 		}
@@ -111,6 +116,7 @@ public abstract class EditInventoryInstance extends Instance {
 
 	@Override
 	public void handleInteractEvent(PlayerInteractEvent e) {
+		if (this instanceof NodeSelectInstance) return;
 		if (e.getAction().isLeftClick()) {
 			s.getParty().get(e.getPlayer().getUniqueId()).scrollMapDown();
 		}

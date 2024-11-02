@@ -946,7 +946,7 @@ public abstract class FightInstance extends Instance {
 		Component statsHeader = SharedUtil.color(
 				"<gray>Fight Statistics [<white>" + timer + "</white>] (Hover for more info!)\n=====\n"
 						+ "[<yellow>Name</yellow> (<green>HP</green>) - <red>Damage Dealt </red>/ <dark_red>Received "
-						+ "<gray>(</gray>HP<gray>)</gray> </dark_red>/ <blue>Buffed</blue> / <gold>Mitigated</gold>]"
+						+ "</dark_red>/ <blue>Buffed</blue> / <gold>Mitigated</gold>]"
 		);
 		s.broadcast(statsHeader);
 		for (UUID uuid : s.getParty().keySet()) {

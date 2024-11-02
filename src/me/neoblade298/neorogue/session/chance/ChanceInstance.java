@@ -148,7 +148,7 @@ public class ChanceInstance extends EditInventoryInstance {
 
 		Player p = e.getPlayer();
 		if (e.getAction() == Action.RIGHT_CLICK_BLOCK && 
-				e.getClickedBlock().getType() == Material.QUARTZ_PILLAR || e.getClickedBlock().getType() == Material.LIGHT_GRAY_CANDLE) {
+				(e.getClickedBlock().getType() == Material.QUARTZ_PILLAR || e.getClickedBlock().getType() == Material.LIGHT_GRAY_CANDLE)) {
 			// If we're stuck in chance event due to someone's inventory full or cursed
 			if (stage.isEmpty()) {
 				returnPlayers();
