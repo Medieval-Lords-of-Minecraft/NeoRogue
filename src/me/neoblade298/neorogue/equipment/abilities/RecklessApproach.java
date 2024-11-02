@@ -79,7 +79,7 @@ public class RecklessApproach extends Equipment {
 		data.addTrigger(ID, Trigger.DEALT_DAMAGE, (pdata, in) -> {
 			if (!inst.getBool()) return TriggerResult.keep();
 			DealtDamageEvent ev = (DealtDamageEvent) in;
-			if (ev.getMeta().getOrigin() != DamageOrigin.PROJECTILE) return TriggerResult.keep();
+			if (!ev.getMeta().hasOrigin(DamageOrigin.PROJECTILE)) return TriggerResult.keep();
 			if (ev.getMeta().getProjectile().getOrigin().distanceSquared(ev.getTarget().getLocation()) >= thresSq) return TriggerResult.keep();
 			return TriggerResult.keep();
 		});

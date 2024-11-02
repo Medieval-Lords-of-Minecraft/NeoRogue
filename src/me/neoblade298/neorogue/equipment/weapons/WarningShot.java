@@ -43,7 +43,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class WarningShot extends Equipment {
 	private static final String ID = "warningShot";
-	private static ParticleContainer pc = new ParticleContainer(Particle.ENCHANTMENT_TABLE);
+	private static ParticleContainer pc = new ParticleContainer(Particle.END_ROD);
 	private static final TargetProperties tp = TargetProperties.radius(6, false, TargetType.ENEMY);
 	private static Circle circ = new Circle(tp.range);
 	private int damage, focus;
@@ -95,8 +95,8 @@ public class WarningShot extends Equipment {
 		public void onHitBlock(ProjectileInstance proj, Block b) {
 			Location loc = b.getLocation();
 			// If projectile is above the top of a block, it's hitting a floor
-			if (proj.getLocation().getY() >= b.getLocation().getY() + 1) {
-				loc.add(0, 1, 0);
+			if (proj.getLocation().getY() >= b.getLocation().getY()) {
+				loc = loc.add(0, 2, 0);
 			}	
 			Sounds.fire.play(p, loc);
 			circ.play(pc, loc, LocalAxes.xz(), null);

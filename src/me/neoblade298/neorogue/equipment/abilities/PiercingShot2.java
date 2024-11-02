@@ -1,15 +1,11 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
-import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.DescUtil;
-import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.BowProjectile;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
@@ -24,7 +20,6 @@ import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroup
 public class PiercingShot2 extends Equipment {
 	private static final String ID = "piercingShot2";
 	private int damage;
-	private static final ParticleContainer pc = new ParticleContainer(Particle.REDSTONE).spread(0.2, 0.2).count(10);
 	
 	public PiercingShot2(boolean isUpgraded) {
 		super(ID, "Piercing Shot II", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,

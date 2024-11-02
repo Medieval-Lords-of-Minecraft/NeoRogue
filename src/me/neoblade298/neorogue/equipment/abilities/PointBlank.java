@@ -38,7 +38,7 @@ public class PointBlank extends Equipment {
 		data.addTrigger(id, Trigger.PRE_DEALT_DAMAGE, (pdata, in) -> {
 			PreDealtDamageEvent ev = (PreDealtDamageEvent) in;
 			DamageMeta dm = ev.getMeta();
-			if (dm.getOrigin() != DamageOrigin.PROJECTILE) return TriggerResult.keep();
+			if (!dm.hasOrigin(DamageOrigin.PROJECTILE)) return TriggerResult.keep();
 			IProjectileInstance ip = dm.getProjectile();
 			if (ip.getOrigin().distanceSquared(ev.getTarget().getLocation()) > thres * thres) return TriggerResult.keep();
 			dm.addBuff(BuffType.GENERAL, new Buff(data, damage, 0), BuffOrigin.NORMAL, true);

@@ -60,7 +60,6 @@ public abstract class Bow extends Equipment {
 	public void bowProjectileOnHit(LivingEntity target, ProjectileInstance proj, Barrier hitBarrier, DamageMeta dm, AmmunitionInstance ammo, boolean basicAttack) {
 		PlayerFightData data = (PlayerFightData) proj.getOwner();
 
-		// Apply any ammo changes
 		if (basicAttack) {
 			BasicAttackEvent ev = new BasicAttackEvent(target, dm, properties.get(PropertyType.KNOCKBACK), this, proj);
 			data.runActions(data, Trigger.BASIC_ATTACK, ev);

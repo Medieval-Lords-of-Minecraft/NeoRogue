@@ -25,7 +25,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroup
 public class ShatteringShot extends Equipment {
 	private static final String ID = "shatteringShot";
 	private int damage;
-	private static final ParticleContainer pc = new ParticleContainer(Particle.REDSTONE).spread(0.2, 0.2).count(10);
+	private static final ParticleContainer pc = new ParticleContainer(Particle.BLOCK_CRACK).blockData(Material.ICE.createBlockData()).spread(0.2, 0.2).count(5);
 	
 	public ShatteringShot(boolean isUpgraded) {
 		super(ID, "Shattering Shot", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
@@ -44,13 +44,13 @@ public class ShatteringShot extends Equipment {
 			data.addTrigger(ID, Trigger.LAUNCH_PROJECTILE_GROUP, (pdata2, in) -> {
 				LaunchProjectileGroupEvent ev = (LaunchProjectileGroupEvent) in;
 				if (!ev.isBowProjectile()) return TriggerResult.keep();
-				Sounds.fire.play(p, p);
 				ProjectileInstance inst = (ProjectileInstance) ev.getInstances().getFirst();
 				inst.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.PIERCING));
 				BowProjectile settings = (BowProjectile) inst.getParent();
 				settings.pierce(2);
 				settings.addProjectileTickAction((p2, proj, interpolation) -> {
 					pc.play(p2, proj.getLocation());
+					Sounds.ice.play(p2, proj.getLocation());
 				});
 				inst.addHitAction((hit, hitBarrier, meta, proj) -> {
 					if (hit.hasStatus(StatusType.FROST)) {
@@ -69,7 +69,7 @@ public class ShatteringShot extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.POWDER_SNOW_BUCKET,
 				"On cast, your next basic attack deals an additional " + GlossaryTag.ICE.tag(this, damage, true) + " and pierces " +
-				DescUtil.white(2) + " enemies. Targets hit with " + GlossaryTag.FROST.tag(this) + " will always be pierced, increase the projectile's range by " +
+				DescUtil.white(1) + " enemy. Targets hit with this projectile that have " + GlossaryTag.FROST.tag(this) + " will always be pierced, increase the projectile's range by " +
 				DescUtil.white(2) + ", and take an additional " + GlossaryTag.ICE.tag(this, 0.2, true) + " per stack of " + GlossaryTag.FROST.tag(this) + ".");
 	}
 }

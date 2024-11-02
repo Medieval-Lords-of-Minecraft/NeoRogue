@@ -34,7 +34,7 @@ public class FlintPendant extends Equipment {
 
 		action.setAction((pdata, in) -> {
 			DealtDamageEvent ev = (DealtDamageEvent) in;
-			if (ev.getMeta().getOrigin() != DamageOrigin.PROJECTILE) return TriggerResult.keep();
+			if (!ev.getMeta().hasOrigin(DamageOrigin.PROJECTILE)) return TriggerResult.keep();
 			action.addCount(1);
 			if (action.getCount() >= thres) {
 				pdata.addStamina(stamina);

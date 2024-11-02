@@ -39,7 +39,8 @@ public class Backstep extends Equipment {
 	}
 
 	public void setupReforges() {
-		addReforge(AgilityTraining.get(), RecklessApproach.get(), Surprise.get(), Backstep2.get());
+		addReforge(AgilityTraining.get(), RecklessApproach.get(), Backstep2.get(), BlastStep.get());
+		addReforge(KeenSenses.get(), Surprise.get());
 	}
 	
 	public static Equipment get() {

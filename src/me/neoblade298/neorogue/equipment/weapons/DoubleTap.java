@@ -5,7 +5,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Bow;
 import me.neoblade298.neorogue.equipment.BowProjectile;
@@ -46,7 +45,7 @@ public class DoubleTap extends Bow {
 
 			ProjectileLaunchEvent ev = (ProjectileLaunchEvent) in;
 			ProjectileGroup proj = new ProjectileGroup(new BowProjectile(data, ev.getEntity().getVelocity(), this));
-			ProjectileGroup second = new ProjectileGroup(new BowProjectile(data, ev.getEntity().getVelocity(), this).setDamageBonus(properties.get(PropertyType.DAMAGE) / 2));
+			ProjectileGroup second = new ProjectileGroup(new BowProjectile(data, ev.getEntity().getVelocity(), this).setDamageBonus(-properties.get(PropertyType.DAMAGE) / 2));
 			proj.start(data);
 
 			data.addTask(new BukkitRunnable() {
@@ -60,6 +59,6 @@ public class DoubleTap extends Bow {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BOW, "Fires a second projectile after a short delay that deals " + DescUtil.white("50%") + " damage.");
+		item = createItem(Material.BOW, "Fires a second projectile after a short delay that deals half bow damage.");
 	}
 }

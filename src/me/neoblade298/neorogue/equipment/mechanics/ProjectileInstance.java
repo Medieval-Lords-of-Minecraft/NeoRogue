@@ -170,7 +170,7 @@ public class ProjectileInstance extends IProjectileInstance {
 					numHit++;
 					
 					int limit = settings.getPierceLimit() + pierceMod;
-					if (limit != -1 && numHit >= settings.getPierceLimit()) return true;
+					if (limit != -1 && numHit >= limit) return true;
 				}
 			}
 			
@@ -271,6 +271,7 @@ public class ProjectileInstance extends IProjectileInstance {
 	}
 
 	public void addPierce(int pierce) {
+		if (settings.getPierceLimit() == -1) return;
 		this.pierceMod += pierce;
 	}
 }

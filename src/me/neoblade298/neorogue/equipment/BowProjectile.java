@@ -79,6 +79,7 @@ public class BowProjectile extends Projectile {
 	@Override
 	public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 		bow.bowProjectileOnHit(hit.getEntity(), proj, hitBarrier, meta, ammo, isBasicAttack);
+		ammo.onHit(proj, meta, hit.getEntity());
 	}
 
 	@Override

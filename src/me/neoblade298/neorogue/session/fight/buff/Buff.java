@@ -3,10 +3,12 @@ package me.neoblade298.neorogue.session.fight.buff;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
 import me.neoblade298.neorogue.session.fight.FightData;
 
 public class Buff {
 	private double increase, multiplier;
+	private DamageOrigin origin;
 	private HashMap<FightData, BuffSlice> slices = new HashMap<FightData, BuffSlice>();
 	
 	public Buff() {}
@@ -17,7 +19,14 @@ public class Buff {
 		slices.put(applier, new BuffSlice(increase, multiplier));
 	}
 	
-	public Buff(double increase, double multiplier, HashMap<FightData, BuffSlice> slices) {
+	public Buff(FightData applier, double increase, double multiplier, DamageOrigin origin) {
+		this.increase = increase;
+		this.multiplier = multiplier;
+		this.origin = origin;
+		slices.put(applier, new BuffSlice(increase, multiplier));
+	}
+	
+	private Buff(double increase, double multiplier, DamageOrigin origin, HashMap<FightData, BuffSlice> slices) {
 		this.increase = increase;
 		this.multiplier = multiplier;
 		this.slices = slices;
@@ -28,7 +37,15 @@ public class Buff {
 		for (Entry<FightData, BuffSlice> ent : slices.entrySet()) {
 			newSlices.put(ent.getKey(), ent.getValue().clone());
 		}
-		return new Buff(increase, multiplier, newSlices);
+		return new Buff(increase, multiplier, origin, newSlices);
+	}
+
+	public DamageOrigin getOrigin() {
+		return origin;
+	}
+
+	public void setOrigin(DamageOrigin origin) {
+		this.origin = origin;
 	}
 	
 	public void addIncrease(FightData applier, double increase) {

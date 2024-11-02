@@ -135,8 +135,9 @@ public class FightStatistics {
 		.append(Component.text(" - ", NamedTextColor.GRAY).hoverEvent(null))
 		.append(getTypedComponent(damageDealt, NamedTextColor.RED, "Damage dealt post buff and mitigation:")).append(separator)
 		.append(getTypedComponent(damageTaken, NamedTextColor.DARK_RED, "Damage taken post buff and mitigation, before shields:")
+			.append(Component.text("♥", NamedTextColor.YELLOW))
 			.append(Component.text(" (", NamedTextColor.GRAY))
-			.append(Component.text(df.format(totalDamageTaken - damageShielded)))
+			.append(Component.text(df.format(totalDamageTaken - damageShielded) + "♥"))
 			.append(Component.text(")", NamedTextColor.GRAY)).append(separator))
 		.append(getTypedComponent(damageBuffed, NamedTextColor.BLUE, "Damage buffed for self and allies:")).append(separator)
 		.append(getTypedComponent(damageMitigated, NamedTextColor.GOLD, "Damage mitigated, excluding shields:"));

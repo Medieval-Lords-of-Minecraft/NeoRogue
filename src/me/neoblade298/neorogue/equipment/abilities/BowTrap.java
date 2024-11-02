@@ -5,8 +5,6 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
@@ -14,25 +12,21 @@ import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
-import me.neoblade298.neorogue.equipment.Bow;
 import me.neoblade298.neorogue.equipment.BowProjectile;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
-import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
-import me.neoblade298.neorogue.equipment.mechanics.ProjectileTickAction;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
-import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
@@ -50,9 +44,9 @@ public class BowTrap extends Equipment {
 	
 	public BowTrap(boolean isUpgraded) {
 		super(ID, "Bow Trap", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 10, 15, tp.range));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 10, 16, tp.range));
 		
-		damage = isUpgraded ? 60 : 40;
+		damage = isUpgraded ? 45 : 30;
 	}
 	
 	public static Equipment get() {
@@ -83,7 +77,7 @@ public class BowTrap extends Equipment {
 				LivingEntity trg = TargetHelper.getNearest(p, loc, tp);
 				if (trg != null) {
 					Sounds.shoot.play(p, loc);
-					Location future = trg.getLocation().add(trg.getVelocity());
+					Location future = trg.getEyeLocation().add(trg.getVelocity());
 					Vector btwn = future.toVector().subtract(loc.toVector()).normalize();
 					proj.start(data, loc, btwn);
 					
@@ -119,7 +113,8 @@ public class BowTrap extends Equipment {
 		@Override
 		public void onStart(ProjectileInstance proj) {
 			Sounds.shoot.play(p, p);
-			proj.applyProperties(data, properties);
+			proj.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.PIERCING));
+			proj.getMeta().addOrigin(DamageOrigin.TRAP);
 		}
 	}
 
@@ -129,6 +124,6 @@ public class BowTrap extends Equipment {
 				"On cast, " + GlossaryTag.CHARGE.tag(this) + " for <white>2s</white>. Afterwards, drop a " + GlossaryTag.TRAP.tag(this) + 
 				" that lasts for " + DescUtil.white("10s") +
 				". It fires a projectile that deals " + GlossaryTag.PIERCING.tag(this, damage, true) +
-				" damage at the nearest enemy.");
+				" damage at the nearest enemy every second.");
 	}
 }

@@ -24,7 +24,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroup
 public class PiercingShot extends Equipment {
 	private static final String ID = "piercingShot";
 	private int damage;
-	private static final ParticleContainer pc = new ParticleContainer(Particle.REDSTONE).spread(0.2, 0.2).count(10);
+	private static final ParticleContainer pc = new ParticleContainer(Particle.REDSTONE).spread(0.2, 0.2).count(3);
 	
 	public PiercingShot(boolean isUpgraded) {
 		super(ID, "Piercing Shot", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
@@ -67,7 +67,7 @@ public class PiercingShot extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLAZE_ROD,
-				"On cast, your next basic attack deals an additional " + GlossaryTag.PIERCING.tag(this, damage, true) + " and pierces up to " +
-				DescUtil.white(2) + " enemies.");
+				"On cast, your next basic attack deals an additional " + GlossaryTag.PIERCING.tag(this, damage, true) + " and pierces " +
+				DescUtil.white(1) + " enemy.");
 	}
 }

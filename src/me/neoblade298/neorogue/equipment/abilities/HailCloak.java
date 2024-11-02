@@ -55,7 +55,7 @@ public class HailCloak extends Equipment {
 		data.addTrigger(id, bind, inst);
 		data.addTrigger(id, Trigger.DEALT_DAMAGE, (pdata, in) -> {
 			DealtDamageEvent ev = (DealtDamageEvent) in;
-			if (!inst.active || ev.getMeta().getOrigin() != DamageOrigin.PROJECTILE) return TriggerResult.keep();
+			if (!inst.active || !ev.getMeta().hasOrigin(DamageOrigin.PROJECTILE)) return TriggerResult.keep();
 			inst.runEffect(ev.getTarget().getLocation());
 			return TriggerResult.keep();
 		});

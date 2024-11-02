@@ -25,6 +25,7 @@ import me.neoblade298.neorogue.map.MapSpawnerInstance;
 import me.neoblade298.neorogue.session.Plot;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
+import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
 import me.neoblade298.neorogue.session.fight.TickAction.TickResult;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffType;
@@ -126,18 +127,26 @@ public class FightData {
 	}
 
 	public void addBuff(FightData applier, boolean damageBuff, boolean multiplier, BuffType type, double amount) {
+		addBuff(applier, damageBuff, multiplier, type, amount, null);
+	}
+
+	public void addBuff(FightData applier, boolean damageBuff, boolean multiplier, BuffType type, double amount, DamageOrigin origin) {
 		Buff b = damageBuff ? damageBuffs.getOrDefault(type, new Buff()) : defenseBuffs.getOrDefault(type, new Buff());
 		if (multiplier)
 			b.addMultiplier(applier, amount);
 		else
 			b.addIncrease(applier, amount);
-		
+		b.setOrigin(origin);
 		if (damageBuff) damageBuffs.put(type, b);
 		else defenseBuffs.put(type, b);
 	}
 
 	public void addBuff(FightData applier, String id, boolean damageBuff, boolean multiplier, BuffType type, double amount, int ticks) {
-		addBuff(applier, damageBuff, multiplier, type, amount);
+		addBuff(applier, id, damageBuff, multiplier, type, amount, null, ticks);
+	}
+
+	public void addBuff(FightData applier, String id, boolean damageBuff, boolean multiplier, BuffType type, double amount, DamageOrigin origin, int ticks) {
+		addBuff(applier, damageBuff, multiplier, type, amount, origin);
 
 		if (ticks > 0) {
 			addTask(id, new BukkitRunnable() {

@@ -33,7 +33,7 @@ public class DamageMeta {
 	
 	private FightData owner;
 	private boolean hitBarrier, isSecondary;
-	private DamageOrigin origin;
+	private HashSet<DamageOrigin> origins = new HashSet<DamageOrigin>();
 	private IProjectileInstance proj; // If the damage originated from projectile
 	private LinkedList<DamageSlice> slices = new  LinkedList<DamageSlice>();
 	private HashMap<BuffType, LinkedList<BuffMeta>> damageBuffs = new HashMap<BuffType, LinkedList<BuffMeta>>(),
@@ -57,7 +57,7 @@ public class DamageMeta {
 	
 	public DamageMeta(FightData data, DamageOrigin origin) {
 		this.owner = data;
-		this.origin = origin;
+		this.origins.add(origin);
 		addBuffs(owner.getBuffs(true), BuffOrigin.NORMAL, true);
 	}
 	
@@ -69,19 +69,19 @@ public class DamageMeta {
 	public DamageMeta(FightData data, double damage, DamageType type, DamageOrigin origin) {
 		this(data);
 		this.slices.add(new DamageSlice(data, damage, type));
-		this.origin = origin;
+		this.origins.add(origin);
 	}
 	
 	public DamageMeta(FightData data, double damage, DamageType type, DamageOrigin origin, IProjectileInstance proj) {
 		this(data);
 		this.slices.add(new DamageSlice(data, damage, type));
-		this.origin = origin;
+		this.origins.add(origin);
 		this.proj = proj;
 	}
 	
 	public DamageMeta(FightData data, double baseDamage, DamageType type, DamageOrigin origin, boolean hitBarrier, boolean isSecondary) {
 		this(data, baseDamage, type);
-		this.origin = origin;
+		this.origins.add(origin);
 		this.hitBarrier = hitBarrier;
 		this.isSecondary = isSecondary;
 	}
@@ -92,7 +92,8 @@ public class DamageMeta {
  		this.slices = new LinkedList<DamageSlice>(original.slices);
 		this.hitBarrier = original.hitBarrier;
 		this.isSecondary = original.isSecondary;
-		this.origin = original.origin;
+		this.origins = original.origins;
+		this.proj = original.proj;
  		
  		// These are deep clones
 		this.damageBuffs = cloneBuffMap(original.damageBuffs);
@@ -147,8 +148,12 @@ public class DamageMeta {
 		this.hitBarrier = hitBarrier;
 	}
 
-	public DamageOrigin getOrigin() {
-		return origin;
+	public boolean hasOrigin(DamageOrigin origin) {
+		return this.origins.contains(origin);
+	}
+
+	public void addOrigin(DamageOrigin origin) {
+		this.origins.add(origin);
 	}
 	
 	public void addDamageSlice(DamageSlice slice) {
@@ -258,6 +263,7 @@ public class DamageMeta {
 				if (!damageBuffs.containsKey(bt)) continue;
 				for (BuffMeta bm : damageBuffs.get(bt)) {
 					Buff b = bm.buff;
+					if (b.getOrigin() != null && origins.contains(b.getOrigin())) continue;
 					increase += b.getIncrease();
 					mult += b.getMultiplier();
 					if (!(owner instanceof PlayerFightData)) continue; // Don't need stats for non-player damager
@@ -274,6 +280,7 @@ public class DamageMeta {
 				if (!defenseBuffs.containsKey(bt)) continue;
 				for (BuffMeta bm : defenseBuffs.get(bt)) {
 					Buff b = bm.buff;
+					if (b.getOrigin() != null && origins.contains(b.getOrigin())) continue;
 					increase -= b.getIncrease();
 					mult -= b.getMultiplier();
 					if (!(recipient instanceof PlayerFightData)) continue; // Don't need stats for non-player mitigation

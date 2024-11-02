@@ -89,7 +89,6 @@ public class ArtifactsInventory extends CoreInventory {
 		
 		ItemStack item = e.getCurrentItem();
 		NBTItem nclicked = new NBTItem(item);
-		System.out.println("Clicked " + nclicked.getString("equipId"));
 		if (e.isRightClick() && nclicked.hasTag("equipId") && e.getCursor().getType().isAir()) {
 			e.setCancelled(true);
 			new BukkitRunnable() {
