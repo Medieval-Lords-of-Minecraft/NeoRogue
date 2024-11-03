@@ -49,6 +49,7 @@ public enum Trigger {
 	THROW_TRIDENT,
 	USE_CONSUMABLE,
 	TOGGLE_SPRINT,
+	TOGGLE_CROUCH,
 	RECEIVED_DAMAGE, // Cancellable
 	RECEIVED_HEALTH_DAMAGE, // Cancellable, only occurs if the player is due to lose health, TOO LATE to apply buffs
 	STAMINA_CHANGE,

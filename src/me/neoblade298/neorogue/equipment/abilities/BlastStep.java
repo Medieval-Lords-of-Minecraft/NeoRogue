@@ -73,7 +73,7 @@ public class BlastStep extends Equipment {
 				FightInstance.knockback(ent, kb);
 				FightData fd = FightInstance.getFightData(ent);
 				fd.applyStatus(
-					Status.createByGenericType(GenericStatusType.BASIC, "blastStep-" + p.getName(), fd, false), data, 1, 60);
+					Status.createByGenericType(GenericStatusType.BASIC, "blastStep-" + p.getName(), fd, true), data, 1, 60);
 			}
 			return TriggerResult.keep();
 		}));
@@ -82,7 +82,7 @@ public class BlastStep extends Equipment {
 			PreDealtDamageEvent ev = (PreDealtDamageEvent) in;
 			if (!ev.getMeta().hasOrigin(DamageOrigin.PROJECTILE)) return TriggerResult.keep();
 			FightData fd = FightInstance.getFightData(ev.getTarget());
-			if (fd.hasStatus("blastStep-" + p.getName())) {
+			if (fd.hasStatus("blastStep-" + p.getName()) && ev.getMeta().getProjectile().getOrigin().distanceSquared(ev.getTarget().getLocation()) <= 25) {
 				ev.getMeta().addDamageSlice(new DamageSlice(data, inc, DamageType.BLUNT));
 			}
 			return TriggerResult.keep();

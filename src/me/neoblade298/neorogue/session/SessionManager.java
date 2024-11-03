@@ -45,6 +45,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -396,6 +397,16 @@ public class SessionManager implements Listener {
 		UUID uuid = p.getUniqueId();
 		if (!sessions.containsKey(uuid)) return;
 		e.setCancelled(true);
+	}
+
+	@EventHandler
+	public void onToggleCrouch(PlayerToggleSneakEvent e) {
+		Player p = e.getPlayer();
+		UUID uuid = p.getUniqueId();
+		if (!sessions.containsKey(uuid)) return;
+		Session s = sessions.get(uuid);
+		if (!(s.getInstance() instanceof FightInstance)) return;
+		((FightInstance) s.getInstance()).handleToggleCrouchEvent(e);
 	}
 	
 	@EventHandler

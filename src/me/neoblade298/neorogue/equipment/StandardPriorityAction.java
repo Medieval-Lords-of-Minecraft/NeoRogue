@@ -14,6 +14,7 @@ public class StandardPriorityAction extends PriorityAction {
 	}
 	private long nextUse, time;
 	private int count;
+	private boolean bool;
 	
 	public void setCount(int count) {
 		this.count = count;
@@ -21,6 +22,12 @@ public class StandardPriorityAction extends PriorityAction {
 	
 	public void addCount(int count) {
 		this.count += count;
+	}
+	public void setBool(boolean bool) {
+		this.bool = bool;
+	}
+	public boolean getBool() {
+		return bool;
 	}
 	
 	public int getCount() {

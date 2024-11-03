@@ -1,11 +1,11 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
@@ -14,8 +14,15 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
+import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
+import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
+import me.neoblade298.neorogue.session.fight.DamageType;
+import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.TargetHelper;
+import me.neoblade298.neorogue.session.fight.Trap;
 import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -23,7 +30,9 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class Setup extends Equipment {
 	private static final String ID = "setup";
 	private int time, inc, damage;
-	private static final ParticleContainer pc = new ParticleContainer(Particle.ENCHANTMENT_TABLE).count(25).spread(1, 1).offsetY(1);
+	private static final ParticleContainer pc = new ParticleContainer(Particle.ENCHANTMENT_TABLE).count(25).spread(1, 1).offsetY(1),
+		trap = new ParticleContainer(Particle.CRIT).count(50).spread(1, 0.2);
+	private static final TargetProperties tp = TargetProperties.radius(2, true, TargetType.ENEMY);
 	
 	public Setup(boolean isUpgraded) {
 		super(ID, "Setup", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
@@ -41,28 +50,44 @@ public class Setup extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		StandardPriorityAction act = new StandardPriorityAction(id);
 		ItemStack icon = item.clone();
-		icon.addEnchantment(Enchantment.LUCK, 1);
 		act.setAction((pdata, in) -> {
 			if (!p.isSneaking()) return TriggerResult.keep();
 			act.addCount(1);
 			if (act.getCount() >= time) {
 				pc.play(p, p);
 				Sounds.enchant.play(p, p);
+				initTrap(p, data);
 				data.addBuff(data, true, false, BuffType.GENERAL, inc, DamageOrigin.TRAP);
 				act.addCount(-time);
 
-				// This stupid stuff is so I can avoid making an object to store a single boolean
-				if (icon.containsEnchantment(Enchantment.LUCK)) {
+				if (act.getBool()) {
 					icon.setAmount(icon.getAmount() + 1);
 				}
 				else {
-					icon.removeEnchantment(Enchantment.LUCK);
+					act.setBool(true);
 				}
 				p.getInventory().setItem(slot, icon);
 			}
 			return TriggerResult.keep();
 		});
 		data.addTrigger(id, Trigger.PLAYER_TICK, act);
+	}
+
+	private void initTrap(Player p, PlayerFightData data) {
+		Location loc = p.getLocation();
+		data.addTrap(new Trap(data, loc, 200) {
+			@Override
+			public void tick() {
+				trap.play(p, loc);
+				LivingEntity trg = TargetHelper.getNearest(p, loc, tp);
+				if (trg != null) {
+					Sounds.breaks.play(p, trg);
+					DamageMeta dm = new DamageMeta(data, damage, DamageType.BLUNT, DamageOrigin.TRAP);
+					FightInstance.dealDamage(dm, trg);
+					data.removeTrap(this);
+				}
+			}
+		});
 	}
 
 	@Override

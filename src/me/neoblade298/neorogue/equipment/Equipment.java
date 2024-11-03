@@ -315,6 +315,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Finale(b);
 			new Fissure(b);
 			new FivePointStrike(b);
+			new FlashDraw(b);
 			new FlowState(b);
 			new FlowState2(b);
 			new Flurry(b);
@@ -378,6 +379,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new ShatteringShot(b);
 			new ShoulderBash(b);
 			new Sear(b);
+			new Setup(b);
 			new Sidestep(b);
 			new SilentSteps(b);
 			new SilentSteps2(b);

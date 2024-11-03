@@ -33,7 +33,8 @@ public class Posturing extends Equipment {
 	}
 
 	public void setupReforges() {
-		addReforge(KeenSenses.get(), Posturing2.get());
+		addReforge(KeenSenses.get(), Posturing2.get(), Setup.get());
+		addReforge(AgilityTraining.get(), FlashDraw.get());
 	}
 
 	@Override

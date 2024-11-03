@@ -37,6 +37,7 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -399,6 +400,10 @@ public abstract class FightInstance extends Instance {
 
 	public static void handleProjectileEvent(Player p, ProjectileLaunchEvent e) {
 		trigger(p, Trigger.VANILLA_PROJECTILE, e);
+	}
+
+	public void handleToggleCrouchEvent(PlayerToggleSneakEvent e) {
+		trigger(e.getPlayer(), Trigger.TOGGLE_CROUCH, e);
 	}
 
 	public void handleToggleSprintEvent(PlayerToggleSprintEvent e) {
