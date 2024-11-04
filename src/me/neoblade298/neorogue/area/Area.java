@@ -128,7 +128,7 @@ public class Area {
 		this.xOff = xOff;
 		this.zOff = zOff + Session.AREA_Z;
 		this.s = s;
-
+		
 		generateNodes();
 
 		// Should only save all nodes at first, on auto-save only save nodes within reach (for instance data)
@@ -759,6 +759,7 @@ public class Area {
 		}
 		
 		cleanLongDiagonals(newPos);
+		fillEmptyDests(prevPos, newPos);
 		
 		return newPos;
 	}
@@ -779,6 +780,36 @@ public class Area {
 					pos[lane] = null;
 					curr.setLane(lane - 1);
 					break;
+				}
+			}
+		}
+	}
+	
+	private void fillEmptyDests(Node[] sourcePos, Node[] destPos) {
+		for (int lane = 0; lane < MAX_LANES; lane++) {
+			Node curr = sourcePos[lane];
+			if (curr == null)
+				continue;
+			if (curr.getDestinations().size() == 0) {
+				if (destPos[lane] != null) { // prioritize straight first
+					curr.addDestination(destPos[lane]);
+					continue;
+				} else if (NeoRogue.gen.nextBoolean()) { // 50/50 between gen'ing left vs right first
+					if (lane - 1 >= 0 && destPos[lane - 1] != null) {
+						curr.addDestination(destPos[lane - 1]);
+						continue;
+					} else if (lane + 1 < MAX_LANES && destPos[lane + 1] != null) {
+						curr.addDestination(destPos[lane + 1]);
+						continue;
+					}
+				} else {
+					if (lane + 1 < MAX_LANES && destPos[lane + 1] != null) {
+						curr.addDestination(destPos[lane + 1]);
+						continue;
+					} else if (lane - 1 >= 0 && destPos[lane - 1] != null) {
+						curr.addDestination(destPos[lane - 1]);
+						continue;
+					}
 				}
 			}
 		}
