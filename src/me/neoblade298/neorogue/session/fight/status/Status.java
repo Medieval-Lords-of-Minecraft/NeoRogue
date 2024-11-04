@@ -14,7 +14,7 @@ public abstract class Status {
 	protected String id;
 	protected int stacks;
 	protected TickAction action;
-	protected FightData owner;
+	protected FightData holder;
 	protected StatusSliceHolder slices = new StatusSliceHolder();
 	protected int ticks;
 	protected boolean hidden;
@@ -29,15 +29,15 @@ public abstract class Status {
 		}
 	};
 	
-	public Status(String id, FightData owner, StatusClass sc) {
+	public Status(String id, FightData holder, StatusClass sc) {
 		this.id = id;
-		this.owner = owner;
+		this.holder = holder;
 		this.sc = sc;
 	}
 	
-	public Status(String id, FightData owner, StatusClass sc, boolean hidden) {
+	public Status(String id, FightData holder, StatusClass sc, boolean hidden) {
 		this.id = id;
-		this.owner = owner;
+		this.holder = holder;
 		this.hidden = hidden;
 		this.sc = sc;
 	}

@@ -845,13 +845,14 @@ public abstract class FightInstance extends Instance {
 				spawn.setX(-spawn.getX());
 				
 				for (Player p : s.getOnlinePlayers()) {
-					p.teleport(spawn);
+					teleportRandomly(p);
 					p.setAllowFlight(false);
 					p.setMaximumNoDamageTicks(0);
 				}
 				for (UUID uuid : s.getSpectators().keySet()) {
 					Player p = Bukkit.getPlayer(uuid);
-					p.teleport(spawn);
+					teleportRandomly(p);
+					p.setAllowFlight(true);
 				}
 				
 				for (FightRunnable runnable : initialTasks) {

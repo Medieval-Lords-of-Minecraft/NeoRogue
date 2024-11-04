@@ -51,7 +51,7 @@ public class ElectrifiedStatus extends DecrementStackStatus {
 		Collections.shuffle(list);
 		LivingEntity target = list.peekFirst();
 		Vector v = target.getLocation().subtract(0, 2, 0).subtract(owner.getEntity().getLocation()).toVector();
-		proj.start(owner, owner.getEntity().getLocation().add(0, 4, 0), v);
+		proj.start(owner, holder.getEntity().getLocation().add(0, 4, 0), v);
 	}
 	
 	private class ElectrifiedProjectile extends Projectile {

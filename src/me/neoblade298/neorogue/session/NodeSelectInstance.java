@@ -73,12 +73,12 @@ public class NodeSelectInstance extends EditInventoryInstance {
 		holograms.add(holo);
 
 		for (Player p : s.getOnlinePlayers()) {
-			p.teleport(spawn);
+			teleportRandomly(p);
 			p.setAllowFlight(true);
 		}
 		for (UUID uuid : s.getSpectators().keySet()) {
 			Player p = Bukkit.getPlayer(uuid);
-			p.teleport(spawn);
+			teleportRandomly(p);
 			p.setAllowFlight(true);
 		}
 		super.start();
@@ -128,7 +128,7 @@ public class NodeSelectInstance extends EditInventoryInstance {
 	public void handleSpectatorInteractEvent(PlayerInteractEvent e) {
 		if (e.getHand() != EquipmentSlot.HAND)
 			return;
-		if (e.getAction() != Action.RIGHT_CLICK_BLOCK && e.getClickedBlock().getType() == Material.LECTERN) {
+		if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock().getType() == Material.LECTERN) {
 			e.setCancelled(true);
 			Node n = s.getArea().getNodeFromLocation(e.getClickedBlock().getLocation().add(0, 2, 1));
 			FightInstance inst = (FightInstance) n.getInstance();

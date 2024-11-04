@@ -43,7 +43,7 @@ public class StandardFightInstance extends FightInstance {
 		SCORE_REQUIRED.put(1, 15D);
 		SCORE_REQUIRED.put(2, 25D);
 		SCORE_REQUIRED.put(3, 35D);
-		SCORE_REQUIRED.put(4, 50D);
+		SCORE_REQUIRED.put(4, 45D);
 	}
 	
 	public StandardFightInstance(Session s, Set<UUID> players, AreaType type, int nodesVisited) {

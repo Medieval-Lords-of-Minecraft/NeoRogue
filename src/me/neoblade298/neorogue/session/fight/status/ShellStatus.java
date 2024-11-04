@@ -11,6 +11,6 @@ public class ShellStatus extends BasicStatus {
 	@Override
 	public void onApply(FightData applier, int stacks) {
 		this.stacks += stacks;
-		owner.addBuff(applier, false, false, BuffType.MAGICAL, stacks);
+		holder.addBuff(applier, false, false, BuffType.MAGICAL, stacks);
 	}
 }

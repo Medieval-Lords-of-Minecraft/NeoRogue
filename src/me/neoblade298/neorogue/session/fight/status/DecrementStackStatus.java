@@ -20,11 +20,11 @@ public class DecrementStackStatus extends Status {
 		if (this.stacks > 0) {
 			if (action == null) {
 				action = new DecrementStackTickAction();
-				owner.addTickAction(action);
+				holder.addTickAction(action);
 			}
 		}
 		else {
-			owner.removeStatus(id);
+			holder.removeStatus(id);
 			return;
 		}
 
@@ -39,7 +39,7 @@ public class DecrementStackStatus extends Status {
 			
 			stacks--;
 			if (stacks <= 0) {
-				owner.removeStatus(id);
+				holder.removeStatus(id);
 				return TickResult.REMOVE;
 			}
 			

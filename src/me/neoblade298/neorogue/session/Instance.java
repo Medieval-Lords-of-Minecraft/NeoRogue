@@ -10,6 +10,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.chance.ChanceInstance;
@@ -47,6 +48,13 @@ public abstract class Instance {
 	
 	public Location getSpawn() {
 		return spawn;
+	}
+
+	// Done so that players don't push each other around
+	public void teleportRandomly(Player p) {
+		double dx = NeoRogue.gen.nextDouble(-1, 1);
+		double dz = NeoRogue.gen.nextDouble(-1, 1);
+		p.teleport(spawn.clone().add(dx, 0, dz));
 	}
 	
 	public static Instance deserialize(Session s, ResultSet row, HashMap<UUID, PlayerSessionData> party) throws SQLException {
