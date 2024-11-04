@@ -35,6 +35,7 @@ public class FlashDraw extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMetadata md = new ActionMetadata();
+		md.setTime(-1);
 		data.addTrigger(id, Trigger.TOGGLE_CROUCH, (pdata, in) -> {
 			PlayerToggleSneakEvent e = (PlayerToggleSneakEvent) in;
 			md.setTime(e.isSneaking() ? System.currentTimeMillis() : -1);
@@ -54,14 +55,14 @@ public class FlashDraw extends Equipment {
 			if (!e.isBasicAttack()) return TriggerResult.keep();
 			data.addTask(new BukkitRunnable() {
 				public void run() {
-					e.getGroup().start(data);
+					e.getGroup().startWithoutEvent(data);
 				}
 			}.runTaskLater(NeoRogue.inst(), 5L));
 			if (md.getCount() >= thres) {
 				md.addCount(-thres);
 				data.addTask(new BukkitRunnable() {
 					public void run() {
-						e.getGroup().start(data);
+						e.getGroup().startWithoutEvent(data);
 					}
 				}.runTaskLater(NeoRogue.inst(), 10L));
 			}

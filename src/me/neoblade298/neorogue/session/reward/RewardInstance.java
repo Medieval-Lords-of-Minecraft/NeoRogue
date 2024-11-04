@@ -46,12 +46,14 @@ public class RewardInstance extends EditInventoryInstance {
 		for (PlayerSessionData data : s.getParty().values()) {
 			Player p = data.getPlayer();
 			p.playSound(p, Sound.ENTITY_PLAYER_LEVELUP, 1F, 1F);
-			p.teleport(spawn);
+			teleportRandomly(p);
 		}
 		
 		for (UUID uuid : s.getSpectators().keySet()) {
 			Player p = Bukkit.getPlayer(uuid);
-			p.teleport(spawn);
+			teleportRandomly(p);
+			p.setAllowFlight(false);
+			p.setFlying(false);
 		}
 		super.start();
 		

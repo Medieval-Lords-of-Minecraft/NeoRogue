@@ -3,8 +3,8 @@ package me.neoblade298.neorogue.session;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.UUID;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -12,9 +12,11 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import eu.decentsoftware.holograms.api.holograms.Hologram;
+import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -47,7 +49,7 @@ public class ShopInstance extends EditInventoryInstance {
 		for (PlayerSessionData data : s.getParty().values()) {
 			Player p = data.getPlayer();
 			EquipmentClass ec = data.getPlayerClass();
-			p.teleport(spawn);
+			teleportRandomly(p);
 			
 			// Create shop contents
 			ArrayList<Equipment> equips = new ArrayList<Equipment>();
@@ -69,7 +71,7 @@ public class ShopInstance extends EditInventoryInstance {
 		}
 		for (UUID uuid : s.getSpectators().keySet()) {
 			Player p = Bukkit.getPlayer(uuid);
-			p.teleport(spawn);
+			teleportRandomly(p);
 		}
 		super.start();
 
@@ -101,6 +103,9 @@ public class ShopInstance extends EditInventoryInstance {
 
 	@Override
 	public void handleInteractEvent(PlayerInteractEvent e) {
+		if (e.getHand() != EquipmentSlot.HAND)
+			return;
+
 		Player p = e.getPlayer();
 		UUID uuid = p.getUniqueId();
 		if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock().getType() == Material.CHEST) {
@@ -124,6 +129,9 @@ public class ShopInstance extends EditInventoryInstance {
 		}
 
 		else {
+			// Have to do this because apparently adventure mode does right and left click when you open a chest
+			// This is a workaround to prevent the player from interacting with the map while the inventory is open
+			if (InventoryListener.hasOpenCoreInventory(p)) return;
 			super.handleInteractEvent(e);
 		}
 	}

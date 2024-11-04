@@ -126,10 +126,10 @@ public class PlayerFightData extends FightData {
 			art.initialize(p, this, null, null, i++);
 		}
 		
-		inv.setItem(EquipmentSlot.OFF_HAND, null); // Remove map from offhand
 		Equipment offhand = data.getEquipment(EquipSlot.OFFHAND)[0];
 		if (offhand != null) {
 			offhand.initialize(p, this, null, EquipSlot.OFFHAND, 0);
+			inv.setItem(EquipmentSlot.OFF_HAND, offhand.getItem());
 		}
 		
 		// Sort triggers by priority
@@ -391,7 +391,10 @@ public class PlayerFightData extends FightData {
 					}
 					iter.remove();
 				}
-				if (tr.cancelEvent()) cancel = true;
+				if (tr.cancelEvent()) {
+					cancel = true;
+					break;
+				}
 			}
 			p.updateInventory();
 			return cancel;

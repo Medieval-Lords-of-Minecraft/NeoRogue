@@ -21,8 +21,8 @@ public class PoisonStatus extends DurationStatus {
 
 	@Override
 	public void apply(FightData applier, int stacks, int ticks) {
-		if (owner instanceof PlayerFightData) {
-			owner.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.POISON, ticks, 0));
+		if (holder instanceof PlayerFightData) {
+			holder.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.POISON, ticks, 0));
 		}
 		super.apply(applier, stacks, ticks);
 	}
@@ -36,6 +36,6 @@ public class PoisonStatus extends DurationStatus {
 		for (Entry<FightData, Integer> ent : slices.getSliceOwners().entrySet()) {
 			meta.addDamageSlice(new DamageSlice(ent.getKey(), ent.getValue() * 0.2, DamageType.POISON, true));
 		}
-		FightInstance.dealDamage(meta, owner.getEntity());
+		FightInstance.dealDamage(meta, holder.getEntity());
 	}
 }

@@ -13,11 +13,11 @@ public class ConcussedStatus extends DecrementStackStatus {
 	@Override
 	public void apply(FightData fd, int stacks, int seconds) {
 		super.apply(fd, stacks, seconds);
-		owner.addBuff(fd, true, false, BuffType.PHYSICAL, -stacks * 0.2);
+		holder.addBuff(fd, true, false, BuffType.PHYSICAL, -stacks * 0.2);
 	}
 	
 	@Override
 	public void onTickAction() {
-		owner.addBuff(slices.first().getFightData(), true, false, BuffType.PHYSICAL, 0.2);
+		holder.addBuff(slices.first().getFightData(), true, false, BuffType.PHYSICAL, 0.2);
 	}
 }

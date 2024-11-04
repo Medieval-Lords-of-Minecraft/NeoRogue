@@ -22,7 +22,7 @@ public class MultiCrossbow extends Bow {
 	public MultiCrossbow(boolean isUpgraded) {
 		super(ID, "Multi-Crossbow", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofBow(isUpgraded ? 35 : 40, 1, 0, 6, 0, 3));
+				EquipmentProperties.ofBow(isUpgraded ? 45 : 40, 1, 0, 6, 0, 3));
 		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 
@@ -49,7 +49,7 @@ public class MultiCrossbow extends Bow {
 			ProjectileGroup proj = new ProjectileGroup();
 			int limit = data.getAmmoInstance().getRemaining();
 			int count = 0;
-			for (double y : new double[] { -0.3, 0.3 }) {
+			for (double y : new double[] { -0.2, 0.2 }) {
 				for (double rotate : new double[] { 10, -10 }) {
 					if (limit != -1 && ++count >= limit) break;
 					proj.add(new BowProjectile(data, ev.getEntity().getVelocity(), this).initialY(y).rotation(rotate));

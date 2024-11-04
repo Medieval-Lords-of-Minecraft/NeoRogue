@@ -1,6 +1,7 @@
 package me.neoblade298.neorogue.session.fight.mythicbukkit;
 
 import org.bukkit.entity.LivingEntity;
+
 import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.api.config.MythicLineConfig;
 import io.lumine.mythic.api.skills.ITargetedEntitySkill;

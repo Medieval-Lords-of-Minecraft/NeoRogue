@@ -18,9 +18,13 @@ import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.area.Node;
+import me.neoblade298.neorogue.area.NodeType;
 import me.neoblade298.neorogue.player.MapViewer;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.session.fight.BossFightInstance;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 
 public abstract class EditInventoryInstance extends Instance {
 	public static final int MAP_ID = 256;
@@ -167,8 +171,18 @@ public abstract class EditInventoryInstance extends Instance {
 						byte x = (byte) MAP_X_SLOTS[lane];
 						byte y = (byte) MAP_Y_SLOTS[pos - mapPos];
 						boolean isCurr = n.equals(s.getNode());
-						MapCursor curs = new MapCursor(x, y, (byte) 0, isCurr ? MapCursor.Type.WHITE_CIRCLE : n.getType().getCursor(),
-							true, Component.text(isCurr ? "You are here" : n.getType().name()));
+
+						MapCursor curs;
+						if (isCurr) {
+							curs = new MapCursor(x, y, (byte) 0, MapCursor.Type.WHITE_CIRCLE, true, Component.text("You are here"));
+						}
+						else if (n.getType() == NodeType.BOSS) {
+							curs = new MapCursor(x, y, (byte) 0, n.getType().getCursor(), true, 
+								Component.text(((BossFightInstance) n.getInstance()).getBossDisplay(), NamedTextColor.WHITE, TextDecoration.BOLD));
+						}
+						else {
+							curs = new MapCursor(x, y, (byte) 0, n.getType().getCursor(), true, Component.text(n.getType().name()));
+						}
 						col.addCursor(curs);
 
 						// Only draw paths for visible nodes
