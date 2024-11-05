@@ -33,7 +33,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 
 public class SunderingShot extends Equipment {
 	private static final String ID = "sunderingShot";
-	private static final ParticleContainer pc = new ParticleContainer(Particle.REDSTONE).count(50).spread(0.5, 0.5);
+	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST).count(50).spread(0.5, 0.5);
 	private int damage;
 	
 	public SunderingShot(boolean isUpgraded) {

@@ -40,8 +40,8 @@ public class ArrowRain extends Equipment {
 	private static final String ID = "arrowRain";
 	private static TargetProperties tp = TargetProperties.block(7, true),
 			hitTp = TargetProperties.radius(2, false, TargetType.ENEMY);
-	private static ParticleContainer hit = new ParticleContainer(Particle.EXPLOSION_NORMAL).count(50).spread(1, 0.1).speed(0.1),
-			targeter = new ParticleContainer(Particle.REDSTONE).count(10).offsetY(1).spread(0.3, 0);
+	private static ParticleContainer hit = new ParticleContainer(Particle.EXPLOSION).count(50).spread(1, 0.1).speed(0.1),
+			targeter = new ParticleContainer(Particle.DUST).count(10).offsetY(1).spread(0.3, 0);
 	private int damage, reps;
 	
 	public ArrowRain(boolean isUpgraded) {

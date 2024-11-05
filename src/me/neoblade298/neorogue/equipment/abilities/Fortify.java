@@ -24,7 +24,7 @@ public class Fortify extends Equipment {
 	private static final String ID = "fortify";
 	private int damage, fortitude;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
-			hit = new ParticleContainer(Particle.REDSTONE);
+			hit = new ParticleContainer(Particle.DUST);
 	
 	public Fortify(boolean isUpgraded) {
 		super(ID, "Fortify", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,

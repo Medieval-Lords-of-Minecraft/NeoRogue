@@ -174,7 +174,7 @@ public abstract class EditInventoryInstance extends Instance {
 
 						MapCursor curs;
 						if (isCurr) {
-							curs = new MapCursor(x, y, (byte) 0, MapCursor.Type.WHITE_CIRCLE, true, Component.text("You are here"));
+							curs = new MapCursor(x, y, (byte) 0, MapCursor.Type.PLAYER, true, Component.text("You are here"));
 						}
 						else if (n.getType() == NodeType.BOSS) {
 							curs = new MapCursor(x, y, (byte) 0, n.getType().getCursor(), true, 

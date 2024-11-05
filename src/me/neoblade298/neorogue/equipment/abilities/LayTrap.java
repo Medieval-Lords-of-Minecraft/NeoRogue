@@ -81,7 +81,7 @@ public class LayTrap extends Equipment {
 					hit.play(p, trg);
 					DamageMeta dm = new DamageMeta(data, damage, DamageType.BLUNT, DamageOrigin.TRAP);
 					FightInstance.dealDamage(dm, trg);
-					trg.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, secs * 20, 2));
+					trg.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, secs * 20, 2));
 					data.removeTrap(this);
 				}
 			}

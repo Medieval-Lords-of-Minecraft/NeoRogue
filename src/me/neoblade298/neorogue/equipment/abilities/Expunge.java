@@ -37,7 +37,7 @@ public class Expunge extends Equipment {
 	private int stacks;
 	private double bonus;
 	private static final TargetProperties tp = TargetProperties.radius(5, false, TargetType.ENEMY);
-	private static final ParticleContainer circPart = new ParticleContainer(Particle.REDSTONE)
+	private static final ParticleContainer circPart = new ParticleContainer(Particle.DUST)
 			.dustOptions(new DustOptions(Color.GREEN, 1F));
 	private static final Circle circ = new Circle(tp.range);
 	
@@ -56,7 +56,7 @@ public class Expunge extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pd, in) -> {
-			p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20, 0));
+			p.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 20, 0));
 			
 			data.addTask(new BukkitRunnable() {
 				public void run() {

@@ -33,7 +33,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class BreakTheLine extends Equipment {
 	private static final String ID = "breakTheLine";
 	private int conc, damage = 220;
-	private static final ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION_LARGE).count(15).spread(3, 0);
+	private static final ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION).count(15).spread(3, 0);
 	private static final TargetProperties tp = TargetProperties.radius(4, true, TargetType.ENEMY);
 	
 	public BreakTheLine(boolean isUpgraded) {
@@ -85,7 +85,7 @@ public class BreakTheLine extends Equipment {
 						LinkedList<LivingEntity> targets = TargetHelper.getEntitiesInRadius(p, tp);
 						for (LivingEntity ent : targets) {
 							FightInstance.knockback(p, ent, 0.9);
-							ent.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 60, 0));
+							ent.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 60, 0));
 							FightInstance.dealDamage(new DamageMeta(pdata, damage, DamageType.EARTHEN), ent);
 							FightInstance.applyStatus(ent, StatusType.CONCUSSED, p, conc, -1);
 						}

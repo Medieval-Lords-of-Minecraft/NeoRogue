@@ -25,7 +25,7 @@ public class BlessedEdge extends Equipment {
 	private static final String ID = "blessedEdge";
 	private int damage, sanct;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
-			hit = new ParticleContainer(Particle.FIREWORKS_SPARK);
+			hit = new ParticleContainer(Particle.FIREWORK);
 	private static final SoundContainer equip = new SoundContainer(Sound.ITEM_ARMOR_EQUIP_CHAIN),
 			hitSound = new SoundContainer(Sound.BLOCK_ANVIL_LAND);
 	

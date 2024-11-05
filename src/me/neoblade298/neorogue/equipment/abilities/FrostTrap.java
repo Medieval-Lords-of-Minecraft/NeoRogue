@@ -33,7 +33,7 @@ public class FrostTrap extends Equipment {
 	private static final String ID = "frostTrap";
 	private static TargetProperties tp = TargetProperties.radius(2, false, TargetType.ENEMY);
 	private static ParticleContainer trap = new ParticleContainer(Particle.CLOUD).count(50).spread(1, 0.2),
-		hit = new ParticleContainer(Particle.EXPLOSION_NORMAL).count(10).spread(1, 1);
+		hit = new ParticleContainer(Particle.EXPLOSION).count(10).spread(1, 1);
 	private int damage, frost;
 	
 	public FrostTrap(boolean isUpgraded) {

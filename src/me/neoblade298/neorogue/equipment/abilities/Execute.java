@@ -23,7 +23,7 @@ public class Execute extends Equipment {
 	private static final String ID = "execute";
 	private int damage, strength;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
-			hit = new ParticleContainer(Particle.REDSTONE);
+			hit = new ParticleContainer(Particle.DUST);
 	
 	public Execute(boolean isUpgraded) {
 		super(ID, "Execute", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,

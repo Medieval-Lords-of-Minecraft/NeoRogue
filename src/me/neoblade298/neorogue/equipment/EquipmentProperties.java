@@ -2,18 +2,19 @@ package me.neoblade298.neorogue.equipment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.UUID;
 
+import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.attribute.AttributeModifier.Operation;
-import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neocore.shared.util.SharedUtil;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
@@ -164,7 +165,7 @@ public class EquipmentProperties {
 		String name = item.getType().name();
 		double attackSpeed = properties.containsKey(PropertyType.ATTACK_SPEED) ? properties.get(PropertyType.ATTACK_SPEED).amount : 0;
 		if (name.endsWith("SWORD") || name.endsWith("AXE") || name.endsWith("HOE") || name.endsWith("SHOVEL")) {
-			meta.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED, new AttributeModifier(UUID.randomUUID(), "neorogue_attackspeed", attackSpeed - 4, Operation.ADD_NUMBER, EquipmentSlot.HAND));
+			meta.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED, new AttributeModifier(new NamespacedKey(NeoRogue.inst(), "neorogue_attackspeed"), attackSpeed - 4, Operation.ADD_NUMBER, EquipmentSlotGroup.HAND));
 		}
 	}
 	

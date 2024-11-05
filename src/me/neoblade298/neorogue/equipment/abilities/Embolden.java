@@ -22,7 +22,7 @@ public class Embolden extends Equipment {
 	private static final String ID = "embolden";
 	private int damage, shields;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
-			hit = new ParticleContainer(Particle.REDSTONE);
+			hit = new ParticleContainer(Particle.DUST);
 	
 	public Embolden(boolean isUpgraded) {
 		super(ID, "Embolden", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,

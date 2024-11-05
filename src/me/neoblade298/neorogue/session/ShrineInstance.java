@@ -30,7 +30,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class ShrineInstance extends EditInventoryInstance {
-	private static final ParticleContainer part = new ParticleContainer(Particle.FIREWORKS_SPARK).count(50).spread(2, 2).speed(0.1);
+	private static final ParticleContainer part = new ParticleContainer(Particle.FIREWORK).count(50).spread(2, 2).speed(0.1);
 	private static final double SPAWN_X = Session.SHRINE_X + 5.5, SPAWN_Z = Session.SHRINE_Z + 2.5,
 			HOLO_X = 0, HOLO_Y = 3, HOLO_Z = 7;
 	private static final int INIT_STATE = 0, REST_STATE = 1, UPGRADE_STATE = 2, RETURN_STATE = 3, RETURN_FAIL_STATE = 4;
@@ -62,11 +62,11 @@ public class ShrineInstance extends EditInventoryInstance {
 		for (PlayerSessionData data : s.getParty().values()) {
 			Player p = data.getPlayer();
 			notUsed.add(p.getUniqueId());
-			p.teleport(spawn);
+			teleportRandomly(p);
 		}
 		for (UUID uuid : s.getSpectators().keySet()) {
 			Player p = Bukkit.getPlayer(uuid);
-			p.teleport(spawn);
+			teleportRandomly(p);
 		}
 		super.start();
 

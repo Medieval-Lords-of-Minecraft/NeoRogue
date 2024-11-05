@@ -81,6 +81,6 @@ public class ManaInfusion extends Equipment {
 				DescUtil.yellow(damage) + ", and killing an enemy grants you " + DescUtil.yellow(drain) + " mana.");
 				
 		activeIcon = item.clone();
-		activeIcon.setType(Material.LAPIS_BLOCK);
+		activeIcon.withType(Material.LAPIS_BLOCK);
 	}
 }

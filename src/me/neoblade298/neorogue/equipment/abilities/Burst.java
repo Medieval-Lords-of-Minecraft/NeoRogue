@@ -20,7 +20,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Burst extends Equipment {
 	private static final String ID = "burst";
-	private static final ParticleContainer pc = new ParticleContainer(Particle.REDSTONE);
+	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST);
 	private int stamina, buff;
 	private static final int seconds = 15;
 	

@@ -34,7 +34,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Pin extends Equipment {
 	private static final String ID = "pin";
-	private static final ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION_LARGE),
+	private static final ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION),
 			start = new ParticleContainer(Particle.CLOUD);
 	private static final TargetProperties aoe = TargetProperties.radius(2, true, TargetType.ENEMY);
 	private int damage, reduction;
@@ -85,7 +85,7 @@ public class Pin extends Equipment {
 		protected void onEnd(PlayerFightData data, boolean hitWall) {
 			data.removeCleanupTask(id);
 			for (LivingEntity ent : hit) {
-				ent.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 100, 0));
+				ent.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 100, 0));
 			}
 			
 			if (!hitWall) {

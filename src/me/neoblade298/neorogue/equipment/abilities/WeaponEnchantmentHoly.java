@@ -33,7 +33,7 @@ public class WeaponEnchantmentHoly extends Equipment {
 	private static final int RANGE = 8;
 	private static final SoundContainer sc = new SoundContainer(Sound.BLOCK_AMETHYST_BLOCK_BREAK),
 			scHit = new SoundContainer(Sound.BLOCK_GLASS_BREAK);
-	private static final ParticleContainer tick = new ParticleContainer(Particle.FIREWORKS_SPARK).count(5).speed(0.02);
+	private static final ParticleContainer tick = new ParticleContainer(Particle.FIREWORK).count(5).speed(0.02);
 	
 	public WeaponEnchantmentHoly(boolean isUpgraded) {
 		super(ID, "Weapon Enchantment: Holy", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,

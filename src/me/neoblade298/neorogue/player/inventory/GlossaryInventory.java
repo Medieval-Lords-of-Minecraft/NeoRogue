@@ -31,7 +31,7 @@ public class GlossaryInventory extends CoreInventory {
 	private CoreInventory prev;
 	private boolean openOther = true;
 	
-	private static final int BASIC = 4, UPGRADED = 5, TAGS = 3, PARENTS = 8;
+	private static final int BASIC = 4, UPGRADED = 5, TAGS = 3, PARENTS = 8, CUSTOM = 0;
 	// Mob glossary book
 	public GlossaryInventory(Player viewer, Mob mob, CoreInventory prev) {
 		super(viewer, Bukkit.createInventory(viewer, calculateSize(mob.getTags().size()),
@@ -81,6 +81,14 @@ public class GlossaryInventory extends CoreInventory {
 		contents[UPGRADED] = eq.canUpgrade() ? eq.getUpgraded().getItem() : null;
 		contents[TAGS] = createTagsItem(eq);
 		if (!eq.getReforgeParents().isEmpty()) contents[PARENTS] = createParentsItem(eq);
+
+		// Custom glossary tags, basically just shoehorned in for now, nowhere to put them, only 1 slot for them
+		for (GlossaryIcon icon : eq.getTags()) {
+			if (icon instanceof CustomGlossaryIcon) {
+				contents[CUSTOM] = icon.getIcon();
+				break;
+			}
+		}
 		
 		// Reforge options
 		if (!eq.getReforgeOptions().isEmpty()) {
@@ -113,11 +121,12 @@ public class GlossaryInventory extends CoreInventory {
 		Iterator<GlossaryIcon> iter = eq.getTags().iterator();
 		while (iter.hasNext()) {
 			GlossaryIcon icon = iter.next();
-			if (!(icon instanceof GlossaryTag)) continue;
-			GlossaryTag tag = (GlossaryTag) icon;
-			lore.add(tag.getTag());
-			lore.addAll(tag.getLore());
-			lore.add(Component.text("-----", NamedTextColor.DARK_GRAY));
+			if (icon instanceof GlossaryTag) {
+				GlossaryTag tag = (GlossaryTag) icon;
+				lore.add(tag.getTag());
+				lore.addAll(tag.getLore());
+				lore.add(Component.text("-----", NamedTextColor.DARK_GRAY));
+			}
 		}
 		if (!lore.isEmpty()) {
 			lore.removeLast();

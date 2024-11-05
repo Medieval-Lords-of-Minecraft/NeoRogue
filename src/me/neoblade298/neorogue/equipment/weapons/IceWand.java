@@ -33,7 +33,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class IceWand extends Equipment {
 	private static final String ID = "iceWand";
 	private static final TargetProperties props = TargetProperties.radius(0.75, true, TargetType.ENEMY);
-	private static final PotionEffect slow = new PotionEffect(PotionEffectType.SLOW, 60, 1, false, false, false);
+	private static final PotionEffect slow = new PotionEffect(PotionEffectType.SLOWNESS, 60, 1, false, false, false);
 	
 	private static final ParticleContainer tick;
 	private static final SoundContainer sc = new SoundContainer(Sound.BLOCK_CHAIN_PLACE);

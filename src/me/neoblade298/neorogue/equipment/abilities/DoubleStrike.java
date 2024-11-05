@@ -10,15 +10,15 @@ import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
-import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
+import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class DoubleStrike extends Equipment {
 	private static final String ID = "doubleStrike";
-	private static final ParticleContainer pc = new ParticleContainer(Particle.CRIT_MAGIC);
+	private static final ParticleContainer pc = new ParticleContainer(Particle.ENCHANTED_HIT);
 	private static final SoundContainer sc = new SoundContainer(Sound.BLOCK_AMETHYST_BLOCK_BREAK);
 	
 	public DoubleStrike(boolean isUpgraded) {

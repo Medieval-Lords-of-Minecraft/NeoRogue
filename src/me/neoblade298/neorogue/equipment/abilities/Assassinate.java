@@ -23,7 +23,7 @@ public class Assassinate extends Equipment {
 	private static final String ID = "assassinate";
 	private int damage;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
-			hit = new ParticleContainer(Particle.REDSTONE);
+			hit = new ParticleContainer(Particle.DUST);
 	
 	public Assassinate(boolean isUpgraded) {
 		super(ID, "Assassinate", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,

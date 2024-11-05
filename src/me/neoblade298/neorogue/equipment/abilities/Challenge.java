@@ -12,8 +12,8 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
-import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
+import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
@@ -26,7 +26,7 @@ public class Challenge extends Equipment {
 	private static final String ID = "challenge";
 	private static final TargetProperties tp = TargetProperties.radius(15, false, TargetType.ENEMY);
 	private int threat, shield;
-	private static final ParticleContainer taunt = new ParticleContainer(Particle.VILLAGER_ANGRY).count(15).spread(0.1, 0.1).offsetY(2);
+	private static final ParticleContainer taunt = new ParticleContainer(Particle.ANGRY_VILLAGER).count(15).spread(0.1, 0.1).offsetY(2);
 	
 	public Challenge(boolean isUpgraded) {
 		super(ID, "Challenge", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
@@ -46,7 +46,7 @@ public class Challenge extends Equipment {
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pd, in) -> {
 			data.addSimpleShield(p.getUniqueId(), shield, 100);
 			for (LivingEntity ent : TargetHelper.getEntitiesInSight(p, tp)) {
-				ent.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20, 0));
+				ent.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 20, 0));
 				NeoRogue.mythicApi.addThreat(ent, p, threat);
 				taunt.play(p, ent);
 			}

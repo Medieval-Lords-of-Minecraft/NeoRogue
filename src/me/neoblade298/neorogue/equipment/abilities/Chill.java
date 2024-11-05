@@ -29,7 +29,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroup
 
 public class Chill extends Equipment {
 	private static final String ID = "chill";
-	private static final ParticleContainer pc = new ParticleContainer(Particle.SNOW_SHOVEL).count(80).spread(2.5, 0.5).speed(0.2);
+	private static final ParticleContainer pc = new ParticleContainer(Particle.SNOWFLAKE).count(80).spread(2.5, 0.5).speed(0.2);
 	private static final TargetProperties tp = TargetProperties.radius(5, false, TargetType.ENEMY);
 	private int frost;
 	
@@ -72,7 +72,7 @@ public class Chill extends Equipment {
 		Sounds.ice.play(p, loc);
 		for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, tp)) {
 			FightInstance.applyStatus(ent, StatusType.FROST, data, frost, -1);
-			ent.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 60, 1));
+			ent.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 60, 1));
 		}
 	}
 

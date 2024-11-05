@@ -23,7 +23,7 @@ public class EmpoweredEdge extends Equipment {
 	private static final String ID = "empoweredEdge";
 	private int damage, shields;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
-			hit = new ParticleContainer(Particle.REDSTONE);
+			hit = new ParticleContainer(Particle.DUST);
 	
 	public EmpoweredEdge(boolean isUpgraded) {
 		super(ID, "Empowered Edge", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,

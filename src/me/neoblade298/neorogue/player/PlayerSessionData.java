@@ -65,7 +65,7 @@ public class PlayerSessionData extends MapViewer {
 	private DropTableSet<Artifact> personalArtifacts;
 	private ArrayList<String> boardLines;
 
-	private static final ParticleContainer heal = new ParticleContainer(Particle.VILLAGER_HAPPY).count(50)
+	private static final ParticleContainer heal = new ParticleContainer(Particle.HAPPY_VILLAGER).count(50)
 			.spread(0.5, 1).speed(0.1).forceVisible(Audience.ALL);
 	public static final int MAX_STORAGE_SIZE = 27, ARMOR_SIZE = 3, ACCESSORY_SIZE = 6;
 	private static final DecimalFormat df = new DecimalFormat("#.##");

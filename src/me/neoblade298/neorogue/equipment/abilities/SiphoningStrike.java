@@ -24,7 +24,7 @@ public class SiphoningStrike extends Equipment {
 	private static final String ID = "siphoningStrike";
 	private int damage, buff;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
-			hit = new ParticleContainer(Particle.REDSTONE);
+			hit = new ParticleContainer(Particle.DUST);
 	
 	public SiphoningStrike(boolean isUpgraded) {
 		super(ID, "Siphoning Strike", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,

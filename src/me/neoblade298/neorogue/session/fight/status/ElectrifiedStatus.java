@@ -28,7 +28,7 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 
 public class ElectrifiedStatus extends DecrementStackStatus {
-	private static final ParticleContainer tick = new ParticleContainer(Particle.FIREWORKS_SPARK).count(3).speed(0.01).spread(0.1, 0.1);
+	private static final ParticleContainer tick = new ParticleContainer(Particle.FIREWORK).count(3).speed(0.01).spread(0.1, 0.1);
 	private static final SoundContainer hit = new SoundContainer(Sound.ENTITY_ITEM_BREAK);
 	private static final TargetProperties tp = TargetProperties.radius(10, false, TargetType.ENEMY);
 	private static String id = "ELECTRIFIED";

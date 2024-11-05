@@ -22,7 +22,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class Deliberation extends Equipment {
 	private static final String ID = "deliberation";
 	private int damage;
-	private static final ParticleContainer pc = new ParticleContainer(Particle.ENCHANTMENT_TABLE).count(50).speed(0.1);
+	private static final ParticleContainer pc = new ParticleContainer(Particle.ENCHANT).count(50).speed(0.1);
 	
 	public Deliberation(boolean isUpgraded) {
 		super(ID, "Deliberation", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,

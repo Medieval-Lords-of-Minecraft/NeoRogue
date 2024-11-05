@@ -39,7 +39,7 @@ public class BlastStep extends Equipment {
 	private static final TargetProperties tp = TargetProperties.cone(90, 5, false, TargetType.ENEMY);
 	private static final Vector kb = new Vector(0, 2, 0);
 	private static final Cone cone = new Cone(tp.range, tp.arc);
-	private static final ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION_NORMAL);
+	private static final ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION);
 	private int damage, inc;
 	
 	public BlastStep(boolean isUpgraded) {

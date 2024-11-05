@@ -25,7 +25,7 @@ public class HuntersBow extends Bow {
 	public HuntersBow(boolean isUpgraded) {
 		super(ID, "Hunter's Bow", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofBow(isUpgraded ? 45 : 35, 1, 0, 12, 0, 1));
+				EquipmentProperties.ofBow(isUpgraded ? 90 : 60, 1, 0, 12, 0, 1));
 		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 

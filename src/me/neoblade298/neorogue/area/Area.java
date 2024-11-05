@@ -63,7 +63,7 @@ public class Area {
 
 	private static int[] generate_order;
 	
-	private static ParticleContainer red = new ParticleContainer(Particle.REDSTONE), black;
+	private static ParticleContainer red = new ParticleContainer(Particle.DUST), black;
 	private HashSet<Node> blackTicks = new HashSet<>();
 	private static HashMap<Integer, DropTable<Integer>> pathChances = new HashMap<Integer, DropTable<Integer>>();
 

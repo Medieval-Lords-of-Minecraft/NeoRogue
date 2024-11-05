@@ -24,7 +24,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Gambit extends Equipment {
 	private static final String ID = "gambit";
-	private static final ParticleContainer pc = new ParticleContainer(Particle.REDSTONE).count(50).spread(1, 1).offsetY(1);
+	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST).count(50).spread(1, 1).offsetY(1);
 	private static final TriggerCondition cond = (p, pdata) -> {
 		if (!pdata.hasStatus(StatusType.FOCUS)) {
 			Util.msg(p, "You need Focus to use this ability!");

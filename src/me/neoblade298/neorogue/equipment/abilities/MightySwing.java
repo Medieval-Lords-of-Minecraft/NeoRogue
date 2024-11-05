@@ -24,7 +24,7 @@ public class MightySwing extends Equipment {
 	private static final String ID = "mightySwing";
 	private int damage, cdr;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
-			hit = new ParticleContainer(Particle.REDSTONE);
+			hit = new ParticleContainer(Particle.DUST);
 	
 	public MightySwing(boolean isUpgraded) {
 		super(ID, "Mighty Swing", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,

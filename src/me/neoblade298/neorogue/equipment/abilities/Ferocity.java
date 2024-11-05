@@ -20,7 +20,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Ferocity extends Equipment {
 	private static final String ID = "ferocity";
-	private static final ParticleContainer pc = new ParticleContainer(Particle.REDSTONE);
+	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST);
 	private int staminaGain, cutoff, berserk;
 	
 	public Ferocity(boolean isUpgraded) {

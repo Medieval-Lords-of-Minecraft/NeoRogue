@@ -28,6 +28,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
+import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
@@ -227,6 +228,15 @@ public class SessionManager implements Listener {
 				e.setCancelled(false);
 			}
 		}
+	}
+	
+	@EventHandler
+	public void onShootBow(EntityShootBowEvent e) {
+		if (!(e.getEntity() instanceof Player)) return;
+		Player p = (Player) e.getEntity();
+
+		if (!sessions.containsKey(p.getUniqueId())) return;
+		e.setCancelled(true);
 	}
 	
 	@EventHandler

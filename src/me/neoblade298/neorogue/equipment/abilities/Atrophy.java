@@ -28,7 +28,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreDealtDamageEvent;
 public class Atrophy extends Equipment {
 	private static final String ID = "atrophy";
 	private static TargetProperties tp = TargetProperties.line(8, 2, TargetType.ENEMY);
-	private static ParticleContainer pc = new ParticleContainer(Particle.SMOKE_NORMAL).count(50).spread(0.5, 2).offsetY(1);
+	private static ParticleContainer pc = new ParticleContainer(Particle.SMOKE).count(50).spread(0.5, 2).offsetY(1);
 	private int damage, ins;
 	
 	public Atrophy(boolean isUpgraded) {

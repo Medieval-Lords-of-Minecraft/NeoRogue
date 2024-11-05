@@ -31,7 +31,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -115,7 +114,7 @@ public abstract class FightInstance extends Instance {
 	
 	private static final Circle reviveCircle = new Circle(5);
 	private static final ParticleContainer reviveCirclePart = new ParticleContainer(Particle.END_ROD).count(1);
-	private static final ParticleContainer revivePart = new ParticleContainer(Particle.FIREWORKS_SPARK)
+	private static final ParticleContainer revivePart = new ParticleContainer(Particle.FIREWORK)
 			.forceVisible(Audience.ALL).count(50).spread(2, 2).speed(0.1);
 	private static final SoundContainer[] reviveSounds = new SoundContainer[] {
 			new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1F),
@@ -396,10 +395,6 @@ public abstract class FightInstance extends Instance {
 		} else if (a == Action.RIGHT_CLICK_AIR || a == Action.RIGHT_CLICK_BLOCK) {
 			handleRightClickGeneral(e);
 		}
-	}
-
-	public static void handleProjectileEvent(Player p, ProjectileLaunchEvent e) {
-		trigger(p, Trigger.VANILLA_PROJECTILE, e);
 	}
 
 	public void handleToggleCrouchEvent(PlayerToggleSneakEvent e) {
@@ -845,13 +840,13 @@ public abstract class FightInstance extends Instance {
 				spawn.setX(-spawn.getX());
 				
 				for (Player p : s.getOnlinePlayers()) {
-					teleportRandomly(p);
+					p.teleport(spawn);
 					p.setAllowFlight(false);
 					p.setMaximumNoDamageTicks(0);
 				}
 				for (UUID uuid : s.getSpectators().keySet()) {
 					Player p = Bukkit.getPlayer(uuid);
-					teleportRandomly(p);
+					p.teleport(spawn);
 					p.setAllowFlight(true);
 				}
 				

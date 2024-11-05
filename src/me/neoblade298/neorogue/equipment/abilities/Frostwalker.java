@@ -103,6 +103,6 @@ public class Frostwalker extends Equipment {
 				DescUtil.yellow(reduc) + " [<white>5s</white>]. Only one pool of frost may apply to an enemy at a time.");
 
 		activeIcon = item.clone();
-		activeIcon.setType(Material.SNOW_BLOCK);
+		activeIcon.withType(Material.SNOW_BLOCK);
 	}
 }

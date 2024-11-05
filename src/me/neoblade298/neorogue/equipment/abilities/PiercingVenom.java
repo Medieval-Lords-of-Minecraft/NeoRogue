@@ -30,7 +30,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 public class PiercingVenom extends Equipment {
 	private static final String ID = "piercingVenom";
 	private int poison, dur, threshold;
-	private static final ParticleContainer pc = new ParticleContainer(Particle.REDSTONE).dustOptions(new DustOptions(Color.GREEN, 1)).count(50).spread(0.5, 0.5).speed(0.2);
+	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST).dustOptions(new DustOptions(Color.GREEN, 1)).count(50).spread(0.5, 0.5).speed(0.2);
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_GENERIC_SWIM);
 	
 	public PiercingVenom(boolean isUpgraded) {

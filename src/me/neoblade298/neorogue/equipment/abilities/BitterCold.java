@@ -29,7 +29,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
 public class BitterCold extends Equipment {
 	private static final String ID = "bitterCold";
 	private int stacks, damage;
-	private static final ParticleContainer pc = new ParticleContainer(Particle.BLOCK_CRACK).blockData(Material.ICE.createBlockData()).count(50).spread(1, 1).offsetY(1);
+	private static final ParticleContainer pc = new ParticleContainer(Particle.BLOCK).blockData(Material.ICE.createBlockData()).count(50).spread(1, 1).offsetY(1);
 	private static final SoundContainer sc = new SoundContainer(Sound.BLOCK_GLASS_BREAK);
 	
 	public BitterCold(boolean isUpgraded) {

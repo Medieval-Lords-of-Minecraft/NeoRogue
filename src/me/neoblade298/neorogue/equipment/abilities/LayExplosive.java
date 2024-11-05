@@ -30,8 +30,8 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class LayExplosive extends Equipment {
 	private static final String ID = "layExplosive";
 	private static TargetProperties tp = TargetProperties.radius(3, false, TargetType.ENEMY);
-	private static ParticleContainer trap = new ParticleContainer(Particle.SMOKE_NORMAL).count(50).spread(1, 0.2),
-		exp = new ParticleContainer(Particle.EXPLOSION_NORMAL).count(50).spread(1.5, 1);
+	private static ParticleContainer trap = new ParticleContainer(Particle.SMOKE).count(50).spread(1, 0.2),
+		exp = new ParticleContainer(Particle.EXPLOSION).count(50).spread(1.5, 1);
 	private int damage;
 	
 	public LayExplosive(boolean isUpgraded) {

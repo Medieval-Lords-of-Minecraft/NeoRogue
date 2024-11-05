@@ -48,7 +48,7 @@ public class Blind extends Equipment {
 		PotionProjectile pot = new PotionProjectile((loc, hit) -> {
 			for (LivingEntity ent : hit) {
 				if (ent instanceof Player || !(ent instanceof LivingEntity)) continue;
-				ent.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 60, 0));
+				ent.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 60, 0));
 				blinded.add(ent.getUniqueId());
 			}
 

@@ -18,11 +18,11 @@ import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.ParticleUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
-import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
-import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
+import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -43,7 +43,7 @@ public class Fracturer extends Equipment {
 	private static final ParticleContainer swingPart = new ParticleContainer(Particle.CLOUD).count(5).spread(0.1, 0.1),
 			edge = new ParticleContainer(Particle.CLOUD).count(1).spread(0, 0),
 			fill = new ParticleContainer(Particle.CLOUD).count(1).spread(0.1, 0),
-			linePart = new ParticleContainer(Particle.BLOCK_CRACK).count(5).spread(0.1, 0.1).blockData(Material.DIRT.createBlockData());
+			linePart = new ParticleContainer(Particle.BLOCK).count(5).spread(0.1, 0.1).blockData(Material.DIRT.createBlockData());
 	private static final Circle hitShape = new Circle(RADIUS);
 	private static final ParticleAnimation swing;
 	private int earth, concussed;

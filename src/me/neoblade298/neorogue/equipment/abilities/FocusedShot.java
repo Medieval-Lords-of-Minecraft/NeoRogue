@@ -13,8 +13,8 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
-import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.DamageMeta.BuffOrigin;
+import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
@@ -25,7 +25,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 public class FocusedShot extends Equipment {
 	private static final String ID = "focusedShot";
 	private int damage;
-	private static final ParticleContainer pc = new ParticleContainer(Particle.ENCHANTMENT_TABLE).count(50).speed(0.1);
+	private static final ParticleContainer pc = new ParticleContainer(Particle.ENCHANT).count(50).speed(0.1);
 	
 	public FocusedShot(boolean isUpgraded) {
 		super(ID, "Focused Shot", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,

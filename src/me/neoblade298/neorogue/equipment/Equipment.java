@@ -921,15 +921,15 @@ public abstract class Equipment implements Comparable<Equipment> {
 		}
 		meta.lore(lore);
 
-		if (isUpgraded) {
-			meta.addEnchant(Enchantment.LUCK, 1, true);
+		if (item.getType() == Material.BOW) {
+			meta.addEnchant(Enchantment.INFINITY, 1, true);
 		}
 
 		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 		meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
 		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 		meta.addItemFlags(ItemFlag.HIDE_DYE);
-		meta.addItemFlags(ItemFlag.HIDE_ITEM_SPECIFICS);
+		meta.setEnchantmentGlintOverride(isUpgraded);
 		meta.setUnbreakable(true);
 		properties.modifyItemMeta(item, meta);
 		item.setItemMeta(meta);

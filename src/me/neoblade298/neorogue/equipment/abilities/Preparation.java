@@ -43,7 +43,7 @@ public class Preparation extends Equipment {
 		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, this, slot, es);
 		data.addTrigger(ID, bind, (pdata, in) -> {
 			Sounds.equip.play(p, p);
-			p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 100, 0));
+			p.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 100, 0));
 			data.addTask(new BukkitRunnable() {
 				public void run() {
 					Sounds.success.play(p, p);

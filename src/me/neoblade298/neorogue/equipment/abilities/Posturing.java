@@ -19,7 +19,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class Posturing extends Equipment {
 	private static final String ID = "posturing";
 	private int time, inc;
-	private static final ParticleContainer pc = new ParticleContainer(Particle.ENCHANTMENT_TABLE).count(25).spread(1, 1).offsetY(1);
+	private static final ParticleContainer pc = new ParticleContainer(Particle.ENCHANT).count(25).spread(1, 1).offsetY(1);
 	
 	public Posturing(boolean isUpgraded) {
 		super(ID, "Posturing", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,

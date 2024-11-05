@@ -103,7 +103,7 @@ public class WarningShot extends Equipment {
 
 			LinkedList<LivingEntity> ents = TargetHelper.getEntitiesInRadius(p, loc, tp);
 			for (LivingEntity ent : ents) {
-				ent.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 60, 0));
+				ent.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 60, 0));
 			}
 			if (!ents.isEmpty()) data.applyStatus(StatusType.FOCUS, data, focus, -1);
 			data.addBuff(data, id, true, false, BuffType.GENERAL, damage * ents.size(), 160);

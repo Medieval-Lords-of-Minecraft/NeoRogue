@@ -33,7 +33,7 @@ public class WeaponEnchantmentElectrified extends Equipment {
 	private static final int RANGE = 8;
 	private static final SoundContainer sc = new SoundContainer(Sound.BLOCK_AMETHYST_BLOCK_BREAK),
 			scHit = new SoundContainer(Sound.BLOCK_GLASS_BREAK);
-	private static final ParticleContainer tick = new ParticleContainer(Particle.FIREWORKS_SPARK).count(5).speed(0.02);
+	private static final ParticleContainer tick = new ParticleContainer(Particle.FIREWORK).count(5).speed(0.02);
 	
 	public WeaponEnchantmentElectrified(boolean isUpgraded) {
 		super(ID, "Weapon Enchantment: Electrified", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,

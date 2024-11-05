@@ -23,7 +23,7 @@ public class Finale extends Equipment {
 	private static final String ID = "finale";
 	private int damage, thres;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
-			hit = new ParticleContainer(Particle.REDSTONE);
+			hit = new ParticleContainer(Particle.DUST);
 	
 	public Finale(boolean isUpgraded) {
 		super(ID, "Finale", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,

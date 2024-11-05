@@ -154,12 +154,12 @@ public class PlayerFightData extends FightData {
 
 	public void channel(int ticks) {
 		applyStatus(StatusType.CHANNELING, this, 1, ticks);
-		entity.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, ticks, 3));
+		entity.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, ticks, 3));
 	}
 
 	public void charge(int ticks) {
 		applyStatus(StatusType.CHANNELING, this, 1, ticks);
-		entity.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, ticks, 1));
+		entity.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, ticks, 1));
 	}
 
 	public HashMap<String, EquipmentInstance> getActiveEquipment() {

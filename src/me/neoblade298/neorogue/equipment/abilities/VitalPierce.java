@@ -22,7 +22,7 @@ public class VitalPierce extends Equipment {
 	private static final String ID = "vitalPierce";
 	private int damage;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
-			hit = new ParticleContainer(Particle.REDSTONE);
+			hit = new ParticleContainer(Particle.DUST);
 	
 	public VitalPierce(boolean isUpgraded) {
 		super(ID, "Vital Pierce", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,

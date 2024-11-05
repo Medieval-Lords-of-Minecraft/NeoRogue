@@ -20,7 +20,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class WarCry extends Equipment {
 	private static final String ID = "warCry";
-	private static final ParticleContainer pc = new ParticleContainer(Particle.REDSTONE);
+	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST);
 	private int strength, shields;
 	
 	public WarCry(boolean isUpgraded) {

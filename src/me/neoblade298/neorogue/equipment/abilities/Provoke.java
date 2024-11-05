@@ -25,7 +25,7 @@ public class Provoke extends Equipment {
 	private static final String ID = "provoke";
 	private static final TargetProperties tp = TargetProperties.radius(15, false, TargetType.ENEMY);
 	private int threat, shield;
-	private static final ParticleContainer taunt = new ParticleContainer(Particle.VILLAGER_ANGRY).count(15).spread(0.1, 0.1).offsetY(2);
+	private static final ParticleContainer taunt = new ParticleContainer(Particle.ANGRY_VILLAGER).count(15).spread(0.1, 0.1).offsetY(2);
 	
 	public Provoke(boolean isUpgraded) {
 		super(ID, "Provoke", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
@@ -44,7 +44,7 @@ public class Provoke extends Equipment {
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pd, in) -> {
 			data.addSimpleShield(p.getUniqueId(), shield, 100);
 			for (LivingEntity ent : TargetHelper.getEntitiesInSight(p, tp)) {
-				ent.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20, 0));
+				ent.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 20, 0));
 				NeoRogue.mythicApi.addThreat(ent, p, threat);
 				taunt.play(p, ent);
 			}

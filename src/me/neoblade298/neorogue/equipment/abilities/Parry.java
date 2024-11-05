@@ -27,7 +27,7 @@ public class Parry extends Equipment {
 	private int shields, damage;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
 			bpc = new ParticleContainer(Particle.FLAME),
-			hit = new ParticleContainer(Particle.REDSTONE);
+			hit = new ParticleContainer(Particle.DUST);
 	
 	public Parry(boolean isUpgraded) {
 		super(ID, "Parry", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,

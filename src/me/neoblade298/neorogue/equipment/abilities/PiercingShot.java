@@ -24,7 +24,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroup
 public class PiercingShot extends Equipment {
 	private static final String ID = "piercingShot";
 	private int damage;
-	private static final ParticleContainer pc = new ParticleContainer(Particle.REDSTONE).spread(0.2, 0.2).count(3);
+	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST).spread(0.2, 0.2).count(3);
 	
 	public PiercingShot(boolean isUpgraded) {
 		super(ID, "Piercing Shot", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,

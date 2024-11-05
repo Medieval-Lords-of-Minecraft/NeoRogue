@@ -39,7 +39,7 @@ public class Atone extends Equipment {
 	private int damage, sanct;
 	private static final TargetProperties tp = TargetProperties.radius(5, false, TargetType.ENEMY);
 	private static final ParticleAnimation anim;
-	private static final ParticleContainer circPart = new ParticleContainer(Particle.FIREWORKS_SPARK);
+	private static final ParticleContainer circPart = new ParticleContainer(Particle.FIREWORK);
 	private static final Circle circ = new Circle(tp.range);
 	
 	static {
@@ -66,7 +66,7 @@ public class Atone extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pd, in) -> {
-			p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20, 0));
+			p.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 20, 0));
 			data.addTask(new BukkitRunnable() {
 				public void run() {
 					anim.play(p, p);

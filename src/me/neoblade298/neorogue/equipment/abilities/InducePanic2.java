@@ -29,7 +29,7 @@ public class InducePanic2 extends Equipment {
 	private static final String ID = "inducePanic2";
 	private static TargetProperties tp = TargetProperties.line(8, 2, TargetType.ENEMY),
 		radius = TargetProperties.radius(10, false, TargetType.ENEMY);
-	private static ParticleContainer pc = new ParticleContainer(Particle.SMOKE_NORMAL).count(50).spread(0.5, 2).offsetY(1);
+	private static ParticleContainer pc = new ParticleContainer(Particle.SMOKE).count(50).spread(0.5, 2).offsetY(1);
 	private int stacks;
 	
 	public InducePanic2(boolean isUpgraded) {

@@ -96,12 +96,12 @@ public class ChanceInstance extends EditInventoryInstance {
 
 		for (PlayerSessionData data : s.getParty().values()) {
 			Player p = data.getPlayer();
-			teleportRandomly(p);
+			p.teleport(spawn);
 			stage.put(p.getUniqueId(), set.getInitialStage());
 		}
 		for (UUID uuid : s.getSpectators().keySet()) {
 			Player p = Bukkit.getPlayer(uuid);
-			teleportRandomly(p);
+			p.teleport(spawn);
 		}
 		super.start();
 

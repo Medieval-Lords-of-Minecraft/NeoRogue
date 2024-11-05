@@ -39,7 +39,7 @@ public class Darkness extends Equipment {
 	private static final Circle circle = new Circle(tp.range);
 	private static final SoundContainer sound = new SoundContainer(Sound.ENTITY_ALLAY_HURT),
 			darkSound = new SoundContainer(Sound.ENTITY_ELDER_GUARDIAN_HURT);
-	private static final ParticleContainer pc = new ParticleContainer(Particle.REDSTONE)
+	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST)
 			.count(3).spread(0.1, 0.1).dustOptions(new DustOptions(Color.BLACK, 1F));
 	
 	public Darkness(boolean isUpgraded) {

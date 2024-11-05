@@ -277,7 +277,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		}
 
 		InventoryAction action = e.getAction();
-		if (action == InventoryAction.HOTBAR_SWAP || action == InventoryAction.HOTBAR_MOVE_AND_READD) {
+		if (action == InventoryAction.HOTBAR_SWAP) {
 			e.setCancelled(true);
 			return;
 		}
@@ -434,7 +434,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 			for (int s : slots) {
 				ItemStack iter = contents[s];
 				if (iter.getType().name().endsWith("PANE")) {
-					iter.setType(Material.GLASS_PANE);
+					iter.withType(Material.GLASS_PANE);
 					highlighted.add(s);
 				}
 			}

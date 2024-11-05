@@ -25,7 +25,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroup
 public class ShatteringShot extends Equipment {
 	private static final String ID = "shatteringShot";
 	private int damage;
-	private static final ParticleContainer pc = new ParticleContainer(Particle.BLOCK_CRACK).blockData(Material.ICE.createBlockData()).spread(0.2, 0.2).count(5);
+	private static final ParticleContainer pc = new ParticleContainer(Particle.BLOCK).blockData(Material.ICE.createBlockData()).spread(0.2, 0.2).count(5);
 	
 	public ShatteringShot(boolean isUpgraded) {
 		super(ID, "Shattering Shot", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,

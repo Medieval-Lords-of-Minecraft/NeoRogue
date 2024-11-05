@@ -35,7 +35,7 @@ public class DarkLance extends Equipment {
 	private static final ParticleContainer placePart = new ParticleContainer(Particle.CLOUD).count(10).spread(0.1, 0.1),
 			smoke = new ParticleContainer(Particle.CLOUD).count(50).spread(1.5, 1.5).offsetY(1.5),
 			smokeEdge = new ParticleContainer(Particle.CLOUD).count(2).spread(0.1, 0),
-			explode = new ParticleContainer(Particle.REDSTONE).count(150).spread(1.5, 2).dustOptions(new DustOptions(Color.BLACK, 1F));
+			explode = new ParticleContainer(Particle.DUST).count(150).spread(1.5, 2).dustOptions(new DustOptions(Color.BLACK, 1F));
 	private static final Circle circ = new Circle(3);
 	private static final SoundContainer place = new SoundContainer(Sound.ENTITY_CREEPER_PRIMED);
 	private static final TargetProperties tp = TargetProperties.radius(3, true, TargetType.ENEMY);

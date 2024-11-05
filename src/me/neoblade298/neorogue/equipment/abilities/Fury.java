@@ -24,8 +24,8 @@ public class Fury extends Equipment {
 	private static final String ID = "fury";
 	private int damage, berserk, heal, berserkHeal;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
-			hit = new ParticleContainer(Particle.REDSTONE),
-			explode = new ParticleContainer(Particle.EXPLOSION_NORMAL);
+			hit = new ParticleContainer(Particle.DUST),
+			explode = new ParticleContainer(Particle.EXPLOSION);
 	
 	public Fury(boolean isUpgraded) {
 		super(ID, "Fury", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,

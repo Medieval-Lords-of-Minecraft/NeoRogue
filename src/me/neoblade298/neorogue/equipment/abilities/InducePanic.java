@@ -28,7 +28,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
 public class InducePanic extends Equipment {
 	private static final String ID = "inducePanic";
 	private static TargetProperties tp = TargetProperties.line(8, 2, TargetType.ENEMY);
-	private static ParticleContainer pc = new ParticleContainer(Particle.SMOKE_NORMAL).count(50).spread(0.5, 2).offsetY(1);
+	private static ParticleContainer pc = new ParticleContainer(Particle.SMOKE).count(50).spread(0.5, 2).offsetY(1);
 	private int stacks;
 	
 	public InducePanic(boolean isUpgraded) {
@@ -57,6 +57,7 @@ public class InducePanic extends Equipment {
 			}
 			return TriggerResult.keep();
 		});
+		data.addTrigger(id, bind, inst);
 	}
 
 	private class InducePanicInstance extends EquipmentInstance	{

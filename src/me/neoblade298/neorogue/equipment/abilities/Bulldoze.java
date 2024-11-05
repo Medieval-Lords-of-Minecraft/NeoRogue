@@ -33,9 +33,9 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Bulldoze extends Equipment {
 	private static final String ID = "bulldoze";
-	private static final ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION_LARGE),
+	private static final ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION),
 			start = new ParticleContainer(Particle.CLOUD),
-			wake = new ParticleContainer(Particle.EXPLOSION_NORMAL);
+			wake = new ParticleContainer(Particle.EXPLOSION);
 	private static final TargetProperties hc = TargetProperties.radius(2, true, TargetType.ENEMY);
 	private int damage;
 	

@@ -44,8 +44,8 @@ public class TreeTrunk extends Equipment {
 	private double conc;
 	private static final Circle hitShape = new Circle(4);
 	private static final ParticleAnimation swing = StoneHammer.swing;
-	private static final ParticleContainer hitLine = new ParticleContainer(Particle.BLOCK_CRACK).blockData(Material.OAK_LOG.createBlockData()).count(10).spread(0.4, 0.1),
-			circle = new ParticleContainer(Particle.REDSTONE).count(20).spread(0.1, 0.7).offsetY(1);
+	private static final ParticleContainer hitLine = new ParticleContainer(Particle.BLOCK).blockData(Material.OAK_LOG.createBlockData()).count(10).spread(0.4, 0.1),
+			circle = new ParticleContainer(Particle.DUST).count(20).spread(0.1, 0.7).offsetY(1);
 	private static final TargetProperties left = TargetProperties.line(4, 2, TargetType.ENEMY),
 			right = TargetProperties.radius(4, false, TargetType.ENEMY);
 	

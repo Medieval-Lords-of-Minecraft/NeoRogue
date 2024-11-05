@@ -32,7 +32,7 @@ public class GlacialHammer extends Artifact {
 			if (data.getMana() > data.getMaxMana() * 0.5) {
 				BasicAttackEvent ev = (BasicAttackEvent) in;
 				data.addMana(-3);
-				ev.getTarget().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20, 0));
+				ev.getTarget().addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 20, 0));
 			}
 			return TriggerResult.keep();
 		});

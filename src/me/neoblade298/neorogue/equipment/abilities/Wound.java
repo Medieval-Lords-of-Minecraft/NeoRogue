@@ -70,6 +70,6 @@ public class Wound extends Equipment {
 				GlossaryTag.INJURY.tag(this, stacks, true) + ".");
 				
 		activeIcon = item.clone();
-		activeIcon.setType(Material.BONE_MEAL);
+		activeIcon.withType(Material.BONE_MEAL);
 	}
 }

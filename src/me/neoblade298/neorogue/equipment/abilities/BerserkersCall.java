@@ -22,7 +22,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class BerserkersCall extends Equipment {
 	private static final String ID = "berserkersCall";
-	private static final ParticleContainer pc = new ParticleContainer(Particle.REDSTONE);
+	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST);
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_BLAZE_DEATH);
 	private int strength, berserkStrength;
 	private static final int BERSERK_CUTOFF = 16;

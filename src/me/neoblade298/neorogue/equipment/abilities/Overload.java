@@ -26,7 +26,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.KillEvent;
 public class Overload extends Equipment {
 	private static final String ID = "overload";
 	private int damage;
-	private static final ParticleContainer part = new ParticleContainer(Particle.FIREWORKS_SPARK)
+	private static final ParticleContainer part = new ParticleContainer(Particle.FIREWORK)
 			.count(50).spread(0.2, 3).offsetY(2);
 	private static final TargetProperties tp = TargetProperties.radius(3, false, TargetType.ENEMY);
 	

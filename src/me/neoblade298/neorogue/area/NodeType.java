@@ -4,11 +4,11 @@ import org.bukkit.Material;
 import org.bukkit.map.MapCursor;
 
 public enum NodeType {
-	FIGHT(Material.REDSTONE_BLOCK, MapCursor.Type.BANNER_RED), CHANCE(Material.NOTE_BLOCK, MapCursor.Type.TEMPLE),
-	SHOP(Material.EMERALD_BLOCK, MapCursor.Type.MANSION), MINIBOSS(Material.OBSIDIAN, MapCursor.Type.WHITE_CROSS),
+	FIGHT(Material.REDSTONE_BLOCK, MapCursor.Type.BANNER_RED), CHANCE(Material.NOTE_BLOCK, MapCursor.Type.JUNGLE_TEMPLE),
+	SHOP(Material.EMERALD_BLOCK, MapCursor.Type.MANSION), MINIBOSS(Material.OBSIDIAN, MapCursor.Type.TARGET_X),
 	BOSS(Material.RESPAWN_ANCHOR, MapCursor.Type.RED_X),
 	SHRINE(Material.OCHRE_FROGLIGHT, MapCursor.Type.BANNER_YELLOW),
-	START(Material.IRON_BLOCK, MapCursor.Type.BLUE_POINTER);
+	START(Material.IRON_BLOCK, MapCursor.Type.BLUE_MARKER);
 	
 	private Material mat;
 	private MapCursor.Type cursor;

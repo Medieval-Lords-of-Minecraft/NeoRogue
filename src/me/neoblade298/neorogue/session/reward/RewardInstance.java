@@ -89,7 +89,7 @@ public class RewardInstance extends EditInventoryInstance {
 		e.setCancelled(true);
 		
 		
-		if (e.getAction() != Action.RIGHT_CLICK_BLOCK || e.getClickedBlock().getType() != Material.ENDER_CHEST) {
+		if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock().getType() == Material.ENDER_CHEST) {
 			Player p = e.getPlayer();
 			UUID uuid = p.getUniqueId();
 			if (rewards.get(uuid).isEmpty()) {
