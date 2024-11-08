@@ -159,7 +159,7 @@ public class Mob implements Comparable<Mob> {
 	}
 	
 	public ItemStack getItemDisplay(ArrayList<MobModifier> modifiers) {
-		ItemStack item = base64 == null ? new ItemStack(mat) : SkullUtil.itemFromBase64(base64);
+		ItemStack item = base64 == null ? new ItemStack(mat) : SkullUtil.fromBase64(base64);
 		ItemMeta meta = item.getItemMeta();
 		meta.displayName(display);
 		ArrayList<Component> lore = new ArrayList<Component>();
