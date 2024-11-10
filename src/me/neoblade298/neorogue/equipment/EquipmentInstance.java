@@ -157,8 +157,9 @@ public class EquipmentInstance extends PriorityAction {
 		}
 		Material mat = COOLDOWN_MATERIALS.get(invSlot);
 		if (inv.getItem(invSlot) == null) return;
-		inv.getItem(invSlot).withType(mat);
-		inv.getItem(invSlot).setAmount(1);
+		ItemStack item = inv.getItem(invSlot).withType(mat);
+		item.setAmount(1);
+		inv.setItem(invSlot, item);
 		
 		p.setCooldown(mat, cooldownSeconds * 20);
 

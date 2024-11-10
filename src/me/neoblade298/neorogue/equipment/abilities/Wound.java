@@ -68,8 +68,6 @@ public class Wound extends Equipment {
 		item = createItem(Material.BONE,
 				"Toggleable, off by default. When active, your basic attacks are weakened by " + DescUtil.white(dec) + " in exchange for applying " +
 				GlossaryTag.INJURY.tag(this, stacks, true) + ".");
-				
-		activeIcon = item.clone();
-		activeIcon.withType(Material.BONE_MEAL);
+		activeIcon = item.withType(Material.BONE_MEAL);
 	}
 }

@@ -52,7 +52,7 @@ public class WarningShot extends Equipment {
 		super(ID, "Warning Shot", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(25, 15, 14, 20).add(PropertyType.AREA_OF_EFFECT, tp.range));
-				focus = isUpgraded ? 3 : 2;
+				focus = isUpgraded ? 2 : 1;
 		damage = isUpgraded ? 15 : 10;
 	}
 	

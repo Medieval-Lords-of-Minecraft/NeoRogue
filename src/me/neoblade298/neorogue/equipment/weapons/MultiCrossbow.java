@@ -49,7 +49,7 @@ public class MultiCrossbow extends Bow {
 			ProjectileGroup proj = new ProjectileGroup();
 			int limit = data.getAmmoInstance().getRemaining();
 			int count = 0;
-			for (double y : new double[] { -0.2, 0.2 }) {
+			for (double y : new double[] { -0.1, 0.1 }) {
 				for (double rotate : new double[] { 10, -10 }) {
 					if (limit != -1 && ++count >= limit) break;
 					proj.add(new BowProjectile(data, ev.getEntity().getVelocity(), this).initialY(y).rotation(rotate));

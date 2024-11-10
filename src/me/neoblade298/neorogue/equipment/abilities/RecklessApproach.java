@@ -42,7 +42,7 @@ public class RecklessApproach extends Equipment {
 	private int damage, inc, shields, thres;
 	
 	public RecklessApproach(boolean isUpgraded) {
-		super(ID, "RecklessApproach", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
+		super(ID, "Reckless Approach", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(5, 25, 14, 0).add(PropertyType.AREA_OF_EFFECT, 2));
 		damage = isUpgraded ? 160 : 120;
 		shields = isUpgraded ? 8 : 5;

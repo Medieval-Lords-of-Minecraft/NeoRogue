@@ -1,14 +1,15 @@
 package me.neoblade298.neorogue.player;
 
+import java.util.ArrayList;
+
 public class Task {
-    private long delay;
-    private Runnable task;
-    public Task(long delay, Runnable task) {
-        this.delay = delay;
-        this.task = task;
+    private long initDelay;
+    private ArrayList<Runnable> runnables = new ArrayList<Runnable>();
+    public Task(long initDelay) {
+        this.initDelay = initDelay;
     }
 
-    private void initialize() {
-
+    public void then(Runnable runnable) {
+        
     }
 }

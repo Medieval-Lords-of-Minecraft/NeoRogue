@@ -22,7 +22,7 @@ public class ArcheryGlove extends Equipment {
 	public ArcheryGlove(boolean isUpgraded) {
 		super(ID, "Archery Glove", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.ARMOR);
-		thres = isUpgraded ? 6 : 4;
+		thres = isUpgraded ? 4 : 6;
 		dec = isUpgraded ? 5 : 3;
 	}
 	

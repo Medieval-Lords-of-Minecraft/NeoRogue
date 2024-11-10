@@ -102,7 +102,6 @@ public class Frostwalker extends Equipment {
 				+ "applies " + GlossaryTag.FROST.tag(this, stacks, true) + " and reduces " + GlossaryTag.MAGICAL.tag(this) + " resistance by " +
 				DescUtil.yellow(reduc) + " [<white>5s</white>]. Only one pool of frost may apply to an enemy at a time.");
 
-		activeIcon = item.clone();
-		activeIcon.withType(Material.SNOW_BLOCK);
+		activeIcon = item.withType(Material.SNOW_BLOCK);
 	}
 }

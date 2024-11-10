@@ -66,7 +66,7 @@ public class UpgradeHolder {
 		has = data.hasUpgrade(id);
 		canGet = has || req.passesRequirement(data);
 		if (item.getType() == Material.BARRIER && canGet) {
-			item.withType(mat);
+			item = item.withType(mat);
 		}
 		ItemMeta meta = item.getItemMeta();
 		NamedTextColor c = data.hasUpgrade(id) ? NamedTextColor.GREEN : (canGet ? NamedTextColor.WHITE : NamedTextColor.RED);

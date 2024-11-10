@@ -80,7 +80,6 @@ public class ManaInfusion extends Equipment {
 				"Toggleable, off by default. When active, your basic attacks consume " + DescUtil.white(mana) + " mana in exchange for increasing their damage by " +
 				DescUtil.yellow(damage) + ", and killing an enemy grants you " + DescUtil.yellow(drain) + " mana.");
 				
-		activeIcon = item.clone();
-		activeIcon.withType(Material.LAPIS_BLOCK);
+		activeIcon = item.withType(Material.LAPIS_BLOCK);
 	}
 }

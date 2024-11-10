@@ -434,7 +434,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 			for (int s : slots) {
 				ItemStack iter = contents[s];
 				if (iter.getType().name().endsWith("PANE")) {
-					iter.withType(Material.GLASS_PANE);
+					contents[s] = iter.withType(Material.GLASS_PANE);
 					highlighted.add(s);
 				}
 			}

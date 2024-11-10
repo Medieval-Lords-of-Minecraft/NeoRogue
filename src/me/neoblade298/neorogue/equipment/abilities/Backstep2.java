@@ -103,11 +103,11 @@ public class Backstep2 extends Equipment {
 	private void updateIcon(StandardEquipmentInstance inst, ItemStack icon) {
 		int count = inst.getCount();
 		if (count == 0) {
-			icon.withType(Material.BARRIER);
+			icon = icon.withType(Material.BARRIER);
 			icon.setAmount(1);
 		}
 		else {
-			icon.withType(Material.IRON_BOOTS);
+			icon = icon.withType(Material.IRON_BOOTS);
 			icon.setAmount(count);
 		}
 		inst.setIcon(icon);
