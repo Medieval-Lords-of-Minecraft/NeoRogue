@@ -869,7 +869,7 @@ public abstract class FightInstance extends Instance {
 						.sum();
 				int bonus = NeoRogue.gen.nextInt(3);
 					
-				double toActivate = bonus + 2 + sumChunkCount / 8.0 + map.getPieces().size() / 4.0;
+				double toActivate = bonus + 2.5 + sumChunkCount / 10.0 + map.getPieces().size() / 5.0;
 				activateSpawner(toActivate);
 
 				startTime = System.currentTimeMillis();
