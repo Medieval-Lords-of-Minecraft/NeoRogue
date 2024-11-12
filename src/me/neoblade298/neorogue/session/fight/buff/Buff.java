@@ -30,6 +30,7 @@ public class Buff {
 		this.increase = increase;
 		this.multiplier = multiplier;
 		this.slices = slices;
+		this.origin = origin;
 	}
 	
 	public Buff clone() {

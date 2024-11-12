@@ -7,7 +7,6 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -43,7 +42,7 @@ public class Overload extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.KILL, new EquipmentInstance(data, this, slot, es, (pd, in) -> {
+		data.addTrigger(id, Trigger.KILL, (pd, in) -> {
 			KillEvent ev = (KillEvent) in;
 			int stacks = FightInstance.getFightData(ev.getTarget()).getStatus(StatusType.ELECTRIFIED).getStacks();
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(ev.getTarget(), tp)) {
@@ -51,7 +50,7 @@ public class Overload extends Equipment {
 				part.play(p, ent);
 			}
 			return TriggerResult.keep();
-		}));
+		});
 	}
 
 	@Override

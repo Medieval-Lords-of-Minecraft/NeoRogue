@@ -60,6 +60,6 @@ public class AgilityTraining extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.FEATHER,
 				"Passive. Increase all " + GlossaryTag.PHYSICAL.tag(this) + " damage by " + DescUtil.white(damage) + ". " +
-				GlossaryTag.PHYSICAL.tag(this) + " damage additionally applies " + GlossaryTag.REND.tag(this, 1, true) + ".");
+				GlossaryTag.PHYSICAL.tag(this) + " damage additionally applies " + GlossaryTag.REND.tag(this, stacks, true) + ".");
 	}
 }

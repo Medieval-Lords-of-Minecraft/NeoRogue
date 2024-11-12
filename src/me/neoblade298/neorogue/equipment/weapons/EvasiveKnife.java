@@ -28,7 +28,7 @@ public class EvasiveKnife extends Equipment {
 		
 		dmg = 5;
 		stam = 25;
-		hits = isUpgraded ? 5 : 3;
+		hits = isUpgraded ? 3 : 5;
 	}
 	
 	public static Equipment get() {

@@ -812,7 +812,7 @@ public abstract class FightInstance extends Instance {
 	}
 	
 	public static double dealDamage(DamageMeta meta, LivingEntity target) {
-		return meta.dealDamage(target);
+		return meta.clone().dealDamage(target);
 	}
 	
 	@Override

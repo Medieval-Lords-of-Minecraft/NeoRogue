@@ -23,7 +23,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 
 public class ManaHaze extends Artifact {
 	private static final String ID = "manaHaze";
-	private static final int thres = 100;
+	private static final int thres = 60;
 	private static TargetProperties tp = TargetProperties.radius(8, true, TargetType.ENEMY);
 
 	public ManaHaze() {
@@ -61,7 +61,7 @@ public class ManaHaze extends Artifact {
 					LivingEntity trg = TargetHelper.getNearest(ev.getTarget().getEntity(), tp);
 					if (trg != null) {
 						stacks -= thres;
-						FightInstance.applyStatus(trg, ev.getStatus().clone(FightInstance.getFightData(trg)), ev.getStacks(), ev.getTicks(), pdata);
+						FightInstance.applyStatus(trg, ev.getStatus().clone(FightInstance.getFightData(trg)), 10, ev.getTicks(), pdata);
 					}
 				}
 				stacks += ev.getStacks();
@@ -74,7 +74,7 @@ public class ManaHaze extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BREWER_POTTERY_SHERD, 
-				"Every " + DescUtil.white(thres) + " stacks of negative statuses you apply, your next negative status applied to a target will also be applied to "
-					+ "the nearest enemy to the target.");
+				"Every " + DescUtil.white(thres) + " stacks of negative statuses you apply, your next negative status applied to a target will also have " +
+				"<white>10</white> stacks of it applied to the nearest enemy to the target.");
 	}
 }

@@ -70,7 +70,7 @@ public class Posturing2 extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.SCAFFOLDING,
 				"Passive. Every " + DescUtil.yellow(time +"s") + " spent crouched during a fight, gain " + GlossaryTag.FOCUS.tag(this, 1, false) + 
-				". Projectiles fired deal an additional " + GlossaryTag.PIERCING.tag(this, inc, true) + " damage. This bonus is doubled if the projectile is"
-				+ " fired while crouching.");
+				". Projectiles fired deal an additional " + GlossaryTag.PIERCING.tag(this, inc, true) + " damage per stack of " + GlossaryTag.FOCUS.tag(this) +
+				". This bonus is doubled if the projectile is fired while crouching.");
 	}
 }

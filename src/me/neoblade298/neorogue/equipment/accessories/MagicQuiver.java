@@ -48,9 +48,9 @@ public class MagicQuiver extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		StandardPriorityAction action = new StandardPriorityAction(id);
-		ProjectileGroup group = new ProjectileGroup(new MagicQuiverProjectile(data));
 
 		action.setAction((pdata, in) -> {
+			ProjectileGroup group = new ProjectileGroup(new MagicQuiverProjectile(data));
 			LaunchProjectileGroupEvent ev = (LaunchProjectileGroupEvent) in;
 			if (!ev.isBasicAttack()) return TriggerResult.keep();
 			action.addCount(1);

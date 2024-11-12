@@ -24,7 +24,7 @@ public class Posturing extends Equipment {
 	public Posturing(boolean isUpgraded) {
 		super(ID, "Posturing", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.none());
-		time = isUpgraded ? 5 : 4;
+		time = isUpgraded ? 4 : 5;
 		inc = isUpgraded ? 3 : 2;
 	}
 	
@@ -41,7 +41,7 @@ public class Posturing extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		StandardPriorityAction act = new StandardPriorityAction(id);
 		act.setAction((pdata, in) -> {
-			if (!p.isSneaking()) return TriggerResult.keep();
+		if (!p.isSneaking()) return TriggerResult.keep();
 			act.addCount(1);
 			if (act.getCount() >= time) {
 				pc.play(p, p);

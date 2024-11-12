@@ -56,9 +56,8 @@ public class DamageMeta {
 	}
 	
 	public DamageMeta(FightData data, DamageOrigin origin) {
-		this.owner = data;
+		this(data);
 		this.origins.add(origin);
-		addBuffs(owner.getBuffs(true), BuffOrigin.NORMAL, true);
 	}
 	
 	public DamageMeta(FightData data, double damage, DamageType type) {
@@ -98,6 +97,10 @@ public class DamageMeta {
  		// These are deep clones
 		this.damageBuffs = cloneBuffMap(original.damageBuffs);
 		this.defenseBuffs = cloneBuffMap(original.defenseBuffs);
+	}
+
+	public void setOwner(FightData owner) {
+		this.owner = owner;
 	}
 
 	public void setProjectileInstance(IProjectileInstance inst) {
@@ -263,7 +266,7 @@ public class DamageMeta {
 				if (!damageBuffs.containsKey(bt)) continue;
 				for (BuffMeta bm : damageBuffs.get(bt)) {
 					Buff b = bm.buff;
-					if (b.getOrigin() != null && origins.contains(b.getOrigin())) continue;
+					if (b.getOrigin() != null && !origins.contains(b.getOrigin())) continue;
 					increase += b.getIncrease();
 					mult += b.getMultiplier();
 					if (!(owner instanceof PlayerFightData)) continue; // Don't need stats for non-player damager
@@ -280,7 +283,7 @@ public class DamageMeta {
 				if (!defenseBuffs.containsKey(bt)) continue;
 				for (BuffMeta bm : defenseBuffs.get(bt)) {
 					Buff b = bm.buff;
-					if (b.getOrigin() != null && origins.contains(b.getOrigin())) continue;
+					if (b.getOrigin() != null && !origins.contains(b.getOrigin())) continue;
 					increase -= b.getIncrease();
 					mult -= b.getMultiplier();
 					if (!(recipient instanceof PlayerFightData)) continue; // Don't need stats for non-player mitigation

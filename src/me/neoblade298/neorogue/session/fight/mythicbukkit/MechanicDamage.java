@@ -1,8 +1,11 @@
 package me.neoblade298.neorogue.session.fight.mythicbukkit;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map.Entry;
 
 import org.bukkit.entity.LivingEntity;
+
 import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.api.config.MythicLineConfig;
 import io.lumine.mythic.api.skills.ITargetedEntitySkill;
@@ -13,14 +16,14 @@ import io.lumine.mythic.api.skills.SkillTrigger;
 import io.lumine.mythic.api.skills.ThreadSafetyLevel;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 
 public class MechanicDamage implements ITargetedEntitySkill {
-	protected final int amount;
-	protected final DamageType type;
 	protected final boolean hitBarrier;
+	protected final HashMap<DamageType, Double> damage = new HashMap<DamageType, Double>();
 	protected Skill successSkill, failSkill;
 
     @Override
@@ -29,8 +32,12 @@ public class MechanicDamage implements ITargetedEntitySkill {
     }
 
 	public MechanicDamage(MythicLineConfig cfg) {
-        this.amount = cfg.getInteger(new String[] { "a", "amount" }, 0);
-        this.type = DamageType.valueOf(cfg.getString(new String[] {"t", "type"}, "BLUNT").toUpperCase());
+		for (DamageType type : DamageType.values()) {
+			double amt = cfg.getDouble(type.name(), 0);
+			if (amt > 0) {
+				damage.put(type, amt);
+			}
+		}
         this.hitBarrier = cfg.getBoolean(new String[] { "hb", "hitbarrier" }, false);
 
 		String skillName = cfg.getString(new String[] { "onSuccess", "oS" });
@@ -48,9 +55,12 @@ public class MechanicDamage implements ITargetedEntitySkill {
     public SkillResult castAtEntity(SkillMetadata data, AbstractEntity target) {
 		try {
 			double level = data.getCaster().getLevel();
-			final double fAmount = amount * (1 + (level / 10));
+			final double mult = 1 + (level / 10);
 			FightData fd = FightInstance.getFightData(data.getCaster().getEntity().getUniqueId());
-			DamageMeta meta = new DamageMeta(fd, fAmount, type);
+			DamageMeta meta = new DamageMeta(fd);
+			for (Entry<DamageType, Double> ent : damage.entrySet()) {
+				meta.addDamageSlice(new DamageSlice(fd, ent.getValue() * mult, ent.getKey()));
+			}
 			meta.setHitBarrier(hitBarrier);
 			double dealt = FightInstance.dealDamage(meta, (LivingEntity) target.getBukkitEntity());
 			

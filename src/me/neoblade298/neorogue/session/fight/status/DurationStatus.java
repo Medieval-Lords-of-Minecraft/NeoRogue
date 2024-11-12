@@ -24,6 +24,7 @@ public class DurationStatus extends Status {
 		}
 
 		if (this.stacks <= 0 || this.ticks <= 0) {
+			this.stacks = 0;
 			holder.removeStatus(id);
 			return;
 		}

@@ -620,6 +620,15 @@ public abstract class Equipment implements Comparable<Equipment> {
 				counts.put(eq.getType(), counts.get(eq.getType()) + 1);
 			}
 		}
+
+		// Setup item now that all reforge options exist
+		for (Equipment eq : equipment.values()) {
+			eq.setupItem();
+			Equipment up = eq.getUpgraded();
+			if (up != null) {
+				up.setupItem();
+			}
+		}
 		
 		for (Equipment eq : equipment.values()) {
 			eq.setupDroptable();
@@ -723,7 +732,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 	}
 
 	public abstract void setupItem();
-	public void postSetup() {} // Basically only used for RustySword glossary tag atm
+	// Basically just used for rusty sword to get an item
+	public void postSetup() {} 
 	public void setupReforges() {}
 
 	private void setup() {
@@ -733,7 +743,6 @@ public abstract class Equipment implements Comparable<Equipment> {
 			reforgeOptions = base.getReforgeOptions();
 		}
 		setupReforges();
-		setupItem();
 	}
 
 	public boolean canUpgrade() {
@@ -970,7 +979,9 @@ public abstract class Equipment implements Comparable<Equipment> {
 
 			// Set item into reforge options
 			this.reforgeOptions.put(combineWith, options);
-			if (this != combineWith) combineWith.reforgeOptions.put(this, options);
+			if (this != combineWith) {
+				combineWith.reforgeOptions.put(this, options);
+			}
 		}
 	}
 
