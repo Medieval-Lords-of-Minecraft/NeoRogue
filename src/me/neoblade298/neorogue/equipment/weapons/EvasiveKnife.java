@@ -55,8 +55,8 @@ public class EvasiveKnife extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STONE_SWORD, "Deal an additional <yellow>" + dmg + "</yellow> damage if above "
-				+ "<yellow>" + stam + "</yellow> stamina. Additionally, every <yellow>" + hits + " </yellow>basic attacks grants "
+		item = createItem(Material.STONE_SWORD, "Deal an additional <white>" + dmg + "</white> damage if above "
+				+ "<white>" + stam + "</white> stamina. Additionally, every <yellow>" + hits + " </yellow>basic attacks grants "
 				+ GlossaryTag.EVADE.tag(this, 1, false) + " [<white>3s</white>].");
 	}
 }

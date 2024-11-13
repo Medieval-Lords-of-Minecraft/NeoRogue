@@ -11,6 +11,7 @@ import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
@@ -32,7 +33,7 @@ public class TwinShiv extends Equipment {
 	
 	public TwinShiv(boolean isUpgraded) {
 		super(ID, "Twin Shiv", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 15, 10, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 15, 10, 10));
 		
 		damage = isUpgraded ? 100 : 80;
 		bonus = isUpgraded ? 80 : 50;
@@ -80,7 +81,7 @@ public class TwinShiv extends Equipment {
 		private PlayerFightData data;
 
 		public TwinShivProjectile(PlayerFightData data, TwinShivInstance inst) {
-			super(0.5, 10, 3);
+			super(1.5, properties.get(PropertyType.RANGE), 1);
 			this.size(0.5, 0.5);
 			this.data = data;
 			this.p = data.getPlayer();
@@ -108,7 +109,7 @@ public class TwinShiv extends Equipment {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			proj.applyProperties(data, getProperties());
+			proj.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.PIERCING));
 			Sounds.attackSweep.play(p, p);
 			proj.setTag("" + inst.isFirstProj);
 		}

@@ -29,5 +29,8 @@ public class BasicStatus extends Status {
 	public void onApply(FightData applier, int stacks) {
 		this.stacks += stacks;
 		slices.add(applier, stacks);
+		if (stacks < 0) {
+			stacks = 0;
+		}
 	}
 }

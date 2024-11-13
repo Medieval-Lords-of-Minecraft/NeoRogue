@@ -28,7 +28,7 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 
 public class ElectrifiedStatus extends DecrementStackStatus {
-	private static final ParticleContainer tick = new ParticleContainer(Particle.FIREWORK).count(3).speed(0.01).spread(0.1, 0.1);
+	private static final ParticleContainer tick = new ParticleContainer(Particle.FIREWORK).count(1).speed(0.01).spread(0.1, 0.1);
 	private static final SoundContainer hit = new SoundContainer(Sound.ENTITY_ITEM_BREAK);
 	private static final TargetProperties tp = TargetProperties.radius(10, false, TargetType.ENEMY);
 	private static String id = "ELECTRIFIED";
@@ -50,15 +50,15 @@ public class ElectrifiedStatus extends DecrementStackStatus {
 		
 		Collections.shuffle(list);
 		LivingEntity target = list.peekFirst();
-		Vector v = target.getLocation().subtract(0, 2, 0).subtract(owner.getEntity().getLocation()).toVector();
-		proj.start(owner, holder.getEntity().getLocation().add(0, 4, 0), v);
+		Vector v = target.getLocation().add(0, 1, 0).subtract(holder.getEntity().getLocation()).toVector();
+		proj.start(owner, holder.getEntity().getLocation().add(0, 3.5, 0), v);
 	}
 	
 	private class ElectrifiedProjectile extends Projectile {
 		private Player p;
 
 		public ElectrifiedProjectile(Player p) {
-			super(0.5, 10, 1);
+			super(1.5, 10, 1);
 			this.size(0.5, 0.5);
 			this.p = p;
 		}

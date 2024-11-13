@@ -24,6 +24,7 @@ public class DecrementStackStatus extends Status {
 			}
 		}
 		else {
+			this.stacks = 0;
 			holder.removeStatus(id);
 			return;
 		}
