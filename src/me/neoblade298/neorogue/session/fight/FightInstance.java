@@ -862,9 +862,9 @@ public abstract class FightInstance extends Instance {
 			public void run() {
 				int sumChunkCount = map.getPieces().stream().mapToInt(x -> x.getPiece().getShape().getChunkCount())
 						.sum();
-				int bonus = NeoRogue.gen.nextInt(3);
+				int bonus = NeoRogue.gen.nextInt(2);
 					
-				double toActivate = bonus + 2 + sumChunkCount / 8.0 + map.getPieces().size() / 4.0;
+				double toActivate = bonus + 1.25 + sumChunkCount / 8.0 + map.getPieces().size() / 6.0;
 				activateSpawner(toActivate);
 
 				startTime = System.currentTimeMillis();
