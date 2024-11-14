@@ -61,7 +61,7 @@ public class MagicQuiver extends Equipment {
 					public void run() {
 						group.start(data);
 					}
-				}.runTaskLater(NeoRogue.inst(), 10));
+				}.runTaskLater(NeoRogue.inst(), 5));
 				action.addCount(-thres);
 			}
 			return TriggerResult.keep();
@@ -82,7 +82,7 @@ public class MagicQuiver extends Equipment {
 		public MagicQuiverProjectile(PlayerFightData data) {
 			super(tp.range, 1);
 			this.blocksPerTick(3);
-			this.homing(0.05);
+			this.homing(0.2);
 			this.data = data;
 			this.p = data.getPlayer();
 			ammo = data.getAmmoInstance();

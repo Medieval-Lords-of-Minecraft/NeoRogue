@@ -699,6 +699,10 @@ public abstract class FightInstance extends Instance {
 		if (!fightData.containsKey(uuid)) {
 			LivingEntity ent = (LivingEntity) Bukkit.getEntity(uuid);
 			ActiveMob am = NeoRogue.mythicApi.getMythicMobInstance(ent);
+			if (am == null) {
+				Bukkit.getLogger().info("Failed to get mythic mob instance for " + ent.getName());
+				return null;
+			}
 			Mob mob = Mob.get(am.getType().getInternalName());
 			FightData fd = new FightData(ent, am, mob, (MapSpawnerInstance) null);
 			fightData.put(uuid, fd);

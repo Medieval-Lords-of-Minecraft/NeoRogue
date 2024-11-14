@@ -52,6 +52,6 @@ public class GlacialHammer extends Artifact {
 	public void setupItem() {
 		item = createItem(Material.GOLDEN_SHOVEL, 
 				"Landing a basic attack when you're above <white>50%</white> mana gives the enemy slowness <white>1</white>"
-				+ " [<white>1s</white>] the enemy and costs <white>3</white> mana.");
+				+ " [<white>1s</white>] and costs <white>3</white> mana.");
 	}
 }

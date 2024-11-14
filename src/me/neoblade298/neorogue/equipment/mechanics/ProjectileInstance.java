@@ -139,8 +139,8 @@ public class ProjectileInstance extends IProjectileInstance {
 					if (b.collides(loc)) {
 						numHit++;
 						DamageMeta clone = meta.clone();
-						damageProjectile(b.getOwner(), clone, b);
 						settings.onHit(FightInstance.getFightData(b.getOwner().getUniqueId()), b, clone, this);
+						damageProjectile(b.getOwner(), clone, b);
 						Player p = owner.getEntity() instanceof Player ? (Player) owner.getEntity() : null;
 						Sounds.block.play(p, loc);
 						return true;
@@ -154,6 +154,7 @@ public class ProjectileInstance extends IProjectileInstance {
 					if (ent instanceof Player || ent.getType() == EntityType.ARMOR_STAND) continue;
 					if (!(ent instanceof LivingEntity)) continue;
 					
+					
 					UUID uuid = ent.getUniqueId();
 					FightData hit = FightInstance.getFightData(uuid);
 					if (hit == null) continue;
@@ -162,11 +163,11 @@ public class ProjectileInstance extends IProjectileInstance {
 
 					// Make sure to never use the same damage meta twice
 					DamageMeta clone = meta.clone();
-					damageProjectile((LivingEntity) ent, clone, null);
 					settings.onHit(hit, null, clone, this);
 					for (HitAction act : hitActions) {
 						act.onHit(hit, null, clone, this);
 					}
+					damageProjectile((LivingEntity) ent, clone, null);
 					numHit++;
 					
 					int limit = settings.getPierceLimit() + pierceMod;

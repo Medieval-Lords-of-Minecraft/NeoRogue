@@ -93,7 +93,19 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 			);
 		}
 		
-		if (e.isShiftClick()) {
+		// If right click with empty hand, open glossary, disgusting code due to if statement handling
+		if (e.isRightClick() && e.getCurrentItem() != null && new NBTItem(e.getCurrentItem()).hasTag("equipId") && e.getCursor().getType().isAir()) {
+			NBTItem nclicked = new NBTItem(e.getCurrentItem());
+			e.setCancelled(true);
+			new BukkitRunnable() {
+				public void run() {
+					handleInventoryClose();
+					new GlossaryInventory(p, Equipment.get(nclicked.getString("equipId"), false), null);
+				}
+			}.runTask(NeoRogue.inst());
+			return;
+		}
+		else if (e.isShiftClick()) {
 			if (e.getCurrentItem() == null) return;
 			e.setCancelled(true);
 			if (!pinv.canShiftClickIn(inv.getItem(0))) return;

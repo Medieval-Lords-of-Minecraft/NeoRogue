@@ -20,6 +20,8 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
@@ -85,7 +87,7 @@ public class Inflame extends Equipment {
 		@Override
 		public void onStart(ProjectileInstance proj) {
 			Sounds.fire.play(p, p);
-			proj.applyProperties(data, properties);
+			proj.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.FIRE));
 		}
 	}
 

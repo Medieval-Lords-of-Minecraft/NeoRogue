@@ -276,6 +276,7 @@ public class Session {
 		}
 		if (inst instanceof FightInstance) {
 			((FightInstance) inst).addSpectator(p);
+			p.setAllowFlight(true);
 		}
 	}
 	

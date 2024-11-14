@@ -41,6 +41,7 @@ public class DamageMeta {
 	private DamageMeta returnDamage;
 	
 	static {
+		// Currently unused because they removed armor?
 		armoredEntities.add(EntityType.ZOMBIE);
 		armoredEntities.add(EntityType.HUSK);
 		armoredEntities.add(EntityType.SKELETON);
@@ -382,19 +383,21 @@ public class DamageMeta {
 		}
 		double finalDamage = damage + ignoreShieldsDamage + target.getAbsorptionAmount();
 		if (damage + ignoreShieldsDamage > 0) {
+
+			double healthBefore = target.getHealth();
 			
 			// Mobs shouldn't have a source of damage because they'll infinitely re-trigger ~OnAttack
 			// Players must have a source of damage to get credit for kills, otherwise mobs that suicide give points
 			if (owner instanceof PlayerFightData) {
-				if (armoredEntities.contains(target.getType())) finalDamage *= 1.09; // To deal with minecraft vanilla armor, rounded up for inconsistency
 				FightInstance.trigger((Player) owner.getEntity(), Trigger.DEALT_DAMAGE, new DealtDamageEvent(this, target, damage, ignoreShieldsDamage));
+				System.out.println(damage + " " + ignoreShieldsDamage + " " + finalDamage + " " + target.getType());
 				target.damage(finalDamage, owner.getEntity());
 			}
 			else {
 				target.damage(finalDamage);
 			}
 			
-			if (target.getHealth() <= 0 && owner instanceof PlayerFightData) {
+			if (healthBefore > 0 && target.getHealth() <= 0 && owner instanceof PlayerFightData) {
 				FightInstance.trigger((Player) owner.getEntity(), Trigger.KILL, new KillEvent(target));
 			}
 			if (!(target instanceof Player)) {
@@ -406,6 +409,7 @@ public class DamageMeta {
 				double x = NeoRogue.gen.nextDouble(0.5), y = NeoRogue.gen.nextDouble(0.5), z = NeoRogue.gen.nextDouble(0.5);
 				loc = loc.add(btwn).add(x, y, z);
 				recipient.getInstance().createIndicator(Component.text((int) (damage + ignoreShieldsDamage), NamedTextColor.RED), loc);
+				System.out.println("again " + damage + " " + ignoreShieldsDamage + " " + finalDamage);
 			}
 			else {
 				PlayerFightData data = FightInstance.getUserData(target.getUniqueId());

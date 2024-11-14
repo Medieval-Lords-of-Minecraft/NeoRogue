@@ -105,6 +105,11 @@ public abstract class EditInventoryInstance extends Instance {
 				data.stopViewingMap();
 			}
 		}
+
+		for (MapViewer viewer : s.getSpectators().values()) {
+			Player p = Bukkit.getPlayer(viewer.getUniqueId());
+			if (p != null) p.getInventory().clear();
+		}
 	}
 
 	@Override
@@ -140,6 +145,7 @@ public abstract class EditInventoryInstance extends Instance {
 		@Override
 		public void render(MapView view, MapCanvas canvas, Player p) {
 			Session s = SessionManager.getSession(p);
+			if (s == null) return;
 			UUID uuid = p.getUniqueId();
 			MapViewer viewer = null;
 			if (s.isSpectator(uuid)) {
