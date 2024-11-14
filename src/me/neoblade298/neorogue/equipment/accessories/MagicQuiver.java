@@ -33,12 +33,13 @@ import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroup
 public class MagicQuiver extends Equipment {
 	private static final String ID = "magicQuiver";
 	private static final TargetProperties tp = TargetProperties.radius(12, false, TargetType.ENEMY);
-	private int thres;
+	private int thres, damage;
 	
 	public MagicQuiver(boolean isUpgraded) {
 		super(ID, "Magic Quiver", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.ACCESSORY);
 		thres = isUpgraded ? 2 : 3;
+		damage = 20;
 	}
 	
 	public static Equipment get() {
@@ -71,7 +72,7 @@ public class MagicQuiver extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FLINT, "Every " + DescUtil.yellow(thres == 3 ? "3rd" : "2nd") + " time you launch a basic attack, also fire a " +
-				"homing projectile towards the nearest enemy using your current ammunition.");
+				"homing projectile towards the nearest enemy using your current ammunition that deals " + DescUtil.white(damage) + " damage.");
 	}
 
 	private class MagicQuiverProjectile extends Projectile {
@@ -104,7 +105,7 @@ public class MagicQuiver extends Equipment {
 			DamageMeta dm = proj.getMeta();
 			EquipmentProperties ammoProps = ammo.getProperties();
 			double dmg = ammoProps.get(PropertyType.DAMAGE);
-			dm.addDamageSlice(new DamageSlice(data, dmg, ammoProps.getType()));
+			dm.addDamageSlice(new DamageSlice(data, damage + dmg, ammoProps.getType()));
 			ammo.onStart(proj);
 		}
 	}

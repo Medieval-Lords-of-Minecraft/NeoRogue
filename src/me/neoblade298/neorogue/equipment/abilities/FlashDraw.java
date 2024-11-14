@@ -25,7 +25,7 @@ public class FlashDraw extends Equipment {
 	public FlashDraw(boolean isUpgraded) {
 		super(ID, "Flash Draw", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.none());
-		thres = isUpgraded ? 35 : 50;
+		thres = isUpgraded ? 5 : 8;
 	}
 	
 	public static Equipment get() {
@@ -68,6 +68,10 @@ public class FlashDraw extends Equipment {
 			}
 			return TriggerResult.keep();
 		});
+
+		if (p.isSneaking()) {
+			md.setTime(System.currentTimeMillis());
+		}
 	}
 
 	@Override

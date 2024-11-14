@@ -23,13 +23,13 @@ import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
 public class Wound extends Equipment {
 	private static final String ID = "wound";
-	private int dec = 5, stacks;
+	private int dec = 25, stacks;
 	private ItemStack activeIcon;
 	
 	public Wound(boolean isUpgraded) {
 		super(ID, "Wound", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 2, 0));
-			stacks = isUpgraded ? 8 : 5;
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 3, 0));
+			stacks = isUpgraded ? 5 : 3;
 	}
 	
 	public static Equipment get() {

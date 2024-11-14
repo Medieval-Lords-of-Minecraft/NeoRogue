@@ -38,8 +38,8 @@ public class Setup extends Equipment {
 	public Setup(boolean isUpgraded) {
 		super(ID, "Setup", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.none());
-		time = 4;
-		inc = isUpgraded ? 15 : 10;
+		time = 6;
+		inc = isUpgraded ? 10 : 5;
 		damage = isUpgraded ? 100 : 70;
 	}
 	

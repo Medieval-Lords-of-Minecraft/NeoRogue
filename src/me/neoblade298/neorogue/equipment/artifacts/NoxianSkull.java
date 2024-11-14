@@ -43,8 +43,8 @@ public class NoxianSkull extends Artifact {
 				PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
 				if (ev.getStatusClass() == StatusClass.NEGATIVE) {
 					int total = map.getOrDefault(ev.getStatusId(), 0) + ev.getStacks();
-					int extra = total / 10;
-					total = total % 10;
+					int extra = total / 6;
+					total = total % 6;
 					map.put(ev.getStatusId(), total);
 					ev.getStacksBuff().addIncrease(pdata, extra);
 				}
@@ -66,6 +66,6 @@ public class NoxianSkull extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.WITHER_SKELETON_SKULL, 
-				"For every <white>10</white> stacks of any negative status you apply, apply <white>1</white> additional stack.");
+				"For every <white>6</white> stacks of any negative status you apply, apply <white>1</white> additional stack.");
 	}
 }

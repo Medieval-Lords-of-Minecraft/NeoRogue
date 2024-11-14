@@ -19,11 +19,11 @@ public class IcyArmguard extends Equipment {
 	private int damageReduction, shields, thres;
 	
 	public IcyArmguard(boolean isUpgraded) {
-		super(ID, "Icy Armguard", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
+		super(ID, "Icy Armguard", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.ARMOR);
-		damageReduction = 3;
-		shields = isUpgraded ? 5 : 3;
-		thres = isUpgraded ? 5 : 4;
+		damageReduction = 4;
+		shields = isUpgraded ? 3 : 2;
+		thres = isUpgraded ? 5 : 7;
 	}
 	
 	public static Equipment get() {

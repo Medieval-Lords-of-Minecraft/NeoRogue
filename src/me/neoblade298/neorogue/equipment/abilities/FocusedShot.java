@@ -30,7 +30,7 @@ public class FocusedShot extends Equipment {
 	public FocusedShot(boolean isUpgraded) {
 		super(ID, "Focused Shot", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 10, 15, 0));
-		damage = isUpgraded ? 100 : 60;
+		damage = isUpgraded ? 140 : 100;
 	}
 	
 	public static Equipment get() {
@@ -48,7 +48,7 @@ public class FocusedShot extends Equipment {
 					Sounds.enchant.play(p, p);
 					pc.play(p, p);
 					primeShot(p, data);
-					inst.reduceCooldown(data.getStatus(StatusType.FOCUS).getStacks());
+					inst.reduceCooldown(data.getStatus(StatusType.FOCUS).getStacks() * 2);
 				}
 			}.runTaskLater(NeoRogue.inst(), 20L));
 			return TriggerResult.keep();
@@ -69,6 +69,7 @@ public class FocusedShot extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.CYAN_DYE,
 				"On cast, " + GlossaryTag.CHARGE.tag(this) + " for <white>1s</white>. Afterwards, your next basic attack " + 
-				"has its damage increased by <yellow>" + damage + "%</yellow>. This skill's cooldown is decreased by stacks of " + GlossaryTag.FOCUS.tag(this) + " you have.");
+				"has its damage increased by <yellow>" + damage + "%</yellow>. This skill's cooldown is decreased by <white>2x</white> " +
+				"the stacks of " + GlossaryTag.FOCUS.tag(this) + " you have.");
 	}
 }

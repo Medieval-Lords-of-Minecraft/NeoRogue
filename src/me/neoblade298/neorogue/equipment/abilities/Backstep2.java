@@ -48,8 +48,8 @@ public class Backstep2 extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.IRON_BOOTS,
 				"This ability can be stored and cast once for every " + GlossaryTag.REND.tag(this, thres, true) + " stacks you apply. " +
-				"On cast, jump backwards and gain " + DescUtil.potion("Speed", 0, 3) + " and fire <white>3</white> projectiles that deal " +
-				GlossaryTag.PIERCING.tag(this, damage, true) + " damage and apply " + GlossaryTag.REND.tag(this, rend, false) +".");
+				"On cast, jump backwards, gain " + DescUtil.potion("Speed", 0, 3) + ", fire <white>3</white> projectiles that deal " +
+				GlossaryTag.PIERCING.tag(this, damage, true) + " damage, and apply " + GlossaryTag.REND.tag(this, rend, false) +".");
 	}
 	
 	public static Equipment get() {

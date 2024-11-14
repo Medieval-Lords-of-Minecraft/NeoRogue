@@ -48,7 +48,7 @@ public class ArcheryGlove extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.RABBIT_HIDE, "Decrease " + GlossaryTag.PHYSICAL.tag(this) + " damage by " + DescUtil.yellow(dec) + " [<white>5s</white>] for every " +
+		item = createItem(Material.RABBIT_HIDE, "Decrease " + GlossaryTag.PHYSICAL.tag(this) + " damage taken by " + DescUtil.yellow(dec) + " [<white>5s</white>] for every " +
 				DescUtil.yellow(thres) + " projectiles you launch, unstackable.");
 	}
 }

@@ -27,6 +27,7 @@ import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.player.TaskChain;
 import me.neoblade298.neorogue.session.fight.TickAction.TickResult;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.status.Status;
@@ -152,18 +153,20 @@ public class PlayerFightData extends FightData {
 		return hasStatus(StatusType.CHANNELING);
 	}
 
-	public void channel(int ticks) {
+	public TaskChain channel(int ticks) {
 		applyStatus(StatusType.CHANNELING, this, 1, ticks);
 		entity.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, ticks, 3));
+		return new TaskChain(this, ticks);
 	}
 
-	public void charge(int ticks) {
+	public TaskChain charge(int ticks) {
 		applyStatus(StatusType.CHANNELING, this, 1, ticks);
 		entity.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, ticks, 1));
+		return new TaskChain(this, ticks);
 	}
 
 	public HashMap<String, EquipmentInstance> getActiveEquipment() {
-	return equips;
+		return equips;
 	}
 	
 	@Override

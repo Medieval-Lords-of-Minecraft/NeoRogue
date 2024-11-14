@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.equipment.ActionMetadata;
 import me.neoblade298.neorogue.equipment.BowProjectile;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -33,7 +34,11 @@ public class PiercingShot2 extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		ActionMetadata md = new ActionMetadata();
 		data.addTrigger(ID, Trigger.LAUNCH_PROJECTILE_GROUP, (pdata2, in) -> {
+			md.addCount(1);
+			if (md.getCount() < 3) return TriggerResult.keep();
+			md.addCount(-3);
 			LaunchProjectileGroupEvent ev = (LaunchProjectileGroupEvent) in;
 			if (!ev.isBowProjectile()) return TriggerResult.keep();
 			ProjectileInstance inst = (ProjectileInstance) ev.getInstances().getFirst();
@@ -47,7 +52,7 @@ public class PiercingShot2 extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FLINT,
-				"Passive. All basic attacks deal an additional " + GlossaryTag.PIERCING.tag(this, damage, true) + " damage and pierce " +
+				"Passive. Every <white>third</white> basic attacks deal an additional " + GlossaryTag.PIERCING.tag(this, damage, true) + " damage and pierce " +
 				DescUtil.white(1) + " enemy.");
 	}
 }

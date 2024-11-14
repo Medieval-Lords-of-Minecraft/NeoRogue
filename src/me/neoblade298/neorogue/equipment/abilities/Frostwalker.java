@@ -70,15 +70,7 @@ public class Frostwalker extends Equipment {
 			super(ID);
 
 			action = (pdata, in) -> {
-				if (!active) return TriggerResult.keep();
-				if (pdata.getMana() < 2) return TriggerResult.keep();
 				Player p = data.getPlayer();
-				pdata.addMana(-2);
-				pools.add(p.getLocation());
-				if (pools.size() > 3) {
-					pools.removeFirst();
-				}
-
 				HashSet<UUID> hit = new HashSet<UUID>();
 				for (Location loc : pools) {
 					pc.play(p, loc);
@@ -90,6 +82,15 @@ public class Frostwalker extends Equipment {
 						hit.add(ent.getUniqueId());
 					}
 				}
+
+				if (!active) return TriggerResult.keep();
+				if (pdata.getMana() < 2) return TriggerResult.keep();
+				pdata.addMana(-2);
+				pools.add(p.getLocation());
+				if (pools.size() > 3) {
+					pools.removeFirst();
+				}
+
 				return TriggerResult.keep();
 			};
 		}
