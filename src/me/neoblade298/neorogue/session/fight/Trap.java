@@ -7,6 +7,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public abstract class Trap {
 	private PlayerFightData owner;
@@ -55,7 +56,9 @@ public abstract class Trap {
 			@Override
 			public void run() {
 				tick();
-				if (durationTicks > 0 && ++tick * tickPeriod >= durationTicks) cancel();
+				if (durationTicks > 0 && ++tick * tickPeriod >= durationTicks) {
+					deactivate();
+				}
 			}
 		}.runTaskTimer(NeoRogue.inst(), 0, tickPeriod);
 		taskId = UUID.randomUUID().toString();
@@ -66,6 +69,8 @@ public abstract class Trap {
 		if (task != null) {
 			task.cancel();
 			owner.removeTask(taskId);
+			owner.runActions(owner, Trigger.LAY_TRAP, null);
+			task = null;
 		}
 	}
 	

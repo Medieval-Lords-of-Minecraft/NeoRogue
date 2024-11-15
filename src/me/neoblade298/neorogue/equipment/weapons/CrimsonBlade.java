@@ -40,8 +40,10 @@ public class CrimsonBlade extends Equipment {
 	
 	private class CrimsonBladeInstance extends PriorityAction {
 		private int count;
+		private long start;
 		public CrimsonBladeInstance(String id, Player p) {
 			super(id);
+			start = System.currentTimeMillis();
 			action = (pdata, inputs) -> {
 				LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
 				weaponSwingAndDamage(p, pdata, ev.getTarget());
@@ -50,6 +52,9 @@ public class CrimsonBlade extends Equipment {
 					Sounds.enchant.play(p, p);
 					count = 0;
 				}
+				if (System.currentTimeMillis() - start >= 30000) {
+					return TriggerResult.remove();
+				}
 				return TriggerResult.keep();
 			};
 		}
@@ -57,6 +62,6 @@ public class CrimsonBlade extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.IRON_SWORD, "Every 5 basic attacks with this weapon heals you for <yellow>" + heal + "</yellow>.");
+		item = createItem(Material.IRON_SWORD, "For the first <white>30s</white> of a fight, every 5 basic attacks with this weapon heals you for <yellow>" + heal + "</yellow>.");
 	}
 }

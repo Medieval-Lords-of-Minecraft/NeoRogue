@@ -42,7 +42,7 @@ public class Frostwalker extends Equipment {
 		super(ID, "Frostwalker", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.none());
 		stacks = isUpgraded ? 4 : 3;
-		reduc = isUpgraded ? 3 : 2;
+		reduc = isUpgraded ? 25 : 15;
 	}
 	
 	public static Equipment get() {
@@ -65,34 +65,47 @@ public class Frostwalker extends Equipment {
 
 	private class FrostwalkerInstance extends PriorityAction {
 		private boolean active = false;
-		private LinkedList<Location> pools = new LinkedList<Location>();
+		private LinkedList<PoolInstance> pools = new LinkedList<PoolInstance>();
 		public FrostwalkerInstance(PlayerFightData data) {
 			super(ID);
 
 			action = (pdata, in) -> {
 				Player p = data.getPlayer();
 				HashSet<UUID> hit = new HashSet<UUID>();
-				for (Location loc : pools) {
-					pc.play(p, loc);
-					for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, tp)) {
+				boolean remove = false;
+				for (PoolInstance pool : pools) {
+					pc.play(p, pool.loc);
+					for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, pool.loc, tp)) {
 						if (hit.contains(ent.getUniqueId())) continue;
 						FightData fd = FightInstance.getFightData(ent);
 						fd.applyStatus(StatusType.FROST, data, stacks, -1);
 						fd.addBuff(data, ID, false, false, BuffType.MAGICAL, -reduc, 100);
 						hit.add(ent.getUniqueId());
 					}
+					remove = pool.tick() || remove;
 				}
+				if (remove) pools.removeFirst();
 
 				if (!active) return TriggerResult.keep();
 				if (pdata.getMana() < 2) return TriggerResult.keep();
 				pdata.addMana(-2);
-				pools.add(p.getLocation());
-				if (pools.size() > 3) {
-					pools.removeFirst();
-				}
-
+				pools.add(new PoolInstance(p.getLocation()));
 				return TriggerResult.keep();
 			};
+		}
+
+		private class PoolInstance {
+			private Location loc;
+			private int ticks;
+			public PoolInstance(Location loc) {
+				this.loc = loc;
+				this.ticks = 0;
+			}
+
+			private boolean tick() {
+				this.ticks++;
+				return ticks >= 3;
+			}
 		}
 	}
 

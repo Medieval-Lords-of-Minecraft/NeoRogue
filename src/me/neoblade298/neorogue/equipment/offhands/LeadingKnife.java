@@ -34,7 +34,7 @@ public class LeadingKnife extends Equipment {
 	public LeadingKnife(boolean isUpgraded) {
 		super(ID, "Leading Knife", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.OFFHAND, EquipmentProperties.ofRangedWeapon(10, 0.5, 0, 10, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
-		stamina = isUpgraded ? 6 : 4;
+		stamina = isUpgraded ? 4 : 3;
 	}
 	
 	public static Equipment get() {

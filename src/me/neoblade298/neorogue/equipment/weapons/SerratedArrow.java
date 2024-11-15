@@ -27,7 +27,7 @@ public class SerratedArrow extends Ammunition {
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofAmmunition(8, 0.1, DamageType.PIERCING));
 				damage = 0.2;
-				stacks = isUpgraded ? 3 : 2;
+				stacks = isUpgraded ? 4 : 3;
 	}
 	
 	public static Equipment get() {

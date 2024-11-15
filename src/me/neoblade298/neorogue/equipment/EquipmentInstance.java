@@ -116,6 +116,7 @@ public class EquipmentInstance extends PriorityAction {
 		if (!data.isIgnoreCooldowns()) nextUsable = (long) (System.currentTimeMillis() + (getEffectiveCooldown() * 1000));
 		data.addMana(-getEffectiveManaCost());
 		data.addStamina(-getEffectiveStaminaCost());
+		resetTempCosts();
 		return action.trigger(data, inputs);
 	}
 	

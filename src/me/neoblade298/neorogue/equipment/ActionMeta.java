@@ -1,10 +1,13 @@
 package me.neoblade298.neorogue.equipment;
 
+import org.bukkit.entity.LivingEntity;
+
 // For most common use cases and storing of data in instance format
-public class ActionMetadata {
+public class ActionMeta {
 	private long time;
 	private boolean bool;
 	private int count;
+	private LivingEntity ent;
 	
 	public void setCount(int count) {
 		this.count = count;
@@ -12,6 +15,14 @@ public class ActionMetadata {
 	
 	public void addCount(int count) {
 		this.count += count;
+	}
+
+	public void setEntity(LivingEntity ent) {
+		this.ent = ent;
+	}
+
+	public LivingEntity getEntity() {
+		return ent;
 	}
 
 	public void setBool(boolean bool) {

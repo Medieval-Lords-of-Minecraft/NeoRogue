@@ -173,6 +173,7 @@ import me.neoblade298.neorogue.equipment.weapons.Quickfire;
 import me.neoblade298.neorogue.equipment.weapons.RapidFire;
 import me.neoblade298.neorogue.equipment.weapons.Rapier;
 import me.neoblade298.neorogue.equipment.weapons.Razor;
+import me.neoblade298.neorogue.equipment.weapons.RedBaron;
 import me.neoblade298.neorogue.equipment.weapons.RighteousHammer;
 import me.neoblade298.neorogue.equipment.weapons.SerratedArrow;
 import me.neoblade298.neorogue.equipment.weapons.SerratedRazor;
@@ -268,6 +269,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new BowTrap(b);
 			new Brace(b);
 			new Brace2(b);
+			new Brand(b);
 			new BreakTheLine(b);
 			new Brightcrown(b);
 			new Bulldoze(b);
@@ -395,6 +397,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new FirstStrike(b);
 			new Flicker(b);
 			new Tackle(b);
+			new Tailwind(b);
 			new ThrowPoison(b);
 			new Thornguard(b);
 			new Titan(b);
@@ -510,6 +513,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Nightmare(b);
 			new Rapier(b);
 			new Razor(b);
+			new RedBaron(b);
 			new SerratedArrow(b);
 			new SerratedRazor(b);
 			new SilverFang(b);

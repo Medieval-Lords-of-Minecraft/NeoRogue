@@ -84,7 +84,7 @@ public class HailCloak extends Equipment {
 				int tick = 0;
 				public void run() {
 					runEffect(p.getLocation());
-					if (++tick >= 5) {
+					if (++tick >= 10) {
 						active = false;
 						cancel();
 					}
@@ -104,7 +104,7 @@ public class HailCloak extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.PACKED_ICE,
-				"On cast, after channeling for <white>1s</white>, for the next <white>5s</white>, you deal " + GlossaryTag.ICE.tag(this, damage, true) + " and apply " +
+				"On cast, after channeling for <white>1s</white>, for the next <white>10s</white>, you deal " + GlossaryTag.ICE.tag(this, damage, true) + " and apply " +
 				GlossaryTag.FROST.tag(this, stacks, true) + " to all enemies near you every second. Your projectiles also do this on hit while active.");
 	}
 }

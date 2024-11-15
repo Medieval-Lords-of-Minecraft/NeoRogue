@@ -54,7 +54,8 @@ public enum Trigger {
 	RECEIVED_HEALTH_DAMAGE, // Cancellable, only occurs if the player is due to lose health, TOO LATE to apply buffs
 	STAMINA_CHANGE,
 	MANA_CHANGE,
-	KILL;
+	KILL,
+	KILL_GLOBAL; // Triggers when ANY player kills a mob; currently just used for Brand
 	
 	public static Trigger getFromHotbarSlot(int hotbar) {
 		switch (hotbar) {

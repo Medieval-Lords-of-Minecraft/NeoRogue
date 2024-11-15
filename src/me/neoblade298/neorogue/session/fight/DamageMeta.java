@@ -390,7 +390,6 @@ public class DamageMeta {
 			// Players must have a source of damage to get credit for kills, otherwise mobs that suicide give points
 			if (owner instanceof PlayerFightData) {
 				FightInstance.trigger((Player) owner.getEntity(), Trigger.DEALT_DAMAGE, new DealtDamageEvent(this, target, damage, ignoreShieldsDamage));
-				System.out.println(damage + " " + ignoreShieldsDamage + " " + finalDamage + " " + target.getType());
 				target.damage(finalDamage, owner.getEntity());
 			}
 			else {
@@ -399,6 +398,9 @@ public class DamageMeta {
 			
 			if (healthBefore > 0 && target.getHealth() <= 0 && owner instanceof PlayerFightData) {
 				FightInstance.trigger((Player) owner.getEntity(), Trigger.KILL, new KillEvent(target));
+				for (Player p : owner.getInstance().getSession().getOnlinePlayers()) {
+					FightInstance.trigger(p, Trigger.KILL_GLOBAL, target);
+				}
 			}
 			if (!(target instanceof Player)) {
 				recipient.updateDisplayName();
@@ -409,7 +411,6 @@ public class DamageMeta {
 				double x = NeoRogue.gen.nextDouble(0.5), y = NeoRogue.gen.nextDouble(0.5), z = NeoRogue.gen.nextDouble(0.5);
 				loc = loc.add(btwn).add(x, y, z);
 				recipient.getInstance().createIndicator(Component.text((int) (damage + ignoreShieldsDamage), NamedTextColor.RED), loc);
-				System.out.println("again " + damage + " " + ignoreShieldsDamage + " " + finalDamage);
 			}
 			else {
 				PlayerFightData data = FightInstance.getUserData(target.getUniqueId());

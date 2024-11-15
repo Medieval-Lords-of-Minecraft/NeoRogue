@@ -371,12 +371,10 @@ public class PlayerFightData extends FightData {
 					if (!b.isEmpty()) ei.setTempCooldown(b.applyNegative(ei.getBaseCooldown()));
 					
 					if (!ei.canTrigger(p, data)) {
-						ei.resetTempCosts();
 						continue;
 					}
 					runActions(data, Trigger.CAST_USABLE, ev);
 					tr = ei.trigger(data, inputs);
-					ei.resetTempCosts();
 					ei.updateIcon();
 				}
 				else {
