@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -22,6 +23,7 @@ import org.bukkit.Particle.DustOptions;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
+import org.bukkit.block.Skull;
 import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.FaceAttachable;
 import org.bukkit.block.data.FaceAttachable.AttachedFace;
@@ -31,6 +33,7 @@ import org.bukkit.block.sign.SignSide;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
@@ -48,6 +51,9 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.session.NodeSelectInstance;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.fight.BossFightInstance;
+import me.neoblade298.neorogue.session.fight.Mob;
+import me.neoblade298.neorogue.session.fight.MobModifier;
+import me.neoblade298.neorogue.session.fight.StandardFightInstance;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 
@@ -679,19 +685,25 @@ public class Area {
 	
 	// Called whenever a player advances to a new node
 	public void update(Node node, NodeSelectInstance inst) {
-		// Remove buttons and lecterns from old paths
+		// Remove old buttons, lecterns, and heads
 		int row = node.getRow();
 		for (int lane = 0; lane < 5; lane++) {
-			Node src = nodes[row][lane];
-			if (src == null)
-				continue;
-			Location loc = nodeToLocation(src, 1);
-			loc.getBlock().setType(Material.AIR);
-			loc.add(0, -2, -1);
-			loc.getBlock().setType(Material.POLISHED_ANDESITE);
+			Node n = nodes[row][lane];
+			if (n != null) {
+				Location loc = nodeToLocation(n, 1);
+				loc.getBlock().setType(Material.AIR);
+				loc.add(0, -2, -1);
+				loc.getBlock().setType(Material.POLISHED_ANDESITE);
+			}
+			
+			n = nodes[row + 1][lane];
+			if (n != null && n.getType() == NodeType.FIGHT) {
+				Location loc = nodeToLocation(n, 1);
+				loc.getBlock().setType(Material.AIR);
+			}
 		}
 		
-		// Add button to new paths and generate them
+		// Add buttons, lecterns, and heads to new paths and generate them
 		for (Node dest : node.getDestinations()) {
 			dest.generateInstance(s, type);
 			
@@ -721,6 +733,24 @@ public class Area {
 				meta.setTitle("Fight Info");
 				org.bukkit.block.Lectern lc = (org.bukkit.block.Lectern) b.getState();
 				lc.getInventory().addItem(book);
+			}
+			
+			// Heads
+			for (Node destDest : dest.getDestinations()) {
+				if (destDest.getType() == NodeType.FIGHT) {
+					StandardFightInstance ddInst = (StandardFightInstance) destDest.generateInstance(s, type);
+					Mob[] mobs = ddInst.getMap().getMobs().keySet().toArray(new Mob[0]);
+					Mob chosen = mobs[NeoCore.gen.nextInt(mobs.length)];
+
+					ItemStack headItem = chosen.getItemDisplay(new ArrayList<MobModifier>());
+					SkullMeta meta = (SkullMeta) headItem.getItemMeta();
+
+					Location headLoc = nodeToLocation(destDest, 1);
+					headLoc.getBlock().setType(Material.PLAYER_HEAD);
+					Skull skull = (Skull) headLoc.getBlock().getState();
+					skull.setPlayerProfile(meta.getPlayerProfile());
+					skull.update(true);
+				}
 			}
 		}
 		
