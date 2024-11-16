@@ -2,7 +2,7 @@ package me.neoblade298.neorogue.area;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
+import java.util.List;
 
 import me.neoblade298.neorogue.session.Instance;
 import me.neoblade298.neorogue.session.Session;
@@ -16,53 +16,22 @@ import me.neoblade298.neorogue.session.fight.StandardFightInstance;
 
 public class Node {
 	private static int MAX_DESTS = 3;
-	private static final Comparator<Node> destinationSorter = new Comparator<Node>() {
-		@Override
-		public int compare(Node o1, Node o2) {
-			return Integer.compare(o1.lane, o2.lane);
-		}
-	};
-	
-	private ArrayList<Node> dests = new ArrayList<Node>(MAX_DESTS);
-	private ArrayList<Node> srcs = new ArrayList<Node>(MAX_DESTS);
-	private NodeType type;
+
 	private Instance inst;
-	private int pos, lane;
-	
-	public Node(NodeType type, int pos, int lane) {
-		this.type = type;
-		this.pos = pos;
+
+	private int row, lane;
+	private NodeType type;
+	private List<Node> srcs = new ArrayList<Node>(MAX_DESTS);
+	private List<Node> dests = new ArrayList<Node>(MAX_DESTS);
+
+	public Node(int row, int lane, NodeType type) {
+		this.row = row;
 		this.lane = lane;
-	}
-	
-	public void addDestination(Node node) {
-		dests.add(node);
-		node.addSource(this);
+		this.type = type;
 	}
 
-	// Basically only used by NodeMapInventory
-	public void sortDestinations() {
-		Collections.sort(dests, destinationSorter);
-	}
-	
-	private void addSource(Node node) {
-		srcs.add(node);
-	}
-	
-	public ArrayList<Node> getDestinations() {
-		return dests;
-	}
-	
-	public ArrayList<Node> getSources() {
-		return srcs;
-	}
-	
-	public void removeSource(Node node) {
-		srcs.remove(node);
-	}
-	
-	public int getPosition() {
-		return pos;
+	public int getRow() {
+		return row;
 	}
 	
 	public int getLane() {
@@ -73,28 +42,56 @@ public class Node {
 		this.lane = lane;
 	}
 	
+	public List<Node> getSources() {
+		return srcs;
+	}
+	
+	public List<Node> getDestinations() {
+		return dests;
+	}
+	
+	public void sortDestinations() {
+		Collections.sort(dests, (x, y) -> x.lane - y.lane);
+	}
+	
+	public Node addDestination(Node dest) {
+		if (!dests.contains(dest))
+			dests.add(dest);
+		if (!dest.srcs.contains(this))
+			dest.addSource(this);
+		return this;
+	}
+	
+	public Node addSource(Node src) {
+		if (!srcs.contains(src))
+			srcs.add(src);
+		if (!src.dests.contains(this))
+			src.addDestination(this);
+		return this;
+	}
+	
 	@Override
 	public String toString() {
 		return type.name();
 	}
-	
-	public String serializePosition() {
-		return pos + "," + lane;
-	}
 
+	public String serializePosition() {
+		return row + "," + lane;
+	}
+	
 	public void deserializeInstance(Session s, String data) {
 		if (!data.isBlank()) {
 			inst = FightInstance.deserializeInstanceData(s, s.getParty(), data);
 		}
 	}
-
+	
 	public String serializeInstanceData() {
 		if (inst instanceof FightInstance) {
 			return ((FightInstance) inst).serializeInstanceData();
 		}
 		return "";
 	}
-	
+
 	public String serializeDestinations() {
 		if (dests.isEmpty())
 			return "";
@@ -104,28 +101,28 @@ public class Node {
 		}
 		return str;
 	}
-	
+
 	public NodeType getType() {
 		return type;
 	}
-	
+
 	public void setType(NodeType type) {
 		this.type = type;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof Node) {
 			Node n = (Node) obj;
-			return lane == n.lane && pos == n.pos;
+			return lane == n.lane && row == n.row;
 		}
 		return false;
 	}
-	
+
 	public Instance generateInstance(Session s, AreaType area) {
 		if (inst != null)
 			return inst;
-
+		
 		switch (type) {
 		case FIGHT:
 			inst = new StandardFightInstance(s, s.getParty().keySet(), area, s.getNodesVisited());
@@ -147,10 +144,10 @@ public class Node {
 		default:
 			break;
 		}
-
+		
 		return inst;
 	}
-	
+
 	public Instance getInstance() {
 		return inst;
 	}
