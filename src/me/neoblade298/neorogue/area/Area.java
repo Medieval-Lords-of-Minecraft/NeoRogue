@@ -55,7 +55,7 @@ public class Area {
 	public static final int LANE_COUNT = 5, ROW_COUNT = 16, CENTER_LANE = LANE_COUNT / 2;
 	private static final int X_EDGE_PADDING = 14, Z_EDGE_PADDING = 11, NODE_DIST_BETWEEN = 4;
 	private static final int MAX_CHAIN_LENGTH = 4;
-	private static final int MIN_SHOP_DISTANCE = 3; // min # of PATHS not NODES
+	private static final int MIN_SHOP_DISTANCE = 4; // min # of PATHS not NODES
 
 	private static ParticleContainer red = new ParticleContainer(Particle.DUST), black;
 	private HashSet<Node> blackTicks = new HashSet<>();
@@ -403,16 +403,16 @@ public class Area {
 			bonusNodeProb = 1;
 			break;
 		case 2:
-			bonusNodeProb = 0.75;
+			bonusNodeProb = 0.65;
 			break;
 		case 3:
-			bonusNodeProb = 0.5;
+			bonusNodeProb = 0.35;
 			break;
 		case 4:
-			bonusNodeProb = 0.1;
+			bonusNodeProb = 0.075;
 			break;
 		case 5:
-			bonusNodeProb = 0.05;
+			bonusNodeProb = 0.025;
 			break;
 		default:
 			bonusNodeProb = 0;
@@ -777,23 +777,23 @@ public class Area {
 			case 0:
 				table.add(NodeType.FIGHT, 55);
 				table.add(NodeType.CHANCE, 30);
-				table.add(NodeType.SHOP, 4);
+				table.add(NodeType.SHOP, 2);
 				table.add(NodeType.MINIBOSS, 10);
-				table.add(NodeType.SHRINE, 1);
+				table.add(NodeType.SHRINE, 3);
 				break;
 			case 1:
-				table.add(NodeType.FIGHT, 4);
-				table.add(NodeType.CHANCE, 4);
-				table.add(NodeType.SHOP, 9);
-				table.add(NodeType.MINIBOSS, 59);
-				table.add(NodeType.SHRINE, 24);
+				table.add(NodeType.FIGHT, 5);
+				table.add(NodeType.CHANCE, 5);
+				table.add(NodeType.SHOP, 12);
+				table.add(NodeType.MINIBOSS, 53);
+				table.add(NodeType.SHRINE, 25);
 				break;
 			case 2:
-				table.add(NodeType.FIGHT, 30);
-				table.add(NodeType.CHANCE, 10);
-				table.add(NodeType.SHOP, 20);
+				table.add(NodeType.FIGHT, 32);
+				table.add(NodeType.CHANCE, 12);
+				table.add(NodeType.SHOP, 15);
 				table.add(NodeType.MINIBOSS, 15);
-				table.add(NodeType.SHRINE, 25);
+				table.add(NodeType.SHRINE, 26);
 				break;
 			case 3:
 				table.add(NodeType.FIGHT, 60);
