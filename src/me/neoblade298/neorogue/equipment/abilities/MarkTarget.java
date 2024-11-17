@@ -43,6 +43,12 @@ public class MarkTarget extends Equipment {
 		return Equipment.get(ID, false);
 	}
 
+	public void setupReforges() {
+		addReforge(BasicElementMastery.get(), Crystallize.get(), Brand.get());
+		addReforge(KeenSenses.get(), Demoralize.get());
+		addReforge(AgilityTraining.get(), MarkTarget2.get());
+	}
+
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pd, in) -> {

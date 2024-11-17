@@ -751,13 +751,12 @@ public abstract class FightInstance extends Instance {
 	public static void applyStatus(Entity target, String id, Entity applier, int stacks, int seconds) {
 		FightData data = getFightData(target.getUniqueId());
 		FightData fdApplier = getFightData(applier.getUniqueId());
-		for (StatusType st : StatusType.values()) {
-			if (st.name().equals(id)) {
-				data.applyStatus(st, fdApplier, stacks, seconds);
-				return;
-			}
+		try {
+			StatusType st = StatusType.valueOf(id);
+			data.applyStatus(st, fdApplier, stacks, seconds);
+		} catch (IllegalArgumentException e) {
+			data.applyStatus(Status.createByGenericType(GenericStatusType.BASIC, id, data), fdApplier, stacks, seconds);
 		}
-		data.applyStatus(Status.createByGenericType(GenericStatusType.BASIC, id, data), fdApplier, stacks, seconds);
 	}
 	
 	public static void applyStatus(Entity target, Status s, int stacks, int ticks, FightData applier) {

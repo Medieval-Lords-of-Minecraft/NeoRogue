@@ -94,6 +94,10 @@ public class EquipmentProperties {
 	public static EquipmentProperties ofUsable(double manaCost, double staminaCost, double cooldown, double range) {
 		return new EquipmentProperties(manaCost, staminaCost, cooldown, range, 0, 0, 0, 0, null, null);
 	}
+	
+	public static EquipmentProperties ofUsable(double manaCost, double staminaCost, double cooldown, double range, double aoe) {
+		return new EquipmentProperties(manaCost, staminaCost, cooldown, range, 0, 0, 0, aoe, null, null);
+	}
 
 	public static EquipmentProperties ofAmmunition(double damage, double knockback, DamageType type) {
 		return new EquipmentProperties(0, 0, 0, 0, damage, 0, knockback, 0, type, null);

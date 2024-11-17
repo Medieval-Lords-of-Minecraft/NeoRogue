@@ -275,6 +275,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Bulldoze(b);
 			new Bulwark(b);
 			new Burst(b);
+			new Cauterize(b);
 			new Challenge(b);
 			new Charge(b);
 			new Chill(b);
@@ -284,12 +285,14 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Contaminate(b);
 			new Cripple(b);
 			new CripplingPoison(b);
+			new Crystallize(b);
 			new CurseMark(b);
 			new DarkLance(b);
 			new Darkness(b);
 			new DarkPact(b);
 			new DarkPulse(b);
 			new Deliberation(b);
+			new Demoralize(b);
 			new Discipline(b);
 			new Dismantle(b);
 			new Disorient(b);
@@ -347,8 +350,10 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Lethality(b);
 			new LightningRush(b);
 			new Maim(b);
+			new Malice(b);
 			new ManaInfusion(b);
 			new MarkTarget(b);
+			new MarkTarget2(b);
 			new MightySwing(b);
 			new MortalEngine(b);
 			new NightShade(b);
