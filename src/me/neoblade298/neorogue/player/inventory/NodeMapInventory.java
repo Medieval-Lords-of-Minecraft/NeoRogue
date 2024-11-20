@@ -38,10 +38,11 @@ public class NodeMapInventory extends CoreInventory {
 	public NodeMapInventory(Player p, Session s) {
 		super(p, Bukkit.createInventory(p, 54, Component.text("Node Map", NamedTextColor.GOLD)));
 		this.nodes = s.getArea().getNodes();
-		currentPos = s.getNode().getPosition();
+		currentPos = s.getNode().getRow();
 		curr = s.getNode();
 		p.playSound(p, Sound.ITEM_BOOK_PAGE_TURN, 1F, 1F);
-		if (s.getParty().containsKey(p.getUniqueId())) new PlayerSessionInventory(s.getParty().get(p.getUniqueId()));
+		if (s.getParty().containsKey(p.getUniqueId()))
+			new PlayerSessionInventory(s.getParty().get(p.getUniqueId()));
 		
 		setupInventory();
 		inv.setItem(BACK2, CoreInventory.createButton(ARROW_DOWN2, Component.text("Down 3 positions")));
@@ -62,32 +63,41 @@ public class NodeMapInventory extends CoreInventory {
 		for (int pos = currentPos; pos < currentPos + 3 && pos < nodes.length; pos++) {
 			for (int lane = 0; lane < 5; lane++) {
 				Node node = nodes[pos][lane];
-				if (node == null) continue;
+				if (node == null)
+					continue;
 				int slot = nodeToSlot(node);
 				if (node.equals(curr)) {
-			        ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
-			        SkullMeta meta = (SkullMeta) skull.getItemMeta();
-			        meta.setOwningPlayer(p);
-			        skull.setItemMeta(meta);
-					contents[slot] = CoreInventory.createButton(skull, Component.text("Lane " + lane + " " + node.getType().name() + " (You are here)"));
-				}
-				else {
-					contents[slot] = CoreInventory.createButton(node.getType().getBlock(), Component.text("Lane " + lane + " " + node.getType().name()));
+					ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
+					SkullMeta meta = (SkullMeta) skull.getItemMeta();
+					meta.setOwningPlayer(p);
+					skull.setItemMeta(meta);
+					contents[slot] = CoreInventory.createButton(
+							skull, Component.text("Lane " + lane + " " + node.getType().name() + " (You are here)")
+					);
+				} else {
+					contents[slot] = CoreInventory.createButton(
+							node.getType().getBlock(), Component.text("Lane " + lane + " " + node.getType().name())
+					);
 				}
 				ArrayList<Component> lore = new ArrayList<Component>(1 + node.getDestinations().size());
-				if (!node.getDestinations().isEmpty()) lore.add(Component.text("Connects to:", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, State.FALSE));
+				if (!node.getDestinations().isEmpty())
+					lore.add(
+							Component.text("Connects to:", NamedTextColor.GRAY)
+									.decoration(TextDecoration.ITALIC, State.FALSE)
+					);
 				node.sortDestinations();
 				for (Node dest : node.getDestinations()) {
-					lore.add(Component.text("- Lane " + dest.getLane() + " " + dest.getType() , NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, State.FALSE));
+					lore.add(
+							Component.text("- Lane " + dest.getLane() + " " + dest.getType(), NamedTextColor.GRAY)
+									.decoration(TextDecoration.ITALIC, State.FALSE)
+					);
 					// Only add arrows to next if the node shows up on the inventory
 					if (slot > 18) {
 						if (dest.getLane() > lane) {
 							contents[slot - 8] = CoreInventory.createButton(ARROW_UPRIGHT, Component.text(" "));
-						}
-						else if (dest.getLane() < lane) {
+						} else if (dest.getLane() < lane) {
 							contents[slot - 10] = CoreInventory.createButton(ARROW_UPLEFT, Component.text(" "));
-						}
-						else {
+						} else {
 							contents[slot - 9] = CoreInventory.createButton(ARROW_UP, Component.text(" "));
 						}
 					}
@@ -99,25 +109,24 @@ public class NodeMapInventory extends CoreInventory {
 	}
 	
 	private int nodeToSlot(Node node) {
-		return (node.getLane() * 2) + ((2 - node.getPosition() + currentPos) * 18) + 9;
+		return (node.getLane() * 2) + ((2 - node.getRow() + currentPos) * 18) + 9;
 	}
 
 	@Override
 	public void handleInventoryClick(InventoryClickEvent e) {
 		e.setCancelled(true);
-		if (e.getCurrentItem() == null) return;
-		if (e.getClickedInventory() != inv) return;
+		if (e.getCurrentItem() == null)
+			return;
+		if (e.getClickedInventory() != inv)
+			return;
 		int slot = e.getSlot();
 		if (slot == BACK2) {
 			turnPage(-3);
-		}
-		else if (slot == BACK) {
+		} else if (slot == BACK) {
 			turnPage(-1);
-		}
-		else if (slot == FORWARD) {
+		} else if (slot == FORWARD) {
 			turnPage(1);
-		}
-		else if (slot == FORWARD2) {
+		} else if (slot == FORWARD2) {
 			turnPage(3);
 		}
 	}

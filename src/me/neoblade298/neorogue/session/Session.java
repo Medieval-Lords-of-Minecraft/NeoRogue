@@ -71,13 +71,11 @@ public class Session {
 	private ArrayList<String> spectatorLines = new ArrayList<String>();
 	
 	// Session coordinates
-	public static final int LOBBY_X = 0, LOBBY_Z = 0, LOBBY_WIDTH = 15,
-			AREA_X = 0, AREA_Z = LOBBY_Z + LOBBY_WIDTH, AREA_WIDTH = 81,
-			REWARDS_X = 0, REWARDS_Z = AREA_Z + AREA_WIDTH, REWARDS_WIDTH = 19,
-			SHRINE_X = 0, SHRINE_Z = REWARDS_Z + REWARDS_WIDTH, SHRINE_WIDTH = 13,
-			SHOP_X = 0, SHOP_Z = SHRINE_Z + SHRINE_WIDTH, SHOP_WIDTH = 12,
-			CHANCE_X = 0, CHANCE_Z = SHOP_Z + SHOP_WIDTH, CHANCE_WIDTH = 12,
-			LOSE_X = 0, LOSE_Z = CHANCE_Z + CHANCE_WIDTH;
+	public static final int LOBBY_X = 0, LOBBY_Z = 0, LOBBY_WIDTH = 15, AREA_X = 0, AREA_Z = LOBBY_Z + LOBBY_WIDTH,
+			AREA_WIDTH = 81, REWARDS_X = 0, REWARDS_Z = AREA_Z + AREA_WIDTH, REWARDS_WIDTH = 19, SHRINE_X = 0,
+			SHRINE_Z = REWARDS_Z + REWARDS_WIDTH, SHRINE_WIDTH = 13, SHOP_X = 0, SHOP_Z = SHRINE_Z + SHRINE_WIDTH,
+			SHOP_WIDTH = 12, CHANCE_X = 0, CHANCE_Z = SHOP_Z + SHOP_WIDTH, CHANCE_WIDTH = 12, LOSE_X = 0,
+			LOSE_Z = CHANCE_Z + CHANCE_WIDTH;
 	
 	private static Clipboard classSelect, nodeSelect, rewardsRoom, shrine, shop, chance, lose;
 	static {
@@ -103,8 +101,9 @@ public class Session {
 		return null;
 	}
 
-	private static void pasteSchematic(Clipboard clipboard, EditSession editSession, Session session, int xOff,
-			int yOff, int zOff) {
+	private static void pasteSchematic(
+			Clipboard clipboard, EditSession editSession, Session session, int xOff, int yOff, int zOff
+	) {
 		Operation operation = new ClipboardHolder(clipboard).createPaste(editSession)
 				.to(BlockVector3.at(-(session.getXOff() + xOff + 1), 64 + yOff, session.getZOff() + zOff))
 				.ignoreAirBlocks(false).build();
@@ -119,7 +118,9 @@ public class Session {
 		pasteSchematic(clipboard, editSession, session, 0, 0, zOff);
 	}
 
-	private static void pasteSchematic(Clipboard clipboard, EditSession editSession, Session session, int yOff, int zOff) {
+	private static void pasteSchematic(
+			Clipboard clipboard, EditSession editSession, Session session, int yOff, int zOff
+	) {
 		pasteSchematic(clipboard, editSession, session, 0, yOff, zOff);
 	}
 	
@@ -144,29 +145,36 @@ public class Session {
 		Session s = this;
 		generateInterstitials();
 		new BukkitRunnable() {
+			@Override
 			public void run() {
 				Util.msgRaw(p, Component.text("Loading game...", NamedTextColor.GRAY));
 				
-				try (Connection con = SQLManager.getConnection("NeoRogue");
-						Statement stmt = con.createStatement()) {
-					ResultSet partySet = stmt.executeQuery("SELECT * FROM neorogue_playersessiondata WHERE host = '" + host + "' AND slot = " + saveSlot + ";");
+				try (Connection con = SQLManager.getConnection("NeoRogue"); Statement stmt = con.createStatement()) {
+					ResultSet partySet = stmt.executeQuery(
+							"SELECT * FROM neorogue_playersessiondata WHERE host = '" + host + "' AND slot = "
+									+ saveSlot + ";"
+					);
 					while (partySet.next()) {
 						UUID uuid = UUID.fromString(partySet.getString("uuid"));
 						party.put(uuid, new PlayerSessionData(uuid, s, partySet));
 					}
 					
-					ResultSet sessSet = stmt.executeQuery("SELECT * FROM neorogue_sessions WHERE host = '" + host + "' AND slot = " + saveSlot + ";");
+					ResultSet sessSet = stmt.executeQuery(
+							"SELECT * FROM neorogue_sessions WHERE host = '" + host + "' AND slot = " + saveSlot + ";"
+					);
 					sessSet.next();
 					nodesVisited = sessSet.getInt("nodesVisited");
 					int pos = sessSet.getInt("position");
 					int lane = sessSet.getInt("lane");
 					Instance inst = Instance.deserialize(s, sessSet, party);
 
-					area = new Area(AreaType.valueOf(sessSet.getString("areaType")),
-							xOff, zOff, host, saveSlot, s, stmt);
+					area = new Area(
+							AreaType.valueOf(sessSet.getString("areaType")), xOff, zOff, host, saveSlot, s, stmt
+					);
 					curr = area.getNodes()[pos][lane];
 					
 					new BukkitRunnable() {
+						@Override
 						public void run() {
 							area.instantiate();
 							setInstance(inst);
@@ -210,16 +218,16 @@ public class Session {
 	}
 	
 	public void save(Statement insert, Statement delete) {
-		if (inst instanceof FightInstance || inst instanceof LoseInstance) return;
+		if (inst instanceof FightInstance || inst instanceof LoseInstance)
+			return;
 		
 		try {
 			SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_sessions")
 					.addString(host.toString()).addValue(saveSlot).addString(area.getType().name())
-					.addValue(curr.getPosition()).addValue(curr.getLane()).addValue(nodesVisited).addValue(potionChance)
+					.addValue(curr.getRow()).addValue(curr.getLane()).addValue(nodesVisited).addValue(potionChance)
 					.addValue(System.currentTimeMillis()).addString(inst.serialize(party));
-					insert.execute(sql.build());
-		}
-		catch (SQLException ex) {
+			insert.execute(sql.build());
+		} catch (SQLException ex) {
 			Bukkit.getLogger().warning("[NeoRogue] Failed to save session for host " + host + " to slot " + saveSlot);
 			ex.printStackTrace();
 		}
@@ -228,13 +236,15 @@ public class Session {
 		area.saveRelevant(insert, delete);
 		
 		try {
-			delete.execute("DELETE FROM neorogue_playersessiondata WHERE host = '" + host + "' AND slot = " + saveSlot + ";");
+			delete.execute(
+					"DELETE FROM neorogue_playersessiondata WHERE host = '" + host + "' AND slot = " + saveSlot + ";"
+			);
 			for (PlayerSessionData psd : party.values()) {
 				psd.save(insert);
 			}
-		}
-		catch (SQLException ex) {
-			Bukkit.getLogger().warning("[NeoRogue] Failed to save player session data for host " + host + " to slot " + saveSlot);
+		} catch (SQLException ex) {
+			Bukkit.getLogger()
+					.warning("[NeoRogue] Failed to save player session data for host " + host + " to slot " + saveSlot);
 			ex.printStackTrace();
 		}
 		
@@ -319,7 +329,8 @@ public class Session {
 
 	public void broadcastOthers(String msg, Player ignore) {
 		for (Player p : getOnlinePlayers()) {
-			if (p == ignore) continue;
+			if (p == ignore)
+				continue;
 			Util.msgRaw(p, NeoCore.miniMessage().deserialize(msg).colorIfAbsent(NamedTextColor.GRAY));
 		}
 
@@ -331,7 +342,8 @@ public class Session {
 
 	public void broadcastOthers(Component msg, Player ignore) {
 		for (Player p : getOnlinePlayers()) {
-			if (p == ignore) continue;
+			if (p == ignore)
+				continue;
 			Util.msgRaw(p, msg);
 		}
 		for (UUID uuid : spectators.keySet()) {
@@ -399,8 +411,10 @@ public class Session {
 	
 	public void setupSpectatorInventory(Player p) {
 		p.getInventory().clear();
-		if (inst instanceof NodeSelectInstance) return;
-		ItemStack item = CoreInventory.createButton(Material.FILLED_MAP, Component.text("Node Map", NamedTextColor.GOLD));
+		if (inst instanceof NodeSelectInstance)
+			return;
+		ItemStack item = CoreInventory
+				.createButton(Material.FILLED_MAP, Component.text("Node Map", NamedTextColor.GOLD));
 		MapMeta meta = (MapMeta) item.getItemMeta();
 		MapView map = Bukkit.getMap(EditInventoryInstance.MAP_ID);
 		meta.setMapView(map);
@@ -422,22 +436,28 @@ public class Session {
 			}
 			
 			// Save player's storage
-			if (this.inst instanceof EditInventoryInstance && !EditInventoryInstance.isValid(this)) return false;
+			if (this.inst instanceof EditInventoryInstance && !EditInventoryInstance.isValid(this))
+				return false;
 			this.inst.cleanup();
 		}
 		this.inst = inst;
 		inst.start();
 		
 		// Auto-save
-		if (firstLoad) return true;
+		if (firstLoad)
+			return true;
 		new BukkitRunnable() {
+			@Override
 			public void run() {
 				try (Connection con = SQLManager.getConnection("NeoRogue");
 						Statement insert = con.createStatement();
-						Statement delete = con.createStatement()){
+						Statement delete = con.createStatement()) {
 					save(insert, delete);
 				} catch (SQLException ex) {
-					Bukkit.getLogger().warning("[NeoRogue] Failed to acquire connection to save session hosted by " + host + " to slot " + saveSlot);
+					Bukkit.getLogger().warning(
+							"[NeoRogue] Failed to acquire connection to save session hosted by " + host + " to slot "
+									+ saveSlot
+					);
 					ex.printStackTrace();
 				}
 			}
@@ -457,7 +477,8 @@ public class Session {
 		ArrayList<Player> players = new ArrayList<Player>();
 		for (UUID uuid : party.keySet()) {
 			Player p = Bukkit.getPlayer(uuid);
-			if (p != null) players.add(p);
+			if (p != null)
+				players.add(p);
 		}
 		return players;
 	}
@@ -498,7 +519,8 @@ public class Session {
 		for (int i = 0; i < nodes.length; i++) {
 			for (int j = 0; j < nodes[i].length; j++) {
 				Node n = nodes[i][j];
-				if (n == null) continue;
+				if (n == null)
+					continue;
 				Location loc = area.nodeToLocation(n, 0);
 				loc.getBlock().setType(Material.AIR); // Remove node block
 				// Remove boss stuff
@@ -526,11 +548,11 @@ public class Session {
 	
 	public void visitNode(Node node) {
 		for (PlayerSessionData psd : party.values()) {
-			psd.setMapPosition(node.getPosition());
+			psd.setMapPosition(node.getRow());
 			psd.setShouldMapRender(true);
 		}
 		for (MapViewer viewer : spectators.values()) {
-			viewer.setMapPosition(node.getPosition());
+			viewer.setMapPosition(node.getRow());
 			viewer.setShouldMapRender(true);
 		}
 		this.curr = node;
@@ -572,8 +594,7 @@ public class Session {
 		if (uuid.equals(host)) {
 			broadcast("The host has left the party, so the game has ended!");
 			SessionManager.endSession(this);
-		}
-		else {
+		} else {
 			broadcast("<yellow>" + p.getName() + " <gray>has left the party!");
 			party.remove(p.getUniqueId());
 			SessionManager.resetPlayer(p);
@@ -589,8 +610,7 @@ public class Session {
 		UUID uuid = p.getUniqueId();
 		if (!uuid.equals(host)) {
 			Util.displayError(p, "Only the host may kick players");
-		}
-		else {
+		} else {
 			if (!party.containsKey(target.getUniqueId())) {
 				Util.displayError(p, "That player isn't in your party!");
 				return;
@@ -602,13 +622,21 @@ public class Session {
 	}
 	
 	public void deleteSave() {
-		try (Connection con = SQLManager.getConnection("NeoRogue");
-				Statement stmt = con.createStatement()){
-			stmt.executeUpdate("DELETE FROM neorogue_playersessiondata WHERE host = '" + host + "' AND slot = " + saveSlot + ";");
-			stmt.executeUpdate("DELETE FROM neorogue_sessions WHERE host = '" + host + "' AND slot = " + saveSlot + ";");
-			stmt.executeUpdate("DELETE FROM neorogue_sessions WHERE host = '" + host + "' AND slot = " + saveSlot + ";");
+		try (Connection con = SQLManager.getConnection("NeoRogue"); Statement stmt = con.createStatement()) {
+			stmt.executeUpdate(
+					"DELETE FROM neorogue_playersessiondata WHERE host = '" + host + "' AND slot = " + saveSlot + ";"
+			);
+			stmt.executeUpdate(
+					"DELETE FROM neorogue_sessions WHERE host = '" + host + "' AND slot = " + saveSlot + ";"
+			);
+			stmt.executeUpdate(
+					"DELETE FROM neorogue_sessions WHERE host = '" + host + "' AND slot = " + saveSlot + ";"
+			);
 		} catch (SQLException ex) {
-			Bukkit.getLogger().warning("[NeoRogue] Failed to acquire connection to delete session hosted by " + host + " from slot " + saveSlot);
+			Bukkit.getLogger().warning(
+					"[NeoRogue] Failed to acquire connection to delete session hosted by " + host + " from slot "
+							+ saveSlot
+			);
 			ex.printStackTrace();
 		}
 	}

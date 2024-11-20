@@ -59,7 +59,7 @@ public class NodeSelectInstance extends EditInventoryInstance {
 		Area area = s.getArea();
 
 		// Teleport player to their previous node selection
-		if (s.getNode().getPosition() != 0)
+		if (s.getNode().getRow() != 0)
 			spawn = area.nodeToLocation(s.getNode(), 1);
 		area.update(s.getNode(), this);
 
@@ -69,7 +69,8 @@ public class NodeSelectInstance extends EditInventoryInstance {
 		lines.addAll(tips.get(NeoRogue.gen.nextInt(tips.size())));
 		Plot plot = s.getPlot();
 		Location loc = spawn.clone().add(0, 2.5 + (lines.size() * 0.3), 4);
-		Hologram holo = NeoRogue.createHologram(plot.getXOffset() + "-" + plot.getZOffset() + "-bossdisplay", loc, lines);
+		Hologram holo = NeoRogue
+				.createHologram(plot.getXOffset() + "-" + plot.getZOffset() + "-bossdisplay", loc, lines);
 		holograms.add(holo);
 
 		for (Player p : s.getOnlinePlayers()) {
@@ -105,7 +106,9 @@ public class NodeSelectInstance extends EditInventoryInstance {
 		ArrayList<String> lines = new ArrayList<String>();
 		lines.add("§f§l" + dest.getType() + " Node");
 		Plot plot = s.getPlot();
-		Hologram holo = NeoRogue.createHologram(plot.getXOffset() + "-" + plot.getZOffset() + "-" + dest.getPosition() + "-" + dest.getLane(), loc, lines);
+		Hologram holo = NeoRogue.createHologram(
+				plot.getXOffset() + "-" + plot.getZOffset() + "-" + dest.getRow() + "-" + dest.getLane(), loc, lines
+		);
 		holograms.add(holo);
 	}
 	
@@ -133,8 +136,7 @@ public class NodeSelectInstance extends EditInventoryInstance {
 			Node n = s.getArea().getNodeFromLocation(e.getClickedBlock().getLocation().add(0, 2, 1));
 			FightInstance inst = (FightInstance) n.getInstance();
 			new FightInfoInventory(e.getPlayer(), null, inst.getMap().getMobs());
-		}
-		else {
+		} else {
 			super.handleSpectatorInteractEvent(e);
 		}
 	}
@@ -147,30 +149,37 @@ public class NodeSelectInstance extends EditInventoryInstance {
 		Player p = e.getPlayer();
 		if (e.getAction() == Action.RIGHT_CLICK_BLOCK && Tag.BUTTONS.isTagged(e.getClickedBlock().getType())) {
 			Node node = s.getArea().getNodeFromLocation(e.getClickedBlock().getLocation());
-			if (node == null) return;
+			if (node == null)
+				return;
 			if (!p.getUniqueId().equals(s.getHost())) {
-				if (!s.canSuggest()) return;
+				if (!s.canSuggest())
+					return;
 				s.setSuggestCooldown();
 				String laneString;
 				switch (node.getLane()) {
-				case 0: laneString = " on the far left.";
-				break;
-				case 1: laneString = " on the middle left.";
-				break;
-				case 2: laneString = " in the middle.";
-				break;
-				case 3: laneString = " on the middle right.";
-				break;
-				default: laneString = " on the far right.";
-				break;
+				case 0:
+					laneString = " on the far left.";
+					break;
+				case 1:
+					laneString = " on the middle left.";
+					break;
+				case 2:
+					laneString = " in the middle.";
+					break;
+				case 3:
+					laneString = " on the middle right.";
+					break;
+				default:
+					laneString = " on the far right.";
+					break;
 				}
 				s.broadcast(
 						p.name().color(NamedTextColor.YELLOW)
-						.append(Component.text(" suggests the ", NamedTextColor.GRAY))
-						.append(Component.text(node.getType() + " Node", NamedTextColor.YELLOW))
-						.append(Component.text(laneString, NamedTextColor.GRAY))
-					);
-					s.broadcastSound(Sound.ENTITY_ARROW_HIT_PLAYER);
+								.append(Component.text(" suggests the ", NamedTextColor.GRAY))
+								.append(Component.text(node.getType() + " Node", NamedTextColor.YELLOW))
+								.append(Component.text(laneString, NamedTextColor.GRAY))
+				);
+				s.broadcastSound(Sound.ENTITY_ARROW_HIT_PLAYER);
 				return;
 			}
 
@@ -187,8 +196,7 @@ public class NodeSelectInstance extends EditInventoryInstance {
 				for (UUID uuid : s.getSpectators().keySet()) {
 					Bukkit.getPlayer(uuid).setAllowFlight(false);
 				}
-			}
-			else {
+			} else {
 				s.setBusy(true);
 			}
 			// Fight instances set allow flight to false and set busy to false on start
@@ -198,8 +206,7 @@ public class NodeSelectInstance extends EditInventoryInstance {
 			Node n = s.getArea().getNodeFromLocation(e.getClickedBlock().getLocation().add(0, 2, 1));
 			FightInstance inst = (FightInstance) n.getInstance();
 			new FightInfoInventory(e.getPlayer(), s.getParty().get(p.getUniqueId()), inst.getMap().getMobs());
-		}
-		else {
+		} else {
 			super.handleInteractEvent(e);
 		}
 	}
