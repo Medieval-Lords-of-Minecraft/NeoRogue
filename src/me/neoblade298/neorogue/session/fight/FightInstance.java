@@ -278,6 +278,7 @@ public abstract class FightInstance extends Instance {
 		ArmorStand as = (ArmorStand) src.getWorld().spawnEntity(src, EntityType.ARMOR_STAND);
 		as.setInvisible(true);
 		as.setVelocity(new Vector(0, 0.1, 0));
+		as.setMarker(true);
 		as.setInvulnerable(true);
 		as.setSmall(true);
 		as.setGravity(true);
@@ -291,6 +292,9 @@ public abstract class FightInstance extends Instance {
 				indicators.remove(as.getUniqueId());
 			}
 		}.runTaskLater(NeoRogue.inst(), 40L);
+
+		//TextDisplay td = (TextDisplay) src.getWorld().spawnEntity(src, EntityType.TEXT_DISPLAY);
+		// td.setTransformation(new Transformat)
 	}
 
 	@Override
@@ -321,7 +325,6 @@ public abstract class FightInstance extends Instance {
 	}
 	
 	public static void handlePlayerAttack(PrePlayerAttackEntityEvent e) {
-		System.out.println("Player attack");
 		Player p = e.getPlayer();
 		e.setCancelled(true);
 		PlayerFightData data = userData.get(p.getUniqueId());
