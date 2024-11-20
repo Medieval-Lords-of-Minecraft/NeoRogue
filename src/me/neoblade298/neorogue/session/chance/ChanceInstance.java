@@ -221,6 +221,7 @@ public class ChanceInstance extends EditInventoryInstance {
 		candle.setLit(true);
 		candleBlock.setBlockData(candle);
 		returning = true;
+		s.setBusy(true);
 		new BukkitRunnable() {
 			@Override
 			public void run() {
@@ -250,6 +251,7 @@ public class ChanceInstance extends EditInventoryInstance {
 			public void run() {
 				returning = false;
 				s.setInstance(nextInstance == null ? new NodeSelectInstance(s) : nextInstance);
+				s.setBusy(false);
 			}
 		}.runTaskLater(NeoRogue.inst(), 60L);
 	}

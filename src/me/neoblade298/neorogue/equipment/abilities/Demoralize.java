@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import java.util.LinkedList;
+
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
@@ -49,11 +51,13 @@ public class Demoralize extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ActionMeta am = new ActionMeta();
+		LinkedList<ActionMeta> insts = new LinkedList<ActionMeta>();
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			Sounds.equip.play(p, p);
+			ActionMeta am = new ActionMeta();
 			am.setBool(true);
 			am.setTime(System.currentTimeMillis() + 5000);
+			insts.add(am);
 			data.addTask(new BukkitRunnable() {
 				public void run() {
 					if (am.getBool()) {
@@ -66,14 +70,17 @@ public class Demoralize extends Equipment {
 							fd.addBuff(data, id, false, true, BuffType.GENERAL, -dec * 0.01, 160);
 						}
 					}
+					insts.removeFirst();
 				}
 			}.runTaskLater(NeoRogue.inst(), 100));
 			return TriggerResult.keep();
 		}));
 		
 		data.addTrigger(id, Trigger.RECEIVED_HEALTH_DAMAGE, (pdata, in) -> {
-			if (am.getTime() < System.currentTimeMillis()) return TriggerResult.keep();
-			am.setBool(false);
+			if (insts.isEmpty()) return TriggerResult.keep();
+			for (ActionMeta am : insts) {
+				am.setBool(false);
+			}
 			return TriggerResult.keep();
 		});
 	}

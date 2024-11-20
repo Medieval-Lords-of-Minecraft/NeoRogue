@@ -1,6 +1,5 @@
 package me.neoblade298.neorogue.session.fight.status;
 
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 
@@ -30,7 +29,7 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 public class ElectrifiedStatus extends DecrementStackStatus {
 	private static final ParticleContainer tick = new ParticleContainer(Particle.FIREWORK).count(1).speed(0.01).spread(0.1, 0.1);
 	private static final SoundContainer hit = new SoundContainer(Sound.ENTITY_ITEM_BREAK);
-	private static final TargetProperties tp = TargetProperties.radius(10, false, TargetType.ENEMY);
+	private static final TargetProperties tp = TargetProperties.radius(8, false, TargetType.ENEMY);
 	private static String id = "ELECTRIFIED";
 
 	// Currently only works on enemies
@@ -45,10 +44,9 @@ public class ElectrifiedStatus extends DecrementStackStatus {
 		PlayerFightData owner = (PlayerFightData) slices.getSliceOwners().entrySet().iterator().next().getKey();
 		ProjectileGroup proj = new ProjectileGroup(new ElectrifiedProjectile(owner.getPlayer()));
 		
-		LinkedList<LivingEntity> list = TargetHelper.getEntitiesInRadius(owner.getEntity(), tp);
+		LinkedList<LivingEntity> list = TargetHelper.getEntitiesInRadius(holder.getEntity(), tp);
 		if (list.isEmpty()) return;
 		
-		Collections.shuffle(list);
 		LivingEntity target = list.peekFirst();
 		Vector v = target.getLocation().subtract(0, 2, 0).subtract(holder.getEntity().getLocation()).toVector();
 		proj.start(owner, holder.getEntity().getLocation().add(0, 3.5, 0), v);
@@ -75,7 +73,6 @@ public class ElectrifiedStatus extends DecrementStackStatus {
 			ElectrifiedStatus.hit.play(p, loc);
 			FightInstance.knockback(target,
 					proj.getVelocity().normalize().multiply(0.2));
-			FightInstance.dealDamage(meta, target);
 		}
 
 		@Override

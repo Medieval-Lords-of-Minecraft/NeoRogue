@@ -36,7 +36,6 @@ public class AgilityTraining extends Equipment {
 	@Override
 	public void setupReforges() {
 		addReforge(PointBlank.get(), Grit.get());
-		addSelfReforge(ShoulderBash.get());
 		addReforge(Quickfire.get(), Volley.get(), RapidFire.get());
 		addReforge(WoodenArrow.get(), SerratedArrow.get());
 	}

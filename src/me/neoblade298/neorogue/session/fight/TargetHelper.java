@@ -1,5 +1,8 @@
 package me.neoblade298.neorogue.session.fight;
 
+import java.util.LinkedList;
+import java.util.function.Predicate;
+
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -7,8 +10,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
-import java.util.LinkedList;
-import java.util.function.Predicate;
 import me.neoblade298.neocore.bukkit.util.TargetUtil;
 import me.neoblade298.neorogue.NeoRogue;
 
@@ -152,7 +153,6 @@ public class TargetHelper {
 	static boolean isValidTarget(final LivingEntity source, final LivingEntity target,
 			boolean throughWall) {
 		return target != source
-				
 				&& (throughWall ||
 						!isObstructed(source.getEyeLocation(), target.getEyeLocation()) ||
 						!isObstructed(source.getEyeLocation(), target.getLocation()))

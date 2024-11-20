@@ -320,6 +320,7 @@ public abstract class FightInstance extends Instance {
 	}
 	
 	public static void handlePlayerAttack(PrePlayerAttackEntityEvent e) {
+		System.out.println("Player attack");
 		Player p = e.getPlayer();
 		e.setCancelled(true);
 		PlayerFightData data = userData.get(p.getUniqueId());
@@ -700,7 +701,7 @@ public abstract class FightInstance extends Instance {
 			LivingEntity ent = (LivingEntity) Bukkit.getEntity(uuid);
 			ActiveMob am = NeoRogue.mythicApi.getMythicMobInstance(ent);
 			if (am == null) {
-				Bukkit.getLogger().info("Failed to get mythic mob instance for " + ent.getName());
+				Bukkit.getLogger().info("Failed to get mythic mob instance for " + ent.getName() + " " + ent.getType() + " " + ent.getUniqueId());
 				return null;
 			}
 			Mob mob = Mob.get(am.getType().getInternalName());

@@ -4,12 +4,11 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-
-import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
-import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
+import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -24,7 +23,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 public class StoneAxe extends Equipment {
 	private static final String ID = "stoneAxe";
 	private static final int BERSERK_THRESHOLD = 10;
-	private static final TargetProperties tp = TargetProperties.cone(90, 4, false, TargetType.ENEMY);
+	private static final TargetProperties tp = TargetProperties.cone(60, 3, false, TargetType.ENEMY);
 	
 	public StoneAxe(boolean isUpgraded) {
 		super(ID, "Stone Axe", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
@@ -46,10 +45,11 @@ public class StoneAxe extends Equipment {
 			return TriggerResult.keep();
 		});
 		
-		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_NO_HIT, (pdata, inputs) -> {
+		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (pdata, inputs) -> {
 			if (!data.canBasicAttack()) return TriggerResult.keep();
 			if (!data.hasStatus(StatusType.BERSERK) || data.getStatus(StatusType.BERSERK).getStacks() < BERSERK_THRESHOLD) return TriggerResult.keep();
-			if (pdata.canBasicAttack(EquipSlot.HOTBAR)) return TriggerResult.keep();
+			if (!pdata.canBasicAttack(EquipSlot.HOTBAR)) return TriggerResult.keep();
+			weaponSwing(p, data);
 			FightInstance.dealDamage(properties.getDamageMeta(data), TargetHelper.getEntitiesInCone(p, tp));
 			return TriggerResult.keep();
 		});

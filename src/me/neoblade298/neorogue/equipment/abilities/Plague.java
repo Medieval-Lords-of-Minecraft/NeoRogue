@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.abilities;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -68,7 +69,7 @@ public class Plague extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.CACTUS,
-				"Passive. Your basic attacks deal an additional " + GlossaryTag.POISON.tag(this, damage, true) +
-				" damage for every " + thres + " stacks of " + GlossaryTag.POISON.tag(this) + " you've applied, up to " + (maxThres * thres) + ".");
+				"Passive. Your basic attacks deal an additional " + GlossaryTag.POISON.tag(this, damage, false) +
+				" damage for every " + DescUtil.white(thres) + " stacks of " + GlossaryTag.POISON.tag(this) + " you've applied, up to " + DescUtil.yellow(maxThres * thres) + ".");
 	}
 }

@@ -58,10 +58,11 @@ public class Brand extends Equipment {
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pd, in) -> {
 			LivingEntity trg = TargetHelper.getNearest(p, tp);
 			if (trg == null) return TriggerResult.keep();
-			am.setEntity(trg);
 			pc.play(p, trg);
 			Sounds.infect.play(p, trg);
 			FightInstance.applyStatus(trg, StatusType.BURN, data, burn, -1);
+			am.setEntity(trg);
+			System.out.println(am.getEntity().getUniqueId() + " " + am.getEntity().getType());
 			data.addTask(new BukkitRunnable() {
 				public void run() {
 					explode(am, data);
@@ -75,7 +76,7 @@ public class Brand extends Equipment {
 			if (!ev.isStatus(StatusType.BURN)) return TriggerResult.keep();
 			if (am.getEntity() == null) return TriggerResult.keep();
 			if (!ev.getTarget().getUniqueId().equals(am.getEntity().getUniqueId())) return TriggerResult.keep();
-			ev.getStacksBuff().addMultiplier(data, 2);
+			ev.getStacksBuff().addMultiplier(data, 1);
 			return TriggerResult.keep();
 		});
 
@@ -93,10 +94,12 @@ public class Brand extends Equipment {
 		Player p = data.getPlayer();
 		Location loc = am.getEntity().getLocation();
 		int stacks = FightInstance.getFightData(am.getEntity()).getStatus(StatusType.BURN).getStacks();
+		System.out.println("Getting entity " + am.getEntity().getUniqueId());
 		am.setEntity(null);
 		circ.play(p, edges, loc, LocalAxes.xz(), fill);
 		Sounds.fire.play(p, loc);
 		for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, aoe)) {
+			System.out.println("Damaging " + ent.getName() + " " + stacks);
 			FightInstance.dealDamage(data, DamageType.FIRE, damage * stacks, ent);
 		}
 	}

@@ -66,7 +66,7 @@ public class ProjectileInstance extends IProjectileInstance {
 		this.meta = new DamageMeta(owner, DamageOrigin.PROJECTILE);
 		meta.setProjectileInstance(this);
 		
-		v = direction.clone().normalize().rotateAroundY(Math.toRadians(settings.getRotation()));
+		v = direction.clone().add(new Vector(0, settings.getArc(), 0)).normalize().rotateAroundY(Math.toRadians(settings.getRotation()));
 		if (settings.initialY() != 0) origin.add(0, settings.initialY(), 0);
 
 		// Slow projectile, no interpolation needed

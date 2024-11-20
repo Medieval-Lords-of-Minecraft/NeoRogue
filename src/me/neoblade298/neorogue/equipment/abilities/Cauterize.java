@@ -23,7 +23,7 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
-import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreDealtDamageEvent;
 
 public class Cauterize extends Equipment {
 	private static final String ID = "cauterize";
@@ -68,14 +68,16 @@ public class Cauterize extends Equipment {
 			return TriggerResult.keep();
 		});
 
-		data.addTrigger(id, Trigger.DEALT_DAMAGE, (pdata, in) -> {
-			DealtDamageEvent ev = (DealtDamageEvent) in;
+		data.addTrigger(id, Trigger.PRE_DEALT_DAMAGE, (pdata, in) -> {
+			PreDealtDamageEvent ev = (PreDealtDamageEvent) in;
+			if (inst.getCount() == 1) return TriggerResult.keep();
 			if (!ev.getMeta().containsType(DamageType.FIRE)) return TriggerResult.keep();
+			if (ev.getMeta().isSecondary()) return TriggerResult.keep();
 			FightData fd = FightInstance.getFightData(ev.getTarget());
 			if (!fd.hasStatus(StatusType.INJURY)) return TriggerResult.keep();
 			int stacks = fd.getStatus(StatusType.INJURY).getStacks();
-			fd.applyStatus(StatusType.INJURY, data, -stacks, -1);
 			ev.getMeta().addDamageSlice(new DamageSlice(pdata, damage * stacks, DamageType.FIRE));
+			fd.applyStatus(StatusType.INJURY, data, -stacks, -1);
 			return TriggerResult.keep();
 		});
 	}
@@ -84,7 +86,7 @@ public class Cauterize extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.REDSTONE_TORCH,
 				"Toggleable, off by default. When active, your basic attacks are weakened by " + DescUtil.white(dec) + " in exchange for applying " +
-				GlossaryTag.INJURY.tag(this, stacks, true) + ". Additionally, dealing " + GlossaryTag.FIRE.tag(this) + " damage removes all stacks of " +
+				GlossaryTag.INJURY.tag(this, stacks, true) + ". When inactive, dealing " + GlossaryTag.FIRE.tag(this) + " damage removes all stacks of " +
 				GlossaryTag.INJURY.tag(this) + " and deals " + GlossaryTag.FIRE.tag(this, damage, true) + " damage per stack removed.");
 		activeIcon = item.withType(Material.TORCH);
 	}

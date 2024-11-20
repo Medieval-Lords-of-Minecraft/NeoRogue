@@ -49,9 +49,8 @@ public class RedBaron extends Bow {
 		super(ID, "Red Baron", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofBow(50, 1, 0, 12, 0, 1.5).add(PropertyType.AREA_OF_EFFECT, tp.range));
-		damage = isUpgraded ? 125 : 100;
+		damage = isUpgraded ? 90 : 60;
 		thres = isUpgraded ? 4 : 5;
-		
 	}
 
 	@Override
@@ -94,9 +93,10 @@ public class RedBaron extends Bow {
 		private PlayerFightData data;
 
 		public RedBaronProjectile(PlayerFightData data) {
-			super(1.5, 10, 1);
-			this.gravity(0.2);
+			super(1, 10, 2);
+			this.gravity(0.05);
 			this.rotation(NeoRogue.gen.nextDouble(-30, 30));
+			this.arc(0.5);
 			this.p = data.getPlayer();
 			this.data = data;
 		}

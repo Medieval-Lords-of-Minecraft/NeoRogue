@@ -132,6 +132,9 @@ public class PlayerFightData extends FightData {
 			offhand.initialize(p, this, null, EquipSlot.OFFHAND, 0);
 			inv.setItem(EquipmentSlot.OFF_HAND, offhand.getItem());
 		}
+		else {
+			inv.setItem(EquipmentSlot.OFF_HAND, null);
+		}
 		
 		// Sort triggers by priority
 		for (ArrayList<PriorityAction> list : triggers.values()) {
@@ -209,6 +212,7 @@ public class PlayerFightData extends FightData {
 		while (iter.hasNext() && boardLines.size() < lineSize - players - 1) {
 			Status s = iter.next();
 			if (s.isHidden()) continue;
+			if (s.getStacks() <= 0) continue;
 			boardLines.add(s.getDisplay());
 		}
 		if (!boardLines.isEmpty()) boardLines.add("§8§m-----");

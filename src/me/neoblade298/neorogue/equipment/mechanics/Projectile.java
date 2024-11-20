@@ -8,7 +8,7 @@ import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.FightData;
 
 public abstract class Projectile extends IProjectile {
-	private double gravity, yRotate, blocksPerTick, initialY, maxRange, homing;
+	private double gravity, yRotate, arc, blocksPerTick, initialY, maxRange, homing;
 	private boolean ignoreBarriers, ignoreBlocks, ignoreEntities;
 	private double width = 0.2, height = 0.2;
 	private int tickSpeed, pierce = 1;
@@ -52,6 +52,15 @@ public abstract class Projectile extends IProjectile {
 	
 	public double getRotation() {
 		return yRotate;
+	}
+
+	public double getArc() {
+		return arc;
+	}
+
+	public Projectile arc(double arc) {
+		this.arc = arc;
+		return this;
 	}
 
 	public Projectile blocksPerTick(double blocksPerTick) {

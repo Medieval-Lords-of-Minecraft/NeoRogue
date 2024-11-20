@@ -267,7 +267,8 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 					}
 				}.runTask(NeoRogue.inst());
 			}
-			else {
+			// Should not be usable if the storage inventory is open
+			else if (!(InventoryListener.getUpperInventory(p) instanceof StorageInventory)) {
 				Equipment eq = Equipment.get(ncursor.getString("equipId"), ncursor.getBoolean("isUpgraded"));
 				p.setItemOnCursor(null);
 				data.sendToStorage(eq);

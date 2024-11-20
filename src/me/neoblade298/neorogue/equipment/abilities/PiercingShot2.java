@@ -52,7 +52,7 @@ public class PiercingShot2 extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FLINT,
-				"Passive. Every <white>third</white> basic attacks deal an additional " + GlossaryTag.PIERCING.tag(this, damage, true) + " damage and pierce " +
+				"Passive. Every <white>third</white> basic attack deals an additional " + GlossaryTag.PIERCING.tag(this, damage, true) + " damage and pierce " +
 				DescUtil.white(1) + " enemy.");
 	}
 }

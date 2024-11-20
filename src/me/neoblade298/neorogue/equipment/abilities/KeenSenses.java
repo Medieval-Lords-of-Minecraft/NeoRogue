@@ -33,9 +33,7 @@ public class KeenSenses extends Equipment {
 
 	@Override
 	public void setupReforges() {
-		addSelfReforge(SpikeTrap.get());
 		addReforge(LayTrap.get(), SpikeTrap.get());
-		addReforge(BasicElementMastery.get(), FrostTrap.get());
 		addReforge(FocusedShot.get(), SunderingShot.get(), GetCentered.get());
 		addReforge(BasicBow.get(), HuntersBow.get());
 	}

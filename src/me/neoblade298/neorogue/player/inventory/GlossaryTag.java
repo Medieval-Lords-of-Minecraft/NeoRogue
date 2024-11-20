@@ -56,7 +56,7 @@ public enum GlossaryTag implements GlossaryIcon {
 			"Decreases the holder's magic damage by 0.2 per stack. Upon the holder dealing magical damage, remove 25% of the stacks and " +
 			"deal that much damage to the holder. 1 stack is removed every second."),
 	ELECTRIFIED(Material.LIGHTNING_ROD, StatusType.ELECTRIFIED.tag,
-			"Fires a projectile that deals 0.2 lightning damage per stack applied to the nearest enemy in a radius of 5. "
+			"Fires a projectile that deals 0.2 lightning damage per stack applied to the nearest enemy in a radius of 8. "
 			+ "1 stack is removed and one projectile fired per second."),
 	CONCUSSED(Material.DIRT, StatusType.CONCUSSED.tag,
 			"Decreases the holder's physical damage by 0.2 per stack. Upon the holder dealing physical damage, remove 25% of the stacks and " +
@@ -103,11 +103,12 @@ public enum GlossaryTag implements GlossaryIcon {
 			"Become unable to move. You cannot use other abilities during this time.");
 	
 	private ItemStack icon;
-	public String tag;
+	public String tag, lore;
 	private ArrayList<TextComponent> loreComp;
 	private Component ctag;
 	private GlossaryTag(Material mat, String display, String lore) {
 		icon = new ItemStack(mat);
+		this.lore = lore;
 		ItemMeta meta = icon.getItemMeta();
 		this.tag = display;
 		this.ctag = SharedUtil.color(display).decoration(TextDecoration.ITALIC, State.FALSE);
@@ -120,6 +121,11 @@ public enum GlossaryTag implements GlossaryIcon {
 
 	public Component getTag() {
 		return ctag;
+	}
+
+	// For use in printing without line breaks (/nr glossary)
+	public String getLoreString() {
+		return lore;
 	}
 
 	public ArrayList<TextComponent> getLore() {

@@ -194,6 +194,7 @@ public class DamageMeta {
 	
 	public double dealDamage(LivingEntity target) {
 		if (slices.isEmpty()) return 0;
+		if (target.getType() == EntityType.ARMOR_STAND) return 0;
 		FightData recipient = FightInstance.getFightData(target.getUniqueId());
 		LivingEntity damager = owner.getEntity();
 		addBuffs(recipient.getBuffs(false), BuffOrigin.NORMAL, false);

@@ -6,7 +6,6 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
-import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -18,10 +17,9 @@ public class Neoblade extends Equipment {
 	private static final String ID = "neoblade";
 	
 	public Neoblade(boolean isUpgraded) {
-		super(ID, "Neoblade", isUpgraded, Rarity.COMMON, EquipmentClass.CLASSLESS,
+		super(ID, "Neoblade", isUpgraded, Rarity.LEGENDARY, EquipmentClass.CLASSLESS,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(99999, 20, 0.4, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
-		properties.addUpgrades(PropertyType.DAMAGE);
+				EquipmentProperties.ofWeapon(isUpgraded ? 99999 : 100, 20, 0.4, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
 		this.canDrop = false;
 	}
 	

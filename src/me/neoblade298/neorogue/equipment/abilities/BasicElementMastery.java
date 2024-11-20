@@ -34,9 +34,7 @@ public class BasicElementMastery extends Equipment {
 	@Override
 	public void setupReforges() {
 		addReforge(WoodenArrow.get(), ColdArrow.get(), LitArrow.get());
-		addSelfReforge(Firebomb.get());
 		addReforge(Sear.get(), Firebomb.get());
-		addReforge(AgilityTraining.get(), Blind.get());
 	}
 	
 	public static Equipment get() {

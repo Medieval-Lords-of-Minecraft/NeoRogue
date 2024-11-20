@@ -12,7 +12,6 @@ import me.neoblade298.neocore.shared.commands.SubcommandRunner;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.player.inventory.GlossaryInventory;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
-import net.kyori.adventure.text.Component;
 
 public class CmdGlossary extends Subcommand {
 
@@ -43,9 +42,7 @@ public class CmdGlossary extends Subcommand {
 		try {
 			GlossaryTag tag = GlossaryTag.valueOf(args[0]);
 			Util.msgRaw(p, tag.getTag());
-			for (Component comp : tag.getLore()) {
-				Util.msgRaw(p, comp);
-			}
+			Util.msgRaw(p, tag.getLoreString());
 			return;
 		}
 		catch (IllegalArgumentException ex) {

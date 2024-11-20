@@ -171,8 +171,9 @@ public class Mob implements Comparable<Mob> {
 			for (BuffType dt : typeOrder) {
 				if (resistances.containsKey(dt)) {
 					int pct = resistances.get(dt);
+					String pfx = pct > 0 ? "Resistant, " : "Weak, ";
 					Component c = Component.text(dt.getDisplay() + ": ", NamedTextColor.YELLOW)
-							.append(Component.text(pct + "%", pct > 0 ? NamedTextColor.GREEN : NamedTextColor.RED));
+							.append(Component.text(pfx + pct + "%", pct > 0 ? NamedTextColor.RED : NamedTextColor.GREEN));
 					lore.add(c.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
 				}
 			}

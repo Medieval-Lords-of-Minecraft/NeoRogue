@@ -222,7 +222,7 @@ public class SessionManager implements Listener {
 			if (s.getInstance() instanceof FightInstance) {
 				FightInstance.handleOffhandSwap(e);
 			}
-			else if (s.getInstance() instanceof EditInventoryInstance) {
+			else if (s.getInstance() instanceof EditInventoryInstance && !(s.getInstance() instanceof NodeSelectInstance)) {
 				EditInventoryInstance.handleSwapHand(e);
 				e.setCancelled(false);
 			}

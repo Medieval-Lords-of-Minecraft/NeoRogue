@@ -6,8 +6,8 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
-import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
+import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
@@ -37,7 +37,7 @@ public class StoneDagger extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
-			DamageMeta dm = new DamageMeta(data, damage, DamageType.SLASHING);
+			DamageMeta dm = new DamageMeta(data, properties.get(PropertyType.DAMAGE), DamageType.SLASHING);
 			if (data.hasStatus(StatusType.STEALTH)) dm.addDamageSlice(new DamageSlice(data, damage, DamageType.DARK));
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
 			weaponSwingAndDamage(p, data, ev.getTarget(), dm);

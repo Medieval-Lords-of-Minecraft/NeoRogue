@@ -4,9 +4,11 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.AmmunitionInstance;
@@ -63,6 +65,11 @@ public class MarkTarget2 extends Equipment {
 			taunt.play(p, trg);
 			Sounds.infect.play(p, trg);
 			am.setEntity(trg);
+			data.addTask(new BukkitRunnable() {
+				public void run() {
+					am.setEntity(null);
+				}
+			}.runTaskLater(NeoRogue.inst(), 160));
 			FightInstance.applyStatus(trg, StatusType.REND, data, rend, -1);
 			return TriggerResult.keep();
 		}));
@@ -75,11 +82,11 @@ public class MarkTarget2 extends Equipment {
 			return TriggerResult.keep();
 		});
 
-		ProjectileGroup projs = new ProjectileGroup(new MarkTarget2Projectile(data));
 		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
 			BasicAttackEvent ev = (BasicAttackEvent) in;
 			if (am.getEntity() == null) return TriggerResult.keep();
-			if (am.getEntity().getUniqueId().equals(ev.getTarget().getUniqueId())) return TriggerResult.keep();
+			if (!am.getEntity().getUniqueId().equals(ev.getTarget().getUniqueId())) return TriggerResult.keep();
+			ProjectileGroup projs = new ProjectileGroup(new MarkTarget2Projectile(data));
 			projs.start(data);
 			return TriggerResult.keep();
 		});

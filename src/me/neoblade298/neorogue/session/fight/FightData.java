@@ -370,11 +370,6 @@ public class FightData {
 		if (applier instanceof PlayerFightData) {
 			FightInstance.trigger(((PlayerFightData) applier).getPlayer(), Trigger.PRE_APPLY_STATUS, ev);
 		}
-		if (this instanceof PlayerFightData) {
-			PlayerFightData data = (PlayerFightData) this;
-			data.updateBoardLines();
-			FightInstance.trigger(data.getPlayer(), Trigger.PRE_RECEIVE_STATUS, ev);
-		}
 		int finalStacks = (int) Math.ceil(ev.getStacksBuff().apply(stacks));
 		int finalDuration = (int) Math.ceil(ev.getDurationBuff().apply(ticks));
 		status.apply(applier, finalStacks, finalDuration);
@@ -383,6 +378,11 @@ public class FightData {
 			FightInstance.trigger(((PlayerFightData) applier).getPlayer(), Trigger.APPLY_STATUS, ev2);
 		}
 		
+		if (this instanceof PlayerFightData) {
+			PlayerFightData data = (PlayerFightData) this;
+			data.updateBoardLines();
+			FightInstance.trigger(data.getPlayer(), Trigger.PRE_RECEIVE_STATUS, ev);
+		}
 		if (statuses.isEmpty()) {
 			addTickAction(new StatusUpdateTickAction());
 		}

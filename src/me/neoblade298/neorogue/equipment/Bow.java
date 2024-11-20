@@ -51,6 +51,24 @@ public abstract class Bow extends Equipment {
 		return true;
 	}
 
+	// Crossbow attack speed is built into the draw
+	public boolean canShootCrossbow(PlayerFightData data) {
+		if (data.getAmmoInstance() == null) { 
+			Util.displayError(data.getPlayer(), "You don't have any ammunition equipped!");
+			return false;
+		}
+		if (data.getMana() < properties.get(PropertyType.MANA_COST)) {
+			Util.displayError(data.getPlayer(), "Not enough mana!");
+			return false;
+		}
+
+		if (data.getStamina() < properties.get(PropertyType.STAMINA_COST)) {
+			Util.displayError(data.getPlayer(), "Not enough stamina!");
+			return false;
+		}
+		return true;
+	}
+
 	public void useBow(PlayerFightData data) {
 		if (properties.has(PropertyType.MANA_COST)) data.addMana(-properties.get(PropertyType.MANA_COST));
 		if (properties.has(PropertyType.STAMINA_COST)) data.addStamina(-properties.get(PropertyType.STAMINA_COST));
