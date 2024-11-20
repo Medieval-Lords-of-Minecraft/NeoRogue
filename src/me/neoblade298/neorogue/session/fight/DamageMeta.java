@@ -21,7 +21,6 @@ import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
-import me.neoblade298.neorogue.session.fight.trigger.event.KillEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealtDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedHealthDamageEvent;
@@ -384,8 +383,6 @@ public class DamageMeta {
 		}
 		double finalDamage = damage + ignoreShieldsDamage + target.getAbsorptionAmount();
 		if (damage + ignoreShieldsDamage > 0) {
-
-			double healthBefore = target.getHealth();
 			
 			// Mobs shouldn't have a source of damage because they'll infinitely re-trigger ~OnAttack
 			// Players must have a source of damage to get credit for kills, otherwise mobs that suicide give points
@@ -395,13 +392,6 @@ public class DamageMeta {
 			}
 			else {
 				target.damage(finalDamage);
-			}
-			
-			if (healthBefore > 0 && target.getHealth() <= 0 && owner instanceof PlayerFightData) {
-				FightInstance.trigger((Player) owner.getEntity(), Trigger.KILL, new KillEvent(target));
-				for (Player p : owner.getInstance().getSession().getOnlinePlayers()) {
-					FightInstance.trigger(p, Trigger.KILL_GLOBAL, target);
-				}
 			}
 			if (!(target instanceof Player)) {
 				recipient.updateDisplayName();

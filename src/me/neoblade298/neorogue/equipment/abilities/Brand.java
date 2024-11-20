@@ -62,7 +62,6 @@ public class Brand extends Equipment {
 			Sounds.infect.play(p, trg);
 			FightInstance.applyStatus(trg, StatusType.BURN, data, burn, -1);
 			am.setEntity(trg);
-			System.out.println(am.getEntity().getUniqueId() + " " + am.getEntity().getType());
 			data.addTask(new BukkitRunnable() {
 				public void run() {
 					explode(am, data);
@@ -94,12 +93,10 @@ public class Brand extends Equipment {
 		Player p = data.getPlayer();
 		Location loc = am.getEntity().getLocation();
 		int stacks = FightInstance.getFightData(am.getEntity()).getStatus(StatusType.BURN).getStacks();
-		System.out.println("Getting entity " + am.getEntity().getUniqueId());
 		am.setEntity(null);
 		circ.play(p, edges, loc, LocalAxes.xz(), fill);
 		Sounds.fire.play(p, loc);
 		for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, aoe)) {
-			System.out.println("Damaging " + ent.getName() + " " + stacks);
 			FightInstance.dealDamage(data, DamageType.FIRE, damage * stacks, ent);
 		}
 	}

@@ -80,6 +80,7 @@ import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.GenericStatusType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
+import me.neoblade298.neorogue.session.fight.trigger.event.KillEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealtDamageMultipleEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.RightClickHitEvent;
@@ -639,6 +640,18 @@ public abstract class FightInstance extends Instance {
 	}
 	
 	public static void handleMythicDeath(MythicMobDeathEvent e) {
+		Entity killer = e.getEntity().getLastDamageCause().getDamageSource().getCausingEntity();
+
+		// Trigger on kill event before removing fight data
+		boolean playerKill = killer instanceof Player;
+		if (playerKill && e.getEntity() instanceof LivingEntity && SessionManager.getSession(killer.getUniqueId()) != null) {
+			Session s = SessionManager.getSession((Player) killer);
+			FightInstance.trigger((Player) killer, Trigger.KILL, new KillEvent((LivingEntity) e.getEntity()));
+			for (Player p : s.getOnlinePlayers()) {
+				FightInstance.trigger(p, Trigger.KILL_GLOBAL, (LivingEntity) e.getEntity());
+			}
+		}
+		
 		FightData data = removeFightData(e.getEntity().getUniqueId());
 		if (data == null)
 			return;
@@ -647,8 +660,6 @@ public abstract class FightInstance extends Instance {
 		if (data.getInstance() == null)
 			return;
 		
-		// Make sure killer was an entity and not something like suffocation
-		boolean playerKill = e.getEntity().getLastDamageCause().getDamageSource().getCausingEntity() instanceof Player;
 		String id = e.getMobType().getInternalName();
 		data.getInstance().handleRespawn(data, id, false, playerKill);
 		data.getInstance().handleMobKill(id, playerKill);
