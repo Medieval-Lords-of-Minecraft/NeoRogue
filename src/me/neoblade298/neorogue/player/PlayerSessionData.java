@@ -14,10 +14,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 
-import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.bukkit.effects.Audience;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
@@ -181,17 +178,9 @@ public class PlayerSessionData extends MapViewer {
 	}
 
 	public void upgradeEquipment(EquipSlot es, int slot) {
-		if (es != EquipSlot.STORAGE) {
-			Equipment[] slots = getArrayFromEquipSlot(es);
-			slots[slot] = slots[slot].getUpgraded();
-			PlayerSessionInventory.setupInventory(this);
-		}
-		else {
-			PlayerInventory inv = data.getPlayer().getInventory();
-			ItemStack item = inv.getItem(slot);
-			NBTItem nbti = new NBTItem(item);
-			inv.setItem(slot, Equipment.get(nbti.getString("equipId"), true).getItem());
-		}
+		Equipment[] slots = getArrayFromEquipSlot(es);
+		slots[slot] = slots[slot].getUpgraded();
+		PlayerSessionInventory.setupInventory(this);
 	}
 
 	public void setEquipment(EquipSlot es, int slot, Equipment eq) {
@@ -225,6 +214,9 @@ public class PlayerSessionData extends MapViewer {
 			break;
 		case OFFHAND:
 			slots = offhand;
+			break;
+		case STORAGE:
+			slots = storage;
 			break;
 		default:
 			Bukkit.getLogger().warning("[NeoRogue] Tried to modify equipment for invalid equip slot " + es);

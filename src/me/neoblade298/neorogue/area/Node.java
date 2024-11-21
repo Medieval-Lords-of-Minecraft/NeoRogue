@@ -61,6 +61,12 @@ public class Node {
 			dest.addSource(this);
 		return this;
 	}
+
+	// Just for debugging, to remove start destinations
+	public void clear() {
+		dests.clear();
+		srcs.clear();
+	}
 	
 	public Node addSource(Node src) {
 		if (!srcs.contains(src))

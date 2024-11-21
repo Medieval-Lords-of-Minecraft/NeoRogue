@@ -176,7 +176,6 @@ public class NeoRogue extends JavaPlugin {
 		s.getParty().get(p.getUniqueId()).addStaminaRegen(10);
 		s.setNode(s.getArea().getNodes()[0][2]);
 		
-		
 		// Required to have delay otherwise the startup save and auto-save happen simultaneously and conflict
 		new BukkitRunnable() {
 			public void run() {

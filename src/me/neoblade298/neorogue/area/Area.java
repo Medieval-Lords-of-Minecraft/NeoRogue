@@ -101,6 +101,13 @@ public class Area {
 
 		generateNodes();
 		
+		/* Brute force node generation by commenting out generateNodes()
+		nodes = new Node[ROW_COUNT][LANE_COUNT];
+		nodes[0][2] = new Node(0, 2, NodeType.START);
+		nodes[1][2] = new Node(1, 2, NodeType.CHANCE);
+		nodes[0][2].addDestination(nodes[1][2]);
+		*/
+		
 		// Should only save all nodes at first, on auto-save only save nodes within reach (for instance data)
 		new BukkitRunnable() {
 			@Override
@@ -621,19 +628,23 @@ public class Area {
 		UUID host = s.getHost();
 		try {
 			int row = s.getNode().getRow() + 1;
-			delete.execute(
-					"DELETE FROM neorogue_nodes WHERE host = '" + host + "' AND slot = " + saveSlot + " AND position = "
-							+ row + ";"
-			);
 			for (int lane = 0; lane < LANE_COUNT; lane++) {
-				Node node = nodes[row][lane];
-				if (node == null)
-					continue;
-				SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.INSERT, "neorogue_nodes")
-						.addString(host.toString()).addValue(saveSlot).addString(node.toString())
-						.addValue(node.getRow()).addValue(node.getLane()).addString(node.serializeDestinations())
-						.addString(node.serializeInstanceData());
-				insert.addBatch(sql.build());
+				// Saves up to two rows ahead
+				for (int i = 0; i < 1 && row + i < ROW_COUNT; i++) {
+					delete.execute(
+							"DELETE FROM neorogue_nodes WHERE host = '" + host + "' AND slot = " + saveSlot + " AND position = "
+									+ row + ";"
+					);
+
+					Node node = nodes[row + i][lane];
+					if (node == null)
+						continue;
+					SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.INSERT, "neorogue_nodes")
+							.addString(host.toString()).addValue(saveSlot).addString(node.toString())
+							.addValue(node.getRow()).addValue(node.getLane()).addString(node.serializeDestinations())
+							.addString(node.serializeInstanceData());
+					insert.addBatch(sql.build());
+				}
 			}
 			insert.executeBatch();
 		} catch (SQLException ex) {
@@ -726,11 +737,11 @@ public class Area {
 				Lectern lec = (Lectern) b.getBlockData();
 				lec.setFacing(BlockFace.NORTH);
 				b.setBlockData(lec);
-				
 				ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
 				BookMeta meta = (BookMeta) book.getItemMeta();
 				meta.setAuthor("MLMC");
 				meta.setTitle("Fight Info");
+				book.setItemMeta(meta);
 				org.bukkit.block.Lectern lc = (org.bukkit.block.Lectern) b.getState();
 				lc.getInventory().addItem(book);
 			}

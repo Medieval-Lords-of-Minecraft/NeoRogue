@@ -51,6 +51,7 @@ public class RedBaron extends Bow {
 				EquipmentProperties.ofBow(50, 1, 0, 12, 0, 1.5).add(PropertyType.AREA_OF_EFFECT, tp.range));
 		damage = isUpgraded ? 90 : 60;
 		thres = isUpgraded ? 4 : 5;
+		canDrop = false;
 	}
 
 	@Override

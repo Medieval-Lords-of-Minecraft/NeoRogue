@@ -37,7 +37,7 @@ public class PocketWatch extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		PocketWatchInstance inst = new PocketWatchInstance();
 		data.addTrigger(ID, Trigger.PLAYER_TICK, inst);
-		data.addTrigger(ID, Trigger.RIGHT_CLICK, (pdata, in) -> {
+		data.addTrigger(ID, data.getSessionData().getPlayerClass() == EquipmentClass.ARCHER ? Trigger.LEFT_CLICK : Trigger.RIGHT_CLICK, (pdata, in) -> {
 			return inst.useWatch(data);
 		});
 	}
@@ -101,7 +101,7 @@ public class PocketWatch extends Equipment {
 	@Override
 	public void setupItem() {
 		String usesString = isUpgraded ? "Twice" : "Once";
-		item = createItem(Material.CLOCK, "<yellow>" + usesString + "</yellow> per fight, right click to" +
+		item = createItem(Material.CLOCK, "<yellow>" + usesString + "</yellow> per fight, right (left for <gold>Archer<gold>) click to" +
 				" set your health, mana, stamina, and location to what it was <white>2</white> seconds ago.");
 	}
 }

@@ -21,7 +21,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 public class NoxianBlight extends Artifact {
 	private static final String ID = "noxianBlight";
-	private static final int stamina = 25, mana = 25;
+	private static final int stamina = 20, mana = 20, inc = 5;
 
 	public NoxianBlight() {
 		super(ID, "Noxian Blight", Rarity.RARE, EquipmentClass.WARRIOR);
@@ -39,11 +39,11 @@ public class NoxianBlight extends Artifact {
 			boolean activated = false;
 			if (ev.getInstance().getManaCost() >= 25) {
 				activated = true;
-				data.applyStatus(StatusType.INTELLECT, data, 1, -1);
+				data.applyStatus(StatusType.INTELLECT, data, inc, -1);
 			}
 			if (ev.getInstance().getStaminaCost() >= 25) {
 				activated = true;
-				data.applyStatus(StatusType.STRENGTH, data, 1, -1);
+				data.applyStatus(StatusType.STRENGTH, data, inc, -1);
 			}
 			
 			if (activated) {
@@ -67,8 +67,8 @@ public class NoxianBlight extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.MAGMA_CREAM, 
-				"For every skill you cast that at base costs at least <white>" + stamina + "</white> stamina, gain 1 " + GlossaryTag.STRENGTH.tag(this) +
+				"For every skill you cast that at base costs at least <white>" + stamina + "</white> stamina, gain " + GlossaryTag.STRENGTH.tag(this, inc, false) +
 				". For every skill you cast that at base costs at least"
-				+ " <white>" + mana + "</white> mana, gain 1 " + GlossaryTag.INTELLECT.tag(this) + ".");
+				+ " <white>" + mana + "</white> mana, gain " + GlossaryTag.INTELLECT.tag(this, inc, false) + ".");
 	}
 }

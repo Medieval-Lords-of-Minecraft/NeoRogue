@@ -202,9 +202,14 @@ public class FightData {
 		ArrayList<Status> list = new ArrayList<Status>(statuses.values());
 		Collections.sort(list, Status.comp);
 		String statuses = "";
-		for (int i = 0; i < list.size() && i < 5; i++) {
-			if (list.get(i).isHidden()) continue;
+		int displaySize = 0;
+		for (int i = 0; i < list.size() && displaySize < 5; i++) {
+			Status s = list.get(i);
+			if (s.isHidden() || s.getStacks() <= 0) {
+				continue;
+			}
 			statuses += list.get(i).getDisplay() + "\\n";
+			displaySize++;
 		}
 		am.setDisplayName(list.isEmpty() ? bottomLine : statuses + bottomLine);
 	}
@@ -367,6 +372,11 @@ public class FightData {
 		status = statuses.getOrDefault(id, status); // If status exists, use that, otherwise add the new one
 
 		PreApplyStatusEvent ev = new PreApplyStatusEvent(this, status, stacks, ticks, isSecondary, meta);
+		if (this instanceof PlayerFightData) {
+			PlayerFightData data = (PlayerFightData) this;
+			data.updateBoardLines();
+			FightInstance.trigger(data.getPlayer(), Trigger.PRE_RECEIVE_STATUS, ev);
+		}
 		if (applier instanceof PlayerFightData) {
 			FightInstance.trigger(((PlayerFightData) applier).getPlayer(), Trigger.PRE_APPLY_STATUS, ev);
 		}
@@ -378,11 +388,6 @@ public class FightData {
 			FightInstance.trigger(((PlayerFightData) applier).getPlayer(), Trigger.APPLY_STATUS, ev2);
 		}
 		
-		if (this instanceof PlayerFightData) {
-			PlayerFightData data = (PlayerFightData) this;
-			data.updateBoardLines();
-			FightInstance.trigger(data.getPlayer(), Trigger.PRE_RECEIVE_STATUS, ev);
-		}
 		if (statuses.isEmpty()) {
 			addTickAction(new StatusUpdateTickAction());
 		}

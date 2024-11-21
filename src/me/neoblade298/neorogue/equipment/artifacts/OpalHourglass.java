@@ -17,7 +17,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.CastUsableEvent;
 
 public class OpalHourglass extends Artifact {
 	private static final String ID = "opalHourglass";
-	private static int thres = 8, reduc = 1;
+	private static int thres = 15, reduc = 4;
 
 	public OpalHourglass() {
 		super(ID, "Opal Hourglass", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);

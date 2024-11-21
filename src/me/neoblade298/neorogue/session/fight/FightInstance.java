@@ -22,10 +22,12 @@ import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Display.Billboard;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.TextDisplay;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -45,6 +47,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.Transformation;
 import org.bukkit.util.Vector;
 
 import io.lumine.mythic.api.mobs.MythicMob;
@@ -275,26 +278,26 @@ public abstract class FightInstance extends Instance {
 	}
 
 	public void createIndicator(Component txt, Location src) {
-		ArmorStand as = (ArmorStand) src.getWorld().spawnEntity(src, EntityType.ARMOR_STAND);
-		as.setInvisible(true);
-		as.setVelocity(new Vector(0, 0.1, 0));
-		as.setMarker(true);
-		as.setInvulnerable(true);
-		as.setSmall(true);
-		as.setGravity(true);
-		as.setCustomNameVisible(true);
-		as.customName(txt);
-		as.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 60, 0));
-		indicators.add(as.getUniqueId());
+		TextDisplay td = (TextDisplay) src.getWorld().spawnEntity(src, EntityType.TEXT_DISPLAY);
+		td.text(txt);
+		Transformation trans = td.getTransformation();
+		trans.getScale().set(2);
+		td.setBillboard(Billboard.CENTER);
+		td.setTransformation(trans);
+		td.setTeleportDuration(40);
 		new BukkitRunnable() {
 			public void run() {
-				as.remove();
-				indicators.remove(as.getUniqueId());
+				td.teleport(td.getLocation().add(0, 2, 0));
+			}
+		}.runTaskLater(NeoRogue.inst(), 2);
+
+		new BukkitRunnable() {
+			public void run() {
+				td.remove();
+				indicators.remove(td.getUniqueId());
 			}
 		}.runTaskLater(NeoRogue.inst(), 40L);
 
-		//TextDisplay td = (TextDisplay) src.getWorld().spawnEntity(src, EntityType.TEXT_DISPLAY);
-		// td.setTransformation(new Transformat)
 	}
 
 	@Override

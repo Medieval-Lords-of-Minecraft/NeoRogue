@@ -44,7 +44,7 @@ public class BowTrap extends Equipment {
 	
 	public BowTrap(boolean isUpgraded) {
 		super(ID, "Bow Trap", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 10, 16, tp.range));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 5, 8, tp.range));
 		
 		damage = isUpgraded ? 45 : 30;
 	}
@@ -70,7 +70,7 @@ public class BowTrap extends Equipment {
 	private void initTrap(Player p, PlayerFightData data) {
 		Location loc = p.getLocation();
 		ProjectileGroup proj = new ProjectileGroup(new BowTrapProjectile(data));
-		data.addTrap(new Trap(data, loc, 200) {
+		data.addTrap(new Trap(data, loc, 100) {
 			@Override
 			public void tick() {
 				trap.play(p, loc);
@@ -122,7 +122,7 @@ public class BowTrap extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.ARCHER_POTTERY_SHERD,
 				"On cast, " + GlossaryTag.CHARGE.tag(this) + " for <white>2s</white>. Afterwards, drop a " + GlossaryTag.TRAP.tag(this) + 
-				" that lasts for " + DescUtil.white("10s") +
+				" that lasts for " + DescUtil.white("5s") +
 				". It fires a projectile that deals " + GlossaryTag.PIERCING.tag(this, damage, true) +
 				" damage at the nearest enemy every second.");
 	}

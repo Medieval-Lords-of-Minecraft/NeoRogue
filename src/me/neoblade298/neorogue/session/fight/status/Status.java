@@ -87,6 +87,7 @@ public abstract class Status {
 		case INJURY: return new DecrementStackStatus(id.name(), target, StatusClass.NEGATIVE);
 		case SILENCED: return new BasicStatus(id.name(), target, StatusClass.NEGATIVE, true);
 		case CHANNELING: return new BasicStatus(id.name(), target, StatusClass.NONE, true);
+		case INVINCIBLE: return new BasicStatus(id.name(), target, StatusClass.POSITIVE, true);
 		}
 		Bukkit.getLogger().warning("[NeoRogue] Failed to create status type " + id);
 		return new BasicStatus(id.name(), target, StatusClass.NONE);
@@ -159,6 +160,7 @@ public abstract class Status {
 		EVADE("<aqua>Evade</aqua>", "&3Evade"),
 		FOCUS("<aqua>Focus</aqua>", "&3Focus"),
 		INJURY("<dark_red>Injury</dark_red>", "&4Injury"),
+		INVINCIBLE("<blue>Invincible</blue>", "&9Invincible"), // Hidden
 		SILENCED("<dark_gray>Silenced</dark_gray>", "&8Silenced"), // Hidden
 		CHANNELING("<dark_red>Channeling</dark_red>", "&4Channeling"); // Hidden
 		public String tag;

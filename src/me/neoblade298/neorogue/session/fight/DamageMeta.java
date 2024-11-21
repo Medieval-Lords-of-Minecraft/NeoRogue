@@ -213,6 +213,10 @@ public class DamageMeta {
 			if (pdata.runActions(pdata, Trigger.RECEIVED_DAMAGE, ev)) {
 				slices.clear();
 			}
+
+			if (pdata.hasStatus(StatusType.INVINCIBLE)) {
+				slices.clear();
+			}
 		}
 		
 		// Reduce damage from barriers, used only for players blocking projectiles
@@ -396,7 +400,7 @@ public class DamageMeta {
 			}
 			if (!(target instanceof Player)) {
 				recipient.updateDisplayName();
-				Location loc = target.getLocation();
+				Location loc = target.getLocation().add(0, 1, 0);
 				Vector btwn = owner.getEntity().getLocation().subtract(loc).toVector();
 				btwn.setY(0);
 				btwn.normalize();

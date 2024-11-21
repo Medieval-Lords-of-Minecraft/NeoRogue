@@ -23,13 +23,12 @@ import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
 public class Hex extends Equipment {
 	private static final String ID = "hex";
-	private int dec = 20, stacks, damage;
+	private int dec = 20, stacks;
 	private ItemStack activeIcon;
 	
 	public Hex(boolean isUpgraded) {
 		super(ID, "Hex", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 3, 0));
-			damage = isUpgraded ? 80 : 60;
 	}
 	
 	public static Equipment get() {
