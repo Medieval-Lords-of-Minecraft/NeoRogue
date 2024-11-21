@@ -456,18 +456,43 @@ public class Area {
 		}
 	}
 
+	double prevCOM = 2;
+
 	private void centralizeRow(int row) {
-		// try move left
-		while (canShiftOver(row, true) && getCenterOfMass(row) > 2.5 && nodes[row][0] == null) {
+		double com = 2;
+
+		// try move left (prefer center)
+		while (canShiftOver(row, true) && getCenterOfMass(row) > 2.5) {
+			shiftOver(row, true);
+		}
+		// try move left (prefer match prev), rng for visual interest
+		while (NeoCore.gen.nextBoolean() && canShiftOver(row, true) && (com = getCenterOfMass(row)) > 2
+				&& com > prevCOM) {
+			shiftOver(row, true);
+		}
+		
+		// try move right (prefer center)
+		while (canShiftOver(row, false) && getCenterOfMass(row) < 1.5) {
+			shiftOver(row, false);
+		}
+		// try move right (prefer match prev), rng for visual interest
+		while (NeoCore.gen.nextBoolean() && canShiftOver(row, false) && (com = getCenterOfMass(row)) < 2
+				&& com < prevCOM) {
+			shiftOver(row, false);
+		}
+
+		prevCOM = getCenterOfMass(row);
+	}
+	
+	private void shiftOver(int row, boolean left) {
+		if (left) {
 			for (int lane = 0; lane < LANE_COUNT - 1; lane++) {
 				nodes[row][lane] = nodes[row][lane + 1];
 				if (nodes[row][lane] != null)
 					nodes[row][lane].setLane(lane);
 			}
 			nodes[row][LANE_COUNT - 1] = null;
-		}
-		// try move right
-		while (canShiftOver(row, false) && getCenterOfMass(row) < 1.5 && nodes[row][LANE_COUNT - 1] == null) {
+		} else {
 			for (int lane = LANE_COUNT - 1; lane >= 1; lane--) {
 				nodes[row][lane] = nodes[row][lane - 1];
 				if (nodes[row][lane] != null)
@@ -478,6 +503,11 @@ public class Area {
 	}
 
 	private boolean canShiftOver(int row, boolean left) {
+		if (left && nodes[row][0] != null)
+			return false;
+		if (!left && nodes[row][LANE_COUNT - 1] != null)
+			return false;
+
 		for (int lane = 0; lane < LANE_COUNT; lane++) {
 			if (nodes[row][lane] != null) {
 				for (Node src : nodes[row][lane].getSources()) {
