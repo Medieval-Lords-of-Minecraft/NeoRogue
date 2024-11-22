@@ -164,6 +164,7 @@ public abstract class FightInstance extends Instance {
 	}
 	
 	public abstract void addSpectator(Player p);
+	public abstract void removeSpectator(Player p);
 
 	private static String createHealthBar(PlayerFightData pfd) {
 		if (pfd != null && pfd.isDead()) {

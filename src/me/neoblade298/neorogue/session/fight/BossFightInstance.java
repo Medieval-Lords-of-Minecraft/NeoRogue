@@ -128,6 +128,11 @@ public class BossFightInstance extends FightInstance {
 	}
 
 	@Override
+	public void removeSpectator(Player p) {
+		
+	}
+
+	@Override
 	public void handlePlayerKickEvent(Player kicked) {
 		
 	}

@@ -200,6 +200,12 @@ public class StandardFightInstance extends FightInstance {
 	}
 
 	@Override
+	public void removeSpectator(Player p) {
+		timeBar.removePlayer(p);
+		scoreBar.removePlayer(p);
+	}
+
+	@Override
 	public void handlePlayerKickEvent(Player kicked) {
 		
 	}

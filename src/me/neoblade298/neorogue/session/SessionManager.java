@@ -576,6 +576,7 @@ public class SessionManager implements Listener {
 		p.setHealth(20);
 		p.setInvulnerable(false);
 		p.setInvisible(false);
+		p.setAllowFlight(false);
 	}
 	
 	public static void endSession(Session s) {
