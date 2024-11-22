@@ -906,8 +906,8 @@ public abstract class FightInstance extends Instance {
 						.sum();
 
 				int rngBonus = NeoRogue.gen.nextInt(4);
-				double mapPieceBonus = map.getPieces().size() * map.getPieces().size() / 4;
-				double chunkBonus = sumChunkCount / 4.0;
+				double mapPieceBonus = map.getPieces().size() * map.getPieces().size() / 8;
+				double chunkBonus = sumChunkCount / 6.0;
 				
 				double toActivate = rngBonus + mapPieceBonus + chunkBonus;
 
