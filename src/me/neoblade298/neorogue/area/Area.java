@@ -1,5 +1,6 @@
 package me.neoblade298.neorogue.area;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -45,6 +46,7 @@ import me.neoblade298.neocore.bukkit.effects.Effect;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.ParticleUtil;
 import me.neoblade298.neocore.shared.droptables.DropTable;
+import me.neoblade298.neocore.shared.io.Section;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder.SQLAction;
 import me.neoblade298.neorogue.NeoRogue;
@@ -60,8 +62,9 @@ import net.kyori.adventure.text.format.TextDecoration;
 public class Area {
 	public static final int LANE_COUNT = 5, ROW_COUNT = 16, CENTER_LANE = LANE_COUNT / 2;
 	private static final int X_EDGE_PADDING = 14, Z_EDGE_PADDING = 11, NODE_DIST_BETWEEN = 4;
-	private static final int MAX_CHAIN_LENGTH = 4;
-	private static final int MIN_SHOP_DISTANCE = 4; // min # of PATHS not NODES
+	private static int MAX_CHAIN_LENGTH;
+	private static int MIN_SHOP_DISTANCE; // min # of PATHS not NODES
+	private static HashMap<Integer, Double> bonusNodeOdds;
 	
 	private static ParticleContainer red = new ParticleContainer(Particle.DUST), black;
 	private HashSet<Node> blackTicks = new HashSet<>();
@@ -82,12 +85,41 @@ public class Area {
 
 	public static void initialize() {
 		world = BukkitAdapter.adapt(Bukkit.getWorld(WORLD_NAME));
+		
+		loadConfig();
 
 		// Load particles
 		red.count(3).spread(0.1, 0.1).forceVisible(Audience.ALL).dustOptions(new DustOptions(Color.RED, 1F));
 		black = red.clone().dustOptions(new DustOptions(Color.BLACK, 1F));
 
 		initialized = true;
+	}
+	
+	public static void loadConfig() {
+		// set defaults
+		MAX_CHAIN_LENGTH = 4;
+		MIN_SHOP_DISTANCE = 4;
+		bonusNodeOdds = new HashMap<Integer, Double>();
+
+		NeoCore.loadFiles(new File(NeoRogue.inst().getDataFolder(), "areaGen.yml"), (yml, file) -> {
+			MAX_CHAIN_LENGTH = yml.getInt("maxChainLength");
+			MIN_SHOP_DISTANCE = yml.getInt("minShopDistance");
+
+			Section bonusSec = yml.getSection("bonusNodeOdds");
+			for (String key : bonusSec.getKeys()) {
+				bonusNodeOdds.put(Integer.parseInt(key), bonusSec.getDouble(key));
+			}
+			
+			Section nodeSec = yml.getSection("nodeGenOdds");
+			for (String key : nodeSec.getKeys()) {
+				Section sec = nodeSec.getSection(key);
+				GenerationType type = GenerationType.valueOf(key.toUpperCase());
+				type.table = new DropTable<NodeType>();
+				for (String subKey : sec.getKeys()) {
+					type.table.add(NodeType.valueOf(subKey.toUpperCase()), sec.getInt(subKey));
+				}
+			}
+		});
 	}
 
 	public Area(AreaType type, int xOff, int zOff, Session s) {
@@ -402,27 +434,7 @@ public class Area {
 				prevCnt++;
 		}
 
-		double bonusNodeProb;
-		switch (prevCnt) {
-		case 1:
-			bonusNodeProb = 1;
-			break;
-		case 2:
-			bonusNodeProb = 0.65;
-			break;
-		case 3:
-			bonusNodeProb = 0.35;
-			break;
-		case 4:
-			bonusNodeProb = 0.075;
-			break;
-		case 5:
-			bonusNodeProb = 0.025;
-			break;
-		default:
-			bonusNodeProb = 0;
-			break;
-		}
+		double bonusNodeProb = bonusNodeOdds.getOrDefault(prevCnt, 0.0);
 
 		for (int lane = 0; lane < LANE_COUNT; lane++) {
 			if (nodes[row - 1][lane] != null) {
