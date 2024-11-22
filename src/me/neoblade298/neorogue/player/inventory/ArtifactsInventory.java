@@ -57,7 +57,7 @@ public class ArtifactsInventory extends CoreInventory {
 			iter.next();
 		}
 		
-		for (int i = 0; i < Math.max(contents.length - 9, 9) && iter.hasNext(); i++) {
+		for (int i = 0; i < Math.max(contents.length, 9) && iter.hasNext() && i < 45; i++) {
 			ArtifactInstance art = arts.get(iter.next());
 			contents[i] = art.getItem();
 		}

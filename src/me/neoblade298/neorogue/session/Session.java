@@ -295,6 +295,10 @@ public class Session {
 		spectators.remove(p.getUniqueId());
 		p.setInvisible(false);
 		p.setInvulnerable(false);
+		p.setAllowFlight(false);
+		if (inst instanceof FightInstance) {
+			((FightInstance) inst).removeSpectator(p);
+		}
 		SessionManager.removeFromSession(p.getUniqueId());
 	}
 	
