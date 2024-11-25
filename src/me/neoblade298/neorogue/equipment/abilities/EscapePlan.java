@@ -77,6 +77,7 @@ public class EscapePlan extends Equipment {
 				}, 100L);
 				
 				pdata1.addTrigger(ID, Trigger.RECEIVED_DAMAGE, (pdata2, in2) -> {
+					if (!active) return TriggerResult.remove();
 					ReceivedDamageEvent ev = (ReceivedDamageEvent) in2;
 					DamageMeta dm = new DamageMeta(pdata1, damage, DamageType.PIERCING);
 					FightInstance.dealDamage(dm, ev.getDamager().getEntity());

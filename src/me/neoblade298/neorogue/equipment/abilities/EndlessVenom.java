@@ -13,7 +13,6 @@ import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
-import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardEquipmentInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -33,9 +32,7 @@ public class EndlessVenom extends Equipment {
 	public EndlessVenom(boolean isUpgraded) {
 		super(ID, "Endless Venom", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 10, 12, 0));
-		properties.addUpgrades(PropertyType.COOLDOWN);
-		poison = 5;
-		dur = isUpgraded ? 7 : 5;
+		poison = isUpgraded ? 10 : 7;
 	}
 	
 	public static Equipment get() {
@@ -60,7 +57,7 @@ public class EndlessVenom extends Equipment {
 		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in) -> {
 			if (inst.getCount() == 0) return TriggerResult.keep();
 			BasicAttackEvent ev = (BasicAttackEvent) in;
-			FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, poison, 20 * dur);
+			FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, poison, -1);
 			return TriggerResult.keep();
 		});
 	}
@@ -68,6 +65,6 @@ public class EndlessVenom extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GREEN_DYE,
-				"On cast, your basic attacks apply " + GlossaryTag.POISON.tag(this, poison, true) + " for <yellow>" + dur + "</yellow> seconds.");
+				"On cast, your basic attacks apply " + GlossaryTag.POISON.tag(this, poison, true) + ".");
 	}
 }

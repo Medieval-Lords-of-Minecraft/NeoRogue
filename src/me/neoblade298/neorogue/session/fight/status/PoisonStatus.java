@@ -12,7 +12,7 @@ import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 
-public class PoisonStatus extends DurationStatus {
+public class PoisonStatus extends DecrementStackStatus {
 	private static String id = "POISON";
 
 	public PoisonStatus(FightData data) {
@@ -21,10 +21,15 @@ public class PoisonStatus extends DurationStatus {
 
 	@Override
 	public void apply(FightData applier, int stacks, int ticks) {
-		if (holder instanceof PlayerFightData) {
-			holder.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.POISON, ticks, 0));
-		}
 		super.apply(applier, stacks, ticks);
+		if (holder instanceof PlayerFightData && stacks > 0) {
+			if (stacks > 0) {
+				holder.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.POISON, ticks > 0 ? ticks : PotionEffect.INFINITE_DURATION, 0));
+			}
+			else if (this.stacks <= 0) {
+				holder.getEntity().removePotionEffect(PotionEffectType.POISON);
+			}
+		}
 	}
 	
 	@Override

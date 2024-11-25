@@ -49,14 +49,14 @@ public class PoisonPowder extends Equipment {
 		data.addTrigger(id, Trigger.DEALT_DAMAGE, (pdata, in) -> {
 			if (inst.getCount() == 0) return TriggerResult.keep();
 			DealtDamageEvent ev = (DealtDamageEvent) in;
-			FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, amount, 60);
+			FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, amount, -1);
 			return TriggerResult.keep();
 		});
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.GREEN_DYE, "Right click to apply " + GlossaryTag.POISON.tag(this, amount, true) + " [<white>3s</white>] to enemies you"
+		item = createItem(Material.GREEN_DYE, "Right click to apply " + GlossaryTag.POISON.tag(this, amount, true) + " to enemies you"
 				+ " deal " + GlossaryTag.PHYSICAL.tag(this) + " damage to for the next <white>5</white> seconds.");
 	}
 }

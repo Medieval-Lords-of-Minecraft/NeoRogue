@@ -1,7 +1,10 @@
 package me.neoblade298.neorogue.equipment.weapons;
 
+import java.util.LinkedList;
+
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -50,14 +53,23 @@ public class StoneAxe extends Equipment {
 			if (!data.hasStatus(StatusType.BERSERK) || data.getStatus(StatusType.BERSERK).getStacks() < BERSERK_THRESHOLD) return TriggerResult.keep();
 			if (!pdata.canBasicAttack(EquipSlot.HOTBAR)) return TriggerResult.keep();
 			weaponSwing(p, data);
-			FightInstance.dealDamage(properties.getDamageMeta(data), TargetHelper.getEntitiesInCone(p, tp));
+			LinkedList<LivingEntity> ents = TargetHelper.getEntitiesInCone(p, tp);
+			if (ents.isEmpty()) return TriggerResult.keep();
+			LivingEntity first = ents.peekFirst();
+			weaponSwingAndDamage(p, data, first);
+			for (LivingEntity ent : ents) {
+				if (ent == first) continue;
+				FightInstance.dealDamage(properties.getDamageMeta(data), ent);
+				FightInstance.knockback(p, ent, properties.get(PropertyType.KNOCKBACK));
+			}
+			
 			return TriggerResult.keep();
 		});
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STONE_AXE, "At 20 stacks of " + GlossaryTag.BERSERK.tag(this) + ", left clicks deal damage in a cone."
+		item = createItem(Material.STONE_AXE, "At <white>20</white> stacks of " + GlossaryTag.BERSERK.tag(this) + ", left clicks deal damage in a cone."
 				+ " Only the closest target is affected by on-hit effects.");
 	}
 }

@@ -66,7 +66,6 @@ public abstract class Status {
 	public static Status createByType(StatusType id, FightData target) {
 		switch (id) {
 		case POISON: return new PoisonStatus(target);
-		case BLEED: return new BleedStatus(target);
 		case REND: return new RendStatus(target);
 		case BURN: return new DecrementStackStatus(id.name(), target, StatusClass.NEGATIVE);
 		case FROST: return new FrostStatus(target);
@@ -142,7 +141,6 @@ public abstract class Status {
 	public enum StatusType {
 		POISON("<dark_green>Poison</dark_green>", "&2Poison"),
 		REND("<red>Rend</red>", "&cRend"),
-		BLEED("<red>Bleed</red>", "&cBleed"),
 		BURN("<gold>Burn</gold>", "&6Burn"),
 		FROST("<blue>Frost</blue>", "&9Frost"),
 		ELECTRIFIED("<yellow>Electrified</yellow>", "&eElectrified"),

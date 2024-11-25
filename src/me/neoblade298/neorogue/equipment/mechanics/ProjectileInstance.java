@@ -72,6 +72,7 @@ public class ProjectileInstance extends IProjectileInstance {
 		// Slow projectile, no interpolation needed
 		if (settings.getWidth() > settings.getBlocksPerTick() * settings.getTickSpeed()) {
 			v = v.multiply(settings.getBlocksPerTick() * settings.getTickSpeed());
+			interpolationPoints = 1;
 		}
 		// Fast projectile, need interpolation
 		else {

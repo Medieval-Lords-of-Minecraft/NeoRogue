@@ -31,7 +31,7 @@ public class Frenzy extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(ID, Trigger.WEAPON_SWING, (pdata, in) -> {
-			int mult = Math.max(4, data.getStatus(StatusType.BERSERK).getStacks() / CUTOFF);
+			int mult = Math.min(4, data.getStatus(StatusType.BERSERK).getStacks() / CUTOFF);
 			WeaponSwingEvent ev = (WeaponSwingEvent) in;
 			ev.getAttackSpeedBuff().addMultiplier(data, mult * atkSpeed * 0.01);
 			return TriggerResult.keep();

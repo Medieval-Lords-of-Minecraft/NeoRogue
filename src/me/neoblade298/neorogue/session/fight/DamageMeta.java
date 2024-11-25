@@ -47,7 +47,6 @@ public class DamageMeta {
 	
 	public DamageMeta(FightData data) {
 		this.owner = data;
-		addBuffs(owner.getBuffs(true), BuffOrigin.NORMAL, true);
 	}
 	
 	public DamageMeta(FightData data, DamageOrigin origin) {
@@ -191,6 +190,7 @@ public class DamageMeta {
 		if (target.getType() == EntityType.ARMOR_STAND) return 0;
 		FightData recipient = FightInstance.getFightData(target.getUniqueId());
 		LivingEntity damager = owner.getEntity();
+		addBuffs(owner.getBuffs(true), BuffOrigin.NORMAL, true);
 		addBuffs(recipient.getBuffs(false), BuffOrigin.NORMAL, false);
 		double damage = 0;
 		double ignoreShieldsDamage = 0;

@@ -32,7 +32,6 @@ public enum BuffType {
 	
 	public static GlossaryTag toGlossary(BuffType type) {
 		switch (type) {
-		case BLEED: return GlossaryTag.BLEED;
 		case BLUNT: return GlossaryTag.BLUNT;
 		case DARK: return GlossaryTag.DARK;
 		case EARTHEN: return GlossaryTag.EARTHEN;

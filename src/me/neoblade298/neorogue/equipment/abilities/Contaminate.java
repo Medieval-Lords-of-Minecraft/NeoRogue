@@ -47,8 +47,7 @@ public class Contaminate extends Equipment {
 				"On cast, Grant speed <white>1</white> and " + GlossaryTag.STEALTH.tag(this) +
 				" [<white>5s</white>]. "
 				+ "Your next <white>3</white> basic attacks deal an additional " + GlossaryTag.PIERCING.tag(this, damage, false) + " damage and multiply existing stacks of "
-				+ GlossaryTag.POISON.tag(this) + " on the enemy hit by <yellow>" + mult + "</yellow>, rounded down. "
-				+ GlossaryTag.POISON.tag(this) + " duration is refreshed by <white>3s</white>.");
+				+ GlossaryTag.POISON.tag(this) + " on the enemy hit by <yellow>" + mult + "</yellow>, rounded down.");
 	}
 
 	@Override
@@ -74,7 +73,7 @@ public class Contaminate extends Equipment {
 				FightData fd = FightInstance.getFightData(ev.getTarget());
 				int toAdd = (int) (fd.getStatus(StatusType.POISON).getStacks() * (mult - 1));
 				if (toAdd <= 0) return TriggerResult.keep();
-				fd.applyStatus(StatusType.POISON, data, toAdd, 100);
+				fd.applyStatus(StatusType.POISON, data, toAdd, -1);
 			}
 			return TriggerResult.keep();
 		});

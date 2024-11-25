@@ -25,8 +25,6 @@ public enum DamageType {
 			 new BuffType[] { BuffType.DARK, BuffType.MAGICAL, BuffType.GENERAL, BuffType.ALL }),
 	LIGHT("Light", DamageCategory.MAGICAL, "<white>Light</white>",
 			 new BuffType[] { BuffType.LIGHT, BuffType.MAGICAL, BuffType.GENERAL, BuffType.ALL }),
-	BLEED("Bleed", DamageCategory.STATUS, StatusType.BLEED.tag,
-			 new BuffType[] { BuffType.BLEED, BuffType.STATUS, BuffType.ALL }),
 	POISON("Poison", DamageCategory.STATUS, StatusType.POISON.tag,
 			 new BuffType[] { BuffType.POISON, BuffType.STATUS, BuffType.ALL }),
 	THORNS("Thorns", DamageCategory.STATUS, StatusType.THORNS.tag,
@@ -70,7 +68,6 @@ public enum DamageType {
 	
 	public static GlossaryTag toGlossary(DamageType type) {
 		switch (type) {
-		case BLEED: return GlossaryTag.BLEED;
 		case BLUNT: return GlossaryTag.BLUNT;
 		case DARK: return GlossaryTag.DARK;
 		case EARTHEN: return GlossaryTag.EARTHEN;

@@ -39,7 +39,7 @@ public class ThrowPoison extends Equipment {
 		PotionProjectile pot = new PotionProjectile((loc, hit) -> {
 			for (LivingEntity ent : hit) {
 				if (ent instanceof Player || !(ent instanceof LivingEntity)) continue;
-				FightInstance.applyStatus(ent, StatusType.POISON, data, poison, 100);
+				FightInstance.applyStatus(ent, StatusType.POISON, data, poison, -1);
 			}
 		});
 		ProjectileGroup grp = new ProjectileGroup(pot);
@@ -53,7 +53,7 @@ public class ThrowPoison extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION,
-				"On cast, throw a potion that applies " + GlossaryTag.POISON.tag(this, poison, true) + " [<white>5s</white>].");
+				"On cast, throw a potion that applies " + GlossaryTag.POISON.tag(this, poison, true) + ".");
 		PotionMeta pm = (PotionMeta) item.getItemMeta();
 		pm.setColor(Color.LIME);
 		item.setItemMeta(pm);
