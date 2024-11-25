@@ -48,9 +48,10 @@ public class StandardFightInstance extends FightInstance {
 	
 	public StandardFightInstance(Session s, Set<UUID> players, AreaType type, int nodesVisited) {
 		super(s, players);
-		int rand = nodesVisited >= 5 ? NeoRogue.gen.nextInt(nodesVisited / 5) : 0;
-		int min = nodesVisited / 10;
-		map = Map.generate(type, 2 + rand + min);
+		double rand = NeoRogue.gen.nextDouble((nodesVisited + 1) / 12.0);
+		double min = 2 + nodesVisited / 12.0;
+		int max = (int) Math.min(rand + min, 8);
+		map = Map.generate(type, max);
 	}
 	
 	public StandardFightInstance(Session s, Set<UUID> players, Map map) {
@@ -82,6 +83,7 @@ public class StandardFightInstance extends FightInstance {
 		time = fightScore.getThreshold();
 		
 		tasks.add(new BukkitRunnable() {
+			@Override
 			public void run() {
 				time--;
 				timeBar.setProgress(time / fightScore.getThreshold());
@@ -89,8 +91,7 @@ public class StandardFightInstance extends FightInstance {
 				if (time <= 0) {
 					if (fightScore.getNext() == null) {
 						this.cancel();
-					}
-					else {
+					} else {
 						fightScore = fightScore.getNext();
 						time = fightScore.getThreshold();
 						timeBar.setTitle("Current Rating: " + fightScore.getDisplay());
@@ -103,24 +104,31 @@ public class StandardFightInstance extends FightInstance {
 	@Override
 	public void handleMobKill(String id, boolean playerKill) {
 		Mob mob = Mob.get(id);
-		if (mob == null) return;
-		if (!playerKill) return;
+		if (mob == null)
+			return;
+		if (!playerKill)
+			return;
 		
-		if (s.getInstance() != this) return; // If we've moved on to reward instance don't spam the user
-		
+		if (s.getInstance() != this)
+			return; // If we've moved on to reward instance don't spam the user
+
 		score += mob.getKillValue();
 		scoreBar.setProgress(Math.min(1, score / scoreRequired));
 		if (score >= scoreRequired) {
 			// Have a time lag so the ability that ended the fight has time to complete
 			new BukkitRunnable() {
+				@Override
 				public void run() {
-					if (!isActive) return;
+					if (!isActive)
+						return;
 					isActive = false;
 					FightInstance.handleWin();
 					timeBar.removeAll();
 					scoreBar.removeAll();
-					s.broadcast(Component.text("You completed the fight with a score of ", NamedTextColor.GRAY)
-							.append(fightScore.getComponentDisplay()).append(Component.text("!")));
+					s.broadcast(
+							Component.text("You completed the fight with a score of ", NamedTextColor.GRAY)
+									.append(fightScore.getComponentDisplay()).append(Component.text("!"))
+					);
 					s.setInstance(new RewardInstance(s, generateRewards(s, fightScore)));
 				}
 			}.runTask(NeoRogue.inst());
@@ -134,8 +142,7 @@ public class StandardFightInstance extends FightInstance {
 		if (NeoRogue.gen.nextInt(100) < s.getPotionChance()) {
 			s.addPotionChance(-25);
 			dropPotion = true;
-		}
-		else {
+		} else {
 			s.addPotionChance(10);
 		}
 		for (UUID uuid : s.getParty().keySet()) {
@@ -175,7 +182,8 @@ public class StandardFightInstance extends FightInstance {
 			equipDrops.add(Equipment.get("emeraldShard", false));
 			equipDrops.add(Equipment.get("sapphireShard", false));
 			list.add(new EquipmentChoiceReward(equipDrops));
-			if (dropPotion) list.add(new EquipmentReward(Equipment.getConsumable(value, ec, EquipmentClass.CLASSLESS)));
+			if (dropPotion)
+				list.add(new EquipmentReward(Equipment.getConsumable(value, ec, EquipmentClass.CLASSLESS)));
 			
 			rewards.put(uuid, list);
 		}
@@ -189,6 +197,7 @@ public class StandardFightInstance extends FightInstance {
 		scoreBar.removeAll();
 	}
 	
+	@Override
 	public String serializeInstanceData() {
 		return "STANDARD:" + map.serialize();
 	}

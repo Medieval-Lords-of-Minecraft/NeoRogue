@@ -63,43 +63,7 @@ import me.neoblade298.neorogue.equipment.armor.LeatherHood;
 import me.neoblade298.neorogue.equipment.armor.LightningCloak;
 import me.neoblade298.neorogue.equipment.armor.NullMagicMantle;
 import me.neoblade298.neorogue.equipment.armor.SpikedPauldrons;
-import me.neoblade298.neorogue.equipment.artifacts.AlchemistBag;
-import me.neoblade298.neorogue.equipment.artifacts.AmuletOfOffering;
-import me.neoblade298.neorogue.equipment.artifacts.AvalonianAnchor;
-import me.neoblade298.neorogue.equipment.artifacts.AzureCutter;
-import me.neoblade298.neorogue.equipment.artifacts.BloodyTrinket;
-import me.neoblade298.neorogue.equipment.artifacts.Brightfeather;
-import me.neoblade298.neorogue.equipment.artifacts.BurningCross;
-import me.neoblade298.neorogue.equipment.artifacts.CharmOfGallus;
-import me.neoblade298.neorogue.equipment.artifacts.ConcealingCloak;
-import me.neoblade298.neorogue.equipment.artifacts.CrystallineFlask;
-import me.neoblade298.neorogue.equipment.artifacts.EmeraldCluster;
-import me.neoblade298.neorogue.equipment.artifacts.EmeraldGem;
-import me.neoblade298.neorogue.equipment.artifacts.EmeraldShard;
-import me.neoblade298.neorogue.equipment.artifacts.EnergyBattery;
-import me.neoblade298.neorogue.equipment.artifacts.GlacialHammer;
-import me.neoblade298.neorogue.equipment.artifacts.GoldIngot;
-import me.neoblade298.neorogue.equipment.artifacts.GrendelsCrystalMirror;
-import me.neoblade298.neorogue.equipment.artifacts.HermesBoots;
-import me.neoblade298.neorogue.equipment.artifacts.HiddenBlade;
-import me.neoblade298.neorogue.equipment.artifacts.HuntersCompass;
-import me.neoblade298.neorogue.equipment.artifacts.ManaHaze;
-import me.neoblade298.neorogue.equipment.artifacts.ManaflowBand;
-import me.neoblade298.neorogue.equipment.artifacts.MercenaryHeadband;
-import me.neoblade298.neorogue.equipment.artifacts.MistralVeil;
-import me.neoblade298.neorogue.equipment.artifacts.NoxianBlight;
-import me.neoblade298.neorogue.equipment.artifacts.NoxianSkull;
-import me.neoblade298.neorogue.equipment.artifacts.OpalHourglass;
-import me.neoblade298.neorogue.equipment.artifacts.PracticeDummy;
-import me.neoblade298.neorogue.equipment.artifacts.RubyCluster;
-import me.neoblade298.neorogue.equipment.artifacts.RubyGem;
-import me.neoblade298.neorogue.equipment.artifacts.RubyShard;
-import me.neoblade298.neorogue.equipment.artifacts.SapphireCluster;
-import me.neoblade298.neorogue.equipment.artifacts.SapphireGem;
-import me.neoblade298.neorogue.equipment.artifacts.SapphireShard;
-import me.neoblade298.neorogue.equipment.artifacts.StaticNecklace;
-import me.neoblade298.neorogue.equipment.artifacts.TomeOfWisdom;
-import me.neoblade298.neorogue.equipment.artifacts.TrickstersSigil;
+import me.neoblade298.neorogue.equipment.artifacts.*;
 import me.neoblade298.neorogue.equipment.consumables.MinorHealthPotion;
 import me.neoblade298.neorogue.equipment.consumables.MinorMagicalPotion;
 import me.neoblade298.neorogue.equipment.consumables.MinorManaPotion;
@@ -126,81 +90,7 @@ import me.neoblade298.neorogue.equipment.offhands.RubyArmament;
 import me.neoblade298.neorogue.equipment.offhands.SmallShield;
 import me.neoblade298.neorogue.equipment.offhands.SpikyShield;
 import me.neoblade298.neorogue.equipment.offhands.WristBlade;
-import me.neoblade298.neorogue.equipment.weapons.BasicBow;
-import me.neoblade298.neorogue.equipment.weapons.BasicCrossbow;
-import me.neoblade298.neorogue.equipment.weapons.BasicShotbow;
-import me.neoblade298.neorogue.equipment.weapons.BluntedArrow;
-import me.neoblade298.neorogue.equipment.weapons.BoltWand;
-import me.neoblade298.neorogue.equipment.weapons.ButterflyKnife;
-import me.neoblade298.neorogue.equipment.weapons.ButterflyKnife2;
-import me.neoblade298.neorogue.equipment.weapons.ChainLightningWand;
-import me.neoblade298.neorogue.equipment.weapons.ColdArrow;
-import me.neoblade298.neorogue.equipment.weapons.CompositeBow;
-import me.neoblade298.neorogue.equipment.weapons.CrescentAxe;
-import me.neoblade298.neorogue.equipment.weapons.CrimsonBlade;
-import me.neoblade298.neorogue.equipment.weapons.CripplingFencingSword;
-import me.neoblade298.neorogue.equipment.weapons.DarkScepter;
-import me.neoblade298.neorogue.equipment.weapons.DoubleTap;
-import me.neoblade298.neorogue.equipment.weapons.EarthStaff;
-import me.neoblade298.neorogue.equipment.weapons.EarthenLeatherGauntlets;
-import me.neoblade298.neorogue.equipment.weapons.ElectromagneticKnife;
-import me.neoblade298.neorogue.equipment.weapons.EnergizedRazor;
-import me.neoblade298.neorogue.equipment.weapons.EtherealKnife;
-import me.neoblade298.neorogue.equipment.weapons.EvasiveKnife;
-import me.neoblade298.neorogue.equipment.weapons.FencingSword;
-import me.neoblade298.neorogue.equipment.weapons.FireStaff;
-import me.neoblade298.neorogue.equipment.weapons.Flametongue;
-import me.neoblade298.neorogue.equipment.weapons.ForcefulLeatherGauntlets;
-import me.neoblade298.neorogue.equipment.weapons.Fracturer;
-import me.neoblade298.neorogue.equipment.weapons.GlassArrow;
-import me.neoblade298.neorogue.equipment.weapons.Harpoon;
-import me.neoblade298.neorogue.equipment.weapons.HiddenRazor;
-import me.neoblade298.neorogue.equipment.weapons.HuntersBow;
-import me.neoblade298.neorogue.equipment.weapons.IceWand;
-import me.neoblade298.neorogue.equipment.weapons.Inflame;
-import me.neoblade298.neorogue.equipment.weapons.Irritant;
-import me.neoblade298.neorogue.equipment.weapons.LeatherGauntlets;
-import me.neoblade298.neorogue.equipment.weapons.LightLeatherGauntlets;
-import me.neoblade298.neorogue.equipment.weapons.LightningCutter;
-import me.neoblade298.neorogue.equipment.weapons.LightningWand;
-import me.neoblade298.neorogue.equipment.weapons.LitArrow;
-import me.neoblade298.neorogue.equipment.weapons.MassiveHalberd;
-import me.neoblade298.neorogue.equipment.weapons.MirrorSickle;
-import me.neoblade298.neorogue.equipment.weapons.MultiCrossbow;
-import me.neoblade298.neorogue.equipment.weapons.Neoblade;
-import me.neoblade298.neorogue.equipment.weapons.Nightmare;
-import me.neoblade298.neorogue.equipment.weapons.Quickfire;
-import me.neoblade298.neorogue.equipment.weapons.RapidFire;
-import me.neoblade298.neorogue.equipment.weapons.Rapier;
-import me.neoblade298.neorogue.equipment.weapons.Razor;
-import me.neoblade298.neorogue.equipment.weapons.RedBaron;
-import me.neoblade298.neorogue.equipment.weapons.RighteousHammer;
-import me.neoblade298.neorogue.equipment.weapons.SerratedArrow;
-import me.neoblade298.neorogue.equipment.weapons.SerratedRazor;
-import me.neoblade298.neorogue.equipment.weapons.ShadowyDagger;
-import me.neoblade298.neorogue.equipment.weapons.ShieldPike;
-import me.neoblade298.neorogue.equipment.weapons.SilverFang;
-import me.neoblade298.neorogue.equipment.weapons.SparkKnife;
-import me.neoblade298.neorogue.equipment.weapons.SparkStick;
-import me.neoblade298.neorogue.equipment.weapons.SparkdrainKnife;
-import me.neoblade298.neorogue.equipment.weapons.StoneArrow;
-import me.neoblade298.neorogue.equipment.weapons.StoneAxe;
-import me.neoblade298.neorogue.equipment.weapons.StoneDagger;
-import me.neoblade298.neorogue.equipment.weapons.StoneDriver;
-import me.neoblade298.neorogue.equipment.weapons.StoneHammer;
-import me.neoblade298.neorogue.equipment.weapons.StoneMace;
-import me.neoblade298.neorogue.equipment.weapons.StoneShiv;
-import me.neoblade298.neorogue.equipment.weapons.StoneSpear;
-import me.neoblade298.neorogue.equipment.weapons.StoneSword;
-import me.neoblade298.neorogue.equipment.weapons.StoneThrowingKnife;
-import me.neoblade298.neorogue.equipment.weapons.TacticiansDagger;
-import me.neoblade298.neorogue.equipment.weapons.TreeTrunk;
-import me.neoblade298.neorogue.equipment.weapons.Volley;
-import me.neoblade298.neorogue.equipment.weapons.WarningShot;
-import me.neoblade298.neorogue.equipment.weapons.WoodenArrow;
-import me.neoblade298.neorogue.equipment.weapons.WoodenDagger;
-import me.neoblade298.neorogue.equipment.weapons.WoodenSword;
-import me.neoblade298.neorogue.equipment.weapons.WoodenWand;
+import me.neoblade298.neorogue.equipment.weapons.*;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.GlossaryIcon;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -225,10 +115,10 @@ public abstract class Equipment implements Comparable<Equipment> {
 	private static DropTableSet<Equipment> droptables = new DropTableSet<Equipment>();
 	private static DropTableSet<Artifact> artifacts = new DropTableSet<Artifact>();
 	private static DropTableSet<Consumable> consumables = new DropTableSet<Consumable>();
-
+	
 	private ArrayList<Equipment> reforgeParents = new ArrayList<Equipment>();
 	private TreeMap<Equipment, Equipment[]> reforgeOptions = new TreeMap<Equipment, Equipment[]>();
-
+	
 	protected String id;
 	protected Component display, hoverable;
 	protected boolean isUpgraded, canDrop = true, isCursed, overrideReforgeDrop;
@@ -239,7 +129,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 	protected EquipmentProperties properties;
 	protected int cooldown = 0;
 	protected TreeSet<GlossaryIcon> tags = new TreeSet<GlossaryIcon>(GlossaryIcon.comparator);
-
+	
 	public static void load() {
 		equipment.clear();
 		upgraded.clear();
@@ -419,7 +309,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Windcutter(b);
 			new WindSlash(b);
 			new Wound(b);
-
+			
 			// Accessories
 			new EagleFeather(b);
 			new EarthenRing(b);
@@ -438,7 +328,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new RingOfSharpness(b);
 			new SaboteursRing(b);
 			new TopazRing(b);
-
+			
 			// Armor
 			new ArcheryGlove(b);
 			new BlindingCloak(b);
@@ -460,7 +350,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new LightningCloak(b);
 			new NullMagicMantle(b);
 			new SpikedPauldrons(b);
-
+			
 			// Offhands
 			new ChasingDagger(b);
 			new HastyShield(b);
@@ -474,7 +364,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new SmallShield(b);
 			new SpikyShield(b);
 			new WristBlade(b);
-
+			
 			// Weapons
 			new BasicBow(b);
 			new BasicCrossbow(b);
@@ -545,9 +435,9 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new WoodenDagger(b);
 			new WoodenSword(b);
 			new WoodenWand(b);
-			
-			new Neoblade(b);
 
+			new Neoblade(b);
+			
 			// Consumables
 			new MinorHealthPotion(b);
 			new MinorStaminaPotion(b);
@@ -556,7 +446,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new MinorPhysicalPotion(b);
 			new MinorMagicalPotion(b);
 		}
-
+		
 		// Artifacts
 		new AlchemistBag();
 		new AmuletOfOffering();
@@ -582,11 +472,12 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new MistralVeil();
 		new NoxianBlight();
 		new NoxianSkull();
+		new OmniGem();
 		new OpalHourglass();
 		new StaticNecklace();
 		new TomeOfWisdom();
 		new TrickstersSigil();
-
+		
 		// Levelup artifacts
 		new EmeraldCluster();
 		new EmeraldGem();
@@ -597,7 +488,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new SapphireCluster();
 		new SapphireGem();
 		new SapphireShard();
-
+		
 		// Curses
 		new CurseOfBurden();
 		new CurseOfInexperience();
@@ -605,15 +496,15 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new GnarledWand();
 		new MangledBow();
 		new RustySword();
-
+		
 		// Materials
-
+		
 		HashMap<EquipmentType, Integer> counts = new HashMap<EquipmentType, Integer>();
 		int cursed = 0;
 		for (EquipmentType type : EquipmentType.values()) {
 			counts.put(type, 0);
 		}
-
+		
 		// Setup equipment
 		for (Equipment eq : equipment.values()) {
 			eq.setup();
@@ -621,15 +512,14 @@ public abstract class Equipment implements Comparable<Equipment> {
 			if (up != null) {
 				up.setup();
 			}
-			
+
 			if (eq.isCursed) {
 				cursed++;
-			}
-			else {
+			} else {
 				counts.put(eq.getType(), counts.get(eq.getType()) + 1);
 			}
 		}
-
+		
 		// Setup item now that all reforge options exist
 		for (Equipment eq : equipment.values()) {
 			eq.setupItem();
@@ -638,7 +528,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 				up.setupItem();
 			}
 		}
-		
+
 		for (Equipment eq : equipment.values()) {
 			eq.setupDroptable();
 			eq.postSetup();
@@ -648,103 +538,113 @@ public abstract class Equipment implements Comparable<Equipment> {
 				up.postSetup();
 			}
 		}
-
+		
 		for (EquipmentType type : EquipmentType.values()) {
 			Bukkit.getLogger().info("[NeoRogue] Loaded " + counts.get(type) + " " + type.getDisplay());
 		}
 		Bukkit.getLogger().info("[NeoRogue] Loaded " + cursed + " Cursed");
 	}
-
-	public Equipment(String id, String display, boolean isUpgraded, Rarity rarity, EquipmentClass ec,
-			EquipmentType type, EquipmentProperties props) {
-		this(id, display, isUpgraded, rarity, new EquipmentClass[] {ec}, type, props);
+	
+	public Equipment(
+			String id, String display, boolean isUpgraded, Rarity rarity, EquipmentClass ec, EquipmentType type,
+			EquipmentProperties props
+	) {
+		this(id, display, isUpgraded, rarity, new EquipmentClass[] { ec }, type, props);
 	}
-
-	public Equipment(String id, String display, boolean isUpgraded, Rarity rarity, EquipmentClass[] ecs,
-			EquipmentType type, EquipmentProperties props) {
+	
+	public Equipment(
+			String id, String display, boolean isUpgraded, Rarity rarity, EquipmentClass[] ecs, EquipmentType type,
+			EquipmentProperties props
+	) {
 		this.id = id;
 		this.rarity = rarity;
 		this.isUpgraded = isUpgraded;
 		this.ecs = ecs;
 		this.type = type;
 		this.properties = props;
-
+		
 		// Just make sure not to close any of the tags in display string or the upgraded
 		// sign will break it
 		this.display = rarity.applyDecorations(SharedUtil.color(display + (isUpgraded ? "+" : "")));
-
+		
 		if (equipment.containsKey(id) && !isUpgraded) {
 			Bukkit.getLogger().warning("[NeoRogue] Duplicate id of " + id + " found while loading equipment");
 		}
-
+		
 		if (isUpgraded)
 			upgraded.put(id, this);
 		else
 			equipment.put(id, this);
 	}
-
-	public Equipment(String id, String display, boolean isUpgraded, Rarity rarity, EquipmentClass ec,
-			EquipmentType type) {
-		this(id, display, isUpgraded, rarity, new EquipmentClass[] {ec}, type, EquipmentProperties.none());
+	
+	public Equipment(
+			String id, String display, boolean isUpgraded, Rarity rarity, EquipmentClass ec, EquipmentType type
+	) {
+		this(id, display, isUpgraded, rarity, new EquipmentClass[] { ec }, type, EquipmentProperties.none());
 	}
-
-	public Equipment(String id, String display, boolean isUpgraded, Rarity rarity, EquipmentClass[] ecs,
-			EquipmentType type) {
+	
+	public Equipment(
+			String id, String display, boolean isUpgraded, Rarity rarity, EquipmentClass[] ecs, EquipmentType type
+	) {
 		this(id, display, isUpgraded, rarity, ecs, type, EquipmentProperties.none());
 	}
-
+	
 	// For curses
 	public Equipment(String id, String display, EquipmentType type) {
 		this.id = id;
 		this.rarity = Rarity.COMMON;
 		this.isUpgraded = false;
-		this.ecs = new EquipmentClass[] {EquipmentClass.CLASSLESS};
+		this.ecs = new EquipmentClass[] { EquipmentClass.CLASSLESS };
 		this.type = type;
 		this.display = SharedUtil.color("<red>" + display);
 		this.properties = EquipmentProperties.none();
 		this.isCursed = true;
 		this.canDrop = false;
-
+		
 		if (equipment.containsKey(id)) {
 			Bukkit.getLogger().warning("[NeoRogue] Duplicate id of " + id + " found while loading equipment");
 		}
-
+		
 		equipment.put(id, this);
 	}
-
+	
 	// For materials
 	public Equipment(String id, String display, Rarity rarity, EquipmentClass ec) {
 		this.id = id;
 		this.rarity = rarity;
 		this.isUpgraded = false;
-		this.ecs = new EquipmentClass[] {ec};
+		this.ecs = new EquipmentClass[] { ec };
 		this.type = EquipmentType.MATERIAL;
 		this.display = rarity.applyDecorations(SharedUtil.color(display));
 		this.properties = EquipmentProperties.none();
 		this.canDrop = false;
-
+		
 		if (equipment.containsKey(id)) {
 			Bukkit.getLogger().warning("[NeoRogue] Duplicate id of " + id + " found while loading equipment");
 		}
-
+		
 		equipment.put(id, this);
 	}
-	
+
 	public static boolean canReforge(Equipment eq, Equipment eqed) {
 		boolean hasUpgrade = eq.isUpgraded() || eqed.isUpgraded();
 		boolean hasCurse = eq.isCursed() || eqed.isCursed();
 		return hasUpgrade || hasCurse;
 	}
-
+	
 	public EquipmentProperties getProperties() {
 		return properties;
 	}
-
+	
 	public abstract void setupItem();
+	
 	// Basically just used for rusty sword to get an item
-	public void postSetup() {} 
-	public void setupReforges() {}
-
+	public void postSetup() {
+	}
+	
+	public void setupReforges() {
+	}
+	
 	private void setup() {
 		if (isUpgraded) {
 			Equipment base = getUnupgraded();
@@ -753,71 +653,71 @@ public abstract class Equipment implements Comparable<Equipment> {
 		}
 		setupReforges();
 	}
-
+	
 	public boolean canUpgrade() {
 		return upgraded.containsKey(id);
 	}
-
+	
 	private void setupDroptable() {
 		int value = rarity.getValue() + (isUpgraded ? 1 : 0);
-		if (!canDrop) return;
-		if (!reforgeParents.isEmpty() && !overrideReforgeDrop) return;
-
+		if (!canDrop)
+			return;
+		if (!reforgeParents.isEmpty() && !overrideReforgeDrop)
+			return;
+		
 		// Artifacts and consumables get their own special droptable with special weight
 		// due to reduced amount
 		if (this instanceof Artifact) {
 			artifacts.addLenientWeight(ecs, value, (Artifact) this);
-		}
-		else if (this instanceof Consumable) {
+		} else if (this instanceof Consumable) {
 			consumables.addLenientWeight(ecs, value, (Consumable) this);
-		}
-		else {
+		} else {
 			droptables.add(ecs, value, this);
 		}
 	}
-
+	
 	public void addTags(GlossaryTag... tags) {
 		for (GlossaryTag tag : tags) {
 			this.tags.add(tag);
 		}
 	}
-
+	
 	public boolean overridesReforgeDrop() {
 		return overrideReforgeDrop;
 	}
-
+	
 	// Run at the start of a fight to initialize Fight Data
 	public abstract void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot);
-
+	
 	// Run at the end of a fight if needed
 	public void cleanup(Player p, PlayerFightData data) {
-
+		
 	}
-
+	
 	public TreeSet<GlossaryIcon> getTags() {
 		return tags;
 	}
-
+	
 	public String getId() {
 		return id;
 	}
-
+	
 	public ItemStack getItem() {
 		return item.clone();
 	}
-
+	
 	public boolean isUpgraded() {
 		return isUpgraded;
 	}
-
+	
 	public Rarity getRarity() {
 		return rarity;
 	}
-
+	
 	public static Equipment get(String id, boolean upgrade) {
 		return upgrade ? upgraded.get(id) : equipment.get(id);
 	}
-
+	
 	public static String serialize(ArrayList<Equipment> arr) {
 		String str = "";
 		for (int i = 0; i < arr.size(); i++) {
@@ -825,7 +725,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		}
 		return str;
 	}
-
+	
 	public static String serialize(Equipment[] arr) {
 		String str = "";
 		for (int i = 0; i < arr.length; i++) {
@@ -837,13 +737,14 @@ public abstract class Equipment implements Comparable<Equipment> {
 		}
 		return str;
 	}
-
+	
 	public String serialize() {
 		return id + (isUpgraded ? "+" : "");
 	}
-
+	
 	public static Equipment deserialize(String str) {
-		if (str.isBlank()) return null;
+		if (str.isBlank())
+			return null;
 		boolean isUpgraded = false;
 		if (str.endsWith("+")) {
 			isUpgraded = true;
@@ -851,57 +752,60 @@ public abstract class Equipment implements Comparable<Equipment> {
 		}
 		return get(str, isUpgraded);
 	}
-
+	
 	public static Equipment[] deserializeAsArray(String str) {
 		String[] separated = str.split(";");
 		Equipment[] arr = new Equipment[separated.length];
 		for (int i = 0; i < separated.length; i++) {
-			if (str.isBlank()) continue;
+			if (str.isBlank())
+				continue;
 			arr[i] = Equipment.deserialize(separated[i]);
 		}
 		return arr;
 	}
-
+	
 	public static ArrayList<Equipment> deserializeAsArrayList(String str) {
-		if (str.isBlank()) return new ArrayList<Equipment>();
+		if (str.isBlank())
+			return new ArrayList<Equipment>();
 		String[] separated = str.split(";");
 		ArrayList<Equipment> arr = new ArrayList<Equipment>(separated.length);
 		for (String s : separated) {
-			if (str.isBlank()) continue;
+			if (str.isBlank())
+				continue;
 			arr.add(Equipment.deserialize(s));
 		}
 		return arr;
 	}
-
+	
 	public ItemStack createItem(Material mat) {
 		return createItem(mat, null, null);
 	}
-
+	
 	public ItemStack createItem(Material mat, String loreLine) {
 		return createItem(mat, null, loreLine);
 	}
-
+	
 	public ItemStack createItem(Material mat, String[] preLoreLine, String loreLine) {
 		// Spell check only needs to happen with unupgraded
 		if (loreLine != null) {
 			char prev = 0;
 			for (char c : loreLine.toCharArray()) {
 				if (c == ' ' && prev == ' ') {
-					Bukkit.getLogger().warning("[NeoRogue] Duplicate space found in equipment " + id + (isUpgraded ? "+" : ""));
+					Bukkit.getLogger()
+							.warning("[NeoRogue] Duplicate space found in equipment " + id + (isUpgraded ? "+" : ""));
 				}
 				prev = c;
 			}
 		}
 		ItemStack item = new ItemStack(mat);
 		ItemMeta meta = item.getItemMeta();
-
+		
 		meta.displayName(display.decoration(TextDecoration.ITALIC, State.FALSE));
 		ArrayList<Component> loreItalicized = new ArrayList<Component>();
 		loreItalicized.add(Component.text("Right click for glossary", NamedTextColor.GRAY));
 		if (isCursed) {
 			loreItalicized.add(Component.text("Cursed " + type.getDisplay(), NamedTextColor.RED));
-		}
-		else {
+		} else {
 			loreItalicized.add(rarity.getDisplay(true).append(Component.text(" " + type.getDisplay())));
 		}
 		loreItalicized.addAll(properties.generateLore(this));
@@ -912,7 +816,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 		}
 		if (isCursed) {
 			loreItalicized.add(
-					Component.text("This item is cursed. It must be equipped to continue.", NamedTextColor.DARK_RED));
+					Component.text("This item is cursed. It must be equipped to continue.", NamedTextColor.DARK_RED)
+			);
 		}
 		if (!reforgeOptions.isEmpty()) {
 			loreItalicized.add(Component.text("Reforgeable with:", NamedTextColor.GOLD));
@@ -922,14 +827,16 @@ public abstract class Equipment implements Comparable<Equipment> {
 				if (!noPostfix) {
 					postfix = isUpgraded ? "(+)" : "+";
 				}
-				loreItalicized.add(Component.text("- ", NamedTextColor.GOLD)
-						.append(eq.getDisplay().append(Component.text(postfix))));
+				loreItalicized.add(
+						Component.text("- ", NamedTextColor.GOLD)
+								.append(eq.getDisplay().append(Component.text(postfix)))
+				);
 			}
 		}
 		if (loreLine != null) {
 			for (TextComponent tc : SharedUtil.addLineBreaks(
-					(TextComponent) NeoCore.miniMessage().deserialize(loreLine).colorIfAbsent(NamedTextColor.GRAY),
-					200)) {
+					(TextComponent) NeoCore.miniMessage().deserialize(loreLine).colorIfAbsent(NamedTextColor.GRAY), 200
+			)) {
 				loreItalicized.add(tc);
 			}
 		}
@@ -938,11 +845,11 @@ public abstract class Equipment implements Comparable<Equipment> {
 			lore.add(c.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
 		}
 		meta.lore(lore);
-
+		
 		if (item.getType() == Material.BOW) {
 			meta.addEnchant(Enchantment.INFINITY, 1, true);
 		}
-
+		
 		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 		meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
 		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
@@ -951,32 +858,33 @@ public abstract class Equipment implements Comparable<Equipment> {
 		meta.setUnbreakable(true);
 		properties.modifyItemMeta(item, meta);
 		item.setItemMeta(meta);
-
+		
 		this.hoverable = this.display.decorate(TextDecoration.UNDERLINED).hoverEvent(item.asHoverEvent())
 				.clickEvent(ClickEvent.runCommand("/nr glossary " + this.id));
-
+		
 		NBTItem nbti = new NBTItem(item);
 		nbti.setString("equipId", id);
 		nbti.setString("type", type.getDisplay());
 		nbti.setBoolean("isUpgraded", isUpgraded);
 		return nbti.getItem();
 	}
-
+	
 	public TreeMap<Equipment, Equipment[]> getReforgeOptions() {
 		return reforgeOptions;
 	}
-	
+
 	public EquipmentClass[] getEquipmentClasses() {
 		return ecs;
 	}
-
+	
 	public boolean containsReforgeOption(String id) {
 		for (Equipment option : reforgeOptions.keySet()) {
-			if (option.id.equals(id)) return true;
+			if (option.id.equals(id))
+				return true;
 		}
 		return false;
 	}
-
+	
 	// Should only ever be called with unupgraded parameters
 	protected void addReforge(Equipment combineWith, Equipment... options) {
 		if (!isUpgraded) {
@@ -985,7 +893,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 				options[i].addReforgeParent(combineWith);
 				options[i].addReforgeParent(this);
 			}
-
+			
 			// Set item into reforge options
 			this.reforgeOptions.put(combineWith, options);
 			if (this != combineWith) {
@@ -993,133 +901,138 @@ public abstract class Equipment implements Comparable<Equipment> {
 			}
 		}
 	}
-
+	
 	protected void addSelfReforge(Equipment... options) {
 		addReforge(this.getUnupgraded(), options);
 	}
-
+	
 	public Equipment getUnupgraded() {
 		return equipment.get(id);
 	}
-
+	
 	public Equipment getUpgraded() {
 		return upgraded.get(id);
 	}
-
+	
 	@Override
 	public boolean equals(Object o) {
-		if (!(o instanceof Equipment)) return false;
+		if (!(o instanceof Equipment))
+			return false;
 		Equipment eq = (Equipment) o;
 		return eq.id.equals(this.id) && eq.isUpgraded == this.isUpgraded;
 	}
-
+	
 	public boolean isSimilar(Equipment eq) {
 		return eq.id.equals(this.id);
 	}
-
-	public static ArrayList<Artifact> getArtifact(DropTableSet<Artifact> set, int value, int numDrops,
-			EquipmentClass... ec) {
+	
+	public static ArrayList<Artifact> getArtifact(
+			DropTableSet<Artifact> set, int value, int numDrops, EquipmentClass... ec
+	) {
 		return set.getMultiple(value, numDrops, ec);
 	}
-
+	
 	public static ArrayList<Consumable> getConsumable(int value, int numDrops, EquipmentClass... ec) {
 		return consumables.getMultiple(value, numDrops, ec);
 	}
-
+	
 	public static ArrayList<Equipment> getDrop(int value, int numDrops, EquipmentClass... ec) {
 		return droptables.getMultiple(value, numDrops, ec);
 	}
-
+	
 	public static Equipment getDrop(int value, EquipmentClass... ec) {
 		return getDrop(value, 1, ec).get(0);
 	}
-
+	
 	public static Consumable getConsumable(int value, EquipmentClass... ec) {
 		return getConsumable(value, 1, ec).get(0);
 	}
-
+	
 	private void addReforgeParent(Equipment reforgeParent) {
 		this.reforgeParents.add(reforgeParent);
 	}
-
+	
 	public ArrayList<Equipment> getReforgeParents() {
 		return reforgeParents;
 	}
-
+	
 	public Component getDisplay() {
 		return display;
 	}
-
+	
 	public Component getHoverable() {
 		return hoverable;
 	}
-
+	
 	public int getCooldown() {
 		return cooldown;
 	}
-
+	
 	public EquipmentType getType() {
 		return type;
 	}
-
+	
 	public boolean canEquip(EquipSlot es) {
 		return type.canEquip(es);
 	}
-
+	
 	public boolean canDrop() {
 		return canDrop;
 	}
-
+	
 	public boolean canUseWeapon(PlayerFightData data) {
 		if (data.getMana() < properties.get(PropertyType.MANA_COST)) {
 			Util.displayError(data.getPlayer(), "Not enough mana!");
 			return false;
 		}
-
+		
 		if (data.getStamina() < properties.get(PropertyType.STAMINA_COST)) {
 			Util.displayError(data.getPlayer(), "Not enough stamina!");
 			return false;
 		}
 		return true;
 	}
-
+	
 	public void weaponSwing(Player p, PlayerFightData data) {
 		weaponSwing(p, data, properties.get(PropertyType.ATTACK_SPEED));
 	}
-
+	
 	public void weaponSwing(Player p, PlayerFightData data, double attackSpeed) {
-		if (properties.has(PropertyType.MANA_COST)) data.addMana(-properties.get(PropertyType.MANA_COST));
-		if (properties.has(PropertyType.STAMINA_COST)) data.addStamina(-properties.get(PropertyType.STAMINA_COST));
+		if (properties.has(PropertyType.MANA_COST))
+			data.addMana(-properties.get(PropertyType.MANA_COST));
+		if (properties.has(PropertyType.STAMINA_COST))
+			data.addStamina(-properties.get(PropertyType.STAMINA_COST));
 		properties.getSwingSound().play(p, p);
 		WeaponSwingEvent ev = new WeaponSwingEvent(this, attackSpeed);
 		FightInstance.trigger(p, Trigger.WEAPON_SWING, ev);
 		data.setBasicAttackCooldown(type.getSlots()[0], ev.getAttackSpeedBuff().apply(attackSpeed));
-		if (type.getSlots()[0] == EquipSlot.OFFHAND) p.swingOffHand();
+		if (type.getSlots()[0] == EquipSlot.OFFHAND)
+			p.swingOffHand();
 	}
-
+	
 	public void weaponSwingAndDamage(Player p, PlayerFightData data, LivingEntity target) {
 		weaponSwing(p, data);
 		weaponDamage(p, data, target);
 	}
-
+	
 	public void weaponSwingAndDamage(Player p, PlayerFightData data, LivingEntity target, DamageMeta dm) {
 		weaponSwing(p, data);
 		weaponDamage(p, data, target, dm);
 	}
-
+	
 	public void weaponSwingAndDamage(Player p, PlayerFightData data, LivingEntity target, double damage) {
 		weaponSwing(p, data);
 		weaponDamage(p, data, target, damage);
 	}
-
+	
 	public void weaponDamage(Player p, PlayerFightData data, LivingEntity target) {
 		weaponDamage(p, data, target, properties.get(PropertyType.DAMAGE), properties.get(PropertyType.KNOCKBACK));
 	}
-
+	
 	public void weaponDamage(Player p, PlayerFightData data, LivingEntity target, double damage) {
 		weaponDamage(p, data, target, damage, properties.get(PropertyType.KNOCKBACK));
 	}
-
+	
 	public void weaponDamage(Player p, PlayerFightData data, LivingEntity target, double damage, double knockback) {
 		DamageMeta dm = new DamageMeta(data, damage, properties.getType());
 		BasicAttackEvent ev = new BasicAttackEvent(target, dm, knockback, this, null);
@@ -1129,7 +1042,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		}
 		FightInstance.dealDamage(dm, target);
 	}
-
+	
 	public void weaponDamage(Player p, PlayerFightData data, LivingEntity target, DamageMeta dm) {
 		double knockback = properties.get(PropertyType.KNOCKBACK);
 		BasicAttackEvent ev = new BasicAttackEvent(target, dm, knockback, this, null);
@@ -1139,45 +1052,52 @@ public abstract class Equipment implements Comparable<Equipment> {
 		}
 		FightInstance.dealDamage(dm, target);
 	}
-
+	
 	public void applyProjectileOnHit(LivingEntity target, ProjectileInstance proj) {
 		applyProjectileOnHit(target, proj, null, true);
 	}
-
+	
 	public void applyProjectileOnHit(LivingEntity target, ProjectileInstance proj, Barrier hitBarrier) {
 		applyProjectileOnHit(target, proj, hitBarrier, true);
 	}
-
-	public void applyProjectileOnHit(LivingEntity target, ProjectileInstance proj, Barrier hitBarrier, boolean basicAttack) {
+	
+	public void applyProjectileOnHit(
+			LivingEntity target, ProjectileInstance proj, Barrier hitBarrier, boolean basicAttack
+	) {
 		applyProjectileOnHit(target, proj, hitBarrier, true, properties.get(PropertyType.KNOCKBACK));
 	}
-
-	public void applyProjectileOnHit(LivingEntity target, ProjectileInstance proj, Barrier hitBarrier, boolean basicAttack, double knockback) {
+	
+	public void applyProjectileOnHit(
+			LivingEntity target, ProjectileInstance proj, Barrier hitBarrier, boolean basicAttack, double knockback
+	) {
 		PlayerFightData data = (PlayerFightData) proj.getOwner();
-		DamageMeta dm = new DamageMeta(data, properties.get(PropertyType.DAMAGE), properties.getType(), DamageOrigin.PROJECTILE, proj);
+		DamageMeta dm = new DamageMeta(
+				data, properties.get(PropertyType.DAMAGE), properties.getType(), DamageOrigin.PROJECTILE, proj
+		);
 		if (!proj.getBuffs().isEmpty()) {
 			dm.addBuffs(proj.getBuffs(), BuffOrigin.PROJECTILE, true);
 		}
 		if (hitBarrier != null) {
 			dm.addBuffs(hitBarrier.getBuffs(), BuffOrigin.BARRIER, false);
 		}
-		
+
 		if (basicAttack) {
 			BasicAttackEvent ev = new BasicAttackEvent(target, dm, knockback, this, null);
 			data.runActions(data, Trigger.BASIC_ATTACK, ev);
 		}
 		if (properties.contains(PropertyType.KNOCKBACK)) {
-			FightInstance.knockback(target,
-					proj.getVelocity().normalize().multiply(knockback));
+			FightInstance.knockback(target, proj.getVelocity().normalize().multiply(knockback));
 		}
 		FightInstance.dealDamage(dm, target);
 	}
-	
+
 	public void applyProjectileOnHit(LivingEntity target, ProjectileInstance proj, DamageMeta dm, Barrier hitBarrier) {
 		applyProjectileOnHit(target, proj, dm, hitBarrier, true);
 	}
-
-	public void applyProjectileOnHit(LivingEntity target, ProjectileInstance proj, DamageMeta dm, Barrier hitBarrier, boolean basicAttack) {
+	
+	public void applyProjectileOnHit(
+			LivingEntity target, ProjectileInstance proj, DamageMeta dm, Barrier hitBarrier, boolean basicAttack
+	) {
 		PlayerFightData data = (PlayerFightData) proj.getOwner();
 		if (!proj.getBuffs().isEmpty()) {
 			dm.addBuffs(proj.getBuffs(), BuffOrigin.PROJECTILE, true);
@@ -1190,38 +1110,39 @@ public abstract class Equipment implements Comparable<Equipment> {
 			data.runActions(data, Trigger.BASIC_ATTACK, ev);
 		}
 		if (properties.contains(PropertyType.KNOCKBACK)) {
-			FightInstance.knockback(target,
-					proj.getVelocity().normalize().multiply(properties.get(PropertyType.KNOCKBACK)));
+			FightInstance
+					.knockback(target, proj.getVelocity().normalize().multiply(properties.get(PropertyType.KNOCKBACK)));
 		}
 		FightInstance.dealDamage(dm, target);
 	}
-
+	
 	public boolean isCursed() {
 		return isCursed;
 	}
-	
-	// Only happens for curses at shops
-	public void onPurify(PlayerSessionData data) {}
 
+	// Only happens for curses at shops
+	public void onPurify(PlayerSessionData data) {
+	}
+	
 	@Override
 	public String toString() {
 		return id + (isUpgraded ? "+" : "");
 	}
-
+	
 	public static enum EquipmentClass {
 		WARRIOR("Warrior"), THIEF("Thief"), ARCHER("Archer"), MAGE("Mage"), SHOP("Shop"), CLASSLESS("Classless");
-
+		
 		private String display;
-
+		
 		private EquipmentClass(String display) {
 			this.display = display;
 		}
-
+		
 		public String getDisplay() {
 			return display;
 		}
 	}
-
+	
 	public static enum EquipmentType {
 		WEAPON("Weapon", "me.neoblade298.neorogue.equipment.weapons", new EquipSlot[] { EquipSlot.HOTBAR }),
 		ARMOR("Armor", "me.neoblade298.neorogue.equipment.armor", new EquipSlot[] { EquipSlot.ARMOR }),
@@ -1234,51 +1155,52 @@ public abstract class Equipment implements Comparable<Equipment> {
 				new EquipSlot[] { EquipSlot.HOTBAR, EquipSlot.KEYBIND }),
 		MATERIAL("Material", "me.neoblade298.neorogue.equipment.materials", new EquipSlot[0]),
 		ARTIFACT("Artifact", "me.neoblade298.neorogue.equipment.artifacts", new EquipSlot[0]);
-
+		
 		private String display, pkg;
 		private EquipSlot[] slots;
-
+		
 		private EquipmentType(String display, String pkg, EquipSlot[] slots) {
 			this.display = display;
 			this.slots = slots;
 		}
-
+		
 		public String getDisplay() {
 			return display;
 		}
-
+		
 		public EquipSlot[] getSlots() {
 			return slots;
 		}
-
+		
 		public boolean canEquip(EquipSlot es) {
 			for (EquipSlot slot : slots) {
-				if (slot == es) return true;
+				if (slot == es)
+					return true;
 			}
 			return false;
 		}
-
+		
 		public String getPackage() {
 			return pkg;
 		}
 	}
-
+	
 	public static DropTableSet<Artifact> copyArtifactsDropSet(EquipmentClass... ecs) {
 		return artifacts.clone(ecs);
 	}
-
+	
 	public static enum EquipSlot {
 		ARMOR("Armor"), ACCESSORY("Accessory"), OFFHAND("Offhand"), HOTBAR("Hotbar"), KEYBIND("Keybind"), // Hotbar +
 		// other
 		// binds
 		STORAGE("Storage");
-
+		
 		private String display;
-
+		
 		private EquipSlot(String display) {
 			this.display = display;
 		}
-
+		
 		public String getDisplay() {
 			return display;
 		}
@@ -1294,17 +1216,18 @@ public abstract class Equipment implements Comparable<Equipment> {
 			}
 		}
 	}
-
+	
 	public static class DropTableSet<E> {
 		protected HashMap<EquipmentClass, HashMap<Integer, DropTable<E>>> droptables = new HashMap<EquipmentClass, HashMap<Integer, DropTable<E>>>();
-
+		
 		public DropTableSet() {
 			reload();
 		}
-
+		
 		private DropTableSet(DropTableSet<E> original, EquipmentClass... ecs) {
 			for (EquipmentClass ec : ecs) {
-				if (!original.droptables.containsKey(ec)) continue;
+				if (!original.droptables.containsKey(ec))
+					continue;
 				HashMap<Integer, DropTable<E>> map = new HashMap<Integer, DropTable<E>>();
 				for (Entry<Integer, DropTable<E>> ent2 : original.droptables.get(ec).entrySet()) {
 					map.put(ent2.getKey(), ent2.getValue().clone());
@@ -1312,11 +1235,11 @@ public abstract class Equipment implements Comparable<Equipment> {
 				droptables.put(ec, map);
 			}
 		}
-
+		
 		public DropTableSet<E> clone(EquipmentClass... ecs) {
 			return new DropTableSet<E>(this, ecs);
 		}
-
+		
 		public void reload() {
 			for (EquipmentClass ec : EquipmentClass.values()) {
 				HashMap<Integer, DropTable<E>> tables = new HashMap<Integer, DropTable<E>>();
@@ -1326,7 +1249,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 				droptables.put(ec, tables);
 			}
 		}
-
+		
 		public void remove(E drop) {
 			for (HashMap<Integer, DropTable<E>> map : droptables.values()) {
 				for (DropTable<E> table : map.values()) {
@@ -1334,7 +1257,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 				}
 			}
 		}
-
+		
 		public void add(EquipmentClass[] ecs, int value, E drop) {
 			for (EquipmentClass ec : ecs) {
 				HashMap<Integer, DropTable<E>> table = droptables.get(ec);
@@ -1349,7 +1272,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 				table.get(value + 2).add(drop, 1);
 			}
 		}
-
+		
 		public void addLenientWeight(EquipmentClass[] ecs, int value, E drop) {
 			for (EquipmentClass ec : ecs) {
 				HashMap<Integer, DropTable<E>> table = droptables.get(ec);
@@ -1372,7 +1295,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 				table.get(value + 4).add(drop, 1);
 			}
 		}
-
+		
 		public ArrayList<E> getMultiple(int value, int numDrops, EquipmentClass... ec) {
 			ArrayList<E> list = new ArrayList<E>();
 			DropTable<E> table;
@@ -1384,33 +1307,33 @@ public abstract class Equipment implements Comparable<Equipment> {
 						tables.add(temp, temp.getTotalWeight());
 					}
 					table = tables.get();
-				}
-				else {
+				} else {
 					table = droptables.get(ec[0]).get(value);
 				}
-
+				
 				list.add(table.get());
 			}
 			return list;
 		}
-
+		
 		@Override
 		public String toString() {
 			return droptables.toString();
 		}
 	}
-
+	
 	@Override
 	public int compareTo(Equipment o) {
 		int comp = this.id.compareTo(o.id);
-		if (comp != 0) return comp;
+		if (comp != 0)
+			return comp;
 		return Boolean.compare(this.isUpgraded, o.isUpgraded);
 	}
-
+	
 	public static Set<String> getEquipmentIds() {
 		return equipment.keySet();
 	}
-
+	
 	public static Collection<Equipment> getAll() {
 		return equipment.values();
 	}
