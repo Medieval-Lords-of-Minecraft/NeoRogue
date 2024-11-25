@@ -72,7 +72,7 @@ public class PlayerFightData extends FightData {
 	private double maxStamina, maxMana, maxHealth;
 	private double staminaRegen, manaRegen;
 	private double sprintCost = 4;
-	private boolean isDead, ignoreCooldowns;
+	private boolean isDead, ignoreCooldowns, hasSprinted;
 	private AmmunitionInstance ammo = null;
 	
 	private FightStatistics stats = new FightStatistics(this);
@@ -135,6 +135,13 @@ public class PlayerFightData extends FightData {
 		else {
 			inv.setItem(EquipmentSlot.OFF_HAND, null);
 		}
+
+		// Initialize static triggers
+		addTrigger("SPRINT", Trigger.TOGGLE_SPRINT, (pdata, in) -> {
+			// Toggling sprint on or off both imply the player sprinted this tick
+			hasSprinted = true;
+			return TriggerResult.keep();
+		});
 		
 		// Sort triggers by priority
 		for (ArrayList<PriorityAction> list : triggers.values()) {
@@ -613,7 +620,8 @@ public class PlayerFightData extends FightData {
 		@Override
 		public TickResult run() {
 			addMana(manaRegen);
-			addStamina(p.isSprinting() ? staminaRegen - sprintCost : staminaRegen);
+			addStamina(hasSprinted || p.isSprinting() ? staminaRegen - sprintCost : staminaRegen);
+			hasSprinted = false;
 			updateBoardLines();
 			FightInstance.trigger(p, Trigger.PLAYER_TICK, null);
 			return TickResult.KEEP;

@@ -38,7 +38,6 @@ public class RapidFire extends Equipment {
 		super(ID, "Rapid Fire", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(20, 5, 13, 8));
-		properties.addUpgrades(PropertyType.RANGE);
 		thres = isUpgraded ? 7 : 10;
 		damage = 10;
 	}

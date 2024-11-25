@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.abilities;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.DescUtil;
@@ -39,6 +40,7 @@ public class Posturing extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		ItemStack icon = item.clone();
 		StandardPriorityAction act = new StandardPriorityAction(id);
 		act.setAction((pdata, in) -> {
 		if (!p.isSneaking()) return TriggerResult.keep();
@@ -48,6 +50,13 @@ public class Posturing extends Equipment {
 				Sounds.enchant.play(p, p);
 				data.addBuff(data, true, false, BuffType.GENERAL, inc);
 				act.addCount(-time);
+				if (act.getBool()) {
+					icon.setAmount(icon.getAmount() + 1);
+					p.getInventory().setItem(EquipSlot.convertSlot(es, slot), icon);
+				}
+				else {
+					act.setBool(true);
+				}
 			}
 			return TriggerResult.keep();
 		});

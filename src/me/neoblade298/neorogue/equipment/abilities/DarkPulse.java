@@ -44,7 +44,7 @@ public class DarkPulse extends Equipment {
 	
 	public DarkPulse(boolean isUpgraded) {
 		super(ID, "Dark Pulse", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 0, 15, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 0, 15, tp.range));
 		thres = isUpgraded ? 80 : 100;
 		pulse = isUpgraded ? 30 : 20;
 	}

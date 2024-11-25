@@ -10,6 +10,7 @@ import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageType;
@@ -28,6 +29,7 @@ public class Finale extends Equipment {
 	public Finale(boolean isUpgraded) {
 		super(ID, "Finale", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, isUpgraded ? 30 : 40, 12, 0));
+		properties.addUpgrades(PropertyType.STAMINA_COST);
 		damage = 360;
 		thres = isUpgraded ? 30 : 40;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
@@ -58,7 +60,7 @@ public class Finale extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FLINT,
-				"On cast, for every " + DescUtil.yellow(thres) + " stamina you have up to " + DescUtil.white(thres * 3) + 
+				"On cast, for every " + DescUtil.yellow(thres) + " stamina you have up to " + DescUtil.yellow(thres * 3) + 
 				", deal an additional " + GlossaryTag.PIERCING.tag(this, damage, false) + " damage on your next basic attack.");
 	}
 }

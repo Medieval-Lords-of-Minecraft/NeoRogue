@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Location;
@@ -104,6 +105,13 @@ public class FightData {
 		this.knockbackMult = mob != null ? mob.getKnockbackMultiplier() : 1;
 		if (am != null && am.getType().getDisplayName() != null && am.getType().getDisplayName().isPresent()) this.mobDisplay = am.getType().getDisplayName().get();
 		this.am = am;
+
+		// Set up base mob resistances
+		if (mob != null) {
+			for (Entry<BuffType, Integer> ent : mob.getResistances().entrySet()) {
+				addBuff(this, false, true, ent.getKey(), (double) ent.getValue() / 100);
+			}
+		}
 	}
 	
 	public UUID getUniqueId() {

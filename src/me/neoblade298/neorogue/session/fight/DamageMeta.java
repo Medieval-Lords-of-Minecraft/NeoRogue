@@ -40,14 +40,9 @@ public class DamageMeta {
 	private DamageMeta returnDamage;
 	
 	static {
-		// Currently unused because they removed armor?
 		armoredEntities.add(EntityType.ZOMBIE);
 		armoredEntities.add(EntityType.HUSK);
-		armoredEntities.add(EntityType.SKELETON);
-		armoredEntities.add(EntityType.STRAY);
-		armoredEntities.add(EntityType.WITHER_SKELETON);
 		armoredEntities.add(EntityType.DROWNED);
-		armoredEntities.add(EntityType.GUARDIAN);
 	}
 	
 	public DamageMeta(FightData data) {
@@ -376,13 +371,19 @@ public class DamageMeta {
 			damage = Math.max(0, shields.useShields(damage));
 		}
 		
-		// trigger received health damage
-		if (recipient instanceof PlayerFightData && (damage > 0 || ignoreShieldsDamage > 0)) {
+		if (recipient instanceof PlayerFightData) {
 			PlayerFightData pdata = (PlayerFightData) recipient;
-			ReceivedHealthDamageEvent ev = new ReceivedHealthDamageEvent(damager, this, damage, ignoreShieldsDamage);
-			if (pdata.runActions(pdata, Trigger.RECEIVED_HEALTH_DAMAGE, ev)) {
-				damage = 0;
-				ignoreShieldsDamage = 0;
+			// trigger received health damage
+			if (damage > 0 || ignoreShieldsDamage > 0) {
+				ReceivedHealthDamageEvent ev = new ReceivedHealthDamageEvent(damager, this, damage, ignoreShieldsDamage);
+				if (pdata.runActions(pdata, Trigger.RECEIVED_HEALTH_DAMAGE, ev)) {
+					damage = 0;
+					ignoreShieldsDamage = 0;
+				}
+			}
+			// all damage was mitigated via buffs or shields
+			else {
+				Sounds.block.play((Player) recipient.getEntity(), recipient.getEntity());
 			}
 		}
 		double finalDamage = damage + ignoreShieldsDamage + target.getAbsorptionAmount();

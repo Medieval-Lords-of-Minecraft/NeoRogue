@@ -36,7 +36,7 @@ public class Setup extends Equipment {
 	private static final TargetProperties tp = TargetProperties.radius(2, true, TargetType.ENEMY);
 	
 	public Setup(boolean isUpgraded) {
-		super(ID, "Setup", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
+		super(ID, "Setup", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.none());
 		time = 6;
 		inc = isUpgraded ? 10 : 5;
@@ -67,7 +67,7 @@ public class Setup extends Equipment {
 				else {
 					act.setBool(true);
 				}
-				p.getInventory().setItem(slot, icon);
+				p.getInventory().setItem(EquipSlot.convertSlot(es, slot), icon);
 			}
 			return TriggerResult.keep();
 		});

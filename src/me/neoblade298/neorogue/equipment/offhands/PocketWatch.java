@@ -101,7 +101,7 @@ public class PocketWatch extends Equipment {
 	@Override
 	public void setupItem() {
 		String usesString = isUpgraded ? "Twice" : "Once";
-		item = createItem(Material.CLOCK, "<yellow>" + usesString + "</yellow> per fight, right (left for <gold>Archer<gold>) click to" +
+		item = createItem(Material.CLOCK, "<yellow>" + usesString + "</yellow> per fight, right (left for <gold>Archer</gold>) click to" +
 				" set your health, mana, stamina, and location to what it was <white>2</white> seconds ago.");
 	}
 }

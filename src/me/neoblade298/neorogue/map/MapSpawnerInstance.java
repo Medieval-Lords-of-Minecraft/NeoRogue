@@ -1,6 +1,5 @@
 package me.neoblade298.neorogue.map;
 
-import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Location;
@@ -13,7 +12,6 @@ import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.Mob;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
 
 public class MapSpawnerInstance {
 	private Session s;
@@ -65,9 +63,6 @@ public class MapSpawnerInstance {
 			
 			UUID uuid = am.getEntity().getUniqueId();
 			FightData fd = new FightData((LivingEntity) am.getEntity().getBukkitEntity(), am, origin.getMob(), this);
-			for (Entry<BuffType, Integer> ent : origin.getMob().getResistances().entrySet()) {
-				fd.addBuff(fd, false, true, ent.getKey(), (double) ent.getValue() / 100);
-			}
 			FightInstance.putFightData(uuid, fd);
 			activeMobs += origin.getMob().getAmount();
 		}

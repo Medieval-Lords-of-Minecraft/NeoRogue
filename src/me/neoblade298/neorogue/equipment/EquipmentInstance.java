@@ -78,15 +78,7 @@ public class EquipmentInstance extends PriorityAction {
 		this.staminaCost = eq.getProperties().get(PropertyType.STAMINA_COST);
 		this.cooldown = eq.getProperties().get(PropertyType.COOLDOWN);
 		this.slot = slot;
-		switch (es) {
-			case ACCESSORY: this.invSlot = slot + 21; break;
-			case ARMOR: this.invSlot = slot + 18; break;
-			case HOTBAR: this.invSlot = slot; break;
-			case KEYBIND: this.invSlot = slot + 27; break;
-			case OFFHAND: this.invSlot = 40; break;
-			default:
-				break;
-		}
+		this.invSlot = EquipSlot.convertSlot(es, slot);
 		this.es = es;
 		this.p = data.getPlayer();
 		this.icon = eq.getItem();

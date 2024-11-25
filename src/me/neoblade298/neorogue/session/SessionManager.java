@@ -496,7 +496,7 @@ public class SessionManager implements Listener {
 			FightData fd = new FightData((LivingEntity) ent,
 					NeoRogue.mythicApi.getMythicMobInstance(ent), mob, (MapSpawnerInstance) null);
 			FightInstance.putFightData(uuid, fd);
-			if (e.getSpawnReason() == SpawnReason.SUMMON) {
+			if (e.getSpawnReason() == SpawnReason.SUMMON || e.getSpawnReason() == SpawnReason.COMMAND) {
 				if (fd.getInstance() == null) return;
 				FightInstance.scaleMob(fd.getInstance().getSession(), mob, mythicMob, e.getMob());
 				fd.getInstance().addSpawnCounter(mob.getSpawnValue());

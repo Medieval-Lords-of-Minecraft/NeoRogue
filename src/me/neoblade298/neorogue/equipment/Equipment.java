@@ -1282,6 +1282,17 @@ public abstract class Equipment implements Comparable<Equipment> {
 		public String getDisplay() {
 			return display;
 		}
+
+		public static int convertSlot(EquipSlot es, int slot) {
+			switch (es) {
+				case ACCESSORY: return slot + 21;
+				case ARMOR: return slot + 18;
+				case HOTBAR: return slot;
+				case KEYBIND: return slot + 27;
+				case OFFHAND: return 40;
+				default: return -1;
+			}
+		}
 	}
 
 	public static class DropTableSet<E> {

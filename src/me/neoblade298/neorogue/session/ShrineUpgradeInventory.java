@@ -82,6 +82,7 @@ public class ShrineUpgradeInventory extends CoreInventory implements ShiftClicka
 			if (e.isShiftClick()) {
 				inst.useUpgrade(p.getUniqueId());
 			}
+			p.closeInventory();
 		}
 		else {
 			e.setCancelled(true);
