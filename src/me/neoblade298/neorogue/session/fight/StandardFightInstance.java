@@ -31,34 +31,34 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class StandardFightInstance extends FightInstance {
-	
-	private static final HashMap<Integer, Double> SCORE_REQUIRED = new HashMap<Integer, Double>();
 
+	private static final HashMap<Integer, Double> SCORE_REQUIRED = new HashMap<Integer, Double>();
+	
 	private BossBar timeBar, scoreBar;
 	private double time, score, scoreRequired;
 	private FightScore fightScore = FightScore.S;
 	private boolean isActive = true;
-
+	
 	static {
 		SCORE_REQUIRED.put(1, 15D);
 		SCORE_REQUIRED.put(2, 25D);
 		SCORE_REQUIRED.put(3, 35D);
 		SCORE_REQUIRED.put(4, 45D);
 	}
-
+	
 	public StandardFightInstance(Session s, Set<UUID> players, AreaType type, int nodesVisited) {
 		super(s, players);
-		double rand = NeoRogue.gen.nextDouble((nodesVisited + 1) / 8.0);
-		double min = 2 + nodesVisited / 8.0;
+		double rand = NeoRogue.gen.nextDouble((nodesVisited + 1) / 12.0);
+		double min = 2 + nodesVisited / 12.0;
 		int max = (int) Math.min(rand + min, 8);
 		map = Map.generate(type, max);
 	}
-
+	
 	public StandardFightInstance(Session s, Set<UUID> players, Map map) {
 		super(s, players);
 		this.map = map;
 	}
-	
+
 	@Override
 	protected void setupInstance(Session s) {
 		scoreRequired = SCORE_REQUIRED.getOrDefault(s.getParty().size(), SCORE_REQUIRED.get(4));
@@ -68,26 +68,26 @@ public class StandardFightInstance extends FightInstance {
 		bars.add(scoreBar);
 		bars.add(timeBar);
 		scoreBar.setProgress(0);
-
+		
 		for (Player p : s.getOnlinePlayers()) {
 			timeBar.addPlayer(p);
 			scoreBar.addPlayer(p);
 		}
-
+		
 		for (UUID uuid : s.getSpectators().keySet()) {
 			Player p = Bukkit.getPlayer(uuid);
 			timeBar.addPlayer(p);
 			scoreBar.addPlayer(p);
 		}
-
+		
 		time = fightScore.getThreshold();
-
+		
 		tasks.add(new BukkitRunnable() {
 			@Override
 			public void run() {
 				time--;
 				timeBar.setProgress(time / fightScore.getThreshold());
-
+				
 				if (time <= 0) {
 					if (fightScore.getNext() == null) {
 						this.cancel();
@@ -100,7 +100,7 @@ public class StandardFightInstance extends FightInstance {
 			}
 		}.runTaskTimer(NeoRogue.inst(), 20L, 20L));
 	}
-
+	
 	@Override
 	public void handleMobKill(String id, boolean playerKill) {
 		Mob mob = Mob.get(id);
@@ -108,10 +108,10 @@ public class StandardFightInstance extends FightInstance {
 			return;
 		if (!playerKill)
 			return;
-
+		
 		if (s.getInstance() != this)
 			return; // If we've moved on to reward instance don't spam the user
-			
+
 		score += mob.getKillValue();
 		scoreBar.setProgress(Math.min(1, score / scoreRequired));
 		if (score >= scoreRequired) {
@@ -135,7 +135,7 @@ public class StandardFightInstance extends FightInstance {
 			return;
 		}
 	}
-
+	
 	public static HashMap<UUID, ArrayList<Reward>> generateRewards(Session s, FightScore fightScore) {
 		HashMap<UUID, ArrayList<Reward>> rewards = new HashMap<UUID, ArrayList<Reward>>();
 		boolean dropPotion = false;
@@ -151,7 +151,7 @@ public class StandardFightInstance extends FightInstance {
 			RewardGoldEvent ev = new RewardGoldEvent(fightScore.getCoins());
 			data.trigger(SessionTrigger.REWARD_GOLD, ev);
 			list.add(new CoinsReward(ev.getAmount()));
-
+			
 			ArrayList<Equipment> equipDrops = new ArrayList<Equipment>();
 			EquipmentClass ec = data.getPlayerClass();
 			int value = s.getAreasCompleted();
@@ -175,7 +175,7 @@ public class StandardFightInstance extends FightInstance {
 				equipDrops.addAll(Equipment.getDrop(value, 2, ec, EquipmentClass.CLASSLESS));
 				break;
 			}
-
+			
 			list.add(new EquipmentChoiceReward(equipDrops));
 			equipDrops = new ArrayList<Equipment>(3);
 			equipDrops.add(Equipment.get("rubyShard", false));
@@ -184,38 +184,38 @@ public class StandardFightInstance extends FightInstance {
 			list.add(new EquipmentChoiceReward(equipDrops));
 			if (dropPotion)
 				list.add(new EquipmentReward(Equipment.getConsumable(value, ec, EquipmentClass.CLASSLESS)));
-
+			
 			rewards.put(uuid, list);
 		}
 		return rewards;
 	}
-
+	
 	@Override
 	public void cleanup() {
 		super.cleanup();
 		timeBar.removeAll();
 		scoreBar.removeAll();
 	}
-
+	
 	@Override
 	public String serializeInstanceData() {
 		return "STANDARD:" + map.serialize();
 	}
-	
+
 	@Override
 	public void addSpectator(Player p) {
 		timeBar.addPlayer(p);
 		scoreBar.addPlayer(p);
 	}
-	
+
 	@Override
 	public void removeSpectator(Player p) {
 		timeBar.removePlayer(p);
 		scoreBar.removePlayer(p);
 	}
-	
+
 	@Override
 	public void handlePlayerKickEvent(Player kicked) {
-
+		
 	}
 }
