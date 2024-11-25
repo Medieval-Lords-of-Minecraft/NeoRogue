@@ -57,6 +57,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class Session {
+	private static final boolean endless = true; // TEMP FOR NOW
+	
 	private Area area;
 	private UUID host;
 	private HashMap<UUID, PlayerSessionData> party = new HashMap<UUID, PlayerSessionData>();
@@ -539,7 +541,7 @@ public class Session {
 			}
 		}
 		
-		generateArea(AreaType.getNextArea(area.getType()));
+		generateArea(AreaType.getNextArea(area.getType(), endless));
 	}
 	
 	public Node getNode() {
