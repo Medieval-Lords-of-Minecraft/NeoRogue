@@ -46,12 +46,7 @@ public class Flicker extends Equipment {
 			if (!inst.active) return TriggerResult.keep();
 			DealtDamageEvent ev = (DealtDamageEvent) in;
 			LivingEntity trg = ev.getTarget();
-			if (!inst.marks.containsKey(trg)) {
-				inst.marks.put(trg, inst.marks.getOrDefault(trg, 0) + 1);
-			}
-			else {
-				inst.marks.put(trg, 1);
-			}
+			inst.marks.put(trg, inst.marks.getOrDefault(trg, 0) + 1);
 			return TriggerResult.keep();
 		});
 	}
@@ -74,9 +69,10 @@ public class Flicker extends Equipment {
 						active = false;
 						for (Entry<LivingEntity, Integer> ent : marks.entrySet()) {
 							if (ent.getValue() < 1) continue;
-							DamageMeta dm = new DamageMeta(pdata, damage * ent.getValue(), DamageType.DARK);
+							DamageMeta dm = new DamageMeta(pdata, damage * Math.min(ent.getValue(), 5), DamageType.DARK);
 							FightInstance.dealDamage(dm, ent.getKey());
 						}
+						marks.clear();
 					}
 				}.runTaskLater(NeoRogue.inst(), 60L));
 				return TriggerResult.keep();

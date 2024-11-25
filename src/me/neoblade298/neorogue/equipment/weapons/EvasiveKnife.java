@@ -15,6 +15,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class EvasiveKnife extends Equipment {
@@ -42,7 +43,13 @@ public class EvasiveKnife extends Equipment {
 			LeftClickHitEvent ev = (LeftClickHitEvent) in;
 			DamageMeta dm = new DamageMeta(pdata, base + (data.getStamina() >= stam ? dmg : 0), DamageType.SLASHING);
 			weaponSwingAndDamage(p, data, ev.getTarget(), dm);
-			
+			return TriggerResult.keep();
+		});
+		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, act);
+
+		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
+			BasicAttackEvent ev = (BasicAttackEvent) in;
+			if (ev.getWeapon() != this) return TriggerResult.keep();
 			act.addCount(1);
 			if (act.getCount() >= hits) {
 				act.setCount(0);
@@ -50,7 +57,6 @@ public class EvasiveKnife extends Equipment {
 			}
 			return TriggerResult.keep();
 		});
-		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, act);
 	}
 
 	@Override
