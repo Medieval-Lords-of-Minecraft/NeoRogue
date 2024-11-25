@@ -75,7 +75,7 @@ public class PiercingVenom extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GREEN_DYE,
-				"On cast, your basic attacks apply " + GlossaryTag.POISON.tag(this, poison, true) + " for <yellow>" + dur + "</yellow> seconds and deal <white>1</white> additional "
+				"On cast, your basic attacks apply " + GlossaryTag.POISON.tag(this, poison, true) + " seconds and deal <white>1</white> additional "
 						+ GlossaryTag.PIERCING.tag(this) + " damage for every <yellow>" + threshold + "</yellow> stacks of poison the enemy has.");
 	}
 }

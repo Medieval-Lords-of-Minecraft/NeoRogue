@@ -43,7 +43,7 @@ public class AcidBomb extends Equipment {
 	private int poison;
 	
 	public AcidBomb(boolean isUpgraded) {
-		super(ID, "Acid Bomb", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
+		super(ID, "Acid Bomb", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 0, 12, 0));
 		poison = isUpgraded ? 45 : 30;
 	}
@@ -86,7 +86,7 @@ public class AcidBomb extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.POTION,
 				"On cast, drop an acid bomb that detonates after <white>3</white> seconds. After detonation, for <white>5</white> seconds,"
-				+ " enemies within the radius get " + GlossaryTag.POISON.tag(this, poison, false) + " [<white>3s</white>].");
+				+ " enemies within the radius get " + GlossaryTag.POISON.tag(this, poison, false) + ".");
 		PotionMeta pm = (PotionMeta) item.getItemMeta();
 		pm.setColor(Color.LIME);
 		item.setItemMeta(pm);

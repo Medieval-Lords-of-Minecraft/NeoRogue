@@ -61,7 +61,7 @@ public class Concoct extends Equipment {
 			BasicAttackEvent ev = (BasicAttackEvent) in;
 			Sounds.extinguish.play(p, p);
 			int mult = (int) ((System.currentTimeMillis() - inst.getTime()) / 1000);
-			FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, poison * mult, 60);
+			FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, poison * mult, -1);
 			inst.setTime(-1);
 			return TriggerResult.keep();
 		});
@@ -70,7 +70,7 @@ public class Concoct extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.DRAGON_BREATH,
-				"On cast, start charging. Your next basic attack applies " + GlossaryTag.POISON.tag(this, poison, true) + " [<white>3s</white>] "
+				"On cast, start charging. Your next basic attack applies " + GlossaryTag.POISON.tag(this, poison, true) + " "
 						+ "for every second you charged, up to <white>5 seconds</white>.");
 	}
 }

@@ -21,7 +21,9 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
+import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
@@ -31,9 +33,9 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class AzureCutter extends Artifact {
 	private static final String ID = "azureCutter";
-	private static final ParticleContainer part = new ParticleContainer(Particle.FIREWORK).count(20).speed(0.1).spread(0.1, 0.1);
+	private static final ParticleContainer part = new ParticleContainer(Particle.FIREWORK).count(1).speed(0.005).spread(0.1, 0.1);
 	private static final TargetProperties tp = TargetProperties.radius(8, false, TargetType.ENEMY);
-	private static int thres = 10, damage = 100;
+	private static int thres = 7, damage = 100;
 
 	public AzureCutter() {
 		super(ID, "Azure Cutter", Rarity.UNCOMMON, EquipmentClass.THIEF);
@@ -46,7 +48,7 @@ public class AzureCutter extends Artifact {
 	@Override
 	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
 		StandardPriorityAction act = new StandardPriorityAction(id);
-		ProjectileGroup proj = new ProjectileGroup(new AzureCutterProjectile(p));
+		ProjectileGroup proj = new ProjectileGroup(new AzureCutterProjectile(data));
 		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
 			act.addCount(1);
 			if (act.getCount() < thres)  return TriggerResult.keep();
@@ -60,12 +62,15 @@ public class AzureCutter extends Artifact {
 	}
 
 	private class AzureCutterProjectile extends Projectile {
+		private PlayerFightData data;
 		private Player p;
 
-		public AzureCutterProjectile(Player p) {
+		public AzureCutterProjectile(PlayerFightData data) {
 			super(0.8, tp.range, 1);
 			this.size(1, 1);
-			this.p = p;
+			this.initialY(1.5);
+			this.data = data;
+			this.p = data.getPlayer();
 		}
 
 		@Override
@@ -76,6 +81,7 @@ public class AzureCutter extends Artifact {
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			Sounds.breaks.play(p, hit.getEntity());
+			FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.PIERCING), hit.getEntity());
 		}
 
 		@Override

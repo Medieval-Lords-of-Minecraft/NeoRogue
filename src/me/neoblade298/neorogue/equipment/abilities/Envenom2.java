@@ -13,7 +13,6 @@ import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
-import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardEquipmentInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -34,8 +33,7 @@ public class Envenom2 extends Equipment {
 	public Envenom2(boolean isUpgraded) {
 		super(ID, "Envenom II", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 10, 12, 0));
-		properties.addUpgrades(PropertyType.COOLDOWN);
-		poison = 5;
+		poison = isUpgraded ? 7 : 5;
 		dur = 3;
 	}
 	
