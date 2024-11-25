@@ -15,24 +15,24 @@ public class OmniGem extends Artifact {
 	private static final String ID = "omniGem";
 	private int flat;
 	private double shields, regen;
-	
+
 	public OmniGem() {
 		super(ID, "Omni-Gem", Rarity.RARE, EquipmentClass.CLASSLESS);
 		canStack = true;
 		flat = 5;
 		shields = 2;
-		regen = 2;
+		regen = 0.2;
 	}
-
+	
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
-	
+
 	@Override
 	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
 		data.addPermanentShield(p.getUniqueId(), ai.getAmount() * shields);
 	}
-	
+
 	@Override
 	public void onAcquire(PlayerSessionData data) {
 		data.addMaxHealth(flat);
@@ -41,12 +41,12 @@ public class OmniGem extends Artifact {
 		data.addMaxMana(flat);
 		data.addManaRegen(regen);
 	}
-	
+
 	@Override
 	public void onInitializeSession(PlayerSessionData data) {
-
+		
 	}
-	
+
 	@Override
 	public void setupItem() {
 		item = createItem(
