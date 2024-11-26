@@ -3,4 +3,5 @@ bin/
 .classpath
 .project
 .settings
+.vscode
 NeoRogue.jar
