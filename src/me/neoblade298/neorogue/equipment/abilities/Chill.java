@@ -36,7 +36,7 @@ public class Chill extends Equipment {
 	public Chill(boolean isUpgraded) {
 		super(ID, "Chill", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 0, 12, 0));
-		frost = isUpgraded ? 40 : 30;
+		frost = isUpgraded ? 75 : 50;
 	}
 	
 	public static Equipment get() {

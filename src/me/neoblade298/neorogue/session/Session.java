@@ -49,6 +49,8 @@ import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.area.Node;
+import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.MapViewer;
 import me.neoblade298.neorogue.player.PlayerSessionData;
@@ -448,6 +450,18 @@ public class Session {
 		}
 		this.inst = inst;
 		inst.start();
+		for (PlayerSessionData psd : party.values()) {
+			System.out.println("Debug for " + psd.getPlayer().getName());
+			for (EquipSlot es : EquipSlot.values()) {
+				String line = es + ": ";
+				Equipment[] eqs = psd.getEquipment(es);
+				for (int i = 0; i < eqs.length; i++) {
+					Equipment eq = eqs[i];
+					line += i + (eq == null ? "-" : eq.toString()) + " ";
+				}
+				System.out.println(line);
+			}
+		}
 		
 		// Auto-save
 		if (firstLoad)

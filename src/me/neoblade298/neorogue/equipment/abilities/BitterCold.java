@@ -29,13 +29,14 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
 public class BitterCold extends Equipment {
 	private static final String ID = "bitterCold";
 	private int stacks, damage;
+	private static final int THRESHOLD = 100;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.BLOCK).blockData(Material.ICE.createBlockData()).count(50).spread(1, 1).offsetY(1);
 	private static final SoundContainer sc = new SoundContainer(Sound.BLOCK_GLASS_BREAK);
 	
 	public BitterCold(boolean isUpgraded) {
 		super(ID, "Bitter Cold", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.none());
-		stacks = isUpgraded ? 5 : 3;
+		stacks = isUpgraded ? 6 : 4;
 		damage = isUpgraded ? 300 : 200;
 	}
 	
@@ -56,7 +57,7 @@ public class BitterCold extends Equipment {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
 			if (!ev.isStatus(StatusType.FROST)) return TriggerResult.keep();
 			FightData fd = ev.getTarget();
-			if (fd.getStatus(StatusType.FROST).getStacks() < 50) return TriggerResult.keep();
+			if (fd.getStatus(StatusType.FROST).getStacks() < THRESHOLD) return TriggerResult.keep();
 			if (fd.hasStatus(p.getName() + "-bitterCold")) return TriggerResult.keep();
 			Status s = new BasicStatus(p.getName() + "-bitterCold", data, StatusClass.NONE, true);
 			fd.applyStatus(s, data, 1, -1);
@@ -71,6 +72,6 @@ public class BitterCold extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.PACKED_ICE,
 				"Passive. All applications of " + GlossaryTag.FROST.tag(this) + " are increased by " + DescUtil.yellow(stacks) + ". Once per enemy, applying " +
-				GlossaryTag.FROST.tag(this, 50, false) + " to them will deal " + GlossaryTag.ICE.tag(this, damage, true) + " damage to them.");
+				GlossaryTag.FROST.tag(this, THRESHOLD, false) + " to them will deal " + GlossaryTag.ICE.tag(this, damage, true) + " damage to them.");
 	}
 }

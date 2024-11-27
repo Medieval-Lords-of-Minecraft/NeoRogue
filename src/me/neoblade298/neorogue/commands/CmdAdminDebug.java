@@ -1,22 +1,19 @@
 package me.neoblade298.neorogue.commands;
 
-import java.util.UUID;
-
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SkullMeta;
-
-import com.destroystokyo.paper.profile.PlayerProfile;
-import com.destroystokyo.paper.profile.ProfileProperty;
 
 import me.neoblade298.neocore.bukkit.commands.Subcommand;
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
+import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
+import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.SessionManager;
 
 public class CmdAdminDebug extends Subcommand {
-	private String b64 = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDM3ODYyY2RjMTU5OTk4ZWQ2YjZmZGNjYWFhNDY3NTg2N2Q0NDg0ZGI1MTJhODRjMzY3ZmFiZjRjYWY2MCJ9fX0";
 
 	public CmdAdminDebug(String key, String desc, String perm, SubcommandRunner runner) {
 		super(key, desc, perm, runner);
@@ -25,13 +22,23 @@ public class CmdAdminDebug extends Subcommand {
 	}
 
 	public void run(CommandSender s, String[] args) {
-		Player p = Bukkit.getPlayer("Ascheladd");
-		ItemStack item = new ItemStack(Material.PLAYER_HEAD);
-		SkullMeta meta = (SkullMeta) item.getItemMeta();
-		PlayerProfile profile = Bukkit.createProfile(UUID.randomUUID());
-		profile.setProperty(new ProfileProperty("textures", b64));
-		meta.setPlayerProfile(profile);
-		item.setItemMeta(meta);
-		p.getInventory().addItem(item);
+		Player p = args.length >= 1 ? Bukkit.getPlayer(args[0]) : (Player) s;
+		Session sess = SessionManager.getSession(p);
+
+		if (sess == null) {
+			Util.displayError(p, "Player is not currently in a session!");
+			return;
+		}
+
+		PlayerSessionData data = sess.getParty().get(p.getUniqueId());
+		for (EquipSlot es : EquipSlot.values()) {
+			String line = es + ": ";
+			Equipment[] eqs = data.getEquipment(es);
+			for (int i = 0; i < eqs.length; i++) {
+				Equipment eq = eqs[i];
+				line += i + (eq == null ? "-" : eq.toString()) + " ";
+			}
+			Util.msg(p, line);
+		}
 	}
 }

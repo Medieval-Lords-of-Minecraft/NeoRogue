@@ -44,7 +44,7 @@ public class Brand extends Equipment {
 	public Brand(boolean isUpgraded) {
 		super(ID, "Brand", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 0, 12, tp.range).add(PropertyType.AREA_OF_EFFECT, aoe.range));
-		burn = isUpgraded ? 60 : 40;
+		burn = isUpgraded ? 100 : 70;
 		damage = isUpgraded ? 0.8 : 0.5;
 	}
 	

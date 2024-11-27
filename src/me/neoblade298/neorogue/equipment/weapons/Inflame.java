@@ -38,8 +38,8 @@ public class Inflame extends Equipment {
 				EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(20, 5, 13, 8));
 		damage = isUpgraded ? 140 : 100;
-		stacks = 20;
-		growth = isUpgraded ? 15 : 10;
+		stacks = 50;
+		growth = isUpgraded ? 25 : 15;
 	}
 	
 	public static Equipment get() {

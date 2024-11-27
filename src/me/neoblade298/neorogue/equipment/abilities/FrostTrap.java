@@ -41,7 +41,7 @@ public class FrostTrap extends Equipment {
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 0, 15, 0));
 		
 		damage = 80;
-		frost = isUpgraded ? 25 : 15;
+		frost = isUpgraded ? 150 : 100;
 	}
 	
 	public static Equipment get() {

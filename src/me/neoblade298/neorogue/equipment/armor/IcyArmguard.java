@@ -23,7 +23,7 @@ public class IcyArmguard extends Equipment {
 				EquipmentType.ARMOR);
 		damageReduction = 4;
 		shields = isUpgraded ? 3 : 2;
-		thres = isUpgraded ? 5 : 7;
+		thres = isUpgraded ? 40 : 60;
 	}
 	
 	public static Equipment get() {

@@ -38,7 +38,7 @@ public class Disorient extends Equipment {
 		
 		inc = 21;
 		damage = isUpgraded ? 60 : 40;
-		insanity = isUpgraded ? 5 : 3;
+		insanity = isUpgraded ? 30 : 20;
 	}
 	
 	public static Equipment get() {

@@ -48,13 +48,14 @@ public class EscapePlan2 extends Equipment {
 	}
 	
 	private class EscapePlanInstance extends EquipmentInstance {
-		boolean active = true;
+		boolean active = false;
 		public EscapePlanInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
 			super(data, eq, slot, es);
 			action = (pdata1, in1) -> {
 				Player p = data.getPlayer();
 				Sounds.equip.play(p, p);
 				Location loc = p.getLocation();
+				active = true;
 				
 				pdata1.addTask(new BukkitRunnable() {
 					public void run() {
@@ -74,11 +75,12 @@ public class EscapePlan2 extends Equipment {
 				}, 200L);
 				
 				pdata1.addTrigger(ID, Trigger.RECEIVED_DAMAGE, (pdata2, in2) -> {
+					if (!active) return TriggerResult.remove();
+					active = false;
 					ReceivedDamageEvent ev = (ReceivedDamageEvent) in2;
 					DamageMeta dm = new DamageMeta(pdata1, activateDamage, DamageType.PIERCING);
 					FightInstance.dealDamage(dm, ev.getDamager().getEntity());
 					Sounds.teleport.play(p, p);
-					active = false;
 					p.teleport(loc);
 					return TriggerResult.of(true, true);
 				});

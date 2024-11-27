@@ -22,7 +22,7 @@ public class IcySigil extends Equipment {
 		super(ID, "Icy Sigil", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.ARMOR);
 				def = isUpgraded ? 5 : 3;
-		thres = 10;
+		thres = 30;
 	}
 	
 	public static Equipment get() {

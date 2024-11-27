@@ -24,6 +24,6 @@ public enum AreaType {
 	}
 	
 	public static AreaType getNextArea(AreaType type, boolean endless) {
-		return endless ? LOW_DISTRICT : nextArea.get(type); // TODO: update in future as new areas are completed
+		return endless ? LOW_DISTRICT : nextArea.get(type);
 	}
 }

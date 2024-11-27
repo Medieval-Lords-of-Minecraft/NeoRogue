@@ -7,6 +7,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
@@ -69,7 +70,7 @@ public class StoneAxe extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STONE_AXE, "At <white>20</white> stacks of " + GlossaryTag.BERSERK.tag(this) + ", left clicks deal damage in a cone."
+		item = createItem(Material.STONE_AXE, "At " + DescUtil.white(BERSERK_THRESHOLD) + " stacks of " + GlossaryTag.BERSERK.tag(this) + ", left clicks deal damage in a cone."
 				+ " Only the closest target is affected by on-hit effects.");
 	}
 }

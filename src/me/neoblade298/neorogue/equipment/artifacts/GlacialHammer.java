@@ -5,6 +5,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -17,9 +19,10 @@ import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
 public class GlacialHammer extends Artifact {
 	private static final String ID = "glacialHammer";
+	private static final int cost = 2;
 
 	public GlacialHammer() {
-		super(ID, "Glacial Hammer", Rarity.RARE, EquipmentClass.CLASSLESS);
+		super(ID, "Glacial Hammer", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
 	}
 	
 	public static Equipment get() {
@@ -28,10 +31,15 @@ public class GlacialHammer extends Artifact {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
+		ActionMeta am = new ActionMeta();
 		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
+			if (am.getTime() + 1000 > System.currentTimeMillis()) {
+				return TriggerResult.keep();
+			}
 			if (data.getMana() > data.getMaxMana() * 0.5) {
 				BasicAttackEvent ev = (BasicAttackEvent) in;
-				data.addMana(-3);
+				am.setTime(System.currentTimeMillis());
+				data.addMana(-cost);
 				ev.getTarget().addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 20, 0));
 			}
 			return TriggerResult.keep();
@@ -52,6 +60,6 @@ public class GlacialHammer extends Artifact {
 	public void setupItem() {
 		item = createItem(Material.GOLDEN_SHOVEL, 
 				"Landing a basic attack when you're above <white>50%</white> mana gives the enemy slowness <white>1</white>"
-				+ " [<white>1s</white>] and costs <white>3</white> mana.");
+				+ " [<white>1s</white>] and costs " + DescUtil.white(cost) + " mana. <white>1s</white> cooldown.");
 	}
 }

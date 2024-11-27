@@ -31,8 +31,8 @@ public class Malice extends Equipment {
 	public Malice(boolean isUpgraded) {
 		super(ID, "Malice", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 3, 0));
-			stacks = 4;
-			thres = isUpgraded ? 40 : 60;
+			stacks = 12;
+			thres = isUpgraded ? 75 : 100;
 	}
 	
 	public static Equipment get() {

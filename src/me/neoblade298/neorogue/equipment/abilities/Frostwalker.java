@@ -41,7 +41,7 @@ public class Frostwalker extends Equipment {
 	public Frostwalker(boolean isUpgraded) {
 		super(ID, "Frostwalker", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.none());
-		stacks = isUpgraded ? 4 : 3;
+		stacks = isUpgraded ? 25 : 15;
 		reduc = isUpgraded ? 25 : 15;
 	}
 	

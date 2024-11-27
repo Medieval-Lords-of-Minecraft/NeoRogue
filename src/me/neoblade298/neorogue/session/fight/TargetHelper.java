@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.function.Predicate;
 
 import org.bukkit.Location;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.RayTraceResult;
@@ -153,10 +152,10 @@ public class TargetHelper {
 	static boolean isValidTarget(final LivingEntity source, final LivingEntity target,
 			boolean throughWall) {
 		return target != source
+				&& NeoRogue.mythicApi.isMythicMob(target)
+				&& Mob.get(NeoRogue.mythicApi.getMythicMobInstance(target).getType().getInternalName()) != null
 				&& (throughWall ||
 						!isObstructed(source.getEyeLocation(), target.getEyeLocation()) ||
-						!isObstructed(source.getEyeLocation(), target.getLocation()))
-				
-				&& target.getType() != EntityType.ARMOR_STAND;
+						!isObstructed(source.getEyeLocation(), target.getLocation()));
 	}
 }

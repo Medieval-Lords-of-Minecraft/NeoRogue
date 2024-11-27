@@ -27,14 +27,14 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreDealtDamageEvent;
 
 public class Cauterize extends Equipment {
 	private static final String ID = "cauterize";
-	private int dec = 25, stacks;
+	private int dec = 15, stacks;
 	private double damage;
 	private ItemStack activeIcon;
 	
 	public Cauterize(boolean isUpgraded) {
 		super(ID, "Cauterize", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 3, 0));
-			stacks = isUpgraded ? 5 : 3;
+			stacks = 15;
 			damage = isUpgraded ? 1.8 : 1.2;
 	}
 	
@@ -86,7 +86,7 @@ public class Cauterize extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.REDSTONE_TORCH,
 				"Toggleable, off by default. When active, your basic attacks are weakened by " + DescUtil.white(dec) + " in exchange for applying " +
-				GlossaryTag.INJURY.tag(this, stacks, true) + ". When inactive, dealing " + GlossaryTag.FIRE.tag(this) + " damage removes all stacks of " +
+				GlossaryTag.INJURY.tag(this, stacks, false) + ". When inactive, dealing " + GlossaryTag.FIRE.tag(this) + " damage removes all stacks of " +
 				GlossaryTag.INJURY.tag(this) + " and deals " + GlossaryTag.FIRE.tag(this, damage, true) + " damage per stack removed.");
 		activeIcon = item.withType(Material.TORCH);
 	}

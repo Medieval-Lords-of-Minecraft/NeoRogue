@@ -46,7 +46,7 @@ public class Darkness extends Equipment {
 		super(ID, "Darkness", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 0, 12, 0));
 		dark = isUpgraded ? 15 : 10;
-		insanity = isUpgraded ? 3 : 2;
+		insanity = isUpgraded ? 25 : 15;
 	}
 	
 	public static Equipment get() {
