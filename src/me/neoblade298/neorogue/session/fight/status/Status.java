@@ -139,35 +139,41 @@ public abstract class Status {
 	}
 	
 	public enum StatusType {
-		POISON("<dark_green>Poison</dark_green>", "&2Poison"),
-		REND("<red>Rend</red>", "&cRend"),
-		BURN("<gold>Burn</gold>", "&6Burn"),
-		FROST("<blue>Frost</blue>", "&9Frost"),
-		ELECTRIFIED("<yellow>Electrified</yellow>", "&eElectrified"),
-		CONCUSSED("<dark_green>Concussed</dark_green>", "&2Concussed"),
-		INSANITY("<dark_purple>Insanity</dark_purple>", "&5Insanity"),
-		SANCTIFIED("<white>Sanctified</white>", "&fSanctified"),
-		THORNS("<gold>Thorns</gold>", "&6Thorns"),
-		REFLECT("<light_purple>Reflect</light_purple>", "&dReflect"),
 		BERSERK("<dark_red>Berserk</dark_red>", "&4Berserk"),
-		STRENGTH("<red>Strength</red>", "&cStrength"),
-		INTELLECT("<blue>Intellect</blue>", "&9Intellect"),
-		PROTECT("<green>Protect</green>", "&aProtect"),
-		SHELL("<aqua>Shell</aqua>", "&3Shell"),
-		STEALTH("<dark_purple>Stealth</dark_purple>", "&5Stealth"),
+		BURN("<gold>Burn</gold>", "&6Burn"),
+		CONCUSSED("<dark_green>Concussed</dark_green>", "&2Concussed"),
+		ELECTRIFIED("<yellow>Electrified</yellow>", "&eElectrified"),
 		EVADE("<aqua>Evade</aqua>", "&3Evade"),
 		FOCUS("<aqua>Focus</aqua>", "&3Focus"),
+		FROST("<blue>Frost</blue>", "&9Frost"),
 		INJURY("<dark_red>Injury</dark_red>", "&4Injury"),
-		INVINCIBLE("<blue>Invincible</blue>", "&9Invincible"), // Hidden
-		SILENCED("<dark_gray>Silenced</dark_gray>", "&8Silenced"), // Hidden
-		CHANNELING("<dark_red>Channeling</dark_red>", "&4Channeling"); // Hidden
+		INSANITY("<dark_purple>Insanity</dark_purple>", "&5Insanity"),
+		INTELLECT("<blue>Intellect</blue>", "&9Intellect"),
+		POISON("<dark_green>Poison</dark_green>", "&2Poison"),
+		PROTECT("<green>Protect</green>", "&aProtect"),
+		REFLECT("<light_purple>Reflect</light_purple>", "&dReflect"),
+		REND("<red>Rend</red>", "&cRend"),
+		SANCTIFIED("<white>Sanctified</white>", "&fSanctified"),
+		SHELL("<aqua>Shell</aqua>", "&3Shell"),
+		STEALTH("<dark_purple>Stealth</dark_purple>", "&5Stealth"),
+		STRENGTH("<red>Strength</red>", "&cStrength"),
+		THORNS("<gold>Thorns</gold>", "&6Thorns"),
+		INVINCIBLE("<blue>Invincible</blue>", "&9Invincible", true), // Hidden
+		SILENCED("<dark_gray>Silenced</dark_gray>", "&8Silenced", true), // Hidden
+		CHANNELING("<dark_red>Channeling</dark_red>", "&4Channeling", true); // Hidden
 		public String tag;
 		public Component ctag;
 		public String boardLine;
+		public boolean hidden = false;
 		private StatusType(String tag, String boardLine) {
 			this.tag = tag;
 			this.ctag = SharedUtil.color(tag);
 			this.boardLine = boardLine.replaceAll("&", "§");
+		}
+		// This is exclusively used to skip statuses in fight stats
+		private StatusType(String tag, String boardLine, boolean hidden) {
+			this(tag, boardLine);
+			hidden = true;
 		}
 	}
 	

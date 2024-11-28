@@ -40,6 +40,9 @@ public class PoisonStatus extends DecrementStackStatus {
 		meta.isSecondary(true);
 		for (Entry<FightData, Integer> ent : slices.getSliceOwners().entrySet()) {
 			meta.addDamageSlice(new DamageSlice(ent.getKey(), ent.getValue() * 0.2, DamageType.POISON, true));
+			if (ent.getKey() instanceof PlayerFightData) {
+				((PlayerFightData) ent.getKey()).getStats().addPoisonDamage(ent.getValue() * 0.2);
+			}
 		}
 		FightInstance.dealDamage(meta, holder.getEntity());
 	}

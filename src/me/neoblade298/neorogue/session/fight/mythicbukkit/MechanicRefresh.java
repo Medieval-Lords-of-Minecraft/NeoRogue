@@ -1,7 +1,6 @@
 package me.neoblade298.neorogue.session.fight.mythicbukkit;
 
 import io.lumine.mythic.api.adapters.AbstractEntity;
-import io.lumine.mythic.api.config.MythicLineConfig;
 import io.lumine.mythic.api.skills.ITargetedEntitySkill;
 import io.lumine.mythic.api.skills.SkillMetadata;
 import io.lumine.mythic.api.skills.SkillResult;
@@ -15,10 +14,6 @@ public class MechanicRefresh implements ITargetedEntitySkill {
     public ThreadSafetyLevel getThreadSafetyLevel() {
         return ThreadSafetyLevel.EITHER;
     }
-
-	public MechanicRefresh(MythicLineConfig cfg) {
-
-	}
 
 	@Override
     public SkillResult castAtEntity(SkillMetadata data, AbstractEntity target) {

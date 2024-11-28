@@ -394,6 +394,11 @@ public class FightData {
 		ApplyStatusEvent ev2 = new ApplyStatusEvent(this, status, finalStacks, finalDuration, isSecondary, meta);
 		if (applier instanceof PlayerFightData) {
 			FightInstance.trigger(((PlayerFightData) applier).getPlayer(), Trigger.APPLY_STATUS, ev2);
+			try {
+				((PlayerFightData) applier).getStats().addStatusApplied(StatusType.valueOf(id), finalStacks);
+			}
+			catch (IllegalArgumentException ex) {
+			}
 		}
 		
 		if (statuses.isEmpty()) {

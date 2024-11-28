@@ -68,6 +68,7 @@ public class MechanicBarrier implements ITargetedEntitySkill {
 			Entity owner = target.getBukkitEntity();
 			FightData fd = FightInstance.getFightData(owner.getUniqueId());
 			if (fd == null) return SkillResult.INVALID_TARGET;
+			if (fd.getInstance() == null) return SkillResult.ERROR;
 			HashMap<BuffType, Buff> buffs = new HashMap<BuffType, Buff>();
 			for (Entry<BuffType, Double> ent : this.buffs.entrySet()) {
 				buffs.put(ent.getKey(), new Buff(fd, 0, ent.getValue()));

@@ -988,12 +988,7 @@ public abstract class FightInstance extends Instance {
 		);
 		String timer = String.format("%d:%02d.%03d", min, sec, ms);
 		
-		Component statsHeader = SharedUtil.color(
-				"<gray>Fight Statistics [<white>" + timer + "</white>] (Hover for more info!)\n=====\n"
-						+ "[<yellow>Name</yellow> (<green>HP</green>) - <red>Damage Dealt </red>/ <dark_red>Received "
-						+ "</dark_red>/ <blue>Buffed</blue> / <gold>Mitigated</gold>]"
-		);
-		s.broadcast(statsHeader);
+		s.broadcast(FightStatistics.getStatsHeader(timer));
 		for (UUID uuid : s.getParty().keySet()) {
 			PlayerFightData pdata = userData.remove(uuid);
 			PlayerSessionData data = pdata.getSessionData();

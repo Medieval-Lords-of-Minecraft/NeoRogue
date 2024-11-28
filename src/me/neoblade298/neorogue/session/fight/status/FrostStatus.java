@@ -18,6 +18,6 @@ public class FrostStatus extends DecrementStackStatus {
 	
 	@Override
 	public void onTickAction() {
-		holder.addBuff(slices.first().getFightData(), true, false, BuffType.MAGICAL, 0.2);
+		holder.addBuff(slices.first().getFightData(), true, false, BuffType.MAGICAL, -0.2);
 	}
 }

@@ -22,6 +22,9 @@ public class MythicLoader implements Listener {
 		case "hitbarrier":
 			condition = new ConditionHitBarrier(cfg);
 			break;
+		case "isnrplayer":
+			condition = new ConditionIsNeoRoguePlayer();
+			break;
 		}
 		if (condition != null) {
 			event.register(condition);
@@ -74,7 +77,7 @@ public class MythicLoader implements Listener {
 			mechanic = new MechanicModifyKnockback(cfg);
 			break;
 		case "nrrefresh":
-			mechanic = new MechanicRefresh(cfg);
+			mechanic = new MechanicRefresh();
 			break;
 		}
 		if (mechanic != null) {

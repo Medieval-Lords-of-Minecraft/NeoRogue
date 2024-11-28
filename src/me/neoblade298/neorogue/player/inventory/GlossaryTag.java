@@ -50,19 +50,19 @@ public enum GlossaryTag implements GlossaryIcon {
 	BURN(Material.BLAZE_POWDER, StatusType.BURN.tag,
 			"Upon the holder taking damage, deals 0.2 fire damage per stack applied. 20% of the stacks is removed every second."),
 	FROST(Material.PACKED_ICE, StatusType.FROST.tag,
-			"Decreases the holder's magic damage by 0.2 per stack. Upon the holder dealing magical damage, remove 25% of the stacks and " +
-			"deal that much damage to the holder. 20% of the stacks is removed every second."),
+			"Decreases the holder's magic damage by 0.2 per stack. Upon the holder dealing magical damage, remove 25% of the stacks. " +
+			"20% of the stacks is removed every second."),
 	ELECTRIFIED(Material.LIGHTNING_ROD, StatusType.ELECTRIFIED.tag,
 			"Fires a projectile that deals 0.2 lightning damage per stack applied to the nearest enemy in a radius of 8. "
 			+ "20% of the stacks and one projectile fired per second."),
 	CONCUSSED(Material.DIRT, StatusType.CONCUSSED.tag,
-			"Decreases the holder's physical damage by 0.2 per stack. Upon the holder dealing physical damage, remove 25% of the stacks and " +
-			"deal that much Earthen damage to the holder. 20% of the stacks is removed every second."),
+			"Decreases the holder's physical damage by 0.2 per stack. Upon the holder dealing physical damage, remove 25% of the stacks. " +
+			"20% of the stacks is removed every second."),
 	INSANITY(Material.SOUL_SAND, StatusType.INSANITY.tag,
 			"Increases the holder's magic damage taken by 0.2 per stack. 20% of the stacks is removed every second."),
 	SANCTIFIED(Material.END_ROD, StatusType.SANCTIFIED.tag,
 			"Upon the holder dealing damage, remove 25% of the stacks and " +
-			"deal that much Light damage to the holder while healing that much to the damaged. 20% of the stacks is removed every second."),
+			"heal that much to the damaged. 20% of the stacks is removed every second."),
 	THORNS(Material.DEAD_BUSH, StatusType.THORNS.tag,
 			"Upon the holder receiving physical damage, even if it is absorbed by shields, return 1 thorns damage per stack."),
 	REFLECT(Material.GLASS_PANE, StatusType.REFLECT.tag,

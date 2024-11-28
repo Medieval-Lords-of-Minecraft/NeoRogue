@@ -11,6 +11,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+import me.libraryaddict.disguise.DisguiseAPI;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.mechanics.IProjectileInstance;
@@ -225,6 +226,9 @@ public class DamageMeta {
 			if (recipient.hasStatus(StatusType.BURN)) {
 				for (Entry<FightData, Integer> ent : recipient.getStatus(StatusType.BURN).getSlices().getSliceOwners().entrySet()) {
 					slices.add(new DamageSlice(ent.getKey(), ent.getValue() * 0.2, DamageType.FIRE));
+					if (ent.getKey() instanceof PlayerFightData) {
+						((PlayerFightData) ent.getKey()).getStats().addBurnDamage(ent.getValue() * 0.2);
+					}
 				}
 			}
 
@@ -233,8 +237,13 @@ public class DamageMeta {
 				int stacks = status.getStacks();
 				int toRemove = (int) (stacks * 0.25);
 				status.apply(owner, -toRemove, 0); // Remove 25% of stacks
-				slices.add(new DamageSlice(owner, toRemove, DamageType.LIGHT));
-				recipient.addHealth(toRemove);
+
+				for (Entry<FightData, Integer> ent : recipient.getStatus(StatusType.SANCTIFIED).getSlices().getSliceOwners().entrySet()) {
+					if (ent.getKey() instanceof PlayerFightData) {
+						((PlayerFightData) ent.getKey()).getStats().addSanctifiedHealing(ent.getValue() * 0.25);
+						FightInstance.giveHeal(ent.getKey().getEntity(), ent.getValue() * 0.25, recipient.getEntity()); // Assumes sanctified owner is always a player
+					}
+				}
 			}
 			
 			if (owner.hasStatus(StatusType.FROST) && containsType(BuffType.MAGICAL)) {
@@ -242,7 +251,12 @@ public class DamageMeta {
 				int stacks = status.getStacks();
 				int toRemove = (int) (-stacks * 0.25);
 				status.apply(owner, toRemove, 0);
-				returnDamage.addDamageSlice(new DamageSlice(recipient, toRemove, DamageType.ICE));
+				
+				for (Entry<FightData, Integer> ent : recipient.getStatus(StatusType.SANCTIFIED).getSlices().getSliceOwners().entrySet()) {
+					if (ent.getKey() instanceof PlayerFightData) {
+						((PlayerFightData) ent.getKey()).getStats().addFrostMitigated(ent.getValue() * 0.25);
+					}
+				}
 			}
 
 			if (owner.hasStatus(StatusType.CONCUSSED) && containsType(BuffType.PHYSICAL)) {
@@ -250,7 +264,12 @@ public class DamageMeta {
 				int stacks = status.getStacks();
 				int toRemove = (int) (-stacks * 0.25);
 				status.apply(owner, toRemove, 0);
-				returnDamage.addDamageSlice(new DamageSlice(recipient, toRemove, DamageType.EARTHEN));
+				
+				for (Entry<FightData, Integer> ent : recipient.getStatus(StatusType.CONCUSSED).getSlices().getSliceOwners().entrySet()) {
+					if (ent.getKey() instanceof PlayerFightData) {
+						((PlayerFightData) ent.getKey()).getStats().addConcussedMitigated(ent.getValue() * 0.25);
+					}
+				}
 			}
 		}
 		
@@ -270,12 +289,6 @@ public class DamageMeta {
 					increase += b.getIncrease();
 					mult += b.getMultiplier();
 					if (!(owner instanceof PlayerFightData)) continue; // Don't need stats for non-player damager
-					for (Entry<FightData, BuffSlice> ent : b.getSlices().entrySet()) {
-						BuffSlice bs = ent.getValue();
-						if (ent.getKey() instanceof PlayerFightData) {
-							((PlayerFightData) ent.getKey()).getStats().addDamageBuffed(slice.getType(), bs.getIncrease() + (bs.getMultiplier() * slice.getDamage()));
-						}
-					}
 				}
 			}
 
@@ -292,13 +305,8 @@ public class DamageMeta {
 						if (ent.getKey() instanceof PlayerFightData) {
 							PlayerFightData buffOwner = (PlayerFightData) ent.getKey();
 							double amt = bs.getIncrease() + (bs.getMultiplier() * slice.getDamage());
-							switch (bm.origin) {
-							case BARRIER:
+							if (bm.origin == BuffOrigin.BARRIER) {
 								buffOwner.getStats().addDamageBarriered(amt);
-								break;
-							default:
-								buffOwner.getStats().addDamageMitigated(slice.getPostBuffType(), amt);
-								break;
 							}
 						}
 					}
@@ -312,12 +320,12 @@ public class DamageMeta {
 				PlayerFightData pl = (PlayerFightData) recipient; // Only players can have evade status
 				if (sliceDamage > pl.getStamina()) {
 					sliceDamage -= pl.getStamina();
-					pl.getStats().addDamageMitigated(slice.getPostBuffType(), pl.getStamina());
+					pl.getStats().addEvadeMitigated(pl.getStamina());
 					pl.setStamina(0);
 				}
 				else {
 					pl.addStamina(-sliceDamage);
-					pl.getStats().addDamageMitigated(slice.getPostBuffType(), sliceDamage);
+					pl.getStats().addEvadeMitigated(sliceDamage);
 					sliceDamage = 0;
 				}
 			}
@@ -326,14 +334,28 @@ public class DamageMeta {
 			while (owner.hasStatus(StatusType.INJURY) && sliceDamage > 0) {
 				Status injury = owner.getStatus(StatusType.INJURY);
 				int stacks = injury.getStacks();
+				HashMap<FightData, Integer> owners = recipient.getStatus(StatusType.EVADE).getSlices().getSliceOwners();
+				int numOwners = owners.size();
 				if (stacks * 0.2 >= sliceDamage) {
 					int toRemove = (int) (sliceDamage / 0.2);
-					sliceDamage = 0;
 					injury.apply(owner, -toRemove, -1);
+				
+					for (Entry<FightData, Integer> ent : owners.entrySet()) {
+						if (ent.getKey() instanceof PlayerFightData) {
+							((PlayerFightData) ent.getKey()).getStats().addInjuryMitigated(sliceDamage / numOwners);
+						}
+					}
+					sliceDamage = 0;
 				}
 				else {
 					sliceDamage -= stacks * 0.2;
 					injury.apply(owner, -stacks, -1);
+				
+					for (Entry<FightData, Integer> ent : recipient.getStatus(StatusType.CONCUSSED).getSlices().getSliceOwners().entrySet()) {
+						if (ent.getKey() instanceof PlayerFightData) {
+							((PlayerFightData) ent.getKey()).getStats().addInjuryMitigated((stacks * 0.2) / numOwners);
+						}
+					}
 				}
 			}
 			
@@ -353,10 +375,18 @@ public class DamageMeta {
 
 			// Return damage
 			if (recipient.hasStatus(StatusType.THORNS) && slice.getPostBuffType().containsBuffType(BuffType.PHYSICAL)) {
-				returnDamage.addDamageSlice(new DamageSlice(recipient, recipient.getStatus(StatusType.THORNS).getStacks(), DamageType.THORNS));
+				int stacks = recipient.getStatus(StatusType.THORNS).getStacks();
+				returnDamage.addDamageSlice(new DamageSlice(recipient, stacks, DamageType.THORNS));
+				if (recipient instanceof PlayerFightData) {
+					((PlayerFightData) recipient).getStats().addThornsDamage(stacks);
+				}
 			}
 			if (recipient.hasStatus(StatusType.REFLECT) && slice.getPostBuffType().containsBuffType(BuffType.MAGICAL)) {
-				returnDamage.addDamageSlice(new DamageSlice(recipient, recipient.getStatus(StatusType.REFLECT).getStacks(), DamageType.REFLECT));
+				int stacks = recipient.getStatus(StatusType.REFLECT).getStacks();
+				returnDamage.addDamageSlice(new DamageSlice(recipient, stacks, DamageType.REFLECT));
+				if (recipient instanceof PlayerFightData) {
+					((PlayerFightData) recipient).getStats().addReflectDamage(stacks);
+				}
 			}
 		}
 		
@@ -392,7 +422,10 @@ public class DamageMeta {
 			// Mobs shouldn't have a source of damage because they'll infinitely re-trigger ~OnAttack
 			// Players must have a source of damage to get credit for kills, otherwise mobs that suicide give points
 			if (owner instanceof PlayerFightData) {
-				if (armoredEntities.contains(target.getType())) finalDamage *= 1.09; // To deal with minecraft vanilla armor, rounded up for inconsistency
+
+				// Apparently minecraft applies armor based on the entity's disguise if it has one
+				EntityType type = DisguiseAPI.isDisguised(target) ? DisguiseAPI.getDisguise(target).getType().getEntityType() : target.getType();
+				if (armoredEntities.contains(type)) finalDamage *= 1.09; // To deal with minecraft vanilla armor, rounded up for inconsistency
 				FightInstance.trigger((Player) owner.getEntity(), Trigger.DEALT_DAMAGE, new DealtDamageEvent(this, target, damage, ignoreShieldsDamage));
 				target.damage(finalDamage, owner.getEntity());
 			}
