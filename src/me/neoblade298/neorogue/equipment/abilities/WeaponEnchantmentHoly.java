@@ -39,7 +39,7 @@ public class WeaponEnchantmentHoly extends Equipment {
 		super(ID, "Weapon Enchantment: Holy", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 3, RANGE));
 		damage = isUpgraded ? 60 : 40;
-		sanct = isUpgraded ? 6 : 4;
+		sanct = isUpgraded ? 25 : 15;
 	}
 	
 	public static Equipment get() {

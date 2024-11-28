@@ -33,7 +33,7 @@ public class Overload extends Equipment {
 		super(ID, "Overload", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, tp.range));
 		
-		damage = isUpgraded ? 40 : 30;
+		damage = isUpgraded ? 90 : 60;
 	}
 	
 	public static Equipment get() {

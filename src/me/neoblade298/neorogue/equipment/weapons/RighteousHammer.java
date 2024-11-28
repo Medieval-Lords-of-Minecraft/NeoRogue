@@ -61,7 +61,7 @@ public class RighteousHammer extends Equipment {
 		super(ID, "Righteous Hammer", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(110, 0.5, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
-		sanct = isUpgraded ? 6 : 4;
+		sanct = isUpgraded ? 18 : 12;
 	}
 	
 	public static Equipment get() {

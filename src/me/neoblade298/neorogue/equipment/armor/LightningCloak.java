@@ -25,8 +25,8 @@ public class LightningCloak extends Equipment {
 	public LightningCloak(boolean isUpgraded) {
 		super(ID, "Lightning Cloak", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ARMOR);
-		base = isUpgraded ? 120 : 90;
-		threshold = isUpgraded ? 500 : 300;
+		base = isUpgraded ? 150 : 100;
+		threshold = isUpgraded ? 600 : 900;
 		def = 12;
 	}
 	

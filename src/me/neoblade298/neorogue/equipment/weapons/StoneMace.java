@@ -29,7 +29,7 @@ public class StoneMace extends Equipment {
 				EquipmentProperties.ofWeapon(isUpgraded ? 80 : 60, 0.75, 0.4, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_CRIT));
 		properties.addUpgrades(PropertyType.DAMAGE);
 		damage = properties.get(PropertyType.DAMAGE);
-		conc = isUpgraded ? 3 : 2;
+		conc = isUpgraded ? 12 : 8;
 	}
 	
 	public static Equipment get() {
@@ -42,7 +42,7 @@ public class StoneMace extends Equipment {
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
 			FightInstance.applyStatus(ev.getTarget(), StatusType.CONCUSSED, p, conc, -1);
 			DamageMeta dm = new DamageMeta(pdata, damage +
-					(FightInstance.getFightData(ev.getTarget()).getStatus(StatusType.CONCUSSED).getStacks() * 3), properties.getType());
+					(FightInstance.getFightData(ev.getTarget()).getStatus(StatusType.CONCUSSED).getStacks() * 2), properties.getType());
 			weaponSwingAndDamage(p, pdata, ev.getTarget(), dm);
 			return TriggerResult.keep();
 		});
@@ -51,6 +51,6 @@ public class StoneMace extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.STONE_SHOVEL, "Increases damage dealt by number of " + GlossaryTag.CONCUSSED.tag(this) + " "
-				+ "stacks the enemy has multiplied by <white>3</white>. Also applies " + GlossaryTag.CONCUSSED.tag(this, conc, true) + " on basic attack.");
+				+ "stacks the enemy has multiplied by <white>2</white>. Also applies " + GlossaryTag.CONCUSSED.tag(this, conc, true) + " on basic attack.");
 	}
 }

@@ -39,10 +39,8 @@ public class LightningRush extends Equipment {
 	public LightningRush(boolean isUpgraded) {
 		super(ID, "Lightning Rush", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF, 
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 10, 15, 0));
-		damage = isUpgraded ? 30 : 20;
-		elec = isUpgraded ? 15 : 10;
-		
-		addTags(GlossaryTag.SHIELDS, GlossaryTag.BERSERK);
+		damage = isUpgraded ? 90 : 60;
+		elec = isUpgraded ? 40 : 30;
 	}
 	
 	public static Equipment get() {

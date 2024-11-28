@@ -37,7 +37,7 @@ public class PoolOfLight extends Equipment {
 		super(ID, "Pool of Light", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 10, 20, 0));
 		properties.addUpgrades(PropertyType.COOLDOWN);
-		sanct = isUpgraded ? 3 : 2;
+		sanct = isUpgraded ? 25 : 15;
 	}
 	
 	public static Equipment get() {

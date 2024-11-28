@@ -27,7 +27,7 @@ public class ThrowPoison extends Equipment {
 	public ThrowPoison(boolean isUpgraded) {
 		super(ID, "Throw Poison", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 15, 10, 0));
-		poison = isUpgraded ? 90 : 60;
+		poison = isUpgraded ? 150 : 100;
 	}
 	
 	public static Equipment get() {

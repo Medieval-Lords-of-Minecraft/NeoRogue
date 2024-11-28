@@ -39,7 +39,7 @@ public class WeaponEnchantmentElectrified extends Equipment {
 		super(ID, "Weapon Enchantment: Electrified", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 3, RANGE));
 		damage = isUpgraded ? 60 : 40;
-		elec = isUpgraded ? 12 : 8;
+		elec = isUpgraded ? 25 : 15;
 	}
 	
 	public static Equipment get() {

@@ -39,6 +39,7 @@ public class EarthStaff extends Equipment {
 	
 	private static final TargetProperties innerProps = TargetProperties.radius(innerRadius, true, TargetType.ENEMY);
 	private static final TargetProperties outerProps = TargetProperties.radius(outerRadius, true, TargetType.ENEMY);
+	private int conc = 15;
 	
 	public EarthStaff(boolean isUpgraded) {
 		super(
@@ -82,7 +83,7 @@ public class EarthStaff extends Equipment {
 							farEnemies.removeAll(closeEnemies);
 							for (LivingEntity ent : farEnemies) {
 								weaponDamage(p, data, ent);
-								FightInstance.getFightData(ent.getUniqueId()).applyStatus(StatusType.CONCUSSED, data, 3, 0);
+								FightInstance.getFightData(ent.getUniqueId()).applyStatus(StatusType.CONCUSSED, data, conc, 0);
 							}
 						}
 					}.runTaskLater(NeoRogue.inst(), 5));
@@ -96,8 +97,8 @@ public class EarthStaff extends Equipment {
 	public void setupItem() {
 		item = createItem(
 				Material.STICK,
-				"After a windup, smashes the ground beneath you, dealing damage in an area spreading outwards. Enemies closest to you receive <white>3</white> "
-						+ GlossaryTag.CONCUSSED.tag(this) + ". Must be cast while on the ground."
+				"After a windup, smashes the ground beneath you, dealing damage in an area spreading outwards. Enemies closest to you receive "
+						+ GlossaryTag.CONCUSSED.tag(this, conc, true) + ". Must be cast while on the ground."
 		);
 	}
 }

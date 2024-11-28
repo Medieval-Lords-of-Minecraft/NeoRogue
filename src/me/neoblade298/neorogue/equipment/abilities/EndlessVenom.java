@@ -35,7 +35,7 @@ public class EndlessVenom extends Equipment {
 				ID, "Endless Venom", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(10, 10, 12, 0)
 		);
-		poison = isUpgraded ? 10 : 7;
+		poison = isUpgraded ? 30 : 20;
 	}
 
 	public static Equipment get() {

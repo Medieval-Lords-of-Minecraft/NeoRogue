@@ -19,14 +19,15 @@ import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class SparkdrainKnife extends Equipment {
 	private static final String ID = "sparkdrainKnife";
-	private static int elec, res;
+	private static int elec, res, thres;
 	
 	public SparkdrainKnife(boolean isUpgraded) {
 		super(ID, "Sparkdrain Knife", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(30, 0.5, 0.2, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
-		elec = 20;
+		elec = 30;
 		res = isUpgraded ? 6 : 4;
+		thres = 100;
 		
 	}
 	
@@ -41,7 +42,7 @@ public class SparkdrainKnife extends Equipment {
 			weaponSwingAndDamage(p, data, ev.getTarget());
 			FightData fd = FightInstance.getFightData(ev.getTarget());
 			
-			if (fd.getStatus(StatusType.ELECTRIFIED).getStacks() >= 50) {
+			if (fd.getStatus(StatusType.ELECTRIFIED).getStacks() >= thres) {
 				data.addStamina(res);
 				data.addMana(res);
 			}
@@ -55,7 +56,7 @@ public class SparkdrainKnife extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.STONE_SWORD, "Every basic attack applies " + GlossaryTag.ELECTRIFIED.tag(this, elec, true) + ". If the "
-				+ "target has at least " + GlossaryTag.ELECTRIFIED.tag(this, 50, false) + ", grant <yellow>" + res + "</yellow> mana and "
+				+ "target has at least " + GlossaryTag.ELECTRIFIED.tag(this, thres, false) + ", grant <yellow>" + res + "</yellow> mana and "
 						+ "stamina instead.");
 	}
 }

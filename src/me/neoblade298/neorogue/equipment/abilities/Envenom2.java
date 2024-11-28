@@ -33,8 +33,7 @@ public class Envenom2 extends Equipment {
 	public Envenom2(boolean isUpgraded) {
 		super(ID, "Envenom II", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 10, 12, 0));
-		poison = isUpgraded ? 7 : 5;
-		dur = 3;
+		poison = isUpgraded ? 24 : 18;
 	}
 	
 	public static Equipment get() {
@@ -68,7 +67,6 @@ public class Envenom2 extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GREEN_DYE,
-				"On cast, all primarily " + GlossaryTag.PHYSICAL.tag(this) + " damage you deal applies " + GlossaryTag.POISON.tag(this, poison, true) +
-				" for <yellow>" + dur + "</yellow> seconds.");
+				"On cast, all primarily " + GlossaryTag.PHYSICAL.tag(this) + " damage you deal applies " + GlossaryTag.POISON.tag(this, poison, true) + ".");
 	}
 }

@@ -37,7 +37,7 @@ public class PiercingVenom extends Equipment {
 		super(ID, "Piercing Venom", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 10, 12, 0));
 		properties.addUpgrades(PropertyType.COOLDOWN);
-		poison = 5;
+		poison = 18;
 		dur = 3;
 		threshold = isUpgraded ? 2 : 3;
 	}

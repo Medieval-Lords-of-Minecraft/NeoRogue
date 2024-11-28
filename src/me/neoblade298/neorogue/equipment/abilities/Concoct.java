@@ -26,7 +26,7 @@ public class Concoct extends Equipment {
 	public Concoct(boolean isUpgraded) {
 		super(ID, "Concoct", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 0, 12, 0));
-		poison = isUpgraded ? 30 : 20;
+		poison = isUpgraded ? 45 : 30;
 	}
 	
 	public static Equipment get() {

@@ -30,7 +30,7 @@ public class BoltWand extends Equipment {
 	private static final ParticleContainer tick;
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_LIGHTNING_BOLT_IMPACT);
 
-	private int pierceAmount;
+	private int pierceAmount, elec;
 	
 	static {
 		tick = new ParticleContainer(Particle.GLOW);
@@ -44,6 +44,7 @@ public class BoltWand extends Equipment {
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
 		pierceAmount = 3;
+		elec = 25;
 	}
 	
 	public static Equipment get() {
@@ -92,7 +93,7 @@ public class BoltWand extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(
-				Material.STICK, "Pierces the first <white>" + pierceAmount + "</white> enemies hit, and applies <white>5</white> " + GlossaryTag.ELECTRIFIED.tag(this) + " to all."
+				Material.STICK, "Pierces the first <white>" + pierceAmount + "</white> enemies hit, and applies " + GlossaryTag.ELECTRIFIED.tag(this, elec, false) + " to all."
 		);
 	}
 }

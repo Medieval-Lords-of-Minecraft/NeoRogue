@@ -54,7 +54,7 @@ public class TreeTrunk extends Equipment {
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofRangedWeapon(isUpgraded ? 140 : 110, 0.5, 0, left.range, DamageType.BLUNT, new SoundContainer(Sound.ENTITY_PLAYER_ATTACK_SWEEP, 0.5F)));
 		properties.addUpgrades(PropertyType.DAMAGE);
-		conc = isUpgraded ? 14 : 10;
+		conc = isUpgraded ? 45 : 30;
 	}
 	
 	public static Equipment get() {

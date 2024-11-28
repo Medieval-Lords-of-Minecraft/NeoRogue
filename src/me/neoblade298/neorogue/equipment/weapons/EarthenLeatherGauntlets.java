@@ -4,11 +4,10 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-
-import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -25,7 +24,7 @@ public class EarthenLeatherGauntlets extends Equipment {
 	public EarthenLeatherGauntlets(boolean isUpgraded) {
 		super(ID, "Earthen Leather Gauntlets", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON, EquipmentProperties.ofWeapon(30, 1.5, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_CRIT));
-		concuss = isUpgraded ? 3 : 2;
+		concuss = isUpgraded ? 18 : 12;
 	}
 	
 	public static Equipment get() {

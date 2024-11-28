@@ -39,7 +39,7 @@ public class BreakTheLine extends Equipment {
 	public BreakTheLine(boolean isUpgraded) {
 		super(ID, "Break the Line", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 40, 15, tp.range));
-		conc = isUpgraded ? 12 : 8;
+		conc = isUpgraded ? 50 : 35;
 	}
 	
 	public static Equipment get() {

@@ -46,6 +46,6 @@ public class Irritant extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BLAZE_ROD, "Deals an additional <yellow>" + dmg + "</yellow> damage to enemies with " + GlossaryTag.POISON.tag(this));
+		item = createItem(Material.BLAZE_ROD, "Deals an additional <yellow>" + dmg + "</yellow> damage to enemies with " + GlossaryTag.POISON.tag(this) + ".");
 	}
 }
