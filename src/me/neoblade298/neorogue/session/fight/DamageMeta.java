@@ -17,7 +17,7 @@ import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.mechanics.IProjectileInstance;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffSlice;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -36,8 +36,8 @@ public class DamageMeta {
 	private HashSet<DamageOrigin> origins = new HashSet<DamageOrigin>();
 	private IProjectileInstance proj; // If the damage originated from projectile
 	private LinkedList<DamageSlice> slices = new  LinkedList<DamageSlice>();
-	private HashMap<BuffType, LinkedList<BuffMeta>> damageBuffs = new HashMap<BuffType, LinkedList<BuffMeta>>(),
-			defenseBuffs = new HashMap<BuffType, LinkedList<BuffMeta>>();
+	private HashMap<DamageBuffType, Buff> damageBuffs = new HashMap<DamageBuffType, Buff>(),
+			defenseBuffs = new HashMap<DamageBuffType, Buff>();
 	private DamageMeta returnDamage;
 	
 	static {
@@ -102,18 +102,10 @@ public class DamageMeta {
 		this.proj = inst;
 	}
 	
-	private HashMap<BuffType, LinkedList<BuffMeta>> cloneBuffMap(HashMap<BuffType, LinkedList<BuffMeta>> map) {
-		HashMap<BuffType, LinkedList<BuffMeta>> clone = new HashMap<BuffType, LinkedList<BuffMeta>>();
-		for (Entry<BuffType, LinkedList<BuffMeta>> ent : map.entrySet()) {
-			clone.put(ent.getKey(), cloneBuffList(ent.getValue()));
-		}
-		return clone;
-	}
-	
-	private LinkedList<BuffMeta> cloneBuffList(LinkedList<BuffMeta> list) {
-		LinkedList<BuffMeta> clone = new LinkedList<BuffMeta>();
-		for (BuffMeta meta : list) {
-			clone.add(meta.clone());
+	private HashMap<DamageBuffType, Buff> cloneBuffMap(HashMap<DamageBuffType, Buff> map) {
+		HashMap<DamageBuffType, Buff> clone = new HashMap<DamageBuffType, Buff>();
+		for (Entry<DamageBuffType, Buff> ent : map.entrySet()) {
+			clone.put(ent.getKey(), ent.getValue().clone());
 		}
 		return clone;
 	}
@@ -164,26 +156,17 @@ public class DamageMeta {
 		this.slices.add(slice);
 	}
 	
-	public void addBuffs(HashMap<BuffType, Buff> buffs, BuffOrigin origin, boolean damageBuff) {
-		for (Entry<BuffType, Buff> buff : buffs.entrySet()) {
-			addBuff(buff.getKey(), buff.getValue(), origin, damageBuff);
+	public void addBuffs(HashMap<DamageBuffType, Buff> buffs, boolean damageBuff) {
+		for (Entry<DamageBuffType, Buff> buff : buffs.entrySet()) {
+			addBuff(buff.getKey(), buff.getValue(), damageBuff);
 		}
 	}
 	
-	public void addBuff(BuffType type, Buff b, BuffOrigin origin, boolean damageBuff) {
-		HashMap<BuffType, LinkedList<BuffMeta>> buffs = damageBuff ? damageBuffs : defenseBuffs;
-		LinkedList<BuffMeta> list = buffs.getOrDefault(type, new LinkedList<BuffMeta>());
-		list.add(new BuffMeta(b, origin));
+	public void addBuff(DamageBuffType type, Buff b, boolean damageBuff) {
+		HashMap<DamageBuffType, Buff> buffs = damageBuff ? damageBuffs : defenseBuffs;
+		Buff curr = buffs.getOrDefault(type, new Buff());
+		list.add(new Buff(b, origin));
 		buffs.putIfAbsent(type, list);
-	}
-	
-	public boolean containsType(BuffType type) {
-		for (DamageSlice slice : slices) {
-			for (BuffType bt : slice.getType().getBuffTypes()) { 
-				if (bt == type) return true;
-			}
-		}
-		return false;
 	}
 	
 	public double dealDamage(LivingEntity target) {
@@ -488,20 +471,7 @@ public class DamageMeta {
 		return str;
 	}
 	
-	private class BuffMeta {
-		protected Buff buff;
-		protected BuffOrigin origin;
-		public BuffMeta(Buff buff, BuffOrigin origin) {
-			super();
-			this.buff = buff;
-			this.origin = origin;
-		}
-		
-		public BuffMeta clone() {
-			return new BuffMeta(buff.clone(), origin);
-		}
-	}
-	
+	// Used for tracking stats mostly
 	public static enum BuffOrigin {
 		BARRIER,
 		STATUS,
@@ -511,6 +481,7 @@ public class DamageMeta {
 		NORMAL;
 	}
 
+	// Used for specifying what a buff applies to
 	public static enum DamageOrigin {
 		NORMAL,
 		PROJECTILE,

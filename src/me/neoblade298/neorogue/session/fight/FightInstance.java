@@ -78,7 +78,6 @@ import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
 import me.neoblade298.neorogue.session.fight.Mob.MobType;
 import me.neoblade298.neorogue.session.fight.TickAction.TickResult;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.GenericStatusType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
@@ -580,7 +579,7 @@ public abstract class FightInstance extends Instance {
 		PlayerFightData deadData = userData.get(dead.getUniqueId());
 		PlayerFightData reviverData = userData.get(p.getUniqueId());
 		deadData.setDeath(false);
-		deadData.addBuff(reviverData, UUID.randomUUID().toString(), false, true, BuffType.ALL, 1, 20);
+		deadData.applyStatus(StatusType.INVINCIBLE, reviverData, 1, 20);
 		dead.getInventory().setContents(corpse.inv);
 		reviverData.getStats().addRevive();
 		new BukkitRunnable() {

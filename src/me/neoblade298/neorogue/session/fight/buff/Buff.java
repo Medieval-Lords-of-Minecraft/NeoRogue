@@ -3,34 +3,54 @@ package me.neoblade298.neorogue.session.fight.buff;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
+import me.neoblade298.neorogue.session.fight.DamageMeta.BuffOrigin;
 import me.neoblade298.neorogue.session.fight.FightData;
 
 public class Buff {
 	private double increase, multiplier;
-	private DamageOrigin origin;
+	private BuffOrigin origin;
 	private HashMap<FightData, BuffSlice> slices = new HashMap<FightData, BuffSlice>();
 	
 	public Buff() {}
 	
 	public Buff(FightData applier, double increase, double multiplier) {
-		this.increase = increase;
-		this.multiplier = multiplier;
-		slices.put(applier, new BuffSlice(increase, multiplier));
+		this(applier, increase, multiplier, BuffOrigin.NORMAL);
 	}
 	
-	public Buff(FightData applier, double increase, double multiplier, DamageOrigin origin) {
+	public Buff(FightData applier, double increase, double multiplier, BuffOrigin origin) {
 		this.increase = increase;
 		this.multiplier = multiplier;
 		this.origin = origin;
 		slices.put(applier, new BuffSlice(increase, multiplier));
 	}
 	
-	private Buff(double increase, double multiplier, DamageOrigin origin, HashMap<FightData, BuffSlice> slices) {
+	// Used in clone
+	private Buff(double increase, double multiplier, BuffOrigin origin, HashMap<FightData, BuffSlice> slices) {
 		this.increase = increase;
 		this.multiplier = multiplier;
 		this.slices = slices;
 		this.origin = origin;
+	}
+
+	public boolean isSimilar(Buff other) {
+		return origin == other.origin;
+	}
+
+	public Buff combineBuff(Buff other) {
+		this.increase += other.increase;
+		this.multiplier += other.multiplier;
+		for (Entry<FightData, BuffSlice> ent : other.slices.entrySet()) {
+			BuffSlice slice = slices.getOrDefault(ent.getKey(), new BuffSlice());
+			slice.addIncrease(ent.getValue().getIncrease());
+			slice.addMultiplier(ent.getValue().getMultiplier());
+			if (!slice.isEmpty()) {
+				slices.put(ent.getKey(), slice);
+			}
+			else {
+				slices.remove(ent.getKey());
+			}
+		}
+		return this;
 	}
 	
 	public Buff clone() {
@@ -40,16 +60,9 @@ public class Buff {
 		}
 		return new Buff(increase, multiplier, origin, newSlices);
 	}
-
-	public DamageOrigin getOrigin() {
-		return origin;
-	}
-
-	public void setOrigin(DamageOrigin origin) {
-		this.origin = origin;
-	}
 	
 	public void addIncrease(FightData applier, double increase) {
+		if (increase == 0) return;
 		this.increase += increase;
 		BuffSlice slice = slices.getOrDefault(applier, new BuffSlice());
 		slice.addIncrease(increase);
@@ -62,7 +75,8 @@ public class Buff {
 		}
 	}
 	
-	public void addMultiplier(FightData applier, double multiplier) {
+	public void addMultiplier(FightData applier, double getMultiplier) {
+		if (multiplier == 0) return;
 		this.multiplier += multiplier;
 		BuffSlice slice = slices.getOrDefault(applier, new BuffSlice());
 		slice.addMultiplier(multiplier);
@@ -77,6 +91,10 @@ public class Buff {
 	
 	public HashMap<FightData, BuffSlice> getSlices() {
 		return slices;
+	}
+
+	public BuffOrigin getOrigin() {
+		return origin;
 	}
 	
 	public double getIncrease() {

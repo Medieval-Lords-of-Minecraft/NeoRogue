@@ -13,11 +13,12 @@ import me.neoblade298.neorogue.session.chance.ChanceChoice;
 import me.neoblade298.neorogue.session.chance.ChanceInstance;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
 import me.neoblade298.neorogue.session.chance.ChanceStage;
+import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.FightScore;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.StandardFightInstance;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.reward.RewardInstance;
 
 public class AmbushChance extends ChanceSet {
@@ -61,7 +62,7 @@ public class AmbushChance extends ChanceSet {
 								"</yellow> lumbers over and snaps a few twigs. You groan and prepare to fight.");
 						((FightInstance) inst.getNextInstance()).addInitialTask((fi, fdata) -> {
 							for (PlayerFightData pfdata : fdata) {
-								pfdata.addBuff(pfdata, true, true, BuffType.GENERAL, -0.2);
+								pfdata.addBuff(pfdata, true, DamageBuffType.of(DamageCategory.GENERAL), 0, -0.2);
 							}
 						});
 					}

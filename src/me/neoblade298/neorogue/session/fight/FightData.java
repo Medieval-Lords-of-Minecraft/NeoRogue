@@ -26,10 +26,10 @@ import me.neoblade298.neorogue.map.MapSpawnerInstance;
 import me.neoblade298.neorogue.session.Plot;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
-import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
+import me.neoblade298.neorogue.session.fight.DamageMeta.BuffOrigin;
 import me.neoblade298.neorogue.session.fight.TickAction.TickResult;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -57,8 +57,8 @@ public class FightData {
 	protected MapSpawnerInstance spawner;
 
 	// Buffs
-	protected HashMap<BuffType, Buff> damageBuffs = new HashMap<BuffType, Buff>();
-	protected HashMap<BuffType, Buff> defenseBuffs = new HashMap<BuffType, Buff>();
+	protected HashMap<DamageBuffType, LinkedList<Buff>> damageBuffs = new HashMap<DamageBuffType, LinkedList<Buff>>(),
+		defenseBuffs = new HashMap<DamageBuffType, LinkedList<Buff>>();
 
 	public void cleanup() {
 		for (Runnable task : cleanupTasks.values()) {
@@ -108,8 +108,8 @@ public class FightData {
 
 		// Set up base mob resistances
 		if (mob != null) {
-			for (Entry<BuffType, Integer> ent : mob.getResistances().entrySet()) {
-				addBuff(this, false, true, ent.getKey(), (double) ent.getValue() / 100);
+			for (Entry<DamageCategory, Integer> ent : mob.getResistances().entrySet()) {
+				addBuff(this, false, DamageBuffType.of(ent.getKey()), 0, (double) ent.getValue() / 100, BuffOrigin.NORMAL);
 			}
 		}
 	}
@@ -134,43 +134,63 @@ public class FightData {
 		return this.mob;
 	}
 
-	public void addBuff(FightData applier, boolean damageBuff, boolean multiplier, BuffType type, double amount) {
-		addBuff(applier, damageBuff, multiplier, type, amount, null);
+	public void addBuff(FightData applier, boolean damageBuff, DamageCategory cat, double increase, double multiplier) {
+		addBuff(applier, damageBuff, DamageBuffType.of(cat), increase, multiplier, BuffOrigin.NORMAL);
 	}
 
-	public void addBuff(FightData applier, boolean damageBuff, boolean multiplier, BuffType type, double amount, DamageOrigin origin) {
-		Buff b = damageBuff ? damageBuffs.getOrDefault(type, new Buff()) : defenseBuffs.getOrDefault(type, new Buff());
-		if (multiplier)
-			b.addMultiplier(applier, amount);
-		else
-			b.addIncrease(applier, amount);
-		b.setOrigin(origin);
-		if (damageBuff) damageBuffs.put(type, b);
-		else defenseBuffs.put(type, b);
+	public void addBuff(FightData applier, boolean damageBuff, DamageBuffType type, double increase, double multiplier) {
+		addBuff(applier, damageBuff, type, increase, multiplier, BuffOrigin.NORMAL);
 	}
 
-	public void addBuff(FightData applier, String id, boolean damageBuff, boolean multiplier, BuffType type, double amount, int ticks) {
-		addBuff(applier, id, damageBuff, multiplier, type, amount, null, ticks);
+	// Maybe will need another version of this for non-damage buffs if I ever make those
+	public void addBuff(FightData applier, boolean damageBuff, DamageBuffType type, double increase, double multiplier, BuffOrigin origin) {
+		LinkedList<Buff> buffs = damageBuff ? damageBuffs.getOrDefault(type, new LinkedList<Buff>()) : defenseBuffs.getOrDefault(type, new LinkedList<Buff>());
+
+		boolean found = false;
+		for (Buff b : buffs) {
+			if (b.getOrigin() == origin) {
+				b.addIncrease(applier, increase);
+				b.addMultiplier(applier, multiplier);
+				found = true;
+				break;
+			}
+		}
+
+		if (!found) {
+			buffs.add(new Buff(applier, increase, multiplier, origin));
+		}
+
+		if (damageBuff) damageBuffs.put(type, buffs);
+		else defenseBuffs.put(type, buffs);
 	}
 
-	public void addBuff(FightData applier, String id, boolean damageBuff, boolean multiplier, BuffType type, double amount, DamageOrigin origin, int ticks) {
-		addBuff(applier, damageBuff, multiplier, type, amount, origin);
+	public void addBuff(FightData applier, boolean damageBuff, DamageCategory cat, double increase, double multiplier, String id, int ticks) {
+		addBuff(applier, damageBuff, DamageBuffType.of(cat), increase, multiplier, BuffOrigin.NORMAL, id, ticks);
+	}
+
+	public void addBuff(FightData applier, boolean damageBuff, DamageBuffType type, double increase, double multiplier, String id, int ticks) {
+		addBuff(applier, damageBuff, type, increase, multiplier, BuffOrigin.NORMAL, id, ticks);
+	}
+
+	public void addBuff(FightData applier, boolean damageBuff, DamageBuffType type, double increase, double multiplier, BuffOrigin origin, 
+		String id, int ticks) {
+		addBuff(applier, damageBuff, type, increase, multiplier, origin);
 
 		if (ticks > 0) {
 			addTask(id, new BukkitRunnable() {
 				public void run() {
-					addBuff(applier, damageBuff, multiplier, type, -amount);
+					addBuff(applier, damageBuff, type, -increase, -multiplier, origin);
 					tasks.remove(id);
 				}
 			}.runTaskLater(NeoRogue.inst(), ticks));
 		}
 	}
 
-	public Buff getBuff(boolean damageBuff, BuffType type) {
+	public LinkedList<Buff> getBuffs(boolean damageBuff, DamageBuffType type) {
 		return damageBuff ? damageBuffs.get(type) : defenseBuffs.get(type);
 	}
 	
-	public HashMap<BuffType, Buff> getBuffs(boolean damageBuff) {
+	public HashMap<DamageBuffType, LinkedList<Buff>> getBuffs(boolean damageBuff) {
 		return damageBuff ? damageBuffs : defenseBuffs;
 	}
 

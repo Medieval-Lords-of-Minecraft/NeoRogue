@@ -33,6 +33,7 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffType;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 
 public class ProjectileInstance extends IProjectileInstance {
 	private FightInstance inst;
@@ -43,7 +44,7 @@ public class ProjectileInstance extends IProjectileInstance {
 	private BukkitTask task;
 	private Location loc;
 	private BoundingBox bounds;
-	private HashMap<BuffType, Buff> buffs = new HashMap<BuffType, Buff>();
+	private HashMap<DamageBuffType, Buff> buffs = new HashMap<DamageBuffType, Buff>();
 	private int tick, numHit, interpolationPoints;
 	private String tag; // Used for metadata, like with twinShiv
 	private DamageMeta meta;

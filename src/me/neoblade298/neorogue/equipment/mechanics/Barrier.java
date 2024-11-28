@@ -17,7 +17,7 @@ import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.ParticleShapeMemory;
 import me.neoblade298.neocore.bukkit.effects.Rectangle;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 
 public class Barrier {
 	private static final double METERS_PER_PARTICLE = 0.5,
@@ -28,7 +28,7 @@ public class Barrier {
 	private UUID uuid;
 	private LivingEntity owner;
 	private double length, height, forward; // Forward is used for where the rectangle actually is drawn
-	private HashMap<BuffType, Buff> buffs = new HashMap<BuffType, Buff>();
+	private HashMap<DamageBuffType, Buff> buffs = new HashMap<DamageBuffType, Buff>();
 	private ParticleContainer part;
 	private Rectangle rect;
 	private Location center, rectcenter; // Center is midpoint of barrier, rectcenter is midpoint of actually rectangle to draw
@@ -39,7 +39,7 @@ public class Barrier {
 	// Centered on owner
 	private LocalAxes axes;
 	
-	private Barrier(LivingEntity owner, double length, double forward, double height, HashMap<BuffType, Buff> buffs, ParticleContainer part) {
+	private Barrier(LivingEntity owner, double length, double forward, double height, HashMap<DamageBuffType, Buff> buffs, ParticleContainer part) {
 		this.uuid = UUID.randomUUID();
 		this.owner = owner;
 		this.height = height;
@@ -59,29 +59,29 @@ public class Barrier {
 	
 	// Stationary version
 	private Barrier(LivingEntity owner, double length, double forward, double height, Location center, LocalAxes axes,
-			HashMap<BuffType, Buff> buffs, ParticleContainer part) {
+			HashMap<DamageBuffType, Buff> buffs, ParticleContainer part) {
 		this(owner, length, forward, height, buffs, part);
 		this.center = center;
 		this.mem = rect.calculate(center, axes);
 	}
 	
 	public static Barrier stationary(LivingEntity owner, double length, double forward, double height, Location center, LocalAxes axes,
-			HashMap<BuffType, Buff> buffs, @Nullable ParticleContainer part) {
+			HashMap<DamageBuffType, Buff> buffs, @Nullable ParticleContainer part) {
 		return new Barrier(owner, length, forward, height, buffs, part);
 	}
 	
 	public static Barrier stationary(LivingEntity owner, double length, double forward, double height, Location center, LocalAxes axes,
-			HashMap<BuffType, Buff> buffs) {
+			HashMap<DamageBuffType, Buff> buffs) {
 		return new Barrier(owner, length, forward, height, buffs, null);
 	}
 	
 	public static Barrier centered(LivingEntity owner, double length, double forward, double height, double forwardOffset, 
-			HashMap<BuffType, Buff> buffs) {
+			HashMap<DamageBuffType, Buff> buffs) {
 		return new Barrier(owner, length, forward, height, buffs, null);
 	}
 	
 	public static Barrier centered(LivingEntity owner, double length, double forward, double height, double forwardOffset, 
-			HashMap<BuffType, Buff> buffs, @Nullable ParticleContainer part) {
+			HashMap<DamageBuffType, Buff> buffs, @Nullable ParticleContainer part) {
 		return new Barrier(owner, length, forward, height, buffs, part);
 	}
 	
@@ -141,7 +141,7 @@ public class Barrier {
 		return uuid;
 	}
 	
-	public HashMap<BuffType, Buff> getBuffs() {
+	public HashMap<DamageBuffType, Buff> getBuffs() {
 		return buffs;
 	}
 }

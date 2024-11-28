@@ -18,16 +18,17 @@ import io.lumine.mythic.api.skills.SkillResult;
 import io.lumine.mythic.api.skills.ThreadSafetyLevel;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
+import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 
 public class MechanicBarrier implements ITargetedEntitySkill {
 	protected final Skill counterSkill, hitSkill;
 	protected final double width, forward, forwardOffset, height, rotateY;
 	protected final int duration;
-	protected final HashMap<BuffType, Double> buffs = new HashMap<BuffType, Double>();
+	protected final HashMap<DamageBuffType, Double> buffs = new HashMap<DamageBuffType, Double>();
 	protected final String id;
 	
 	protected static final HashMap<String, UUID> barrierIds = new HashMap<String, UUID>();
@@ -55,10 +56,10 @@ public class MechanicBarrier implements ITargetedEntitySkill {
 		if (temp.isPresent()) hitSkill = temp.get();
 		else hitSkill = null;
 		
-		for (BuffType type : BuffType.values()) {
+		for (DamageCategory type : DamageCategory.values()) {
 			double amt = config.getDouble(type.name(), 0);
 			
-			if (amt != 0) buffs.put(type, amt);
+			if (amt != 0) buffs.put(DamageBuffType.of(type), amt);
 		}
 	}
 
@@ -69,8 +70,8 @@ public class MechanicBarrier implements ITargetedEntitySkill {
 			FightData fd = FightInstance.getFightData(owner.getUniqueId());
 			if (fd == null) return SkillResult.INVALID_TARGET;
 			if (fd.getInstance() == null) return SkillResult.ERROR;
-			HashMap<BuffType, Buff> buffs = new HashMap<BuffType, Buff>();
-			for (Entry<BuffType, Double> ent : this.buffs.entrySet()) {
+			HashMap<DamageBuffType, Buff> buffs = new HashMap<DamageBuffType, Buff>();
+			for (Entry<DamageBuffType, Double> ent : this.buffs.entrySet()) {
 				buffs.put(ent.getKey(), new Buff(fd, 0, ent.getValue()));
 			}
 			LivingEntity ent = (LivingEntity) data.getCaster().getEntity().getBukkitEntity();
