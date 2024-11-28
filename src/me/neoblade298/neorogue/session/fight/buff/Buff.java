@@ -3,7 +3,6 @@ package me.neoblade298.neorogue.session.fight.buff;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import me.neoblade298.neorogue.session.fight.DamageMeta.BuffOrigin;
 import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
 import me.neoblade298.neorogue.session.fight.FightData;
 
@@ -50,7 +49,7 @@ public class Buff {
 		this.origin = origin;
 	}
 	
-	public void addIncrease(FightData applier, double increase, BuffOrigin origin) {
+	public void addIncrease(FightData applier, double increase) {
 		this.increase += increase;
 		BuffSlice slice = slices.getOrDefault(applier, new BuffSlice());
 		slice.addIncrease(increase);
@@ -63,7 +62,7 @@ public class Buff {
 		}
 	}
 	
-	public void addMultiplier(FightData applier, double multiplier, BuffOrigin origin) {
+	public void addMultiplier(FightData applier, double multiplier) {
 		this.multiplier += multiplier;
 		BuffSlice slice = slices.getOrDefault(applier, new BuffSlice());
 		slice.addMultiplier(multiplier);
