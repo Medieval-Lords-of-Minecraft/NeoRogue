@@ -109,7 +109,7 @@ public class FightData {
 		// Set up base mob resistances
 		if (mob != null) {
 			for (Entry<DamageCategory, Integer> ent : mob.getResistances().entrySet()) {
-				addBuff(this, false, DamageBuffType.of(ent.getKey()), 0, (double) ent.getValue() / 100, BuffOrigin.NORMAL);
+				addBuff(false, DamageBuffType.of(ent.getKey()), new Buff(this, 0, (double) ent.getValue() / 100, BuffOrigin.NORMAL));
 			}
 		}
 	}
@@ -134,52 +134,22 @@ public class FightData {
 		return this.mob;
 	}
 
-	public void addBuff(FightData applier, boolean damageBuff, DamageCategory cat, double increase, double multiplier) {
-		addBuff(applier, damageBuff, DamageBuffType.of(cat), increase, multiplier, BuffOrigin.NORMAL);
-	}
-
-	public void addBuff(FightData applier, boolean damageBuff, DamageBuffType type, double increase, double multiplier) {
-		addBuff(applier, damageBuff, type, increase, multiplier, BuffOrigin.NORMAL);
-	}
-
 	// Maybe will need another version of this for non-damage buffs if I ever make those
-	public void addBuff(FightData applier, boolean damageBuff, DamageBuffType type, double increase, double multiplier, BuffOrigin origin) {
+	public void addBuff(boolean damageBuff, DamageBuffType type, Buff b) {
 		LinkedList<Buff> buffs = damageBuff ? damageBuffs.getOrDefault(type, new LinkedList<Buff>()) : defenseBuffs.getOrDefault(type, new LinkedList<Buff>());
-
-		boolean found = false;
-		for (Buff b : buffs) {
-			if (b.getOrigin() == origin) {
-				b.addIncrease(applier, increase);
-				b.addMultiplier(applier, multiplier);
-				found = true;
-				break;
-			}
-		}
-
-		if (!found) {
-			buffs.add(new Buff(applier, increase, multiplier, origin));
-		}
+		buffs.add(b);
 
 		if (damageBuff) damageBuffs.put(type, buffs);
 		else defenseBuffs.put(type, buffs);
 	}
 
-	public void addBuff(FightData applier, boolean damageBuff, DamageCategory cat, double increase, double multiplier, String id, int ticks) {
-		addBuff(applier, damageBuff, DamageBuffType.of(cat), increase, multiplier, BuffOrigin.NORMAL, id, ticks);
-	}
-
-	public void addBuff(FightData applier, boolean damageBuff, DamageBuffType type, double increase, double multiplier, String id, int ticks) {
-		addBuff(applier, damageBuff, type, increase, multiplier, BuffOrigin.NORMAL, id, ticks);
-	}
-
-	public void addBuff(FightData applier, boolean damageBuff, DamageBuffType type, double increase, double multiplier, BuffOrigin origin, 
-		String id, int ticks) {
-		addBuff(applier, damageBuff, type, increase, multiplier, origin);
+	public void addBuff(boolean damageBuff, DamageBuffType type, Buff b, String id, int ticks) {
+		addBuff(damageBuff, type, b);
 
 		if (ticks > 0) {
 			addTask(id, new BukkitRunnable() {
 				public void run() {
-					addBuff(applier, damageBuff, type, -increase, -multiplier, origin);
+					addBuff(damageBuff, type, b.invert());
 					tasks.remove(id);
 				}
 			}.runTaskLater(NeoRogue.inst(), ticks));

@@ -1,15 +1,12 @@
 package me.neoblade298.neorogue.session.fight.buff;
 
-import java.util.HashMap;
-import java.util.Map.Entry;
-
 import me.neoblade298.neorogue.session.fight.DamageMeta.BuffOrigin;
 import me.neoblade298.neorogue.session.fight.FightData;
 
 public class Buff {
+	private FightData applier;
 	private double increase, multiplier;
 	private BuffOrigin origin;
-	private HashMap<FightData, BuffSlice> slices = new HashMap<FightData, BuffSlice>();
 	
 	public Buff() {}
 	
@@ -18,79 +15,30 @@ public class Buff {
 	}
 	
 	public Buff(FightData applier, double increase, double multiplier, BuffOrigin origin) {
+		this.applier = applier;
 		this.increase = increase;
 		this.multiplier = multiplier;
 		this.origin = origin;
-		slices.put(applier, new BuffSlice(increase, multiplier));
 	}
 	
 	// Used in clone
-	private Buff(double increase, double multiplier, BuffOrigin origin, HashMap<FightData, BuffSlice> slices) {
-		this.increase = increase;
-		this.multiplier = multiplier;
-		this.slices = slices;
-		this.origin = origin;
+	private Buff(Buff src) {
+		this.applier = src.applier;
+		this.increase = src.increase;
+		this.multiplier = src.multiplier;
+		this.origin = src.origin;
 	}
 
 	public boolean isSimilar(Buff other) {
 		return origin == other.origin;
 	}
-
-	public Buff combineBuff(Buff other) {
-		this.increase += other.increase;
-		this.multiplier += other.multiplier;
-		for (Entry<FightData, BuffSlice> ent : other.slices.entrySet()) {
-			BuffSlice slice = slices.getOrDefault(ent.getKey(), new BuffSlice());
-			slice.addIncrease(ent.getValue().getIncrease());
-			slice.addMultiplier(ent.getValue().getMultiplier());
-			if (!slice.isEmpty()) {
-				slices.put(ent.getKey(), slice);
-			}
-			else {
-				slices.remove(ent.getKey());
-			}
-		}
-		return this;
-	}
 	
 	public Buff clone() {
-		HashMap<FightData, BuffSlice> newSlices = new HashMap<FightData, BuffSlice>();
-		for (Entry<FightData, BuffSlice> ent : slices.entrySet()) {
-			newSlices.put(ent.getKey(), ent.getValue().clone());
-		}
-		return new Buff(increase, multiplier, origin, newSlices);
+		return new Buff(this);
 	}
-	
-	public void addIncrease(FightData applier, double increase) {
-		if (increase == 0) return;
-		this.increase += increase;
-		BuffSlice slice = slices.getOrDefault(applier, new BuffSlice());
-		slice.addIncrease(increase);
-		
-		if (!slice.isEmpty()) {
-			slices.put(applier, slice);
-		}
-		else {
-			slices.remove(applier);
-		}
-	}
-	
-	public void addMultiplier(FightData applier, double getMultiplier) {
-		if (multiplier == 0) return;
-		this.multiplier += multiplier;
-		BuffSlice slice = slices.getOrDefault(applier, new BuffSlice());
-		slice.addMultiplier(multiplier);
-		
-		if (!slice.isEmpty()) {
-			slices.put(applier, slice);
-		}
-		else {
-			slices.remove(applier);
-		}
-	}
-	
-	public HashMap<FightData, BuffSlice> getSlices() {
-		return slices;
+
+	public Buff invert() {
+		return new Buff(applier, -increase, -multiplier, origin);
 	}
 
 	public BuffOrigin getOrigin() {

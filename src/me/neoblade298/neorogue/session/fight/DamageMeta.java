@@ -36,8 +36,8 @@ public class DamageMeta {
 	private HashSet<DamageOrigin> origins = new HashSet<DamageOrigin>();
 	private IProjectileInstance proj; // If the damage originated from projectile
 	private LinkedList<DamageSlice> slices = new  LinkedList<DamageSlice>();
-	private HashMap<DamageBuffType, Buff> damageBuffs = new HashMap<DamageBuffType, Buff>(),
-			defenseBuffs = new HashMap<DamageBuffType, Buff>();
+	private HashMap<DamageBuffType, LinkedList<Buff>> damageBuffs = new HashMap<DamageBuffType, LinkedList<Buff>>(),
+			defenseBuffs = new HashMap<DamageBuffType, LinkedList<Buff>>();
 	private DamageMeta returnDamage;
 	
 	static {
@@ -102,10 +102,14 @@ public class DamageMeta {
 		this.proj = inst;
 	}
 	
-	private HashMap<DamageBuffType, Buff> cloneBuffMap(HashMap<DamageBuffType, Buff> map) {
-		HashMap<DamageBuffType, Buff> clone = new HashMap<DamageBuffType, Buff>();
-		for (Entry<DamageBuffType, Buff> ent : map.entrySet()) {
-			clone.put(ent.getKey(), ent.getValue().clone());
+	private HashMap<DamageBuffType, LinkedList<Buff>> cloneBuffMap(HashMap<DamageBuffType, LinkedList<Buff>> map) {
+		HashMap<DamageBuffType, LinkedList<Buff>> clone = new HashMap<DamageBuffType, LinkedList<Buff>>();
+		for (Entry<DamageBuffType, LinkedList<Buff>> ent : map.entrySet()) {
+			LinkedList<Buff> list = new LinkedList<Buff>();
+			clone.put(ent.getKey(), list);
+			for (Buff b : ent.getValue()) {
+				list.add(b.clone());
+			}
 		}
 		return clone;
 	}
@@ -156,16 +160,30 @@ public class DamageMeta {
 		this.slices.add(slice);
 	}
 	
-	public void addBuffs(HashMap<DamageBuffType, Buff> buffs, boolean damageBuff) {
-		for (Entry<DamageBuffType, Buff> buff : buffs.entrySet()) {
-			addBuff(buff.getKey(), buff.getValue(), damageBuff);
+	public void addBuffs(HashMap<DamageBuffType, LinkedList<Buff>> buffs, boolean damageBuff) {
+		for (Entry<DamageBuffType, LinkedList<Buff>> ent : buffs.entrySet()) {
+			for (Buff b : ent.getValue()) {
+				addBuff(ent.getKey(), b, damageBuff);
+			}
 		}
 	}
 	
 	public void addBuff(DamageBuffType type, Buff b, boolean damageBuff) {
-		HashMap<DamageBuffType, Buff> buffs = damageBuff ? damageBuffs : defenseBuffs;
-		Buff curr = buffs.getOrDefault(type, new Buff());
-		list.add(new Buff(b, origin));
+		HashMap<DamageBuffType, LinkedList<Buff>> buffs = damageBuff ? damageBuffs : defenseBuffs;
+		LinkedList<Buff> list = buffs.getOrDefault(type, new LinkedList<Buff>());
+
+		boolean found = false;
+		for (Buff buff : list) {
+			if (buff.isSimilar(b)) {
+				buff.combineBuff(b);
+				found = true;
+				break;
+			}
+		}
+
+		if (!found) {
+			list.add(b);
+		}
 		buffs.putIfAbsent(type, list);
 	}
 	
@@ -174,8 +192,8 @@ public class DamageMeta {
 		if (target.getType() == EntityType.ARMOR_STAND) return 0;
 		FightData recipient = FightInstance.getFightData(target.getUniqueId());
 		LivingEntity damager = owner.getEntity();
-		addBuffs(owner.getBuffs(true), BuffOrigin.NORMAL, true);
-		addBuffs(recipient.getBuffs(false), BuffOrigin.NORMAL, false);
+		addBuffs(owner.getBuffs(true), true);
+		addBuffs(recipient.getBuffs(false), false);
 		double damage = 0;
 		double ignoreShieldsDamage = 0;
 		returnDamage = new DamageMeta(recipient);
