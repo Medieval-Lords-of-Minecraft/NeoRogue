@@ -16,6 +16,7 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.mechanics.IProjectileInstance;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.BuffHolder;
 import me.neoblade298.neorogue.session.fight.buff.BuffSlice;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.status.Status;
@@ -28,7 +29,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedHealthDamageE
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-public class DamageMeta {
+public class DamageMeta extends BuffHolder {
 	private static HashSet<EntityType> armoredEntities = new HashSet<EntityType>();
 	
 	private FightData owner;
@@ -36,8 +37,6 @@ public class DamageMeta {
 	private HashSet<DamageOrigin> origins = new HashSet<DamageOrigin>();
 	private IProjectileInstance proj; // If the damage originated from projectile
 	private LinkedList<DamageSlice> slices = new  LinkedList<DamageSlice>();
-	private HashMap<DamageBuffType, LinkedList<Buff>> damageBuffs = new HashMap<DamageBuffType, LinkedList<Buff>>(),
-			defenseBuffs = new HashMap<DamageBuffType, LinkedList<Buff>>();
 	private DamageMeta returnDamage;
 	
 	static {
@@ -163,28 +162,9 @@ public class DamageMeta {
 	public void addBuffs(HashMap<DamageBuffType, LinkedList<Buff>> buffs, boolean damageBuff) {
 		for (Entry<DamageBuffType, LinkedList<Buff>> ent : buffs.entrySet()) {
 			for (Buff b : ent.getValue()) {
-				addBuff(ent.getKey(), b, damageBuff);
+				addBuff(damageBuff, ent.getKey(), b);
 			}
 		}
-	}
-	
-	public void addBuff(DamageBuffType type, Buff b, boolean damageBuff) {
-		HashMap<DamageBuffType, LinkedList<Buff>> buffs = damageBuff ? damageBuffs : defenseBuffs;
-		LinkedList<Buff> list = buffs.getOrDefault(type, new LinkedList<Buff>());
-
-		boolean found = false;
-		for (Buff buff : list) {
-			if (buff.isSimilar(b)) {
-				buff.combineBuff(b);
-				found = true;
-				break;
-			}
-		}
-
-		if (!found) {
-			list.add(b);
-		}
-		buffs.putIfAbsent(type, list);
 	}
 	
 	public double dealDamage(LivingEntity target) {
@@ -219,7 +199,7 @@ public class DamageMeta {
 		// Reduce damage from barriers, used only for players blocking projectiles
 		// For mobs blocking projectiles, go to damageProjectile
 		if (hitBarrier && recipient.getBarrier() != null) {
-			addBuffs(recipient.getBarrier().getBuffs(), BuffOrigin.BARRIER, false);
+			addBuffs(false, recipient.getBarrier().getBuffs(), BuffOrigin.BARRIER);
 		}
 
 		// Status effects

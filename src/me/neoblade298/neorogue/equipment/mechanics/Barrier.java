@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.equipment.mechanics;
 
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -16,10 +17,12 @@ import me.neoblade298.neocore.bukkit.effects.LocalAxes;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.ParticleShapeMemory;
 import me.neoblade298.neocore.bukkit.effects.Rectangle;
+import me.neoblade298.neorogue.session.fight.DamageMeta.BuffOrigin;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.BuffHolder;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 
-public class Barrier {
+public class Barrier extends BuffHolder {
 	private static final double METERS_PER_PARTICLE = 0.5,
 			FORWARD_OFFSET = 0.5; // Used so the shield hitbox doesn't protect the user from side attacks, only for centered
 	private static final ParticleContainer DEFAULT_SHIELD_PARTICLE = new ParticleContainer(Particle.END_ROD).count(1);
@@ -28,7 +31,6 @@ public class Barrier {
 	private UUID uuid;
 	private LivingEntity owner;
 	private double length, height, forward; // Forward is used for where the rectangle actually is drawn
-	private HashMap<DamageBuffType, Buff> buffs = new HashMap<DamageBuffType, Buff>();
 	private ParticleContainer part;
 	private Rectangle rect;
 	private Location center, rectcenter; // Center is midpoint of barrier, rectcenter is midpoint of actually rectangle to draw
@@ -39,14 +41,14 @@ public class Barrier {
 	// Centered on owner
 	private LocalAxes axes;
 	
-	private Barrier(LivingEntity owner, double length, double forward, double height, HashMap<DamageBuffType, Buff> buffs, ParticleContainer part) {
+	private Barrier(LivingEntity owner, double length, double forward, double height, DamageBuffType type, Buff b, ParticleContainer part) {
 		this.uuid = UUID.randomUUID();
 		this.owner = owner;
 		this.height = height;
 		this.length = length;
 		this.forward = forward;
-		this.buffs = buffs;
 		this.rect = new Rectangle(length, height, METERS_PER_PARTICLE);
+		addBuff(false, type, b);
 		calculateLocation();
 		
 		if (part == null) {
@@ -59,30 +61,30 @@ public class Barrier {
 	
 	// Stationary version
 	private Barrier(LivingEntity owner, double length, double forward, double height, Location center, LocalAxes axes,
-			HashMap<DamageBuffType, Buff> buffs, ParticleContainer part) {
-		this(owner, length, forward, height, buffs, part);
+			DamageBuffType type, Buff b, ParticleContainer part) {
+		this(owner, length, forward, height, type, b, part);
 		this.center = center;
 		this.mem = rect.calculate(center, axes);
 	}
 	
 	public static Barrier stationary(LivingEntity owner, double length, double forward, double height, Location center, LocalAxes axes,
-			HashMap<DamageBuffType, Buff> buffs, @Nullable ParticleContainer part) {
-		return new Barrier(owner, length, forward, height, buffs, part);
+		DamageBuffType type, Buff b, @Nullable ParticleContainer part) {
+		return new Barrier(owner, length, forward, height, type, b, part);
 	}
 	
 	public static Barrier stationary(LivingEntity owner, double length, double forward, double height, Location center, LocalAxes axes,
-			HashMap<DamageBuffType, Buff> buffs) {
-		return new Barrier(owner, length, forward, height, buffs, null);
+		DamageBuffType type, Buff b) {
+		return new Barrier(owner, length, forward, height, type, b, null);
 	}
 	
 	public static Barrier centered(LivingEntity owner, double length, double forward, double height, double forwardOffset, 
-			HashMap<DamageBuffType, Buff> buffs) {
-		return new Barrier(owner, length, forward, height, buffs, null);
+		DamageBuffType type, Buff b) {
+		return new Barrier(owner, length, forward, height, type, b, null);
 	}
 	
 	public static Barrier centered(LivingEntity owner, double length, double forward, double height, double forwardOffset, 
-			HashMap<DamageBuffType, Buff> buffs, @Nullable ParticleContainer part) {
-		return new Barrier(owner, length, forward, height, buffs, part);
+		DamageBuffType type, Buff b, @Nullable ParticleContainer part) {
+		return new Barrier(owner, length, forward, height, type, b, part);
 	}
 	
 	public void tick() {
@@ -140,8 +142,14 @@ public class Barrier {
 	public UUID getUniqueId() {
 		return uuid;
 	}
+
+	@Override
+	public void addBuff(boolean damageBuff, DamageBuffType type, Buff b) {
+		b.setOrigin(BuffOrigin.BARRIER);
+		super.addBuff(false, type, b);
+	}
 	
-	public HashMap<DamageBuffType, Buff> getBuffs() {
-		return buffs;
+	public HashMap<DamageBuffType, LinkedList<Buff>> getBuffs() {
+		return getBuffs(false);
 	}
 }

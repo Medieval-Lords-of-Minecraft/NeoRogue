@@ -29,8 +29,18 @@ public class Buff {
 		this.origin = src.origin;
 	}
 
+	public void setOrigin(BuffOrigin origin) {
+		this.origin = origin;
+	}
+
 	public boolean isSimilar(Buff other) {
-		return origin == other.origin;
+		return origin == other.origin && applier == other.applier;
+	}
+
+	public Buff combine(Buff other) {
+		this.increase += other.increase;
+		this.multiplier += other.multiplier;
+		return this;
 	}
 	
 	public Buff clone() {

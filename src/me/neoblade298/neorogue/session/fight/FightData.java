@@ -29,6 +29,7 @@ import me.neoblade298.neorogue.session.SessionManager;
 import me.neoblade298.neorogue.session.fight.DamageMeta.BuffOrigin;
 import me.neoblade298.neorogue.session.fight.TickAction.TickResult;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.BuffHolder;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
@@ -37,7 +38,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.GrantShieldsEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
 
-public class FightData {
+public class FightData extends BuffHolder {
 	protected FightInstance inst;
 	protected String mobDisplay;
 	protected ActiveMob am;
@@ -55,10 +56,6 @@ public class FightData {
 	protected LivingEntity entity = null;
 	protected LinkedList<TickAction> tickActions = new LinkedList<TickAction>(); // Every 20 ticks
 	protected MapSpawnerInstance spawner;
-
-	// Buffs
-	protected HashMap<DamageBuffType, LinkedList<Buff>> damageBuffs = new HashMap<DamageBuffType, LinkedList<Buff>>(),
-		defenseBuffs = new HashMap<DamageBuffType, LinkedList<Buff>>();
 
 	public void cleanup() {
 		for (Runnable task : cleanupTasks.values()) {
@@ -132,15 +129,6 @@ public class FightData {
 	
 	public Mob getMob() {
 		return this.mob;
-	}
-
-	// Maybe will need another version of this for non-damage buffs if I ever make those
-	public void addBuff(boolean damageBuff, DamageBuffType type, Buff b) {
-		LinkedList<Buff> buffs = damageBuff ? damageBuffs.getOrDefault(type, new LinkedList<Buff>()) : defenseBuffs.getOrDefault(type, new LinkedList<Buff>());
-		buffs.add(b);
-
-		if (damageBuff) damageBuffs.put(type, buffs);
-		else defenseBuffs.put(type, buffs);
 	}
 
 	public void addBuff(boolean damageBuff, DamageBuffType type, Buff b, String id, int ticks) {
