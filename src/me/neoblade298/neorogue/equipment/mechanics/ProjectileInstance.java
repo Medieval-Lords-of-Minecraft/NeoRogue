@@ -22,7 +22,6 @@ import me.neoblade298.neorogue.equipment.AmmunitionInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
-import me.neoblade298.neorogue.session.fight.DamageMeta.BuffOrigin;
 import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.FightData;
@@ -31,8 +30,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
-import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
+import me.neoblade298.neorogue.session.fight.buff.BuffList;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 
 public class ProjectileInstance extends IProjectileInstance {
@@ -44,13 +42,13 @@ public class ProjectileInstance extends IProjectileInstance {
 	private BukkitTask task;
 	private Location loc;
 	private BoundingBox bounds;
-	private HashMap<DamageBuffType, Buff> buffs = new HashMap<DamageBuffType, Buff>();
 	private int tick, numHit, interpolationPoints;
 	private String tag; // Used for metadata, like with twinShiv
 	private DamageMeta meta;
 	private double distance = 0, distancePerPoint; // Estimated distance traveled, not exact, doesn't factor in gravity
 	private int maxRangeMod, pierceMod;
 	private LivingEntity homingTarget;
+	private HashMap<DamageBuffType, BuffList> buffs = new HashMap<DamageBuffType, BuffList>();
 
 	private ArrayList<HitBlockAction> hitBlockActions = new ArrayList<HitBlockAction>();
 	private ArrayList<HitAction> hitActions = new ArrayList<HitAction>();
@@ -220,11 +218,9 @@ public class ProjectileInstance extends IProjectileInstance {
 	}
 
 	private void damageProjectile(LivingEntity target, DamageMeta meta, Barrier hitBarrier) {
-		if (!buffs.isEmpty()) {
-			meta.addBuffs(buffs, BuffOrigin.PROJECTILE, true);
-		}
+		meta.addBuffs(buffs, true);
 		if (hitBarrier != null) {
-			meta.addBuffs(hitBarrier.getBuffs(), BuffOrigin.BARRIER, false);
+			meta.addBuffs(hitBarrier.getBuffLists(), false);
 		}
 		FightInstance.dealDamage(meta, target);
 	}
@@ -237,7 +233,7 @@ public class ProjectileInstance extends IProjectileInstance {
 		return v;
 	}
 	
-	public HashMap<BuffType, Buff> getBuffs() {
+	public BuffList getBuffList() {
 		return buffs;
 	}
 	

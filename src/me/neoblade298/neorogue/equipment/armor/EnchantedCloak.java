@@ -7,7 +7,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class EnchantedCloak extends Equipment {
@@ -27,8 +27,8 @@ public class EnchantedCloak extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addBuff(data, false, false, BuffType.MAGICAL, reduc);
-		data.addBuff(data, true, false, BuffType.MAGICAL, damage);
+		data.addBuff(data, false, false, DamageBuffType.MAGICAL, reduc);
+		data.addBuff(data, true, false, DamageBuffType.MAGICAL, damage);
 	}
 
 	@Override

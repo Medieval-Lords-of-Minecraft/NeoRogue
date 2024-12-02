@@ -19,7 +19,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
@@ -51,7 +51,7 @@ public class Cripple extends Equipment {
 			Sounds.attackSweep.play(p, p);
 			for (LivingEntity ent : TargetHelper.getEntitiesInCone(p, tp)) {
 				part.play(p, ent);
-				FightInstance.getFightData(ent).addBuff(data, UUID.randomUUID().toString(), false, false, BuffType.PHYSICAL, -inc, 100);
+				FightInstance.getFightData(ent).addBuff(data, UUID.randomUUID().toString(), false, false, DamageBuffType.PHYSICAL, -inc, 100);
 			}
 			return TriggerResult.keep();
 		}));

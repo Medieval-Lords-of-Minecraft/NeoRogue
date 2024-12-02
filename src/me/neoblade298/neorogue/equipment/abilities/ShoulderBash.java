@@ -19,7 +19,7 @@ import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
@@ -49,7 +49,7 @@ public class ShoulderBash extends Equipment {
 			pc.play(p, p);
 			FightInstance.knockback(p, ev.getTarget(), 0.5);
 			FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.BLUNT), ev.getTarget());
-			FightInstance.getFightData(ev.getTarget()).addBuff(data, UUID.randomUUID().toString(), false, false, BuffType.GENERAL, -inc, 100);
+			FightInstance.getFightData(ev.getTarget()).addBuff(data, UUID.randomUUID().toString(), false, false, DamageBuffType.GENERAL, -inc, 100);
 			return TriggerResult.keep();
 		}));
 	}

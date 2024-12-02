@@ -12,7 +12,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -41,7 +41,7 @@ public class Deliberation extends Equipment {
 					Sounds.enchant.play(p, p);
 					pc.play(p, p);
 					data.applyStatus(StatusType.FOCUS, data, 1, -1);
-					data.addBuff(data, id, true, false, BuffType.GENERAL, damage * data.getStatus(StatusType.FOCUS).getStacks(), 100);
+					data.addBuff(data, id, true, false, DamageBuffType.GENERAL, damage * data.getStatus(StatusType.FOCUS).getStacks(), 100);
 				}
 			});
 			return TriggerResult.keep();

@@ -25,7 +25,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -79,7 +79,7 @@ public class Frostwalker extends Equipment {
 						if (hit.contains(ent.getUniqueId())) continue;
 						FightData fd = FightInstance.getFightData(ent);
 						fd.applyStatus(StatusType.FROST, data, stacks, -1);
-						fd.addBuff(data, ID, false, false, BuffType.MAGICAL, -reduc, 100);
+						fd.addBuff(data, ID, false, false, DamageBuffType.MAGICAL, -reduc, 100);
 						hit.add(ent.getUniqueId());
 					}
 					remove = pool.tick() || remove;

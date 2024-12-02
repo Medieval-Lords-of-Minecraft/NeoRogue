@@ -21,7 +21,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -50,7 +50,7 @@ public class CurseMark extends Equipment {
 		data.addTrigger(ID, Trigger.DEALT_DAMAGE, (pdata, in) -> {
 			if (inst.mark == null) return TriggerResult.keep();
 			DealtDamageEvent ev = (DealtDamageEvent) in;
-			if (ev.getMeta().containsType(BuffType.GENERAL) && ev.getTarget().getUniqueId().equals(inst.mark.getUniqueId())) {
+			if (ev.getMeta().containsType(DamageBuffType.GENERAL) && ev.getTarget().getUniqueId().equals(inst.mark.getUniqueId())) {
 				inst.mark = null;
 			}
 			return TriggerResult.keep();
@@ -71,7 +71,7 @@ public class CurseMark extends Equipment {
 						FightInstance.applyStatus(mark, StatusType.INSANITY, pdata, stacks, -1);
 						pc.play(p, inst.mark);
 						Sounds.infect.play(p, mark);
-						fd.addBuff(pdata, false, true, BuffType.DARK, -buff);
+						fd.addBuff(pdata, false, true, DamageBuffType.DARK, -buff);
 					}
 				}.runTaskLater(NeoRogue.inst(), 40L));
 				return TriggerResult.keep();

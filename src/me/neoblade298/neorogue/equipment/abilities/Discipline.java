@@ -13,7 +13,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
@@ -48,7 +48,7 @@ public class Discipline extends Equipment {
 			pc.play(p, p);
 			pdata.addMaxStamina(staminaGain);
 			pdata.addStamina(stamina);
-			data.addBuff(data, false, false, BuffType.GENERAL, 7);
+			data.addBuff(data, false, false, DamageBuffType.GENERAL, 7);
 			return TriggerResult.keep();
 		}));
 	}

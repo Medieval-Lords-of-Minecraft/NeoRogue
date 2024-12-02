@@ -5,12 +5,12 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.PotionMeta;
 
-import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.equipment.Consumable;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
 
 public class MinorMagicalPotion extends Consumable {
 	private static final String ID = "minorMagicalPotion";
@@ -27,7 +27,7 @@ public class MinorMagicalPotion extends Consumable {
 	
 	@Override
 	public void runConsumableEffects(Player p, PlayerFightData data) {
-		data.addBuff(data, true, false, BuffType.MAGICAL, intel);
+		data.addBuff(data, true, false, DamageCategory.MAGICAL, intel);
 	}
 
 	@Override

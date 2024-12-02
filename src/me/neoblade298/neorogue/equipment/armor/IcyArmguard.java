@@ -7,8 +7,8 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -32,7 +32,7 @@ public class IcyArmguard extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addBuff(data, false, false, BuffType.MAGICAL, damageReduction);
+		data.addBuff(data, false, false, DamageCategory.MAGICAL, damageReduction);
 
 		StandardPriorityAction act = new StandardPriorityAction(id);
 		act.setAction((pdata, in) -> {

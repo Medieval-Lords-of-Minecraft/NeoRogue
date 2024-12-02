@@ -7,10 +7,10 @@ import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
-import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.DamageMeta.BuffOrigin;
+import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -35,8 +35,8 @@ public class HuntersVest extends Equipment {
 		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, (pdata, in) -> {
 			ReceivedDamageEvent ev = (ReceivedDamageEvent) in;
 			if (!data.hasStatus(StatusType.FOCUS)) return TriggerResult.keep();
-			if (!ev.getMeta().containsType(BuffType.PHYSICAL)) return TriggerResult.keep();
-			ev.getMeta().addBuff(BuffType.PHYSICAL, new Buff(data, reduc * Math.min(3, data.getStatus(StatusType.FOCUS).getStacks()), 0), BuffOrigin.NORMAL, false);
+			if (!ev.getMeta().containsType(DamageCategory.PHYSICAL)) return TriggerResult.keep();
+			ev.getMeta().addBuff(DamageCategory.PHYSICAL, new Buff(data, reduc * Math.min(3, data.getStatus(StatusType.FOCUS).getStacks()), 0), BuffOrigin.NORMAL, false);
 			return TriggerResult.keep();
 		});
 	}

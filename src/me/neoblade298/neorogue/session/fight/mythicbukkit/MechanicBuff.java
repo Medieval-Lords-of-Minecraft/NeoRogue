@@ -9,6 +9,8 @@ import io.lumine.mythic.api.skills.ThreadSafetyLevel;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 
 public class MechanicBuff implements ITargetedEntitySkill {
 	private final int seconds;
@@ -36,10 +38,10 @@ public class MechanicBuff implements ITargetedEntitySkill {
 			FightData fd = FightInstance.getFightData(target.getBukkitEntity().getUniqueId());
 			FightData fdCaster = FightInstance.getFightData(data.getCaster().getEntity().getUniqueId());
 			if (seconds > 0) {
-				fd.addBuff(fdCaster, damageBuff, type, increase, multiplier, "MythicMobs", seconds);
+				fd.addBuff(damageBuff, DamageBuffType.of(type), new Buff(fdCaster, increase, multiplier), "MythicMobs", seconds);
 			}
 			else {
-				fd.addBuff(fdCaster, damageBuff, type, increase, multiplier);
+				fd.addBuff(damageBuff, DamageBuffType.of(type), new Buff(fdCaster, increase, multiplier));
 			}
 			return SkillResult.SUCCESS;
 		} catch (Exception e) {

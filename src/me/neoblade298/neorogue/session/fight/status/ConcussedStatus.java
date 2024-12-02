@@ -1,7 +1,9 @@
 package me.neoblade298.neorogue.session.fight.status;
 
+import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.FightData;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 
 public class ConcussedStatus extends DecrementStackStatus {
 	private static String id = "CONCUSSED";
@@ -13,11 +15,11 @@ public class ConcussedStatus extends DecrementStackStatus {
 	@Override
 	public void apply(FightData fd, int stacks, int seconds) {
 		super.apply(fd, stacks, seconds);
-		holder.addBuff(fd, true, false, BuffType.PHYSICAL, -stacks * 0.2);
+		holder.addBuff(true, DamageBuffType.of(DamageCategory.PHYSICAL), new Buff(slices.first().getFightData(), -stacks * 0.2, 0));
 	}
 	
 	@Override
 	public void onTickAction() {
-		holder.addBuff(slices.first().getFightData(), true, false, BuffType.PHYSICAL, 0.2);
+		holder.addBuff(true, DamageBuffType.of(DamageCategory.PHYSICAL), new Buff(slices.first().getFightData(), -0.2, 0));
 	}
 }

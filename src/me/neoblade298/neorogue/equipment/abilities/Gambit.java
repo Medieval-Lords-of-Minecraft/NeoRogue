@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardEquipmentInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerCondition;
@@ -69,7 +69,7 @@ public class Gambit extends Equipment {
 					inst.setCount(0);
 					Sounds.roar.play(p, p);
 					pc.play(p, p);
-					data.addBuff(data, true, false, BuffType.GENERAL, damage);
+					data.addBuff(data, true, false, DamageBuffType.GENERAL, damage);
 				}
 			}
 			return TriggerResult.keep();

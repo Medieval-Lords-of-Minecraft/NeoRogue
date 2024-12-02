@@ -8,8 +8,8 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.IProjectileInstance;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroupEvent;
@@ -30,7 +30,7 @@ public class ElbowBrace extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addBuff(data, false, false, BuffType.PHYSICAL, damageReduction);
+		data.addBuff(data, false, false, DamageCategory.PHYSICAL, damageReduction);
 		data.addTrigger(id, Trigger.LAUNCH_PROJECTILE_GROUP, (pdata, in) -> {
 			LaunchProjectileGroupEvent ev = (LaunchProjectileGroupEvent) in;
 			if (!(ev.getInstances().getFirst() instanceof ProjectileInstance)) return TriggerResult.keep();

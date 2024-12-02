@@ -26,10 +26,9 @@ import me.neoblade298.neorogue.map.MapSpawnerInstance;
 import me.neoblade298.neorogue.session.Plot;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
-import me.neoblade298.neorogue.session.fight.DamageMeta.BuffOrigin;
 import me.neoblade298.neorogue.session.fight.TickAction.TickResult;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.BuffHolder;
+import me.neoblade298.neorogue.session.fight.buff.BuffList;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
@@ -38,7 +37,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.GrantShieldsEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
 
-public class FightData extends BuffHolder {
+public class FightData {
 	protected FightInstance inst;
 	protected String mobDisplay;
 	protected ActiveMob am;
@@ -56,6 +55,7 @@ public class FightData extends BuffHolder {
 	protected LivingEntity entity = null;
 	protected LinkedList<TickAction> tickActions = new LinkedList<TickAction>(); // Every 20 ticks
 	protected MapSpawnerInstance spawner;
+	protected HashMap<DamageBuffType, BuffList> damageBuffs = new HashMap<DamageBuffType, BuffList>(), defenseBuffs = new HashMap<DamageBuffType, BuffList>();
 
 	public void cleanup() {
 		for (Runnable task : cleanupTasks.values()) {
@@ -106,7 +106,7 @@ public class FightData extends BuffHolder {
 		// Set up base mob resistances
 		if (mob != null) {
 			for (Entry<DamageCategory, Integer> ent : mob.getResistances().entrySet()) {
-				addBuff(false, DamageBuffType.of(ent.getKey()), new Buff(this, 0, (double) ent.getValue() / 100, BuffOrigin.NORMAL));
+				addBuff(false, DamageBuffType.of(ent.getKey()), new Buff(this, 0, (double) ent.getValue() / 100));
 			}
 		}
 	}
@@ -131,6 +131,13 @@ public class FightData extends BuffHolder {
 		return this.mob;
 	}
 
+	public void addBuff(boolean damageBuff, DamageBuffType type, Buff b) {
+		HashMap<DamageBuffType, BuffList> lists = damageBuff ? damageBuffs : defenseBuffs;
+		BuffList list = lists.getOrDefault(type, new BuffList());
+		list.add(b);
+		lists.put(type, list);
+	}
+
 	public void addBuff(boolean damageBuff, DamageBuffType type, Buff b, String id, int ticks) {
 		addBuff(damageBuff, type, b);
 
@@ -144,11 +151,11 @@ public class FightData extends BuffHolder {
 		}
 	}
 
-	public LinkedList<Buff> getBuffs(boolean damageBuff, DamageBuffType type) {
+	public BuffList getBuffList(boolean damageBuff, DamageBuffType type) {
 		return damageBuff ? damageBuffs.get(type) : defenseBuffs.get(type);
 	}
-	
-	public HashMap<DamageBuffType, LinkedList<Buff>> getBuffs(boolean damageBuff) {
+
+	public HashMap<DamageBuffType, BuffList> getBuffLists(boolean damageBuff) {
 		return damageBuff ? damageBuffs : defenseBuffs;
 	}
 

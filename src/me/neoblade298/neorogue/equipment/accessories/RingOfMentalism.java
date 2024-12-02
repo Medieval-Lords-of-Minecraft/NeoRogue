@@ -6,9 +6,9 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -32,7 +32,7 @@ public class RingOfMentalism extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(ID, Trigger.DEALT_DAMAGE, (pdata, in) -> {
 			DealtDamageEvent ev = (DealtDamageEvent) in;
-			if (!ev.getMeta().containsType(BuffType.MAGICAL)) return TriggerResult.keep();
+			if (!ev.getMeta().containsType(DamageCategory.MAGICAL)) return TriggerResult.keep();
 			FightInstance.applyStatus(ev.getTarget(), StatusType.INSANITY, data, stacks, -1);
 			return TriggerResult.keep();
 		});

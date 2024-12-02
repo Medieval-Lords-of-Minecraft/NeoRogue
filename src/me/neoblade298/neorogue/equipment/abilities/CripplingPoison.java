@@ -20,7 +20,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -51,7 +51,7 @@ public class CripplingPoison extends Equipment {
 				part.play(p, ent);
 				FightData fd = FightInstance.getFightData(ent);
 				int add = fd.getStatus(StatusType.POISON).getStacks() / poisonThreshold;
-				fd.addBuff(data, UUID.randomUUID().toString(), false, false, BuffType.PHYSICAL, -inc - add, 100);
+				fd.addBuff(data, UUID.randomUUID().toString(), false, false, DamageBuffType.PHYSICAL, -inc - add, 100);
 			}
 			return TriggerResult.keep();
 		}));

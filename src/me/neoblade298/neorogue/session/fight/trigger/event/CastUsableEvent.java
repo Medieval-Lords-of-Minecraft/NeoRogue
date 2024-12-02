@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
-import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 
 public class CastUsableEvent {
@@ -22,15 +21,10 @@ public class CastUsableEvent {
 	}
 	
 	// Id is so that equipment that modify the event can later check if the event successfully cast
-	public void addBuff(PropertyType type, FightData applier, String id, double amount, boolean multiplier) {
-		Buff b = getBuff(type);
+	public void addBuff(PropertyType type, String id, Buff b) {
+		Buff curr = getBuff(type);
 		modifiers.add(id);
-		if (multiplier) {
-			b.addMultiplier(applier, amount);
-		}
-		else {
-			b.addIncrease(applier, amount);
-		}
+		curr.combine(b);
 	}
 	
 	public Buff getBuff(PropertyType type) {

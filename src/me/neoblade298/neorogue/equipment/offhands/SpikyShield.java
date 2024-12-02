@@ -6,15 +6,14 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
-import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.DamageMeta.BuffOrigin;
+import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -41,12 +40,12 @@ public class SpikyShield extends Equipment {
 		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, (pdata, inputs) -> {
 			if (!p.isHandRaised()) return TriggerResult.keep();
 			ReceivedDamageEvent ev = (ReceivedDamageEvent) inputs;
-			ev.getMeta().addBuff(BuffType.GENERAL, new Buff(data, reduction, 0), BuffOrigin.SHIELD, false);
+			ev.getMeta().addBuff(DamageCategory.GENERAL, new Buff(data, reduction, 0), BuffOrigin.SHIELD, false);
 			p.playSound(p, Sound.ITEM_SHIELD_BLOCK, 1F, 1F);
 			return TriggerResult.keep();
 		});
 		data.addTrigger(id, Trigger.RAISE_SHIELD, (pdata, inputs) -> {
-			data.setBarrier(Barrier.centered(p, 3, 2, 2, 0, new HashMap<BuffType, Buff>()));
+			data.setBarrier(Barrier.centered(p, 3, 2, 2, 0, new HashMap<DamageCategory, Buff>()));
 			return TriggerResult.keep();
 		});
 

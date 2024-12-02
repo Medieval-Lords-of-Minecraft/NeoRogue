@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -68,7 +68,7 @@ public class Parry extends Equipment {
 			Sounds.fire.play(p, p);
 			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
 				BasicAttackEvent ev = (BasicAttackEvent) in;
-				ev.getMeta().addBuff(BuffType.GENERAL, new Buff(data, damage, 0), BuffOrigin.NORMAL, true);
+				ev.getMeta().addBuff(DamageBuffType.GENERAL, new Buff(data, damage, 0), BuffOrigin.NORMAL, true);
 				FightInstance.dealDamage(data, DamageType.SLASHING, damage, ev.getTarget());
 				hit.play(p, ev.getTarget().getLocation());
 				Sounds.anvil.play(p, p);

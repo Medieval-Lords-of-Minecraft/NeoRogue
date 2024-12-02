@@ -10,7 +10,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import net.kyori.adventure.text.Component;
@@ -31,7 +31,7 @@ public class AmuletOfOffering extends Artifact {
 		data.addTrigger(id, Trigger.RECEIVED_HEALTH_DAMAGE, (pdata, in) -> {
 			data.addMana(1000);
 			data.addStamina(1000);
-			data.addBuff(data, id, true, true, BuffType.GENERAL, 0.5, 300);
+			data.addBuff(data, id, true, true, DamageBuffType.GENERAL, 0.5, 300);
 			Util.msg(p, this.display.append(Component.text(" was activated", NamedTextColor.GRAY)));
 			return TriggerResult.remove();
 		});

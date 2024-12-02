@@ -6,8 +6,8 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class IronCuirass extends Equipment {
@@ -26,7 +26,7 @@ public class IronCuirass extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addBuff(data, false, false, BuffType.PHYSICAL, damageReduction);
+		data.addBuff(data, false, false, DamageCategory.PHYSICAL, damageReduction);
 	}
 
 	@Override

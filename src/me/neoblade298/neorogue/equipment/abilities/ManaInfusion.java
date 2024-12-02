@@ -15,7 +15,7 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.session.fight.DamageMeta.BuffOrigin;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroupEvent;
@@ -59,7 +59,7 @@ public class ManaInfusion extends Equipment {
 			if (inst.getCount() == 1 && pdata.getMana() >= mana) {
 				for (IProjectileInstance pi : ev.getInstances()) {
 					ProjectileInstance proj = (ProjectileInstance) pi;
-					proj.getMeta().addBuff(BuffType.GENERAL, new Buff(data, damage, 0), BuffOrigin.NORMAL, true);
+					proj.getMeta().addBuff(DamageBuffType.GENERAL, new Buff(data, damage, 0), BuffOrigin.NORMAL, true);
 				}
 				pdata.addMana(-mana);
 			}

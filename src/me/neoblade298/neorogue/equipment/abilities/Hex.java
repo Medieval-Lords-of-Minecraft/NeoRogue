@@ -15,7 +15,7 @@ import me.neoblade298.neorogue.session.fight.DamageMeta.BuffOrigin;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -55,7 +55,7 @@ public class Hex extends Equipment {
 		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
 			BasicAttackEvent ev = (BasicAttackEvent) in;
 			if (inst.getCount() == 1) {
-				ev.getMeta().addBuff(BuffType.GENERAL, new Buff(data, -dec, 0), BuffOrigin.NORMAL, true);
+				ev.getMeta().addBuff(DamageBuffType.GENERAL, new Buff(data, -dec, 0), BuffOrigin.NORMAL, true);
 				FightInstance.applyStatus(ev.getTarget(), StatusType.INJURY, data, stacks, -1);
 			}
 			return TriggerResult.keep();

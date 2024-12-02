@@ -24,7 +24,7 @@ import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.Trap;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
@@ -58,7 +58,7 @@ public class Setup extends Equipment {
 				pc.play(p, p);
 				Sounds.enchant.play(p, p);
 				initTrap(p, data);
-				data.addBuff(data, true, true, BuffType.GENERAL, inc * 0.01, DamageOrigin.TRAP);
+				data.addBuff(data, true, true, DamageBuffType.GENERAL, inc * 0.01, DamageOrigin.TRAP);
 				act.addCount(-time);
 
 				if (act.getBool()) {

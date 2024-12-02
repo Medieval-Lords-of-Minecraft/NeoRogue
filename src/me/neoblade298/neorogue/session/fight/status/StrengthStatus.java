@@ -1,7 +1,9 @@
 package me.neoblade298.neorogue.session.fight.status;
 
+import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.FightData;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 
 public class StrengthStatus extends BasicStatus {
 	public StrengthStatus(FightData target) {
@@ -11,6 +13,6 @@ public class StrengthStatus extends BasicStatus {
 	@Override
 	public void onApply(FightData applier, int stacks) {
 		super.onApply(applier, stacks);
-		holder.addBuff(applier, true, false, BuffType.PHYSICAL, stacks);
+		holder.addBuff(true, DamageBuffType.of(DamageCategory.PHYSICAL), new Buff(applier, stacks, 0));
 	}
 }

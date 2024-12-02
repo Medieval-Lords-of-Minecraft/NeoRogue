@@ -7,8 +7,8 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -31,7 +31,7 @@ public class IcySigil extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addBuff(data, false, false, BuffType.MAGICAL, def);
+		data.addBuff(data, false, false, DamageCategory.MAGICAL, def);
 
 		StandardPriorityAction act = new StandardPriorityAction(id);
 		act.setAction((pdata, in) -> {
@@ -39,7 +39,7 @@ public class IcySigil extends Equipment {
 			if (!ev.isStatus(StatusType.FROST)) return TriggerResult.keep();
 			act.addCount(ev.getStacks());
 			if (act.getCount() >= thres) {
-				data.addBuff(data, id, false, false, BuffType.MAGICAL, def, 100);
+				data.addBuff(data, id, false, false, DamageCategory.MAGICAL, def, 100);
 				act.setCount(act.getCount() % thres);
 			}
 			return TriggerResult.keep();

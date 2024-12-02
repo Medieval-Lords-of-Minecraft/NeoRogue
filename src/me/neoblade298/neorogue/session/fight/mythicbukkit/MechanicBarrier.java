@@ -22,13 +22,14 @@ import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.BuffList;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 
 public class MechanicBarrier implements ITargetedEntitySkill {
 	protected final Skill counterSkill, hitSkill;
 	protected final double width, forward, forwardOffset, height, rotateY;
 	protected final int duration;
-	protected final HashMap<DamageBuffType, Double> buffs = new HashMap<DamageBuffType, Double>();
+	protected final HashMap<DamageCategory, Double> buffs = new HashMap<DamageCategory, Double>();
 	protected final String id;
 	
 	protected static final HashMap<String, UUID> barrierIds = new HashMap<String, UUID>();
@@ -59,7 +60,9 @@ public class MechanicBarrier implements ITargetedEntitySkill {
 		for (DamageCategory type : DamageCategory.values()) {
 			double amt = config.getDouble(type.name(), 0);
 			
-			if (amt != 0) buffs.put(DamageBuffType.of(type), amt);
+			if (amt != 0) {
+				buffs.put(type, amt);
+			}
 		}
 	}
 
@@ -70,9 +73,11 @@ public class MechanicBarrier implements ITargetedEntitySkill {
 			FightData fd = FightInstance.getFightData(owner.getUniqueId());
 			if (fd == null) return SkillResult.INVALID_TARGET;
 			if (fd.getInstance() == null) return SkillResult.ERROR;
-			HashMap<DamageBuffType, Buff> buffs = new HashMap<DamageBuffType, Buff>();
-			for (Entry<DamageBuffType, Double> ent : this.buffs.entrySet()) {
-				buffs.put(ent.getKey(), new Buff(fd, 0, ent.getValue()));
+			HashMap<DamageBuffType, BuffList> buffs = new HashMap<DamageBuffType, BuffList>();
+			for (Entry<DamageCategory, Double> ent : this.buffs.entrySet()) {
+				BuffList bl = new BuffList();
+				bl.add(new Buff(fd, 0, ent.getValue()));
+				buffs.put(DamageBuffType.of(ent.getKey()), bl);
 			}
 			LivingEntity ent = (LivingEntity) data.getCaster().getEntity().getBukkitEntity();
 			Barrier b = Barrier.centered(ent, width, forward, height, forwardOffset, buffs);

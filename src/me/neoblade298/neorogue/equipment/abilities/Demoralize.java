@@ -26,7 +26,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -67,7 +67,7 @@ public class Demoralize extends Equipment {
 						for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
 							FightData fd = FightInstance.getFightData(ent);
 							fd.applyStatus(StatusType.INJURY, data, injure, -1);
-							fd.addBuff(data, id, false, true, BuffType.GENERAL, -dec * 0.01, 160);
+							fd.addBuff(data, id, false, true, DamageBuffType.GENERAL, -dec * 0.01, 160);
 						}
 					}
 					insts.removeFirst();

@@ -11,10 +11,10 @@ import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
-import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.DamageMeta.BuffOrigin;
+import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
@@ -38,7 +38,7 @@ public class AvalonianAnchor extends Artifact {
 				if (ev.isProjectile()) return TriggerResult.keep();
 				Sounds.crit.play(p, p);
 				part.play(p, ev.getTarget());
-				ev.getMeta().addBuff(BuffType.GENERAL, new Buff(data, 0, 0.5), BuffOrigin.NORMAL, true);
+				ev.getMeta().addBuff(DamageCategory.GENERAL, new Buff(data, 0, 0.5), BuffOrigin.NORMAL, true);
 			}
 			return TriggerResult.keep();
 		});

@@ -21,7 +21,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -52,7 +52,7 @@ public class Disorient extends Equipment {
 			for (LivingEntity ent : TargetHelper.getEntitiesInCone(p, tp)) {
 				part.play(p, ent);
 				FightData fd = FightInstance.getFightData(ent);
-				fd.addBuff(data, UUID.randomUUID().toString(), false, false, BuffType.PHYSICAL, -inc, 200);
+				fd.addBuff(data, UUID.randomUUID().toString(), false, false, DamageBuffType.PHYSICAL, -inc, 200);
 				fd.applyStatus(StatusType.INSANITY, data, insanity, -1);
 				FightInstance.dealDamage(fd, DamageType.DARK, damage, ent);
 			}

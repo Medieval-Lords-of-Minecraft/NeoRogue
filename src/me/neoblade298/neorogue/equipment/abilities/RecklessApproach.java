@@ -28,7 +28,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
@@ -69,7 +69,7 @@ public class RecklessApproach extends Equipment {
 				p.teleport(p.getLocation().add(0, 0.2, 0));
 			}
 			p.setVelocity(v.setY(0).normalize().setY(0.3));
-			data.addBuff(data, ID, true, false, BuffType.GENERAL, inc, 100);
+			data.addBuff(data, ID, true, false, DamageBuffType.GENERAL, inc, 100);
 			new RecklessApproachHitbox(p, data, inst);
 			return TriggerResult.keep();
 		});
