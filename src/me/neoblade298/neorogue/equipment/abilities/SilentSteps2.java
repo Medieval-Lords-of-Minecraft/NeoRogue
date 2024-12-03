@@ -34,8 +34,7 @@ public class SilentSteps2 extends Equipment {
 		data.addTrigger(ID,  Trigger.PRE_RECEIVE_STATUS, (pdata, in) -> {
 			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
 			if (!ev.getStatusId().equals(StatusType.STEALTH.name())) return TriggerResult.keep();
-			ev.getDurationBuffList().add(new Buff(data, duration, 0);
-			ev.getStacksBuffList().addIncrease(data, 1);
+			ev.getDurationBuffList().add(new Buff(data, duration, 0));
 			return TriggerResult.keep();
 		});
 	}

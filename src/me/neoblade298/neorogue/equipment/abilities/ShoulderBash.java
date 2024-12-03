@@ -1,7 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
-import java.util.UUID;
-
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -15,10 +13,12 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -49,7 +49,7 @@ public class ShoulderBash extends Equipment {
 			pc.play(p, p);
 			FightInstance.knockback(p, ev.getTarget(), 0.5);
 			FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.BLUNT), ev.getTarget());
-			FightInstance.getFightData(ev.getTarget()).addBuff(data, UUID.randomUUID().toString(), false, false, DamageBuffType.of(DamageCategory.GENERAL), -inc, 100);
+			FightInstance.getFightData(ev.getTarget()).addBuff(false, DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, -inc, 0), 100);
 			return TriggerResult.keep();
 		}));
 	}
