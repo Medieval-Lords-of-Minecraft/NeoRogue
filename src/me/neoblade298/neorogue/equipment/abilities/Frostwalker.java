@@ -81,7 +81,7 @@ public class Frostwalker extends Equipment {
 						if (hit.contains(ent.getUniqueId())) continue;
 						FightData fd = FightInstance.getFightData(ent);
 						fd.applyStatus(StatusType.FROST, data, stacks, -1);
-						fd.addBuff(false, DamageBuffType.of(DamageCategory.MAGICAL), new Buff(data, -reduc, 0), 100);
+						fd.addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL), new Buff(data, -reduc, 0), 100);
 						hit.add(ent.getUniqueId());
 					}
 					remove = pool.tick() || remove;

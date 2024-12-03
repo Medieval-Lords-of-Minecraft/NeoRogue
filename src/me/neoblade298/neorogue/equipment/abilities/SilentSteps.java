@@ -42,15 +42,15 @@ public class SilentSteps extends Equipment {
 		data.addTrigger(ID,  Trigger.PRE_RECEIVE_STATUS, (pdata, in) -> {
 			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
 			if (!ev.getStatusId().equals(StatusType.STEALTH.name())) return TriggerResult.keep();
-			ev.getDurationBuffList().addIncrease(data, 20);
+			ev.getDurationBuffList().add(new Buff(data, 20, 0));
 			return TriggerResult.keep();
 		});
 		
 		data.addTrigger(ID, Trigger.PRE_DEALT_DAMAGE, (pdata, in) -> {
 			if (!pdata.hasStatus(StatusType.STEALTH)) return TriggerResult.keep();
 			PreDealtDamageEvent ev = (PreDealtDamageEvent) in;
-			ev.getMeta().addBuff(DamageBuffType.of(DamageCategory.GENERAL),
-					new Buff(pdata, damage * pdata.getStatus(StatusType.STEALTH).getStacks(), 0), true);
+			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+					new Buff(pdata, damage * pdata.getStatus(StatusType.STEALTH).getStacks(), 0));
 			return TriggerResult.keep();
 		});
 	}

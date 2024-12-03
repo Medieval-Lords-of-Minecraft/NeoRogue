@@ -73,7 +73,7 @@ public class CurseMark extends Equipment {
 						FightInstance.applyStatus(mark, StatusType.INSANITY, pdata, stacks, -1);
 						pc.play(p, inst.mark);
 						Sounds.infect.play(p, mark);
-						fd.addBuff(false, DamageBuffType.of(DamageCategory.DARK), new Buff(data, 0, -buff * 0.01), 100);
+						fd.addDefenseBuff(DamageBuffType.of(DamageCategory.DARK), new Buff(data, 0, -buff * 0.01), 100);
 					}
 				}.runTaskLater(NeoRogue.inst(), 40L));
 				return TriggerResult.keep();

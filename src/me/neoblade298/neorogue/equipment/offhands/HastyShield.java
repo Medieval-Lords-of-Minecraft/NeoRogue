@@ -51,7 +51,7 @@ public class HastyShield extends Equipment {
 			if (now <= nextUsable) return TriggerResult.keep();
 			
 			ReceivedDamageEvent ev = (ReceivedDamageEvent) inputs;
-			ev.getMeta().addBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, reduction, 0, BuffOrigin.SHIELD), false);
+			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, reduction, 0, BuffOrigin.SHIELD));
 			nextUsable = now + 5000L; // 5s
 			p.playSound(p, Sound.ITEM_SHIELD_BLOCK, 1F, 1F);
 			data.addMana(amount);

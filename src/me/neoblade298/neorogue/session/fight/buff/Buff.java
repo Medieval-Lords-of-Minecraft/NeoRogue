@@ -20,6 +20,22 @@ public class Buff {
 		this.multiplier = multiplier;
 		this.origin = origin;
 	}
+
+	public static Buff increase(FightData applier, double increase) {
+		return new Buff(applier, increase, 0, BuffOrigin.NORMAL);
+	}
+
+	public static Buff increase(FightData applier, double increase, BuffOrigin origin) {
+		return new Buff(applier, increase, 0, origin);
+	}
+
+	public static Buff multiplier(FightData applier, double multiplier) {
+		return new Buff(applier, 0, multiplier, BuffOrigin.NORMAL);
+	}
+
+	public static Buff multiplier(FightData applier, double multiplier, BuffOrigin origin) {
+		return new Buff(applier, 0, multiplier, origin);
+	}
 	
 	// Used in clone
 	private Buff(Buff src) {

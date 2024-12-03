@@ -64,7 +64,7 @@ public class ConfidenceKill extends Equipment {
 			KillEvent ev = (KillEvent) in;
 			if (inst.toKill.getUniqueId().equals(ev.getTarget().getUniqueId())) {
 				Sounds.extinguish.play(p, p);
-				pdata.addBuff(true, DamageBuffType.of(DamageCategory.GENERAL), new Buff(pdata, 0, buff * 0.01), UUID.randomUUID().toString(), 200);
+				pdata.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(pdata, 0, buff * 0.01), UUID.randomUUID().toString(), 200);
 			}
 			return TriggerResult.keep();
 		});

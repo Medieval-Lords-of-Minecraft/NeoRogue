@@ -10,6 +10,7 @@ import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -35,7 +36,7 @@ public class HuntersVest extends Equipment {
 			ReceivedDamageEvent ev = (ReceivedDamageEvent) in;
 			if (!data.hasStatus(StatusType.FOCUS)) return TriggerResult.keep();
 			if (!ev.getMeta().containsType(DamageCategory.PHYSICAL)) return TriggerResult.keep();
-			ev.getMeta().addBuff(DamageCategory.PHYSICAL, new Buff(data, reduc * Math.min(3, data.getStatus(StatusType.FOCUS).getStacks()), 0), false);
+			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.PHYSICAL), new Buff(data, reduc * Math.min(3, data.getStatus(StatusType.FOCUS).getStacks()), 0));
 			return TriggerResult.keep();
 		});
 	}

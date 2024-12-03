@@ -49,7 +49,7 @@ public class KeenSenses extends Equipment {
 		data.addTrigger(id, Trigger.PRE_DEALT_DAMAGE, (pdata, in) -> {
 			PreDealtDamageEvent ev = (PreDealtDamageEvent) in;
 			if (!ev.getMeta().hasOrigin(DamageOrigin.TRAP)) return TriggerResult.keep();
-			ev.getMeta().addBuff(true, DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, damage * 0.01));
+			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, damage * 0.01));
 			return TriggerResult.keep();
 		});
 	}

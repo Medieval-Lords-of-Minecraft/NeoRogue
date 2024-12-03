@@ -9,6 +9,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.CastUsableEvent;
@@ -35,7 +36,7 @@ public class MortalEngine extends Equipment {
 		inst.setAction((pdata, in) -> {
 			CastUsableEvent ev = (CastUsableEvent) in;
 			if (ev.getInstance().getStaminaCost() > 0) {
-				ev.addBuff(PropertyType.STAMINA_COST, data, ID, inst.getCount(), false);
+				ev.addBuff(PropertyType.STAMINA_COST, ID, new Buff(data, inst.getCount(), 0));
 			}
 			if (ev.getInstance().getStaminaCost() < cutoff) return TriggerResult.keep();
 			inst.addCount(reduc);

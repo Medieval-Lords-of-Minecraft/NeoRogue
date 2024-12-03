@@ -2,13 +2,13 @@ package me.neoblade298.neorogue.session.fight.trigger.event;
 
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.Shield;
-import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.BuffList;
 
 public class GrantShieldsEvent {
 	private FightData applier, target;
 	private boolean isSecondary;
 	private Shield shield;
-	private Buff buff = new Buff();
+	private BuffList buff = new BuffList();
 	public GrantShieldsEvent(FightData applier, FightData target, Shield shield, boolean isSecondary) {
 		this.applier = applier;
 		this.target = target;
@@ -27,7 +27,7 @@ public class GrantShieldsEvent {
 	public boolean isSecondary() {
 		return this.isSecondary;
 	}
-	public Buff getBuff() {
+	public BuffList getBuff() {
 		return buff;
 	}
 }

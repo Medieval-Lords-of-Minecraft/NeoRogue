@@ -156,22 +156,34 @@ public class DamageMeta {
 		this.slices.add(slice);
 	}
 	
-	public void addBuffLists(boolean damageBuff, HashMap<DamageBuffType, BuffList> buffLists) {
-		HashMap<DamageBuffType, BuffList> curr = damageBuff ? damageBuffs : defenseBuffs;
+	public void addDamageBuffLists(HashMap<DamageBuffType, BuffList> buffLists) {
 		for (Entry<DamageBuffType, BuffList> entry : buffLists.entrySet()) {
 			DamageBuffType type = entry.getKey();
-			BuffList list = curr.getOrDefault(type, new BuffList());
+			BuffList list = damageBuffs.getOrDefault(type, new BuffList());
 			list.add(entry.getValue());
-			curr.put(type, list);
+			damageBuffs.put(type, list);
+		}
+	}
+	
+	public void addDefenseBuffLists(HashMap<DamageBuffType, BuffList> buffLists) {
+		for (Entry<DamageBuffType, BuffList> entry : buffLists.entrySet()) {
+			DamageBuffType type = entry.getKey();
+			BuffList list = defenseBuffs.getOrDefault(type, new BuffList());
+			list.add(entry.getValue());
+			defenseBuffs.put(type, list);
 		}
 	}
 
-	public void addBuff(boolean damageBuff, DamageBuffType type, Buff b) {
-		HashMap<DamageBuffType, BuffList> curr = damageBuff ? damageBuffs : defenseBuffs;
-		BuffList list = curr.getOrDefault(type, new BuffList());
+	public void addDamageBuff(DamageBuffType type, Buff b) {
+		BuffList list = damageBuffs.getOrDefault(type, new BuffList());
 		list.add(b);
-		curr.put(type, list);
-		
+		damageBuffs.put(type, list);
+	}
+
+	public void addDefenseBuff(DamageBuffType type, Buff b) {
+		BuffList list = defenseBuffs.getOrDefault(type, new BuffList());
+		list.add(b);
+		defenseBuffs.put(type, list);
 	}
 	
 	public double dealDamage(LivingEntity target) {
@@ -179,8 +191,8 @@ public class DamageMeta {
 		if (target.getType() == EntityType.ARMOR_STAND) return 0;
 		FightData recipient = FightInstance.getFightData(target.getUniqueId());
 		LivingEntity damager = owner.getEntity();
-		addBuffLists(owner.getBuffLists(true), true);
-		addBuffLists(recipient.getBuffLists(false), false);
+		addDamageBuffLists(owner.getDamageBuffLists());
+		addDefenseBuffLists(recipient.getDefenseBuffLists());
 		double damage = 0;
 		double ignoreShieldsDamage = 0;
 		returnDamage = new DamageMeta(recipient);
@@ -206,7 +218,7 @@ public class DamageMeta {
 		// Reduce damage from barriers, used only for players blocking projectiles
 		// For mobs blocking projectiles, go to damageProjectile
 		if (hitBarrier && recipient.getBarrier() != null) {
-			addBuffLists(recipient.getBarrier().getBuffLists(), false);
+			addDefenseBuffLists(recipient.getBarrier().getBuffLists());
 		}
 
 		// Status effects

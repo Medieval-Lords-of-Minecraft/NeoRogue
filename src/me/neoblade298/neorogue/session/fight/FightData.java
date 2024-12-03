@@ -106,7 +106,7 @@ public class FightData {
 		// Set up base mob resistances
 		if (mob != null) {
 			for (Entry<DamageCategory, Integer> ent : mob.getResistances().entrySet()) {
-				addBuff(false, DamageBuffType.of(ent.getKey()), new Buff(this, 0, (double) ent.getValue() / 100));
+				addDefenseBuff(DamageBuffType.of(ent.getKey()), new Buff(this, 0, (double) ent.getValue() / 100));
 			}
 		}
 	}
@@ -131,38 +131,63 @@ public class FightData {
 		return this.mob;
 	}
 
-	public void addBuff(boolean damageBuff, DamageBuffType type, Buff b) {
-		HashMap<DamageBuffType, BuffList> lists = damageBuff ? damageBuffs : defenseBuffs;
+	public void addDamageBuff(DamageBuffType type, Buff b) {
+		addBuff(damageBuffs, type, b);
+	}
+
+	public void addDefenseBuff(DamageBuffType type, Buff b) {
+		addBuff(defenseBuffs, type, b);
+	}
+
+	private void addBuff(HashMap<DamageBuffType, BuffList> lists, DamageBuffType type, Buff b) {
 		BuffList list = lists.getOrDefault(type, new BuffList());
 		list.add(b);
 		lists.put(type, list);
 	}
 
-	
-
-	public void addBuff(boolean damageBuff, DamageBuffType type, Buff b, int ticks) {
-		addBuff(damageBuff, type, b, UUID.randomUUID().toString(), ticks);
+	public void addDamageBuff(DamageBuffType type, Buff b, int ticks) {
+		addBuff(damageBuffs, type, b, UUID.randomUUID().toString(), ticks);
 	}
 
-	public void addBuff(boolean damageBuff, DamageBuffType type, Buff b, String id, int ticks) {
-		addBuff(damageBuff, type, b);
+	public void addDamageBuff(DamageBuffType type, Buff b, String id, int ticks) {
+		addBuff(damageBuffs, type, b, id, ticks);
+	}
+
+	public void addDefenseBuff(DamageBuffType type, Buff b, String id, int ticks) {
+		addBuff(defenseBuffs, type, b, id, ticks);
+	}
+
+	public void addDefenseBuff(DamageBuffType type, Buff b, int ticks) {
+		addBuff(defenseBuffs, type, b, UUID.randomUUID().toString(), ticks);
+	}
+
+	private void addBuff(HashMap<DamageBuffType, BuffList> lists, DamageBuffType type, Buff b, String id, int ticks) {
+		addBuff(lists, type, b);
 
 		if (ticks > 0) {
 			addTask(id, new BukkitRunnable() {
 				public void run() {
-					addBuff(damageBuff, type, b.invert());
+					addBuff(lists, type, b.invert());
 					tasks.remove(id);
 				}
 			}.runTaskLater(NeoRogue.inst(), ticks));
 		}
 	}
 
-	public BuffList getBuffList(boolean damageBuff, DamageBuffType type) {
-		return damageBuff ? damageBuffs.get(type) : defenseBuffs.get(type);
+	public BuffList getDamageBuffList(DamageBuffType type) {
+		return damageBuffs.get(type);
 	}
 
-	public HashMap<DamageBuffType, BuffList> getBuffLists(boolean damageBuff) {
-		return damageBuff ? damageBuffs : defenseBuffs;
+	public BuffList getDefenseBuffList(DamageBuffType type) {
+		return defenseBuffs.get(type);
+	}
+
+	public HashMap<DamageBuffType, BuffList> getDamageBuffLists() {
+		return damageBuffs;
+	}
+
+	public HashMap<DamageBuffType, BuffList> getDefenseBuffLists() {
+		return defenseBuffs;
 	}
 
 	public void addTask(BukkitTask task) {

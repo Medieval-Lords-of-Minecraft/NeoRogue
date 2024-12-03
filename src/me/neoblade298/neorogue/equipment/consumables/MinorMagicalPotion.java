@@ -29,7 +29,7 @@ public class MinorMagicalPotion extends Consumable {
 	
 	@Override
 	public void runConsumableEffects(Player p, PlayerFightData data) {
-		data.addBuff(true, DamageBuffType.of(DamageCategory.MAGICAL), new Buff(data, intel, 0));
+		data.addDamageBuff(DamageBuffType.of(DamageCategory.MAGICAL), new Buff(data, intel, 0));
 	}
 
 	@Override

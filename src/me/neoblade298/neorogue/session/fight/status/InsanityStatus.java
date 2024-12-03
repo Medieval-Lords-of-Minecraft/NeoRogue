@@ -15,11 +15,11 @@ public class InsanityStatus extends DecrementStackStatus {
 	@Override
 	public void apply(FightData applier, int stacks, int seconds) {
 		super.apply(applier, stacks, seconds);
-		holder.addBuff(false, DamageBuffType.of(DamageCategory.MAGICAL), new Buff(applier, stacks, -stacks * 0.2));
+		holder.addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL), new Buff(applier, stacks, -stacks * 0.2));
 	}
 	
 	@Override
 	public void onTickAction() {
-		holder.addBuff(false, DamageBuffType.of(DamageCategory.MAGICAL), new Buff(slices.first().getFightData(), stacks, stacks * 0.2));
+		holder.addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL), new Buff(slices.first().getFightData(), stacks, stacks * 0.2));
 	}
 }

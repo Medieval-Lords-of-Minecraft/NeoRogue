@@ -2,10 +2,12 @@ package me.neoblade298.neorogue.equipment.accessories;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.GrantShieldsEvent;
@@ -29,7 +31,7 @@ public class MinorShieldingRelic extends Equipment {
 		data.addTrigger(id, Trigger.RECEIVE_SHIELDS, (pdata, in) -> {
 			GrantShieldsEvent ev = (GrantShieldsEvent) in;
 			if (ev.isSecondary()) return TriggerResult.keep();
-			ev.getBuff().addIncrease(data, shields);
+			ev.getBuff().add(Buff.increase(data, shields));
 			return TriggerResult.keep();
 		});
 	}

@@ -41,7 +41,7 @@ public class PointBlank extends Equipment {
 			if (!dm.hasOrigin(DamageOrigin.PROJECTILE)) return TriggerResult.keep();
 			IProjectileInstance ip = dm.getProjectile();
 			if (ip.getOrigin().distanceSquared(ev.getTarget().getLocation()) > thres * thres) return TriggerResult.keep();
-			dm.addBuff(true, DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, damage, 0));
+			dm.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, damage, 0));
 			return TriggerResult.keep();
 		});
 	}

@@ -37,7 +37,7 @@ public class DarkPact extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addBuff(false, DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, -0.5), seconds * 20);
+		data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, -0.5), seconds * 20);
 		data.addTrigger(id, Trigger.BASIC_ATTACK, new DarkPactTriggerAction());
 	}
 	

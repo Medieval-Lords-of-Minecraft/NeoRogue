@@ -1185,9 +1185,9 @@ public abstract class Equipment implements Comparable<Equipment> {
 				data, properties.get(PropertyType.DAMAGE), properties.getType(), DamageOrigin.PROJECTILE, proj
 		);
 
-		dm.addBuffLists(proj.getBuffLists(), true);
+		dm.addDamageBuffLists(proj.getBuffLists());
 		if (hitBarrier != null) {
-			dm.addBuffLists(hitBarrier.getBuffLists(), false);
+			dm.addDefenseBuffLists(hitBarrier.getBuffLists());
 		}
 
 		if (basicAttack) {
@@ -1209,10 +1209,10 @@ public abstract class Equipment implements Comparable<Equipment> {
 	) {
 		PlayerFightData data = (PlayerFightData) proj.getOwner();
 		if (!proj.getBuffLists().isEmpty()) {
-			dm.addBuffLists(proj.getBuffLists(), true);
+			dm.addDamageBuffLists(proj.getBuffLists());
 		}
 		if (hitBarrier != null) {
-			dm.addBuffLists(hitBarrier.getBuffLists(), false);
+			dm.addDefenseBuffLists(hitBarrier.getBuffLists());
 		}
 		if (basicAttack) {
 			BasicAttackEvent ev = new BasicAttackEvent(target, dm, properties.get(PropertyType.KNOCKBACK), this, null);

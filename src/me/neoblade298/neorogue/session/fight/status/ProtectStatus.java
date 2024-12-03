@@ -13,6 +13,6 @@ public class ProtectStatus extends BasicStatus {
 	@Override
 	public void onApply(FightData applier, int stacks) {
 		this.stacks += stacks;
-		holder.addBuff(false, DamageBuffType.of(DamageCategory.PHYSICAL), new Buff(applier, stacks, 0));
+		holder.addDefenseBuff(DamageBuffType.of(DamageCategory.PHYSICAL), new Buff(applier, stacks, 0));
 	}
 }

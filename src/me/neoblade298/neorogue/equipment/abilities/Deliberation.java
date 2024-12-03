@@ -43,7 +43,7 @@ public class Deliberation extends Equipment {
 					Sounds.enchant.play(p, p);
 					pc.play(p, p);
 					data.applyStatus(StatusType.FOCUS, data, 1, -1);
-					data.addBuff(true, DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, damage * data.getStatus(StatusType.FOCUS).getStacks(), 0),
+					data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, damage * data.getStatus(StatusType.FOCUS).getStacks(), 0),
 						100);
 				}
 			});

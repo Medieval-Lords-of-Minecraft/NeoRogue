@@ -53,7 +53,7 @@ public class CripplingPoison extends Equipment {
 				part.play(p, ent);
 				FightData fd = FightInstance.getFightData(ent);
 				int add = fd.getStatus(StatusType.POISON).getStacks() / poisonThreshold;
-				fd.addBuff(false, DamageBuffType.of(DamageCategory.PHYSICAL), new Buff(data, -inc - add, 0), UUID.randomUUID().toString(), 100);
+				fd.addDefenseBuff(DamageBuffType.of(DamageCategory.PHYSICAL), new Buff(data, -inc - add, 0), UUID.randomUUID().toString(), 100);
 			}
 			return TriggerResult.keep();
 		}));

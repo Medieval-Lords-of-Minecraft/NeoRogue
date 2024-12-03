@@ -38,10 +38,20 @@ public class MechanicBuff implements ITargetedEntitySkill {
 			FightData fd = FightInstance.getFightData(target.getBukkitEntity().getUniqueId());
 			FightData fdCaster = FightInstance.getFightData(data.getCaster().getEntity().getUniqueId());
 			if (seconds > 0) {
-				fd.addBuff(damageBuff, DamageBuffType.of(type), new Buff(fdCaster, increase, multiplier), "MythicMobs", seconds);
+				if (damageBuff) {
+					fd.addDamageBuff(DamageBuffType.of(type), new Buff(fdCaster, increase, multiplier), "MythicMobs", seconds);
+				}
+				else {
+					fd.addDefenseBuff(DamageBuffType.of(type), new Buff(fdCaster, increase, multiplier), "MythicMobs", seconds);
+				}
 			}
 			else {
-				fd.addBuff(damageBuff, DamageBuffType.of(type), new Buff(fdCaster, increase, multiplier));
+				if (damageBuff) {
+					fd.addDamageBuff(DamageBuffType.of(type), new Buff(fdCaster, increase, multiplier));
+				}
+				else {
+					fd.addDefenseBuff(DamageBuffType.of(type), new Buff(fdCaster, increase, multiplier));
+				}
 			}
 			return SkillResult.SUCCESS;
 		} catch (Exception e) {

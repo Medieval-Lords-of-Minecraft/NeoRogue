@@ -58,7 +58,7 @@ public class GetCentered extends Equipment {
 			}
 
 			for (IProjectileInstance pi : ev.getInstances()) {
-				((ProjectileInstance) pi).getMeta().addBuff(true, DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, damage * data.getStatus(StatusType.FOCUS).getStacks(),
+				((ProjectileInstance) pi).getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, damage * data.getStatus(StatusType.FOCUS).getStacks(),
 					0));
 			}
 			return TriggerResult.keep();

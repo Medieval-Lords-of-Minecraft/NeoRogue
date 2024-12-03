@@ -60,12 +60,12 @@ public class RubyArmament extends Equipment {
 			BasicAttackEvent ev = (BasicAttackEvent) in;
 			if (act.getCount() == 0) {
 				data.addStamina(stamina);
-				ev.getMeta().addBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(pdata, -damageDec, 0), true);
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(pdata, -damageDec, 0));
 			}
 			else {
 				if (data.getStamina() < stamCost) return TriggerResult.keep();
 				data.addStamina(-stamCost);
-				ev.getMeta().addBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(pdata, damage, 0), true);
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(pdata, damage, 0));
 			}
 			return TriggerResult.keep();
 		});

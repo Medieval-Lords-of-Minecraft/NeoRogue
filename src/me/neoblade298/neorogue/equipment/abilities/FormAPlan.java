@@ -63,7 +63,7 @@ public class FormAPlan extends Equipment {
 						pc.play(p, p);
 						data.applyStatus(StatusType.STEALTH, data, 3, 100);
 						Util.msg(p, item.displayName().append(Component.text(" was activated", NamedTextColor.GRAY)));
-						data.addBuff(true, DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, buff * 0.01));
+						data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, buff * 0.01));
 						this.cancel();
 					}
 				}

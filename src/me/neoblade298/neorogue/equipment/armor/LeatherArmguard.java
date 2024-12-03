@@ -8,6 +8,7 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -30,7 +31,7 @@ public class LeatherArmguard extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, (pdata, in) -> {
-			data.addBuff(data, false, false, DamageCategory.GENERAL, data.hasStatus(StatusType.STEALTH) ? spdef + def : def);
+			data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL, data.hasStatus(StatusType.STEALTH) ? spdef + def : def);
 			return TriggerResult.keep();
 		});
 	}

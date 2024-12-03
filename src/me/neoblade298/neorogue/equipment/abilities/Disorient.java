@@ -52,7 +52,7 @@ public class Disorient extends Equipment {
 			for (LivingEntity ent : TargetHelper.getEntitiesInCone(p, tp)) {
 				part.play(p, ent);
 				FightData fd = FightInstance.getFightData(ent);
-				fd.addBuff(false, DamageBuffType.of(DamageCategory.PHYSICAL), new Buff(data, -inc, 0), 200);
+				fd.addDefenseBuff(DamageBuffType.of(DamageCategory.PHYSICAL), new Buff(data, -inc, 0), 200);
 				fd.applyStatus(StatusType.INSANITY, data, insanity, -1);
 				FightInstance.dealDamage(fd, DamageType.DARK, damage, ent);
 			}

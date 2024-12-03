@@ -56,7 +56,7 @@ public class Wound extends Equipment {
 		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
 			BasicAttackEvent ev = (BasicAttackEvent) in;
 			if (inst.getCount() == 1) {
-				ev.getMeta().addBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, -dec, 0), true);
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, -dec, 0));
 				FightInstance.applyStatus(ev.getTarget(), StatusType.INJURY, data, stacks, -1);
 			}
 			return TriggerResult.keep();

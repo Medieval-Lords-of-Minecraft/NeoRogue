@@ -220,9 +220,9 @@ public class ProjectileInstance extends IProjectileInstance {
 	}
 
 	private void damageProjectile(LivingEntity target, DamageMeta meta, Barrier hitBarrier) {
-		meta.addBuffLists(buffs, true);
+		meta.addDamageBuffLists(buffs);
 		if (hitBarrier != null) {
-			meta.addBuffLists(hitBarrier.getBuffLists(), false);
+			meta.addDefenseBuffLists(hitBarrier.getBuffLists());
 		}
 		FightInstance.dealDamage(meta, target);
 	}

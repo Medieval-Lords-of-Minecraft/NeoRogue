@@ -13,6 +13,6 @@ public class IntellectStatus extends BasicStatus {
 	@Override
 	public void onApply(FightData applier, int stacks) {
 		super.onApply(applier, stacks);
-		holder.addBuff(true, DamageBuffType.of(DamageCategory.MAGICAL), new Buff(applier, stacks, 0));
+		holder.addDamageBuff(DamageBuffType.of(DamageCategory.MAGICAL), new Buff(applier, stacks, 0));
 	}
 }

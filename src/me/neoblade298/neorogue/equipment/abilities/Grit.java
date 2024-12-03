@@ -44,7 +44,7 @@ public class Grit extends Equipment {
 			PreDealtDamageEvent ev = (PreDealtDamageEvent) in;
 			double dist = ev.getTarget().getLocation().distanceSquared(p.getLocation());
 			if (dist <= 25) {
-				ev.getMeta().addBuff(true, DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, inc, 0));
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, inc, 0));
 			}
 			return TriggerResult.keep();
 		});

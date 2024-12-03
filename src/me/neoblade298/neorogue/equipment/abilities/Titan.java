@@ -11,6 +11,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.CastUsableEvent;
@@ -38,7 +39,7 @@ public class Titan extends Equipment {
 			CastUsableEvent ev = (CastUsableEvent) in;
 			EquipmentInstance inst = ev.getInstance();
 			if (inst.getStaminaCost() < CUTOFF) return TriggerResult.keep();
-			ev.addBuff(PropertyType.STAMINA_COST, data, id, staminaReduction, false);
+			ev.addBuff(PropertyType.STAMINA_COST, id, new Buff(data, staminaReduction, 0));
 			return TriggerResult.keep();
 		});
 	}

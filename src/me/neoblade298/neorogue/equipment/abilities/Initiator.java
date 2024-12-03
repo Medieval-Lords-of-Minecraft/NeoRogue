@@ -43,7 +43,7 @@ public class Initiator extends Equipment {
 			if (fd.hasStatus(p.getName() + "-INITIATOR")) return TriggerResult.keep();
 			fd.applyStatus(Status.createByGenericType(GenericStatusType.BASIC, p.getName() + "-INITIATOR",
 					fd, true), data, 1, -1, ev.getMeta(), false);
-			ev.getMeta().addBuff(true, DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, damage * 0.01));
+			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, damage * 0.01));
 			return TriggerResult.keep();
 		});
 	}

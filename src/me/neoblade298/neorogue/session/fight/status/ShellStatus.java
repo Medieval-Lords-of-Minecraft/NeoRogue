@@ -13,6 +13,6 @@ public class ShellStatus extends BasicStatus {
 	@Override
 	public void onApply(FightData applier, int stacks) {
 		this.stacks += stacks;
-		holder.addBuff(false, DamageBuffType.of(DamageCategory.MAGICAL), new Buff(applier, stacks, 0));
+		holder.addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL), new Buff(applier, stacks, 0));
 	}
 }

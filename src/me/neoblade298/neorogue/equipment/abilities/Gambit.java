@@ -71,7 +71,7 @@ public class Gambit extends Equipment {
 					inst.setCount(0);
 					Sounds.roar.play(p, p);
 					pc.play(p, p);
-					data.addBuff(true, DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, damage, 0));
+					data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, damage, 0));
 				}
 			}
 			return TriggerResult.keep();

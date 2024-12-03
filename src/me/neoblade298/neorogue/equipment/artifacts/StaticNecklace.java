@@ -39,7 +39,7 @@ public class StaticNecklace extends Artifact {
 			if (!fd.hasStatus(StatusType.ELECTRIFIED)) return TriggerResult.keep();
 			
 			double buff = fd.getStatus(StatusType.ELECTRIFIED).getStacks() * 0.2;
-			ev.getMeta().addBuff(DamageBuffType.of(DamageCategory.LIGHTNING), new Buff(pdata, buff, 0), true);
+			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.LIGHTNING), new Buff(pdata, buff, 0));
 			return TriggerResult.keep();
 		});
 	}

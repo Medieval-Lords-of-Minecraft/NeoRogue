@@ -29,4 +29,18 @@ public class BuffList {
         clone.add(this);
         return clone;
     }
+
+    // These methods currently avoid fight stats
+    public int apply(int base) {
+        return (int) apply((double) base);
+    }
+    
+    public double apply(double base) {
+        double increase = 0, mult = 0;
+        for (Buff b : buffs) {
+            increase += b.getIncrease();
+            mult += b.getMultiplier();
+        }
+        return (base * mult) + increase;
+    }
 }

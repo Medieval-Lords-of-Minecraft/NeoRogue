@@ -53,7 +53,7 @@ public class Cripple extends Equipment {
 			Sounds.attackSweep.play(p, p);
 			for (LivingEntity ent : TargetHelper.getEntitiesInCone(p, tp)) {
 				part.play(p, ent);
-				FightInstance.getFightData(ent).addBuff(false, DamageBuffType.of(DamageCategory.PHYSICAL), new Buff(data, -inc, 0),
+				FightInstance.getFightData(ent).addDefenseBuff(DamageBuffType.of(DamageCategory.PHYSICAL), new Buff(data, -inc, 0),
 				UUID.randomUUID().toString(), 100);
 			}
 			return TriggerResult.keep();
