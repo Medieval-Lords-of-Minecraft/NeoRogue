@@ -16,6 +16,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -61,7 +62,7 @@ public class EnergyBattery extends Artifact {
 				Player p = data.getPlayer();
 				part.play(p, p);
 				for (PropertyType type : new PropertyType[] { PropertyType.MANA_COST, PropertyType.STAMINA_COST, PropertyType.COOLDOWN }) {
-					ev.addBuff(type, data, uuid, 1, true);
+					ev.addBuff(type, uuid, Buff.multiplier(data, 1));
 				}
 				return TriggerResult.keep();
 			}

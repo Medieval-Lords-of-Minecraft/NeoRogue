@@ -32,7 +32,7 @@ public class TopazRing extends Equipment {
 		data.addTrigger(id, Trigger.PRE_APPLY_STATUS, (pdata, in) -> {
 			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
 			if (!ev.isStatus(StatusType.ELECTRIFIED)) return TriggerResult.keep();
-			ev..getStacksBuffList()getStacksBuffList().add(new Buff(data, stacks, 0);
+			ev.getStacksBuffList().add(new Buff(data, stacks, 0));
 			return TriggerResult.keep();
 		});
 	}

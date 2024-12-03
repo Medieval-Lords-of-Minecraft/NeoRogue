@@ -6,7 +6,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.BuffList;
 
 public class Shield implements Comparable<Shield> {
 	private double amount, total, decayAmount;
@@ -36,7 +36,7 @@ public class Shield implements Comparable<Shield> {
 	}
 	
 	// Should only be called before a shield is applied, or else it'll refill the shield and break stuff
-	public void applyBuff(Buff b) {
+	public void applyBuff(BuffList b) {
 		this.amount = b.apply(amount);
 		this.total = b.apply(total);
 	}

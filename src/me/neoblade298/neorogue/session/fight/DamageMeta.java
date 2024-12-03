@@ -275,7 +275,7 @@ public class DamageMeta {
 		
 		// Calculate buffs for every slice of damage
 		boolean evading = recipient.hasStatus(StatusType.EVADE) && 
-				(slices.isEmpty() ? false : DamageCategory.GENERAL.hasType(slices.getFirst().getPostBuffType());
+				(slices.isEmpty() ? false : DamageCategory.GENERAL.hasType(slices.getFirst().getPostBuffType()));
 		if (evading) {
 			recipient.getStatus(StatusType.EVADE).apply(recipient, -1, -1);
 		}

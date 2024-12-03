@@ -43,4 +43,17 @@ public class BuffList {
         }
         return (base * mult) + increase;
     }
+
+    public int applyNegative(int base) {
+        return (int) applyNegative((double) base);
+    }
+
+    public double applyNegative(double base) {
+        double increase = 0, mult = 0;
+        for (Buff b : buffs) {
+            increase += b.getIncrease();
+            mult += b.getMultiplier();
+        }
+        return (base * (1 - mult)) - increase;
+    }
 }

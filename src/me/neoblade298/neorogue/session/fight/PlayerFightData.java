@@ -29,7 +29,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.TaskChain;
 import me.neoblade298.neorogue.session.fight.TickAction.TickResult;
-import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.BuffList;
 import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.KeyBind;
@@ -390,17 +390,17 @@ public class PlayerFightData extends FightData {
 					runActions(data, Trigger.PRE_CAST_USABLE, ev);
 
 					// Buff mana costs, cannot go below 0, uses temp mana/stamina cost if it exists first (Escape Plan)
-					Buff b = ev.getBuff(PropertyType.MANA_COST);
-					if (!b.isEmpty() && ei.getTempManaCost() == -1)
+					BuffList b = ev.getBuff(PropertyType.MANA_COST);
+					if (ei.getTempManaCost() == -1)
 						ei.setTempManaCost(Math.max(0, b.applyNegative(ei.getManaCost())));
 					// Buff stamina costs, cannot go below 0
 					b = ev.getBuff(PropertyType.STAMINA_COST);
-					if (!b.isEmpty() && ei.getTempStaminaCost() == -1)
+					if (ei.getTempStaminaCost() == -1)
 						ei.setTempStaminaCost(Math.max(0, b.applyNegative(ei.getStaminaCost())));
 					// Buff cooldowns, doesn't matter if it goes below 0
 					b = ev.getBuff(PropertyType.COOLDOWN);
-					if (!b.isEmpty())
-						ei.setTempCooldown(b.applyNegative(ei.getBaseCooldown()));
+					
+					ei.setTempCooldown(b.applyNegative(ei.getBaseCooldown()));
 
 					if (!ei.canTrigger(p, data)) {
 						continue;

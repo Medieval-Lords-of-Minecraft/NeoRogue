@@ -49,14 +49,14 @@ public class Buff {
 		this.origin = origin;
 	}
 
-	public boolean isSimilar(Buff other) {
-		return origin == other.origin && applier == other.applier;
-	}
-
 	public Buff combine(Buff other) {
 		this.increase += other.increase;
 		this.multiplier += other.multiplier;
 		return this;
+	}
+
+	public boolean isSimilar(Buff other) {
+		return origin == other.origin && applier == other.applier;
 	}
 	
 	public Buff clone() {
@@ -77,10 +77,6 @@ public class Buff {
 	
 	public double getMultiplier() {
 		return multiplier;
-	}
-	
-	public double apply(double original) {
-		return (original * (1 + multiplier)) + increase;
 	}
 	
 	public double applyNegative(double original) {
