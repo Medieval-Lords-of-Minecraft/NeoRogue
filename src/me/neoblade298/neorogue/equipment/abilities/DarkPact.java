@@ -10,7 +10,9 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -35,7 +37,7 @@ public class DarkPact extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addBuff(data, id, false, true, DamageBuffType.GENERAL, 1, seconds);
+		data.addBuff(false, DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, -0.5), seconds * 20);
 		data.addTrigger(id, Trigger.BASIC_ATTACK, new DarkPactTriggerAction());
 	}
 	

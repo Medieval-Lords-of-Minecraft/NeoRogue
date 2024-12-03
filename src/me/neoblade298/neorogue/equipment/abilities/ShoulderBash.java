@@ -49,7 +49,7 @@ public class ShoulderBash extends Equipment {
 			pc.play(p, p);
 			FightInstance.knockback(p, ev.getTarget(), 0.5);
 			FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.BLUNT), ev.getTarget());
-			FightInstance.getFightData(ev.getTarget()).addBuff(data, UUID.randomUUID().toString(), false, false, DamageBuffType.GENERAL, -inc, 100);
+			FightInstance.getFightData(ev.getTarget()).addBuff(data, UUID.randomUUID().toString(), false, false, DamageBuffType.of(DamageCategory.GENERAL), -inc, 100);
 			return TriggerResult.keep();
 		}));
 	}

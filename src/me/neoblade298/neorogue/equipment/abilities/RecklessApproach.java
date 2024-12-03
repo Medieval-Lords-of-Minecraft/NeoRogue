@@ -21,6 +21,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardEquipmentInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -69,7 +70,7 @@ public class RecklessApproach extends Equipment {
 				p.teleport(p.getLocation().add(0, 0.2, 0));
 			}
 			p.setVelocity(v.setY(0).normalize().setY(0.3));
-			data.addBuff(data, ID, true, false, DamageBuffType.GENERAL, inc, 100);
+			data.addBuff(true, DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, inc, 0), 100);
 			new RecklessApproachHitbox(p, data, inst);
 			return TriggerResult.keep();
 		});

@@ -33,7 +33,7 @@ public class EngineersCap extends Equipment {
 		data.addBuff(data, false, false, DamageCategory.PHYSICAL, dec);
 		data.addTrigger(id, Trigger.LAY_TRAP, (pdata, in) -> {
 			LayTrapEvent ev = (LayTrapEvent) in;
-			ev.getDurationBuff().addIncrease(data, dur * 20);
+			ev.getDurationBuffList().addIncrease(data, dur * 20);
 			return TriggerResult.keep();
 		});
 	}

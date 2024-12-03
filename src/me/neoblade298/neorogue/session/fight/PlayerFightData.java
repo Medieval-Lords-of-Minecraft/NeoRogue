@@ -625,7 +625,7 @@ public class PlayerFightData extends FightData {
 		traps.put(trap.getUniqueId(), trap);
 		LayTrapEvent ev = new LayTrapEvent(trap);
 		runActions(this, Trigger.LAY_TRAP, ev);
-		trap.setDuration((int) ev.getDurationBuff().apply(trap.getDuration()));
+		trap.setDuration((int) ev.getDurationBuffList().apply(trap.getDuration()));
 		trap.activate();
 	}
 	

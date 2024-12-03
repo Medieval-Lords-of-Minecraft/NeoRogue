@@ -22,6 +22,7 @@ import me.neoblade298.neorogue.equipment.AmmunitionInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageMeta.BuffOrigin;
 import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.FightData;
@@ -30,6 +31,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffList;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 
@@ -218,9 +220,9 @@ public class ProjectileInstance extends IProjectileInstance {
 	}
 
 	private void damageProjectile(LivingEntity target, DamageMeta meta, Barrier hitBarrier) {
-		meta.addBuffs(buffs, true);
+		meta.addBuffLists(buffs, true);
 		if (hitBarrier != null) {
-			meta.addBuffs(hitBarrier.getBuffLists(), false);
+			meta.addBuffLists(hitBarrier.getBuffLists(), false);
 		}
 		FightInstance.dealDamage(meta, target);
 	}
@@ -233,8 +235,15 @@ public class ProjectileInstance extends IProjectileInstance {
 		return v;
 	}
 	
-	public BuffList getBuffList() {
+	public HashMap<DamageBuffType, BuffList> getBuffLists() {
 		return buffs;
+	}
+	
+	public void addBuff(DamageBuffType type, Buff b) {
+		BuffList list = buffs.getOrDefault(type, new BuffList());
+		b.setOrigin(BuffOrigin.PROJECTILE);
+		list.add(b);
+		buffs.put(type, list);
 	}
 	
 	public FightData getOwner() {

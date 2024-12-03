@@ -15,7 +15,7 @@ import me.neoblade298.neorogue.equipment.StandardPriorityAction;
 import me.neoblade298.neorogue.equipment.mechanics.IProjectileInstance;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
-import me.neoblade298.neorogue.session.fight.DamageMeta.BuffOrigin;
+import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
@@ -58,8 +58,8 @@ public class GetCentered extends Equipment {
 			}
 
 			for (IProjectileInstance pi : ev.getInstances()) {
-				((ProjectileInstance) pi).getMeta().addBuff(DamageBuffType.GENERAL, new Buff(data, damage * data.getStatus(StatusType.FOCUS).getStacks(),
-					0), BuffOrigin.PROJECTILE, true);
+				((ProjectileInstance) pi).getMeta().addBuff(true, DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, damage * data.getStatus(StatusType.FOCUS).getStacks(),
+					0));
 			}
 			return TriggerResult.keep();
 		});

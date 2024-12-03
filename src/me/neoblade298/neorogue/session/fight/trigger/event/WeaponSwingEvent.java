@@ -1,12 +1,12 @@
 package me.neoblade298.neorogue.session.fight.trigger.event;
 
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.BuffList;
 
 public class WeaponSwingEvent {
 	private Equipment weapon;
 	private double attackSpeed;
-	private Buff buff = new Buff();
+	private BuffList buff = new BuffList();
 	public WeaponSwingEvent(Equipment weapon, double attackSpeed) {
 		this.weapon = weapon;
 		this.attackSpeed = attackSpeed;
@@ -17,7 +17,7 @@ public class WeaponSwingEvent {
 	public double getAttackSpeed() {
 		return attackSpeed;
 	}
-	public Buff getAttackSpeedBuff() {
+	public BuffList getAttackSpeedBuffList() {
 		return buff;
 	}
 }

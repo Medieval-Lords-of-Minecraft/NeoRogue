@@ -156,7 +156,7 @@ public class DamageMeta {
 		this.slices.add(slice);
 	}
 	
-	public void addBuffLists(HashMap<DamageBuffType, BuffList> buffLists, boolean damageBuff) {
+	public void addBuffLists(boolean damageBuff, HashMap<DamageBuffType, BuffList> buffLists) {
 		HashMap<DamageBuffType, BuffList> curr = damageBuff ? damageBuffs : defenseBuffs;
 		for (Entry<DamageBuffType, BuffList> entry : buffLists.entrySet()) {
 			DamageBuffType type = entry.getKey();
@@ -164,6 +164,14 @@ public class DamageMeta {
 			list.add(entry.getValue());
 			curr.put(type, list);
 		}
+	}
+
+	public void addBuff(boolean damageBuff, DamageBuffType type, Buff b) {
+		HashMap<DamageBuffType, BuffList> curr = damageBuff ? damageBuffs : defenseBuffs;
+		BuffList list = curr.getOrDefault(type, new BuffList());
+		list.add(b);
+		curr.put(type, list);
+		
 	}
 	
 	public double dealDamage(LivingEntity target) {

@@ -15,6 +15,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
 import me.neoblade298.neorogue.session.fight.DamageType;
@@ -58,7 +59,7 @@ public class Setup extends Equipment {
 				pc.play(p, p);
 				Sounds.enchant.play(p, p);
 				initTrap(p, data);
-				data.addBuff(data, true, true, DamageBuffType.GENERAL, inc * 0.01, DamageOrigin.TRAP);
+				data.addBuff(true, DamageBuffType.of(DamageCategory.GENERAL, ), new Buff(data, 0, inc * 0.01));
 				act.addCount(-time);
 
 				if (act.getBool()) {

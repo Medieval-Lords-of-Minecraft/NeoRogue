@@ -18,6 +18,8 @@ import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.MinibossFightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 
 public class VultureChance extends ChanceSet {
 	private ChanceStage fightMiniboss;
@@ -61,7 +63,7 @@ public class VultureChance extends ChanceSet {
 						inst.setNextInstance(new MinibossFightInstance(s, s.getParty().keySet(), s.getArea().getType()));
 						((FightInstance) inst.getNextInstance()).addInitialTask((fi, fdata) -> {
 							for (PlayerFightData pfdata : fdata) {
-								pfdata.addBuff(pfdata, true, DamageCategory.GENERAL, 0, -0.2);
+								pfdata.addBuff(true, DamageBuffType.of(DamageCategory.GENERAL), new Buff(pfdata, 0, -0.2));
 							}
 						});
 						return "miniboss";

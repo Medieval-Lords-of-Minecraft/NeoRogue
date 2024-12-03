@@ -11,6 +11,8 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 
 public class MinorMagicalPotion extends Consumable {
 	private static final String ID = "minorMagicalPotion";
@@ -27,7 +29,7 @@ public class MinorMagicalPotion extends Consumable {
 	
 	@Override
 	public void runConsumableEffects(Player p, PlayerFightData data) {
-		data.addBuff(data, true, false, DamageCategory.MAGICAL, intel);
+		data.addBuff(true, DamageBuffType.of(DamageCategory.MAGICAL), new Buff(data, intel, 0));
 	}
 
 	@Override

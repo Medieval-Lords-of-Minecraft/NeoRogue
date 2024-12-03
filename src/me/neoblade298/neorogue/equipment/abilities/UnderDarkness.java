@@ -20,6 +20,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
@@ -67,7 +68,7 @@ public class UnderDarkness extends Equipment {
 							circ.play(smokeEdge, loc, LocalAxes.xz(), null);
 							if (p.getLocation().distanceSquared(loc) <= tp.range * tp.range) {
 								data.applyStatus(StatusType.STEALTH, data, 1, 20);
-								data.addBuff(data, UUID.randomUUID().toString(), true, false, DamageBuffType.GENERAL, damage, 20);
+								data.addBuff(data, UUID.randomUUID().toString(), true, false, DamageBuffType.of(DamageCategory.GENERAL), damage, 20);
 							}
 							
 							if (++tick == TICKS) this.cancel();

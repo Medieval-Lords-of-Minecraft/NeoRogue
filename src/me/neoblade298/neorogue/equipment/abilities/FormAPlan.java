@@ -13,7 +13,9 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -43,7 +45,7 @@ public class FormAPlan extends Equipment {
 		data.addTrigger(ID, Trigger.DEALT_DAMAGE, (pdata, in) -> {
 			if (inst.isActive) return TriggerResult.remove();
 			DealtDamageEvent ev = (DealtDamageEvent) in;
-			if (!ev.getMeta().containsType(DamageBuffType.GENERAL)) return TriggerResult.keep();
+			if (!ev.getMeta().containsType(DamageCategory.GENERAL)) return TriggerResult.keep();
 			inst.timer--;
 			return TriggerResult.keep();
 		});
@@ -61,7 +63,7 @@ public class FormAPlan extends Equipment {
 						pc.play(p, p);
 						data.applyStatus(StatusType.STEALTH, data, 3, 100);
 						Util.msg(p, item.displayName().append(Component.text(" was activated", NamedTextColor.GRAY)));
-						data.addBuff(data, true, true, DamageBuffType.GENERAL, buff * 0.01);
+						data.addBuff(true, DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, buff * 0.01));
 						this.cancel();
 					}
 				}

@@ -11,6 +11,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -48,7 +49,7 @@ public class Flurry extends Equipment {
 			action = (pdata, in) -> {
 				if (++count > cutoff) return TriggerResult.remove();
 				WeaponSwingEvent ev = (WeaponSwingEvent) in;
-				ev.getAttackSpeedBuff().addMultiplier(pdata, 1);
+				ev.getAttackSpeedBuffList().add(new Buff(pdata, 0, 1));
 				return TriggerResult.keep();
 			};
 		}

@@ -138,6 +138,12 @@ public class FightData {
 		lists.put(type, list);
 	}
 
+	
+
+	public void addBuff(boolean damageBuff, DamageBuffType type, Buff b, int ticks) {
+		addBuff(damageBuff, type, b, UUID.randomUUID().toString(), ticks);
+	}
+
 	public void addBuff(boolean damageBuff, DamageBuffType type, Buff b, String id, int ticks) {
 		addBuff(damageBuff, type, b);
 
@@ -373,8 +379,8 @@ public class FightData {
 		if (applier instanceof PlayerFightData) {
 			FightInstance.trigger(((PlayerFightData) applier).getPlayer(), Trigger.PRE_APPLY_STATUS, ev);
 		}
-		int finalStacks = (int) Math.ceil(ev.getStacksBuff().apply(stacks));
-		int finalDuration = (int) Math.ceil(ev.getDurationBuff().apply(ticks));
+		int finalStacks = (int) Math.ceil(ev.getStacksBuffList().apply(stacks));
+		int finalDuration = (int) Math.ceil(ev.getDurationBuffList().apply(ticks));
 		status.apply(applier, finalStacks, finalDuration);
 		ApplyStatusEvent ev2 = new ApplyStatusEvent(this, status, finalStacks, finalDuration, isSecondary, meta);
 		if (applier instanceof PlayerFightData) {

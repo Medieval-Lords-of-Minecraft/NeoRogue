@@ -25,6 +25,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -75,7 +76,7 @@ public class Brand extends Equipment {
 			if (!ev.isStatus(StatusType.BURN)) return TriggerResult.keep();
 			if (am.getEntity() == null) return TriggerResult.keep();
 			if (!ev.getTarget().getUniqueId().equals(am.getEntity().getUniqueId())) return TriggerResult.keep();
-			ev.getStacksBuff().addMultiplier(data, 1);
+			ev.getStacksBuffList().add(new Buff(data, 0, 1));
 			return TriggerResult.keep();
 		});
 

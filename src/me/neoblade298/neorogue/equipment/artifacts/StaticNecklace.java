@@ -9,7 +9,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
-import me.neoblade298.neorogue.session.fight.DamageMeta.BuffOrigin;
+import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -39,7 +39,7 @@ public class StaticNecklace extends Artifact {
 			if (!fd.hasStatus(StatusType.ELECTRIFIED)) return TriggerResult.keep();
 			
 			double buff = fd.getStatus(StatusType.ELECTRIFIED).getStacks() * 0.2;
-			ev.getMeta().addBuff(DamageBuffType.LIGHTNING, new Buff(pdata, buff, 0), BuffOrigin.NORMAL, true);
+			ev.getMeta().addBuff(DamageBuffType.of(DamageCategory.LIGHTNING), new Buff(pdata, buff, 0), true);
 			return TriggerResult.keep();
 		});
 	}

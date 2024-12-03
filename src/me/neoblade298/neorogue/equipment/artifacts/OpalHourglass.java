@@ -11,6 +11,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.CastUsableEvent;
@@ -32,7 +33,7 @@ public class OpalHourglass extends Artifact {
 		data.addTrigger(ID, Trigger.PRE_CAST_USABLE, (pdata, in) -> {
 			CastUsableEvent ev = (CastUsableEvent) in;
 			if (ev.getInstance().getBaseCooldown() < thres) return TriggerResult.keep();
-			ev.addBuff(PropertyType.COOLDOWN, data, id, 1, false);
+			ev.addBuff(PropertyType.COOLDOWN, id, new Buff(data, reduc, 0));
 			return TriggerResult.keep();
 		});
 	}

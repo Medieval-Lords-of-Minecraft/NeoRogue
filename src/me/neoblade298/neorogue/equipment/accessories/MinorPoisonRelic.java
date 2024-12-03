@@ -31,7 +31,7 @@ public class MinorPoisonRelic extends Equipment {
 		data.addTrigger(id, Trigger.PRE_APPLY_STATUS, (pdata, in) -> {
 			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
 			if (!ev.getStatusId().equals(StatusType.POISON.name())) return TriggerResult.keep();
-			ev.getStacksBuff().addIncrease(data, increase);
+			ev.getStacksBuffList().addIncrease(data, increase);
 			return TriggerResult.keep();
 		});
 	}

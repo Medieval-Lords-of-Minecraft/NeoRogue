@@ -63,7 +63,44 @@ import me.neoblade298.neorogue.equipment.armor.LeatherHood;
 import me.neoblade298.neorogue.equipment.armor.LightningCloak;
 import me.neoblade298.neorogue.equipment.armor.NullMagicMantle;
 import me.neoblade298.neorogue.equipment.armor.SpikedPauldrons;
-import me.neoblade298.neorogue.equipment.artifacts.*;
+import me.neoblade298.neorogue.equipment.artifacts.AlchemistBag;
+import me.neoblade298.neorogue.equipment.artifacts.AmuletOfOffering;
+import me.neoblade298.neorogue.equipment.artifacts.AvalonianAnchor;
+import me.neoblade298.neorogue.equipment.artifacts.AzureCutter;
+import me.neoblade298.neorogue.equipment.artifacts.BloodyTrinket;
+import me.neoblade298.neorogue.equipment.artifacts.Brightfeather;
+import me.neoblade298.neorogue.equipment.artifacts.BurningCross;
+import me.neoblade298.neorogue.equipment.artifacts.CharmOfGallus;
+import me.neoblade298.neorogue.equipment.artifacts.ConcealingCloak;
+import me.neoblade298.neorogue.equipment.artifacts.CrystallineFlask;
+import me.neoblade298.neorogue.equipment.artifacts.EmeraldCluster;
+import me.neoblade298.neorogue.equipment.artifacts.EmeraldGem;
+import me.neoblade298.neorogue.equipment.artifacts.EmeraldShard;
+import me.neoblade298.neorogue.equipment.artifacts.EnergyBattery;
+import me.neoblade298.neorogue.equipment.artifacts.GlacialHammer;
+import me.neoblade298.neorogue.equipment.artifacts.GoldIngot;
+import me.neoblade298.neorogue.equipment.artifacts.GrendelsCrystalMirror;
+import me.neoblade298.neorogue.equipment.artifacts.HermesBoots;
+import me.neoblade298.neorogue.equipment.artifacts.HiddenBlade;
+import me.neoblade298.neorogue.equipment.artifacts.HuntersCompass;
+import me.neoblade298.neorogue.equipment.artifacts.ManaHaze;
+import me.neoblade298.neorogue.equipment.artifacts.ManaflowBand;
+import me.neoblade298.neorogue.equipment.artifacts.MercenaryHeadband;
+import me.neoblade298.neorogue.equipment.artifacts.MistralVeil;
+import me.neoblade298.neorogue.equipment.artifacts.NoxianBlight;
+import me.neoblade298.neorogue.equipment.artifacts.NoxianSkull;
+import me.neoblade298.neorogue.equipment.artifacts.OmniGem;
+import me.neoblade298.neorogue.equipment.artifacts.OpalHourglass;
+import me.neoblade298.neorogue.equipment.artifacts.PracticeDummy;
+import me.neoblade298.neorogue.equipment.artifacts.RubyCluster;
+import me.neoblade298.neorogue.equipment.artifacts.RubyGem;
+import me.neoblade298.neorogue.equipment.artifacts.RubyShard;
+import me.neoblade298.neorogue.equipment.artifacts.SapphireCluster;
+import me.neoblade298.neorogue.equipment.artifacts.SapphireGem;
+import me.neoblade298.neorogue.equipment.artifacts.SapphireShard;
+import me.neoblade298.neorogue.equipment.artifacts.StaticNecklace;
+import me.neoblade298.neorogue.equipment.artifacts.TomeOfWisdom;
+import me.neoblade298.neorogue.equipment.artifacts.TrickstersSigil;
 import me.neoblade298.neorogue.equipment.consumables.MinorHealthPotion;
 import me.neoblade298.neorogue.equipment.consumables.MinorMagicalPotion;
 import me.neoblade298.neorogue.equipment.consumables.MinorManaPotion;
@@ -90,12 +127,85 @@ import me.neoblade298.neorogue.equipment.offhands.RubyArmament;
 import me.neoblade298.neorogue.equipment.offhands.SmallShield;
 import me.neoblade298.neorogue.equipment.offhands.SpikyShield;
 import me.neoblade298.neorogue.equipment.offhands.WristBlade;
-import me.neoblade298.neorogue.equipment.weapons.*;
+import me.neoblade298.neorogue.equipment.weapons.BasicBow;
+import me.neoblade298.neorogue.equipment.weapons.BasicCrossbow;
+import me.neoblade298.neorogue.equipment.weapons.BasicShotbow;
+import me.neoblade298.neorogue.equipment.weapons.BluntedArrow;
+import me.neoblade298.neorogue.equipment.weapons.BoltWand;
+import me.neoblade298.neorogue.equipment.weapons.ButterflyKnife;
+import me.neoblade298.neorogue.equipment.weapons.ButterflyKnife2;
+import me.neoblade298.neorogue.equipment.weapons.ChainLightningWand;
+import me.neoblade298.neorogue.equipment.weapons.ColdArrow;
+import me.neoblade298.neorogue.equipment.weapons.CompositeBow;
+import me.neoblade298.neorogue.equipment.weapons.CrescentAxe;
+import me.neoblade298.neorogue.equipment.weapons.CrimsonBlade;
+import me.neoblade298.neorogue.equipment.weapons.CripplingFencingSword;
+import me.neoblade298.neorogue.equipment.weapons.DarkScepter;
+import me.neoblade298.neorogue.equipment.weapons.DoubleTap;
+import me.neoblade298.neorogue.equipment.weapons.EarthStaff;
+import me.neoblade298.neorogue.equipment.weapons.EarthenLeatherGauntlets;
+import me.neoblade298.neorogue.equipment.weapons.ElectromagneticKnife;
+import me.neoblade298.neorogue.equipment.weapons.EnergizedRazor;
+import me.neoblade298.neorogue.equipment.weapons.EtherealKnife;
+import me.neoblade298.neorogue.equipment.weapons.EvasiveKnife;
+import me.neoblade298.neorogue.equipment.weapons.FencingSword;
+import me.neoblade298.neorogue.equipment.weapons.FireStaff;
+import me.neoblade298.neorogue.equipment.weapons.Flametongue;
+import me.neoblade298.neorogue.equipment.weapons.ForcefulLeatherGauntlets;
+import me.neoblade298.neorogue.equipment.weapons.Fracturer;
+import me.neoblade298.neorogue.equipment.weapons.GlassArrow;
+import me.neoblade298.neorogue.equipment.weapons.Harpoon;
+import me.neoblade298.neorogue.equipment.weapons.HiddenRazor;
+import me.neoblade298.neorogue.equipment.weapons.HuntersBow;
+import me.neoblade298.neorogue.equipment.weapons.IceWand;
+import me.neoblade298.neorogue.equipment.weapons.Inflame;
+import me.neoblade298.neorogue.equipment.weapons.Irritant;
+import me.neoblade298.neorogue.equipment.weapons.LeatherGauntlets;
+import me.neoblade298.neorogue.equipment.weapons.LightLeatherGauntlets;
+import me.neoblade298.neorogue.equipment.weapons.LightningCutter;
+import me.neoblade298.neorogue.equipment.weapons.LightningWand;
+import me.neoblade298.neorogue.equipment.weapons.LitArrow;
+import me.neoblade298.neorogue.equipment.weapons.MassiveHalberd;
+import me.neoblade298.neorogue.equipment.weapons.MirrorSickle;
+import me.neoblade298.neorogue.equipment.weapons.MultiCrossbow;
+import me.neoblade298.neorogue.equipment.weapons.Neoblade;
+import me.neoblade298.neorogue.equipment.weapons.Nightmare;
+import me.neoblade298.neorogue.equipment.weapons.Quickfire;
+import me.neoblade298.neorogue.equipment.weapons.RapidFire;
+import me.neoblade298.neorogue.equipment.weapons.Rapier;
+import me.neoblade298.neorogue.equipment.weapons.Razor;
+import me.neoblade298.neorogue.equipment.weapons.RedBaron;
+import me.neoblade298.neorogue.equipment.weapons.RighteousHammer;
+import me.neoblade298.neorogue.equipment.weapons.SerratedArrow;
+import me.neoblade298.neorogue.equipment.weapons.SerratedRazor;
+import me.neoblade298.neorogue.equipment.weapons.ShadowyDagger;
+import me.neoblade298.neorogue.equipment.weapons.ShieldPike;
+import me.neoblade298.neorogue.equipment.weapons.SilverFang;
+import me.neoblade298.neorogue.equipment.weapons.SparkKnife;
+import me.neoblade298.neorogue.equipment.weapons.SparkStick;
+import me.neoblade298.neorogue.equipment.weapons.SparkdrainKnife;
+import me.neoblade298.neorogue.equipment.weapons.StoneArrow;
+import me.neoblade298.neorogue.equipment.weapons.StoneAxe;
+import me.neoblade298.neorogue.equipment.weapons.StoneDagger;
+import me.neoblade298.neorogue.equipment.weapons.StoneDriver;
+import me.neoblade298.neorogue.equipment.weapons.StoneHammer;
+import me.neoblade298.neorogue.equipment.weapons.StoneMace;
+import me.neoblade298.neorogue.equipment.weapons.StoneShiv;
+import me.neoblade298.neorogue.equipment.weapons.StoneSpear;
+import me.neoblade298.neorogue.equipment.weapons.StoneSword;
+import me.neoblade298.neorogue.equipment.weapons.StoneThrowingKnife;
+import me.neoblade298.neorogue.equipment.weapons.TacticiansDagger;
+import me.neoblade298.neorogue.equipment.weapons.TreeTrunk;
+import me.neoblade298.neorogue.equipment.weapons.Volley;
+import me.neoblade298.neorogue.equipment.weapons.WarningShot;
+import me.neoblade298.neorogue.equipment.weapons.WoodenArrow;
+import me.neoblade298.neorogue.equipment.weapons.WoodenDagger;
+import me.neoblade298.neorogue.equipment.weapons.WoodenSword;
+import me.neoblade298.neorogue.equipment.weapons.WoodenWand;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.GlossaryIcon;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
-import me.neoblade298.neorogue.session.fight.DamageMeta.BuffOrigin;
 import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -1005,7 +1115,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		properties.getSwingSound().play(p, p);
 		WeaponSwingEvent ev = new WeaponSwingEvent(this, attackSpeed);
 		FightInstance.trigger(p, Trigger.WEAPON_SWING, ev);
-		data.setBasicAttackCooldown(type.getSlots()[0], ev.getAttackSpeedBuff().apply(attackSpeed));
+		data.setBasicAttackCooldown(type.getSlots()[0], ev.getAttackSpeedBuffList().apply(attackSpeed));
 		if (type.getSlots()[0] == EquipSlot.OFFHAND)
 			p.swingOffHand();
 	}
@@ -1074,11 +1184,10 @@ public abstract class Equipment implements Comparable<Equipment> {
 		DamageMeta dm = new DamageMeta(
 				data, properties.get(PropertyType.DAMAGE), properties.getType(), DamageOrigin.PROJECTILE, proj
 		);
-		if (!proj.getBuffs().isEmpty()) {
-			dm.addBuffs(proj.getBuffs(), BuffOrigin.PROJECTILE, true);
-		}
+
+		dm.addBuffLists(proj.getBuffLists(), true);
 		if (hitBarrier != null) {
-			dm.addBuffs(hitBarrier.getBuffs(), BuffOrigin.BARRIER, false);
+			dm.addBuffLists(hitBarrier.getBuffLists(), false);
 		}
 
 		if (basicAttack) {
@@ -1099,11 +1208,11 @@ public abstract class Equipment implements Comparable<Equipment> {
 			LivingEntity target, ProjectileInstance proj, DamageMeta dm, Barrier hitBarrier, boolean basicAttack
 	) {
 		PlayerFightData data = (PlayerFightData) proj.getOwner();
-		if (!proj.getBuffs().isEmpty()) {
-			dm.addBuffs(proj.getBuffs(), BuffOrigin.PROJECTILE, true);
+		if (!proj.getBuffLists().isEmpty()) {
+			dm.addBuffLists(proj.getBuffLists(), true);
 		}
 		if (hitBarrier != null) {
-			dm.addBuffs(hitBarrier.getBuffs(), BuffOrigin.BARRIER, false);
+			dm.addBuffLists(hitBarrier.getBuffLists(), false);
 		}
 		if (basicAttack) {
 			BasicAttackEvent ev = new BasicAttackEvent(target, dm, properties.get(PropertyType.KNOCKBACK), this, null);
