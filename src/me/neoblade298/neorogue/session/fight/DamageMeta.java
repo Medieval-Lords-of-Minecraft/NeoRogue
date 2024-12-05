@@ -287,7 +287,9 @@ public class DamageMeta {
 			
 			// Set the slice damage to at most the target's health so the stats don't overcount damage
 			double sliceDamage = Math.max(0, (slice.getDamage() * mult) + increase);
-			sliceDamage = Math.min(sliceDamage, target.getHealth() + 1);
+			if (damage + ignoreShieldsDamage + sliceDamage > target.getHealth()) {
+				sliceDamage = target.getHealth() - damage - ignoreShieldsDamage;
+			}
 
 			// If the first slice isn't a status, evade it
 			if (evading) {
@@ -345,15 +347,7 @@ public class DamageMeta {
 				};
 				damBuffs.sort(comp);
 				defBuffs.sort(comp);
-				double damageCopy = sliceDamage;
-				if (sliceDamage > 0) {
-					for (Buff b : damBuffs) {
-						// Get the change a buff applies to the damage
-						double effectiveChange = Math.min(damageCopy, b.getEffectiveChange(damageCopy));
-						damageCopy -= b.getEffectiveChange(damageCopy);
-						if (damageCopy <= 0) break;
-					}
-				}
+				handleBuffStatistics(sliceDamage, damBuffs, defBuffs);
 			}
 			
 			if (owner instanceof PlayerFightData) {
@@ -385,6 +379,8 @@ public class DamageMeta {
 					((PlayerFightData) recipient).getStats().addReflectDamage(stacks);
 				}
 			}
+			// Stop counting damage slices after the target is already dead
+			if (damage + ignoreShieldsDamage >= target.getHealth()) break;
 		}
 		
 		// Threat
@@ -466,6 +462,18 @@ public class DamageMeta {
 		}
 		return types;
 	}
+
+	private void handleBuffStatistics(double sliceDamage, ArrayList<Buff> damageBuffs, ArrayList<Buff> defenseBuffs) {
+		if (sliceDamage > 0) {
+			// Since damage was dealt, all defense buffs are calculated in the stat
+			for (Buff b : defenseBuffs) {
+
+			}
+		}
+		else {
+
+		}
+	}
 	
 	public DamageMeta getReturnDamage() {
 		return returnDamage;
@@ -505,8 +513,9 @@ public class DamageMeta {
 	// Used for tracking stats mostly
 	public static enum BuffOrigin {
 		BARRIER,
-		STATUS,
+		FROST,
 		SHIELD,
+		STATUS,
 		PROJECTILE,
 		INITIAL_VELOCITY, // Multiplier of initial projectile velocity
 		NORMAL;

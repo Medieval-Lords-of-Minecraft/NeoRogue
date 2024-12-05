@@ -49,6 +49,8 @@ public class Buff {
 		this.origin = origin;
 	}
 
+	// Consider removing so that buffs are immutable
+	// Currently this is used to keep similar buffs combined when adding them together
 	public Buff combine(Buff other) {
 		this.increase += other.increase;
 		this.multiplier += other.multiplier;
@@ -79,8 +81,19 @@ public class Buff {
 		return multiplier;
 	}
 
-	public double getEffectiveChange(double base) {
-		return (base * multiplier) + increase;
+	public boolean isPositive(double base) {
+		if (increase == 0) return multiplier > 0;
+		else if (multiplier == 0) return increase > 0;
+		else return (base * multiplier) + increase > 0;
+	}
+
+	public double calculateEffects(double damage) {
+		double effectiveChange = (damage * multiplier) + increase;
+		return damage - effectiveChange;
+	}
+
+	private void calculateStatistics(double effectiveChange) {
+
 	}
 	
 	@Override
