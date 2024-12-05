@@ -78,13 +78,9 @@ public class Buff {
 	public double getMultiplier() {
 		return multiplier;
 	}
-	
-	public double applyNegative(double original) {
-		return (original * (1 - multiplier)) - increase;
-	}
-	
-	public boolean isEmpty() {
-		return increase == 0 && multiplier == 0;
+
+	public double getEffectiveChange(double base) {
+		return (base * multiplier) + increase;
 	}
 	
 	@Override

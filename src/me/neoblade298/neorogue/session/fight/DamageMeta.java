@@ -1,5 +1,8 @@
 package me.neoblade298.neorogue.session.fight;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -17,7 +20,6 @@ import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.mechanics.IProjectileInstance;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffList;
-import me.neoblade298.neorogue.session.fight.buff.BuffSlice;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
@@ -226,9 +228,6 @@ public class DamageMeta {
 			if (recipient.hasStatus(StatusType.BURN)) {
 				for (Entry<FightData, Integer> ent : recipient.getStatus(StatusType.BURN).getSlices().getSliceOwners().entrySet()) {
 					slices.add(new DamageSlice(ent.getKey(), ent.getValue() * 0.2, DamageType.FIRE));
-					if (ent.getKey() instanceof PlayerFightData) {
-						((PlayerFightData) ent.getKey()).getStats().addBurnDamage(ent.getValue() * 0.2);
-					}
 				}
 			}
 
@@ -251,12 +250,6 @@ public class DamageMeta {
 				int stacks = status.getStacks();
 				int toRemove = (int) (-stacks * 0.25);
 				status.apply(owner, toRemove, 0);
-				
-				for (Entry<FightData, Integer> ent : recipient.getStatus(StatusType.SANCTIFIED).getSlices().getSliceOwners().entrySet()) {
-					if (ent.getKey() instanceof PlayerFightData) {
-						((PlayerFightData) ent.getKey()).getStats().addFrostMitigated(ent.getValue() * 0.25);
-					}
-				}
 			}
 
 			if (owner.hasStatus(StatusType.CONCUSSED) && containsType(DamageCategory.PHYSICAL)) {
@@ -264,12 +257,6 @@ public class DamageMeta {
 				int stacks = status.getStacks();
 				int toRemove = (int) (-stacks * 0.25);
 				status.apply(owner, toRemove, 0);
-				
-				for (Entry<FightData, Integer> ent : recipient.getStatus(StatusType.CONCUSSED).getSlices().getSliceOwners().entrySet()) {
-					if (ent.getKey() instanceof PlayerFightData) {
-						((PlayerFightData) ent.getKey()).getStats().addConcussedMitigated(ent.getValue() * 0.25);
-					}
-				}
 			}
 		}
 		
@@ -280,40 +267,28 @@ public class DamageMeta {
 			recipient.getStatus(StatusType.EVADE).apply(recipient, -1, -1);
 		}
 		for (DamageSlice slice : slices) {
-			double increase = 0, mult = 1;
-			for (BuffType bt : slice.getType().getBuffTypes()) {
-				if (!damageBuffs.containsKey(bt)) continue;
-				for (BuffMeta bm : damageBuffs.get(bt)) {
-					Buff b = bm.buff;
-					if (b.getOrigin() != null && !origins.contains(b.getOrigin())) continue;
-					increase += b.getIncrease();
-					mult += b.getMultiplier();
-					if (!(owner instanceof PlayerFightData)) continue; // Don't need stats for non-player damager
-				}
+			double increase = 0, mult = 1, base = slice.getDamage();
+			ArrayList<Buff> damBuffs = new ArrayList<Buff>(), defBuffs = new ArrayList<Buff>();
+			for (DamageBuffType dbt : getDamageBuffTypes(slice.getType().getCategories())) {
+				if (!damageBuffs.containsKey(dbt)) continue;
+				BuffList list = damageBuffs.get(dbt);
+				increase += list.getIncrease();
+				mult += list.getMultiplier();
+				damBuffs.addAll(list.getBuffs());
 			}
 
-			for (BuffType bt : slice.getPostBuffType().getBuffTypes()) {
-				if (!defenseBuffs.containsKey(bt)) continue;
-				for (BuffMeta bm : defenseBuffs.get(bt)) {
-					Buff b = bm.buff;
-					if (b.getOrigin() != null && !origins.contains(b.getOrigin())) continue;
-					increase -= b.getIncrease();
-					mult -= b.getMultiplier();
-					if (!(recipient instanceof PlayerFightData)) continue; // Don't need stats for non-player mitigation
-					for (Entry<FightData, BuffSlice> ent : b.getSlices().entrySet()) {
-						BuffSlice bs = ent.getValue();
-						if (ent.getKey() instanceof PlayerFightData) {
-							PlayerFightData buffOwner = (PlayerFightData) ent.getKey();
-							double amt = bs.getIncrease() + (bs.getMultiplier() * slice.getDamage());
-							if (bm.origin == BuffOrigin.BARRIER) {
-								buffOwner.getStats().addDamageBarriered(amt);
-							}
-						}
-					}
-				}
+			for (DamageBuffType dbt : getDamageBuffTypes(slice.getPostBuffType().getCategories())) {
+				if (!defenseBuffs.containsKey(dbt)) continue;
+				BuffList list = damageBuffs.get(dbt);
+				increase -= list.getIncrease();
+				mult -= list.getMultiplier();
+				defBuffs.addAll(list.getBuffs());
 			}
 			
+			// Set the slice damage to at most the target's health so the stats don't overcount damage
 			double sliceDamage = Math.max(0, (slice.getDamage() * mult) + increase);
+			sliceDamage = Math.min(sliceDamage, target.getHealth() + 1);
+
 			// If the first slice isn't a status, evade it
 			if (evading) {
 				if (recipient.getEntity().getType() == EntityType.PLAYER) Sounds.attackSweep.play((Player) recipient.getEntity(), recipient.getEntity());
@@ -355,6 +330,28 @@ public class DamageMeta {
 						if (ent.getKey() instanceof PlayerFightData) {
 							((PlayerFightData) ent.getKey()).getStats().addInjuryMitigated((stacks * 0.2) / numOwners);
 						}
+					}
+				}
+			}
+
+			// Handle statistics if the owner is a player
+			if (owner instanceof PlayerFightData) {
+				// Sort buffs by greatest positive impact to greatest negative impact
+				Comparator<Buff> comp = new Comparator<Buff>() {
+					@Override
+					public int compare(Buff b1, Buff b2) {
+						return Double.compare(b1.getEffectiveChange(base), b2.getEffectiveChange(base));
+					}
+				};
+				damBuffs.sort(comp);
+				defBuffs.sort(comp);
+				double damageCopy = sliceDamage;
+				if (sliceDamage > 0) {
+					for (Buff b : damBuffs) {
+						// Get the change a buff applies to the damage
+						double effectiveChange = Math.min(damageCopy, b.getEffectiveChange(damageCopy));
+						damageCopy -= b.getEffectiveChange(damageCopy);
+						if (damageCopy <= 0) break;
 					}
 				}
 			}
@@ -458,6 +455,16 @@ public class DamageMeta {
 		// Return damage
 		FightInstance.dealDamage(returnDamage, owner.getEntity());
 		return damage + ignoreShieldsDamage;
+	}
+
+	private Collection<DamageBuffType> getDamageBuffTypes(Collection<DamageCategory> cats) {
+		Collection<DamageBuffType> types = new ArrayList<DamageBuffType>();
+		for (DamageCategory cat : cats) {
+			for (DamageOrigin origin : origins) {
+				types.add(DamageBuffType.of(cat, origin));
+			}
+		}
+		return types;
 	}
 	
 	public DamageMeta getReturnDamage() {
