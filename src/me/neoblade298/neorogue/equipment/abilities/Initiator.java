@@ -12,6 +12,7 @@ import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.GenericStatusType;
@@ -43,7 +44,7 @@ public class Initiator extends Equipment {
 			if (fd.hasStatus(p.getName() + "-INITIATOR")) return TriggerResult.keep();
 			fd.applyStatus(Status.createByGenericType(GenericStatusType.BASIC, p.getName() + "-INITIATOR",
 					fd, true), data, 1, -1, ev.getMeta(), false);
-			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, damage * 0.01));
+			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, damage * 0.01, StatTracker.damageBuffAlly(this)));
 			return TriggerResult.keep();
 		});
 	}

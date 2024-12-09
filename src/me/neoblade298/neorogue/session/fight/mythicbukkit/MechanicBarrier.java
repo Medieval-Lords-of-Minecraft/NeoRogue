@@ -24,6 +24,7 @@ import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffList;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 
 public class MechanicBarrier implements ITargetedEntitySkill {
 	protected final Skill counterSkill, hitSkill;
@@ -76,7 +77,7 @@ public class MechanicBarrier implements ITargetedEntitySkill {
 			HashMap<DamageBuffType, BuffList> buffs = new HashMap<DamageBuffType, BuffList>();
 			for (Entry<DamageCategory, Double> ent : this.buffs.entrySet()) {
 				BuffList bl = new BuffList();
-				bl.add(new Buff(fd, 0, ent.getValue()));
+				bl.add(new Buff(fd, 0, ent.getValue(), StatTracker.IGNORED));
 				buffs.put(DamageBuffType.of(ent.getKey()), bl);
 			}
 			LivingEntity ent = (LivingEntity) data.getCaster().getEntity().getBukkitEntity();

@@ -28,6 +28,7 @@ import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -53,6 +54,7 @@ public class Demoralize extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		Equipment eq = this;
 		LinkedList<ActionMeta> insts = new LinkedList<ActionMeta>();
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			Sounds.equip.play(p, p);
@@ -69,7 +71,7 @@ public class Demoralize extends Equipment {
 						for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
 							FightData fd = FightInstance.getFightData(ent);
 							fd.applyStatus(StatusType.INJURY, data, injure, -1);
-							fd.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, -dec * 0.01), 160);
+							fd.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, -dec * 0.01, StatTracker.defenseDebuffEnemy(eq)), 160);
 						}
 					}
 					insts.removeFirst();

@@ -17,6 +17,7 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -58,7 +59,7 @@ public class CharmOfGallus extends Artifact {
 				CastUsableEvent ev = (CastUsableEvent) inputs;
 				if (ev.getInstance().getEffectiveStaminaCost() == 0) return TriggerResult.keep();
 				if (ev.getBuff(PropertyType.STAMINA_COST).apply(ev.getInstance().getStaminaCost()) <= 0) return TriggerResult.keep();
-				ev.addBuff(PropertyType.STAMINA_COST, uuid, Buff.increase(data, stamina));
+				ev.addBuff(PropertyType.STAMINA_COST, uuid, Buff.increase(data, stamina, StatTracker.IGNORED));
 				return TriggerResult.keep();
 			}
 			return TriggerResult.remove();

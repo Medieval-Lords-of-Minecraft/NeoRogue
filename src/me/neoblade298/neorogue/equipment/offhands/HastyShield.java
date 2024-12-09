@@ -8,9 +8,9 @@ import org.bukkit.inventory.EquipmentSlot;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
-import me.neoblade298.neorogue.session.fight.DamageMeta.BuffOrigin;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
@@ -34,14 +34,16 @@ public class HastyShield extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, new HastyShieldInstance(p));
+		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, new HastyShieldInstance(p, this));
 	}
 	
 	private class HastyShieldInstance implements TriggerAction {
 		private Player p;
 		private long nextUsable = 0L;
-		public HastyShieldInstance(Player p) {
+		private Equipment eq;
+		public HastyShieldInstance(Player p, Equipment eq) {
 			this.p = p;
+			this.eq = eq;
 		}
 		
 		@Override
@@ -51,7 +53,7 @@ public class HastyShield extends Equipment {
 			if (now <= nextUsable) return TriggerResult.keep();
 			
 			ReceivedDamageEvent ev = (ReceivedDamageEvent) inputs;
-			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, reduction, 0, BuffOrigin.SHIELD));
+			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, reduction, 0, StatTracker.damageBarriered(eq)));
 			nextUsable = now + 5000L; // 5s
 			p.playSound(p, Sound.ITEM_SHIELD_BLOCK, 1F, 1F);
 			data.addMana(amount);

@@ -6,15 +6,13 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
-import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
-import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class MinorStrengthRelic extends Equipment {
 	private static final String ID = "minorStrengthRelic";
-	private double str;
+	private int str;
 	
 	public MinorStrengthRelic(boolean isUpgraded) {
 		super(ID, "Minor Strength Relic", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
@@ -28,7 +26,7 @@ public class MinorStrengthRelic extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addDamageBuff(DamageBuffType.of(DamageCategory.PHYSICAL), Buff.increase(data, str));
+		data.applyStatus(StatusType.STRENGTH, data, str, -1);
 	}
 
 	@Override

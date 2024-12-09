@@ -22,7 +22,6 @@ import me.neoblade298.neorogue.equipment.AmmunitionInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
-import me.neoblade298.neorogue.session.fight.DamageMeta.BuffOrigin;
 import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.FightData;
@@ -241,7 +240,6 @@ public class ProjectileInstance extends IProjectileInstance {
 	
 	public void addBuff(DamageBuffType type, Buff b) {
 		BuffList list = buffs.getOrDefault(type, new BuffList());
-		b.setOrigin(BuffOrigin.PROJECTILE);
 		list.add(b);
 		buffs.put(type, list);
 	}

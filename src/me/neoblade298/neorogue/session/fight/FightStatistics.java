@@ -17,14 +17,18 @@ public class FightStatistics {
 	private HashMap<DamageType, Double> damageDealt = new HashMap<DamageType, Double>(),
 			damageTaken = new HashMap<DamageType, Double>();
 	private HashMap<StatusType, Integer> statuses = new HashMap<StatusType, Integer>();
-	private double healingGiven, healingReceived, selfHealing, damageBarriered, damageShielded, defenseBuffed;
+	private double healingGiven, healingReceived, selfHealing, damageShielded, defenseBuffed;
 	private int deaths, revives;
 
 	// Etc stats
-	private double evadeMitigated, sanctifiedHealing;
+	private double evadeMitigated, sanctifiedHealing, injuryMitigated;
 
 	public void addEvadeMitigated(double evadeMitigated) {
 		this.evadeMitigated += evadeMitigated;
+	}
+
+	public void addInjuryMitigated(double injuryMitigated) {
+		this.injuryMitigated += injuryMitigated;
 	}
 
 	public void addSanctifiedHealing(double sanctifiedHealing) {
@@ -43,10 +47,6 @@ public class FightStatistics {
 	public void addDamageTaken(DamageType type, double amount) {
 		double amt = damageTaken.getOrDefault(type, 0D);
 		damageTaken.put(type, amt + amount);
-	}
-	
-	public void addDamageBarriered(double amount) {
-		this.damageBarriered += amount;
 	}
 	
 	public void addDamageShielded(double amount) {
@@ -96,10 +96,6 @@ public class FightStatistics {
 
 	public double getHealingReceived() {
 		return healingReceived;
-	}
-
-	public double getDamageBarriered() {
-		return damageBarriered;
 	}
 
 	public double getDamageShielded() {
@@ -184,7 +180,7 @@ public class FightStatistics {
 	}
 
 	public Component getStatusComponent() {
-		double score = calculateStatusValue();
+		double score = 0;
 		Component hover = Component.text("Statuses applied, with additional stats:", NamedTextColor.GRAY);
 		for (StatusType type : statuses.keySet()) {
 			if (type.hidden) continue;
@@ -200,37 +196,14 @@ public class FightStatistics {
 		return Component.text(df.format(score), NamedTextColor.GOLD).hoverEvent(hover);
 	}
 
-	// Maybe add multipliers later
-	private double calculateStatusValue() {
-		return burnDamage + concussedMitigated + electrifiedDamage + evadeMitigated + frostMitigated + injuryMitigated
-				+ insanityDamage + poisonDamage + reflectDamage + sanctifiedHealing + thornsDamage;
-	}
-
 	private Component getStatusStat(StatusType type) {
 		switch (type) {
-		case BURN:
-			return type.ctag.append(Component.text(" Damage: " + df.format(burnDamage), NamedTextColor.WHITE));
-		case CONCUSSED:
-			return type.ctag.append(Component.text(" Mitigation: " + df.format(concussedMitigated), NamedTextColor.WHITE));
-		case ELECTRIFIED:
-			return type.ctag.append(Component.text(" Damage: " + df.format(electrifiedDamage), NamedTextColor.WHITE));
 		case EVADE:
 			return type.ctag.append(Component.text(" Mitigation: " + df.format(evadeMitigated), NamedTextColor.WHITE));
-		case FROST:
-			return type.ctag.append(Component.text(" Damage: " + df.format(frostDamage), NamedTextColor.WHITE)).appendNewline()
-					.append(type.ctag.append(Component.text(" Mitigated: " + df.format(frostMitigated), NamedTextColor.WHITE)));
 		case INJURY:
 			return type.ctag.append(Component.text(" Mitigation: " + df.format(injuryMitigated), NamedTextColor.WHITE));
-		case INSANITY:
-			return type.ctag.append(Component.text(" Damage: " + df.format(insanityDamage), NamedTextColor.WHITE));
-		case POISON:
-			return type.ctag.append(Component.text(" Damage: " + df.format(poisonDamage), NamedTextColor.WHITE));
-		case REFLECT:
-			return type.ctag.append(Component.text(" Damage: " + df.format(reflectDamage), NamedTextColor.WHITE));
 		case SANCTIFIED:
 			return type.ctag.append(Component.text(" Healing: " + df.format(sanctifiedHealing), NamedTextColor.WHITE));
-		case THORNS:
-			return type.ctag.append(Component.text(" Damage: " + df.format(thornsDamage), NamedTextColor.WHITE));
 		default:
 			return null;
 		}
@@ -245,14 +218,27 @@ public class FightStatistics {
 	}
 	
 	private Component getNameHoverComponent() {
-		return getStatPiece("Ally Healing", healingGiven).appendNewline()
-				.append(getStatPiece("Self Healing", selfHealing)).appendNewline()
-				.append(getStatPiece("Healing Received", healingReceived)).appendNewline()
-				.append(getStatPiece("Damage Barriered", damageBarriered)).appendNewline()
-				.append(getStatPiece("Damage Shielded", damageShielded)).appendNewline()
-				.append(getStatPiece("Defense Buffed", defenseBuffed)).appendNewline()
-				.append(getStatPiece("Deaths", deaths)).appendNewline()
-				.append(getStatPiece("Revives", revives));
+		Component cmp = Component.text("");
+		cmp = appendIfNotEmpty(cmp, "Ally Healing", healingGiven);
+		cmp = appendIfNotEmpty(cmp, "Self Healing", selfHealing);
+		cmp = appendIfNotEmpty(cmp, "Healing Received", healingReceived);
+		cmp = appendIfNotEmpty(cmp, "Deaths", deaths);
+		cmp = appendIfNotEmpty(cmp, "Revives", revives);
+		return cmp;
+	}
+
+	private Component appendIfNotEmpty(Component base, String display, double stat) {
+		if (stat != 0) {
+			return base.append(getStatPiece(display, stat)).appendNewline();
+		}
+		return base;
+	}
+
+	private Component appendIfNotEmpty(Component base, String display, int stat) {
+		if (stat != 0) {
+			return base.append(getStatPiece(display, stat)).appendNewline();
+		}
+		return base;
 	}
 	
 	private Component getStatPiece(String display, int stat) {

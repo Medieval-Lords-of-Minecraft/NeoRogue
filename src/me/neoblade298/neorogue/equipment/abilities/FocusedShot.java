@@ -16,6 +16,7 @@ import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -60,7 +61,7 @@ public class FocusedShot extends Equipment {
 	private void primeShot(Player p, PlayerFightData data) {
 		data.addTrigger(ID, Trigger.BASIC_ATTACK, (pdata, in) -> {
 			BasicAttackEvent ev = (BasicAttackEvent) in;
-			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, damage * 0.01));
+			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, damage * 0.01, StatTracker.damageBuffAlly(this)));
 			return TriggerResult.remove();
 		});
 	}

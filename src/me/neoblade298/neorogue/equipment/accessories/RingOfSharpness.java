@@ -9,6 +9,7 @@ import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
@@ -28,7 +29,7 @@ public class RingOfSharpness extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addDamageBuff(DamageBuffType.of(DamageCategory.PIERCING), Buff.increase(data, buff * 0.01));
+		data.addDamageBuff(DamageBuffType.of(DamageCategory.PIERCING), Buff.increase(data, buff * 0.01, StatTracker.damageBuffAlly(this)));
 	}
 
 	@Override

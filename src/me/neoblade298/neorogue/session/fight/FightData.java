@@ -29,6 +29,7 @@ import me.neoblade298.neorogue.session.SessionManager;
 import me.neoblade298.neorogue.session.fight.TickAction.TickResult;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffList;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
@@ -106,7 +107,7 @@ public class FightData {
 		// Set up base mob resistances
 		if (mob != null) {
 			for (Entry<DamageCategory, Integer> ent : mob.getResistances().entrySet()) {
-				addDefenseBuff(DamageBuffType.of(ent.getKey()), new Buff(this, 0, (double) ent.getValue() / 100));
+				addDefenseBuff(DamageBuffType.of(ent.getKey()), new Buff(this, 0, (double) ent.getValue() / 100, StatTracker.IGNORED));
 			}
 		}
 	}

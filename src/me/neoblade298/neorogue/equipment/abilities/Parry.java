@@ -16,6 +16,7 @@ import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
@@ -49,7 +50,7 @@ public class Parry extends Equipment {
 			pc.play(p, p);
 			data.addSimpleShield(p.getUniqueId(), shields, 100);
 			Sounds.equip.play(p, p);
-			data.addTrigger(id, Trigger.RECEIVED_DAMAGE, new ParryBlock(p));
+			data.addTrigger(id, Trigger.RECEIVED_DAMAGE, new ParryBlock(p, this));
 			return TriggerResult.keep();
 		}));
 	}
@@ -57,8 +58,10 @@ public class Parry extends Equipment {
 	private class ParryBlock implements TriggerAction {
 		private long createTime;
 		private Player p;
-		public ParryBlock(Player p) {
+		private Equipment eq;
+		public ParryBlock(Player p, Equipment eq) {
 			this.p = p;
+			this.eq = eq;
 			createTime = System.currentTimeMillis();
 		}
 		@Override
@@ -68,7 +71,7 @@ public class Parry extends Equipment {
 			Sounds.fire.play(p, p);
 			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
 				BasicAttackEvent ev = (BasicAttackEvent) in;
-				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, damage, 0));
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, damage, 0, StatTracker.damageBuffAlly(eq)));
 				FightInstance.dealDamage(data, DamageType.SLASHING, damage, ev.getTarget());
 				hit.play(p, ev.getTarget().getLocation());
 				Sounds.anvil.play(p, p);

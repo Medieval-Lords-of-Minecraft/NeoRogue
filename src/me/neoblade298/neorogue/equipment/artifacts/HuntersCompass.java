@@ -11,6 +11,7 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusClass;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -33,7 +34,7 @@ public class HuntersCompass extends Artifact {
 		data.addTrigger(ID, Trigger.PRE_APPLY_STATUS, (pdata, in) -> {
 			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
 			if (ev.getStatusClass() == StatusClass.NEGATIVE) {
-				ev.getStacksBuffList().add(new Buff(pdata, data.getStatus(StatusType.FOCUS).getStacks() * 2, 0));
+				ev.getStacksBuffList().add(new Buff(pdata, data.getStatus(StatusType.FOCUS).getStacks() * 2, 0, StatTracker.IGNORED));
 			}
 			return TriggerResult.keep();
 		});

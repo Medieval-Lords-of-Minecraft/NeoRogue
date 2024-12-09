@@ -10,6 +10,7 @@ import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
@@ -28,7 +29,7 @@ public class RedRing extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addDamageBuff(DamageBuffType.of(DamageCategory.FIRE), Buff.increase(data, inc * 0.01));
+		data.addDamageBuff(DamageBuffType.of(DamageCategory.FIRE), Buff.increase(data, inc * 0.01, StatTracker.damageBuffAlly(this)));
 	}
 
 	@Override

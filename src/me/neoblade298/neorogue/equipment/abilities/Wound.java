@@ -15,6 +15,7 @@ import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -56,7 +57,7 @@ public class Wound extends Equipment {
 		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
 			BasicAttackEvent ev = (BasicAttackEvent) in;
 			if (inst.getCount() == 1) {
-				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, -dec, 0));
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, -dec, 0, StatTracker.damageDebuffAlly(this)));
 				FightInstance.applyStatus(ev.getTarget(), StatusType.INJURY, data, stacks, -1);
 			}
 			return TriggerResult.keep();

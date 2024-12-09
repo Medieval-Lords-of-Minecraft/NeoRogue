@@ -12,10 +12,10 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
-import me.neoblade298.neorogue.session.fight.DamageMeta.BuffOrigin;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffList;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -57,7 +57,7 @@ public class PaladinsShield extends Equipment {
 		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, (pdata, inputs) -> {
 			if (p.getHandRaised() != EquipmentSlot.OFF_HAND || !p.isHandRaised()) return TriggerResult.keep();
 			ReceivedDamageEvent ev = (ReceivedDamageEvent) inputs;
-			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, reduction, 0,BuffOrigin.SHIELD));
+			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, reduction, 0, StatTracker.damageBarriered(this)));
 			p.playSound(p, Sound.ITEM_SHIELD_BLOCK, 1F, 1F);
 			ev.getMeta().getOwner().applyStatus(StatusType.SANCTIFIED, data, sanct, -1);
 			return TriggerResult.keep();

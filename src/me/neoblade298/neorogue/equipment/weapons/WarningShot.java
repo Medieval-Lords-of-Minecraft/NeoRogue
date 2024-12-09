@@ -38,6 +38,7 @@ import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -64,7 +65,7 @@ public class WarningShot extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ProjectileGroup proj = new ProjectileGroup(new WarningShotProjectile(data));
+		ProjectileGroup proj = new ProjectileGroup(new WarningShotProjectile(data, this));
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (d, inputs) -> {
 			data.charge(20);
 			data.addTask(new BukkitRunnable() {
@@ -79,13 +80,15 @@ public class WarningShot extends Equipment {
 	private class WarningShotProjectile extends Projectile {
 		private PlayerFightData data;
 		private Player p;
+		private Equipment eq;
 
 		// Vector is non-normalized velocity of the vanilla projectile being fired
-		public WarningShotProjectile(PlayerFightData data) {
+		public WarningShotProjectile(PlayerFightData data, Equipment eq) {
 			super(properties.get(PropertyType.RANGE), 1);
 			this.blocksPerTick(2);
 			this.data = data;
 			this.p = data.getPlayer();
+			this.eq = eq;
 		}
 
 		@Override
@@ -108,7 +111,7 @@ public class WarningShot extends Equipment {
 				ent.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 60, 0));
 			}
 			if (!ents.isEmpty()) data.applyStatus(StatusType.FOCUS, data, focus, -1);
-			data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, damage * ents.size(), -0.2), id, 160);
+			data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, damage * ents.size(), -0.2, StatTracker.damageBuffAlly(eq)), id, 160);
 		}
 
 		@Override

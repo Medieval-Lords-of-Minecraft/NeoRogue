@@ -14,6 +14,7 @@ import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -36,6 +37,7 @@ public class Deliberation extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		Equipment eq = this;
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, inputs) -> {
 			Sounds.equip.play(p, p);
 			data.channel(60).then(new Runnable() {
@@ -43,7 +45,8 @@ public class Deliberation extends Equipment {
 					Sounds.enchant.play(p, p);
 					pc.play(p, p);
 					data.applyStatus(StatusType.FOCUS, data, 1, -1);
-					data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, damage * data.getStatus(StatusType.FOCUS).getStacks(), 0),
+					data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+						new Buff(data, damage * data.getStatus(StatusType.FOCUS).getStacks(), 0, StatTracker.damageBuffAlly(eq)),
 						100);
 				}
 			});

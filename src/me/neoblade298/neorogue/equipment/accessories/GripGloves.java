@@ -8,6 +8,7 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -34,7 +35,7 @@ public class GripGloves extends Equipment {
 		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, (pdata, in) -> {
 			if (data.getStamina() / data.getMaxStamina() <= cutoffPct) return TriggerResult.keep();
 			ReceivedDamageEvent ev = (ReceivedDamageEvent) in;
-			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 3, 0));
+			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 3, 0, StatTracker.defenseBuffAlly(this)));
 			return TriggerResult.keep();
 		});
 	}

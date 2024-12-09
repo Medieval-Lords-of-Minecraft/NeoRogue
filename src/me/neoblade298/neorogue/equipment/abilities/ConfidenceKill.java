@@ -24,6 +24,7 @@ import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -64,7 +65,7 @@ public class ConfidenceKill extends Equipment {
 			KillEvent ev = (KillEvent) in;
 			if (inst.toKill.getUniqueId().equals(ev.getTarget().getUniqueId())) {
 				Sounds.extinguish.play(p, p);
-				pdata.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(pdata, 0, buff * 0.01), UUID.randomUUID().toString(), 200);
+				pdata.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(pdata, 0, buff * 0.01, StatTracker.damageBuffAlly(this)), UUID.randomUUID().toString(), 200);
 			}
 			return TriggerResult.keep();
 		});

@@ -13,6 +13,7 @@ import me.neoblade298.neorogue.equipment.StandardPriorityAction;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -60,12 +61,12 @@ public class RubyArmament extends Equipment {
 			BasicAttackEvent ev = (BasicAttackEvent) in;
 			if (act.getCount() == 0) {
 				data.addStamina(stamina);
-				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(pdata, -damageDec, 0));
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(pdata, -damageDec, 0, StatTracker.damageBuffAlly(this)));
 			}
 			else {
 				if (data.getStamina() < stamCost) return TriggerResult.keep();
 				data.addStamina(-stamCost);
-				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(pdata, damage, 0));
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(pdata, damage, 0, StatTracker.damageBuffAlly(this)));
 			}
 			return TriggerResult.keep();
 		});

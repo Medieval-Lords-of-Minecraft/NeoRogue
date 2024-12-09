@@ -13,6 +13,7 @@ import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroupEvent;
@@ -40,7 +41,7 @@ public class ArcheryGlove extends Equipment {
 			if (!(ev.getInstances().getFirst() instanceof ProjectileInstance)) return TriggerResult.keep();
 			act.addCount(ev.getInstances().size());
 			while (act.getCount() >= thres) {
-				data.addDefenseBuff(DamageBuffType.of(DamageCategory.PHYSICAL), Buff.increase(data, dec), 100);
+				data.addDefenseBuff(DamageBuffType.of(DamageCategory.PHYSICAL), Buff.increase(data, dec, StatTracker.defenseBuffAlly(this)), 100);
 				act.addCount(-thres);
 			}
 			return TriggerResult.keep();

@@ -309,7 +309,7 @@ public class DamageMeta {
 			while (owner.hasStatus(StatusType.INJURY) && sliceDamage > 0) {
 				Status injury = owner.getStatus(StatusType.INJURY);
 				int stacks = injury.getStacks();
-				HashMap<FightData, Integer> owners = recipient.getStatus(StatusType.EVADE).getSlices().getSliceOwners();
+				HashMap<FightData, Integer> owners = recipient.getStatus(StatusType.INJURY).getSlices().getSliceOwners();
 				int numOwners = owners.size();
 				if (stacks * 0.2 >= sliceDamage) {
 					int toRemove = (int) (sliceDamage / 0.2);
@@ -376,16 +376,10 @@ public class DamageMeta {
 			if (recipient.hasStatus(StatusType.THORNS) && DamageCategory.PHYSICAL.hasType(slice.getPostBuffType())) {
 				int stacks = recipient.getStatus(StatusType.THORNS).getStacks();
 				returnDamage.addDamageSlice(new DamageSlice(recipient, stacks, DamageType.THORNS));
-				if (recipient instanceof PlayerFightData) {
-					((PlayerFightData) recipient).getStats().addThornsDamage(stacks);
-				}
 			}
 			if (recipient.hasStatus(StatusType.REFLECT) && DamageCategory.MAGICAL.hasType(slice.getPostBuffType())) {
 				int stacks = recipient.getStatus(StatusType.REFLECT).getStacks();
 				returnDamage.addDamageSlice(new DamageSlice(recipient, stacks, DamageType.REFLECT));
-				if (recipient instanceof PlayerFightData) {
-					((PlayerFightData) recipient).getStats().addReflectDamage(stacks);
-				}
 			}
 			// Stop counting damage slices after the target is already dead
 			if (damage + ignoreShieldsDamage >= target.getHealth()) break;
@@ -516,17 +510,6 @@ public class DamageMeta {
 			str += slice.toString() + ", ";
 		}
 		return str;
-	}
-	
-	// Used for tracking stats mostly
-	public static enum BuffOrigin {
-		BARRIER,
-		FROST,
-		SHIELD,
-		STATUS,
-		PROJECTILE,
-		INITIAL_VELOCITY, // Multiplier of initial projectile velocity
-		NORMAL;
 	}
 
 	// Used for specifying what a buff applies to

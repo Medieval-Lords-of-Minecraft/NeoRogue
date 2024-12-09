@@ -23,6 +23,7 @@ import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -73,7 +74,7 @@ public class CurseMark extends Equipment {
 						FightInstance.applyStatus(mark, StatusType.INSANITY, pdata, stacks, -1);
 						pc.play(p, inst.mark);
 						Sounds.infect.play(p, mark);
-						fd.addDefenseBuff(DamageBuffType.of(DamageCategory.DARK), new Buff(data, 0, -buff * 0.01), 100);
+						fd.addDefenseBuff(DamageBuffType.of(DamageCategory.DARK), new Buff(data, 0, -buff * 0.01, StatTracker.defenseDebuffEnemy(eq)), 100);
 					}
 				}.runTaskLater(NeoRogue.inst(), 40L));
 				return TriggerResult.keep();

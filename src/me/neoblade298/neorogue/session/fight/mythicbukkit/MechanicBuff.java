@@ -11,6 +11,7 @@ import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 
 public class MechanicBuff implements ITargetedEntitySkill {
 	private final int seconds;
@@ -39,18 +40,18 @@ public class MechanicBuff implements ITargetedEntitySkill {
 			FightData fdCaster = FightInstance.getFightData(data.getCaster().getEntity().getUniqueId());
 			if (seconds > 0) {
 				if (damageBuff) {
-					fd.addDamageBuff(DamageBuffType.of(type), new Buff(fdCaster, increase, multiplier), "MythicMobs", seconds);
+					fd.addDamageBuff(DamageBuffType.of(type), new Buff(fdCaster, increase, multiplier, StatTracker.IGNORED), "MythicMobs", seconds);
 				}
 				else {
-					fd.addDefenseBuff(DamageBuffType.of(type), new Buff(fdCaster, increase, multiplier), "MythicMobs", seconds);
+					fd.addDefenseBuff(DamageBuffType.of(type), new Buff(fdCaster, increase, multiplier, StatTracker.IGNORED), "MythicMobs", seconds);
 				}
 			}
 			else {
 				if (damageBuff) {
-					fd.addDamageBuff(DamageBuffType.of(type), new Buff(fdCaster, increase, multiplier));
+					fd.addDamageBuff(DamageBuffType.of(type), new Buff(fdCaster, increase, multiplier, StatTracker.IGNORED));
 				}
 				else {
-					fd.addDefenseBuff(DamageBuffType.of(type), new Buff(fdCaster, increase, multiplier));
+					fd.addDefenseBuff(DamageBuffType.of(type), new Buff(fdCaster, increase, multiplier, StatTracker.IGNORED));
 				}
 			}
 			return SkillResult.SUCCESS;

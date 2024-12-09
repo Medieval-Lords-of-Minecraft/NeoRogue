@@ -12,6 +12,7 @@ import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -34,7 +35,7 @@ public class HiddenBlade extends Artifact {
 		data.addTrigger(id, Trigger.RECEIVE_STATUS, (pdata, in) -> {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
 			if (!ev.isStatus(StatusType.STEALTH)) return TriggerResult.keep();
-			data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, 0.15), 40);
+			data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, 0.15, StatTracker.damageBuffAlly(this)), 40);
 			return TriggerResult.keep();
 		});
 	}

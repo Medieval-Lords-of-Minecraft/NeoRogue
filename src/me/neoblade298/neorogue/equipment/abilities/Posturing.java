@@ -15,6 +15,7 @@ import me.neoblade298.neorogue.equipment.StandardPriorityAction;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -50,7 +51,7 @@ public class Posturing extends Equipment {
 			if (act.getCount() >= time) {
 				pc.play(p, p);
 				Sounds.enchant.play(p, p);
-				data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, inc, 0));
+				data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, inc, 0, StatTracker.damageBuffAlly(this)));
 				act.addCount(-time);
 				if (act.getBool()) {
 					icon.setAmount(icon.getAmount() + 1);
