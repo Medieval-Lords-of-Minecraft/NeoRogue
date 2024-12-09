@@ -1,5 +1,6 @@
 import java.util.HashMap;
 
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -31,5 +32,10 @@ public class BuffOrigin {
     private BuffOrigin(StatusType type, boolean damage) {
         this(type.name(), type.ctag.append(
             Component.text(damage ? " - Damage Buffed" : " - Damage Mitigated", NamedTextColor.GRAY)));
+    }
+    
+    public BuffOrigin(Equipment eq, boolean isDamageBuff) {
+        this(eq.getId(), eq.getDisplay().append(
+            Component.text(isDamageBuff ? " - Damage Buffed" : " - Damage Mitigated", NamedTextColor.GRAY)));
     }
 }
