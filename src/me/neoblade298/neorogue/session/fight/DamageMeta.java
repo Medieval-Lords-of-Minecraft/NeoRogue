@@ -227,7 +227,7 @@ public class DamageMeta {
 		if (!isSecondary) {
 			if (recipient.hasStatus(StatusType.BURN)) {
 				for (Entry<FightData, Integer> ent : recipient.getStatus(StatusType.BURN).getSlices().getSliceOwners().entrySet()) {
-					slices.add(new DamageSlice(ent.getKey(), ent.getValue() * 0.2, DamageType.FIRE));
+					slices.add(new DamageSlice(ent.getKey(), ent.getValue() * 0.2, DamageType.BURN));
 				}
 			}
 
@@ -268,13 +268,12 @@ public class DamageMeta {
 		}
 		for (DamageSlice slice : slices) {
 			double increase = 0, mult = 1, base = slice.getDamage();
-			ArrayList<Buff> damBuffs = new ArrayList<Buff>(), defBuffs = new ArrayList<Buff>();
+			ArrayList<Buff> buffs = new ArrayList<Buff>(), debuffs = new ArrayList<Buff>();
 			for (DamageBuffType dbt : getDamageBuffTypes(slice.getType().getCategories())) {
 				if (!damageBuffs.containsKey(dbt)) continue;
 				BuffList list = damageBuffs.get(dbt);
 				increase += list.getIncrease();
 				mult += list.getMultiplier();
-				damBuffs.addAll(list.getBuffs());
 			}
 
 			for (DamageBuffType dbt : getDamageBuffTypes(slice.getPostBuffType().getCategories())) {
@@ -282,7 +281,6 @@ public class DamageMeta {
 				BuffList list = damageBuffs.get(dbt);
 				increase -= list.getIncrease();
 				mult -= list.getMultiplier();
-				defBuffs.addAll(list.getBuffs());
 			}
 			
 			// Set the slice damage to at most the target's health so the stats don't overcount damage
@@ -336,17 +334,27 @@ public class DamageMeta {
 				}
 			}
 
+			/* Todo:
+			 * Split buffs into positive (increases damage) and negative (decreases damage)
+			 * If damage > 0, all negative buffs get full stats
+			 * Subtract base damage from final damage, then positive buffs get stats in priority of
+			 * highest effective change to lowest
+			 * If damage <= 0, skip positive buff stats entirely
+			 * Apply all positive buffs to the base damage, then give debuffs stats based on
+			 * highest effective change to lowest
+			 */
+
 			// Handle statistics if the owner is a player
 			if (owner instanceof PlayerFightData) {
 				// Sort buffs by greatest positive impact to greatest negative impact
 				Comparator<Buff> comp = new Comparator<Buff>() {
 					@Override
 					public int compare(Buff b1, Buff b2) {
-						return Double.compare(b1.getEffectiveChange(base), b2.getEffectiveChange(base));
+
 					}
 				};
-				damBuffs.sort(comp);
-				defBuffs.sort(comp);
+				buffs.sort(comp);
+				debuffs.sort(comp);
 				handleBuffStatistics(sliceDamage, damBuffs, defBuffs);
 			}
 			

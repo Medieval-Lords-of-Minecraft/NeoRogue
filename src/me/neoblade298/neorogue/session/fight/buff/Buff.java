@@ -10,10 +10,6 @@ public class Buff {
 	
 	public Buff() {}
 	
-	public Buff(FightData applier, double increase, double multiplier) {
-		this(applier, increase, multiplier, BuffOrigin.NORMAL);
-	}
-	
 	public Buff(FightData applier, double increase, double multiplier, BuffOrigin origin) {
 		this.applier = applier;
 		this.increase = increase;

@@ -20,58 +20,15 @@ public class FightStatistics {
 	private double healingGiven, healingReceived, selfHealing, damageBarriered, damageShielded, defenseBuffed;
 	private int deaths, revives;
 
-	// Status stats
-	private double burnDamage, concussedMitigated, electrifiedDamage,
-		evadeMitigated, frostMitigated, frostDamage, injuryMitigated, insanityDamage,
-		poisonDamage, reflectDamage, sanctifiedHealing, thornsDamage;
-	
-	
-	public void addBurnDamage(double burnDamage) {
-		this.burnDamage += burnDamage;
-	}
-
-	public void addConcussedMitigated(double concussedMitigated) {
-		this.concussedMitigated += concussedMitigated;
-	}
-
-	public void addElectrifiedDamage(double electrifiedDamage) {
-		this.electrifiedDamage += electrifiedDamage;
-	}
+	// Etc stats
+	private double evadeMitigated, sanctifiedHealing;
 
 	public void addEvadeMitigated(double evadeMitigated) {
 		this.evadeMitigated += evadeMitigated;
 	}
 
-	public void addFrostDamage(double frostDamage) {
-		this.frostDamage += frostDamage;
-	}
-
-	public void addFrostMitigated(double frostMitigated) {
-		this.frostMitigated += frostMitigated;
-	}
-
-	public void addInjuryMitigated(double injuryMitigated) {
-		this.injuryMitigated += injuryMitigated;
-	}
-
-	public void addInsanityDamage(double insanityDamage) {
-		this.insanityDamage += insanityDamage;
-	}
-
-	public void addPoisonDamage(double poisonDamage) {
-		this.poisonDamage += poisonDamage;
-	}
-
-	public void addReflectDamage(double reflectDamage) {
-		this.reflectDamage += reflectDamage;
-	}
-
 	public void addSanctifiedHealing(double sanctifiedHealing) {
 		this.sanctifiedHealing += sanctifiedHealing;
-	}
-
-	public void addThornsDamage(double thornsDamage) {
-		this.thornsDamage += thornsDamage;
 	}
 
 	public FightStatistics(PlayerFightData data) {
@@ -116,7 +73,7 @@ public class FightStatistics {
 		return SharedUtil.color(
 			"<gray>Fight Statistics [<white>" + timer + "</white>] (Hover for more info!)\n=====\n"
 					+ "[<yellow>Name</yellow> (<green>HP</green>) - <red>Damage Dealt </red>/ <dark_red>Damage Received "
-					+ "</dark_red>/ <gold>Status Impact</gold>]"
+					+ "</dark_red>/ <gold>Statuses</gold> / <blue>Buffs</blue>]"
 		);
 	}
 
