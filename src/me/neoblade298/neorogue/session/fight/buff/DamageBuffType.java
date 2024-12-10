@@ -58,4 +58,9 @@ public class DamageBuffType {
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return category + "," + origin;
+	}
 }

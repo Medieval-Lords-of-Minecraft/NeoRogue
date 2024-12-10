@@ -46,7 +46,7 @@ public class BuffList {
             increase += b.getIncrease();
             mult += b.getMultiplier();
         }
-        return (base * mult) + increase;
+        return (base * (1 + mult)) + increase;
     }
 
     public int applyNegative(int base) {
@@ -72,5 +72,9 @@ public class BuffList {
 
     public LinkedList<Buff> getBuffs() {
         return buffs;
+    }
+
+    public String toString() {
+        return buffs.toString();
     }
 }

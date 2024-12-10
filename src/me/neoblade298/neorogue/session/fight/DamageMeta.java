@@ -50,6 +50,7 @@ public class DamageMeta {
 	
 	public DamageMeta(FightData data) {
 		this.owner = data;
+		this.origins.add(DamageOrigin.NORMAL);
 	}
 	
 	public DamageMeta(FightData data, DamageOrigin origin) {
@@ -272,6 +273,7 @@ public class DamageMeta {
 			for (DamageBuffType dbt : getDamageBuffTypes(slice.getType().getCategories())) {
 				if (!damageBuffs.containsKey(dbt)) continue;
 				BuffList list = damageBuffs.get(dbt);
+				System.out.println("5 " + dbt + " " + list + " " + list.getIncrease() + " " + list.getMultiplier());
 				increase += list.getIncrease();
 				mult += list.getMultiplier();
 
@@ -283,7 +285,7 @@ public class DamageMeta {
 
 			for (DamageBuffType dbt : getDamageBuffTypes(slice.getPostBuffType().getCategories())) {
 				if (!defenseBuffs.containsKey(dbt)) continue;
-				BuffList list = damageBuffs.get(dbt);
+				BuffList list = defenseBuffs.get(dbt);
 				increase -= list.getIncrease();
 				mult -= list.getMultiplier();
 
@@ -296,8 +298,8 @@ public class DamageMeta {
 			// Set the slice damage to at most the target's health so the stats don't overcount damage
 			double sliceDamage = Math.max(0, (slice.getDamage() * mult) + increase);
 			if (damage + ignoreShieldsDamage + sliceDamage > target.getHealth()) {
-				//sliceDamage = target.getHealth() + 1 - damage - ignoreShieldsDamage;
-				System.out.println("Setting slice damage to " + sliceDamage);
+				sliceDamage = target.getHealth() - damage - ignoreShieldsDamage;
+				System.out.println("slice damage " + sliceDamage + " " + target.getHealth());
 			}
 
 			// If the first slice isn't a status, evade it
@@ -454,7 +456,7 @@ public class DamageMeta {
 				Sounds.block.play((Player) recipient.getEntity(), recipient.getEntity());
 			}
 		}
-		double finalDamage = damage + ignoreShieldsDamage + target.getAbsorptionAmount();
+		double finalDamage = damage + ignoreShieldsDamage + target.getAbsorptionAmount() + 1; // +1 to deal with rounding errors
 		if (damage + ignoreShieldsDamage > 0) {
 			
 			// Mobs shouldn't have a source of damage because they'll infinitely re-trigger ~OnAttack
@@ -463,8 +465,9 @@ public class DamageMeta {
 
 				// Apparently minecraft applies armor based on the entity's disguise if it has one
 				EntityType type = DisguiseAPI.isDisguised(target) ? DisguiseAPI.getDisguise(target).getType().getEntityType() : target.getType();
-				if (armoredEntities.contains(type)) finalDamage *= 1.09; // To deal with minecraft vanilla armor, rounded up for inconsistency
+				if (armoredEntities.contains(type)) finalDamage *= 1.1; // To deal with minecraft vanilla armor, rounded up for inconsistency
 				FightInstance.trigger((Player) owner.getEntity(), Trigger.DEALT_DAMAGE, new DealtDamageEvent(this, target, damage, ignoreShieldsDamage));
+				System.out.println("Final damage " + finalDamage + " " + owner.getEntity().getHealth());
 				target.damage(finalDamage, owner.getEntity());
 			}
 			else {
