@@ -175,6 +175,10 @@ public abstract class Status {
 			this(tag, boardLine);
 			hidden = true;
 		}
+
+		public boolean isHidden() {
+			return hidden;
+		}
 	}
 	
 	public enum GenericStatusType {

@@ -29,8 +29,8 @@ import me.neoblade298.neorogue.session.SessionManager;
 import me.neoblade298.neorogue.session.fight.TickAction.TickResult;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffList;
-import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -412,7 +412,8 @@ public class FightData {
 		if (applier instanceof PlayerFightData) {
 			FightInstance.trigger(((PlayerFightData) applier).getPlayer(), Trigger.APPLY_STATUS, ev2);
 			try {
-				((PlayerFightData) applier).getStats().addStatusApplied(StatusType.valueOf(id), finalStacks);
+				StatusType type = StatusType.valueOf(id);
+				if (!type.isHidden()) ((PlayerFightData) applier).getStats().addStatusApplied(type, finalStacks);
 			}
 			catch (IllegalArgumentException ex) {
 			}

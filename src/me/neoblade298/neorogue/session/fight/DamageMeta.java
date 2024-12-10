@@ -274,6 +274,11 @@ public class DamageMeta {
 				BuffList list = damageBuffs.get(dbt);
 				increase += list.getIncrease();
 				mult += list.getMultiplier();
+
+				for (Buff b : list.getBuffs()) {
+					if (b.isPositive(base)) buffs.add(b);
+					else debuffs.add(b);
+				}
 			}
 
 			for (DamageBuffType dbt : getDamageBuffTypes(slice.getPostBuffType().getCategories())) {
@@ -281,12 +286,18 @@ public class DamageMeta {
 				BuffList list = damageBuffs.get(dbt);
 				increase -= list.getIncrease();
 				mult -= list.getMultiplier();
+
+				for (Buff b : list.getBuffs()) {
+					if (!b.isPositive(base)) buffs.add(b);
+					else debuffs.add(b);
+				}
 			}
 			
 			// Set the slice damage to at most the target's health so the stats don't overcount damage
 			double sliceDamage = Math.max(0, (slice.getDamage() * mult) + increase);
 			if (damage + ignoreShieldsDamage + sliceDamage > target.getHealth()) {
-				sliceDamage = target.getHealth() - damage - ignoreShieldsDamage;
+				//sliceDamage = target.getHealth() + 1 - damage - ignoreShieldsDamage;
+				System.out.println("Setting slice damage to " + sliceDamage);
 			}
 
 			// If the first slice isn't a status, evade it
@@ -334,7 +345,18 @@ public class DamageMeta {
 				}
 			}
 
-			/* Todo:
+			// Sort buffs by greatest positive impact to greatest negative impact
+			final double sliceDamageFinal = sliceDamage;
+			Comparator<Buff> comp = new Comparator<Buff>() {
+				@Override
+				public int compare(Buff b1, Buff b2) {
+					double change1 = b1.getEffectiveChange(sliceDamageFinal);
+					double change2 = b2.getEffectiveChange(sliceDamageFinal);
+					return Double.compare(change2, change1);
+				}
+			};
+
+			/* 
 			 * Split buffs into positive (increases damage) and negative (decreases damage)
 			 * If damage > 0, all negative buffs get full stats
 			 * Subtract base damage from final damage, then positive buffs get stats in priority of
@@ -343,19 +365,40 @@ public class DamageMeta {
 			 * Apply all positive buffs to the base damage, then give debuffs stats based on
 			 * highest effective change to lowest
 			 */
+			 if (sliceDamage > 0) {
+				for (Buff b : debuffs) {
+					if (b.getStatTracker() == null) continue;
+					if (!(b.getApplier() instanceof PlayerFightData)) continue;
+					((PlayerFightData) b.getApplier()).getStats().addBuffStat(b.getStatTracker(), b.getEffectiveChange(base));
+				}
 
-			// Handle statistics if the owner is a player
-			if (owner instanceof PlayerFightData) {
-				// Sort buffs by greatest positive impact to greatest negative impact
-				Comparator<Buff> comp = new Comparator<Buff>() {
-					@Override
-					public int compare(Buff b1, Buff b2) {
-
-					}
-				};
+				double temp = sliceDamage - base;
 				buffs.sort(comp);
-				debuffs.sort(comp);
-				handleBuffStatistics(sliceDamage, damBuffs, defBuffs);
+				for (Buff b : buffs) {
+					if (temp <= 0) break;
+					if (b.getStatTracker() == null) continue;
+					if (!(b.getApplier() instanceof PlayerFightData)) continue;
+					double change = b.getEffectiveChange(base);
+					((PlayerFightData) b.getApplier()).getStats().addBuffStat(b.getStatTracker(), Math.min(temp, change));
+					temp -= change;
+				}
+			}
+			else {
+				double temp = base, inc = 0, multi = 1;
+				for (Buff b : buffs) {
+					inc += b.getIncrease();
+					multi += b.getMultiplier();
+				}
+
+				temp = (temp * multi) + inc;
+				for (Buff b : debuffs) {
+					if (temp <= 0) break;
+					if (b.getStatTracker() == null) continue;
+					if (!(b.getApplier() instanceof PlayerFightData)) continue;
+					double change = b.getEffectiveChange(temp);
+					((PlayerFightData) b.getApplier()).getStats().addBuffStat(b.getStatTracker(), Math.min(temp, change));
+					temp -= change;
+				}
 			}
 			
 			if (owner instanceof PlayerFightData) {
@@ -463,18 +506,6 @@ public class DamageMeta {
 			}
 		}
 		return types;
-	}
-
-	private void handleBuffStatistics(double sliceDamage, ArrayList<Buff> damageBuffs, ArrayList<Buff> defenseBuffs) {
-		if (sliceDamage > 0) {
-			// Since damage was dealt, all defense buffs are calculated in the stat
-			for (Buff b : defenseBuffs) {
-
-			}
-		}
-		else {
-
-		}
 	}
 	
 	public DamageMeta getReturnDamage() {

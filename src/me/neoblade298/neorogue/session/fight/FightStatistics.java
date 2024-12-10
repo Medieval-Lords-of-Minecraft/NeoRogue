@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import me.neoblade298.neocore.shared.util.SharedUtil;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -16,7 +17,8 @@ public class FightStatistics {
 	private PlayerFightData data;
 	private HashMap<DamageType, Double> damageDealt = new HashMap<DamageType, Double>(),
 			damageTaken = new HashMap<DamageType, Double>();
-	private HashMap<StatusType, Integer> statuses = new HashMap<StatusType, Integer>();
+	private HashMap<StatusType, Integer> statusesApplied = new HashMap<StatusType, Integer>();
+	private HashMap<StatTracker, Double> buffStats = new HashMap<StatTracker, Double>();
 	private double healingGiven, healingReceived, selfHealing, damageShielded, defenseBuffed;
 	private int deaths, revives;
 
@@ -68,6 +70,11 @@ public class FightStatistics {
 	public void addHealingReceived(double amount) {
 		this.healingReceived += amount;
 	}
+	
+	public void addBuffStat(StatTracker stat, double amount) {
+		double amt = buffStats.getOrDefault(stat, 0D);
+		buffStats.put(stat, amt + amount);
+	}
 
 	public static Component getStatsHeader(String timer) {
 		return SharedUtil.color(
@@ -78,8 +85,8 @@ public class FightStatistics {
 	}
 
 	public void addStatusApplied(StatusType type, int amount) {
-		int curr = statuses.getOrDefault(type, 0);
-		statuses.put(type, curr + amount);
+		int curr = statusesApplied.getOrDefault(type, 0);
+		statusesApplied.put(type, curr + amount);
 	}
 
 	public HashMap<DamageType, Double> getDamageDealt() {
@@ -130,7 +137,8 @@ public class FightStatistics {
 		Component line = Component.text("").append(getNameplateComponent())
 				.append(getDamageDealtComponent()).append(separator)
 				.append(getDamageTakenComponent()).append(separator)
-				.append(getStatusComponent());
+				.append(getStatusComponent()).append(separator)
+				.append(getBuffComponent());
 		return line;
 	}
 
@@ -181,19 +189,31 @@ public class FightStatistics {
 
 	public Component getStatusComponent() {
 		double score = 0;
-		Component hover = Component.text("Statuses applied, with additional stats:", NamedTextColor.GRAY);
-		for (StatusType type : statuses.keySet()) {
+		Component hover = Component.text("Statuses applied:", NamedTextColor.GRAY);
+		for (StatusType type : statusesApplied.keySet()) {
 			if (type.hidden) continue;
-			if (!statuses.containsKey(type)) continue;
+			if (!statusesApplied.containsKey(type)) continue;
 
-			hover = hover.appendNewline().append(type.ctag.append(Component.text(" Applied: " + df.format(statuses.get(type)), NamedTextColor.WHITE)));
-			score += statuses.get(type);
+			hover = hover.appendNewline().append(type.ctag.append(Component.text(" Applied: " + df.format(statusesApplied.get(type)), NamedTextColor.WHITE)));
+			score += statusesApplied.get(type);
 			Component extra = getStatusStat(type);
 			if (extra != null) {
 				hover = hover.appendNewline().append(extra);
 			}
 		}
 		return Component.text(df.format(score), NamedTextColor.GOLD).hoverEvent(hover);
+	}
+
+	public Component getBuffComponent() {
+		double score = 0;
+		Component hover = Component.text("Impact of buffs:", NamedTextColor.GRAY);
+		for (Entry<StatTracker, Double> ent : buffStats.entrySet()) {
+			StatTracker stat = ent.getKey();
+			double amt = ent.getValue();
+			hover = hover.appendNewline().append(stat.getDisplay().append(Component.text(": " + df.format(amt), NamedTextColor.WHITE)));
+			score += buffStats.get(stat);
+		}
+		return Component.text(df.format(score), NamedTextColor.BLUE).hoverEvent(hover);
 	}
 
 	private Component getStatusStat(StatusType type) {
