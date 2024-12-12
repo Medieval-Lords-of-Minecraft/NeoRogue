@@ -1,7 +1,6 @@
 package me.neoblade298.neorogue.session.fight.status;
 
 import java.util.LinkedList;
-import java.util.Map.Entry;
 
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -17,11 +16,11 @@ import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
-import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.StatusDamageSlice;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
@@ -31,6 +30,7 @@ public class ElectrifiedStatus extends DecrementStackStatus {
 	private static final SoundContainer hit = new SoundContainer(Sound.ENTITY_ITEM_BREAK);
 	private static final TargetProperties tp = TargetProperties.radius(8, false, TargetType.ENEMY);
 	private static String id = "ELECTRIFIED";
+	public static double DAMAGE = 0.2;
 
 	// Currently only works on enemies
 	public ElectrifiedStatus(FightData target) {
@@ -42,7 +42,7 @@ public class ElectrifiedStatus extends DecrementStackStatus {
 	public void onTickAction() {
 		// Owner is arbitrarily first slice of damage
 		PlayerFightData owner = (PlayerFightData) slices.getSliceOwners().entrySet().iterator().next().getKey();
-		ProjectileGroup proj = new ProjectileGroup(new ElectrifiedProjectile(owner.getPlayer()));
+		ProjectileGroup proj = new ProjectileGroup(new ElectrifiedProjectile(owner.getPlayer(), this));
 		
 		LinkedList<LivingEntity> list = TargetHelper.getEntitiesInRadius(holder.getEntity(), tp);
 		if (list.isEmpty()) return;
@@ -54,8 +54,9 @@ public class ElectrifiedStatus extends DecrementStackStatus {
 	
 	private class ElectrifiedProjectile extends Projectile {
 		private Player p;
+		private Status s;
 
-		public ElectrifiedProjectile(Player p) {
+		public ElectrifiedProjectile(Player p, Status s) {
 			super(1.5, 10, 1);
 			this.size(0.5, 0.5);
 			this.p = p;
@@ -72,16 +73,14 @@ public class ElectrifiedStatus extends DecrementStackStatus {
 			LivingEntity target = hit.getEntity();
 			ElectrifiedStatus.hit.play(p, loc);
 			FightInstance.knockback(target,
-					proj.getVelocity().normalize().multiply(0.2));
+					proj.getVelocity().normalize().multiply(DAMAGE));
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
 			DamageMeta dm = proj.getMeta();
 			dm.isSecondary(true);
-			for (Entry<FightData, Integer> ent : slices.getSliceOwners().entrySet()) {
-				dm.addDamageSlice(new DamageSlice(ent.getKey(), ent.getValue() * 0.2, DamageType.ELECTRIFIED, true));
-			}
+			dm.addDamageSlice(new StatusDamageSlice(DamageType.ELECTRIFIED, s));
 		}
 	}
 }

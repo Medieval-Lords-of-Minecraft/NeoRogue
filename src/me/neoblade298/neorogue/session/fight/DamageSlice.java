@@ -53,6 +53,12 @@ public class DamageSlice {
 	public PlayerFightData getOwner() {
 		return (PlayerFightData) owner;
 	}
+	public void handleStatistics(DamageType type, double damage) {
+		if (owner instanceof PlayerFightData) {
+			PlayerFightData pfd = (PlayerFightData) owner;
+			pfd.getStats().addDamageDealt(type, damage);
+		}
+	}
 
 	@Override
 	public String toString() {

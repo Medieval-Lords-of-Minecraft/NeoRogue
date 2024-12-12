@@ -231,9 +231,7 @@ public class DamageMeta {
 		// Status effects
 		if (!isSecondary) {
 			if (recipient.hasStatus(StatusType.BURN)) {
-				for (Entry<FightData, Integer> ent : recipient.getStatus(StatusType.BURN).getSlices().getSliceOwners().entrySet()) {
-					slices.add(new DamageSlice(ent.getKey(), ent.getValue() * 0.2, DamageType.BURN));
-				}
+				slices.add(new StatusDamageSlice(DamageType.BURN, recipient.getStatus(StatusType.BURN)));
 			}
 
 			if (owner.hasStatus(StatusType.SANCTIFIED)) {
@@ -406,7 +404,7 @@ public class DamageMeta {
 			}
 			
 			if (owner instanceof PlayerFightData) {
-				((PlayerFightData) owner).getStats().addDamageDealt(slice.getPostBuffType(), sliceDamage);
+				slice.handleStatistics(slice.getPostBuffType(), sliceDamage);
 			}
 			if (recipient instanceof PlayerFightData) {
 				((PlayerFightData) recipient).getStats().addDamageTaken(slice.getPostBuffType(), sliceDamage);

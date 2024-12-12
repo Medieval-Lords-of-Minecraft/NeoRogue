@@ -10,6 +10,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.session.fight.DamageType;
+import me.neoblade298.neorogue.session.fight.status.ElectrifiedStatus;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -53,7 +54,7 @@ public enum GlossaryTag implements GlossaryIcon {
 			"Decreases the holder's magic damage by 0.2 per stack. Upon the holder dealing magical damage, remove 25% of the stacks. " +
 			"20% of the stacks is removed every second."),
 	ELECTRIFIED(Material.LIGHTNING_ROD, StatusType.ELECTRIFIED.tag,
-			"Fires a projectile that deals 0.2 lightning damage per stack applied to the nearest enemy in a radius of 8. "
+			"Fires a projectile that deals " + ElectrifiedStatus.DAMAGE + " lightning damage per stack applied to the nearest enemy in a radius of 8. "
 			+ "20% of the stacks and one projectile fired per second."),
 	CONCUSSED(Material.DIRT, StatusType.CONCUSSED.tag,
 			"Decreases the holder's physical damage by 0.2 per stack. Upon the holder dealing physical damage, remove 25% of the stacks. " +
