@@ -79,7 +79,7 @@ public class FightStatistics {
 	public static Component getStatsHeader(String timer) {
 		return SharedUtil.color(
 			"<gray>Fight Statistics [<white>" + timer + "</white>] (Hover for more info!)\n=====\n"
-					+ "[<yellow>Name</yellow> (<green>HP</green>) - <red>Damage Dealt </red>/ <dark_red>Damage Received "
+					+ "[<yellow>Name</yellow> (<green>HP</green>) - <red>Damage Dealt </red>/ <dark_red>Taken "
 					+ "</dark_red>/ <gold>Statuses</gold> / <blue>Buffs</blue>]"
 		);
 	}
@@ -143,11 +143,12 @@ public class FightStatistics {
 	}
 
 	public Component getNameplateComponent() {
+		Component nameHover = getNameHoverComponent();
 		return Component.text(data.getSessionData().getData().getDisplay(), NamedTextColor.YELLOW)
 		.append(Component.text(" (", NamedTextColor.GRAY))
 		.append(Component.text(df.format(data.getPlayer().getHealth()), NamedTextColor.GREEN))
 		.append(Component.text(")", NamedTextColor.GRAY))
-		.hoverEvent(HoverEvent.showText(getNameHoverComponent()))
+		.hoverEvent(nameHover.children().isEmpty() ? null : HoverEvent.showText(getNameHoverComponent()))
 		.append(Component.text(" - ", NamedTextColor.GRAY).hoverEvent(null));
 	}
 	
@@ -238,7 +239,7 @@ public class FightStatistics {
 	}
 	
 	private Component getNameHoverComponent() {
-		Component cmp = Component.text("");
+		Component cmp = Component.text("General Stats:");
 		cmp = appendIfNotEmpty(cmp, "Ally Healing", healingGiven);
 		cmp = appendIfNotEmpty(cmp, "Self Healing", selfHealing);
 		cmp = appendIfNotEmpty(cmp, "Healing Received", healingReceived);
@@ -249,7 +250,7 @@ public class FightStatistics {
 
 	private Component appendIfNotEmpty(Component base, String display, double stat) {
 		if (stat != 0) {
-			return base.append(getStatPiece(display, stat)).appendNewline();
+			return base.appendNewline().append(getStatPiece(display, stat));
 		}
 		return base;
 	}

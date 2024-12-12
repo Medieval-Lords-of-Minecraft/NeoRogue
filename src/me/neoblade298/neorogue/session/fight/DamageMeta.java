@@ -1,5 +1,6 @@
 package me.neoblade298.neorogue.session.fight;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -9,12 +10,13 @@ import java.util.LinkedList;
 import java.util.Map.Entry;
 
 import org.bukkit.Location;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import me.libraryaddict.disguise.DisguiseAPI;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.mechanics.IProjectileInstance;
@@ -32,7 +34,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class DamageMeta {
-	private static HashSet<EntityType> armoredEntities = new HashSet<EntityType>();
+	private static final DecimalFormat df = new DecimalFormat("##.#");
 	
 	private FightData owner;
 	private boolean hitBarrier, isSecondary;
@@ -41,12 +43,6 @@ public class DamageMeta {
 	private LinkedList<DamageSlice> slices = new  LinkedList<DamageSlice>();
 	private DamageMeta returnDamage;
 	private HashMap<DamageBuffType, BuffList> damageBuffs = new HashMap<DamageBuffType, BuffList>(), defenseBuffs = new HashMap<DamageBuffType, BuffList>();
-	
-	static {
-		armoredEntities.add(EntityType.ZOMBIE);
-		armoredEntities.add(EntityType.HUSK);
-		armoredEntities.add(EntityType.DROWNED);
-	}
 	
 	public DamageMeta(FightData data) {
 		this.owner = data;
@@ -201,6 +197,14 @@ public class DamageMeta {
 		returnDamage = new DamageMeta(recipient);
 		returnDamage.isSecondary = true;
 
+		// Remove all armor from entity, apparently this can't be done on-spawn because armor is added asynchronously or something
+		AttributeInstance armor = target.getAttribute(Attribute.GENERIC_ARMOR);
+		AttributeInstance toughness = target.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS);
+		armor.setBaseValue(0);
+		armor.getModifiers().forEach(mod -> armor.removeModifier(mod));
+		toughness.setBaseValue(0);
+		toughness.getModifiers().forEach(mod -> armor.removeModifier(mod));
+
 		if (owner instanceof PlayerFightData) {
 			FightInstance.trigger((Player) owner.getEntity(), Trigger.PRE_DEALT_DAMAGE, new PreDealtDamageEvent(this, target));
 		}
@@ -273,7 +277,6 @@ public class DamageMeta {
 			for (DamageBuffType dbt : getDamageBuffTypes(slice.getType().getCategories())) {
 				if (!damageBuffs.containsKey(dbt)) continue;
 				BuffList list = damageBuffs.get(dbt);
-				System.out.println("5 " + dbt + " " + list + " " + list.getIncrease() + " " + list.getMultiplier());
 				increase += list.getIncrease();
 				mult += list.getMultiplier();
 
@@ -299,7 +302,6 @@ public class DamageMeta {
 			double sliceDamage = Math.max(0, (slice.getDamage() * mult) + increase);
 			if (damage + ignoreShieldsDamage + sliceDamage > target.getHealth()) {
 				sliceDamage = target.getHealth() - damage - ignoreShieldsDamage;
-				System.out.println("slice damage " + sliceDamage + " " + target.getHealth());
 			}
 
 			// If the first slice isn't a status, evade it
@@ -456,18 +458,16 @@ public class DamageMeta {
 				Sounds.block.play((Player) recipient.getEntity(), recipient.getEntity());
 			}
 		}
-		double finalDamage = damage + ignoreShieldsDamage + target.getAbsorptionAmount() + 1; // +1 to deal with rounding errors
+		double finalDamage = damage + ignoreShieldsDamage + target.getAbsorptionAmount(); // +1 to deal with rounding errors
 		if (damage + ignoreShieldsDamage > 0) {
 			
 			// Mobs shouldn't have a source of damage because they'll infinitely re-trigger ~OnAttack
 			// Players must have a source of damage to get credit for kills, otherwise mobs that suicide give points
 			if (owner instanceof PlayerFightData) {
-
 				// Apparently minecraft applies armor based on the entity's disguise if it has one
-				EntityType type = DisguiseAPI.isDisguised(target) ? DisguiseAPI.getDisguise(target).getType().getEntityType() : target.getType();
-				if (armoredEntities.contains(type)) finalDamage *= 1.1; // To deal with minecraft vanilla armor, rounded up for inconsistency
+				//EntityType type = DisguiseAPI.isDisguised(target) ? DisguiseAPI.getDisguise(target).getType().getEntityType() : target.getType();
+				//if (armoredEntities.contains(type)) finalDamage *= 1.09; // To deal with minecraft vanilla armor, rounded up for inconsistency
 				FightInstance.trigger((Player) owner.getEntity(), Trigger.DEALT_DAMAGE, new DealtDamageEvent(this, target, damage, ignoreShieldsDamage));
-				System.out.println("Final damage " + finalDamage + " " + owner.getEntity().getHealth());
 				target.damage(finalDamage, owner.getEntity());
 			}
 			else {
@@ -481,7 +481,7 @@ public class DamageMeta {
 				btwn.normalize();
 				double x = NeoRogue.gen.nextDouble(0.5), y = NeoRogue.gen.nextDouble(0.5), z = NeoRogue.gen.nextDouble(0.5);
 				loc = loc.add(btwn).add(x, y, z);
-				recipient.getInstance().createIndicator(Component.text((int) (damage + ignoreShieldsDamage), NamedTextColor.RED), loc);
+				recipient.getInstance().createIndicator(Component.text(df.format(damage + ignoreShieldsDamage), NamedTextColor.RED), loc);
 			}
 			else {
 				PlayerFightData data = FightInstance.getUserData(target.getUniqueId());

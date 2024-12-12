@@ -413,7 +413,6 @@ public class FightData {
 			FightInstance.trigger(((PlayerFightData) applier).getPlayer(), Trigger.APPLY_STATUS, ev2);
 			try {
 				StatusType type = StatusType.valueOf(id);
-				System.out.println("Type added " + type + " " + finalStacks);
 				if (!type.isHidden()) ((PlayerFightData) applier).getStats().addStatusApplied(type, finalStacks);
 			}
 			catch (IllegalArgumentException ex) {
