@@ -12,10 +12,11 @@ import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
-import me.neoblade298.neorogue.session.fight.DamageMeta.BuffOrigin;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -40,12 +41,17 @@ public class PracticeDummy extends Artifact {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
-		data.addTrigger(id, Trigger.BASIC_ATTACK, new PracticeDummyInstance());
+		data.addTrigger(id, Trigger.BASIC_ATTACK, new PracticeDummyInstance(ai.getArtifact()));
 	}
 	
 	public class PracticeDummyInstance implements TriggerAction {
 		private int count = 0;
 		private String weapon = null;
+		private Equipment art;
+
+		public PracticeDummyInstance(Equipment art) {
+			this.art = art;
+		}
 
 		@Override
 		public TriggerResult trigger(PlayerFightData data, Object inputs) {
@@ -64,7 +70,7 @@ public class PracticeDummy extends Artifact {
 				Util.msg(p, "<red>Practice Dummy</red> was activated");
 			}
 			if (count > num) {
-				ev.getMeta().addBuff(BuffType.GENERAL, new Buff(data, 0, 0.5), BuffOrigin.NORMAL, true);
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, 0.5, StatTracker.damageBuffAlly(art)));
 				return TriggerResult.keep();
 			}
 			return TriggerResult.remove();

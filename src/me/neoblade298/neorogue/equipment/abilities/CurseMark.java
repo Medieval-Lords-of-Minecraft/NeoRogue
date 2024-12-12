@@ -15,13 +15,16 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -50,7 +53,7 @@ public class CurseMark extends Equipment {
 		data.addTrigger(ID, Trigger.DEALT_DAMAGE, (pdata, in) -> {
 			if (inst.mark == null) return TriggerResult.keep();
 			DealtDamageEvent ev = (DealtDamageEvent) in;
-			if (ev.getMeta().containsType(BuffType.GENERAL) && ev.getTarget().getUniqueId().equals(inst.mark.getUniqueId())) {
+			if (ev.getMeta().containsType(DamageCategory.GENERAL) && ev.getTarget().getUniqueId().equals(inst.mark.getUniqueId())) {
 				inst.mark = null;
 			}
 			return TriggerResult.keep();
@@ -71,7 +74,7 @@ public class CurseMark extends Equipment {
 						FightInstance.applyStatus(mark, StatusType.INSANITY, pdata, stacks, -1);
 						pc.play(p, inst.mark);
 						Sounds.infect.play(p, mark);
-						fd.addBuff(pdata, false, true, BuffType.DARK, -buff);
+						fd.addDefenseBuff(DamageBuffType.of(DamageCategory.DARK), new Buff(data, 0, -buff * 0.01, StatTracker.defenseDebuffEnemy(eq)), 100);
 					}
 				}.runTaskLater(NeoRogue.inst(), 40L));
 				return TriggerResult.keep();

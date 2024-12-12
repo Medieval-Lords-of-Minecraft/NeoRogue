@@ -1,82 +1,59 @@
 package me.neoblade298.neorogue.session.fight.buff;
 
-import java.util.HashMap;
-import java.util.Map.Entry;
-
-import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
 import me.neoblade298.neorogue.session.fight.FightData;
 
 public class Buff {
+	private FightData applier;
 	private double increase, multiplier;
-	private DamageOrigin origin;
-	private HashMap<FightData, BuffSlice> slices = new HashMap<FightData, BuffSlice>();
+	private StatTracker tracker;
 	
 	public Buff() {}
 	
-	public Buff(FightData applier, double increase, double multiplier) {
+	public Buff(FightData applier, double increase, double multiplier, StatTracker tracker) {
+		this.applier = applier;
 		this.increase = increase;
 		this.multiplier = multiplier;
-		slices.put(applier, new BuffSlice(increase, multiplier));
+		this.tracker = tracker;
+	}
+
+	public static Buff increase(FightData applier, double increase, StatTracker tracker) {
+		return new Buff(applier, increase, 0, tracker);
+	}
+
+	public static Buff multiplier(FightData applier, double multiplier, StatTracker tracker) {
+		return new Buff(applier, 0, multiplier, tracker);
 	}
 	
-	public Buff(FightData applier, double increase, double multiplier, DamageOrigin origin) {
-		this.increase = increase;
-		this.multiplier = multiplier;
-		this.origin = origin;
-		slices.put(applier, new BuffSlice(increase, multiplier));
+	// Used in clone
+	private Buff(Buff src) {
+		this.applier = src.applier;
+		this.increase = src.increase;
+		this.multiplier = src.multiplier;
+		this.tracker = src.tracker;
 	}
-	
-	private Buff(double increase, double multiplier, DamageOrigin origin, HashMap<FightData, BuffSlice> slices) {
-		this.increase = increase;
-		this.multiplier = multiplier;
-		this.slices = slices;
-		this.origin = origin;
+
+	// Consider removing so that buffs are immutable
+	// Currently this is used to keep similar buffs combined when adding them together
+	public Buff combine(Buff other) {
+		this.increase += other.increase;
+		this.multiplier += other.multiplier;
+		return this;
+	}
+
+	public boolean isSimilar(Buff other) {
+		return tracker.isSimilar(other.tracker) && applier == other.applier;
 	}
 	
 	public Buff clone() {
-		HashMap<FightData, BuffSlice> newSlices = new HashMap<FightData, BuffSlice>();
-		for (Entry<FightData, BuffSlice> ent : slices.entrySet()) {
-			newSlices.put(ent.getKey(), ent.getValue().clone());
-		}
-		return new Buff(increase, multiplier, origin, newSlices);
+		return new Buff(this);
 	}
 
-	public DamageOrigin getOrigin() {
-		return origin;
+	public Buff invert() {
+		return new Buff(applier, -increase, -multiplier, tracker);
 	}
 
-	public void setOrigin(DamageOrigin origin) {
-		this.origin = origin;
-	}
-	
-	public void addIncrease(FightData applier, double increase) {
-		this.increase += increase;
-		BuffSlice slice = slices.getOrDefault(applier, new BuffSlice());
-		slice.addIncrease(increase);
-		
-		if (!slice.isEmpty()) {
-			slices.put(applier, slice);
-		}
-		else {
-			slices.remove(applier);
-		}
-	}
-	
-	public void addMultiplier(FightData applier, double multiplier) {
-		this.multiplier += multiplier;
-		BuffSlice slice = slices.getOrDefault(applier, new BuffSlice());
-		slice.addMultiplier(multiplier);
-		
-		if (!slice.isEmpty()) {
-			slices.put(applier, slice);
-		}
-		else {
-			slices.remove(applier);
-		}
-	}
-	
-	public HashMap<FightData, BuffSlice> getSlices() {
-		return slices;
+	public StatTracker getStatTracker() {
+		return tracker;
 	}
 	
 	public double getIncrease() {
@@ -86,17 +63,19 @@ public class Buff {
 	public double getMultiplier() {
 		return multiplier;
 	}
-	
-	public double apply(double original) {
-		return (original * (1 + multiplier)) + increase;
+
+	public boolean isPositive(double base) {
+		if (increase == 0) return multiplier > 0;
+		else if (multiplier == 0) return increase > 0;
+		else return (base * multiplier) + increase > 0;
 	}
-	
-	public double applyNegative(double original) {
-		return (original * (1 - multiplier)) - increase;
+
+	public double getEffectiveChange(double damage) {
+		return (damage * multiplier) + increase;
 	}
-	
-	public boolean isEmpty() {
-		return increase == 0 && multiplier == 0;
+
+	public FightData getApplier() {
+		return applier;
 	}
 	
 	@Override

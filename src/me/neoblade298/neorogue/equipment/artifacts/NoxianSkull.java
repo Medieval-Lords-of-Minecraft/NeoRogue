@@ -11,6 +11,8 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusClass;
 import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -46,7 +48,7 @@ public class NoxianSkull extends Artifact {
 					int extra = total / 6;
 					total = total % 6;
 					map.put(ev.getStatusId(), total);
-					ev.getStacksBuff().addIncrease(pdata, extra);
+					ev.getStacksBuffList().add(Buff.increase(pdata, extra, StatTracker.IGNORED));
 				}
 				return TriggerResult.keep();
 			};

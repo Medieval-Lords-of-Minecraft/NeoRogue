@@ -4,7 +4,7 @@ import javax.annotation.Nullable;
 
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.FightData;
-import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.BuffList;
 import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusClass;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
@@ -15,7 +15,7 @@ public class PreApplyStatusEvent {
 	private String statusId;
 	private DamageMeta meta;
 	private int stacks, ticks;
-	private Buff stackBuff = new Buff(), durationBuff = new Buff();
+	private BuffList stackBuff = new BuffList(), durationBuff = new BuffList();
 	private boolean isSecondary;
 	private StatusClass sc;
 	private Status s;
@@ -47,10 +47,10 @@ public class PreApplyStatusEvent {
 	public DamageMeta getMeta() {
 		return meta;
 	}
-	public Buff getStacksBuff() {
+	public BuffList getStacksBuffList() {
 		return stackBuff;
 	}
-	public Buff getDurationBuff() {
+	public BuffList getDurationBuffList() {
 		return durationBuff;
 	}
 	public StatusClass getStatusClass() {

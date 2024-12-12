@@ -9,12 +9,13 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
-import me.neoblade298.neorogue.session.fight.DamageMeta.BuffOrigin;
+import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -39,7 +40,7 @@ public class StaticNecklace extends Artifact {
 			if (!fd.hasStatus(StatusType.ELECTRIFIED)) return TriggerResult.keep();
 			
 			double buff = fd.getStatus(StatusType.ELECTRIFIED).getStacks() * 0.2;
-			ev.getMeta().addBuff(BuffType.LIGHTNING, new Buff(pdata, buff, 0), BuffOrigin.NORMAL, true);
+			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.LIGHTNING), new Buff(pdata, buff, 0, StatTracker.damageBuffAlly(this)));
 			return TriggerResult.keep();
 		});
 	}

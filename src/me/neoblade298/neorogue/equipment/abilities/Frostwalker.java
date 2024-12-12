@@ -19,13 +19,16 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -51,7 +54,7 @@ public class Frostwalker extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		FrostwalkerInstance inst = new FrostwalkerInstance(data);
+		FrostwalkerInstance inst = new FrostwalkerInstance(data, this);
 		data.addTrigger(id, Trigger.PLAYER_TICK, inst);
 		EquipmentInstance toggle = new EquipmentInstance(data, this, slot, es);
 		toggle.setAction((pdata, in) -> {
@@ -66,7 +69,7 @@ public class Frostwalker extends Equipment {
 	private class FrostwalkerInstance extends PriorityAction {
 		private boolean active = false;
 		private LinkedList<PoolInstance> pools = new LinkedList<PoolInstance>();
-		public FrostwalkerInstance(PlayerFightData data) {
+		public FrostwalkerInstance(PlayerFightData data, Equipment eq) {
 			super(ID);
 
 			action = (pdata, in) -> {
@@ -79,7 +82,7 @@ public class Frostwalker extends Equipment {
 						if (hit.contains(ent.getUniqueId())) continue;
 						FightData fd = FightInstance.getFightData(ent);
 						fd.applyStatus(StatusType.FROST, data, stacks, -1);
-						fd.addBuff(data, ID, false, false, BuffType.MAGICAL, -reduc, 100);
+						fd.addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL), new Buff(data, -reduc, 0, StatTracker.defenseDebuffEnemy(eq)), 100);
 						hit.add(ent.getUniqueId());
 					}
 					remove = pool.tick() || remove;

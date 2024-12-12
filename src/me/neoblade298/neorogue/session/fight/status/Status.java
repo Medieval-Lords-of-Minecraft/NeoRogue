@@ -173,7 +173,11 @@ public abstract class Status {
 		// This is exclusively used to skip statuses in fight stats
 		private StatusType(String tag, String boardLine, boolean hidden) {
 			this(tag, boardLine);
-			hidden = true;
+			this.hidden = hidden;
+		}
+
+		public boolean isHidden() {
+			return hidden;
 		}
 	}
 	

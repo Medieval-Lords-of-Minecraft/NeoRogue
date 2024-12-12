@@ -7,12 +7,13 @@ import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
-import me.neoblade298.neorogue.session.fight.DamageMeta.BuffOrigin;
+import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -37,7 +38,8 @@ public class SaboteursRing extends Equipment {
 			PreDealtDamageEvent ev = (PreDealtDamageEvent) in;
 			FightData fd = FightInstance.getFightData(ev.getTarget());
 			if (!fd.hasStatus(StatusType.INJURY)) return TriggerResult.keep();
-			ev.getMeta().addBuff(BuffType.GENERAL, new Buff(data, inc * fd.getStatus(StatusType.INJURY).getStacks(), 0), BuffOrigin.NORMAL, true);
+			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+				new Buff(data, inc * fd.getStatus(StatusType.INJURY).getStacks(), 0, StatTracker.damageBuffAlly(this)));
 			return TriggerResult.keep();
 		});
 	}

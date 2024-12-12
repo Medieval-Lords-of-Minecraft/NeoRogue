@@ -4,13 +4,13 @@ import java.util.ArrayList;
 
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
-import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.BuffList;
 
 public class CastUsableEvent {
 	private EquipmentInstance instance;
 	private ArrayList<String> modifiers = new ArrayList<String>();
-	private Buff staminaBuff = new Buff(), manaBuff = new Buff(), cooldownBuff = new Buff();
+	private BuffList staminaBuff = new BuffList(), manaBuff = new BuffList(), cooldownBuff = new BuffList();
 
 	public EquipmentInstance getInstance() {
 		return instance;
@@ -22,18 +22,13 @@ public class CastUsableEvent {
 	}
 	
 	// Id is so that equipment that modify the event can later check if the event successfully cast
-	public void addBuff(PropertyType type, FightData applier, String id, double amount, boolean multiplier) {
-		Buff b = getBuff(type);
+	public void addBuff(PropertyType type, String id, Buff b) {
+		BuffList curr = getBuff(type);
 		modifiers.add(id);
-		if (multiplier) {
-			b.addMultiplier(applier, amount);
-		}
-		else {
-			b.addIncrease(applier, amount);
-		}
+		curr.add(b);
 	}
 	
-	public Buff getBuff(PropertyType type) {
+	public BuffList getBuff(PropertyType type) {
 		switch (type) {
 		case COOLDOWN:
 			return cooldownBuff;

@@ -26,10 +26,11 @@ import me.neoblade298.neorogue.map.MapSpawnerInstance;
 import me.neoblade298.neorogue.session.Plot;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
-import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
 import me.neoblade298.neorogue.session.fight.TickAction.TickResult;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
+import me.neoblade298.neorogue.session.fight.buff.BuffList;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -55,10 +56,7 @@ public class FightData {
 	protected LivingEntity entity = null;
 	protected LinkedList<TickAction> tickActions = new LinkedList<TickAction>(); // Every 20 ticks
 	protected MapSpawnerInstance spawner;
-
-	// Buffs
-	protected HashMap<BuffType, Buff> damageBuffs = new HashMap<BuffType, Buff>();
-	protected HashMap<BuffType, Buff> defenseBuffs = new HashMap<BuffType, Buff>();
+	protected HashMap<DamageBuffType, BuffList> damageBuffs = new HashMap<DamageBuffType, BuffList>(), defenseBuffs = new HashMap<DamageBuffType, BuffList>();
 
 	public void cleanup() {
 		for (Runnable task : cleanupTasks.values()) {
@@ -108,8 +106,8 @@ public class FightData {
 
 		// Set up base mob resistances
 		if (mob != null) {
-			for (Entry<BuffType, Integer> ent : mob.getResistances().entrySet()) {
-				addBuff(this, false, true, ent.getKey(), (double) ent.getValue() / 100);
+			for (Entry<DamageCategory, Integer> ent : mob.getResistances().entrySet()) {
+				addDefenseBuff(DamageBuffType.of(ent.getKey()), new Buff(this, 0, (double) ent.getValue() / 100, StatTracker.IGNORED));
 			}
 		}
 	}
@@ -134,44 +132,63 @@ public class FightData {
 		return this.mob;
 	}
 
-	public void addBuff(FightData applier, boolean damageBuff, boolean multiplier, BuffType type, double amount) {
-		addBuff(applier, damageBuff, multiplier, type, amount, null);
+	public void addDamageBuff(DamageBuffType type, Buff b) {
+		addBuff(damageBuffs, type, b);
 	}
 
-	public void addBuff(FightData applier, boolean damageBuff, boolean multiplier, BuffType type, double amount, DamageOrigin origin) {
-		Buff b = damageBuff ? damageBuffs.getOrDefault(type, new Buff()) : defenseBuffs.getOrDefault(type, new Buff());
-		if (multiplier)
-			b.addMultiplier(applier, amount);
-		else
-			b.addIncrease(applier, amount);
-		b.setOrigin(origin);
-		if (damageBuff) damageBuffs.put(type, b);
-		else defenseBuffs.put(type, b);
+	public void addDefenseBuff(DamageBuffType type, Buff b) {
+		addBuff(defenseBuffs, type, b);
 	}
 
-	public void addBuff(FightData applier, String id, boolean damageBuff, boolean multiplier, BuffType type, double amount, int ticks) {
-		addBuff(applier, id, damageBuff, multiplier, type, amount, null, ticks);
+	private void addBuff(HashMap<DamageBuffType, BuffList> lists, DamageBuffType type, Buff b) {
+		BuffList list = lists.getOrDefault(type, new BuffList());
+		list.add(b);
+		lists.put(type, list);
 	}
 
-	public void addBuff(FightData applier, String id, boolean damageBuff, boolean multiplier, BuffType type, double amount, DamageOrigin origin, int ticks) {
-		addBuff(applier, damageBuff, multiplier, type, amount, origin);
+	public void addDamageBuff(DamageBuffType type, Buff b, int ticks) {
+		addBuff(damageBuffs, type, b, UUID.randomUUID().toString(), ticks);
+	}
+
+	public void addDamageBuff(DamageBuffType type, Buff b, String id, int ticks) {
+		addBuff(damageBuffs, type, b, id, ticks);
+	}
+
+	public void addDefenseBuff(DamageBuffType type, Buff b, String id, int ticks) {
+		addBuff(defenseBuffs, type, b, id, ticks);
+	}
+
+	public void addDefenseBuff(DamageBuffType type, Buff b, int ticks) {
+		addBuff(defenseBuffs, type, b, UUID.randomUUID().toString(), ticks);
+	}
+
+	private void addBuff(HashMap<DamageBuffType, BuffList> lists, DamageBuffType type, Buff b, String id, int ticks) {
+		addBuff(lists, type, b);
 
 		if (ticks > 0) {
 			addTask(id, new BukkitRunnable() {
 				public void run() {
-					addBuff(applier, damageBuff, multiplier, type, -amount);
+					addBuff(lists, type, b.invert());
 					tasks.remove(id);
 				}
 			}.runTaskLater(NeoRogue.inst(), ticks));
 		}
 	}
 
-	public Buff getBuff(boolean damageBuff, BuffType type) {
-		return damageBuff ? damageBuffs.get(type) : defenseBuffs.get(type);
+	public BuffList getDamageBuffList(DamageBuffType type) {
+		return damageBuffs.get(type);
 	}
-	
-	public HashMap<BuffType, Buff> getBuffs(boolean damageBuff) {
-		return damageBuff ? damageBuffs : defenseBuffs;
+
+	public BuffList getDefenseBuffList(DamageBuffType type) {
+		return defenseBuffs.get(type);
+	}
+
+	public HashMap<DamageBuffType, BuffList> getDamageBuffLists() {
+		return damageBuffs;
+	}
+
+	public HashMap<DamageBuffType, BuffList> getDefenseBuffLists() {
+		return defenseBuffs;
 	}
 
 	public void addTask(BukkitTask task) {
@@ -388,14 +405,15 @@ public class FightData {
 		if (applier instanceof PlayerFightData) {
 			FightInstance.trigger(((PlayerFightData) applier).getPlayer(), Trigger.PRE_APPLY_STATUS, ev);
 		}
-		int finalStacks = (int) Math.ceil(ev.getStacksBuff().apply(stacks));
-		int finalDuration = (int) Math.ceil(ev.getDurationBuff().apply(ticks));
+		int finalStacks = (int) Math.ceil(ev.getStacksBuffList().apply(stacks));
+		int finalDuration = (int) Math.ceil(ev.getDurationBuffList().apply(ticks));
 		status.apply(applier, finalStacks, finalDuration);
 		ApplyStatusEvent ev2 = new ApplyStatusEvent(this, status, finalStacks, finalDuration, isSecondary, meta);
 		if (applier instanceof PlayerFightData) {
 			FightInstance.trigger(((PlayerFightData) applier).getPlayer(), Trigger.APPLY_STATUS, ev2);
 			try {
-				((PlayerFightData) applier).getStats().addStatusApplied(StatusType.valueOf(id), finalStacks);
+				StatusType type = StatusType.valueOf(id);
+				if (!type.isHidden()) ((PlayerFightData) applier).getStats().addStatusApplied(type, finalStacks);
 			}
 			catch (IllegalArgumentException ex) {
 			}

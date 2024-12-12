@@ -17,7 +17,8 @@ import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.ParticleShapeMemory;
 import me.neoblade298.neocore.bukkit.effects.Rectangle;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
+import me.neoblade298.neorogue.session.fight.buff.BuffList;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 
 public class Barrier {
 	private static final double METERS_PER_PARTICLE = 0.5,
@@ -28,10 +29,10 @@ public class Barrier {
 	private UUID uuid;
 	private LivingEntity owner;
 	private double length, height, forward; // Forward is used for where the rectangle actually is drawn
-	private HashMap<BuffType, Buff> buffs = new HashMap<BuffType, Buff>();
 	private ParticleContainer part;
 	private Rectangle rect;
 	private Location center, rectcenter; // Center is midpoint of barrier, rectcenter is midpoint of actually rectangle to draw
+	private HashMap<DamageBuffType, BuffList> buffs = new HashMap<DamageBuffType, BuffList>();
 	
 	// Stationary
 	private ParticleShapeMemory mem;
@@ -39,14 +40,14 @@ public class Barrier {
 	// Centered on owner
 	private LocalAxes axes;
 	
-	private Barrier(LivingEntity owner, double length, double forward, double height, HashMap<BuffType, Buff> buffs, ParticleContainer part) {
+	private Barrier(LivingEntity owner, double length, double forward, double height, HashMap<DamageBuffType, BuffList> buffs, ParticleContainer part) {
 		this.uuid = UUID.randomUUID();
 		this.owner = owner;
 		this.height = height;
 		this.length = length;
 		this.forward = forward;
-		this.buffs = buffs;
 		this.rect = new Rectangle(length, height, METERS_PER_PARTICLE);
+		this.buffs = buffs;
 		calculateLocation();
 		
 		if (part == null) {
@@ -59,29 +60,29 @@ public class Barrier {
 	
 	// Stationary version
 	private Barrier(LivingEntity owner, double length, double forward, double height, Location center, LocalAxes axes,
-			HashMap<BuffType, Buff> buffs, ParticleContainer part) {
+		HashMap<DamageBuffType, BuffList> buffs, ParticleContainer part) {
 		this(owner, length, forward, height, buffs, part);
 		this.center = center;
 		this.mem = rect.calculate(center, axes);
 	}
 	
 	public static Barrier stationary(LivingEntity owner, double length, double forward, double height, Location center, LocalAxes axes,
-			HashMap<BuffType, Buff> buffs, @Nullable ParticleContainer part) {
-		return new Barrier(owner, length, forward, height, buffs, part);
+		HashMap<DamageBuffType, BuffList> buffs) {
+		return new Barrier(owner, length, forward, height, buffs, null);
 	}
 	
 	public static Barrier stationary(LivingEntity owner, double length, double forward, double height, Location center, LocalAxes axes,
-			HashMap<BuffType, Buff> buffs) {
+		HashMap<DamageBuffType, BuffList> buffs, @Nullable ParticleContainer part) {
+		return new Barrier(owner, length, forward, height, buffs, part);
+	}
+	
+	public static Barrier centered(LivingEntity owner, double length, double forward, double height, double forwardOffset, 
+		HashMap<DamageBuffType, BuffList> buffs) {
 		return new Barrier(owner, length, forward, height, buffs, null);
 	}
 	
 	public static Barrier centered(LivingEntity owner, double length, double forward, double height, double forwardOffset, 
-			HashMap<BuffType, Buff> buffs) {
-		return new Barrier(owner, length, forward, height, buffs, null);
-	}
-	
-	public static Barrier centered(LivingEntity owner, double length, double forward, double height, double forwardOffset, 
-			HashMap<BuffType, Buff> buffs, @Nullable ParticleContainer part) {
+		HashMap<DamageBuffType, BuffList> buffs, @Nullable ParticleContainer part) {
 		return new Barrier(owner, length, forward, height, buffs, part);
 	}
 	
@@ -140,8 +141,14 @@ public class Barrier {
 	public UUID getUniqueId() {
 		return uuid;
 	}
+
+	public void addBuff(DamageBuffType type, Buff b) {
+		BuffList list = buffs.getOrDefault(type, new BuffList());
+		list.add(b);
+		buffs.put(type, list);
+	}
 	
-	public HashMap<BuffType, Buff> getBuffs() {
+	public HashMap<DamageBuffType, BuffList> getBuffLists() {
 		return buffs;
 	}
 }

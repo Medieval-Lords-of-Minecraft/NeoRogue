@@ -9,6 +9,8 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -36,7 +38,7 @@ public class Vanish extends Equipment {
 			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
 			if (!ev.getStatusId().equals(StatusType.STEALTH.name())) return TriggerResult.keep();
 			inst.addCount(1);
-			ev.getDurationBuff().addIncrease(data, duration);
+			ev.getDurationBuffList().add(new Buff(data, duration, 0, StatTracker.IGNORED));
 			
 			if (inst.getCount() >= threshold) {
 				data.applyStatus(StatusType.EVADE, data, 1, 100);

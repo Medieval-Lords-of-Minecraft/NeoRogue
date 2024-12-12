@@ -6,15 +6,18 @@ import io.lumine.mythic.api.skills.ITargetedEntitySkill;
 import io.lumine.mythic.api.skills.SkillMetadata;
 import io.lumine.mythic.api.skills.SkillResult;
 import io.lumine.mythic.api.skills.ThreadSafetyLevel;
+import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 
 public class MechanicBuff implements ITargetedEntitySkill {
-	protected final double amount;
 	private final int seconds;
-	protected final BuffType type;
-	protected final boolean damageBuff, multiplier;
+	protected final DamageCategory type;
+	protected final boolean damageBuff;
+	protected final double increase, multiplier;
 
     @Override
     public ThreadSafetyLevel getThreadSafetyLevel() {
@@ -22,11 +25,11 @@ public class MechanicBuff implements ITargetedEntitySkill {
     }
 
 	public MechanicBuff(MythicLineConfig config) {
-        this.amount = config.getDouble(new String[] { "a", "amount" }, 0);
         this.seconds = config.getInteger(new String[] {"s", "seconds" }, 1);
-        this.type = BuffType.valueOf(config.getString(new String[] {"t", "type"}, "BLUNT").toUpperCase());
+        this.type = DamageCategory.valueOf(config.getString(new String[] {"t", "type"}, "BLUNT").toUpperCase());
         this.damageBuff = config.getBoolean(new String[] { "isDamage", "dmg" }, true);
-        this.multiplier = config.getBoolean(new String[] { "m", "mult" }, false);
+        this.increase = config.getDouble(new String[] { "i", "increase" }, 0);
+        this.multiplier = config.getDouble(new String[] { "m", "mult" }, 0);
         
 	}
 
@@ -36,10 +39,20 @@ public class MechanicBuff implements ITargetedEntitySkill {
 			FightData fd = FightInstance.getFightData(target.getBukkitEntity().getUniqueId());
 			FightData fdCaster = FightInstance.getFightData(data.getCaster().getEntity().getUniqueId());
 			if (seconds > 0) {
-				fd.addBuff(fdCaster, "MM", damageBuff, multiplier, type, amount, seconds);
+				if (damageBuff) {
+					fd.addDamageBuff(DamageBuffType.of(type), new Buff(fdCaster, increase, multiplier, StatTracker.IGNORED), "MythicMobs", seconds);
+				}
+				else {
+					fd.addDefenseBuff(DamageBuffType.of(type), new Buff(fdCaster, increase, multiplier, StatTracker.IGNORED), "MythicMobs", seconds);
+				}
 			}
 			else {
-				fd.addBuff(fdCaster, damageBuff, multiplier, type, amount);
+				if (damageBuff) {
+					fd.addDamageBuff(DamageBuffType.of(type), new Buff(fdCaster, increase, multiplier, StatTracker.IGNORED));
+				}
+				else {
+					fd.addDefenseBuff(DamageBuffType.of(type), new Buff(fdCaster, increase, multiplier, StatTracker.IGNORED));
+				}
 			}
 			return SkillResult.SUCCESS;
 		} catch (Exception e) {

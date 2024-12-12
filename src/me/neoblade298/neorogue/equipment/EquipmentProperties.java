@@ -122,7 +122,7 @@ public class EquipmentProperties {
 		}
 		if (type != null) {
 			lore.add(SharedUtil.color("<gold>Damage Type: <white>" + type));
-			eq.addTags(DamageType.toGlossary(type));
+			eq.addTags(type.toGlossary());
 		}
 		return lore;
 	}

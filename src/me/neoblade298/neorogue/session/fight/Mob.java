@@ -23,7 +23,6 @@ import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.player.inventory.GlossaryIcon;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
-import me.neoblade298.neorogue.session.fight.buff.BuffType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -31,7 +30,6 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextDecoration.State;
 
 public class Mob implements Comparable<Mob> {
-	private static ArrayList<BuffType> typeOrder = new ArrayList<BuffType>();
 	private static HashMap<String, Mob> mobs = new HashMap<String, Mob>();
 	private static final Pattern glossaryPattern = Pattern.compile("%[a-zA-Z]+%");
 	
@@ -41,27 +39,11 @@ public class Mob implements Comparable<Mob> {
 	private int amount;
 	private double spawnValue, killValue, knockbackMultiplier;
 	private Material mat;
-	private HashMap<BuffType, Integer> resistances = new HashMap<BuffType, Integer>();
-	private HashMap<BuffType, Amount> damageTypes = new HashMap<BuffType, Amount>();
+	private HashMap<DamageCategory, Integer> resistances = new HashMap<DamageCategory, Integer>();
+	private HashMap<DamageType, Amount> damageTypes = new HashMap<DamageType, Amount>();
 	private TreeSet<GlossaryIcon> tags = new TreeSet<GlossaryIcon>(GlossaryIcon.comparator);
 	private List<String> summons;
 	private ArrayList<TextComponent> lore = new ArrayList<TextComponent>();
-	
-	static {
-		typeOrder.add(BuffType.PHYSICAL);
-		typeOrder.add(BuffType.MAGICAL);
-		typeOrder.add(BuffType.SLASHING);
-		typeOrder.add(BuffType.PIERCING);
-		typeOrder.add(BuffType.BLUNT);
-		typeOrder.add(BuffType.FIRE);
-		typeOrder.add(BuffType.ICE);
-		typeOrder.add(BuffType.LIGHTNING);
-		typeOrder.add(BuffType.EARTHEN);
-		typeOrder.add(BuffType.LIGHT);
-		typeOrder.add(BuffType.DARK);
-		typeOrder.add(BuffType.BLEED);
-		typeOrder.add(BuffType.POISON);
-	}
 	
 	public static void load() {
 		NeoCore.loadFiles(new File(NeoRogue.inst().getDataFolder(), "mobs"), (yml, file) -> {
@@ -92,9 +74,9 @@ public class Mob implements Comparable<Mob> {
 		if (resSec != null) {
 			for (String key : resSec.getKeys()) {
 				int pct = resSec.getInt(key);
-				BuffType bt = BuffType.valueOf(key);
-				resistances.put(bt, pct);
-				GlossaryTag tag = BuffType.toGlossary(bt);
+				DamageCategory cat = DamageCategory.valueOf(key);
+				resistances.put(cat, pct);
+				GlossaryTag tag = cat.toGlossary();
 				if (tag != null) tags.add(tag);
 			}
 		}
@@ -102,9 +84,9 @@ public class Mob implements Comparable<Mob> {
 		Section dmgSec = sec.getSection("damagetypes");
 		if (dmgSec != null) {
 			for (String key : dmgSec.getKeys()) {
-				BuffType bt = BuffType.valueOf(key);
-				damageTypes.put(bt, Amount.valueOf(dmgSec.getString(key)));
-				GlossaryTag tag = BuffType.toGlossary(bt);
+				DamageType dt = DamageType.valueOf(key);
+				damageTypes.put(dt, Amount.valueOf(dmgSec.getString(key)));
+				GlossaryTag tag = dt.toGlossary();
 				if (tag != null) tags.add(tag);
 			}
 		}
@@ -142,7 +124,7 @@ public class Mob implements Comparable<Mob> {
 		base64 = sec.getString("base64");
 	}
 	
-	public HashMap<BuffType, Integer> getResistances() {
+	public HashMap<DamageCategory, Integer> getResistances() {
 		return resistances;
 	}
 	
@@ -168,12 +150,12 @@ public class Mob implements Comparable<Mob> {
 		if (!resistances.isEmpty()) {
 			Component header = Component.text("Resistances:", NamedTextColor.GOLD);
 			lore.add(header.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
-			for (BuffType dt : typeOrder) {
-				if (resistances.containsKey(dt)) {
-					int pct = resistances.get(dt);
-					String pfx = pct > 0 ? "Resistant, " : "Weak, ";
-					Component c = Component.text(dt.getDisplay() + ": ", NamedTextColor.YELLOW)
-							.append(Component.text(pfx + pct + "%", pct > 0 ? NamedTextColor.RED : NamedTextColor.GREEN));
+			for (DamageCategory cat : DamageCategory.values()) {
+				if (resistances.containsKey(cat)) {
+					int pct = resistances.get(cat);
+					String sfx = pct > 0 ? "Resistant" : "Weak";
+					Component c = Component.text(cat.getDisplay() + ": ", NamedTextColor.YELLOW)
+							.append(Component.text(pct + "% " + sfx, pct > 0 ? NamedTextColor.RED : NamedTextColor.GREEN));
 					lore.add(c.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
 				}
 			}
@@ -182,7 +164,7 @@ public class Mob implements Comparable<Mob> {
 		if (!damageTypes.isEmpty()) {
 			Component header = Component.text("Damage:", NamedTextColor.GOLD);
 			lore.add(header.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
-			for (BuffType dt : typeOrder) {
+			for (DamageType dt : DamageType.values()) {
 				if (damageTypes.containsKey(dt)) {
 					Component c = Component.text(dt.getDisplay(), NamedTextColor.YELLOW)
 							.append(Component.text(": ", NamedTextColor.GRAY))

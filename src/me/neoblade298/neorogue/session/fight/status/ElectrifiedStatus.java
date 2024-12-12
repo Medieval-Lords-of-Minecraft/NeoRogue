@@ -80,11 +80,7 @@ public class ElectrifiedStatus extends DecrementStackStatus {
 			DamageMeta dm = proj.getMeta();
 			dm.isSecondary(true);
 			for (Entry<FightData, Integer> ent : slices.getSliceOwners().entrySet()) {
-				dm.addDamageSlice(new DamageSlice(ent.getKey(), ent.getValue() * 0.2, DamageType.LIGHTNING, true));
-				if (ent.getKey() instanceof PlayerFightData) {
-					PlayerFightData pfd = (PlayerFightData) ent.getKey();
-					pfd.getStats().addElectrifiedDamage(ent.getValue() * 0.2);
-				}
+				dm.addDamageSlice(new DamageSlice(ent.getKey(), ent.getValue() * 0.2, DamageType.ELECTRIFIED, true));
 			}
 		}
 	}
