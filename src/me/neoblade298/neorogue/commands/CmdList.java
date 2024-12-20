@@ -39,7 +39,7 @@ public class CmdList extends Subcommand {
 		super(key, desc, perm, runner);
 		this.overrideTabHandler();
 		args.setOverride("{--type EquipmentType1,2...} {--rarity Rarity1,2...} {--class EquipmentClass1,2...} {--tags GlossaryTag1,2...}"
-				+ " {--reforge Parent/Child/None}");
+				+ " {--reforge Parent/Child/None} {--droppable true/false}");
 		args.setMax(-1);
 		
 		filterTypes.add("--type");

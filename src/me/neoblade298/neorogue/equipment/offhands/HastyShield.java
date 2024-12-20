@@ -10,8 +10,8 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -22,7 +22,7 @@ public class HastyShield extends Equipment {
 	private int reduction, amount;
 	
 	public HastyShield(boolean isUpgraded) {
-		super(ID, "Hasty Shield", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
+		super(ID, "Hasty Shield", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.OFFHAND);
 		reduction = 15;
 		amount = isUpgraded ? 25 : 18;
