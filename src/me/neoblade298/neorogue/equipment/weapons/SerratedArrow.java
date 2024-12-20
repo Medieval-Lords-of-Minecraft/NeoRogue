@@ -45,7 +45,7 @@ public class SerratedArrow extends Ammunition {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ARROW, "Applies " + GlossaryTag.REND.tag(this, stacks, true) + ". Deals an additional " + 
-		GlossaryTag.PIERCING.tag(this, damage, false) + " damage for every stack of " + 
+		GlossaryTag.REND.tag(this, damage, false) + " damage for every stack of " + 
 		GlossaryTag.REND.tag(this) + " the target has.");
 	}
 }
