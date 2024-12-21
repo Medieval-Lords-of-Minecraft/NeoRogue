@@ -27,7 +27,7 @@ public class Finale extends Equipment {
 			hit = new ParticleContainer(Particle.DUST);
 	
 	public Finale(boolean isUpgraded) {
-		super(ID, "Finale", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
+		super(ID, "Finale", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, isUpgraded ? 30 : 40, 12, 0));
 		properties.addUpgrades(PropertyType.STAMINA_COST);
 		damage = 360;

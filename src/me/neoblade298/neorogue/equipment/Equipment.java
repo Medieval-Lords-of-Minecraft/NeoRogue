@@ -258,6 +258,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Backstep(b);
 			new Backstep2(b);
 			new BasicElementMastery(b);
+			new BasicInfusionMastery(b);
+			new BasicManaManipulation(b);
 			new BattleCry(b);
 			new BerserkersCall(b);
 			new Bide(b);
@@ -292,6 +294,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new DarkPulse(b);
 			new Deliberation(b);
 			new Demoralize(b);
+			new Dexterity(b);
 			new Discipline(b);
 			new Dismantle(b);
 			new Disorient(b);
@@ -330,6 +333,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Frenzy(b);
 			new FrostTrap(b);
 			new Frostwalker(b);
+			new Furor(b);
 			new Fury(b);
 			new Gambit(b);
 			new GatheringShadows(b);
@@ -374,6 +378,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new RainOfSteel(b);
 			new RapidFire(b);
 			new RecklessApproach(b);
+			new Resourcefulness(b);
 			new Revenge(b);
 			new Roar(b);
 			new Rushdown(b);

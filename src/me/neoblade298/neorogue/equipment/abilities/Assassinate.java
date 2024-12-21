@@ -26,7 +26,7 @@ public class Assassinate extends Equipment {
 			hit = new ParticleContainer(Particle.DUST);
 	
 	public Assassinate(boolean isUpgraded) {
-		super(ID, "Assassinate", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
+		super(ID, "Assassinate", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, isUpgraded ? 40 : 30, 12, 0));
 		properties.addUpgrades(PropertyType.STAMINA_COST);
 		damage = 180;

@@ -15,6 +15,7 @@ import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
@@ -37,6 +38,7 @@ public class Fissure extends Equipment {
 	public Fissure(boolean isUpgraded) {
 		super(ID, "Fissure", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 30, isUpgraded ? 11 : 14, 0));
+		properties.addUpgrades(PropertyType.COOLDOWN);
 		damage = isUpgraded ? 220 : 180;
 		concussed = isUpgraded ? 60 : 40;
 	}

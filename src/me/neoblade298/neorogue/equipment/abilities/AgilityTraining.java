@@ -5,7 +5,6 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.weapons.Quickfire;
@@ -18,8 +17,8 @@ import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -50,12 +49,12 @@ public class AgilityTraining extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addDamageBuff(DamageBuffType.of(DamageCategory.PHYSICAL), new Buff(data, damage, 0, StatTracker.damageBuffAlly(this)));
-		data.addTrigger(id, Trigger.DEALT_DAMAGE, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+		data.addTrigger(id, Trigger.DEALT_DAMAGE, (pdata, in) -> {
 			DealtDamageEvent ev = (DealtDamageEvent) in;
 			if (!ev.getMeta().containsType(DamageCategory.PHYSICAL)) return TriggerResult.keep();
 			FightInstance.applyStatus(ev.getTarget(), StatusType.REND, data, stacks, -1);
 			return TriggerResult.keep();
-		}));
+		});
 	}
 
 	@Override

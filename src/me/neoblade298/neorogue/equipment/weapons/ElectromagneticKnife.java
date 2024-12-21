@@ -29,11 +29,6 @@ public class ElectromagneticKnife extends Equipment {
 		elec = 20;
 		inc = isUpgraded ? 2 : 1;
 	}
-
-	@Override
-	public void setupReforges() {
-		addSelfReforge(SparkdrainKnife.get());
-	}
 	
 	public static Equipment get() {
 		return Equipment.get(ID, false);

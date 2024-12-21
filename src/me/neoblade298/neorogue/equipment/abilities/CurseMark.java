@@ -23,8 +23,8 @@ import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -94,6 +94,6 @@ public class CurseMark extends Equipment {
 		item = createItem(Material.OBSIDIAN,
 				"On cast, mark the target you're looking at. If you don't deal " + GlossaryTag.GENERAL.tag(this) + " damage to that enemy for <white>2</white> seconds," +
 				" apply " + GlossaryTag.INSANITY.tag(this, stacks, false) + " to them and increase " + GlossaryTag.DARK.tag(this) + " damage dealt to them by " +
-				DescUtil.yellow(buff + "%") + "[<white>5s</white>].");
+				DescUtil.yellow(buff + "%") + " [<white>5s</white>].");
 	}
 }

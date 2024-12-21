@@ -10,6 +10,8 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.abilities.Dexterity;
+import me.neoblade298.neorogue.equipment.abilities.Resourcefulness;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -28,7 +30,8 @@ public class Razor extends Equipment {
 
 	@Override
 	public void setupReforges() {
-		addSelfReforge(SerratedRazor.get(), EnergizedRazor.get(), HiddenRazor.get());
+		addReforge(Resourcefulness.get(), SerratedRazor.get(), EnergizedRazor.get());
+		addReforge(Dexterity.get(), HiddenRazor.get());
 	}
 	
 	public static Equipment get() {

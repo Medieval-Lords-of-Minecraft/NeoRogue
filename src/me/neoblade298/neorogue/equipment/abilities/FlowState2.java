@@ -17,7 +17,7 @@ public class FlowState2 extends Equipment {
 	private double inc, dmgInc;
 	
 	public FlowState2(boolean isUpgraded) {
-		super(ID, "Flow State II", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
+		super(ID, "Flow State II", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.none());
 		thres = 30;
 		inc = 0.8;

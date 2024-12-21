@@ -31,7 +31,7 @@ public class GatheringShadows extends Equipment {
 
 	@Override
 	public void setupReforges() {
-		addSelfReforge(GatheringShadows2.get(), ShadowImbuement.get(), Atrophy.get());
+		addReforge(BasicManaManipulation.get(), GatheringShadows2.get(), ShadowImbuement.get(), Atrophy.get());
 	}
 
 	@Override

@@ -39,7 +39,8 @@ public class Envenom extends Equipment {
 
 	@Override
 	public void setupReforges() {
-		addSelfReforge(EndlessVenom.get(), PiercingVenom.get(), Envenom2.get());
+		addReforge(Resourcefulness.get(), EndlessVenom.get());
+		addReforge(Dexterity.get(), PiercingVenom.get(), Envenom2.get());
 	}
 	
 	public static Equipment get() {

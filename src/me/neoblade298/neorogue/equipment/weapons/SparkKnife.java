@@ -8,6 +8,8 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.abilities.BasicManaManipulation;
+import me.neoblade298.neorogue.equipment.abilities.Resourcefulness;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -31,7 +33,8 @@ public class SparkKnife extends Equipment {
 
 	@Override
 	public void setupReforges() {
-		addSelfReforge(SparkdrainKnife.get(), ElectromagneticKnife.get(), LightningCutter.get());
+		addReforge(BasicManaManipulation.get(), ElectromagneticKnife.get());
+		addReforge(Resourcefulness.get(), SparkdrainKnife.get(), LightningCutter.get());
 	}
 	
 	public static Equipment get() {

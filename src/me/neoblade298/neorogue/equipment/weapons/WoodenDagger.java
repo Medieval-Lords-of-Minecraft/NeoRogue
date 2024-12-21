@@ -8,6 +8,8 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.abilities.BasicManaManipulation;
+import me.neoblade298.neorogue.equipment.abilities.Dexterity;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -26,7 +28,8 @@ public class WoodenDagger extends Equipment {
 
 	@Override
 	public void setupReforges() {
-		addSelfReforge(StoneDagger.get(), StoneShiv.get(), StoneThrowingKnife.get());
+		addReforge(Dexterity.get(), StoneShiv.get(), StoneThrowingKnife.get());
+		addReforge(BasicManaManipulation.get(), StoneDagger.get());
 	}
 	
 	public static Equipment get() {

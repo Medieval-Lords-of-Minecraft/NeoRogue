@@ -7,6 +7,8 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.abilities.Dexterity;
+import me.neoblade298.neorogue.equipment.abilities.Resourcefulness;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -29,7 +31,9 @@ public class ButterflyKnife extends Equipment {
 
 	@Override
 	public void setupReforges() {
-		addSelfReforge(ButterflyKnife2.get(), StoneDriver.get(), EvasiveKnife.get());
+		addSelfReforge(StoneDriver.get());
+		addReforge(Dexterity.get(), EvasiveKnife.get());
+		addReforge(Resourcefulness.get(), ButterflyKnife2.get());
 	}
 	
 	public static Equipment get() {

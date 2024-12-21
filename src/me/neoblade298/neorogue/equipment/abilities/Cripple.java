@@ -21,8 +21,8 @@ import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
@@ -41,7 +41,9 @@ public class Cripple extends Equipment {
 
 	@Override
 	public void setupReforges() {
-		addSelfReforge(CripplingPoison.get(), Disorient.get(), Maim.get());
+		addReforge(Resourcefulness.get(), CripplingPoison.get());
+		addReforge(BasicManaManipulation.get(), Disorient.get());
+		addReforge(Dexterity.get(), Maim.get());
 	}
 	
 	public static Equipment get() {
@@ -56,7 +58,7 @@ public class Cripple extends Equipment {
 				part.play(p, ent);
 				FightInstance.getFightData(ent).addDefenseBuff(DamageBuffType.of(DamageCategory.PHYSICAL), new Buff(data, -inc, 0,
 					StatTracker.defenseDebuffEnemy(this)),
-				UUID.randomUUID().toString(), 100);
+				UUID.randomUUID().toString(), 160);
 			}
 			return TriggerResult.keep();
 		}));
@@ -66,6 +68,6 @@ public class Cripple extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.ARMOR_STAND,
 				"On cast, increase the " + GlossaryTag.PHYSICAL.tag(this) + " damage taken of enemies in a cone in front of you by <yellow>" + inc + "</yellow>"
-						+ " for <white>5</white> seconds.");
+						+ " for <white>8</white> seconds.");
 	}
 }

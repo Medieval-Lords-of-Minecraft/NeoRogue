@@ -10,9 +10,9 @@ import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardEquipmentInstance;
-import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageType;
@@ -41,7 +41,9 @@ public class ShadowWalk extends Equipment {
 
 	@Override
 	public void setupReforges() {
-		addSelfReforge(NightShade.get(), Sidestep.get(), Contaminate.get());
+		addReforge(Resourcefulness.get(), Contaminate.get());
+		addReforge(BasicManaManipulation.get(), NightShade.get());
+		addReforge(Dexterity.get(), Sidestep.get());
 	}
 
 	@Override

@@ -34,7 +34,7 @@ public class VitalPierce extends Equipment {
 
 	@Override
 	public void setupReforges() {
-		addSelfReforge(Assassinate.get(), Finale.get());
+		addReforge(Dexterity.get(), Assassinate.get(), Finale.get());
 	}
 	
 	public static Equipment get() {

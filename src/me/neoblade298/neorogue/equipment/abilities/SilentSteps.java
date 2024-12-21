@@ -10,8 +10,8 @@ import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -31,7 +31,7 @@ public class SilentSteps extends Equipment {
 
 	@Override
 	public void setupReforges() {
-		addSelfReforge(Fade.get(), Vanish.get(), SilentSteps2.get());
+		addReforge(Dexterity.get(), SilentSteps2.get(), Fade.get(), Vanish.get());
 	}
 	
 	public static Equipment get() {
