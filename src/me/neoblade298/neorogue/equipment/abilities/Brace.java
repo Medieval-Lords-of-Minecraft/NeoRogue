@@ -29,8 +29,8 @@ public class Brace extends Equipment {
 	
 	@Override
 	public void setupReforges() {
-		addSelfReforge(Brace2.get(), Bide.get(), Parry.get());
-		addReforge(Provoke.get(), Challenge.get());
+		addReforge(EnduranceTraining.get(), Brace2.get(), Parry.get());
+		addReforge(Furor.get(), Bide.get());
 	}
 	
 	public static Equipment get() {

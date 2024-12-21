@@ -16,8 +16,8 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
@@ -39,7 +39,8 @@ public class Adrenaline extends Equipment {
 	
 	@Override
 	public void setupReforges() {
-		addSelfReforge(Burst.get(), Discipline.get(), Ferocity.get());
+		addReforge(Furor.get(), Burst.get(), Ferocity.get());
+		addReforge(EnduranceTraining.get(), Discipline.get());
 	}
 
 	@Override

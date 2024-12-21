@@ -8,6 +8,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.abilities.EnduranceTraining;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -26,7 +27,7 @@ public class WoodenSword extends Equipment {
 
 	@Override
 	public void setupReforges() {
-		addSelfReforge(StoneSword.get(), StoneSpear.get(), StoneAxe.get());
+		addSelfReforge(EnduranceTraining.get(), StoneSword.get(), StoneSpear.get(), StoneAxe.get());
 	}
 	
 	public static Equipment get() {

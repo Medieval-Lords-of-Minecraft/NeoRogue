@@ -35,7 +35,8 @@ public class BattleCry extends Equipment {
 	
 	@Override
 	public void setupReforges() {
-		addSelfReforge(BerserkersCall.get(), WarCry.get(), Roar.get());
+		addReforge(Furor.get(), BerserkersCall.get(), Roar.get());
+		addReforge(EnduranceTraining.get(), WarCry.get());
 	}
 	
 	public static Equipment get() {

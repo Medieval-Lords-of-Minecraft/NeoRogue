@@ -21,6 +21,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.abilities.BasicInfusionMastery;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -62,7 +63,7 @@ public class StoneHammer extends Equipment {
 
 	@Override
 	public void setupReforges() {
-		addSelfReforge(RighteousHammer.get(), Fracturer.get());
+		addReforge(BasicInfusionMastery.get(), RighteousHammer.get(), Fracturer.get());
 	}
 	
 	public static Equipment get() {

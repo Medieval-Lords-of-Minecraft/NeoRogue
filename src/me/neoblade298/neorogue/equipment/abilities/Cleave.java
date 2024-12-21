@@ -41,7 +41,7 @@ public class Cleave extends Equipment {
 	
 	@Override
 	public void setupReforges() {
-		addSelfReforge(Quake.get(), Smite.get(), WindSlash.get());
+		addReforge(BasicInfusionMastery.get(), Quake.get(), Smite.get(), WindSlash.get());
 	}
 
 	@Override

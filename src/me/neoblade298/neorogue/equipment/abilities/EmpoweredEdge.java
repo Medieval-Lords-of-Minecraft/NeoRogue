@@ -37,7 +37,9 @@ public class EmpoweredEdge extends Equipment {
 
 	@Override
 	public void setupReforges() {
-		addSelfReforge(Embolden.get(), Fury.get(), BlessedEdge.get());
+		addReforge(BasicInfusionMastery.get(), BlessedEdge.get());
+		addReforge(Furor.get(), Fury.get());
+		addReforge(EnduranceTraining.get(), Embolden.get());
 	}
 	
 	public static Equipment get() {

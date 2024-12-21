@@ -28,15 +28,16 @@ public class Execute extends Equipment {
 	public Execute(boolean isUpgraded) {
 		super(ID, "Execute", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 15, 7, 0));
-		damage = isUpgraded ? 120 : 80;
-		strength = isUpgraded ? 5 : 3;
+		damage = isUpgraded ? 180 : 120;
+		strength = isUpgraded ? 15 : 10;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		hit.count(50).spread(0.5, 0.5);
 	}
 
 	@Override
 	public void setupReforges() {
-		addSelfReforge(SiphoningStrike.get(), Fortify.get(), MightySwing.get());
+		addReforge(BasicInfusionMastery.get(), SiphoningStrike.get());
+		addReforge(EnduranceTraining.get(), Fortify.get(), MightySwing.get());
 	}
 	
 	public static Equipment get() {

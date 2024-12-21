@@ -276,7 +276,6 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Bulwark(b);
 			new Burst(b);
 			new Cauterize(b);
-			new Challenge(b);
 			new Charge(b);
 			new Chill(b);
 			new Cleave(b);
@@ -305,6 +304,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Endure(b);
 			new Enlighten(b);
 			new EndlessVenom(b);
+			new EnduranceTraining(b);
 			new Energize(b);
 			new Envenom(b);
 			new Envenom2(b);
@@ -371,7 +371,6 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Posturing2(b);
 			new Prayer(b);
 			new Preparation(b);
-			new Provoke(b);
 			new RainOfSteel(b);
 			new RapidFire(b);
 			new RecklessApproach(b);
