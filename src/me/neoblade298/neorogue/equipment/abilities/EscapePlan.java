@@ -37,9 +37,8 @@ public class EscapePlan extends Equipment {
 
 	@Override
 	public void setupReforges() {
-		addReforge(BasicManaManipulation.get(), Flicker.get());
+		addReforge(BasicDarkArts.get(), Flicker.get(), EscapePlan2.get());
 		addReforge(Resourcefulness.get(), Preparation.get());
-		addReforge(Dexterity.get(), EscapePlan2.get());
 	}
 	
 	public static Equipment get() {

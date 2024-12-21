@@ -31,7 +31,7 @@ public class SilentSteps extends Equipment {
 
 	@Override
 	public void setupReforges() {
-		addReforge(Dexterity.get(), SilentSteps2.get(), Fade.get(), Vanish.get());
+		addReforge(BasicManaManipulation.get(), SilentSteps2.get(), Fade.get(), Vanish.get());
 	}
 	
 	public static Equipment get() {

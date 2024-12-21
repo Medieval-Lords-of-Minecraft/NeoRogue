@@ -28,7 +28,7 @@ public class FlowState extends Equipment {
 
 	@Override
 	public void setupReforges() {
-		addReforge(BasicManaManipulation.get(), Rushdown.get(), FlowState2.get());
+		addReforge(Dexterity.get(), Rushdown.get(), FlowState2.get());
 	}
 
 	@Override

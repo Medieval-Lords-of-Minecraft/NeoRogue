@@ -43,8 +43,8 @@ public class InducePanic extends Equipment {
 	
 	@Override
 	public void setupReforges() {
-		addReforge(BasicManaManipulation.get(), InducePanic2.get(), CurseMark.get());
-		addReforge(Dexterity.get(), ConfidenceKill.get());
+		addReforge(BasicDarkArts.get(), InducePanic2.get(), CurseMark.get());
+		addReforge(BasicManaManipulation.get(), ConfidenceKill.get());
 	}
 
 	@Override

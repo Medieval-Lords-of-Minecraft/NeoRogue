@@ -257,6 +257,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Atrophy(b);
 			new Backstep(b);
 			new Backstep2(b);
+			new BasicDarkArts(b);
 			new BasicElementMastery(b);
 			new BasicInfusionMastery(b);
 			new BasicManaManipulation(b);

@@ -43,7 +43,7 @@ public class ShadowWalk extends Equipment {
 	public void setupReforges() {
 		addReforge(Resourcefulness.get(), Contaminate.get());
 		addReforge(BasicManaManipulation.get(), NightShade.get());
-		addReforge(Dexterity.get(), Sidestep.get());
+		addReforge(BasicDarkArts.get(), Sidestep.get());
 	}
 
 	@Override
