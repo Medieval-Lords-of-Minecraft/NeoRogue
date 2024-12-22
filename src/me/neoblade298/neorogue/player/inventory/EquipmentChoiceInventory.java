@@ -57,7 +57,7 @@ public class EquipmentChoiceInventory extends CoreInventory {
 		
 		if (slot < equips.size()) {
 			if (e.isRightClick()) {
-				new GlossaryInventory(p, equips.get(slot), this);
+				new EquipmentGlossaryInventory(p, equips.get(slot), this);
 				return;
 			}
 			

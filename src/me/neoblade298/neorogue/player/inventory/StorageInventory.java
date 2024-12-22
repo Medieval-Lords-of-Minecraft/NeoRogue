@@ -100,7 +100,7 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 			new BukkitRunnable() {
 				public void run() {
 					handleInventoryClose();
-					new GlossaryInventory(p, Equipment.get(nclicked.getString("equipId"), false), null);
+					new EquipmentGlossaryInventory(p, Equipment.get(nclicked.getString("equipId"), false), null);
 				}
 			}.runTask(NeoRogue.inst());
 			return;

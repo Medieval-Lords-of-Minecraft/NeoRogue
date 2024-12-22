@@ -297,7 +297,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 			new BukkitRunnable() {
 				public void run() {
 					handleInventoryClose();
-					new GlossaryInventory(p, Equipment.get(nclicked.getString("equipId"), false), null);
+					new EquipmentGlossaryInventory(p, Equipment.get(nclicked.getString("equipId"), false), null);
 				}
 			}.runTask(NeoRogue.inst());
 			return;

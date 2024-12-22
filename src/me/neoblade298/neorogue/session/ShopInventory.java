@@ -21,7 +21,7 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
-import me.neoblade298.neorogue.player.inventory.GlossaryInventory;
+import me.neoblade298.neorogue.player.inventory.EquipmentGlossaryInventory;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
 import me.neoblade298.neorogue.player.inventory.SpectateSelectInventory;
 import net.kyori.adventure.text.Component;
@@ -133,7 +133,7 @@ public class ShopInventory extends CoreInventory {
 			int price = shopItem.getPrice();
 			
 			if (e.isRightClick()) {
-				new GlossaryInventory(p, shopItem.getEquipment(), this);
+				new EquipmentGlossaryInventory(p, shopItem.getEquipment(), this);
 				return;
 			}
 			
