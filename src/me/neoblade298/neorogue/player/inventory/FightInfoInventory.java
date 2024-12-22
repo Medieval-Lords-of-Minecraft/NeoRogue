@@ -55,7 +55,7 @@ public class FightInfoInventory extends CoreInventory {
 			
 			Mob mob = Mob.get(nbti.getString("mobId"));
 			if (mob.getTags().isEmpty()) return;
-			new GlossaryInventory(p, mob, this);
+			new MobGlossaryInventory(p, mob, this);
 		}
 	}
 	

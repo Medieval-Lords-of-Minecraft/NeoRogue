@@ -219,7 +219,7 @@ public class PlayerSessionSpectateInventory extends CoreInventory {
 			PlayerSessionSpectateInventory temp = this;
 			new BukkitRunnable() {
 				public void run() {
-					new GlossaryInventory(p, Equipment.get(nclicked.getString("equipId"), false), temp);
+					new EquipmentGlossaryInventory(p, Equipment.get(nclicked.getString("equipId"), false), temp);
 				}
 			}.runTask(NeoRogue.inst());
 			return;

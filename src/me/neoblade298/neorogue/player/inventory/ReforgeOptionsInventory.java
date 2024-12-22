@@ -72,7 +72,7 @@ public class ReforgeOptionsInventory extends CoreInventory {
 				new BukkitRunnable() {
 					public void run() {
 						// Intentionally null so you can't return to reforge options inv after you get the items back
-						new GlossaryInventory(p, getFromSlot(e.getSlot()), null);
+						new EquipmentGlossaryInventory(p, getFromSlot(e.getSlot()), null);
 					}
 				}.runTask(NeoRogue.inst());
 				return;

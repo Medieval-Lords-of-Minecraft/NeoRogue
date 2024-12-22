@@ -93,7 +93,7 @@ public class ArtifactsInventory extends CoreInventory {
 			e.setCancelled(true);
 			new BukkitRunnable() {
 				public void run() {
-					new GlossaryInventory(p, Equipment.get(nclicked.getString("equipId"), false), null);
+					new EquipmentGlossaryInventory(p, Equipment.get(nclicked.getString("equipId"), false), null);
 				}
 			}.runTask(NeoRogue.inst());
 			return;
