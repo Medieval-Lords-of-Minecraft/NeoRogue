@@ -22,9 +22,17 @@ public class EquipmentParentsGlossaryInventory extends GlossaryInventory {
 		eq.getReforgeParents();
 		
 		ItemStack[] contents = inv.getContents();
+		for (int i = 0; i < 9; i++) {
+			if (i == 4) {
+				contents[i] = eq.getItem();
+			}
+			else {
+				contents[i] = CoreInventory.createButton(Material.BLACK_STAINED_GLASS_PANE, Component.text(" "));
+			}
+		}
 		
 		Iterator<Equipment> iter = eq.getReforgeParents().iterator();
-		int row = 0;
+		int row = 1;
 		while (iter.hasNext()) {
 			Equipment eq1 = iter.next();
 			Equipment eq2 = iter.next();
@@ -36,6 +44,7 @@ public class EquipmentParentsGlossaryInventory extends GlossaryInventory {
 				contents[(row * 9) + i] = CoreInventory.createButton(Material.GRAY_STAINED_GLASS_PANE, 
 					Component.text(" "));
 			}
+			row++;
 		}
 		inv.setContents(contents);
 	}

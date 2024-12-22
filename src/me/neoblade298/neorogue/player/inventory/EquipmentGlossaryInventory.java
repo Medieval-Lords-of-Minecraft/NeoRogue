@@ -103,7 +103,7 @@ public class EquipmentGlossaryInventory extends GlossaryInventory {
 	@Override
 	public void handleInventoryClick(InventoryClickEvent e) {
 		e.setCancelled(true);
-		if (e.getSlot() == PARENTS) {
+		if (e.getSlot() == PARENTS && !eq.getReforgeParents().isEmpty()) {
 			openOther = false;
 			new BukkitRunnable() {
 				public void run() {

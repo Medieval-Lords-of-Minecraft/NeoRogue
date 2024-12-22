@@ -33,9 +33,7 @@ import me.neoblade298.neorogue.equipment.abilities.EmpoweredEdge;
 import me.neoblade298.neorogue.equipment.abilities.PiercingShot;
 import me.neoblade298.neorogue.equipment.abilities.Sear;
 import me.neoblade298.neorogue.equipment.abilities.ShadowWalk;
-import me.neoblade298.neorogue.equipment.accessories.RedRing;
 import me.neoblade298.neorogue.equipment.weapons.BasicBow;
-import me.neoblade298.neorogue.equipment.weapons.WoodenArrow;
 import me.neoblade298.neorogue.equipment.weapons.WoodenDagger;
 import me.neoblade298.neorogue.equipment.weapons.WoodenSword;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
@@ -126,8 +124,6 @@ public class PlayerSessionData extends MapViewer {
 			hotbar[0] = BasicBow.get();
 			hotbar[1] = PiercingShot.get();
 			hotbar[2] = Sear.get().getUpgraded();
-			accessories[0] = RedRing.get().getUpgraded();
-			hotbar[8] = WoodenArrow.get();
 			abilitiesEquipped = 1;
 			break;
 		case MAGE:
