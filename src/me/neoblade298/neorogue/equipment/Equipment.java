@@ -281,6 +281,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Cauterize(b);
 			new Charge(b);
 			new Chill(b);
+			new Chokehold(b);
 			new Cleave(b);
 			new Concoct(b);
 			new ConfidenceKill(b);
@@ -343,6 +344,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new GraniteShield(b);
 			new Grit(b);
 			new HailCloak(b);
+			new HexingShot(b);
 			new HoldTheLine(b);
 			new InducePanic(b);
 			new InducePanic2(b);
@@ -391,6 +393,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new ShatteringShot(b);
 			new ShoulderBash(b);
 			new Sear(b);
+			new SelfDestruct(b);
 			new Setup(b);
 			new Sidestep(b);
 			new SilentSteps(b);
@@ -424,6 +427,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Windcutter(b);
 			new WindSlash(b);
 			new Wound(b);
+			new Zone(b);
+			new Zone2(b);
 			
 			// Accessories
 			new EagleFeather(b);

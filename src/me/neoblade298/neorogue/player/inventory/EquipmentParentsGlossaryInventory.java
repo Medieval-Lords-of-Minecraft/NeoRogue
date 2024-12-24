@@ -17,7 +17,7 @@ public class EquipmentParentsGlossaryInventory extends GlossaryInventory {
 	private static final int[] FILLER = new int[] {0, 1, 7, 8};
 	private static final String PLUS_HEAD = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTcxZDg5NzljMTg3OGEwNTk4N2E3ZmFmMjFiNTZkMWI3NDRmOWQwNjhjNzRjZmZjZGUxZWExZWRhZDU4NTIifX19";
 	public EquipmentParentsGlossaryInventory(Player viewer, Equipment eq, CoreInventory prev) {
-		super(viewer, (eq.getReforgeParents().size() / 2) * 9, eq.getUnupgraded().getDisplay().append(Component.text(" Parents", NamedTextColor.WHITE)), prev);
+		super(viewer, (eq.getReforgeParents().size() / 2) * 9, eq.getUnupgraded().getDisplay().append(Component.text(" Parents", NamedTextColor.DARK_GRAY)), prev);
 		eq = eq.getUnupgraded();
 		eq.getReforgeParents();
 		

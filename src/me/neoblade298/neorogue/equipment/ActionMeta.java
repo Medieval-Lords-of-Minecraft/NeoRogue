@@ -1,5 +1,6 @@
 package me.neoblade298.neorogue.equipment;
 
+import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 
 // For most common use cases and storing of data in instance format
@@ -8,6 +9,7 @@ public class ActionMeta {
 	private boolean bool;
 	private int count;
 	private LivingEntity ent;
+	private Location loc;
 	
 	public void setCount(int count) {
 		this.count = count;
@@ -43,5 +45,13 @@ public class ActionMeta {
 	
 	public long getTime() {
 		return time;
+	}
+
+	public Location getLocation() {
+		return loc;
+	}
+
+	public void setLocation(Location loc) {
+		this.loc = loc;
 	}
 }

@@ -14,10 +14,16 @@ public class ConditionIsNeoRoguePlayer implements ISkillMetaComparisonCondition 
 
 	@Override
 	public boolean check(SkillMetadata data, AbstractEntity ent) {
-		if (!(ent.getBukkitEntity() instanceof Player)) return false;
-		Player p = (Player) ent.getBukkitEntity();
-		PlayerFightData pfd = FightInstance.getUserData(p.getUniqueId());
-		if (pfd == null) return false;
-		return !pfd.isDead();
+		try {
+			if (!(ent.getBukkitEntity() instanceof Player)) return false;
+			Player p = (Player) ent.getBukkitEntity();
+			PlayerFightData pfd = FightInstance.getUserData(p.getUniqueId());
+			if (pfd == null) return false;
+			return !pfd.isDead();
+		}
+		catch (IllegalStateException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 }

@@ -69,7 +69,7 @@ public abstract class Trap {
 		if (task != null) {
 			task.cancel();
 			owner.removeTask(taskId);
-			owner.runActions(owner, Trigger.LAY_TRAP, null);
+			owner.runActions(owner, Trigger.DEACTIVATE_TRAP, this);
 			task = null;
 		}
 	}

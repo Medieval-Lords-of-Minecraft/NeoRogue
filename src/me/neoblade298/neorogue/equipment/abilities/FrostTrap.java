@@ -38,7 +38,7 @@ public class FrostTrap extends Equipment {
 	
 	public FrostTrap(boolean isUpgraded) {
 		super(ID, "Frost Trap", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 0, 15, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 0, 8, 0));
 		
 		damage = 80;
 		frost = isUpgraded ? 150 : 100;

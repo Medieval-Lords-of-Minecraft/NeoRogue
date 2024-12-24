@@ -380,6 +380,12 @@ public class SessionManager implements Listener {
 		
 		if (s.isSpectator(uuid)) {
 			e.setCancelled(true);
+			if (e.getRightClicked() instanceof Player) {
+				Player viewed = (Player) e.getRightClicked();
+				if (s.getParty().containsKey(viewed.getUniqueId())) {
+					new PlayerSessionSpectateInventory(s.getParty().get(viewed.getUniqueId()), p);
+				}
+			}
 			return;
 		}
 		
