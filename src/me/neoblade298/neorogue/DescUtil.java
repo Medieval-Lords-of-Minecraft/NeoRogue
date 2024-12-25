@@ -27,4 +27,8 @@ public class DescUtil {
 	public static String potionUp(String txt, int potency, int seconds) {
 		return txt + " " + white(potency + 1) + " [" + yellow(seconds + "s") + "]";
 	}
+
+	public static String duration(int seconds, boolean upgrade) {
+		return "[" + (upgrade ? yellow(seconds + "s") : white(seconds + "s")) + "]";
+	}
 }
