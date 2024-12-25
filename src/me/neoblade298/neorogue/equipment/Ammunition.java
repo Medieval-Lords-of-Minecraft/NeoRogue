@@ -1,5 +1,6 @@
 package me.neoblade298.neorogue.equipment;
 
+import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -19,6 +20,7 @@ public abstract class Ammunition extends Equipment {
 	}
 	public void onTick(Player p, ProjectileInstance proj, int interpolation) {}
 	public void onHit(ProjectileInstance inst, DamageMeta meta, LivingEntity target) {}
+	public void onHitBlock(ProjectileInstance inst, Block b) {}
 	public void onStart(ProjectileInstance inst) {}
 
 	@Override

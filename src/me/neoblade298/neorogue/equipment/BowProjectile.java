@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment;
 import java.util.ArrayList;
 
 import org.bukkit.Particle;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -90,5 +91,10 @@ public class BowProjectile extends Projectile {
 		double dmg = ammoProps.get(PropertyType.DAMAGE) + props.get(PropertyType.DAMAGE) + damageBonus;
 		dm.addDamageSlice(new DamageSlice(data, dmg, ammoProps.getType()));
 		ammo.onStart(proj);
+	}
+
+	@Override
+	public void onHitBlock(ProjectileInstance proj, Block b) {
+		ammo.onHitBlock(proj, b);
 	}
 }

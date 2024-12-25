@@ -1,5 +1,6 @@
 package me.neoblade298.neorogue.equipment;
 
+import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -50,6 +51,9 @@ public class AmmunitionInstance {
 	}
 	public void onHit(ProjectileInstance inst, DamageMeta meta, LivingEntity target) {
 		ammo.onHit(inst, meta, target);
+	}
+	public void onHitBlock(ProjectileInstance proj, Block b) {
+		ammo.onHitBlock(proj, b);
 	}
 	public EquipmentProperties getProperties() {
 		return ammo.getProperties();
