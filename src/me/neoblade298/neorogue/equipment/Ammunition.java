@@ -11,6 +11,7 @@ import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.ChangedAmmunitionEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -36,6 +37,8 @@ public abstract class Ammunition extends Equipment {
 	}
 
 	protected void equip(Player p, PlayerFightData data, AmmunitionInstance ammo) {
+		if (data.getAmmoInstance() == ammo) return;
+		data.runActions(data, Trigger.CHANGE_AMMUNITION, new ChangedAmmunitionEvent(data.getAmmoInstance(), ammo));
 		data.setAmmoInstance(ammo);
 		Sounds.equip.play(p, p);
 		Util.msg(p, Component.text("You equipped ", NamedTextColor.GRAY).append(this.getDisplay()));

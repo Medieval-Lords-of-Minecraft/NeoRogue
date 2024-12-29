@@ -104,6 +104,7 @@ import me.neoblade298.neorogue.equipment.artifacts.SapphireCluster;
 import me.neoblade298.neorogue.equipment.artifacts.SapphireGem;
 import me.neoblade298.neorogue.equipment.artifacts.SapphireShard;
 import me.neoblade298.neorogue.equipment.artifacts.StaticNecklace;
+import me.neoblade298.neorogue.equipment.artifacts.StormSigil;
 import me.neoblade298.neorogue.equipment.artifacts.TomeOfWisdom;
 import me.neoblade298.neorogue.equipment.artifacts.TrickstersSigil;
 import me.neoblade298.neorogue.equipment.consumables.MinorHealthPotion;
@@ -368,6 +369,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new MarkTarget(b);
 			new MarkTarget2(b);
 			new MightySwing(b);
+			new Momentum(b);
 			new MortalEngine(b);
 			new NightShade(b);
 			new Overload(b);
@@ -397,6 +399,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Quickfire(b);
 			new ShadowImbuement(b);
 			new ShadowWalk(b);
+			new ShardBlast(b);
 			new ShatteringShot(b);
 			new ShoulderBash(b);
 			new Sear(b);
@@ -434,6 +437,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Windcall(b);
 			new Windcutter(b);
 			new WindSlash(b);
+			new WindTrap(b);
 			new Wound(b);
 			new Zone(b);
 			new Zone2(b);
@@ -480,7 +484,10 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new SpikedPauldrons(b);
 			
 			// Offhands
+			new BlinkRune(b);
 			new ChasingDagger(b);
+			new CopperFunnel(b);
+			new GuardingRune(b);
 			new HastyShield(b);
 			new InsanityPowder(b);
 			new LeadingKnife(b);
@@ -491,6 +498,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new RubyArmament(b);
 			new SmallShield(b);
 			new SpikyShield(b);
+			new TomeOfWeakness(b);
+			new WardingRune(b);
 			new WristBlade(b);
 			
 			// Weapons
@@ -608,6 +617,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new OmniGem();
 		new OpalHourglass();
 		new StaticNecklace();
+		new StormSigil();
 		new TomeOfWisdom();
 		new TrickstersSigil();
 		

@@ -8,9 +8,7 @@ import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
-import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
@@ -20,17 +18,15 @@ import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
 
-public class CopperFunnel extends Equipment {
-	private static final String ID = "copperFunnel";
-	private int reps, reduc = 25;
+public class WardingRune extends Equipment {
+	private static final String ID = "wardingRune";
+	private int reduc;
 	
-	public CopperFunnel(boolean isUpgraded) {
-		super(ID, "Copper Funnel", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
-				EquipmentType.OFFHAND, EquipmentProperties.ofUsable(isUpgraded ? 10 : 15, 0, 0, 0));
-				reps = isUpgraded ? 3 : 2;
-				properties.addUpgrades(PropertyType.MANA_COST);
+	public WardingRune(boolean isUpgraded) {
+		super(ID, "Warding Rune", isUpgraded, Rarity.COMMON, EquipmentClass.CLASSLESS,
+				EquipmentType.OFFHAND, EquipmentProperties.none());
+				reduc = isUpgraded ? 15 : 10;
 	}
 	
 	public static Equipment get() {
@@ -39,33 +35,35 @@ public class CopperFunnel extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		int reps = (int) (data.getSessionData().getMaxMana() - 40) / 10;
 		ItemStack icon = item.clone();
-		icon.setAmount(reps);
 		ActionMeta am = new ActionMeta();
+		icon.setAmount(reps);
 		am.setCount(reps);
-		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
-		inst.setAction((pdata, in) -> {
-			ReceivedDamageEvent ev = (ReceivedDamageEvent) in;
-			if (!ev.getMeta().containsType(DamageCategory.MAGICAL)) return TriggerResult.keep();
-			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL), Buff.increase(data, reduc, StatTracker.defenseBuffAlly(this)));
+		Trigger tr = data.getSessionData().getPlayerClass() == EquipmentClass.ARCHER ? Trigger.LEFT_CLICK : Trigger.RIGHT_CLICK;
+		data.addTrigger(id, tr, (pdata, in) -> {
+			Sounds.fire.play(p, p);
+			data.addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL), Buff.increase(data, reduc, StatTracker.defenseBuffAlly(this)), 20);
+			
 			am.addCount(-1);
 			if (am.getCount() <= 0) {
 				Sounds.breaks.play(p, p);
+				p.getInventory().setItemInOffHand(null);
 				return TriggerResult.remove();
 			}
 			else {
 				icon.setAmount(am.getCount());
-				inst.setIcon(icon);
+				p.getInventory().setItemInOffHand(icon);
 				return TriggerResult.keep();
 			}
 		});
-		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, inst);
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.HOPPER,
-				"Passive. The first " + DescUtil.yellow(reps) + " you recieve " + GlossaryTag.MAGICAL.tag(this) + " damage, " +
-				"reduce it by " + DescUtil.white(reduc) + ".");
+		item = createItem(Material.QUARTZ_SLAB,
+				"On right click (left click for <gold>Archer</gold>), reduce " + GlossaryTag.MAGICAL.tag(this) + " damage taken by " +
+				DescUtil.yellow(reduc) + " for <white>1s</white>. " +
+				"Can be used once for every <white>10</white> max mana you have over <white>40</white>.");
 	}
 }
