@@ -25,9 +25,9 @@ public class PriorityAction implements TriggerAction, Comparable<PriorityAction>
 	public TriggerResult trigger(PlayerFightData data, Object inputs) {
 		return action.trigger(data, inputs);
 	}
-	public boolean canTrigger(Player p, PlayerFightData data) {
+	public boolean canTrigger(Player p, PlayerFightData data, Object event) {
 		if (condition == null) return true;
-		return condition.canTrigger(p, data);
+		return condition.canTrigger(p, data, event);
 	}
 	public int getPriority() {
 		return priority;

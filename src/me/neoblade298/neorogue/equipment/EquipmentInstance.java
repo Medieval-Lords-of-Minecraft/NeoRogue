@@ -117,7 +117,7 @@ public class EquipmentInstance extends PriorityAction {
 	}
 	
 	@Override
-	public boolean canTrigger(Player p, PlayerFightData data) {
+	public boolean canTrigger(Player p, PlayerFightData data, Object in) {
 		if (nextUsable >= System.currentTimeMillis()) {
 			sendCooldownMessage(p);
 			return false;
@@ -132,7 +132,7 @@ public class EquipmentInstance extends PriorityAction {
 			return false;
 		}
 		if (condition != null) {
-			return condition.canTrigger(p, data);
+			return condition.canTrigger(p, data, in);
 		}
 		return true;
 	}

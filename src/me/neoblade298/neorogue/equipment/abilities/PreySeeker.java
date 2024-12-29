@@ -6,12 +6,10 @@ import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.DescUtil;
-import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.AmmoEquipmentInstance;
 import me.neoblade298.neorogue.equipment.AmmunitionInstance;
@@ -33,22 +31,22 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
+import me.neoblade298.neorogue.session.fight.Trap;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroupEvent;
 
-public class ArrowRain extends Equipment {
-	private static final String ID = "arrowRain";
-	private static TargetProperties tp = TargetProperties.block(7, true),
-			hitTp = TargetProperties.radius(2, false, TargetType.ENEMY);
-	private static ParticleContainer hit = new ParticleContainer(Particle.EXPLOSION).count(50).spread(1, 0.1).speed(0.1),
-			targeter = new ParticleContainer(Particle.DUST).count(10).offsetY(1).spread(0.3, 0);
-	private int damage, reps;
+public class PreySeeker extends Equipment {
+	private static final String ID = "preySeeker";
+	private static TargetProperties tp = TargetProperties.radius(4, false, TargetType.ENEMY);
+	private static ParticleContainer trap = new ParticleContainer(Particle.CLOUD).count(20).spread(2, 0.2);
+	private int damage, dur = 5;
 	
-	public ArrowRain(boolean isUpgraded) {
-		super(ID, "Arrow Rain", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 5, 12, tp.range));
-				reps = isUpgraded ? 4 : 3;
-				damage = 40;
+	public PreySeeker(boolean isUpgraded) {
+		super(ID, "Prey Seeker", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 10, 3, 0).add(PropertyType.AREA_OF_EFFECT, tp.range));
+		
+		damage = isUpgraded ? 150 : 100;
 	}
 	
 	public static Equipment get() {
@@ -57,63 +55,65 @@ public class ArrowRain extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new AmmoEquipmentInstance(data, this, slot, es, (pd, in) -> {
-			Sounds.equip.play(p, p);
-			data.charge(20);
-			data.addTask(new BukkitRunnable() {
-				public void run() {
-					initRain(p, data);
-				}
-			}.runTaskLater(NeoRogue.inst(), 20L));
-			return TriggerResult.keep();
-		}));
+		PreySeekerInstance inst = new PreySeekerInstance(data, this, slot, es);
+		data.addTrigger(id, Trigger.PRE_LAUNCH_PROJECTILE_GROUP, inst);
 	}
 
-	private void initRain(Player p, PlayerFightData data) {
-		data.addTask(new BukkitRunnable() {
-			private int tick = 0;
-			public void run() {
-				if (data.getAmmoInstance() != null) { 
-					Sounds.shoot.play(p, p);
-					ProjectileGroup projs = new ProjectileGroup(new ArrowRainProjectile(p, p.getLocation(), data));
-					Location block = TargetHelper.getSightLocation(p, tp);
-					targeter.play(p, block);
-					if (block != null) {
-						dropRain(p, block, data, projs);
+	private class PreySeekerInstance extends AmmoEquipmentInstance {
+		public PreySeekerInstance(PlayerFightData data, Equipment equip, int slot, EquipSlot es) {
+			super(data, equip, slot, es);
+			action = (pdata, in) -> {
+				Sounds.equip.play(p, p);
+				initTrap(p, data);
+				return TriggerResult.of(false, true);
+			};
+		}
+
+		@Override
+		public boolean canTrigger(Player p, PlayerFightData data, Object in) {
+			LaunchProjectileGroupEvent ev = (LaunchProjectileGroupEvent) in;
+			if (!ev.isBasicAttack()) return false;
+			if (p.getEyeLocation().getDirection().getY() < 0.9) return false; // Looking straight up
+			return super.canTrigger(p, data, in);
+		}
+
+		private void initTrap(Player p, PlayerFightData data) {
+			Location loc = p.getLocation();
+			AmmunitionInstance ammo = data.getAmmoInstance();
+			data.addTrap(new Trap(data, loc, dur * 20) {
+				@Override
+				public void tick() {
+					trap.play(p, loc);
+					LivingEntity trg = TargetHelper.getNearest(p, loc, tp);
+					if (trg != null) {
+						ProjectileGroup projs = new ProjectileGroup(new PreySeekerProjectile(p, loc, data, ammo));
+						Location up = loc.clone().add(0, 4, 0);
+						projs.start(data, up, new Vector(0, -1, 0));
+						data.removeTrap(this);
 					}
 				}
-				if (++tick >= reps) {
-					this.cancel();
-				}
-			}
-		}.runTaskTimer(NeoRogue.inst(), 0L, 5L));
-	}
-
-	private void dropRain(Player p, Location block, PlayerFightData data, ProjectileGroup projs) {
-		data.addTask(new BukkitRunnable() {
-			public void run() {
-				Location loc = block.clone().add(0, 4, 0);
-				projs.start(data, loc, new Vector(0, -1, 0));
-			}
-		}.runTaskLater(NeoRogue.inst(), 20L));
+			});
+		}
 	}
 	
-	private class ArrowRainProjectile extends Projectile {
+	private class PreySeekerProjectile extends Projectile {
+		private static ParticleContainer hit = new ParticleContainer(Particle.EXPLOSION).count(50).spread(1, 0.1).speed(0.1);
 		private Player p;
 		private PlayerFightData data;
 		private AmmunitionInstance ammo;
+		private Location src;
 
-		public ArrowRainProjectile(Player p, Location trg, PlayerFightData data) {
+		public PreySeekerProjectile(Player p, Location src, PlayerFightData data, AmmunitionInstance ammo) {
 			super(0.5, 6, 1);
 			this.p = p;
 			this.data = data;
-			this.ammo = data.getAmmoInstance();
-			ammo.use();
+			this.ammo = ammo;
+			this.src = src;
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			proj.setOrigin(p.getLocation());
+			proj.setOrigin(src);
 			DamageMeta dm = proj.getMeta();
 			EquipmentProperties ammoProps = ammo.getProperties();
 			double dmg = damage + ammoProps.get(PropertyType.DAMAGE);
@@ -125,7 +125,7 @@ public class ArrowRain extends Equipment {
 		public void onHitBlock(ProjectileInstance proj, Block b) {
 			Location block = b.getLocation().add(0, 1, 0);
 			hitAnimation(block);
-			LivingEntity trg = TargetHelper.getNearest(p, block, hitTp);
+			LivingEntity trg = TargetHelper.getNearest(p, block, tp);
 			if (trg == null) return;
 			DamageMeta dm = proj.getMeta();
 			ammo.onHit(proj, dm, trg);
@@ -152,8 +152,10 @@ public class ArrowRain extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.FLINT,
-				"On cast, " + GlossaryTag.CHARGE.tag(this) + " for <white>1s</white>. Afterwards, shoot " + DescUtil.yellow(reps) + " of your equipped arrow at the blocks you're "
-				+ "looking at. They land after <white>1s</white> and deal " + GlossaryTag.PIERCING.tag(this, damage, false) + " damage.");
+		item = createItem(Material.REDSTONE_TORCH,
+				"Passive. Upon firing a basic attack straight up, cancel the basic attack and drop a " + GlossaryTag.TRAP.tag(this) + 
+				" that lasts for " + DescUtil.duration(dur, false) +
+				". If an enemy steps on the trap, they take " + DescUtil.yellow(damage) +
+				" damage using the current ammunition and deactivate the trap.");
 	}
 }

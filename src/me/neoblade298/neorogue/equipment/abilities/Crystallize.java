@@ -63,7 +63,7 @@ public class Crystallize extends Equipment {
 				FightInstance.applyStatus(le, StatusType.FROST, data, frost, -1);
 			}
 			return TriggerResult.keep();
-		}), (p2, data2) -> {
+		}), (p2, data2, in) -> {
 			LivingEntity trg = TargetHelper.getNearest(p, tp);
 			if (trg == null) return false;
 			return trg.getHealth() <= thres;

@@ -81,8 +81,8 @@ public class InducePanic extends Equipment {
 		}
 
 		@Override
-		public boolean canTrigger(Player p, PlayerFightData data) {
-			if (!super.canTrigger(p, data)) return false;
+		public boolean canTrigger(Player p, PlayerFightData data, Object in) {
+			if (!super.canTrigger(p, data, in)) return false;
 			mark = TargetHelper.getNearestInSight(p, tp);
 			return mark != null;
 		}

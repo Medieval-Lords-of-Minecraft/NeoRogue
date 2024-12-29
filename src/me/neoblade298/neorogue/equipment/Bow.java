@@ -15,7 +15,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerCondition;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
 public abstract class Bow extends Equipment {
-	public static TriggerCondition needsAmmo = (p, data) -> {
+	public static TriggerCondition needsAmmo = (p, data, in) -> {
 		if (data.getAmmoInstance() == null) {
 			Util.displayError(data.getPlayer(), "You don't have any ammunition equipped!");
 			return false;

@@ -58,7 +58,7 @@ public class StoneSpear extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		StoneSpearInstance inst = new StoneSpearInstance(data, this, slot, es);
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, in) -> {
-			if (!inst.canTrigger(p, data))
+			if (!inst.canTrigger(p, data, in))
 				return TriggerResult.keep();
 			LeftClickHitEvent ev = (LeftClickHitEvent) in;
 			weaponSwing(p, data);
@@ -68,7 +68,7 @@ public class StoneSpear extends Equipment {
 		});
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_NO_HIT, (pdata, in) -> {
 			if (!data.canBasicAttack()) return TriggerResult.keep();
-			if (!inst.canTrigger(p, data))
+			if (!inst.canTrigger(p, data, in))
 				return TriggerResult.keep();
 			LinkedList<LivingEntity> targets = TargetHelper.getEntitiesInSight(p, spearHit);
 			if (targets.isEmpty())
@@ -96,7 +96,7 @@ public class StoneSpear extends Equipment {
 		}
 		
 		@Override
-		public boolean canTrigger(Player p, PlayerFightData data) {
+		public boolean canTrigger(Player p, PlayerFightData data, Object in) {
 			if (nextUsable >= System.currentTimeMillis()) {
 				sendCooldownMessage(p);
 				return false;

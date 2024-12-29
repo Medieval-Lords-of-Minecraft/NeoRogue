@@ -16,8 +16,8 @@ public class AmmoEquipmentInstance extends EquipmentInstance {
 	}
 
 	@Override
-	public boolean canTrigger(Player p, PlayerFightData data) {
-		if (!super.canTrigger(p, data)) return false;
+	public boolean canTrigger(Player p, PlayerFightData data, Object in) {
+		if (!super.canTrigger(p, data, in)) return false;
 		if (data.getAmmoInstance() == null) return false;
 		return true;
 	}

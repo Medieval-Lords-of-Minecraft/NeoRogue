@@ -80,7 +80,7 @@ public class Backstep2 extends Equipment {
 			projs.start(data);
 			return TriggerResult.keep();
 		});
-		inst.setCondition((pl, pdata) -> {
+		inst.setCondition((pl, pdata, in) -> {
 			return inst.getCount() > 0;
 		});
 		data.addTrigger(id, bind, inst);

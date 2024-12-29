@@ -18,8 +18,8 @@ import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerCondition;
@@ -28,7 +28,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class Gambit extends Equipment {
 	private static final String ID = "gambit";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST).count(50).spread(1, 1).offsetY(1);
-	private static final TriggerCondition cond = (p, pdata) -> {
+	private static final TriggerCondition cond = (p, pdata, in) -> {
 		if (!pdata.hasStatus(StatusType.FOCUS)) {
 			Util.msg(p, "You need Focus to use this ability!");
 			return false;

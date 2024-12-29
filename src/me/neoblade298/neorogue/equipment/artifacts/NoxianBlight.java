@@ -35,7 +35,7 @@ public class NoxianBlight extends Artifact {
 	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
 		data.addTrigger(id, Trigger.CAST_USABLE, (pdata, in) -> {
 			CastUsableEvent ev = (CastUsableEvent) in;
-			if (!ev.getInstance().canTrigger(data.getPlayer(), data)) return TriggerResult.keep();
+			if (!ev.getInstance().canTrigger(data.getPlayer(), data, in)) return TriggerResult.keep();
 			boolean activated = false;
 			if (ev.getInstance().getManaCost() >= 25) {
 				activated = true;

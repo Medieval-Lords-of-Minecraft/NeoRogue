@@ -24,8 +24,8 @@ import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -97,8 +97,8 @@ public class ConfidenceKill extends Equipment {
 		}
 
 		@Override
-		public boolean canTrigger(Player p, PlayerFightData data) {
-			if (!super.canTrigger(p, data)) return false;
+		public boolean canTrigger(Player p, PlayerFightData data, Object in) {
+			if (!super.canTrigger(p, data, in)) return false;
 			mark = TargetHelper.getNearestInSight(p, tp);
 			return mark != null;
 		}
