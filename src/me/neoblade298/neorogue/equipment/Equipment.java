@@ -274,6 +274,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new BlessedEdge(b);
 			new Blind(b);
 			new Bloodlust(b);
+			new BodyDouble(b);
 			new BowTrap(b);
 			new Brace(b);
 			new Brace2(b);
@@ -430,6 +431,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new WarningShot(b);
 			new WeaponEnchantmentElectrified(b);
 			new WeaponEnchantmentHoly(b);
+			new Windcall(b);
 			new Windcutter(b);
 			new WindSlash(b);
 			new Wound(b);
