@@ -154,11 +154,13 @@ import me.neoblade298.neorogue.equipment.weapons.ElectromagneticKnife;
 import me.neoblade298.neorogue.equipment.weapons.EnergizedRazor;
 import me.neoblade298.neorogue.equipment.weapons.EtherealKnife;
 import me.neoblade298.neorogue.equipment.weapons.EvasiveKnife;
+import me.neoblade298.neorogue.equipment.weapons.ExplosiveArrow;
 import me.neoblade298.neorogue.equipment.weapons.FencingSword;
 import me.neoblade298.neorogue.equipment.weapons.FireStaff;
 import me.neoblade298.neorogue.equipment.weapons.Flametongue;
 import me.neoblade298.neorogue.equipment.weapons.ForcefulLeatherGauntlets;
 import me.neoblade298.neorogue.equipment.weapons.Fracturer;
+import me.neoblade298.neorogue.equipment.weapons.FrostbiteBow;
 import me.neoblade298.neorogue.equipment.weapons.GlassArrow;
 import me.neoblade298.neorogue.equipment.weapons.Harpoon;
 import me.neoblade298.neorogue.equipment.weapons.HiddenRazor;
@@ -524,11 +526,13 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new ElectromagneticKnife(b);
 			new EnergizedRazor(b);
 			new EvasiveKnife(b);
+			new ExplosiveArrow(b);
 			new FencingSword(b);
 			new FireStaff(b);
 			new Flametongue(b);
 			new ForcefulLeatherGauntlets(b);
 			new Fracturer(b);
+			new FrostbiteBow(b);
 			new GlassArrow(b);
 			new Harpoon(b);
 			new HiddenRazor(b);
@@ -1360,7 +1364,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		}
 	}
 	
-	public static class DropTableSet<E> {
+	public static class DropTableSet<E extends Equipment> {
 		protected HashMap<EquipmentClass, HashMap<Integer, DropTable<E>>> droptables = new HashMap<EquipmentClass, HashMap<Integer, DropTable<E>>>();
 		
 		public DropTableSet() {
@@ -1440,12 +1444,18 @@ public abstract class Equipment implements Comparable<Equipment> {
 		}
 		
 		public ArrayList<E> getMultiple(int value, int numDrops, EquipmentClass... ec) {
-			ArrayList<E> list = new ArrayList<E>();
+			return getMultiple(value, numDrops, true, ec);
+		}
+
+		public ArrayList<E> getMultiple(int value, int numDrops, boolean unique, EquipmentClass... ec) {
+			ArrayList<E> list = new ArrayList<E>(numDrops);
 			DropTable<E> table;
-			for (int i = 0; i < numDrops; i++) {
+			int tries = 0;
+			while (list.size() < numDrops || tries > 100) {
 				if (ec.length > 1) {
 					DropTable<DropTable<E>> tables = new DropTable<DropTable<E>>();
 					for (int j = 0; j < ec.length; j++) {
+						if (!droptables.containsKey(ec[j]) || !droptables.get(ec[j]).containsKey(value)) continue;
 						DropTable<E> temp = droptables.get(ec[j]).get(value);
 						tables.add(temp, temp.getTotalWeight());
 					}
@@ -1454,6 +1464,19 @@ public abstract class Equipment implements Comparable<Equipment> {
 					table = droptables.get(ec[0]).get(value);
 				}
 				
+				Equipment drop = table.get();
+				if (unique) {
+					boolean isUnique = true;
+					for (Equipment eq : list) {
+						if (eq.isSimilar(drop)) {
+							isUnique = false;
+						}
+					}
+					
+					if (!isUnique) {
+						continue;
+					}
+				}
 				list.add(table.get());
 			}
 			return list;

@@ -19,8 +19,6 @@ import eu.decentsoftware.holograms.api.holograms.Hologram;
 import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.SpectateSelectInventory;
 
@@ -29,7 +27,7 @@ public class ShopInstance extends EditInventoryInstance {
 			HOLO_X = 0, HOLO_Y = 1, HOLO_Z = 4;
 	static final int NUM_ITEMS = 10;
 	
-	private HashMap<UUID, ArrayList<ShopItem>> shops = new HashMap<UUID, ArrayList<ShopItem>>();
+	private HashMap<UUID, ShopContents> shops = new HashMap<UUID, ShopContents>();
 	private HashSet<UUID> ready = new HashSet<UUID>();
 	private Hologram holo;
 	
@@ -40,7 +38,7 @@ public class ShopInstance extends EditInventoryInstance {
 	public ShopInstance(Session s, HashMap<UUID, PlayerSessionData> party) {
 		this(s);
 		for (Entry<UUID, PlayerSessionData> ent : party.entrySet()) {
-			shops.put(ent.getKey(), ShopItem.deserializeShopItems(ent.getValue().getInstanceData()));
+			shops.put(ent.getKey(), ShopContents.deserializeShopItems(ent.getValue().getInstanceData()));
 		}
 	}
 
@@ -48,26 +46,8 @@ public class ShopInstance extends EditInventoryInstance {
 	public void start() {
 		for (PlayerSessionData data : s.getParty().values()) {
 			Player p = data.getPlayer();
-			EquipmentClass ec = data.getPlayerClass();
 			teleportRandomly(p);
-			
-			// Create shop contents
-			ArrayList<Equipment> equips = new ArrayList<Equipment>();
-			equips.addAll(Equipment.getDrop(s.getAreasCompleted() + 0, NUM_ITEMS / 2, ec, EquipmentClass.SHOP));
-			equips.addAll(Equipment.getDrop(s.getAreasCompleted() + 1, NUM_ITEMS / 2, ec, EquipmentClass.SHOP));
-			
-			// Generate 2 random unique sale slots
-			HashSet<Integer> saleSlots = new HashSet<Integer>(2);
-			while (saleSlots.size() < 2) {
-				saleSlots.add(NeoRogue.gen.nextInt(equips.size()));
-			}
-
-			// Turn equipment into shop items
-			ArrayList<ShopItem> shopItems = new ArrayList<ShopItem>();
-			for (int i = 0; i < equips.size(); i++) {
-				shopItems.add(new ShopItem(equips.get(i), ShopInventory.SLOT_ORDER[i], i >= NUM_ITEMS / 2, saleSlots.contains(i)));
-			}
-			shops.put(p.getUniqueId(), shopItems);
+			shops.put(p.getUniqueId(), new ShopContents(s, data));
 		}
 		for (UUID uuid : s.getSpectators().keySet()) {
 			Player p = Bukkit.getPlayer(uuid);
@@ -115,11 +95,7 @@ public class ShopInstance extends EditInventoryInstance {
 				Util.displayError(p, "You've already been marked as ready! Press the button again to un-ready!");
 				return;
 			}
-			
-			if (shops.get(uuid).isEmpty()) {
-				Util.displayError(p, "You don't have any shop items remaining!");
-				return;
-			}
+
 			p.playSound(p, Sound.BLOCK_ENDER_CHEST_OPEN, 1F, 1F);
 			new ShopInventory(s.getParty().get(uuid), shops.get(uuid));
 		}
@@ -167,9 +143,10 @@ public class ShopInstance extends EditInventoryInstance {
 
 	@Override
 	public String serialize(HashMap<UUID, PlayerSessionData> party) {
-		for (Entry<UUID, ArrayList<ShopItem>> ent : shops.entrySet()) {
+		for (Entry<UUID, ShopContents> ent : shops.entrySet()) {
 			PlayerSessionData data = party.get(ent.getKey());
-			data.setInstanceData(ShopItem.serializeShopItems(ent.getValue()));
+			String ser = ent.getValue().serialize();
+			data.setInstanceData(ser);
 		}
 		return "SHOP:";
 	}

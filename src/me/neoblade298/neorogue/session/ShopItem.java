@@ -1,15 +1,14 @@
 package me.neoblade298.neorogue.session;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.shared.util.SharedUtil;
-import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import net.kyori.adventure.text.Component;
@@ -24,35 +23,34 @@ public class ShopItem {
 	private static final ItemStack PURCHASED = CoreInventory
 			.createButton(Material.BARRIER, (TextComponent) SharedUtil.color("<red>Purchased!</red>"));
 	
-	private int price, slot;
+	private int price;
 	private boolean sale;
 	private boolean isPurchased;
 	private Equipment eq;
 
-	public ShopItem(Equipment eq, int slot, boolean expensive, boolean sale) {
+	public ShopItem(Equipment eq, int price, boolean sale) {
 		this.eq = eq;
 		this.sale = sale;
-		this.slot = slot;
-		price = expensive ? NeoRogue.gen.nextInt(150, 200) : NeoRogue.gen.nextInt(100, 150);
-		if (sale)
-			price = (int) (price * NeoRogue.gen.nextDouble(0.4, 0.8));
-	}
-	
-	// For deserialization
-	public ShopItem(Equipment eq, int price, int slot, boolean sale, boolean purchased) {
-		this.eq = eq;
-		this.sale = sale;
-		this.slot = slot;
 		this.price = price;
 	}
 	
-	public ItemStack getItem(PlayerSessionData data) {
+	// For deserialization
+	public ShopItem(Equipment eq, int price, boolean sale, boolean purchased) {
+		this.eq = eq;
+		this.sale = sale;
+		this.price = price;
+		this.isPurchased = purchased;
+	}
+	
+	public ItemStack getItem(PlayerSessionData data, int idx) {
 		if (isPurchased) {
 			return PURCHASED;
 		}
 		ItemStack item = eq.getItem();
-		updateLore(data, item, true);
-		return item;
+		update(data, item, true);
+		NBTItem nbti = new NBTItem(item);
+		nbti.setInteger("idx", idx);
+		return nbti.getItem();
 	}
 	
 	public Equipment getEquipment() {
@@ -63,10 +61,6 @@ public class ShopItem {
 		return price;
 	}
 	
-	public int getSlot() {
-		return slot;
-	}
-	
 	public boolean isOnSale() {
 		return sale;
 	}
@@ -75,7 +69,7 @@ public class ShopItem {
 		this.isPurchased = isPurchased;
 	}
 	
-	public void updateLore(PlayerSessionData data, ItemStack item, boolean firstLoad) {
+	public void update(PlayerSessionData data, ItemStack item, boolean firstLoad) {
 		if (item == null)
 			return;
 		if (item.getType() == Material.BARRIER)
@@ -100,7 +94,7 @@ public class ShopItem {
 	public String serialize() {
 		if (isPurchased)
 			return "purchased";
-		return eq.serialize() + ":" + price + ":" + slot + ":" + (sale ? 1 : 0) + ":" + (isPurchased ? 1 : 0);
+		return eq.serialize() + ":" + price + ":" + (sale ? 1 : 0) + ":" + (isPurchased ? 1 : 0);
 	}
 	
 	public boolean isPurchased() {
@@ -111,32 +105,8 @@ public class ShopItem {
 		String[] split = str.split(":");
 		Equipment eq = Equipment.deserialize(split[0]);
 		int price = Integer.parseInt(split[1]);
-		int slot = Integer.parseInt(split[2]);
 		boolean sale = split[3].equals("1");
 		boolean isPurchased = split[4].equals("1");
-		return new ShopItem(eq, price, slot, sale, isPurchased);
-	}
-	
-	public static String serializeShopItems(ArrayList<ShopItem> items) {
-		String serialized = "";
-		boolean first = true;
-		for (ShopItem item : items) {
-			if (first) {
-				first = false;
-				serialized += item.serialize();
-				continue;
-			}
-			serialized += "," + item.serialize();
-		}
-		return serialized;
-	}
-	
-	public static ArrayList<ShopItem> deserializeShopItems(String str) {
-		String[] split = str.split(",");
-		ArrayList<ShopItem> arr = new ArrayList<ShopItem>(split.length);
-		for (int i = 0; i < split.length; i++) {
-			arr.add(deserialize(split[i]));
-		}
-		return arr;
+		return new ShopItem(eq, price, sale, isPurchased);
 	}
 }
