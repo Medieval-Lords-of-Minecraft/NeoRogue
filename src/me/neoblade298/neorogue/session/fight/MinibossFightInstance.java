@@ -11,6 +11,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.AreaType;
+import me.neoblade298.neorogue.equipment.Consumable;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.map.Map;
@@ -87,6 +88,7 @@ public class MinibossFightInstance extends FightInstance {
 			EquipmentClass ec = data.getPlayerClass();
 			int value = s.getAreasCompleted() + 2;
 			equipDrops.addAll(Equipment.getDrop(value, 3, ec, EquipmentClass.CLASSLESS));
+			s.rollUpgrades(equipDrops);
 			list.add(new EquipmentChoiceReward(equipDrops));
 			
 			equipDrops = new ArrayList<Equipment>(3);
@@ -98,7 +100,10 @@ public class MinibossFightInstance extends FightInstance {
 			equipDrops.add(Equipment.get("emeraldCluster", false));
 			equipDrops.add(Equipment.get("sapphireCluster", false));
 			list.add(new EquipmentChoiceReward(equipDrops));
-			if (dropPotion) list.add(new EquipmentReward(Equipment.getConsumable(value, ec, EquipmentClass.CLASSLESS)));
+			if (dropPotion) {
+				Consumable cons = Equipment.getConsumable(value, ec, EquipmentClass.CLASSLESS);
+				list.add(new EquipmentReward(s.rollUpgrade(cons)));
+			}
 			rewards.put(uuid, list);
 		}
 		return rewards;

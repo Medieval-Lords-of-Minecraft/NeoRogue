@@ -678,11 +678,10 @@ public abstract class Equipment implements Comparable<Equipment> {
 		}
 
 		for (Equipment eq : equipment.values()) {
-			eq.setupDroptable();
+			eq.setupDroptable(); // Only add unupgraded equipment to droptable
 			eq.postSetup();
 			Equipment up = eq.getUpgraded();
 			if (up != null) {
-				up.setupDroptable();
 				up.postSetup();
 			}
 		}
@@ -807,7 +806,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 	}
 	
 	private void setupDroptable() {
-		int value = rarity.getValue() + (isUpgraded ? 1 : 0);
+		int value = rarity.getValue();
 		if (!canDrop)
 			return;
 		if (!reforgeParents.isEmpty() && !overrideReforgeDrop)

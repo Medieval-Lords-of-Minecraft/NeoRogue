@@ -19,8 +19,8 @@ import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.MinibossFightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 
 public class VultureChance extends ChanceSet {
 	private ChanceStage fightMiniboss;
@@ -128,7 +128,8 @@ public class VultureChance extends ChanceSet {
 		}),
 		EQUIPMENT("You find some equipment for your troubles!", (s) -> {
 			for (PlayerSessionData data : s.getParty().values()) {
-				data.giveEquipment(Equipment.getDrop(s.getAreasCompleted() + 1, 1, data.getPlayerClass(), EquipmentClass.CLASSLESS).get(0));
+				Equipment eq = Equipment.getDrop(s.getAreasCompleted() + 1, 1, data.getPlayerClass(), EquipmentClass.CLASSLESS).get(0);
+				data.giveEquipment(s.rollUpgrade(eq));
 			}
 		});
 		private String desc;

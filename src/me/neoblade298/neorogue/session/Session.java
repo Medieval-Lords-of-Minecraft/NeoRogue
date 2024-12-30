@@ -73,6 +73,7 @@ public class Session {
 	private boolean busy;
 	private long nextSuggest = 0L;
 	private ArrayList<String> spectatorLines = new ArrayList<String>();
+	private double UPGRADE_CHANCE = 0.7;
 	
 	// Session coordinates
 	public static final int LOBBY_X = 0, LOBBY_Z = 0, LOBBY_WIDTH = 15, AREA_X = 0, AREA_Z = LOBBY_Z + LOBBY_WIDTH,
@@ -415,6 +416,19 @@ public class Session {
 	
 	public void addPotionChance(int amount) {
 		this.potionChance = Math.max(0, Math.min(100, potionChance + amount));
+	}
+
+	public Equipment rollUpgrade(Equipment eq) {
+		return NeoRogue.gen.nextDouble() >= UPGRADE_CHANCE ? eq.getUpgraded() : eq;
+	}
+
+	public ArrayList<Equipment> rollUpgrades(ArrayList<Equipment> drops) {
+		for (int i = 0; i < drops.size(); i++) {
+			if (NeoRogue.gen.nextDouble() >= UPGRADE_CHANCE) {
+				drops.set(i, drops.get(i).getUpgraded());
+			}
+		}
+		return drops;
 	}
 	
 	public void setupSpectatorInventory(Player p) {

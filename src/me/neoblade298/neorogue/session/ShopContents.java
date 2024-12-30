@@ -40,6 +40,7 @@ public class ShopContents {
 		ArrayList<Equipment> equips = new ArrayList<Equipment>();
 		equips.addAll(Equipment.getDrop(s.getAreasCompleted() + 0, ShopInstance.NUM_ITEMS / 2, ec, EquipmentClass.SHOP, EquipmentClass.CLASSLESS));
 		equips.addAll(Equipment.getDrop(s.getAreasCompleted() + 1, ShopInstance.NUM_ITEMS / 2, ec, EquipmentClass.SHOP, EquipmentClass.CLASSLESS));
+		s.rollUpgrades(equips);
 		
 		// Generate 2 random unique sale slots
 		HashSet<Integer> saleSlots = new HashSet<Integer>(2);
@@ -71,7 +72,7 @@ public class ShopContents {
 		int idx = 10;
 		for (Consumable cons : Equipment.getConsumable(s.getAreasCompleted(), 3, ec, EquipmentClass.SHOP, EquipmentClass.CLASSLESS)) {
 			int price = NeoRogue.gen.nextInt(30, 60);
-			shopItems.put(idx++, new ShopItem(cons, price, false));
+			shopItems.put(idx++, new ShopItem(NeoRogue.gen.nextDouble() >= 0.7 ? cons.getUpgraded() : cons, price, false));
 		}
 	}
 

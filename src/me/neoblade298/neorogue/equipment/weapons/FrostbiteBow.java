@@ -1,9 +1,11 @@
 package me.neoblade298.neorogue.equipment.weapons;
 
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 
+import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Bow;
@@ -22,6 +24,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 
 public class FrostbiteBow extends Bow {
 	private static final String ID = "frostbiteBow";
+	private static final ParticleContainer pc = new ParticleContainer(Particle.FIREWORK);
 	private int damage;
 	
 	public FrostbiteBow(boolean isUpgraded) {
@@ -49,7 +52,14 @@ public class FrostbiteBow extends Bow {
 
 			ProjectileLaunchEvent ev = (ProjectileLaunchEvent) in;
 			boolean hasBonus = System.currentTimeMillis() - am.getTime() < 5000;
-			ProjectileGroup proj = new ProjectileGroup(new BowProjectile(data, ev.getEntity().getVelocity(), this).setDamageBonus(hasBonus ? damage : 0));
+			BowProjectile bproj = new BowProjectile(data, ev.getEntity().getVelocity(), this);
+			bproj.setDamageBonus(hasBonus ? damage : 0);
+			if (hasBonus) {
+				bproj.addProjectileTickAction((p2, inst, interpolation) -> {
+					pc.play(p, inst.getLocation());
+				});
+			}
+			ProjectileGroup proj = new ProjectileGroup(bproj);
 			proj.start(data);
 			return TriggerResult.keep();
 		});

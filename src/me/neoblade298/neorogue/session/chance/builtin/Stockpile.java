@@ -29,7 +29,8 @@ public class Stockpile extends ChanceSet {
 					s.broadcast("You tell the thief that your party will leave without telling a soul if they give you something for your"
 							+ " troubles. The thief thinks briefly before agreeing, and you leave.");
 					for (PlayerSessionData data : s.getParty().values()) {
-						data.giveEquipment(Equipment.getDrop(s.getAreasCompleted() + 1, 1, data.getPlayerClass(), EquipmentClass.CLASSLESS).get(0));
+						Equipment eq = Equipment.getDrop(s.getAreasCompleted() + 1, 1, data.getPlayerClass(), EquipmentClass.CLASSLESS).get(0);
+						data.giveEquipment(s.rollUpgrade(eq));
 					}
 					return null;
 				});
@@ -48,7 +49,9 @@ public class Stockpile extends ChanceSet {
 					for (PlayerSessionData pd : s.getParty().values()) {
 						pd.damagePercent(0.25);
 						ArrayList<Reward> rewards = new ArrayList<Reward>();
-						rewards.add(new EquipmentChoiceReward(Equipment.getDrop(s.getAreasCompleted() + 2, 3, pd.getPlayerClass(), EquipmentClass.CLASSLESS)));
+						ArrayList<Equipment> equips = Equipment.getDrop(s.getAreasCompleted() + 2, 3, pd.getPlayerClass(), EquipmentClass.CLASSLESS);
+						s.rollUpgrades(equips);
+						rewards.add(new EquipmentChoiceReward(equips));
 						generated.put(pd.getUniqueId(), rewards);
 					}
 					inst.setNextInstance(new RewardInstance(s, generated));

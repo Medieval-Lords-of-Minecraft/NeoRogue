@@ -11,6 +11,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.AreaType;
+import me.neoblade298.neorogue.equipment.Consumable;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.map.Map;
@@ -98,6 +99,7 @@ public class BossFightInstance extends FightInstance {
 			
 			equipDrops = new ArrayList<Equipment>(3);
 			equipDrops.addAll(Equipment.getArtifact(data.getArtifactDroptable(), value, 4, ec, EquipmentClass.CLASSLESS));
+			s.rollUpgrades(equipDrops);
 			list.add(new EquipmentChoiceReward(equipDrops));
 			
 			equipDrops = new ArrayList<Equipment>(3);
@@ -106,7 +108,10 @@ public class BossFightInstance extends FightInstance {
 			equipDrops.add(Equipment.get("sapphireGem", false));
 			list.add(new EquipmentChoiceReward(equipDrops));
 			list.add(new EquipmentReward(Equipment.get("tomeOfWisdom", false)));
-			if (dropPotion) list.add(new EquipmentReward(Equipment.getConsumable(value, ec, EquipmentClass.CLASSLESS)));
+			if (dropPotion) {
+				Consumable cons = Equipment.getConsumable(value, ec, EquipmentClass.CLASSLESS);
+				list.add(new EquipmentReward(s.rollUpgrade(cons)));
+			}
 			rewards.put(uuid, list);
 		}
 		return rewards;

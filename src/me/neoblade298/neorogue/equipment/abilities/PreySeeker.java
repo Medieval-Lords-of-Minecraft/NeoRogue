@@ -34,7 +34,7 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.Trap;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroupEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreLaunchProjectileGroupEvent;
 
 public class PreySeeker extends Equipment {
 	private static final String ID = "preySeeker";
@@ -71,7 +71,7 @@ public class PreySeeker extends Equipment {
 
 		@Override
 		public boolean canTrigger(Player p, PlayerFightData data, Object in) {
-			LaunchProjectileGroupEvent ev = (LaunchProjectileGroupEvent) in;
+			PreLaunchProjectileGroupEvent ev = (PreLaunchProjectileGroupEvent) in;
 			if (!ev.isBasicAttack()) return false;
 			if (p.getEyeLocation().getDirection().getY() < 0.9) return false; // Looking straight up
 			return super.canTrigger(p, data, in);
