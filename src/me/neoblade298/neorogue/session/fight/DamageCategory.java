@@ -16,6 +16,7 @@ public enum DamageCategory {
 	DARK("Dark", GlossaryTag.DARK),
 	LIGHT("Light", GlossaryTag.LIGHT),
 	POISON("Poison", GlossaryTag.POISON),
+	BURN("Burn", GlossaryTag.BURN),
 	STATUS("Status", null),
 	OTHER("Other", null),
 	ALL("All", null);
