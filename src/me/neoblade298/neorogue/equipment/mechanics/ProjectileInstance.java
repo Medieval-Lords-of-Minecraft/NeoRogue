@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -16,6 +17,7 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
+import me.libraryaddict.disguise.DisguiseAPI;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.AmmunitionInstance;
@@ -35,6 +37,9 @@ import me.neoblade298.neorogue.session.fight.buff.BuffList;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 
 public class ProjectileInstance extends IProjectileInstance {
+	private static final HashMap<EntityType, BoundingBox> entityBounds = new HashMap<EntityType, BoundingBox>();
+
+
 	private FightInstance inst;
 	private FightData owner;
 	private HashSet<UUID> targetsHit = new HashSet<UUID>();
@@ -42,7 +47,7 @@ public class ProjectileInstance extends IProjectileInstance {
 	private Projectile settings;
 	private BukkitTask task;
 	private Location loc;
-	private BoundingBox bounds;
+	private BoundingBox bounds, bigBounds;
 	private int tick, numHit, interpolationPoints;
 	private String tag; // Used for metadata, like with twinShiv
 	private DamageMeta meta;
@@ -53,6 +58,12 @@ public class ProjectileInstance extends IProjectileInstance {
 
 	private ArrayList<HitBlockAction> hitBlockActions = new ArrayList<HitBlockAction>();
 	private ArrayList<HitAction> hitActions = new ArrayList<HitAction>();
+
+	static {
+		// Used for correcting libsdisguises bounding boxes
+		// Center must be at exactly 0,0,0 so that shifting them works easily
+		entityBounds.put(EntityType.SPIDER, new BoundingBox(-1.4, -1.4, -0.45, 1.4, 0.45, 1.4));
+	}
 	
 	protected ProjectileInstance(Projectile settings, FightData owner) {
 		this(settings, owner, owner.getEntity().getLocation().add(0, 1.5, 0), owner.getEntity().getLocation().getDirection());
@@ -82,6 +93,9 @@ public class ProjectileInstance extends IProjectileInstance {
 		distancePerPoint = v.length();
 		loc = origin.clone().add(v.clone().multiply(0.5)); // Start slightly offset forward to avoid hitting behind
 		bounds = BoundingBox.of(loc, settings.getWidth(), settings.getHeight(), settings.getWidth());
+		// Loose bounds, this is because current bounds don't check for libsdisguises so we need a bigger bounds that is more lenient
+		// Ex: Baby zombie disguised as spider, bounds won't hit the spider's legs, but bigBounds will
+		bigBounds = BoundingBox.of(loc, settings.getWidth() + 1, settings.getHeight() + 1, settings.getWidth() + 1); 
 
 		if (settings.getHoming() != 0) 
 			homingTarget = TargetHelper.getNearest(owner.getEntity(), loc, TargetProperties.radius(settings.getMaxRange() + 5, false, TargetType.ENEMY));
@@ -151,9 +165,26 @@ public class ProjectileInstance extends IProjectileInstance {
 			
 			// Check for collision with mobs
 			if (!settings.isIgnoreEntities()) {
-				for (Entity ent : loc.getWorld().getNearbyEntities(bounds)) {
+				for (Entity ent : loc.getWorld().getNearbyEntities(bigBounds)) {
 					if (ent instanceof Player || ent.getType() == EntityType.ARMOR_STAND) continue;
 					if (!(ent instanceof LivingEntity)) continue;
+
+					// Check actual bounding box for disguised entity if applicable
+					if (DisguiseAPI.isDisguised(ent)) {
+						EntityType type = DisguiseAPI.getDisguise(ent).getType().getEntityType();
+						BoundingBox disgBox = ent.getBoundingBox();
+						if (!entityBounds.containsKey(type)) {
+							Bukkit.getLogger().warning("NeoRogue doesn't have an appropriate bounding box for " + type);
+						}
+						else {
+							disgBox = entityBounds.get(type).clone();
+							disgBox.shift(ent.getBoundingBox().getCenter());
+						}
+						if (!disgBox.contains(bounds)) continue;
+					}
+					else {
+						if (!ent.getBoundingBox().contains(bounds)) continue;
+					}
 					
 					
 					UUID uuid = ent.getUniqueId();
@@ -197,6 +228,7 @@ public class ProjectileInstance extends IProjectileInstance {
 			settings.onTick(this, i);
 			loc.add(v);
 			bounds.shift(v);
+			bigBounds.shift(v);
 			distance += distancePerPoint;
 			if (distance >= settings.getMaxRange() + maxRangeMod) {
 				settings.onFizzle(this);
