@@ -61,7 +61,7 @@ public class ShardBlast extends Equipment {
 		ei.setAction((pd, in) -> {
 			if (am.getTrap() != null && am.getTrap().isActive()) {
 				Trap t = am.getTrap();
-				Sounds.ice.play(p, t.getLocation());
+				Sounds.glass.play(p, t.getLocation());
 				for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, t.getLocation(), tp)) {
 					hit.play(p, ent);
 					FightData fd = FightInstance.getFightData(ent);

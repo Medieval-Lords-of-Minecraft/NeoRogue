@@ -69,7 +69,7 @@ public class Chill extends Equipment {
 
 	private void chillHit(Player p, PlayerFightData data, Location loc) {
 		pc.play(p, loc);
-		Sounds.ice.play(p, loc);
+		Sounds.glass.play(p, loc);
 		for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, tp)) {
 			FightInstance.applyStatus(ent, StatusType.FROST, data, frost, -1);
 			ent.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 60, 1));

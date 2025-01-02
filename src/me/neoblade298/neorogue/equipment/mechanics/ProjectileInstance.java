@@ -63,6 +63,7 @@ public class ProjectileInstance extends IProjectileInstance {
 		// Used for correcting libsdisguises bounding boxes
 		// Center must be at exactly 0,0,0 so that shifting them works easily
 		entityBounds.put(EntityType.SPIDER, new BoundingBox(-1.4, -1.4, -0.45, 1.4, 0.45, 1.4));
+		entityBounds.put(EntityType.WOLF, new BoundingBox(-0.3, -0.3, -0.425, 0.3, 0.3, 0.425));
 	}
 	
 	protected ProjectileInstance(Projectile settings, FightData owner) {

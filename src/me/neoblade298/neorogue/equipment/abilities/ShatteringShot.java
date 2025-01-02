@@ -50,7 +50,7 @@ public class ShatteringShot extends Equipment {
 				settings.pierce(2);
 				settings.addProjectileTickAction((p2, proj, interpolation) -> {
 					pc.play(p2, proj.getLocation());
-					Sounds.ice.play(p2, proj.getLocation());
+					Sounds.glass.play(p2, proj.getLocation());
 				});
 				inst.addHitAction((hit, hitBarrier, meta, proj) -> {
 					if (hit.hasStatus(StatusType.FROST)) {

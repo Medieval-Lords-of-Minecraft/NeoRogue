@@ -54,7 +54,7 @@ public class Crystallize extends Equipment {
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pd, in) -> {
 			LivingEntity trg = TargetHelper.getNearest(p, tp);
 			circ.play(p, edges, trg.getLocation(), LocalAxes.xz(), fill);
-			Sounds.ice.play(p, trg.getLocation());
+			Sounds.glass.play(p, trg.getLocation());
 			DamageMeta dm = new DamageMeta(data);
 			dm.addDamageSlice(new DamageSlice(data, thres, DamageType.ICE, true));
 			FightInstance.dealDamage(dm, trg);

@@ -10,6 +10,7 @@ public class ActionMeta {
 	private long time;
 	private boolean bool;
 	private int count;
+	private double db;
 	private LivingEntity ent;
 	private Location loc;
 	private Trap trap;
@@ -20,6 +21,18 @@ public class ActionMeta {
 	
 	public void addCount(int count) {
 		this.count += count;
+	}
+
+	public void addDouble(double db) {
+		this.db += db;
+	}
+
+	public void setDouble(double db) {
+		this.db = db;
+	}
+
+	public double getDouble() {
+		return db;
 	}
 
 	public void setTrap(Trap trap) {

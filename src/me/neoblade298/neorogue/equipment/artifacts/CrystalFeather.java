@@ -36,7 +36,7 @@ public class CrystalFeather extends Artifact {
 		data.addTrigger(id, Trigger.RECEIVED_HEALTH_DAMAGE, (pdata, in) -> {
 			data.applyStatus(StatusType.INVINCIBLE, data, 1, dur * 20);
 			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, dur * 20, 1));
-			Sounds.ice.play(p, p);
+			Sounds.glass.play(p, p);
 			p.sendMessage(display.append(Component.text(" was activated", NamedTextColor.GRAY)));
 			return TriggerResult.remove();
 		});
