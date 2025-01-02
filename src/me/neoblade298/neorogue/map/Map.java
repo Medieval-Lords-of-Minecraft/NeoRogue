@@ -56,6 +56,7 @@ public class Map {
 	private LinkedHashMap<Mob, ArrayList<MobModifier>> customMobs = new LinkedHashMap<Mob, ArrayList<MobModifier>>();
 	private HashSet<String> targets = new HashSet<String>();
 	private boolean[][] shape = new boolean[MAP_SIZE][MAP_SIZE];
+	private int effectiveSize;
 	
 	public Map(AreaType type) {
 		this.type = type;
@@ -345,7 +346,7 @@ public class Map {
 			if (inst.getPiece().getInitialSpawns() != null) {
 				for (MapSpawner spawner : inst.getPiece().getInitialSpawns()) {
 					if (spawner.getMob() == null) {
-						Bukkit.getLogger().warning("[NeoRogue] Failed to load map piece " + inst.getPiece().getId() + ", initial spawner had null mob");
+						Bukkit.getLogger().warning("[NeoRogue] Failed to load map piece " + inst.getPiece().getId() + ", initial spawner had null mob " + spawner.getMobId());
 						continue;
 					}
 					mobs.put(spawner.getMob(), MobModifier.generateModifiers(0));
@@ -354,7 +355,7 @@ public class Map {
 			if (inst.getPiece().hasSpawners()) {
 				for (MapSpawner spawner : inst.getPiece().getSpawners(inst.getSpawnerSet())) {
 					if (spawner.getMob() == null) {
-						Bukkit.getLogger().warning("[NeoRogue] Failed to load map piece " + inst.getPiece().getId() + ", spawner had null mob");
+						Bukkit.getLogger().warning("[NeoRogue] Failed to load map piece " + inst.getPiece().getId() + ", spawner had null mob " + spawner.getMobId());
 						continue;
 					}
 					mobs.put(spawner.getMob(), MobModifier.generateModifiers(0));
@@ -368,7 +369,7 @@ public class Map {
 				spawns.add(coords.clone().applySettings(inst));
 			}
 		}
-
+		if (!inst.getPiece().ignoreSize()) effectiveSize += inst.getPiece().getShape().getChunkCount();
 		pieces.add(inst);
 	}
 	
@@ -399,6 +400,11 @@ public class Map {
 				}
 			}
 		}
+	}
+
+	// Used to calculate rough chunk size of the map
+	public int getEffectiveSize() {
+		return effectiveSize;
 	}
 	
 	public void cleanup() {

@@ -34,6 +34,10 @@ public class MapSpawner {
 		return mythicMob;
 	}
 	
+	public String getMobId() {
+		return id;
+	}
+	
 	public Mob getMob() {
 		return mob;
 	}

@@ -62,8 +62,21 @@ public class ProjectileInstance extends IProjectileInstance {
 	static {
 		// Used for correcting libsdisguises bounding boxes
 		// Center must be at exactly 0,0,0 so that shifting them works easily
-		entityBounds.put(EntityType.SPIDER, new BoundingBox(-1.4, -1.4, -0.45, 1.4, 0.45, 1.4));
-		entityBounds.put(EntityType.WOLF, new BoundingBox(-0.3, -0.3, -0.425, 0.3, 0.3, 0.425));
+		BoundingBox zombie = createBox(0.6, 1.95);
+		entityBounds.put(EntityType.SPIDER, createBox(1.4, 0.9));
+		entityBounds.put(EntityType.WOLF, createBox(0.6, 0.85));
+		entityBounds.put(EntityType.SKELETON, createBox(0.6, 2));
+		entityBounds.put(EntityType.STRAY, createBox(0.6, 2));
+		entityBounds.put(EntityType.WITHER_SKELETON, createBox(0.7, 2.4));
+		entityBounds.put(EntityType.ZOMBIE, zombie);
+		entityBounds.put(EntityType.HUSK, zombie);
+		entityBounds.put(EntityType.DROWNED, zombie);
+	}
+
+	private static BoundingBox createBox(double width, double height) {
+		double w = width / 2;
+		double h = height / 2;
+		return new BoundingBox(-w, -w, -h, w, w, h);
 	}
 	
 	protected ProjectileInstance(Projectile settings, FightData owner) {
@@ -181,10 +194,10 @@ public class ProjectileInstance extends IProjectileInstance {
 							disgBox = entityBounds.get(type).clone();
 							disgBox.shift(ent.getBoundingBox().getCenter());
 						}
-						if (!disgBox.contains(bounds)) continue;
+						if (!disgBox.overlaps(bounds)) continue;
 					}
 					else {
-						if (!ent.getBoundingBox().contains(bounds)) continue;
+						if (!ent.getBoundingBox().overlaps(bounds)) continue;
 					}
 					
 					

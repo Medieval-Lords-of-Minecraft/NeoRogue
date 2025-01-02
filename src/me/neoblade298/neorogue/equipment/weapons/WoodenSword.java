@@ -27,7 +27,7 @@ public class WoodenSword extends Equipment {
 
 	@Override
 	public void setupReforges() {
-		addSelfReforge(EnduranceTraining.get(), StoneSword.get(), StoneSpear.get(), StoneAxe.get());
+		addReforge(EnduranceTraining.get(), StoneSword.get(), StoneSpear.get(), StoneAxe.get());
 	}
 	
 	public static Equipment get() {

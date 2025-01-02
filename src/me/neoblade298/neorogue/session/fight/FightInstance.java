@@ -904,9 +904,7 @@ public abstract class FightInstance extends Instance {
 			@Override
 			public void run() {
 				double rngBonus = NeoRogue.gen.nextDouble(2);
-				double mapPieceBonus = Math.pow(map.getPieces().size() - 2, 3) / 12.0;
-
-				double toActivate = 2.0 + rngBonus + mapPieceBonus;
+				double toActivate = 2.0 + rngBonus + map.getEffectiveSize();
 				
 				activateSpawner(toActivate);
 

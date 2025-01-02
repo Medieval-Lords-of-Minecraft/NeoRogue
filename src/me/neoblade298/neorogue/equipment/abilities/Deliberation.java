@@ -14,8 +14,8 @@ import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -26,8 +26,8 @@ public class Deliberation extends Equipment {
 	private static final ParticleContainer pc = new ParticleContainer(Particle.ENCHANT).count(50).speed(0.1);
 	
 	public Deliberation(boolean isUpgraded) {
-		super(ID, "Deliberation", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 20, 15, 0));
+		super(ID, "Deliberation", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 20, 15, 0));
 		damage = isUpgraded ? 30 : 15;
 	}
 	

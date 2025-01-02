@@ -211,7 +211,7 @@ public class ShopInventory extends CoreInventory {
 				}
 				data.addCoins(SELL_PRICE);
 				inv.setItem(
-						22,
+						SELL_ICON,
 						CoreInventory.createButton(
 								Material.GOLD_NUGGET,
 								Component.text("You have " + data.getCoins() + " coins", NamedTextColor.YELLOW)

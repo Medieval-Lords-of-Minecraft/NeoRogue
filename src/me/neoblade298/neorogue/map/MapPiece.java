@@ -20,9 +20,11 @@ import me.neoblade298.neorogue.NeoRogue;
 public class MapPiece {
 	public static MapPiece HARVESTBORDER;
 	private static HashMap<String, MapPiece> pieces = new HashMap<String, MapPiece>();
+
 	private String id, display;
 	private MapShape shape;
 	private HashSet<String> targets;
+	private boolean ignoreSize;
 	protected Coordinates[] entrances, spawns;
 	protected HashMap<String, Coordinates> mythicLocations = new HashMap<String, Coordinates>();
 	private ArrayList<MapSpawner[]> spawnerSets = new ArrayList<MapSpawner[]>();
@@ -112,7 +114,14 @@ public class MapPiece {
 	}
 	
 	private void setupSpecialPiece() {
-		if (id.equals("HarvestFieldsBorder")) HARVESTBORDER = this;
+		if (id.equals("HarvestFieldsBorder")) {
+			HARVESTBORDER = this;
+			ignoreSize = true;
+		}
+	}
+
+	public boolean ignoreSize() {
+		return ignoreSize;
 	}
 	
 	public void reloadMythicMobs() {

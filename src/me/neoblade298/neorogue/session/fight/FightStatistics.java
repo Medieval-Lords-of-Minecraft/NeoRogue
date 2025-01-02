@@ -210,6 +210,7 @@ public class FightStatistics {
 		Component hover = Component.text("Impact of buffs:", NamedTextColor.GRAY);
 		for (Entry<StatTracker, Double> ent : buffStats.entrySet()) {
 			StatTracker stat = ent.getKey();
+			if (stat == StatTracker.IGNORED) continue;
 			double amt = ent.getValue();
 			hover = hover.appendNewline().append(stat.getDisplay().append(Component.text(": " + df.format(amt), NamedTextColor.WHITE)));
 			score += buffStats.get(stat);
