@@ -14,7 +14,7 @@ import net.kyori.adventure.text.Component;
 
 public class ThiefsCacheChance extends ChanceSet {
 	public ThiefsCacheChance() {
-		super(AreaType.LOW_DISTRICT, Material.GOLD_INGOT, "ThiefsCache", "Thief's Cache", true);
+		super(new AreaType[] { AreaType.LOW_DISTRICT, AreaType.HARVEST_FIELDS }, Material.GOLD_INGOT, "ThiefsCache", "Thief's Cache", true);
 		ChanceStage stage = new ChanceStage(this, INIT_ID, "You come across a thief’s cache that has some gold, equipment, and potions lying around. "
 				+ "Suddenly you hear noise behind you. The thief is coming and you’ll have to act fast.");
 

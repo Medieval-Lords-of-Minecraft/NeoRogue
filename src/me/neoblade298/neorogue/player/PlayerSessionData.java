@@ -312,6 +312,14 @@ public class PlayerSessionData extends MapViewer {
 		}
 	}
 
+	public void removeArtifact(Artifact artifact) {
+		if (artifacts.containsKey(artifact.getId())) {
+			ArtifactInstance inst = artifacts.get(artifact.getId());
+			inst.add(-1);
+			if (inst.getAmount() <= 1) artifacts.remove(artifact.getId());
+		}
+	}
+
 	private void giveArtifact(Artifact artifact) {
 		ArtifactInstance inst;
 		if (artifacts.containsKey(artifact.getId())) {

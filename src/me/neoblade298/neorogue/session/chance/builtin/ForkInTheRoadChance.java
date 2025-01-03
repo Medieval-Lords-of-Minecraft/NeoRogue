@@ -13,15 +13,15 @@ import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.StandardFightInstance;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 
 public class ForkInTheRoadChance extends ChanceSet {
 
 	public ForkInTheRoadChance() {
 		super(AreaType.LOW_DISTRICT, Material.GRAVEL, "ForkInTheRoad", "Fork in the road");
 		ChanceStage stage = new ChanceStage(this, INIT_ID, "There seems to be a new lightly-traveled path that isn't on your map."
-				+ " It could lead to a nice shrine or potentially some enemies.");
+				+ " It could lead to a nice resting area or potentially some enemies.");
 		
 		ChanceStage fight = new ChanceStage(this, "fight", "The path led you straight to enemies. You must fight.");
 		fight.addChoice(new ChanceChoice(Material.RED_WOOL, "Welp"));

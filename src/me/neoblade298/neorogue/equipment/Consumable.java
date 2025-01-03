@@ -10,7 +10,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.UseConsumableEvent;
 
 public abstract class Consumable extends Equipment {
-	private SoundContainer drink = new SoundContainer(Sound.ENTITY_WITCH_DRINK);
+	protected SoundContainer drink = new SoundContainer(Sound.ENTITY_WITCH_DRINK);
 	public Consumable(String id, String display, boolean isUpgraded, Rarity rarity, EquipmentClass ec) {
 		super(id, display, isUpgraded, rarity, ec, EquipmentType.CONSUMABLE, EquipmentProperties.none());
 	}

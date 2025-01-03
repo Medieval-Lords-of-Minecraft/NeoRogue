@@ -9,7 +9,17 @@ import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.session.Session;
-import me.neoblade298.neorogue.session.chance.builtin.*;
+import me.neoblade298.neorogue.session.chance.builtin.AmbushChance;
+import me.neoblade298.neorogue.session.chance.builtin.ForgottenWellChance;
+import me.neoblade298.neorogue.session.chance.builtin.ForkInTheRoadChance;
+import me.neoblade298.neorogue.session.chance.builtin.GreedChance;
+import me.neoblade298.neorogue.session.chance.builtin.LabChance;
+import me.neoblade298.neorogue.session.chance.builtin.LostRelicChance;
+import me.neoblade298.neorogue.session.chance.builtin.ManaPoolChance;
+import me.neoblade298.neorogue.session.chance.builtin.ShiningLightChance;
+import me.neoblade298.neorogue.session.chance.builtin.StockpileChance;
+import me.neoblade298.neorogue.session.chance.builtin.ThiefsCacheChance;
+import me.neoblade298.neorogue.session.chance.builtin.VultureChance;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -41,31 +51,46 @@ public class ChanceSet {
 		}
 		
 		new AmbushChance();
-		new Stockpile();
+		new StockpileChance();
+		new ForgottenWellChance();
 		new ForkInTheRoadChance();
 		new GreedChance();
 		new LabChance();
 		new LostRelicChance();
+		new ManaPoolChance();
 		new ShiningLightChance();
 		new ThiefsCacheChance();
 		new VultureChance();
 	}
 	
 	public ChanceSet(AreaType type, Material mat, String id) {
-		this(type, mat, id, id);
+		this(new AreaType[] { type }, mat, id, id);
+	}
+	
+	public ChanceSet(AreaType[] types, Material mat, String id) {
+		this(types, mat, id, id);
 	}
 	
 	public ChanceSet(AreaType type, Material mat, String id, String display) {
+		this(new AreaType[] { type }, mat, id, display);
+	}
+
+	public ChanceSet(AreaType[] types, Material mat, String id, String display) {
 		this.id = id;
 		this.display = (TextComponent) SharedUtil.color(display).colorIfAbsent(NamedTextColor.RED)
 				.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE);
 		this.mat = mat;
-		sets.get(type).add(this);
+		for (AreaType type : types) {
+			sets.get(type).add(this);
+		}
 		setsById.put(id, this);
 	}
-	public ChanceSet(AreaType type, Material mat, String id, String display, boolean individualChoices) {
-		this(type, mat, id, display);
+	public ChanceSet(AreaType[] types, Material mat, String id, String display, boolean individualChoices) {
+		this(types, mat, id, display);
 		this.individualChoices = individualChoices;
+	}
+	public ChanceSet(AreaType type, Material mat, String id, String display, boolean individualChoices) {
+		this(new AreaType[] { type }, mat, id, display, individualChoices);
 	}
 	
 	public ChanceStage getInitialStage() {

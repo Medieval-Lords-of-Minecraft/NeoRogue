@@ -65,6 +65,7 @@ import me.neoblade298.neorogue.equipment.armor.NullMagicMantle;
 import me.neoblade298.neorogue.equipment.armor.SpikedPauldrons;
 import me.neoblade298.neorogue.equipment.artifacts.AlchemistBag;
 import me.neoblade298.neorogue.equipment.artifacts.AmuletOfOffering;
+import me.neoblade298.neorogue.equipment.artifacts.Anxiety;
 import me.neoblade298.neorogue.equipment.artifacts.AthenianChalice;
 import me.neoblade298.neorogue.equipment.artifacts.AurorBadge;
 import me.neoblade298.neorogue.equipment.artifacts.AvalonianAnchor;
@@ -107,7 +108,9 @@ import me.neoblade298.neorogue.equipment.artifacts.StaticNecklace;
 import me.neoblade298.neorogue.equipment.artifacts.StormSigil;
 import me.neoblade298.neorogue.equipment.artifacts.TomeOfWisdom;
 import me.neoblade298.neorogue.equipment.artifacts.TrickstersSigil;
+import me.neoblade298.neorogue.equipment.consumables.MinorFirePotion;
 import me.neoblade298.neorogue.equipment.consumables.MinorHealthPotion;
+import me.neoblade298.neorogue.equipment.consumables.MinorImbuementPotion;
 import me.neoblade298.neorogue.equipment.consumables.MinorMagicalPotion;
 import me.neoblade298.neorogue.equipment.consumables.MinorManaPotion;
 import me.neoblade298.neorogue.equipment.consumables.MinorPhysicalPotion;
@@ -599,7 +602,9 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Neoblade(b);
 			
 			// Consumables
+			new MinorFirePotion(b);
 			new MinorHealthPotion(b);
+			new MinorImbuementPotion(b);
 			new MinorStaminaPotion(b);
 			new MinorManaPotion(b);
 			new MinorShieldsPotion(b);
@@ -610,6 +615,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		// Artifacts
 		new AlchemistBag();
 		new AmuletOfOffering();
+		new Anxiety();
 		new AthenianChalice();
 		new AurorBadge();
 		new AvalonianAnchor();

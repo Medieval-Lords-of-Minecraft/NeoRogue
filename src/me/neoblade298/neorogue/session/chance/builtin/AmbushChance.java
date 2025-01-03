@@ -19,14 +19,14 @@ import me.neoblade298.neorogue.session.fight.FightScore;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.StandardFightInstance;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.reward.RewardInstance;
 
 public class AmbushChance extends ChanceSet {
 
 	public AmbushChance() {
-		super(AreaType.LOW_DISTRICT, Material.GRAVEL, "Ambush", "Ambush");
+		super(new AreaType[] { AreaType.LOW_DISTRICT, AreaType.HARVEST_FIELDS }, Material.GRAVEL, "Ambush", "Ambush");
 		ChanceStage stage = new ChanceStage(this, INIT_ID, "You catch sight of a group of enemies. Looks like they haven't noticed you yet.");
 
 		stage.addChoice(new ChanceChoice(Material.DIAMOND_SWORD, "Gather yourself",

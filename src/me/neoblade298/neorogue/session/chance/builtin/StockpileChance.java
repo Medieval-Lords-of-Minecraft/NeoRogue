@@ -17,9 +17,9 @@ import me.neoblade298.neorogue.session.reward.EquipmentChoiceReward;
 import me.neoblade298.neorogue.session.reward.Reward;
 import me.neoblade298.neorogue.session.reward.RewardInstance;
 
-public class Stockpile extends ChanceSet {
+public class StockpileChance extends ChanceSet {
 
-	public Stockpile() {
+	public StockpileChance() {
 		super(AreaType.LOW_DISTRICT, Material.GOLD_INGOT, "Stockpile");
 		ChanceStage stage = new ChanceStage(this, INIT_ID, "You stumble across a thief's stockpile of equipment. The thief confronts you and looks skilled, but"
 				+ " makes it clear they're here to defend their stockpile and nothing else.");
