@@ -407,7 +407,11 @@ public class DamageMeta {
 				slice.handleStatistics(slice.getPostBuffType(), sliceDamage);
 			}
 			if (recipient instanceof PlayerFightData) {
-				((PlayerFightData) recipient).getStats().addDamageTaken(slice.getPostBuffType(), sliceDamage);
+				String mob = null; // Can be null, just won't show mob display name
+				if (NeoRogue.mythicApi.isMythicMob(owner.getEntity())) {
+					mob = NeoRogue.mythicApi.getMythicMobInstance(owner.getEntity()).getType().getInternalName();
+				}
+				((PlayerFightData) recipient).getStats().addDamageTaken(mob, slice.getPostBuffType(), sliceDamage);
 			}
 
 			if (!slice.isIgnoreShields()) {

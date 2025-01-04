@@ -15,8 +15,8 @@ public class FightStatistics {
 	private static final DecimalFormat df = new DecimalFormat("#.##");
 	private static final Component separator = Component.text(" / ", NamedTextColor.GRAY).hoverEvent(null);
 	private PlayerFightData data;
-	private HashMap<DamageType, Double> damageDealt = new HashMap<DamageType, Double>(),
-			damageTaken = new HashMap<DamageType, Double>();
+	private HashMap<DamageType, Double> damageDealt = new HashMap<DamageType, Double>();
+	private HashMap<String, HashMap<DamageType, Double>> damageTaken = new HashMap<String, HashMap<DamageType, Double>>();
 	private HashMap<StatusType, Integer> statusesApplied = new HashMap<StatusType, Integer>();
 	private HashMap<StatTracker, Double> buffStats = new HashMap<StatTracker, Double>();
 	private double healingGiven, healingReceived, selfHealing, damageShielded, defenseBuffed;
@@ -46,9 +46,11 @@ public class FightStatistics {
 		damageDealt.put(type, amt + amount);
 	}
 	
-	public void addDamageTaken(DamageType type, double amount) {
-		double amt = damageTaken.getOrDefault(type, 0D);
-		damageTaken.put(type, amt + amount);
+	public void addDamageTaken(String mobId, DamageType type, double amount) {
+		HashMap<DamageType, Double> mobMap = damageTaken.getOrDefault(mobId, new HashMap<DamageType, Double>());
+		double amt = mobMap.getOrDefault(type, 0D);
+		mobMap.put(type, amt + amount);
+		damageTaken.put(mobId, mobMap);
 	}
 	
 	public void addDamageShielded(double amount) {
@@ -93,7 +95,7 @@ public class FightStatistics {
 		return damageDealt;
 	}
 
-	public HashMap<DamageType, Double> getDamageTaken() {
+	public HashMap<String, HashMap<DamageType, Double>> getDamageTaken() {
 		return damageTaken;
 	}
 
@@ -177,13 +179,16 @@ public class FightStatistics {
 		
 		Component hover = Component.text("Damage taken post buff and mitigation:", NamedTextColor.GRAY);
 		double totalDamageTaken = 0;
-		for (Entry<DamageType, Double> ent : damageTaken.entrySet()) {
-			totalDamageTaken += ent.getValue();
-			hover = hover.appendNewline().append(getStatPiece(ent.getKey(), damageTaken));
+		for (Entry<String, HashMap<DamageType, Double>> mobMap : damageTaken.entrySet()) {
+			Mob mob = Mob.get(mobMap.getKey());
+			for (Entry<DamageType, Double> ent : mobMap.getValue().entrySet()) {
+				totalDamageTaken += ent.getValue();
+				hover = hover.appendNewline().append(getDamageTakenStatPiece(mob, ent.getKey(), mobMap.getValue()));
+			}
 		}
 			
 		taken = taken.append(Component.text(df.format(totalDamageTaken - damageShielded) + "♥", NamedTextColor.DARK_RED));
-		if (totalDamageTaken > 0) taken.hoverEvent(hover);
+		if (totalDamageTaken > 0) taken = taken.hoverEvent(hover);
 
 		return taken;
 	}
@@ -268,6 +273,11 @@ public class FightStatistics {
 	}
 	private Component getStatPiece(DamageType type, HashMap<DamageType, Double> map) {
 		return Component.text(type.getDisplay() + ": ",NamedTextColor.YELLOW)
+				.append(Component.text(df.format(map.get(type)), NamedTextColor.WHITE));
+	}
+	private Component getDamageTakenStatPiece(Mob mob, DamageType type, HashMap<DamageType, Double> map) {
+		if (mob == null) return getStatPiece(type, map);
+		return mob.getDisplay().append(Component.text(" - ", NamedTextColor.GRAY)).append(Component.text(type.getDisplay() + ": ",NamedTextColor.YELLOW))
 				.append(Component.text(df.format(map.get(type)), NamedTextColor.WHITE));
 	}
 	

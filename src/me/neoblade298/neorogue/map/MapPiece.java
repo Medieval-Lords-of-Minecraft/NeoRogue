@@ -114,7 +114,7 @@ public class MapPiece {
 	}
 	
 	private void setupSpecialPiece() {
-		if (id.equals("HarvestFieldsBorder")) {
+		if (id.equals("HFB")) {
 			HARVESTBORDER = this;
 			ignoreSize = true;
 		}

@@ -62,6 +62,10 @@ public class Mob implements Comparable<Mob> {
 	public static Mob get(String id) {
 		return mobs.get(id);
 	}
+
+	public TextComponent getDisplay() {
+		return display;
+	}
 	
 	public Mob(Section sec) {
 		id = sec.getName();
