@@ -263,7 +263,7 @@ public class FightStatistics {
 
 	private Component appendIfNotEmpty(Component base, String display, int stat) {
 		if (stat != 0) {
-			return base.append(getStatPiece(display, stat)).appendNewline();
+			return base.appendNewline().append(getStatPiece(display, stat));
 		}
 		return base;
 	}

@@ -55,7 +55,7 @@ public class ManaPoolChance extends ChanceSet {
 
 		stage.addChoice(new ChanceChoice(Material.WATER_BUCKET, "Drink the water",
 				"<white>50%</white> chance to acquire a random highly reforgeable Equipment,"
-				+ "<white>50%</white> chance to start the next fight with <white>25%</white> reduced damage for <white>20s</white>.",
+				+ " <white>50%</white> chance to start the next fight with <white>25%</white> reduced damage for <white>20s</white>.",
 				(s, inst, data) -> {
 					Player p = data.getPlayer();
 					if (NeoRogue.gen.nextBoolean()) {

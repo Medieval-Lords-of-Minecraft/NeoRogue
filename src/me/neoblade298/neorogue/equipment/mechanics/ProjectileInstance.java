@@ -71,6 +71,7 @@ public class ProjectileInstance extends IProjectileInstance {
 		entityBounds.put(EntityType.ZOMBIE, zombie);
 		entityBounds.put(EntityType.HUSK, zombie);
 		entityBounds.put(EntityType.DROWNED, zombie);
+		entityBounds.put(EntityType.IRON_GOLEM, createBox(1.4, 2.7));
 	}
 
 	private static BoundingBox createBox(double width, double height) {

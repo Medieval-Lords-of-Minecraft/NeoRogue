@@ -159,7 +159,7 @@ public class Mob implements Comparable<Mob> {
 					int pct = resistances.get(cat);
 					String sfx = pct > 0 ? "Resistant" : "Weak";
 					Component c = Component.text(cat.getDisplay() + ": ", NamedTextColor.YELLOW)
-							.append(Component.text(pct + "% " + sfx, pct > 0 ? NamedTextColor.RED : NamedTextColor.GREEN));
+							.append(Component.text(Math.abs(pct) + "% " + sfx, pct > 0 ? NamedTextColor.RED : NamedTextColor.GREEN));
 					lore.add(c.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
 				}
 			}

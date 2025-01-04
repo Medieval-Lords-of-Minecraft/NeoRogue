@@ -9,7 +9,6 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -31,7 +30,7 @@ public class SelfDestruct extends Equipment {
 	
 	public SelfDestruct(boolean isUpgraded) {
 		super(ID, "Self-Destruct", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 15, 10, 0));
+				EquipmentType.ABILITY, EquipmentProperties.none());
 		damage = isUpgraded ? 120 : 90;
 		pc.count(10).spread(0.5, 0.5).speed(0.2);
 	}
@@ -42,7 +41,7 @@ public class SelfDestruct extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.DEACTIVATE_TRAP, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+		data.addTrigger(id, Trigger.DEACTIVATE_TRAP, (pdata, in) -> {
 			Trap t = (Trap) in;
 			Location loc = t.getLocation();
 			pc.play(p, loc);
@@ -51,7 +50,7 @@ public class SelfDestruct extends Equipment {
 				FightInstance.dealDamage(data, DamageType.FIRE, damage, ent);
 			}
 			return TriggerResult.keep();
-		}));
+		});
 	}
 
 	@Override

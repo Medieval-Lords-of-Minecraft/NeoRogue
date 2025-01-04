@@ -58,7 +58,7 @@ public class PlayerSessionData extends MapViewer {
 	private Equipment[][] allEquips = new Equipment[][] { hotbar, armors, offhand, accessories, storage, otherBinds };
 	private TreeMap<String, ArtifactInstance> artifacts = new TreeMap<String, ArtifactInstance>();
 	private HashMap<SessionTrigger, ArrayList<SessionAction>> triggers = new HashMap<SessionTrigger, ArrayList<SessionAction>>();
-	private int abilitiesEquipped, maxAbilities = 4, maxStorage = 9, coins = 50;
+	private int abilitiesEquipped, maxAbilities = 4, maxStorage = 3, coins = 50;
 	private String instanceData;
 	private DropTableSet<Artifact> personalArtifacts;
 	private ArrayList<String> boardLines;
@@ -401,6 +401,7 @@ public class PlayerSessionData extends MapViewer {
 				if (toSelf != null) Util.msg(p, toSelf.append(SharedUtil.color(", it was sent to storage.")));
 			}
 			else {
+				// Should basically never happen
 				Util.displayError(p, "Your storage is full!");
 			}
 		}
