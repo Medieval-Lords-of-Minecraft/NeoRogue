@@ -29,8 +29,8 @@ public class TomeOfWisdom extends Artifact {
 	}
 
 	@Override
-	public void onAcquire(PlayerSessionData data) {	
-		data.increaseAbilityLimit(1);
+	public void onAcquire(PlayerSessionData data, int amount) {	
+		data.addMaxAbilities(1);
 	}
 
 	@Override

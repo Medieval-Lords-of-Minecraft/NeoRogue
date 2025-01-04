@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.chance.ChanceStage;
 public class ForgottenWellChance extends ChanceSet {
 
 	public ForgottenWellChance() {
-		super(AreaType.LOW_DISTRICT, Material.GRAVEL, "ForgottenWell", "Forgotten Well", true);
+		super(AreaType.LOW_DISTRICT, Material.COBBLESTONE_WALL, "ForgottenWell", "Forgotten Well", true);
 		ChanceStage stage = new ChanceStage(this, INIT_ID, "You come across an unassuming mossy well, but there is some sort of magic emanating from it."
 				+ " An old rotted sign nearby has \"Make a wish\" written on it.");
 

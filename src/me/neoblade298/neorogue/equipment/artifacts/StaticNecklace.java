@@ -14,8 +14,8 @@ import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -46,7 +46,7 @@ public class StaticNecklace extends Artifact {
 	}
 
 	@Override
-	public void onAcquire(PlayerSessionData data) {
+	public void onAcquire(PlayerSessionData data, int amount) {
 		
 	}
 

@@ -9,41 +9,40 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 
-public class RubyCluster extends Artifact {
-	private static final String ID = "rubyCluster";
-	private int max, shields;
-
-	public RubyCluster() {
-		super(ID, "Ruby Cluster", Rarity.RARE, EquipmentClass.CLASSLESS);
-		canDrop = false;
-		max = 10;
-		shields = 4;
-	}
+public class TreatiseOnElectricity extends Artifact {
+	private static final String ID = "treatiseOnElectricity";
 	
+	public TreatiseOnElectricity() {
+		super(ID, "Treatise on Electricity", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
+		canDrop = false;
+	}
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
-
+	
 	@Override
 	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
-		data.addPermanentShield(p.getUniqueId(), ai.getAmount() * shields);
+		data.addDamageBuff(DamageBuffType.of(DamageCategory.LIGHTNING), Buff.multiplier(data, 0.2, StatTracker.damageBuffAlly(this)));
 	}
-
+	
 	@Override
 	public void onAcquire(PlayerSessionData data, int amount) {
-		data.addMaxHealth(max);
+
 	}
 
 	@Override
 	public void onInitializeSession(PlayerSessionData data) {
-		
 	}
-
+	
 	@Override
 	public void setupItem() {
-		item = createItem(Material.REDSTONE, "Increases max health by <white>" + max + "</white> and grants " +
-				GlossaryTag.SHIELDS.tag(this, shields, false) + " at the start of a fight.");
+		item = createItem(Material.ENCHANTED_BOOK, "Increases " + GlossaryTag.LIGHTNING.tag(this) + " damage by <white>20%</white>.");
 	}
 }

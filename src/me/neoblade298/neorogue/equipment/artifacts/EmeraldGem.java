@@ -32,7 +32,7 @@ public class EmeraldGem extends Artifact {
 	}
 
 	@Override
-	public void onAcquire(PlayerSessionData data) {
+	public void onAcquire(PlayerSessionData data, int amount) {
 		data.addMaxStamina(max);
 		data.addStaminaRegen(regen);
 	}

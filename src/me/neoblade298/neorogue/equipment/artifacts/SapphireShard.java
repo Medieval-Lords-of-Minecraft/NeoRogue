@@ -32,7 +32,7 @@ public class SapphireShard extends Artifact {
 	}
 
 	@Override
-	public void onAcquire(PlayerSessionData data) {
+	public void onAcquire(PlayerSessionData data, int amount) {
 		data.addMaxMana(max);
 		data.addManaRegen(regen);
 	}

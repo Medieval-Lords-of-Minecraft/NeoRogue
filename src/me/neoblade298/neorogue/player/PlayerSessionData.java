@@ -43,6 +43,7 @@ import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.fight.trigger.KeyBind;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class PlayerSessionData extends MapViewer {
 	private PlayerData data;
@@ -320,6 +321,29 @@ public class PlayerSessionData extends MapViewer {
 		}
 	}
 
+	public void giveArtifact(Artifact artifact, int amount) {
+		ArtifactInstance inst;
+		if (artifacts.containsKey(artifact.getId())) {
+			inst = artifacts.get(artifact.getId());
+			inst.add(amount);
+		}
+		else {
+			inst = new ArtifactInstance(artifact);
+			artifacts.put(artifact.getId(), inst);
+			if (!artifact.canStack()) personalArtifacts.remove(artifact);
+		}
+		inst.getArtifact().onAcquire(this, amount);
+		inst.getArtifact().onInitializeSession(this);
+
+		// If you want customizable broadcast message, you'll need to refactor a bit
+		Player p = data.getPlayer();
+		Component toSelf = SharedUtil.color("You received ");
+		Component toOthers = SharedUtil.color("<yellow>" + data.getDisplay() + "</yellow> received ");
+		Component body = Component.text("" + amount, NamedTextColor.YELLOW).append(artifact.getHoverable()).append(Component.text(".", NamedTextColor.GRAY));
+		s.broadcastOthers(toOthers.append(body), p);
+		Util.msg(p, toSelf.append(body));
+	}
+
 	private void giveArtifact(Artifact artifact) {
 		ArtifactInstance inst;
 		if (artifacts.containsKey(artifact.getId())) {
@@ -331,7 +355,7 @@ public class PlayerSessionData extends MapViewer {
 			artifacts.put(artifact.getId(), inst);
 			if (!artifact.canStack()) personalArtifacts.remove(artifact);
 		}
-		inst.getArtifact().onAcquire(this);
+		inst.getArtifact().onAcquire(this, 1);
 		inst.getArtifact().onInitializeSession(this);
 	}
 	
@@ -500,7 +524,7 @@ public class PlayerSessionData extends MapViewer {
 		return ec;
 	}
 
-	public void increaseAbilityLimit(int amount) {
+	public void addMaxAbilities(int amount) {
 		this.maxAbilities += amount;
 	}
 

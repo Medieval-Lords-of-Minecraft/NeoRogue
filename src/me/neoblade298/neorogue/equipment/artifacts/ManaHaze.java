@@ -40,7 +40,7 @@ public class ManaHaze extends Artifact {
 	}
 
 	@Override
-	public void onAcquire(PlayerSessionData data) {
+	public void onAcquire(PlayerSessionData data, int amount) {
 		
 	}
 

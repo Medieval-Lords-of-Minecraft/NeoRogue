@@ -8,44 +8,41 @@ import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
-import me.neoblade298.neorogue.session.fight.trigger.Trigger;
-import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 
-public class StarlightVeil extends Artifact {
-	private static final String ID = "starlightVeil";
-	public StarlightVeil() {
-		super(ID, "Starlight Veil", Rarity.RARE, EquipmentClass.CLASSLESS);
-	}
+public class InfernalTome extends Artifact {
+	private static final String ID = "infernalTome";
 	
+	public InfernalTome() {
+		super(ID, "Infernal Tome", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
+		canDrop = false;
+	}
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
-
+	
 	@Override
 	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
-		data.addStaminaRegen(1);
-		data.addManaRegen(1);
-		data.addTrigger(id, Trigger.RECEIVED_HEALTH_DAMAGE, (pdata, in) -> {
-			data.addStaminaRegen(-1);
-			data.addManaRegen(-1);
-			return TriggerResult.remove();
-		});
+		data.addDamageBuff(DamageBuffType.of(DamageCategory.FIRE), Buff.multiplier(data, 0.2, StatTracker.damageBuffAlly(this)));
 	}
-
+	
 	@Override
 	public void onAcquire(PlayerSessionData data, int amount) {
-		
+
 	}
 
 	@Override
 	public void onInitializeSession(PlayerSessionData data) {
-		
 	}
-
+	
 	@Override
 	public void setupItem() {
-		item = createItem(Material.GLOWSTONE_DUST, 
-				"Increase mana and stamina regen by <white>1</white> until you recieve health damage.");
+		item = createItem(Material.ENCHANTED_BOOK, "Increases " + GlossaryTag.FIRE.tag(this) + " damage by <white>20%</white>.");
 	}
 }

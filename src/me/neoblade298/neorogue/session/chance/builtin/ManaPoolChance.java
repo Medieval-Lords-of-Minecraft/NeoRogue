@@ -49,7 +49,7 @@ public class ManaPoolChance extends ChanceSet {
 	}
 
 	public ManaPoolChance() {
-		super(AreaType.LOW_DISTRICT, Material.GRAVEL, "ManaPool", "Mana Pool", true);
+		super(AreaType.LOW_DISTRICT, Material.BLUE_ICE, "ManaPool", "Mana Pool", true);
 		ChanceStage stage = new ChanceStage(this, INIT_ID, "The winding corridors give way to a surprisingly vegetated room. " +
 			"In the center is a small pool of crystal clear water. There is an inexplicable force that draws you towards it.");
 

@@ -24,6 +24,6 @@ public abstract class Artifact extends Equipment {
 		// This is not used, ArtifactInstance instead calls the below abstract initialize
 	}
 	public abstract void initialize(Player p, PlayerFightData data, ArtifactInstance ai);
-	public abstract void onAcquire(PlayerSessionData data);
+	public abstract void onAcquire(PlayerSessionData data, int amount);
 	public abstract void onInitializeSession(PlayerSessionData data);
 }
