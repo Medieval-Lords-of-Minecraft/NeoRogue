@@ -37,7 +37,7 @@ public class WoodenWand extends Equipment {
 	public WoodenWand(boolean isUpgraded) {
 		super(
 				ID , "Wooden Wand", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(5, 0, isUpgraded ? 50 : 25, isUpgraded ? 1 : 0.5, DamageType.LIGHT, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
+				EquipmentProperties.ofWeapon(6, 0, isUpgraded ? 75 : 50, 1, DamageType.LIGHT, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
 		properties.addUpgrades(PropertyType.ATTACK_SPEED);

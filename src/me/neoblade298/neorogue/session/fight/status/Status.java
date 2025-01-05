@@ -85,6 +85,7 @@ public abstract class Status {
 		case FOCUS: return new BasicStatus(id.name(), target, StatusClass.POSITIVE);
 		case INJURY: return new DecrementStackStatus(id.name(), target, StatusClass.NEGATIVE);
 		case SILENCED: return new BasicStatus(id.name(), target, StatusClass.NEGATIVE, true);
+		case STOPPED: return new BasicStatus(id.name(), target, StatusClass.NEGATIVE, true);
 		case CHANNELING: return new BasicStatus(id.name(), target, StatusClass.NONE, true);
 		case INVINCIBLE: return new BasicStatus(id.name(), target, StatusClass.POSITIVE, true);
 		}
@@ -158,9 +159,10 @@ public abstract class Status {
 		STEALTH("<dark_purple>Stealth</dark_purple>", "&5Stealth"),
 		STRENGTH("<red>Strength</red>", "&cStrength"),
 		THORNS("<gold>Thorns</gold>", "&6Thorns"),
-		INVINCIBLE("<blue>Invincible</blue>", "&9Invincible", true), // Hidden
-		SILENCED("<dark_gray>Silenced</dark_gray>", "&8Silenced", true), // Hidden
-		CHANNELING("<dark_red>Channeling</dark_red>", "&4Channeling", true); // Hidden
+		INVINCIBLE("<blue>Invincible</blue>", "&9Invincible", true),
+		SILENCED("<dark_gray>Silenced</dark_gray>", "&8Silenced", true), // disallows casting abilities
+		STOPPED("<dark_gray>Stopped</dark_gray>", "&8Stopped", true), // disallows casting abilities and slot-based triggers (weapons usually)
+		CHANNELING("<dark_red>Channeling</dark_red>", "&4Channeling", true);
 		public String tag;
 		public Component ctag;
 		public String boardLine;

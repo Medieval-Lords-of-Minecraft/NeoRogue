@@ -30,12 +30,14 @@ import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
 import me.neoblade298.neorogue.equipment.abilities.EmpoweredEdge;
+import me.neoblade298.neorogue.equipment.abilities.Meditate;
 import me.neoblade298.neorogue.equipment.abilities.PiercingShot;
 import me.neoblade298.neorogue.equipment.abilities.ShadowWalk;
 import me.neoblade298.neorogue.equipment.weapons.BasicBow;
 import me.neoblade298.neorogue.equipment.weapons.WoodenArrow;
 import me.neoblade298.neorogue.equipment.weapons.WoodenDagger;
 import me.neoblade298.neorogue.equipment.weapons.WoodenSword;
+import me.neoblade298.neorogue.equipment.weapons.WoodenWand;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.event.SessionAction;
@@ -128,8 +130,8 @@ public class PlayerSessionData extends MapViewer {
 			abilitiesEquipped = 1;
 			break;
 		case MAGE:
-			hotbar[0] = Equipment.get("woodenSword", false);
-			hotbar[1] = Equipment.get("empoweredEdge", false);
+			hotbar[0] = WoodenWand.get();
+			hotbar[1] = Meditate.get();
 			abilitiesEquipped = 1;
 			break;
 		default:

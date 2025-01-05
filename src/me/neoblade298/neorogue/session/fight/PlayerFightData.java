@@ -383,7 +383,7 @@ public class PlayerFightData extends FightData {
 				TriggerResult tr;
 				
 				if (inst instanceof EquipmentInstance) {
-					if (data.isChanneling())
+					if (data.isChanneling() || data.hasStatus(StatusType.STOPPED) || data.hasStatus(StatusType.SILENCED))
 						return false;
 					EquipmentInstance ei = (EquipmentInstance) inst;
 					CastUsableEvent ev = new CastUsableEvent(ei);
