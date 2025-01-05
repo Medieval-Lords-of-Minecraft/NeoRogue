@@ -305,6 +305,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Bulldoze(b);
 			new Bulwark(b);
 			new Burst(b);
+			new CalculatingGaze(b);
 			new Cauterize(b);
 			new Charge(b);
 			new Chill(b);
@@ -386,7 +387,9 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new LightningRush(b);
 			new Maim(b);
 			new Malice(b);
+			new Manabending(b);
 			new ManaInfusion(b);
+			new ManaShell(b);
 			new MarkTarget(b);
 			new MarkTarget2(b);
 			new MightySwing(b);
