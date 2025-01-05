@@ -49,9 +49,9 @@ public class CrimsonBlade extends Equipment {
 				weaponSwingAndDamage(p, pdata, ev.getTarget());
 				if (++count >= 5) {
 					if (System.currentTimeMillis() - start < 30000) {
+						Sounds.enchant.play(p, p);
 						FightInstance.giveHeal(p, heal, p);
 					}
-					Sounds.enchant.play(p, p);
 					count = 0;
 				}
 				return TriggerResult.keep();

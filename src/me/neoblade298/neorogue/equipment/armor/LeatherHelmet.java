@@ -11,7 +11,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class LeatherHelmet extends Equipment {
 	private static final String ID = "leatherHelmet";
-	private double shields;
+	private int shields;
 	
 	public LeatherHelmet(boolean isUpgraded) {
 		super(ID, "Leather Helmet", isUpgraded, Rarity.COMMON, EquipmentClass.CLASSLESS,

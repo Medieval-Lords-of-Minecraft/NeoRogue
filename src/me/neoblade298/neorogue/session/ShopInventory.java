@@ -62,6 +62,11 @@ public class ShopInventory extends CoreInventory {
 		this.spectator = spectator;
 		setupInventory();
 	}
+
+	// Call when reopening this inv without a constructor
+	public void onOpenInventory() {
+		InventoryListener.registerPlayerInventory(p, new PlayerSessionInventory(data));
+	}
 	
 	private void setupInventory() {
 		ItemStack[] contents = inv.getContents();
@@ -122,6 +127,9 @@ public class ShopInventory extends CoreInventory {
 	@Override
 	public void handleInventoryClick(InventoryClickEvent e) {
 		Inventory iclicked = e.getClickedInventory();
+		if (InventoryListener.getLowerInventory(p) == null) {
+			InventoryListener.registerPlayerInventory(p, new PlayerSessionInventory(data));
+		}
 		PlayerSessionInventory pinv = (PlayerSessionInventory) InventoryListener.getLowerInventory(p);
 		if (spectator != null) {
 			e.setCancelled(true);

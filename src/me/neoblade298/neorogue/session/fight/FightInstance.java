@@ -94,7 +94,7 @@ public abstract class FightInstance extends Instance {
 	private static HashMap<UUID, FightData> fightData = new HashMap<UUID, FightData>();
 	private static HashMap<UUID, BukkitTask> blockTasks = new HashMap<UUID, BukkitTask>();
 	private static HashSet<UUID> toTick = new HashSet<UUID>(), indicators = new HashSet<UUID>();
-	private static final int KILLS_TO_SCALE = 4; // number of mobs to kill before increasing total mobs by 1
+	private static final int KILLS_TO_SCALE = 5; // number of mobs to kill before increasing total mobs by 1
 	
 	protected LinkedList<Corpse> corpses = new LinkedList<Corpse>();
 	protected HashMap<Player, Corpse> revivers = new HashMap<Player, Corpse>();
@@ -903,7 +903,7 @@ public abstract class FightInstance extends Instance {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				double rngBonus = NeoRogue.gen.nextDouble(2);
+				double rngBonus = NeoRogue.gen.nextDouble(-1, 1);
 				double toActivate = rngBonus + map.getEffectiveSize();
 				
 				activateSpawner(toActivate);

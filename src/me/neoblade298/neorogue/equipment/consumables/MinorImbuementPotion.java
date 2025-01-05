@@ -22,7 +22,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.UseConsumableEvent;
 
 public class MinorImbuementPotion extends Consumable {
 	private static final String ID = "minorImbuementPotion";
-	private double damage;
+	private int damage;
 	
 	public MinorImbuementPotion(boolean isUpgraded) {
 		super(ID, "Minor Imbuement Potion", isUpgraded, Rarity.UNCOMMON, EquipmentClass.CLASSLESS);

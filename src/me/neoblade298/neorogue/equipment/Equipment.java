@@ -1501,7 +1501,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 					table = droptables.get(ec[0]).get(value);
 				}
 				
-				Equipment drop = table.get();
+				E drop = table.get();
 				if (unique) {
 					boolean isUnique = true;
 					for (Equipment eq : list) {
@@ -1514,7 +1514,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 						continue;
 					}
 				}
-				list.add(table.get());
+				list.add(drop);
 			}
 			return list;
 		}

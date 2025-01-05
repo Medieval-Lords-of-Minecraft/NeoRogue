@@ -12,6 +12,7 @@ import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.session.ShopInventory;
 import net.kyori.adventure.text.Component;
 
 public class GlossaryInventory extends CoreInventory {
@@ -55,7 +56,12 @@ public class GlossaryInventory extends CoreInventory {
 		if (openOther) {
 			new BukkitRunnable() {
 				public void run() {
-					if (prev != null) prev.openInventory();
+					if (prev != null) {
+						prev.openInventory();
+						if (prev instanceof ShopInventory) {
+							((ShopInventory) prev).onOpenInventory();
+						}
+					}
 				}
 			}.runTask(NeoRogue.inst());
 		}

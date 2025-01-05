@@ -14,6 +14,10 @@ import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.equipment.Consumable;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
+import me.neoblade298.neorogue.equipment.artifacts.EmeraldGem;
+import me.neoblade298.neorogue.equipment.artifacts.RubyGem;
+import me.neoblade298.neorogue.equipment.artifacts.SapphireGem;
+import me.neoblade298.neorogue.equipment.artifacts.TomeOfWisdom;
 import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
@@ -99,15 +103,14 @@ public class BossFightInstance extends FightInstance {
 			
 			equipDrops = new ArrayList<Equipment>(3);
 			equipDrops.addAll(Equipment.getArtifact(data.getArtifactDroptable(), value, 4, ec, EquipmentClass.CLASSLESS));
-			s.rollUpgrades(equipDrops);
 			list.add(new EquipmentChoiceReward(equipDrops));
 			
 			equipDrops = new ArrayList<Equipment>(3);
-			equipDrops.add(Equipment.get("rubyGem", false));
-			equipDrops.add(Equipment.get("emeraldGem", false));
-			equipDrops.add(Equipment.get("sapphireGem", false));
+			equipDrops.add(RubyGem.get());
+			equipDrops.add(EmeraldGem.get());
+			equipDrops.add(SapphireGem.get());
 			list.add(new EquipmentChoiceReward(equipDrops));
-			list.add(new EquipmentReward(Equipment.get("tomeOfWisdom", false)));
+			list.add(new EquipmentReward(TomeOfWisdom.get()));
 			if (dropPotion) {
 				Consumable cons = Equipment.getConsumable(value, ec, EquipmentClass.CLASSLESS);
 				list.add(new EquipmentReward(s.rollUpgrade(cons)));

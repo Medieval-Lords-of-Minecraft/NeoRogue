@@ -54,11 +54,6 @@ public class HexingShot extends Equipment {
 	}
 
 	@Override
-	public void setupReforges() {
-		addReforge(KeenSenses.get(), Malice.get());
-	}
-
-	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, this, slot, es);
 		inst.setAction((pdata, in) -> {
