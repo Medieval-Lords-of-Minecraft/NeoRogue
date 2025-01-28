@@ -10,13 +10,13 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.Tag;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.TextDisplay;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import eu.decentsoftware.holograms.api.holograms.Hologram;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.area.Node;
@@ -25,25 +25,20 @@ import me.neoblade298.neorogue.player.inventory.FightInfoInventory;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.format.TextDecoration.State;
 
 public class NodeSelectInstance extends EditInventoryInstance {
 	private static final double SPAWN_X = Session.AREA_X + 21.5, SPAWN_Z = Session.AREA_Z + 6.5;
 	private BukkitTask task;
-	private ArrayList<Hologram> holograms = new ArrayList<Hologram>();
+	private ArrayList<TextDisplay> holograms = new ArrayList<TextDisplay>();
 	
-	private static final ArrayList<ArrayList<String>> tips = new ArrayList<ArrayList<String>>();
+	private static final ArrayList<Component> tips = new ArrayList<Component>();
 	
 	static {
-		ArrayList<String> tip = new ArrayList<String>();
-		tip.add("Shrines can be used to heal");
-		tip.add("or upgrade one or your equipment!");
-		tips.add(tip);
-
-		tip = new ArrayList<String>();
-		tip.add("Keep an eye out for equipment");
-		tip.add("that can be reforged with your");
-		tip.add("existing equipment to get even stronger!");
-		tips.add(tip);
+		tips.add(Component.text("Shrines can be used to heal").appendNewline().append(Component.text("or upgrade one of your equipment!")));
+		tips.add(Component.text("Keep an eye out for equipment").appendNewline().append(Component.text("that can be reforged with your"))
+			.appendNewline().append(Component.text("existing equipment to get even stronger!")));
 	}
 
 	public NodeSelectInstance(Session s) {
@@ -64,13 +59,10 @@ public class NodeSelectInstance extends EditInventoryInstance {
 		area.update(s.getNode(), this);
 
 		// Set up boss hologram and tips
-		ArrayList<String> lines = new ArrayList<String>();
-		lines.add("§f§lBoss: §4§l" + area.getBoss());
-		lines.addAll(tips.get(NeoRogue.gen.nextInt(tips.size())));
-		Plot plot = s.getPlot();
-		Location loc = spawn.clone().add(0, 2.5 + (lines.size() * 0.3), 4);
-		Hologram holo = NeoRogue
-				.createHologram(plot.getXOffset() + "-" + plot.getZOffset() + "-bossdisplay", loc, lines);
+		Component text = Component.text("Boss: ", NamedTextColor.WHITE, TextDecoration.BOLD).append(Component.text(area.getBoss(), NamedTextColor.RED, TextDecoration.BOLD));
+		text = text.decoration(TextDecoration.BOLD, State.FALSE).appendNewline().append(tips.get(NeoRogue.gen.nextInt(tips.size())));
+		Location loc = spawn.clone().add(0, 2.8, 4);
+		TextDisplay holo = NeoRogue.createHologram(loc, text);
 		holograms.add(holo);
 
 		for (Player p : s.getOnlinePlayers()) {
@@ -103,12 +95,8 @@ public class NodeSelectInstance extends EditInventoryInstance {
 	}
 
 	public void createHologram(Location loc, Node dest) {
-		ArrayList<String> lines = new ArrayList<String>();
-		lines.add("§f§l" + dest.getType() + " Node");
-		Plot plot = s.getPlot();
-		Hologram holo = NeoRogue.createHologram(
-				plot.getXOffset() + "-" + plot.getZOffset() + "-" + dest.getRow() + "-" + dest.getLane(), loc, lines
-		);
+		Component text = Component.text(dest.getType() + " Node", NamedTextColor.WHITE, TextDecoration.BOLD);
+		TextDisplay holo = NeoRogue.createHologram(loc, text);
 		holograms.add(holo);
 	}
 	
@@ -122,8 +110,8 @@ public class NodeSelectInstance extends EditInventoryInstance {
 			Bukkit.getPlayer(uuid).setAllowFlight(false);
 		}
 
-		for (Hologram holo : holograms) {
-			holo.delete();
+		for (TextDisplay holo : holograms) {
+			holo.remove();
 		}
 	}
 

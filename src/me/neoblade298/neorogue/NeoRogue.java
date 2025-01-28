@@ -1,20 +1,21 @@
 package me.neoblade298.neorogue;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.Display.Billboard;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.TextDisplay;
 import org.bukkit.event.EventHandler;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Transformation;
 
-import eu.decentsoftware.holograms.api.DHAPI;
-import eu.decentsoftware.holograms.api.holograms.Hologram;
 import io.lumine.mythic.api.mobs.MobManager;
 import io.lumine.mythic.bukkit.BukkitAPIHelper;
 import io.lumine.mythic.bukkit.MythicBukkit;
@@ -62,6 +63,7 @@ import me.neoblade298.neorogue.session.SessionManager;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
 import me.neoblade298.neorogue.session.fight.Mob;
 import me.neoblade298.neorogue.session.fight.mythicbukkit.MythicLoader;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class NeoRogue extends JavaPlugin {
@@ -187,15 +189,15 @@ public class NeoRogue extends JavaPlugin {
 			}
 		}.runTaskLater(this, 1L);
 	}
-	
-	public static Hologram createHologram(String name, Location loc, ArrayList<String> lines) {
-		try {
-			return DHAPI.createHologram(name, loc, lines);
-		}
-		catch (IllegalArgumentException e) {
-			DHAPI.removeHologram(name);
-			return DHAPI.createHologram(name, loc, lines);
-		}
+
+	public static TextDisplay createHologram(Location loc, Component text) {
+		TextDisplay td = (TextDisplay) loc.getWorld().spawnEntity(loc, EntityType.TEXT_DISPLAY);
+		td.text(text);
+		Transformation trans = td.getTransformation();
+		trans.getScale().set(1);
+		td.setBillboard(Billboard.CENTER);
+		td.setTransformation(trans);
+		return td;
 	}
 	
 	@EventHandler

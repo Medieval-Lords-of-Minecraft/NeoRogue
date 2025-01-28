@@ -1,7 +1,7 @@
 name: NeoRogue
 main: me.neoblade298.neorogue.NeoRogue
 authors: [Ascheladd, FoPzl]
-depend: [NeoCore, WorldEdit, DecentHolograms, PlaceholderAPI]
+depend: [NeoCore, WorldEdit, PlaceholderAPI]
 softdepend: [MythicMobs]
 version: 1.0
 api-version: 1.20

@@ -1,13 +1,11 @@
 package me.neoblade298.neorogue.session;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -17,12 +15,12 @@ import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.type.Wall;
 import org.bukkit.block.data.type.Wall.Height;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.TextDisplay;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import eu.decentsoftware.holograms.api.holograms.Hologram;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.player.PlayerSessionData;
@@ -37,7 +35,7 @@ public class ShrineInstance extends EditInventoryInstance {
 	private int state = 0;
 	private Block blockBottom, blockMiddle, blockTop;
 	private HashSet<UUID> notUsed = new HashSet<UUID>();
-	private Hologram holo;
+	private TextDisplay holo;
 	
 	public ShrineInstance(Session s) {
 		super(s, SPAWN_X, SPAWN_Z);
@@ -71,11 +69,8 @@ public class ShrineInstance extends EditInventoryInstance {
 		super.start();
 
 		// Setup hologram
-		ArrayList<String> lines = new ArrayList<String>();
-		lines.add("Right click the");
-		lines.add("§aemerald blocks§f!");
-		Plot plot = s.getPlot();
-		holo = NeoRogue.createHologram(plot.getXOffset() + "-" + plot.getZOffset() + "-shrine", spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), lines);
+		Component text = Component.text("Right click the").appendNewline().append(Component.text("emerald blocks", NamedTextColor.GREEN)).append(Component.text("!"));
+		holo = NeoRogue.createHologram(spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), text);
 	}
 
 	@Override
@@ -84,7 +79,7 @@ public class ShrineInstance extends EditInventoryInstance {
 		blockBottom.setType(Material.EMERALD_BLOCK);
 		blockMiddle.setType(Material.EMERALD_BLOCK);
 		blockTop.setType(Material.AIR);
-		holo.delete();
+		holo.remove();
 	}
 
 	@Override
@@ -139,9 +134,7 @@ public class ShrineInstance extends EditInventoryInstance {
 		part.play(blockMiddle.getLocation());
 		s.broadcastSound(Sound.ENTITY_FIREWORK_ROCKET_BLAST);
 		s.broadcastSound(Sound.ENTITY_ARROW_HIT_PLAYER);
-
-		Location loc = holo.getLocation();
-		holo.delete();
+		holo.remove();
 		if (rest) {
 			blockBottom.setType(Material.LODESTONE);
 			blockMiddle.setType(Material.DIORITE_WALL);
@@ -170,13 +163,9 @@ public class ShrineInstance extends EditInventoryInstance {
 			blockMiddle.setBlockData(anvil);
 			blockTop.setType(Material.WITHER_SKELETON_SKULL);
 
-			ArrayList<String> lines = new ArrayList<String>();
-			loc.add(0, 2, 0);
-			lines.add("Use the anvil!");
-			lines.add("To skip upgrading,");
-			lines.add("shift click the paper!");
-			Plot plot = s.getPlot();
-			holo = NeoRogue.createHologram(plot.getXOffset() + "-" + plot.getZOffset() + "-shrineanvil", spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), lines);
+			Component text = Component.text("Use the anvil!").appendNewline()
+				.append(Component.text("To skip upgrading,")).append(Component.text("shift click the paper!"));
+			holo = NeoRogue.createHologram(spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), text);
 		}
 	}
 	

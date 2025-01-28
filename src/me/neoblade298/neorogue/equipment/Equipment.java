@@ -349,6 +349,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Fade(b);
 			new Farewell(b);
 			new Ferocity(b);
+			new Fireball(b);
+			new Fireblast(b);
 			new Firebomb(b);
 			new Finale(b);
 			new Fissure(b);

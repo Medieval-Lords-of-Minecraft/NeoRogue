@@ -9,25 +9,25 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.TextDisplay;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import eu.decentsoftware.holograms.api.holograms.Hologram;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.SpectateSelectInventory;
 import me.neoblade298.neorogue.session.EditInventoryInstance;
 import me.neoblade298.neorogue.session.NodeSelectInstance;
-import me.neoblade298.neorogue.session.Plot;
 import me.neoblade298.neorogue.session.Session;
+import net.kyori.adventure.text.Component;
 
 public class RewardInstance extends EditInventoryInstance {
 	private static final double SPAWN_X = Session.REWARDS_X + 7.5, SPAWN_Z = Session.REWARDS_Z + 3.5,
 			HOLO_X = 0, HOLO_Y = 3, HOLO_Z = 6;
 	private HashMap<UUID, ArrayList<Reward>> rewards = new HashMap<UUID, ArrayList<Reward>>();
-	private Hologram holo;
+	private TextDisplay holo;
 	
 	public RewardInstance(Session s, HashMap<UUID, ArrayList<Reward>> rewards) {
 		super(s, SPAWN_X, SPAWN_Z);
@@ -58,17 +58,14 @@ public class RewardInstance extends EditInventoryInstance {
 		super.start();
 		
 		// Setup hologram
-		ArrayList<String> lines = new ArrayList<String>();
-		lines.add("Open the enderchest and");
-		lines.add("collect your reward!");
-		Plot plot = s.getPlot();
-		holo = NeoRogue.createHologram(plot.getXOffset() + "-" + plot.getZOffset() + "-rewards", spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), lines);
+		Component text = Component.text("Open the enderchest and").appendNewline().append(Component.text("collect your reward!"));
+		holo = NeoRogue.createHologram(spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), text);
 	}
 
 	@Override
 	public void cleanup() {
 		super.cleanup();
-		holo.delete();
+		holo.remove();
 	}
 
 	@Override

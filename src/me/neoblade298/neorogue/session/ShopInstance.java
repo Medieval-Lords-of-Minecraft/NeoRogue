@@ -1,6 +1,5 @@
 package me.neoblade298.neorogue.session;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
@@ -10,17 +9,20 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.TextDisplay;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import eu.decentsoftware.holograms.api.holograms.Hologram;
 import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.SpectateSelectInventory;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 
 public class ShopInstance extends EditInventoryInstance {
 	private static final double SPAWN_X = Session.SHOP_X + 5.5, SPAWN_Z = Session.SHOP_Z + 2.5,
@@ -29,7 +31,7 @@ public class ShopInstance extends EditInventoryInstance {
 	
 	private HashMap<UUID, ShopContents> shops = new HashMap<UUID, ShopContents>();
 	private HashSet<UUID> ready = new HashSet<UUID>();
-	private Hologram holo;
+	private TextDisplay holo;
 	
 	public ShopInstance(Session s) {
 		super(s, SPAWN_X, SPAWN_Z);
@@ -56,17 +58,15 @@ public class ShopInstance extends EditInventoryInstance {
 		super.start();
 
 		// Setup hologram
-		ArrayList<String> lines = new ArrayList<String>();
-		lines.add("Open the chest, then click the");
-		lines.add("stone button when you're ready!");
-		Plot plot = s.getPlot();
-		holo = NeoRogue.createHologram(plot.getXOffset() + "-" + plot.getZOffset() + "-shop", spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), lines);
+		Component text = Component.text("Open the chest, then click the").appendNewline().append(Component.text("stone button", NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
+				.append(Component.text(" when you're ready!"));
+		holo = NeoRogue.createHologram(spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), text);
 	}
 
 	@Override
 	public void cleanup() {
 		super.cleanup();
-		holo.delete();
+		holo.remove();
 	}
 
 	@Override

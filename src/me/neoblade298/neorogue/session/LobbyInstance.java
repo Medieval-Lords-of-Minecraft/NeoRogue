@@ -1,6 +1,5 @@
 package me.neoblade298.neorogue.session;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
@@ -13,12 +12,12 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.TextDisplay;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import eu.decentsoftware.holograms.api.holograms.Hologram;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
@@ -42,7 +41,7 @@ public class LobbyInstance extends Instance {
 	private UUID host;
 	private Component partyInfoHeader;
 	private HashSet<UUID> ready = new HashSet<UUID>();
-	private Hologram holo;
+	private TextDisplay holo;
 
 	// Static error messages
 	private static final TextComponent hostOnlyInvite = Component.text("Only the host may invite other players!",
@@ -74,12 +73,10 @@ public class LobbyInstance extends Instance {
 		
 
 		// Setup hologram
-		ArrayList<String> lines = new ArrayList<String>();
-		lines.add("Invite players with /nr invite {name/all}");
-		lines.add("Choose a class then hit the button");
-		lines.add("when you're ready!");
-		Plot plot = s.getPlot();
-		holo = NeoRogue.createHologram(plot.getXOffset() + "-" + plot.getZOffset() + "-lobby", spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), lines);
+		Component text = Component.text("Invite players with /nr invite {name/all}").appendNewline()
+			.append(Component.text("Choose a class then hit the button")).appendNewline()
+			.append(Component.text("when you're ready!"));
+		holo = NeoRogue.createHologram(spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), text);
 	}
 
 	public void invitePlayer(Player inviter, String username) {
@@ -297,7 +294,7 @@ public class LobbyInstance extends Instance {
 
 	@Override
 	public void cleanup() {
-		holo.delete();
+		holo.remove();
 	}
 
 	@Override

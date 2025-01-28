@@ -1,6 +1,5 @@
 package me.neoblade298.neorogue.session.chance;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -13,12 +12,12 @@ import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.Candle;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.TextDisplay;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import eu.decentsoftware.holograms.api.holograms.Hologram;
 import me.neoblade298.neocore.bukkit.effects.Audience;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
@@ -30,7 +29,6 @@ import me.neoblade298.neorogue.player.inventory.SpectateSelectInventory;
 import me.neoblade298.neorogue.session.EditInventoryInstance;
 import me.neoblade298.neorogue.session.Instance;
 import me.neoblade298.neorogue.session.NodeSelectInstance;
-import me.neoblade298.neorogue.session.Plot;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.ShopInstance;
 import me.neoblade298.neorogue.session.ShrineInstance;
@@ -48,7 +46,7 @@ public class ChanceInstance extends EditInventoryInstance {
 	private HashMap<UUID, ChanceStage> stage = new HashMap<UUID, ChanceStage>();
 	private Instance nextInstance; // For taking you directly from this instance to another
 	private boolean returning;
-	private Hologram holo;
+	private TextDisplay holo;
 	private Block candleBlock;
 
 	public ChanceInstance(Session s) {
@@ -106,10 +104,7 @@ public class ChanceInstance extends EditInventoryInstance {
 		super.start();
 
 		// Setup hologram
-		ArrayList<String> lines = new ArrayList<String>();
-		lines.add("Right click the pillar below!");
-		Plot plot = s.getPlot();
-		holo = NeoRogue.createHologram(plot.getXOffset() + "-" + plot.getZOffset() + "-shop", spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), lines);
+		holo = NeoRogue.createHologram(spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), Component.text("Right click the pillar below!"));
 		candleBlock = holo.getLocation().add(0, -1, 0).getBlock();
 	}
 
@@ -119,7 +114,7 @@ public class ChanceInstance extends EditInventoryInstance {
 		Candle candle = (Candle) candleBlock.getBlockData();
 		candle.setLit(false);
 		candleBlock.setBlockData(candle);
-		holo.delete();
+		holo.remove();
 	}
 	
 	@Override
