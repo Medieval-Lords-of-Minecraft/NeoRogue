@@ -86,6 +86,7 @@ import me.neoblade298.neorogue.equipment.artifacts.EmeraldShard;
 import me.neoblade298.neorogue.equipment.artifacts.EnergyBattery;
 import me.neoblade298.neorogue.equipment.artifacts.Exertion;
 import me.neoblade298.neorogue.equipment.artifacts.FaerieDust;
+import me.neoblade298.neorogue.equipment.artifacts.FaeriePendant;
 import me.neoblade298.neorogue.equipment.artifacts.GlacialHammer;
 import me.neoblade298.neorogue.equipment.artifacts.GoldIngot;
 import me.neoblade298.neorogue.equipment.artifacts.GrendelsCrystalMirror;
@@ -350,6 +351,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Farewell(b);
 			new Ferocity(b);
 			new Fireball(b);
+			new Fireball2(b);
 			new Fireblast(b);
 			new Firebomb(b);
 			new Finale(b);
@@ -361,6 +363,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Flurry(b);
 			new FocusedShot(b);
 			new FormAPlan(b);
+			new ForceCloak(b);
 			new Fortify(b);
 			new Frenzy(b);
 			new FrostTrap(b);
@@ -390,6 +393,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Maim(b);
 			new Malice(b);
 			new Manabending(b);
+			new ManaCloak(b);
+			new ManaGuard(b);
 			new ManaInfusion(b);
 			new ManaShell(b);
 			new MarkTarget(b);
@@ -451,6 +456,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new ThrowPoison(b);
 			new Thornguard(b);
 			new Titan(b);
+			new Torch(b);
 			new TreeTrunk(b);
 			new TwinShiv(b);
 			new Vanish(b);
@@ -646,6 +652,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new EnergyBattery();
 		new Exertion();
 		new FaerieDust();
+		new FaeriePendant();
 		new GlacialHammer();
 		new GoldIngot();
 		new GrendelsCrystalMirror();
