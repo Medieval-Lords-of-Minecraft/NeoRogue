@@ -40,6 +40,7 @@ import me.neoblade298.neorogue.equipment.accessories.RingOfFortitude;
 import me.neoblade298.neorogue.equipment.accessories.RingOfMentalism;
 import me.neoblade298.neorogue.equipment.accessories.RingOfSharpness;
 import me.neoblade298.neorogue.equipment.accessories.SaboteursRing;
+import me.neoblade298.neorogue.equipment.accessories.SpiritShard;
 import me.neoblade298.neorogue.equipment.accessories.TopazRing;
 import me.neoblade298.neorogue.equipment.armor.ArcheryGlove;
 import me.neoblade298.neorogue.equipment.armor.BlindingCloak;
@@ -62,6 +63,7 @@ import me.neoblade298.neorogue.equipment.armor.LeatherHelmet;
 import me.neoblade298.neorogue.equipment.armor.LeatherHood;
 import me.neoblade298.neorogue.equipment.armor.LightningCloak;
 import me.neoblade298.neorogue.equipment.armor.NullMagicMantle;
+import me.neoblade298.neorogue.equipment.armor.RedCloak;
 import me.neoblade298.neorogue.equipment.armor.SpikedPauldrons;
 import me.neoblade298.neorogue.equipment.artifacts.AlchemistBag;
 import me.neoblade298.neorogue.equipment.artifacts.AmuletOfOffering;
@@ -103,6 +105,7 @@ import me.neoblade298.neorogue.equipment.artifacts.NoxianBlight;
 import me.neoblade298.neorogue.equipment.artifacts.NoxianSkull;
 import me.neoblade298.neorogue.equipment.artifacts.OmniGem;
 import me.neoblade298.neorogue.equipment.artifacts.OpalHourglass;
+import me.neoblade298.neorogue.equipment.artifacts.OpalNecklace;
 import me.neoblade298.neorogue.equipment.artifacts.PracticeDummy;
 import me.neoblade298.neorogue.equipment.artifacts.RubyCluster;
 import me.neoblade298.neorogue.equipment.artifacts.RubyGem;
@@ -492,6 +495,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new RingOfMentalism(b);
 			new RingOfSharpness(b);
 			new SaboteursRing(b);
+			new SpiritShard(b);
 			new TopazRing(b);
 			
 			// Armor
@@ -514,6 +518,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new LeatherHood(b);
 			new LightningCloak(b);
 			new NullMagicMantle(b);
+			new RedCloak(b);
 			new SpikedPauldrons(b);
 			
 			// Offhands
@@ -669,6 +674,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new NoxianSkull();
 		new OmniGem();
 		new OpalHourglass();
+		new OpalNecklace();
 		new PracticeDummy();
 		new ScrollOfFrost();
 		new StaticNecklace();
