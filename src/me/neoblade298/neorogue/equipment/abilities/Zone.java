@@ -65,7 +65,7 @@ public class Zone extends Equipment {
 				int count = 0;
 				public void run() {
 					circ.play(pc, loc, LocalAxes.xz(), null);
-					if (p.getLocation().distanceSquared(loc) >= rangesq) {
+					if (p.getLocation().distanceSquared(loc) <= rangesq) {
 						data.addDamageBuff(DamageBuffType.of(DamageCategory.PHYSICAL), Buff.increase(data, damage, StatTracker.damageBuffAlly(eq)), uuid, 40);
 					}
 					if (++count >= 8) {

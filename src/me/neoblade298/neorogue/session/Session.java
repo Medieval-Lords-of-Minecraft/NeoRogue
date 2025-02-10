@@ -59,7 +59,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class Session {
-	private static final boolean endless = true; // TEMP FOR NOW
+	private static final boolean endless = false; // TEMP FOR NOW
 	
 	private Area area;
 	private UUID host;

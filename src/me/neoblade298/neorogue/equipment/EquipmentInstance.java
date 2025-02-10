@@ -54,6 +54,7 @@ public class EquipmentInstance extends PriorityAction {
 		COOLDOWN_MATERIALS.put(31, Material.GRAY_CANDLE);
 		COOLDOWN_MATERIALS.put(32, Material.BLACK_CANDLE);
 		COOLDOWN_MATERIALS.put(33, Material.BROWN_CANDLE);
+		COOLDOWN_MATERIALS.put(40, Material.CANDLE);
 	}
 	
 	public EquipmentInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {

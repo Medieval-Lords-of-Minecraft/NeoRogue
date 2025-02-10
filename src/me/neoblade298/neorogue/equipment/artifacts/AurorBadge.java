@@ -36,7 +36,7 @@ public class AurorBadge extends Artifact {
 		ActionMeta am = new ActionMeta();
 		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
 			BasicAttackEvent ev = (BasicAttackEvent) in;
-			if (am.getTime() + 5000 < System.currentTimeMillis()) {
+			if (am.getTime() + 3000 < System.currentTimeMillis()) {
 				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.multiplier(data, damage, StatTracker.damageBuffAlly(this)));
 			}
 			am.setTime(System.currentTimeMillis());
@@ -57,7 +57,7 @@ public class AurorBadge extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SKULL_BANNER_PATTERN, 
-				"Upon dealing a basic attack, if your last basic attack was over <white>5</white> seconds ago, your " +
+				"Upon dealing a basic attack, if your last basic attack was over <white>3</white> seconds ago, your " +
 				"basic attack damage is increased by " + DescUtil.yellow((damage * 100) + "%") + ".");
 	}
 }

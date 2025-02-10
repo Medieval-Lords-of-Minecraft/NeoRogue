@@ -8,18 +8,12 @@ import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.ParticleUtil;
-import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.equipment.mechanics.Barrier;
-import me.neoblade298.neorogue.equipment.mechanics.Projectile;
-import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
-import me.neoblade298.neorogue.session.fight.DamageMeta;
-import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -60,38 +54,10 @@ public class LightningBolt extends Equipment {
 			return TriggerResult.keep();
 		}));
 	}
-	
-	private class FireballProjectile extends Projectile {
-		private Player p;
-		private PlayerFightData data;
-
-		public FireballProjectile(PlayerFightData data) {
-			super(1, properties.get(PropertyType.RANGE), 1);
-			this.size(0.5, 0.5);
-			this.data = data;
-			this.p = data.getPlayer();
-		}
-
-		@Override
-		public void onTick(ProjectileInstance proj, int interpolation) {
-			tick.play(p, proj.getLocation());
-		}
-
-		@Override
-		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
-			
-		}
-
-		@Override
-		public void onStart(ProjectileInstance proj) {
-			Sounds.shoot.play(p, p);
-			proj.applyProperties(data, properties);	
-		}
-	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BLAZE_POWDER,
+		item = createItem(Material.YELLOW_DYE,
 			GlossaryTag.CHANNEL.tag(this) + " for <white>1s</white> before launching a fireball that deals " + GlossaryTag.FIRE.tag(this, damage, true) + " damage but apply " +
 			GlossaryTag.BURN.tag(this, burn, false) + " to yourself.");
 	}

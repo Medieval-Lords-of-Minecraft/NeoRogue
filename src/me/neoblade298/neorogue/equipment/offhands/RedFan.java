@@ -52,8 +52,22 @@ public class RedFan extends Equipment {
 		ItemStack charged = item.clone().withType(Material.FIRE_CORAL);
 		ItemStack icon = item.clone();
 		eqi.setAction((pdata, in) -> {	
+			if (am.getCount() >= thres) {
+				am.addCount(-thres);
+				Sounds.fire.play(p, p);
+				cone.play(pc, p.getLocation().add(0, 0.8, 0), LocalAxes.usingEyeLocation(p), pc);
+				for (LivingEntity ent : TargetHelper.getEntitiesInCone(p, tp)) {
+					FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE), ent);
+				}
+				if (am.getCount() < thres) {
+					eqi.setIcon(icon);
+				}
+			}
+			return TriggerResult.keep();
+		});
+		data.addTrigger(id, Trigger.DEALT_DAMAGE, (pdata, in) -> {
 			DealtDamageEvent ev = (DealtDamageEvent) in;
-			if (ev.getMeta().containsType(DamageType.BURN)) {
+			if (ev.getMeta().containsType(DamageType.FIRE)) {
 				am.addCount(1);
 				if (am.getCount() >= thres) {
 					eqi.setIcon(charged);
@@ -65,18 +79,7 @@ public class RedFan extends Equipment {
 			}
 			return TriggerResult.keep();
 		});
-		data.addTrigger(id, Trigger.DEALT_DAMAGE, eqi);
-		data.addTrigger(id, Trigger.LEFT_CLICK, (pdata, in) -> {
-			if (am.getCount() >= thres) {
-				am.addCount(-thres);
-				Sounds.fire.play(p, p);
-				cone.play(pc, p.getLocation(), LocalAxes.usingEyeLocation(p), pc);
-				for (LivingEntity ent : TargetHelper.getEntitiesInCone(p, tp)) {
-					FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE), ent);
-				}
-			}
-			return TriggerResult.keep();
-		});
+		data.addTrigger(id, Trigger.LEFT_CLICK, eqi);
 	}
 
 	@Override

@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.DescUtil;
@@ -29,7 +30,7 @@ public class Firebird extends Ammunition {
 		super(ID, "Firebird", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofAmmunition(20, 0.1, DamageType.FIRE));
-				mult = isUpgraded ? 0.2 : 0.3;
+				mult = isUpgraded ? 0.3 : 0.2;
 
 	}
 	
@@ -40,16 +41,18 @@ public class Firebird extends Ammunition {
 	@Override
 	public void onStart(ProjectileInstance inst) {
 		inst.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.BURN), Buff.multiplier(inst.getOwner(), mult, StatTracker.damageBuffAlly(this)));
+		inst.getVelocity().add(new Vector(0, 0.08, 0));
 	}
 
 	@Override
 	public void onTick(Player p, ProjectileInstance proj, int interpolation) {
 		pc.play(p, proj.getLocation());
+		proj.getVelocity().add(new Vector(0, -0.002, 0));
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.TIPPED_ARROW, "Increases " + GlossaryTag.BURN.tag(this) + " damage on basic attacks by " + DescUtil.yellow((mult * 100) + "%") + ".");
+		item = createItem(Material.TIPPED_ARROW, "Launches in an arc. Increases " + GlossaryTag.BURN.tag(this) + " damage on basic attacks by " + DescUtil.yellow((mult * 100) + "%") + ".");
 		PotionMeta pm = (PotionMeta) item.getItemMeta();
 		pm.setColor(Color.RED);
 		item.setItemMeta(pm);

@@ -216,9 +216,9 @@ public class FightStatistics {
 		for (Entry<StatTracker, Double> ent : buffStats.entrySet()) {
 			StatTracker stat = ent.getKey();
 			if (stat == StatTracker.IGNORED) continue;
-			double amt = ent.getValue();
+			double amt = stat.isInverted() ? ent.getValue() : -ent.getValue();
 			hover = hover.appendNewline().append(stat.getDisplay().append(Component.text(": " + df.format(amt), NamedTextColor.WHITE)));
-			score += buffStats.get(stat);
+			score += amt;
 		}
 		return Component.text(df.format(score), NamedTextColor.BLUE).hoverEvent(hover);
 	}

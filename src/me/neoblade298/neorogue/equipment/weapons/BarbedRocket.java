@@ -22,7 +22,7 @@ public class BarbedRocket extends Ammunition {
 	public BarbedRocket(boolean isUpgraded) {
 		super(ID, "Barbed Rocket", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofAmmunition(isUpgraded ? 20 : 10, 0.2, DamageType.PIERCING));
+				EquipmentProperties.ofAmmunition(isUpgraded ? 20 : 10, 0.6, DamageType.PIERCING));
 		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 	
@@ -32,18 +32,22 @@ public class BarbedRocket extends Ammunition {
 
 	@Override
 	public void onHit(ProjectileInstance inst, DamageMeta meta, LivingEntity target) {
-		Vector v = inst.getVelocity().normalize().multiply(properties.get(PropertyType.KNOCKBACK));
+		Vector v = inst.getVelocity().setY(0).normalize().setY(0.2).multiply(properties.get(PropertyType.KNOCKBACK));
 		inst.getOwner().addTask(new BukkitRunnable() {
+			private int count = 0;
 			public void run() {
 				if (target != null && target.isValid()) {
 					FightInstance.knockback(target, v);
 				}
+				if (++count >= 2) {
+					this.cancel();
+				}
 			}
-		}.runTaskTimer(NeoRogue.inst(), 10, 10));
+		}.runTaskTimer(NeoRogue.inst(), 20, 20));
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.ARROW, "Knocks the enemy back two additional times over <white>1s</white> on hit.");
+		item = createItem(Material.ARROW, "Knocks the enemy back two additional times over <white>2s</white> on hit.");
 	}
 }

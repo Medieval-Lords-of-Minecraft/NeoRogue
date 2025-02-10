@@ -13,8 +13,8 @@ import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealtDamageEvent;
@@ -26,7 +26,7 @@ public class PointBlank extends Equipment {
 	public PointBlank(boolean isUpgraded) {
 		super(ID, "Point Blank", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.none());
-		thres = isUpgraded ? 5 : 4;
+		thres = isUpgraded ? 7 : 5;
 		damage = isUpgraded ? 25 : 15;
 	}
 	

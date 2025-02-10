@@ -8,6 +8,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Display;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -77,7 +78,7 @@ public class ProjectileInstance extends IProjectileInstance {
 	private static BoundingBox createBox(double width, double height) {
 		double w = width / 2;
 		double h = height / 2;
-		return new BoundingBox(-w, -w, -h, w, w, h);
+		return new BoundingBox(-w, -h, -w, w, h, w);
 	}
 	
 	protected ProjectileInstance(Projectile settings, FightData owner) {
@@ -110,10 +111,13 @@ public class ProjectileInstance extends IProjectileInstance {
 		bounds = BoundingBox.of(loc, settings.getWidth(), settings.getHeight(), settings.getWidth());
 		// Loose bounds, this is because current bounds don't check for libsdisguises so we need a bigger bounds that is more lenient
 		// Ex: Baby zombie disguised as spider, bounds won't hit the spider's legs, but bigBounds will
-		bigBounds = BoundingBox.of(loc, settings.getWidth() + 1, settings.getHeight() + 1, settings.getWidth() + 1); 
+		bigBounds = BoundingBox.of(loc, settings.getWidth() + 2, settings.getHeight() + 2, settings.getWidth() + 2); 
 
-		if (settings.getHoming() != 0) 
-			homingTarget = TargetHelper.getNearest(owner.getEntity(), loc, TargetProperties.radius(settings.getMaxRange() + 5, false, TargetType.ENEMY));
+		// Home on enemies in front of the player
+		if (settings.getHoming() != 0) {
+			LivingEntity le = owner.getEntity();
+			homingTarget = TargetHelper.getEntitiesInCone(le, TargetProperties.cone(90, settings.getMaxRange() + 5, false, TargetType.ENEMY)).peekFirst();
+		}
 		
 		task = new BukkitRunnable() {
 			public void run() {
@@ -181,7 +185,7 @@ public class ProjectileInstance extends IProjectileInstance {
 			// Check for collision with mobs
 			if (!settings.isIgnoreEntities()) {
 				for (Entity ent : loc.getWorld().getNearbyEntities(bigBounds)) {
-					if (ent instanceof Player || ent.getType() == EntityType.ARMOR_STAND) continue;
+					if (ent instanceof Player || ent.getType() == EntityType.ARMOR_STAND || ent instanceof Display) continue;
 					if (!(ent instanceof LivingEntity)) continue;
 
 					// Check actual bounding box for disguised entity if applicable
@@ -192,8 +196,7 @@ public class ProjectileInstance extends IProjectileInstance {
 							Bukkit.getLogger().warning("NeoRogue doesn't have an appropriate bounding box for " + type);
 						}
 						else {
-							disgBox = entityBounds.get(type).clone();
-							disgBox.shift(ent.getBoundingBox().getCenter());
+							disgBox = entityBounds.get(type).clone().shift(ent.getBoundingBox().getCenter());
 						}
 						if (!disgBox.overlaps(bounds)) continue;
 					}
@@ -240,6 +243,13 @@ public class ProjectileInstance extends IProjectileInstance {
 				}
 			}
 
+		
+			// Homing
+			if (settings.getHoming() != 0 && homingTarget != null) {
+				Vector between = homingTarget.getEyeLocation().toVector().subtract(loc.toVector()).normalize();
+				v = v.add(between.multiply(settings.getHoming())).normalize().multiply(distancePerPoint);
+			}
+
 			settings.onTick(this, i);
 			loc.add(v);
 			bounds.shift(v);
@@ -254,12 +264,6 @@ public class ProjectileInstance extends IProjectileInstance {
 		// Gravity
 		if (settings.getGravity() != 0) {
 			v.setY(v.getY() - settings.getGravity());
-		}
-		
-		// Homing
-		if (settings.getHoming() != 0 && homingTarget != null) {
-			Vector between = homingTarget.getEyeLocation().toVector().subtract(loc.toVector()).normalize();
-			v = v.add(between.multiply(settings.getHoming())).normalize().multiply(distancePerPoint);
 		}
 
 		return false;

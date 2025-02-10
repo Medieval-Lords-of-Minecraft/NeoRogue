@@ -108,7 +108,7 @@ public class MarkTarget2 extends Equipment {
 		public MarkTarget2Projectile(PlayerFightData data) {
 			super(tp.range, 1);
 			this.blocksPerTick(3);
-			this.homing(0.2);
+			this.homing(0.02);
 			this.data = data;
 			this.p = data.getPlayer();
 			ammo = data.getAmmoInstance();

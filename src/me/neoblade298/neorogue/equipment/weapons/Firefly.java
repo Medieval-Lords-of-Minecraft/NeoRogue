@@ -41,17 +41,18 @@ public class Firefly extends Ammunition {
 	
 	@Override
 	public void onStart(ProjectileInstance inst) {
-		inst.getVelocity().add(new Vector(0, 0.3, 0));
+		inst.getVelocity().add(new Vector(0, 0.08, 0));
 	}
 
 	@Override
 	public void onTick(Player p, ProjectileInstance proj, int interpolation) {
 		pc.play(p, proj.getLocation());
+		proj.getVelocity().add(new Vector(0, -0.002, 0));
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.TIPPED_ARROW, "Launches slightly upwards.");
+		item = createItem(Material.TIPPED_ARROW, "Launches in an arc.");
 		PotionMeta pm = (PotionMeta) item.getItemMeta();
 		pm.setColor(Color.RED);
 		item.setItemMeta(pm);

@@ -55,7 +55,7 @@ public class CrystalFeather extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FEATHER, 
-				"Once every fight upon recieving health damage, gain " + DescUtil.potion("Speed", 1, dur) +
+				"Once every fight upon receiving health damage, gain " + DescUtil.potion("Speed", 1, dur) +
 				" and invincibility for that duration.");
 	}
 }

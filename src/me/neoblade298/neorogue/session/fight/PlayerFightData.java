@@ -18,8 +18,11 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 
+import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.AmmunitionInstance;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -133,7 +136,7 @@ public class PlayerFightData extends FightData {
 
 		Equipment offhand = data.getEquipment(EquipSlot.OFFHAND)[0];
 		if (offhand != null) {
-			offhand.initialize(p, this, null, EquipSlot.OFFHAND, 0);
+			offhand.initialize(p, this, null, EquipSlot.OFFHAND, 40);
 			inv.setItem(EquipmentSlot.OFF_HAND, offhand.getItem());
 		} else {
 			inv.setItem(EquipmentSlot.OFF_HAND, null);
@@ -167,15 +170,38 @@ public class PlayerFightData extends FightData {
 	}
 	
 	public TaskChain channel(int ticks) {
+		// Make sounds every second while charging if over 1s
+		if (ticks >= 20) {
+			addWaitSound(Sounds.piano, ticks);
+		}
+		
 		applyStatus(StatusType.CHANNELING, this, 1, ticks);
 		entity.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, ticks, 3));
 		return new TaskChain(this, ticks);
 	}
 	
 	public TaskChain charge(int ticks) {
+		// Make sounds every second while charging if over 1s
+		if (ticks >= 20) {
+			addWaitSound(Sounds.piano, ticks);
+		}
+
 		applyStatus(StatusType.CHANNELING, this, 1, ticks);
 		entity.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, ticks, 1));
 		return new TaskChain(this, ticks);
+	}
+
+	private void addWaitSound(SoundContainer sc, int ticks) {
+		addTask(new BukkitRunnable() {
+			int tick = 0;
+			public void run() {
+				sc.play(p, p);
+				tick += 20;
+				if (tick >= ticks) {
+					cancel();
+				}
+			}
+		}.runTaskTimer(NeoRogue.inst(), 0, 20));
 	}
 	
 	public HashMap<String, EquipmentInstance> getActiveEquipment() {

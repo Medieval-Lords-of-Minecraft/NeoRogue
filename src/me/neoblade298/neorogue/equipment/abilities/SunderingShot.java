@@ -50,6 +50,7 @@ public class SunderingShot extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, this, slot, es);
 		inst.setAction((pdata, in) -> {
+			Sounds.piano.play(p, p);
 			data.charge(40);
 			data.addTask(new BukkitRunnable() {
 				public void run() {

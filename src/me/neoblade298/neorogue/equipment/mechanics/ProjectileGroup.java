@@ -21,6 +21,10 @@ public class ProjectileGroup {
 		}
 	}
 
+	public LinkedList<IProjectile> list() {
+		return group;
+	}
+
 	public IProjectile getFirst() {
 		return group.getFirst();
 	}

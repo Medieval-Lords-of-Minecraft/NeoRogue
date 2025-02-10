@@ -10,6 +10,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 public class StatTracker {
     private Component display;
     private String id;
+    private boolean invert; // Quick easy way to invert the stat number
 
     private static HashMap<StatusType, StatTracker> statusOrigins = new HashMap<StatusType, StatTracker>();
     public static StatTracker IGNORED = new StatTracker(null, (Component) null);
@@ -23,7 +24,7 @@ public class StatTracker {
             statusOrigins.put(type, new StatTracker(type, true));
         }
         for (StatusType type : defenseStatuses) {
-            statusOrigins.put(type, new StatTracker(type, false));
+            statusOrigins.put(type, new StatTracker(type, false, true));
         }
     }
     
@@ -37,13 +38,23 @@ public class StatTracker {
             Component.text(damage ? " - Damage Buffed" : " - Damage Mitigated", NamedTextColor.GRAY)));
     }
 
+    private StatTracker(StatusType type, boolean damage, boolean invert) {
+        this(type.name(), type.ctag.append(
+            Component.text(damage ? " - Damage Buffed" : " - Damage Mitigated", NamedTextColor.GRAY)));
+        this.invert = invert;
+    }
+
     public static StatTracker of(StatusType type) {
         return statusOrigins.get(type);
     }
 
     public boolean isSimilar(StatTracker other) {
-        return this.id.equals(other.id);
-    }  
+        return this.id != null && this.id.equals(other.id);
+    }
+
+    public boolean isInverted() {
+        return invert;
+    }
     
     private StatTracker(Equipment eq, String sfx) {
         this.id = eq.getId();

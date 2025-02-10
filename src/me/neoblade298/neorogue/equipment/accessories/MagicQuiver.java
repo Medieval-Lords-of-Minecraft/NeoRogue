@@ -82,7 +82,7 @@ public class MagicQuiver extends Equipment {
 		public MagicQuiverProjectile(PlayerFightData data) {
 			super(tp.range, 1);
 			this.blocksPerTick(3);
-			this.homing(0.2);
+			this.homing(0.02);
 			this.data = data;
 			this.p = data.getPlayer();
 			ammo = data.getAmmoInstance();

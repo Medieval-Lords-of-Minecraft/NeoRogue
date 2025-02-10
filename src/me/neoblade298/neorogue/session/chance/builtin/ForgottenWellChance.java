@@ -21,7 +21,7 @@ public class ForgottenWellChance extends ChanceSet {
 				+ " An old rotted sign nearby has \"Make a wish\" written on it.");
 
 		ChanceChoice ruby = new ChanceChoice(Material.REDSTONE, "I wish to become more durable.",
-				"Acquire one <green>Ruby Cluster</green>.",
+				"Acquire one <blue>Ruby Cluster</blue>.",
 				(s, inst, data) -> {
 					Player p = data.getPlayer();
 					Util.msgRaw(p, "You feel a gust of wind, and suddenly you feel just a little tougher.");
@@ -29,7 +29,7 @@ public class ForgottenWellChance extends ChanceSet {
 					return null;
 				});
 		ChanceChoice emerald = new ChanceChoice(Material.EMERALD, "I wish to become more agile.",
-				"Acquire one <green>Emerald Cluster</green>.",
+				"Acquire one <blue>Emerald Cluster</blue>.",
 				(s, inst, data) -> {
 					Player p = data.getPlayer();
 					Util.msgRaw(p, "You feel a gust of wind, and suddenly your body feels just a little lighter.");
@@ -37,7 +37,7 @@ public class ForgottenWellChance extends ChanceSet {
 					return null;
 				});
 		ChanceChoice sapphire = new ChanceChoice(Material.LAPIS_LAZULI, "I wish to become more mindful.",
-				"Acquire one <green>Sapphire Cluster</green>.",
+				"Acquire one <blue>Sapphire Cluster</blue>.",
 				(s, inst, data) -> {
 					Player p = data.getPlayer();
 					Util.msgRaw(p, "You feel a gust of wind, and suddenly your mind feels just a little more insightful.");
@@ -45,11 +45,11 @@ public class ForgottenWellChance extends ChanceSet {
 					return null;
 				});
 		stage.addChoice(new ChanceChoice(Material.LAPIS_LAZULI, "I wish to become rich.",
-				"Acquire <yellow>50 coins</yellow>.",
+				"Acquire <yellow>100 coins</yellow>.",
 				(s, inst, data) -> {
 					Player p = data.getPlayer();
-					Util.msgRaw(p, "You feel a gust of wind, and then spot <yellow>50 coins</yellow> laying on the ground.");
-					data.addCoins(50);
+					Util.msgRaw(p, "You feel a gust of wind, and then spot <yellow>100 coins</yellow> laying on the ground.");
+					data.addCoins(100);
 					return null;
 				}));
 				

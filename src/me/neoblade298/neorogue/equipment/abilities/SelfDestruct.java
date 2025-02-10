@@ -10,6 +10,7 @@ import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageType;
@@ -30,7 +31,7 @@ public class SelfDestruct extends Equipment {
 	
 	public SelfDestruct(boolean isUpgraded) {
 		super(ID, "Self-Destruct", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+				EquipmentType.ABILITY, EquipmentProperties.none().add(PropertyType.AREA_OF_EFFECT, tp.range));
 		damage = isUpgraded ? 120 : 90;
 		pc.count(10).spread(0.5, 0.5).speed(0.2);
 	}
@@ -57,6 +58,6 @@ public class SelfDestruct extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.CAMPFIRE,
 				"Passive. Any time a " + GlossaryTag.TRAP.tag(this) + " is removed, " +
-				"including removal on activation, deal " + GlossaryTag.FIRE.tag(this, damage, true) + " to all nearby enemies.");
+				"including removal on activation, deal " + GlossaryTag.FIRE.tag(this, damage, true) + " to all enemies near the trap.");
 	}
 }
