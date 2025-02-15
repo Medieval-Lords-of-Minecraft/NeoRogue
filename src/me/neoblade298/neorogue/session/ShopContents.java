@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.equipment.artifacts.SapphireCluster;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 
 public class ShopContents {
-	private static final Equipment[] GEMS = new Equipment[] { RubyCluster.get(), SapphireCluster.get(), EmeraldCluster.get() };
+	private static final Equipment[] GEMS = new Equipment[] { RubyCluster.get(), EmeraldCluster.get(), SapphireCluster.get() };
 	private HashMap<Integer, ShopItem> shopItems = new HashMap<Integer, ShopItem>();
 
 	public ShopContents(Session s, PlayerSessionData data) {

@@ -79,7 +79,7 @@ public class ReforgeOptionsInventory extends CoreInventory {
 			}
 			Equipment reforged = getFromSlot(e.getSlot());
 			p.playSound(p, Sound.BLOCK_ANVIL_USE, 1F, 1F);
-			Component cmp = SharedUtil.color("<yellow>" + p.getName() + "</yellow> reforged their ").append(toReforge.getUnupgraded().getHoverable());
+			Component cmp = SharedUtil.color("<yellow>" + p.getName() + "</yellow> reforged their ").append(toReforge.getHoverable());
 			if (!toReforge.getId().equals(reforgeWith.getId())) cmp = cmp.append(Component.text(", ").append(reforgeWith.getHoverable()));
 			cmp = cmp.append(Component.text(" into a(n) ").append(reforged.getHoverable().append(Component.text("!"))));
 			data.getSession().broadcast(cmp);

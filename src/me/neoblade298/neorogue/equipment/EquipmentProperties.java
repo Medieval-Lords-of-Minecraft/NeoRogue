@@ -21,7 +21,8 @@ import me.neoblade298.neorogue.session.fight.FightData;
 import net.kyori.adventure.text.Component;
 
 public class EquipmentProperties {
-	private static final EquipmentProperties NONE = new EquipmentProperties(0,0,0,0,0,0,0,0, null, null);
+	private static final EquipmentProperties NONE = new EquipmentProperties(0,0,0,0,0,
+		0,0,0, null, null);
 	private ArrayList<Component> lore;
 	private HashMap<PropertyType, Property> properties = new HashMap<PropertyType, Property>();
 	private DamageType type;
@@ -102,12 +103,25 @@ public class EquipmentProperties {
 	public static EquipmentProperties ofAmmunition(double damage, double knockback, DamageType type) {
 		return new EquipmentProperties(0, 0, 0, 0, damage, 0, knockback, 0, type, null);
 	}
+
+	public EquipmentProperties clone() {
+		return new EquipmentProperties(get(PropertyType.MANA_COST), get(PropertyType.STAMINA_COST), get(PropertyType.COOLDOWN), get(PropertyType.RANGE),
+			get(PropertyType.DAMAGE), get(PropertyType.ATTACK_SPEED), get(PropertyType.KNOCKBACK), get(PropertyType.AREA_OF_EFFECT),
+			type, swingSound);
+	}
 	
 	public static EquipmentProperties none() {
-		return NONE;
+		return NONE.clone();
 	}
 	
 	public EquipmentProperties add(PropertyType type, double amount) {
+		if (this == NONE) {
+			try {
+				throw new Exception("Attempted to add " + amount + " " + type + " to NONE");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 		if (amount == 0) return this;
 		properties.put(type, new Property(amount));
 		return this;
@@ -193,6 +207,17 @@ public class EquipmentProperties {
 		private PropertyType(String label) {
 			this.label = label;
 		}
+	}
+
+	@Override
+	public String toString() {
+		String str = "";
+		for (PropertyType type : PropertyType.values()) {
+			if (properties.containsKey(type)) {
+				str += type.label + properties.get(type).amount + ",";
+			}
+		}
+		return str;
 	}
 	
 	private class Property {

@@ -54,7 +54,7 @@ public abstract class EditInventoryInstance extends Instance {
 				return false;
 			}
 			if (data.exceedsStorageLimit()) {
-				s.broadcastError(data.getData().getDisplay() + " must remove some equipment before continuing!");
+				s.broadcastError(data.getData().getDisplay() + " must remove some items from his storage before continuing!");
 				return false;
 			}
 			
