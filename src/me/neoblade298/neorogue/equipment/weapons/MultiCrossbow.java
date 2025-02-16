@@ -49,6 +49,9 @@ public class MultiCrossbow extends Bow {
 			ProjectileGroup proj = new ProjectileGroup();
 			int limit = data.getAmmoInstance().getRemaining();
 			int count = 0;
+			if (limit == -1 || ++count < limit) {
+				proj.add(new BowProjectile(data, ev.getEntity().getVelocity(), this));
+			}
 			for (double y : new double[] { -0.1, 0.1 }) {
 				for (double rotate : new double[] { 10, -10 }) {
 					if (limit != -1 && ++count >= limit) break;
@@ -64,6 +67,6 @@ public class MultiCrossbow extends Bow {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.CROSSBOW,
-			"Fires <white>4</white> projectiles in a circle around the cursor.");
+			"Additionally fires <white>4</white> projectiles in a circle around the cursor.");
 	}
 }

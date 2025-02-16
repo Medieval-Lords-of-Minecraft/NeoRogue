@@ -108,8 +108,8 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 		else if (e.isShiftClick()) {
 			if (e.getCurrentItem() == null) return;
 			e.setCancelled(true);
-			if (!pinv.canShiftClickIn(inv.getItem(0))) return;
-			pinv.handleShiftClickIn(inv.getItem(0));
+			if (!pinv.canShiftClickIn(inv.getItem(e.getSlot()))) return;
+			pinv.handleShiftClickIn(inv.getItem(e.getSlot()));
 			e.setCurrentItem(null);
 			p.playSound(p, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1F);
 		}
