@@ -39,8 +39,8 @@ public class Momentum extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
 		double distSq = DISTANCE * DISTANCE;
-		data.addTrigger(id, Trigger.PRE_LAUNCH_PROJECTILE_GROUP, (pdata, in) -> {
-			if (am.getLocation() != null && am.getLocation().distanceSquared(p.getLocation()) < distSq) {
+		data.addTrigger(id, Trigger.LAUNCH_PROJECTILE_GROUP, (pdata, in) -> {
+			if (am.getLocation() != null && am.getLocation().distanceSquared(p.getLocation()) >= distSq) {
 				LaunchProjectileGroupEvent ev = (LaunchProjectileGroupEvent) in;
 				for (IProjectileInstance ipi : ev.getInstances()) {
 					if (!(ipi instanceof ProjectileInstance)) continue;

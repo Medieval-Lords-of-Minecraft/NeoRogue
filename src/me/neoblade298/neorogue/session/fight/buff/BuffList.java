@@ -10,16 +10,24 @@ public class BuffList {
 
 	// Maybe will need another version of this for non-damage buffs if I ever make those
 	public void add(Buff b) {
-        // Either combine a buff with a similar one or just add it to the list
-        increase += b.getIncrease();
-        mult += b.getMultiplier();
         for (Buff curr : buffs) {
             if (curr.isSimilar(b)) {
-                curr.combine(b);
-                return;
+                if (curr.getStatTracker().shouldCombine()) {
+                    curr.combine(b);
+                    increase += b.getIncrease();
+                    mult += b.getMultiplier();
+                    return;
+                }
+                else {
+                    curr.replace(b);
+                    return;
+                }
             }
         }
 
+        // Either replace a buff with a similar one or just add it to the list
+        increase += b.getIncrease();
+        mult += b.getMultiplier();
         buffs.add(b);
 	}
 

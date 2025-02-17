@@ -57,6 +57,7 @@ public class StickyBomb extends Ammunition {
 
 	@Override
 	public void onTick(Player p, ProjectileInstance proj, int interpolation) {
+		if (interpolation % 2 == 0) return;
 		proj.getVelocity().add(new Vector(0, -0.002, 0));
 		pc.play(p, proj.getLocation());
 	}

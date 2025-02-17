@@ -12,7 +12,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.StatTracker;
+import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -38,19 +38,19 @@ public class Flurry extends Equipment {
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, inputs) -> {
 			Sounds.equip.play(p, p);
 			pc.play(p, p);
-			data.addTrigger(id, Trigger.WEAPON_SWING, new FlurryInstance(id, p));
+			data.addTrigger(id, Trigger.WEAPON_SWING, new FlurryInstance(id, p, this));
 			return TriggerResult.keep();
 		}));
 	}
 	
 	private class FlurryInstance extends PriorityAction {
 		int count = 0;
-		public FlurryInstance(String id, Player p) {
+		public FlurryInstance(String id, Player p, Equipment eq) {
 			super(id);
 			action = (pdata, in) -> {
 				if (++count > cutoff) return TriggerResult.remove();
 				WeaponSwingEvent ev = (WeaponSwingEvent) in;
-				ev.getAttackSpeedBuffList().add(new Buff(pdata, 0, 1, StatTracker.IGNORED));
+				ev.getAttackSpeedBuffList().add(new Buff(pdata, 0, 1, BuffStatTracker.ignored(eq)));
 				return TriggerResult.keep();
 			};
 		}

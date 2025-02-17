@@ -28,7 +28,7 @@ public class RingOfAnger extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTask(id, new BukkitRunnable() {
+		data.addTask(new BukkitRunnable() {
 			private int count = 0;
 			private boolean addedStrength = false;
 			public void run() {

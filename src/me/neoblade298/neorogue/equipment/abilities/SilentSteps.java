@@ -10,6 +10,7 @@ import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
@@ -43,7 +44,7 @@ public class SilentSteps extends Equipment {
 		data.addTrigger(ID,  Trigger.PRE_RECEIVE_STATUS, (pdata, in) -> {
 			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
 			if (!ev.getStatusId().equals(StatusType.STEALTH.name())) return TriggerResult.keep();
-			ev.getDurationBuffList().add(new Buff(data, 20, 0, StatTracker.IGNORED));
+			ev.getDurationBuffList().add(new Buff(data, 20, 0, BuffStatTracker.ignored(this)));
 			return TriggerResult.keep();
 		});
 		

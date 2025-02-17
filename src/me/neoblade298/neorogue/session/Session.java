@@ -73,7 +73,7 @@ public class Session {
 	private boolean busy;
 	private long nextSuggest = 0L;
 	private ArrayList<String> spectatorLines = new ArrayList<String>();
-	private double BASE_UPGRADE_CHANCE = 0.5;
+	private double BASE_UPGRADE_CHANCE = 0.2;
 	
 	// Session coordinates
 	public static final int LOBBY_X = 0, LOBBY_Z = 0, LOBBY_WIDTH = 15, AREA_X = 0, AREA_Z = LOBBY_Z + LOBBY_WIDTH,
@@ -437,7 +437,7 @@ public class Session {
 	}
 
 	private boolean rollUpgradeFormula(Equipment eq) {
-		return NeoRogue.gen.nextDouble() >= BASE_UPGRADE_CHANCE + (areasCompleted * 0.2) - (eq.getRarity().getValue() * 0.15);
+		return NeoRogue.gen.nextDouble() <= BASE_UPGRADE_CHANCE + (areasCompleted * 0.2) - (eq.getRarity().getValue() * 0.15);
 	}
 	
 	public void setupSpectatorInventory(Player p) {

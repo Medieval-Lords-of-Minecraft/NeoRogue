@@ -38,8 +38,8 @@ import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -111,7 +111,7 @@ public class WarningShot extends Equipment {
 				ent.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 60, 0));
 			}
 			if (!ents.isEmpty()) data.applyStatus(StatusType.FOCUS, data, focus, -1);
-			data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, damage * ents.size(), -0.2, StatTracker.damageBuffAlly(eq)), id, 160);
+			data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, damage * ents.size(), -0.2, StatTracker.damageBuffAlly(eq)), 160);
 		}
 
 		@Override

@@ -170,7 +170,7 @@ public class EquipmentInstance extends PriorityAction {
 				cooldownTask = null;
 			}
 		}.runTaskLater(NeoRogue.inst(), cooldownSeconds * 20);
-		data.addTask(cooldownTaskId, cooldownTask);
+		data.addTask(cooldownTask);
 	}
 	
 	public double getBaseCooldown() {

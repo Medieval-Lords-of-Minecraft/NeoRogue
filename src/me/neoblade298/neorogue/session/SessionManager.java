@@ -230,7 +230,7 @@ public class SessionManager implements Listener {
 	}
 	
 	@EventHandler
-	public void onThrow(ProjectileLaunchEvent e) {
+	public void onLaunchProjectile(ProjectileLaunchEvent e) {
 		if (!(e.getEntity().getShooter() instanceof Player)) return;
 		Player p = (Player) e.getEntity().getShooter();
 
@@ -241,6 +241,7 @@ public class SessionManager implements Listener {
 			FightInstance.trigger(p, Trigger.THROW_TRIDENT, e);
 		}
 		else if (e.getEntity() instanceof Arrow) {
+			p.getInventory().addItem(((Arrow) e.getEntity()).getItemStack());
 			FightInstance.trigger(p, Trigger.VANILLA_PROJECTILE, e);
 		}
 	}

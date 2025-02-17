@@ -17,7 +17,7 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.StatTracker;
+import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -42,7 +42,7 @@ public class CharmOfGallus extends Artifact {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
-		CharmOfGallusInstance inst = new CharmOfGallusInstance();
+		CharmOfGallusInstance inst = new CharmOfGallusInstance(this);
 		data.addTrigger(id, Trigger.PRE_CAST_USABLE, inst);
 		data.addTrigger(id, Trigger.CAST_USABLE, (pdata, in) -> {
 			return inst.checkUsed(p, (CastUsableEvent) in);
@@ -52,6 +52,11 @@ public class CharmOfGallus extends Artifact {
 	public class CharmOfGallusInstance implements TriggerAction {
 		private int count = 0;
 		private String uuid = UUID.randomUUID().toString();
+		private Equipment eq;
+
+		public CharmOfGallusInstance(Equipment eq) {
+			this.eq = eq;
+		}
 
 		@Override
 		public TriggerResult trigger(PlayerFightData data, Object inputs) {
@@ -59,7 +64,7 @@ public class CharmOfGallus extends Artifact {
 				CastUsableEvent ev = (CastUsableEvent) inputs;
 				if (ev.getInstance().getEffectiveStaminaCost() == 0) return TriggerResult.keep();
 				if (ev.getBuff(PropertyType.STAMINA_COST).apply(ev.getInstance().getStaminaCost()) <= 0) return TriggerResult.keep();
-				ev.addBuff(PropertyType.STAMINA_COST, uuid, Buff.increase(data, stamina, StatTracker.IGNORED));
+				ev.addBuff(PropertyType.STAMINA_COST, uuid, Buff.increase(data, stamina, BuffStatTracker.ignored(eq)));
 				return TriggerResult.keep();
 			}
 			return TriggerResult.remove();

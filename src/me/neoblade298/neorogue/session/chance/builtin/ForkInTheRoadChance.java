@@ -13,8 +13,8 @@ import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.StandardFightInstance;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
-import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 
 public class ForkInTheRoadChance extends ChanceSet {
 
@@ -43,7 +43,7 @@ public class ForkInTheRoadChance extends ChanceSet {
 						StandardFightInstance sfi = new StandardFightInstance(s, s.getParty().keySet(), s.getArea().getType(), s.getNodesVisited());
 						sfi.addInitialTask((fi, fdata) -> {
 							for (PlayerFightData pfdata : fdata) {
-								pfdata.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(pfdata, 0, -0.2, StatTracker.IGNORED));
+								pfdata.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(pfdata, 0, -0.2, BuffStatTracker.ignored("forkInTheRoadChance")));
 							}
 						});
 						inst.setNextInstance(sfi);

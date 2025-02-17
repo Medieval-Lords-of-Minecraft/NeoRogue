@@ -10,10 +10,9 @@ import net.kyori.adventure.text.format.NamedTextColor;
 public class StatTracker {
     private Component display;
     private String id;
-    private boolean invert; // Quick easy way to invert the stat number
+    private boolean invert, ignore; // Quick easy way to invert the stat number
 
-    private static HashMap<StatusType, StatTracker> statusOrigins = new HashMap<StatusType, StatTracker>();
-    public static StatTracker IGNORED = new StatTracker(null, (Component) null);
+    private static HashMap<StatusType, BuffStatTracker> statusOrigins = new HashMap<StatusType, BuffStatTracker>();
 
     static {
         StatusType[] damageStatuses = new StatusType[] { StatusType.STRENGTH, StatusType.INTELLECT,
@@ -21,30 +20,40 @@ public class StatTracker {
         StatusType[] defenseStatuses = new StatusType[] { StatusType.FROST, StatusType.CONCUSSED,
             StatusType.INJURY, StatusType.PROTECT, StatusType.SHELL };
         for (StatusType type : damageStatuses) {
-            statusOrigins.put(type, new StatTracker(type, true));
+            statusOrigins.put(type, new BuffStatTracker(type, true));
         }
         for (StatusType type : defenseStatuses) {
-            statusOrigins.put(type, new StatTracker(type, false, true));
+            statusOrigins.put(type, new BuffStatTracker(type, false, true));
         }
     }
     
-    private StatTracker(String id, Component display) {
+    protected StatTracker(String id, Component display) {
         this.display = display;
         this.id = id;
     }
-
-    private StatTracker(StatusType type, boolean damage) {
-        this(type.name(), type.ctag.append(
-            Component.text(damage ? " - Damage Buffed" : " - Damage Mitigated", NamedTextColor.GRAY)));
-    }
-
-    private StatTracker(StatusType type, boolean damage, boolean invert) {
-        this(type.name(), type.ctag.append(
-            Component.text(damage ? " - Damage Buffed" : " - Damage Mitigated", NamedTextColor.GRAY)));
+    
+    protected StatTracker(String id, Component display, boolean invert) {
+        this.display = display;
+        this.id = id;
         this.invert = invert;
     }
+    
+    protected StatTracker(Equipment eq, String sfx) {
+        this.id = eq.getId();
+        this.display = eq.getDisplay().append(Component.text(" - " + sfx, NamedTextColor.GRAY));
+    }
+    
+    protected StatTracker(String id) {
+        this.id = id;
+        this.ignore = true;
+    }
+    
+    protected StatTracker(Equipment eq) {
+        this.id = eq.getId();
+        this.ignore = true;
+    }
 
-    public static StatTracker of(StatusType type) {
+    public static BuffStatTracker of(StatusType type) {
         return statusOrigins.get(type);
     }
 
@@ -52,41 +61,52 @@ public class StatTracker {
         return this.id != null && this.id.equals(other.id);
     }
 
+    public String getId() {
+        return id;
+    }
+
     public boolean isInverted() {
         return invert;
     }
     
-    private StatTracker(Equipment eq, String sfx) {
-        this.id = eq.getId();
-        this.display = eq.getDisplay().append(Component.text(" - " + sfx, NamedTextColor.GRAY));
+    public boolean isIgnored() {
+        return ignore;
     }
 
     public static StatTracker of(Equipment eq, String statTitle) {
         return new StatTracker(eq, statTitle);
     }
 
-    public static StatTracker damageBuffAlly(Equipment eq) {
-        return new StatTracker(eq, "Damage Buffed");
+    public static StatTracker ignored(String id) {
+        return new StatTracker(id);
     }
 
-    public static StatTracker damageDebuffAlly(Equipment eq) {
-        return new StatTracker(eq, "Damage Reduced");
+    public static StatTracker ignored(Equipment eq) {
+        return new StatTracker(eq);
     }
 
-    public static StatTracker defenseBuffAlly(Equipment eq) {
-        return new StatTracker(eq, "Damage Mitigated");
+    public static BuffStatTracker damageBuffAlly(Equipment eq) {
+        return new BuffStatTracker(eq, "Damage Buffed");
     }
 
-    public static StatTracker damageDebuffEnemy(Equipment eq) {
-        return new StatTracker(eq, "Damage Mitigated");
+    public static BuffStatTracker damageDebuffAlly(Equipment eq) {
+        return new BuffStatTracker(eq, "Damage Reduced");
     }
 
-    public static StatTracker defenseDebuffEnemy(Equipment eq) {
-        return new StatTracker(eq, "Defense Debuffed");
+    public static BuffStatTracker defenseBuffAlly(Equipment eq) {
+        return new BuffStatTracker(eq, "Damage Mitigated");
     }
 
-    public static StatTracker damageBarriered(Equipment eq) {
-        return new StatTracker(eq, "Damage Barriered");
+    public static BuffStatTracker damageDebuffEnemy(Equipment eq) {
+        return new BuffStatTracker(eq, "Damage Mitigated");
+    }
+
+    public static BuffStatTracker defenseDebuffEnemy(Equipment eq) {
+        return new BuffStatTracker(eq, "Defense Debuffed");
+    }
+
+    public static BuffStatTracker damageBarriered(Equipment eq) {
+        return new BuffStatTracker(eq, "Damage Barriered");
     }
 
     @Override

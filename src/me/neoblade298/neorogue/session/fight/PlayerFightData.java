@@ -176,7 +176,7 @@ public class PlayerFightData extends FightData {
 		}
 		
 		applyStatus(StatusType.CHANNELING, this, 1, ticks);
-		entity.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, ticks, 3));
+		entity.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, ticks, 7));
 		return new TaskChain(this, ticks);
 	}
 	

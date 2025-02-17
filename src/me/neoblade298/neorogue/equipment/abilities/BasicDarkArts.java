@@ -11,6 +11,7 @@ import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
@@ -39,7 +40,7 @@ public class BasicDarkArts extends Equipment {
 		data.addTrigger(id, Trigger.PRE_APPLY_STATUS, (pdata, in) -> {
 			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
 			if (ev.isStatus(StatusType.INSANITY)) {
-				ev.getStacksBuffList().add(Buff.increase(data, stacks, StatTracker.IGNORED));
+				ev.getStacksBuffList().add(Buff.increase(data, stacks, BuffStatTracker.ignored(this)));
 			}
 			return TriggerResult.keep();
 		});

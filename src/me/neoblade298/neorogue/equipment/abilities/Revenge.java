@@ -47,7 +47,7 @@ public class Revenge extends Equipment {
 				data.applyStatus(StatusType.BERSERK, data, 1, -1);
 			}
 			else {
-				data.applyStatus(Status.createByGenericType(GenericStatusType.BASIC, "Revenge", data), data, 1, 200);
+				data.applyStatus(Status.createByGenericType(GenericStatusType.BASIC, "Revenge", data, true), data, 1, 200);
 				Sounds.fire.play(p, p);
 				pc.play(p, p);
 				return TriggerResult.keep();

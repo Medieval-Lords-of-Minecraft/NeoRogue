@@ -29,7 +29,7 @@ public class SearingArrow extends Ammunition {
 		super(ID, "Searing Arrow", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofAmmunition(20, 0.1, DamageType.FIRE));
-				burn = isUpgraded ? 25 : 15;
+				burn = isUpgraded ? 35 : 25;
 
 	}
 	
@@ -49,6 +49,7 @@ public class SearingArrow extends Ammunition {
 
 	@Override
 	public void onTick(Player p, ProjectileInstance proj, int interpolation) {
+		if (interpolation % 2 == 0) return;
 		pc.play(p, proj.getLocation());
 		proj.getVelocity().add(new Vector(0, -0.002, 0));
 	}

@@ -10,7 +10,7 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.StatTracker;
+import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.GrantShieldsEvent;
@@ -35,7 +35,7 @@ public class EnduranceTraining extends Equipment {
 		data.addPermanentShield(p.getUniqueId(), shields);
 		data.addTrigger(id, Trigger.GRANT_SHIELDS, (pdata, in) -> {
 			GrantShieldsEvent ev = (GrantShieldsEvent) in;
-			ev.getBuff().add(Buff.increase(data, dur, StatTracker.IGNORED));
+			ev.getBuff().add(Buff.increase(data, dur, BuffStatTracker.ignored(this)));
 			return TriggerResult.keep();
 		});
 	}

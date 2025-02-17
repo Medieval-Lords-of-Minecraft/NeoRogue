@@ -87,7 +87,7 @@ public class Fracturer extends Equipment {
 				Player p = data.getPlayer();
 				weaponSwing(p, data);
 				data.runAnimation(id, p, swing, p);
-				data.addTask(id, new BukkitRunnable() {
+				data.addTask(new BukkitRunnable() {
 					public void run() {
 						hitArea(p, data);
 					}

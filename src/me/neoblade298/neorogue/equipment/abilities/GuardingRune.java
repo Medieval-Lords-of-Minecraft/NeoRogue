@@ -31,7 +31,7 @@ public class GuardingRune extends Equipment {
 		Trigger tr = data.getSessionData().getPlayerClass() == EquipmentClass.ARCHER ? Trigger.LEFT_CLICK : Trigger.RIGHT_CLICK;
 		data.addTrigger(id, tr, (pdata, in) -> {
 			Sounds.blazeDeath.play(p, p);
-			data.addSimpleShield(p.getUniqueId(), shields, 100);
+			data.addSimpleShield(p.getUniqueId(), shields, 200);
 			p.getInventory().setItemInOffHand(null);
 			return TriggerResult.remove();
 		});
@@ -40,6 +40,6 @@ public class GuardingRune extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.COBBLESTONE,
-				"On right click (left click for <gold>Archer</gold>), gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " for <white>5s</white> once per fight.");
+				"On right click (left click for <gold>Archer</gold>), gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " for <white>10s</white> once per fight.");
 	}
 }

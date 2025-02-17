@@ -5,23 +5,27 @@ import me.neoblade298.neorogue.session.fight.FightData;
 public class Buff {
 	private FightData applier;
 	private double increase, multiplier;
-	private StatTracker tracker;
+	private BuffStatTracker tracker;
 	
 	public Buff() {}
 	
-	public Buff(FightData applier, double increase, double multiplier, StatTracker tracker) {
+	public Buff(FightData applier, double increase, double multiplier, BuffStatTracker tracker) {
 		this.applier = applier;
 		this.increase = increase;
 		this.multiplier = multiplier;
 		this.tracker = tracker;
 	}
 
-	public static Buff increase(FightData applier, double increase, StatTracker tracker) {
+	public static Buff increase(FightData applier, double increase, BuffStatTracker tracker) {
 		return new Buff(applier, increase, 0, tracker);
 	}
 
-	public static Buff multiplier(FightData applier, double multiplier, StatTracker tracker) {
+	public static Buff multiplier(FightData applier, double multiplier, BuffStatTracker tracker) {
 		return new Buff(applier, 0, multiplier, tracker);
+	}
+
+	public static Buff empty(FightData applier, BuffStatTracker tracker) {
+		return new Buff(applier, 0, 0, tracker);
 	}
 	
 	// Used in clone
@@ -34,6 +38,11 @@ public class Buff {
 
 	// Consider removing so that buffs are immutable
 	// Currently this is used to keep similar buffs combined when adding them together
+	public Buff replace(Buff other) {
+		this.increase = other.increase;
+		this.multiplier = other.multiplier;
+		return this;
+	}
 	public Buff combine(Buff other) {
 		this.increase += other.increase;
 		this.multiplier += other.multiplier;
@@ -52,7 +61,7 @@ public class Buff {
 		return new Buff(applier, -increase, -multiplier, tracker);
 	}
 
-	public StatTracker getStatTracker() {
+	public BuffStatTracker getStatTracker() {
 		return tracker;
 	}
 	

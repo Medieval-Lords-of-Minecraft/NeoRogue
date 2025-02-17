@@ -3,8 +3,8 @@ package me.neoblade298.neorogue.session.fight.status;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
-import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 
 public class FrostStatus extends DecrementStackStatus {
 	private static String id = "FROST";
@@ -16,11 +16,11 @@ public class FrostStatus extends DecrementStackStatus {
 	@Override
 	public void apply(FightData applier, int stacks, int seconds) {
 		super.apply(applier, stacks, seconds);
-		holder.addDamageBuff(DamageBuffType.of(DamageCategory.MAGICAL), new Buff(slices.first().getFightData(), -stacks * 0.2, 0, StatTracker.of(StatusType.FROST)));
+		holder.addDamageBuff(DamageBuffType.of(DamageCategory.MAGICAL), new Buff(slices.first().getFightData(), -stacks * 0.2, 0, BuffStatTracker.of(StatusType.FROST)));
 	}
 	
 	@Override
 	public void onTickAction() {
-		holder.addDamageBuff(DamageBuffType.of(DamageCategory.MAGICAL), new Buff(slices.first().getFightData(), 0.2, 0, StatTracker.of(StatusType.FROST)));
+		holder.addDamageBuff(DamageBuffType.of(DamageCategory.MAGICAL), new Buff(slices.first().getFightData(), 0.2, 0, BuffStatTracker.of(StatusType.FROST)));
 	}
 }

@@ -164,7 +164,7 @@ public class ShrineInstance extends EditInventoryInstance {
 			blockTop.setType(Material.WITHER_SKELETON_SKULL);
 
 			Component text = Component.text("Use the anvil!").appendNewline()
-				.append(Component.text("To skip upgrading,")).append(Component.text("shift click the paper!"));
+				.append(Component.text("To skip upgrading,")).appendNewline().append(Component.text("shift click the paper!"));
 			holo = NeoRogue.createHologram(spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), text);
 		}
 	}

@@ -39,7 +39,7 @@ public class SerratedArrow extends Ammunition {
 		FightData fd = FightInstance.getFightData(trg);
 		fd.applyStatus(StatusType.REND, inst.getOwner(), stacks, -1);
 		int total = fd.getStatus(StatusType.REND).getStacks();
-		meta.addDamageSlice(new DamageSlice(inst.getOwner(), damage * total, DamageType.PIERCING));
+		meta.addDamageSlice(new DamageSlice(inst.getOwner(), damage * total, DamageType.REND));
 	}
 
 	@Override

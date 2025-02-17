@@ -73,7 +73,7 @@ public class RighteousHammer extends Equipment {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (pdata, inputs) -> {
 			weaponSwing(p, data);
 			data.runAnimation(id, p, swing, p);
-			data.addTask(id, new BukkitRunnable() {
+			data.addTask(new BukkitRunnable() {
 				public void run() {
 					hitArea(p, data);
 				}

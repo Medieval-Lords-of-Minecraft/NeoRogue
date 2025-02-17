@@ -14,7 +14,7 @@ import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.StatTracker;
+import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -48,7 +48,7 @@ public class BasicElementMastery extends Equipment {
 		data.addTrigger(id, Trigger.PRE_APPLY_STATUS, (pdata, in) -> {
 			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
 			if (!ev.isStatus(StatusType.FROST)) return TriggerResult.keep();
-			ev.getStacksBuffList().add(new Buff(data, 1, 0, StatTracker.IGNORED));
+			ev.getStacksBuffList().add(new Buff(data, 1, 0, BuffStatTracker.ignored(this)));
 			data.addSimpleShield(p.getUniqueId(), shields, 60);
 			return TriggerResult.keep();
 		});

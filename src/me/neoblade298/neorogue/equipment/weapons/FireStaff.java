@@ -61,7 +61,7 @@ public class FireStaff extends Equipment {
 			if (!canUseWeapon(data))
 				return TriggerResult.keep();
 			weaponSwing(p, data);
-			data.addTask(id, new BukkitRunnable() {
+			data.addTask(new BukkitRunnable() {
 				@Override
 				public void run() {
 					proj.start(data);

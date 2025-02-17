@@ -10,6 +10,7 @@ import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -36,7 +37,7 @@ public class EngineersCap extends Equipment {
 		data.addDefenseBuff(DamageBuffType.of(DamageCategory.PHYSICAL), Buff.increase(data, dec, StatTracker.defenseBuffAlly(this)));
 		data.addTrigger(id, Trigger.LAY_TRAP, (pdata, in) -> {
 			LayTrapEvent ev = (LayTrapEvent) in;
-			ev.getDurationBuffList().add(Buff.increase(data, dur * 20, StatTracker.IGNORED));
+			ev.getDurationBuffList().add(Buff.increase(data, dur * 20, BuffStatTracker.ignored(this)));
 			return TriggerResult.keep();
 		});
 	}

@@ -17,7 +17,7 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.StatTracker;
+import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -42,7 +42,7 @@ public class EnergyBattery extends Artifact {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
-		EnergyBatteryInstance inst = new EnergyBatteryInstance();
+		EnergyBatteryInstance inst = new EnergyBatteryInstance(this);
 		data.addTrigger(id, Trigger.PRE_CAST_USABLE, inst);
 		data.addTrigger(id, Trigger.CAST_USABLE, (pdata, in) -> {
 			return inst.checkUsed(p, (CastUsableEvent) in);
@@ -51,7 +51,12 @@ public class EnergyBattery extends Artifact {
 	
 	public class EnergyBatteryInstance implements TriggerAction {
 		private int count = 0;
-		String uuid = UUID.randomUUID().toString();
+		private String uuid = UUID.randomUUID().toString();
+		private Equipment eq;
+
+		public EnergyBatteryInstance(Equipment eq) {
+			this.eq = eq;
+		}
 
 		@Override
 		public TriggerResult trigger(PlayerFightData data, Object inputs) {
@@ -63,7 +68,7 @@ public class EnergyBattery extends Artifact {
 				Player p = data.getPlayer();
 				part.play(p, p);
 				for (PropertyType type : new PropertyType[] { PropertyType.MANA_COST, PropertyType.STAMINA_COST, PropertyType.COOLDOWN }) {
-					ev.addBuff(type, uuid, Buff.multiplier(data, 1, StatTracker.IGNORED));
+					ev.addBuff(type, uuid, Buff.multiplier(data, 1, BuffStatTracker.ignored(eq)));
 				}
 				return TriggerResult.keep();
 			}

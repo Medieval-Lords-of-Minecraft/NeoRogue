@@ -9,7 +9,7 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.StatTracker;
+import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -35,7 +35,7 @@ public class Frenzy extends Equipment {
 		data.addTrigger(ID, Trigger.WEAPON_SWING, (pdata, in) -> {
 			int mult = Math.min(4, data.getStatus(StatusType.BERSERK).getStacks() / CUTOFF);
 			WeaponSwingEvent ev = (WeaponSwingEvent) in;
-			ev.getAttackSpeedBuffList().add(new Buff(data, 0, mult * atkSpeed * 0.01, StatTracker.IGNORED));
+			ev.getAttackSpeedBuffList().add(new Buff(data, 0, mult * atkSpeed * 0.01, BuffStatTracker.ignored(this)));
 			return TriggerResult.keep();
 		});
 	}

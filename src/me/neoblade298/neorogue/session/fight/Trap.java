@@ -62,13 +62,12 @@ public abstract class Trap {
 			}
 		}.runTaskTimer(NeoRogue.inst(), 0, tickPeriod);
 		taskId = UUID.randomUUID().toString();
-		owner.addTask(taskId, task);	
+		owner.addTask(task);	
 	}
 
 	public void deactivate() {
 		if (task != null) {
-			task.cancel();
-			owner.removeTask(taskId);
+			owner.removeAndCancelTask(taskId);
 			owner.runActions(owner, Trigger.DEACTIVATE_TRAP, this);
 			task = null;
 		}

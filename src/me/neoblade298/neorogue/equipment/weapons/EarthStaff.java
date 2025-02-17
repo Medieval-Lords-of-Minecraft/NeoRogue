@@ -63,7 +63,7 @@ public class EarthStaff extends Equipment {
 				Util.displayError(p, "Can't use in the air!");
 			}
 			weaponSwing(p, data);
-			data.addTask(id, new BukkitRunnable() {
+			data.addTask(new BukkitRunnable() {
 				@Override
 				public void run() {
 					Sounds.explode.play(p, p);
@@ -74,7 +74,7 @@ public class EarthStaff extends Equipment {
 						FightInstance.getFightData(ent.getUniqueId()).applyStatus(StatusType.CONCUSSED, data, 3, 0);
 					}
 
-					data.addTask(id, new BukkitRunnable() {
+					data.addTask(new BukkitRunnable() {
 						@Override
 						public void run() {
 							Sounds.explode.play(p, p);

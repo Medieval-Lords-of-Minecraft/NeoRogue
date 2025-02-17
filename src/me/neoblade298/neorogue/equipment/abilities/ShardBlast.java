@@ -104,6 +104,6 @@ public class ShardBlast extends Equipment {
 		item = createItem(Material.DARK_PRISMARINE,
 				"On cast, drop a " + GlossaryTag.TRAP.tag(this) + 
 				" " + DescUtil.duration(dur, false) + ". Recasting activates the trap, dealing " + GlossaryTag.PIERCING.tag(this, damage, true) +
-				" damage to all nearby enemies and reducing their defense by " + DescUtil.yellow(reduc) + " " + DescUtil.duration(5, false) + ".");
+				" damage to all nearby enemies and reducing their " + GlossaryTag.GENERAL.tag(this) + " defense by " + DescUtil.yellow(reduc) + " " + DescUtil.duration(5, false) + ".");
 	}
 }

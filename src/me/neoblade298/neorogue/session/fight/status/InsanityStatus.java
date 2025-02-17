@@ -3,8 +3,8 @@ package me.neoblade298.neorogue.session.fight.status;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
-import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 
 public class InsanityStatus extends DecrementStackStatus {
 	private static String id = "INSANITY";
@@ -16,11 +16,11 @@ public class InsanityStatus extends DecrementStackStatus {
 	@Override
 	public void apply(FightData applier, int stacks, int seconds) {
 		super.apply(applier, stacks, seconds);
-		holder.addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL), new Buff(applier, stacks, -stacks * 0.2, StatTracker.of(StatusType.INSANITY)));
+		holder.addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL), new Buff(applier, stacks, -stacks * 0.2, BuffStatTracker.of(StatusType.INSANITY)));
 	}
 	
 	@Override
 	public void onTickAction() {
-		holder.addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL), new Buff(slices.first().getFightData(), stacks, stacks * 0.2, StatTracker.of(StatusType.INSANITY)));
+		holder.addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL), new Buff(slices.first().getFightData(), stacks, stacks * 0.2, BuffStatTracker.of(StatusType.INSANITY)));
 	}
 }

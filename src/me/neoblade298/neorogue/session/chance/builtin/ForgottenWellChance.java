@@ -44,7 +44,7 @@ public class ForgottenWellChance extends ChanceSet {
 					data.giveEquipment(SapphireCluster.get());
 					return null;
 				});
-		stage.addChoice(new ChanceChoice(Material.LAPIS_LAZULI, "I wish to become rich.",
+		stage.addChoice(new ChanceChoice(Material.GOLD_NUGGET, "I wish to become rich.",
 				"Acquire <yellow>100 coins</yellow>.",
 				(s, inst, data) -> {
 					Player p = data.getPlayer();

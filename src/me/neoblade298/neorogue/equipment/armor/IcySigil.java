@@ -42,7 +42,7 @@ public class IcySigil extends Equipment {
 			if (!ev.isStatus(StatusType.FROST)) return TriggerResult.keep();
 			act.addCount(ev.getStacks());
 			if (act.getCount() >= thres) {
-				data.addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL), Buff.increase(data, def, StatTracker.defenseBuffAlly(this)), id, 100);
+				data.addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL), Buff.increase(data, def, StatTracker.defenseBuffAlly(this)), 100);
 				act.setCount(act.getCount() % thres);
 			}
 			return TriggerResult.keep();

@@ -52,7 +52,7 @@ public class Windcall extends Equipment {
 			cone.play(p, pc, p.getLocation(), LocalAxes.usingGroundedEyeLocation(p), pc);
 			for (LivingEntity ent : TargetHelper.getEntitiesInCone(p, tp)) {
 				FightData fd = FightInstance.getFightData(ent);
-				if (ent.getLocation().distanceSquared(p.getLocation()) <= 3 * 3) {
+				if (ent.getLocation().distanceSquared(p.getLocation()) <= 5 * 5) {
 					fd.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
 						Buff.increase(data, -reduc, StatTracker.damageDebuffEnemy(this)), dur);
 				}
@@ -65,7 +65,7 @@ public class Windcall extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.WIND_CHARGE,
-				"On cast, knock back nearby enemies in a cone in front of you. Enemies within <white>3</white> blocks of you have their damage reduced by "
+				"On cast, knock back nearby enemies in a cone in front of you. Enemies within <white>5</white> blocks of you have their damage reduced by "
 				+ DescUtil.yellow(reduc) + " " + DescUtil.duration(dur, false) + ".");
 	}
 }

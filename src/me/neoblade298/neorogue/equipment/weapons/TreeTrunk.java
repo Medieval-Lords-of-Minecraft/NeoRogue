@@ -72,7 +72,7 @@ public class TreeTrunk extends Equipment {
 			if (!data.canBasicAttack()) return TriggerResult.keep();
 			data.runAnimation(id, p, swing, p);
 			weaponSwing(p, data);
-			data.addTask(id, new BukkitRunnable() {
+			data.addTask(new BukkitRunnable() {
 				public void run() {
 					leftHit(p, data);
 				}

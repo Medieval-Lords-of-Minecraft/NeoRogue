@@ -12,7 +12,7 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.StatTracker;
+import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusClass;
 import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -32,13 +32,13 @@ public class NoxianSkull extends Artifact {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
-		data.addTrigger(ID, Trigger.PRE_APPLY_STATUS, new NoxianSkullInstance(ID));
+		data.addTrigger(ID, Trigger.PRE_APPLY_STATUS, new NoxianSkullInstance(this, ID));
 	}
 	
 	private class NoxianSkullInstance extends PriorityAction {
 		HashMap<String, Integer> map = new HashMap<String, Integer>();
 		
-		public NoxianSkullInstance(String id) {
+		public NoxianSkullInstance(Equipment eq, String id) {
 			super(id);
 			
 			action = (pdata, in) -> {
@@ -48,7 +48,7 @@ public class NoxianSkull extends Artifact {
 					int extra = total / 6;
 					total = total % 6;
 					map.put(ev.getStatusId(), total);
-					ev.getStacksBuffList().add(Buff.increase(pdata, extra, StatTracker.IGNORED));
+					ev.getStacksBuffList().add(Buff.increase(pdata, extra, BuffStatTracker.ignored(eq)));
 				}
 				return TriggerResult.keep();
 			};

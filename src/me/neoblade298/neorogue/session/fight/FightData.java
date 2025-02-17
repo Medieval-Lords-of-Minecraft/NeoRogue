@@ -29,8 +29,8 @@ import me.neoblade298.neorogue.session.SessionManager;
 import me.neoblade298.neorogue.session.fight.TickAction.TickResult;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffList;
+import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
-import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -107,7 +107,7 @@ public class FightData {
 		// Set up base mob resistances
 		if (mob != null) {
 			for (Entry<DamageCategory, Integer> ent : mob.getResistances().entrySet()) {
-				addDefenseBuff(DamageBuffType.of(ent.getKey()), new Buff(this, 0, (double) ent.getValue() / 100, StatTracker.IGNORED));
+				addDefenseBuff(DamageBuffType.of(ent.getKey()), new Buff(this, 0, (double) ent.getValue() / 100, BuffStatTracker.ignored("MythicMobs")));
 			}
 		}
 	}
@@ -140,35 +140,28 @@ public class FightData {
 		addBuff(defenseBuffs, type, b);
 	}
 
+	public void addDamageBuff(DamageBuffType type, Buff b, int ticks) {
+		addBuff(damageBuffs, type, b, ticks);
+	}
+
+	public void addDefenseBuff(DamageBuffType type, Buff b, int ticks) {
+		addBuff(defenseBuffs, type, b, ticks);
+	}
+
 	private void addBuff(HashMap<DamageBuffType, BuffList> lists, DamageBuffType type, Buff b) {
 		BuffList list = lists.getOrDefault(type, new BuffList());
 		list.add(b);
 		lists.put(type, list);
 	}
 
-	public void addDamageBuff(DamageBuffType type, Buff b, int ticks) {
-		addBuff(damageBuffs, type, b, UUID.randomUUID().toString(), ticks);
-	}
-
-	public void addDamageBuff(DamageBuffType type, Buff b, String id, int ticks) {
-		addBuff(damageBuffs, type, b, id, ticks);
-	}
-
-	public void addDefenseBuff(DamageBuffType type, Buff b, String id, int ticks) {
-		addBuff(defenseBuffs, type, b, id, ticks);
-	}
-
-	public void addDefenseBuff(DamageBuffType type, Buff b, int ticks) {
-		addBuff(defenseBuffs, type, b, UUID.randomUUID().toString(), ticks);
-	}
-
-	private void addBuff(HashMap<DamageBuffType, BuffList> lists, DamageBuffType type, Buff b, String id, int ticks) {
+	private void addBuff(HashMap<DamageBuffType, BuffList> lists, DamageBuffType type, Buff b, int ticks) {
 		addBuff(lists, type, b);
 
 		if (ticks > 0) {
+			String id = b.getStatTracker().getId();
 			addTask(id, new BukkitRunnable() {
 				public void run() {
-					addBuff(lists, type, b.invert());
+					addBuff(lists, type, Buff.empty(b.getApplier(), b.getStatTracker()));
 					tasks.remove(id);
 				}
 			}.runTaskLater(NeoRogue.inst(), ticks));
@@ -196,7 +189,7 @@ public class FightData {
 	}
 
 	public void addTask(String id, BukkitTask task) {
-		while (tasks.containsKey(id)) id += "1";
+		if (tasks.containsKey(id)) tasks.get(id).cancel();
 		tasks.put(id, task);
 	}
 	
@@ -282,6 +275,11 @@ public class FightData {
 
 	public void removeTask(String id) {
 		tasks.remove(id);
+	}
+
+	public void removeAndCancelTask(String id) {
+		BukkitTask task = tasks.remove(id);
+		task.cancel();
 	}
 	
 	public void removeCleanupTask(String id) {

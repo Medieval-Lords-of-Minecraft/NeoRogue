@@ -10,7 +10,7 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.StatTracker;
+import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -35,10 +35,10 @@ public class BasicManaManipulation extends Equipment {
 		data.addTrigger(id, Trigger.PRE_APPLY_STATUS, (pdata, in) -> {
 			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
 			if (ev.isStatus(StatusType.STEALTH)) {
-				ev.getDurationBuffList().add(Buff.increase(data, 1, StatTracker.IGNORED));
+				ev.getDurationBuffList().add(Buff.increase(data, 1, BuffStatTracker.ignored(this)));
 			}
 			else if (ev.isStatus(StatusType.ELECTRIFIED)) {
-				ev.getStacksBuffList().add(Buff.increase(data, stacks, StatTracker.IGNORED));
+				ev.getStacksBuffList().add(Buff.increase(data, stacks, BuffStatTracker.ignored(this)));
 			}
 			return TriggerResult.keep();
 		});

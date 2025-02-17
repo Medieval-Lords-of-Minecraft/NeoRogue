@@ -76,7 +76,7 @@ public class StoneHammer extends Equipment {
 			if (!data.canBasicAttack()) return TriggerResult.keep();
 			weaponSwing(p, data);
 			data.runAnimation(id, p, swing, p);
-			data.addTask(id, new BukkitRunnable() {
+			data.addTask(new BukkitRunnable() {
 				public void run() {
 					hitArea(p, data);
 				}

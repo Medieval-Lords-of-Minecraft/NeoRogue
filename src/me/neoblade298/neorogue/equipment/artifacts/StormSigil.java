@@ -33,7 +33,7 @@ public class StormSigil extends Artifact {
 	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
 		data.addTrigger(id, Trigger.CHANGE_AMMUNITION, (pdata, in) -> {
 			data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), 
-				Buff.increase(data, damage, StatTracker.damageBuffAlly(this)), id, secs * 20);
+				Buff.increase(data, damage, StatTracker.damageBuffAlly(this)), secs * 20);
 			return TriggerResult.keep();
 		});
 	}
