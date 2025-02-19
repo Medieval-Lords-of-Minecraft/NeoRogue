@@ -660,6 +660,33 @@ public class PlayerSessionData extends MapViewer {
 		}
 	}
 
+
+	public String serialize() {
+		return ec.name() + "," + maxHealth + "," + maxMana + "," + maxStamina + "," + manaRegen + "," + staminaRegen + "," +
+			Equipment.serialize(hotbar) + "," + Equipment.serialize(armors) + "," + Equipment.serialize(offhand) + "," +
+			Equipment.serialize(accessories) + "," + Equipment.serialize(storage) + "," + Equipment.serialize(otherBinds) + "," +
+			ArtifactInstance.serialize(artifacts) + "," + maxAbilities + "," + maxStorage + "," + coins;
+	}
+
+	public void deserialize(String str) {
+		String[] arr = str.split(",");
+		maxHealth = Integer.parseInt(arr[0]);
+		maxMana = Integer.parseInt(arr[1]);
+		maxStamina = Integer.parseInt(arr[2]);
+		manaRegen = Double.parseDouble(arr[3]);
+		staminaRegen = Double.parseDouble(arr[4]);
+		hotbar = Equipment.deserializeAsArray(arr[5]);
+		armors = Equipment.deserializeAsArray(arr[6]);
+		offhand = Equipment.deserializeAsArray(arr[7]);
+		accessories = Equipment.deserializeAsArray(arr[8]);
+		storage = Equipment.deserializeAsArray(arr[9]);
+		otherBinds = Equipment.deserializeAsArray(arr[10]);
+		artifacts = ArtifactInstance.deserializeMap(arr[11]);
+		maxAbilities = Integer.parseInt(arr[12]);
+		maxStorage = Integer.parseInt(arr[13]);
+		coins = Integer.parseInt(arr[14]);
+	}
+
 	public class PlayerSlot {
 		private int slot;
 		private EquipSlot es;

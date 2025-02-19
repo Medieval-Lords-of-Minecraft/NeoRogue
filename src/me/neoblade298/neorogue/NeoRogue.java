@@ -30,6 +30,7 @@ import me.neoblade298.neorogue.commands.CmdAdminChance;
 import me.neoblade298.neorogue.commands.CmdAdminCoins;
 import me.neoblade298.neorogue.commands.CmdAdminDamage;
 import me.neoblade298.neorogue.commands.CmdAdminDebug;
+import me.neoblade298.neorogue.commands.CmdAdminDeserialize;
 import me.neoblade298.neorogue.commands.CmdAdminEquipment;
 import me.neoblade298.neorogue.commands.CmdAdminGod;
 import me.neoblade298.neorogue.commands.CmdAdminMap;
@@ -38,6 +39,7 @@ import me.neoblade298.neorogue.commands.CmdAdminPiece;
 import me.neoblade298.neorogue.commands.CmdAdminPieceSettings;
 import me.neoblade298.neorogue.commands.CmdAdminReload;
 import me.neoblade298.neorogue.commands.CmdAdminReloadMythic;
+import me.neoblade298.neorogue.commands.CmdAdminSerialize;
 import me.neoblade298.neorogue.commands.CmdAdminSet;
 import me.neoblade298.neorogue.commands.CmdAdminStatus;
 import me.neoblade298.neorogue.commands.CmdAdminTrash;
@@ -149,8 +151,10 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdAdminBoss("boss", "Tests a boss fight", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminGod("god", "Maxes out your health, mana, stamina, and ignores cooldowns in a fight", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminSet("set", "Set your stats mid-fight", null, SubcommandRunner.PLAYER_ONLY));
-		mngr.register(new CmdAdminStatus("status", "Add/remove statuses mid-fight", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdAdminStatus("status", "Add/remove statuses mid-fight, aim at mob to use on them", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminDamage("damage", "Deal damage to yourself for testing purposes", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdAdminSerialize("serialize", "Save a player's loadout for debug purposes", null, SubcommandRunner.BOTH));
+		mngr.register(new CmdAdminDeserialize("deserialize", "Loads in a player's loadout for debug purposes", null, SubcommandRunner.BOTH));
 		mngr.registerCommandList("");
 	}
 	

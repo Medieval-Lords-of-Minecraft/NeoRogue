@@ -1,6 +1,7 @@
 package me.neoblade298.neorogue.equipment;
 
 import java.util.TreeMap;
+
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -74,7 +75,7 @@ public class ArtifactInstance implements Comparable<ArtifactInstance> {
 	public static String serialize(TreeMap<String, ArtifactInstance> map) {
 		String str = "";
 		for (ArtifactInstance ai : map.values()) {
-			str += ai.serialize();
+			str += ai.serialize() + ";";
 		}
 		return str;
 	}
