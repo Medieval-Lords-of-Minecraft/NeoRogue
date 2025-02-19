@@ -15,6 +15,7 @@ import io.lumine.mythic.api.skills.SkillResult;
 import io.lumine.mythic.api.skills.SkillTrigger;
 import io.lumine.mythic.api.skills.ThreadSafetyLevel;
 import io.lumine.mythic.bukkit.MythicBukkit;
+import io.lumine.mythic.core.mobs.ActiveMob;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageType;
@@ -22,7 +23,7 @@ import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 
 public class MechanicDamage implements ITargetedEntitySkill {
-	protected final boolean hitBarrier;
+	protected final boolean hitBarrier, asParent;
 	protected final HashMap<DamageType, Double> damage = new HashMap<DamageType, Double>();
 	protected Skill successSkill, failSkill;
 
@@ -39,6 +40,7 @@ public class MechanicDamage implements ITargetedEntitySkill {
 			}
 		}
         this.hitBarrier = cfg.getBoolean(new String[] { "hb", "hitbarrier" }, false);
+		this.asParent = cfg.getBoolean(new String[] { "asParent", "ap" }, false);
 
 		String skillName = cfg.getString(new String[] { "onSuccess", "oS" });
 		if (skillName != null) {
@@ -56,7 +58,11 @@ public class MechanicDamage implements ITargetedEntitySkill {
 		try {
 			double level = data.getCaster().getLevel();
 			final double mult = 1 + (level / 10);
-			FightData fd = FightInstance.getFightData(data.getCaster().getEntity().getUniqueId());
+			ActiveMob am = MythicBukkit.inst().getMobManager().getMythicMobInstance(data.getCaster().getEntity()); // Currently assumes caster is always mythicmob
+			if (asParent && !am.getParent().isPresent()) {
+				return SkillResult.CONDITION_FAILED;
+			}
+			FightData fd = asParent ? FightInstance.getFightData(am.getParent().get().getBukkitEntity()) : FightInstance.getFightData(data.getCaster().getEntity().getUniqueId());
 			DamageMeta meta = new DamageMeta(fd);
 			for (Entry<DamageType, Double> ent : damage.entrySet()) {
 				meta.addDamageSlice(new DamageSlice(fd, ent.getValue() * mult, ent.getKey()));

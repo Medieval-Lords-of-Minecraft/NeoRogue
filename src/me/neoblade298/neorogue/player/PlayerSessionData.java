@@ -668,23 +668,30 @@ public class PlayerSessionData extends MapViewer {
 			ArtifactInstance.serialize(artifacts) + "," + maxAbilities + "," + maxStorage + "," + coins;
 	}
 
-	public void deserialize(String str) {
+	public void deserialize(String str) throws Exception {
 		String[] arr = str.split(",");
-		maxHealth = Integer.parseInt(arr[0]);
-		maxMana = Integer.parseInt(arr[1]);
-		maxStamina = Integer.parseInt(arr[2]);
-		manaRegen = Double.parseDouble(arr[3]);
-		staminaRegen = Double.parseDouble(arr[4]);
-		hotbar = Equipment.deserializeAsArray(arr[5]);
-		armors = Equipment.deserializeAsArray(arr[6]);
-		offhand = Equipment.deserializeAsArray(arr[7]);
-		accessories = Equipment.deserializeAsArray(arr[8]);
-		storage = Equipment.deserializeAsArray(arr[9]);
-		otherBinds = Equipment.deserializeAsArray(arr[10]);
-		artifacts = ArtifactInstance.deserializeMap(arr[11]);
-		maxAbilities = Integer.parseInt(arr[12]);
-		maxStorage = Integer.parseInt(arr[13]);
-		coins = Integer.parseInt(arr[14]);
+		int i = 0;
+		try {
+			ec = EquipmentClass.valueOf(arr[i++]);
+			maxHealth = Double.parseDouble(arr[i++]);
+			maxMana = Double.parseDouble(arr[i++]);
+			maxStamina = Double.parseDouble(arr[i++]);
+			manaRegen = Double.parseDouble(arr[i++]);
+			staminaRegen = Double.parseDouble(arr[i++]);
+			hotbar = Equipment.deserializeAsArray(arr[i++]);
+			armors = Equipment.deserializeAsArray(arr[i++]);
+			offhand = Equipment.deserializeAsArray(arr[i++]);
+			accessories = Equipment.deserializeAsArray(arr[i++]);
+			storage = Equipment.deserializeAsArray(arr[i++]);
+			otherBinds = Equipment.deserializeAsArray(arr[i++]);
+			artifacts = ArtifactInstance.deserializeMap(arr[i++]);
+			maxAbilities = Integer.parseInt(arr[i++]);
+			maxStorage = Integer.parseInt(arr[i++]);
+			coins = Integer.parseInt(arr[i++]);
+		}
+		catch (Exception ex) {
+			throw new Exception("Failed to deserialize player session data slot " + i);
+		}
 	}
 
 	public class PlayerSlot {

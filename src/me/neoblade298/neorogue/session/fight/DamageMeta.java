@@ -327,12 +327,11 @@ public class DamageMeta {
 			while (owner.hasStatus(StatusType.INJURY) && sliceDamage > 0) {
 				Status injury = owner.getStatus(StatusType.INJURY);
 				int stacks = injury.getStacks();
-				HashMap<FightData, Integer> owners = recipient.getStatus(StatusType.INJURY).getSlices().getSliceOwners();
+				HashMap<FightData, Integer> owners = owner.getStatus(StatusType.INJURY).getSlices().getSliceOwners();
 				int numOwners = owners.size();
 				if (stacks * 0.2 >= sliceDamage) {
 					int toRemove = (int) (sliceDamage / 0.2);
 					injury.apply(owner, -toRemove, -1);
-				
 					for (Entry<FightData, Integer> ent : owners.entrySet()) {
 						if (ent.getKey() instanceof PlayerFightData) {
 							((PlayerFightData) ent.getKey()).getStats().addInjuryMitigated(sliceDamage / numOwners);
@@ -343,8 +342,7 @@ public class DamageMeta {
 				else {
 					sliceDamage -= stacks * 0.2;
 					injury.apply(owner, -stacks, -1);
-				
-					for (Entry<FightData, Integer> ent : recipient.getStatus(StatusType.CONCUSSED).getSlices().getSliceOwners().entrySet()) {
+					for (Entry<FightData, Integer> ent : owner.getStatus(StatusType.INJURY).getSlices().getSliceOwners().entrySet()) {
 						if (ent.getKey() instanceof PlayerFightData) {
 							((PlayerFightData) ent.getKey()).getStats().addInjuryMitigated((stacks * 0.2) / numOwners);
 						}

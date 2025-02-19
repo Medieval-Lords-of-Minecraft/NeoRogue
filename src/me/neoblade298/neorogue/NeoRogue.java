@@ -154,7 +154,7 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdAdminStatus("status", "Add/remove statuses mid-fight, aim at mob to use on them", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminDamage("damage", "Deal damage to yourself for testing purposes", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminSerialize("serialize", "Save a player's loadout for debug purposes", null, SubcommandRunner.BOTH));
-		mngr.register(new CmdAdminDeserialize("deserialize", "Loads in a player's loadout for debug purposes", null, SubcommandRunner.BOTH));
+		mngr.register(new CmdAdminDeserialize("deserialize", "Loads in a player's loadout for debug purposes", null, SubcommandRunner.CONSOLE_ONLY));
 		mngr.registerCommandList("");
 	}
 	

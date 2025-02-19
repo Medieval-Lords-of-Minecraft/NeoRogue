@@ -18,7 +18,7 @@ public class StatTracker {
         StatusType[] damageStatuses = new StatusType[] { StatusType.STRENGTH, StatusType.INTELLECT,
             StatusType.INSANITY };
         StatusType[] defenseStatuses = new StatusType[] { StatusType.CONCUSSED,
-            StatusType.INJURY, StatusType.PROTECT, StatusType.SHELL };
+            StatusType.PROTECT, StatusType.SHELL };
         for (StatusType type : damageStatuses) {
             statusOrigins.put(type, new BuffStatTracker(type, true));
         }

@@ -53,7 +53,7 @@ public class ShopInventory extends CoreInventory {
 		super(
 				spectator,
 				Bukkit.createInventory(
-						data.getPlayer(), 27,
+						data.getPlayer(), 36,
 						Component.text(data.getData().getDisplay() + "'s Shop", NamedTextColor.BLUE)
 				)
 		);

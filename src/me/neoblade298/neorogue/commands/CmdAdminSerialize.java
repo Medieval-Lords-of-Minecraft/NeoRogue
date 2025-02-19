@@ -13,6 +13,8 @@ import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class CmdAdminSerialize extends Subcommand {
 
@@ -34,7 +36,11 @@ public class CmdAdminSerialize extends Subcommand {
 		Component cmp;
 		if (s instanceof Player) {
 			cmp = Component.text("Click here to copy " + p.getName() + "'s equipment to clipboard")
-				.clickEvent(ClickEvent.copyToClipboard(data.serialize()));
+				.clickEvent(ClickEvent.copyToClipboard(data.serialize()))
+				.clickEvent(ClickEvent.callback(e -> {
+					Util.msg(s, "Copied to clipboard! Too long to paste in chat, use console instead with /nra deserialize [player] [paste].");
+				}))
+				.hoverEvent(HoverEvent.showText(Component.text("Click to copy").color(NamedTextColor.YELLOW)));
 		}
 		else {
 			cmp = Component.text(p.getName() + "'s Data:").appendNewline().append(Component.text(data.serialize()));
