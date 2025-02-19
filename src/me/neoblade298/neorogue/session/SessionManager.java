@@ -241,7 +241,8 @@ public class SessionManager implements Listener {
 			FightInstance.trigger(p, Trigger.THROW_TRIDENT, e);
 		}
 		else if (e.getEntity() instanceof Arrow) {
-			p.getInventory().addItem(((Arrow) e.getEntity()).getItemStack());
+			ItemStack item = ((Arrow) e.getEntity()).getItemStack();
+			if (item.getType() != Material.ARROW) p.getInventory().addItem(item);
 			FightInstance.trigger(p, Trigger.VANILLA_PROJECTILE, e);
 		}
 	}

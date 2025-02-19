@@ -18,7 +18,7 @@ public class BuffStatTracker extends StatTracker {
     
     protected BuffStatTracker(Equipment eq, String sfx) {
         super(eq, sfx);
-        this.shouldCombine = true;
+        this.shouldCombine = false;
     }
 
     protected BuffStatTracker(StatusType type, boolean damage) {

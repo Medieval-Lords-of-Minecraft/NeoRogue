@@ -19,7 +19,7 @@ public class GuardingRune extends Equipment {
 	public GuardingRune(boolean isUpgraded) {
 		super(ID, "Guarding Rune", isUpgraded, Rarity.COMMON, EquipmentClass.CLASSLESS,
 				EquipmentType.OFFHAND, EquipmentProperties.none());
-		shields = isUpgraded ? 8 : 5;
+		shields = isUpgraded ? 15 : 10;
 	}
 	
 	public static Equipment get() {

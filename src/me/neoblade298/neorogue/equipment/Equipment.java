@@ -1053,7 +1053,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		meta.lore(lore);
 		
 		if (item.getType() == Material.BOW) {
-			meta.addEnchant(Enchantment.INFINITY, 1, true);
+			meta.addEnchant(Enchantment.INFINITY, 1, true); // Needed for now
 		}
 		
 		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);

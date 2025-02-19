@@ -23,12 +23,11 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreDealtDamageEvent;
 
 public class BasicElementMastery extends Equipment {
 	private static final String ID = "basicElementMastery";
-	private int shields, burn;
+	private int burn;
 	
 	public BasicElementMastery(boolean isUpgraded) {
 		super(ID, "Basic Element Mastery", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.none());
-				shields = isUpgraded ? 5 : 3;
 				burn = isUpgraded ? 8 : 5;
 	}
 
@@ -49,7 +48,6 @@ public class BasicElementMastery extends Equipment {
 			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
 			if (!ev.isStatus(StatusType.FROST)) return TriggerResult.keep();
 			ev.getStacksBuffList().add(new Buff(data, 1, 0, BuffStatTracker.ignored(this)));
-			data.addSimpleShield(p.getUniqueId(), shields, 60);
 			return TriggerResult.keep();
 		});
 		data.addTrigger(id, Trigger.PRE_DEALT_DAMAGE, (pdata, in) -> {

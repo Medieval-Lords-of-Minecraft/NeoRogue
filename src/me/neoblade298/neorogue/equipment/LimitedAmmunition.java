@@ -24,7 +24,7 @@ public abstract class LimitedAmmunition extends Ammunition {
 		}
 
 		data.addTrigger(id, bind, (pdata, in) -> {
-			if (uses <= 0) return TriggerResult.remove();
+			if (inst.getRemaining() == 0) return TriggerResult.remove();
 			equip(p, data, inst);
 			return TriggerResult.keep();
 		});

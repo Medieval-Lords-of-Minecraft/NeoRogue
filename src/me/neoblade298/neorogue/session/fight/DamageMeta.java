@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
@@ -272,6 +273,10 @@ public class DamageMeta {
 		for (DamageSlice slice : slices) {
 			double increase = 0, mult = 1, base = slice.getDamage();
 			ArrayList<Buff> buffs = new ArrayList<Buff>(), debuffs = new ArrayList<Buff>();
+			if (slice.getType() == null) {
+				Bukkit.getLogger().warning("[NeoRogue] Damage slice has null type dealing " + slice.getDamage() + " damage");
+				continue;
+			}
 			for (DamageBuffType dbt : getDamageBuffTypes(slice.getType().getCategories())) {
 				if (!damageBuffs.containsKey(dbt)) continue;
 				BuffList list = damageBuffs.get(dbt);

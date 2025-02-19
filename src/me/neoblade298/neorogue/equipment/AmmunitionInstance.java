@@ -59,6 +59,6 @@ public class AmmunitionInstance {
 		return ammo.getProperties();
 	}
 	public int getRemaining() {
-		return ammo instanceof LimitedAmmunition ? ((LimitedAmmunition) ammo).uses : -1;
+		return ammo instanceof LimitedAmmunition ? count : -1;
 	}
 }

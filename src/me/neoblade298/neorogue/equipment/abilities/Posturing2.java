@@ -30,8 +30,8 @@ public class Posturing2 extends Equipment {
 	public Posturing2(boolean isUpgraded) {
 		super(ID, "Posturing II", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.none());
-		time = 4;
-		inc = isUpgraded ? 4 : 3;
+		time = 6;
+		inc = isUpgraded ? 12 : 8;
 	}
 	
 	public static Equipment get() {
@@ -59,7 +59,8 @@ public class Posturing2 extends Equipment {
 			for (IProjectileInstance ipi : ev.getInstances()) {
 				if (ipi instanceof ProjectileInstance) {
 					ProjectileInstance inst = (ProjectileInstance) ipi;
-					inst.getMeta().addDamageSlice(new DamageSlice(data, p.isSneaking() ? inc * 2 : inc, DamageType.PIERCING));
+					double damage = inc * Math.min(4, data.getStatus(StatusType.FOCUS).getStacks());
+					inst.getMeta().addDamageSlice(new DamageSlice(data, p.isSneaking() ? damage * 2 : damage, DamageType.PIERCING));
 				}
 			}
 			return TriggerResult.keep();
@@ -71,6 +72,6 @@ public class Posturing2 extends Equipment {
 		item = createItem(Material.SCAFFOLDING,
 				"Passive. Every " + DescUtil.yellow(time +"s") + " spent crouched during a fight, gain " + GlossaryTag.FOCUS.tag(this, 1, false) + 
 				". Projectiles fired deal an additional " + GlossaryTag.PIERCING.tag(this, inc, true) + " damage per stack of " + GlossaryTag.FOCUS.tag(this) +
-				". This bonus is doubled if the projectile is fired while crouching.");
+				", up to <white>4</white>. This bonus is doubled if the projectile is fired while crouching.");
 	}
 }

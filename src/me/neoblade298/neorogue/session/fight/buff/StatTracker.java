@@ -17,13 +17,14 @@ public class StatTracker {
     static {
         StatusType[] damageStatuses = new StatusType[] { StatusType.STRENGTH, StatusType.INTELLECT,
             StatusType.INSANITY };
-        StatusType[] defenseStatuses = new StatusType[] { StatusType.FROST, StatusType.CONCUSSED,
+        StatusType[] defenseStatuses = new StatusType[] { StatusType.CONCUSSED,
             StatusType.INJURY, StatusType.PROTECT, StatusType.SHELL };
         for (StatusType type : damageStatuses) {
             statusOrigins.put(type, new BuffStatTracker(type, true));
         }
+        statusOrigins.put(StatusType.FROST, new BuffStatTracker(StatusType.FROST, false, true));
         for (StatusType type : defenseStatuses) {
-            statusOrigins.put(type, new BuffStatTracker(type, false, true));
+            statusOrigins.put(type, new BuffStatTracker(type, false));
         }
     }
     
