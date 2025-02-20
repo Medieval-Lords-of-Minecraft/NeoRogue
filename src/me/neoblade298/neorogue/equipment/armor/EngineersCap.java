@@ -8,23 +8,23 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
+import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
-import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.LayTrapEvent;
 
 public class EngineersCap extends Equipment {
 	private static final String ID = "engineersCap";
-	private int dur, dec;
+	private int damage, dec;
+	private double damageActual;
 	
 	public EngineersCap(boolean isUpgraded) {
 		super(ID, "Engineer's Cap", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.ARMOR);
-		dur = isUpgraded ? 5 : 3;
+		damage = isUpgraded ? 15 : 10;
+		damageActual = damage * 0.01;
 		dec = isUpgraded ? 4 : 3;
 	}
 	
@@ -35,16 +35,12 @@ public class EngineersCap extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addDefenseBuff(DamageBuffType.of(DamageCategory.PHYSICAL), Buff.increase(data, dec, StatTracker.defenseBuffAlly(this)));
-		data.addTrigger(id, Trigger.LAY_TRAP, (pdata, in) -> {
-			LayTrapEvent ev = (LayTrapEvent) in;
-			ev.getDurationBuffList().add(Buff.increase(data, dur * 20, BuffStatTracker.ignored(this)));
-			return TriggerResult.keep();
-		});
+		data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL, DamageOrigin.TRAP), Buff.multiplier(data, damageActual, StatTracker.damageBuffAlly(this)));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LEATHER_HELMET, "Decrease " + GlossaryTag.PHYSICAL.tag(this) + " damage taken by " + DescUtil.yellow(dec) + ". Any " + GlossaryTag.TRAP.tagPlural(this) +
-				" you lay will last " + DescUtil.yellow(dur + "s") + " longer.");
+				" you lay will deal " + DescUtil.yellow(damage + "%") + " more damage.");
 	}
 }

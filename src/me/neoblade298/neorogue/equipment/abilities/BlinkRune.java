@@ -38,6 +38,7 @@ public class BlinkRune extends Equipment {
 		am.setCount(reps);
 		Trigger tr = data.getSessionData().getPlayerClass() == EquipmentClass.ARCHER ? Trigger.LEFT_CLICK : Trigger.RIGHT_CLICK;
 		data.addTrigger(id, tr, (pdata, in) -> {
+			if (tr == Trigger.LEFT_CLICK) p.swingOffHand();
 			Vector v = p.getEyeLocation().getDirection();
 			if (p.isOnGround()) {
 				p.teleport(p.getLocation().add(0, 0.2, 0));

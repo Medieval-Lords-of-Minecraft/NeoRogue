@@ -207,7 +207,10 @@ public class FightStatistics {
 				hover = hover.appendNewline().append(extra);
 			}
 		}
-		return Component.text(df.format(score), NamedTextColor.GOLD).hoverEvent(hover);
+		score += evadeMitigated + injuryMitigated + sanctifiedHealing;
+		Component cmp = Component.text(df.format(score), NamedTextColor.GOLD);
+		if (score > 0) cmp = cmp.hoverEvent(hover);
+		return cmp;
 	}
 
 	public Component getBuffComponent() {
@@ -220,7 +223,9 @@ public class FightStatistics {
 			hover = hover.appendNewline().append(stat.getDisplay().append(Component.text(": " + df.format(amt), NamedTextColor.WHITE)));
 			score += amt;
 		}
-		return Component.text(df.format(score), NamedTextColor.BLUE).hoverEvent(hover);
+		Component cmp = Component.text(df.format(score), NamedTextColor.BLUE).hoverEvent(hover);
+		if (score > 0) cmp = cmp.hoverEvent(hover);
+		return cmp;
 	}
 
 	private Component getStatusStat(StatusType type) {

@@ -49,7 +49,7 @@ public enum GlossaryTag implements GlossaryIcon {
 	REND(Material.NETHERITE_SCRAP, StatusType.REND.tag,
 			"Certain abilities become stronger with more stacks of these applied to enemies."),
 	BURN(Material.BLAZE_POWDER, StatusType.BURN.tag,
-			"Upon the holder taking damage, deals 0.2 fire damage per stack applied. 20% of the stacks is removed every second."),
+			"Reduces the holder's resistance to fire by damage by 0.2 per stack applied. 20% of the stacks is removed every second."),
 	FROST(Material.PACKED_ICE, StatusType.FROST.tag,
 			"Decreases the holder's magic damage by 0.2 per stack. Upon the holder dealing magical damage, remove 25% of the stacks. " +
 			"20% of the stacks is removed every second."),

@@ -38,7 +38,7 @@ public class QuickTrap extends Equipment {
 	
 	public QuickTrap(boolean isUpgraded) {
 		super(ID, "Quick Trap", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
-				EquipmentType.OFFHAND, EquipmentProperties.ofUsable(0, 10, 15, 0));
+				EquipmentType.OFFHAND, EquipmentProperties.ofUsable(0, 10, 8, 0));
 		
 		damage = isUpgraded ? 150 : 100;
 		thres = isUpgraded ? 200 : 300;

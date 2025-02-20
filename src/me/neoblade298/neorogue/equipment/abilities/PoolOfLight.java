@@ -50,11 +50,13 @@ public class PoolOfLight extends Equipment {
 			sc.play(p, p);
 			Location loc = p.getLocation();
 			data.addTask(new BukkitRunnable() {
+				int count = 0;
 				public void run() {
 					pc.play(p, loc);
 					for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, tp)) {
 						FightInstance.applyStatus(ent, StatusType.SANCTIFIED, p, sanct, -1);
 					}
+					if (++count >= 10) cancel();
 				}
 			}.runTaskTimer(NeoRogue.inst(), 0L, 20L));
 			return TriggerResult.keep();

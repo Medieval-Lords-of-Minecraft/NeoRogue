@@ -114,6 +114,7 @@ import me.neoblade298.neorogue.equipment.artifacts.SapphireCluster;
 import me.neoblade298.neorogue.equipment.artifacts.SapphireGem;
 import me.neoblade298.neorogue.equipment.artifacts.SapphireShard;
 import me.neoblade298.neorogue.equipment.artifacts.ScrollOfFrost;
+import me.neoblade298.neorogue.equipment.artifacts.StarlightVeil;
 import me.neoblade298.neorogue.equipment.artifacts.StaticNecklace;
 import me.neoblade298.neorogue.equipment.artifacts.StormSigil;
 import me.neoblade298.neorogue.equipment.artifacts.TomeOfWisdom;
@@ -334,6 +335,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Disorient(b);
 			new DodgeRoll(b);
 			new DoubleStrike(b);
+			new DrainLightning(b);
 			new EarthenTackle(b);
 			new EtherealKnife(b);
 			new Embolden(b);
@@ -679,6 +681,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new OpalNecklace();
 		new PracticeDummy();
 		new ScrollOfFrost();
+		new StarlightVeil();
 		new StaticNecklace();
 		new StormSigil();
 		new TomeOfWisdom();

@@ -16,7 +16,7 @@ public class StatTracker {
 
     static {
         StatusType[] damageStatuses = new StatusType[] { StatusType.STRENGTH, StatusType.INTELLECT,
-            StatusType.INSANITY };
+            StatusType.INSANITY, StatusType.BURN };
         StatusType[] defenseStatuses = new StatusType[] { StatusType.CONCUSSED,
             StatusType.PROTECT, StatusType.SHELL };
         for (StatusType type : damageStatuses) {

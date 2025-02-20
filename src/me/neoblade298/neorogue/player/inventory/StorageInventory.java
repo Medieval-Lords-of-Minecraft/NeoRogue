@@ -64,6 +64,11 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 					), 250, NamedTextColor.GRAY
 			);
 		}
+
+		for (int i = data.getMaxStorage(); i < contents.length; i++) {
+			if (contents[i] != null) continue;
+			contents[i] = CoreInventory.createButton(Material.GRAY_STAINED_GLASS_PANE, Component.text(" "));
+		}
 		inv.setContents(contents);
 	}
 
@@ -92,10 +97,12 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 							.append(Component.text("."))
 			);
 		}
+
+		NBTItem nclicked = e.getCurrentItem() != null ? new NBTItem(e.getCurrentItem()) : null;
+		NBTItem ncursor = !e.getCursor().isEmpty() ? new NBTItem(e.getCursor()) : null;
 		
 		// If right click with empty hand, open glossary, disgusting code due to if statement handling
-		if (e.isRightClick() && e.getCurrentItem() != null && new NBTItem(e.getCurrentItem()).hasTag("equipId") && e.getCursor().getType().isAir()) {
-			NBTItem nclicked = new NBTItem(e.getCurrentItem());
+		if (e.isRightClick() && nclicked != null && nclicked.hasTag("equipId") && e.getCursor().getType().isAir()) {
 			e.setCancelled(true);
 			new BukkitRunnable() {
 				public void run() {
@@ -105,23 +112,21 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 			}.runTask(NeoRogue.inst());
 			return;
 		}
+		// Handle shift clicks
 		else if (e.isShiftClick()) {
-			if (e.getCurrentItem() == null) return;
+			if (nclicked == null || !nclicked.hasTag("equipId")) return;
 			e.setCancelled(true);
 			if (!pinv.canShiftClickIn(inv.getItem(e.getSlot()))) return;
 			pinv.handleShiftClickIn(inv.getItem(e.getSlot()));
 			e.setCurrentItem(null);
 			p.playSound(p, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1F);
 		}
+		// Handle left click
 		else {
-			if (!e.getCursor().getType().isAir() || e.getCurrentItem() != null) 
+			// Picking up an item
+			if (nclicked != null && nclicked.hasTag("equipId")) {
+				Equipment eq = Equipment.get(nclicked.getString("equipId"), false);
 				p.playSound(p, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1F);
-			if (!e.getCursor().getType().isAir()) {
-				pinv.clearHighlights();
-			}
-			if (e.getCurrentItem() != null) {
-				NBTItem nbti = new NBTItem(e.getCurrentItem());
-				Equipment eq = Equipment.get(nbti.getString("equipId"), false);
 				if (e.getSlot() == SELL) {
 					pinv.clearHighlights();
 				}
@@ -129,10 +134,13 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 					pinv.setHighlights(eq.getType());
 				}
 			}
-			
-			if (!e.getCursor().getType().isAir() && e.getCurrentItem() != null) {
-				NBTItem ncursor = new NBTItem(e.getCursor());
-				NBTItem nclicked = new NBTItem(e.getCurrentItem());
+			// Swapping an item
+			else if (ncursor != null && nclicked != null) {
+				if (!nclicked.hasTag("equipId") || !ncursor.hasTag("equipId")) {
+					e.setCancelled(true);
+					return;
+				}
+				p.playSound(p, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1F);
 				String eqId = ncursor.getString("equipId");
 				String eqedId = nclicked.getString("equipId");
 				Equipment eq = Equipment.get(eqId, ncursor.getBoolean("isUpgraded"));
@@ -170,8 +178,13 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 				}
 				// Prevent stacking
 				else if (e.getCursor().isSimilar(e.getCurrentItem())) {
-					e.setCancelled(true);
+					p.playSound(p, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1F);
 				}
+			}
+			// dropping an item
+			else if (nclicked == null && ncursor != null) {
+				p.playSound(p, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1F);
+				pinv.clearHighlights();
 			}
 		}
 	}
@@ -192,7 +205,7 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 		// Ignores the sell slot
 		for (int i = 0; i < contents.length - 1; i++) {
 			ItemStack item = contents[i];
-			if (item == null) continue;
+			if (item == null || item.getType() == Material.GRAY_STAINED_GLASS_PANE) continue;
 			NBTItem nbti = new NBTItem(item);
 			Equipment eq = Equipment.get(nbti.getString("equipId"), nbti.getBoolean("isUpgraded"));
 			if (eq == null) {

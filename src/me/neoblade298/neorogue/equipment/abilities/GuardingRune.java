@@ -31,6 +31,7 @@ public class GuardingRune extends Equipment {
 		Trigger tr = data.getSessionData().getPlayerClass() == EquipmentClass.ARCHER ? Trigger.LEFT_CLICK : Trigger.RIGHT_CLICK;
 		data.addTrigger(id, tr, (pdata, in) -> {
 			Sounds.blazeDeath.play(p, p);
+			if (tr == Trigger.LEFT_CLICK) p.swingOffHand();
 			data.addSimpleShield(p.getUniqueId(), shields, 200);
 			p.getInventory().setItemInOffHand(null);
 			return TriggerResult.remove();

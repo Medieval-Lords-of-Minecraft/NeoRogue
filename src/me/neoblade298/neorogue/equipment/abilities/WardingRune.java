@@ -43,7 +43,8 @@ public class WardingRune extends Equipment {
 		Trigger tr = data.getSessionData().getPlayerClass() == EquipmentClass.ARCHER ? Trigger.LEFT_CLICK : Trigger.RIGHT_CLICK;
 		data.addTrigger(id, tr, (pdata, in) -> {
 			Sounds.fire.play(p, p);
-			data.addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL), Buff.increase(data, reduc, StatTracker.defenseBuffAlly(this)), 20);
+			if (tr == Trigger.LEFT_CLICK) p.swingOffHand();
+			data.addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL), Buff.increase(data, reduc, StatTracker.defenseBuffAlly(this)), 60);
 			
 			am.addCount(-1);
 			if (am.getCount() <= 0) {
@@ -63,7 +64,7 @@ public class WardingRune extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.QUARTZ_SLAB,
 				"On right click (left click for <gold>Archer</gold>), reduce " + GlossaryTag.MAGICAL.tag(this) + " damage taken by " +
-				DescUtil.yellow(reduc) + " for <white>1s</white>. " +
+				DescUtil.yellow(reduc) + " for <white>3s</white>. " +
 				"Can be used once for every <white>10</white> max mana you have over <white>40</white>.");
 	}
 }

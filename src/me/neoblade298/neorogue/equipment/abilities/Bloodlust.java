@@ -24,7 +24,7 @@ public class Bloodlust extends Equipment {
 	public Bloodlust(boolean isUpgraded) {
 		super(ID, "Bloodlust", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.none());
-		strength = isUpgraded ? 5 : 3;
+		strength = isUpgraded ? 15 : 10;
 	}
 	
 	public static Equipment get() {

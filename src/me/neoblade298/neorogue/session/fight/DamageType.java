@@ -28,8 +28,6 @@ public enum DamageType {
 		EnumSet.of(DamageCategory.LIGHT, DamageCategory.MAGICAL, DamageCategory.GENERAL, DamageCategory.ALL)),
 	POISON("Poison", StatusType.POISON.tag,
 		EnumSet.of(DamageCategory.STATUS, DamageCategory.ALL)),
-	BURN("Burn", StatusType.BURN.tag,
-		EnumSet.of(DamageCategory.BURN, DamageCategory.FIRE, DamageCategory.MAGICAL, DamageCategory.GENERAL, DamageCategory.STATUS, DamageCategory.ALL)),
 	REND("Rend", StatusType.REND.tag,
 		EnumSet.of(DamageCategory.PIERCING, DamageCategory.PHYSICAL, DamageCategory.GENERAL, DamageCategory.STATUS, DamageCategory.ALL)),
 	ELECTRIFIED("Electrified", StatusType.ELECTRIFIED.tag,

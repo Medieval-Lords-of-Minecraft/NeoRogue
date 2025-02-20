@@ -279,7 +279,7 @@ public class FightData {
 
 	public void removeAndCancelTask(String id) {
 		BukkitTask task = tasks.remove(id);
-		task.cancel();
+		if (task != null) task.cancel();
 	}
 	
 	public void removeCleanupTask(String id) {

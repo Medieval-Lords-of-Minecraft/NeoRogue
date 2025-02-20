@@ -26,8 +26,8 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.Trap;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
@@ -42,8 +42,8 @@ public class Setup extends Equipment {
 		super(ID, "Setup", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.none());
 		time = 6;
-		inc = isUpgraded ? 10 : 5;
-		damage = isUpgraded ? 100 : 70;
+		inc = isUpgraded ? 15 : 10;
+		damage = isUpgraded ? 225 : 150;
 	}
 	
 	public static Equipment get() {

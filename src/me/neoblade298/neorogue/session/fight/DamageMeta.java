@@ -231,20 +231,17 @@ public class DamageMeta {
 
 		// Status effects
 		if (!isSecondary) {
-			if (recipient.hasStatus(StatusType.BURN)) {
-				slices.add(new StatusDamageSlice(DamageType.BURN, recipient.getStatus(StatusType.BURN)));
-			}
-
 			if (owner.hasStatus(StatusType.SANCTIFIED)) {
 				Status status = owner.getStatus(StatusType.SANCTIFIED);
 				int stacks = status.getStacks();
 				int toRemove = (int) (stacks * 0.25);
 				status.apply(owner, -toRemove, 0); // Remove 25% of stacks
 
-				for (Entry<FightData, Integer> ent : recipient.getStatus(StatusType.SANCTIFIED).getSlices().getSliceOwners().entrySet()) {
+				for (Entry<FightData, Integer> ent : owner.getStatus(StatusType.SANCTIFIED).getSlices().getSliceOwners().entrySet()) {
 					if (ent.getKey() instanceof PlayerFightData) {
-						((PlayerFightData) ent.getKey()).getStats().addSanctifiedHealing(ent.getValue() * 0.25);
-						FightInstance.giveHeal(ent.getKey().getEntity(), ent.getValue() * 0.25, recipient.getEntity()); // Assumes sanctified owner is always a player
+						double pct = (double) ent.getValue() / stacks;
+						((PlayerFightData) ent.getKey()).getStats().addSanctifiedHealing(pct * toRemove);
+						FightInstance.giveHeal(ent.getKey().getEntity(), pct * toRemove, recipient.getEntity()); // Assumes sanctified owner is always a player
 					}
 				}
 			}
@@ -498,7 +495,7 @@ public class DamageMeta {
 		}
 		// Only do damage if we haven't canceled the damage
 		else if (!slices.isEmpty()) {
-			target.damage(0.001);
+			target.playHurtAnimation(0);
 		}
 		
 		// Return damage
