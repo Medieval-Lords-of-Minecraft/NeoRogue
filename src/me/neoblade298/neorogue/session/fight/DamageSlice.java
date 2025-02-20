@@ -39,7 +39,7 @@ public class DamageSlice {
 	}
 	public boolean isSimilar(DamageSlice slice) {
 		return this.type == slice.getType() && this.postBuffType == slice.getPostBuffType() &&
-				this.ignoreShields == slice.isIgnoreShields();
+				this.ignoreShields == slice.isIgnoreShields() && this.owner == slice.owner;
 	}
 	public void add(DamageSlice slice) {
 		this.damage += slice.getDamage();

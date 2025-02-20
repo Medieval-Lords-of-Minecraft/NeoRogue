@@ -21,6 +21,8 @@ import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
+import me.neoblade298.neorogue.session.fight.status.Status;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 
 public class MechanicDamage implements ITargetedEntitySkill {
 	protected final boolean hitBarrier, asParent;
@@ -83,6 +85,14 @@ public class MechanicDamage implements ITargetedEntitySkill {
 			}
 			if (skill != null) skill.execute(SkillTrigger.get("API"), data.getCaster(), data.getTrigger(),
 					data.getCaster().getLocation(), targets, null, 1F);
+
+			if (fd.hasStatus(StatusType.ELECTRIFIED)) {
+				Status s = fd.getStatus(StatusType.ELECTRIFIED);
+				DamageMeta dm = new DamageMeta(s.getSlices().first().getFightData()); // Arbitrarily pick first owner as damage meta owner
+				for (Entry<FightData, Integer> slice : fd.getStatus(StatusType.ELECTRIFIED).getSlices().getSliceOwners().entrySet()) {
+					dm.addDamageSlice(new DamageSlice(slice.getKey(), slice.getValue() * 0.2, DamageType.ELECTRIFIED));
+				}
+			}
 			return SkillResult.SUCCESS;
 		} catch (Exception e) {
 			e.printStackTrace();
