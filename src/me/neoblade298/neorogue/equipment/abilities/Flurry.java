@@ -25,7 +25,7 @@ public class Flurry extends Equipment {
 	
 	public Flurry(boolean isUpgraded) {
 		super(ID, "Flurry", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 35, 10, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 25, 10, 0));
 		cutoff = isUpgraded ? 6 : 4;
 	}
 	

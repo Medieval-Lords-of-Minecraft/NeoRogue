@@ -37,9 +37,6 @@ public class CmdAdminSerialize extends Subcommand {
 		if (s instanceof Player) {
 			cmp = Component.text("Click here to copy " + p.getName() + "'s equipment to clipboard")
 				.clickEvent(ClickEvent.copyToClipboard(data.serialize()))
-				.clickEvent(ClickEvent.callback(e -> {
-					Util.msg(s, "Copied to clipboard! Too long to paste in chat, use console instead with /nra deserialize [player] [paste].");
-				}))
 				.hoverEvent(HoverEvent.showText(Component.text("Click to copy").color(NamedTextColor.YELLOW)));
 		}
 		else {

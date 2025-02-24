@@ -35,7 +35,7 @@ public class EndlessVenom extends Equipment {
 				ID, "Endless Venom", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(10, 10, 12, 0)
 		);
-		poison = isUpgraded ? 30 : 20;
+		poison = isUpgraded ? 20 : 15;
 	}
 
 	public static Equipment get() {
@@ -54,7 +54,7 @@ public class EndlessVenom extends Equipment {
 				public void run() {
 					inst.setCount(0);
 				}
-			}.runTaskLater(NeoRogue.inst(), 160L));
+			}.runTaskLater(NeoRogue.inst(), 240L));
 			return TriggerResult.keep();
 		});
 		data.addTrigger(ID, bind, inst);
@@ -71,7 +71,7 @@ public class EndlessVenom extends Equipment {
 	public void setupItem() {
 		item = createItem(
 				Material.GREEN_DYE,
-				"On cast, your basic attacks apply " + GlossaryTag.POISON.tag(this, poison, true) + "."
+				"On cast, your basic attacks apply " + GlossaryTag.POISON.tag(this, poison, true) + " for <white>12s</white>."
 		);
 	}
 }

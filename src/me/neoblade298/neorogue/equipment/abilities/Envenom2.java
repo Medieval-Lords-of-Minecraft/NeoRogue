@@ -26,14 +26,14 @@ import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
 
 public class Envenom2 extends Equipment {
 	private static final String ID = "envenom2";
-	private int poison, dur;
+	private int poison;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST).dustOptions(new DustOptions(Color.GREEN, 1)).count(50).spread(0.5, 0.5).speed(0.2);
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_GENERIC_SWIM);
 	
 	public Envenom2(boolean isUpgraded) {
 		super(ID, "Envenom II", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 10, 12, 0));
-		poison = isUpgraded ? 24 : 18;
+		poison = isUpgraded ? 35 : 25;
 	}
 	
 	public static Equipment get() {
@@ -51,7 +51,7 @@ public class Envenom2 extends Equipment {
 				public void run() {
 					inst.setCount(0);
 				}
-			}.runTaskLater(NeoRogue.inst(), 160L));
+			}.runTaskLater(NeoRogue.inst(), 140L));
 			return TriggerResult.keep();
 		});
 		data.addTrigger(ID, bind, inst);
@@ -59,7 +59,7 @@ public class Envenom2 extends Equipment {
 			if (inst.getCount() == 0) return TriggerResult.keep();
 			DealtDamageEvent ev = (DealtDamageEvent) in;
 			if (!DamageCategory.PHYSICAL.hasType(ev.getMeta().getPrimarySlice().getType())) return TriggerResult.keep();
-			FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, poison, 20 * dur);
+			FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, poison, -1);
 			return TriggerResult.keep();
 		});
 	}
@@ -67,6 +67,6 @@ public class Envenom2 extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GREEN_DYE,
-				"On cast, all primarily " + GlossaryTag.PHYSICAL.tag(this) + " damage you deal applies " + GlossaryTag.POISON.tag(this, poison, true) + ".");
+				"On cast, all primarily " + GlossaryTag.PHYSICAL.tag(this) + " damage you deal applies " + GlossaryTag.POISON.tag(this, poison, true) + " for <white>7s</white>.");
 	}
 }

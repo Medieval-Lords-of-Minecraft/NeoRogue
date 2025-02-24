@@ -23,7 +23,7 @@ public class MortalEngine extends Equipment {
 		super(ID, "Mortal Engine", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.none());
 		
-		cutoff = isUpgraded ? 15 : 25;
+		cutoff = 15;
 		reduc = isUpgraded ? 2 : 1;
 	}
 	
@@ -50,6 +50,6 @@ public class MortalEngine extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.SEA_LANTERN,
 				"Passive. For every ability cast that costs "
-				+ "at least <yellow>" + cutoff + "</yellow> stamina, reduce the stamina cost of all abilities by <yellow>" + reduc + "</yellow>.");
+				+ "at least <white>" + cutoff + "</white> stamina, reduce the stamina cost of all abilities by <yellow>" + reduc + "</yellow>.");
 	}
 }

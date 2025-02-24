@@ -20,7 +20,7 @@ public class Charge extends Equipment {
 	public Charge(boolean isUpgraded) {
 		super(ID, "Charge", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.none());
-		shields = isUpgraded ? 10 : 7;
+		shields = isUpgraded ? 6 : 4;
 	}
 
 	@Override

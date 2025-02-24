@@ -169,7 +169,7 @@ public class NeoRogue extends JavaPlugin {
 		p.setMaximumNoDamageTicks(0);
 		
 		Session s = SessionManager.createSession(p, "test", 1);
-		s.generateArea(AreaType.LOW_DISTRICT);
+		s.generateArea(AreaType.HARVEST_FIELDS);
 		s.addPlayer(p.getUniqueId(), EquipmentClass.ARCHER);
 		SessionManager.addToSession(p.getUniqueId(), s);
 		Player alt = Bukkit.getPlayer("SuaveGentleman");

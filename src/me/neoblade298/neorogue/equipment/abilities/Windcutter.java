@@ -38,7 +38,7 @@ public class Windcutter extends Equipment {
 	public Windcutter(boolean isUpgraded) {
 		super(ID, "Windcutter", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 5));
-		damage = isUpgraded ? 50 : 30;
+		damage = isUpgraded ? 120 : 80;
 		for (int i = 0; i < PROJECTILE_AMOUNT; i++) {
 			projs.add(new WindcutterProjectile(i, PROJECTILE_AMOUNT / 2));
 		}
@@ -61,7 +61,7 @@ public class Windcutter extends Equipment {
 				if (++count >= 3 && (data.getStamina() / data.getMaxStamina()) > 0.5) {
 					sound.play(p, p);
 					projs.start(data, p.getLocation().add(0, 1, 0), p.getLocation().getDirection().setY(0).normalize());
-					data.addStamina(-10);
+					data.addStamina(-8);
 					count = 0;
 				}
 				return TriggerResult.keep();
@@ -74,7 +74,7 @@ public class Windcutter extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.BAMBOO,
 				"Passive. When above 50% max stamina, every third basic attack fires five piercing projectiles in a cone that deal " + GlossaryTag.SLASHING.tag(this, damage, true) +
-				" damage and costs <white>10</white> stamina. Unaffected by stamina cost reduction.");
+				" damage and costs <white>8</white> stamina. Unaffected by stamina cost reduction.");
 	}
 	
 	private class WindcutterProjectile extends Projectile {

@@ -397,6 +397,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Lethality(b);
 			new LightningBolt(b);
 			new LightningRush(b);
+			new LightningStrike(b);
 			new Maim(b);
 			new Malice(b);
 			new Manabending(b);

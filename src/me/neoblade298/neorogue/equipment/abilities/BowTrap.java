@@ -57,7 +57,7 @@ public class BowTrap extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pd, in) -> {
 			Sounds.equip.play(p, p);
-			data.channel(40);
+			data.charge(20);
 			data.addTask(new BukkitRunnable() {
 				public void run() {
 					initTrap(p, data);
@@ -121,7 +121,7 @@ public class BowTrap extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ARCHER_POTTERY_SHERD,
-				"On cast, " + GlossaryTag.CHARGE.tag(this) + " for <white>2s</white>. Afterwards, drop a " + GlossaryTag.TRAP.tag(this) + 
+				"On cast, " + GlossaryTag.CHARGE.tag(this) + " for <white>1s</white>. Afterwards, drop a " + GlossaryTag.TRAP.tag(this) + 
 				" that lasts for " + DescUtil.white("5s") +
 				". It fires a projectile that deals " + GlossaryTag.PIERCING.tag(this, damage, true) +
 				" damage at the nearest enemy every second.");

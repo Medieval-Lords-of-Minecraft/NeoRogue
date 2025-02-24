@@ -58,7 +58,7 @@ public class Envenom extends Equipment {
 				public void run() {
 					inst.setCount(0);
 				}
-			}.runTaskLater(NeoRogue.inst(), 160L));
+			}.runTaskLater(NeoRogue.inst(), 140L));
 			return TriggerResult.keep();
 		});
 		data.addTrigger(ID, bind, inst);
@@ -73,6 +73,6 @@ public class Envenom extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GREEN_DYE,
-				"On cast, for <white>7</white> seconds your basic attacks apply " + GlossaryTag.POISON.tag(this, poison, true) + ".");
+				"On cast, for <white>7</white> seconds your basic attacks apply " + GlossaryTag.POISON.tag(this, poison, true) + " for <white>7s</white>.");
 	}
 }

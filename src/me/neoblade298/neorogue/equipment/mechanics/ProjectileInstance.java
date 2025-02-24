@@ -75,6 +75,7 @@ public class ProjectileInstance extends IProjectileInstance {
 		entityBounds.put(EntityType.IRON_GOLEM, createBox(1.4, 2.7));
 		entityBounds.put(EntityType.BLOCK_DISPLAY, createBox(1, 1));
 		entityBounds.put(EntityType.FALLING_BLOCK, createBox(1, 1));
+		entityBounds.put(EntityType.PLAYER, createBox(1, 2));
 	}
 
 	private static BoundingBox createBox(double width, double height) {

@@ -19,7 +19,7 @@ public class CalculatingGaze extends Equipment {
 	private static final int THRES = 20;
 	
 	public CalculatingGaze(boolean isUpgraded) {
-		super(ID, "CalculatingGaze", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE,
+		super(ID, "Calculating Gaze", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE,
 				EquipmentType.ABILITY, EquipmentProperties.none());
 				shields = 5;
 				regen = isUpgraded ? 0.5 : 0.3;

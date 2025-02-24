@@ -46,6 +46,6 @@ public class StarlightVeil extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GLOWSTONE_DUST, 
-				"Increase mana and stamina regen by <white>1</white> until you recieve health damage.");
+				"Increase mana and stamina regen by <white>1</white> until you receive health damage.");
 	}
 }

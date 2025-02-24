@@ -15,7 +15,6 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.buff.StatTracker;
-import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class Resourcefulness extends Equipment {
@@ -35,7 +34,6 @@ public class Resourcefulness extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.applyStatus(StatusType.EVADE, data, 1, -1);
 		Equipment eq = this;
 		data.addTask(new BukkitRunnable() {
 			public void run() {
@@ -48,6 +46,6 @@ public class Resourcefulness extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.CHEST,
 				"Passive. Increase all " + GlossaryTag.POISON.tag(this, poison, true) + " application stacks by " + DescUtil.yellow(poison) + ". " +
-				"Increase all " + GlossaryTag.PHYSICAL.tag(this) + " damage by " + DescUtil.yellow(damage) + " <white>10s</white> after a fight starts.");
+				"Increase all " + GlossaryTag.PHYSICAL.tag(this) + " damage by " + DescUtil.yellow(damage) + " for <white>10s</white> after a fight starts.");
 	}
 }

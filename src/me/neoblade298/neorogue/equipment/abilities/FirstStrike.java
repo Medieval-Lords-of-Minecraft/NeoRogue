@@ -29,12 +29,13 @@ public class FirstStrike extends Equipment {
 	private static final String ID = "firstStrike";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.PORTAL);
 	private static final TargetProperties tp = TargetProperties.radius(4, false, TargetType.ENEMY);
-	private int damage = 80;
+	private int damage;
 	
 	public FirstStrike(boolean isUpgraded) {
 		super(ID, "First Strike", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(5, 10, 10, 4));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(5, 5, 10, 4));
 		pc.count(50).spread(0.5, 0.5).offsetY(1);
+		damage = isUpgraded ? 225 : 150;
 	}
 	
 	public static Equipment get() {

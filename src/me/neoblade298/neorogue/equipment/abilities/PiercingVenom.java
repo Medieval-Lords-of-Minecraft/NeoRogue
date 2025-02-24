@@ -29,7 +29,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
 public class PiercingVenom extends Equipment {
 	private static final String ID = "piercingVenom";
-	private int poison, dur, threshold;
+	private int poison, threshold;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST).dustOptions(new DustOptions(Color.GREEN, 1)).count(50).spread(0.5, 0.5).speed(0.2);
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_GENERIC_SWIM);
 	
@@ -38,7 +38,6 @@ public class PiercingVenom extends Equipment {
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 10, 12, 0));
 		properties.addUpgrades(PropertyType.COOLDOWN);
 		poison = 18;
-		dur = 3;
 		threshold = isUpgraded ? 2 : 3;
 	}
 	
@@ -64,7 +63,7 @@ public class PiercingVenom extends Equipment {
 		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in) -> {
 			if (inst.getCount() == 0) return TriggerResult.keep();
 			BasicAttackEvent ev = (BasicAttackEvent) in;
-			FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, poison, 20 * dur);
+			FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, poison, -1);
 			FightData fd = FightInstance.getFightData(ev.getTarget());
 			int damage = fd.getStatus(StatusType.POISON).getStacks() / threshold;
 			ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.PIERCING));
@@ -75,7 +74,7 @@ public class PiercingVenom extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GREEN_DYE,
-				"On cast, your basic attacks apply " + GlossaryTag.POISON.tag(this, poison, true) + " seconds and deal <white>1</white> additional "
-						+ GlossaryTag.PIERCING.tag(this) + " damage for every <yellow>" + threshold + "</yellow> stacks of poison the enemy has.");
+				"On cast, your basic attacks apply " + GlossaryTag.POISON.tag(this, poison, true) + " and deal <white>1</white> additional "
+						+ GlossaryTag.PIERCING.tag(this) + " damage for every <yellow>" + threshold + "</yellow> stacks of poison the enemy has for <white>8s</white>.");
 	}
 }

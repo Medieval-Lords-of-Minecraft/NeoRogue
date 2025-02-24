@@ -3,11 +3,9 @@ package me.neoblade298.neorogue.equipment.abilities;
 import java.util.HashSet;
 import java.util.UUID;
 
-import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -76,11 +74,8 @@ public class Blind extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.POTION,
+		item = createItem(Material.LIGHT,
 				"On cast, throw an orb of light that applies Slowness 1 [<white>3s</white>]. During this time, dealing damage to enemies hit " +
 				"applies " + GlossaryTag.INJURY.tag(this, injure, true) + ".");
-		PotionMeta pm = (PotionMeta) item.getItemMeta();
-		pm.setColor(Color.WHITE);
-		item.setItemMeta(pm);
 	}
 }

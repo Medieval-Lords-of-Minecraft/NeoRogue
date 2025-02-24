@@ -43,10 +43,10 @@ public class Expunge extends Equipment {
 	
 	public Expunge(boolean isUpgraded) {
 		super(ID, "Expunge", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 0, 5, 7));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 0, 12, 7));
 		
-		stacks = isUpgraded ? 200 : 150;
-		bonus = isUpgraded ? 0.6 : 0.4;
+		stacks = isUpgraded ? 150 : 100;
+		bonus = isUpgraded ? 0.3 : 0.2;
 	}
 	
 	public static Equipment get() {

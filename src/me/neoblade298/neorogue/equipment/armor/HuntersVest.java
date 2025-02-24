@@ -38,7 +38,7 @@ public class HuntersVest extends Equipment {
 			if (!data.hasStatus(StatusType.FOCUS)) return TriggerResult.keep();
 			if (!ev.getMeta().containsType(DamageCategory.PHYSICAL)) return TriggerResult.keep();
 			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.PHYSICAL),
-				new Buff(data, reduc * Math.min(3, data.getStatus(StatusType.FOCUS).getStacks()), 0, StatTracker.defenseBuffAlly(this)));
+				new Buff(data, reduc * Math.min(2, data.getStatus(StatusType.FOCUS).getStacks()), 0, StatTracker.defenseBuffAlly(this)));
 			return TriggerResult.keep();
 		});
 	}
@@ -46,6 +46,6 @@ public class HuntersVest extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LEATHER_CHESTPLATE, "Physical damage taken is reduced by " + DescUtil.yellow(reduc) + " multiplied by stacks of " +
-			GlossaryTag.FOCUS.tag(this) + ", up to <white>3</white> stacks.");
+			GlossaryTag.FOCUS.tag(this) + ", up to <white>2</white> stacks.");
 	}
 }

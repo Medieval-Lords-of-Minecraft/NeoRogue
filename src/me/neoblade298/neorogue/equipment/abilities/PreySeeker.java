@@ -24,6 +24,7 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -40,7 +41,7 @@ public class PreySeeker extends Equipment {
 	private static final String ID = "preySeeker";
 	private static TargetProperties tp = TargetProperties.radius(4, false, TargetType.ENEMY);
 	private static ParticleContainer trap = new ParticleContainer(Particle.CLOUD).count(20).spread(2, 0.2);
-	private int damage, dur = 5;
+	private int damage, dur = 8;
 	
 	public PreySeeker(boolean isUpgraded) {
 		super(ID, "Prey Seeker", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
@@ -115,6 +116,7 @@ public class PreySeeker extends Equipment {
 		public void onStart(ProjectileInstance proj) {
 			proj.setOrigin(src);
 			DamageMeta dm = proj.getMeta();
+			dm.addOrigin(DamageOrigin.TRAP);
 			EquipmentProperties ammoProps = ammo.getProperties();
 			double dmg = damage + ammoProps.get(PropertyType.DAMAGE);
 			dm.addDamageSlice(new DamageSlice(data, dmg, ammoProps.getType()));

@@ -17,8 +17,6 @@ import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
-import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
-import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
@@ -28,12 +26,11 @@ public class TargetAcquisition extends Equipment {
 	private int damage;
 	private static final ParticleContainer part = new ParticleContainer(Particle.LARGE_SMOKE).offsetY(1).count(25).spread(0.5, 0.5).speed(0.01),
 			hit = new ParticleContainer(Particle.DUST).count(25).offsetY(1).spread(0.5, 0.5);
-	private static final TargetProperties tp = TargetProperties.radius(15, true, TargetType.ENEMY);
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_ZOMBIE_INFECT);
 	
 	public TargetAcquisition(boolean isUpgraded) {
 		super(ID, "Target Acquisition", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 10, tp.range));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 10, 0));
 		
 		damage = isUpgraded ? 70 : 50;
 	}

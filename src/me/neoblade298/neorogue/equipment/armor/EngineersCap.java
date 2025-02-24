@@ -23,7 +23,7 @@ public class EngineersCap extends Equipment {
 	public EngineersCap(boolean isUpgraded) {
 		super(ID, "Engineer's Cap", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.ARMOR);
-		damage = isUpgraded ? 15 : 10;
+		damage = isUpgraded ? 30 : 20;
 		damageActual = damage * 0.01;
 		dec = isUpgraded ? 4 : 3;
 	}

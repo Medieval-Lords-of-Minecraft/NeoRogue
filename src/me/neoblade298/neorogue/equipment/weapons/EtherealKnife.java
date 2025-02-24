@@ -23,7 +23,7 @@ public class EtherealKnife extends Equipment {
 		super(ID, "Ethereal Knife", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(100, 0.5, 0.2, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
-		durability = isUpgraded ? 10 : 5;
+		durability = isUpgraded ? 15 : 10;
 	}
 	
 	public static Equipment get() {
@@ -50,6 +50,6 @@ public class EtherealKnife extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.GOLDEN_SWORD, "Breaks after <yellow>" + durability + "</yellow> uses each fight. Repaired every fight.");
+		item = createItem(Material.GOLDEN_SWORD, "Has <yellow>" + durability + "</yellow> uses per fight.");
 	}
 }

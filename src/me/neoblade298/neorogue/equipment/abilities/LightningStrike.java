@@ -3,14 +3,19 @@ package me.neoblade298.neorogue.equipment.abilities;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
+import org.bukkit.scheduler.BukkitRunnable;
 
+import me.neoblade298.neocore.bukkit.effects.Circle;
+import me.neoblade298.neocore.bukkit.effects.LocalAxes;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.ParticleUtil;
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -29,19 +34,21 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class LightningStrike extends Equipment {
 	private static final String ID = "lightningStrike";
-	private static final ParticleContainer tick = new ParticleContainer(Particle.FIREWORK).count(3).spread(0.3, 0.3);
-	private static final TargetProperties tp = TargetProperties.line(7, 2, TargetType.ENEMY);
+	private static final ParticleContainer tick = new ParticleContainer(Particle.FIREWORK).count(3).spread(0.3, 0.3),
+		explode = new ParticleContainer(Particle.EXPLOSION).count(5).spread(3, 0.2);
+	private static final TargetProperties cursor = TargetProperties.line(7, 2, TargetType.ENEMY),
+		aoe = TargetProperties.radius(3, false, TargetType.ENEMY);
+	private static final Circle circ = new Circle(aoe.range);
 
 	private int damage, thres, bonusDamage;
 	
 	public LightningStrike(boolean isUpgraded) {
 		super(
 				ID , "Lightning Strike", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(20, 0, 12, tp.range));
-		damage = 70;
-		thres = isUpgraded ? 40 : 30;
-		bonusDamage = isUpgraded ? 140 : 70;
-
+				EquipmentProperties.ofUsable(20, 0, 12, cursor.range, aoe.range));
+		damage = 100;
+		thres = isUpgraded ? 40 : 50;
+		bonusDamage = isUpgraded ? 200 : 100;
 	}
 	
 	public static Equipment get() {
@@ -50,28 +57,53 @@ public class LightningStrike extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata ,in) -> {
+		ActionMeta am = new ActionMeta();
+		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
+		inst.setAction((pdata ,in) -> {
 			data.channel(20).then(new Runnable() {
 				public void run() {
-					Location start = p.getLocation().add(0, 1, 0);
-					Vector dir = p.getEyeLocation().getDirection();
-					Location end = start.clone().add(dir.clone().multiply(properties.get(PropertyType.RANGE)));
-					ParticleUtil.drawLine(p, tick, start, end, 0.3);
-					double fDamage = damage + (data.getMana() >= thres ? bonusDamage : 0);
-					Sounds.firework.play(p, p);
-					for (LivingEntity ent : TargetHelper.getEntitiesInLine(p, start, end, tp)) {
-						FightInstance.dealDamage(new DamageMeta(data, fDamage, DamageType.LIGHTNING), ent);
+					Block b = p.getTargetBlockExact((int) cursor.range);
+
+					// Reset cooldown and refund mana and stamina
+					if (!b.getType().isSolid()) {
+						Sounds.extinguish.play(p, p);
+						data.addMana(properties.get(PropertyType.MANA_COST));
+						inst.setCooldown(0);
+					}
+					else {
+						am.setLocation(p.getTargetBlockExact((int) cursor.range).getLocation());
+						data.addTask(new BukkitRunnable() {
+							public void run() {
+								Location loc = am.getLocation();
+								Location top = loc.add(0, 4, 1);
+								Location middle1 = loc.add(0, 1.5, 1);
+								Location middle2 = loc.add(0, 2, 0);
+								ParticleUtil.drawLine(p, tick, top, middle1, 0.3);
+								ParticleUtil.drawLine(p, tick, middle1, middle2, 0.3);
+								ParticleUtil.drawLine(p, tick, middle1, middle2, 0.3);
+								explode.play(p, loc);
+								double fDamage = damage + (data.getMana() >= thres ? bonusDamage : 0);
+								Sounds.firework.play(p, loc);
+								Sounds.explode.play(p, loc);
+								circ.play(tick, loc, LocalAxes.xz(), null);
+								for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, aoe)) {
+									FightInstance.dealDamage(new DamageMeta(data, fDamage, DamageType.LIGHTNING), ent);
+								}
+							}
+						}.runTaskLater(NeoRogue.inst(), 20));
 					}
 				}
 			});
 			return TriggerResult.keep();
-		}));
+		});
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es));
+		
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.YELLOW_DYE,
-			GlossaryTag.CHANNEL.tag(this) + " for <white>1s</white> before dealing " + GlossaryTag.LIGHTNING.tag(this, damage, true) +
-			" in a line in front of you. If you are above " + DescUtil.yellow(thres) + " mana, increase the damage by " + DescUtil.yellow(bonusDamage) + ".");
+			GlossaryTag.CHANNEL.tag(this) + " for <white>1s</white> before marking a ground location. After <white>1s</white>, that location explodes, dealing " + 
+			GlossaryTag.LIGHTNING.tag(this, damage, true) + " in an area. If you are above " + DescUtil.yellow(thres) + " mana, increase the damage by " + DescUtil.yellow(bonusDamage) + ".");
 	}
 }

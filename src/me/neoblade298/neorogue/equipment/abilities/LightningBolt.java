@@ -43,6 +43,12 @@ public class LightningBolt extends Equipment {
 		bonusDamage = isUpgraded ? 140 : 70;
 
 	}
+
+	@Override
+	public void setupReforges() {
+		addReforge(Manabending.get(), LightningStrike.get(), FireBolt.get());
+		addReforge(Intuition.get(), DrainLightning.get());
+	}
 	
 	public static Equipment get() {
 		return Equipment.get(ID, false);

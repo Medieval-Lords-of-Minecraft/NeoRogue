@@ -24,7 +24,7 @@ public class PoisonPowder extends Equipment {
 	
 	public PoisonPowder(boolean isUpgraded) {
 		super(ID, "Poison Powder", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
-				EquipmentType.OFFHAND, EquipmentProperties.ofUsable(0, 0, 20, 0));
+				EquipmentType.OFFHAND, EquipmentProperties.ofUsable(0, 0, 15, 0));
 		amount = isUpgraded ? 60 : 40;
 	}
 	

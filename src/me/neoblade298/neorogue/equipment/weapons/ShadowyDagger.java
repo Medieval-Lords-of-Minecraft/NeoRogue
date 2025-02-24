@@ -19,7 +19,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class ShadowyDagger extends Equipment {
 	private static final String ID = "shadowyDagger";
-	private static int base = 20;
+	private static int base = 40;
 	private int dmg;
 	
 	public ShadowyDagger(boolean isUpgraded) {
