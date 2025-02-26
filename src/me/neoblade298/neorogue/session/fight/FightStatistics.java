@@ -23,7 +23,7 @@ public class FightStatistics {
 	private int deaths, revives;
 
 	// Etc stats
-	private double evadeMitigated, sanctifiedHealing, injuryMitigated;
+	private double evadeMitigated, sanctifiedShielding, injuryMitigated;
 
 	public void addEvadeMitigated(double evadeMitigated) {
 		this.evadeMitigated += evadeMitigated;
@@ -33,8 +33,8 @@ public class FightStatistics {
 		this.injuryMitigated += injuryMitigated;
 	}
 
-	public void addSanctifiedHealing(double sanctifiedHealing) {
-		this.sanctifiedHealing += sanctifiedHealing;
+	public void addSanctifiedShielding(double addSanctifiedShielding) {
+		this.sanctifiedShielding += sanctifiedShielding;
 	}
 
 	public FightStatistics(PlayerFightData data) {
@@ -207,7 +207,7 @@ public class FightStatistics {
 				hover = hover.appendNewline().append(extra);
 			}
 		}
-		score += evadeMitigated + injuryMitigated + sanctifiedHealing;
+		score += evadeMitigated + injuryMitigated + sanctifiedShielding;
 		Component cmp = Component.text(df.format(score), NamedTextColor.GOLD);
 		if (score > 0) cmp = cmp.hoverEvent(hover);
 		return cmp;
@@ -235,7 +235,7 @@ public class FightStatistics {
 		case INJURY:
 			return type.ctag.append(Component.text(" Mitigation: " + df.format(injuryMitigated), NamedTextColor.WHITE));
 		case SANCTIFIED:
-			return type.ctag.append(Component.text(" Healing: " + df.format(sanctifiedHealing), NamedTextColor.WHITE));
+			return type.ctag.append(Component.text(" Healing: " + df.format(sanctifiedShielding), NamedTextColor.WHITE));
 		default:
 			return null;
 		}

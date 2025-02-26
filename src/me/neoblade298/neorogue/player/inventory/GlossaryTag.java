@@ -60,8 +60,7 @@ public enum GlossaryTag implements GlossaryIcon {
 	INSANITY(Material.SOUL_SAND, StatusType.INSANITY.tag,
 			"Increases the holder's magic damage taken by 0.2 per stack. 20% of the stacks is removed every second."),
 	SANCTIFIED(Material.END_ROD, StatusType.SANCTIFIED.tag,
-			"Upon the holder dealing damage, remove 25% of the stacks and " +
-			"heal that much to the damaged. 20% of the stacks is removed every second."),
+			"Upon the holder receiving light damage, grant the attacker 0.1 shields per stack. 20% of the stacks is removed every second."),
 	THORNS(Material.DEAD_BUSH, StatusType.THORNS.tag,
 			"Upon the holder receiving physical damage, even if it is absorbed by shields, return 1 thorns damage per stack."),
 	REFLECT(Material.GLASS_PANE, StatusType.REFLECT.tag,

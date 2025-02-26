@@ -98,6 +98,10 @@ public class TargetHelper {
 			return this;
 		}
 		
+		public static TargetProperties radius(double range, boolean throughWall) {
+			return new TargetProperties(range, throughWall, TargetType.ENEMY);
+		}
+		
 		public static TargetProperties radius(double range, boolean throughWall, TargetType type) {
 			return new TargetProperties(range, throughWall, type);
 		}

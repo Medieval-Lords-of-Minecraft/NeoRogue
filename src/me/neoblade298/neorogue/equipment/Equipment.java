@@ -24,6 +24,7 @@ import me.neoblade298.neocore.shared.droptables.DropTable;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.abilities.*;
+import me.neoblade298.neorogue.equipment.accessories.CeruleanBracelet;
 import me.neoblade298.neorogue.equipment.accessories.EagleFeather;
 import me.neoblade298.neorogue.equipment.accessories.EarthenRing;
 import me.neoblade298.neorogue.equipment.accessories.FlintPendant;
@@ -79,6 +80,7 @@ import me.neoblade298.neorogue.equipment.artifacts.Brightfeather;
 import me.neoblade298.neorogue.equipment.artifacts.BurningCross;
 import me.neoblade298.neorogue.equipment.artifacts.CharmOfGallus;
 import me.neoblade298.neorogue.equipment.artifacts.ConcealingCloak;
+import me.neoblade298.neorogue.equipment.artifacts.CrackedCrystal;
 import me.neoblade298.neorogue.equipment.artifacts.CrystalFeather;
 import me.neoblade298.neorogue.equipment.artifacts.CrystallineFlask;
 import me.neoblade298.neorogue.equipment.artifacts.DarkArtsTreatise;
@@ -165,7 +167,11 @@ import me.neoblade298.neorogue.equipment.weapons.CompositeBow;
 import me.neoblade298.neorogue.equipment.weapons.CrescentAxe;
 import me.neoblade298.neorogue.equipment.weapons.CrimsonBlade;
 import me.neoblade298.neorogue.equipment.weapons.CripplingFencingSword;
+import me.neoblade298.neorogue.equipment.weapons.DarkBolt;
+import me.neoblade298.neorogue.equipment.weapons.DarkBolt2;
 import me.neoblade298.neorogue.equipment.weapons.DarkScepter;
+import me.neoblade298.neorogue.equipment.weapons.DarkTorrent;
+import me.neoblade298.neorogue.equipment.weapons.Depletion;
 import me.neoblade298.neorogue.equipment.weapons.DoubleTap;
 import me.neoblade298.neorogue.equipment.weapons.EarthStaff;
 import me.neoblade298.neorogue.equipment.weapons.EarthenLeatherGauntlets;
@@ -326,12 +332,16 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new CripplingPoison(b);
 			new Crystallize(b);
 			new CurseMark(b);
+			new DarkBolt(b);
+			new DarkBolt2(b);
 			new DarkLance(b);
 			new Darkness(b);
 			new DarkPact(b);
 			new DarkPulse(b);
+			new DarkTorrent(b);
 			new Deliberation(b);
 			new Demoralize(b);
+			new Depletion(b);
 			new Dexterity(b);
 			new Discipline(b);
 			new Dismantle(b);
@@ -493,6 +503,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Zone2(b);
 			
 			// Accessories
+			new CeruleanBracelet(b);
 			new EagleFeather(b);
 			new EarthenRing(b);
 			new FlintPendant(b);
@@ -665,6 +676,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new Brightfeather();
 		new CharmOfGallus();
 		new ConcealingCloak();
+		new CrackedCrystal();
 		new CrystalFeather();
 		new CrystallineFlask();
 		new DarkArtsTreatise();
@@ -739,7 +751,18 @@ public abstract class Equipment implements Comparable<Equipment> {
 			} else {
 				counts.put(eq.getType(), counts.get(eq.getType()) + 1);
 			}
+
+			// Check for reforges being wrong rarity
+			if (eq.reforgeParents != null) {
+				for (Equipment parent : eq.reforgeParents) {
+					if (parent.getRarity() == eq.getRarity()) {
+						Bukkit.getLogger().warning("[NeoRogue] " + eq.getId() + " has a reforge parent of " + parent.getId() + " with same rarity");
+						break;
+					}
+				}
+			}
 		}
+
 		
 		// Setup item now that all reforge options exist
 		for (Equipment eq : equipment.values()) {

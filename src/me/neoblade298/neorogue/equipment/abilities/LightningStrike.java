@@ -44,7 +44,7 @@ public class LightningStrike extends Equipment {
 	
 	public LightningStrike(boolean isUpgraded) {
 		super(
-				ID , "Lightning Strike", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
+				ID , "Lightning Strike", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(20, 0, 12, cursor.range, aoe.range));
 		damage = 100;
 		thres = isUpgraded ? 40 : 50;

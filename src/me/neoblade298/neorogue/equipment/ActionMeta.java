@@ -14,6 +14,7 @@ public class ActionMeta {
 	private LivingEntity ent;
 	private Location loc;
 	private Marker trap;
+	private Object obj;
 	
 	public void setCount(int count) {
 		this.count = count;
@@ -33,6 +34,14 @@ public class ActionMeta {
 
 	public double getDouble() {
 		return db;
+	}
+
+	public void setObject(Object obj) {
+		this.obj = obj;
+	}
+
+	public Object getObject() {
+		return obj;
 	}
 
 	public void setTrap(Marker trap) {

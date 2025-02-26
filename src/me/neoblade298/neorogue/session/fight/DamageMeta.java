@@ -231,17 +231,12 @@ public class DamageMeta {
 
 		// Status effects
 		if (!isSecondary) {
-			if (owner.hasStatus(StatusType.SANCTIFIED)) {
+			if (recipient.hasStatus(StatusType.SANCTIFIED) && containsType(DamageCategory.LIGHT)) {
 				Status status = owner.getStatus(StatusType.SANCTIFIED);
-				int stacks = status.getStacks();
-				int toRemove = (int) (stacks * 0.25);
-				status.apply(owner, -toRemove, 0); // Remove 25% of stacks
-
 				for (Entry<FightData, Integer> ent : owner.getStatus(StatusType.SANCTIFIED).getSlices().getSliceOwners().entrySet()) {
 					if (ent.getKey() instanceof PlayerFightData) {
-						double pct = (double) ent.getValue() / stacks;
-						((PlayerFightData) ent.getKey()).getStats().addSanctifiedHealing(pct * toRemove);
-						FightInstance.giveHeal(ent.getKey().getEntity(), pct * toRemove, recipient.getEntity()); // Assumes sanctified owner is always a player
+						((PlayerFightData) ent.getKey()).getStats().addSanctifiedShielding(ent.getValue() * 0.01);
+						recipient.addSimpleShield(ent.getKey().getUniqueId(), ent.getValue() * 0.01, 60);
 					}
 				}
 			}

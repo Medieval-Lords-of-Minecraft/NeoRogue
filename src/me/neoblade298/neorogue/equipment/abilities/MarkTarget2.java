@@ -46,7 +46,7 @@ public class MarkTarget2 extends Equipment {
 	private static final ParticleContainer taunt = new ParticleContainer(Particle.CRIMSON_SPORE).count(50).spread(0.3, 0.3).offsetY(2);
 	
 	public MarkTarget2(boolean isUpgraded) {
-		super(ID, "Mark Target II", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
+		super(ID, "Mark Target II", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 0, 12, tp.range));
 		rend = isUpgraded ? 40 : 30;
 		damage = 0.4;
