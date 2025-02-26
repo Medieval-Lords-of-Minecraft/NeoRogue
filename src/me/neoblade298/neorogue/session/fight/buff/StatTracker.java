@@ -44,6 +44,12 @@ public class StatTracker {
         this.display = eq.getDisplay().append(Component.text(" - " + sfx, NamedTextColor.GRAY));
     }
     
+    protected StatTracker(Equipment eq, String sfx, boolean invert) {
+        this.id = eq.getId();
+        this.display = eq.getDisplay().append(Component.text(" - " + sfx, NamedTextColor.GRAY));
+        this.invert = invert;
+    }
+    
     protected StatTracker(String id) {
         this.id = id;
         this.ignore = true;
@@ -103,7 +109,7 @@ public class StatTracker {
     }
 
     public static BuffStatTracker defenseDebuffEnemy(Equipment eq) {
-        return new BuffStatTracker(eq, "Defense Debuffed");
+        return new BuffStatTracker(eq, "Defense Debuffed", true);
     }
 
     public static BuffStatTracker damageBarriered(Equipment eq) {

@@ -15,10 +15,17 @@ public class BuffStatTracker extends StatTracker {
         super(id, display, invert);
         this.shouldCombine = shouldCombine;
     }
+                                
+    protected BuffStatTracker(String id, Component display, boolean invert) {
+        super(id, display, invert);
+    }
     
     protected BuffStatTracker(Equipment eq, String sfx) {
         super(eq, sfx);
-        this.shouldCombine = false;
+    }
+    
+    protected BuffStatTracker(Equipment eq, String sfx, boolean invert) {
+        super(eq, sfx, invert);
     }
 
     protected BuffStatTracker(StatusType type, boolean damage) {

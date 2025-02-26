@@ -42,6 +42,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerCondition;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.CastUsableEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.CreateRiftEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.LayTrapEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.StaminaChangeEvent;
 import net.kyori.adventure.text.Component;
@@ -68,6 +69,7 @@ public class PlayerFightData extends FightData {
 	private HashMap<Integer, HashMap<Trigger, ArrayList<PriorityAction>>> slotBasedTriggers = new HashMap<Integer, HashMap<Trigger, ArrayList<PriorityAction>>>();
 	private LinkedList<Listener> listeners = new LinkedList<Listener>();
 	private HashMap<UUID, Trap> traps = new HashMap<UUID, Trap>();
+	private HashMap<UUID, Rift> rifts = new HashMap<UUID, Rift>();
 	private ArrayList<String> boardLines;
 	private Player p;
 	private long nextAttack, nextOffAttack;
@@ -657,11 +659,28 @@ public class PlayerFightData extends FightData {
 	
 	public void removeTrap(Trap trap) {
 		trap.deactivate();
-		traps.remove(uuid);
+		traps.remove(trap.getUniqueId());
 	}
 	
 	public HashMap<UUID, Trap> getTraps() {
 		return traps;
+	}
+
+	public void addRift(Rift rift) {
+		rifts.put(rift.getUniqueId(), rift);
+		CreateRiftEvent ev = new CreateRiftEvent(rift);
+		runActions(this, Trigger.CREATE_RIFT, ev);
+		rift.setDuration((int) ev.getDurationBuffList().apply(rift.getDuration()));
+		rift.activate();
+	}
+
+	public void removeRift(Rift rift) {
+		rift.deactivate();
+		rifts.remove(rift.getUniqueId());
+	}
+	
+	public HashMap<UUID, Rift> getRifts() {
+		return rifts;
 	}
 
 	private class PlayerUpdateTickAction extends TickAction {

@@ -3,7 +3,7 @@ package me.neoblade298.neorogue.equipment;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 
-import me.neoblade298.neorogue.session.fight.Trap;
+import me.neoblade298.neorogue.session.fight.Marker;
 
 // For most common use cases and storing of data in instance format
 public class ActionMeta {
@@ -13,7 +13,7 @@ public class ActionMeta {
 	private double db;
 	private LivingEntity ent;
 	private Location loc;
-	private Trap trap;
+	private Marker trap;
 	
 	public void setCount(int count) {
 		this.count = count;
@@ -35,11 +35,11 @@ public class ActionMeta {
 		return db;
 	}
 
-	public void setTrap(Trap trap) {
+	public void setTrap(Marker trap) {
 		this.trap = trap;
 	}
 
-	public Trap getTrap() {
+	public Marker getTrap() {
 		return trap;
 	}
 

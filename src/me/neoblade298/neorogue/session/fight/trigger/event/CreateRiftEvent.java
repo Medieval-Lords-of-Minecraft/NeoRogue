@@ -1,17 +1,17 @@
 package me.neoblade298.neorogue.session.fight.trigger.event;
 
 import me.neoblade298.neorogue.session.fight.Marker;
-import me.neoblade298.neorogue.session.fight.Trap;
+import me.neoblade298.neorogue.session.fight.Rift;
 import me.neoblade298.neorogue.session.fight.buff.BuffList;
 
-public class LayTrapEvent {
-	private Trap trap;
+public class CreateRiftEvent {
+	private Rift rift;
 	private BuffList buff = new BuffList();
-	public LayTrapEvent(Trap trap) {
-		this.trap = trap;
+	public CreateRiftEvent(Rift rift) {
+		this.rift = rift;
 	}
-	public Marker getTrap() {
-		return this.trap;
+	public Marker getRift() {
+		return this.rift;
 	}
 	public BuffList getDurationBuffList() {
 		return buff;

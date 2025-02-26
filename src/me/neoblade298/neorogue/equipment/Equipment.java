@@ -42,6 +42,7 @@ import me.neoblade298.neorogue.equipment.accessories.RingOfSharpness;
 import me.neoblade298.neorogue.equipment.accessories.SaboteursRing;
 import me.neoblade298.neorogue.equipment.accessories.SpiritShard;
 import me.neoblade298.neorogue.equipment.accessories.TopazRing;
+import me.neoblade298.neorogue.equipment.accessories.VoidBracelet;
 import me.neoblade298.neorogue.equipment.armor.ArcheryGlove;
 import me.neoblade298.neorogue.equipment.armor.BlindingCloak;
 import me.neoblade298.neorogue.equipment.armor.Brightcrown;
@@ -182,6 +183,7 @@ import me.neoblade298.neorogue.equipment.weapons.ForcefulLeatherGauntlets;
 import me.neoblade298.neorogue.equipment.weapons.Fracturer;
 import me.neoblade298.neorogue.equipment.weapons.FrostbiteBow;
 import me.neoblade298.neorogue.equipment.weapons.GlassArrow;
+import me.neoblade298.neorogue.equipment.weapons.GrowingSpark;
 import me.neoblade298.neorogue.equipment.weapons.Harpoon;
 import me.neoblade298.neorogue.equipment.weapons.HiddenRazor;
 import me.neoblade298.neorogue.equipment.weapons.HuntersBow;
@@ -278,6 +280,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		artifacts.reload();
 		for (boolean b : new boolean[] { false, true }) {
 			// Abilities
+			new Absorb(b);
 			new AcidBomb(b);
 			new Adrenaline(b);
 			new Advantage(b);
@@ -382,7 +385,9 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new GetCentered(b);
 			new GraniteShield(b);
 			new Grit(b);
+			new GrowingSpark(b);
 			new HailCloak(b);
+			new Heartbeat(b);
 			new HexingShot(b);
 			new HoldTheLine(b);
 			new InducePanic(b);
@@ -408,6 +413,10 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new MarkTarget(b);
 			new MarkTarget2(b);
 			new MightySwing(b);
+			new MindBlast(b);
+			new MindGrowth(b);
+			new MindGrowth2(b);
+			new MindShell(b);
 			new Momentum(b);
 			new MortalEngine(b);
 			new NightShade(b);
@@ -502,6 +511,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new SaboteursRing(b);
 			new SpiritShard(b);
 			new TopazRing(b);
+			new VoidBracelet(b);
 			
 			// Armor
 			new ArcheryGlove(b);

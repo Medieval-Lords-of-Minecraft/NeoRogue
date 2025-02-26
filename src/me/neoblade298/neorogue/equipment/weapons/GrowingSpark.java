@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.weapons;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
@@ -24,22 +25,21 @@ import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
-import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class Inflame extends Equipment {
-	private static final String ID = "inflame";
-	private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME);
-	private int damage, stacks, growth;
+public class GrowingSpark extends Equipment {
+	private static final String ID = "growingSpark";
+	private static final ParticleContainer pc = new ParticleContainer(Particle.FIREWORK);
+	private ItemStack chargedIcon;
+	private int damage, growth;
 	
-	public Inflame(boolean isUpgraded) {
-		super(ID, "Inflame", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
+	public GrowingSpark(boolean isUpgraded) {
+		super(ID, "Growing Spark", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE,
 				EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(20, 5, 13, 8));
-		damage = isUpgraded ? 140 : 100;
-		stacks = 50;
-		growth = isUpgraded ? 25 : 15;
+				EquipmentProperties.ofUsable(15, 0, 3, 10));
+		damage = 40;
+		growth = isUpgraded ? 20 : 10;
 	}
 	
 	public static Equipment get() {
@@ -48,8 +48,9 @@ public class Inflame extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ProjectileGroup proj = new ProjectileGroup(new InflameProjectile(data));
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
+		ProjectileGroup proj = new ProjectileGroup(new GrowingSparkProjectile(data, inst));
+		inst.setAction((pdata, in) -> {
 			data.charge(20);
 			data.addTask(new BukkitRunnable() {
 				public void run() {
@@ -57,19 +58,23 @@ public class Inflame extends Equipment {
 				}
 			}.runTaskLater(NeoRogue.inst(), 20));
 			return TriggerResult.keep();
-		}));
+		});
+		data.addTrigger(id, bind, inst);
 	}
 	
-	private class InflameProjectile extends Projectile {
+	private class GrowingSparkProjectile extends Projectile {
 		private PlayerFightData data;
 		private Player p;
-		private int lvl = 0;
+		private EquipmentInstance inst;
+		private int stacks = 0;
+		private long lastCast = 0;
 
 		// Vector is non-normalized velocity of the vanilla projectile being fired
-		public InflameProjectile(PlayerFightData data) {
+		public GrowingSparkProjectile(PlayerFightData data, EquipmentInstance inst) {
 			super(1.5, properties.get(PropertyType.RANGE), 1);
 			this.data = data;
 			this.p = data.getPlayer();
+			this.inst = inst;
 		}
 
 		@Override
@@ -79,23 +84,35 @@ public class Inflame extends Equipment {
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
-			boolean lvlUp = hit.hasStatus(StatusType.BURN);
-			hit.applyStatus(StatusType.BURN, data, stacks + (growth * lvl), -1);
-			if (lvlUp) lvl++;
+
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			Sounds.fire.play(p, p);
-			proj.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.FIRE));
+			Sounds.firework.play(p, p);
+			proj.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.LIGHTNING));
+			stacks = Math.min(5, stacks + 1);
+			chargedIcon.setAmount(stacks);
+			inst.setIcon(chargedIcon);
+			lastCast = System.currentTimeMillis();
+			final long fcast = lastCast;
+			data.addTask(new BukkitRunnable() {
+				public void run() {
+					// Check if the last cast is still the same as it was 6s ago, aka see if the skill was cast again
+					if (fcast == lastCast) {
+						stacks = 0;
+						inst.setIcon(item);
+					}
+				}
+			}.runTaskLater(NeoRogue.inst(), 120));
 		}
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.CAMPFIRE, "On cast, " + GlossaryTag.CHARGE.tag(this) + " for <white>1s</white> before firing a projectile that deals "
-				+ GlossaryTag.FIRE.tag(this, damage, true) + " damage and applies " +
-				GlossaryTag.BURN.tag(this, stacks, false) + ". If the enemy hit already has " + GlossaryTag.BURN.tag(this) + ", increase the stacks applied by " +
-				"this ability for the fight by " + DescUtil.yellow(growth) + ".");
+		item = createItem(Material.QUARTZ, "On cast, fire a projectile that deals "
+				+ GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage. Every time you cast within <white>6s</white> of the last cast, increase " +
+				"its damage by " + DescUtil.yellow(growth) + ", up to <white>5x</white>.");
+		chargedIcon = item.clone().withType(Material.NETHER_STAR);
 	}
 }

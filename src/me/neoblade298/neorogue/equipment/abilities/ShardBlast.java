@@ -23,6 +23,7 @@ import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
+import me.neoblade298.neorogue.session.fight.Marker;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
@@ -60,7 +61,7 @@ public class ShardBlast extends Equipment {
 		ItemStack icon = item.clone().withType(Material.ECHO_SHARD);
 		ei.setAction((pd, in) -> {
 			if (am.getTrap() != null && am.getTrap().isActive()) {
-				Trap t = am.getTrap();
+				Marker t = am.getTrap();
 				Sounds.glass.play(p, t.getLocation());
 				for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, t.getLocation(), tp)) {
 					hit.play(p, ent);
@@ -80,7 +81,7 @@ public class ShardBlast extends Equipment {
 		data.addTrigger(id, bind, ei);
 	}
 
-	private Trap initTrap(Player p, PlayerFightData data, EquipmentInstance ei, ItemStack icon) {
+	private Marker initTrap(Player p, PlayerFightData data, EquipmentInstance ei, ItemStack icon) {
 		ei.setIcon(icon);
 		Location loc = p.getLocation();
 		Trap t = new Trap(data, loc, 200) {
