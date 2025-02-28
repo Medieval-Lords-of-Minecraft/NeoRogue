@@ -788,13 +788,18 @@ public class Area {
 					Mob chosen = mobs[NeoCore.gen.nextInt(mobs.length)];
 					
 					ItemStack headItem = chosen.getItemDisplay(new ArrayList<MobModifier>());
-					SkullMeta meta = (SkullMeta) headItem.getItemMeta();
-					
 					Location headLoc = nodeToLocation(destDest, 1);
-					headLoc.getBlock().setType(Material.PLAYER_HEAD);
-					Skull skull = (Skull) headLoc.getBlock().getState();
-					skull.setPlayerProfile(meta.getPlayerProfile());
-					skull.update(true);
+					if (headItem.getType() == Material.PLAYER_HEAD) {
+						SkullMeta meta = (SkullMeta) headItem.getItemMeta();
+						headLoc.getBlock().setType(Material.PLAYER_HEAD);
+						Skull skull = (Skull) headLoc.getBlock().getState();
+						skull.setPlayerProfile(meta.getPlayerProfile());
+						skull.update(true);
+					}
+					else {
+						headLoc.getBlock().setType(headItem.getType());
+					}
+					
 				}
 			}
 		}

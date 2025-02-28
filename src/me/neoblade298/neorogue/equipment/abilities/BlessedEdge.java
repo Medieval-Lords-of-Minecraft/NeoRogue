@@ -51,7 +51,7 @@ public class BlessedEdge extends Equipment {
 				BasicAttackEvent ev = (BasicAttackEvent) in;
 				LivingEntity target = ev.getTarget();
 				FightInstance.getFightData(target.getUniqueId()).applyStatus(StatusType.SANCTIFIED, data, sanct, -1);
-				FightInstance.dealDamage(data, DamageType.SLASHING, damage, target);
+				FightInstance.dealDamage(data, DamageType.LIGHT, damage, target);
 				hit.play(p, target.getLocation());
 				hitSound.play(p, target.getLocation());
 				return TriggerResult.remove();
@@ -63,7 +63,7 @@ public class BlessedEdge extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GLOWSTONE_DUST,
-				"On cast, your next basic attack deals <white>" + damage + " </white>" + GlossaryTag.SLASHING.tag(this) + " damage and applies <yellow>" + sanct +
+				"On cast, your next basic attack deals <white>" + damage + " </white>" + GlossaryTag.LIGHT.tag(this) + " damage and applies <yellow>" + sanct +
 				"</yellow> " + GlossaryTag.SANCTIFIED.tag(this) + ".");
 	}
 }

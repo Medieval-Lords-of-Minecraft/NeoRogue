@@ -187,7 +187,8 @@ public class EquipmentInstance extends PriorityAction {
 	}
 	
 	public void setCooldown(int seconds) {
-		nextUsable = System.currentTimeMillis() + (seconds * 1000);
+		// Set cooldown to -1 to remove cooldown, otherwise updateIcon will assume it's on 1s cooldown
+		nextUsable = seconds == 0 ? -1 : System.currentTimeMillis() + (seconds * 1000);
 		updateIcon();
 	}
 	

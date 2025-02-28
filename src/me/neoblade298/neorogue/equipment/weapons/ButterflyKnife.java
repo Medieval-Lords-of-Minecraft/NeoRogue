@@ -18,14 +18,14 @@ import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class ButterflyKnife extends Equipment {
 	private static final String ID = "butterflyKnife";
-	private static final int base = 25;
+	private static final int base = 35;
 	private int dmg, stam;
 	public ButterflyKnife(boolean isUpgraded) {
 		super(ID, "Butterfly Knife", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(base, 1.25, 0.2, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
 		
-		dmg = isUpgraded ? 15 : 5;
+		dmg = isUpgraded ? 20 : 10;
 		stam = isUpgraded ? 35 : 25;
 	}
 

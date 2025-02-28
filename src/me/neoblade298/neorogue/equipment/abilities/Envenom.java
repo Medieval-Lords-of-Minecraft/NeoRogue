@@ -34,7 +34,7 @@ public class Envenom extends Equipment {
 		super(ID, "Envenom", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 10, 12, 0));
 		properties.addUpgrades(PropertyType.COOLDOWN);
-		poison = isUpgraded ? 18 : 12;
+		poison = isUpgraded ? 30 : 15;
 	}
 
 	@Override

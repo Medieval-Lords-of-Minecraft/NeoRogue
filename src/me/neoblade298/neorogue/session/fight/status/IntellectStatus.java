@@ -14,6 +14,6 @@ public class IntellectStatus extends BasicStatus {
 	@Override
 	public void onApply(FightData applier, int stacks) {
 		super.onApply(applier, stacks);
-		holder.addDamageBuff(DamageBuffType.of(DamageCategory.MAGICAL), new Buff(applier, stacks, 0, StatTracker.of(StatusType.INTELLECT)));
+		holder.addDamageBuff(DamageBuffType.of(DamageCategory.MAGICAL), new Buff(applier, 0, stacks * 0.02, StatTracker.of(StatusType.INTELLECT)));
 	}
 }

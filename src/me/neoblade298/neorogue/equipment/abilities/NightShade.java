@@ -30,7 +30,7 @@ public class NightShade extends Equipment {
 	
 	public NightShade(boolean isUpgraded) {
 		super(ID, "Night Shade", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 45, 12, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 35, 12, 0));
 		pc.count(50).spread(0.5, 0.5).offsetY(1);
 		insanity = isUpgraded ? 75 : 50;
 	}

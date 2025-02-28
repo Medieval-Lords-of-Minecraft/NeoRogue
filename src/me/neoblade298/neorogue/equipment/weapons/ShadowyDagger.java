@@ -26,7 +26,7 @@ public class ShadowyDagger extends Equipment {
 		super(ID, "Shadowy Dagger", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(base, 1.25, 0.2, DamageType.DARK, Sounds.fire));
-		dmg = isUpgraded ? 30 : 20;
+		dmg = isUpgraded ? 50 : 30;
 	}
 	
 	public static Equipment get() {

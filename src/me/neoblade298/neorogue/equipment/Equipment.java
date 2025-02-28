@@ -328,6 +328,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Concoct(b);
 			new ConfidenceKill(b);
 			new Contaminate(b);
+			new CreateEarth(b);
 			new Cripple(b);
 			new CripplingPoison(b);
 			new Crystallize(b);
@@ -473,6 +474,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new SmokeBomb(b);
 			new SpikeTrap(b);
 			new SpiritOfTheDragoon(b);
+			new Storm(b);
+			new Study(b);
 			new Sturdy(b);
 			new SunderingShot(b);
 			new Surprise(b);
@@ -566,6 +569,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new RubyArmament(b);
 			new SmallShield(b);
 			new SpikyShield(b);
+			new TomeOfScorchedEarth(b);
 			new TomeOfWeakness(b);
 			new WardingRune(b);
 			new WristBlade(b);

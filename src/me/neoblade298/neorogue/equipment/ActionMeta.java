@@ -64,6 +64,10 @@ public class ActionMeta {
 		this.bool = bool;
 	}
 
+	public void toggleBool() {
+		this.bool = !bool;
+	}
+
 	public boolean getBool() {
 		return bool;
 	}

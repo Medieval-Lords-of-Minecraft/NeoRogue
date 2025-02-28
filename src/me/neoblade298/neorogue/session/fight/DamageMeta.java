@@ -191,6 +191,7 @@ public class DamageMeta {
 		if (target.getType() == EntityType.ARMOR_STAND) return 0;
 		FightData recipient = FightInstance.getFightData(target.getUniqueId());
 		LivingEntity damager = owner.getEntity();
+		if (damager == null) return 0;
 		addDamageBuffLists(owner.getDamageBuffLists());
 		addDefenseBuffLists(recipient.getDefenseBuffLists());
 		double damage = 0;
@@ -232,7 +233,6 @@ public class DamageMeta {
 		// Status effects
 		if (!isSecondary) {
 			if (recipient.hasStatus(StatusType.SANCTIFIED) && containsType(DamageCategory.LIGHT)) {
-				Status status = owner.getStatus(StatusType.SANCTIFIED);
 				for (Entry<FightData, Integer> ent : owner.getStatus(StatusType.SANCTIFIED).getSlices().getSliceOwners().entrySet()) {
 					if (ent.getKey() instanceof PlayerFightData) {
 						((PlayerFightData) ent.getKey()).getStats().addSanctifiedShielding(ent.getValue() * 0.01);

@@ -20,14 +20,14 @@ import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class EvasiveKnife extends Equipment {
 	private static final String ID = "evasiveKnife";
-	private static final int base = 25;
+	private static final int base = 35;
 	private int dmg, stam, hits;
 	public EvasiveKnife(boolean isUpgraded) {
 		super(ID, "Evasive Knife", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(base, 1.25, 0.2, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
 		
-		dmg = 5;
+		dmg = 20;
 		stam = 25;
 		hits = isUpgraded ? 3 : 5;
 	}

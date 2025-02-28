@@ -3,10 +3,11 @@ package me.neoblade298.neorogue.equipment.offhands;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 
-import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
@@ -33,19 +34,27 @@ public class LeatherBracer extends Equipment {
 	
 	private class LeatherBracerInstance implements TriggerAction {
 		private Player p;
-		int count = instances;
+		private int count = instances;
+		private ItemStack icon;
+
 		public LeatherBracerInstance(Player p) {
 			this.p = p;
+			icon = item.clone();
+			icon.setAmount(count);
+			p.getInventory().setItemInOffHand(icon);
 		}
 
 		@Override
 		public TriggerResult trigger(PlayerFightData data, Object inputs) {
 			Sounds.block.play(p, p);
+
 			if (--count <= 0) {
 				Sounds.breaks.play(p, p);
 				p.getInventory().setItem(EquipmentSlot.OFF_HAND, null);
 				return TriggerResult.of(true, true);
 			}
+			icon.setAmount(count);
+			p.getInventory().setItemInOffHand(icon);
 			return TriggerResult.of(false, true);
 		}
 	}

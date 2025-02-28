@@ -19,14 +19,14 @@ import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class Irritant extends Equipment {
 	private static final String ID = "irritant";
-	private static int base = 20;
+	private static int base = 40;
 	private int dmg;
 	
 	public Irritant(boolean isUpgraded) {
 		super(ID, "Irritant", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(base, 1.25, 0.2, DamageType.PIERCING, Sounds.extinguish));
-		dmg = isUpgraded ? 30 : 20;
+		dmg = isUpgraded ? 80 : 40;
 	}
 	
 	public static Equipment get() {

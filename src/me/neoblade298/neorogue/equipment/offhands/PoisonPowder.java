@@ -7,6 +7,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardEquipmentInstance;
@@ -35,7 +36,7 @@ public class PoisonPowder extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, this, slot, es);
-		data.addTrigger(ID, Trigger.RIGHT_CLICK, (pdata, in) -> {
+		data.addTrigger(ID, Trigger.RIGHT_CLICK, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			inst.setCount(1);
 			Sounds.equip.play(p, p);
 			data.addTask(new BukkitRunnable() {
@@ -44,7 +45,7 @@ public class PoisonPowder extends Equipment {
 				}
 			}.runTaskLater(NeoRogue.inst(), 100L));
 			return TriggerResult.keep();
-		});
+		}));
 		
 		data.addTrigger(id, Trigger.DEALT_DAMAGE, (pdata, in) -> {
 			if (inst.getCount() == 0) return TriggerResult.keep();

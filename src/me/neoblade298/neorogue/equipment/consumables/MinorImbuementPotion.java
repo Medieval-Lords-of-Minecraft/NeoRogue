@@ -36,7 +36,7 @@ public class MinorImbuementPotion extends Consumable {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ImbuementPotionMeta meta = new ImbuementPotionMeta();
-		data.addTrigger(id, Trigger.RIGHT_CLICK, (pdata, in) -> {
+		data.addSlotBasedTrigger(id, slot, Trigger.RIGHT_CLICK, (pdata, in) -> {
 			drink.play(p, p);
 			data.getSessionData().removeEquipment(es, slot);
 			data.runActions(data, Trigger.USE_CONSUMABLE, new UseConsumableEvent(this));
@@ -61,7 +61,7 @@ public class MinorImbuementPotion extends Consumable {
 
 	private static class ImbuementPotionMeta {
 		private static HashMap<DamageType, DamageType> elements = new HashMap<DamageType, DamageType>();
-		private DamageType curr;
+		private DamageType curr = DamageType.FIRE;
 		private boolean used = false;
 		static {
 			elements.put(DamageType.FIRE, DamageType.ICE);
