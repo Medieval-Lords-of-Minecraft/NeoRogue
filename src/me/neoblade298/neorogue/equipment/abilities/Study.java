@@ -3,11 +3,13 @@ package me.neoblade298.neorogue.equipment.abilities;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -35,12 +37,19 @@ public class Study extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
-		data.addTrigger(id, Trigger.KILL, (pdata, in) -> {
+		ItemStack icon = item.clone();
+		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
+		data.addTrigger(id, Trigger.KILL, inst);
+		inst.setAction((pdata, in) -> {
 			if (am.getTime() + (properties.get(PropertyType.COOLDOWN) * 1000) > System.currentTimeMillis()) {
 				return TriggerResult.keep();
 			}
+			am.addCount(1);
 			data.applyStatus(StatusType.INTELLECT, data, intel, -1);
 			Sounds.enchant.play(p, p);
+			pc.play(p, p);
+			icon.setAmount(am.getCount());
+			inst.setIcon(icon);
 			am.setTime(System.currentTimeMillis());
 			return TriggerResult.keep();
 		});

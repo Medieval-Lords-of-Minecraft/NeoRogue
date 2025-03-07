@@ -89,7 +89,7 @@ public enum GlossaryTag implements GlossaryIcon {
 			"When the holder takes damage, damage dealt is first subtracted from stamina. One stack is lost per damage instance."),
 	FOCUS(Material.SPYGLASS, StatusType.FOCUS.tag,
 			"Certain abilities become stronger upon reaching a certain threshold of these stacks."),
-	RIFT(Material.MAGMA_CREAM, "<purple>Rift</purple>",
+	RIFT(Material.MAGMA_CREAM, "<dark_purple>Rift</dark_purple>",
 			"Placed at a set location. Other abilities may interact with these."),
 	INJURY(Material.BONE, StatusType.INJURY.tag,
 			"When the holder deals damage, a stack of injury is used to reduce 0.2 damage dealt post-buff until there are no stacks or no damage remaining. " +

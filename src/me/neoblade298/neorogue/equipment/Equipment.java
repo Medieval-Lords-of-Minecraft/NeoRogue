@@ -476,6 +476,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new SpiritOfTheDragoon(b);
 			new Storm(b);
 			new Study(b);
+			new Study2(b);
 			new Sturdy(b);
 			new SunderingShot(b);
 			new Surprise(b);

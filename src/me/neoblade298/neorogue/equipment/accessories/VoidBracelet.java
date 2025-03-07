@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.accessories;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -41,6 +42,6 @@ public class VoidBracelet extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.IRON_NUGGET, "Every <white>10s</white>, drop a " + GlossaryTag.RIFT.tag(this) + " [<white>5s</white>]. Increase your " +
-			GlossaryTag.MAGICAL.tag(this, inc, true) + " for every rift you have created.");
+			GlossaryTag.MAGICAL.tag(this) + " damage by " + DescUtil.yellow(inc) + " for every rift you have created.");
 	}
 }
