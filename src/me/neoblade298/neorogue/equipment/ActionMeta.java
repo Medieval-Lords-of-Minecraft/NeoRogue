@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment;
 
+import java.util.UUID;
+
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 
@@ -14,7 +16,16 @@ public class ActionMeta {
 	private LivingEntity ent;
 	private Location loc;
 	private Marker trap;
+	private UUID uuid;
 	private Object obj;
+
+	public void setUniqueId(UUID uuid) {
+		this.uuid = uuid;
+	}
+
+	public UUID getUniqueId() {
+		return uuid;
+	}
 	
 	public void setCount(int count) {
 		this.count = count;

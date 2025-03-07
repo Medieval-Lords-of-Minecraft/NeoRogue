@@ -9,6 +9,8 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 
+import javax.annotation.Nullable;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
@@ -18,8 +20,11 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+import io.lumine.mythic.api.skills.SkillMetadata;
+import io.lumine.mythic.bukkit.BukkitAdapter;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.IProjectileInstance;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffList;
@@ -29,6 +34,7 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageBarrierEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedHealthDamageEvent;
 import net.kyori.adventure.text.Component;
@@ -185,8 +191,12 @@ public class DamageMeta {
 		list.add(b);
 		defenseBuffs.put(type, list);
 	}
-	
+
 	public double dealDamage(LivingEntity target) {
+		return dealDamage(target, null);
+	}
+	
+	public double dealDamage(LivingEntity target, @Nullable SkillMetadata data) {
 		if (slices.isEmpty()) return 0;
 		if (target.getType() == EntityType.ARMOR_STAND) return 0;
 		FightData recipient = FightInstance.getFightData(target.getUniqueId());
@@ -226,8 +236,23 @@ public class DamageMeta {
 		
 		// Reduce damage from barriers, used only for players blocking projectiles
 		// For mobs blocking projectiles, go to damageProjectile
-		if (hitBarrier && recipient.getBarrier() != null) {
-			addDefenseBuffLists(recipient.getBarrier().getBuffLists());
+		if (hitBarrier && !recipient.getBarriers().isEmpty()) {
+			// Figure out which barrier it is
+			PlayerFightData pdata = (PlayerFightData) recipient;
+			Location loc = BukkitAdapter.adapt(data.getOrigin());
+			Barrier barrier;
+			for (Barrier b : recipient.getBarriers().values()) {
+				if (b.collides(loc)) {
+					barrier = b;
+					break;
+				}
+			}
+
+			if (barrier != null) {
+				addDefenseBuffLists(barrier.getBuffLists());
+				ReceivedDamageBarrierEvent ev = new ReceivedDamageBarrierEvent(owner, this, barrier);
+				pdata.runActions(pdata, Trigger.RECEIVED_DAMAGE_BARRIER, ev);
+			}
 		}
 
 		// Status effects

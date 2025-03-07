@@ -1,12 +1,14 @@
 package me.neoblade298.neorogue.equipment.offhands;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 
+import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
@@ -15,8 +17,8 @@ import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffList;
-import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -39,18 +41,24 @@ public class PaladinsShield extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		ActionMeta am = new ActionMeta();
 		data.addTrigger(id, Trigger.RAISE_SHIELD, (pdata, inputs) -> {
-			data.setBarrier(Barrier.centered(p, 4, 2, 2, 0, new HashMap<DamageBuffType, BuffList>()));
+			Barrier b = Barrier.centered(p, 4, 2, 2, 0, new HashMap<DamageBuffType, BuffList>());
+			UUID uuid = data.addBarrier(b);
+			b.tick();
+			am.setUniqueId(uuid);
 			return TriggerResult.keep();
 		});
 
 		data.addTrigger(id, Trigger.SHIELD_TICK, (pdata, inputs) -> {
-			data.getBarrier().tick();
+			Barrier b = data.getBarrier(am.getUniqueId());
+			if (b == null) return TriggerResult.keep();
+			b.tick();
 			return TriggerResult.keep();
 		});
 		
 		data.addTrigger(id, Trigger.LOWER_SHIELD, (pdata, inputs) -> {
-			data.setBarrier(null);
+			data.removeBarrier(am.getUniqueId());
 			return TriggerResult.keep();
 		});
 		

@@ -51,7 +51,7 @@ public class FightData {
 	protected HashMap<String, BukkitTask> tasks = new HashMap<String, BukkitTask>();
 	protected HashMap<String, Runnable> cleanupTasks = new HashMap<String, Runnable>();
 	
-	protected Barrier barrier = null;
+	protected HashMap<UUID, Barrier> barriers = new HashMap<UUID, Barrier>();
 	protected ShieldHolder shields; // Never null
 	protected LivingEntity entity = null;
 	protected LinkedList<TickAction> tickActions = new LinkedList<TickAction>(); // Every 20 ticks
@@ -286,12 +286,25 @@ public class FightData {
 		cleanupTasks.remove(id);
 	}
 	
-	public void setBarrier(Barrier barrier) {
-		this.barrier = barrier;
+	public UUID addBarrier(Barrier barrier) {
+		barriers.put(barrier.getUniqueId(), barrier);
+		return barrier.getUniqueId();
+	}
+
+	public void removeBarrier(UUID uuid) {
+		barriers.remove(uuid);
+	}
+
+	public void removeBarrier(Barrier barrier) {
+		barriers.remove(barrier.getUniqueId());
 	}
 	
-	public Barrier getBarrier() {
-		return barrier;
+	public Barrier getBarrier(UUID uuid) {
+		return barriers.get(uuid);
+	}
+
+	public HashMap<UUID, Barrier> getBarriers() {
+		return barriers;
 	}
 	
 	public ShieldHolder getShields() {

@@ -73,7 +73,7 @@ public class ConditionHitBarrier implements ISkillMetaComparisonCondition {
 		
 		if (skill == null) return true;
 		skill.execute(SkillTrigger.get("API"), data.getCaster(), data.getTrigger(),
-				data.getCaster().getLocation(), targets, null, 1F);
+				tracker.getCurrentLocation(), targets, null, 1F);
 		return true;
 	}
 }

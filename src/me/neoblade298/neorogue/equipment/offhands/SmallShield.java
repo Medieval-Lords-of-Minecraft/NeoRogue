@@ -15,8 +15,8 @@ import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffList;
-import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
@@ -43,7 +43,7 @@ public class SmallShield extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.RAISE_SHIELD, (pdata, inputs) -> {
-			data.setBarrier(Barrier.centered(p, 3, 2, 2, 0, new HashMap<DamageBuffType, BuffList>()));
+			data.addBarrier(Barrier.centered(p, 3, 2, 2, 0, new HashMap<DamageBuffType, BuffList>()));
 			return TriggerResult.keep();
 		});
 
