@@ -51,6 +51,7 @@ import org.bukkit.util.Transformation;
 import org.bukkit.util.Vector;
 
 import io.lumine.mythic.api.mobs.MythicMob;
+import io.lumine.mythic.api.skills.SkillMetadata;
 import io.lumine.mythic.bukkit.BukkitAdapter;
 import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
 import io.lumine.mythic.bukkit.events.MythicMobDespawnEvent;
@@ -858,6 +859,10 @@ public abstract class FightInstance extends Instance {
 	
 	public static double dealDamage(DamageMeta meta, LivingEntity target) {
 		return meta.clone().dealDamage(target);
+	}
+	
+	public static double dealDamage(DamageMeta meta, LivingEntity target, SkillMetadata data) {
+		return meta.clone().dealDamage(target, data);
 	}
 	
 	@Override

@@ -43,7 +43,7 @@ public class PaladinsShield extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
 		data.addTrigger(id, Trigger.RAISE_SHIELD, (pdata, inputs) -> {
-			Barrier b = Barrier.centered(p, 4, 2, 2, 0, new HashMap<DamageBuffType, BuffList>());
+			Barrier b = Barrier.centered(p, 4, 2, 2, 0, new HashMap<DamageBuffType, BuffList>(), null, true);
 			UUID uuid = data.addBarrier(b);
 			b.tick();
 			am.setUniqueId(uuid);
@@ -61,11 +61,12 @@ public class PaladinsShield extends Equipment {
 			data.removeBarrier(am.getUniqueId());
 			return TriggerResult.keep();
 		});
+		// TODO: Break barrier after 5 projectiles
 		
 		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, (pdata, inputs) -> {
 			if (p.getHandRaised() != EquipmentSlot.OFF_HAND || !p.isHandRaised()) return TriggerResult.keep();
 			ReceivedDamageEvent ev = (ReceivedDamageEvent) inputs;
-			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, reduction, 0, StatTracker.damageBarriered(this)));
+			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, reduction, 0, StatTracker.defenseBuffAlly(this)));
 			p.playSound(p, Sound.ITEM_SHIELD_BLOCK, 1F, 1F);
 			ev.getMeta().getOwner().applyStatus(StatusType.SANCTIFIED, data, sanct, -1);
 			return TriggerResult.keep();
@@ -74,8 +75,7 @@ public class PaladinsShield extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.SHIELD, "When raised, creates a " + GlossaryTag.BARRIER.tag(this) + " of size <white>4x3</white>"
-				+ " and reduce all damage by <yellow>" + reduction + "</yellow>, apply <yellow>" + sanct + "</yellow> " + GlossaryTag.SANCTIFIED.tag(this)
-				+ " to damagers.");
+		item = createItem(Material.SHIELD, "When raised, reduces all damage by <yellow>" + reduction + "</yellow> and applies <yellow>" + sanct + "</yellow> " + GlossaryTag.SANCTIFIED.tag(this)
+				+ " to damagers. Also creates a " + GlossaryTag.BARRIER.tag(this) + " that blocks <white>5</white> projectiles before breaking.");
 	}
 }

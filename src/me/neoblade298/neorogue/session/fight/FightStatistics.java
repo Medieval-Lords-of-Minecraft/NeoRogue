@@ -19,7 +19,7 @@ public class FightStatistics {
 	private HashMap<String, HashMap<DamageType, Double>> damageTaken = new HashMap<String, HashMap<DamageType, Double>>();
 	private HashMap<StatusType, Integer> statusesApplied = new HashMap<StatusType, Integer>();
 	private HashMap<StatTracker, Double> buffStats = new HashMap<StatTracker, Double>();
-	private double healingGiven, healingReceived, selfHealing, damageShielded, defenseBuffed;
+	private double healingGiven, healingReceived, selfHealing, damageShielded, defenseBuffed, damageBarriered, damageNullified;
 	private int deaths, revives;
 
 	// Etc stats
@@ -27,6 +27,14 @@ public class FightStatistics {
 
 	public void addEvadeMitigated(double evadeMitigated) {
 		this.evadeMitigated += evadeMitigated;
+	}
+
+	public void addDamageNullified(double damageNullified) {
+		this.damageNullified += damageNullified;
+	}
+
+	public void addDamageBarriered(double damageBarriered) {
+		this.damageBarriered += damageBarriered;
 	}
 
 	public void addInjuryMitigated(double injuryMitigated) {
@@ -251,6 +259,8 @@ public class FightStatistics {
 	
 	private Component getNameHoverComponent() {
 		Component cmp = Component.text("General Stats:");
+		cmp = appendIfNotEmpty(cmp, "Damage Nullified", damageNullified);
+		cmp = appendIfNotEmpty(cmp, "Damage Barriered", damageBarriered);
 		cmp = appendIfNotEmpty(cmp, "Ally Healing", healingGiven);
 		cmp = appendIfNotEmpty(cmp, "Self Healing", selfHealing);
 		cmp = appendIfNotEmpty(cmp, "Healing Received", healingReceived);

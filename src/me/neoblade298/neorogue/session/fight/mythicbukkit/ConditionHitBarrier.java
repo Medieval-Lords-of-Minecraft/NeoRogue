@@ -35,10 +35,11 @@ public class ConditionHitBarrier implements ISkillMetaComparisonCondition {
 		Location loc = BukkitAdapter.adapt(tracker.getCurrentLocation());
 		boolean foundBarrier = false;
 		for (PlayerFightData fd : FightInstance.getUserData().values()) {
-			Barrier b = fd.getBarrier();
-			if (checkBarrier(data, b, tracker, loc, fd)) {
-				foundBarrier = true;
-				break;
+			for (Barrier b : fd.getBarriers().values()) {
+				if (checkBarrier(data, b, tracker, loc, fd)) {
+					foundBarrier = true;
+					break;
+				}
 			}
 		}
 		if (foundBarrier) {

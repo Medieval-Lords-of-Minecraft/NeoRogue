@@ -196,7 +196,7 @@ public class DamageMeta {
 		return dealDamage(target, null);
 	}
 	
-	public double dealDamage(LivingEntity target, @Nullable SkillMetadata data) {
+	public double dealDamage(LivingEntity target, @Nullable SkillMetadata skillData) {
 		if (slices.isEmpty()) return 0;
 		if (target.getType() == EntityType.ARMOR_STAND) return 0;
 		FightData recipient = FightInstance.getFightData(target.getUniqueId());
@@ -225,11 +225,11 @@ public class DamageMeta {
 		if (recipient instanceof PlayerFightData) {
 			PlayerFightData pdata = (PlayerFightData) recipient;
 			ReceivedDamageEvent ev = new ReceivedDamageEvent(owner, this);
+			// TODO: Move all of these below buffs to have accurate number for damage nullified and barriered
 			if (pdata.runActions(pdata, Trigger.RECEIVED_DAMAGE, ev)) {
 				slices.clear();
 			}
-
-			if (pdata.hasStatus(StatusType.INVINCIBLE)) {
+			else if (pdata.hasStatus(StatusType.INVINCIBLE)) {
 				slices.clear();
 			}
 		}
@@ -239,8 +239,8 @@ public class DamageMeta {
 		if (hitBarrier && !recipient.getBarriers().isEmpty()) {
 			// Figure out which barrier it is
 			PlayerFightData pdata = (PlayerFightData) recipient;
-			Location loc = BukkitAdapter.adapt(data.getOrigin());
-			Barrier barrier;
+			Location loc = BukkitAdapter.adapt(skillData.getOrigin());
+			Barrier barrier = null;
 			for (Barrier b : recipient.getBarriers().values()) {
 				if (b.collides(loc)) {
 					barrier = b;
@@ -249,9 +249,11 @@ public class DamageMeta {
 			}
 
 			if (barrier != null) {
-				addDefenseBuffLists(barrier.getBuffLists());
 				ReceivedDamageBarrierEvent ev = new ReceivedDamageBarrierEvent(owner, this, barrier);
-				pdata.runActions(pdata, Trigger.RECEIVED_DAMAGE_BARRIER, ev);
+				if (pdata.runActions(pdata, Trigger.RECEIVED_DAMAGE_BARRIER, ev) || barrier.isUnbreakable()) {
+					slices.clear();
+				}
+				addDefenseBuffLists(barrier.getBuffLists());
 			}
 		}
 

@@ -1,11 +1,13 @@
 package me.neoblade298.neorogue.equipment.offhands;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
@@ -38,26 +40,32 @@ public class SpikyShield extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		ActionMeta am = new ActionMeta();
 		data.applyStatus(StatusType.THORNS, data, amount, -1);
+		data.addTrigger(id, Trigger.RAISE_SHIELD, (pdata, inputs) -> {
+			Barrier b = Barrier.centered(p, 3, 2, 2, 0, new HashMap<DamageBuffType, BuffList>(), null, true);
+			UUID uuid = data.addBarrier(b);
+			b.tick();
+			am.setUniqueId(uuid);
+			return TriggerResult.keep();
+		});
+
+		data.addTrigger(id, Trigger.SHIELD_TICK, (pdata, inputs) -> {
+			Barrier b = data.getBarrier(am.getUniqueId());
+			if (b == null) return TriggerResult.keep();
+			b.tick();
+			return TriggerResult.keep();
+		});
+		
+		data.addTrigger(id, Trigger.LOWER_SHIELD, (pdata, inputs) -> {
+			data.removeBarrier(am.getUniqueId());
+			return TriggerResult.keep();
+		});
 		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, (pdata, inputs) -> {
 			if (!p.isHandRaised()) return TriggerResult.keep();
 			ReceivedDamageEvent ev = (ReceivedDamageEvent) inputs;
 			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, reduction, 0, StatTracker.damageBarriered(this)));
 			p.playSound(p, Sound.ITEM_SHIELD_BLOCK, 1F, 1F);
-			return TriggerResult.keep();
-		});
-		data.addTrigger(id, Trigger.RAISE_SHIELD, (pdata, inputs) -> {
-			data.setBarrier(Barrier.centered(p, 3, 2, 2, 0, new HashMap<DamageBuffType, BuffList>()));
-			return TriggerResult.keep();
-		});
-
-		data.addTrigger(id, Trigger.SHIELD_TICK, (pdata, inputs) -> {
-			data.getBarrier().tick();
-			return TriggerResult.keep();
-		});
-		
-		data.addTrigger(id, Trigger.LOWER_SHIELD, (pdata, inputs) -> {
-			data.setBarrier(null);
 			return TriggerResult.keep();
 		});
 	}

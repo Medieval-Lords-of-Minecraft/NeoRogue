@@ -33,6 +33,7 @@ public class Barrier {
 	private Rectangle rect;
 	private Location center, rectcenter; // Center is midpoint of barrier, rectcenter is midpoint of actually rectangle to draw
 	private HashMap<DamageBuffType, BuffList> buffs = new HashMap<DamageBuffType, BuffList>();
+	private boolean isUnbreakable; // If true, this barrier cancels damage instead of applying buffs
 	
 	// Stationary
 	private ParticleShapeMemory mem;
@@ -40,7 +41,7 @@ public class Barrier {
 	// Centered on owner
 	private LocalAxes axes;
 	
-	private Barrier(LivingEntity owner, double length, double forward, double height, HashMap<DamageBuffType, BuffList> buffs, ParticleContainer part) {
+	private Barrier(LivingEntity owner, double length, double forward, double height, HashMap<DamageBuffType, BuffList> buffs, ParticleContainer part, boolean isUnbreakable) {
 		this.uuid = UUID.randomUUID();
 		this.owner = owner;
 		this.height = height;
@@ -48,6 +49,7 @@ public class Barrier {
 		this.forward = forward;
 		this.rect = new Rectangle(length, height, METERS_PER_PARTICLE);
 		this.buffs = buffs;
+		this.isUnbreakable = isUnbreakable;
 		calculateLocation();
 		
 		if (part == null) {
@@ -60,30 +62,20 @@ public class Barrier {
 	
 	// Stationary version
 	private Barrier(LivingEntity owner, double length, double forward, double height, Location center, LocalAxes axes,
-		HashMap<DamageBuffType, BuffList> buffs, ParticleContainer part) {
-		this(owner, length, forward, height, buffs, part);
+		HashMap<DamageBuffType, BuffList> buffs, ParticleContainer part, boolean isUnbreakable) {
+		this(owner, length, forward, height, buffs, part, isUnbreakable);
 		this.center = center;
 		this.mem = rect.calculate(center, axes);
 	}
 	
 	public static Barrier stationary(LivingEntity owner, double length, double forward, double height, Location center, LocalAxes axes,
-		HashMap<DamageBuffType, BuffList> buffs) {
-		return new Barrier(owner, length, forward, height, buffs, null);
-	}
-	
-	public static Barrier stationary(LivingEntity owner, double length, double forward, double height, Location center, LocalAxes axes,
-		HashMap<DamageBuffType, BuffList> buffs, @Nullable ParticleContainer part) {
-		return new Barrier(owner, length, forward, height, buffs, part);
+		HashMap<DamageBuffType, BuffList> buffs, @Nullable ParticleContainer part, boolean isUnbreakable) {
+		return new Barrier(owner, length, forward, height, buffs, part, isUnbreakable);
 	}
 	
 	public static Barrier centered(LivingEntity owner, double length, double forward, double height, double forwardOffset, 
-		HashMap<DamageBuffType, BuffList> buffs) {
-		return new Barrier(owner, length, forward, height, buffs, null);
-	}
-	
-	public static Barrier centered(LivingEntity owner, double length, double forward, double height, double forwardOffset, 
-		HashMap<DamageBuffType, BuffList> buffs, @Nullable ParticleContainer part) {
-		return new Barrier(owner, length, forward, height, buffs, part);
+		HashMap<DamageBuffType, BuffList> buffs, @Nullable ParticleContainer part, boolean isUnbreakable) {
+		return new Barrier(owner, length, forward, height, buffs, null, isUnbreakable);
 	}
 	
 	public void tick() {
@@ -150,5 +142,9 @@ public class Barrier {
 	
 	public HashMap<DamageBuffType, BuffList> getBuffLists() {
 		return buffs;
+	}
+
+	public boolean isUnbreakable() {
+		return isUnbreakable;
 	}
 }

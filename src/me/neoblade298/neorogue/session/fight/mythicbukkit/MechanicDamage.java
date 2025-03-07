@@ -70,7 +70,7 @@ public class MechanicDamage implements ITargetedEntitySkill {
 				meta.addDamageSlice(new DamageSlice(fd, ent.getValue() * mult, ent.getKey()));
 			}
 			meta.setHitBarrier(hitBarrier);
-			double dealt = FightInstance.dealDamage(meta, (LivingEntity) target.getBukkitEntity());
+			double dealt = FightInstance.dealDamage(meta, (LivingEntity) target.getBukkitEntity(), data);
 			
 
 			HashSet<AbstractEntity> targets = new HashSet<AbstractEntity>();

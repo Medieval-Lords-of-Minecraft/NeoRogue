@@ -59,7 +59,7 @@ public class EarthenWall extends Equipment {
 					for (LivingEntity ent : TargetHelper.getEntitiesInLine(p, start, end, tp)) {
 						FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.EARTHEN), ent);
 					}
-					Barrier.stationary(p, tp.range, 2, 4, start.clone().add(dir.clone().multiply(0.5)), new LocalAxes(left, new Vector(0, 1, 0), forward), null, earth);
+					Barrier.stationary(p, tp.range, 2, 4, start.clone().add(dir.clone().multiply(0.5)), new LocalAxes(left, new Vector(0, 1, 0), forward), null, earth, true);
 				}
 			});
 			return TriggerResult.keep();
