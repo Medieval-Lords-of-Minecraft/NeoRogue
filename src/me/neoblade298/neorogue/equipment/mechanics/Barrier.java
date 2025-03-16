@@ -16,6 +16,7 @@ import me.neoblade298.neocore.bukkit.effects.LocalAxes;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.ParticleShapeMemory;
 import me.neoblade298.neocore.bukkit.effects.Rectangle;
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffList;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
@@ -32,7 +33,7 @@ public class Barrier {
 	private ParticleContainer part;
 	private Rectangle rect;
 	private Location center, rectcenter; // Center is midpoint of barrier, rectcenter is midpoint of actually rectangle to draw
-	private HashMap<DamageBuffType, BuffList> buffs = new HashMap<DamageBuffType, BuffList>();
+	private HashMap<DamageBuffType, BuffList> buffs;
 	private boolean isUnbreakable; // If true, this barrier cancels damage instead of applying buffs
 	
 	// Stationary
@@ -48,16 +49,10 @@ public class Barrier {
 		this.length = length;
 		this.forward = forward;
 		this.rect = new Rectangle(length, height, METERS_PER_PARTICLE);
-		this.buffs = buffs;
+		this.buffs = buffs != null ? buffs : new HashMap<DamageBuffType, BuffList>();
+		this.part = part != null ? part : DEFAULT_SHIELD_PARTICLE;
 		this.isUnbreakable = isUnbreakable;
 		calculateLocation();
-		
-		if (part == null) {
-			this.part = DEFAULT_SHIELD_PARTICLE;
-		}
-		else {
-			this.part = part;
-		}
 	}
 	
 	// Stationary version
@@ -65,12 +60,13 @@ public class Barrier {
 		HashMap<DamageBuffType, BuffList> buffs, ParticleContainer part, boolean isUnbreakable) {
 		this(owner, length, forward, height, buffs, part, isUnbreakable);
 		this.center = center;
+		System.out.println("Center: " + Util.locToString(center));
 		this.mem = rect.calculate(center, axes);
 	}
 	
 	public static Barrier stationary(LivingEntity owner, double length, double forward, double height, Location center, LocalAxes axes,
 		HashMap<DamageBuffType, BuffList> buffs, @Nullable ParticleContainer part, boolean isUnbreakable) {
-		return new Barrier(owner, length, forward, height, buffs, part, isUnbreakable);
+		return new Barrier(owner, length, forward, height, center, axes, buffs, part, isUnbreakable);
 	}
 	
 	public static Barrier centered(LivingEntity owner, double length, double forward, double height, double forwardOffset, 
@@ -80,6 +76,7 @@ public class Barrier {
 	
 	public void tick() {
 		// Static tick
+		System.out.println("Mem: " + mem);
 		if (mem != null) {
 			if (owner instanceof Player) {
 				mem.play((Player) owner, part, part);
@@ -103,6 +100,10 @@ public class Barrier {
 		axes = LocalAxes.usingEyeLocation(owner);
 		center = owner.getLocation().add(axes.forward().multiply((FORWARD_OFFSET + forward) / 2)).add(axes.up().multiply(height / 2));
 		rectcenter = center.clone().add(axes.forward().multiply((FORWARD_OFFSET + forward) / 2));
+	}
+
+	public Location getLocation() {
+		return center;
 	}
 	
 	public boolean collides(Location loc) {

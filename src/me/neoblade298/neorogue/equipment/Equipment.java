@@ -351,6 +351,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new DoubleStrike(b);
 			new DrainLightning(b);
 			new EarthenTackle(b);
+			new EarthenWall(b);
 			new EtherealKnife(b);
 			new Embolden(b);
 			new EmpoweredEdge(b);
@@ -423,6 +424,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new ManaShell(b);
 			new MarkTarget(b);
 			new MarkTarget2(b);
+			new Meditate(b);
 			new MightySwing(b);
 			new MindBlast(b);
 			new MindGrowth(b);
@@ -474,6 +476,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new SmokeBomb(b);
 			new SpikeTrap(b);
 			new SpiritOfTheDragoon(b);
+			new Splinterstone(b);
 			new Storm(b);
 			new Study(b);
 			new Study2(b);

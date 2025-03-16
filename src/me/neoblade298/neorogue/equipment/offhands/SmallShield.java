@@ -21,6 +21,7 @@ import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageBarrierEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
 
 public class SmallShield extends Equipment {
@@ -46,6 +47,7 @@ public class SmallShield extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
 		data.addTrigger(id, Trigger.RAISE_SHIELD, (pdata, inputs) -> {
+			if (am.getCount() >= 5) return TriggerResult.remove();
 			Barrier b = Barrier.centered(p, 3, 2, 2, 0, new HashMap<DamageBuffType, BuffList>(), null, true);
 			UUID uuid = data.addBarrier(b);
 			b.tick();
@@ -54,6 +56,7 @@ public class SmallShield extends Equipment {
 		});
 
 		data.addTrigger(id, Trigger.SHIELD_TICK, (pdata, inputs) -> {
+			if (am.getCount() >= 5) return TriggerResult.remove();
 			Barrier b = data.getBarrier(am.getUniqueId());
 			if (b == null) return TriggerResult.keep();
 			b.tick();
@@ -61,7 +64,21 @@ public class SmallShield extends Equipment {
 		});
 		
 		data.addTrigger(id, Trigger.LOWER_SHIELD, (pdata, inputs) -> {
+			if (am.getCount() >= 5) return TriggerResult.remove();
 			data.removeBarrier(am.getUniqueId());
+			return TriggerResult.keep();
+		});
+
+		data.addTrigger(id, Trigger.RECEIVED_DAMAGE_BARRIER, (pdata, in) -> {
+			ReceivedDamageBarrierEvent ev = (ReceivedDamageBarrierEvent) in;
+			Barrier b = ev.getBarrier();
+			if (!b.getUniqueId().equals(am.getUniqueId())) return TriggerResult.keep();
+			am.addCount(1);
+			if (am.getCount() >= 5) {
+				data.removeBarrier(am.getUniqueId());
+				p.playSound(p, Sound.ITEM_SHIELD_BREAK, 1F, 1F);
+				return TriggerResult.remove();
+			}
 			return TriggerResult.keep();
 		});
 		

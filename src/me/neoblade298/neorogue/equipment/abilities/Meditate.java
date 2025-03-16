@@ -22,7 +22,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Meditate extends Equipment {
-	private static final String ID = "brace";
+	private static final String ID = "meditate";
 	private int regen;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
 	

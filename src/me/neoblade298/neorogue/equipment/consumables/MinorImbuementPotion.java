@@ -39,6 +39,7 @@ public class MinorImbuementPotion extends Consumable {
 		data.addSlotBasedTrigger(id, slot, Trigger.RIGHT_CLICK, (pdata, in) -> {
 			drink.play(p, p);
 			data.getSessionData().removeEquipment(es, slot);
+			p.getInventory().setItem(slot, null);
 			data.runActions(data, Trigger.USE_CONSUMABLE, new UseConsumableEvent(this));
 			meta.use();
 			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in2) -> {

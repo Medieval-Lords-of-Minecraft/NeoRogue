@@ -58,6 +58,14 @@ public class QuickTrap extends Equipment {
 				am.addDouble(-thres);
 				Sounds.equip.play(p, p);
 				initTrap(p, data);
+				if (am.getDouble() < thres) {
+					inst.setIcon(item);
+				}
+				else {
+					charged.setAmount((int) (am.getDouble() / thres));
+					inst.setIcon(charged);
+				}
+				inst.setIcon(item);
 			}
 			return TriggerResult.keep();
 		});
@@ -67,10 +75,8 @@ public class QuickTrap extends Equipment {
 			DealtDamageEvent ev = (DealtDamageEvent) in;
 			am.addDouble(ev.getTotalDamage());
 			if (am.getDouble() >= thres) {
+				charged.setAmount((int) (am.getDouble() / thres));
 				inst.setIcon(charged);
-			}
-			else {
-				inst.setIcon(item);
 			}
 			return TriggerResult.keep();
 		});

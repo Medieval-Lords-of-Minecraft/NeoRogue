@@ -37,12 +37,16 @@ public class TargetHelper {
 		return getEntitiesInRadius(source, props).peekFirst();
 	}
 	
-	public static LinkedList<LivingEntity> getEntitiesInCone(LivingEntity source, Vector direction, TargetProperties props) {
-		return TargetUtil.getEntitiesInCone(source, direction, props.arc, props.range, new TargetFilter(source, props));
-	}
-	
 	public static LinkedList<LivingEntity> getEntitiesInCone(LivingEntity source, TargetProperties props) {
 		return TargetUtil.getEntitiesInCone(source, props.arc, props.range, new TargetFilter(source, props));
+	}
+	
+	public static LinkedList<LivingEntity> getEntitiesInCone(LivingEntity source, Vector direction, TargetProperties props) {
+		return TargetUtil.getEntitiesInCone(source, source.getLocation(), direction, props.arc, props.range, new TargetFilter(source, props));
+	}
+	
+	public static LinkedList<LivingEntity> getEntitiesInCone(LivingEntity source, Location loc, Vector direction, TargetProperties props) {
+		return TargetUtil.getEntitiesInCone(source, loc, direction, props.arc, props.range, new TargetFilter(source, props));
 	}
 	
 	public static Location getSightLocation(LivingEntity source, TargetProperties props) {

@@ -32,5 +32,6 @@ public class Sounds {
 			wind = new SoundContainer(Sound.ENTITY_BREEZE_WIND_BURST),
 			wither = new SoundContainer(Sound.ENTITY_WITHER_SHOOT),
 			piano = new SoundContainer(Sound.BLOCK_NOTE_BLOCK_HARP),
+			shieldBreak = new SoundContainer(Sound.ITEM_SHIELD_BREAK),
 			teleport = new SoundContainer(Sound.ENTITY_ENDERMAN_TELEPORT);
 }

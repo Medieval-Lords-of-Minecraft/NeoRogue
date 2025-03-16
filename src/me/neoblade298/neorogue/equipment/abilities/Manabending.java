@@ -52,6 +52,6 @@ public class Manabending extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.LIGHT_BLUE_GLAZED_TERRACOTTA,
 				"Passive. Increase all " + GlossaryTag.MAGICAL.tag(this) + " damage by " + DescUtil.white(damage) + ". " +
-				"Applying any negative status effects increases your mana by " + DescUtil.yellow(regen) + ", up to one per second.");
+				"Applying any negative status effects increases your mana by " + DescUtil.yellow(regen) + ", up to once per second.");
 	}
 }
