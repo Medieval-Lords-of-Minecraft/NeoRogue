@@ -221,21 +221,9 @@ public class DamageMeta {
 			FightInstance.trigger((Player) owner.getEntity(), Trigger.PRE_DEALT_DAMAGE, new PreDealtDamageEvent(this, target));
 		}
 		
-		// See if any of our effects cancel damage first
-		if (recipient instanceof PlayerFightData) {
-			PlayerFightData pdata = (PlayerFightData) recipient;
-			ReceivedDamageEvent ev = new ReceivedDamageEvent(owner, this);
-			// TODO: Move all of these below buffs to have accurate number for damage nullified and barriered
-			if (pdata.runActions(pdata, Trigger.RECEIVED_DAMAGE, ev)) {
-				slices.clear();
-			}
-			else if (pdata.hasStatus(StatusType.INVINCIBLE)) {
-				slices.clear();
-			}
-		}
-		
 		// Reduce damage from barriers, used only for players blocking projectiles
 		// For mobs blocking projectiles, go to damageProjectile
+		boolean nullifiedByBarrier = false;
 		if (hitBarrier && !recipient.getBarriers().isEmpty()) {
 			// Figure out which barrier it is
 			PlayerFightData pdata = (PlayerFightData) recipient;
@@ -251,9 +239,21 @@ public class DamageMeta {
 			if (barrier != null) {
 				ReceivedDamageBarrierEvent ev = new ReceivedDamageBarrierEvent(owner, this, barrier);
 				if (pdata.runActions(pdata, Trigger.RECEIVED_DAMAGE_BARRIER, ev) || barrier.isUnbreakable()) {
-					slices.clear();
+					nullifiedByBarrier = true;
 				}
-				addDefenseBuffLists(barrier.getBuffLists());
+				else {
+					addDefenseBuffLists(barrier.getBuffLists());
+				}
+			}
+		}
+
+		// See if any of our effects cancel damage after barrier
+		boolean cancelDamage = false;
+		if (recipient instanceof PlayerFightData && !nullifiedByBarrier) {
+			PlayerFightData pdata = (PlayerFightData) recipient;
+			ReceivedDamageEvent ev = new ReceivedDamageEvent(owner, this);
+			if (pdata.runActions(pdata, Trigger.RECEIVED_DAMAGE, ev) || pdata.hasStatus(StatusType.INVINCIBLE)) {
+				cancelDamage = true;
 			}
 		}
 
@@ -283,12 +283,8 @@ public class DamageMeta {
 			}
 		}
 		
+		boolean isStatusDamage = DamageCategory.GENERAL.hasType(slices.getFirst().getPostBuffType());
 		// Calculate buffs for every slice of damage
-		boolean evading = recipient.hasStatus(StatusType.EVADE) && 
-				(slices.isEmpty() ? false : DamageCategory.GENERAL.hasType(slices.getFirst().getPostBuffType()));
-		if (evading) {
-			recipient.getStatus(StatusType.EVADE).apply(recipient, -1, -1);
-		}
 		for (DamageSlice slice : slices) {
 			double increase = 0, mult = 1, base = slice.getDamage();
 			ArrayList<Buff> buffs = new ArrayList<Buff>(), debuffs = new ArrayList<Buff>();
@@ -324,49 +320,6 @@ public class DamageMeta {
 			double sliceDamage = Math.max(0, (slice.getDamage() * mult) + increase);
 			if (damage + ignoreShieldsDamage + sliceDamage > target.getHealth()) {
 				sliceDamage = target.getHealth() - damage - ignoreShieldsDamage;
-			}
-
-			// If the first slice isn't a status, evade it
-			if (evading) {
-				if (recipient.getEntity().getType() == EntityType.PLAYER) Sounds.attackSweep.play((Player) recipient.getEntity(), recipient.getEntity());
-				PlayerFightData pl = (PlayerFightData) recipient; // Only players can have evade status
-				if (sliceDamage > pl.getStamina()) {
-					sliceDamage -= pl.getStamina();
-					pl.getStats().addEvadeMitigated(pl.getStamina());
-					pl.setStamina(0);
-				}
-				else {
-					pl.addStamina(-sliceDamage);
-					pl.getStats().addEvadeMitigated(sliceDamage);
-					sliceDamage = 0;
-				}
-			}
-
-			// Handle injury
-			while (owner.hasStatus(StatusType.INJURY) && sliceDamage > 0) {
-				Status injury = owner.getStatus(StatusType.INJURY);
-				int stacks = injury.getStacks();
-				HashMap<FightData, Integer> owners = owner.getStatus(StatusType.INJURY).getSlices().getSliceOwners();
-				int numOwners = owners.size();
-				if (stacks * 0.2 >= sliceDamage) {
-					int toRemove = (int) (sliceDamage / 0.2);
-					injury.apply(owner, -toRemove, -1);
-					for (Entry<FightData, Integer> ent : owners.entrySet()) {
-						if (ent.getKey() instanceof PlayerFightData) {
-							((PlayerFightData) ent.getKey()).getStats().addInjuryMitigated(sliceDamage / numOwners);
-						}
-					}
-					sliceDamage = 0;
-				}
-				else {
-					sliceDamage -= stacks * 0.2;
-					injury.apply(owner, -stacks, -1);
-					for (Entry<FightData, Integer> ent : owner.getStatus(StatusType.INJURY).getSlices().getSliceOwners().entrySet()) {
-						if (ent.getKey() instanceof PlayerFightData) {
-							((PlayerFightData) ent.getKey()).getStats().addInjuryMitigated((stacks * 0.2) / numOwners);
-						}
-					}
-				}
 			}
 
 			// Sort buffs by greatest positive impact to greatest negative impact
@@ -454,6 +407,89 @@ public class DamageMeta {
 			}
 			// Stop counting damage slices after the target is already dead
 			if (damage + ignoreShieldsDamage >= target.getHealth()) break;
+		}
+		
+		// Barrier nullification
+		if (nullifiedByBarrier) {
+			PlayerFightData pl = (PlayerFightData) recipient; // Only players can have barrier
+			pl.getStats().addDamageBarriered(damage + ignoreShieldsDamage);
+			damage = 0;
+			ignoreShieldsDamage = 0;
+		}
+		
+		// General damage nullification
+		if (cancelDamage && recipient instanceof PlayerFightData) {
+			PlayerFightData pl = (PlayerFightData) recipient;
+			pl.getStats().addDamageNullified(damage + ignoreShieldsDamage);
+			damage = 0;
+			ignoreShieldsDamage = 0;
+		}
+
+		// Evade
+		if (recipient.hasStatus(StatusType.EVADE) && !isStatusDamage && (damage > 0 || ignoreShieldsDamage > 0)) {
+			if (recipient.getEntity().getType() == EntityType.PLAYER) Sounds.attackSweep.play((Player) recipient.getEntity(), recipient.getEntity());
+			double totalDamage = damage + ignoreShieldsDamage;
+			PlayerFightData pl = (PlayerFightData) recipient; // Only players can have evade status
+			if (totalDamage < pl.getStamina()) {
+				damage = 0;
+				ignoreShieldsDamage = 0;
+				pl.getStats().addEvadeMitigated(pl.getStamina());
+				pl.setStamina(0);
+			}
+			else {
+				if (ignoreShieldsDamage < pl.getStamina()) {
+					pl.addStamina(ignoreShieldsDamage);
+					ignoreShieldsDamage = 0;
+				}
+				else {
+					ignoreShieldsDamage -= pl.getStamina();
+					pl.setStamina(0);
+				}
+				
+				damage -= pl.getStamina();
+				pl.setStamina(0);
+			}
+		}
+
+		// Injury
+		if (owner.hasStatus(StatusType.INJURY) && !isStatusDamage && (damage > 0 || ignoreShieldsDamage > 0)) {
+			double totalDamage = damage + ignoreShieldsDamage;
+			Status injury = owner.getStatus(StatusType.INJURY);
+			int stacks = injury.getStacks();
+			HashMap<FightData, Integer> owners = owner.getStatus(StatusType.INJURY).getSlices().getSliceOwners();
+			int numOwners = owners.size();
+			// Full block with injury
+			if (stacks * 0.2 >= totalDamage) {
+				int toRemove = (int) (totalDamage / 0.2);
+				injury.apply(owner, -toRemove, -1);
+				for (Entry<FightData, Integer> ent : owners.entrySet()) {
+					if (ent.getKey() instanceof PlayerFightData) {
+						((PlayerFightData) ent.getKey()).getStats().addInjuryMitigated(totalDamage / numOwners);
+					}
+				}
+				damage = 0;
+				ignoreShieldsDamage = 0;
+			}
+			// No full block with injury
+			else {
+				injury.apply(owner, -stacks, -1);
+				for (Entry<FightData, Integer> ent : owners.entrySet()) {
+					if (ent.getKey() instanceof PlayerFightData) {
+						((PlayerFightData) ent.getKey()).getStats().addInjuryMitigated(stacks * 0.2 / numOwners);
+					}
+				}
+				
+				// Block ignore shields damage first
+				if (stacks * 0.2 >= ignoreShieldsDamage) {
+					stacks -= (int) (ignoreShieldsDamage / 0.2);
+					ignoreShieldsDamage = 0;
+				}
+				else {
+					ignoreShieldsDamage -= stacks * 0.2;
+					stacks = 0;
+				}
+				damage -= stacks * 0.2;
+			}
 		}
 		
 		// Threat

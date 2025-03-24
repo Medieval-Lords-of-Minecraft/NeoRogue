@@ -86,7 +86,7 @@ public enum GlossaryTag implements GlossaryIcon {
 	STEALTH(Material.NETHER_STAR, StatusType.STEALTH.tag,
 			"Certain abilities become stronger when this status is applied."),
 	EVADE(Material.PHANTOM_MEMBRANE, StatusType.EVADE.tag,
-			"When the holder takes damage, damage dealt is first subtracted from stamina. One stack is lost per damage instance."),
+			"When the holder takes damage, post-buff damage dealt is first subtracted from stamina. One stack is lost per damage instance."),
 	FOCUS(Material.SPYGLASS, StatusType.FOCUS.tag,
 			"Certain abilities become stronger upon reaching a certain threshold of these stacks."),
 	RIFT(Material.MAGMA_CREAM, "<dark_purple>Rift</dark_purple>",
