@@ -89,7 +89,7 @@ import me.neoblade298.neorogue.equipment.artifacts.EmeraldCluster;
 import me.neoblade298.neorogue.equipment.artifacts.EmeraldGem;
 import me.neoblade298.neorogue.equipment.artifacts.EmeraldShard;
 import me.neoblade298.neorogue.equipment.artifacts.EnergyBattery;
-import me.neoblade298.neorogue.equipment.artifacts.Exertion;
+import me.neoblade298.neorogue.equipment.artifacts.Exhaustion;
 import me.neoblade298.neorogue.equipment.artifacts.FaerieDust;
 import me.neoblade298.neorogue.equipment.artifacts.FaeriePendant;
 import me.neoblade298.neorogue.equipment.artifacts.GlacialHammer;
@@ -365,6 +365,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new EscapePlan(b);
 			new EscapePlan2(b);
 			new Execute(b);
+			new Exertion(b);
 			new ExploitWeakness(b);
 			new Expunge(b);
 			new Fade(b);
@@ -490,6 +491,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new ThrowPoison(b);
 			new Thornguard(b);
 			new Titan(b);
+			new ToAshes(b);
 			new Torch(b);
 			new TreeTrunk(b);
 			new TwinShiv(b);
@@ -690,7 +692,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new DarkArtsTreatise();
 		new EarthenTome();
 		new EnergyBattery();
-		new Exertion();
+		new Exhaustion();
 		new FaerieDust();
 		new FaeriePendant();
 		new GlacialHammer();

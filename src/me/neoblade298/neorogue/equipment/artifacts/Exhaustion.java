@@ -15,11 +15,11 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-public class Exertion extends Artifact {
+public class Exhaustion extends Artifact {
 	private static final String ID = "exertion";
 	
-	public Exertion() {
-		super(ID, "Exertion", Rarity.COMMON, EquipmentClass.CLASSLESS);
+	public Exhaustion() {
+		super(ID, "Exhaustion", Rarity.COMMON, EquipmentClass.CLASSLESS);
 		canDrop = false;
 		canStack = true;
 	}

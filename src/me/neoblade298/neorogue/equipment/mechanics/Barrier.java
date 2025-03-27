@@ -16,7 +16,6 @@ import me.neoblade298.neocore.bukkit.effects.LocalAxes;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.ParticleShapeMemory;
 import me.neoblade298.neocore.bukkit.effects.Rectangle;
-import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffList;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
@@ -60,7 +59,6 @@ public class Barrier {
 		HashMap<DamageBuffType, BuffList> buffs, ParticleContainer part, boolean isUnbreakable) {
 		this(owner, length, forward, height, buffs, part, isUnbreakable);
 		this.center = center;
-		System.out.println("Center: " + Util.locToString(center));
 		this.mem = rect.calculate(center, axes);
 	}
 	
@@ -71,12 +69,11 @@ public class Barrier {
 	
 	public static Barrier centered(LivingEntity owner, double length, double forward, double height, double forwardOffset, 
 		HashMap<DamageBuffType, BuffList> buffs, @Nullable ParticleContainer part, boolean isUnbreakable) {
-		return new Barrier(owner, length, forward, height, buffs, null, isUnbreakable);
+		return new Barrier(owner, length, forward, height, buffs, part, isUnbreakable);
 	}
 	
 	public void tick() {
 		// Static tick
-		System.out.println("Mem: " + mem);
 		if (mem != null) {
 			if (owner instanceof Player) {
 				mem.play((Player) owner, part, part);
