@@ -34,9 +34,14 @@ public class Exertion extends Equipment {
 	private int damage, selfDmg = 3;
 	
 	public Exertion(boolean isUpgraded) {
-		super(ID, "Exertion", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
+		super(ID, "Exertion", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 0, 12, tp.range));
-				damage = isUpgraded ? 300 : 200;
+				damage = isUpgraded ? 250 : 150;
+	}
+
+	@Override
+	public void setupReforges() {
+		addSelfReforge(ToAshes.get());
 	}
 	
 	public static Equipment get() {

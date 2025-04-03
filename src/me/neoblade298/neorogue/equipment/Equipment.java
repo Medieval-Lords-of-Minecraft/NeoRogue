@@ -305,6 +305,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new BerserkersCall(b);
 			new Bide(b);
 			new BitterCold(b);
+			new Blast(b);
 			new BlastStep(b);
 			new BlessedEdge(b);
 			new Blind(b);
@@ -344,6 +345,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Demoralize(b);
 			new Depletion(b);
 			new Dexterity(b);
+			new Discharge(b);
 			new Discipline(b);
 			new Dismantle(b);
 			new Disorient(b);

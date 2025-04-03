@@ -14,26 +14,23 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
-public class Study extends Equipment {
-	private static final String ID = "study";
+public class Discharge extends Equipment {
+	private static final String ID = "discharge";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.ENCHANT).count(25).spread(0.5, 0.5).speed(0.1);;
-	private int intel;
+	private int intel, elec;
 	
-	public Study(boolean isUpgraded) {
-		super(ID, "Study", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE,
+	public Discharge(boolean isUpgraded) {
+		super(ID, "Discharge", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 8, 0));
-		intel = isUpgraded ? 3 : 2;
-	}
-
-	@Override
-	public void setupReforges() {
-		addReforge(Intuition.get(), Study2.get());
-		addReforge(Manabending.get(), Discharge.get(), Entropy.get());
+		intel = isUpgraded ? 4 : 3;
+		elec = isUpgraded ? 60 : 40;
 	}
 	
 	public static Equipment get() {
@@ -57,6 +54,12 @@ public class Study extends Equipment {
 			icon.setAmount(am.getCount());
 			inst.setIcon(icon);
 			am.setTime(System.currentTimeMillis());
+
+			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in2) -> {
+				BasicAttackEvent ev = (BasicAttackEvent) in;
+				FightInstance.applyStatus(ev.getTarget(), StatusType.ELECTRIFIED, data, elec, -1);
+				return TriggerResult.remove();
+			});
 			return TriggerResult.keep();
 		});
 	}
@@ -64,6 +67,7 @@ public class Study extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.WRITABLE_BOOK,
-				"Passive. Gain " + GlossaryTag.INTELLECT.tag(this, intel, true) + " on kill.");
+				"Passive. Gain " + GlossaryTag.INTELLECT.tag(this, intel, true) + " on kill. Your next basic attack will also apply " +
+				GlossaryTag.ELECTRIFIED.tag(this, elec, true) + ".");
 	}
 }
