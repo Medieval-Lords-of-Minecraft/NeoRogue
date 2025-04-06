@@ -362,6 +362,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new EndlessVenom(b);
 			new EnduranceTraining(b);
 			new Energize(b);
+			new Entropy(b);
 			new Envenom(b);
 			new Envenom2(b);
 			new EscapePlan(b);
@@ -400,6 +401,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new GetCentered(b);
 			new GraniteShield(b);
 			new Grit(b);
+			new GroundLance(b);
 			new GrowingSpark(b);
 			new HailCloak(b);
 			new Heartbeat(b);
