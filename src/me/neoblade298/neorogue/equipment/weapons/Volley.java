@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.AmmunitionInstance;
@@ -101,7 +102,7 @@ public class Volley extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.FIREWORK_ROCKET, "On cast, " + GlossaryTag.CHARGE.tag(this) + " for <white>1s</white> before firing " +
+		item = createItem(Material.FIREWORK_ROCKET, "On cast, " + DescUtil.charge(this, 1, 1) + " before firing " +
 			"<white>5</white> projectiles in a <white>60 degree</white> cone " +
 		 	"that deal " + GlossaryTag.PIERCING.tag(this, damage, true) + " damage using " +
 			"your current ammunition.");

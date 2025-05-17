@@ -6,13 +6,12 @@ import org.bukkit.Particle;
 import org.bukkit.Particle.DustOptions;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.Circle;
 import me.neoblade298.neocore.bukkit.effects.LocalAxes;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -56,7 +55,7 @@ public class Expunge extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pd, in) -> {
-			p.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 20, 0));
+			data.charge(20, 0);
 			
 			data.addTask(new BukkitRunnable() {
 				public void run() {
@@ -77,7 +76,7 @@ public class Expunge extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.CACTUS,
-				"On cast, charge for <white>1</white> second before applying " + GlossaryTag.POISON.tag(this, stacks, true) + " to nearby enemies. "
+				"On cast, " + DescUtil.charge(this, 1, 1) + " before applying " + GlossaryTag.POISON.tag(this, stacks, true) + " to nearby enemies. "
 				+ "Then, deal damage based on " + GlossaryTag.POISON.tag(this) + " stacks on the enemy multiplied by <yellow>" + bonus + "</yellow>.");
 	}
 }

@@ -10,7 +10,10 @@ import java.util.TreeSet;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
+import org.bukkit.attribute.AttributeModifier.Operation;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -179,17 +182,28 @@ public class PlayerFightData extends FightData {
 		
 		applyStatus(StatusType.CHANNELING, this, 1, ticks);
 		entity.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, ticks, 7));
+		AttributeModifier mod = new AttributeModifier(NamespacedKey.fromString("jump", NeoRogue.inst()), 5, Operation.ADD_NUMBER);
+		entity.getAttribute(Attribute.GENERIC_JUMP_STRENGTH).addModifier(mod);
+		addGuaranteedTask(UUID.randomUUID(), new Runnable() {
+			public void run() {
+				entity.getAttribute(Attribute.GENERIC_JUMP_STRENGTH).removeModifier(NamespacedKey.fromString("jump", NeoRogue.inst()));
+			}
+		}, ticks);
 		return new TaskChain(this, ticks);
 	}
-	
+
 	public TaskChain charge(int ticks) {
+		return charge(1, ticks);
+	}
+	
+	public TaskChain charge(int ticks, int slow) {
 		// Make sounds every second while charging if over 1s
 		if (ticks >= 20) {
 			addWaitSound(Sounds.piano, ticks);
 		}
 
 		applyStatus(StatusType.CHANNELING, this, 1, ticks);
-		entity.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, ticks, 1));
+		entity.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, ticks, slow));
 		return new TaskChain(this, ticks);
 	}
 

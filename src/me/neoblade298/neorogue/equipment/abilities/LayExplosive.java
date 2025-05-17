@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -108,7 +109,7 @@ public class LayExplosive extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.OAK_TRAPDOOR,
-				"On cast, " + GlossaryTag.CHARGE.tag(this) + " for <white>2s</white>. Then drop a " + GlossaryTag.TRAP.tag(this) + " that explodes on recast, dealing " +
+				"On cast, " + DescUtil.charge(this, 1, 2) + ". Then drop a " + GlossaryTag.TRAP.tag(this) + " that explodes on recast, dealing " +
 				GlossaryTag.BLUNT.tag(this, damage, true) + " damage multiplied by how many seconds it's been active, up to <white>5s</white>," +
 				" to all nearby enemies.");
 	}

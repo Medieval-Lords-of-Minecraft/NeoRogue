@@ -11,6 +11,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import me.neoblade298.neocore.bukkit.effects.Circle;
 import me.neoblade298.neocore.bukkit.effects.LocalAxes;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -94,7 +95,7 @@ public class Blast extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.TNT,
-				"On cast, " + GlossaryTag.CHARGE.tag(this) + " for <white>2s</white> before dealing " + GlossaryTag.FIRE.tag(this, damage, true) + 
+				"On cast, " + DescUtil.charge(this, 1, 2) + " before dealing " + GlossaryTag.FIRE.tag(this, damage, true) + 
 				" in an area around the block you aim at.");
 	}
 }

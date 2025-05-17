@@ -8,6 +8,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -103,7 +104,7 @@ public class Sear extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BLAZE_POWDER, "On cast, " + GlossaryTag.CHARGE.tag(this) + " for <white>1s</white> before firing a <white>4</white> block wide piercing projectile that deals "
+		item = createItem(Material.BLAZE_POWDER, "On cast, " + DescUtil.charge(this, 1, 1) + " before firing a <white>4</white> block wide piercing projectile that deals "
 			+ GlossaryTag.FIRE.tag(this, damage, true) + " damage. Any enemies that do not have any stacks of " + GlossaryTag.BURN.tag(this) +
 			" will receive " + GlossaryTag.BURN.tag(this, burn, true) + ".");
 	}

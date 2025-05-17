@@ -10,6 +10,7 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.damage.DamageType;
@@ -539,6 +540,7 @@ public class SessionManager implements Listener {
 	@EventHandler
 	public void onJoin(PlayerJoinEvent e) {
 		Player p = e.getPlayer();
+		p.getAttribute(Attribute.GENERIC_JUMP_STRENGTH).removeModifier(NamespacedKey.fromString("jump", NeoRogue.inst()));
 		if (sessions.containsKey(p.getUniqueId())) {
 			Session s = sessions.get(p.getUniqueId());
 			s.getData(p.getUniqueId()).syncHealth();

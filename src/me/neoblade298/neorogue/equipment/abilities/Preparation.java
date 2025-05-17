@@ -3,11 +3,10 @@ package me.neoblade298.neorogue.equipment.abilities;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -43,7 +42,7 @@ public class Preparation extends Equipment {
 		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, this, slot, es);
 		data.addTrigger(ID, bind, (pdata, in) -> {
 			Sounds.equip.play(p, p);
-			p.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 100, 0));
+			data.charge(100, 0);
 			data.addTask(new BukkitRunnable() {
 				public void run() {
 					Sounds.success.play(p, p);
@@ -73,7 +72,7 @@ public class Preparation extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLAZE_POWDER,
-				"On cast, charge for <white>5</white> seconds before gaining " + GlossaryTag.SHIELDS.tag(this, shields, true) + " "
+				"On cast, " + DescUtil.charge(this, 0, 5) + " before gaining " + GlossaryTag.SHIELDS.tag(this, shields, true) + " "
 				+ "and dealing an additional "
 				+ GlossaryTag.PIERCING.tag(this, damage, true) + " damage on basic attacks for <white>10</white> seconds.");
 	}

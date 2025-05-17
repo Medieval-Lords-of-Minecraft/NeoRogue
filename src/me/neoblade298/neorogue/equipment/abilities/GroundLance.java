@@ -15,6 +15,7 @@ import me.neoblade298.neocore.bukkit.effects.Circle;
 import me.neoblade298.neocore.bukkit.effects.LocalAxes;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.ParticleUtil;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -96,7 +97,7 @@ public class GroundLance extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POINTED_DRIPSTONE,
-				"On cast, " + GlossaryTag.CHARGE.tag(this) + " for <white>1s</white> before dealing " + GlossaryTag.EARTHEN.tag(this, damage, true) + 
+				"On cast, " + DescUtil.charge(this, 1, 1) + " before dealing " + GlossaryTag.EARTHEN.tag(this, damage, true) + 
 				" in an area around the block you aim at. Deal triple damage if you hit exactly one target.");
 	}
 }

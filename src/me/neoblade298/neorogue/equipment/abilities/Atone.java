@@ -16,6 +16,7 @@ import me.neoblade298.neocore.bukkit.effects.LocalAxes;
 import me.neoblade298.neocore.bukkit.effects.ParticleAnimation;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.ParticleShapeMemory;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -89,7 +90,7 @@ public class Atone extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLADE_POTTERY_SHERD,
-				"On cast, charge for <white>1</white> second before dealing " + GlossaryTag.LIGHT.tag(this, damage, true) + " to nearby enemies. "
+				"On cast, " + DescUtil.charge(this, 1, 1) + " before dealing " + GlossaryTag.LIGHT.tag(this, damage, true) + " to nearby enemies. "
 				+ "Increase damage dealt by number of " + GlossaryTag.SANCTIFIED.tag(this) + " stacks on the enemy multiplied by <yellow>" + sanct + "</yellow>.");
 	}
 }

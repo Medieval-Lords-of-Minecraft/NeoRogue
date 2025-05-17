@@ -10,6 +10,7 @@ import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.ParticleUtil;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -50,6 +51,7 @@ public class Fissure extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, inputs) -> {
+			data.charge(20, 0);
 			Sounds.equip.play(p, p);
 			data.addTask(new BukkitRunnable() {
 				public void run() {
@@ -72,7 +74,7 @@ public class Fissure extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.COAL,
-				"On cast, charge for <white>1</white> second, then deal " + GlossaryTag.EARTHEN.tag(this, damage, true) + " damage and knock up in a line."
+				"On cast, " + DescUtil.charge(this, 0, 1) + ", then deal " + GlossaryTag.EARTHEN.tag(this, damage, true) + " damage and knock up in a line."
 				+ " All enemies damaged are given " + GlossaryTag.CONCUSSED.tag(this, concussed, true) + ".");
 	}
 }

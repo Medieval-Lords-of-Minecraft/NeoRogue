@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -38,6 +39,7 @@ public class QuickFeet extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(ID, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			Sounds.equip.play(p, p);
+			data.charge(20, 0);
 			data.addTask(new BukkitRunnable() {
 				public void run() {
 					Sounds.fire.play(p, p);
@@ -52,6 +54,6 @@ public class QuickFeet extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.CYAN_DYE,
-				"On cast, charge for <white>5</white> seconds before gaining " + GlossaryTag.EVADE.tag(this, ev, true) + ".");
+				"On cast, " + DescUtil.charge(this, 0, 1) + " before gaining " + GlossaryTag.EVADE.tag(this, ev, true) + ".");
 	}
 }

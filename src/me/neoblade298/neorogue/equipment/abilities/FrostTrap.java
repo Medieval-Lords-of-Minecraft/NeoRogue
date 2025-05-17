@@ -80,7 +80,7 @@ public class FrostTrap extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.OAK_TRAPDOOR,
-				"On cast, " + GlossaryTag.CHARGE.tag(this) + " for <white>2s</white>. Then drop a " + GlossaryTag.TRAP.tag(this) + 
+				"On cast, " + DescUtil.charge(this, 1, 2) + ". Then drop a " + GlossaryTag.TRAP.tag(this) + 
 				" that lasts for " + DescUtil.white("10s") +
 				". If an enemy steps on the trap, they take " + GlossaryTag.ICE.tag(this, damage, true) +
 				" damage, apply " + GlossaryTag.FROST.tag(this, frost, true) +", and deactivate the trap.");
