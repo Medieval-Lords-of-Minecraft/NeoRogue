@@ -428,6 +428,7 @@ public class DamageMeta {
 		// Evade
 		if (recipient.hasStatus(StatusType.EVADE) && !isStatusDamage && (damage > 0 || ignoreShieldsDamage > 0)) {
 			if (recipient.getEntity().getType() == EntityType.PLAYER) Sounds.attackSweep.play((Player) recipient.getEntity(), recipient.getEntity());
+			recipient.applyStatus(StatusType.EVADE, recipient, -1, -1);
 			double totalDamage = damage + ignoreShieldsDamage;
 			PlayerFightData pl = (PlayerFightData) recipient; // Only players can have evade status
 			if (totalDamage < pl.getStamina()) {

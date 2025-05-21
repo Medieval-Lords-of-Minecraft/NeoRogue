@@ -19,7 +19,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class HiddenRazor extends Equipment {
 	private static final String ID = "hiddenRazor";
-	private static int base = 12;
+	private static int base = 50;
 	
 	public HiddenRazor(boolean isUpgraded) {
 		super(ID, "Hidden Razor", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,

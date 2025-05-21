@@ -22,10 +22,12 @@ public class BuffStatTracker extends StatTracker {
     
     protected BuffStatTracker(Equipment eq, String sfx) {
         super(eq, sfx);
+        this.shouldCombine = true;
     }
     
     protected BuffStatTracker(Equipment eq, String sfx, boolean invert) {
         super(eq, sfx, invert);
+        this.shouldCombine = true;
     }
 
     protected BuffStatTracker(StatusType type, boolean damage) {

@@ -27,7 +27,7 @@ public class VitalPierce extends Equipment {
 	public VitalPierce(boolean isUpgraded) {
 		super(ID, "Vital Pierce", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 30, 9, 0));
-		damage = isUpgraded ? 360 : 300;
+		damage = isUpgraded ? 450 : 300;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		hit.count(50).spread(0.5, 0.5);
 	}
