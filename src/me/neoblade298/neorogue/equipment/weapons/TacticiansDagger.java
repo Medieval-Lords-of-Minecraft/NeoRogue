@@ -3,9 +3,13 @@ package me.neoblade298.neorogue.equipment.weapons;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardEquipmentInstance;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
@@ -36,6 +40,7 @@ public class TacticiansDagger extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		ItemStack icon = item.clone().withType(Material.WOODEN_SWORD);
 		StandardPriorityAction timer = new StandardPriorityAction(ID);
 		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, this, slot, es);
 		timer.setAction((pdata, in) -> {
@@ -43,8 +48,13 @@ public class TacticiansDagger extends Equipment {
 			if (!ev.getMeta().containsType(DamageCategory.GENERAL)) {
 				return TriggerResult.keep();
 			}
+			inst.setIcon(icon);
 			timer.setTime(System.currentTimeMillis());
-			inst.setCooldown(3);
+			data.addTask(new BukkitRunnable() {
+				public void run() {
+					inst.setIcon(item);
+				}
+			}.runTaskLater(NeoRogue.inst(), 60));
 			return TriggerResult.keep();
 		});
 		data.addTrigger(ID, Trigger.DEALT_DAMAGE, timer);
@@ -53,10 +63,10 @@ public class TacticiansDagger extends Equipment {
 			DamageMeta dm;
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
 			if (timer.getTime() + 3000 >= System.currentTimeMillis()) {
-				dm = new DamageMeta(data, 20, DamageType.PIERCING);
+				dm = new DamageMeta(data, properties.get(PropertyType.DAMAGE), DamageType.PIERCING);
 			}
 			else {
-				dm = new DamageMeta(data, 20 + damage, DamageType.PIERCING);
+				dm = new DamageMeta(data, properties.get(PropertyType.DAMAGE) + damage, DamageType.PIERCING);
 			}
 			weaponSwingAndDamage(p, data, ev.getTarget(), dm);
 			return TriggerResult.keep();

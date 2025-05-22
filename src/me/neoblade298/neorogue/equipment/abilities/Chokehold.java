@@ -34,7 +34,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreDealtDamageEvent;
 public class Chokehold extends Equipment {
 	private static final String ID = "chokehold";
 	private double damage;
-	private static final TargetProperties tp = TargetProperties.radius(12, true, TargetType.ALLY);
+	private static final TargetProperties tp = TargetProperties.radius(10, true, TargetType.ALLY);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
 	private static final Circle circ = new Circle(tp.range);
 	
@@ -76,7 +76,7 @@ public class Chokehold extends Equipment {
 			if (!ev.getMeta().hasOrigin(DamageOrigin.TRAP)) return TriggerResult.keep();
 			if (am.getTime() + 15000 < System.currentTimeMillis()) return TriggerResult.keep();
 			if (ev.getTarget().getLocation().distanceSquared(am.getLocation()) > rangeSq) return TriggerResult.keep();
-			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.multiplier(data, damage, StatTracker.damageBuffAlly(this)));
+			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL, DamageOrigin.TRAP), Buff.multiplier(data, damage, StatTracker.damageBuffAlly(this)));
 			return TriggerResult.keep();
 		});
 	}

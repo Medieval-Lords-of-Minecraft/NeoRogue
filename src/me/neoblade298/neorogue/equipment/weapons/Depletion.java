@@ -15,6 +15,7 @@ import org.bukkit.util.Vector;
 import me.neoblade298.neocore.bukkit.effects.Circle;
 import me.neoblade298.neocore.bukkit.effects.LocalAxes;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -117,7 +118,7 @@ public class Depletion extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.COAL, "On cast, fire a projectile that deals "
+		item = createItem(Material.COAL, "On cast, " + DescUtil.charge(this, 1, 1) + " before firing a projectile that deals "
 				+ GlossaryTag.DARK.tag(this, damage, true) + " damage. If you hit an enemy, create a " + GlossaryTag.RIFT.tag(this) + " [<white>10s</white>] at their location. " +
 				"The new " + GlossaryTag.RIFT.tag(this) + " pulls in nearby enemies and grants " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>8s</white>] for every enemy pulled.");
 	}
