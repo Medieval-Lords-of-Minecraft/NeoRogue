@@ -182,18 +182,22 @@ public class PlayerFightData extends FightData {
 		
 		applyStatus(StatusType.CHANNELING, this, 1, ticks);
 		entity.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, ticks, 7));
-		AttributeModifier mod = new AttributeModifier(NamespacedKey.fromString("jump", NeoRogue.inst()), 5, Operation.ADD_NUMBER);
+		disableJump(ticks);
+		return new TaskChain(this, ticks);
+	}
+
+	public TaskChain charge(int ticks) {
+		return charge(1, ticks);
+	}
+
+	private void disableJump(int ticks) {
+		AttributeModifier mod = new AttributeModifier(NamespacedKey.fromString("jump", NeoRogue.inst()), -0.42, Operation.ADD_NUMBER);
 		entity.getAttribute(Attribute.GENERIC_JUMP_STRENGTH).addModifier(mod);
 		addGuaranteedTask(UUID.randomUUID(), new Runnable() {
 			public void run() {
 				entity.getAttribute(Attribute.GENERIC_JUMP_STRENGTH).removeModifier(NamespacedKey.fromString("jump", NeoRogue.inst()));
 			}
 		}, ticks);
-		return new TaskChain(this, ticks);
-	}
-
-	public TaskChain charge(int ticks) {
-		return charge(1, ticks);
 	}
 	
 	public TaskChain charge(int ticks, int slow) {
@@ -203,6 +207,7 @@ public class PlayerFightData extends FightData {
 		}
 
 		applyStatus(StatusType.CHANNELING, this, 1, ticks);
+		disableJump(ticks);
 		entity.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, ticks, slow));
 		return new TaskChain(this, ticks);
 	}

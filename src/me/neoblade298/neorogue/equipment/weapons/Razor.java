@@ -53,7 +53,7 @@ public class Razor extends Equipment {
 				weaponSwingAndDamage(p, data, ev.getTarget());
 				if (++count >= 3) {
 					data.setBasicAttackCooldown(EquipSlot.HOTBAR, 3000L);
-					this.setCooldown(3);
+					this.setCooldown(2);
 					Sounds.extinguish.play(p, p);
 					count = 0;
 				}
@@ -65,6 +65,6 @@ public class Razor extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.WOODEN_HOE, "Every <white>3</white> basic attacks, your attack cooldown is set to <white>3</white> seconds.");
+		item = createItem(Material.WOODEN_HOE, "Every <white>2</white> basic attacks, your attack cooldown is set to <white>3</white> seconds.");
 	}
 }

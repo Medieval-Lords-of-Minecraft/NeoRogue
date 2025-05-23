@@ -71,6 +71,6 @@ public class Concoct extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.DRAGON_BREATH,
 				"On cast, start charging. Your next basic attack applies " + GlossaryTag.POISON.tag(this, poison, true) + " "
-						+ "for every second you charged, up to <white>5 seconds</white>.");
+						+ "for every second you charged, up to <white>5</white> seconds.");
 	}
 }

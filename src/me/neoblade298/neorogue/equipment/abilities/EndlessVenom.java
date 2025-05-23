@@ -16,8 +16,11 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardEquipmentInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.status.Status;
+import me.neoblade298.neorogue.session.fight.status.Status.GenericStatusType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -63,6 +66,9 @@ public class EndlessVenom extends Equipment {
 				return TriggerResult.keep();
 			BasicAttackEvent ev = (BasicAttackEvent) in;
 			FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, poison, -1);
+			FightData fd = FightInstance.getFightData(ev.getTarget());
+			Status s = Status.createByGenericType(GenericStatusType.BASIC, "FRAIL", fd, true);
+			fd.applyStatus(s, data, 1, 60);
 			return TriggerResult.keep();
 		});
 	}
@@ -71,7 +77,8 @@ public class EndlessVenom extends Equipment {
 	public void setupItem() {
 		item = createItem(
 				Material.GREEN_DYE,
-				"On cast, your basic attacks apply " + GlossaryTag.POISON.tag(this, poison, true) + " for <white>12s</white>."
+				"On cast, your basic attacks apply " + GlossaryTag.POISON.tag(this, poison, true) + " for <white>7s</white>. Additionally, enemies hit by your basic attacks " +
+				"stop poison from being reduced for <white>3s</white>."
 		);
 	}
 }

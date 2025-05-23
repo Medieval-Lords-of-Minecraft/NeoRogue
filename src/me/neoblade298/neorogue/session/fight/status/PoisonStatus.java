@@ -33,7 +33,7 @@ public class PoisonStatus extends DecrementStackStatus {
 	}
 	
 	@Override
-	public void onTickAction() {
+	public void onTickAction(int toRemove) {
 		// Owner is arbitrarily first slice of damage
 		FightData owner = slices.getSliceOwners().entrySet().iterator().next().getKey();
 		DamageMeta meta = new DamageMeta(owner);

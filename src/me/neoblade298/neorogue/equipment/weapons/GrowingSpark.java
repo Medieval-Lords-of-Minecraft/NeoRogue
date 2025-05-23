@@ -90,8 +90,8 @@ public class GrowingSpark extends Equipment {
 		@Override
 		public void onStart(ProjectileInstance proj) {
 			Sounds.firework.play(p, p);
-			proj.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.LIGHTNING));
 			stacks = Math.min(5, stacks + 1);
+			proj.getMeta().addDamageSlice(new DamageSlice(data, damage * (stacks + 1), DamageType.LIGHTNING));
 			chargedIcon.setAmount(stacks);
 			inst.setIcon(chargedIcon);
 			lastCast = System.currentTimeMillis();
@@ -112,7 +112,7 @@ public class GrowingSpark extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.QUARTZ, "On cast, fire a projectile that deals "
 				+ GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage. Every time you cast within <white>6s</white> of the last cast, increase " +
-				"its damage by " + DescUtil.yellow(growth) + ", up to <white>5x</white>.");
+				"its damage by " + DescUtil.yellow(growth) + ", up to <white>5</white>.");
 		chargedIcon = item.clone().withType(Material.NETHER_STAR);
 	}
 }

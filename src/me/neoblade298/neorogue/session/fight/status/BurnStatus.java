@@ -20,7 +20,7 @@ public class BurnStatus extends DecrementStackStatus {
 	}
 	
 	@Override
-	public void onTickAction() {
-		holder.addDefenseBuff(DamageBuffType.of(DamageCategory.FIRE), new Buff(slices.first().getFightData(), 0.2, 0, BuffStatTracker.of(StatusType.BURN)));
+	public void onTickAction(int toRemove) {
+		holder.addDefenseBuff(DamageBuffType.of(DamageCategory.FIRE), new Buff(slices.first().getFightData(), toRemove * 0.2, 0, BuffStatTracker.of(StatusType.BURN)));
 	}
 }

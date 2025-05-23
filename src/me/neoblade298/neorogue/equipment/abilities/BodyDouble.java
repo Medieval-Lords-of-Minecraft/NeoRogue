@@ -1,11 +1,14 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+import me.libraryaddict.disguise.disguisetypes.PlayerDisguise;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
@@ -41,9 +44,19 @@ public class BodyDouble extends Equipment {
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pd, in) -> {
 			Sounds.equip.play(p, p);
 			ArmorStand as = (ArmorStand) p.getWorld().spawnEntity(p.getLocation(), EntityType.ARMOR_STAND);
+			PlayerDisguise dis = new PlayerDisguise(p);
+			dis.setName(p.getName() + " Body Double");
+			dis.setEntity(as);
+			dis.startDisguise();
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
-				NeoRogue.mythicApi.addThreat(as, ent, 100000);
+				if (!NeoRogue.mythicApi.isMythicMob(ent)) continue;
+				NeoRogue.mythicApi.addThreat(ent, as, 100000);
 			}
+			data.addGuaranteedTask(UUID.randomUUID(), new Runnable() {
+				public void run() {
+					as.remove();
+				}
+			}, dur * 20);
 			return TriggerResult.keep();
 		}));
 	}

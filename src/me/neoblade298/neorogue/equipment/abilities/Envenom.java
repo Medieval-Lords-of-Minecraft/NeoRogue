@@ -13,7 +13,6 @@ import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
-import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardEquipmentInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -33,8 +32,7 @@ public class Envenom extends Equipment {
 	public Envenom(boolean isUpgraded) {
 		super(ID, "Envenom", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 10, 12, 0));
-		properties.addUpgrades(PropertyType.COOLDOWN);
-		poison = isUpgraded ? 30 : 15;
+		poison = isUpgraded ? 30 : 20;
 	}
 
 	@Override
@@ -73,6 +71,6 @@ public class Envenom extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GREEN_DYE,
-				"On cast, for <white>7</white> seconds your basic attacks apply " + GlossaryTag.POISON.tag(this, poison, true) + " for <white>7s</white>.");
+				"On cast, for <white>7</white> seconds your basic attacks apply " + GlossaryTag.POISON.tag(this, poison, true) + "");
 	}
 }

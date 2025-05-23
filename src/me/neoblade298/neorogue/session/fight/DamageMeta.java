@@ -292,7 +292,9 @@ public class DamageMeta {
 				Bukkit.getLogger().warning("[NeoRogue] Damage slice has null type dealing " + slice.getDamage() + " damage");
 				continue;
 			}
-			for (DamageBuffType dbt : getDamageBuffTypes(slice.getType().getCategories())) {
+
+			Collection<DamageBuffType> categories = getDamageBuffTypes(slice.getType().getCategories());
+			for (DamageBuffType dbt : categories) {
 				if (!damageBuffs.containsKey(dbt)) continue;
 				BuffList list = damageBuffs.get(dbt);
 				increase += list.getIncrease();
@@ -304,7 +306,7 @@ public class DamageMeta {
 				}
 			}
 
-			for (DamageBuffType dbt : getDamageBuffTypes(slice.getPostBuffType().getCategories())) {
+			for (DamageBuffType dbt : categories) {
 				if (!defenseBuffs.containsKey(dbt)) continue;
 				BuffList list = defenseBuffs.get(dbt);
 				increase -= list.getIncrease();

@@ -95,7 +95,7 @@ public enum GlossaryTag implements GlossaryIcon {
 			"When the holder deals damage, a stack of injury is used to reduce 0.2 damage dealt post-buff until there are no stacks or no damage remaining. " +
 			"20% of the stacks is removed every second."),
 	CHARGE(Material.BLAZE_ROD, "<gold>Charge</gold>",
-			"Apply slowness based on level of charge to yourself. You cannot use other abilities during this time."),
+			"Become unable to jump and apply slowness based on level of charge to yourself. You cannot use other abilities during this time."),
 	CHANNEL(Material.CLOCK, "<red>Channel</red>",
 			"Become unable to move. You cannot use other abilities during this time.");
 	

@@ -95,18 +95,16 @@ public class Depletion extends Equipment {
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			Location loc = hit.getEntity().getLocation();
 			data.addRift(new Rift(data, loc, 200));
-			data.addTask(new BukkitRunnable() {
-				public void run() {
-					Sounds.infect.play(p, loc);
-					circ.play(pc, loc, LocalAxes.xz(), null);
-					LinkedList<LivingEntity> trgs = TargetHelper.getEntitiesInRadius(p, loc, tp);
-					data.addSimpleShield(p.getUniqueId(), shields * trgs.size(), 160);
-					for (LivingEntity ent : trgs) {
-						Vector v = ent.getLocation().toVector().subtract(loc.toVector()).normalize();
-						FightInstance.knockback(ent, v);
-					}
-				}
-			}.runTaskLater(NeoRogue.inst(), 20));
+			Sounds.infect.play(p, loc);
+			circ.play(pc, loc, LocalAxes.xz(), null);
+			LinkedList<LivingEntity> trgs = TargetHelper.getEntitiesInRadius(p, loc, tp);
+			data.addSimpleShield(p.getUniqueId(), shields * trgs.size(), 160);
+			for (LivingEntity ent : trgs) {
+				Vector v = loc.toVector().subtract(ent.getLocation().toVector());
+				if (v.isZero()) continue;
+				v = v.normalize();
+				FightInstance.knockback(ent, v);
+			}
 		}
 
 		@Override

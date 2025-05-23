@@ -124,7 +124,7 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 		// Handle left click
 		else {
 			// Picking up an item
-			if (nclicked != null && nclicked.hasTag("equipId")) {
+			if (nclicked != null && nclicked.hasTag("equipId") && ncursor == null) {
 				Equipment eq = Equipment.get(nclicked.getString("equipId"), false);
 				p.playSound(p, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1F);
 				if (e.getSlot() == SELL) {

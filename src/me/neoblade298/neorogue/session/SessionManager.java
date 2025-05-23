@@ -438,15 +438,23 @@ public class SessionManager implements Listener {
 		PlayerInventory inv = p.getInventory();
 		ItemStack hand = e.getItem();
 		Block b = e.getClickedBlock();
+		Material mat = b.getType();
 		if (hand != null) {
 			// Make sure you can't equip armor with right click
 			EquipmentSlot slot = canEquip(hand);
 			if (slot != null && inv.getItem(slot).getType().isAir()) {
 				e.setCancelled(true);
 			}
-			
-			// Make sure you can't put items into clay pots
-			if (b != null && b.getType() == Material.DECORATED_POT) {
+		}
+
+		// Disable clicking on crafting tables, anvils, furnaces, etc
+		if (b != null) {
+			if (mat == Material.DECORATED_POT || mat == Material.CRAFTING_TABLE ||
+					mat == Material.ANVIL || mat == Material.ENCHANTING_TABLE ||
+					mat == Material.BREWING_STAND || mat == Material.FURNACE ||
+					mat == Material.SMITHING_TABLE || mat == Material.GRINDSTONE ||
+					mat == Material.CARTOGRAPHY_TABLE || mat == Material.LOOM ||
+					mat == Material.JIGSAW) {
 				e.setCancelled(true);
 			}
 		}
