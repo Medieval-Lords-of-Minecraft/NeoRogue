@@ -285,6 +285,7 @@ public class DamageMeta {
 		
 		boolean isStatusDamage = DamageCategory.GENERAL.hasType(slices.getFirst().getPostBuffType());
 		// Calculate buffs for every slice of damage
+		HashMap<DamageType, Double> statSlices = new HashMap<DamageType, Double>();
 		for (DamageSlice slice : slices) {
 			double increase = 0, mult = 1, base = slice.getDamage();
 			ArrayList<Buff> buffs = new ArrayList<Buff>(), debuffs = new ArrayList<Buff>();
@@ -379,17 +380,9 @@ public class DamageMeta {
 					temp -= change;
 				}
 			}
-			
-			if (owner instanceof PlayerFightData) {
-				slice.handleStatistics(slice.getPostBuffType(), sliceDamage);
-			}
-			if (recipient instanceof PlayerFightData) {
-				String mob = null; // Can be null, just won't show mob display name
-				if (NeoRogue.mythicApi.isMythicMob(owner.getEntity())) {
-					mob = NeoRogue.mythicApi.getMythicMobInstance(owner.getEntity()).getType().getInternalName();
-				}
-				((PlayerFightData) recipient).getStats().addDamageTaken(mob, slice.getPostBuffType(), sliceDamage);
-			}
+			// Save the damage values per damage type to put into stats later
+			double temp = statSlices.getOrDefault(slice.getPostBuffType(), 0.0) + sliceDamageFinal;
+			statSlices.put(slice.getPostBuffType(), temp);
 
 			if (!slice.isIgnoreShields()) {
 				damage += sliceDamage;
@@ -417,6 +410,7 @@ public class DamageMeta {
 			pl.getStats().addDamageBarriered(damage + ignoreShieldsDamage);
 			damage = 0;
 			ignoreShieldsDamage = 0;
+			statSlices.clear();
 		}
 		
 		// General damage nullification
@@ -425,6 +419,7 @@ public class DamageMeta {
 			pl.getStats().addDamageNullified(damage + ignoreShieldsDamage);
 			damage = 0;
 			ignoreShieldsDamage = 0;
+			statSlices.clear();
 		}
 
 		// Evade
@@ -436,20 +431,24 @@ public class DamageMeta {
 			if (totalDamage < pl.getStamina()) {
 				damage = 0;
 				ignoreShieldsDamage = 0;
+				statSlices.clear();
 				pl.getStats().addEvadeMitigated(pl.getStamina());
 				pl.setStamina(0);
 			}
 			else {
 				if (ignoreShieldsDamage < pl.getStamina()) {
 					pl.addStamina(ignoreShieldsDamage);
+					subtractFromStats(statSlices, ignoreShieldsDamage);
 					ignoreShieldsDamage = 0;
 				}
 				else {
 					ignoreShieldsDamage -= pl.getStamina();
+					subtractFromStats(statSlices, pl.getStamina());
 					pl.setStamina(0);
 				}
 				
 				damage -= pl.getStamina();
+				subtractFromStats(statSlices, pl.getStamina());
 				pl.setStamina(0);
 			}
 		}
@@ -470,6 +469,7 @@ public class DamageMeta {
 						((PlayerFightData) ent.getKey()).getStats().addInjuryMitigated(totalDamage / numOwners);
 					}
 				}
+				statSlices.clear();
 				damage = 0;
 				ignoreShieldsDamage = 0;
 			}
@@ -485,12 +485,15 @@ public class DamageMeta {
 				// Block ignore shields damage first
 				if (stacks * 0.2 >= ignoreShieldsDamage) {
 					stacks -= (int) (ignoreShieldsDamage / 0.2);
+					subtractFromStats(statSlices, (int) (ignoreShieldsDamage / 0.2));
 					ignoreShieldsDamage = 0;
 				}
 				else {
 					ignoreShieldsDamage -= stacks * 0.2;
+					subtractFromStats(statSlices, stacks * 0.2);
 					stacks = 0;
 				}
+				subtractFromStats(statSlices, stacks * 0.2);
 				damage -= stacks * 0.2;
 			}
 		}
@@ -505,9 +508,25 @@ public class DamageMeta {
 			ShieldHolder shields = recipient.getShields();
 			damage = Math.max(0, shields.useShields(damage));
 		}
+			
+		if (owner instanceof PlayerFightData) {
+			PlayerFightData pdata = (PlayerFightData) owner;
+			for (Entry<DamageType, Double> entry : statSlices.entrySet()) {
+				pdata.getStats().addDamageDealt(entry.getKey(), entry.getValue());
+			}
+		}
 		
 		if (recipient instanceof PlayerFightData) {
 			PlayerFightData pdata = (PlayerFightData) recipient;
+			// Apply damage received stats
+			String mob = null; // Can be null, just won't show mob display name
+			if (NeoRogue.mythicApi.isMythicMob(owner.getEntity())) {
+				mob = NeoRogue.mythicApi.getMythicMobInstance(owner.getEntity()).getType().getInternalName();
+			}
+			for (Entry<DamageType, Double> entry : statSlices.entrySet()) {
+				pdata.getStats().addDamageTaken(mob, entry.getKey(), entry.getValue());
+			}
+
 			// trigger received health damage
 			if (damage > 0 || ignoreShieldsDamage > 0) {
 				ReceivedHealthDamageEvent ev = new ReceivedHealthDamageEvent(damager, this, damage, ignoreShieldsDamage);
@@ -598,6 +617,16 @@ public class DamageMeta {
 			if (slice.getPostBuffType() == type) return true;
 		}
 		return false;
+	}
+
+	// Used to subtract a straight number equally from all damage types in the stat slices
+	private void subtractFromStats(HashMap<DamageType, Double> slices, double amount) {
+		double fromEach = Math.round(amount * 10 / slices.size()) / 10;
+		for (Entry<DamageType, Double> entry : slices.entrySet()) {
+			double newVal = entry.getValue() - fromEach;
+			if (newVal < 0) newVal = 0;
+			slices.put(entry.getKey(), newVal);
+		}
 	}
 
 	@Override

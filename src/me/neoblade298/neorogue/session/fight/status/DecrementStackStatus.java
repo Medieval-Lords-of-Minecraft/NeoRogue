@@ -32,14 +32,16 @@ public class DecrementStackStatus extends Status {
 		slices.add(fd, stacks);
 	}
 	
-	private class DecrementStackTickAction extends TickAction {
+	public class DecrementStackTickAction extends TickAction {
+		protected boolean decrement = true;
 		@Override
 		public TickResult run() {
 			if (action.isCancelled()) return TickResult.REMOVE;
 			
 			int toRemove = (int) Math.max(stacks * 0.2, 1);
-			stacks -= toRemove;
 			onTickAction(toRemove);
+			if (!decrement) return TickResult.KEEP;
+			stacks -= toRemove;
 			if (stacks <= 0) {
 				holder.removeStatus(id);
 				return TickResult.REMOVE;

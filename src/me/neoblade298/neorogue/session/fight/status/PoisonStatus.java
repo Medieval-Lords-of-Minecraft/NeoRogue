@@ -42,5 +42,12 @@ public class PoisonStatus extends DecrementStackStatus {
 			meta.addDamageSlice(new DamageSlice(ent.getKey(), ent.getValue() * 0.2, DamageType.POISON, true));
 		}
 		FightInstance.dealDamage(meta, holder.getEntity());
+
+		if (holder.hasStatus("SICKLY")) {
+			((DecrementStackTickAction) action).decrement = false;
+		}
+		else {
+			((DecrementStackTickAction) action).decrement = true;
+		}
 	}
 }
