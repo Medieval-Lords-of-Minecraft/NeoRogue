@@ -249,7 +249,7 @@ import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
-import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.WeaponSwingEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -1292,8 +1292,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 	
 	public void weaponDamage(Player p, PlayerFightData data, LivingEntity target, double damage, double knockback) {
 		DamageMeta dm = new DamageMeta(data, damage, properties.getType());
-		BasicAttackEvent ev = new BasicAttackEvent(target, dm, knockback, this, null);
-		data.runActions(data, Trigger.BASIC_ATTACK, ev);
+		PreBasicAttackEvent ev = new PreBasicAttackEvent(target, dm, knockback, this, null);
+		data.runActions(data, Trigger.PRE_BASIC_ATTACK, ev);
 		if (knockback != 0) {
 			FightInstance.knockback(p, target, knockback);
 		}
@@ -1302,8 +1302,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 	
 	public void weaponDamage(Player p, PlayerFightData data, LivingEntity target, DamageMeta dm) {
 		double knockback = properties.get(PropertyType.KNOCKBACK);
-		BasicAttackEvent ev = new BasicAttackEvent(target, dm, knockback, this, null);
-		data.runActions(data, Trigger.BASIC_ATTACK, ev);
+		PreBasicAttackEvent ev = new PreBasicAttackEvent(target, dm, knockback, this, null);
+		data.runActions(data, Trigger.PRE_BASIC_ATTACK, ev);
 		if (knockback != 0) {
 			FightInstance.knockback(p, target, knockback);
 		}
@@ -1338,8 +1338,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 		}
 
 		if (basicAttack) {
-			BasicAttackEvent ev = new BasicAttackEvent(target, dm, knockback, this, null);
-			data.runActions(data, Trigger.BASIC_ATTACK, ev);
+			PreBasicAttackEvent ev = new PreBasicAttackEvent(target, dm, knockback, this, null);
+			data.runActions(data, Trigger.PRE_BASIC_ATTACK, ev);
 		}
 		if (properties.contains(PropertyType.KNOCKBACK)) {
 			FightInstance.knockback(target, proj.getVelocity().normalize().multiply(knockback));
@@ -1362,8 +1362,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 			dm.addDefenseBuffLists(hitBarrier.getBuffLists());
 		}
 		if (basicAttack) {
-			BasicAttackEvent ev = new BasicAttackEvent(target, dm, properties.get(PropertyType.KNOCKBACK), this, null);
-			data.runActions(data, Trigger.BASIC_ATTACK, ev);
+			PreBasicAttackEvent ev = new PreBasicAttackEvent(target, dm, properties.get(PropertyType.KNOCKBACK), this, null);
+			data.runActions(data, Trigger.PRE_BASIC_ATTACK, ev);
 		}
 		if (properties.contains(PropertyType.KNOCKBACK)) {
 			FightInstance

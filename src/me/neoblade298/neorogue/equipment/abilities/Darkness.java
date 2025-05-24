@@ -30,7 +30,7 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class Darkness extends Equipment {
 	private static final String ID = "darkness";
@@ -57,9 +57,9 @@ public class Darkness extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		DarknessInstance inst = new DarknessInstance(data, this, slot, es);
 		data.addTrigger(id, bind, inst);
-		data.addTrigger(ID, Trigger.BASIC_ATTACK, (pdata, in) -> {
+		data.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
 			if (!inst.basicAttack) return TriggerResult.keep();
-			BasicAttackEvent ev = (BasicAttackEvent) in;
+			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 			FightInstance.applyStatus(ev.getTarget(), StatusType.INSANITY, data, insanity, -1);
 			sound.play(p, p);
 			return TriggerResult.keep();

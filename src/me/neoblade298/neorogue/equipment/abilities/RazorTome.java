@@ -14,7 +14,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class RazorTome extends Equipment {
 	private static final String ID = "razorTome";
@@ -34,11 +34,11 @@ public class RazorTome extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
-		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
+		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
 			am.addCount(1);
 			if (am.getCount() >= thres) {
 				am.addCount(-thres);
-				BasicAttackEvent ev = (BasicAttackEvent) in;
+				PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 				FightInstance.applyStatus(ev.getTarget(), StatusType.REND, data, rend, -1);
 			}
 			return TriggerResult.keep();

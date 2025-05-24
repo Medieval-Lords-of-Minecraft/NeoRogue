@@ -13,7 +13,7 @@ import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class GatheringShadows extends Equipment {
 	private static final String ID = "gatheringShadows";
@@ -39,7 +39,7 @@ public class GatheringShadows extends Equipment {
 		StandardPriorityAction inst = new StandardPriorityAction(ID);
 		inst.setAction((pdata, in) -> {
 			if (inst.getCount() <= 0) return TriggerResult.keep();
-			BasicAttackEvent ev = (BasicAttackEvent) in;
+			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 			ev.getMeta().addDamageSlice(new DamageSlice(pdata, damage * inst.getCount(), DamageType.DARK));
 			inst.setCount(0);
 			return TriggerResult.keep();
@@ -50,7 +50,7 @@ public class GatheringShadows extends Equipment {
 			inst.addCount(1);
 			return TriggerResult.keep();
 		});
-		data.addTrigger(ID, Trigger.BASIC_ATTACK, inst);
+		data.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, inst);
 	}
 
 	@Override

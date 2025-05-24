@@ -45,7 +45,7 @@ public class LifeThief extends Equipment {
 		});
 		data.addTrigger(id, Trigger.RECEIVE_STATUS, inst);
 		
-		data.addTrigger(ID, Trigger.BASIC_ATTACK, (pdata, in) -> {
+		data.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
 			if (inst.getCount() < cutoff) return TriggerResult.keep();
 			Sounds.fire.play(p, p);
 			data.addHealth(heal);

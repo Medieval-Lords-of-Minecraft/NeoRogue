@@ -17,7 +17,7 @@ import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class EmpoweredEdge extends Equipment {
 	private static final String ID = "empoweredEdge";
@@ -52,8 +52,8 @@ public class EmpoweredEdge extends Equipment {
 			Sounds.equip.play(p, p);
 			data.addSimpleShield(p.getUniqueId(), shields, 100L);
 			pc.play(p, p);
-			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in) -> {
-				BasicAttackEvent ev = (BasicAttackEvent) in;
+			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata2, in) -> {
+				PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 				FightInstance.dealDamage(data, DamageType.SLASHING, damage, ev.getTarget());
 				hit.play(p, ev.getTarget());
 				Sounds.anvil.play(p, ev.getTarget());

@@ -17,7 +17,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class Concoct extends Equipment {
 	private static final String ID = "concoct";
@@ -56,9 +56,9 @@ public class Concoct extends Equipment {
 		});
 		
 		data.addTrigger(ID, bind, inst);
-		data.addTrigger(ID, Trigger.BASIC_ATTACK, (pdata, in) -> {
+		data.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
 			if (inst.getTime() <= 0) return TriggerResult.keep();
-			BasicAttackEvent ev = (BasicAttackEvent) in;
+			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 			Sounds.extinguish.play(p, p);
 			int mult = (int) ((System.currentTimeMillis() - inst.getTime()) / 1000);
 			FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, poison * mult, -1);

@@ -24,7 +24,7 @@ import me.neoblade298.neorogue.session.fight.status.Status.GenericStatusType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class EndlessVenom extends Equipment {
 	private static final String ID = "endlessVenom";
@@ -61,10 +61,10 @@ public class EndlessVenom extends Equipment {
 			return TriggerResult.keep();
 		});
 		data.addTrigger(ID, bind, inst);
-		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in) -> {
+		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata2, in) -> {
 			if (inst.getCount() == 0)
 				return TriggerResult.keep();
-			BasicAttackEvent ev = (BasicAttackEvent) in;
+			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 			FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, poison, -1);
 			FightData fd = FightInstance.getFightData(ev.getTarget());
 			Status s = Status.createByGenericType(GenericStatusType.BASIC, "SICKLY", fd, true);

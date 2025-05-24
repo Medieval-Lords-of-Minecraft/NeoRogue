@@ -33,8 +33,8 @@ import me.neoblade298.neorogue.session.fight.status.BasicStatus;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusClass;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.KillEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class HexingShot extends Equipment {
 	private static final String ID = "hexingShot";
@@ -70,8 +70,8 @@ public class HexingShot extends Equipment {
 		});
 		data.addTrigger(id, bind, inst);
 
-		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
-			BasicAttackEvent ev = (BasicAttackEvent) in;
+		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
+			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 			if (inst.getCount() == 1) {
 				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, -dec, 0, StatTracker.damageDebuffAlly(this)));
 				FightData trg = FightInstance.getFightData(ev.getTarget());

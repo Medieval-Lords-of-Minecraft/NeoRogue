@@ -21,7 +21,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class Envenom extends Equipment {
 	private static final String ID = "envenom";
@@ -60,9 +60,9 @@ public class Envenom extends Equipment {
 			return TriggerResult.keep();
 		});
 		data.addTrigger(ID, bind, inst);
-		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in) -> {
+		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata2, in) -> {
 			if (inst.getCount() == 0) return TriggerResult.keep();
-			BasicAttackEvent ev = (BasicAttackEvent) in;
+			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 			FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, poison, -1);
 			return TriggerResult.keep();
 		});

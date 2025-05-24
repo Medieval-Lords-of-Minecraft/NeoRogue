@@ -15,7 +15,7 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class GlacialHammer extends Artifact {
 	private static final String ID = "glacialHammer";
@@ -32,12 +32,12 @@ public class GlacialHammer extends Artifact {
 	@Override
 	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
 		ActionMeta am = new ActionMeta();
-		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
+		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
 			if (am.getTime() + 1000 > System.currentTimeMillis()) {
 				return TriggerResult.keep();
 			}
 			if (data.getMana() > data.getMaxMana() * 0.5) {
-				BasicAttackEvent ev = (BasicAttackEvent) in;
+				PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 				am.setTime(System.currentTimeMillis());
 				data.addMana(-cost);
 				ev.getTarget().addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 20, 0));

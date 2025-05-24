@@ -17,7 +17,7 @@ import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.UseConsumableEvent;
 
 public class MinorImbuementPotion extends Consumable {
@@ -42,8 +42,8 @@ public class MinorImbuementPotion extends Consumable {
 			p.getInventory().setItem(slot, null);
 			data.runActions(data, Trigger.USE_CONSUMABLE, new UseConsumableEvent(this));
 			meta.use();
-			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in2) -> {
-				BasicAttackEvent ev = (BasicAttackEvent) in2;
+			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata2, in2) -> {
+				PreBasicAttackEvent ev = (PreBasicAttackEvent) in2;
 				ev.getMeta().addDamageSlice(new DamageSlice(data, damage, meta.getElement()));
 				return TriggerResult.keep();
 			});

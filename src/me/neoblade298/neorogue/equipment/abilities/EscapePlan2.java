@@ -22,7 +22,7 @@ import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
 
 public class EscapePlan2 extends Equipment {
@@ -85,9 +85,9 @@ public class EscapePlan2 extends Equipment {
 					return TriggerResult.of(true, true);
 				});
 				
-				pdata1.addTrigger(ID, Trigger.BASIC_ATTACK, (pdata2, in2) -> {
+				pdata1.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, (pdata2, in2) -> {
 					if (!active) return TriggerResult.remove();
-					BasicAttackEvent ev = (BasicAttackEvent) in2;
+					PreBasicAttackEvent ev = (PreBasicAttackEvent) in2;
 					DamageMeta dm = new DamageMeta(pdata1, basicAttackDamage, DamageType.PIERCING);
 					FightInstance.dealDamage(dm, ev.getTarget());
 					return TriggerResult.keep();

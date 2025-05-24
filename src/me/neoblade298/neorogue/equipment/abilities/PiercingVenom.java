@@ -16,9 +16,6 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardEquipmentInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
-import me.neoblade298.neorogue.session.fight.DamageSlice;
-import me.neoblade298.neorogue.session.fight.DamageType;
-import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
@@ -37,7 +34,7 @@ public class PiercingVenom extends Equipment {
 		super(ID, "Piercing Venom", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 10, 12, 0));
 		properties.addUpgrades(PropertyType.COOLDOWN);
-		poison = 50;
+		poison = 30;
 		mult = isUpgraded ? 0.5 : 0.3;
 	}
 	
@@ -58,10 +55,8 @@ public class PiercingVenom extends Equipment {
 		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in) -> {
 			if (inst.getCount() == 0) return TriggerResult.keep();
 			BasicAttackEvent ev = (BasicAttackEvent) in;
-			FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, poison, -1);
-			FightData fd = FightInstance.getFightData(ev.getTarget());
-			int damage = fd.getStatus(StatusType.POISON).getStacks() / threshold;
-			ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.PIERCING));
+			FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, poison + (int) (ev.getMeta().getTotalDamage() * mult), -1);
+			inst.addCount(-1);
 			return TriggerResult.keep();
 		});
 	}

@@ -19,7 +19,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class Discharge extends Equipment {
 	private static final String ID = "discharge";
@@ -55,8 +55,8 @@ public class Discharge extends Equipment {
 			inst.setIcon(icon);
 			am.setTime(System.currentTimeMillis());
 
-			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in2) -> {
-				BasicAttackEvent ev = (BasicAttackEvent) in;
+			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata2, in2) -> {
+				PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 				FightInstance.applyStatus(ev.getTarget(), StatusType.ELECTRIFIED, data, elec, -1);
 				return TriggerResult.remove();
 			});

@@ -19,7 +19,7 @@ import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class TargetAcquisition extends Equipment {
 	private static final String ID = "targetAcquisition";
@@ -52,8 +52,8 @@ public class TargetAcquisition extends Equipment {
 		});
 		data.addTrigger(id, Trigger.KILL, inst);
 		
-		data.addTrigger(ID, Trigger.BASIC_ATTACK, (pdata, in) -> {
-			BasicAttackEvent ev = (BasicAttackEvent) in;
+		data.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
+			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 			if (inst.getCount() <= 0) return TriggerResult.keep();
 			inst.addCount(-1);
 			ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.PIERCING));

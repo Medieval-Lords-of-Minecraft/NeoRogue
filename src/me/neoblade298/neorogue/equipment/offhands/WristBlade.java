@@ -26,7 +26,7 @@ public class WristBlade extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.BASIC_ATTACK, new WristBladeInstance());
+		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, new WristBladeInstance());
 	}
 	
 	private class WristBladeInstance implements TriggerAction {
@@ -36,7 +36,7 @@ public class WristBlade extends Equipment {
 		public TriggerResult trigger(PlayerFightData data, Object inputs) {
 			if (++count >= hits) {
 				count = -1; // -1 so that the double trigger sets it to 0
-				data.runActions(data, Trigger.BASIC_ATTACK, inputs);
+				data.runActions(data, Trigger.PRE_BASIC_ATTACK, inputs);
 			}
 			return TriggerResult.keep();
 		}

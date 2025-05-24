@@ -19,7 +19,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class BlessedEdge extends Equipment {
 	private static final String ID = "blessedEdge";
@@ -47,8 +47,8 @@ public class BlessedEdge extends Equipment {
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, inputs) -> {
 			equip.play(p, p);
 			pc.play(p, p);
-			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in) -> {
-				BasicAttackEvent ev = (BasicAttackEvent) in;
+			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata2, in) -> {
+				PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 				LivingEntity target = ev.getTarget();
 				FightInstance.getFightData(target.getUniqueId()).applyStatus(StatusType.SANCTIFIED, data, sanct, -1);
 				FightInstance.dealDamage(data, DamageType.LIGHT, damage, target);

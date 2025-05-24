@@ -49,7 +49,7 @@ public class AzureCutter extends Artifact {
 	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
 		StandardPriorityAction act = new StandardPriorityAction(id);
 		ProjectileGroup proj = new ProjectileGroup(new AzureCutterProjectile(data));
-		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
+		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
 			act.addCount(1);
 			if (act.getCount() < thres)  return TriggerResult.keep();
 			LivingEntity trg = TargetHelper.getNearest(p, tp);

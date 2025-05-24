@@ -35,7 +35,7 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealtDamageEvent;
 
 public class MarkTarget2 extends Equipment {
@@ -82,8 +82,8 @@ public class MarkTarget2 extends Equipment {
 			return TriggerResult.keep();
 		});
 
-		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
-			BasicAttackEvent ev = (BasicAttackEvent) in;
+		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
+			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 			if (am.getEntity() == null) return TriggerResult.keep();
 			if (!am.getEntity().getUniqueId().equals(ev.getTarget().getUniqueId())) return TriggerResult.keep();
 			ProjectileGroup projs = new ProjectileGroup(new MarkTarget2Projectile(data));

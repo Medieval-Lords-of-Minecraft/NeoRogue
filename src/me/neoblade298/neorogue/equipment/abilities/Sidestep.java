@@ -19,7 +19,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class Sidestep extends Equipment {
 	private static final String ID = "sidestep";
@@ -62,10 +62,10 @@ public class Sidestep extends Equipment {
 		});
 		
 		data.addTrigger(ID, bind, inst);
-		data.addTrigger(ID, Trigger.BASIC_ATTACK, (pdata, in) -> {
+		data.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
 			if (inst.getCount() > 0) {
 				inst.addCount(-1);
-				BasicAttackEvent ev = (BasicAttackEvent) in;
+				PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 				hit.play(p, p);
 				Sounds.anvil.play(p, p);
 				ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.PIERCING));

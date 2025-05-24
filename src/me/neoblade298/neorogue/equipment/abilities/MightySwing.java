@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class MightySwing extends Equipment {
 	private static final String ID = "mightySwing";
@@ -48,9 +48,9 @@ public class MightySwing extends Equipment {
 		eqi.setAction((pdata, inputs) -> {
 			Sounds.equip.play(p, p);
 			pc.play(p, p);
-			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in) -> {
+			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata2, in) -> {
 				if (p.isOnGround()) return TriggerResult.keep();
-				BasicAttackEvent ev = (BasicAttackEvent) in;
+				PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 				double pct = ev.getTarget().getHealth() / ev.getTarget().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
 				Sounds.anvil.play(p, p);
 				hit.play(p, ev.getTarget().getLocation());

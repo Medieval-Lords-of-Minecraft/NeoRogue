@@ -20,7 +20,7 @@ import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class PracticeDummy extends Artifact {
 	private static final String ID = "practiceDummy";
@@ -41,7 +41,7 @@ public class PracticeDummy extends Artifact {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
-		data.addTrigger(id, Trigger.BASIC_ATTACK, new PracticeDummyInstance(ai.getArtifact()));
+		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, new PracticeDummyInstance(ai.getArtifact()));
 	}
 	
 	public class PracticeDummyInstance implements TriggerAction {
@@ -55,7 +55,7 @@ public class PracticeDummy extends Artifact {
 
 		@Override
 		public TriggerResult trigger(PlayerFightData data, Object inputs) {
-			BasicAttackEvent ev = (BasicAttackEvent) inputs;
+			PreBasicAttackEvent ev = (PreBasicAttackEvent) inputs;
 			Equipment eq = ev.getWeapon();
 			if (eq.getId().equals(weapon)) {
 				count = 0;

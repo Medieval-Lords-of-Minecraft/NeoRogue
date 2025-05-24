@@ -50,6 +50,7 @@ public class DamageMeta {
 	private LinkedList<DamageSlice> slices = new  LinkedList<DamageSlice>();
 	private DamageMeta returnDamage;
 	private HashMap<DamageBuffType, BuffList> damageBuffs = new HashMap<DamageBuffType, BuffList>(), defenseBuffs = new HashMap<DamageBuffType, BuffList>();
+	private double ignoreShieldsDamage, damage;
 	
 	public DamageMeta(FightData data) {
 		this.owner = data;
@@ -204,8 +205,6 @@ public class DamageMeta {
 		if (damager == null) return 0;
 		addDamageBuffLists(owner.getDamageBuffLists());
 		addDefenseBuffLists(recipient.getDefenseBuffLists());
-		double damage = 0;
-		double ignoreShieldsDamage = 0;
 		returnDamage = new DamageMeta(recipient);
 		returnDamage.isSecondary = true;
 
@@ -603,6 +602,18 @@ public class DamageMeta {
 	
 	public LinkedList<DamageSlice> getSlices() {
 		return slices;
+	}
+
+	public double getDamage() {
+		return damage;
+	}
+
+	public double getIgnoreShieldsDamage() {
+		return ignoreShieldsDamage;
+	}
+
+	public double getTotalDamage() {
+		return damage + ignoreShieldsDamage;
 	}
 
 	public boolean containsType(DamageCategory cat) {

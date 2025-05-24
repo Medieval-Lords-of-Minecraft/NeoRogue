@@ -17,7 +17,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class Disappear extends Equipment {
 	private static final String ID = "disappear";
@@ -49,8 +49,8 @@ public class Disappear extends Equipment {
 			return TriggerResult.keep();
 		});
 		
-		data.addTrigger(ID, Trigger.BASIC_ATTACK, (pdata, in) -> {
-			inst.handleAttack((BasicAttackEvent) in);
+		data.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
+			inst.handleAttack((PreBasicAttackEvent) in);
 			return TriggerResult.keep();
 		});
 	}
@@ -75,7 +75,7 @@ public class Disappear extends Equipment {
 			};
 		}
 		
-		public void handleAttack(BasicAttackEvent ev) {
+		public void handleAttack(PreBasicAttackEvent ev) {
 			if (!primed) return;
 			
 			Sounds.anvil.play(p, p);

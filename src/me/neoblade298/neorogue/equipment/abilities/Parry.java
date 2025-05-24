@@ -16,12 +16,12 @@ import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class Parry extends Equipment {
 	private static final String ID = "parry";
@@ -69,8 +69,8 @@ public class Parry extends Equipment {
 			if (System.currentTimeMillis() - createTime > 5000) return TriggerResult.remove();
 			bpc.play(p, p);
 			Sounds.fire.play(p, p);
-			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
-				BasicAttackEvent ev = (BasicAttackEvent) in;
+			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
+				PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, damage, 0, StatTracker.damageBuffAlly(eq)));
 				FightInstance.dealDamage(data, DamageType.SLASHING, damage, ev.getTarget());
 				hit.play(p, ev.getTarget().getLocation());

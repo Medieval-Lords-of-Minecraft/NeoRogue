@@ -50,7 +50,7 @@ public class Windcutter extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.BASIC_ATTACK, new WindcutterInstance(id, p, data));
+		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, new WindcutterInstance(id, p, data));
 	}
 	
 	private class WindcutterInstance extends PriorityAction {

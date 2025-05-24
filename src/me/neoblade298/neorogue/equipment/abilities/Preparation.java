@@ -19,7 +19,7 @@ import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class Preparation extends Equipment {
 	private static final String ID = "preparation";
@@ -62,7 +62,7 @@ public class Preparation extends Equipment {
 		inst.setAction((pdata, in) -> {
 			if (inst.getCount() == 0) return TriggerResult.keep();
 			if (inst.getCount() == 2) return TriggerResult.remove();
-			BasicAttackEvent ev = (BasicAttackEvent) in;
+			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 			ev.getMeta().addDamageSlice(new DamageSlice(pdata, damage, DamageType.PIERCING));
 			Sounds.anvil.play(p, p);
 			return TriggerResult.keep();

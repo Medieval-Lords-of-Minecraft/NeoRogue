@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
-import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class Plague extends Equipment {
 	private static final String ID = "plague";
@@ -42,7 +42,7 @@ public class Plague extends Equipment {
 			if (!ev.isStatus(StatusType.POISON)) return TriggerResult.keep();
 			return inst.calculateStacks(ev.getStacks());
 		});
-		data.addTrigger(ID, Trigger.BASIC_ATTACK, inst);
+		data.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, inst);
 	}
 
 	private class PlagueInstance extends PriorityAction	{
@@ -51,7 +51,7 @@ public class Plague extends Equipment {
 			super(id);
 			action = (pdata, in) -> {
 				if (damageStacks > 0) {
-					BasicAttackEvent ev = (BasicAttackEvent) in;
+					PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 					ev.getMeta().addDamageSlice(new DamageSlice(pdata, damage * damageStacks, DamageType.POISON));
 				}
 				return TriggerResult.keep();

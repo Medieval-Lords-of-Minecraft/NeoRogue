@@ -22,7 +22,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
 
 public class Energize extends Equipment {
@@ -69,9 +69,9 @@ public class Energize extends Equipment {
 		public EnergizeInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
 			super(data, eq, slot, es);
 			action = (pdata, in) -> {
-				pdata.addTrigger(ID, Trigger.BASIC_ATTACK, (pdata2, in2) -> {
+				pdata.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, (pdata2, in2) -> {
 					Player p = data.getPlayer();
-					BasicAttackEvent ev2 = (BasicAttackEvent) in2;
+					PreBasicAttackEvent ev2 = (PreBasicAttackEvent) in2;
 					mark = ev2.getTarget();
 					ev2.getMeta().addDamageSlice(new DamageSlice(pdata, damage, DamageType.LIGHTNING));
 					pc.play(p, mark);

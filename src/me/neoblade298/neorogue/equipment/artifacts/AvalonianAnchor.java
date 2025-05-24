@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class AvalonianAnchor extends Artifact {
 	private static final String ID = "avalonianAnchor";
@@ -33,10 +33,10 @@ public class AvalonianAnchor extends Artifact {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
-		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
+		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
 			// Apparently standing still is roughly -0.078 downward velocity
 			if (p.getVelocity().getY() < 0.1) {
-				BasicAttackEvent ev = (BasicAttackEvent) in;
+				PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 				if (ev.isProjectile()) return TriggerResult.keep();
 				Sounds.crit.play(p, p);
 				part.play(p, ev.getTarget());

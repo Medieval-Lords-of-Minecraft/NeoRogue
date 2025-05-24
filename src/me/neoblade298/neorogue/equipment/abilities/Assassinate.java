@@ -17,7 +17,7 @@ import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class Assassinate extends Equipment {
 	private static final String ID = "assassinate";
@@ -44,8 +44,8 @@ public class Assassinate extends Equipment {
 		inst.setAction((pdata, in) -> {
 			Sounds.equip.play(p, p);
 			pc.play(p, p);
-			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in2) -> {
-				BasicAttackEvent ev = (BasicAttackEvent) in2;
+			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata2, in2) -> {
+				PreBasicAttackEvent ev = (PreBasicAttackEvent) in2;
 				FightInstance.dealDamage(data, DamageType.PIERCING, damage, ev.getTarget());
 				hit.play(p, ev.getTarget());
 				Sounds.anvil.play(p, ev.getTarget());

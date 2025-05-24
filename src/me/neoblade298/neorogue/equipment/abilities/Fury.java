@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class Fury extends Equipment {
 	private static final String ID = "fury";
@@ -57,8 +57,8 @@ public class Fury extends Equipment {
 				Player p = data.getPlayer();
 				Sounds.equip.play(p, p);
 				pc.play(p, p);
-				data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in2) -> {
-					BasicAttackEvent ev = (BasicAttackEvent) in2;
+				data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata2, in2) -> {
+					PreBasicAttackEvent ev = (PreBasicAttackEvent) in2;
 					LivingEntity target = ev.getTarget();
 					FightInstance.dealDamage(data, DamageType.SLASHING, damage, target);
 					hit.play(p, target);

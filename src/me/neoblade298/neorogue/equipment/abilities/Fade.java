@@ -49,7 +49,7 @@ public class Fade extends Equipment {
 			data.applyStatus(StatusType.STEALTH, data, 1, 60);
 			return TriggerResult.keep();
 		});
-		data.addTrigger(ID, Trigger.BASIC_ATTACK, inst);
+		data.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, inst);
 	}
 
 	@Override

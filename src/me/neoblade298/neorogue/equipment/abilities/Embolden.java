@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class Embolden extends Equipment {
 	private static final String ID = "embolden";
@@ -44,8 +44,8 @@ public class Embolden extends Equipment {
 			Sounds.equip.play(p, p);
 			data.addPermanentShield(p.getUniqueId(), shields);
 			pc.play(p, p);
-			pdata.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in2) -> {
-				BasicAttackEvent ev = (BasicAttackEvent) in2;
+			pdata.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata2, in2) -> {
+				PreBasicAttackEvent ev = (PreBasicAttackEvent) in2;
 				FightInstance.dealDamage(data, DamageType.SLASHING, damage, ev.getTarget());
 				hit.play(p, ev.getTarget().getLocation());
 				Sounds.anvil.play(p, p);

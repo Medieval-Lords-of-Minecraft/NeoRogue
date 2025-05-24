@@ -17,7 +17,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class Execute extends Equipment {
 	private static final String ID = "execute";
@@ -50,9 +50,9 @@ public class Execute extends Equipment {
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, inputs) -> {
 			Sounds.enchant.play(p, p);
 			pc.play(p, p);
-			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in) -> {
+			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata2, in) -> {
 				if (p.isOnGround()) return TriggerResult.keep();
-				BasicAttackEvent ev = (BasicAttackEvent) in;
+				PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 				FightInstance.dealDamage(data, DamageType.PIERCING, damage, ev.getTarget());
 				Sounds.anvil.play(p, ev.getTarget());
 				hit.play(p, ev.getTarget());
