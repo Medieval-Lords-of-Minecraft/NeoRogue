@@ -189,6 +189,7 @@ import me.neoblade298.neorogue.equipment.weapons.ForcefulLeatherGauntlets;
 import me.neoblade298.neorogue.equipment.weapons.Fracturer;
 import me.neoblade298.neorogue.equipment.weapons.FrostbiteBow;
 import me.neoblade298.neorogue.equipment.weapons.GlassArrow;
+import me.neoblade298.neorogue.equipment.weapons.Gravity;
 import me.neoblade298.neorogue.equipment.weapons.GrowingSpark;
 import me.neoblade298.neorogue.equipment.weapons.Harpoon;
 import me.neoblade298.neorogue.equipment.weapons.HiddenRazor;
@@ -292,6 +293,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Advantage(b);
 			new AgilityTraining(b);
 			new Assassinate(b);
+			new ArcaneBlast(b);
 			new ArrowRain(b);
 			new Atone(b);
 			new Atrophy(b);
@@ -400,6 +402,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new GatheringShadows2(b);
 			new GetCentered(b);
 			new GraniteShield(b);
+			new Gravity(b);
 			new Grit(b);
 			new GroundLance(b);
 			new GrowingSpark(b);

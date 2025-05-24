@@ -19,6 +19,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.weapons.Gravity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageType;
@@ -45,7 +46,8 @@ public class Blast extends Equipment {
 	
 	@Override
 	public void setupReforges() {
-
+		addReforge(CalculatingGaze.get(), GroundLance.get(), Gravity.get());
+		addReforge(Intuition.get(), ArcaneBlast.get());
 	}
 	
 	public static Equipment get() {
@@ -72,7 +74,6 @@ public class Blast extends Equipment {
 					Block b = p.getTargetBlockExact((int) properties.get(PropertyType.RANGE));
 					if (b.getType().isAir()) {
 						data.addMana(properties.get(PropertyType.MANA_COST));
-						data.addMana(properties.get(PropertyType.STAMINA_COST));
 						inst.setCooldown(0);
 						Sounds.error.play(p, p);
 						return;

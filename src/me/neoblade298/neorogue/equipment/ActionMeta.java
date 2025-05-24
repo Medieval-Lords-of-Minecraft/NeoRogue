@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.scheduler.BukkitTask;
 
 import me.neoblade298.neorogue.session.fight.Marker;
 
@@ -18,6 +19,7 @@ public class ActionMeta {
 	private Marker trap;
 	private UUID uuid;
 	private Object obj;
+	private BukkitTask task;
 
 	public void setUniqueId(UUID uuid) {
 		this.uuid = uuid;
@@ -101,5 +103,11 @@ public class ActionMeta {
 
 	public void setLocation(Location loc) {
 		this.loc = loc;
+	}
+	public BukkitTask getTask() {
+		return task;
+	}
+	public void setTask(BukkitTask task) {
+		this.task = task;
 	}
 }
