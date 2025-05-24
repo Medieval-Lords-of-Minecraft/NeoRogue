@@ -56,7 +56,7 @@ public class SerratedRazor extends Equipment {
 					data.setBasicAttackCooldown(EquipSlot.HOTBAR, 3000L);
 					Sounds.extinguish.play(p, p);
 					count = 0;
-					this.setCooldown(3);
+					this.setCooldown(1);
 				}
 				else {
 					weaponSwingAndDamage(p, data, ev.getTarget());
@@ -71,6 +71,6 @@ public class SerratedRazor extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.WOODEN_HOE, "Every <white>3</white> basic attacks, deal an additional <yellow>" + bonus + "</yellow>"
 				+ " damage if the target has " + GlossaryTag.POISON.tag(this) + " or " + GlossaryTag.INSANITY.tag(this) + ", and "
-						+ "your attack cooldown is set to <white>3</white> seconds.");
+						+ "your attack cooldown is set to <white>1s</white>.");
 	}
 }

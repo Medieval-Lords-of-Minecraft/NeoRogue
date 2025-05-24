@@ -17,7 +17,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class EnergizedRazor extends Equipment {
 	private static final String ID = "energizedRazor";
-	private static int base = 45;
+	private static int base = 30;
 	private int res;
 	
 	public EnergizedRazor(boolean isUpgraded) {
@@ -49,7 +49,7 @@ public class EnergizedRazor extends Equipment {
 					data.addStamina(res);
 					Sounds.extinguish.play(p, p);
 					count = 0;
-					this.setCooldown(3);
+					this.setCooldown(1);
 				}
 				return TriggerResult.keep();
 			};
@@ -60,6 +60,6 @@ public class EnergizedRazor extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.WOODEN_HOE, "Every <white>3</white> basic attacks, gain <yellow>" + res + "</yellow> stamina"
-						+ " and your attack cooldown is set to <white>3</white> seconds.");
+						+ " and your attack cooldown is set to <white>1</white> seconds.");
 	}
 }
