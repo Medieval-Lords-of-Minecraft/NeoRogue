@@ -87,11 +87,11 @@ public class SessionManager implements Listener {
 		Session s = new Session(p, plot, name, saveSlot);
 		sessions.put(p.getUniqueId(), s);
 		sessionPlots.put(plot, s);
-		
+
 		Util.msg(p, Component.text("Successfully created a lobby!", NamedTextColor.GRAY));
 		return s;
 	}
-	
+
 	public static Session loadSession(Player p, int saveSlot) {
 		PlayerData pd = PlayerManager.getPlayerData(p.getUniqueId());
 		SessionSnapshot ss = pd.getSnapshot(saveSlot);
@@ -101,14 +101,14 @@ public class SessionManager implements Listener {
 				return null;
 			}
 		}
-		
+
 		Plot plot = findPlot();
 		Session s = new Session(p, plot, saveSlot);
 		sessions.put(p.getUniqueId(), s);
 		sessionPlots.put(plot, s);
 		return s;
 	}
-	
+
 	private static Plot findPlot() {
 		for (int x = 0; x < 6; x++) {
 			for (int z = 0; z < 100; z++) {
@@ -118,7 +118,7 @@ public class SessionManager implements Listener {
 				}
 			}
 		}
-		
+
 		return null;
 	}
 
@@ -129,7 +129,8 @@ public class SessionManager implements Listener {
 	public static void removeFromSession(UUID uuid) {
 		sessions.remove(uuid);
 		Player p = Bukkit.getPlayer(uuid);
-		if (p != null) p.teleport(NeoRogue.spawn);
+		if (p != null)
+			p.teleport(NeoRogue.spawn);
 	}
 
 	public static void removeSession(Session s) {
@@ -138,8 +139,7 @@ public class SessionManager implements Listener {
 			for (UUID uuid : lob.getPlayers().keySet()) {
 				removeFromSession(uuid);
 			}
-		}
-		else {
+		} else {
 			for (UUID uuid : s.getParty().keySet()) {
 				removeFromSession(uuid);
 			}
@@ -170,15 +170,17 @@ public class SessionManager implements Listener {
 	public void onInventoryDrag(InventoryDragEvent e) {
 		Player p = (Player) e.getWhoClicked();
 		UUID uuid = p.getUniqueId();
-		if (!sessions.containsKey(uuid)) return;
+		if (!sessions.containsKey(uuid))
+			return;
 		Session s = sessions.get(uuid);
 		e.setCancelled(true);
-		if (InventoryListener.hasOpenCoreInventory(p)) return;
+		if (InventoryListener.hasOpenCoreInventory(p))
+			return;
 		if (s.getInstance() instanceof EditInventoryInstance
 				&& e.getView().getTopInventory().getType() == InventoryType.CRAFTING) {
-			new PlayerSessionInventory(s.getData(uuid)).handleInventoryDrag(e); // Register core player inventory when inv is opened
-		}
-		else if (s.getInstance() instanceof FightInstance) {
+			new PlayerSessionInventory(s.getData(uuid)).handleInventoryDrag(e); // Register core player inventory when
+																				// inv is opened
+		} else if (s.getInstance() instanceof FightInstance) {
 			e.setCancelled(true);
 		}
 	}
@@ -187,23 +189,25 @@ public class SessionManager implements Listener {
 	public void onInventoryClick(InventoryClickEvent e) {
 		Player p = (Player) e.getWhoClicked();
 		UUID uuid = p.getUniqueId();
-		if (!sessions.containsKey(uuid)) return;
+		if (!sessions.containsKey(uuid))
+			return;
 		Session s = sessions.get(uuid);
-		if (e.getClickedInventory() == null) return;
+		if (e.getClickedInventory() == null)
+			return;
 		if (e.getClickedInventory().getType() == InventoryType.CRAFTING) {
 			e.setCancelled(true);
 			return;
 		}
-		if (InventoryListener.hasOpenCoreInventory(p)) return;
+		if (InventoryListener.hasOpenCoreInventory(p))
+			return;
 		if (s.getInstance() instanceof EditInventoryInstance
 				&& e.getView().getTopInventory().getType() == InventoryType.CRAFTING) {
 			new PlayerSessionInventory(s.getData(uuid)).handleInventoryClick(e);
-		}
-		else if (s.getInstance() instanceof FightInstance) {
+		} else if (s.getInstance() instanceof FightInstance) {
 			e.setCancelled(true);
 		}
 	}
-	
+
 	@EventHandler
 	public void onBuild(BlockPlaceEvent e) {
 		if (sessions.containsKey(e.getPlayer().getUniqueId())) {
@@ -218,32 +222,36 @@ public class SessionManager implements Listener {
 		if (sessions.containsKey(uuid)) {
 			Session s = sessions.get(uuid);
 			e.setCancelled(true);
-			if (s.isSpectator(uuid)) return;
-			
+			if (s.isSpectator(uuid))
+				return;
+
 			if (s.getInstance() instanceof FightInstance) {
 				FightInstance.handleOffhandSwap(e);
-			}
-			else if (s.getInstance() instanceof EditInventoryInstance && !(s.getInstance() instanceof NodeSelectInstance)) {
+			} else if (s.getInstance() instanceof EditInventoryInstance
+					&& !(s.getInstance() instanceof NodeSelectInstance)) {
 				EditInventoryInstance.handleSwapHand(e);
 				e.setCancelled(false);
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void onLaunchProjectile(ProjectileLaunchEvent e) {
-		if (!(e.getEntity().getShooter() instanceof Player)) return;
+		if (!(e.getEntity().getShooter() instanceof Player))
+			return;
 		Player p = (Player) e.getEntity().getShooter();
 
-		if (!sessions.containsKey(p.getUniqueId())) return;
+		if (!sessions.containsKey(p.getUniqueId()))
+			return;
 		e.setCancelled(true);
-		if (sessions.get(p.getUniqueId()).isSpectator(p.getUniqueId())) return;
+		if (sessions.get(p.getUniqueId()).isSpectator(p.getUniqueId()))
+			return;
 		if (e.getEntity() instanceof Trident) {
 			FightInstance.trigger(p, Trigger.THROW_TRIDENT, e);
-		}
-		else if (e.getEntity() instanceof Arrow) {
+		} else if (e.getEntity() instanceof Arrow) {
 			ItemStack item = ((Arrow) e.getEntity()).getItemStack();
-			if (item.getType() != Material.ARROW) p.getInventory().addItem(item);
+			if (item.getType() != Material.ARROW)
+				p.getInventory().addItem(item);
 			FightInstance.trigger(p, Trigger.VANILLA_PROJECTILE, e);
 		}
 	}
@@ -252,15 +260,18 @@ public class SessionManager implements Listener {
 	public void onDrop(PlayerDropItemEvent e) {
 		Player p = e.getPlayer();
 		UUID uuid = p.getUniqueId();
-		if (!sessions.containsKey(uuid)) return;
+		if (!sessions.containsKey(uuid))
+			return;
 		e.setCancelled(true);
-		if (sessions.get(p.getUniqueId()).isSpectator(uuid)) return;
+		if (sessions.get(p.getUniqueId()).isSpectator(uuid))
+			return;
 		FightInstance.handleDropItem(e);
 	}
-	
+
 	@EventHandler
 	public void onDeath(PlayerDeathEvent e) {
-		if (!sessions.containsKey(e.getPlayer().getUniqueId())) return;
+		if (!sessions.containsKey(e.getPlayer().getUniqueId()))
+			return;
 		Player p = e.getPlayer();
 		Session s = sessions.get(p.getUniqueId());
 		if (s.isSpectator(p.getUniqueId())) {
@@ -270,43 +281,44 @@ public class SessionManager implements Listener {
 		}
 		FightInstance.handleDeath(e);
 	}
-	
+
 	@EventHandler
 	public void onPotionSplash(PotionSplashEvent e) {
 		if (e.getEntity().hasMetadata("uuid")) {
 			UUID uuid = (UUID) e.getEntity().getMetadata("uuid").get(0).value();
 			PotionProjectileInstance inst = PotionProjectileInstance.get(uuid);
-			if (inst == null) return;
+			if (inst == null)
+				return;
 			inst.callback(e.getPotion().getLocation(), e.getAffectedEntities());
 			PotionProjectileInstance.remove(uuid);
 		}
 	}
-	
+
 	// Stops players from being able to vanilla damage mobs
 	@EventHandler
 	public void onPlayerAttack(PrePlayerAttackEntityEvent e) {
 		Player p = e.getPlayer();
 		UUID uuid = p.getUniqueId();
-		if (!sessions.containsKey(uuid)) return;
+		if (!sessions.containsKey(uuid))
+			return;
 		FightInstance.handlePlayerAttack(e);
 	}
-	
-	// Stops mobs from being able to melee players, but allows custom damage 
+
+	// Stops mobs from being able to melee players, but allows custom damage
 	@EventHandler
 	public void onDamageByEntity(EntityDamageByEntityEvent e) {
 		Player p = null;
 		boolean playerDamager = false;
-		
+
 		// Our plugin uses magic damage type
-		if (e.getDamageSource().getDamageType() == DamageType.MAGIC) return;
+		if (e.getDamageSource().getDamageType() == DamageType.MAGIC)
+			return;
 		if (sessions.containsKey(e.getDamager().getUniqueId())) {
 			p = (Player) e.getDamager();
 			playerDamager = true;
-		}
-		else if (sessions.containsKey(e.getEntity().getUniqueId())) {
+		} else if (sessions.containsKey(e.getEntity().getUniqueId())) {
 			p = (Player) e.getEntity();
-		}
-		else {
+		} else {
 			return;
 		}
 
@@ -317,26 +329,31 @@ public class SessionManager implements Listener {
 			e.setCancelled(true);
 			return;
 		}
-		if (!(s.getInstance() instanceof FightInstance)) return;
+		if (!(s.getInstance() instanceof FightInstance))
+			return;
 		if (!playerDamager) {
-			// Don't cancel damage, but set it to 0 so the ~onAttack mythicmob trigger still goes
+			// Don't cancel damage, but set it to 0 so the ~onAttack mythicmob trigger still
+			// goes
 			e.setDamage(0);
 			return;
 		}
-		
+
 	}
-	
+
 	@EventHandler
 	public void onDamage(EntityDamageEvent e) {
-		if (e instanceof EntityDamageByEntityEvent) return;
+		if (e instanceof EntityDamageByEntityEvent)
+			return;
 		UUID uuid = e.getEntity().getUniqueId();
 		if (e.getCause() == DamageCause.POISON || e.getCause() == DamageCause.WITHER ||
 				e.getCause() == DamageCause.STARVATION || e.getCause() == DamageCause.DROWNING) {
 			e.setCancelled(true);
 			return;
 		}
-		if (e.getEntity().getType() != EntityType.PLAYER) return;
-		if (!sessions.containsKey(uuid)) return;
+		if (e.getEntity().getType() != EntityType.PLAYER)
+			return;
+		if (!sessions.containsKey(uuid))
+			return;
 		if (!(sessions.get(uuid).getInstance() instanceof FightInstance) && e.getCause() == DamageCause.FALL) {
 			e.setCancelled(true);
 		}
@@ -346,23 +363,26 @@ public class SessionManager implements Listener {
 	@EventHandler
 	public void onHotbarSwap(PlayerItemHeldEvent e) {
 		UUID uuid = e.getPlayer().getUniqueId();
-		if (!sessions.containsKey(uuid)) return;
+		if (!sessions.containsKey(uuid))
+			return;
 		Session s = sessions.get(uuid);
-		if (s.isSpectator(uuid)) return;
+		if (s.isSpectator(uuid))
+			return;
 
 		if (s.getInstance() instanceof FightInstance) {
 			FightInstance.handleHotbarSwap(e);
-		}
-		else if (s.getInstance() instanceof EditInventoryInstance) {
+		} else if (s.getInstance() instanceof EditInventoryInstance) {
 			EditInventoryInstance.handleHotbarSwap(e);
 		}
 	}
 
 	@EventHandler
 	public void onLoadCrossbow(EntityLoadCrossbowEvent e) {
-		if (e.getEntityType() != EntityType.PLAYER) return;
+		if (e.getEntityType() != EntityType.PLAYER)
+			return;
 		UUID uuid = e.getEntity().getUniqueId();
-		if (!sessions.containsKey(uuid)) return;
+		if (!sessions.containsKey(uuid))
+			return;
 		e.setConsumeItem(false);
 	}
 
@@ -370,8 +390,10 @@ public class SessionManager implements Listener {
 	public void onInteractEntity(PlayerInteractEntityEvent e) {
 		Player p = e.getPlayer();
 		UUID uuid = p.getUniqueId();
-		if (!sessions.containsKey(uuid)) return;
-		if (e.getHand() != EquipmentSlot.OFF_HAND) return;
+		if (!sessions.containsKey(uuid))
+			return;
+		if (e.getHand() != EquipmentSlot.OFF_HAND)
+			return;
 		Session s = sessions.get(uuid);
 		if (s.getInstance() instanceof EditInventoryInstance && e.getRightClicked() instanceof Player) {
 			Player viewed = (Player) e.getRightClicked();
@@ -380,7 +402,7 @@ public class SessionManager implements Listener {
 			}
 			return;
 		}
-		
+
 		if (s.isSpectator(uuid)) {
 			e.setCancelled(true);
 			if (e.getRightClicked() instanceof Player) {
@@ -391,20 +413,21 @@ public class SessionManager implements Listener {
 			}
 			return;
 		}
-		
+
 		FightInstance.handleRightClickEntity(e);
 	}
-	
+
 	@EventHandler
 	public void onPotion(EntityPotionEffectEvent e) {
 		FightInstance.handlePotionEffect(e);
 	}
-	
+
 	@EventHandler
 	public void onConsume(PlayerItemConsumeEvent e) {
 		Player p = e.getPlayer();
 		UUID uuid = p.getUniqueId();
-		if (!sessions.containsKey(uuid)) return;
+		if (!sessions.containsKey(uuid))
+			return;
 		e.setCancelled(true);
 	}
 
@@ -412,19 +435,23 @@ public class SessionManager implements Listener {
 	public void onToggleCrouch(PlayerToggleSneakEvent e) {
 		Player p = e.getPlayer();
 		UUID uuid = p.getUniqueId();
-		if (!sessions.containsKey(uuid)) return;
+		if (!sessions.containsKey(uuid))
+			return;
 		Session s = sessions.get(uuid);
-		if (!(s.getInstance() instanceof FightInstance)) return;
+		if (!(s.getInstance() instanceof FightInstance))
+			return;
 		((FightInstance) s.getInstance()).handleToggleCrouchEvent(e);
 	}
-	
+
 	@EventHandler
 	public void onToggleSprint(PlayerToggleSprintEvent e) {
 		Player p = e.getPlayer();
 		UUID uuid = p.getUniqueId();
-		if (!sessions.containsKey(uuid)) return;
+		if (!sessions.containsKey(uuid))
+			return;
 		Session s = sessions.get(uuid);
-		if (!(s.getInstance() instanceof FightInstance)) return;
+		if (!(s.getInstance() instanceof FightInstance))
+			return;
 		((FightInstance) s.getInstance()).handleToggleSprintEvent(e);
 	}
 
@@ -432,13 +459,12 @@ public class SessionManager implements Listener {
 	public void onInteract(PlayerInteractEvent e) {
 		Player p = e.getPlayer();
 		UUID uuid = p.getUniqueId();
-		if (!sessions.containsKey(uuid)) return;
+		if (!sessions.containsKey(uuid))
+			return;
 		Session s = sessions.get(uuid);
-		
+
 		PlayerInventory inv = p.getInventory();
 		ItemStack hand = e.getItem();
-		Block b = e.getClickedBlock();
-		Material mat = b.getType();
 		if (hand != null) {
 			// Make sure you can't equip armor with right click
 			EquipmentSlot slot = canEquip(hand);
@@ -448,7 +474,9 @@ public class SessionManager implements Listener {
 		}
 
 		// Disable clicking on crafting tables, anvils, furnaces, etc
+		Block b = e.getClickedBlock();
 		if (b != null) {
+			Material mat = b.getType();
 			if (mat == Material.DECORATED_POT || mat == Material.CRAFTING_TABLE ||
 					mat == Material.ANVIL || mat == Material.ENCHANTING_TABLE ||
 					mat == Material.BREWING_STAND || mat == Material.FURNACE ||
@@ -465,30 +493,37 @@ public class SessionManager implements Listener {
 		}
 		s.getInstance().handleInteractEvent(e);
 	}
-	
+
 	@EventHandler(ignoreCancelled = false)
 	public void onInteractArmorStand(PlayerInteractAtEntityEvent e) {
 		Player p = e.getPlayer();
 		UUID uuid = p.getUniqueId();
-		if (!sessions.containsKey(uuid)) return;
+		if (!sessions.containsKey(uuid))
+			return;
 		Session s = sessions.get(uuid);
 		if (s.isSpectator(uuid)) {
 			e.setCancelled(true);
 			return;
 		}
-		if (!(s.getInstance() instanceof FightInstance)) return;
-		
+		if (!(s.getInstance() instanceof FightInstance))
+			return;
+
 		e.setCancelled(true);
 		FightInstance.handleClickArmorStand(p, e.getRightClicked());
 	}
-	
+
 	private static EquipmentSlot canEquip(ItemStack item) {
 		String name = item.getType().name();
-		// For sake of efficiency, this is leaving out elytra, jackolanterns, turtle shell, and mob heads
-		if (name.endsWith("HELMET")) return EquipmentSlot.HEAD;
-		else if (name.endsWith("CHESTPLATE")) return EquipmentSlot.CHEST;
-		else if (name.endsWith("LEGGINGS")) return EquipmentSlot.LEGS;
-		else if (name.endsWith("BOOTS")) return EquipmentSlot.FEET;
+		// For sake of efficiency, this is leaving out elytra, jackolanterns, turtle
+		// shell, and mob heads
+		if (name.endsWith("HELMET"))
+			return EquipmentSlot.HEAD;
+		else if (name.endsWith("CHESTPLATE"))
+			return EquipmentSlot.CHEST;
+		else if (name.endsWith("LEGGINGS"))
+			return EquipmentSlot.LEGS;
+		else if (name.endsWith("BOOTS"))
+			return EquipmentSlot.FEET;
 		return null;
 	}
 
@@ -509,12 +544,14 @@ public class SessionManager implements Listener {
 		if (ent instanceof LivingEntity) {
 			MythicMob mythicMob = e.getMobType();
 			Mob mob = Mob.get(mythicMob.getInternalName());
-			if (mob == null) return;
+			if (mob == null)
+				return;
 			FightData fd = new FightData((LivingEntity) ent,
 					NeoRogue.mythicApi.getMythicMobInstance(ent), mob, (MapSpawnerInstance) null);
 			FightInstance.putFightData(uuid, fd);
 			if (e.getSpawnReason() == SpawnReason.SUMMON || e.getSpawnReason() == SpawnReason.COMMAND) {
-				if (fd.getInstance() == null) return;
+				if (fd.getInstance() == null)
+					return;
 				FightInstance.scaleMob(fd.getInstance().getSession(), mob, mythicMob, e.getMob());
 				fd.getInstance().addSpawnCounter(mob.getSpawnValue());
 			}
@@ -523,13 +560,15 @@ public class SessionManager implements Listener {
 
 	@EventHandler
 	public void onHungerChange(FoodLevelChangeEvent e) {
-		if (!sessions.containsKey(e.getEntity().getUniqueId())) return;
+		if (!sessions.containsKey(e.getEntity().getUniqueId()))
+			return;
 		e.setCancelled(true);
 	}
 
 	@EventHandler
 	public void onHungerRegen(EntityRegainHealthEvent e) {
-		if (!sessions.containsKey(e.getEntity().getUniqueId())) return;
+		if (!sessions.containsKey(e.getEntity().getUniqueId()))
+			return;
 		if (e.getRegainReason() == RegainReason.SATIATED) {
 			e.setCancelled(true);
 		}
@@ -544,17 +583,17 @@ public class SessionManager implements Listener {
 	public void onLeave(PlayerQuitEvent e) {
 		handleLeave(e.getPlayer());
 	}
-	
+
 	@EventHandler
 	public void onJoin(PlayerJoinEvent e) {
 		Player p = e.getPlayer();
-		p.getAttribute(Attribute.GENERIC_JUMP_STRENGTH).removeModifier(NamespacedKey.fromString("jump", NeoRogue.inst()));
+		p.getAttribute(Attribute.GENERIC_JUMP_STRENGTH)
+				.removeModifier(NamespacedKey.fromString("jump", NeoRogue.inst()));
 		if (sessions.containsKey(p.getUniqueId())) {
 			Session s = sessions.get(p.getUniqueId());
 			s.getData(p.getUniqueId()).syncHealth();
 			s.getInstance().handlePlayerRejoin(p);
-		}
-		else {
+		} else {
 			p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
 			p.teleport(NeoRogue.spawn);
 		}
@@ -564,7 +603,7 @@ public class SessionManager implements Listener {
 		UUID uuid = p.getUniqueId();
 		if (sessions.containsKey(uuid)) {
 			Session s = sessions.get(uuid);
-			
+
 			if (s.isSpectator(uuid)) {
 				s.removeSpectator(p);
 				return;
@@ -573,8 +612,7 @@ public class SessionManager implements Listener {
 			if (s.getInstance() instanceof LobbyInstance) {
 				LobbyInstance li = (LobbyInstance) s.getInstance();
 				li.leavePlayer(p);
-			}
-			else {
+			} else {
 				// Must be <= 1 since the last player isn't offline until after event
 				if (s.getOnlinePlayers().size() <= 1) {
 					s.broadcast("Everyone logged off, so the game has ended!");
@@ -585,9 +623,10 @@ public class SessionManager implements Listener {
 			}
 		}
 	}
-	
+
 	public static void resetPlayer(Player p) {
-		if (p == null) return;
+		if (p == null)
+			return;
 		p.getInventory().clear();
 		p.setMaximumNoDamageTicks(20);
 		p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
@@ -596,19 +635,18 @@ public class SessionManager implements Listener {
 		p.setInvisible(false);
 		p.setAllowFlight(false);
 	}
-	
+
 	public static void endSession(Session s) {
 		s.cleanup();
 		removeSession(s);
-		
+
 		new BukkitRunnable() {
 			public void run() {
 				try (Connection con = NeoCore.getConnection("NeoRogue-SessionManager");
 						Statement insert = con.createStatement();
 						Statement delete = con.createStatement()) {
 					s.save(insert, delete);
-				}
-				catch (SQLException ex) {
+				} catch (SQLException ex) {
 					ex.printStackTrace();
 				}
 			}
