@@ -25,14 +25,14 @@ public class Meditate extends Equipment {
 	private static final String ID = "meditate";
 	private int regen;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
-	
+
 	public Meditate(boolean isUpgraded) {
-		super(ID, "Meditate", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 12, 0));
+		super(ID, "Meditate", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
+				EquipmentProperties.ofUsable(0, 0, 12, 0));
 		regen = isUpgraded ? 5 : 3;
 		pc.count(10).spread(0.5, 0.5).speed(0.2);
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
@@ -45,6 +45,7 @@ public class Meditate extends Equipment {
 				p.removePotionEffect(PotionEffectType.SLOWNESS);
 				data.removeStatus(StatusType.STOPPED);
 				am.setBool(false);
+				data.enableJump();
 			}
 			return TriggerResult.keep();
 		});
@@ -52,10 +53,12 @@ public class Meditate extends Equipment {
 			Sounds.equip.play(p, p);
 			pc.play(p, p);
 			am.setBool(true);
+			data.disableJump(100);
 			p.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 100, 1));
 			data.applyStatus(StatusType.STOPPED, data, 1, 100);
 			data.addTask(new BukkitRunnable() {
 				int count = 0;
+
 				public void run() {
 					if (!am.getBool()) {
 						cancel();
@@ -71,12 +74,18 @@ public class Meditate extends Equipment {
 			}.runTaskTimer(NeoRogue.inst(), 20, 20));
 			return TriggerResult.keep();
 		}));
+
+		data.addTrigger(id, Trigger.WIN_FIGHT, (pdata, in) -> {
+			data.enableJump();
+			return TriggerResult.remove();
+		});
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLUE_DYE,
-				"On cast, slow yourself and become unable to cast abilities or use weapons for <white>5s</white>. " +
-				"During this time, gain " + DescUtil.yellow(regen) + " mana per second. Effect ends early if you receive health damage.");
+				"On cast, slow yourself and become unable to cast abilities, jump, or use weapons for <white>5s</white>. "
+						+ "During this time, gain " + DescUtil.yellow(regen)
+						+ " mana per second. Effect ends early if you receive health damage.");
 	}
 }

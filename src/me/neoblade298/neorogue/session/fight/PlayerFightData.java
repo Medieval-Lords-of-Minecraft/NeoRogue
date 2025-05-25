@@ -68,7 +68,9 @@ public class PlayerFightData extends FightData {
 
 	private PlayerSessionData sessdata;
 	private HashMap<Trigger, ArrayList<PriorityAction>> triggers = new HashMap<Trigger, ArrayList<PriorityAction>>();
-	private HashMap<String, EquipmentInstance> equips = new HashMap<String, EquipmentInstance>(); // Useful for modifying cooldowns
+	private HashMap<String, EquipmentInstance> equips = new HashMap<String, EquipmentInstance>(); // Useful for
+																									// modifying
+																									// cooldowns
 	private HashMap<Integer, HashMap<Trigger, ArrayList<PriorityAction>>> slotBasedTriggers = new HashMap<Integer, HashMap<Trigger, ArrayList<PriorityAction>>>();
 	private LinkedList<Listener> listeners = new LinkedList<Listener>();
 	private HashMap<UUID, Trap> traps = new HashMap<UUID, Trap>();
@@ -76,7 +78,7 @@ public class PlayerFightData extends FightData {
 	private ArrayList<String> boardLines;
 	private Player p;
 	private long nextAttack, nextOffAttack;
-	
+
 	private double stamina, mana;
 	private double maxStamina, maxMana, maxHealth;
 	private double staminaRegen, manaRegen;
@@ -85,7 +87,7 @@ public class PlayerFightData extends FightData {
 	private AmmunitionInstance ammo = null;
 
 	private FightStatistics stats = new FightStatistics(this);
-	
+
 	public PlayerFightData(FightInstance inst, PlayerSessionData data) {
 		super(data.getPlayer(), inst);
 		p = data.getPlayer();
@@ -101,7 +103,7 @@ public class PlayerFightData extends FightData {
 		this.stamina = sessdata.getStartingStamina();
 		this.staminaRegen = sessdata.getStaminaRegen();
 		this.manaRegen = sessdata.getManaRegen();
-		
+
 		// Initialize fight data
 		PlayerInventory inv = p.getInventory();
 		int i = 0;
@@ -146,7 +148,7 @@ public class PlayerFightData extends FightData {
 		} else {
 			inv.setItem(EquipmentSlot.OFF_HAND, null);
 		}
-		
+
 		// Initialize static triggers
 		addTrigger("SPRINT", Trigger.TOGGLE_SPRINT, (pdata, in) -> {
 			// Toggling sprint on or off both imply the player sprinted this tick
@@ -164,22 +166,22 @@ public class PlayerFightData extends FightData {
 			}
 		}
 		addTickAction(new PlayerUpdateTickAction());
-		
+
 		updateStamina();
 		updateMana();
 		updateBoardLines();
 	}
-	
+
 	public boolean isChanneling() {
 		return hasStatus(StatusType.CHANNELING);
 	}
-	
+
 	public TaskChain channel(int ticks) {
 		// Make sounds every second while charging if over 1s
 		if (ticks >= 20) {
 			addWaitSound(Sounds.piano, ticks);
 		}
-		
+
 		applyStatus(StatusType.CHANNELING, this, 1, ticks);
 		entity.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, ticks, 7));
 		disableJump(ticks);
@@ -190,16 +192,29 @@ public class PlayerFightData extends FightData {
 		return charge(1, ticks);
 	}
 
-	private void disableJump(int ticks) {
-		AttributeModifier mod = new AttributeModifier(NamespacedKey.fromString("jump", NeoRogue.inst()), -0.42, Operation.ADD_NUMBER);
+	public void disableJump(int ticks) {
+		AttributeModifier mod = new AttributeModifier(NamespacedKey.fromString("jump", NeoRogue.inst()), -0.42,
+				Operation.ADD_NUMBER);
 		entity.getAttribute(Attribute.GENERIC_JUMP_STRENGTH).addModifier(mod);
 		addGuaranteedTask(UUID.randomUUID(), new Runnable() {
 			public void run() {
-				entity.getAttribute(Attribute.GENERIC_JUMP_STRENGTH).removeModifier(NamespacedKey.fromString("jump", NeoRogue.inst()));
+				entity.getAttribute(Attribute.GENERIC_JUMP_STRENGTH)
+						.removeModifier(NamespacedKey.fromString("jump", NeoRogue.inst()));
 			}
 		}, ticks);
 	}
-	
+
+	public void disableJump() {
+		AttributeModifier mod = new AttributeModifier(NamespacedKey.fromString("jump", NeoRogue.inst()), -0.42,
+				Operation.ADD_NUMBER);
+		entity.getAttribute(Attribute.GENERIC_JUMP_STRENGTH).addModifier(mod);
+	}
+
+	public void enableJump() {
+		entity.getAttribute(Attribute.GENERIC_JUMP_STRENGTH)
+				.removeModifier(NamespacedKey.fromString("jump", NeoRogue.inst()));
+	}
+
 	public TaskChain charge(int ticks, int slow) {
 		// Make sounds every second while charging if over 1s
 		if (ticks >= 20) {
@@ -215,6 +230,7 @@ public class PlayerFightData extends FightData {
 	private void addWaitSound(SoundContainer sc, int ticks) {
 		addTask(new BukkitRunnable() {
 			int tick = 0;
+
 			public void run() {
 				sc.play(p, p);
 				tick += 20;
@@ -224,7 +240,7 @@ public class PlayerFightData extends FightData {
 			}
 		}.runTaskTimer(NeoRogue.inst(), 0, 20));
 	}
-	
+
 	public HashMap<String, EquipmentInstance> getActiveEquipment() {
 		return equips;
 	}
@@ -243,11 +259,11 @@ public class PlayerFightData extends FightData {
 	public ArrayList<String> getBoardLines() {
 		return boardLines;
 	}
-	
+
 	public void ignoreCooldowns(boolean ignore) {
 		this.ignoreCooldowns = ignore;
 	}
-	
+
 	public boolean isIgnoreCooldowns() {
 		return ignoreCooldowns;
 	}
@@ -306,13 +322,14 @@ public class PlayerFightData extends FightData {
 		} else if (php < 25) {
 			color = "§c";
 		}
-		
+
 		// Add 5 so 25% is still 3/10 on the health bar
 		int phpmod = (php + 5) / 10;
 		int pshmod = (psh + 5) / 10;
 		String bar = "" + color + (pshmod > 0 ? "§n" : "");
 		for (int i = 0; i < 10; i++) {
-			// If you have more shields than health, make the bars gray but keep the underline
+			// If you have more shields than health, make the bars gray but keep the
+			// underline
 			if (i == phpmod) {
 				bar += "§7";
 				if (pshmod > i) {
@@ -329,7 +346,7 @@ public class PlayerFightData extends FightData {
 
 		return color + p.getName() + " " + bar;
 	}
-	
+
 	// Used when the player dies or revived
 	public void setDeath(boolean isDead) {
 		Player p = getPlayer();
@@ -338,32 +355,31 @@ public class PlayerFightData extends FightData {
 			p.setInvulnerable(true);
 			p.setInvisible(true);
 			removeStatus(StatusType.POISON);
-		}
-		else {
+		} else {
 			p.setInvulnerable(false);
 			p.setInvisible(false);
 			p.setHealth(Math.round(this.maxHealth * 0.05));
-			// This one's more reliable, sometimes statuses may be applied when player is dead
+			// This one's more reliable, sometimes statuses may be applied when player is
+			// dead
 			removeStatus(StatusType.POISON);
 		}
 	}
 
 	@Override
-	public void applyStatus(
-			Status s, FightData applier, int stacks, int seconds, DamageMeta meta, boolean isSecondary
-	) {
+	public void applyStatus(Status s, FightData applier, int stacks, int seconds, DamageMeta meta,
+			boolean isSecondary) {
 		if (isDead)
 			return;
 		super.applyStatus(s, applier, stacks, seconds, meta, isSecondary);
 	}
-	
+
 	public boolean isDead() {
 		return isDead;
 	}
 
 	public void cleanup(PlayerSessionData data) {
 		super.cleanup();
-		
+
 		if (isDead) {
 			Player p = getPlayer();
 			p.setInvisible(false);
@@ -405,13 +421,15 @@ public class PlayerFightData extends FightData {
 			HandlerList.unregisterAll(l);
 		}
 	}
-	
-	// Returns whether to cancel the event, which may or may not be ignored if it's an event that can be cancelled
+
+	// Returns whether to cancel the event, which may or may not be ignored if it's
+	// an event that can be cancelled
 	public boolean runActions(PlayerFightData data, Trigger trigger, Object inputs) {
 		return runActions(data, triggers, trigger, inputs);
 	}
-	
-	// Must be separate due to the same trigger doing a different thing based on slot (like weapons)
+
+	// Must be separate due to the same trigger doing a different thing based on
+	// slot (like weapons)
 	public boolean runSlotBasedActions(PlayerFightData data, Trigger trigger, int slot, Object inputs) {
 		if (!slotBasedTriggers.containsKey(slot))
 			return false;
@@ -419,24 +437,25 @@ public class PlayerFightData extends FightData {
 		return runActions(data, triggers, trigger, inputs);
 	}
 
-	private boolean runActions(
-			PlayerFightData data, HashMap<Trigger, ArrayList<PriorityAction>> triggers, Trigger trigger, Object inputs
-	) {
+	private boolean runActions(PlayerFightData data, HashMap<Trigger, ArrayList<PriorityAction>> triggers,
+			Trigger trigger, Object inputs) {
 		if (triggers.containsKey(trigger)) {
 			boolean cancel = false;
 			Iterator<PriorityAction> iter = triggers.get(trigger).iterator();
 			while (iter.hasNext()) {
 				PriorityAction inst = iter.next();
 				TriggerResult tr;
-				
+
 				if (inst instanceof EquipmentInstance) {
-					if (data.isChanneling() || data.hasStatus(StatusType.STOPPED) || data.hasStatus(StatusType.SILENCED))
+					if (data.isChanneling() || data.hasStatus(StatusType.STOPPED)
+							|| data.hasStatus(StatusType.SILENCED))
 						return false;
 					EquipmentInstance ei = (EquipmentInstance) inst;
 					CastUsableEvent ev = new CastUsableEvent(ei);
 					runActions(data, Trigger.PRE_CAST_USABLE, ev);
 
-					// Buff mana costs, cannot go below 0, uses temp mana/stamina cost if it exists first (Escape Plan)
+					// Buff mana costs, cannot go below 0, uses temp mana/stamina cost if it exists
+					// first (Escape Plan)
 					BuffList b = ev.getBuff(PropertyType.MANA_COST);
 					if (ei.getTempManaCost() == -1)
 						ei.setTempManaCost(Math.max(0, b.applyNegative(ei.getManaCost())));
@@ -446,7 +465,7 @@ public class PlayerFightData extends FightData {
 						ei.setTempStaminaCost(Math.max(0, b.applyNegative(ei.getStaminaCost())));
 					// Buff cooldowns, doesn't matter if it goes below 0
 					b = ev.getBuff(PropertyType.COOLDOWN);
-					
+
 					ei.setTempCooldown(b.applyNegative(ei.getBaseCooldown()));
 
 					if (!ei.canTrigger(p, data, inputs)) {
@@ -461,7 +480,7 @@ public class PlayerFightData extends FightData {
 					}
 					tr = inst.trigger(data, inputs);
 				}
-				
+
 				if (tr.removeTrigger()) {
 					int hotbar = Trigger.toHotbarSlot(trigger);
 					if (hotbar != -1) {
@@ -479,15 +498,15 @@ public class PlayerFightData extends FightData {
 		}
 		return false;
 	}
-	
+
 	public void setAmmoInstance(AmmunitionInstance ammo) {
 		this.ammo = ammo;
 	}
-	
+
 	public AmmunitionInstance getAmmoInstance() {
 		return ammo;
 	}
-	
+
 	public boolean hasAmmoInstance() {
 		return ammo != null;
 	}
@@ -505,22 +524,22 @@ public class PlayerFightData extends FightData {
 	}
 
 	public void addSlotBasedTrigger(String id, int slot, Trigger trigger, PriorityAction action) {
-		HashMap<Trigger, ArrayList<PriorityAction>> triggers = slotBasedTriggers
-				.getOrDefault(slot, new HashMap<Trigger, ArrayList<PriorityAction>>());
+		HashMap<Trigger, ArrayList<PriorityAction>> triggers = slotBasedTriggers.getOrDefault(slot,
+				new HashMap<Trigger, ArrayList<PriorityAction>>());
 		slotBasedTriggers.put(slot, triggers);
 		ArrayList<PriorityAction> actions = triggers.getOrDefault(trigger, new ArrayList<PriorityAction>());
 		triggers.put(trigger, actions);
 		addTrigger(id, actions, action);
 	}
-	
+
 	public void addTrigger(String id, Trigger trigger, TriggerAction action) {
 		addTrigger(id, trigger, new PriorityAction(id, action));
 	}
-	
+
 	public void addTrigger(String id, Trigger trigger, TriggerAction action, TriggerCondition cond) {
 		addTrigger(id, trigger, new PriorityAction(id, action, cond));
 	}
-	
+
 	public void addTrigger(String id, Trigger trigger, PriorityAction action) {
 		ArrayList<PriorityAction> actions = triggers.containsKey(trigger) ? triggers.get(trigger)
 				: new ArrayList<PriorityAction>();
@@ -536,7 +555,7 @@ public class PlayerFightData extends FightData {
 			Bukkit.getPluginManager().registerEvents(l, NeoRogue.inst());
 			listeners.add(l);
 		}
-		
+
 		if (action instanceof EquipmentInstance) {
 			EquipmentInstance inst = (EquipmentInstance) action;
 			equips.put(id, inst);
@@ -546,12 +565,12 @@ public class PlayerFightData extends FightData {
 	public boolean isActive() {
 		return !isDead && getPlayer().isOnline(); // Not dead and online
 	}
-	
+
 	@Override
 	public FightInstance getInstance() {
 		return inst;
 	}
-	
+
 	public Player getPlayer() {
 		return sessdata.getData().getPlayer();
 	}
@@ -624,11 +643,11 @@ public class PlayerFightData extends FightData {
 	public double getMaxMana() {
 		return maxMana;
 	}
-	
+
 	public double getMaxHealth() {
 		return maxHealth;
 	}
-	
+
 	public void setStaminaRegen(double amount) {
 		this.staminaRegen = amount;
 	}
@@ -667,7 +686,7 @@ public class PlayerFightData extends FightData {
 				.append(Component.text("SP: " + (int) stamina + " / " + (int) maxStamina, NamedTextColor.GREEN));
 		p.sendActionBar(bar);
 	}
-	
+
 	public void addTrap(Trap trap) {
 		traps.put(trap.getUniqueId(), trap);
 		LayTrapEvent ev = new LayTrapEvent(trap);
@@ -675,12 +694,12 @@ public class PlayerFightData extends FightData {
 		trap.setDuration((int) ev.getDurationBuffList().apply(trap.getDuration()));
 		trap.activate();
 	}
-	
+
 	public void removeTrap(Trap trap) {
 		trap.deactivate();
 		traps.remove(trap.getUniqueId());
 	}
-	
+
 	public HashMap<UUID, Trap> getTraps() {
 		return traps;
 	}
@@ -697,7 +716,7 @@ public class PlayerFightData extends FightData {
 		rift.deactivate();
 		rifts.remove(rift.getUniqueId());
 	}
-	
+
 	public HashMap<UUID, Rift> getRifts() {
 		return rifts;
 	}
@@ -754,7 +773,7 @@ public class PlayerFightData extends FightData {
 		else
 			return nextOffAttack <= System.currentTimeMillis();
 	}
-	
+
 	public void addMaxHealth(double amount) {
 		this.maxHealth += amount;
 		getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(this.maxHealth);

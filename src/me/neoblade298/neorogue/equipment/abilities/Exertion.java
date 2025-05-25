@@ -30,27 +30,27 @@ public class Exertion extends Equipment {
 	private static final String ID = "exertion";
 	private static final TargetProperties tp = TargetProperties.cone(60, 5, false, TargetType.ENEMY);
 	private static final Cone cone = new Cone(tp.range, tp.arc);
-	private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME);
+	private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME).offsetY(0.5);
 	private int damage, selfDmg = 3;
-	
+
 	public Exertion(boolean isUpgraded) {
-		super(ID, "Exertion", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 0, 12, tp.range));
-				damage = isUpgraded ? 250 : 150;
+		super(ID, "Exertion", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
+				EquipmentProperties.ofUsable(25, 0, 12, tp.range));
+		damage = isUpgraded ? 250 : 150;
 	}
 
 	@Override
 	public void setupReforges() {
 		addSelfReforge(ToAshes.get());
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es,(pdata, in) -> {
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			Sounds.fire.play(p, p);
 			cone.play(pc, p.getLocation(), LocalAxes.usingEyeLocation(p), null);
 			LinkedList<LivingEntity> trgs = TargetHelper.getEntitiesInCone(p, tp);
@@ -65,7 +65,8 @@ public class Exertion extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLAZE_POWDER,
-				"On cast, deal " + GlossaryTag.FIRE.tag(this, damage, true) + " to all enemies in a cone in front of you, but " +
-				"deal " + GlossaryTag.FIRE.tag(this, selfDmg, false) + " to yourself.");
+				"On cast, deal " + GlossaryTag.FIRE.tag(this, damage, true)
+						+ " to all enemies in a cone in front of you, but " + "deal "
+						+ GlossaryTag.FIRE.tag(this, selfDmg, false) + " to yourself.");
 	}
 }

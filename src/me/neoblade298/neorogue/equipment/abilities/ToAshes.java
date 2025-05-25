@@ -37,16 +37,16 @@ public class ToAshes extends Equipment {
 	private static final String ID = "toAshes";
 	private static final TargetProperties tp = TargetProperties.cone(60, 5, false, TargetType.ENEMY);
 	private static final Cone cone = new Cone(tp.range, tp.arc);
-	private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME);
+	private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME).offsetY(0.5);
 	private int damage, selfDmg = 3, inc;
-	
+
 	public ToAshes(boolean isUpgraded) {
-		super(ID, "To Ashes", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 0, 12, tp.range));
-				damage = 300;
-				inc = isUpgraded ? 100 : 50;
+		super(ID, "To Ashes", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
+				EquipmentProperties.ofUsable(25, 0, 12, tp.range));
+		damage = 300;
+		inc = isUpgraded ? 100 : 50;
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
@@ -55,7 +55,7 @@ public class ToAshes extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
 		ItemStack icon = item.clone();
-		EquipmentInstance eqi = new EquipmentInstance(data, this, slot, es,(pdata, in) -> {
+		EquipmentInstance eqi = new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			Sounds.fire.play(p, p);
 			cone.play(pc, p.getLocation(), LocalAxes.usingEyeLocation(p), null);
 			LinkedList<LivingEntity> trgs = TargetHelper.getEntitiesInCone(p, tp);
@@ -64,8 +64,8 @@ public class ToAshes extends Equipment {
 			}
 			FightInstance.dealDamage(new DamageMeta(data, selfDmg, DamageType.FIRE), p);
 
-			
-			Barrier b = Barrier.stationary(p, 4, tp.range, 3, p.getLocation(), LocalAxes.usingEyeLocation(p), null, null, true);
+			Barrier b = Barrier.stationary(p, 4, tp.range, 3, p.getLocation(), LocalAxes.usingEyeLocation(p), null,
+					null, true);
 			am.setUniqueId(b.getUniqueId());
 			data.addBarrier(b);
 			data.addTask(new BukkitRunnable() {
@@ -92,9 +92,11 @@ public class ToAshes extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BLAZE_POWDER,
-				"On cast, deal " + GlossaryTag.FIRE.tag(this, damage, true) + " to all enemies in a cone in front of you, but " +
-				"deal " + GlossaryTag.FIRE.tag(this, selfDmg, false) + " to yourself. All projectiles in the cone are destroyed. If you destroy at least <white>1</white>" +
-				" projectile, increase the damage of this ability by " + DescUtil.yellow(inc) + " for the rest of the fight.");
+		item = createItem(Material.BLAZE_POWDER, "On cast, deal " + GlossaryTag.FIRE.tag(this, damage, true)
+				+ " to all enemies in a cone in front of you, but " + "deal "
+				+ GlossaryTag.FIRE.tag(this, selfDmg, false)
+				+ " to yourself. All projectiles in the cone are destroyed. If you destroy at least <white>1</white>"
+				+ " projectile, increase the damage of this ability by " + DescUtil.yellow(inc)
+				+ " for the rest of the fight.");
 	}
 }
