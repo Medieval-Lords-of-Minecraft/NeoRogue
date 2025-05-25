@@ -9,22 +9,17 @@ import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
-import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
-import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
-import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
 
-public class LeatherBracer extends Equipment {
-	private static final String ID = "leatherBracer";
+public class MirrorBracer extends Equipment {
+	private static final String ID = "mirrorBracer";
 	private int instances;
 
-	public LeatherBracer(boolean isUpgraded) {
-		super(ID, "Leather Bracer", isUpgraded, Rarity.COMMON, EquipmentClass.CLASSLESS, EquipmentType.OFFHAND);
+	public MirrorBracer(boolean isUpgraded) {
+		super(ID, "Mirror Bracer", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.OFFHAND);
 		instances = isUpgraded ? 2 : 1;
 	}
 
@@ -34,46 +29,41 @@ public class LeatherBracer extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, new LeatherBracerInstance(this, p));
+		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, new MirrorBracerInstance(p));
 	}
 
-	private class LeatherBracerInstance implements TriggerAction {
+	private class MirrorBracerInstance implements TriggerAction {
 		private Player p;
 		private int count = instances;
 		private ItemStack icon;
-		private Equipment eq;
 
-		public LeatherBracerInstance(Equipment eq, Player p) {
+		public MirrorBracerInstance(Player p) {
 			this.p = p;
 			icon = item.clone();
 			icon.setAmount(count);
 			p.getInventory().setItemInOffHand(icon);
-			this.eq = eq;
 		}
 
 		@Override
 		public TriggerResult trigger(PlayerFightData data, Object inputs) {
-			ReceivedDamageEvent ev = (ReceivedDamageEvent) inputs;
 			Sounds.block.play(p, p);
-			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL),
-					Buff.increase(data, 15, BuffStatTracker.defenseBuffAlly(eq)));
 
-			if (--count > 0) {
-				icon.setAmount(count);
-				p.getInventory().setItemInOffHand(icon);
-				return TriggerResult.keep();
-			} else {
+			if (--count <= 0) {
 				Sounds.breaks.play(p, p);
 				p.getInventory().setItem(EquipmentSlot.OFF_HAND, null);
-				return TriggerResult.remove();
+				return TriggerResult.of(true, true);
 			}
+			icon.setAmount(count);
+			p.getInventory().setItemInOffHand(icon);
+			return TriggerResult.of(false, true);
 		}
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LEATHER,
-				"Reduces the first <yellow>" + instances + "</yellow> instances of receiving "
-						+ GlossaryTag.GENERAL.tag(this) + " damage in a fight by <white>15</white>.");
+				"Passive. Start fights with " + GlossaryTag.REFLECT.tag(this, reflect, true) + ". "
+						+ "Prevents the first <yellow>" + instances
+						+ "</yellow> instances of taking damage in a fight.");
 	}
 }
