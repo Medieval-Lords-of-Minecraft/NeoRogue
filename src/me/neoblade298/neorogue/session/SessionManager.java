@@ -345,8 +345,8 @@ public class SessionManager implements Listener {
 		if (e instanceof EntityDamageByEntityEvent)
 			return;
 		UUID uuid = e.getEntity().getUniqueId();
-		if (e.getCause() == DamageCause.POISON || e.getCause() == DamageCause.WITHER ||
-				e.getCause() == DamageCause.STARVATION || e.getCause() == DamageCause.DROWNING) {
+		if (e.getCause() == DamageCause.POISON || e.getCause() == DamageCause.WITHER
+				|| e.getCause() == DamageCause.STARVATION || e.getCause() == DamageCause.DROWNING) {
 			e.setCancelled(true);
 			return;
 		}
@@ -477,12 +477,10 @@ public class SessionManager implements Listener {
 		Block b = e.getClickedBlock();
 		if (b != null) {
 			Material mat = b.getType();
-			if (mat == Material.DECORATED_POT || mat == Material.CRAFTING_TABLE ||
-					mat == Material.ANVIL || mat == Material.ENCHANTING_TABLE ||
-					mat == Material.BREWING_STAND || mat == Material.FURNACE ||
-					mat == Material.SMITHING_TABLE || mat == Material.GRINDSTONE ||
-					mat == Material.CARTOGRAPHY_TABLE || mat == Material.LOOM ||
-					mat == Material.JIGSAW) {
+			if (mat == Material.DECORATED_POT || mat == Material.CRAFTING_TABLE || mat == Material.ANVIL
+					|| mat == Material.ENCHANTING_TABLE || mat == Material.BREWING_STAND || mat == Material.FURNACE
+					|| mat == Material.SMITHING_TABLE || mat == Material.GRINDSTONE || mat == Material.CARTOGRAPHY_TABLE
+					|| mat == Material.LOOM || mat == Material.JIGSAW) {
 				e.setCancelled(true);
 			}
 		}
@@ -546,8 +544,8 @@ public class SessionManager implements Listener {
 			Mob mob = Mob.get(mythicMob.getInternalName());
 			if (mob == null)
 				return;
-			FightData fd = new FightData((LivingEntity) ent,
-					NeoRogue.mythicApi.getMythicMobInstance(ent), mob, (MapSpawnerInstance) null);
+			FightData fd = new FightData((LivingEntity) ent, NeoRogue.mythicApi.getMythicMobInstance(ent), mob,
+					(MapSpawnerInstance) null);
 			FightInstance.putFightData(uuid, fd);
 			if (e.getSpawnReason() == SpawnReason.SUMMON || e.getSpawnReason() == SpawnReason.COMMAND) {
 				if (fd.getInstance() == null)
