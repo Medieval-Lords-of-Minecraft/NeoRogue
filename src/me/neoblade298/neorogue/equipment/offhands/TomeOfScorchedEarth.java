@@ -1,4 +1,4 @@
-package me.neoblade298.neorogue.equipment.abilities;
+package me.neoblade298.neorogue.equipment.offhands;
 
 import java.util.LinkedList;
 
@@ -32,20 +32,20 @@ public class TomeOfScorchedEarth extends Equipment {
 	private static final Cone cone = new Cone(tp.range, tp.arc);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME);
 	private int damage, selfDmg = 3;
-	
+
 	public TomeOfScorchedEarth(boolean isUpgraded) {
-		super(ID, "Tome of Scorched Earth", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
-				EquipmentType.OFFHAND, EquipmentProperties.ofUsable(25, 0, 12, tp.range));
-				damage = isUpgraded ? 180 : 120;
+		super(ID, "Tome of Scorched Earth", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.OFFHAND,
+				EquipmentProperties.ofUsable(25, 0, 12, tp.range));
+		damage = isUpgraded ? 180 : 120;
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.RIGHT_CLICK, new EquipmentInstance(data, this, slot, es,(pdata, in) -> {
+		data.addTrigger(id, Trigger.RIGHT_CLICK, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			Sounds.fire.play(p, p);
 			cone.play(pc, p.getLocation(), LocalAxes.usingEyeLocation(p), null);
 			LinkedList<LivingEntity> trgs = TargetHelper.getEntitiesInCone(p, tp);
@@ -61,8 +61,8 @@ public class TomeOfScorchedEarth extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BOOK,
-				"On right click, deal " + GlossaryTag.FIRE.tag(this, damage, true) + " to all enemies in a cone in front of you. If you hit less than <white>2</white> enemies, also " +
-				"deal " + GlossaryTag.FIRE.tag(this, selfDmg, false) + " to yourself.");
+		item = createItem(Material.BOOK, "On right click, deal " + GlossaryTag.FIRE.tag(this, damage, true)
+				+ " to all enemies in a cone in front of you. If you hit less than <white>2</white> enemies, also "
+				+ "deal " + GlossaryTag.FIRE.tag(this, selfDmg, false) + " to yourself.");
 	}
 }

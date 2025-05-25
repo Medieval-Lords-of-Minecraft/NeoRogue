@@ -2,25 +2,27 @@ package me.neoblade298.neorogue.equipment.offhands;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.ItemStack;
 
-import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
-import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
-import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class MirrorBracer extends Equipment {
 	private static final String ID = "mirrorBracer";
-	private int instances;
+	private int reflect, mr;
 
 	public MirrorBracer(boolean isUpgraded) {
 		super(ID, "Mirror Bracer", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.OFFHAND);
-		instances = isUpgraded ? 2 : 1;
+		reflect = isUpgraded ? 100 : 60;
+		mr = isUpgraded ? 3 : 2;
 	}
 
 	public static Equipment get() {
@@ -29,41 +31,14 @@ public class MirrorBracer extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, new MirrorBracerInstance(p));
-	}
-
-	private class MirrorBracerInstance implements TriggerAction {
-		private Player p;
-		private int count = instances;
-		private ItemStack icon;
-
-		public MirrorBracerInstance(Player p) {
-			this.p = p;
-			icon = item.clone();
-			icon.setAmount(count);
-			p.getInventory().setItemInOffHand(icon);
-		}
-
-		@Override
-		public TriggerResult trigger(PlayerFightData data, Object inputs) {
-			Sounds.block.play(p, p);
-
-			if (--count <= 0) {
-				Sounds.breaks.play(p, p);
-				p.getInventory().setItem(EquipmentSlot.OFF_HAND, null);
-				return TriggerResult.of(true, true);
-			}
-			icon.setAmount(count);
-			p.getInventory().setItemInOffHand(icon);
-			return TriggerResult.of(false, true);
-		}
+		data.applyStatus(StatusType.REFLECT, data, reflect, -1);
+		data.addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL),
+				Buff.increase(data, mr, BuffStatTracker.defenseBuffAlly(this)));
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LEATHER,
-				"Passive. Start fights with " + GlossaryTag.REFLECT.tag(this, reflect, true) + ". "
-						+ "Prevents the first <yellow>" + instances
-						+ "</yellow> instances of taking damage in a fight.");
+		item = createItem(Material.LEATHER, "Passive. Start fights with " + GlossaryTag.REFLECT.tag(this, reflect, true)
+				+ ". " + "Also reduces magic damage taken by " + DescUtil.yellow(mr) + ".");
 	}
 }

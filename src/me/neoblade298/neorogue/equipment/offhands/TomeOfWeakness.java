@@ -1,4 +1,4 @@
-package me.neoblade298.neorogue.equipment.abilities;
+package me.neoblade298.neorogue.equipment.offhands;
 
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -30,20 +30,20 @@ public class TomeOfWeakness extends Equipment {
 	private static final Cone cone = new Cone(tp.range, tp.arc);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.ENCHANTED_HIT);
 	private int inj;
-	
+
 	public TomeOfWeakness(boolean isUpgraded) {
-		super(ID, "Tome of Weakness", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
-				EquipmentType.OFFHAND, EquipmentProperties.ofUsable(15, 0, 12, tp.range));
-				inj = isUpgraded ? 50 : 35;
+		super(ID, "Tome of Weakness", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER, EquipmentType.OFFHAND,
+				EquipmentProperties.ofUsable(15, 0, 12, tp.range));
+		inj = isUpgraded ? 50 : 35;
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.LEFT_CLICK, new EquipmentInstance(data, this, slot, es,(pdata, in) -> {
+		data.addTrigger(id, Trigger.LEFT_CLICK, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			p.swingOffHand();
 			Sounds.enchant.play(p, p);
 			cone.play(pc, p.getLocation(), LocalAxes.usingEyeLocation(p), null);
@@ -57,7 +57,7 @@ public class TomeOfWeakness extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BOOK,
-				"On left click, apply " + GlossaryTag.INJURY.tag(this, inj, true) + " to all enemies in a cone in front of you.");
+		item = createItem(Material.BOOK, "On left click, apply " + GlossaryTag.INJURY.tag(this, inj, true)
+				+ " to all enemies in a cone in front of you.");
 	}
 }
