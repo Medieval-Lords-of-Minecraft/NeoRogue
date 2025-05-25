@@ -39,6 +39,7 @@ import me.neoblade298.neorogue.equipment.accessories.RedRing;
 import me.neoblade298.neorogue.equipment.accessories.RingOfAnger;
 import me.neoblade298.neorogue.equipment.accessories.RingOfFortitude;
 import me.neoblade298.neorogue.equipment.accessories.RingOfMentalism;
+import me.neoblade298.neorogue.equipment.accessories.RingOfNature;
 import me.neoblade298.neorogue.equipment.accessories.RingOfSharpness;
 import me.neoblade298.neorogue.equipment.accessories.SaboteursRing;
 import me.neoblade298.neorogue.equipment.accessories.SpiritShard;
@@ -367,6 +368,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Entropy(b);
 			new Envenom(b);
 			new Envenom2(b);
+			new Erupt(b);
 			new EscapePlan(b);
 			new EscapePlan2(b);
 			new Execute(b);
@@ -534,6 +536,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new RingOfAnger(b);
 			new RingOfFortitude(b);
 			new RingOfMentalism(b);
+			new RingOfNature(b);
 			new RingOfSharpness(b);
 			new SaboteursRing(b);
 			new SpiritShard(b);
