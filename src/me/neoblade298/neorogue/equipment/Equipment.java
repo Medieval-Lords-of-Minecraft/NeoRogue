@@ -208,6 +208,7 @@ import me.neoblade298.neorogue.equipment.weapons.LightLeatherGauntlets;
 import me.neoblade298.neorogue.equipment.weapons.LightningCutter;
 import me.neoblade298.neorogue.equipment.weapons.LightningWand;
 import me.neoblade298.neorogue.equipment.weapons.LitArrow;
+import me.neoblade298.neorogue.equipment.weapons.MagicSpear;
 import me.neoblade298.neorogue.equipment.weapons.MassiveHalberd;
 import me.neoblade298.neorogue.equipment.weapons.MechanicalBow;
 import me.neoblade298.neorogue.equipment.weapons.MirrorSickle;
@@ -640,6 +641,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new LightningCutter(b);
 			new LightningWand(b);
 			new LitArrow(b);
+			new MagicSpear(b);
 			new MassiveHalberd(b);
 			new MechanicalBow(b);
 			new MirrorSickle(b);
