@@ -381,6 +381,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Exertion(b);
 			new ExploitWeakness(b);
 			new Expunge(b);
+			new EyeOfTheStorm(b);
 			new Fade(b);
 			new Farewell(b);
 			new Ferocity(b);
@@ -434,6 +435,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Maim(b);
 			new Malice(b);
 			new Manabending(b);
+			new ManaBlitz(b);
 			new ManaCloak(b);
 			new ManaGuard(b);
 			new ManaInfusion(b);
