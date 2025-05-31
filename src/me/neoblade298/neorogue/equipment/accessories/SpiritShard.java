@@ -12,14 +12,13 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 public class SpiritShard extends Equipment {
 	private static final String ID = "spiritShard";
 	private double stam, mana;
-	
+
 	public SpiritShard(boolean isUpgraded) {
-		super(ID, "Spirit Shard", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE,
-				EquipmentType.ACCESSORY);
+		super(ID, "Spirit Shard", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.ACCESSORY);
 		stam = 0.5;
 		mana = isUpgraded ? 0.8 : 0.5;
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
@@ -27,12 +26,12 @@ public class SpiritShard extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addManaRegen(mana);
-		data.addStamina(stam);
+		data.addStamina(-stam);
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LIGHT_BLUE_BANNER, "Decrease your stamina reduction by " + DescUtil.white(stam) + " and increases your mana regen by "
-				+ DescUtil.yellow(mana) + ".");
+		item = createItem(Material.LIGHT_BLUE_BANNER, "Decrease your stamina reduction by " + DescUtil.white(stam)
+				+ " and increases your mana regen by " + DescUtil.yellow(mana) + ".");
 	}
 }

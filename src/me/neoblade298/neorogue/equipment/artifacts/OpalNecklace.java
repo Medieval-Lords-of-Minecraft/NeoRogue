@@ -25,10 +25,11 @@ public class OpalNecklace extends Artifact {
 	private static final String ID = "opalNecklace";
 	private double inc = 0.3;
 	private int displayInc = (int) (inc * 100);
+
 	public OpalNecklace() {
 		super(ID, "Opal Necklace", Rarity.UNCOMMON, EquipmentClass.MAGE);
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
@@ -40,15 +41,18 @@ public class OpalNecklace extends Artifact {
 
 	private class OpalNecklaceInstance extends PriorityAction {
 		private DamageType lastType;
+
 		public OpalNecklaceInstance(Equipment eq, String id) {
 			super(id);
 			action = (pdata, in) -> {
 				PreDealtDamageEvent ev = (PreDealtDamageEvent) in;
 				// Only trigger on magical damage
-				if (!ev.getMeta().getPrimarySlice().getPostBuffType().getCategories().contains(DamageCategory.MAGICAL)) return TriggerResult.keep();
+				if (!ev.getMeta().getPrimarySlice().getPostBuffType().getCategories().contains(DamageCategory.MAGICAL))
+					return TriggerResult.keep();
 				DamageType curr = ev.getMeta().getPrimarySlice().getPostBuffType();
-				if (lastType != curr) {
-					ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.multiplier(pdata, inc, StatTracker.damageBuffAlly(eq)));
+				if (lastType != curr && lastType != null) {
+					ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+							Buff.multiplier(pdata, inc, StatTracker.damageBuffAlly(eq)));
 				}
 				lastType = curr;
 				return TriggerResult.keep();
@@ -58,18 +62,19 @@ public class OpalNecklace extends Artifact {
 
 	@Override
 	public void onAcquire(PlayerSessionData data, int amount) {
-		
+
 	}
 
 	@Override
 	public void onInitializeSession(PlayerSessionData data) {
-		
+
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.GOLD_NUGGET, 
-				"Whenever you deal " + GlossaryTag.MAGICAL.tag(this) + " damage that is different from your previous damage's main type, increase its damage by "
-				+ DescUtil.yellow(displayInc + "%") + ".");
+		item = createItem(Material.GOLD_NUGGET,
+				"Whenever you deal " + GlossaryTag.MAGICAL.tag(this)
+						+ " damage that is different from your previous damage's main type, increase its damage by "
+						+ DescUtil.yellow(displayInc + "%") + ".");
 	}
 }

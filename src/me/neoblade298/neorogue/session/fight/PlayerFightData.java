@@ -591,6 +591,11 @@ public class PlayerFightData extends FightData {
 		updateStamina();
 	}
 
+	public void setMaxStamina(double amount) {
+		this.maxStamina = amount;
+		updateStamina();
+	}
+
 	public void setStamina(double amount) {
 		this.stamina = amount;
 		updateStamina();
@@ -628,6 +633,11 @@ public class PlayerFightData extends FightData {
 
 	public void addMaxMana(double amount) {
 		this.maxMana += amount;
+		updateMana();
+	}
+
+	public void setMaxMana(double amount) {
+		this.maxMana = amount;
 		updateMana();
 	}
 

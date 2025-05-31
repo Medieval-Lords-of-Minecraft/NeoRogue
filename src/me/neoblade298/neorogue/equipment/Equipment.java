@@ -67,6 +67,7 @@ import me.neoblade298.neorogue.equipment.armor.LeatherCowl;
 import me.neoblade298.neorogue.equipment.armor.LeatherHelmet;
 import me.neoblade298.neorogue.equipment.armor.LeatherHood;
 import me.neoblade298.neorogue.equipment.armor.LightningCloak;
+import me.neoblade298.neorogue.equipment.armor.MagiciansHood;
 import me.neoblade298.neorogue.equipment.armor.NullMagicMantle;
 import me.neoblade298.neorogue.equipment.armor.RedCloak;
 import me.neoblade298.neorogue.equipment.armor.SpikedPauldrons;
@@ -304,6 +305,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new ArrowRain(b);
 			new Atone(b);
 			new Atrophy(b);
+			new AvatarState(b);
 			new Backstep(b);
 			new Backstep2(b);
 			new BasicDarkArts(b);
@@ -572,6 +574,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new LeatherHelmet(b);
 			new LeatherHood(b);
 			new LightningCloak(b);
+			new MagiciansHood(b);
 			new NullMagicMantle(b);
 			new RedCloak(b);
 			new SpikedPauldrons(b);

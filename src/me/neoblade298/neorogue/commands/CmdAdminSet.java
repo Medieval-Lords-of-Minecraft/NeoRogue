@@ -57,11 +57,17 @@ public class CmdAdminSet extends Subcommand {
 		case STAMINA_REGEN:
 			data.setStaminaRegen(value);
 			break;
+		case MAX_MANA:
+			data.setMaxMana(value);
+			break;
+		case MAX_STAMINA:
+			data.setMaxStamina(value);
+			break;
 		}
 		Util.msg(s, "Set " + type + " to " + value + ".");
 	}
 
 	private static enum SetType {
-		MANA, STAMINA, MANA_REGEN, STAMINA_REGEN;
+		MANA, STAMINA, MANA_REGEN, STAMINA_REGEN, MAX_MANA, MAX_STAMINA;
 	}
 }

@@ -17,6 +17,8 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
@@ -28,10 +30,9 @@ public class Fireball extends Equipment {
 	private static final ParticleContainer tick = new ParticleContainer(Particle.FLAME).count(5).spread(0.3, 0.3);
 
 	private int damage, burn;
-	
+
 	public Fireball(boolean isUpgraded) {
-		super(
-				ID , "Fireball", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
+		super(ID, "Fireball", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(20, 0, 12, 10));
 		damage = isUpgraded ? 240 : 160;
 		burn = 30;
@@ -41,7 +42,7 @@ public class Fireball extends Equipment {
 	public void setupReforges() {
 		addReforge(Manabending.get(), Fireball2.get(), Torch.get(), Fireblast.get());
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
@@ -49,7 +50,7 @@ public class Fireball extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ProjectileGroup proj = new ProjectileGroup(new FireballProjectile(data));
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata ,in) -> {
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			data.channel(20).then(new Runnable() {
 				public void run() {
 					data.applyStatus(StatusType.BURN, data, burn, -1);
@@ -59,7 +60,7 @@ public class Fireball extends Equipment {
 			return TriggerResult.keep();
 		}));
 	}
-	
+
 	private class FireballProjectile extends Projectile {
 		private Player p;
 		private PlayerFightData data;
@@ -78,20 +79,21 @@ public class Fireball extends Equipment {
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
-			
+
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			Sounds.shoot.play(p, p);
-			proj.applyProperties(data, properties);	
+			Sounds.fire.play(p, p);
+			proj.addDamageSlice(new DamageSlice(data, damage, DamageType.FIRE));
 		}
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLAZE_POWDER,
-			GlossaryTag.CHANNEL.tag(this) + " for <white>1s</white> before launching a fireball that deals " + GlossaryTag.FIRE.tag(this, damage, true) + " damage but apply " +
-			GlossaryTag.BURN.tag(this, burn, false) + " to yourself.");
+				GlossaryTag.CHANNEL.tag(this) + " for <white>1s</white> before launching a fireball that deals "
+						+ GlossaryTag.FIRE.tag(this, damage, true) + " damage but apply "
+						+ GlossaryTag.BURN.tag(this, burn, false) + " to yourself.");
 	}
 }

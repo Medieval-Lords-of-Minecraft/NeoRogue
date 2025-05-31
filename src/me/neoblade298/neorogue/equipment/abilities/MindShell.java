@@ -23,18 +23,19 @@ public class MindShell extends Equipment {
 	private int shell;
 	private static final int THRES = 5;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
-	
+
 	public MindShell(boolean isUpgraded) {
-		super(ID, "Mind Shell", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.none());
-		regen = isUpgraded ? 0.3 : 0.2;
+		super(ID, "Mind Shell", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
+				EquipmentProperties.none());
+		regen = 0.3;
+		shell = isUpgraded ? 2 : 1;
 	}
-	
+
 	@Override
 	public void setupReforges() {
 
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
@@ -58,6 +59,7 @@ public class MindShell extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LIGHT_BLUE_DYE,
-				"Passive. Every " + DescUtil.white(THRES) + " ability casts, increase your mana regen by " + DescUtil.white(regen) + " and gain " + GlossaryTag.SHELL.tag(this, shell, true) + ".");
+				"Passive. Every " + DescUtil.white(THRES) + " ability casts, increase your mana regen by "
+						+ DescUtil.white(regen) + " and gain " + GlossaryTag.SHELL.tag(this, shell, true) + ".");
 	}
 }

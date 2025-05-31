@@ -33,10 +33,9 @@ public class LightningBolt extends Equipment {
 	private static final TargetProperties tp = TargetProperties.line(7, 2, TargetType.ENEMY);
 
 	private int damage, thres, bonusDamage;
-	
+
 	public LightningBolt(boolean isUpgraded) {
-		super(
-				ID , "Lightning Bolt", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
+		super(ID, "Lightning Bolt", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(20, 0, 12, tp.range));
 		damage = 70;
 		thres = isUpgraded ? 40 : 30;
@@ -49,21 +48,24 @@ public class LightningBolt extends Equipment {
 		addReforge(Manabending.get(), LightningStrike.get(), FireBolt.get());
 		addReforge(Intuition.get(), DrainLightning.get());
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata ,in) -> {
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			double cost = properties.get(PropertyType.MANA_COST);
+			double currMana = data.getMana() + cost;
+			boolean hasBonus = currMana >= thres;
 			data.channel(20).then(new Runnable() {
 				public void run() {
 					Location start = p.getLocation().add(0, 1, 0);
 					Vector dir = p.getEyeLocation().getDirection();
 					Location end = start.clone().add(dir.clone().multiply(properties.get(PropertyType.RANGE)));
 					ParticleUtil.drawLine(p, tick, start, end, 0.3);
-					double fDamage = damage + (data.getMana() >= thres ? bonusDamage : 0);
+					double fDamage = damage + (hasBonus ? bonusDamage : 0);
 					Sounds.firework.play(p, p);
 					for (LivingEntity ent : TargetHelper.getEntitiesInLine(p, start, end, tp)) {
 						FightInstance.dealDamage(new DamageMeta(data, fDamage, DamageType.LIGHTNING), ent);
@@ -76,8 +78,8 @@ public class LightningBolt extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.YELLOW_DYE,
-			GlossaryTag.CHANNEL.tag(this) + " for <white>1s</white> before dealing " + GlossaryTag.LIGHTNING.tag(this, damage, true) +
-			" in a line in front of you. If you are above " + DescUtil.yellow(thres) + " mana, increase the damage by " + DescUtil.yellow(bonusDamage) + ".");
+		item = createItem(Material.YELLOW_DYE, GlossaryTag.CHANNEL.tag(this) + " for <white>1s</white> before dealing "
+				+ GlossaryTag.LIGHTNING.tag(this, damage, true) + " in a line in front of you. If you are above "
+				+ DescUtil.yellow(thres) + " mana, increase the damage by " + DescUtil.yellow(bonusDamage) + ".");
 	}
 }

@@ -33,17 +33,16 @@ public class DrainLightning extends Equipment {
 	private static final TargetProperties tp = TargetProperties.line(7, 2, TargetType.ENEMY);
 
 	private int damage, cdr, thres;
-	
+
 	public DrainLightning(boolean isUpgraded) {
-		super(
-				ID , "Drain Lightning", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
+		super(ID, "Drain Lightning", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(20, 0, 12, tp.range));
-		damage = 200;
+		damage = 150;
 		thres = 50;
-		cdr = isUpgraded ? 5 : 2;
+		cdr = isUpgraded ? 5 : 3;
 
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
@@ -52,6 +51,8 @@ public class DrainLightning extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
 		inst.setAction((pdata, in) -> {
+			double cost = properties.get(PropertyType.MANA_COST);
+			double currMana = data.getMana() + cost;
 			data.channel(20).then(new Runnable() {
 				public void run() {
 					Location start = p.getLocation().add(0, 1, 0);
@@ -63,23 +64,23 @@ public class DrainLightning extends Equipment {
 						FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.LIGHTNING), ent);
 					}
 
-					if (data.getMana() >= thres) {
-						data.addMana(thres);
+					if (currMana >= thres) {
+						data.addMana(cost);
 						inst.reduceCooldown(cdr);
 					}
 				}
 			});
 			return TriggerResult.keep();
 		});
-		
+
 		data.addTrigger(id, bind, inst);
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.HOPPER,
-			GlossaryTag.CHANNEL.tag(this) + " for <white>1s</white> before dealing " + GlossaryTag.LIGHTNING.tag(this, damage, true) +
-			" in a line in front of you. If you are above " + DescUtil.yellow(thres) + " mana, regain the mana cost of this ability and reduce its "
-			+ "cooldown by " + DescUtil.yellow(cdr + "s") + ".");
+		item = createItem(Material.HOPPER, GlossaryTag.CHANNEL.tag(this) + " for <white>1s</white> before dealing "
+				+ GlossaryTag.LIGHTNING.tag(this, damage, true) + " in a line in front of you. If you are above "
+				+ DescUtil.yellow(thres) + " mana, regain the mana cost of this ability and reduce its "
+				+ "cooldown by " + DescUtil.yellow(cdr + "s") + ".");
 	}
 }

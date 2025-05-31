@@ -16,13 +16,13 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 public class ManaGuard extends Equipment {
 	private static final String ID = "manaGuard";
 	private int reduc;
-	
+
 	public ManaGuard(boolean isUpgraded) {
-		super(ID, "Mana Guard", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+		super(ID, "Mana Guard", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
+				EquipmentProperties.none());
 		reduc = isUpgraded ? 9 : 6;
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
@@ -30,12 +30,13 @@ public class ManaGuard extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addManaRegen(-1);
-		data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, reduc, StatTracker.defenseBuffAlly(this)));
+		data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL),
+				Buff.increase(data, reduc, StatTracker.defenseBuffAlly(this)));
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.SHIELD,
-				"Passive. Reduces damage taken by <yellow>" + reduc + "</yellow> but decrease mana regen by <white>1</white>.");
+		item = createItem(Material.SHIELD, "Passive. Reduces damage taken by <yellow>" + reduc
+				+ "</yellow> but decrease mana regen by <white>1</white>.");
 	}
 }
