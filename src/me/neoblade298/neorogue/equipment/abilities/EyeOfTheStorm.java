@@ -45,12 +45,6 @@ public class EyeOfTheStorm extends Equipment {
 		pc.count(10).spread(0.5, 0.5).speed(0.2);
 	}
 
-	@Override
-	public void setupReforges() {
-		addReforge(EnduranceTraining.get(), Brace2.get(), Parry.get());
-		addReforge(Furor.get(), Bide.get());
-	}
-
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}

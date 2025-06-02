@@ -29,10 +29,10 @@ public class MechanicDamage implements ITargetedEntitySkill {
 	protected final HashMap<DamageType, Double> damage = new HashMap<DamageType, Double>();
 	protected Skill successSkill, failSkill;
 
-    @Override
-    public ThreadSafetyLevel getThreadSafetyLevel() {
-        return ThreadSafetyLevel.SYNC_ONLY;
-    }
+	@Override
+	public ThreadSafetyLevel getThreadSafetyLevel() {
+		return ThreadSafetyLevel.SYNC_ONLY;
+	}
 
 	public MechanicDamage(MythicLineConfig cfg) {
 		for (DamageType type : DamageType.values()) {
@@ -41,14 +41,14 @@ public class MechanicDamage implements ITargetedEntitySkill {
 				damage.put(type, amt);
 			}
 		}
-        this.hitBarrier = cfg.getBoolean(new String[] { "hb", "hitbarrier" }, false);
+		this.hitBarrier = cfg.getBoolean(new String[] { "hb", "hitbarrier" }, false);
 		this.asParent = cfg.getBoolean(new String[] { "asParent", "ap" }, false);
 
 		String skillName = cfg.getString(new String[] { "onSuccess", "oS" });
 		if (skillName != null) {
 			successSkill = MythicBukkit.inst().getSkillManager().getSkill(skillName).get();
 		}
-		
+
 		skillName = cfg.getString(new String[] { "onFail", "oF" });
 		if (skillName != null) {
 			failSkill = MythicBukkit.inst().getSkillManager().getSkill(skillName).get();
@@ -56,40 +56,47 @@ public class MechanicDamage implements ITargetedEntitySkill {
 	}
 
 	@Override
-    public SkillResult castAtEntity(SkillMetadata data, AbstractEntity target) {
+	public SkillResult castAtEntity(SkillMetadata data, AbstractEntity target) {
 		try {
 			double level = data.getCaster().getLevel();
-			final double mult = 1 + (level / 10);
-			ActiveMob am = MythicBukkit.inst().getMobManager().getMythicMobInstance(data.getCaster().getEntity()); // Currently assumes caster is always mythicmob
+			final double mult = 1 + (level / 15);
+			ActiveMob am = MythicBukkit.inst().getMobManager().getMythicMobInstance(data.getCaster().getEntity()); // Currently
+																													// assumes
+																													// caster
+																													// is
+																													// always
+																													// mythicmob
 			if (asParent && !am.getParent().isPresent()) {
 				return SkillResult.CONDITION_FAILED;
 			}
-			FightData fd = asParent ? FightInstance.getFightData(am.getParent().get().getBukkitEntity()) : FightInstance.getFightData(data.getCaster().getEntity().getUniqueId());
+			FightData fd = asParent ? FightInstance.getFightData(am.getParent().get().getBukkitEntity())
+					: FightInstance.getFightData(data.getCaster().getEntity().getUniqueId());
 			DamageMeta meta = new DamageMeta(fd);
 			for (Entry<DamageType, Double> ent : damage.entrySet()) {
 				meta.addDamageSlice(new DamageSlice(fd, ent.getValue() * mult, ent.getKey()));
 			}
 			meta.setHitBarrier(hitBarrier);
 			double dealt = FightInstance.dealDamage(meta, (LivingEntity) target.getBukkitEntity(), data);
-			
 
 			HashSet<AbstractEntity> targets = new HashSet<AbstractEntity>();
 			targets.add(target);
-			
+
 			Skill skill;
 			if (dealt > 0) {
 				skill = successSkill;
-			}
-			else {
+			} else {
 				skill = failSkill;
 			}
-			if (skill != null) skill.execute(SkillTrigger.get("API"), data.getCaster(), data.getTrigger(),
-					data.getCaster().getLocation(), targets, null, 1F);
+			if (skill != null)
+				skill.execute(SkillTrigger.get("API"), data.getCaster(), data.getTrigger(),
+						data.getCaster().getLocation(), targets, null, 1F);
 
 			if (fd.hasStatus(StatusType.ELECTRIFIED)) {
 				Status s = fd.getStatus(StatusType.ELECTRIFIED);
-				DamageMeta dm = new DamageMeta(s.getSlices().first().getFightData()); // Arbitrarily pick first owner as damage meta owner
-				for (Entry<FightData, Integer> slice : fd.getStatus(StatusType.ELECTRIFIED).getSlices().getSliceOwners().entrySet()) {
+				DamageMeta dm = new DamageMeta(s.getSlices().first().getFightData()); // Arbitrarily pick first owner as
+																						// damage meta owner
+				for (Entry<FightData, Integer> slice : fd.getStatus(StatusType.ELECTRIFIED).getSlices().getSliceOwners()
+						.entrySet()) {
 					dm.addDamageSlice(new DamageSlice(slice.getKey(), slice.getValue() * 0.2, DamageType.ELECTRIFIED));
 				}
 			}
@@ -98,5 +105,5 @@ public class MechanicDamage implements ITargetedEntitySkill {
 			e.printStackTrace();
 			return SkillResult.ERROR;
 		}
-    }
+	}
 }

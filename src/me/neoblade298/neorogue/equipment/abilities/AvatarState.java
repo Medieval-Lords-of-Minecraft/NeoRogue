@@ -60,7 +60,7 @@ public class AvatarState extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GLOWSTONE,
-				"On cast, increase mana regen by " + DescUtil.yellow(mreg) + ",  health regen by "
+				"On cast, increase mana regen by " + DescUtil.yellow(mreg) + ", health regen by "
 						+ DescUtil.yellow(hreg) + ", and gain " + GlossaryTag.SHIELDS.tag(this, shields, true)
 						+ " for <white>10s</white> or until you receive health damage.");
 	}

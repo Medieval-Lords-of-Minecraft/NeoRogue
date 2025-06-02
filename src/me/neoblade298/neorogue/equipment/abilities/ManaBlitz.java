@@ -30,7 +30,9 @@ public class ManaBlitz extends Equipment {
 
 	@Override
 	public void setupReforges() {
-
+		addReforge(Manabending.get(), Flashfire.get());
+		addReforge(Intuition.get(), ManaArc.get());
+		addReforge(CalculatingGaze.get(), AvatarState.get());
 	}
 
 	public static Equipment get() {

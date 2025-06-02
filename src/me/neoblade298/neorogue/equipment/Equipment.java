@@ -144,6 +144,7 @@ import me.neoblade298.neorogue.equipment.cursed.RustySword;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.equipment.offhands.ChasingDagger;
+import me.neoblade298.neorogue.equipment.offhands.ConductiveArmguard;
 import me.neoblade298.neorogue.equipment.offhands.HastyShield;
 import me.neoblade298.neorogue.equipment.offhands.IcicleTome;
 import me.neoblade298.neorogue.equipment.offhands.InsanityPowder;
@@ -369,6 +370,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Embolden(b);
 			new EmpoweredEdge(b);
 			new Endure(b);
+			new Engulf(b);
 			new Enlighten(b);
 			new EndlessVenom(b);
 			new EnduranceTraining(b);
@@ -396,6 +398,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Fissure(b);
 			new FivePointStrike(b);
 			new FlashDraw(b);
+			new Flashfire(b);
 			new FlowState(b);
 			new FlowState2(b);
 			new Flurry(b);
@@ -437,6 +440,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Maim(b);
 			new Malice(b);
 			new Manabending(b);
+			new ManaArc(b);
 			new ManaBlitz(b);
 			new ManaCloak(b);
 			new ManaGuard(b);
@@ -583,6 +587,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new BlinkRune(b);
 			new ChasingDagger(b);
 			new CopperFunnel(b);
+			new ConductiveArmguard(b);
 			new GuardingRune(b);
 			new HastyShield(b);
 			new IcicleTome(b);
