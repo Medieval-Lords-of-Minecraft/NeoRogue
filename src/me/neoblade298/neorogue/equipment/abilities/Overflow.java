@@ -20,19 +20,20 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Overflow extends Equipment {
 	private static final String ID = "overflow";
-	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST).dustOptions(new DustOptions(Color.BLUE, 1));
+	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST)
+			.dustOptions(new DustOptions(Color.BLUE, 1));
 	private double reduc = isUpgraded ? 0.5 : 0.8;
-	
+
 	public Overflow(boolean isUpgraded) {
-		super(ID, "Overflow", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 10, 0));
+		super(ID, "Overflow", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
+				EquipmentProperties.ofUsable(0, 0, 0, 0));
 		pc.count(50).spread(0.5, 0.5).dustOptions(new DustOptions(Color.RED, 1F));
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
-	
+
 	@Override
 	public void setupReforges() {
 
@@ -40,8 +41,8 @@ public class Overflow extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.POTION,
-				"On cast, set your mana to your max mana and decrease your mana regen by " + DescUtil.yellow(reduc) + ".");
+		item = createItem(Material.POTION, "On cast, set your mana to your max mana and decrease your mana regen by "
+				+ DescUtil.yellow(reduc) + ". Can only be used once per fight.");
 		PotionMeta pm = (PotionMeta) item.getItemMeta();
 		pm.setColor(Color.BLUE);
 		item.setItemMeta(pm);
@@ -50,12 +51,12 @@ public class Overflow extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-				Sounds.infect.play(p, p);
-				pc.play(p, p);
-				data.setMana(data.getMaxMana());
-				data.addManaRegen(-reduc);
-
-				return TriggerResult.remove();
+			Sounds.infect.play(p, p);
+			pc.play(p, p);
+			data.setMana(data.getMaxMana());
+			data.addManaRegen(-reduc);
+			p.getInventory().setItem(slot, null);
+			return TriggerResult.remove();
 		}));
 	}
 }

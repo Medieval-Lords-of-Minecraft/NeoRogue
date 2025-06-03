@@ -30,6 +30,7 @@ import me.neoblade298.neorogue.equipment.accessories.EarthenRing;
 import me.neoblade298.neorogue.equipment.accessories.FlintPendant;
 import me.neoblade298.neorogue.equipment.accessories.GripGloves;
 import me.neoblade298.neorogue.equipment.accessories.MagicQuiver;
+import me.neoblade298.neorogue.equipment.accessories.ManaMagnifier;
 import me.neoblade298.neorogue.equipment.accessories.MinorManaRelic;
 import me.neoblade298.neorogue.equipment.accessories.MinorPoisonRelic;
 import me.neoblade298.neorogue.equipment.accessories.MinorShieldingRelic;
@@ -129,7 +130,6 @@ import me.neoblade298.neorogue.equipment.artifacts.TreatiseOnElectricity;
 import me.neoblade298.neorogue.equipment.artifacts.TrickstersSigil;
 import me.neoblade298.neorogue.equipment.consumables.MinorFirePotion;
 import me.neoblade298.neorogue.equipment.consumables.MinorHealthPotion;
-import me.neoblade298.neorogue.equipment.consumables.MinorImbuementPotion;
 import me.neoblade298.neorogue.equipment.consumables.MinorMagicalPotion;
 import me.neoblade298.neorogue.equipment.consumables.MinorManaPotion;
 import me.neoblade298.neorogue.equipment.consumables.MinorPhysicalPotion;
@@ -245,6 +245,7 @@ import me.neoblade298.neorogue.equipment.weapons.StoneSword;
 import me.neoblade298.neorogue.equipment.weapons.StoneThrowingKnife;
 import me.neoblade298.neorogue.equipment.weapons.TacticiansDagger;
 import me.neoblade298.neorogue.equipment.weapons.TreeTrunk;
+import me.neoblade298.neorogue.equipment.weapons.TwinBolt;
 import me.neoblade298.neorogue.equipment.weapons.Volley;
 import me.neoblade298.neorogue.equipment.weapons.WarningShot;
 import me.neoblade298.neorogue.equipment.weapons.WoodenArrow;
@@ -301,6 +302,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Adrenaline(b);
 			new Advantage(b);
 			new AgilityTraining(b);
+			new AnchoringEarth(b);
 			new Assassinate(b);
 			new ArcaneBlast(b);
 			new ArrowRain(b);
@@ -457,6 +459,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Momentum(b);
 			new MortalEngine(b);
 			new NightShade(b);
+			new Overflow(b);
 			new Overload(b);
 			new Parry(b);
 			new PartingGift(b);
@@ -517,6 +520,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new ToAshes(b);
 			new Torch(b);
 			new TreeTrunk(b);
+			new TwinBolt(b);
 			new TwinShiv(b);
 			new Vanish(b);
 			new VitalPierce(b);
@@ -541,6 +545,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new FlintPendant(b);
 			new GripGloves(b);
 			new MagicQuiver(b);
+			new ManaMagnifier(b);
 			new MinorManaRelic(b);
 			new MinorPoisonRelic(b);
 			new MinorShieldingRelic(b);
@@ -694,7 +699,6 @@ public abstract class Equipment implements Comparable<Equipment> {
 			// Consumables
 			new MinorFirePotion(b);
 			new MinorHealthPotion(b);
-			new MinorImbuementPotion(b);
 			new MinorStaminaPotion(b);
 			new MinorManaPotion(b);
 			new MinorShieldsPotion(b);

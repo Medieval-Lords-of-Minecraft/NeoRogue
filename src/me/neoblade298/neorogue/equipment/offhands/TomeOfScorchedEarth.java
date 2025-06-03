@@ -30,7 +30,7 @@ public class TomeOfScorchedEarth extends Equipment {
 	private static final String ID = "tomeOfScorchedEarth";
 	private static final TargetProperties tp = TargetProperties.cone(60, 5, false, TargetType.ENEMY);
 	private static final Cone cone = new Cone(tp.range, tp.arc);
-	private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME);
+	private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME).offsetY(0.3);
 	private int damage, selfDmg = 3;
 
 	public TomeOfScorchedEarth(boolean isUpgraded) {
@@ -47,7 +47,7 @@ public class TomeOfScorchedEarth extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.RIGHT_CLICK, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			Sounds.fire.play(p, p);
-			cone.play(pc, p.getLocation(), LocalAxes.usingEyeLocation(p), null);
+			cone.play(pc, p.getLocation(), LocalAxes.usingEyeLocation(p), pc);
 			LinkedList<LivingEntity> trgs = TargetHelper.getEntitiesInCone(p, tp);
 			for (LivingEntity ent : trgs) {
 				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE), ent);

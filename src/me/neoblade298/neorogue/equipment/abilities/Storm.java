@@ -33,19 +33,20 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Storm extends Equipment {
 	private static final String ID = "storm";
-	private static final TargetProperties tp = TargetProperties.radius(4, true);
+	private static final TargetProperties tp = TargetProperties.radius(14, true),
+			aoe = TargetProperties.radius(4, true);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.ANGRY_VILLAGER);
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_LIGHTNING_BOLT_THUNDER);
 	private static final Circle circ = new Circle(tp.range);
 	private int damage, mana = 3;
 	private ItemStack activeIcon;
-	
+
 	public Storm(boolean isUpgraded) {
-		super(ID, "Storm", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 1, tp.range));
-				damage = isUpgraded ? 30 : 20;
+		super(ID, "Storm", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
+				EquipmentProperties.ofUsable(0, 0, 1, tp.range, aoe.range));
+		damage = isUpgraded ? 30 : 20;
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
@@ -59,15 +60,15 @@ public class Storm extends Equipment {
 			if (am.getBool()) {
 				Sounds.equip.play(p, p);
 				inst.setIcon(activeIcon);
-			}
-			else {
+			} else {
 				inst.setIcon(item);
 			}
 			return TriggerResult.keep();
 		});
 		data.addTrigger(id, bind, inst);
 		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
-			if (!am.getBool()) return TriggerResult.keep();
+			if (!am.getBool())
+				return TriggerResult.keep();
 			if (data.getMana() < mana) {
 				inst.setIcon(item);
 				am.setBool(false);
@@ -75,13 +76,14 @@ public class Storm extends Equipment {
 			}
 
 			Block b = p.getTargetBlockExact((int) properties.get(PropertyType.RANGE));
-			if (b.getType().isAir()) return TriggerResult.keep();
+			if (b.getType().isAir())
+				return TriggerResult.keep();
 
 			Location loc = b.getLocation().add(0, 1, 0);
 			circ.play(pc, loc, LocalAxes.xz(), null);
 			sc.play(p, p);
 			data.addMana(-mana);
-			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
+			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, aoe)) {
 				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.LIGHTNING), ent);
 			}
 			return TriggerResult.keep();
@@ -91,9 +93,10 @@ public class Storm extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLAZE_ROD,
-				"Toggleable, off by default. While active, aim at a block to deal " + GlossaryTag.LIGHTNING.tag(this, damage, true) +
-				" damage to all enemies near it for " + DescUtil.white(mana) + " mana each second.");
-				
+				"Toggleable, off by default. While active, aim at a block to deal "
+						+ GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage to all enemies near it for "
+						+ DescUtil.white(mana) + " mana each second.");
+
 		activeIcon = item.withType(Material.BLAZE_POWDER);
 	}
 }

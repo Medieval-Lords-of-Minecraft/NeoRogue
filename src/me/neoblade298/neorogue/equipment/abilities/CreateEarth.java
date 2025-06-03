@@ -35,24 +35,25 @@ public class CreateEarth extends Equipment {
 	private static final TargetProperties tp = TargetProperties.radius(3, false);
 	private static final Circle circ = new Circle(tp.range);
 	private int damage, conc;
-	
+
 	public CreateEarth(boolean isUpgraded) {
-		super(ID, "Create Earth", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 10, 15, 12));
+		super(ID, "Create Earth", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
+				EquipmentProperties.ofUsable(20, 10, 15, 12));
 		damage = isUpgraded ? 160 : 120;
 		conc = isUpgraded ? 60 : 40;
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es));
 		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
+		data.addTrigger(id, bind, inst);
 		inst.setAction((pdata, in) -> {
-			circ.play(pc, p.getTargetBlockExact((int) properties.get(PropertyType.RANGE)).getLocation().add(0, 1, 0), LocalAxes.xz(), null);
+			circ.play(pc, p.getTargetBlockExact((int) properties.get(PropertyType.RANGE)).getLocation().add(0, 1, 0),
+					LocalAxes.xz(), null);
 			data.charge(20).then(new Runnable() {
 				public void run() {
 					Block b = p.getTargetBlockExact((int) properties.get(PropertyType.RANGE));
@@ -84,7 +85,9 @@ public class CreateEarth extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.DIRT,
-				"On cast, " + GlossaryTag.CHANNEL.tag(this) + " for <white>1s</white> before dealing " + GlossaryTag.BLUNT.tag(this, damage, true) + " damage, applying " +
-				GlossaryTag.CONCUSSED.tag(this, conc, true) + ", and knocking up all enemies in a radius around a targeted block.");	
+				"On cast, " + GlossaryTag.CHANNEL.tag(this) + " for <white>1s</white> before dealing "
+						+ GlossaryTag.BLUNT.tag(this, damage, true) + " damage, applying "
+						+ GlossaryTag.CONCUSSED.tag(this, conc, true)
+						+ ", and knocking up all enemies in a radius around a targeted block.");
 	}
 }
