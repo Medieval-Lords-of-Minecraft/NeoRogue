@@ -303,6 +303,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Advantage(b);
 			new AgilityTraining(b);
 			new AnchoringEarth(b);
+			new AnchoringEarth2(b);
 			new Assassinate(b);
 			new ArcaneBlast(b);
 			new ArrowRain(b);
@@ -368,7 +369,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new DrainLightning(b);
 			new EarthenTackle(b);
 			new EarthenWall(b);
-			new EtherealKnife(b);
+			new Electrode(b);
 			new Embolden(b);
 			new EmpoweredEdge(b);
 			new Endure(b);
@@ -635,6 +636,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new EarthenLeatherGauntlets(b);
 			new ElectromagneticKnife(b);
 			new EnergizedRazor(b);
+			new EtherealKnife(b);
 			new EvasiveKnife(b);
 			new ExplosiveArrow(b);
 			new FencingSword(b);
