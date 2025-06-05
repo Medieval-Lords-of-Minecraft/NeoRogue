@@ -57,7 +57,8 @@ public class CreateEarth extends Equipment {
 			data.charge(20).then(new Runnable() {
 				public void run() {
 					Block b = p.getTargetBlockExact((int) properties.get(PropertyType.RANGE));
-					if (b.getType().isAir()) {
+					if (b == null) {
+						Sounds.error.play(p, p);
 						data.addMana(properties.get(PropertyType.MANA_COST));
 						data.addMana(properties.get(PropertyType.STAMINA_COST));
 						inst.setCooldown(0);
@@ -78,7 +79,7 @@ public class CreateEarth extends Equipment {
 		});
 
 		inst.setCondition((pl, pdata, in) -> {
-			return p.getTargetBlockExact((int) properties.get(PropertyType.RANGE)).getType().isAir();
+			return p.getTargetBlockExact((int) properties.get(PropertyType.RANGE)) != null;
 		});
 	}
 

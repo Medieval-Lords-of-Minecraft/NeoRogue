@@ -189,7 +189,7 @@ public class PlayerFightData extends FightData {
 	}
 
 	public TaskChain charge(int ticks) {
-		return charge(1, ticks);
+		return charge(ticks, 1);
 	}
 
 	public void disableJump(int ticks) {

@@ -16,6 +16,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.player.TaskChain;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageType;
@@ -39,7 +40,7 @@ public class FireBolt extends Equipment {
 		super(ID, "Fire Bolt", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(30, 0, 12, tp.range));
 		damage = 200;
-		thres = isUpgraded ? 60 : 50;
+		thres = isUpgraded ? 50 : 60;
 
 	}
 
@@ -50,21 +51,25 @@ public class FireBolt extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			data.channel(20).then(new Runnable() {
+			double mana = data.getMana() + properties.get(PropertyType.MANA_COST);
+			TaskChain chain = data.channel(20).then(new Runnable() {
 				public void run() {
 					fire(p, data, true);
 				}
-			}).then(new Runnable() {
-				public void run() {
-					fire(p, data, false);
-				}
-			}, 10);
+			});
+
+			if (mana >= thres) {
+				chain.then(new Runnable() {
+					public void run() {
+						fire(p, data, false);
+					}
+				}, 10);
+			}
 			return TriggerResult.keep();
 		}));
 	}
 
 	private void fire(Player p, PlayerFightData data, boolean isLightning) {
-		System.out.println("Firing " + isLightning);
 		Location start = p.getLocation().add(0, 1, 0);
 		Vector dir = p.getEyeLocation().getDirection();
 		Location end = start.clone().add(dir.clone().multiply(properties.get(PropertyType.RANGE)));

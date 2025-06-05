@@ -34,12 +34,12 @@ public class TaskChain {
             Task prev = curr;
             curr = new Task(data, runnable);
             prev.chain(curr, delay);
-        }
-        else {
+        } else {
             curr = new Task(data, runnable);
+            final Task task = curr;
             BukkitRunnable br = new BukkitRunnable() {
                 public void run() {
-                    curr.run();
+                    task.run();
                 }
             };
             data.addTask(br.runTaskLater(NeoRogue.inst(), initDelay + delay));

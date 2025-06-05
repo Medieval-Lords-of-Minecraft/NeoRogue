@@ -36,21 +36,22 @@ public class GroundLance extends Equipment {
 	private static final String ID = "groundLance";
 	private static final TargetProperties tp = TargetProperties.radius(2, false);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
-			grnd = new ParticleContainer(Particle.DUST).count(20).spread(0.5, 0.5).dustOptions(new DustOptions(Color.fromRGB(139, 69, 19), 1F));
+			grnd = new ParticleContainer(Particle.DUST).count(20).spread(0.5, 0.5)
+					.dustOptions(new DustOptions(Color.fromRGB(139, 69, 19), 1F));
 	private static final Circle circ = new Circle(tp.range);
 	private int damage;
-	
+
 	public GroundLance(boolean isUpgraded) {
-		super(ID, "Ground Lance", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(40, 0, 10, 14, tp.range));
-				damage = isUpgraded ? 150 : 120;
+		super(ID, "Ground Lance", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
+				EquipmentProperties.ofUsable(40, 0, 10, 14, tp.range));
+		damage = isUpgraded ? 150 : 120;
 	}
-	
+
 	@Override
 	public void setupReforges() {
 
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
@@ -59,12 +60,13 @@ public class GroundLance extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
 		inst.setAction((pdata, in) -> {
-			circ.play(pc, p.getTargetBlockExact((int) properties.get(PropertyType.RANGE)).getLocation().add(0, 1, 0), LocalAxes.xz(), null);
+			circ.play(pc, p.getTargetBlockExact((int) properties.get(PropertyType.RANGE)).getLocation().add(0, 1, 0),
+					LocalAxes.xz(), null);
 
 			data.charge(20).then(new Runnable() {
 				public void run() {
 					Block b = p.getTargetBlockExact((int) properties.get(PropertyType.RANGE));
-					if (b.getType().isAir()) {
+					if (b == null) {
 						data.addMana(properties.get(PropertyType.MANA_COST));
 						inst.setCooldown(0);
 						Sounds.error.play(p, p);
@@ -79,9 +81,9 @@ public class GroundLance extends Equipment {
 					LinkedList<LivingEntity> targets = TargetHelper.getEntitiesInRadius(p, tp);
 					if (targets.size() == 1) {
 						Sounds.wither.play(p, loc);
-						FightInstance.dealDamage(new DamageMeta(data, damage * 3, DamageType.EARTHEN), targets.getFirst());
-					}
-					else {
+						FightInstance.dealDamage(new DamageMeta(data, damage * 3, DamageType.EARTHEN),
+								targets.getFirst());
+					} else {
 						for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
 							FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.EARTHEN), ent);
 						}
@@ -96,7 +98,8 @@ public class GroundLance extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POINTED_DRIPSTONE,
-				"On cast, " + DescUtil.charge(this, 1, 1) + " before dealing " + GlossaryTag.EARTHEN.tag(this, damage, true) + 
-				" in an area around the block you aim at. Deal triple damage if you hit exactly one target.");
+				"On cast, " + DescUtil.charge(this, 1, 1) + " before dealing "
+						+ GlossaryTag.EARTHEN.tag(this, damage, true)
+						+ " in an area around the block you aim at. Deal triple damage if you hit exactly one target.");
 	}
 }
