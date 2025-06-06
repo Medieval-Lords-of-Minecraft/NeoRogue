@@ -31,6 +31,7 @@ import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.CastType;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.TaskChain;
@@ -45,6 +46,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerCondition;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.CastUsableEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.CheckCastUsableEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.CreateRiftEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.LayTrapEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.StaminaChangeEvent;
@@ -451,7 +453,7 @@ public class PlayerFightData extends FightData {
 							|| data.hasStatus(StatusType.SILENCED))
 						return false;
 					EquipmentInstance ei = (EquipmentInstance) inst;
-					CastUsableEvent ev = new CastUsableEvent(ei);
+					CheckCastUsableEvent ev = new CheckCastUsableEvent(ei);
 					runActions(data, Trigger.PRE_CAST_USABLE, ev);
 
 					// Buff mana costs, cannot go below 0, uses temp mana/stamina cost if it exists
@@ -471,7 +473,12 @@ public class PlayerFightData extends FightData {
 					if (!ei.canTrigger(p, data, inputs)) {
 						continue;
 					}
-					runActions(data, Trigger.CAST_USABLE, ev);
+					runActions(data, Trigger.CHECK_CAST_USABLE, ev);
+					CastType type = ei.getEquipment().getProperties().getCastType();
+					// If the cast type is not standard, it's up to the equipment to run the action
+					if (type == CastType.STANDARD) {
+						runActions(data, Trigger.CAST_USABLE, new CastUsableEvent(ei, type));
+					}
 					tr = ei.trigger(data, inputs);
 					ei.updateIcon();
 				} else {

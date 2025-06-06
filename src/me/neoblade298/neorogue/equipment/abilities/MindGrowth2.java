@@ -21,19 +21,19 @@ public class MindGrowth2 extends Equipment {
 	private int maxMana;
 	private static final int THRES = 5;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
-	
+
 	public MindGrowth2(boolean isUpgraded) {
-		super(ID, "Mind Growth II", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+		super(ID, "Mind Growth II", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
+				EquipmentProperties.none());
 		regen = isUpgraded ? 0.5 : 0.4;
 		maxMana = isUpgraded ? 10 : 5;
 	}
-	
+
 	@Override
 	public void setupReforges() {
 
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
@@ -57,6 +57,7 @@ public class MindGrowth2 extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LIGHT_BLUE_DYE,
-				"Passive. Every " + DescUtil.white(THRES) + " ability casts, increase your mana regen by " + DescUtil.yellow(regen) + " and your max mana by " + DescUtil.yellow(maxMana) + ".");
+				"Passive. Every " + DescUtil.white(THRES) + " ability casts, increase your mana regen by "
+						+ DescUtil.yellow(regen) + " and your max mana by " + DescUtil.yellow(maxMana) + ".");
 	}
 }

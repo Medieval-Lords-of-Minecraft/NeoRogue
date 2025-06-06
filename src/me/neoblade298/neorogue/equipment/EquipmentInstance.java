@@ -25,18 +25,23 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class EquipmentInstance extends PriorityAction {
 	private static HashMap<Integer, Material> COOLDOWN_MATERIALS = new HashMap<Integer, Material>();
 	private static final DecimalFormat df = new DecimalFormat("##.#");
-	
+
 	protected ItemStack icon;
 	protected Player p;
 	protected PlayerFightData data;
 	protected int slot, invSlot;
 	protected Equipment eq;
 	protected EquipSlot es;
-	protected double staminaCost, manaCost, tempStaminaCost = -1, tempManaCost = -1, nextStaminaCost = -1, nextManaCost = -1, cooldown, tempCooldown = -1;
+	protected double staminaCost, manaCost, tempStaminaCost = -1, tempManaCost = -1, nextStaminaCost = -1,
+			nextManaCost = -1, cooldown, tempCooldown = -1;
 	protected long nextUsable = 0L;
 	protected BukkitTask cooldownTask;
 	protected String cooldownTaskId;
-	
+	// If false, do not automatically trigger CAST_USABLE. MUST be done manually.
+	// Useful for toggleable abilities and abilities that can fail post-trigger
+	// (like ground lance requiring a block to be aimed at).
+	protected boolean castsUsable = true;
+
 	static {
 		COOLDOWN_MATERIALS.put(0, Material.RED_CANDLE);
 		COOLDOWN_MATERIALS.put(1, Material.ORANGE_CANDLE);
@@ -56,18 +61,19 @@ public class EquipmentInstance extends PriorityAction {
 		COOLDOWN_MATERIALS.put(33, Material.BROWN_CANDLE);
 		COOLDOWN_MATERIALS.put(40, Material.CANDLE);
 	}
-	
+
 	public EquipmentInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
 		super(eq.id);
 		init(data, eq, slot, es);
 	}
-	
+
 	public EquipmentInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es, TriggerAction action) {
 		super(eq.id, action);
 		init(data, eq, slot, es);
 	}
-	
-	public EquipmentInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es, TriggerAction action, TriggerCondition condition) {
+
+	public EquipmentInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es, TriggerAction action,
+			TriggerCondition condition) {
 		super(eq.id, action, condition);
 		init(data, eq, slot, es);
 	}
@@ -90,11 +96,11 @@ public class EquipmentInstance extends PriorityAction {
 		this.icon = icon;
 		updateIcon();
 	}
-	
+
 	public EquipSlot getEquipSlot() {
 		return es;
 	}
-	
+
 	// Apparently earthen tackle needs this
 	public void setAction(TriggerAction action) {
 		this.action = action;
@@ -103,20 +109,21 @@ public class EquipmentInstance extends PriorityAction {
 	public void setCondition(TriggerCondition cond) {
 		this.condition = cond;
 	}
-	
+
 	@Override
 	public TriggerResult trigger(PlayerFightData data, Object inputs) {
-		if (!data.isIgnoreCooldowns()) nextUsable = (long) (System.currentTimeMillis() + (getEffectiveCooldown() * 1000));
+		if (!data.isIgnoreCooldowns())
+			nextUsable = (long) (System.currentTimeMillis() + (getEffectiveCooldown() * 1000));
 		data.addMana(-getEffectiveManaCost());
 		data.addStamina(-getEffectiveStaminaCost());
 		resetTempCosts();
 		return action.trigger(data, inputs);
 	}
-	
+
 	public Player getPlayer() {
 		return data.getPlayer();
 	}
-	
+
 	@Override
 	public boolean canTrigger(Player p, PlayerFightData data, Object in) {
 		if (nextUsable >= System.currentTimeMillis()) {
@@ -124,12 +131,14 @@ public class EquipmentInstance extends PriorityAction {
 			return false;
 		}
 		if (data.getMana() < getEffectiveManaCost()) {
-			Util.displayError(data.getPlayer(), "You need " + df.format(getEffectiveManaCost() - data.getMana()) + " more mana!");
+			Util.displayError(data.getPlayer(),
+					"You need " + df.format(getEffectiveManaCost() - data.getMana()) + " more mana!");
 			return false;
 		}
-		
+
 		if (data.getStamina() < getEffectiveStaminaCost()) {
-			Util.displayError(data.getPlayer(), "You need " + df.format(getEffectiveStaminaCost() - data.getStamina()) + " more stamina!");
+			Util.displayError(data.getPlayer(),
+					"You need " + df.format(getEffectiveStaminaCost() - data.getStamina()) + " more stamina!");
 			return false;
 		}
 		if (condition != null) {
@@ -137,31 +146,33 @@ public class EquipmentInstance extends PriorityAction {
 		}
 		return true;
 	}
-	
+
 	public void sendCooldownMessage(Player p) {
-		Util.msgRaw(p, eq.display.append(NeoCore.miniMessage().deserialize(" <red>cooldown: </red><yellow>" + getCooldownSeconds() + "s")));
+		Util.msgRaw(p, eq.display.append(
+				NeoCore.miniMessage().deserialize(" <red>cooldown: </red><yellow>" + getCooldownSeconds() + "s")));
 	}
-	
+
 	public void updateIcon() {
 		int cooldownSeconds = getCooldownSeconds();
 		PlayerInventory inv = p.getInventory();
-		if (cooldownSeconds <= 0) {	// For setting icon when not on cooldown
+		if (cooldownSeconds <= 0) { // For setting icon when not on cooldown
 			p.getInventory().setItem(invSlot, icon);
 			return;
 		}
 		Material mat = COOLDOWN_MATERIALS.get(invSlot);
-		if (inv.getItem(invSlot) == null) return;
+		if (inv.getItem(invSlot) == null)
+			return;
 		ItemStack item = inv.getItem(invSlot).withType(mat);
 		item.setAmount(1);
 		inv.setItem(invSlot, item);
-		
+
 		p.setCooldown(mat, cooldownSeconds * 20);
 
 		if (cooldownTaskId != null) {
 			cooldownTask.cancel();
 			data.removeTask(cooldownTaskId);
 		}
-		
+
 		cooldownTaskId = UUID.randomUUID().toString();
 		cooldownTask = new BukkitRunnable() {
 			public void run() {
@@ -172,63 +183,64 @@ public class EquipmentInstance extends PriorityAction {
 		}.runTaskLater(NeoRogue.inst(), cooldownSeconds * 20);
 		data.addTask(cooldownTask);
 	}
-	
+
 	public double getBaseCooldown() {
 		return cooldown;
 	}
-	
+
 	public void setTempCooldown(double cooldown) {
 		this.tempCooldown = cooldown;
 	}
-	
+
 	public void addCooldown(double seconds) {
 		nextUsable += seconds * 1000;
 		updateIcon();
 	}
-	
+
 	public void setCooldown(int seconds) {
-		// Set cooldown to -1 to remove cooldown, otherwise updateIcon will assume it's on 1s cooldown
+		// Set cooldown to -1 to remove cooldown, otherwise updateIcon will assume it's
+		// on 1s cooldown
 		nextUsable = seconds == 0 ? -1 : System.currentTimeMillis() + (seconds * 1000);
 		updateIcon();
 	}
-	
+
 	public void reduceCooldown(double seconds) {
 		nextUsable -= seconds * 1000;
 		updateIcon();
 	}
-	
+
 	public int getCooldownSeconds() {
 		return (int) (Math.max(0, (nextUsable - System.currentTimeMillis() + 1000) / 1000));
 	}
-	
+
 	public int getCooldownTicks() {
 		return getCooldownSeconds() * 20;
 	}
-	
+
 	public void setTempStaminaCost(double stamina) {
 		this.tempStaminaCost = stamina;
 	}
-	
+
 	public void setTempManaCost(double mana) {
 		this.tempManaCost = mana;
 	}
-	
+
 	public void setNextStaminaCost(double stamina) {
 		this.nextStaminaCost = stamina;
 	}
-	
+
 	public void setNextManaCost(double mana) {
 		this.nextManaCost = mana;
 	}
-	
+
 	public double getStaminaCost() {
 		return this.staminaCost;
 	}
-	
+
 	public double getTempStaminaCost() {
 		return tempStaminaCost;
 	}
-	
+
 	public double getEffectiveStaminaCost() {
 		return tempStaminaCost == -1 ? staminaCost : tempStaminaCost;
 	}
@@ -236,31 +248,31 @@ public class EquipmentInstance extends PriorityAction {
 	public double getManaCost() {
 		return this.manaCost;
 	}
-	
+
 	public double getTempManaCost() {
 		return tempManaCost;
 	}
-	
+
 	public double getEffectiveManaCost() {
 		return tempManaCost == -1 ? manaCost : tempManaCost;
 	}
-	
+
 	public double getEffectiveCooldown() {
 		return tempCooldown == -1 ? cooldown : tempCooldown;
 	}
-	
+
 	public Equipment getEquipment() {
 		return eq;
 	}
-	
+
 	public TriggerAction getAction() {
 		return action;
 	}
-	
+
 	public int getSlot() {
 		return slot;
 	}
-	
+
 	public void resetTempCosts() {
 		tempStaminaCost = nextStaminaCost;
 		tempManaCost = nextManaCost;

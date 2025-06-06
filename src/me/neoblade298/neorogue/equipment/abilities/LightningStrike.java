@@ -19,6 +19,7 @@ import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.CastType;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -31,6 +32,7 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.CastUsableEvent;
 
 public class LightningStrike extends Equipment {
 	private static final String ID = "lightningStrike";
@@ -48,6 +50,7 @@ public class LightningStrike extends Equipment {
 		damage = 100;
 		thres = isUpgraded ? 40 : 50;
 		bonusDamage = isUpgraded ? 200 : 100;
+		properties.setCastType(CastType.POST_TRIGGER);
 	}
 
 	public static Equipment get() {
@@ -70,6 +73,7 @@ public class LightningStrike extends Equipment {
 						inst.setCooldown(0);
 					} else {
 						am.setLocation(p.getTargetBlockExact((int) cursor.range).getLocation());
+						data.runActions(data, Trigger.CAST_USABLE, new CastUsableEvent(inst, CastType.POST_TRIGGER));
 						data.addTask(new BukkitRunnable() {
 							public void run() {
 								Location loc = am.getLocation();

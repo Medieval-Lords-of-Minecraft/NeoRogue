@@ -17,6 +17,7 @@ import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.CastType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
@@ -27,8 +28,8 @@ import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -37,17 +38,19 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class Frostwalker extends Equipment {
 	private static final String ID = "frostwalker";
 	private static final TargetProperties tp = TargetProperties.radius(2, false, TargetType.ENEMY);
-	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD).count(25).spread(2, 0.2).offsetY(0.5);
+	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD).count(25).spread(2, 0.2)
+			.offsetY(0.5);
 	private int stacks, reduc;
 	private ItemStack activeIcon;
-	
+
 	public Frostwalker(boolean isUpgraded) {
-		super(ID, "Frostwalker", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+		super(ID, "Frostwalker", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER, EquipmentType.ABILITY,
+				EquipmentProperties.none());
 		stacks = isUpgraded ? 25 : 15;
 		reduc = isUpgraded ? 25 : 15;
+		properties.setCastType(CastType.TOGGLE);
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
@@ -69,6 +72,7 @@ public class Frostwalker extends Equipment {
 	private class FrostwalkerInstance extends PriorityAction {
 		private boolean active = false;
 		private LinkedList<PoolInstance> pools = new LinkedList<PoolInstance>();
+
 		public FrostwalkerInstance(PlayerFightData data, Equipment eq) {
 			super(ID);
 
@@ -79,18 +83,23 @@ public class Frostwalker extends Equipment {
 				for (PoolInstance pool : pools) {
 					pc.play(p, pool.loc);
 					for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, pool.loc, tp)) {
-						if (hit.contains(ent.getUniqueId())) continue;
+						if (hit.contains(ent.getUniqueId()))
+							continue;
 						FightData fd = FightInstance.getFightData(ent);
 						fd.applyStatus(StatusType.FROST, data, stacks, -1);
-						fd.addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL), new Buff(data, -reduc, 0, StatTracker.defenseDebuffEnemy(eq)), 100);
+						fd.addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL),
+								new Buff(data, -reduc, 0, StatTracker.defenseDebuffEnemy(eq)), 100);
 						hit.add(ent.getUniqueId());
 					}
 					remove = pool.tick() || remove;
 				}
-				if (remove) pools.removeFirst();
+				if (remove)
+					pools.removeFirst();
 
-				if (!active) return TriggerResult.keep();
-				if (pdata.getMana() < 2) return TriggerResult.keep();
+				if (!active)
+					return TriggerResult.keep();
+				if (pdata.getMana() < 2)
+					return TriggerResult.keep();
 				pdata.addMana(-2);
 				pools.add(new PoolInstance(p.getLocation()));
 				return TriggerResult.keep();
@@ -100,6 +109,7 @@ public class Frostwalker extends Equipment {
 		private class PoolInstance {
 			private Location loc;
 			private int ticks;
+
 			public PoolInstance(Location loc) {
 				this.loc = loc;
 				this.ticks = 0;
@@ -116,8 +126,9 @@ public class Frostwalker extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.SNOWBALL,
 				"Toggleable, off by default. Every second, use <white>2</white> mana to drop a pool of frost that lasts <white>3s</white>. It "
-				+ "applies " + GlossaryTag.FROST.tag(this, stacks, true) + " and reduces " + GlossaryTag.MAGICAL.tag(this) + " resistance by " +
-				DescUtil.yellow(reduc) + " [<white>5s</white>]. Only one pool of frost may apply to an enemy at a time.");
+						+ "applies " + GlossaryTag.FROST.tag(this, stacks, true) + " and reduces "
+						+ GlossaryTag.MAGICAL.tag(this) + " resistance by " + DescUtil.yellow(reduc)
+						+ " [<white>5s</white>]. Only one pool of frost may apply to an enemy at a time.");
 
 		activeIcon = item.withType(Material.SNOW_BLOCK);
 	}

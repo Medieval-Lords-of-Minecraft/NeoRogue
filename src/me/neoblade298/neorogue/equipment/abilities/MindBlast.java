@@ -23,19 +23,19 @@ public class MindBlast extends Equipment {
 	private int intel;
 	private static final int THRES = 5;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
-	
+
 	public MindBlast(boolean isUpgraded) {
-		super(ID, "Mind Blast", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+		super(ID, "Mind Blast", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
+				EquipmentProperties.none());
 		regen = 0.3;
 		intel = isUpgraded ? 5 : 3;
 	}
-	
+
 	@Override
 	public void setupReforges() {
 
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
@@ -59,6 +59,7 @@ public class MindBlast extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LIGHT_BLUE_DYE,
-				"Passive. Every " + DescUtil.white(THRES) + " ability casts, increase your mana regen by " + DescUtil.white(regen) + " and grants " + GlossaryTag.INTELLECT.tag(this, intel, true) + ".");
+				"Passive. Every " + DescUtil.white(THRES) + " ability casts, increase your mana regen by "
+						+ DescUtil.white(regen) + " and grants " + GlossaryTag.INTELLECT.tag(this, intel, true) + ".");
 	}
 }

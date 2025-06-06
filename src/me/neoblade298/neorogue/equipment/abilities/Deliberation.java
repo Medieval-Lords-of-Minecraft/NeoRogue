@@ -24,13 +24,13 @@ public class Deliberation extends Equipment {
 	private static final String ID = "deliberation";
 	private int damage;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.ENCHANT).count(50).speed(0.1);
-	
+
 	public Deliberation(boolean isUpgraded) {
-		super(ID, "Deliberation", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 20, 15, 0));
+		super(ID, "Deliberation", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER, EquipmentType.ABILITY,
+				EquipmentProperties.ofUsable(0, 20, 15, 0));
 		damage = isUpgraded ? 30 : 15;
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
@@ -45,9 +45,9 @@ public class Deliberation extends Equipment {
 					Sounds.enchant.play(p, p);
 					pc.play(p, p);
 					data.applyStatus(StatusType.FOCUS, data, 1, -1);
-					data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
-						new Buff(data, damage * data.getStatus(StatusType.FOCUS).getStacks(), 0, StatTracker.damageBuffAlly(eq)),
-						100);
+					data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data,
+							damage * data.getStatus(StatusType.FOCUS).getStacks(), 0, StatTracker.damageBuffAlly(eq)),
+							100);
 				}
 			});
 			return TriggerResult.keep();
@@ -57,7 +57,9 @@ public class Deliberation extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SHIELD,
-				"On cast, " + GlossaryTag.CHANNEL.tag(this) + " for <white>3s</white> before gaining " + GlossaryTag.FOCUS.tag(this, 1, false) +
-				" and increasing your damage by <yellow>" + damage + "</yellow> multiplied by your current " + GlossaryTag.FOCUS.tag(this) + " for <white>5s</white>.");
+				"On cast, " + GlossaryTag.CHANNEL.tag(this) + " for <white>3s</white> before gaining "
+						+ GlossaryTag.FOCUS.tag(this, 1, false) + " and increasing your damage by <yellow>" + damage
+						+ "</yellow> multiplied by your current " + GlossaryTag.FOCUS.tag(this)
+						+ " for <white>5s</white>.");
 	}
 }

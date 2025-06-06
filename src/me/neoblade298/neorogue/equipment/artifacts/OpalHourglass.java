@@ -15,7 +15,7 @@ import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.CastUsableEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.CheckCastUsableEvent;
 
 public class OpalHourglass extends Artifact {
 	private static final String ID = "opalHourglass";
@@ -24,7 +24,7 @@ public class OpalHourglass extends Artifact {
 	public OpalHourglass() {
 		super(ID, "Opal Hourglass", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
@@ -32,8 +32,9 @@ public class OpalHourglass extends Artifact {
 	@Override
 	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
 		data.addTrigger(ID, Trigger.PRE_CAST_USABLE, (pdata, in) -> {
-			CastUsableEvent ev = (CastUsableEvent) in;
-			if (ev.getInstance().getBaseCooldown() < thres) return TriggerResult.keep();
+			CheckCastUsableEvent ev = (CheckCastUsableEvent) in;
+			if (ev.getInstance().getBaseCooldown() < thres)
+				return TriggerResult.keep();
 			ev.addBuff(PropertyType.COOLDOWN, id, new Buff(data, reduc, 0, BuffStatTracker.ignored(this)));
 			return TriggerResult.keep();
 		});
@@ -41,17 +42,17 @@ public class OpalHourglass extends Artifact {
 
 	@Override
 	public void onAcquire(PlayerSessionData data, int amount) {
-		
+
 	}
 
 	@Override
 	public void onInitializeSession(PlayerSessionData data) {
-		
+
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.CLOCK, 
-				"Cooldowns that are " + DescUtil.white(thres + "s") + " or more are reduced by " + DescUtil.white(reduc) + ".");
+		item = createItem(Material.CLOCK, "Cooldowns that are " + DescUtil.white(thres + "s")
+				+ " or more are reduced by " + DescUtil.white(reduc) + ".");
 	}
 }

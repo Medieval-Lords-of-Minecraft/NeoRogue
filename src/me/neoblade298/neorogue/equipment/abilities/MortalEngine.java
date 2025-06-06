@@ -13,20 +13,20 @@ import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.CastUsableEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.CheckCastUsableEvent;
 
 public class MortalEngine extends Equipment {
 	private static final String ID = "mortalEngine";
 	private int cutoff, reduc;
-	
+
 	public MortalEngine(boolean isUpgraded) {
-		super(ID, "Mortal Engine", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.none());
-		
+		super(ID, "Mortal Engine", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR, EquipmentType.ABILITY,
+				EquipmentProperties.none());
+
 		cutoff = 15;
 		reduc = isUpgraded ? 2 : 1;
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
@@ -35,21 +35,24 @@ public class MortalEngine extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		StandardPriorityAction inst = new StandardPriorityAction(ID);
 		inst.setAction((pdata, in) -> {
-			CastUsableEvent ev = (CastUsableEvent) in;
+			CheckCastUsableEvent ev = (CheckCastUsableEvent) in;
 			if (ev.getInstance().getStaminaCost() > 0) {
-				ev.addBuff(PropertyType.STAMINA_COST, ID, new Buff(data, inst.getCount(), 0, BuffStatTracker.ignored(this)));
+				ev.addBuff(PropertyType.STAMINA_COST, ID,
+						new Buff(data, inst.getCount(), 0, BuffStatTracker.ignored(this)));
 			}
-			if (ev.getInstance().getStaminaCost() < cutoff) return TriggerResult.keep();
+			if (ev.getInstance().getStaminaCost() < cutoff)
+				return TriggerResult.keep();
 			inst.addCount(reduc);
 			return TriggerResult.keep();
 		});
-		data.addTrigger(ID, Trigger.CAST_USABLE, inst);
+		data.addTrigger(ID, Trigger.CHECK_CAST_USABLE, inst);
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SEA_LANTERN,
-				"Passive. For every ability cast that costs "
-				+ "at least <white>" + cutoff + "</white> stamina, reduce the stamina cost of all abilities by <yellow>" + reduc + "</yellow>.");
+				"Passive. For every ability cast that costs " + "at least <white>" + cutoff
+						+ "</white> stamina, reduce the stamina cost of all abilities by <yellow>" + reduc
+						+ "</yellow>.");
 	}
 }

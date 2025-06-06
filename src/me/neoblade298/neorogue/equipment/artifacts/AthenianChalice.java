@@ -13,7 +13,7 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.CastUsableEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.CheckCastUsableEvent;
 
 public class AthenianChalice extends Artifact {
 	private static final String ID = "athenianChalice";
@@ -22,7 +22,7 @@ public class AthenianChalice extends Artifact {
 	public AthenianChalice() {
 		super(ID, "Athenian Chalice", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
@@ -30,7 +30,7 @@ public class AthenianChalice extends Artifact {
 	@Override
 	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
 		data.addTrigger(id, Trigger.PRE_CAST_USABLE, (pdata, in) -> {
-			CastUsableEvent ev = (CastUsableEvent) in;
+			CheckCastUsableEvent ev = (CheckCastUsableEvent) in;
 			EquipmentInstance inst = ev.getInstance();
 			if (inst.getManaCost() > 0) {
 				data.addStamina(gain);
@@ -44,18 +44,19 @@ public class AthenianChalice extends Artifact {
 
 	@Override
 	public void onAcquire(PlayerSessionData data, int amount) {
-		
+
 	}
 
 	@Override
 	public void onInitializeSession(PlayerSessionData data) {
-		
+
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.GOLD_NUGGET, 
-				"Casting an ability that costs mana grants " + DescUtil.white(gain) + " stamina, and casting an " +
-				"ability that costs stamina grants " + DescUtil.white(gain) + " mana. Both can be triggered simultaneously.");
+		item = createItem(Material.GOLD_NUGGET,
+				"Casting an ability that costs mana grants " + DescUtil.white(gain) + " stamina, and casting an "
+						+ "ability that costs stamina grants " + DescUtil.white(gain)
+						+ " mana. Both can be triggered simultaneously.");
 	}
 }

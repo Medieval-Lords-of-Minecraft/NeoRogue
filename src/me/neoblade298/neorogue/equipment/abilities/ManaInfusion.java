@@ -8,6 +8,7 @@ import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.CastType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardEquipmentInstance;
 import me.neoblade298.neorogue.equipment.mechanics.IProjectileInstance;
@@ -15,8 +16,8 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroupEvent;
@@ -25,14 +26,15 @@ public class ManaInfusion extends Equipment {
 	private static final String ID = "manaInfusion";
 	private int damage, drain, mana = 3;
 	private ItemStack activeIcon;
-	
+
 	public ManaInfusion(boolean isUpgraded) {
-		super(ID, "Mana Infusion", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 2, 0));
-				damage = isUpgraded ? 30 : 20;
-				drain = isUpgraded ? 4 : 2;
+		super(ID, "Mana Infusion", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER, EquipmentType.ABILITY,
+				EquipmentProperties.ofUsable(0, 0, 2, 0));
+		damage = isUpgraded ? 30 : 20;
+		drain = isUpgraded ? 4 : 2;
+		properties.setCastType(CastType.TOGGLE);
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
@@ -45,8 +47,7 @@ public class ManaInfusion extends Equipment {
 				inst.setCount(1);
 				Sounds.equip.play(p, p);
 				inst.setIcon(activeIcon);
-			}
-			else {
+			} else {
 				inst.setCount(0);
 				inst.setIcon(item);
 			}
@@ -56,11 +57,13 @@ public class ManaInfusion extends Equipment {
 
 		data.addTrigger(id, Trigger.LAUNCH_PROJECTILE_GROUP, (pdata, in) -> {
 			LaunchProjectileGroupEvent ev = (LaunchProjectileGroupEvent) in;
-			if (!ev.isBowProjectile()) return TriggerResult.keep();
+			if (!ev.isBowProjectile())
+				return TriggerResult.keep();
 			if (inst.getCount() == 1 && pdata.getMana() >= mana) {
 				for (IProjectileInstance pi : ev.getInstances()) {
 					ProjectileInstance proj = (ProjectileInstance) pi;
-					proj.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, damage, 0, StatTracker.damageBuffAlly(this)));
+					proj.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+							new Buff(data, damage, 0, StatTracker.damageBuffAlly(this)));
 				}
 				pdata.addMana(-mana);
 			}
@@ -78,9 +81,10 @@ public class ManaInfusion extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LAPIS_LAZULI,
-				"Toggleable, off by default. When active, your basic attacks consume " + DescUtil.white(mana) + " mana in exchange for increasing their damage by " +
-				DescUtil.yellow(damage) + ", and killing an enemy grants you " + DescUtil.yellow(drain) + " mana.");
-				
+				"Toggleable, off by default. When active, your basic attacks consume " + DescUtil.white(mana)
+						+ " mana in exchange for increasing their damage by " + DescUtil.yellow(damage)
+						+ ", and killing an enemy grants you " + DescUtil.yellow(drain) + " mana.");
+
 		activeIcon = item.withType(Material.LAPIS_BLOCK);
 	}
 }

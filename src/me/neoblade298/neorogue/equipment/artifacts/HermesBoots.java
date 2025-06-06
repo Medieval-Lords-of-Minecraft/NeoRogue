@@ -20,7 +20,7 @@ public class HermesBoots extends Artifact {
 	public HermesBoots() {
 		super(ID, "Hermes Boots", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
@@ -33,20 +33,21 @@ public class HermesBoots extends Artifact {
 
 	@Override
 	public void onAcquire(PlayerSessionData data, int amount) {
-		
+
 	}
 
 	@Override
 	public void onInitializeSession(PlayerSessionData data) {
-		
+
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.GOLDEN_BOOTS, 
-				"Sprinting's cost is decreased by <white>4</white> until you cast <white>" + num + "</white> abilities.");
+		item = createItem(Material.GOLDEN_BOOTS,
+				"Sprinting's cost is decreased by <white>4</white> until you cast <white>" + num
+						+ "</white> abilities.");
 	}
-	
+
 	private class HermesBootsInstance extends PriorityAction {
 		private int count = 0;
 
@@ -60,6 +61,6 @@ public class HermesBoots extends Artifact {
 				return TriggerResult.keep();
 			};
 		}
-		
+
 	}
 }

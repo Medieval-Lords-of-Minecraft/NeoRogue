@@ -11,6 +11,7 @@ import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.CastType;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardEquipmentInstance;
@@ -42,13 +43,14 @@ public class HexingShot extends Equipment {
 	private ItemStack activeIcon;
 	private static TargetProperties tp = TargetProperties.radius(3, false, TargetType.ENEMY);
 	private static ParticleContainer spike = new ParticleContainer(Particle.FIREWORK).count(50).spread(1, 0.4);
-	
+
 	public HexingShot(boolean isUpgraded) {
-		super(ID, "Hexing Shot", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 3, 0).add(PropertyType.AREA_OF_EFFECT, tp.range));
-			damage = isUpgraded ? 90 : 60;
+		super(ID, "Hexing Shot", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER, EquipmentType.ABILITY,
+				EquipmentProperties.ofUsable(0, 0, 3, 0).add(PropertyType.AREA_OF_EFFECT, tp.range));
+		damage = isUpgraded ? 90 : 60;
+		properties.setCastType(CastType.TOGGLE);
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
@@ -61,8 +63,7 @@ public class HexingShot extends Equipment {
 				inst.setCount(1);
 				Sounds.equip.play(p, p);
 				inst.setIcon(activeIcon);
-			}
-			else {
+			} else {
 				inst.setCount(0);
 				inst.setIcon(item);
 			}
@@ -73,7 +74,8 @@ public class HexingShot extends Equipment {
 		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 			if (inst.getCount() == 1) {
-				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, -dec, 0, StatTracker.damageDebuffAlly(this)));
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+						new Buff(data, -dec, 0, StatTracker.damageDebuffAlly(this)));
 				FightData trg = FightInstance.getFightData(ev.getTarget());
 				trg.applyStatus(new BasicStatus(ID + p.getName(), trg, StatusClass.NEGATIVE, true), data, 1, 10);
 			}
@@ -96,7 +98,8 @@ public class HexingShot extends Equipment {
 			@Override
 			public void tick() {
 				spike.play(p, loc);
-				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.PIERCING, DamageOrigin.TRAP), TargetHelper.getEntitiesInRadius(p, loc, tp));
+				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.PIERCING, DamageOrigin.TRAP),
+						TargetHelper.getEntitiesInRadius(p, loc, tp));
 			}
 		});
 	}
@@ -104,9 +107,11 @@ public class HexingShot extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POLISHED_BLACKSTONE_BRICK_SLAB,
-				"Toggleable, off by default. When active, your basic attacks are weakened by " + DescUtil.white(dec) + ". Killing an enemy with a basic attack while active " +
-				"drops a " + GlossaryTag.TRAP.tag(this) + " on the killed enemy that deals " + GlossaryTag.PIERCING.tag(this, damage, true) + " damage per second for " +
-				DescUtil.white("10s") + ".");
+				"Toggleable, off by default. When active, your basic attacks are weakened by " + DescUtil.white(dec)
+						+ ". Killing an enemy with a basic attack while active " + "drops a "
+						+ GlossaryTag.TRAP.tag(this) + " on the killed enemy that deals "
+						+ GlossaryTag.PIERCING.tag(this, damage, true) + " damage per second for "
+						+ DescUtil.white("10s") + ".");
 		activeIcon = item.withType(Material.SCULK_SENSOR);
 	}
 }

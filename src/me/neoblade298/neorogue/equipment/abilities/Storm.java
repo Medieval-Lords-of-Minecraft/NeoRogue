@@ -19,6 +19,7 @@ import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.CastType;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -45,6 +46,7 @@ public class Storm extends Equipment {
 		super(ID, "Storm", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(0, 0, 1, tp.range, aoe.range));
 		damage = isUpgraded ? 30 : 20;
+		properties.setCastType(CastType.TOGGLE);
 	}
 
 	public static Equipment get() {

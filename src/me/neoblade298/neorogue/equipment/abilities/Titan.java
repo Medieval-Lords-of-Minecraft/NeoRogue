@@ -15,21 +15,21 @@ import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.CastUsableEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.CheckCastUsableEvent;
 
 public class Titan extends Equipment {
 	private static final String ID = "titan";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
 	private int staminaReduction;
 	private static final int CUTOFF = 20;
-	
+
 	public Titan(boolean isUpgraded) {
-		super(ID, "Titan", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+		super(ID, "Titan", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR, EquipmentType.ABILITY,
+				EquipmentProperties.none());
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		staminaReduction = isUpgraded ? 15 : 10;
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
@@ -37,17 +37,19 @@ public class Titan extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.PRE_CAST_USABLE, (pdata, in) -> {
-			CastUsableEvent ev = (CastUsableEvent) in;
+			CheckCastUsableEvent ev = (CheckCastUsableEvent) in;
 			EquipmentInstance inst = ev.getInstance();
-			if (inst.getStaminaCost() < CUTOFF) return TriggerResult.keep();
-			ev.addBuff(PropertyType.STAMINA_COST, id, new Buff(data, staminaReduction, 0, BuffStatTracker.ignored(this)));
+			if (inst.getStaminaCost() < CUTOFF)
+				return TriggerResult.keep();
+			ev.addBuff(PropertyType.STAMINA_COST, id,
+					new Buff(data, staminaReduction, 0, BuffStatTracker.ignored(this)));
 			return TriggerResult.keep();
 		});
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.DEAD_BUSH,
-				"Passive. Abilities that cost at least <white>" + CUTOFF + "</white> stamina have their stamina cost reduced by <yellow>" + staminaReduction + "</yellow>.");
+		item = createItem(Material.DEAD_BUSH, "Passive. Abilities that cost at least <white>" + CUTOFF
+				+ "</white> stamina have their stamina cost reduced by <yellow>" + staminaReduction + "</yellow>.");
 	}
 }

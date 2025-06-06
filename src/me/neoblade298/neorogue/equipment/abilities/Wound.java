@@ -8,6 +8,7 @@ import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.CastType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardEquipmentInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -26,13 +27,14 @@ public class Wound extends Equipment {
 	private static final String ID = "wound";
 	private int dec = 15, stacks;
 	private ItemStack activeIcon;
-	
+
 	public Wound(boolean isUpgraded) {
-		super(ID, "Wound", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 3, 0));
-			stacks = isUpgraded ? 12 : 8;
+		super(ID, "Wound", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER, EquipmentType.ABILITY,
+				EquipmentProperties.ofUsable(0, 0, 3, 0));
+		stacks = isUpgraded ? 12 : 8;
+		properties.setCastType(CastType.TOGGLE);
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
@@ -51,8 +53,7 @@ public class Wound extends Equipment {
 				inst.setCount(1);
 				Sounds.equip.play(p, p);
 				inst.setIcon(activeIcon);
-			}
-			else {
+			} else {
 				inst.setCount(0);
 				inst.setIcon(item);
 			}
@@ -63,7 +64,8 @@ public class Wound extends Equipment {
 		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 			if (inst.getCount() == 1) {
-				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, -dec, 0, StatTracker.damageDebuffAlly(this)));
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+						new Buff(data, -dec, 0, StatTracker.damageDebuffAlly(this)));
 				FightInstance.applyStatus(ev.getTarget(), StatusType.INJURY, data, stacks, -1);
 			}
 			return TriggerResult.keep();
@@ -73,8 +75,8 @@ public class Wound extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BONE,
-				"Toggleable, off by default. When active, your basic attacks are weakened by " + DescUtil.white(dec) + " in exchange for applying " +
-				GlossaryTag.INJURY.tag(this, stacks, true) + ".");
+				"Toggleable, off by default. When active, your basic attacks are weakened by " + DescUtil.white(dec)
+						+ " in exchange for applying " + GlossaryTag.INJURY.tag(this, stacks, true) + ".");
 		activeIcon = item.withType(Material.BONE_MEAL);
 	}
 }

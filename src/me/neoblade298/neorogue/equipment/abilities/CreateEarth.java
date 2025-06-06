@@ -15,6 +15,7 @@ import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.CastType;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -27,6 +28,7 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.CastUsableEvent;
 
 public class CreateEarth extends Equipment {
 	private static final String ID = "createEarth";
@@ -41,6 +43,7 @@ public class CreateEarth extends Equipment {
 				EquipmentProperties.ofUsable(20, 10, 15, 12));
 		damage = isUpgraded ? 160 : 120;
 		conc = isUpgraded ? 60 : 40;
+		properties.setCastType(CastType.POST_TRIGGER);
 	}
 
 	public static Equipment get() {
@@ -67,6 +70,7 @@ public class CreateEarth extends Equipment {
 					Location loc = b.getLocation().add(0, 1, 0);
 					circ.play(pc, loc, LocalAxes.xz(), earth);
 					Sounds.explode.play(p, loc);
+					data.runActions(data, Trigger.CAST_USABLE, new CastUsableEvent(inst, CastType.POST_TRIGGER));
 
 					for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, tp)) {
 						FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.BLUNT), ent);

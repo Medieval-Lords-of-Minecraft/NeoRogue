@@ -78,7 +78,7 @@ public class GroundLance extends Equipment {
 					ParticleUtil.drawLine(p, grnd, loc, loc.clone().add(0, 4, 0), 1);
 					grnd.play(p, loc);
 					Sounds.explode.play(p, loc);
-					LinkedList<LivingEntity> targets = TargetHelper.getEntitiesInRadius(p, tp);
+					LinkedList<LivingEntity> targets = TargetHelper.getEntitiesInRadius(p, loc, tp);
 					if (targets.size() == 1) {
 						Sounds.wither.play(p, loc);
 						FightInstance.dealDamage(new DamageMeta(data, damage * 3, DamageType.EARTHEN),

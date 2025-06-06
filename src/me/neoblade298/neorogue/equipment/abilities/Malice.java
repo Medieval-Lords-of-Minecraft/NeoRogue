@@ -9,6 +9,7 @@ import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.CastType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardEquipmentInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -28,14 +29,15 @@ public class Malice extends Equipment {
 	private static final String ID = "malice";
 	private int dec = 15, stacks, thres;
 	private ItemStack activeIcon;
-	
+
 	public Malice(boolean isUpgraded) {
-		super(ID, "Malice", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 3, 0));
-			stacks = 12;
-			thres = isUpgraded ? 75 : 100;
+		super(ID, "Malice", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER, EquipmentType.ABILITY,
+				EquipmentProperties.ofUsable(0, 0, 3, 0));
+		stacks = 12;
+		thres = isUpgraded ? 75 : 100;
+		properties.setCastType(CastType.TOGGLE);
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
@@ -50,8 +52,7 @@ public class Malice extends Equipment {
 				inst.setBool(true);
 				Sounds.equip.play(p, p);
 				inst.setIcon(activeIcon);
-			}
-			else {
+			} else {
 				inst.setBool(false);
 				inst.setIcon(item);
 			}
@@ -61,13 +62,15 @@ public class Malice extends Equipment {
 
 		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
-			if (!ev.isStatus(StatusType.INJURY)) return TriggerResult.keep();
+			if (!ev.isStatus(StatusType.INJURY))
+				return TriggerResult.keep();
 			inst.addCount(ev.getStacks());
 			if (inst.getCount() >= thres) {
 				inst.addCount(-thres);
 				am.addCount(1);
 				activeIcon.setAmount(am.getCount());
-				if (inst.getBool()) inst.setIcon(activeIcon);
+				if (inst.getBool())
+					inst.setIcon(activeIcon);
 			}
 			return TriggerResult.keep();
 		});
@@ -75,7 +78,8 @@ public class Malice extends Equipment {
 		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 			if (inst.getBool()) {
-				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, -dec, 0, StatTracker.damageDebuffAlly(this)));
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+						new Buff(data, -dec, 0, StatTracker.damageDebuffAlly(this)));
 				FightInstance.applyStatus(ev.getTarget(), StatusType.INJURY, data, stacks * am.getCount(), -1);
 			}
 			return TriggerResult.keep();
@@ -85,8 +89,10 @@ public class Malice extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BONE,
-				"Toggleable, off by default. When active, your basic attacks are weakened by " + DescUtil.white(dec) + " in exchange for applying " +
-				GlossaryTag.INJURY.tag(this, stacks, false) + ", increased by <white>1</white> for every " + GlossaryTag.INJURY.tag(this, thres, true) + " you apply.");
+				"Toggleable, off by default. When active, your basic attacks are weakened by " + DescUtil.white(dec)
+						+ " in exchange for applying " + GlossaryTag.INJURY.tag(this, stacks, false)
+						+ ", increased by <white>1</white> for every " + GlossaryTag.INJURY.tag(this, thres, true)
+						+ " you apply.");
 		activeIcon = item.withType(Material.BONE_MEAL);
 	}
 }
