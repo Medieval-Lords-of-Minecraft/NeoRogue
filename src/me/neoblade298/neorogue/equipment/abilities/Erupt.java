@@ -88,6 +88,6 @@ public class Erupt extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.TORCH,
 				"On cast, deal " + GlossaryTag.FIRE.tag(this, damage, true) + " damage to the target you're aiming at. If they have " + GlossaryTag.BURN.tag(this) + ", " +
-				"instead deal damage to all enemies near the target.");
+				"additionally deal damage to all enemies near the target.");
 	}
 }

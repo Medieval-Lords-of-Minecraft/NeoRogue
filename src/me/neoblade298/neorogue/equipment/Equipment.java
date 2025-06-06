@@ -367,6 +367,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new DodgeRoll(b);
 			new DoubleStrike(b);
 			new DrainLightning(b);
+			new EarthenDomain(b);
 			new EarthenTackle(b);
 			new EarthenWall(b);
 			new Electrode(b);

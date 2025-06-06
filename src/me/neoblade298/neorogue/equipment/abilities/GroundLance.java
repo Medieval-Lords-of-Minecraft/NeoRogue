@@ -20,6 +20,7 @@ import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.CastType;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -31,6 +32,7 @@ import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.CastUsableEvent;
 
 public class GroundLance extends Equipment {
 	private static final String ID = "groundLance";
@@ -45,6 +47,7 @@ public class GroundLance extends Equipment {
 		super(ID, "Ground Lance", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(40, 0, 10, 14, tp.range));
 		damage = isUpgraded ? 150 : 120;
+		properties.setCastType(CastType.POST_TRIGGER);
 	}
 
 	@Override
@@ -60,8 +63,14 @@ public class GroundLance extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
 		inst.setAction((pdata, in) -> {
-			circ.play(pc, p.getTargetBlockExact((int) properties.get(PropertyType.RANGE)).getLocation().add(0, 1, 0),
-					LocalAxes.xz(), null);
+			Block b = p.getTargetBlockExact((int) properties.get(PropertyType.RANGE));
+			if (b == null) {
+				data.addMana(properties.get(PropertyType.MANA_COST));
+				inst.setCooldown(0);
+				Sounds.error.play(p, p);
+				return TriggerResult.keep();
+			}
+			circ.play(pc, b.getLocation().add(0, 1, 0), LocalAxes.xz(), null);
 
 			data.charge(20).then(new Runnable() {
 				public void run() {
@@ -73,6 +82,7 @@ public class GroundLance extends Equipment {
 						return;
 					}
 
+					data.runActions(data, Trigger.CAST_USABLE, new CastUsableEvent(inst, CastType.POST_TRIGGER));
 					Location loc = b.getLocation().add(0, 1, 0);
 					circ.play(pc, loc, LocalAxes.xz(), null);
 					ParticleUtil.drawLine(p, grnd, loc, loc.clone().add(0, 4, 0), 1);

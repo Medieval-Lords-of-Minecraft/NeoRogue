@@ -93,23 +93,43 @@ public class StatTracker {
     }
 
     public static BuffStatTracker damageBuffAlly(Equipment eq) {
-        return new BuffStatTracker(eq, "Damage Buffed");
+        return new BuffStatTracker(eq, "Damage Buffed", true);
+    }
+
+    public static BuffStatTracker damageBuffAlly(Equipment eq, boolean shouldCombine) {
+        return new BuffStatTracker(eq, "Damage Buffed", shouldCombine);
     }
 
     public static BuffStatTracker damageDebuffAlly(Equipment eq) {
-        return new BuffStatTracker(eq, "Damage Reduced");
+        return new BuffStatTracker(eq, "Damage Reduced", true);
+    }
+
+    public static BuffStatTracker damageDebuffAlly(Equipment eq, boolean shouldCombine) {
+        return new BuffStatTracker(eq, "Damage Reduced", shouldCombine);
     }
 
     public static BuffStatTracker defenseBuffAlly(Equipment eq) {
-        return new BuffStatTracker(eq, "Damage Mitigated");
+        return new BuffStatTracker(eq, "Damage Mitigated", true);
+    }
+
+    public static BuffStatTracker defenseBuffAlly(Equipment eq, boolean shouldCombine) {
+        return new BuffStatTracker(eq, "Damage Mitigated", shouldCombine);
     }
 
     public static BuffStatTracker damageDebuffEnemy(Equipment eq) {
-        return new BuffStatTracker(eq, "Damage Mitigated");
+        return new BuffStatTracker(eq, "Damage Mitigated", true, true);
+    }
+
+    public static BuffStatTracker damageDebuffEnemy(Equipment eq, boolean shouldCombine) {
+        return new BuffStatTracker(eq, "Damage Mitigated", true, shouldCombine);
     }
 
     public static BuffStatTracker defenseDebuffEnemy(Equipment eq) {
-        return new BuffStatTracker(eq, "Defense Debuffed", true);
+        return new BuffStatTracker(eq, "Defense Debuffed", true, true);
+    }
+
+    public static BuffStatTracker defenseDebuffEnemy(Equipment eq, boolean shouldCombine) {
+        return new BuffStatTracker(eq, "Defense Debuffed", true, shouldCombine);
     }
 
     public static BuffStatTracker damageBarriered(Equipment eq) {

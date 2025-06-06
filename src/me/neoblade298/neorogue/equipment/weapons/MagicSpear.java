@@ -70,6 +70,6 @@ public class MagicSpear extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.TRIDENT, "Melee range +1. Deals an additional " + DescUtil.yellow(damage)
-				+ " if enemy is " + GlossaryTag.CONCUSSED.tag(this) + ".");
+				+ " damage if enemy is " + GlossaryTag.CONCUSSED.tag(this) + ".");
 	}
 }

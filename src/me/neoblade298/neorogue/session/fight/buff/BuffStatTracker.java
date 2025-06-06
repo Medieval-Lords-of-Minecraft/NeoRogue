@@ -19,15 +19,19 @@ public class BuffStatTracker extends StatTracker {
     protected BuffStatTracker(String id, Component display, boolean invert) {
         super(id, display, invert);
     }
-    
+
     protected BuffStatTracker(Equipment eq, String sfx) {
         super(eq, sfx);
-        this.shouldCombine = true;
     }
     
-    protected BuffStatTracker(Equipment eq, String sfx, boolean invert) {
+    protected BuffStatTracker(Equipment eq, String sfx, boolean shouldCombine) {
+        super(eq, sfx);
+        this.shouldCombine = shouldCombine;
+    }
+    
+    protected BuffStatTracker(Equipment eq, String sfx, boolean invert, boolean shouldCombine) {
         super(eq, sfx, invert);
-        this.shouldCombine = true;
+        this.shouldCombine = shouldCombine;
     }
 
     protected BuffStatTracker(StatusType type, boolean damage) {
@@ -49,7 +53,11 @@ public class BuffStatTracker extends StatTracker {
     }
 
     public static BuffStatTracker of(Equipment eq, String statTitle) {
-        return new BuffStatTracker(eq, statTitle);
+        return new BuffStatTracker(eq, statTitle, false);
+    }
+
+    public static BuffStatTracker of(Equipment eq, String statTitle, boolean shouldCombine) {
+        return new BuffStatTracker(eq, statTitle, shouldCombine);
     }
 
     public static BuffStatTracker ignored(String id) {

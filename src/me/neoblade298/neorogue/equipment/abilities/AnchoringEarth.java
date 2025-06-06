@@ -49,7 +49,8 @@ public class AnchoringEarth extends Equipment {
 
 	@Override
 	public void setupReforges() {
-
+		addReforge(CalculatingGaze.get(), AnchoringEarth2.get(), EarthenDomain.get());
+		addReforge(Intuition.get(), Electrode.get());
 	}
 
 	public static Equipment get() {

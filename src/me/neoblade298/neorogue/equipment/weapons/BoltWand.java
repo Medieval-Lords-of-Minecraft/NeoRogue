@@ -40,11 +40,11 @@ public class BoltWand extends Equipment {
 	public BoltWand(boolean isUpgraded) {
 		super(
 				ID, "Bolt Wand", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(5, 0, isUpgraded ? 30 : 20, 0.35, DamageType.LIGHTNING, Sound.ITEM_AXE_SCRAPE)
+				EquipmentProperties.ofWeapon(5, 0, isUpgraded ? 60 : 50, 0.8, DamageType.LIGHTNING, Sound.ITEM_AXE_SCRAPE)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
 		pierceAmount = 3;
-		elec = 25;
+		elec = 40;
 	}
 	
 	public static Equipment get() {

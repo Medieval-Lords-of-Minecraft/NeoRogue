@@ -161,7 +161,13 @@ public class FightData {
 			String id = b.getStatTracker().getId();
 			addTask(id, new BukkitRunnable() {
 				public void run() {
-					addBuff(lists, type, Buff.empty(b.getApplier(), b.getStatTracker()));
+					BuffStatTracker tracker = b.getStatTracker();
+					if (tracker.shouldCombine()) {
+						addBuff(lists, type, b.invert());
+					}
+					else {
+						addBuff(lists, type, Buff.empty(b.getApplier(), b.getStatTracker()));
+					}
 					tasks.remove(id);
 				}
 			}.runTaskLater(NeoRogue.inst(), ticks));

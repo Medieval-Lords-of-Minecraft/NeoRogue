@@ -6,8 +6,9 @@ public enum Trigger {
 	PRE_BASIC_ATTACK, BASIC_ATTACK, PRE_CAST_USABLE, // Use this event for actual buffs
 	CHECK_CAST_USABLE, // Use this event to check if the buffs were used (e.g. energy battery)
 	CAST_USABLE, // Use this event to check for cast abilities for passives, this won't happen on
-					// things like toggles
-	LEFT_CLICK, LEFT_CLICK_NO_HIT, LEFT_CLICK_HIT, RIGHT_CLICK, RIGHT_CLICK_HIT, VANILLA_PROJECTILE, RAISE_SHIELD,
+					// things like toggles. Only STANDARD and POST_TRIGGER will run this trigger
+	LEFT_CLICK,
+	LEFT_CLICK_NO_HIT, LEFT_CLICK_HIT, RIGHT_CLICK, RIGHT_CLICK_HIT, VANILLA_PROJECTILE, RAISE_SHIELD,
 	SHIELD_TICK, // Ticks while you have your shield up
 	PLAYER_TICK, // Tick after default player tick (stamina/mana regen and sprinting check)
 	LOWER_SHIELD, RECEIVED_DAMAGE_BARRIER, // Cancellable

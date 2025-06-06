@@ -37,7 +37,7 @@ public class LightningWand extends Equipment {
 	public LightningWand(boolean isUpgraded) {
 		super(
 				ID, "Lightning Wand", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(5, 0, isUpgraded ? 30 : 20, 0.45, DamageType.LIGHTNING, Sound.ITEM_AXE_SCRAPE)
+				EquipmentProperties.ofWeapon(7, 0, isUpgraded ? 80 : 60, 0.8, DamageType.LIGHTNING, Sound.ITEM_AXE_SCRAPE)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
 		pierceAmount = isUpgraded ? 3 : 1;

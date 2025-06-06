@@ -37,7 +37,7 @@ public class SparkStick extends Equipment {
 	public SparkStick(boolean isUpgraded) {
 		super(
 				ID, "Spark Stick", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(isUpgraded ? 1 : 2, 0, 5, 4, DamageType.LIGHTNING, Sound.ITEM_AXE_SCRAPE)
+				EquipmentProperties.ofWeapon(isUpgraded ? 4 : 6, 0, 20, 4, DamageType.LIGHTNING, Sound.ITEM_AXE_SCRAPE)
 		);
 		properties.addUpgrades(PropertyType.MANA_COST);
 		pierceAmount = 1;

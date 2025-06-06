@@ -80,7 +80,7 @@ public class AnchoringEarth2 extends Equipment {
 			if (fd.hasStatus("anchoringEarth2-" + p.getName()))
 				return TriggerResult.keep();
 
-			ev.getStacksBuffList().add(Buff.multiplier(data, 1, BuffStatTracker.of(this, "Statuses doubled")));
+			ev.getStacksBuffList().add(Buff.multiplier(data, 1D, BuffStatTracker.of(this, "Statuses doubled")));
 			return TriggerResult.keep();
 		});
 	}

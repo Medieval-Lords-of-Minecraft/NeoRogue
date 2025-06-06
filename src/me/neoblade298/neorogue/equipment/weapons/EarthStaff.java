@@ -44,7 +44,7 @@ public class EarthStaff extends Equipment {
 	public EarthStaff(boolean isUpgraded) {
 		super(
 				ID, "Earth Staff", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(10, 0, isUpgraded ? 75 : 50, 0.2, DamageType.EARTHEN, Sound.ITEM_AXE_SCRAPE)
+				EquipmentProperties.ofWeapon(10, 0, isUpgraded ? 140 : 100, 0.5, DamageType.EARTHEN, Sound.ITEM_AXE_SCRAPE)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
 	}
