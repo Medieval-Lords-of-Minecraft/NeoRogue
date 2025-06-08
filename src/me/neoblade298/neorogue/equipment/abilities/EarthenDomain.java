@@ -86,6 +86,7 @@ public class EarthenDomain extends Equipment {
 			super(1, properties.get(PropertyType.RANGE), 1);
 			this.data = data;
 			this.p = data.getPlayer();
+			this.pierce(-1);
 		}
 
 		@Override

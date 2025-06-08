@@ -16,10 +16,12 @@ public class BuffList {
                     curr.combine(b);
                     increase += b.getIncrease();
                     mult += b.getMultiplier();
+                    System.out.println("Combining buff " + b.getIncrease() + " " + b.getMultiplier() + ", total: " + increase + " " + mult);
                     return;
                 }
                 else {
                     curr.replace(b);
+                    System.out.println("Replacing buff " + b.getIncrease() + " " + b.getMultiplier());
                     return;
                 }
             }

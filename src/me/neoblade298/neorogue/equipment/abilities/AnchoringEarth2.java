@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -15,6 +16,7 @@ import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.ParticleUtil;
+import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -45,6 +47,7 @@ public class AnchoringEarth2 extends Equipment {
 	private int damage, reduc;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.BLOCK)
 			.blockData(Material.DIRT.createBlockData());
+	private static final SoundContainer sc = new SoundContainer(Sound.BLOCK_ROOTED_DIRT_BREAK);
 
 	public AnchoringEarth2(boolean isUpgraded) {
 		super(ID, "Anchoring Earth II", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
@@ -95,6 +98,7 @@ public class AnchoringEarth2 extends Equipment {
 			super(1, properties.get(PropertyType.RANGE), 1);
 			this.data = data;
 			this.p = data.getPlayer();
+			this.pierce(-1);
 		}
 
 		@Override
@@ -116,6 +120,7 @@ public class AnchoringEarth2 extends Equipment {
 		@Override
 		public void onHitBlock(ProjectileInstance proj, Block b) {
 			Location loc = b.getLocation();
+			sc.play(p, loc);
 			for (UUID uuid : enemiesHit) {
 				FightData fd = FightInstance.getFightData(uuid);
 				if (fd == null || fd.getEntity() == null || !fd.getEntity().isValid())

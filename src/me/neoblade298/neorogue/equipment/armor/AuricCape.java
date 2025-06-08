@@ -31,7 +31,7 @@ public class AuricCape extends Equipment {
 		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
 			if (pdata.getMana() > pdata.getMaxMana() / 2) {
 				data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL),
-						Buff.increase(data, reduc, BuffStatTracker.defenseBuffAlly(this)), 20);
+						Buff.increase(data, reduc, BuffStatTracker.defenseBuffAlly(this, false)), 20);
 			}
 			return TriggerResult.keep();
 		});

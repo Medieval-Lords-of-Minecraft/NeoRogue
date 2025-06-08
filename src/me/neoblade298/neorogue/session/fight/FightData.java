@@ -156,14 +156,15 @@ public class FightData {
 
 	private void addBuff(HashMap<DamageBuffType, BuffList> lists, DamageBuffType type, Buff b, int ticks) {
 		addBuff(lists, type, b);
+		Buff inv = b.invert();
 
 		if (ticks > 0) {
-			String id = b.getStatTracker().getId();
+			String id = UUID.randomUUID().toString();
 			addTask(id, new BukkitRunnable() {
 				public void run() {
 					BuffStatTracker tracker = b.getStatTracker();
 					if (tracker.shouldCombine()) {
-						addBuff(lists, type, b.invert());
+						addBuff(lists, type, inv);
 					}
 					else {
 						addBuff(lists, type, Buff.empty(b.getApplier(), b.getStatTracker()));

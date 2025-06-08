@@ -22,6 +22,7 @@ import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.CastType;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -35,6 +36,7 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.CastUsableEvent;
 
 public class Gravity extends Equipment {
 	private static final String ID = "gravity";
@@ -48,6 +50,7 @@ public class Gravity extends Equipment {
 				EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(40, 0, 12, 10));
 		damage = isUpgraded ? 300 : 200;
+		properties.setCastType(CastType.POST_TRIGGER);
 	}
 	
 	public static Equipment get() {
@@ -61,13 +64,14 @@ public class Gravity extends Equipment {
 			data.charge(40).then(new Runnable() {
 				public void run() {
 					Block b = p.getTargetBlockExact((int) properties.get(PropertyType.RANGE));
-					if (b.getType().isAir()) {
+					if (b == null) {
 						data.addMana(properties.get(PropertyType.MANA_COST));
 						inst.setCooldown(0);
 						Sounds.error.play(p, p);
 						return;
 					}
 
+					data.runActions(data, Trigger.CAST_USABLE, new CastUsableEvent(inst, CastType.POST_TRIGGER));
 					Location loc = b.getLocation().add(0, 1, 0);
 					Sounds.fire.play(p, loc);
 					data.addRift(new Rift(data, loc, 160));

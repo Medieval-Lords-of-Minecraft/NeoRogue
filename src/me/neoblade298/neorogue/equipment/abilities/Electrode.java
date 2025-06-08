@@ -43,7 +43,7 @@ public class Electrode extends Equipment {
 
 	public Electrode(boolean isUpgraded) {
 		super(ID, "Electrode", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(40, 0, 18, 12));
+				EquipmentProperties.ofUsable(40, 0, 18, 16));
 		damage = isUpgraded ? 300 : 200;
 		elec = isUpgraded ? 105 : 70;
 	}
@@ -72,9 +72,10 @@ public class Electrode extends Equipment {
 
 		// Vector is non-normalized velocity of the vanilla projectile being fired
 		public AnchoringEarthProjectile(PlayerFightData data) {
-			super(1, properties.get(PropertyType.RANGE), 1);
+			super(0.7, properties.get(PropertyType.RANGE), 1);
 			this.data = data;
 			this.p = data.getPlayer();
+			this.pierce(-1);
 		}
 
 		@Override
@@ -95,7 +96,7 @@ public class Electrode extends Equipment {
 
 		@Override
 		public void onHitBlock(ProjectileInstance proj, Block b) {
-			Location end = b.getLocation();
+			Location end = proj.getLocation();
 			Location start = p.getLocation().add(0, 1, 0);
 			Sounds.firework.play(p, end);
 			ParticleUtil.drawLine(p, pc, end, start, 1);
