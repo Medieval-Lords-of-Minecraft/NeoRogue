@@ -1,7 +1,6 @@
 package me.neoblade298.neorogue.session.fight.buff;
 
 import java.util.HashMap;
-import java.util.UUID;
 
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
@@ -41,12 +40,12 @@ public class StatTracker {
     }
 
     protected StatTracker(Equipment eq) {
-        this.id = eq.getId() + UUID.randomUUID().toString();
+        this.id = eq.getId();
         this.ignore = true;
     }
     
     protected StatTracker(Equipment eq, String sfx) {
-        this.id = eq.getId() + UUID.randomUUID().toString(); // Having multiple of one equipment should not use the same id
+        this.id = eq.getId();
         this.display = eq.getDisplay().append(Component.text(" - " + sfx, NamedTextColor.GRAY));
     }
     
