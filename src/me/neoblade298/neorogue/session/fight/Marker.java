@@ -57,6 +57,7 @@ public abstract class Marker {
 				tick();
 				if (durationTicks > 0 && ++tick * tickPeriod >= durationTicks) {
 					deactivate();
+					cancel();
 				}
 			}
 		}.runTaskTimer(NeoRogue.inst(), 0, tickPeriod);
@@ -68,6 +69,7 @@ public abstract class Marker {
 		if (task != null) {
 			owner.removeAndCancelTask(taskId);
 			onDeactivate();
+			owner.removeMarker(this);
 			task = null;
 		}
 	}

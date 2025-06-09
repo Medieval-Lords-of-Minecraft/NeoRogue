@@ -57,7 +57,7 @@ public class EarthStaff extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (d, inputs) -> {
-			if (!canUseWeapon(data))
+			if (!canUseWeapon(data) || !data.canBasicAttack(EquipSlot.HOTBAR))
 				return TriggerResult.keep();
 			if (!p.isOnGround()) {
 				Util.displayError(p, "Can't use in the air!");

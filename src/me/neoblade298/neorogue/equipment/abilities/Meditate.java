@@ -28,8 +28,8 @@ public class Meditate extends Equipment {
 
 	public Meditate(boolean isUpgraded) {
 		super(ID, "Meditate", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(0, 0, 12, 0));
-		regen = isUpgraded ? 5 : 3;
+				EquipmentProperties.ofUsable(0, 0, 16, 0));
+		regen = isUpgraded ? 6 : 4;
 		pc.count(10).spread(0.5, 0.5).speed(0.2);
 	}
 

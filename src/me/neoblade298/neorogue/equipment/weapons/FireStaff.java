@@ -58,7 +58,7 @@ public class FireStaff extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ProjectileGroup proj = new ProjectileGroup(new FireStaffProjectile(p));
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (d, inputs) -> {
-			if (!canUseWeapon(data))
+			if (!canUseWeapon(data) || !data.canBasicAttack(EquipSlot.HOTBAR))
 				return TriggerResult.keep();
 			weaponSwing(p, data);
 			data.addTask(new BukkitRunnable() {

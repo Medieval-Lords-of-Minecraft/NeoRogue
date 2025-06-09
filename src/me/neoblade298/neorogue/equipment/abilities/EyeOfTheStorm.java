@@ -41,7 +41,7 @@ public class EyeOfTheStorm extends Equipment {
 		super(ID, "Eye Of The Storm", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(30, 0, 16, 0, tp.range));
 		damage = isUpgraded ? 120 : 80;
-		elec = isUpgraded ? 30 : 20;
+		elec = isUpgraded ? 60 : 40;
 		pc.count(10).spread(0.5, 0.5).speed(0.2);
 	}
 

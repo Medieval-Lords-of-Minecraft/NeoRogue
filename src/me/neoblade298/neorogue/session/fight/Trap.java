@@ -11,7 +11,7 @@ public abstract class Trap extends Marker {
 
     @Override
     public void onDeactivate() {
-		owner.runActions(owner, Trigger.DEACTIVATE_TRAP, this);
+		  owner.runActions(owner, Trigger.DEACTIVATE_TRAP, this);
     }
     
 }

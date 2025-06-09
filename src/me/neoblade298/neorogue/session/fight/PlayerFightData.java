@@ -734,6 +734,19 @@ public class PlayerFightData extends FightData {
 		rifts.remove(rift.getUniqueId());
 	}
 
+	public void removeMarker(Marker marker) {
+		UUID uuid = marker.getUniqueId();
+		if (marker instanceof Trap) {
+			traps.remove(uuid);
+		}
+		else if (marker instanceof Rift) {
+			rifts.remove(uuid);
+		}
+		else {
+			Bukkit.getLogger().warning("[NeoRogue] " + p.getName() + " tried to remove marker " + uuid + " but it was not a trap or rift!");
+		}
+	}
+
 	public HashMap<UUID, Rift> getRifts() {
 		return rifts;
 	}

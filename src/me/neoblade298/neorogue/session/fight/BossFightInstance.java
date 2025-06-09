@@ -67,6 +67,9 @@ public class BossFightInstance extends FightInstance {
 				public void run() {
 					FightInstance.handleWin();
 					s.broadcast("You beat the boss!");
+					s.getParty().values().forEach(data -> {
+						data.healPercent(100);
+					});
 					s.setInstance(new RewardInstance(s, generateRewards()));
 					
 					// Set up next area
