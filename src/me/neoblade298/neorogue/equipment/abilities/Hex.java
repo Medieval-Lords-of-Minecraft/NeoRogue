@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -38,6 +40,7 @@ public class Hex extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		String buffId = UUID.randomUUID().toString();
 		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, this, slot, es);
 		inst.setAction((pdata, in) -> {
 			if (inst.getCount() == 0) {
@@ -56,7 +59,7 @@ public class Hex extends Equipment {
 		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 			if (inst.getCount() == 1) {
-				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, -dec, 0, StatTracker.damageDebuffAlly(this)));
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, -dec, 0, StatTracker.damageDebuffAlly(buffId, this)));
 				FightInstance.applyStatus(ev.getTarget(), StatusType.INJURY, data, stacks, -1);
 			}
 			return TriggerResult.keep();

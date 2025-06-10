@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.accessories;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -31,10 +33,11 @@ public class VoidBracelet extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		String buffId = UUID.randomUUID().toString();
 		data.addRift(new Rift(data, p.getLocation(), 200));
 
 		data.addTrigger(id, Trigger.CREATE_RIFT, (pdata, in) -> {
-			data.addDamageBuff(DamageBuffType.of(DamageCategory.MAGICAL), Buff.increase(data, inc, StatTracker.damageBuffAlly(this)));
+			data.addDamageBuff(DamageBuffType.of(DamageCategory.MAGICAL), Buff.increase(data, inc, StatTracker.damageBuffAlly(buffId, this)));
 			return TriggerResult.keep();
 		});
 	}

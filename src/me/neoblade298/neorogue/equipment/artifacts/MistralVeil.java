@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.artifacts;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -32,10 +34,11 @@ public class MistralVeil extends Artifact {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
+		String buffId = UUID.randomUUID().toString();
 		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, (pdata, in) -> {
 			ReceivedDamageEvent ev = (ReceivedDamageEvent) in;
 			if (p.getLocation().distanceSquared(ev.getDamager().getEntity().getLocation()) > rangeSq) {
-				ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, reduc, 0, StatTracker.defenseBuffAlly(this)));
+				ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, reduc, 0, StatTracker.defenseBuffAlly(buffId, this)));
 			}
 			return TriggerResult.keep();
 		});

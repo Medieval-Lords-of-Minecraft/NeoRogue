@@ -82,7 +82,7 @@ public class PaladinsShield extends Equipment {
 		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, (pdata, inputs) -> {
 			if (p.getHandRaised() != EquipmentSlot.OFF_HAND || !p.isHandRaised()) return TriggerResult.keep();
 			ReceivedDamageEvent ev = (ReceivedDamageEvent) inputs;
-			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, reduction, 0, StatTracker.defenseBuffAlly(this)));
+			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, reduction, 0, StatTracker.defenseBuffAlly(am.getId(), this)));
 			p.playSound(p, Sound.ITEM_SHIELD_BLOCK, 1F, 1F);
 			ev.getMeta().getOwner().applyStatus(StatusType.SANCTIFIED, data, sanct, -1);
 			return TriggerResult.keep();

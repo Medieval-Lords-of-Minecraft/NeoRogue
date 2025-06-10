@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.armor;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -34,15 +36,16 @@ public class IcySigil extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL), Buff.increase(data, def, StatTracker.defenseBuffAlly(this)));
+		data.addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL), Buff.increase(data, def, StatTracker.defenseBuffAlly(UUID.randomUUID().toString(), this)));
 
+		String buffId = UUID.randomUUID().toString();
 		StandardPriorityAction act = new StandardPriorityAction(id);
 		act.setAction((pdata, in) -> {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
 			if (!ev.isStatus(StatusType.FROST)) return TriggerResult.keep();
 			act.addCount(ev.getStacks());
 			if (act.getCount() >= thres) {
-				data.addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL), Buff.increase(data, def, StatTracker.defenseBuffAlly(this)), 100);
+				data.addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL), Buff.increase(data, def, StatTracker.defenseBuffAlly(buffId, this)), 100);
 				act.setCount(act.getCount() % thres);
 			}
 			return TriggerResult.keep();

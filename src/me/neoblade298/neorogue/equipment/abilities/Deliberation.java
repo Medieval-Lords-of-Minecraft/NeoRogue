@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
@@ -38,6 +40,7 @@ public class Deliberation extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		Equipment eq = this;
+		String buffId = UUID.randomUUID().toString();
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, inputs) -> {
 			Sounds.equip.play(p, p);
 			data.channel(60).then(new Runnable() {
@@ -46,7 +49,8 @@ public class Deliberation extends Equipment {
 					pc.play(p, p);
 					data.applyStatus(StatusType.FOCUS, data, 1, -1);
 					data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data,
-							damage * data.getStatus(StatusType.FOCUS).getStacks(), 0, StatTracker.damageBuffAlly(eq)),
+							damage * data.getStatus(StatusType.FOCUS).getStacks(), 0, StatTracker.damageBuffAlly(
+									buffId, eq)),
 							100);
 				}
 			});

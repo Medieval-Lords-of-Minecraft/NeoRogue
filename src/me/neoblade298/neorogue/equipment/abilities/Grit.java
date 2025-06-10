@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -14,8 +16,8 @@ import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.KillEvent;
@@ -41,11 +43,12 @@ public class Grit extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		String buffId = UUID.randomUUID().toString();
 		data.addTrigger(ID, Trigger.PRE_DEALT_DAMAGE, (pdata, in) -> {
 			PreDealtDamageEvent ev = (PreDealtDamageEvent) in;
 			double dist = ev.getTarget().getLocation().distanceSquared(p.getLocation());
 			if (dist <= 25) {
-				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, inc, 0, StatTracker.damageBuffAlly(this)));
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, inc, 0, StatTracker.damageBuffAlly(buffId, this)));
 			}
 			return TriggerResult.keep();
 		});

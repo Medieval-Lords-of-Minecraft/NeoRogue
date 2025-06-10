@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import java.util.UUID;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -23,8 +25,8 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -53,6 +55,7 @@ public class UnderDarkness extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		Equipment eq = this;
+		String buffId = UUID.randomUUID().toString();
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, inputs) -> {
 			placePart.play(p, p);
 			place.play(p, p);
@@ -70,7 +73,7 @@ public class UnderDarkness extends Equipment {
 							if (p.getLocation().distanceSquared(loc) <= tp.range * tp.range) {
 								data.applyStatus(StatusType.STEALTH, data, 1, 20);
 								data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, damage, 0,
-									StatTracker.damageBuffAlly(eq)), 20);
+									StatTracker.damageBuffAlly(buffId, eq)), 20);
 							}
 							
 							if (++tick == TICKS) this.cancel();

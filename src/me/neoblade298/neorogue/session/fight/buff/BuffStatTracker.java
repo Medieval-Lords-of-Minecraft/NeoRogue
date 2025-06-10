@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.session.fight.buff;
 
+import java.util.UUID;
+
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import net.kyori.adventure.text.Component;
@@ -20,17 +22,17 @@ public class BuffStatTracker extends StatTracker {
         super(id, display, invert);
     }
 
-    protected BuffStatTracker(Equipment eq, String sfx) {
-        super(eq, sfx);
+    protected BuffStatTracker(String id, Equipment eq, String sfx) {
+        super(id, eq, sfx);
     }
     
-    protected BuffStatTracker(Equipment eq, String sfx, boolean shouldCombine) {
-        super(eq, sfx);
+    protected BuffStatTracker(String id, Equipment eq, String sfx, boolean shouldCombine) {
+        super(id, eq, sfx);
         this.shouldCombine = shouldCombine;
     }
     
-    protected BuffStatTracker(Equipment eq, String sfx, boolean invert, boolean shouldCombine) {
-        super(eq, sfx, invert);
+    protected BuffStatTracker(String id, Equipment eq, String sfx, boolean invert, boolean shouldCombine) {
+        super(id, eq, sfx, invert);
         this.shouldCombine = shouldCombine;
     }
 
@@ -48,24 +50,28 @@ public class BuffStatTracker extends StatTracker {
         super(id);
     }
     
-    protected BuffStatTracker(Equipment eq) {
-        super(eq);
+    protected BuffStatTracker(String id, Equipment eq) {
+        super(id, eq);
     }
 
-    public static BuffStatTracker of(Equipment eq, String statTitle) {
-        return new BuffStatTracker(eq, statTitle, false);
+    public static BuffStatTracker of(String id, Equipment eq, String statTitle) {
+        return new BuffStatTracker(id, eq, statTitle, false);
     }
 
-    public static BuffStatTracker of(Equipment eq, String statTitle, boolean shouldCombine) {
-        return new BuffStatTracker(eq, statTitle, shouldCombine);
+    public static BuffStatTracker of(String id, Equipment eq, String statTitle, boolean shouldCombine) {
+        return new BuffStatTracker(id, eq, statTitle, shouldCombine);
     }
 
     public static BuffStatTracker ignored(String id) {
         return new BuffStatTracker(id);
     }
 
+    public static BuffStatTracker ignored(String id, Equipment eq) {
+        return new BuffStatTracker(id, eq);
+    }
+
     public static BuffStatTracker ignored(Equipment eq) {
-        return new BuffStatTracker(eq);
+        return new BuffStatTracker(UUID.randomUUID().toString(), eq);
     }
 
     public boolean shouldCombine() {

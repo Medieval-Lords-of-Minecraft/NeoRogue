@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
@@ -47,6 +49,7 @@ public class Windcall extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		String buffId = UUID.randomUUID().toString();
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			Sounds.attackSweep.play(p, p);
 			cone.play(p, pc, p.getLocation(), LocalAxes.usingGroundedEyeLocation(p), pc);
@@ -54,7 +57,7 @@ public class Windcall extends Equipment {
 				FightData fd = FightInstance.getFightData(ent);
 				if (ent.getLocation().distanceSquared(p.getLocation()) <= 5 * 5) {
 					fd.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
-						Buff.increase(data, -reduc, StatTracker.damageDebuffEnemy(this)), dur * 20);
+						Buff.increase(data, -reduc, StatTracker.damageDebuffEnemy(buffId, this)), dur * 20);
 				}
 				FightInstance.knockback(p, ent, 1);
 			}

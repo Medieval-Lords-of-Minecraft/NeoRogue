@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.accessories;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -29,7 +31,8 @@ public class RedRing extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addDamageBuff(DamageBuffType.of(DamageCategory.FIRE), Buff.multiplier(data, inc * 0.01, StatTracker.damageBuffAlly(this)));
+		String buffId = UUID.randomUUID().toString();
+		data.addDamageBuff(DamageBuffType.of(DamageCategory.FIRE), Buff.multiplier(data, inc * 0.01, StatTracker.damageBuffAlly(buffId, this)));
 	}
 
 	@Override

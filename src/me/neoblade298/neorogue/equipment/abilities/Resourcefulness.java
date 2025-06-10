@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -34,10 +36,11 @@ public class Resourcefulness extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		String buffId = UUID.randomUUID().toString();
 		Equipment eq = this;
 		data.addTask(new BukkitRunnable() {
 			public void run() {
-				data.addDamageBuff(DamageBuffType.of(DamageCategory.PHYSICAL), Buff.increase(data, damage, StatTracker.damageBuffAlly(eq)));
+				data.addDamageBuff(DamageBuffType.of(DamageCategory.PHYSICAL), Buff.increase(data, damage, StatTracker.damageBuffAlly(buffId, eq)));
 			}
 		}.runTaskLater(NeoRogue.inst(), 100L));
 	}

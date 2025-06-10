@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
@@ -16,8 +18,8 @@ import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -57,6 +59,7 @@ public class FormAPlan extends Equipment {
 		private boolean isActive = false;
 		public FormAPlanInstance(PlayerFightData data, Equipment eq) {
 			Player p = data.getPlayer();
+			String buffId = UUID.randomUUID().toString();
 			data.addTask(new BukkitRunnable() {
 				public void run() {
 					if (++timer >= 10) {
@@ -64,7 +67,7 @@ public class FormAPlan extends Equipment {
 						pc.play(p, p);
 						data.applyStatus(StatusType.STEALTH, data, 3, 100);
 						Util.msg(p, item.displayName().append(Component.text(" was activated", NamedTextColor.GRAY)));
-						data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, buff * 0.01, StatTracker.damageBuffAlly(eq)));
+						data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, buff * 0.01, StatTracker.damageBuffAlly(buffId, eq)));
 						this.cancel();
 					}
 				}

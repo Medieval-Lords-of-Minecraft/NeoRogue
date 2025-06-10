@@ -45,7 +45,7 @@ public class Momentum extends Equipment {
 				for (IProjectileInstance ipi : ev.getInstances()) {
 					if (!(ipi instanceof ProjectileInstance)) continue;
 					ProjectileInstance pi = (ProjectileInstance) ipi;
-					pi.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, damage, StatTracker.damageBuffAlly(this)));
+					pi.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, damage, StatTracker.damageBuffAlly(am.getId(), this)));
 				}
 			}
 			am.setLocation(p.getLocation());

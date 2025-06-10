@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.offhands;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
@@ -40,6 +42,7 @@ public class RubyArmament extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		String buffId = UUID.randomUUID().toString();
 		StandardPriorityAction act = new StandardPriorityAction(ID);
 		data.addTrigger(ID, Trigger.RIGHT_CLICK, (pdata, in) -> {
 			if (act.getCount() == 0) {
@@ -61,12 +64,12 @@ public class RubyArmament extends Equipment {
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 			if (act.getCount() == 0) {
 				data.addStamina(stamina);
-				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(pdata, -damageDec, 0, StatTracker.damageBuffAlly(this)));
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(pdata, -damageDec, 0, StatTracker.damageBuffAlly(buffId, this)));
 			}
 			else {
 				if (data.getStamina() < stamCost) return TriggerResult.keep();
 				data.addStamina(-stamCost);
-				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(pdata, damage, 0, StatTracker.damageBuffAlly(this)));
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(pdata, damage, 0, StatTracker.damageBuffAlly(buffId, this)));
 			}
 			return TriggerResult.keep();
 		});

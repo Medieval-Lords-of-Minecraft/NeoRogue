@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -41,6 +43,7 @@ public class SilentSteps extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		String buffId = UUID.randomUUID().toString();
 		data.addTrigger(ID,  Trigger.PRE_RECEIVE_STATUS, (pdata, in) -> {
 			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
 			if (!ev.getStatusId().equals(StatusType.STEALTH.name())) return TriggerResult.keep();
@@ -52,7 +55,7 @@ public class SilentSteps extends Equipment {
 			if (!pdata.hasStatus(StatusType.STEALTH)) return TriggerResult.keep();
 			PreDealtDamageEvent ev = (PreDealtDamageEvent) in;
 			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
-					new Buff(pdata, damage * pdata.getStatus(StatusType.STEALTH).getStacks(), 0, StatTracker.damageBuffAlly(this)));
+					new Buff(pdata, damage * pdata.getStatus(StatusType.STEALTH).getStacks(), 0, StatTracker.damageBuffAlly(buffId, this)));
 			return TriggerResult.keep();
 		});
 	}

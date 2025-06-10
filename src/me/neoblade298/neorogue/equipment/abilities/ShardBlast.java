@@ -67,7 +67,7 @@ public class ShardBlast extends Equipment {
 					hit.play(p, ent);
 					FightData fd = FightInstance.getFightData(ent);
 					FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.PIERCING, DamageOrigin.TRAP), ent);
-					fd.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, -reduc, StatTracker.defenseDebuffEnemy(this)), 100);
+					fd.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, -reduc, StatTracker.defenseDebuffEnemy(am.getId(), this)), 100);
 				}
 				t.deactivate();
 			}

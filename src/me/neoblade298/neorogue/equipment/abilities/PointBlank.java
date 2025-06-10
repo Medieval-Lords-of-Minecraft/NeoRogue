@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -36,13 +38,14 @@ public class PointBlank extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		String buffId = UUID.randomUUID().toString();
 		data.addTrigger(id, Trigger.PRE_DEALT_DAMAGE, (pdata, in) -> {
 			PreDealtDamageEvent ev = (PreDealtDamageEvent) in;
 			DamageMeta dm = ev.getMeta();
 			if (!dm.hasOrigin(DamageOrigin.PROJECTILE)) return TriggerResult.keep();
 			IProjectileInstance ip = dm.getProjectile();
 			if (ip.getOrigin().distanceSquared(ev.getTarget().getLocation()) > thres * thres) return TriggerResult.keep();
-			dm.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, damage, 0, StatTracker.damageBuffAlly(this)));
+			dm.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, damage, 0, StatTracker.damageBuffAlly(buffId, this)));
 			return TriggerResult.keep();
 		});
 	}

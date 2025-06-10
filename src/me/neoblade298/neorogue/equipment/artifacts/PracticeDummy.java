@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.artifacts;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
@@ -48,6 +50,7 @@ public class PracticeDummy extends Artifact {
 		private int count = 0;
 		private String weapon = null;
 		private Equipment art;
+		private String buffId = UUID.randomUUID().toString();
 
 		public PracticeDummyInstance(Equipment art) {
 			this.art = art;
@@ -70,7 +73,7 @@ public class PracticeDummy extends Artifact {
 				Util.msg(p, "<red>Practice Dummy</red> was activated");
 			}
 			if (count > num) {
-				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, 0.5, StatTracker.damageBuffAlly(art)));
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, 0.5, StatTracker.damageBuffAlly(buffId, art)));
 				return TriggerResult.keep();
 			}
 			return TriggerResult.remove();

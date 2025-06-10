@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.armor;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -30,8 +32,9 @@ public class EnchantedCloak extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL), Buff.increase(data, reduc, StatTracker.defenseBuffAlly(this)));
-		data.addDamageBuff(DamageBuffType.of(DamageCategory.MAGICAL), Buff.increase(data, damage, StatTracker.damageBuffAlly(this)));
+		data.addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL), Buff.increase(data, reduc, StatTracker.defenseBuffAlly(UUID.randomUUID().toString(), this)));
+		data.addDamageBuff(DamageBuffType.of(DamageCategory.MAGICAL), Buff.increase(data, damage, StatTracker.damageBuffAlly(
+				UUID.randomUUID().toString(), this)));
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
@@ -43,6 +45,7 @@ public class GetCentered extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		String buffId = UUID.randomUUID().toString();
 		StandardPriorityAction inst = new StandardPriorityAction(id);
 		inst.setAction((pdata, in) -> {
 			LaunchProjectileGroupEvent ev = (LaunchProjectileGroupEvent) in;
@@ -60,7 +63,7 @@ public class GetCentered extends Equipment {
 
 			for (IProjectileInstance pi : ev.getInstances()) {
 				((ProjectileInstance) pi).getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
-					new Buff(data, damage * data.getStatus(StatusType.FOCUS).getStacks(), 0, StatTracker.damageBuffAlly(this)));
+					new Buff(data, damage * data.getStatus(StatusType.FOCUS).getStacks(), 0, StatTracker.damageBuffAlly(buffId, this)));
 			}
 			return TriggerResult.keep();
 		});

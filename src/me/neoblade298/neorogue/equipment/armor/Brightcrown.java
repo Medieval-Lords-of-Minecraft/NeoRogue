@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.armor;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -33,7 +35,8 @@ public class Brightcrown extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL), Buff.increase(data, def, StatTracker.defenseBuffAlly(this)));
+		String buffId = UUID.randomUUID().toString();
+		data.addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL), Buff.increase(data, def, StatTracker.defenseBuffAlly(buffId, this)));
 		data.addTrigger(ID, Trigger.RECEIVED_DAMAGE, (pdata, in) -> {
 			ReceivedDamageEvent ev = (ReceivedDamageEvent) in;
 			if (!ev.getMeta().containsType(DamageCategory.MAGICAL)) return TriggerResult.keep();

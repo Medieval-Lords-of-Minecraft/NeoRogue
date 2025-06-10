@@ -77,13 +77,14 @@ public class AnchoringEarth2 extends Equipment {
 			return TriggerResult.keep();
 		}));
 
+		String buffId = UUID.randomUUID().toString();
 		data.addTrigger(id, Trigger.PRE_APPLY_STATUS, (pdata, in) -> {
 			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
 			FightData fd = ev.getTarget();
 			if (fd.hasStatus("anchoringEarth2-" + p.getName()))
 				return TriggerResult.keep();
 
-			ev.getStacksBuffList().add(Buff.multiplier(data, 1D, BuffStatTracker.of(this, "Statuses doubled")));
+			ev.getStacksBuffList().add(Buff.multiplier(data, 1D, BuffStatTracker.of(buffId, this, "Statuses doubled")));
 			return TriggerResult.keep();
 		});
 	}

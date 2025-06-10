@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.armor;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -34,8 +36,9 @@ public class EngineersCap extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addDefenseBuff(DamageBuffType.of(DamageCategory.PHYSICAL), Buff.increase(data, dec, StatTracker.defenseBuffAlly(this)));
-		data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL, DamageOrigin.TRAP), Buff.multiplier(data, damageActual, StatTracker.damageBuffAlly(this)));
+		data.addDefenseBuff(DamageBuffType.of(DamageCategory.PHYSICAL), Buff.increase(data, dec, StatTracker.defenseBuffAlly(UUID.randomUUID().toString(), this)));
+		data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL, DamageOrigin.TRAP), Buff.multiplier(data, damageActual, StatTracker.damageBuffAlly(
+				UUID.randomUUID().toString(), this)));
 	}
 
 	@Override

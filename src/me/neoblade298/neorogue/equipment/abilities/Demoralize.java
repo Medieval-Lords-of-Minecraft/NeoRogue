@@ -1,6 +1,7 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
 import java.util.LinkedList;
+import java.util.UUID;
 
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -55,6 +56,7 @@ public class Demoralize extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		Equipment eq = this;
+		String buffId = UUID.randomUUID().toString();
 		LinkedList<ActionMeta> insts = new LinkedList<ActionMeta>();
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			Sounds.equip.play(p, p);
@@ -71,7 +73,7 @@ public class Demoralize extends Equipment {
 						for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
 							FightData fd = FightInstance.getFightData(ent);
 							fd.applyStatus(StatusType.INJURY, data, injure, -1);
-							fd.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, -dec * 0.01, StatTracker.defenseDebuffEnemy(eq)), 160);
+							fd.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, -dec * 0.01, StatTracker.defenseDebuffEnemy(buffId, eq)), 160);
 						}
 					}
 					insts.removeFirst();

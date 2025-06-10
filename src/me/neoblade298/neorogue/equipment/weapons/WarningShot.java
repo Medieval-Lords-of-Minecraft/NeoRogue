@@ -1,6 +1,7 @@
 package me.neoblade298.neorogue.equipment.weapons;
 
 import java.util.LinkedList;
+import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -99,6 +100,7 @@ public class WarningShot extends Equipment {
 		@Override
 		public void onHitBlock(ProjectileInstance proj, Block b) {
 			Location loc = b.getLocation();
+			String buffId = UUID.randomUUID().toString();
 			// If projectile is above the top of a block, it's hitting a floor
 			if (proj.getLocation().getY() >= b.getLocation().getY()) {
 				loc = loc.add(0, 2, 0);
@@ -111,7 +113,7 @@ public class WarningShot extends Equipment {
 				ent.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 60, 0));
 			}
 			if (!ents.isEmpty()) data.applyStatus(StatusType.FOCUS, data, focus, -1);
-			data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, damage * ents.size(), 0, StatTracker.damageBuffAlly(eq)), 160);
+			data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, damage * ents.size(), 0, StatTracker.damageBuffAlly(buffId, eq)), 160);
 		}
 
 		@Override

@@ -79,7 +79,7 @@ public class Pressure extends Equipment {
 			if (!am.getBool()) return TriggerResult.keep();
 			if (ev.getTarget().getLocation().distanceSquared(am.getLocation()) <= rangesq &&
 				p.getLocation().distanceSquared(am.getLocation()) <= rangesq) {
-					ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, damage, StatTracker.damageBuffAlly(this)));
+					ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, damage, StatTracker.damageBuffAlly(am.getId(), this)));
 			}
 			return TriggerResult.keep();
 

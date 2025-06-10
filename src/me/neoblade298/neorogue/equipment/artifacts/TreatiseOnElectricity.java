@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.artifacts;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -29,7 +31,8 @@ public class TreatiseOnElectricity extends Artifact {
 	
 	@Override
 	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
-		data.addDamageBuff(DamageBuffType.of(DamageCategory.LIGHTNING), Buff.multiplier(data, 0.2, StatTracker.damageBuffAlly(this)));
+		String buffId = UUID.randomUUID().toString();
+		data.addDamageBuff(DamageBuffType.of(DamageCategory.LIGHTNING), Buff.multiplier(data, 0.2, StatTracker.damageBuffAlly(buffId, this)));
 	}
 	
 	@Override

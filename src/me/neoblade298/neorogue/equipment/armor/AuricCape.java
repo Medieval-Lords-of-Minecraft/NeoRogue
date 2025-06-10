@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.armor;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -28,10 +30,17 @@ public class AuricCape extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		String buffId = UUID.randomUUID().toString();
+		BuffStatTracker tr = BuffStatTracker.defenseBuffAlly(buffId, this, false);
 		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
 			if (pdata.getMana() > pdata.getMaxMana() / 2) {
+				// This buff doesn't have a duration because we can just set it to 0 when mana is below 50%
 				data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL),
-						Buff.increase(data, reduc, BuffStatTracker.defenseBuffAlly(this, false)), 20);
+						Buff.increase(data, reduc, tr));
+			}
+			else {
+				data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL),
+						Buff.empty(data, tr));
 			}
 			return TriggerResult.keep();
 		});

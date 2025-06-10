@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.equipment.abilities;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.UUID;
 
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -30,8 +31,8 @@ import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
@@ -63,6 +64,7 @@ public class RecklessApproach extends Equipment {
 	@SuppressWarnings("deprecation")
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		String buffId = UUID.randomUUID().toString();
 		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, this, slot, es);
 		inst.setAction((pdata, in) -> {
 			Sounds.jump.play(p, p);
@@ -72,7 +74,7 @@ public class RecklessApproach extends Equipment {
 				p.teleport(p.getLocation().add(0, 0.2, 0));
 			}
 			p.setVelocity(v.setY(0).normalize().setY(0.3));
-			data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, inc, 0, StatTracker.damageBuffAlly(this)), 100);
+			data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, inc, 0, StatTracker.damageBuffAlly(buffId, this)), 100);
 			new RecklessApproachHitbox(p, data, inst);
 			return TriggerResult.keep();
 		});

@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import java.util.UUID;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -53,6 +55,7 @@ public class Zone2 extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		String buffId = UUID.randomUUID().toString();
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			Sounds.equip.play(p, p);
 			int inc = damage * data.getStatus(StatusType.FOCUS).getStacks();
@@ -65,7 +68,7 @@ public class Zone2 extends Equipment {
 				public void run() {
 					circ.play(pc, loc, LocalAxes.xz(), null);
 					if (p.getLocation().distanceSquared(loc) <= rangesq) {
-						data.addDamageBuff(DamageBuffType.of(DamageCategory.PHYSICAL), Buff.increase(data, inc, StatTracker.damageBuffAlly(eq)), 40);
+						data.addDamageBuff(DamageBuffType.of(DamageCategory.PHYSICAL), Buff.increase(data, inc, StatTracker.damageBuffAlly(buffId, eq)), 40);
 					}
 					else {
 						stayed = false;

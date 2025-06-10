@@ -39,19 +39,19 @@ public class StatTracker {
         this.invert = invert;
     }
 
-    protected StatTracker(Equipment eq) {
-        this.id = eq.getId();
+    protected StatTracker(String id, Equipment eq) {
+        this.id = id;
         this.ignore = true;
     }
     
-    protected StatTracker(Equipment eq, String sfx) {
-        this.id = eq.getId();
+    protected StatTracker(String id, Equipment eq, String sfx) {
+        this.id = id;
         this.display = eq.getDisplay().append(Component.text(" - " + sfx, NamedTextColor.GRAY));
     }
     
     // Inverted 
-    protected StatTracker(Equipment eq, String sfx, boolean invert) {
-        this.id = eq.getId();
+    protected StatTracker(String id, Equipment eq, String sfx, boolean invert) {
+        this.id = id;
         this.display = eq.getDisplay().append(Component.text(" - " + sfx, NamedTextColor.GRAY));
         this.invert = invert;
     }
@@ -81,60 +81,60 @@ public class StatTracker {
         return ignore;
     }
 
-    public static StatTracker of(Equipment eq, String statTitle) {
-        return new StatTracker(eq, statTitle);
+    public static StatTracker of(String id, Equipment eq, String statTitle) {
+        return new StatTracker(id, eq, statTitle);
     }
 
     public static StatTracker ignored(String id) {
         return new StatTracker(id);
     }
 
-    public static StatTracker ignored(Equipment eq) {
-        return new StatTracker(eq);
+    public static StatTracker ignored(String id, Equipment eq) {
+        return new StatTracker(id, eq);
     }
 
-    public static BuffStatTracker damageBuffAlly(Equipment eq) {
-        return new BuffStatTracker(eq, "Damage Buffed", true);
+    public static BuffStatTracker damageBuffAlly(String id, Equipment eq) {
+        return new BuffStatTracker(id, eq, "Damage Buffed", true);
     }
 
-    public static BuffStatTracker damageBuffAlly(Equipment eq, boolean shouldCombine) {
-        return new BuffStatTracker(eq, "Damage Buffed", shouldCombine);
+    public static BuffStatTracker damageBuffAlly(String id, Equipment eq, boolean shouldCombine) {
+        return new BuffStatTracker(id, eq, "Damage Buffed", shouldCombine);
     }
 
-    public static BuffStatTracker damageDebuffAlly(Equipment eq) {
-        return new BuffStatTracker(eq, "Damage Reduced", true);
+    public static BuffStatTracker damageDebuffAlly(String id, Equipment eq) {
+        return new BuffStatTracker(id, eq, "Damage Reduced", true);
     }
 
-    public static BuffStatTracker damageDebuffAlly(Equipment eq, boolean shouldCombine) {
-        return new BuffStatTracker(eq, "Damage Reduced", shouldCombine);
+    public static BuffStatTracker damageDebuffAlly(String id, Equipment eq, boolean shouldCombine) {
+        return new BuffStatTracker(id, eq, "Damage Reduced", shouldCombine);
     }
 
-    public static BuffStatTracker defenseBuffAlly(Equipment eq) {
-        return new BuffStatTracker(eq, "Damage Mitigated", true);
+    public static BuffStatTracker defenseBuffAlly(String id, Equipment eq) {
+        return new BuffStatTracker(id, eq, "Damage Mitigated", true);
     }
 
-    public static BuffStatTracker defenseBuffAlly(Equipment eq, boolean shouldCombine) {
-        return new BuffStatTracker(eq, "Damage Mitigated", shouldCombine);
+    public static BuffStatTracker defenseBuffAlly(String id, Equipment eq, boolean shouldCombine) {
+        return new BuffStatTracker(id, eq, "Damage Mitigated", shouldCombine);
     }
 
-    public static BuffStatTracker damageDebuffEnemy(Equipment eq) {
-        return new BuffStatTracker(eq, "Damage Mitigated", true, true);
+    public static BuffStatTracker damageDebuffEnemy(String id, Equipment eq) {
+        return new BuffStatTracker(id, eq, "Damage Mitigated", true, true);
     }
 
-    public static BuffStatTracker damageDebuffEnemy(Equipment eq, boolean shouldCombine) {
-        return new BuffStatTracker(eq, "Damage Mitigated", true, shouldCombine);
+    public static BuffStatTracker damageDebuffEnemy(String id, Equipment eq, boolean shouldCombine) {
+        return new BuffStatTracker(id, eq, "Damage Mitigated", true, shouldCombine);
     }
 
-    public static BuffStatTracker defenseDebuffEnemy(Equipment eq) {
-        return new BuffStatTracker(eq, "Defense Debuffed", true, true);
+    public static BuffStatTracker defenseDebuffEnemy(String id, Equipment eq) {
+        return new BuffStatTracker(id, eq, "Defense Debuffed", true, true);
     }
 
-    public static BuffStatTracker defenseDebuffEnemy(Equipment eq, boolean shouldCombine) {
-        return new BuffStatTracker(eq, "Defense Debuffed", true, shouldCombine);
+    public static BuffStatTracker defenseDebuffEnemy(String id, Equipment eq, boolean shouldCombine) {
+        return new BuffStatTracker(id, eq, "Defense Debuffed", true, shouldCombine);
     }
 
-    public static BuffStatTracker damageBarriered(Equipment eq) {
-        return new BuffStatTracker(eq, "Damage Barriered");
+    public static BuffStatTracker damageBarriered(String id, Equipment eq) {
+        return new BuffStatTracker(id, eq, "Damage Barriered");
     }
 
     @Override

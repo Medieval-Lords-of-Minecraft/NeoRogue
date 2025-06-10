@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
@@ -64,6 +66,7 @@ public class CurseMark extends Equipment {
 		private LivingEntity mark;
 		public InducePanicInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
 			super(data, eq, slot, es);
+			String buffId = UUID.randomUUID().toString();
 			InducePanicInstance inst = this;
 			action = (pdata, in) -> {
 				pdata.addTask(new BukkitRunnable() {
@@ -74,7 +77,7 @@ public class CurseMark extends Equipment {
 						FightInstance.applyStatus(mark, StatusType.INSANITY, pdata, stacks, -1);
 						pc.play(p, inst.mark);
 						Sounds.infect.play(p, mark);
-						fd.addDefenseBuff(DamageBuffType.of(DamageCategory.DARK), new Buff(data, 0, -buff * 0.01, StatTracker.defenseDebuffEnemy(eq)), 100);
+						fd.addDefenseBuff(DamageBuffType.of(DamageCategory.DARK), new Buff(data, 0, -buff * 0.01, StatTracker.defenseDebuffEnemy(buffId, eq)), 100);
 					}
 				}.runTaskLater(NeoRogue.inst(), 40L));
 				return TriggerResult.keep();

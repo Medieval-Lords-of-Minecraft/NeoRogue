@@ -14,18 +14,20 @@ public class BuffList {
             if (curr.isSimilar(b)) {
                 if (curr.getStatTracker().shouldCombine()) {
                     curr.combine(b);
-                    increase += b.getIncrease();
-                    mult += b.getMultiplier();
+                    increase += curr.getIncrease();
+                    mult += curr.getMultiplier();
                     return;
                 }
                 else {
+                    increase = increase - curr.getIncrease() + b.getIncrease();
+                    mult = mult - curr.getMultiplier() + b.getMultiplier();
                     curr.replace(b);
                     return;
                 }
             }
         }
 
-        // Either replace a buff with a similar one or just add it to the list
+        // If an existing buff was not found, just add the new buff
         increase += b.getIncrease();
         mult += b.getMultiplier();
         buffs.add(b);

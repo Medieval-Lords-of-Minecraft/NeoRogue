@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -48,7 +50,7 @@ public class AgilityTraining extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addDamageBuff(DamageBuffType.of(DamageCategory.PHYSICAL), new Buff(data, damage, 0, StatTracker.damageBuffAlly(this)));
+		data.addDamageBuff(DamageBuffType.of(DamageCategory.PHYSICAL), new Buff(data, damage, 0, StatTracker.damageBuffAlly(UUID.randomUUID().toString(), this)));
 		data.addTrigger(id, Trigger.DEALT_DAMAGE, (pdata, in) -> {
 			DealtDamageEvent ev = (DealtDamageEvent) in;
 			if (!ev.getMeta().containsType(DamageCategory.PHYSICAL)) return TriggerResult.keep();

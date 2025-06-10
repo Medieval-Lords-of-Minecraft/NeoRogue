@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.armor;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -39,6 +41,7 @@ public class LightningCloak extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		String buffId = UUID.randomUUID().toString();
 		data.addTrigger(ID, Trigger.RECEIVED_DAMAGE, (pdata, in) -> {
 			ReceivedDamageEvent ev = (ReceivedDamageEvent) in;
 			ev.getDamager().applyStatus(StatusType.ELECTRIFIED, data, base, -1);
@@ -51,7 +54,7 @@ public class LightningCloak extends Equipment {
 			if (!ev.isStatus(StatusType.ELECTRIFIED)) return TriggerResult.keep();
 			inst.addCount(ev.getStacks());
 			if (inst.getCount() >= threshold) {
-				data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, def, StatTracker.defenseBuffAlly(this)));
+				data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, def, StatTracker.defenseBuffAlly(buffId, this)));
 				Util.msg(p, this.display.append(Component.text(" was activated", NamedTextColor.GRAY)));
 				return TriggerResult.remove();
 			}

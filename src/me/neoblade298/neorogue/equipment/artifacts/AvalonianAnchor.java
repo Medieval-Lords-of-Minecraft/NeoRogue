@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.artifacts;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
@@ -33,6 +35,7 @@ public class AvalonianAnchor extends Artifact {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
+		String buffId = UUID.randomUUID().toString();
 		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
 			// Apparently standing still is roughly -0.078 downward velocity
 			if (p.getVelocity().getY() < 0.1) {
@@ -40,7 +43,7 @@ public class AvalonianAnchor extends Artifact {
 				if (ev.isProjectile()) return TriggerResult.keep();
 				Sounds.crit.play(p, p);
 				part.play(p, ev.getTarget());
-				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, 0.5, StatTracker.damageBuffAlly(this)));
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, 0.5, StatTracker.damageBuffAlly(buffId, this)));
 			}
 			return TriggerResult.keep();
 		});

@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.armor;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -33,7 +35,8 @@ public class ElbowBrace extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addDefenseBuff(DamageBuffType.of(DamageCategory.PHYSICAL), Buff.increase(data, damageReduction, StatTracker.defenseBuffAlly(this)));
+		String buffId = UUID.randomUUID().toString();
+		data.addDefenseBuff(DamageBuffType.of(DamageCategory.PHYSICAL), Buff.increase(data, damageReduction, StatTracker.defenseBuffAlly(buffId, this)));
 		data.addTrigger(id, Trigger.LAUNCH_PROJECTILE_GROUP, (pdata, in) -> {
 			LaunchProjectileGroupEvent ev = (LaunchProjectileGroupEvent) in;
 			if (!(ev.getInstances().getFirst() instanceof ProjectileInstance)) return TriggerResult.keep();

@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.armor;
 
+import java.util.UUID;
+
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -34,11 +36,12 @@ public class MagiciansHood extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		String buffId = UUID.randomUUID().toString();
 		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
 			double mana = data.getMaxMana();
 			int stacks = Math.min((int) Math.floor(mana / thres), 4);
 			data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL),
-					Buff.increase(data, def * stacks, StatTracker.defenseBuffAlly(this)), 40);
+					Buff.increase(data, def * stacks, StatTracker.defenseBuffAlly(buffId, this)), 40);
 			return TriggerResult.keep();
 		});
 	}

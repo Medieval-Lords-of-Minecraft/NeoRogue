@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.offhands;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -41,6 +43,7 @@ public class HastyShield extends Equipment {
 		private Player p;
 		private long nextUsable = 0L;
 		private Equipment eq;
+		private String buffId = UUID.randomUUID().toString();
 		public HastyShieldInstance(Player p, Equipment eq) {
 			this.p = p;
 			this.eq = eq;
@@ -53,7 +56,7 @@ public class HastyShield extends Equipment {
 			if (now <= nextUsable) return TriggerResult.keep();
 			
 			ReceivedDamageEvent ev = (ReceivedDamageEvent) inputs;
-			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, reduction, 0, StatTracker.damageBarriered(eq)));
+			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, reduction, 0, StatTracker.damageBarriered(buffId, eq)));
 			nextUsable = now + 5000L; // 5s
 			p.playSound(p, Sound.ITEM_SHIELD_BLOCK, 1F, 1F);
 			data.addMana(amount);

@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.accessories;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -32,10 +34,11 @@ public class GripGloves extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		String buffId = UUID.randomUUID().toString();
 		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, (pdata, in) -> {
 			if (data.getStamina() / data.getMaxStamina() <= cutoffPct) return TriggerResult.keep();
 			ReceivedDamageEvent ev = (ReceivedDamageEvent) in;
-			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 3, 0, StatTracker.defenseBuffAlly(this)));
+			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 3, 0, StatTracker.defenseBuffAlly(buffId, this)));
 			return TriggerResult.keep();
 		});
 	}

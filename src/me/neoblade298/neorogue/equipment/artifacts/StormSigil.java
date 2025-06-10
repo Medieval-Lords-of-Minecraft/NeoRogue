@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.artifacts;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -31,9 +33,10 @@ public class StormSigil extends Artifact {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
+		String buffId = UUID.randomUUID().toString();
 		data.addTrigger(id, Trigger.CHANGE_AMMUNITION, (pdata, in) -> {
 			data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), 
-				Buff.increase(data, damage, StatTracker.damageBuffAlly(this)), secs * 20);
+				Buff.increase(data, damage, StatTracker.damageBuffAlly(buffId, this)), secs * 20);
 			return TriggerResult.keep();
 		});
 	}

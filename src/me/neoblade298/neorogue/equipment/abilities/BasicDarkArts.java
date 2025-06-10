@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -36,7 +38,8 @@ public class BasicDarkArts extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addDamageBuff(DamageBuffType.of(DamageCategory.DARK), Buff.increase(data, damage, StatTracker.damageBuffAlly(this)));
+		String buffId = UUID.randomUUID().toString();
+		data.addDamageBuff(DamageBuffType.of(DamageCategory.DARK), Buff.increase(data, damage, StatTracker.damageBuffAlly(buffId, this)));
 		data.addTrigger(id, Trigger.PRE_APPLY_STATUS, (pdata, in) -> {
 			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
 			if (ev.isStatus(StatusType.INSANITY)) {

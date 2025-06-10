@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
@@ -59,6 +61,7 @@ public class Parry extends Equipment {
 		private long createTime;
 		private Player p;
 		private Equipment eq;
+		private String buffId = UUID.randomUUID().toString();
 		public ParryBlock(Player p, Equipment eq) {
 			this.p = p;
 			this.eq = eq;
@@ -71,7 +74,7 @@ public class Parry extends Equipment {
 			Sounds.fire.play(p, p);
 			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
 				PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
-				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, damage, 0, StatTracker.damageBuffAlly(eq)));
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, damage, 0, StatTracker.damageBuffAlly(buffId, eq)));
 				FightInstance.dealDamage(data, DamageType.SLASHING, damage, ev.getTarget());
 				hit.play(p, ev.getTarget().getLocation());
 				Sounds.anvil.play(p, p);

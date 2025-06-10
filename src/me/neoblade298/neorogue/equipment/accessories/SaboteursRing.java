@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.accessories;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -12,8 +14,8 @@ import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -34,12 +36,13 @@ public class SaboteursRing extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		String buffId = UUID.randomUUID().toString();
 		data.addTrigger(id, Trigger.PRE_DEALT_DAMAGE, (pdata, in) -> {
 			PreDealtDamageEvent ev = (PreDealtDamageEvent) in;
 			FightData fd = FightInstance.getFightData(ev.getTarget());
 			if (!fd.hasStatus(StatusType.INJURY)) return TriggerResult.keep();
 			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
-				new Buff(data, inc * fd.getStatus(StatusType.INJURY).getStacks(), 0, StatTracker.damageBuffAlly(this)));
+				new Buff(data, inc * fd.getStatus(StatusType.INJURY).getStacks(), 0, StatTracker.damageBuffAlly(buffId, this)));
 			return TriggerResult.keep();
 		});
 	}

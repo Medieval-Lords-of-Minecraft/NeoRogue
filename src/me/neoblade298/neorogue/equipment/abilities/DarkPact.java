@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -38,7 +40,7 @@ public class DarkPact extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, -0.5, BuffStatTracker.of(this, "Additional Damage Taken")), seconds * 20);
+		data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, -0.5, BuffStatTracker.of(UUID.randomUUID().toString(), this, "Additional Damage Taken")), seconds * 20);
 		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, new DarkPactTriggerAction());
 	}
 	

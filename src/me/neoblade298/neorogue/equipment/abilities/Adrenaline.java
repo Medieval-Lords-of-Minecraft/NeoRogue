@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import java.util.UUID;
+
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -62,12 +64,13 @@ public class Adrenaline extends Equipment {
 			super(data, eq, slot, es);
 			Player p = data.getPlayer();
 			max = isUpgraded ? 2 : 1;
+			String id = UUID.randomUUID().toString();
 			action = (pdata, in) -> {
 				count++;
 				sc.play(p, p);
 				pc.play(p, p);
 				pdata.addStamina(stamina);
-				pdata.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(pdata, 5, 0, StatTracker.defenseBuffAlly(eq, false)));
+				pdata.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(pdata, 5, 0, StatTracker.defenseBuffAlly(id, eq, false)));
 				if (count < max) return TriggerResult.keep();
 
 				if (es == EquipSlot.HOTBAR) p.getInventory().setItem(slot, null);

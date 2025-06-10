@@ -47,7 +47,7 @@ public class CopperFunnel extends Equipment {
 		inst.setAction((pdata, in) -> {
 			ReceivedDamageEvent ev = (ReceivedDamageEvent) in;
 			if (!ev.getMeta().containsType(DamageCategory.MAGICAL)) return TriggerResult.keep();
-			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL), Buff.increase(data, reduc, StatTracker.defenseBuffAlly(this)));
+			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL), Buff.increase(data, reduc, StatTracker.defenseBuffAlly(am.getId(), this)));
 			am.addCount(-1);
 			if (am.getCount() <= 0) {
 				Sounds.breaks.play(p, p);

@@ -41,7 +41,7 @@ public class CrackedCrystal extends Artifact {
 			DamageType prev = (DamageType) am.getObject();
 			DamageType curr = ev.getMeta().getPrimarySlice().getType();
 			if (curr.getCategories().contains(DamageCategory.MAGICAL) && curr != prev) {
-				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.MAGICAL), Buff.multiplier(data, buff * 0.01, StatTracker.damageBuffAlly(this)));
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.MAGICAL), Buff.multiplier(data, buff * 0.01, StatTracker.damageBuffAlly(am.getId(), this)));
 			}
 			am.setObject(curr);
 			return TriggerResult.keep();

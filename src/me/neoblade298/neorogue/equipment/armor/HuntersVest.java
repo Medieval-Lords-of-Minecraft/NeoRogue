@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.armor;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -33,12 +35,13 @@ public class HuntersVest extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		String buffId = UUID.randomUUID().toString();
 		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, (pdata, in) -> {
 			ReceivedDamageEvent ev = (ReceivedDamageEvent) in;
 			if (!data.hasStatus(StatusType.FOCUS)) return TriggerResult.keep();
 			if (!ev.getMeta().containsType(DamageCategory.PHYSICAL)) return TriggerResult.keep();
 			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.PHYSICAL),
-				new Buff(data, reduc * Math.min(2, data.getStatus(StatusType.FOCUS).getStacks()), 0, StatTracker.defenseBuffAlly(this)));
+				new Buff(data, reduc * Math.min(2, data.getStatus(StatusType.FOCUS).getStacks()), 0, StatTracker.defenseBuffAlly(buffId, this)));
 			return TriggerResult.keep();
 		});
 	}

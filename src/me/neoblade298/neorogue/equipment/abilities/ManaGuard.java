@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -29,9 +31,10 @@ public class ManaGuard extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		String buffId = UUID.randomUUID().toString();
 		data.addManaRegen(-1);
 		data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL),
-				Buff.increase(data, reduc, StatTracker.defenseBuffAlly(this)));
+				Buff.increase(data, reduc, StatTracker.defenseBuffAlly(buffId, this)));
 	}
 
 	@Override

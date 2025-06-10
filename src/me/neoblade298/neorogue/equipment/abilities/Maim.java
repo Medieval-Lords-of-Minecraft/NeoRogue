@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -45,6 +47,7 @@ public class Maim extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		String buffId = UUID.randomUUID().toString();
 		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, this, slot, es);
 		inst.setAction((pdata, in) -> {
 			Sounds.equip.play(p, p);
@@ -60,7 +63,7 @@ public class Maim extends Equipment {
 				part.play(p, ev.getTarget());
 				hit.play(p, ev.getTarget());
 				ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.PIERCING));
-				FightInstance.getFightData(ev.getTarget()).addDefenseBuff(DamageBuffType.of(DamageCategory.PHYSICAL), new Buff(data, -inc, 0, StatTracker.damageBuffAlly(this)), 200);
+				FightInstance.getFightData(ev.getTarget()).addDefenseBuff(DamageBuffType.of(DamageCategory.PHYSICAL), new Buff(data, -inc, 0, StatTracker.damageBuffAlly(buffId, this)), 200);
 			}
 			return TriggerResult.keep();
 		});

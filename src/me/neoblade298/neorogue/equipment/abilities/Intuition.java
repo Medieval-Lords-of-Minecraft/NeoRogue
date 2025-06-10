@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -35,7 +37,8 @@ public class Intuition extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addDamageBuff(DamageBuffType.of(DamageCategory.MAGICAL), new Buff(data, damage, 0, StatTracker.damageBuffAlly(this)));
+		String buffId = UUID.randomUUID().toString();
+		data.addDamageBuff(DamageBuffType.of(DamageCategory.MAGICAL), new Buff(data, damage, 0, StatTracker.damageBuffAlly(buffId, this)));
 		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
 			if (data.getMana() < THRES) data.addMana(regen);
 			return TriggerResult.keep();

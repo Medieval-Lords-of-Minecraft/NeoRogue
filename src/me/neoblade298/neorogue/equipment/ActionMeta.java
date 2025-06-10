@@ -10,6 +10,7 @@ import me.neoblade298.neorogue.session.fight.Marker;
 
 // For most common use cases and storing of data in instance format
 public class ActionMeta {
+	private String id = UUID.randomUUID().toString(); // Unique identifier for actionmeta, convenient for buff stat tracker id
 	private long time;
 	private boolean bool;
 	private int count;
@@ -20,6 +21,10 @@ public class ActionMeta {
 	private UUID uuid;
 	private Object obj;
 	private BukkitTask task;
+
+	public String getId() {
+		return id;
+	}
 
 	public void setUniqueId(UUID uuid) {
 		this.uuid = uuid;

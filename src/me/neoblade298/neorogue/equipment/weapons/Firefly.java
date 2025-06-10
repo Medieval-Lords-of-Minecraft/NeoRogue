@@ -32,7 +32,7 @@ public class Firefly extends Ammunition {
 	@Override
 	public void setupReforges() {
 		addReforge(Sear.get(), SearingArrow.get());
-		addReforge(BasicElementMastery.get(), Firebird.get(), StickyBomb.get());
+		addReforge(BasicElementMastery.get(), StickyBomb.get());
 	}
 	
 	public static Equipment get() {

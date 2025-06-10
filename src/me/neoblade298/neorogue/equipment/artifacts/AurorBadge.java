@@ -37,7 +37,7 @@ public class AurorBadge extends Artifact {
 		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 			if (am.getTime() + 3000 < System.currentTimeMillis()) {
-				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.multiplier(data, damage, StatTracker.damageBuffAlly(this)));
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.multiplier(data, damage, StatTracker.damageBuffAlly(am.getId(), this)));
 			}
 			am.setTime(System.currentTimeMillis());
 			return TriggerResult.keep();

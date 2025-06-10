@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.artifacts;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -34,13 +36,14 @@ public class StaticNecklace extends Artifact {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
+		String buffId = UUID.randomUUID().toString();
 		data.addTrigger(ID, Trigger.PRE_DEALT_DAMAGE, (pdata, in) -> {
 			PreDealtDamageEvent ev = (PreDealtDamageEvent) in;
 			FightData fd = FightInstance.getFightData(ev.getTarget());
 			if (!fd.hasStatus(StatusType.ELECTRIFIED)) return TriggerResult.keep();
 			
 			double buff = fd.getStatus(StatusType.ELECTRIFIED).getStacks() * 0.2;
-			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.LIGHTNING), new Buff(pdata, buff, 0, StatTracker.damageBuffAlly(this)));
+			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.LIGHTNING), new Buff(pdata, buff, 0, StatTracker.damageBuffAlly(buffId, this)));
 			return TriggerResult.keep();
 		});
 	}

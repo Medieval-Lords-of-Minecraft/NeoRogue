@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import java.util.UUID;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -57,6 +59,7 @@ public class HexingShot extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		String buffId = UUID.randomUUID().toString();
 		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, this, slot, es);
 		inst.setAction((pdata, in) -> {
 			if (inst.getCount() == 0) {
@@ -75,7 +78,7 @@ public class HexingShot extends Equipment {
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 			if (inst.getCount() == 1) {
 				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
-						new Buff(data, -dec, 0, StatTracker.damageDebuffAlly(this)));
+						new Buff(data, -dec, 0, StatTracker.damageDebuffAlly(buffId, this)));
 				FightData trg = FightInstance.getFightData(ev.getTarget());
 				trg.applyStatus(new BasicStatus(ID + p.getName(), trg, StatusClass.NEGATIVE, true), data, 1, 10);
 			}

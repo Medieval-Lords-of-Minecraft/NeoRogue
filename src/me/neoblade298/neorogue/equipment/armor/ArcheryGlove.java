@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.armor;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -35,13 +37,14 @@ public class ArcheryGlove extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		String buffId = UUID.randomUUID().toString();
 		StandardPriorityAction act = new StandardPriorityAction(id);
 		act.setAction((pdata, in) -> {
 			LaunchProjectileGroupEvent ev = (LaunchProjectileGroupEvent) in;
 			if (!(ev.getInstances().getFirst() instanceof ProjectileInstance)) return TriggerResult.keep();
 			act.addCount(ev.getInstances().size());
 			while (act.getCount() >= thres) {
-				data.addDefenseBuff(DamageBuffType.of(DamageCategory.PHYSICAL), Buff.increase(data, dec, StatTracker.defenseBuffAlly(this)), 100);
+				data.addDefenseBuff(DamageBuffType.of(DamageCategory.PHYSICAL), Buff.increase(data, dec, StatTracker.defenseBuffAlly(buffId, this)), 100);
 				act.addCount(-thres);
 			}
 			return TriggerResult.keep();

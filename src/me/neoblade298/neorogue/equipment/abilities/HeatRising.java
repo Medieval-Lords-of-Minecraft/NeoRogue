@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
@@ -42,13 +44,14 @@ public class HeatRising extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		Equipment eq = this;
+		String buffId = UUID.randomUUID().toString();
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			Sounds.equip.play(p, p);
 			data.channel(20).then(new Runnable() {
 				public void run() {
 					Sounds.shoot.play(p, p);
 					data.applyStatus(StatusType.BURN, data, burn, -1);
-					data.addDamageBuff(DamageBuffType.of(DamageCategory.FIRE), Buff.multiplier(data, mult, StatTracker.damageBuffAlly(eq)));
+					data.addDamageBuff(DamageBuffType.of(DamageCategory.FIRE), Buff.multiplier(data, mult, StatTracker.damageBuffAlly(buffId, eq)));
 				}
 			});
 			pc.play(p, p);

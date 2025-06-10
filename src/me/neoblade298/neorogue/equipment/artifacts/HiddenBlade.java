@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.artifacts;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -32,10 +34,11 @@ public class HiddenBlade extends Artifact {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
+		String buffId = UUID.randomUUID().toString();
 		data.addTrigger(id, Trigger.RECEIVE_STATUS, (pdata, in) -> {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
 			if (!ev.isStatus(StatusType.STEALTH)) return TriggerResult.keep();
-			data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, 0.15, StatTracker.damageBuffAlly(this)), 40);
+			data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, 0.15, StatTracker.damageBuffAlly(buffId, this)), 40);
 			return TriggerResult.keep();
 		});
 	}

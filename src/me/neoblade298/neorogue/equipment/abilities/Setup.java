@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import java.util.UUID;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -52,6 +54,7 @@ public class Setup extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		String buffId = UUID.randomUUID().toString();
 		StandardPriorityAction act = new StandardPriorityAction(id);
 		ItemStack icon = item.clone();
 		act.setAction((pdata, in) -> {
@@ -61,7 +64,7 @@ public class Setup extends Equipment {
 				pc.play(p, p);
 				Sounds.enchant.play(p, p);
 				initTrap(p, data);
-				data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL, DamageOrigin.TRAP), new Buff(data, 0, inc * 0.01, StatTracker.damageBuffAlly(this)));
+				data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL, DamageOrigin.TRAP), new Buff(data, 0, inc * 0.01, StatTracker.damageBuffAlly(buffId, this)));
 				act.addCount(-time);
 
 				if (act.getBool()) {

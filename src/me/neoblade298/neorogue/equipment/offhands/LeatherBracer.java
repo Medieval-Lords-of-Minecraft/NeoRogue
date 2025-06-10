@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.offhands;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
@@ -42,6 +44,7 @@ public class LeatherBracer extends Equipment {
 		private int count = instances;
 		private ItemStack icon;
 		private Equipment eq;
+		private String buffId = UUID.randomUUID().toString();
 
 		public LeatherBracerInstance(Equipment eq, Player p) {
 			this.p = p;
@@ -56,7 +59,7 @@ public class LeatherBracer extends Equipment {
 			ReceivedDamageEvent ev = (ReceivedDamageEvent) inputs;
 			Sounds.block.play(p, p);
 			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL),
-					Buff.increase(data, 15, BuffStatTracker.defenseBuffAlly(eq)));
+					Buff.increase(data, 15, BuffStatTracker.defenseBuffAlly(buffId, eq)));
 
 			if (--count > 0) {
 				icon.setAmount(count);

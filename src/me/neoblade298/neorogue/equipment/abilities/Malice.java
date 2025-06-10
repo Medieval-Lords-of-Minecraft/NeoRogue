@@ -79,7 +79,7 @@ public class Malice extends Equipment {
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 			if (inst.getBool()) {
 				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
-						new Buff(data, -dec, 0, StatTracker.damageDebuffAlly(this)));
+						new Buff(data, -dec, 0, StatTracker.damageDebuffAlly(am.getId(), this)));
 				FightInstance.applyStatus(ev.getTarget(), StatusType.INJURY, data, stacks * am.getCount(), -1);
 			}
 			return TriggerResult.keep();

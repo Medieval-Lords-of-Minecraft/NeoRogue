@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.artifacts;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -31,7 +33,7 @@ public class FaerieDust extends Artifact {
 	@Override
 	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
 		data.addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL), 
-			Buff.increase(data, def, StatTracker.defenseBuffAlly(this)), 300);
+			Buff.increase(data, def, StatTracker.defenseBuffAlly(UUID.randomUUID().toString(), this)), 300);
 	}
 
 	@Override

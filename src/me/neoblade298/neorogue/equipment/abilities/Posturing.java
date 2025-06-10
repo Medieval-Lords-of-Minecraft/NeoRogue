@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
@@ -15,8 +17,8 @@ import me.neoblade298.neorogue.equipment.StandardPriorityAction;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
@@ -44,6 +46,7 @@ public class Posturing extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ItemStack icon = item.clone();
+		String buffId = UUID.randomUUID().toString();
 		StandardPriorityAction act = new StandardPriorityAction(id);
 		act.setAction((pdata, in) -> {
 		if (!p.isSneaking()) return TriggerResult.keep();
@@ -51,7 +54,7 @@ public class Posturing extends Equipment {
 			if (act.getCount() >= time) {
 				pc.play(p, p);
 				Sounds.enchant.play(p, p);
-				data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, inc, 0, StatTracker.damageBuffAlly(this)));
+				data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, inc, 0, StatTracker.damageBuffAlly(buffId, this)));
 				act.addCount(-time);
 				if (act.getBool()) {
 					icon.setAmount(icon.getAmount() + 1);

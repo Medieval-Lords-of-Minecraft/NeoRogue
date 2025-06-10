@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
@@ -46,13 +48,14 @@ public class CripplingPoison extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		String buffId = UUID.randomUUID().toString();
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pd, in) -> {
 			Sounds.attackSweep.play(p, p);
 			for (LivingEntity ent : TargetHelper.getEntitiesInCone(p, tp)) {
 				part.play(p, ent);
 				FightData fd = FightInstance.getFightData(ent);
 				int add = fd.getStatus(StatusType.POISON).getStacks() / poisonThreshold;
-				fd.addDefenseBuff(DamageBuffType.of(DamageCategory.PHYSICAL), new Buff(data, -inc - add, 0, StatTracker.defenseDebuffEnemy(this)), 100);
+				fd.addDefenseBuff(DamageBuffType.of(DamageCategory.PHYSICAL), new Buff(data, -inc - add, 0, StatTracker.defenseDebuffEnemy(buffId, this)), 100);
 			}
 			return TriggerResult.keep();
 		}));

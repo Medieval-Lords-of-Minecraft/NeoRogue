@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import java.util.UUID;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -51,6 +53,7 @@ public class Chokehold extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
+		String buffId = UUID.randomUUID().toString();
 
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			Sounds.equip.play(p, p);
@@ -76,7 +79,7 @@ public class Chokehold extends Equipment {
 			if (!ev.getMeta().hasOrigin(DamageOrigin.TRAP)) return TriggerResult.keep();
 			if (am.getTime() + 15000 < System.currentTimeMillis()) return TriggerResult.keep();
 			if (ev.getTarget().getLocation().distanceSquared(am.getLocation()) > rangeSq) return TriggerResult.keep();
-			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL, DamageOrigin.TRAP), Buff.multiplier(data, damage, StatTracker.damageBuffAlly(this)));
+			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL, DamageOrigin.TRAP), Buff.multiplier(data, damage, StatTracker.damageBuffAlly(buffId, this)));
 			return TriggerResult.keep();
 		});
 	}

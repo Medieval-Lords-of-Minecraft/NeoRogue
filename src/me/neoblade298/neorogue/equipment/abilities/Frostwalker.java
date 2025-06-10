@@ -76,6 +76,7 @@ public class Frostwalker extends Equipment {
 		public FrostwalkerInstance(PlayerFightData data, Equipment eq) {
 			super(ID);
 
+			String buffId = UUID.randomUUID().toString();
 			action = (pdata, in) -> {
 				Player p = data.getPlayer();
 				HashSet<UUID> hit = new HashSet<UUID>();
@@ -88,7 +89,7 @@ public class Frostwalker extends Equipment {
 						FightData fd = FightInstance.getFightData(ent);
 						fd.applyStatus(StatusType.FROST, data, stacks, -1);
 						fd.addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL),
-								new Buff(data, -reduc, 0, StatTracker.defenseDebuffEnemy(eq, false)), 100);
+								new Buff(data, -reduc, 0, StatTracker.defenseDebuffEnemy(buffId, eq, false)), 100);
 						hit.add(ent.getUniqueId());
 					}
 					remove = pool.tick() || remove;

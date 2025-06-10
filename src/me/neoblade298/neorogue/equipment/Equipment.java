@@ -190,7 +190,6 @@ import me.neoblade298.neorogue.equipment.weapons.EvasiveKnife;
 import me.neoblade298.neorogue.equipment.weapons.ExplosiveArrow;
 import me.neoblade298.neorogue.equipment.weapons.FencingSword;
 import me.neoblade298.neorogue.equipment.weapons.FireStaff;
-import me.neoblade298.neorogue.equipment.weapons.Firebird;
 import me.neoblade298.neorogue.equipment.weapons.Firefly;
 import me.neoblade298.neorogue.equipment.weapons.Flametongue;
 import me.neoblade298.neorogue.equipment.weapons.ForcefulLeatherGauntlets;
@@ -641,7 +640,6 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new EvasiveKnife(b);
 			new ExplosiveArrow(b);
 			new FencingSword(b);
-			new Firebird(b);
 			new Firefly(b);
 			new FireStaff(b);
 			new Flametongue(b);

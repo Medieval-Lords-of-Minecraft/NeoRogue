@@ -82,7 +82,7 @@ public class SpikyShield extends Equipment {
 		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, (pdata, inputs) -> {
 			if (!p.isHandRaised()) return TriggerResult.keep();
 			ReceivedDamageEvent ev = (ReceivedDamageEvent) inputs;
-			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, reduction, 0, StatTracker.damageBarriered(this)));
+			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, reduction, 0, StatTracker.damageBarriered(am.getId(), this)));
 			p.playSound(p, Sound.ITEM_SHIELD_BLOCK, 1F, 1F);
 			return TriggerResult.keep();
 		});

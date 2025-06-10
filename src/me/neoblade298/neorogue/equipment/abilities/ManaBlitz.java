@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -41,10 +43,11 @@ public class ManaBlitz extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		String buffId = UUID.randomUUID().toString();
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			Sounds.fire.play(p, p);
 			data.addDamageBuff(DamageBuffType.of(DamageCategory.MAGICAL),
-					Buff.increase(data, inc, BuffStatTracker.damageBuffAlly(this)), 160);
+					Buff.increase(data, inc, BuffStatTracker.damageBuffAlly(buffId, this)), 160);
 			return TriggerResult.keep();
 		}));
 	}

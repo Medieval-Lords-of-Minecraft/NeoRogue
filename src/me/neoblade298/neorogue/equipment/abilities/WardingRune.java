@@ -44,7 +44,7 @@ public class WardingRune extends Equipment {
 		data.addTrigger(id, tr, (pdata, in) -> {
 			Sounds.fire.play(p, p);
 			if (tr == Trigger.LEFT_CLICK) p.swingOffHand();
-			data.addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL), Buff.increase(data, reduc, StatTracker.defenseBuffAlly(this)), 60);
+			data.addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL), Buff.increase(data, reduc, StatTracker.defenseBuffAlly(am.getId(), this)), 60);
 			
 			am.addCount(-1);
 			if (am.getCount() <= 0) {

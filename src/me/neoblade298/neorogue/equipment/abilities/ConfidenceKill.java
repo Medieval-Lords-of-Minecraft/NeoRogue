@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
@@ -49,6 +51,7 @@ public class ConfidenceKill extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		String buffId = UUID.randomUUID().toString();
 		InducePanicInstance inst = new InducePanicInstance(data, this, slot, es);
 		data.addTrigger(ID, Trigger.DEALT_DAMAGE, (pdata, in) -> {
 			if (inst.mark == null) return TriggerResult.keep();
@@ -63,7 +66,7 @@ public class ConfidenceKill extends Equipment {
 			KillEvent ev = (KillEvent) in;
 			if (inst.toKill.getUniqueId().equals(ev.getTarget().getUniqueId())) {
 				Sounds.extinguish.play(p, p);
-				pdata.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(pdata, 0, buff * 0.01, StatTracker.damageBuffAlly(this)), 200);
+				pdata.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(pdata, 0, buff * 0.01, StatTracker.damageBuffAlly(buffId, this)), 200);
 			}
 			return TriggerResult.keep();
 		});

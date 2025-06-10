@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.artifacts;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -44,6 +46,7 @@ public class OpalNecklace extends Artifact {
 
 		public OpalNecklaceInstance(Equipment eq, String id) {
 			super(id);
+			String buffId = UUID.randomUUID().toString();
 			action = (pdata, in) -> {
 				PreDealtDamageEvent ev = (PreDealtDamageEvent) in;
 				// Only trigger on magical damage
@@ -52,7 +55,7 @@ public class OpalNecklace extends Artifact {
 				DamageType curr = ev.getMeta().getPrimarySlice().getPostBuffType();
 				if (lastType != curr && lastType != null) {
 					ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
-							Buff.multiplier(pdata, inc, StatTracker.damageBuffAlly(eq)));
+							Buff.multiplier(pdata, inc, StatTracker.damageBuffAlly(buffId, eq)));
 				}
 				lastType = curr;
 				return TriggerResult.keep();

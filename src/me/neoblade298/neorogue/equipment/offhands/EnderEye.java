@@ -1,6 +1,7 @@
 package me.neoblade298.neorogue.equipment.offhands;
 
 import java.util.LinkedList;
+import java.util.UUID;
 
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -50,13 +51,14 @@ public class EnderEye extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		String buffId = UUID.randomUUID().toString();
 		data.addTrigger(id, Trigger.RIGHT_CLICK, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			sc.play(p, p);
 			cone.play(pc, p.getLocation(), LocalAxes.usingEyeLocation(p), null);
 			LinkedList<LivingEntity> trgs = TargetHelper.getEntitiesInCone(p, tp);
 			for (LivingEntity ent : trgs) {
 				FightInstance.getFightData(ent).addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL),
-						Buff.increase(data, slot, BuffStatTracker.defenseDebuffEnemy(this)), 8 * 20);
+						Buff.increase(data, slot, BuffStatTracker.defenseDebuffEnemy(buffId, this)), 8 * 20);
 			}
 			return TriggerResult.keep();
 		}));

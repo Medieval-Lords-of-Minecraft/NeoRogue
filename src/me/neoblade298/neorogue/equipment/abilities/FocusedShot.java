@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
@@ -41,6 +43,7 @@ public class FocusedShot extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		String buffId = UUID.randomUUID().toString();
 		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
 		inst.setAction((pdata, inputs) -> {
 			Sounds.equip.play(p, p);
@@ -49,7 +52,7 @@ public class FocusedShot extends Equipment {
 				public void run() {
 					Sounds.enchant.play(p, p);
 					pc.play(p, p);
-					primeShot(p, data);
+					primeShot(p, data, buffId);
 					inst.reduceCooldown(data.getStatus(StatusType.FOCUS).getStacks() * 2);
 				}
 			}.runTaskLater(NeoRogue.inst(), 20L));
@@ -59,10 +62,10 @@ public class FocusedShot extends Equipment {
 		
 	}
 
-	private void primeShot(Player p, PlayerFightData data) {
+	private void primeShot(Player p, PlayerFightData data, String buffId) {
 		data.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
-			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, damage * 0.01, StatTracker.damageBuffAlly(this)));
+			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, damage * 0.01, StatTracker.damageBuffAlly(buffId, this)));
 			return TriggerResult.remove();
 		});
 	}

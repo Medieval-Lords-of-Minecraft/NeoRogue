@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import java.util.UUID;
+
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -46,12 +48,13 @@ public class Discipline extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		String buffId = UUID.randomUUID().toString();
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			Sounds.blazeDeath.play(p, p);
 			pc.play(p, p);
 			pdata.addMaxStamina(staminaGain);
 			pdata.addStamina(stamina);
-			data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 7, 0, StatTracker.defenseBuffAlly(this)), 200);
+			data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 7, 0, StatTracker.defenseBuffAlly(buffId, this)), 200);
 			return TriggerResult.keep();
 		}));
 	}

@@ -73,4 +73,8 @@ public class PriorityAction implements TriggerAction, Comparable<PriorityAction>
 	public String toString() {
 		return id;
 	}
+
+	public String getId() {
+		return id;
+	}
 }

@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -41,6 +43,7 @@ public class ManaInfusion extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		String buffId = UUID.randomUUID().toString();
 		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, this, slot, es);
 		inst.setAction((pdata, in) -> {
 			if (inst.getCount() == 0) {
@@ -63,7 +66,7 @@ public class ManaInfusion extends Equipment {
 				for (IProjectileInstance pi : ev.getInstances()) {
 					ProjectileInstance proj = (ProjectileInstance) pi;
 					proj.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
-							new Buff(data, damage, 0, StatTracker.damageBuffAlly(this)));
+							new Buff(data, damage, 0, StatTracker.damageBuffAlly(buffId, this)));
 				}
 				pdata.addMana(-mana);
 			}
