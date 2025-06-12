@@ -63,7 +63,7 @@ public class WoodenWand extends Equipment {
 		private PlayerFightData data;
 
 		public WoodenWandProjectile(PlayerFightData data) {
-			super(0.8, 10, 3);
+			super(1, 10, 3);
 			this.size(0.5, 0.5);
 			this.data = data;
 			this.p = data.getPlayer();

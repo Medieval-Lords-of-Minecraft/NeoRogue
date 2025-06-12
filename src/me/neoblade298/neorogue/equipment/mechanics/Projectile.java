@@ -11,7 +11,7 @@ public abstract class Projectile extends IProjectile {
 	private double gravity, yRotate, arc, blocksPerTick, initialY, maxRange, homing;
 	private boolean ignoreBarriers, ignoreBlocks, ignoreEntities;
 	private double width = 0.2, height = 0.2;
-	private int tickSpeed, pierce = 1;
+	private int tickSpeed, pierce = 0;
 
 	public Projectile(double blocksPerTick, double maxRange, int tickSpeed) {
 		this.blocksPerTick = blocksPerTick; // Per in-game tick, not projectile tick

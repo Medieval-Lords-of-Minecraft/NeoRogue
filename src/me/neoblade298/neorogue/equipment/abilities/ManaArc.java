@@ -78,12 +78,13 @@ public class ManaArc extends Equipment {
 
 		data.addTrigger(id, Trigger.DEALT_DAMAGE, (pdata, in) -> {
 			if (!am.getBool())
-				return TriggerResult.remove();
+				return TriggerResult.keep();
 
 			DealtDamageEvent ev = (DealtDamageEvent) in;
+			if (ev.getMeta().isSecondary()) return TriggerResult.keep();
 			LivingEntity trg = ev.getTarget();
 			Vector dir = trg.getLocation().toVector().subtract(p.getLocation().toVector()).normalize();
-			proj.start(data, p.getLocation(), dir);
+			proj.start(data, p.getLocation().add(0, 1, 0), dir);
 			return TriggerResult.keep();
 		});
 	}
@@ -112,6 +113,7 @@ public class ManaArc extends Equipment {
 		@Override
 		public void onStart(ProjectileInstance proj) {
 			proj.addDamageSlice(new DamageSlice(data, damage, DamageType.LIGHTNING));
+			proj.getMeta().isSecondary(true);
 		}
 	}
 

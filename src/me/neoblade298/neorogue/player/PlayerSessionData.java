@@ -30,7 +30,7 @@ import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
 import me.neoblade298.neorogue.equipment.abilities.EmpoweredEdge;
-import me.neoblade298.neorogue.equipment.abilities.Meditate;
+import me.neoblade298.neorogue.equipment.abilities.ManaBlitz;
 import me.neoblade298.neorogue.equipment.abilities.PiercingShot;
 import me.neoblade298.neorogue.equipment.abilities.ShadowWalk;
 import me.neoblade298.neorogue.equipment.weapons.BasicBow;
@@ -131,7 +131,7 @@ public class PlayerSessionData extends MapViewer {
 			break;
 		case MAGE:
 			hotbar[0] = WoodenWand.get();
-			hotbar[1] = Meditate.get();
+			hotbar[1] = ManaBlitz.get();
 			abilitiesEquipped = 1;
 			break;
 		default:

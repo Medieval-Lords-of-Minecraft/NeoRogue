@@ -282,7 +282,7 @@ public class DamageMeta {
 			}
 		}
 		
-		boolean isStatusDamage = DamageCategory.GENERAL.hasType(slices.getFirst().getPostBuffType());
+		boolean isStatusDamage = !DamageCategory.GENERAL.hasType(slices.getFirst().getPostBuffType());
 		// Calculate buffs for every slice of damage
 		HashMap<DamageType, Double> statSlices = new HashMap<DamageType, Double>();
 		for (DamageSlice slice : slices) {

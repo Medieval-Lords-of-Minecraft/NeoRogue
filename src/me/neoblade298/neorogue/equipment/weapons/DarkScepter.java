@@ -30,7 +30,7 @@ public class DarkScepter extends Equipment {
 	private static final ParticleContainer tick;
 
 	static {
-		tick = new ParticleContainer(Particle.GLOW);
+		tick = new ParticleContainer(Particle.SMOKE);
 		tick.count(5).spread(0.1, 0.1).speed(0.01);
 	}
 

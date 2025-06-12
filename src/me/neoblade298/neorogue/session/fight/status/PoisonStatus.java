@@ -48,6 +48,9 @@ public class PoisonStatus extends DecrementStackStatus {
 		}
 		else {
 			((DecrementStackTickAction) action).decrement = true;
+			if (toRemove >= stacks) {
+				holder.getEntity().removePotionEffect(PotionEffectType.POISON);
+			}
 		}
 	}
 }

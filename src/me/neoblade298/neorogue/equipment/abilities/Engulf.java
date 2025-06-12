@@ -31,7 +31,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 public class Engulf extends Equipment {
 	private static final String ID = "engulf";
 	private static final TargetProperties tp = TargetProperties.radius(3, false);
-	private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME);
+	private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME).offsetY(0.3).spread(0.2, 0.2).count(5);
 	private static final Circle circ = new Circle(tp.range);
 	private int damage, thres;
 
@@ -51,7 +51,7 @@ public class Engulf extends Equipment {
 		ActionMeta am = new ActionMeta();
 		data.addTrigger(id, Trigger.APPLY_STATUS, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
-			if (ev.isStatus(StatusType.BURN))
+			if (!ev.isStatus(StatusType.BURN))
 				return TriggerResult.keep();
 			am.addCount(ev.getStacks());
 

@@ -61,6 +61,8 @@ public class EarthStaff extends Equipment {
 				return TriggerResult.keep();
 			if (!p.isOnGround()) {
 				Util.displayError(p, "Can't use in the air!");
+				data.disableJump(17);
+				return TriggerResult.keep();
 			}
 			weaponSwing(p, data);
 			data.addTask(new BukkitRunnable() {
@@ -97,7 +99,7 @@ public class EarthStaff extends Equipment {
 	public void setupItem() {
 		item = createItem(
 				Material.STICK,
-				"After a windup, smashes the ground beneath you, dealing damage in an area spreading outwards. Enemies closest to you receive "
+				"After a windup where you can't jump, smashes the ground beneath you, dealing damage in an area spreading outwards. Enemies closest to you receive "
 						+ GlossaryTag.CONCUSSED.tag(this, conc, true) + ". Must be cast while on the ground."
 		);
 	}

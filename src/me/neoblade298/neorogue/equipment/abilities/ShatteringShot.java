@@ -47,7 +47,7 @@ public class ShatteringShot extends Equipment {
 				ProjectileInstance inst = (ProjectileInstance) ev.getInstances().getFirst();
 				inst.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.PIERCING));
 				BowProjectile settings = (BowProjectile) inst.getParent();
-				settings.pierce(2);
+				settings.pierce(1);
 				settings.addProjectileTickAction((p2, proj, interpolation) -> {
 					pc.play(p2, proj.getLocation());
 					Sounds.glass.play(p2, proj.getLocation());

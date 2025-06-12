@@ -38,7 +38,7 @@ public class Storm extends Equipment {
 			aoe = TargetProperties.radius(4, true);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.ANGRY_VILLAGER);
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_LIGHTNING_BOLT_THUNDER);
-	private static final Circle circ = new Circle(tp.range);
+	private static final Circle circ = new Circle(aoe.range);
 	private int damage, mana = 3;
 	private ItemStack activeIcon;
 
@@ -78,14 +78,14 @@ public class Storm extends Equipment {
 			}
 
 			Block b = p.getTargetBlockExact((int) properties.get(PropertyType.RANGE));
-			if (b.getType().isAir())
+			if (b == null)
 				return TriggerResult.keep();
 
 			Location loc = b.getLocation().add(0, 1, 0);
 			circ.play(pc, loc, LocalAxes.xz(), null);
 			sc.play(p, p);
 			data.addMana(-mana);
-			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, aoe)) {
+			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, aoe)) {
 				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.LIGHTNING), ent);
 			}
 			return TriggerResult.keep();

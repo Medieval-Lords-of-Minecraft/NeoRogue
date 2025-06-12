@@ -4,7 +4,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -21,7 +20,7 @@ public class ConductiveArmguard extends Equipment {
 	public ConductiveArmguard(boolean isUpgraded) {
 		super(ID, "Conductive Armguard", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.OFFHAND,
 				EquipmentProperties.none());
-		shields = isUpgraded ? 16 : 8;
+		shields = isUpgraded ? 9 : 6;
 	}
 
 	public static Equipment get() {
@@ -30,13 +29,13 @@ public class ConductiveArmguard extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.DEALT_DAMAGE, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+		data.addTrigger(id, Trigger.DEALT_DAMAGE, (pdata, in) -> {
 			DealtDamageEvent ev = (DealtDamageEvent) in;
 			if (!ev.getMeta().containsType(DamageCategory.LIGHTNING))
 				return TriggerResult.keep();
 			data.addSimpleShield(p.getUniqueId(), shields, 100);
 			return TriggerResult.keep();
-		}));
+		});
 	}
 
 	@Override

@@ -451,7 +451,6 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new ManaShell(b);
 			new MarkTarget(b);
 			new MarkTarget2(b);
-			new Meditate(b);
 			new MightySwing(b);
 			new MindBlast(b);
 			new MindGrowth(b);

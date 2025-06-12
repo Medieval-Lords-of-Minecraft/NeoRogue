@@ -80,11 +80,11 @@ public class Gravity extends Equipment {
 						circ.play(pc, rift.getLocation(), LocalAxes.xz(), null);
 						LinkedList<LivingEntity> targets = TargetHelper.getEntitiesInRadius(p, rift.getLocation(), tp);
 						for (LivingEntity ent : targets) {
-							FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.DARK), ent);
 							ent.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 60, 1));
 							Vector v = rift.getLocation().toVector().subtract(ent.getLocation().toVector());
 							if (v.isZero()) continue;
-							v = v.normalize();
+							v = v.setY(0).normalize().setY(0.3);
+							FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.DARK), ent);
 							FightInstance.knockback(ent, v);
 						}
 					}

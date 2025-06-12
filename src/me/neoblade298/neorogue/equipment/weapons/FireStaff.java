@@ -89,7 +89,7 @@ public class FireStaff extends Equipment {
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			Location loc = hit.getEntity().getLocation();
 			sc.play(p, loc);
-			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(hit.getEntity(), props)) {
+			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, props)) {
 				DamageMeta clone = proj.getMeta();
 				FightInstance.dealDamage(clone, ent);
 			}

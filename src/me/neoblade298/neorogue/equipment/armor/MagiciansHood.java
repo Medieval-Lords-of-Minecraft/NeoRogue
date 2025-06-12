@@ -21,13 +21,14 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class MagiciansHood extends Equipment {
 	private static final String ID = "magiciansHood";
+	private static final int MAX_STACKS = 3;
 	private int thres, def;
 
 	public MagiciansHood(boolean isUpgraded) {
 		super(ID, "Magician's Hood", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
 				EquipmentType.ARMOR);
-		thres = isUpgraded ? 35 : 30;
-		def = 2;
+		thres = isUpgraded ? 25 : 35;
+		def = 1;
 	}
 
 	public static Equipment get() {
@@ -39,7 +40,7 @@ public class MagiciansHood extends Equipment {
 		String buffId = UUID.randomUUID().toString();
 		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
 			double mana = data.getMaxMana();
-			int stacks = Math.min((int) Math.floor(mana / thres), 4);
+			int stacks = Math.min((int) Math.floor(mana / thres), MAX_STACKS);
 			data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL),
 					Buff.increase(data, def * stacks, StatTracker.defenseBuffAlly(buffId, this)), 40);
 			return TriggerResult.keep();
@@ -50,7 +51,7 @@ public class MagiciansHood extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.LEATHER_HELMET,
 				"Increase your " + GlossaryTag.GENERAL.tag(this) + " defense by " + DescUtil.white(def) + " for every "
-						+ DescUtil.yellow(thres) + " max mana you have, up to <white>4x</white>.");
+						+ DescUtil.yellow(thres) + " max mana you have, up to " + DescUtil.white(MAX_STACKS + "x") + ".");
 
 		LeatherArmorMeta dye = (LeatherArmorMeta) item.getItemMeta();
 		dye.setColor(Color.BLUE);
