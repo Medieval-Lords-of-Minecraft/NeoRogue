@@ -6,8 +6,6 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
@@ -23,6 +21,7 @@ import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
+import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
@@ -30,10 +29,9 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class IceWand extends Equipment {
+public class DrainWand extends Equipment {
 	private static final String ID = "iceWand";
 	private static final TargetProperties props = TargetProperties.radius(0.75, true, TargetType.ENEMY);
-	private static final PotionEffect slow = new PotionEffect(PotionEffectType.SLOWNESS, 60, 1, false, false, false);
 	
 	private static final ParticleContainer tick;
 	private static final SoundContainer sc = new SoundContainer(Sound.BLOCK_CHAIN_PLACE);
@@ -41,14 +39,14 @@ public class IceWand extends Equipment {
 	private int shieldAmount;
 
 	static {
-		tick = new ParticleContainer(Particle.GLOW);
+		tick = new ParticleContainer(Particle.SMOKE);
 		tick.count(5).spread(0.1, 0.1).speed(0.01);
 	}
 
-	public IceWand(boolean isUpgraded) {
+	public DrainWand(boolean isUpgraded) {
 		super(
-				ID, "Ice Wand", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(6, 0, isUpgraded ? 65 : 55, 0.8, DamageType.ICE, Sound.ITEM_AXE_SCRAPE)
+				ID, "Drain Wand", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
+				EquipmentProperties.ofWeapon(2, 0, isUpgraded ? 65 : 55, 1, DamageType.DARK, Sound.ITEM_AXE_SCRAPE)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
 		shieldAmount = isUpgraded ? 3 : 2;
@@ -60,7 +58,7 @@ public class IceWand extends Equipment {
 	
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ProjectileGroup proj = new ProjectileGroup(new IceWandProjectile(data));
+		ProjectileGroup proj = new ProjectileGroup(new DrainWandProjectile(data));
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (d, inputs) -> {
 			if (!canUseWeapon(data) || !data.canBasicAttack(EquipSlot.HOTBAR))
 				return TriggerResult.keep();
@@ -70,12 +68,12 @@ public class IceWand extends Equipment {
 		});
 	}
 
-	private class IceWandProjectile extends Projectile {
+	private class DrainWandProjectile extends Projectile {
 		private Player p;
 		private PlayerFightData data;
 		
-		public IceWandProjectile(PlayerFightData data) {
-			super(0.4, 8, 3);
+		public DrainWandProjectile(PlayerFightData data) {
+			super(0.8, 10, 3);
 			this.size(1, 1);
 			this.data = data;
 			this.p = data.getPlayer();
@@ -89,8 +87,8 @@ public class IceWand extends Equipment {
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(hit.getEntity(), props)) {
-				ent.addPotionEffect(slow);
-				proj.getOwner().addSimpleShield(p.getUniqueId(), shieldAmount, 40);
+				data.addSimpleShield(p.getUniqueId(), shieldAmount, 40);
+				FightInstance.dealDamage(new DamageMeta(hit, properties.get(PropertyType.DAMAGE), DamageType.DARK), ent);
 			}
 
 			Location loc = hit.getEntity().getLocation();
@@ -107,8 +105,8 @@ public class IceWand extends Equipment {
 	public void setupItem() {
 		item = createItem(
 				Material.STICK,
-				"Shoots an ice missile shattering on hit. All enemies hit are slightly slowed, and for each you gain <yellow>" + shieldAmount + "</yellow> "
-						+ GlossaryTag.SHIELDS.tag(this) + " for <white>2</white> seconds."
+				"Gain <yellow>" + shieldAmount + "</yellow> "
+						+ GlossaryTag.SHIELDS.tag(this) + " [<white>2s</white>] on hit."
 		);
 	}
 }

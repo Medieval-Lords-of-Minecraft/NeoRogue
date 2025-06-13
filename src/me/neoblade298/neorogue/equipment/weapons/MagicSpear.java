@@ -32,7 +32,7 @@ public class MagicSpear extends Equipment {
 
 	public MagicSpear(boolean isUpgraded) {
 		super(ID, "Magic Spear", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(isUpgraded ? 50 : 40, 0.75, 0.2, DamageType.EARTHEN,
+				EquipmentProperties.ofWeapon(0, 1, isUpgraded ? 50 : 40, 0.75, 0.2, DamageType.EARTHEN,
 						Sound.ENTITY_PLAYER_ATTACK_CRIT));
 		properties.addUpgrades(PropertyType.DAMAGE);
 		damage = isUpgraded ? 120 : 90;

@@ -2,31 +2,24 @@ package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.Circle;
-import me.neoblade298.neocore.bukkit.effects.LocalAxes;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
-import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageType;
-import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
-import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
-import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
 
 public class Engulf extends Equipment {
 	private static final String ID = "engulf";
@@ -38,8 +31,8 @@ public class Engulf extends Equipment {
 	public Engulf(boolean isUpgraded) {
 		super(ID, "Engulf", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(0, 0, 0, 0, tp.range));
-		damage = isUpgraded ? 45 : 30;
-		thres = isUpgraded ? 120 : 150;
+		damage = isUpgraded ? 60 : 90;
+		thres = isUpgraded ? 400 : 300;
 	}
 
 	public static Equipment get() {
@@ -49,11 +42,14 @@ public class Engulf extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
-		data.addTrigger(id, Trigger.APPLY_STATUS, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			ApplyStatusEvent ev = (ApplyStatusEvent) in;
-			if (!ev.isStatus(StatusType.BURN))
-				return TriggerResult.keep();
-			am.addCount(ev.getStacks());
+		data.addTrigger(id, Trigger.DEALT_DAMAGE, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			DealtDamageEvent ev = (DealtDamageEvent) in;
+			HashMap<
+
+			for (DamageSlice slice : ev.getMeta().getSlices()) {
+				if (slice.getType() != DamageType.FIRE) continue;
+				am.addCount((int) slice.getDamage());
+			}
 
 			if (am.getCount() >= thres) {
 				am.addCount(-thres);
@@ -80,7 +76,7 @@ public class Engulf extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FIRE_CHARGE,
-				"Passive. Every time you apply " + GlossaryTag.BURN.tag(this, thres, true) + ", deal "
+				"Passive. Every time you deal " + GlossaryTag.FIRE.tag(this, thres, true) + " damage, deal "
 						+ GlossaryTag.FIRE.tag(this, damage, true)
 						+ " damage to all enemies near you <white>3</white> times over <white>3s</white>.");
 	}

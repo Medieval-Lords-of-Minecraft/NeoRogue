@@ -40,8 +40,8 @@ public class EarthenWall extends Equipment {
 	
 	public EarthenWall(boolean isUpgraded) {
 		super(ID, "Earthen Wall", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 15, 18, tp.range));
-		damage = isUpgraded ? 120 : 80;
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 10, 18, tp.range));
+		damage = isUpgraded ? 300 : 250;
 		def = isUpgraded ? 4 : 2;
 		conc = isUpgraded ? 50 : 35;
 	}

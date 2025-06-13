@@ -5,32 +5,31 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.equipment.abilities.CalculatingGaze;
-import me.neoblade298.neorogue.equipment.abilities.Intuition;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageType;
+import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
-public class MonksStaff extends Equipment {
-	private static final String ID = "monksStaff";
+public class MonksHeadsplitter extends Equipment {
+	private static final String ID = "monksHeadsplitter";
+	private int bonus;
 	
-	public MonksStaff(boolean isUpgraded) {
-		super(ID, "Monk's Staff", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE ,
+	public MonksHeadsplitter(boolean isUpgraded) {
+		super(ID, "Monk's Headsplitter", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE ,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(0, 1.5, isUpgraded ? 60 : 40, 1, 0.4, DamageType.BLUNT, new SoundContainer(Sound.ENTITY_PLAYER_ATTACK_SWEEP, 0.5F)));
+				EquipmentProperties.ofWeapon(0, 2, 65, 1, 0.4, DamageType.BLUNT, new SoundContainer(Sound.ENTITY_PLAYER_ATTACK_SWEEP, 0.5F)));
 		properties.addUpgrades(PropertyType.DAMAGE);
-	}
-
-	@Override
-	public void setupReforges() {
-		addReforge(CalculatingGaze.get(), MonksHeadsplitter.get(), EarthStaff.get());
-		addReforge(Intuition.get(), MonksStaff2.get());
+		bonus = isUpgraded ? 40 : 20;
 	}
 	
 	public static Equipment get() {
@@ -41,13 +40,15 @@ public class MonksStaff extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
-			weaponSwingAndDamage(p, data, ev.getTarget());
+			boolean isConc = FightInstance.getFightData(ev.getTarget()).hasStatus(StatusType.CONCUSSED);
+			DamageMeta dm = new DamageMeta(data, properties.get(PropertyType.DAMAGE) + (isConc ? bonus : 0), DamageType.BLUNT);
+			weaponSwingAndDamage(p, data, ev.getTarget(), dm);
 			return TriggerResult.keep();
 		});
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STICK);
+		item = createItem(Material.STICK, "Deals an additional " + DescUtil.yellow(bonus) + " damage to " + GlossaryTag.CONCUSSED.tag(this) + " enemies.");
 	}
 }

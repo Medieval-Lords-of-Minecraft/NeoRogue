@@ -48,7 +48,7 @@ public class Gravity extends Equipment {
 	public Gravity(boolean isUpgraded) {
 		super(ID, "Gravity", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
 				EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(40, 0, 12, 10));
+				EquipmentProperties.ofUsable(30, 0, 12, 10));
 		damage = isUpgraded ? 300 : 200;
 		properties.setCastType(CastType.POST_TRIGGER);
 	}

@@ -36,8 +36,8 @@ public class ManaArc extends Equipment {
 
 	public ManaArc(boolean isUpgraded) {
 		super(ID, "Mana Arc", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(10, 0, 25, 0));
-		mana = isUpgraded ? 3 : 4;
+				EquipmentProperties.ofUsable(15, 0, 25, 0));
+		mana = isUpgraded ? 6 : 5;
 		damage = isUpgraded ? 90 : 60;
 		elec = isUpgraded ? 45 : 30;
 	}

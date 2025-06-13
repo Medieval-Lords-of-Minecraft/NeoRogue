@@ -28,7 +28,7 @@ public class Entropy extends Equipment {
 	
 	public Entropy(boolean isUpgraded) {
 		super(ID, "Entropy", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 8, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
 		intel = 3;
 		riftThres = isUpgraded ? 3 : 4;
 	}

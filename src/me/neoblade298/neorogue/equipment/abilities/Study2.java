@@ -28,7 +28,7 @@ public class Study2 extends Equipment {
 	
 	public Study2(boolean isUpgraded) {
 		super(ID, "Study II", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 8, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
 		intel = 4;
 		regen = isUpgraded ? 0.2 : 0.1;
 	}

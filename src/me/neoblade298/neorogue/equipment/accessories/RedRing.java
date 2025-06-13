@@ -20,7 +20,7 @@ public class RedRing extends Equipment {
 	private static final String ID = "redRing";
 	private int inc;
 	public RedRing(boolean isUpgraded) {
-		super(ID, "Red Ring", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
+		super(ID, "Red Ring", isUpgraded, Rarity.COMMON, new EquipmentClass[] { EquipmentClass.ARCHER, EquipmentClass.MAGE },
 				EquipmentType.ACCESSORY);
 		inc = isUpgraded ? 25 : 15;
 	}

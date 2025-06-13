@@ -39,7 +39,7 @@ public class Storm extends Equipment {
 	private static final ParticleContainer pc = new ParticleContainer(Particle.ANGRY_VILLAGER);
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_LIGHTNING_BOLT_THUNDER);
 	private static final Circle circ = new Circle(aoe.range);
-	private int damage, mana = 3;
+	private int damage, mana = 6;
 	private ItemStack activeIcon;
 
 	public Storm(boolean isUpgraded) {

@@ -15,8 +15,8 @@ public class SpiritShard extends Equipment {
 
 	public SpiritShard(boolean isUpgraded) {
 		super(ID, "Spirit Shard", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.ACCESSORY);
-		stam = 0.5;
-		mana = isUpgraded ? 0.8 : 0.5;
+		stam = 0.2;
+		mana = isUpgraded ? 1.8 : 1.2;
 	}
 
 	public static Equipment get() {
@@ -31,7 +31,7 @@ public class SpiritShard extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LIGHT_BLUE_BANNER, "Decrease your stamina reduction by " + DescUtil.white(stam)
+		item = createItem(Material.LIGHT_BLUE_BANNER, "Decrease your stamina by " + DescUtil.white(stam)
 				+ " and increases your mana regen by " + DescUtil.yellow(mana) + ".");
 	}
 }

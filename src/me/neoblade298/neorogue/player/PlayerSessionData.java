@@ -300,6 +300,11 @@ public class PlayerSessionData extends MapViewer {
 		return maxStorage;
 	}
 
+	public void addMaxStorage(int amount) {
+		this.maxStorage += amount;
+		if (maxStorage > MAX_STORAGE_SIZE) maxStorage = MAX_STORAGE_SIZE;
+	}
+
 	public double getManaRegen() {
 		return manaRegen;
 	}

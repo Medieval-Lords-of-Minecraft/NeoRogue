@@ -50,6 +50,7 @@ public class DamageMeta {
 	private LinkedList<DamageSlice> slices = new  LinkedList<DamageSlice>();
 	private DamageMeta returnDamage;
 	private HashMap<DamageBuffType, BuffList> damageBuffs = new HashMap<DamageBuffType, BuffList>(), defenseBuffs = new HashMap<DamageBuffType, BuffList>();
+	private HashMap<DamageType, Double> statSlices = new HashMap<DamageType, Double>();
 	private double ignoreShieldsDamage, damage;
 	
 	public DamageMeta(FightData data) {
@@ -284,7 +285,6 @@ public class DamageMeta {
 		
 		boolean isStatusDamage = !DamageCategory.GENERAL.hasType(slices.getFirst().getPostBuffType());
 		// Calculate buffs for every slice of damage
-		HashMap<DamageType, Double> statSlices = new HashMap<DamageType, Double>();
 		for (DamageSlice slice : slices) {
 			double increase = 0, mult = 1, base = slice.getDamage();
 			ArrayList<Buff> buffs = new ArrayList<Buff>(), debuffs = new ArrayList<Buff>();
@@ -598,6 +598,10 @@ public class DamageMeta {
 	
 	public DamageSlice getPrimarySlice() {
 		return slices.getFirst();
+	}
+
+	public HashMap<DamageType, Double> getPostMitigationDamage() {
+		return statSlices;
 	}
 	
 	public LinkedList<DamageSlice> getSlices() {

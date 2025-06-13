@@ -39,7 +39,7 @@ public class DarkBolt extends Equipment {
 	public DarkBolt(boolean isUpgraded) {
 		super(ID, "Dark Bolt", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE,
 				EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(25, 0, isUpgraded ? 16 : 12, 10));
+				EquipmentProperties.ofUsable(15, 0, isUpgraded ? 16 : 12, 10));
 		damage = isUpgraded ? 210 : 140;
 		properties.addUpgrades(PropertyType.COOLDOWN);
 	}

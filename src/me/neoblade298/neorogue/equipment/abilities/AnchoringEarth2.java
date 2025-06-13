@@ -51,7 +51,7 @@ public class AnchoringEarth2 extends Equipment {
 
 	public AnchoringEarth2(boolean isUpgraded) {
 		super(ID, "Anchoring Earth II", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(40, 25, 18, 12));
+				EquipmentProperties.ofUsable(20, 10, 18, 12));
 		damage = 250;
 		reduc = isUpgraded ? 90 : 60;
 	}

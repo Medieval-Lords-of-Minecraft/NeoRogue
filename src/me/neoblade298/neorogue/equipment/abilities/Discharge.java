@@ -28,9 +28,9 @@ public class Discharge extends Equipment {
 	
 	public Discharge(boolean isUpgraded) {
 		super(ID, "Discharge", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 8, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
 		intel = isUpgraded ? 4 : 3;
-		elec = isUpgraded ? 60 : 40;
+		elec = isUpgraded ? 90 : 60;
 	}
 	
 	public static Equipment get() {

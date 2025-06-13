@@ -14,7 +14,7 @@ public class MinorManaRelic extends Equipment {
 	
 	public MinorManaRelic(boolean isUpgraded) {
 		super(ID, "Minor Mana Relic", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ACCESSORY);
-		regen = isUpgraded ? 2 : 1;
+		regen = isUpgraded ? 1.5 : 1;
 	}
 	
 	public static Equipment get() {

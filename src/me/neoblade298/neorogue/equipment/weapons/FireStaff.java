@@ -90,6 +90,7 @@ public class FireStaff extends Equipment {
 			Location loc = hit.getEntity().getLocation();
 			sc.play(p, loc);
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, props)) {
+				if (ent == hit) continue;
 				DamageMeta clone = proj.getMeta();
 				FightInstance.dealDamage(clone, ent);
 			}
@@ -97,7 +98,7 @@ public class FireStaff extends Equipment {
 		
 		@Override
 		public void onStart(ProjectileInstance proj) {
-
+			proj.applyProperties(null, properties);
 		}
 	}
 	

@@ -47,7 +47,7 @@ public class DarkTorrent extends Equipment {
 	public DarkTorrent(boolean isUpgraded) {
 		super(ID, "Dark Torrent", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
 				EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(30, 0, 12, 10));
+				EquipmentProperties.ofUsable(25, 0, 12, 10));
 		damage = 200;
 		aoeDamage = isUpgraded ? 75 : 50;
 	}

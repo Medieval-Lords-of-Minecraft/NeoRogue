@@ -26,7 +26,7 @@ public class ManaBlitz extends Equipment {
 
 	public ManaBlitz(boolean isUpgraded) {
 		super(ID, "Mana Blitz", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(10, 0, 16, 0));
+				EquipmentProperties.ofUsable(0, 0, 16, 0));
 		inc = isUpgraded ? 50 : 30;
 	}
 

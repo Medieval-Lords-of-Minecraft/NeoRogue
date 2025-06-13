@@ -40,7 +40,7 @@ public class Blast extends Equipment {
 	
 	public Blast(boolean isUpgraded) {
 		super(ID, "Blast", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 0, 10, 14, tp.range));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 0, 10, 14, tp.range));
 				damage = isUpgraded ? 120 : 80;
 	}
 	

@@ -45,7 +45,7 @@ public class GroundLance extends Equipment {
 
 	public GroundLance(boolean isUpgraded) {
 		super(ID, "Ground Lance", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(20, 20, 10, 14, tp.range));
+				EquipmentProperties.ofUsable(15, 10, 10, 14, tp.range));
 		damage = isUpgraded ? 150 : 120;
 		properties.setCastType(CastType.POST_TRIGGER);
 	}

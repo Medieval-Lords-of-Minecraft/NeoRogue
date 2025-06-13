@@ -51,7 +51,7 @@ public class MortalEngine extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SEA_LANTERN,
-				"Passive. For every ability cast that costs " + "at least <white>" + cutoff
+				"Passive. For every ability cast that has a base cost of at least <white>" + cutoff
 						+ "</white> stamina, reduce the stamina cost of all abilities by <yellow>" + reduc
 						+ "</yellow>.");
 	}
