@@ -22,7 +22,7 @@ public class AvatarState extends Equipment {
 
 	public AvatarState(boolean isUpgraded) {
 		super(ID, "Avatar State", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(0, 0, 40, 0));
+				EquipmentProperties.ofUsable(0, 35, 40, 0));
 		mreg = isUpgraded ? 2.5 : 1.5;
 		hreg = isUpgraded ? 1.5 : 1;
 		shields = isUpgraded ? 10 : 5;

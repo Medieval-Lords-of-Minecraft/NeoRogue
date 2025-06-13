@@ -24,7 +24,7 @@ public class ManaCloak extends Equipment {
 
 	public ManaCloak(boolean isUpgraded) {
 		super(ID, "Mana Cloak", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(isUpgraded ? 30 : 60, 0, 10, 0));
+				EquipmentProperties.ofUsable(isUpgraded ? 30 : 45, 20, 10, 0));
 		properties.addUpgrades(PropertyType.MANA_COST);
 		shields = 12;
 	}

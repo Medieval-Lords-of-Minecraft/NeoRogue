@@ -20,8 +20,8 @@ public class ForceCloak extends Equipment {
 
 	public ForceCloak(boolean isUpgraded) {
 		super(ID, "Force Cloak", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(isUpgraded ? 25 : 35, 0, isUpgraded ? 15 : 20, 0));
-		properties.addUpgrades(PropertyType.MANA_COST, PropertyType.COOLDOWN);
+				EquipmentProperties.ofUsable(isUpgraded ? 25 : 35, isUpgraded ? 35 : 25, isUpgraded ? 15 : 20, 0));
+		properties.addUpgrades(PropertyType.MANA_COST, PropertyType.STAMINA_COST, PropertyType.COOLDOWN);
 	}
 
 	public static Equipment get() {

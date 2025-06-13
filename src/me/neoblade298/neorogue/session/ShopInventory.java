@@ -253,6 +253,8 @@ public class ShopInventory extends CoreInventory {
 					Util.displayError(p, "Only cursed items may be removed this way!");
 					return;
 				}
+				inv.setItem(GOLD_ICON, CoreInventory.createButton(Material.GOLD_NUGGET,
+						Component.text("You have " + data.getCoins() + " coins", NamedTextColor.YELLOW)));
 				data.getSession().broadcast(
 						SharedUtil.color("<yellow>" + p.getName() + " </yellow>purified their ")
 								.append(eq.getHoverable()).append(Component.text("."))

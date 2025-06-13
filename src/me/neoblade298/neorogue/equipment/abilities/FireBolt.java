@@ -38,7 +38,7 @@ public class FireBolt extends Equipment {
 
 	public FireBolt(boolean isUpgraded) {
 		super(ID, "Fire Bolt", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(30, 0, 12, tp.range));
+				EquipmentProperties.ofUsable(30, 10, 12, tp.range));
 		damage = 200;
 		thres = isUpgraded ? 50 : 60;
 

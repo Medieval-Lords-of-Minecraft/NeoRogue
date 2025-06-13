@@ -67,7 +67,7 @@ public class Discharge extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.WRITABLE_BOOK,
-				"Passive. Gain " + GlossaryTag.INTELLECT.tag(this, intel, true) + " on kill. Your next basic attack will also apply " +
+				"Passive. On kill, gain " + GlossaryTag.INTELLECT.tag(this, intel, true) + " on kill and your next basic attack will also apply " +
 				GlossaryTag.ELECTRIFIED.tag(this, elec, true) + ".");
 	}
 }

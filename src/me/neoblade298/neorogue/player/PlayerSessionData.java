@@ -117,22 +117,38 @@ public class PlayerSessionData extends MapViewer {
 			hotbar[0] = WoodenSword.get();
 			hotbar[1] = EmpoweredEdge.get();
 			abilitiesEquipped = 1;
+			maxStamina = 50;
+			maxMana = 25;
+			staminaRegen = 2;
+			manaRegen = 1;
 			break;
 		case THIEF:
 			hotbar[0] = WoodenDagger.get();
 			hotbar[1] = ShadowWalk.get();
 			abilitiesEquipped = 1;
+			maxStamina = 45;
+			maxMana = 30;
+			staminaRegen = 1.8;
+			manaRegen = 1.2;
 			break;
 		case ARCHER:
 			hotbar[0] = BasicBow.get();
 			hotbar[1] = PiercingShot.get();
 			hotbar[8] = WoodenArrow.get();
 			abilitiesEquipped = 1;
+			maxStamina = 40;
+			maxMana = 35;
+			staminaRegen = 1.6;
+			manaRegen = 1.4;
 			break;
 		case MAGE:
 			hotbar[0] = WoodenWand.get();
 			hotbar[1] = ManaBlitz.get();
 			abilitiesEquipped = 1;
+			maxStamina = 25;
+			maxMana = 50;
+			staminaRegen = 1;
+			manaRegen = 2;
 			break;
 		default:
 			break;

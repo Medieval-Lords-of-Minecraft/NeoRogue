@@ -52,7 +52,7 @@ public class Depletion extends Equipment {
 		super(ID, "Depletion", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
 				EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(30, 0, 12, 10));
-		damage = 100;
+		damage = 150;
 		shields = isUpgraded ? 5 : 3;
 	}
 	

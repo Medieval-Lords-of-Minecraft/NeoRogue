@@ -47,7 +47,7 @@ public class Splinterstone extends Equipment {
 
 	public Splinterstone(boolean isUpgraded) {
 		super(ID, "Splinterstone", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(20, 0, 13, 10));
+				EquipmentProperties.ofUsable(20, 5, 13, 10));
 		damage = isUpgraded ? 240 : 160;
 		properties.add(PropertyType.DAMAGE, damage);
 		pierce = isUpgraded ? 90 : 60;
