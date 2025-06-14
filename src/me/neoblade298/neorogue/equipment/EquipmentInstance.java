@@ -130,13 +130,13 @@ public class EquipmentInstance extends PriorityAction {
 			sendCooldownMessage(p);
 			return false;
 		}
-		if (data.getMana() < getEffectiveManaCost()) {
+		if (data.getMana() < getEffectiveManaCost() && getEffectiveManaCost() > 0) {
 			Util.displayError(data.getPlayer(),
 					"You need " + df.format(getEffectiveManaCost() - data.getMana()) + " more mana!");
 			return false;
 		}
 
-		if (data.getStamina() < getEffectiveStaminaCost()) {
+		if (data.getStamina() < getEffectiveStaminaCost() && getEffectiveStaminaCost() > 0) {
 			Util.displayError(data.getPlayer(),
 					"You need " + df.format(getEffectiveStaminaCost() - data.getStamina()) + " more stamina!");
 			return false;

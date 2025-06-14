@@ -24,6 +24,7 @@ import me.neoblade298.neocore.shared.droptables.DropTable;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.abilities.*;
+import me.neoblade298.neorogue.equipment.accessories.AshenWreath;
 import me.neoblade298.neorogue.equipment.accessories.BurningRing;
 import me.neoblade298.neorogue.equipment.accessories.CeruleanBracelet;
 import me.neoblade298.neorogue.equipment.accessories.EagleFeather;
@@ -76,6 +77,7 @@ import me.neoblade298.neorogue.equipment.armor.NullMagicMantle;
 import me.neoblade298.neorogue.equipment.armor.PhoenixfireMantle;
 import me.neoblade298.neorogue.equipment.armor.RedCloak;
 import me.neoblade298.neorogue.equipment.armor.SpikedPauldrons;
+import me.neoblade298.neorogue.equipment.armor.StarlightHood;
 import me.neoblade298.neorogue.equipment.artifacts.AlchemistBag;
 import me.neoblade298.neorogue.equipment.artifacts.AmuletOfOffering;
 import me.neoblade298.neorogue.equipment.artifacts.Anxiety;
@@ -159,6 +161,7 @@ import me.neoblade298.neorogue.equipment.offhands.LeadingKnife;
 import me.neoblade298.neorogue.equipment.offhands.LeatherBracer;
 import me.neoblade298.neorogue.equipment.offhands.MirrorBracer;
 import me.neoblade298.neorogue.equipment.offhands.PaladinsShield;
+import me.neoblade298.neorogue.equipment.offhands.PalmBlast;
 import me.neoblade298.neorogue.equipment.offhands.PocketWatch;
 import me.neoblade298.neorogue.equipment.offhands.PoisonPowder;
 import me.neoblade298.neorogue.equipment.offhands.RedFan;
@@ -433,6 +436,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Gravity(b);
 			new Grit(b);
 			new GroundLance(b);
+			new GrowingHex(b);
 			new GrowingSpark(b);
 			new HailCloak(b);
 			new Heartbeat(b);
@@ -474,6 +478,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new NightShade(b);
 			new Overflow(b);
 			new Overload(b);
+			new PalmBlast(b);
 			new Parry(b);
 			new PartingGift(b);
 			new PiercingShot(b);
@@ -552,6 +557,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Zone2(b);
 
 			// Accessories
+			new AshenWreath(b);
 			new BurningRing(b);
 			new CeruleanBracelet(b);
 			new EagleFeather(b);
@@ -604,6 +610,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new PhoenixfireMantle(b);
 			new RedCloak(b);
 			new SpikedPauldrons(b);
+			new StarlightHood(b);
 
 			// Offhands
 			new BlinkRune(b);

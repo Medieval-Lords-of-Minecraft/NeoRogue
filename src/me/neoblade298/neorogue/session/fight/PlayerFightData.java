@@ -752,20 +752,22 @@ public class PlayerFightData extends FightData {
 	}
 
 	private class PlayerUpdateTickAction extends TickAction {
+		private int tick = 0;
 		@Override
 		public TickResult run() {
 			addMana(manaRegen);
 
 			double staminaChange = staminaRegen;
-			if (p.isSprinting())
+			if (p.isSprinting() && tick > 2) // Sprint cost only applies 2 seconds of the fight starting
 				staminaChange -= sprintCost;
-			else if (hasSprinted)
+			else if (hasSprinted && tick > 2) // Player sprinted this tick, but is not currently sprinting
 				staminaChange -= sprintCost / 2;
 			addStamina(staminaChange);
 			hasSprinted = false;
 
 			updateBoardLines();
 			FightInstance.trigger(p, Trigger.PLAYER_TICK, null);
+			tick++;
 			return TickResult.KEEP;
 		}
 	}

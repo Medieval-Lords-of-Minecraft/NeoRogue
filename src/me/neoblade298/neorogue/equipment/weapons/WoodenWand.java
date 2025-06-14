@@ -31,7 +31,7 @@ public class WoodenWand extends Equipment {
 	
 	static {
 		tick = new ParticleContainer(Particle.END_ROD);
-		tick.count(4).spread(0.1, 0.1).speed(0.01);
+		tick.count(1).spread(0.1, 0.1).speed(0.01);
 	}
 	
 	public WoodenWand(boolean isUpgraded) {
@@ -63,7 +63,7 @@ public class WoodenWand extends Equipment {
 		private PlayerFightData data;
 
 		public WoodenWandProjectile(PlayerFightData data) {
-			super(1, 10, 3);
+			super(1, 10, 2);
 			this.size(0.2, 0.2);
 			this.data = data;
 			this.p = data.getPlayer();
@@ -72,7 +72,6 @@ public class WoodenWand extends Equipment {
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
 			tick.play(p, proj.getLocation());
-			tickSound.play(p, proj.getLocation());
 		}
 
 		@Override
@@ -84,6 +83,7 @@ public class WoodenWand extends Equipment {
 		@Override
 		public void onStart(ProjectileInstance proj) {
 			proj.applyProperties(data, properties);	
+			tickSound.play(p, proj.getLocation());
 		}
 	}
 

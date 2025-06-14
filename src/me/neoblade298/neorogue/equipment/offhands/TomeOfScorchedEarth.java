@@ -62,7 +62,7 @@ public class TomeOfScorchedEarth extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BOOK, "On right click, deal " + GlossaryTag.FIRE.tag(this, damage, true)
-				+ " to all enemies in a cone in front of you. If you hit less than <white>2</white> enemies, also "
+				+ " damage to all enemies in a cone in front of you. If you hit less than <white>2</white> enemies, also "
 				+ "deal " + GlossaryTag.FIRE.tag(this, selfDmg, false) + " to yourself.");
 	}
 }

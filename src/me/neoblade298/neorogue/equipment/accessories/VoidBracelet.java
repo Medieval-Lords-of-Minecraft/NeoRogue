@@ -33,7 +33,7 @@ public class VoidBracelet extends Equipment {
 			public void run() {
 				data.addRift(new Rift(data, p.getLocation(), 200));
 			}
-		}.runTaskTimer(NeoRogue.inst(), 100, 300));
+		}.runTaskTimer(NeoRogue.inst(), 100, 400));
 
 		data.addTrigger(id, Trigger.CREATE_RIFT, (pdata, in) -> {
 			data.applyStatus(StatusType.INTELLECT, data, inc, -1);
@@ -43,7 +43,7 @@ public class VoidBracelet extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.IRON_NUGGET, "Every <white>15s</white>, drop a " + GlossaryTag.RIFT.tag(this) + " [<white>5s</white>]. Gain " +
+		item = createItem(Material.IRON_NUGGET, "Every <white>20s</white>, drop a " + GlossaryTag.RIFT.tag(this) + " [<white>5s</white>]. Gain " +
 			GlossaryTag.INTELLECT.tag(this, inc, true) + " every time you create a rift.");
 	}
 }

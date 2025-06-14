@@ -36,7 +36,7 @@ public class YellowRing extends Equipment {
 				return TriggerResult.keep();
 			}
 			DealtDamageEvent ev = (DealtDamageEvent) in;
-			if (ev.getMeta().containsType(DamageType.ELECTRIFIED)) {
+			if (!ev.getMeta().containsType(DamageType.ELECTRIFIED)) {
 				FightData fd = FightInstance.getFightData(ev.getTarget());
 				fd.applyStatus(StatusType.ELECTRIFIED, data, elec, -1);
 			}
