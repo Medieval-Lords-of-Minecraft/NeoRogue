@@ -46,7 +46,7 @@ public class DrainWand extends Equipment {
 	public DrainWand(boolean isUpgraded) {
 		super(
 				ID, "Drain Wand", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(2, 0, isUpgraded ? 65 : 55, 1, DamageType.DARK, Sound.ITEM_AXE_SCRAPE)
+				EquipmentProperties.ofWeapon(2, 0, isUpgraded ? 45 : 35, 1, DamageType.DARK, Sound.ITEM_AXE_SCRAPE)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
 		shieldAmount = isUpgraded ? 3 : 2;

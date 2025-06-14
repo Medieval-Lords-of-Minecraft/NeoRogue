@@ -12,6 +12,7 @@ import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerCondition;
+import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public abstract class Bow extends Equipment {
@@ -79,12 +80,17 @@ public abstract class Bow extends Equipment {
 		PlayerFightData data = (PlayerFightData) proj.getOwner();
 
 		if (basicAttack) {
+			dm.setBasicAttack(true);
 			PreBasicAttackEvent ev = new PreBasicAttackEvent(target, dm, properties.get(PropertyType.KNOCKBACK), this, proj);
 			data.runActions(data, Trigger.PRE_BASIC_ATTACK, ev);
 		}
 		if (properties.contains(PropertyType.KNOCKBACK)) {
 			FightInstance.knockback(target,
 					proj.getVelocity().normalize().multiply(properties.get(PropertyType.KNOCKBACK) + ammo.getProperties().get(PropertyType.KNOCKBACK)));
+		}
+		if (basicAttack) {
+			BasicAttackEvent ev = new BasicAttackEvent(target, dm, properties.get(PropertyType.KNOCKBACK), this, proj);
+			data.runActions(data, Trigger.BASIC_ATTACK, ev);
 		}
 	}
 }

@@ -31,13 +31,13 @@ public class DarkScepter extends Equipment {
 
 	static {
 		tick = new ParticleContainer(Particle.SMOKE);
-		tick.count(5).spread(0.1, 0.1).speed(0.01);
+		tick.count(25).spread(0.1, 0.1).speed(0.01);
 	}
 
 	public DarkScepter(boolean isUpgraded) {
 		super(
 				ID, "Dark Scepter", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(3, 0, isUpgraded ? 110 : 80, 0.5, DamageType.DARK, Sound.ITEM_AXE_SCRAPE)
+				EquipmentProperties.ofWeapon(3, 0, isUpgraded ? 80 : 60, 0.5, DamageType.DARK, Sound.ITEM_AXE_SCRAPE)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
 	}
@@ -56,8 +56,15 @@ public class DarkScepter extends Equipment {
 			
 			RayTraceResult result = p.rayTraceBlocks(hitScanRange);
 			if (result != null) {
-				Location spawnLoc = result.getHitBlock().getLocation().add(0.5, -0.5, 0.5);
+				double yOff = 0.5;
 				Vector spawnVec = result.getHitBlockFace().getDirection();
+				if (spawnVec.getY() > 0) {
+					yOff = 0;
+				}
+				else if (spawnVec.getY() < 0) {
+					yOff = 1;
+				}
+				Location spawnLoc = result.getHitBlock().getLocation().add(0.5, yOff, 0.5);
 				spawnLoc = spawnLoc.add(spawnVec.multiply(0.75));
 				proj.start(data, spawnLoc, spawnVec);
 			}
@@ -72,6 +79,7 @@ public class DarkScepter extends Equipment {
 		public DarkRay(PlayerFightData data) {
 			super(0.5, 2, 1);
 			this.size(1.25, 1.25).pierce(-1);
+			this.ignore(false, true, false);
 			this.data = data;
 			this.p = data.getPlayer();
 		}

@@ -52,6 +52,7 @@ public class DamageMeta {
 	private HashMap<DamageBuffType, BuffList> damageBuffs = new HashMap<DamageBuffType, BuffList>(), defenseBuffs = new HashMap<DamageBuffType, BuffList>();
 	private HashMap<DamageType, Double> statSlices = new HashMap<DamageType, Double>();
 	private double ignoreShieldsDamage, damage;
+	private boolean isBasicAttack = false;
 	
 	public DamageMeta(FightData data) {
 		this.owner = data;
@@ -96,6 +97,7 @@ public class DamageMeta {
 		this.isSecondary = original.isSecondary;
 		this.origins = original.origins;
 		this.proj = original.proj;
+		this.isBasicAttack = original.isBasicAttack;
  		
  		// These are deep clones
 		this.damageBuffs = cloneBuffLists(original.damageBuffs);
@@ -618,6 +620,14 @@ public class DamageMeta {
 
 	public double getTotalDamage() {
 		return damage + ignoreShieldsDamage;
+	}
+
+	public boolean isBasicAttack() {
+		return isBasicAttack;
+	}
+
+	public void setBasicAttack(boolean isBasicAttack) {
+		this.isBasicAttack = isBasicAttack;
 	}
 
 	public boolean containsType(DamageCategory cat) {

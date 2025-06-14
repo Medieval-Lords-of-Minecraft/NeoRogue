@@ -45,7 +45,7 @@ public class FireStaff extends Equipment {
 	public FireStaff(boolean isUpgraded) {
 		super(
 				ID, "Fire Staff", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(8, 0, isUpgraded ? 110 : 80, 0.5, DamageType.FIRE, Sound.ITEM_AXE_SCRAPE)
+				EquipmentProperties.ofWeapon(8, 0, isUpgraded ? 80 : 60, 0.5, DamageType.FIRE, Sound.ITEM_AXE_SCRAPE)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
 	}

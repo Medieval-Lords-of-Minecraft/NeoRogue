@@ -19,7 +19,7 @@ public class MindGrowth2 extends Equipment {
 	private static final String ID = "mindGrowth2";
 	private double regen;
 	private int maxMana;
-	private static final int THRES = 5;
+	private static final int THRES = 3;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
 
 	public MindGrowth2(boolean isUpgraded) {

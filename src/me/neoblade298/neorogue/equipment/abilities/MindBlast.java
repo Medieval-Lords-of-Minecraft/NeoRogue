@@ -21,7 +21,7 @@ public class MindBlast extends Equipment {
 	private static final String ID = "mindBlast";
 	private double regen;
 	private int intel;
-	private static final int THRES = 5;
+	private static final int THRES = 3;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
 
 	public MindBlast(boolean isUpgraded) {

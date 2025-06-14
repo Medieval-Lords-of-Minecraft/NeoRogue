@@ -40,6 +40,7 @@ import me.neoblade298.neorogue.equipment.accessories.MinorStrengthRelic;
 import me.neoblade298.neorogue.equipment.accessories.RedRing;
 import me.neoblade298.neorogue.equipment.accessories.RingOfAnger;
 import me.neoblade298.neorogue.equipment.accessories.RingOfFortitude;
+import me.neoblade298.neorogue.equipment.accessories.RingOfManaflow;
 import me.neoblade298.neorogue.equipment.accessories.RingOfMentalism;
 import me.neoblade298.neorogue.equipment.accessories.RingOfNature;
 import me.neoblade298.neorogue.equipment.accessories.RingOfScalding;
@@ -48,6 +49,7 @@ import me.neoblade298.neorogue.equipment.accessories.SaboteursRing;
 import me.neoblade298.neorogue.equipment.accessories.SpiritShard;
 import me.neoblade298.neorogue.equipment.accessories.TopazRing;
 import me.neoblade298.neorogue.equipment.accessories.VoidBracelet;
+import me.neoblade298.neorogue.equipment.accessories.YellowRing;
 import me.neoblade298.neorogue.equipment.armor.ArcheryGlove;
 import me.neoblade298.neorogue.equipment.armor.AuricCape;
 import me.neoblade298.neorogue.equipment.armor.BlindingCloak;
@@ -71,6 +73,7 @@ import me.neoblade298.neorogue.equipment.armor.LeatherHood;
 import me.neoblade298.neorogue.equipment.armor.LightningCloak;
 import me.neoblade298.neorogue.equipment.armor.MagiciansHood;
 import me.neoblade298.neorogue.equipment.armor.NullMagicMantle;
+import me.neoblade298.neorogue.equipment.armor.PhoenixfireMantle;
 import me.neoblade298.neorogue.equipment.armor.RedCloak;
 import me.neoblade298.neorogue.equipment.armor.SpikedPauldrons;
 import me.neoblade298.neorogue.equipment.artifacts.AlchemistBag;
@@ -149,6 +152,7 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.equipment.offhands.ChasingDagger;
 import me.neoblade298.neorogue.equipment.offhands.ConductiveArmguard;
 import me.neoblade298.neorogue.equipment.offhands.HastyShield;
+import me.neoblade298.neorogue.equipment.offhands.HavenTome;
 import me.neoblade298.neorogue.equipment.offhands.IcicleTome;
 import me.neoblade298.neorogue.equipment.offhands.InsanityPowder;
 import me.neoblade298.neorogue.equipment.offhands.LeadingKnife;
@@ -265,6 +269,7 @@ import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
+import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.WeaponSwingEvent;
 import net.kyori.adventure.text.Component;
@@ -431,6 +436,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new GrowingSpark(b);
 			new HailCloak(b);
 			new Heartbeat(b);
+			new HexCurse(b);
+			new HexCurse2(b);
 			new HexingShot(b);
 			new HoldTheLine(b);
 			new InducePanic(b);
@@ -561,6 +568,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new RedRing(b);
 			new RingOfAnger(b);
 			new RingOfFortitude(b);
+			new RingOfManaflow(b);
 			new RingOfMentalism(b);
 			new RingOfNature(b);
 			new RingOfScalding(b);
@@ -569,6 +577,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new SpiritShard(b);
 			new TopazRing(b);
 			new VoidBracelet(b);
+			new YellowRing(b);
 
 			// Armor
 			new ArcheryGlove(b);
@@ -592,6 +601,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new LightningCloak(b);
 			new MagiciansHood(b);
 			new NullMagicMantle(b);
+			new PhoenixfireMantle(b);
 			new RedCloak(b);
 			new SpikedPauldrons(b);
 
@@ -602,6 +612,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new ConductiveArmguard(b);
 			new GuardingRune(b);
 			new HastyShield(b);
+			new HavenTome(b);
 			new IcicleTome(b);
 			new InsanityPowder(b);
 			new LeadingKnife(b);
@@ -1323,23 +1334,23 @@ public abstract class Equipment implements Comparable<Equipment> {
 	}
 
 	public void weaponDamage(Player p, PlayerFightData data, LivingEntity target, double damage, double knockback) {
-		DamageMeta dm = new DamageMeta(data, damage, properties.getType());
-		PreBasicAttackEvent ev = new PreBasicAttackEvent(target, dm, knockback, this, null);
-		data.runActions(data, Trigger.PRE_BASIC_ATTACK, ev);
-		if (knockback != 0) {
-			FightInstance.knockback(p, target, knockback);
-		}
-		FightInstance.dealDamage(dm, target);
+		weaponDamage(p, data, target, new DamageMeta(data, damage, properties.getType()), knockback);
 	}
 
 	public void weaponDamage(Player p, PlayerFightData data, LivingEntity target, DamageMeta dm) {
-		double knockback = properties.get(PropertyType.KNOCKBACK);
+		weaponDamage(p, data, target, dm, properties.get(PropertyType.KNOCKBACK));
+	}
+
+	public void weaponDamage(Player p, PlayerFightData data, LivingEntity target, DamageMeta dm, double knockback) {
+		dm.setBasicAttack(true);
 		PreBasicAttackEvent ev = new PreBasicAttackEvent(target, dm, knockback, this, null);
 		data.runActions(data, Trigger.PRE_BASIC_ATTACK, ev);
 		if (knockback != 0) {
 			FightInstance.knockback(p, target, knockback);
 		}
 		FightInstance.dealDamage(dm, target);
+		BasicAttackEvent ev2 = new BasicAttackEvent(target, dm, knockback, this, null);
+		data.runActions(data, Trigger.BASIC_ATTACK, ev2);
 	}
 
 	public void applyProjectileOnHit(LivingEntity target, ProjectileInstance proj) {
@@ -1355,33 +1366,20 @@ public abstract class Equipment implements Comparable<Equipment> {
 		applyProjectileOnHit(target, proj, hitBarrier, true, properties.get(PropertyType.KNOCKBACK));
 	}
 
+	public void applyProjectileOnHit(LivingEntity target, ProjectileInstance proj, DamageMeta dm, Barrier hitBarrier,
+			boolean basicAttack) {
+		applyProjectileOnHit(target, proj, dm, hitBarrier, basicAttack, properties.contains(PropertyType.KNOCKBACK) ? properties.get(PropertyType.KNOCKBACK) : 0);
+	}
+
 	public void applyProjectileOnHit(LivingEntity target, ProjectileInstance proj, Barrier hitBarrier,
 			boolean basicAttack, double knockback) {
 		PlayerFightData data = (PlayerFightData) proj.getOwner();
-		DamageMeta dm = new DamageMeta(data, properties.get(PropertyType.DAMAGE), properties.getType(),
-				DamageOrigin.PROJECTILE, proj);
-
-		dm.addDamageBuffLists(proj.getBuffLists());
-		if (hitBarrier != null) {
-			dm.addDefenseBuffLists(hitBarrier.getBuffLists());
-		}
-
-		if (basicAttack) {
-			PreBasicAttackEvent ev = new PreBasicAttackEvent(target, dm, knockback, this, null);
-			data.runActions(data, Trigger.PRE_BASIC_ATTACK, ev);
-		}
-		if (properties.contains(PropertyType.KNOCKBACK)) {
-			FightInstance.knockback(target, proj.getVelocity().normalize().multiply(knockback));
-		}
-		FightInstance.dealDamage(dm, target);
-	}
-
-	public void applyProjectileOnHit(LivingEntity target, ProjectileInstance proj, DamageMeta dm, Barrier hitBarrier) {
-		applyProjectileOnHit(target, proj, dm, hitBarrier, true);
+		DamageMeta dm = new DamageMeta(data, properties.get(PropertyType.DAMAGE), properties.getType(), DamageOrigin.PROJECTILE, proj);
+		applyProjectileOnHit(target, proj, dm, hitBarrier, basicAttack, knockback);
 	}
 
 	public void applyProjectileOnHit(LivingEntity target, ProjectileInstance proj, DamageMeta dm, Barrier hitBarrier,
-			boolean basicAttack) {
+			boolean basicAttack, double knockback) {
 		PlayerFightData data = (PlayerFightData) proj.getOwner();
 		if (!proj.getBuffLists().isEmpty()) {
 			dm.addDamageBuffLists(proj.getBuffLists());
@@ -1389,16 +1387,24 @@ public abstract class Equipment implements Comparable<Equipment> {
 		if (hitBarrier != null) {
 			dm.addDefenseBuffLists(hitBarrier.getBuffLists());
 		}
+
 		if (basicAttack) {
-			PreBasicAttackEvent ev = new PreBasicAttackEvent(target, dm, properties.get(PropertyType.KNOCKBACK), this,
-					null);
+			dm.setBasicAttack(true);
+			PreBasicAttackEvent ev = new PreBasicAttackEvent(target, dm, knockback, this, proj);
 			data.runActions(data, Trigger.PRE_BASIC_ATTACK, ev);
 		}
 		if (properties.contains(PropertyType.KNOCKBACK)) {
-			FightInstance.knockback(target,
-					proj.getVelocity().normalize().multiply(properties.get(PropertyType.KNOCKBACK)));
+			FightInstance.knockback(target, proj.getVelocity().normalize().multiply(knockback));
 		}
 		FightInstance.dealDamage(dm, target);
+		if (basicAttack) {
+			BasicAttackEvent ev2 = new BasicAttackEvent(target, dm, knockback, this, proj);
+			data.runActions(data, Trigger.BASIC_ATTACK, ev2);
+		}
+	}
+
+	public void applyProjectileOnHit(LivingEntity target, ProjectileInstance proj, DamageMeta dm, Barrier hitBarrier) {
+		applyProjectileOnHit(target, proj, dm, hitBarrier, true);
 	}
 
 	public boolean isCursed() {
