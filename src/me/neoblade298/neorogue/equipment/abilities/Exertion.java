@@ -54,10 +54,12 @@ public class Exertion extends Equipment {
 			Sounds.fire.play(p, p);
 			cone.play(pc, p.getLocation(), LocalAxes.usingEyeLocation(p), null);
 			LinkedList<LivingEntity> trgs = TargetHelper.getEntitiesInCone(p, tp);
+			boolean kill = false;
 			for (LivingEntity ent : trgs) {
 				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE), ent);
+				if (ent.getHealth() <= 0) kill = true;
 			}
-			FightInstance.dealDamage(new DamageMeta(data, selfDmg, DamageType.FIRE), p);
+			if (!kill) FightInstance.dealDamage(new DamageMeta(data, selfDmg, DamageType.FIRE), p);
 			return TriggerResult.keep();
 		}));
 	}
@@ -67,6 +69,7 @@ public class Exertion extends Equipment {
 		item = createItem(Material.BLAZE_POWDER,
 				"On cast, deal " + GlossaryTag.FIRE.tag(this, damage, true)
 						+ " to all enemies in a cone in front of you, but " + "deal "
-						+ GlossaryTag.FIRE.tag(this, selfDmg, false) + " to yourself.");
+						+ GlossaryTag.FIRE.tag(this, selfDmg, false) + " to yourself if you don't kill " +
+						"at least one enemy with it.");
 	}
 }

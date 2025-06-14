@@ -43,6 +43,11 @@ public class HexCurse extends Equipment {
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(5, 0, 14, 0));
 				damage = isUpgraded ? 105 : 70;
 	}
+
+	public void setupReforges() {
+		addReforge(CalculatingGaze.get(), HexCurse2.get(), CollectionHex.get());
+		addReforge(Intuition.get(), GrowingHex.get());
+	}
 	
 	public static Equipment get() {
 		return Equipment.get(ID, false);
