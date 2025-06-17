@@ -37,6 +37,10 @@ public abstract class Marker {
 		return loc;
 	}
 
+	public void setLocation(Location loc) {
+		this.loc = loc;
+	}
+
 	public int getDuration() {
 		return durationTicks;
 	}

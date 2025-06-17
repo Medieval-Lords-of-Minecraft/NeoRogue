@@ -37,7 +37,7 @@ public class Heartbeat extends Equipment {
 	
 	public Heartbeat(boolean isUpgraded) {
 		super(ID, "Heartbeat", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 0, 0, 0, tp.range));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 0, 10, 0, tp.range));
 				damage = isUpgraded ? 60 : 40;
 	}
 	
@@ -47,13 +47,21 @@ public class Heartbeat extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		ActionMeta am = new ActionMeta();
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			Sounds.equip.play(p, p);
-			data.addRift(new Rift(data, p.getLocation(), 300));
+			if (am.getObject() != null) {
+				Rift old = (Rift) am.getObject();
+				old.setLocation(p.getLocation());
+			}
+			else {
+				Rift r = new Rift(data, p.getLocation(), -1);
+				am.setObject(r);
+				data.addRift(r);
+			}
 			return TriggerResult.remove();
 		}));
 
-		ActionMeta am = new ActionMeta();
 		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
 			am.addCount(1);
 			if (am.getCount() >= 3) {
@@ -73,7 +81,7 @@ public class Heartbeat extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.CHORUS_FRUIT,
-				"Once per fight, drop a " + GlossaryTag.RIFT.tag(this) + " [<white>15s</white>]. Every <white>3s</white>, deal " +
+				"On first cast, drop a permanent " + GlossaryTag.RIFT.tag(this) + ". This rift gets moved to you on recast. Every <white>3s</white>, deal " +
 					GlossaryTag.DARK.tag(this, damage, true) + " to all enemies near every " + GlossaryTag.RIFT.tag(this) + ".");
 	}
 }
