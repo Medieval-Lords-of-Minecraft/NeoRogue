@@ -12,42 +12,34 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.equipment.abilities.CalculatingGaze;
-import me.neoblade298.neorogue.equipment.abilities.Manabending;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
+import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class WoodenWand extends Equipment {
-	private static final String ID = "woodenWand";
-	private static final ParticleContainer tick;
-	private static final SoundContainer tickSound = new SoundContainer(Sound.BLOCK_AMETHYST_BLOCK_BREAK),
+public class StonyWand extends Equipment {
+	private static final String ID = "stonyWand";
+	private static final ParticleContainer tick = new ParticleContainer(Particle.BLOCK).blockData(Material.STONE.createBlockData());
+	private static final SoundContainer start = new SoundContainer(Sound.BLOCK_STONE_BREAK),
 			hit = new SoundContainer(Sound.BLOCK_CHAIN_PLACE);
-	
-	static {
-		tick = new ParticleContainer(Particle.SMOKE);
-		tick.count(5).spread(0.1, 0.1).speed(0.01);
-	}
-	
-	public WoodenWand(boolean isUpgraded) {
+	private int conc;
+
+	public StonyWand(boolean isUpgraded) {
 		super(
-				ID , "Wooden Wand", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(2, 0, isUpgraded ? 35 : 25, 1, DamageType.DARK, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
+				ID , "Stony Wand", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
+				EquipmentProperties.ofWeapon(2, 0, isUpgraded ? 45 : 35, 1, DamageType.EARTHEN, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
-	}
-
-	@Override
-	public void setupReforges() {
-		addReforge(CalculatingGaze.get(), StonyWand.get());
-		addReforge(Manabending.get(), ManaEater.get(), WandOfIgnition.get());
+		conc = isUpgraded ? 20 : 15;
 	}
 	
 	public static Equipment get() {
@@ -56,7 +48,7 @@ public class WoodenWand extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ProjectileGroup proj = new ProjectileGroup(new WoodenWandProjectile(data));
+		ProjectileGroup proj = new ProjectileGroup(new StonyWandProjectile(data));
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (d, inputs) -> {
 			if (!canUseWeapon(data) || !data.canBasicAttack(EquipSlot.HOTBAR))
 				return TriggerResult.keep();
@@ -66,11 +58,11 @@ public class WoodenWand extends Equipment {
 		});
 	}
 	
-	private class WoodenWandProjectile extends Projectile {
+	private class StonyWandProjectile extends Projectile {
 		private Player p;
 		private PlayerFightData data;
 
-		public WoodenWandProjectile(PlayerFightData data) {
+		public StonyWandProjectile(PlayerFightData data) {
 			super(1, 10, 2);
 			this.size(0.2, 0.2);
 			this.data = data;
@@ -85,18 +77,19 @@ public class WoodenWand extends Equipment {
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			Location loc = hit.getEntity().getLocation();
-			WoodenWand.hit.play(p, loc);
+			StonyWand.hit.play(p, loc);
+			FightInstance.applyStatus(hit.getEntity(), StatusType.CONCUSSED, data, conc, -1);
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
 			proj.applyProperties(data, properties);	
-			tickSound.play(p, proj.getLocation());
+			start.play(p, proj.getLocation());
 		}
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STICK);
+		item = createItem(Material.STONE_HOE, "Applies " + GlossaryTag.CONCUSSED.tag(this, conc, true) + " on hit.");
 	}
 }

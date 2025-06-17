@@ -2,52 +2,40 @@ package me.neoblade298.neorogue.equipment.weapons;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.equipment.abilities.CalculatingGaze;
-import me.neoblade298.neorogue.equipment.abilities.Manabending;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class WoodenWand extends Equipment {
-	private static final String ID = "woodenWand";
-	private static final ParticleContainer tick;
-	private static final SoundContainer tickSound = new SoundContainer(Sound.BLOCK_AMETHYST_BLOCK_BREAK),
-			hit = new SoundContainer(Sound.BLOCK_CHAIN_PLACE);
+public class OldStaff extends Equipment {
+	private static final String ID = "oldStaff";
+	private static final ParticleContainer tick = new ParticleContainer(org.bukkit.Particle.ASH).count(5).spread(0.1, 0.1).speed(0.01);
+	private static final SoundContainer hit = new SoundContainer(Sound.BLOCK_CHAIN_PLACE);
+	private int bonus;
 	
-	static {
-		tick = new ParticleContainer(Particle.SMOKE);
-		tick.count(5).spread(0.1, 0.1).speed(0.01);
-	}
-	
-	public WoodenWand(boolean isUpgraded) {
+	public OldStaff(boolean isUpgraded) {
 		super(
-				ID , "Wooden Wand", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(2, 0, isUpgraded ? 35 : 25, 1, DamageType.DARK, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
+				ID , "Old Staff", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
+				EquipmentProperties.ofWeapon(1, 0, 20, 1.3, DamageType.DARK, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
 		);
-		properties.addUpgrades(PropertyType.DAMAGE);
-	}
-
-	@Override
-	public void setupReforges() {
-		addReforge(CalculatingGaze.get(), StonyWand.get());
-		addReforge(Manabending.get(), ManaEater.get(), WandOfIgnition.get());
+		bonus = isUpgraded ? 30 : 20;
 	}
 	
 	public static Equipment get() {
@@ -85,18 +73,21 @@ public class WoodenWand extends Equipment {
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			Location loc = hit.getEntity().getLocation();
-			WoodenWand.hit.play(p, loc);
+			OldStaff.hit.play(p, loc);
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			proj.applyProperties(data, properties);	
-			tickSound.play(p, proj.getLocation());
+			double damage = properties.get(PropertyType.DAMAGE);
+			if (data.getMana() < data.getMaxMana() * 0.25) {
+				damage += bonus;
+			}
+			proj.addDamageSlice(new DamageSlice(data, damage, DamageType.DARK));
 		}
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STICK);
+		item = createItem(Material.DEAD_BUSH, "Deals an additional " + DescUtil.yellow(bonus) + " damage when below <white>25%</white> mana.");
 	}
 }

@@ -8,46 +8,38 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.equipment.abilities.CalculatingGaze;
-import me.neoblade298.neorogue.equipment.abilities.Manabending;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
+import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class WoodenWand extends Equipment {
-	private static final String ID = "woodenWand";
-	private static final ParticleContainer tick;
-	private static final SoundContainer tickSound = new SoundContainer(Sound.BLOCK_AMETHYST_BLOCK_BREAK),
-			hit = new SoundContainer(Sound.BLOCK_CHAIN_PLACE);
-	
-	static {
-		tick = new ParticleContainer(Particle.SMOKE);
-		tick.count(5).spread(0.1, 0.1).speed(0.01);
-	}
-	
-	public WoodenWand(boolean isUpgraded) {
+public class WandOfIgnition extends Equipment {
+	private static final String ID = "wandOfIgnition";
+	private static final ParticleContainer tick = new ParticleContainer(Particle.FLAME);
+	private int burn, selfburn;
+
+	public WandOfIgnition(boolean isUpgraded) {
 		super(
-				ID , "Wooden Wand", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(2, 0, isUpgraded ? 35 : 25, 1, DamageType.DARK, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
+				ID , "Wand of Ignition", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
+				EquipmentProperties.ofWeapon(2, 0, isUpgraded ? 60 : 45, 1, DamageType.FIRE, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
-	}
-
-	@Override
-	public void setupReforges() {
-		addReforge(CalculatingGaze.get(), StonyWand.get());
-		addReforge(Manabending.get(), ManaEater.get(), WandOfIgnition.get());
+		burn = isUpgraded ? 40 : 30;
+		selfburn = 5;
 	}
 	
 	public static Equipment get() {
@@ -56,7 +48,7 @@ public class WoodenWand extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ProjectileGroup proj = new ProjectileGroup(new WoodenWandProjectile(data));
+		ProjectileGroup proj = new ProjectileGroup(new WandOfIgnitionProjectile(data));
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (d, inputs) -> {
 			if (!canUseWeapon(data) || !data.canBasicAttack(EquipSlot.HOTBAR))
 				return TriggerResult.keep();
@@ -66,11 +58,12 @@ public class WoodenWand extends Equipment {
 		});
 	}
 	
-	private class WoodenWandProjectile extends Projectile {
+	private class WandOfIgnitionProjectile extends Projectile {
 		private Player p;
 		private PlayerFightData data;
+		private static final SoundContainer start = Sounds.fire, hit = new SoundContainer(Sound.BLOCK_FIRE_EXTINGUISH);
 
-		public WoodenWandProjectile(PlayerFightData data) {
+		public WandOfIgnitionProjectile(PlayerFightData data) {
 			super(1, 10, 2);
 			this.size(0.2, 0.2);
 			this.data = data;
@@ -85,18 +78,21 @@ public class WoodenWand extends Equipment {
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			Location loc = hit.getEntity().getLocation();
-			WoodenWand.hit.play(p, loc);
+			WandOfIgnitionProjectile.hit.play(p, loc);
+			FightInstance.applyStatus(hit.getEntity(), StatusType.CONCUSSED, data, burn, -1);
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
 			proj.applyProperties(data, properties);	
-			tickSound.play(p, proj.getLocation());
+			start.play(p, proj.getLocation());
+			FightInstance.applyStatus(p, StatusType.BURN, data, selfburn, -1);
 		}
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STICK);
+		item = createItem(Material.BLAZE_ROD, "Applies " + GlossaryTag.BURN.tag(this, burn, true) + " on hit. Applies "
+		+ GlossaryTag.BURN.tag(this, selfburn, false) + " to you when used.");
 	}
 }
