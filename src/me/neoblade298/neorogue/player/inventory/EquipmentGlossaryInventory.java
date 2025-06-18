@@ -13,6 +13,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -20,8 +21,12 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextDecoration.State;
 
 public class EquipmentGlossaryInventory extends GlossaryInventory {
-	private static final String ARROW_DOWN2 = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDM3ODYyY2RjMTU5OTk4ZWQ2YjZmZGNjYWFhNDY3NTg2N2Q0NDg0ZGI1MTJhODRjMzY3ZmFiZjRjYWY2MCJ9fX0=";
-	Equipment eq;
+	private static final String ARROW_DOWN2 = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDM3ODYyY2RjMTU5OTk4ZWQ2YjZmZGNjYWFhNDY3NTg2N2Q0NDg0ZGI1MTJhODRjMzY3ZmFiZjRjYWY2MCJ9fX0=",
+	ARROW_LEFT = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGExZDU1YjNmOTg5NDEwYTM0NzUyNjUwZTI0OGM5YjZjMTc4M2E3ZWMyYWEzZmQ3Nzg3YmRjNGQwZTYzN2QzOSJ9fX0=",
+	ARROW_RIGHT = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmE4N2UzZDk2ZTFjZmViOWNjZmIzYmE1M2EyMTdmYWY1MjQ5ZTI4NTUzM2IyNzFhMmZiMjg0YzMwZGJkOTgyOSJ9fX0=";
+	private Equipment eq;
+	private int page = 0;
+	private static final int PAGE_LEFT = 9, PAGE_RIGHT = 17;
 	public EquipmentGlossaryInventory(Player viewer, Equipment equip, CoreInventory prev) {
 		super(viewer, calculateSize(equip), equip.getUnupgraded().getDisplay(), prev);
 		this.eq = equip.getUnupgraded();
@@ -39,19 +44,45 @@ public class EquipmentGlossaryInventory extends GlossaryInventory {
 				break;
 			}
 		}
+		setupReforges(contents);
+		inv.setContents(contents);
+	}
+
+	private void setupReforges(ItemStack[] contents) {
+		// First clear out everything
+		for (int i = 18; i < contents.length; i++) {
+			contents[i] = null;
+		}
 		
 		// Reforge options
 		if (!eq.getReforgeOptions().isEmpty()) {
+			int numReforges = eq.getReforgeOptions().size();
 			for (int i = 9; i < 18; i++) {
-				contents[i] = CoreInventory.createButton(Material.BLACK_STAINED_GLASS_PANE, Component.text("Reforge Options:"));
+				contents[i] = CoreInventory.createButton(Material.BLACK_STAINED_GLASS_PANE,
+						Component.text("Reforge Options:"));
+			}
+			if (numReforges > (page + 1) * 9) {
+				contents[PAGE_RIGHT] = CoreInventory.createButton(ARROW_RIGHT, Component.text("Next Page"));
+			}
+			if (page > 0) {
+				contents[PAGE_LEFT] = CoreInventory.createButton(ARROW_LEFT, Component.text("Previous Page"));
 			}
 
 			int col = 0;
+			int entry = 0;
 			for (Entry<Equipment, Equipment[]> ent : eq.getReforgeOptions().entrySet()) {
+				entry++;
+				if (entry <= page * 9) {
+					continue;
+				}
+				if (entry > (page + 1) * 9) {
+					break;
+				}
 				int row = 2;
 				contents[(row++ * 9) + col] = ent.getKey().getItem();
-				contents[(row++ * 9) + col] = CoreInventory.createButton(ARROW_DOWN2, 
-					Component.text("Combine ").append(ent.getKey().getDisplay()).append(Component.text(" with ").append(eq.getDisplay()).append(Component.text(":"))));
+				contents[(row++ * 9) + col] = CoreInventory.createButton(ARROW_DOWN2,
+						Component.text("Combine ").append(ent.getKey().getDisplay())
+								.append(Component.text(" with ").append(eq.getDisplay()).append(Component.text(":"))));
 				for (Equipment option : ent.getValue()) {
 					if (row > 5) {
 						row = 4;
@@ -62,7 +93,6 @@ public class EquipmentGlossaryInventory extends GlossaryInventory {
 				col++;
 			}
 		}
-		inv.setContents(contents);
 	}
 
 	private ItemStack createTagsItem(Equipment eq) {
@@ -110,6 +140,22 @@ public class EquipmentGlossaryInventory extends GlossaryInventory {
 					new EquipmentParentsGlossaryInventory(p, eq, prev);
 				}
 			}.runTask(NeoRogue.inst());
+			return;
+		}
+		if (e.getSlot() == PAGE_LEFT && page > 0) {
+			page--;
+			ItemStack[] contents = inv.getContents();
+			setupReforges(contents);
+			inv.setContents(contents);
+			Sounds.turnPage.play(p, p);
+			return;
+		}
+		if (e.getSlot() == PAGE_RIGHT && eq.getReforgeOptions().size() > (page + 1) * 9) {
+			page++;
+			ItemStack[] contents = inv.getContents();
+			setupReforges(contents);
+			inv.setContents(contents);
+			Sounds.turnPage.play(p, p);
 			return;
 		}
 		if (!e.isRightClick()) return;
