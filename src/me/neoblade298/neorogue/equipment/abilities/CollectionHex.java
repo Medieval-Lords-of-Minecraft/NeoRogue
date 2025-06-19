@@ -29,12 +29,12 @@ import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.GenericStatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class CollectionHex extends Equipment {
 	private static final String ID = "collectionHex";
-	private static final ParticleContainer pc = new ParticleContainer(Particle.SMOKE).offsetY(0.5).spread(0.5, 0.5).count(10),
+	private static final ParticleContainer pc = new ParticleContainer(Particle.SMOKE).offsetY(0.5).spread(0.5, 0.5).count(30),
 			cons = pc.clone().particle(Particle.SOUL);
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_GUARDIAN_HURT);
 	private int damage, shields, mana;
@@ -66,8 +66,8 @@ public class CollectionHex extends Equipment {
 			return TriggerResult.keep();
 		}));
 
-		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
-			BasicAttackEvent ev = (BasicAttackEvent) in;
+		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
+			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 			FightData fd = FightInstance.getFightData(ev.getTarget());
 			if (fd.hasStatus(statusName)) {
 				Location loc = ev.getTarget().getLocation();
@@ -77,6 +77,8 @@ public class CollectionHex extends Equipment {
 						Buff.increase(data, damage, BuffStatTracker.damageBuffAlly(id, this)));
 				data.addMana(mana);
 				data.addSimpleShield(p.getUniqueId(), shields, 100);
+				Status s = Status.createByGenericType(GenericStatusType.BASIC, statusName, fd, true);
+				fd.applyStatus(s, data, -1, -1);
 			}
 			return TriggerResult.keep();
 		});
@@ -90,7 +92,7 @@ public class CollectionHex extends Equipment {
 			if (!fd.hasStatus(statusName)) {
 				Sounds.infect.play(p, loc);
 				pc.play(p, loc);
-				Status s = Status.createByGenericType(GenericStatusType.BASIC, statusName, fd);
+				Status s = Status.createByGenericType(GenericStatusType.BASIC, statusName, fd, true);
 				fd.applyStatus(s, data, 1, 160);
 			}
 			return TriggerResult.keep();

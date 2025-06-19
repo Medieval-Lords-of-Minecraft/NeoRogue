@@ -24,12 +24,12 @@ import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.GenericStatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class HexCurse2 extends Equipment {
 	private static final String ID = "hexCurse2";
-	private static final ParticleContainer pc = new ParticleContainer(Particle.SMOKE).offsetY(0.5).spread(0.5, 0.5).count(10),
+	private static final ParticleContainer pc = new ParticleContainer(Particle.SMOKE).offsetY(0.5).spread(0.5, 0.5).count(30),
 			cons = pc.clone().particle(Particle.SOUL);
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_GUARDIAN_HURT);
 	private int damage;
@@ -37,7 +37,7 @@ public class HexCurse2 extends Equipment {
 	public HexCurse2(boolean isUpgraded) {
 		super(ID, "Hex Curse II", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
 				EquipmentType.ABILITY, EquipmentProperties.none());
-				damage = isUpgraded ? 105 : 70;
+				damage = isUpgraded ? 75 : 50;
 	}
 	
 	public static Equipment get() {
@@ -48,8 +48,8 @@ public class HexCurse2 extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		String statusName = p.getName() + "-hexcurse";
 
-		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
-			BasicAttackEvent ev = (BasicAttackEvent) in;
+		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
+			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 			FightData fd = FightInstance.getFightData(ev.getTarget());
 			if (fd.hasStatus(statusName)) {
 				Location loc = ev.getTarget().getLocation();
@@ -57,6 +57,8 @@ public class HexCurse2 extends Equipment {
 				cons.play(p, loc);
 				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
 						Buff.increase(data, damage, BuffStatTracker.damageBuffAlly(id, this)));
+				Status s = Status.createByGenericType(GenericStatusType.BASIC, statusName, fd, true);
+				fd.applyStatus(s, data, -1, -1);
 			}
 			return TriggerResult.keep();
 		});
@@ -70,7 +72,7 @@ public class HexCurse2 extends Equipment {
 			if (!fd.hasStatus(statusName)) {
 				Sounds.infect.play(p, loc);
 				pc.play(p, loc);
-				Status s = Status.createByGenericType(GenericStatusType.BASIC, statusName, fd);
+				Status s = Status.createByGenericType(GenericStatusType.BASIC, statusName, fd, true);
 				fd.applyStatus(s, data, 1, 160);
 			}
 			return TriggerResult.keep();

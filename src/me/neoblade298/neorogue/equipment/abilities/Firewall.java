@@ -38,15 +38,14 @@ public class Firewall extends Equipment {
 	private static final String ID = "firewall";
 	private int damage, burn;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME),
-		wall = pc.clone().spread(0.1, 2).count(10).speed(0.1).offsetY(1);
-	private static final TargetProperties tp = TargetProperties.line(10, 2, TargetType.BOTH);
+		wall = pc.clone().spread(0.2, 2).count(15).offsetY(1);
+	private static final TargetProperties tp = TargetProperties.line(10, 4, true, TargetType.BOTH).canTargetSource(true);
 	
 	public Firewall(boolean isUpgraded) {
 		super(ID, "Firewall", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 5, 22, tp.range));
 		damage = isUpgraded ? 60 : 40;
 		burn = isUpgraded ? 20 : 10;
-		pc.count(10).spread(0.5, 0.5).speed(0.2);
 	}
 	
 	public static Equipment get() {
@@ -82,6 +81,7 @@ public class Firewall extends Equipment {
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
+
 		}
 		
 		@Override
@@ -93,14 +93,14 @@ public class Firewall extends Equipment {
 
 		@Override
 		public void onFizzle(ProjectileInstance proj) {
-			end = proj.getLocation();
+			end = proj.getLocation().clone();
 			end.setY(start.getY());
 			activateFirewall();
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			start = proj.getLocation();
+			start = proj.getLocation().clone();
 			Sounds.fire.play(p, start);
 		}
 
@@ -110,6 +110,7 @@ public class Firewall extends Equipment {
 				public void run() {
 					ParticleUtil.drawLine(p, wall, start, end, 1);
 					for (LivingEntity ent : TargetHelper.getEntitiesInLine(p, start, end, tp)) {
+						System.out.println(ent.getName());
 						if (!(ent instanceof Player)) {
 							FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE), ent);
 						}

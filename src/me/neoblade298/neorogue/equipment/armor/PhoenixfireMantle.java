@@ -9,11 +9,11 @@ import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
-import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 
 public class PhoenixfireMantle extends Equipment {
 	private static final String ID = "phoenixfireMantle";
@@ -31,9 +31,9 @@ public class PhoenixfireMantle extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
-		data.addTrigger(id, Trigger.DEALT_DAMAGE, (pdata, in) -> {
-			ReceivedDamageEvent ev = (ReceivedDamageEvent) in;
-			if (ev.getMeta().containsType(DamageCategory.FIRE)) {
+		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
+			ApplyStatusEvent ev = (ApplyStatusEvent) in;
+			if (ev.isStatus(StatusType.BURN) && !(ev.getTarget() instanceof PlayerFightData)) {
 				am.addCount(1);
 
 				if (am.getCount() >= thres) {
@@ -48,6 +48,6 @@ public class PhoenixfireMantle extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BLAZE_POWDER, "Every " + DescUtil.yellow(thres) + " times you deal " + GlossaryTag.FIRE.tag(this) + " damage, heal for " + DescUtil.white(heal) + ".");
+		item = createItem(Material.BLAZE_POWDER, "Every " + DescUtil.yellow(thres) + " times you apply " + GlossaryTag.BURN.tag(this) + ", heal for " + DescUtil.white(heal) + ".");
 	}
 }

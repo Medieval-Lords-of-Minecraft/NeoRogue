@@ -60,13 +60,13 @@ public class ChainLightningWand extends Equipment {
 				return TriggerResult.keep();
 			LivingEntity target = TargetHelper.getNearestInSight(p, hitScan);
 			if (target != null) {
+				weaponSwing(p, data);
 				weaponDamage(p, data, target);
 				drawCache = Effect.calculateCache(p, p.getLocation(), Audience.NONE, ParticleContainer.HIDE_TAG);
 				drawChains(p.getLocation(), target.getLocation());
 				chainHit(p, data, target, chainAmount);
 			}
 
-			weaponSwing(p, data);
 			return TriggerResult.keep();
 		});
 	}

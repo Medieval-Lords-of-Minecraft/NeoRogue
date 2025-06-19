@@ -55,6 +55,7 @@ import me.neoblade298.neorogue.equipment.armor.ArcheryGlove;
 import me.neoblade298.neorogue.equipment.armor.AuricCape;
 import me.neoblade298.neorogue.equipment.armor.BlindingCloak;
 import me.neoblade298.neorogue.equipment.armor.Brightcrown;
+import me.neoblade298.neorogue.equipment.armor.BurningMantle;
 import me.neoblade298.neorogue.equipment.armor.CalmingHood;
 import me.neoblade298.neorogue.equipment.armor.ClothBindings;
 import me.neoblade298.neorogue.equipment.armor.ElbowBrace;
@@ -75,6 +76,7 @@ import me.neoblade298.neorogue.equipment.armor.LeatherHood;
 import me.neoblade298.neorogue.equipment.armor.LightningCloak;
 import me.neoblade298.neorogue.equipment.armor.MagiciansHood;
 import me.neoblade298.neorogue.equipment.armor.NullMagicMantle;
+import me.neoblade298.neorogue.equipment.armor.NullifyingCloak;
 import me.neoblade298.neorogue.equipment.armor.PhoenixfireMantle;
 import me.neoblade298.neorogue.equipment.armor.RedCloak;
 import me.neoblade298.neorogue.equipment.armor.SpikedPauldrons;
@@ -110,6 +112,7 @@ import me.neoblade298.neorogue.equipment.artifacts.GlacialHammer;
 import me.neoblade298.neorogue.equipment.artifacts.GoldIngot;
 import me.neoblade298.neorogue.equipment.artifacts.GoldenVeil;
 import me.neoblade298.neorogue.equipment.artifacts.GrendelsCrystalMirror;
+import me.neoblade298.neorogue.equipment.artifacts.GrendelsFavoriteTome;
 import me.neoblade298.neorogue.equipment.artifacts.HermesBoots;
 import me.neoblade298.neorogue.equipment.artifacts.HiddenBlade;
 import me.neoblade298.neorogue.equipment.artifacts.HolyScriptures;
@@ -356,6 +359,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new GrowingHex(b);
 			new GrowingSpark(b);
 			new HailCloak(b);
+			new HeadTrauma(b);
 			new Heartbeat(b);
 			new HexCurse(b);
 			new HexCurse2(b);
@@ -506,6 +510,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			// Armor
 			new ArcheryGlove(b);
 			new AuricCape(b);
+			new BurningMantle(b);
 			new BlindingCloak(b);
 			new CalmingHood(b);
 			new ClothBindings(b);
@@ -525,6 +530,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new LeatherHood(b);
 			new LightningCloak(b);
 			new MagiciansHood(b);
+			new NullifyingCloak(b);
 			new NullMagicMantle(b);
 			new PhoenixfireMantle(b);
 			new RedCloak(b);
@@ -693,6 +699,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new GoldIngot();
 		new GoldenVeil();
 		new GrendelsCrystalMirror();
+		new GrendelsFavoriteTome();
 		new HermesBoots();
 		new HiddenBlade();
 		new HolyScriptures();
@@ -1311,6 +1318,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		applyProjectileOnHit(target, proj, dm, hitBarrier, basicAttack, properties.contains(PropertyType.KNOCKBACK) ? properties.get(PropertyType.KNOCKBACK) : 0);
 	}
 
+	// Currently there is no support for altering the damage meta prior to projectile hit
 	public void applyProjectileOnHit(LivingEntity target, ProjectileInstance proj, Barrier hitBarrier,
 			boolean basicAttack, double knockback) {
 		PlayerFightData data = (PlayerFightData) proj.getOwner();

@@ -74,6 +74,7 @@ public class OldStaff extends Equipment {
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			Location loc = hit.getEntity().getLocation();
 			OldStaff.hit.play(p, loc);
+			applyProjectileOnHit(hit.getEntity(), proj, proj.getMeta(), hitBarrier, true);
 		}
 
 		@Override

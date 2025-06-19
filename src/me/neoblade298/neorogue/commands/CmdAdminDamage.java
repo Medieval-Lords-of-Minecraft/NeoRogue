@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.commands;
 import java.util.ArrayList;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.commands.Subcommand;
@@ -15,8 +16,12 @@ import me.neoblade298.neorogue.session.SessionManager;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
+import me.neoblade298.neorogue.session.fight.TargetHelper;
+import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
+import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 
 public class CmdAdminDamage extends Subcommand {
+	private static TargetProperties tp = TargetProperties.line(10, 2, TargetType.ENEMY);
 	public CmdAdminDamage(String key, String desc, String perm, SubcommandRunner runner) {
 		super(key, desc, perm, runner);
 		ArrayList<String> tab = new ArrayList<String>(DamageType.values().length);
@@ -44,7 +49,9 @@ public class CmdAdminDamage extends Subcommand {
 		}
 		DamageType type = DamageType.valueOf(args[0].toUpperCase());
 		DamageMeta dm = new DamageMeta(FightInstance.getUserData(p.getUniqueId()), Integer.parseInt(args[1]), type);
-		dm.dealDamage(p);
+		LivingEntity trg = TargetHelper.getNearestInSight(p, tp);
+		if (trg == null) trg = p;
+		dm.dealDamage(trg);
 		Util.msg(s, "Dealt " + args[1] + " " + type + " damage");
 	}
 }

@@ -96,12 +96,12 @@ public class AshenHeadhunter extends Equipment {
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			Location loc = hit.getEntity().getLocation();
 			Sounds.infect.play(p, loc);
+			applyProjectileOnHit(hit.getEntity(), proj, hitBarrier, true);
 			hit.applyStatus(StatusType.BURN, data, burn, -1);
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			proj.applyProperties(data, properties);	
 			Sounds.fire.play(p, p);
 		}
 	}

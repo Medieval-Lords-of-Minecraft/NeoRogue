@@ -38,7 +38,7 @@ public class PalmBlast extends Equipment {
 	private int damage, burn;
 
 	public PalmBlast(boolean isUpgraded) {
-		super(ID, "Tome of Scorched Earth", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
+		super(ID, "Palm Blast", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(30, 0, 16, tp.range));
 		damage = isUpgraded ? 450 : 300;
 		burn = isUpgraded ? 150 : 100;
@@ -50,7 +50,7 @@ public class PalmBlast extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.RIGHT_CLICK, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			data.charge(20, 2).then(new Runnable() {
 				public void run() {
 					Sounds.fire.play(p, p);
@@ -59,7 +59,7 @@ public class PalmBlast extends Equipment {
 					cone.play(pc, p.getLocation(), LocalAxes.usingEyeLocation(p), pc);
 					LinkedList<LivingEntity> trgs = TargetHelper.getEntitiesInCone(p, tp);
 					Vector v = p.getEyeLocation().getDirection();
-					p.setVelocity(v.setY(0).normalize().setY(0.3));
+					p.setVelocity(v.setX(-v.getX()).setZ(-v.getZ()).setY(0).normalize().setY(0.3));
 					for (LivingEntity ent : trgs) {
 						FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE), ent);
 						FightInstance.applyStatus(ent, StatusType.BURN, data, burn, -1);

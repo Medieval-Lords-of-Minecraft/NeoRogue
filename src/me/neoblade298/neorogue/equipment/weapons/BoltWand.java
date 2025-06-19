@@ -65,13 +65,11 @@ public class BoltWand extends Equipment {
 	
 	private class BoltWandProjectile extends Projectile {
 		private Player p;
-		private PlayerFightData data;
 
 		public BoltWandProjectile(Player p, PlayerFightData data) {
 			super(2.5, 12, 1);
 			this.size(0.5, 0.5).pierce(pierceAmount);
 			this.p = p;
-			this.data = data;
 		}
 
 		@Override
@@ -84,11 +82,12 @@ public class BoltWand extends Equipment {
 			hit.applyStatus(StatusType.ELECTRIFIED, proj.getOwner(), 5, -1);
 			Location loc = hit.getEntity().getLocation();
 			sc.play(p, loc);
+			applyProjectileOnHit(hit.getEntity(), proj, hitBarrier, true);
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			proj.applyProperties(data, properties);
+
 		}
 	}
 

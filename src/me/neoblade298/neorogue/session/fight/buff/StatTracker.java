@@ -109,6 +109,14 @@ public class StatTracker {
         return new BuffStatTracker(id, eq, "Damage Reduced", shouldCombine);
     }
 
+    public static BuffStatTracker defenseDebuffAlly(String id, Equipment eq) {
+        return new BuffStatTracker(id, eq, "Self Defense Reduced", true);
+    }
+
+    public static BuffStatTracker defenseDebuffAlly(String id, Equipment eq, boolean shouldCombine) {
+        return new BuffStatTracker(id, eq, "Self Defense Reduced", shouldCombine);
+    }
+
     public static BuffStatTracker defenseBuffAlly(String id, Equipment eq) {
         return new BuffStatTracker(id, eq, "Damage Mitigated", true);
     }

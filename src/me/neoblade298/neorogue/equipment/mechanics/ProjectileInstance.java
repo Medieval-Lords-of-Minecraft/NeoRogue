@@ -178,6 +178,7 @@ public class ProjectileInstance extends IProjectileInstance {
 
 	// True to cancel runnable
 	private boolean tick() {
+		tick++; // Has to be at the start since so many things end the method early
 		for (int i = 0; i < interpolationPoints; i++) {
 			// Check for collision with shields
 			if (!settings.isIgnoreBarriers()) {

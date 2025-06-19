@@ -70,7 +70,7 @@ public class TargetHelper {
 	
 	public static class TargetProperties {
 		public double range, tolerance = 4, arc;
-		public boolean throughWall, stickToGround;
+		public boolean throughWall, stickToGround, canTargetSource;
 		public TargetType type;
 		
 		private TargetProperties(double range, boolean stickToGround) {
@@ -82,6 +82,13 @@ public class TargetHelper {
 			this.range = range;
 			this.tolerance = tolerance;
 			this.type = type;
+		}
+
+		private TargetProperties(double range, double tolerance, TargetType type, boolean throughWall) {
+			this.range = range;
+			this.tolerance = tolerance;
+			this.type = type;
+			this.throughWall = throughWall;
 		}
 		
 		private TargetProperties(double range, boolean throughWall, TargetType type) {
@@ -113,6 +120,10 @@ public class TargetHelper {
 		public static TargetProperties line(double range, double tolerance, TargetType type) {
 			return new TargetProperties(range, tolerance, type);
 		}
+
+		public static TargetProperties line(double range, double tolerance, boolean throughWall, TargetType type) {
+			return new TargetProperties(range, tolerance, type, throughWall);
+		}
 		
 		public static TargetProperties cone(double arc, double range, boolean throughWall, TargetType type) {
 			return new TargetProperties(arc, range, throughWall, type);
@@ -120,6 +131,11 @@ public class TargetHelper {
 		
 		public static TargetProperties block(double range, boolean stickToGround) {
 			return new TargetProperties(range, stickToGround);
+		}
+
+		public TargetProperties canTargetSource(boolean canTargetSource) {
+			this.canTargetSource = canTargetSource;
+			return this;
 		}
 	}
 	
@@ -137,7 +153,7 @@ public class TargetHelper {
 
 		@Override
 		public boolean test(LivingEntity trg) {
-			if (!isValidTarget(src, trg, props.throughWall)) return false;
+			if (!isValidTarget(src, trg, props)) return false;
 			switch (props.type) {
 			case ENEMY: return NeoRogue.mythicApi.isMythicMob(trg);
 			case ALLY: return trg instanceof Player;
@@ -157,13 +173,40 @@ public class TargetHelper {
 		return rt != null && rt.getHitBlock() != null;
 	}
 
-	static boolean isValidTarget(final LivingEntity source, final LivingEntity target,
-			boolean throughWall) {
-		return target != source
-				&& NeoRogue.mythicApi.isMythicMob(target)
-				&& Mob.get(NeoRogue.mythicApi.getMythicMobInstance(target).getType().getInternalName()) != null
-				&& (throughWall ||
+	private static boolean isValidTarget(final LivingEntity source, final LivingEntity target,
+			TargetProperties props) {
+
+		// Check for if target type matches
+		if (props.type == TargetType.ENEMY) {
+			if (!checkValidEnemy(source, target, props)) return false;
+		}
+		else if (props.type == TargetType.ALLY) {
+			if (!checkValidAlly(source, target, props)) return false;
+		}
+		else {
+			if (!(target instanceof Player) && !checkValidEnemy(source, target, props)) return false;
+			if (target instanceof Player && !checkValidAlly(source, target, props)) return false;
+		}
+		return (props.throughWall ||
 						!isObstructed(source.getEyeLocation(), target.getEyeLocation()) ||
 						!isObstructed(source.getEyeLocation(), target.getLocation()));
+	}
+
+	private static boolean checkValidEnemy(final LivingEntity source, final LivingEntity target,
+		TargetProperties props) {
+		if (!NeoRogue.mythicApi.isMythicMob(target))
+			return false;
+		if (Mob.get(NeoRogue.mythicApi.getMythicMobInstance(target).getType().getInternalName()) == null)
+			return false;
+		return true;
+	}
+
+	private static boolean checkValidAlly(final LivingEntity source, final LivingEntity target,
+			TargetProperties props) {
+		if (!(target instanceof Player))
+			return false;
+		if (target == source && !props.canTargetSource)
+			return false;
+		return true;
 	}
 }

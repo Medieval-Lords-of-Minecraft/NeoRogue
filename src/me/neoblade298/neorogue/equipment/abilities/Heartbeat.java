@@ -59,7 +59,7 @@ public class Heartbeat extends Equipment {
 				am.setObject(r);
 				data.addRift(r);
 			}
-			return TriggerResult.remove();
+			return TriggerResult.keep();
 		}));
 
 		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {

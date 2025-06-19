@@ -28,12 +28,12 @@ import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.GenericStatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class HexCurse extends Equipment {
 	private static final String ID = "hexCurse";
-	private static final ParticleContainer pc = new ParticleContainer(Particle.SMOKE).offsetY(0.5).spread(0.5, 0.5).count(10),
+	private static final ParticleContainer pc = new ParticleContainer(Particle.SMOKE).offsetY(1).spread(0.5, 0.5).count(30),
 			cons = pc.clone().particle(Particle.SOUL);
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_GUARDIAN_HURT);
 	private int damage;
@@ -68,15 +68,17 @@ public class HexCurse extends Equipment {
 			return TriggerResult.keep();
 		}));
 
-		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
-			BasicAttackEvent ev = (BasicAttackEvent) in;
+		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
+			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 			FightData fd = FightInstance.getFightData(ev.getTarget());
 			if (fd.hasStatus(statusName)) {
 				Location loc = ev.getTarget().getLocation();
 				sc.play(p, loc);
 				cons.play(p, loc);
+				Status s = Status.createByGenericType(GenericStatusType.BASIC, statusName, fd, true);
 				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
 						Buff.increase(data, damage, BuffStatTracker.damageBuffAlly(id, this)));
+				fd.applyStatus(s, data, -1, -1);
 			}
 			return TriggerResult.keep();
 		});
@@ -90,7 +92,7 @@ public class HexCurse extends Equipment {
 			if (!fd.hasStatus(statusName)) {
 				Sounds.infect.play(p, loc);
 				pc.play(p, loc);
-				Status s = Status.createByGenericType(GenericStatusType.BASIC, statusName, fd);
+				Status s = Status.createByGenericType(GenericStatusType.BASIC, statusName, fd, false);
 				fd.applyStatus(s, data, 1, 160);
 			}
 			return TriggerResult.keep();

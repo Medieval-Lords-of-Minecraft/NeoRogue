@@ -60,12 +60,10 @@ public class ManaEater extends Equipment {
 	
 	private class ManaEaterProjectile extends Projectile {
 		private Player p;
-		private PlayerFightData data;
 
 		public ManaEaterProjectile(PlayerFightData data) {
 			super(1, 10, 2);
 			this.size(0.2, 0.2);
-			this.data = data;
 			this.p = data.getPlayer();
 		}
 
@@ -78,11 +76,11 @@ public class ManaEater extends Equipment {
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			Location loc = hit.getEntity().getLocation();
 			ManaEater.hit.play(p, loc);
+			applyProjectileOnHit(hit.getEntity(), proj, hitBarrier, true);
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			proj.applyProperties(data, properties);	
 			tickSound.play(p, proj.getLocation());
 		}
 	}

@@ -12,8 +12,10 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.effects.ParticleUtil;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -36,7 +38,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class ElectricOrb extends Equipment {
 	private static final String ID = "electricOrb";
-	private static final ParticleContainer pc = new ParticleContainer(Particle.FIREWORK);
+	private static final ParticleContainer pc = new ParticleContainer(Particle.END_ROD), line = new ParticleContainer(Particle.ELECTRIC_SPARK);
 	private static final SoundContainer shoot = new SoundContainer(Sound.ENTITY_FIREWORK_ROCKET_BLAST);
 	private static final TargetProperties tp = TargetProperties.radius(12, false);
 	private int elec, damage;
@@ -74,7 +76,7 @@ public class ElectricOrb extends Equipment {
 		private HashSet<UUID> hitEntities = new HashSet<UUID>();
 
 		public ElectricOrbProjectile(PlayerFightData data) {
-			super(0.3, tp.range, 2);
+			super(0.3, tp.range, 4);
 			this.data = data;
 			this.p = data.getPlayer();
 			this.ignore(false, false, true);
@@ -84,6 +86,8 @@ public class ElectricOrb extends Equipment {
 		public void onTick(ProjectileInstance proj, int interpolation) {
 			pc.play(p, proj.getLocation());
 			if (proj.getTick() % 10 == 0 && proj.getTick() > 0) {
+				Sounds.firework.play(p, proj.getLocation());
+				ParticleUtil.drawLine(p, line, p.getLocation().add(0, 1, 0), proj.getLocation(), 1);
 				for (LivingEntity ent : TargetHelper.getEntitiesInLine(p, p.getLocation().add(0, 1, 0), proj.getLocation(), tp)) {
 					FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.LIGHTNING), ent);
 				}

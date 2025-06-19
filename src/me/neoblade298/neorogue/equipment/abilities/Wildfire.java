@@ -69,7 +69,7 @@ public class Wildfire extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BLAZE_POWDER, "Every time you do " + GlossaryTag.FIRE.tag(this, thres, true) + ", launch a fireball randomly in front of you that arcs, " +
+		item = createItem(Material.BLAZE_POWDER, "Every time you do " + GlossaryTag.FIRE.tag(this, thres, true) + " damage, launch a fireball randomly in front of you that arcs, " +
 			"dealing " + GlossaryTag.FIRE.tag(this, damage, true) + " damage and applying " + GlossaryTag.BURN.tag(this, burn, false) + 
 			" in an area upon hitting an enemy or block.");
 	}

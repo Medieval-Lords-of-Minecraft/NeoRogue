@@ -13,11 +13,13 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 public class EtherVeil extends Equipment {
 	private static final String ID = "etherVeil";
 	private double def;
+	private int defStr;
 
 	public EtherVeil(boolean isUpgraded) {
 		super(ID, "Ether Veil", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
 				EquipmentType.ARMOR);
 		def = isUpgraded ? 0.3 : 0.2;
+		defStr = (int) (def * 100);
 	}
 
 	public static Equipment get() {
@@ -32,6 +34,6 @@ public class EtherVeil extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BELL,
-				"Start fights with " + DescUtil.yellow((int) def + "%") + " of your max mana in " + GlossaryTag.SHIELDS.tag(this) + ". ");
+				"Start fights with " + DescUtil.yellow(defStr + "%") + " of your max mana in " + GlossaryTag.SHIELDS.tag(this) + ". ");
 	}
 }

@@ -79,12 +79,12 @@ public class WandOfIgnition extends Equipment {
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			Location loc = hit.getEntity().getLocation();
 			WandOfIgnitionProjectile.hit.play(p, loc);
-			FightInstance.applyStatus(hit.getEntity(), StatusType.CONCUSSED, data, burn, -1);
+			applyProjectileOnHit(hit.getEntity(), proj, hitBarrier, true);
+			FightInstance.applyStatus(hit.getEntity(), StatusType.BURN, data, burn, -1);
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			proj.applyProperties(data, properties);	
 			start.play(p, proj.getLocation());
 			FightInstance.applyStatus(p, StatusType.BURN, data, selfburn, -1);
 		}
