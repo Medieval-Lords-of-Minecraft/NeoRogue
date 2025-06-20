@@ -15,7 +15,7 @@ public class StatTracker {
     private static HashMap<StatusType, BuffStatTracker> statusOrigins = new HashMap<StatusType, BuffStatTracker>();
 
     static {
-        for (StatusType type : new StatusType[] { StatusType.STRENGTH, StatusType.INTELLECT, StatusType.BURN }) {
+        for (StatusType type : new StatusType[] { StatusType.STRENGTH, StatusType.INTELLECT }) {
             statusOrigins.put(type, new BuffStatTracker(type, true));
         }
         for (StatusType type : new StatusType[] { StatusType.PROTECT, StatusType.SHELL }) {
@@ -24,6 +24,7 @@ public class StatTracker {
         
         // Inverted statuses (negative defense buff or negative damage buff)
         statusOrigins.put(StatusType.FROST, new BuffStatTracker(StatusType.FROST, false, true));
+        statusOrigins.put(StatusType.BURN, new BuffStatTracker(StatusType.BURN, false, true));
         statusOrigins.put(StatusType.CONCUSSED, new BuffStatTracker(StatusType.CONCUSSED, false, true));
         statusOrigins.put(StatusType.INSANITY, new BuffStatTracker(StatusType.INSANITY, true, true));
     }
