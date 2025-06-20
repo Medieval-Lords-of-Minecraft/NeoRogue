@@ -62,6 +62,6 @@ public class Study2 extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.WRITABLE_BOOK,
-				"Passive. Gain " + GlossaryTag.INTELLECT.tag(this, intel, true) + " and " + DescUtil.yellow(regen) + " mana regen on kill.");
+				"Passive. Gain " + GlossaryTag.INTELLECT.tag(this, intel, false) + " and " + DescUtil.yellow(regen) + " mana regen on kill.");
 	}
 }

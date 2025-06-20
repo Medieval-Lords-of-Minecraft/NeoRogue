@@ -79,8 +79,8 @@ public class Buff {
 		else return (base * multiplier) + increase > 0;
 	}
 
-	public double getEffectiveChange(double damage) {
-		return (damage * multiplier) + increase;
+	public double getEffectiveChange(double base) {
+		return (base * multiplier) + increase;
 	}
 
 	public FightData getApplier() {

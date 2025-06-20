@@ -18,7 +18,7 @@ public class EtherVeil extends Equipment {
 	public EtherVeil(boolean isUpgraded) {
 		super(ID, "Ether Veil", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
 				EquipmentType.ARMOR);
-		def = isUpgraded ? 0.3 : 0.2;
+		def = isUpgraded ? 0.2 : 0.1;
 		defStr = (int) (def * 100);
 	}
 

@@ -64,14 +64,14 @@ public class AshenHeadhunter extends Equipment {
 				private int tick = 0;
 
 				public void run() {
-					if (++tick < 4) {
+					if (++tick < 3) {
 						pc.play(p, start);
 					} else {
 						proj.start(data, start, dir);
 						this.cancel();
 					}
 				}
-			}.runTaskTimer(NeoRogue.inst(), 10, 10));
+			}.runTaskTimer(NeoRogue.inst(), 0, 10));
 			return TriggerResult.keep();
 		});
 	}
@@ -81,7 +81,7 @@ public class AshenHeadhunter extends Equipment {
 		private PlayerFightData data;
 
 		public AshenHeadhunterProjectile(PlayerFightData data) {
-			super(1, 10, 2);
+			super(2, 10, 2);
 			this.size(0.2, 0.2);
 			this.data = data;
 			this.p = data.getPlayer();
@@ -108,6 +108,6 @@ public class AshenHeadhunter extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STICK, "Projectiles are paused for <white>2s</white> before firing and apply " + GlossaryTag.BURN.tag(this, burn, true) + ".");
+		item = createItem(Material.STICK, "Projectiles are paused for <white>1s</white> before firing and apply " + GlossaryTag.BURN.tag(this, burn, true) + ".");
 	}
 }

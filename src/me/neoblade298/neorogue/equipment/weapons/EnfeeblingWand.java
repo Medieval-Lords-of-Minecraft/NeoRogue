@@ -45,9 +45,9 @@ public class EnfeeblingWand extends Equipment {
 	public EnfeeblingWand(boolean isUpgraded) {
 		super(
 				ID , "Enfeebling Wand", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(3, 0, 40, 1, DamageType.DARK, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
+				EquipmentProperties.ofWeapon(3, 0, 60, 0.5, DamageType.DARK, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
 		);
-		mult = isUpgraded ? 0.2 : 0.1;
+		mult = isUpgraded ? 0.3 : 0.2;
 		multStr = (int) (100 * mult);
 	}
 	
@@ -73,9 +73,10 @@ public class EnfeeblingWand extends Equipment {
 		private EnfeeblingWand eq;
 
 		public EnfeeblingWandProjectile(PlayerFightData data, EnfeeblingWand eq) {
-			super(1, 10, 2);
+			super(1.5, 10, 2);
 			this.size(0.2, 0.2);
 			this.p = data.getPlayer();
+			this.eq = eq;
 		}
 
 		@Override

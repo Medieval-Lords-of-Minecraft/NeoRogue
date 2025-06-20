@@ -33,7 +33,8 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 
 public class HeadTrauma extends Equipment {
 	private static final String ID = "headTrauma";
-	private int reduc, damage;
+	private int damage, reducStr;
+	private double reduc;
 	private static final int THRESHOLD = 100;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.BLOCK).blockData(Material.DIRT.createBlockData()).count(20).spread(1, 1).offsetY(1);
 	private static final SoundContainer sc = new SoundContainer(Sound.BLOCK_ROOTED_DIRT_BREAK);
@@ -41,7 +42,8 @@ public class HeadTrauma extends Equipment {
 	public HeadTrauma(boolean isUpgraded) {
 		super(ID, "Head Trauma", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
 				EquipmentType.ABILITY, EquipmentProperties.none());
-		reduc = isUpgraded ? 9 : 6;
+		reduc = isUpgraded ? 0.6 : 0.4;
+		reducStr = (int) (100 * reduc);
 		damage = isUpgraded ? 300 : 200;
 	}
 	
@@ -62,7 +64,7 @@ public class HeadTrauma extends Equipment {
 			Status s = new BasicStatus(statusName, data, StatusClass.NONE, true);
 			fd.applyStatus(s, data, 1, -1);
 			FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.EARTHEN), fd.getEntity());
-			fd.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, -reduc, BuffStatTracker.damageDebuffEnemy(buffId, this)));
+			fd.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.multiplier(data, -reduc, BuffStatTracker.defenseDebuffEnemy(buffId, this, false)));
 			pc.play(p, fd.getEntity());
 			sc.play(p, fd.getEntity());
 			return TriggerResult.keep();
@@ -73,7 +75,7 @@ public class HeadTrauma extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.ARMOR_STAND,
 				"Passive. Once per enemy, applying " + GlossaryTag.CONCUSSED.tag(this, THRESHOLD, false) +
-				" to an enemy will deal " + GlossaryTag.EARTHEN.tag(this, damage, true) + " damage to them and reduce their damage dealt by " + 
-				DescUtil.yellow(reduc) + " for <white>5s</white>.");
+				" to an enemy will deal " + GlossaryTag.EARTHEN.tag(this, damage, true) + " damage to them and reduce their defense by " + 
+				DescUtil.yellow(reduc + "%") + " permanently.");
 	}
 }

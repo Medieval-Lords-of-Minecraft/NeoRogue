@@ -66,7 +66,7 @@ public class DrainWand extends Equipment {
 		private PlayerFightData data;
 		
 		public DrainWandProjectile(PlayerFightData data) {
-			super(0.8, 10, 3);
+			super(1.5, 10, 3);
 			this.size(1, 1);
 			this.data = data;
 			this.p = data.getPlayer();

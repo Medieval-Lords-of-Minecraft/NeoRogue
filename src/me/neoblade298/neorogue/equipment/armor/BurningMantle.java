@@ -44,6 +44,7 @@ public class BurningMantle extends Equipment {
 		data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, reduc, StatTracker.defenseBuffAlly(UUID.randomUUID().toString(), this)));
 		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, (pdata, in) -> {
 			ReceivedDamageEvent ev = (ReceivedDamageEvent) in;
+			if (!ev.getMeta().containsType(DamageCategory.GENERAL)) return TriggerResult.keep();
 			DamageMeta dm = ev.getMeta().getReturnDamage();
 			dm.addDamageSlice(new DamageSlice(data, damage + (damageCount.getCount() * inc), DamageType.FIRE));
 			return TriggerResult.keep();

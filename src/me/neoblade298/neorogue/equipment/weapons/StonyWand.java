@@ -63,7 +63,7 @@ public class StonyWand extends Equipment {
 		private PlayerFightData data;
 
 		public StonyWandProjectile(PlayerFightData data) {
-			super(1, 10, 2);
+			super(1.5, 10, 2);
 			this.size(0.2, 0.2);
 			this.data = data;
 			this.p = data.getPlayer();

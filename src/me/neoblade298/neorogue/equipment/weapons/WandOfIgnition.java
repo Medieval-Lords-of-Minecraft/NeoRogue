@@ -11,7 +11,6 @@ import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
-import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
@@ -35,10 +34,9 @@ public class WandOfIgnition extends Equipment {
 	public WandOfIgnition(boolean isUpgraded) {
 		super(
 				ID , "Wand of Ignition", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(2, 0, isUpgraded ? 60 : 45, 1, DamageType.FIRE, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
+				EquipmentProperties.ofWeapon(2, 0, 40, 1, DamageType.FIRE, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
 		);
-		properties.addUpgrades(PropertyType.DAMAGE);
-		burn = isUpgraded ? 40 : 30;
+		burn = isUpgraded ? 30 : 20;
 		selfburn = 5;
 	}
 	
@@ -64,7 +62,7 @@ public class WandOfIgnition extends Equipment {
 		private static final SoundContainer start = Sounds.fire, hit = new SoundContainer(Sound.BLOCK_FIRE_EXTINGUISH);
 
 		public WandOfIgnitionProjectile(PlayerFightData data) {
-			super(1, 10, 2);
+			super(1.5, 10, 2);
 			this.size(0.2, 0.2);
 			this.data = data;
 			this.p = data.getPlayer();

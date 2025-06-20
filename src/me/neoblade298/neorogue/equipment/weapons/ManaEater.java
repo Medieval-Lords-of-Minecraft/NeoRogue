@@ -62,7 +62,7 @@ public class ManaEater extends Equipment {
 		private Player p;
 
 		public ManaEaterProjectile(PlayerFightData data) {
-			super(1, 10, 2);
+			super(1.5, 10, 2);
 			this.size(0.2, 0.2);
 			this.p = data.getPlayer();
 		}

@@ -38,8 +38,8 @@ public class GrowingSpark extends Equipment {
 		super(ID, "Growing Spark", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE,
 				EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(15, 0, 3, 10));
-		damage = 40;
-		growth = isUpgraded ? 20 : 10;
+		damage = 80;
+		growth = isUpgraded ? 30 : 20;
 	}
 	
 	public static Equipment get() {

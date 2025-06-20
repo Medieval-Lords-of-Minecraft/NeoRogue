@@ -44,7 +44,7 @@ public class OldStaff extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ProjectileGroup proj = new ProjectileGroup(new WoodenWandProjectile(data));
+		ProjectileGroup proj = new ProjectileGroup(new OldStaffProjectile(data));
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (d, inputs) -> {
 			if (!canUseWeapon(data) || !data.canBasicAttack(EquipSlot.HOTBAR))
 				return TriggerResult.keep();
@@ -54,12 +54,12 @@ public class OldStaff extends Equipment {
 		});
 	}
 	
-	private class WoodenWandProjectile extends Projectile {
+	private class OldStaffProjectile extends Projectile {
 		private Player p;
 		private PlayerFightData data;
 
-		public WoodenWandProjectile(PlayerFightData data) {
-			super(1, 10, 2);
+		public OldStaffProjectile(PlayerFightData data) {
+			super(1.5, 10, 2);
 			this.size(0.2, 0.2);
 			this.data = data;
 			this.p = data.getPlayer();

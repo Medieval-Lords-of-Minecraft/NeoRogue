@@ -428,6 +428,15 @@ public class FightData {
 		status.apply(applier, finalStacks, finalDuration);
 		ApplyStatusEvent ev2 = new ApplyStatusEvent(this, status, finalStacks, finalDuration, isSecondary, meta);
 		if (applier instanceof PlayerFightData) {
+			// Stat tracking
+			for (Buff b : ev.getStacksBuffList().getBuffs()) {
+				((PlayerFightData) applier).getStats().addBuffStat(b.getStatTracker(), b.getEffectiveChange(stacks));
+			}
+			for (Buff b : ev.getDurationBuffList().getBuffs()) {
+				((PlayerFightData) applier).getStats().addBuffStat(b.getStatTracker(), b.getEffectiveChange(ticks));
+			}
+
+
 			FightInstance.trigger(((PlayerFightData) applier).getPlayer(), Trigger.APPLY_STATUS, ev2);
 			try {
 				StatusType type = StatusType.valueOf(id);

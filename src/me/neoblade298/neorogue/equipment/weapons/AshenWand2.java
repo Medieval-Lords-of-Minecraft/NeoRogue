@@ -60,7 +60,7 @@ public class AshenWand2 extends Equipment {
 		private Player p;
 
 		public AshenWandProjectile(PlayerFightData data) {
-			super(1, 10, 2);
+			super(1.5, 10, 2);
 			this.size(0.2, 0.2);
 			this.p = data.getPlayer();
 		}
@@ -85,6 +85,6 @@ public class AshenWand2 extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STICK, "Projectiles are paused for <white>1s</white> before firing.");
+		item = createItem(Material.STICK);
 	}
 }

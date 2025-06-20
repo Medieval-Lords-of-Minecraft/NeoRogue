@@ -22,7 +22,7 @@ public class Overflow extends Equipment {
 	private static final String ID = "overflow";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST)
 			.dustOptions(new DustOptions(Color.BLUE, 1));
-	private double reduc = isUpgraded ? 0.5 : 0.8;
+	private double reduc = isUpgraded ? 0.1 : 0.3;
 
 	public Overflow(boolean isUpgraded) {
 		super(ID, "Overflow", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,

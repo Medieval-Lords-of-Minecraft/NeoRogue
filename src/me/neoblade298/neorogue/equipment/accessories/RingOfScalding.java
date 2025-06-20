@@ -23,7 +23,7 @@ public class RingOfScalding extends Equipment {
 	public RingOfScalding(boolean isUpgraded) {
 		super(ID, "Ring of Scalding", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
 				EquipmentType.ACCESSORY);
-				mult = isUpgraded ? 0.1 : 0.05;
+				mult = isUpgraded ? 0.3 : 0.2;
 	}
 	
 	public static Equipment get() {

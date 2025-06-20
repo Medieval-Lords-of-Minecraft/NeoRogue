@@ -21,7 +21,7 @@ public class PhoenixfireMantle extends Equipment {
 	public PhoenixfireMantle(boolean isUpgraded) {
 		super(ID, "Phoenixfire Mantle", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
 				EquipmentType.ARMOR);
-		thres = isUpgraded ? 7 : 5;
+		thres = isUpgraded ? 5 : 7;
 	}
 	
 	public static Equipment get() {

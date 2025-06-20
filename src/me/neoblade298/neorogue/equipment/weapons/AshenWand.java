@@ -62,19 +62,13 @@ public class AshenWand extends Equipment {
 			weaponSwing(p, data);
 			Location start = p.getLocation().add(0, 1, 0);
 			Vector dir = start.getDirection();
+			tick.play(p, start);
 			data.addTask(new BukkitRunnable() {
-				private boolean first = false;
 				public void run() {
-					if (first) {
-						first = true;
-						tick.play(p, start);
-					}
-					else {
-						proj.start(data, start, dir);
-						this.cancel();
-					}
+					proj.start(data, start, dir);
+					this.cancel();
 				}
-			}.runTaskTimer(NeoRogue.inst(), 10, 10));
+			}.runTaskLater(NeoRogue.inst(), 10));
 			return TriggerResult.keep();
 		});
 	}
@@ -83,7 +77,7 @@ public class AshenWand extends Equipment {
 		private Player p;
 
 		public AshenWandProjectile(PlayerFightData data) {
-			super(1, 10, 2);
+			super(1.5, 10, 2);
 			this.size(0.2, 0.2);
 			this.p = data.getPlayer();
 		}
@@ -108,6 +102,6 @@ public class AshenWand extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STICK, "Projectiles are paused for <white>1s</white> before firing.");
+		item = createItem(Material.STICK, "Projectiles are paused briefly before firing.");
 	}
 }
