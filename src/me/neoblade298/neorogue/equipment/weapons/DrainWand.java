@@ -1,10 +1,8 @@
 package me.neoblade298.neorogue.equipment.weapons;
 
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
@@ -21,17 +19,12 @@ import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
-import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
-import me.neoblade298.neorogue.session.fight.TargetHelper;
-import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
-import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class DrainWand extends Equipment {
-	private static final String ID = "iceWand";
-	private static final TargetProperties props = TargetProperties.radius(0.75, true, TargetType.ENEMY);
+	private static final String ID = "drainWand";
 	
 	private static final ParticleContainer tick;
 	private static final SoundContainer sc = new SoundContainer(Sound.BLOCK_CHAIN_PLACE);
@@ -73,7 +66,7 @@ public class DrainWand extends Equipment {
 		private PlayerFightData data;
 		
 		public DrainWandProjectile(PlayerFightData data) {
-			super(0.8, 10, 3);
+			super(1.5, 10, 3);
 			this.size(1, 1);
 			this.data = data;
 			this.p = data.getPlayer();
@@ -86,18 +79,14 @@ public class DrainWand extends Equipment {
 		
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
-			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(hit.getEntity(), props)) {
-				data.addSimpleShield(p.getUniqueId(), shieldAmount, 40);
-				FightInstance.dealDamage(new DamageMeta(hit, properties.get(PropertyType.DAMAGE), DamageType.DARK), ent);
-			}
-
-			Location loc = hit.getEntity().getLocation();
-			sc.play(p, loc);
+			applyProjectileOnHit(hit.getEntity(), proj, hitBarrier, true);
+			data.addSimpleShield(p.getUniqueId(), shieldAmount, 40);
+			sc.play(p, hit.getEntity());
 		}
 		
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			proj.applyProperties(data, properties);
+
 		}
 	}
 	

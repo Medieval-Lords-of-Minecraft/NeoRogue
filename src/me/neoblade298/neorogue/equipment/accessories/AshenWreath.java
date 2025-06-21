@@ -36,8 +36,7 @@ public class AshenWreath extends Equipment {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
 			if (!ev.isStatus(StatusType.BURN) || ev.getTarget() instanceof PlayerFightData) return TriggerResult.keep();
 			am.addCount(1);
-			if (am.getCount() >= thres) {
-				am.addCount(-thres);
+			if (am.getCount() % thres == 0 && am.getCount() <= MAX * thres) {
 				data.applyStatus(StatusType.SHELL, data, inc, -1);
 			}
 			return TriggerResult.keep();

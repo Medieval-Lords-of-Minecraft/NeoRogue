@@ -32,7 +32,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Blast extends Equipment {
 	private static final String ID = "blast";
-	private static final TargetProperties tp = TargetProperties.radius(4, false);
+	private static final TargetProperties tp = TargetProperties.radius(4, true);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
 			expl = new ParticleContainer(Particle.EXPLOSION).count(20).spread(tp.range / 2, 0.5);
 	private static final Circle circ = new Circle(tp.range);
@@ -72,7 +72,7 @@ public class Blast extends Equipment {
 			data.charge(40).then(new Runnable() {
 				public void run() {
 					Block b = p.getTargetBlockExact((int) properties.get(PropertyType.RANGE));
-					if (b.getType().isAir()) {
+					if (b == null) {
 						data.addMana(properties.get(PropertyType.MANA_COST));
 						inst.setCooldown(0);
 						Sounds.error.play(p, p);

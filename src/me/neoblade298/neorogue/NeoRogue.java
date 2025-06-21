@@ -152,7 +152,7 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdAdminGod("god", "Maxes out your health, mana, stamina, and ignores cooldowns in a fight", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminSet("set", "Set your stats mid-fight", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminStatus("status", "Add/remove statuses mid-fight, aim at mob to use on them", null, SubcommandRunner.PLAYER_ONLY));
-		mngr.register(new CmdAdminDamage("damage", "Deal damage to yourself for testing purposes", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdAdminDamage("damage", "Deal damage mid-fight, aim at mob to use on them", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminSerialize("serialize", "Save a player's loadout for debug purposes", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminDeserialize("deserialize", "Loads in a player's loadout for debug purposes", null, SubcommandRunner.CONSOLE_ONLY));
 		mngr.registerCommandList("");
@@ -169,12 +169,12 @@ public class NeoRogue extends JavaPlugin {
 		p.setMaximumNoDamageTicks(0);
 		
 		Session s = SessionManager.createSession(p, "test", 1);
-		s.generateArea(AreaType.HARVEST_FIELDS);
-		s.addPlayer(p.getUniqueId(), EquipmentClass.ARCHER);
+		s.generateArea(AreaType.LOW_DISTRICT);
+		s.addPlayer(p.getUniqueId(), EquipmentClass.MAGE);
 		SessionManager.addToSession(p.getUniqueId(), s);
 		Player alt = Bukkit.getPlayer("SuaveGentleman");
 		if (alt != null) {
-			s.addPlayer(alt.getUniqueId(), EquipmentClass.ARCHER);
+			s.addPlayer(alt.getUniqueId(), EquipmentClass.MAGE);
 			SessionManager.addToSession(alt.getUniqueId(), s);
 			alt.setMaximumNoDamageTicks(0);
 		}

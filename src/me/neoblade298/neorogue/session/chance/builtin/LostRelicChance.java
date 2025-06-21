@@ -11,7 +11,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
 import me.neoblade298.neorogue.equipment.cursed.DullDagger;
-import me.neoblade298.neorogue.equipment.cursed.GnarledWand;
+import me.neoblade298.neorogue.equipment.cursed.GnarledStaff;
 import me.neoblade298.neorogue.equipment.cursed.MangledBow;
 import me.neoblade298.neorogue.equipment.cursed.RustySword;
 import me.neoblade298.neorogue.player.PlayerSessionData;
@@ -27,7 +27,7 @@ public class LostRelicChance extends ChanceSet {
 		items.put(EquipmentClass.ARCHER, MangledBow.get());
 		items.put(EquipmentClass.THIEF, DullDagger.get());
 		items.put(EquipmentClass.WARRIOR, RustySword.get());
-		items.put(EquipmentClass.MAGE, GnarledWand.get());
+		items.put(EquipmentClass.MAGE, GnarledStaff.get());
 	}
 
 	public LostRelicChance() {
@@ -53,7 +53,7 @@ public class LostRelicChance extends ChanceSet {
 		ch.addTag(new CustomGlossaryIcon("mangledBow", MangledBow.get().getItem()));
 		ch.addTag(new CustomGlossaryIcon("dullDagger", DullDagger.get().getItem()));
 		ch.addTag(new CustomGlossaryIcon("rustySword", RustySword.get().getItem()));
-		ch.addTag(new CustomGlossaryIcon("gnarledWand", GnarledWand.get().getItem()));
+		ch.addTag(new CustomGlossaryIcon("gnarledWand", GnarledStaff.get().getItem()));
 		stage.addChoice(ch);
 		
 		stage.addChoice(new ChanceChoice(Material.LEATHER_BOOTS, "Leave it",

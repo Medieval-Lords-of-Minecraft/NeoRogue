@@ -75,12 +75,10 @@ public class DarkScepter extends Equipment {
 
 	private class DarkRay extends Projectile {
 		private Player p;
-		private PlayerFightData data;
 		public DarkRay(PlayerFightData data) {
 			super(0.5, 2, 1);
 			this.size(1.25, 1.25).pierce(-1);
 			this.ignore(false, true, false);
-			this.data = data;
 			this.p = data.getPlayer();
 		}
 		
@@ -91,12 +89,12 @@ public class DarkScepter extends Equipment {
 		
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
-			
+			applyProjectileOnHit(hit.getEntity(), proj, hitBarrier, true);
 		}
 		
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			proj.applyProperties(data, properties);
+
 		}
 	}
 	

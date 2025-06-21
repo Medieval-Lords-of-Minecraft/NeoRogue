@@ -61,13 +61,11 @@ public class SparkStick extends Equipment {
 	
 	private class SparkStickProjectile extends Projectile {
 		private Player p;
-		private PlayerFightData data;
 		private int pierceAmount;
 
 		public SparkStickProjectile(PlayerFightData data) {
 			super(2.5, 10, 1);
 			this.size(0.5, 0.5).pierce(pierceAmount);
-			this.data = data;
 			this.p = data.getPlayer();
 		}
 
@@ -80,11 +78,11 @@ public class SparkStick extends Equipment {
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			Location loc = hit.getEntity().getLocation();
 			Sounds.explode.play(p, loc);
+			applyProjectileOnHit(hit.getEntity(), proj, hitBarrier, true);
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			proj.applyProperties(data, properties);
 		}
 	}
 

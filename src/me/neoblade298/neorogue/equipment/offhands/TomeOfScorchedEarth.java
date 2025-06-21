@@ -35,7 +35,7 @@ public class TomeOfScorchedEarth extends Equipment {
 
 	public TomeOfScorchedEarth(boolean isUpgraded) {
 		super(ID, "Tome of Scorched Earth", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.OFFHAND,
-				EquipmentProperties.ofUsable(25, 0, 12, tp.range));
+				EquipmentProperties.ofUsable(10, 0, 12, tp.range));
 		damage = isUpgraded ? 180 : 120;
 	}
 

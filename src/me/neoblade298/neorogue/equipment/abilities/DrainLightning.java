@@ -36,7 +36,7 @@ public class DrainLightning extends Equipment {
 
 	public DrainLightning(boolean isUpgraded) {
 		super(ID, "Drain Lightning", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(20, 0, 12, tp.range));
+				EquipmentProperties.ofUsable(20, 0, 9, tp.range));
 		damage = 150;
 		thres = 50;
 		cdr = isUpgraded ? 5 : 3;

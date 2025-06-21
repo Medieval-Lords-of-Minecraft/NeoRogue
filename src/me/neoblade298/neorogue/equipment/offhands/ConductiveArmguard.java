@@ -20,7 +20,7 @@ public class ConductiveArmguard extends Equipment {
 	public ConductiveArmguard(boolean isUpgraded) {
 		super(ID, "Conductive Armguard", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.OFFHAND,
 				EquipmentProperties.none());
-		shields = isUpgraded ? 9 : 6;
+		shields = isUpgraded ? 5 : 3;
 	}
 
 	public static Equipment get() {
@@ -33,7 +33,7 @@ public class ConductiveArmguard extends Equipment {
 			DealtDamageEvent ev = (DealtDamageEvent) in;
 			if (!ev.getMeta().containsType(DamageCategory.LIGHTNING))
 				return TriggerResult.keep();
-			data.addSimpleShield(p.getUniqueId(), shields, 100);
+			data.addSimpleShield(p.getUniqueId(), shields, 60);
 			return TriggerResult.keep();
 		});
 	}
@@ -41,6 +41,6 @@ public class ConductiveArmguard extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SHIELD, "Passive. Every time you deal " + GlossaryTag.LIGHTNING.tag(this)
-				+ " damage, gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>5s</white>].");
+				+ " damage, gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>3s</white>].");
 	}
 }

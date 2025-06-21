@@ -39,8 +39,8 @@ public class BurningRing extends Equipment {
 		data.addDamageBuff(DamageBuffType.of(DamageCategory.FIRE), Buff.multiplier(data, inc * 0.01, StatTracker.damageBuffAlly(UUID.randomUUID().toString(), this)));
 		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
-			if (ev.isStatus(StatusType.BURN)) return TriggerResult.keep();
-			data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, -dec, StatTracker.damageDebuffAlly(buffId, this, false)), 100);
+			if (!ev.isStatus(StatusType.BURN)) return TriggerResult.keep();
+			data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, -dec, StatTracker.defenseDebuffAlly(buffId, this, false)), 100);
 			return TriggerResult.keep();
 		});
 	}

@@ -12,6 +12,8 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.abilities.CalculatingGaze;
+import me.neoblade298.neorogue.equipment.abilities.Manabending;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
@@ -30,16 +32,22 @@ public class WoodenWand extends Equipment {
 			hit = new SoundContainer(Sound.BLOCK_CHAIN_PLACE);
 	
 	static {
-		tick = new ParticleContainer(Particle.END_ROD);
-		tick.count(1).spread(0.1, 0.1).speed(0.01);
+		tick = new ParticleContainer(Particle.SMOKE);
+		tick.count(5).spread(0.1, 0.1).speed(0.01);
 	}
 	
 	public WoodenWand(boolean isUpgraded) {
 		super(
 				ID , "Wooden Wand", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(2, 0, isUpgraded ? 35 : 25, 1, DamageType.LIGHT, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
+				EquipmentProperties.ofWeapon(2, 0, isUpgraded ? 30 : 20, 1, DamageType.DARK, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
+	}
+
+	@Override
+	public void setupReforges() {
+		addReforge(CalculatingGaze.get(), StonyWand.get());
+		addReforge(Manabending.get(), ManaEater.get(), WandOfIgnition.get());
 	}
 	
 	public static Equipment get() {
@@ -60,12 +68,10 @@ public class WoodenWand extends Equipment {
 	
 	private class WoodenWandProjectile extends Projectile {
 		private Player p;
-		private PlayerFightData data;
 
 		public WoodenWandProjectile(PlayerFightData data) {
-			super(1, 10, 2);
+			super(1.5, 10, 2);
 			this.size(0.2, 0.2);
-			this.data = data;
 			this.p = data.getPlayer();
 		}
 
@@ -78,11 +84,11 @@ public class WoodenWand extends Equipment {
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			Location loc = hit.getEntity().getLocation();
 			WoodenWand.hit.play(p, loc);
+			applyProjectileOnHit(hit.getEntity(), proj, hitBarrier, true);
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			proj.applyProperties(data, properties);	
 			tickSound.play(p, proj.getLocation());
 		}
 	}

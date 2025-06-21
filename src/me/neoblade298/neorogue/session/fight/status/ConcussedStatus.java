@@ -21,6 +21,6 @@ public class ConcussedStatus extends DecrementStackStatus {
 	
 	@Override
 	public void onTickAction(int toRemove) {
-		holder.addDamageBuff(DamageBuffType.of(DamageCategory.PHYSICAL), new Buff(slices.first().getFightData(), toRemove * -0.2, 0, BuffStatTracker.of(StatusType.CONCUSSED)));
+		holder.addDamageBuff(DamageBuffType.of(DamageCategory.PHYSICAL), new Buff(slices.first().getFightData(), toRemove * 0.2, 0, BuffStatTracker.of(StatusType.CONCUSSED)));
 	}
 }
