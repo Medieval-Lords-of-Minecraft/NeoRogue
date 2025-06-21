@@ -44,7 +44,7 @@ public class DamageMeta {
 	private static final DecimalFormat df = new DecimalFormat("##.#");
 	
 	private FightData owner;
-	private boolean hitBarrier, isSecondary;
+	private boolean hitBarrier, isSecondary, isBasicAttack, ignoreBuffs;
 	private HashSet<DamageOrigin> origins = new HashSet<DamageOrigin>();
 	private IProjectileInstance proj; // If the damage originated from projectile
 	private LinkedList<DamageSlice> slices = new  LinkedList<DamageSlice>();
@@ -52,7 +52,6 @@ public class DamageMeta {
 	private HashMap<DamageBuffType, BuffList> damageBuffs = new HashMap<DamageBuffType, BuffList>(), defenseBuffs = new HashMap<DamageBuffType, BuffList>();
 	private HashMap<DamageType, Double> statSlices = new HashMap<DamageType, Double>();
 	private double ignoreShieldsDamage, damage;
-	private boolean isBasicAttack = false;
 	
 	public DamageMeta(FightData data) {
 		this.owner = data;
@@ -98,10 +97,21 @@ public class DamageMeta {
 		this.origins = original.origins;
 		this.proj = original.proj;
 		this.isBasicAttack = original.isBasicAttack;
+		this.ignoreBuffs = original.ignoreBuffs;
  		
  		// These are deep clones
 		this.damageBuffs = cloneBuffLists(original.damageBuffs);
 		this.defenseBuffs = cloneBuffLists(original.defenseBuffs);
+	}
+
+	public DamageMeta ignoreBuffs(boolean ignore) {
+		this.ignoreBuffs = ignore;
+		return this;
+	}
+
+	public DamageMeta isBasicAttack(boolean isBasicAttack) {
+		this.isBasicAttack = isBasicAttack;
+		return this;
 	}
 
 	private static HashMap<DamageBuffType, BuffList> cloneBuffLists(HashMap<DamageBuffType, BuffList> buffList) {
@@ -139,9 +149,14 @@ public class DamageMeta {
 	public boolean isSecondary() {
 		return isSecondary;
 	}
+
+	public boolean isIgnoringBuffs() {
+		return ignoreBuffs;
+	}
 	
-	public void isSecondary(boolean isSecondary) {
+	public DamageMeta isSecondary(boolean isSecondary) {
 		this.isSecondary = isSecondary;
+		return this;
 	}
 	
 	public void setHitBarrier(boolean hitBarrier) {
@@ -206,8 +221,11 @@ public class DamageMeta {
 		FightData recipient = FightInstance.getFightData(target.getUniqueId());
 		LivingEntity damager = owner.getEntity();
 		if (damager == null) return 0;
-		addDamageBuffLists(owner.getDamageBuffLists());
-		addDefenseBuffLists(recipient.getDefenseBuffLists());
+
+		if (!ignoreBuffs) {
+			addDamageBuffLists(owner.getDamageBuffLists());
+			addDefenseBuffLists(recipient.getDefenseBuffLists());
+		}
 		returnDamage = new DamageMeta(recipient);
 		returnDamage.isSecondary = true;
 

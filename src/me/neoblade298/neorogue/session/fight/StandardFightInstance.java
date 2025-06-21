@@ -81,20 +81,18 @@ public class StandardFightInstance extends FightInstance {
 			scoreBar.addPlayer(p);
 		}
 
-		time = fightScore.getThreshold();
-
 		tasks.add(new BukkitRunnable() {
 			@Override
 			public void run() {
-				time--;
+				time++;
 				timeBar.setProgress(time / fightScore.getThreshold());
 
-				if (time <= 0) {
+				if (time >= fightScore.getThreshold()) {
 					if (fightScore.getNext() == null) {
 						this.cancel();
 					} else {
 						fightScore = fightScore.getNext();
-						time = fightScore.getThreshold();
+						time = 0;
 						timeBar.setTitle("Current Rating: " + fightScore.getDisplay());
 					}
 				}
