@@ -76,6 +76,6 @@ public class HeadTrauma extends Equipment {
 		item = createItem(Material.ARMOR_STAND,
 				"Passive. Once per enemy, applying " + GlossaryTag.CONCUSSED.tag(this, THRESHOLD, false) +
 				" to an enemy will deal " + GlossaryTag.EARTHEN.tag(this, damage, true) + " damage to them and reduce their defense by " + 
-				DescUtil.yellow(reduc + "%") + " permanently.");
+				DescUtil.yellow(reducStr + "%") + " permanently.");
 	}
 }

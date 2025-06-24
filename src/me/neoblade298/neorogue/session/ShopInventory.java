@@ -204,7 +204,7 @@ public class ShopInventory extends CoreInventory {
 			contents[slot] = shopItem.getItem(data, idx);
 			updateAll(contents);
 			contents[GOLD_ICON] = CoreInventory.createButton(
-					Material.GOLD_NUGGET,
+					Material.GOLD_INGOT,
 					Component.text("You have " + data.getCoins() + " coins", NamedTextColor.YELLOW)
 			);
 			inv.setContents(contents);
@@ -221,7 +221,7 @@ public class ShopInventory extends CoreInventory {
 				inv.setItem(
 						GOLD_ICON,
 						CoreInventory.createButton(
-								Material.GOLD_NUGGET,
+								Material.GOLD_INGOT,
 								Component.text("You have " + data.getCoins() + " coins", NamedTextColor.YELLOW)
 						)
 				);
@@ -253,7 +253,7 @@ public class ShopInventory extends CoreInventory {
 					Util.displayError(p, "Only cursed items may be removed this way!");
 					return;
 				}
-				inv.setItem(GOLD_ICON, CoreInventory.createButton(Material.GOLD_NUGGET,
+				inv.setItem(GOLD_ICON, CoreInventory.createButton(Material.GOLD_INGOT,
 						Component.text("You have " + data.getCoins() + " coins", NamedTextColor.YELLOW)));
 				data.getSession().broadcast(
 						SharedUtil.color("<yellow>" + p.getName() + " </yellow>purified their ")

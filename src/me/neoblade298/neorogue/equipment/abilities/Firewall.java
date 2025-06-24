@@ -44,8 +44,8 @@ public class Firewall extends Equipment {
 	public Firewall(boolean isUpgraded) {
 		super(ID, "Firewall", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 5, 22, tp.range));
-		damage = isUpgraded ? 60 : 40;
-		burn = isUpgraded ? 20 : 10;
+		damage = isUpgraded ? 75 : 50;
+		burn = isUpgraded ? 25 : 15;
 	}
 	
 	public static Equipment get() {
@@ -120,8 +120,8 @@ public class Firewall extends Equipment {
 						}
 					}
 
-					if (++tick >= 5) {
-						// Stop the task after 5 seconds
+					if (++tick >= 7) {
+						// Stop the task after 7 seconds
 						this.cancel();
 					}
 				}
@@ -134,6 +134,6 @@ public class Firewall extends Equipment {
 		item = createItem(Material.RED_CONCRETE_POWDER,
 				"On cast, fire a projectile that travels until it hits a block or max range. Create a wall of fire along where the projectile traveled which deals "
 				+ GlossaryTag.FIRE.tag(this, damage, true) + " to enemies and applies " + GlossaryTag.BURN.tag(this, burn, true) +
-				" to enemies and yourself every second for <white>5s</white>.");
+				" to enemies and yourself every second for <white>7s</white>.");
 	}
 }

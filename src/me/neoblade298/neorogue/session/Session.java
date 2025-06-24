@@ -296,7 +296,7 @@ public class Session {
 	}
 	
 	public void removeSpectator(Player p) {
-		broadcast("<yellow>" + p.getName() + " <gray>has stopped specating!");
+		broadcast("<yellow>" + p.getName() + " <gray>has stopped spectating!");
 		spectators.remove(p.getUniqueId());
 		p.setInvisible(false);
 		p.setInvulnerable(false);

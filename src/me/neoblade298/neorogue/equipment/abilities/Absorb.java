@@ -30,7 +30,7 @@ public class Absorb extends Equipment {
 	private static final ParticleContainer pc = new ParticleContainer(Particle.SMOKE).count(50).spread(0.3, 0.3).offsetY(1);
 	
 	public Absorb(boolean isUpgraded) {
-		super(ID, "Absorb", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
+		super(ID, "Absorb", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 0, 12, tp.range));
 		damage = isUpgraded ? 90 : 60;
 		mana = isUpgraded ? 30 : 20;

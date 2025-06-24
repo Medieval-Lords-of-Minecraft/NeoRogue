@@ -259,6 +259,7 @@ public abstract class FightInstance extends Instance {
 		for (BossBar bar : bars) {
 			bar.removePlayer(p);
 		}
+		userData.get(p.getUniqueId()).cleanup();
 		checkInstanceDead(p);
 	}
 

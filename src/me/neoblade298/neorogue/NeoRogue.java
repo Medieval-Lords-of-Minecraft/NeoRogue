@@ -42,6 +42,7 @@ import me.neoblade298.neorogue.commands.CmdAdminReloadMythic;
 import me.neoblade298.neorogue.commands.CmdAdminSerialize;
 import me.neoblade298.neorogue.commands.CmdAdminSet;
 import me.neoblade298.neorogue.commands.CmdAdminStatus;
+import me.neoblade298.neorogue.commands.CmdAdminTest;
 import me.neoblade298.neorogue.commands.CmdAdminTrash;
 import me.neoblade298.neorogue.commands.CmdGlossary;
 import me.neoblade298.neorogue.commands.CmdInfo;
@@ -70,7 +71,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 public class NeoRogue extends JavaPlugin {
 	private static NeoRogue inst;
-	private static final boolean DEBUGGER = true;
 	public static Random gen = new Random();
 	public static BukkitAPIHelper mythicApi;
 	public static MobManager mythicMobs;
@@ -152,6 +152,7 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdAdminGod("god", "Maxes out your health, mana, stamina, and ignores cooldowns in a fight", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminSet("set", "Set your stats mid-fight", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminStatus("status", "Add/remove statuses mid-fight, aim at mob to use on them", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdAdminTest("test", "Quickstarts a session", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminDamage("damage", "Deal damage mid-fight, aim at mob to use on them", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminSerialize("serialize", "Save a player's loadout for debug purposes", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminDeserialize("deserialize", "Loads in a player's loadout for debug purposes", null, SubcommandRunner.CONSOLE_ONLY));
@@ -162,8 +163,7 @@ public class NeoRogue extends JavaPlugin {
 		return inst;
 	}
 	
-	private void debugInitialize() {
-		if (!DEBUGGER) return;
+	public static void debugInitialize() {
 		Player p = Bukkit.getPlayer("Ascheladd");
 		if (p == null) return;
 		p.setMaximumNoDamageTicks(0);
@@ -191,7 +191,7 @@ public class NeoRogue extends JavaPlugin {
 				//Map map = Map.generate(AreaType.LOW_DISTRICT, 8);
 				//map.instantiate(null, 0, 0);
 			}
-		}.runTaskLater(this, 1L);
+		}.runTaskLater(NeoRogue.inst(), 1L);
 	}
 
 	public static TextDisplay createHologram(Location loc, Component text) {

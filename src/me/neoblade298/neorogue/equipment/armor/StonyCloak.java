@@ -25,7 +25,7 @@ public class StonyCloak extends Equipment {
 	private int baseReduc = 2, concReduc;
 	
 	public StonyCloak(boolean isUpgraded) {
-		super(ID, "Stony Cloak", isUpgraded, Rarity.COMMON, EquipmentClass.CLASSLESS,
+		super(ID, "Stony Cloak", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE,
 				EquipmentType.ARMOR);
 				concReduc = isUpgraded ? 4 : 2;
 	}

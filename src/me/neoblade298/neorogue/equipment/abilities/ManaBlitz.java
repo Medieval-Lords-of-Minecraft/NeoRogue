@@ -54,7 +54,7 @@ public class ManaBlitz extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.REDSTONE_TORCH, "On cast, increase your " + GlossaryTag.MAGICAL.tag(this) + " by "
+		item = createItem(Material.REDSTONE_TORCH, "On cast, increase your " + GlossaryTag.MAGICAL.tag(this) + " damage by "
 				+ DescUtil.yellow(inc) + " for <white>8s</white>.");
 	}
 }
