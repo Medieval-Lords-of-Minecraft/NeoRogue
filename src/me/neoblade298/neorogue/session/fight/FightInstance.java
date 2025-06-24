@@ -209,7 +209,13 @@ public abstract class FightInstance extends Instance {
 		PlayerFightData data = userData.get(pu);
 		FightInstance fi = data.getInstance();
 		Session s = fi.getSession();
-		
+		ItemStack[] inv = p.getInventory().getContents();
+		int[] cooldowns = new int[9]; // Get material cooldowns so they persist in death
+		for (int i = 0; i < 9; i++) {
+			if (inv[i] == null) continue;
+			cooldowns[i] = p.getCooldown(inv[i].getType());
+		}
+
 		new BukkitRunnable() {
 			@Override
 			public void run() {
@@ -247,6 +253,12 @@ public abstract class FightInstance extends Instance {
 								p.spigot().respawn();
 								p.teleport(prev);
 								p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 60, 0));
+								p.getInventory().setContents(inv);
+								// Set cooldowns so they persist through death
+								for (int i = 0; i < 9; i++) {
+									if (inv[i] == null) continue;
+									p.setCooldown(inv[i].getType(), cooldowns[i]);
+								}
 							}
 						}.runTask(NeoRogue.inst());
 					}
@@ -582,7 +594,6 @@ public abstract class FightInstance extends Instance {
 		PlayerFightData reviverData = userData.get(p.getUniqueId());
 		deadData.setDeath(false);
 		deadData.applyStatus(StatusType.INVINCIBLE, reviverData, 1, 20);
-		dead.getInventory().setContents(corpse.inv);
 		reviverData.getStats().addRevive();
 		new BukkitRunnable() {
 			@Override
@@ -1173,12 +1184,10 @@ public abstract class FightInstance extends Instance {
 		protected Entity corpseDisplay;
 		protected LinkedList<Entity> hitbox = new LinkedList<Entity>();
 		protected LinkedList<BukkitTask> tasks = new LinkedList<BukkitTask>();
-		protected ItemStack[] inv;
 		
 		public Corpse(PlayerFightData data) {
 			this.data = data;
 			Player p = data.getPlayer();
-			inv = p.getInventory().getContents();
 			p.getInventory().clear();
 			World w = p.getWorld();
 			Location loc = p.getLocation();
