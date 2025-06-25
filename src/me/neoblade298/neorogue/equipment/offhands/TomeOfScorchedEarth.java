@@ -53,7 +53,7 @@ public class TomeOfScorchedEarth extends Equipment {
 				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE), ent);
 			}
 			if (trgs.size() < 2) {
-				FightInstance.dealDamage(new DamageMeta(data, selfDmg, DamageType.FIRE), p);
+				FightInstance.dealDamage(new DamageMeta(data, selfDmg, DamageType.FIRE).ignoreBuffs(true), p);
 			}
 			return TriggerResult.keep();
 		}));
@@ -63,6 +63,6 @@ public class TomeOfScorchedEarth extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.BOOK, "On right click, deal " + GlossaryTag.FIRE.tag(this, damage, true)
 				+ " damage to all enemies in a cone in front of you. If you hit less than <white>2</white> enemies, also "
-				+ "deal " + GlossaryTag.FIRE.tag(this, selfDmg, false) + " to yourself.");
+				+ "deal " + GlossaryTag.FIRE.tag(this, selfDmg, false) + " to yourself (unaffected by buffs/debuffs).");
 	}
 }

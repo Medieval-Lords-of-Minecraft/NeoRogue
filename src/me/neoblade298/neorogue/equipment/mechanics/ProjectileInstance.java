@@ -21,6 +21,7 @@ import org.bukkit.util.Vector;
 import me.libraryaddict.disguise.DisguiseAPI;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.AmmunitionInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
@@ -49,6 +50,7 @@ public class ProjectileInstance extends IProjectileInstance {
 	private Location loc;
 	private BoundingBox bounds, bigBounds;
 	private int tick, numHit, interpolationPoints;
+	private ActionMeta am = new ActionMeta();
 	private String tag; // Used for metadata, like with twinShiv
 	private DamageMeta meta;
 	private double distance = 0, distancePerPoint; // Estimated distance traveled, not exact, doesn't factor in gravity
@@ -174,6 +176,11 @@ public class ProjectileInstance extends IProjectileInstance {
 
 	public void setHomingTarget(LivingEntity target) {
 		this.homingTarget = target;
+	}
+
+	// Used to retain metadata within projectile
+	public ActionMeta getActionMeta() {
+		return am;
 	}
 
 	// True to cancel runnable

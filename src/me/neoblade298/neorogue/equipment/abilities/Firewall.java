@@ -64,7 +64,6 @@ public class Firewall extends Equipment {
 	private class FirewallProjectile extends Projectile {
 		private Player p;
 		private PlayerFightData data;
-		private Location start, end;
 
 		public FirewallProjectile(PlayerFightData data) {
 			super(1, properties.get(PropertyType.RANGE), 2);
@@ -86,31 +85,32 @@ public class Firewall extends Equipment {
 		
 		@Override
 		public void onHitBlock(ProjectileInstance proj, Block b) {
-			end = b.getLocation().clone();
+			Location end = b.getLocation().clone();
+			Location start = proj.getActionMeta().getLocation();
 			end.setY(start.getY());
-			activateFirewall();
+			activateFirewall(start, end);
 		}
 
 		@Override
 		public void onFizzle(ProjectileInstance proj) {
-			end = proj.getLocation().clone();
+			Location end = proj.getLocation().clone();
+			Location start = proj.getActionMeta().getLocation();
 			end.setY(start.getY());
-			activateFirewall();
+			activateFirewall(start, end);
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			start = proj.getLocation().clone();
-			Sounds.fire.play(p, start);
+			proj.getActionMeta().setLocation(proj.getLocation().clone());
+			Sounds.fire.play(p, p);
 		}
 
-		private void activateFirewall() {
+		private void activateFirewall(Location start, Location end) {
 			data.addTask(new BukkitRunnable() {
 				private int tick = 0;
 				public void run() {
 					ParticleUtil.drawLine(p, wall, start, end, 1);
 					for (LivingEntity ent : TargetHelper.getEntitiesInLine(p, start, end, tp)) {
-						System.out.println(ent.getName());
 						if (!(ent instanceof Player)) {
 							FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE), ent);
 						}

@@ -222,10 +222,8 @@ public class DamageMeta {
 		LivingEntity damager = owner.getEntity();
 		if (damager == null) return 0;
 
-		if (!ignoreBuffs) {
-			addDamageBuffLists(owner.getDamageBuffLists());
-			addDefenseBuffLists(recipient.getDefenseBuffLists());
-		}
+		addDamageBuffLists(owner.getDamageBuffLists());
+		addDefenseBuffLists(recipient.getDefenseBuffLists());
 		returnDamage = new DamageMeta(recipient);
 		returnDamage.isSecondary = true;
 
@@ -308,33 +306,35 @@ public class DamageMeta {
 		for (DamageSlice slice : slices) {
 			double increase = 0, mult = 1, base = slice.getDamage();
 			ArrayList<Buff> buffs = new ArrayList<Buff>(), debuffs = new ArrayList<Buff>();
-			if (slice.getType() == null) {
-				Bukkit.getLogger().warning("[NeoRogue] Damage slice has null type dealing " + slice.getDamage() + " damage");
-				continue;
-			}
-
-			Collection<DamageBuffType> categories = getDamageBuffTypes(slice.getType().getCategories());
-			for (DamageBuffType dbt : categories) {
-				if (!damageBuffs.containsKey(dbt)) continue;
-				BuffList list = damageBuffs.get(dbt);
-				increase += list.getIncrease();
-				mult += list.getMultiplier();
-
-				for (Buff b : list.getBuffs()) {
-					if (b.isPositive(base)) buffs.add(b);
-					else debuffs.add(b);
+			if (!ignoreBuffs) {
+				if (slice.getType() == null) {
+					Bukkit.getLogger().warning("[NeoRogue] Damage slice has null type dealing " + slice.getDamage() + " damage");
+					continue;
 				}
-			}
 
-			for (DamageBuffType dbt : categories) {
-				if (!defenseBuffs.containsKey(dbt)) continue;
-				BuffList list = defenseBuffs.get(dbt);
-				increase -= list.getIncrease();
-				mult -= list.getMultiplier();
+				Collection<DamageBuffType> categories = getDamageBuffTypes(slice.getType().getCategories());
+				for (DamageBuffType dbt : categories) {
+					if (!damageBuffs.containsKey(dbt)) continue;
+					BuffList list = damageBuffs.get(dbt);
+					increase += list.getIncrease();
+					mult += list.getMultiplier();
 
-				for (Buff b : list.getBuffs()) {
-					if (!b.isPositive(base)) buffs.add(b);
-					else debuffs.add(b);
+					for (Buff b : list.getBuffs()) {
+						if (b.isPositive(base)) buffs.add(b);
+						else debuffs.add(b);
+					}
+				}
+
+				for (DamageBuffType dbt : categories) {
+					if (!defenseBuffs.containsKey(dbt)) continue;
+					BuffList list = defenseBuffs.get(dbt);
+					increase -= list.getIncrease();
+					mult -= list.getMultiplier();
+
+					for (Buff b : list.getBuffs()) {
+						if (!b.isPositive(base)) buffs.add(b);
+						else debuffs.add(b);
+					}
 				}
 			}
 			
@@ -343,60 +343,62 @@ public class DamageMeta {
 			if (damage + ignoreShieldsDamage + sliceDamage > target.getHealth()) {
 				sliceDamage = target.getHealth() - damage - ignoreShieldsDamage;
 			}
+			final double sliceDamageFinal = sliceDamage;
 
 			// Sort buffs by greatest positive impact to greatest negative impact
-			final double sliceDamageFinal = sliceDamage;
-			Comparator<Buff> comp = new Comparator<Buff>() {
-				@Override
-				public int compare(Buff b1, Buff b2) {
-					double change1 = b1.getEffectiveChange(sliceDamageFinal);
-					double change2 = b2.getEffectiveChange(sliceDamageFinal);
-					return Double.compare(change2, change1);
-				}
-			};
+			if (!ignoreBuffs) {
+				Comparator<Buff> comp = new Comparator<Buff>() {
+					@Override
+					public int compare(Buff b1, Buff b2) {
+						double change1 = b1.getEffectiveChange(sliceDamageFinal);
+						double change2 = b2.getEffectiveChange(sliceDamageFinal);
+						return Double.compare(change2, change1);
+					}
+				};
 
-			/* 
-			 * Split buffs into positive (increases damage) and negative (decreases damage)
-			 * If damage > 0, all negative buffs get full stats
-			 * Subtract base damage from final damage, then positive buffs get stats in priority of
-			 * highest effective change to lowest
-			 * If damage <= 0, skip positive buff stats entirely
-			 * Apply all positive buffs to the base damage, then give debuffs stats based on
-			 * highest effective change to lowest
-			 */
-			 if (sliceDamage > 0) {
-				for (Buff b : debuffs) {
-					if (b.getStatTracker() == null) continue;
-					if (!(b.getApplier() instanceof PlayerFightData)) continue;
-					((PlayerFightData) b.getApplier()).getStats().addBuffStat(b.getStatTracker(), b.getEffectiveChange(base));
-				}
+				/* 
+				* Split buffs into positive (increases damage) and negative (decreases damage)
+				* If damage > 0, all negative buffs get full stats
+				* Subtract base damage from final damage, then positive buffs get stats in priority of
+				* highest effective change to lowest
+				* If damage <= 0, skip positive buff stats entirely
+				* Apply all positive buffs to the base damage, then give debuffs stats based on
+				* highest effective change to lowest
+				*/
+				if (sliceDamage > 0) {
+					for (Buff b : debuffs) {
+						if (b.getStatTracker() == null) continue;
+						if (!(b.getApplier() instanceof PlayerFightData)) continue;
+						((PlayerFightData) b.getApplier()).getStats().addBuffStat(b.getStatTracker(), b.getEffectiveChange(base));
+					}
 
-				double temp = sliceDamage - base;
-				buffs.sort(comp);
-				for (Buff b : buffs) {
-					if (temp <= 0) break;
-					if (b.getStatTracker() == null) continue;
-					if (!(b.getApplier() instanceof PlayerFightData)) continue;
-					double change = b.getEffectiveChange(base);
-					((PlayerFightData) b.getApplier()).getStats().addBuffStat(b.getStatTracker(), Math.min(temp, change));
-					temp -= change;
+					double temp = sliceDamage - base;
+					buffs.sort(comp);
+					for (Buff b : buffs) {
+						if (temp <= 0) break;
+						if (b.getStatTracker() == null) continue;
+						if (!(b.getApplier() instanceof PlayerFightData)) continue;
+						double change = b.getEffectiveChange(base);
+						((PlayerFightData) b.getApplier()).getStats().addBuffStat(b.getStatTracker(), Math.min(temp, change));
+						temp -= change;
+					}
 				}
-			}
-			else {
-				double temp = base, inc = 0, multi = 1;
-				for (Buff b : buffs) {
-					inc += b.getIncrease();
-					multi += b.getMultiplier();
-				}
+				else {
+					double temp = base, inc = 0, multi = 1;
+					for (Buff b : buffs) {
+						inc += b.getIncrease();
+						multi += b.getMultiplier();
+					}
 
-				temp = (temp * multi) + inc;
-				for (Buff b : debuffs) {
-					if (temp <= 0) break;
-					if (b.getStatTracker() == null) continue;
-					if (!(b.getApplier() instanceof PlayerFightData)) continue;
-					double change = b.getEffectiveChange(temp);
-					((PlayerFightData) b.getApplier()).getStats().addBuffStat(b.getStatTracker(), Math.min(temp, change));
-					temp -= change;
+					temp = (temp * multi) + inc;
+					for (Buff b : debuffs) {
+						if (temp <= 0) break;
+						if (b.getStatTracker() == null) continue;
+						if (!(b.getApplier() instanceof PlayerFightData)) continue;
+						double change = b.getEffectiveChange(temp);
+						((PlayerFightData) b.getApplier()).getStats().addBuffStat(b.getStatTracker(), Math.min(temp, change));
+						temp -= change;
+					}
 				}
 			}
 			// Save the damage values per damage type to put into stats later

@@ -32,21 +32,20 @@ public class GrendelsCrystalMirror extends Artifact {
 	}
 	
 	private class GrendelsCrystalMirrorInstance implements TriggerAction {
-		private int count = 3;
+		private int count = 0;
  
 		@Override
 		public TriggerResult trigger(PlayerFightData data, Object inputs) {
-			if (count > 0) {
-				count--;
+			if (++count >= 5) {
+				count = 0;
 				LaunchProjectileGroupEvent ev = (LaunchProjectileGroupEvent) inputs;
 				data.addTask(new BukkitRunnable() {
 					public void run() {
 						ev.getGroup().startWithoutEvent(data);
 					}
 				}.runTaskLater(NeoRogue.inst(), 10L));
-				return TriggerResult.keep();
 			}
-			return TriggerResult.remove();
+			return TriggerResult.keep();
 		}
 	}
 
@@ -63,6 +62,6 @@ public class GrendelsCrystalMirror extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GLASS_PANE,
-				"The first <white>3</white> sets of 1+ projectiles you fire will be fired twice.");
+				"Every <white>5th</white> projectile you fire will be fired twice.");
 	}
 }

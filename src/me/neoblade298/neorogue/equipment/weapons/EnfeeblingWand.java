@@ -69,6 +69,7 @@ public class EnfeeblingWand extends Equipment {
 	
 	private class EnfeeblingWandProjectile extends Projectile {
 		private Player p;
+		private PlayerFightData data;
 		private String buffId = UUID.randomUUID().toString();
 		private EnfeeblingWand eq;
 
@@ -76,6 +77,7 @@ public class EnfeeblingWand extends Equipment {
 			super(1.5, 10, 2);
 			this.size(0.2, 0.2);
 			this.p = data.getPlayer();
+			this.data = data;
 			this.eq = eq;
 		}
 
@@ -89,7 +91,7 @@ public class EnfeeblingWand extends Equipment {
 			Location loc = hit.getEntity().getLocation();
 			EnfeeblingWand.hit.play(p, loc);
 			applyProjectileOnHit(hit.getEntity(), proj, hitBarrier, true);
-			hit.addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL), Buff.multiplier(hit, -mult, BuffStatTracker.defenseDebuffEnemy(buffId, eq, false)), 100);
+			hit.addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL), Buff.multiplier(data, -mult, BuffStatTracker.defenseDebuffEnemy(buffId, eq, false)), 100);
 		}
 
 		@Override

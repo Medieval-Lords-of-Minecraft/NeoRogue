@@ -67,7 +67,7 @@ public abstract class Status {
 		switch (id) {
 		case POISON: return new PoisonStatus(target);
 		case REND: return new RendStatus(target);
-		case BURN: return new DecrementStackStatus(id.name(), target, StatusClass.NEGATIVE);
+		case BURN: return new BurnStatus(target);
 		case FROST: return new FrostStatus(target);
 		case ELECTRIFIED: return new DecrementStackStatus(id.name(), target, StatusClass.NEGATIVE);
 		case CONCUSSED: return new ConcussedStatus(target);
