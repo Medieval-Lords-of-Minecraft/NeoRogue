@@ -1,7 +1,10 @@
 package me.neoblade298.neorogue.session;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -41,6 +44,7 @@ public class LobbyInstance extends Instance {
 	private UUID host;
 	private Component partyInfoHeader;
 	private HashSet<UUID> ready = new HashSet<UUID>();
+	private ArrayList<String> lobbyLines = new ArrayList<String>();
 	private TextDisplay holo;
 
 	// Static error messages
@@ -134,6 +138,27 @@ public class LobbyInstance extends Instance {
 		TextComponent tc = Component.text().content(p.getName()).color(NamedTextColor.YELLOW)
 				.append(Component.text(" joined the lobby!", NamedTextColor.GRAY)).build();
 		broadcast(tc);
+		updateLobbyLines();
+	}
+
+	public ArrayList<String> getLobbyLines() {
+		return lobbyLines;
+	}
+
+	private void updateLobbyLines() {
+		lobbyLines.clear();
+		Player hostp = Bukkit.getPlayer(host);
+		lobbyLines.add("(Host) " + hostp.getName() + "§7 - §e" +
+			players.get(host).getDisplay());
+
+		ArrayList<String> sorted = new ArrayList<String>();
+		for (Entry<UUID, EquipmentClass> ent : players.entrySet()) {
+			if (ent.getKey() == host) continue;
+			Player p = Bukkit.getPlayer(ent.getKey());
+			sorted.add(p.getName() + "§7 - §e" + ent.getValue().getDisplay());
+		}
+		Collections.sort(sorted);
+		lobbyLines.addAll(sorted);
 	}
 
 	public void kickPlayer(Player s, String name) {
@@ -160,6 +185,7 @@ public class LobbyInstance extends Instance {
 		TextComponent tc = Component.text().content(p.getName()).color(NamedTextColor.YELLOW)
 				.append(Component.text(" was kicked from the lobby!", NamedTextColor.GRAY)).build();
 		broadcast(tc);
+		updateLobbyLines();
 	}
 
 	public void leavePlayer(Player p) {
@@ -182,6 +208,7 @@ public class LobbyInstance extends Instance {
 			broadcast(tc);
 		}
 		p.teleport(NeoRogue.spawn);
+		updateLobbyLines();
 	}
 
 	public void broadcast(TextComponent msg) {
@@ -286,6 +313,7 @@ public class LobbyInstance extends Instance {
 				.append(Component.text(pc.getDisplay(), NamedTextColor.RED)).build();
 		broadcast(tc);
 		players.put(uuid, pc);
+		updateLobbyLines();
 	}
 
 	public String getName() {

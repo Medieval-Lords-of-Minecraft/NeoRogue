@@ -256,12 +256,14 @@ public class Session {
 		party.get(host).getData().updateSnapshot(this, saveSlot);
 	}
 	
+	// Players are added this way after a lobby instance starts the game
 	public void addPlayers(HashMap<UUID, EquipmentClass> players) {
 		for (Entry<UUID, EquipmentClass> ent : players.entrySet()) {
 			party.put(ent.getKey(), new PlayerSessionData(ent.getKey(), ent.getValue(), this));
 		}
 	}
 	
+	// Used for debug purposes only
 	public void addPlayer(UUID uuid, EquipmentClass pc) {
 		party.put(uuid, new PlayerSessionData(uuid, pc, this));
 	}
