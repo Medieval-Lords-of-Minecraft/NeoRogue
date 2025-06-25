@@ -1,10 +1,9 @@
 package me.neoblade298.neorogue.session;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -46,6 +45,13 @@ public class LobbyInstance extends Instance {
 	private HashSet<UUID> ready = new HashSet<UUID>();
 	private ArrayList<String> lobbyLines = new ArrayList<String>();
 	private TextDisplay holo;
+
+	private static final Comparator<Player> comp = new Comparator<Player>() {
+		@Override
+		public int compare(Player p1, Player p2) {
+			return p1.getName().compareToIgnoreCase(p2.getName());
+		}
+	};
 
 	// Static error messages
 	private static final TextComponent hostOnlyInvite = Component.text("Only the host may invite other players!",
@@ -151,14 +157,18 @@ public class LobbyInstance extends Instance {
 		lobbyLines.add("(Host) " + hostp.getName() + "§7 - §e" +
 			players.get(host).getDisplay());
 
-		ArrayList<String> sorted = new ArrayList<String>();
-		for (Entry<UUID, EquipmentClass> ent : players.entrySet()) {
-			if (ent.getKey() == host) continue;
-			Player p = Bukkit.getPlayer(ent.getKey());
-			sorted.add(p.getName() + "§7 - §e" + ent.getValue().getDisplay());
+		ArrayList<Player> sorted = new ArrayList<Player>();
+		for (UUID uuid : players.keySet()) {
+			if (host == uuid) continue;
+			sorted.add(Bukkit.getPlayer(uuid));
 		}
-		Collections.sort(sorted);
-		lobbyLines.addAll(sorted);
+		sorted.sort(comp);
+		for (Player p : sorted) {
+			UUID uuid = p.getUniqueId();
+			String line = ready.contains(uuid) ? "§7[§a✓§7] §f" : "§7[§c✗§7] §f";
+			line += p.getName() + "§7 - §e" + players.get(p.getUniqueId()).getDisplay();
+			lobbyLines.add(line);
+		}
 	}
 
 	public void kickPlayer(Player s, String name) {
