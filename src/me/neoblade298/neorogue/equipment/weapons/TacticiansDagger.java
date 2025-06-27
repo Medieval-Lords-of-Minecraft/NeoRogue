@@ -15,7 +15,6 @@ import me.neoblade298.neorogue.equipment.StandardEquipmentInstance;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
-import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -60,15 +59,9 @@ public class TacticiansDagger extends Equipment {
 		data.addTrigger(ID, Trigger.DEALT_DAMAGE, timer);
 		
 		inst.setAction((pdata, inputs) -> {
-			DamageMeta dm;
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
-			if (timer.getTime() + 3000 >= System.currentTimeMillis()) {
-				dm = new DamageMeta(data, properties.get(PropertyType.DAMAGE), DamageType.PIERCING);
-			}
-			else {
-				dm = new DamageMeta(data, properties.get(PropertyType.DAMAGE) + damage, DamageType.PIERCING);
-			}
-			weaponSwingAndDamage(p, data, ev.getTarget(), dm);
+			boolean hasBonus = timer.getTime() + 3000 >= System.currentTimeMillis();
+			weaponSwingAndDamage(p, data, ev.getTarget(), properties.get(PropertyType.DAMAGE) + (hasBonus ? damage : 0));
 			return TriggerResult.keep();
 		});
 

@@ -10,7 +10,6 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
-import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -51,8 +50,7 @@ public class SerratedRazor extends Equipment {
 				if (++count >= 3) {
 					FightData fd = FightInstance.getFightData(ev.getTarget());
 					boolean canBonus = fd.hasStatus(StatusType.POISON) || fd.hasStatus(StatusType.INSANITY);
-					DamageMeta dm = new DamageMeta(data, base + (canBonus ? bonus : 0), DamageType.PIERCING);
-					weaponSwingAndDamage(p, data, ev.getTarget(), dm);
+					weaponSwingAndDamage(p, data, ev.getTarget(), base + (canBonus ? bonus : 0));
 					data.setBasicAttackCooldown(EquipSlot.HOTBAR, 3000L);
 					Sounds.extinguish.play(p, p);
 					count = 0;

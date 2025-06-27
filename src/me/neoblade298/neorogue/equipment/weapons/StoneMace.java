@@ -9,7 +9,6 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
-import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -41,9 +40,8 @@ public class StoneMace extends Equipment {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
 			FightInstance.applyStatus(ev.getTarget(), StatusType.CONCUSSED, p, conc, -1);
-			DamageMeta dm = new DamageMeta(pdata, damage +
-					(FightInstance.getFightData(ev.getTarget()).getStatus(StatusType.CONCUSSED).getStacks() * 2), properties.getType());
-			weaponSwingAndDamage(p, pdata, ev.getTarget(), dm);
+			weaponSwingAndDamage(p, pdata, ev.getTarget(), damage
+					+ (FightInstance.getFightData(ev.getTarget()).getStatus(StatusType.CONCUSSED).getStacks() * 2));
 			return TriggerResult.keep();
 		});
 	}

@@ -148,8 +148,9 @@ public class DamageMeta {
 		return this;
 	}
 
-	public void setKnockback(double knockback) {
+	public DamageMeta setKnockback(double knockback) {
 		this.knockback = knockback;
+		return this;
 	}
 
 	public IProjectileInstance getProjectile() {

@@ -11,7 +11,6 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
-import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -41,8 +40,7 @@ public class MonksHeadsplitter extends Equipment {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
 			boolean isConc = FightInstance.getFightData(ev.getTarget()).hasStatus(StatusType.CONCUSSED);
-			DamageMeta dm = new DamageMeta(data, properties.get(PropertyType.DAMAGE) + (isConc ? bonus : 0), DamageType.BLUNT);
-			weaponSwingAndDamage(p, data, ev.getTarget(), dm);
+			weaponSwingAndDamage(p, data, ev.getTarget(), properties.get(PropertyType.DAMAGE) + (isConc ? bonus : 0));
 			return TriggerResult.keep();
 		});
 	}

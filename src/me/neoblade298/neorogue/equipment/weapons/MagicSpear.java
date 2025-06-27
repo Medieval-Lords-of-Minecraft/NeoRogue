@@ -13,7 +13,6 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
-import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -42,11 +41,8 @@ public class MagicSpear extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, in) -> {
 			LeftClickHitEvent ev = (LeftClickHitEvent) in;
-			DamageMeta dm = new DamageMeta(pdata,
-					properties.get(PropertyType.DAMAGE)
-							+ (FightInstance.getFightData(ev.getTarget()).hasStatus(StatusType.CONCUSSED) ? damage : 0),
-					DamageType.EARTHEN);
-			weaponSwingAndDamage(p, data, ev.getTarget(), dm);
+			weaponSwingAndDamage(p, data, ev.getTarget(), properties.get(PropertyType.DAMAGE)
+					+ (FightInstance.getFightData(ev.getTarget()).hasStatus(StatusType.CONCUSSED) ? damage : 0));
 			return TriggerResult.keep();
 		});
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_NO_HIT, (pdata, in) -> {
@@ -55,10 +51,8 @@ public class MagicSpear extends Equipment {
 			LinkedList<LivingEntity> targets = TargetHelper.getEntitiesInSight(p, spearHit);
 			if (targets.isEmpty())
 				return TriggerResult.keep();
-			DamageMeta dm = new DamageMeta(pdata, properties.get(PropertyType.DAMAGE)
-					+ (FightInstance.getFightData(targets.getFirst()).hasStatus(StatusType.CONCUSSED) ? damage : 0),
-					DamageType.EARTHEN);
-			weaponSwingAndDamage(p, data, targets.getFirst(), dm);
+			weaponSwingAndDamage(p, data, targets.getFirst(), properties.get(PropertyType.DAMAGE)
+					+ (FightInstance.getFightData(targets.getFirst()).hasStatus(StatusType.CONCUSSED) ? damage : 0));
 			return TriggerResult.keep();
 		});
 	}

@@ -12,6 +12,7 @@ import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageType;
+import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -37,10 +38,11 @@ public class StoneDagger extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
-			DamageMeta dm = new DamageMeta(data, properties.get(PropertyType.DAMAGE), DamageType.SLASHING);
+			DamageMeta dm = new DamageMeta(data, this, true);
 			if (data.hasStatus(StatusType.STEALTH)) dm.addDamageSlice(new DamageSlice(data, damage, DamageType.DARK));
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
-			weaponSwingAndDamage(p, data, ev.getTarget(), dm);
+			weaponSwing(p, data);
+			FightInstance.dealDamage(dm, ev.getTarget());
 			return TriggerResult.keep();
 		});
 	}

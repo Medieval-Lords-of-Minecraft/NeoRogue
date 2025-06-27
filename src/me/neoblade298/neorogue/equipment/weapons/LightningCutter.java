@@ -13,6 +13,7 @@ import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageType;
+import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -38,8 +39,9 @@ public class LightningCutter extends Equipment {
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
 			DamageMeta dm = new DamageMeta(pdata);
 			dm.addDamageSlice(new DamageSlice(data, properties.get(PropertyType.DAMAGE), properties.getType(), DamageType.LIGHTNING));
+			dm.setKnockback(properties.get(PropertyType.KNOCKBACK)).isBasicAttack(this, true);
 			weaponSwing(p, data);
-			weaponDamage(p, data, ev.getTarget(), dm);
+			FightInstance.dealDamage(dm, ev.getTarget());
 			return TriggerResult.keep();
 		});
 	}

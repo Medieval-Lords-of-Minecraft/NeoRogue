@@ -10,7 +10,6 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -38,15 +37,12 @@ public class MonksStaff2 extends Equipment {
 		ActionMeta am = new ActionMeta();
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
-			DamageMeta dm;
+			double dmgBonus = 0;
 			if (am.getCount() > 0) {
-				dm = new DamageMeta(data, properties.get(PropertyType.DAMAGE) + bonus, DamageType.BLUNT);
+				dmgBonus = bonus;
 				am.addCount(-1);
 			}
-			else {
-				dm = new DamageMeta(data, properties.get(PropertyType.DAMAGE), DamageType.BLUNT);
-			}
-			weaponSwingAndDamage(p, data, ev.getTarget(), dm);
+			weaponSwingAndDamage(p, data, ev.getTarget(), properties.get(PropertyType.DAMAGE) + dmgBonus);
 			return TriggerResult.keep();
 		});
 

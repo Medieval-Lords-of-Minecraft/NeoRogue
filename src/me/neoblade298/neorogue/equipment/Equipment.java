@@ -184,8 +184,6 @@ import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
-import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
-import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.WeaponSwingEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -1259,42 +1257,20 @@ public abstract class Equipment implements Comparable<Equipment> {
 		weaponDamage(p, data, target);
 	}
 
-	public void weaponSwingAndDamage(Player p, PlayerFightData data, LivingEntity target, DamageMeta dm) {
-		weaponSwing(p, data);
-		weaponDamage(p, data, target, dm);
-	}
-
 	public void weaponSwingAndDamage(Player p, PlayerFightData data, LivingEntity target, double damage) {
 		weaponSwing(p, data);
 		weaponDamage(p, data, target, damage);
 	}
 
 	public void weaponDamage(Player p, PlayerFightData data, LivingEntity target) {
-		weaponDamage(p, data, target, properties.get(PropertyType.DAMAGE), properties.get(PropertyType.KNOCKBACK));
+		weaponDamage(p, data, target, properties.get(PropertyType.DAMAGE));
 	}
 
 	public void weaponDamage(Player p, PlayerFightData data, LivingEntity target, double damage) {
-		weaponDamage(p, data, target, damage, properties.get(PropertyType.KNOCKBACK));
-	}
-
-	public void weaponDamage(Player p, PlayerFightData data, LivingEntity target, double damage, double knockback) {
-		weaponDamage(p, data, target, new DamageMeta(data, damage, properties.getType()), knockback);
-	}
-
-	public void weaponDamage(Player p, PlayerFightData data, LivingEntity target, DamageMeta dm) {
-		weaponDamage(p, data, target, dm, properties.get(PropertyType.KNOCKBACK));
-	}
-
-	public void weaponDamage(Player p, PlayerFightData data, LivingEntity target, DamageMeta dm, double knockback) {
+		DamageMeta dm = new DamageMeta(data, damage, properties.getType());
+		dm.setKnockback(properties.get(PropertyType.KNOCKBACK));
 		dm.isBasicAttack(this, true);
-		PreBasicAttackEvent ev = new PreBasicAttackEvent(target, dm, this, null);
-		data.runActions(data, Trigger.PRE_BASIC_ATTACK, ev);
-		if (knockback != 0) {
-			FightInstance.knockback(p, target, knockback);
-		}
 		FightInstance.dealDamage(dm, target);
-		BasicAttackEvent ev2 = new BasicAttackEvent(target, dm, this, null);
-		data.runActions(data, Trigger.BASIC_ATTACK, ev2);
 	}
 
 	public boolean isCursed() {

@@ -9,14 +9,13 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
-import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class EvasiveKnife extends Equipment {
 	private static final String ID = "evasiveKnife";
@@ -41,8 +40,7 @@ public class EvasiveKnife extends Equipment {
 		StandardPriorityAction act = new StandardPriorityAction(id);
 		act.setAction((pdata, in) -> {
 			LeftClickHitEvent ev = (LeftClickHitEvent) in;
-			DamageMeta dm = new DamageMeta(pdata, base + (data.getStamina() >= stam ? dmg : 0), DamageType.SLASHING);
-			weaponSwingAndDamage(p, data, ev.getTarget(), dm);
+			weaponSwingAndDamage(p, data, ev.getTarget(), base + (data.getStamina() >= stam ? dmg : 0));
 			return TriggerResult.keep();
 		});
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, act);

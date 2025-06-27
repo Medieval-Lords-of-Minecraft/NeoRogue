@@ -8,7 +8,6 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
-import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -38,8 +37,7 @@ public class Irritant extends Equipment {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
 			boolean hasStatus = FightInstance.getFightData(ev.getTarget()).hasStatus(StatusType.POISON);
-			DamageMeta dm = new DamageMeta(data, base + (hasStatus ? dmg : 0), DamageType.PIERCING);
-			weaponSwingAndDamage(p, data, ev.getTarget(), dm);
+			weaponSwingAndDamage(p, data, ev.getTarget(), base + (hasStatus ? dmg : 0));
 			return TriggerResult.keep();
 		});
 	}

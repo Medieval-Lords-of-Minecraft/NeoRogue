@@ -62,8 +62,7 @@ public class StoneSpear extends Equipment {
 				return TriggerResult.keep();
 			LeftClickHitEvent ev = (LeftClickHitEvent) in;
 			weaponSwing(p, data);
-			DamageMeta dm = new DamageMeta(data, damage + data.getStatus(StatusType.STRENGTH).getStacks() * 2, DamageType.PIERCING);
-			weaponDamage(p, data, ev.getTarget(), dm);
+			weaponDamage(p, data, ev.getTarget(), damage + data.getStatus(StatusType.STRENGTH).getStacks() * 2);
 			return TriggerResult.keep();
 		});
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_NO_HIT, (pdata, in) -> {
@@ -74,8 +73,7 @@ public class StoneSpear extends Equipment {
 			if (targets.isEmpty())
 				return TriggerResult.keep();
 			weaponSwing(p, data);
-			DamageMeta dm = new DamageMeta(data, damage + data.getStatus(StatusType.STRENGTH).getStacks() * 2, DamageType.PIERCING);
-			weaponDamage(p, data, targets.getFirst(), dm);
+			weaponDamage(p, data, targets.getFirst(), damage + data.getStatus(StatusType.STRENGTH).getStacks() * 2);
 			return TriggerResult.keep();
 		});
 		data.addSlotBasedTrigger(id, slot, Trigger.THROW_TRIDENT, inst);

@@ -9,7 +9,6 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
-import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
@@ -37,8 +36,8 @@ public class CrescentAxe extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
-			DamageMeta dm = new DamageMeta(pdata, damage + (data.getStatus(StatusType.BERSERK).getStacks() * 3), properties.getType());
-			weaponSwingAndDamage(p, pdata, ev.getTarget(), dm);
+			weaponSwingAndDamage(p, pdata, ev.getTarget(), 
+					damage + (data.getStatus(StatusType.BERSERK).getStacks() * 3));
 			return TriggerResult.keep();
 		});
 	}

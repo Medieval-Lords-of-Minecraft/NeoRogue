@@ -16,6 +16,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -68,8 +69,7 @@ public class Harpoon extends Equipment {
 			ParticleUtil.drawLine(p, harpoonPart, p.getLocation().add(0, 1, 0), start.clone().add(v), 0.5);
 			if (targets.isEmpty())
 				return TriggerResult.keep();
-			weaponDamage(p, data, targets.getFirst(), properties.get(PropertyType.DAMAGE), 0);
-			FightInstance.knockback(p, targets.getFirst(), -0.5);
+			FightInstance.dealDamage(new DamageMeta(data, this, true).setKnockback(-0.5), targets.getFirst());
 			return TriggerResult.keep();
 		});
 	}
@@ -79,7 +79,7 @@ public class Harpoon extends Equipment {
 		item = createItem(
 				Material.TRIDENT,
 				"Melee range +1. Throwing the weapon additionally increases its range by <white>2</white> and pulls enemies towards"
-				+ " the player and taunts them for <white>5x</white> weapon damage."
+				+ " the player."
 		);
 	}
 }

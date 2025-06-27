@@ -45,8 +45,9 @@ public class SilverFang extends Equipment {
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
 			DamageMeta dm = new DamageMeta(pdata);
 			dm.addDamageSlice(new DamageSlice(data, properties.get(PropertyType.DAMAGE), properties.getType(), DamageType.LIGHT));
+			dm.setKnockback(properties.get(PropertyType.KNOCKBACK)).isBasicAttack(this, true);
 			weaponSwing(p, data);
-			weaponDamage(p, data, ev.getTarget(), dm);
+			FightInstance.dealDamage(dm, ev.getTarget());
 			FightInstance.getFightData(ev.getTarget()).applyStatus(StatusType.SANCTIFIED, data, sanct, -1);
 			return TriggerResult.keep();
 		});
