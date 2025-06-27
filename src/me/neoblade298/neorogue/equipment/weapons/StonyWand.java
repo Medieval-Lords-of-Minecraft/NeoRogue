@@ -48,7 +48,7 @@ public class StonyWand extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ProjectileGroup proj = new ProjectileGroup(new StonyWandProjectile(data));
+		ProjectileGroup proj = new ProjectileGroup(new StonyWandProjectile(data, this));
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (d, inputs) -> {
 			if (!canUseWeapon(data) || !data.canBasicAttack(EquipSlot.HOTBAR))
 				return TriggerResult.keep();
@@ -61,12 +61,14 @@ public class StonyWand extends Equipment {
 	private class StonyWandProjectile extends Projectile {
 		private Player p;
 		private PlayerFightData data;
+		private StonyWand eq;
 
-		public StonyWandProjectile(PlayerFightData data) {
+		public StonyWandProjectile(PlayerFightData data, StonyWand eq) {
 			super(1.5, 10, 2);
 			this.size(0.2, 0.2);
 			this.data = data;
 			this.p = data.getPlayer();
+			this.eq = eq;
 		}
 
 		@Override
@@ -78,13 +80,13 @@ public class StonyWand extends Equipment {
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			Location loc = hit.getEntity().getLocation();
 			StonyWand.hit.play(p, loc);
-			applyProjectileOnHit(hit.getEntity(), proj, hitBarrier, true);
 			FightInstance.applyStatus(hit.getEntity(), StatusType.CONCUSSED, data, conc, -1);
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
 			start.play(p, proj.getLocation());
+			proj.applyWeapon(data, eq);
 		}
 	}
 

@@ -95,7 +95,7 @@ public class Volley extends Equipment {
 		@Override
 		public void onStart(ProjectileInstance proj) {
 			Sounds.shoot.play(p, p);
-			proj.applyBowAndAmmo(data, properties, ammo);
+			proj.applyAmmo(data, properties, ammo);
 			ammo.onStart(proj);
 		}
 	}

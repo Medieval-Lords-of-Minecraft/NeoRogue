@@ -23,6 +23,8 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.AmmunitionInstance;
+import me.neoblade298.neorogue.equipment.Bow;
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
@@ -95,8 +97,8 @@ public class ProjectileInstance extends IProjectileInstance {
 		this.inst = owner.getInstance();
 		this.owner = owner;
 		this.settings = settings;
-		this.meta = new DamageMeta(owner, DamageOrigin.PROJECTILE);
-		meta.setProjectileInstance(this);
+		this.meta = new DamageMeta(owner, DamageOrigin.PROJECTILE).setProjectileInstance(this);
+		meta.addOrigin(DamageOrigin.NORMAL);
 
 		v = direction.clone().add(new Vector(0, settings.getArc(), 0)).normalize()
 				.rotateAroundY(Math.toRadians(settings.getRotation()));
@@ -155,14 +157,35 @@ public class ProjectileInstance extends IProjectileInstance {
 		meta.addDamageSlice(slice);
 	}
 
-	public void applyProperties(PlayerFightData data, EquipmentProperties props) {
+	// Sometimes useful for non-weapon projectiles like leading knife
+	public void applyProperties(PlayerFightData data, Equipment eq) {
+		EquipmentProperties props = eq.getProperties();
 		meta.addDamageSlice(new DamageSlice(data, props.get(PropertyType.DAMAGE), props.getType()));
+		meta.setKnockback(props.get(PropertyType.KNOCKBACK));
 	}
 
-	public void applyBowAndAmmo(PlayerFightData data, EquipmentProperties bow, AmmunitionInstance ammo) {
+	public void applyWeapon(PlayerFightData data, Equipment weapon) {
+		EquipmentProperties props = weapon.getProperties();
+		meta.addDamageSlice(new DamageSlice(data, props.get(PropertyType.DAMAGE), props.getType()));
+		meta.setKnockback(props.get(PropertyType.KNOCKBACK));
+		meta.isBasicAttack(weapon, true);
+	}
+
+	public void applyBowAndAmmo(PlayerFightData data, Bow bow, AmmunitionInstance ammo) {
 		EquipmentProperties ammoProps = ammo.getProperties();
-		double dmg = ammoProps.get(PropertyType.DAMAGE) + bow.get(PropertyType.DAMAGE);
+		double dmg = ammoProps.get(PropertyType.DAMAGE) + bow.getProperties().get(PropertyType.DAMAGE);
 		meta.addDamageSlice(new DamageSlice(data, dmg, ammoProps.getType()));
+		meta.setKnockback(bow.getProperties().get(PropertyType.KNOCKBACK) + ammo.getProperties().get(PropertyType.KNOCKBACK));
+		meta.isBasicAttack(bow, true);
+	}
+
+	// Useful for applying miscellaneous properties that you don't want to show up in descriptions, like with Rapid Fire
+	public void applyAmmo(PlayerFightData data, EquipmentProperties props, AmmunitionInstance ammo) {
+		EquipmentProperties ammoProps = ammo.getProperties();
+		double dmg = ammoProps.get(PropertyType.DAMAGE) + props.get(PropertyType.DAMAGE);
+		meta.addDamageSlice(new DamageSlice(data, dmg, ammoProps.getType()));
+		meta.setKnockback(
+				props.get(PropertyType.KNOCKBACK) + ammo.getProperties().get(PropertyType.KNOCKBACK));
 	}
 
 	@Override
@@ -293,7 +316,9 @@ public class ProjectileInstance extends IProjectileInstance {
 	}
 
 	private void damageProjectile(LivingEntity target, DamageMeta meta, Barrier hitBarrier) {
-		meta.addDamageBuffLists(buffs);
+		meta.addDamageBuffLists(buffs); // Add projectile buffs
+		// This is here for mob barriers blocking projectiles,
+		// user barriers blocking projectiles are handled in damagemeta
 		if (hitBarrier != null) {
 			meta.addDefenseBuffLists(hitBarrier.getBuffLists());
 		}

@@ -44,7 +44,7 @@ public class OldStaff extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ProjectileGroup proj = new ProjectileGroup(new OldStaffProjectile(data));
+		ProjectileGroup proj = new ProjectileGroup(new OldStaffProjectile(data, this));
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (d, inputs) -> {
 			if (!canUseWeapon(data) || !data.canBasicAttack(EquipSlot.HOTBAR))
 				return TriggerResult.keep();
@@ -57,11 +57,13 @@ public class OldStaff extends Equipment {
 	private class OldStaffProjectile extends Projectile {
 		private Player p;
 		private PlayerFightData data;
+		private OldStaff eq;
 
-		public OldStaffProjectile(PlayerFightData data) {
+		public OldStaffProjectile(PlayerFightData data, OldStaff eq) {
 			super(1.5, 10, 2);
 			this.size(0.2, 0.2);
 			this.data = data;
+			this.eq = eq;
 			this.p = data.getPlayer();
 		}
 
@@ -74,16 +76,16 @@ public class OldStaff extends Equipment {
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			Location loc = hit.getEntity().getLocation();
 			OldStaff.hit.play(p, loc);
-			applyProjectileOnHit(hit.getEntity(), proj, proj.getMeta(), hitBarrier, true);
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
 			double damage = properties.get(PropertyType.DAMAGE);
+			proj.applyWeapon(data, eq);
 			if (data.getMana() < data.getMaxMana() * 0.25) {
 				damage += bonus;
 			}
-			proj.addDamageSlice(new DamageSlice(data, damage, DamageType.DARK));
+			proj.addDamageSlice(new DamageSlice(data, damage, properties.getType()));
 		}
 	}
 

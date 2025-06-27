@@ -24,15 +24,21 @@ import io.lumine.mythic.api.skills.SkillMetadata;
 import io.lumine.mythic.bukkit.BukkitAdapter;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.IProjectileInstance;
+import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffList;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
+import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealtDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageBarrierEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
@@ -45,22 +51,35 @@ public class DamageMeta {
 	
 	private FightData owner;
 	private boolean hitBarrier, isSecondary, isBasicAttack, ignoreBuffs;
+	private Equipment weapon; // For basic attacks
 	private HashSet<DamageOrigin> origins = new HashSet<DamageOrigin>();
-	private IProjectileInstance proj; // If the damage originated from projectile
+	private ProjectileInstance proj; // If the damage originated from projectile
 	private LinkedList<DamageSlice> slices = new  LinkedList<DamageSlice>();
 	private DamageMeta returnDamage;
 	private HashMap<DamageBuffType, BuffList> damageBuffs = new HashMap<DamageBuffType, BuffList>(), defenseBuffs = new HashMap<DamageBuffType, BuffList>();
 	private HashMap<DamageType, Double> statSlices = new HashMap<DamageType, Double>();
-	private double ignoreShieldsDamage, damage;
+	private double ignoreShieldsDamage, damage, knockback;
+	private Location source; // Override for knockback source
 	
 	public DamageMeta(FightData data) {
-		this.owner = data;
-		this.origins.add(DamageOrigin.NORMAL);
+		this(data, DamageOrigin.NORMAL);
 	}
 	
 	public DamageMeta(FightData data, DamageOrigin origin) {
-		this(data);
+		this.owner = data;
+		addDamageBuffLists(owner.getDamageBuffLists());
 		this.origins.add(origin);
+	}
+
+	// Helper constructor that directly uses equipment properties
+	public DamageMeta(FightData data, Equipment eq, boolean isBasicAttack) {
+		this(data);
+		EquipmentProperties props = eq.getProperties();
+		this.slices.add(new DamageSlice(data, props.get(PropertyType.DAMAGE), props.getType()));
+		this.knockback = props.get(PropertyType.KNOCKBACK);
+		if (isBasicAttack) {
+			isBasicAttack(eq, isBasicAttack);
+		}
 	}
 	
 	public DamageMeta(FightData data, double damage, DamageType type) {
@@ -69,12 +88,11 @@ public class DamageMeta {
 	}
 	
 	public DamageMeta(FightData data, double damage, DamageType type, DamageOrigin origin) {
-		this(data);
+		this(data, origin);
 		this.slices.add(new DamageSlice(data, damage, type));
-		this.origins.add(origin);
 	}
 	
-	public DamageMeta(FightData data, double damage, DamageType type, DamageOrigin origin, IProjectileInstance proj) {
+	public DamageMeta(FightData data, double damage, DamageType type, DamageOrigin origin, ProjectileInstance proj) {
 		this(data);
 		this.slices.add(new DamageSlice(data, damage, type));
 		this.origins.add(origin);
@@ -98,6 +116,8 @@ public class DamageMeta {
 		this.proj = original.proj;
 		this.isBasicAttack = original.isBasicAttack;
 		this.ignoreBuffs = original.ignoreBuffs;
+		this.source = original.source;
+		this.knockback = original.knockback;
  		
  		// These are deep clones
 		this.damageBuffs = cloneBuffLists(original.damageBuffs);
@@ -109,8 +129,9 @@ public class DamageMeta {
 		return this;
 	}
 
-	public DamageMeta isBasicAttack(boolean isBasicAttack) {
+	public DamageMeta isBasicAttack(Equipment weapon, boolean isBasicAttack) {
 		this.isBasicAttack = isBasicAttack;
+		this.weapon = weapon;
 		return this;
 	}
 
@@ -122,12 +143,13 @@ public class DamageMeta {
 		return clone;
 	}
 
-	public void setOwner(FightData owner) {
-		this.owner = owner;
+	public DamageMeta setProjectileInstance(ProjectileInstance inst) {
+		this.proj = inst;
+		return this;
 	}
 
-	public void setProjectileInstance(IProjectileInstance inst) {
-		this.proj = inst;
+	public void setKnockback(double knockback) {
+		this.knockback = knockback;
 	}
 
 	public IProjectileInstance getProjectile() {
@@ -186,6 +208,7 @@ public class DamageMeta {
 			DamageBuffType type = entry.getKey();
 			BuffList list = damageBuffs.getOrDefault(type, new BuffList());
 			list.add(entry.getValue());
+			System.out.println("Adding list " + list.toString());
 			damageBuffs.put(type, list);
 		}
 	}
@@ -211,6 +234,10 @@ public class DamageMeta {
 		defenseBuffs.put(type, list);
 	}
 
+	public void setSource(Location source) {
+		this.source = source;
+	}
+
 	public double dealDamage(LivingEntity target) {
 		return dealDamage(target, null);
 	}
@@ -222,8 +249,7 @@ public class DamageMeta {
 		LivingEntity damager = owner.getEntity();
 		if (damager == null) return 0;
 
-		addDamageBuffLists(owner.getDamageBuffLists());
-		addDefenseBuffLists(recipient.getDefenseBuffLists());
+		addDefenseBuffLists(recipient.getDefenseBuffLists()); // Add target defense buffs
 		returnDamage = new DamageMeta(recipient);
 		returnDamage.isSecondary = true;
 
@@ -236,6 +262,10 @@ public class DamageMeta {
 		toughness.getModifiers().forEach(mod -> armor.removeModifier(mod));
 
 		if (owner instanceof PlayerFightData) {
+			if (isBasicAttack) {
+				PreBasicAttackEvent ev = new PreBasicAttackEvent(target, this, weapon, proj);
+				((PlayerFightData) owner).runActions((PlayerFightData) owner, Trigger.PRE_BASIC_ATTACK, ev);
+			}
 			FightInstance.trigger((Player) owner.getEntity(), Trigger.PRE_DEALT_DAMAGE, new PreDealtDamageEvent(this, target));
 		}
 		
@@ -260,7 +290,7 @@ public class DamageMeta {
 					nullifiedByBarrier = true;
 				}
 				else {
-					addDefenseBuffLists(barrier.getBuffLists());
+					addDefenseBuffLists(barrier.getBuffLists()); // Barrier defense buffs
 				}
 			}
 		}
@@ -302,6 +332,7 @@ public class DamageMeta {
 		}
 		
 		boolean isStatusDamage = !DamageCategory.GENERAL.hasType(slices.getFirst().getPostBuffType());
+		System.out.println(damageBuffs);
 		// Calculate buffs for every slice of damage
 		for (DamageSlice slice : slices) {
 			double increase = 0, mult = 1, base = slice.getDamage();
@@ -313,6 +344,7 @@ public class DamageMeta {
 				}
 
 				Collection<DamageBuffType> categories = getDamageBuffTypes(slice.getType().getCategories());
+				System.out.println("Categories: " + categories);
 				for (DamageBuffType dbt : categories) {
 					if (!damageBuffs.containsKey(dbt)) continue;
 					BuffList list = damageBuffs.get(dbt);
@@ -563,19 +595,38 @@ public class DamageMeta {
 		}
 		double finalDamage = damage + ignoreShieldsDamage + target.getAbsorptionAmount(); // +1 to deal with rounding errors
 		if (damage + ignoreShieldsDamage > 0) {
+
+			// First handle knockback
+			if (knockback > 0) {
+				if (source == null) {
+					if (proj != null) {
+						FightInstance.knockback(target, proj.getVelocity().clone().normalize().multiply(knockback));
+					}
+					else {
+						FightInstance.knockback(owner.getEntity().getLocation(), target, knockback);
+					}
+				}
+				else {
+					FightInstance.knockback(source, target, knockback);
+				}
+			}
 			
 			// Mobs shouldn't have a source of damage because they'll infinitely re-trigger ~OnAttack
 			// Players must have a source of damage to get credit for kills, otherwise mobs that suicide give points
 			if (owner instanceof PlayerFightData) {
-				// Apparently minecraft applies armor based on the entity's disguise if it has one
-				//EntityType type = DisguiseAPI.isDisguised(target) ? DisguiseAPI.getDisguise(target).getType().getEntityType() : target.getType();
-				//if (armoredEntities.contains(type)) finalDamage *= 1.09; // To deal with minecraft vanilla armor, rounded up for inconsistency
+				if (isBasicAttack) {
+					BasicAttackEvent ev = new BasicAttackEvent(target, this, weapon, proj);
+					System.out.println("Basic attack event");
+					((PlayerFightData) owner).runActions((PlayerFightData) owner, Trigger.BASIC_ATTACK, ev);
+				}
 				FightInstance.trigger((Player) owner.getEntity(), Trigger.DEALT_DAMAGE, new DealtDamageEvent(this, target, damage, ignoreShieldsDamage));
 				target.damage(finalDamage, owner.getEntity());
 			}
 			else {
 				target.damage(finalDamage);
 			}
+
+			// Create damage display
 			if (!(target instanceof Player)) {
 				recipient.updateDisplayName();
 				Location loc = target.getLocation().add(0, 1, 0);
@@ -586,6 +637,7 @@ public class DamageMeta {
 				loc = loc.add(btwn).add(x, y, z);
 				recipient.getInstance().createIndicator(Component.text(df.format(damage + ignoreShieldsDamage), NamedTextColor.RED), loc);
 			}
+			// Shields updates
 			else {
 				PlayerFightData data = FightInstance.getUserData(target.getUniqueId());
 				if (data == null) return damage + ignoreShieldsDamage; // Should hopefully never happen
@@ -644,10 +696,6 @@ public class DamageMeta {
 
 	public boolean isBasicAttack() {
 		return isBasicAttack;
-	}
-
-	public void setBasicAttack(boolean isBasicAttack) {
-		this.isBasicAttack = isBasicAttack;
 	}
 
 	public boolean containsType(DamageCategory cat) {

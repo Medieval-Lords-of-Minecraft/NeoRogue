@@ -46,7 +46,7 @@ public class WandOfIgnition extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ProjectileGroup proj = new ProjectileGroup(new WandOfIgnitionProjectile(data));
+		ProjectileGroup proj = new ProjectileGroup(new WandOfIgnitionProjectile(data, this));
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (d, inputs) -> {
 			if (!canUseWeapon(data) || !data.canBasicAttack(EquipSlot.HOTBAR))
 				return TriggerResult.keep();
@@ -59,13 +59,15 @@ public class WandOfIgnition extends Equipment {
 	private class WandOfIgnitionProjectile extends Projectile {
 		private Player p;
 		private PlayerFightData data;
+		private WandOfIgnition eq;
 		private static final SoundContainer start = Sounds.fire, hit = new SoundContainer(Sound.BLOCK_FIRE_EXTINGUISH);
 
-		public WandOfIgnitionProjectile(PlayerFightData data) {
+		public WandOfIgnitionProjectile(PlayerFightData data, WandOfIgnition eq) {
 			super(1.5, 10, 2);
 			this.size(0.2, 0.2);
 			this.data = data;
 			this.p = data.getPlayer();
+			this.eq = eq;
 		}
 
 		@Override
@@ -77,13 +79,13 @@ public class WandOfIgnition extends Equipment {
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			Location loc = hit.getEntity().getLocation();
 			WandOfIgnitionProjectile.hit.play(p, loc);
-			applyProjectileOnHit(hit.getEntity(), proj, hitBarrier, true);
 			FightInstance.applyStatus(hit.getEntity(), StatusType.BURN, data, burn, -1);
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
 			start.play(p, proj.getLocation());
+			proj.applyWeapon(data, eq);
 			FightInstance.applyStatus(p, StatusType.BURN, data, selfburn, -1);
 		}
 	}

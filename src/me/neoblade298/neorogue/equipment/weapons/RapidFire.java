@@ -50,7 +50,7 @@ public class RapidFire extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, this, slot, es);
 		inst.setAction((pdata, in) -> {
-			ProjectileGroup proj = new ProjectileGroup(new RapidFireProjectile(data));
+			ProjectileGroup proj = new ProjectileGroup(new RapidFireProjectile(data, this));
 			for (int i = 0; i * thres <= inst.getCount() && i < MAX; i++) {
 				data.addTask(new BukkitRunnable() {
 					public void run() {
@@ -81,7 +81,7 @@ public class RapidFire extends Equipment {
 		private AmmunitionInstance ammo;
 
 		// Vector is non-normalized velocity of the vanilla projectile being fired
-		public RapidFireProjectile(PlayerFightData data) {
+		public RapidFireProjectile(PlayerFightData data, Equipment eq) {
 			super(properties.get(PropertyType.RANGE), 1);
 			setBowDefaults();
 			this.data = data;
@@ -103,7 +103,7 @@ public class RapidFire extends Equipment {
 		@Override
 		public void onStart(ProjectileInstance proj) {
 			Sounds.shoot.play(p, p);
-			proj.applyBowAndAmmo(data, properties, ammo);
+			proj.applyAmmo(data, properties, ammo);
 			ammo.onStart(proj);
 		}
 	}

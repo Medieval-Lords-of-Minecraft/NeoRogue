@@ -53,7 +53,7 @@ public class AshenHeadhunter extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ProjectileGroup proj = new ProjectileGroup(new AshenHeadhunterProjectile(data));
+		ProjectileGroup proj = new ProjectileGroup(new AshenHeadhunterProjectile(data, this));
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (d, inputs) -> {
 			if (!canUseWeapon(data) || !data.canBasicAttack(EquipSlot.HOTBAR))
 				return TriggerResult.keep();
@@ -79,8 +79,9 @@ public class AshenHeadhunter extends Equipment {
 	private class AshenHeadhunterProjectile extends Projectile {
 		private Player p;
 		private PlayerFightData data;
+		private AshenHeadhunter eq;
 
-		public AshenHeadhunterProjectile(PlayerFightData data) {
+		public AshenHeadhunterProjectile(PlayerFightData data, AshenHeadhunter eq) {
 			super(2, 10, 2);
 			this.size(0.2, 0.2);
 			this.data = data;
@@ -96,13 +97,13 @@ public class AshenHeadhunter extends Equipment {
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			Location loc = hit.getEntity().getLocation();
 			Sounds.infect.play(p, loc);
-			applyProjectileOnHit(hit.getEntity(), proj, hitBarrier, true);
 			hit.applyStatus(StatusType.BURN, data, burn, -1);
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
 			Sounds.fire.play(p, p);
+			proj.applyWeapon(data, eq);
 		}
 	}
 

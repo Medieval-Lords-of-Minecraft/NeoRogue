@@ -8,14 +8,12 @@ import me.neoblade298.neorogue.session.fight.DamageMeta;
 
 public class PreBasicAttackEvent {
 	private LivingEntity target;
-	private double knockback;
 	private DamageMeta meta;
 	private Equipment weapon;
 	private ProjectileInstance proj;
-	public PreBasicAttackEvent(LivingEntity target, DamageMeta meta, double knockback, Equipment weapon, ProjectileInstance proj) {
+	public PreBasicAttackEvent(LivingEntity target, DamageMeta meta, Equipment weapon, ProjectileInstance proj) {
 		this.target = target;
 		this.meta = meta;
-		this.knockback = knockback;
 		this.weapon = weapon;
 		this.proj = proj;
 	}
@@ -27,12 +25,6 @@ public class PreBasicAttackEvent {
 	}
 	public DamageMeta getMeta() {
 		return meta;
-	}
-	public double getKnockback() {
-		return knockback;
-	}
-	public void setKnockback(double knockback) {
-		this.knockback = knockback;
 	}
 	public Equipment getWeapon() {
 		return weapon;

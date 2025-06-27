@@ -1,19 +1,12 @@
 package me.neoblade298.neorogue.equipment;
 
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
-import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
-import me.neoblade298.neorogue.session.fight.DamageMeta;
-import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
-import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerCondition;
-import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
-import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public abstract class Bow extends Equipment {
 	public static TriggerCondition needsAmmo = (p, data, in) -> {
@@ -74,23 +67,5 @@ public abstract class Bow extends Equipment {
 		if (properties.has(PropertyType.MANA_COST)) data.addMana(-properties.get(PropertyType.MANA_COST));
 		if (properties.has(PropertyType.STAMINA_COST)) data.addStamina(-properties.get(PropertyType.STAMINA_COST));
 		data.setBasicAttackCooldown(EquipSlot.HOTBAR, properties.get(PropertyType.ATTACK_SPEED));
-	}
-
-	public void bowProjectileOnHit(LivingEntity target, ProjectileInstance proj, Barrier hitBarrier, DamageMeta dm, AmmunitionInstance ammo, boolean basicAttack) {
-		PlayerFightData data = (PlayerFightData) proj.getOwner();
-
-		if (basicAttack) {
-			dm.setBasicAttack(true);
-			PreBasicAttackEvent ev = new PreBasicAttackEvent(target, dm, properties.get(PropertyType.KNOCKBACK), this, proj);
-			data.runActions(data, Trigger.PRE_BASIC_ATTACK, ev);
-		}
-		if (properties.contains(PropertyType.KNOCKBACK)) {
-			FightInstance.knockback(target,
-					proj.getVelocity().normalize().multiply(properties.get(PropertyType.KNOCKBACK) + ammo.getProperties().get(PropertyType.KNOCKBACK)));
-		}
-		if (basicAttack) {
-			BasicAttackEvent ev = new BasicAttackEvent(target, dm, properties.get(PropertyType.KNOCKBACK), this, proj);
-			data.runActions(data, Trigger.BASIC_ATTACK, ev);
-		}
 	}
 }

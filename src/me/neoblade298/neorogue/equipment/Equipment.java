@@ -156,8 +156,6 @@ import me.neoblade298.neorogue.equipment.cursed.DullDagger;
 import me.neoblade298.neorogue.equipment.cursed.GnarledStaff;
 import me.neoblade298.neorogue.equipment.cursed.MangledBow;
 import me.neoblade298.neorogue.equipment.cursed.RustySword;
-import me.neoblade298.neorogue.equipment.mechanics.Barrier;
-import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.equipment.offhands.ChasingDagger;
 import me.neoblade298.neorogue.equipment.offhands.ConductiveArmguard;
 import me.neoblade298.neorogue.equipment.offhands.HastyShield;
@@ -183,7 +181,6 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.GlossaryIcon;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
-import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -1289,70 +1286,15 @@ public abstract class Equipment implements Comparable<Equipment> {
 	}
 
 	public void weaponDamage(Player p, PlayerFightData data, LivingEntity target, DamageMeta dm, double knockback) {
-		dm.setBasicAttack(true);
-		PreBasicAttackEvent ev = new PreBasicAttackEvent(target, dm, knockback, this, null);
+		dm.isBasicAttack(this, true);
+		PreBasicAttackEvent ev = new PreBasicAttackEvent(target, dm, this, null);
 		data.runActions(data, Trigger.PRE_BASIC_ATTACK, ev);
 		if (knockback != 0) {
 			FightInstance.knockback(p, target, knockback);
 		}
 		FightInstance.dealDamage(dm, target);
-		BasicAttackEvent ev2 = new BasicAttackEvent(target, dm, knockback, this, null);
+		BasicAttackEvent ev2 = new BasicAttackEvent(target, dm, this, null);
 		data.runActions(data, Trigger.BASIC_ATTACK, ev2);
-	}
-
-	public void applyProjectileOnHit(LivingEntity target, ProjectileInstance proj) {
-		applyProjectileOnHit(target, proj, null, true);
-	}
-
-	public void applyProjectileOnHit(LivingEntity target, ProjectileInstance proj, Barrier hitBarrier) {
-		applyProjectileOnHit(target, proj, hitBarrier, true);
-	}
-
-	public void applyProjectileOnHit(LivingEntity target, ProjectileInstance proj, Barrier hitBarrier,
-			boolean basicAttack) {
-		applyProjectileOnHit(target, proj, hitBarrier, true, properties.get(PropertyType.KNOCKBACK));
-	}
-
-	public void applyProjectileOnHit(LivingEntity target, ProjectileInstance proj, DamageMeta dm, Barrier hitBarrier,
-			boolean basicAttack) {
-		applyProjectileOnHit(target, proj, dm, hitBarrier, basicAttack, properties.contains(PropertyType.KNOCKBACK) ? properties.get(PropertyType.KNOCKBACK) : 0);
-	}
-
-	// Currently there is no support for altering the damage meta prior to projectile hit
-	public void applyProjectileOnHit(LivingEntity target, ProjectileInstance proj, Barrier hitBarrier,
-			boolean basicAttack, double knockback) {
-		PlayerFightData data = (PlayerFightData) proj.getOwner();
-		DamageMeta dm = new DamageMeta(data, properties.get(PropertyType.DAMAGE), properties.getType(), DamageOrigin.PROJECTILE, proj);
-		applyProjectileOnHit(target, proj, dm, hitBarrier, basicAttack, knockback);
-	}
-
-	public void applyProjectileOnHit(LivingEntity target, ProjectileInstance proj, DamageMeta dm, Barrier hitBarrier,
-			boolean basicAttack, double knockback) {
-		PlayerFightData data = (PlayerFightData) proj.getOwner();
-		if (!proj.getBuffLists().isEmpty()) {
-			dm.addDamageBuffLists(proj.getBuffLists());
-		}
-		if (hitBarrier != null) {
-			dm.addDefenseBuffLists(hitBarrier.getBuffLists());
-		}
-
-		if (basicAttack) {
-			dm.setBasicAttack(true);
-			PreBasicAttackEvent ev = new PreBasicAttackEvent(target, dm, knockback, this, proj);
-			data.runActions(data, Trigger.PRE_BASIC_ATTACK, ev);
-		}
-		if (properties.contains(PropertyType.KNOCKBACK)) {
-			FightInstance.knockback(target, proj.getVelocity().normalize().multiply(knockback));
-		}
-		FightInstance.dealDamage(dm, target);
-		if (basicAttack) {
-			BasicAttackEvent ev2 = new BasicAttackEvent(target, dm, knockback, this, proj);
-			data.runActions(data, Trigger.BASIC_ATTACK, ev2);
-		}
-	}
-
-	public void applyProjectileOnHit(LivingEntity target, ProjectileInstance proj, DamageMeta dm, Barrier hitBarrier) {
-		applyProjectileOnHit(target, proj, dm, hitBarrier, true);
 	}
 
 	public boolean isCursed() {

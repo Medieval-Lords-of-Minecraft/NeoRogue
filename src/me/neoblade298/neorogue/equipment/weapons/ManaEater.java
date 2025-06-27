@@ -48,7 +48,7 @@ public class ManaEater extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ProjectileGroup proj = new ProjectileGroup(new ManaEaterProjectile(data));
+		ProjectileGroup proj = new ProjectileGroup(new ManaEaterProjectile(data, this));
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (d, inputs) -> {
 			if (!canUseWeapon(data) || !data.canBasicAttack(EquipSlot.HOTBAR))
 				return TriggerResult.keep();
@@ -60,11 +60,15 @@ public class ManaEater extends Equipment {
 	
 	private class ManaEaterProjectile extends Projectile {
 		private Player p;
+		private PlayerFightData data;
+		private ManaEater eq;
 
-		public ManaEaterProjectile(PlayerFightData data) {
+		public ManaEaterProjectile(PlayerFightData data, ManaEater eq) {
 			super(1.5, 10, 2);
 			this.size(0.2, 0.2);
 			this.p = data.getPlayer();
+			this.data = data;
+			this.eq = eq;
 		}
 
 		@Override
@@ -76,12 +80,12 @@ public class ManaEater extends Equipment {
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			Location loc = hit.getEntity().getLocation();
 			ManaEater.hit.play(p, loc);
-			applyProjectileOnHit(hit.getEntity(), proj, hitBarrier, true);
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
 			tickSound.play(p, proj.getLocation());
+			proj.applyWeapon(data, eq);
 		}
 	}
 

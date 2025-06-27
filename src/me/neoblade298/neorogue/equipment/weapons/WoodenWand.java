@@ -56,7 +56,7 @@ public class WoodenWand extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ProjectileGroup proj = new ProjectileGroup(new WoodenWandProjectile(data));
+		ProjectileGroup proj = new ProjectileGroup(new WoodenWandProjectile(data, this));
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (d, inputs) -> {
 			if (!canUseWeapon(data) || !data.canBasicAttack(EquipSlot.HOTBAR))
 				return TriggerResult.keep();
@@ -68,11 +68,15 @@ public class WoodenWand extends Equipment {
 	
 	private class WoodenWandProjectile extends Projectile {
 		private Player p;
+		private PlayerFightData data;
+		private WoodenWand eq;
 
-		public WoodenWandProjectile(PlayerFightData data) {
+		public WoodenWandProjectile(PlayerFightData data, WoodenWand eq) {
 			super(1.5, 10, 2);
 			this.size(0.2, 0.2);
 			this.p = data.getPlayer();
+			this.data = data;
+			this.eq = eq;
 		}
 
 		@Override
@@ -84,12 +88,12 @@ public class WoodenWand extends Equipment {
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			Location loc = hit.getEntity().getLocation();
 			WoodenWand.hit.play(p, loc);
-			applyProjectileOnHit(hit.getEntity(), proj, hitBarrier, true);
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
 			tickSound.play(p, proj.getLocation());
+			proj.applyWeapon(data, eq);
 		}
 	}
 

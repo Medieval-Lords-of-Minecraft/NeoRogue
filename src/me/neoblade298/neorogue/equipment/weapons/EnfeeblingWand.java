@@ -90,13 +90,13 @@ public class EnfeeblingWand extends Equipment {
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			Location loc = hit.getEntity().getLocation();
 			EnfeeblingWand.hit.play(p, loc);
-			applyProjectileOnHit(hit.getEntity(), proj, hitBarrier, true);
 			hit.addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL), Buff.multiplier(data, -mult, BuffStatTracker.defenseDebuffEnemy(buffId, eq, false)), 100);
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
 			tickSound.play(p, proj.getLocation());
+			proj.applyWeapon(data, eq);
 		}
 	}
 
