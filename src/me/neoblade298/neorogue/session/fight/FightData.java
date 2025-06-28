@@ -155,12 +155,11 @@ public class FightData {
 	}
 
 	private void addBuff(HashMap<DamageBuffType, BuffList> lists, DamageBuffType type, Buff b, int ticks) {
-		addBuff(lists, type, b);
-		Buff inv = b.invert();
-
+		Buff inv = b.invert(); // Should be done immediately, since buffs combine and inverting it after it
+								// combines will over-remove
 		if (ticks > 0) {
 			String id = UUID.randomUUID().toString();
-			addTask(id, new BukkitRunnable() {
+			BukkitTask removeTask = new BukkitRunnable() {
 				public void run() {
 					BuffStatTracker tracker = b.getStatTracker();
 					if (tracker.shouldCombine()) {
@@ -169,10 +168,15 @@ public class FightData {
 					else {
 						addBuff(lists, type, Buff.empty(b.getApplier(), b.getStatTracker()));
 					}
-					tasks.remove(id);
+					b.getApplier().tasks.remove(id);
 				}
-			}.runTaskLater(NeoRogue.inst(), ticks));
+			}.runTaskLater(NeoRogue.inst(), ticks);
+			b.setRemoveTask(id);
+			b.getApplier().addTask(id, removeTask);
 		}
+
+		// Adding buff must be done after the remove task is set
+		addBuff(lists, type, b);
 	}
 
 	public BuffList getDamageBuffList(DamageBuffType type) {

@@ -6,6 +6,8 @@ public class Buff {
 	private FightData applier;
 	private double increase, multiplier;
 	private BuffStatTracker tracker;
+	private String removeTaskId; // Used for non-combineable buffs that need to be removed after a certain time
+	// If another buff is replacing it, this will be cancelled so that the remove tasks don't stack
 	
 	public Buff() {}
 	
@@ -27,6 +29,10 @@ public class Buff {
 	public static Buff empty(FightData applier, BuffStatTracker tracker) {
 		return new Buff(applier, 0, 0, tracker);
 	}
+
+	public void setRemoveTask(String id) {
+		this.removeTaskId = id;
+	}
 	
 	// Used in clone
 	private Buff(Buff src) {
@@ -39,8 +45,10 @@ public class Buff {
 	// Consider removing so that buffs are immutable
 	// Currently this is used to keep similar buffs combined when adding them together
 	public Buff replace(Buff other) {
+		applier.removeAndCancelTask(removeTaskId);
 		this.increase = other.increase;
 		this.multiplier = other.multiplier;
+		this.removeTaskId = other.removeTaskId;
 		return this;
 	}
 	public Buff combine(Buff other) {
