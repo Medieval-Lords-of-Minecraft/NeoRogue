@@ -1,6 +1,8 @@
 package me.neoblade298.neorogue.session.chance;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.UUID;
@@ -106,6 +108,33 @@ public class ChanceInstance extends EditInventoryInstance {
 		// Setup hologram
 		holo = NeoRogue.createHologram(spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), Component.text("Right click the pillar below!"));
 		candleBlock = holo.getLocation().add(0, -1, 0).getBlock();
+	}
+
+	@Override
+	public void updateBoardLines() {
+		playerLines.clear();
+		playerLines.add(createBoardLine(s.getParty().get(s.getHost()), true));
+
+		ArrayList<PlayerSessionData> sorted = new ArrayList<PlayerSessionData>();
+		for (PlayerSessionData data : s.getParty().values()) {
+			if (s.getHost() == data.getUniqueId())
+				continue;
+			sorted.add(data);
+		}
+		Collections.sort(sorted);
+		for (PlayerSessionData data : sorted) {
+			playerLines.add(createBoardLine(data, false));
+		}
+	}
+
+	private String createBoardLine(PlayerSessionData data, boolean isHost) {
+		UUID uuid = data.getUniqueId();
+		String line = stage.containsKey(uuid) ? "§a✓ §f" : "§c✗ §f";
+		if (isHost) {
+			line += "(Host) ";
+		}
+		line += data.getData().getDisplay();
+		return line;
 	}
 
 	@Override

@@ -220,4 +220,9 @@ public class StandardFightInstance extends FightInstance {
 	public void handlePlayerKickEvent(Player kicked) {
 
 	}
+
+	@Override
+	public void updateBoardLines() {
+
+	}
 }

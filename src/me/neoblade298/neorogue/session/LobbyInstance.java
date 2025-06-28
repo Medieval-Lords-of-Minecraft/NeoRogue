@@ -43,7 +43,6 @@ public class LobbyInstance extends Instance {
 	private UUID host;
 	private Component partyInfoHeader;
 	private HashSet<UUID> ready = new HashSet<UUID>();
-	private ArrayList<String> lobbyLines = new ArrayList<String>();
 	private TextDisplay holo;
 
 	private static final Comparator<Player> comp = new Comparator<Player>() {
@@ -77,9 +76,12 @@ public class LobbyInstance extends Instance {
 		host.setGameMode(GameMode.ADVENTURE);
 		players.put(host.getUniqueId(), EquipmentClass.WARRIOR);
 		host.teleport(spawn);
+		spectatorLines = playerLines;
+		updateBoardLines();
 		partyInfoHeader = Component.text().content("<< ( ").color(NamedTextColor.GRAY)
 				.append(Component.text(name, NamedTextColor.RED)).append(Component.text(" ) >>"))
 				.append(Component.text("\nPlayers:")).build();
+
 		
 
 		// Setup hologram
@@ -144,18 +146,14 @@ public class LobbyInstance extends Instance {
 		TextComponent tc = Component.text().content(p.getName()).color(NamedTextColor.YELLOW)
 				.append(Component.text(" joined the lobby!", NamedTextColor.GRAY)).build();
 		broadcast(tc);
-		updateLobbyLines();
+		updateBoardLines();
 	}
 
-	public ArrayList<String> getLobbyLines() {
-		return lobbyLines;
-	}
-
-	private void updateLobbyLines() {
-		lobbyLines.clear();
+	@Override
+	public void updateBoardLines() {
+		playerLines.clear();
 		Player hostp = Bukkit.getPlayer(host);
-		lobbyLines.add("(Host) " + hostp.getName() + "§7 - §e" +
-			players.get(host).getDisplay());
+		playerLines.add(createBoardLine(hostp, true));
 
 		ArrayList<Player> sorted = new ArrayList<Player>();
 		for (UUID uuid : players.keySet()) {
@@ -164,11 +162,18 @@ public class LobbyInstance extends Instance {
 		}
 		sorted.sort(comp);
 		for (Player p : sorted) {
-			UUID uuid = p.getUniqueId();
-			String line = ready.contains(uuid) ? "§7[§a✓§7] §f" : "§7[§c✗§7] §f";
-			line += p.getName() + "§7 - §e" + players.get(p.getUniqueId()).getDisplay();
-			lobbyLines.add(line);
+			playerLines.add(createBoardLine(p, false));
 		}
+	}
+
+	private String createBoardLine(Player p, boolean isHost) {
+		UUID uuid = p.getUniqueId();
+		String line = ready.contains(uuid) ? "§7[§a✓§7] §f" : "§7[§c✗§7] §f";
+		if (isHost) {
+			line += "(Host) ";
+		}
+		line += p.getName() + "§7 - §e" + players.get(p.getUniqueId()).getDisplay();
+		return line;
 	}
 
 	public void kickPlayer(Player s, String name) {
@@ -195,7 +200,7 @@ public class LobbyInstance extends Instance {
 		TextComponent tc = Component.text().content(p.getName()).color(NamedTextColor.YELLOW)
 				.append(Component.text(" was kicked from the lobby!", NamedTextColor.GRAY)).build();
 		broadcast(tc);
-		updateLobbyLines();
+		updateBoardLines();
 	}
 
 	public void leavePlayer(Player p) {
@@ -218,7 +223,7 @@ public class LobbyInstance extends Instance {
 			broadcast(tc);
 		}
 		p.teleport(NeoRogue.spawn);
-		updateLobbyLines();
+		updateBoardLines();
 	}
 
 	public void broadcast(TextComponent msg) {
@@ -323,7 +328,7 @@ public class LobbyInstance extends Instance {
 				.append(Component.text(pc.getDisplay(), NamedTextColor.RED)).build();
 		broadcast(tc);
 		players.put(uuid, pc);
-		updateLobbyLines();
+		updateBoardLines();
 	}
 
 	public String getName() {
@@ -381,6 +386,7 @@ public class LobbyInstance extends Instance {
 			ready.remove(uuid);
 			broadcast("<yellow>" + p.getName() + "</yellow> is no longer ready!");
 		}
+		updateBoardLines();
 	}
 
 	@Override

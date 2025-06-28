@@ -170,7 +170,7 @@ public class ShopInventory extends CoreInventory {
 			return;
 		}
 
-		if (e.getCursor().getType().isAir()) {
+		if (e.getCursor().getType().isAir() && slot >= 9) {
 			ItemStack clicked = e.getCurrentItem();
 			NBTItem nclicked = new NBTItem(clicked);
 			int idx = nclicked.getInteger("idx");
@@ -187,7 +187,7 @@ public class ShopInventory extends CoreInventory {
 				return;
 			}
 			shopItem.setPurchased(true);
-			
+			data.getSession().getInstance().updateBoardLines();
 			data.addCoins(-price);
 			data.giveEquipment(
 					shopItem.getEquipment(),
@@ -232,6 +232,7 @@ public class ShopInventory extends CoreInventory {
 								.append(Component.text("."))
 				);
 				
+				data.getSession().getInstance().updateBoardLines();
 				ItemStack[] contents = inv.getContents();
 				updateAll(contents);
 				inv.setContents(contents);
@@ -266,6 +267,7 @@ public class ShopInventory extends CoreInventory {
 				updateAll(contents);
 				inv.setContents(contents);
 				pinv.clearHighlights();
+				data.getSession().getInstance().updateBoardLines();
 			}
 		}
 	}

@@ -47,7 +47,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-public class PlayerSessionData extends MapViewer {
+public class PlayerSessionData extends MapViewer implements Comparable<PlayerSessionData> {
 	private PlayerData data;
 	private EquipmentClass ec;
 	private double maxHealth, maxMana, maxStamina, health, startingMana, startingStamina, manaRegen, staminaRegen;
@@ -731,5 +731,10 @@ public class PlayerSessionData extends MapViewer {
 		public EquipSlot getEquipSlot() {
 			return es;
 		}
+	}
+
+	@Override
+	public int compareTo(PlayerSessionData o) {
+		return this.data.getDisplay().compareTo(o.getData().getDisplay());
 	}
 }

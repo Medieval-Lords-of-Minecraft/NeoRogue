@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.session;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -19,6 +20,7 @@ import me.neoblade298.neorogue.session.reward.RewardInstance;
 public abstract class Instance {
 	protected Session s;
 	protected Location spawn;
+	protected ArrayList<String> playerLines = new ArrayList<String>(), spectatorLines = new ArrayList<String>();
 	public abstract void start();
 	public abstract void cleanup();
 	public abstract void handleInteractEvent(PlayerInteractEvent e);
@@ -77,4 +79,14 @@ public abstract class Instance {
 		}
 		return null;
 	}
+
+	public ArrayList<String> getPlayerLines() {
+		return playerLines;
+	}
+
+	public ArrayList<String> getSpectatorLines() {
+		return spectatorLines;
+	}
+
+	public abstract void updateBoardLines();
 }

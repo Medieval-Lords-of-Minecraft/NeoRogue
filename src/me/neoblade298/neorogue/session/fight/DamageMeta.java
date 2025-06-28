@@ -132,6 +132,7 @@ public class DamageMeta {
 	public DamageMeta isBasicAttack(Equipment weapon, boolean isBasicAttack) {
 		this.isBasicAttack = isBasicAttack;
 		this.weapon = weapon;
+		this.knockback = weapon.getProperties().get(PropertyType.KNOCKBACK);
 		return this;
 	}
 
@@ -209,7 +210,6 @@ public class DamageMeta {
 			DamageBuffType type = entry.getKey();
 			BuffList list = damageBuffs.getOrDefault(type, new BuffList());
 			list.add(entry.getValue());
-			System.out.println("Adding list " + list.toString());
 			damageBuffs.put(type, list);
 		}
 	}
@@ -333,7 +333,6 @@ public class DamageMeta {
 		}
 		
 		boolean isStatusDamage = !DamageCategory.GENERAL.hasType(slices.getFirst().getPostBuffType());
-		System.out.println(damageBuffs);
 		// Calculate buffs for every slice of damage
 		for (DamageSlice slice : slices) {
 			double increase = 0, mult = 1, base = slice.getDamage();
@@ -345,7 +344,6 @@ public class DamageMeta {
 				}
 
 				Collection<DamageBuffType> categories = getDamageBuffTypes(slice.getType().getCategories());
-				System.out.println("Categories: " + categories);
 				for (DamageBuffType dbt : categories) {
 					if (!damageBuffs.containsKey(dbt)) continue;
 					BuffList list = damageBuffs.get(dbt);
@@ -596,28 +594,11 @@ public class DamageMeta {
 		}
 		double finalDamage = damage + ignoreShieldsDamage + target.getAbsorptionAmount(); // +1 to deal with rounding errors
 		if (damage + ignoreShieldsDamage > 0) {
-
-			// First handle knockback
-			if (knockback > 0) {
-				if (source == null) {
-					if (proj != null) {
-						FightInstance.knockback(target, proj.getVelocity().clone().normalize().multiply(knockback));
-					}
-					else {
-						FightInstance.knockback(owner.getEntity().getLocation(), target, knockback);
-					}
-				}
-				else {
-					FightInstance.knockback(source, target, knockback);
-				}
-			}
-			
 			// Mobs shouldn't have a source of damage because they'll infinitely re-trigger ~OnAttack
 			// Players must have a source of damage to get credit for kills, otherwise mobs that suicide give points
 			if (owner instanceof PlayerFightData) {
 				if (isBasicAttack) {
 					BasicAttackEvent ev = new BasicAttackEvent(target, this, weapon, proj);
-					System.out.println("Basic attack event");
 					((PlayerFightData) owner).runActions((PlayerFightData) owner, Trigger.BASIC_ATTACK, ev);
 				}
 				FightInstance.trigger((Player) owner.getEntity(), Trigger.DEALT_DAMAGE, new DealtDamageEvent(this, target, damage, ignoreShieldsDamage));
@@ -645,6 +626,19 @@ public class DamageMeta {
 				data.getInstance().cancelRevives((Player) target);
 				if (data.shields.getAmount() > 0 && ignoreShieldsDamage > 0) data.shields.update();
 				data.updateActionBar();
+			}
+
+			// Then handle knockback
+			if (knockback != 0) {
+				if (source == null) {
+					if (proj != null) {
+						FightInstance.knockback(target, proj.getVelocity().clone().normalize().multiply(knockback));
+					} else {
+						FightInstance.knockback(owner.getEntity().getLocation(), target, knockback);
+					}
+				} else {
+					FightInstance.knockback(source, target, knockback);
+				}
 			}
 		}
 		// Only do damage if we haven't canceled the damage

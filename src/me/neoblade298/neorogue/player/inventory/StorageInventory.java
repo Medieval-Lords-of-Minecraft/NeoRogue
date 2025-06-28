@@ -76,6 +76,7 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 	public void handleInventoryClick(InventoryClickEvent e) {
 		if (spectator != null) {
 			e.setCancelled(true);
+			return;
 		}
 		PlayerSessionInventory pinv = (PlayerSessionInventory) InventoryListener.getLowerInventory(p);
 		

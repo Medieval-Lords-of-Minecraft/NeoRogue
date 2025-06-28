@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.session;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -35,6 +37,31 @@ public class LoseInstance extends EditInventoryInstance {
 		s.broadcast(Component.text("You lost!", NamedTextColor.RED));
 		PlayerManager.getPlayerData(s.getHost()).removeSnapshot(s.getSaveSlot());
 		s.deleteSave();
+	}
+
+	@Override
+	public void updateBoardLines() {
+		playerLines.clear();
+		playerLines.add(createBoardLine(s.getParty().get(s.getHost()), true));
+
+		ArrayList<PlayerSessionData> sorted = new ArrayList<PlayerSessionData>();
+		for (PlayerSessionData data : s.getParty().values()) {
+			if (s.getHost() == data.getUniqueId()) continue;
+			sorted.add(data);
+		}
+		Collections.sort(sorted);
+		for (PlayerSessionData data : sorted) {
+			playerLines.add(createBoardLine(data, false));
+		}
+	}
+
+	private String createBoardLine(PlayerSessionData data, boolean isHost) {
+		String line = "";
+		if (isHost) {
+			line += "(Host) ";
+		}
+		line += data.getData().getDisplay() + " sucks";
+		return line;
 	}
 
 	@Override

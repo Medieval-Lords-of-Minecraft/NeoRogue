@@ -44,6 +44,7 @@ public abstract class EditInventoryInstance extends Instance {
 			Player p = Bukkit.getPlayer(uuid);
 			s.setupSpectatorInventory(p);
 		}
+		updateBoardLines();
 	}
 
 	public static boolean isValid(Session s) {

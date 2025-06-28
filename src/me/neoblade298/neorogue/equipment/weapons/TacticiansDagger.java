@@ -60,7 +60,7 @@ public class TacticiansDagger extends Equipment {
 		
 		inst.setAction((pdata, inputs) -> {
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
-			boolean hasBonus = timer.getTime() + 3000 >= System.currentTimeMillis();
+			boolean hasBonus = timer.getTime() + 3000 < System.currentTimeMillis();
 			weaponSwingAndDamage(p, data, ev.getTarget(), properties.get(PropertyType.DAMAGE) + (hasBonus ? damage : 0));
 			return TriggerResult.keep();
 		});

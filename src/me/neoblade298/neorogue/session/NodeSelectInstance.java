@@ -99,6 +99,11 @@ public class NodeSelectInstance extends EditInventoryInstance {
 		TextDisplay holo = NeoRogue.createHologram(loc, text);
 		holograms.add(holo);
 	}
+
+	@Override
+	public void updateBoardLines() {
+		// Empty as node select board is per player
+	}
 	
 	@Override
 	public void cleanup() {

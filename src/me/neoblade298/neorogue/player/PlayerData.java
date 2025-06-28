@@ -17,7 +17,7 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder.SQLAction;
 import me.neoblade298.neorogue.ascension.Upgrade;
-import me.neoblade298.neorogue.session.LobbyInstance;
+import me.neoblade298.neorogue.session.NodeSelectInstance;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -199,14 +199,18 @@ public class PlayerData {
 			if (pfd == null) return null; // Will happen for a second as fight loads
 			return pfd.getBoardLines();
 		}
-		else if (s.getInstance() instanceof LobbyInstance) {
-			return ((LobbyInstance) s.getInstance()).getLobbyLines();
+		else if (s.getInstance() instanceof NodeSelectInstance) {
+			if (s.isSpectator(p.getUniqueId()))
+				return s.getSpectatorLines();
+			PlayerSessionData psd = s.getParty().get(p.getUniqueId());
+			if (psd == null)
+				return null;
+			return psd.getBoardLines();
 		}
 		else {
-			if (s.isSpectator(p.getUniqueId())) return s.getSpectatorLines();
-			PlayerSessionData psd = s.getParty().get(p.getUniqueId());
-			if (psd == null) return null;
-			return psd.getBoardLines();
+			if (s.isSpectator(p.getUniqueId()))
+				return s.getInstance().getSpectatorLines();
+			return s.getInstance().getPlayerLines();
 		}
 	}
 }

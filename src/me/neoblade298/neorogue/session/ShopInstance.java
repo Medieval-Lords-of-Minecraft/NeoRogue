@@ -1,5 +1,7 @@
 package me.neoblade298.neorogue.session;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
@@ -61,6 +63,32 @@ public class ShopInstance extends EditInventoryInstance {
 		Component text = Component.text("Open the chest, then click the").appendNewline().append(Component.text("stone button", NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))
 				.append(Component.text(" when you're ready!"));
 		holo = NeoRogue.createHologram(spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), text);
+	}
+
+	@Override
+	public void updateBoardLines() {
+		playerLines.clear();
+		playerLines.add(createBoardLine(s.getParty().get(s.getHost()), true));
+
+		ArrayList<PlayerSessionData> sorted = new ArrayList<PlayerSessionData>();
+		for (PlayerSessionData data : s.getParty().values()) {
+			if (s.getHost() == data.getUniqueId()) continue;
+			sorted.add(data);
+		}
+		Collections.sort(sorted);
+		for (PlayerSessionData data : sorted) {
+			playerLines.add(createBoardLine(data, false));
+		}
+	}
+
+	private String createBoardLine(PlayerSessionData data, boolean isHost) {
+		UUID uuid = data.getUniqueId();
+		String line = ready.contains(uuid) ? "§a✓ §f" : "§c✗ §f";
+		if (isHost) {
+			line += "(Host) ";
+		}
+		line += data.getData().getDisplay() + "§7 - §e" + data.getCoins() + " coins";
+		return line;
 	}
 
 	@Override
@@ -139,6 +167,7 @@ public class ShopInstance extends EditInventoryInstance {
 			s.broadcast("<yellow>" + p.getName() + " <gray>is no longer ready!");
 			ready.remove(uuid);
 		}
+		updateBoardLines();
 	}
 
 	@Override
