@@ -24,7 +24,7 @@ public class StatTracker {
         
         // Inverted statuses (negative defense buff or negative damage buff)
         statusOrigins.put(StatusType.FROST, new BuffStatTracker(StatusType.FROST, false, true));
-        statusOrigins.put(StatusType.BURN, new BuffStatTracker(StatusType.BURN, false, true));
+        statusOrigins.put(StatusType.BURN, new BuffStatTracker(StatusType.BURN, true, true));
         statusOrigins.put(StatusType.CONCUSSED, new BuffStatTracker(StatusType.CONCUSSED, false, true));
         statusOrigins.put(StatusType.INSANITY, new BuffStatTracker(StatusType.INSANITY, true, true));
     }

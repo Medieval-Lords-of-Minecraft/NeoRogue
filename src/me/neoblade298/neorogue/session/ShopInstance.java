@@ -37,6 +37,7 @@ public class ShopInstance extends EditInventoryInstance {
 	
 	public ShopInstance(Session s) {
 		super(s, SPAWN_X, SPAWN_Z);
+		spectatorLines = playerLines;
 	}
 	
 	public ShopInstance(Session s, HashMap<UUID, PlayerSessionData> party) {

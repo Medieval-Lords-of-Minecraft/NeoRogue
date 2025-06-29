@@ -53,6 +53,7 @@ public class ChanceInstance extends EditInventoryInstance {
 
 	public ChanceInstance(Session s) {
 		super(s, SPAWN_X, SPAWN_Z);
+		spectatorLines = playerLines;
 	}
 	
 	public ChanceInstance(Session s, String setId) {
@@ -129,7 +130,7 @@ public class ChanceInstance extends EditInventoryInstance {
 
 	private String createBoardLine(PlayerSessionData data, boolean isHost) {
 		UUID uuid = data.getUniqueId();
-		String line = stage.containsKey(uuid) ? "§a✓ §f" : "§c✗ §f";
+		String line = !stage.containsKey(uuid) ? "§a✓ §f" : "§c✗ §f";
 		if (isHost) {
 			line += "(Host) ";
 		}

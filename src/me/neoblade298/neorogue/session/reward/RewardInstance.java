@@ -81,7 +81,7 @@ public class RewardInstance extends EditInventoryInstance {
 
 	private String createBoardLine(PlayerSessionData data, boolean isHost) {
 		UUID uuid = data.getUniqueId();
-		String line = !rewards.containsKey(uuid) ? "§a✓ §f" : "§c✗ §f";
+		String line = rewards.get(uuid).isEmpty() ? "§a✓ §f" : "§c✗ §f";
 		if (isHost) {
 			line += "(Host) ";
 		}
@@ -135,6 +135,7 @@ public class RewardInstance extends EditInventoryInstance {
 	}
 	
 	public boolean onRewardClaim() {
+		updateBoardLines();
 		for (ArrayList<Reward> rewards : this.rewards.values()) {
 			if (!rewards.isEmpty()) return false;
 		}

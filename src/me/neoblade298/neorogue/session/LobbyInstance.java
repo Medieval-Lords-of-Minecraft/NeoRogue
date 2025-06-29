@@ -168,7 +168,7 @@ public class LobbyInstance extends Instance {
 
 	private String createBoardLine(Player p, boolean isHost) {
 		UUID uuid = p.getUniqueId();
-		String line = ready.contains(uuid) ? "§7[§a✓§7] §f" : "§7[§c✗§7] §f";
+		String line = ready.contains(uuid) ? "§a✓ §f" : "§c✗ §f";
 		if (isHost) {
 			line += "(Host) ";
 		}

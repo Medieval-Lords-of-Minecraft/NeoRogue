@@ -41,6 +41,7 @@ public class ShrineInstance extends EditInventoryInstance {
 	
 	public ShrineInstance(Session s) {
 		super(s, SPAWN_X, SPAWN_Z);
+		spectatorLines = playerLines;
 	}
 	
 	public ShrineInstance(Session s, String data, HashMap<UUID, PlayerSessionData> party) {
@@ -52,6 +53,7 @@ public class ShrineInstance extends EditInventoryInstance {
 				notUsed.add(pd.getPlayer().getUniqueId());
 			}
 		}
+
 	}
 
 	@Override
@@ -97,7 +99,8 @@ public class ShrineInstance extends EditInventoryInstance {
 		if (isHost) {
 			line += "(Host) ";
 		}
-		line += data.getData().getDisplay();
+		line += data.getData().getDisplay() + " (" + Math.round(data.getHealth()) + " / " + data.getMaxHealth()
+				+ "§c♥§f)";
 		return line;
 	}
 

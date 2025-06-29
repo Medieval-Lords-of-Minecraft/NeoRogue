@@ -15,6 +15,7 @@ import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
@@ -43,7 +44,7 @@ public class Wildfire extends Equipment {
 	
 	public Wildfire(boolean isUpgraded) {
 		super(ID, "Wildfire", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
-				EquipmentProperties.none());
+				EquipmentProperties.none().add(PropertyType.COOLDOWN, 1));
 		damage = isUpgraded ? 90 : 60;
 		thres = isUpgraded ? 400 : 600;
 	}
@@ -58,8 +59,9 @@ public class Wildfire extends Equipment {
 		data.addTrigger(id, Trigger.DEALT_DAMAGE, (pdata, in) -> {
 			DealtDamageEvent ev = (DealtDamageEvent) in;
 			am.addDouble(ev.getMeta().getPostMitigationDamage().getOrDefault(DamageType.FIRE, 0D));
-			if (am.getDouble() >= thres) {
+			if (am.getDouble() >= thres && System.currentTimeMillis() - am.getTime() >= 1000) {
 				am.addDouble(-thres);
+				am.setTime(System.currentTimeMillis());
 				ProjectileGroup group = new ProjectileGroup(new WildfireProjectile(data));
 				group.start(data);
 			}

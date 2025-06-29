@@ -149,6 +149,7 @@ public class ChanceInventory extends CoreInventory {
 		
 		ChanceStage next = set.getStage(choice.choose(s, inst, data));
 		inst.advanceStage(uuid, next);
+		s.getInstance().updateBoardLines();
 		new BukkitRunnable() {
 			public void run() {
 				p.closeInventory();
