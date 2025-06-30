@@ -19,6 +19,7 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -46,8 +47,8 @@ public class TwinBolt extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ProjectileGroup proj = new ProjectileGroup(new TwinBoltProjectile(data, true),
-				new TwinBoltProjectile(data, false));
+		ProjectileGroup proj = new ProjectileGroup(new TwinBoltProjectile(data, true, slot, this),
+				new TwinBoltProjectile(data, false, slot, this));
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			data.charge(20).then(new Runnable() {
 				public void run() {
@@ -63,14 +64,18 @@ public class TwinBolt extends Equipment {
 		private PlayerFightData data;
 		private Player p;
 		private boolean left;
+		private int slot;
+		private Equipment eq;
 		private static double ANGLE = Math.toRadians(1.6);
 
 		// Vector is non-normalized velocity of the vanilla projectile being fired
-		public TwinBoltProjectile(PlayerFightData data, boolean left) {
+		public TwinBoltProjectile(PlayerFightData data, boolean left, int slot, Equipment eq) {
 			super(1, properties.get(PropertyType.RANGE), 1);
 			this.data = data;
 			this.p = data.getPlayer();
 			this.left = left;
+			this.slot = slot;
+			this.eq = eq;
 
 			if (left) {
 				this.rotation(-30);
@@ -106,7 +111,7 @@ public class TwinBolt extends Equipment {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			proj.addDamageSlice(new DamageSlice(data, damage, DamageType.FIRE));
+			proj.addDamageSlice(new DamageSlice(data, damage, DamageType.FIRE, DamageStatTracker.of(id + slot, eq)));
 		}
 	}
 

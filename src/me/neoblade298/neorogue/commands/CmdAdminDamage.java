@@ -14,6 +14,7 @@ import me.neoblade298.neorogue.session.Instance;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
@@ -48,7 +49,7 @@ public class CmdAdminDamage extends Subcommand {
 			return;
 		}
 		DamageType type = DamageType.valueOf(args[0].toUpperCase());
-		DamageMeta dm = new DamageMeta(FightInstance.getUserData(p.getUniqueId()), Integer.parseInt(args[1]), type);
+		DamageMeta dm = new DamageMeta(FightInstance.getUserData(p.getUniqueId()), Integer.parseInt(args[1]), type, DamageStatTracker.ignored("Command"));
 		LivingEntity trg = TargetHelper.getNearestInSight(p, tp);
 		if (trg == null) trg = p;
 		dm.dealDamage(trg);

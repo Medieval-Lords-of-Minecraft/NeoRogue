@@ -14,6 +14,7 @@ import me.neoblade298.neorogue.equipment.mechanics.PotionProjectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -36,7 +37,7 @@ public class MinorFirePotion extends Consumable {
 		PotionProjectile pot = new PotionProjectile((loc, hit) -> {
 			for (LivingEntity ent : hit) {
 				if (ent instanceof Player || !(ent instanceof LivingEntity)) continue;
-				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE), ent);
+				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE, DamageStatTracker.of(id, this)), ent);
 			}
 			Sounds.explode.play(p, loc);
 		});

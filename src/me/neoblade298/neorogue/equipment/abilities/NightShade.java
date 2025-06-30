@@ -14,6 +14,7 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardEquipmentInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -69,7 +70,7 @@ public class NightShade extends Equipment {
 				PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 				hit.play(p, p);
 				Sounds.anvil.play(p, p);
-				ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.DARK));
+				ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.DARK, DamageStatTracker.of(ID + slot, this)));
 				FightInstance.applyStatus(ev.getTarget(), StatusType.INSANITY, p, insanity, -1);
 			}
 			return TriggerResult.keep();

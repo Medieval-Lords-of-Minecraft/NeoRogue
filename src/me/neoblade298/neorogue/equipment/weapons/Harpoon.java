@@ -17,6 +17,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -69,7 +70,7 @@ public class Harpoon extends Equipment {
 			ParticleUtil.drawLine(p, harpoonPart, p.getLocation().add(0, 1, 0), start.clone().add(v), 0.5);
 			if (targets.isEmpty())
 				return TriggerResult.keep();
-			FightInstance.dealDamage(new DamageMeta(data, this, true).setKnockback(-0.5), targets.getFirst());
+			FightInstance.dealDamage(new DamageMeta(data, this, true, DamageStatTracker.of(id + slot, this)).setKnockback(-0.5), targets.getFirst());
 			return TriggerResult.keep();
 		});
 	}

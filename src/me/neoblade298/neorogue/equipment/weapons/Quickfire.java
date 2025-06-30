@@ -19,6 +19,7 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -43,7 +44,7 @@ public class Quickfire extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (d, inputs) -> {
-			ProjectileGroup proj = new ProjectileGroup(new QuickfireProjectile(data));
+			ProjectileGroup proj = new ProjectileGroup(new QuickfireProjectile(data, this, slot));
 			proj.start(data);
 			return TriggerResult.keep();
 		}, Bow.needsAmmo));
@@ -53,14 +54,18 @@ public class Quickfire extends Equipment {
 		private PlayerFightData data;
 		private Player p;
 		private AmmunitionInstance ammo;
+		private Equipment eq;
+		private int slot;
 
 		// Vector is non-normalized velocity of the vanilla projectile being fired
-		public QuickfireProjectile(PlayerFightData data) {
+		public QuickfireProjectile(PlayerFightData data, Equipment eq, int slot) {
 			super(properties.get(PropertyType.RANGE), 1);
 			setBowDefaults();
 			this.data = data;
 			this.p = data.getPlayer();
 			this.ammo = data.getAmmoInstance();
+			this.eq = eq;
+			this.slot = slot;
 		}
 
 		@Override
@@ -80,7 +85,7 @@ public class Quickfire extends Equipment {
 			DamageMeta dm = proj.getMeta();
 			EquipmentProperties ammoProps = ammo.getProperties();
 			double dmg = ammoProps.get(PropertyType.DAMAGE) + damage;
-			dm.addDamageSlice(new DamageSlice(data, dmg, ammoProps.getType()));
+			dm.addDamageSlice(new DamageSlice(data, dmg, ammoProps.getType(), DamageStatTracker.of(id + slot, eq)));
 			ammo.onStart(proj);
 		}
 	}

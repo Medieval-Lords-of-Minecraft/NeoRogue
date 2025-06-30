@@ -25,6 +25,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -61,6 +62,7 @@ public class GroundLance extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		Equipment eq = this;
 		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
 		inst.setAction((pdata, in) -> {
 			Block b = p.getTargetBlockExact((int) properties.get(PropertyType.RANGE));
@@ -91,11 +93,12 @@ public class GroundLance extends Equipment {
 					LinkedList<LivingEntity> targets = TargetHelper.getEntitiesInRadius(p, loc, tp);
 					if (targets.size() == 1) {
 						Sounds.wither.play(p, loc);
-						FightInstance.dealDamage(new DamageMeta(data, damage * 3, DamageType.EARTHEN),
+						FightInstance.dealDamage(new DamageMeta(data, damage * 3, DamageType.EARTHEN, DamageStatTracker.of(id + slot, eq)),
 								targets.getFirst());
 					} else {
 						for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
-							FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.EARTHEN), ent);
+							FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.EARTHEN,
+									DamageStatTracker.of(id + slot, eq)), ent);
 						}
 					}
 				}

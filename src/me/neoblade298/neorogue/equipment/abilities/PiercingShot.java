@@ -15,6 +15,7 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -52,7 +53,7 @@ public class PiercingShot extends Equipment {
 				if (!ev.isBasicAttack()) return TriggerResult.keep();
 				Sounds.fire.play(p, p);
 				ProjectileInstance inst = (ProjectileInstance) ev.getInstances().getFirst();
-				inst.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.PIERCING));
+				inst.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.PIERCING, DamageStatTracker.of(ID + slot, this)));
 				BowProjectile settings = (BowProjectile) inst.getParent();
 				settings.pierce(1);
 				settings.addProjectileTickAction((p2, proj, interpolation) -> {

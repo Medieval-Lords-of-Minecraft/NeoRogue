@@ -20,6 +20,7 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -53,7 +54,7 @@ public class Fireball2 extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ProjectileGroup proj = new ProjectileGroup(new FireballProjectile(data));
+		ProjectileGroup proj = new ProjectileGroup(new FireballProjectile(data, this, slot));
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata ,in) -> {
 			data.channel(20).then(new Runnable() {
 				public void run() {
@@ -67,12 +68,16 @@ public class Fireball2 extends Equipment {
 	private class FireballProjectile extends Projectile {
 		private Player p;
 		private PlayerFightData data;
+		private Equipment eq;
+		private int slot;
 
-		public FireballProjectile(PlayerFightData data) {
+		public FireballProjectile(PlayerFightData data, Equipment eq, int slot) {
 			super(1, properties.get(PropertyType.RANGE), 1);
 			this.size(0.5, 0.5);
 			this.data = data;
 			this.p = data.getPlayer();
+			this.eq = eq;
+			this.slot = slot;
 		}
 
 		@Override
@@ -100,7 +105,7 @@ public class Fireball2 extends Equipment {
 			explode.play(p, p);
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, tp)) {
 				if (ent instanceof Player || !(ent instanceof LivingEntity)) continue;
-				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE), ent);
+				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE, DamageStatTracker.of(id + slot, eq)), ent);
 				FightInstance.applyStatus(ent, StatusType.BURN, data, burn, -1);
 			}
 		}

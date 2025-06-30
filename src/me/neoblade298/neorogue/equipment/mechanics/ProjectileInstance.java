@@ -27,9 +27,11 @@ import me.neoblade298.neorogue.equipment.Bow;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
+import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -38,6 +40,7 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffList;
+import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 
 public class ProjectileInstance extends IProjectileInstance {
@@ -158,32 +161,39 @@ public class ProjectileInstance extends IProjectileInstance {
 	}
 
 	// Sometimes useful for non-weapon projectiles like leading knife
-	public void applyProperties(PlayerFightData data, Equipment eq) {
+	public void applyProperties(PlayerFightData data, Equipment eq, int slot) {
 		EquipmentProperties props = eq.getProperties();
-		meta.addDamageSlice(new DamageSlice(data, props.get(PropertyType.DAMAGE), props.getType()));
+		meta.addDamageSlice(new DamageSlice(data, props.get(PropertyType.DAMAGE), props.getType(),
+				DamageStatTracker.of(eq.getId() + slot, eq)));
 		meta.setKnockback(props.get(PropertyType.KNOCKBACK));
 	}
 
-	public void applyWeapon(PlayerFightData data, Equipment weapon) {
+	public void applyWeapon(PlayerFightData data, Equipment weapon, int slot) {
 		EquipmentProperties props = weapon.getProperties();
-		meta.addDamageSlice(new DamageSlice(data, props.get(PropertyType.DAMAGE), props.getType()));
+		meta.addDamageSlice(new DamageSlice(data, props.get(PropertyType.DAMAGE), props.getType(), DamageStatTracker.of(weapon.getId() + slot, weapon)));
 		meta.setKnockback(props.get(PropertyType.KNOCKBACK));
 		meta.isBasicAttack(weapon, true);
 	}
 
-	public void applyBowAndAmmo(PlayerFightData data, Bow bow, AmmunitionInstance ammo) {
+	public void applyBowAndAmmo(PlayerFightData data, Bow bow, AmmunitionInstance ammo, int slot) {
 		EquipmentProperties ammoProps = ammo.getProperties();
-		double dmg = ammoProps.get(PropertyType.DAMAGE) + bow.getProperties().get(PropertyType.DAMAGE);
-		meta.addDamageSlice(new DamageSlice(data, dmg, ammoProps.getType()));
+		double dmg = bow.getProperties().get(PropertyType.DAMAGE);
+		meta.addDamageSlice(new DamageSlice(data, dmg, ammoProps.getType(), DamageStatTracker.of(bow.getId() + slot, bow)));
+		meta.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, 
+				ammoProps.get(PropertyType.DAMAGE), BuffStatTracker.arrowBuff(ammo.getAmmo())));
 		meta.setKnockback(bow.getProperties().get(PropertyType.KNOCKBACK) + ammo.getProperties().get(PropertyType.KNOCKBACK));
 		meta.isBasicAttack(bow, true);
 	}
 
 	// Useful for applying miscellaneous properties that you don't want to show up in descriptions, like with Rapid Fire
-	public void applyAmmo(PlayerFightData data, EquipmentProperties props, AmmunitionInstance ammo) {
+	public void applyAmmo(PlayerFightData data, Equipment eq, AmmunitionInstance ammo) {
+		EquipmentProperties props = eq.getProperties();
 		EquipmentProperties ammoProps = ammo.getProperties();
-		double dmg = ammoProps.get(PropertyType.DAMAGE) + props.get(PropertyType.DAMAGE);
-		meta.addDamageSlice(new DamageSlice(data, dmg, ammoProps.getType()));
+		double dmg = props.get(PropertyType.DAMAGE);
+		meta.addDamageSlice(
+				new DamageSlice(data, dmg, ammoProps.getType(), DamageStatTracker.of(eq.getId(), eq)));
+		meta.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+				Buff.increase(data, ammoProps.get(PropertyType.DAMAGE), BuffStatTracker.arrowBuff(ammo.getAmmo())));
 		meta.setKnockback(
 				props.get(PropertyType.KNOCKBACK) + ammo.getProperties().get(PropertyType.KNOCKBACK));
 	}

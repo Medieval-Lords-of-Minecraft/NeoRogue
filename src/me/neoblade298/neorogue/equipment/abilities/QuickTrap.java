@@ -18,6 +18,7 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -57,7 +58,7 @@ public class QuickTrap extends Equipment {
 			if (am.getDouble() >= thres) {
 				am.addDouble(-thres);
 				Sounds.equip.play(p, p);
-				initTrap(p, data);
+				initTrap(p, data, this, slot);
 				if (am.getDouble() < thres) {
 					inst.setIcon(item);
 				}
@@ -82,7 +83,7 @@ public class QuickTrap extends Equipment {
 		});
 	}
 
-	private void initTrap(Player p, PlayerFightData data) {
+	private void initTrap(Player p, PlayerFightData data, Equipment eq, int slot) {
 		Location loc = p.getLocation();
 		data.addTrap(new Trap(data, loc, secs * 20) {
 			@Override
@@ -92,7 +93,7 @@ public class QuickTrap extends Equipment {
 				if (trg != null) {
 					Sounds.breaks.play(p, trg);
 					hit.play(p, trg);
-					DamageMeta dm = new DamageMeta(data, damage, DamageType.BLUNT, DamageOrigin.TRAP);
+					DamageMeta dm = new DamageMeta(data, damage, DamageType.BLUNT, DamageStatTracker.of(id + slot, eq), DamageOrigin.TRAP);
 					FightInstance.dealDamage(dm, trg);
 					data.removeTrap(this);
 				}

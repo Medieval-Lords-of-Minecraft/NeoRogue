@@ -12,6 +12,7 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 
 public class StoneArrow extends Ammunition {
@@ -34,7 +35,7 @@ public class StoneArrow extends Ammunition {
 	@Override
 	public void onHit(ProjectileInstance inst, DamageMeta meta, LivingEntity trg) {
 		if (inst.getOrigin().distanceSquared(inst.getLocation()) >= (thres * thres)) {
-			meta.addDamageSlice(new DamageSlice(inst.getOwner(), damage, DamageType.PIERCING));
+			meta.addDamageSlice(new DamageSlice(inst.getOwner(), damage, DamageType.PIERCING, DamageStatTracker.of(id, this)));
 		}
 	}
 

@@ -18,6 +18,7 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -44,7 +45,7 @@ public class OldStaff extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ProjectileGroup proj = new ProjectileGroup(new OldStaffProjectile(data, this));
+		ProjectileGroup proj = new ProjectileGroup(new OldStaffProjectile(data, this, slot));
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (d, inputs) -> {
 			if (!canUseWeapon(data) || !data.canBasicAttack(EquipSlot.HOTBAR))
 				return TriggerResult.keep();
@@ -58,13 +59,15 @@ public class OldStaff extends Equipment {
 		private Player p;
 		private PlayerFightData data;
 		private OldStaff eq;
+		private int slot;
 
-		public OldStaffProjectile(PlayerFightData data, OldStaff eq) {
+		public OldStaffProjectile(PlayerFightData data, OldStaff eq, int slot) {
 			super(1.5, 10, 2);
 			this.size(0.2, 0.2);
 			this.data = data;
 			this.eq = eq;
 			this.p = data.getPlayer();
+			this.slot = slot;
 		}
 
 		@Override
@@ -81,11 +84,11 @@ public class OldStaff extends Equipment {
 		@Override
 		public void onStart(ProjectileInstance proj) {
 			double damage = properties.get(PropertyType.DAMAGE);
-			proj.applyWeapon(data, eq);
+			proj.applyWeapon(data, eq, slot);
 			if (data.getMana() < data.getMaxMana() * 0.25) {
 				damage += bonus;
 			}
-			proj.addDamageSlice(new DamageSlice(data, damage, properties.getType()));
+			proj.addDamageSlice(new DamageSlice(data, damage, properties.getType(), DamageStatTracker.of(id + slot, eq)));
 		}
 	}
 

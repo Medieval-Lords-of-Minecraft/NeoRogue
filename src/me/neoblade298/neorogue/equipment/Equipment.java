@@ -181,6 +181,7 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.GlossaryIcon;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -1267,7 +1268,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 	}
 
 	public void weaponDamage(Player p, PlayerFightData data, LivingEntity target, double damage) {
-		DamageMeta dm = new DamageMeta(data, damage, properties.getType());
+		DamageMeta dm = new DamageMeta(data, damage, properties.getType(), DamageStatTracker.of(id, this));
 		dm.setKnockback(properties.get(PropertyType.KNOCKBACK));
 		dm.isBasicAttack(this, true);
 		FightInstance.dealDamage(dm, target);

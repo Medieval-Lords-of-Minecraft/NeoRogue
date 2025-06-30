@@ -19,6 +19,7 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -39,9 +40,6 @@ public class Windcutter extends Equipment {
 		super(ID, "Windcutter", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 5));
 		damage = isUpgraded ? 120 : 80;
-		for (int i = 0; i < PROJECTILE_AMOUNT; i++) {
-			projs.add(new WindcutterProjectile(i, PROJECTILE_AMOUNT / 2));
-		}
 	}
 	
 	public static Equipment get() {
@@ -50,6 +48,9 @@ public class Windcutter extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		for (int i = 0; i < PROJECTILE_AMOUNT; i++) {
+			projs.add(new WindcutterProjectile(i, PROJECTILE_AMOUNT / 2, slot, this));
+		}
 		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, new WindcutterInstance(id, p, data));
 	}
 	
@@ -78,11 +79,15 @@ public class Windcutter extends Equipment {
 	}
 	
 	private class WindcutterProjectile extends Projectile {
-		public WindcutterProjectile(int i, int center) {
+		private int slot;
+		private Equipment eq;
+		public WindcutterProjectile(int i, int center, int slot, Equipment eq) {
 			super(0.5, properties.get(PropertyType.RANGE), 2);
 			this.size(1, 1).pierce(-1);
 			int iter = i - center;
 			this.rotation(iter * 25);
+			this.slot = slot;
+			this.eq = eq;
 		}
 
 		@Override
@@ -99,7 +104,7 @@ public class Windcutter extends Equipment {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			proj.getMeta().addDamageSlice(new DamageSlice(proj.getOwner(), damage, DamageType.SLASHING));
+			proj.getMeta().addDamageSlice(new DamageSlice(proj.getOwner(), damage, DamageType.SLASHING, DamageStatTracker.of(id + slot, eq)));
 		}
 	}
 }

@@ -19,13 +19,18 @@ import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
+import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroupEvent;
@@ -51,7 +56,7 @@ public class MagicQuiver extends Equipment {
 		StandardPriorityAction action = new StandardPriorityAction(id);
 
 		action.setAction((pdata, in) -> {
-			ProjectileGroup group = new ProjectileGroup(new MagicQuiverProjectile(data));
+			ProjectileGroup group = new ProjectileGroup(new MagicQuiverProjectile(data, this, slot));
 			LaunchProjectileGroupEvent ev = (LaunchProjectileGroupEvent) in;
 			if (!ev.isBasicAttack()) return TriggerResult.keep();
 			action.addCount(1);
@@ -79,13 +84,17 @@ public class MagicQuiver extends Equipment {
 		private AmmunitionInstance ammo;
 		private PlayerFightData data;
 		private Player p;
-		public MagicQuiverProjectile(PlayerFightData data) {
+		private Equipment eq;
+		private int slot;
+		public MagicQuiverProjectile(PlayerFightData data, Equipment eq, int slot) {
 			super(tp.range, 1);
 			this.blocksPerTick(3);
 			this.homing(0.02);
 			this.data = data;
 			this.p = data.getPlayer();
 			ammo = data.getAmmoInstance();
+			this.eq = eq;
+			this.slot = slot;
 		}
 
 		@Override
@@ -105,7 +114,8 @@ public class MagicQuiver extends Equipment {
 			DamageMeta dm = proj.getMeta();
 			EquipmentProperties ammoProps = ammo.getProperties();
 			double dmg = ammoProps.get(PropertyType.DAMAGE);
-			dm.addDamageSlice(new DamageSlice(data, damage + dmg, ammoProps.getType()));
+			dm.addDamageSlice(new DamageSlice(data, damage, ammoProps.getType(), DamageStatTracker.of(id + slot, eq)));
+			dm.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, dmg, BuffStatTracker.arrowBuff(ammo.getAmmo())));
 			ammo.onStart(proj);
 		}
 	}

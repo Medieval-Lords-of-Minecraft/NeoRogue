@@ -9,6 +9,7 @@ import io.lumine.mythic.api.skills.SkillResult;
 import io.lumine.mythic.api.skills.ThreadSafetyLevel;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -31,7 +32,7 @@ public class MechanicCastAbility implements INoTargetSkill {
 				Status s = fd.getStatus(StatusType.ELECTRIFIED);
 				DamageMeta dm = new DamageMeta(s.getSlices().first().getFightData()); // Arbitrarily pick first owner as damage meta owner
 				for (Entry<FightData, Integer> slice : fd.getStatus(StatusType.ELECTRIFIED).getSlices().getSliceOwners().entrySet()) {
-					dm.addDamageSlice(new DamageSlice(slice.getKey(), slice.getValue() * 0.2, DamageType.ELECTRIFIED));
+					dm.addDamageSlice(new DamageSlice(slice.getKey(), slice.getValue() * 0.2, DamageType.ELECTRIFIED, DamageStatTracker.ignored("MythicDamage")));
 				}
 			}
 			return SkillResult.SUCCESS;

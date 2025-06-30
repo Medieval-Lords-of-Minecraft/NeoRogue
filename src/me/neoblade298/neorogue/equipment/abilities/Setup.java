@@ -20,6 +20,7 @@ import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -63,7 +64,7 @@ public class Setup extends Equipment {
 			if (act.getCount() >= time) {
 				pc.play(p, p);
 				Sounds.enchant.play(p, p);
-				initTrap(p, data);
+				initTrap(p, data, this, slot);
 				data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL, DamageOrigin.TRAP), new Buff(data, 0, inc * 0.01, StatTracker.damageBuffAlly(buffId, this)));
 				act.addCount(-time);
 
@@ -80,7 +81,7 @@ public class Setup extends Equipment {
 		data.addTrigger(id, Trigger.PLAYER_TICK, act);
 	}
 
-	private void initTrap(Player p, PlayerFightData data) {
+	private void initTrap(Player p, PlayerFightData data, Equipment eq, int slot) {
 		Location loc = p.getLocation();
 		data.addTrap(new Trap(data, loc, 200) {
 			@Override
@@ -89,7 +90,7 @@ public class Setup extends Equipment {
 				LivingEntity trg = TargetHelper.getNearest(p, loc, tp);
 				if (trg != null) {
 					Sounds.breaks.play(p, trg);
-					DamageMeta dm = new DamageMeta(data, damage, DamageType.BLUNT, DamageOrigin.TRAP);
+					DamageMeta dm = new DamageMeta(data, damage, DamageType.BLUNT, DamageStatTracker.of(id + slot, eq), DamageOrigin.TRAP);
 					FightInstance.dealDamage(dm, trg);
 					data.removeTrap(this);
 				}

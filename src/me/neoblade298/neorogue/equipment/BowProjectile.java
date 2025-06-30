@@ -14,14 +14,20 @@ import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileTickAction;
+import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 
 public class BowProjectile extends Projectile {
 	public static ParticleContainer tick = new ParticleContainer(Particle.CRIT);
 	
+	private String id; // Unique id per bow + slot, used for damage stat tracker
 	private PlayerFightData data;
 	private Player p;
 	private Bow bow;
@@ -31,13 +37,13 @@ public class BowProjectile extends Projectile {
 	private boolean isBasicAttack = true;
 	private ArrayList<ProjectileTickAction> tickActions = new ArrayList<ProjectileTickAction>();
 
-	public BowProjectile(PlayerFightData data, Vector v, Bow bow, boolean isBasicAttack) {
+	public BowProjectile(PlayerFightData data, Vector v, Bow bow, boolean isBasicAttack, String id) {
 		super(bow.getProperties().get(PropertyType.RANGE), 1);
 		this.isBasicAttack = isBasicAttack;
 	}
 
 	// Vector is non-normalized velocity of the vanilla projectile being fired
-	public BowProjectile(PlayerFightData data, Vector v, Bow bow) {
+	public BowProjectile(PlayerFightData data, Vector v, Bow bow, String id) {
 		super(bow.getProperties().get(PropertyType.RANGE), 1);
 		setBowDefaults();
 		this.data = data;
@@ -45,6 +51,7 @@ public class BowProjectile extends Projectile {
 		this.bow = bow;
 		this.ammo = data.getAmmoInstance();
 		this.props = bow.getProperties();
+		this.id = id;
 		initialVelocity = v.length();
 
 		blocksPerTick(initialVelocity);
@@ -91,8 +98,10 @@ public class BowProjectile extends Projectile {
 		Sounds.shoot.play(p, p);
 		DamageMeta dm = proj.getMeta();
 		EquipmentProperties ammoProps = ammo.getProperties();
-		double dmg = ammoProps.get(PropertyType.DAMAGE) + props.get(PropertyType.DAMAGE) + damageBonus;
-		dm.addDamageSlice(new DamageSlice(data, dmg, ammoProps.getType()));
+		double dmg = props.get(PropertyType.DAMAGE) + damageBonus;
+		dm.addDamageSlice(new DamageSlice(data, dmg, ammoProps.getType(), DamageStatTracker.of(id, bow)));
+		dm.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, 
+				ammoProps.get(PropertyType.DAMAGE), BuffStatTracker.of(id, ammo.getAmmo(), "Damage increased")));
 		ammo.onStart(proj);
 	}
 

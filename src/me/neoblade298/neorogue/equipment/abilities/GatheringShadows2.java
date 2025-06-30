@@ -9,6 +9,7 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -38,7 +39,8 @@ public class GatheringShadows2 extends Equipment {
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 			double dmg = (damage * inst.getCount());
 			if (inst.getCount() > 2) dmg += bonus * (inst.getCount() - 2);
-			ev.getMeta().addDamageSlice(new DamageSlice(pdata, dmg, DamageType.DARK));
+			ev.getMeta().addDamageSlice(new DamageSlice(pdata, dmg, DamageType.DARK,
+					DamageStatTracker.of(ID + slot, this)));
 			inst.setCount(0);
 			return TriggerResult.keep();
 		});

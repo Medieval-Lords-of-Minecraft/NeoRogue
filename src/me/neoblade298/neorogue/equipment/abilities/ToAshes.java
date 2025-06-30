@@ -23,6 +23,7 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -60,9 +61,10 @@ public class ToAshes extends Equipment {
 			cone.play(pc, p.getLocation(), LocalAxes.usingEyeLocation(p), null);
 			LinkedList<LivingEntity> trgs = TargetHelper.getEntitiesInCone(p, tp);
 			for (LivingEntity ent : trgs) {
-				FightInstance.dealDamage(new DamageMeta(data, damage + (inc * am.getCount()), DamageType.FIRE), ent);
+				FightInstance.dealDamage(new DamageMeta(data, damage + (inc * am.getCount()), DamageType.FIRE, DamageStatTracker.of(id + slot, this)), ent);
 			}
-			FightInstance.dealDamage(new DamageMeta(data, selfDmg, DamageType.FIRE), p);
+			FightInstance.dealDamage(new DamageMeta(data, selfDmg, DamageType.FIRE,
+					DamageStatTracker.of(id + slot + "self", this, "Self damage")), p);
 
 			Barrier b = Barrier.stationary(p, 4, tp.range, 3, p.getLocation(), LocalAxes.usingEyeLocation(p), null,
 					null, true);

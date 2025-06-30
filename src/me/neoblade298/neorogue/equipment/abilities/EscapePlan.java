@@ -17,6 +17,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -82,7 +83,7 @@ public class EscapePlan extends Equipment {
 					if (!active) return TriggerResult.remove();
 					active = false;
 					ReceivedDamageEvent ev = (ReceivedDamageEvent) in2;
-					DamageMeta dm = new DamageMeta(pdata1, damage, DamageType.PIERCING);
+					DamageMeta dm = new DamageMeta(pdata1, damage, DamageType.PIERCING, DamageStatTracker.of(id + slot, eq));
 					FightInstance.dealDamage(dm, ev.getDamager().getEntity());
 					Sounds.teleport.play(p, p);
 					p.teleport(loc);

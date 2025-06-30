@@ -57,7 +57,7 @@ public class EnfeeblingWand extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ProjectileGroup proj = new ProjectileGroup(new EnfeeblingWandProjectile(data, this));
+		ProjectileGroup proj = new ProjectileGroup(new EnfeeblingWandProjectile(data, this, slot));
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (d, inputs) -> {
 			if (!canUseWeapon(data) || !data.canBasicAttack(EquipSlot.HOTBAR))
 				return TriggerResult.keep();
@@ -72,13 +72,15 @@ public class EnfeeblingWand extends Equipment {
 		private PlayerFightData data;
 		private String buffId = UUID.randomUUID().toString();
 		private EnfeeblingWand eq;
+		private int slot;
 
-		public EnfeeblingWandProjectile(PlayerFightData data, EnfeeblingWand eq) {
+		public EnfeeblingWandProjectile(PlayerFightData data, EnfeeblingWand eq, int slot) {
 			super(1.5, 10, 2);
 			this.size(0.2, 0.2);
 			this.p = data.getPlayer();
 			this.data = data;
 			this.eq = eq;
+			this.slot = slot;
 		}
 
 		@Override
@@ -96,7 +98,7 @@ public class EnfeeblingWand extends Equipment {
 		@Override
 		public void onStart(ProjectileInstance proj) {
 			tickSound.play(p, proj.getLocation());
-			proj.applyWeapon(data, eq);
+			proj.applyWeapon(data, eq, slot);
 		}
 	}
 

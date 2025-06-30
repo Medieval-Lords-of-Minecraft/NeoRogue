@@ -7,6 +7,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -39,7 +40,7 @@ public class PoisonStatus extends DecrementStackStatus {
 		DamageMeta meta = new DamageMeta(owner);
 		meta.isSecondary(true);
 		for (Entry<FightData, Integer> ent : slices.getSliceOwners().entrySet()) {
-			meta.addDamageSlice(new DamageSlice(ent.getKey(), ent.getValue() * 0.2, DamageType.POISON, true));
+			meta.addDamageSlice(new DamageSlice(ent.getKey(), ent.getValue() * 0.2, DamageType.POISON, true, DamageStatTracker.poison()));
 		}
 		FightInstance.dealDamage(meta, holder.getEntity());
 

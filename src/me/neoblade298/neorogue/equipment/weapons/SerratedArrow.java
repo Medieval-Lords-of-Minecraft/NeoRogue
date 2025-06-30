@@ -11,6 +11,7 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -39,7 +40,7 @@ public class SerratedArrow extends Ammunition {
 		FightData fd = FightInstance.getFightData(trg);
 		fd.applyStatus(StatusType.REND, inst.getOwner(), stacks, -1);
 		int total = fd.getStatus(StatusType.REND).getStacks();
-		meta.addDamageSlice(new DamageSlice(inst.getOwner(), damage * total, DamageType.REND));
+		meta.addDamageSlice(new DamageSlice(inst.getOwner(), damage * total, DamageType.REND, DamageStatTracker.of(id, this)));
 	}
 
 	@Override

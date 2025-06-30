@@ -53,7 +53,7 @@ public class BoltWand extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ProjectileGroup proj = new ProjectileGroup(new BoltWandProjectile(p, data, this));
+		ProjectileGroup proj = new ProjectileGroup(new BoltWandProjectile(p, data, this, slot));
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (d, inputs) -> {
 			if (!canUseWeapon(data) || !data.canBasicAttack(EquipSlot.HOTBAR))
 				return TriggerResult.keep();
@@ -67,8 +67,9 @@ public class BoltWand extends Equipment {
 		private Player p;
 		private PlayerFightData data;
 		private BoltWand eq;
+		private int slot;
 
-		public BoltWandProjectile(Player p, PlayerFightData data, BoltWand eq) {
+		public BoltWandProjectile(Player p, PlayerFightData data, BoltWand eq, int slot) {
 			super(2.5, 12, 1);
 			this.size(0.5, 0.5).pierce(pierceAmount);
 			this.p = p;
@@ -90,7 +91,7 @@ public class BoltWand extends Equipment {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			proj.applyWeapon(data, eq);
+			proj.applyWeapon(data, eq, slot);
 		}
 	}
 

@@ -23,6 +23,7 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -54,7 +55,7 @@ public class Firewall extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ProjectileGroup proj = new ProjectileGroup(new FirewallProjectile(data));
+		ProjectileGroup proj = new ProjectileGroup(new FirewallProjectile(data, this, slot));
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			proj.start(data);
 			return TriggerResult.keep();
@@ -64,13 +65,17 @@ public class Firewall extends Equipment {
 	private class FirewallProjectile extends Projectile {
 		private Player p;
 		private PlayerFightData data;
+		private Equipment eq;
+		private int slot;
 
-		public FirewallProjectile(PlayerFightData data) {
+		public FirewallProjectile(PlayerFightData data, Equipment eq, int slot) {
 			super(1, properties.get(PropertyType.RANGE), 2);
 			this.size(0.2, 0.2);
 			this.data = data;
 			this.p = data.getPlayer();
 			this.ignore(false, false, true);
+			this.eq = eq;
+			this.slot = slot;
 		}
 
 		@Override
@@ -88,7 +93,7 @@ public class Firewall extends Equipment {
 			Location end = b.getLocation().clone();
 			Location start = proj.getActionMeta().getLocation();
 			end.setY(start.getY());
-			activateFirewall(start, end);
+			activateFirewall(start, end, slot);
 		}
 
 		@Override
@@ -96,7 +101,7 @@ public class Firewall extends Equipment {
 			Location end = proj.getLocation().clone();
 			Location start = proj.getActionMeta().getLocation();
 			end.setY(start.getY());
-			activateFirewall(start, end);
+			activateFirewall(start, end, slot);
 		}
 
 		@Override
@@ -105,14 +110,14 @@ public class Firewall extends Equipment {
 			Sounds.fire.play(p, p);
 		}
 
-		private void activateFirewall(Location start, Location end) {
+		private void activateFirewall(Location start, Location end, int slot) {
 			data.addTask(new BukkitRunnable() {
 				private int tick = 0;
 				public void run() {
 					ParticleUtil.drawLine(p, wall, start, end, 1);
 					for (LivingEntity ent : TargetHelper.getEntitiesInLine(p, start, end, tp)) {
 						if (!(ent instanceof Player)) {
-							FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE), ent);
+							FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE, DamageStatTracker.of(id + slot, eq)), ent);
 						}
 						// Apply burn to enemies and caster
 						if (ent == p || !(ent instanceof Player)) {

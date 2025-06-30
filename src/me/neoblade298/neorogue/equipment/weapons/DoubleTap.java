@@ -47,10 +47,10 @@ public class DoubleTap extends Bow {
 			useBow(data);
 
 			ProjectileLaunchEvent ev = (ProjectileLaunchEvent) in;
-			ProjectileGroup proj = new ProjectileGroup(new BowProjectile(data, ev.getEntity().getVelocity(), this));
+			ProjectileGroup proj = new ProjectileGroup(new BowProjectile(data, ev.getEntity().getVelocity(), this, id + slot));
 			am.addCount(1);
 			if (am.getCount() >= THRESHOLD) {
-				ProjectileGroup second = new ProjectileGroup(new BowProjectile(data, ev.getEntity().getVelocity(), this).setDamageBonus(-properties.get(PropertyType.DAMAGE) / 2));
+				ProjectileGroup second = new ProjectileGroup(new BowProjectile(data, ev.getEntity().getVelocity(), this, id + slot).setDamageBonus(-properties.get(PropertyType.DAMAGE) / 2));
 				am.addCount(-THRESHOLD);
 				data.addTask(new BukkitRunnable() {
 					public void run() {

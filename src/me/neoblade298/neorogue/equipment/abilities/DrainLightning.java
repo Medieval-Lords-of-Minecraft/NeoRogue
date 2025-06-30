@@ -18,6 +18,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -49,6 +50,7 @@ public class DrainLightning extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		Equipment eq = this;
 		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
 		inst.setAction((pdata, in) -> {
 			double cost = properties.get(PropertyType.MANA_COST);
@@ -61,7 +63,7 @@ public class DrainLightning extends Equipment {
 					ParticleUtil.drawLine(p, tick, start, end, 0.3);
 					Sounds.firework.play(p, p);
 					for (LivingEntity ent : TargetHelper.getEntitiesInLine(p, start, end, tp)) {
-						FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.LIGHTNING), ent);
+						FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.LIGHTNING, DamageStatTracker.of(id + slot, eq)), ent);
 					}
 
 					if (currMana >= thres) {

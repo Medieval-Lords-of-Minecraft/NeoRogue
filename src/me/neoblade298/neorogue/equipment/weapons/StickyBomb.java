@@ -23,6 +23,7 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
@@ -64,6 +65,7 @@ public class StickyBomb extends Ammunition {
 
 	@Override
 	public void onHitBlock(ProjectileInstance inst, Block b) {
+		Equipment eq = this;
 		Location loc = b.getLocation();
 		inst.getOwner().addTask(new BukkitRunnable() {
 			public void run() {
@@ -71,7 +73,7 @@ public class StickyBomb extends Ammunition {
 				Sounds.explode.play(p, loc);
 				explode.play(p, loc);
 				for (LivingEntity ent : TargetHelper.getEntitiesInRadius(inst.getOwner().getEntity(), loc, tp)) {
-					FightInstance.dealDamage(new DamageMeta(inst.getOwner(), damage, DamageType.FIRE, DamageOrigin.PROJECTILE), ent);
+					FightInstance.dealDamage(new DamageMeta(inst.getOwner(), damage, DamageType.FIRE, DamageStatTracker.of(id, eq), DamageOrigin.PROJECTILE), ent);
 				}
 			}
 		}.runTaskLater(NeoRogue.inst(), 20));

@@ -48,7 +48,7 @@ public class DarkScepter extends Equipment {
 	
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ProjectileGroup proj = new ProjectileGroup(new DarkRay(data, this));
+		ProjectileGroup proj = new ProjectileGroup(new DarkRay(data, this, slot));
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (d, inputs) -> {
 			if (!canUseWeapon(data) || !data.canBasicAttack(EquipSlot.HOTBAR))
 				return TriggerResult.keep();
@@ -77,13 +77,15 @@ public class DarkScepter extends Equipment {
 		private Player p;
 		private PlayerFightData data;
 		private DarkScepter eq;
-		public DarkRay(PlayerFightData data, DarkScepter eq) {
+		private int slot;
+		public DarkRay(PlayerFightData data, DarkScepter eq, int slot) {
 			super(0.5, 2, 1);
 			this.size(1.25, 1.25).pierce(-1);
 			this.ignore(false, true, false);
 			this.p = data.getPlayer();
 			this.data = data;
 			this.eq = eq;
+			this.slot = slot;
 		}
 		
 		@Override
@@ -98,7 +100,7 @@ public class DarkScepter extends Equipment {
 		
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			proj.applyWeapon(data, eq);
+			proj.applyWeapon(data, eq, slot);
 		}
 	}
 	

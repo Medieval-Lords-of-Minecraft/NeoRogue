@@ -25,6 +25,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -114,7 +115,7 @@ public class ArcaneBlast extends Equipment {
 				expl.play(p, am.getLocation());
 				Sounds.explode.play(p, am.getLocation());
 				for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, am.getLocation(), tp)) {
-					FightInstance.dealDamage(new DamageMeta(data, damage * am.getCount(), DamageType.FIRE), ent);
+					FightInstance.dealDamage(new DamageMeta(data, damage * am.getCount(), DamageType.FIRE, DamageStatTracker.of(id + slot, this)), ent);
 				}
 				am.setBool(false);
 				am.setCount(0);

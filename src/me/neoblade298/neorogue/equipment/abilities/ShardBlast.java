@@ -20,6 +20,7 @@ import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -66,7 +67,7 @@ public class ShardBlast extends Equipment {
 				for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, t.getLocation(), tp)) {
 					hit.play(p, ent);
 					FightData fd = FightInstance.getFightData(ent);
-					FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.PIERCING, DamageOrigin.TRAP), ent);
+					FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.PIERCING, DamageStatTracker.of(id + slot, this), DamageOrigin.TRAP), ent);
 					fd.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, -reduc, StatTracker.defenseDebuffEnemy(am.getId(), this)), 100);
 				}
 				t.deactivate();

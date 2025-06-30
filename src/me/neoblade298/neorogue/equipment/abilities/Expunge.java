@@ -20,6 +20,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -54,6 +55,7 @@ public class Expunge extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		Equipment eq = this;
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pd, in) -> {
 			data.charge(20, 0);
 			
@@ -65,7 +67,7 @@ public class Expunge extends Equipment {
 						FightData fd = FightInstance.getFightData(ent);
 						fd.applyStatus(StatusType.POISON, data, stacks, -1);
 						double dmg = FightInstance.getFightData(ent).getStatus(StatusType.POISON).getStacks() * bonus;
-						FightInstance.dealDamage(new DamageMeta(data, dmg, DamageType.POISON), ent);
+						FightInstance.dealDamage(new DamageMeta(data, dmg, DamageType.POISON, DamageStatTracker.of(id + slot, eq)), ent);
 					}
 				}
 			}.runTaskLater(NeoRogue.inst(), 25L));

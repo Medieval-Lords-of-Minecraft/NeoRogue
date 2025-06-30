@@ -27,6 +27,7 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -57,25 +58,26 @@ public class ArrowRain extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		ArrowRain eq = this;
 		data.addTrigger(id, bind, new AmmoEquipmentInstance(data, this, slot, es, (pd, in) -> {
 			Sounds.equip.play(p, p);
 			data.charge(20);
 			data.addTask(new BukkitRunnable() {
 				public void run() {
-					initRain(p, data);
+					initRain(p, data, eq, id + slot);
 				}
 			}.runTaskLater(NeoRogue.inst(), 20L));
 			return TriggerResult.keep();
 		}));
 	}
 
-	private void initRain(Player p, PlayerFightData data) {
+	private void initRain(Player p, PlayerFightData data, ArrowRain eq, String id) {
 		data.addTask(new BukkitRunnable() {
 			private int tick = 0;
 			public void run() {
 				if (data.getAmmoInstance() != null) { 
 					Sounds.shoot.play(p, p);
-					ProjectileGroup projs = new ProjectileGroup(new ArrowRainProjectile(p, p.getLocation(), data));
+					ProjectileGroup projs = new ProjectileGroup(new ArrowRainProjectile(p, p.getLocation(), data, eq, id));
 					Location block = TargetHelper.getSightLocation(p, tp);
 					targeter.play(p, block);
 					if (block != null) {
@@ -102,12 +104,15 @@ public class ArrowRain extends Equipment {
 		private Player p;
 		private PlayerFightData data;
 		private AmmunitionInstance ammo;
+		private ArrowRain eq;
+		private String id;
 
-		public ArrowRainProjectile(Player p, Location trg, PlayerFightData data) {
+		public ArrowRainProjectile(Player p, Location trg, PlayerFightData data, ArrowRain eq, String id) {
 			super(0.5, 6, 1);
 			this.p = p;
 			this.data = data;
 			this.ammo = data.getAmmoInstance();
+			this.eq = eq;
 			ammo.use();
 		}
 
@@ -117,7 +122,7 @@ public class ArrowRain extends Equipment {
 			DamageMeta dm = proj.getMeta();
 			EquipmentProperties ammoProps = ammo.getProperties();
 			double dmg = damage + ammoProps.get(PropertyType.DAMAGE);
-			dm.addDamageSlice(new DamageSlice(data, dmg, ammoProps.getType()));
+			dm.addDamageSlice(new DamageSlice(data, dmg, ammoProps.getType(), DamageStatTracker.of(id, eq)));
 			ammo.onStart(proj, false);
 		}
 

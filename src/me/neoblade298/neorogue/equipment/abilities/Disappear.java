@@ -12,6 +12,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
@@ -36,7 +37,7 @@ public class Disappear extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		DisappearInstance inst = new DisappearInstance(id, p, data);
+		DisappearInstance inst = new DisappearInstance(id, p, data, slot, this);
 		data.addTrigger(ID, Trigger.KILL, inst);
 		
 		data.addTrigger(ID, Trigger.RECEIVED_HEALTH_DAMAGE, (pdata, in) -> {
@@ -58,12 +59,16 @@ public class Disappear extends Equipment {
 	private class DisappearInstance extends PriorityAction {
 		private Player p;
 		private PlayerFightData data;
+		private Disappear eq;
 		private BukkitTask timer;
 		private boolean primed = false;
-		public DisappearInstance(String id, Player p, PlayerFightData data) {
+		private int slot;
+		public DisappearInstance(String id, Player p, PlayerFightData data, int slot, Disappear eq) {
 			super(id);
 			this.p = p;
 			this.data = data;
+			this.slot = slot;
+			this.eq = eq;
 			action = (pdata, in) -> {
 				timer = new BukkitRunnable() {
 					public void run() {
@@ -79,7 +84,7 @@ public class Disappear extends Equipment {
 			if (!primed) return;
 			
 			Sounds.anvil.play(p, p);
-			ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.PIERCING));
+			ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.PIERCING, DamageStatTracker.of(ID + slot, eq)));
 			primed = false;
 		}
 		

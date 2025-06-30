@@ -45,6 +45,7 @@ public class Volley extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		Equipment eq = this;
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (d, inputs) -> {
 			data.channel(20);
 			data.addTask(new BukkitRunnable() {
@@ -52,7 +53,7 @@ public class Volley extends Equipment {
 					ProjectileGroup proj = new ProjectileGroup();
 					for (int i : rotations) {
 						if (data.getAmmoInstance() != null) {
-							proj.add(new VolleyProjectile(data, i));
+							proj.add(new VolleyProjectile(data, i, eq));
 							data.getAmmoInstance().use();
 						}
 						else {
@@ -70,15 +71,17 @@ public class Volley extends Equipment {
 		private PlayerFightData data;
 		private Player p;
 		private AmmunitionInstance ammo;
+		private Equipment eq;
 
 		// Vector is non-normalized velocity of the vanilla projectile being fired
-		public VolleyProjectile(PlayerFightData data, int rotation) {
+		public VolleyProjectile(PlayerFightData data, int rotation, Equipment eq) {
 			super(properties.get(PropertyType.RANGE), 1);
 			setBowDefaults();
 			this.rotation(rotation);
 			this.data = data;
 			this.p = data.getPlayer();
 			this.ammo = data.getAmmoInstance();
+			this.eq = eq;
 		}
 
 		@Override
@@ -95,7 +98,7 @@ public class Volley extends Equipment {
 		@Override
 		public void onStart(ProjectileInstance proj) {
 			Sounds.shoot.play(p, p);
-			proj.applyAmmo(data, properties, ammo);
+			proj.applyAmmo(data, eq, ammo);
 			ammo.onStart(proj);
 		}
 	}

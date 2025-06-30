@@ -20,6 +20,7 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -55,15 +56,15 @@ public class ManaArc extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			activate(p, data, am);
+			activate(p, data, am, slot);
 			return TriggerResult.keep();
 		}, (pl, pdata, in) -> {
 			return !am.getBool(); // Only allow casting if it's not already active
 		}));
 	}
 
-	private void activate(Player p, PlayerFightData data, ActionMeta am) {
-		ManaArcProjectile proj = new ManaArcProjectile(data);
+	private void activate(Player p, PlayerFightData data, ActionMeta am, int slot) {
+		ManaArcProjectile proj = new ManaArcProjectile(data, slot, this);
 		Sounds.equip.play(p, p);
 		am.setBool(true);
 		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
@@ -92,11 +93,15 @@ public class ManaArc extends Equipment {
 	private class ManaArcProjectile extends Projectile {
 		private Player p;
 		private PlayerFightData data;
+		private int slot;
+		private Equipment eq;
 
-		public ManaArcProjectile(PlayerFightData data) {
+		public ManaArcProjectile(PlayerFightData data, int slot, Equipment eq) {
 			super(0.5, 12, 1);
 			this.data = data;
 			this.p = data.getPlayer();
+			this.slot = slot;
+			this.eq = eq;
 		}
 
 		@Override
@@ -112,7 +117,8 @@ public class ManaArc extends Equipment {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			proj.addDamageSlice(new DamageSlice(data, damage, DamageType.LIGHTNING));
+			proj.addDamageSlice(new DamageSlice(data, damage, DamageType.LIGHTNING,
+					DamageStatTracker.of(ID + slot, eq)));
 			proj.getMeta().isSecondary(true);
 		}
 	}

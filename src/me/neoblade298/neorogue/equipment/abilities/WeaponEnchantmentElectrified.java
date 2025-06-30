@@ -17,6 +17,7 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -28,7 +29,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class WeaponEnchantmentElectrified extends Equipment {
 	private static final String ID = "weaponEnchantmentElectrified";
-	private ProjectileGroup projs = new ProjectileGroup(new WeaponEnchantmentElectrifiedProjectile());
+	private ProjectileGroup projs;
 	private int damage, elec;
 	private static final int RANGE = 8;
 	private static final SoundContainer sc = new SoundContainer(Sound.BLOCK_AMETHYST_BLOCK_BREAK),
@@ -48,6 +49,7 @@ public class WeaponEnchantmentElectrified extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		projs = new ProjectileGroup(new WeaponEnchantmentElectrifiedProjectile(slot, this));
 		data.addTrigger(id, Trigger.LEFT_CLICK, new WeaponEnchantmentElectrifiedInstance(id));
 	}
 
@@ -73,8 +75,12 @@ public class WeaponEnchantmentElectrified extends Equipment {
 	}
 	
 	private class WeaponEnchantmentElectrifiedProjectile extends Projectile {
-		public WeaponEnchantmentElectrifiedProjectile() {
+		private int slot;
+		private Equipment eq;
+		public WeaponEnchantmentElectrifiedProjectile(int slot, Equipment eq) {
 			super(0.8, RANGE, 2);
+			this.slot = slot;
+			this.eq = eq;
 		}
 
 		@Override
@@ -92,7 +98,7 @@ public class WeaponEnchantmentElectrified extends Equipment {
 		@Override
 		public void onStart(ProjectileInstance proj) {
 			sc.play((Player) proj.getOwner().getEntity(), proj.getOwner().getEntity());
-			proj.getMeta().addDamageSlice(new DamageSlice(proj.getOwner(), damage, DamageType.LIGHTNING));
+			proj.getMeta().addDamageSlice(new DamageSlice(proj.getOwner(), damage, DamageType.LIGHTNING, DamageStatTracker.of(id + slot, eq)));
 		}
 	}
 }

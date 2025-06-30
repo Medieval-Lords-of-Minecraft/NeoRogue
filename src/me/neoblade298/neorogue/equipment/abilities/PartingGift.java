@@ -20,6 +20,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -59,6 +60,7 @@ public class PartingGift extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		Equipment eq = this;
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, inputs) -> {
 			placePart.play(p, p);
 			place.play(p, p);
@@ -71,7 +73,7 @@ public class PartingGift extends Equipment {
 						Sounds.explode.play(p, loc);
 						explode.play(p, loc);
 						for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, tp)) {
-							FightInstance.dealDamage(pdata, DamageType.DARK, damage * tick, ent);
+							FightInstance.dealDamage(pdata, DamageType.DARK, damage * tick, ent, DamageStatTracker.of(id + slot, eq));
 						}
 						this.cancel();
 						return;

@@ -18,6 +18,7 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -57,6 +58,7 @@ public class MirrorSickle extends Equipment {
 		}
 		
 		StandardPriorityAction inst = new StandardPriorityAction(ID);
+		Equipment eq = this;
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
 			weaponSwingAndDamage(p, data, ev.getTarget());
@@ -78,7 +80,7 @@ public class MirrorSickle extends Equipment {
 				public void run() {
 					LivingEntity ent = TargetHelper.getNearest(p, tp);
 					if (ent == null) return;
-					DamageMeta dm = new DamageMeta(data, dash, DamageType.PIERCING);
+					DamageMeta dm = new DamageMeta(data, dash, DamageType.PIERCING, DamageStatTracker.of(id + slot, eq));
 					FightInstance.dealDamage(dm, ent);
 				}
 			}.runTaskLater(NeoRogue.inst(), 10L));

@@ -16,6 +16,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -58,7 +59,7 @@ public class Flashfire extends Equipment {
 							fd.getStatus(StatusType.BURN).getStacks() * (hasBonus ? 2 : 1), slot);
 				}
 
-				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE), ent);
+				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE, DamageStatTracker.of(id + slot, this)), ent);
 				fd.applyStatus(StatusType.BURN, data, burn, -1);
 			}
 			return TriggerResult.keep();

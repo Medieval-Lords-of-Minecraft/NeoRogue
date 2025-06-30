@@ -44,7 +44,7 @@ public class LeadingKnife extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		LeadingKnifeInstance inst = new LeadingKnifeInstance(ID, this);
-		ProjectileGroup proj = new ProjectileGroup(new LeadingKnifeProjectile(data, inst));
+		ProjectileGroup proj = new ProjectileGroup(new LeadingKnifeProjectile(data, inst, slot));
 		inst.initialize(proj);
 		
 		data.addTrigger(ID, Trigger.RIGHT_CLICK, inst);
@@ -90,13 +90,15 @@ public class LeadingKnife extends Equipment {
 		private Player p;
 		private PlayerFightData data;
 		private LeadingKnifeInstance inst;
+		private int slot;
 
-		public LeadingKnifeProjectile(PlayerFightData data, LeadingKnifeInstance inst) {
+		public LeadingKnifeProjectile(PlayerFightData data, LeadingKnifeInstance inst, int slot) {
 			super(1.5, 10, 1);
 			this.size(0.5, 0.5);
 			this.data = data;
 			this.p = data.getPlayer();
 			this.inst = inst;
+			this.slot = slot;
 		}
 
 		@Override
@@ -113,7 +115,7 @@ public class LeadingKnife extends Equipment {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			proj.applyProperties(data, inst.eq);
+			proj.applyProperties(data, inst.eq, slot);
 		}
 	}
 }

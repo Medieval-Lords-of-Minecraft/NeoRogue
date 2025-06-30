@@ -12,6 +12,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -39,13 +40,13 @@ public class MiasmaInABottle extends Artifact {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
-		data.addTrigger(ID, Trigger.PLAYER_TICK, new MiasmaInABottleInstance(ID));
+		data.addTrigger(ID, Trigger.PLAYER_TICK, new MiasmaInABottleInstance(ID, this));
 	}
 	
 	private class MiasmaInABottleInstance extends PriorityAction {
 		private int timer = 5;
 		
-		public MiasmaInABottleInstance(String id) {
+		public MiasmaInABottleInstance(String id, Equipment eq) {
 			super(id);
 			action = (pdata, in) -> {
 				if (--timer > 0) return TriggerResult.keep();
@@ -53,7 +54,7 @@ public class MiasmaInABottle extends Artifact {
 					FightData fd = FightInstance.getFightData(ent);
 					if (!fd.hasStatus(StatusType.INSANITY)) continue;
 					double add = fd.getStatus(StatusType.INSANITY).getStacks() * 0.1;
-					FightInstance.dealDamage(pdata, DamageType.DARK, add, ent);
+					FightInstance.dealDamage(pdata, DamageType.DARK, add, ent, DamageStatTracker.of(id, eq));
 				}
 				return TriggerResult.keep();
 			};

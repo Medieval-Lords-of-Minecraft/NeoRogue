@@ -4,32 +4,34 @@ public class DamageSlice {
 	private FightData owner;
 	private double damage;
 	private DamageType type, postBuffType;
+	private DamageStatTracker tracker;
 	private boolean ignoreShields;
-	public DamageSlice(FightData owner, double damage, DamageType type) {
+	public DamageSlice(FightData owner, double damage, DamageType type, DamageStatTracker tracker) {
 		super();
 		this.owner = owner;
 		this.damage = damage;
 		this.type = type;
+		this.tracker = tracker;
 	}
-	public DamageSlice(FightData owner, double damage, DamageType type, DamageType postBuffType) {
-		super();
-		this.owner = owner;
-		this.damage = damage;
-		this.type = type;
+	public DamageSlice(FightData owner, double damage, DamageType type, DamageType postBuffType,
+			DamageStatTracker tracker) {
+		this(owner, damage, type, tracker);
 		this.postBuffType = postBuffType;
 	}
-	public DamageSlice(FightData owner, double damage, DamageType type, boolean ignoreShields) {
-		super();
-		this.owner = owner;
-		this.damage = damage;
-		this.type = type;
+	public DamageSlice(FightData owner, double damage, DamageType type, boolean ignoreShields,
+			DamageStatTracker tracker) {
+		this(owner, damage, type, tracker);
 		this.ignoreShields = ignoreShields;
+		this.tracker = tracker;
 	}
 	public double getDamage() {
 		return damage;
 	}
 	public DamageType getType() {
 		return type;
+	}
+	public DamageStatTracker getTracker() {
+		return tracker;
 	}
 	public void setPostBuffType(DamageType postBuffType) {
 		this.postBuffType = postBuffType;
@@ -38,7 +40,7 @@ public class DamageSlice {
 		return this.postBuffType != null ? this.postBuffType : this.type;
 	}
 	public boolean isSimilar(DamageSlice slice) {
-		return this.type == slice.getType() && this.postBuffType == slice.getPostBuffType() &&
+		return this.tracker.getId().equals(slice.getTracker().getId()) &&
 				this.ignoreShields == slice.isIgnoreShields() && this.owner == slice.owner;
 	}
 	public void add(DamageSlice slice) {
@@ -52,12 +54,6 @@ public class DamageSlice {
 	}
 	public PlayerFightData getOwner() {
 		return (PlayerFightData) owner;
-	}
-	public void handleStatistics(DamageType type, double damage) {
-		if (owner instanceof PlayerFightData) {
-			PlayerFightData pfd = (PlayerFightData) owner;
-			pfd.getStats().addDamageDealt(type, damage);
-		}
 	}
 
 	@Override

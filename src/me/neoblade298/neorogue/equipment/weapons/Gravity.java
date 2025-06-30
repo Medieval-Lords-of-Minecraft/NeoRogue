@@ -27,6 +27,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -59,6 +60,7 @@ public class Gravity extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		Equipment eq = this;
 		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
 		inst.setAction((pdata, in) -> {
 			data.charge(40).then(new Runnable() {
@@ -84,7 +86,7 @@ public class Gravity extends Equipment {
 							Vector v = rift.getLocation().toVector().subtract(ent.getLocation().toVector());
 							if (v.isZero()) continue;
 							v = v.setY(0).normalize().setY(0.3);
-							FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.DARK), ent);
+							FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.DARK, DamageStatTracker.of(id + slot, eq)), ent);
 							FightInstance.knockback(ent, v);
 						}
 					}

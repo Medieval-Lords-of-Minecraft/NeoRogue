@@ -23,6 +23,7 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -63,8 +64,8 @@ public class Backstep2 extends Equipment {
 		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, this, slot, es);
 		updateIcon(inst, icon);
 		ProjectileGroup projs = new ProjectileGroup();
-		for (int i : ROTATIONS) {
-			projs.add(new Backstep2Projectile(data, i));
+		for (int i : ROTATIONS) {;
+			projs.add(new Backstep2Projectile(data, i, slot, this));
 		}
 
 		inst.setAction((pdata, in) -> {
@@ -116,14 +117,18 @@ public class Backstep2 extends Equipment {
 	private class Backstep2Projectile extends Projectile {
 		private PlayerFightData data;
 		private Player p;
+		private Backstep2 eq;
+		private String id;
 
 		// Vector is non-normalized velocity of the vanilla projectile being fired
-		public Backstep2Projectile(PlayerFightData data, int rotation) {
+		public Backstep2Projectile(PlayerFightData data, int rotation, int slot, Backstep2 eq) {
 			super(properties.get(PropertyType.RANGE), 1);
 			this.blocksPerTick(3);
 			this.rotation(rotation);
 			this.data = data;
 			this.p = data.getPlayer();
+			this.eq = eq;
+			this.id = ID + slot;
 		}
 
 		@Override
@@ -140,7 +145,7 @@ public class Backstep2 extends Equipment {
 		public void onStart(ProjectileInstance proj) {
 			Sounds.shoot.play(p, p);
 			DamageMeta dm = proj.getMeta();
-			dm.addDamageSlice(new DamageSlice(data, damage, DamageType.PIERCING));
+			dm.addDamageSlice(new DamageSlice(data, damage, DamageType.PIERCING, DamageStatTracker.of(id, eq)));
 		}
 	}
 }

@@ -17,6 +17,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -50,10 +51,11 @@ public class TomeOfScorchedEarth extends Equipment {
 			cone.play(pc, p.getLocation(), LocalAxes.usingEyeLocation(p), pc);
 			LinkedList<LivingEntity> trgs = TargetHelper.getEntitiesInCone(p, tp);
 			for (LivingEntity ent : trgs) {
-				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE), ent);
+				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE, DamageStatTracker.of(id + slot, this)), ent);
 			}
 			if (trgs.size() < 2) {
-				FightInstance.dealDamage(new DamageMeta(data, selfDmg, DamageType.FIRE).ignoreBuffs(true), p);
+				FightInstance.dealDamage(new DamageMeta(data, selfDmg, DamageType.FIRE,
+						DamageStatTracker.of(id + slot, this, "Self damage")).ignoreBuffs(true), p);
 			}
 			return TriggerResult.keep();
 		}));

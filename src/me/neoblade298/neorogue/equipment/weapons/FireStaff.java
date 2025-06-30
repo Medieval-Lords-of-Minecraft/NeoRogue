@@ -19,6 +19,7 @@ import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -56,7 +57,7 @@ public class FireStaff extends Equipment {
 	
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ProjectileGroup proj = new ProjectileGroup(new FireStaffProjectile(data, this));
+		ProjectileGroup proj = new ProjectileGroup(new FireStaffProjectile(data, this, slot));
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (d, inputs) -> {
 			if (!canUseWeapon(data) || !data.canBasicAttack(EquipSlot.HOTBAR))
 				return TriggerResult.keep();
@@ -70,13 +71,15 @@ public class FireStaff extends Equipment {
 		private Player p;
 		private PlayerFightData data;
 		private FireStaff eq;
+		private int slot;
 
-		public FireStaffProjectile(PlayerFightData data, FireStaff eq) {
+		public FireStaffProjectile(PlayerFightData data, FireStaff eq, int slot) {
 			super(0.5, 15, 2);
 			this.size(1, 1).gravity(0.0125).initialY(0.55);
 			this.p = data.getPlayer();
 			this.data = data;
 			this.eq = eq;
+			this.slot = slot;
 		}
 		
 		@Override
@@ -106,7 +109,7 @@ public class FireStaff extends Equipment {
 			Sounds.explode.play(p, loc);
 			exp.play(p, loc);
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, props)) {
-				DamageMeta dm = new DamageMeta(data, eq, true);
+				DamageMeta dm = new DamageMeta(data, eq, true, DamageStatTracker.of(id + slot, eq));
 				dm.setSource(loc);
 				FightInstance.dealDamage(dm, ent);
 				// Make sure this happens BEFORE projectile tick is resolved, since damagemeta is resolved in there first and we need to change Location source

@@ -24,6 +24,7 @@ import me.neoblade298.neorogue.equipment.StandardEquipmentInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -75,7 +76,7 @@ public class RecklessApproach extends Equipment {
 			}
 			p.setVelocity(v.setY(0).normalize().setY(0.3));
 			data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, inc, 0, StatTracker.damageBuffAlly(buffId, this)), 100);
-			new RecklessApproachHitbox(p, data, inst);
+			new RecklessApproachHitbox(p, data, inst, this, slot);
 			return TriggerResult.keep();
 		});
 		data.addTrigger(id, bind, inst);
@@ -93,7 +94,7 @@ public class RecklessApproach extends Equipment {
 	private class RecklessApproachHitbox {
 		private ArrayList<BukkitTask> tasks = new ArrayList<BukkitTask>();
 		
-		protected RecklessApproachHitbox(Player p, PlayerFightData data, StandardEquipmentInstance inst) {
+		protected RecklessApproachHitbox(Player p, PlayerFightData data, StandardEquipmentInstance inst, Equipment eq, int slot) {
 			for (long delay = 1; delay <= 10; delay++) {
 				final boolean last = delay == 10;
 				tasks.add(new BukkitRunnable() {
@@ -111,7 +112,7 @@ public class RecklessApproach extends Equipment {
 						Sounds.explode.play(p, p);
 						for (LivingEntity ent : hit) {
 							pc.play(p, p);
-							FightInstance.dealDamage(data, DamageType.BLUNT, damage, ent);
+							FightInstance.dealDamage(data, DamageType.BLUNT, damage, ent, DamageStatTracker.of(id + slot, eq));
 						}
 						data.addSimpleShield(p.getUniqueId(), shields, 100);
 						inst.setBool(true);

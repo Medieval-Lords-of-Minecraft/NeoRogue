@@ -21,6 +21,7 @@ import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -69,7 +70,8 @@ public class BlastStep extends Equipment {
 			cone.play(p, pc, p.getLocation(), LocalAxes.usingGroundedEyeLocation(p), pc);
 			Sounds.explode.play(p, p);
 			for (LivingEntity ent : TargetHelper.getEntitiesInCone(p, tp)) {
-				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.BLUNT), ent);
+				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.BLUNT,
+						DamageStatTracker.of(id + slot, this)), ent);
 				FightInstance.knockback(ent, kb);
 				FightData fd = FightInstance.getFightData(ent);
 				fd.applyStatus(
@@ -83,7 +85,7 @@ public class BlastStep extends Equipment {
 			if (!ev.getMeta().hasOrigin(DamageOrigin.PROJECTILE)) return TriggerResult.keep();
 			FightData fd = FightInstance.getFightData(ev.getTarget());
 			if (fd.hasStatus("blastStep-" + p.getName()) && ev.getMeta().getProjectile().getOrigin().distanceSquared(ev.getTarget().getLocation()) <= 25) {
-				ev.getMeta().addDamageSlice(new DamageSlice(data, inc, DamageType.BLUNT));
+				ev.getMeta().addDamageSlice(new DamageSlice(data, inc, DamageType.BLUNT, DamageStatTracker.of(id + slot, this)));
 			}
 			return TriggerResult.keep();
 		});

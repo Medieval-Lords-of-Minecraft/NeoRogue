@@ -33,6 +33,7 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffList;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -58,6 +59,7 @@ public class DamageMeta {
 	private DamageMeta returnDamage;
 	private HashMap<DamageBuffType, BuffList> damageBuffs = new HashMap<DamageBuffType, BuffList>(), defenseBuffs = new HashMap<DamageBuffType, BuffList>();
 	private HashMap<DamageType, Double> statSlices = new HashMap<DamageType, Double>();
+	private HashMap<StatTracker, Double> trackerSlices = new HashMap<StatTracker, Double>();
 	private double ignoreShieldsDamage, damage, knockback;
 	private Location source; // Override for knockback source
 	
@@ -72,36 +74,37 @@ public class DamageMeta {
 	}
 
 	// Helper constructor that directly uses equipment properties
-	public DamageMeta(FightData data, Equipment eq, boolean isBasicAttack) {
+	public DamageMeta(FightData data, Equipment eq, boolean isBasicAttack, DamageStatTracker tracker) {
 		this(data);
 		EquipmentProperties props = eq.getProperties();
-		this.slices.add(new DamageSlice(data, props.get(PropertyType.DAMAGE), props.getType()));
+		this.slices.add(new DamageSlice(data, props.get(PropertyType.DAMAGE), props.getType(), tracker));
 		this.knockback = props.get(PropertyType.KNOCKBACK);
 		if (isBasicAttack) {
 			isBasicAttack(eq, isBasicAttack);
 		}
 	}
 	
-	public DamageMeta(FightData data, double damage, DamageType type) {
+	public DamageMeta(FightData data, double damage, DamageType type, DamageStatTracker tracker) {
 		this(data);
-		this.slices.add(new DamageSlice(data, damage, type));
+		this.slices.add(new DamageSlice(data, damage, type, tracker));
 	}
 	
-	public DamageMeta(FightData data, double damage, DamageType type, DamageOrigin origin) {
+	public DamageMeta(FightData data, double damage, DamageType type, DamageStatTracker tracker, DamageOrigin origin) {
 		this(data, origin);
-		this.slices.add(new DamageSlice(data, damage, type));
+		this.slices.add(new DamageSlice(data, damage, type, tracker));
 	}
 	
-	public DamageMeta(FightData data, double damage, DamageType type, DamageOrigin origin, ProjectileInstance proj) {
+	public DamageMeta(FightData data, double damage, DamageType type,
+			DamageStatTracker tracker, DamageOrigin origin, ProjectileInstance proj) {
 		this(data);
-		this.slices.add(new DamageSlice(data, damage, type));
+		this.slices.add(new DamageSlice(data, damage, type, tracker));
 		this.origins.add(origin);
 		this.proj = proj;
 	}
 	
-	public DamageMeta(FightData data, double baseDamage, DamageType type, DamageOrigin origin, boolean hitBarrier, boolean isSecondary) {
-		this(data, baseDamage, type);
-		this.origins.add(origin);
+	public DamageMeta(FightData data, double baseDamage, DamageType type,
+			DamageStatTracker tracker, DamageOrigin origin, boolean hitBarrier, boolean isSecondary) {
+		this(data, baseDamage, type, tracker, origin);
 		this.hitBarrier = hitBarrier;
 		this.isSecondary = isSecondary;
 	}
@@ -436,6 +439,8 @@ public class DamageMeta {
 			// Save the damage values per damage type to put into stats later
 			double temp = statSlices.getOrDefault(slice.getPostBuffType(), 0.0) + sliceDamageFinal;
 			statSlices.put(slice.getPostBuffType(), temp);
+			temp = trackerSlices.getOrDefault(slice.getTracker().getId(), 0.0) + sliceDamageFinal;
+			trackerSlices.put(slice.getTracker(), temp);
 
 			if (!slice.isIgnoreShields()) {
 				damage += sliceDamage;
@@ -447,11 +452,12 @@ public class DamageMeta {
 			// Return damage
 			if (recipient.hasStatus(StatusType.THORNS) && DamageCategory.PHYSICAL.hasType(slice.getPostBuffType())) {
 				int stacks = recipient.getStatus(StatusType.THORNS).getStacks();
-				returnDamage.addDamageSlice(new DamageSlice(recipient, stacks, DamageType.THORNS));
+				returnDamage.addDamageSlice(new DamageSlice(recipient, stacks, DamageType.THORNS,
+						DamageStatTracker.thorns()));
 			}
 			if (recipient.hasStatus(StatusType.REFLECT) && DamageCategory.MAGICAL.hasType(slice.getPostBuffType())) {
 				int stacks = recipient.getStatus(StatusType.REFLECT).getStacks();
-				returnDamage.addDamageSlice(new DamageSlice(recipient, stacks, DamageType.REFLECT));
+				returnDamage.addDamageSlice(new DamageSlice(recipient, stacks, DamageType.REFLECT, DamageStatTracker.reflect()));
 			}
 			// Stop counting damage slices after the target is already dead
 			if (damage + ignoreShieldsDamage >= target.getHealth()) break;
@@ -464,6 +470,7 @@ public class DamageMeta {
 			damage = 0;
 			ignoreShieldsDamage = 0;
 			statSlices.clear();
+			trackerSlices.clear();
 		}
 		
 		// General damage nullification
@@ -473,6 +480,7 @@ public class DamageMeta {
 			damage = 0;
 			ignoreShieldsDamage = 0;
 			statSlices.clear();
+			trackerSlices.clear();
 		}
 
 		// Evade
@@ -485,23 +493,24 @@ public class DamageMeta {
 				damage = 0;
 				ignoreShieldsDamage = 0;
 				statSlices.clear();
+				trackerSlices.clear();
 				pl.getStats().addEvadeMitigated(pl.getStamina());
 				pl.setStamina(0);
 			}
 			else {
 				if (ignoreShieldsDamage < pl.getStamina()) {
 					pl.addStamina(ignoreShieldsDamage);
-					subtractFromStats(statSlices, ignoreShieldsDamage);
+					subtractFromStats(ignoreShieldsDamage);
 					ignoreShieldsDamage = 0;
 				}
 				else {
 					ignoreShieldsDamage -= pl.getStamina();
-					subtractFromStats(statSlices, pl.getStamina());
+					subtractFromStats(pl.getStamina());
 					pl.setStamina(0);
 				}
 				
 				damage -= pl.getStamina();
-				subtractFromStats(statSlices, pl.getStamina());
+				subtractFromStats(pl.getStamina());
 				pl.setStamina(0);
 			}
 		}
@@ -523,6 +532,7 @@ public class DamageMeta {
 					}
 				}
 				statSlices.clear();
+				trackerSlices.clear();
 				damage = 0;
 				ignoreShieldsDamage = 0;
 			}
@@ -538,15 +548,15 @@ public class DamageMeta {
 				// Block ignore shields damage first
 				if (stacks * 0.2 >= ignoreShieldsDamage) {
 					stacks -= (int) (ignoreShieldsDamage / 0.2);
-					subtractFromStats(statSlices, (int) (ignoreShieldsDamage / 0.2));
+					subtractFromStats((int) (ignoreShieldsDamage / 0.2));
 					ignoreShieldsDamage = 0;
 				}
 				else {
 					ignoreShieldsDamage -= stacks * 0.2;
-					subtractFromStats(statSlices, stacks * 0.2);
+					subtractFromStats(stacks * 0.2);
 					stacks = 0;
 				}
-				subtractFromStats(statSlices, stacks * 0.2);
+				subtractFromStats(stacks * 0.2);
 				damage -= stacks * 0.2;
 			}
 		}
@@ -564,7 +574,7 @@ public class DamageMeta {
 			
 		if (owner instanceof PlayerFightData) {
 			PlayerFightData pdata = (PlayerFightData) owner;
-			for (Entry<DamageType, Double> entry : statSlices.entrySet()) {
+			for (Entry<StatTracker, Double> entry : trackerSlices.entrySet()) {
 				pdata.getStats().addDamageDealt(entry.getKey(), entry.getValue());
 			}
 		}
@@ -709,12 +719,18 @@ public class DamageMeta {
 	}
 
 	// Used to subtract a straight number equally from all damage types in the stat slices
-	private void subtractFromStats(HashMap<DamageType, Double> slices, double amount) {
+	private void subtractFromStats(double amount) {
 		double fromEach = Math.round(amount * 10 / slices.size()) / 10;
-		for (Entry<DamageType, Double> entry : slices.entrySet()) {
+		for (Entry<DamageType, Double> entry : statSlices.entrySet()) {
 			double newVal = entry.getValue() - fromEach;
 			if (newVal < 0) newVal = 0;
-			slices.put(entry.getKey(), newVal);
+			statSlices.put(entry.getKey(), newVal);
+		}
+
+		for (Entry<StatTracker, Double> entry : trackerSlices.entrySet()) {
+			double newVal = entry.getValue() - fromEach;
+			if (newVal < 0) newVal = 0;
+			trackerSlices.put(entry.getKey(), newVal);
 		}
 	}
 

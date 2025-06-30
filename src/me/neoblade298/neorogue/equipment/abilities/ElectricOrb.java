@@ -26,6 +26,7 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -56,7 +57,7 @@ public class ElectricOrb extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ProjectileGroup group = new ProjectileGroup(new ElectricOrbProjectile(data));
+		ProjectileGroup group = new ProjectileGroup(new ElectricOrbProjectile(data, this, slot));
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, inputs) -> {
 			group.start(data);
 			return TriggerResult.keep();
@@ -74,12 +75,16 @@ public class ElectricOrb extends Equipment {
 		private Player p;
 		private PlayerFightData data;
 		private HashSet<UUID> hitEntities = new HashSet<UUID>();
+		private Equipment eq;
+		private int slot;
 
-		public ElectricOrbProjectile(PlayerFightData data) {
+		public ElectricOrbProjectile(PlayerFightData data, Equipment eq, int slot) {
 			super(0.3, tp.range, 4);
 			this.data = data;
 			this.p = data.getPlayer();
 			this.ignore(false, false, true);
+			this.eq = eq;
+			this.slot = slot;
 		}
 
 		@Override
@@ -89,7 +94,7 @@ public class ElectricOrb extends Equipment {
 				Sounds.firework.play(p, proj.getLocation());
 				ParticleUtil.drawLine(p, line, p.getLocation().add(0, 1, 0), proj.getLocation(), 1);
 				for (LivingEntity ent : TargetHelper.getEntitiesInLine(p, p.getLocation().add(0, 1, 0), proj.getLocation(), tp)) {
-					FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.LIGHTNING), ent);
+					FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.LIGHTNING, DamageStatTracker.of(id + slot, eq)), ent);
 				}
 			}
 		}

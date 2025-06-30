@@ -20,6 +20,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -52,6 +53,7 @@ public class CreateEarth extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		Equipment eq = this;
 		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
 		data.addTrigger(id, bind, inst);
 		inst.setAction((pdata, in) -> {
@@ -73,7 +75,7 @@ public class CreateEarth extends Equipment {
 					data.runActions(data, Trigger.CAST_USABLE, new CastUsableEvent(inst, CastType.POST_TRIGGER));
 
 					for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, tp)) {
-						FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.BLUNT), ent);
+						FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.BLUNT, DamageStatTracker.of(id + slot, eq)), ent);
 						FightInstance.applyStatus(ent, StatusType.CONCUSSED, data, conc, -1);
 						FightInstance.knockback(ent, new Vector(0, 2, 0));
 					}

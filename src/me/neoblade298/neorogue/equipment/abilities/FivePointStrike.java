@@ -18,6 +18,7 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -35,9 +36,6 @@ public class FivePointStrike extends Equipment {
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 25, 10, 4));
 		
 		damage = isUpgraded ? 60 : 40;
-		for (int i = 0; i < 5; i++) {
-			projs.add(new FivePointStrikeProjectile(i));
-		}
 	}
 	
 	public static Equipment get() {
@@ -46,6 +44,9 @@ public class FivePointStrike extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		for (int i = 0; i < 5; i++) {
+			projs.add(new FivePointStrikeProjectile(i, slot, this));
+		}
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pd, in) -> {
 			Sounds.attackSweep.play(p, p);
 			projs.start(data);
@@ -61,11 +62,15 @@ public class FivePointStrike extends Equipment {
 	}
 	
 	private class FivePointStrikeProjectile extends Projectile {
-		public FivePointStrikeProjectile(int i) {
+		private int slot;
+		private Equipment eq;
+		public FivePointStrikeProjectile(int i, int slot, Equipment eq) {
 			super(1, properties.get(PropertyType.RANGE), 1);
 			int iter = i - 2;
 			this.rotation(iter * 15);
 			this.size(1, 1);
+			this.slot = slot;
+			this.eq = eq;
 		}
 
 		@Override
@@ -77,7 +82,7 @@ public class FivePointStrike extends Equipment {
 		public void onStart(ProjectileInstance proj) {
 			Player p = (Player) proj.getOwner().getEntity();
 			Sounds.attackSweep.play(p, p);
-			proj.getMeta().addDamageSlice(new DamageSlice(proj.getOwner(), damage, DamageType.PIERCING));
+			proj.getMeta().addDamageSlice(new DamageSlice(proj.getOwner(), damage, DamageType.PIERCING, DamageStatTracker.of(ID + slot, eq)));
 		}
 
 		@Override

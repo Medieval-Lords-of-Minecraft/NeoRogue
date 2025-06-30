@@ -377,7 +377,7 @@ public abstract class FightInstance extends Instance {
 			// Cancel fall damage if trigger returns true
 			if (!trigger(p, Trigger.FALL_DAMAGE, e)) {
 				DamageMeta meta = new DamageMeta(
-						FightInstance.getUserData(p.getUniqueId()), e.getFinalDamage(), DamageType.FALL
+						FightInstance.getUserData(p.getUniqueId()), e.getFinalDamage(), DamageType.FALL, DamageStatTracker.fall()
 				);
 				meta.dealDamage(p);
 			}
@@ -833,8 +833,8 @@ public abstract class FightInstance extends Instance {
 		data.applyStatus(Status.createByGenericType(type, id, data), fdApplier, stacks, ticks);
 	}
 	
-	public static void dealDamage(FightData owner, DamageType type, double amount, LivingEntity target) {
-		dealDamage(new DamageMeta(owner, amount, type), target);
+	public static void dealDamage(FightData owner, DamageType type, double amount, LivingEntity target, DamageStatTracker tracker) {
+		dealDamage(new DamageMeta(owner, amount, type, tracker), target);
 	}
 	
 	public static void knockback(Entity src, Entity trg, double force) {

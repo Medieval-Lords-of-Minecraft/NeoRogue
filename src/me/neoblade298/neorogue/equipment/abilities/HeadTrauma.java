@@ -16,6 +16,7 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -63,7 +64,7 @@ public class HeadTrauma extends Equipment {
 			if (fd.hasStatus(statusName)) return TriggerResult.keep();
 			Status s = new BasicStatus(statusName, data, StatusClass.NONE, true);
 			fd.applyStatus(s, data, 1, -1);
-			FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.EARTHEN), fd.getEntity());
+			FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.EARTHEN, DamageStatTracker.of(id + slot, this)), fd.getEntity());
 			fd.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.multiplier(data, -reduc, BuffStatTracker.defenseDebuffEnemy(buffId, this, false)));
 			pc.play(p, fd.getEntity());
 			sc.play(p, fd.getEntity());

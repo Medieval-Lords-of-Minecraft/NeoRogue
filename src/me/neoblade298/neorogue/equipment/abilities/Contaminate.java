@@ -14,6 +14,7 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardEquipmentInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -69,7 +70,7 @@ public class Contaminate extends Equipment {
 				PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 				hit.play(p, p);
 				Sounds.anvil.play(p, p);
-				ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.PIERCING));
+				ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.PIERCING, DamageStatTracker.of(ID + slot, this)));
 				FightData fd = FightInstance.getFightData(ev.getTarget());
 				int toAdd = (int) (fd.getStatus(StatusType.POISON).getStacks() * (mult - 1));
 				if (toAdd <= 0) return TriggerResult.keep();

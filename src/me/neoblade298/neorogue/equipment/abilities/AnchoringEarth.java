@@ -30,6 +30,7 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -62,7 +63,7 @@ public class AnchoringEarth extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ProjectileGroup projs = new ProjectileGroup(new AnchoringEarthProjectile(data));
+		ProjectileGroup projs = new ProjectileGroup(new AnchoringEarthProjectile(data, this, slot));
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			data.charge(20).then(new Runnable() {
 				public void run() {
@@ -77,13 +78,17 @@ public class AnchoringEarth extends Equipment {
 		private PlayerFightData data;
 		private Player p;
 		private HashSet<UUID> enemiesHit = new HashSet<UUID>();
+		private int slot;
+		private Equipment eq;
 
 		// Vector is non-normalized velocity of the vanilla projectile being fired
-		public AnchoringEarthProjectile(PlayerFightData data) {
+		public AnchoringEarthProjectile(PlayerFightData data, Equipment eq, int slot) {
 			super(1, properties.get(PropertyType.RANGE), 1);
 			this.data = data;
 			this.p = data.getPlayer();
 			this.pierce(-1);
+			this.slot = slot;
+			this.eq = eq;
 		}
 
 		@Override
@@ -111,7 +116,7 @@ public class AnchoringEarth extends Equipment {
 				if (fd == null || fd.getEntity() == null || !fd.getEntity().isValid())
 					continue;
 				LivingEntity ent = fd.getEntity();
-				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.EARTHEN), ent);
+				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.EARTHEN, DamageStatTracker.of(id + slot, eq)), ent);
 				ParticleUtil.drawLine(p, pc, loc, ent.getLocation(), 1);
 				Vector pull = loc.toVector().subtract(fd.getEntity().getLocation().toVector()).normalize()
 						.multiply(0.5);

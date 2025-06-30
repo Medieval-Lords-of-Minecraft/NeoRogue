@@ -18,6 +18,7 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -100,7 +101,7 @@ public class LayExplosive extends Equipment {
 			Sounds.explode.play(p, loc);
 			exp.play(p, loc);
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, tp)) {
-				FightInstance.dealDamage(new DamageMeta(data, damage * ticks, DamageType.BLUNT, DamageOrigin.TRAP), ent);
+				FightInstance.dealDamage(new DamageMeta(data, damage * ticks, DamageType.BLUNT, DamageStatTracker.of(id + slot, eq), DamageOrigin.TRAP), ent);
 			}
 			data.removeTrap(tr);
 		}

@@ -22,6 +22,7 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -49,7 +50,7 @@ public class DarkBolt2 extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
-		ProjectileGroup proj = new ProjectileGroup(new DarkBoltProjectile(data));
+		ProjectileGroup proj = new ProjectileGroup(new DarkBoltProjectile(data, slot, this));
 		inst.setAction((pdata, in) -> {
 			data.charge(20);
 			data.addTask(new BukkitRunnable() {
@@ -65,11 +66,15 @@ public class DarkBolt2 extends Equipment {
 	private class DarkBoltProjectile extends Projectile {
 		private PlayerFightData data;
 		private Player p;
+		private Equipment eq;
+		private int slot;
 
-		public DarkBoltProjectile(PlayerFightData data) {
+		public DarkBoltProjectile(PlayerFightData data, int slot, Equipment eq) {
 			super(1.5, properties.get(PropertyType.RANGE), 1);
 			this.data = data;
 			this.p = data.getPlayer();
+			this.slot = slot;
+			this.eq = eq;
 		}
 
 		@Override
@@ -86,7 +91,7 @@ public class DarkBolt2 extends Equipment {
 		@Override
 		public void onStart(ProjectileInstance proj) {
 			Sounds.fire.play(p, p);
-			proj.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.DARK));
+			proj.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.DARK, DamageStatTracker.of(id + slot, eq)));
 		}
 	}
 

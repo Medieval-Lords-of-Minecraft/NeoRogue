@@ -7,6 +7,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -31,7 +32,7 @@ public class RingOfFortitude extends Equipment {
 		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
 			if (data.getShields().isEmpty()) return TriggerResult.keep();
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
-			ev.getMeta().addDamageSlice(new DamageSlice(data, data.getShields().getAmount(), DamageType.BLUNT));
+			ev.getMeta().addDamageSlice(new DamageSlice(data, data.getShields().getAmount(), DamageType.BLUNT, DamageStatTracker.of(id + slot, this)));
 			return TriggerResult.keep();
 		});
 	}

@@ -20,6 +20,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -68,7 +69,7 @@ public class Tackle extends Equipment {
 				p.teleport(p.getLocation().add(0, 0.2, 0));
 			}
 			p.setVelocity(v.setY(0).normalize().setY(0.3));
-			new TackleHitChecker(p, data, inst);
+			new TackleHitChecker(p, data, inst, this, slot);
 			return TriggerResult.keep();
 		});
 		data.addTrigger(id, bind, inst);
@@ -77,7 +78,7 @@ public class Tackle extends Equipment {
 	private class TackleHitChecker {
 		private ArrayList<BukkitTask> tasks = new ArrayList<BukkitTask>();
 		
-		protected TackleHitChecker(Player p, PlayerFightData data, EquipmentInstance inst) {
+		protected TackleHitChecker(Player p, PlayerFightData data, EquipmentInstance inst, Equipment eq, int slot) {
 			for (long delay = 1; delay <= 10; delay++) {
 				final boolean last = delay == 10;
 				tasks.add(new BukkitRunnable() {
@@ -96,7 +97,7 @@ public class Tackle extends Equipment {
 						Sounds.explode.play(p, p);
 						for (LivingEntity ent : hit) {
 							pc.play(p, p);
-							FightInstance.dealDamage(data, DamageType.BLUNT, damage, ent);
+							FightInstance.dealDamage(data, DamageType.BLUNT, damage, ent, DamageStatTracker.of(id + slot, eq));
 						}
 					}
 				}.runTaskLater(NeoRogue.inst(), delay));

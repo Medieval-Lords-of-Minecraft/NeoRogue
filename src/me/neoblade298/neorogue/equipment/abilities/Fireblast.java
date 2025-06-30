@@ -18,6 +18,7 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -46,7 +47,7 @@ public class Fireblast extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ProjectileGroup proj = new ProjectileGroup();
 		for (int i : new int[] { -30, 0, 30 }) {
-			proj.add(new FireballProjectile(data, i));
+			proj.add(new FireballProjectile(data, i, this, slot));
 		}
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			data.channel(20).then(new Runnable() {
@@ -63,13 +64,17 @@ public class Fireblast extends Equipment {
 	private class FireballProjectile extends Projectile {
 		private Player p;
 		private PlayerFightData data;
+		private int slot;
+		private Equipment eq;
 
-		public FireballProjectile(PlayerFightData data, int rotation) {
+		public FireballProjectile(PlayerFightData data, int rotation, Equipment eq, int slot) {
 			super(1, properties.get(PropertyType.RANGE), 1);
 			this.size(0.5, 0.5);
 			this.rotation(rotation);
 			this.data = data;
 			this.p = data.getPlayer();
+			this.eq = eq;
+			this.slot = slot;
 		}
 
 		@Override
@@ -84,7 +89,7 @@ public class Fireblast extends Equipment {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			proj.addDamageSlice(new DamageSlice(data, damage, DamageType.FIRE));
+			proj.addDamageSlice(new DamageSlice(data, damage, DamageType.FIRE, DamageStatTracker.of(ID + slot, eq)));
 		}
 	}
 

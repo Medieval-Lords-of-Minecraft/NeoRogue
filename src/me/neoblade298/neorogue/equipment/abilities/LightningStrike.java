@@ -24,6 +24,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -59,6 +60,7 @@ public class LightningStrike extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		Equipment eq = this;
 		ActionMeta am = new ActionMeta();
 		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
 		inst.setAction((pdata, in) -> {
@@ -89,7 +91,7 @@ public class LightningStrike extends Equipment {
 								Sounds.explode.play(p, loc);
 								circ.play(tick, loc, LocalAxes.xz(), null);
 								for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, aoe)) {
-									FightInstance.dealDamage(new DamageMeta(data, fDamage, DamageType.LIGHTNING), ent);
+									FightInstance.dealDamage(new DamageMeta(data, fDamage, DamageType.LIGHTNING, DamageStatTracker.of(id + slot, eq)), ent);
 								}
 							}
 						}.runTaskLater(NeoRogue.inst(), 20));

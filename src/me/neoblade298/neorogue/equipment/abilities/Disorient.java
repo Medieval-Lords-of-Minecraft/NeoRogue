@@ -15,6 +15,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -58,7 +59,7 @@ public class Disorient extends Equipment {
 				FightData fd = FightInstance.getFightData(ent);
 				fd.addDefenseBuff(DamageBuffType.of(DamageCategory.PHYSICAL), new Buff(data, -inc, 0, StatTracker.defenseDebuffEnemy(buffId, this)), 200);
 				fd.applyStatus(StatusType.INSANITY, data, insanity, -1);
-				FightInstance.dealDamage(fd, DamageType.DARK, damage, ent);
+				FightInstance.dealDamage(fd, DamageType.DARK, damage, ent, DamageStatTracker.of(id + slot, this));
 			}
 			return TriggerResult.keep();
 		}));

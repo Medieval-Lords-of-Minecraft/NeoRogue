@@ -23,8 +23,10 @@ import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -32,6 +34,9 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -78,7 +83,8 @@ public class MarkTarget2 extends Equipment {
 			PreDealtDamageEvent ev = (PreDealtDamageEvent) in;
 			FightData fd = FightInstance.getFightData(ev.getTarget());
 			if (!fd.hasStatus(StatusType.REND)) return TriggerResult.keep();
-			ev.getMeta().addDamageSlice(new DamageSlice(data, damage * fd.getStatus(StatusType.REND).getStacks(), DamageType.SLASHING));
+			ev.getMeta().addDamageSlice(new DamageSlice(data, damage * fd.getStatus(StatusType.REND).getStacks(), DamageType.SLASHING,
+					DamageStatTracker.of(ID + slot, this)));
 			return TriggerResult.keep();
 		});
 
@@ -86,7 +92,7 @@ public class MarkTarget2 extends Equipment {
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 			if (am.getEntity() == null) return TriggerResult.keep();
 			if (!am.getEntity().getUniqueId().equals(ev.getTarget().getUniqueId())) return TriggerResult.keep();
-			ProjectileGroup projs = new ProjectileGroup(new MarkTarget2Projectile(data));
+			ProjectileGroup projs = new ProjectileGroup(new MarkTarget2Projectile(data, slot, this));
 			projs.start(data);
 			return TriggerResult.keep();
 		});
@@ -105,13 +111,17 @@ public class MarkTarget2 extends Equipment {
 		private AmmunitionInstance ammo;
 		private PlayerFightData data;
 		private Player p;
-		public MarkTarget2Projectile(PlayerFightData data) {
+		private int slot;
+		private Equipment eq;
+		public MarkTarget2Projectile(PlayerFightData data, int slot, Equipment eq) {
 			super(tp.range, 1);
 			this.blocksPerTick(3);
 			this.homing(0.02);
 			this.data = data;
 			this.p = data.getPlayer();
 			ammo = data.getAmmoInstance();
+			this.slot = slot;
+			this.eq = eq;
 		}
 
 		@Override
@@ -131,7 +141,8 @@ public class MarkTarget2 extends Equipment {
 			DamageMeta dm = proj.getMeta();
 			EquipmentProperties ammoProps = ammo.getProperties();
 			double dmg = ammoProps.get(PropertyType.DAMAGE);
-			dm.addDamageSlice(new DamageSlice(data, damage + dmg, ammoProps.getType()));
+			dm.addDamageSlice(new DamageSlice(data, damage, ammoProps.getType(), DamageStatTracker.of(ID + slot + "proj", eq, "Projectile damage dealt")));
+			dm.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, dmg, BuffStatTracker.damageBuffAlly(ammo.getAmmo().getId() + slot, ammo.getAmmo())));
 			ammo.onStart(proj);
 		}
 	}

@@ -17,6 +17,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -78,7 +79,7 @@ public class EscapePlan2 extends Equipment {
 					if (!active) return TriggerResult.remove();
 					active = false;
 					ReceivedDamageEvent ev = (ReceivedDamageEvent) in2;
-					DamageMeta dm = new DamageMeta(pdata1, activateDamage, DamageType.PIERCING);
+					DamageMeta dm = new DamageMeta(pdata1, activateDamage, DamageType.PIERCING, DamageStatTracker.of(id + slot, eq));
 					FightInstance.dealDamage(dm, ev.getDamager().getEntity());
 					Sounds.teleport.play(p, p);
 					p.teleport(loc);
@@ -88,7 +89,8 @@ public class EscapePlan2 extends Equipment {
 				pdata1.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, (pdata2, in2) -> {
 					if (!active) return TriggerResult.remove();
 					PreBasicAttackEvent ev = (PreBasicAttackEvent) in2;
-					DamageMeta dm = new DamageMeta(pdata1, basicAttackDamage, DamageType.PIERCING);
+					DamageMeta dm = new DamageMeta(pdata1, basicAttackDamage, DamageType.PIERCING,
+							DamageStatTracker.of(id + slot, eq));
 					FightInstance.dealDamage(dm, ev.getTarget());
 					return TriggerResult.keep();
 				});

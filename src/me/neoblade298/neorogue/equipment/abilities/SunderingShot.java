@@ -21,11 +21,16 @@ import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -49,6 +54,7 @@ public class SunderingShot extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, this, slot, es);
+		Equipment eq = this;
 		inst.setAction((pdata, in) -> {
 			Sounds.piano.play(p, p);
 			data.charge(40);
@@ -56,7 +62,7 @@ public class SunderingShot extends Equipment {
 				public void run() {
 					Vector v = p.getEyeLocation().getDirection();
 					p.setVelocity(v.setY(0).setX(-v.getX()).setZ(-v.getZ()).normalize().multiply(0.4).setY(0.1));
-					ProjectileGroup projs = new ProjectileGroup(new SunderingShotProjectile(data));
+					ProjectileGroup projs = new ProjectileGroup(new SunderingShotProjectile(data, eq, slot));
 					projs.start(data);
 				}
 			}.runTaskLater(NeoRogue.inst(), 40L));
@@ -69,15 +75,19 @@ public class SunderingShot extends Equipment {
 		private PlayerFightData data;
 		private Player p;
 		private AmmunitionInstance ammo;
+		private Equipment eq;
+		private int slot;
 
 		// Vector is non-normalized velocity of the vanilla projectile being fired
-		public SunderingShotProjectile(PlayerFightData data) {
+		public SunderingShotProjectile(PlayerFightData data, Equipment eq, int slot) {
 			super(properties.get(PropertyType.RANGE), 1);
 			this.size(1.5, 1.5);
 			this.pierce(-1);
 			this.data = data;
 			this.p = data.getPlayer();
 			this.ammo = data.getAmmoInstance();
+			this.eq = eq;
+			this.slot = slot;
 
 			blocksPerTick(2);
 		}
@@ -101,8 +111,9 @@ public class SunderingShot extends Equipment {
 			DamageMeta dm = proj.getMeta();
 			EquipmentProperties ammoProps = ammo.getProperties();
 			int stacks = Math.min(MAX, data.getStatus(StatusType.FOCUS).getStacks());
-			dm.addDamageSlice(new DamageSlice(data, damage * stacks, DamageType.PIERCING));
-			dm.addDamageSlice(new DamageSlice(data, ammoProps.get(PropertyType.DAMAGE), ammoProps.getType()));
+			dm.addDamageSlice(new DamageSlice(data, damage * stacks, DamageType.PIERCING, DamageStatTracker.of(ID + slot, eq)));
+			dm.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, ammoProps.get(PropertyType.DAMAGE),
+				BuffStatTracker.damageBuffAlly(ammo.getAmmo().getId(), ammo.getAmmo())));
 			ammo.onStart(proj);
 		}
 	}

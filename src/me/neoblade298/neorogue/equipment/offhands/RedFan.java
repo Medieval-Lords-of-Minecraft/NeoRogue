@@ -17,6 +17,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -57,7 +58,7 @@ public class RedFan extends Equipment {
 				Sounds.fire.play(p, p);
 				cone.play(pc, p.getLocation().add(0, 0.8, 0), LocalAxes.usingEyeLocation(p), pc);
 				for (LivingEntity ent : TargetHelper.getEntitiesInCone(p, tp)) {
-					FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE), ent);
+					FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE, DamageStatTracker.of(id + slot, this)), ent);
 				}
 				if (am.getCount() < thres) {
 					eqi.setIcon(icon);

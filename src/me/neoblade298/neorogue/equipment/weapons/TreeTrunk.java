@@ -26,6 +26,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -74,7 +75,7 @@ public class TreeTrunk extends Equipment {
 			weaponSwing(p, data);
 			data.addTask(new BukkitRunnable() {
 				public void run() {
-					leftHit(p, data);
+					leftHit(p, data, slot);
 				}
 			}.runTaskLater(NeoRogue.inst(), 10L));
 			return TriggerResult.keep();
@@ -84,12 +85,12 @@ public class TreeTrunk extends Equipment {
 			if (data.getStatus(StatusType.BERSERK).getStacks() < CUTOFF) return TriggerResult.keep();
 			if (!data.canBasicAttack()) return TriggerResult.keep();
 			weaponSwing(p, data, 0.25);
-			rightHit(p, data);
+			rightHit(p, data, slot);
 			return TriggerResult.keep();
 		});
 	}
 	
-	private void leftHit(Player p, PlayerFightData data) {
+	private void leftHit(Player p, PlayerFightData data, int slot) {
 		Location hit = p.getLocation().add(p.getLocation().getDirection().setY(0).normalize().multiply(left.range));
 		Sounds.explode.play(p, p);
 		ParticleUtil.drawLine(p, hitLine, p.getLocation(), hit, 0.5);
@@ -103,14 +104,14 @@ public class TreeTrunk extends Equipment {
 				first = false;
 			}
 			else {
-				DamageMeta dm = new DamageMeta(data, properties.get(PropertyType.DAMAGE), properties.getType());
+				DamageMeta dm = new DamageMeta(data, properties.get(PropertyType.DAMAGE), properties.getType(), DamageStatTracker.of(id + slot, this));
 				FightInstance.dealDamage(dm, ent);
 			}
 			FightInstance.knockback(ent, v);
 		}
 	}
 	
-	private void rightHit(Player p, PlayerFightData data) {
+	private void rightHit(Player p, PlayerFightData data, int slot) {
 		Sounds.explode.play(p, p);
 		hitShape.play(circle, p.getLocation(), LocalAxes.xz(), null);
 		LinkedList<LivingEntity> enemies = TargetHelper.getEntitiesInRadius(p, right);
@@ -123,7 +124,8 @@ public class TreeTrunk extends Equipment {
 				first = false;
 			}
 			else {
-				DamageMeta dm = new DamageMeta(data, properties.get(PropertyType.DAMAGE), properties.getType());
+				DamageMeta dm = new DamageMeta(data, properties.get(PropertyType.DAMAGE), properties.getType(),
+						DamageStatTracker.of(id + slot, this));
 				FightInstance.dealDamage(dm, ent);
 			}
 			FightInstance.knockback(ent, v);

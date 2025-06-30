@@ -14,6 +14,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -55,7 +56,7 @@ public class FirstStrike extends Equipment {
 		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
 		inst.setAction((pdata, in) -> {
 			Sounds.flap.play(p, p);
-			DamageMeta dm = new DamageMeta(data, damage, DamageType.PIERCING);
+			DamageMeta dm = new DamageMeta(data, damage, DamageType.PIERCING, DamageStatTracker.of(id + slot, this));
 			LivingEntity trg = TargetHelper.getNearest(p, tp);
 			if (trg != null) FightInstance.dealDamage(dm, trg);
 			Vector v = p.getEyeLocation().getDirection();

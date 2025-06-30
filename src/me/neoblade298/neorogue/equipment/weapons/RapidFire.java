@@ -79,6 +79,7 @@ public class RapidFire extends Equipment {
 		private PlayerFightData data;
 		private Player p;
 		private AmmunitionInstance ammo;
+		private Equipment eq;
 
 		// Vector is non-normalized velocity of the vanilla projectile being fired
 		public RapidFireProjectile(PlayerFightData data, Equipment eq) {
@@ -87,6 +88,7 @@ public class RapidFire extends Equipment {
 			this.data = data;
 			this.p = data.getPlayer();
 			this.ammo = data.getAmmoInstance();
+			this.eq = eq;
 		}
 
 		@Override
@@ -103,7 +105,7 @@ public class RapidFire extends Equipment {
 		@Override
 		public void onStart(ProjectileInstance proj) {
 			Sounds.shoot.play(p, p);
-			proj.applyAmmo(data, properties, ammo);
+			proj.applyAmmo(data, eq, ammo);
 			ammo.onStart(proj);
 		}
 	}

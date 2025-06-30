@@ -29,6 +29,7 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -66,7 +67,7 @@ public class EarthenDomain extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ProjectileGroup projs = new ProjectileGroup(new AnchoringEarthProjectile(data));
+		ProjectileGroup projs = new ProjectileGroup(new AnchoringEarthProjectile(data, this, slot));
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			data.charge(20).then(new Runnable() {
 				public void run() {
@@ -80,13 +81,17 @@ public class EarthenDomain extends Equipment {
 	private class AnchoringEarthProjectile extends Projectile {
 		private PlayerFightData data;
 		private Player p;
+		private Equipment eq;
+		private int slot;
 
 		// Vector is non-normalized velocity of the vanilla projectile being fired
-		public AnchoringEarthProjectile(PlayerFightData data) {
+		public AnchoringEarthProjectile(PlayerFightData data, Equipment eq, int slot) {
 			super(1, properties.get(PropertyType.RANGE), 1);
 			this.data = data;
 			this.p = data.getPlayer();
 			this.pierce(-1);
+			this.eq = eq;
+			this.slot = slot;
 		}
 
 		@Override
@@ -120,7 +125,7 @@ public class EarthenDomain extends Equipment {
 					circ.play(pc, fLoc, LocalAxes.xz(), null);
 					sc.play(p, fLoc);
 					for (LivingEntity trg : trgs) {
-						FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.EARTHEN), trg);
+						FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.EARTHEN, DamageStatTracker.of(id + slot, eq)), trg);
 						FightInstance.applyStatus(trg, StatusType.CONCUSSED, data, conc, -1);
 					}
 				}

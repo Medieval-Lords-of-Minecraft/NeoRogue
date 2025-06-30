@@ -20,6 +20,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -49,6 +50,7 @@ public class Engulf extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		Equipment eq = this;
 		ActionMeta am = new ActionMeta();
 		data.addTrigger(id, Trigger.DEALT_DAMAGE, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			DealtDamageEvent ev = (DealtDamageEvent) in;
@@ -66,7 +68,7 @@ public class Engulf extends Equipment {
 						Sounds.fire.play(p, p);
 						circ.play(pc, p.getLocation(), LocalAxes.xz(), null);
 						for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
-							FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE), ent);
+							FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE, DamageStatTracker.of(id + slot, eq)), ent);
 						}
 
 						if (++count >= 3) {

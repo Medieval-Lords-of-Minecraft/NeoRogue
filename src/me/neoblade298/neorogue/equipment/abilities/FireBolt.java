@@ -19,6 +19,7 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.TaskChain;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -54,14 +55,14 @@ public class FireBolt extends Equipment {
 			double mana = data.getMana() + properties.get(PropertyType.MANA_COST);
 			TaskChain chain = data.channel(20).then(new Runnable() {
 				public void run() {
-					fire(p, data, true);
+					fire(p, data, slot, true);
 				}
 			});
 
 			if (mana >= thres) {
 				chain.then(new Runnable() {
 					public void run() {
-						fire(p, data, false);
+						fire(p, data, slot, false);
 					}
 				}, 10);
 			}
@@ -69,7 +70,7 @@ public class FireBolt extends Equipment {
 		}));
 	}
 
-	private void fire(Player p, PlayerFightData data, boolean isLightning) {
+	private void fire(Player p, PlayerFightData data, int slot, boolean isLightning) {
 		Location start = p.getLocation().add(0, 1, 0);
 		Vector dir = p.getEyeLocation().getDirection();
 		Location end = start.clone().add(dir.clone().multiply(properties.get(PropertyType.RANGE)));
@@ -79,7 +80,7 @@ public class FireBolt extends Equipment {
 		else
 			Sounds.fire.play(p, p);
 		for (LivingEntity ent : TargetHelper.getEntitiesInLine(p, start, end, tp)) {
-			FightInstance.dealDamage(new DamageMeta(data, damage, isLightning ? DamageType.LIGHTNING : DamageType.FIRE),
+			FightInstance.dealDamage(new DamageMeta(data, damage, isLightning ? DamageType.LIGHTNING : DamageType.FIRE, DamageStatTracker.of(id + slot, this)),
 					ent);
 		}
 	}

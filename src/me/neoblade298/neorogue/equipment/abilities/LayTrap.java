@@ -21,6 +21,7 @@ import me.neoblade298.neorogue.equipment.weapons.BasicBow;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -57,19 +58,20 @@ public class LayTrap extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		Equipment eq = this;
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pd, in) -> {
 			Sounds.equip.play(p, p);
 			data.channel(40);
 			data.addTask(new BukkitRunnable() {
 				public void run() {
-					initTrap(p, data);
+					initTrap(p, data, slot, eq);
 				}
 			}.runTaskLater(NeoRogue.inst(), 40L));
 			return TriggerResult.keep();
 		}));
 	}
 
-	private void initTrap(Player p, PlayerFightData data) {
+	private void initTrap(Player p, PlayerFightData data, int slot, Equipment eq) {
 		Location loc = p.getLocation();
 		data.addTrap(new Trap(data, loc, 200) {
 			@Override
@@ -79,7 +81,7 @@ public class LayTrap extends Equipment {
 				if (trg != null) {
 					Sounds.breaks.play(p, trg);
 					hit.play(p, trg);
-					DamageMeta dm = new DamageMeta(data, damage, DamageType.BLUNT, DamageOrigin.TRAP);
+					DamageMeta dm = new DamageMeta(data, damage, DamageType.BLUNT, DamageStatTracker.of(id + slot, eq), DamageOrigin.TRAP);
 					FightInstance.dealDamage(dm, trg);
 					trg.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, secs * 20, 2));
 					data.removeTrap(this);

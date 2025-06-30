@@ -25,6 +25,7 @@ import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -60,16 +61,16 @@ public class BowTrap extends Equipment {
 			data.charge(20);
 			data.addTask(new BukkitRunnable() {
 				public void run() {
-					initTrap(p, data);
+					initTrap(p, data, slot);
 				}
 			}.runTaskLater(NeoRogue.inst(), 40L));
 			return TriggerResult.keep();
 		}));
 	}
 
-	private void initTrap(Player p, PlayerFightData data) {
+	private void initTrap(Player p, PlayerFightData data, int slot) {
 		Location loc = p.getLocation();
-		ProjectileGroup proj = new ProjectileGroup(new BowTrapProjectile(data));
+		ProjectileGroup proj = new ProjectileGroup(new BowTrapProjectile(data, ID + slot, this));
 		data.addTrap(new Trap(data, loc, 100) {
 			@Override
 			public void tick() {
@@ -90,14 +91,18 @@ public class BowTrap extends Equipment {
 	private class BowTrapProjectile extends Projectile {
 		private Player p;
 		private PlayerFightData data;
+		private BowTrap eq;
+		private String id;
 		
-		public BowTrapProjectile(PlayerFightData data) {
+		public BowTrapProjectile(PlayerFightData data, String id, BowTrap eq) {
 			super(tp.range, 1);
 			setBowDefaults();
 			this.gravity(0);
 			blocksPerTick(3);
 			this.data = data;
 			this.p = data.getPlayer();
+			this.id = id;
+			this.eq = eq;
 		}
 
 		@Override
@@ -113,7 +118,7 @@ public class BowTrap extends Equipment {
 		@Override
 		public void onStart(ProjectileInstance proj) {
 			Sounds.shoot.play(p, p);
-			proj.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.PIERCING));
+			proj.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.PIERCING, DamageStatTracker.of(id, eq)));
 			proj.getMeta().addOrigin(DamageOrigin.TRAP);
 		}
 	}

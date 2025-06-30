@@ -19,6 +19,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -66,7 +67,7 @@ public class Brand extends Equipment {
 			am.setEntity(trg);
 			data.addTask(new BukkitRunnable() {
 				public void run() {
-					explode(am, data);
+					explode(am, data, slot);
 				}
 			}.runTaskLater(NeoRogue.inst(), 100));
 			return TriggerResult.keep();
@@ -85,12 +86,12 @@ public class Brand extends Equipment {
 			LivingEntity ent = (LivingEntity) in;
 			if (am.getEntity() == null) return TriggerResult.keep();
 			if (!am.getEntity().getUniqueId().equals(ent.getUniqueId())) return TriggerResult.keep();
-			explode(am, data);
+			explode(am, data, slot);
 			return TriggerResult.keep();
 		});
 	}
 
-	private void explode(ActionMeta am, PlayerFightData data) {
+	private void explode(ActionMeta am, PlayerFightData data, int slot) {
 		if (am.getEntity() == null) return;
 		Player p = data.getPlayer();
 		Location loc = am.getEntity().getLocation();
@@ -99,7 +100,7 @@ public class Brand extends Equipment {
 		circ.play(p, edges, loc, LocalAxes.xz(), fill);
 		Sounds.fire.play(p, loc);
 		for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, aoe)) {
-			FightInstance.dealDamage(data, DamageType.FIRE, damage * stacks, ent);
+			FightInstance.dealDamage(data, DamageType.FIRE, damage * stacks, ent, DamageStatTracker.of(id + slot, this));
 		}
 	}
 

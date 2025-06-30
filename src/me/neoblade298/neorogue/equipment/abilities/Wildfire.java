@@ -23,6 +23,7 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -62,7 +63,7 @@ public class Wildfire extends Equipment {
 			if (am.getDouble() >= thres && System.currentTimeMillis() - am.getTime() >= 1000) {
 				am.addDouble(-thres);
 				am.setTime(System.currentTimeMillis());
-				ProjectileGroup group = new ProjectileGroup(new WildfireProjectile(data));
+				ProjectileGroup group = new ProjectileGroup(new WildfireProjectile(data, this, slot));
 				group.start(data);
 			}
 			return TriggerResult.keep();
@@ -79,14 +80,18 @@ public class Wildfire extends Equipment {
 	private class WildfireProjectile extends Projectile {
 		private Player p;
 		private PlayerFightData data;
+		private Equipment eq;
+		private int slot;
 
-		public WildfireProjectile(PlayerFightData data) {
+		public WildfireProjectile(PlayerFightData data, Equipment eq, int slot) {
 			super(1, 10, 2);
 			this.gravity(0.05);
 			this.rotation(NeoRogue.gen.nextDouble(-30, 30));
 			this.arc(0.5);
 			this.p = data.getPlayer();
 			this.data = data;
+			this.eq = eq;
+			this.slot = slot;
 		}
 
 		@Override
@@ -96,12 +101,12 @@ public class Wildfire extends Equipment {
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
-			dealDamageArea(hit.getEntity().getLocation());
+			dealDamageArea(hit.getEntity().getLocation(), eq, slot);
 		}
 
 		@Override
 		public void onHitBlock(ProjectileInstance proj, Block b) {
-			dealDamageArea(b.getLocation());
+			dealDamageArea(b.getLocation(), eq, slot);
 		}
 
 		@Override
@@ -109,14 +114,14 @@ public class Wildfire extends Equipment {
 			Sounds.fire.play(p, p);
 		}
 
-		private void dealDamageArea(Location loc) {
+		private void dealDamageArea(Location loc, Equipment eq, int slot) {
 			while (loc.getBlock().getType().isAir()) {
 				loc.add(0, -1, 0);
 			}
 			Sounds.explode.play(p, loc);
 			circ.play(p, pc, loc, LocalAxes.xz(), fill);
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, tp)) {
-				DamageMeta dm = new DamageMeta(data, damage, DamageType.FIRE);
+				DamageMeta dm = new DamageMeta(data, damage, DamageType.FIRE, DamageStatTracker.of(id + slot, eq));
 				FightInstance.dealDamage(dm, ent);
 				FightInstance.applyStatus(ent, StatusType.BURN, data, burn, -1);
 			}

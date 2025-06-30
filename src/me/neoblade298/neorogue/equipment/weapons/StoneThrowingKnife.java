@@ -42,7 +42,7 @@ public class StoneThrowingKnife extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ProjectileGroup proj = new ProjectileGroup(new StoneThrowingKnifeProjectile(data, this));
+		ProjectileGroup proj = new ProjectileGroup(new StoneThrowingKnifeProjectile(data, this, slot));
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (d, inputs) -> {
 			if (!canUseWeapon(data)) return TriggerResult.keep();
 			if (!data.canBasicAttack()) return TriggerResult.keep();
@@ -56,13 +56,15 @@ public class StoneThrowingKnife extends Equipment {
 		private PlayerFightData data;
 		private Player p;
 		private StoneThrowingKnife eq;
+		private int slot;
 
-		public StoneThrowingKnifeProjectile(PlayerFightData data, StoneThrowingKnife eq) {
+		public StoneThrowingKnifeProjectile(PlayerFightData data, StoneThrowingKnife eq, int slot) {
 			super(0.5, isUpgraded ? 5 : 3, 1);
 			this.size(0.5, 0.5);
 			this.data = data;
 			this.eq = eq;
 			this.p = data.getPlayer();
+			this.slot = slot;
 		}
 
 		@Override
@@ -78,7 +80,7 @@ public class StoneThrowingKnife extends Equipment {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			proj.applyWeapon(data, eq);
+			proj.applyWeapon(data, eq, slot);
 		}
 	}
 

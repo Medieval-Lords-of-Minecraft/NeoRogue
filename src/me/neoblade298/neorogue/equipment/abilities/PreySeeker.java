@@ -26,6 +26,7 @@ import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -87,7 +88,7 @@ public class PreySeeker extends Equipment {
 					trap.play(p, loc);
 					LivingEntity trg = TargetHelper.getNearest(p, loc, tp);
 					if (trg != null) {
-						ProjectileGroup projs = new ProjectileGroup(new PreySeekerProjectile(p, loc, data, ammo));
+						ProjectileGroup projs = new ProjectileGroup(new PreySeekerProjectile(p, loc, data, ammo, slot, eq));
 						Location up = loc.clone().add(0, 4, 0);
 						projs.start(data, up, new Vector(0, -1, 0));
 						data.removeTrap(this);
@@ -103,13 +104,17 @@ public class PreySeeker extends Equipment {
 		private PlayerFightData data;
 		private AmmunitionInstance ammo;
 		private Location src;
+		private int slot;
+		private Equipment eq;
 
-		public PreySeekerProjectile(Player p, Location src, PlayerFightData data, AmmunitionInstance ammo) {
+		public PreySeekerProjectile(Player p, Location src, PlayerFightData data, AmmunitionInstance ammo, int slot, Equipment eq) {
 			super(0.5, 6, 1);
 			this.p = p;
 			this.data = data;
 			this.ammo = ammo;
 			this.src = src;
+			this.slot = slot;
+			this.eq = eq;
 		}
 
 		@Override
@@ -119,7 +124,7 @@ public class PreySeeker extends Equipment {
 			dm.addOrigin(DamageOrigin.TRAP);
 			EquipmentProperties ammoProps = ammo.getProperties();
 			double dmg = damage + ammoProps.get(PropertyType.DAMAGE);
-			dm.addDamageSlice(new DamageSlice(data, dmg, ammoProps.getType()));
+			dm.addDamageSlice(new DamageSlice(data, dmg, ammoProps.getType(), DamageStatTracker.of(ID + slot, eq)));
 			ammo.onStart(proj, false);
 		}
 

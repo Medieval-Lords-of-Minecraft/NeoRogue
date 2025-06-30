@@ -20,6 +20,7 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -95,7 +96,7 @@ public class HailCloak extends Equipment {
 		public void runEffect(Location loc) {
 			circ.play(pc, loc, LocalAxes.xz(), null);
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, tp)) {
-				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.ICE), ent);
+				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.ICE, DamageStatTracker.of(id + slot, eq)), ent);
 				FightInstance.applyStatus(ent, StatusType.FROST, data, stacks, -1);
 			}
 		}

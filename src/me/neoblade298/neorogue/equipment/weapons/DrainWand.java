@@ -51,7 +51,7 @@ public class DrainWand extends Equipment {
 	
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ProjectileGroup proj = new ProjectileGroup(new DrainWandProjectile(data, this));
+		ProjectileGroup proj = new ProjectileGroup(new DrainWandProjectile(data, this, slot));
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (d, inputs) -> {
 			if (!canUseWeapon(data) || !data.canBasicAttack(EquipSlot.HOTBAR))
 				return TriggerResult.keep();
@@ -65,13 +65,15 @@ public class DrainWand extends Equipment {
 		private Player p;
 		private PlayerFightData data;
 		private DrainWand eq;
-		
-		public DrainWandProjectile(PlayerFightData data, DrainWand eq) {
+		private int slot;
+
+		public DrainWandProjectile(PlayerFightData data, DrainWand eq, int slot) {
 			super(1.5, 10, 3);
 			this.size(1, 1);
 			this.data = data;
 			this.p = data.getPlayer();
 			this.eq = eq;
+			this.slot = slot;
 		}
 		
 		@Override
@@ -87,7 +89,7 @@ public class DrainWand extends Equipment {
 		
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			proj.applyWeapon(data, eq);
+			proj.applyWeapon(data, eq, slot);
 		}
 	}
 	

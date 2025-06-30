@@ -18,6 +18,7 @@ import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.core.mobs.ActiveMob;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -73,7 +74,7 @@ public class MechanicDamage implements ITargetedEntitySkill {
 					: FightInstance.getFightData(data.getCaster().getEntity().getUniqueId());
 			DamageMeta meta = new DamageMeta(fd);
 			for (Entry<DamageType, Double> ent : damage.entrySet()) {
-				meta.addDamageSlice(new DamageSlice(fd, ent.getValue() * mult, ent.getKey()));
+				meta.addDamageSlice(new DamageSlice(fd, ent.getValue() * mult, ent.getKey(), DamageStatTracker.ignored("MythicDamage1")));
 			}
 			meta.setHitBarrier(hitBarrier);
 			double dealt = FightInstance.dealDamage(meta, (LivingEntity) target.getBukkitEntity(), data);
@@ -97,7 +98,8 @@ public class MechanicDamage implements ITargetedEntitySkill {
 																						// damage meta owner
 				for (Entry<FightData, Integer> slice : fd.getStatus(StatusType.ELECTRIFIED).getSlices().getSliceOwners()
 						.entrySet()) {
-					dm.addDamageSlice(new DamageSlice(slice.getKey(), slice.getValue() * 0.2, DamageType.ELECTRIFIED));
+					dm.addDamageSlice(new DamageSlice(slice.getKey(), slice.getValue() * 0.2, DamageType.ELECTRIFIED,
+							DamageStatTracker.ignored("MythicDamage2")));
 				}
 			}
 			return SkillResult.SUCCESS;

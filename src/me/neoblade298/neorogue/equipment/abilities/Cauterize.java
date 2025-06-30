@@ -16,6 +16,7 @@ import me.neoblade298.neorogue.equipment.StandardEquipmentInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -86,7 +87,7 @@ public class Cauterize extends Equipment {
 			if (!fd.hasStatus(StatusType.INJURY))
 				return TriggerResult.keep();
 			int stacks = fd.getStatus(StatusType.INJURY).getStacks();
-			ev.getMeta().addDamageSlice(new DamageSlice(pdata, damage * stacks, DamageType.FIRE));
+			ev.getMeta().addDamageSlice(new DamageSlice(pdata, damage * stacks, DamageType.FIRE, DamageStatTracker.of(id + slot, this)));
 			fd.applyStatus(StatusType.INJURY, data, -stacks, -1);
 			return TriggerResult.keep();
 		});

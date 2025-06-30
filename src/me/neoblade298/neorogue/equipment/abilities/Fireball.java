@@ -18,6 +18,7 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -49,7 +50,7 @@ public class Fireball extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ProjectileGroup proj = new ProjectileGroup(new FireballProjectile(data));
+		ProjectileGroup proj = new ProjectileGroup(new FireballProjectile(data, slot, this));
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			data.channel(20).then(new Runnable() {
 				public void run() {
@@ -64,12 +65,16 @@ public class Fireball extends Equipment {
 	private class FireballProjectile extends Projectile {
 		private Player p;
 		private PlayerFightData data;
+		private int slot;
+		private Equipment eq;
 
-		public FireballProjectile(PlayerFightData data) {
+		public FireballProjectile(PlayerFightData data, int slot, Equipment eq) {
 			super(1, properties.get(PropertyType.RANGE), 1);
 			this.size(0.5, 0.5);
 			this.data = data;
+			this.slot = slot;
 			this.p = data.getPlayer();
+			this.eq = eq;
 		}
 
 		@Override
@@ -85,7 +90,7 @@ public class Fireball extends Equipment {
 		@Override
 		public void onStart(ProjectileInstance proj) {
 			Sounds.fire.play(p, p);
-			proj.addDamageSlice(new DamageSlice(data, damage, DamageType.FIRE));
+			proj.addDamageSlice(new DamageSlice(data, damage, DamageType.FIRE, DamageStatTracker.of(ID + slot, eq)));
 		}
 	}
 

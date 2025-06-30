@@ -23,6 +23,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.abilities.BasicInfusionMastery;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -78,14 +79,14 @@ public class StoneHammer extends Equipment {
 			data.runAnimation(id, p, swing, p);
 			data.addTask(new BukkitRunnable() {
 				public void run() {
-					hitArea(p, data);
+					hitArea(p, data, slot);
 				}
 			}.runTaskLater(NeoRogue.inst(), 10L));
 			return TriggerResult.keep();
 		});
 	}
 	
-	private void hitArea(Player p, PlayerFightData data) {
+	private void hitArea(Player p, PlayerFightData data, int slot) {
 		Location hit = p.getLocation().add(p.getLocation().getDirection().setY(0).normalize().multiply(DISTANCE));
 		Sounds.explode.play(p, hit);
 		hitShape.play(StoneHammer.edge, hit, LocalAxes.xz(), StoneHammer.fill);
@@ -99,7 +100,7 @@ public class StoneHammer extends Equipment {
 				first = false;
 			}
 			else {
-				DamageMeta dm = new DamageMeta(data, properties.get(PropertyType.DAMAGE), properties.getType());
+				DamageMeta dm = new DamageMeta(data, properties.get(PropertyType.DAMAGE), properties.getType(), DamageStatTracker.of(id + slot, this));
 				FightInstance.dealDamage(dm, ent);
 			}
 			FightInstance.knockback(ent, v);

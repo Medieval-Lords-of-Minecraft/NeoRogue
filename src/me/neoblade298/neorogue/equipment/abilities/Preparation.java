@@ -15,6 +15,7 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardEquipmentInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -63,7 +64,7 @@ public class Preparation extends Equipment {
 			if (inst.getCount() == 0) return TriggerResult.keep();
 			if (inst.getCount() == 2) return TriggerResult.remove();
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
-			ev.getMeta().addDamageSlice(new DamageSlice(pdata, damage, DamageType.PIERCING));
+			ev.getMeta().addDamageSlice(new DamageSlice(pdata, damage, DamageType.PIERCING, DamageStatTracker.of(ID + slot, this)));
 			Sounds.anvil.play(p, p);
 			return TriggerResult.keep();
 		});

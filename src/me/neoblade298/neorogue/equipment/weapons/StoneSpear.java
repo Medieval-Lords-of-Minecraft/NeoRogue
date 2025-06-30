@@ -22,6 +22,7 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -84,7 +85,7 @@ public class StoneSpear extends Equipment {
 
 		public StoneSpearInstance(PlayerFightData pdata, Equipment eq, int slot, EquipSlot es) {
 			super(pdata, eq, slot, es);
-			projs = new ProjectileGroup(new StoneSpearProjectile(p));
+			projs = new ProjectileGroup(new StoneSpearProjectile(p, slot, eq));
 			
 			action = (pdata2, in) -> {
 				setCooldown(throwCooldown);
@@ -105,11 +106,14 @@ public class StoneSpear extends Equipment {
 	
 	private class StoneSpearProjectile extends Projectile {
 		private Player p;
+		private int slot;
+		private Equipment eq;
 
-		public StoneSpearProjectile(Player p) {
+		public StoneSpearProjectile(Player p, int slot, Equipment eq) {
 			super(1, 15, 1);
 			this.size(0.5, 0.5).pierce(-1).gravity(0.02).initialY(1);
 			this.p = p;
+			this.slot = slot;
 		}
 
 		@Override
@@ -125,7 +129,8 @@ public class StoneSpear extends Equipment {
 		@Override
 		public void onStart(ProjectileInstance proj) {
 			Sounds.threw.play(p, p);
-			proj.getMeta().addDamageSlice(new DamageSlice(proj.getOwner(), throwDamage + proj.getOwner().getStatus(StatusType.STRENGTH).getStacks() * 2, DamageType.PIERCING));
+			proj.getMeta().addDamageSlice(new DamageSlice(proj.getOwner(),
+				throwDamage + proj.getOwner().getStatus(StatusType.STRENGTH).getStacks() * 2, DamageType.PIERCING, DamageStatTracker.of(id + slot, eq)));
 		}
 	}
 

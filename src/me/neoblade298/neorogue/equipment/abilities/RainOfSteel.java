@@ -14,6 +14,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -41,6 +42,7 @@ public class RainOfSteel extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		Equipment eq = this;
 		data.addTrigger(ID, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			pdata.addTask(new BukkitRunnable() {
 				int count = 0;
@@ -48,7 +50,7 @@ public class RainOfSteel extends Equipment {
 					if (++count >= 5) this.cancel();
 					LivingEntity trg = TargetHelper.getNearest(p, tp);
 					if (trg == null) return;
-					FightInstance.dealDamage(pdata, DamageType.PIERCING, damage, trg);
+					FightInstance.dealDamage(pdata, DamageType.PIERCING, damage, trg, DamageStatTracker.of(id + slot, eq));
 					Sounds.attackSweep.play(p, trg);
 					pc.play(p, trg);
 				}

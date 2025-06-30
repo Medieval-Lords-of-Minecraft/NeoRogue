@@ -15,7 +15,7 @@ public class FightStatistics {
 	private static final DecimalFormat df = new DecimalFormat("#.##");
 	private static final Component separator = Component.text(" / ", NamedTextColor.GRAY).hoverEvent(null);
 	private PlayerFightData data;
-	private HashMap<DamageType, Double> damageDealt = new HashMap<DamageType, Double>();
+	private HashMap<StatTracker, Double> damageDealt = new HashMap<StatTracker, Double>();
 	private HashMap<String, HashMap<DamageType, Double>> damageTaken = new HashMap<String, HashMap<DamageType, Double>>();
 	private HashMap<StatusType, Integer> statusesApplied = new HashMap<StatusType, Integer>();
 	private HashMap<StatTracker, Double> buffStats = new HashMap<StatTracker, Double>();
@@ -49,9 +49,9 @@ public class FightStatistics {
 		this.data = data;
 	}
 	
-	public void addDamageDealt(DamageType type, double amount) {
-		double amt = damageDealt.getOrDefault(type, 0D);
-		damageDealt.put(type, amt + amount);
+	public void addDamageDealt(StatTracker tracker, double amount) {
+		double amt = damageDealt.getOrDefault(tracker, 0D);
+		damageDealt.put(tracker, amt + amount);
 	}
 	
 	public void addDamageTaken(String mobId, DamageType type, double amount) {
@@ -99,7 +99,7 @@ public class FightStatistics {
 		statusesApplied.put(type, curr + amount);
 	}
 
-	public HashMap<DamageType, Double> getDamageDealt() {
+	public HashMap<StatTracker, Double> getDamageDealt() {
 		return damageDealt;
 	}
 
@@ -170,8 +170,8 @@ public class FightStatistics {
 		else {
 			Component hover = Component.text("Damage dealt post buff and mitigation:", NamedTextColor.GRAY);
 			double total = 0;
-			for (Entry<DamageType, Double> ent : damageDealt.entrySet()) {
-				hover = hover.appendNewline().append(getStatPiece(ent.getKey(), damageDealt));
+			for (Entry<StatTracker, Double> ent : damageDealt.entrySet()) {
+				hover = hover.appendNewline().append(getStatPiece(ent.getKey().getDisplay(), ent.getValue()));
 				total += ent.getValue();
 			}
 			return Component.text(df.format(total), color).hoverEvent(HoverEvent.showText(hover));
@@ -285,6 +285,10 @@ public class FightStatistics {
 	
 	private Component getStatPiece(String display, int stat) {
 		return Component.text(display + ": ", NamedTextColor.YELLOW).append(Component.text(stat, NamedTextColor.WHITE));
+	}
+
+	private Component getStatPiece(Component display, double stat) {
+		return display.append(Component.text(": ", NamedTextColor.YELLOW)).append(Component.text(df.format(stat), NamedTextColor.WHITE));
 	}
 	private Component getStatPiece(DamageType type, HashMap<DamageType, Double> map) {
 		return Component.text(type.getDisplay() + ": ",NamedTextColor.YELLOW)

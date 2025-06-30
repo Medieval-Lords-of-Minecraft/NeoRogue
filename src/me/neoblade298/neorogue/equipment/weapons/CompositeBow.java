@@ -47,7 +47,7 @@ public class CompositeBow extends Bow {
 
 			ProjectileLaunchEvent ev = (ProjectileLaunchEvent) in;
 			boolean hasBonus = data.getStatus(StatusType.FOCUS).getStacks() >= thres;
-			ProjectileGroup proj = new ProjectileGroup(new BowProjectile(data, ev.getEntity().getVelocity(), this).setDamageBonus(hasBonus ? damage : 0));
+			ProjectileGroup proj = new ProjectileGroup(new BowProjectile(data, ev.getEntity().getVelocity(), this, id + slot).setDamageBonus(hasBonus ? damage : 0));
 			proj.start(data);
 			return TriggerResult.keep();
 		});

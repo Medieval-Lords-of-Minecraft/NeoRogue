@@ -25,6 +25,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -66,6 +67,7 @@ public class Atone extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		Equipment eq = this;
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pd, in) -> {
 			p.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 20, 0));
 			data.addTask(new BukkitRunnable() {
@@ -79,7 +81,7 @@ public class Atone extends Equipment {
 					Sounds.firework.play(p, p);
 					for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
 						double increase = FightInstance.getFightData(ent).getStatus(StatusType.SANCTIFIED).getStacks() * sanct;
-						FightInstance.dealDamage(new DamageMeta(data, damage + increase, DamageType.LIGHT), ent);
+						FightInstance.dealDamage(new DamageMeta(data, damage + increase, DamageType.LIGHT, DamageStatTracker.of(id + slot, eq)), ent);
 					}
 				}
 			}.runTaskLater(NeoRogue.inst(), 25L));

@@ -11,6 +11,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -46,7 +47,7 @@ public class Overload extends Equipment {
 			KillEvent ev = (KillEvent) in;
 			int stacks = FightInstance.getFightData(ev.getTarget()).getStatus(StatusType.ELECTRIFIED).getStacks();
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(ev.getTarget(), tp)) {
-				FightInstance.dealDamage(new DamageMeta(data, damage + (stacks * 5), DamageType.LIGHTNING), ent);
+				FightInstance.dealDamage(new DamageMeta(data, damage + (stacks * 5), DamageType.LIGHTNING, DamageStatTracker.of(id + slot, this)), ent);
 				part.play(p, ent);
 			}
 			return TriggerResult.keep();

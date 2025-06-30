@@ -15,6 +15,7 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -56,7 +57,7 @@ public class TargetAcquisition extends Equipment {
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 			if (inst.getCount() <= 0) return TriggerResult.keep();
 			inst.addCount(-1);
-			ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.PIERCING));
+			ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.PIERCING, DamageStatTracker.of(id + slot, this)));
 			Sounds.anvil.play(p, p);
 			hit.play(p, ev.getTarget());
 			return TriggerResult.keep();

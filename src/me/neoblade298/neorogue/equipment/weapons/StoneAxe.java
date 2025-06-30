@@ -13,6 +13,8 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -60,8 +62,7 @@ public class StoneAxe extends Equipment {
 			weaponSwingAndDamage(p, data, first);
 			for (LivingEntity ent : ents) {
 				if (ent == first) continue;
-				FightInstance.dealDamage(properties.getDamageMeta(data), ent);
-				FightInstance.knockback(p, ent, properties.get(PropertyType.KNOCKBACK));
+				FightInstance.dealDamage(new DamageMeta(data, this, true, DamageStatTracker.of(id + slot, this)), ent);
 			}
 			
 			return TriggerResult.keep();

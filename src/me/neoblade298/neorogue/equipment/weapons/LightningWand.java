@@ -54,7 +54,7 @@ public class LightningWand extends Equipment {
 	
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ProjectileGroup proj = new ProjectileGroup(new LightningWandProjectile(data, this));
+		ProjectileGroup proj = new ProjectileGroup(new LightningWandProjectile(data, this, slot));
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (d, inputs) -> {
 			if (!canUseWeapon(data) || !data.canBasicAttack(EquipSlot.HOTBAR))
 				return TriggerResult.keep();
@@ -68,13 +68,15 @@ public class LightningWand extends Equipment {
 		private Player p;
 		private PlayerFightData data;
 		private LightningWand eq;
+		private int slot;
 
-		public LightningWandProjectile(PlayerFightData data, LightningWand eq) {
+		public LightningWandProjectile(PlayerFightData data, LightningWand eq, int slot) {
 			super(2.5, 12, 1);
 			this.size(0.5, 0.5).pierce(pierceAmount);
 			this.p = data.getPlayer();
 			this.data = data;
 			this.eq = eq;
+			this.slot = slot;
 		}
 		
 		@Override
@@ -90,7 +92,7 @@ public class LightningWand extends Equipment {
 		
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			proj.applyWeapon(data, eq);
+			proj.applyWeapon(data, eq, slot);
 		}
 	}
 	

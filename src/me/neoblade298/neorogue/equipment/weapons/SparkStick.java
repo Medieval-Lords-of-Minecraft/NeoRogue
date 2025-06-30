@@ -49,7 +49,7 @@ public class SparkStick extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ProjectileGroup proj = new ProjectileGroup(new SparkStickProjectile(data, this));
+		ProjectileGroup proj = new ProjectileGroup(new SparkStickProjectile(data, this, slot));
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (d, inputs) -> {
 			if (!canUseWeapon(data) || !data.canBasicAttack(EquipSlot.HOTBAR))
 				return TriggerResult.keep();
@@ -63,14 +63,15 @@ public class SparkStick extends Equipment {
 		private Player p;
 		private PlayerFightData data;
 		private SparkStick eq;
-		private int pierceAmount;
+		private int pierceAmount, slot;
 
-		public SparkStickProjectile(PlayerFightData data, SparkStick eq) {
+		public SparkStickProjectile(PlayerFightData data, SparkStick eq, int slot) {
 			super(2.5, 10, 1);
 			this.size(0.5, 0.5).pierce(pierceAmount);
 			this.p = data.getPlayer();
 			this.data = data;
 			this.eq = eq;
+			this.slot = slot;
 		}
 
 		@Override
@@ -86,7 +87,7 @@ public class SparkStick extends Equipment {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			proj.applyWeapon(data, eq);
+			proj.applyWeapon(data, eq, slot);
 		}
 	}
 

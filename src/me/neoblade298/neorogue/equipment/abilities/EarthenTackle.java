@@ -19,6 +19,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -64,7 +65,7 @@ public class EarthenTackle extends Equipment {
 				p.teleport(p.getLocation().add(0, 0.2, 0));
 			}
 			p.setVelocity(v.setY(0).normalize().setY(0.3));
-			new EarthenTackleHitChecker(p, data, inst);
+			new EarthenTackleHitChecker(p, data, inst, this, slot);
 			return TriggerResult.keep();
 		});
 		data.addTrigger(id, bind, inst);
@@ -73,7 +74,7 @@ public class EarthenTackle extends Equipment {
 	private class EarthenTackleHitChecker {
 		private ArrayList<BukkitTask> tasks = new ArrayList<BukkitTask>();
 		
-		protected EarthenTackleHitChecker(Player p, PlayerFightData data, EquipmentInstance inst) {
+		protected EarthenTackleHitChecker(Player p, PlayerFightData data, EquipmentInstance inst, Equipment eq, int slot) {
 			for (long delay = 1; delay <= 10; delay++) {
 				final boolean last = delay == 10;
 				tasks.add(new BukkitRunnable() {
@@ -92,7 +93,7 @@ public class EarthenTackle extends Equipment {
 						for (LivingEntity ent : hit) {
 							pc.play(p, ent);
 							dirt.play(p, ent);
-							FightInstance.dealDamage(data, DamageType.EARTHEN, damage, ent);
+							FightInstance.dealDamage(data, DamageType.EARTHEN, damage, ent, DamageStatTracker.of(id + slot, eq));
 							FightInstance.applyStatus(ent, StatusType.CONCUSSED, p, concussed, -1);
 						}
 					}

@@ -46,7 +46,7 @@ public class AshenWand2 extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ProjectileGroup proj = new ProjectileGroup(new AshenWandProjectile(data, this));
+		ProjectileGroup proj = new ProjectileGroup(new AshenWandProjectile(data, this, slot));
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (d, inputs) -> {
 			if (!canUseWeapon(data) || !data.canBasicAttack(EquipSlot.HOTBAR))
 				return TriggerResult.keep();
@@ -60,13 +60,15 @@ public class AshenWand2 extends Equipment {
 		private Player p;
 		private PlayerFightData data;
 		private AshenWand2 eq;
+		private int slot;
 
-		public AshenWandProjectile(PlayerFightData data, AshenWand2 eq) {
+		public AshenWandProjectile(PlayerFightData data, AshenWand2 eq, int slot) {
 			super(1.5, 10, 2);
 			this.size(0.2, 0.2);
 			this.p = data.getPlayer();
 			this.data = data;
 			this.eq = eq;
+			this.slot = slot;
 		}
 
 		@Override
@@ -83,7 +85,7 @@ public class AshenWand2 extends Equipment {
 		@Override
 		public void onStart(ProjectileInstance proj) {
 			Sounds.fire.play(p, p);
-			proj.applyWeapon(data, eq);
+			proj.applyWeapon(data, eq, slot);
 		}
 	}
 

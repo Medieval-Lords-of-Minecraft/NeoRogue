@@ -50,12 +50,12 @@ public class MultiCrossbow extends Bow {
 			int limit = data.getAmmoInstance().getRemaining();
 			int count = 0;
 			if (limit == -1 || ++count < limit) {
-				proj.add(new BowProjectile(data, ev.getEntity().getVelocity(), this));
+				proj.add(new BowProjectile(data, ev.getEntity().getVelocity(), this, id + slot));
 			}
 			for (double y : new double[] { -0.1, 0.1 }) {
 				for (double rotate : new double[] { 10, -10 }) {
 					if (limit != -1 && ++count >= limit) break;
-					proj.add(new BowProjectile(data, ev.getEntity().getVelocity(), this).initialY(y).rotation(rotate));
+					proj.add(new BowProjectile(data, ev.getEntity().getVelocity(), this, id + slot).initialY(y).rotation(rotate));
 				}
 				if (limit != -1 && count >= limit) break;
 			}

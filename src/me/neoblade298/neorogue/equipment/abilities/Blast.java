@@ -22,6 +22,7 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.weapons.Gravity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -56,6 +57,7 @@ public class Blast extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		Equipment eq = this;
 		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
 		inst.setAction((pdata, in) -> {
 			data.addTask(new BukkitRunnable() {
@@ -84,7 +86,7 @@ public class Blast extends Equipment {
 					expl.play(p, loc);
 					Sounds.explode.play(p, loc);
 					for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
-						FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE), ent);
+						FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE, DamageStatTracker.of(id + slot, eq)), ent);
 					}
 				}
 			});

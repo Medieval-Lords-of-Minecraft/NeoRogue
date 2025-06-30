@@ -46,7 +46,7 @@ public class BasicCrossbow extends Bow {
 			if (!canShootCrossbow(data)) return TriggerResult.keep();
 			useBow(data);
 			ProjectileLaunchEvent ev = (ProjectileLaunchEvent) in;
-			ProjectileGroup proj = new ProjectileGroup(new BowProjectile(data, ev.getEntity().getVelocity(), this));
+			ProjectileGroup proj = new ProjectileGroup(new BowProjectile(data, ev.getEntity().getVelocity(), this, id + slot));
 			proj.start(data);
 			return TriggerResult.keep();
 		});

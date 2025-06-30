@@ -22,6 +22,7 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -49,7 +50,7 @@ public class GrowingSpark extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
-		ProjectileGroup proj = new ProjectileGroup(new GrowingSparkProjectile(data, inst));
+		ProjectileGroup proj = new ProjectileGroup(new GrowingSparkProjectile(data, inst, slot, this));
 		inst.setAction((pdata, in) -> {
 			data.charge(20);
 			data.addTask(new BukkitRunnable() {
@@ -68,13 +69,17 @@ public class GrowingSpark extends Equipment {
 		private EquipmentInstance inst;
 		private int stacks = 0;
 		private long lastCast = 0;
+		private Equipment eq;
+		private int slot;
 
 		// Vector is non-normalized velocity of the vanilla projectile being fired
-		public GrowingSparkProjectile(PlayerFightData data, EquipmentInstance inst) {
+		public GrowingSparkProjectile(PlayerFightData data, EquipmentInstance inst, int slot, Equipment eq) {
 			super(1.5, properties.get(PropertyType.RANGE), 1);
 			this.data = data;
 			this.p = data.getPlayer();
 			this.inst = inst;
+			this.slot = slot;
+			this.eq = eq;
 		}
 
 		@Override
@@ -91,7 +96,7 @@ public class GrowingSpark extends Equipment {
 		public void onStart(ProjectileInstance proj) {
 			Sounds.firework.play(p, p);
 			stacks = Math.min(5, stacks + 1);
-			proj.getMeta().addDamageSlice(new DamageSlice(data, damage * (stacks + 1), DamageType.LIGHTNING));
+			proj.getMeta().addDamageSlice(new DamageSlice(data, damage * (stacks + 1), DamageType.LIGHTNING, DamageStatTracker.of(id + slot, eq)));
 			chargedIcon.setAmount(stacks);
 			inst.setIcon(chargedIcon);
 			lastCast = System.currentTimeMillis();

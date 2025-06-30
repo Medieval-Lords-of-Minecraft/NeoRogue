@@ -21,6 +21,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -93,7 +94,7 @@ public class Darkness extends Equipment {
 					circle.play(pc, loc, LocalAxes.xz(), null);
 					darkSound.play(p, loc);
 					for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, tp)) {
-						FightInstance.dealDamage(pdata, DamageType.DARK, dark, ent);
+						FightInstance.dealDamage(pdata, DamageType.DARK, dark, ent, DamageStatTracker.of(id + slot, eq));
 					}
 				}
 			}.runTaskTimer(NeoRogue.inst(), 20L, 20L));

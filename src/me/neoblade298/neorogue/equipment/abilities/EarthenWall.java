@@ -21,6 +21,7 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -52,6 +53,7 @@ public class EarthenWall extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		Equipment eq = this;
 		ActionMeta am = new ActionMeta();
 		data.addTrigger(id, bind, (pdata, in) -> {
 			data.charge(20).then(new Runnable() {
@@ -64,7 +66,7 @@ public class EarthenWall extends Equipment {
 					ParticleUtil.drawLine(p, earth, start, end, 0.5);
 					Sounds.explode.play(p, p);
 					for (LivingEntity ent : TargetHelper.getEntitiesInLine(p, start, end, tp)) {
-						FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.EARTHEN), ent);
+						FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.EARTHEN, DamageStatTracker.of(id + slot, eq)), ent);
 					}
 					Barrier b = Barrier.stationary(p, tp.range, 2, 4, start.clone().add(dir.clone().multiply(0.5)), new LocalAxes(left, new Vector(0, 1, 0), forward), null, earth, true);
 					am.setUniqueId(b.getUniqueId());

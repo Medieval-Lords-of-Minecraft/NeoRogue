@@ -17,6 +17,7 @@ import me.neoblade298.neorogue.equipment.LimitedAmmunition;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -62,7 +63,7 @@ public class ExplosiveArrow extends LimitedAmmunition {
 		pc.play(p, loc);
 		for (LivingEntity ent : TargetHelper.getEntitiesInRadius(owner.getEntity(), loc, tp)) {
 			if (ent == hit) continue;
-			FightInstance.dealDamage(new DamageMeta(owner, properties.get(PropertyType.DAMAGE), properties.getType()), ent);
+			FightInstance.dealDamage(new DamageMeta(owner, properties.get(PropertyType.DAMAGE), properties.getType(), DamageStatTracker.of(id, this)), ent);
 			FightInstance.knockback(ent,
 					inst.getVelocity().setY(0).normalize().multiply(properties.get(PropertyType.KNOCKBACK)));
 		}

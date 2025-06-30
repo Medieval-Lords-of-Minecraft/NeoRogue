@@ -17,6 +17,7 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -28,7 +29,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class WeaponEnchantmentHoly extends Equipment {
 	private static final String ID = "weaponEnchantmentHoly";
-	private ProjectileGroup projs = new ProjectileGroup(new WeaponEnchantmentHolyProjectile());
+	private ProjectileGroup projs;
 	private int damage, sanct;
 	private static final int RANGE = 8;
 	private static final SoundContainer sc = new SoundContainer(Sound.BLOCK_AMETHYST_BLOCK_BREAK),
@@ -48,6 +49,7 @@ public class WeaponEnchantmentHoly extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		projs = new ProjectileGroup(new WeaponEnchantmentHolyProjectile(this, slot));
 		data.addTrigger(id, Trigger.LEFT_CLICK, new WeaponEnchantmentHolyInstance(id));
 	}
 
@@ -73,8 +75,12 @@ public class WeaponEnchantmentHoly extends Equipment {
 	}
 	
 	private class WeaponEnchantmentHolyProjectile extends Projectile {
-		public WeaponEnchantmentHolyProjectile() {
+		private Equipment eq;
+		private int slot;
+		public WeaponEnchantmentHolyProjectile(Equipment eq, int slot) {
 			super(0.5, RANGE, 2);
+			this.eq = eq;
+			this.slot = slot;
 		}
 
 		@Override
@@ -92,7 +98,7 @@ public class WeaponEnchantmentHoly extends Equipment {
 		@Override
 		public void onStart(ProjectileInstance proj) {
 			sc.play((Player) proj.getOwner().getEntity(), proj.getOwner().getEntity());
-			proj.getMeta().addDamageSlice(new DamageSlice(proj.getOwner(), damage, DamageType.LIGHT));
+			proj.getMeta().addDamageSlice(new DamageSlice(proj.getOwner(), damage, DamageType.LIGHT, DamageStatTracker.of(id + slot, eq)));
 		}
 	}
 }

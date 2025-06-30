@@ -25,6 +25,7 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -54,7 +55,7 @@ public class Electrode extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ProjectileGroup projs = new ProjectileGroup(new AnchoringEarthProjectile(data));
+		ProjectileGroup projs = new ProjectileGroup(new AnchoringEarthProjectile(data, this, slot));
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			data.charge(20).then(new Runnable() {
 				public void run() {
@@ -69,13 +70,17 @@ public class Electrode extends Equipment {
 		private PlayerFightData data;
 		private Player p;
 		private HashSet<UUID> enemiesHit = new HashSet<UUID>();
+		private Equipment eq;
+		private int slot;
 
 		// Vector is non-normalized velocity of the vanilla projectile being fired
-		public AnchoringEarthProjectile(PlayerFightData data) {
+		public AnchoringEarthProjectile(PlayerFightData data, Equipment eq, int slot) {
 			super(0.7, properties.get(PropertyType.RANGE), 1);
 			this.data = data;
 			this.p = data.getPlayer();
 			this.pierce(-1);
+			this.slot = slot;
+			this.eq = eq;
 		}
 
 		@Override
@@ -103,7 +108,7 @@ public class Electrode extends Equipment {
 			for (LivingEntity ent : TargetHelper.getEntitiesInLine(p, start, end,
 					TargetProperties.line(end.distance(start), 2, TargetType.ENEMY))) {
 				boolean marked = enemiesHit.contains(ent.getUniqueId());
-				FightInstance.dealDamage(new DamageMeta(data, marked ? damage * 2 : damage, DamageType.LIGHTNING), ent);
+				FightInstance.dealDamage(new DamageMeta(data, marked ? damage * 2 : damage, DamageType.LIGHTNING, DamageStatTracker.of(id + slot, eq)), ent);
 				if (marked) {
 					FightInstance.applyStatus(ent, StatusType.ELECTRIFIED, data, elec, -1);
 				}

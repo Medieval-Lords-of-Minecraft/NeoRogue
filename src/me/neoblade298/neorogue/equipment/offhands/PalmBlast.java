@@ -19,6 +19,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -50,6 +51,7 @@ public class PalmBlast extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		Equipment eq = this;
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			data.charge(20, 2).then(new Runnable() {
 				public void run() {
@@ -61,7 +63,7 @@ public class PalmBlast extends Equipment {
 					Vector v = p.getEyeLocation().getDirection();
 					p.setVelocity(v.setX(-v.getX()).setZ(-v.getZ()).setY(0).normalize().setY(0.3));
 					for (LivingEntity ent : trgs) {
-						FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE), ent);
+						FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE, DamageStatTracker.of(id + slot, eq)), ent);
 						FightInstance.applyStatus(ent, StatusType.BURN, data, burn, -1);
 					}
 				}

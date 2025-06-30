@@ -45,12 +45,12 @@ public class BasicShotbow extends Bow {
 			useBow(data);
 			ProjectileLaunchEvent ev = (ProjectileLaunchEvent) in;
 			Vector v = ev.getEntity().getVelocity();
-			ProjectileGroup proj = new ProjectileGroup(new BowProjectile(data, v, this));
+			ProjectileGroup proj = new ProjectileGroup(new BowProjectile(data, v, this, id + slot));
 			act.addCount(1);
 			if (act.getCount() >= 3) {
 				act.setCount(0);
-				proj.add(new BowProjectile(data, v, this).rotation(-15));
-				proj.add(new BowProjectile(data, v, this).rotation(15));
+				proj.add(new BowProjectile(data, v, this, id + slot).rotation(-15));
+				proj.add(new BowProjectile(data, v, this, id + slot).rotation(15));
 			}
 			proj.start(data);
 			return TriggerResult.keep();

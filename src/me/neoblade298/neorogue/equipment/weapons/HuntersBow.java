@@ -50,7 +50,7 @@ public class HuntersBow extends Bow {
 			useBow(data);
 			ProjectileLaunchEvent ev = (ProjectileLaunchEvent) in;
 			if (ev.getEntity().getVelocity().length() < 2.9) return TriggerResult.keep();
-			ProjectileGroup proj = new ProjectileGroup(new BowProjectile(data, ev.getEntity().getVelocity(), this));
+			ProjectileGroup proj = new ProjectileGroup(new BowProjectile(data, ev.getEntity().getVelocity(), this, id + slot));
 			proj.start(data);
 			return TriggerResult.keep();
 		});

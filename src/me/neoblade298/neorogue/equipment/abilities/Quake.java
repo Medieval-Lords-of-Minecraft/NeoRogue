@@ -14,6 +14,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -49,7 +50,7 @@ public class Quake extends Equipment {
 			sc.play(p, p);
 			part.play(p, p);
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
-				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.EARTHEN), ent);
+				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.EARTHEN, DamageStatTracker.of(id + slot, this)), ent);
 				FightInstance.applyStatus(ent, StatusType.CONCUSSED, p, concussed, -1);
 			}
 			return TriggerResult.keep();

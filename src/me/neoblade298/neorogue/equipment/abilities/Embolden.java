@@ -11,6 +11,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -46,7 +47,7 @@ public class Embolden extends Equipment {
 			pc.play(p, p);
 			pdata.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata2, in2) -> {
 				PreBasicAttackEvent ev = (PreBasicAttackEvent) in2;
-				FightInstance.dealDamage(data, DamageType.SLASHING, damage, ev.getTarget());
+				FightInstance.dealDamage(data, DamageType.SLASHING, damage, ev.getTarget(), DamageStatTracker.of(id + slot, this));
 				hit.play(p, ev.getTarget().getLocation());
 				Sounds.anvil.play(p, p);
 				return TriggerResult.remove();

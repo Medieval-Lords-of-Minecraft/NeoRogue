@@ -18,6 +18,7 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -46,25 +47,26 @@ public class SpikeTrap extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		Equipment eq = this;
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, inputs) -> {
 			data.charge(40);
 			data.addTask(new BukkitRunnable() {
 				public void run() {
-					initTrap(p, data);
+					initTrap(p, data, eq, slot);
 				}
 			}.runTaskLater(NeoRogue.inst(), 40L));
 			return TriggerResult.keep();
 		}));
 	}
 
-	private void initTrap(Player p, PlayerFightData data) {
+	private void initTrap(Player p, PlayerFightData data, Equipment eq, int slot) {
 		Sounds.equip.play(p, p);
 		Location loc = p.getLocation();
 		data.addTrap(new Trap(data, loc, 400) {
 			@Override
 			public void tick() {
 				spike.play(p, loc);
-				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.PIERCING, DamageOrigin.TRAP), TargetHelper.getEntitiesInRadius(p, loc, tp));
+				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.PIERCING, DamageStatTracker.of(id + slot, eq), DamageOrigin.TRAP), TargetHelper.getEntitiesInRadius(p, loc, tp));
 			}
 		});
 	}

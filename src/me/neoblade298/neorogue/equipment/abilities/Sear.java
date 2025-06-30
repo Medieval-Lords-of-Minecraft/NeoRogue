@@ -23,6 +23,7 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -49,7 +50,7 @@ public class Sear extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ProjectileGroup proj = new ProjectileGroup(new SearProjectile(data));
+		ProjectileGroup proj = new ProjectileGroup(new SearProjectile(data, this, slot));
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			data.charge(20);
 			data.addTask(new BukkitRunnable() {
@@ -64,14 +65,18 @@ public class Sear extends Equipment {
 	private class SearProjectile extends Projectile {
 		private PlayerFightData data;
 		private Player p;
+		private Equipment eq;
+		private int slot;
 
 		// Vector is non-normalized velocity of the vanilla projectile being fired
-		public SearProjectile(PlayerFightData data) {
+		public SearProjectile(PlayerFightData data, Equipment eq, int slot) {
 			super(properties.get(PropertyType.RANGE), 2);
 			this.size(4, 1);
 			this.pierce(-1);
 			this.data = data;
 			this.p = data.getPlayer();
+			this.eq = eq;
+			this.slot = slot;
 
 			blocksPerTick(2);
 		}
@@ -98,7 +103,7 @@ public class Sear extends Equipment {
 		public void onStart(ProjectileInstance proj) {
 			Sounds.fire.play(p, p);
 			DamageMeta dm = proj.getMeta();
-			dm.addDamageSlice(new DamageSlice(data, damage, DamageType.FIRE));
+			dm.addDamageSlice(new DamageSlice(data, damage, DamageType.FIRE, DamageStatTracker.of(ID + slot, eq)));
 		}
 	}
 

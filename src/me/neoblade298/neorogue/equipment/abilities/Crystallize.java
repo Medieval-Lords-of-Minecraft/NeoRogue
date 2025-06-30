@@ -18,6 +18,7 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -56,7 +57,7 @@ public class Crystallize extends Equipment {
 			circ.play(p, edges, trg.getLocation(), LocalAxes.xz(), fill);
 			Sounds.glass.play(p, trg.getLocation());
 			DamageMeta dm = new DamageMeta(data);
-			dm.addDamageSlice(new DamageSlice(data, thres, DamageType.ICE, true));
+			dm.addDamageSlice(new DamageSlice(data, thres, DamageType.ICE, true, DamageStatTracker.of(ID + slot, this)));
 			FightInstance.dealDamage(dm, trg);
 			pc.play(p, trg);
 			for (LivingEntity le : TargetHelper.getEntitiesInRadius(p, aoe)) {

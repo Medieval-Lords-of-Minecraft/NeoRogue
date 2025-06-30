@@ -15,6 +15,7 @@ import me.neoblade298.neorogue.equipment.mechanics.IProjectileInstance;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
@@ -60,7 +61,7 @@ public class Posturing2 extends Equipment {
 				if (ipi instanceof ProjectileInstance) {
 					ProjectileInstance inst = (ProjectileInstance) ipi;
 					double damage = inc * Math.min(4, data.getStatus(StatusType.FOCUS).getStacks());
-					inst.getMeta().addDamageSlice(new DamageSlice(data, p.isSneaking() ? damage * 2 : damage, DamageType.PIERCING));
+					inst.getMeta().addDamageSlice(new DamageSlice(data, p.isSneaking() ? damage * 2 : damage, DamageType.PIERCING, DamageStatTracker.of(ID + slot, this)));
 				}
 			}
 			return TriggerResult.keep();

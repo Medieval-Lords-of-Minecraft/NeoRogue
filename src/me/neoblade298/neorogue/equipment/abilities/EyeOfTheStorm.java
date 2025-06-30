@@ -20,6 +20,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -51,6 +52,7 @@ public class EyeOfTheStorm extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		Equipment eq = this;
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			Sounds.equip.play(p, p);
 			data.charge(20).then(new Runnable() {
@@ -63,7 +65,7 @@ public class EyeOfTheStorm extends Equipment {
 							circ.play(pc, p.getLocation().add(0, 0.2, 0), LocalAxes.xz(), null);
 							sc.play(p.getLocation());
 							for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
-								FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.LIGHTNING), ent);
+								FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.LIGHTNING, DamageStatTracker.of(id + slot, eq)), ent);
 								FightInstance.applyStatus(ent, StatusType.ELECTRIFIED, data, elec, -1);
 							}
 							if (++count >= 3) {

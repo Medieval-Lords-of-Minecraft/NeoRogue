@@ -24,6 +24,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -86,7 +87,7 @@ public class Storm extends Equipment {
 			sc.play(p, p);
 			data.addMana(-mana);
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, aoe)) {
-				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.LIGHTNING), ent);
+				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.LIGHTNING, DamageStatTracker.of(id + slot, this)), ent);
 			}
 			return TriggerResult.keep();
 		});

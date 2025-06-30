@@ -13,6 +13,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -63,7 +64,7 @@ public class BitterCold extends Equipment {
 			if (fd.hasStatus(p.getName() + "-bitterCold")) return TriggerResult.keep();
 			Status s = new BasicStatus(p.getName() + "-bitterCold", data, StatusClass.NONE, true);
 			fd.applyStatus(s, data, 1, -1);
-			FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.ICE), fd.getEntity());
+			FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.ICE, DamageStatTracker.of(id + slot, this)), fd.getEntity());
 			pc.play(p, fd.getEntity());
 			sc.play(p, fd.getEntity());
 			return TriggerResult.keep();

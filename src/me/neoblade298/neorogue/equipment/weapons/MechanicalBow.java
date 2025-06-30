@@ -52,7 +52,7 @@ public class MechanicalBow extends Bow {
 
 			ProjectileLaunchEvent ev = (ProjectileLaunchEvent) in;
 			boolean hasBonus = System.currentTimeMillis() - am.getTime() < 5000;
-			BowProjectile bproj = new BowProjectile(data, ev.getEntity().getVelocity(), this);
+			BowProjectile bproj = new BowProjectile(data, ev.getEntity().getVelocity(), this, id + slot);
 			bproj.setDamageBonus(hasBonus ? damage : 0);
 			if (hasBonus) {
 				bproj.addProjectileTickAction((p2, inst, interpolation) -> {

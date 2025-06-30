@@ -13,6 +13,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -49,7 +50,7 @@ public class Atrophy extends Equipment {
 			PreDealtDamageEvent ev = (PreDealtDamageEvent) in;
 			if (!ev.getTarget().equals(inst.trg)) return TriggerResult.keep();
 			FightData fd = FightInstance.getFightData(ev.getTarget());
-			ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.DARK));
+			ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.DARK, DamageStatTracker.of(id + slot, this)));
 			fd.applyStatus(StatusType.INSANITY, data, ins, -1);
 			return TriggerResult.keep();
 		});

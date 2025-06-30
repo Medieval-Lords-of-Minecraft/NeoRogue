@@ -13,6 +13,7 @@ import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
@@ -46,7 +47,7 @@ public class BurningMantle extends Equipment {
 			ReceivedDamageEvent ev = (ReceivedDamageEvent) in;
 			if (!ev.getMeta().containsType(DamageCategory.GENERAL)) return TriggerResult.keep();
 			DamageMeta dm = ev.getMeta().getReturnDamage();
-			dm.addDamageSlice(new DamageSlice(data, damage + (damageCount.getCount() * inc), DamageType.FIRE));
+			dm.addDamageSlice(new DamageSlice(data, damage + (damageCount.getCount() * inc), DamageType.FIRE, DamageStatTracker.of(id + slot, this)));
 			return TriggerResult.keep();
 		});
 

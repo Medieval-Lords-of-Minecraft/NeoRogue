@@ -22,6 +22,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -60,7 +61,7 @@ public class Bulldoze extends Equipment {
 			Sounds.roar.play(p, p);
 			start.play(p, p);
 			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 60, 0));
-			new BulldozeHitChecker(p, data);
+			new BulldozeHitChecker(p, data, this, slot);
 			return TriggerResult.keep();
 		});
 		data.addTrigger(id, bind, inst);
@@ -70,7 +71,7 @@ public class Bulldoze extends Equipment {
 		private ArrayList<BukkitTask> tasks = new ArrayList<BukkitTask>();
 		private HashSet<UUID> hitList = new HashSet<UUID>();
 		
-		protected BulldozeHitChecker(Player p, PlayerFightData data) {
+		protected BulldozeHitChecker(Player p, PlayerFightData data, Equipment eq, int slot) {
 			for (long delay = 2; delay <= 60; delay+= 2) {
 				boolean spawnParticle = delay % 4 == 0;
 				tasks.add(new BukkitRunnable() {
@@ -85,7 +86,7 @@ public class Bulldoze extends Equipment {
 							if (hitList.contains(ent.getUniqueId())) continue;
 							hitList.add(ent.getUniqueId());
 							pc.play(p, ent);
-							FightInstance.dealDamage(data, DamageType.BLUNT, damage + data.getShields().getAmount(), ent);
+							FightInstance.dealDamage(data, DamageType.BLUNT, damage + data.getShields().getAmount(), ent, DamageStatTracker.of(id + slot, eq));
 							FightInstance.knockback(p, ent, 2);
 						}
 					}

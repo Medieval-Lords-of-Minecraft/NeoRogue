@@ -17,6 +17,7 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -52,7 +53,7 @@ public class ShoulderBash extends Equipment {
 			sc.play(p, p);
 			pc.play(p, p);
 			FightInstance.knockback(p, ev.getTarget(), 0.5);
-			FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.BLUNT), ev.getTarget());
+			FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.BLUNT, DamageStatTracker.of(id + slot, this)), ev.getTarget());
 			FightInstance.getFightData(ev.getTarget()).addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL),
 				new Buff(data, -inc, 0, StatTracker.defenseDebuffEnemy(buffId, this)), 100);
 			return TriggerResult.keep();

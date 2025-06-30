@@ -17,6 +17,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -56,10 +57,11 @@ public class Exertion extends Equipment {
 			LinkedList<LivingEntity> trgs = TargetHelper.getEntitiesInCone(p, tp);
 			boolean kill = false;
 			for (LivingEntity ent : trgs) {
-				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE), ent);
+				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE, DamageStatTracker.of(id + slot, this)), ent);
 				if (ent.getHealth() <= 0) kill = true;
 			}
-			if (!kill) FightInstance.dealDamage(new DamageMeta(data, selfDmg, DamageType.FIRE), p);
+			if (!kill) FightInstance.dealDamage(new DamageMeta(data, selfDmg, DamageType.FIRE,
+						DamageStatTracker.of(id + slot, this)), p);
 			return TriggerResult.keep();
 		}));
 	}

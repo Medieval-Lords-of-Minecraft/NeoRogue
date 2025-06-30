@@ -9,6 +9,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
@@ -36,7 +37,7 @@ public class Plague extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		PlagueInstance inst = new PlagueInstance(ID);
+		PlagueInstance inst = new PlagueInstance(ID, slot, this);
 		data.addTrigger(ID, Trigger.APPLY_STATUS, (pdata, in) -> {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
 			if (!ev.isStatus(StatusType.POISON)) return TriggerResult.keep();
@@ -47,12 +48,12 @@ public class Plague extends Equipment {
 
 	private class PlagueInstance extends PriorityAction	{
 		private int damageStacks, stacksApplied;
-		public PlagueInstance(String id) {
+		public PlagueInstance(String id, int slot, Equipment eq) {
 			super(id);
 			action = (pdata, in) -> {
 				if (damageStacks > 0) {
 					PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
-					ev.getMeta().addDamageSlice(new DamageSlice(pdata, damage * damageStacks, DamageType.POISON));
+					ev.getMeta().addDamageSlice(new DamageSlice(pdata, damage * damageStacks, DamageType.POISON, DamageStatTracker.of(ID + slot, eq)));
 				}
 				return TriggerResult.keep();
 			};

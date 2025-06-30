@@ -17,6 +17,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -69,7 +70,7 @@ public class Flicker extends Equipment {
 						active = false;
 						for (Entry<LivingEntity, Integer> ent : marks.entrySet()) {
 							if (ent.getValue() < 1) continue;
-							DamageMeta dm = new DamageMeta(pdata, damage * Math.min(ent.getValue(), 5), DamageType.DARK);
+							DamageMeta dm = new DamageMeta(pdata, damage * Math.min(ent.getValue(), 5), DamageType.DARK, DamageStatTracker.of(id + slot, eq));
 							FightInstance.dealDamage(dm, ent.getKey());
 						}
 						marks.clear();

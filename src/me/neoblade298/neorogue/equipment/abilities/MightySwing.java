@@ -13,6 +13,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -59,7 +60,7 @@ public class MightySwing extends Equipment {
 					Sounds.fire.play(p, p);
 				}
 				else {
-					FightInstance.dealDamage(data, DamageType.PIERCING, damage, ev.getTarget());
+					FightInstance.dealDamage(data, DamageType.PIERCING, damage, ev.getTarget(), DamageStatTracker.of(id + slot, this));
 				}
 				return TriggerResult.remove();
 			});

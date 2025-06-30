@@ -13,6 +13,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -51,7 +52,7 @@ public class BlessedEdge extends Equipment {
 				PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 				LivingEntity target = ev.getTarget();
 				FightInstance.getFightData(target.getUniqueId()).applyStatus(StatusType.SANCTIFIED, data, sanct, -1);
-				FightInstance.dealDamage(data, DamageType.LIGHT, damage, target);
+				FightInstance.dealDamage(data, DamageType.LIGHT, damage, target, DamageStatTracker.of(id + slot, this));
 				hit.play(p, target.getLocation());
 				hitSound.play(p, target.getLocation());
 				return TriggerResult.remove();

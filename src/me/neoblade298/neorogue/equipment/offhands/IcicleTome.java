@@ -20,6 +20,7 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -49,7 +50,7 @@ public class IcicleTome extends Equipment {
 		ActionMeta am = new ActionMeta();
 		EquipmentInstance eqi = new EquipmentInstance(data, this, slot, es);
 		ItemStack charged = item.clone().withType(Material.ENCHANTED_BOOK);
-		ProjectileGroup projs = new ProjectileGroup(new IcicleTomeProjectile());
+		ProjectileGroup projs = new ProjectileGroup(new IcicleTomeProjectile(slot, this));
 		eqi.setAction((pdata, in) -> {	
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
 			if (ev.isStatus(StatusType.FROST)) {
@@ -81,8 +82,12 @@ public class IcicleTome extends Equipment {
 	}
 	
 	private class IcicleTomeProjectile extends Projectile {
-		public IcicleTomeProjectile() {
+		private int slot;
+		private Equipment eq;
+		public IcicleTomeProjectile(int slot, Equipment eq) {
 			super(0.8, properties.get(PropertyType.RANGE), 1);
+			this.slot = slot;
+			this.eq = eq;
 		}
 
 		@Override
@@ -98,7 +103,7 @@ public class IcicleTome extends Equipment {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			proj.getMeta().addDamageSlice(new DamageSlice(proj.getOwner(), damage, DamageType.ICE));
+			proj.getMeta().addDamageSlice(new DamageSlice(proj.getOwner(), damage, DamageType.ICE, DamageStatTracker.of(id + slot, eq)));
 		}
 	}
 }

@@ -18,6 +18,7 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -36,9 +37,6 @@ public class WindSlash extends Equipment {
 		
 		amount = isUpgraded ? 5 : 3;
 		damage = isUpgraded ? 180 : 140;
-		for (int i = 0; i < amount; i++) {
-			projs.add(new WindSlashProjectile(i, amount / 2));
-		}
 	}
 	
 	public static Equipment get() {
@@ -47,6 +45,9 @@ public class WindSlash extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		for (int i = 0; i < amount; i++) {
+			projs.add(new WindSlashProjectile(i, amount / 2, slot, this));
+		}
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pd, in) -> {
 			Sounds.attackSweep.play(p, p);
 			projs.start(data);
@@ -62,11 +63,15 @@ public class WindSlash extends Equipment {
 	}
 	
 	private class WindSlashProjectile extends Projectile {
-		public WindSlashProjectile(int i, int center) {
+		private int slot;
+		private Equipment eq;
+		public WindSlashProjectile(int i, int center, int slot, Equipment eq) {
 			super(0.5, properties.get(PropertyType.RANGE), 2);
 			this.size(1, 1);
 			int iter = i - center;
 			this.rotation(iter * 25);
+			this.slot = slot;
+			this.eq = eq;
 		}
 
 		@Override
@@ -83,7 +88,7 @@ public class WindSlash extends Equipment {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			proj.getMeta().addDamageSlice(new DamageSlice(proj.getOwner(), damage, DamageType.SLASHING));
+			proj.getMeta().addDamageSlice(new DamageSlice(proj.getOwner(), damage, DamageType.SLASHING, DamageStatTracker.of(id + slot, eq)));
 		}
 	}
 }

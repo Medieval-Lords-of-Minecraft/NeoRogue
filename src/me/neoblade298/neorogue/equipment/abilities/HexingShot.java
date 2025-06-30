@@ -21,6 +21,7 @@ import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -89,19 +90,19 @@ public class HexingShot extends Equipment {
 			KillEvent ev = (KillEvent) in;
 			FightData fd = FightInstance.getFightData(ev.getTarget());
 			if (fd.hasStatus(ID + p.getName())) {
-				initTrap(p, data, ev.getTarget().getLocation());
+				initTrap(p, data, ev.getTarget().getLocation(), slot, this);
 			}
 			return TriggerResult.keep();
 		});
 	}
 
-	private void initTrap(Player p, PlayerFightData data, Location loc) {
+	private void initTrap(Player p, PlayerFightData data, Location loc, int slot, Equipment eq) {
 		Sounds.equip.play(p, p);
 		data.addTrap(new Trap(data, loc, 200) {
 			@Override
 			public void tick() {
 				spike.play(p, loc);
-				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.PIERCING, DamageOrigin.TRAP),
+				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.PIERCING, DamageStatTracker.of(id + slot, eq), DamageOrigin.TRAP),
 						TargetHelper.getEntitiesInRadius(p, loc, tp));
 			}
 		});

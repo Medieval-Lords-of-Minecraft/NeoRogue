@@ -24,6 +24,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -75,13 +76,14 @@ public class Fracturer extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, new FracturerInstance(id));
+		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, new FracturerInstance(id, this, slot));
 	}
 	
 	
 	private class FracturerInstance extends PriorityAction {
+		private Equipment eq;
 		private int count = 0;
-		public FracturerInstance(String id) {
+		public FracturerInstance(String id, Equipment eq, int slot) {
 			super(id);
 			action = (data, in) -> {
 				Player p = data.getPlayer();
@@ -89,14 +91,14 @@ public class Fracturer extends Equipment {
 				data.runAnimation(id, p, swing, p);
 				data.addTask(new BukkitRunnable() {
 					public void run() {
-						hitArea(p, data);
+						hitArea(p, data, slot);
 					}
 				}.runTaskLater(NeoRogue.inst(), 10L));
 				return TriggerResult.keep();
 			};
 		}
 		
-		private void hitArea(Player p, PlayerFightData data) {
+		private void hitArea(Player p, PlayerFightData data, int slot) {
 			Location hit = p.getLocation().add(p.getLocation().getDirection().setY(0).normalize().multiply(DISTANCE));
 			Sounds.explode.play(p, hit);
 			hitShape.play(Fracturer.edge, hit, LocalAxes.xz(), Fracturer.fill);
@@ -111,7 +113,7 @@ public class Fracturer extends Equipment {
 						first = false;
 					}
 					else {
-						DamageMeta dm = new DamageMeta(data, properties.get(PropertyType.DAMAGE), properties.getType());
+						DamageMeta dm = new DamageMeta(data, properties.get(PropertyType.DAMAGE), properties.getType(), DamageStatTracker.of(id + slot, eq));
 						FightInstance.dealDamage(dm, ent);
 					}
 				}
@@ -122,7 +124,8 @@ public class Fracturer extends Equipment {
 				Location start = p.getLocation().add(0, 0.5, 0);
 				ParticleUtil.drawLine(p, linePart, start, hit, 0.25);
 				LinkedList<LivingEntity> lineHit =  TargetHelper.getEntitiesInLine(p, start, hit, line);
-				FightInstance.dealDamage(new DamageMeta(data, earth, DamageType.EARTHEN), lineHit);
+				FightInstance.dealDamage(new DamageMeta(data, earth, DamageType.EARTHEN,
+						DamageStatTracker.of(id + slot, eq)), lineHit);
 				for (LivingEntity ent : lineHit) {
 					FightInstance.getFightData(ent.getUniqueId()).applyStatus(StatusType.CONCUSSED, data, concussed, -1);
 				}

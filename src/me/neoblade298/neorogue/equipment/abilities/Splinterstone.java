@@ -24,6 +24,7 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -60,7 +61,7 @@ public class Splinterstone extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ProjectileGroup proj = new ProjectileGroup(new SplinterstoneProjectile(data));
+		ProjectileGroup proj = new ProjectileGroup(new SplinterstoneProjectile(data, this, slot));
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			data.channel(20).then(new Runnable() {
 				public void run() {
@@ -74,8 +75,10 @@ public class Splinterstone extends Equipment {
 	private class SplinterstoneProjectile extends Projectile {
 		private Player p;
 		private PlayerFightData data;
+		private Equipment eq;
+		private int slot;
 
-		public SplinterstoneProjectile(PlayerFightData data) {
+		public SplinterstoneProjectile(PlayerFightData data, Equipment eq, int slot) {
 			super(1, properties.get(PropertyType.RANGE), 1);
 			this.size(0.5, 0.5);
 			this.data = data;
@@ -99,14 +102,15 @@ public class Splinterstone extends Equipment {
 			for (LivingEntity tmp : TargetHelper.getEntitiesInCone(p, ent.getLocation(), forward, tp)) {
 				if (tmp == hit.getEntity())
 					continue;
-				FightInstance.dealDamage(new DamageMeta(data, pierce, DamageType.PIERCING), tmp);
+				FightInstance.dealDamage(new DamageMeta(data, pierce, DamageType.PIERCING,
+						DamageStatTracker.of(id + slot, eq)), tmp);
 			}
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
 			Sounds.shoot.play(p, p);
-			proj.addDamageSlice(new DamageSlice(data, damage, DamageType.EARTHEN));
+			proj.addDamageSlice(new DamageSlice(data, damage, DamageType.EARTHEN, DamageStatTracker.of(ID + slot, eq)));
 		}
 	}
 

@@ -61,4 +61,7 @@ public class AmmunitionInstance {
 	public int getRemaining() {
 		return ammo instanceof LimitedAmmunition ? count : -1;
 	}
+	public Ammunition getAmmo() {
+		return ammo;
+	}
 }

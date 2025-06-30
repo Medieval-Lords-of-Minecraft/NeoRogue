@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.session.fight.buff;
 
 import java.util.HashMap;
 
+import me.neoblade298.neorogue.equipment.Ammunition;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import net.kyori.adventure.text.Component;
@@ -96,6 +97,10 @@ public class StatTracker {
 
     public static BuffStatTracker damageBuffAlly(String id, Equipment eq) {
         return new BuffStatTracker(id, eq, "Damage Buffed", true);
+    }
+
+    public static BuffStatTracker arrowBuff(Ammunition ammo) {
+        return new BuffStatTracker(ammo.getId(), ammo, "Damage Buffed", true);
     }
 
     public static BuffStatTracker damageBuffAlly(String id, Equipment eq, boolean shouldCombine) {
