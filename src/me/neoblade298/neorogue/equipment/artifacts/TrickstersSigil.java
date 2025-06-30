@@ -11,8 +11,10 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -29,11 +31,15 @@ public class TrickstersSigil extends Artifact {
 	
 	@Override
 	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
-		data.addTrigger(ID, Trigger.RECEIVED_DAMAGE, (pdata, in) -> {
+		PriorityAction act = new PriorityAction(ID, (pdata, in) -> {
+			ReceivedDamageEvent ev = (ReceivedDamageEvent) in;
+			ev.setNullified(true);
 			Sounds.breaks.play(p, p);
 			Util.msgRaw(p, display.append(Component.text(" was used", NamedTextColor.GRAY)));
 			return TriggerResult.of(true, true);
 		});
+		act.setPriority(0);
+		data.addTrigger(ID, Trigger.RECEIVED_DAMAGE, act);
 	}
 	
 	@Override

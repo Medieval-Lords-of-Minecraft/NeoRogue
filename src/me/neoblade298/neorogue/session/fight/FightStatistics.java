@@ -243,7 +243,7 @@ public class FightStatistics {
 		case INJURY:
 			return type.ctag.append(Component.text(" Mitigation: " + df.format(injuryMitigated), NamedTextColor.WHITE));
 		case SANCTIFIED:
-			return type.ctag.append(Component.text(" Healing: " + df.format(sanctifiedShielding), NamedTextColor.WHITE));
+			return type.ctag.append(Component.text(" Shielding: " + df.format(sanctifiedShielding), NamedTextColor.WHITE));
 		default:
 			return null;
 		}

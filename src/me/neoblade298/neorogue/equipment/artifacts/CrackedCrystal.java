@@ -31,7 +31,7 @@ public class CrackedCrystal extends Artifact {
 	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
 		data.addTrigger(ID, Trigger.PRE_CAST_USABLE, (pdata, in) -> {
 			CheckCastUsableEvent ev = (CheckCastUsableEvent) in;
-			ev.addBuff(PropertyType.COOLDOWN, id, new Buff(data, 1, 0, BuffStatTracker.ignored(this)));
+			ev.addBuff(PropertyType.COOLDOWN, id, new Buff(data, 1, 0, BuffStatTracker.of(ID, this, "Cooldown reduced")));
 			return TriggerResult.keep();
 		});
 	}

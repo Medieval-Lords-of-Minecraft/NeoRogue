@@ -6,6 +6,7 @@ import me.neoblade298.neorogue.session.fight.FightData;
 public class ReceivedDamageEvent {
 	private FightData damager;
 	private DamageMeta meta;
+	private boolean isNullified = false;
 	public FightData getDamager() {
 		return damager;
 	}
@@ -19,5 +20,11 @@ public class ReceivedDamageEvent {
 		super();
 		this.damager = damager;
 		this.meta = meta;
+	}
+	public boolean isNullified() {
+		return isNullified;
+	}
+	public void setNullified(boolean isNullified) {
+		this.isNullified = isNullified;
 	}
 }

@@ -36,6 +36,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.TaskChain;
 import me.neoblade298.neorogue.session.fight.TickAction.TickResult;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffList;
 import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
@@ -459,16 +460,20 @@ public class PlayerFightData extends FightData {
 					// Buff mana costs, cannot go below 0, uses temp mana/stamina cost if it exists
 					// first (Escape Plan)
 					BuffList b = ev.getBuff(PropertyType.MANA_COST);
-					if (ei.getTempManaCost() == -1)
+					if (ei.getTempManaCost() == -1) {
 						ei.setTempManaCost(Math.max(0, b.applyNegative(ei.getManaCost())));
+						calculateStatTrackers(ei.getManaCost(), ei.getManaCost() - ei.getTempManaCost(), b);
+					}
 					// Buff stamina costs, cannot go below 0
 					b = ev.getBuff(PropertyType.STAMINA_COST);
-					if (ei.getTempStaminaCost() == -1)
+					if (ei.getTempStaminaCost() == -1) {
 						ei.setTempStaminaCost(Math.max(0, b.applyNegative(ei.getStaminaCost())));
+						calculateStatTrackers(ei.getStaminaCost(), ei.getStaminaCost() - ei.getTempStaminaCost(), b);
+					}
 					// Buff cooldowns, doesn't matter if it goes below 0
 					b = ev.getBuff(PropertyType.COOLDOWN);
-
-					ei.setTempCooldown(b.applyNegative(ei.getBaseCooldown()));
+					ei.setTempCooldown(Math.max(0, b.applyNegative(ei.getBaseCooldown())));
+					calculateStatTrackers(ei.getTempCooldown(), ei.getBaseCooldown() - ei.getTempCooldown(), b);
 
 					if (!ei.canTrigger(p, data, inputs)) {
 						continue;
@@ -504,6 +509,37 @@ public class PlayerFightData extends FightData {
 			return cancel;
 		}
 		return false;
+	}
+
+	private void calculateStatTrackers(double base, double diff, BuffList buffs) {
+		Comparator<Buff> comp = new Comparator<Buff>() {
+			@Override
+			public int compare(Buff b1, Buff b2) {
+				double change1 = b1.getEffectiveChange(base);
+				double change2 = b2.getEffectiveChange(base);
+				return Double.compare(change2, change1);
+			}
+		};
+		ArrayList<Buff> sorted = new ArrayList<Buff>(buffs.getBuffs());
+		Collections.sort(sorted, comp);
+
+		for (Buff b : sorted) {
+			if (b.getStatTracker() == null)
+				continue;
+			if (!(b.getApplier() instanceof PlayerFightData))
+				continue;
+				
+			double change = b.getEffectiveChange(base);
+			// Run through buffs and apply stats until the diff is 0
+			if (diff > change) {
+				((PlayerFightData) b.getApplier()).getStats().addBuffStat(b.getStatTracker(), change);
+				diff -= change;
+			}
+			else {
+				((PlayerFightData) b.getApplier()).getStats().addBuffStat(b.getStatTracker(), diff);
+				break;
+			}
+		}
 	}
 
 	public void setAmmoInstance(AmmunitionInstance ammo) {

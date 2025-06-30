@@ -60,8 +60,11 @@ public class PracticeDummy extends Artifact {
 		public TriggerResult trigger(PlayerFightData data, Object inputs) {
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) inputs;
 			Equipment eq = ev.getWeapon();
-			if (eq.getId().equals(weapon)) {
-				count = 0;
+			if (!eq.getId().equals(weapon)) {
+				weapon = eq.getId();
+				count = 1;
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+						new Buff(data, 0, 0, StatTracker.damageBuffAlly(buffId, art, false)));
 				return TriggerResult.keep();
 			}
 			
@@ -73,10 +76,10 @@ public class PracticeDummy extends Artifact {
 				Util.msg(p, "<red>Practice Dummy</red> was activated");
 			}
 			if (count > num) {
-				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, 0.5, StatTracker.damageBuffAlly(buffId, art)));
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, 0.5, StatTracker.damageBuffAlly(buffId, art, false)));
 				return TriggerResult.keep();
 			}
-			return TriggerResult.remove();
+			return TriggerResult.keep();
 		}
 		
 	}

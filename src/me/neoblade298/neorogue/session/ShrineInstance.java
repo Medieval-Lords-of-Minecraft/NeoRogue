@@ -99,7 +99,7 @@ public class ShrineInstance extends EditInventoryInstance {
 		if (isHost) {
 			line += "(Host) ";
 		}
-		line += data.getData().getDisplay() + " (" + Math.round(data.getHealth()) + " / " + data.getMaxHealth()
+		line += data.getData().getDisplay() + " (" + Math.round(data.getHealth()) + " / " + (int) data.getMaxHealth()
 				+ "§c♥§f)";
 		return line;
 	}

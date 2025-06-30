@@ -192,6 +192,10 @@ public class EquipmentInstance extends PriorityAction {
 		this.tempCooldown = cooldown;
 	}
 
+	public double getTempCooldown() {
+		return this.tempCooldown;
+	}
+
 	public void addCooldown(double seconds) {
 		nextUsable += seconds * 1000;
 		updateIcon();

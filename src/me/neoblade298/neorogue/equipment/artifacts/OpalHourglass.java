@@ -35,7 +35,7 @@ public class OpalHourglass extends Artifact {
 			CheckCastUsableEvent ev = (CheckCastUsableEvent) in;
 			if (ev.getInstance().getBaseCooldown() < thres)
 				return TriggerResult.keep();
-			ev.addBuff(PropertyType.COOLDOWN, id, new Buff(data, reduc, 0, BuffStatTracker.ignored(this)));
+			ev.addBuff(PropertyType.COOLDOWN, id, new Buff(data, reduc, 0, BuffStatTracker.of(ID, this, "Cooldown reduced")));
 			return TriggerResult.keep();
 		});
 	}

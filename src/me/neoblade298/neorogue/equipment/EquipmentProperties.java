@@ -175,7 +175,7 @@ public class EquipmentProperties {
 		Property prop = properties.get(type);
 		String color = prop.canUpgrade ? "<yellow>" : "<white>";
 		return SharedUtil
-				.color("<gold>" + type.label + color + prop.amount + (type == PropertyType.ATTACK_SPEED ? "/s" : ""));
+				.color("<gold>" + type.label + ": " + color + prop.amount + (type == PropertyType.ATTACK_SPEED ? "/s" : ""));
 	}
 
 	public boolean contains(PropertyType type) {
@@ -233,14 +233,18 @@ public class EquipmentProperties {
 	}
 
 	public enum PropertyType {
-		MANA_COST("Mana Cost: "), STAMINA_COST("Stamina Cost: "), RANGE("Range: "), COOLDOWN("Cooldown: "),
-		DAMAGE("Damage: "), KNOCKBACK("Knockback: "), AREA_OF_EFFECT("Area of Effect: "),
-		ATTACK_SPEED("Attack Speed: ");
+		MANA_COST("Mana Cost"), STAMINA_COST("Stamina Cost"), RANGE("Range"), COOLDOWN("Cooldown"),
+		DAMAGE("Damage"), KNOCKBACK("Knockback"), AREA_OF_EFFECT("Area of Effect"),
+		ATTACK_SPEED("Attack Speed");
 
 		private String label;
 
 		private PropertyType(String label) {
 			this.label = label;
+		}
+
+		public String getDisplay() {
+			return label;
 		}
 	}
 
@@ -249,7 +253,7 @@ public class EquipmentProperties {
 		String str = "";
 		for (PropertyType type : PropertyType.values()) {
 			if (properties.containsKey(type)) {
-				str += type.label + properties.get(type).amount + ",";
+				str += type.label + ": " + properties.get(type).amount + ",";
 			}
 		}
 		return str;

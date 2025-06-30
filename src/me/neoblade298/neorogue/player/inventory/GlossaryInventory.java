@@ -12,6 +12,9 @@ import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.SessionManager;
 import me.neoblade298.neorogue.session.ShopInventory;
 import net.kyori.adventure.text.Component;
 
@@ -61,6 +64,13 @@ public class GlossaryInventory extends CoreInventory {
 						if (prev instanceof ShopInventory) {
 							((ShopInventory) prev).onOpenInventory();
 						}
+
+						// Need to manually reactivate player session inventory
+						Session s = SessionManager.getSession(p);
+						if (s == null) return;
+						PlayerSessionData psd = s.getData(p.getUniqueId());
+						if (psd == null || s.isSpectator(p.getUniqueId())) return;
+						new PlayerSessionInventory(psd);
 					}
 				}
 			}.runTask(NeoRogue.inst());

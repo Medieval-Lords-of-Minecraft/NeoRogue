@@ -6,7 +6,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 
 public class PriorityAction implements TriggerAction, Comparable<PriorityAction> {
 	protected String id;
-	protected int priority = 0;
+	protected int priority = 10;
 	protected TriggerAction action;
 	protected TriggerCondition condition;
 	public PriorityAction(String id) {
@@ -31,6 +31,10 @@ public class PriorityAction implements TriggerAction, Comparable<PriorityAction>
 	}
 	public int getPriority() {
 		return priority;
+	}
+	// Lowest priority is executed first
+	public void setPriority(int priority) {
+		this.priority = priority;
 	}
 	@Override
 	public int compareTo(PriorityAction o) {
@@ -71,7 +75,7 @@ public class PriorityAction implements TriggerAction, Comparable<PriorityAction>
 	}
 	@Override
 	public String toString() {
-		return id;
+		return id + "(" + priority + ")";
 	}
 
 	public String getId() {

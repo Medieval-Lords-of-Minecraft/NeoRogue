@@ -38,14 +38,14 @@ public class MortalEngine extends Equipment {
 			CheckCastUsableEvent ev = (CheckCastUsableEvent) in;
 			if (ev.getInstance().getStaminaCost() > 0) {
 				ev.addBuff(PropertyType.STAMINA_COST, ID,
-						new Buff(data, inst.getCount(), 0, BuffStatTracker.ignored(this)));
+						new Buff(data, inst.getCount(), 0, BuffStatTracker.of(id + slot, this, "Stamina cost reduced")));
 			}
 			if (ev.getInstance().getStaminaCost() < cutoff)
 				return TriggerResult.keep();
 			inst.addCount(reduc);
 			return TriggerResult.keep();
 		});
-		data.addTrigger(ID, Trigger.CHECK_CAST_USABLE, inst);
+		data.addTrigger(ID, Trigger.PRE_CAST_USABLE, inst);
 	}
 
 	@Override

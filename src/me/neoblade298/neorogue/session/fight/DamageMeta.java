@@ -118,6 +118,7 @@ public class DamageMeta {
 		this.ignoreBuffs = original.ignoreBuffs;
 		this.source = original.source;
 		this.knockback = original.knockback;
+		this.weapon = original.weapon;
  		
  		// These are deep clones
 		this.damageBuffs = cloneBuffLists(original.damageBuffs);

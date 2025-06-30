@@ -57,6 +57,9 @@ public class LeatherBracer extends Equipment {
 		@Override
 		public TriggerResult trigger(PlayerFightData data, Object inputs) {
 			ReceivedDamageEvent ev = (ReceivedDamageEvent) inputs;
+			if (ev.isNullified()) {
+				return TriggerResult.keep();
+			}
 			Sounds.block.play(p, p);
 			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL),
 					Buff.increase(data, 15, BuffStatTracker.defenseBuffAlly(buffId, eq)));
