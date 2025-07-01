@@ -94,9 +94,10 @@ public abstract class FightInstance extends Instance {
 	private static HashMap<UUID, Barrier> userBarriers = new HashMap<UUID, Barrier>();
 	private static HashMap<UUID, FightData> fightData = new HashMap<UUID, FightData>();
 	private static HashMap<UUID, BukkitTask> blockTasks = new HashMap<UUID, BukkitTask>();
-	private static HashSet<UUID> toTick = new HashSet<UUID>(), indicators = new HashSet<UUID>();
+	private static HashSet<UUID> indicators = new HashSet<UUID>();
 	private static final int KILLS_TO_SCALE = 5; // number of mobs to kill before increasing total mobs by 1
 	
+	protected HashSet<UUID> toTick = new HashSet<UUID>();
 	protected LinkedList<Corpse> corpses = new LinkedList<Corpse>();
 	protected HashMap<Player, Corpse> revivers = new HashMap<Player, Corpse>();
 	protected HashSet<UUID> party = new HashSet<UUID>();
@@ -1049,12 +1050,18 @@ public abstract class FightInstance extends Instance {
 	}
 	
 	public static FightData removeFightData(UUID uuid) {
-		toTick.remove(uuid);
-		return fightData.remove(uuid);
+		FightData fd = fightData.remove(uuid);
+		if (fd.getInstance() == null) return fd;
+		fd.getInstance().removeFromTickList(uuid);
+		return fd;
 	}
 	
-	public static void addToTickList(UUID uuid) {
+	public void addToTickList(UUID uuid) {
 		toTick.add(uuid);
+	}
+
+	public void removeFromTickList(UUID uuid) {
+		toTick.remove(uuid);
 	}
 	
 	// For any barrier that isn't the user's personal barrier (shield)
