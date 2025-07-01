@@ -154,8 +154,8 @@ public abstract class FightInstance extends Instance {
 
 	public void updateSpectatorLines() {
 		spectatorLines = new ArrayList<String>(9);
-		for (PlayerFightData pdata : userData.values()) {
-			spectatorLines.add(createHealthBar(pdata));
+		for (Player p : s.getOnlinePlayers()) {
+			spectatorLines.add(createHealthBar(userData.get(p.getUniqueId())));
 		}
 	}
 
