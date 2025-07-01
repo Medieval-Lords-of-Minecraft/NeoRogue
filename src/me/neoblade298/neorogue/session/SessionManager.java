@@ -471,6 +471,11 @@ public class SessionManager implements Listener {
 			if (slot != null && inv.getItem(slot).getType().isAir()) {
 				e.setCancelled(true);
 			}
+
+			// Prevent using eye of ender
+			if (hand.getType() == Material.ENDER_EYE) {
+				e.setCancelled(true);
+			}
 		}
 
 		// Disable clicking on crafting tables, anvils, furnaces, etc
