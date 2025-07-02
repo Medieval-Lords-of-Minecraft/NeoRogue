@@ -154,7 +154,8 @@ public class Map {
 		
 		// Fill in any spots adjacent to pieces with border pieces
 		if (type == AreaType.HARVEST_FIELDS) {
-			int y = (int) map.getPieces().getFirst().getPiece().getEntrances()[0].getY();
+			boolean hasEntrances = map.getPieces().getFirst().getPiece().getEntrances() != null;
+			int y = hasEntrances ? (int) map.getPieces().getFirst().getPiece().getEntrances()[0].getY() : 0;
 			boolean[][] shape = map.shape;
 			HashSet<Pair> set = new HashSet<Pair>();
 			for (int i = 0; i < shape.length; i++) {

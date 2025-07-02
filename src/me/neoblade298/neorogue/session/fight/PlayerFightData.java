@@ -802,7 +802,6 @@ public class PlayerFightData extends FightData {
 			hasSprinted = false;
 
 			updateBoardLines();
-			System.out.println("Triggering for " + p.getName());
 			FightInstance.trigger(p, Trigger.PLAYER_TICK, null);
 			tick++;
 			return TickResult.KEEP;

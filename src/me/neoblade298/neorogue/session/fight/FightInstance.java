@@ -1051,6 +1051,7 @@ public abstract class FightInstance extends Instance {
 	
 	public static FightData removeFightData(UUID uuid) {
 		FightData fd = fightData.remove(uuid);
+		if (fd == null) return null;
 		if (fd.getInstance() == null) return fd;
 		fd.getInstance().removeFromTickList(uuid);
 		return fd;
