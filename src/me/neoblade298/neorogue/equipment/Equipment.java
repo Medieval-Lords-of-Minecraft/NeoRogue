@@ -1224,12 +1224,14 @@ public abstract class Equipment implements Comparable<Equipment> {
 	}
 
 	public boolean canUseWeapon(PlayerFightData data) {
-		if (data.getMana() < properties.get(PropertyType.MANA_COST)) {
+		double manaCost = properties.get(PropertyType.MANA_COST);
+		if (data.getMana() < manaCost && manaCost > 0) {
 			Util.displayError(data.getPlayer(), "Not enough mana!");
 			return false;
 		}
 
-		if (data.getStamina() < properties.get(PropertyType.STAMINA_COST)) {
+		double staminaCost = properties.get(PropertyType.STAMINA_COST);
+		if (data.getStamina() < staminaCost && staminaCost > 0) {
 			Util.displayError(data.getPlayer(), "Not enough stamina!");
 			return false;
 		}
