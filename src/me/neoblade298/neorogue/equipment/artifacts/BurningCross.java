@@ -28,7 +28,7 @@ public class BurningCross extends Artifact {
 	public BurningCross() {
 		super(ID, "Burning Cross", Rarity.UNCOMMON, EquipmentClass.WARRIOR);
 
-		damage = 5;
+		damage = 25;
 	}
 	
 	public static Equipment get() {
@@ -41,7 +41,7 @@ public class BurningCross extends Artifact {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
 			String id = ev.getStatusId();
 			int stacks = ev.getStacks();
-			if (id.equals(StatusType.CONCUSSED.name())) {
+			if (id.equals(StatusType.SANCTIFIED.name())) {
 				FightData fd = ev.getTarget();
 				if (ev.getMeta() == null) {
 					FightInstance.dealDamage(new DamageMeta(data, stacks * damage, DamageType.FIRE,

@@ -16,11 +16,11 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class RingOfFortitude extends Equipment {
 	private static final String ID = "ringOfFortitude";
-	private double mult;
+	private int damage;
 	public RingOfFortitude(boolean isUpgraded) {
 		super(ID, "Ring Of Fortitude", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ACCESSORY);
-		mult = isUpgraded ? 0.8 : 0.5;
+		damage = isUpgraded ? 45 : 30;
 	}
 	
 	public static Equipment get() {
@@ -32,14 +32,14 @@ public class RingOfFortitude extends Equipment {
 		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
 			if (data.getShields().isEmpty()) return TriggerResult.keep();
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
-			ev.getMeta().addDamageSlice(new DamageSlice(data, data.getShields().getAmount(), DamageType.BLUNT, DamageStatTracker.of(id + slot, this)));
+			ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.BLUNT, DamageStatTracker.of(id + slot, this)));
 			return TriggerResult.keep();
 		});
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.IRON_NUGGET, "Your basic attacks additionally deal your current " + GlossaryTag.SHIELDS.tag(this)
-				+ " multiplied by <yellow>" + mult + "</yellow> as " + GlossaryTag.BLUNT.tag(this) + " damage.");
+		item = createItem(Material.IRON_NUGGET, "Your basic attacks deal " + GlossaryTag.BLUNT.tag(this, damage, true) + " damage if you have " + 
+			GlossaryTag.SHIELDS.tag(this) + ".");
 	}
 }

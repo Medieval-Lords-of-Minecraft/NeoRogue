@@ -55,10 +55,10 @@ public class Atone extends Equipment {
 	
 	public Atone(boolean isUpgraded) {
 		super(ID, "Atone", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 10, 5, 7));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(5, 10, 5, 7));
 		
-		damage = isUpgraded ? 150 : 120;
-		sanct = isUpgraded ? 10 : 7;
+		damage = isUpgraded ? 300 : 200;
+		sanct = isUpgraded ? 15 : 7;
 	}
 	
 	public static Equipment get() {
