@@ -64,7 +64,7 @@ public class Charge extends Equipment {
 			// 1 second cooldown to adding shield so player can't spam toggle sprint
 			if (System.currentTimeMillis() - lastUsed < 1000) return;
 			Player p = pdata.getPlayer();
-			pdata.addSimpleShield(p.getUniqueId(), shields, 60L);
+			pdata.addSimpleShield(p.getUniqueId(), shields, 60);
 			lastUsed = System.currentTimeMillis();
 		}
 	}

@@ -354,6 +354,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new GroundLance(b);
 			new GrowingHex(b);
 			new GrowingSpark(b);
+			new GuardianSpirit(b);
 			new HailCloak(b);
 			new HeadTrauma(b);
 			new Heartbeat(b);

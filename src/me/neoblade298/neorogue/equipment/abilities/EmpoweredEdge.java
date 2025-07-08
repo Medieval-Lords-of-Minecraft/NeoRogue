@@ -51,7 +51,7 @@ public class EmpoweredEdge extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, inputs) -> {
 			Sounds.equip.play(p, p);
-			data.addSimpleShield(p.getUniqueId(), shields, 100L);
+			data.addSimpleShield(p.getUniqueId(), shields, 100);
 			pc.play(p, p);
 			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata2, in) -> {
 				PreBasicAttackEvent ev = (PreBasicAttackEvent) in;

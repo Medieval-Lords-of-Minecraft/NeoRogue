@@ -48,7 +48,7 @@ public class Preparation extends Equipment {
 				public void run() {
 					Sounds.success.play(p, p);
 					part.play(p, p);
-					data.addSimpleShield(p.getUniqueId(), shields, 200L);
+					data.addSimpleShield(p.getUniqueId(), shields, 200);
 					inst.setCount(1);
 					data.addTask(new BukkitRunnable() {
 						public void run() {

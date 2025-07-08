@@ -323,11 +323,11 @@ public class FightData {
 	}
 	
 	// No decay
-	public Shield addSimpleShield(UUID applier, double amt, long decayDelayTicks, boolean isSecondary) {
+	public Shield addSimpleShield(UUID applier, double amt, int decayDelayTicks, boolean isSecondary) {
 		return addShield(applier, amt, true, decayDelayTicks, 100, 0, 1, isSecondary);
 	}
 	// No decay
-	public Shield addSimpleShield(UUID applier, double amt, long decayDelayTicks) {
+	public Shield addSimpleShield(UUID applier, double amt, int decayDelayTicks) {
 		return addShield(applier, amt, true, decayDelayTicks, 100, 0, 1, false);
 	}
 	
@@ -339,7 +339,8 @@ public class FightData {
 		return addShield(applier, amt, true, 0, 0, 0, 0, false);
 	}
 	
-	public Shield addShield(UUID applier, double amt, boolean decayPercent, long decayDelayTicks, double decayAmount, long decayPeriodTicks, int decayRepetitions, boolean isSecondary) {
+	public Shield addShield(UUID applier, double amt, boolean decayPercent, int decayDelayTicks, double decayAmount, 
+			int decayPeriodTicks, int decayRepetitions, boolean isSecondary) {
 		PlayerFightData applierData = FightInstance.getUserData(applier);
 		Shield shield = new Shield(applier, amt, decayPercent, decayDelayTicks, decayAmount, decayPeriodTicks, decayRepetitions);
 		GrantShieldsEvent ev = new GrantShieldsEvent(applierData, this, shield, isSecondary);
@@ -349,7 +350,7 @@ public class FightData {
 		if (this instanceof PlayerFightData) {
 			FightInstance.trigger(((PlayerFightData) this).getPlayer(), Trigger.RECEIVE_SHIELDS, ev);
 		}
-		shield.applyBuff(ev.getBuff());
+		shield.applyBuffs(ev.getAmountBuff(), ev.getDurationBuff());
 		shields.addShield(shield);
 		if (shield.getTask() != null) tasks.put(UUID.randomUUID().toString(), shield.getTask());
 		return shield;

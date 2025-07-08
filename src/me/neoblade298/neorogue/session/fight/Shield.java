@@ -10,13 +10,14 @@ import me.neoblade298.neorogue.session.fight.buff.BuffList;
 
 public class Shield implements Comparable<Shield> {
 	private double amount, total, decayAmount;
-	private long decayDelayTicks, decayPeriodTicks;
+	private int decayDelayTicks, decayPeriodTicks;
 	private boolean isPercent;
 	private int decayRepetitions;
 	private ShieldHolder shieldHolder;
 	private UUID applier;
 	private BukkitTask task;
-	public Shield(UUID applier, double amt, boolean isPercent, long decayDelayTicks, double decayAmount, long decayPeriodTicks, int decayRepetitions) {
+	public Shield(UUID applier, double amt, boolean isPercent, int decayDelayTicks, double decayAmount, 
+			int decayPeriodTicks, int decayRepetitions) {
 		this.total = amt;
 		this.amount = amt;
 		this.applier = applier;
@@ -36,9 +37,24 @@ public class Shield implements Comparable<Shield> {
 	}
 	
 	// Should only be called before a shield is applied, or else it'll refill the shield and break stuff
-	public void applyBuff(BuffList b) {
-		this.amount = b.apply(amount);
-		this.total = b.apply(total);
+	public void applyBuffs(BuffList amountBuff, BuffList durationBuff) {
+		this.amount = amountBuff.apply(amount);
+		this.total = amountBuff.apply(total);
+
+		if (decayAmount == 0) {
+			// If decay amount is 0, then we don't need to apply duration buffs
+			return;
+		}
+
+		// Simple shield, only decays once after a set delay, buff the delay
+		if (decayRepetitions == 1 && decayAmount == 100) {
+			this.decayDelayTicks = durationBuff.apply(decayDelayTicks);
+		}
+		// Currently not used, as I don't use any complex decaying shields, but it would probably require
+		// separate buff lists for both the decay delay and period since they can be different
+		//else if (decayRepetitions > 1) {
+		
+		//}
 	}
 	
 	public void initialize(FightData data) {

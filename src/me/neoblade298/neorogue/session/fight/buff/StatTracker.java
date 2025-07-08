@@ -95,6 +95,14 @@ public class StatTracker {
         return new StatTracker(id, eq);
     }
 
+    public static BuffStatTracker statusBuff(String id, Equipment eq) {
+        return new BuffStatTracker(id, eq, "Statuses Buffed");
+    }
+
+    public static BuffStatTracker shield(String id, Equipment eq) {
+        return new BuffStatTracker(id, eq, "Shields Buffed");
+    }
+
     public static BuffStatTracker damageBuffAlly(String id, Equipment eq) {
         return new BuffStatTracker(id, eq, "Damage Buffed", true);
     }

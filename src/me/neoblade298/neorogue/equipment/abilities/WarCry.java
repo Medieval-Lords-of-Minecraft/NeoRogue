@@ -49,7 +49,7 @@ public class WarCry extends Equipment {
 			Sounds.blazeDeath.play(p, p);
 			pc.play(p, p);
 			data.applyStatus(StatusType.STRENGTH, data, strength, -1);
-			data.addSimpleShield(p.getUniqueId(), shields, 100L);
+			data.addSimpleShield(p.getUniqueId(), shields, 100);
 			return TriggerResult.keep();
 		}));
 	}
