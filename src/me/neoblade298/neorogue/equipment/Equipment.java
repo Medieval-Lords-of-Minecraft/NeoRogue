@@ -156,6 +156,7 @@ import me.neoblade298.neorogue.equipment.cursed.DullDagger;
 import me.neoblade298.neorogue.equipment.cursed.GnarledStaff;
 import me.neoblade298.neorogue.equipment.cursed.MangledBow;
 import me.neoblade298.neorogue.equipment.cursed.RustySword;
+import me.neoblade298.neorogue.equipment.offhands.BatteringRam;
 import me.neoblade298.neorogue.equipment.offhands.ChasingDagger;
 import me.neoblade298.neorogue.equipment.offhands.ConductiveArmguard;
 import me.neoblade298.neorogue.equipment.offhands.HastyShield;
@@ -358,6 +359,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new HailCloak(b);
 			new HeadTrauma(b);
 			new Heartbeat(b);
+			new HerculeanStrength(b);
 			new HexCurse(b);
 			new HexCurse2(b);
 			new HexingShot(b);
@@ -536,6 +538,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new StonyCloak(b);
 
 			// Offhands
+			new BatteringRam(b);
 			new BlinkRune(b);
 			new ChasingDagger(b);
 			new CopperFunnel(b);
