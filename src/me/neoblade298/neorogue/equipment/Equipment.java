@@ -159,6 +159,7 @@ import me.neoblade298.neorogue.equipment.cursed.RustySword;
 import me.neoblade298.neorogue.equipment.offhands.BatteringRam;
 import me.neoblade298.neorogue.equipment.offhands.ChasingDagger;
 import me.neoblade298.neorogue.equipment.offhands.ConductiveArmguard;
+import me.neoblade298.neorogue.equipment.offhands.EnduranceShield;
 import me.neoblade298.neorogue.equipment.offhands.HastyShield;
 import me.neoblade298.neorogue.equipment.offhands.HavenTome;
 import me.neoblade298.neorogue.equipment.offhands.IcicleTome;
@@ -176,6 +177,7 @@ import me.neoblade298.neorogue.equipment.offhands.SmallShield;
 import me.neoblade298.neorogue.equipment.offhands.SpikyShield;
 import me.neoblade298.neorogue.equipment.offhands.TomeOfScorchedEarth;
 import me.neoblade298.neorogue.equipment.offhands.TomeOfWeakness;
+import me.neoblade298.neorogue.equipment.offhands.VengefulShield;
 import me.neoblade298.neorogue.equipment.offhands.WristBlade;
 import me.neoblade298.neorogue.equipment.weapons.*;
 import me.neoblade298.neorogue.player.PlayerSessionData;
@@ -543,6 +545,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new ChasingDagger(b);
 			new CopperFunnel(b);
 			new ConductiveArmguard(b);
+			new EnduranceShield(b);
 			new GuardingRune(b);
 			new HastyShield(b);
 			new HavenTome(b);
@@ -562,6 +565,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new SpikyShield(b);
 			new TomeOfScorchedEarth(b);
 			new TomeOfWeakness(b);
+			new VengefulShield(b);
 			new WardingRune(b);
 			new WristBlade(b);
 

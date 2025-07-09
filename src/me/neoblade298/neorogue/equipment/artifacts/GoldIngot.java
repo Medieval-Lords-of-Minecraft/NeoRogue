@@ -37,7 +37,7 @@ public class GoldIngot extends Artifact {
 	public void onInitializeSession(PlayerSessionData data) {
 		data.addTrigger(id, SessionTrigger.REWARD_GOLD, (pdata, in) -> {
 			RewardGoldEvent ev = (RewardGoldEvent) in;
-			ev.setAmount(ev.getAmount() + 10);
+			ev.setAmount(ev.getAmount() + 25);
 		});
 	}
 	
