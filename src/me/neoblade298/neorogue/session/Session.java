@@ -54,6 +54,7 @@ import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.MapViewer;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -477,6 +478,7 @@ public class Session {
 		inst.start();
 		System.out.println("Started instance " + inst.getClass().getSimpleName());
 		for (PlayerSessionData psd : party.values()) {
+			psd.trigger(SessionTrigger.VISIT_NODE, null);
 			System.out.println("Debug for " + psd.getPlayer().getName());
 			for (EquipSlot es : EquipSlot.values()) {
 				String line = es + ": ";

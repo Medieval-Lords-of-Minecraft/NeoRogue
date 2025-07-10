@@ -33,7 +33,13 @@ public class QuartzPrism extends Artifact {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void setupItem() {
+		item = createItem(Material.QUARTZ, "For the first " + DescUtil.white(duration + "s") +
+		" of a fight, any positive status effects applied to you are increased by " + DescUtil.white(inc) + ".");
+	}
+
+	@Override
+	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
 		ActionMeta am = new ActionMeta();
 		am.setBool(true);
 
@@ -44,23 +50,14 @@ public class QuartzPrism extends Artifact {
 		}.runTaskLater(NeoRogue.inst(), duration * 20));
 
 		data.addTrigger(id, Trigger.PRE_APPLY_STATUS, (pdata, in) -> {
-			if (!am.getBool()) return TriggerResult.remove();
+			if (!am.getBool())
+				return TriggerResult.remove();
 			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
-			if (ev.getStatusClass() != StatusClass.POSITIVE) return TriggerResult.keep();
+			if (ev.getStatusClass() != StatusClass.POSITIVE)
+				return TriggerResult.keep();
 			ev.getStacksBuffList().add(Buff.increase(data, inc, BuffStatTracker.statusBuff(id, this)));
 			return TriggerResult.keep();
 		});
-	}
-
-	@Override
-	public void setupItem() {
-		item = createItem(Material.QUARTZ, "For the first " + DescUtil.white(duration + "s") +
-		" of a fight, any positive status effects applied to you are increased by " + DescUtil.white(inc) + ".");
-	}
-
-	@Override
-	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
-
 	}
 
 	@Override

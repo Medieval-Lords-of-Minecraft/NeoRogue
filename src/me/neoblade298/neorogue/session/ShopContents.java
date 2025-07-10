@@ -19,11 +19,11 @@ public class ShopContents {
 	private static final Equipment[] GEMS = new Equipment[] { RubyCluster.get(), EmeraldCluster.get(), SapphireCluster.get() };
 	private HashMap<Integer, ShopItem> shopItems = new HashMap<Integer, ShopItem>();
 
-	public ShopContents(Session s, PlayerSessionData data) {
-		generateEquips(s, data); // 0-9
-		generateConsumables(s, data); // 10-12
-		generateGems(); // 13-15
-		generateArtifacts(s, data); // 16-18
+	public ShopContents(Session s, PlayerSessionData data, double discountMult) {
+		generateEquips(s, data, discountMult); // 0-9
+		generateConsumables(s, data, discountMult); // 10-12
+		generateGems(discountMult); // 13-15
+		generateArtifacts(s, data, discountMult); // 16-18
 	}
 
 	private ShopContents(HashMap<Integer, ShopItem> shopItems) {
@@ -34,7 +34,7 @@ public class ShopContents {
 		return shopItems.get(idx);
 	}
 
-	private void generateEquips(Session s, PlayerSessionData data) {
+	private void generateEquips(Session s, PlayerSessionData data, double discountMult) {
 		EquipmentClass ec = data.getPlayerClass();
 		// Create shop contents
 		ArrayList<Equipment> equips = new ArrayList<Equipment>();
@@ -51,7 +51,7 @@ public class ShopContents {
 		// First row of items
 		for (int i = 0; i < 5; i++) {
 			boolean sale = saleSlots.contains(i);
-			int price = NeoRogue.gen.nextInt(100, 150);
+			int price = NeoRogue.gen.nextInt((int) (100 * discountMult), (int) (150 * discountMult));
 			if (sale)
 				price = (int) (price * NeoRogue.gen.nextDouble(0.4, 0.8));
 			shopItems.put(i, new ShopItem(equips.get(i), price, sale));
@@ -60,35 +60,35 @@ public class ShopContents {
 		// Second row, more expensive
 		for (int i = 5; i < 10; i++) {
 			boolean sale = saleSlots.contains(i);
-			int price = NeoRogue.gen.nextInt(150, 200);
+			int price = NeoRogue.gen.nextInt((int) (150 * discountMult), (int) (200 * discountMult));
 			if (sale)
 				price = (int) (price * NeoRogue.gen.nextDouble(0.4, 0.8));
 			shopItems.put(i, new ShopItem(equips.get(i), price, sale));
 		}
 	}
 
-	private void generateConsumables(Session s, PlayerSessionData data) {
+	private void generateConsumables(Session s, PlayerSessionData data, double discountMult) {
 		EquipmentClass ec = data.getPlayerClass();
 		int idx = 10;
 		for (Consumable cons : Equipment.getConsumable(s.getAreasCompleted(), 3, ec, EquipmentClass.SHOP, EquipmentClass.CLASSLESS)) {
-			int price = NeoRogue.gen.nextInt(30, 60);
+			int price = NeoRogue.gen.nextInt((int) (30 * discountMult), (int) (60 * discountMult));
 			shopItems.put(idx++, new ShopItem(NeoRogue.gen.nextDouble() >= 0.7 ? cons.getUpgraded() : cons, price, false));
 		}
 	}
 
-	private void generateGems() {
+	private void generateGems(double discountMult) {
 		int idx = 13;
 		for (Equipment gem : GEMS) {
-			int price = NeoRogue.gen.nextInt(100, 200);
+			int price = NeoRogue.gen.nextInt((int) (100 * discountMult), (int) (200 * discountMult));
 			shopItems.put(idx++, new ShopItem(gem, price, false));
 		}
 	}
 
-	private void generateArtifacts(Session s, PlayerSessionData data) {
+	private void generateArtifacts(Session s, PlayerSessionData data, double discountMult) {
 		EquipmentClass ec = data.getPlayerClass();
 		int idx = 16;
 		for (Artifact art : Equipment.getArtifact(data.getArtifactDroptable(), s.getAreasCompleted() + 2, 3, ec, EquipmentClass.SHOP, EquipmentClass.CLASSLESS)) {
-			int price = NeoRogue.gen.nextInt(150, 250);
+			int price = NeoRogue.gen.nextInt((int) (150 * discountMult), (int) (250 * discountMult));
 			shopItems.put(idx++, new ShopItem(art, price, false));
 		}
 	}

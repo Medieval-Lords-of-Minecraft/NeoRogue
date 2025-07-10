@@ -11,13 +11,18 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.AreaType;
+import me.neoblade298.neorogue.area.NodeType;
+import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.Consumable;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
+import me.neoblade298.neorogue.equipment.artifacts.EmeraldCluster;
+import me.neoblade298.neorogue.equipment.artifacts.RubyCluster;
+import me.neoblade298.neorogue.equipment.artifacts.SapphireCluster;
 import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
-import me.neoblade298.neorogue.session.event.RewardGoldEvent;
+import me.neoblade298.neorogue.session.event.RewardFightEvent;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.reward.CoinsReward;
 import me.neoblade298.neorogue.session.reward.EquipmentChoiceReward;
@@ -80,25 +85,24 @@ public class MinibossFightInstance extends FightInstance {
 		for (UUID uuid : s.getParty().keySet()) {
 			PlayerSessionData data = s.getParty().get(uuid);
 			ArrayList<Reward> list = new ArrayList<Reward>();
-			RewardGoldEvent ev = new RewardGoldEvent(50);
-			data.trigger(SessionTrigger.REWARD_GOLD, ev);
-			list.add(new CoinsReward(ev.getAmount()));
+			RewardFightEvent ev = new RewardFightEvent(NodeType.MINIBOSS);
+			data.trigger(SessionTrigger.REWARD_FIGHT, ev);
+			list.add(new CoinsReward(50 + ev.getBonusGold()));
 			
 			ArrayList<Equipment> equipDrops = new ArrayList<Equipment>();
 			EquipmentClass ec = data.getPlayerClass();
 			int value = s.getAreasCompleted() + 2;
-			equipDrops.addAll(Equipment.getDrop(value, 3, ec, EquipmentClass.CLASSLESS));
+			equipDrops.addAll(Equipment.getDrop(value, 3 + ev.getBonusEquipment(), ec, EquipmentClass.CLASSLESS));
 			s.rollUpgrades(equipDrops);
 			list.add(new EquipmentChoiceReward(equipDrops));
 			
-			equipDrops = new ArrayList<Equipment>(3);
-			equipDrops.addAll(Equipment.getArtifact(data.getArtifactDroptable(), value, 3, ec, EquipmentClass.CLASSLESS));
-			list.add(new EquipmentChoiceReward(equipDrops));
+			Artifact art = Equipment.getArtifact(data.getArtifactDroptable(), value, 3, ec, EquipmentClass.CLASSLESS).getFirst();
+			list.add(new EquipmentReward(art));
 			
 			equipDrops = new ArrayList<Equipment>(3);
-			equipDrops.add(Equipment.get("rubyCluster", false));
-			equipDrops.add(Equipment.get("emeraldCluster", false));
-			equipDrops.add(Equipment.get("sapphireCluster", false));
+			equipDrops.add(RubyCluster.get());
+			equipDrops.add(EmeraldCluster.get());
+			equipDrops.add(SapphireCluster.get());
 			list.add(new EquipmentChoiceReward(equipDrops));
 			if (dropPotion) {
 				Consumable cons = Equipment.getConsumable(value, ec, EquipmentClass.CLASSLESS);

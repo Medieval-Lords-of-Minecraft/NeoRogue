@@ -3,20 +3,25 @@ package me.neoblade298.neorogue.equipment.artifacts;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
-import me.neoblade298.neorogue.session.event.RewardFightEvent;
+import me.neoblade298.neorogue.session.ShrineInstance;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import net.kyori.adventure.text.Component;
 
-public class GoldIngot extends Artifact {
-	private static final String ID = "goldIngot";
+public class CrossOfAntiquan extends Artifact {
+	private static final String ID = "crossOfAntiquan";
+	private double mult = 0.1;
+	private int multStr = (int) (mult * 100);
 	
-	public GoldIngot() {
-		super(ID, "Gold Ingot", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
+	public CrossOfAntiquan() {
+		super(ID, "Cross of Antiquan", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
 	}
 
 	public static Equipment get() {
@@ -35,14 +40,16 @@ public class GoldIngot extends Artifact {
 
 	@Override
 	public void onInitializeSession(PlayerSessionData data) {
-		data.addTrigger(id, SessionTrigger.REWARD_FIGHT, (pdata, in) -> {
-			RewardFightEvent ev = (RewardFightEvent) in;
-			ev.addBonusGold(25);
+		data.addTrigger(id, SessionTrigger.VISIT_NODE, (pdata, in) -> {
+			if (data.getSession().getInstance() instanceof ShrineInstance) {
+				Util.msg(data.getPlayer(), display.append(Component.text(" was activated")));
+				data.healPercent(mult);
+			}
 		});
 	}
 	
 	@Override
 	public void setupItem() {
-		item = createItem(Material.GOLD_INGOT, "Increases gold earned from fights by <white>25</white>.");
+		item = createItem(Material.GOLD_INGOT, "Every time you visit a shrine node, heal for " + DescUtil.white(multStr + "%") + " of your max health.");
 	}
 }

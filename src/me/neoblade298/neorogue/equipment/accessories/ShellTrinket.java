@@ -9,16 +9,18 @@ import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
-import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
-import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 
-public class LionheartBangle extends Artifact {
-	private static final String ID = "lionheartBangle";
-	private int thres = 10;
+public class ShellTrinket extends Artifact {
+	private static final String ID = "shellTrinket";
+	private static final int dec = 2;
 	
-	public LionheartBangle() {
-		super(ID, "Lionheart Bangle", Rarity.RARE, EquipmentClass.WARRIOR);
+	public ShellTrinket() {
+		super(ID, "Shell Trinket", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
 	}
 	
 	public static Equipment get() {
@@ -27,14 +29,12 @@ public class LionheartBangle extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.MAGMA_BLOCK, "For every " + DescUtil.white(thres) + " max HP you have, " +
-		"gain " + GlossaryTag.STRENGTH.tag(this, 1, true) + " at the start of a fight.");
+		item = createItem(Material.REDSTONE_TORCH, "Decreases damage taken by " + DescUtil.white(dec) + ".");
 	}
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
-		int str = (int) data.getMaxHealth() / thres;
-		data.applyStatus(StatusType.STRENGTH, data, str, -1);
+		data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, dec, BuffStatTracker.defenseBuffAlly(id, this)));
 	}
 
 	@Override
@@ -44,6 +44,6 @@ public class LionheartBangle extends Artifact {
 
 	@Override
 	public void onInitializeSession(PlayerSessionData data) {
-
+		
 	}
 }

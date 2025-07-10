@@ -1,7 +1,7 @@
 package me.neoblade298.neorogue.session.event;
 
 public enum SessionTrigger {
-	REWARD_GOLD,
-	REWARD_EQUIPMENT_CHOICE,
+	REWARD_FIGHT,
+	GENERATE_SHOP,
 	VISIT_NODE;
 }

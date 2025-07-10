@@ -22,6 +22,8 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.SpectateSelectInventory;
+import me.neoblade298.neorogue.session.event.GenerateShopEvent;
+import me.neoblade298.neorogue.session.event.SessionTrigger;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -52,7 +54,9 @@ public class ShopInstance extends EditInventoryInstance {
 		for (PlayerSessionData data : s.getParty().values()) {
 			Player p = data.getPlayer();
 			teleportRandomly(p);
-			shops.put(p.getUniqueId(), new ShopContents(s, data));
+			GenerateShopEvent ev = new GenerateShopEvent();
+			data.trigger(SessionTrigger.GENERATE_SHOP, ev);
+			shops.put(p.getUniqueId(), new ShopContents(s, data, ev.getDiscountMultiplier()));
 		}
 		for (UUID uuid : s.getSpectators().keySet()) {
 			Player p = Bukkit.getPlayer(uuid);

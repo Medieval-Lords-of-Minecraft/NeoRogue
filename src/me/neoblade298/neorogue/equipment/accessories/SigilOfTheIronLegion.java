@@ -35,11 +35,18 @@ public class SigilOfTheIronLegion extends Artifact {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void setupItem() {
+		item = createItem(Material.IRON_BARS, "If you reach at least " + GlossaryTag.STRENGTH.tag(this, thres, false) + " during a fight, gain one " +
+		" <green>Ruby Shard</green> after the fight ends.");
+	}
+
+	@Override
+	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
 		ActionMeta am = new ActionMeta();
 		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
-			if (!ev.isStatus(StatusType.STRENGTH)) return TriggerResult.keep();
+			if (!ev.isStatus(StatusType.STRENGTH))
+				return TriggerResult.keep();
 			if (data.getStatus(StatusType.STRENGTH).getStacks() >= thres) {
 				Sounds.success.play(p, p, Audience.ORIGIN);
 				Util.msg(p, display.append(Component.text(" was activated")));
@@ -54,17 +61,6 @@ public class SigilOfTheIronLegion extends Artifact {
 			}
 			return TriggerResult.keep();
 		});
-	}
-
-	@Override
-	public void setupItem() {
-		item = createItem(Material.IRON_BARS, "If you reach at least " + GlossaryTag.STRENGTH.tag(this, thres, false) + " during a fight, gain one " +
-		" <green>Ruby Shard</green> after the fight ends.");
-	}
-
-	@Override
-	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
-
 	}
 
 	@Override

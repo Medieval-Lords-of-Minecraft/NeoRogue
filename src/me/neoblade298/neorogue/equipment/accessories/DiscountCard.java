@@ -3,22 +3,20 @@ package me.neoblade298.neorogue.equipment.accessories;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
-import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.event.GenerateShopEvent;
+import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
-import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 
-public class LionheartBangle extends Artifact {
-	private static final String ID = "lionheartBangle";
-	private int thres = 10;
-	
-	public LionheartBangle() {
-		super(ID, "Lionheart Bangle", Rarity.RARE, EquipmentClass.WARRIOR);
+public class DiscountCard extends Artifact {
+	private static final String ID = "discountCard";
+
+	public DiscountCard() {
+		super(ID, "Discount Card", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
 	}
 	
 	public static Equipment get() {
@@ -27,14 +25,12 @@ public class LionheartBangle extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.MAGMA_BLOCK, "For every " + DescUtil.white(thres) + " max HP you have, " +
-		"gain " + GlossaryTag.STRENGTH.tag(this, 1, true) + " at the start of a fight.");
+		item = createItem(Material.MAP, "Discounts all shop prices by <white>20%</white>.");
 	}
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
-		int str = (int) data.getMaxHealth() / thres;
-		data.applyStatus(StatusType.STRENGTH, data, str, -1);
+
 	}
 
 	@Override
@@ -44,6 +40,9 @@ public class LionheartBangle extends Artifact {
 
 	@Override
 	public void onInitializeSession(PlayerSessionData data) {
-
+		data.addTrigger(id, SessionTrigger.GENERATE_SHOP, (pdata, in) -> {
+			GenerateShopEvent ev = (GenerateShopEvent) in;
+			ev.addDiscount(0.2);
+		});
 	}
 }

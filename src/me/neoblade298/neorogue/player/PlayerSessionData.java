@@ -175,6 +175,8 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		personalArtifacts = Equipment.copyArtifactsDropSet(ec, EquipmentClass.CLASSLESS);
 		for (ArtifactInstance ai : artifacts.values()) {
 			ai.getArtifact().onInitializeSession(this);
+
+			// Artifacts that can stack do not get removed from the droptable if you have one
 			if (ai.getArtifact().canStack()) continue;
 			personalArtifacts.remove(ai.getArtifact());
 		}
