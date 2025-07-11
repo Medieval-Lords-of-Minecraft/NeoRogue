@@ -31,6 +31,11 @@ public class Frenzy extends Equipment {
 	}
 
 	@Override
+	public void setupReforges() {
+		addReforge(Bloodlust.get(), BloodFrenzy.get());
+	}
+
+	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(ID, Trigger.WEAPON_SWING, (pdata, in) -> {
 			int mult = Math.min(4, data.getStatus(StatusType.BERSERK).getStacks() / CUTOFF);

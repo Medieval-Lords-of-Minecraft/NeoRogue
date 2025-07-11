@@ -37,7 +37,7 @@ public class SigilOfTheIronLegion extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.IRON_BARS, "If you reach at least " + GlossaryTag.STRENGTH.tag(this, thres, false) + " during a fight, gain one " +
-		" <green>Ruby Shard</green> after the fight ends.");
+		"<green>Ruby Shard</green> after the fight ends.");
 	}
 
 	@Override

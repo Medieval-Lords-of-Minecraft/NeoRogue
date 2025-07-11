@@ -14,6 +14,10 @@ import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
+import me.neoblade298.neorogue.equipment.weapons.Harpoon;
+import me.neoblade298.neorogue.equipment.weapons.RighteousFlame;
+import me.neoblade298.neorogue.equipment.weapons.RighteousLance;
+import me.neoblade298.neorogue.equipment.weapons.SilverFang;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
@@ -45,6 +49,12 @@ public class WeaponEnchantmentHoly extends Equipment {
 	
 	public static Equipment get() {
 		return Equipment.get(ID, false);
+	}
+
+	@Override
+	public void setupReforges() {
+		addReforge(SilverFang.get(), RighteousFlame.get());
+		addReforge(Harpoon.get(), RighteousLance.get());
 	}
 
 	@Override

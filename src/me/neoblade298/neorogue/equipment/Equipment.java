@@ -47,6 +47,7 @@ import me.neoblade298.neorogue.equipment.accessories.QuartzPrism;
 import me.neoblade298.neorogue.equipment.accessories.RedRing;
 import me.neoblade298.neorogue.equipment.accessories.RingOfAnger;
 import me.neoblade298.neorogue.equipment.accessories.RingOfFortitude;
+import me.neoblade298.neorogue.equipment.accessories.RingOfLight;
 import me.neoblade298.neorogue.equipment.accessories.RingOfManaflow;
 import me.neoblade298.neorogue.equipment.accessories.RingOfMentalism;
 import me.neoblade298.neorogue.equipment.accessories.RingOfNature;
@@ -174,6 +175,7 @@ import me.neoblade298.neorogue.equipment.offhands.HastyShield;
 import me.neoblade298.neorogue.equipment.offhands.HavenTome;
 import me.neoblade298.neorogue.equipment.offhands.IcicleTome;
 import me.neoblade298.neorogue.equipment.offhands.InsanityPowder;
+import me.neoblade298.neorogue.equipment.offhands.IronMaiden;
 import me.neoblade298.neorogue.equipment.offhands.LeadingKnife;
 import me.neoblade298.neorogue.equipment.offhands.LeatherBracer;
 import me.neoblade298.neorogue.equipment.offhands.MirrorBracer;
@@ -261,6 +263,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new BlastStep(b);
 			new BlessedEdge(b);
 			new Blind(b);
+			new BloodFrenzy(b);
 			new Bloodlust(b);
 			new BodyDouble(b);
 			new BowTrap(b);
@@ -281,6 +284,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new CollectionHex(b);
 			new Concoct(b);
 			new ConfidenceKill(b);
+			new Consecrate(b);
 			new Contaminate(b);
 			new CreateEarth(b);
 			new Cripple(b);
@@ -386,6 +390,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new KeenSenses(b);
 			new LayTrap(b);
 			new Lethality(b);
+			new Lightfall(b);
 			new LightningBolt(b);
 			new LightningRush(b);
 			new LightningStrike(b);
@@ -466,7 +471,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Tackle(b);
 			new Tailwind(b);
 			new ThrowPoison(b);
-			new Thornguard(b);
+			new ThornGarden(b);
 			new Titan(b);
 			new ToAshes(b);
 			new Torch(b);
@@ -507,6 +512,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new RedRing(b);
 			new RingOfAnger(b);
 			new RingOfFortitude(b);
+			new RingOfLight(b);
 			new RingOfManaflow(b);
 			new RingOfMentalism(b);
 			new RingOfNature(b);
@@ -562,6 +568,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new HavenTome(b);
 			new IcicleTome(b);
 			new InsanityPowder(b);
+			new IronMaiden(b);
 			new LeadingKnife(b);
 			new LeatherBracer(b);
 			new MirrorBracer(b);
@@ -642,6 +649,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Razor(b);
 			new ReckoningOrb(b);
 			new RedBaron(b);
+			new RighteousFlame(b);
+			new RighteousLance(b);
 			new SearingArrow(b);
 			new SerratedArrow(b);
 			new SerratedRazor(b);

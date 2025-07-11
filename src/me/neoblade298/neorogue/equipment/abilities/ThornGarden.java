@@ -18,15 +18,15 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.GrantShieldsEvent;
 
-public class Thornguard extends Equipment {
-	private static final String ID = "thornguard";
+public class ThornGarden extends Equipment {
+	private static final String ID = "thornGarden";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
 	private static final int CUTOFF = 3;
 	private int thorns;
 	
-	public Thornguard(boolean isUpgraded) {
-		super(ID, "Thornguard", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(isUpgraded ? 15 : 25, isUpgraded ? 40 : 70, 0, 0));
+	public ThornGarden(boolean isUpgraded) {
+		super(ID, "thornGarden", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(isUpgraded ? 20 : 30, isUpgraded ? 70 : 90, 0, 0));
 		properties.addUpgrades(PropertyType.MANA_COST, PropertyType.STAMINA_COST);
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		
