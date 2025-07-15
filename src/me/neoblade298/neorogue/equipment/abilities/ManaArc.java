@@ -28,7 +28,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class ManaArc extends Equipment {
 	private static final String ID = "manaArc";
@@ -77,11 +77,11 @@ public class ManaArc extends Equipment {
 			return TriggerResult.keep();
 		});
 
-		data.addTrigger(id, Trigger.DEALT_DAMAGE, (pdata, in) -> {
+		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
 			if (!am.getBool())
 				return TriggerResult.keep();
 
-			DealtDamageEvent ev = (DealtDamageEvent) in;
+			DealDamageEvent ev = (DealDamageEvent) in;
 			if (ev.getMeta().isSecondary()) return TriggerResult.keep();
 			LivingEntity trg = ev.getTarget();
 			Vector dir = trg.getLocation().toVector().subtract(p.getLocation().toVector()).normalize();

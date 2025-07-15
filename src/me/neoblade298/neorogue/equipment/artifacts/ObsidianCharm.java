@@ -22,7 +22,7 @@ import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.PreDealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
 public class ObsidianCharm extends Artifact {
 	private static final String ID = "obsidianCharm";
@@ -39,8 +39,8 @@ public class ObsidianCharm extends Artifact {
 	@Override
 	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
 		String buffId = UUID.randomUUID().toString();
-		data.addTrigger(id, Trigger.PRE_DEALT_DAMAGE, (pdata, in) -> {
-			PreDealtDamageEvent ev = (PreDealtDamageEvent) in;
+		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
+			PreDealDamageEvent ev = (PreDealDamageEvent) in;
 			FightData fd = FightInstance.getFightData(ev.getTarget());
 			if (!fd.hasStatus(StatusType.CONCUSSED)) return TriggerResult.keep();
 			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.MAGICAL), Buff.multiplier(data, pct * 0.01, BuffStatTracker.damageBuffAlly(buffId, this)));

@@ -21,8 +21,8 @@ import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageBarrierEvent;
-import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageBarrierEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 
 public class SmallShield extends Equipment {
 	private static final String ID = "smallShield";
@@ -69,8 +69,8 @@ public class SmallShield extends Equipment {
 			return TriggerResult.keep();
 		});
 
-		data.addTrigger(id, Trigger.RECEIVED_DAMAGE_BARRIER, (pdata, in) -> {
-			ReceivedDamageBarrierEvent ev = (ReceivedDamageBarrierEvent) in;
+		data.addTrigger(id, Trigger.RECEIVE_DAMAGE_BARRIER, (pdata, in) -> {
+			ReceiveDamageBarrierEvent ev = (ReceiveDamageBarrierEvent) in;
 			Barrier b = ev.getBarrier();
 			if (!b.getUniqueId().equals(am.getUniqueId())) return TriggerResult.keep();
 			am.addCount(1);
@@ -82,9 +82,9 @@ public class SmallShield extends Equipment {
 			return TriggerResult.keep();
 		});
 		
-		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, (pdata, inputs) -> {
+		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, (pdata, inputs) -> {
 			if (p.getHandRaised() != EquipmentSlot.OFF_HAND || !p.isHandRaised()) return TriggerResult.keep();
-			ReceivedDamageEvent ev = (ReceivedDamageEvent) inputs;
+			ReceiveDamageEvent ev = (ReceiveDamageEvent) inputs;
 			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, reduction, 0, StatTracker.defenseBuffAlly(am.getId(), this)));
 			if (ev.getMeta().containsType(DamageCategory.GENERAL)) p.playSound(p, Sound.ITEM_SHIELD_BLOCK, 1F, 1F);
 			return TriggerResult.keep();

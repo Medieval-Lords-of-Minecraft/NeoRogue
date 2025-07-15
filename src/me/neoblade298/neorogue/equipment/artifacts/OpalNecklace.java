@@ -21,7 +21,7 @@ import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.PreDealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
 public class OpalNecklace extends Artifact {
 	private static final String ID = "opalNecklace";
@@ -38,7 +38,7 @@ public class OpalNecklace extends Artifact {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
-		data.addTrigger(id, Trigger.PRE_DEALT_DAMAGE, new OpalNecklaceInstance(this, id));
+		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, new OpalNecklaceInstance(this, id));
 	}
 
 	private class OpalNecklaceInstance extends PriorityAction {
@@ -48,7 +48,7 @@ public class OpalNecklace extends Artifact {
 			super(id);
 			String buffId = UUID.randomUUID().toString();
 			action = (pdata, in) -> {
-				PreDealtDamageEvent ev = (PreDealtDamageEvent) in;
+				PreDealDamageEvent ev = (PreDealDamageEvent) in;
 				// Only trigger on magical damage
 				if (!ev.getMeta().getPrimarySlice().getPostBuffType().getCategories().contains(DamageCategory.MAGICAL))
 					return TriggerResult.keep();

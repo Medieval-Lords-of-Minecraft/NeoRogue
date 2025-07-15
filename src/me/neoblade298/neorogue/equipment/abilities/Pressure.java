@@ -27,7 +27,7 @@ import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.PreDealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
 public class Pressure extends Equipment {
 	private static final String ID = "pressure";
@@ -72,9 +72,9 @@ public class Pressure extends Equipment {
 			return TriggerResult.keep();
 		}));
 
-		data.addTrigger(id, Trigger.PRE_DEALT_DAMAGE, (pdata, in) -> {
+		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
 			double rangesq = tp.range * tp.range;
-			PreDealtDamageEvent ev = (PreDealtDamageEvent) in;
+			PreDealDamageEvent ev = (PreDealDamageEvent) in;
 			// Check if the zone is active
 			if (!am.getBool()) return TriggerResult.keep();
 			if (ev.getTarget().getLocation().distanceSquared(am.getLocation()) <= rangesq &&

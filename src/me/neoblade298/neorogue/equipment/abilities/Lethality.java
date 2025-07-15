@@ -12,11 +12,11 @@ import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.PreDealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
 public class Lethality extends Equipment {
 	private static final String ID = "lethality";
@@ -36,9 +36,9 @@ public class Lethality extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		String buffId = UUID.randomUUID().toString();
-		data.addTrigger(ID, Trigger.PRE_DEALT_DAMAGE, (pdata, in) -> {
+		data.addTrigger(ID, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
 			if (data.getStamina() < thres) return TriggerResult.keep();
-			PreDealtDamageEvent ev = (PreDealtDamageEvent) in;
+			PreDealDamageEvent ev = (PreDealDamageEvent) in;
 			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.PIERCING), new Buff(data, inc, 0, StatTracker.damageBuffAlly(buffId, this)));
 			return TriggerResult.keep();
 		});

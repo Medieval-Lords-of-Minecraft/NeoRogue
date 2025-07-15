@@ -15,7 +15,7 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 
 public class GraniteShield extends Equipment {
 	private static final String ID = "graniteShield";
@@ -44,9 +44,9 @@ public class GraniteShield extends Equipment {
 			return TriggerResult.keep();
 		});
 		
-		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, (pdata, in) -> {
+		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, (pdata, in) -> {
 			if (p.getHandRaised() != EquipmentSlot.OFF_HAND || !p.isHandRaised()) return TriggerResult.keep();
-			ReceivedDamageEvent ev = (ReceivedDamageEvent) in;
+			ReceiveDamageEvent ev = (ReceiveDamageEvent) in;
 			ev.getDamager().applyStatus(StatusType.CONCUSSED, data, conc, -1);
 			return TriggerResult.keep();
 		});

@@ -28,7 +28,7 @@ import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class Engulf extends Equipment {
 	private static final String ID = "engulf";
@@ -52,8 +52,8 @@ public class Engulf extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		Equipment eq = this;
 		ActionMeta am = new ActionMeta();
-		data.addTrigger(id, Trigger.DEALT_DAMAGE, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			DealtDamageEvent ev = (DealtDamageEvent) in;
+		data.addTrigger(id, Trigger.DEAL_DAMAGE, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			DealDamageEvent ev = (DealDamageEvent) in;
 			HashMap<DamageType, Double> dmg = ev.getMeta().getPostMitigationDamage();
 
 			if (!dmg.containsKey(DamageType.FIRE)) return TriggerResult.keep();

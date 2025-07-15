@@ -54,7 +54,7 @@ public class Bide extends Equipment {
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (fd, in) -> {
 			data.addSimpleShield(p.getUniqueId(), shields, duration * 20);
 			sc.play(p, p);
-			data.addTrigger(id, Trigger.RECEIVED_DAMAGE, new BideInstance(p, id));
+			data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, new BideInstance(p, id));
 			return TriggerResult.keep();
 		}));
 	}

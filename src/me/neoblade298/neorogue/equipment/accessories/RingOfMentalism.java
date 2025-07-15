@@ -12,7 +12,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class RingOfMentalism extends Equipment {
 	private static final String ID = "ringOfMentalism";
@@ -30,8 +30,8 @@ public class RingOfMentalism extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(ID, Trigger.DEALT_DAMAGE, (pdata, in) -> {
-			DealtDamageEvent ev = (DealtDamageEvent) in;
+		data.addTrigger(ID, Trigger.DEAL_DAMAGE, (pdata, in) -> {
+			DealDamageEvent ev = (DealDamageEvent) in;
 			if (!ev.getMeta().containsType(DamageCategory.MAGICAL)) return TriggerResult.keep();
 			FightInstance.applyStatus(ev.getTarget(), StatusType.INSANITY, data, stacks, -1);
 			return TriggerResult.keep();

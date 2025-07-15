@@ -29,7 +29,7 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class DarkPulse extends Equipment {
 	private static final String ID = "darkPulse";
@@ -59,9 +59,9 @@ public class DarkPulse extends Equipment {
 		DarkPulseInstance inst = new DarkPulseInstance(p, data, this, es, slot);
 		data.addTrigger(id, bind, inst);
 
-		data.addTrigger(ID, Trigger.DEALT_DAMAGE, (pdata, in) -> {
+		data.addTrigger(ID, Trigger.DEAL_DAMAGE, (pdata, in) -> {
 			if (!inst.active) return TriggerResult.keep();
-			DealtDamageEvent ev = (DealtDamageEvent) in;
+			DealDamageEvent ev = (DealDamageEvent) in;
 			inst.pulse(ev.getTotalDamage(), slot);
 			return TriggerResult.keep();
 		});

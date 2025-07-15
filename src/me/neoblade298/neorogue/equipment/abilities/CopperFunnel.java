@@ -20,7 +20,7 @@ import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 
 public class CopperFunnel extends Equipment {
 	private static final String ID = "copperFunnel";
@@ -45,7 +45,7 @@ public class CopperFunnel extends Equipment {
 		am.setCount(reps);
 		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
 		inst.setAction((pdata, in) -> {
-			ReceivedDamageEvent ev = (ReceivedDamageEvent) in;
+			ReceiveDamageEvent ev = (ReceiveDamageEvent) in;
 			if (!ev.getMeta().containsType(DamageCategory.MAGICAL)) return TriggerResult.keep();
 			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL), Buff.increase(data, reduc, StatTracker.defenseBuffAlly(am.getId(), this)));
 			am.addCount(-1);
@@ -59,7 +59,7 @@ public class CopperFunnel extends Equipment {
 				return TriggerResult.keep();
 			}
 		});
-		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, inst);
+		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, inst);
 	}
 
 	@Override

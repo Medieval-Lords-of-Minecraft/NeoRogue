@@ -85,7 +85,7 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.event.KillEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
-import me.neoblade298.neorogue.session.fight.trigger.event.PreDealtDamageMultipleEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageMultipleEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.RightClickHitEvent;
 import net.kyori.adventure.text.Component;
 
@@ -861,8 +861,8 @@ public abstract class FightInstance extends Instance {
 	public static void dealDamage(DamageMeta meta, Collection<LivingEntity> targets) {
 		if (meta.getOwner() instanceof PlayerFightData) {
 			trigger(
-					(Player) meta.getOwner().getEntity(), Trigger.DEALT_DAMAGE_MULTIPLE,
-					new PreDealtDamageMultipleEvent(meta, targets)
+					(Player) meta.getOwner().getEntity(), Trigger.DEAL_DAMAGE_MULTIPLE,
+					new PreDealDamageMultipleEvent(meta, targets)
 			);
 		}
 		for (LivingEntity target : targets) {

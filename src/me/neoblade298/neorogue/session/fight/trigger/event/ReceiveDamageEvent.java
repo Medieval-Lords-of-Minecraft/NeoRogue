@@ -3,7 +3,7 @@ package me.neoblade298.neorogue.session.fight.trigger.event;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.FightData;
 
-public class ReceivedDamageEvent {
+public class ReceiveDamageEvent {
 	private FightData damager;
 	private DamageMeta meta;
 	private boolean isNullified = false;
@@ -16,7 +16,7 @@ public class ReceivedDamageEvent {
 	public void setMeta(DamageMeta meta) {
 		this.meta = meta;
 	}
-	public ReceivedDamageEvent(FightData damager, DamageMeta meta) {
+	public ReceiveDamageEvent(FightData damager, DamageMeta meta) {
 		super();
 		this.damager = damager;
 		this.meta = meta;

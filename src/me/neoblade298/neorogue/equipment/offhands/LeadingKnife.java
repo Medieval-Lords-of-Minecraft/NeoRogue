@@ -22,7 +22,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class LeadingKnife extends Equipment {
 	private static final String ID = "leadingKnife";
@@ -48,8 +48,8 @@ public class LeadingKnife extends Equipment {
 		inst.initialize(proj);
 		
 		data.addTrigger(ID, Trigger.RIGHT_CLICK, inst);
-		data.addTrigger(ID, Trigger.DEALT_DAMAGE, (pdata, in) -> {
-			DealtDamageEvent ev = (DealtDamageEvent) in;
+		data.addTrigger(ID, Trigger.DEAL_DAMAGE, (pdata, in) -> {
+			DealDamageEvent ev = (DealDamageEvent) in;
 			if ((System.currentTimeMillis() - inst.hitTime > 2000) || inst.marked != ev.getTarget()) return TriggerResult.keep();
 			
 			inst.marked = null;

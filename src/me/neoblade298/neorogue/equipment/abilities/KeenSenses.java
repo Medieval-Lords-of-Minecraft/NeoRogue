@@ -21,7 +21,7 @@ import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.PreDealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
 public class KeenSenses extends Equipment {
 	private static final String ID = "keenSenses";
@@ -50,8 +50,8 @@ public class KeenSenses extends Equipment {
 		String buffId = UUID.randomUUID().toString();
 		data.addPermanentShield(p.getUniqueId(), shields);
 		data.applyStatus(StatusType.FOCUS, data, 1, -1);
-		data.addTrigger(id, Trigger.PRE_DEALT_DAMAGE, (pdata, in) -> {
-			PreDealtDamageEvent ev = (PreDealtDamageEvent) in;
+		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
+			PreDealDamageEvent ev = (PreDealDamageEvent) in;
 			if (!ev.getMeta().hasOrigin(DamageOrigin.TRAP)) return TriggerResult.keep();
 			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, damage * 0.01, StatTracker.damageBuffAlly(buffId, this)));
 			return TriggerResult.keep();

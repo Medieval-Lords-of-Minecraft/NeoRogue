@@ -24,7 +24,7 @@ import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class AgilityTraining extends Equipment {
 	private static final String ID = "agilityTraining";
@@ -51,8 +51,8 @@ public class AgilityTraining extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addDamageBuff(DamageBuffType.of(DamageCategory.PHYSICAL), new Buff(data, damage, 0, StatTracker.damageBuffAlly(UUID.randomUUID().toString(), this)));
-		data.addTrigger(id, Trigger.DEALT_DAMAGE, (pdata, in) -> {
-			DealtDamageEvent ev = (DealtDamageEvent) in;
+		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
+			DealDamageEvent ev = (DealDamageEvent) in;
 			if (!ev.getMeta().containsType(DamageCategory.PHYSICAL)) return TriggerResult.keep();
 			FightInstance.applyStatus(ev.getTarget(), StatusType.REND, data, stacks, -1);
 			return TriggerResult.keep();

@@ -17,7 +17,7 @@ import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 
 public class HuntersVest extends Equipment {
 	private static final String ID = "huntersVest";
@@ -36,8 +36,8 @@ public class HuntersVest extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		String buffId = UUID.randomUUID().toString();
-		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, (pdata, in) -> {
-			ReceivedDamageEvent ev = (ReceivedDamageEvent) in;
+		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, (pdata, in) -> {
+			ReceiveDamageEvent ev = (ReceiveDamageEvent) in;
 			if (!data.hasStatus(StatusType.FOCUS)) return TriggerResult.keep();
 			if (!ev.getMeta().containsType(DamageCategory.PHYSICAL)) return TriggerResult.keep();
 			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.PHYSICAL),

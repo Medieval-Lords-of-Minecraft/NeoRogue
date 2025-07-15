@@ -13,7 +13,7 @@ import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.PreDealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
 public class ShadowImbuement extends Equipment {
 	private static final String ID = "shadowImbuement";
@@ -31,8 +31,8 @@ public class ShadowImbuement extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(ID, Trigger.PRE_DEALT_DAMAGE, (pdata, in) -> {
-			PreDealtDamageEvent ev = (PreDealtDamageEvent) in;
+		data.addTrigger(ID, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
+			PreDealDamageEvent ev = (PreDealDamageEvent) in;
 			ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.DARK, DamageStatTracker.of(ID + slot, this)));
 			return TriggerResult.keep();
 		});

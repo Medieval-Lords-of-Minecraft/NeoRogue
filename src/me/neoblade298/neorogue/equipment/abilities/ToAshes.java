@@ -32,7 +32,7 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageBarrierEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageBarrierEvent;
 
 public class ToAshes extends Equipment {
 	private static final String ID = "toAshes";
@@ -80,8 +80,8 @@ public class ToAshes extends Equipment {
 		});
 		data.addTrigger(id, bind, eqi);
 
-		data.addTrigger(id, Trigger.RECEIVED_DAMAGE_BARRIER, (pdata, in) -> {
-			ReceivedDamageBarrierEvent ev = (ReceivedDamageBarrierEvent) in;
+		data.addTrigger(id, Trigger.RECEIVE_DAMAGE_BARRIER, (pdata, in) -> {
+			ReceiveDamageBarrierEvent ev = (ReceiveDamageBarrierEvent) in;
 			if (ev.getBarrier().getUniqueId() == am.getUniqueId()) {
 				am.setUniqueId(null);
 				am.addCount(1);

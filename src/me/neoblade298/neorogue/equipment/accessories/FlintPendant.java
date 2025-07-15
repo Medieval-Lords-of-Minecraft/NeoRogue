@@ -11,7 +11,7 @@ import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class FlintPendant extends Equipment {
 	private static final String ID = "flintPendant";
@@ -33,7 +33,7 @@ public class FlintPendant extends Equipment {
 		StandardPriorityAction action = new StandardPriorityAction(id);
 
 		action.setAction((pdata, in) -> {
-			DealtDamageEvent ev = (DealtDamageEvent) in;
+			DealDamageEvent ev = (DealDamageEvent) in;
 			if (!ev.getMeta().hasOrigin(DamageOrigin.PROJECTILE)) return TriggerResult.keep();
 			action.addCount(1);
 			if (action.getCount() >= thres) {
@@ -42,7 +42,7 @@ public class FlintPendant extends Equipment {
 			}
 			return TriggerResult.keep();
 		});
-		data.addTrigger(id, Trigger.DEALT_DAMAGE, action);
+		data.addTrigger(id, Trigger.DEAL_DAMAGE, action);
 	}
 
 	@Override

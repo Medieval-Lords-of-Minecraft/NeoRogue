@@ -29,12 +29,12 @@ public class ConcealingCloak extends Artifact {
 		ConcealingCloakInstance inst = new ConcealingCloakInstance(ID, data);
 		data.addTrigger(ID, Trigger.PLAYER_TICK, inst);
 		
-		data.addTrigger(ID, Trigger.DEALT_DAMAGE, (pdata, in) -> {
+		data.addTrigger(ID, Trigger.DEAL_DAMAGE, (pdata, in) -> {
 			inst.reset();
 			return TriggerResult.keep();
 		});
 		
-		data.addTrigger(ID, Trigger.RECEIVED_HEALTH_DAMAGE, (pdata, in) -> {
+		data.addTrigger(ID, Trigger.RECEIVE_HEALTH_DAMAGE, (pdata, in) -> {
 			inst.reset();
 			return TriggerResult.keep();
 		});

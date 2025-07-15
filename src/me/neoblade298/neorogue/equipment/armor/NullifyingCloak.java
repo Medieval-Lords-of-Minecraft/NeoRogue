@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 
 public class NullifyingCloak extends Equipment {
 	private static final String ID = "nullifyingCloak";
@@ -34,8 +34,8 @@ public class NullifyingCloak extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		String buffId = UUID.randomUUID().toString();
-		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, (pdata, in) -> {
-			ReceivedDamageEvent ev = (ReceivedDamageEvent) in;
+		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, (pdata, in) -> {
+			ReceiveDamageEvent ev = (ReceiveDamageEvent) in;
 			int rifts = data.getRifts().size();
 			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, rifts * def, StatTracker.defenseBuffAlly(buffId, this, false)));
 			return TriggerResult.keep();

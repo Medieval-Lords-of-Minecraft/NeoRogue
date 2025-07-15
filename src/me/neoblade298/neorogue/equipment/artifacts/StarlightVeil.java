@@ -26,7 +26,7 @@ public class StarlightVeil extends Artifact {
 	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
 		data.addStaminaRegen(1);
 		data.addManaRegen(1);
-		data.addTrigger(id, Trigger.RECEIVED_HEALTH_DAMAGE, (pdata, in) -> {
+		data.addTrigger(id, Trigger.RECEIVE_HEALTH_DAMAGE, (pdata, in) -> {
 			data.addStaminaRegen(-1);
 			data.addManaRegen(-1);
 			return TriggerResult.remove();

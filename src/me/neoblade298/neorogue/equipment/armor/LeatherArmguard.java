@@ -34,7 +34,7 @@ public class LeatherArmguard extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, (pdata, in) -> {
+		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, (pdata, in) -> {
 			data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, data.hasStatus(StatusType.STEALTH) ? spdef + def : def, StatTracker.defenseBuffAlly(UUID.randomUUID().toString(), this)));
 			return TriggerResult.keep();
 		});

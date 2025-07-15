@@ -14,7 +14,7 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class Dismantle extends Equipment {
 	private static final String ID = "dismantle";
@@ -32,7 +32,7 @@ public class Dismantle extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.DEALT_DAMAGE, new DismantleInstance(data, this, slot, es));
+		data.addTrigger(id, Trigger.DEAL_DAMAGE, new DismantleInstance(data, this, slot, es));
 	}
 
 	private class DismantleInstance extends PriorityAction {
@@ -40,7 +40,7 @@ public class Dismantle extends Equipment {
 		public DismantleInstance(PlayerFightData data, Equipment equip, int slot, EquipSlot es) {
 			super(ID);
 			action = (pdata, in) -> {
-				DealtDamageEvent ev = (DealtDamageEvent) in;
+				DealDamageEvent ev = (DealDamageEvent) in;
 				if (ev.getTarget() == target) {
 					FightInstance.applyStatus(ev.getTarget(), StatusType.INJURY, data, stacks, -1);
 				}

@@ -24,7 +24,7 @@ import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.GenericStatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class HexCurse2 extends Equipment {
@@ -63,8 +63,8 @@ public class HexCurse2 extends Equipment {
 			return TriggerResult.keep();
 		});
 
-		data.addTrigger(id, Trigger.DEALT_DAMAGE, (pdata, in) -> {
-			DealtDamageEvent ev = (DealtDamageEvent) in;
+		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
+			DealDamageEvent ev = (DealDamageEvent) in;
 			if (ev.getMeta().isBasicAttack()) return TriggerResult.keep();
 			
 			Location loc = ev.getTarget().getLocation();

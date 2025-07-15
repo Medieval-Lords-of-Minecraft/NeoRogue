@@ -21,7 +21,7 @@ import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.KillEvent;
-import me.neoblade298.neorogue.session.fight.trigger.event.PreDealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
 public class Grit extends Equipment {
 	private static final String ID = "grit";
@@ -44,8 +44,8 @@ public class Grit extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		String buffId = UUID.randomUUID().toString();
-		data.addTrigger(ID, Trigger.PRE_DEALT_DAMAGE, (pdata, in) -> {
-			PreDealtDamageEvent ev = (PreDealtDamageEvent) in;
+		data.addTrigger(ID, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
+			PreDealDamageEvent ev = (PreDealDamageEvent) in;
 			double dist = ev.getTarget().getLocation().distanceSquared(p.getLocation());
 			if (dist <= 25) {
 				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, inc, 0, StatTracker.damageBuffAlly(buffId, this)));

@@ -24,7 +24,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class Blind extends Equipment {
 	private static final String ID = "blind";
@@ -63,8 +63,8 @@ public class Blind extends Equipment {
 			return TriggerResult.keep();
 		}));
 
-		data.addTrigger(id, Trigger.DEALT_DAMAGE, (pdata, in) -> {
-			DealtDamageEvent ev = (DealtDamageEvent) in;
+		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
+			DealDamageEvent ev = (DealDamageEvent) in;
 			if (blinded.contains(ev.getTarget().getUniqueId())) {
 				FightInstance.applyStatus(ev.getTarget(), StatusType.INJURY, data, injure, -1);
 			}

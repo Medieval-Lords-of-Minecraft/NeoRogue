@@ -11,7 +11,7 @@ import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class ConductiveArmguard extends Equipment {
 	private static final String ID = "conductiveArmguard";
@@ -29,8 +29,8 @@ public class ConductiveArmguard extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.DEALT_DAMAGE, (pdata, in) -> {
-			DealtDamageEvent ev = (DealtDamageEvent) in;
+		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
+			DealDamageEvent ev = (DealDamageEvent) in;
 			if (!ev.getMeta().containsType(DamageCategory.LIGHTNING))
 				return TriggerResult.keep();
 			data.addSimpleShield(p.getUniqueId(), shields, 60);

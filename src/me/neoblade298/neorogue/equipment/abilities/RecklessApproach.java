@@ -36,7 +36,7 @@ import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class RecklessApproach extends Equipment {
 	private static final String ID = "recklessApproach";
@@ -82,9 +82,9 @@ public class RecklessApproach extends Equipment {
 		data.addTrigger(id, bind, inst);
 
 		double thresSq = thres * thres;
-		data.addTrigger(ID, Trigger.DEALT_DAMAGE, (pdata, in) -> {
+		data.addTrigger(ID, Trigger.DEAL_DAMAGE, (pdata, in) -> {
 			if (!inst.getBool()) return TriggerResult.keep();
-			DealtDamageEvent ev = (DealtDamageEvent) in;
+			DealDamageEvent ev = (DealDamageEvent) in;
 			if (!ev.getMeta().hasOrigin(DamageOrigin.PROJECTILE)) return TriggerResult.keep();
 			if (ev.getMeta().getProjectile().getOrigin().distanceSquared(ev.getTarget().getLocation()) >= thresSq) return TriggerResult.keep();
 			return TriggerResult.keep();

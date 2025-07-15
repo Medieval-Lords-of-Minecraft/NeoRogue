@@ -21,8 +21,8 @@ import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
-import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 
 public class BurningMantle extends Equipment {
 	private static final String ID = "burningMantle";
@@ -43,16 +43,16 @@ public class BurningMantle extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta tracker = new ActionMeta(), damageCount = new ActionMeta();
 		data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, reduc, StatTracker.defenseBuffAlly(UUID.randomUUID().toString(), this)));
-		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, (pdata, in) -> {
-			ReceivedDamageEvent ev = (ReceivedDamageEvent) in;
+		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, (pdata, in) -> {
+			ReceiveDamageEvent ev = (ReceiveDamageEvent) in;
 			if (!ev.getMeta().containsType(DamageCategory.GENERAL)) return TriggerResult.keep();
 			DamageMeta dm = ev.getMeta().getReturnDamage();
 			dm.addDamageSlice(new DamageSlice(data, damage + (damageCount.getCount() * inc), DamageType.FIRE, DamageStatTracker.of(id + slot, this)));
 			return TriggerResult.keep();
 		});
 
-		data.addTrigger(id, Trigger.DEALT_DAMAGE, (pdata, in) -> {
-			DealtDamageEvent ev = (DealtDamageEvent) in;
+		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
+			DealDamageEvent ev = (DealDamageEvent) in;
 			tracker.addCount((int) ev.getTotalDamage());
 			if (tracker.getCount() >= thres) {
 				tracker.addCount(-thres);

@@ -23,7 +23,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class Energize extends Equipment {
@@ -56,9 +56,9 @@ public class Energize extends Equipment {
 		EnergizeInstance inst = new EnergizeInstance(data, this, slot, es);
 		data.addTrigger(id, bind, inst);
 		
-		data.addTrigger(ID, Trigger.DEALT_DAMAGE, (pdata, in) -> {
+		data.addTrigger(ID, Trigger.DEAL_DAMAGE, (pdata, in) -> {
 			if (inst.mark == null || !inst.mark.isValid()) return TriggerResult.keep();
-			DealtDamageEvent ev = (DealtDamageEvent) in;
+			DealDamageEvent ev = (DealDamageEvent) in;
 			if (!ev.getMeta().containsType(DamageType.LIGHTNING)) return TriggerResult.keep();
 			FightInstance.applyStatus(inst.mark, StatusType.ELECTRIFIED, p, elec, -1);
 			return TriggerResult.keep();

@@ -17,7 +17,7 @@ import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 
 public class CalculatingGaze extends Equipment {
 	private static final String ID = "calculatingGaze";
@@ -39,8 +39,8 @@ public class CalculatingGaze extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		String buffId = UUID.randomUUID().toString();
 		data.addPermanentShield(p.getUniqueId(), shields);
-		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, (pdata, in) -> {
-			ReceivedDamageEvent ev = (ReceivedDamageEvent) in;
+		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, (pdata, in) -> {
+			ReceiveDamageEvent ev = (ReceiveDamageEvent) in;
 			if (data.getMana() > THRES) {
 				ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, def, StatTracker.defenseBuffAlly(buffId, this)));
 			}

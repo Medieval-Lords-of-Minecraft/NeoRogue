@@ -23,7 +23,7 @@ import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class Flicker extends Equipment {
 	private static final String ID = "flicker";
@@ -43,9 +43,9 @@ public class Flicker extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		FlickerInstance inst = new FlickerInstance(data, this, slot, es);
 		data.addTrigger(id, bind, inst);
-		data.addTrigger(ID, Trigger.DEALT_DAMAGE, (pdata, in) -> {
+		data.addTrigger(ID, Trigger.DEAL_DAMAGE, (pdata, in) -> {
 			if (!inst.active) return TriggerResult.keep();
-			DealtDamageEvent ev = (DealtDamageEvent) in;
+			DealDamageEvent ev = (DealDamageEvent) in;
 			LivingEntity trg = ev.getTarget();
 			inst.marks.put(trg, inst.marks.getOrDefault(trg, 0) + 1);
 			return TriggerResult.keep();

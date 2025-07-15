@@ -53,7 +53,7 @@ public class Parry extends Equipment {
 			pc.play(p, p);
 			data.addSimpleShield(p.getUniqueId(), shields, 100);
 			Sounds.equip.play(p, p);
-			data.addTrigger(id, Trigger.RECEIVED_DAMAGE, new ParryBlock(p, this, slot));
+			data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, new ParryBlock(p, this, slot));
 			return TriggerResult.keep();
 		}));
 	}

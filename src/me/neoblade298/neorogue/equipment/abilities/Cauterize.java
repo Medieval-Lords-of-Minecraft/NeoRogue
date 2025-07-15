@@ -28,7 +28,7 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
-import me.neoblade298.neorogue.session.fight.trigger.event.PreDealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
 public class Cauterize extends Equipment {
 	private static final String ID = "cauterize";
@@ -75,8 +75,8 @@ public class Cauterize extends Equipment {
 			return TriggerResult.keep();
 		});
 
-		data.addTrigger(id, Trigger.PRE_DEALT_DAMAGE, (pdata, in) -> {
-			PreDealtDamageEvent ev = (PreDealtDamageEvent) in;
+		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
+			PreDealDamageEvent ev = (PreDealDamageEvent) in;
 			if (inst.getCount() == 1)
 				return TriggerResult.keep();
 			if (!ev.getMeta().containsType(DamageType.FIRE))

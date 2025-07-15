@@ -21,7 +21,7 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
-import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 
 public class VengefulShield extends Equipment {
 	private static final String ID = "vengefulShield";
@@ -42,10 +42,10 @@ public class VengefulShield extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
-		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, (pdata, inputs) -> {
+		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, (pdata, inputs) -> {
 			int berserk = data.getStatus(StatusType.BERSERK).getStacks();
 			if ((p.getHandRaised() != EquipmentSlot.OFF_HAND || !p.isHandRaised()) && berserk < thres) return TriggerResult.keep();
-			ReceivedDamageEvent ev = (ReceivedDamageEvent) inputs;
+			ReceiveDamageEvent ev = (ReceiveDamageEvent) inputs;
 			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, reduction, 0, StatTracker.defenseBuffAlly(am.getId(), this)));
 			p.playSound(p, Sound.ITEM_SHIELD_BLOCK, 1F, 1F);
 			data.applyStatus(StatusType.BERSERK, data, 1, -1);

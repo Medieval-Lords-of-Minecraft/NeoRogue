@@ -34,7 +34,7 @@ public class AmuletOfOffering extends Artifact {
 	@Override
 	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
 		String buffId = UUID.randomUUID().toString();
-		data.addTrigger(id, Trigger.RECEIVED_HEALTH_DAMAGE, (pdata, in) -> {
+		data.addTrigger(id, Trigger.RECEIVE_HEALTH_DAMAGE, (pdata, in) -> {
 			data.addMana(1000);
 			data.addStamina(1000);
 			data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.multiplier(data, 0.5, StatTracker.damageBuffAlly(buffId, this)), 300);

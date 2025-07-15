@@ -19,7 +19,7 @@ import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class TacticiansDagger extends Equipment {
@@ -43,7 +43,7 @@ public class TacticiansDagger extends Equipment {
 		StandardPriorityAction timer = new StandardPriorityAction(ID);
 		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, this, slot, es);
 		timer.setAction((pdata, in) -> {
-			DealtDamageEvent ev = (DealtDamageEvent) in;
+			DealDamageEvent ev = (DealDamageEvent) in;
 			if (!ev.getMeta().containsType(DamageCategory.GENERAL)) {
 				return TriggerResult.keep();
 			}
@@ -56,7 +56,7 @@ public class TacticiansDagger extends Equipment {
 			}.runTaskLater(NeoRogue.inst(), 60));
 			return TriggerResult.keep();
 		});
-		data.addTrigger(ID, Trigger.DEALT_DAMAGE, timer);
+		data.addTrigger(ID, Trigger.DEAL_DAMAGE, timer);
 		
 		inst.setAction((pdata, inputs) -> {
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;

@@ -6,14 +6,14 @@ import org.bukkit.entity.LivingEntity;
 
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 
-public class PreDealtDamageMultipleEvent {
+public class PreDealDamageMultipleEvent {
 	private DamageMeta meta;
 	private Collection<LivingEntity> targets;
 	public DamageMeta getMeta() {
 		return meta;
 	}
 	
-	public PreDealtDamageMultipleEvent(DamageMeta meta, Collection<LivingEntity> targets) {
+	public PreDealDamageMultipleEvent(DamageMeta meta, Collection<LivingEntity> targets) {
 		super();
 		this.meta = meta;
 		this.targets = targets;

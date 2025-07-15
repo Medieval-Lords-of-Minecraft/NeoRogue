@@ -19,7 +19,7 @@ import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.PreDealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
 public class SaboteursRing extends Equipment {
 	private static final String ID = "saboteursRing";
@@ -37,8 +37,8 @@ public class SaboteursRing extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		String buffId = UUID.randomUUID().toString();
-		data.addTrigger(id, Trigger.PRE_DEALT_DAMAGE, (pdata, in) -> {
-			PreDealtDamageEvent ev = (PreDealtDamageEvent) in;
+		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
+			PreDealDamageEvent ev = (PreDealDamageEvent) in;
 			FightData fd = FightInstance.getFightData(ev.getTarget());
 			if (!fd.hasStatus(StatusType.INJURY)) return TriggerResult.keep();
 			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),

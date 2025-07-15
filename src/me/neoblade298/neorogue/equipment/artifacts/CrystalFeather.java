@@ -33,7 +33,7 @@ public class CrystalFeather extends Artifact {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
-		data.addTrigger(id, Trigger.RECEIVED_HEALTH_DAMAGE, (pdata, in) -> {
+		data.addTrigger(id, Trigger.RECEIVE_HEALTH_DAMAGE, (pdata, in) -> {
 			data.applyStatus(StatusType.INVINCIBLE, data, 1, dur * 20);
 			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, dur * 20, 1));
 			Sounds.glass.play(p, p);

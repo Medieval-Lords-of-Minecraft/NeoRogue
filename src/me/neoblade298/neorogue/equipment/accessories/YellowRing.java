@@ -13,7 +13,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class YellowRing extends Equipment {
 	private static final String ID = "yellowRing";
@@ -31,11 +31,11 @@ public class YellowRing extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		double max = data.getMaxMana() * 0.5;
-		data.addTrigger(id, Trigger.DEALT_DAMAGE, (pdata, in) -> {
+		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
 			if (data.getMana() <= max) {
 				return TriggerResult.keep();
 			}
-			DealtDamageEvent ev = (DealtDamageEvent) in;
+			DealDamageEvent ev = (DealDamageEvent) in;
 			if (ev.getMeta().containsType(DamageType.LIGHTNING)) {
 				FightData fd = FightInstance.getFightData(ev.getTarget());
 				fd.applyStatus(StatusType.ELECTRIFIED, data, elec, -1);

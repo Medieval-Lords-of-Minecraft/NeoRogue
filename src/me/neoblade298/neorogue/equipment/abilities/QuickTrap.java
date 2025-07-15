@@ -28,7 +28,7 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.Trap;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class QuickTrap extends Equipment {
 	private static final String ID = "quickTrap";
@@ -72,8 +72,8 @@ public class QuickTrap extends Equipment {
 		});
 		data.addTrigger(id, Trigger.LEFT_CLICK, inst);
 
-		data.addTrigger(id, Trigger.DEALT_DAMAGE, (pdata, in) -> {
-			DealtDamageEvent ev = (DealtDamageEvent) in;
+		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
+			DealDamageEvent ev = (DealDamageEvent) in;
 			am.addDouble(ev.getTotalDamage());
 			if (am.getDouble() >= thres) {
 				charged.setAmount((int) (am.getDouble() / thres));

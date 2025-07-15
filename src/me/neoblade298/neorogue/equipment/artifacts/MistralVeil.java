@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 
 public class MistralVeil extends Artifact {
 	private static final String ID = "mistralVeil";
@@ -35,8 +35,8 @@ public class MistralVeil extends Artifact {
 	@Override
 	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
 		String buffId = UUID.randomUUID().toString();
-		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, (pdata, in) -> {
-			ReceivedDamageEvent ev = (ReceivedDamageEvent) in;
+		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, (pdata, in) -> {
+			ReceiveDamageEvent ev = (ReceiveDamageEvent) in;
 			if (p.getLocation().distanceSquared(ev.getDamager().getEntity().getLocation()) > rangeSq) {
 				ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, reduc, 0, StatTracker.defenseBuffAlly(buffId, this)));
 			}

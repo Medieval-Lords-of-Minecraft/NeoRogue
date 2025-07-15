@@ -26,7 +26,7 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class RedFan extends Equipment {
 	private static final String ID = "redFan";
@@ -66,8 +66,8 @@ public class RedFan extends Equipment {
 			}
 			return TriggerResult.keep();
 		});
-		data.addTrigger(id, Trigger.DEALT_DAMAGE, (pdata, in) -> {
-			DealtDamageEvent ev = (DealtDamageEvent) in;
+		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
+			DealDamageEvent ev = (DealDamageEvent) in;
 			if (ev.getMeta().containsType(DamageType.FIRE)) {
 				am.addCount(1);
 				if (am.getCount() >= thres) {

@@ -38,12 +38,12 @@ import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
-import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
-import me.neoblade298.neorogue.session.fight.trigger.event.PreDealtDamageEvent;
-import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageBarrierEvent;
-import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
-import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedHealthDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageBarrierEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveHealthDamageEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -271,7 +271,7 @@ public class DamageMeta {
 				PreBasicAttackEvent ev = new PreBasicAttackEvent(target, this, weapon, proj);
 				((PlayerFightData) owner).runActions((PlayerFightData) owner, Trigger.PRE_BASIC_ATTACK, ev);
 			}
-			FightInstance.trigger((Player) owner.getEntity(), Trigger.PRE_DEALT_DAMAGE, new PreDealtDamageEvent(this, target));
+			FightInstance.trigger((Player) owner.getEntity(), Trigger.PRE_DEAL_DAMAGE, new PreDealDamageEvent(this, target));
 		}
 		
 		// Reduce damage from barriers, used only for players blocking projectiles
@@ -290,8 +290,8 @@ public class DamageMeta {
 			}
 
 			if (barrier != null) {
-				ReceivedDamageBarrierEvent ev = new ReceivedDamageBarrierEvent(owner, this, barrier);
-				if (pdata.runActions(pdata, Trigger.RECEIVED_DAMAGE_BARRIER, ev) || barrier.isUnbreakable()) {
+				ReceiveDamageBarrierEvent ev = new ReceiveDamageBarrierEvent(owner, this, barrier);
+				if (pdata.runActions(pdata, Trigger.RECEIVE_DAMAGE_BARRIER, ev) || barrier.isUnbreakable()) {
 					nullifiedByBarrier = true;
 				}
 				else {
@@ -304,8 +304,8 @@ public class DamageMeta {
 		boolean cancelDamage = false;
 		if (recipient instanceof PlayerFightData && !nullifiedByBarrier) {
 			PlayerFightData pdata = (PlayerFightData) recipient;
-			ReceivedDamageEvent ev = new ReceivedDamageEvent(owner, this);
-			if (pdata.runActions(pdata, Trigger.RECEIVED_DAMAGE, ev) || pdata.hasStatus(StatusType.INVINCIBLE)) {
+			ReceiveDamageEvent ev = new ReceiveDamageEvent(owner, this);
+			if (pdata.runActions(pdata, Trigger.PRE_RECEIVE_DAMAGE, ev) || pdata.hasStatus(StatusType.INVINCIBLE)) {
 				cancelDamage = true;
 			}
 		}
@@ -590,20 +590,24 @@ public class DamageMeta {
 				pdata.getStats().addDamageTaken(mob, entry.getKey(), entry.getValue());
 			}
 
-			// trigger received health damage
+			// trigger received health damage and received damage events
 			if (damage > 0 || ignoreShieldsDamage > 0) {
-				ReceivedHealthDamageEvent ev = new ReceivedHealthDamageEvent(damager, this, damage, ignoreShieldsDamage);
-				if (pdata.runActions(pdata, Trigger.RECEIVED_HEALTH_DAMAGE, ev)) {
+				ReceiveHealthDamageEvent ev = new ReceiveHealthDamageEvent(damager, this, damage, ignoreShieldsDamage);
+				if (pdata.runActions(pdata, Trigger.RECEIVE_HEALTH_DAMAGE, ev)) {
 					damage = 0;
 					ignoreShieldsDamage = 0;
+					trackerSlices.clear();
+					statSlices.clear();
 				}
 			}
 			// all damage was mitigated via buffs or shields
 			else {
 				Sounds.block.play((Player) recipient.getEntity(), recipient.getEntity());
 			}
+			ReceiveDamageEvent ev = new ReceiveDamageEvent(owner, this);
+			pdata.runActions(pdata, Trigger.RECEIVE_DAMAGE, ev);
 		}
-		double finalDamage = damage + ignoreShieldsDamage + target.getAbsorptionAmount(); // +1 to deal with rounding errors
+		double finalDamage = damage + ignoreShieldsDamage + target.getAbsorptionAmount();
 		if (damage + ignoreShieldsDamage > 0) {
 			// Mobs shouldn't have a source of damage because they'll infinitely re-trigger ~OnAttack
 			// Players must have a source of damage to get credit for kills, otherwise mobs that suicide give points
@@ -612,7 +616,7 @@ public class DamageMeta {
 					BasicAttackEvent ev = new BasicAttackEvent(target, this, weapon, proj);
 					((PlayerFightData) owner).runActions((PlayerFightData) owner, Trigger.BASIC_ATTACK, ev);
 				}
-				FightInstance.trigger((Player) owner.getEntity(), Trigger.DEALT_DAMAGE, new DealtDamageEvent(this, target, damage, ignoreShieldsDamage));
+				FightInstance.trigger((Player) owner.getEntity(), Trigger.DEAL_DAMAGE, new DealDamageEvent(this, target, damage, ignoreShieldsDamage));
 				target.damage(finalDamage, owner.getEntity());
 			}
 			else {

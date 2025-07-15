@@ -4,7 +4,7 @@ import org.bukkit.entity.LivingEntity;
 
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 
-public class DealtDamageEvent {
+public class DealDamageEvent {
 	private DamageMeta meta;
 	private LivingEntity target;
 	private double totalDamage, damage, ignoreShieldsDamage;
@@ -20,7 +20,7 @@ public class DealtDamageEvent {
 	public DamageMeta getMeta() {
 		return meta;
 	}
-	public DealtDamageEvent(DamageMeta meta, LivingEntity target, double damage, double ignoreShieldsDamage) {
+	public DealDamageEvent(DamageMeta meta, LivingEntity target, double damage, double ignoreShieldsDamage) {
 		super();
 		this.meta = meta;
 		this.target = target;

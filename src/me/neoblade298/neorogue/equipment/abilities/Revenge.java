@@ -54,7 +54,7 @@ public class Revenge extends Equipment {
 			}
 			return TriggerResult.keep();
 			});
-		data.addTrigger(ID, Trigger.RECEIVED_DAMAGE, inst);
+		data.addTrigger(ID, Trigger.PRE_RECEIVE_DAMAGE, inst);
 		
 		data.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
 			if (!data.hasStatus("Revenge")) return TriggerResult.keep();

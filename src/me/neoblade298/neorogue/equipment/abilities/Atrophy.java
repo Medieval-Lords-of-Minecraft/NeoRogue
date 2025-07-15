@@ -24,7 +24,7 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.PreDealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
 public class Atrophy extends Equipment {
 	private static final String ID = "atrophy";
@@ -46,8 +46,8 @@ public class Atrophy extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		AtrophyInstance inst = new AtrophyInstance(data, this, slot, es);
-		data.addTrigger(ID, Trigger.PRE_DEALT_DAMAGE, (pdata, in) -> {
-			PreDealtDamageEvent ev = (PreDealtDamageEvent) in;
+		data.addTrigger(ID, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
+			PreDealDamageEvent ev = (PreDealDamageEvent) in;
 			if (!ev.getTarget().equals(inst.trg)) return TriggerResult.keep();
 			FightData fd = FightInstance.getFightData(ev.getTarget());
 			ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.DARK, DamageStatTracker.of(id + slot, this)));

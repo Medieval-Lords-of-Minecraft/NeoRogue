@@ -21,7 +21,7 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
-import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 
 public class IronMaiden extends Equipment {
 	private static final String ID = "ironMaiden";
@@ -41,9 +41,9 @@ public class IronMaiden extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
-		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, (pdata, inputs) -> {
+		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, (pdata, inputs) -> {
 			if (p.getHandRaised() != EquipmentSlot.OFF_HAND || !p.isHandRaised()) return TriggerResult.keep();
-			ReceivedDamageEvent ev = (ReceivedDamageEvent) inputs;
+			ReceiveDamageEvent ev = (ReceiveDamageEvent) inputs;
 			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, reduction, 0, StatTracker.defenseBuffAlly(am.getId(), this)));
 			p.playSound(p, Sound.ITEM_SHIELD_BLOCK, 1F, 1F);
 			data.applyStatus(StatusType.THORNS, data, thorns, -1);

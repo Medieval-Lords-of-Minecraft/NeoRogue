@@ -33,7 +33,7 @@ import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.GenericStatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.PreDealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
 public class BlastStep extends Equipment {
 	private static final String ID = "blastStep";
@@ -80,8 +80,8 @@ public class BlastStep extends Equipment {
 			return TriggerResult.keep();
 		}));
 
-		data.addTrigger(id, Trigger.PRE_DEALT_DAMAGE, (pdata, in) -> {
-			PreDealtDamageEvent ev = (PreDealtDamageEvent) in;
+		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
+			PreDealDamageEvent ev = (PreDealDamageEvent) in;
 			if (!ev.getMeta().hasOrigin(DamageOrigin.PROJECTILE)) return TriggerResult.keep();
 			FightData fd = FightInstance.getFightData(ev.getTarget());
 			if (fd.hasStatus("blastStep-" + p.getName()) && ev.getMeta().getProjectile().getOrigin().distanceSquared(ev.getTarget().getLocation()) <= 25) {

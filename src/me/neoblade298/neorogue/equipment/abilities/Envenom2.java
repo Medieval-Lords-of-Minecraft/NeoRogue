@@ -13,7 +13,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class Envenom2 extends Equipment {
 	private static final String ID = "envenom2";
@@ -31,8 +31,8 @@ public class Envenom2 extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.DEALT_DAMAGE, (pdata2, in) -> {
-			DealtDamageEvent ev = (DealtDamageEvent) in;
+		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata2, in) -> {
+			DealDamageEvent ev = (DealDamageEvent) in;
 			if (!DamageCategory.PHYSICAL.hasType(ev.getMeta().getPrimarySlice().getType())) return TriggerResult.keep();
 			FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, poison, -1);
 			return TriggerResult.keep();

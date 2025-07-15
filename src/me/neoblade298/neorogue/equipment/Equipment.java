@@ -359,6 +359,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new FormAPlan(b);
 			new ForceCloak(b);
 			new Fortify(b);
+			new Fortress(b);
 			new Frenzy(b);
 			new FrostTrap(b);
 			new Frostwalker(b);
@@ -387,6 +388,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new InducePanic(b);
 			new InducePanic2(b);
 			new Inflame(b);
+			new Inexorable(b);
 			new Initiator(b);
 			new Intuition(b);
 			new IronCuirass(b);

@@ -44,7 +44,7 @@ public class Warmup extends Equipment {
 			return TriggerResult.keep();
 		});
 		data.addTrigger(ID, Trigger.PLAYER_TICK, inst);
-		data.addTrigger(ID, Trigger.RECEIVED_HEALTH_DAMAGE, (pdata, in) -> {
+		data.addTrigger(ID, Trigger.RECEIVE_HEALTH_DAMAGE, (pdata, in) -> {
 			inst.addCount(1);
 			if (inst.getCount() < -5) return TriggerResult.remove();
 			return TriggerResult.keep();

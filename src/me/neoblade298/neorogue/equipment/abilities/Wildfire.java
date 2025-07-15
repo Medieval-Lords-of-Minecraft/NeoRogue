@@ -34,7 +34,7 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class Wildfire extends Equipment {
 	private static final String ID = "wildfire";
@@ -57,8 +57,8 @@ public class Wildfire extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
-		data.addTrigger(id, Trigger.DEALT_DAMAGE, (pdata, in) -> {
-			DealtDamageEvent ev = (DealtDamageEvent) in;
+		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
+			DealDamageEvent ev = (DealDamageEvent) in;
 			am.addDouble(ev.getMeta().getPostMitigationDamage().getOrDefault(DamageType.FIRE, 0D));
 			if (am.getDouble() >= thres && System.currentTimeMillis() - am.getTime() >= 1000) {
 				am.addDouble(-thres);

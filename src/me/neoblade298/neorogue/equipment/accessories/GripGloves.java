@@ -10,11 +10,11 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 
 public class GripGloves extends Equipment {
 	private static final String ID = "gripGloves";
@@ -35,9 +35,9 @@ public class GripGloves extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		String buffId = UUID.randomUUID().toString();
-		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, (pdata, in) -> {
+		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, (pdata, in) -> {
 			if (data.getStamina() / data.getMaxStamina() <= cutoffPct) return TriggerResult.keep();
-			ReceivedDamageEvent ev = (ReceivedDamageEvent) in;
+			ReceiveDamageEvent ev = (ReceiveDamageEvent) in;
 			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 3, 0, StatTracker.defenseBuffAlly(buffId, this)));
 			return TriggerResult.keep();
 		});

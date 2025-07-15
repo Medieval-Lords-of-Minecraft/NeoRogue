@@ -10,7 +10,7 @@ import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class RingOfNature extends Equipment {
 	private static final String ID = "ringOfNature";
@@ -29,8 +29,8 @@ public class RingOfNature extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.DEALT_DAMAGE, (pdata, in) -> {
-			DealtDamageEvent ev = (DealtDamageEvent) in;
+		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
+			DealDamageEvent ev = (DealDamageEvent) in;
 			if (ev.getMeta().containsType(DamageType.EARTHEN)) {
 				data.addSimpleShield(p.getUniqueId(), shields, dur * 20);
 			}

@@ -19,7 +19,7 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
-import me.neoblade298.neorogue.session.fight.trigger.event.PreDealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
 public class BasicElementMastery extends Equipment {
 	private static final String ID = "basicElementMastery";
@@ -50,8 +50,8 @@ public class BasicElementMastery extends Equipment {
 			ev.getStacksBuffList().add(new Buff(data, 1, 0, BuffStatTracker.ignored(this)));
 			return TriggerResult.keep();
 		});
-		data.addTrigger(id, Trigger.PRE_DEALT_DAMAGE, (pdata, in) -> {
-			PreDealtDamageEvent ev = (PreDealtDamageEvent) in;
+		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
+			PreDealDamageEvent ev = (PreDealDamageEvent) in;
 			if (!ev.getMeta().containsType(DamageType.FIRE)) return TriggerResult.keep();
 			FightInstance.applyStatus(ev.getTarget(), StatusType.BURN, data, burn, -1);
 			return TriggerResult.keep();

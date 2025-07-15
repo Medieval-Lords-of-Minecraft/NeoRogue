@@ -30,7 +30,7 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class HailCloak extends Equipment {
 	private static final String ID = "hailCloak";
@@ -54,8 +54,8 @@ public class HailCloak extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		HailCloakInstance inst = new HailCloakInstance(data, this, slot, es);
 		data.addTrigger(id, bind, inst);
-		data.addTrigger(id, Trigger.DEALT_DAMAGE, (pdata, in) -> {
-			DealtDamageEvent ev = (DealtDamageEvent) in;
+		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
+			DealDamageEvent ev = (DealDamageEvent) in;
 			if (!inst.active || !ev.getMeta().hasOrigin(DamageOrigin.PROJECTILE)) return TriggerResult.keep();
 			inst.runEffect(ev.getTarget().getLocation());
 			return TriggerResult.keep();

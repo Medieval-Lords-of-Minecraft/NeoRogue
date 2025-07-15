@@ -31,9 +31,9 @@ public class BloodyTrinket extends Artifact {
 			data.applyStatus(StatusType.STRENGTH, data, 10, -1);
 		}
 		else {
-			data.addTrigger(ID, Trigger.RECEIVED_HEALTH_DAMAGE, (pdata, in) -> {
+			data.addTrigger(ID, Trigger.RECEIVE_HEALTH_DAMAGE, (pdata, in) -> {
 				if (p.getHealth() <= data.getMaxHealth() * 0.5) {
-					data.applyStatus(StatusType.STRENGTH, data, 10, -1);
+					data.applyStatus(StatusType.STRENGTH, data, 20, -1);
 					return TriggerResult.remove();
 				}
 				return TriggerResult.keep();
@@ -54,6 +54,6 @@ public class BloodyTrinket extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GOLD_NUGGET, 
-				"Being below <white>50%</white> health grants " + GlossaryTag.STRENGTH.tag(this, 10, false) + ".");
+				"Being below <white>50%</white> health grants " + GlossaryTag.STRENGTH.tag(this, 20, false) + ".");
 	}
 }

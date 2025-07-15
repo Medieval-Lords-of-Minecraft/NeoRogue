@@ -40,12 +40,12 @@ public class Disappear extends Equipment {
 		DisappearInstance inst = new DisappearInstance(id, p, data, slot, this);
 		data.addTrigger(ID, Trigger.KILL, inst);
 		
-		data.addTrigger(ID, Trigger.RECEIVED_HEALTH_DAMAGE, (pdata, in) -> {
+		data.addTrigger(ID, Trigger.RECEIVE_HEALTH_DAMAGE, (pdata, in) -> {
 			inst.cancelPrime();
 			return TriggerResult.keep();
 		});
 		
-		data.addTrigger(ID, Trigger.DEALT_DAMAGE, (pdata, in) -> {
+		data.addTrigger(ID, Trigger.DEAL_DAMAGE, (pdata, in) -> {
 			inst.cancelPrime();
 			return TriggerResult.keep();
 		});

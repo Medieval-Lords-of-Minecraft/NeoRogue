@@ -19,7 +19,7 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
-import me.neoblade298.neorogue.session.fight.trigger.event.PreDealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
 public class SilentSteps extends Equipment {
 	private static final String ID = "silentSteps";
@@ -51,9 +51,9 @@ public class SilentSteps extends Equipment {
 			return TriggerResult.keep();
 		});
 		
-		data.addTrigger(ID, Trigger.PRE_DEALT_DAMAGE, (pdata, in) -> {
+		data.addTrigger(ID, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
 			if (!pdata.hasStatus(StatusType.STEALTH)) return TriggerResult.keep();
-			PreDealtDamageEvent ev = (PreDealtDamageEvent) in;
+			PreDealDamageEvent ev = (PreDealDamageEvent) in;
 			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
 					new Buff(pdata, damage * pdata.getStatus(StatusType.STEALTH).getStacks(), 0, StatTracker.damageBuffAlly(buffId, this)));
 			return TriggerResult.keep();

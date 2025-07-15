@@ -17,7 +17,7 @@ import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 
 public class HastyShield extends Equipment {
 	private static final String ID = "hastyShield";
@@ -36,7 +36,7 @@ public class HastyShield extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.RECEIVED_DAMAGE, new HastyShieldInstance(p, this));
+		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, new HastyShieldInstance(p, this));
 	}
 	
 	private class HastyShieldInstance implements TriggerAction {
@@ -55,7 +55,7 @@ public class HastyShield extends Equipment {
 			long now = System.currentTimeMillis();
 			if (now <= nextUsable) return TriggerResult.keep();
 			
-			ReceivedDamageEvent ev = (ReceivedDamageEvent) inputs;
+			ReceiveDamageEvent ev = (ReceiveDamageEvent) inputs;
 			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, reduction, 0, StatTracker.damageBarriered(buffId, eq)));
 			nextUsable = now + 5000L; // 5s
 			p.playSound(p, Sound.ITEM_SHIELD_BLOCK, 1F, 1F);

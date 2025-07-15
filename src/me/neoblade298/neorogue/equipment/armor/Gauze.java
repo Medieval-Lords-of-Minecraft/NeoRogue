@@ -12,7 +12,7 @@ import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
-import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedHealthDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveHealthDamageEvent;
 
 public class Gauze extends Equipment {
 	private static final String ID = "gauze";
@@ -32,7 +32,7 @@ public class Gauze extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		GauzeInstance inst = new GauzeInstance(ID);
-		data.addTrigger(ID, Trigger.RECEIVED_HEALTH_DAMAGE, inst);
+		data.addTrigger(ID, Trigger.RECEIVE_HEALTH_DAMAGE, inst);
 		data.addTrigger(ID, Trigger.RECEIVE_STATUS, (pdata, in) -> {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
 			if (!ev.isStatus(StatusType.STEALTH)) return TriggerResult.keep();
@@ -52,7 +52,7 @@ public class Gauze extends Equipment {
 		public GauzeInstance(String id) {
 			super(id);
 			action = (pdata, in) -> {
-				ReceivedHealthDamageEvent ev = (ReceivedHealthDamageEvent) in;
+				ReceiveHealthDamageEvent ev = (ReceiveHealthDamageEvent) in;
 				damage = ev.getTotalDamage();
 				timestamp = System.currentTimeMillis();
 				return TriggerResult.keep();

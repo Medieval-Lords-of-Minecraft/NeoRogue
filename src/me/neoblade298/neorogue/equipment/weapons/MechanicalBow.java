@@ -20,7 +20,7 @@ import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class MechanicalBow extends Bow {
 	private static final String ID = "mechanicalBow";
@@ -64,8 +64,8 @@ public class MechanicalBow extends Bow {
 			return TriggerResult.keep();
 		});
 
-		data.addTrigger(id, Trigger.DEALT_DAMAGE, (pdata, in) -> {
-			DealtDamageEvent ev = (DealtDamageEvent) in;
+		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
+			DealDamageEvent ev = (DealDamageEvent) in;
 			if (ev.getMeta().hasOrigin(DamageOrigin.TRAP)) {
 				am.setTime(System.currentTimeMillis());
 			}

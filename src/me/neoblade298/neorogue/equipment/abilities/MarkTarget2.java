@@ -41,7 +41,7 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
-import me.neoblade298.neorogue.session.fight.trigger.event.PreDealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
 public class MarkTarget2 extends Equipment {
 	private static final String ID = "markTarget2";
@@ -79,8 +79,8 @@ public class MarkTarget2 extends Equipment {
 			return TriggerResult.keep();
 		}));
 
-		data.addTrigger(id, Trigger.PRE_DEALT_DAMAGE, (pdata, in) -> {
-			PreDealtDamageEvent ev = (PreDealtDamageEvent) in;
+		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
+			PreDealDamageEvent ev = (PreDealDamageEvent) in;
 			FightData fd = FightInstance.getFightData(ev.getTarget());
 			if (!fd.hasStatus(StatusType.REND)) return TriggerResult.keep();
 			ev.getMeta().addDamageSlice(new DamageSlice(data, damage * fd.getStatus(StatusType.REND).getStacks(), DamageType.SLASHING,

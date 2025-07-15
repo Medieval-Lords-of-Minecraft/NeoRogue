@@ -23,7 +23,7 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.DealtDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class InducePanic extends Equipment {
 	private static final String ID = "inducePanic";
@@ -50,9 +50,9 @@ public class InducePanic extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		InducePanicInstance inst = new InducePanicInstance(data, this, slot, es);
-		data.addTrigger(ID, Trigger.DEALT_DAMAGE, (pdata, in) -> {
+		data.addTrigger(ID, Trigger.DEAL_DAMAGE, (pdata, in) -> {
 			if (inst.mark == null) return TriggerResult.keep();
-			DealtDamageEvent ev = (DealtDamageEvent) in;
+			DealDamageEvent ev = (DealDamageEvent) in;
 			if (ev.getMeta().containsType(DamageCategory.GENERAL) && ev.getTarget().getUniqueId().equals(inst.mark.getUniqueId())) {
 				inst.mark = null;
 			}

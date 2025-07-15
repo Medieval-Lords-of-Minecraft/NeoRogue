@@ -31,7 +31,7 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.ReceivedDamageBarrierEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageBarrierEvent;
 
 public class EarthenWall extends Equipment {
 	private static final String ID = "earthenWall";
@@ -86,8 +86,8 @@ public class EarthenWall extends Equipment {
 			return TriggerResult.keep();
 		});
 
-		data.addTrigger(id, Trigger.RECEIVED_DAMAGE_BARRIER, (pdata, in) -> {
-			ReceivedDamageBarrierEvent ev = (ReceivedDamageBarrierEvent) in;
+		data.addTrigger(id, Trigger.RECEIVE_DAMAGE_BARRIER, (pdata, in) -> {
+			ReceiveDamageBarrierEvent ev = (ReceiveDamageBarrierEvent) in;
 			if (ev.getBarrier().getUniqueId().equals(am.getUniqueId())) {
 				am.addCount(1);
 				ev.getDamager().applyStatus(StatusType.CONCUSSED, data, conc, -1);
