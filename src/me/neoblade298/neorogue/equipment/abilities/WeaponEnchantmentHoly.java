@@ -55,6 +55,7 @@ public class WeaponEnchantmentHoly extends Equipment {
 	public void setupReforges() {
 		addReforge(SilverFang.get(), RighteousFlame.get());
 		addReforge(Harpoon.get(), RighteousLance.get());
+		addReforge(Windcutter.get(), LightPulse.get());
 	}
 
 	@Override

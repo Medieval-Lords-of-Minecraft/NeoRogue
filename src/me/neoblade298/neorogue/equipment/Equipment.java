@@ -37,6 +37,7 @@ import me.neoblade298.neorogue.equipment.accessories.ForceTrinket;
 import me.neoblade298.neorogue.equipment.accessories.GripGloves;
 import me.neoblade298.neorogue.equipment.accessories.LionheartBangle;
 import me.neoblade298.neorogue.equipment.accessories.MagicQuiver;
+import me.neoblade298.neorogue.equipment.accessories.MajorShieldingRelic;
 import me.neoblade298.neorogue.equipment.accessories.ManaMagnifier;
 import me.neoblade298.neorogue.equipment.accessories.MinorManaRelic;
 import me.neoblade298.neorogue.equipment.accessories.MinorPoisonRelic;
@@ -280,9 +281,11 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Charge(b);
 			new Chill(b);
 			new Chokehold(b);
+			new ChosenOfTheLight(b);
 			new Cleave(b);
 			new CollectionHex(b);
 			new Concoct(b);
+			new Condemn(b);
 			new ConfidenceKill(b);
 			new Consecrate(b);
 			new Contaminate(b);
@@ -380,6 +383,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new HexCurse2(b);
 			new HexingShot(b);
 			new HoldTheLine(b);
+			new HolySpear(b);
 			new InducePanic(b);
 			new InducePanic2(b);
 			new Inflame(b);
@@ -394,6 +398,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new LightningBolt(b);
 			new LightningRush(b);
 			new LightningStrike(b);
+			new LightPulse(b);
 			new LimitBreak(b);
 			new Maim(b);
 			new Malice(b);
@@ -478,6 +483,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new TreeTrunk(b);
 			new TwinBolt(b);
 			new TwinShiv(b);
+			new ValiantPierce(b);
 			new Vanish(b);
 			new VitalPierce(b);
 			new Volley(b);
@@ -503,6 +509,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new FlintPendant(b);
 			new GripGloves(b);
 			new MagicQuiver(b);
+			new MajorShieldingRelic(b);
 			new ManaMagnifier(b);
 			new MinorManaRelic(b);
 			new MinorPoisonRelic(b);

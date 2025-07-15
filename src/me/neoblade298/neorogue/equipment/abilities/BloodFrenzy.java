@@ -25,7 +25,7 @@ public class BloodFrenzy extends Equipment {
 	private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME).count(20).speed(0.01).offsetY(1);
 	
 	public BloodFrenzy(boolean isUpgraded) {
-		super(ID, "BloodFrenzy", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
+		super(ID, "Blood Frenzy", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.none());
 		strength = isUpgraded ? 20 : 15;
 		atkSpeed = isUpgraded ? 13 : 10;

@@ -25,7 +25,7 @@ public class LimitBreak extends Equipment {
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_RAVAGER_ROAR);
 	
 	public LimitBreak(boolean isUpgraded) {
-		super(ID, "Limit Break", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
+		super(ID, "Limit Break", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 100, 40, 0));
 		pc.count(50).spread(0.5, 0.5).dustOptions(new DustOptions(Color.RED, 1F));
 	}

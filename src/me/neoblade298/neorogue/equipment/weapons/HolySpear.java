@@ -17,44 +17,41 @@ import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.equipment.abilities.GuardianSpirit;
-import me.neoblade298.neorogue.equipment.abilities.HerculeanStrength;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
+import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class ValiantPierce extends Equipment {
-	private static final String ID = "valiantPierce";
+public class HolySpear extends Equipment {
+	private static final String ID = "holySpear";
 	private static final ParticleContainer lancePart = new ParticleContainer(Particle.ELECTRIC_SPARK).count(5).spread(0.1, 0.1);
 	private static final TargetProperties tp = TargetProperties.line(6, 1, TargetType.ENEMY);
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_PLAYER_ATTACK_CRIT, 0.5F);
-	private int damage, bonus;
+	private int damage, bonus, sanct, thres;
 
-	public ValiantPierce(boolean isUpgraded) {
+	public HolySpear(boolean isUpgraded) {
 		super(
-				ID, "Valiant Pierce", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR, EquipmentType.WEAPON,
-				EquipmentProperties.ofUsable(0, 35, 8, tp.range)
+				ID, "Holy Spear", isUpgraded, Rarity.EPIC, EquipmentClass.WARRIOR, EquipmentType.WEAPON,
+				EquipmentProperties.ofUsable(20, 35, 12, tp.range)
 		);
-		damage = isUpgraded ? 200 : 150;
-		bonus = isUpgraded ? 300 : 200;
+		damage = 200;
+		bonus = isUpgraded ? 500 : 350;
+		sanct = isUpgraded ? 150 : 100;
+		thres = 100;
 	}
 	
 	public static Equipment get() {
 		return Equipment.get(ID, false);
-	}
-
-	public void setupReforges() {
-		addReforge(GuardianSpirit.get(), HolySpear.get());
-		addReforge(HerculeanStrength.get(), Condemn.get());
 	}
 
 	@Override
@@ -65,16 +62,16 @@ public class ValiantPierce extends Equipment {
 				public void run() {
 					LinkedList<LivingEntity> targets = TargetHelper.getEntitiesInSight(p, tp);
 					sc.play(p, p);
+					weaponSwing(p, data);
 					Location start = p.getLocation().add(0, 1, 0);
 					Vector v = p.getLocation().getDirection().setY(0).normalize().multiply(tp.range);
 					ParticleUtil.drawLine(p, lancePart, p.getLocation().add(0, 1, 0), start.clone().add(v), 0.5);
-					boolean first = true;
 					DamageStatTracker tracker = DamageStatTracker.of(id + slot, eq);
 					for (LivingEntity target : targets) {
 						DamageMeta dm = new DamageMeta(data, eq, true, tracker);
-						if (first && targets.size() > 1) {
+						FightData fd = FightInstance.getFightData(target);
+						if (fd.getStatus(StatusType.SANCTIFIED).getStacks() >= thres) {
 							dm.addDamageSlice(new DamageSlice(data, bonus, DamageType.PIERCING, tracker));
-							first = false;
 						}
 						FightInstance.dealDamage(dm, target);
 					}
@@ -87,8 +84,9 @@ public class ValiantPierce extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(
-				Material.POINTED_DRIPSTONE,
-				"On cast, after " + DescUtil.charge(this, 1, 1) + ", deal " + GlossaryTag.PIERCING.tag(this, damage, true) + " to all enemies in a line. " +
-				"If more than one enemy is hit, deal " + DescUtil.yellow(bonus) + " bonus damage to the first enemy hit.");
+				Material.GLOWSTONE_DUST,
+				"On cast, after " + DescUtil.charge(this, 1, 1) + ", deal " + GlossaryTag.PIERCING.tag(this, damage, false) + " to all enemies in a line. " +
+				"Deal " + DescUtil.yellow(bonus) + " bonus damage to enemies with over " + GlossaryTag.SANCTIFIED.tag(this, thres, false) + ". Apply " + GlossaryTag.SANCTIFIED.tag(this, sanct, true) + 
+				" to all enemies hit after.");
 	}
 }

@@ -6,55 +6,60 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.ParticleUtil;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.equipment.abilities.GuardianSpirit;
-import me.neoblade298.neorogue.equipment.abilities.HerculeanStrength;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
+import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class ValiantPierce extends Equipment {
-	private static final String ID = "valiantPierce";
+public class Condemn extends Equipment {
+	private static final String ID = "condemn";
 	private static final ParticleContainer lancePart = new ParticleContainer(Particle.ELECTRIC_SPARK).count(5).spread(0.1, 0.1);
 	private static final TargetProperties tp = TargetProperties.line(6, 1, TargetType.ENEMY);
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_PLAYER_ATTACK_CRIT, 0.5F);
-	private int damage, bonus;
+	private int damage, bonus, multStr;
+	private double mult;
 
-	public ValiantPierce(boolean isUpgraded) {
+	public Condemn(boolean isUpgraded) {
 		super(
-				ID, "Valiant Pierce", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR, EquipmentType.WEAPON,
-				EquipmentProperties.ofUsable(0, 35, 8, tp.range)
+				ID, "Condemn", isUpgraded, Rarity.EPIC, EquipmentClass.WARRIOR, EquipmentType.WEAPON,
+				EquipmentProperties.ofUsable(0, 50, 8, tp.range)
 		);
-		damage = isUpgraded ? 200 : 150;
-		bonus = isUpgraded ? 300 : 200;
+		damage = 200;
+		bonus = 300;
+		mult = isUpgraded ? 0.6 : 0.3;
+		multStr = (int) (mult * 100);
 	}
 	
 	public static Equipment get() {
 		return Equipment.get(ID, false);
-	}
-
-	public void setupReforges() {
-		addReforge(GuardianSpirit.get(), HolySpear.get());
-		addReforge(HerculeanStrength.get(), Condemn.get());
 	}
 
 	@Override
@@ -68,13 +73,19 @@ public class ValiantPierce extends Equipment {
 					Location start = p.getLocation().add(0, 1, 0);
 					Vector v = p.getLocation().getDirection().setY(0).normalize().multiply(tp.range);
 					ParticleUtil.drawLine(p, lancePart, p.getLocation().add(0, 1, 0), start.clone().add(v), 0.5);
-					boolean first = true;
+					Block b = p.getTargetBlockExact((int) tp.range);
+					if (b != null) {
+						Sounds.explode.play(p, p);
+					}
 					DamageStatTracker tracker = DamageStatTracker.of(id + slot, eq);
 					for (LivingEntity target : targets) {
-						DamageMeta dm = new DamageMeta(data, eq, true, tracker);
-						if (first && targets.size() > 1) {
+						DamageMeta dm = new DamageMeta(data, eq, true, tracker).setKnockback(0.5);
+						if (b != null) {
 							dm.addDamageSlice(new DamageSlice(data, bonus, DamageType.PIERCING, tracker));
-							first = false;
+							target.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 40, 2));
+							FightData fd = FightInstance.getFightData(target);
+							fd.addDefenseBuff(DamageBuffType.of(DamageCategory.PHYSICAL), Buff.multiplier(data, -mult,
+									BuffStatTracker.defenseDebuffEnemy(id + slot, eq, true)), 100);
 						}
 						FightInstance.dealDamage(dm, target);
 					}
@@ -88,7 +99,8 @@ public class ValiantPierce extends Equipment {
 	public void setupItem() {
 		item = createItem(
 				Material.POINTED_DRIPSTONE,
-				"On cast, after " + DescUtil.charge(this, 1, 1) + ", deal " + GlossaryTag.PIERCING.tag(this, damage, true) + " to all enemies in a line. " +
-				"If more than one enemy is hit, deal " + DescUtil.yellow(bonus) + " bonus damage to the first enemy hit.");
+				"On cast, after " + DescUtil.charge(this, 1, 1) + ", deal " + GlossaryTag.PIERCING.tag(this, damage, true) + " and knock back enemies in a line. " +
+				"If the line includes a wall, deal " + DescUtil.yellow(bonus) + " bonus damage to all enemies hit, apply " + DescUtil.potion("Slowness", 2, 2) +
+				", and reduce their " + GlossaryTag.PHYSICAL.tag(this) + " defense by " + DescUtil.yellow(multStr + "%") + " for <white>5s</white>.");
 	}
 }
