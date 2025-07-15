@@ -26,11 +26,6 @@ public class Inexorable extends Equipment {
 		refresh = 20;
 	}
 	
-	@Override
-	public void setupReforges() {
-
-	}
-	
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}

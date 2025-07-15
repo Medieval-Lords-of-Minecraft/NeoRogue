@@ -40,11 +40,6 @@ public class Mahoraga extends Equipment {
 		heal = 10;
 	}
 	
-	@Override
-	public void setupReforges() {
-		addSelfReforge(Inexorable.get());
-	}
-	
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}

@@ -25,7 +25,7 @@ public class ThornGarden extends Equipment {
 	private int thorns;
 	
 	public ThornGarden(boolean isUpgraded) {
-		super(ID, "thornGarden", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
+		super(ID, "Thorn Garden", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(isUpgraded ? 20 : 30, isUpgraded ? 70 : 90, 0, 0));
 		properties.addUpgrades(PropertyType.MANA_COST, PropertyType.STAMINA_COST);
 		pc.count(50).spread(0.5, 0.5).speed(0.2);

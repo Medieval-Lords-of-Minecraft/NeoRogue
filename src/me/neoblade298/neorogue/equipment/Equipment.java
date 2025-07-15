@@ -172,6 +172,7 @@ import me.neoblade298.neorogue.equipment.offhands.BatteringRam;
 import me.neoblade298.neorogue.equipment.offhands.ChasingDagger;
 import me.neoblade298.neorogue.equipment.offhands.ConductiveArmguard;
 import me.neoblade298.neorogue.equipment.offhands.EnduranceShield;
+import me.neoblade298.neorogue.equipment.offhands.ForceBracer;
 import me.neoblade298.neorogue.equipment.offhands.HastyShield;
 import me.neoblade298.neorogue.equipment.offhands.HavenTome;
 import me.neoblade298.neorogue.equipment.offhands.IcicleTome;
@@ -271,6 +272,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Brace(b);
 			new Brace2(b);
 			new Brand(b);
+			new BreakingPoint(b);
 			new BreakTheLine(b);
 			new Brightcrown(b);
 			new Bulldoze(b);
@@ -402,6 +404,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new LightningStrike(b);
 			new LightPulse(b);
 			new LimitBreak(b);
+			new Mahoraga(b);
 			new Maim(b);
 			new Malice(b);
 			new Manabending(b);
@@ -572,6 +575,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new CopperFunnel(b);
 			new ConductiveArmguard(b);
 			new EnduranceShield(b);
+			new ForceBracer(b);
 			new GuardingRune(b);
 			new HastyShield(b);
 			new HavenTome(b);

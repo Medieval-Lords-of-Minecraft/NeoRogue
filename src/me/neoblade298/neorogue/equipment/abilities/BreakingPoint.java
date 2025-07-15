@@ -39,12 +39,6 @@ public class BreakingPoint extends Equipment {
 		multStr = (int) (mult * 100);
 	}
 	
-	@Override
-	public void setupReforges() {
-		addSelfReforge(Inexorable.get());
-		addReforge(Revenge.get(), Mahoraga.get());
-	}
-	
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
