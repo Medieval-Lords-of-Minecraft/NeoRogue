@@ -660,6 +660,9 @@ public abstract class FightInstance extends Instance {
 			return;
 		trigger(e.getPlayer(), Trigger.LEFT_CLICK_NO_HIT, null);
 		trigger(e.getPlayer(), Trigger.LEFT_CLICK, null);
+		if (e.getAction() == Action.LEFT_CLICK_BLOCK) {
+			trigger(e.getPlayer(), Trigger.LEFT_CLICK_BLOCK, e);
+		}
 	}
 	
 	public static void handleMythicDespawn(MythicMobDespawnEvent e) {

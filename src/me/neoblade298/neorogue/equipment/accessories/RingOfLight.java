@@ -22,7 +22,7 @@ public class RingOfLight extends Equipment {
 	private int sanct;
 	public RingOfLight(boolean isUpgraded) {
 		super(ID, "Ring Of Light", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ACCESSORY, EquipmentProperties.ofUsable(0, 0, 0, 0, tp.range));
+				EquipmentType.ACCESSORY, EquipmentProperties.ofUsable(0, 0, 0, tp.range));
 		sanct = isUpgraded ? 60 : 40;
 	}
 	

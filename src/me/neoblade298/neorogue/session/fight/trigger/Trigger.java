@@ -8,7 +8,7 @@ public enum Trigger {
 	CAST_USABLE, // Use this event to check for cast abilities for passives, this won't happen on
 					// things like toggles. Only STANDARD and POST_TRIGGER will run this trigger
 	LEFT_CLICK,
-	LEFT_CLICK_NO_HIT, LEFT_CLICK_HIT, RIGHT_CLICK, RIGHT_CLICK_HIT, VANILLA_PROJECTILE, RAISE_SHIELD,
+	LEFT_CLICK_NO_HIT, LEFT_CLICK_BLOCK, LEFT_CLICK_HIT, RIGHT_CLICK, RIGHT_CLICK_HIT, VANILLA_PROJECTILE, RAISE_SHIELD,
 	SHIELD_TICK, // Ticks while you have your shield up
 	PLAYER_TICK, // Tick after default player tick (stamina/mana regen and sprinting check)
 	LOWER_SHIELD, RECEIVE_DAMAGE_BARRIER, // Cancellable

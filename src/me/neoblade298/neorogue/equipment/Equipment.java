@@ -90,6 +90,7 @@ import me.neoblade298.neorogue.equipment.armor.NullMagicMantle;
 import me.neoblade298.neorogue.equipment.armor.NullifyingCloak;
 import me.neoblade298.neorogue.equipment.armor.PhoenixfireMantle;
 import me.neoblade298.neorogue.equipment.armor.RedCloak;
+import me.neoblade298.neorogue.equipment.armor.SaviorsHelm;
 import me.neoblade298.neorogue.equipment.armor.SpikedPauldrons;
 import me.neoblade298.neorogue.equipment.armor.StarlightHood;
 import me.neoblade298.neorogue.equipment.armor.StonyCloak;
@@ -274,7 +275,6 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Brand(b);
 			new BreakingPoint(b);
 			new BreakTheLine(b);
-			new Brightcrown(b);
 			new Bulldoze(b);
 			new Bulwark(b);
 			new Burst(b);
@@ -286,6 +286,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new ChosenOfTheLight(b);
 			new Cleave(b);
 			new CollectionHex(b);
+			new CompoundingInjury(b);
 			new Concoct(b);
 			new Condemn(b);
 			new ConfidenceKill(b);
@@ -542,6 +543,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new AuricCape(b);
 			new BurningMantle(b);
 			new BlindingCloak(b);
+			new Brightcrown(b);
 			new CalmingHood(b);
 			new ClothBindings(b);
 			new ElbowBrace(b);
@@ -564,6 +566,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new NullMagicMantle(b);
 			new PhoenixfireMantle(b);
 			new RedCloak(b);
+			new SaviorsHelm(b);
 			new SpikedPauldrons(b);
 			new StarlightHood(b);
 			new StonyCloak(b);
@@ -637,6 +640,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Fracturer(b);
 			new FrostbiteBow(b);
 			new GlassArrow(b);
+			new Groundbreaker(b);
 			new Harpoon(b);
 			new HiddenRazor(b);
 			new HuntersBow(b);

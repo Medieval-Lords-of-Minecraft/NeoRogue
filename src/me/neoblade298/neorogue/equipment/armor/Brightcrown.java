@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.accessories.RingOfLight;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -31,6 +32,11 @@ public class Brightcrown extends Equipment {
 	
 	public static Equipment get() {
 		return Equipment.get(ID, false);
+	}
+
+	@Override
+	public void setupReforges() {
+		addReforge(RingOfLight.get(), SaviorsHelm.get());
 	}
 
 	@Override

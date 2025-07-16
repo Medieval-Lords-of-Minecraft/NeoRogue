@@ -14,10 +14,10 @@ import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
+import me.neoblade298.neorogue.equipment.weapons.Flametongue;
 import me.neoblade298.neorogue.equipment.weapons.Harpoon;
 import me.neoblade298.neorogue.equipment.weapons.RighteousFlame;
 import me.neoblade298.neorogue.equipment.weapons.RighteousLance;
-import me.neoblade298.neorogue.equipment.weapons.SilverFang;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
@@ -44,7 +44,7 @@ public class WeaponEnchantmentHoly extends Equipment {
 		super(ID, "Weapon Enchantment: Holy", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 3, RANGE));
 		damage = isUpgraded ? 60 : 40;
-		sanct = isUpgraded ? 25 : 15;
+		sanct = isUpgraded ? 50 : 30;
 	}
 	
 	public static Equipment get() {
@@ -53,7 +53,7 @@ public class WeaponEnchantmentHoly extends Equipment {
 
 	@Override
 	public void setupReforges() {
-		addReforge(SilverFang.get(), RighteousFlame.get());
+		addReforge(Flametongue.get(), RighteousFlame.get());
 		addReforge(Harpoon.get(), RighteousLance.get());
 		addReforge(Windcutter.get(), LightPulse.get());
 	}
