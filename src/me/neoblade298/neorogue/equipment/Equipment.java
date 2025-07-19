@@ -607,6 +607,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new AshenHeadhunter(b);
 			new AshenWand(b);
 			new AshenWand2(b);
+			new AvalonianMace(b);
 			new BarbedRocket(b);
 			new BasicBow(b);
 			new BasicCrossbow(b);
