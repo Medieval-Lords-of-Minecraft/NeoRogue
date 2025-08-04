@@ -446,6 +446,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new RainOfSteel(b);
 			new RapidFire(b);
 			new RecklessApproach(b);
+			new RecklessSwing(b);
 			new Resourcefulness(b);
 			new Revenge(b);
 			new Roar(b);
@@ -481,6 +482,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Flicker(b);
 			new Tackle(b);
 			new Tailwind(b);
+			new TargetAcquisition(b);
 			new ThrowPoison(b);
 			new ThornGarden(b);
 			new Titan(b);
@@ -613,6 +615,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new BasicCrossbow(b);
 			new BasicShotbow(b);
 			new BeamStaff(b);
+			new Bloodthirster(b);
 			new BluntedArrow(b);
 			new BoltWand(b);
 			new ButterflyKnife(b);
@@ -674,6 +677,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new SerratedRazor(b);
 			new SilverFang(b);
 			new ShadowyDagger(b);
+			new ShieldbearerStaff(b);
 			new ShieldPike(b);
 			new SlowingOrb(b);
 			new SparkdrainKnife(b);
@@ -692,7 +696,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new StoneThrowingKnife(b);
 			new StonyWand(b);
 			new TacticiansDagger(b);
-			new TargetAcquisition(b);
+			new TheGreatDivide(b);
 			new UnderDarkness(b);
 			new RighteousHammer(b);
 			new WandOfIgnition(b);
