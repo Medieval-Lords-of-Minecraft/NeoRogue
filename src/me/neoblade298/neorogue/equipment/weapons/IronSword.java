@@ -11,6 +11,9 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.abilities.GuardianSpirit;
+import me.neoblade298.neorogue.equipment.abilities.HerculeanStrength;
+import me.neoblade298.neorogue.equipment.abilities.Skirmisher;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -29,6 +32,13 @@ public class IronSword extends Equipment {
 	
 	public static Equipment get() {
 		return Equipment.get(ID, false);
+	}
+
+	@Override
+	public void setupReforges() {
+		addReforge(GuardianSpirit.get(), Excalibur.get());
+		addReforge(HerculeanStrength.get(), SoulHarvester.get());
+		addReforge(Skirmisher.get(), HibernianQuickblade.get());
 	}
 
 	@Override

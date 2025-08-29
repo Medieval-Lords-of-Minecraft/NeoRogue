@@ -635,6 +635,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new EnfeeblingWand(b);
 			new EtherealKnife(b);
 			new EvasiveKnife(b);
+			new Excalibur(b);
 			new ExplosiveArrow(b);
 			new FencingSword(b);
 			new Firefly(b);
@@ -646,6 +647,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new GlassArrow(b);
 			new Groundbreaker(b);
 			new Harpoon(b);
+			new HibernianQuickblade(b);
 			new HiddenRazor(b);
 			new HuntersBow(b);
 			new DrainWand(b);
@@ -681,6 +683,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new ShieldbearerStaff(b);
 			new ShieldPike(b);
 			new SlowingOrb(b);
+			new SoulHarvester(b);
 			new SparkdrainKnife(b);
 			new SparkKnife(b);
 			new SparkStick(b);

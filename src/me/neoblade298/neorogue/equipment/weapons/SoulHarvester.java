@@ -5,11 +5,10 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
-import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageType;
@@ -17,20 +16,17 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
-public class Excalibur extends Equipment {
-	private static final String ID = "excalibur";
-	private double mult;
-	private int multStr;
+public class SoulHarvester extends Equipment {
+	private static final String ID = "soulHarvester";
+	private int str;
 	
-	public Excalibur(boolean isUpgraded) {
-		super(ID, "Excalibur", isUpgraded, Rarity.EPIC, EquipmentClass.WARRIOR,
+	public SoulHarvester(boolean isUpgraded) {
+		super(ID, "Soul Harvester", isUpgraded, Rarity.EPIC, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(100, 1, 0.4, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
-		mult = isUpgraded ? 0.5 : 0.3;
-		multStr = (int) (mult * 100);
+		str = isUpgraded ? 20 : 10;
 	}
 	
 	public static Equipment get() {
@@ -40,22 +36,19 @@ public class Excalibur extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
-		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
-			ApplyStatusEvent ev = (ApplyStatusEvent) in;
-			if (!ev.isStatus(StatusType.SANCTIFIED)) return TriggerResult.keep();
-			am.addCount(ev.getStacks());
-			return TriggerResult.keep();
-		});
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
-			weaponSwingAndDamage(p, data, ev.getTarget(), properties.get(PropertyType.DAMAGE) + (mult * am.getCount()));
+			weaponSwingAndDamage(p, data, ev.getTarget());
+			if (ev.getTarget().getHealth() <= 0) {
+				data.applyStatus(StatusType.STRENGTH, data, str, -1);
+				Sounds.fire.play(p, p);
+			}
 			return TriggerResult.keep();
 		});
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.GOLDEN_SWORD, "Deal an additional " + DescUtil.yellow(multStr) + " damage for every stack of " +
-		GlossaryTag.SANCTIFIED.tag(this) + " you've applied during the fight.");
+		item = createItem(Material.GOLDEN_SWORD, "Gain " + GlossaryTag.STRENGTH.tag(this, str, true) + " on basic attack kill.");
 	}
 }
