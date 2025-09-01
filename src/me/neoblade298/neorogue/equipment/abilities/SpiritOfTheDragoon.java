@@ -34,6 +34,11 @@ public class SpiritOfTheDragoon extends Equipment {
 	}
 
 	@Override
+	public void setupReforges() {
+		addReforge(HerculeanStrength.get(), HerosLanding.get());
+	}
+
+	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		SpiritOfTheDragoonInstance inst = new SpiritOfTheDragoonInstance(data, this, slot, es);
 		data.addTrigger(id, bind, inst);

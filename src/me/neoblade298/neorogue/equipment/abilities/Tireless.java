@@ -8,6 +8,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
@@ -15,20 +16,17 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.CheckCastUsableEvent;
 
-public class MortalEngine extends Equipment {
-	private static final String ID = "mortalEngine";
-	private int cutoff, reduc;
+public class Tireless extends Equipment {
+	private static final String ID = "tireless";
+	private int cutoff, reduc, shields;
 
-	public MortalEngine(boolean isUpgraded) {
-		super(ID, "Mortal Engine", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR, EquipmentType.ABILITY,
+	public Tireless(boolean isUpgraded) {
+		super(ID, "Tireless", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR, EquipmentType.ABILITY,
 				EquipmentProperties.none());
 
-		cutoff = 15;
-		reduc = isUpgraded ? 2 : 1;
-	}
-
-	public void setupReforges() {
-		addReforge(Brace.get(), Tireless.get());
+		cutoff = 20;
+		reduc = isUpgraded ? 3 : 2;
+		shields = isUpgraded ? 15 : 10;
 	}
 
 	public static Equipment get() {
@@ -47,6 +45,7 @@ public class MortalEngine extends Equipment {
 			if (ev.getInstance().getStaminaCost() < cutoff)
 				return TriggerResult.keep();
 			inst.addCount(reduc);
+			data.addSimpleShield(p.getUniqueId(), shields, 100);
 			return TriggerResult.keep();
 		});
 		data.addTrigger(ID, Trigger.PRE_CAST_USABLE, inst);
@@ -57,6 +56,6 @@ public class MortalEngine extends Equipment {
 		item = createItem(Material.SEA_LANTERN,
 				"Passive. For every ability cast that has a base cost of at least <white>" + cutoff
 						+ "</white> stamina, reduce the stamina cost of all abilities by <yellow>" + reduc
-						+ "</yellow>.");
+						+ "</yellow> and gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>5s</white>].");
 	}
 }

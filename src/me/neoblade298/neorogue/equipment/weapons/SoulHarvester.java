@@ -6,7 +6,6 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.Sounds;
-import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -35,7 +34,6 @@ public class SoulHarvester extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ActionMeta am = new ActionMeta();
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
 			weaponSwingAndDamage(p, data, ev.getTarget());

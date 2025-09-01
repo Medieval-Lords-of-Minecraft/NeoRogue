@@ -383,6 +383,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new HeadTrauma(b);
 			new Heartbeat(b);
 			new HerculeanStrength(b);
+			new HerosLanding(b);
 			new HexCurse(b);
 			new HexCurse2(b);
 			new HexingShot(b);
@@ -485,6 +486,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new TargetAcquisition(b);
 			new ThrowPoison(b);
 			new ThornGarden(b);
+			new Tireless(b);
 			new Titan(b);
 			new ToAshes(b);
 			new Torch(b);
