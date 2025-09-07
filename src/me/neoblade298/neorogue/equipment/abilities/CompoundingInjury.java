@@ -63,6 +63,6 @@ public class CompoundingInjury extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.REDSTONE_ORE,
 				"Passive. Dealing damage to an enemy with at least " + GlossaryTag.CONCUSSED.tag(this, thres, true) + " will cause the damage to happen again, but "
-				+ " multiplied by " + DescUtil.yellow(multStr + "%") + ".");
+				+ "multiplied by " + DescUtil.yellow(multStr + "%") + ".");
 	}
 }

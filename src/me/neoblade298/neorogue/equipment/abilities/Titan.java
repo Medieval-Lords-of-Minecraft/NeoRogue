@@ -21,7 +21,7 @@ public class Titan extends Equipment {
 	private static final String ID = "titan";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
 	private int staminaReduction;
-	private static final int CUTOFF = 20;
+	private static final int CUTOFF = 15;
 
 	public Titan(boolean isUpgraded) {
 		super(ID, "Titan", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR, EquipmentType.ABILITY,

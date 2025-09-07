@@ -3,13 +3,15 @@ package me.neoblade298.neorogue.equipment.abilities;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
-import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
@@ -20,27 +22,19 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
-public class EmpoweredEdge extends Equipment {
-	private static final String ID = "empoweredEdge";
-	private int damage, shields;
+public class Rampage extends Equipment {
+	private static final String ID = "rampage";
+	private int damage, inc;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
 			hit = new ParticleContainer(Particle.DUST);
 	
-	public EmpoweredEdge(boolean isUpgraded) {
-		super(ID, "Empowered Edge", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 15, isUpgraded ? 5 : 7, 0));
-		properties.addUpgrades(PropertyType.COOLDOWN);
-		damage = isUpgraded ? 70 : 50;
-		shields = isUpgraded ? 4 : 3;
+	public Rampage(boolean isUpgraded) {
+		super(ID, "Rampage", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 35, 6, 0));
+		damage = isUpgraded ? 300 : 200;
+		inc = isUpgraded ? 75 : 50;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		hit.count(50).spread(0.5, 0.5);
-	}
-
-	@Override
-	public void setupReforges() {
-		addReforge(BasicInfusionMastery.get(), BlessedEdge.get());
-		addReforge(Furor.get(), Fury.get());
-		addReforge(EnduranceTraining.get(), Embolden.get());
 	}
 	
 	public static Equipment get() {
@@ -49,26 +43,36 @@ public class EmpoweredEdge extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, inputs) -> {
+		ActionMeta am = new ActionMeta();
+		ActionMeta count = new ActionMeta();
+		ItemStack icon = item.clone();
+		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es, (pdata, inputs) -> {
 			Sounds.equip.play(p, p);
-			data.addSimpleShield(p.getUniqueId(), shields, 100);
 			pc.play(p, p);
-			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata2, in) -> {
-				PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
-				ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.SLASHING,
-						DamageStatTracker.of(id + slot, this)));
-				hit.play(p, ev.getTarget());
-				Sounds.anvil.play(p, ev.getTarget());
-				return TriggerResult.remove();
-			});
+			am.addCount(1);
 			return TriggerResult.keep();
-		}));
+		});
+		data.addTrigger(id, bind, inst);
+		
+		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata2, in) -> {
+			if (am.getCount() <= 0) return TriggerResult.keep();
+			am.addCount(-1);
+			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
+			ev.getMeta().addDamageSlice(
+					new DamageSlice(data, damage + (count.getCount() * inc), DamageType.SLASHING, DamageStatTracker.of(id + slot, this)));
+			count.addCount(1);
+			icon.setAmount(count.getCount());
+			inst.setIcon(icon);
+			hit.play(p, ev.getTarget());
+			Sounds.anvil.play(p, ev.getTarget());
+			return TriggerResult.remove();
+		});
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FLINT,
-				"On cast, grant yourself " + GlossaryTag.SHIELDS.tag(this, shields, true) + " for <white>5</white> seconds. "
-						+ "Your next basic attack deals " + GlossaryTag.SLASHING.tag(this, damage, true) + " damage.");
+				"On cast, your next basic attack deals an additional " + GlossaryTag.SLASHING.tag(this, damage, true) + " damage. This amount increases by " +
+				DescUtil.yellow(inc) + " for every time you land this attack.");
 	}
 }
