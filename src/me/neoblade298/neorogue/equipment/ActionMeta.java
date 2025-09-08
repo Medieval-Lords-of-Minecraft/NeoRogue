@@ -13,7 +13,7 @@ public class ActionMeta {
 	private String id = UUID.randomUUID().toString(); // Unique identifier for actionmeta, convenient for buff stat tracker id
 	private long time;
 	private boolean bool;
-	private int count;
+	private int count, integer;
 	private double db;
 	private LivingEntity ent;
 	private Location loc;
@@ -41,6 +41,19 @@ public class ActionMeta {
 	public int addCount(int count) {
 		this.count += count;
 		return this.count;
+	}
+
+	public void setInt(int integer) {
+		this.integer = integer;
+	}
+
+	public int addInt(int integer) {
+		this.integer += integer;
+		return this.integer;
+	}
+
+	public int getInt() {
+		return integer;
 	}
 
 	public void addDouble(double db) {

@@ -111,6 +111,7 @@ public class Mahoraga extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.OAK_SAPLING,
+				new String[] { "Adapt to anything and everything." },
 				"This ability holds up to " + GlossaryTag.SHIELDS.tag(this, shields, false) + ". While crouching, gain this shield. " +
 				"Not crouching for " + DescUtil.white(refresh) + " will restore it to full. Receiving damage while crouching grants " + GlossaryTag.PROTECT.tag(this, 1, false) +
 				" or " + GlossaryTag.SHELL.tag(this, 1, false) + " if the damage was " + GlossaryTag.PHYSICAL.tag(this) + " or " + GlossaryTag.MAGICAL.tag(this) + " respectively. " +

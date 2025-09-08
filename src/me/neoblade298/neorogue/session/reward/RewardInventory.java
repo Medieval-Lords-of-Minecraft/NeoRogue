@@ -18,6 +18,8 @@ import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
 import me.neoblade298.neorogue.player.inventory.SpectateSelectInventory;
+import me.neoblade298.neorogue.session.event.ClearRewardsEvent;
+import me.neoblade298.neorogue.session.event.SessionTrigger;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -89,6 +91,8 @@ public class RewardInventory extends CoreInventory {
 		}
 		else if (slot == 8) {
 			if (spectator != null) return;
+			ClearRewardsEvent ev = new ClearRewardsEvent(rewards);
+			data.trigger(SessionTrigger.CLEAR_REWARDS, ev);
 			rewards.clear();
 			((RewardInstance) data.getSession().getInstance()).onRewardClaim();
 			p.closeInventory();
