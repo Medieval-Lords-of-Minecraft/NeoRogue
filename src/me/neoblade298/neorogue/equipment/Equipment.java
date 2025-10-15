@@ -1136,7 +1136,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		loreItalicized.addAll(properties.generateLore(this));
 		if (preLoreLine != null) {
 			for (String l : preLoreLine) {
-				loreItalicized.add(NeoCore.miniMessage().deserialize(l));
+				loreItalicized.add(NeoCore.miniMessage().deserialize(l).color(NamedTextColor.GRAY).decorate(TextDecoration.ITALIC));
 			}
 		}
 		if (isCursed) {
