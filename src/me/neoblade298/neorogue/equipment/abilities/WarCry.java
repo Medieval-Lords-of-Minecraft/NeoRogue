@@ -48,7 +48,7 @@ public class WarCry extends Equipment {
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, inputs) -> {
 			Sounds.blazeDeath.play(p, p);
 			pc.play(p, p);
-			data.applyStatus(StatusType.STRENGTH, data, strength, -1);
+			data.applyStatus(StatusType.STRENGTH, data, strength, 100);
 			data.addSimpleShield(p.getUniqueId(), shields, 100);
 			return TriggerResult.keep();
 		}));

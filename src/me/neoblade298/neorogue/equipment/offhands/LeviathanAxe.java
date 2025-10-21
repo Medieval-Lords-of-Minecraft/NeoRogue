@@ -79,6 +79,6 @@ public class LeviathanAxe extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GOLDEN_AXE, "Can only be used after applying " + DescUtil.yellow(thres) + " negative status stacks to enemies. " +
-		" Right click to basic attack.");
+		"Right click to basic attack.");
 	}
 }

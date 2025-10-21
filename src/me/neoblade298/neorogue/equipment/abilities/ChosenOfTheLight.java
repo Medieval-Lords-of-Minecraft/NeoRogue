@@ -55,7 +55,7 @@ public class ChosenOfTheLight extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.IRON_ORE,
 				"Passive. Whenever you apply " + GlossaryTag.SANCTIFIED.tag(this) + ", heal for " +
-				DescUtil.white(heal) + " and increase your " + GlossaryTag.MAGICAL.tag(this, multStr, true) + " damage by " +
+				DescUtil.white(heal) + " and increase your " + GlossaryTag.MAGICAL.tag(this) + " damage by " +
 				DescUtil.yellow(multStr + "%") + " [<white>10s</white>], stackable.");
 	}
 }

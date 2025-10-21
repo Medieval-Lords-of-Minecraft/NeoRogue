@@ -53,7 +53,7 @@ public class Lightfall extends Equipment {
 		ActionMeta am = new ActionMeta();
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			Sounds.flap.play(p, p);
-			p.setVelocity(new Vector(0, 2, 0));
+			p.setVelocity(new Vector(0, 1, 0));
 			am.setBool(true);
 			data.addTask(new BukkitRunnable() {
 				private int count;

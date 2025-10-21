@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.util.Util;
@@ -52,6 +53,7 @@ public class DaedalusHammer extends Artifact {
 		}
 		EquipmentMetadata meta = list.getFirst();
 		data.upgradeEquipment(meta.getEquipSlot(), meta.getSlot());
+		p.playSound(p, Sound.BLOCK_ANVIL_USE, 1F, 1F);
 		Util.msgRaw(p, Component.text("You upgraded your ").append(meta.getEquipment().getHoverable()));
 		s.broadcastOthers(SharedUtil.color("<yellow>" + p.getName() + "</yellow> upgraded their ").append(meta.getEquipment().getHoverable()), p);
 	}

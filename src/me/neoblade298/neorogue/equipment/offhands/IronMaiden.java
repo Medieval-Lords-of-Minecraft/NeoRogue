@@ -47,6 +47,7 @@ public class IronMaiden extends Equipment {
 			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, reduction, 0, StatTracker.defenseBuffAlly(am.getId(), this)));
 			p.playSound(p, Sound.ITEM_SHIELD_BLOCK, 1F, 1F);
 			data.applyStatus(StatusType.THORNS, data, thorns, -1);
+			am.addCount(1);
 			return TriggerResult.keep();
 		});
 

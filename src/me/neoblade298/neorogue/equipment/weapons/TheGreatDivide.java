@@ -38,7 +38,7 @@ public class TheGreatDivide extends Equipment {
 	public TheGreatDivide(boolean isUpgraded) {
 		super(
 				ID, "The Great Divide", isUpgraded, Rarity.EPIC, EquipmentClass.WARRIOR, EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(100, 0.5, 0.5, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_CRIT)
+				EquipmentProperties.ofWeapon(100, 0.5, 0.5, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_CRIT)
 				.add(PropertyType.RANGE, tp.range)
 		);
 		damage = isUpgraded ? 325 : 250;

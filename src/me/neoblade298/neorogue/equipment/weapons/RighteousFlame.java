@@ -43,9 +43,10 @@ public class RighteousFlame extends Equipment {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
 			DamageMeta dm = new DamageMeta(pdata);
-			dm.addDamageSlice(new DamageSlice(data, properties.get(PropertyType.DAMAGE) / 2, properties.getType(), DamageType.LIGHT, DamageStatTracker.of(id + slot, this)));
+			dm.addDamageSlice(new DamageSlice(data, properties.get(PropertyType.DAMAGE) / 2, properties.getType(), DamageType.LIGHT,
+				DamageStatTracker.of(id + slot + 1, this, "Damage Dealt (Light)")));
 			dm.addDamageSlice(new DamageSlice(data, properties.get(PropertyType.DAMAGE) / 2, properties.getType(),
-					DamageType.FIRE, DamageStatTracker.of(id + slot, this)));
+					DamageType.FIRE, DamageStatTracker.of(id + slot, this, "Damage Dealt (Fire)")));
 			dm.setKnockback(properties.get(PropertyType.KNOCKBACK)).isBasicAttack(this, true);
 			weaponSwing(p, data);
 			FightInstance.dealDamage(dm, ev.getTarget());

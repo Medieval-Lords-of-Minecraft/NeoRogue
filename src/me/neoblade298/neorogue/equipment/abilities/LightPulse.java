@@ -31,8 +31,8 @@ public class LightPulse extends Equipment {
 	private static final String ID = "lightPulse";
 	private static final SoundContainer sound = new SoundContainer(Sound.ENTITY_ELDER_GUARDIAN_DEATH, 2F),
 			tick = new SoundContainer(Sound.ENTITY_EVOKER_CAST_SPELL);
-	private static final ParticleContainer part = new ParticleContainer(Particle.FIREWORK).count(10).spread(1, 0.2);
-	private static final int PROJECTILE_AMOUNT = 5;
+	private static final ParticleContainer part = new ParticleContainer(Particle.FIREWORK).count(5).spread(0.4, 0.2);
+	private static final int PROJECTILE_AMOUNT = 3;
 	
 	private ProjectileGroup projs = new ProjectileGroup();
 	private int damage, cost;
@@ -76,8 +76,8 @@ public class LightPulse extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.END_ROD,
-				"Passive. When above 50% max mana, every third basic attack fires five piercing projectiles in a cone that deal " + GlossaryTag.LIGHT.tag(this, damage, true) +
-				" damage and costs " + DescUtil.white(cost) + " mana. Unaffected by mana cost reduction.");
+				"Passive. When above 50% max mana, every <white>third basic attack fires five piercing projectiles in a cone that deal " + GlossaryTag.LIGHT.tag(this, damage, true) +
+				" damage. Costs " + DescUtil.white(cost) + " mana, unaffected by mana cost reduction.");
 	}
 	
 	private class LightPulseProjectile extends Projectile {
@@ -95,7 +95,6 @@ public class LightPulse extends Equipment {
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
 			Player p = (Player) proj.getOwner().getEntity();
-			if (proj.getTick() % 3 == 0) tick.play(p, proj.getLocation());
 			part.play(p, proj.getLocation());
 		}
 
@@ -107,6 +106,7 @@ public class LightPulse extends Equipment {
 		@Override
 		public void onStart(ProjectileInstance proj) {
 			proj.getMeta().addDamageSlice(new DamageSlice(proj.getOwner(), damage, DamageType.LIGHT, DamageStatTracker.of(id + slot, eq)));
+			tick.play((Player) proj.getOwner().getEntity(), proj.getLocation());
 		}
 	}
 }

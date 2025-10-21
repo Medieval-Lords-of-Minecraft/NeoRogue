@@ -19,6 +19,7 @@ import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -65,7 +66,7 @@ public class Condemn extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		Equipment eq = this;
-		data.addSlotBasedTrigger(id, slot, bind, (pdata, in) -> {
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			data.charge(20).then(new Runnable() {
 				public void run() {
 					LinkedList<LivingEntity> targets = TargetHelper.getEntitiesInSight(p, tp);
@@ -99,7 +100,7 @@ public class Condemn extends Equipment {
 	public void setupItem() {
 		item = createItem(
 				Material.POINTED_DRIPSTONE,
-				"On cast, after " + DescUtil.charge(this, 1, 1) + ", deal " + GlossaryTag.PIERCING.tag(this, damage, true) + " and knock back enemies in a line. " +
+				"On cast, " + DescUtil.charge(this, 1, 1) + ", then deal " + GlossaryTag.PIERCING.tag(this, damage, true) + " and knock back enemies in a line. " +
 				"If the line includes a wall, deal " + DescUtil.yellow(bonus) + " bonus damage to all enemies hit, apply " + DescUtil.potion("Slowness", 2, 2) +
 				", and reduce their " + GlossaryTag.PHYSICAL.tag(this) + " defense by " + DescUtil.yellow(multStr + "%") + " for <white>5s</white>.");
 	}

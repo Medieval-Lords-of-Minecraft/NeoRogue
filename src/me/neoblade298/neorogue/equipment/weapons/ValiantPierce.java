@@ -15,6 +15,7 @@ import me.neoblade298.neocore.bukkit.effects.ParticleUtil;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.abilities.GuardianSpirit;
@@ -60,7 +61,7 @@ public class ValiantPierce extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		Equipment eq = this;
-		data.addSlotBasedTrigger(id, slot, bind, (pdata, in) -> {
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			data.charge(20).then(new Runnable() {
 				public void run() {
 					LinkedList<LivingEntity> targets = TargetHelper.getEntitiesInSight(p, tp);
@@ -81,14 +82,14 @@ public class ValiantPierce extends Equipment {
 				}
 			});
 			return TriggerResult.keep();
-		});
+		}));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(
 				Material.POINTED_DRIPSTONE,
-				"On cast, after " + DescUtil.charge(this, 1, 1) + ", deal " + GlossaryTag.PIERCING.tag(this, damage, true) + " to all enemies in a line. " +
+				"On cast, " + DescUtil.charge(this, 1, 1) + ", then deal " + GlossaryTag.PIERCING.tag(this, damage, true) + " to all enemies in a line. " +
 				"If more than one enemy is hit, deal " + DescUtil.yellow(bonus) + " bonus damage to the first enemy hit.");
 	}
 }

@@ -32,11 +32,10 @@ public class MajorShieldingRelic extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		int shields = (int) (data.getMaxHealth() * mult);
 		data.addTrigger(id, Trigger.RECEIVE_SHIELDS, (pdata, in) -> {
 			GrantShieldsEvent ev = (GrantShieldsEvent) in;
 			if (ev.isSecondary()) return TriggerResult.keep();
-			ev.getAmountBuff().add(Buff.increase(data, shields + (data.getMaxHealth() * mult), BuffStatTracker.ignored(this)));
+			ev.getAmountBuff().add(Buff.increase(data, data.getMaxHealth() * mult, BuffStatTracker.ignored(this)));
 			return TriggerResult.keep();
 		});
 	}

@@ -280,6 +280,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Brand(b);
 			new BreakingPoint(b);
 			new BreakTheLine(b);
+			new Brightshell(b);
 			new Bulldoze(b);
 			new Bulwark(b);
 			new Burst(b);
@@ -452,6 +453,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new PreySeeker(b);
 			new RainOfSteel(b);
 			new RapidFire(b);
+			new RazorCloak(b);
 			new RecklessApproach(b);
 			new RecklessSwing(b);
 			new Resourcefulness(b);

@@ -49,11 +49,7 @@ public class BreakingPoint extends Equipment {
 		am.setDouble(shields);
 		data.addTrigger(id, Trigger.TOGGLE_CROUCH, (pdata, in) -> {
 			PlayerToggleSneakEvent ev = (PlayerToggleSneakEvent) in;
-			if (am.getDouble() <= 0) return TriggerResult.keep();
 			if (ev.isSneaking()) {
-				Shield shield = data.addPermanentShield(p.getUniqueId(), am.getDouble(), true);
-				am.setObject(shield);
-
 				// Refresh shield
 				BukkitTask task = am.getTask();
 				if (task != null) {
@@ -67,6 +63,11 @@ public class BreakingPoint extends Equipment {
 					}
 				}.runTaskLater(NeoRogue.inst(), refresh * 20);
 				am.setTask(task);
+
+				if (am.getDouble() <= 0)
+					return TriggerResult.keep();
+				Shield shield = data.addPermanentShield(p.getUniqueId(), am.getDouble(), true);
+				am.setObject(shield);
 			}
 			else {
 				if (am.getObject() == null) return TriggerResult.keep();
@@ -96,7 +97,7 @@ public class BreakingPoint extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.BRICK,
 				"This ability holds up to " + GlossaryTag.SHIELDS.tag(this, shields, true) + ". While crouching, gain this shield. " +
-				"Not crouching for " + DescUtil.white(refresh + "s") + " will restore it to full. Once per fight, if the shield is reduced to half, gain a " +
-				DescUtil.yellow(multStr + "%") + " damage buff.");
+				"Not crouching for " + DescUtil.white(refresh + "s") + " will restore it to full. If the shield is reduced to half, gain a " +
+				DescUtil.yellow(multStr + "%") + " damage buff for the rest of the fight.");
 	}
 }

@@ -50,11 +50,7 @@ public class Fortress extends Equipment {
 		am.setDouble(shields);
 		data.addTrigger(id, Trigger.TOGGLE_CROUCH, (pdata, in) -> {
 			PlayerToggleSneakEvent ev = (PlayerToggleSneakEvent) in;
-			if (am.getDouble() <= 0) return TriggerResult.keep();
 			if (ev.isSneaking()) {
-				Shield shield = data.addPermanentShield(p.getUniqueId(), am.getDouble(), true);
-				am.setObject(shield);
-
 				// Refresh shield
 				BukkitTask task = am.getTask();
 				if (task != null) {
@@ -68,6 +64,10 @@ public class Fortress extends Equipment {
 					}
 				}.runTaskLater(NeoRogue.inst(), refresh * 20);
 				am.setTask(task);
+
+				if (am.getDouble() <= 0) return TriggerResult.keep();
+				Shield shield = data.addPermanentShield(p.getUniqueId(), am.getDouble(), true);
+				am.setObject(shield);
 			}
 			else {
 				if (am.getObject() == null) return TriggerResult.keep();
