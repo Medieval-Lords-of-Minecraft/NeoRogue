@@ -29,7 +29,7 @@ public class BurningMantle extends Equipment {
 	private int reduc, damage = 50, thres = 500, inc;
 	
 	public BurningMantle(boolean isUpgraded) {
-		super(ID, "Burning Mantle", isUpgraded, Rarity.COMMON, EquipmentClass.CLASSLESS,
+		super(ID, "Burning Mantle", isUpgraded, Rarity.COMMON, new EquipmentClass[] { EquipmentClass.ARCHER, EquipmentClass.MAGE },
 				EquipmentType.ARMOR);
 				reduc = isUpgraded ? 3 : 2;
 			inc = isUpgraded ? 50 : 25;

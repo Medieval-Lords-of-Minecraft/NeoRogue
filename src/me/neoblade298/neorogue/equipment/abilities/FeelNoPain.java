@@ -15,7 +15,7 @@ import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 
 public class FeelNoPain extends Equipment {
 	private static final String ID = "feelNoPain";
@@ -37,7 +37,7 @@ public class FeelNoPain extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, (pdata, in) -> {
-			PreDealDamageEvent ev = (PreDealDamageEvent) in;
+			ReceiveDamageEvent ev = (ReceiveDamageEvent) in;
 			int stacks = data.getStatus(StatusType.BERSERK).getStacks();
 			int ct = Math.min(COUNT, stacks / THRES);
 			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL),

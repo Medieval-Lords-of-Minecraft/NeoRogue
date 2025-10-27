@@ -30,7 +30,7 @@ public class VengefulShield extends Equipment {
 	public VengefulShield(boolean isUpgraded) {
 		super(ID, "Vengeful Shield", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.OFFHAND);
-		reduction = isUpgraded ? 6 : 8;
+		reduction = isUpgraded ? 8 : 6;
 		damage = isUpgraded ? 250 : 150;
 		thres = isUpgraded ? 30 : 25;
 	}

@@ -421,26 +421,26 @@ public class Session {
 		this.potionChance = Math.max(0, Math.min(100, potionChance + amount));
 	}
 
-	public Equipment rollUpgrade(Equipment eq) {
-		return rollUpgradeFormula(eq) ? eq.getUpgraded() : eq;
+	public Equipment rollUpgrade(Equipment eq, double bonusChance) {
+		return rollUpgradeFormula(eq, bonusChance) ? eq.getUpgraded() : eq;
 	}
 
-	public ArrayList<Equipment> rollUpgrades(ArrayList<Equipment> drops) {
+	public ArrayList<Equipment> rollUpgrades(ArrayList<Equipment> drops, double bonusChance) {
 		for (int i = 0; i < drops.size(); i++) {
 			Equipment eq = drops.get(i);
 			if (!eq.canUpgrade()) {
 				Bukkit.getLogger().warning("Tried to upgrade unupgradeable item: " + drops.get(i).toString());
 				continue;
 			}
-			if (rollUpgradeFormula(eq)) {
+			if (rollUpgradeFormula(eq, bonusChance)) {
 				drops.set(i, eq.getUpgraded());
 			}
 		}
 		return drops;
 	}
 
-	private boolean rollUpgradeFormula(Equipment eq) {
-		return NeoRogue.gen.nextDouble() <= BASE_UPGRADE_CHANCE + (areasCompleted * 0.2) - (eq.getRarity().getValue() * 0.15);
+	private boolean rollUpgradeFormula(Equipment eq, double bonusChance) {
+		return NeoRogue.gen.nextDouble() <= BASE_UPGRADE_CHANCE + bonusChance + (areasCompleted * 0.2) - (eq.getRarity().getValue() * 0.15);
 	}
 	
 	public void setupSpectatorInventory(Player p) {
@@ -542,6 +542,10 @@ public class Session {
 	
 	public void setNodesVisited(int nodesVisited) {
 		this.nodesVisited = nodesVisited;
+	}
+
+	public void setAreasCompleted(int areasCompleted) {
+		this.areasCompleted = areasCompleted;
 	}
 	
 	public int getXOff() {

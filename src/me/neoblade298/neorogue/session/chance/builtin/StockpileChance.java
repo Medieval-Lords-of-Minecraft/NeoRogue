@@ -30,7 +30,7 @@ public class StockpileChance extends ChanceSet {
 							+ " troubles. The thief thinks briefly before agreeing, and you leave.");
 					for (PlayerSessionData data : s.getParty().values()) {
 						Equipment eq = Equipment.getDrop(s.getAreasCompleted() + 1, 1, data.getPlayerClass(), EquipmentClass.CLASSLESS).get(0);
-						data.giveEquipment(s.rollUpgrade(eq));
+						data.giveEquipment(s.rollUpgrade(eq, 0));
 					}
 					return null;
 				});
@@ -50,7 +50,7 @@ public class StockpileChance extends ChanceSet {
 						pd.damagePercent(0.25);
 						ArrayList<Reward> rewards = new ArrayList<Reward>();
 						ArrayList<Equipment> equips = Equipment.getDrop(s.getAreasCompleted() + 2, 3, pd.getPlayerClass(), EquipmentClass.CLASSLESS);
-						s.rollUpgrades(equips);
+						s.rollUpgrades(equips, 0);
 						rewards.add(new EquipmentChoiceReward(equips));
 						generated.put(pd.getUniqueId(), rewards);
 					}

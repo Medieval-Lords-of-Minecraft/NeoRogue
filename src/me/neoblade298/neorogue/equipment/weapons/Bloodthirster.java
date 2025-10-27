@@ -37,7 +37,7 @@ public class Bloodthirster extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, in) -> {
 			LeftClickHitEvent ev = (LeftClickHitEvent) in;
-			int bonus = (data.getStatus(StatusType.BERSERK).getStacks() * mult) + (data.getStatus(StatusType.STRENGTH).getStacks() * mult);
+			int bonus = (data.getStatus(StatusType.BERSERK).getStacks() * mult) + (data.getStatus(StatusType.STRENGTH).getStacks() * (mult - 1));
 			weaponSwing(p, data);
 			weaponDamage(p, data, ev.getTarget(), properties.get(PropertyType.DAMAGE) + bonus);
 			return TriggerResult.keep();
@@ -48,6 +48,6 @@ public class Bloodthirster extends Equipment {
 	public void setupItem() {
 		item = createItem(
 				Material.IRON_SWORD,
-				"Increases its damage by " + DescUtil.yellow(mult + "x") + GlossaryTag.STRENGTH.tag(this) + " and " + GlossaryTag.BERSERK.tag(this) + ".");
+				"Increases its damage by " + DescUtil.yellow(mult + "x") + " "+ GlossaryTag.STRENGTH.tag(this) + " and " + GlossaryTag.BERSERK.tag(this) + ".");
 	}
 }

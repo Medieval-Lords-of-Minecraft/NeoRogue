@@ -34,6 +34,8 @@ public class CmdAdminGod extends Subcommand {
 			return;
 		}
 		PlayerFightData data = FightInstance.getUserData(p.getUniqueId());
+		data.addMaxMana(1000);
+		data.addMaxStamina(1000);
 		data.addManaRegen(100);
 		data.addStaminaRegen(100);
 		data.addHealth(10000);

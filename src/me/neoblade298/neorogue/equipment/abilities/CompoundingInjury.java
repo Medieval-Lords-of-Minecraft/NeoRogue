@@ -42,7 +42,7 @@ public class CompoundingInjury extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
+		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
 			PreDealDamageEvent ev = (PreDealDamageEvent) in;
 			FightData fd = FightInstance.getFightData(ev.getTarget());
 			if (fd.getStatus(StatusType.CONCUSSED).getStacks() >= thres && !ev.getMeta().getPrimarySlice().getType().getCategories().contains(DamageCategory.STATUS)) {

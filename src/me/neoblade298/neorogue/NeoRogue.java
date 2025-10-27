@@ -35,6 +35,7 @@ import me.neoblade298.neorogue.commands.CmdAdminEquipment;
 import me.neoblade298.neorogue.commands.CmdAdminGod;
 import me.neoblade298.neorogue.commands.CmdAdminMap;
 import me.neoblade298.neorogue.commands.CmdAdminMiniboss;
+import me.neoblade298.neorogue.commands.CmdAdminNew;
 import me.neoblade298.neorogue.commands.CmdAdminPiece;
 import me.neoblade298.neorogue.commands.CmdAdminPieceSettings;
 import me.neoblade298.neorogue.commands.CmdAdminReload;
@@ -78,6 +79,10 @@ public class NeoRogue extends JavaPlugin {
 	public static File SCHEMATIC_FOLDER = new File("/home/mlmc/dev/plugins/WorldEdit/schematics");
 	
 	public static Location spawn;
+
+	public static void main(String args[]) {
+		// Use for debug
+	}
 	
 	public void onEnable() {
 		Bukkit.getServer().getLogger().info("NeoRogue Enabled");
@@ -156,6 +161,7 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdAdminDamage("damage", "Deal damage mid-fight, aim at mob to use on them", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminSerialize("serialize", "Save a player's loadout for debug purposes", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminDeserialize("deserialize", "Loads in a player's loadout for debug purposes", null, SubcommandRunner.CONSOLE_ONLY));
+		mngr.register(new CmdAdminNew("new", "Starts a new session with all online players with custom start parameters", null, SubcommandRunner.BOTH));
 		mngr.registerCommandList("");
 	}
 	

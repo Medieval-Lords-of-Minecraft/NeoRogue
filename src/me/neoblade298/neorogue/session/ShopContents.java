@@ -40,7 +40,7 @@ public class ShopContents {
 		ArrayList<Equipment> equips = new ArrayList<Equipment>();
 		equips.addAll(Equipment.getDrop(s.getAreasCompleted() + 0, ShopInstance.NUM_ITEMS / 2, ec, EquipmentClass.SHOP, EquipmentClass.CLASSLESS));
 		equips.addAll(Equipment.getDrop(s.getAreasCompleted() + 1, ShopInstance.NUM_ITEMS / 2, ec, EquipmentClass.SHOP, EquipmentClass.CLASSLESS));
-		s.rollUpgrades(equips);
+		s.rollUpgrades(equips, 0);
 		
 		// Generate 2 random unique sale slots
 		HashSet<Integer> saleSlots = new HashSet<Integer>(2);

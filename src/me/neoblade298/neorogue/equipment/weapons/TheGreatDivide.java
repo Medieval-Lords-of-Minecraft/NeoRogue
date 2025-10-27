@@ -11,6 +11,7 @@ import org.bukkit.util.Vector;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.ParticleUtil;
 import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
@@ -51,9 +52,12 @@ public class TheGreatDivide extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		ActionMeta am = new ActionMeta();
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, in) -> {
 			LeftClickHitEvent ev = (LeftClickHitEvent) in;
 			weaponSwingAndDamage(p, data, ev.getTarget());
+			
+			if (am.addCount(1) < 3) return TriggerResult.keep();
 
 			// fissure
 			Sounds.explode.play(p, p);
@@ -64,7 +68,7 @@ public class TheGreatDivide extends Equipment {
 			for (LivingEntity ent : TargetHelper.getEntitiesInLine(p, p.getLocation(), end, tp)) {
 				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.EARTHEN, DamageStatTracker.of(id + slot, this)), ent);
 				FightInstance.getFightData(ent.getUniqueId()).applyStatus(StatusType.CONCUSSED, data, concussed, -1);
-				FightInstance.knockback(ent, new Vector(0, 0.2, 0));
+				FightInstance.knockback(ent, new Vector(0, 0.4, 0));
 			}
 			return TriggerResult.keep();
 		});

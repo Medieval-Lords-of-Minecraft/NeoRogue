@@ -5,11 +5,11 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 
 public enum Rarity {
-	COMMON(0, "Common", NamedTextColor.GRAY, null),
+	COMMON(1, "Common", NamedTextColor.GRAY, null),
 	UNCOMMON(2, "Uncommon", NamedTextColor.GREEN, null),
-	RARE(4, "Rare", NamedTextColor.BLUE, null),
-	EPIC(6, "Epic", NamedTextColor.GOLD, null),
-	LEGENDARY(8, "Legendary", NamedTextColor.RED, TextDecoration.BOLD);
+	RARE(3, "Rare", NamedTextColor.BLUE, null),
+	EPIC(4, "Epic", NamedTextColor.GOLD, null),
+	LEGENDARY(5, "Legendary", NamedTextColor.RED, TextDecoration.BOLD);
 	
 	private int value;
 	private Component display;

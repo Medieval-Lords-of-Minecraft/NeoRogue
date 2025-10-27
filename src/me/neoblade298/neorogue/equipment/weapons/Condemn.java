@@ -93,7 +93,7 @@ public class Condemn extends Equipment {
 				}
 			});
 			return TriggerResult.keep();
-		});
+		}));
 	}
 
 	@Override

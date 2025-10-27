@@ -176,7 +176,7 @@ public class StandardFightInstance extends FightInstance {
 				break;
 			}
 
-			s.rollUpgrades(equipDrops);
+			s.rollUpgrades(equipDrops, fightScore.getUpgradeModifier());
 			list.add(new EquipmentChoiceReward(equipDrops));
 			equipDrops = new ArrayList<Equipment>(3);
 			equipDrops.add(Equipment.get("rubyShard", false));
@@ -185,7 +185,7 @@ public class StandardFightInstance extends FightInstance {
 			list.add(new EquipmentChoiceReward(equipDrops));
 			if (dropPotion) {
 				Consumable cons = Equipment.getConsumable(value, ec, EquipmentClass.CLASSLESS);
-				list.add(new EquipmentReward(s.rollUpgrade(cons)));
+				list.add(new EquipmentReward(s.rollUpgrade(cons, fightScore.getUpgradeModifier())));
 			}
 
 			rewards.put(uuid, list);

@@ -50,7 +50,7 @@ public class HibernianQuickblade extends Equipment {
 			weaponSwingAndDamage(p, data, ev.getTarget());
 			if (am.addCount(1) >= 3) {
 				am.setCount(0);
-				Sounds.attackSweep.play(p, p);
+				Sounds.flap.play(p, p);
 				p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 60, 0));
 				data.addSimpleShield(p.getUniqueId(), shields, 100);
 				for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, props)) {
@@ -64,7 +64,7 @@ public class HibernianQuickblade extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.GOLDEN_SWORD, "Every <white>3rd</white> hit grants " + GlossaryTag.SHIELDS.tag(this, shields, true) + ", " 
+		item = createItem(Material.GOLDEN_SWORD, "Every <white>3rd</white> hit grants " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>5s</white>], " 
 		+ DescUtil.potion("speed", 0, 3) + ", and knocks back nearby enemies.");
 	}
 }

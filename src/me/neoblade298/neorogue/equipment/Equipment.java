@@ -222,6 +222,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 	private static DropTableSet<Equipment> droptables = new DropTableSet<Equipment>();
 	private static DropTableSet<Artifact> artifacts = new DropTableSet<Artifact>();
 	private static DropTableSet<Consumable> consumables = new DropTableSet<Consumable>();
+	private static final int TIER_MAX = 10;
 
 	private ArrayList<Equipment> reforgeParents = new ArrayList<Equipment>();
 	private TreeMap<Equipment, Equipment[]> reforgeOptions = new TreeMap<Equipment, Equipment[]>();
@@ -452,6 +453,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Pressure(b);
 			new PreySeeker(b);
 			new RainOfSteel(b);
+			new Rampage(b);
 			new RapidFire(b);
 			new RazorCloak(b);
 			new RecklessApproach(b);
@@ -985,8 +987,28 @@ public abstract class Equipment implements Comparable<Equipment> {
 		return upgraded.containsKey(id);
 	}
 
+	private <T extends Equipment> void addToSpecialDropTable(DropTableSet<T> dropTable, int value, T item) {
+		if (value >= 4) {
+			dropTable.add(ecs, value - 4, item, 1);
+		}
+		if (value >= 3) {
+			dropTable.add(ecs, value - 3, item, 2);
+		}
+		if (value >= 2) {
+			dropTable.add(ecs, value - 2, item, 3);
+		}
+		if (value >= 1) {
+			dropTable.add(ecs, value - 1, item, 4);
+		}
+		dropTable.add(ecs, value, item, 5);
+		dropTable.add(ecs, value + 1, item, 4);
+		dropTable.add(ecs, value + 2, item, 3);
+		dropTable.add(ecs, value + 3, item, 2);
+		dropTable.add(ecs, value + 4, item, 1);
+	}
+
 	private void setupDroptable() {
-		int value = rarity.getValue();
+		int rarValue = rarity.getValue();
 		if (!canDrop)
 			return;
 		if (!reforgeParents.isEmpty() && !overrideReforgeDrop)
@@ -995,11 +1017,15 @@ public abstract class Equipment implements Comparable<Equipment> {
 		// Artifacts and consumables get their own special droptable with special weight
 		// due to reduced amount
 		if (this instanceof Artifact) {
-			artifacts.addLenientWeight(ecs, value, (Artifact) this);
+			addToSpecialDropTable(artifacts, rarValue, (Artifact) this);
 		} else if (this instanceof Consumable) {
-			consumables.addLenientWeight(ecs, value, (Consumable) this);
+			addToSpecialDropTable(consumables, rarValue, (Consumable) this);
 		} else {
-			droptables.add(ecs, value, this);
+			double spread = 2.5; // higher spread means more likely to get higher/lower tier than the tier you're at
+			double width = 2.0; // Lower width means you start getting uncommon/rare in earlier tiers
+			for (int tier = 0; tier < TIER_MAX; tier++) {
+				double probability = Math.pow(Math.E, -Math.pow(tier - (spread * rarValue), 2) / width);
+			}
 		}
 	}
 
@@ -1464,7 +1490,10 @@ public abstract class Equipment implements Comparable<Equipment> {
 	}
 
 	public static class DropTableSet<E extends Equipment> {
+		protected static final int TIER_MAX = 10;
+		protected HashMap<EquipmentClass, DropTable<E>[]> droptablesArray = new HashMap<EquipmentClass, DropTable<E>[]>();
 		protected HashMap<EquipmentClass, HashMap<Integer, DropTable<E>>> droptables = new HashMap<EquipmentClass, HashMap<Integer, DropTable<E>>>();
+
 
 		public DropTableSet() {
 			reload();
@@ -1504,18 +1533,10 @@ public abstract class Equipment implements Comparable<Equipment> {
 			}
 		}
 
-		public void add(EquipmentClass[] ecs, int value, E drop) {
+		public void add(EquipmentClass[] ecs, int value, E drop, int amount) {
 			for (EquipmentClass ec : ecs) {
 				HashMap<Integer, DropTable<E>> table = droptables.get(ec);
-				if (value >= 2) {
-					table.get(value - 2).add(drop, 1);
-				}
-				if (value >= 1) {
-					table.get(value - 1).add(drop, 8);
-				}
-				table.get(value).add(drop, 32);
-				table.get(value + 1).add(drop, 8);
-				table.get(value + 2).add(drop, 1);
+				table.get(value).add(drop, amount);
 			}
 		}
 

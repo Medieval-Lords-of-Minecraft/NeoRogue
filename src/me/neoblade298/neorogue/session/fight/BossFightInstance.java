@@ -117,7 +117,7 @@ public class BossFightInstance extends FightInstance {
 			list.add(new EquipmentReward(TomeOfWisdom.get()));
 			if (dropPotion) {
 				Consumable cons = Equipment.getConsumable(value, ec, EquipmentClass.CLASSLESS);
-				list.add(new EquipmentReward(s.rollUpgrade(cons)));
+				list.add(new EquipmentReward(s.rollUpgrade(cons, 0)));
 			}
 			rewards.put(uuid, list);
 		}

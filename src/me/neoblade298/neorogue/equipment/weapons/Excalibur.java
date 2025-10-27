@@ -23,14 +23,12 @@ import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 public class Excalibur extends Equipment {
 	private static final String ID = "excalibur";
 	private double mult;
-	private int multStr;
 	
 	public Excalibur(boolean isUpgraded) {
 		super(ID, "Excalibur", isUpgraded, Rarity.EPIC, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(100, 1, 0.4, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
-		mult = isUpgraded ? 0.5 : 0.3;
-		multStr = (int) (mult * 100);
+		mult = isUpgraded ? 0.3 : 0.2;
 	}
 	
 	public static Equipment get() {
@@ -55,7 +53,7 @@ public class Excalibur extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.GOLDEN_SWORD, "Deal an additional " + DescUtil.yellow(multStr) + " damage for every stack of " +
+		item = createItem(Material.GOLDEN_SWORD, "Deal an additional " + DescUtil.yellow(mult) + " damage for every stack of " +
 		GlossaryTag.SANCTIFIED.tag(this) + " you've applied during the fight.");
 	}
 }
