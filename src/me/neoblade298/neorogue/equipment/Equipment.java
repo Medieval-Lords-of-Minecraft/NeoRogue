@@ -3,7 +3,6 @@ package me.neoblade298.neorogue.equipment;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -222,7 +221,6 @@ public abstract class Equipment implements Comparable<Equipment> {
 	private static DropTableSet<Equipment> droptables = new DropTableSet<Equipment>();
 	private static DropTableSet<Artifact> artifacts = new DropTableSet<Artifact>();
 	private static DropTableSet<Consumable> consumables = new DropTableSet<Consumable>();
-	private static final int TIER_MAX = 10;
 
 	private ArrayList<Equipment> reforgeParents = new ArrayList<Equipment>();
 	private TreeMap<Equipment, Equipment[]> reforgeOptions = new TreeMap<Equipment, Equipment[]>();
@@ -987,46 +985,13 @@ public abstract class Equipment implements Comparable<Equipment> {
 		return upgraded.containsKey(id);
 	}
 
-	private <T extends Equipment> void addToSpecialDropTable(DropTableSet<T> dropTable, int value, T item) {
-		if (value >= 4) {
-			dropTable.add(ecs, value - 4, item, 1);
-		}
-		if (value >= 3) {
-			dropTable.add(ecs, value - 3, item, 2);
-		}
-		if (value >= 2) {
-			dropTable.add(ecs, value - 2, item, 3);
-		}
-		if (value >= 1) {
-			dropTable.add(ecs, value - 1, item, 4);
-		}
-		dropTable.add(ecs, value, item, 5);
-		dropTable.add(ecs, value + 1, item, 4);
-		dropTable.add(ecs, value + 2, item, 3);
-		dropTable.add(ecs, value + 3, item, 2);
-		dropTable.add(ecs, value + 4, item, 1);
-	}
-
 	private void setupDroptable() {
-		int rarValue = rarity.getValue();
 		if (!canDrop)
 			return;
 		if (!reforgeParents.isEmpty() && !overrideReforgeDrop)
 			return;
 
-		// Artifacts and consumables get their own special droptable with special weight
-		// due to reduced amount
-		if (this instanceof Artifact) {
-			addToSpecialDropTable(artifacts, rarValue, (Artifact) this);
-		} else if (this instanceof Consumable) {
-			addToSpecialDropTable(consumables, rarValue, (Consumable) this);
-		} else {
-			double spread = 2.5; // higher spread means more likely to get higher/lower tier than the tier you're at
-			double width = 2.0; // Lower width means you start getting uncommon/rare in earlier tiers
-			for (int tier = 0; tier < TIER_MAX; tier++) {
-				double probability = Math.pow(Math.E, -Math.pow(tier - (spread * rarValue), 2) / width);
-			}
-		}
+		droptables.add(ecs, this);
 	}
 
 	public void addTags(GlossaryTag... tags) {
@@ -1491,23 +1456,60 @@ public abstract class Equipment implements Comparable<Equipment> {
 
 	public static class DropTableSet<E extends Equipment> {
 		protected static final int TIER_MAX = 10;
-		protected HashMap<EquipmentClass, DropTable<E>[]> droptablesArray = new HashMap<EquipmentClass, DropTable<E>[]>();
-		protected HashMap<EquipmentClass, HashMap<Integer, DropTable<E>>> droptables = new HashMap<EquipmentClass, HashMap<Integer, DropTable<E>>>();
+		private static final int[] EQUIPMENT_VALUES = new int[Rarity.values().length * TIER_MAX];
+		protected HashMap<EquipmentClass, ArrayList<DropTable<E>>> droptables = new HashMap<EquipmentClass, ArrayList<DropTable<E>>>();
 
+		static {
+			EQUIPMENT_VALUES[getIndex(Rarity.COMMON, 1)] = 9;
+			EQUIPMENT_VALUES[getIndex(Rarity.UNCOMMON, 1)] = 1;
+
+			EQUIPMENT_VALUES[getIndex(Rarity.COMMON, 2)] = 7;
+			EQUIPMENT_VALUES[getIndex(Rarity.UNCOMMON, 2)] = 3;
+
+			EQUIPMENT_VALUES[getIndex(Rarity.COMMON, 3)] = 4;
+			EQUIPMENT_VALUES[getIndex(Rarity.UNCOMMON, 3)] = 5;
+			EQUIPMENT_VALUES[getIndex(Rarity.RARE, 3)] = 1;
+
+			EQUIPMENT_VALUES[getIndex(Rarity.COMMON, 4)] = 0;
+			EQUIPMENT_VALUES[getIndex(Rarity.UNCOMMON, 4)] = 8;
+			EQUIPMENT_VALUES[getIndex(Rarity.RARE, 4)] = 2;
+
+			EQUIPMENT_VALUES[getIndex(Rarity.UNCOMMON, 5)] = 7;
+			EQUIPMENT_VALUES[getIndex(Rarity.RARE, 5)] = 3;
+
+			EQUIPMENT_VALUES[getIndex(Rarity.UNCOMMON, 6)] = 5;
+			EQUIPMENT_VALUES[getIndex(Rarity.RARE, 6)] = 4;
+			EQUIPMENT_VALUES[getIndex(Rarity.EPIC, 6)] = 1;
+
+			EQUIPMENT_VALUES[getIndex(Rarity.UNCOMMON, 7)] = 3;
+			EQUIPMENT_VALUES[getIndex(Rarity.RARE, 7)] = 6;
+			EQUIPMENT_VALUES[getIndex(Rarity.EPIC, 7)] = 1;
+
+			EQUIPMENT_VALUES[getIndex(Rarity.UNCOMMON, 8)] = 1;
+			EQUIPMENT_VALUES[getIndex(Rarity.RARE, 8)] = 7;
+			EQUIPMENT_VALUES[getIndex(Rarity.EPIC, 8)] = 2;
+		}
+
+		private static int getIndex(Rarity rarity, int tier) {
+			return rarity.ordinal() * TIER_MAX + tier - 1;
+		}
+
+		private static int getValue(Rarity rarity, int tier) {
+			return EQUIPMENT_VALUES[rarity.ordinal() * TIER_MAX + tier - 1];
+		}
 
 		public DropTableSet() {
 			reload();
 		}
 
 		private DropTableSet(DropTableSet<E> original, EquipmentClass... ecs) {
-			for (EquipmentClass ec : ecs) {
-				if (!original.droptables.containsKey(ec))
-					continue;
-				HashMap<Integer, DropTable<E>> map = new HashMap<Integer, DropTable<E>>();
-				for (Entry<Integer, DropTable<E>> ent2 : original.droptables.get(ec).entrySet()) {
-					map.put(ent2.getKey(), ent2.getValue().clone());
+			for (EquipmentClass ec : original.droptables.keySet()) {
+				ArrayList<DropTable<E>> list = new ArrayList<DropTable<E>>(TIER_MAX);
+				ArrayList<DropTable<E>> originalList = original.droptables.get(ec);
+				for (int i = 0; i < originalList.size(); i++) {
+					list.add(originalList.get(i).clone());
 				}
-				droptables.put(ec, map);
+				droptables.put(ec, list);
 			}
 		}
 
@@ -1517,32 +1519,36 @@ public abstract class Equipment implements Comparable<Equipment> {
 
 		public void reload() {
 			for (EquipmentClass ec : EquipmentClass.values()) {
-				HashMap<Integer, DropTable<E>> tables = new HashMap<Integer, DropTable<E>>();
-				for (int i = 0; i < 10; i++) {
-					tables.put(i, new DropTable<E>());
+				ArrayList<DropTable<E>> tables = new ArrayList<DropTable<E>>(TIER_MAX);
+				for (int i = 0; i < TIER_MAX; i++) {
+					tables.add(new DropTable<E>());
 				}
 				droptables.put(ec, tables);
 			}
 		}
 
 		public void remove(E drop) {
-			for (HashMap<Integer, DropTable<E>> map : droptables.values()) {
-				for (DropTable<E> table : map.values()) {
+			for (ArrayList<DropTable<E>> list : droptables.values()) {
+				for (DropTable<E> table : list) {
 					table.remove(drop);
 				}
 			}
 		}
 
-		public void add(EquipmentClass[] ecs, int value, E drop, int amount) {
+		public void add(EquipmentClass[] ecs, E drop) {
 			for (EquipmentClass ec : ecs) {
-				HashMap<Integer, DropTable<E>> table = droptables.get(ec);
-				table.get(value).add(drop, amount);
+				for (int i = 0; i < TIER_MAX; i++) {
+					ArrayList<DropTable<E>> table = droptables.get(ec);
+					int value = getValue(drop.rarity, i);
+					if (value > 0) table.get(i).add(drop, value);
+				}
 			}
 		}
 
+		/*
 		public void addLenientWeight(EquipmentClass[] ecs, int value, E drop) {
 			for (EquipmentClass ec : ecs) {
-				HashMap<Integer, DropTable<E>> table = droptables.get(ec);
+				ArrayList<DropTable<E>> table = droptables.get(ec);
 				if (value >= 4) {
 					table.get(value - 4).add(drop, 1);
 				}
@@ -1562,6 +1568,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 				table.get(value + 4).add(drop, 1);
 			}
 		}
+		*/
 
 		public ArrayList<E> getMultiple(int value, int numDrops, EquipmentClass... ec) {
 			return getMultiple(value, numDrops, true, ec);
@@ -1571,18 +1578,23 @@ public abstract class Equipment implements Comparable<Equipment> {
 			ArrayList<E> list = new ArrayList<E>(numDrops);
 			DropTable<E> table;
 			int tries = 0;
-			while (list.size() < numDrops || tries > 100) {
+			while (list.size() < numDrops && tries < 100) {
+				tries++;
 				if (ec.length > 1) {
 					DropTable<DropTable<E>> tables = new DropTable<DropTable<E>>();
 					for (int j = 0; j < ec.length; j++) {
-						if (!droptables.containsKey(ec[j]) || !droptables.get(ec[j]).containsKey(value))
+						if (!droptables.containsKey(ec[j]) || value >= droptables.get(ec[j]).size())
 							continue;
 						DropTable<E> temp = droptables.get(ec[j]).get(value);
 						tables.add(temp, temp.getTotalWeight());
 					}
 					table = tables.get();
 				} else {
-					table = droptables.get(ec[0]).get(value);
+					ArrayList<DropTable<E>> tableList = droptables.get(ec[0]);
+					if (tableList == null || value >= tableList.size()) {
+						break;
+					}
+					table = tableList.get(value);
 				}
 
 				E drop = table.get();
