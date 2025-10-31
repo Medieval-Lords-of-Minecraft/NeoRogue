@@ -28,8 +28,8 @@ public class RecklessSwing extends Equipment {
 			hit = new ParticleContainer(Particle.DUST);
 	
 	public RecklessSwing(boolean isUpgraded) {
-		super(ID, "Reckless Swing", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 15, 8, 0));
+		super(ID, "Reckless Swing", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 25, 8, 0));
 		mult = isUpgraded ? 20 : 15;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		hit.count(50).spread(0.5, 0.5);

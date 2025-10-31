@@ -991,7 +991,15 @@ public abstract class Equipment implements Comparable<Equipment> {
 		if (!reforgeParents.isEmpty() && !overrideReforgeDrop)
 			return;
 
-		droptables.add(ecs, this);
+		if (type == EquipmentType.ARTIFACT) {
+			artifacts.add(ecs, (Artifact) this);
+		}
+		else if (type == EquipmentType.CONSUMABLE) {
+			consumables.add(ecs, (Consumable) this);
+		}
+		else {
+			droptables.add(ecs, this);
+		}
 	}
 
 	public void addTags(GlossaryTag... tags) {
@@ -1460,42 +1468,44 @@ public abstract class Equipment implements Comparable<Equipment> {
 		protected HashMap<EquipmentClass, ArrayList<DropTable<E>>> droptables = new HashMap<EquipmentClass, ArrayList<DropTable<E>>>();
 
 		static {
+			EQUIPMENT_VALUES[getIndex(Rarity.COMMON, 0)] = 10;
+
 			EQUIPMENT_VALUES[getIndex(Rarity.COMMON, 1)] = 9;
 			EQUIPMENT_VALUES[getIndex(Rarity.UNCOMMON, 1)] = 1;
 
-			EQUIPMENT_VALUES[getIndex(Rarity.COMMON, 2)] = 7;
-			EQUIPMENT_VALUES[getIndex(Rarity.UNCOMMON, 2)] = 3;
+			EQUIPMENT_VALUES[getIndex(Rarity.COMMON, 2)] = 5;
+			EQUIPMENT_VALUES[getIndex(Rarity.UNCOMMON, 2)] = 4;
+			EQUIPMENT_VALUES[getIndex(Rarity.RARE, 2)] = 1;
 
-			EQUIPMENT_VALUES[getIndex(Rarity.COMMON, 3)] = 4;
-			EQUIPMENT_VALUES[getIndex(Rarity.UNCOMMON, 3)] = 5;
-			EQUIPMENT_VALUES[getIndex(Rarity.RARE, 3)] = 1;
+			EQUIPMENT_VALUES[getIndex(Rarity.COMMON, 3)] = 1;
+			EQUIPMENT_VALUES[getIndex(Rarity.UNCOMMON, 3)] = 8;
+			EQUIPMENT_VALUES[getIndex(Rarity.RARE, 3)] = 2;
 
-			EQUIPMENT_VALUES[getIndex(Rarity.COMMON, 4)] = 0;
-			EQUIPMENT_VALUES[getIndex(Rarity.UNCOMMON, 4)] = 8;
-			EQUIPMENT_VALUES[getIndex(Rarity.RARE, 4)] = 2;
+			EQUIPMENT_VALUES[getIndex(Rarity.UNCOMMON, 4)] = 7;
+			EQUIPMENT_VALUES[getIndex(Rarity.RARE, 4)] = 3;
 
-			EQUIPMENT_VALUES[getIndex(Rarity.UNCOMMON, 5)] = 7;
-			EQUIPMENT_VALUES[getIndex(Rarity.RARE, 5)] = 3;
+			EQUIPMENT_VALUES[getIndex(Rarity.UNCOMMON, 5)] = 5;
+			EQUIPMENT_VALUES[getIndex(Rarity.RARE, 5)] = 4;
+			EQUIPMENT_VALUES[getIndex(Rarity.EPIC, 5)] = 1;
 
-			EQUIPMENT_VALUES[getIndex(Rarity.UNCOMMON, 6)] = 5;
-			EQUIPMENT_VALUES[getIndex(Rarity.RARE, 6)] = 4;
+			EQUIPMENT_VALUES[getIndex(Rarity.UNCOMMON, 6)] = 3;
+			EQUIPMENT_VALUES[getIndex(Rarity.RARE, 6)] = 6;
 			EQUIPMENT_VALUES[getIndex(Rarity.EPIC, 6)] = 1;
 
-			EQUIPMENT_VALUES[getIndex(Rarity.UNCOMMON, 7)] = 3;
-			EQUIPMENT_VALUES[getIndex(Rarity.RARE, 7)] = 6;
-			EQUIPMENT_VALUES[getIndex(Rarity.EPIC, 7)] = 1;
+			EQUIPMENT_VALUES[getIndex(Rarity.UNCOMMON, 7)] = 1;
+			EQUIPMENT_VALUES[getIndex(Rarity.RARE, 7)] = 7;
+			EQUIPMENT_VALUES[getIndex(Rarity.EPIC, 7)] = 2;
 
-			EQUIPMENT_VALUES[getIndex(Rarity.UNCOMMON, 8)] = 1;
-			EQUIPMENT_VALUES[getIndex(Rarity.RARE, 8)] = 7;
-			EQUIPMENT_VALUES[getIndex(Rarity.EPIC, 8)] = 2;
+			EQUIPMENT_VALUES[getIndex(Rarity.RARE, 8)] = 6;
+			EQUIPMENT_VALUES[getIndex(Rarity.EPIC, 8)] = 4;
 		}
 
 		private static int getIndex(Rarity rarity, int tier) {
-			return rarity.ordinal() * TIER_MAX + tier - 1;
+			return rarity.ordinal() * TIER_MAX + tier;
 		}
 
 		private static int getValue(Rarity rarity, int tier) {
-			return EQUIPMENT_VALUES[rarity.ordinal() * TIER_MAX + tier - 1];
+			return EQUIPMENT_VALUES[getIndex(rarity, tier)];
 		}
 
 		public DropTableSet() {

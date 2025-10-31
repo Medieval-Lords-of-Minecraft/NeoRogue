@@ -356,6 +356,7 @@ public class SessionManager implements Listener {
 			return;
 		if (!(sessions.get(uuid).getInstance() instanceof FightInstance) && e.getCause() == DamageCause.FALL) {
 			e.setCancelled(true);
+			return;
 		}
 		FightInstance.handleEnvironmentDamage(e);
 	}

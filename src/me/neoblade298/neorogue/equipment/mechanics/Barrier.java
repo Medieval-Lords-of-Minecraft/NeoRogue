@@ -28,7 +28,9 @@ public class Barrier {
 	// Shared
 	private UUID uuid;
 	private LivingEntity owner;
-	private double length, height, forward; // Forward is used for where the rectangle actually is drawn
+	// Length: length perpendicular to where the user is facing
+	// Forward: depth of shield parallel to where the user is facing
+	private double length, height, forward;
 	private ParticleContainer part;
 	private Rectangle rect;
 	private Location center, rectcenter; // Center is midpoint of barrier, rectcenter is midpoint of actually rectangle to draw

@@ -91,7 +91,7 @@ public class MinibossFightInstance extends FightInstance {
 			
 			ArrayList<Equipment> equipDrops = new ArrayList<Equipment>();
 			EquipmentClass ec = data.getPlayerClass();
-			int value = s.getAreasCompleted() + 2;
+			int value = (s.getAreasCompleted() * 2) + 2 + ev.getBonusRarity();
 			equipDrops.addAll(Equipment.getDrop(value, 3 + ev.getBonusEquipment(), ec, EquipmentClass.CLASSLESS));
 			s.rollUpgrades(equipDrops, 0.1);
 			list.add(new EquipmentChoiceReward(equipDrops));

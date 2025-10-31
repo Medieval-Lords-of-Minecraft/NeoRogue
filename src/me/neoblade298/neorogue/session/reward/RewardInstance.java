@@ -144,6 +144,12 @@ public class RewardInstance extends EditInventoryInstance {
 			s.setBusy(true);
 			new BukkitRunnable() {
 				public void run() {
+					if (s.getNode().getRow() == 0) {
+						// Should heal everyone upon new area
+						s.getParty().values().forEach(data -> {
+							data.healPercent(100);
+						});
+					}
 					s.setInstance(new NodeSelectInstance(s));
 					s.setBusy(false);
 				}

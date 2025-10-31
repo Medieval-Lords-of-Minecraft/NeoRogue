@@ -38,7 +38,7 @@ public class BasicInfusionMastery extends Equipment {
 		ActionMeta meta = new ActionMeta();
 		data.addTrigger(id, Trigger.PRE_APPLY_STATUS, (pdata, in) -> {
 			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
-			if (!ev.isStatus(StatusType.CONCUSSED)) {
+			if (ev.isStatus(StatusType.CONCUSSED)) {
 				ev.getStacksBuffList().add(Buff.increase(data, conc, BuffStatTracker.ignored(this)));
 			}
 			else if (ev.isStatus(StatusType.SANCTIFIED)) {

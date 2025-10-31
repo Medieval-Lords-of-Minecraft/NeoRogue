@@ -16,9 +16,15 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 public class EquipmentChoiceReward implements Reward {
 	private ArrayList<Equipment> equips;
+	private ItemStack icon;
 	
 	public EquipmentChoiceReward(ArrayList<Equipment> equips) {
 		this.equips = equips;
+	}
+
+	public EquipmentChoiceReward(ArrayList<Equipment> equips, ItemStack icon) {
+		this.equips = equips;
+		this.icon = icon;
 	}
 	
 	public EquipmentChoiceReward(String str) {
@@ -38,7 +44,7 @@ public class EquipmentChoiceReward implements Reward {
 	}
 	@Override
 	public ItemStack getIcon() {
-		ItemStack item = new ItemStack(Material.LEATHER_CHESTPLATE);
+		ItemStack item = icon != null ? icon : new ItemStack(Material.CHEST);
 		item.setAmount(equips.size());
 		ItemMeta meta = item.getItemMeta();
 		meta.displayName(Component.text("Choose 1 of " + equips.size() + " equipment", NamedTextColor.GOLD));

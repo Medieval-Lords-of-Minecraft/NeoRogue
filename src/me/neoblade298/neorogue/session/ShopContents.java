@@ -20,10 +20,11 @@ public class ShopContents {
 	private HashMap<Integer, ShopItem> shopItems = new HashMap<Integer, ShopItem>();
 
 	public ShopContents(Session s, PlayerSessionData data, double discountMult) {
-		generateEquips(s, data, discountMult); // 0-9
-		generateConsumables(s, data, discountMult); // 10-12
+		int value = (s.getAreasCompleted() * 2);
+		generateEquips(s, data, value, discountMult); // 0-9
+		generateConsumables(s, data, value, discountMult); // 10-12
 		generateGems(discountMult); // 13-15
-		generateArtifacts(s, data, discountMult); // 16-18
+		generateArtifacts(s, data, value, discountMult); // 16-18
 	}
 
 	private ShopContents(HashMap<Integer, ShopItem> shopItems) {
@@ -34,12 +35,12 @@ public class ShopContents {
 		return shopItems.get(idx);
 	}
 
-	private void generateEquips(Session s, PlayerSessionData data, double discountMult) {
+	private void generateEquips(Session s, PlayerSessionData data, int tier, double discountMult) {
 		EquipmentClass ec = data.getPlayerClass();
 		// Create shop contents
 		ArrayList<Equipment> equips = new ArrayList<Equipment>();
-		equips.addAll(Equipment.getDrop(s.getAreasCompleted() + 0, ShopInstance.NUM_ITEMS / 2, ec, EquipmentClass.SHOP, EquipmentClass.CLASSLESS));
-		equips.addAll(Equipment.getDrop(s.getAreasCompleted() + 1, ShopInstance.NUM_ITEMS / 2, ec, EquipmentClass.SHOP, EquipmentClass.CLASSLESS));
+		equips.addAll(Equipment.getDrop(tier, ShopInstance.NUM_ITEMS / 2, ec, EquipmentClass.SHOP, EquipmentClass.CLASSLESS));
+		equips.addAll(Equipment.getDrop(tier + 2, ShopInstance.NUM_ITEMS / 2, ec, EquipmentClass.SHOP, EquipmentClass.CLASSLESS));
 		s.rollUpgrades(equips, 0);
 		
 		// Generate 2 random unique sale slots
@@ -67,10 +68,10 @@ public class ShopContents {
 		}
 	}
 
-	private void generateConsumables(Session s, PlayerSessionData data, double discountMult) {
+	private void generateConsumables(Session s, PlayerSessionData data, int tier, double discountMult) {
 		EquipmentClass ec = data.getPlayerClass();
 		int idx = 10;
-		for (Consumable cons : Equipment.getConsumable(s.getAreasCompleted(), 3, ec, EquipmentClass.SHOP, EquipmentClass.CLASSLESS)) {
+		for (Consumable cons : Equipment.getConsumable(tier, 3, ec, EquipmentClass.SHOP, EquipmentClass.CLASSLESS)) {
 			int price = NeoRogue.gen.nextInt((int) (30 * discountMult), (int) (60 * discountMult));
 			shopItems.put(idx++, new ShopItem(NeoRogue.gen.nextDouble() >= 0.7 ? cons.getUpgraded() : cons, price, false));
 		}
@@ -84,10 +85,10 @@ public class ShopContents {
 		}
 	}
 
-	private void generateArtifacts(Session s, PlayerSessionData data, double discountMult) {
+	private void generateArtifacts(Session s, PlayerSessionData data, int tier, double discountMult) {
 		EquipmentClass ec = data.getPlayerClass();
 		int idx = 16;
-		for (Artifact art : Equipment.getArtifact(data.getArtifactDroptable(), s.getAreasCompleted() + 2, 3, ec, EquipmentClass.SHOP, EquipmentClass.CLASSLESS)) {
+		for (Artifact art : Equipment.getArtifact(data.getArtifactDroptable(), tier, 3, ec, EquipmentClass.SHOP, EquipmentClass.CLASSLESS)) {
 			int price = NeoRogue.gen.nextInt((int) (150 * discountMult), (int) (250 * discountMult));
 			shopItems.put(idx++, new ShopItem(art, price, false));
 		}

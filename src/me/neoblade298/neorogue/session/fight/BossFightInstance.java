@@ -69,9 +69,6 @@ public class BossFightInstance extends FightInstance {
 					FightInstance.handleWin();
 					s.broadcast("You beat the boss!");
 					s.setInstance(new RewardInstance(s, generateRewards()));
-					s.getParty().values().forEach(data -> {
-						data.healPercent(100);
-					});
 					
 					// Set up next area
 					s.generateNextArea();
@@ -101,7 +98,7 @@ public class BossFightInstance extends FightInstance {
 
 			ArrayList<Equipment> equipDrops = new ArrayList<Equipment>();
 			EquipmentClass ec = data.getPlayerClass();
-			int value = s.getAreasCompleted() + 3;
+			int value = (s.getAreasCompleted() * 2) + 4 + ev.getBonusRarity();
 			equipDrops.addAll(Equipment.getDrop(value, 3 + ev.getBonusEquipment(), ec, EquipmentClass.CLASSLESS));
 			list.add(new EquipmentChoiceReward(equipDrops));
 			
@@ -117,7 +114,7 @@ public class BossFightInstance extends FightInstance {
 			list.add(new EquipmentReward(TomeOfWisdom.get()));
 			if (dropPotion) {
 				Consumable cons = Equipment.getConsumable(value, ec, EquipmentClass.CLASSLESS);
-				list.add(new EquipmentReward(s.rollUpgrade(cons, 0)));
+				list.add(new EquipmentReward(s.rollUpgrade(cons, 0.1)));
 			}
 			rewards.put(uuid, list);
 		}

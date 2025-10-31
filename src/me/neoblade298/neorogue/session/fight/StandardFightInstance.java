@@ -154,7 +154,7 @@ public class StandardFightInstance extends FightInstance {
 
 			ArrayList<Equipment> equipDrops = new ArrayList<Equipment>();
 			EquipmentClass ec = data.getPlayerClass();
-			int value = s.getAreasCompleted();
+			int value = (s.getAreasCompleted() * 2) + ev.getBonusRarity();
 			switch (fightScore) {
 			case S:
 				equipDrops.addAll(Equipment.getDrop(value + 1, 2, ec, EquipmentClass.CLASSLESS));
