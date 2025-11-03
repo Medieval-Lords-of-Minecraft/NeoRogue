@@ -22,7 +22,7 @@ public class LoseInstance extends EditInventoryInstance {
 	}
 
 	@Override
-	public void start() {
+	public void setup() {
 		for (PlayerSessionData data : s.getParty().values()) {
 			data.getPlayer().teleport(spawn);
 		}
@@ -32,7 +32,7 @@ public class LoseInstance extends EditInventoryInstance {
 			p.setAllowFlight(false);
 			p.setFlying(false);
 		}
-		super.start();
+		super.setup();
 
 		s.broadcast(Component.text("You lost!", NamedTextColor.RED));
 		PlayerManager.getPlayerData(s.getHost()).removeSnapshot(s.getSaveSlot());

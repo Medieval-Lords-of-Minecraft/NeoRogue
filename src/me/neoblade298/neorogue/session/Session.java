@@ -475,7 +475,7 @@ public class Session {
 			this.inst.cleanup();
 		}
 		this.inst = inst;
-		inst.start();
+		inst.setup();
 		System.out.println("Started instance " + inst.getClass().getSimpleName());
 		for (PlayerSessionData psd : party.values()) {
 			psd.trigger(SessionTrigger.VISIT_NODE, null);

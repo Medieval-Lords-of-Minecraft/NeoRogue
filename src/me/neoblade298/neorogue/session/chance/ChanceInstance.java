@@ -88,7 +88,7 @@ public class ChanceInstance extends EditInventoryInstance {
 	}
 
 	@Override
-	public void start() {
+	public void setup() {
 		// Pick a random chance set if not already picked
 		if (set == null) {
 			set = ChanceSet.getSet(s.getArea().getType());
@@ -104,7 +104,7 @@ public class ChanceInstance extends EditInventoryInstance {
 			Player p = Bukkit.getPlayer(uuid);
 			p.teleport(spawn);
 		}
-		super.start();
+		super.setup();
 
 		// Setup hologram
 		holo = NeoRogue.createHologram(spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), Component.text("Right click the pillar below!"));

@@ -38,6 +38,7 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -128,7 +129,7 @@ public abstract class FightInstance extends Instance {
 			new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1.259921F) };
 	
 	public FightInstance(Session s, Set<UUID> players) {
-		super(s);
+		super(s, new PlayerFlags(PlayerFlag.SCALE_HEALTH, PlayerFlag.ZERO_DAMAGE_TICKS, PlayerFlag.ALLOW_FLIGHT_FALL));
 		party.addAll(players);
 	}
 	
@@ -320,19 +321,14 @@ public abstract class FightInstance extends Instance {
 
 	@Override
 	public void handlePlayerLeave(Player p) {
-		p.setInvulnerable(false);
-		p.setInvisible(false);
-		p.setMaximumNoDamageTicks(20);
+		super.handlePlayerLeave(p);
 		p.removePotionEffect(PotionEffectType.ABSORPTION);
 		checkInstanceDead(p);
 	}
 
 	@Override
 	public void handlePlayerRejoin(Player p) {
-		p.setMaximumNoDamageTicks(0);
-		p.setHealthScaled(true);
-		// If player rejoins fight, don't tp them, it'll still be the same fight
-		// If the fight already ended, another instance will handle their tp anyway
+		super.handlePlayerRejoin(p);
 		PlayerFightData pdata = getUserData(p.getUniqueId());
 		if (pdata == null) {
 			Bukkit.getLogger().warning("[NeoRogue] Failed to get player fight data on rejoin for " + p.getName());
@@ -374,14 +370,7 @@ public abstract class FightInstance extends Instance {
 		Player p = (Player) e.getEntity();
 		if (e.getCause() == DamageCause.FALL) {
 			e.setCancelled(true);
-
-			// Cancel fall damage if trigger returns true
-			if (!trigger(p, Trigger.FALL_DAMAGE, e)) {
-				DamageMeta meta = new DamageMeta(
-						FightInstance.getUserData(p.getUniqueId()), e.getFinalDamage(), DamageType.FALL, DamageStatTracker.fall()
-				);
-				meta.dealDamage(p);
-			}
+			trigger(p, Trigger.FALL_DAMAGE, e);
 			return;
 		}
 	}
@@ -424,6 +413,21 @@ public abstract class FightInstance extends Instance {
 		} else if (a == Action.RIGHT_CLICK_AIR || a == Action.RIGHT_CLICK_BLOCK) {
 			handleRightClickGeneral(e);
 		}
+	}
+
+	public void handleFlightToggle(PlayerToggleFlightEvent e) {
+		e.setCancelled(true);
+		Player p = e.getPlayer();
+		trigger(p, Trigger.TOGGLE_FLIGHT, e);
+		p.setAllowFlight(false);
+		FightInstance fight = this;
+		new BukkitRunnable() {
+			public void run() {
+				if (p != null && s.getInstance() == fight) {
+				p.setAllowFlight(true);
+				}
+			}
+		}.runTaskLater(NeoRogue.inst(), 10);
 	}
 
 	public void handleToggleCrouchEvent(PlayerToggleSneakEvent e) {
@@ -882,7 +886,7 @@ public abstract class FightInstance extends Instance {
 	}
 	
 	@Override
-	public void start() {
+	public void setup() {
 		instantiate();
 		s.broadcast("Commencing fight...");
 		setupInstance(s);
@@ -907,13 +911,10 @@ public abstract class FightInstance extends Instance {
 				
 				for (Player p : s.getOnlinePlayers()) {
 					p.teleport(spawn);
-					p.setAllowFlight(false);
-					p.setMaximumNoDamageTicks(0);
 				}
 				for (UUID uuid : s.getSpectators().keySet()) {
 					Player p = Bukkit.getPlayer(uuid);
 					p.teleport(spawn);
-					p.setAllowFlight(true);
 				}
 				
 				for (FightRunnable runnable : initialTasks) {

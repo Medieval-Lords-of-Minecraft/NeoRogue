@@ -50,7 +50,7 @@ public class ShopInstance extends EditInventoryInstance {
 	}
 
 	@Override
-	public void start() {
+	public void setup() {
 		for (PlayerSessionData data : s.getParty().values()) {
 			Player p = data.getPlayer();
 			teleportRandomly(p);
@@ -62,7 +62,7 @@ public class ShopInstance extends EditInventoryInstance {
 			Player p = Bukkit.getPlayer(uuid);
 			teleportRandomly(p);
 		}
-		super.start();
+		super.setup();
 
 		// Setup hologram
 		Component text = Component.text("Open the chest, then click the").appendNewline().append(Component.text("stone button", NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true))

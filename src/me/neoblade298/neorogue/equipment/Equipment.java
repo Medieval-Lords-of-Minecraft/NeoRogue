@@ -1591,6 +1591,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			while (list.size() < numDrops && tries < 100) {
 				tries++;
 				if (ec.length > 1) {
+					// If more than 1 equipment class, choose from all of them equally
 					DropTable<DropTable<E>> tables = new DropTable<DropTable<E>>();
 					for (int j = 0; j < ec.length; j++) {
 						if (!droptables.containsKey(ec[j]) || value >= droptables.get(ec[j]).size())
@@ -1621,6 +1622,10 @@ public abstract class Equipment implements Comparable<Equipment> {
 					}
 				}
 				list.add(drop);
+			}
+
+			if (tries >= 100) {
+				Bukkit.getLogger().warning("[NeoRogue] Hit max tries when getting drop table for value " + value);
 			}
 			return list;
 		}

@@ -41,7 +41,7 @@ public class SpiritOfTheDragoon extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		SpiritOfTheDragoonInstance inst = new SpiritOfTheDragoonInstance(data, this, slot, es);
-		data.addTrigger(id, bind, inst);
+		data.addTrigger(id, Trigger.TOGGLE_FLIGHT, inst);
 		
 		data.addTrigger(id, Trigger.FALL_DAMAGE, (pdata, in) -> {
 			strPart.play(p, p);
@@ -70,7 +70,8 @@ public class SpiritOfTheDragoon extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FEATHER,
-				"Passively gain " + GlossaryTag.STRENGTH.tag(this, strength, true) + " upon taking fall damage, even if negated. " +
-				"On cast, jump into the air and gain " + GlossaryTag.SHIELDS.tag(this, shield, true) + " for <white>5</white> seconds.");
+				"Grants the ability to double jump. Passively gain " + GlossaryTag.STRENGTH.tag(this, strength, true)
+						+ " upon falling from a small height. " + "Upon double jump, launch into the air and gain "
+						+ GlossaryTag.SHIELDS.tag(this, shield, true) + " for <white>5s</white>.");
 	}
 }

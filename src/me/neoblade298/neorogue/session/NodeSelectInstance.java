@@ -50,7 +50,7 @@ public class NodeSelectInstance extends EditInventoryInstance {
 	}
 	
 	@Override
-	public void start() {
+	public void setup() {
 		Area area = s.getArea();
 
 		// Teleport player to their previous node selection
@@ -74,7 +74,7 @@ public class NodeSelectInstance extends EditInventoryInstance {
 			teleportRandomly(p);
 			p.setAllowFlight(true);
 		}
-		super.start();
+		super.setup();
 		task = new BukkitRunnable() {
 			@Override
 			public void run() {

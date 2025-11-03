@@ -51,9 +51,6 @@ public class BreakTheLine extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		BreakTheLineInstance inst = new BreakTheLineInstance(data, this, slot, es);
 		data.addTrigger(id, bind, inst);
-		data.addTrigger(id, Trigger.FALL_DAMAGE, (pdata, in) -> {
-			return TriggerResult.of(false, inst.inAir);
-		});
 	}
 
 	@Override
@@ -64,14 +61,12 @@ public class BreakTheLine extends Equipment {
 	}
 	
 	private class BreakTheLineInstance extends EquipmentInstance {
-		private boolean inAir;
 		public BreakTheLineInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
 			super(data, eq, slot, es);
 			action = (pdata, inputs) -> {
 				Player p = data.getPlayer();
 				Sounds.jump.play(p, p);
 				p.setVelocity(p.getVelocity().add(new Vector(0, 1, 0)));
-				inAir = true;
 				
 				pdata.addTask(new BukkitRunnable() {
 					public void run() {

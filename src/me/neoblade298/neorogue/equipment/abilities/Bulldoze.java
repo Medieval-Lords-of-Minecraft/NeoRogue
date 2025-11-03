@@ -76,12 +76,14 @@ public class Bulldoze extends Equipment {
 				boolean spawnParticle = delay % 4 == 0;
 				tasks.add(new BukkitRunnable() {
 					public void run() {
-						if (spawnParticle) wake.play(p, p);
+						if (spawnParticle) {
+							wake.play(p, p);
+							Sounds.explode.play(p, p);
+						}
 						
 						LinkedList<LivingEntity> hit = TargetHelper.getEntitiesInRadius(p, hc);
 						if (hit.size() == 0) return;
 
-						Sounds.explode.play(p, p);
 						for (LivingEntity ent : hit) {
 							if (hitList.contains(ent.getUniqueId())) continue;
 							hitList.add(ent.getUniqueId());

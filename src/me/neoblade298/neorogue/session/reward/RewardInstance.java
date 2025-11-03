@@ -43,7 +43,7 @@ public class RewardInstance extends EditInventoryInstance {
 	}
 
 	@Override
-	public void start() {
+	public void setup() {
 		for (PlayerSessionData data : s.getParty().values()) {
 			Player p = data.getPlayer();
 			p.playSound(p, Sound.ENTITY_PLAYER_LEVELUP, 1F, 1F);
@@ -56,7 +56,7 @@ public class RewardInstance extends EditInventoryInstance {
 			p.setAllowFlight(false);
 			p.setFlying(false);
 		}
-		super.start();
+		super.setup();
 		
 		// Setup hologram
 		Component text = Component.text("Open the enderchest and").appendNewline().append(Component.text("collect your reward!"));

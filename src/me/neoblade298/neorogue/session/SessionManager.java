@@ -46,6 +46,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -71,6 +72,7 @@ import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.SessionSnapshot;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionSpectateInventory;
+import me.neoblade298.neorogue.session.Instance.PlayerFlags;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.Mob;
@@ -387,6 +389,20 @@ public class SessionManager implements Listener {
 		e.setConsumeItem(false);
 	}
 
+	@EventHandler
+	public void onFlight(PlayerToggleFlightEvent e) {
+		Player p = e.getPlayer();
+		UUID uuid = p.getUniqueId();
+		if (!sessions.containsKey(uuid))
+			return;
+		Session s = sessions.get(uuid);
+		if (s.isSpectator(uuid))
+			return;
+		if (s.getInstance() instanceof FightInstance) {
+			((FightInstance) s.getInstance()).handleFlightToggle(e);
+		}
+	}
+
 	@EventHandler(ignoreCancelled = false)
 	public void onInteractEntity(PlayerInteractEntityEvent e) {
 		Player p = e.getPlayer();
@@ -632,12 +648,8 @@ public class SessionManager implements Listener {
 		if (p == null)
 			return;
 		p.getInventory().clear();
-		p.setMaximumNoDamageTicks(20);
-		p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
+		PlayerFlags.applyDefaults(p);
 		p.setHealth(20);
-		p.setInvulnerable(false);
-		p.setInvisible(false);
-		p.setAllowFlight(false);
 	}
 
 	public static void endSession(Session s) {

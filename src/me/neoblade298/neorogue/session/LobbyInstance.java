@@ -65,12 +65,12 @@ public class LobbyInstance extends Instance {
 
 
 	@Override
-	public void start() {
+	public void setup() {
 
 	}
 
 	public LobbyInstance(String name, Player host, Session session) {
-		super(session, SPAWN_X, SPAWN_Z);
+		super(session, SPAWN_X, SPAWN_Z, new PlayerFlags(PlayerFlag.CAN_FLY, PlayerFlag.SCALE_HEALTH));
 		this.name = name;
 		this.host = host.getUniqueId();
 		host.setGameMode(GameMode.ADVENTURE);
@@ -304,7 +304,6 @@ public class LobbyInstance extends Instance {
 				for (UUID uuid : players.keySet()) {
 					Player p = Bukkit.getPlayer(uuid);
 					p.setHealth(p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
-					p.setMaximumNoDamageTicks(0);
 				}
 				s.setInstance(new NodeSelectInstance(s));
 				s.setBusy(false);

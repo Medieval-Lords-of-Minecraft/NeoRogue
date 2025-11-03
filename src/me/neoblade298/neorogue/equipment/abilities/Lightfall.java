@@ -72,19 +72,9 @@ public class Lightfall extends Equipment {
 			}.runTaskLater(NeoRogue.inst(), 7));
 
 			data.addTask(new BukkitRunnable() {
-				public void run() {
-					am.setBool(false);
-				}
-			}.runTaskLater(NeoRogue.inst(), 30));
-
-			data.addTask(new BukkitRunnable() {
 				int count = 0;
 				@SuppressWarnings("deprecation")
 				public void run() {
-					if (!am.getBool()) {
-						cancel();
-						return;
-					}
 
 					if (p.isOnGround()) {
 						activateDamage(p, data, slot);
@@ -98,15 +88,6 @@ public class Lightfall extends Equipment {
 			}.runTaskTimer(NeoRogue.inst(), 8, 1));
 			return TriggerResult.keep();
 		}));
-
-		data.addTrigger(id, Trigger.FALL_DAMAGE, (pdata, in) -> {
-			if (am.getBool()) {
-				am.setBool(false);
-				activateDamage(p, data, slot);
-				return TriggerResult.of(false, true);
-			}
-			return TriggerResult.keep();
-		});
 	}
 
 	private void activateDamage(Player p, PlayerFightData data, int slot) {

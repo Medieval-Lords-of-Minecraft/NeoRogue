@@ -30,11 +30,11 @@ public abstract class EditInventoryInstance extends Instance {
 	public static final int MAP_ID = 256;
 
 	public EditInventoryInstance(Session s, double spawnX, double spawnZ) {
-		super(s, spawnX, spawnZ);
+		super(s, spawnX, spawnZ, new PlayerFlags(PlayerFlag.SCALE_HEALTH, PlayerFlag.ZERO_DAMAGE_TICKS));
 	}
 	
 	@Override
-	public void start() {
+	public void setup() {
 		for (PlayerSessionData data : s.getParty().values()) {
 			data.setupInventory();
 			data.updateBoardLines();

@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -15,37 +16,74 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.chance.ChanceInstance;
+import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.reward.RewardInstance;
+import net.kyori.adventure.util.TriState;
 
 public abstract class Instance {
 	protected Session s;
 	protected Location spawn;
 	protected ArrayList<String> playerLines = new ArrayList<String>(), spectatorLines = new ArrayList<String>();
-	public abstract void start();
+	protected PlayerFlags playerFlags, spectatorFlags = new PlayerFlags(PlayerFlag.INVISIBLE, PlayerFlag.INVULNERABLE);
+	protected abstract void setup();
 	public abstract void cleanup();
 	public abstract void handleInteractEvent(PlayerInteractEvent e);
 	public abstract void handlePlayerKickEvent(Player kicked);
 	public abstract String serialize(HashMap<UUID, PlayerSessionData> party);
-	public Instance(Session s) {
+	public Instance(Session s, PlayerFlags playerFlags) {
 		this.s = s;
+		this.playerFlags = playerFlags;
 	}
-	public Instance(Session s, double spawnX, double spawnZ) {
+
+	public Instance(Session s, PlayerFlags playerFlags, PlayerFlags spectatorFlags) {
+		this.s = s;
+		this.playerFlags = playerFlags;
+		this.spectatorFlags = spectatorFlags;
+	}
+
+	public Instance(Session s, double spawnX, double spawnZ, PlayerFlags playerFlags) {
 		this.s = s;
 		spawn = new Location(Bukkit.getWorld(Area.WORLD_NAME), -(s.getXOff() + spawnX), 64, s.getZOff() + spawnZ);
+		this.playerFlags = playerFlags;
+	}
+	
+	public Instance(Session s, double spawnX, double spawnZ, PlayerFlags playerFlags, PlayerFlags spectatorFlags) {
+		this.s = s;
+		spawn = new Location(Bukkit.getWorld(Area.WORLD_NAME), -(s.getXOff() + spawnX), 64, s.getZOff() + spawnZ);
+		this.playerFlags = playerFlags;
+		this.spectatorFlags = spectatorFlags;
 	}
 	
 	public void handleSpectatorInteractEvent(PlayerInteractEvent e) {
 		
 	}
+
+	public void start() {
+		for (Player p : s.getOnlinePlayers()) {
+			playerFlags.applyFlags(p);
+		}
+		for (UUID uuid : s.getSpectators().keySet()) {
+			Player p = Bukkit.getPlayer(uuid);
+			spectatorFlags.applyFlags(p);
+		}
+	}
 	
 	public void handlePlayerRejoin(Player p) {
-		p.teleport(spawn);
-		p.setMaximumNoDamageTicks(0);
-		p.setHealthScaled(true);
+		if (s.isSpectator(p.getUniqueId())) {
+			spectatorFlags.applyFlags(p);
+		}
+		else {
+			playerFlags.applyFlags(p);
+		}
+
+		// Do not teleport if it's a player in a fight instance
+		if (!(s.getInstance() instanceof FightInstance && !s.isSpectator(p.getUniqueId()))) {
+			p.teleport(spawn);
+		}
 	}
 	
 	public void handlePlayerLeave(Player p) {
-		
+		PlayerFlags.applyDefaults(p);
 	}
 	
 	public Location getSpawn() {
@@ -89,4 +127,81 @@ public abstract class Instance {
 	}
 
 	public abstract void updateBoardLines();
+
+	public static class PlayerFlags {
+		private HashSet<PlayerFlag> flags = new HashSet<PlayerFlag>();
+
+		public PlayerFlags(PlayerFlag... flags) {
+			for (PlayerFlag flag : flags) {
+				this.flags.add(flag);
+			}
+		}
+
+		public void applyFlags(Player p) {
+			for (PlayerFlag flag : PlayerFlag.values()) {
+				if (flags.contains(flag)) {
+					flag.applyFlag(p);
+				}
+				else {
+					flag.applyDefault(p);
+				}
+			}
+		}
+
+		public static void applyDefaults(Player p) {
+			for (PlayerFlag flag : PlayerFlag.values()) {
+				flag.applyDefault(p);
+			}
+		}
+	}
+
+	public enum PlayerFlag {
+		INVULNERABLE, CAN_FLY, INVISIBLE, SCALE_HEALTH, ZERO_DAMAGE_TICKS, ALLOW_FLIGHT_FALL;
+
+		public void applyFlag(Player p) {
+			switch (this) {
+				case INVULNERABLE:
+					p.setInvulnerable(true);
+					break;
+				case CAN_FLY:
+					p.setAllowFlight(true);
+					break;
+				case INVISIBLE:
+					p.setInvisible(true);
+					break;
+				case SCALE_HEALTH:
+					p.setHealthScaled(true);
+					break;
+				case ZERO_DAMAGE_TICKS:
+					p.setMaximumNoDamageTicks(0);
+					break;
+				case ALLOW_FLIGHT_FALL:
+					p.setFlyingFallDamage(TriState.TRUE);
+					break;
+			}
+		}
+
+		public void applyDefault(Player p) {
+			switch (this) {
+				case INVULNERABLE:
+					p.setInvulnerable(false);
+					break;
+				case CAN_FLY:
+					p.setAllowFlight(false);
+					break;
+				case INVISIBLE:
+					p.setInvisible(false);
+					break;
+				case SCALE_HEALTH:
+					p.setHealthScaled(false);
+					break;
+				case ZERO_DAMAGE_TICKS:
+					p.setMaximumNoDamageTicks(20);
+					break;
+				case ALLOW_FLIGHT_FALL:
+					p.setFlyingFallDamage(TriState.NOT_SET);
+					break;
+			}
+		}
+	}
 }

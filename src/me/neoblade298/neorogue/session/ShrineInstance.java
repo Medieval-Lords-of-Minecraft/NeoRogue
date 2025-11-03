@@ -57,7 +57,7 @@ public class ShrineInstance extends EditInventoryInstance {
 	}
 
 	@Override
-	public void start() {
+	public void setup() {
 		blockBottom = spawn.clone().add(0, 0, 7).getBlock();
 		blockMiddle = blockBottom.getRelative(BlockFace.UP);
 		blockTop = blockMiddle.getRelative(BlockFace.UP);
@@ -70,7 +70,7 @@ public class ShrineInstance extends EditInventoryInstance {
 			Player p = Bukkit.getPlayer(uuid);
 			teleportRandomly(p);
 		}
-		super.start();
+		super.setup();
 
 		// Setup hologram
 		Component text = Component.text("Right click the").appendNewline().append(Component.text("emerald blocks", NamedTextColor.GREEN)).append(Component.text("!"));

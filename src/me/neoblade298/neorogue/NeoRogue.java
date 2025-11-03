@@ -172,7 +172,6 @@ public class NeoRogue extends JavaPlugin {
 	public static void debugInitialize() {
 		Player p = Bukkit.getPlayer("Ascheladd");
 		if (p == null) return;
-		p.setMaximumNoDamageTicks(0);
 		
 		Session s = SessionManager.createSession(p, "test", 1);
 		s.generateArea(AreaType.HARVEST_FIELDS);
@@ -182,7 +181,6 @@ public class NeoRogue extends JavaPlugin {
 		if (alt != null) {
 			s.addPlayer(alt.getUniqueId(), EquipmentClass.MAGE);
 			SessionManager.addToSession(alt.getUniqueId(), s);
-			alt.setMaximumNoDamageTicks(0);
 		}
 		s.getParty().get(p.getUniqueId()).addManaRegen(10);
 		s.getParty().get(p.getUniqueId()).addStaminaRegen(10);

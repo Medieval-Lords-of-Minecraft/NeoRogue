@@ -159,6 +159,11 @@ public class PlayerFightData extends FightData {
 			return TriggerResult.keep();
 		});
 
+		// If the player has a TOGGLE_FLIGHT trigger, allow them to fly
+		if (triggers.containsKey(Trigger.TOGGLE_FLIGHT)) {
+			p.setAllowFlight(true);
+		}
+
 		// Sort triggers by priority
 		for (ArrayList<PriorityAction> list : triggers.values()) {
 			Collections.sort(list);
