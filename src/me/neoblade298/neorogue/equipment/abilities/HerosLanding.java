@@ -79,7 +79,7 @@ public class HerosLanding extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ANVIL,
-				"On cast, jump into the air. Passively, whenever you take fall damage, negate it, deal " + GlossaryTag.BLUNT.tag(this, damage, true) + " damage and apply " + 
+				"Grants double jump. Upon double jump, deal " + GlossaryTag.BLUNT.tag(this, damage, true) + " damage and apply " + 
 				GlossaryTag.CONCUSSED.tag(this, conc, true) + " to nearby enemies, and gain " + GlossaryTag.STRENGTH.tag(this, str, true) + ".");
 	}
 }

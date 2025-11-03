@@ -2,13 +2,15 @@ package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
@@ -18,15 +20,16 @@ import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 
 public class WardingRune extends Equipment {
 	private static final String ID = "wardingRune";
-	private int reduc;
+	private int reduc = 10, mana = 5;
 	
 	public WardingRune(boolean isUpgraded) {
 		super(ID, "Warding Rune", isUpgraded, Rarity.COMMON, EquipmentClass.CLASSLESS,
-				EquipmentType.OFFHAND, EquipmentProperties.none());
-				reduc = isUpgraded ? 15 : 10;
+				EquipmentType.OFFHAND, EquipmentProperties.ofUsable(0, 0, isUpgraded ? 15 : 11, 0));
+		properties.addUpgrades(PropertyType.COOLDOWN);
 	}
 	
 	public static Equipment get() {
@@ -35,36 +38,35 @@ public class WardingRune extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		int reps = (int) (data.getSessionData().getMaxMana() - 40) / 10;
-		ItemStack icon = item.clone();
 		ActionMeta am = new ActionMeta();
-		icon.setAmount(reps);
-		am.setCount(reps);
 		Trigger tr = data.getSessionData().getPlayerClass() == EquipmentClass.ARCHER ? Trigger.LEFT_CLICK : Trigger.RIGHT_CLICK;
 		data.addTrigger(id, tr, (pdata, in) -> {
 			Sounds.fire.play(p, p);
 			if (tr == Trigger.LEFT_CLICK) p.swingOffHand();
-			data.addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL), Buff.increase(data, reduc, StatTracker.defenseBuffAlly(am.getId(), this)), 60);
-			
-			am.addCount(-1);
-			if (am.getCount() <= 0) {
-				Sounds.breaks.play(p, p);
-				p.getInventory().setItemInOffHand(null);
-				return TriggerResult.remove();
+			data.addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL), Buff.increase(data, reduc, StatTracker.defenseBuffAlly(am.getId(), this)), 100);
+			am.setBool(true);
+			data.addTask(new BukkitRunnable() {
+				public void run() {
+					am.setBool(false);
+				}
+			}.runTaskLater(NeoRogue.inst(), 100));
+			return TriggerResult.keep();
+		});
+
+		data.addTrigger(id, Trigger.RECEIVE_DAMAGE, (pdata, in) -> {
+			ReceiveDamageEvent ev = (ReceiveDamageEvent) in;
+			if (ev.getMeta().containsType(DamageCategory.MAGICAL) && am.getBool()) {
+				data.addMana(mana);
+				Sounds.enchant.play(p, p);
 			}
-			else {
-				icon.setAmount(am.getCount());
-				p.getInventory().setItemInOffHand(icon);
-				return TriggerResult.keep();
-			}
+			return TriggerResult.keep();
 		});
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.QUARTZ_SLAB,
-				"On right click (left click for <gold>Archer</gold>), reduce " + GlossaryTag.MAGICAL.tag(this) + " damage taken by " +
-				DescUtil.yellow(reduc) + " for <white>3s</white>. " +
-				"Can be used once for every <white>10</white> max mana you have over <white>40</white>.");
+				"On right click (left click for <gold>Archer</gold>), gain " + GlossaryTag.SHELL.tag(this, reduc, false) + " for <white>5s</white>. Receiving "
+				+ GlossaryTag.MAGICAL.tag(this) + " damage during this time grants " + DescUtil.white(mana) + " mana.");
 	}
 }
