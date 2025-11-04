@@ -12,6 +12,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.ShrineInstance;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
@@ -48,9 +49,11 @@ public class CailiricCrystal extends Artifact {
 	@Override
 	public void onInitializeSession(PlayerSessionData data) {
 		data.addTrigger(id, SessionTrigger.VISIT_NODE, (pdata, in) -> {
-			data.giveEquipment(CailiricCrystal.get(), null, null);
-			Util.msg(data.getPlayer(), display.append(SharedUtil.color(
-					" potency has increased to " + DescUtil.white(inc * data.getArtifacts().get(id).getAmount()))));
+			if (data.getSession().getInstance() instanceof ShrineInstance) {
+				data.giveEquipment(CailiricCrystal.get(), null, null);
+				Util.msg(data.getPlayer(), display.append(SharedUtil.color(
+						" potency has increased to " + DescUtil.white(inc * (data.getArtifacts().get(id).getAmount() - 1)))));
+			}
 		});
 	}
 }

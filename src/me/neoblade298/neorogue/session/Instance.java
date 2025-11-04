@@ -66,6 +66,7 @@ public abstract class Instance {
 			Player p = Bukkit.getPlayer(uuid);
 			spectatorFlags.applyFlags(p);
 		}
+		setup();
 	}
 	
 	public void handlePlayerRejoin(Player p) {
@@ -139,6 +140,7 @@ public abstract class Instance {
 
 		public void applyFlags(Player p) {
 			for (PlayerFlag flag : PlayerFlag.values()) {
+				System.out.println("Contains flag " + flag + ": " + flags.contains(flag));
 				if (flags.contains(flag)) {
 					flag.applyFlag(p);
 				}
@@ -188,6 +190,7 @@ public abstract class Instance {
 					break;
 				case CAN_FLY:
 					p.setAllowFlight(false);
+					p.setFlying(false);
 					break;
 				case INVISIBLE:
 					p.setInvisible(false);

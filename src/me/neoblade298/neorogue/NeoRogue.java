@@ -42,6 +42,7 @@ import me.neoblade298.neorogue.commands.CmdAdminReload;
 import me.neoblade298.neorogue.commands.CmdAdminReloadMythic;
 import me.neoblade298.neorogue.commands.CmdAdminSerialize;
 import me.neoblade298.neorogue.commands.CmdAdminSet;
+import me.neoblade298.neorogue.commands.CmdAdminSetInstance;
 import me.neoblade298.neorogue.commands.CmdAdminStatus;
 import me.neoblade298.neorogue.commands.CmdAdminTest;
 import me.neoblade298.neorogue.commands.CmdAdminTrash;
@@ -162,6 +163,7 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdAdminSerialize("serialize", "Save a player's loadout for debug purposes", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminDeserialize("deserialize", "Loads in a player's loadout for debug purposes", null, SubcommandRunner.CONSOLE_ONLY));
 		mngr.register(new CmdAdminNew("new", "Starts a new session with all online players with custom start parameters", null, SubcommandRunner.BOTH));
+		mngr.register(new CmdAdminSetInstance("setinstance", "Sets the current instance", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.registerCommandList("");
 	}
 	
@@ -175,7 +177,7 @@ public class NeoRogue extends JavaPlugin {
 		
 		Session s = SessionManager.createSession(p, "test", 1);
 		s.generateArea(AreaType.HARVEST_FIELDS);
-		s.addPlayer(p.getUniqueId(), EquipmentClass.MAGE);
+		s.addPlayer(p.getUniqueId(), EquipmentClass.WARRIOR);
 		SessionManager.addToSession(p.getUniqueId(), s);
 		Player alt = Bukkit.getPlayer("SuaveGentleman");
 		if (alt != null) {

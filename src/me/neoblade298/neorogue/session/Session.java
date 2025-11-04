@@ -475,7 +475,7 @@ public class Session {
 			this.inst.cleanup();
 		}
 		this.inst = inst;
-		inst.setup();
+		inst.start();
 		System.out.println("Started instance " + inst.getClass().getSimpleName());
 		for (PlayerSessionData psd : party.values()) {
 			psd.trigger(SessionTrigger.VISIT_NODE, null);
@@ -649,7 +649,7 @@ public class Session {
 		} else {
 			broadcast("<yellow>" + p.getName() + " <gray>has left the party!");
 			party.remove(p.getUniqueId());
-			SessionManager.resetPlayer(p);
+			SessionManager.resetPlayer(p); // endSession does this for everyone, so only need to do it in the else section
 			SessionManager.removeFromSession(p.getUniqueId());
 			
 			if (inst instanceof FightInstance) {

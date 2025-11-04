@@ -30,7 +30,7 @@ public abstract class EditInventoryInstance extends Instance {
 	public static final int MAP_ID = 256;
 
 	public EditInventoryInstance(Session s, double spawnX, double spawnZ) {
-		super(s, spawnX, spawnZ, new PlayerFlags(PlayerFlag.SCALE_HEALTH, PlayerFlag.ZERO_DAMAGE_TICKS));
+		super(s, spawnX, spawnZ, new PlayerFlags(PlayerFlag.SCALE_HEALTH, PlayerFlag.ZERO_DAMAGE_TICKS, PlayerFlag.CAN_FLY));
 	}
 	
 	@Override

@@ -42,7 +42,7 @@ public class Pin extends Equipment {
 	
 	public Pin(boolean isUpgraded) {
 		super(ID, "Pin", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 30, 15, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 30, 15, 0, 2));
 		damage = isUpgraded ? 160 : 130;
 		reduction = isUpgraded ? 15 : 10;
 		
@@ -172,7 +172,7 @@ public class Pin extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.REDSTONE, new String[] { "<gold>Area of Effect: <white>2" },
+		item = createItem(Material.REDSTONE,
 				"On cast, dash forward, taking all enemies you contact with you. Slow all enemies hit for <white>5</white> seconds. If you hit a wall,"
 				+ " deal " + GlossaryTag.BLUNT.tag(this) + " <yellow>" + damage + "</yellow> damage and reduce the damage of all enemies hit by <white>"
 				+ reduction + "</white> for <white>5</white> seconds.");

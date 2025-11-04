@@ -25,6 +25,7 @@ public class EquipmentProperties {
 	private DamageType type;
 	private SoundContainer swingSound;
 	private CastType castType = CastType.STANDARD;
+	public static final String PROPERTY_COLOR = "#C98D8D";
 
 	private EquipmentProperties(double manaCost, double staminaCost, double cooldown, double range, double damage,
 			double attackSpeed, double knockback, double area, DamageType type, SoundContainer swingSound) {
@@ -159,7 +160,7 @@ public class EquipmentProperties {
 			lore.add(generateLoreLine(type));
 		}
 		if (type != null) {
-			lore.add(SharedUtil.color("<gold>Damage Type: <white>" + type));
+			lore.add(SharedUtil.color("<color:" + PROPERTY_COLOR + ">Damage Type: <white>" + type));
 			eq.addTags(type.toGlossary());
 		}
 		return lore;
@@ -169,7 +170,7 @@ public class EquipmentProperties {
 		Property prop = properties.get(type);
 		String color = prop.canUpgrade ? "<yellow>" : "<white>";
 		return SharedUtil
-				.color("<gold>" + type.label + ": " + color + prop.amount + (type == PropertyType.ATTACK_SPEED ? "/s" : ""));
+				.color("<color:" + PROPERTY_COLOR + ">" + type.label + ": " + color + prop.amount + (type == PropertyType.ATTACK_SPEED ? "/s" : ""));
 	}
 
 	public boolean contains(PropertyType type) {

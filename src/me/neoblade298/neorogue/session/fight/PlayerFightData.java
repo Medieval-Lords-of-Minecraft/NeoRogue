@@ -162,6 +162,7 @@ public class PlayerFightData extends FightData {
 		// If the player has a TOGGLE_FLIGHT trigger, allow them to fly
 		if (triggers.containsKey(Trigger.TOGGLE_FLIGHT)) {
 			p.setAllowFlight(true);
+			System.out.println("Flying fall " + p.hasFlyingFallDamage());
 		}
 
 		// Sort triggers by priority

@@ -212,6 +212,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextDecoration.State;
 
@@ -1145,14 +1146,14 @@ public abstract class Equipment implements Comparable<Equipment> {
 					Component.text("This item is cursed. It must be equipped to continue.", NamedTextColor.DARK_RED));
 		}
 		if (!reforgeOptions.isEmpty()) {
-			loreItalicized.add(Component.text("Reforgeable with:", NamedTextColor.GOLD));
+			loreItalicized.add(Component.text("Reforgeable with:", TextColor.fromHexString(EquipmentProperties.PROPERTY_COLOR)));
 			for (Equipment eq : reforgeOptions.keySet()) {
 				boolean noPostfix = isCursed || eq.isCursed;
 				String postfix = "";
 				if (!noPostfix) {
 					postfix = isUpgraded ? "(+)" : "+";
 				}
-				loreItalicized.add(Component.text("- ", NamedTextColor.GOLD)
+				loreItalicized.add(Component.text("- ", TextColor.fromHexString(EquipmentProperties.PROPERTY_COLOR))
 						.append(eq.getDisplay().append(Component.text(postfix))));
 			}
 		}
@@ -1585,49 +1586,21 @@ public abstract class Equipment implements Comparable<Equipment> {
 		}
 
 		public ArrayList<E> getMultiple(int value, int numDrops, boolean unique, EquipmentClass... ec) {
-			ArrayList<E> list = new ArrayList<E>(numDrops);
 			DropTable<E> table;
-			int tries = 0;
-			while (list.size() < numDrops && tries < 100) {
-				tries++;
-				if (ec.length > 1) {
-					// If more than 1 equipment class, choose from all of them equally
-					DropTable<DropTable<E>> tables = new DropTable<DropTable<E>>();
-					for (int j = 0; j < ec.length; j++) {
-						if (!droptables.containsKey(ec[j]) || value >= droptables.get(ec[j]).size())
-							continue;
-						DropTable<E> temp = droptables.get(ec[j]).get(value);
-						tables.add(temp, temp.getTotalWeight());
-					}
-					table = tables.get();
-				} else {
-					ArrayList<DropTable<E>> tableList = droptables.get(ec[0]);
-					if (tableList == null || value >= tableList.size()) {
-						break;
-					}
-					table = tableList.get(value);
-				}
-
-				E drop = table.get();
-				if (unique) {
-					boolean isUnique = true;
-					for (Equipment eq : list) {
-						if (eq.isSimilar(drop)) {
-							isUnique = false;
-						}
-					}
-
-					if (!isUnique) {
+			if (ec.length > 1) {
+				// If more than 1 equipment class, choose from all of them equally
+				DropTable<DropTable<E>> tables = new DropTable<DropTable<E>>();
+				for (int j = 0; j < ec.length; j++) {
+					if (!droptables.containsKey(ec[j]) || value >= droptables.get(ec[j]).size())
 						continue;
-					}
+					DropTable<E> temp = droptables.get(ec[j]).get(value);
+					tables.add(temp, temp.getTotalWeight());
 				}
-				list.add(drop);
+				table = tables.get();
+			} else {
+				table = droptables.get(ec[0]).get(value);
 			}
-
-			if (tries >= 100) {
-				Bukkit.getLogger().warning("[NeoRogue] Hit max tries when getting drop table for value " + value);
-			}
-			return list;
+			return table.getMultiple(numDrops, unique);
 		}
 
 		@Override

@@ -607,15 +607,13 @@ public class SessionManager implements Listener {
 	@EventHandler
 	public void onJoin(PlayerJoinEvent e) {
 		Player p = e.getPlayer();
-		p.getAttribute(Attribute.GENERIC_JUMP_STRENGTH)
-				.removeModifier(NamespacedKey.fromString("jump", NeoRogue.inst()));
 		if (sessions.containsKey(p.getUniqueId())) {
 			Session s = sessions.get(p.getUniqueId());
 			s.getData(p.getUniqueId()).syncHealth();
 			s.getInstance().handlePlayerRejoin(p);
 		} else {
-			p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
 			p.teleport(NeoRogue.spawn);
+			resetPlayer(p);
 		}
 	}
 
@@ -649,7 +647,9 @@ public class SessionManager implements Listener {
 			return;
 		p.getInventory().clear();
 		PlayerFlags.applyDefaults(p);
-		p.setHealth(20);
+		p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
+		p.getAttribute(Attribute.GENERIC_JUMP_STRENGTH)
+				.removeModifier(NamespacedKey.fromString("jump", NeoRogue.inst()));
 	}
 
 	public static void endSession(Session s) {

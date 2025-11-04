@@ -109,4 +109,8 @@ public class ShopItem {
 		boolean isPurchased = split[4].equals("1");
 		return new ShopItem(eq, price, sale, isPurchased);
 	}
+
+	public String toString() {
+		return eq.getId() + "-" + price + "-" + (sale ? "sale" : "nosale");
+	}
 }
