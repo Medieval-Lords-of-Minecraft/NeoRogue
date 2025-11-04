@@ -20,7 +20,7 @@ public class AlchemistBag extends Artifact {
 	private static final int heal = 15;
 
 	public AlchemistBag() {
-		super(ID, "Alchemist Bag", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
+		super(ID, "Alchemist Bag", Rarity.COMMON, EquipmentClass.CLASSLESS);
 	}
 	
 	public static Equipment get() {

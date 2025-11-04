@@ -22,7 +22,7 @@ public class OpalHourglass extends Artifact {
 	private static int thres = 15, reduc = 4;
 
 	public OpalHourglass() {
-		super(ID, "Opal Hourglass", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
+		super(ID, "Opal Hourglass", Rarity.COMMON, EquipmentClass.CLASSLESS);
 	}
 
 	public static Equipment get() {

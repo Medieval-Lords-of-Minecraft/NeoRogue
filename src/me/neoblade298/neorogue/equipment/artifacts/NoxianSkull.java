@@ -23,7 +23,7 @@ public class NoxianSkull extends Artifact {
 	private static final String ID = "noxianSkull";
 
 	public NoxianSkull() {
-		super(ID, "Noxian Skull", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
+		super(ID, "Noxian Skull", Rarity.COMMON, EquipmentClass.CLASSLESS);
 	}
 	
 	public static Equipment get() {

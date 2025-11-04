@@ -21,7 +21,7 @@ public class ForceTrinket extends Artifact {
 	private static final int multStr = (int) (mult * 100);
 	
 	public ForceTrinket() {
-		super(ID, "Force Trinket", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
+		super(ID, "Force Trinket", Rarity.COMMON, EquipmentClass.CLASSLESS);
 	}
 	
 	public static Equipment get() {

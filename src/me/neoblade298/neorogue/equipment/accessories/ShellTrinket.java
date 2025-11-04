@@ -20,7 +20,7 @@ public class ShellTrinket extends Artifact {
 	private static final int dec = 2;
 	
 	public ShellTrinket() {
-		super(ID, "Shell Trinket", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
+		super(ID, "Shell Trinket", Rarity.COMMON, EquipmentClass.CLASSLESS);
 	}
 	
 	public static Equipment get() {

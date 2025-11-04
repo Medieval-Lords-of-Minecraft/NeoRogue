@@ -23,7 +23,7 @@ public class FaerieDust extends Artifact {
 	private static final int def = 8;
 
 	public FaerieDust() {
-		super(ID, "Faerie Dust", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
+		super(ID, "Faerie Dust", Rarity.COMMON, EquipmentClass.CLASSLESS);
 	}
 	
 	public static Equipment get() {

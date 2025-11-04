@@ -14,7 +14,7 @@ public class BagOfPreparation extends Artifact {
 	private static final String ID = "bagOfPreparation";
 	
 	public BagOfPreparation() {
-		super(ID, "Bag of Preparation", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
+		super(ID, "Bag of Preparation", Rarity.COMMON, EquipmentClass.CLASSLESS);
 		canDrop = false;
 	}
 

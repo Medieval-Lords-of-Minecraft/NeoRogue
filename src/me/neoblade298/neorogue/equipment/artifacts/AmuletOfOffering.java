@@ -24,7 +24,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 public class AmuletOfOffering extends Artifact {
 	private static final String ID = "amuletOfOffering";
 	public AmuletOfOffering() {
-		super(ID, "Amulet of Offering", Rarity.RARE, EquipmentClass.CLASSLESS);
+		super(ID, "Amulet of Offering", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
 	}
 	
 	public static Equipment get() {

@@ -17,7 +17,7 @@ public class ManaflowBand extends Artifact {
 	private static final String ID = "manaflowBand";
 
 	public ManaflowBand() {
-		super(ID, "Manaflow Band", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
+		super(ID, "Manaflow Band", Rarity.COMMON, EquipmentClass.CLASSLESS);
 	}
 	
 	public static Equipment get() {

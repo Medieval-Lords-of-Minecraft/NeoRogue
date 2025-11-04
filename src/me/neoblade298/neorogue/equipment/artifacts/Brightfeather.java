@@ -17,7 +17,7 @@ public class Brightfeather extends Artifact {
 	private static final String ID = "brightfeather";
 
 	public Brightfeather() {
-		super(ID, "Brightfeather", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
+		super(ID, "Brightfeather", Rarity.COMMON, EquipmentClass.CLASSLESS);
 	}
 	
 	public static Equipment get() {

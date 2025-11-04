@@ -25,7 +25,6 @@ public class ShopContents {
 		generateConsumables(s, data, value, discountMult); // 10-12
 		generateGems(discountMult); // 13-15
 		generateArtifacts(s, data, value, discountMult); // 16-18
-		System.out.println("Generated shopcontents " + shopItems);
 	}
 
 	private ShopContents(HashMap<Integer, ShopItem> shopItems) {

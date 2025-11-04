@@ -24,7 +24,7 @@ public class CrystalFeather extends Artifact {
 	private static final int dur = 3;
 
 	public CrystalFeather() {
-		super(ID, "Crystal Feather", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
+		super(ID, "Crystal Feather", Rarity.COMMON, EquipmentClass.CLASSLESS);
 	}
 	
 	public static Equipment get() {
