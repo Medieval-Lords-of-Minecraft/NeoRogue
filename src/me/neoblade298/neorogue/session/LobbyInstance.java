@@ -170,7 +170,7 @@ public class LobbyInstance extends Instance {
 		UUID uuid = p.getUniqueId();
 		String line = ready.contains(uuid) ? "§a✓ §f" : "§c✗ §f";
 		if (isHost) {
-			line += "(Host) ";
+			line += "★ ";
 		}
 		line += p.getName() + "§7 - §e" + players.get(p.getUniqueId()).getDisplay();
 		return line;

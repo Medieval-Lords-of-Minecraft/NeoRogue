@@ -35,7 +35,7 @@ public class EarthenBracer extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.PRE_APPLY_STATUS, (pdata, in) -> {
 			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
-			if (ev.isStatus(StatusType.CONCUSSED)) return TriggerResult.keep();
+			if (!ev.isStatus(StatusType.CONCUSSED)) return TriggerResult.keep();
 			ev.getStacksBuffList().add(Buff.multiplier(data, mult, BuffStatTracker.statusBuff(id + slot, this)));
 			return TriggerResult.keep();
 		});

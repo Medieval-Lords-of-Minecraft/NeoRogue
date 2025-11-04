@@ -5,11 +5,13 @@ import java.util.ArrayList;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.commands.Subcommand;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.commands.Arg;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.session.Instance;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
@@ -29,7 +31,7 @@ public class CmdAdminDamage extends Subcommand {
 		for (DamageType type : DamageType.values()) {
 			tab.add(type.toString());
 		}
-		args.add(new Arg("damage type").setTabOptions(tab), new Arg("amount"));
+		args.add(new Arg("damage type").setTabOptions(tab), new Arg("amount"), new Arg("delay ticks", false));
 		this.enableTabComplete();
 	}
 
@@ -49,10 +51,28 @@ public class CmdAdminDamage extends Subcommand {
 			return;
 		}
 		DamageType type = DamageType.valueOf(args[0].toUpperCase());
-		DamageMeta dm = new DamageMeta(FightInstance.getUserData(p.getUniqueId()), Integer.parseInt(args[1]), type, DamageStatTracker.ignored("Command"));
+		int damage = Integer.parseInt(args[1]);
+		DamageMeta dm = new DamageMeta(FightInstance.getUserData(p.getUniqueId()), damage, type, DamageStatTracker.ignored("Command"));
 		LivingEntity trg = TargetHelper.getNearestInSight(p, tp);
 		if (trg == null) trg = p;
+
+		final LivingEntity ftrg = trg;
+		if (args.length > 2) {
+			int delay = Integer.parseInt(args[2]);
+			new BukkitRunnable() {
+				public void run() {
+					dealDamage(s, dm, damage, type, ftrg);
+				}
+			}.runTaskLater(NeoRogue.inst(), delay);
+			return;
+		}
+		else {
+			dealDamage(s, dm, damage, type, trg);
+		}
+	}
+
+	private void dealDamage(CommandSender s, DamageMeta dm, int damage, DamageType type, LivingEntity trg) {
 		dm.dealDamage(trg);
-		Util.msg(s, "Dealt " + args[1] + " " + type + " damage");
+		Util.msg(s, "Dealt " + damage + " " + type + " damage");
 	}
 }

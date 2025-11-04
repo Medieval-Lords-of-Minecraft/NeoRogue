@@ -53,7 +53,7 @@ public class PotOfGreed extends Artifact {
 			Sounds.success.play(p, p, Audience.ORIGIN);
 			int coins = GOLD * ev.getRewards().size();
 			data.addCoins(coins);
-			Util.msg(p, item.displayName().append(SharedUtil.color(" gives you " + DescUtil.yellow(coins) + " coins")));
+			Util.msg(p, getHoverable().append(SharedUtil.color("<gray> gives you " + DescUtil.yellow(coins) + " coins")));
 		});
 	}
 }

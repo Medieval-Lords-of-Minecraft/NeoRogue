@@ -83,7 +83,7 @@ public class RewardInstance extends EditInventoryInstance {
 		UUID uuid = data.getUniqueId();
 		String line = rewards.get(uuid).isEmpty() ? "§a✓ §f" : "§c✗ §f";
 		if (isHost) {
-			line += "(Host) ";
+			line += "★ ";
 		}
 		line += data.getData().getDisplay();
 		return line;

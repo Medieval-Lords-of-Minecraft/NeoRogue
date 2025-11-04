@@ -132,7 +132,7 @@ public class ChanceInstance extends EditInventoryInstance {
 		UUID uuid = data.getUniqueId();
 		String line = !stage.containsKey(uuid) ? "§a✓ §f" : "§c✗ §f";
 		if (isHost) {
-			line += "(Host) ";
+			line += "★ ";
 		}
 		line += data.getData().getDisplay();
 		return line;

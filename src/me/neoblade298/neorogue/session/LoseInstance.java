@@ -58,9 +58,9 @@ public class LoseInstance extends EditInventoryInstance {
 	private String createBoardLine(PlayerSessionData data, boolean isHost) {
 		String line = "";
 		if (isHost) {
-			line += "(Host) ";
+			line += "★ ";
 		}
-		line += data.getData().getDisplay() + " sucks";
+		line += data.getData().getDisplay();
 		return line;
 	}
 

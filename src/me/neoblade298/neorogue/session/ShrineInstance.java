@@ -97,7 +97,7 @@ public class ShrineInstance extends EditInventoryInstance {
 		UUID uuid = data.getUniqueId();
 		String line = !notUsed.contains(uuid) ? "§a✓ §f" : "§c✗ §f";
 		if (isHost) {
-			line += "(Host) ";
+			line += "★ ";
 		}
 		line += data.getData().getDisplay() + " (" + Math.round(data.getHealth()) + " / " + (int) data.getMaxHealth()
 				+ "§c♥§f)";

@@ -91,7 +91,7 @@ public class ShopInstance extends EditInventoryInstance {
 		UUID uuid = data.getUniqueId();
 		String line = ready.contains(uuid) ? "§a✓ §f" : "§c✗ §f";
 		if (isHost) {
-			line += "(Host) ";
+			line += "★ ";
 		}
 		line += data.getData().getDisplay() + "§7 - §e" + data.getCoins() + " coins";
 		return line;
