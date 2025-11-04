@@ -167,6 +167,11 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		data.initialize(s, this);
 	}
 
+	public void cleanup() {
+		data.getPlayer().setHealthScaled(false);
+		data.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
+	}
+
 	public UUID getUniqueId() {
 		return uuid;
 	}

@@ -629,9 +629,10 @@ public class Session {
 	
 	public void cleanup() {
 		inst.cleanup();
-		
-		for (UUID uuid : party.keySet()) {
-			Player p = Bukkit.getPlayer(uuid);
+
+		for (Entry<UUID, PlayerSessionData> entry : party.entrySet()) {
+			Player p = Bukkit.getPlayer(entry.getKey());
+			entry.getValue().cleanup();
 			SessionManager.resetPlayer(p);
 		}
 		
@@ -648,7 +649,8 @@ public class Session {
 			SessionManager.endSession(this);
 		} else {
 			broadcast("<yellow>" + p.getName() + " <gray>has left the party!");
-			party.remove(p.getUniqueId());
+			PlayerSessionData psd = party.remove(p.getUniqueId());
+			psd.cleanup();
 			SessionManager.resetPlayer(p); // endSession does this for everyone, so only need to do it in the else section
 			SessionManager.removeFromSession(p.getUniqueId());
 			
@@ -668,7 +670,9 @@ public class Session {
 				return;
 			}
 			broadcast("<yellow>" + target.getName() + " <gray>was kicked from the party!");
-			party.remove(target.getUniqueId());
+			PlayerSessionData psd = party.remove(target.getUniqueId());
+			psd.cleanup();
+			SessionManager.resetPlayer(p);
 			SessionManager.removeFromSession(target.getUniqueId());
 		}
 	}

@@ -32,9 +32,11 @@ public class VermillionBelt extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
 			ActionMeta am = new ActionMeta();
+			System.out.println("Basic attack " + am.getCount());
 			if (am.addCount(1) >= thres) {
 				Sounds.fire.play(p, p);
 				data.applyStatus(StatusType.BERSERK, data, berserk, -1);
+				am.setCount(0);
 			}
 			return TriggerResult.keep();
 		});

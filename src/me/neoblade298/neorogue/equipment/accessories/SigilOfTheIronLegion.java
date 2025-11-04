@@ -47,10 +47,12 @@ public class SigilOfTheIronLegion extends Artifact {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
 			if (!ev.isStatus(StatusType.STRENGTH))
 				return TriggerResult.keep();
+				System.out.println("Is strength " + data.getStatus(StatusType.STRENGTH).getStacks() + " " + thres);
 			if (data.getStatus(StatusType.STRENGTH).getStacks() >= thres) {
 				Sounds.success.play(p, p, Audience.ORIGIN);
 				Util.msg(p, display.append(Component.text(" was activated")));
 				am.setBool(true);
+				return TriggerResult.remove();
 			}
 			return TriggerResult.keep();
 		});

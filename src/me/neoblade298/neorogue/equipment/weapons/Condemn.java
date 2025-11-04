@@ -80,7 +80,7 @@ public class Condemn extends Equipment {
 					}
 					DamageStatTracker tracker = DamageStatTracker.of(id + slot, eq);
 					for (LivingEntity target : targets) {
-						DamageMeta dm = new DamageMeta(data, eq, true, tracker).setKnockback(0.5);
+						DamageMeta dm = new DamageMeta(data, damage, DamageType.PIERCING, tracker).setKnockback(0.5);
 						if (b != null) {
 							dm.addDamageSlice(new DamageSlice(data, bonus, DamageType.PIERCING, tracker));
 							target.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 40, 2));
@@ -88,7 +88,7 @@ public class Condemn extends Equipment {
 							fd.addDefenseBuff(DamageBuffType.of(DamageCategory.PHYSICAL), Buff.multiplier(data, -mult,
 									BuffStatTracker.defenseDebuffEnemy(id + slot, eq, true)), 100);
 						}
-						FightInstance.dealDamage(dm, target);
+					FightInstance.dealDamage(dm, target);
 					}
 				}
 			});

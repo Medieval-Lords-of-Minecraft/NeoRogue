@@ -43,6 +43,7 @@ public class LeviathanAxe extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ItemStack icon = item.withType(Material.GOLD_INGOT);
+		p.getInventory().setItemInOffHand(icon);
 		ActionMeta am = new ActionMeta();
 
 		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
@@ -50,6 +51,7 @@ public class LeviathanAxe extends Equipment {
 			if (ev.getStatusClass() != StatusClass.NEGATIVE) return TriggerResult.keep();
 			if (ev.getTarget() instanceof Player) return TriggerResult.keep();
 			am.addCount(ev.getStacks());
+			System.out.println("Added to stacks " + am.getCount());
 
 			if (am.getCount() >= thres) {
 				activateWeapon(data);
@@ -57,6 +59,7 @@ public class LeviathanAxe extends Equipment {
 			}
 			int pct = am.getCount() / (thres / 10);
 			icon.setAmount(Math.min(1, pct));
+			p.getInventory().setItemInOffHand(icon);
 			return TriggerResult.keep();
 		});
 	}

@@ -70,7 +70,7 @@ public class LobbyInstance extends Instance {
 	}
 
 	public LobbyInstance(String name, Player host, Session session) {
-		super(session, SPAWN_X, SPAWN_Z, new PlayerFlags(PlayerFlag.CAN_FLY, PlayerFlag.SCALE_HEALTH));
+		super(session, SPAWN_X, SPAWN_Z, new PlayerFlags(PlayerFlag.CAN_FLY));
 		this.name = name;
 		this.host = host.getUniqueId();
 		host.setGameMode(GameMode.ADVENTURE);

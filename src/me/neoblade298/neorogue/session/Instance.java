@@ -158,7 +158,7 @@ public abstract class Instance {
 	}
 
 	public enum PlayerFlag {
-		INVULNERABLE, CAN_FLY, INVISIBLE, SCALE_HEALTH, ZERO_DAMAGE_TICKS, ALLOW_FLIGHT_FALL;
+		INVULNERABLE, CAN_FLY, INVISIBLE, ZERO_DAMAGE_TICKS, ALLOW_FLIGHT_FALL;
 
 		public void applyFlag(Player p) {
 			switch (this) {
@@ -170,9 +170,6 @@ public abstract class Instance {
 					break;
 				case INVISIBLE:
 					p.setInvisible(true);
-					break;
-				case SCALE_HEALTH:
-					p.setHealthScaled(true);
 					break;
 				case ZERO_DAMAGE_TICKS:
 					p.setMaximumNoDamageTicks(0);
@@ -194,9 +191,6 @@ public abstract class Instance {
 					break;
 				case INVISIBLE:
 					p.setInvisible(false);
-					break;
-				case SCALE_HEALTH:
-					p.setHealthScaled(false);
 					break;
 				case ZERO_DAMAGE_TICKS:
 					p.setMaximumNoDamageTicks(20);

@@ -68,11 +68,12 @@ public class HolySpear extends Equipment {
 					ParticleUtil.drawLine(p, lancePart, p.getLocation().add(0, 1, 0), start.clone().add(v), 0.5);
 					DamageStatTracker tracker = DamageStatTracker.of(id + slot, eq);
 					for (LivingEntity target : targets) {
-						DamageMeta dm = new DamageMeta(data, eq, true, tracker);
+						DamageMeta dm = new DamageMeta(data, damage, DamageType.PIERCING, tracker);
 						FightData fd = FightInstance.getFightData(target);
 						if (fd.getStatus(StatusType.SANCTIFIED).getStacks() >= thres) {
 							dm.addDamageSlice(new DamageSlice(data, bonus, DamageType.PIERCING, tracker));
 						}
+						FightInstance.applyStatus(target, StatusType.SANCTIFIED, data, sanct, -1);
 						FightInstance.dealDamage(dm, target);
 					}
 				}

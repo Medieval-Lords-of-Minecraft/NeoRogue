@@ -72,7 +72,7 @@ public class ValiantPierce extends Equipment {
 					boolean first = true;
 					DamageStatTracker tracker = DamageStatTracker.of(id + slot, eq);
 					for (LivingEntity target : targets) {
-						DamageMeta dm = new DamageMeta(data, eq, true, tracker);
+						DamageMeta dm = new DamageMeta(data, damage, DamageType.PIERCING, tracker);
 						if (first && targets.size() > 1) {
 							dm.addDamageSlice(new DamageSlice(data, bonus, DamageType.PIERCING, tracker));
 							first = false;
