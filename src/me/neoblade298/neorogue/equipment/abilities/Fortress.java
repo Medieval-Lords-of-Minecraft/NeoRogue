@@ -60,7 +60,7 @@ public class Fortress extends Equipment {
 					public void run() {
 						am.setDouble(shields);
 						Sounds.success.play(p, p);
-						Util.msg(p, display.append(Component.text(" was refreshed")));
+						Util.msg(p, hoverable.append(Component.text(" was refreshed")));
 					}
 				}.runTaskLater(NeoRogue.inst(), refresh * 20);
 				am.setTask(task);

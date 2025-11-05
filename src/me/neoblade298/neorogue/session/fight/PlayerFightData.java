@@ -146,8 +146,8 @@ public class PlayerFightData extends FightData {
 
 		Equipment offhand = data.getEquipment(EquipSlot.OFFHAND)[0];
 		if (offhand != null) {
-			offhand.initialize(p, this, null, EquipSlot.OFFHAND, 40);
 			inv.setItem(EquipmentSlot.OFF_HAND, offhand.getItem());
+			offhand.initialize(p, this, null, EquipSlot.OFFHAND, 40);
 		} else {
 			inv.setItem(EquipmentSlot.OFF_HAND, null);
 		}
@@ -162,7 +162,6 @@ public class PlayerFightData extends FightData {
 		// If the player has a TOGGLE_FLIGHT trigger, allow them to fly
 		if (triggers.containsKey(Trigger.TOGGLE_FLIGHT)) {
 			p.setAllowFlight(true);
-			System.out.println("Flying fall " + p.hasFlyingFallDamage());
 		}
 
 		// Sort triggers by priority

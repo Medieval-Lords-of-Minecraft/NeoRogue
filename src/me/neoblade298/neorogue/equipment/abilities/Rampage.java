@@ -65,7 +65,7 @@ public class Rampage extends Equipment {
 			inst.setIcon(icon);
 			hit.play(p, ev.getTarget());
 			Sounds.anvil.play(p, ev.getTarget());
-			return TriggerResult.remove();
+			return TriggerResult.keep();
 		});
 	}
 

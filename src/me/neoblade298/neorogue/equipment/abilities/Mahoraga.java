@@ -60,7 +60,7 @@ public class Mahoraga extends Equipment {
 					public void run() {
 						am.setDouble(shields);
 						Sounds.success.play(p, p);
-						Util.msg(p, display.append(Component.text(" was refreshed")));
+						Util.msg(p, hoverable.append(Component.text(" was refreshed")));
 					}
 				}.runTaskLater(NeoRogue.inst(), refresh * 20);
 				am.setTask(task);
@@ -92,10 +92,10 @@ public class Mahoraga extends Equipment {
 
 			data.applyStatus(StatusType.BERSERK, data, berserk, -1);
 			if (data.getStatus(StatusType.BERSERK).getStacks() >= thres) {
+				Sounds.fire.play(p, p);
 				data.addTask(new BukkitRunnable() {
 					private int count;
 					public void run() {
-						Sounds.fire.play(p, p);
 						data.addHealth(heal / 5);
 						if (++count >= 5) {
 							cancel();

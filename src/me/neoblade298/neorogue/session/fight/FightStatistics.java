@@ -171,7 +171,10 @@ public class FightStatistics {
 			Component hover = Component.text("Damage dealt post buff and mitigation:", NamedTextColor.GRAY);
 			double total = 0;
 			for (Entry<StatTracker, Double> ent : damageDealt.entrySet()) {
-				hover = hover.appendNewline().append(getStatPiece(ent.getKey().getDisplay(), ent.getValue()));
+				StatTracker stat = ent.getKey();
+				if (stat.isIgnored())
+					continue;
+				hover = hover.appendNewline().append(getStatPiece(stat.getDisplay(), ent.getValue()));
 				total += ent.getValue();
 			}
 			return Component.text(df.format(total), color).hoverEvent(HoverEvent.showText(hover));

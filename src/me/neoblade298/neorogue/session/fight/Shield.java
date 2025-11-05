@@ -95,16 +95,12 @@ public class Shield implements Comparable<Shield> {
 		if (fd instanceof PlayerFightData) {
 			((PlayerFightData) fd).getStats().addDamageShielded(original - amount);
 		}
-		new BukkitRunnable() {
-			public void run() {
-				shieldHolder.update();
-			}
-		}.runTask(NeoRogue.inst());
 		return this.amount > 0 ? 0 : damage - original;
 	}
 	
 	public void remove() {
-		shieldHolder.subtractShields(this.amount);
+		shieldHolder.removeShield(this);
+		shieldHolder.update();
 	}
 	
 	public boolean isUsable() {

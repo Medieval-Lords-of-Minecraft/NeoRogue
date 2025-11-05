@@ -72,7 +72,7 @@ public class Hullbreaker extends Equipment {
 			FightData fd = FightInstance.getFightData(trg);
 			FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.BLUNT, DamageStatTracker.of(id + slot, this)), trg);
 			int count = am.getCount() / THRES;
-			fd.addDefenseBuff(DamageBuffType.of(DamageCategory.PHYSICAL), Buff.increase(data, -reduc * count, BuffStatTracker.defenseDebuffEnemy(id, this, true)));
+			fd.addDefenseBuff(DamageBuffType.of(DamageCategory.PHYSICAL), Buff.increase(data, -reduc * count, BuffStatTracker.defenseDebuffEnemy(id, this, false)));
 			return TriggerResult.keep();
 		});
 	}

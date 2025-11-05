@@ -57,12 +57,11 @@ public class HolySpear extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		Equipment eq = this;
-		data.addSlotBasedTrigger(id, slot, bind, (pdata, in) -> {
+		data.addTrigger(id, bind, (pdata, in) -> {
 			data.charge(20).then(new Runnable() {
 				public void run() {
 					LinkedList<LivingEntity> targets = TargetHelper.getEntitiesInSight(p, tp);
 					sc.play(p, p);
-					weaponSwing(p, data);
 					Location start = p.getLocation().add(0, 1, 0);
 					Vector v = p.getLocation().getDirection().setY(0).normalize().multiply(tp.range);
 					ParticleUtil.drawLine(p, lancePart, p.getLocation().add(0, 1, 0), start.clone().add(v), 0.5);

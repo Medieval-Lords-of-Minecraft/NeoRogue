@@ -33,6 +33,9 @@ public class DamageSlice {
 	public DamageStatTracker getTracker() {
 		return tracker;
 	}
+	public void setTracker(DamageStatTracker tracker) {
+		this.tracker = tracker;
+	}
 	public void setPostBuffType(DamageType postBuffType) {
 		this.postBuffType = postBuffType;
 	}

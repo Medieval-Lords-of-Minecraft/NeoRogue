@@ -57,7 +57,6 @@ public class ShopInstance extends EditInventoryInstance {
 			GenerateShopEvent ev = new GenerateShopEvent();
 			data.trigger(SessionTrigger.GENERATE_SHOP, ev);
 			shops.put(p.getUniqueId(), new ShopContents(s, data, ev.getDiscountMultiplier()));
-			System.out.println("Player " + p.getName() + " " + shops.get(p.getUniqueId()));
 		}
 		for (UUID uuid : s.getSpectators().keySet()) {
 			Player p = Bukkit.getPlayer(uuid);

@@ -33,7 +33,7 @@ public class MercenaryHeadband extends Artifact {
 			if (data.getStamina() + ((StaminaChangeEvent) in).getChange() < 50) return TriggerResult.keep();
 			
 			data.addStaminaRegen(regen);
-			Util.msg(p, this.display.append(Component.text(" was activated", NamedTextColor.GRAY)));
+			Util.msg(p, this.hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 			return TriggerResult.remove();
 		});
 	}

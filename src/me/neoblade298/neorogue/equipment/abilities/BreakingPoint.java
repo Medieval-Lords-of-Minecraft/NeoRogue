@@ -24,6 +24,7 @@ import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class BreakingPoint extends Equipment {
 	private static final String ID = "breakingPoint";
@@ -59,9 +60,10 @@ public class BreakingPoint extends Equipment {
 					public void run() {
 						am.setDouble(shields);
 						Sounds.success.play(p, p);
-						Util.msg(p, display.append(Component.text(" was refreshed")));
+						Util.msg(p, hoverable.append(Component.text(" was refreshed", NamedTextColor.GRAY)));
 					}
 				}.runTaskLater(NeoRogue.inst(), refresh * 20);
+				data.addTask(task);
 				am.setTask(task);
 
 				if (am.getDouble() <= 0)
@@ -86,7 +88,7 @@ public class BreakingPoint extends Equipment {
 				// Gain damage buff
 				data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.multiplier(data, mult, BuffStatTracker.damageBuffAlly(id + slot, this)));
 				Sounds.blazeDeath.play(p, p);
-				Util.msg(p, display.append(Component.text(" was activated")));
+				Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 				return TriggerResult.remove();
 			}
 			return TriggerResult.keep();

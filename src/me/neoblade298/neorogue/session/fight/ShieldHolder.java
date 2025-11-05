@@ -47,10 +47,13 @@ public class ShieldHolder {
 		while (!shields.isEmpty() && damage > 0) {
 			Shield curr = shields.getFirst();
 			damage = curr.useShield(damage);
+
+			// Move to next shield if this one is used up
 			if (!curr.isUsable()) {
 				shields.pollFirst();
 			}
 		}
+		update();
 		return damage;
 	}
 	
@@ -93,5 +96,10 @@ public class ShieldHolder {
 	
 	public void subtractShields(double difference) {
 		this.amount -= difference;
+	}
+
+	public void removeShield(Shield shield) {
+		this.amount -= shield.getAmount();
+		shields.remove(shield);
 	}
 }

@@ -51,11 +51,14 @@ public class HerosLanding extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			p.setVelocity(new Vector(0, 1, 0));
+		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
+		inst.setAction((pdata, in) -> {
+			p.setVelocity(new Vector(0, 0.5, 0));
 			Sounds.jump.play(p, p);
 			return TriggerResult.keep();
-		}));
+		});
+
+		data.addTrigger(id, Trigger.TOGGLE_FLIGHT, inst);
 
 		data.addTrigger(id, Trigger.FALL_DAMAGE, (pdata, in) -> {
 			strPart.play(p, p);
@@ -79,7 +82,7 @@ public class HerosLanding extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ANVIL,
-				"Grants double jump. Upon double jump, deal " + GlossaryTag.BLUNT.tag(this, damage, true) + " damage and apply " + 
+				"Grants double jump. Upon falling from a small height, deal " + GlossaryTag.BLUNT.tag(this, damage, true) + " damage and apply " + 
 				GlossaryTag.CONCUSSED.tag(this, conc, true) + " to nearby enemies, and gain " + GlossaryTag.STRENGTH.tag(this, str, true) + ".");
 	}
 }

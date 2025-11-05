@@ -24,6 +24,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.RightClickHitEvent;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class LeviathanAxe extends Equipment {
 	private static final String ID = "leviathanAxe";
@@ -51,14 +52,13 @@ public class LeviathanAxe extends Equipment {
 			if (ev.getStatusClass() != StatusClass.NEGATIVE) return TriggerResult.keep();
 			if (ev.getTarget() instanceof Player) return TriggerResult.keep();
 			am.addCount(ev.getStacks());
-			System.out.println("Added to stacks " + am.getCount());
 
 			if (am.getCount() >= thres) {
 				activateWeapon(data);
 				return TriggerResult.remove();
 			}
 			int pct = am.getCount() / (thres / 10);
-			icon.setAmount(Math.min(1, pct));
+			icon.setAmount(Math.max(1, pct));
 			p.getInventory().setItemInOffHand(icon);
 			return TriggerResult.keep();
 		});
@@ -69,7 +69,7 @@ public class LeviathanAxe extends Equipment {
 		Sounds.fire.play(p, p);
 		pc.play(p, p);
 		p.getInventory().setItemInOffHand(item);
-		Util.msg(p, item.displayName().append(Component.text(" was activated")));
+		Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 		data.addTrigger(id, Trigger.RIGHT_CLICK_HIT, (pdata2, inputs) -> {
 			RightClickHitEvent ev = (RightClickHitEvent) inputs;
 			if (ev.getTarget() instanceof Player)

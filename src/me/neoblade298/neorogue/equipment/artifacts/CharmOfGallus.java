@@ -77,7 +77,7 @@ public class CharmOfGallus extends Artifact {
 			if (ev.hasId(uuid)) {
 				Sounds.success.play(p, p);
 				part.play(p, p);
-				Util.msg(p, display.append(Component.text(" was activated", NamedTextColor.GRAY)));
+				Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 				if (++count >= 5) {
 					return TriggerResult.remove();
 				}

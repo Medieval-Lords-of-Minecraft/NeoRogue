@@ -20,6 +20,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class SigilOfTheIronLegion extends Artifact {
 	private static final String ID = "sigilOfTheIronLegion";
@@ -47,10 +48,9 @@ public class SigilOfTheIronLegion extends Artifact {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
 			if (!ev.isStatus(StatusType.STRENGTH))
 				return TriggerResult.keep();
-				System.out.println("Is strength " + data.getStatus(StatusType.STRENGTH).getStacks() + " " + thres);
-			if (data.getStatus(StatusType.STRENGTH).getStacks() >= thres) {
+			if (data.getStatus(StatusType.STRENGTH).getStacks() + ev.getStacks()>= thres) {
 				Sounds.success.play(p, p, Audience.ORIGIN);
-				Util.msg(p, display.append(Component.text(" was activated")));
+				Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 				am.setBool(true);
 				return TriggerResult.remove();
 			}

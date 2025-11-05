@@ -39,7 +39,7 @@ public class LifeThief extends Equipment {
 			if (!ev.getStatusId().equals(StatusType.STEALTH.name())) return TriggerResult.keep();
 			inst.addCount(1);
 			if (inst.getCount() == cutoff) {
-				Util.msg(p, this.display.append(Component.text(" was activated", NamedTextColor.GRAY)));
+				Util.msg(p, this.hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 			}
 			return TriggerResult.keep();
 		});

@@ -41,8 +41,8 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 public class BatteringRam extends Equipment {
 	private static final String ID = "batteringRam";
 	private int reduction, damage, thres, conc;
-	private static final ParticleContainer pc = new ParticleContainer(Particle.CRIT);
-	private static final TargetProperties tp = TargetProperties.cone(60, 4, false, TargetType.ENEMY);
+	private static final ParticleContainer pc = new ParticleContainer(Particle.CRIT).count(3).spread(0.1, 0.1);
+	private static final TargetProperties tp = TargetProperties.cone(90, 6, false, TargetType.ENEMY);
 	private static final Cone cone = new Cone(tp.range, tp.arc);
 	
 	public BatteringRam(boolean isUpgraded) {

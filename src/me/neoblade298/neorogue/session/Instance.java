@@ -140,7 +140,6 @@ public abstract class Instance {
 
 		public void applyFlags(Player p) {
 			for (PlayerFlag flag : PlayerFlag.values()) {
-				System.out.println("Contains flag " + flag + ": " + flags.contains(flag));
 				if (flags.contains(flag)) {
 					flag.applyFlag(p);
 				}

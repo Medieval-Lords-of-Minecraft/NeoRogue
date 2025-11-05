@@ -12,6 +12,8 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
+import me.neoblade298.neorogue.session.fight.DamageSlice;
+import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -21,7 +23,7 @@ import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class CompoundingInjury extends Equipment {
 	private static final String ID = "compoundingInjury";
@@ -42,13 +44,20 @@ public class CompoundingInjury extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
-			PreDealDamageEvent ev = (PreDealDamageEvent) in;
+		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
+			DealDamageEvent ev = (DealDamageEvent) in;
 			FightData fd = FightInstance.getFightData(ev.getTarget());
+			if (ev.getMeta().isSecondary())
+				return TriggerResult.keep();
 			if (fd.getStatus(StatusType.CONCUSSED).getStacks() >= thres && !ev.getMeta().getPrimarySlice().getType().getCategories().contains(DamageCategory.STATUS)) {
 				DamageMeta dm = ev.getMeta().clone();
 				dm.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.multiplier(data, mult, 
 						BuffStatTracker.ignored(this)));
+				dm.isSecondary(true);
+
+				for (DamageSlice slice : dm.getSlices()) {
+					slice.setTracker(DamageStatTracker.of(id + slot, this));
+				}
 				data.addTask(new BukkitRunnable() {
 					public void run() {
 						FightInstance.dealDamage(dm, ev.getTarget());

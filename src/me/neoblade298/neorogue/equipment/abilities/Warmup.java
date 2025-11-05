@@ -37,7 +37,7 @@ public class Warmup extends Equipment {
 			inst.addCount(-1);
 			if (inst.getCount() <= 0) {
 				Sounds.fire.play(p, p);
-				Util.msgRaw(p, this.display.append(Component.text(" was activated", NamedTextColor.GRAY)));
+				Util.msgRaw(p, this.hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 				data.addStaminaRegen(1);
 				return TriggerResult.remove();
 			}

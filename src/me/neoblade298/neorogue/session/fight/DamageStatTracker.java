@@ -18,6 +18,10 @@ public class DamageStatTracker extends StatTracker {
         super(id, display);
     }
 
+    protected DamageStatTracker(String id, boolean ignored) {
+        super(id);
+    }
+
     public static DamageStatTracker of(String id, Equipment eq) {
         return new DamageStatTracker(id, eq, "Damage dealt");
     }
@@ -43,6 +47,6 @@ public class DamageStatTracker extends StatTracker {
     }
 
     public static DamageStatTracker ignored(String id) {
-        return new DamageStatTracker(id);
+        return new DamageStatTracker(id, true);
     }
 }

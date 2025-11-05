@@ -42,7 +42,7 @@ public class CrossOfAntiquan extends Artifact {
 	public void onInitializeSession(PlayerSessionData data) {
 		data.addTrigger(id, SessionTrigger.VISIT_NODE, (pdata, in) -> {
 			if (data.getSession().getInstance() instanceof ShrineInstance) {
-				Util.msg(data.getPlayer(), display.append(Component.text(" was activated")));
+				Util.msg(data.getPlayer(), hoverable.append(Component.text(" was activated")));
 				data.healPercent(mult);
 			}
 		});

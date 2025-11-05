@@ -49,7 +49,7 @@ public class NoxianBlight extends Artifact {
 
 			if (activated) {
 				p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1F, 1F);
-				Util.msg(p, this.display.append(Component.text(" was activated", NamedTextColor.GRAY)));
+				Util.msg(p, this.hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 			}
 			return TriggerResult.keep();
 		});

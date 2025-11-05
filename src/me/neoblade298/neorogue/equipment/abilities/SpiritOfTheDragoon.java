@@ -58,7 +58,7 @@ public class SpiritOfTheDragoon extends Equipment {
 			super(data, eq, slot, es);
 			action = (pdata, in) -> {
 				pdata.addSimpleShield(p.getUniqueId(), shield, 100);
-				p.setVelocity(p.getVelocity().add(new Vector(0, 1, 0)));
+				p.setVelocity(p.getVelocity().add(new Vector(0, 0.5, 0)));
 				Sounds.jump.play(p, p);
 				lastCast = System.currentTimeMillis();
 				return TriggerResult.keep();

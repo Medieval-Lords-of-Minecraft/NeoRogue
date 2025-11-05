@@ -35,7 +35,7 @@ public class Rushdown extends Equipment {
 		data.addTask(new BukkitRunnable() {
 			public void run() {
 				data.addStaminaRegen(-inc);
-				Util.msg(p, display.append(Component.text(" has expired", NamedTextColor.GRAY)));
+				Util.msg(p, hoverable.append(Component.text(" has expired", NamedTextColor.GRAY)));
 			}
 		}.runTaskLater(NeoRogue.inst(), 20L * secs));
 	}
