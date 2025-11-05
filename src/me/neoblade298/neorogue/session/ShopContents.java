@@ -40,7 +40,7 @@ public class ShopContents {
 		// Create shop contents
 		ArrayList<Equipment> equips = new ArrayList<Equipment>();
 		equips.addAll(Equipment.getDrop(tier, ShopInstance.NUM_ITEMS / 2, ec, EquipmentClass.SHOP, EquipmentClass.CLASSLESS));
-		equips.addAll(Equipment.getDrop(tier + 2, ShopInstance.NUM_ITEMS / 2, ec, EquipmentClass.SHOP, EquipmentClass.CLASSLESS));
+		equips.addAll(Equipment.getDrop(tier + 2, ShopInstance.NUM_ITEMS / 2, equips, ec, EquipmentClass.SHOP, EquipmentClass.CLASSLESS));
 		s.rollUpgrades(equips, 0);
 		
 		// Generate 2 random unique sale slots

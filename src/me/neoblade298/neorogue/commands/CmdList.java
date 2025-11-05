@@ -136,7 +136,6 @@ public class CmdList extends Subcommand {
 								return;
 							}
 						}
-						EquipmentType.valueOf(str.toUpperCase());
 						stream = stream.filter((eq) -> {
 							for (EquipmentType type : types) {
 								if (eq.getType() == type) return true;

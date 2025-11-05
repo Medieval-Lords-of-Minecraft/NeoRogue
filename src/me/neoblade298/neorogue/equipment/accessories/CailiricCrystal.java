@@ -2,10 +2,12 @@ package me.neoblade298.neorogue.equipment.accessories;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -50,9 +52,14 @@ public class CailiricCrystal extends Artifact {
 	public void onInitializeSession(PlayerSessionData data) {
 		data.addTrigger(id, SessionTrigger.VISIT_NODE, (pdata, in) -> {
 			if (data.getSession().getInstance() instanceof ShrineInstance) {
-				data.giveEquipment(CailiricCrystal.get(), null, null);
-				Util.msg(data.getPlayer(), display.append(SharedUtil.color(
-						" potency has increased to " + DescUtil.white(inc * (data.getArtifacts().get(id).getAmount() - 1)))));
+				// Must be done with runnable otherwise concurrent exception, adding new artifact while iterating through artifacts
+				new BukkitRunnable() {
+					public void run() {
+						data.giveEquipment(CailiricCrystal.get(), null, null);
+						Util.msg(data.getPlayer(), hoverable.append(SharedUtil.color(
+							"<gray> potency has increased to " + DescUtil.white(inc * (data.getArtifacts().get(id).getAmount() - 1)))));
+					}
+				}.runTaskLater(NeoRogue.inst(), 10); // Must be delayed else this will trigger twice for some reason
 			}
 		});
 	}

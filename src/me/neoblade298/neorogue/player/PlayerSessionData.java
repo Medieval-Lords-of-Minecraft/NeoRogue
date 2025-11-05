@@ -344,9 +344,13 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 	}
 
 	public void removeArtifact(Artifact artifact) {
+		removeArtifact(artifact, 1);
+	}
+
+	public void removeArtifact(Artifact artifact, int amount) {
 		if (artifacts.containsKey(artifact.getId())) {
 			ArtifactInstance inst = artifacts.get(artifact.getId());
-			inst.add(-1);
+			inst.add(-amount);
 			if (inst.getAmount() <= 1) artifacts.remove(artifact.getId());
 		}
 	}

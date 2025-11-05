@@ -14,8 +14,6 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
-import me.neoblade298.neorogue.session.fight.DamageMeta;
-import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -32,14 +30,14 @@ import me.neoblade298.neorogue.session.fight.trigger.event.RightClickHitEvent;
 public class Hullbreaker extends Equipment {
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR);
 	private static final String ID = "hullbreaker";
-	private int damage, reduc;
+	private static int damage = 100;
+	private int reduc;
 	private static final int THRES = 150;
 	
 	public Hullbreaker(boolean isUpgraded) {
 		super(ID, "Hullbreaker", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
-				EquipmentType.OFFHAND, EquipmentProperties.none());
-				damage = 100;
-				reduc = isUpgraded ? 50 : 30;
+				EquipmentType.OFFHAND, EquipmentProperties.ofWeapon(damage, 0.5, 0, DamageType.BLUNT, Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR));
+				reduc = isUpgraded ? 15 : 10;
 
 	}
 	
@@ -70,9 +68,8 @@ public class Hullbreaker extends Equipment {
 			RightClickHitEvent ev = (RightClickHitEvent) in;
 			LivingEntity trg = ev.getTarget();
 			FightData fd = FightInstance.getFightData(trg);
-			FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.BLUNT, DamageStatTracker.of(id + slot, this)), trg);
-			int count = am.getCount() / THRES;
-			fd.addDefenseBuff(DamageBuffType.of(DamageCategory.PHYSICAL), Buff.increase(data, -reduc * count, BuffStatTracker.defenseDebuffEnemy(id, this, false)));
+			weaponSwingAndDamage(p, data, trg);
+			fd.addDefenseBuff(DamageBuffType.of(DamageCategory.PHYSICAL), Buff.increase(data, -reduc * am.getCount(), BuffStatTracker.defenseDebuffEnemy(id, this, false)));
 			return TriggerResult.keep();
 		});
 	}
@@ -80,7 +77,7 @@ public class Hullbreaker extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ANVIL,
-				"Right click to deal " + GlossaryTag.BLUNT.tag(this, damage, false) + " to an enemy, knock them back, and lower their " + GlossaryTag.PHYSICAL.tag(this) +
-				" defense by " + DescUtil.yellow(reduc) + " for every " + DescUtil.white(THRES) + " " + GlossaryTag.CONCUSSED.tag(this) + " you have applied during the fight.");
+				"Right click to basic attack. Lowers " + GlossaryTag.PHYSICAL.tag(this) +
+				" defense by " + DescUtil.yellow(reduc) + " for every " + DescUtil.white(THRES) + " " + GlossaryTag.CONCUSSED.tag(this) + " you have applied during the fight. Defense reduction does not stack.");
 	}
 }

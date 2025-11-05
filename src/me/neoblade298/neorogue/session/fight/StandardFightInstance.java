@@ -158,15 +158,15 @@ public class StandardFightInstance extends FightInstance {
 			switch (fightScore) {
 			case S:
 				equipDrops.addAll(Equipment.getDrop(value + 1, 2, ec, EquipmentClass.CLASSLESS));
-				equipDrops.addAll(Equipment.getDrop(value, 2 + ev.getBonusEquipment(), ec, EquipmentClass.CLASSLESS));
+				equipDrops.addAll(Equipment.getDrop(value, 2 + ev.getBonusEquipment(), equipDrops, ec, EquipmentClass.CLASSLESS));
 				break;
 			case A:
 				equipDrops.addAll(Equipment.getDrop(value + 1, 1, ec, EquipmentClass.CLASSLESS));
-				equipDrops.addAll(Equipment.getDrop(value, 3 + ev.getBonusEquipment(), ec, EquipmentClass.CLASSLESS));
+				equipDrops.addAll(Equipment.getDrop(value, 3 + ev.getBonusEquipment(), equipDrops, ec, EquipmentClass.CLASSLESS));
 				break;
 			case B:
 				equipDrops.add(Equipment.getDrop(value + 1, ec, EquipmentClass.CLASSLESS));
-				equipDrops.addAll(Equipment.getDrop(value, 2 + ev.getBonusEquipment(), ec, EquipmentClass.CLASSLESS));
+				equipDrops.addAll(Equipment.getDrop(value, 2 + ev.getBonusEquipment(), equipDrops, ec, EquipmentClass.CLASSLESS));
 				break;
 			case C:
 				equipDrops.addAll(Equipment.getDrop(value, 3 + ev.getBonusEquipment(), ec, EquipmentClass.CLASSLESS));

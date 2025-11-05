@@ -1,5 +1,8 @@
 package me.neoblade298.neorogue.commands;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -14,7 +17,7 @@ import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 public class CmdAdminTest extends Subcommand {
 	public CmdAdminTest(String key, String desc, String perm, SubcommandRunner runner) {
 		super(key, desc, perm, runner);
-		args.add(new Arg("Arg"));
+		args.add(new Arg("Arg"), new Arg("Arg2, false"));
 	}
 
 	@Override
@@ -31,9 +34,12 @@ public class CmdAdminTest extends Subcommand {
 			}.runTaskLater(NeoRogue.inst(), 20);
 		}
 		else {
-			for (Equipment eq : Equipment.getDrop(Integer.parseInt(args[0]), 4, EquipmentClass.WARRIOR, EquipmentClass.CLASSLESS)) {
+			ArrayList<Equipment> drop = Equipment.getDrop(Integer.parseInt(args[0]), Integer.parseInt(args[1]), EquipmentClass.WARRIOR, EquipmentClass.CLASSLESS);
+			Collections.sort(drop);
+			for (Equipment eq : drop) {
 				System.out.println(eq);
 			}
+			System.out.println("-----");
 		}
 	}
 }

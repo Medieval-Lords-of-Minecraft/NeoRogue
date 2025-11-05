@@ -1263,6 +1263,10 @@ public abstract class Equipment implements Comparable<Equipment> {
 		return droptables.getMultiple(value, numDrops, ec);
 	}
 
+	public static ArrayList<Equipment> getDrop(int value, int numDrops, ArrayList<Equipment> exclusions, EquipmentClass... ec) {
+		return droptables.getMultiple(value, numDrops, true, exclusions, ec);
+	}
+
 	public static Equipment getDrop(int value, EquipmentClass... ec) {
 		return getDrop(value, 1, ec).get(0);
 	}
@@ -1582,10 +1586,10 @@ public abstract class Equipment implements Comparable<Equipment> {
 		*/
 
 		public ArrayList<E> getMultiple(int value, int numDrops, EquipmentClass... ec) {
-			return getMultiple(value, numDrops, true, ec);
+			return getMultiple(value, numDrops, true, null, ec);
 		}
 
-		public ArrayList<E> getMultiple(int value, int numDrops, boolean unique, EquipmentClass... ec) {
+		public ArrayList<E> getMultiple(int value, int numDrops, boolean unique, ArrayList<E> exclusions, EquipmentClass... ec) {
 			DropTable<E> table;
 			if (ec.length > 1) {
 				// If more than 1 equipment class, choose from all of them equally
@@ -1600,7 +1604,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			} else {
 				table = droptables.get(ec[0]).get(value);
 			}
-			return table.getMultiple(numDrops, unique);
+			return table.getMultiple(numDrops, unique, exclusions);
 		}
 
 		@Override
