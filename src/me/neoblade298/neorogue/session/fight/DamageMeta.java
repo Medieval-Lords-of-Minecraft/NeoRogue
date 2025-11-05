@@ -360,6 +360,7 @@ public class DamageMeta {
 					}
 				}
 
+				System.out.println("Damage before defense buffs: " + base + " " + mult + " " + increase);
 				for (DamageBuffType dbt : categories) {
 					if (!defenseBuffs.containsKey(dbt)) continue;
 					BuffList list = defenseBuffs.get(dbt);
@@ -371,6 +372,7 @@ public class DamageMeta {
 						else debuffs.add(b);
 					}
 				}
+				System.out.println("Damage after defense buffs: " + base + " " + mult + " " + increase);
 			}
 			
 			// Set the slice damage to at most the target's health so the stats don't overcount damage
@@ -443,6 +445,7 @@ public class DamageMeta {
 			trackerSlices.put(slice.getTracker(), temp);
 
 			if (!slice.isIgnoreShields()) {
+				System.out.println("Final damage: " + sliceDamage);
 				damage += sliceDamage;
 			}
 			else {

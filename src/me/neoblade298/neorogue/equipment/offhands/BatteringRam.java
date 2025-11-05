@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.offhands;
 import java.util.HashMap;
 import java.util.UUID;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -41,7 +42,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 public class BatteringRam extends Equipment {
 	private static final String ID = "batteringRam";
 	private int reduction, damage, thres, conc;
-	private static final ParticleContainer pc = new ParticleContainer(Particle.CRIT).count(3).spread(0.1, 0.1);
+	private static final ParticleContainer pc = new ParticleContainer(Particle.CRIT).count(2).spread(0.1, 0.1).offsetY(0.3);
 	private static final TargetProperties tp = TargetProperties.cone(90, 6, false, TargetType.ENEMY);
 	private static final Cone cone = new Cone(tp.range, tp.arc);
 	
@@ -102,7 +103,9 @@ public class BatteringRam extends Equipment {
 			ReceiveDamageEvent ev = (ReceiveDamageEvent) inputs;
 			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, reduction, 0, StatTracker.defenseBuffAlly(am.getId(), this)));
 			p.playSound(p, Sound.ITEM_SHIELD_BLOCK, 1F, 1F);
-			cone.play(pc, p.getLocation(), LocalAxes.usingEyeLocation(p), pc);
+			Location loc = p.getLocation().clone();
+			LocalAxes axes = LocalAxes.usingGroundedEyeLocation(p);
+			cone.play(pc, loc, axes, pc);
 			for (LivingEntity ent : TargetHelper.getEntitiesInCone(p, tp)) {
 				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.BLUNT, DamageStatTracker.of(id + slot, this)), ent);
 				FightInstance.applyStatus(ent, StatusType.CONCUSSED, data, conc, -1);
