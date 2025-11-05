@@ -2,7 +2,9 @@ package me.neoblade298.neorogue.commands;
 
 import java.util.ArrayList;
 
+import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -18,10 +20,12 @@ import me.neoblade298.neorogue.session.SessionManager;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
+import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
+import net.kyori.adventure.text.Component;
 
 public class CmdAdminDamage extends Subcommand {
 	private static TargetProperties tp = TargetProperties.line(10, 2, TargetType.ENEMY);
@@ -52,16 +56,37 @@ public class CmdAdminDamage extends Subcommand {
 		}
 		DamageType type = DamageType.valueOf(args[0].toUpperCase());
 		int damage = Integer.parseInt(args[1]);
-		DamageMeta dm = new DamageMeta(FightInstance.getUserData(p.getUniqueId()), damage, type, DamageStatTracker.ignored("Command"));
 		LivingEntity trg = TargetHelper.getNearestInSight(p, tp);
-		if (trg == null) trg = p;
+		FightData src;
+		LivingEntity temp = null;
+		if (trg == null) {
+			trg = p;
+			Location above = p.getLocation().add(0, 5, 0);
+			// Player can't damage themselves if their shield is raised for some reason, spawn a temporary mob to act as damage source
+			temp = (LivingEntity) p.getWorld().spawnEntity(above, EntityType.ZOMBIE);
+			temp.setAI(false);
+			temp.setInvulnerable(true);
+			temp.setSilent(true);
+			temp.customName(Component.text("Damage Source"));
+			temp.setCustomNameVisible(false);
+			FightInstance fi = (FightInstance) sess.getInstance();
+			src = fi.createFightData(temp);
+		}
+		else {
+			src = FightInstance.getFightData(trg);
+		}
 
 		final LivingEntity ftrg = trg;
+		final LivingEntity ftemp = temp;
+		DamageMeta dm = new DamageMeta(src, damage, type, DamageStatTracker.ignored("Command"));
 		if (args.length > 2) {
 			int delay = Integer.parseInt(args[2]);
 			new BukkitRunnable() {
 				public void run() {
 					dealDamage(s, dm, damage, type, ftrg);
+					if (ftemp != null) {
+						ftemp.remove();
+					}
 				}
 			}.runTaskLater(NeoRogue.inst(), delay);
 			return;

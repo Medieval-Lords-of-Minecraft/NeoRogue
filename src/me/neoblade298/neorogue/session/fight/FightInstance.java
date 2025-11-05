@@ -767,6 +767,14 @@ public abstract class FightInstance extends Instance {
 		}
 		return fightData.get(uuid);
 	}
+
+	// Used for CmdAdminDamage
+	public FightData createFightData(LivingEntity ent) {
+		ActiveMob am = NeoRogue.mythicApi.getMythicMobInstance(ent);
+		FightData fd = new FightData(ent, am, null, (MapSpawnerInstance) null);
+		fightData.put(ent.getUniqueId(), fd);
+		return fd;
+	}
 	
 	public static HashMap<UUID, PlayerFightData> getUserData() {
 		return userData;
