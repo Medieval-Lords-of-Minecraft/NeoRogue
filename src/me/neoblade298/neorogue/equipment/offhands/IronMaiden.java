@@ -30,7 +30,7 @@ public class IronMaiden extends Equipment {
 	public IronMaiden(boolean isUpgraded) {
 		super(ID, "Iron Maiden", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.OFFHAND);
-		reduction = isUpgraded ? 6 : 8;
+		reduction = isUpgraded ? 8 : 6;
 		thorns = isUpgraded ? 35 : 25;
 	}
 	
