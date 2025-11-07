@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.artifacts;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -23,12 +24,13 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 
 public class BurningCross extends Artifact {
 	private static final String ID = "burningCross";
-	private int damage;
+	private int damage, thres;
 
 	public BurningCross() {
 		super(ID, "Burning Cross", Rarity.UNCOMMON, EquipmentClass.WARRIOR);
 
 		damage = 3;
+		thres = 5;
 	}
 	
 	public static Equipment get() {
@@ -68,7 +70,7 @@ public class BurningCross extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.NETHER_STAR, 
-				"For each stack of " + GlossaryTag.SANCTIFIED.tag(this) + " you apply, also deal <white>" + damage + "</white> " +
+				"For every " + DescUtil.white(thres) + " stacks of " + GlossaryTag.SANCTIFIED.tag(this) + " you apply, also deal <white>" + damage + "</white> " +
 						GlossaryTag.FIRE.tag(this) + " damage.");
 	}
 }

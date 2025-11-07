@@ -5,6 +5,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -27,8 +28,8 @@ public class CripplingFencingSword extends Equipment {
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(45, 1, 0.3, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_CRIT)
 		);
-		shields = isUpgraded ? 4 : 3;
-		concussed = isUpgraded ? 18 : 12;
+		shields = 6;
+		concussed = isUpgraded ? 50 : 30;
 	}
 
 	public static Equipment get() {
@@ -37,13 +38,16 @@ public class CripplingFencingSword extends Equipment {
 	
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		ActionMeta am = new ActionMeta();
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
+			if (am.addCount(1) < 3) return TriggerResult.keep();
+			am.setCount(0);
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
 			LivingEntity target = ev.getTarget();
 			weaponSwingAndDamage(p, data, target);
 			FightInstance.getFightData(target.getUniqueId())
-					.applyStatus(StatusType.CONCUSSED, data, concussed, 0);
-			data.addSimpleShield(p.getUniqueId(), shields, 40);
+					.applyStatus(StatusType.CONCUSSED, data, concussed, -1);
+			data.addSimpleShield(p.getUniqueId(), shields, 60);
 			return TriggerResult.keep();
 		});
 	}
@@ -52,9 +56,8 @@ public class CripplingFencingSword extends Equipment {
 	public void setupItem() {
 		item = createItem(
 				Material.STONE_SWORD,
-				"On hit, grant yourself <yellow>" + shields + "</yellow> " + GlossaryTag.SHIELDS.tag(this)
-						+ " for <white>2</white> seconds. Apply " + GlossaryTag.CONCUSSED.tag(this, concussed, true)
-						+ " every 2 hits."
+				"Every <white>3rd</white> hit, grant yourself " + GlossaryTag.SHIELDS.tag(this, shields, false)
+						+ " [<white>3s</white>] and apply " + GlossaryTag.CONCUSSED.tag(this, concussed, true) + "."
 		);
 	}
 }

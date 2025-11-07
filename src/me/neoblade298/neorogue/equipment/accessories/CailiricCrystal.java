@@ -21,10 +21,10 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 
 public class CailiricCrystal extends Artifact {
 	private static final String ID = "cailiricCrystal";
-	private static final int inc = 5;
+	private static final int inc = 10;
 	
 	public CailiricCrystal() {
-		super(ID, "Cailiric Crystal", Rarity.RARE, EquipmentClass.CLASSLESS);
+		super(ID, "Cailiric Crystal", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
 	}
 	
 	public static Equipment get() {

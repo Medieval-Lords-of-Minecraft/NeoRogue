@@ -21,7 +21,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 public class NoxianBlight extends Artifact {
 	private static final String ID = "noxianBlight";
-	private static final int stamina = 20, mana = 20, inc = 5;
+	private static final int stamina = 20, mana = 20, inc = 2;
 
 	public NoxianBlight() {
 		super(ID, "Noxian Blight", Rarity.RARE, EquipmentClass.WARRIOR);

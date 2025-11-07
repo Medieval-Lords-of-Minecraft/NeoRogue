@@ -30,7 +30,7 @@ public class Fortify extends Equipment {
 	public Fortify(boolean isUpgraded) {
 		super(ID, "Fortify", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 30, isUpgraded ? 5 : 7, 0));
-		damage = 100;
+		damage = 200;
 		fortitude = isUpgraded ? 2 : 1;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		hit.count(50).spread(0.5, 0.5);
@@ -51,7 +51,7 @@ public class Fortify extends Equipment {
 				hit.play(p, ev.getTarget());
 				FightInstance.dealDamage(data, DamageType.PIERCING, damage, ev.getTarget(), DamageStatTracker.of(id + slot, this));
 				data.applyStatus(Status.createByGenericType(GenericStatusType.BASIC, "Fortitude", data), data, fortitude, -1);
-				data.addSimpleShield(p.getUniqueId(), data.getStatus("Fortitude").getStacks(), 40);
+				data.addSimpleShield(p.getUniqueId(), data.getStatus("Fortitude").getStacks(), 100);
 				return TriggerResult.remove();
 			});
 			return TriggerResult.keep();
@@ -61,8 +61,8 @@ public class Fortify extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.PHANTOM_MEMBRANE,
-				"On cast, your next basic attack while in the air deals <white>" + damage + " </white>" + GlossaryTag.PIERCING.tag(this) + " damage, "
-								+ "gain <yellow>" + fortitude + "</yellow> stacks of fortitude, a shield that lasts <white>2</white> seconds with "
-						+ "the number of stacks of fortitude you have.");
+				"On cast, your next basic attack while in the air deals <white>" + damage + " </white>" + GlossaryTag.PIERCING.tag(this) + " damage. "
+								+ "After which, gain " + GlossaryTag.SHIELDS.tag(this, fortitude, true) + 
+								" [<white>5s</white>] for every time you've landed this ability this fight.");
 	}
 }
