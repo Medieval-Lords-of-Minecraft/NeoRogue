@@ -283,6 +283,10 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		abilitiesEquipped += num;
 	}
 
+	public int getAbilitiesEquipped() {
+		return abilitiesEquipped;
+	}
+
 	public PlayerData getData() {
 		return data;
 	}

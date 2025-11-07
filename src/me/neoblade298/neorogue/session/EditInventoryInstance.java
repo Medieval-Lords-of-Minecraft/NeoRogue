@@ -58,6 +58,11 @@ public abstract class EditInventoryInstance extends Instance {
 				s.broadcastError(data.getData().getDisplay() + " must remove some items from his storage before continuing!");
 				return false;
 			}
+			if (data.getMaxAbilities() < data.getAbilitiesEquipped()) {
+				s.broadcastError(
+						data.getData().getDisplay() + " must unequip some abilities before continuing!");
+				return false;
+			}
 			
 			if (data.getPlayer() != null && InventoryListener.hasOpenCoreInventory(p)) {
 				s.broadcastError(data.getData().getDisplay() + " must close their inventory before continuing!");
