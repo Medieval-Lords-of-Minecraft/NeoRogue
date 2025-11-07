@@ -38,12 +38,7 @@ import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
-import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
-import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
-import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageBarrierEvent;
-import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
-import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveHealthDamageEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -257,6 +252,7 @@ public class DamageMeta {
 		addDefenseBuffLists(recipient.getDefenseBuffLists()); // Add target defense buffs
 		returnDamage = new DamageMeta(recipient);
 		returnDamage.isSecondary = true;
+		System.out.println("Starting with " + slices);
 
 		// Remove all armor from entity, apparently this can't be done on-spawn because armor is added asynchronously or something
 		AttributeInstance armor = target.getAttribute(Attribute.GENERIC_ARMOR);
@@ -443,6 +439,7 @@ public class DamageMeta {
 			trackerSlices.put(slice.getTracker(), temp);
 
 			if (!slice.isIgnoreShields()) {
+				System.out.println("Damage now " + damage + " " + sliceDamage + " " + mult + " " + increase);
 				damage += sliceDamage;
 			}
 			else {

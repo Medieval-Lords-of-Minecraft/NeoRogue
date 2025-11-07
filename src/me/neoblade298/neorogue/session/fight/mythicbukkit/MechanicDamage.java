@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 
 import io.lumine.mythic.api.adapters.AbstractEntity;
@@ -26,7 +27,7 @@ import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 
 public class MechanicDamage implements ITargetedEntitySkill {
-	protected final boolean hitBarrier, asParent;
+	protected final boolean hitBarrier, asParent, debug;
 	protected final HashMap<DamageType, Double> damage = new HashMap<DamageType, Double>();
 	protected Skill successSkill, failSkill;
 
@@ -44,6 +45,7 @@ public class MechanicDamage implements ITargetedEntitySkill {
 		}
 		this.hitBarrier = cfg.getBoolean(new String[] { "hb", "hitbarrier" }, false);
 		this.asParent = cfg.getBoolean(new String[] { "asParent", "ap" }, false);
+		this.debug = cfg.getBoolean("debug", false);
 
 		String skillName = cfg.getString(new String[] { "onSuccess", "oS" });
 		if (skillName != null) {
@@ -68,6 +70,7 @@ public class MechanicDamage implements ITargetedEntitySkill {
 																													// always
 																													// mythicmob
 			if (asParent && !am.getParent().isPresent()) {
+				if (debug) Bukkit.getLogger().info("[NeoRogue] Nrdamage failed, tried to deal damage as parent of mob, parent doesn't exist");
 				return SkillResult.CONDITION_FAILED;
 			}
 			FightData fd = asParent ? FightInstance.getFightData(am.getParent().get().getBukkitEntity())
@@ -85,8 +88,10 @@ public class MechanicDamage implements ITargetedEntitySkill {
 			Skill skill;
 			if (dealt > 0) {
 				skill = successSkill;
+				if (debug) Bukkit.getLogger().info("[NeoRogue] Nrdamage dealt " + dealt + " damage to " + target.getBukkitEntity().getName());
 			} else {
 				skill = failSkill;
+				if (debug) Bukkit.getLogger().info("[NeoRogue] Nrdamage dealt 0 damage to " + target.getBukkitEntity().getName());
 			}
 			if (skill != null)
 				skill.execute(SkillTrigger.get("API"), data.getCaster(), data.getTrigger(),
