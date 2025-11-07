@@ -38,7 +38,12 @@ import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageBarrierEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveHealthDamageEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
