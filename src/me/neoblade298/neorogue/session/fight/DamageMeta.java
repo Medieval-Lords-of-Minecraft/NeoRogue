@@ -257,7 +257,6 @@ public class DamageMeta {
 		addDefenseBuffLists(recipient.getDefenseBuffLists()); // Add target defense buffs
 		returnDamage = new DamageMeta(recipient);
 		returnDamage.isSecondary = true;
-		System.out.println("Starting with " + slices);
 
 		// Remove all armor from entity, apparently this can't be done on-spawn because armor is added asynchronously or something
 		AttributeInstance armor = target.getAttribute(Attribute.GENERIC_ARMOR);
@@ -444,7 +443,6 @@ public class DamageMeta {
 			trackerSlices.put(slice.getTracker(), temp);
 
 			if (!slice.isIgnoreShields()) {
-				System.out.println("Damage now " + damage + " " + sliceDamage + " " + mult + " " + increase);
 				damage += sliceDamage;
 			}
 			else {
