@@ -33,7 +33,9 @@ import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
+import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.GrantShieldsEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
@@ -47,6 +49,7 @@ public class FightData {
 	protected UUID uuid;
 	protected HashMap<String, Status> statuses = new HashMap<String, Status>();
 	protected ArrayList<Entity> holograms = new ArrayList<Entity>();
+	private HashMap<Trigger, ArrayList<PriorityAction>> triggers = new HashMap<Trigger, ArrayList<PriorityAction>>();
 
 	protected HashMap<String, BukkitTask> tasks = new HashMap<String, BukkitTask>();
 	protected HashMap<String, Runnable> cleanupTasks = new HashMap<String, Runnable>();
@@ -57,7 +60,7 @@ public class FightData {
 	protected LinkedList<TickAction> tickActions = new LinkedList<TickAction>(); // Every 20 ticks
 	protected MapSpawnerInstance spawner;
 	protected HashMap<DamageBuffType, BuffList> damageBuffs = new HashMap<DamageBuffType, BuffList>(), defenseBuffs = new HashMap<DamageBuffType, BuffList>();
-
+	
 	public void cleanup() {
 		for (Runnable task : cleanupTasks.values()) {
 			task.run();
@@ -87,6 +90,11 @@ public class FightData {
 		this.entity = p;
 		this.shields = new ShieldHolder(this);
 		this.uuid = p.getUniqueId();
+	}
+
+	@FunctionalInterface
+	public interface FightDataConstructor {
+		FightData create(LivingEntity e, ActiveMob am, Mob mob, MapSpawnerInstance spawner);
 	}
 
 	public FightData(LivingEntity e, ActiveMob am, Mob mob, MapSpawnerInstance spawner) {
@@ -489,5 +497,17 @@ public class FightData {
 	
 	public MapSpawnerInstance getSpawner() {
 		return spawner;
+	}
+
+	// Exclusively used for mobs like Bandit King that have custom triggers
+	public void runMobActions(PlayerFightData src, Trigger trigger, Object inputs) {
+		if (triggers.containsKey(trigger)) {
+			Iterator<PriorityAction> iter = triggers.get(trigger).iterator();
+			while (iter.hasNext()) {
+				PriorityAction inst = iter.next();
+				TriggerResult tr = inst.trigger(src, inputs);
+				if (tr == TriggerResult.remove()) iter.remove();
+			}
+		}
 	}
 }
