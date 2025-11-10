@@ -58,6 +58,8 @@ public class MythicLoader implements Listener {
 		MythicLineConfig cfg = event.getConfig();
 
 		switch (name) {
+		case "nrbehavior":
+			mechanic = new MechanicBehavior(cfg);
 		case "nrdamage":
 			mechanic = new MechanicDamage(cfg);
 			break;
