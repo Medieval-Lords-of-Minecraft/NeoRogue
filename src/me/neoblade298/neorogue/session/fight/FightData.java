@@ -433,6 +433,9 @@ public class FightData {
 			data.updateBoardLines();
 			FightInstance.trigger(data.getPlayer(), Trigger.PRE_RECEIVE_STATUS, ev);
 		}
+		else {
+			runMobActions(this, Trigger.PRE_RECEIVE_STATUS, ev);
+		}
 		if (applier instanceof PlayerFightData) {
 			FightInstance.trigger(((PlayerFightData) applier).getPlayer(), Trigger.PRE_APPLY_STATUS, ev);
 		}
@@ -500,12 +503,12 @@ public class FightData {
 	}
 
 	// Exclusively used for mobs like Bandit King that have custom triggers
-	public void runMobActions(PlayerFightData src, FightData data, Trigger trigger, Object inputs) {
+	public void runMobActions(FightData data, Trigger trigger, Object inputs) {
 		if (triggers.containsKey(trigger)) {
 			Iterator<MobAction> iter = triggers.get(trigger).iterator();
 			while (iter.hasNext()) {
 				MobAction inst = iter.next();
-				TriggerResult tr = inst.trigger(src, data, inputs);
+				TriggerResult tr = inst.trigger(data, inputs);
 				if (tr == TriggerResult.remove()) iter.remove();
 			}
 		}

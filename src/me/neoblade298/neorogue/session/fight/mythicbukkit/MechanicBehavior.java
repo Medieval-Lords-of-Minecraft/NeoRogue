@@ -75,8 +75,8 @@ public class MechanicBehavior implements ITargetedEntitySkill {
 	}
 
 	private static TriggerActionPackage packageBanditKing() {
-		Trigger trigger = Trigger.PRE_APPLY_STATUS;
-		MobAction action = (src, data, in) -> {
+		Trigger trigger = Trigger.PRE_RECEIVE_STATUS;
+		MobAction action = (data, in) -> {
 			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
 			data.applyStatus(StatusType.STRENGTH, data, 2, -1);
 			Sounds.fire.play(data.getEntity());
