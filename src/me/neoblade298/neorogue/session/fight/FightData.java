@@ -33,7 +33,7 @@ import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
-import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
+import me.neoblade298.neorogue.session.fight.trigger.MobAction;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
@@ -49,7 +49,7 @@ public class FightData {
 	protected UUID uuid;
 	protected HashMap<String, Status> statuses = new HashMap<String, Status>();
 	protected ArrayList<Entity> holograms = new ArrayList<Entity>();
-	private HashMap<Trigger, ArrayList<PriorityAction>> triggers = new HashMap<Trigger, ArrayList<PriorityAction>>();
+	private HashMap<Trigger, ArrayList<MobAction>> triggers = new HashMap<Trigger, ArrayList<MobAction>>();
 
 	protected HashMap<String, BukkitTask> tasks = new HashMap<String, BukkitTask>();
 	protected HashMap<String, Runnable> cleanupTasks = new HashMap<String, Runnable>();
@@ -500,14 +500,20 @@ public class FightData {
 	}
 
 	// Exclusively used for mobs like Bandit King that have custom triggers
-	public void runMobActions(PlayerFightData src, Trigger trigger, Object inputs) {
+	public void runMobActions(PlayerFightData src, FightData data, Trigger trigger, Object inputs) {
 		if (triggers.containsKey(trigger)) {
-			Iterator<PriorityAction> iter = triggers.get(trigger).iterator();
+			Iterator<MobAction> iter = triggers.get(trigger).iterator();
 			while (iter.hasNext()) {
-				PriorityAction inst = iter.next();
-				TriggerResult tr = inst.trigger(src, inputs);
+				MobAction inst = iter.next();
+				TriggerResult tr = inst.trigger(src, data, inputs);
 				if (tr == TriggerResult.remove()) iter.remove();
 			}
 		}
+	}
+
+	public void addMobTrigger(Trigger trigger, MobAction action) {
+		ArrayList<MobAction> list = triggers.getOrDefault(trigger, new ArrayList<MobAction>());
+		list.add(action);
+		triggers.put(trigger, list);
 	}
 }

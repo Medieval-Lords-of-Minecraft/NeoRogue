@@ -1,15 +1,29 @@
 package me.neoblade298.neorogue.session.fight.mythicbukkit;
 
+import java.util.HashMap;
+import java.util.UUID;
+
+import org.bukkit.Bukkit;
+
 import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.api.config.MythicLineConfig;
 import io.lumine.mythic.api.skills.ITargetedEntitySkill;
 import io.lumine.mythic.api.skills.SkillMetadata;
 import io.lumine.mythic.api.skills.SkillResult;
 import io.lumine.mythic.api.skills.ThreadSafetyLevel;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
+import me.neoblade298.neorogue.session.fight.trigger.MobAction;
+import me.neoblade298.neorogue.session.fight.trigger.Trigger;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
 
 public class MechanicBehavior implements ITargetedEntitySkill {
+	private static HashMap<String, TriggerActionPackage> behaviors = new HashMap<String, TriggerActionPackage>();
 	protected final String id;
 
     @Override
@@ -25,12 +39,50 @@ public class MechanicBehavior implements ITargetedEntitySkill {
 	@Override
     public SkillResult castAtEntity(SkillMetadata data, AbstractEntity target) {
 		try {
-			FightData fd = FightInstance.getFightData(target.getBukkitEntity().getUniqueId());
-			FightData fdCaster = FightInstance.getFightData(data.getCaster().getEntity().getUniqueId());
+			UUID uuid = target.getBukkitEntity().getUniqueId();
+			FightData fd = FightInstance.getFightData(uuid);
+			if (fd == null) {
+				Bukkit.getLogger().warning("[NeoRogue] No fight data found for entity targeted with behavior " + id);
+				return SkillResult.INVALID_TARGET;
+			}
+
+			TriggerActionPackage tap = behaviors.get(id);
+			if (tap == null) {
+				Bukkit.getLogger().warning("[NeoRogue] No mob behavior found for id " + id);
+				return SkillResult.INVALID_CONFIG;
+			}
+			fd.addMobTrigger(tap.trigger, tap.action);
 			return SkillResult.SUCCESS;
 		} catch (Exception e) {
+			Bukkit.getLogger().warning("[NeoRogue] Failed to add mob behavior " + id);
 			e.printStackTrace();
 			return SkillResult.ERROR;
 		}
     }
+
+	private static class TriggerActionPackage {
+		public Trigger trigger;
+		public MobAction action;
+
+		public TriggerActionPackage(Trigger trigger, MobAction action) {
+			this.trigger = trigger;
+			this.action = action;
+		}
+	}
+
+	static {
+		behaviors.put("BanditKing", packageBanditKing());
+	}
+
+	private static TriggerActionPackage packageBanditKing() {
+		Trigger trigger = Trigger.PRE_APPLY_STATUS;
+		MobAction action = (src, data, in) -> {
+			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
+			data.applyStatus(StatusType.STRENGTH, data, 2, -1);
+			Sounds.fire.play(data.getEntity());
+			ev.getStacksBuffList().add(Buff.multiplier(data, -0.5, BuffStatTracker.ignored("BanditKing")));
+			return TriggerResult.keep();
+		};
+		return new TriggerActionPackage(trigger, action);
+	}
 }
