@@ -28,12 +28,11 @@ public class MechanicBehavior implements ITargetedEntitySkill {
 
     @Override
     public ThreadSafetyLevel getThreadSafetyLevel() {
-        return ThreadSafetyLevel.EITHER;
+        return ThreadSafetyLevel.SYNC_ONLY;
     }
 
 	public MechanicBehavior(MythicLineConfig config) {
 		this.id = config.getString("id");
-        
 	}
 
 	@Override
@@ -78,7 +77,7 @@ public class MechanicBehavior implements ITargetedEntitySkill {
 		Trigger trigger = Trigger.PRE_RECEIVE_STATUS;
 		MobAction action = (data, in) -> {
 			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
-			data.applyStatus(StatusType.STRENGTH, data, 2, -1);
+			data.applyStatus(StatusType.STRENGTH, data, 2, -1, null, true);
 			Sounds.fire.play(data.getEntity());
 			ev.getStacksBuffList().add(Buff.multiplier(data, -0.5, BuffStatTracker.ignored("BanditKing")));
 			return TriggerResult.keep();

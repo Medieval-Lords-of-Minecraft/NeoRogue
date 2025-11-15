@@ -18,6 +18,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import io.lumine.mythic.core.mobs.ActiveMob;
+import me.libraryaddict.disguise.DisguiseAPI;
 import me.neoblade298.neocore.bukkit.effects.ParticleAnimation;
 import me.neoblade298.neocore.bukkit.effects.ParticleAnimation.ParticleAnimationInstance;
 import me.neoblade298.neorogue.NeoRogue;
@@ -117,6 +118,11 @@ public class FightData {
 			for (Entry<DamageCategory, Integer> ent : mob.getResistances().entrySet()) {
 				addDefenseBuff(DamageBuffType.of(ent.getKey()), new Buff(this, 0, (double) ent.getValue() / 100, BuffStatTracker.ignored("MythicMobs")));
 			}
+		}
+
+		// This enables the nameplate + hp to show properly
+		if (DisguiseAPI.isDisguised(entity)) {
+			DisguiseAPI.getDisguise(entity).setDynamicName(true);
 		}
 	}
 	
@@ -436,6 +442,7 @@ public class FightData {
 		else {
 			runMobActions(this, Trigger.PRE_RECEIVE_STATUS, ev);
 		}
+
 		if (applier instanceof PlayerFightData) {
 			FightInstance.trigger(((PlayerFightData) applier).getPlayer(), Trigger.PRE_APPLY_STATUS, ev);
 		}

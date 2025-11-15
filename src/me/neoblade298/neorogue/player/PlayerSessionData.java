@@ -728,6 +728,9 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		catch (Exception ex) {
 			throw new Exception("Failed to deserialize player session data slot " + i);
 		}
+
+		// Need to initialize artifacts after deserialization
+		setupArtifacts();
 	}
 
 	public class PlayerSlot {

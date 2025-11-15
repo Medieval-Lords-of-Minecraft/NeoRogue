@@ -4,6 +4,8 @@ import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import io.lumine.mythic.api.mobs.MythicMob;
 import io.lumine.mythic.core.mobs.ActiveMob;
@@ -63,6 +65,7 @@ public class MapSpawnerInstance {
 			
 			UUID uuid = am.getEntity().getUniqueId();
 			FightData fd = new FightData((LivingEntity) am.getEntity().getBukkitEntity(), am, origin.getMob(), this);
+			fd.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 40, 0));
 			FightInstance.putFightData(uuid, fd);
 			activeMobs += origin.getMob().getAmount();
 		}

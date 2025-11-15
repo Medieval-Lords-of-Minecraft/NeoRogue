@@ -184,8 +184,6 @@ public class NeoRogue extends JavaPlugin {
 			s.addPlayer(alt.getUniqueId(), EquipmentClass.MAGE);
 			SessionManager.addToSession(alt.getUniqueId(), s);
 		}
-		s.getParty().get(p.getUniqueId()).addManaRegen(10);
-		s.getParty().get(p.getUniqueId()).addStaminaRegen(10);
 		s.setNode(s.getArea().getNodes()[0][2]);
 		
 		// Required to have delay otherwise the startup save and auto-save happen simultaneously and conflict

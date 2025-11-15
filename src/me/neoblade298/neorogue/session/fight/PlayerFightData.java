@@ -722,8 +722,24 @@ public class PlayerFightData extends FightData {
 		this.manaRegen += amount;
 	}
 
+	public double getManaRegen() {
+		return manaRegen;
+	}
+
+	public double getStaminaRegen() {
+		return staminaRegen;
+	}
+
 	public void addSprintCost(double amount) {
 		this.sprintCost += amount;
+	}
+
+	public void setSprintCost(double amount) {
+		this.sprintCost = amount;
+	}
+
+	public double getSprintCost() {
+		return sprintCost;
 	}
 
 	private void updateMana() {

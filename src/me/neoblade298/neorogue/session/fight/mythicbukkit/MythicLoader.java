@@ -60,6 +60,10 @@ public class MythicLoader implements Listener {
 		switch (name) {
 		case "nrbehavior":
 			mechanic = new MechanicBehavior(cfg);
+			break;
+		case "nrmodifystat":
+			mechanic = new MechanicModifyStat(cfg);
+			break;
 		case "nrdamage":
 			mechanic = new MechanicDamage(cfg);
 			break;
