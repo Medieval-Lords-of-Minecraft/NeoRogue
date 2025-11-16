@@ -52,14 +52,18 @@ public class Mob implements Comparable<Mob> {
 				Mob mob = new Mob(sec);
 				mobs.put(key, mob);
 			}
-			
-			for (Mob mob : mobs.values()) {
-				mob.resolveSpawnValue();
-			}
 		});
+
+		for (Mob mob : mobs.values()) {
+			mob.resolveSpawnValue();
+		}
 	}
 	
 	public static Mob get(String id) {
+		if (!mobs.containsKey(id)) {
+			Bukkit.getLogger().warning("[NeoRogue] Tried to get unregistered mob " + id);
+			return null;
+		}
 		return mobs.get(id);
 	}
 
