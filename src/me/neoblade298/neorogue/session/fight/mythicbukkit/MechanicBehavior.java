@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Particle;
 
 import io.lumine.mythic.api.adapters.AbstractEntity;
 import io.lumine.mythic.api.config.MythicLineConfig;
@@ -11,6 +12,8 @@ import io.lumine.mythic.api.skills.ITargetedEntitySkill;
 import io.lumine.mythic.api.skills.SkillMetadata;
 import io.lumine.mythic.api.skills.SkillResult;
 import io.lumine.mythic.api.skills.ThreadSafetyLevel;
+import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -24,6 +27,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
 
 public class MechanicBehavior implements ITargetedEntitySkill {
 	private static HashMap<String, TriggerActionPackage> behaviors = new HashMap<String, TriggerActionPackage>();
+	private static final ParticleContainer bkpc = new ParticleContainer(Particle.FLAME).count(10).speed(0.1).offsetY(1);
 	protected final String id;
 
     @Override
@@ -77,8 +81,11 @@ public class MechanicBehavior implements ITargetedEntitySkill {
 		Trigger trigger = Trigger.PRE_RECEIVE_STATUS;
 		MobAction action = (data, in) -> {
 			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
-			data.applyStatus(StatusType.STRENGTH, data, 2, -1, null, true);
+			if (ev.isSecondary()) return TriggerResult.keep();
+			if (NeoRogue.gen.nextBoolean())	return TriggerResult.keep();
+			data.applyStatus(StatusType.STRENGTH, data, 1, -1, null, true);
 			Sounds.fire.play(data.getEntity());
+			bkpc.play(data.getEntity());
 			ev.getStacksBuffList().add(Buff.multiplier(data, -0.5, BuffStatTracker.ignored("BanditKing")));
 			return TriggerResult.keep();
 		};

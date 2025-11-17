@@ -24,6 +24,7 @@ public class ApplyStatusEvent {
 		this.stacks = stacks;
 		this.ticks = ticks;
 		this.sc = s.getStatusClass();
+		this.isSecondary = isSecondary;
 	}
 	public ApplyStatusEvent(FightData target, Status s, int stacks, int ticks, boolean isSecondary, @Nullable DamageMeta meta) {
 		this(target, s, stacks, ticks, isSecondary);

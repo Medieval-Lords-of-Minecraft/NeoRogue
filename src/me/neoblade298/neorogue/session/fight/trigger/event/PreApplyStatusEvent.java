@@ -26,6 +26,7 @@ public class PreApplyStatusEvent {
 		this.ticks = ticks;
 		this.sc = s.getStatusClass();
 		this.s = s;
+		this.isSecondary = isSecondary;
 	}
 	public PreApplyStatusEvent(FightData target, Status s, int stacks, int ticks, boolean isSecondary, @Nullable DamageMeta meta) {
 		this(target, s, stacks, ticks, isSecondary);
