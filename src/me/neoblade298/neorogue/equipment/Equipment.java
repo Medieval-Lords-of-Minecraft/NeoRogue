@@ -42,11 +42,13 @@ import me.neoblade298.neorogue.equipment.accessories.EarthenRing;
 import me.neoblade298.neorogue.equipment.accessories.FlintPendant;
 import me.neoblade298.neorogue.equipment.accessories.ForceTrinket;
 import me.neoblade298.neorogue.equipment.accessories.GripGloves;
+import me.neoblade298.neorogue.equipment.accessories.LifeThief;
 import me.neoblade298.neorogue.equipment.accessories.LionheartBangle;
 import me.neoblade298.neorogue.equipment.accessories.MagicQuiver;
 import me.neoblade298.neorogue.equipment.accessories.MajorShieldingRelic;
 import me.neoblade298.neorogue.equipment.accessories.MajorStaminaRelic;
 import me.neoblade298.neorogue.equipment.accessories.ManaMagnifier;
+import me.neoblade298.neorogue.equipment.accessories.MerchantSpyglass;
 import me.neoblade298.neorogue.equipment.accessories.MinorManaRelic;
 import me.neoblade298.neorogue.equipment.accessories.MinorPoisonRelic;
 import me.neoblade298.neorogue.equipment.accessories.MinorShieldingRelic;
@@ -55,6 +57,7 @@ import me.neoblade298.neorogue.equipment.accessories.MinorStrengthRelic;
 import me.neoblade298.neorogue.equipment.accessories.PotOfGreed;
 import me.neoblade298.neorogue.equipment.accessories.QuartzPrism;
 import me.neoblade298.neorogue.equipment.accessories.RedRing;
+import me.neoblade298.neorogue.equipment.accessories.RighteousRing;
 import me.neoblade298.neorogue.equipment.accessories.RingOfAnger;
 import me.neoblade298.neorogue.equipment.accessories.RingOfFortitude;
 import me.neoblade298.neorogue.equipment.accessories.RingOfLight;
@@ -71,10 +74,12 @@ import me.neoblade298.neorogue.equipment.accessories.TarotCard;
 import me.neoblade298.neorogue.equipment.accessories.TopazRing;
 import me.neoblade298.neorogue.equipment.accessories.VermillionBelt;
 import me.neoblade298.neorogue.equipment.accessories.VoidBracelet;
+import me.neoblade298.neorogue.equipment.accessories.WarpedAnvil;
 import me.neoblade298.neorogue.equipment.accessories.YellowRing;
 import me.neoblade298.neorogue.equipment.armor.ArcheryGlove;
 import me.neoblade298.neorogue.equipment.armor.AuricCape;
 import me.neoblade298.neorogue.equipment.armor.BlindingCloak;
+import me.neoblade298.neorogue.equipment.armor.BootsOfSpeed;
 import me.neoblade298.neorogue.equipment.armor.Brightcrown;
 import me.neoblade298.neorogue.equipment.armor.BurningMantle;
 import me.neoblade298.neorogue.equipment.armor.CalmingHood;
@@ -144,6 +149,7 @@ import me.neoblade298.neorogue.equipment.artifacts.InfernalTome;
 import me.neoblade298.neorogue.equipment.artifacts.ManaHaze;
 import me.neoblade298.neorogue.equipment.artifacts.ManaflowBand;
 import me.neoblade298.neorogue.equipment.artifacts.MercenaryHeadband;
+import me.neoblade298.neorogue.equipment.artifacts.MiasmaInABottle;
 import me.neoblade298.neorogue.equipment.artifacts.MistralVeil;
 import me.neoblade298.neorogue.equipment.artifacts.NoxianBlight;
 import me.neoblade298.neorogue.equipment.artifacts.NoxianSkull;
@@ -152,6 +158,7 @@ import me.neoblade298.neorogue.equipment.artifacts.OmniGem;
 import me.neoblade298.neorogue.equipment.artifacts.OpalHourglass;
 import me.neoblade298.neorogue.equipment.artifacts.OpalNecklace;
 import me.neoblade298.neorogue.equipment.artifacts.PracticeDummy;
+import me.neoblade298.neorogue.equipment.artifacts.Pumped;
 import me.neoblade298.neorogue.equipment.artifacts.RodOfAges;
 import me.neoblade298.neorogue.equipment.artifacts.RubyCluster;
 import me.neoblade298.neorogue.equipment.artifacts.RubyGem;
@@ -182,6 +189,7 @@ import me.neoblade298.neorogue.equipment.cursed.RustySword;
 import me.neoblade298.neorogue.equipment.offhands.BatteringRam;
 import me.neoblade298.neorogue.equipment.offhands.ChasingDagger;
 import me.neoblade298.neorogue.equipment.offhands.ConductiveArmguard;
+import me.neoblade298.neorogue.equipment.offhands.EnderEye;
 import me.neoblade298.neorogue.equipment.offhands.EnduranceShield;
 import me.neoblade298.neorogue.equipment.offhands.ForceBracer;
 import me.neoblade298.neorogue.equipment.offhands.HastyShield;
@@ -309,6 +317,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Cripple(b);
 			new CripplingPoison(b);
 			new Crystallize(b);
+			new Cull(b);
 			new CurseMark(b);
 			new DarkBolt(b);
 			new DarkBolt2(b);
@@ -322,6 +331,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new DensityOrb(b);
 			new Depletion(b);
 			new Dexterity(b);
+			new Disappear(b);
 			new Discharge(b);
 			new Discipline(b);
 			new Dismantle(b);
@@ -337,7 +347,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Electrolysis(b);
 			new Embolden(b);
 			new EmpoweredEdge(b);
-			new Endure(b);
+			new Endurance(b);
 			new Engulf(b);
 			new Enlighten(b);
 			new EndlessVenom(b);
@@ -395,6 +405,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new GuardianSpirit(b);
 			new HailCloak(b);
 			new HeadTrauma(b);
+			new HeatRising(b);
 			new Heartbeat(b);
 			new HerculeanStrength(b);
 			new HerosLanding(b);
@@ -412,6 +423,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new IronCuirass(b);
 			new Ironskin(b);
 			new KeenSenses(b);
+			new LayExplosive(b);
 			new LayTrap(b);
 			new Lethality(b);
 			new Lightfall(b);
@@ -454,6 +466,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new PoolOfLight(b);
 			new Posturing(b);
 			new Posturing2(b);
+			new PowerThrough(b);
 			new Prayer(b);
 			new Preparation(b);
 			new Pressure(b);
@@ -466,6 +479,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new RecklessSwing(b);
 			new Resourcefulness(b);
 			new Revenge(b);
+			new RisingSun(b);
 			new Roar(b);
 			new Rushdown(b);
 			new Quake(b);
@@ -535,6 +549,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new EarthenRing(b);
 			new FlintPendant(b);
 			new GripGloves(b);
+			new LifeThief(b);
 			new MagicQuiver(b);
 			new MajorShieldingRelic(b);
 			new ManaMagnifier(b);
@@ -545,6 +560,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new MinorStaminaRelic(b);
 			new MinorStrengthRelic(b);
 			new RedRing(b);
+			new RighteousRing(b);
 			new RingOfAnger(b);
 			new RingOfFortitude(b);
 			new RingOfLight(b);
@@ -564,6 +580,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			// Armor
 			new ArcheryGlove(b);
 			new AuricCape(b);
+			new BootsOfSpeed(b);
 			new BurningMantle(b);
 			new BlindingCloak(b);
 			new Brightcrown(b);
@@ -600,6 +617,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new ChasingDagger(b);
 			new CopperFunnel(b);
 			new ConductiveArmguard(b);
+			new EnderEye(b);
 			new EnduranceShield(b);
 			new ForceBracer(b);
 			new GuardingRune(b);
@@ -787,6 +805,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new ManaflowBand();
 		new ManaHaze();
 		new MercenaryHeadband();
+		new MerchantSpyglass();
+		new MiasmaInABottle();
 		new MistralVeil();
 		new NoxianBlight();
 		new NoxianSkull();
@@ -796,6 +816,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new OpalNecklace();
 		new PotOfGreed();
 		new PracticeDummy();
+		new Pumped();
 		new QuartzPrism();
 		new RodOfAges();
 		new ScrollOfFrost();
@@ -808,6 +829,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new TomeOfWisdom();
 		new TreatiseOnElectricity();
 		new TrickstersSigil();
+		new WarpedAnvil();
 
 		// Levelup artifacts
 		new EmeraldCluster();
@@ -886,7 +908,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		Bukkit.getLogger().info("[NeoRogue] Loaded " + cursed + " Cursed");
 		
 		// Validate that all ability classes are initialized
-		validateAbilityClassInitialization();
+		validateClassInitialization();
 	}
 
 	public Equipment(String id, String display, boolean isUpgraded, Rarity rarity, EquipmentClass ec,
@@ -1643,7 +1665,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 	 * Validates that all classes in all equipment packages have been properly initialized.
 	 * Logs warnings for any missing classes that should be registered.
 	 */
-	private static void validateAbilityClassInitialization() {
+	private static void validateClassInitialization() {
 		// Define all equipment packages to validate
 		String[] packageNames = {
 			"me.neoblade298.neorogue.equipment.abilities",
@@ -1682,28 +1704,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 					validClassCount++;
 					
 					// Check if this class has been registered
-					String className = clazz.getSimpleName();
-					boolean found = false;
-					
-					// Check both base and upgraded equipment
-					for (Equipment eq : equipment.values()) {
-						if (eq.getClass().getSimpleName().equals(className)) {
-							found = true;
-							break;
-						}
-					}
-					
-					if (!found) {
-						for (Equipment eq : upgraded.values()) {
-							if (eq.getClass().getSimpleName().equals(className)) {
-								found = true;
-								break;
-							}
-						}
-					}
-					
-					if (!found) {
-						missingClasses.add(className);
+					if (!equipment.containsKey(clazz.getSimpleName())) {
+						missingClasses.add(clazz.getSimpleName());
 					}
 				}
 				
@@ -1717,9 +1719,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 				} else if (!missingClasses.isEmpty()) {
 					Bukkit.getLogger().warning("[NeoRogue] ⚠ Found " + missingClasses.size() + " uninitialized " + packageShortName + " classes:");
 					for (String missing : missingClasses) {
-						String initCode = packageShortName.equals("artifacts") ? 
-							"new " + missing + "();" : "new " + missing + "(b);";
-						Bukkit.getLogger().warning("[NeoRogue]   - " + missing + " (add '" + initCode + "' to load() method)");
+						Bukkit.getLogger().warning("[NeoRogue]   - " + missing);
 					}
 				}
 			}

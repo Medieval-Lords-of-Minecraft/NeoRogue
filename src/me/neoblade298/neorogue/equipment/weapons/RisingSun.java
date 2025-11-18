@@ -1,6 +1,8 @@
 package me.neoblade298.neorogue.equipment.weapons;
 
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -8,12 +10,16 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+import io.papermc.paper.entity.TeleportFlag;
+import me.neoblade298.neocore.bukkit.effects.Cone;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.ParticleUtil;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -22,7 +28,6 @@ import me.neoblade298.neorogue.equipment.abilities.GuardianSpirit;
 import me.neoblade298.neorogue.equipment.abilities.HerculeanStrength;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
-import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -33,17 +38,18 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class ValiantPierce extends Equipment {
-	private static final String ID = "ValiantPierce";
+public class RisingSun extends Equipment {
+	private static final String ID = "RisingSun";
 	private static final ParticleContainer lancePart = new ParticleContainer(Particle.ELECTRIC_SPARK).count(5).spread(0.1, 0.1);
-	private static final TargetProperties tp = TargetProperties.line(6, 1, TargetType.ENEMY);
+	private static final TargetProperties tp = TargetProperties.cone(60, 6, false, TargetType.ENEMY);
+	private static final Cone cone = new Cone(tp.range, 60);
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_PLAYER_ATTACK_CRIT, 0.5F);
 	private int damage, bonus;
 
-	public ValiantPierce(boolean isUpgraded) {
+	public RisingSun(boolean isUpgraded) {
 		super(
-				ID, "Valiant Pierce", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR, EquipmentType.WEAPON,
-				EquipmentProperties.ofUsable(0, 35, 8, tp.range)
+				ID, "Rising Sun", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR, EquipmentType.WEAPON,
+				EquipmentProperties.ofUsable(0, 45, 10, tp.range)
 		);
 		damage = isUpgraded ? 200 : 150;
 		bonus = isUpgraded ? 300 : 200;
@@ -61,23 +67,32 @@ public class ValiantPierce extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		Equipment eq = this;
+		DamageStatTracker tracker = DamageStatTracker.of(id + slot, eq);
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			HashSet<UUID> entitiesHit = new HashSet<UUID>();
 			data.charge(20).then(new Runnable() {
 				public void run() {
-					LinkedList<LivingEntity> targets = TargetHelper.getEntitiesInSight(p, tp);
-					sc.play(p, p);
-					Location start = p.getLocation().add(0, 1, 0);
-					Vector v = p.getLocation().getDirection().setY(0).normalize().multiply(tp.range);
-					ParticleUtil.drawLine(p, lancePart, p.getLocation().add(0, 1, 0), start.clone().add(v), 0.5);
-					boolean first = true;
-					DamageStatTracker tracker = DamageStatTracker.of(id + slot, eq);
-					for (LivingEntity target : targets) {
-						DamageMeta dm = new DamageMeta(data, damage, DamageType.PIERCING, tracker);
-						if (first && targets.size() > 1) {
-							dm.addDamageSlice(new DamageSlice(data, bonus, DamageType.PIERCING, tracker));
-							first = false;
-						}
-						FightInstance.dealDamage(dm, target);
+					for (int i = 0; i < 6; i++) {
+						new BukkitRunnable() {
+							public void run() {
+								sc.play(p, p);
+								Location start = p.getLocation().add(0, 1, 0);
+								Vector v = p.getLocation().getDirection().setY(0).normalize().multiply(tp.range);
+								ParticleUtil.drawLine(p, lancePart, p.getLocation().add(0, 1, 0), start.clone().add(v), 0.5);
+								LinkedList<LivingEntity> targets = TargetHelper.getEntitiesInCone(p, tp);
+								for (LivingEntity target : targets) {
+									if (entitiesHit.contains(target.getUniqueId())) continue;
+									entitiesHit.add(target.getUniqueId());
+									DamageMeta dm = new DamageMeta(data, damage, DamageType.PIERCING, tracker);
+									FightInstance.dealDamage(dm, target);
+									FightInstance.knockback(target, new Vector(0, 3, 0));
+								}
+								// Rotate player
+								Location loc = p.getLocation().clone();
+								loc.setYaw(loc.getYaw() + 60);
+								p.teleport(loc, TeleportFlag.Relative.X, TeleportFlag.Relative.Y, TeleportFlag.Relative.Z, TeleportFlag.Relative.PITCH);
+							}
+						}.runTaskLater(NeoRogue.inst(), i * 3);
 					}
 				}
 			});
@@ -88,8 +103,7 @@ public class ValiantPierce extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(
-				Material.POINTED_DRIPSTONE,
-				"On cast, " + DescUtil.charge(this, 1, 1) + ", then deal " + GlossaryTag.PIERCING.tag(this, damage, true) + " damage to all enemies in a line. " +
-				"If more than one enemy is hit, deal " + DescUtil.yellow(bonus) + " bonus damage to the first enemy hit.");
+				Material.COAST_ARMOR_TRIM_SMITHING_TEMPLATE,
+				"On cast, " + DescUtil.charge(this, 1, 1) + ", then spin clockwise, dealing " + GlossaryTag.SLASHING.tag(this, damage, true) + " damage to and knocking up all enemies in a circle.");
 	}
 }

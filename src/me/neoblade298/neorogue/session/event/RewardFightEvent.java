@@ -4,6 +4,7 @@ import me.neoblade298.neorogue.area.NodeType;
 
 public class RewardFightEvent {
 	private int bonusGold, bonusEquipment, bonusRarity;
+	private double bonusUpgradeChance;
 	private NodeType type;
 
 	public int getBonusGold() {
@@ -18,6 +19,10 @@ public class RewardFightEvent {
 		return bonusRarity;
 	}
 
+	public double getBonusUpgradeChance() {
+		return bonusUpgradeChance;
+	}
+
 	public void addBonusGold(int goldAmount) {
 		this.bonusGold += goldAmount;
 	}
@@ -28,6 +33,10 @@ public class RewardFightEvent {
 
 	public void addBonusRarity(int bonus) {
 		this.bonusRarity += bonus;
+	}
+
+	public void addBonusUpgradeChance(double chance) {
+		this.bonusUpgradeChance = chance;
 	}
 
 	public NodeType getType() {

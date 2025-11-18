@@ -16,11 +16,11 @@ import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class Endure extends Equipment {
+public class Endurance extends Equipment {
 	private static final String ID = "Endurance";
 	private int shields, berserk, cd;
 	
-	public Endure(boolean isUpgraded) {
+	public Endurance(boolean isUpgraded) {
 		super(ID, "Endurance", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 5, 0));
 		shields = 15;

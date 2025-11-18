@@ -27,7 +27,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 
 public class EscapePlan2 extends Equipment {
-	private static final String ID = "EscapePlanII";
+	private static final String ID = "EscapePlan2";
 	private int activateDamage, basicAttackDamage;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD).count(50).spread(0.5, 0);
 	

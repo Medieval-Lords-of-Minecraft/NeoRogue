@@ -106,7 +106,7 @@ public class MinibossFightInstance extends FightInstance {
 			list.add(new EquipmentChoiceReward(equipDrops));
 			if (dropPotion) {
 				Consumable cons = Equipment.getConsumable(value, ec, EquipmentClass.CLASSLESS);
-				list.add(new EquipmentReward(s.rollUpgrade(cons, 0.1)));
+				list.add(new EquipmentReward(s.rollUpgrade(cons, 0.1 + ev.getBonusUpgradeChance())));
 			}
 			rewards.put(uuid, list);
 		}

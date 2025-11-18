@@ -27,7 +27,7 @@ public class Sturdy extends Equipment {
 
 	@Override
 	public void setupReforges() {
-		addSelfReforge(GraniteShield.get(), Bulwark.get(), Endure.get());
+		addSelfReforge(GraniteShield.get(), Bulwark.get(), Endurance.get());
 	}
 	
 	public static Equipment get() {

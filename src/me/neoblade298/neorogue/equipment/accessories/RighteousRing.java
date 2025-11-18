@@ -38,6 +38,6 @@ public class RighteousRing extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.CACTUS, "Basic attacks additionally apply " + GlossaryTag.SANCTIFIED.tag(this, sanct, true) + ".");
+		item = createItem(Material.IRON_NUGGET, "Basic attacks additionally apply " + GlossaryTag.SANCTIFIED.tag(this, sanct, true) + ".");
 	}
 }

@@ -176,7 +176,7 @@ public class StandardFightInstance extends FightInstance {
 				break;
 			}
 
-			s.rollUpgrades(equipDrops, fightScore.getUpgradeModifier());
+			s.rollUpgrades(equipDrops, fightScore.getUpgradeModifier() + ev.getBonusUpgradeChance());
 			list.add(new EquipmentChoiceReward(equipDrops));
 			equipDrops = new ArrayList<Equipment>(3);
 			equipDrops.add(Equipment.get("rubyShard", false));
