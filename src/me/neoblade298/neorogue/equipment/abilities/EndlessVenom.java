@@ -27,7 +27,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class EndlessVenom extends Equipment {
-	private static final String ID = "endlessVenom";
+	private static final String ID = "EndlessVenom";
 	private int poison;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST)
 			.dustOptions(new DustOptions(Color.GREEN, 1)).count(50).spread(0.5, 0.5).speed(0.2);

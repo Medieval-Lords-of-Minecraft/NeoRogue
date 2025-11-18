@@ -20,7 +20,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 
 public class CalculatingGaze extends Equipment {
-	private static final String ID = "calculatingGaze";
+	private static final String ID = "CalculatingGaze";
 	private int shields, def;
 	private static final int THRES = 30;
 	

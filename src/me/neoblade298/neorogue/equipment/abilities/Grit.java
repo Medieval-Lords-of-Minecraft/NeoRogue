@@ -24,7 +24,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.KillEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
 public class Grit extends Equipment {
-	private static final String ID = "grit";
+	private static final String ID = "Grit";
 	private int shields, inc;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
 	private static final SoundContainer equip = new SoundContainer(Sound.ITEM_ARMOR_EQUIP_CHAIN);

@@ -25,7 +25,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageBarrierE
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 
 public class SpikyShield extends Equipment {
-	private static final String ID = "spikyShield";
+	private static final String ID = "SpikyShield";
 	private int reduction, amount;
 	
 	public SpikyShield(boolean isUpgraded) {

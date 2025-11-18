@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class Bramblevine extends Artifact {
-	private static final String ID = "bramblevine";
+	private static final String ID = "Bramblevine";
 	private static final int shield = 10;
 
 	public Bramblevine() {

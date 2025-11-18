@@ -17,7 +17,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class ShieldbearerStaff extends Equipment {
-	private static final String ID = "shieldbearerStaff";
+	private static final String ID = "ShieldbearerStaff";
 	private double mult;
 
 	public ShieldbearerStaff(boolean isUpgraded) {

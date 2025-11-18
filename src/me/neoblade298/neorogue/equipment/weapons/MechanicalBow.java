@@ -23,7 +23,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class MechanicalBow extends Bow {
-	private static final String ID = "mechanicalBow";
+	private static final String ID = "MechanicalBow";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.FIREWORK);
 	private int damage;
 	

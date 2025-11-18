@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class MonksStaff extends Equipment {
-	private static final String ID = "monksStaff";
+	private static final String ID = "MonksStaff";
 	
 	public MonksStaff(boolean isUpgraded) {
 		super(ID, "Monk's Staff", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE ,

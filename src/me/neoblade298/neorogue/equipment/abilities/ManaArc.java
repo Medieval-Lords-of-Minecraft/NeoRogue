@@ -31,7 +31,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class ManaArc extends Equipment {
-	private static final String ID = "manaArc";
+	private static final String ID = "ManaArc";
 	private int mana, damage, elec;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.FIREWORK);
 

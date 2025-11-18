@@ -44,7 +44,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
 
 public class AnchoringEarth2 extends Equipment {
-	private static final String ID = "anchoringEarth2";
+	private static final String ID = "AnchoringEarth2";
 	private int damage, reduc;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.BLOCK)
 			.blockData(Material.DIRT.createBlockData());

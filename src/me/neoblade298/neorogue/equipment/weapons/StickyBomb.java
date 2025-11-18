@@ -31,7 +31,7 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 
 public class StickyBomb extends Ammunition {
-	private static final String ID = "stickyBomb";
+	private static final String ID = "StickyBomb";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME);
 	private ParticleContainer explode;
 	private TargetProperties tp;

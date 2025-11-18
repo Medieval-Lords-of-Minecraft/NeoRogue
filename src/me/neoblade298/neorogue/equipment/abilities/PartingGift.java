@@ -31,7 +31,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class PartingGift extends Equipment {
-	private static final String ID = "partingGift";
+	private static final String ID = "PartingGift";
 	private static final ParticleContainer placePart = new ParticleContainer(Particle.CLOUD).count(10).spread(0.1, 0.1),
 			smoke = new ParticleContainer(Particle.CLOUD).count(50).spread(2.5, 2.5).offsetY(1.5),
 			smokeEdge = new ParticleContainer(Particle.CLOUD).count(2).spread(0.1, 0),

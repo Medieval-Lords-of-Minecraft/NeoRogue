@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class AuricCape extends Equipment {
-	private static final String ID = "auricCape";
+	private static final String ID = "AuricCape";
 	private int reduc;
 
 	public AuricCape(boolean isUpgraded) {

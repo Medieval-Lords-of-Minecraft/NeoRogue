@@ -17,7 +17,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 
 public class GripGloves extends Equipment {
-	private static final String ID = "gripGloves";
+	private static final String ID = "GripGloves";
 	private int cutoff;
 	private double cutoffPct;
 	

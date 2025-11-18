@@ -14,7 +14,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class RighteousRing extends Equipment {
-	private static final String ID = "righteousRing";
+	private static final String ID = "RighteousRing";
 	private int sanct;
 	
 	public RighteousRing(boolean isUpgraded) {

@@ -21,7 +21,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class ManaBlitz extends Equipment {
-	private static final String ID = "manaBlitz";
+	private static final String ID = "ManaBlitz";
 	private int inc;
 
 	public ManaBlitz(boolean isUpgraded) {

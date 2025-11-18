@@ -28,7 +28,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroupEvent;
 
 public class Chill extends Equipment {
-	private static final String ID = "chill";
+	private static final String ID = "Chill";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.SNOWFLAKE).count(80).spread(2.5, 0.5).speed(0.2);
 	private static final TargetProperties tp = TargetProperties.radius(5, false, TargetType.ENEMY);
 	private int frost;

@@ -14,7 +14,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.GrantShieldsEvent;
 
 public class MinorShieldingRelic extends Equipment {
-	private static final String ID = "minorShieldingRelic";
+	private static final String ID = "MinorShieldingRelic";
 	private int shields;
 	
 	public MinorShieldingRelic(boolean isUpgraded) {

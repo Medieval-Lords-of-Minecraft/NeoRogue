@@ -25,7 +25,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
 public class ObsidianCharm extends Artifact {
-	private static final String ID = "obsidianCharm";
+	private static final String ID = "ObsidianCharm";
 	private static final int pct = 20;
 
 	public ObsidianCharm() {

@@ -27,7 +27,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Smite extends Equipment {
-	private static final String ID = "smite";
+	private static final String ID = "Smite";
 	private int sanctified, damage;
 	private static final ParticleContainer part = new ParticleContainer(Particle.FIREWORK).offsetForward(2).count(30).spread(4, 0.2);
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_FIREWORK_ROCKET_TWINKLE);

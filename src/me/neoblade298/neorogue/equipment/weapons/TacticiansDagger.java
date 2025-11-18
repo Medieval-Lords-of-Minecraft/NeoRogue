@@ -23,7 +23,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class TacticiansDagger extends Equipment {
-	private static final String ID = "tacticiansDagger";
+	private static final String ID = "TacticiansDagger";
 	private int damage;
 	
 	public TacticiansDagger(boolean isUpgraded) {

@@ -27,7 +27,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class StoneAxe extends Equipment {
-	private static final String ID = "stoneAxe";
+	private static final String ID = "StoneAxe";
 	private static final int BERSERK_THRESHOLD = 10;
 	private static final TargetProperties tp = TargetProperties.cone(60, 3, false, TargetType.ENEMY);
 	

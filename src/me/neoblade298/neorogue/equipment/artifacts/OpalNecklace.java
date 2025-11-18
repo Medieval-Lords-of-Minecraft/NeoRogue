@@ -24,7 +24,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
 public class OpalNecklace extends Artifact {
-	private static final String ID = "opalNecklace";
+	private static final String ID = "OpalNecklace";
 	private double inc = 0.3;
 	private int displayInc = (int) (inc * 100);
 

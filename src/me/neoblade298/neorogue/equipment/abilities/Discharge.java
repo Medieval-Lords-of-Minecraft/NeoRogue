@@ -22,7 +22,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class Discharge extends Equipment {
-	private static final String ID = "discharge";
+	private static final String ID = "Discharge";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.ENCHANT).count(25).spread(0.5, 0.5).speed(0.1);;
 	private int intel, elec;
 	

@@ -9,7 +9,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class MinorManaRelic extends Equipment {
-	private static final String ID = "minorManaRelic";
+	private static final String ID = "MinorManaRelic";
 	private double regen;
 	
 	public MinorManaRelic(boolean isUpgraded) {

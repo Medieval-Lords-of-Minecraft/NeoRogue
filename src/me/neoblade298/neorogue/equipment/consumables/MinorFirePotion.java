@@ -20,7 +20,7 @@ import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 
 public class MinorFirePotion extends Consumable {
-	private static final String ID = "minorFirePotion";
+	private static final String ID = "MinorFirePotion";
 	private int damage;
 	
 	public MinorFirePotion(boolean isUpgraded) {

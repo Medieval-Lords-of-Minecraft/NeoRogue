@@ -21,7 +21,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class LightningCutter extends Equipment {
-	private static final String ID = "lightningCutter";
+	private static final String ID = "LightningCutter";
 	
 	public LightningCutter(boolean isUpgraded) {
 		super(ID, "Lightning Cutter", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,

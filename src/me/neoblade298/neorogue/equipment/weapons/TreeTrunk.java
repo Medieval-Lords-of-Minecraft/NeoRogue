@@ -40,7 +40,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class TreeTrunk extends Equipment {
-	private static final String ID = "treeTrunk";
+	private static final String ID = "TreeTrunk";
 	private static final int CUTOFF = 1;
 	private double conc;
 	private static final Circle hitShape = new Circle(4);

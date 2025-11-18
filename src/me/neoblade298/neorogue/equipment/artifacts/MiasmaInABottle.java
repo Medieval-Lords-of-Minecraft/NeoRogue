@@ -26,7 +26,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class MiasmaInABottle extends Artifact {
-	private static final String ID = "miasmaInABottle";
+	private static final String ID = "MiasmaInABottle";
 	private static final TargetProperties tp = TargetProperties.radius(5, false, TargetType.ENEMY);
 	private double damage = 0.1;
 

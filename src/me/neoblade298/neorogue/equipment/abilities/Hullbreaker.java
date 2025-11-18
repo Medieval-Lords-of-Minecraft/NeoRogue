@@ -29,7 +29,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.RightClickHitEvent;
 
 public class Hullbreaker extends Equipment {
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR);
-	private static final String ID = "hullbreaker";
+	private static final String ID = "Hullbreaker";
 	private static int damage = 100;
 	private int reduc;
 	private static final int THRES = 150;

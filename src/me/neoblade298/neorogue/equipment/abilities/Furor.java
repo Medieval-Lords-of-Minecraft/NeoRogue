@@ -12,7 +12,7 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class Furor extends Equipment {
-	private static final String ID = "furor";
+	private static final String ID = "Furor";
 	private int strength = 5, berserk;
 	
 	public Furor(boolean isUpgraded) {

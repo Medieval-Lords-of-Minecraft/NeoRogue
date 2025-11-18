@@ -36,7 +36,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Demoralize extends Equipment {
-	private static final String ID = "demoralize";
+	private static final String ID = "Demoralize";
 	private static final TargetProperties tp = TargetProperties.radius(8, false, TargetType.ENEMY);
 	private static final Circle circ = new Circle(tp.range);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD);

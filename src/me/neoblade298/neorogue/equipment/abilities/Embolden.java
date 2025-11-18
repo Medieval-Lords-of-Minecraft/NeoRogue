@@ -20,7 +20,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class Embolden extends Equipment {
-	private static final String ID = "embolden";
+	private static final String ID = "Embolden";
 	private int damage, shields;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
 			hit = new ParticleContainer(Particle.DUST);

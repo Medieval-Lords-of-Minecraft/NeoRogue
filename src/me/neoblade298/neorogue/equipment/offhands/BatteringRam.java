@@ -40,7 +40,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageBarrierE
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 
 public class BatteringRam extends Equipment {
-	private static final String ID = "batteringRam";
+	private static final String ID = "BatteringRam";
 	private int reduction, damage, thres, conc;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CRIT).count(2).spread(0.1, 0.1).offsetY(0.3);
 	private static final TargetProperties tp = TargetProperties.cone(90, 6, false, TargetType.ENEMY);

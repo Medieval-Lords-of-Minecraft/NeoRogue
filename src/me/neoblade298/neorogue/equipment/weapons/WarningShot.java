@@ -46,7 +46,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class WarningShot extends Equipment {
-	private static final String ID = "warningShot";
+	private static final String ID = "WarningShot";
 	private static ParticleContainer pc = new ParticleContainer(Particle.END_ROD);
 	private static final TargetProperties tp = TargetProperties.radius(6, false, TargetType.ENEMY);
 	private static Circle circ = new Circle(tp.range);

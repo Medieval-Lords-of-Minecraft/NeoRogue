@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.CheckCastUsableEvent;
 
 public class MortalEngine extends Equipment {
-	private static final String ID = "mortalEngine";
+	private static final String ID = "MortalEngine";
 	private int cutoff, reduc;
 
 	public MortalEngine(boolean isUpgraded) {

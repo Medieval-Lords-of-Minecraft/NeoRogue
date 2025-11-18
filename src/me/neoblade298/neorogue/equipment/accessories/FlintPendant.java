@@ -14,7 +14,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class FlintPendant extends Equipment {
-	private static final String ID = "flintPendant";
+	private static final String ID = "FlintPendant";
 	private int thres, stamina;
 	
 	public FlintPendant(boolean isUpgraded) {

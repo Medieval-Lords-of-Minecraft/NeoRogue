@@ -23,7 +23,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Skirmisher extends Equipment {
-	private static final String ID = "skirmisher";
+	private static final String ID = "Skirmisher";
 	private static final TargetProperties props = TargetProperties.radius(3, false, TargetType.ENEMY);
 	private static final SoundContainer sound = new SoundContainer(Sound.ENTITY_ALLAY_HURT, 0.8F);
 	private int shields;

@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class ButterflyKnife extends Equipment {
-	private static final String ID = "butterflyKnife";
+	private static final String ID = "ButterflyKnife";
 	private static final int base = 35;
 	private int dmg, stam;
 	public ButterflyKnife(boolean isUpgraded) {

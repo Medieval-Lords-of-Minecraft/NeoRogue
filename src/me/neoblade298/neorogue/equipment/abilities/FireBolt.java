@@ -30,7 +30,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class FireBolt extends Equipment {
-	private static final String ID = "fireBolt";
+	private static final String ID = "FireBolt";
 	private static final ParticleContainer lightning = new ParticleContainer(Particle.FIREWORK).count(3).spread(0.3,
 			0.3), fire = new ParticleContainer(Particle.FLAME).count(3).spread(0.3, 0.3);
 	private static final TargetProperties tp = TargetProperties.line(7, 2, TargetType.ENEMY);

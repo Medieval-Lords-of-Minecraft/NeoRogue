@@ -11,7 +11,7 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 
 public class EmeraldCluster extends Artifact {
-	private static final String ID = "emeraldCluster";
+	private static final String ID = "EmeraldCluster";
 	private int max;
 	private double regen;
 

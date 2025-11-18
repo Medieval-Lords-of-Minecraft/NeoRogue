@@ -31,7 +31,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Surprise extends Equipment {
-	private static final String ID = "surprise";
+	private static final String ID = "Surprise";
 	private static TargetProperties tp = TargetProperties.radius(2, false, TargetType.ENEMY);
 	private static ParticleContainer trap = new ParticleContainer(Particle.CRIT).count(50).spread(1, 0.2),
 		hit = new ParticleContainer(Particle.CRIT).count(50).spread(1, 1);

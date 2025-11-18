@@ -34,7 +34,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
 
 public class Brand extends Equipment {
-	private static final String ID = "brand";
+	private static final String ID = "Brand";
 	private static final TargetProperties tp = TargetProperties.radius(8, false, TargetType.ENEMY),
 		aoe = TargetProperties.radius(4, false, TargetType.ENEMY);
 	private static final Circle circ = new Circle(aoe.range);

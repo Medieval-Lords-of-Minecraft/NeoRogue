@@ -25,7 +25,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class BodyDouble extends Equipment {
-	private static final String ID = "bodyDouble";
+	private static final String ID = "BodyDouble";
 	private static TargetProperties tp = TargetProperties.radius(12, false, TargetType.ENEMY);
 	private int dur;
 	

@@ -10,7 +10,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Footpads extends Equipment {
-	private static final String ID = "footpads";
+	private static final String ID = "Footpads";
 	private double stamina;
 	
 	public Footpads(boolean isUpgraded) {

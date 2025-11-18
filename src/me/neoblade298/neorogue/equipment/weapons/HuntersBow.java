@@ -19,7 +19,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class HuntersBow extends Bow {
-	private static final String ID = "huntersBow";
+	private static final String ID = "HuntersBow";
 	private static final ParticleContainer tick = new ParticleContainer(Particle.CRIT).count(10).speed(0.01).spread(0.1, 0.1);
 	
 	public HuntersBow(boolean isUpgraded) {

@@ -17,7 +17,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class RingOfLight extends Equipment {
-	private static final String ID = "ringOfLight";
+	private static final String ID = "RingOfLight";
 	private static final TargetProperties tp = TargetProperties.radius(5, false);
 	private int sanct;
 	public RingOfLight(boolean isUpgraded) {

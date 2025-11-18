@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Bloodlust extends Equipment {
-	private static final String ID = "bloodlust";
+	private static final String ID = "Bloodlust";
 	private int strength;
 	private static final int CUTOFF = 15;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME).count(20).speed(0.01).offsetY(1);

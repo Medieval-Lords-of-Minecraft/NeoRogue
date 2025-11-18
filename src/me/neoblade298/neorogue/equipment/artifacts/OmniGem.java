@@ -12,7 +12,7 @@ import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 
 public class OmniGem extends Artifact {
-	private static final String ID = "omniGem";
+	private static final String ID = "OmniGem";
 	private int flat;
 	private double shields, regen;
 

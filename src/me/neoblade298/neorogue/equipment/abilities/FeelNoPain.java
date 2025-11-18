@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 
 public class FeelNoPain extends Equipment {
-	private static final String ID = "feelNoPain";
+	private static final String ID = "FeelNoPain";
 	private double reduc;
 	private int reducString;
 	private static final int THRES = 10, COUNT = 4, CUTOFF = THRES * COUNT;

@@ -27,7 +27,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class AgilityTraining extends Equipment {
-	private static final String ID = "agilityTraining";
+	private static final String ID = "AgilityTraining";
 	private int damage, stacks;
 	
 	public AgilityTraining(boolean isUpgraded) {

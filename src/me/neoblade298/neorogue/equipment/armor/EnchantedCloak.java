@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class EnchantedCloak extends Equipment {
-	private static final String ID = "enchantedCloak";
+	private static final String ID = "EnchantedCloak";
 	private int reduc, damage;
 	
 	public EnchantedCloak(boolean isUpgraded) {

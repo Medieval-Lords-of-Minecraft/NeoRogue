@@ -31,7 +31,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class EarthStaff extends Equipment {
-	private static final String ID = "earthStaff";
+	private static final String ID = "EarthStaff";
 	
 	private static final double innerRadius = 1.5, outerRadius = 4;
 	private static final Circle innerRing = new Circle(innerRadius), outerRing = new Circle(outerRadius);

@@ -33,7 +33,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class AzureCutter extends Artifact {
-	private static final String ID = "azureCutter";
+	private static final String ID = "AzureCutter";
 	private static final ParticleContainer part = new ParticleContainer(Particle.FIREWORK).count(1).speed(0.005).spread(0.1, 0.1);
 	private static final TargetProperties tp = TargetProperties.radius(8, false, TargetType.ENEMY);
 	private static int thres = 7, damage = 100;

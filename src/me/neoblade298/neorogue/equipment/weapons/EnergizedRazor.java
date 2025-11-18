@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class EnergizedRazor extends Equipment {
-	private static final String ID = "energizedRazor";
+	private static final String ID = "EnergizedRazor";
 	private static int base = 30;
 	private int res;
 	

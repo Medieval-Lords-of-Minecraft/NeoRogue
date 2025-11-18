@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 
 public class DarkArtsTreatise extends Artifact {
-	private static final String ID = "darkArtsTreatise";
+	private static final String ID = "DarkArtsTreatise";
 	
 	public DarkArtsTreatise() {
 		super(ID, "Dark Arts Treatise", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);

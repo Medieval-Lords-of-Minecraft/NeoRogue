@@ -41,7 +41,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class EarthenDomain extends Equipment {
-	private static final String ID = "earthenDomain";
+	private static final String ID = "EarthenDomain";
 	private int damage, conc;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.BLOCK)
 			.blockData(Material.DIRT.createBlockData());

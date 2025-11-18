@@ -33,7 +33,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class CurseMark extends Equipment {
-	private static final String ID = "curseMark";
+	private static final String ID = "CurseMark";
 	private static TargetProperties tp = TargetProperties.line(8, 2, TargetType.ENEMY);
 	private static ParticleContainer pc = new ParticleContainer(Particle.SMOKE).count(50).spread(0.5, 2).offsetY(1);
 	private int stacks, buff;

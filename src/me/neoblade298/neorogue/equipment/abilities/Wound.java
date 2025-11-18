@@ -26,7 +26,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class Wound extends Equipment {
-	private static final String ID = "wound";
+	private static final String ID = "Wound";
 	private int dec = 15, stacks;
 	private ItemStack activeIcon;
 

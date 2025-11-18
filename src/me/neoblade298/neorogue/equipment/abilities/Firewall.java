@@ -36,7 +36,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Firewall extends Equipment {
-	private static final String ID = "firewall";
+	private static final String ID = "Firewall";
 	private int damage, burn;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME),
 		wall = pc.clone().spread(0.2, 2).count(15).offsetY(1);

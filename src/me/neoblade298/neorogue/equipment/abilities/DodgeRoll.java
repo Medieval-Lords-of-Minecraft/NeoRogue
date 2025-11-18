@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class DodgeRoll extends Equipment {
-	private static final String ID = "dodgeRoll";
+	private static final String ID = "DodgeRoll";
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_PLAYER_ATTACK_SWEEP, 0.5F);
 	private int dur = 5;
 	

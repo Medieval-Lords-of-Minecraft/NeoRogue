@@ -15,7 +15,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class StoneDriver extends Equipment {
-	private static final String ID = "stoneDriver";
+	private static final String ID = "StoneDriver";
 	public StoneDriver(boolean isUpgraded) {
 		super(ID, "Stone Driver", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,

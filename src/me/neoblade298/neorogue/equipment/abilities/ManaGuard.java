@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class ManaGuard extends Equipment {
-	private static final String ID = "manaGuard";
+	private static final String ID = "ManaGuard";
 	private int reduc;
 
 	public ManaGuard(boolean isUpgraded) {

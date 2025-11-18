@@ -27,7 +27,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Volley extends Equipment {
-	private static final String ID = "volley";
+	private static final String ID = "Volley";
 	private static final int[] rotations = new int[] { 0, -15, 15, -30, 30 };
 	private int damage;
 	

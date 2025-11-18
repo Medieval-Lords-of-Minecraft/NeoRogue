@@ -11,7 +11,7 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class SpikedPauldrons extends Equipment {
-	private static final String ID = "spikedPauldrons";
+	private static final String ID = "SpikedPauldrons";
 	private int thorns;
 	
 	public SpikedPauldrons(boolean isUpgraded) {

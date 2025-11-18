@@ -25,7 +25,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class LeadingKnife extends Equipment {
-	private static final String ID = "leadingKnife";
+	private static final String ID = "LeadingKnife";
 	private static final ParticleContainer tick = new ParticleContainer(Particle.CRIT).count(3).speed(0.01).spread(0.1, 0.1);
 	private static final SoundContainer hit = new SoundContainer(Sound.ENTITY_ITEM_BREAK);
 	private int stamina;

@@ -20,7 +20,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Revenge extends Equipment {
-	private static final String ID = "revenge";
+	private static final String ID = "Revenge";
 	private int strength, heal;
 	private static final int CUTOFF = 20;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME).count(20).speed(0.01).offsetY(1);

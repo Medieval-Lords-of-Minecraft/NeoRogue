@@ -32,7 +32,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class WeaponEnchantmentHoly extends Equipment {
-	private static final String ID = "weaponEnchantmentHoly";
+	private static final String ID = "WeaponEnchantmentHoly";
 	private ProjectileGroup projs;
 	private int damage, sanct;
 	private static final int RANGE = 8;

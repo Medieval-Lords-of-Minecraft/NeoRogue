@@ -11,7 +11,7 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class CalmingHood extends Equipment {
-	private static final String ID = "calmingHood";
+	private static final String ID = "CalmingHood";
 	private int focus;
 	
 	public CalmingHood(boolean isUpgraded) {

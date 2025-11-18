@@ -20,7 +20,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class BattleCry extends Equipment {
-	private static final String ID = "battleCry";
+	private static final String ID = "BattleCry";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST);
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_BLAZE_DEATH);
 	private int strength;

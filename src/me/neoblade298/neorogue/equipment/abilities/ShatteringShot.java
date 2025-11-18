@@ -24,7 +24,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroupEvent;
 
 public class ShatteringShot extends Equipment {
-	private static final String ID = "shatteringShot";
+	private static final String ID = "ShatteringShot";
 	private int damage;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.BLOCK).blockData(Material.ICE.createBlockData()).spread(0.2, 0.2).count(5);
 	

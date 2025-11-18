@@ -30,7 +30,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
 public class Pressure extends Equipment {
-	private static final String ID = "pressure";
+	private static final String ID = "Pressure";
 	private int damage;
 	private static final TargetProperties tp = TargetProperties.radius(8, true, TargetType.ALLY);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD);

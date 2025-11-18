@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 
 public class ColdArrow extends Ammunition {
-	private static final String ID = "coldArrow";
+	private static final String ID = "ColdArrow";
 	private int frost;
 	
 	public ColdArrow(boolean isUpgraded) {

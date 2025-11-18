@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 
 public class GraniteShield extends Equipment {
-	private static final String ID = "graniteShield";
+	private static final String ID = "GraniteShield";
 	private int shields, cd, conc;
 	
 	public GraniteShield(boolean isUpgraded) {

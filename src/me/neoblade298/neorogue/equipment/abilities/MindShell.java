@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class MindShell extends Equipment {
-	private static final String ID = "mindShell";
+	private static final String ID = "MindShell";
 	private double regen;
 	private int shell;
 	private static final int THRES = 3;

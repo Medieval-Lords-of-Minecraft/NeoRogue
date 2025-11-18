@@ -23,7 +23,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 
 public class FrostbiteBow extends Bow {
-	private static final String ID = "frostbiteBow";
+	private static final String ID = "FrostbiteBow";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.FIREWORK);
 	private int damage;
 	

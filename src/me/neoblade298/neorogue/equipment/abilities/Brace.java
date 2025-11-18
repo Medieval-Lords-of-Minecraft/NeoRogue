@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Brace extends Equipment {
-	private static final String ID = "brace";
+	private static final String ID = "Brace";
 	private int shields;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
 	

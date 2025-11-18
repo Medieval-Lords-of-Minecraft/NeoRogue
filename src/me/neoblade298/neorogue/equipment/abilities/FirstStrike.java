@@ -27,7 +27,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
 
 public class FirstStrike extends Equipment {
-	private static final String ID = "firstStrike";
+	private static final String ID = "FirstStrike";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.PORTAL);
 	private static final TargetProperties tp = TargetProperties.radius(4, false, TargetType.ENEMY);
 	private int damage;

@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class YellowRing extends Equipment {
-	private static final String ID = "yellowRing";
+	private static final String ID = "YellowRing";
 	private int elec;
 	public YellowRing(boolean isUpgraded) {
 		super(ID, "Yellow Ring", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE,

@@ -21,7 +21,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class Excalibur extends Equipment {
-	private static final String ID = "excalibur";
+	private static final String ID = "Excalibur";
 	private double mult;
 	
 	public Excalibur(boolean isUpgraded) {

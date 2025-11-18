@@ -31,7 +31,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Tackle extends Equipment {
-	private static final String ID = "tackle";
+	private static final String ID = "Tackle";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION),
 			start = new ParticleContainer(Particle.CLOUD);
 	private static final TargetProperties hc = TargetProperties.radius(1.5, true, TargetType.ENEMY),

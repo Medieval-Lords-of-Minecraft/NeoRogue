@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 
 public class BluntedArrow extends Ammunition {
-	private static final String ID = "bluntedArrow";
+	private static final String ID = "BluntedArrow";
 	private int stacks;
 	
 	public BluntedArrow(boolean isUpgraded) {

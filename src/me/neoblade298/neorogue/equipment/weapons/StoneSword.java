@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class StoneSword extends Equipment {
-	private static final String ID = "stoneSword";
+	private static final String ID = "StoneSword";
 	private int shields, shieldsBonus;
 	
 	public StoneSword(boolean isUpgraded) {

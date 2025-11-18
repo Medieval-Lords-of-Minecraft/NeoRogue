@@ -17,7 +17,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class Irritant extends Equipment {
-	private static final String ID = "irritant";
+	private static final String ID = "Irritant";
 	private static int base = 40;
 	private int dmg;
 	

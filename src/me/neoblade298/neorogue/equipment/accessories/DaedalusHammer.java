@@ -20,7 +20,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import net.kyori.adventure.text.Component;
 
 public class DaedalusHammer extends Artifact {
-	private static final String ID = "daedalusHammer";
+	private static final String ID = "DaedalusHammer";
 	
 	public DaedalusHammer() {
 		super(ID, "Daedalus Hammer", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);

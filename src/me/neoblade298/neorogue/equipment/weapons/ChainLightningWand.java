@@ -26,7 +26,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class ChainLightningWand extends Equipment {
-	private static final String ID = "chainLightningWand";
+	private static final String ID = "ChainLightningWand";
 	private static final TargetProperties hitScan = TargetProperties.cone(9, 10, false, TargetType.ENEMY);
 	private static final TargetProperties chainScan = TargetProperties.cone(60, 5, false, TargetType.ENEMY);
 

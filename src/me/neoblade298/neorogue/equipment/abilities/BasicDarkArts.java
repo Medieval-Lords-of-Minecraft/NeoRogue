@@ -22,7 +22,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
 
 public class BasicDarkArts extends Equipment {
-	private static final String ID = "basicDarkArts";
+	private static final String ID = "BasicDarkArts";
 	private int stacks, damage;
 	
 	public BasicDarkArts(boolean isUpgraded) {

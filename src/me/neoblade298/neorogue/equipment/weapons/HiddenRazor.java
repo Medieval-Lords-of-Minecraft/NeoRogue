@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class HiddenRazor extends Equipment {
-	private static final String ID = "hiddenRazor";
+	private static final String ID = "HiddenRazor";
 	private static int base = 60;
 	
 	public HiddenRazor(boolean isUpgraded) {

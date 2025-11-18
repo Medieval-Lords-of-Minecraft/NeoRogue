@@ -29,7 +29,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class HerosLanding extends Equipment {
-	private static final String ID = "herosLanding";
+	private static final String ID = "HerosLanding";
 	private static final TargetProperties tp = TargetProperties.radius(4, true);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
 			expl = new ParticleContainer(Particle.EXPLOSION).count(20).spread(tp.range / 2, 0.5);

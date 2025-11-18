@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 
 public class PhoenixfireMantle extends Equipment {
-	private static final String ID = "phoenixfireMantle";
+	private static final String ID = "PhoenixfireMantle";
 	private int thres, heal = 2;
 	public PhoenixfireMantle(boolean isUpgraded) {
 		super(ID, "Phoenixfire Mantle", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,

@@ -40,7 +40,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.CastUsableEvent;
 
 public class Gravity extends Equipment {
-	private static final String ID = "gravity";
+	private static final String ID = "Gravity";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST).dustOptions(new DustOptions(Color.BLACK, 1F));
 	private static final TargetProperties tp = TargetProperties.radius(5, true, TargetType.ENEMY);
 	private static final Circle circ = new Circle(tp.range);

@@ -21,7 +21,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class StoneDagger extends Equipment {
-	private static final String ID = "stoneDagger";
+	private static final String ID = "StoneDagger";
 	private int damage;
 	
 	public StoneDagger(boolean isUpgraded) {

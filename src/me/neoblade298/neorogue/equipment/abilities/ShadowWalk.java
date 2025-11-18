@@ -24,7 +24,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class ShadowWalk extends Equipment {
-	private static final String ID = "shadowWalk";
+	private static final String ID = "ShadowWalk";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.PORTAL),
 			hit = new ParticleContainer(Particle.DUST).count(50).spread(0.5, 0.5);
 	private int damage = 80;

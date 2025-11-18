@@ -29,7 +29,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Heartbeat extends Equipment {
-	private static final String ID = "heartbeat";
+	private static final String ID = "Heartbeat";
 	private static final TargetProperties tp = TargetProperties.radius(5, true, TargetType.ENEMY);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.END_ROD).offsetY(0.1);
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_ELDER_GUARDIAN_HURT);

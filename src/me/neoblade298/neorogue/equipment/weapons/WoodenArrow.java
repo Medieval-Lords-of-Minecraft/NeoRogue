@@ -10,7 +10,7 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.DamageType;
 
 public class WoodenArrow extends Ammunition {
-	private static final String ID = "woodenArrow";
+	private static final String ID = "WoodenArrow";
 	
 	public WoodenArrow(boolean isUpgraded) {
 		super(ID, "Wooden Arrow", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,

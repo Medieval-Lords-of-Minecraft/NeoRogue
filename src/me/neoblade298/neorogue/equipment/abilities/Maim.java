@@ -29,7 +29,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class Maim extends Equipment {
-	private static final String ID = "maim";
+	private static final String ID = "Maim";
 	private int inc, damage;
 	private static final ParticleContainer part = new ParticleContainer(Particle.CRIT).count(50).spread(0.5, 0.5);
 	private static final SoundContainer hit = new SoundContainer(Sound.BLOCK_BAMBOO_WOOD_TRAPDOOR_CLOSE);

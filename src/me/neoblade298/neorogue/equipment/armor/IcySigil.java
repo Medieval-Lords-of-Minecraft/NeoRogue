@@ -20,7 +20,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 
 public class IcySigil extends Equipment {
-	private static final String ID = "icySigil";
+	private static final String ID = "IcySigil";
 	private int def, thres;
 	
 	public IcySigil(boolean isUpgraded) {

@@ -12,7 +12,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class RingOfManaflow extends Equipment {
-	private static final String ID = "ringOfManaflow";
+	private static final String ID = "RingOfManaflow";
 	private int regen;
 	
 	public RingOfManaflow(boolean isUpgraded) {

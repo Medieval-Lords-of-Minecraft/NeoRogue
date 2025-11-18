@@ -13,7 +13,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class RingOfNature extends Equipment {
-	private static final String ID = "ringOfNature";
+	private static final String ID = "RingOfNature";
 	private int shields, dur;
 	
 	public RingOfNature(boolean isUpgraded) {

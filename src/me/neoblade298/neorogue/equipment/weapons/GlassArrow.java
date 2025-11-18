@@ -10,7 +10,7 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.DamageType;
 
 public class GlassArrow extends LimitedAmmunition {
-	private static final String ID = "glassArrow";
+	private static final String ID = "GlassArrow";
 	
 	public GlassArrow(boolean isUpgraded) {
 		super(ID, "Glass Arrow", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,

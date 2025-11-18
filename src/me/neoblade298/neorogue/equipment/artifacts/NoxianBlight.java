@@ -20,7 +20,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class NoxianBlight extends Artifact {
-	private static final String ID = "noxianBlight";
+	private static final String ID = "NoxianBlight";
 	private static final int stamina = 20, mana = 20, inc = 2;
 
 	public NoxianBlight() {

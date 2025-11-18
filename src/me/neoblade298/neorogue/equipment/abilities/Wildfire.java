@@ -37,7 +37,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class Wildfire extends Equipment {
-	private static final String ID = "wildfire";
+	private static final String ID = "Wildfire";
 	private static final TargetProperties tp = TargetProperties.radius(4, false, TargetType.ENEMY);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME), fill = new ParticleContainer(Particle.LAVA);
 	private static final Circle circ = new Circle(tp.range);

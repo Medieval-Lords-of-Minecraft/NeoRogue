@@ -19,7 +19,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class TrickstersSigil extends Artifact {
-	private static final String ID = "trickstersSigil";
+	private static final String ID = "TrickstersSigil";
 	
 	public TrickstersSigil() {
 		super(ID, "Trickster's Sigil", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);

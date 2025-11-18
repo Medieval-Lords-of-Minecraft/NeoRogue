@@ -13,7 +13,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 
 public class BlindingCloak extends Equipment {
-	private static final String ID = "blindingCloak";
+	private static final String ID = "BlindingCloak";
 	private int shields;
 	
 	public BlindingCloak(boolean isUpgraded) {

@@ -26,7 +26,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Quake extends Equipment {
-	private static final String ID = "quake";
+	private static final String ID = "Quake";
 	private static final TargetProperties tp = TargetProperties.radius(5, true, TargetType.ENEMY);
 	private int concussed, damage;
 	private static final ParticleContainer part = new ParticleContainer(Particle.CLOUD).spread(tp.range, 0.2).count(50);

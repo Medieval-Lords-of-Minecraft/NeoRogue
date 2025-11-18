@@ -14,7 +14,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroupEvent;
 
 public class EagleFeather extends Equipment {
-	private static final String ID = "eagleFeather";
+	private static final String ID = "EagleFeather";
 	private int buff;
 	
 	public EagleFeather(boolean isUpgraded) {

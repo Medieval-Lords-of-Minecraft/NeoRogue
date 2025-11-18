@@ -33,7 +33,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class HailCloak extends Equipment {
-	private static final String ID = "hailCloak";
+	private static final String ID = "HailCloak";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
 	private static final TargetProperties tp = TargetProperties.radius(4, false, TargetType.ENEMY);
 	private static final Circle circ = new Circle(tp.range);

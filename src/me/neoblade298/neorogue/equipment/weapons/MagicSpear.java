@@ -25,7 +25,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class MagicSpear extends Equipment {
-	private static final String ID = "magicSpear";
+	private static final String ID = "MagicSpear";
 	private static final TargetProperties spearHit = TargetProperties.line(4, 1, TargetType.ENEMY);
 	private int damage;
 

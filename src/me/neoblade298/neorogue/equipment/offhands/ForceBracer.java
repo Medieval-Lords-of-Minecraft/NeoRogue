@@ -24,7 +24,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 
 public class ForceBracer extends Equipment {
-	private static final String ID = "forceBracer";
+	private static final String ID = "ForceBracer";
 	private int instances, multStr, strength;
 	private double mult;
 

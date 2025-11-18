@@ -27,7 +27,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class Energize extends Equipment {
-	private static final String ID = "energize";
+	private static final String ID = "Energize";
 	private int damage, elec;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST)
 			.dustOptions(new DustOptions(Color.WHITE, 1F)).count(50).spread(1, 2).offsetY(1);

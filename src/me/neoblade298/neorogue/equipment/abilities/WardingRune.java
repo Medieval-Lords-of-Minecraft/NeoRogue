@@ -23,7 +23,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 
 public class WardingRune extends Equipment {
-	private static final String ID = "wardingRune";
+	private static final String ID = "WardingRune";
 	private int reduc = 10, mana = 5;
 	
 	public WardingRune(boolean isUpgraded) {

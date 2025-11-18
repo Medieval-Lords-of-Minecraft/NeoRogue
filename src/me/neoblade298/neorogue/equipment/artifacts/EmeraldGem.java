@@ -11,7 +11,7 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 
 public class EmeraldGem extends Artifact {
-	private static final String ID = "emeraldGem";
+	private static final String ID = "EmeraldGem";
 	private int max;
 	private double regen;
 

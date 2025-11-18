@@ -22,7 +22,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class SiphoningStrike extends Equipment {
-	private static final String ID = "siphoningStrike";
+	private static final String ID = "SiphoningStrike";
 	private int damage, buff;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
 			hit = new ParticleContainer(Particle.DUST);

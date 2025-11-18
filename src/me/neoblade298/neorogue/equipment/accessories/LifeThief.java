@@ -18,7 +18,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class LifeThief extends Equipment {
-	private static final String ID = "lifeThief";
+	private static final String ID = "LifeThief";
 	private int cutoff = 10, heal;
 	
 	public LifeThief(boolean isUpgraded) {

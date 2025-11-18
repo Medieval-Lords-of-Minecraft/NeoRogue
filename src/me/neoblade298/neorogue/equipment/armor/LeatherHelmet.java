@@ -10,7 +10,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class LeatherHelmet extends Equipment {
-	private static final String ID = "leatherHelmet";
+	private static final String ID = "LeatherHelmet";
 	private int shields;
 	
 	public LeatherHelmet(boolean isUpgraded) {

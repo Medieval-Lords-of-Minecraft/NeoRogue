@@ -20,7 +20,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 
 public class HastyShield extends Equipment {
-	private static final String ID = "hastyShield";
+	private static final String ID = "HastyShield";
 	private int reduction, amount;
 	
 	public HastyShield(boolean isUpgraded) {

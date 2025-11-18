@@ -28,7 +28,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Brightshell extends Equipment {
-	private static final String ID = "brightshell";
+	private static final String ID = "Brightshell";
 	private int shields, damage, sanct;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
 		aoe = new ParticleContainer(Particle.FIREWORK).count(100).spread(4, 1).speed(0.01);

@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class RingOfSharpness extends Equipment {
-	private static final String ID = "ringOfSharpness";
+	private static final String ID = "RingOfSharpness";
 	private int buff;
 	
 	public RingOfSharpness(boolean isUpgraded) {

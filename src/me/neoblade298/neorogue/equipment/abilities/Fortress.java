@@ -23,7 +23,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import net.kyori.adventure.text.Component;
 
 public class Fortress extends Equipment {
-	private static final String ID = "fortress";
+	private static final String ID = "Fortress";
 	private int shields, refresh;
 	
 	public Fortress(boolean isUpgraded) {

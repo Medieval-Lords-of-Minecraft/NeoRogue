@@ -39,7 +39,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreLaunchProjectileGroupEvent;
 
 public class PreySeeker extends Equipment {
-	private static final String ID = "preySeeker";
+	private static final String ID = "PreySeeker";
 	private static TargetProperties tp = TargetProperties.radius(4, false, TargetType.ENEMY);
 	private static ParticleContainer trap = new ParticleContainer(Particle.CLOUD).count(20).spread(2, 0.2);
 	private int damage, dur = 8;

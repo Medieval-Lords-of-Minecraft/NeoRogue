@@ -10,7 +10,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class CeruleanBracelet extends Equipment {
-	private static final String ID = "ceruleanBracelet";
+	private static final String ID = "CeruleanBracelet";
 	private int mp;
 	public CeruleanBracelet(boolean isUpgraded) {
 		super(ID, "Cerulean Bracelet", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE,

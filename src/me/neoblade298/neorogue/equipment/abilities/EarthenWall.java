@@ -34,7 +34,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageBarrierEvent;
 
 public class EarthenWall extends Equipment {
-	private static final String ID = "earthenWall";
+	private static final String ID = "EarthenWall";
 	private static final ParticleContainer earth = new ParticleContainer(Particle.BLOCK).blockData(Material.DIRT.createBlockData());
 	private static final TargetProperties tp = TargetProperties.line(7, 2, TargetType.ENEMY);
 	private int damage, def, conc;

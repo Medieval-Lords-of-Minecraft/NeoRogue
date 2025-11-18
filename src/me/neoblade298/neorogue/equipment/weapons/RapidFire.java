@@ -30,7 +30,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 
 public class RapidFire extends Equipment {
-	private static final String ID = "rapidFire";
+	private static final String ID = "RapidFire";
 	private int thres, damage;
 	private static final int MAX = 6;
 	

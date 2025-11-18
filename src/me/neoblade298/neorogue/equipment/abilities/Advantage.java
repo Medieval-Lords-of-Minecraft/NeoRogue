@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 
 public class Advantage extends Equipment {
-	private static final String ID = "advantage";
+	private static final String ID = "Advantage";
 	private int shields, thres = 75;
 	
 	public Advantage(boolean isUpgraded) {

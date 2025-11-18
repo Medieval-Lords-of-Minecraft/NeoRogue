@@ -13,7 +13,7 @@ import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 
 public class GoldIngot extends Artifact {
-	private static final String ID = "goldIngot";
+	private static final String ID = "GoldIngot";
 	
 	public GoldIngot() {
 		super(ID, "Gold Ingot", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);

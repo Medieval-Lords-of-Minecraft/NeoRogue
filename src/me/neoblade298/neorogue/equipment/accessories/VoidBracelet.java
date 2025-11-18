@@ -15,7 +15,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class VoidBracelet extends Equipment {
-	private static final String ID = "voidBracelet";
+	private static final String ID = "VoidBracelet";
 	private int inc;
 	public VoidBracelet(boolean isUpgraded) {
 		super(ID, "Void Bracelet", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE,

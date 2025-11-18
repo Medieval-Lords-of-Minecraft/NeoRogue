@@ -33,7 +33,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class CollectionHex extends Equipment {
-	private static final String ID = "collectionHex";
+	private static final String ID = "CollectionHex";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.SMOKE).offsetY(0.5).spread(0.5, 0.5).count(30),
 			cons = pc.clone().particle(Particle.SOUL);
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_GUARDIAN_HURT);

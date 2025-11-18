@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
 
 public class SilentSteps2 extends Equipment {
-	private static final String ID = "silentSteps2";
+	private static final String ID = "SilentSteps2";
 	private int duration, damage;
 	
 	public SilentSteps2(boolean isUpgraded) {

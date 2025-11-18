@@ -21,7 +21,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class ThrowPoison extends Equipment {
-	private static final String ID = "throwPoison";
+	private static final String ID = "ThrowPoison";
 	private int poison;
 	
 	public ThrowPoison(boolean isUpgraded) {

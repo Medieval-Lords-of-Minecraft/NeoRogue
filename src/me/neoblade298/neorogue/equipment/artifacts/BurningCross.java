@@ -23,7 +23,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 
 public class BurningCross extends Artifact {
-	private static final String ID = "burningCross";
+	private static final String ID = "BurningCross";
 	private int damage, thres;
 
 	public BurningCross() {

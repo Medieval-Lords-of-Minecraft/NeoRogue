@@ -26,7 +26,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class WindTrap extends Equipment {
-	private static final String ID = "windTrap";
+	private static final String ID = "WindTrap";
 	private static TargetProperties tp = TargetProperties.radius(5, false, TargetType.ENEMY);
 	private static ParticleContainer trap = new ParticleContainer(Particle.SWEEP_ATTACK).count(15).spread(2.5, 0.1);
 	private int secs;

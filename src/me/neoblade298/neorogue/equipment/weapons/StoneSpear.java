@@ -35,7 +35,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class StoneSpear extends Equipment {
-	private static final String ID = "stoneSpear";
+	private static final String ID = "StoneSpear";
 	private int damage, throwDamage, throwCooldown = 5;
 	private static final ParticleContainer throwPart = new ParticleContainer(Particle.CLOUD);
 	private static final TargetProperties spearHit = TargetProperties.line(4, 1, TargetType.ENEMY);

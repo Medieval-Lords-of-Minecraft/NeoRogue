@@ -22,7 +22,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
 public class PointBlank extends Equipment {
-	private static final String ID = "pointBlank";
+	private static final String ID = "PointBlank";
 	private int thres, damage;
 	
 	public PointBlank(boolean isUpgraded) {

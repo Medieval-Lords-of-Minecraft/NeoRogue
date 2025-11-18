@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
 public class ShadowImbuement extends Equipment {
-	private static final String ID = "shadowImbuement";
+	private static final String ID = "ShadowImbuement";
 	private int damage;
 	
 	public ShadowImbuement(boolean isUpgraded) {

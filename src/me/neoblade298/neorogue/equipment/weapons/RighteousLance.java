@@ -31,7 +31,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class RighteousLance extends Equipment {
-	private static final String ID = "righteousLance";
+	private static final String ID = "RighteousLance";
 	private static final ParticleContainer lancePart = new ParticleContainer(Particle.ELECTRIC_SPARK).count(3).spread(0.1, 0.1);
 	private static final TargetProperties regHit = TargetProperties.line(4, 1, TargetType.ENEMY),
 			lanceHit = TargetProperties.line(6, 1, TargetType.ENEMY);

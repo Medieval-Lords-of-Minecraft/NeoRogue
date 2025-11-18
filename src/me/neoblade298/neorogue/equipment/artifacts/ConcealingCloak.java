@@ -14,7 +14,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class ConcealingCloak extends Artifact {
-	private static final String ID = "concealingCloak";
+	private static final String ID = "ConcealingCloak";
 
 	public ConcealingCloak() {
 		super(ID, "Concealing Cloak", Rarity.COMMON, EquipmentClass.THIEF);

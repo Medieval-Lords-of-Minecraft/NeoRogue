@@ -25,7 +25,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class DarkScepter extends Equipment {
-	private static final String ID = "darkScepter";
+	private static final String ID = "DarkScepter";
 	private static final int hitScanRange = 12;
 	private static final ParticleContainer tick;
 

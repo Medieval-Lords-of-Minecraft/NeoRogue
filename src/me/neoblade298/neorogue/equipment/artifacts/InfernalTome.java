@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 
 public class InfernalTome extends Artifact {
-	private static final String ID = "infernalTome";
+	private static final String ID = "InfernalTome";
 	
 	public InfernalTome() {
 		super(ID, "Infernal Tome", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);

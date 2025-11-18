@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class ForceCloak extends Equipment {
-	private static final String ID = "forceCloak";
+	private static final String ID = "ForceCloak";
 
 	public ForceCloak(boolean isUpgraded) {
 		super(ID, "Force Cloak", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,

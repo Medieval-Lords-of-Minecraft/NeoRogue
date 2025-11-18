@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class SpiritOfTheDragoon extends Equipment {
-	private static final String ID = "spiritOfTheDragoon";
+	private static final String ID = "SpiritOfTheDragoon";
 	private int strength, shield;
 	private static final ParticleContainer strPart = new ParticleContainer(Particle.FLAME).count(25).spread(0.5, 0.5).offsetY(1).speed(0.1);
 	

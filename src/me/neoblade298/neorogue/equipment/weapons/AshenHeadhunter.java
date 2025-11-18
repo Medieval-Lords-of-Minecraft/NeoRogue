@@ -29,7 +29,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class AshenHeadhunter extends Equipment {
-	private static final String ID = "ashenHeadhunter";
+	private static final String ID = "AshenHeadhunter";
 	private static final ParticleContainer pc;
 	private int burn;
 	

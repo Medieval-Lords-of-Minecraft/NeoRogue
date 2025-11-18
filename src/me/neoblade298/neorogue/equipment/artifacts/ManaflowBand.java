@@ -14,7 +14,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class ManaflowBand extends Artifact {
-	private static final String ID = "manaflowBand";
+	private static final String ID = "ManaflowBand";
 
 	public ManaflowBand() {
 		super(ID, "Manaflow Band", Rarity.COMMON, EquipmentClass.CLASSLESS);

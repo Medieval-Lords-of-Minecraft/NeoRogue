@@ -20,7 +20,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class MonksHeadsplitter extends Equipment {
-	private static final String ID = "monksHeadsplitter";
+	private static final String ID = "MonksHeadsplitter";
 	private int bonus;
 	
 	public MonksHeadsplitter(boolean isUpgraded) {

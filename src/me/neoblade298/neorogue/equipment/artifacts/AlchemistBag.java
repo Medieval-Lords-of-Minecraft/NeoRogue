@@ -16,7 +16,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class AlchemistBag extends Artifact {
-	private static final String ID = "alchemistBag";
+	private static final String ID = "AlchemistBag";
 	private static final int heal = 15;
 
 	public AlchemistBag() {

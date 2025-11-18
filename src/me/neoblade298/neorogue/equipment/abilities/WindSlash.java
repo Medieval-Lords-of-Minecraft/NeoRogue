@@ -26,7 +26,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class WindSlash extends Equipment {
-	private static final String ID = "windSlash";
+	private static final String ID = "WindSlash";
 	private int amount, damage;
 	private ProjectileGroup projs = new ProjectileGroup();
 	private static final ParticleContainer part = new ParticleContainer(Particle.SWEEP_ATTACK);

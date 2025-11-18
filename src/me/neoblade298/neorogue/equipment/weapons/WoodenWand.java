@@ -26,7 +26,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class WoodenWand extends Equipment {
-	private static final String ID = "woodenWand";
+	private static final String ID = "WoodenWand";
 	private static final ParticleContainer tick;
 	private static final SoundContainer tickSound = new SoundContainer(Sound.BLOCK_AMETHYST_BLOCK_BREAK),
 			hit = new SoundContainer(Sound.BLOCK_CHAIN_PLACE);

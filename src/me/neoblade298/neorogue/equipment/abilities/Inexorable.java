@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Inexorable extends Equipment {
-	private static final String ID = "inexorable";
+	private static final String ID = "Inexorable";
 	private int shields, refresh;
 	
 	public Inexorable(boolean isUpgraded) {

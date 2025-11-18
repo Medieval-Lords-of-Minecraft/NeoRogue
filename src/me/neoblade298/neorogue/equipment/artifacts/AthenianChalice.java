@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.CheckCastUsableEvent;
 
 public class AthenianChalice extends Artifact {
-	private static final String ID = "athenianChalice";
+	private static final String ID = "AthenianChalice";
 	private static final int gain = 5;
 
 	public AthenianChalice() {

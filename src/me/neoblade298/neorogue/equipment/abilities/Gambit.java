@@ -28,7 +28,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerCondition;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Gambit extends Equipment {
-	private static final String ID = "gambit";
+	private static final String ID = "Gambit";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST).count(50).spread(1, 1).offsetY(1);
 	private static final TriggerCondition cond = (p, pdata, in) -> {
 		if (!pdata.hasStatus(StatusType.FOCUS)) {

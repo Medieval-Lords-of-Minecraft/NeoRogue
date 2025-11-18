@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class ManaCloak extends Equipment {
-	private static final String ID = "manaCloak";
+	private static final String ID = "ManaCloak";
 	private int shields;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
 

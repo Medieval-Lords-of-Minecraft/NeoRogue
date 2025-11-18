@@ -23,7 +23,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroupEvent;
 
 public class PiercingShot extends Equipment {
-	private static final String ID = "piercingShot";
+	private static final String ID = "PiercingShot";
 	private int damage;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST).spread(0.2, 0.2).count(3);
 	

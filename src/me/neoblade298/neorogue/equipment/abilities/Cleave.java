@@ -24,7 +24,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Cleave extends Equipment {
-	private static final String ID = "cleave";
+	private static final String ID = "Cleave";
 	private int damage;
 	private static final ParticleContainer part = new ParticleContainer(Particle.SWEEP_ATTACK).offsetForward(2).count(10).spread(2.5, 0.2);
 	private static final TargetProperties tp = TargetProperties.cone(90, 5, false, TargetType.ENEMY);

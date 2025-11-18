@@ -38,7 +38,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class ElectricOrb extends Equipment {
-	private static final String ID = "electricOrb";
+	private static final String ID = "ElectricOrb";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.END_ROD), line = new ParticleContainer(Particle.ELECTRIC_SPARK);
 	private static final SoundContainer shoot = new SoundContainer(Sound.ENTITY_FIREWORK_ROCKET_BLAST);
 	private static final TargetProperties tp = TargetProperties.radius(12, false);

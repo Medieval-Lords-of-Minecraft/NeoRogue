@@ -19,7 +19,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.WeaponSwingEvent;
 
 public class Flurry extends Equipment {
-	private static final String ID = "flurry";
+	private static final String ID = "Flurry";
 	private int cutoff;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
 	

@@ -27,7 +27,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class HibernianQuickblade extends Equipment {
-	private static final String ID = "hibernianQuickblade";
+	private static final String ID = "HibernianQuickblade";
 	private static final TargetProperties props = TargetProperties.radius(3, false, TargetType.ENEMY);
 	private int shields;
 	

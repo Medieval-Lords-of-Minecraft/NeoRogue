@@ -19,7 +19,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
 public class Lethality extends Equipment {
-	private static final String ID = "lethality";
+	private static final String ID = "Lethality";
 	private int thres, inc;
 	
 	public Lethality(boolean isUpgraded) {

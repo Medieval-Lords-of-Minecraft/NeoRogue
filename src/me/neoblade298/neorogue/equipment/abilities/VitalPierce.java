@@ -20,7 +20,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class VitalPierce extends Equipment {
-	private static final String ID = "vitalPierce";
+	private static final String ID = "VitalPierce";
 	private int damage;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
 			hit = new ParticleContainer(Particle.DUST);

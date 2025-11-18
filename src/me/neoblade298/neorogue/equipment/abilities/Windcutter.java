@@ -28,7 +28,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Windcutter extends Equipment {
-	private static final String ID = "windcutter";
+	private static final String ID = "Windcutter";
 	private static final SoundContainer sound = new SoundContainer(Sound.ENTITY_ELDER_GUARDIAN_DEATH, 2F);
 	private static final ParticleContainer part = new ParticleContainer(Particle.SWEEP_ATTACK);
 	private static final int PROJECTILE_AMOUNT = 5;

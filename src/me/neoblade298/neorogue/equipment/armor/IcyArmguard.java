@@ -20,7 +20,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 
 public class IcyArmguard extends Equipment {
-	private static final String ID = "icyArmguard";
+	private static final String ID = "IcyArmguard";
 	private int damageReduction, shields, thres;
 	
 	public IcyArmguard(boolean isUpgraded) {

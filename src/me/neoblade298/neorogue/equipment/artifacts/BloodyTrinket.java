@@ -15,7 +15,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class BloodyTrinket extends Artifact {
-	private static final String ID = "bloodyTrinket";
+	private static final String ID = "BloodyTrinket";
 
 	public BloodyTrinket() {
 		super(ID, "Bloody Trinket", Rarity.UNCOMMON, EquipmentClass.WARRIOR);

@@ -33,7 +33,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class LayTrap extends Equipment {
-	private static final String ID = "layTrap";
+	private static final String ID = "LayTrap";
 	private static TargetProperties tp = TargetProperties.radius(2, false, TargetType.ENEMY);
 	private static ParticleContainer trap = new ParticleContainer(Particle.CRIT).count(50).spread(1, 0.2),
 		hit = new ParticleContainer(Particle.CRIT).count(50).spread(1, 1);

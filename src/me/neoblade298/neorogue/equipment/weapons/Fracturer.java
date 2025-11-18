@@ -37,7 +37,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Fracturer extends Equipment {
-	private static final String ID = "fracturer";
+	private static final String ID = "Fracturer";
 	private static final int DISTANCE = 4, RADIUS = 2;
 	private static final TargetProperties props = TargetProperties.radius(RADIUS, true, TargetType.ENEMY),
 			line = TargetProperties.line(5, 2, TargetType.ENEMY);

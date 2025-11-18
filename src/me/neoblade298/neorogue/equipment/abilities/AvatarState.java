@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class AvatarState extends Equipment {
-	private static final String ID = "avatarState";
+	private static final String ID = "AvatarState";
 	private double mreg, hreg;
 	private int shields;
 

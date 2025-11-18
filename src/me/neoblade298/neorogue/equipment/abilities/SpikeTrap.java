@@ -30,7 +30,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class SpikeTrap extends Equipment {
-	private static final String ID = "spikeTrap";
+	private static final String ID = "SpikeTrap";
 	private static TargetProperties tp = TargetProperties.radius(2, false, TargetType.ENEMY);
 	private static ParticleContainer spike = new ParticleContainer(Particle.FIREWORK).count(50).spread(1, 0.4);
 	private int damage = 40;

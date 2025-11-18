@@ -24,7 +24,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroupEvent;
 
 public class Posturing2 extends Equipment {
-	private static final String ID = "posturing2";
+	private static final String ID = "Posturing2";
 	private int time, inc;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.ENCHANT).count(25).spread(1, 1).offsetY(1);
 	

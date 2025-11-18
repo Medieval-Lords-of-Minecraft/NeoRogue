@@ -15,7 +15,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class EarthenRing extends Equipment {
-	private static final String ID = "earthenRing";
+	private static final String ID = "EarthenRing";
 	private int damage;
 	
 	public EarthenRing(boolean isUpgraded) {

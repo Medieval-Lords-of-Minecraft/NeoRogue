@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class LeatherChestplate extends Equipment {
-	private static final String ID = "leatherChestplate";
+	private static final String ID = "LeatherChestplate";
 	private int damageReduction;
 	
 	public LeatherChestplate(boolean isUpgraded) {

@@ -21,7 +21,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 
 public class ChosenOfTheLight extends Equipment {
-	private static final String ID = "chosenOfTheLight";
+	private static final String ID = "ChosenOfTheLight";
 	private double mult;
 	private int heal, multStr;
 	

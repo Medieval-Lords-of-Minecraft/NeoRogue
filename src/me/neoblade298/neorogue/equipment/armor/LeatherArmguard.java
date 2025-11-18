@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class LeatherArmguard extends Equipment {
-	private static final String ID = "leatherArmguard";
+	private static final String ID = "LeatherArmguard";
 	private double def, spdef;
 	
 	public LeatherArmguard(boolean isUpgraded) {

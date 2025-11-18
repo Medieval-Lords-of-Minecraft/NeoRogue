@@ -22,7 +22,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class Flametongue extends Equipment {
-	private static final String ID = "flametongue";
+	private static final String ID = "Flametongue";
 	
 	public Flametongue(boolean isUpgraded) {
 		super(ID, "Flametongue", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,

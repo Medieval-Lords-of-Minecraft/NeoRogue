@@ -31,7 +31,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
 public class Consecrate extends Equipment {
-	private static final String ID = "consecrate";
+	private static final String ID = "Consecrate";
 	private static final TargetProperties tp = TargetProperties.radius(5, false);
 	private static final ParticleContainer edge = new ParticleContainer(Particle.CLOUD),
 			center = new ParticleContainer(Particle.FIREWORK).count(100).spread(tp.range / 2, 0.5).speed(0.01).offsetY(0.5);

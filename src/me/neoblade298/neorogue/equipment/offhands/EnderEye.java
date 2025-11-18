@@ -32,7 +32,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class EnderEye extends Equipment {
-	private static final String ID = "enderEye";
+	private static final String ID = "EnderEye";
 	private static final TargetProperties tp = TargetProperties.cone(60, 5, false, TargetType.ENEMY);
 	private static final Cone cone = new Cone(tp.range, tp.arc);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.PORTAL);

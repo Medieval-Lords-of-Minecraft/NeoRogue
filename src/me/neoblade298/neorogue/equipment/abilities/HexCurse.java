@@ -32,7 +32,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class HexCurse extends Equipment {
-	private static final String ID = "hexCurse";
+	private static final String ID = "HexCurse";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.SMOKE).offsetY(1).spread(0.5, 0.5).count(30),
 			cons = pc.clone().particle(Particle.SOUL);
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_GUARDIAN_HURT);

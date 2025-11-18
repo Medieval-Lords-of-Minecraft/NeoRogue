@@ -17,7 +17,7 @@ import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class RedRing extends Equipment {
-	private static final String ID = "redRing";
+	private static final String ID = "RedRing";
 	private int inc;
 	public RedRing(boolean isUpgraded) {
 		super(ID, "Red Ring", isUpgraded, Rarity.COMMON, new EquipmentClass[] { EquipmentClass.ARCHER, EquipmentClass.MAGE },

@@ -20,7 +20,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
 
 public class GrendelsFavoriteTome extends Artifact {
-	private static final String ID = "grendelsFavoriteTome";
+	private static final String ID = "GrendelsFavoriteTome";
 
 	public GrendelsFavoriteTome() {
 		super(ID, "Grendel's Favorite Tome", Rarity.RARE, EquipmentClass.MAGE);

@@ -23,7 +23,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
 public class Initiator extends Equipment {
-	private static final String ID = "initiator";
+	private static final String ID = "Initiator";
 	private int damage;
 	
 	public Initiator(boolean isUpgraded) {

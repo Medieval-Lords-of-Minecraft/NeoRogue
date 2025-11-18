@@ -24,7 +24,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class StoneThrowingKnife extends Equipment {
-	private static final String ID = "stoneThrowingKnife";
+	private static final String ID = "StoneThrowingKnife";
 	
 	private static final ParticleContainer tick = new ParticleContainer(Particle.CRIT).count(1);
 	private static final SoundContainer hit = new SoundContainer(Sound.ENTITY_ITEM_BREAK);

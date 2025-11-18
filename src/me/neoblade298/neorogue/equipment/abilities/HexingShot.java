@@ -41,7 +41,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.KillEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class HexingShot extends Equipment {
-	private static final String ID = "hexingShot";
+	private static final String ID = "HexingShot";
 	private int dec = 15, damage;
 	private ItemStack activeIcon;
 	private static TargetProperties tp = TargetProperties.radius(3, false, TargetType.ENEMY);

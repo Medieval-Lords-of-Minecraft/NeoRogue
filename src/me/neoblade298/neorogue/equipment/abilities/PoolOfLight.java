@@ -27,7 +27,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class PoolOfLight extends Equipment {
-	private static final String ID = "poolOfLight";
+	private static final String ID = "PoolOfLight";
 	private int sanct;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.FIREWORK).count(50).spread(2.5, 0.1);
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_ELDER_GUARDIAN_CURSE, 1.6F);

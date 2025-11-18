@@ -11,7 +11,7 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 
 public class TomeOfWisdom extends Artifact {
-	private static final String ID = "tomeOfWisdom";
+	private static final String ID = "TomeOfWisdom";
 
 	public TomeOfWisdom() {
 		super(ID, "Tome Of Wisdom", Rarity.RARE, EquipmentClass.CLASSLESS);

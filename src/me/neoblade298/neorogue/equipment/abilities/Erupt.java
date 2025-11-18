@@ -28,7 +28,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Erupt extends Equipment {
-	private static final String ID = "erupt";
+	private static final String ID = "Erupt";
 	private static TargetProperties tp = TargetProperties.line(8, 2, TargetType.ENEMY),
 		aoe = TargetProperties.radius(3, false);
 	private static ParticleContainer fire = new ParticleContainer(Particle.FLAME).count(50).spread(0.5, 2).offsetY(1).speed(0.1),

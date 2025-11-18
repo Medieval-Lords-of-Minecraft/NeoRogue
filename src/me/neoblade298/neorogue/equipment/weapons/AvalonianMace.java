@@ -21,7 +21,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class AvalonianMace extends Equipment {
-	private static final String ID = "avalonianMace";
+	private static final String ID = "AvalonianMace";
 	private int mult;
 
 	public AvalonianMace(boolean isUpgraded) {

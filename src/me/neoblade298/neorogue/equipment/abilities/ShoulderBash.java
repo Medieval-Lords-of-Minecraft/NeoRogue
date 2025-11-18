@@ -29,7 +29,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class ShoulderBash extends Equipment {
-	private static final String ID = "shoulderBash";
+	private static final String ID = "ShoulderBash";
 	private int damage, inc;
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST_PLUME).count(20).spread(0.5, 0.5);

@@ -26,7 +26,7 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 
 public class ExplosiveArrow extends LimitedAmmunition {
-	private static final String ID = "explosiveArrow";
+	private static final String ID = "ExplosiveArrow";
 	private static final TargetProperties tp = TargetProperties.radius(3, true, TargetType.ENEMY);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION);
 	

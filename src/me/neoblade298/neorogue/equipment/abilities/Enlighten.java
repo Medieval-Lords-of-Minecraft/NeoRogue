@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
 public class Enlighten extends Equipment {
-	private static final String ID = "enlighten";
+	private static final String ID = "Enlighten";
 	private int sanct;
 	
 	public Enlighten(boolean isUpgraded) {

@@ -20,7 +20,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class StormSigil extends Artifact {
-	private static final String ID = "stormSigil";
+	private static final String ID = "StormSigil";
 	private static final int damage = 15, secs = 5;
 
 	public StormSigil() {

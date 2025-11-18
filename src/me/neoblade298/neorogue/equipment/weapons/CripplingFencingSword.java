@@ -19,7 +19,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class CripplingFencingSword extends Equipment {
-	private static final String ID = "cripplingFencingSword";
+	private static final String ID = "CripplingFencingSword";
 	private int shields, concussed;
 	
 	public CripplingFencingSword(boolean isUpgraded) {

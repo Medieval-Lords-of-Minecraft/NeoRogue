@@ -12,7 +12,7 @@ import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 
 public class MinorHealthPotion extends Consumable {
-	private static final String ID = "minorHealthPotion";
+	private static final String ID = "MinorHealthPotion";
 	private double health;
 	
 	public MinorHealthPotion(boolean isUpgraded) {

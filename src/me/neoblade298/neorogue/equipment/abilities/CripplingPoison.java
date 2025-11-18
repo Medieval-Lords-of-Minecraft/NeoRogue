@@ -29,7 +29,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class CripplingPoison extends Equipment {
-	private static final String ID = "cripplingPoison";
+	private static final String ID = "CripplingPoison";
 	private int inc, poisonThreshold;
 	private static final ParticleContainer part = new ParticleContainer(Particle.CRIT).count(50).spread(0.5, 0.5);
 	private static final TargetProperties tp = TargetProperties.cone(90, 5, false, TargetType.ENEMY);

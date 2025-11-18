@@ -30,7 +30,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 
 public class IcicleTome extends Equipment {
-	private static final String ID = "icicleTome";
+	private static final String ID = "IcicleTome";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.BLOCK).blockData(Material.BLUE_ICE.createBlockData());
 	private int damage, thres;
 	

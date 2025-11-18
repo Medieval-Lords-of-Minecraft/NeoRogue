@@ -12,7 +12,7 @@ import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 
 public class RubyShard extends Artifact {
-	private static final String ID = "rubyShard";
+	private static final String ID = "RubyShard";
 	private int max, shields;
 
 	public RubyShard() {

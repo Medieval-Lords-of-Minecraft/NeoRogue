@@ -23,7 +23,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class DarkPact extends Equipment {
-	private static final String ID = "darkPact";
+	private static final String ID = "DarkPact";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME);
 	private int seconds;
 	

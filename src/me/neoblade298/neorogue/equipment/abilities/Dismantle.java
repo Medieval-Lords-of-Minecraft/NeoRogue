@@ -17,7 +17,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class Dismantle extends Equipment {
-	private static final String ID = "dismantle";
+	private static final String ID = "Dismantle";
 	private int stacks;
 	
 	public Dismantle(boolean isUpgraded) {

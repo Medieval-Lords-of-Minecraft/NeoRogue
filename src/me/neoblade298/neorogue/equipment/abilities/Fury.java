@@ -23,7 +23,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class Fury extends Equipment {
-	private static final String ID = "fury";
+	private static final String ID = "Fury";
 	private int damage, berserk, heal, berserkHeal;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
 			hit = new ParticleContainer(Particle.DUST),

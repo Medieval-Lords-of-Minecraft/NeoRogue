@@ -35,7 +35,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class RighteousHammer extends Equipment {
-	private static final String ID = "righteousHammer";
+	private static final String ID = "RighteousHammer";
 	private static final int DISTANCE = 4, RADIUS = 2;
 	private static final TargetProperties props = TargetProperties.radius(RADIUS, true, TargetType.ENEMY);
 	private static final ParticleContainer swingPart = new ParticleContainer(Particle.CLOUD).count(5).spread(0.1, 0.1),

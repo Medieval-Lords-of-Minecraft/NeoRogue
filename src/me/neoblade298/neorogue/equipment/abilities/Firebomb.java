@@ -31,7 +31,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Firebomb extends Equipment {
-	private static final String ID = "firebomb";
+	private static final String ID = "Firebomb";
 	private static final TargetProperties tp = TargetProperties.radius(3, false, TargetType.ENEMY);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME).spread(1.5, 0.1).count(100);
 	private int burn, damage;

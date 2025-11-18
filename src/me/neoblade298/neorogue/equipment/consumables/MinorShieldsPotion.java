@@ -12,7 +12,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 
 public class MinorShieldsPotion extends Consumable {
-	private static final String ID = "minorShieldsPotion";
+	private static final String ID = "MinorShieldsPotion";
 	private double shields;
 	
 	public MinorShieldsPotion(boolean isUpgraded) {

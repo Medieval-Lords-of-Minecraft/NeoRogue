@@ -15,7 +15,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class VermillionBelt extends Equipment {
-	private static final String ID = "vermillionBelt";
+	private static final String ID = "VermillionBelt";
 	private int thres, berserk;
 	public VermillionBelt(boolean isUpgraded) {
 		super(ID, "Vermillion Belt", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,

@@ -12,7 +12,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class RustySword extends Equipment {
-	private static final String ID = "rustySword";
+	private static final String ID = "RustySword";
 	
 	public RustySword() {
 		super(ID, "Rusty Sword", EquipmentType.ACCESSORY);

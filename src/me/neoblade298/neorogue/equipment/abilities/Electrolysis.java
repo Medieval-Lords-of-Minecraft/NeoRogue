@@ -24,7 +24,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
 public class Electrolysis extends Equipment {
-	private static final String ID = "electrolysis";
+	private static final String ID = "Electrolysis";
 	private double mult;
 	private int mana, multStr;
 	

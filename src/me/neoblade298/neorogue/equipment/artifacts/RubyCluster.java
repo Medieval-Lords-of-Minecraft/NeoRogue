@@ -12,7 +12,7 @@ import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 
 public class RubyCluster extends Artifact {
-	private static final String ID = "rubyCluster";
+	private static final String ID = "RubyCluster";
 	private int max, shields;
 
 	public RubyCluster() {

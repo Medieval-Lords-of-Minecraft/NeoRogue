@@ -26,7 +26,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class CompoundingInjury extends Equipment {
-	private static final String ID = "compoundingInjury";
+	private static final String ID = "CompoundingInjury";
 	private int multStr, thres;
 	private double mult;
 	

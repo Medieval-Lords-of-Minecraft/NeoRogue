@@ -10,7 +10,7 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.DamageType;
 
 public class LitArrow extends Ammunition {
-	private static final String ID = "litArrow";
+	private static final String ID = "LitArrow";
 	
 	public LitArrow(boolean isUpgraded) {
 		super(ID, "Lit Arrow", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,

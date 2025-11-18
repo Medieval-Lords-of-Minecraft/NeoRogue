@@ -19,7 +19,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 
 public class Prayer extends Equipment {
-	private static final String ID = "prayer";
+	private static final String ID = "Prayer";
 	private int heal;
 	private double healPct;
 	

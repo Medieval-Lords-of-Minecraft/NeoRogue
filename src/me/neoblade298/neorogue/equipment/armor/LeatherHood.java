@@ -13,7 +13,7 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class LeatherHood extends Equipment {
-	private static final String ID = "leatherHood";
+	private static final String ID = "LeatherHood";
 	private int dur;
 	
 	public LeatherHood(boolean isUpgraded) {

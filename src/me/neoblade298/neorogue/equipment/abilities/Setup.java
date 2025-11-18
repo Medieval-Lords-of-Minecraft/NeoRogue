@@ -35,7 +35,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Setup extends Equipment {
-	private static final String ID = "setup";
+	private static final String ID = "Setup";
 	private int time, inc, damage;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.ENCHANT).count(25).spread(1, 1).offsetY(1),
 		trap = new ParticleContainer(Particle.CRIT).count(50).spread(1, 0.2);

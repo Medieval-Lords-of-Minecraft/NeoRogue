@@ -10,7 +10,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class SpiritShard extends Equipment {
-	private static final String ID = "spiritShard";
+	private static final String ID = "SpiritShard";
 	private double stam, mana;
 
 	public SpiritShard(boolean isUpgraded) {

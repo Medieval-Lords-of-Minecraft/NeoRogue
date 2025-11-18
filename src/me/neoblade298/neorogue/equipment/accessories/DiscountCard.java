@@ -13,7 +13,7 @@ import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 
 public class DiscountCard extends Artifact {
-	private static final String ID = "discountCard";
+	private static final String ID = "DiscountCard";
 
 	public DiscountCard() {
 		super(ID, "Discount Card", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);

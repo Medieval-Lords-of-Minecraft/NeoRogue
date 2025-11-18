@@ -36,7 +36,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Frostwalker extends Equipment {
-	private static final String ID = "frostwalker";
+	private static final String ID = "Frostwalker";
 	private static final TargetProperties tp = TargetProperties.radius(2, false, TargetType.ENEMY);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD).count(25).spread(2, 0.2)
 			.offsetY(0.5);

@@ -19,7 +19,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
 
 public class HerculeanStrength extends Equipment {
-	private static final String ID = "herculeanStrength";
+	private static final String ID = "HerculeanStrength";
 	private int strength, conc, bers;
 	
 	public HerculeanStrength(boolean isUpgraded) {

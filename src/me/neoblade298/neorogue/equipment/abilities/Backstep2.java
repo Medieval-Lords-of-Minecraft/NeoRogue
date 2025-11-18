@@ -33,7 +33,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 
 public class Backstep2 extends Equipment {
-	private static final String ID = "backstep2";
+	private static final String ID = "Backstep2";
 	private static final int[] ROTATIONS = { 0, -15, 15 };
 	private int thres, damage, rend;
 	

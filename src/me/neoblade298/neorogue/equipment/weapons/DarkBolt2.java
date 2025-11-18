@@ -31,7 +31,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class DarkBolt2 extends Equipment {
-	private static final String ID = "darkBolt2";
+	private static final String ID = "DarkBolt2";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST).dustOptions(new DustOptions(Color.BLACK, 1F));
 	private int damage, dur;
 	

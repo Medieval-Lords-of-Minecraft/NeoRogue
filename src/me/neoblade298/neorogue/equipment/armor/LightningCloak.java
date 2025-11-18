@@ -24,7 +24,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class LightningCloak extends Equipment {
-	private static final String ID = "lightningCloak";
+	private static final String ID = "LightningCloak";
 	private int base, threshold, def;
 	
 	public LightningCloak(boolean isUpgraded) {

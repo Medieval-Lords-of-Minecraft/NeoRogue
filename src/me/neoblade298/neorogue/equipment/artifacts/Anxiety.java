@@ -19,7 +19,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Anxiety extends Artifact {
-	private static final String ID = "anxiety";
+	private static final String ID = "Anxiety";
 	
 	public Anxiety() {
 		super(ID, "Anxiety", Rarity.COMMON, EquipmentClass.CLASSLESS);

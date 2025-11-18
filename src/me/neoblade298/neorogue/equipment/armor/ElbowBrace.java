@@ -20,7 +20,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroupEvent;
 
 public class ElbowBrace extends Equipment {
-	private static final String ID = "elbowBrace";
+	private static final String ID = "ElbowBrace";
 	private int damageReduction;
 	
 	public ElbowBrace(boolean isUpgraded) {

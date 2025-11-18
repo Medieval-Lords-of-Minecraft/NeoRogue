@@ -15,7 +15,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveHealthDamageEvent;
 
 public class Gauze extends Equipment {
-	private static final String ID = "gauze";
+	private static final String ID = "Gauze";
 	private int pct, max;
 	
 	public Gauze(boolean isUpgraded) {

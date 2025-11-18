@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class WoodenSword extends Equipment {
-	private static final String ID = "woodenSword";
+	private static final String ID = "WoodenSword";
 	
 	public WoodenSword(boolean isUpgraded) {
 		super(ID, "Wooden Sword", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,

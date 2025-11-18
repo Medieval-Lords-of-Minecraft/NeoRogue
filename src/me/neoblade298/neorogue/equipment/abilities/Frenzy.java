@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.WeaponSwingEvent;
 
 public class Frenzy extends Equipment {
-	private static final String ID = "frenzy";
+	private static final String ID = "Frenzy";
 	private int atkSpeed;
 	private static final int CUTOFF = 5;
 	

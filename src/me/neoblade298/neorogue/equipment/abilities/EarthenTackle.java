@@ -31,7 +31,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class EarthenTackle extends Equipment {
-	private static final String ID = "earthenTackle";
+	private static final String ID = "EarthenTackle";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION),
 			start = new ParticleContainer(Particle.BLOCK),
 			dirt = start.clone().spread(0.5, 0.5);

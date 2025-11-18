@@ -14,7 +14,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class Neoblade extends Equipment {
-	private static final String ID = "neoblade";
+	private static final String ID = "Neoblade";
 	
 	public Neoblade(boolean isUpgraded) {
 		super(ID, "Neoblade", isUpgraded, Rarity.LEGENDARY, EquipmentClass.CLASSLESS,

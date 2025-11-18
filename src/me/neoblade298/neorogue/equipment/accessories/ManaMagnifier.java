@@ -14,7 +14,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroupEvent;
 
 public class ManaMagnifier extends Equipment {
-	private static final String ID = "manaMagnifier";
+	private static final String ID = "ManaMagnifier";
 	private int buff;
 
 	public ManaMagnifier(boolean isUpgraded) {

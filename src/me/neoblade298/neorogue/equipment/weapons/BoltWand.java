@@ -26,7 +26,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class BoltWand extends Equipment {
-	private static final String ID = "boltWand";
+	private static final String ID = "BoltWand";
 	private static final ParticleContainer tick;
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_LIGHTNING_BOLT_IMPACT);
 

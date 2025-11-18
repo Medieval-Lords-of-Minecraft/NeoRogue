@@ -23,7 +23,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class BlessedEdge extends Equipment {
-	private static final String ID = "blessedEdge";
+	private static final String ID = "BlessedEdge";
 	private int damage, sanct;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
 			hit = new ParticleContainer(Particle.FIREWORK);

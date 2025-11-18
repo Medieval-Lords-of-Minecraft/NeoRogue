@@ -24,7 +24,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
 public class StaticNecklace extends Artifact {
-	private static final String ID = "staticNecklace";
+	private static final String ID = "StaticNecklace";
 
 	public StaticNecklace() {
 		super(ID, "Static Necklace", Rarity.COMMON, EquipmentClass.THIEF);

@@ -32,7 +32,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class BreakTheLine extends Equipment {
-	private static final String ID = "breakTheLine";
+	private static final String ID = "BreakTheLine";
 	private int conc, damage = 220;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION).count(15).spread(3, 0);
 	private static final TargetProperties tp = TargetProperties.radius(4, true, TargetType.ENEMY);

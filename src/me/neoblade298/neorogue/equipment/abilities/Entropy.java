@@ -22,7 +22,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Entropy extends Equipment {
-	private static final String ID = "entropy";
+	private static final String ID = "Entropy";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.ENCHANT).count(25).spread(0.5, 0.5).speed(0.1);;
 	private int intel, riftThres;
 	

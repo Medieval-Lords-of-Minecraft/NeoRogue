@@ -39,7 +39,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class RecklessApproach extends Equipment {
-	private static final String ID = "recklessApproach";
+	private static final String ID = "RecklessApproach";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION),
 			start = new ParticleContainer(Particle.CLOUD);
 	private static final TargetProperties hc = TargetProperties.radius(1.5, true, TargetType.ENEMY),

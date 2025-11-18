@@ -11,7 +11,7 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class LeatherCowl extends Equipment {
-	private static final String ID = "leatherCowl";
+	private static final String ID = "LeatherCowl";
 	private int evade;
 	
 	public LeatherCowl(boolean isUpgraded) {

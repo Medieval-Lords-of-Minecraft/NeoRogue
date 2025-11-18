@@ -20,7 +20,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroupEvent;
 
 public class Momentum extends Equipment {
-	private static final String ID = "momentum";
+	private static final String ID = "Momentum";
 	private static final int DISTANCE = 5;
 	private int damage, dur;
 	

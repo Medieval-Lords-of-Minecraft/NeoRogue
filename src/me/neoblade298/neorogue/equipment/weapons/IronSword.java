@@ -21,7 +21,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class IronSword extends Equipment {
-	private static final String ID = "ironSword";
+	private static final String ID = "IronSword";
 	
 	public IronSword(boolean isUpgraded) {
 		super(ID, "Iron Sword", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,

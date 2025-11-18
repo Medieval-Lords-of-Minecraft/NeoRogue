@@ -21,7 +21,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroupEvent;
 
 public class ArcheryGlove extends Equipment {
-	private static final String ID = "archeryGlove";
+	private static final String ID = "ArcheryGlove";
 	private int thres, dec;
 	
 	public ArcheryGlove(boolean isUpgraded) {

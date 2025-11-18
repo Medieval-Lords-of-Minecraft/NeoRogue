@@ -20,7 +20,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 
 public class BurningRing extends Equipment {
-	private static final String ID = "burningRing";
+	private static final String ID = "BurningRing";
 	private int inc, dec;
 	public BurningRing(boolean isUpgraded) {
 		super(ID, "Burning Ring", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,

@@ -32,7 +32,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Sear extends Equipment {
-	private static final String ID = "sear";
+	private static final String ID = "Sear";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME).count(10).spread(0.5, 0.2).offsetY(-0.3);
 	private int damage, burn;
 	

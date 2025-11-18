@@ -34,7 +34,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Pin extends Equipment {
-	private static final String ID = "pin";
+	private static final String ID = "Pin";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION),
 			start = new ParticleContainer(Particle.CLOUD);
 	private static final TargetProperties aoe = TargetProperties.radius(2, true, TargetType.ENEMY);

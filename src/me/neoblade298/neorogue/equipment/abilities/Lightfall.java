@@ -30,7 +30,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Lightfall extends Equipment {
-	private static final String ID = "lightfall";
+	private static final String ID = "Lightfall";
 	private static final TargetProperties tp = TargetProperties.radius(5, false);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
 			explode = new ParticleContainer(Particle.FIREWORK).count(50).spread(tp.range / 2, 1).speed(0.01);

@@ -31,7 +31,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class EyeOfTheStorm extends Equipment {
-	private static final String ID = "eyeOfTheStorm";
+	private static final String ID = "EyeOfTheStorm";
 	private int damage, elec;
 	private static final TargetProperties tp = TargetProperties.radius(4, false);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.ENCHANTED_HIT);

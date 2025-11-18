@@ -32,7 +32,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class MirrorSickle extends Equipment {
-	private static final String ID = "mirrorSickle";
+	private static final String ID = "MirrorSickle";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.PORTAL).count(50).spread(0.5, 0.5).offsetY(1);
 	private static TargetProperties tp = TargetProperties.radius(3, false, TargetType.ENEMY);
 	private int dash;

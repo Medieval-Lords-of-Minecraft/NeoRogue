@@ -19,7 +19,7 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.session.fight.DamageType;
 
 public class Firefly extends Ammunition {
-	private static final String ID = "firefly";
+	private static final String ID = "Firefly";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME);
 	
 	public Firefly(boolean isUpgraded) {

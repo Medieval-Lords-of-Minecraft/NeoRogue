@@ -19,7 +19,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 
 public class NullifyingCloak extends Equipment {
-	private static final String ID = "nullifyingCloak";
+	private static final String ID = "NullifyingCloak";
 	private int def;
 	public NullifyingCloak(boolean isUpgraded) {
 		super(ID, "Nullifying Cloak", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,

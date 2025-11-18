@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
 
 public class Fade extends Equipment {
-	private static final String ID = "fade";
+	private static final String ID = "Fade";
 	private int duration, cooldown;
 	
 	public Fade(boolean isUpgraded) {

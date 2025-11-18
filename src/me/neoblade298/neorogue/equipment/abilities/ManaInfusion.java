@@ -25,7 +25,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroupEvent;
 
 public class ManaInfusion extends Equipment {
-	private static final String ID = "manaInfusion";
+	private static final String ID = "ManaInfusion";
 	private int damage, drain, mana = 3;
 	private ItemStack activeIcon;
 

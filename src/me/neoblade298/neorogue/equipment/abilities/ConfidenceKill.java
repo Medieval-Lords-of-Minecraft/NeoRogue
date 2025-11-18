@@ -33,7 +33,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.KillEvent;
 
 public class ConfidenceKill extends Equipment {
-	private static final String ID = "confidenceKill";
+	private static final String ID = "ConfidenceKill";
 	private static TargetProperties tp = TargetProperties.line(8, 2, TargetType.ENEMY);
 	private static ParticleContainer pc = new ParticleContainer(Particle.SMOKE).count(50).spread(0.5, 2).offsetY(1);
 	private int stacks, buff;

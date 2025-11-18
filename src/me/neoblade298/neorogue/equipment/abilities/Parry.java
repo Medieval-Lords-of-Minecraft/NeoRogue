@@ -27,7 +27,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class Parry extends Equipment {
-	private static final String ID = "parry";
+	private static final String ID = "Parry";
 	private int shields, damage;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
 			bpc = new ParticleContainer(Particle.FLAME),

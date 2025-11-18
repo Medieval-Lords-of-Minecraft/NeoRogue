@@ -25,7 +25,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 
 public class EnduranceShield extends Equipment {
-	private static final String ID = "enduranceShield";
+	private static final String ID = "EnduranceShield";
 	private int reduction, damage;
 
 	public EnduranceShield(boolean isUpgraded) {

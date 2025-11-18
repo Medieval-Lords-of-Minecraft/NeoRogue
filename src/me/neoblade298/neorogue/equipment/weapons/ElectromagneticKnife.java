@@ -19,7 +19,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class ElectromagneticKnife extends Equipment {
-	private static final String ID = "electromagneticKnife";
+	private static final String ID = "ElectromagneticKnife";
 	private static int elec, inc;
 	
 	public ElectromagneticKnife(boolean isUpgraded) {

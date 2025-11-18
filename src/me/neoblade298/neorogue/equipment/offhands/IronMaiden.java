@@ -24,7 +24,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 
 public class IronMaiden extends Equipment {
-	private static final String ID = "ironMaiden";
+	private static final String ID = "IronMaiden";
 	private int reduction, thorns;
 
 	public IronMaiden(boolean isUpgraded) {

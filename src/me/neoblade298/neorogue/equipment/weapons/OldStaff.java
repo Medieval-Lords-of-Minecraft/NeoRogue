@@ -26,7 +26,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class OldStaff extends Equipment {
-	private static final String ID = "oldStaff";
+	private static final String ID = "OldStaff";
 	private static final ParticleContainer tick = new ParticleContainer(org.bukkit.Particle.ASH).count(5).spread(0.1, 0.1).speed(0.01);
 	private static final SoundContainer hit = new SoundContainer(Sound.BLOCK_CHAIN_PLACE);
 	private int bonus;

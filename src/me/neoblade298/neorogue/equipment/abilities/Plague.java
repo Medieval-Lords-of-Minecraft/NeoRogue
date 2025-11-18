@@ -20,7 +20,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class Plague extends Equipment {
-	private static final String ID = "plague";
+	private static final String ID = "Plague";
 	private int damage, thres, maxThres;
 	
 	public Plague(boolean isUpgraded) {

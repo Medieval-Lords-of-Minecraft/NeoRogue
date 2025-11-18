@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class MindGrowth extends Equipment {
-	private static final String ID = "mindGrowth";
+	private static final String ID = "MindGrowth";
 	private double regen;
 	private static final int THRES = 3;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD);

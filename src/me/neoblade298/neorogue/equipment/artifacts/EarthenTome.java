@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 
 public class EarthenTome extends Artifact {
-	private static final String ID = "earthenTome";
+	private static final String ID = "EarthenTome";
 	
 	public EarthenTome() {
 		super(ID, "Earthen Tome", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);

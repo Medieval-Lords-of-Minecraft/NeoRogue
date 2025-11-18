@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.CheckCastUsableEvent;
 
 public class Titan extends Equipment {
-	private static final String ID = "titan";
+	private static final String ID = "Titan";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
 	private int staminaReduction;
 	private static final int CUTOFF = 15;

@@ -23,7 +23,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class Preparation extends Equipment {
-	private static final String ID = "preparation";
+	private static final String ID = "Preparation";
 	private static final ParticleContainer part = new ParticleContainer(Particle.FLAME).count(25).spread(0.5, 0.5).speed(0.1).offsetY(1);
 	private int damage, shields;
 	

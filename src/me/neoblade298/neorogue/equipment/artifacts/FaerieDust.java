@@ -19,7 +19,7 @@ import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 
 public class FaerieDust extends Artifact {
-	private static final String ID = "faerieDust";
+	private static final String ID = "FaerieDust";
 	private static final int def = 8;
 
 	public FaerieDust() {

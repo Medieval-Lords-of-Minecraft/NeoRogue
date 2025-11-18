@@ -24,7 +24,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class DrainWand extends Equipment {
-	private static final String ID = "drainWand";
+	private static final String ID = "DrainWand";
 	
 	private static final ParticleContainer tick;
 	private static final SoundContainer sc = new SoundContainer(Sound.BLOCK_CHAIN_PLACE);

@@ -20,7 +20,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class PoisonPowder extends Equipment {
-	private static final String ID = "poisonPowder";
+	private static final String ID = "PoisonPowder";
 	private int amount;
 	
 	public PoisonPowder(boolean isUpgraded) {

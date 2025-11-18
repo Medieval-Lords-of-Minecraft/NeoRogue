@@ -25,7 +25,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class PracticeDummy extends Artifact {
-	private static final String ID = "practiceDummy";
+	private static final String ID = "PracticeDummy";
 	private static final ParticleContainer part = new ParticleContainer(Particle.FIREWORK).count(10).speed(0.1).spread(0.5, 0.5);
 	private int num;
 	private double damageMult;

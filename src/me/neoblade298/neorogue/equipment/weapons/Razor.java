@@ -19,7 +19,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class Razor extends Equipment {
-	private static final String ID = "razor";
+	private static final String ID = "Razor";
 	
 	public Razor(boolean isUpgraded) {
 		super(ID, "Razor", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,

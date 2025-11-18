@@ -15,7 +15,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
 
 public class TopazRing extends Equipment {
-	private static final String ID = "topazRing";
+	private static final String ID = "TopazRing";
 	private int stacks;
 	
 	public TopazRing(boolean isUpgraded) {

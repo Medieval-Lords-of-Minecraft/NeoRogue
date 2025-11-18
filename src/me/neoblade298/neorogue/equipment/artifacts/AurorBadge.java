@@ -20,7 +20,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class AurorBadge extends Artifact {
-	private static final String ID = "aurorBadge";
+	private static final String ID = "AurorBadge";
 	private static final int damage = 2;
 
 	public AurorBadge() {

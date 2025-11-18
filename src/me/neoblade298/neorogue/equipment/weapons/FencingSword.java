@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class FencingSword extends Equipment {
-	private static final String ID = "fencingSword";
+	private static final String ID = "FencingSword";
 	private int shields;
 
 	public FencingSword(boolean isUpgraded) {

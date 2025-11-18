@@ -20,7 +20,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 
 public class RedCloak extends Equipment {
-	private static final String ID = "redCloak";
+	private static final String ID = "RedCloak";
 	private int def;
 	public RedCloak(boolean isUpgraded) {
 		super(ID, "Red Cloak", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE,

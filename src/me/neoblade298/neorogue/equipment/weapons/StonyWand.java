@@ -27,7 +27,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class StonyWand extends Equipment {
-	private static final String ID = "stonyWand";
+	private static final String ID = "StonyWand";
 	private static final ParticleContainer tick = new ParticleContainer(Particle.BLOCK).blockData(Material.STONE.createBlockData());
 	private static final SoundContainer start = new SoundContainer(Sound.BLOCK_STONE_BREAK),
 			hit = new SoundContainer(Sound.BLOCK_CHAIN_PLACE);

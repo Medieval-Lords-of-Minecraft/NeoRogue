@@ -17,7 +17,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Ironskin extends Equipment {
-	private static final String ID = "ironskin";
+	private static final String ID = "Ironskin";
 	private int shields;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
 	private static final SoundContainer sc = new SoundContainer(Sound.ITEM_ARMOR_EQUIP_CHAIN);

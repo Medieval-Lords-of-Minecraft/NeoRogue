@@ -37,7 +37,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class BowTrap extends Equipment {
-	private static final String ID = "bowTrap";
+	private static final String ID = "BowTrap";
 	private static TargetProperties tp = TargetProperties.radius(8, false, TargetType.ENEMY);
 	private static ParticleContainer trap = new ParticleContainer(Particle.CRIT).count(50).spread(1, 0.2),
 		hit = new ParticleContainer(Particle.CRIT).count(50).spread(1, 1);

@@ -15,7 +15,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class MassiveHalberd extends Equipment {
-	private static final String ID = "massiveHalberd";
+	private static final String ID = "MassiveHalberd";
 	
 	public MassiveHalberd(boolean isUpgraded) {
 		super(ID, "Massive Halberd", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,

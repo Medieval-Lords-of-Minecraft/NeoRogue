@@ -20,7 +20,7 @@ import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class Resourcefulness extends Equipment {
-	private static final String ID = "resourcefulness";
+	private static final String ID = "Resourcefulness";
 	private int poison, damage;
 	
 	public Resourcefulness(boolean isUpgraded) {

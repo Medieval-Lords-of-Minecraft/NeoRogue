@@ -35,7 +35,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageBarrierEvent;
 
 public class ToAshes extends Equipment {
-	private static final String ID = "toAshes";
+	private static final String ID = "ToAshes";
 	private static final TargetProperties tp = TargetProperties.cone(60, 5, false, TargetType.ENEMY);
 	private static final Cone cone = new Cone(tp.range, tp.arc);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME).offsetY(0.5);

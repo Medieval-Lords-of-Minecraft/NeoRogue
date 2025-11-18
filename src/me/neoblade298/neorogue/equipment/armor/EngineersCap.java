@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class EngineersCap extends Equipment {
-	private static final String ID = "engineersCap";
+	private static final String ID = "EngineersCap";
 	private int damage, dec;
 	private double damageActual;
 	

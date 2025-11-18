@@ -37,7 +37,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Splinterstone extends Equipment {
-	private static final String ID = "splinterstone";
+	private static final String ID = "Splinterstone";
 	private static final ParticleContainer tick = new ParticleContainer(Particle.BLOCK)
 			.blockData(Material.DIRT.createBlockData()).count(5).spread(0.3, 0.3);
 	private static final TargetProperties tp = TargetProperties.cone(60, 4, false, TargetType.ENEMY);

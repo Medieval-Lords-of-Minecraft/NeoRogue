@@ -12,7 +12,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class DullDagger extends Equipment {
-	private static final String ID = "dullDagger";
+	private static final String ID = "DullDagger";
 	
 	public DullDagger() {
 		super(ID, "Dull Dagger", EquipmentType.ACCESSORY);

@@ -38,7 +38,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class ArrowRain extends Equipment {
-	private static final String ID = "arrowRain";
+	private static final String ID = "ArrowRain";
 	private static TargetProperties tp = TargetProperties.block(7, true),
 			hitTp = TargetProperties.radius(2, false, TargetType.ENEMY);
 	private static ParticleContainer hit = new ParticleContainer(Particle.EXPLOSION).count(50).spread(1, 0.1).speed(0.1),

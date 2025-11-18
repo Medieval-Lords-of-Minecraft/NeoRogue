@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 
 public class TreatiseOnElectricity extends Artifact {
-	private static final String ID = "treatiseOnElectricity";
+	private static final String ID = "TreatiseOnElectricity";
 	
 	public TreatiseOnElectricity() {
 		super(ID, "Treatise on Electricity", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);

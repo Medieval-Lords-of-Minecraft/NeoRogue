@@ -22,7 +22,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class RubyArmament extends Equipment {
-	private static final String ID = "rubyArmament";
+	private static final String ID = "RubyArmament";
 	private int stamina, stamCost, damage, damageDec;
 	private static final ParticleContainer patience = new ParticleContainer(Particle.END_ROD).count(25).speed(0.01),
 			power = new ParticleContainer(Particle.SOUL_FIRE_FLAME).count(25).speed(0.01);

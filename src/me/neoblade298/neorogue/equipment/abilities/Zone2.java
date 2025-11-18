@@ -32,7 +32,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Zone2 extends Equipment {
-	private static final String ID = "zone2";
+	private static final String ID = "Zone2";
 	private int damage;
 	private static final TargetProperties tp = TargetProperties.radius(8, true, TargetType.ALLY);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD);

@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class EarthenLeatherGauntlets extends Equipment {
-	private static final String ID = "earthenLeatherGauntlets";
+	private static final String ID = "EarthenLeatherGauntlets";
 	private int concuss;
 	
 	public EarthenLeatherGauntlets(boolean isUpgraded) {

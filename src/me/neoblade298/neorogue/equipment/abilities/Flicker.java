@@ -26,7 +26,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class Flicker extends Equipment {
-	private static final String ID = "flicker";
+	private static final String ID = "Flicker";
 	private int damage;
 	
 	public Flicker(boolean isUpgraded) {

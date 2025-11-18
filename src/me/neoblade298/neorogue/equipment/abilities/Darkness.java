@@ -34,7 +34,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class Darkness extends Equipment {
-	private static final String ID = "darkness";
+	private static final String ID = "Darkness";
 	private int dark, insanity;
 	private static final TargetProperties tp = TargetProperties.radius(5, false, TargetType.ENEMY);
 	private static final Circle circle = new Circle(tp.range);

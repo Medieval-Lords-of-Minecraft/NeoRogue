@@ -20,7 +20,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroupEvent;
 
 public class PiercingShot2 extends Equipment {
-	private static final String ID = "piercingShot2";
+	private static final String ID = "PiercingShot2";
 	private int damage;
 	
 	public PiercingShot2(boolean isUpgraded) {

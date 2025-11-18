@@ -36,7 +36,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroupEvent;
 
 public class MagicQuiver extends Equipment {
-	private static final String ID = "magicQuiver";
+	private static final String ID = "MagicQuiver";
 	private static final TargetProperties tp = TargetProperties.radius(12, false, TargetType.ENEMY);
 	private int thres, damage;
 	

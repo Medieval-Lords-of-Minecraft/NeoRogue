@@ -32,7 +32,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class LightningRush extends Equipment {
-	private static final String ID = "lightningRush";
+	private static final String ID = "LightningRush";
 	private int damage, elec;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST)
 			.dustOptions(new DustOptions(Color.YELLOW, 1F)).count(50).spread(1, 2).offsetY(1);

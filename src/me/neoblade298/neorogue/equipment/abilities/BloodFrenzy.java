@@ -19,7 +19,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.WeaponSwingEvent;
 
 public class BloodFrenzy extends Equipment {
-	private static final String ID = "bloodFrenzy";
+	private static final String ID = "BloodFrenzy";
 	private int strength, atkSpeed;
 	private static final int CUTOFF_STRENGTH = 15, CUTOFF_ATK_SPEED = 20, THRES_ATK_SPEED = 5;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME).count(20).speed(0.01).offsetY(1);

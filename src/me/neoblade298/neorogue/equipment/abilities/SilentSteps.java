@@ -22,7 +22,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
 public class SilentSteps extends Equipment {
-	private static final String ID = "silentSteps";
+	private static final String ID = "SilentSteps";
 	private int duration, damage;
 	
 	public SilentSteps(boolean isUpgraded) {

@@ -33,7 +33,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Bulldoze extends Equipment {
-	private static final String ID = "bulldoze";
+	private static final String ID = "Bulldoze";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION),
 			start = new ParticleContainer(Particle.CLOUD),
 			wake = new ParticleContainer(Particle.EXPLOSION);

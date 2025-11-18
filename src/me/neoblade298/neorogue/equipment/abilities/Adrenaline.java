@@ -24,7 +24,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Adrenaline extends Equipment {
-	private static final String ID = "adrenaline";
+	private static final String ID = "Adrenaline";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST);
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_BLAZE_DEATH);
 	private static final int stamina = 100;

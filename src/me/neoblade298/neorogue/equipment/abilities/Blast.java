@@ -32,7 +32,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Blast extends Equipment {
-	private static final String ID = "blast";
+	private static final String ID = "Blast";
 	private static final TargetProperties tp = TargetProperties.radius(4, true);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
 			expl = new ParticleContainer(Particle.EXPLOSION).count(20).spread(tp.range / 2, 0.5);

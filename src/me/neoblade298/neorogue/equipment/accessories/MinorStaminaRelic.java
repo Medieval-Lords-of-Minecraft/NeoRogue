@@ -9,7 +9,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class MinorStaminaRelic extends Equipment {
-	private static final String ID = "minorStaminaRelic";
+	private static final String ID = "MinorStaminaRelic";
 	private double regen;
 	
 	public MinorStaminaRelic(boolean isUpgraded) {

@@ -15,7 +15,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class RingOfFortitude extends Equipment {
-	private static final String ID = "ringOfFortitude";
+	private static final String ID = "RingOfFortitude";
 	private int damage;
 	public RingOfFortitude(boolean isUpgraded) {
 		super(ID, "Ring Of Fortitude", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,

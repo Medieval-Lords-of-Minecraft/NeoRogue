@@ -12,7 +12,7 @@ import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 
 public class RubyGem extends Artifact {
-	private static final String ID = "rubyGem";
+	private static final String ID = "RubyGem";
 	private int max, shields;
 
 	public RubyGem() {

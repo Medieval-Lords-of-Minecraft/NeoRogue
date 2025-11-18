@@ -30,7 +30,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class GrowingSpark extends Equipment {
-	private static final String ID = "growingSpark";
+	private static final String ID = "GrowingSpark";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.FIREWORK).spread(0.2, 0.2);
 	private ItemStack chargedIcon;
 	private int damage, growth;

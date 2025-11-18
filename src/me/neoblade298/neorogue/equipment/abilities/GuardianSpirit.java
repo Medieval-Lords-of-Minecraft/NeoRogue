@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.GrantShieldsEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
 
 public class GuardianSpirit extends Equipment {
-	private static final String ID = "guardianSpirit";
+	private static final String ID = "GuardianSpirit";
 	private int shields, sanct;
 	
 	public GuardianSpirit(boolean isUpgraded) {

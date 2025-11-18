@@ -22,7 +22,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 
 public class ManaHaze extends Artifact {
-	private static final String ID = "manaHaze";
+	private static final String ID = "ManaHaze";
 	private static final int thres = 60;
 	private static TargetProperties tp = TargetProperties.radius(8, true, TargetType.ENEMY);
 

@@ -21,7 +21,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 
 public class StonyCloak extends Equipment {
-	private static final String ID = "stonyCloak";
+	private static final String ID = "StonyCloak";
 	private int baseReduc = 2, concReduc;
 	
 	public StonyCloak(boolean isUpgraded) {

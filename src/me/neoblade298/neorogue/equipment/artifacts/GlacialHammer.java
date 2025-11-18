@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class GlacialHammer extends Artifact {
-	private static final String ID = "glacialHammer";
+	private static final String ID = "GlacialHammer";
 	private static final int cost = 2;
 
 	public GlacialHammer() {

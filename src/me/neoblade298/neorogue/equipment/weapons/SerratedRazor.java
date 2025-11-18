@@ -20,7 +20,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class SerratedRazor extends Equipment {
-	private static final String ID = "serratedRazor";
+	private static final String ID = "SerratedRazor";
 	private static int base = 40;
 	private int bonus;
 	

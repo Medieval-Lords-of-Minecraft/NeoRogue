@@ -13,7 +13,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 
 public class Pumped extends Artifact {
-	private static final String ID = "pumped";
+	private static final String ID = "Pumped";
 	private int str = 25;
 	
 	public Pumped() {

@@ -21,7 +21,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class EmpoweredEdge extends Equipment {
-	private static final String ID = "empoweredEdge";
+	private static final String ID = "EmpoweredEdge";
 	private int damage, shields;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
 			hit = new ParticleContainer(Particle.DUST);

@@ -27,7 +27,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Torch extends Equipment {
-	private static final String ID = "torch";
+	private static final String ID = "Torch";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME);
 	private static final TargetProperties tp = TargetProperties.radius(5, false, TargetType.ENEMY);
 	private static final Circle circ = new Circle(tp.range);

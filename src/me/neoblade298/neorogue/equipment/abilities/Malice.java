@@ -26,7 +26,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class Malice extends Equipment {
-	private static final String ID = "malice";
+	private static final String ID = "Malice";
 	private int dec = 15, stacks, thres;
 	private ItemStack activeIcon;
 

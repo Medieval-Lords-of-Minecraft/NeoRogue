@@ -27,7 +27,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 import net.kyori.adventure.text.Component;
 
 public class Mahoraga extends Equipment {
-	private static final String ID = "mahoraga";
+	private static final String ID = "Mahoraga";
 	private int shields, refresh, berserk, thres, heal;
 	
 	public Mahoraga(boolean isUpgraded) {

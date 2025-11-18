@@ -30,7 +30,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class TwinBolt extends Equipment {
-	private static final String ID = "twinBolt";
+	private static final String ID = "TwinBolt";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME);
 	private int damage, burn;
 

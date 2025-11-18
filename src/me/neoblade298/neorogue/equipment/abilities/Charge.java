@@ -14,7 +14,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Charge extends Equipment {
-	private static final String ID = "charge";
+	private static final String ID = "Charge";
 	private int shields;
 	
 	public Charge(boolean isUpgraded) {

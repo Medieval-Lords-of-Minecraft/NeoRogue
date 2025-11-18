@@ -32,7 +32,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.CastUsableEvent;
 
 public class CreateEarth extends Equipment {
-	private static final String ID = "createEarth";
+	private static final String ID = "CreateEarth";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
 			earth = new ParticleContainer(Particle.BLOCK).blockData(Material.DIRT.createBlockData());
 	private static final TargetProperties tp = TargetProperties.radius(3, false);

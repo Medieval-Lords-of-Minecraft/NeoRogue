@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 
 public class ShellTrinket extends Artifact {
-	private static final String ID = "shellTrinket";
+	private static final String ID = "ShellTrinket";
 	private static final int dec = 2;
 	
 	public ShellTrinket() {

@@ -20,7 +20,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class StarlightHood extends Equipment {
-	private static final String ID = "starlightHood";
+	private static final String ID = "StarlightHood";
 	private static final int MAX_STACKS = 3;
 	private int def;
 

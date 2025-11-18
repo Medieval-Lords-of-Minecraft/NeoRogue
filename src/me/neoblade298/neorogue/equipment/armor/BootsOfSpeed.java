@@ -9,7 +9,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class BootsOfSpeed extends Equipment {
-	private static final String ID = "bootsOfSpeed";
+	private static final String ID = "BootsOfSpeed";
 	private double stamina;
 	
 	public BootsOfSpeed(boolean isUpgraded) {

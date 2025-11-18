@@ -11,7 +11,7 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 
 public class SapphireCluster extends Artifact {
-	private static final String ID = "sapphireCluster";
+	private static final String ID = "SapphireCluster";
 	private int max;
 	private double regen;
 

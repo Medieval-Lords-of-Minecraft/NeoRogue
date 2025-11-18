@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class CrimsonBlade extends Equipment {
-	private static final String ID = "crimsonBlade";
+	private static final String ID = "CrimsonBlade";
 	private int heal;
 	
 	public CrimsonBlade(boolean isUpgraded) {

@@ -19,7 +19,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 
 public class InsanityPowder extends Equipment {
-	private static final String ID = "insanityPowder";
+	private static final String ID = "InsanityPowder";
 	private static final TargetProperties tp = TargetProperties.radius(5, false, TargetType.ENEMY);
 	private int stacks;
 	

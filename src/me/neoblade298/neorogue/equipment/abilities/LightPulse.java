@@ -28,7 +28,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class LightPulse extends Equipment {
-	private static final String ID = "lightPulse";
+	private static final String ID = "LightPulse";
 	private static final SoundContainer sound = new SoundContainer(Sound.ENTITY_ELDER_GUARDIAN_DEATH, 2F),
 			tick = new SoundContainer(Sound.ENTITY_EVOKER_CAST_SPELL);
 	private static final ParticleContainer part = new ParticleContainer(Particle.FIREWORK).count(5).spread(0.4, 0.2);

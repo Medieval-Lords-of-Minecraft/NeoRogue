@@ -34,7 +34,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class StoneHammer extends Equipment {
-	private static final String ID = "stoneHammer";
+	private static final String ID = "StoneHammer";
 	private static final int DISTANCE = 4, RADIUS = 2;
 	private static final TargetProperties props = TargetProperties.radius(RADIUS, true, TargetType.ENEMY);
 	private static final ParticleContainer swingPart = new ParticleContainer(Particle.CLOUD).count(5).spread(0.1, 0.1),

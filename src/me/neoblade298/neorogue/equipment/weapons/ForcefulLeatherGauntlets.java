@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class ForcefulLeatherGauntlets extends Equipment {
-	private static final String ID = "forcefulLeatherGauntlets";
+	private static final String ID = "ForcefulLeatherGauntlets";
 	
 	public ForcefulLeatherGauntlets(boolean isUpgraded) {
 		super(ID, "Forceful Leather Gauntlets", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,

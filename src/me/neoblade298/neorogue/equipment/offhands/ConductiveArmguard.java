@@ -14,7 +14,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class ConductiveArmguard extends Equipment {
-	private static final String ID = "conductiveArmguard";
+	private static final String ID = "ConductiveArmguard";
 	private int shields;
 
 	public ConductiveArmguard(boolean isUpgraded) {

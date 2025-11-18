@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class StoneMace extends Equipment {
-	private static final String ID = "stoneMace";
+	private static final String ID = "StoneMace";
 	private double damage;
 	private int conc;
 	

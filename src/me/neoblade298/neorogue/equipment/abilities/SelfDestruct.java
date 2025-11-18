@@ -25,7 +25,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class SelfDestruct extends Equipment {
-	private static final String ID = "selfDestruct";
+	private static final String ID = "SelfDestruct";
 	private int damage;
 	private static final TargetProperties tp = TargetProperties.radius(3, true, TargetType.ENEMY);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION).count(5).spread((double) tp.range / 2, 0);

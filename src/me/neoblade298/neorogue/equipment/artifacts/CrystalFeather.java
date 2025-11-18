@@ -20,7 +20,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class CrystalFeather extends Artifact {
-	private static final String ID = "crystalFeather";
+	private static final String ID = "CrystalFeather";
 	private static final int dur = 3;
 
 	public CrystalFeather() {

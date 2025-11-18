@@ -36,7 +36,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class SunderingShot extends Equipment {
-	private static final String ID = "sunderingShot";
+	private static final String ID = "SunderingShot";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST).count(50).spread(0.5, 0.5);
 	private int damage;
 	private static final int MAX = 3;

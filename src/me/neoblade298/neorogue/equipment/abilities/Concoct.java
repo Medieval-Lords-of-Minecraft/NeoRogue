@@ -20,7 +20,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class Concoct extends Equipment {
-	private static final String ID = "concoct";
+	private static final String ID = "Concoct";
 	private int poison;
 	
 	public Concoct(boolean isUpgraded) {

@@ -23,7 +23,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class SigilOfTheIronLegion extends Artifact {
-	private static final String ID = "sigilOfTheIronLegion";
+	private static final String ID = "SigilOfTheIronLegion";
 	private int thres;
 	
 	public SigilOfTheIronLegion() {

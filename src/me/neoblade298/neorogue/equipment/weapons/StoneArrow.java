@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 
 public class StoneArrow extends Ammunition {
-	private static final String ID = "stoneArrow";
+	private static final String ID = "StoneArrow";
 	private static final int thres = 5;
 
 	private int damage;

@@ -16,7 +16,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class Exhaustion extends Artifact {
-	private static final String ID = "exhaustion";
+	private static final String ID = "Exhaustion";
 	
 	public Exhaustion() {
 		super(ID, "Exhaustion", Rarity.COMMON, EquipmentClass.CLASSLESS);

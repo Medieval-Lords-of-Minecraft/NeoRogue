@@ -19,7 +19,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.GrantShieldsEvent;
 
 public class ThornGarden extends Equipment {
-	private static final String ID = "thornGarden";
+	private static final String ID = "ThornGarden";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
 	private static final int CUTOFF = 3;
 	private int thorns;

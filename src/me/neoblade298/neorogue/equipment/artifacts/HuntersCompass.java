@@ -19,7 +19,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
 
 public class HuntersCompass extends Artifact {
-	private static final String ID = "huntersCompass";
+	private static final String ID = "HuntersCompass";
 
 	public HuntersCompass() {
 		super(ID, "Hunter's Compass", Rarity.UNCOMMON, EquipmentClass.ARCHER);

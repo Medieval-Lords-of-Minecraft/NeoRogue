@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import net.kyori.adventure.text.Component;
 
 public class CrossOfAntiquan extends Artifact {
-	private static final String ID = "crossOfAntiquan";
+	private static final String ID = "CrossOfAntiquan";
 	private double mult = 0.1;
 	private int multStr = (int) (mult * 100);
 	

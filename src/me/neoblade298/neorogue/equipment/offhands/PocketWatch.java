@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class PocketWatch extends Equipment {
-	private static final String ID = "pocketWatch";
+	private static final String ID = "PocketWatch";
 	private static SoundContainer sc = new SoundContainer(Sound.BLOCK_NOTE_BLOCK_CHIME);
 	private static ParticleContainer pc = new ParticleContainer(Particle.PORTAL).count(50).spread(1, 2).offsetY(1);
 	private int uses;

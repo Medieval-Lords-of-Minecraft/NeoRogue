@@ -25,7 +25,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Absorb extends Equipment {
-	private static final String ID = "absorb";
+	private static final String ID = "Absorb";
 	private static final TargetProperties tp = TargetProperties.radius(8, false, TargetType.ENEMY);
 	private int damage, mana;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.SMOKE).count(50).spread(0.3, 0.3).offsetY(1);

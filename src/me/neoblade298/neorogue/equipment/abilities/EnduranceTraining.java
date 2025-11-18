@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.GrantShieldsEvent;
 
 public class EnduranceTraining extends Equipment {
-	private static final String ID = "enduranceTraining";
+	private static final String ID = "EnduranceTraining";
 	private int dur, shields;
 	
 	public EnduranceTraining(boolean isUpgraded) {

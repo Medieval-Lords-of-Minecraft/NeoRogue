@@ -27,7 +27,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class LeviathanAxe extends Equipment {
-	private static final String ID = "leviathanAxe";
+	private static final String ID = "LeviathanAxe";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME).count(25).spread(1, 1).speed(0.1);
 	private int thres;
 	public LeviathanAxe(boolean isUpgraded) {

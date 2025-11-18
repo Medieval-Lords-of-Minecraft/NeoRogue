@@ -15,7 +15,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.GrantShieldsEvent;
 
 public class MajorShieldingRelic extends Equipment {
-	private static final String ID = "majorShieldingRelic";
+	private static final String ID = "MajorShieldingRelic";
 	private double mult;
 	private int multStr;
 	

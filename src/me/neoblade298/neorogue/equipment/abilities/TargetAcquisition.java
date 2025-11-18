@@ -23,7 +23,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class TargetAcquisition extends Equipment {
-	private static final String ID = "targetAcquisition";
+	private static final String ID = "TargetAcquisition";
 	private int damage;
 	private static final ParticleContainer part = new ParticleContainer(Particle.LARGE_SMOKE).offsetY(1).count(25).spread(0.5, 0.5).speed(0.01),
 			hit = new ParticleContainer(Particle.DUST).count(25).offsetY(1).spread(0.5, 0.5);

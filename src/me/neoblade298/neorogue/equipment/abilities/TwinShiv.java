@@ -28,7 +28,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class TwinShiv extends Equipment {
-	private static final String ID = "twinShiv";
+	private static final String ID = "TwinShiv";
 	private int damage, bonus;
 	private static final ParticleContainer tick = new ParticleContainer(Particle.CRIT).count(3).speed(0.01).spread(0.1, 0.1);
 	

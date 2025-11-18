@@ -11,7 +11,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class EtherVeil extends Equipment {
-	private static final String ID = "etherVeil";
+	private static final String ID = "EtherVeil";
 	private double def;
 	private int defStr;
 

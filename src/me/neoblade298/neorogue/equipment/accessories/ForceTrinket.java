@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 
 public class ForceTrinket extends Artifact {
-	private static final String ID = "forceTrinket";
+	private static final String ID = "ForceTrinket";
 	private static final double mult = 0.1;
 	private static final int multStr = (int) (mult * 100);
 	

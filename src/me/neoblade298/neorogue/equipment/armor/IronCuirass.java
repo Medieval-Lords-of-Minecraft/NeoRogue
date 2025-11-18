@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class IronCuirass extends Equipment {
-	private static final String ID = "ironCuirass";
+	private static final String ID = "IronCuirass";
 	private int damageReduction;
 	
 	public IronCuirass(boolean isUpgraded) {

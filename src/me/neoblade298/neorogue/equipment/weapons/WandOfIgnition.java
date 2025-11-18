@@ -27,7 +27,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class WandOfIgnition extends Equipment {
-	private static final String ID = "wandOfIgnition";
+	private static final String ID = "WandOfIgnition";
 	private static final ParticleContainer tick = new ParticleContainer(Particle.FLAME);
 	private int burn, selfburn;
 

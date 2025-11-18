@@ -15,7 +15,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 
 public class AshenWreath extends Equipment {
-	private static final String ID = "ashenWreath";
+	private static final String ID = "AshenWreath";
 	private int inc, thres;
 	private static final int MAX = 5;
 	public AshenWreath(boolean isUpgraded) {

@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class NullMagicMantle extends Equipment {
-	private static final String ID = "nullMagicMantle";
+	private static final String ID = "NullMagicMantle";
 	private int damageReduction;
 	
 	public NullMagicMantle(boolean isUpgraded) {

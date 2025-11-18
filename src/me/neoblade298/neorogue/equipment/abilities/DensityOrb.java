@@ -37,7 +37,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class DensityOrb extends Equipment {
-	private static final String ID = "densityOrb";
+	private static final String ID = "DensityOrb";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.END_ROD);
 	private static final SoundContainer shoot = new SoundContainer(Sound.ENTITY_SHULKER_SHOOT),
 		expl = new SoundContainer(Sound.ENTITY_ELDER_GUARDIAN_HURT);

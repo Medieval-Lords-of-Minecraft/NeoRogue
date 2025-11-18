@@ -26,7 +26,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Quickfire extends Equipment {
-	private static final String ID = "quickfire";
+	private static final String ID = "Quickfire";
 	private int damage;
 	
 	public Quickfire(boolean isUpgraded) {

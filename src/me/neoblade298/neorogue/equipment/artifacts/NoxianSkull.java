@@ -20,7 +20,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
 
 public class NoxianSkull extends Artifact {
-	private static final String ID = "noxianSkull";
+	private static final String ID = "NoxianSkull";
 
 	public NoxianSkull() {
 		super(ID, "Noxian Skull", Rarity.COMMON, EquipmentClass.CLASSLESS);

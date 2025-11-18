@@ -15,7 +15,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class RingOfMentalism extends Equipment {
-	private static final String ID = "ringOfMentalism";
+	private static final String ID = "RingOfMentalism";
 	private int stacks;
 	
 	public RingOfMentalism(boolean isUpgraded) {

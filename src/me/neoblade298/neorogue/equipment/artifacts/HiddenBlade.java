@@ -22,7 +22,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 
 public class HiddenBlade extends Artifact {
-	private static final String ID = "hiddenBlade";
+	private static final String ID = "HiddenBlade";
 
 	public HiddenBlade() {
 		super(ID, "Hidden Blade", Rarity.UNCOMMON, EquipmentClass.THIEF);

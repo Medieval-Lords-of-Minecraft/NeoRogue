@@ -25,7 +25,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageBarrierE
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 
 public class SmallShield extends Equipment {
-	private static final String ID = "smallShield";
+	private static final String ID = "SmallShield";
 	private int reduction;
 	
 	public SmallShield(boolean isUpgraded) {

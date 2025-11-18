@@ -15,7 +15,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class LightLeatherGauntlets extends Equipment {
-	private static final String ID = "lightLeatherGauntlets";
+	private static final String ID = "LightLeatherGauntlets";
 	private int stamina;
 	
 	public LightLeatherGauntlets(boolean isUpgraded) {

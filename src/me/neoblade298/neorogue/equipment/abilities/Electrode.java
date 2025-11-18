@@ -38,7 +38,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Electrode extends Equipment {
-	private static final String ID = "electrode";
+	private static final String ID = "Electrode";
 	private int damage, elec;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.FIREWORK);
 

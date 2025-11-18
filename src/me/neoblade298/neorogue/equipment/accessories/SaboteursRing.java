@@ -22,7 +22,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
 public class SaboteursRing extends Equipment {
-	private static final String ID = "saboteursRing";
+	private static final String ID = "SaboteursRing";
 	private double inc;
 	public SaboteursRing(boolean isUpgraded) {
 		super(ID, "Saboteur's Ring", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,

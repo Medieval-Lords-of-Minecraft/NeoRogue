@@ -31,7 +31,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class FireStaff extends Equipment {
-	private static final String ID = "fireStaff";
+	private static final String ID = "FireStaff";
 	private static final TargetProperties props = TargetProperties.radius(1.2, true, TargetType.ENEMY);
 	private static final ParticleContainer exp = new ParticleContainer(Particle.EXPLOSION);
 	

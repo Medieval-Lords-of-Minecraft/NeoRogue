@@ -27,7 +27,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class Blind extends Equipment {
-	private static final String ID = "blind";
+	private static final String ID = "Blind";
 	private int injure;
 	
 	public Blind(boolean isUpgraded) {

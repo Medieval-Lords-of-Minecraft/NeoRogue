@@ -36,7 +36,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
 public class BlastStep extends Equipment {
-	private static final String ID = "blastStep";
+	private static final String ID = "BlastStep";
 	private static final TargetProperties tp = TargetProperties.cone(90, 5, false, TargetType.ENEMY);
 	private static final Vector kb = new Vector(0, 2, 0);
 	private static final Cone cone = new Cone(tp.range, tp.arc);

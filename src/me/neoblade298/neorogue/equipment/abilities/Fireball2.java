@@ -33,7 +33,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Fireball2 extends Equipment {
-	private static final String ID = "fireball2";
+	private static final String ID = "Fireball2";
 	private static final ParticleContainer tick = new ParticleContainer(Particle.FLAME).count(5).spread(0.3, 0.3),
 		explode = new ParticleContainer(Particle.EXPLOSION).count(3).spread(0.5, 0.5);
 	private static final TargetProperties tp = TargetProperties.radius(2, false, TargetType.ENEMY);

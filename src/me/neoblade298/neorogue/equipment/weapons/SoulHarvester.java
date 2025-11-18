@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class SoulHarvester extends Equipment {
-	private static final String ID = "soulHarvester";
+	private static final String ID = "SoulHarvester";
 	private int str;
 	
 	public SoulHarvester(boolean isUpgraded) {

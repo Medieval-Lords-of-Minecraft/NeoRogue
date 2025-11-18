@@ -14,7 +14,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Brightfeather extends Artifact {
-	private static final String ID = "brightfeather";
+	private static final String ID = "Brightfeather";
 
 	public Brightfeather() {
 		super(ID, "Brightfeather", Rarity.COMMON, EquipmentClass.CLASSLESS);

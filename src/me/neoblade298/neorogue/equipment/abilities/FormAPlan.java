@@ -28,7 +28,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class FormAPlan extends Equipment {
-	private static final String ID = "formAPlan";
+	private static final String ID = "FormAPlan";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.SMOKE).count(50).spread(1, 2).offsetY(1);
 	private int buff;
 	

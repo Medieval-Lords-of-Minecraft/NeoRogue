@@ -20,7 +20,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 
 public class CailiricCrystal extends Artifact {
-	private static final String ID = "cailiricCrystal";
+	private static final String ID = "CailiricCrystal";
 	private static final int inc = 10;
 	
 	public CailiricCrystal() {

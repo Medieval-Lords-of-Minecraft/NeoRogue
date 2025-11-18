@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class MirrorBracer extends Equipment {
-	private static final String ID = "mirrorBracer";
+	private static final String ID = "MirrorBracer";
 	private int reflect, mr;
 
 	public MirrorBracer(boolean isUpgraded) {

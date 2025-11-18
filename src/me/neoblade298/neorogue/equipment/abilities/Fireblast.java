@@ -27,7 +27,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Fireblast extends Equipment {
-	private static final String ID = "fireblast";
+	private static final String ID = "Fireblast";
 	private static final ParticleContainer tick = new ParticleContainer(Particle.FLAME).count(5).spread(0.3, 0.3);
 
 	private int damage, burn;

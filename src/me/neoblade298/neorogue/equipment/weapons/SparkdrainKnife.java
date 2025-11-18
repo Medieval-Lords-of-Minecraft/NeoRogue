@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class SparkdrainKnife extends Equipment {
-	private static final String ID = "sparkdrainKnife";
+	private static final String ID = "SparkdrainKnife";
 	private static int elec, res, thres;
 	
 	public SparkdrainKnife(boolean isUpgraded) {

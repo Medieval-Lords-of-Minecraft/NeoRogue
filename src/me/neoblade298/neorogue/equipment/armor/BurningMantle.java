@@ -25,7 +25,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 
 public class BurningMantle extends Equipment {
-	private static final String ID = "burningMantle";
+	private static final String ID = "BurningMantle";
 	private int reduc, damage = 50, thres = 500, inc;
 	
 	public BurningMantle(boolean isUpgraded) {

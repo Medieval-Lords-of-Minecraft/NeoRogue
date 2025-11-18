@@ -24,7 +24,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class Envenom extends Equipment {
-	private static final String ID = "envenom";
+	private static final String ID = "Envenom";
 	private int poison;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST).dustOptions(new DustOptions(Color.GREEN, 1)).count(50).spread(0.5, 0.5).speed(0.2);
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_GENERIC_SWIM);

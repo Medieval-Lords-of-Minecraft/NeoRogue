@@ -23,7 +23,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Deliberation extends Equipment {
-	private static final String ID = "deliberation";
+	private static final String ID = "Deliberation";
 	private int damage;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.ENCHANT).count(50).speed(0.1);
 

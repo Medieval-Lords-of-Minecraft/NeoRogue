@@ -23,7 +23,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 
 public class CopperFunnel extends Equipment {
-	private static final String ID = "copperFunnel";
+	private static final String ID = "CopperFunnel";
 	private int reps, reduc = 25;
 	
 	public CopperFunnel(boolean isUpgraded) {

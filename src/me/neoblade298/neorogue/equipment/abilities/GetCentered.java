@@ -28,7 +28,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroupEvent;
 
 public class GetCentered extends Equipment {
-	private static final String ID = "getCentered";
+	private static final String ID = "GetCentered";
 	private int thres, damage;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.ENCHANT).count(25).spread(1, 1);
 	

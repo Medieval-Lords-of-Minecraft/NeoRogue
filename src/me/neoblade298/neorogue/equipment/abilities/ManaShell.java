@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class ManaShell extends Equipment {
-	private static final String ID = "manaShell";
+	private static final String ID = "ManaShell";
 	private int shields;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
 	

@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 
 public class HolyScriptures extends Artifact {
-	private static final String ID = "holyScriptures";
+	private static final String ID = "HolyScriptures";
 	
 	public HolyScriptures() {
 		super(ID, "Holy Scriptures", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);

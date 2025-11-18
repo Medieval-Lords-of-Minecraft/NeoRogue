@@ -20,7 +20,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class MagiciansHood extends Equipment {
-	private static final String ID = "magiciansHood";
+	private static final String ID = "MagiciansHood";
 	private static final int MAX_STACKS = 3;
 	private int thres, def;
 

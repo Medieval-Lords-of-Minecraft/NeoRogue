@@ -24,7 +24,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class SparkStick extends Equipment {
-	private static final String ID = "sparkStick";
+	private static final String ID = "SparkStick";
 	private static final ParticleContainer tick;
 	
 	private int pierceAmount;

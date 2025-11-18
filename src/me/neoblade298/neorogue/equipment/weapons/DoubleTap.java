@@ -20,7 +20,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class DoubleTap extends Bow {
-	private static final String ID = "doubleTap";
+	private static final String ID = "DoubleTap";
 	private static final int THRESHOLD = 3;
 	
 	public DoubleTap(boolean isUpgraded) {

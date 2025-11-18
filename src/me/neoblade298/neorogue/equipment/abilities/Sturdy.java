@@ -15,7 +15,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Sturdy extends Equipment {
-	private static final String ID = "sturdy";
+	private static final String ID = "Sturdy";
 	private int shields, cd;
 	
 	public Sturdy(boolean isUpgraded) {

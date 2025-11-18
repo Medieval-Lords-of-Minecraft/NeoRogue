@@ -17,7 +17,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class DoubleStrike extends Equipment {
-	private static final String ID = "doubleStrike";
+	private static final String ID = "DoubleStrike";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.ENCHANTED_HIT);
 	private static final SoundContainer sc = new SoundContainer(Sound.BLOCK_AMETHYST_BLOCK_BREAK);
 	

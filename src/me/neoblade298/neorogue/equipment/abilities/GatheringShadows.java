@@ -17,7 +17,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class GatheringShadows extends Equipment {
-	private static final String ID = "gatheringShadows";
+	private static final String ID = "GatheringShadows";
 	private int damage;
 	
 	public GatheringShadows(boolean isUpgraded) {

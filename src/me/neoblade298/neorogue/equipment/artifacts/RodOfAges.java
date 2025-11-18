@@ -14,7 +14,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class RodOfAges extends Artifact {
-	private static final String ID = "rodOfAges";
+	private static final String ID = "RodOfAges";
 	private static final int mana = 5;
 
 	public RodOfAges() {

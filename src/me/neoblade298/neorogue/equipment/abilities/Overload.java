@@ -24,7 +24,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.KillEvent;
 
 public class Overload extends Equipment {
-	private static final String ID = "overload";
+	private static final String ID = "Overload";
 	private int damage;
 	private static final ParticleContainer part = new ParticleContainer(Particle.FIREWORK)
 			.count(50).spread(0.2, 3).offsetY(2);

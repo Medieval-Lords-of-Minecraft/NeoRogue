@@ -14,7 +14,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.StandardFightInstance;
 
 public class CrystallineFlask extends Artifact {
-	private static final String ID = "crystallineFlask";
+	private static final String ID = "CrystallineFlask";
 	private int healthPercent = 10;
 	public CrystallineFlask() {
 		super(ID, "Crystalline Flask", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);

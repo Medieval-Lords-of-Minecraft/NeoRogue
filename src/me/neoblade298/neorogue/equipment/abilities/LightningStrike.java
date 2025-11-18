@@ -36,7 +36,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.CastUsableEvent;
 
 public class LightningStrike extends Equipment {
-	private static final String ID = "lightningStrike";
+	private static final String ID = "LightningStrike";
 	private static final ParticleContainer tick = new ParticleContainer(Particle.FIREWORK).count(3).spread(0.3, 0.3),
 			explode = new ParticleContainer(Particle.EXPLOSION).count(5).spread(3, 0.2);
 	private static final TargetProperties cursor = TargetProperties.line(7, 2, TargetType.ENEMY),

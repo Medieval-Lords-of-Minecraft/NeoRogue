@@ -36,7 +36,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.CastUsableEvent;
 
 public class GroundLance extends Equipment {
-	private static final String ID = "groundLance";
+	private static final String ID = "GroundLance";
 	private static final TargetProperties tp = TargetProperties.radius(2, true);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
 			grnd = new ParticleContainer(Particle.DUST).count(20).spread(0.5, 0.5)

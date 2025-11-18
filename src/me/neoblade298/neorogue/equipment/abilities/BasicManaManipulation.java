@@ -17,7 +17,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
 
 public class BasicManaManipulation extends Equipment {
-	private static final String ID = "basicManaManipulation";
+	private static final String ID = "BasicManaManipulation";
 	private int stacks;
 	
 	public BasicManaManipulation(boolean isUpgraded) {

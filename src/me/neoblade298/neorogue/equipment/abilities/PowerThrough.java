@@ -15,7 +15,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 
 public class PowerThrough extends Equipment {
-	private static final String ID = "powerThrough";
+	private static final String ID = "PowerThrough";
 	private int cutoff;
 	
 	public PowerThrough(boolean isUpgraded) {

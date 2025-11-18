@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 
 public class SerratedArrow extends Ammunition {
-	private static final String ID = "serratedArrow";
+	private static final String ID = "SerratedArrow";
 
 	private double damage;
 	private int stacks;

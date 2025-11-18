@@ -12,7 +12,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class GnarledStaff extends Equipment {
-	private static final String ID = "gnarledStaff";
+	private static final String ID = "GnarledStaff";
 	
 	public GnarledStaff() {
 		super(ID, "Gnarled Staff", EquipmentType.ACCESSORY);

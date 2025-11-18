@@ -22,7 +22,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
 public class BasicElementMastery extends Equipment {
-	private static final String ID = "basicElementMastery";
+	private static final String ID = "BasicElementMastery";
 	private int burn;
 	
 	public BasicElementMastery(boolean isUpgraded) {

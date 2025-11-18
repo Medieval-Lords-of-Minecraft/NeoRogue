@@ -13,7 +13,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class StarlightVeil extends Artifact {
-	private static final String ID = "starlightVeil";
+	private static final String ID = "StarlightVeil";
 	public StarlightVeil() {
 		super(ID, "Starlight Veil", Rarity.RARE, EquipmentClass.CLASSLESS);
 	}

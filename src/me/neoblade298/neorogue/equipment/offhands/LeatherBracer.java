@@ -23,7 +23,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 
 public class LeatherBracer extends Equipment {
-	private static final String ID = "leatherBracer";
+	private static final String ID = "LeatherBracer";
 	private int instances;
 
 	public LeatherBracer(boolean isUpgraded) {

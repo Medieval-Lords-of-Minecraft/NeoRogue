@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class MindBlast extends Equipment {
-	private static final String ID = "mindBlast";
+	private static final String ID = "MindBlast";
 	private double regen;
 	private int intel;
 	private static final int THRES = 3;

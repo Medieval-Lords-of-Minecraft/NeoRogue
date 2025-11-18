@@ -20,7 +20,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Roar extends Equipment {
-	private static final String ID = "roar";
+	private static final String ID = "Roar";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST);
 	private int strength, heal;
 	private static final int CUTOFF = 20;

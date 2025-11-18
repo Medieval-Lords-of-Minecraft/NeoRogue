@@ -11,7 +11,7 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 
 public class MinorManaPotion extends Consumable {
-	private static final String ID = "minorManaPotion";
+	private static final String ID = "MinorManaPotion";
 	private double mana;
 	
 	public MinorManaPotion(boolean isUpgraded) {

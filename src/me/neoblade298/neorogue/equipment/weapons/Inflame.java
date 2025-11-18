@@ -30,7 +30,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Inflame extends Equipment {
-	private static final String ID = "inflame";
+	private static final String ID = "Inflame";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME);
 	private int damage, stacks, growth;
 	

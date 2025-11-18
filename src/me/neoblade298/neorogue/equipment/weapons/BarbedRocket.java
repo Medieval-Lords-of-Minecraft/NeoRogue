@@ -17,7 +17,7 @@ import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 
 public class BarbedRocket extends Ammunition {
-	private static final String ID = "barbedRocket";
+	private static final String ID = "BarbedRocket";
 	
 	public BarbedRocket(boolean isUpgraded) {
 		super(ID, "Barbed Rocket", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,

@@ -40,7 +40,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class ReckoningOrb extends Equipment {
-	private static final String ID = "reckoningOrb";
+	private static final String ID = "ReckoningOrb";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.ITEM_SLIME);
 	private static final SoundContainer shoot = new SoundContainer(Sound.ENTITY_SHULKER_SHOOT),
 		expl = new SoundContainer(Sound.ENTITY_SLIME_DEATH);

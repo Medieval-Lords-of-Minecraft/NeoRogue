@@ -22,7 +22,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 
 public class Manabending extends Equipment {
-	private static final String ID = "manabending";
+	private static final String ID = "Manabending";
 	private int damage, regen;
 	
 	public Manabending(boolean isUpgraded) {

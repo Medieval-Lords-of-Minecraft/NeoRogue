@@ -19,7 +19,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Overflow extends Equipment {
-	private static final String ID = "overflow";
+	private static final String ID = "Overflow";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST)
 			.dustOptions(new DustOptions(Color.BLUE, 1));
 	private double reduc = isUpgraded ? 0.1 : 0.3;

@@ -11,7 +11,7 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 
 public class BagOfPreparation extends Artifact {
-	private static final String ID = "bagOfPreparation";
+	private static final String ID = "BagOfPreparation";
 	
 	public BagOfPreparation() {
 		super(ID, "Bag of Preparation", Rarity.COMMON, EquipmentClass.CLASSLESS);

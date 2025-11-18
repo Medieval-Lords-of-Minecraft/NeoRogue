@@ -25,7 +25,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class RainOfSteel extends Equipment {
-	private static final String ID = "rainOfSteel";
+	private static final String ID = "RainOfSteel";
 	private static TargetProperties tp = TargetProperties.radius(4, false, TargetType.ENEMY);
 	private static ParticleContainer pc = new ParticleContainer(Particle.SWEEP_ATTACK).count(10).spread(0.5, 0.5);
 	private int damage;

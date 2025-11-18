@@ -19,7 +19,7 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class Dexterity extends Equipment {
-	private static final String ID = "dexterity";
+	private static final String ID = "Dexterity";
 	private int damage;
 	
 	public Dexterity(boolean isUpgraded) {

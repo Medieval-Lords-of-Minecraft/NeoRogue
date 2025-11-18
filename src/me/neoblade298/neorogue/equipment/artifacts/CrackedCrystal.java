@@ -17,7 +17,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.CheckCastUsableEvent;
 
 public class CrackedCrystal extends Artifact {
-	private static final String ID = "crackedCrystal";
+	private static final String ID = "CrackedCrystal";
 
 	public CrackedCrystal() {
 		super(ID, "Cracked Crystal", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);

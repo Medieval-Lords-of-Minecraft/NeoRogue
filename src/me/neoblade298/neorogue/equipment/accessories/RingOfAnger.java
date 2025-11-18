@@ -13,7 +13,7 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class RingOfAnger extends Equipment {
-	private static final String ID = "ringOfAnger";
+	private static final String ID = "RingOfAnger";
 	private int seconds;
 	
 	public RingOfAnger(boolean isUpgraded) {

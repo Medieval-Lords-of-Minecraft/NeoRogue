@@ -31,7 +31,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class FrostTrap extends Equipment {
-	private static final String ID = "frostTrap";
+	private static final String ID = "FrostTrap";
 	private static TargetProperties tp = TargetProperties.radius(2, false, TargetType.ENEMY);
 	private static ParticleContainer trap = new ParticleContainer(Particle.CLOUD).count(50).spread(1, 0.2),
 		hit = new ParticleContainer(Particle.EXPLOSION).count(10).spread(1, 1);

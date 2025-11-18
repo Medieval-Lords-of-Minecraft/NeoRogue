@@ -26,7 +26,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class FivePointStrike extends Equipment {
-	private static final String ID = "fivePointStrike";
+	private static final String ID = "FivePointStrike";
 	private int damage;
 	private ProjectileGroup projs = new ProjectileGroup();
 	private static final ParticleContainer part = new ParticleContainer(Particle.CRIT);

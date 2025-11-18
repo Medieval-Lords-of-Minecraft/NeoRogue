@@ -19,7 +19,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Intuition extends Equipment {
-	private static final String ID = "intuition";
+	private static final String ID = "Intuition";
 	private int damage;
 	private double regen;
 	private static final int THRES = 30;

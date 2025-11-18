@@ -27,7 +27,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class BreakingPoint extends Equipment {
-	private static final String ID = "breakingPoint";
+	private static final String ID = "BreakingPoint";
 	private int shields, refresh, multStr;
 	private double mult;
 	

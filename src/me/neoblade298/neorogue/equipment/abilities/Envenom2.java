@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class Envenom2 extends Equipment {
-	private static final String ID = "envenom2";
+	private static final String ID = "Envenom2";
 	private int poison;
 	
 	public Envenom2(boolean isUpgraded) {

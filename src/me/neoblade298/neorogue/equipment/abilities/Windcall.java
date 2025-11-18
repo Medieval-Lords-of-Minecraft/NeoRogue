@@ -30,7 +30,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Windcall extends Equipment {
-	private static final String ID = "windcall";
+	private static final String ID = "Windcall";
 	private int reduc, dur;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
 	private static final TargetProperties tp = TargetProperties.cone(75, 5, false, TargetType.ENEMY);

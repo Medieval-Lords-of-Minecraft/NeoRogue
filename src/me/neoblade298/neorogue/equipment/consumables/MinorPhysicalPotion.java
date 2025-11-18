@@ -13,7 +13,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 
 public class MinorPhysicalPotion extends Consumable {
-	private static final String ID = "minorPhysicalPotion";
+	private static final String ID = "MinorPhysicalPotion";
 	private int strength;
 	
 	public MinorPhysicalPotion(boolean isUpgraded) {

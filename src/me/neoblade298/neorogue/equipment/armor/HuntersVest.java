@@ -20,7 +20,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 
 public class HuntersVest extends Equipment {
-	private static final String ID = "huntersVest";
+	private static final String ID = "HuntersVest";
 	private int reduc;
 	
 	public HuntersVest(boolean isUpgraded) {

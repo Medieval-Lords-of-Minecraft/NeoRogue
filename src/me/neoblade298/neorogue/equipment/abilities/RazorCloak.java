@@ -17,7 +17,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class RazorCloak extends Equipment {
-	private static final String ID = "razorCloak";
+	private static final String ID = "RazorCloak";
 	private int thorns;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
 	

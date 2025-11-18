@@ -26,7 +26,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageBarrierE
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 
 public class PaladinsShield extends Equipment {
-	private static final String ID = "paladinsShield";
+	private static final String ID = "PaladinsShield";
 	private int reduction, sanct;
 	
 	public PaladinsShield(boolean isUpgraded) {

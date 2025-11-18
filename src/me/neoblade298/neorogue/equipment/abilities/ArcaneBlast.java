@@ -36,7 +36,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.CastUsableEvent;
 
 public class ArcaneBlast extends Equipment {
-	private static final String ID = "arcaneBlast";
+	private static final String ID = "ArcaneBlast";
 	private static final TargetProperties tp = TargetProperties.radius(4, true);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
 			expl = new ParticleContainer(Particle.EXPLOSION).count(20).spread(tp.range / 2, 0.5);

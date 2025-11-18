@@ -11,7 +11,7 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class MinorStrengthRelic extends Equipment {
-	private static final String ID = "minorStrengthRelic";
+	private static final String ID = "MinorStrengthRelic";
 	private int str;
 	
 	public MinorStrengthRelic(boolean isUpgraded) {

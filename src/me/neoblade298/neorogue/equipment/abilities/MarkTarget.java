@@ -27,7 +27,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
 public class MarkTarget extends Equipment {
-	private static final String ID = "markTarget";
+	private static final String ID = "MarkTarget";
 	private static final TargetProperties tp = TargetProperties.radius(8, false, TargetType.ENEMY);
 	private int rend;
 	private double damage;

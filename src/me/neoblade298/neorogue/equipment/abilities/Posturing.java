@@ -23,7 +23,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Posturing extends Equipment {
-	private static final String ID = "posturing";
+	private static final String ID = "Posturing";
 	private int time, inc;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.ENCHANT).count(25).spread(1, 1).offsetY(1);
 	

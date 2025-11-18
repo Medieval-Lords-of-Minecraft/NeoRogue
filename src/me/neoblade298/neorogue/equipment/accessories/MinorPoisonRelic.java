@@ -15,7 +15,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
 
 public class MinorPoisonRelic extends Equipment {
-	private static final String ID = "minorPoisonRelic";
+	private static final String ID = "MinorPoisonRelic";
 	private int increase;
 	
 	public MinorPoisonRelic(boolean isUpgraded) {

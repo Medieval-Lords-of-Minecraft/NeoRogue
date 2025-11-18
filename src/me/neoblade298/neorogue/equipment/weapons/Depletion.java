@@ -43,7 +43,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Depletion extends Equipment {
-	private static final String ID = "depletion";
+	private static final String ID = "Depletion";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST).dustOptions(new DustOptions(Color.BLACK, 1F));
 	private static final TargetProperties tp = TargetProperties.radius(5, false, TargetType.ENEMY);
 	private static final Circle circ = new Circle(tp.range);

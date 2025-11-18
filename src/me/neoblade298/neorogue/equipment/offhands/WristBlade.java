@@ -11,7 +11,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class WristBlade extends Equipment {
-	private static final String ID = "wristBlade";
+	private static final String ID = "WristBlade";
 	private int hits;
 	
 	public WristBlade(boolean isUpgraded) {

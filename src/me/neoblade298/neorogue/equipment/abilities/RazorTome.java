@@ -17,7 +17,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class RazorTome extends Equipment {
-	private static final String ID = "razorTome";
+	private static final String ID = "RazorTome";
 	private int rend, thres; // If change thres, fix description
 	
 	public RazorTome(boolean isUpgraded) {

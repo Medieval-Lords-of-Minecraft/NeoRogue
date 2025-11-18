@@ -21,7 +21,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 
 public class MistralVeil extends Artifact {
-	private static final String ID = "mistralVeil";
+	private static final String ID = "MistralVeil";
 	private static final int range = 7, reduc = 6, rangeSq = range * range;
 
 	public MistralVeil() {

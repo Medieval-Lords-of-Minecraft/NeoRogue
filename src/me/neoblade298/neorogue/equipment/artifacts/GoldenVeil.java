@@ -15,7 +15,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class GoldenVeil extends Artifact {
-	private static final String ID = "goldenVeil";
+	private static final String ID = "GoldenVeil";
 	
 	public GoldenVeil() {
 		super(ID, "Golden Veil", Rarity.RARE, EquipmentClass.MAGE);

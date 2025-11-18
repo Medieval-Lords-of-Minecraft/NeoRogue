@@ -28,7 +28,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class AshenWand extends Equipment {
-	private static final String ID = "ashenWand";
+	private static final String ID = "AshenWand";
 	private static final ParticleContainer tick;
 	
 	static {

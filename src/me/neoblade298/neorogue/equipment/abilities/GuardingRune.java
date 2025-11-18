@@ -13,7 +13,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class GuardingRune extends Equipment {
-	private static final String ID = "guardingRune";
+	private static final String ID = "GuardingRune";
 	private int shields;
 	
 	public GuardingRune(boolean isUpgraded) {

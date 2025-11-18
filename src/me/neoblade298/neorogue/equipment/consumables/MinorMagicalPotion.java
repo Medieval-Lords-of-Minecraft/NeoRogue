@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 
 public class MinorMagicalPotion extends Consumable {
-	private static final String ID = "minorMagicalPotion";
+	private static final String ID = "MinorMagicalPotion";
 	private double intel;
 	
 	public MinorMagicalPotion(boolean isUpgraded) {

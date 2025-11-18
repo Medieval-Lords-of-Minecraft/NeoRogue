@@ -31,7 +31,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Groundbreaker extends Equipment {
-	private static final String ID = "groundbreaker";
+	private static final String ID = "Groundbreaker";
 	private static final TargetProperties tp = TargetProperties.radius(2, true);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
 		explode = new ParticleContainer(Particle.EXPLOSION).spread(tp.range / 2, 0);

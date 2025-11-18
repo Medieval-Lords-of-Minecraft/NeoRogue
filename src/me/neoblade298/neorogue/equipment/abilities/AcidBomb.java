@@ -32,7 +32,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class AcidBomb extends Equipment {
-	private static final String ID = "acidBomb";
+	private static final String ID = "AcidBomb";
 	private static final ParticleContainer placePart = new ParticleContainer(Particle.CLOUD).count(10).spread(0.1, 0.1),
 			smoke = new ParticleContainer(Particle.DUST).count(50).spread(2.5, 2.5).offsetY(1.5).dustOptions(new DustOptions(Color.LIME, 1F)),
 			smokeEdge = new ParticleContainer(Particle.DUST).count(2).spread(0.1, 0).dustOptions(new DustOptions(Color.LIME, 1F));

@@ -21,7 +21,7 @@ import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 
 public class SearingArrow extends Ammunition {
-	private static final String ID = "searingArrow";
+	private static final String ID = "SearingArrow";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME);
 	private int burn;
 	

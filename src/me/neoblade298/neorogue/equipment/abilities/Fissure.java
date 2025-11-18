@@ -32,7 +32,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Fissure extends Equipment {
-	private static final String ID = "fissure";
+	private static final String ID = "Fissure";
 	private static final TargetProperties tp = TargetProperties.line(6, 2, TargetType.ENEMY);
 	private static final ParticleContainer part = new ParticleContainer(Particle.CLOUD).spread(1, 0.1).speed(0.02).count(20);
 	private int damage, concussed;

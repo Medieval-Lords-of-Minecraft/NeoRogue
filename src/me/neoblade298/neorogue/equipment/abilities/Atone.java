@@ -37,7 +37,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Atone extends Equipment {
-	private static final String ID = "atone";
+	private static final String ID = "Atone";
 	private int damage, sanct;
 	private static final TargetProperties tp = TargetProperties.radius(5, false, TargetType.ENEMY);
 	private static final ParticleAnimation anim;

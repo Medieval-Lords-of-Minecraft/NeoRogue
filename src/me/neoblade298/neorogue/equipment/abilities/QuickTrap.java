@@ -31,7 +31,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class QuickTrap extends Equipment {
-	private static final String ID = "quickTrap";
+	private static final String ID = "QuickTrap";
 	private static TargetProperties tp = TargetProperties.radius(2, false, TargetType.ENEMY);
 	private static ParticleContainer trap = new ParticleContainer(Particle.CRIT).count(50).spread(1, 0.2),
 		hit = new ParticleContainer(Particle.CRIT).count(50).spread(1, 1);

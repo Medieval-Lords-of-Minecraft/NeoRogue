@@ -19,7 +19,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class Nightmare extends Equipment {
-	private static final String ID = "nightmare";
+	private static final String ID = "Nightmare";
 	private int stacks;
 	
 	public Nightmare(boolean isUpgraded) {

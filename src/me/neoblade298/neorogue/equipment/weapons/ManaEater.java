@@ -24,7 +24,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class ManaEater extends Equipment {
-	private static final String ID = "manaEater";
+	private static final String ID = "ManaEater";
 	private static final ParticleContainer tick;
 	private static final SoundContainer tickSound = new SoundContainer(Sound.BLOCK_AMETHYST_BLOCK_BREAK),
 			hit = new SoundContainer(Sound.BLOCK_CHAIN_PLACE);

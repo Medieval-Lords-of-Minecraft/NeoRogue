@@ -40,7 +40,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class RedBaron extends Bow {
-	private static final String ID = "redBaron";
+	private static final String ID = "RedBaron";
 	private static final TargetProperties tp = TargetProperties.radius(4, false, TargetType.ENEMY);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME), fill = new ParticleContainer(Particle.LAVA);
 	private static final Circle circ = new Circle(tp.range);

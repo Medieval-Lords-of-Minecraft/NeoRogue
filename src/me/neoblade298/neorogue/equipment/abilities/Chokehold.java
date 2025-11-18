@@ -34,7 +34,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
 public class Chokehold extends Equipment {
-	private static final String ID = "chokehold";
+	private static final String ID = "Chokehold";
 	private double damage;
 	private static final TargetProperties tp = TargetProperties.radius(10, true, TargetType.ALLY);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD);

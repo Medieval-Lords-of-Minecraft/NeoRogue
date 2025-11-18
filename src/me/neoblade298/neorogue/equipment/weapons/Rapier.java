@@ -17,7 +17,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class Rapier extends Equipment {
-	private static final String ID = "rapier";
+	private static final String ID = "Rapier";
 
 	private int shields;
 	

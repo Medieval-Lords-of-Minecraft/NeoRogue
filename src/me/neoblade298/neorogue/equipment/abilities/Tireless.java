@@ -17,7 +17,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.CheckCastUsableEvent;
 
 public class Tireless extends Equipment {
-	private static final String ID = "tireless";
+	private static final String ID = "Tireless";
 	private int cutoff, reduc, shields;
 
 	public Tireless(boolean isUpgraded) {

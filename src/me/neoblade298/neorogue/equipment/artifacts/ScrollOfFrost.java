@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 
 public class ScrollOfFrost extends Artifact {
-	private static final String ID = "scrollOfFrost";
+	private static final String ID = "ScrollOfFrost";
 	
 	public ScrollOfFrost() {
 		super(ID, "Scroll of Frost", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);

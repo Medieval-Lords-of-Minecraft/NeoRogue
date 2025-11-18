@@ -21,7 +21,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class Disappear extends Equipment {
-	private static final String ID = "disappear";
+	private static final String ID = "Disappear";
 	private int damage;
 	
 	public Disappear(boolean isUpgraded) {

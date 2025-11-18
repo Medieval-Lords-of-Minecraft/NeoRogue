@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
 
 public class EarthenBracer extends Equipment {
-	private static final String ID = "earthenBracer";
+	private static final String ID = "EarthenBracer";
 	private int multStr;
 	private double mult;
 	

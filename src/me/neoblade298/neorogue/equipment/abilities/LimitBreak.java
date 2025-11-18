@@ -20,7 +20,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class LimitBreak extends Equipment {
-	private static final String ID = "limitBreak";
+	private static final String ID = "LimitBreak";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST);
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_RAVAGER_ROAR);
 	

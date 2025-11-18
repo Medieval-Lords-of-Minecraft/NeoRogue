@@ -25,7 +25,7 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class SaviorsHelm extends Equipment {
-	private static final String ID = "saviorsHelm";
+	private static final String ID = "SaviorsHelm";
 	private static final TargetProperties tp = TargetProperties.radius(5, false);
 	private int def, sanct;
 	

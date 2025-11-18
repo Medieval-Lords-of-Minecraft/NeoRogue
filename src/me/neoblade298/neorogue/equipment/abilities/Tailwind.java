@@ -23,7 +23,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Tailwind extends Equipment {
-	private static final String ID = "tailwind";
+	private static final String ID = "Tailwind";
 	private static final int radius = 6;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
 	private static final Circle circ = new Circle(radius);

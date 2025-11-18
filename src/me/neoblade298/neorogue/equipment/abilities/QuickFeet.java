@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class QuickFeet extends Equipment {
-	private static final String ID = "quickFeet";
+	private static final String ID = "QuickFeet";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.FIREWORK).count(25)
 			.spread(0.5, 0.5).offsetY(1).speed(0.01);
 	private int ev;

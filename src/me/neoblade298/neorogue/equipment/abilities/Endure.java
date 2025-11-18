@@ -17,7 +17,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Endure extends Equipment {
-	private static final String ID = "endurance";
+	private static final String ID = "Endurance";
 	private int shields, berserk, cd;
 	
 	public Endure(boolean isUpgraded) {

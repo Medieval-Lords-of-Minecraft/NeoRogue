@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class BlinkRune extends Equipment {
-	private static final String ID = "blinkRune";
+	private static final String ID = "BlinkRune";
 	private int reps;
 	
 	public BlinkRune(boolean isUpgraded) {

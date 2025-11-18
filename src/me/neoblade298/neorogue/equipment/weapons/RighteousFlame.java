@@ -23,7 +23,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class RighteousFlame extends Equipment {
-	private static final String ID = "righteousFlame";
+	private static final String ID = "RighteousFlame";
 	private int sanct;
 	
 	public RighteousFlame(boolean isUpgraded) {

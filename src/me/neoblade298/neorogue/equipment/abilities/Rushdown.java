@@ -15,7 +15,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class Rushdown extends Equipment {
-	private static final String ID = "rushdown";
+	private static final String ID = "Rushdown";
 	private int secs;
 	private double inc = 1.5;
 	

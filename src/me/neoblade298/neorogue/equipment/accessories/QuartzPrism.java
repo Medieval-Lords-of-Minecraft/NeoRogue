@@ -21,7 +21,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
 
 public class QuartzPrism extends Artifact {
-	private static final String ID = "quartzPrism";
+	private static final String ID = "QuartzPrism";
 	private int duration = 20, inc = 2;
 	
 	public QuartzPrism() {

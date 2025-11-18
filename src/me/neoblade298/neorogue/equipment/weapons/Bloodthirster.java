@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class Bloodthirster extends Equipment {
-	private static final String ID = "bloodthirster";
+	private static final String ID = "Bloodthirster";
 	private int mult;
 
 	public Bloodthirster(boolean isUpgraded) {

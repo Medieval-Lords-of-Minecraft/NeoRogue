@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Backstep extends Equipment {
-	private static final String ID = "backstep";
+	private static final String ID = "Backstep";
 	
 	public Backstep(boolean isUpgraded) {
 		super(ID, "Backstep", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,

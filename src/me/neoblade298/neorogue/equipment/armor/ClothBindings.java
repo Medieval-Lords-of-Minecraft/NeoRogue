@@ -11,7 +11,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class ClothBindings extends Equipment {
-	private static final String ID = "clothBindings";
+	private static final String ID = "ClothBindings";
 	private double health;
 	
 	public ClothBindings(boolean isUpgraded) {

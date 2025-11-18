@@ -16,7 +16,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class Warmup extends Equipment {
-	private static final String ID = "warmup";
+	private static final String ID = "Warmup";
 	private int timer;
 
 	public Warmup(boolean isUpgraded) {

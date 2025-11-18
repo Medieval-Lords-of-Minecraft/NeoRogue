@@ -33,7 +33,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 
 public class HeadTrauma extends Equipment {
-	private static final String ID = "headTrauma";
+	private static final String ID = "HeadTrauma";
 	private int damage, reducStr;
 	private double reduc;
 	private static final int THRESHOLD = 100;

@@ -30,7 +30,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Crystallize extends Equipment {
-	private static final String ID = "crystallize";
+	private static final String ID = "Crystallize";
 	private static final TargetProperties tp = TargetProperties.radius(8, false, TargetType.ENEMY),
 		aoe = TargetProperties.radius(8, false, TargetType.ENEMY);
 	private static final Circle circ = new Circle(8);

@@ -28,7 +28,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class WeaponEnchantmentElectrified extends Equipment {
-	private static final String ID = "weaponEnchantmentElectrified";
+	private static final String ID = "WeaponEnchantmentElectrified";
 	private ProjectileGroup projs;
 	private int damage, elec;
 	private static final int RANGE = 8;

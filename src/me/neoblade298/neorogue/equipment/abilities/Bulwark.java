@@ -17,7 +17,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Bulwark extends Equipment {
-	private static final String ID = "bulwark";
+	private static final String ID = "Bulwark";
 	private int shields, prot, cd;
 	
 	public Bulwark(boolean isUpgraded) {

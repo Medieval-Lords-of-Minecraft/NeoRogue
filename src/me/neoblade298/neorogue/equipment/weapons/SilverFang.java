@@ -23,7 +23,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class SilverFang extends Equipment {
-	private static final String ID = "silverFang";
+	private static final String ID = "SilverFang";
 	private int sanct;
 	
 	public SilverFang(boolean isUpgraded) {

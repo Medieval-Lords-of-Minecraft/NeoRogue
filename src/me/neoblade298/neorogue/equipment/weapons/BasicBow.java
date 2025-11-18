@@ -17,7 +17,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class BasicBow extends Bow {
-	private static final String ID = "basicBow";
+	private static final String ID = "BasicBow";
 	
 	public BasicBow(boolean isUpgraded) {
 		super(ID, "Basic Bow", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,

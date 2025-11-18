@@ -11,7 +11,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class FlowState extends Equipment {
-	private static final String ID = "flowState";
+	private static final String ID = "FlowState";
 	private int thres;
 	private double inc;
 	

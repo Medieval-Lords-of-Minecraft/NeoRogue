@@ -33,7 +33,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class HolySpear extends Equipment {
-	private static final String ID = "holySpear";
+	private static final String ID = "HolySpear";
 	private static final ParticleContainer lancePart = new ParticleContainer(Particle.ELECTRIC_SPARK).count(5).spread(0.1, 0.1);
 	private static final TargetProperties tp = TargetProperties.line(6, 1, TargetType.ENEMY);
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_PLAYER_ATTACK_CRIT, 0.5F);

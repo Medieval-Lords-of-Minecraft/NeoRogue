@@ -34,7 +34,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Storm extends Equipment {
-	private static final String ID = "storm";
+	private static final String ID = "Storm";
 	private static final TargetProperties tp = TargetProperties.radius(14, true),
 			aoe = TargetProperties.radius(4, true);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.ANGRY_VILLAGER);

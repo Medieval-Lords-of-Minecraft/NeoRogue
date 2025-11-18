@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.CheckCastUsableEvent;
 
 public class OpalHourglass extends Artifact {
-	private static final String ID = "opalHourglass";
+	private static final String ID = "OpalHourglass";
 	private static int thres = 15, reduc = 4;
 
 	public OpalHourglass() {

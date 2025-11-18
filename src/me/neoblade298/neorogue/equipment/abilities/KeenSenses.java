@@ -24,7 +24,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
 public class KeenSenses extends Equipment {
-	private static final String ID = "keenSenses";
+	private static final String ID = "KeenSenses";
 	private int shields, damage;
 	
 	public KeenSenses(boolean isUpgraded) {

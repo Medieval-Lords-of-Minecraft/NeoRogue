@@ -37,7 +37,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
 
 public class BeamStaff extends Equipment {
-	private static final String ID = "beamStaff";
+	private static final String ID = "BeamStaff";
 	private static final TargetProperties tp = TargetProperties.radius(12, false),
 		aoe = TargetProperties.radius(1.5, false);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.FIREWORK).count(10).spread(0.25, 0.2).speed(0.01);

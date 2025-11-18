@@ -19,7 +19,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroupEvent;
 
 public class FlashDraw extends Equipment {
-	private static final String ID = "flashDraw";
+	private static final String ID = "FlashDraw";
 	private int thres;
 	
 	public FlashDraw(boolean isUpgraded) {

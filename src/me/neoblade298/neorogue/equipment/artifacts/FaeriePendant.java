@@ -13,7 +13,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 
 public class FaeriePendant extends Artifact {
-	private static final String ID = "faeriePendant";
+	private static final String ID = "FaeriePendant";
 	public FaeriePendant() {
 		super(ID, "Faerie Pendant", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
 	}

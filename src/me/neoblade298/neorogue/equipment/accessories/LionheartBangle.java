@@ -14,7 +14,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 
 public class LionheartBangle extends Artifact {
-	private static final String ID = "lionheartBangle";
+	private static final String ID = "LionheartBangle";
 	private int thres = 10;
 	
 	public LionheartBangle() {

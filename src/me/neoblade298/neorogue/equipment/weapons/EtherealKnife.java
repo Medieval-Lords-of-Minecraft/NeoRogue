@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class EtherealKnife extends Equipment {
-	private static final String ID = "etherealKnife";
+	private static final String ID = "EtherealKnife";
 	private int durability;
 	
 	public EtherealKnife(boolean isUpgraded) {

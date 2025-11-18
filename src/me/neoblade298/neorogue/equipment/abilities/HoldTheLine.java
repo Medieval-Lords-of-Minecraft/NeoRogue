@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class HoldTheLine extends Equipment {
-	private static final String ID = "holdTheLine";
+	private static final String ID = "HoldTheLine";
 	private int shields, concussed;
 	private static final SoundContainer hit = new SoundContainer(Sound.BLOCK_ROOTED_DIRT_BREAK);
 	

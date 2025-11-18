@@ -17,7 +17,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class RingOfScalding extends Equipment {
-	private static final String ID = "ringOfScalding";
+	private static final String ID = "RingOfScalding";
 	private double mult;
 	
 	public RingOfScalding(boolean isUpgraded) {

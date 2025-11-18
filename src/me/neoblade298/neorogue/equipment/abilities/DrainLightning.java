@@ -29,7 +29,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class DrainLightning extends Equipment {
-	private static final String ID = "drainLightning";
+	private static final String ID = "DrainLightning";
 	private static final ParticleContainer tick = new ParticleContainer(Particle.FIREWORK).count(3).spread(0.3, 0.3);
 	private static final TargetProperties tp = TargetProperties.line(7, 2, TargetType.ENEMY);
 

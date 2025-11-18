@@ -13,7 +13,7 @@ import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 
 public class TarotCard extends Artifact {
-	private static final String ID = "tarotCard";
+	private static final String ID = "TarotCard";
 
 	public TarotCard() {
 		super(ID, "Tarot Card", Rarity.RARE, EquipmentClass.CLASSLESS);

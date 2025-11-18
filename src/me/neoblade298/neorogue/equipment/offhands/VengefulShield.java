@@ -24,7 +24,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 
 public class VengefulShield extends Equipment {
-	private static final String ID = "vengefulShield";
+	private static final String ID = "VengefulShield";
 	private int reduction, damage, thres;
 
 	public VengefulShield(boolean isUpgraded) {
