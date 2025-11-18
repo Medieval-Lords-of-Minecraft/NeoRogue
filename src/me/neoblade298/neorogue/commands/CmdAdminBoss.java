@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.commands;
 import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -41,6 +42,7 @@ public class CmdAdminBoss extends Subcommand {
 		for (Player p : Bukkit.getOnlinePlayers()) {
 			SessionManager.addToSession(p.getUniqueId(), sess);
 			sess.addPlayer(p.getUniqueId(), EquipmentClass.WARRIOR);
+			p.setHealth(p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
 		}
 		sess.generateArea(AreaType.LOW_DISTRICT);
 		sess.setNode(sess.getArea().getNodes()[0][2]);
