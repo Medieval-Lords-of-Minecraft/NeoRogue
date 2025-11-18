@@ -1,11 +1,18 @@
 package me.neoblade298.neorogue.equipment;
 
+import java.io.File;
+import java.lang.reflect.Modifier;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -877,6 +884,9 @@ public abstract class Equipment implements Comparable<Equipment> {
 			Bukkit.getLogger().info("[NeoRogue] Loaded " + counts.get(type) + " " + type.getDisplay());
 		}
 		Bukkit.getLogger().info("[NeoRogue] Loaded " + cursed + " Cursed");
+		
+		// Validate that all ability classes are initialized
+		validateAbilityClassInitialization();
 	}
 
 	public Equipment(String id, String display, boolean isUpgraded, Rarity rarity, EquipmentClass ec,
@@ -1627,5 +1637,157 @@ public abstract class Equipment implements Comparable<Equipment> {
 
 	public static Collection<Equipment> getAll() {
 		return equipment.values();
+	}
+	
+	/**
+	 * Validates that all classes in all equipment packages have been properly initialized.
+	 * Logs warnings for any missing classes that should be registered.
+	 */
+	private static void validateAbilityClassInitialization() {
+		// Define all equipment packages to validate
+		String[] packageNames = {
+			"me.neoblade298.neorogue.equipment.abilities",
+			"me.neoblade298.neorogue.equipment.accessories", 
+			"me.neoblade298.neorogue.equipment.armor",
+			"me.neoblade298.neorogue.equipment.artifacts",
+			"me.neoblade298.neorogue.equipment.consumables",
+			"me.neoblade298.neorogue.equipment.cursed",
+			"me.neoblade298.neorogue.equipment.materials",
+			"me.neoblade298.neorogue.equipment.mechanics",
+			"me.neoblade298.neorogue.equipment.offhands",
+			"me.neoblade298.neorogue.equipment.weapons"
+		};
+		
+		try {
+			int totalClasses = 0;
+			int totalMissing = 0;
+			
+			for (String packageName : packageNames) {
+				// Get all classes in the current package
+				List<Class<?>> equipmentClasses = getClassesInPackage(packageName);
+				
+				// Track missing classes for this package
+				List<String> missingClasses = new ArrayList<>();
+				int validClassCount = 0;
+				
+				for (Class<?> clazz : equipmentClasses) {
+					// Skip abstract classes, interfaces, inner classes, and non-Equipment classes
+					if (Modifier.isAbstract(clazz.getModifiers()) || 
+						clazz.isInterface() || 
+						clazz.isMemberClass() ||
+						!Equipment.class.isAssignableFrom(clazz)) {
+						continue;
+					}
+					
+					validClassCount++;
+					
+					// Check if this class has been registered
+					String className = clazz.getSimpleName();
+					boolean found = false;
+					
+					// Check both base and upgraded equipment
+					for (Equipment eq : equipment.values()) {
+						if (eq.getClass().getSimpleName().equals(className)) {
+							found = true;
+							break;
+						}
+					}
+					
+					if (!found) {
+						for (Equipment eq : upgraded.values()) {
+							if (eq.getClass().getSimpleName().equals(className)) {
+								found = true;
+								break;
+							}
+						}
+					}
+					
+					if (!found) {
+						missingClasses.add(className);
+					}
+				}
+				
+				totalClasses += validClassCount;
+				totalMissing += missingClasses.size();
+				
+				// Report results for this package
+				String packageShortName = packageName.substring(packageName.lastIndexOf('.') + 1);
+				if (missingClasses.isEmpty() && validClassCount > 0) {
+					Bukkit.getLogger().info("[NeoRogue] ✓ All " + validClassCount + " " + packageShortName + " classes are properly initialized!");
+				} else if (!missingClasses.isEmpty()) {
+					Bukkit.getLogger().warning("[NeoRogue] ⚠ Found " + missingClasses.size() + " uninitialized " + packageShortName + " classes:");
+					for (String missing : missingClasses) {
+						String initCode = packageShortName.equals("artifacts") ? 
+							"new " + missing + "();" : "new " + missing + "(b);";
+						Bukkit.getLogger().warning("[NeoRogue]   - " + missing + " (add '" + initCode + "' to load() method)");
+					}
+				}
+			}
+			
+			// Summary report
+			if (totalMissing == 0 && totalClasses > 0) {
+				Bukkit.getLogger().info("[NeoRogue] 🎉 All " + totalClasses + " equipment classes across all packages are properly initialized!");
+			} else if (totalMissing > 0) {
+				Bukkit.getLogger().warning("[NeoRogue] 📊 Equipment validation summary: " + (totalClasses - totalMissing) + "/" + totalClasses + " classes initialized (" + totalMissing + " missing)");
+			}
+			
+		} catch (Exception e) {
+			Bukkit.getLogger().warning("[NeoRogue] Failed to validate equipment class initialization: " + e.getMessage());
+		}
+	}
+	
+	/**
+	 * Gets all classes in a given package using reflection.
+	 * Works both in development (file system) and production (JAR) environments.
+	 */
+	private static List<Class<?>> getClassesInPackage(String packageName) throws Exception {
+		List<Class<?>> classes = new ArrayList<>();
+		String path = packageName.replace('.', '/');
+		
+		// Get the class loader
+		ClassLoader classLoader = Equipment.class.getClassLoader();
+		Enumeration<URL> resources = classLoader.getResources(path);
+		
+		while (resources.hasMoreElements()) {
+			URL resource = resources.nextElement();
+			
+			if (resource.getProtocol().equals("file")) {
+				// Development environment - files in filesystem
+				File directory = new File(resource.getFile());
+				if (directory.exists()) {
+					for (File file : directory.listFiles()) {
+						if (file.getName().endsWith(".class")) {
+							String className = packageName + '.' + file.getName().substring(0, file.getName().length() - 6);
+							try {
+								classes.add(Class.forName(className));
+							} catch (ClassNotFoundException e) {
+								// Skip classes that can't be loaded
+							}
+						}
+					}
+				}
+			} else if (resource.getProtocol().equals("jar")) {
+				// Production environment - classes in JAR file
+				String jarPath = resource.getPath().substring(5, resource.getPath().indexOf("!"));
+				try (JarFile jar = new JarFile(jarPath)) {
+					Enumeration<JarEntry> entries = jar.entries();
+					while (entries.hasMoreElements()) {
+						JarEntry entry = entries.nextElement();
+						if (entry.getName().startsWith(path) && entry.getName().endsWith(".class")) {
+							String className = entry.getName().replace('/', '.').substring(0, entry.getName().length() - 6);
+							if (className.startsWith(packageName)) {
+								try {
+									classes.add(Class.forName(className));
+								} catch (ClassNotFoundException e) {
+									// Skip classes that can't be loaded
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		return classes;
 	}
 }
