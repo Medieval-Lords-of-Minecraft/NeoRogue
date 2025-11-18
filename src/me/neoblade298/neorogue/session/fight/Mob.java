@@ -60,10 +60,13 @@ public class Mob implements Comparable<Mob> {
 	}
 	
 	public static Mob get(String id) {
-		if (!mobs.containsKey(id)) {
-			Bukkit.getLogger().warning("[NeoRogue] Tried to get unregistered mob " + id);
-			return null;
-		}
+		/**
+		 * Don't do this, many mobs aren't in the Mob glossary (like BanditKingCondemn) and thus this will spam
+		 * if (!mobs.containsKey(id)) {
+		 *	Bukkit.getLogger().warning("[NeoRogue] Tried to get unregistered mob " + id);
+		 *	return null;
+		 * }
+		 */
 		return mobs.get(id);
 	}
 
