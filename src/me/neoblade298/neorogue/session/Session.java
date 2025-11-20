@@ -547,6 +547,10 @@ public class Session {
 	public void setAreasCompleted(int areasCompleted) {
 		this.areasCompleted = areasCompleted;
 	}
+
+	public void incrementAreasCompleted() {
+		this.areasCompleted++;
+	}
 	
 	public int getXOff() {
 		return xOff;
