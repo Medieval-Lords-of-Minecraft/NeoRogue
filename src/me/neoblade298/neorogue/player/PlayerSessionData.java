@@ -707,27 +707,22 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 	public void deserialize(String str) throws Exception {
 		String[] arr = str.split(",");
 		int i = 0;
-		try {
-			ec = EquipmentClass.valueOf(arr[i++]);
-			maxHealth = Double.parseDouble(arr[i++]);
-			maxMana = Double.parseDouble(arr[i++]);
-			maxStamina = Double.parseDouble(arr[i++]);
-			manaRegen = Double.parseDouble(arr[i++]);
-			staminaRegen = Double.parseDouble(arr[i++]);
-			hotbar = Equipment.deserializeAsArray(arr[i++]);
-			armors = Equipment.deserializeAsArray(arr[i++]);
-			offhand = Equipment.deserializeAsArray(arr[i++]);
-			accessories = Equipment.deserializeAsArray(arr[i++]);
-			storage = Equipment.deserializeAsArray(arr[i++]);
-			otherBinds = Equipment.deserializeAsArray(arr[i++]);
-			artifacts = ArtifactInstance.deserializeMap(arr[i++]);
-			maxAbilities = Integer.parseInt(arr[i++]);
-			maxStorage = Integer.parseInt(arr[i++]);
-			coins = Integer.parseInt(arr[i++]);
-		}
-		catch (Exception ex) {
-			throw new Exception("Failed to deserialize player session data slot " + i);
-		}
+		ec = EquipmentClass.valueOf(arr[i++]);
+		maxHealth = Double.parseDouble(arr[i++]);
+		maxMana = Double.parseDouble(arr[i++]);
+		maxStamina = Double.parseDouble(arr[i++]);
+		manaRegen = Double.parseDouble(arr[i++]);
+		staminaRegen = Double.parseDouble(arr[i++]);
+		hotbar = Equipment.deserializeAsArray(arr[i++]);
+		armors = Equipment.deserializeAsArray(arr[i++]);
+		offhand = Equipment.deserializeAsArray(arr[i++]);
+		accessories = Equipment.deserializeAsArray(arr[i++]);
+		storage = Equipment.deserializeAsArray(arr[i++]);
+		otherBinds = Equipment.deserializeAsArray(arr[i++]);
+		artifacts = ArtifactInstance.deserializeMap(arr[i++]);
+		maxAbilities = Integer.parseInt(arr[i++]);
+		maxStorage = Integer.parseInt(arr[i++]);
+		coins = Integer.parseInt(arr[i++]);
 
 		// Need to initialize artifacts after deserialization
 		setupArtifacts();

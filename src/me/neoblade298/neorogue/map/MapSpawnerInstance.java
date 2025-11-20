@@ -65,6 +65,7 @@ public class MapSpawnerInstance {
 			
 			UUID uuid = am.getEntity().getUniqueId();
 			FightData fd = new FightData((LivingEntity) am.getEntity().getBukkitEntity(), am, origin.getMob(), this);
+			if (fd.getEntity() == null) continue; // Sometimes happens when a fight ends (despawn triggers more spawnmob)
 			fd.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, 40, 0));
 			FightInstance.putFightData(uuid, fd);
 			activeMobs += origin.getMob().getAmount();

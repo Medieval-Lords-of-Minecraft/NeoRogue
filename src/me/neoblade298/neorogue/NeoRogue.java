@@ -178,13 +178,16 @@ public class NeoRogue extends JavaPlugin {
 		Session s = SessionManager.createSession(p, "test", 1);
 		s.generateArea(AreaType.HARVEST_FIELDS);
 		s.addPlayer(p.getUniqueId(), EquipmentClass.WARRIOR);
-		SessionManager.addToSession(p.getUniqueId(), s);
-		Player alt = Bukkit.getPlayer("SuaveGentleman");
-		if (alt != null) {
-			s.addPlayer(alt.getUniqueId(), EquipmentClass.MAGE);
-			SessionManager.addToSession(alt.getUniqueId(), s);
-		}
+		s.setNodesVisited(16);
+
 		s.setNode(s.getArea().getNodes()[0][2]);
+		for (Player pl : Bukkit.getOnlinePlayers()) {
+			if (p == pl) continue;
+			if (SessionManager.getSession(pl) == null) {
+				s.addPlayer(pl.getUniqueId(), EquipmentClass.WARRIOR);
+				SessionManager.addToSession(pl.getUniqueId(), s);
+			}
+		}
 		
 		// Required to have delay otherwise the startup save and auto-save happen simultaneously and conflict
 		new BukkitRunnable() {

@@ -1115,10 +1115,16 @@ public abstract class Equipment implements Comparable<Equipment> {
 	public static Equipment[] deserializeAsArray(String str) {
 		String[] separated = str.split(";");
 		Equipment[] arr = new Equipment[separated.length];
-		for (int i = 0; i < separated.length; i++) {
-			if (str.isBlank())
-				continue;
-			arr[i] = Equipment.deserialize(separated[i]);
+		try {
+			for (int i = 0; i < separated.length; i++) {
+				if (str.isBlank())
+					continue;
+				arr[i] = Equipment.deserialize(separated[i]);
+			}
+		}
+		catch (Exception e) {
+			Bukkit.getLogger().warning("[NeoRogue] Failed to deserialize equipment as an array: " + str);
+			e.printStackTrace();
 		}
 		return arr;
 	}

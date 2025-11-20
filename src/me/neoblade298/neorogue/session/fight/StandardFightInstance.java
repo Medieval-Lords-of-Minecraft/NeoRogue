@@ -19,6 +19,9 @@ import me.neoblade298.neorogue.area.NodeType;
 import me.neoblade298.neorogue.equipment.Consumable;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
+import me.neoblade298.neorogue.equipment.artifacts.EmeraldShard;
+import me.neoblade298.neorogue.equipment.artifacts.RubyShard;
+import me.neoblade298.neorogue.equipment.artifacts.SapphireShard;
 import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
@@ -179,9 +182,9 @@ public class StandardFightInstance extends FightInstance {
 			s.rollUpgrades(equipDrops, fightScore.getUpgradeModifier() + ev.getBonusUpgradeChance());
 			list.add(new EquipmentChoiceReward(equipDrops));
 			equipDrops = new ArrayList<Equipment>(3);
-			equipDrops.add(Equipment.get("rubyShard", false));
-			equipDrops.add(Equipment.get("emeraldShard", false));
-			equipDrops.add(Equipment.get("sapphireShard", false));
+			equipDrops.add(RubyShard.get());
+			equipDrops.add(EmeraldShard.get());
+			equipDrops.add(SapphireShard.get());
 			list.add(new EquipmentChoiceReward(equipDrops));
 			if (dropPotion) {
 				Consumable cons = Equipment.getConsumable(value, ec, EquipmentClass.CLASSLESS);
