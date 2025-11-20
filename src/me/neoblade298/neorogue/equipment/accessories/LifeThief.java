@@ -22,7 +22,7 @@ public class LifeThief extends Equipment {
 	private int cutoff = 10, heal;
 	
 	public LifeThief(boolean isUpgraded) {
-		super(ID, "Life Thief", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
+		super(ID, "Life Thief", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ACCESSORY);
 		heal = isUpgraded ? 25 : 15;
 	}

@@ -76,7 +76,7 @@ public class LightPulse extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.END_ROD,
-				"Passive. When above 50% max mana, every <white>third basic attack fires five piercing projectiles in a cone that deal " + GlossaryTag.LIGHT.tag(this, damage, true) +
+				"Passive. When above 50% max mana, every <white>third</white> basic attack fires five piercing projectiles in a cone that deal " + GlossaryTag.LIGHT.tag(this, damage, true) +
 				" damage. Costs " + DescUtil.white(cost) + " mana, unaffected by mana cost reduction.");
 	}
 	

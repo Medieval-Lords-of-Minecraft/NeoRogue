@@ -89,7 +89,7 @@ public class WeaponEnchantmentHoly extends Equipment {
 		private Equipment eq;
 		private int slot;
 		public WeaponEnchantmentHolyProjectile(Equipment eq, int slot) {
-			super(0.5, RANGE, 2);
+			super(1, RANGE, 2);
 			this.eq = eq;
 			this.slot = slot;
 		}
