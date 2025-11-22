@@ -370,10 +370,10 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		else {
 			inst = new ArtifactInstance(artifact);
 			artifacts.put(artifact.getId(), inst);
+			inst.getArtifact().onInitializeSession(this);
 			if (!artifact.canStack()) personalArtifacts.remove(artifact);
 		}
 		inst.getArtifact().onAcquire(this, amount);
-		inst.getArtifact().onInitializeSession(this);
 
 		// If you want customizable broadcast message, you'll need to refactor a bit
 		Player p = data.getPlayer();
@@ -394,9 +394,10 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 			inst = new ArtifactInstance(artifact);
 			artifacts.put(artifact.getId(), inst);
 			if (!artifact.canStack()) personalArtifacts.remove(artifact);
+			inst.getArtifact().onInitializeSession(this);
 		}
+
 		inst.getArtifact().onAcquire(this, 1);
-		inst.getArtifact().onInitializeSession(this);
 	}
 	
 	public void giveEquipmentSilent(Equipment eq) {

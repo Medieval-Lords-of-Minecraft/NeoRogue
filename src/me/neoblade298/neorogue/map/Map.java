@@ -82,7 +82,8 @@ public class Map {
 					allPieces.put(key, piece);
 					if (type.equals("BOSS")) bossPieces.get(area).add(piece);
 					else if (type.equals("MINIBOSS")) minibossPieces.get(area).add(piece);
-					else standardPieces.get(area).add(piece);
+					else if (type.equals("STANDARD")) standardPieces.get(area).add(piece);
+					// Do not turn into an else, there are other types like BORDER pieces
 				}
 				catch (Exception e) {
 					e.printStackTrace();

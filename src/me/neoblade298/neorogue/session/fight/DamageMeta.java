@@ -313,10 +313,11 @@ public class DamageMeta {
 		// Status effects
 		if (!isSecondary) {
 			if (recipient.hasStatus(StatusType.SANCTIFIED) && containsType(DamageCategory.LIGHT)) {
-				for (Entry<FightData, Integer> ent : owner.getStatus(StatusType.SANCTIFIED).getSlices().getSliceOwners().entrySet()) {
+				for (Entry<FightData, Integer> ent : recipient.getStatus(StatusType.SANCTIFIED).getSlices().getSliceOwners().entrySet()) {
 					if (ent.getKey() instanceof PlayerFightData) {
-						((PlayerFightData) ent.getKey()).getStats().addSanctifiedShielding(ent.getValue() * 0.01);
-						owner.addSimpleShield(ent.getKey().getUniqueId(), ent.getValue() * 0.01, 60);
+						double mult = 0.1;
+						((PlayerFightData) ent.getKey()).getStats().addSanctifiedShielding(ent.getValue() * mult);
+						owner.addSimpleShield(ent.getKey().getUniqueId(), ent.getValue() * mult, 60);
 					}
 				}
 			}
