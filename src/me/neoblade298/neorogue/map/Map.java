@@ -48,6 +48,7 @@ public class Map {
 	private static final int MAP_SIZE = 12;
 	
 	private AreaType type;
+	private boolean hasCustomMobInfo = false;
 	private ArrayList<MapPieceInstance> pieces = new ArrayList<MapPieceInstance>();
 	private LinkedList<Coordinates> entrances = new LinkedList<Coordinates>(),
 			obstructedEntrances = new LinkedList<Coordinates>();
@@ -336,6 +337,7 @@ public class Map {
 
 		// Set up the mobs
 		if (inst.getPiece().hasCustomMobInfo()) {
+			hasCustomMobInfo = true;
 			for (String str : inst.getPiece().getCustomMobInfo()) {
 				Mob mob = Mob.get(str);
 				if (mob == null) {
@@ -409,6 +411,10 @@ public class Map {
 	// Used to calculate rough chunk size of the map
 	public int getEffectiveSize() {
 		return effectiveSize;
+	}
+
+	public boolean hasCustomMobInfo() {
+		return hasCustomMobInfo;
 	}
 	
 	public void cleanup() {

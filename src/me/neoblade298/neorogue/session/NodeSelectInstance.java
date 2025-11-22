@@ -128,7 +128,7 @@ public class NodeSelectInstance extends EditInventoryInstance {
 			e.setCancelled(true);
 			Node n = s.getArea().getNodeFromLocation(e.getClickedBlock().getLocation().add(0, 2, 1));
 			FightInstance inst = (FightInstance) n.getInstance();
-			new FightInfoInventory(e.getPlayer(), null, inst.getMap().getMobs());
+			new FightInfoInventory(e.getPlayer(), null, inst.getMap().getMobs(), inst.getMap().hasCustomMobInfo());
 		} else {
 			super.handleSpectatorInteractEvent(e);
 		}
@@ -192,13 +192,12 @@ public class NodeSelectInstance extends EditInventoryInstance {
 			} else {
 				s.setBusy(true);
 			}
-			// Fight instances set allow flight to false and set busy to false on start
 			return;
 		} else if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock().getType() == Material.LECTERN) {
 			e.setCancelled(true);
 			Node n = s.getArea().getNodeFromLocation(e.getClickedBlock().getLocation().add(0, 2, 1));
 			FightInstance inst = (FightInstance) n.getInstance();
-			new FightInfoInventory(e.getPlayer(), s.getParty().get(p.getUniqueId()), inst.getMap().getMobs());
+			new FightInfoInventory(e.getPlayer(), s.getParty().get(p.getUniqueId()), inst.getMap().getMobs(), inst.getMap().hasCustomMobInfo());
 		} else {
 			super.handleInteractEvent(e);
 		}

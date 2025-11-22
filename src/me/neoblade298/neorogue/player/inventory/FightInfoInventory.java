@@ -22,7 +22,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class FightInfoInventory extends CoreInventory {
-	public FightInfoInventory(Player viewer, @Nullable PlayerSessionData data, AbstractMap<Mob, ArrayList<MobModifier>> mobs) {
+	public FightInfoInventory(Player viewer, @Nullable PlayerSessionData data, AbstractMap<Mob, ArrayList<MobModifier>> mobs, boolean hasCustomMobInfo) {
 		super(viewer, Bukkit.createInventory(viewer, mobs.size() + (9 - mobs.size() % 9) + 9, Component.text("Fight Info", NamedTextColor.BLUE)));
 		if (data != null) InventoryListener.registerPlayerInventory(p, new PlayerSessionInventory(data));
 		ItemStack[] contents = inv.getContents();
@@ -31,7 +31,9 @@ public class FightInfoInventory extends CoreInventory {
 		for (Entry<Mob, ArrayList<MobModifier>> ent : mobs.entrySet()) {
 			Mob mob = ent.getKey();
 			contents[pos++] = mob.getItemDisplay(ent.getValue());
-			if (mob.getSummons() != null) {
+
+			// Only show summons if there's no custom mob order, since the mob order overrides everything
+			if (!hasCustomMobInfo && mob.getSummons() != null) {
 				for (String summonStr : mob.getSummons()) {
 					Mob summon = Mob.get(summonStr);
 					if (summon == null) {

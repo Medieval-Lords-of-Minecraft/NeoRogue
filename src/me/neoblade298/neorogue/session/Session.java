@@ -626,6 +626,10 @@ public class Session {
 	public int getAreasCompleted() {
 		return areasCompleted;
 	}
+
+	public int getBaseDropValue() {
+		return areasCompleted * 2;
+	}
 	
 	public int getSaveSlot() {
 		return saveSlot;

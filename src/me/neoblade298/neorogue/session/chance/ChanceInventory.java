@@ -100,7 +100,8 @@ public class ChanceInventory extends CoreInventory {
 	public void handleInventoryClick(InventoryClickEvent e) {
 		e.setCancelled(true);
 		if (e.getRawSlot() == 0 && e.getCurrentItem() != null) {
-			new FightInfoInventory(p, data, ((FightInstance) inst.getNextInstance()).getMap().getMobs());
+			FightInstance fi = (FightInstance) inst.getNextInstance();
+			new FightInfoInventory(p, data, fi.getMap().getMobs(), fi.getMap().hasCustomMobInfo());
 		}
 		Player p = (Player) e.getWhoClicked();
 		UUID uuid = p.getUniqueId();
