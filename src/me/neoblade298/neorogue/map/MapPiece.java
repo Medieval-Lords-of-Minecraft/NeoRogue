@@ -21,7 +21,7 @@ public class MapPiece {
 	public static MapPiece HARVESTBORDER;
 	private static HashMap<String, MapPiece> pieces = new HashMap<String, MapPiece>();
 
-	private String id, display;
+	private String id, display, type;
 	private MapShape shape;
 	private HashSet<String> targets;
 	private boolean ignoreSize;
@@ -48,7 +48,7 @@ public class MapPiece {
 		}
 		
 		shape = new MapShape(cfg.getStringList("shape"));
-		
+		type = cfg.getString("type", "STANDARD");
 		List<String> entrances = cfg.getStringList("entrances");
 		int i = 0;
 		if (entrances != null) {
@@ -118,6 +118,10 @@ public class MapPiece {
 			HARVESTBORDER = this;
 			ignoreSize = true;
 		}
+	}
+
+	public String getType() {
+		return type;
 	}
 
 	public boolean ignoreSize() {

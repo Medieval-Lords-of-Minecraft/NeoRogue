@@ -217,6 +217,7 @@ import me.neoblade298.neorogue.equipment.weapons.*;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.GlossaryIcon;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -1212,10 +1213,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			meta.addEnchant(Enchantment.INFINITY, 1, true); // Needed for now
 		}
 
-		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-		meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-		meta.addItemFlags(ItemFlag.HIDE_DYE);
+		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_DYE, ItemFlag.HIDE_ADDITIONAL_TOOLTIP, ItemFlag.HIDE_ARMOR_TRIM);
 		meta.setEnchantmentGlintOverride(isUpgraded);
 		meta.setUnbreakable(true);
 		properties.modifyItemMeta(item, meta);
@@ -1315,6 +1313,10 @@ public abstract class Equipment implements Comparable<Equipment> {
 
 	private void addReforgeParent(Equipment reforgeParent) {
 		this.reforgeParents.add(reforgeParent);
+	}
+
+	public static int getBaseDropValue(Session s) {
+		return s.getAreasCompleted() * 2;
 	}
 
 	public ArrayList<Equipment> getReforgeParents() {

@@ -134,6 +134,10 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 	public int getZ() {
 		return z;
 	}
+
+	public String getType() {
+		return piece.getType();
+	}
 	
 	public void setRotations(int amount) {
 		numRotations = amount % 4;

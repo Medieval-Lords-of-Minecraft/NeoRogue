@@ -15,8 +15,8 @@ import org.bukkit.util.Vector;
 
 import io.papermc.paper.entity.TeleportFlag;
 import me.neoblade298.neocore.bukkit.effects.Cone;
+import me.neoblade298.neocore.bukkit.effects.LocalAxes;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
-import me.neoblade298.neocore.bukkit.effects.ParticleUtil;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
@@ -44,15 +44,14 @@ public class RisingSun extends Equipment {
 	private static final TargetProperties tp = TargetProperties.cone(60, 6, false, TargetType.ENEMY);
 	private static final Cone cone = new Cone(tp.range, 60);
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_PLAYER_ATTACK_CRIT, 0.5F);
-	private int damage, bonus;
+	private int damage;
 
 	public RisingSun(boolean isUpgraded) {
 		super(
 				ID, "Rising Sun", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR, EquipmentType.WEAPON,
 				EquipmentProperties.ofUsable(0, 45, 10, tp.range)
 		);
-		damage = isUpgraded ? 200 : 150;
-		bonus = isUpgraded ? 300 : 200;
+		damage = isUpgraded ? 300 : 200;
 	}
 	
 	public static Equipment get() {
@@ -76,9 +75,7 @@ public class RisingSun extends Equipment {
 						new BukkitRunnable() {
 							public void run() {
 								sc.play(p, p);
-								Location start = p.getLocation().add(0, 1, 0);
-								Vector v = p.getLocation().getDirection().setY(0).normalize().multiply(tp.range);
-								ParticleUtil.drawLine(p, lancePart, p.getLocation().add(0, 1, 0), start.clone().add(v), 0.5);
+								cone.play(lancePart, p.getLocation(), LocalAxes.usingGroundedEyeLocation(p), null);
 								LinkedList<LivingEntity> targets = TargetHelper.getEntitiesInCone(p, tp);
 								for (LivingEntity target : targets) {
 									if (entitiesHit.contains(target.getUniqueId())) continue;

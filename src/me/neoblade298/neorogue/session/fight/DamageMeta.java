@@ -337,6 +337,7 @@ public class DamageMeta {
 		}
 		
 		boolean isStatusDamage = !DamageCategory.GENERAL.hasType(slices.getFirst().getPostBuffType());
+		boolean hasPhysical = false, hasMagical = false;
 		// Calculate buffs for every slice of damage
 		for (DamageSlice slice : slices) {
 			double increase = 0, mult = 1, base = slice.getDamage();
@@ -450,13 +451,15 @@ public class DamageMeta {
 			}
 
 			// Return damage
-			if (recipient.hasStatus(StatusType.THORNS) && DamageCategory.PHYSICAL.hasType(slice.getPostBuffType())) {
+			if (recipient.hasStatus(StatusType.THORNS) && DamageCategory.PHYSICAL.hasType(slice.getPostBuffType()) && !hasPhysical) {
 				int stacks = recipient.getStatus(StatusType.THORNS).getStacks();
+				hasPhysical = true;
 				returnDamage.addDamageSlice(new DamageSlice(recipient, stacks, DamageType.THORNS,
 						DamageStatTracker.thorns()));
 			}
-			if (recipient.hasStatus(StatusType.REFLECT) && DamageCategory.MAGICAL.hasType(slice.getPostBuffType())) {
+			if (recipient.hasStatus(StatusType.REFLECT) && DamageCategory.MAGICAL.hasType(slice.getPostBuffType()) && !hasMagical) {
 				int stacks = recipient.getStatus(StatusType.REFLECT).getStacks();
+				hasMagical = true;
 				returnDamage.addDamageSlice(new DamageSlice(recipient, stacks, DamageType.REFLECT, DamageStatTracker.reflect()));
 			}
 			// Stop counting damage slices after the target is already dead

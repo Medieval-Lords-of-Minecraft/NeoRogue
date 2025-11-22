@@ -81,7 +81,7 @@ public class Map {
 					allPieces.put(key, piece);
 					if (type.equals("BOSS")) bossPieces.get(area).add(piece);
 					else if (type.equals("MINIBOSS")) minibossPieces.get(area).add(piece);
-					else if (type.equals("STANDARD")) standardPieces.get(area).add(piece);
+					else standardPieces.get(area).add(piece);
 				}
 				catch (Exception e) {
 					e.printStackTrace();
@@ -173,20 +173,23 @@ public class Map {
 				}
 			}
 			
-			for (Pair coords : set) {
-				MapPieceInstance inst = MapPiece.HARVESTBORDER.getInstance();
-				MapShape ms = inst.getPiece().getShape();
-				
-				// Randomly rotate the piece
-				inst.setRotations(NeoRogue.gen.nextInt(4));
-				int rand = NeoRogue.gen.nextInt(3);
-				if (rand == 1) inst.setFlip(true, false);
-				else if (rand == 2) inst.setFlip(false, true);
-				ms.applySettings(inst);
-				inst.setX(coords.i);
-				inst.setY(y);
-				inst.setZ(coords.j);
-				map.place(inst, false);
+			// Only have harvest fields borders for standard maps
+			if (map.getPieces().getFirst().getType().equals("STANDARD")) {
+				for (Pair coords : set) {
+					MapPieceInstance inst = MapPiece.HARVESTBORDER.getInstance();
+					MapShape ms = inst.getPiece().getShape();
+					
+					// Randomly rotate the piece
+					inst.setRotations(NeoRogue.gen.nextInt(4));
+					int rand = NeoRogue.gen.nextInt(3);
+					if (rand == 1) inst.setFlip(true, false);
+					else if (rand == 2) inst.setFlip(false, true);
+					ms.applySettings(inst);
+					inst.setX(coords.i);
+					inst.setY(y);
+					inst.setZ(coords.j);
+					map.place(inst, false);
+				}
 			}
 		}
 		
