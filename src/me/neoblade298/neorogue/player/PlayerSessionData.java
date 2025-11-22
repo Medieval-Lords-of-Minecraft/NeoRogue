@@ -33,6 +33,8 @@ import me.neoblade298.neorogue.equipment.abilities.EmpoweredEdge;
 import me.neoblade298.neorogue.equipment.abilities.ManaBlitz;
 import me.neoblade298.neorogue.equipment.abilities.PiercingShot;
 import me.neoblade298.neorogue.equipment.abilities.ShadowWalk;
+import me.neoblade298.neorogue.equipment.cursed.CurseOfBurden;
+import me.neoblade298.neorogue.equipment.cursed.CurseOfInexperience;
 import me.neoblade298.neorogue.equipment.weapons.BasicBow;
 import me.neoblade298.neorogue.equipment.weapons.WoodenArrow;
 import me.neoblade298.neorogue.equipment.weapons.WoodenDagger;
@@ -155,10 +157,10 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		}
 
 		for (int i = 2; i < accessories.length; i++) {
-			accessories[i] = Equipment.get("curseOfInexperience", false);
+			accessories[i] = CurseOfInexperience.get();
 		}
 		for (int i = 1; i < armors.length; i++) {
-			armors[i] = Equipment.get("curseOfBurden", false);
+			armors[i] = CurseOfBurden.get();
 		}
 
 		setupArtifacts();

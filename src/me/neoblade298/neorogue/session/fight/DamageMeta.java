@@ -316,7 +316,7 @@ public class DamageMeta {
 				for (Entry<FightData, Integer> ent : owner.getStatus(StatusType.SANCTIFIED).getSlices().getSliceOwners().entrySet()) {
 					if (ent.getKey() instanceof PlayerFightData) {
 						((PlayerFightData) ent.getKey()).getStats().addSanctifiedShielding(ent.getValue() * 0.01);
-						recipient.addSimpleShield(ent.getKey().getUniqueId(), ent.getValue() * 0.01, 60);
+						owner.addSimpleShield(ent.getKey().getUniqueId(), ent.getValue() * 0.01, 60);
 					}
 				}
 			}

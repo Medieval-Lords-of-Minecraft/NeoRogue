@@ -6,22 +6,21 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
-import me.neoblade298.neorogue.session.fight.DamageSlice;
-import me.neoblade298.neorogue.session.fight.DamageStatTracker;
-import me.neoblade298.neorogue.session.fight.DamageType;
+import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class EarthenRing extends Equipment {
 	private static final String ID = "EarthenRing";
-	private int damage;
+	private int conc;
 	
 	public EarthenRing(boolean isUpgraded) {
 		super(ID, "Earthen Ring", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ACCESSORY);
-		damage = isUpgraded ? 12 : 8;
+		conc = isUpgraded ? 25 : 15;
 	}
 	
 	public static Equipment get() {
@@ -32,13 +31,13 @@ public class EarthenRing extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
-			ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.EARTHEN, DamageStatTracker.of(id + slot, this)));
+			FightInstance.applyStatus(ev.getTarget(), StatusType.CONCUSSED, data, conc, -1);
 			return TriggerResult.keep();
 		});
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.CACTUS, "Basic attacks additionally deal <yellow>" + damage + "</yellow> " + GlossaryTag.EARTHEN.tag(this) + " damage.");
+		item = createItem(Material.CACTUS, "Basic attacks additionally apply " + GlossaryTag.CONCUSSED.tag(this, conc, true) + "..");
 	}
 }

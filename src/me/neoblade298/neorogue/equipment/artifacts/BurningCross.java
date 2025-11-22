@@ -29,7 +29,7 @@ public class BurningCross extends Artifact {
 	public BurningCross() {
 		super(ID, "Burning Cross", Rarity.UNCOMMON, EquipmentClass.WARRIOR);
 
-		damage = 3;
+		damage = 1;
 		thres = 5;
 	}
 	
