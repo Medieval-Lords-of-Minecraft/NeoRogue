@@ -700,6 +700,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 	}
 
 
+	// Notably, this isn't used for saving to SQL, only for the admin command
 	public String serialize() {
 		return ec.name() + "," + health + "," + maxHealth + "," + maxMana + "," + maxStamina + "," + manaRegen + "," + staminaRegen + "," +
 			Equipment.serialize(hotbar) + "," + Equipment.serialize(armors) + "," + Equipment.serialize(offhand) + "," +
@@ -728,6 +729,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		maxStorage = Integer.parseInt(arr[i++]);
 		coins = Integer.parseInt(arr[i++]);
 
+		getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHealth);
 		getPlayer().setHealth(health);
 
 		// Need to initialize artifacts after deserialization
