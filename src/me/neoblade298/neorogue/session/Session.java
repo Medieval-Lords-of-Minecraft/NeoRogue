@@ -465,7 +465,7 @@ public class Session {
 		}
 		this.inst = next;
 		next.start();
-		System.out.println("Started instance " + next.getClass().getSimpleName());
+		System.out.println("Started instance " + next.getClass().getSimpleName() + ", visited nodes " + nodesVisited);
 		for (PlayerSessionData psd : party.values()) {
 			psd.trigger(SessionTrigger.VISIT_NODE, null);
 			System.out.println("Serialization for " + psd.getPlayer().getName());
