@@ -229,8 +229,8 @@ public class ShrineInstance extends EditInventoryInstance {
 	}
 
 	@Override
-	public void handlePlayerKickEvent(Player kicked) {
-		notUsed.remove(kicked.getUniqueId());
+	public void handlePlayerLeaveParty(Player p) {
+		notUsed.remove(p.getUniqueId());
 		if (notUsed.isEmpty()) {
 			returnToNodes();
 		}

@@ -659,10 +659,7 @@ public class Session {
 			psd.cleanup();
 			SessionManager.resetPlayer(p); // endSession does this for everyone, so only need to do it in the else section
 			SessionManager.removeFromSession(p.getUniqueId());
-			
-			if (inst instanceof FightInstance) {
-				((FightInstance) inst).handlePlayerLeaveParty(p);
-			}
+			inst.handlePlayerLeaveParty(p);
 		}
 	}
 	

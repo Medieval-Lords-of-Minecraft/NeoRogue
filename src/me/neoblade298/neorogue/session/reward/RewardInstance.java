@@ -179,8 +179,8 @@ public class RewardInstance extends EditInventoryInstance {
 	}
 
 	@Override
-	public void handlePlayerKickEvent(Player kicked) {
-		rewards.remove(kicked.getUniqueId());
+	public void handlePlayerLeaveParty(Player p) {
+		rewards.remove(p.getUniqueId());
 		onRewardClaim();
 	}
 }

@@ -314,7 +314,7 @@ public class ChanceInstance extends EditInventoryInstance {
 	}
 
 	@Override
-	public void handlePlayerKickEvent(Player kicked) {
-		stage.remove(kicked.getUniqueId());
+	public void handlePlayerLeaveParty(Player p) {
+		stage.remove(p.getUniqueId());
 	}
 }

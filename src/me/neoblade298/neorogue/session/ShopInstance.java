@@ -193,7 +193,8 @@ public class ShopInstance extends EditInventoryInstance {
 	}
 
 	@Override
-	public void handlePlayerKickEvent(Player kicked) {
+	public void handlePlayerLeaveParty(Player p) {
+		ready.remove(p.getUniqueId());
 		if (ready.size() == s.getParty().size()) {
 			s.broadcast("Everyone is ready! Teleporting back to node select...");
 			s.broadcastSound(Sound.ENTITY_PLAYER_LEVELUP);

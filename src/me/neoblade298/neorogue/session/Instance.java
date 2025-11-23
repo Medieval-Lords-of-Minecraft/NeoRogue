@@ -28,7 +28,7 @@ public abstract class Instance {
 	protected abstract void setup();
 	public abstract void cleanup();
 	public abstract void handleInteractEvent(PlayerInteractEvent e);
-	public abstract void handlePlayerKickEvent(Player kicked);
+	public abstract void handlePlayerLeaveParty(Player p);
 	public abstract String serialize(HashMap<UUID, PlayerSessionData> party);
 	public Instance(Session s, PlayerFlags playerFlags) {
 		this.s = s;

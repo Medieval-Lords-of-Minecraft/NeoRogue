@@ -395,7 +395,7 @@ public class LobbyInstance extends Instance {
 	}
 
 	@Override
-	public void handlePlayerKickEvent(Player kicked) {
+	public void handlePlayerLeaveParty(Player p) {
 		
 	}
 }

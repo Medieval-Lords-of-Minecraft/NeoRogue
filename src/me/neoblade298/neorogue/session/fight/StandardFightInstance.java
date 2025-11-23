@@ -221,7 +221,7 @@ public class StandardFightInstance extends FightInstance {
 	}
 	
 	@Override
-	public void handlePlayerKickEvent(Player kicked) {
+	public void handlePlayerLeaveParty(Player p) {
 
 	}
 

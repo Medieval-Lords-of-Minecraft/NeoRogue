@@ -209,7 +209,7 @@ public class NodeSelectInstance extends EditInventoryInstance {
 	}
 
 	@Override
-	public void handlePlayerKickEvent(Player kicked) {
+	public void handlePlayerLeaveParty(Player p) {
 		
 	}
 }
