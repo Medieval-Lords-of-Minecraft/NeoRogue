@@ -208,11 +208,13 @@ public class ShrineInstance extends EditInventoryInstance {
 	}
 	
 	public void returnToNodes() {
+		NodeSelectInstance next = new NodeSelectInstance(s);
+		if (!s.canSetInstance(next)) return;
 		s.broadcast("Everyone is ready! Returning you to node select...");
 		state = RETURN_STATE;
 		new BukkitRunnable() {
 			public void run() {
-				s.setInstance(new NodeSelectInstance(s));
+				s.setInstance(next);
 				state = RETURN_FAIL_STATE; // Only used if we're still stuck in the room
 			}
 		}.runTaskLater(NeoRogue.inst(), 60L);

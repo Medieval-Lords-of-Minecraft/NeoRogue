@@ -240,6 +240,12 @@ public class ChanceInstance extends EditInventoryInstance {
 	private void returnPlayers() {
 		if (returning)
 			return;
+
+		Instance next = nextInstance == null ? new NodeSelectInstance(s) : nextInstance;
+		if (s.canSetInstance(next)) {
+			return;
+		}
+
 		s.broadcastSound(Sound.ENTITY_BLAZE_SHOOT);
 		part.play(holo.getLocation());
 		Candle candle = (Candle) candleBlock.getBlockData();
@@ -275,7 +281,7 @@ public class ChanceInstance extends EditInventoryInstance {
 			@Override
 			public void run() {
 				returning = false;
-				s.setInstance(nextInstance == null ? new NodeSelectInstance(s) : nextInstance);
+				s.setInstance(next);
 				s.setBusy(false);
 			}
 		}.runTaskLater(NeoRogue.inst(), 60L);

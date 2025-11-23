@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.Collection;
 import java.util.Random;
 
+import javax.annotation.Nullable;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Display.Billboard;
@@ -105,7 +107,7 @@ public class NeoRogue extends JavaPlugin {
 		map.addRenderer(new NodeMapRenderer());
 
 		// Strictly for debug usage
-		debugInitialize();
+		debugInitialize(Bukkit.getPlayer("Ascheladd"), null);
 	}
 	
 	public static void reload() {
@@ -172,7 +174,7 @@ public class NeoRogue extends JavaPlugin {
 		return inst;
 	}
 	
-	public static void debugInitialize(Player host, Collection<Player> others) {
+	public static void debugInitialize(Player host, @Nullable Collection<Player> others) {
 		Session s = SessionManager.createSession(host, "test", 1);
 		s.generateArea(AreaType.HARVEST_FIELDS);
 		s.addPlayer(host.getUniqueId(), EquipmentClass.WARRIOR);
@@ -191,10 +193,6 @@ public class NeoRogue extends JavaPlugin {
 		new BukkitRunnable() {
 			public void run() {
 				s.setInstance(new NodeSelectInstance(s));
-				// s.setInstance(new ChanceInstance());
-
-				//Map map = Map.generate(AreaType.LOW_DISTRICT, 8);
-				//map.instantiate(null, 0, 0);
 			}
 		}.runTaskLater(NeoRogue.inst(), 1L);
 	}

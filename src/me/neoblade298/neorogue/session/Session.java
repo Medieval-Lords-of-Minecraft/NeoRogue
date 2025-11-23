@@ -456,26 +456,16 @@ public class Session {
 	}
 	
 	// False if set instance fails
-	public boolean setInstance(Instance inst) {
+	public boolean setInstance(Instance next) {
 		boolean firstLoad = this.inst == null;
 		if (!firstLoad) {
-			if (!(this.inst instanceof FightInstance)) {
-				for (UUID uuid : party.keySet()) {
-					if (Bukkit.getPlayer(uuid) == null) {
-						broadcast("<red>You can't move on until every member in your party is online!");
-						return false;
-					}
-				}
+			if (canSetInstance(next)) {
+				this.inst.cleanup();
 			}
-			
-			// Save player's storage
-			if (this.inst instanceof EditInventoryInstance && !EditInventoryInstance.isValid(this))
-				return false;
-			this.inst.cleanup();
 		}
-		this.inst = inst;
-		inst.start();
-		System.out.println("Started instance " + inst.getClass().getSimpleName());
+		this.inst = next;
+		next.start();
+		System.out.println("Started instance " + next.getClass().getSimpleName());
 		for (PlayerSessionData psd : party.values()) {
 			psd.trigger(SessionTrigger.VISIT_NODE, null);
 			System.out.println("Serialization for " + psd.getPlayer().getName());
@@ -501,6 +491,23 @@ public class Session {
 				}
 			}
 		}.runTaskAsynchronously(NeoRogue.inst());
+		return true;
+	}
+
+	public boolean canSetInstance(Instance next) {
+		if (!(this.inst instanceof FightInstance)) {
+			for (UUID uuid : party.keySet()) {
+				if (Bukkit.getPlayer(uuid) == null) {
+					broadcast("<red>You can't move on until every member in your party is online!");
+					return false;
+				}
+			}
+		}
+
+		// Save player's storage
+		if (this.inst instanceof EditInventoryInstance && !EditInventoryInstance.isValid(this))
+			return false;
+
 		return true;
 	}
 	

@@ -18,6 +18,7 @@ import me.neoblade298.neorogue.session.ShrineInstance;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextDecoration.State;
 
@@ -58,7 +59,7 @@ public class CailiricCrystal extends Artifact {
 				new BukkitRunnable() {
 					public void run() {
 						data.giveEquipment(CailiricCrystal.get(), null, null);
-						Util.msg(data.getPlayer(), hoverable.append(
+						Util.msg(data.getPlayer(), Component.empty().append(hoverable).append(
 							SharedUtil.color(
 							"<gray> potency has increased to " + DescUtil.white(inc * (data.getArtifacts().get(id).getAmount() - 1)
 						)).decoration(TextDecoration.UNDERLINED, State.FALSE)));

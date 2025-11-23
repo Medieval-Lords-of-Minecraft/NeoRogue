@@ -153,19 +153,26 @@ public class ShopInstance extends EditInventoryInstance {
 		UUID uuid = p.getUniqueId();
 		if (s.isBusy()) return;
 		if (!ready.contains(uuid)) {
-			s.broadcast("<yellow>" + p.getName() + " <gray>is <green>ready</green>!");
-			ready.add(uuid);
 			
-			if (ready.size() == s.getParty().size()) {
+			NodeSelectInstance next = new NodeSelectInstance(s);
+			// Last person to get ready, check if instance can be set first
+			if (ready.size() == s.getParty().size() - 1 && s.canSetInstance(next)) {
+				ready.add(uuid);
 				s.broadcast("Everyone is ready! Teleporting back to node select...");
 				s.broadcastSound(Sound.ENTITY_PLAYER_LEVELUP);
 				s.setBusy(true);
 				new BukkitRunnable() {
 					public void run() {
-						s.setInstance(new NodeSelectInstance(s));
+						if (!s.setInstance(next)) {
+							ready.remove(uuid);
+						}
 						s.setBusy(false);
 					}
 				}.runTaskLater(NeoRogue.inst(), 60L);
+			}
+			else {
+				s.broadcast("<yellow>" + p.getName() + " <gray>is <green>ready</green>!");
+				ready.add(uuid);
 			}
 		}
 		else {

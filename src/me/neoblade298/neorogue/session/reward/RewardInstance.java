@@ -139,7 +139,9 @@ public class RewardInstance extends EditInventoryInstance {
 		for (ArrayList<Reward> rewards : this.rewards.values()) {
 			if (!rewards.isEmpty()) return false;
 		}
-		if (!s.isBusy()) {
+
+		NodeSelectInstance next = new NodeSelectInstance(s);
+		if (!s.isBusy() && s.canSetInstance(next)) {
 			s.broadcast("Everyone's finished claiming rewards! Returning to node select...");
 			s.setBusy(true);
 			new BukkitRunnable() {
@@ -152,7 +154,7 @@ public class RewardInstance extends EditInventoryInstance {
 						});
 						s.incrementAreasCompleted();
 					}
-					s.setInstance(new NodeSelectInstance(s));
+					s.setInstance(next);
 					s.setBusy(false);
 				}
 			}.runTaskLater(NeoRogue.inst(), 40L);

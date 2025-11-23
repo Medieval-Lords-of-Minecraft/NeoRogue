@@ -701,7 +701,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 
 
 	public String serialize() {
-		return ec.name() + "," + maxHealth + "," + maxMana + "," + maxStamina + "," + manaRegen + "," + staminaRegen + "," +
+		return ec.name() + "," + health + "," + maxHealth + "," + maxMana + "," + maxStamina + "," + manaRegen + "," + staminaRegen + "," +
 			Equipment.serialize(hotbar) + "," + Equipment.serialize(armors) + "," + Equipment.serialize(offhand) + "," +
 			Equipment.serialize(accessories) + "," + Equipment.serialize(storage) + "," + Equipment.serialize(otherBinds) + "," +
 			ArtifactInstance.serialize(artifacts) + "," + maxAbilities + "," + maxStorage + "," + coins;
@@ -711,6 +711,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		String[] arr = str.split(",");
 		int i = 0;
 		ec = EquipmentClass.valueOf(arr[i++]);
+		health = Double.parseDouble(arr[i++]);
 		maxHealth = Double.parseDouble(arr[i++]);
 		maxMana = Double.parseDouble(arr[i++]);
 		maxStamina = Double.parseDouble(arr[i++]);
@@ -726,6 +727,8 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		maxAbilities = Integer.parseInt(arr[i++]);
 		maxStorage = Integer.parseInt(arr[i++]);
 		coins = Integer.parseInt(arr[i++]);
+
+		getPlayer().setHealth(health);
 
 		// Need to initialize artifacts after deserialization
 		setupArtifacts();
