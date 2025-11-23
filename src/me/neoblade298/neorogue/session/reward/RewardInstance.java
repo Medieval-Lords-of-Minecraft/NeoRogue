@@ -53,8 +53,6 @@ public class RewardInstance extends EditInventoryInstance {
 		for (UUID uuid : s.getSpectators().keySet()) {
 			Player p = Bukkit.getPlayer(uuid);
 			teleportRandomly(p);
-			p.setAllowFlight(false);
-			p.setFlying(false);
 		}
 		super.setup();
 		
@@ -87,6 +85,10 @@ public class RewardInstance extends EditInventoryInstance {
 		}
 		line += data.getData().getDisplay();
 		return line;
+	}
+
+	public HashMap<UUID, ArrayList<Reward>> getRewards() {
+		return rewards;
 	}
 
 	@Override

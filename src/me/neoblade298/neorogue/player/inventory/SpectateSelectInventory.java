@@ -17,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.EditInventoryInstance;
 import me.neoblade298.neorogue.session.Instance;
@@ -45,8 +46,10 @@ public class SpectateSelectInventory extends CoreInventory {
 		int idx = 5 - partySize;
 		
 		// Display all players that aren't you
+		int count = 0;
 		for (PlayerSessionData data : s.getParty().values()) {
-			if (spectator.getUniqueId().equals(data.getUniqueId())) continue;
+			if (spectator.getUniqueId().equals(data.getUniqueId()) && canSpectate(data)) continue;
+			count++;
 	        ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
 	        SkullMeta meta = (SkullMeta) skull.getItemMeta();
 	        meta.setOwningPlayer(data.getPlayer() != null ? data.getPlayer() : Bukkit.getOfflinePlayer(data.getUniqueId()));
@@ -56,6 +59,24 @@ public class SpectateSelectInventory extends CoreInventory {
 			players.put(idx, data);
 			idx += 2;
 		}
+
+		if (count == 0) {
+			Util.displayError(spectator, "No one to spectate, everyone is done!");
+			spectator.closeInventory();
+		}
+	}
+
+	private boolean canSpectate(PlayerSessionData data) {
+		Instance inst = s.getInstance();
+		if (inst instanceof ChanceInstance) {
+			ChanceInstance ci = (ChanceInstance) inst;
+			return ci.getStages().containsKey(data.getUniqueId());
+		}
+		else if (inst instanceof RewardInstance) {
+			RewardInstance ri = (RewardInstance) inst;
+			return ri.getRewards().containsKey(data.getUniqueId());
+		}
+		return true;
 	}
 
 	@Override

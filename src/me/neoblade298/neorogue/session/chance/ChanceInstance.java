@@ -295,6 +295,10 @@ public class ChanceInstance extends EditInventoryInstance {
 		return nextInstance;
 	}
 
+	public HashMap<UUID, ChanceStage> getStages() {
+		return stage;
+	}
+
 	@Override
 	public String serialize(HashMap<UUID, PlayerSessionData> party) {
 		for (PlayerSessionData data : party.values()) {
