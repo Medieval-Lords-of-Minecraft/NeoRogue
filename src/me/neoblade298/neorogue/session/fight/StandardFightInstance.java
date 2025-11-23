@@ -53,10 +53,13 @@ public class StandardFightInstance extends FightInstance {
 
 	public StandardFightInstance(Session s, Set<UUID> players, AreaType type, int nodesVisited) {
 		super(s, players);
-		double rand = NeoRogue.gen.nextDouble((nodesVisited + 1) / 12.0);
-		double min = 2 + nodesVisited / 12.0;
-		int max = (int) Math.min(rand + min, 6);
-		map = Map.generate(type, max);
+		/*
+		 * Currently scrapped due to map sizes being unnecessarily large
+		 * double rand = NeoRogue.gen.nextDouble((nodesVisited + 1) / 12.0);
+		 * double min = 2 + nodesVisited / 12.0;
+		 * int max = (int) Math.min(rand + min, 6);
+		 */
+		map = Map.generate(type, NeoRogue.gen.nextInt(3, 6));
 	}
 
 	public StandardFightInstance(Session s, Set<UUID> players, Map map) {
