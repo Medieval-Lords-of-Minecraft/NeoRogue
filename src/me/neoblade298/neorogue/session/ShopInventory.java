@@ -246,6 +246,11 @@ public class ShopInventory extends CoreInventory {
 					);
 					return;
 				}
+
+				if (e.getCursor() == null) {
+					Util.displayError(p, "Drag the cursed item onto the purify option!");
+					return;
+				}
 	
 				data.addCoins(-REMOVE_CURSE_PRICE);
 				NBTItem nbti = new NBTItem(e.getCursor());

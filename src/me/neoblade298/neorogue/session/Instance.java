@@ -24,7 +24,7 @@ public abstract class Instance {
 	protected Session s;
 	protected Location spawn;
 	protected ArrayList<String> playerLines = new ArrayList<String>(), spectatorLines = new ArrayList<String>();
-	protected PlayerFlags playerFlags, spectatorFlags = new PlayerFlags(PlayerFlag.INVISIBLE, PlayerFlag.INVULNERABLE);
+	protected PlayerFlags playerFlags, spectatorFlags = new PlayerFlags(PlayerFlag.CAN_FLY, PlayerFlag.INVISIBLE, PlayerFlag.INVULNERABLE);
 	protected abstract void setup();
 	public abstract void cleanup();
 	public abstract void handleInteractEvent(PlayerInteractEvent e);

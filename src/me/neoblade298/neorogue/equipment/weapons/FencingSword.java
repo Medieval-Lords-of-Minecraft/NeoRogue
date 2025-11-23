@@ -45,11 +45,12 @@ public class FencingSword extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
-			if (am.addCount(1) < 3) return TriggerResult.keep();
-			am.setCount(0);
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
 			weaponSwingAndDamage(p, data, ev.getTarget());
-			data.addSimpleShield(p.getUniqueId(), shields, 60);
+			if (am.addCount(1) < 3) {
+				am.setCount(0);
+				data.addSimpleShield(p.getUniqueId(), shields, 60);
+			}
 			return TriggerResult.keep();
 		});
 	}

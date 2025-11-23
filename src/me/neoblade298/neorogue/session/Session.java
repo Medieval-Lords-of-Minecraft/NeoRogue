@@ -50,7 +50,6 @@ import me.neoblade298.neorogue.area.Area;
 import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.area.Node;
 import me.neoblade298.neorogue.equipment.Equipment;
-import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.MapViewer;
 import me.neoblade298.neorogue.player.PlayerSessionData;
@@ -479,16 +478,8 @@ public class Session {
 		System.out.println("Started instance " + inst.getClass().getSimpleName());
 		for (PlayerSessionData psd : party.values()) {
 			psd.trigger(SessionTrigger.VISIT_NODE, null);
-			System.out.println("Debug for " + psd.getPlayer().getName());
-			for (EquipSlot es : EquipSlot.values()) {
-				String line = es + ": ";
-				Equipment[] eqs = psd.getEquipment(es);
-				for (int i = 0; i < eqs.length; i++) {
-					Equipment eq = eqs[i];
-					line += i + (eq == null ? "-" : eq.toString()) + " ";
-				}
-				System.out.println(line);
-			}
+			System.out.println("Serialization for " + psd.getPlayer().getName());
+			System.out.println(psd.serialize());
 		}
 		
 		// Auto-save

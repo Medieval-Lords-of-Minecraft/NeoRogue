@@ -1,6 +1,7 @@
 package me.neoblade298.neorogue;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
@@ -44,7 +45,7 @@ import me.neoblade298.neorogue.commands.CmdAdminSerialize;
 import me.neoblade298.neorogue.commands.CmdAdminSet;
 import me.neoblade298.neorogue.commands.CmdAdminSetInstance;
 import me.neoblade298.neorogue.commands.CmdAdminStatus;
-import me.neoblade298.neorogue.commands.CmdAdminTest;
+import me.neoblade298.neorogue.commands.CmdAdminTestHF;
 import me.neoblade298.neorogue.commands.CmdAdminTrash;
 import me.neoblade298.neorogue.commands.CmdGlossary;
 import me.neoblade298.neorogue.commands.CmdInfo;
@@ -158,7 +159,7 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdAdminGod("god", "Maxes out your health, mana, stamina, and ignores cooldowns in a fight", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminSet("set", "Set your stats mid-fight", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminStatus("status", "Add/remove statuses mid-fight, aim at mob to use on them", null, SubcommandRunner.PLAYER_ONLY));
-		mngr.register(new CmdAdminTest("test", "Quickstarts a session", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdAdminTestHF("testhf", "Loads in a harvest fields game", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminDamage("damage", "Deal damage mid-fight, aim at mob to use on them", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminSerialize("serialize", "Save a player's loadout for debug purposes", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminDeserialize("deserialize", "Loads in a player's loadout for debug purposes", null, SubcommandRunner.CONSOLE_ONLY));
@@ -171,18 +172,15 @@ public class NeoRogue extends JavaPlugin {
 		return inst;
 	}
 	
-	public static void debugInitialize() {
-		Player p = Bukkit.getPlayer("Ascheladd");
-		if (p == null) return;
-		
-		Session s = SessionManager.createSession(p, "test", 1);
+	public static void debugInitialize(Player host, Collection<Player> others) {
+		Session s = SessionManager.createSession(host, "test", 1);
 		s.generateArea(AreaType.HARVEST_FIELDS);
-		s.addPlayer(p.getUniqueId(), EquipmentClass.WARRIOR);
+		s.addPlayer(host.getUniqueId(), EquipmentClass.WARRIOR);
 		s.setNodesVisited(16);
 
 		s.setNode(s.getArea().getNodes()[0][2]);
-		for (Player pl : Bukkit.getOnlinePlayers()) {
-			if (p == pl) continue;
+		for (Player pl : others == null ? Bukkit.getOnlinePlayers() : others) {
+			if (pl == host) continue;
 			if (SessionManager.getSession(pl) == null) {
 				s.addPlayer(pl.getUniqueId(), EquipmentClass.WARRIOR);
 				SessionManager.addToSession(pl.getUniqueId(), s);

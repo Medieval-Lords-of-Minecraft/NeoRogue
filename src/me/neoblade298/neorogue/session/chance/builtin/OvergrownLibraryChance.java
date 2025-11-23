@@ -12,7 +12,7 @@ import me.neoblade298.neorogue.equipment.artifacts.HolyScriptures;
 import me.neoblade298.neorogue.equipment.artifacts.InfernalTome;
 import me.neoblade298.neorogue.equipment.artifacts.Pumped;
 import me.neoblade298.neorogue.equipment.artifacts.ScrollOfFrost;
-import me.neoblade298.neorogue.equipment.artifacts.TreatiseOnElectricity;
+import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.chance.ChanceChoice;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
@@ -28,48 +28,63 @@ public class OvergrownLibraryChance extends ChanceSet {
 		stage.addChoice(new ChanceChoice(Material.BLAZE_POWDER, "Read \"Infernal Tome\"",
 				"Permanently increase " + GlossaryTag.FIRE.tag + " by <white>20%</white>",
 				(s, inst, data) -> {
-					data.giveEquipment(InfernalTome.get());
+					for (PlayerSessionData psd : s.getParty().values()) {
+						psd.giveEquipment(InfernalTome.get());
+					}
 					return null;
 				}));
 
 		stage.addChoice(new ChanceChoice(Material.BLUE_ICE, "Read \"Scroll of Frost\"",
 				"Permanently increase " + GlossaryTag.ICE.tag + " by <white>20%</white>",
 				(s, inst, data) -> {
-					data.giveEquipment(ScrollOfFrost.get());
+					for (PlayerSessionData psd : s.getParty().values()) {
+						psd.giveEquipment(ScrollOfFrost.get());
+					}
 					return null;
 				}));
 
 		stage.addChoice(new ChanceChoice(Material.LIGHTNING_ROD, "Read \"Treatise on Electricity\"",
 				"Permanently increase " + GlossaryTag.LIGHTNING.tag + " by <white>20%</white>",
 				(s, inst, data) -> {
-					data.giveEquipment(TreatiseOnElectricity.get());
+					for (PlayerSessionData psd : s.getParty().values()) {
+						psd.giveEquipment(ScrollOfFrost.get());
+					}
 					return null;
 		}));
 
 		stage.addChoice(new ChanceChoice(Material.GRASS_BLOCK, "Read \"Earthen Tome\"",
 				"Permanently increase " + GlossaryTag.EARTHEN.tag + " by <white>20%</white>",
 				(s, inst, data) -> {
-					data.giveEquipment(EarthenTome.get());
+					for (PlayerSessionData psd : s.getParty().values()) {
+						psd.giveEquipment(EarthenTome.get());
+					}
 					return null;
 		}));
 
 		stage.addChoice(new ChanceChoice(Material.NETHER_STAR, "Read \"Holy Scriptures\"",
 				"Permanently increase " + GlossaryTag.LIGHT.tag + " by <white>20%</white>",
 				(s, inst, data) -> {
-					data.giveEquipment(HolyScriptures.get());
+					for (PlayerSessionData psd : s.getParty().values()) {
+						psd.giveEquipment(HolyScriptures.get());
+					}
 					return null;
 		}));
 
 		stage.addChoice(new ChanceChoice(Material.OBSIDIAN, "Read \"Dark Arts Treatise\"",
 				"Permanently increase " + GlossaryTag.DARK.tag + " by <white>20%</white>",
 				(s, inst, data) -> {
-					data.giveEquipment(DarkArtsTreatise.get());
+					for (PlayerSessionData psd : s.getParty().values()) {
+						psd.giveEquipment(DarkArtsTreatise.get());
+					}
 					return null;
 		}));
 
 		stage.addChoice(new ChanceChoice(Material.IRON_SWORD, "Reading is for nerds, I'll do some pushups",
 				"Increase your strength by <white>50</white> for <white>2</white> fights.",
 				(s, inst, data) -> {
+					for (PlayerSessionData psd : s.getParty().values()) {
+						psd.giveEquipment(Pumped.get());
+					}
 					Player p = data.getPlayer();
 					data.giveArtifact((Artifact) Pumped.get(), 2);
 					s.broadcast(SharedUtil.color("<yellow>" + p.getName() + "</yellow> thinks that reading is for nerds."));

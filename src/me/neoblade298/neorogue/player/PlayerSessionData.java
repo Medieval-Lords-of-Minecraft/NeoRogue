@@ -379,7 +379,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		Player p = data.getPlayer();
 		Component toSelf = SharedUtil.color("You received ");
 		Component toOthers = SharedUtil.color("<yellow>" + data.getDisplay() + "</yellow> received ");
-		Component body = Component.text("" + amount, NamedTextColor.YELLOW).append(artifact.getHoverable()).append(Component.text(".", NamedTextColor.GRAY));
+		Component body = Component.text(amount + " ", NamedTextColor.YELLOW).append(artifact.getHoverable()).append(Component.text(".", NamedTextColor.GRAY));
 		s.broadcastOthers(toOthers.append(body), p);
 		Util.msg(p, toSelf.append(body));
 	}
