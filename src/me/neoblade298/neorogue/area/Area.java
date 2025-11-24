@@ -72,7 +72,7 @@ public class Area {
 	private AreaType type;
 	private Node[][] nodes;
 	private Session s;
-	private String boss, bossId;
+	private String boss;
 
 	public static World world;
 	public static final String WORLD_NAME = "Dev";
@@ -188,7 +188,7 @@ public class Area {
 		}
 
 		// Load the boss for the area
-		BossFightInstance bi = (BossFightInstance) nodes[ROW_COUNT - 1][CENTER_LANE].generateInstance(s, type); // generate boss
+		BossFightInstance bi = (BossFightInstance) nodes[ROW_COUNT - 1][CENTER_LANE].getInstance(); // should be loaded in
 		boss = bi.getBossDisplay();
 	}
 
@@ -201,11 +201,6 @@ public class Area {
 		
 		BossFightInstance bi = (BossFightInstance) nodes[ROW_COUNT - 1][CENTER_LANE].generateInstance(s, type); // generate boss
 		boss = bi.getBossDisplay();
-		bossId = bi.getPieceId();
-	}
-
-	public String getBossId() {
-		return bossId;
 	}
 
 	private void tryGenerateNodes() {

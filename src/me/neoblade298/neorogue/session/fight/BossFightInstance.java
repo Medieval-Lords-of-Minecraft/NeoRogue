@@ -20,7 +20,6 @@ import me.neoblade298.neorogue.equipment.artifacts.RubyGem;
 import me.neoblade298.neorogue.equipment.artifacts.SapphireGem;
 import me.neoblade298.neorogue.equipment.artifacts.TomeOfWisdom;
 import me.neoblade298.neorogue.map.Map;
-import me.neoblade298.neorogue.map.MapPiece;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.event.RewardFightEvent;
@@ -39,13 +38,6 @@ public class BossFightInstance extends FightInstance {
 		map = Map.generateBoss(type, 0);
 		targets.addAll(map.getTargets());
 	}
-
-	public BossFightInstance(Session s, Set<UUID> players, AreaType type, String boss) {
-		super(s, players);
-		MapPiece piece = MapPiece.get(boss);
-		map = Map.generate(type, 0, piece);
-		targets.addAll(map.getTargets());
-	}
 	
 	public BossFightInstance(Session s, Set<UUID> players, Map map) {
 		super(s, players);
@@ -55,10 +47,6 @@ public class BossFightInstance extends FightInstance {
 	
 	public String getBossDisplay() {
 		return map.getPieces().get(0).getPiece().getDisplay();
-	}
-
-	public String getPieceId() {
-		return map.getPieces().get(0).getPiece().getId();
 	}
 
 	@Override

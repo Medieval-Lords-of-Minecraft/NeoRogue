@@ -229,7 +229,7 @@ public class Session {
 		
 		try {
 			SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_sessions")
-					.addString(host.toString()).addValue(saveSlot).addString(area.getType().name()).addString(area.getBossId())
+					.addString(host.toString()).addValue(saveSlot).addString(area.getType().name())
 					.addValue(curr.getRow()).addValue(curr.getLane()).addValue(nodesVisited).addValue(potionChance)
 					.addValue(System.currentTimeMillis()).addString(inst.serialize(party));
 			insert.execute(sql.build());
