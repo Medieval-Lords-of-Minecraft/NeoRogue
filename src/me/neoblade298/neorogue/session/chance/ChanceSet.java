@@ -1,13 +1,17 @@
 package me.neoblade298.neorogue.session.chance;
 
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.AreaType;
+import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.chance.builtin.AmbushChance;
 import me.neoblade298.neorogue.session.chance.builtin.CaravanRobberyChance;
@@ -67,64 +71,48 @@ public class ChanceSet {
 		new VultureChance();
 		
 		// Validate all chance classes are loaded
-		validateAllChanceClassesLoaded();
+		validateClassInitialization();
 	}
-	
-	/**
-	 * Validates that all chance event classes in the builtin package are properly instantiated.
-	 * Checks if the simple class name without "Chance" exists as a key in the setsById hashmap.
-	 */
-	private static void validateAllChanceClassesLoaded() {
+
+	private static void validateClassInitialization() {
+		
 		try {
-			// Get the builtin package path
-			String packageName = "me.neoblade298.neorogue.session.chance.builtin";
-			ClassLoader classLoader = ChanceSet.class.getClassLoader();
-			String path = packageName.replace('.', '/');
-			java.net.URL resource = classLoader.getResource(path);
+			// Get all classes in the current package
+			List<Class<?>> chanceClasses = Equipment.getClassesInPackage("me.neoblade298.neorogue.session.chance.builtin");
 			
-			if (resource == null) {
-				NeoRogue.inst().getLogger().warning("[ChanceSet] Could not find builtin chance package for validation");
-				return;
-			}
+			// Track missing classes for this package
+			List<String> missingClasses = new ArrayList<>();
+			int loadedClasses = 0;
 			
-			java.io.File directory = new java.io.File(resource.getFile());
-			if (!directory.exists()) {
-				NeoRogue.inst().getLogger().warning("[ChanceSet] Builtin chance directory does not exist for validation");
-				return;
-			}
-			
-			// Get all .java files that end with "Chance"
-			java.io.File[] files = directory.listFiles((dir, name) -> 
-				name.endsWith("Chance.java") && !name.equals("TestChance.java"));
-			
-			if (files == null) {
-				NeoRogue.inst().getLogger().warning("[ChanceSet] Could not read builtin chance directory for validation");
-				return;
-			}
-			
-			java.util.ArrayList<String> missingClasses = new java.util.ArrayList<>();
-			
-			for (java.io.File file : files) {
-				String className = file.getName().replace("Chance.java", "");
-				// Remove "Chance" suffix to get expected ID
+			for (Class<?> clazz : chanceClasses) {
+				// Skip abstract classes, interfaces, inner classes, and non-Equipment classes
+				if (Modifier.isAbstract(clazz.getModifiers()) || 
+					clazz.isInterface() || 
+					clazz.isMemberClass() ||
+					!ChanceSet.class.isAssignableFrom(clazz)) {
+					continue;
+				}
 				
-				if (!setsById.containsKey(className)) {
-					missingClasses.add(className + " (expected ID: " + className + ")");
+				loadedClasses++;
+				
+				// Check if this class has been registered
+				String id = clazz.getSimpleName().replace("Chance", "");
+				if (!setsById.containsKey(id)) {
+					missingClasses.add(id);
 				}
 			}
 			
-			if (!missingClasses.isEmpty()) {
-				NeoRogue.inst().getLogger().warning("[NeoRogue] Validation failed: The following chance classes are not loaded:");
+			// Report results for this package
+			if (missingClasses.isEmpty() && loadedClasses > 0) {
+				Bukkit.getLogger().info("[NeoRogue] ✓ All " + loadedClasses + " chance classes are properly initialized!");
+			} else if (!missingClasses.isEmpty()) {
+				Bukkit.getLogger().warning("[NeoRogue] ⚠ Found " + missingClasses.size() + " uninitialized chance classes:");
 				for (String missing : missingClasses) {
-					NeoRogue.inst().getLogger().warning("[NeoRogue] Missing: " + missing);
+					Bukkit.getLogger().warning("[NeoRogue]   - " + missing);
 				}
-			} else {
-				NeoRogue.inst().getLogger().info(String.format(
-					"[NeoRogue] Validation passed: All %d chance classes loaded successfully", files.length));
 			}
-			
 		} catch (Exception e) {
-			NeoRogue.inst().getLogger().warning("[NeoRogue] Error during chance class validation: " + e.getMessage());
+			Bukkit.getLogger().warning("[NeoRogue] Failed to validate chance class initialization: " + e.getMessage());
 		}
 	}
 	

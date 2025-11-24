@@ -1743,7 +1743,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 	 * Gets all classes in a given package using reflection.
 	 * Works both in development (file system) and production (JAR) environments.
 	 */
-	private static List<Class<?>> getClassesInPackage(String packageName) throws Exception {
+	public static List<Class<?>> getClassesInPackage(String packageName) throws Exception {
 		List<Class<?>> classes = new ArrayList<>();
 		String path = packageName.replace('.', '/');
 		

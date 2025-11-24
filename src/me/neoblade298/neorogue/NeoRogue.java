@@ -107,7 +107,10 @@ public class NeoRogue extends JavaPlugin {
 		map.addRenderer(new NodeMapRenderer());
 
 		// Strictly for debug usage
-		debugInitialize(Bukkit.getPlayer("Ascheladd"), null);
+		Player p = Bukkit.getPlayer("Ascheladd");
+		if (p != null) {
+			debugInitialize(p, null);
+		}
 	}
 	
 	public static void reload() {

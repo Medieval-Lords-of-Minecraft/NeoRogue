@@ -159,6 +159,7 @@ public class Area {
 		ResultSet rs = stmt
 				.executeQuery("SELECT * FROM neorogue_nodes WHERE host = '" + uuid + "' AND slot = " + saveSlot + ";");
 		// First load the nodes themselves
+		nodes = new Node[ROW_COUNT][LANE_COUNT];
 		while (rs.next()) {
 			int row = rs.getInt("position");
 			int lane = rs.getInt("lane");

@@ -236,13 +236,23 @@ public class ChanceInstance extends EditInventoryInstance {
 		Collection<PlayerSessionData> party = s.getParty().values();
 		return (PlayerSessionData) party.toArray()[NeoRogue.gen.nextInt(party.size())];
 	}
-	
+
+	// Must be run later to avoid player open inventory error
 	private void returnPlayers() {
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				returnPlayersTask();
+			}
+		}.runTask(NeoRogue.inst());
+	}
+	
+	private void returnPlayersTask() {
 		if (returning)
 			return;
 
 		Instance next = nextInstance == null ? new NodeSelectInstance(s) : nextInstance;
-		if (s.canSetInstance(next)) {
+		if (!s.canSetInstance(next)) {
 			return;
 		}
 
