@@ -72,7 +72,7 @@ public class Area {
 	private AreaType type;
 	private Node[][] nodes;
 	private Session s;
-	private String boss;
+	private String boss, bossId;
 
 	public static World world;
 	public static final String WORLD_NAME = "Dev";
@@ -149,7 +149,7 @@ public class Area {
 	}
 
 	// Deserialize
-	public Area(AreaType type, int xOff, int zOff, UUID uuid, int saveSlot, Session s, Statement stmt)
+	public Area(AreaType type, int xOff, int zOff, UUID uuid, int saveSlot, Session s, Statement stmt, String bossId)
 			throws SQLException {
 		this.type = type;
 		this.xOff = xOff;
@@ -186,6 +186,10 @@ public class Area {
 				node.addDestination(nodes[row][lane]);
 			}
 		}
+
+		// Load the boss for the area
+		BossFightInstance bi = (BossFightInstance) nodes[ROW_COUNT - 1][CENTER_LANE].generateInstance(s, type); // generate boss
+		boss = bi.getBossDisplay();
 	}
 
 	private void generateNodes() {
@@ -197,6 +201,11 @@ public class Area {
 		
 		BossFightInstance bi = (BossFightInstance) nodes[ROW_COUNT - 1][CENTER_LANE].generateInstance(s, type); // generate boss
 		boss = bi.getBossDisplay();
+		bossId = bi.getPieceId();
+	}
+
+	public String getBossId() {
+		return bossId;
 	}
 
 	private void tryGenerateNodes() {

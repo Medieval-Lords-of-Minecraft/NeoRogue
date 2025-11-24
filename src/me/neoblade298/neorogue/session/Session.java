@@ -171,10 +171,11 @@ public class Session {
 					nodesVisited = sessSet.getInt("nodesVisited");
 					int pos = sessSet.getInt("position");
 					int lane = sessSet.getInt("lane");
+					String bossId = sessSet.getString("boss");
 					Instance inst = Instance.deserialize(s, sessSet, party);
 
 					area = new Area(
-							AreaType.valueOf(sessSet.getString("areaType")), xOff, zOff, host, saveSlot, s, stmt
+							AreaType.valueOf(sessSet.getString("areaType")), xOff, zOff, host, saveSlot, s, stmt, bossId
 					);
 					curr = area.getNodes()[pos][lane];
 					
@@ -228,7 +229,7 @@ public class Session {
 		
 		try {
 			SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_sessions")
-					.addString(host.toString()).addValue(saveSlot).addString(area.getType().name())
+					.addString(host.toString()).addValue(saveSlot).addString(area.getType().name()).addString(area.getBossId())
 					.addValue(curr.getRow()).addValue(curr.getLane()).addValue(nodesVisited).addValue(potionChance)
 					.addValue(System.currentTimeMillis()).addString(inst.serialize(party));
 			insert.execute(sql.build());
