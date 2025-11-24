@@ -26,7 +26,7 @@ public class LabChance extends ChanceSet {
 				"At least one player doesn't have an armor slot available!",
 				(s, inst, unused) -> {
 					for (PlayerSessionData data : s.getParty().values()) {
-						int numCurses = data.aggregateEquipment((eq) -> { return eq.getType() == EquipmentType.ARMOR && eq.isCursed(); }).size();
+						int numCurses = data.aggregateEquipment((meta) -> { return meta.getEquipment().getType() == EquipmentType.ARMOR && meta.getEquipment().isCursed(); }).size();
 						if (numCurses >= PlayerSessionData.ARMOR_SIZE) return false;
 					}
 					return true;

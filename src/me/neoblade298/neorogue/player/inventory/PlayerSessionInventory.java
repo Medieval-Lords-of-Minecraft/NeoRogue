@@ -80,6 +80,11 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		// Import data from session data
 		int iter = 0;
 		for (int i : ARMOR) {
+			if (iter >= data.getArmorSlots()) {
+				contents[i] = CoreInventory.createButton(Material.BLACK_STAINED_GLASS_PANE, Component.text(" "));
+				iter++;
+				continue;
+			}
 			slotTypes.put(i, EquipSlot.ARMOR);
 			Equipment a = data.getEquipment(EquipSlot.ARMOR)[iter];
 			contents[i] = a != null ? addNbt(a.getItem(), a.getId(), a.isUpgraded(), iter) : createArmorIcon(iter);
@@ -88,6 +93,11 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 
 		iter = 0;
 		for (int i : ACCESSORIES) {
+			if (iter >= data.getAccessorySlots()) {
+				contents[i] = CoreInventory.createButton(Material.BLACK_STAINED_GLASS_PANE, Component.text(" "));
+				iter++;
+				continue;
+			}
 			slotTypes.put(i, EquipSlot.ACCESSORY);
 			Equipment a = data.getEquipment(EquipSlot.ACCESSORY)[iter];
 			contents[i] = a != null ? addNbt(a.getItem(), a.getId(), a.isUpgraded(), iter) : createAccessoryIcon(iter);
@@ -304,7 +314,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 			return;
 		}
 		
-		// Shift click logic
+		// Shift click out logic
 		if (e.isShiftClick() && clicked != null) {
 			EquipSlot type = slotTypes.get(slot);
 			e.setCancelled(true);
@@ -352,7 +362,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 			// Reforged item check
 			if (eq.containsReforgeOption(eqedId)) {
 				if (!Equipment.canReforge(eq, eqed)) {
-					displayError("At least one of the items must be upgraded to reforge!", true);
+					displayError("At least one of the items must be upgraded to reforge!", false);
 					return;
 				}
 				new BukkitRunnable() {
@@ -369,7 +379,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 			}
 			else if (eqed != null && eqed.containsReforgeOption(eqId)) {
 				if (!Equipment.canReforge(eq, eqed)) {
-					displayError("At least one of the items must be upgraded to reforge!", true);
+					displayError("At least one of the items must be upgraded to reforge!", false);
 					return;
 				}
 				new BukkitRunnable() {
@@ -435,7 +445,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		for (int[] slots : arrayFromEquipSlot(type)) {
 			for (int s : slots) {
 				ItemStack iter = contents[s];
-				if (iter.getType().name().endsWith("PANE")) {
+				if (iter.getType() != Material.BLACK_STAINED_GLASS_PANE && iter.getType().name().endsWith("PANE")) {
 					contents[s] = iter.withType(Material.GLASS_PANE);
 					highlighted.add(s);
 				}
@@ -450,7 +460,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		for (int[] slots : arrayFromEquipSlot(type)) {
 			for (int s : slots) {
 				ItemStack iter = contents[s];
-				if (iter.getType().name().endsWith("PANE")) {
+				if (iter.getType() != Material.BLACK_STAINED_GLASS_PANE && iter.getType().name().endsWith("PANE")) {
 					return new AutoEquipResult(type.getSlots()[equipSlotIdx], s);
 				}
 			}
@@ -488,55 +498,6 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		AutoEquipResult result = attemptAutoEquip(eq.getType());
 		return result != null;
 	}
-
-	/* Too lazy to fix, if someone actually uses this I will fix it
-	private void handleInventorySwap(InventoryClickEvent e) {
-		int swapNum = e.getHotbarButton();
-		int slot = e.getSlot();
-		ItemStack swapped = p.getInventory().getContents()[swapNum];
-		ItemStack clicked = e.getCurrentItem();
-		NBTItem nswapped = swapped != null ? new NBTItem(swapped) : null;
-		NBTItem nclicked = clicked != null ? new NBTItem(clicked) : null;
-
-		if (clicked != null) {
-			e.setCancelled(true);
-			if (swapped == null) {
-				if (!nclicked.hasTag("equipId")) return;
-				EquipSlot type = slotTypes.get(slot);
-				if (isBindable(type)) clicked = removeBindLore(clicked);
-				p.getInventory().setItem(swapNum, clicked);
-				removeEquipment(type, nclicked.getInteger("dataSlot"), slot, e.getClickedInventory());
-				p.playSound(p, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1F);
-			}
-			else {
-				if (!nclicked.hasTag("dataSlot")) return;
-				Equipment eq = Equipment.get(nswapped.getString("equipId"), nswapped.getBoolean("isUpgraded"));
-				Equipment eqed = Equipment.get(nclicked.getString("equipId"), nclicked.getBoolean("isUpgraded"));
-				if (eq.getType() == EquipmentType.ABILITY && (eqed == null || eqed.getType() != EquipmentType.ABILITY)
-						&& !data.canEquipAbility()) {
-					displayError("You can only equip " + data.getMaxAbilities() + " abilities!", true);
-					return;
-				}
-
-				EquipSlot type = slotTypes.get(slot);
-				// If swapping equipment with equipment, remove that equipment
-				if (!nclicked.hasTag("equipId")) {
-					p.getInventory().setItem(swapNum, null);
-				}
-				else {
-					data.removeEquipment(type, nclicked.getInteger("dataSlot"));
-					if (isBindable(type)) clicked = removeBindLore(clicked);
-					p.setItemOnCursor(clicked);
-				}
-
-				data.setEquipment(type, nclicked.getInteger("dataSlot"), eq);
-				p.playSound(p, Sound.ITEM_ARMOR_EQUIP_DIAMOND, 1F, 1F);
-				if (isBindable(type)) swapped = addBindLore(swapped, slot, nclicked.getInteger("dataSlot"));
-				inv.setItem(slot, addNbt(swapped, nclicked.getInteger("dataSlot")));
-			}
-		}
-	}
-	*/
 
 	private void handleInventoryDrop(InventoryClickEvent e) {
 		ItemStack clicked = e.getCurrentItem();

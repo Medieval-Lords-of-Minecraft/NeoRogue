@@ -34,7 +34,7 @@ public class ShiningLightChance extends ChanceSet {
 					Util.msgRaw(p, "You are engulfed by the light. You feel a sharp pain, but you can tell your equipment has absorbed some power.");
 					
 					data.damagePercent(0.2);
-					ArrayList<EquipmentMetadata> list = data.aggregateEquipment((eq) -> { return !eq.isUpgraded() && eq.canUpgrade() && eq.getType() != EquipmentType.CONSUMABLE; });
+					ArrayList<EquipmentMetadata> list = data.aggregateEquipment((meta) -> { return !meta.getEquipment().isUpgraded() && meta.getEquipment().canUpgrade() && meta.getEquipment().getType() != EquipmentType.CONSUMABLE; });
 					Collections.shuffle(list);
 					for (int i = 0; i < 2; i++) {
 						if (i >= list.size()) {

@@ -10,6 +10,8 @@ import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.Consumable;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
+import me.neoblade298.neorogue.equipment.accessories.ArmorStand;
+import me.neoblade298.neorogue.equipment.accessories.Lockbox;
 import me.neoblade298.neorogue.equipment.artifacts.EmeraldCluster;
 import me.neoblade298.neorogue.equipment.artifacts.RubyCluster;
 import me.neoblade298.neorogue.equipment.artifacts.SapphireCluster;
@@ -25,6 +27,7 @@ public class ShopContents {
 		generateConsumables(s, data, value, discountMult); // 10-12
 		generateGems(discountMult); // 13-15
 		generateArtifacts(s, data, value, discountMult); // 16-18
+		generateShopArtifacts(s, data, value, discountMult); // 19-20
 	}
 
 	private ShopContents(HashMap<Integer, ShopItem> shopItems) {
@@ -90,6 +93,14 @@ public class ShopContents {
 		int idx = 16;
 		for (Artifact art : Equipment.getArtifact(data.getArtifactDroptable(), value, 3, ec, EquipmentClass.SHOP, EquipmentClass.CLASSLESS)) {
 			int price = NeoRogue.gen.nextInt((int) (150 * discountMult), (int) (250 * discountMult));
+			shopItems.put(idx++, new ShopItem(art, price, false));
+		}
+	}
+
+	private void generateShopArtifacts(Session s, PlayerSessionData data, int value, double discountMult) {
+		int idx = 19;
+		for (Artifact art : new Artifact[] { (Artifact) ArmorStand.get(), (Artifact) Lockbox.get() }) {
+			int price = NeoRogue.gen.nextInt((int) (100 * discountMult), (int) (200 * discountMult));
 			shopItems.put(idx++, new ShopItem(art, price, false));
 		}
 	}

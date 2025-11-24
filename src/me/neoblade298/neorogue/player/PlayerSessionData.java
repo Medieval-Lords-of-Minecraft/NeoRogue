@@ -33,8 +33,6 @@ import me.neoblade298.neorogue.equipment.abilities.EmpoweredEdge;
 import me.neoblade298.neorogue.equipment.abilities.ManaBlitz;
 import me.neoblade298.neorogue.equipment.abilities.PiercingShot;
 import me.neoblade298.neorogue.equipment.abilities.ShadowWalk;
-import me.neoblade298.neorogue.equipment.cursed.CurseOfBurden;
-import me.neoblade298.neorogue.equipment.cursed.CurseOfInexperience;
 import me.neoblade298.neorogue.equipment.weapons.BasicBow;
 import me.neoblade298.neorogue.equipment.weapons.WoodenArrow;
 import me.neoblade298.neorogue.equipment.weapons.WoodenDagger;
@@ -62,7 +60,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 	private Equipment[][] allEquips = new Equipment[][] { hotbar, armors, offhand, accessories, storage, otherBinds };
 	private TreeMap<String, ArtifactInstance> artifacts = new TreeMap<String, ArtifactInstance>();
 	private HashMap<SessionTrigger, ArrayList<SessionAction>> triggers = new HashMap<SessionTrigger, ArrayList<SessionAction>>();
-	private int abilitiesEquipped, maxAbilities = 4, maxStorage = 3, coins = 100;
+	private int abilitiesEquipped, armorEquipped, accessoriesEquipped, maxAbilities = 4, maxStorage = 3, coins = 100, armorSlots = 1, accessorySlots = 2;
 	private String instanceData;
 	private DropTableSet<Artifact> personalArtifacts;
 	private ArrayList<String> boardLines;
@@ -95,7 +93,13 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		this.maxAbilities = rs.getInt("maxAbilities");
 		this.maxStorage = rs.getInt("maxStorage");
 		this.coins = rs.getInt("coins");
+		this.armorSlots = rs.getInt("armorSlots");
+		this.accessorySlots = rs.getInt("accessorySlots");
 		this.instanceData = rs.getString("instanceData");
+
+		abilitiesEquipped = aggregateEquipment((eq) -> { return eq.getEquipment().getType() == EquipmentType.ABILITY && eq.getEquipSlot() != EquipSlot.STORAGE; }).size();
+		armorEquipped = aggregateEquipment((eq) -> { return eq.getEquipment().getType() == EquipmentType.ARMOR && eq.getEquipSlot() != EquipSlot.STORAGE; }).size();
+		accessoriesEquipped = aggregateEquipment((eq) -> { return eq.getEquipment().getType() == EquipmentType.ACCESSORY && eq.getEquipSlot() != EquipSlot.STORAGE; }).size();
 		setupArtifacts();
 		updateBoardLines();
 	}
@@ -156,13 +160,6 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 			break;
 		}
 
-		for (int i = 2; i < accessories.length; i++) {
-			accessories[i] = CurseOfInexperience.get();
-		}
-		for (int i = 1; i < armors.length; i++) {
-			armors[i] = CurseOfBurden.get();
-		}
-
 		setupArtifacts();
 		data.getPlayer().setHealthScaled(true);
 		data.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHealth);
@@ -215,14 +212,48 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		Equipment[] slots = getArrayFromEquipSlot(es);
 		if (slots[slot] != null) removeEquipment(es, slot);
 		slots[slot] = eq;
-		if (eq.getType() == EquipmentType.ABILITY) abilitiesEquipped++;
+
+		switch (eq.getType()) {
+		case ARMOR:
+			armorEquipped++;
+			break;
+		case ACCESSORY:
+			accessoriesEquipped++;
+			break;
+		case ABILITY:
+			abilitiesEquipped++;
+			break;
+		default:
+		}
 	}
 
 	public void removeEquipment(EquipSlot es, int slot) {
 		Equipment[] slots = getArrayFromEquipSlot(es);
 		Equipment eq = slots[slot];
 		slots[slot] = null;
-		if (eq.getType() == EquipmentType.ABILITY) abilitiesEquipped--;
+
+		switch (eq.getType()) {
+		case ARMOR:
+			armorEquipped--;
+			break;
+		case ACCESSORY:
+			accessoriesEquipped--;
+			break;
+		case ABILITY:
+			abilitiesEquipped--;
+			break;
+		default:
+		}
+	}
+
+	// Used for curses to auto unequip an item
+	public void unequip(EquipSlot es) {
+		Equipment[] slots = getArrayFromEquipSlot(es);
+		for (int i = 0; i < slots.length; i++) {
+			if (slots[i] != null) {
+				removeEquipment(es, i);
+			}
+		}
 	}
 
 	private Equipment[] getArrayFromEquipSlot(EquipSlot es) {
@@ -267,6 +298,14 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 
 	public Equipment[] getOtherBinds() {
 		return otherBinds;
+	}
+
+	public void addArmorSlots(int amount) {
+		this.armorSlots += amount;
+	}
+	
+	public void addAccessorySlots(int amount) {
+		this.accessorySlots += amount;
 	}
 
 	public Equipment getOtherBind(KeyBind bind) {
@@ -421,7 +460,10 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		else {
 			// First try to auto-equip
 			boolean success = false;
-			if (eq.getType() != EquipmentType.ABILITY || canEquipAbility()) {
+			boolean blockEquip = (eq.getType() == EquipmentType.ACCESSORY && accessoriesEquipped >= accessorySlots)
+					|| (eq.getType() == EquipmentType.ARMOR && armorEquipped >= armorSlots)
+					|| (eq.getType() == EquipmentType.ABILITY && abilitiesEquipped >= maxAbilities);
+			if (!blockEquip) {
 				EquipSlot es = null;
 				for (EquipSlot eqs : eq.getType().getSlots()) {
 					success = tryEquip(eqs, eq);
@@ -481,7 +523,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		return false;
 	}
 	
-	public ArrayList<EquipmentMetadata> aggregateEquipment(Predicate<Equipment> filter) {
+	public ArrayList<EquipmentMetadata> aggregateEquipment(Predicate<EquipmentMetadata> filter) {
 		ArrayList<EquipmentMetadata> list = new ArrayList<EquipmentMetadata>();
 		EquipSlot[] es = new EquipSlot[] { EquipSlot.HOTBAR, EquipSlot.ARMOR, EquipSlot.OFFHAND, EquipSlot.ACCESSORY, EquipSlot.STORAGE, EquipSlot.KEYBIND };
 		
@@ -492,7 +534,8 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 			for (Equipment eq : arr) {
 				slot++;
 				if (eq == null) continue;
-				if (filter.test(eq)) list.add(new EquipmentMetadata(eq, slot, es[esIdx]));
+				EquipmentMetadata meta = new EquipmentMetadata(eq, slot, es[esIdx]);
+				if (filter.test(meta)) list.add(meta);
 			}
 		}
 		return list;
@@ -608,6 +651,22 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 	public double getHealth() {
 		return health;
 	}
+	
+	public int getArmorSlots() {
+		return armorSlots;
+	}
+
+	public int getArmorEquipped() {
+		return armorEquipped;
+	}
+
+	public int getAccessorySlots() {
+		return accessorySlots;
+	}
+	
+	public int getAccessoriesEquipped() {
+		return accessoriesEquipped;
+	}
 
 	public void updateHealth() {
 		health = Math.round(Math.min(this.maxHealth, getPlayer().getHealth()));
@@ -690,7 +749,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 					.addString(Equipment.serialize(offhand)).addString(Equipment.serialize(accessories))
 					.addString(Equipment.serialize(storage)).addString(Equipment.serialize(otherBinds))
 					.addString(ArtifactInstance.serialize(artifacts)).addValue(maxAbilities).addValue(maxStorage)
-					.addValue(coins).addString(instanceData);
+					.addValue(armorSlots).addValue(accessorySlots).addValue(coins).addString(instanceData);
 			stmt.execute(sql.build());
 		} catch (SQLException ex) {
 			Bukkit.getLogger().warning("[NeoRogue] Failed to save player session data for " + uuid + " hosted by "
@@ -705,7 +764,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		return ec.name() + "," + health + "," + maxHealth + "," + maxMana + "," + maxStamina + "," + manaRegen + "," + staminaRegen + "," +
 			Equipment.serialize(hotbar) + "," + Equipment.serialize(armors) + "," + Equipment.serialize(offhand) + "," +
 			Equipment.serialize(accessories) + "," + Equipment.serialize(storage) + "," + Equipment.serialize(otherBinds) + "," +
-			ArtifactInstance.serialize(artifacts) + "," + maxAbilities + "," + maxStorage + "," + coins;
+			ArtifactInstance.serialize(artifacts) + "," + maxAbilities + "," + maxStorage + "," + armorSlots + "," + accessorySlots + "," + coins;
 	}
 
 	public void deserialize(String str) throws Exception {
@@ -727,6 +786,8 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		artifacts = ArtifactInstance.deserializeMap(arr[i++]);
 		maxAbilities = Integer.parseInt(arr[i++]);
 		maxStorage = Integer.parseInt(arr[i++]);
+		armorSlots = Integer.parseInt(arr[i++]);
+		accessorySlots = Integer.parseInt(arr[i++]);
 		coins = Integer.parseInt(arr[i++]);
 
 		getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHealth);

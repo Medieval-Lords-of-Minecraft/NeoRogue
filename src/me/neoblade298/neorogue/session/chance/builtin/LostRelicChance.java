@@ -39,7 +39,7 @@ public class LostRelicChance extends ChanceSet {
 				"Acquire a <red>cursed accessory</red> that cannot be unequipped or used, but becomes a strong weapon when purified at a shop.",
 				"You don't have an accessory slot available",
 				(s, inst, pdata) -> {
-					int numCurses = pdata.aggregateEquipment((eq) -> { return eq.getType() == EquipmentType.ACCESSORY && eq.isCursed(); }).size();
+					int numCurses = pdata.aggregateEquipment((meta) -> { return meta.getEquipment().getType() == EquipmentType.ACCESSORY && meta.getEquipment().isCursed(); }).size();
 					if (numCurses >= PlayerSessionData.ACCESSORY_SIZE) return false;
 					return true;
 				},

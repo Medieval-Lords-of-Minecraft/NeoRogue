@@ -45,7 +45,7 @@ public class DaedalusHammer extends Artifact {
 	public void onAcquire(PlayerSessionData data, int amount) {
 		Player p = data.getPlayer();
 		Session s = data.getSession();
-		ArrayList<EquipmentMetadata> list = data.aggregateEquipment((eq) -> { return !eq.isUpgraded() && eq.canUpgrade() && eq.getType() != EquipmentType.CONSUMABLE; });
+		ArrayList<EquipmentMetadata> list = data.aggregateEquipment((meta) -> { return !meta.getEquipment().isUpgraded() && meta.getEquipment().canUpgrade() && meta.getEquipment().getType() != EquipmentType.CONSUMABLE; });
 		Collections.shuffle(list);
 		if (list.isEmpty()) {
 			Util.msgRaw(p, "You had nothing else to upgrade!");

@@ -30,6 +30,7 @@ import me.neoblade298.neocore.shared.droptables.DropTable;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.abilities.*;
+import me.neoblade298.neorogue.equipment.accessories.ArmorStand;
 import me.neoblade298.neorogue.equipment.accessories.AshenWreath;
 import me.neoblade298.neorogue.equipment.accessories.BurningRing;
 import me.neoblade298.neorogue.equipment.accessories.CailiricCrystal;
@@ -44,6 +45,7 @@ import me.neoblade298.neorogue.equipment.accessories.ForceTrinket;
 import me.neoblade298.neorogue.equipment.accessories.GripGloves;
 import me.neoblade298.neorogue.equipment.accessories.LifeThief;
 import me.neoblade298.neorogue.equipment.accessories.LionheartBangle;
+import me.neoblade298.neorogue.equipment.accessories.Lockbox;
 import me.neoblade298.neorogue.equipment.accessories.MagicQuiver;
 import me.neoblade298.neorogue.equipment.accessories.MajorShieldingRelic;
 import me.neoblade298.neorogue.equipment.accessories.MajorStaminaRelic;
@@ -180,8 +182,6 @@ import me.neoblade298.neorogue.equipment.consumables.MinorManaPotion;
 import me.neoblade298.neorogue.equipment.consumables.MinorPhysicalPotion;
 import me.neoblade298.neorogue.equipment.consumables.MinorShieldsPotion;
 import me.neoblade298.neorogue.equipment.consumables.MinorStaminaPotion;
-import me.neoblade298.neorogue.equipment.cursed.CurseOfBurden;
-import me.neoblade298.neorogue.equipment.cursed.CurseOfInexperience;
 import me.neoblade298.neorogue.equipment.cursed.DullDagger;
 import me.neoblade298.neorogue.equipment.cursed.GnarledStaff;
 import me.neoblade298.neorogue.equipment.cursed.MangledBow;
@@ -766,6 +766,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new AlchemistBag();
 		new AmuletOfOffering();
 		new Anxiety();
+		new ArmorStand();
 		new AthenianChalice();
 		new AurorBadge();
 		new AvalonianAnchor();
@@ -802,6 +803,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new HuntersCompass();
 		new InfernalTome();
 		new LionheartBangle();
+		new Lockbox();
 		new ManaflowBand();
 		new ManaHaze();
 		new MercenaryHeadband();
@@ -843,14 +845,10 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new SapphireShard();
 
 		// Curses
-		new CurseOfBurden();
-		new CurseOfInexperience();
 		new DullDagger();
 		new GnarledStaff();
 		new MangledBow();
 		new RustySword();
-
-		// Materials
 
 		HashMap<EquipmentType, Integer> counts = new HashMap<EquipmentType, Integer>();
 		int cursed = 0;

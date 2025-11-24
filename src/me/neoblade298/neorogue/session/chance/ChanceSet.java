@@ -97,7 +97,7 @@ public class ChanceSet {
 				
 				// Check if this class has been registered
 				String id = clazz.getSimpleName().replace("Chance", "");
-				if (!setsById.containsKey(id)) {
+				if (!setsById.containsKey(id) && !id.equals("Test")) {
 					missingClasses.add(id);
 				}
 			}
