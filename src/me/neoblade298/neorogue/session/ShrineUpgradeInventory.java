@@ -51,7 +51,7 @@ public class ShrineUpgradeInventory extends CoreInventory implements ShiftClicka
 			if (e.isShiftClick()) {
 				if (e.getCurrentItem() == null) return;
 				if (!pinv.canShiftClickIn(inv.getItem(0))) return;
-				pinv.handleShiftClickIn(inv.getItem(0));
+				pinv.handleShiftClickIn(e, inv.getItem(0));
 				p.playSound(p, Sound.ITEM_ARMOR_EQUIP_DIAMOND, 1F, 1F);
 				e.setCancelled(true);
 				inv.setItem(0, null);
@@ -126,7 +126,7 @@ public class ShrineUpgradeInventory extends CoreInventory implements ShiftClicka
 	}
 
 	@Override
-	public void handleShiftClickIn(ItemStack item) {
+	public void handleShiftClickIn(InventoryClickEvent ev, ItemStack item) {
 		inv.setItem(0, item);
 		updateOutput();
 	}

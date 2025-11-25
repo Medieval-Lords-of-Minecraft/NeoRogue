@@ -326,7 +326,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 				if (!sci.canShiftClickIn(clicked)) return;
 				if (isBindable(type)) clicked = removeBindLore(clicked);
 				removeEquipment(type, nclicked.getInteger("dataSlot"), slot, e.getClickedInventory());
-				sci.handleShiftClickIn(clicked);
+				sci.handleShiftClickIn(e, clicked);
 			}
 			p.playSound(p, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1F);
 			return;
@@ -479,7 +479,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 	}
 	
 	@Override
-	public void handleShiftClickIn(ItemStack item) {
+	public void handleShiftClickIn(InventoryClickEvent ev, ItemStack item) {
 		NBTItem nbti = new NBTItem(item);
 		Equipment eq = Equipment.get(nbti.getString("equipId"), nbti.getBoolean("isUpgraded"));
 		AutoEquipResult result = attemptAutoEquip(eq.getType());
@@ -495,6 +495,27 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 	public boolean canShiftClickIn(ItemStack item) {
 		NBTItem nbti = new NBTItem(item);
 		Equipment eq = Equipment.get(nbti.getString("equipId"), nbti.getBoolean("isUpgraded"));
+		switch (eq.getType()) {
+			case ABILITY:
+				if (!data.canEquipAbility()) {
+					displayError("You can't equip any more abilities!", false);
+					return false;
+				}
+				break;
+			case ARMOR:
+				if (data.getArmorEquipped() >= data.getArmorSlots()) {
+					displayError("You can't equip any more armor!", false);
+					return false;
+				}
+				break;
+			case ACCESSORY:
+				if (data.getAccessoriesEquipped() >= data.getAccessorySlots()) {
+					displayError("You can't equip any more accessories!", false);
+					return false;
+				}
+				break;
+			default:
+		}
 		AutoEquipResult result = attemptAutoEquip(eq.getType());
 		return result != null;
 	}

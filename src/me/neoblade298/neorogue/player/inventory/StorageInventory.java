@@ -118,7 +118,7 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 			if (nclicked == null || !nclicked.hasTag("equipId")) return;
 			e.setCancelled(true);
 			if (!pinv.canShiftClickIn(inv.getItem(e.getSlot()))) return;
-			pinv.handleShiftClickIn(inv.getItem(e.getSlot()));
+			pinv.handleShiftClickIn(e, inv.getItem(e.getSlot()));
 			e.setCurrentItem(null);
 			p.playSound(p, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1F);
 		}
@@ -234,7 +234,7 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 	}
 
 	@Override
-	public void handleShiftClickIn(ItemStack item) {
+	public void handleShiftClickIn(InventoryClickEvent ev, ItemStack item) {
 		inv.addItem(item);
 	}
 }

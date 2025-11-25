@@ -37,7 +37,7 @@ public class TrashInventory extends CoreInventory implements ShiftClickableInven
 			if (e.getCurrentItem() == null) return;
 			e.setCancelled(true);
 			if (!pinv.canShiftClickIn(inv.getItem(0))) return;
-			pinv.handleShiftClickIn(inv.getItem(0));
+			pinv.handleShiftClickIn(e, inv.getItem(0));
 			e.setCurrentItem(null);
 			p.playSound(p, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1F);
 		}
@@ -74,7 +74,7 @@ public class TrashInventory extends CoreInventory implements ShiftClickableInven
 	}
 
 	@Override
-	public void handleShiftClickIn(ItemStack item) {
+	public void handleShiftClickIn(InventoryClickEvent ev, ItemStack item) {
 		inv.addItem(item);
 	}
 }
