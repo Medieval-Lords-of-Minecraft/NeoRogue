@@ -124,6 +124,16 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 		}
 		// Handle left click
 		else {
+			// First check for curses in cursor
+			if (ncursor != null && ncursor.hasTag("equipId")) {
+				Equipment eq = Equipment.get(ncursor.getString("equipId"), ncursor.getBoolean("isUpgraded"));
+				if (eq.isCursed()) {
+					displayError("You can't unequip cursed items!", false);
+					e.setCancelled(true);
+					return;
+				}
+			}
+
 			// Picking up an item
 			if (nclicked != null && nclicked.hasTag("equipId") && ncursor == null) {
 				Equipment eq = Equipment.get(nclicked.getString("equipId"), false);

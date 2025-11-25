@@ -227,7 +227,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		}
 	}
 
-	public void removeEquipment(EquipSlot es, int slot) {
+	public Equipment removeEquipment(EquipSlot es, int slot) {
 		Equipment[] slots = getArrayFromEquipSlot(es);
 		Equipment eq = slots[slot];
 		slots[slot] = null;
@@ -244,16 +244,50 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 			break;
 		default:
 		}
+		return eq;
 	}
 
-	// Used for curses to auto unequip an item
-	public void unequip(EquipSlot es) {
-		Equipment[] slots = getArrayFromEquipSlot(es);
-		for (int i = 0; i < slots.length; i++) {
-			if (slots[i] != null) {
-				removeEquipment(es, i);
-			}
+	// Used for curses to auto unequip an item, only does so if all slots are used
+	// Returns true if an item was unequipped
+	public boolean unequip(EquipmentType type) {
+		Equipment eq = null;
+		EquipmentMetadata result;
+		switch (type) {
+			case ARMOR:
+				if (armorEquipped < armorSlots) return false;
+				result = aggregateEquipment((meta) -> {
+					return meta.getEquipment().getType() == EquipmentType.ARMOR && !meta.getEquipment().isCursed()
+							&& meta.getEquipSlot() != EquipSlot.STORAGE;
+				}).getLast();
+				eq = removeEquipment(result.getEquipSlot(), result.getSlot());
+				sendToStorage(eq);
+				break;
+			case ACCESSORY:
+				if (accessoriesEquipped < accessorySlots) return false;
+				result = aggregateEquipment((meta) -> {
+					return meta.getEquipment().getType() == EquipmentType.ACCESSORY && !meta.getEquipment().isCursed()
+							&& meta.getEquipSlot() != EquipSlot.STORAGE;
+				}).getLast();
+				eq = removeEquipment(result.getEquipSlot(), result.getSlot());
+				sendToStorage(eq);
+				break;
+			case ABILITY:
+				if (abilitiesEquipped < maxAbilities) return false;
+				result = aggregateEquipment((meta) -> { return meta.getEquipment().getType() == EquipmentType.ABILITY && !meta.getEquipment().isCursed() && meta.getEquipSlot() != EquipSlot.STORAGE; }).getLast();
+				eq = removeEquipment(result.getEquipSlot(), result.getSlot());
+				sendToStorage(eq);
+				break;
+			default:
+				Bukkit.getLogger().warning("[NeoRogue] Unaccounted case for unequip with equipment type " + type);
+				break;
 		}
+
+		if (eq != null) {
+			PlayerSessionInventory.setupInventory(this);
+			Util.msg(getPlayer(), Component.text("You unequipped ", NamedTextColor.GRAY).append(eq.getHoverable()).append(Component.text(", it was sent to storage.")));
+			return true;
+		}
+		return false;
 	}
 
 	private Equipment[] getArrayFromEquipSlot(EquipSlot es) {

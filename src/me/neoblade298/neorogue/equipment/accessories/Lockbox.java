@@ -8,6 +8,7 @@ import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 
 public class Lockbox extends Artifact {
@@ -23,7 +24,7 @@ public class Lockbox extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.ARMOR_STAND, "Increases your accessory slots by <white>1</white>, up to a maximum of <white>6</white>.");
+		item = createItem(Material.BUNDLE, "Increases your accessory slots by <white>1</white>, up to a maximum of <white>6</white>.");
 	}
 
 	@Override
@@ -34,7 +35,7 @@ public class Lockbox extends Artifact {
 	@Override
 	public void onAcquire(PlayerSessionData data, int amount) {
 		data.addAccessorySlots(1);
-		data.setupInventory();
+		PlayerSessionInventory.setupInventory(data);
 	}
 
 	@Override

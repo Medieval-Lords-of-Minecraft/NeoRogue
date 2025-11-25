@@ -244,7 +244,7 @@ public class ChanceInstance extends EditInventoryInstance {
 			public void run() {
 				returnPlayersTask();
 			}
-		}.runTask(NeoRogue.inst());
+		}.runTaskLater(NeoRogue.inst(), 1);
 	}
 	
 	private void returnPlayersTask() {

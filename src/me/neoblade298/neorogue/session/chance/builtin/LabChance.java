@@ -27,7 +27,7 @@ public class LabChance extends ChanceSet {
 				(s, inst, unused) -> {
 					for (PlayerSessionData data : s.getParty().values()) {
 						int numCurses = data.aggregateEquipment((meta) -> { return meta.getEquipment().getType() == EquipmentType.ARMOR && meta.getEquipment().isCursed(); }).size();
-						if (numCurses >= PlayerSessionData.ARMOR_SIZE) return false;
+						if (numCurses >= data.getArmorSlots()) return false;
 					}
 					return true;
 				},
@@ -37,6 +37,7 @@ public class LabChance extends ChanceSet {
 					}
 					if (NeoRogue.gen.nextDouble() < 0.25) {
 						for (PlayerSessionData data : s.getParty().values()) {
+							data.unequip(EquipmentType.ARMOR);
 							data.giveEquipment(Equipment.get("curseOfBurden", false));
 						}
 						s.broadcast("<red>In your haste to leave, you acquire a curse.");
