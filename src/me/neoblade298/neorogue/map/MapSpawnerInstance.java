@@ -17,6 +17,7 @@ import me.neoblade298.neorogue.session.fight.Mob;
 
 public class MapSpawnerInstance {
 	private Session s;
+	private MapPieceInstance piece;
 	private MapSpawner origin;
 	private Location loc;
 	private int maxMobs, activeMobs;
@@ -31,10 +32,15 @@ public class MapSpawnerInstance {
 		);
 		this.loc.setX(-this.loc.getX() + 0.5);
 		this.maxMobs = original.getMaxMobs();
+		this.piece = inst;
 	}
 	
 	public Location getLocation() {
 		return loc;
+	}
+
+	public MapPieceInstance getPiece() {
+		return piece;
 	}
 	
 	public boolean canSpawn() {

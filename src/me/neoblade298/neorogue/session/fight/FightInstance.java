@@ -70,6 +70,7 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
+import me.neoblade298.neorogue.map.Coordinates;
 import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.map.MapPieceInstance;
 import me.neoblade298.neorogue.map.MapSpawnerInstance;
@@ -899,6 +900,15 @@ public abstract class FightInstance extends Instance {
 		s.broadcast("Commencing fight...");
 		setupInstance(s);
 		FightInstance fi = this;
+
+		// Choose random map piece to spawn in and order spawners by distance from it
+		Coordinates[] spawns = map.getPieces().get(NeoRogue.gen.nextInt(map.getPieces().size())).getSpawns();
+		Coordinates spawnPiece = spawns[NeoRogue.gen.nextInt(spawns.length)];
+		ArrayList<MapSpawnerInstance> spawnersByDist = new ArrayList<MapSpawnerInstance>(fi.spawners);
+		spawnersByDist.sort(
+				(a, b) -> Double
+						.compare(spawnPiece.toLocation().distanceSquared(a.getLocation()), spawnPiece.toLocation().distanceSquared(b.getLocation()))
+		);
 		
 		new BukkitRunnable() {
 			@Override
@@ -938,6 +948,8 @@ public abstract class FightInstance extends Instance {
 				double rngBonus = NeoRogue.gen.nextDouble(-1, 1);
 				double toActivate = rngBonus + (map.getEffectiveSize() / 2);
 				
+				// Always spawn one of the closest spawners
+				spawnersByDist.getFirst().spawnMob();
 				activateSpawner(toActivate);
 
 				startTime = System.currentTimeMillis();

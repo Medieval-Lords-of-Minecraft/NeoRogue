@@ -153,6 +153,9 @@ public class Map {
 				break;
 			}
 		}
+
+		// Pick a map piece to spawn the player on
+		map.spawnPiece = map.pieces.get(NeoRogue.gen.nextInt(map.pieces.size()));
 		
 		// Fill in any spots adjacent to pieces with border pieces
 		if (type == AreaType.HARVEST_FIELDS) {
