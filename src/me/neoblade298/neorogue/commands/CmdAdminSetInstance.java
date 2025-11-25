@@ -23,7 +23,7 @@ public class CmdAdminSetInstance extends Subcommand {
 		for (NodeType type : NodeType.values()) {
 			tab.add(type.toString());
 		}
-		args.add(new Arg("type").setTabOptions(tab));
+		args.add(new Arg("type").setTabOptions(tab), new Arg("chance id", false));
 		this.enableTabComplete();
 	}
 
@@ -45,7 +45,7 @@ public class CmdAdminSetInstance extends Subcommand {
 				sess.setInstance(new ShopInstance(sess));
 				break;
 			case CHANCE:
-				sess.setInstance(new ChanceInstance(sess));
+				sess.setInstance(new ChanceInstance(sess, args.length > 1 ? args[1] : null));
 				break;
 			case SHRINE:
 				sess.setInstance(new ShrineInstance(sess));

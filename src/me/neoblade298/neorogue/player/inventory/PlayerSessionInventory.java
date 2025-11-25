@@ -280,6 +280,10 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 			// Should not be usable if the storage inventory is open
 			else if (!(InventoryListener.getUpperInventory(p) instanceof StorageInventory)) {
 				Equipment eq = Equipment.get(ncursor.getString("equipId"), ncursor.getBoolean("isUpgraded"));
+				if (eq.isCursed()) {
+					displayError("You can't unequip cursed items!", false);
+					return;
+				}
 				p.setItemOnCursor(null);
 				data.sendToStorage(eq);
 				p.playSound(p, Sound.ITEM_ARMOR_EQUIP_CHAIN, 1F, 1F);
@@ -322,6 +326,11 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 			CoreInventory upper = InventoryListener.getUpperInventory(p);
 			if (upper == null) return;
 			if (upper instanceof ShiftClickableInventory) {
+				Equipment eq = Equipment.get(nclicked.getString("equipId"), false);
+				if (eq.isCursed()) {
+					displayError("You can't unequip cursed items!", false);
+					return;
+				}
 				ShiftClickableInventory sci = (ShiftClickableInventory) upper;
 				if (!sci.canShiftClickIn(clicked)) return;
 				if (isBindable(type)) clicked = removeBindLore(clicked);

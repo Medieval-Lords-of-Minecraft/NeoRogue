@@ -265,7 +265,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 			case ACCESSORY:
 				if (accessoriesEquipped < accessorySlots) return false;
 				result = aggregateEquipment((meta) -> {
-					return meta.getEquipment().getType() == EquipmentType.ARMOR && !meta.getEquipment().isCursed()
+					return meta.getEquipment().getType() == EquipmentType.ACCESSORY && !meta.getEquipment().isCursed()
 							&& meta.getEquipSlot() != EquipSlot.STORAGE;
 				}).getLast();
 				eq = removeEquipment(result.getEquipSlot(), result.getSlot());
@@ -283,6 +283,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		}
 
 		if (eq != null) {
+			PlayerSessionInventory.setupInventory(this);
 			Util.msg(getPlayer(), Component.text("You unequipped ", NamedTextColor.GRAY).append(eq.getHoverable()).append(Component.text(", it was sent to storage.")));
 			return true;
 		}
