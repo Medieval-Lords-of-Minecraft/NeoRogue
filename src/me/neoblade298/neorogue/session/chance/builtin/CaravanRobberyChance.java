@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.session.chance.builtin;
 import org.bukkit.Material;
 
 import me.neoblade298.neorogue.area.AreaType;
+import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
 import me.neoblade298.neorogue.equipment.artifacts.Exhaustion;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.chance.ChanceChoice;
@@ -23,6 +24,7 @@ public class CaravanRobberyChance extends ChanceSet {
 					for (PlayerSessionData pd: s.getParty().values()) {
 						pd.giveEquipment(Exhaustion.get());
 						pd.addCoins(300);
+						pd.unequip(EquipmentType.ABILITY);
 					}
 					s.broadcast("You save the merchants and are rewarded <yellow>300 coins</yellow>, but you feel exhausted.");
 					return null;
