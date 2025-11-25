@@ -27,7 +27,7 @@ public class ShopContents {
 		generateConsumables(s, data, value, discountMult); // 10-12
 		generateGems(discountMult); // 13-15
 		generateArtifacts(s, data, value, discountMult); // 16-18
-		generateShopArtifacts(s, data, value, discountMult); // 19-20
+		generateShopArtifacts(s, data, value, discountMult); // 19, 20
 	}
 
 	private ShopContents(HashMap<Integer, ShopItem> shopItems) {

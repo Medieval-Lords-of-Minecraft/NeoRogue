@@ -33,7 +33,7 @@ public class ShopInventory extends CoreInventory {
 		GEMS = new int[] { 24, 25, 26 },
 		ARTIFACTS = new int[] { 33, 34, 35 };
 	public static final int SELL_PRICE = 25, REMOVE_CURSE_PRICE = 100,
-		GOLD_ICON = 4, SELL_ICON = 0, PURIFY_ICON = 1, SPECTATE_ICON = 8;
+		GOLD_ICON = 4, SELL_ICON = 0, PURIFY_ICON = 1, SPECTATE_ICON = 2, ARMOR_ARTIFACT = 7, ACCESSORY_ARTIFACT = 8;
 	private PlayerSessionData data;
 	private ShopContents shopItems;
 	private Player spectator;
@@ -46,7 +46,7 @@ public class ShopInventory extends CoreInventory {
 		this.data = data;
 		this.shopItems = items;
 		InventoryListener.registerPlayerInventory(p, new PlayerSessionInventory(data));
-		setupInventory();
+		setupInventory(data);
 	}
 	
 	public ShopInventory(PlayerSessionData data, ShopContents items, Player spectator) {
@@ -60,7 +60,7 @@ public class ShopInventory extends CoreInventory {
 		this.data = data;
 		this.shopItems = items;
 		this.spectator = spectator;
-		setupInventory();
+		setupInventory(data);
 	}
 
 	// Call when reopening this inv without a constructor
@@ -68,7 +68,7 @@ public class ShopInventory extends CoreInventory {
 		InventoryListener.registerPlayerInventory(p, new PlayerSessionInventory(data));
 	}
 	
-	private void setupInventory() {
+	private void setupInventory(PlayerSessionData data) {
 		ItemStack[] contents = inv.getContents();
 		contents[GOLD_ICON] = CoreInventory.createButton(
 				Material.GOLD_INGOT, Component.text("You have " + data.getCoins() + " coins", NamedTextColor.YELLOW)
@@ -116,6 +116,16 @@ public class ShopInventory extends CoreInventory {
 			contents[i] = si.getItem(data, idx);
 			idx++;
 		}
+
+		if (data.getArmorSlots() < PlayerSessionData.ARMOR_SIZE) {
+			ShopItem armorArt = shopItems.get(19);
+			contents[ARMOR_ARTIFACT] = armorArt.getItem(data, 19);
+		}
+		if (data.getAccessorySlots() < PlayerSessionData.ACCESSORY_SIZE) {
+			ShopItem accessoryArt = shopItems.get(20);
+			contents[ACCESSORY_ARTIFACT] = accessoryArt.getItem(data, 20);
+		}
+
 		for (int i = 0; i < contents.length; i++) {
 			if (contents[i] == null) {
 				contents[i] = CoreInventory.createButton(Material.GRAY_STAINED_GLASS_PANE, Component.text(""));
@@ -165,12 +175,12 @@ public class ShopInventory extends CoreInventory {
 		}
 		int slot = e.getSlot();
 
-		if (slot == SPECTATE_ICON && e.getCurrentItem() != null) {
+		if (slot == SPECTATE_ICON && e.getCurrentItem().getType() != Material.GRAY_STAINED_GLASS_PANE) {
 			new SpectateSelectInventory(data.getSession(), p, data, true);
 			return;
 		}
 
-		if (e.getCursor().getType().isAir() && slot >= 9) {
+		if (e.getCursor().getType().isAir() && slot >= 6 && e.getCurrentItem().getType() != Material.GRAY_STAINED_GLASS_PANE) {
 			ItemStack clicked = e.getCurrentItem();
 			NBTItem nclicked = new NBTItem(clicked);
 			int idx = nclicked.getInteger("idx");
@@ -239,16 +249,16 @@ public class ShopInventory extends CoreInventory {
 				pinv.clearHighlights();
 			}
 			else if (slot == PURIFY_ICON) {
+				if (e.getCursor() == null) {
+					Util.displayError(p, "Drag the cursed item onto the purify option!");
+					return;
+				}
+
 				if (!data.hasCoins(REMOVE_CURSE_PRICE)) {
 					Util.displayError(
 							p,
 							"You don't have enough coins! You need " + (REMOVE_CURSE_PRICE - data.getCoins()) + " more."
 					);
-					return;
-				}
-
-				if (e.getCursor() == null) {
-					Util.displayError(p, "Drag the cursed item onto the purify option!");
 					return;
 				}
 	
