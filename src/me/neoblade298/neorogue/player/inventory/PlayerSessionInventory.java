@@ -491,6 +491,19 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 	public void handleShiftClickIn(ItemStack item) {
 		NBTItem nbti = new NBTItem(item);
 		Equipment eq = Equipment.get(nbti.getString("equipId"), nbti.getBoolean("isUpgraded"));
+
+		// Todo: Complete, need a way to cancel this in order to fix caravan robbery chance
+		switch (eq.getType()) {
+		case ABILITY:
+			if (!data.canEquipAbility()) {
+				displayError("You can only equip " + data.getMaxAbilities() + " abilities!", true);
+				return;
+			}
+			break;
+			case ARMOR:
+
+		}
+
 		AutoEquipResult result = attemptAutoEquip(eq.getType());
 		ItemStack autoItem = inv.getItem(result.slot);
 		NBTItem nauto = new NBTItem(autoItem);
