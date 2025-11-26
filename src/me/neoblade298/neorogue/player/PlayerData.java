@@ -32,7 +32,7 @@ public class PlayerData {
 	private String display;
 	private HashMap<String, Upgrade> upgrades = new HashMap<String, Upgrade>();
 	private HashMap<Integer, SessionSnapshot> snapshots = new HashMap<Integer, SessionSnapshot>();
-	private int slotsAvailable, upgradePoints;
+	private int slotsAvailable, upgradePoints, maxNotoriety;
 	// Something that holds ascension tree skills
 	
 	// Create new one if one doesn't exist
@@ -122,6 +122,14 @@ public class PlayerData {
 	
 	public void removeSnapshot(int saveSlot) {
 		snapshots.remove(saveSlot);
+	}
+
+	public int getMaxNotoriety() {
+		return maxNotoriety;
+	}
+
+	public void addMaxNotoriety(int amount) {
+		maxNotoriety += amount;
 	}
 	
 	public void save(Statement stmt) {

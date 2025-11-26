@@ -77,6 +77,7 @@ public class Session {
 	
 	// Difficulty settings
 	private double enemyHealthScale, enemyDamageScale, goldReduction, fightTimeReduction;
+	private int notoriety;
 	
 	// Session coordinates
 	public static final int LOBBY_X = 0, LOBBY_Z = 0, LOBBY_WIDTH = 15, AREA_X = 0, AREA_Z = LOBBY_Z + LOBBY_WIDTH,
@@ -580,6 +581,18 @@ public class Session {
 
 	public double getFightTimeReduction() {
 		return fightTimeReduction;
+	}
+
+	public int getNotoriety() {
+		return notoriety;
+	}
+
+	public int getMaxNotoriety() {
+		return party.get(host).getData().getMaxNotoriety();
+	}
+	
+	public void addNotoriety(int amount) {
+		notoriety += amount;
 	}
 	
 	public void generateArea(AreaType type) {
