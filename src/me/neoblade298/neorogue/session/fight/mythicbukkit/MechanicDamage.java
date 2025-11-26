@@ -62,7 +62,6 @@ public class MechanicDamage implements ITargetedEntitySkill {
 	public SkillResult castAtEntity(SkillMetadata data, AbstractEntity target) {
 		try {
 			double level = data.getCaster().getLevel();
-			final double mult = 1 + (level / 15);
 			ActiveMob am = MythicBukkit.inst().getMobManager().getMythicMobInstance(data.getCaster().getEntity()); // Currently
 																													// assumes
 																													// caster
@@ -76,6 +75,7 @@ public class MechanicDamage implements ITargetedEntitySkill {
 			FightData fd = asParent ? FightInstance.getFightData(am.getParent().get().getBukkitEntity())
 					: FightInstance.getFightData(data.getCaster().getEntity().getUniqueId());
 			DamageMeta meta = new DamageMeta(fd);
+			final double mult = 1 + (level * (0.05 + fd.getInstance().getSession().getEnemyDamageScale()));
 			for (Entry<DamageType, Double> ent : damage.entrySet()) {
 				meta.addDamageSlice(new DamageSlice(fd, ent.getValue() * mult, ent.getKey(), DamageStatTracker.ignored("MythicDamage1")));
 			}

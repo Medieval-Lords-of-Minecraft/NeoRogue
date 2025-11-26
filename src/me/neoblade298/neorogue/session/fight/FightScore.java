@@ -8,9 +8,9 @@ import net.md_5.bungee.api.ChatColor;
 
 public enum FightScore {
 	D(0, 9999, 5, 0.0, null, new Color(255, 140, 90)),
-	C(1, 30, 10, 0.0, D, new Color(255, 178, 52)),
-	B(2, 30, 15, 0.0, C, new Color(255, 217, 52)),
-	A(3, 30, 20, 0.05, B, new Color(173, 214, 51)),
+	C(1, 50, 10, 0.0, D, new Color(255, 178, 52)),
+	B(2, 45, 15, 0.0, C, new Color(255, 217, 52)),
+	A(3, 40, 20, 0.05, B, new Color(173, 214, 51)),
 	S(4, 80, 25, 0.1, A, new Color(160, 193, 90));
 
 	private int value, threshold, coins; // Threshold in seconds

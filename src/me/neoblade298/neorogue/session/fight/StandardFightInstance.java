@@ -92,7 +92,7 @@ public class StandardFightInstance extends FightInstance {
 			@Override
 			public void run() {
 				time++;
-				timeBar.setProgress(time / fightScore.getThreshold());
+				timeBar.setProgress(time / ((1 - s.getFightTimeReduction()) * fightScore.getThreshold()));
 
 				if (time >= fightScore.getThreshold()) {
 					if (fightScore.getNext() == null) {
@@ -156,7 +156,7 @@ public class StandardFightInstance extends FightInstance {
 			ArrayList<Reward> list = new ArrayList<Reward>();
 			RewardFightEvent ev = new RewardFightEvent(NodeType.FIGHT);
 			data.trigger(SessionTrigger.REWARD_FIGHT, ev);
-			list.add(new CoinsReward(fightScore.getCoins() + ev.getBonusGold()));
+			list.add(new CoinsReward((int) ((1 - s.getGoldReduction()) * fightScore.getCoins()) + ev.getBonusGold()));
 
 			ArrayList<Equipment> equipDrops = new ArrayList<Equipment>();
 			EquipmentClass ec = data.getPlayerClass();

@@ -1195,7 +1195,7 @@ public abstract class FightInstance extends Instance {
 		if (mob != null && mob.getType() != MobType.NORMAL) {
 			mhealth *= 0.75 + (s.getParty().size() * 0.25); // 25% health increase per player, starting from 2 players
 		}
-		mhealth *= 1 + (lvl / 5);
+		mhealth *= 1 + (lvl * (0.1 * s.getEnemyHealthScale()));
 		am.getEntity().setMaxHealth(Math.round(mhealth));
 		am.getEntity().setHealth(Math.round(mhealth));
 		return am;

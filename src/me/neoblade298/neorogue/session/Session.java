@@ -75,6 +75,9 @@ public class Session {
 	private ArrayList<String> spectatorLines = new ArrayList<String>();
 	private double BASE_UPGRADE_CHANCE = 0.3;
 	
+	// Difficulty settings
+	private double enemyHealthScale, enemyDamageScale, goldReduction, fightTimeReduction;
+	
 	// Session coordinates
 	public static final int LOBBY_X = 0, LOBBY_Z = 0, LOBBY_WIDTH = 15, AREA_X = 0, AREA_Z = LOBBY_Z + LOBBY_WIDTH,
 			AREA_WIDTH = 81, REWARDS_X = 0, REWARDS_Z = AREA_Z + AREA_WIDTH, REWARDS_WIDTH = 19, SHRINE_X = 0,
@@ -561,6 +564,22 @@ public class Session {
 	
 	public Plot getPlot() {
 		return plot;
+	}
+
+	public double getEnemyHealthScale() {
+		return enemyHealthScale;
+	}
+
+	public double getEnemyDamageScale() {
+		return enemyDamageScale;
+	}
+
+	public double getGoldReduction() {
+		return goldReduction;
+	}
+
+	public double getFightTimeReduction() {
+		return fightTimeReduction;
 	}
 	
 	public void generateArea(AreaType type) {
