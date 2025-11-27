@@ -178,7 +178,6 @@ public class Session {
 					nodesVisited = sessSet.getInt("nodesVisited");
 					int pos = sessSet.getInt("position");
 					int lane = sessSet.getInt("lane");
-					String bossId = sessSet.getString("boss");
 					Instance inst = Instance.deserialize(s, sessSet, party);
 
 					// settings
@@ -189,7 +188,7 @@ public class Session {
 					fightTimeReduction = sessSet.getInt("fightTimeReduction");
 
 					area = new Area(
-							AreaType.valueOf(sessSet.getString("areaType")), xOff, zOff, host, saveSlot, s, stmt, bossId
+							AreaType.valueOf(sessSet.getString("areaType")), xOff, zOff, host, saveSlot, s, stmt
 					);
 					curr = area.getNodes()[pos][lane];
 					

@@ -149,7 +149,7 @@ public class Area {
 	}
 
 	// Deserialize
-	public Area(AreaType type, int xOff, int zOff, UUID uuid, int saveSlot, Session s, Statement stmt, String bossId)
+	public Area(AreaType type, int xOff, int zOff, UUID uuid, int saveSlot, Session s, Statement stmt)
 			throws SQLException {
 		this.type = type;
 		this.xOff = xOff;
