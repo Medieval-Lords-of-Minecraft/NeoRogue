@@ -8,8 +8,10 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.ItemStack;
 
+import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.notoriety.NotorietySetting;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -20,6 +22,7 @@ public class SessionSettingsInventory extends CoreInventory {
 	public SessionSettingsInventory(Player p, Session s) {
 		super(p, Bukkit.createInventory(p, 9, Component.text("Session Settings", NamedTextColor.BLUE)));
 		this.s = s;
+		isHost = s.getHost().equals(p.getUniqueId());
 		setupInventory();
 	}
 	
@@ -35,11 +38,33 @@ public class SessionSettingsInventory extends CoreInventory {
 				Component.text("Complete a run at max notoriety to increase your notoriety limit.", NamedTextColor.GRAY),
 				Component.text("Current Notoriety: ", NamedTextColor.GOLD).append(Component.text(s.getNotoriety() + " / " + s.getMaxNotoriety(), NamedTextColor.WHITE)));
 		}
+
+		int iter = 18;
+		for (NotorietySetting setting : NotorietySetting.settings) {
+			contents[iter++] = setting.getItem();
+		}
 		inv.setContents(contents);
 	}
 
 	@Override
 	public void handleInventoryClick(InventoryClickEvent e) {
+		e.setCancelled(true);
+		if (!isHost) return;
+		if (e.getCurrentItem() == null) return;
+		
+		NBTItem clicked = new NBTItem(e.getCurrentItem());
+
+		// Notoriety settings
+		if (clicked.hasTag("id")) {
+			int id = clicked.getInteger("id");
+			NotorietySetting setting = NotorietySetting.getById(id);
+			if (e.isLeftClick()) {
+				setting.increase(s);
+			}
+			else if (e.isRightClick()) {
+				setting.decrease(s);
+			}
+		}
 	}
 
 	@Override

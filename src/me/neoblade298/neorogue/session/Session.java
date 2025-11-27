@@ -235,6 +235,7 @@ public class Session {
 			SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_sessions")
 					.addString(host.toString()).addValue(saveSlot).addString(area.getType().name())
 					.addValue(curr.getRow()).addValue(curr.getLane()).addValue(nodesVisited).addValue(potionChance)
+					.addValue(enemyHealthScale).addValue(enemyDamageScale).addValue(goldReduction).addValue(fightTimeReduction)
 					.addValue(System.currentTimeMillis()).addString(inst.serialize(party));
 			insert.execute(sql.build());
 		} catch (SQLException ex) {
@@ -242,7 +243,7 @@ public class Session {
 			ex.printStackTrace();
 		}
 		
-		// Only save the nodes near the player
+		// Only save the nodes near the player and the boss
 		area.saveRelevant(insert, delete);
 		
 		try {
@@ -567,16 +568,32 @@ public class Session {
 		return plot;
 	}
 
+	public void setEnemyHealthScale(double enemyHealthScale) {
+		this.enemyHealthScale = enemyHealthScale;
+	}
+
 	public double getEnemyHealthScale() {
 		return enemyHealthScale;
+	}
+
+	public void setEnemyDamageScale(double enemyDamageScale) {
+		this.enemyDamageScale = enemyDamageScale;
 	}
 
 	public double getEnemyDamageScale() {
 		return enemyDamageScale;
 	}
 
+	public void setGoldReduction(double goldReduction) {
+		this.goldReduction = goldReduction;
+	}
+
 	public double getGoldReduction() {
 		return goldReduction;
+	}
+
+	public void setFightTimeReduction(double fightTimeReduction) {
+		this.fightTimeReduction = fightTimeReduction;
 	}
 
 	public double getFightTimeReduction() {

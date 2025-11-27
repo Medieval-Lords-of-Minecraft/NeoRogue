@@ -61,13 +61,10 @@ public class MechanicDamage implements ITargetedEntitySkill {
 	@Override
 	public SkillResult castAtEntity(SkillMetadata data, AbstractEntity target) {
 		try {
-			double level = data.getCaster().getLevel();
-			ActiveMob am = MythicBukkit.inst().getMobManager().getMythicMobInstance(data.getCaster().getEntity()); // Currently
-																													// assumes
-																													// caster
-																													// is
-																													// always
-																													// mythicmob
+			double level = data.getCaster().getLevel(); // From Session#getLevel()
+
+			// Currently assumes caster is always a mythicmob
+			ActiveMob am = MythicBukkit.inst().getMobManager().getMythicMobInstance(data.getCaster().getEntity());
 			if (asParent && !am.getParent().isPresent()) {
 				if (debug) Bukkit.getLogger().info("[NeoRogue] Nrdamage failed, tried to deal damage as parent of mob, parent doesn't exist");
 				return SkillResult.CONDITION_FAILED;

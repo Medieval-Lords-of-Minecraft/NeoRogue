@@ -678,19 +678,27 @@ public class Area {
 					Node node = nodes[row + i][lane];
 					if (node == null)
 						continue;
-					SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.INSERT, "neorogue_nodes")
-							.addString(host.toString()).addValue(saveSlot).addString(node.toString())
-							.addValue(node.getRow()).addValue(node.getLane()).addString(node.serializeDestinations())
-							.addString(node.serializeInstanceData());
-					insert.addBatch(sql.build());
+					saveNode(insert, node, saveSlot, host);
 				}
 			}
+			// Save boss node too
+			delete.execute(
+					"DELETE FROM neorogue_nodes WHERE host = '" + host + "' AND slot = " + saveSlot
+							+ " AND position = " + (ROW_COUNT - 1) + ";"
+			);
 			insert.executeBatch();
 		} catch (SQLException ex) {
 			Bukkit.getLogger()
 					.warning("[NeoRogue] Failed to save relevant nodes for host " + host + " to slot " + saveSlot);
 			ex.printStackTrace();
 		}
+	}
+
+	private void saveNode(Statement insert, Node node, int saveSlot, UUID host) throws SQLException {
+		SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_nodes").addString(host.toString())
+				.addValue(saveSlot).addString(node.toString()).addValue(node.getRow()).addValue(node.getLane())
+				.addString(node.serializeDestinations()).addString(node.serializeInstanceData());
+		insert.addBatch(sql.build());
 	}
 
 	public void instantiate() {
