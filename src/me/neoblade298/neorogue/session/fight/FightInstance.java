@@ -90,6 +90,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageMultipleEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.RightClickHitEvent;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.title.Title;
 
 public abstract class FightInstance extends Instance {
 	private static HashMap<UUID, PlayerFightData> userData = new HashMap<UUID, PlayerFightData>();
@@ -116,6 +117,7 @@ public abstract class FightInstance extends Instance {
 	protected double totalKillValue; // Keeps track of total mob spawns, to handle scaling of spawning
 	private long startTime;
 	private ArrayList<String> spectatorLines;
+	protected boolean isActive = true;
 	protected ArrayList<BossBar> bars = new ArrayList<BossBar>();
 	
 	private static final Circle reviveCircle = new Circle(5);
@@ -376,10 +378,19 @@ public abstract class FightInstance extends Instance {
 		}
 	}
 	
-	public static void handleWin() {
+	public void handleWin(Title title, Instance next) {
 		for (PlayerFightData data : userData.values()) {
 			trigger(data.getPlayer(), Trigger.WIN_FIGHT, new Object[0]);
 		}
+
+
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				s.broadcastTitle(title);
+				s.setInstance(next);
+			}
+		}.runTaskLater(NeoRogue.inst(), 60L);
 	}
 	
 	public static void handleHotbarSwap(PlayerItemHeldEvent e) {
@@ -1052,6 +1063,16 @@ public abstract class FightInstance extends Instance {
 			FightData fdata = fightData.remove(uuid);
 			if (fdata != null)
 				fdata.cleanup();
+		}
+
+		for (FightData fd : fightData.values()) {
+			if (fd == null)
+				continue;
+			fd.cleanup();
+			if (fd.getEntity() != null) {
+				LivingEntity li = fd.getEntity();
+				li.damage(li.getHealth() + 20);
+			}
 		}
 
 		for (Corpse c : corpses) {

@@ -29,6 +29,7 @@ import me.neoblade298.neorogue.session.reward.EquipmentChoiceReward;
 import me.neoblade298.neorogue.session.reward.EquipmentReward;
 import me.neoblade298.neorogue.session.reward.Reward;
 import me.neoblade298.neorogue.session.reward.RewardInstance;
+import net.kyori.adventure.text.Component;
 
 public class MinibossFightInstance extends FightInstance {
 	private HashSet<String> targets = new HashSet<String>();
@@ -62,9 +63,7 @@ public class MinibossFightInstance extends FightInstance {
 		if (targets.isEmpty()) {
 			new BukkitRunnable() {
 				public void run() {
-					FightInstance.handleWin();
-					s.broadcast("You beat the miniboss!");
-					s.setInstance(new RewardInstance(s, generateRewards(), NodeType.MINIBOSS));
+					handleWin(Component.text("You beat the miniboss!"), new RewardInstance(s, generateRewards(), NodeType.MINIBOSS));
 				}
 			}.runTask(NeoRogue.inst());
 			return;
@@ -87,7 +86,7 @@ public class MinibossFightInstance extends FightInstance {
 			ArrayList<Reward> list = new ArrayList<Reward>();
 			RewardFightEvent ev = new RewardFightEvent(NodeType.MINIBOSS);
 			data.trigger(SessionTrigger.REWARD_FIGHT, ev);
-			list.add(new CoinsReward((int) ((1 - (s.getGoldReduction()
+			list.add(new CoinsReward((int) ((1 - (s.getCoinReduction()
 					* Session.GOLD_REDUCTION_PER_LEVEL)) * 50) + ev.getBonusGold()));
 			
 			ArrayList<Equipment> equipDrops = new ArrayList<Equipment>();

@@ -102,6 +102,7 @@ public class ShopItem {
 	}
 	
 	public static ShopItem deserialize(String str) {
+		System.out.println("Attempting to deserialize shop item: " + str);
 		String[] split = str.split(":");
 		Equipment eq = Equipment.deserialize(split[0]);
 		int price = Integer.parseInt(split[1]);

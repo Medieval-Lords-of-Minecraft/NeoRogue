@@ -33,6 +33,7 @@ import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.EditInventoryInstance;
 import me.neoblade298.neorogue.session.NodeSelectInstance;
+import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.fight.trigger.KeyBind;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -46,7 +47,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 	private static final int[] HOTBAR = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
 	private static final int[] FILLER = new int[] { 11, 12, 14, 15, 16, 17, 34 };
 	private static final int[] KEYBINDS = new int[] { 27, 28, 29, 30, 31, 32, 33 };
-	private static final int STATS = 9, TRASH = 17, STORAGE = 10, OFFHAND = 35, ARTIFACTS = 13, SEE_OTHERS = 11, MAP = 40;
+	private static final int STATS = 9, TRASH = 17, STORAGE = 10, OFFHAND = 35, ARTIFACTS = 13, SEE_OTHERS = 11, MAP = 40, SETTINGS = 12;
 	private static HashMap<Integer, EquipSlot> slotTypes = new HashMap<Integer, EquipSlot>();
 	private static final DecimalFormat df = new DecimalFormat("#.##");
 
@@ -133,6 +134,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		contents[TRASH] = addNbt(CoreInventory.createButton(Material.HOPPER,
 				Component.text("Trash", NamedTextColor.GOLD), "Drag items here to trash them!", 250, NamedTextColor.GRAY),
 				0);
+		contents[SETTINGS] = createSettingsIcon(data);
 
 		contents[ARTIFACTS] = addNbt(
 				CoreInventory.createButton(Material.NETHER_STAR, Component.text("Artifacts", NamedTextColor.GOLD),
@@ -209,6 +211,19 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		TextComponent coins = Component.text("Coins: ", NamedTextColor.GOLD)
 				.append(Component.text(data.getCoins(), NamedTextColor.WHITE));
 		return CoreInventory.createButton(Material.ARMOR_STAND, statsText, cls, health, mana, stamina, mr, sr, coins);
+	}
+
+	private static ItemStack createSettingsIcon(PlayerSessionData data) {
+		Session s = data.getSession();
+		TextComponent health = Component.text("Enemy Health Scaling: ", NamedTextColor.GOLD)
+				.append(Component.text("Lv " + s.getEnemyHealthScale(), NamedTextColor.WHITE));
+		TextComponent dmg = Component.text("Enemy Damage Scaling: ", NamedTextColor.GOLD)
+				.append(Component.text("Lv " + s.getEnemyDamageScale(), NamedTextColor.WHITE));
+		TextComponent gold = Component.text("Coin reduction: ", NamedTextColor.GOLD)
+				.append(Component.text("Lv " + s.getCoinReduction(), NamedTextColor.WHITE));
+		TextComponent time = Component.text("Fight Time Reduction: ", NamedTextColor.GOLD)
+				.append(Component.text("Lv " + s.getFightTimeReduction(), NamedTextColor.WHITE));
+		return CoreInventory.createButton(Material.ARMOR_STAND, statsText, health, dmg, gold, time);
 	}
 
 	@Override

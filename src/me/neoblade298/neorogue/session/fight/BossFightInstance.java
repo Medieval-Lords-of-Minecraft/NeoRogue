@@ -29,6 +29,8 @@ import me.neoblade298.neorogue.session.reward.EquipmentChoiceReward;
 import me.neoblade298.neorogue.session.reward.EquipmentReward;
 import me.neoblade298.neorogue.session.reward.Reward;
 import me.neoblade298.neorogue.session.reward.RewardInstance;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.title.Title;
 
 public class BossFightInstance extends FightInstance {
 	private HashSet<String> targets = new HashSet<String>();
@@ -66,9 +68,8 @@ public class BossFightInstance extends FightInstance {
 		if (targets.isEmpty()) {
 			new BukkitRunnable() {
 				public void run() {
-					FightInstance.handleWin();
-					s.broadcast("You beat the boss!");
-					s.setInstance(new RewardInstance(s, generateRewards(), NodeType.BOSS));
+					Title title = Title.title(Component.text("You beat the boss!"), null);
+					handleWin(title, new RewardInstance(s, generateRewards(), NodeType.BOSS));
 					
 					// Set up next region
 					s.generateNextRegion();
@@ -94,7 +95,7 @@ public class BossFightInstance extends FightInstance {
 			ArrayList<Reward> list = new ArrayList<Reward>();
 			RewardFightEvent ev = new RewardFightEvent(NodeType.BOSS);
 			data.trigger(SessionTrigger.REWARD_FIGHT, ev);
-			list.add(new CoinsReward((int) ((1 - (s.getGoldReduction() * Session.GOLD_REDUCTION_PER_LEVEL)) * 100) + ev.getBonusGold()));
+			list.add(new CoinsReward((int) ((1 - (s.getCoinReduction() * Session.GOLD_REDUCTION_PER_LEVEL)) * 100) + ev.getBonusGold()));
 
 			ArrayList<Equipment> equipDrops = new ArrayList<Equipment>();
 			EquipmentClass ec = data.getPlayerClass();

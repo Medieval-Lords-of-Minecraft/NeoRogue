@@ -78,10 +78,10 @@ public class SessionSetting {
         settings.put(20, new SessionNotorietySetting(20, "Coin Reduction", Component.text("Fights give ", NamedTextColor.GRAY)
                 .append(Component.text("10%", NamedTextColor.YELLOW)).append(Component.text(" fewer coins per level.")),
                 Material.GOLD_NUGGET, 3, (s, leftClick) -> {
-                    s.setGoldReduction(s.getGoldReduction() + (leftClick ? 1 : -1));
+                    s.setCoinReduction(s.getCoinReduction() + (leftClick ? 1 : -1));
                 },
                 (s) -> {
-                    return s.getGoldReduction();
+                    return s.getCoinReduction();
                 }));
 
         settings.put(21, new SessionNotorietySetting(21, "Fight Time Reduction",

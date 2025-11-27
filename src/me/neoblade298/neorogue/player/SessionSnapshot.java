@@ -23,14 +23,14 @@ import net.kyori.adventure.text.format.TextDecoration;
 public class SessionSnapshot {
 	private long lastSaved;
 	private int nodesVisited;
-	private RegionType areaType;
+	private RegionType regionType;
 	private HashMap<String, EquipmentClass> party = new HashMap<String, EquipmentClass>();
 	private HashMap<UUID, String> partyIds = new HashMap<UUID, String>();
 	
 	public SessionSnapshot(Session s) {
 		this.lastSaved = System.currentTimeMillis();
 		this.nodesVisited = s.getNodesVisited();
-		this.areaType = s.getRegion().getType();
+		this.regionType = s.getRegion().getType();
 		
 		for (Entry<UUID, PlayerSessionData> ent : s.getParty().entrySet()) {
 			partyIds.put(ent.getKey(), ent.getValue().getData().getDisplay());
@@ -41,7 +41,7 @@ public class SessionSnapshot {
 	public SessionSnapshot(ResultSet save, ResultSet party) throws SQLException {
 		this.lastSaved = save.getLong("lastSaved");
 		this.nodesVisited = save.getInt("nodesVisited");
-		this.areaType = RegionType.valueOf(save.getString("areaType"));
+		this.regionType = RegionType.valueOf(save.getString("regionType"));
 		
 		while (party.next()) {
 			UUID uuid = UUID.fromString(party.getString("uuid"));
@@ -81,7 +81,7 @@ public class SessionSnapshot {
 	
 	private Component createHoverText() {
 		Builder b = Component.text().content("Area: ").color(NamedTextColor.GRAY)
-				.append(Component.text(areaType.getDisplay(), NamedTextColor.GOLD))
+				.append(Component.text(regionType.getDisplay(), NamedTextColor.GOLD))
 				.append(Component.text("\nNodes visited: ", NamedTextColor.GRAY))
 				.append(Component.text(nodesVisited, NamedTextColor.GOLD))
 				.append(Component.text("\nParty members:", NamedTextColor.GRAY));

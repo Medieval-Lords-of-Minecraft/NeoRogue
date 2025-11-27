@@ -58,6 +58,7 @@ import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.title.Title;
 
 public class Session {
 	
@@ -79,7 +80,7 @@ public class Session {
 	private boolean endless;
 	public static double ENEMY_HEALTH_SCALE_PER_LEVEL = 0.1, ENEMY_DAMAGE_SCALE_PER_LEVEL = 0.05,
 			GOLD_REDUCTION_PER_LEVEL = 0.1, FIGHT_TIME_REDUCTION_PER_LEVEL = 0.1;
-	private int enemyHealthScale, enemyDamageScale, goldReduction, fightTimeReduction;
+	private int enemyHealthScale, enemyDamageScale, coinReduction, fightTimeReduction;
 	private int notoriety;
 	
 	// Session coordinates
@@ -184,11 +185,11 @@ public class Session {
 					endless = sessSet.getBoolean("endless");
 					enemyHealthScale = sessSet.getInt("enemyHealthScale");
 					enemyDamageScale = sessSet.getInt("enemyDamageScale");
-					goldReduction = sessSet.getInt("goldReduction");
+					coinReduction = sessSet.getInt("goldReduction");
 					fightTimeReduction = sessSet.getInt("fightTimeReduction");
 
 					region = new Region(
-							RegionType.valueOf(sessSet.getString("areaType")), xOff, zOff, host, saveSlot, s, stmt
+							RegionType.valueOf(sessSet.getString("regionType")), xOff, zOff, host, saveSlot, s, stmt
 					);
 					curr = region.getNodes()[pos][lane];
 					
@@ -249,7 +250,7 @@ public class Session {
 			SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_sessions")
 					.addString(host.toString()).addValue(saveSlot).addString(region.getType().name())
 					.addValue(curr.getRow()).addValue(curr.getLane()).addValue(nodesVisited).addValue(potionChance)
-					.addValue(enemyHealthScale).addValue(enemyDamageScale).addValue(goldReduction).addValue(fightTimeReduction)
+					.addValue(enemyHealthScale).addValue(enemyDamageScale).addValue(coinReduction).addValue(fightTimeReduction)
 					.addValue(endless ? 1 : 0)
 					.addValue(System.currentTimeMillis()).addString(inst.serialize(party));
 			insert.execute(sql.build());
@@ -391,6 +392,16 @@ public class Session {
 		for (UUID uuid : spectators.keySet()) {
 			Player p = Bukkit.getPlayer(uuid);
 			Util.msgRaw(p, NeoCore.miniMessage().deserialize(msg).colorIfAbsent(NamedTextColor.GRAY));
+		}
+	}
+
+	public void broadcastTitle(Title title) {
+		for (Player p : getOnlinePlayers()) {
+			p.showTitle(title);
+		}
+		for (UUID uuid : spectators.keySet()) {
+			Player p = Bukkit.getPlayer(uuid);
+			p.showTitle(title);
 		}
 	}
 
@@ -607,12 +618,12 @@ public class Session {
 		return enemyDamageScale;
 	}
 
-	public void setGoldReduction(int goldReduction) {
-		this.goldReduction = goldReduction;
+	public void setCoinReduction(int coinReduction) {
+		this.coinReduction = coinReduction;
 	}
 
-	public int getGoldReduction() {
-		return goldReduction;
+	public int getCoinReduction() {
+		return coinReduction;
 	}
 
 	public void setFightTimeReduction(int fightTimeReduction) {

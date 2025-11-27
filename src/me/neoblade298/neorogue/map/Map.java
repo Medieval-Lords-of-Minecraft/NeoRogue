@@ -76,7 +76,7 @@ public class Map {
 				try {
 					Section sec = yml.getSection(key);
 					MapPiece piece = new MapPiece(sec);
-					RegionType region = RegionType.valueOf(sec.getString("regionType"));
+					RegionType region = RegionType.valueOf(sec.getString("region"));
 					String type = sec.getString("type", "STANDARD");
 
 					allPieces.put(key, piece);

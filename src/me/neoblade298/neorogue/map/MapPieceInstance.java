@@ -381,6 +381,10 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 					Util.msg(p, "<red>Coords: " + Util.locToString(loc, false, false));
 					Util.msg(p, "<red>Block: " + loc.getBlock().getType());
 				}
+				if (loc.add(0, -1, 0).getBlock().getType().isAir()) {
+					Util.msg(p, "<red>A spawner appears to be floating or off map.");
+					Util.msg(p, "<red>Coords: " + Util.locToString(loc, false, false));
+				}
 				locs.add(loc);
 			}
 		}
@@ -400,6 +404,10 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 					Util.msg(p, "<red>An initial spawn appears to be inside a block.");
 					Util.msg(p, "<red>Coords: " + Util.locToString(loc, false, false));
 					Util.msg(p, "<red>Block: " + loc.getBlock().getType());
+				}
+				if (loc.add(0, -1, 0).getBlock().getType().isAir()) {
+					Util.msg(p, "<red>An initial spawn appears to be floating or off map.");
+					Util.msg(p, "<red>Coords: " + Util.locToString(loc, false, false));
 				}
 				loc.getBlock().setType(Material.PURPLE_WOOL);
 			}

@@ -42,7 +42,6 @@ public class StandardFightInstance extends FightInstance {
 	private BossBar timeBar, scoreBar;
 	private double time, score, scoreRequired;
 	private FightScore fightScore = FightScore.S;
-	private boolean isActive = true;
 
 	static {
 		SCORE_REQUIRED.put(1, 15D);
@@ -115,7 +114,7 @@ public class StandardFightInstance extends FightInstance {
 		if (!playerKill)
 			return;
 
-		if (s.getInstance() != this)
+		if (!isActive)
 			return; // If we've moved on to reward instance don't spam the user
 			
 		score += mob.getKillValue();
@@ -128,14 +127,11 @@ public class StandardFightInstance extends FightInstance {
 					if (!isActive)
 						return;
 					isActive = false;
-					FightInstance.handleWin();
 					timeBar.removeAll();
 					scoreBar.removeAll();
-					s.broadcast(
-							Component.text("You completed the fight with a score of ", NamedTextColor.GRAY)
-									.append(fightScore.getComponentDisplay()).append(Component.text("!"))
-					);
-					s.setInstance(new RewardInstance(s, generateRewards(s, fightScore), NodeType.FIGHT));
+					handleWin(Component.text("You completed the fight with a score of ", NamedTextColor.GRAY)
+							.append(fightScore.getComponentDisplay()).append(Component.text("!")), 
+							new RewardInstance(s, generateRewards(s, fightScore), NodeType.FIGHT));
 				}
 			}.runTask(NeoRogue.inst());
 			return;
@@ -156,7 +152,7 @@ public class StandardFightInstance extends FightInstance {
 			ArrayList<Reward> list = new ArrayList<Reward>();
 			RewardFightEvent ev = new RewardFightEvent(NodeType.FIGHT);
 			data.trigger(SessionTrigger.REWARD_FIGHT, ev);
-			list.add(new CoinsReward((int) ((1 - (s.getGoldReduction()
+			list.add(new CoinsReward((int) ((1 - (s.getCoinReduction()
 					* Session.GOLD_REDUCTION_PER_LEVEL)) * fightScore.getCoins()) + ev.getBonusGold()));
 
 			ArrayList<Equipment> equipDrops = new ArrayList<Equipment>();
