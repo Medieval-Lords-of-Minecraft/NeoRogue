@@ -1727,9 +1727,9 @@ public abstract class Equipment implements Comparable<Equipment> {
 			
 			// Summary report
 			if (totalMissing == 0 && totalClasses > 0) {
-				Bukkit.getLogger().info("[NeoRogue] 🎉 All " + totalClasses + " equipment classes across all packages are properly initialized!");
+				Bukkit.getLogger().info("[NeoRogue] ✓ All " + totalClasses + " equipment classes across all packages are properly initialized!");
 			} else if (totalMissing > 0) {
-				Bukkit.getLogger().warning("[NeoRogue] 📊 Equipment validation summary: " + (totalClasses - totalMissing) + "/" + totalClasses + " classes initialized (" + totalMissing + " missing)");
+				Bukkit.getLogger().warning("[NeoRogue] Equipment validation summary: " + (totalClasses - totalMissing) + "/" + totalClasses + " classes initialized (" + totalMissing + " missing)");
 			}
 			
 		} catch (Exception e) {

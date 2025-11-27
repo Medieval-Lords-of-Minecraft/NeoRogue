@@ -52,6 +52,7 @@ import me.neoblade298.neorogue.area.Node;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.MapViewer;
+import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -59,7 +60,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class Session {
-	private static final boolean endless = false; // TEMP FOR NOW
 	
 	private Area area;
 	private UUID host;
@@ -75,7 +75,8 @@ public class Session {
 	private ArrayList<String> spectatorLines = new ArrayList<String>();
 	private double BASE_UPGRADE_CHANCE = 0.3;
 	
-	// Difficulty settings
+	// Settings
+	private boolean endless;
 	private double enemyHealthScale, enemyDamageScale, goldReduction, fightTimeReduction;
 	private int notoriety;
 	
@@ -178,6 +179,13 @@ public class Session {
 					String bossId = sessSet.getString("boss");
 					Instance inst = Instance.deserialize(s, sessSet, party);
 
+					// settings
+					endless = sessSet.getBoolean("endless");
+					enemyHealthScale = sessSet.getDouble("enemyHealthScale");
+					enemyDamageScale = sessSet.getDouble("enemyDamageScale");
+					goldReduction = sessSet.getDouble("goldReduction");
+					fightTimeReduction = sessSet.getDouble("fightTimeReduction");
+
 					area = new Area(
 							AreaType.valueOf(sessSet.getString("areaType")), xOff, zOff, host, saveSlot, s, stmt, bossId
 					);
@@ -215,15 +223,20 @@ public class Session {
 	}
 	
 	private void generateInterstitials() {
-		// Generate the lobby and add the host there
-		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Area.world)) {
-			pasteSchematic(classSelect, editSession, this, Session.LOBBY_Z);
-			pasteSchematic(nodeSelect, editSession, this, Session.AREA_Z);
-			pasteSchematic(rewardsRoom, editSession, this, Session.REWARDS_Z);
-			pasteSchematic(shrine, editSession, this, Session.SHRINE_Z);
-			pasteSchematic(shop, editSession, this, Session.SHOP_Z);
-			pasteSchematic(chance, editSession, this, Session.CHANCE_Z);
-			pasteSchematic(lose, editSession, this, -1, Session.LOSE_Z);
+		Location loc = new Location(Bukkit.getWorld(Area.WORLD_NAME), -(xOff + 1), 64, zOff - 1);
+
+		// Primitive way to check if this plot has been generated
+		if (loc.getBlock().getType() != Material.GRASS_BLOCK) {
+			// Generate the lobby and add the host there
+			try (EditSession editSession = WorldEdit.getInstance().newEditSession(Area.world)) {
+				pasteSchematic(classSelect, editSession, this, Session.LOBBY_Z);
+				pasteSchematic(nodeSelect, editSession, this, Session.AREA_Z);
+				pasteSchematic(rewardsRoom, editSession, this, Session.REWARDS_Z);
+				pasteSchematic(shrine, editSession, this, Session.SHRINE_Z);
+				pasteSchematic(shop, editSession, this, Session.SHOP_Z);
+				pasteSchematic(chance, editSession, this, Session.CHANCE_Z);
+				pasteSchematic(lose, editSession, this, -1, Session.LOSE_Z);
+			}
 		}
 	}
 	
@@ -236,6 +249,7 @@ public class Session {
 					.addString(host.toString()).addValue(saveSlot).addString(area.getType().name())
 					.addValue(curr.getRow()).addValue(curr.getLane()).addValue(nodesVisited).addValue(potionChance)
 					.addValue(enemyHealthScale).addValue(enemyDamageScale).addValue(goldReduction).addValue(fightTimeReduction)
+					.addValue(endless ? 1 : 0)
 					.addValue(System.currentTimeMillis()).addString(inst.serialize(party));
 			insert.execute(sql.build());
 		} catch (SQLException ex) {
@@ -568,6 +582,14 @@ public class Session {
 		return plot;
 	}
 
+	public void setEndless(boolean endless) {
+		this.endless = endless;
+	}
+
+	public boolean isEndless() {
+		return endless;
+	}
+
 	public void setEnemyHealthScale(double enemyHealthScale) {
 		this.enemyHealthScale = enemyHealthScale;
 	}
@@ -605,7 +627,7 @@ public class Session {
 	}
 
 	public int getMaxNotoriety() {
-		return party.get(host).getData().getMaxNotoriety();
+		return PlayerManager.getPlayerData(host).getMaxNotoriety();
 	}
 	
 	public void addNotoriety(int amount) {

@@ -6,6 +6,7 @@ import org.bukkit.Material;
 
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.AreaType;
+import me.neoblade298.neorogue.area.NodeType;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.NodeSelectInstance;
 import me.neoblade298.neorogue.session.Session;
@@ -54,7 +55,7 @@ public class AmbushChance extends ChanceSet {
 				"<yellow>50%</yellow> chance you get an S tier reward, <yellow>50%</yellow> chance you start a fight dealing 20% reduced damage.",
 				(s, inst, unused) -> {
 					if (NeoRogue.gen.nextBoolean()) {
-						inst.setNextInstance(new RewardInstance(s, StandardFightInstance.generateRewards(s, FightScore.S)));
+						inst.setNextInstance(new RewardInstance(s, StandardFightInstance.generateRewards(s, FightScore.S), NodeType.FIGHT));
 						s.broadcast("Success! You take your pick of the loot and go on your way.");
 					}
 					else {

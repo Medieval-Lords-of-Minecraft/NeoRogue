@@ -26,6 +26,7 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.player.inventory.SessionSettingsInventory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -33,7 +34,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 public class LobbyInstance extends Instance {
 	private static final int MAX_SIZE = 4;
 	private static final double SPAWN_X = Session.LOBBY_X + 6.5, SPAWN_Z = Session.LOBBY_Z + 3.5,
-			HOLO_X = 0, HOLO_Y = 4, HOLO_Z = 10;
+			HOLO_X = 0, HOLO_Y = 3, HOLO_Z = 10;
 
 	private String name;
 	private static String invPrefix = "<dark_gray>[<green><click:run_command:'/nr join ",
@@ -367,6 +368,9 @@ public class LobbyInstance extends Instance {
 			break;
 		case 'M':
 			switchClass(uuid, EquipmentClass.MAGE);
+			break;
+		case 'R':
+			new SessionSettingsInventory(e.getPlayer(), s, this);
 			break;
 		}
 	}

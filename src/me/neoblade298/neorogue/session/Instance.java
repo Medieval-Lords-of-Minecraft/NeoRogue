@@ -14,6 +14,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.area.Area;
+import me.neoblade298.neorogue.area.NodeType;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.chance.ChanceInstance;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -108,7 +109,8 @@ public abstract class Instance {
 			return new NodeSelectInstance(s);
 		}
 		else if (data.startsWith("REWARD")) {
-			return new RewardInstance(s, party, false); // boolean is literally just to differentiate constructors
+			String type = data.substring(data.indexOf(":") + 1);
+			return new RewardInstance(s, party, NodeType.valueOf(type), false); // boolean is literally just to differentiate constructors
 		}
 		else if (data.startsWith("SHOP")) {
 			return new ShopInstance(s, party);

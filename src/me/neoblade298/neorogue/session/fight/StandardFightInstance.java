@@ -135,7 +135,7 @@ public class StandardFightInstance extends FightInstance {
 							Component.text("You completed the fight with a score of ", NamedTextColor.GRAY)
 									.append(fightScore.getComponentDisplay()).append(Component.text("!"))
 					);
-					s.setInstance(new RewardInstance(s, generateRewards(s, fightScore)));
+					s.setInstance(new RewardInstance(s, generateRewards(s, fightScore), NodeType.FIGHT));
 				}
 			}.runTask(NeoRogue.inst());
 			return;

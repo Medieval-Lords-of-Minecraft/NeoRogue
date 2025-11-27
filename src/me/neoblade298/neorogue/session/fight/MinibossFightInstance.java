@@ -64,7 +64,7 @@ public class MinibossFightInstance extends FightInstance {
 				public void run() {
 					FightInstance.handleWin();
 					s.broadcast("You beat the miniboss!");
-					s.setInstance(new RewardInstance(s, generateRewards()));
+					s.setInstance(new RewardInstance(s, generateRewards(), NodeType.MINIBOSS));
 				}
 			}.runTask(NeoRogue.inst());
 			return;

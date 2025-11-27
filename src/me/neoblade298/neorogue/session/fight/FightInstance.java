@@ -948,8 +948,8 @@ public abstract class FightInstance extends Instance {
 				double rngBonus = NeoRogue.gen.nextDouble(-1, 1);
 				double toActivate = rngBonus + (map.getEffectiveSize() / 2);
 				
-				// Always spawn one of the closest spawners
-				spawnersByDist.getFirst().spawnMob();
+				// Always spawn one of the closest spawners if it exists (it won't for minibosses and bosses)
+				if (!spawnersByDist.isEmpty()) spawnersByDist.getFirst().spawnMob();
 				activateSpawner(toActivate);
 
 				startTime = System.currentTimeMillis();

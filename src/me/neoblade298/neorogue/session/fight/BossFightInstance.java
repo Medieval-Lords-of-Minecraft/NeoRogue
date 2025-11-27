@@ -68,7 +68,7 @@ public class BossFightInstance extends FightInstance {
 				public void run() {
 					FightInstance.handleWin();
 					s.broadcast("You beat the boss!");
-					s.setInstance(new RewardInstance(s, generateRewards()));
+					s.setInstance(new RewardInstance(s, generateRewards(), NodeType.BOSS));
 					
 					// Set up next area
 					s.generateNextArea();

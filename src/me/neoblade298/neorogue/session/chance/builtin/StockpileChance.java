@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.bukkit.Material;
 
 import me.neoblade298.neorogue.area.AreaType;
+import me.neoblade298.neorogue.area.NodeType;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.PlayerSessionData;
@@ -54,7 +55,7 @@ public class StockpileChance extends ChanceSet {
 						rewards.add(new EquipmentChoiceReward(equips));
 						generated.put(pd.getUniqueId(), rewards);
 					}
-					inst.setNextInstance(new RewardInstance(s, generated));
+					inst.setNextInstance(new RewardInstance(s, generated, NodeType.CHANCE));
 					s.broadcast("The thief was formidable, but that gear is all yours now!");
 					return null;
 				});

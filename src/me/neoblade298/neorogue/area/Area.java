@@ -661,7 +661,7 @@ public class Area {
 		}
 	}
 
-	// Only save nodes that need saving (the ones within reach)
+	// Only re-save nodes that need saving (the ones within reach)
 	public void saveRelevant(Statement insert, Statement delete) {
 		int saveSlot = s.getSaveSlot();
 		UUID host = s.getHost();
@@ -676,8 +676,6 @@ public class Area {
 					saveNode(insert, node, saveSlot, host);
 				}
 			}
-			// Save boss node too
-			saveNode(insert, nodes[ROW_COUNT - 1][CENTER_LANE], saveSlot, host);
 			insert.executeBatch();
 		} catch (SQLException ex) {
 			Bukkit.getLogger()

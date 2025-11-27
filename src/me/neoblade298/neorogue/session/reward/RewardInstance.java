@@ -17,6 +17,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.area.NodeType;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.SpectateSelectInventory;
 import me.neoblade298.neorogue.session.EditInventoryInstance;
@@ -29,17 +30,21 @@ public class RewardInstance extends EditInventoryInstance {
 			HOLO_X = 0, HOLO_Y = 3, HOLO_Z = 6;
 	private HashMap<UUID, ArrayList<Reward>> rewards = new HashMap<UUID, ArrayList<Reward>>();
 	private TextDisplay holo;
+	private NodeType previous;
 	
-	public RewardInstance(Session s, HashMap<UUID, ArrayList<Reward>> rewards) {
+	public RewardInstance(Session s, HashMap<UUID, ArrayList<Reward>> rewards, NodeType previous) {
 		super(s, SPAWN_X, SPAWN_Z);
 		this.rewards = rewards;
+		this.previous = previous;
 	}
 	
-	public RewardInstance(Session s, HashMap<UUID, PlayerSessionData> party, boolean useless) {
+	// Explicitly used for deserialization
+	public RewardInstance(Session s, HashMap<UUID, PlayerSessionData> party, NodeType previous, boolean useless) {
 		super(s, SPAWN_X, SPAWN_Z);
 		for (Entry<UUID, PlayerSessionData> ent : party.entrySet()) {
 			rewards.put(ent.getKey(), Reward.deserializeArray(ent.getValue().getInstanceData()));
 		}
+		this.previous = previous;
 	}
 
 	@Override
@@ -175,7 +180,7 @@ public class RewardInstance extends EditInventoryInstance {
 			PlayerSessionData data = party.get(ent.getKey());
 			data.setInstanceData(serialized);
 		}
-		return "REWARD";
+		return "REWARD:" + previous.name();
 	}
 
 	@Override
