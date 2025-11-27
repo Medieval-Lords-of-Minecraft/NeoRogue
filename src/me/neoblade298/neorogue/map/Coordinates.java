@@ -3,7 +3,7 @@ package me.neoblade298.neorogue.map;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
-import me.neoblade298.neorogue.area.Area;
+import me.neoblade298.neorogue.region.Region;
 
 /* Assumed to always be rotating around 0,0 origin
  * After rotating, the coordinates translate themselves to be above 0,0
@@ -137,10 +137,10 @@ public class Coordinates extends Rotatable {
 	// Should only be used for spawners as it turns x offset into chunk offset
 	// * 15 because xOff/zOff was already added once
 	public Location toLocation() {
-		return new Location(Bukkit.getWorld(Area.WORLD_NAME), getX() + (xOff * 15), getY() - 1, getZ() + (zOff * 15), dir.getYaw(), 0);
+		return new Location(Bukkit.getWorld(Region.WORLD_NAME), getX() + (xOff * 15), getY() - 1, getZ() + (zOff * 15), dir.getYaw(), 0);
 	}
 	public Location toBlockLocation() {
-		return new Location(Bukkit.getWorld(Area.WORLD_NAME), getX() + (xOff * 15), getY() - 1, getZ() + (zOff * 15), dir.getYaw(), 0);
+		return new Location(Bukkit.getWorld(Region.WORLD_NAME), getX() + (xOff * 15), getY() - 1, getZ() + (zOff * 15), dir.getYaw(), 0);
 	}
 	
 	@Override

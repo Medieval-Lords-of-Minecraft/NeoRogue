@@ -2,10 +2,10 @@ package me.neoblade298.neorogue.session.chance.builtin;
 
 import org.bukkit.Material;
 
-import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
 import me.neoblade298.neorogue.equipment.artifacts.Exhaustion;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.chance.ChanceChoice;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
 import me.neoblade298.neorogue.session.chance.ChanceStage;
@@ -13,7 +13,7 @@ import me.neoblade298.neorogue.session.chance.ChanceStage;
 public class CaravanRobberyChance extends ChanceSet {
 
 	public CaravanRobberyChance() {
-		super(AreaType.HARVEST_FIELDS, Material.SADDLE, "CaravanRobbery", "Caravan Robbery");
+		super(RegionType.HARVEST_FIELDS, Material.SADDLE, "CaravanRobbery", "Caravan Robbery");
 		ChanceStage stage = new ChanceStage(this, INIT_ID, "While walking through the forest, you hear a commotion and decide to investigate. " +
 			"On a small dirt road, you see a small caravan being robbed by a group of bandits. You could probably save them for a monetary reward, though having to " +
 			"protect the merchants would undoubtedly be dangerous.");

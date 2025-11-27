@@ -1,4 +1,4 @@
-package me.neoblade298.neorogue.area;
+package me.neoblade298.neorogue.region;
 
 import java.io.File;
 import java.sql.Connection;
@@ -59,7 +59,7 @@ import me.neoblade298.neorogue.session.fight.StandardFightInstance;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 
-public class Area {
+public class Region {
 	public static final int LANE_COUNT = 5, ROW_COUNT = 16, CENTER_LANE = LANE_COUNT / 2;
 	private static final int X_EDGE_PADDING = 14, Z_EDGE_PADDING = 11, NODE_DIST_BETWEEN = 4;
 	private static int MAX_CHAIN_LENGTH;
@@ -69,7 +69,7 @@ public class Area {
 	private static ParticleContainer red = new ParticleContainer(Particle.DUST), black;
 	private HashSet<Node> blackTicks = new HashSet<>();
 
-	private AreaType type;
+	private RegionType type;
 	private Node[][] nodes;
 	private Session s;
 	private String boss;
@@ -122,7 +122,7 @@ public class Area {
 		});
 	}
 
-	public Area(AreaType type, int xOff, int zOff, Session s) {
+	public Region(RegionType type, int xOff, int zOff, Session s) {
 		if (!initialized)
 			initialize();
 		
@@ -149,7 +149,7 @@ public class Area {
 	}
 
 	// Deserialize
-	public Area(AreaType type, int xOff, int zOff, UUID uuid, int saveSlot, Session s, Statement stmt)
+	public Region(RegionType type, int xOff, int zOff, UUID uuid, int saveSlot, Session s, Statement stmt)
 			throws SQLException {
 		this.type = type;
 		this.xOff = xOff;
@@ -629,7 +629,7 @@ public class Area {
 		}
 	}
 	
-	public AreaType getType() {
+	public RegionType getType() {
 		return type;
 	}
 

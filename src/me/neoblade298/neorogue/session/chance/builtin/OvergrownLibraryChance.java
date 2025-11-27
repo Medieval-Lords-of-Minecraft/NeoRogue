@@ -4,7 +4,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.shared.util.SharedUtil;
-import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.artifacts.DarkArtsTreatise;
 import me.neoblade298.neorogue.equipment.artifacts.EarthenTome;
@@ -13,6 +12,7 @@ import me.neoblade298.neorogue.equipment.artifacts.InfernalTome;
 import me.neoblade298.neorogue.equipment.artifacts.Pumped;
 import me.neoblade298.neorogue.equipment.artifacts.ScrollOfFrost;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.chance.ChanceChoice;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
 import me.neoblade298.neorogue.session.chance.ChanceStage;
@@ -20,7 +20,7 @@ import me.neoblade298.neorogue.session.chance.ChanceStage;
 public class OvergrownLibraryChance extends ChanceSet {
 
 	public OvergrownLibraryChance() {
-		super(AreaType.HARVEST_FIELDS, Material.LECTERN, "OvergrownLibrary", "Overgrown Library", true);
+		super(RegionType.HARVEST_FIELDS, Material.LECTERN, "OvergrownLibrary", "Overgrown Library", true);
 		ChanceStage stage = new ChanceStage(this, INIT_ID, "Along the forest path is an overgrown stone wall that seemed to have one point " +
 			"been a shelf. On it are some books that, while old, seem surprisingly well-kept.");
 

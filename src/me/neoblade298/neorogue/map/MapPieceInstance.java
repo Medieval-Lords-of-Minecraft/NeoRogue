@@ -26,7 +26,7 @@ import com.sk89q.worldedit.session.ClipboardHolder;
 
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.area.Area;
+import me.neoblade298.neorogue.region.Region;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 
@@ -284,14 +284,14 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		int y = Y_OFFSET + this.y;
 		int z = (this.z * 16) + rotateOffset[1] + flipOffset[1] + zOff + Z_FIGHT_OFFSET;
 		
-		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Area.world)) {
+		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Region.world)) {
 		    Operation pasteSolid = schematic.createPaste(editSession)
-		    		.maskSource(new SolidBlockMask(Area.world))
+		    		.maskSource(new SolidBlockMask(Region.world))
 		            .to(BlockVector3.at(x, y, z))
 		            .ignoreAirBlocks(true)
 		            .build();
 		    Operation pasteRemaining = schematic.createPaste(editSession)
-		    		.maskSource(Masks.negate(new SolidBlockMask(Area.world)))
+		    		.maskSource(Masks.negate(new SolidBlockMask(Region.world)))
 		            .to(BlockVector3.at(x, y, z))
 		            .ignoreAirBlocks(true)
 		            .build();

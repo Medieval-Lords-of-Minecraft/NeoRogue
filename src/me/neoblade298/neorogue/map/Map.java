@@ -33,21 +33,21 @@ import com.sk89q.worldedit.regions.CuboidRegion;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.shared.io.Section;
 import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.area.Area;
-import me.neoblade298.neorogue.area.AreaType;
+import me.neoblade298.neorogue.region.Region;
+import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.Mob;
 import me.neoblade298.neorogue.session.fight.MobModifier;
 
 public class Map {
 	private static HashMap<String, MapPiece> allPieces = new HashMap<String, MapPiece>();
-	private static HashMap<AreaType, LinkedList<MapPiece>> standardPieces = new HashMap<AreaType, LinkedList<MapPiece>>(),
-			usedPieces = new HashMap<AreaType, LinkedList<MapPiece>>();
-	private static HashMap<AreaType, ArrayList<MapPiece>> minibossPieces = new HashMap<AreaType, ArrayList<MapPiece>>(),
-			bossPieces = new HashMap<AreaType, ArrayList<MapPiece>>();
+	private static HashMap<RegionType, LinkedList<MapPiece>> standardPieces = new HashMap<RegionType, LinkedList<MapPiece>>(),
+			usedPieces = new HashMap<RegionType, LinkedList<MapPiece>>();
+	private static HashMap<RegionType, ArrayList<MapPiece>> minibossPieces = new HashMap<RegionType, ArrayList<MapPiece>>(),
+			bossPieces = new HashMap<RegionType, ArrayList<MapPiece>>();
 	private static final int MAP_SIZE = 12;
 	
-	private AreaType type;
+	private RegionType type;
 	private boolean hasCustomMobInfo = false;
 	private ArrayList<MapPieceInstance> pieces = new ArrayList<MapPieceInstance>();
 	private LinkedList<Coordinates> entrances = new LinkedList<Coordinates>(),
@@ -59,12 +59,12 @@ public class Map {
 	private boolean[][] shape = new boolean[MAP_SIZE][MAP_SIZE];
 	private int effectiveSize;
 	
-	public Map(AreaType type) {
+	public Map(RegionType type) {
 		this.type = type;
 	}
 	
 	public static void load() {
-		for (AreaType type : AreaType.values()) {
+		for (RegionType type : RegionType.values()) {
 			standardPieces.put(type, new LinkedList<MapPiece>());
 			usedPieces.put(type, new LinkedList<MapPiece>());
 			minibossPieces.put(type, new ArrayList<MapPiece>());
@@ -76,13 +76,13 @@ public class Map {
 				try {
 					Section sec = yml.getSection(key);
 					MapPiece piece = new MapPiece(sec);
-					AreaType area = AreaType.valueOf(sec.getString("area"));
+					RegionType region = RegionType.valueOf(sec.getString("regionType"));
 					String type = sec.getString("type", "STANDARD");
 
 					allPieces.put(key, piece);
-					if (type.equals("BOSS")) bossPieces.get(area).add(piece);
-					else if (type.equals("MINIBOSS")) minibossPieces.get(area).add(piece);
-					else if (type.equals("STANDARD")) standardPieces.get(area).add(piece);
+					if (type.equals("BOSS")) bossPieces.get(region).add(piece);
+					else if (type.equals("MINIBOSS")) minibossPieces.get(region).add(piece);
+					else if (type.equals("STANDARD")) standardPieces.get(region).add(piece);
 					// Do not turn into an else, there are other types like BORDER pieces
 				}
 				catch (Exception e) {
@@ -92,7 +92,7 @@ public class Map {
 			}
 		});
 		
-		for (AreaType type : AreaType.values()) {
+		for (RegionType type : RegionType.values()) {
 			Collections.shuffle(standardPieces.get(type));
 		}
 	}
@@ -103,27 +103,27 @@ public class Map {
 		}
 	}
 	
-	public static Map generateBoss(AreaType type, int numPieces) {
+	public static Map generateBoss(RegionType type, int numPieces) {
 		MapPiece piece = bossPieces.get(type).get(bossPieces.get(type).size() > 1 ? NeoRogue.gen.nextInt(bossPieces.get(type).size()) : 0);
 		return generate(type, numPieces, piece);
 	}
 	
-	public static Map generateMiniboss(AreaType type, int numPieces) {
+	public static Map generateMiniboss(RegionType type, int numPieces) {
 		MapPiece piece = minibossPieces.get(type).get(NeoRogue.gen.nextInt(minibossPieces.get(type).size()));
 		return generate(type, numPieces, piece);
 	}
 	
-	public static Map generate(AreaType type, int numPieces) {
+	public static Map generate(RegionType type, int numPieces) {
 		return generate(new Map(type), type, numPieces);
 	}
 	
-	public static Map generate(AreaType type, int numPieces, MapPiece requiredPiece) {
+	public static Map generate(RegionType type, int numPieces, MapPiece requiredPiece) {
 		Map map = new Map(type);
 		map.place(requiredPiece);
 		return generate(map, type, numPieces);
 	}
 	
-	public static Map generate(Map map, AreaType type, int numPieces) {
+	public static Map generate(Map map, RegionType type, int numPieces) {
 		LinkedList<MapPiece> pieces = standardPieces.get(type);
 		int totalAttempts = pieces.size() + usedPieces.get(type).size();
 		
@@ -155,7 +155,7 @@ public class Map {
 		}
 		
 		// Fill in any spots adjacent to pieces with border pieces
-		if (type == AreaType.HARVEST_FIELDS) {
+		if (type == RegionType.HARVEST_FIELDS) {
 			boolean hasEntrances = map.getPieces().getFirst().getPiece().getEntrances() != null;
 			int y = hasEntrances ? (int) map.getPieces().getFirst().getPiece().getEntrances()[0].getY() : 0;
 			boolean[][] shape = map.shape;
@@ -424,7 +424,7 @@ public class Map {
 	
 	public void instantiate(FightInstance fi, int xOff, int zOff) {
 		// First clear the board
-		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Area.world)) {
+		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Region.world)) {
 		    CuboidRegion r = new CuboidRegion(
 		    		BlockVector3.at(-(xOff + MapPieceInstance.X_FIGHT_OFFSET), 0, MapPieceInstance.Z_FIGHT_OFFSET + zOff),
 		    		BlockVector3.at(-(xOff + MapPieceInstance.X_FIGHT_OFFSET + MAP_SIZE * 16), 128, MapPieceInstance.Z_FIGHT_OFFSET + zOff + MAP_SIZE * 16));
@@ -455,7 +455,7 @@ public class Map {
 					}
 					
 					// Block off all unused entrances
-					World w = Bukkit.getWorld(Area.WORLD_NAME);
+					World w = Bukkit.getWorld(Region.WORLD_NAME);
 					for (Coordinates coords : entrances) {
 						handleUnusedEntrance(coords, w, xOff, zOff);
 					}
@@ -468,12 +468,12 @@ public class Map {
 	}
 	
 	private void handleUnusedEntrance(Coordinates coords, World w, int xOff, int zOff) {
-		if (type == AreaType.HARVEST_FIELDS) return;
+		if (type == RegionType.HARVEST_FIELDS) return;
 		handleObstructedEntrance(coords, w, xOff, zOff);
 	}
 	
 	private void handleObstructedEntrance(Coordinates coords, World w, int xOff, int zOff) {
-		if (type == AreaType.HARVEST_FIELDS) return;
+		if (type == RegionType.HARVEST_FIELDS) return;
 		int x = (int) -(xOff + MapPieceInstance.X_FIGHT_OFFSET + (coords.getX() * 16));
 		int y = (int) (MapPieceInstance.Y_OFFSET + coords.getY());
 		int z = (int) (MapPieceInstance.Z_FIGHT_OFFSET + zOff + (coords.getZ() * 16));
@@ -522,7 +522,7 @@ public class Map {
 		}
 	}
 	
-	private static void shufflePieces(AreaType type) {
+	private static void shufflePieces(RegionType type) {
 		Collections.shuffle(usedPieces.get(type));
 		standardPieces.get(type).addAll(usedPieces.get(type));
 	}
@@ -531,15 +531,15 @@ public class Map {
 		return allPieces;
 	}
 	
-	public static HashMap<AreaType, ArrayList<MapPiece>> getMinibossPieces() {
+	public static HashMap<RegionType, ArrayList<MapPiece>> getMinibossPieces() {
 		return minibossPieces;
 	}
 	
-	public static HashMap<AreaType, ArrayList<MapPiece>> getBossPieces() {
+	public static HashMap<RegionType, ArrayList<MapPiece>> getBossPieces() {
 		return bossPieces;
 	}
 	
-	public static LinkedList<MapPiece> getPieces(AreaType type) {
+	public static LinkedList<MapPiece> getPieces(RegionType type) {
 		return standardPieces.get(type);
 	}
 	
@@ -597,7 +597,7 @@ public class Map {
 	}
 	
 	public static Map deserialize(String str) {
-		AreaType type = AreaType.valueOf(str.substring(0, str.indexOf("-")));
+		RegionType type = RegionType.valueOf(str.substring(0, str.indexOf("-")));
 		Map map = new Map(type);
 		str = str.substring(str.indexOf("-") + 1);
 		String[] pieces = str.split(";");

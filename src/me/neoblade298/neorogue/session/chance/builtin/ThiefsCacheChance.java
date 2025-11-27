@@ -4,9 +4,9 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.util.Util;
-import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
+import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.chance.ChanceChoice;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
 import me.neoblade298.neorogue.session.chance.ChanceStage;
@@ -14,7 +14,7 @@ import net.kyori.adventure.text.Component;
 
 public class ThiefsCacheChance extends ChanceSet {
 	public ThiefsCacheChance() {
-		super(new AreaType[] { AreaType.LOW_DISTRICT, AreaType.HARVEST_FIELDS }, Material.GOLD_INGOT, "ThiefsCache", "Thief's Cache", true);
+		super(new RegionType[] { RegionType.LOW_DISTRICT, RegionType.HARVEST_FIELDS }, Material.GOLD_INGOT, "ThiefsCache", "Thief's Cache", true);
 		ChanceStage stage = new ChanceStage(this, INIT_ID, "You come across a thief’s cache that has some gold, equipment, and potions lying around. "
 				+ "Suddenly you hear noise behind you. The thief is coming and you’ll have to act fast.");
 
@@ -23,7 +23,7 @@ public class ThiefsCacheChance extends ChanceSet {
 					Player p = data.getPlayer();
 					Util.msgRaw(p, "You pick up the potions and leave with haste.");
 					s.broadcastOthers("<yellow>" + p.getName() + "</yellow> decided to pick up the potions!", p);
-					data.giveEquipment(Equipment.getConsumable(s.getAreasCompleted() * 2, 2, data.getPlayerClass(), EquipmentClass.CLASSLESS));
+					data.giveEquipment(Equipment.getConsumable(s.getRegionsCompleted() * 2, 2, data.getPlayerClass(), EquipmentClass.CLASSLESS));
 					return null;
 				});
 		stage.addChoice(choice);

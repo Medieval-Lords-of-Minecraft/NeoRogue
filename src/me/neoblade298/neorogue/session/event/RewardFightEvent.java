@@ -1,6 +1,6 @@
 package me.neoblade298.neorogue.session.event;
 
-import me.neoblade298.neorogue.area.NodeType;
+import me.neoblade298.neorogue.region.NodeType;
 
 public class RewardFightEvent {
 	private int bonusGold, bonusEquipment, bonusRarity;

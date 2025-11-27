@@ -3,8 +3,8 @@ package me.neoblade298.neorogue.session.chance.builtin;
 import org.bukkit.Material;
 
 import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.ShrineInstance;
 import me.neoblade298.neorogue.session.chance.ChanceChoice;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
@@ -19,7 +19,7 @@ import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 public class ForkInTheRoadChance extends ChanceSet {
 
 	public ForkInTheRoadChance() {
-		super(AreaType.LOW_DISTRICT, Material.GRAVEL, "ForkInTheRoad", "Fork in the road");
+		super(RegionType.LOW_DISTRICT, Material.GRAVEL, "ForkInTheRoad", "Fork in the road");
 		ChanceStage stage = new ChanceStage(this, INIT_ID, "There seems to be a new lightly-traveled path that isn't on your map."
 				+ " It could lead to a nice resting area or potentially some enemies.");
 		
@@ -40,7 +40,7 @@ public class ForkInTheRoadChance extends ChanceSet {
 					else {
 						PlayerSessionData psd = inst.chooseRandomPartyMember();
 						s.broadcast("You follow <yellow>" + psd.getData().getDisplay() + "'s</yellow> bold instructions to walk along the path straight into an enemy lair.");
-						StandardFightInstance sfi = new StandardFightInstance(s, s.getParty().keySet(), s.getArea().getType(), s.getNodesVisited());
+						StandardFightInstance sfi = new StandardFightInstance(s, s.getParty().keySet(), s.getRegion().getType(), s.getNodesVisited());
 						sfi.addInitialTask((fi, fdata) -> {
 							for (PlayerFightData pfdata : fdata) {
 								pfdata.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(pfdata, 0, -0.2, BuffStatTracker.ignored("forkInTheRoadChance")));

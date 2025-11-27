@@ -26,8 +26,6 @@ import io.lumine.mythic.bukkit.events.MythicReloadedEvent;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.commands.SubcommandManager;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
-import me.neoblade298.neorogue.area.Area;
-import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.commands.CmdAdminBoss;
 import me.neoblade298.neorogue.commands.CmdAdminChance;
 import me.neoblade298.neorogue.commands.CmdAdminCoins;
@@ -63,6 +61,8 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.player.PlayerManager;
+import me.neoblade298.neorogue.region.Region;
+import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.EditInventoryInstance;
 import me.neoblade298.neorogue.session.EditInventoryInstance.NodeMapRenderer;
 import me.neoblade298.neorogue.session.NodeSelectInstance;
@@ -116,14 +116,14 @@ public class NeoRogue extends JavaPlugin {
 	public static void reload() {
 		mythicApi = MythicBukkit.inst().getAPIHelper();
 		mythicMobs = MythicBukkit.inst().getMobManager();
-		Area.initialize();
+		Region.initialize();
 		Equipment.load();
 		ChanceSet.load(); // Must load after equipment
 		Mob.load(); // Load in mob types
 		Map.load(); // Load in map pieces
 		
 		// Will need to add multiverse dependency if the world isn't first loaded
-		spawn = new Location(Bukkit.getWorld(Area.WORLD_NAME), -250, 65, -250);
+		spawn = new Location(Bukkit.getWorld(Region.WORLD_NAME), -250, 65, -250);
 	}
 	
 	public void onDisable() {
@@ -179,11 +179,11 @@ public class NeoRogue extends JavaPlugin {
 	
 	public static void debugInitialize(Player host, @Nullable Collection<Player> others) {
 		Session s = SessionManager.createSession(host, "test", 1);
-		s.generateArea(AreaType.HARVEST_FIELDS);
+		s.generateRegion(RegionType.HARVEST_FIELDS);
 		s.addPlayer(host.getUniqueId(), EquipmentClass.WARRIOR);
 		s.setNodesVisited(16);
 
-		s.setNode(s.getArea().getNodes()[0][2]);
+		s.setNode(s.getRegion().getNodes()[0][2]);
 		for (Player pl : others == null ? Bukkit.getOnlinePlayers() : others) {
 			if (pl == host) continue;
 			if (SessionManager.getSession(pl) == null) {

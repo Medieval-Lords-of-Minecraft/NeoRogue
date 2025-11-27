@@ -17,9 +17,9 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.area.NodeType;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.SpectateSelectInventory;
+import me.neoblade298.neorogue.region.NodeType;
 import me.neoblade298.neorogue.session.EditInventoryInstance;
 import me.neoblade298.neorogue.session.NodeSelectInstance;
 import me.neoblade298.neorogue.session.Session;
@@ -157,14 +157,13 @@ public class RewardInstance extends EditInventoryInstance {
 						public void run() {
 							s.setInstance(next);
 							s.setBusy(false);
-							
-							// Boss killed, area completed
+
+							// Boss killed, region completed
 							if (previous == NodeType.BOSS) {
-								// Should heal everyone upon new area
 								s.getParty().values().forEach(data -> {
 									data.healPercent(100);
 								});
-								s.incrementAreasCompleted();
+								s.incrementRegionsCompleted();
 							}
 						}
 					}.runTaskLater(NeoRogue.inst(), 40L);

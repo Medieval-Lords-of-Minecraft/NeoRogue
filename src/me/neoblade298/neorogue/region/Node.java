@@ -1,4 +1,4 @@
-package me.neoblade298.neorogue.area;
+package me.neoblade298.neorogue.region;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -125,13 +125,13 @@ public class Node {
 		return false;
 	}
 
-	public Instance generateInstance(Session s, AreaType area) {
+	public Instance generateInstance(Session s, RegionType region) {
 		if (inst != null)
 			return inst;
 		
 		switch (type) {
 		case FIGHT:
-			inst = new StandardFightInstance(s, s.getParty().keySet(), area, s.getNodesVisited());
+			inst = new StandardFightInstance(s, s.getParty().keySet(), region, s.getNodesVisited());
 			break;
 		case SHRINE:
 			inst = new ShrineInstance(s);
@@ -143,10 +143,10 @@ public class Node {
 			inst = new ShopInstance(s);
 			break;
 		case MINIBOSS:
-			inst = new MinibossFightInstance(s, s.getParty().keySet(), area);
+			inst = new MinibossFightInstance(s, s.getParty().keySet(), region);
 			break;
 		case BOSS:
-			inst = new BossFightInstance(s, s.getParty().keySet(), area);
+			inst = new BossFightInstance(s, s.getParty().keySet(), region);
 		default:
 			break;
 		}

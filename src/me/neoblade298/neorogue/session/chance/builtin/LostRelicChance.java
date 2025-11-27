@@ -6,7 +6,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.util.Util;
-import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
@@ -16,6 +15,7 @@ import me.neoblade298.neorogue.equipment.cursed.MangledBow;
 import me.neoblade298.neorogue.equipment.cursed.RustySword;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.CustomGlossaryIcon;
+import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.chance.ChanceChoice;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
 import me.neoblade298.neorogue.session.chance.ChanceStage;
@@ -31,7 +31,7 @@ public class LostRelicChance extends ChanceSet {
 	}
 
 	public LostRelicChance() {
-		super(AreaType.LOW_DISTRICT, Material.GRAVEL, "LostRelic", "Lost Relic", true);
+		super(RegionType.LOW_DISTRICT, Material.GRAVEL, "LostRelic", "Lost Relic", true);
 		ChanceStage stage = new ChanceStage(this, INIT_ID, "You spot an old weapon on the ground. At first glance it seems worthless, "
 				+ "but something makes you think it’s worth keeping around.");
 

@@ -15,27 +15,27 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.commands.Arg;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
 import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.map.Coordinates;
 import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.map.MapPiece;
 import me.neoblade298.neorogue.map.MapPieceInstance;
+import me.neoblade298.neorogue.region.RegionType;
 
 public class CmdAdminMap extends Subcommand {
 	public CmdAdminMap(String key, String desc, String perm, SubcommandRunner runner) {
 		super(key, desc, perm, runner);
 		this.enableTabComplete();
 		ArrayList<String> tab = new ArrayList<String>();
-		for (AreaType type : AreaType.values()) {
+		for (RegionType type : RegionType.values()) {
 			tab.add(type.toString());
 		}
-		args.add(new Arg("AreaType", false).setTabOptions(tab), new Arg("NumPieces", false), new Arg("RequiredPiece", false));
+		args.add(new Arg("RegionType", false).setTabOptions(tab), new Arg("NumPieces", false), new Arg("RequiredPiece", false));
 	}
 
 	@Override
 	public void run(CommandSender s, String[] args) {
 		int numPieces = args.length > 1 ? Integer.parseInt(args[1]) : 5;
-		AreaType type = args.length > 0 ? AreaType.valueOf(args[0]) : AreaType.LOW_DISTRICT;
+		RegionType type = args.length > 0 ? RegionType.valueOf(args[0]) : RegionType.LOW_DISTRICT;
 		Player p = (Player) s;
 
 		MapPiece piece = null;

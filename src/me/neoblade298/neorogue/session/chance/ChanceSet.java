@@ -10,8 +10,8 @@ import org.bukkit.Material;
 
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.chance.builtin.AmbushChance;
 import me.neoblade298.neorogue.session.chance.builtin.CaravanRobberyChance;
@@ -32,7 +32,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextDecoration.State;
 
 public class ChanceSet {
-	private static HashMap<AreaType, ArrayList<ChanceSet>> sets = new HashMap<AreaType, ArrayList<ChanceSet>>();
+	private static HashMap<RegionType, ArrayList<ChanceSet>> sets = new HashMap<RegionType, ArrayList<ChanceSet>>();
 	private static HashMap<String, ChanceSet> setsById = new HashMap<String, ChanceSet>();
 	public static final String INIT_ID = "init";
 	
@@ -42,7 +42,7 @@ public class ChanceSet {
 	private Material mat;
 	private boolean individualChoices = false;
 	
-	public static ChanceSet getSet(AreaType type) {
+	public static ChanceSet getSet(RegionType type) {
 		ArrayList<ChanceSet> set = sets.get(type);
 		return set.get(NeoRogue.gen.nextInt(set.size()));
 	}
@@ -52,7 +52,7 @@ public class ChanceSet {
 	}
 	
 	public static void load() {
-		for (AreaType type : AreaType.values()) {
+		for (RegionType type : RegionType.values()) {
 			sets.put(type, new ArrayList<ChanceSet>());
 		}
 		
@@ -116,34 +116,34 @@ public class ChanceSet {
 		}
 	}
 	
-	public ChanceSet(AreaType type, Material mat, String id) {
-		this(new AreaType[] { type }, mat, id, id);
+	public ChanceSet(RegionType type, Material mat, String id) {
+		this(new RegionType[] { type }, mat, id, id);
 	}
 	
-	public ChanceSet(AreaType[] types, Material mat, String id) {
+	public ChanceSet(RegionType[] types, Material mat, String id) {
 		this(types, mat, id, id);
 	}
 	
-	public ChanceSet(AreaType type, Material mat, String id, String display) {
-		this(new AreaType[] { type }, mat, id, display);
+	public ChanceSet(RegionType type, Material mat, String id, String display) {
+		this(new RegionType[] { type }, mat, id, display);
 	}
 
-	public ChanceSet(AreaType[] types, Material mat, String id, String display) {
+	public ChanceSet(RegionType[] types, Material mat, String id, String display) {
 		this.id = id;
 		this.display = (TextComponent) SharedUtil.color(display).colorIfAbsent(NamedTextColor.RED)
 				.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE);
 		this.mat = mat;
-		for (AreaType type : types) {
+		for (RegionType type : types) {
 			sets.get(type).add(this);
 		}
 		setsById.put(id, this);
 	}
-	public ChanceSet(AreaType[] types, Material mat, String id, String display, boolean individualChoices) {
+	public ChanceSet(RegionType[] types, Material mat, String id, String display, boolean individualChoices) {
 		this(types, mat, id, display);
 		this.individualChoices = individualChoices;
 	}
-	public ChanceSet(AreaType type, Material mat, String id, String display, boolean individualChoices) {
-		this(new AreaType[] { type }, mat, id, display, individualChoices);
+	public ChanceSet(RegionType type, Material mat, String id, String display, boolean individualChoices) {
+		this(new RegionType[] { type }, mat, id, display, individualChoices);
 	}
 	
 	public ChanceStage getInitialStage() {

@@ -2,11 +2,12 @@ package me.neoblade298.neorogue.session.chance.builtin;
 
 import java.util.Collections;
 import java.util.Comparator;
+
 import org.bukkit.Material;
 
 import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.chance.ChanceChoice;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
@@ -15,7 +16,7 @@ import me.neoblade298.neorogue.session.chance.ChanceStage;
 public class GreedChance extends ChanceSet {
 
 	public GreedChance() {
-		super(AreaType.LOW_DISTRICT, Material.GOLD_INGOT, "Greed");
+		super(RegionType.LOW_DISTRICT, Material.GOLD_INGOT, "Greed");
 		ChanceStage stage = new ChanceStage(this, INIT_ID, "You come across a thick sludge that seems to contain various coins within."
 				+ " You'll take damage if you reach into it, but the extra coins may be worth the effort.");
 

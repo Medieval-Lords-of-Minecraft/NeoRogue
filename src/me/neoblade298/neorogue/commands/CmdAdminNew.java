@@ -7,8 +7,8 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neocore.bukkit.commands.Subcommand;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
-import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
+import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
 
@@ -27,13 +27,13 @@ public class CmdAdminNew extends Subcommand {
 		}
 		
 		Session sess = SessionManager.createSession(p, "test", 1);
-		sess.generateArea(AreaType.HARVEST_FIELDS);
+		sess.generateRegion(RegionType.HARVEST_FIELDS);
 		sess.setNodesVisited(15);
-		sess.setAreasCompleted(1);
+		sess.setRegionsCompleted(1);
 		for (Player pl : Bukkit.getOnlinePlayers()) {
 			sess.addPlayer(pl.getUniqueId(), EquipmentClass.WARRIOR);
 			SessionManager.addToSession(pl.getUniqueId(), sess);
 		}
-		sess.setNode(sess.getArea().getNodes()[0][2]);
+		sess.setNode(sess.getRegion().getNodes()[0][2]);
 	}
 }

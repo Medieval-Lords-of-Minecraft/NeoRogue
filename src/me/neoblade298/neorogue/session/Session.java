@@ -46,14 +46,14 @@ import me.neoblade298.neocore.shared.util.SQLInsertBuilder;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder.SQLAction;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
-import me.neoblade298.neorogue.area.Area;
-import me.neoblade298.neorogue.area.AreaType;
-import me.neoblade298.neorogue.area.Node;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.MapViewer;
 import me.neoblade298.neorogue.player.PlayerManager;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.region.Node;
+import me.neoblade298.neorogue.region.Region;
+import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import net.kyori.adventure.text.Component;
@@ -61,14 +61,14 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 public class Session {
 	
-	private Area area;
+	private Region region;
 	private UUID host;
 	private HashMap<UUID, PlayerSessionData> party = new HashMap<UUID, PlayerSessionData>();
 	private HashMap<UUID, MapViewer> spectators = new HashMap<UUID, MapViewer>();
 	private Instance inst;
 	private Node curr;
 	private SessionStatistics stats;
-	private int saveSlot, xOff, zOff, nodesVisited, areasCompleted, potionChance = 25;
+	private int saveSlot, xOff, zOff, nodesVisited, regionsCompleted, potionChance = 25;
 	private Plot plot;
 	private boolean busy;
 	private long nextSuggest = 0L;
@@ -187,15 +187,15 @@ public class Session {
 					goldReduction = sessSet.getInt("goldReduction");
 					fightTimeReduction = sessSet.getInt("fightTimeReduction");
 
-					area = new Area(
-							AreaType.valueOf(sessSet.getString("areaType")), xOff, zOff, host, saveSlot, s, stmt
+					region = new Region(
+							RegionType.valueOf(sessSet.getString("areaType")), xOff, zOff, host, saveSlot, s, stmt
 					);
-					curr = area.getNodes()[pos][lane];
+					curr = region.getNodes()[pos][lane];
 					
 					new BukkitRunnable() {
 						@Override
 						public void run() {
-							area.instantiate();
+							region.instantiate();
 							setInstance(inst);
 							s.updateSpectatorLines();
 							Util.msgRaw(p, Component.text("Finished loading.", NamedTextColor.GRAY));
@@ -224,12 +224,12 @@ public class Session {
 	}
 	
 	private void generateInterstitials() {
-		Location loc = new Location(Bukkit.getWorld(Area.WORLD_NAME), -(xOff + 1), 64, zOff - 1);
+		Location loc = new Location(Bukkit.getWorld(Region.WORLD_NAME), -(xOff + 1), 64, zOff - 1);
 
 		// Primitive way to check if this plot has been generated
 		if (loc.getBlock().getType() != Material.GRASS_BLOCK) {
 			// Generate the lobby and add the host there
-			try (EditSession editSession = WorldEdit.getInstance().newEditSession(Area.world)) {
+			try (EditSession editSession = WorldEdit.getInstance().newEditSession(Region.world)) {
 				pasteSchematic(classSelect, editSession, this, Session.LOBBY_Z);
 				pasteSchematic(nodeSelect, editSession, this, Session.AREA_Z);
 				pasteSchematic(rewardsRoom, editSession, this, Session.REWARDS_Z);
@@ -247,7 +247,7 @@ public class Session {
 		
 		try {
 			SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_sessions")
-					.addString(host.toString()).addValue(saveSlot).addString(area.getType().name())
+					.addString(host.toString()).addValue(saveSlot).addString(region.getType().name())
 					.addValue(curr.getRow()).addValue(curr.getLane()).addValue(nodesVisited).addValue(potionChance)
 					.addValue(enemyHealthScale).addValue(enemyDamageScale).addValue(goldReduction).addValue(fightTimeReduction)
 					.addValue(endless ? 1 : 0)
@@ -259,7 +259,7 @@ public class Session {
 		}
 		
 		// Only save the nodes near the player and the boss
-		area.saveRelevant(insert, delete);
+		region.saveRelevant(insert, delete);
 		
 		try {
 			delete.execute(
@@ -460,7 +460,7 @@ public class Session {
 	}
 
 	private boolean rollUpgradeFormula(Equipment eq, double bonusChance) {
-		return NeoRogue.gen.nextDouble() <= BASE_UPGRADE_CHANCE + bonusChance + (areasCompleted * 0.2) - (eq.getRarity().getValue() * 0.15);
+		return NeoRogue.gen.nextDouble() <= BASE_UPGRADE_CHANCE + bonusChance + (regionsCompleted * 0.2) - (eq.getRarity().getValue() * 0.15);
 	}
 	
 	public void setupSpectatorInventory(Player p) {
@@ -536,8 +536,8 @@ public class Session {
 		return party.get(uuid);
 	}
 	
-	public Area getArea() {
-		return area;
+	public Region getRegion() {
+		return region;
 	}
 	
 	public ArrayList<Player> getOnlinePlayers() {
@@ -563,12 +563,12 @@ public class Session {
 		this.nodesVisited = nodesVisited;
 	}
 
-	public void setAreasCompleted(int areasCompleted) {
-		this.areasCompleted = areasCompleted;
+	public void setRegionsCompleted(int regionsCompleted) {
+		this.regionsCompleted = regionsCompleted;
 	}
 
-	public void incrementAreasCompleted() {
-		this.areasCompleted++;
+	public void incrementRegionsCompleted() {
+		this.regionsCompleted++;
 	}
 	
 	public int getXOff() {
@@ -635,20 +635,20 @@ public class Session {
 		notoriety += amount;
 	}
 	
-	public void generateArea(AreaType type) {
-		this.area = new Area(type, xOff, zOff, this);
-		area.instantiate();
+	public void generateRegion(RegionType type) {
+		this.region = new Region(type, xOff, zOff, this);
+		region.instantiate();
 	}
 	
-	public void generateNextArea() {
+	public void generateNextRegion() {
 		// Erase old nodes
-		Node[][] nodes = area.getNodes();
+		Node[][] nodes = region.getNodes();
 		for (int i = 0; i < nodes.length; i++) {
 			for (int j = 0; j < nodes[i].length; j++) {
 				Node n = nodes[i][j];
 				if (n == null)
 					continue;
-				Location loc = area.nodeToLocation(n, 0);
+				Location loc = region.nodeToLocation(n, 0);
 				loc.getBlock().setType(Material.AIR); // Remove node block
 				// Remove boss stuff
 				if (i == 15 && j == 2) {
@@ -662,7 +662,7 @@ public class Session {
 			}
 		}
 		
-		generateArea(AreaType.getNextArea(area.getType(), endless));
+		generateRegion(RegionType.getNextRegion(region.getType(), endless));
 	}
 	
 	public Node getNode() {
@@ -694,12 +694,12 @@ public class Session {
 		return stats;
 	}
 	
-	public int getAreasCompleted() {
-		return areasCompleted;
+	public int getRegionsCompleted() {
+		return regionsCompleted;
 	}
 
 	public int getBaseDropValue() {
-		return areasCompleted * 2;
+		return regionsCompleted * 2;
 	}
 	
 	public int getSaveSlot() {

@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neocore.shared.droptables.DropTable;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.abilities.AgilityTraining;
@@ -22,6 +21,7 @@ import me.neoblade298.neorogue.equipment.abilities.Furor;
 import me.neoblade298.neorogue.equipment.abilities.KeenSenses;
 import me.neoblade298.neorogue.equipment.abilities.Resourcefulness;
 import me.neoblade298.neorogue.equipment.artifacts.Anxiety;
+import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.chance.ChanceChoice;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
 import me.neoblade298.neorogue.session.chance.ChanceStage;
@@ -49,7 +49,7 @@ public class ManaPoolChance extends ChanceSet {
 	}
 
 	public ManaPoolChance() {
-		super(AreaType.LOW_DISTRICT, Material.BLUE_ICE, "ManaPool", "Mana Pool", true);
+		super(RegionType.LOW_DISTRICT, Material.BLUE_ICE, "ManaPool", "Mana Pool", true);
 		ChanceStage stage = new ChanceStage(this, INIT_ID, "The winding corridors give way to a surprisingly vegetated room. " +
 			"In the center is a small pool of crystal clear water. There is an inexplicable force that draws you towards it.");
 

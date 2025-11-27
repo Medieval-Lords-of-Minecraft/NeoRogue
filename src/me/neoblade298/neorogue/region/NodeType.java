@@ -1,4 +1,4 @@
-package me.neoblade298.neorogue.area;
+package me.neoblade298.neorogue.region;
 
 import org.bukkit.Material;
 import org.bukkit.map.MapCursor;

@@ -6,11 +6,11 @@ import java.util.UUID;
 
 import org.bukkit.Material;
 
-import me.neoblade298.neorogue.area.AreaType;
-import me.neoblade298.neorogue.area.NodeType;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.region.NodeType;
+import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.chance.ChanceChoice;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
 import me.neoblade298.neorogue.session.chance.ChanceStage;
@@ -21,7 +21,7 @@ import me.neoblade298.neorogue.session.reward.RewardInstance;
 public class StockpileChance extends ChanceSet {
 
 	public StockpileChance() {
-		super(AreaType.LOW_DISTRICT, Material.GOLD_INGOT, "Stockpile");
+		super(RegionType.LOW_DISTRICT, Material.GOLD_INGOT, "Stockpile");
 		ChanceStage stage = new ChanceStage(this, INIT_ID, "You stumble across a thief's stockpile of equipment. The thief confronts you and looks skilled, but"
 				+ " makes it clear they're here to defend their stockpile and nothing else.");
 

@@ -14,8 +14,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.area.AreaType;
-import me.neoblade298.neorogue.area.NodeType;
 import me.neoblade298.neorogue.equipment.Consumable;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
@@ -24,6 +22,8 @@ import me.neoblade298.neorogue.equipment.artifacts.RubyShard;
 import me.neoblade298.neorogue.equipment.artifacts.SapphireShard;
 import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.region.NodeType;
+import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.event.RewardFightEvent;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
@@ -51,7 +51,7 @@ public class StandardFightInstance extends FightInstance {
 		SCORE_REQUIRED.put(4, 40D);
 	}
 
-	public StandardFightInstance(Session s, Set<UUID> players, AreaType type, int nodesVisited) {
+	public StandardFightInstance(Session s, Set<UUID> players, RegionType type, int nodesVisited) {
 		super(s, players);
 		/*
 		 * Currently scrapped due to map sizes being unnecessarily large

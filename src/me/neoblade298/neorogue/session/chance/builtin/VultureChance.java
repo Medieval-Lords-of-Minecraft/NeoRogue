@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import org.bukkit.Material;
 
 import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.chance.ChanceChoice;
 import me.neoblade298.neorogue.session.chance.ChanceSet;
@@ -31,7 +31,7 @@ public class VultureChance extends ChanceSet {
 	});
 
 	public VultureChance() {
-		super(AreaType.LOW_DISTRICT, Material.GRAVEL, "Vulture");
+		super(RegionType.LOW_DISTRICT, Material.GRAVEL, "Vulture");
 		
 		fightMiniboss = new ChanceStage(this, "miniboss", "You're cornered by a powerful foe.");
 		fightMiniboss.addChoice(new ChanceChoice(Material.IRON_SWORD, "<red>You know what time it is!"));
@@ -61,7 +61,7 @@ public class VultureChance extends ChanceSet {
 				(s, inst, unused) -> {
 					if (NeoRogue.gen.nextInt(100) < failPercent) {
 						s.broadcast("<red>As you loot the body, the enemy returns!");
-						inst.setNextInstance(new MinibossFightInstance(s, s.getParty().keySet(), s.getArea().getType()));
+						inst.setNextInstance(new MinibossFightInstance(s, s.getParty().keySet(), s.getRegion().getType()));
 						((FightInstance) inst.getNextInstance()).addInitialTask((fi, fdata) -> {
 							for (PlayerFightData pfdata : fdata) {
 								pfdata.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(pfdata, 0, -0.2, BuffStatTracker.ignored("vultureChance")));

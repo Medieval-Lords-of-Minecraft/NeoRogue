@@ -13,7 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
-import me.neoblade298.neorogue.area.Node;
+import me.neoblade298.neorogue.region.Node;
 import me.neoblade298.neorogue.session.Session;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -37,7 +37,7 @@ public class NodeMapInventory extends CoreInventory {
 
 	public NodeMapInventory(Player p, Session s) {
 		super(p, Bukkit.createInventory(p, 54, Component.text("Node Map", NamedTextColor.GOLD)));
-		this.nodes = s.getArea().getNodes();
+		this.nodes = s.getRegion().getNodes();
 		currentPos = s.getNode().getRow();
 		curr = s.getNode();
 		p.playSound(p, Sound.ITEM_BOOK_PAGE_TURN, 1F, 1F);

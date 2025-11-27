@@ -10,8 +10,8 @@ import java.util.UUID;
 import org.bukkit.command.CommandSender;
 
 import me.neoblade298.neocore.bukkit.util.Util;
-import me.neoblade298.neorogue.area.AreaType;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
+import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.Session;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent.Builder;
@@ -23,14 +23,14 @@ import net.kyori.adventure.text.format.TextDecoration;
 public class SessionSnapshot {
 	private long lastSaved;
 	private int nodesVisited;
-	private AreaType areaType;
+	private RegionType areaType;
 	private HashMap<String, EquipmentClass> party = new HashMap<String, EquipmentClass>();
 	private HashMap<UUID, String> partyIds = new HashMap<UUID, String>();
 	
 	public SessionSnapshot(Session s) {
 		this.lastSaved = System.currentTimeMillis();
 		this.nodesVisited = s.getNodesVisited();
-		this.areaType = s.getArea().getType();
+		this.areaType = s.getRegion().getType();
 		
 		for (Entry<UUID, PlayerSessionData> ent : s.getParty().entrySet()) {
 			partyIds.put(ent.getKey(), ent.getValue().getData().getDisplay());
@@ -41,7 +41,7 @@ public class SessionSnapshot {
 	public SessionSnapshot(ResultSet save, ResultSet party) throws SQLException {
 		this.lastSaved = save.getLong("lastSaved");
 		this.nodesVisited = save.getInt("nodesVisited");
-		this.areaType = AreaType.valueOf(save.getString("areaType"));
+		this.areaType = RegionType.valueOf(save.getString("areaType"));
 		
 		while (party.next()) {
 			UUID uuid = UUID.fromString(party.getString("uuid"));

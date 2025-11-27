@@ -56,7 +56,7 @@ public class SessionSetting {
         settings.put(18, new SessionNotorietySetting(18, "Enemy Health Scaling",
                 Component.text("Enemy health scales up an additional ", NamedTextColor.GRAY)
                         .append(Component.text("5%", NamedTextColor.YELLOW))
-                        .append(Component.text(" per level for every area you visit.")),
+                        .append(Component.text(" per level for every region you visit.")),
                 Material.GREEN_DYE, 5, (s, leftClick) -> {
                     s.setEnemyHealthScale(s.getEnemyHealthScale() + (leftClick ? 1 : -1));
                 },
@@ -67,7 +67,7 @@ public class SessionSetting {
         settings.put(19, new SessionNotorietySetting(19, "Enemy Damage Scaling",
                 Component.text("Enemy damage scales up an additional ", NamedTextColor.GRAY)
                         .append(Component.text("1%", NamedTextColor.YELLOW))
-                        .append(Component.text(" per level for every area you visit.")),
+                        .append(Component.text(" per level for every region you visit.")),
                 Material.RED_DYE, 5, (s, leftClick) -> {
                     s.setEnemyDamageScale(s.getEnemyDamageScale() + (leftClick ? 1 : -1));
                 },

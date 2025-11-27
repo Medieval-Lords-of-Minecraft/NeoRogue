@@ -10,8 +10,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.area.AreaType;
-import me.neoblade298.neorogue.area.NodeType;
 import me.neoblade298.neorogue.equipment.Consumable;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
@@ -21,6 +19,8 @@ import me.neoblade298.neorogue.equipment.artifacts.SapphireGem;
 import me.neoblade298.neorogue.equipment.artifacts.TomeOfWisdom;
 import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.region.NodeType;
+import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.event.RewardFightEvent;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
@@ -33,7 +33,7 @@ import me.neoblade298.neorogue.session.reward.RewardInstance;
 public class BossFightInstance extends FightInstance {
 	private HashSet<String> targets = new HashSet<String>();
 	
-	public BossFightInstance(Session s, Set<UUID> players, AreaType type) {
+	public BossFightInstance(Session s, Set<UUID> players, RegionType type) {
 		super(s, players);
 		map = Map.generateBoss(type, 0);
 		targets.addAll(map.getTargets());
@@ -70,9 +70,9 @@ public class BossFightInstance extends FightInstance {
 					s.broadcast("You beat the boss!");
 					s.setInstance(new RewardInstance(s, generateRewards(), NodeType.BOSS));
 					
-					// Set up next area
-					s.generateNextArea();
-					s.setNode(s.getArea().getNodes()[0][2]);
+					// Set up next region
+					s.generateNextRegion();
+					s.setNode(s.getRegion().getNodes()[0][2]);
 				}
 			}.runTask(NeoRogue.inst());
 			return;

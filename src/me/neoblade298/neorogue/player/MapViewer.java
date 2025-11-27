@@ -9,7 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 import me.neoblade298.neorogue.Sounds;
-import me.neoblade298.neorogue.area.Area;
+import me.neoblade298.neorogue.region.Region;
 import me.neoblade298.neorogue.session.Session;
 
 public class MapViewer {
@@ -34,7 +34,7 @@ public class MapViewer {
 	
 	public void scrollMapUp() {
 		Player p = Bukkit.getPlayer(uuid);
-		mapPosition = Math.min(Area.ROW_COUNT - 5, mapPosition + 4);
+		mapPosition = Math.min(Region.ROW_COUNT - 5, mapPosition + 4);
 		shouldRenderMap = true;
 		Sounds.turnPage.play(p, p);
 	}

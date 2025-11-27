@@ -18,10 +18,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.area.Area;
-import me.neoblade298.neorogue.area.Node;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.FightInfoInventory;
+import me.neoblade298.neorogue.region.Node;
+import me.neoblade298.neorogue.region.Region;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -51,15 +51,15 @@ public class NodeSelectInstance extends EditInventoryInstance {
 	
 	@Override
 	public void setup() {
-		Area area = s.getArea();
+		Region region = s.getRegion();
 
 		// Teleport player to their previous node selection
 		if (s.getNode().getRow() != 0)
-			spawn = area.nodeToLocation(s.getNode(), 1);
-		area.update(s.getNode(), this);
+			spawn = region.nodeToLocation(s.getNode(), 1);
+		region.update(s.getNode(), this);
 
 		// Set up boss hologram and tips
-		Component text = Component.text("Boss: ", NamedTextColor.WHITE, TextDecoration.BOLD).append(Component.text(area.getBoss(), NamedTextColor.RED, TextDecoration.BOLD));
+		Component text = Component.text("Boss: ", NamedTextColor.WHITE, TextDecoration.BOLD).append(Component.text(region.getBoss(), NamedTextColor.RED, TextDecoration.BOLD));
 		text = text.decoration(TextDecoration.BOLD, State.FALSE).appendNewline().append(tips.get(NeoRogue.gen.nextInt(tips.size())));
 		Location loc = spawn.clone().add(0, 2.8, 4);
 		TextDisplay holo = NeoRogue.createHologram(loc, text);
@@ -78,7 +78,7 @@ public class NodeSelectInstance extends EditInventoryInstance {
 		task = new BukkitRunnable() {
 			@Override
 			public void run() {
-				area.tickParticles(s.getNode());
+				region.tickParticles(s.getNode());
 			}
 		}.runTaskTimer(NeoRogue.inst(), 0L, 15L);
 	}
@@ -126,7 +126,7 @@ public class NodeSelectInstance extends EditInventoryInstance {
 			return;
 		if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock().getType() == Material.LECTERN) {
 			e.setCancelled(true);
-			Node n = s.getArea().getNodeFromLocation(e.getClickedBlock().getLocation().add(0, 2, 1));
+			Node n = s.getRegion().getNodeFromLocation(e.getClickedBlock().getLocation().add(0, 2, 1));
 			FightInstance inst = (FightInstance) n.getInstance();
 			new FightInfoInventory(e.getPlayer(), null, inst.getMap().getMobs(), inst.getMap().hasCustomMobInfo());
 		} else {
@@ -141,7 +141,7 @@ public class NodeSelectInstance extends EditInventoryInstance {
 
 		Player p = e.getPlayer();
 		if (e.getAction() == Action.RIGHT_CLICK_BLOCK && Tag.BUTTONS.isTagged(e.getClickedBlock().getType())) {
-			Node node = s.getArea().getNodeFromLocation(e.getClickedBlock().getLocation());
+			Node node = s.getRegion().getNodeFromLocation(e.getClickedBlock().getLocation());
 			if (node == null)
 				return;
 			if (!p.getUniqueId().equals(s.getHost())) {
@@ -195,7 +195,7 @@ public class NodeSelectInstance extends EditInventoryInstance {
 			return;
 		} else if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock().getType() == Material.LECTERN) {
 			e.setCancelled(true);
-			Node n = s.getArea().getNodeFromLocation(e.getClickedBlock().getLocation().add(0, 2, 1));
+			Node n = s.getRegion().getNodeFromLocation(e.getClickedBlock().getLocation().add(0, 2, 1));
 			FightInstance inst = (FightInstance) n.getInstance();
 			new FightInfoInventory(e.getPlayer(), s.getParty().get(p.getUniqueId()), inst.getMap().getMobs(), inst.getMap().hasCustomMobInfo());
 		} else {

@@ -16,11 +16,11 @@ import org.bukkit.map.MinecraftFont;
 
 import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
 import me.neoblade298.neorogue.Sounds;
-import me.neoblade298.neorogue.area.Area;
-import me.neoblade298.neorogue.area.Node;
-import me.neoblade298.neorogue.area.NodeType;
 import me.neoblade298.neorogue.player.MapViewer;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.region.Node;
+import me.neoblade298.neorogue.region.NodeType;
+import me.neoblade298.neorogue.region.Region;
 import me.neoblade298.neorogue.session.fight.BossFightInstance;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -169,7 +169,7 @@ public abstract class EditInventoryInstance extends Instance {
 			if (viewer.shouldRenderMap()) {
 				viewer.setShouldMapRender(false);
 				MapCursorCollection col = new MapCursorCollection();
-				Area a = s.getArea();
+				Region a = s.getRegion();
 				int mapPos = viewer.getMapPosition();
 
 				for (int i = 0; i < 256; i++) {
@@ -179,8 +179,8 @@ public abstract class EditInventoryInstance extends Instance {
 				}
 
 				Node[][] nodes = a.getNodes();
-				for (int lane = 0; lane < Area.LANE_COUNT; lane++) {
-					for (int pos = mapPos; pos < Area.ROW_COUNT && pos < mapPos + MAP_Y_SLOTS.length; pos++) {
+				for (int lane = 0; lane < Region.LANE_COUNT; lane++) {
+					for (int pos = mapPos; pos < Region.ROW_COUNT && pos < mapPos + MAP_Y_SLOTS.length; pos++) {
 						Node n = nodes[pos][lane];
 						if (n == null)
 							continue;

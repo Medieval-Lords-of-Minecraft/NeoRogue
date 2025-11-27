@@ -13,9 +13,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.area.Area;
-import me.neoblade298.neorogue.area.NodeType;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.region.NodeType;
+import me.neoblade298.neorogue.region.Region;
 import me.neoblade298.neorogue.session.chance.ChanceInstance;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.reward.RewardInstance;
@@ -44,13 +44,13 @@ public abstract class Instance {
 
 	public Instance(Session s, double spawnX, double spawnZ, PlayerFlags playerFlags) {
 		this.s = s;
-		spawn = new Location(Bukkit.getWorld(Area.WORLD_NAME), -(s.getXOff() + spawnX), 64, s.getZOff() + spawnZ);
+		spawn = new Location(Bukkit.getWorld(Region.WORLD_NAME), -(s.getXOff() + spawnX), 64, s.getZOff() + spawnZ);
 		this.playerFlags = playerFlags;
 	}
 	
 	public Instance(Session s, double spawnX, double spawnZ, PlayerFlags playerFlags, PlayerFlags spectatorFlags) {
 		this.s = s;
-		spawn = new Location(Bukkit.getWorld(Area.WORLD_NAME), -(s.getXOff() + spawnX), 64, s.getZOff() + spawnZ);
+		spawn = new Location(Bukkit.getWorld(Region.WORLD_NAME), -(s.getXOff() + spawnX), 64, s.getZOff() + spawnZ);
 		this.playerFlags = playerFlags;
 		this.spectatorFlags = spectatorFlags;
 	}

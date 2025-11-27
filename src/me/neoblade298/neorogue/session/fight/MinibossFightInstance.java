@@ -10,8 +10,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neorogue.NeoRogue;
-import me.neoblade298.neorogue.area.AreaType;
-import me.neoblade298.neorogue.area.NodeType;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.Consumable;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -21,6 +19,8 @@ import me.neoblade298.neorogue.equipment.artifacts.RubyCluster;
 import me.neoblade298.neorogue.equipment.artifacts.SapphireCluster;
 import me.neoblade298.neorogue.map.Map;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.region.NodeType;
+import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.event.RewardFightEvent;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
@@ -33,7 +33,7 @@ import me.neoblade298.neorogue.session.reward.RewardInstance;
 public class MinibossFightInstance extends FightInstance {
 	private HashSet<String> targets = new HashSet<String>();
 	
-	public MinibossFightInstance(Session s, Set<UUID> party, AreaType type) {
+	public MinibossFightInstance(Session s, Set<UUID> party, RegionType type) {
 		super(s, party);
 		map = Map.generateMiniboss(type, 0);
 		targets.addAll(map.getTargets());
