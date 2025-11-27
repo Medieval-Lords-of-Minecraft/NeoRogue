@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
@@ -71,18 +72,20 @@ public class SessionSettingsInventory extends CoreInventory {
 		e.setCancelled(true);
 		if (!isHost) return;
 		if (e.getCurrentItem() == null) return;
+		if (e.getAction() == InventoryAction.NOTHING) return; // Happens on double left click
 		
 		NBTItem clicked = new NBTItem(e.getCurrentItem());
 
 		if (clicked.hasTag("id")) {
 			int id = clicked.getInteger("id");
 			SessionSetting setting = SessionSetting.getById(id);
-			click.play(p, p, Audience.ORIGIN);
 			
-			if (e.isLeftClick()) {
+			if (e.isLeftClick() && setting.canLeftClick(s)) {
+				click.play(p, p, Audience.ORIGIN);
 				setting.leftClick(s);
 			}
-			else if (e.isRightClick()) {
+			else if (e.isRightClick() && setting.canRightClick(s)) {
+				click.play(p, p, Audience.ORIGIN);
 				setting.rightClick(s);
 			}
 			inv.setItem(e.getSlot(), setting.getItem(s));

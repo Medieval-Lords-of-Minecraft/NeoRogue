@@ -148,24 +148,29 @@ public class RewardInstance extends EditInventoryInstance {
 		}
 
 		NodeSelectInstance next = new NodeSelectInstance(s);
-		if (!s.isBusy() && s.canSetInstance(next)) {
-			s.broadcast("Everyone's finished claiming rewards! Returning to node select...");
-			s.setBusy(true);
-			new BukkitRunnable() {
-				public void run() {
-					// Boss killed, area completed
-					if (s.getNode().getRow() == 0) {
-						// Should heal everyone upon new area
-						s.getParty().values().forEach(data -> {
-							data.healPercent(100);
-						});
-						s.incrementAreasCompleted();
-					}
-					s.setInstance(next);
-					s.setBusy(false);
+		new BukkitRunnable() {
+			public void run() {
+				if (!s.isBusy() && s.canSetInstance(next)) {
+					s.broadcast("Everyone's finished claiming rewards! Returning to node select...");
+					s.setBusy(true);
+					new BukkitRunnable() {
+						public void run() {
+							s.setInstance(next);
+							s.setBusy(false);
+							
+							// Boss killed, area completed
+							if (previous == NodeType.BOSS) {
+								// Should heal everyone upon new area
+								s.getParty().values().forEach(data -> {
+									data.healPercent(100);
+								});
+								s.incrementAreasCompleted();
+							}
+						}
+					}.runTaskLater(NeoRogue.inst(), 40L);
 				}
-			}.runTaskLater(NeoRogue.inst(), 40L);
-		}
+			}
+		}.runTaskLater(NeoRogue.inst(), 1);
 		return true;
 	}
 

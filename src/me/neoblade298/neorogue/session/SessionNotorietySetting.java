@@ -20,15 +20,15 @@ public class SessionNotorietySetting extends SessionSetting{
     protected String title;
     protected TextComponent desc;
     protected Material mat;
-    protected int level, maxLevel;
+    protected int maxLevel;
     protected ItemStack icon;
     protected SettingEffect effect;
 
     static {
     }
 
-    public SessionNotorietySetting(int id, String title, TextComponent desc, Material mat, int maxLevel, SettingEffect effect) {
-        super(title, effect);
+    public SessionNotorietySetting(int id, String title, TextComponent desc, Material mat, int maxLevel, SettingEffect effect, SettingValueRetriever valueRetriever) {
+        super(title, effect, valueRetriever);
         this.id = id;
         this.title = title;
         this.desc = desc;
@@ -41,6 +41,7 @@ public class SessionNotorietySetting extends SessionSetting{
     public ItemStack getItem(Session s) {
         icon = CoreInventory.createButton(mat, Component.text(title, NamedTextColor.GOLD));
         icon.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP, ItemFlag.HIDE_ARMOR_TRIM, ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS);
+        int level = getValue(s);
         if (level > 0) {
             icon.setAmount(level);
             ItemMeta meta = icon.getItemMeta();
@@ -62,28 +63,22 @@ public class SessionNotorietySetting extends SessionSetting{
         return maxLevel;
     }
 
-    public int getLevel() {
-        return level;
-    }
-
-    @Override
-    public void leftClick(Session s) {
-        level++;
-        effect.onChange(s, level);
-    }
-
-    @Override
-    public void rightClick(Session s) {
-        level--;
-        effect.onChange(s, level);
-    }
-
     @Override
     public int getValue(Session s) {
-        return level;
+        return valueRetriever.get(s);
     }
 
     public static SessionSetting getById(int id) {
         return settings.get(id);
+    }
+
+    @Override
+    public boolean canLeftClick(Session s) {
+        return getValue(s) < maxLevel;
+    }
+
+    @Override
+    public boolean canRightClick(Session s) {
+        return getValue(s) > 0;
     }
 }

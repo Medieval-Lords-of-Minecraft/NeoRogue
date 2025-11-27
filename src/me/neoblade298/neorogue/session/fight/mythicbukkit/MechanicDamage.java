@@ -17,6 +17,7 @@ import io.lumine.mythic.api.skills.SkillTrigger;
 import io.lumine.mythic.api.skills.ThreadSafetyLevel;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.core.mobs.ActiveMob;
+import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
@@ -72,7 +73,7 @@ public class MechanicDamage implements ITargetedEntitySkill {
 			FightData fd = asParent ? FightInstance.getFightData(am.getParent().get().getBukkitEntity())
 					: FightInstance.getFightData(data.getCaster().getEntity().getUniqueId());
 			DamageMeta meta = new DamageMeta(fd);
-			final double mult = 1 + (level * (0.05 + fd.getInstance().getSession().getEnemyDamageScale()));
+			final double mult = 1 + (level * (0.05 + (Session.ENEMY_DAMAGE_SCALE_PER_LEVEL + fd.getInstance().getSession().getEnemyDamageScale())));
 			for (Entry<DamageType, Double> ent : damage.entrySet()) {
 				meta.addDamageSlice(new DamageSlice(fd, ent.getValue() * mult, ent.getKey(), DamageStatTracker.ignored("MythicDamage1")));
 			}

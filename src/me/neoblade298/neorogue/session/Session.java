@@ -77,7 +77,9 @@ public class Session {
 	
 	// Settings
 	private boolean endless;
-	private double enemyHealthScale, enemyDamageScale, goldReduction, fightTimeReduction;
+	public static double ENEMY_HEALTH_SCALE_PER_LEVEL = 0.1, ENEMY_DAMAGE_SCALE_PER_LEVEL = 0.05,
+			GOLD_REDUCTION_PER_LEVEL = 0.1, FIGHT_TIME_REDUCTION_PER_LEVEL = 0.1;
+	private int enemyHealthScale, enemyDamageScale, goldReduction, fightTimeReduction;
 	private int notoriety;
 	
 	// Session coordinates
@@ -181,10 +183,10 @@ public class Session {
 
 					// settings
 					endless = sessSet.getBoolean("endless");
-					enemyHealthScale = sessSet.getDouble("enemyHealthScale");
-					enemyDamageScale = sessSet.getDouble("enemyDamageScale");
-					goldReduction = sessSet.getDouble("goldReduction");
-					fightTimeReduction = sessSet.getDouble("fightTimeReduction");
+					enemyHealthScale = sessSet.getInt("enemyHealthScale");
+					enemyDamageScale = sessSet.getInt("enemyDamageScale");
+					goldReduction = sessSet.getInt("goldReduction");
+					fightTimeReduction = sessSet.getInt("fightTimeReduction");
 
 					area = new Area(
 							AreaType.valueOf(sessSet.getString("areaType")), xOff, zOff, host, saveSlot, s, stmt, bossId
@@ -590,35 +592,35 @@ public class Session {
 		return endless;
 	}
 
-	public void setEnemyHealthScale(double enemyHealthScale) {
+	public void setEnemyHealthScale(int enemyHealthScale) {
 		this.enemyHealthScale = enemyHealthScale;
 	}
 
-	public double getEnemyHealthScale() {
+	public int getEnemyHealthScale() {
 		return enemyHealthScale;
 	}
 
-	public void setEnemyDamageScale(double enemyDamageScale) {
+	public void setEnemyDamageScale(int enemyDamageScale) {
 		this.enemyDamageScale = enemyDamageScale;
 	}
 
-	public double getEnemyDamageScale() {
+	public int getEnemyDamageScale() {
 		return enemyDamageScale;
 	}
 
-	public void setGoldReduction(double goldReduction) {
+	public void setGoldReduction(int goldReduction) {
 		this.goldReduction = goldReduction;
 	}
 
-	public double getGoldReduction() {
+	public int getGoldReduction() {
 		return goldReduction;
 	}
 
-	public void setFightTimeReduction(double fightTimeReduction) {
+	public void setFightTimeReduction(int fightTimeReduction) {
 		this.fightTimeReduction = fightTimeReduction;
 	}
 
-	public double getFightTimeReduction() {
+	public int getFightTimeReduction() {
 		return fightTimeReduction;
 	}
 
