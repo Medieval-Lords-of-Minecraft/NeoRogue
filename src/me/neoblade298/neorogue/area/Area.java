@@ -670,11 +670,6 @@ public class Area {
 			for (int lane = 0; lane < LANE_COUNT; lane++) {
 				// Saves up to two rows ahead
 				for (int i = 0; i < 1 && row + i < ROW_COUNT; i++) {
-					delete.execute(
-							"DELETE FROM neorogue_nodes WHERE host = '" + host + "' AND slot = " + saveSlot
-									+ " AND position = " + row + ";"
-					);
-					
 					Node node = nodes[row + i][lane];
 					if (node == null)
 						continue;
@@ -682,10 +677,7 @@ public class Area {
 				}
 			}
 			// Save boss node too
-			delete.execute(
-					"DELETE FROM neorogue_nodes WHERE host = '" + host + "' AND slot = " + saveSlot
-							+ " AND position = " + (ROW_COUNT - 1) + ";"
-			);
+			saveNode(insert, nodes[ROW_COUNT - 1][CENTER_LANE], saveSlot, host);
 			insert.executeBatch();
 		} catch (SQLException ex) {
 			Bukkit.getLogger()
