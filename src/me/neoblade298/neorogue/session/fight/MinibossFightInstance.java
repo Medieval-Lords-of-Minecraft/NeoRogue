@@ -30,6 +30,7 @@ import me.neoblade298.neorogue.session.reward.EquipmentReward;
 import me.neoblade298.neorogue.session.reward.Reward;
 import me.neoblade298.neorogue.session.reward.RewardInstance;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.title.Title;
 
 public class MinibossFightInstance extends FightInstance {
 	private HashSet<String> targets = new HashSet<String>();
@@ -63,7 +64,8 @@ public class MinibossFightInstance extends FightInstance {
 		if (targets.isEmpty()) {
 			new BukkitRunnable() {
 				public void run() {
-					handleWin(Component.text("You beat the miniboss!"), new RewardInstance(s, generateRewards(), NodeType.MINIBOSS));
+					Title title = Title.title(Component.text("You beat the miniboss!"), Component.text(" "));
+					handleWin(title, new RewardInstance(s, generateRewards(), NodeType.MINIBOSS));
 				}
 			}.runTask(NeoRogue.inst());
 			return;

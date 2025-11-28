@@ -33,7 +33,7 @@ import me.neoblade298.neorogue.session.reward.EquipmentReward;
 import me.neoblade298.neorogue.session.reward.Reward;
 import me.neoblade298.neorogue.session.reward.RewardInstance;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.title.Title;
 
 public class StandardFightInstance extends FightInstance {
 	
@@ -129,11 +129,11 @@ public class StandardFightInstance extends FightInstance {
 					isActive = false;
 					timeBar.removeAll();
 					scoreBar.removeAll();
-					handleWin(Component.text("You completed the fight with a score of ", NamedTextColor.GRAY)
-							.append(fightScore.getComponentDisplay()).append(Component.text("!")), 
-							new RewardInstance(s, generateRewards(s, fightScore), NodeType.FIGHT));
+					Title title = Title.title(Component.text("Victory"),
+						Component.text("Your ranking: ").append(fightScore.getComponentDisplay()));
+					handleWin(title, new RewardInstance(s, generateRewards(s, fightScore), NodeType.FIGHT));
 				}
-			}.runTask(NeoRogue.inst());
+			}.runTaskLater(NeoRogue.inst(), 1);
 			return;
 		}
 	}

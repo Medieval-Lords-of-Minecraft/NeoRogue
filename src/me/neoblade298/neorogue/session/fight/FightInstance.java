@@ -119,7 +119,7 @@ public abstract class FightInstance extends Instance {
 	private ArrayList<String> spectatorLines;
 	protected boolean isActive = true;
 	protected ArrayList<BossBar> bars = new ArrayList<BossBar>();
-	
+	private boolean isCleaned;
 	private static final Circle reviveCircle = new Circle(5);
 	private static final ParticleContainer reviveCirclePart = new ParticleContainer(Particle.END_ROD).count(1);
 	private static final ParticleContainer revivePart = new ParticleContainer(Particle.FIREWORK)
@@ -245,6 +245,7 @@ public abstract class FightInstance extends Instance {
 					new BukkitRunnable() {
 						@Override
 						public void run() {
+							fi.broadcastStatistics();
 							sess.setInstance(new LoseInstance(sess));
 						}
 					}.runTask(NeoRogue.inst());
@@ -293,6 +294,7 @@ public abstract class FightInstance extends Instance {
 		}
 
 		if (lose) {
+			broadcastStatistics();
 			s.setInstance(new LoseInstance(s));
 		}
 	}
@@ -383,6 +385,9 @@ public abstract class FightInstance extends Instance {
 			trigger(data.getPlayer(), Trigger.WIN_FIGHT, new Object[0]);
 		}
 
+		broadcastStatistics();
+		s.launchFireworks();
+		cleanupHelper();
 
 		new BukkitRunnable() {
 			@Override
@@ -688,6 +693,7 @@ public abstract class FightInstance extends Instance {
 		data.cleanup();
 		if (data.getInstance() == null)
 			return;
+		if (!data.getInstance().isActive) return;
 		data.getInstance().handleRespawn(data, e.getMobType().getInternalName(), true, false);
 	}
 	
@@ -712,6 +718,7 @@ public abstract class FightInstance extends Instance {
 
 		if (data.getInstance() == null)
 			return;
+		if (!data.getInstance().isActive) return;
 		
 		String id = e.getMobType().getInternalName();
 		data.getInstance().handleRespawn(data, id, false, playerKill);
@@ -913,12 +920,11 @@ public abstract class FightInstance extends Instance {
 		FightInstance fi = this;
 
 		// Choose random map piece to spawn in and order spawners by distance from it
-		Coordinates[] spawns = map.getPieces().get(NeoRogue.gen.nextInt(map.getPieces().size())).getSpawns();
-		Coordinates spawnPiece = spawns[NeoRogue.gen.nextInt(spawns.length)];
+		Coordinates spawnCoords = map.getRandomSpawn();
 		ArrayList<MapSpawnerInstance> spawnersByDist = new ArrayList<MapSpawnerInstance>(fi.spawners);
 		spawnersByDist.sort(
 				(a, b) -> Double
-						.compare(spawnPiece.toLocation().distanceSquared(a.getLocation()), spawnPiece.toLocation().distanceSquared(b.getLocation()))
+						.compare(spawnCoords.toLocation().distanceSquared(a.getLocation()), spawnCoords.toLocation().distanceSquared(b.getLocation()))
 		);
 		
 		new BukkitRunnable() {
@@ -1027,9 +1033,8 @@ public abstract class FightInstance extends Instance {
 	public Session getSession() {
 		return s;
 	}
-	
-	@Override
-	public void cleanup() {
+
+	private void broadcastStatistics() {
 		long time = System.currentTimeMillis() - startTime;
 		final long hr = TimeUnit.MILLISECONDS.toHours(time);
 		final long min = TimeUnit.MILLISECONDS.toMinutes(time - TimeUnit.HOURS.toMillis(hr));
@@ -1041,6 +1046,17 @@ public abstract class FightInstance extends Instance {
 		String timer = String.format("%d:%02d.%03d", min, sec, ms);
 		
 		s.broadcast(FightStatistics.getStatsHeader(timer));
+	}
+	
+	@Override
+	public void cleanup() {
+		cleanupHelper();
+	}
+
+	private void cleanupHelper() {
+		if (isCleaned) return;
+		isCleaned = true;
+		System.out.println("Cleaning up player data");
 		for (UUID uuid : s.getParty().keySet()) {
 			PlayerFightData pdata = userData.remove(uuid);
 			PlayerSessionData data = pdata.getSessionData();
@@ -1065,32 +1081,43 @@ public abstract class FightInstance extends Instance {
 				fdata.cleanup();
 		}
 
+		System.out.println("Cleaning up fight data");
+		ArrayList<FightData> toKill = new ArrayList<FightData>(fightData.values());
 		for (FightData fd : fightData.values()) {
 			if (fd == null)
 				continue;
 			fd.cleanup();
-			if (fd.getEntity() != null) {
-				LivingEntity li = fd.getEntity();
-				li.damage(li.getHealth() + 20);
-			}
 		}
 
+		System.out.println("Removing corpses");
 		for (Corpse c : corpses) {
 			c.remove();
 		}
 
+		System.out.println("Removing indicators");
 		for (UUID ind : indicators) {
 			Entity ent = Bukkit.getEntity(ind);
 			if (ent != null)
 				ent.remove();
 		}
 
+		System.out.println("Running cleanup tasks");
 		for (BukkitRunnable cleanupTask : cleanupTasks) {
 			cleanupTask.runTask(NeoRogue.inst());
 		}
 		
+		
+		System.out.println("Canceling tasks");
 		for (BukkitTask task : tasks) {
 			task.cancel();
+		}
+
+		// Avoids concurrent modification (killing them removes them)
+		for (FightData fd : toKill) {
+			if (fd.getEntity() != null) {
+				LivingEntity li = fd.getEntity();
+				li.damage(li.getHealth() + 20);
+			}
 		}
 	}
 	

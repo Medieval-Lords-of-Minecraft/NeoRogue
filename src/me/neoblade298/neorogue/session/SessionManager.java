@@ -312,9 +312,13 @@ public class SessionManager implements Listener {
 		Player p = null;
 		boolean playerDamager = false;
 
-		// Our plugin uses magic damage type
+		// Our plugin uses magic damage type, don't cancel those
 		if (e.getDamageSource().getDamageType() == DamageType.MAGIC)
 			return;
+		if (e.getDamageSource().getDamageType() == DamageType.FIREWORKS) {
+			e.setCancelled(true);
+			return;
+		}
 		if (sessions.containsKey(e.getDamager().getUniqueId())) {
 			p = (Player) e.getDamager();
 			playerDamager = true;

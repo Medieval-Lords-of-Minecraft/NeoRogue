@@ -14,13 +14,18 @@ import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
+import org.bukkit.FireworkEffect;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
+import org.bukkit.World;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.map.MapView;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -382,6 +387,17 @@ public class Session {
 		for (UUID uuid : spectators.keySet()) {
 			Player p = Bukkit.getPlayer(uuid);
 			Util.msgRaw(p, msg);
+		}
+	}
+
+	public void launchFireworks() {
+		for (Player p : getOnlinePlayers()) {
+			World w = p.getWorld();
+			Firework firework = w.spawn(p.getLocation(), Firework.class);
+			FireworkMeta meta = firework.getFireworkMeta();
+			meta.addEffect(FireworkEffect.builder().withColor(Color.RED).with(FireworkEffect.Type.BALL).build());
+			meta.setPower(1);
+			firework.setFireworkMeta(meta);
 		}
 	}
 
