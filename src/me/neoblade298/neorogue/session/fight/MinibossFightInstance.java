@@ -64,7 +64,7 @@ public class MinibossFightInstance extends FightInstance {
 		if (targets.isEmpty()) {
 			new BukkitRunnable() {
 				public void run() {
-					Title title = Title.title(Component.text("You beat the miniboss!"), Component.text(" "));
+					Title title = Title.title(Component.text("Victory"), Component.text(" "));
 					handleWin(title, new RewardInstance(s, generateRewards(), NodeType.MINIBOSS));
 				}
 			}.runTask(NeoRogue.inst());

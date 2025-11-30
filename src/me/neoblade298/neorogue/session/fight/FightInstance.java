@@ -388,11 +388,12 @@ public abstract class FightInstance extends Instance {
 		broadcastStatistics();
 		s.launchFireworks();
 		cleanupHelper();
+		s.broadcastTitle(title);
+		s.broadcastSound(Sound.UI_TOAST_CHALLENGE_COMPLETE);
 
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				s.broadcastTitle(title);
 				s.setInstance(next);
 			}
 		}.runTaskLater(NeoRogue.inst(), 60L);
@@ -1056,7 +1057,6 @@ public abstract class FightInstance extends Instance {
 	private void cleanupHelper() {
 		if (isCleaned) return;
 		isCleaned = true;
-		System.out.println("Cleaning up player data");
 		for (UUID uuid : s.getParty().keySet()) {
 			PlayerFightData pdata = userData.remove(uuid);
 			PlayerSessionData data = pdata.getSessionData();
@@ -1081,7 +1081,6 @@ public abstract class FightInstance extends Instance {
 				fdata.cleanup();
 		}
 
-		System.out.println("Cleaning up fight data");
 		ArrayList<FightData> toKill = new ArrayList<FightData>(fightData.values());
 		for (FightData fd : fightData.values()) {
 			if (fd == null)
@@ -1089,25 +1088,21 @@ public abstract class FightInstance extends Instance {
 			fd.cleanup();
 		}
 
-		System.out.println("Removing corpses");
 		for (Corpse c : corpses) {
 			c.remove();
 		}
 
-		System.out.println("Removing indicators");
 		for (UUID ind : indicators) {
 			Entity ent = Bukkit.getEntity(ind);
 			if (ent != null)
 				ent.remove();
 		}
 
-		System.out.println("Running cleanup tasks");
 		for (BukkitRunnable cleanupTask : cleanupTasks) {
 			cleanupTask.runTask(NeoRogue.inst());
 		}
 		
 		
-		System.out.println("Canceling tasks");
 		for (BukkitTask task : tasks) {
 			task.cancel();
 		}

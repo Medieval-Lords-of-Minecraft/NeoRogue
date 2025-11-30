@@ -94,6 +94,8 @@ public class Session {
 			SHRINE_Z = REWARDS_Z + REWARDS_WIDTH, SHRINE_WIDTH = 13, SHOP_X = 0, SHOP_Z = SHRINE_Z + SHRINE_WIDTH,
 			SHOP_WIDTH = 12, CHANCE_X = 0, CHANCE_Z = SHOP_Z + SHOP_WIDTH, CHANCE_WIDTH = 12, LOSE_X = 0,
 			LOSE_Z = CHANCE_Z + CHANCE_WIDTH;
+
+	private static final ArrayList<Color> fireworkColors = new ArrayList<Color>();
 	
 	private static Clipboard classSelect, nodeSelect, rewardsRoom, shrine, shop, chance, lose;
 	static {
@@ -104,6 +106,13 @@ public class Session {
 		shop = loadClipboard("shop.schem");
 		chance = loadClipboard("chance.schem");
 		lose = loadClipboard("graveyard.schem");
+
+		fireworkColors.add(Color.RED);
+		fireworkColors.add(Color.BLUE);
+		fireworkColors.add(Color.GREEN);
+		fireworkColors.add(Color.YELLOW);
+		fireworkColors.add(Color.PURPLE);
+		fireworkColors.add(Color.ORANGE);
 	}
 	
 	private static Clipboard loadClipboard(String schematic) {
@@ -230,10 +239,11 @@ public class Session {
 	}
 	
 	private void generateInterstitials() {
-		Location loc = new Location(Bukkit.getWorld(Region.WORLD_NAME), -(xOff + 1), 64, zOff - 1);
+		Location loc = new Location(Bukkit.getWorld(Region.WORLD_NAME), -(xOff + 1), 62, zOff);
 
 		// Primitive way to check if this plot has been generated
 		if (loc.getBlock().getType() != Material.GRASS_BLOCK) {
+			System.out.println("Block " + Util.locToString(loc) + " is " + loc.getBlock().getType() + ", generating...");
 			// Generate the lobby and add the host there
 			try (EditSession editSession = WorldEdit.getInstance().newEditSession(Region.world)) {
 				pasteSchematic(classSelect, editSession, this, Session.LOBBY_Z);
@@ -391,11 +401,26 @@ public class Session {
 	}
 
 	public void launchFireworks() {
+		new BukkitRunnable() {
+			int count = 0;
+			public void run() {
+				launchFirework();
+				if (++count >= 2) {
+					this.cancel();
+				}
+			}
+		}.runTaskTimer(NeoRogue.inst(), 0L, 10L);
+	}
+	
+	private void launchFirework() {
 		for (Player p : getOnlinePlayers()) {
 			World w = p.getWorld();
-			Firework firework = w.spawn(p.getLocation(), Firework.class);
+			Location loc = p.getLocation().clone().add(NeoCore.gen.nextDouble(-1, 1), 
+					NeoCore.gen.nextDouble(-1, 1), NeoCore.gen.nextDouble(-1, 1));
+			Firework firework = w.spawn(loc, Firework.class);
 			FireworkMeta meta = firework.getFireworkMeta();
-			meta.addEffect(FireworkEffect.builder().withColor(Color.RED).with(FireworkEffect.Type.BALL).build());
+			Color color = fireworkColors.get(NeoRogue.gen.nextInt(fireworkColors.size()));
+			meta.addEffect(FireworkEffect.builder().withColor(color).with(FireworkEffect.Type.BALL).build());
 			meta.setPower(1);
 			firework.setFireworkMeta(meta);
 		}

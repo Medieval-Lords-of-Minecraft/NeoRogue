@@ -27,6 +27,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextDecoration.State;
+import net.kyori.adventure.title.Title;
 
 public class NodeSelectInstance extends EditInventoryInstance {
 	private static final double SPAWN_X = Session.AREA_X + 21.5, SPAWN_Z = Session.AREA_Z + 6.5;
@@ -65,14 +66,18 @@ public class NodeSelectInstance extends EditInventoryInstance {
 		TextDisplay holo = NeoRogue.createHologram(loc, text);
 		holograms.add(holo);
 
+		if (s.getNode().getRow() == 0) {
+			Title title = Title.title(Component.text(region.getType().getDisplay()), Component.text(" "));
+			s.broadcastTitle(title);
+			s.broadcastSound(Sound.UI_TOAST_CHALLENGE_COMPLETE);
+		}
+		
 		for (Player p : s.getOnlinePlayers()) {
 			teleportRandomly(p);
-			p.setAllowFlight(true);
 		}
 		for (UUID uuid : s.getSpectators().keySet()) {
 			Player p = Bukkit.getPlayer(uuid);
 			teleportRandomly(p);
-			p.setAllowFlight(true);
 		}
 		super.setup();
 		task = new BukkitRunnable() {

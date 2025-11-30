@@ -68,7 +68,7 @@ public class BossFightInstance extends FightInstance {
 		if (targets.isEmpty()) {
 			new BukkitRunnable() {
 				public void run() {
-					Title title = Title.title(Component.text("You beat the boss!"), Component.text(" "));
+					Title title = Title.title(Component.text("Victory"), Component.text(" "));
 					handleWin(title, new RewardInstance(s, generateRewards(), NodeType.BOSS));
 					
 					// Set up next region

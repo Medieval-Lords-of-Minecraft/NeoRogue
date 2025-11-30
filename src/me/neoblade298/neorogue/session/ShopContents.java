@@ -123,7 +123,7 @@ public class ShopContents {
 		HashMap<Integer, ShopItem> contents = new HashMap<Integer, ShopItem>();
 		String[] split = str.split(",");
 		for (int i = 0; i < split.length; i++) {
-			String[] subsplit = str.split(":");
+			String[] subsplit = split[i].split(":", 2);
 			int idx = Integer.parseInt(subsplit[0]);
 			ShopItem item = ShopItem.deserialize(subsplit[1]);
 			contents.put(idx, item);

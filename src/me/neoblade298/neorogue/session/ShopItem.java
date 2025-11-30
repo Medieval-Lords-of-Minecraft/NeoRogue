@@ -102,12 +102,11 @@ public class ShopItem {
 	}
 	
 	public static ShopItem deserialize(String str) {
-		System.out.println("Attempting to deserialize shop item: " + str);
 		String[] split = str.split(":");
 		Equipment eq = Equipment.deserialize(split[0]);
 		int price = Integer.parseInt(split[1]);
-		boolean sale = split[3].equals("1");
-		boolean isPurchased = split[4].equals("1");
+		boolean sale = split[2].equals("1");
+		boolean isPurchased = split[3].equals("1");
 		return new ShopItem(eq, price, sale, isPurchased);
 	}
 

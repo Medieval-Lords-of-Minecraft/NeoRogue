@@ -250,6 +250,7 @@ public class DamageMeta {
 	public double dealDamage(LivingEntity target, @Nullable SkillMetadata skillData) {
 		if (slices.isEmpty()) return 0;
 		if (target.getType() == EntityType.ARMOR_STAND) return 0;
+		if (owner.getInstance() == null || !owner.getInstance().isActive) return 0;
 		FightData recipient = FightInstance.getFightData(target.getUniqueId());
 		LivingEntity damager = owner.getEntity();
 		if (damager == null) return 0;
