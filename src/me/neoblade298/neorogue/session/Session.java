@@ -539,11 +539,12 @@ public class Session {
 		}
 		this.inst = next;
 		next.start();
-		System.out.println("Started instance " + next.getClass().getSimpleName() + ", visited nodes " + nodesVisited);
+		Bukkit.getLogger()
+				.info("Started instance " + next.getClass().getSimpleName() + ", visited nodes " + nodesVisited);
 		for (PlayerSessionData psd : party.values()) {
 			psd.trigger(SessionTrigger.VISIT_NODE, null);
-			System.out.println("Serialization for " + psd.getPlayer().getName());
-			System.out.println(psd.serialize());
+			Bukkit.getLogger().info("Serialization for " + psd.getPlayer().getName());
+			Bukkit.getLogger().info(psd.serialize());
 		}
 		
 		// Auto-save
