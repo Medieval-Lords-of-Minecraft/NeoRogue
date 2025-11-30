@@ -240,10 +240,11 @@ public class Session {
 	
 	private void generateInterstitials() {
 		Location loc = new Location(Bukkit.getWorld(Region.WORLD_NAME), -(xOff + 1), 62, zOff);
-
-		// Primitive way to check if this plot has been generated
-		if (loc.getBlock().getType() != Material.GRASS_BLOCK) {
-			System.out.println("Block " + Util.locToString(loc) + " is " + loc.getBlock().getType() + ", generating...");
+		Material versionCheck = Material.STONE; // Change this when interstitials change to regen them
+		
+		if (loc.getBlock().getType() != versionCheck) {
+			Bukkit.getLogger().info("[NeoRogue] Generating interstitials for host " + Bukkit.getPlayer(host).getName());
+			loc.getBlock().setType(versionCheck);
 			// Generate the lobby and add the host there
 			try (EditSession editSession = WorldEdit.getInstance().newEditSession(Region.world)) {
 				pasteSchematic(classSelect, editSession, this, Session.LOBBY_Z);
