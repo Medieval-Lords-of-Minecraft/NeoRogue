@@ -81,12 +81,12 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		// Import data from session data
 		int iter = 0;
 		for (int i : ARMOR) {
+			slotTypes.put(i, EquipSlot.ARMOR);
 			if (iter >= data.getArmorSlots()) {
 				contents[i] = CoreInventory.createButton(Material.BLACK_STAINED_GLASS_PANE, Component.text(" "));
 				iter++;
 				continue;
 			}
-			slotTypes.put(i, EquipSlot.ARMOR);
 			Equipment a = data.getEquipment(EquipSlot.ARMOR)[iter];
 			contents[i] = a != null ? addNbt(a.getItem(), a.getId(), a.isUpgraded(), iter) : createArmorIcon(iter);
 			iter++;
@@ -94,12 +94,12 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 
 		iter = 0;
 		for (int i : ACCESSORIES) {
+			slotTypes.put(i, EquipSlot.ACCESSORY);
 			if (iter >= data.getAccessorySlots()) {
 				contents[i] = CoreInventory.createButton(Material.BLACK_STAINED_GLASS_PANE, Component.text(" "));
 				iter++;
 				continue;
 			}
-			slotTypes.put(i, EquipSlot.ACCESSORY);
 			Equipment a = data.getEquipment(EquipSlot.ACCESSORY)[iter];
 			contents[i] = a != null ? addNbt(a.getItem(), a.getId(), a.isUpgraded(), iter) : createAccessoryIcon(iter);
 			iter++;
@@ -108,6 +108,10 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		for (KeyBind bind : KeyBind.values()) {
 			slotTypes.put(bind.getInventorySlot(), EquipSlot.KEYBIND);
 			Equipment a = data.getEquipment(EquipSlot.KEYBIND)[bind.getDataSlot()];
+			if (a == null && data.getAbilitiesEquipped() >= data.getMaxAbilities()) {
+				contents[bind.getInventorySlot()] = createMaxedAbilitiesIcon(data, bind.getDataSlot());
+				continue;
+			}
 			contents[bind.getInventorySlot()] = a != null
 					? addNbt(addBindLore(a.getItem(), bind.getInventorySlot(), bind.getDataSlot()), a.getId(),
 							a.isUpgraded(), bind.getDataSlot())
@@ -121,6 +125,10 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		for (int i : HOTBAR) {
 			slotTypes.put(i, EquipSlot.HOTBAR);
 			Equipment eq = data.getEquipment(EquipSlot.HOTBAR)[i];
+			if (eq == null && data.getAbilitiesEquipped() >= data.getMaxAbilities()) {
+				contents[i] = createMaxedAbilitiesIcon(data, i);
+				continue;
+			}
 			contents[i] = eq != null ? addNbt(addBindLore(eq.getItem(), i, i), eq.getId(), eq.isUpgraded(), i)
 					: createHotbarIcon(i);
 		}
@@ -157,6 +165,15 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		return addNbt(CoreInventory.createButton(Material.YELLOW_STAINED_GLASS_PANE,
 				Component.text("Armor Slot", NamedTextColor.YELLOW), "Drag an armor here to equip it!", 250,
 				NamedTextColor.GRAY), dataSlot);
+	}
+
+	private static ItemStack createMaxedAbilitiesIcon(PlayerSessionData data, int dataSlot) {
+		ItemStack item = CoreInventory.createButton(Material.BLACK_STAINED_GLASS_PANE, Component.text("Out of abilities", NamedTextColor.RED),
+				Component.text("You have equipped " + data.getAbilitiesEquipped() + " / " +data.getMaxAbilities() + " abilities", NamedTextColor.GRAY));
+				NBTItem nbti = new NBTItem(item);
+				nbti.setBoolean("maxed", true);
+				nbti.setBoolean("openSlot", true);
+				return addNbt(nbti.getItem(), dataSlot);
 	}
 
 	public static ItemStack createIcon(EquipSlot slot, int dataSlot) {
@@ -351,6 +368,10 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 				if (isBindable(type)) clicked = removeBindLore(clicked);
 				removeEquipment(type, nclicked.getInteger("dataSlot"), slot, e.getClickedInventory());
 				sci.handleShiftClickIn(e, clicked);
+
+				if (eq.getType() == EquipmentType.ABILITY && data.getAbilitiesEquipped() == data.getMaxAbilities() - 1) {
+					setupInventory(data);
+				}
 			}
 			p.playSound(p, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1F);
 			return;
@@ -433,7 +454,6 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 			}
 
 			// If swapping equipment with equipment, remove that equipment
-			clearHighlights();
 			if (!nclicked.hasTag("equipId")) {
 				p.setItemOnCursor(null);
 			}
@@ -448,6 +468,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 			p.playSound(p, Sound.ITEM_ARMOR_EQUIP_DIAMOND, 1F, 1F);
 			if (isBindable(type)) cursor = addBindLore(cursor, slot, nclicked.getInteger("dataSlot"));
 			inv.setItem(slot, addNbt(cursor, nclicked.getInteger("dataSlot")));
+			clearHighlights();
 		}
 		else {
 			p.playSound(p, Sound.ITEM_ARMOR_EQUIP_DIAMOND, 1F, 1F);
@@ -457,11 +478,13 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 	public void clearHighlights() {
 		ItemStack[] contents = inv.getContents();
 		for (int i : highlighted) {
-			if (contents[i].getType() != Material.GLASS_PANE) continue;
 			contents[i] = iconFromEquipSlot(slotTypes.get(i), i);
 		}
 		highlighted.clear();
 		inv.setContents(contents);
+
+		// Lazy, just reset the inventory
+		setupInventory(data);
 	}
 	
 	public void setHighlights(EquipmentType type) {
@@ -469,7 +492,12 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		for (int[] slots : arrayFromEquipSlot(type)) {
 			for (int s : slots) {
 				ItemStack iter = contents[s];
-				if (iter.getType() != Material.BLACK_STAINED_GLASS_PANE && iter.getType().name().endsWith("PANE")) {
+				NBTItem nbti = new NBTItem(iter);
+				if (nbti.hasTag("equipId") || !nbti.hasTag("openSlot")) continue;
+				if (type == EquipmentType.ABILITY && !data.canEquipAbility()) {
+					createMaxedAbilitiesIcon(data, nbti.getInteger("dataSlot"));
+				}
+				else {
 					contents[s] = iter.withType(Material.GLASS_PANE);
 					highlighted.add(s);
 				}
@@ -513,6 +541,11 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		p.playSound(p, Sound.ITEM_ARMOR_EQUIP_DIAMOND, 1F, 1F);
 		if (isBindable(result.es)) item = addBindLore(item, result.slot, nauto.getInteger("dataSlot"));
 		inv.setItem(result.slot, addNbt(item, nauto.getInteger("dataSlot")));
+
+		if (eq.getType() == EquipmentType.ABILITY && !data.canEquipAbility()) {
+			// Lazy, just re-setup entire inventory
+			setupInventory(data);
+		}
 	}
 	
 	@Override
@@ -591,6 +624,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 	private static ItemStack addNbt(ItemStack item, int dataSlot) {
 		NBTItem nbti = new NBTItem(item);
 		nbti.setInteger("dataSlot", dataSlot);
+		nbti.setBoolean("openSlot", true); // Differentiates with available equippable slots and just empty panes in inventory
 		return nbti.getItem();
 	}
 
@@ -599,6 +633,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		nbti.setString("equipId", equipId);
 		nbti.setInteger("dataSlot", dataSlot);
 		nbti.setBoolean("isUpgraded", isUpgraded);
+		nbti.setBoolean("openSlot", true);
 		return nbti.getItem();
 	}
 
@@ -654,9 +689,20 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		switch (es) {
 		case ACCESSORY: return createAccessoryIcon(slot - 21);
 		case ARMOR: return createArmorIcon(slot - 18);
-		case HOTBAR: return createHotbarIcon(slot);
-		case KEYBIND: KeyBind bind = KeyBind.getBindFromSlot(slot - 18);
-			return addNbt(bind.getItem(), bind.getDataSlot());
+		case HOTBAR: if (data.getAbilitiesEquipped() >= data.getMaxAbilities()) {
+			return createMaxedAbilitiesIcon(data, slot);
+		}
+		else {
+			return createHotbarIcon(slot);
+		}
+		case KEYBIND: 
+		if (data.getAbilitiesEquipped() >= data.getMaxAbilities()) {
+			return createMaxedAbilitiesIcon(data, slot);
+		}
+		else {
+		KeyBind bind = KeyBind.getBindFromSlot(slot - 18);
+		return addNbt(bind.getItem(), bind.getDataSlot());
+		}
 		case OFFHAND: return createOffhandIcon();
 		default: return null; // should never happen
 		}
