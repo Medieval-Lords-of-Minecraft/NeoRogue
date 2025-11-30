@@ -160,6 +160,7 @@ public class Map {
 			int y = hasEntrances ? (int) map.getPieces().getFirst().getPiece().getEntrances()[0].getY() : 0;
 			boolean[][] shape = map.shape;
 			HashSet<Pair> set = new HashSet<Pair>();
+			// Look for all empty spots adjacent to used spots
 			for (int i = 0; i < shape.length; i++) {
 				for (int j = 0; j < shape[0].length; j++) {
 					if (!shape[i][j]) continue;
