@@ -15,10 +15,13 @@ import me.neoblade298.neorogue.equipment.abilities.BasicDarkArts;
 import me.neoblade298.neorogue.equipment.abilities.BasicElementMastery;
 import me.neoblade298.neorogue.equipment.abilities.BasicInfusionMastery;
 import me.neoblade298.neorogue.equipment.abilities.BasicManaManipulation;
+import me.neoblade298.neorogue.equipment.abilities.CalculatingGaze;
 import me.neoblade298.neorogue.equipment.abilities.Dexterity;
 import me.neoblade298.neorogue.equipment.abilities.EnduranceTraining;
 import me.neoblade298.neorogue.equipment.abilities.Furor;
+import me.neoblade298.neorogue.equipment.abilities.Intuition;
 import me.neoblade298.neorogue.equipment.abilities.KeenSenses;
+import me.neoblade298.neorogue.equipment.abilities.Manabending;
 import me.neoblade298.neorogue.equipment.abilities.Resourcefulness;
 import me.neoblade298.neorogue.equipment.artifacts.Anxiety;
 import me.neoblade298.neorogue.region.RegionType;
@@ -46,6 +49,11 @@ public class ManaPoolChance extends ChanceSet {
 		table.add(KeenSenses.get(), 1);
 		table.add(BasicElementMastery.get(), 1);
 		tables.put(EquipmentClass.ARCHER, table);
+		table = new DropTable<Equipment>();
+		table.add(Manabending.get(), 1);
+		table.add(CalculatingGaze.get(), 1);
+		table.add(Intuition.get(), 1);
+		tables.put(EquipmentClass.MAGE, table);
 	}
 
 	public ManaPoolChance() {

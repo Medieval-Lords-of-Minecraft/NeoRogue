@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -30,8 +29,6 @@ public class Initiator extends Equipment {
 		super(ID, "Initiator", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 15, 10, 0));
 		damage = isUpgraded ? 50 : 30;
-		
-		tags.add(GlossaryTag.SHIELDS);
 	}
 	
 	public static Equipment get() {
