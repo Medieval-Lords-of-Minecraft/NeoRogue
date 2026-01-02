@@ -533,9 +533,10 @@ public class Session {
 	public boolean setInstance(Instance next) {
 		boolean firstLoad = this.inst == null;
 		if (!firstLoad) {
-			if (canSetInstance(next)) {
-				this.inst.cleanup();
+			if (!canSetInstance(next)) {
+				return false;
 			}
+			this.inst.cleanup();
 		}
 		this.inst = next;
 		next.start();

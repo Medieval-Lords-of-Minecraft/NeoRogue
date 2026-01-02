@@ -38,7 +38,7 @@ public class ShrineUpgradeInventory extends CoreInventory implements ShiftClicka
 		ItemStack[] contents = inv.getContents();
 		contents[1] = CoreInventory.createButton(Material.PAPER, Component.text("Upgrade", NamedTextColor.BLUE),
 				(TextComponent) NeoCore.miniMessage().deserialize("<gray>Place an item on the left to see what it upgrades into. "
-				+ "<red>To skip upgrading, shift left click this paper."), 250, NamedTextColor.GRAY);
+				+ "<red>To skip upgrading, shift right click this paper."), 250, NamedTextColor.GRAY);
 		inv.setContents(contents);
 	}
 
@@ -79,7 +79,7 @@ public class ShrineUpgradeInventory extends CoreInventory implements ShiftClicka
 		}
 		else if (slot == 1) {
 			e.setCancelled(true);
-			if (e.isShiftClick()) {
+			if (e.isShiftClick() && e.isRightClick()) {
 				inst.useUpgrade(p.getUniqueId());
 			}
 			p.closeInventory();

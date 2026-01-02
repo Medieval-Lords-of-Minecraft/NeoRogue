@@ -33,7 +33,7 @@ public class ShrineInstance extends EditInventoryInstance {
 	private static final ParticleContainer part = new ParticleContainer(Particle.FIREWORK).count(50).spread(2, 2).speed(0.1);
 	private static final double SPAWN_X = Session.SHRINE_X + 5.5, SPAWN_Z = Session.SHRINE_Z + 2.5,
 			HOLO_X = 0, HOLO_Y = 3, HOLO_Z = 7;
-	private static final int INIT_STATE = 0, REST_STATE = 1, UPGRADE_STATE = 2, RETURN_STATE = 3, RETURN_FAIL_STATE = 4;
+	private static final int INIT_STATE = 0, REST_STATE = 1, UPGRADE_STATE = 2, RETURNING_STATE = 3, RETURN_FAIL_STATE = 4;
 	private int state = 0;
 	private Block blockBottom, blockMiddle, blockTop;
 	private HashSet<UUID> notUsed = new HashSet<UUID>();
@@ -122,7 +122,7 @@ public class ShrineInstance extends EditInventoryInstance {
 		if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			Player p = e.getPlayer();
 			UUID uuid = p.getUniqueId();
-			if (state == RETURN_FAIL_STATE) {
+			if (state == RETURN_FAIL_STATE || (state != RETURNING_STATE && notUsed.isEmpty())) {
 				returnToNodes();
 				return;
 			}
@@ -195,11 +195,12 @@ public class ShrineInstance extends EditInventoryInstance {
 			blockTop.setType(Material.WITHER_SKELETON_SKULL);
 
 			Component text = Component.text("Use the anvil!").appendNewline()
-				.append(Component.text("To skip upgrading,")).appendNewline().append(Component.text("shift click the paper!"));
+				.append(Component.text("To skip upgrading,")).appendNewline().append(Component.text("shift right click the paper!"));
 			holo = NeoRogue.createHologram(spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), text);
 		}
 	}
 	
+	// Used to skip upgrading
 	public void useUpgrade(UUID uuid) {
 		notUsed.remove(uuid);
 		if (notUsed.isEmpty()) {
@@ -208,16 +209,20 @@ public class ShrineInstance extends EditInventoryInstance {
 	}
 	
 	public void returnToNodes() {
-		NodeSelectInstance next = new NodeSelectInstance(s);
-		if (!s.canSetInstance(next)) return;
-		s.broadcast("Everyone is ready! Returning you to node select...");
-		state = RETURN_STATE;
 		new BukkitRunnable() {
 			public void run() {
-				s.setInstance(next);
-				state = RETURN_FAIL_STATE; // Only used if we're still stuck in the room
+				NodeSelectInstance next = new NodeSelectInstance(s);
+				if (!s.canSetInstance(next)) return;
+				s.broadcast("Everyone is ready! Returning you to node select...");
+				state = RETURNING_STATE;
+				new BukkitRunnable() {
+					public void run() {
+						s.setInstance(next);
+						state = RETURN_FAIL_STATE; // Only used if we're still stuck in the room
+					}
+				}.runTaskLater(NeoRogue.inst(), 60L);
 			}
-		}.runTaskLater(NeoRogue.inst(), 60L);
+		}.runTaskLater(NeoRogue.inst(), 1);
 	}
 
 	@Override

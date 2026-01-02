@@ -7,7 +7,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Artifact;
@@ -62,12 +61,8 @@ public class MinibossFightInstance extends FightInstance {
 		}
 		
 		if (targets.isEmpty()) {
-			new BukkitRunnable() {
-				public void run() {
-					Title title = Title.title(Component.text("Victory"), Component.text(" "));
-					handleWin(title, new RewardInstance(s, generateRewards(), NodeType.MINIBOSS));
-				}
-			}.runTask(NeoRogue.inst());
+			Title title = Title.title(Component.text("Victory"), Component.text(" "));
+			handleWin(title, new RewardInstance(s, generateRewards(), NodeType.MINIBOSS));
 			return;
 		}
 	}

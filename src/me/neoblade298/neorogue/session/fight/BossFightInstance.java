@@ -7,7 +7,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Consumable;
@@ -66,17 +65,12 @@ public class BossFightInstance extends FightInstance {
 		}
 		
 		if (targets.isEmpty()) {
-			new BukkitRunnable() {
-				public void run() {
-					Title title = Title.title(Component.text("Victory"), Component.text(" "));
-					handleWin(title, new RewardInstance(s, generateRewards(), NodeType.BOSS));
-					
-					// Set up next region
-					s.generateNextRegion();
-					s.setNode(s.getRegion().getNodes()[0][2]);
-				}
-			}.runTask(NeoRogue.inst());
-			return;
+			Title title = Title.title(Component.text("Victory"), Component.text(" "));
+			handleWin(title, new RewardInstance(s, generateRewards(), NodeType.BOSS));
+			
+			// Set up next region
+			s.generateNextRegion();
+			s.setNode(s.getRegion().getNodes()[0][2]);
 		}
 	}
 	
