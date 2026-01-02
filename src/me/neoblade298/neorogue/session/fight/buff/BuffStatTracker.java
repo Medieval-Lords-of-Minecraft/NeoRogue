@@ -11,7 +11,7 @@ public class BuffStatTracker extends StatTracker {
     /* If true, any buffs with the same id will be combined instead of replaced
         Useful for statuses like strength where you have multiple sources of the same strength at a time
         instead of replacing them */
-    private boolean shouldCombine;
+    private boolean shouldCombine = false;
                                 
     protected BuffStatTracker(String id, Component display, boolean invert, boolean shouldCombine) {
         super(id, display, invert);

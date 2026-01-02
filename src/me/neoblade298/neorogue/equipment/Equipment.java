@@ -262,11 +262,13 @@ public abstract class Equipment implements Comparable<Equipment> {
 			// Abilities
 			new Absorb(b);
 			new AcidBomb(b);
+			new AfterImage(b);
 			new Adrenaline(b);
 			new Advantage(b);
 			new AgilityTraining(b);
 			new AnchoringEarth(b);
 			new AnchoringEarth2(b);
+			new Analyze(b);
 			new Assassinate(b);
 			new ArcaneBlast(b);
 			new ArrowRain(b);
@@ -283,6 +285,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new BerserkersCall(b);
 			new Bide(b);
 			new BitterCold(b);
+			new Blackspike(b);
+			new BlackRain(b);
 			new Blast(b);
 			new BlastStep(b);
 			new BlessedEdge(b);
@@ -381,6 +385,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new FivePointStrike(b);
 			new FlashDraw(b);
 			new Flashfire(b);
+			new FlashMark(b);
 			new FlowState(b);
 			new FlowState2(b);
 			new Flurry(b);
@@ -434,6 +439,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new LightningStrike(b);
 			new LightPulse(b);
 			new LimitBreak(b);
+			new LordOfTheNight(b);
 			new Mahoraga(b);
 			new Maim(b);
 			new Malice(b);
@@ -518,6 +524,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new TargetAcquisition(b);
 			new ThrowPoison(b);
 			new ThornGarden(b);
+			new ThriveInChaos(b);
 			new Tireless(b);
 			new Titan(b);
 			new ToAshes(b);

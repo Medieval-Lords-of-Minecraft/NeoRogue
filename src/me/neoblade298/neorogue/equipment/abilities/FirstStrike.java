@@ -4,7 +4,6 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.Sounds;
@@ -50,7 +49,6 @@ public class FirstStrike extends Equipment {
 				+ " forward. Gaining " + GlossaryTag.STEALTH.tag(this) + " or " + GlossaryTag.EVADE.tag(this) + " takes it off cooldown.");
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
@@ -59,11 +57,7 @@ public class FirstStrike extends Equipment {
 			DamageMeta dm = new DamageMeta(data, damage, DamageType.PIERCING, DamageStatTracker.of(id + slot, this));
 			LivingEntity trg = TargetHelper.getNearest(p, tp);
 			if (trg != null) FightInstance.dealDamage(dm, trg);
-			Vector v = p.getEyeLocation().getDirection();
-			if (p.isOnGround()) {
-				p.teleport(p.getLocation().add(0, 0.2, 0));
-			}
-			p.setVelocity(v.setY(0).normalize().multiply(2).setY(-1));
+			data.dash();
 			return TriggerResult.keep();
 		});
 		

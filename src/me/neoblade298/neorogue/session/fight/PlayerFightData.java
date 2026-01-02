@@ -22,6 +22,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neorogue.NeoRogue;
@@ -274,6 +275,21 @@ public class PlayerFightData extends FightData {
 
 	public boolean isIgnoreCooldowns() {
 		return ignoreCooldowns;
+	}
+
+	public void dash() {
+		dash(p.getEyeLocation().getDirection());
+	}
+
+	@SuppressWarnings("deprecation")
+	public void dash(Vector v) {
+		runActions(this, Trigger.DASH, null);
+		Player p = getPlayer();
+		v = v.normalize();
+		if (p.isOnGround()) {
+			p.teleport(p.getLocation().add(0, 0.2, 0));
+		}
+		p.setVelocity(v.setY(0).normalize().multiply(2).setY(-1));
 	}
 
 	@Override
