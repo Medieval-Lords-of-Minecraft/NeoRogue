@@ -1642,6 +1642,12 @@ public abstract class Equipment implements Comparable<Equipment> {
 			} else {
 				table = droptables.get(ec[0]).get(value);
 			}
+			
+			if (table.size() < numDrops) {
+				Bukkit.getLogger().warning("[NeoRogue] Failed to find " + numDrops + " equipment of value " + value + " for equip classes " + ec + ", falling back to lower value");
+				return getMultiple(value - 1, numDrops, unique, exclusions, ec);
+			}
+
 			return table.getMultiple(numDrops, unique, exclusions);
 		}
 
