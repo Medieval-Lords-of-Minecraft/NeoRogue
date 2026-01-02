@@ -39,6 +39,7 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.KillEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageBarrierEvent;
@@ -623,6 +624,9 @@ public class DamageMeta {
 				}
 				FightInstance.trigger((Player) owner.getEntity(), Trigger.DEAL_DAMAGE, new DealDamageEvent(this, target, damage, ignoreShieldsDamage));
 				target.damage(finalDamage, owner.getEntity());
+				if (target.getHealth() <= 0) {
+					FightInstance.trigger((Player) owner.getEntity(), Trigger.KILL, new KillEvent((LivingEntity) target, this));
+				}
 			}
 			else {
 				target.damage(finalDamage);

@@ -85,7 +85,6 @@ import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.GenericStatusType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
-import me.neoblade298.neorogue.session.fight.trigger.event.KillEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageMultipleEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.RightClickHitEvent;
@@ -384,6 +383,7 @@ public abstract class FightInstance extends Instance {
 		for (PlayerFightData data : userData.values()) {
 			trigger(data.getPlayer(), Trigger.WIN_FIGHT, new Object[0]);
 		}
+		isActive = false;
 
 		broadcastStatistics();
 		s.launchFireworks();
@@ -694,7 +694,6 @@ public abstract class FightInstance extends Instance {
 		data.cleanup();
 		if (data.getInstance() == null)
 			return;
-		if (!data.getInstance().isActive) return;
 		data.getInstance().handleRespawn(data, e.getMobType().getInternalName(), true, false);
 	}
 	
@@ -706,7 +705,6 @@ public abstract class FightInstance extends Instance {
 		if (playerKill && e.getEntity() instanceof LivingEntity
 				&& SessionManager.getSession(killer.getUniqueId()) != null) {
 			Session s = SessionManager.getSession((Player) killer);
-			FightInstance.trigger((Player) killer, Trigger.KILL, new KillEvent((LivingEntity) e.getEntity()));
 			for (Player p : s.getOnlinePlayers()) {
 				FightInstance.trigger(p, Trigger.KILL_GLOBAL, e.getEntity());
 			}
@@ -717,9 +715,8 @@ public abstract class FightInstance extends Instance {
 			return;
 		data.cleanup();
 
-		if (data.getInstance() == null)
+		if (data.getInstance() == null || !data.getInstance().isActive)
 			return;
-		if (!data.getInstance().isActive) return;
 		
 		String id = e.getMobType().getInternalName();
 		data.getInstance().handleRespawn(data, id, false, playerKill);
@@ -916,7 +913,7 @@ public abstract class FightInstance extends Instance {
 	@Override
 	public void setup() {
 		instantiate();
-		s.broadcast("Commencing fight...");
+		s.broadcastTitle(Title.title(Component.text("Commencing fight..."), Component.text(" ")));
 		setupInstance(s);
 		FightInstance fi = this;
 

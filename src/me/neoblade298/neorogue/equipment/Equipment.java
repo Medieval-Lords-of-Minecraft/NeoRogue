@@ -56,6 +56,7 @@ import me.neoblade298.neorogue.equipment.accessories.MinorPoisonRelic;
 import me.neoblade298.neorogue.equipment.accessories.MinorShieldingRelic;
 import me.neoblade298.neorogue.equipment.accessories.MinorStaminaRelic;
 import me.neoblade298.neorogue.equipment.accessories.MinorStrengthRelic;
+import me.neoblade298.neorogue.equipment.accessories.Plaguebearer;
 import me.neoblade298.neorogue.equipment.accessories.PotOfGreed;
 import me.neoblade298.neorogue.equipment.accessories.QuartzPrism;
 import me.neoblade298.neorogue.equipment.accessories.RedRing;
@@ -313,6 +314,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new ConfidenceKill(b);
 			new Consecrate(b);
 			new Contaminate(b);
+			new CorpseExplosion(b);
 			new CreateEarth(b);
 			new Cripple(b);
 			new CripplingPoison(b);
@@ -530,6 +532,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new WarCry(b);
 			new Warmup(b);
 			new WarningShot(b);
+			new WeaponEnchantmentDarkness(b);
 			new WeaponEnchantmentElectrified(b);
 			new WeaponEnchantmentHoly(b);
 			new Windcall(b);
@@ -559,6 +562,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new MinorShieldingRelic(b);
 			new MinorStaminaRelic(b);
 			new MinorStrengthRelic(b);
+			new Plaguebearer(b);
 			new RedRing(b);
 			new RighteousRing(b);
 			new RingOfAnger(b);
@@ -742,6 +746,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new StonyWand(b);
 			new TacticiansDagger(b);
 			new TheGreatDivide(b);
+			new ToxicRazor(b);
 			new UnderDarkness(b);
 			new RighteousHammer(b);
 			new WandOfIgnition(b);

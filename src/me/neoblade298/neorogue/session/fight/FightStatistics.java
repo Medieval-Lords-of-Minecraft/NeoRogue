@@ -143,6 +143,10 @@ public class FightStatistics {
 		return revives;
 	}
 	
+	public HashMap<StatusType, Integer> getStatusesApplied() {
+		return statusesApplied;
+	}
+	
 	public Component getStatLine() {
 		Component line = Component.text("").append(getNameplateComponent())
 				.append(getDamageDealtComponent()).append(separator)

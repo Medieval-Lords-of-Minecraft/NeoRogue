@@ -94,6 +94,8 @@ public enum GlossaryTag implements GlossaryIcon {
 	INJURY(Material.BONE, StatusType.INJURY.tag,
 			"When the holder deals damage, a stack of injury is used to reduce 0.2 damage dealt post-buff until there are no stacks or no damage remaining. " +
 			"20% of the stacks is removed every second."),
+	DASH(Material.WIND_CHARGE, "<green>Dash</green>",
+			"Certain abilities may trigger upon dashing."),
 	CHARGE(Material.BLAZE_ROD, "<gold>Charge</gold>",
 			"Become unable to jump and apply slowness based on level of charge to yourself. You cannot use other abilities during this time."),
 	CHANNEL(Material.CLOCK, "<red>Channel</red>",
