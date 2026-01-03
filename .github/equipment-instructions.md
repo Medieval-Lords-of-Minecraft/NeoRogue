@@ -480,6 +480,65 @@ data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
 - Named tasks allow replacement/cancellation by ID
 - Group related tasks with consistent ID prefixes
 
+### Channeling & Charging
+
+**CRITICAL: Use PlayerFightData's built-in channel() and charge() methods instead of manual implementation.**
+
+When the user requests "channel" or "charge" mechanics, use these methods which handle slowness, movement restrictions, and ability lockout automatically.
+
+#### Channel vs Charge
+- **channel()**: Applies slowness based on duration, prevents ability usage during channeling
+- **charge()**: Same as channel but also prevents jumping
+
+#### Basic Patterns
+
+**Channel (slowness + ability lockout):**
+```java
+data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+    data.channel(20).then(new Runnable() {
+        public void run() {
+            // Execute effect after 1 second channel
+        }
+    });
+    return TriggerResult.keep();
+}));
+```
+
+**Charge (slowness + ability lockout + no jumping):**
+```java
+data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+    data.charge(20).then(new Runnable() {
+        public void run() {
+            // Execute effect after 1 second charge
+        }
+    });
+    return TriggerResult.keep();
+}));
+```
+
+**Charge with custom slowness level:**
+```java
+// charge(duration, slownessLevel)
+data.charge(20, 2).then(new Runnable() {
+    public void run() {
+        // Charge with Slowness 2 instead of default
+    }
+});
+```
+
+**Without callback (just apply channel/charge state):**
+```java
+data.channel(40); // 2 second channel, no follow-up action
+data.charge(20);  // 1 second charge, no follow-up action
+```
+
+#### Key Points
+- Duration is in ticks (20 ticks = 1 second)
+- `.then(Runnable)` is optional - use when you need action after channel/charge completes
+- Channel/charge automatically prevents other ability usage during duration
+- Charge additionally prevents jumping
+- Default slowness level is based on duration, or specify custom level with second parameter
+
 ## Equipment Categories
 
 #### Equipment Types

@@ -465,6 +465,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Momentum(b);
 			new MortalEngine(b);
 			new NightShade(b);
+			new Obfuscation(b);
+			new OdinsDecree(b);
 			new Overflow(b);
 			new Overload(b);
 			new PalmBlast(b);
@@ -516,6 +518,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new SpikeTrap(b);
 			new SpiritOfTheDragoon(b);
 			new Splinterstone(b);
+			new SpeedBlitz(b);
 			new StaticSurge(b);
 			new Storm(b);
 			new Study(b);

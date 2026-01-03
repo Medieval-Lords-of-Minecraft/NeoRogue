@@ -63,6 +63,10 @@ Player Action → Trigger Event → Equipment Triggers → Status/Damage/Effects
 - Trigger actions: Lambda expressions with `(pdata, in) ->`
 - Static get methods: `public static Equipment get() { return Equipment.get(ID, false); }`
 
+### Timing
+- **Player Tick Duration**: One player tick (`Trigger.PLAYER_TICK`) = 20 game ticks = 1 second
+- Example: To trigger every 2 seconds, check if tick count >= 40
+
 ### Status/Effect Integration  
 - Use `GlossaryTag` for consistent descriptions
 - Status application through `FightInstance.applyStatus()`
