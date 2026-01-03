@@ -16,6 +16,8 @@ NeoRogue is a **session-based dungeon crawler** Minecraft plugin with a sophisti
 
 For detailed equipment development patterns, see **[Equipment Instructions](equipment-instructions.md)**
 
+For particle effects and animations, see **[Particle Instructions](particle-instructions.md)**
+
 Key equipment concepts:
 - Equipment extends base `Equipment` class with trigger-based behavior
 - Registration required in `Equipment.java` constructor
@@ -71,7 +73,7 @@ Player Action → Trigger Event → Equipment Triggers → Status/Damage/Effects
 - Use `GlossaryTag` for consistent descriptions
 - Status application through `FightInstance.applyStatus()`
 - Shields managed via `FightData` methods with `p.getUniqueId()` as applier
-- Particle/sound effects via `ParticleContainer`/`SoundContainer`
+- Particle/sound effects via `ParticleContainer`/`SoundContainer` (see [Particle Instructions](particle-instructions.md))
 
 ### Item Description Formatting
 When creating equipment descriptions in `setupItem()`, follow these patterns:

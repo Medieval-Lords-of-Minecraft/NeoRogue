@@ -36,23 +36,25 @@ public class Analyze extends Equipment {
 	}
 
 	@Override
+	public void setupReforges() {
+		addReforge(Obfuscation.get(), Paranoia.get());
+	}
+
+	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ActionMeta am = new ActionMeta(); // Tracks seconds since last basic attack
-		ActionMeta stacks = new ActionMeta(); // Tracks analyze stacks
+		ActionMeta stacks = new ActionMeta();
 		ItemStack icon = item.clone();
+		ItemStack activeIcon = icon.withType(Material.PAPER);
 		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
 		
 		// Every second (20 ticks), gain a stack if not at max
 		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
-			am.addCount(1);
-			// PLAYER_TICK triggers every tick, so 20 ticks = 1 second
-			if (am.getCount() >= 20) {
-				am.setCount(0);
-				if (stacks.getCount() < MAX_STACKS) {
-					stacks.addCount(1);
-					icon.setAmount(stacks.getCount());
-					inst.setIcon(icon);
-				}
+			if (stacks.getCount() < MAX_STACKS) {
+				stacks.addCount(1);
+				// Use active icon when we have stacks
+				ItemStack currentIcon = activeIcon.clone();
+				currentIcon.setAmount(stacks.getCount());
+				inst.setIcon(currentIcon);
 			}
 			return TriggerResult.keep();
 		});
@@ -72,10 +74,8 @@ public class Analyze extends Equipment {
 			int shieldAmount = SHIELDS_PER_STACK * currentStacks;
 			data.addSimpleShield(p.getUniqueId(), shieldAmount, 100); // 5 seconds = 100 ticks
 			
-			// Reset stacks and icon
+			// Reset stacks and icon to base
 			stacks.setCount(0);
-			am.setCount(0);
-			icon.setAmount(1); // Reset to 1 (default item amount)
 			inst.setIcon(icon);
 			
 			return TriggerResult.keep();

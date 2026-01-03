@@ -47,6 +47,11 @@ data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
 
 Key triggers: `APPLY_STATUS`, `PRE_APPLY_STATUS`, `PRE_DEAL_DAMAGE`, `RECEIVE_DAMAGE`, `PLAYER_TICK`, `PRE_BASIC_ATTACK`
 
+**IMPORTANT - PLAYER_TICK Timing:**
+- `Trigger.PLAYER_TICK` runs **once every 20 game ticks** (1 second), NOT every tick
+- To trigger every 2 seconds, increment count by 1 every PLAYER_TICK. Run the rest of the code when count is 2.
+- Example: `if (tickCounter++ >= 2)` for a 2-second interval
+
 ### Dynamic Equipment Icons
 
 Equipment icons can be updated dynamically to display stack counts or charges. This is useful for abilities that accumulate stacks or have limited uses.
@@ -131,6 +136,30 @@ public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot e
 - Reset to 1 (not 0) when clearing stacks to show the base item
 - Choose pattern based on whether you need icon updates in same or separate trigger
 
+**Using Different Icons for Active States:**
+When you want to change the icon material when active (e.g., different item when charged):
+```java
+ActionMeta stacks = new ActionMeta();
+ItemStack icon = item.clone();
+ItemStack activeIcon = icon.withType(Material.DIFFERENT_MATERIAL);  // Change material type
+
+data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
+    if (stacks.getCount() < MAX_STACKS) {
+        stacks.addCount(1);
+        ItemStack currentIcon = activeIcon.clone();
+        currentIcon.setAmount(stacks.getCount());
+        inst.setIcon(currentIcon);  // Show active icon with stack count
+    }
+    return TriggerResult.keep();
+});
+
+data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
+    stacks.setCount(0);
+    inst.setIcon(icon);  // Reset to base icon
+    return TriggerResult.keep();
+});
+```
+
 ### Targeting & Area Effects System
 
 #### TargetProperties
@@ -188,83 +217,36 @@ LivingEntity nearest = TargetHelper.getNearest(p, tp);
 
 #### Particle Shapes & Visual Effects
 
-**Basic Shape Objects (typically static):**
+For detailed particle and animation patterns, see **[Particle Instructions](particle-instructions.md)**
+
+**Quick Reference:**
 ```java
 // Circle for radius effects
-private static final Circle circ = new Circle(5); // 5 block radius
-
-// Cone for directional effects  
-private static final Cone cone = new Cone(5, 60); // 5 blocks range, 60° arc
-
-// TargetProperties are also commonly static
-private static final TargetProperties tp = TargetProperties.radius(5, false, TargetType.ENEMY);
-```
-
-**ParticleContainer Setup (typically static):**
-```java
+private static final Circle circ = new Circle(5);
 private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME)
-    .count(25)          // Number of particles
-    .spread(1, 0.5)     // X/Z spread, Y spread
-    .offsetY(1)         // Y offset from base location
-    .speed(0.1);        // Particle speed
+    .count(25).spread(1, 0.5).offsetY(1);
 
-// Sound containers are also typically static
-private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_BLAZE_SHOOT);
-```
-
-**Note**: Shapes, particle containers, sound containers, and target properties are usually declared as `static final` since they don't change per equipment instance and can be shared across all instances of the equipment class.
-
-**Playing Particle Effects:**
-```java
-// Play particles at location with shape
+// Play at location
 circ.play(pc, location, LocalAxes.xz(), null);
-
-// Play particles following entity
-cone.play(pc, player, player.getLocation(), LocalAxes.fromDirection(player.getEyeLocation().getDirection()));
-
-// Simple particle play at location
 pc.play(player, location);
 ```
 
-**LocalAxes for Shape Orientation:**
-- `LocalAxes.xz()` - Horizontal plane (most common)
-- `LocalAxes.fromDirection(vector)` - Oriented from direction vector
-- Used to orient shapes like circles and cones in 3D space
+**Note**: Shapes, particle containers, and target properties are typically `static final`.
 
 #### Common Area Effect Patterns
 
-**Delayed Area Effect:**
+See **[Particle Instructions](particle-instructions.md)** for detailed visual effect patterns.
+
+**Basic delayed effect:**
 ```java
-Bukkit.getScheduler().runTaskLater(NeoRogue.inst(), () -> {
-    Location center = player.getLocation();
-    circ.play(pc, center, LocalAxes.xz(), null);
-    for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, center, tp)) {
-        FightInstance.applyStatus(ent, StatusType.POISON, data, stacks, duration);
+data.addTask(new BukkitRunnable() {
+    public void run() {
+        circ.play(pc, center, LocalAxes.xz(), null);
+        for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, center, tp)) {
+            FightInstance.applyStatus(ent, StatusType.POISON, data, stacks, duration);
+        }
     }
-}, 40L); // 2 second delay
-```
-
-**Line/Projectile Effects:**
-```java
-Vector direction = player.getEyeLocation().getDirection();
-Location end = player.getLocation().add(direction.multiply(tp.range));
-ParticleUtil.drawLine(player, pc, player.getLocation(), end, 0.5); // 0.5 particle spacing
-
-for (LivingEntity ent : TargetHelper.getEntitiesInLine(p, player.getLocation(), end, tp)) {
-    // Apply effects along line
-}
-```
-
-**Ground-Targeted Abilities:**
-```java
-Block targetBlock = player.getTargetBlockExact((int) range);
-if (targetBlock != null) {
-    Location center = targetBlock.getLocation().add(0, 1, 0);
-    circ.play(pc, center, LocalAxes.xz(), null);
-    for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, center, tp)) {
-        // Apply effects at target location
-    }
-}
+}.runTaskLater(NeoRogue.inst(), 40L));
 ```
 
 ### Shield/Status Management

@@ -45,6 +45,7 @@ import me.neoblade298.neorogue.commands.CmdAdminSerialize;
 import me.neoblade298.neorogue.commands.CmdAdminSet;
 import me.neoblade298.neorogue.commands.CmdAdminSetInstance;
 import me.neoblade298.neorogue.commands.CmdAdminStatus;
+import me.neoblade298.neorogue.commands.CmdAdminTest;
 import me.neoblade298.neorogue.commands.CmdAdminTestHF;
 import me.neoblade298.neorogue.commands.CmdAdminTrash;
 import me.neoblade298.neorogue.commands.CmdGlossary;
@@ -151,7 +152,7 @@ public class NeoRogue extends JavaPlugin {
 		mngr = new SubcommandManager("nradmin", "neorogue.admin", NamedTextColor.DARK_RED, this);
 		mngr.register(new CmdAdminReload("reload", "Reloads everything", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminReloadMythic("reloadmythic", "Reloads mythicmobs safely", null, SubcommandRunner.BOTH));
-		mngr.register(new CmdAdminDebug("debug", "Testing", null, SubcommandRunner.BOTH));
+		mngr.register(new CmdAdminDebug("debug", "Pastes current session info onscreen", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminPiece("piece", "Pastes a map piece at 0,0 for ease of setting up spawners with coords", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminPieceSettings("piecesettings", "Pastes map piece to show how it looks rotated and flipped", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminMap("map", "Generates and pastes a map", null, SubcommandRunner.PLAYER_ONLY));
@@ -170,6 +171,7 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdAdminDeserialize("deserialize", "Loads in a player's loadout for debug purposes", null, SubcommandRunner.CONSOLE_ONLY));
 		mngr.register(new CmdAdminNew("new", "Starts a new session with all online players with custom start parameters", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminSetInstance("setinstance", "Sets the current instance", null, SubcommandRunner.PLAYER_ONLY));
+		mngr.register(new CmdAdminTest("test", "Used for testing various things", null, SubcommandRunner.BOTH));
 		mngr.registerCommandList("");
 	}
 	
