@@ -39,6 +39,7 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.EvadeEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.KillEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
@@ -519,6 +520,8 @@ public class DamageMeta {
 				subtractFromStats(pl.getStamina());
 				pl.setStamina(0);
 			}
+			EvadeEvent ev = new EvadeEvent(totalDamage, pl.getStamina(), this);
+			pl.runActions(pl, Trigger.EVADE, ev);
 		}
 
 		// Injury

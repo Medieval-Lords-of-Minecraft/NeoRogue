@@ -51,22 +51,26 @@ Key triggers: `APPLY_STATUS`, `PRE_APPLY_STATUS`, `PRE_DEAL_DAMAGE`, `RECEIVE_DA
 
 Equipment icons can be updated dynamically to display stack counts or charges. This is useful for abilities that accumulate stacks or have limited uses.
 
-**Basic Pattern:**
+**IMPORTANT**: For icons to update properly, the EquipmentInstance must be attached to a trigger using `data.addTrigger()`. The instance action is where icon updates occur.
+
+**Basic Pattern with Separate Triggers:**
 ```java
-ActionMeta stacks = new ActionMeta(); // Tracks stack count
-ItemStack icon = item.clone(); // Clone the base item
-EquipmentInstance inst = new EquipmentInstance(data, this, slot, es, (pdata, inputs) -> {
-    // Equipment action here
+ActionMeta stacks = new ActionMeta();
+ItemStack icon = item.clone();
+EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
+inst.setAction((pdata, in) -> {
+    // Update icon here
+    stacks.addCount(1);
+    icon.setAmount(stacks.getCount());
+    inst.setIcon(icon);
     return TriggerResult.keep();
 });
 
-// Update icon when stacks change
-stacks.addCount(1);
-icon.setAmount(stacks.getCount()); // Set display amount to stack count
-inst.setIcon(icon); // Update the equipment icon
+// CRITICAL: Attach the instance to a trigger for it to function
+data.addTrigger(id, Trigger.PLAYER_TICK, inst);
 ```
 
-**Complete Example:**
+**Complete Example - Separate Triggers:**
 ```java
 @Override
 public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
@@ -74,7 +78,8 @@ public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot e
     ItemStack icon = item.clone();
     EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
     
-    data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
+    // Set the action that updates the icon
+    inst.setAction((pdata, in) -> {
         if (stacks.getCount() < MAX_STACKS) {
             stacks.addCount(1);
             icon.setAmount(stacks.getCount());
@@ -83,7 +88,10 @@ public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot e
         return TriggerResult.keep();
     });
     
-    // Consume stacks
+    // Attach to trigger for icon updates to work
+    data.addTrigger(id, Trigger.PLAYER_TICK, inst);
+    
+    // Separate trigger to consume stacks
     data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
         if (stacks.getCount() > 0) {
             // Use stacks for effect
@@ -96,11 +104,32 @@ public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot e
 }
 ```
 
+**Alternative Pattern - Single Trigger with EquipmentInstance constructor:**
+```java
+@Override
+public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+    ActionMeta stacks = new ActionMeta();
+    ItemStack icon = item.clone();
+    
+    // Icon updates happen inside the constructor action
+    data.addTrigger(id, Trigger.PLAYER_TICK, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+        if (stacks.getCount() < MAX_STACKS) {
+            stacks.addCount(1);
+            icon.setAmount(stacks.getCount());
+            // Note: Can't call setIcon here as we don't have the instance reference
+        }
+        return TriggerResult.keep();
+    }));
+}
+```
+
 **Key Points:**
 - Clone the item: `ItemStack icon = item.clone()`
 - Update amount: `icon.setAmount(count)`
 - Set on instance: `inst.setIcon(icon)`
+- **MUST attach instance to trigger**: `data.addTrigger(id, triggerType, inst)`
 - Reset to 1 (not 0) when clearing stacks to show the base item
+- Choose pattern based on whether you need icon updates in same or separate trigger
 
 ### Targeting & Area Effects System
 
