@@ -344,6 +344,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Disappear(b);
 			new Discharge(b);
 			new Discipline(b);
+			new Dread(b);
 			new Dismantle(b);
 			new Disorient(b);
 			new DodgeRoll(b);
