@@ -79,6 +79,7 @@ import me.neoblade298.neorogue.equipment.accessories.VermillionBelt;
 import me.neoblade298.neorogue.equipment.accessories.VoidBracelet;
 import me.neoblade298.neorogue.equipment.accessories.WarpedAnvil;
 import me.neoblade298.neorogue.equipment.accessories.YellowRing;
+import me.neoblade298.neorogue.equipment.armor.AdaptiveChemvest;
 import me.neoblade298.neorogue.equipment.armor.ArcheryGlove;
 import me.neoblade298.neorogue.equipment.armor.AuricCape;
 import me.neoblade298.neorogue.equipment.armor.BlindingCloak;
@@ -601,6 +602,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new YellowRing(b);
 
 			// Armor
+			new AdaptiveChemvest(b);
 			new ArcheryGlove(b);
 			new AuricCape(b);
 			new BootsOfSpeed(b);
