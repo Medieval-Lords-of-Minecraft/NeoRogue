@@ -7,7 +7,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -22,6 +24,8 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class Dread extends Equipment {
 	private static final String ID = "Dread";
@@ -60,7 +64,8 @@ public class Dread extends Equipment {
 					data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), 
 						new Buff(data, 0, damageIncrease, StatTracker.damageBuffAlly(buffId, this)));
 				}
-				act.setCount(act.getCount() % thres);
+                Sounds.wither.play(p, p);
+				Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 			}
 			return TriggerResult.keep();
 		});
@@ -69,7 +74,7 @@ public class Dread extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.WITHER_SKELETON_SKULL,
-				"Passive. For every " + DescUtil.white(thres) + " stacks of " + GlossaryTag.STEALTH.tag(this) + " you apply, " +
+				"Passive. Upon applying " + GlossaryTag.STEALTH.tag(this, thres, false) + ", " +
 				"gain " + GlossaryTag.STEALTH.tag(this, stealthGained, true) + ", " + DescUtil.white("Speed 1") + ", and " +
 				DescUtil.yellow((int)(damageIncrease * 100) + "%") + " " + GlossaryTag.GENERAL.tag(this) + " damage permanently.");
 	}

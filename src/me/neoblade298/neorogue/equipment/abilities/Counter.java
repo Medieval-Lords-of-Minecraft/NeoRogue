@@ -46,17 +46,17 @@ public class Counter extends Equipment {
 			LivingEntity damager = ev.getDamageMeta().getOwner().getEntity();
 			Location playerLoc = p.getLocation();
 			Location damagerLoc = damager.getLocation();
+
+			// Calculate dash direction away from the enemy
+			Vector awayFromEnemy = playerLoc.toVector().subtract(damagerLoc.toVector()).normalize();
+
+			// Dash away from the enemy
+			data.dash(awayFromEnemy);
 			
 			// Deal damage to the attacker
 			FightInstance.dealDamage(pdata, DamageType.PIERCING, damage, damager, 
 					DamageStatTracker.of(id + slot, this));
 			Sounds.attackSweep.play(p, p);
-			
-			// Calculate dash direction away from the enemy
-			Vector awayFromEnemy = playerLoc.toVector().subtract(damagerLoc.toVector()).normalize();
-			
-			// Dash away from the enemy
-			data.dash(awayFromEnemy);
 			
 			return TriggerResult.keep();
 		});

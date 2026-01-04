@@ -33,7 +33,6 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class SpeedBlitz extends Equipment {
 	private static final String ID = "SpeedBlitz";
-	private static final int CHARGE_TIME = 20; // 1 second
 	private static final int TOTAL_ATTACKS = 5;
 	private static final int ATTACK_INTERVAL = 4; // 20 ticks / 5 attacks = 4 ticks between attacks
 	private static final TargetProperties tp = TargetProperties.radius(20, true, TargetType.ENEMY);
@@ -63,7 +62,7 @@ public class SpeedBlitz extends Equipment {
             data.charge(20).then(new Runnable() {
                 @Override
                 public void run() {
-					p.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 20, 0));
+					p.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 20, 1));
                     // After 1 second charge, start the blitz
                     data.addTask(new BukkitRunnable() {
                         int attackCount = 0;
@@ -87,11 +86,11 @@ public class SpeedBlitz extends Equipment {
                             sc.play(p, target);
                             
                             // Apply slowness on first attack
-                            if (attackCount >= 5) {
+                            if (attackCount > 5) {
                                 cancel();
                             }
                         }
-                    }.runTaskTimer(NeoRogue.inst(), CHARGE_TIME, ATTACK_INTERVAL));
+                    }.runTaskTimer(NeoRogue.inst(), 0, ATTACK_INTERVAL));
                 }
             });
 			

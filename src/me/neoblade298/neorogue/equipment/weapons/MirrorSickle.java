@@ -6,7 +6,6 @@ import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
@@ -48,7 +47,6 @@ public class MirrorSickle extends Equipment {
 		return Equipment.get(ID, false);
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		if (data.getSessionData().getEquipment(EquipSlot.OFFHAND)[0] != null) {
@@ -71,11 +69,7 @@ public class MirrorSickle extends Equipment {
 			inst.addCount(-3);
 			Sounds.teleport.play(p, p);
 			pc.play(p, p);
-			Vector v = p.getEyeLocation().getDirection();
-			if (p.isOnGround()) {
-				p.teleport(p.getLocation().add(0, 0.2, 0));
-			}
-			p.setVelocity(v.setY(0).normalize().multiply(0.5).setY(0.1));
+			data.dash();
 			data.addTask(new BukkitRunnable() {
 				public void run() {
 					LivingEntity ent = TargetHelper.getNearest(p, tp);
@@ -92,7 +86,7 @@ public class MirrorSickle extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.PRISMARINE_SHARD, "Can only be used without an offhand. Basic attacks with this weapon grant "
-				+ "<white>1 power</white>. Right clicking uses <white>3 power</white> to dash and deal "
+				+ "<white>1 power</white>. Right clicking uses <white>3 power</white> to " + GlossaryTag.DASH.tag(this) + " and deal "
 				+ GlossaryTag.PIERCING.tag(this, dash, true) + " damage to the nearest enemy.");
 	}
 }

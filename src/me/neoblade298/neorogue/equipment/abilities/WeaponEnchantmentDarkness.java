@@ -27,7 +27,8 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class WeaponEnchantmentDarkness extends Equipment {
 	private static final String ID = "WeaponEnchantmentDarkness";
 	private int damage;
-	private static final ParticleContainer part = new ParticleContainer(Particle.SMOKE);
+	private static final ParticleContainer slash = new ParticleContainer(Particle.SWEEP_ATTACK);
+	private static final ParticleContainer trail = new ParticleContainer(Particle.SOUL);
 	private ProjectileGroup projs;
 	
 	public WeaponEnchantmentDarkness(boolean isUpgraded) {
@@ -35,7 +36,8 @@ public class WeaponEnchantmentDarkness extends Equipment {
 				EquipmentType.ABILITY, EquipmentProperties.none());
 		
 		damage = isUpgraded ? 300 : 200;
-		part.count(10).spread(0.5, 0.5).speed(0.05);
+		slash.count(3).spread(0, 0).speed(0);
+		trail.count(15).spread(0.3, 0.3).speed(0.02);
 	}
 	
 	public static Equipment get() {
@@ -51,8 +53,9 @@ public class WeaponEnchantmentDarkness extends Equipment {
 			am.addCount(1);
 			if (am.getCount() >= 3) {
 				am.addCount(-3);
-				Sounds.attackSweep.play(p, p);
-				part.play(p, p);
+				Sounds.flap.play(p, p);
+				slash.play(p, p);
+				trail.play(p, p);
 				projs.start(data);
 			}
 			return TriggerResult.keep();
@@ -61,27 +64,28 @@ public class WeaponEnchantmentDarkness extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.NETHERITE_SWORD,
+		item = createItem(Material.OBSIDIAN,
 				"Passive. Every <white>3rd</white> basic attack launches a slash projectile that deals "
-						+ "<yellow>" + damage + " </yellow>" + GlossaryTag.DARK.tag(this) + " damage and pierces infinitely.");
+						+ "<yellow>" + damage + " </yellow>" + GlossaryTag.DARK.tag(this) + " damage and pierces.");
 	}
 	
 	private class DarknessSlashProjectile extends Projectile {
-		private int slot;
 		private Equipment eq;
+		private int slot;
 		
 		public DarknessSlashProjectile(int slot, Equipment eq) {
 			super(0.5, 8, 2);
 			this.size(1.5, 1.5);
 			this.pierce(-1);
-			this.slot = slot;
 			this.eq = eq;
+			this.slot = slot;
 		}
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
 			Player p = (Player) proj.getOwner().getEntity();
-			part.play(p, proj.getLocation());
+			slash.play(p, proj.getLocation());
+			trail.play(p, proj.getLocation());
 		}
 
 		@Override

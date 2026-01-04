@@ -28,7 +28,7 @@ public class Disappear extends Equipment {
 		super(ID, "Disappear", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.none());
 		
-		damage = isUpgraded ? 100 : 70;
+		damage = isUpgraded ? 225 : 150;
 	}
 	
 	public static Equipment get() {
@@ -89,7 +89,7 @@ public class Disappear extends Equipment {
 		}
 		
 		public void cancelPrime() {
-			if (timer == null && !timer.isCancelled()) return;
+			if (timer == null || timer.isCancelled()) return;
 			Sounds.error.play(p, p);
 			timer.cancel();
 		}

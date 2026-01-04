@@ -36,10 +36,10 @@ public class LifeThief extends Equipment {
 		StandardPriorityAction inst = new StandardPriorityAction(id);
 		inst.setAction((pdata, in) -> {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
-			if (!ev.getStatusId().equals(StatusType.STEALTH.name())) return TriggerResult.keep();
-			inst.addCount(1);
-			if (inst.getCount() == cutoff) {
-				Util.msg(p, this.hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
+			if (!ev.isStatus(StatusType.STEALTH)) return TriggerResult.keep();
+			inst.addCount(ev.getStacks());
+			if (inst.getCount() >= cutoff) {
+				Util.msg(p, this.hoverable.append(Component.text(" can be activated", NamedTextColor.GRAY)));
 			}
 			return TriggerResult.keep();
 		});

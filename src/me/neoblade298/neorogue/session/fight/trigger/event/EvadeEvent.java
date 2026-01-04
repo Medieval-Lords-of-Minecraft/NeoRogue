@@ -8,6 +8,7 @@ public class EvadeEvent {
 	public EvadeEvent(double startingDamage, double evadeMitigated, DamageMeta dm) {
 		this.evadeMitigated = evadeMitigated;
 		this.startingDamage = startingDamage;
+		this.dm = dm;
 	}
 
 	public double getEvadeMitigated() {

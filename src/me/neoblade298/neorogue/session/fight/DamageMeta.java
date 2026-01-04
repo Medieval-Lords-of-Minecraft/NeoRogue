@@ -520,6 +520,7 @@ public class DamageMeta {
 				subtractFromStats(pl.getStamina());
 				pl.setStamina(0);
 			}
+			Sounds.attackSweep.play(pl.getPlayer(), pl.getPlayer());
 			EvadeEvent ev = new EvadeEvent(totalDamage, pl.getStamina(), this);
 			pl.runActions(pl, Trigger.EVADE, ev);
 		}
@@ -617,6 +618,7 @@ public class DamageMeta {
 			pdata.runActions(pdata, Trigger.RECEIVE_DAMAGE, ev);
 		}
 		double finalDamage = damage + ignoreShieldsDamage + target.getAbsorptionAmount();
+		Vector originalVelocity = target.getVelocity().clone();
 		if (damage + ignoreShieldsDamage > 0) {
 			// Mobs shouldn't have a source of damage because they'll infinitely re-trigger ~OnAttack
 			// Players must have a source of damage to get credit for kills, otherwise mobs that suicide give points
@@ -666,6 +668,10 @@ public class DamageMeta {
 				} else {
 					FightInstance.knockback(source, target, knockback);
 				}
+			}
+			else {
+				// Have to reset velocity if no knockback to prevent vanilla knockback
+				target.setVelocity(originalVelocity);
 			}
 		}
 		// Only do damage if we haven't canceled the damage

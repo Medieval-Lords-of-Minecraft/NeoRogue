@@ -49,9 +49,9 @@ public class HeatRising extends Equipment {
 			Sounds.equip.play(p, p);
 			data.channel(20).then(new Runnable() {
 				public void run() {
-					Sounds.shoot.play(p, p);
+					Sounds.fire.play(p, p);
 					data.applyStatus(StatusType.BURN, data, burn, -1);
-					data.addDamageBuff(DamageBuffType.of(DamageCategory.FIRE), Buff.multiplier(data, mult, StatTracker.damageBuffAlly(buffId, eq)));
+					data.addDamageBuff(DamageBuffType.of(DamageCategory.FIRE), Buff.multiplier(data, mult, StatTracker.damageBuffAlly(buffId, eq)), 200);
 				}
 			});
 			pc.play(p, p);
@@ -64,6 +64,6 @@ public class HeatRising extends Equipment {
 		item = createItem(Material.TORCHFLOWER,
 				"On cast, " + GlossaryTag.CHANNEL.tag(this) + " for <white>1s</white> before applying " +
 				GlossaryTag.BURN.tag(this, burn, false) + " to yourself and increase your " + GlossaryTag.FIRE.tag(this) + " damage by "
-						+ DescUtil.yellow(multDisplay + "%") + ".");
+						+ DescUtil.yellow(multDisplay + "%") + " [<white>10s</white>].");
 	}
 }
