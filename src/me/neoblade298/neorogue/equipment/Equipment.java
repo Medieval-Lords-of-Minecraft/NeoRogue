@@ -33,7 +33,8 @@ import me.neoblade298.neorogue.equipment.abilities.*;
 import me.neoblade298.neorogue.equipment.accessories.ArmorStand;
 import me.neoblade298.neorogue.equipment.accessories.AshenWreath;
 import me.neoblade298.neorogue.equipment.accessories.BurningRing;
-import me.neoblade298.neorogue.equipment.accessories.CailiricCrystal;mport me.neoblade298.neorogue.equipment.accessories.CeruleanBracelet;
+import me.neoblade298.neorogue.equipment.accessories.CailiricCrystal;
+import me.neoblade298.neorogue.equipment.accessories.CeruleanBracelet;
 import me.neoblade298.neorogue.equipment.accessories.DaedalusHammer;
 import me.neoblade298.neorogue.equipment.accessories.DiscountCard;
 import me.neoblade298.neorogue.equipment.accessories.EagleFeather;
@@ -89,6 +90,7 @@ import me.neoblade298.neorogue.equipment.armor.BurningMantle;
 import me.neoblade298.neorogue.equipment.armor.CalmingHood;
 import me.neoblade298.neorogue.equipment.armor.ClothBindings;
 import me.neoblade298.neorogue.equipment.armor.ElbowBrace;
+import me.neoblade298.neorogue.equipment.armor.ElectrostaticVest;
 import me.neoblade298.neorogue.equipment.armor.EnchantedCloak;
 import me.neoblade298.neorogue.equipment.armor.EngineersCap;
 import me.neoblade298.neorogue.equipment.armor.EtherVeil;
@@ -292,6 +294,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Blast(b);
 			new BlastStep(b);
 			new BlessedEdge(b);
+			new BlightTendril(b);
 			new Blind(b);
 			new BloodFrenzy(b);
 			new Bloodlust(b);
@@ -319,6 +322,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Condemn(b);
 			new ConfidenceKill(b);
 			new Consecrate(b);
+			new ConstantFlux(b);
 			new Contaminate(b);
 			new CorpseExplosion(b);
 			new Counter(b);
@@ -354,6 +358,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new EarthenDomain(b);
 			new EarthenTackle(b);
 			new EarthenWall(b);
+			new Egoism(b);
 			new ElectricOrb(b);
 			new Electrode(b);
 			new Electrolysis(b);
@@ -506,6 +511,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Quickfire(b);
 			new Quicken(b);
 			new ShadowImbuement(b);
+			new ShadowPartner(b);
 			new ShadowWalk(b);
 			new ShardBlast(b);
 			new ShatteringShot(b);
@@ -520,6 +526,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Skirmisher(b);
 			new Smite(b);
 			new SmokeBomb(b);
+			new SparkTrap(b);
 			new SpikeTrap(b);
 			new SpiritOfTheDragoon(b);
 			new Splinterstone(b);
@@ -615,6 +622,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new CalmingHood(b);
 			new ClothBindings(b);
 			new ElbowBrace(b);
+			new ElectrostaticVest(b);
 			new EnchantedCloak(b);
 			new EngineersCap(b);
 			new EtherVeil(b);

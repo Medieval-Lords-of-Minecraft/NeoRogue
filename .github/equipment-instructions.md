@@ -254,6 +254,40 @@ data.addTask(new BukkitRunnable() {
 - **Status Effects**: `FightInstance.applyStatus(target, StatusType.POISON, applier, stacks, duration)`
 - **Buffs**: `data.addDamageBuff(DamageBuffType.of(category), buff, duration)`
 
+### Custom Status Marking
+
+For tracking/marking enemies without using HashMaps, use custom generic status effects:
+
+```java
+// Create unique status name per player
+String statusName = p.getName() + "-equipmentid";
+
+// Apply the mark to an enemy
+FightData fd = FightInstance.getFightData(target);
+Status s = Status.createByGenericType(GenericStatusType.BASIC, statusName, fd, true);
+fd.applyStatus(s, data, 1, 160); // 1 stack, 8 seconds (160 ticks)
+
+// Check if enemy is marked
+if (fd.hasStatus(statusName)) {
+    // Enemy is marked
+}
+
+// Consume/remove the mark
+Status s = Status.createByGenericType(GenericStatusType.BASIC, statusName, fd, true);
+fd.applyStatus(s, data, -1, -1); // Negative stacks removes it
+```
+
+**Benefits over HashMap tracking:**
+- Automatic cleanup when enemy dies
+- Duration-based expiration
+- No need for manual cleanup tasks
+- Integrates with status system
+
+**Example use cases:**
+- Mark targets for bonus damage (CollectionHex, BlightTendril)
+- Track which enemies have been affected by an ability
+- Conditional effects based on marked status
+
 ### Equipment Properties System
 
 Equipment behavior is controlled through `EquipmentProperties` which define costs, cooldowns, ranges, and other mechanical attributes.
@@ -561,6 +595,7 @@ GlossaryTag.SHIELDS.tag(this, amount, true)  // Tag with value (true = yellow if
 - **Yellow values** (`<yellow>` or `DescUtil.yellow()`): Used for values that change with upgrades
 - **White values** (`<white>` or `DescUtil.white()`): Used for fixed values, durations, thresholds
 - **Duration format**: `[<white>5s</white>]` for fixed durations, `[<yellow>10s</yellow>]` if upgradable
+- **Potion effects**: Use `DescUtil.potion("Speed", 0, 5)` for "Speed 1 [5s]" formatting (name, amplifier, duration)
 
 **Common Patterns:**
 ```java
