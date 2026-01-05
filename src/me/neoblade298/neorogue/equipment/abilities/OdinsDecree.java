@@ -27,7 +27,7 @@ public class OdinsDecree extends Equipment {
 	private static final String ID = "OdinsDecree";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.ELECTRIC_SPARK)
 			.count(100)
-			.spread(1, 2)
+			.spread(0.3, 2)
 			.offsetY(1)
 			.speed(0.3);
 	private static final TargetProperties tp = TargetProperties.radius(20, false, TargetType.ENEMY);
@@ -65,7 +65,7 @@ public class OdinsDecree extends Equipment {
 				
 				// Drop lightning bolt
 				pc.play(p, target.getLocation());
-				Sounds.levelup.play(p, target.getLocation());
+				Sounds.thunder.play(p, target.getLocation());
 				
 				// Deal damage and apply electrified
 				FightInstance.dealDamage(pdata, DamageType.LIGHTNING, damage, target, 

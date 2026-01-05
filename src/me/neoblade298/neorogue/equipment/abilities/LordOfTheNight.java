@@ -15,7 +15,7 @@ import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
 public class LordOfTheNight extends Equipment {
 	private static final String ID = "LordOfTheNight";
@@ -43,7 +43,7 @@ public class LordOfTheNight extends Equipment {
 			}
 			
 			// Apply damage buff based on stealth stacks
-			DealDamageEvent ev = (DealDamageEvent) inputs;
+			PreDealDamageEvent ev = (PreDealDamageEvent) inputs;
 			double totalIncrease = damageIncreaseMult * stealthStacks;
 			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), 
 				new Buff(data, 0, totalIncrease, StatTracker.damageBuffAlly(id, this)));

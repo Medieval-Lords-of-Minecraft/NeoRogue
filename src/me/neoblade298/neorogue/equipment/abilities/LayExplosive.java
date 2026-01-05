@@ -64,6 +64,7 @@ public class LayExplosive extends Equipment {
 			action = (pd, in) -> {
 				if (!active) {
 					cast(data);
+					this.setCooldown(0);
 				}
 				else {
 					recast(data);

@@ -37,18 +37,19 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class BlackRain extends Equipment {
 	private static final String ID = "BlackRain";
-	private int damage, bonusDamage;
+	private int damage, bonusDamage, thres;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST)
 		.dustOptions(new DustOptions(Color.BLACK, 1F));
 	private static final ParticleContainer bonusPC = new ParticleContainer(Particle.DUST)
 		.dustOptions(new DustOptions(Color.PURPLE, 1.2F))
-		.count(30).spread(1, 1).speed(0.3);
+		.count(30).spread(0.2, 1).speed(0.3);
 	
 	public BlackRain(boolean isUpgraded) {
 		super(ID, "Black Rain", isUpgraded, Rarity.EPIC, EquipmentClass.THIEF, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(30, 15, 10, 8));
 		damage = isUpgraded ? 350 : 250;
 		bonusDamage = isUpgraded ? 200 : 150;
+		thres = isUpgraded ? 150 : 200;
 	}
 	
 	public static Equipment get() {
@@ -158,8 +159,8 @@ public class BlackRain extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.NETHERITE_SCRAP,
 			"On cast, throw <white>3</white> projectiles in a cone that each deal " + 
-			GlossaryTag.DARK.tag(this, damage, true) + " damage. For every <white>40</white> " +
-			GlossaryTag.INSANITY.tag(this) + " on hit enemies, drop another projectile dealing " +
+			GlossaryTag.DARK.tag(this, damage, true) + " damage. For every " +
+			GlossaryTag.INSANITY.tag(this, thres, true) + " on hit enemies combined, drop another projectile dealing " +
 			GlossaryTag.DARK.tag(this, bonusDamage, true) + " damage.");
 	}
 }

@@ -50,6 +50,7 @@ public class MiasmaInABottle extends Artifact {
 			super(id);
 			action = (pdata, in) -> {
 				if (--timer > 0) return TriggerResult.keep();
+				timer = 5;
 				for (LivingEntity ent : TargetHelper.getEntitiesInRadius(pdata.getPlayer(), tp)) {
 					FightData fd = FightInstance.getFightData(ent);
 					if (!fd.hasStatus(StatusType.INSANITY)) continue;

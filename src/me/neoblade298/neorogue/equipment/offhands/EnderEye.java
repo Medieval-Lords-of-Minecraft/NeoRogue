@@ -42,7 +42,7 @@ public class EnderEye extends Equipment {
 	public EnderEye(boolean isUpgraded) {
 		super(ID, "Ender Eye", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.OFFHAND,
 				EquipmentProperties.ofUsable(20, 0, 24, tp.range));
-		inc = isUpgraded ? 240 : 160;
+		inc = isUpgraded ? 105 : 70;
 	}
 
 	public static Equipment get() {
@@ -58,7 +58,7 @@ public class EnderEye extends Equipment {
 			LinkedList<LivingEntity> trgs = TargetHelper.getEntitiesInCone(p, tp);
 			for (LivingEntity ent : trgs) {
 				FightInstance.getFightData(ent).addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL),
-						Buff.increase(data, slot, BuffStatTracker.defenseDebuffEnemy(buffId, this)), 8 * 20);
+						Buff.increase(data, -inc, BuffStatTracker.defenseDebuffEnemy(buffId, this)), 8 * 20);
 			}
 			return TriggerResult.keep();
 		}));

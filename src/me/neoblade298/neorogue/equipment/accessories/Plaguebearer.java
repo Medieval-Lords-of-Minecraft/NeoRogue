@@ -31,7 +31,7 @@ public class Plaguebearer extends Equipment {
 		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
 			if (!ev.isStatus(StatusType.POISON)) return TriggerResult.keep();
-			data.addSimpleShield(p.getUniqueId(), shields, 0);
+			data.addSimpleShield(p.getUniqueId(), shields, 100);
 			return TriggerResult.keep();
 		});
 	}
@@ -39,6 +39,6 @@ public class Plaguebearer extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ROTTEN_FLESH, "Whenever you apply " + GlossaryTag.POISON.tag(this) + " to an enemy, gain "
-				+ GlossaryTag.SHIELDS.tag(this, shields, true) + ".");
+				+ GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>5s</white>].");
 	}
 }

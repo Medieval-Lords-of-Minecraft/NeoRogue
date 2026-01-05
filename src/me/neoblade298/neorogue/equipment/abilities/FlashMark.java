@@ -8,17 +8,21 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
-import me.neoblade298.neocore.bukkit.effects.ParticleUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.mechanics.Barrier;
+import me.neoblade298.neorogue.equipment.mechanics.Projectile;
+import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
+import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
+import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
@@ -31,7 +35,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class FlashMark extends Equipment {
 	private static final String ID = "FlashMark";
 	private static final TargetProperties tp = TargetProperties.line(30, 1.5, TargetType.ENEMY);
-	private static final ParticleContainer pc = new ParticleContainer(Particle.ELECTRIC_SPARK).count(50).spread(0.3, 0.3);
+	private static final ParticleContainer pc = new ParticleContainer(Particle.ELECTRIC_SPARK).count(25).spread(0.5, 0.5);
 	private int damage, electrified;
 	
 	public FlashMark(boolean isUpgraded) {
@@ -47,42 +51,67 @@ public class FlashMark extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
-		inst.setAction((pdata, in) -> {
-			Block b = p.getTargetBlockExact((int) properties.get(PropertyType.RANGE));
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			// Launch projectile toward the block
+			ProjectileGroup proj = new ProjectileGroup(new FlashMarkProjectile(data, slot, this));
+			proj.start(data);
+			Sounds.shoot.play(p, p);
 			
-			// Check if block exists and is solid
-			if (b == null || !b.getType().isSolid()) {
-				Sounds.extinguish.play(p, p);
-				data.addMana(properties.get(PropertyType.MANA_COST));
-				inst.setCooldown(0);
-				return TriggerResult.keep();
-			}
+			return TriggerResult.keep();
+		}));
+	}
+	
+	private class FlashMarkProjectile extends Projectile {
+		private Player p;
+		private PlayerFightData data;
+		private Location startLoc;
+		private int slot;
+		private Equipment eq;
+
+		public FlashMarkProjectile(PlayerFightData data, int slot, Equipment eq) {
+			super(properties.get(PropertyType.RANGE), 1);
+			this.size(0.5, 0.5);
+			this.data = data;
+			this.p = data.getPlayer();
+			this.slot = slot;
+			this.eq = eq;
 			
-			// Get the target location and prepare for dash
-			Location targetLoc = b.getLocation();
-			Location start = p.getLocation().add(0, 1, 0);
-			Location end = targetLoc.clone().add(0, 1, 0);
-			
-			// Draw particle line
-			ParticleUtil.drawLine(p, pc, start, end, 0.5);
-			Sounds.firework.play(p, p);
+			blocksPerTick(1.5);
+		}
+
+		@Override
+		public void onTick(ProjectileInstance proj, int interpolation) {
+			pc.play(p, proj.getLocation());
+		}
+
+		@Override
+		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
+
+		}
+
+		@Override
+		public void onStart(ProjectileInstance proj) {
+
+		}
+
+		@Override
+		public void onHitBlock(ProjectileInstance proj, Block b) {
+			Location endLoc = b.getLocation();
 			
 			// Deal damage and apply electrified to all enemies in line
-			for (LivingEntity ent : TargetHelper.getEntitiesInLine(p, start, end, tp)) {
-				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.LIGHTNING, DamageStatTracker.of(id + slot, this)), ent);
+			for (LivingEntity ent : TargetHelper.getEntitiesInLine(p, startLoc, endLoc, tp)) {
+				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.LIGHTNING, DamageStatTracker.of(id + slot, eq)), ent);
 				FightInstance.applyStatus(ent, StatusType.ELECTRIFIED, data, electrified, -1);
 			}
 			
-			// Dash
+			// Dash to the block location
 			Location playerLoc = p.getLocation();
-			playerLoc.setDirection(end.toVector().subtract(start.toVector()).normalize());
+			playerLoc.setDirection(endLoc.toVector().subtract(startLoc.toVector()).normalize());
 			p.teleport(playerLoc);
-			data.dash(end.toVector().subtract(start.toVector()).normalize());
+			data.dash(endLoc.toVector().subtract(startLoc.toVector()).normalize());
 			
-			return TriggerResult.keep();
-		});
-		data.addTrigger(id, bind, inst);
+			Sounds.equip.play(p, p);
+		}
 	}
 
 	@Override
