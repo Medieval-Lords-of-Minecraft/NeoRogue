@@ -34,6 +34,11 @@ public class Counter extends Equipment {
 	}
 
 	@Override
+	public void setupReforges() {
+		addReforge(WeaponEnchantmentElectrified.get(), ThunderclapAndFlash.get());
+	}
+
+	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.EVADE, (pdata, in) -> {
 			PreEvadeEvent ev = (PreEvadeEvent) in;

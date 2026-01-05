@@ -48,7 +48,7 @@ public class RisingSun extends Equipment {
 
 	public RisingSun(boolean isUpgraded) {
 		super(
-				ID, "Rising Sun", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR, EquipmentType.WEAPON,
+				ID, "Rising Sun", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(0, 45, 10, tp.range)
 		);
 		damage = isUpgraded ? 300 : 200;

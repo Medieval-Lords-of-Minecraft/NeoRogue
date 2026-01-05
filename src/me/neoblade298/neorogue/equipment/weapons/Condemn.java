@@ -50,7 +50,7 @@ public class Condemn extends Equipment {
 
 	public Condemn(boolean isUpgraded) {
 		super(
-				ID, "Condemn", isUpgraded, Rarity.EPIC, EquipmentClass.WARRIOR, EquipmentType.WEAPON,
+				ID, "Condemn", isUpgraded, Rarity.EPIC, EquipmentClass.WARRIOR, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(0, 50, 8, tp.range)
 		);
 		damage = 200;

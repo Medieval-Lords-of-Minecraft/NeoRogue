@@ -50,7 +50,7 @@ public class StoneDagger extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STONE_SWORD, "Deal an additional " + GlossaryTag.DARK.tag(this, damage, true) + " when in "
+		item = createItem(Material.STONE_SWORD, "Deal an additional " + GlossaryTag.DARK.tag(this, damage, true) + " damage when in "
 				+ GlossaryTag.STEALTH.tag(this) + ".");
 	}
 }

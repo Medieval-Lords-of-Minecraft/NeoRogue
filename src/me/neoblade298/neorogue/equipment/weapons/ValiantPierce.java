@@ -42,7 +42,7 @@ public class ValiantPierce extends Equipment {
 
 	public ValiantPierce(boolean isUpgraded) {
 		super(
-				ID, "Valiant Pierce", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR, EquipmentType.WEAPON,
+				ID, "Valiant Pierce", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(0, 35, 8, tp.range)
 		);
 		damage = isUpgraded ? 200 : 150;

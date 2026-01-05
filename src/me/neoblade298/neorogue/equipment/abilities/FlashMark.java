@@ -8,6 +8,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.effects.ParticleUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -103,6 +104,11 @@ public class FlashMark extends Equipment {
 				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.LIGHTNING, DamageStatTracker.of(id + slot, eq)), ent);
 				FightInstance.applyStatus(ent, StatusType.ELECTRIFIED, data, electrified, -1);
 			}
+			
+			// Draw line particles from current position to destination
+			Location currentLoc = p.getLocation().add(0, 1, 0);
+			Location destLoc = endLoc.clone().add(0.5, 1, 0.5); // Center of block
+			ParticleUtil.drawLine(p, pc, currentLoc, destLoc, 0.5);
 			
 			// Dash to the block location
 			Location playerLoc = p.getLocation();

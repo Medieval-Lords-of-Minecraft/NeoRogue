@@ -330,6 +330,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Contaminate(b);
 			new CorpseExplosion(b);
 			new Counter(b);
+			new ThunderclapAndFlash(b);
 			new CreateEarth(b);
 			new Cripple(b);
 			new CripplingPoison(b);
@@ -398,6 +399,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Finale(b);
 			new Fissure(b);
 			new FivePointStrike(b);
+			new UmbralVolley(b);
 			new FlashDraw(b);
 			new Flashfire(b);
 			new FlashMark(b);
@@ -499,7 +501,6 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Preparation(b);
 			new Pressure(b);
 			new PreySeeker(b);
-			new RainOfSteel(b);
 			new Rampage(b);
 			new RapidFire(b);
 			new RazorCloak(b);
