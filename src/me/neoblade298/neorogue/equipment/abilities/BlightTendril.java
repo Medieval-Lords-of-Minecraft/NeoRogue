@@ -11,7 +11,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
-import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -36,7 +35,6 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class BlightTendril extends Equipment {
 	private static final String ID = "BlightTendril";
-	private static final int TENDRIL_INTERVAL = 80; // 4 seconds
 	private static final TargetProperties tp = TargetProperties.radius(15, false, TargetType.ENEMY);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST)
 			.dustOptions(new DustOptions(Color.fromRGB(100, 50, 150), 1F))
@@ -57,7 +55,6 @@ public class BlightTendril extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		String statusName = p.getName() + "-blighttendril";
-        ActionMeta am = new ActionMeta();
         Equipment eq = this;
 
         data.addTask(new BukkitRunnable() {
@@ -101,8 +98,6 @@ public class BlightTendril extends Equipment {
 	private class BlightTendrilProjectile extends Projectile {
 		private PlayerFightData data;
 		private Player p;
-		private Equipment eq;
-		private int slot;
 		private String statusName;
 
 		public BlightTendrilProjectile(PlayerFightData data, Equipment eq, int slot, String statusName) {
@@ -111,8 +106,6 @@ public class BlightTendril extends Equipment {
 			this.blocksPerTick(2);
 			this.data = data;
 			this.p = data.getPlayer();
-			this.eq = eq;
-			this.slot = slot;
 			this.statusName = statusName;
 		}
 

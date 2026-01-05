@@ -43,6 +43,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.EvadeEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.KillEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreEvadeEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageBarrierEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveHealthDamageEvent;
@@ -476,7 +477,7 @@ public class DamageMeta {
 			pl.getStats().addDamageBarriered(damage + ignoreShieldsDamage);
 			damage = 0;
 			ignoreShieldsDamage = 0;
-			statSlices.clear();
+			statSlices.clear(); // Clear these so they don't get counted in stats
 			trackerSlices.clear();
 		}
 		
@@ -486,43 +487,46 @@ public class DamageMeta {
 			pl.getStats().addDamageNullified(damage + ignoreShieldsDamage);
 			damage = 0;
 			ignoreShieldsDamage = 0;
-			statSlices.clear();
+			statSlices.clear(); // Clear these so they don't get counted in stats
 			trackerSlices.clear();
 		}
 
 		// Evade
+		boolean fullEvade = false;
 		if (recipient.hasStatus(StatusType.EVADE) && !isStatusDamage && (damage > 0 || ignoreShieldsDamage > 0)) {
-			if (recipient.getEntity().getType() == EntityType.PLAYER) Sounds.attackSweep.play((Player) recipient.getEntity(), recipient.getEntity());
 			recipient.applyStatus(StatusType.EVADE, recipient, -1, -1);
 			double totalDamage = damage + ignoreShieldsDamage;
 			PlayerFightData pl = (PlayerFightData) recipient; // Only players can have evade status
-			if (totalDamage < pl.getStamina()) {
+			PreEvadeEvent ev = new PreEvadeEvent(this);
+			pl.runActions(pl, Trigger.PRE_EVADE, ev);
+			BuffList stamCostBuffs = ev.getStaminaCostBuff();
+			double staminaPerDamage = stamCostBuffs.apply(1);
+			double evasionLimit = pl.getStamina() * staminaPerDamage;
+			if (totalDamage < evasionLimit) {
 				damage = 0;
 				ignoreShieldsDamage = 0;
-				statSlices.clear();
+				statSlices.clear(); // Clear these so they don't get counted in stats
 				trackerSlices.clear();
-				pl.getStats().addEvadeMitigated(pl.getStamina());
-				pl.setStamina(0);
+				pl.getStats().addEvadeMitigated(totalDamage);
+				pl.addStamina(-totalDamage / staminaPerDamage);
+				fullEvade = true;
 			}
 			else {
-				if (ignoreShieldsDamage < pl.getStamina()) {
-					pl.addStamina(ignoreShieldsDamage);
-					subtractFromStats(ignoreShieldsDamage);
+				pl.getStats().addEvadeMitigated(evasionLimit);
+				pl.setStamina(0);
+				subtractFromStats(evasionLimit);
+				// Prioritize ignoring ignore-shields damage first
+				if (ignoreShieldsDamage < evasionLimit) {
+					evasionLimit -= ignoreShieldsDamage;
 					ignoreShieldsDamage = 0;
+					damage -= evasionLimit;
 				}
 				else {
-					ignoreShieldsDamage -= pl.getStamina();
-					subtractFromStats(pl.getStamina());
-					pl.setStamina(0);
+					ignoreShieldsDamage -= evasionLimit;
 				}
 				
-				damage -= pl.getStamina();
-				subtractFromStats(pl.getStamina());
-				pl.setStamina(0);
 			}
-			Sounds.attackSweep.play(pl.getPlayer(), pl.getPlayer());
-			EvadeEvent ev = new EvadeEvent(totalDamage, pl.getStamina(), this);
-			pl.runActions(pl, Trigger.EVADE, ev);
+			pl.runActions(pl, Trigger.EVADE, new EvadeEvent(totalDamage, evasionLimit, this));
 		}
 
 		// Injury
@@ -612,7 +616,8 @@ public class DamageMeta {
 			}
 			// all damage was mitigated via buffs or shields
 			else {
-				Sounds.block.play((Player) recipient.getEntity(), recipient.getEntity());
+				if (fullEvade) Sounds.attackSweep.play((Player) recipient.getEntity(), recipient.getEntity());
+				else Sounds.block.play((Player) recipient.getEntity(), recipient.getEntity());
 			}
 			ReceiveDamageEvent ev = new ReceiveDamageEvent(owner, this);
 			pdata.runActions(pdata, Trigger.RECEIVE_DAMAGE, ev);

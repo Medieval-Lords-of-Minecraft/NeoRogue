@@ -17,7 +17,7 @@ public enum Trigger {
 	DEACTIVATE_TRAP, CREATE_RIFT, REMOVE_RIFT, GRANT_SHIELDS, FALL_DAMAGE, // Cancellable
 	RECEIVE_SHIELDS, CHANGE_AMMUNITION, THROW_TRIDENT, USE_CONSUMABLE, TOGGLE_SPRINT, TOGGLE_CROUCH, PRE_RECEIVE_DAMAGE, // Cancellable
 	RECEIVE_DAMAGE, DASH,
-	TOGGLE_FLIGHT, EVADE,
+	TOGGLE_FLIGHT, PRE_EVADE, EVADE,
 	RECEIVE_HEALTH_DAMAGE, // Cancellable, only occurs if the player is due to lose health, TOO LATE to
 							// apply buffs
 	STAMINA_CHANGE, MANA_CHANGE, KILL, KILL_GLOBAL; // Triggers when ANY player kills a mob; currently just used for
