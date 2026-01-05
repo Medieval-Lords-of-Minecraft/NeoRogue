@@ -15,30 +15,29 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.buff.StatTracker;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
-public class Analyze extends Equipment {
-	private static final String ID = "Analyze";
+public class Analyze2 extends Equipment {
+	private static final String ID = "Analyze2";
 	private static final int MAX_STACKS = 5;
-	private static final int SHIELDS_PER_STACK = 4;
+	private static final int SHIELDS_PER_STACK = 6;
 	private int damagePerStack;
+	private double staminaRegen;
+	private int staminaRegenStacks;
 	
-	public Analyze(boolean isUpgraded) {
-		super(ID, "Analyze", isUpgraded, Rarity.RARE, EquipmentClass.THIEF, EquipmentType.ABILITY,
+	public Analyze2(boolean isUpgraded) {
+		super(ID, "Analyze II", isUpgraded, Rarity.EPIC, EquipmentClass.THIEF, EquipmentType.ABILITY,
 				EquipmentProperties.none());
-		damagePerStack = isUpgraded ? 75 : 50;
+		damagePerStack = isUpgraded ? 100 : 75;
+		staminaRegen = isUpgraded ? 0.3 : 0.2;
+		staminaRegenStacks = 3;
 	}
 	
 	public static Equipment get() {
 		return Equipment.get(ID, false);
-	}
-
-	@Override
-	public void setupReforges() {
-		addReforge(Obfuscation.get(), Paranoia.get());
-		addReforge(Mastermind.get(), Analyze2.get(), BalefulStrike.get());
 	}
 
 	@Override
@@ -56,6 +55,12 @@ public class Analyze extends Equipment {
 				ItemStack currentIcon = activeIcon.clone();
 				currentIcon.setAmount(stacks.getCount());
 				inst.setIcon(currentIcon);
+				
+				// When we hit threshold stacks, apply stamina regen buff and evade if not already active
+				if (stacks.getCount() == staminaRegenStacks) {
+					data.addStaminaRegen(staminaRegen);
+					data.applyStatus(StatusType.EVADE, data, 1, -1);
+				}
 			}
 			return TriggerResult.keep();
 		});
@@ -88,6 +93,8 @@ public class Analyze extends Equipment {
 		item = createItem(Material.SPYGLASS,
 				"Passive. For every second you don't basic attack, gain a stack (up to <white>" + MAX_STACKS + "</white>). " +
 				"The next time you basic attack, deal " + GlossaryTag.PIERCING.tag(this, damagePerStack, true) + " damage " +
-				"and gain " + GlossaryTag.SHIELDS.tag(this, SHIELDS_PER_STACK, false) + " for <white>5s</white> per stack.");
+				"and gain " + GlossaryTag.SHIELDS.tag(this, SHIELDS_PER_STACK, false) + " for <white>5s</white> per stack. " +
+				"When you reach <white>" + staminaRegenStacks + "</white> stacks, permanently gain <yellow>" + staminaRegen + "</yellow> stamina regen and " +
+				GlossaryTag.EVADE.tag(this, 1, false) + ".");
 	}
 }

@@ -33,8 +33,8 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 
-public class ShadowPartner extends Equipment {
-	private static final String ID = "ShadowPartner";
+public class ShadowPartner2 extends Equipment {
+	private static final String ID = "ShadowPartner2";
 	private static final ParticleContainer shadowBall = new ParticleContainer(Particle.DUST)
 		.dustOptions(new org.bukkit.Particle.DustOptions(Color.BLACK, 1.5F))
 		.count(15).spread(0.3, 0.3);
@@ -42,12 +42,13 @@ public class ShadowPartner extends Equipment {
 		.dustOptions(new org.bukkit.Particle.DustOptions(Color.fromRGB(50, 0, 50), 1F))
 		.count(3).spread(0.2, 0.2);
 	
-	private int damage;
+	private int damage, insanityThreshold;
 
-	public ShadowPartner(boolean isUpgraded) {
-		super(ID, "Shadow Partner", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
+	public ShadowPartner2(boolean isUpgraded) {
+		super(ID, "Shadow Partner II", isUpgraded, Rarity.EPIC, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 1, 0));
-		damage = isUpgraded ? 300 : 200;
+		damage = isUpgraded ? 400 : 300;
+		insanityThreshold = isUpgraded ? 200 : 300;
 	}
 
 	public static Equipment get() {
@@ -97,12 +98,19 @@ public class ShadowPartner extends Equipment {
 			if (!(target.getEntity() instanceof LivingEntity)) return TriggerResult.keep();
 			LivingEntity targetEntity = (LivingEntity) target.getEntity();
 			
-			// Fire projectile from shadow ball location
+			// Calculate number of bonus projectiles based on insanity applied this fight
+			int totalInsanity = data.getStats().getStatusesApplied().getOrDefault(StatusType.INSANITY, 0);
+			int bonusProjectiles = totalInsanity / insanityThreshold;
+			int totalProjectiles = 1 + bonusProjectiles;
+			
+			// Fire projectiles from shadow ball location
 			Location shadowLoc = locationQueue.getFirst();
 			Location targetLoc = targetEntity.getEyeLocation();
 			
-			ProjectileGroup proj = new ProjectileGroup(new ShadowProjectile(data, slot, this));
-			proj.start(data, shadowLoc, targetLoc.toVector().subtract(shadowLoc.toVector()).normalize());
+			for (int i = 0; i < totalProjectiles; i++) {
+				ProjectileGroup proj = new ProjectileGroup(new ShadowProjectile(data, slot, this));
+				proj.start(data, shadowLoc, targetLoc.toVector().subtract(shadowLoc.toVector()).normalize());
+			}
 			
 			Sounds.fire.play(p, shadowLoc);
 			cooldown.setTime(System.currentTimeMillis());
@@ -143,15 +151,11 @@ public class ShadowPartner extends Equipment {
 	}
 
 	@Override
-	public void setupReforges() {
-		addReforge(Obfuscation.get(), ShadowPartner2.get());
-	}
-
-	@Override
 	public void setupItem() {
 		item = createItem(Material.ENDER_PEARL,
 				"A ball of darkness follows <white>2s</white> behind you. Anytime you apply " +
 				GlossaryTag.INSANITY.tag(this) + " <white>(1s cooldown)</white>, the ball fires a projectile at them, dealing " +
-				GlossaryTag.DARK.tag(this, damage, true) + " damage on hit.");
+				GlossaryTag.DARK.tag(this, damage, true) + " damage on hit. Fires an additional projectile for every <yellow>" + 
+				insanityThreshold + "</yellow> " + GlossaryTag.INSANITY.tag(this) + " you've applied this fight.");
 	}
 }

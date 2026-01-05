@@ -112,6 +112,7 @@ import me.neoblade298.neorogue.equipment.armor.NullifyingCloak;
 import me.neoblade298.neorogue.equipment.armor.PhoenixfireMantle;
 import me.neoblade298.neorogue.equipment.armor.RedCloak;
 import me.neoblade298.neorogue.equipment.armor.SaviorsHelm;
+import me.neoblade298.neorogue.equipment.armor.SilversilkCowl;
 import me.neoblade298.neorogue.equipment.armor.SpikedPauldrons;
 import me.neoblade298.neorogue.equipment.armor.StarlightHood;
 import me.neoblade298.neorogue.equipment.armor.StonyCloak;
@@ -216,6 +217,7 @@ import me.neoblade298.neorogue.equipment.offhands.SmallShield;
 import me.neoblade298.neorogue.equipment.offhands.SpikyShield;
 import me.neoblade298.neorogue.equipment.offhands.TomeOfScorchedEarth;
 import me.neoblade298.neorogue.equipment.offhands.TomeOfWeakness;
+import me.neoblade298.neorogue.equipment.offhands.VeiledHourglass;
 import me.neoblade298.neorogue.equipment.offhands.VengefulShield;
 import me.neoblade298.neorogue.equipment.offhands.WristBlade;
 import me.neoblade298.neorogue.equipment.weapons.*;
@@ -273,6 +275,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new AnchoringEarth(b);
 			new AnchoringEarth2(b);
 			new Analyze(b);
+			new Analyze2(b);
+			new BalefulStrike(b);
 			new Assassinate(b);
 			new ArcaneBlast(b);
 			new ArrowRain(b);
@@ -512,6 +516,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Quicken(b);
 			new ShadowImbuement(b);
 			new ShadowPartner(b);
+			new ShadowPartner2(b);
 			new ShadowWalk(b);
 			new ShardBlast(b);
 			new ShatteringShot(b);
@@ -558,6 +563,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Vanish(b);
 			new VitalPierce(b);
 			new Volley(b);
+			new WallJump(b);
 			new WarCry(b);
 			new Warmup(b);
 			new WarningShot(b);
@@ -643,6 +649,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new PhoenixfireMantle(b);
 			new RedCloak(b);
 			new SaviorsHelm(b);
+			new SilversilkCowl(b);
 			new SpikedPauldrons(b);
 			new StarlightHood(b);
 			new StonyCloak(b);
@@ -678,6 +685,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new SpikyShield(b);
 			new TomeOfScorchedEarth(b);
 			new TomeOfWeakness(b);
+			new VeiledHourglass(b);
 			new VengefulShield(b);
 			new WardingRune(b);
 			new WristBlade(b);
