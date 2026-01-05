@@ -17,7 +17,7 @@ import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.EvadeEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreEvadeEvent;
 
 public class Counter extends Equipment {
 	private static final String ID = "Counter";
@@ -36,7 +36,7 @@ public class Counter extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.EVADE, (pdata, in) -> {
-			EvadeEvent ev = (EvadeEvent) in;
+			PreEvadeEvent ev = (PreEvadeEvent) in;
 			
 			// Get the damager entity from the DamageMeta
 			if (ev.getDamageMeta() == null || ev.getDamageMeta().getOwner() == null) {
