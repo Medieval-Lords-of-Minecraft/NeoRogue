@@ -15,7 +15,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.CheckCastUsableEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.CastUsableEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -33,8 +33,8 @@ public class NoxianBlight extends Artifact {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
-		data.addTrigger(id, Trigger.CHECK_CAST_USABLE, (pdata, in) -> {
-			CheckCastUsableEvent ev = (CheckCastUsableEvent) in;
+		data.addTrigger(id, Trigger.CAST_USABLE, (pdata, in) -> {
+			CastUsableEvent ev = (CastUsableEvent) in;
 			if (!ev.getInstance().canTrigger(data.getPlayer(), data, in))
 				return TriggerResult.keep();
 			boolean activated = false;

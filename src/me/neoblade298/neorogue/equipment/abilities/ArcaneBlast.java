@@ -72,13 +72,14 @@ public class ArcaneBlast extends Equipment {
 				data.charge(20).then(new Runnable() {
 					public void run() {
 						Block b = p.getTargetBlockExact((int) properties.get(PropertyType.RANGE));
+						CastUsableEvent last = inst.getLastCastEvent();
 						if (b == null) {
-							data.addMana(properties.get(PropertyType.MANA_COST));
+							data.addMana(last.getManaCost());
 							inst.setCooldown(0);
 							Sounds.error.play(p, p);
 							return;
 						}
-						data.runActions(data, Trigger.CAST_USABLE, new CastUsableEvent(inst, CastType.POST_TRIGGER));
+						data.runActions(data, Trigger.CAST_USABLE, new CastUsableEvent(inst, CastType.POST_TRIGGER, last.getManaCost(), last.getStaminaCost(), last.getCooldown(), last.getTags()));
 						Location loc = b.getLocation().add(0, 1, 0);
 						Sounds.equip.play(p, loc);
 						circ.play(pc, loc, LocalAxes.xz(), null);

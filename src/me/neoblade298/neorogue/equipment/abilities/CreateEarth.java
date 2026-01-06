@@ -61,18 +61,19 @@ public class CreateEarth extends Equipment {
 					LocalAxes.xz(), null);
 			data.charge(20).then(new Runnable() {
 				public void run() {
+					CastUsableEvent last = inst.getLastCastEvent();
 					Block b = p.getTargetBlockExact((int) properties.get(PropertyType.RANGE));
 					if (b == null) {
 						Sounds.error.play(p, p);
-						data.addMana(properties.get(PropertyType.MANA_COST));
-						data.addMana(properties.get(PropertyType.STAMINA_COST));
+						data.addMana(last.getManaCost());
+						data.addStamina(last.getStaminaCost());
 						inst.setCooldown(0);
 						return;
 					}
 					Location loc = b.getLocation().add(0, 1, 0);
 					circ.play(pc, loc, LocalAxes.xz(), earth);
 					Sounds.explode.play(p, loc);
-					data.runActions(data, Trigger.CAST_USABLE, new CastUsableEvent(inst, CastType.POST_TRIGGER));
+					data.runActions(data, Trigger.CAST_USABLE, new CastUsableEvent(inst, CastType.POST_TRIGGER, last.getManaCost(), last.getStaminaCost(), last.getCooldown(), last.getTags()));
 
 					for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, tp)) {
 						FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.BLUNT, DamageStatTracker.of(id + slot, eq)), ent);

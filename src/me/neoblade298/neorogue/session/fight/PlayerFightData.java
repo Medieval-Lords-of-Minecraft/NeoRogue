@@ -1,5 +1,6 @@
 package me.neoblade298.neorogue.session.fight;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -25,6 +26,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.AmmunitionInstance;
@@ -48,15 +50,16 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerCondition;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.CastUsableEvent;
-import me.neoblade298.neorogue.session.fight.trigger.event.CheckCastUsableEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.CreateRiftEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.LayTrapEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreCastUsableEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.StaminaChangeEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class PlayerFightData extends FightData {
 
+	private static final DecimalFormat df = new DecimalFormat("##.#");
 	private static final Comparator<Status> stackComparator = new Comparator<Status>() {
 		@Override
 		public int compare(Status s1, Status s2) {
@@ -289,7 +292,7 @@ public class PlayerFightData extends FightData {
 		if (p.isOnGround()) {
 			p.teleport(p.getLocation().add(0, 0.2, 0));
 		}
-		p.setVelocity(v.setY(0).normalize().multiply(2).setY(-1));
+		p.setVelocity(v.setY(0).normalize().multiply(1.5).setY(-1));
 	}
 
 	@Override
@@ -475,36 +478,54 @@ public class PlayerFightData extends FightData {
 							|| data.hasStatus(StatusType.SILENCED))
 						return false;
 					EquipmentInstance ei = (EquipmentInstance) inst;
-					CheckCastUsableEvent ev = new CheckCastUsableEvent(ei);
+					PreCastUsableEvent ev = new PreCastUsableEvent(ei);
 					runActions(data, Trigger.PRE_CAST_USABLE, ev);
 
-					// Buff mana costs, cannot go below 0, uses temp mana/stamina cost if it exists
-					BuffList b = ev.getBuff(PropertyType.MANA_COST);
-					if (ei.getTempManaCost() == -1) {
-						ei.setTempManaCost(Math.max(0, b.applyNegative(ei.getManaCost())));
-						calculateStatTrackers(ei.getManaCost(), ei.getManaCost() - ei.getTempManaCost(), b);
-					}
-					// Buff stamina costs, cannot go below 0
-					b = ev.getBuff(PropertyType.STAMINA_COST);
-					if (ei.getTempStaminaCost() == -1) {
-						ei.setTempStaminaCost(Math.max(0, b.applyNegative(ei.getStaminaCost())));
-						calculateStatTrackers(ei.getStaminaCost(), ei.getStaminaCost() - ei.getTempStaminaCost(), b);
-					}
-					// Buff cooldowns, doesn't matter if it goes below 0
-					b = ev.getBuff(PropertyType.COOLDOWN);
-					ei.setTempCooldown(Math.max(0, b.applyNegative(ei.getBaseCooldown())));
-					calculateStatTrackers(ei.getTempCooldown(), ei.getBaseCooldown() - ei.getTempCooldown(), b);
-
+					// Check other conditions first (cooldown, custom conditions)
 					if (!ei.canTrigger(p, data, inputs)) {
 						continue;
 					}
-					runActions(data, Trigger.CHECK_CAST_USABLE, ev);
+
+					// Mana
+					BuffList b = ev.getBuff(PropertyType.MANA_COST);
+					double manaCost = Math.max(0, b.applyNegative(ei.getManaCost()));
+					if (manaCost > data.getMana() && manaCost > 0) {
+						Util.displayError(data.getPlayer(),
+								"You need " + df.format(manaCost - data.getMana()) + " more mana!");
+						continue;
+					}
+
+					// Stamina
+					b = ev.getBuff(PropertyType.STAMINA_COST);
+					double staminaCost = Math.max(0, b.applyNegative(ei.getStaminaCost()));
+					if (staminaCost > data.getStamina() && staminaCost > 0) {
+						Util.displayError(data.getPlayer(),
+								"You need " + df.format(staminaCost - data.getStamina()) + " more stamina!");
+						continue;
+					}
+
+					// Cooldown
+					b = ev.getBuff(PropertyType.COOLDOWN);
+					double cooldown = Math.max(0, b.applyNegative(ei.getBaseCooldown()));
+					
+					// Passed checks, run stat trackers
+					calculateStatTrackers(ei.getStaminaCost(), ei.getStaminaCost() - staminaCost, b);
+					calculateStatTrackers(ei.getManaCost(), ei.getManaCost() - manaCost, b);
+					calculateStatTrackers(ei.getBaseCooldown(), ei.getBaseCooldown() - cooldown, b);
+
 					CastType type = ei.getEquipment().getProperties().getCastType();
 					// If the cast type is not standard, it's up to the equipment to run the action
 					// This is so CAST_USABLE doesn't get multi-triggered by toggled or recast abilities
+					CastUsableEvent cuv = new CastUsableEvent(ei, type, manaCost, staminaCost, cooldown, ev.getTags());
 					if (type == CastType.STANDARD) {
-						runActions(data, Trigger.CAST_USABLE, new CastUsableEvent(ei, type));
+						runActions(data, Trigger.CAST_USABLE, cuv);
 					}
+					else {
+						ei.setLastCastEvent(cuv);
+					}
+					data.addMana(-manaCost);
+					data.addStamina(-staminaCost);
+					if (!data.isIgnoreCooldowns()) ei.setCooldown(cooldown);
 					tr = ei.trigger(data, inputs);
 					ei.updateIcon();
 				} else {

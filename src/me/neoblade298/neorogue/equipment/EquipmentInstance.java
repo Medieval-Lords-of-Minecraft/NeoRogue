@@ -1,6 +1,5 @@
 package me.neoblade298.neorogue.equipment;
 
-import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -20,11 +19,10 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerCondition;
-import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.CastUsableEvent;
 
 public class EquipmentInstance extends PriorityAction {
 	private static HashMap<Integer, Material> COOLDOWN_MATERIALS = new HashMap<Integer, Material>();
-	private static final DecimalFormat df = new DecimalFormat("##.#");
 
 	protected ItemStack icon;
 	protected Player p;
@@ -32,8 +30,9 @@ public class EquipmentInstance extends PriorityAction {
 	protected int slot, invSlot;
 	protected Equipment eq;
 	protected EquipSlot es;
-	protected double staminaCost, manaCost, tempStaminaCost = -1, tempManaCost = -1, nextStaminaCost = -1,
-			nextManaCost = -1, cooldown, tempCooldown = -1;
+	protected double staminaCost, manaCost, cooldown; // Base costs
+	protected CastUsableEvent lastCastEvent; // Useful for non-standard cast types that may need to access final mana/stamina cost info for refunds, like Gravity
+	protected TriggerCondition resourceUsageCondition;
 	protected long nextUsable = 0L;
 	protected BukkitTask cooldownTask;
 	protected String cooldownTaskId;
@@ -106,19 +105,6 @@ public class EquipmentInstance extends PriorityAction {
 		this.action = action;
 	}
 
-	@Override
-	public TriggerResult trigger(PlayerFightData data, Object inputs) {
-		if (!data.isIgnoreCooldowns())
-			nextUsable = (long) (System.currentTimeMillis() + (getEffectiveCooldown() * 1000));
-
-		if (resourceUsageCondition == null || !resourceUsageCondition.canTrigger(p, data, inputs)) {
-			data.addMana(-getEffectiveManaCost());
-			data.addStamina(-getEffectiveStaminaCost());
-		}
-		resetTempCosts();
-		return action.trigger(data, inputs);
-	}
-
 	public Player getPlayer() {
 		return data.getPlayer();
 	}
@@ -127,17 +113,6 @@ public class EquipmentInstance extends PriorityAction {
 	public boolean canTrigger(Player p, PlayerFightData data, Object in) {
 		if (nextUsable >= System.currentTimeMillis()) {
 			sendCooldownMessage(p);
-			return false;
-		}
-		if (data.getMana() < getEffectiveManaCost() && getEffectiveManaCost() > 0) {
-			Util.displayError(data.getPlayer(),
-					"You need " + df.format(getEffectiveManaCost() - data.getMana()) + " more mana!");
-			return false;
-		}
-
-		if (data.getStamina() < getEffectiveStaminaCost() && getEffectiveStaminaCost() > 0) {
-			Util.displayError(data.getPlayer(),
-					"You need " + df.format(getEffectiveStaminaCost() - data.getStamina()) + " more stamina!");
 			return false;
 		}
 		if (condition != null) {
@@ -149,6 +124,14 @@ public class EquipmentInstance extends PriorityAction {
 	public void sendCooldownMessage(Player p) {
 		Util.msgRaw(p, eq.display.append(
 				NeoCore.miniMessage().deserialize(" <red>cooldown: </red><yellow>" + getCooldownSeconds() + "s")));
+	}
+
+	public void setResourceUsageCondition(TriggerCondition cond) {
+		this.resourceUsageCondition = cond;
+	}
+
+	public boolean shouldUseResource(Player p, PlayerFightData data, Object event) {
+		return resourceUsageCondition == null || resourceUsageCondition.canTrigger(p, data, event);
 	}
 
 	public void updateIcon() {
@@ -187,23 +170,15 @@ public class EquipmentInstance extends PriorityAction {
 		return cooldown;
 	}
 
-	public void setTempCooldown(double cooldown) {
-		this.tempCooldown = cooldown;
-	}
-
-	public double getTempCooldown() {
-		return this.tempCooldown;
-	}
-
 	public void addCooldown(double seconds) {
 		nextUsable += seconds * 1000;
 		updateIcon();
 	}
 
-	public void setCooldown(int seconds) {
+	public void setCooldown(double seconds) {
 		// Set cooldown to -1 to remove cooldown, otherwise updateIcon will assume it's
 		// on 1s cooldown
-		nextUsable = seconds == 0 ? -1 : System.currentTimeMillis() + (seconds * 1000);
+		nextUsable = seconds == 0 ? -1 : System.currentTimeMillis() + (long)((int) (seconds * 1000));
 		updateIcon();
 	}
 
@@ -220,48 +195,12 @@ public class EquipmentInstance extends PriorityAction {
 		return getCooldownSeconds() * 20;
 	}
 
-	public void setTempStaminaCost(double stamina) {
-		this.tempStaminaCost = stamina;
-	}
-
-	public void setTempManaCost(double mana) {
-		this.tempManaCost = mana;
-	}
-
-	public void setNextStaminaCost(double stamina) {
-		this.nextStaminaCost = stamina;
-	}
-
-	public void setNextManaCost(double mana) {
-		this.nextManaCost = mana;
-	}
-
 	public double getStaminaCost() {
 		return this.staminaCost;
 	}
 
-	public double getTempStaminaCost() {
-		return tempStaminaCost;
-	}
-
-	public double getEffectiveStaminaCost() {
-		return tempStaminaCost == -1 ? staminaCost : tempStaminaCost;
-	}
-
 	public double getManaCost() {
 		return this.manaCost;
-	}
-
-	public double getTempManaCost() {
-		return tempManaCost;
-	}
-
-	public double getEffectiveManaCost() {
-		return tempManaCost == -1 ? manaCost : tempManaCost;
-	}
-
-	public double getEffectiveCooldown() {
-		return tempCooldown == -1 ? cooldown : tempCooldown;
 	}
 
 	public Equipment getEquipment() {
@@ -276,11 +215,11 @@ public class EquipmentInstance extends PriorityAction {
 		return slot;
 	}
 
-	public void resetTempCosts() {
-		tempStaminaCost = nextStaminaCost;
-		tempManaCost = nextManaCost;
-		tempCooldown = -1;
-		nextStaminaCost = -1;
-		nextManaCost = -1;
+	// Only run if your cast type is non-standard
+	public void setLastCastEvent(CastUsableEvent ev) {
+		this.lastCastEvent = ev;
+	}
+	public CastUsableEvent getLastCastEvent() {
+		return this.lastCastEvent;
 	}
 }

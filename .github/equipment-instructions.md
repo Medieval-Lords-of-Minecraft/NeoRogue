@@ -555,6 +555,221 @@ data.charge(20);  // 1 second charge, no follow-up action
 - Charge additionally prevents jumping
 - Default slowness level is based on duration, or specify custom level with second parameter
 
+### Cancellable Casts (POST_TRIGGER Pattern)
+
+Some abilities have delays before execution and can fail due to conditions not being met after the delay (e.g., block targeting abilities). These require proper cost refunding.
+
+#### When to Use POST_TRIGGER
+Use `CastType.POST_TRIGGER` when:
+- Ability has a charge/channel delay before execution
+- Cast can fail after the delay due to environmental conditions (block targeting, range checks)
+- Need to refund costs (mana/stamina/cooldown) on failure
+
+#### Core Pattern
+
+**1. Set CastType to POST_TRIGGER:**
+```java
+public MyAbility(boolean isUpgraded) {
+    super(ID, "Name", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
+        EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 0, 12, 10));
+    properties.setCastType(CastType.POST_TRIGGER);
+}
+```
+
+**2. Manual CAST_USABLE Triggering with Cost Refunds:**
+```java
+@Override
+public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+    EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
+    inst.setAction((pdata, in) -> {
+        data.charge(40).then(new Runnable() {
+            public void run() {
+                // Check if cast conditions are still valid
+                Block b = p.getTargetBlockExact((int) properties.get(PropertyType.RANGE));
+                CastUsableEvent last = inst.getLastCastEvent();
+                
+                // FAILED CAST - Refund costs
+                if (b == null) {
+                    data.addMana(last.getManaCost());
+                    data.addStamina(last.getStaminaCost());
+                    inst.setCooldown(0);
+                    Sounds.error.play(p, p);
+                    return;
+                }
+                
+                // SUCCESSFUL CAST - Manually trigger CAST_USABLE
+                data.runActions(data, Trigger.CAST_USABLE, 
+                    new CastUsableEvent(inst, CastType.POST_TRIGGER, 
+                        last.getManaCost(), last.getStaminaCost(), 
+                        last.getCooldown(), last.getTags()));
+                
+                // Execute ability effect
+                Location loc = b.getLocation().add(0, 1, 0);
+                // ... ability logic here
+            }
+        });
+        return TriggerResult.keep();
+    });
+    data.addTrigger(id, bind, inst);
+}
+```
+
+#### Complete Example - Ground-Targeted Delayed Ability (Gravity.java)
+
+```java
+public class Gravity extends Equipment {
+    private static final String ID = "Gravity";
+    private int damage;
+    
+    public Gravity(boolean isUpgraded) {
+        super(ID, "Gravity", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
+            EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 0, 12, 10));
+        damage = isUpgraded ? 300 : 200;
+        properties.setCastType(CastType.POST_TRIGGER);  // CRITICAL
+    }
+    
+    @Override
+    public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+        EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
+        inst.setAction((pdata, in) -> {
+            // 2 second charge
+            data.charge(40).then(new Runnable() {
+                public void run() {
+                    Block b = p.getTargetBlockExact((int) properties.get(PropertyType.RANGE));
+                    CastUsableEvent last = inst.getLastCastEvent();
+                    
+                    // Check if still targeting valid block
+                    if (b == null) {
+                        // Refund buffed costs (not base costs!)
+                        data.addMana(last.getManaCost());
+                        data.addStamina(last.getStaminaCost());
+                        inst.setCooldown(0);
+                        Sounds.error.play(p, p);
+                        return;
+                    }
+                    
+                    // Manually trigger CAST_USABLE for other equipment to react
+                    data.runActions(data, Trigger.CAST_USABLE, 
+                        new CastUsableEvent(inst, CastType.POST_TRIGGER,
+                            last.getManaCost(), last.getStaminaCost(),
+                            last.getCooldown(), last.getTags()));
+                    
+                    // Execute ability
+                    Location loc = b.getLocation().add(0, 1, 0);
+                    data.addRift(new Rift(data, loc, 160));
+                    // ... rest of ability logic
+                }
+            });
+            return TriggerResult.keep();
+        });
+        data.addTrigger(id, bind, inst);
+    }
+}
+```
+
+#### Complete Example - Multi-Stage Ability (ArcaneBlast.java)
+
+```java
+public class ArcaneBlast extends Equipment {
+    private static final String ID = "ArcaneBlast";
+    
+    public ArcaneBlast(boolean isUpgraded) {
+        super(ID, "Arcane Blast", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
+            EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 0, 10, 14, 4));
+        properties.setCastType(CastType.POST_TRIGGER);
+    }
+    
+    @Override
+    public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+        ActionMeta am = new ActionMeta();  // Track multi-stage state
+        EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
+        
+        // Condition: either first cast with valid target, or recast
+        inst.setCondition((pl, pdata, in) -> {
+            return am.getBool() || p.getTargetBlockExact((int) properties.get(PropertyType.RANGE)) != null;
+        });
+        
+        inst.setAction((pdata, in) -> {
+            // First cast - charge and place marker
+            if (!am.getBool()) {
+                data.charge(20).then(new Runnable() {
+                    public void run() {
+                        Block b = p.getTargetBlockExact((int) properties.get(PropertyType.RANGE));
+                        CastUsableEvent last = inst.getLastCastEvent();
+                        
+                        // Failed - no valid target
+                        if (b == null) {
+                            data.addMana(last.getManaCost());
+                            data.addStamina(last.getStaminaCost());
+                            inst.setCooldown(0);
+                            Sounds.error.play(p, p);
+                            return;
+                        }
+                        
+                        // Success - trigger CAST_USABLE
+                        data.runActions(data, Trigger.CAST_USABLE,
+                            new CastUsableEvent(inst, CastType.POST_TRIGGER,
+                                last.getManaCost(), last.getStaminaCost(),
+                                last.getCooldown(), last.getTags()));
+                        
+                        Location loc = b.getLocation().add(0, 1, 0);
+                        am.setBool(true);  // Enter second stage
+                        am.setLocation(loc);
+                        // ... start charge accumulation
+                    }
+                });
+            }
+            // Recast - detonate
+            else {
+                // ... execute detonation
+                am.setBool(false);  // Reset state
+                inst.setIcon(item);
+            }
+            return TriggerResult.keep();
+        });
+        data.addTrigger(id, bind, inst);
+    }
+}
+```
+
+#### Key Points for POST_TRIGGER Pattern
+
+**Why use getLastCastEvent():**
+- Costs are calculated with buffs applied in the hotkey trigger system
+- `inst.getLastCastEvent()` stores the **buffed** mana/stamina/cooldown costs
+- Refunding base costs (`properties.get(PropertyType.MANA_COST)`) is incorrect when cost reduction buffs exist
+- `CastUsableEvent` contains: `getManaCost()`, `getStaminaCost()`, `getCooldown()`, `getTags()`
+
+**Critical Requirements:**
+1. Set `properties.setCastType(CastType.POST_TRIGGER)` in constructor
+2. Access costs via `inst.getLastCastEvent()` NOT base property values
+3. Manually call `data.runActions(data, Trigger.CAST_USABLE, ...)` on success
+4. Refund all three: mana, stamina, AND cooldown on failure
+5. Play error sound for user feedback when cast fails
+
+**Common Failure Conditions:**
+- Block targeting: `p.getTargetBlockExact()` returns null
+- Range checks: Target moved out of range during delay
+- Entity targeting: Target died or despawned during charge
+- Environmental: Required game state changed (rift disappeared, etc.)
+
+**Cost Refund Pattern:**
+```java
+CastUsableEvent last = inst.getLastCastEvent();
+if (conditionFailed) {
+    data.addMana(last.getManaCost());      // Refund buffed mana
+    data.addStamina(last.getStaminaCost()); // Refund buffed stamina  
+    inst.setCooldown(0);                    // Remove cooldown
+    Sounds.error.play(p, p);                // User feedback
+    return;
+}
+```
+
+**When NOT to use POST_TRIGGER:**
+- Instant cast abilities (use default `CastType.STANDARD`)
+- Abilities that cannot fail after trigger
+- Toggle abilities (use their own cast type patterns)
+
 ## Equipment Categories
 
 #### Equipment Types

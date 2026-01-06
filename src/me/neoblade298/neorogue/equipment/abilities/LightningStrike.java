@@ -20,7 +20,6 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.CastType;
-import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
@@ -67,15 +66,16 @@ public class LightningStrike extends Equipment {
 			data.channel(20).then(new Runnable() {
 				public void run() {
 					Block b = p.getTargetBlockExact((int) cursor.range);
+					CastUsableEvent last = inst.getLastCastEvent();
 
 					// Reset cooldown and refund mana and stamina
 					if (b == null || !b.getType().isSolid()) {
 						Sounds.extinguish.play(p, p);
-						data.addMana(properties.get(PropertyType.MANA_COST));
+						data.addMana(last.getManaCost());
 						inst.setCooldown(0);
 					} else {
 						am.setLocation(p.getTargetBlockExact((int) cursor.range).getLocation());
-						data.runActions(data, Trigger.CAST_USABLE, new CastUsableEvent(inst, CastType.POST_TRIGGER));
+						data.runActions(data, Trigger.CAST_USABLE, new CastUsableEvent(inst, CastType.POST_TRIGGER, last.getManaCost(), last.getStaminaCost(), last.getCooldown(), last.getTags()));
 						data.addTask(new BukkitRunnable() {
 							public void run() {
 								Location loc = am.getLocation();

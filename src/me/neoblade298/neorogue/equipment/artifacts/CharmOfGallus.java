@@ -1,7 +1,5 @@
 package me.neoblade298.neorogue.equipment.artifacts;
 
-import java.util.UUID;
-
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
@@ -21,7 +19,8 @@ import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.CheckCastUsableEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.CastUsableEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreCastUsableEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -45,14 +44,13 @@ public class CharmOfGallus extends Artifact {
 	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
 		CharmOfGallusInstance inst = new CharmOfGallusInstance(this);
 		data.addTrigger(id, Trigger.PRE_CAST_USABLE, inst);
-		data.addTrigger(id, Trigger.CHECK_CAST_USABLE, (pdata, in) -> {
-			return inst.checkUsed(p, (CheckCastUsableEvent) in);
+		data.addTrigger(id, Trigger.CAST_USABLE, (pdata, in) -> {
+			return inst.checkUsed(p, (CastUsableEvent) in);
 		});
 	}
 
 	public class CharmOfGallusInstance implements TriggerAction {
 		private int count = 0;
-		private String uuid = UUID.randomUUID().toString();
 		private Equipment eq;
 
 		public CharmOfGallusInstance(Equipment eq) {
@@ -62,19 +60,17 @@ public class CharmOfGallus extends Artifact {
 		@Override
 		public TriggerResult trigger(PlayerFightData data, Object inputs) {
 			if (count < 5) {
-				CheckCastUsableEvent ev = (CheckCastUsableEvent) inputs;
-				if (ev.getInstance().getEffectiveStaminaCost() == 0)
+				PreCastUsableEvent ev = (PreCastUsableEvent) inputs;
+				if (ev.getBuff(PropertyType.STAMINA_COST).applyNegative(ev.getInstance().getStaminaCost()) <= 0)
 					return TriggerResult.keep();
-				if (ev.getBuff(PropertyType.STAMINA_COST).apply(ev.getInstance().getStaminaCost()) <= 0)
-					return TriggerResult.keep();
-				ev.addBuff(PropertyType.STAMINA_COST, uuid, Buff.increase(data, stamina, BuffStatTracker.ignored(eq)));
+				ev.addBuff(PropertyType.STAMINA_COST, id, Buff.increase(data, stamina, BuffStatTracker.ignored(eq)));
 				return TriggerResult.keep();
 			}
 			return TriggerResult.remove();
 		}
 
-		private TriggerResult checkUsed(Player p, CheckCastUsableEvent ev) {
-			if (ev.hasId(uuid)) {
+		private TriggerResult checkUsed(Player p, CastUsableEvent ev) {
+			if (ev.hasTag(id)) {
 				Sounds.success.play(p, p);
 				part.play(p, p);
 				Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));

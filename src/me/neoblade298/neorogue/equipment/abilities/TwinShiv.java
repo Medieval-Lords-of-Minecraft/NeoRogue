@@ -61,8 +61,6 @@ public class TwinShiv extends Equipment {
 				if (isFirstProj) {
 					firstHit = null;
 					this.setCooldown(1);
-					this.setTempStaminaCost(0);
-					this.setTempManaCost(0);
 					proj.start(pdata);
 					isFirstProj = false;
 				}
@@ -71,6 +69,9 @@ public class TwinShiv extends Equipment {
 					isFirstProj = true;
 				}
 				return TriggerResult.keep();
+			};
+			resourceUsageCondition = (pl, pdata, in) -> {
+				return isFirstProj;
 			};
 		}
 		

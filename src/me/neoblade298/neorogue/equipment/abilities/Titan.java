@@ -15,7 +15,7 @@ import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.CheckCastUsableEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreCastUsableEvent;
 
 public class Titan extends Equipment {
 	private static final String ID = "Titan";
@@ -37,7 +37,7 @@ public class Titan extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.PRE_CAST_USABLE, (pdata, in) -> {
-			CheckCastUsableEvent ev = (CheckCastUsableEvent) in;
+			PreCastUsableEvent ev = (PreCastUsableEvent) in;
 			EquipmentInstance inst = ev.getInstance();
 			if (inst.getStaminaCost() < CUTOFF)
 				return TriggerResult.keep();

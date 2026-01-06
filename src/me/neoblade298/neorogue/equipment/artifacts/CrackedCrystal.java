@@ -14,7 +14,7 @@ import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.CheckCastUsableEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreCastUsableEvent;
 
 public class CrackedCrystal extends Artifact {
 	private static final String ID = "CrackedCrystal";
@@ -30,7 +30,7 @@ public class CrackedCrystal extends Artifact {
 	@Override
 	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
 		data.addTrigger(ID, Trigger.PRE_CAST_USABLE, (pdata, in) -> {
-			CheckCastUsableEvent ev = (CheckCastUsableEvent) in;
+			PreCastUsableEvent ev = (PreCastUsableEvent) in;
 			ev.addBuff(PropertyType.COOLDOWN, id, new Buff(data, 1, 0, BuffStatTracker.of(ID, this, "Cooldown reduced")));
 			return TriggerResult.keep();
 		});

@@ -77,14 +77,15 @@ public class GroundLance extends Equipment {
 			data.charge(20).then(new Runnable() {
 				public void run() {
 					Block b = p.getTargetBlockExact((int) properties.get(PropertyType.RANGE));
+					CastUsableEvent last = inst.getLastCastEvent();
 					if (b == null) {
-						data.addMana(properties.get(PropertyType.MANA_COST));
+						data.addMana(last.getManaCost());
 						inst.setCooldown(0);
 						Sounds.error.play(p, p);
 						return;
 					}
 
-					data.runActions(data, Trigger.CAST_USABLE, new CastUsableEvent(inst, CastType.POST_TRIGGER));
+					data.runActions(data, Trigger.CAST_USABLE, new CastUsableEvent(inst, CastType.POST_TRIGGER, last.getManaCost(), last.getStaminaCost(), last.getCooldown(), last.getTags()));
 					Location loc = b.getLocation().add(0, 1, 0);
 					circ.play(pc, loc, LocalAxes.xz(), null);
 					ParticleUtil.drawLine(p, grnd, loc, loc.clone().add(0, 4, 0), 1);
@@ -96,7 +97,7 @@ public class GroundLance extends Equipment {
 						FightInstance.dealDamage(new DamageMeta(data, damage * 3, DamageType.EARTHEN, DamageStatTracker.of(id + slot, eq)),
 								targets.getFirst());
 					} else {
-						for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
+						for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, tp)) {
 							FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.EARTHEN,
 									DamageStatTracker.of(id + slot, eq)), ent);
 						}

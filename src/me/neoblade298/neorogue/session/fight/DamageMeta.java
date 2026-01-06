@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 
@@ -56,8 +55,8 @@ public class DamageMeta {
 	private FightData owner;
 	private boolean hitBarrier, isSecondary, isBasicAttack, ignoreBuffs;
 	private Equipment weapon; // For basic attacks
-	private HashSet<DamageOrigin> origins = new HashSet<DamageOrigin>();
-	private HashSet<String> tags = new HashSet<String>(); // Currently used to track kills, like with cull; Currently is NOT cloned
+	private ArrayList<DamageOrigin> origins = new ArrayList<DamageOrigin>();
+	private ArrayList<String> tags = new ArrayList<String>(); // Currently used to track kills, like with cull; Currently is NOT cloned
 	private ProjectileInstance proj; // If the damage originated from projectile
 	private LinkedList<DamageSlice> slices = new  LinkedList<DamageSlice>();
 	private DamageMeta returnDamage;
@@ -119,7 +118,7 @@ public class DamageMeta {
  		this.slices = new LinkedList<DamageSlice>(original.slices);
 		this.hitBarrier = original.hitBarrier;
 		this.isSecondary = original.isSecondary;
-		this.origins = original.origins;
+		this.origins = new ArrayList<DamageOrigin>(original.origins);
 		this.proj = original.proj;
 		this.isBasicAttack = original.isBasicAttack;
 		this.ignoreBuffs = original.ignoreBuffs;
@@ -190,7 +189,7 @@ public class DamageMeta {
 		tags.add(tag);
 	}
 
-	public HashSet<String> getTags() {
+	public ArrayList<String> getTags() {
 		return tags;
 	}
 	

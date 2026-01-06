@@ -13,7 +13,7 @@ import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.CheckCastUsableEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreCastUsableEvent;
 
 public class MortalEngine extends Equipment {
 	private static final String ID = "MortalEngine";
@@ -39,7 +39,7 @@ public class MortalEngine extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		StandardPriorityAction inst = new StandardPriorityAction(ID);
 		inst.setAction((pdata, in) -> {
-			CheckCastUsableEvent ev = (CheckCastUsableEvent) in;
+			PreCastUsableEvent ev = (PreCastUsableEvent) in;
 			if (ev.getInstance().getStaminaCost() > 0) {
 				ev.addBuff(PropertyType.STAMINA_COST, ID,
 						new Buff(data, inst.getCount(), 0, BuffStatTracker.of(id + slot, this, "Stamina cost reduced")));

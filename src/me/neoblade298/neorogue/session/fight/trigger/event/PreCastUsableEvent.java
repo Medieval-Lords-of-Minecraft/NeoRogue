@@ -7,25 +7,25 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffList;
 
-public class CheckCastUsableEvent {
+public class PreCastUsableEvent {
 	private EquipmentInstance instance;
-	private ArrayList<String> modifiers = new ArrayList<String>();
+	private ArrayList<String> tags = new ArrayList<String>();
 	private BuffList staminaBuff = new BuffList(), manaBuff = new BuffList(), cooldownBuff = new BuffList();
 
 	public EquipmentInstance getInstance() {
 		return instance;
 	}
 
-	public CheckCastUsableEvent(EquipmentInstance instance) {
+	public PreCastUsableEvent(EquipmentInstance instance) {
 		super();
 		this.instance = instance;
 	}
 
-	// Id is so that equipment that modify the event can later check if the event
-	// successfully cast
-	public void addBuff(PropertyType type, String id, Buff b) {
+	// Tag is so that equipment that modify the event can later check if the event
+	// successfully cast, like Energy Battery
+	public void addBuff(PropertyType type, String tag, Buff b) {
 		BuffList curr = getBuff(type);
-		modifiers.add(id);
+		tags.add(tag);
 		curr.add(b);
 	}
 
@@ -42,7 +42,11 @@ public class CheckCastUsableEvent {
 		}
 	}
 
-	public boolean hasId(String id) {
-		return modifiers.contains(id);
+	public boolean hasTag(String tag) {
+		return tags.contains(tag);
+	}
+
+	public ArrayList<String> getTags() {
+		return tags;
 	}
 }

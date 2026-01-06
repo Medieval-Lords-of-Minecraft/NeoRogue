@@ -4,7 +4,6 @@ public enum Trigger {
 	SHIFT_RCLICK, SHIFT_DROP, SHIFT_SWAP, DROP, SWAP, UP_RCLICK, DOWN_RCLICK, HOTBAR_1, HOTBAR_2, HOTBAR_3, HOTBAR_4,
 	HOTBAR_5, HOTBAR_6, HOTBAR_7, HOTBAR_8, HOTBAR_9, WEAPON_SWING, // Sets weapon attack cooldown
 	PRE_BASIC_ATTACK, BASIC_ATTACK, PRE_CAST_USABLE, // Use this event for actual buffs
-	CHECK_CAST_USABLE, // Use this event to check if the buffs were used (e.g. energy battery)
 	CAST_USABLE, // Use this event to check for cast abilities for passives, this won't happen on
 					// things like toggles. Only STANDARD and POST_TRIGGER will run this trigger
 	LEFT_CLICK,
