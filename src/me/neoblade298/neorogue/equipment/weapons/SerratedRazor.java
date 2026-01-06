@@ -51,7 +51,7 @@ public class SerratedRazor extends Equipment {
 					FightData fd = FightInstance.getFightData(ev.getTarget());
 					boolean canBonus = fd.hasStatus(StatusType.POISON) || fd.hasStatus(StatusType.INSANITY);
 					weaponSwingAndDamage(p, data, ev.getTarget(), base + (canBonus ? bonus : 0));
-					data.setBasicAttackCooldown(EquipSlot.HOTBAR, 3000L);
+					data.setBasicAttackCooldown(EquipSlot.HOTBAR, 1000L);
 					Sounds.extinguish.play(p, p);
 					count = 0;
 					this.setCooldown(1);

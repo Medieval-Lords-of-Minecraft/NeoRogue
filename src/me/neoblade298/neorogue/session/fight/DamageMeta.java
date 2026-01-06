@@ -57,6 +57,7 @@ public class DamageMeta {
 	private boolean hitBarrier, isSecondary, isBasicAttack, ignoreBuffs;
 	private Equipment weapon; // For basic attacks
 	private HashSet<DamageOrigin> origins = new HashSet<DamageOrigin>();
+	private HashSet<String> tags = new HashSet<String>(); // Currently used to track kills, like with cull; Currently is NOT cloned
 	private ProjectileInstance proj; // If the damage originated from projectile
 	private LinkedList<DamageSlice> slices = new  LinkedList<DamageSlice>();
 	private DamageMeta returnDamage;
@@ -183,6 +184,14 @@ public class DamageMeta {
 
 	public boolean isIgnoringBuffs() {
 		return ignoreBuffs;
+	}
+
+	public void addTag(String tag) {
+		tags.add(tag);
+	}
+
+	public HashSet<String> getTags() {
+		return tags;
 	}
 	
 	public DamageMeta isSecondary(boolean isSecondary) {
@@ -500,7 +509,7 @@ public class DamageMeta {
 			PreEvadeEvent ev = new PreEvadeEvent(this);
 			pl.runActions(pl, Trigger.PRE_EVADE, ev);
 			BuffList stamCostBuffs = ev.getStaminaCostBuff();
-			double staminaPerDamage = stamCostBuffs.apply(1);
+			double staminaPerDamage = stamCostBuffs.apply(1D);
 			double evasionLimit = pl.getStamina() * staminaPerDamage;
 			if (totalDamage < evasionLimit) {
 				damage = 0;
@@ -616,7 +625,7 @@ public class DamageMeta {
 			}
 			// all damage was mitigated via buffs or shields
 			else {
-				if (fullEvade) Sounds.attackSweep.play((Player) recipient.getEntity(), recipient.getEntity());
+				if (fullEvade) Sounds.flap.play((Player) recipient.getEntity(), recipient.getEntity());
 				else Sounds.block.play((Player) recipient.getEntity(), recipient.getEntity());
 			}
 			ReceiveDamageEvent ev = new ReceiveDamageEvent(owner, this);

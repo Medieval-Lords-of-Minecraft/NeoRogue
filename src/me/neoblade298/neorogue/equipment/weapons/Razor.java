@@ -52,7 +52,7 @@ public class Razor extends Equipment {
 				LeftClickHitEvent ev = (LeftClickHitEvent) in;
 				weaponSwingAndDamage(p, data, ev.getTarget());
 				if (++count >= 3) {
-					data.setBasicAttackCooldown(EquipSlot.HOTBAR, 3000L);
+					data.setBasicAttackCooldown(EquipSlot.HOTBAR, 1000L);
 					this.setCooldown(1);
 					Sounds.extinguish.play(p, p);
 					count = 0;

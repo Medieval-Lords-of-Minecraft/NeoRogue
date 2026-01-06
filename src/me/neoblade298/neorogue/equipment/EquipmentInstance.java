@@ -106,16 +106,15 @@ public class EquipmentInstance extends PriorityAction {
 		this.action = action;
 	}
 
-	public void setCondition(TriggerCondition cond) {
-		this.condition = cond;
-	}
-
 	@Override
 	public TriggerResult trigger(PlayerFightData data, Object inputs) {
 		if (!data.isIgnoreCooldowns())
 			nextUsable = (long) (System.currentTimeMillis() + (getEffectiveCooldown() * 1000));
-		data.addMana(-getEffectiveManaCost());
-		data.addStamina(-getEffectiveStaminaCost());
+
+		if (resourceUsageCondition == null || !resourceUsageCondition.canTrigger(p, data, inputs)) {
+			data.addMana(-getEffectiveManaCost());
+			data.addStamina(-getEffectiveStaminaCost());
+		}
 		resetTempCosts();
 		return action.trigger(data, inputs);
 	}

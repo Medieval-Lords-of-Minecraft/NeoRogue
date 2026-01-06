@@ -8,6 +8,7 @@ import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
@@ -23,7 +24,8 @@ public class Quicken extends Equipment {
 	
 	public Quicken(boolean isUpgraded) {
 		super(ID, "Quicken", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, isUpgraded ? 15 : 25, isUpgraded ? 8 : 12, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, isUpgraded ? 15 : 25, 3, 0));
+				properties.addUpgrades(PropertyType.STAMINA_COST);
 	}
 	
 	public static Equipment get() {
@@ -38,6 +40,9 @@ public class Quicken extends Equipment {
 		ItemStack activeIcon = icon.withType(Material.FEATHER);
 		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
 		
+		// Set condition that stacks must be greater than 0 to cast
+		inst.setCondition((pl, pdata, in) -> stacks.getCount() > 0);
+		
 		// Set action for when the ability is cast
 		inst.setAction((pdata, in) -> {
 			// Dash forward
@@ -46,9 +51,18 @@ public class Quicken extends Equipment {
 			// Grant 1 evade for 5 seconds
 			data.applyStatus(StatusType.EVADE, data, 1, 100);
 			
-			// Reset stacks to 0 and update icon
-			stacks.setCount(0);
-			inst.setIcon(icon);
+			// Reduce stacks by 1 and update icon
+			if (stacks.getCount() > 0) {
+				stacks.addCount(-1);
+			}
+			
+			if (stacks.getCount() > 0) {
+				ItemStack currentIcon = activeIcon.clone();
+				currentIcon.setAmount(stacks.getCount());
+				inst.setIcon(currentIcon);
+			} else {
+				inst.setIcon(icon);
+			}
 			
 			return TriggerResult.keep();
 		});

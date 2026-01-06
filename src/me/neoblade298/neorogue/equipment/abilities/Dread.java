@@ -1,14 +1,14 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
-import java.util.UUID;
-
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -45,27 +45,29 @@ public class Dread extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		Equipment eq = this;
 		StandardPriorityAction act = new StandardPriorityAction(id);
 		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
 			if (!ev.isStatus(StatusType.STEALTH)) return TriggerResult.keep();
 			act.addCount(ev.getStacks());
 			if (act.getCount() >= thres) {
-				int triggers = act.getCount() / thres;
-				for (int i = 0; i < triggers; i++) {
-					// Apply permanent stealth
-					data.applyStatus(StatusType.STEALTH, data, stealthGained, -1);
-					
-					// Apply permanent Speed 1
-					p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, -1, 0));
-					
-					// Apply permanent damage buff
-					String buffId = UUID.randomUUID().toString();
-					data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), 
-						new Buff(data, 0, damageIncrease, StatTracker.damageBuffAlly(buffId, this)));
-				}
-                Sounds.wither.play(p, p);
-				Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
+				data.addTask(new BukkitRunnable() {
+					public void run() {
+						// Apply permanent stealth
+						data.applyStatus(StatusType.STEALTH, data, stealthGained, -1);
+
+						// Apply permanent Speed 1
+						p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, PotionEffect.INFINITE_DURATION, 0));
+
+						// Apply permanent damage buff
+						data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+								new Buff(data, 0, damageIncrease, StatTracker.damageBuffAlly(id + slot, eq)));
+						Sounds.wither.play(p, p);
+						Util.msg(p, Component.text("").append(hoverable).append(Component.text(" was activated", NamedTextColor.GRAY)));
+					}
+				}.runTaskLater(NeoRogue.inst(), 1));
+				return TriggerResult.remove();
 			}
 			return TriggerResult.keep();
 		});

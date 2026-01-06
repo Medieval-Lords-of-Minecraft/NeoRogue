@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.offhands;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -31,6 +32,7 @@ public class VeiledHourglass extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
 		inst.setAction((pdata, in) -> {
+			Sounds.teleport.play(p, p);
 			// Check if player has stealth
 			if (data.hasStatus(StatusType.STEALTH)) {
 				// If in stealth, reduce all castable cooldowns
@@ -47,7 +49,7 @@ public class VeiledHourglass extends Equipment {
 			return TriggerResult.keep();
 		});
 		
-		data.addTrigger(id, bind, inst);
+		data.addTrigger(id, Trigger.RIGHT_CLICK, inst);
 	}
 
 	@Override

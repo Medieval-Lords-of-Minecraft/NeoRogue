@@ -60,6 +60,6 @@ public class HiddenRazor extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.STONE_HOE, "Requires " + GlossaryTag.STEALTH.tag(this) + " to be used. Reduces your "
-				+ GlossaryTag.STEALTH.tag(this) + " by <white>1</white> every <white>5rd</white> hit.");
+				+ GlossaryTag.STEALTH.tag(this) + " by <white>1</white> every <white>5th</white> hit.");
 	}
 }

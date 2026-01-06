@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -60,6 +61,7 @@ public class Analyze2 extends Equipment {
 				if (stacks.getCount() == staminaRegenStacks) {
 					data.addStaminaRegen(staminaRegen);
 					data.applyStatus(StatusType.EVADE, data, 1, -1);
+					Sounds.enchant.play(p, p);
 				}
 			}
 			return TriggerResult.keep();

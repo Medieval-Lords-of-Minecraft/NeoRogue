@@ -479,7 +479,6 @@ public class PlayerFightData extends FightData {
 					runActions(data, Trigger.PRE_CAST_USABLE, ev);
 
 					// Buff mana costs, cannot go below 0, uses temp mana/stamina cost if it exists
-					// first (Escape Plan)
 					BuffList b = ev.getBuff(PropertyType.MANA_COST);
 					if (ei.getTempManaCost() == -1) {
 						ei.setTempManaCost(Math.max(0, b.applyNegative(ei.getManaCost())));
@@ -502,6 +501,7 @@ public class PlayerFightData extends FightData {
 					runActions(data, Trigger.CHECK_CAST_USABLE, ev);
 					CastType type = ei.getEquipment().getProperties().getCastType();
 					// If the cast type is not standard, it's up to the equipment to run the action
+					// This is so CAST_USABLE doesn't get multi-triggered by toggled or recast abilities
 					if (type == CastType.STANDARD) {
 						runActions(data, Trigger.CAST_USABLE, new CastUsableEvent(ei, type));
 					}

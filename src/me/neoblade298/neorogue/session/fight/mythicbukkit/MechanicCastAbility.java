@@ -34,6 +34,7 @@ public class MechanicCastAbility implements INoTargetSkill {
 				for (Entry<FightData, Integer> slice : fd.getStatus(StatusType.ELECTRIFIED).getSlices().getSliceOwners().entrySet()) {
 					dm.addDamageSlice(new DamageSlice(slice.getKey(), slice.getValue() * 0.2, DamageType.ELECTRIFIED, DamageStatTracker.ignored("MythicDamage")));
 				}
+				FightInstance.dealDamage(dm, fd.getEntity());
 			}
 			return SkillResult.SUCCESS;
 		} catch (Exception e) {

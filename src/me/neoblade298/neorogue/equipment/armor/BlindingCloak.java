@@ -32,7 +32,7 @@ public class BlindingCloak extends Equipment {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
 			if (!ev.getStatusId().equals(StatusType.STEALTH.name())) return TriggerResult.keep();
 			
-			data.addSimpleShield(p.getUniqueId(), shields, 60);
+			data.addSimpleShield(p.getUniqueId(), shields, 160);
 			return TriggerResult.keep();
 		});
 	}
@@ -40,6 +40,6 @@ public class BlindingCloak extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LEATHER_BOOTS, "Whenever you receive " + GlossaryTag.STEALTH.tag(this) + ", "
-				+ "grant " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>3s</white>].");
+				+ "grant " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>8s</white>].");
 	}
 }

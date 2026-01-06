@@ -45,7 +45,7 @@ public class EnergizedRazor extends Equipment {
 				LeftClickHitEvent ev = (LeftClickHitEvent) in;
 				weaponSwingAndDamage(p, data, ev.getTarget());
 				if (++count >= 3) {
-					data.setBasicAttackCooldown(EquipSlot.HOTBAR, 3000L);
+					data.setBasicAttackCooldown(EquipSlot.HOTBAR, 1000L);
 					data.addStamina(res);
 					Sounds.extinguish.play(p, p);
 					count = 0;

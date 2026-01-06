@@ -25,7 +25,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class OdinsDecree extends Equipment {
 	private static final String ID = "OdinsDecree";
-	private static final ParticleContainer pc = new ParticleContainer(Particle.ELECTRIC_SPARK)
+	private static final ParticleContainer pc = new ParticleContainer(Particle.FIREWORK)
 			.count(100)
 			.spread(0.3, 2)
 			.offsetY(1)

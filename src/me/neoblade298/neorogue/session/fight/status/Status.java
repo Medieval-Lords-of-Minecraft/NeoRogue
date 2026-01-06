@@ -80,7 +80,7 @@ public abstract class Status {
 		case INTELLECT: return new IntellectStatus(target);
 		case PROTECT: return new ProtectStatus(target);
 		case SHELL: return new ShellStatus(target);
-		case STEALTH: return new DurationStatus(id.name(), target, StatusClass.POSITIVE);
+		case STEALTH: return new BasicStatus(id.name(), target, StatusClass.POSITIVE);
 		case EVADE: return new BasicStatus(id.name(), target, StatusClass.POSITIVE);
 		case FOCUS: return new BasicStatus(id.name(), target, StatusClass.POSITIVE);
 		case INJURY: return new DecrementStackStatus(id.name(), target, StatusClass.NEGATIVE);

@@ -18,6 +18,7 @@ import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class Cull extends Equipment {
@@ -51,15 +52,20 @@ public class Cull extends Equipment {
 		
 		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata2, in) -> {
 			if (am.getCount() <= 0) return TriggerResult.keep();
-			am.addCount(-1);
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 			ev.getMeta().addDamageSlice(
 					new DamageSlice(data, damage, DamageType.SLASHING, DamageStatTracker.of(id + slot, this)));
+			ev.getMeta().addTag(id);
 			hit.play(p, ev.getTarget());
 			Sounds.anvil.play(p, ev.getTarget());
-			if (ev.getTarget().getHealth() < 0) {
-				Sounds.success.play(p, p);
-				am.addCount(1);
+			return TriggerResult.keep();
+		});
+
+		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in) -> {
+			BasicAttackEvent ev = (BasicAttackEvent) in;
+			// Remove buff if we didn't kill
+			if (ev.getMeta().getTags().contains(id) && !ev.getTarget().isDead()) {
+				am.addCount(-1);
 			}
 			return TriggerResult.keep();
 		});

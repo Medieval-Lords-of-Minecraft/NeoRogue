@@ -1,10 +1,14 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -26,6 +30,9 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 public class BalefulStrike extends Equipment {
 	private static final String ID = "BalefulStrike";
 	private static final int CHARGE_TIME = 3; // 3 seconds
+	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST)
+		.dustOptions(new Particle.DustOptions(Color.GREEN, 1.5F))
+		.count(25).spread(0.5, 0.5);
 	private double damageMultiplier;
 	private double applyMultiplier;
 	
@@ -79,6 +86,10 @@ public class BalefulStrike extends Equipment {
 				// Apply poison stacks after the attack
 				int stacksToApply = (int) (poisonStacks * applyMultiplier);
 				FightInstance.applyStatus(target, StatusType.POISON, data, stacksToApply, 100); // 5 seconds = 100 ticks
+				
+				// Play green particles and anvil sound on hit
+				pc.play(p, target.getLocation());
+				Sounds.anvil.play(p, target.getLocation());
 			}
 			
 			// Reset charge and icon

@@ -35,13 +35,13 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class FlashMark extends Equipment {
 	private static final String ID = "FlashMark";
-	private static final TargetProperties tp = TargetProperties.line(30, 1.5, TargetType.ENEMY);
-	private static final ParticleContainer pc = new ParticleContainer(Particle.ELECTRIC_SPARK).count(25).spread(0.5, 0.5);
+	private static final TargetProperties tp = TargetProperties.line(15, 1.5, TargetType.ENEMY);
+	private static final ParticleContainer pc = new ParticleContainer(Particle.FIREWORK).count(5).spread(0.1, 0.1);
 	private int damage, electrified;
 	
 	public FlashMark(boolean isUpgraded) {
 		super(ID, "Flash Mark", isUpgraded, Rarity.RARE, EquipmentClass.THIEF, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(15, 0, 8, 30));
+				EquipmentProperties.ofUsable(30, 10, 8, tp.range));
 		damage = isUpgraded ? 250 : 180;
 		electrified = isUpgraded ? 150 : 100;
 	}
@@ -65,7 +65,6 @@ public class FlashMark extends Equipment {
 	private class FlashMarkProjectile extends Projectile {
 		private Player p;
 		private PlayerFightData data;
-		private Location startLoc;
 		private int slot;
 		private Equipment eq;
 
@@ -76,8 +75,9 @@ public class FlashMark extends Equipment {
 			this.p = data.getPlayer();
 			this.slot = slot;
 			this.eq = eq;
+			this.ignore(false, false, true);
 			
-			blocksPerTick(1.5);
+			blocksPerTick(1);
 		}
 
 		@Override
@@ -97,6 +97,7 @@ public class FlashMark extends Equipment {
 
 		@Override
 		public void onHitBlock(ProjectileInstance proj, Block b) {
+			Location startLoc = p.getLocation().add(0, 1, 0);
 			Location endLoc = b.getLocation();
 			
 			// Deal damage and apply electrified to all enemies in line
@@ -113,17 +114,15 @@ public class FlashMark extends Equipment {
 			// Dash to the block location
 			Location playerLoc = p.getLocation();
 			playerLoc.setDirection(endLoc.toVector().subtract(startLoc.toVector()).normalize());
-			p.teleport(playerLoc);
 			data.dash(endLoc.toVector().subtract(startLoc.toVector()).normalize());
-			
-			Sounds.equip.play(p, p);
+			Sounds.thunder.play(p, p);
 		}
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LIGHTNING_ROD,
-				"On cast, throw a projectile. If it hits a block, " + GlossaryTag.DASH.tag(this) + " in that direction, " +
+				"On cast, throw a projectile that ignores enemies. If it hits a block, " + GlossaryTag.DASH.tag(this) + " in that direction, " +
 				"dealing " + GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage and applying " + 
 				GlossaryTag.ELECTRIFIED.tag(this, electrified, true) + " to enemies in a line between you and the block.");
 	}

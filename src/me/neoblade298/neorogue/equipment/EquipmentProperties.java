@@ -264,7 +264,8 @@ public class EquipmentProperties {
 	}
 
 	public static enum CastType {
-		STANDARD, TOGGLE, // Toggleable abilities that can be cast multiple times without waiting for
+		STANDARD,
+		TOGGLE, // Toggleable abilities that can be cast multiple times without waiting for
 							// cooldown
 		POST_TRIGGER // Abilities that can fail post-trigger, like ground lance requiring a block to
 						// be aimed at. These abilities MUST MANUALLY trigger CAST_USABLE

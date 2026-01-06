@@ -38,14 +38,14 @@ public class BlightTendril extends Equipment {
 	private static final TargetProperties tp = TargetProperties.radius(15, false, TargetType.ENEMY);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST)
 			.dustOptions(new DustOptions(Color.fromRGB(100, 50, 150), 1F))
-			.count(5).spread(0.2, 0.2);
+			.count(5).spread(0.1, 0.1);
 	
 	private int poison;
 
 	public BlightTendril(boolean isUpgraded) {
 		super(ID, "Blight Tendril", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.none());
-		poison = isUpgraded ? 5 : 3;
+		poison = isUpgraded ? 200 : 150;
 	}
 
 	public static Equipment get() {
@@ -101,9 +101,9 @@ public class BlightTendril extends Equipment {
 		private String statusName;
 
 		public BlightTendrilProjectile(PlayerFightData data, Equipment eq, int slot, String statusName) {
-			super(15, 1);
+			super(15, 3);
 			this.homing(0.02); // Light homing
-			this.blocksPerTick(2);
+			this.blocksPerTick(0.2);
 			this.data = data;
 			this.p = data.getPlayer();
 			this.statusName = statusName;

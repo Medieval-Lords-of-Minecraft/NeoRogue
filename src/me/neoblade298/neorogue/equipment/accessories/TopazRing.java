@@ -21,7 +21,7 @@ public class TopazRing extends Equipment {
 	public TopazRing(boolean isUpgraded) {
 		super(ID, "Topaz Ring", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.ACCESSORY);
-		stacks = isUpgraded ? 12 : 8;
+		stacks = isUpgraded ? 25 : 15;
 	}
 	
 	public static Equipment get() {

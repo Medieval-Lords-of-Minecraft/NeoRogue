@@ -78,7 +78,7 @@ public class WeaponEnchantmentElectrified extends Equipment {
 		private int slot;
 		private Equipment eq;
 		public WeaponEnchantmentElectrifiedProjectile(int slot, Equipment eq) {
-			super(0.8, RANGE, 2);
+			super(1, RANGE, 2);
 			this.slot = slot;
 			this.eq = eq;
 		}

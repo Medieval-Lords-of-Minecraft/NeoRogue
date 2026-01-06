@@ -8,7 +8,7 @@ public class PriorityAction implements TriggerAction, Comparable<PriorityAction>
 	protected String id;
 	protected int priority = 10;
 	protected TriggerAction action;
-	protected TriggerCondition condition;
+	protected TriggerCondition condition, resourceUsageCondition;
 	public PriorityAction(String id) {
 		this.id = id;
 	}
@@ -26,8 +26,10 @@ public class PriorityAction implements TriggerAction, Comparable<PriorityAction>
 		return action.trigger(data, inputs);
 	}
 	public boolean canTrigger(Player p, PlayerFightData data, Object event) {
-		if (condition == null) return true;
-		return condition.canTrigger(p, data, event);
+		return(condition == null) || condition.canTrigger(p, data, event);
+	}
+	public boolean shouldUseResource(Player p, PlayerFightData data, Object event) {
+		return resourceUsageCondition == null || resourceUsageCondition.canTrigger(p, data, event);
 	}
 	public int getPriority() {
 		return priority;
@@ -45,6 +47,14 @@ public class PriorityAction implements TriggerAction, Comparable<PriorityAction>
 	
 	public void setAction(TriggerAction action) {
 		this.action = action;
+	}
+
+	public void setCondition(TriggerCondition cond) {
+		this.condition = cond;
+	}
+
+	public void setResourceUsageCondition(TriggerCondition cond) {
+		this.resourceUsageCondition = cond;
 	}
 	
 	@Override

@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.commands.Subcommand;
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neocore.shared.commands.Arg;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.session.Instance;
@@ -16,6 +17,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 public class CmdAdminGod extends Subcommand {
 	public CmdAdminGod(String key, String desc, String perm, SubcommandRunner runner) {
 		super(key, desc, perm, runner);
+		args.add(new Arg("full", false));
 	}
 
 	@Override
@@ -41,11 +43,18 @@ public class CmdAdminGod extends Subcommand {
 		data.addHealth(10000);
 		data.addMana(10000);
 		data.addStamina(10000);
-		data.ignoreCooldowns(true);
-		for (EquipmentInstance ei : data.getActiveEquipment().values()) {
-			ei.setCooldown(0);
+
+		if (args.length == 0) {
+			Util.msg(s, "All stats maxed.");
+			return;
+		}
+		else {
+			data.ignoreCooldowns(true);
+			for (EquipmentInstance ei : data.getActiveEquipment().values()) {
+				ei.setCooldown(0);
+			}
+			Util.msg(s, "All stats maxed and cooldowns ignored.");
 		}
 		
-		Util.msg(s, "All stats maxed and cooldowns ignored.");
 	}
 }

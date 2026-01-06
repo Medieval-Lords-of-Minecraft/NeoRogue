@@ -3,8 +3,10 @@ package me.neoblade298.neorogue.equipment.abilities;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -56,8 +58,14 @@ public class UmbralVolley extends Equipment {
 			if (cooldown.getTime() >= System.currentTimeMillis()) return TriggerResult.keep();
 			
 			cooldown.setTime(System.currentTimeMillis() + COOLDOWN * 50); // Convert ticks to ms
-			Sounds.attackSweep.play(p, p);
-			projs.start(data);
+			
+			// Fire projectiles after half a second delay
+			data.addTask(new BukkitRunnable() {
+				public void run() {
+					Sounds.attackSweep.play(p, p);
+					projs.start(data);
+				}
+			}.runTaskLater(NeoRogue.inst(), 10L)); // 10 ticks = 0.5 seconds
 			
 			return TriggerResult.keep();
 		});
@@ -66,7 +74,8 @@ public class UmbralVolley extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.PHANTOM_MEMBRANE,
-				"Passive. On a <white>3s</white> cooldown, on basic attack, fire <white>5</white> dark needles in a cone in front of you that deal "
+				"Passive. On a <white>3s</white> cooldown, on basic attack, fire <white>5</white> dark needles in a cone in front of you "
+						+ "<white>0.5s</white> later that deal "
 						+ GlossaryTag.DARK.tag(this, damage, true) + " damage.");
 	}
 	

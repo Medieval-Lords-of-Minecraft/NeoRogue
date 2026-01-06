@@ -15,7 +15,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.PreEvadeEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.EvadeEvent;
 
 public class FlightRing extends Equipment {
 	private static final String ID = "FlightRing";
@@ -41,7 +41,7 @@ public class FlightRing extends Equipment {
 		
 		// Trigger on evade to dash away
 		data.addTrigger(id, Trigger.EVADE, (pdata, in) -> {
-			PreEvadeEvent ev = (PreEvadeEvent) in;
+			EvadeEvent ev = (EvadeEvent) in;
 			
 			// Check if we still have dashes left
 			if (dashCount.getCount() >= evade) {

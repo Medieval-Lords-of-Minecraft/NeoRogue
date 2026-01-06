@@ -39,23 +39,24 @@ public class LifeThief extends Equipment {
 			if (!ev.isStatus(StatusType.STEALTH)) return TriggerResult.keep();
 			inst.addCount(ev.getStacks());
 			if (inst.getCount() >= cutoff) {
-				Util.msg(p, this.hoverable.append(Component.text(" can be activated", NamedTextColor.GRAY)));
+				Sounds.success.play(p, p);
+				Util.msg(p, Component.text("").append(hoverable).append(Component.text(" can be activated", NamedTextColor.GRAY)));
 			}
 			return TriggerResult.keep();
 		});
-		data.addTrigger(id, Trigger.RECEIVE_STATUS, inst);
+		data.addTrigger(id, Trigger.APPLY_STATUS, inst);
 		
 		data.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
 			if (inst.getCount() < cutoff) return TriggerResult.keep();
 			Sounds.fire.play(p, p);
 			data.addHealth(heal);
-			return TriggerResult.keep();
+			return TriggerResult.remove();
 		});
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.RABBIT_FOOT, "Passive. Upon gaining <yellow>" + cutoff + " </yellow>stacks of " + GlossaryTag.STEALTH.tag(this) + ","
+		item = createItem(Material.RABBIT_FOOT, "Passive. Upon applying <yellow>" + cutoff + " </yellow>stacks of " + GlossaryTag.STEALTH.tag(this) + ","
 				+ " your next basic attack heals you for <yellow>" + heal + "</yellow>. Once per fight.");
 	}
 }

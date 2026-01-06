@@ -39,13 +39,13 @@ public class WallJump extends Equipment {
 		.count(10).spread(0.5, 0.5);
 	private static final ParticleContainer lineParticle = new ParticleContainer(Particle.CRIT)
 		.count(5).spread(0.2, 0.2);
-	private static final TargetProperties tp = TargetProperties.line(12, 2, TargetType.ENEMY);
+	private static final TargetProperties tp = TargetProperties.line(4, 2, TargetType.ENEMY);
 	
 	private int damage;
 
 	public WallJump(boolean isUpgraded) {
 		super(ID, "Wall Jump", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 15, 12, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 25, 12, 0));
 		damage = isUpgraded ? 250 : 200;
 	}
 
@@ -73,12 +73,12 @@ public class WallJump extends Equipment {
 					Sounds.jump.play(p, p);
 					
 					// Dash in stored direction
-					Vector dashVec = direction.clone().multiply(1.5);
+					Vector dashVec = p.getLocation().getDirection().clone().multiply(1.5);
 					p.setVelocity(dashVec);
 					
 					// Deal line damage
 					Location start = p.getLocation().add(0, 1, 0);
-					Location end = start.clone().add(direction.clone().multiply(tp.range));
+					Location end = start.clone().add(dashVec.clone().multiply(tp.range));
 					
 					ParticleUtil.drawLine(p, lineParticle, start, end, 0.3);
 					jumpParticle.play(p, p.getLocation());

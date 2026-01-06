@@ -103,16 +103,21 @@ public class ShadowPartner2 extends Equipment {
 			int bonusProjectiles = totalInsanity / insanityThreshold;
 			int totalProjectiles = 1 + bonusProjectiles;
 			
-			// Fire projectiles from shadow ball location
+			// Fire projectiles from shadow ball location with 3 tick delay between them
 			Location shadowLoc = locationQueue.getFirst();
 			Location targetLoc = targetEntity.getEyeLocation();
 			
 			for (int i = 0; i < totalProjectiles; i++) {
-				ProjectileGroup proj = new ProjectileGroup(new ShadowProjectile(data, slot, this));
-				proj.start(data, shadowLoc, targetLoc.toVector().subtract(shadowLoc.toVector()).normalize());
+				final int index = i;
+				data.addTask(new BukkitRunnable() {
+					public void run() {
+						ProjectileGroup proj = new ProjectileGroup(new ShadowProjectile(data, slot, ShadowPartner2.this));
+						proj.start(data, shadowLoc, targetLoc.toVector().subtract(shadowLoc.toVector()).normalize());
+						Sounds.fire.play(p, shadowLoc);
+					}
+				}.runTaskLater(NeoRogue.inst(), index * 3L)); // 3 tick delay between each projectile
 			}
 			
-			Sounds.fire.play(p, shadowLoc);
 			cooldown.setTime(System.currentTimeMillis());
 			
 			return TriggerResult.keep();
