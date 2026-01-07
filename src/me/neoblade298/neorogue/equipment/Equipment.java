@@ -487,6 +487,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Paranoia(b);
 			new Parry(b);
 			new PartingGift(b);
+			new PiercingNight(b);
 			new PiercingShot(b);
 			new PiercingShot2(b);
 			new PiercingVenom(b);
@@ -560,6 +561,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new TreeTrunk(b);
 			new TwinBolt(b);
 			new TwinShiv(b);
+			new Untouchable(b);
 			new ValiantPierce(b);
 			new Vanish(b);
 			new VitalPierce(b);

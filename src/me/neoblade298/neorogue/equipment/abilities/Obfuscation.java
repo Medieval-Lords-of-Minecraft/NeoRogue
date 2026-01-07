@@ -32,6 +32,11 @@ public class Obfuscation extends Equipment {
 	}
 
 	@Override
+	public void setupReforges() {
+		addSelfReforge(PiercingNight.get());
+	}
+
+	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.PRE_APPLY_STATUS, (pdata, in) -> {
 			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;

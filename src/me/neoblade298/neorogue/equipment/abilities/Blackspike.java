@@ -93,7 +93,7 @@ public class Blackspike extends Equipment {
 
 	@Override
 	public void setupReforges() {
-		addSelfReforge(BlackRain.get());
+		addReforge(Obfuscation.get(), BlackRain.get());
 	}
 
 	@Override
