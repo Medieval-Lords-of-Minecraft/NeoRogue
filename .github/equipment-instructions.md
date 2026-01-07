@@ -770,6 +770,198 @@ if (conditionFailed) {
 - Abilities that cannot fail after trigger
 - Toggle abilities (use their own cast type patterns)
 
+### Recast Abilities (resourceUsageCondition Pattern)
+
+For abilities that can be recast without paying mana/stamina/cooldown costs, use the `resourceUsageCondition` field on `EquipmentInstance`.
+
+#### When to Use resourceUsageCondition
+Use this pattern when:
+- An ability can be cast a second time under certain conditions
+- The recast should be free (no mana/stamina cost, no cooldown)
+- Both casts execute in the same action logic (just different branches)
+
+#### Basic Pattern
+
+```java
+private class MyAbilityInstance extends EquipmentInstance {
+    private boolean isInitialCast = true;
+    
+    public MyAbilityInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
+        super(data, eq, slot, es);
+        
+        action = (pdata, in) -> {
+            Player p = data.getPlayer();
+            
+            // Recast logic
+            if (!isInitialCast) {
+                // Execute recast effect (free - no costs)
+                // ...
+                
+                // Reset to initial state
+                isInitialCast = true;
+                setIcon(item);
+                return TriggerResult.keep();
+            }
+            
+            // Initial cast logic
+            // ... execute initial effect
+            
+            // Enable recast under certain conditions
+            if (someCondition) {
+                isInitialCast = false;
+                ItemStack recastIcon = item.clone().withType(Material.DIFFERENT_MATERIAL);
+                setIcon(recastIcon);
+            }
+            
+            return TriggerResult.keep();
+        };
+        
+        // CRITICAL: Only consume resources on initial cast
+        resourceUsageCondition = (pl, pdata, in) -> {
+            return isInitialCast;
+        };
+    }
+}
+```
+
+#### Complete Example - TwinShiv.java
+
+```java
+public class TwinShiv extends Equipment {
+    private static final String ID = "TwinShiv";
+    private int damage, bonus;
+    
+    public TwinShiv(boolean isUpgraded) {
+        super(ID, "Twin Shiv", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
+            EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 15, 10, 10));
+        damage = isUpgraded ? 100 : 80;
+        bonus = isUpgraded ? 80 : 50;
+    }
+    
+    @Override
+    public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+        data.addTrigger(id, bind, new TwinShivInstance(data, this, slot, es));
+    }
+    
+    private class TwinShivInstance extends EquipmentInstance {
+        public UUID firstHit;
+        public boolean isFirstProj = true;
+
+        public TwinShivInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
+            super(data, eq, slot, es);
+            
+            ProjectileGroup proj = new ProjectileGroup(new TwinShivProjectile(data, this, slot, eq));
+            
+            action = (pdata, in) -> {
+                if (isFirstProj) {
+                    // Initial cast - fire first projectile
+                    firstHit = null;
+                    this.setCooldown(1);  // Short cooldown between casts
+                    proj.start(pdata);
+                    isFirstProj = false;
+                }
+                else {
+                    // Recast - fire second projectile (free)
+                    proj.start(pdata);
+                    isFirstProj = true;
+                }
+                return TriggerResult.keep();
+            };
+            
+            // Only pay costs on first projectile
+            resourceUsageCondition = (pl, pdata, in) -> {
+                return isFirstProj;
+            };
+        }
+    }
+}
+```
+
+#### Complete Example - SparkTrap.java
+
+```java
+private class SparkTrapInstance extends EquipmentInstance {
+    private Location trapLocation = null;
+    private boolean isInitialCast = true;
+    
+    public SparkTrapInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
+        super(data, eq, slot, es);
+        
+        action = (pdata, in) -> {
+            Player p = data.getPlayer();
+            
+            // Recast: teleport to bomb and deal line damage
+            if (!isInitialCast && trapLocation != null) {
+                // Execute free recast
+                p.teleport(trapLocation);
+                // ... deal damage in line
+                
+                // Reset state
+                isInitialCast = true;
+                trapLocation = null;
+                setIcon(item);
+                return TriggerResult.keep();
+            }
+            
+            // Initial cast: drop trap
+            trapLocation = p.getLocation().clone();
+            
+            // Setup trap that may enable recast
+            data.addTrap(new Trap(data, trapLocation, 40) {
+                @Override
+                public void tick() {
+                    // Trap ticking logic
+                }
+                
+                private void explode() {
+                    // Deal damage
+                    boolean hitElectrified = checkForElectrifiedEnemies();
+                    
+                    // Enable recast if condition met
+                    if (hitElectrified) {
+                        isInitialCast = false;
+                        setIcon(item.clone().withType(Material.LIGHTNING_ROD));
+                    }
+                }
+            });
+            
+            return TriggerResult.keep();
+        };
+        
+        // Only consume resources on initial cast
+        resourceUsageCondition = (pl, pdata, in) -> {
+            return isInitialCast;
+        };
+    }
+}
+```
+
+#### Key Points for resourceUsageCondition Pattern
+
+**How it works:**
+- `resourceUsageCondition` is a lambda that returns `true` when costs should be consumed
+- Checked before mana/stamina deduction and cooldown application
+- When it returns `false`, the ability executes for free
+
+**Pattern checklist:**
+1. Track cast state with boolean field (e.g., `isInitialCast`, `isFirstProj`)
+2. Branch logic in `action` based on cast state
+3. Set `resourceUsageCondition` to check the cast state boolean
+4. Toggle state when enabling/disabling recast
+5. Update icon to show recast is available (optional but recommended)
+6. Reset to initial state after recast completes
+
+**Common use cases:**
+- Double-cast abilities (TwinShiv - fires two projectiles)
+- Conditional recasts (SparkTrap - teleport if hit electrified enemy)
+- Charge-up abilities (cast multiple times to build up effect)
+- Toggle abilities with free toggle-off
+
+**When to use vs POST_TRIGGER:**
+- Use `resourceUsageCondition` for same-ability recasts (free second cast)
+- Use `POST_TRIGGER` for delayed casts that can fail (refund costs on failure)
+- Can combine both patterns if needed (delayed cast with free recast)
+
 ## Equipment Categories
 
 #### Equipment Types

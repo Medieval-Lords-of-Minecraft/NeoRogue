@@ -135,6 +135,15 @@ rect.play(player, pc, center, axes, fillParticle);
 
 #### Shape with Edge and Fill
 Shapes can have different particles for edges vs fill:
+
+**IMPORTANT - Particle Density Guidelines:**
+- **Edge particles**: Use `count(1)` and `spread(0, 0)` for clear, crisp outlines
+- **Fill particles**: Use `count(1)` with minimal spread (`spread(0.1, 0)`) 
+- **Fill density**: Approximately 1 particle per 0.5 square meters of area
+  - For a radius 4 circle: area = π × 4² = ~50m², so ~100 fill particles total
+  - For a radius 5 circle: area = π × 5² = ~78m², so ~156 fill particles total
+  - The shape system automatically distributes fill particles across the area
+
 ```java
 private static final ParticleContainer edge = new ParticleContainer(Particle.CLOUD)
     .count(1).spread(0, 0);
@@ -143,6 +152,21 @@ private static final ParticleContainer fill = new ParticleContainer(Particle.CLO
 
 // Play with both edge and fill particles
 hitShape.play(edge, location, LocalAxes.xz(), fill);
+```
+
+**Common mistake to avoid:**
+```java
+// ❌ WRONG - High count/spread makes edges blurry and unclear
+private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD)
+    .count(20).spread(1, 0.5);
+circ.play(pc, location, LocalAxes.xz(), null);
+
+// ✓ CORRECT - Separate edge and fill with low spread/count
+private static final ParticleContainer edge = new ParticleContainer(Particle.CLOUD)
+    .count(1).spread(0, 0);
+private static final ParticleContainer fill = new ParticleContainer(Particle.CLOUD)
+    .count(1).spread(0.1, 0);
+circ.play(edge, location, LocalAxes.xz(), fill);
 ```
 
 ### ParticleShapeMemory

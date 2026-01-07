@@ -636,12 +636,13 @@ public class DamageMeta {
 			// Mobs shouldn't have a source of damage because they'll infinitely re-trigger ~OnAttack
 			// Players must have a source of damage to get credit for kills, otherwise mobs that suicide give points
 			if (owner instanceof PlayerFightData) {
+				target.damage(finalDamage, owner.getEntity());
 				if (isBasicAttack) {
 					BasicAttackEvent ev = new BasicAttackEvent(target, this, weapon, proj);
 					((PlayerFightData) owner).runActions((PlayerFightData) owner, Trigger.BASIC_ATTACK, ev);
 				}
-				FightInstance.trigger((Player) owner.getEntity(), Trigger.DEAL_DAMAGE, new DealDamageEvent(this, target, damage, ignoreShieldsDamage));
-				target.damage(finalDamage, owner.getEntity());
+				FightInstance.trigger((Player) owner.getEntity(), Trigger.DEAL_DAMAGE,
+						new DealDamageEvent(this, target, damage, ignoreShieldsDamage));
 				if (target.getHealth() <= 0) {
 					FightInstance.trigger((Player) owner.getEntity(), Trigger.KILL, new KillEvent((LivingEntity) target, this));
 				}

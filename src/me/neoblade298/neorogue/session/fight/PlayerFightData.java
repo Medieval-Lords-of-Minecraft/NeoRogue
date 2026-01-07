@@ -486,9 +486,10 @@ public class PlayerFightData extends FightData {
 						continue;
 					}
 
+					boolean useResources = ei.shouldUseResource(p, data, inputs);
 					// Mana
 					BuffList b = ev.getBuff(PropertyType.MANA_COST);
-					double manaCost = Math.max(0, b.applyNegative(ei.getManaCost()));
+					double manaCost = useResources ? Math.max(0, b.applyNegative(ei.getManaCost())) : 0;
 					if (manaCost > data.getMana() && manaCost > 0) {
 						Util.displayError(data.getPlayer(),
 								"You need " + df.format(manaCost - data.getMana()) + " more mana!");
@@ -497,7 +498,7 @@ public class PlayerFightData extends FightData {
 
 					// Stamina
 					b = ev.getBuff(PropertyType.STAMINA_COST);
-					double staminaCost = Math.max(0, b.applyNegative(ei.getStaminaCost()));
+					double staminaCost = useResources ? Math.max(0, b.applyNegative(ei.getStaminaCost())) : 0;
 					if (staminaCost > data.getStamina() && staminaCost > 0) {
 						Util.displayError(data.getPlayer(),
 								"You need " + df.format(staminaCost - data.getStamina()) + " more stamina!");
@@ -509,8 +510,10 @@ public class PlayerFightData extends FightData {
 					double cooldown = Math.max(0, b.applyNegative(ei.getBaseCooldown()));
 					
 					// Passed checks, run stat trackers
-					calculateStatTrackers(ei.getStaminaCost(), ei.getStaminaCost() - staminaCost, b);
-					calculateStatTrackers(ei.getManaCost(), ei.getManaCost() - manaCost, b);
+					if (useResources) {
+						calculateStatTrackers(ei.getStaminaCost(), ei.getStaminaCost() - staminaCost, b);
+						calculateStatTrackers(ei.getManaCost(), ei.getManaCost() - manaCost, b);
+					}
 					calculateStatTrackers(ei.getBaseCooldown(), ei.getBaseCooldown() - cooldown, b);
 
 					CastType type = ei.getEquipment().getProperties().getCastType();

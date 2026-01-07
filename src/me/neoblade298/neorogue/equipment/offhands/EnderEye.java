@@ -35,7 +35,7 @@ public class EnderEye extends Equipment {
 	private static final String ID = "EnderEye";
 	private static final TargetProperties tp = TargetProperties.cone(60, 5, false, TargetType.ENEMY);
 	private static final Cone cone = new Cone(tp.range, tp.arc);
-	private static final ParticleContainer pc = new ParticleContainer(Particle.WITCH).offsetY(0.5);
+	private static final ParticleContainer pc = new ParticleContainer(Particle.WITCH);
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_ENDERMAN_AMBIENT);
 	private int inc;
 
@@ -54,7 +54,7 @@ public class EnderEye extends Equipment {
 		String buffId = UUID.randomUUID().toString();
 		data.addTrigger(id, Trigger.RIGHT_CLICK, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			sc.play(p, p);
-			cone.play(pc, p.getLocation(), LocalAxes.usingEyeLocation(p), null);
+			cone.play(pc, p.getLocation().add(0, 0.5, 0), LocalAxes.usingEyeLocation(p), pc);
 			LinkedList<LivingEntity> trgs = TargetHelper.getEntitiesInCone(p, tp);
 			for (LivingEntity ent : trgs) {
 				FightInstance.getFightData(ent).addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL),

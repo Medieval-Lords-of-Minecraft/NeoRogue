@@ -122,6 +122,12 @@ public class ArcaneBlast extends Equipment {
 			}
 			return TriggerResult.keep();
 		});
+		
+		// Only consume resources on initial cast, not on recast
+		inst.setResourceUsageCondition((pl, pdata, in) -> {
+			return !am.getBool();
+		});
+		
 		data.addTrigger(id, bind, inst);
 	}
 

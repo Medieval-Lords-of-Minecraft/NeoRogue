@@ -60,7 +60,7 @@ public class WallJump extends Equipment {
 	}
 
 	private class WallJumpInstance extends EquipmentInstance {
-		private boolean canRecast = false;
+		private boolean isInitialCast = true;
 		private Vector direction;
 		
 		public WallJumpInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
@@ -69,7 +69,7 @@ public class WallJump extends Equipment {
 				Player p = data.getPlayer();
 				
 				// Recast: dash long distance and deal damage in a line
-				if (canRecast) {
+				if (!isInitialCast) {
 					Sounds.jump.play(p, p);
 					
 					// Dash in stored direction
@@ -89,7 +89,7 @@ public class WallJump extends Equipment {
 					}
 					
 					// Reset state
-					canRecast = false;
+					isInitialCast = true;
 					direction = null;
 					setIcon(item);
 					
@@ -112,7 +112,7 @@ public class WallJump extends Equipment {
 						// Check for wall hit
 						if (hitWall(p)) {
 							// Enable recast
-							canRecast = true;
+							isInitialCast = false;
 							ItemStack recastIcon = item.clone();
 							recastIcon.withType(Material.PHANTOM_MEMBRANE);
 							setIcon(recastIcon);
@@ -129,6 +129,11 @@ public class WallJump extends Equipment {
 				}.runTaskTimer(NeoRogue.inst(), 0L, 1L);
 				
 				return TriggerResult.keep();
+			};
+			
+			// Only consume resources on initial cast, not on recast
+			resourceUsageCondition = (pl, pdata, in) -> {
+				return isInitialCast;
 			};
 		}
 		

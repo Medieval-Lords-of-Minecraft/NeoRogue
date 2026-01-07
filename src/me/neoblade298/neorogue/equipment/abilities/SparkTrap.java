@@ -6,10 +6,12 @@ import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.ParticleUtil;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -25,14 +27,13 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
-import me.neoblade298.neorogue.session.fight.Trap;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class SparkTrap extends Equipment {
 	private static final String ID = "SparkTrap";
-	private static final ParticleContainer trapParticle = new ParticleContainer(Particle.ELECTRIC_SPARK)
+	private static final ParticleContainer trapParticle = new ParticleContainer(Particle.CLOUD)
 		.count(10).spread(0.5, 0.5);
 	private static final ParticleContainer explosionParticle = new ParticleContainer(Particle.FIREWORK)
 		.count(30).spread(2, 1);
@@ -62,17 +63,21 @@ public class SparkTrap extends Equipment {
 
 	private class SparkTrapInstance extends EquipmentInstance {
 		private Location trapLocation = null;
-		private boolean canRecast = false;
+		private boolean isInitialCast = true;
 		
 		public SparkTrapInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
 			super(data, eq, slot, es);
 			action = (pdata, in) -> {
 				Player p = data.getPlayer();
+				SparkTrapInstance inst = this;
 				
 				// Recast: teleport to bomb and deal line damage
-				if (canRecast && trapLocation != null) {
+				if (!isInitialCast && trapLocation != null) {
 					Location playerLoc = p.getLocation();
 					Location teleportLoc = trapLocation.clone();
+					
+					// Draw particle line between player and trap before teleporting
+					ParticleUtil.drawLine(p, lineParticle, playerLoc.clone().add(0, 1, 0), trapLocation.clone().add(0, 1, 0), 0.3);
 					
 					// Teleport player
 					p.teleport(teleportLoc);
@@ -83,8 +88,6 @@ public class SparkTrap extends Equipment {
 					Location end = playerLoc.add(0, 1, 0);
 					Vector direction = end.toVector().subtract(start.toVector()).normalize();
 					Location lineEnd = start.clone().add(direction.clone().multiply(lineProps.range));
-					
-					ParticleUtil.drawLine(p, lineParticle, start, lineEnd, 0.3);
 					Sounds.firework.play(p, p);
 					
 					for (LivingEntity ent : TargetHelper.getEntitiesInLine(p, start, lineEnd, lineProps)) {
@@ -93,7 +96,7 @@ public class SparkTrap extends Equipment {
 					}
 					
 					// Reset state
-					canRecast = false;
+					isInitialCast = true;
 					trapLocation = null;
 					setIcon(item);
 					
@@ -104,51 +107,54 @@ public class SparkTrap extends Equipment {
 				trapLocation = p.getLocation().clone();
 				Sounds.equip.play(p, p);
 				
-				data.addTrap(new Trap(data, trapLocation, 40) { // 2 seconds = 40 ticks
+				// Manual trap with particles and explosion
+				data.addTask(new BukkitRunnable() {
 					private int tickCount = 0;
 					
-					@Override
-					public void tick() {
+					public void run() {
 						trapParticle.play(p, trapLocation);
 						tickCount++;
 						
-						// Explode after 2 seconds
+						// Explode after 2 seconds (40 ticks)
 						if (tickCount >= 40) {
-							explode();
-							data.removeTrap(this);
-						}
-					}
-					
-					private void explode() {
-						Sounds.explode.play(p, trapLocation);
-						explosionParticle.play(p, trapLocation);
-						
-						boolean hitElectrified = false;
-						
-						for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, trapLocation, radiusProps)) {
-							FightInstance.dealDamage(new DamageMeta(data, explosionDamage, DamageType.LIGHTNING, 
-								DamageStatTracker.of(id + slot, eq)), ent);
+							Sounds.explode.play(p, trapLocation);
+							explosionParticle.play(p, trapLocation);
 							
-							// Check if enemy is electrified
-							FightData fd = FightInstance.getFightData(ent);
-							if (fd.hasStatus(StatusType.ELECTRIFIED)) {
-								hitElectrified = true;
+							boolean hitElectrified = false;
+							
+							for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, trapLocation, radiusProps)) {
+								FightInstance.dealDamage(new DamageMeta(data, explosionDamage, DamageType.LIGHTNING, 
+									DamageStatTracker.of(id + slot, eq)), ent);
+								
+								// Check if enemy is electrified
+								FightData fd = FightInstance.getFightData(ent);
+								if (fd.hasStatus(StatusType.ELECTRIFIED)) {
+									hitElectrified = true;
+								}
 							}
-						}
-						
-						// Enable recast if we hit an electrified enemy
-						if (hitElectrified) {
-							canRecast = true;
-							ItemStack recastIcon = item.clone().withType(Material.LIGHTNING_ROD);
-							setIcon(recastIcon);
-						}
-						else {
-							trapLocation = null;
+							
+							// Enable recast if we hit an electrified enemy
+							if (hitElectrified) {
+								isInitialCast = false;
+								ItemStack recastIcon = item.clone().withType(Material.LIGHTNING_ROD);
+								setIcon(recastIcon);
+								inst.setCooldown(-1);
+							}
+							else {
+								trapLocation = null;
+							}
+							
+							this.cancel();
 						}
 					}
-				});
+				}.runTaskTimer(NeoRogue.inst(), 0L, 1L));
 				
 				return TriggerResult.keep();
+			};
+			
+			// Only consume resources on initial cast, not on recast
+			resourceUsageCondition = (pl, pdata, in) -> {
+				return isInitialCast;
 			};
 		}
 	}

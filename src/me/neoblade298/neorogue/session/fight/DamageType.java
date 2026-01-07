@@ -27,7 +27,7 @@ public enum DamageType {
 	LIGHT("Light", "<white>Light</white>",
 		EnumSet.of(DamageCategory.LIGHT, DamageCategory.MAGICAL, DamageCategory.GENERAL, DamageCategory.ALL)),
 	POISON("Poison", StatusType.POISON.tag,
-		EnumSet.of(DamageCategory.STATUS, DamageCategory.ALL)),
+		EnumSet.of(DamageCategory.POISON, DamageCategory.STATUS, DamageCategory.ALL)),
 	REND("Rend", StatusType.REND.tag,
 		EnumSet.of(DamageCategory.PIERCING, DamageCategory.PHYSICAL, DamageCategory.GENERAL, DamageCategory.STATUS, DamageCategory.ALL)),
 	ELECTRIFIED("Electrified", StatusType.ELECTRIFIED.tag,

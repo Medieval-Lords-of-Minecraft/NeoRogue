@@ -59,6 +59,8 @@ public class FightData {
 	protected ShieldHolder shields; // Never null
 	protected LivingEntity entity = null;
 	protected LinkedList<TickAction> tickActions = new LinkedList<TickAction>(); // Every 20 ticks
+	protected LinkedList<TickAction> pendingTickActions = new LinkedList<TickAction>(); // Added during iteration
+	protected boolean isIteratingTickActions = false;
 	protected MapSpawnerInstance spawner;
 	protected HashMap<DamageBuffType, BuffList> damageBuffs = new HashMap<DamageBuffType, BuffList>(), defenseBuffs = new HashMap<DamageBuffType, BuffList>();
 	
@@ -373,10 +375,16 @@ public class FightData {
 	public void addTickAction(TickAction action) {
 		if (entity == null) return;
 		inst.addToTickList(entity.getUniqueId());
-		tickActions.add(action);
+		// If we're currently iterating, defer the addition to avoid ConcurrentModificationException
+		if (isIteratingTickActions) {
+			pendingTickActions.add(action);
+		} else {
+			tickActions.add(action);
+		}
 	}
 	
 	public TickResult runTickActions() {
+		isIteratingTickActions = true;
 		Iterator<TickAction> iter = tickActions.iterator();
 		while (iter.hasNext()) {
 			TickAction ta = iter.next();
@@ -387,6 +395,14 @@ public class FightData {
 			TickResult tr = ta.run();
 			if (tr == TickResult.REMOVE) iter.remove();
 		}
+		isIteratingTickActions = false;
+		
+		// Add any tick actions that were queued during iteration
+		if (!pendingTickActions.isEmpty()) {
+			tickActions.addAll(pendingTickActions);
+			pendingTickActions.clear();
+		}
+		
 		return tickActions.isEmpty() ? TickResult.REMOVE : TickResult.KEEP;
 	}
 	
@@ -497,10 +513,12 @@ public class FightData {
 	}
 	
 	private boolean areStatusesEmpty() {
-		for (Status s : statuses.values()) {
+		Iterator<Status> iter = statuses.values().iterator();
+		while (iter.hasNext()) {
+			Status s = iter.next();
 			if (s.getStacks() > 0) return false;
 			
-			statuses.remove(s.getId());
+			iter.remove();
 		}
 		return true;
 	}

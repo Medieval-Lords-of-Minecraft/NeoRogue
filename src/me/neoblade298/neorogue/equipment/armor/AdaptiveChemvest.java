@@ -1,12 +1,14 @@
 package me.neoblade298.neorogue.equipment.armor;
 
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
-import me.neoblade298.neorogue.session.fight.DamageCategory;
+import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -30,7 +32,7 @@ public class AdaptiveChemvest extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
 			DealDamageEvent ev = (DealDamageEvent) in;
-			if (!ev.getMeta().containsType(DamageCategory.POISON)) return TriggerResult.keep();
+			if (!ev.getMeta().containsType(DamageType.POISON)) return TriggerResult.keep();
 			data.addSimpleShield(p.getUniqueId(), shields, 100);
 			return TriggerResult.keep();
 		});
@@ -40,5 +42,8 @@ public class AdaptiveChemvest extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.LEATHER_CHESTPLATE, "Dealing " + GlossaryTag.POISON.tag(this) + " damage grants you " + 
 				GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>5s</white>].");
+		LeatherArmorMeta meta = (LeatherArmorMeta) item.getItemMeta();
+		meta.setColor(Color.GREEN);
+		item.setItemMeta(meta);
 	}
 }
