@@ -182,14 +182,15 @@ public class NeoRogue extends JavaPlugin {
 	public static void debugInitialize(Player host, @Nullable Collection<Player> others) {
 		Session s = SessionManager.createSession(host, "test", 1);
 		s.generateRegion(RegionType.HARVEST_FIELDS);
-		s.addPlayer(host.getUniqueId(), EquipmentClass.WARRIOR);
+		s.addPlayer(host.getUniqueId(), EquipmentClass.THIEF);
 		s.setNodesVisited(16);
+		s.setRegionsCompleted(1);
 
 		s.setNode(s.getRegion().getNodes()[0][2]);
 		for (Player pl : others == null ? Bukkit.getOnlinePlayers() : others) {
 			if (pl == host) continue;
 			if (SessionManager.getSession(pl) == null) {
-				s.addPlayer(pl.getUniqueId(), EquipmentClass.WARRIOR);
+				s.addPlayer(pl.getUniqueId(), EquipmentClass.THIEF);
 				SessionManager.addToSession(pl.getUniqueId(), s);
 			}
 		}

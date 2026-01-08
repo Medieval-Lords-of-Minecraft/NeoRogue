@@ -23,11 +23,13 @@ public class ShopContents {
 
 	public ShopContents(Session s, PlayerSessionData data, double discountMult) {
 		int value = s.getBaseDropValue();
+		System.out.println("Generating shop contents...");
 		generateEquips(s, data, value, discountMult); // 0-9
 		generateConsumables(s, data, value, discountMult); // 10-12
 		generateGems(discountMult); // 13-15
 		generateArtifacts(s, data, value, discountMult); // 16-18
 		generateShopArtifacts(s, data, value, discountMult); // 19, 20
+		System.out.println("Done generating shop contents");
 	}
 
 	private ShopContents(HashMap<Integer, ShopItem> shopItems) {

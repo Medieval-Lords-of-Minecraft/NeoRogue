@@ -4,6 +4,7 @@ import java.io.File;
 import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -1467,6 +1468,11 @@ public abstract class Equipment implements Comparable<Equipment> {
 		public String getDisplay() {
 			return display;
 		}
+
+		@Override
+		public String toString() {
+			return display;
+		}
 	}
 
 	public static enum EquipmentType {
@@ -1682,13 +1688,23 @@ public abstract class Equipment implements Comparable<Equipment> {
 					DropTable<E> temp = droptables.get(ec[j]).get(value);
 					tables.add(temp, temp.getTotalWeight());
 				}
+				if (tables.size() == 0) {
+					Bukkit.getLogger().warning("[NeoRogue] No droptables found for equip classes " + Arrays.toString(ec) + " at value " + value
+							+ ", falling back to lower value");
+					return getMultiple(value - 1, numDrops, unique, exclusions, ec);
+				}
 				table = tables.get();
 			} else {
+				if (!droptables.containsKey(ec[0]) || value >= droptables.get(ec[0]).size()) {
+					Bukkit.getLogger().warning("[NeoRogue] No droptables found for equip class " + ec[0] + " at value " + value
+							+ ", falling back to lower value");
+					return getMultiple(value - 1, numDrops, unique, exclusions, ec);
+				}
 				table = droptables.get(ec[0]).get(value);
 			}
 			
 			if (table.size() < numDrops) {
-				Bukkit.getLogger().warning("[NeoRogue] Failed to find " + numDrops + " equipment of value " + value + " for equip classes " + ec + ", falling back to lower value");
+				Bukkit.getLogger().warning("[NeoRogue] Failed to find " + numDrops + " equipment of value " + value + " for equip classes " + Arrays.toString(ec) + ", falling back to lower value");
 				return getMultiple(value - 1, numDrops, unique, exclusions, ec);
 			}
 

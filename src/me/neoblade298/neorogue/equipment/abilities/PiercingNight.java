@@ -174,11 +174,6 @@ public class PiercingNight extends Equipment {
 	}
 
 	@Override
-	public void setupReforges() {
-		addSelfReforge(Blackspike.get(), Obfuscation.get());
-	}
-
-	@Override
 	public void setupItem() {
 		item = createItem(Material.BLACKSTONE,
 			"On cast, throw <white>3</white> projectiles in a cone that each deal " + 
