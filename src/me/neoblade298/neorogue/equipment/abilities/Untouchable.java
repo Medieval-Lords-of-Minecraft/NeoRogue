@@ -35,7 +35,6 @@ public class Untouchable extends Equipment {
 		
 		data.addTrigger(id, Trigger.RECEIVE_STATUS, (pdata, in) -> {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
-			System.out.println("Receive status happened");
 			
 			// Only trigger when player receives stealth
 			if (!ev.isStatus(StatusType.STEALTH)) return TriggerResult.keep();

@@ -73,7 +73,7 @@ public class CmdAdminDamage extends Subcommand {
 			src = fi.createFightData(temp);
 		}
 		else {
-			src = FightInstance.getFightData(trg);
+			src = FightInstance.getUserData(p.getUniqueId());
 		}
 
 		final LivingEntity ftrg = trg;

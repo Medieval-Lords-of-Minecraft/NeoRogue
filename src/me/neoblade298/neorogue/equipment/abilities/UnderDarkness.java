@@ -74,6 +74,7 @@ public class UnderDarkness extends Equipment {
 								data.applyStatus(StatusType.STEALTH, data, 1, 20);
 								data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, damage, 0,
 									StatTracker.damageBuffAlly(buffId, eq)), 20);
+								data.addSimpleShield(p.getUniqueId(), 8, 40);
 							}
 							
 							if (++tick == TICKS) this.cancel();
@@ -90,7 +91,8 @@ public class UnderDarkness extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.SHIELD,
 				"On cast, drop a smoke bomb that detonates after <white>1</white> second. After detonation, for <white>5</white> seconds,"
-				+ " standing within the radius grants " + GlossaryTag.STEALTH.tag(this, 1, false) + " [<white>1s</white>] and buffs"
-						+ " your damage by <yellow>" + damage + "</yellow>.");
+				+ " standing within the radius grants " + GlossaryTag.STEALTH.tag(this, 1, false) + " [<white>1s</white>], buffs"
+						+ " your damage by <yellow>" + damage + "</yellow>, and grants "
+						+ GlossaryTag.SHIELDS.tag(this, 8, false) + " [<white>2s</white>].");
 	}
 }

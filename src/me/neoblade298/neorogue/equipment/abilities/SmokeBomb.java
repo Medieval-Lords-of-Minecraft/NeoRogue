@@ -35,13 +35,14 @@ public class SmokeBomb extends Equipment {
 	private static final SoundContainer place = new SoundContainer(Sound.ENTITY_CREEPER_PRIMED);
 	private static final TargetProperties tp = TargetProperties.radius(5, true, TargetType.ENEMY);
 	
-	private int delay;
+	private int delay, shields;
 	
 	public SmokeBomb(boolean isUpgraded) {
 		super(ID, "Smoke Bomb", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(isUpgraded ? 20 : 10, 0, 12, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(isUpgraded ? 10 : 15, 0, 12, 0));
 		properties.addUpgrades(PropertyType.MANA_COST);
 		delay = isUpgraded ? 3 : 1;
+		shields = isUpgraded ? 5 : 3;
 	}
 
 	@Override
@@ -72,6 +73,7 @@ public class SmokeBomb extends Equipment {
 							circ.play(smokeEdge, loc, LocalAxes.xz(), null);
 							if (p.getLocation().distanceSquared(loc) <= tp.range * tp.range) {
 								data.applyStatus(StatusType.STEALTH, data, 1, 20);
+								data.addSimpleShield(p.getUniqueId(), shields, 40);
 							}
 							if (++tick == TICKS) this.cancel();
 						}
@@ -88,6 +90,7 @@ public class SmokeBomb extends Equipment {
 		item = createItem(Material.SHIELD,
 				"On cast, drop a smoke bomb that detonates after <yellow>" + delay
 				+ "</yellow> second(s). After detonation, for <white>5</white> seconds,"
-				+ " standing within the radius grants " + GlossaryTag.STEALTH.tag(this, 1, false) + " [<white>1s</white>].");
+				+ " standing within the radius grants " + GlossaryTag.STEALTH.tag(this, 1, false) + " [<white>1s</white>] and "
+				+ GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>2s</white>].");
 	}
 }

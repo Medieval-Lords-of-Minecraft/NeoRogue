@@ -484,6 +484,9 @@ public class FightData {
 			catch (IllegalArgumentException ex) {
 			}
 		}
+		if (this instanceof PlayerFightData) {
+			FightInstance.trigger(((PlayerFightData) this).getPlayer(), Trigger.RECEIVE_STATUS, ev2);
+		}
 		
 		if (statuses.isEmpty()) {
 			addTickAction(new StatusUpdateTickAction());

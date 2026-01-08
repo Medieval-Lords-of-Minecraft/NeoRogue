@@ -876,7 +876,9 @@ public abstract class FightInstance extends Instance {
 	
 	// Limits +y velocity
 	public static void knockback(Location src, Entity trg, double force) {
-		Vector v = trg.getLocation().subtract(src).toVector().setY(0).normalize().multiply(force).setY(0.5);
+		Vector v = trg.getLocation().subtract(src).toVector().setY(0);
+		if (v.lengthSquared() == 0) return; // Prevent NaN from normalizing zero-length vector
+		v = v.normalize().multiply(force).setY(0.5);
 		knockback(trg, v);
 	}
 	

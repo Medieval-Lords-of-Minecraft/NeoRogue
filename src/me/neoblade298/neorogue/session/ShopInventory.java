@@ -197,8 +197,8 @@ public class ShopInventory extends CoreInventory {
 				return;
 			}
 			shopItem.setPurchased(true);
-			data.getSession().getInstance().updateBoardLines();
 			data.addCoins(-price);
+			data.getSession().getInstance().updateBoardLines();
 			data.giveEquipment(
 					shopItem.getEquipment(),
 					SharedUtil.color("You spent <yellow>" + price + " coins</yellow> to purchase a(n) "),
