@@ -1117,16 +1117,11 @@ public abstract class FightInstance extends Instance {
 		FightData fd = fightData.remove(uuid);
 		if (fd == null) return null;
 		if (fd.getInstance() == null) return fd;
-		fd.getInstance().removeFromTickList(uuid);
 		return fd;
 	}
 	
 	public void addToTickList(UUID uuid) {
 		toTick.add(uuid);
-	}
-
-	public void removeFromTickList(UUID uuid) {
-		toTick.remove(uuid);
 	}
 	
 	// For any barrier that isn't the user's personal barrier (shield)

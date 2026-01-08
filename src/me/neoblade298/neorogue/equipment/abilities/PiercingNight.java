@@ -50,7 +50,7 @@ public class PiercingNight extends Equipment {
 	private static final TargetProperties lineProps = TargetProperties.line(8, 2, TargetType.ENEMY);
 	
 	public PiercingNight(boolean isUpgraded) {
-		super(ID, "Piercing Night", isUpgraded, Rarity.RARE, EquipmentClass.THIEF, EquipmentType.ABILITY,
+		super(ID, "Piercing Night", isUpgraded, Rarity.EPIC, EquipmentClass.THIEF, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(25, 10, 8, 8));
 		damage = isUpgraded ? 300 : 200;
 		lineDamage = isUpgraded ? 250 : 175;

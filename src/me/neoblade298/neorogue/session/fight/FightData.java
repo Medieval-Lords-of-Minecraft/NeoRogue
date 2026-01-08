@@ -445,7 +445,7 @@ public class FightData {
 	}
 	
 	public void applyStatus(Status status, FightData applier, int stacks, int ticks, DamageMeta meta, boolean isSecondary) {
-		if (!entity.isValid()) return;
+		if (entity == null || !entity.isValid()) return;
 		String id = status.getId();
 		status = statuses.getOrDefault(id, status); // If status exists, use that, otherwise add the new one
 
