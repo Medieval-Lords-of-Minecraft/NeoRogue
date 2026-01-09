@@ -330,6 +330,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new ConstantFlux(b);
 			new Contaminate(b);
 			new CorpseExplosion(b);
+			new Corrode(b);
 			new Counter(b);
 			new ThunderclapAndFlash(b);
 			new CreateEarth(b);
@@ -485,6 +486,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Overflow(b);
 			new Overload(b);
 			new PalmBlast(b);
+			new Pandemic(b);
 			new Paranoia(b);
 			new Parry(b);
 			new PartingGift(b);
@@ -541,6 +543,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new SpeedBlitz(b);
 			new StaticSurge(b);
 			new Storm(b);
+			new Stormspike(b);
 			new Study(b);
 			new Study2(b);
 			new Sturdy(b);

@@ -47,7 +47,7 @@ public class ShadowPartner extends Equipment {
 	public ShadowPartner(boolean isUpgraded) {
 		super(ID, "Shadow Partner", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 1, 0));
-		damage = isUpgraded ? 300 : 200;
+		damage = isUpgraded ? 250 : 150;
 	}
 
 	public static Equipment get() {

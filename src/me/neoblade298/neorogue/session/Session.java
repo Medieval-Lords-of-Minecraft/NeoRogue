@@ -37,10 +37,13 @@ import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
+import com.sk89q.worldedit.function.mask.BlockMask;
 import com.sk89q.worldedit.function.operation.Operation;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.session.ClipboardHolder;
+import com.sk89q.worldedit.world.block.BlockTypes;
 
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.effects.Audience;
@@ -151,6 +154,43 @@ public class Session {
 		pasteSchematic(clipboard, editSession, session, 0, yOff, zOff);
 	}
 	
+	/**
+	 * Resets the node select area by replacing node type blocks with air and lecterns with polished andesite
+	 * This is useful for clearing the area for regeneration
+	 */
+	public void resetNodeSelectArea() {
+		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Region.world)) {
+			// Define the region bounds for the node select area
+			BlockVector3 min = BlockVector3.at(-(xOff + 1), 64, zOff + AREA_Z);
+			BlockVector3 max = BlockVector3.at(-(xOff + 1) + AREA_WIDTH, 128, zOff + AREA_Z + AREA_WIDTH);
+			CuboidRegion region = new CuboidRegion(Region.world, min, max);
+			
+			// Create mask for node type blocks
+			BlockMask nodeTypesMask = new BlockMask(editSession,
+				BlockTypes.REDSTONE_BLOCK.getDefaultState().toBaseBlock(),      // FIGHT
+				BlockTypes.NOTE_BLOCK.getDefaultState().toBaseBlock(),           // CHANCE
+				BlockTypes.EMERALD_BLOCK.getDefaultState().toBaseBlock(),        // SHOP
+				BlockTypes.OBSIDIAN.getDefaultState().toBaseBlock(),             // MINIBOSS
+				BlockTypes.RESPAWN_ANCHOR.getDefaultState().toBaseBlock(),       // BOSS
+				BlockTypes.OCHRE_FROGLIGHT.getDefaultState().toBaseBlock(),      // SHRINE
+				BlockTypes.IRON_BLOCK.getDefaultState().toBaseBlock()            // START
+			);
+			
+			// Replace node type blocks with air
+			editSession.replaceBlocks(region, nodeTypesMask, BlockTypes.AIR.getDefaultState());
+			
+			// Create mask for lecterns
+			BlockMask lecternMask = new BlockMask(editSession, BlockTypes.LECTERN.getDefaultState().toBaseBlock());
+			
+			// Replace lecterns with polished andesite
+			editSession.replaceBlocks(region, lecternMask, BlockTypes.POLISHED_ANDESITE.getDefaultState());
+			
+		} catch (WorldEditException e) {
+			Bukkit.getLogger().warning("[NeoRogue] Failed to reset node select area for host " + host);
+			e.printStackTrace();
+		}
+	}
+	
 	public Session(Player p, Plot plot, String lobby, int saveSlot) {
 		this.saveSlot = saveSlot;
 		this.xOff = plot.getXOffset();
@@ -240,7 +280,7 @@ public class Session {
 	
 	private void generateInterstitials() {
 		Location loc = new Location(Bukkit.getWorld(Region.WORLD_NAME), -(xOff + 1), 62, zOff);
-		Material versionCheck = Material.STONE; // Change this when interstitials change to regen them
+		Material versionCheck = Material.DIRT; // Change this when interstitials change to regen them
 		
 		if (loc.getBlock().getType() != versionCheck) {
 			Bukkit.getLogger().info("[NeoRogue] Generating interstitials for host " + Bukkit.getPlayer(host).getName());
@@ -255,6 +295,10 @@ public class Session {
 				pasteSchematic(chance, editSession, this, Session.CHANCE_Z);
 				pasteSchematic(lose, editSession, this, -1, Session.LOSE_Z);
 			}
+		}
+		else {
+			Bukkit.getLogger().info("[NeoRogue] Interstitials for host " + Bukkit.getPlayer(host).getName() + " are up to date");
+			resetNodeSelectArea();
 		}
 	}
 	
@@ -546,6 +590,7 @@ public class Session {
 			psd.trigger(SessionTrigger.VISIT_NODE, null);
 			Bukkit.getLogger().info("Serialization for " + psd.getPlayer().getName());
 			Bukkit.getLogger().info(psd.serialize());
+			Bukkit.getLogger().info("Abilities: " + psd.getAbilitiesEquipped() + " / " + psd.getMaxAbilities());
 		}
 		
 		// Auto-save

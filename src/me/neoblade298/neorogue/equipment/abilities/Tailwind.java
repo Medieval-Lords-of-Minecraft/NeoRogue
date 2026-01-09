@@ -18,6 +18,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -27,11 +28,13 @@ public class Tailwind extends Equipment {
 	private static final int radius = 6;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
 	private static final Circle circ = new Circle(radius);
+	private int shields;
 	
 	public Tailwind(boolean isUpgraded) {
 		super(ID, "Tailwind", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(isUpgraded ? 15 : 20, 5, isUpgraded ? 17 : 20, 0).add(PropertyType.AREA_OF_EFFECT, radius));
 		properties.addUpgrades(PropertyType.MANA_COST, PropertyType.COOLDOWN);
+		shields = isUpgraded ? 3 : 2;
 	}
 	
 	@Override
@@ -54,6 +57,7 @@ public class Tailwind extends Equipment {
 					circ.play(pc, loc, LocalAxes.xz(), null);
 					if (loc.distanceSquared(p.getLocation()) <= radius * radius) {
 						p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20, 0));
+						data.addSimpleShield(p.getUniqueId(), shields, 20);
 					}
 					if (++tick >= 8) {
 						this.cancel();
@@ -67,6 +71,7 @@ public class Tailwind extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FEATHER,
-				"On cast, place a circle [<white>8s</white>] that grants you <white>Speed 1</white> while you're in it.");
+				"On cast, place a circle [<white>8s</white>] that grants you <white>Speed 1</white> and " +
+				GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>1s</white>] while you're in it.");
 	}
 }
