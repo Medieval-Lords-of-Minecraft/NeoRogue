@@ -3,8 +3,6 @@ package me.neoblade298.neorogue.equipment.abilities;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.Sounds;
@@ -42,7 +40,7 @@ public class Sidestep extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.OBSIDIAN,
-				"On cast, Grant speed <white>1</white> and " + GlossaryTag.STEALTH.tag(this) +
+				"On cast, " + GlossaryTag.DASH.tag(this) + " and gain " + GlossaryTag.STEALTH.tag(this) +
 				" [<white>5s</white>], and " + GlossaryTag.EVADE.tag(this, evade, true) + " [<white>10s</white>]. "
 				+ "Your next <white>3</white> basic attacks deal an additional " + GlossaryTag.PIERCING.tag(this, damage, false) + " damage. "
 				+ "The cooldown of this ability is reduced by your " + GlossaryTag.STEALTH.tag(this)
@@ -55,7 +53,7 @@ public class Sidestep extends Equipment {
 		inst.setAction((pdata, in) -> {
 			Sounds.teleport.play(p, p);
 			pc.play(p, p);
-			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 100, 0));
+			data.dash();
 			data.applyStatus(StatusType.STEALTH, data, 1, 100);
 			data.applyStatus(StatusType.EVADE, data, evade, 200);
 			inst.addCount(3);

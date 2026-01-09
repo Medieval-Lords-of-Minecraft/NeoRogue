@@ -24,7 +24,7 @@ public class Egoism extends Equipment {
 	public Egoism(boolean isUpgraded) {
 		super(ID, "Egoism", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.none());
-		healthRegen = isUpgraded ? 10 : 5;
+		healthRegen = isUpgraded ? 6 : 4;
 		stealth = isUpgraded ? 2 : 1;
 	}
 	

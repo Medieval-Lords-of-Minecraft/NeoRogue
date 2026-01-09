@@ -265,7 +265,7 @@ public class Session {
 		try {
 			SQLInsertBuilder sql = new SQLInsertBuilder(SQLAction.REPLACE, "neorogue_sessions")
 					.addString(host.toString()).addValue(saveSlot).addString(region.getType().name())
-					.addValue(curr.getRow()).addValue(curr.getLane()).addValue(nodesVisited).addValue(potionChance)
+					.addValue(curr.getRow()).addValue(curr.getLane()).addValue(nodesVisited).addValue(regionsCompleted).addValue(potionChance)
 					.addValue(enemyHealthScale).addValue(enemyDamageScale).addValue(coinReduction).addValue(fightTimeReduction)
 					.addValue(endless ? 1 : 0)
 					.addValue(System.currentTimeMillis()).addString(inst.serialize(party));

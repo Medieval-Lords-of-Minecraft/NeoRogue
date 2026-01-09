@@ -219,26 +219,24 @@ public abstract class FightInstance extends Instance {
 			if (inv[i] == null) continue;
 			cooldowns[i] = p.getCooldown(inv[i].getType());
 		}
+		s.broadcast("<red>" + p.getName() + " died!");
+		data.setDeath(true);
+		data.getStats().addDeath();
 
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				s.broadcast("<red>" + p.getName() + " died!");
-				data.setDeath(true);
-				data.getStats().addDeath();
-				
-				// If that's the last player alive, send them to lose instance
-				boolean lose = true;
-				for (UUID uuid : data.getInstance().getParty()) {
-					PlayerFightData fdata = userData.get(uuid);
-					if (fdata != null && fdata.isActive()) {
-						lose = false;
-						break;
-					}
-				}
-				
-				// End game as a loss
-				if (lose) {
+		// If that's the last player alive, send them to lose instance
+		boolean lose = true;
+		for (UUID uuid : data.getInstance().getParty()) {
+			PlayerFightData fdata = userData.get(uuid);
+			if (fdata != null && fdata.isActive()) {
+				lose = false;
+				break;
+			}
+		}
+		
+		if (lose) {
+			fi.isActive = false;
+			new BukkitRunnable() {
+				public void run() {
 					p.spigot().respawn();
 					Session sess = data.getInstance().getSession();
 					new BukkitRunnable() {
@@ -248,28 +246,29 @@ public abstract class FightInstance extends Instance {
 							sess.setInstance(new LoseInstance(sess));
 						}
 					}.runTask(NeoRogue.inst());
-				} else {
-					if (p != null) {
-						fi.corpses.add(new Corpse(data));
-						// Have a wait time so that mythicmobs can handle deaths
-						new BukkitRunnable() {
-							@Override
-							public void run() {
-								p.spigot().respawn();
-								p.teleport(prev);
-								p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 60, 0));
-								p.getInventory().setContents(inv);
-								// Set cooldowns so they persist through death
-								for (int i = 0; i < 9; i++) {
-									if (inv[i] == null) continue;
-									p.setCooldown(inv[i].getType(), cooldowns[i]);
-								}
-							}
-						}.runTask(NeoRogue.inst());
-					}
 				}
+			}.runTask(NeoRogue.inst());
+		}
+		else {
+			if (p != null) {
+				fi.corpses.add(new Corpse(data));
+				// Have a wait time so that mythicmobs can handle deaths
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						p.spigot().respawn();
+						p.teleport(prev);
+						p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 60, 0));
+						p.getInventory().setContents(inv);
+						// Set cooldowns so they persist through death
+						for (int i = 0; i < 9; i++) {
+							if (inv[i] == null) continue;
+							p.setCooldown(inv[i].getType(), cooldowns[i]);
+						}
+					}
+				}.runTask(NeoRogue.inst());
 			}
-		}.runTaskLater(NeoRogue.inst(), 5L);
+		}
 	}
 
 	public void handlePlayerLeaveParty(Player p) {
