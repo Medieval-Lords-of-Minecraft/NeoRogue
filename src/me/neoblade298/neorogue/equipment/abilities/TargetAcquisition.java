@@ -24,7 +24,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class TargetAcquisition extends Equipment {
 	private static final String ID = "TargetAcquisition";
-	private int damage;
+	private int damage, shields;
 	private static final ParticleContainer part = new ParticleContainer(Particle.LARGE_SMOKE).offsetY(1).count(25).spread(0.5, 0.5).speed(0.01),
 			hit = new ParticleContainer(Particle.DUST).count(25).offsetY(1).spread(0.5, 0.5);
 	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_ZOMBIE_INFECT);
@@ -33,7 +33,8 @@ public class TargetAcquisition extends Equipment {
 		super(ID, "Target Acquisition", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 10, 0));
 		
-		damage = isUpgraded ? 70 : 50;
+		damage = isUpgraded ? 50 : 30;
+		shields = isUpgraded ? 5 : 3;
 	}
 	
 	public static Equipment get() {
@@ -49,6 +50,7 @@ public class TargetAcquisition extends Equipment {
 			sc.play(p, p);
 			part.play(p, p);
 			inst.addCount(1);
+			data.addSimpleShield(p.getUniqueId(), shields, 100);
 			return TriggerResult.keep();
 		});
 		data.addTrigger(id, Trigger.KILL, inst);
@@ -68,6 +70,7 @@ public class TargetAcquisition extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.SPYGLASS,
 				"Passive. Killing an enemy grants your next basic attack an additional " +
-				GlossaryTag.PIERCING.tag(this, damage, true) + " damage.");
+				GlossaryTag.PIERCING.tag(this, damage, true) + " damage and grants " +
+				GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>5s</white>].");
 	}
 }

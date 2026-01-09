@@ -16,12 +16,13 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
 
 public class TopazRing extends Equipment {
 	private static final String ID = "TopazRing";
-	private int stacks;
+	private int stacks, shields;
 	
 	public TopazRing(boolean isUpgraded) {
 		super(ID, "Topaz Ring", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.ACCESSORY);
 		stacks = isUpgraded ? 25 : 15;
+		shields = isUpgraded ? 5 : 3;
 	}
 	
 	public static Equipment get() {
@@ -34,6 +35,7 @@ public class TopazRing extends Equipment {
 			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
 			if (!ev.isStatus(StatusType.ELECTRIFIED)) return TriggerResult.keep();
 			ev.getStacksBuffList().add(new Buff(data, stacks, 0, BuffStatTracker.ignored(this)));
+			data.addSimpleShield(p.getUniqueId(), shields, 100);
 			return TriggerResult.keep();
 		});
 	}
@@ -41,6 +43,7 @@ public class TopazRing extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.CACTUS, "Increase stacks of " + GlossaryTag.ELECTRIFIED.tag(this) + " applied by <yellow>"
-				+ stacks + "</yellow>.");
+				+ stacks + "</yellow>. Applying " + GlossaryTag.ELECTRIFIED.tag(this) + " grants "
+				+ GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>5s</white>].");
 	}
 }

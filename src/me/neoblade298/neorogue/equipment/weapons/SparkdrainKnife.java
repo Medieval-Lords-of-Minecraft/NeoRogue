@@ -19,7 +19,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class SparkdrainKnife extends Equipment {
 	private static final String ID = "SparkdrainKnife";
-	private static int elec, res, thres;
+	private static int elec, res, thres, shields;
 	
 	public SparkdrainKnife(boolean isUpgraded) {
 		super(ID, "Sparkdrain Knife", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
@@ -28,6 +28,7 @@ public class SparkdrainKnife extends Equipment {
 		elec = 30;
 		res = isUpgraded ? 6 : 4;
 		thres = 100;
+		shields = isUpgraded ? 8 : 5;
 		
 	}
 	
@@ -37,14 +38,13 @@ public class SparkdrainKnife extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
+	data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
 			weaponSwingAndDamage(p, data, ev.getTarget());
 			FightData fd = FightInstance.getFightData(ev.getTarget());
 			
-			if (fd.getStatus(StatusType.ELECTRIFIED).getStacks() >= thres) {
-				data.addStamina(res);
-				data.addMana(res);
+			if (fd.getStatus(StatusType.ELECTRIFIED).getStacks() > thres) {
+				data.addSimpleShield(p.getUniqueId(), shields, 40);
 			}
 			else {
 				FightInstance.applyStatus(ev.getTarget(), StatusType.ELECTRIFIED, data, elec, -1);
@@ -56,7 +56,7 @@ public class SparkdrainKnife extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.STONE_SWORD, "Every basic attack applies " + GlossaryTag.ELECTRIFIED.tag(this, elec, true) + ". If the "
-				+ "target has at least " + GlossaryTag.ELECTRIFIED.tag(this, thres, false) + ", grant <yellow>" + res + "</yellow> mana and "
-						+ "stamina instead.");
+				+ "target has over " + GlossaryTag.ELECTRIFIED.tag(this, thres, false) + ", grant " 
+				+ GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>2s</white>] instead.");
 	}
 }

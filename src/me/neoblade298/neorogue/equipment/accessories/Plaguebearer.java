@@ -19,7 +19,7 @@ public class Plaguebearer extends Equipment {
 	public Plaguebearer(boolean isUpgraded) {
 		super(ID, "Plaguebearer", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
 				EquipmentType.ACCESSORY);
-		shields = isUpgraded ? 5 : 3;
+		shields = isUpgraded ? 10 : 7;
 	}
 	
 	public static Equipment get() {
@@ -31,7 +31,7 @@ public class Plaguebearer extends Equipment {
 		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
 			if (!ev.isStatus(StatusType.POISON)) return TriggerResult.keep();
-			data.addSimpleShield(p.getUniqueId(), shields, 100);
+			data.addSimpleShield(p.getUniqueId(), shields, 160);
 			return TriggerResult.keep();
 		});
 	}
@@ -39,6 +39,6 @@ public class Plaguebearer extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ROTTEN_FLESH, "Whenever you apply " + GlossaryTag.POISON.tag(this) + " to an enemy, gain "
-				+ GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>5s</white>].");
+				+ GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>8s</white>].");
 	}
 }

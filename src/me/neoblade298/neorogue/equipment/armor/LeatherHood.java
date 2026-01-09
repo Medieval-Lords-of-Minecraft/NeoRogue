@@ -14,12 +14,13 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 
 public class LeatherHood extends Equipment {
 	private static final String ID = "LeatherHood";
-	private int dur;
+	private int dur, shields;
 	
 	public LeatherHood(boolean isUpgraded) {
 		super(ID, "Leather Hood", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.ARMOR);
 		dur = isUpgraded ? 15 : 10;
+		shields = isUpgraded ? 15 : 10;
 	}
 	
 	public static Equipment get() {
@@ -29,12 +30,13 @@ public class LeatherHood extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.applyStatus(StatusType.STEALTH, data, 1, dur);
+		data.addSimpleShield(p.getUniqueId(), shields, 200);
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LEATHER_HELMET, "Start every fight with " + GlossaryTag.STEALTH.tag(this, 1, false)
-		+ " [<yellow>" + dur +"s</yellow>].");
+		+ " [<yellow>" + dur +"s</yellow>] and " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>10s</white>].");
 		
 		LeatherArmorMeta dye = (LeatherArmorMeta) item.getItemMeta();
 		dye.setColor(Color.BLACK);

@@ -9,6 +9,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -17,12 +18,13 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 public class Warmup extends Equipment {
 	private static final String ID = "Warmup";
-	private int timer;
+	private int timer, shields;
 
 	public Warmup(boolean isUpgraded) {
 		super(ID, "Warmup", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF, EquipmentType.ABILITY,
 				EquipmentProperties.none());
 		timer = isUpgraded ? 7 : 10;
+		shields = isUpgraded ? 15 : 10;
 	}
 
 	public static Equipment get() {
@@ -54,7 +56,7 @@ public class Warmup extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.RED_DYE,
-				"Passive. After <yellow>" + timer + "</yellow> seconds, gain <white>1</white> stamina regen."
+				"Passive. After <yellow>" + timer + "</yellow> seconds, gain <white>1</white> stamina regen and " + GlossaryTag.SHIELDS.tag(this, shields, true) + "."
 				+ " Taking health damage increases the timer by <white>1</white>.");
 	}
 }

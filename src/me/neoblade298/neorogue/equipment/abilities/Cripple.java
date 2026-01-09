@@ -34,9 +34,9 @@ public class Cripple extends Equipment {
 	
 	public Cripple(boolean isUpgraded) {
 		super(ID, "Cripple", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 10, 15, tp.range));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 5, 15, tp.range));
 		
-		inc = isUpgraded ? 21 : 14;
+		inc = isUpgraded ? 35 : 25;
 	}
 
 	@Override
