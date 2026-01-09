@@ -42,7 +42,7 @@ public class Cripple extends Equipment {
 	@Override
 	public void setupReforges() {
 		addReforge(Resourcefulness.get(), CripplingPoison.get());
-		addReforge(BasicDarkArts.get(), Maim.get());
+		addReforge(BasicDarkArts.get(), Maim.get(), Disorient.get());
 	}
 	
 	public static Equipment get() {

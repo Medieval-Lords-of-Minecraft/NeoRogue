@@ -27,13 +27,14 @@ public class NightShade extends Equipment {
 	private static final String ID = "NightShade";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.PORTAL),
 			hit = new ParticleContainer(Particle.DUST).count(50).spread(0.5, 0.5);
-	private int damage = 100, insanity;
+	private int damage, insanity;
 	
 	public NightShade(boolean isUpgraded) {
 		super(ID, "Night Shade", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 35, 12, 0));
 		pc.count(50).spread(0.5, 0.5).offsetY(1);
-		insanity = isUpgraded ? 75 : 50;
+		damage = isUpgraded ? 200 : 150;
+		insanity = isUpgraded ? 150 : 90;
 	}
 	
 	public static Equipment get() {
@@ -45,7 +46,7 @@ public class NightShade extends Equipment {
 		item = createItem(Material.OBSIDIAN,
 				"On cast, Grant speed <white>1</white> and " + GlossaryTag.STEALTH.tag(this) +
 				" [<white>5s</white>]. "
-				+ "Your next <white>3</white> basic attacks deals an additional " + GlossaryTag.DARK.tag(this, damage, false) + " damage and applies " +
+				+ "Your next <white>3</white> basic attacks deals an additional " + GlossaryTag.DARK.tag(this, damage, true) + " damage and applies " +
 				GlossaryTag.INSANITY.tag(this, insanity, true) + ". "
 				+ "The cooldown of this ability is reduced by your " + GlossaryTag.STEALTH.tag(this)
 				+ " stacks every second.");

@@ -28,7 +28,7 @@ public class BasicDarkArts extends Equipment {
 	public BasicDarkArts(boolean isUpgraded) {
 		super(ID, "Basic Dark Arts", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.none());
-				stacks = isUpgraded ? 15 : 10;
+				stacks = isUpgraded ? 35 : 25;
 				damage = isUpgraded ? 15 : 10;
 	}
 	

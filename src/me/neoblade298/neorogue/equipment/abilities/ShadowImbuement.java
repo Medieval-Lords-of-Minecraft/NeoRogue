@@ -22,7 +22,7 @@ public class ShadowImbuement extends Equipment {
 	public ShadowImbuement(boolean isUpgraded) {
 		super(ID, "Shadow Imbuement", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.none());
-		damage = isUpgraded ? 20 : 14;
+		damage = isUpgraded ? 35 : 25;
 	}
 	
 	public static Equipment get() {

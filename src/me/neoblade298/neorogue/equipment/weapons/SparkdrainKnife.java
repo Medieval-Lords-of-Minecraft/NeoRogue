@@ -19,14 +19,13 @@ import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class SparkdrainKnife extends Equipment {
 	private static final String ID = "SparkdrainKnife";
-	private static int elec, res, thres, shields;
+	private static int elec, thres, shields;
 	
 	public SparkdrainKnife(boolean isUpgraded) {
 		super(ID, "Sparkdrain Knife", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(30, 0.5, 0.2, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
 		elec = 30;
-		res = isUpgraded ? 6 : 4;
 		thres = 100;
 		shields = isUpgraded ? 8 : 5;
 		

@@ -5,6 +5,7 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
@@ -12,6 +13,7 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
@@ -55,18 +57,27 @@ public class MirrorSickle extends Equipment {
 			return;
 		}
 		
-		StandardPriorityAction inst = new StandardPriorityAction(ID);
+		StandardPriorityAction stacks = new StandardPriorityAction(ID);
+		ItemStack icon = item.clone();
+		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
 		Equipment eq = this;
+		
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
 			weaponSwingAndDamage(p, data, ev.getTarget());
-			inst.addCount(1);
+			stacks.addCount(1);
+			
+			// Update icon to show stacks
+			if (stacks.getCount() > 0) {
+				icon.setAmount(stacks.getCount());
+				inst.setIcon(icon);
+			}
 			return TriggerResult.keep();
 		});
 		
 		inst.setAction((pdata, in) -> {
-			if (inst.getCount() < 3) return TriggerResult.keep();
-			inst.addCount(-3);
+			if (stacks.getCount() < 3) return TriggerResult.keep();
+			stacks.addCount(-3);
 			Sounds.teleport.play(p, p);
 			pc.play(p, p);
 			data.dash();
@@ -77,7 +88,11 @@ public class MirrorSickle extends Equipment {
 					DamageMeta dm = new DamageMeta(data, dash, DamageType.PIERCING, DamageStatTracker.of(id + slot, eq));
 					FightInstance.dealDamage(dm, ent);
 				}
-			}.runTaskLater(NeoRogue.inst(), 10L));
+			}.runTaskLater(NeoRogue.inst(), 4L));
+			
+			// Reset icon when stacks consumed
+			icon.setAmount(Math.max(1, stacks.getCount()));
+			inst.setIcon(icon);
 			return TriggerResult.keep();
 		});
 		data.addSlotBasedTrigger(id, slot, Trigger.RIGHT_CLICK, inst);

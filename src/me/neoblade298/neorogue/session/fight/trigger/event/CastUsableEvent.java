@@ -22,6 +22,7 @@ public class CastUsableEvent {
 		this.manaCost = manaCost;
 		this.staminaCost = staminaCost;
 		this.cooldown = cooldown;
+		this.tags = tags;
 	}
 
 	public CastType getType() {

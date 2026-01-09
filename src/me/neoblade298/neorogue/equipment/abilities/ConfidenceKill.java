@@ -39,7 +39,7 @@ public class ConfidenceKill extends Equipment {
 	public ConfidenceKill(boolean isUpgraded) {
 		super(ID, "Confidence Kill", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 5, tp.range));
-				stacks = 90;
+				stacks = 150;
 				buff = isUpgraded ? 60 : 40;
 	}
 	

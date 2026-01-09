@@ -41,8 +41,8 @@ public class Disorient extends Equipment {
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 0, 15, tp.range));
 		
 		inc = 21;
-		damage = isUpgraded ? 60 : 40;
-		insanity = isUpgraded ? 60 : 30;
+		damage = isUpgraded ? 150 : 100;
+		insanity = isUpgraded ? 90 : 60;
 	}
 	
 	public static Equipment get() {
@@ -68,7 +68,7 @@ public class Disorient extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ARMOR_STAND,
-				"On cast, reduce the " + GlossaryTag.PHYSICAL.tag(this) + " damage of enemies in a cone in front of you by <yellow>" + inc + "</yellow>"
+				"On cast, reduce the " + GlossaryTag.PHYSICAL.tag(this) + " defense of enemies in a cone in front of you by <yellow>" + inc + "</yellow>"
 						+ " [<white>10s</white>]. Also deal " + GlossaryTag.DARK.tag(this, damage, true) + " damage and apply " +
 						GlossaryTag.INSANITY.tag(this, insanity, true) + ".");
 	}

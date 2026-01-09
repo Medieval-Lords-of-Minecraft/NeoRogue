@@ -26,11 +26,11 @@ public class Sidestep extends Equipment {
 	private static final String ID = "Sidestep";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.PORTAL),
 			hit = new ParticleContainer(Particle.DUST).count(50).spread(0.5, 0.5);
-	private int damage = 100, evade;
+	private int damage = 150, evade;
 	
 	public Sidestep(boolean isUpgraded) {
 		super(ID, "Sidestep", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 50, 15, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 35, 15, 0));
 		pc.count(50).spread(0.5, 0.5).offsetY(1);
 		evade = isUpgraded ? 2 : 1;
 	}

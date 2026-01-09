@@ -41,7 +41,7 @@ public class CurseMark extends Equipment {
 	public CurseMark(boolean isUpgraded) {
 		super(ID, "Curse Mark", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 5, tp.range));
-				stacks = 90;
+				stacks = 150;
 				buff = isUpgraded ? 60 : 40;
 	}
 	

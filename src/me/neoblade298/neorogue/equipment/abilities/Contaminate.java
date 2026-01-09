@@ -28,12 +28,12 @@ public class Contaminate extends Equipment {
 	private static final String ID = "Contaminate";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.PORTAL),
 			hit = new ParticleContainer(Particle.DUST).count(50).spread(0.5, 0.5);
-	private int damage = 100;
+	private int damage = 150;
 	private double mult;
 	
 	public Contaminate(boolean isUpgraded) {
 		super(ID, "Contaminate", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 40, 18, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 30, 18, 0));
 		pc.count(50).spread(0.5, 0.5).offsetY(1);
 		mult = isUpgraded ? 1.6 : 1.4;
 	}

@@ -20,11 +20,13 @@ public class DoubleStrike extends Equipment {
 	private static final String ID = "DoubleStrike";
 	private static final ParticleContainer pc = new ParticleContainer(Particle.ENCHANTED_HIT);
 	private static final SoundContainer sc = new SoundContainer(Sound.BLOCK_AMETHYST_BLOCK_BREAK);
+	private int shields;
 	
 	public DoubleStrike(boolean isUpgraded) {
 		super(ID, "Double Strike", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, isUpgraded ? 5 : 10, 6, 0));
-		properties.addUpgrades(PropertyType.STAMINA_COST);
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, isUpgraded ? 5 : 10, isUpgraded ? 6 : 2, 0));
+		properties.addUpgrades(PropertyType.STAMINA_COST, PropertyType.COOLDOWN);
+		shields = 5;
 		
 		pc.count(50).spread(0.5, 0.5);
 	}
@@ -36,7 +38,7 @@ public class DoubleStrike extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LIGHTNING_ROD,
-				"On cast, reset your basic attack cooldown.");
+				"On cast, reset your basic attack cooldown and gain <yellow>" + shields + "</yellow> shields [<white>2s</white>].");
 	}
 
 	@Override
@@ -46,6 +48,7 @@ public class DoubleStrike extends Equipment {
 			pc.play(p, p);
 			data.resetBasicAttackCooldown(EquipSlot.HOTBAR);
 			data.resetBasicAttackCooldown(EquipSlot.OFFHAND);
+			data.addSimpleShield(p.getUniqueId(), shields, 40);
 			return TriggerResult.keep();
 		}));
 	}
