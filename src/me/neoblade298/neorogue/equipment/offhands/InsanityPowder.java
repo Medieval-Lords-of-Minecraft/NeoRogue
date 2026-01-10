@@ -26,7 +26,7 @@ public class InsanityPowder extends Equipment {
 	public InsanityPowder(boolean isUpgraded) {
 		super(ID, "Insanity Powder", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.OFFHAND, EquipmentProperties.ofUsable(0, 0, 0, tp.range));
-		stacks = isUpgraded ? 25 : 15;
+		stacks = isUpgraded ? 90 : 60;
 	}
 	
 	public static Equipment get() {

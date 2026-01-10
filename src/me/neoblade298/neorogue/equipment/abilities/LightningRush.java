@@ -40,8 +40,8 @@ public class LightningRush extends Equipment {
 	public LightningRush(boolean isUpgraded) {
 		super(ID, "Lightning Rush", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF, 
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 10, 15, 0));
-		damage = isUpgraded ? 90 : 60;
-		elec = isUpgraded ? 40 : 30;
+		damage = isUpgraded ? 120 : 80;
+		elec = isUpgraded ? 90 : 60;
 	}
 	
 	public static Equipment get() {
@@ -55,7 +55,7 @@ public class LightningRush extends Equipment {
 				+ " grant speed <white>1</white> [<white>1s</white>],"
 				+ " deals an additional " + GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage, applies "
 				+ GlossaryTag.ELECTRIFIED.tag(this, elec, true) + ", and extends the duration"
-				+ " of the skill by <white>1</white> second. Once per enemy.");
+				+ " of the skill by <white>2</white> seconds. Once per enemy.");
 	}
 
 	@Override
@@ -75,7 +75,7 @@ public class LightningRush extends Equipment {
 			ev.getMeta().addDamageSlice(new DamageSlice(pdata, damage, DamageType.LIGHTNING,
 					DamageStatTracker.of(ID + slot, this)));
 			FightInstance.applyStatus(trg, StatusType.ELECTRIFIED, pdata, elec, -1);
-			inst.timer++;
+			inst.timer += 2;
 			return TriggerResult.keep();
 		});
 	}

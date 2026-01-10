@@ -26,7 +26,7 @@ public class LightningCutter extends Equipment {
 	public LightningCutter(boolean isUpgraded) {
 		super(ID, "Lightning Cutter", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(isUpgraded ? 60 : 45, 1, 0.2, DamageType.PIERCING, Sounds.firework));
+				EquipmentProperties.ofWeapon(isUpgraded ? 55 : 45, 1, 0.2, DamageType.PIERCING, Sounds.firework));
 		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 	

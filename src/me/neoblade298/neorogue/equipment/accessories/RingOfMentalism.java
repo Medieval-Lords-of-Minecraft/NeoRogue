@@ -21,7 +21,7 @@ public class RingOfMentalism extends Equipment {
 	public RingOfMentalism(boolean isUpgraded) {
 		super(ID, "Ring Of Mentalism", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ACCESSORY);
-		stacks = isUpgraded ? 25 : 15;
+		stacks = isUpgraded ? 45 : 30;
 	}
 	
 	public static Equipment get() {

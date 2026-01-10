@@ -21,7 +21,7 @@ public class MinorPoisonRelic extends Equipment {
 	public MinorPoisonRelic(boolean isUpgraded) {
 		super(ID, "Minor Poison Relic", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.ACCESSORY);
-		increase = isUpgraded ? 12 : 8;
+		increase = isUpgraded ? 40 : 20;
 	}
 	
 	public static Equipment get() {

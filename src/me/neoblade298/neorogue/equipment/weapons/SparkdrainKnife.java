@@ -24,7 +24,7 @@ public class SparkdrainKnife extends Equipment {
 	public SparkdrainKnife(boolean isUpgraded) {
 		super(ID, "Sparkdrain Knife", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(30, 0.5, 0.2, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
+				EquipmentProperties.ofWeapon(40, 1, 0.2, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
 		elec = 30;
 		thres = 100;
 		shields = isUpgraded ? 8 : 5;
@@ -43,7 +43,7 @@ public class SparkdrainKnife extends Equipment {
 			FightData fd = FightInstance.getFightData(ev.getTarget());
 			
 			if (fd.getStatus(StatusType.ELECTRIFIED).getStacks() > thres) {
-				data.addSimpleShield(p.getUniqueId(), shields, 40);
+				data.addSimpleShield(p.getUniqueId(), shields, 60);
 			}
 			else {
 				FightInstance.applyStatus(ev.getTarget(), StatusType.ELECTRIFIED, data, elec, -1);
@@ -56,6 +56,6 @@ public class SparkdrainKnife extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.STONE_SWORD, "Every basic attack applies " + GlossaryTag.ELECTRIFIED.tag(this, elec, true) + ". If the "
 				+ "target has over " + GlossaryTag.ELECTRIFIED.tag(this, thres, false) + ", grant " 
-				+ GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>2s</white>] instead.");
+				+ GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>3s</white>] instead.");
 	}
 }

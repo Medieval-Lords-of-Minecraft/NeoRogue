@@ -240,7 +240,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 				.append(Component.text("Lv " + s.getCoinReduction(), NamedTextColor.WHITE));
 		TextComponent time = Component.text("Fight Time Reduction: ", NamedTextColor.GOLD)
 				.append(Component.text("Lv " + s.getFightTimeReduction(), NamedTextColor.WHITE));
-		return CoreInventory.createButton(Material.ARMOR_STAND, statsText, health, dmg, gold, time);
+		return CoreInventory.createButton(Material.ARMOR_STAND, Component.text("Your Notoriety", NamedTextColor.GOLD), health, dmg, gold, time);
 	}
 
 	@Override

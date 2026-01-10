@@ -28,7 +28,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class MiasmaInABottle extends Artifact {
 	private static final String ID = "MiasmaInABottle";
 	private static final TargetProperties tp = TargetProperties.radius(5, false, TargetType.ENEMY);
-	private double damage = 0.1;
+	private double damage = 0.3;
 
 	public MiasmaInABottle() {
 		super(ID, "Miasma in a Bottle", Rarity.UNCOMMON, EquipmentClass.THIEF);
@@ -44,17 +44,17 @@ public class MiasmaInABottle extends Artifact {
 	}
 	
 	private class MiasmaInABottleInstance extends PriorityAction {
-		private int timer = 5;
+		private int timer = 3;
 		
 		public MiasmaInABottleInstance(String id, Equipment eq) {
 			super(id);
 			action = (pdata, in) -> {
 				if (--timer > 0) return TriggerResult.keep();
-				timer = 5;
+				timer = 3;
 				for (LivingEntity ent : TargetHelper.getEntitiesInRadius(pdata.getPlayer(), tp)) {
 					FightData fd = FightInstance.getFightData(ent);
 					if (!fd.hasStatus(StatusType.INSANITY)) continue;
-					double add = fd.getStatus(StatusType.INSANITY).getStacks() * 0.1;
+					double add = fd.getStatus(StatusType.INSANITY).getStacks() * damage;
 					FightInstance.dealDamage(pdata, DamageType.DARK, add, ent, DamageStatTracker.of(id, eq));
 				}
 				return TriggerResult.keep();
@@ -75,7 +75,7 @@ public class MiasmaInABottle extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION, 
-				"Every <white>5</white> seconds, enemies within <white>5</white> blocks of you take " + GlossaryTag.DARK.tag(this, damage, false)
+				"Every <white>3</white> seconds, enemies within <white>5</white> blocks of you take " + GlossaryTag.DARK.tag(this, damage, false)
 				+ " damage for every stack of " + GlossaryTag.INSANITY.tag(this) + " they have.");
 		PotionMeta pm = (PotionMeta) item.getItemMeta();
 		pm.setColor(Color.fromRGB(139, 69, 19));

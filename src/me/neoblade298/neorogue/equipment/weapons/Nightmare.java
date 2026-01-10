@@ -25,7 +25,7 @@ public class Nightmare extends Equipment {
 	public Nightmare(boolean isUpgraded) {
 		super(ID, "Nightmare", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(isUpgraded ? 60 : 45, 1.5, 0.2, DamageType.PIERCING, Sounds.attackSweep));
+				EquipmentProperties.ofWeapon(isUpgraded ? 50 : 45, 1.5, 0.2, DamageType.PIERCING, Sounds.attackSweep));
 		properties.addUpgrades(PropertyType.DAMAGE);
 		stacks = isUpgraded ? 45 : 30;
 		canDrop = false;
