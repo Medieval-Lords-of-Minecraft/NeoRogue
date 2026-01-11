@@ -102,7 +102,7 @@ public class MechanicDamage implements ITargetedEntitySkill {
 				for (Entry<FightData, Integer> slice : fd.getStatus(StatusType.ELECTRIFIED).getSlices().getSliceOwners()
 						.entrySet()) {
 					dm.addDamageSlice(new DamageSlice(slice.getKey(), slice.getValue() * 0.2, DamageType.ELECTRIFIED,
-							DamageStatTracker.ignored("MythicDamage2")));
+							DamageStatTracker.electrified()));
 				}
 			}
 			return SkillResult.SUCCESS;

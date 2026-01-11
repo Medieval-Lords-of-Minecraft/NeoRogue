@@ -36,6 +36,7 @@ import me.neoblade298.neorogue.equipment.accessories.AshenWreath;
 import me.neoblade298.neorogue.equipment.accessories.BurningRing;
 import me.neoblade298.neorogue.equipment.accessories.CailiricCrystal;
 import me.neoblade298.neorogue.equipment.accessories.CeruleanBracelet;
+import me.neoblade298.neorogue.equipment.accessories.CobraCrest;
 import me.neoblade298.neorogue.equipment.accessories.DaedalusHammer;
 import me.neoblade298.neorogue.equipment.accessories.DiscountCard;
 import me.neoblade298.neorogue.equipment.accessories.EagleFeather;
@@ -481,6 +482,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Momentum(b);
 			new MortalEngine(b);
 			new NightShade(b);
+			new NightSurge(b);
 			new Obfuscation(b);
 			new OdinsDecree(b);
 			new Overflow(b);
@@ -520,8 +522,11 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Quickfire(b);
 			new Quicken(b);
 			new ShadowImbuement(b);
+			new Twilight(b);
 			new ShadowPartner(b);
 			new ShadowPartner2(b);
+			new Shadowsteel(b);
+			new Illusion(b);
 			new ShadowWalk(b);
 			new ShardBlast(b);
 			new ShatteringShot(b);
@@ -589,6 +594,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new AshenWreath(b);
 			new BurningRing(b);
 			new CeruleanBracelet(b);
+			new CobraCrest(b);
 			new EagleFeather(b);
 			new EarthenBracer(b);
 			new EarthenRing(b);

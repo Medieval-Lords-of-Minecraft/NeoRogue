@@ -88,7 +88,8 @@ public class Corrode extends Equipment {
 
 	@Override
 	public void setupReforges() {
-		addReforge(Pandemic.get(), Mastermind.get());
+		addReforge(Mastermind.get(), Pandemic.get(), NightSurge.get());
+
 	}
 
 	@Override

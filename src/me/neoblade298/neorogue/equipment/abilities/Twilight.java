@@ -8,6 +8,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
@@ -16,15 +17,15 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
 
-public class Vanish extends Equipment {
-	private static final String ID = "Vanish";
-	private int duration, threshold;
+public class Twilight extends Equipment {
+	private static final String ID = "Twilight";
+	private int duration, evade;
 	
-	public Vanish(boolean isUpgraded) {
-		super(ID, "Vanish", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
+	public Twilight(boolean isUpgraded) {
+		super(ID, "Twilight", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.none());
-		duration = 2;
-		threshold = isUpgraded ? 5 : 3;
+		duration = isUpgraded ? 5 : 3;
+		evade = isUpgraded ? 2 : 1;
 	}
 	
 	public static Equipment get() {
@@ -37,13 +38,16 @@ public class Vanish extends Equipment {
 		inst.setAction((pdata, in) -> {
 			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
 			if (!ev.getStatusId().equals(StatusType.STEALTH.name())) return TriggerResult.keep();
-			inst.addCount(1);
+			
+			// Increase stealth duration
 			ev.getDurationBuffList().add(new Buff(data, duration, 0, BuffStatTracker.ignored(this)));
 			
-			if (inst.getCount() >= threshold) {
-				data.applyStatus(StatusType.EVADE, data, 1, 100);
-				data.addStamina(10);
-			}
+			// Apply evade
+			FightInstance.applyStatus(p, StatusType.EVADE, data, evade, 160);
+			
+			// Add stamina
+			data.addStamina(10);
+			
 			return TriggerResult.keep();
 		});
 		
@@ -52,9 +56,8 @@ public class Vanish extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LEATHER_BOOTS,
-				"Passive. Whenever you receive " + GlossaryTag.STEALTH.tag(this) + ", increase its duration by <yellow>" + duration + "</yellow>." +
-				" Every <yellow>" + threshold + "</yellow> times you receive " + GlossaryTag.STEALTH.tag(this) + ", gain " + GlossaryTag.EVADE.tag(this, 1, false) +
-				" [<white>5s</white>] and <white>10</white> stamina.");
+		item = createItem(Material.ECHO_SHARD,
+				"Passive. Whenever you receive " + GlossaryTag.STEALTH.tag(this) + ", increase its duration by <yellow>" + duration + "</yellow>, " +
+				"gain " + GlossaryTag.EVADE.tag(this, evade, true) + " [<white>8s</white>], and <white>10</white> stamina.");
 	}
 }

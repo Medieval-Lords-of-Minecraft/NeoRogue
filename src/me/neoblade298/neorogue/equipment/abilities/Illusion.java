@@ -1,21 +1,26 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
 import java.util.LinkedList;
+import java.util.UUID;
 
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import me.libraryaddict.disguise.disguisetypes.PlayerDisguise;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
@@ -28,26 +33,31 @@ import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.TargetHelper;
+import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
+import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 
-public class ShadowPartner extends Equipment {
-	private static final String ID = "ShadowPartner";
+public class Illusion extends Equipment {
+	private static final String ID = "Illusion";
 	private static final ParticleContainer shadowBall = new ParticleContainer(Particle.DUST)
 		.dustOptions(new org.bukkit.Particle.DustOptions(Color.BLACK, 1.5F))
 		.count(15).spread(0.3, 0.3);
 	private static final ParticleContainer projectileParticle = new ParticleContainer(Particle.DUST)
 		.dustOptions(new org.bukkit.Particle.DustOptions(Color.fromRGB(50, 0, 50), 1F))
 		.count(3).spread(0.2, 0.2);
+	private static TargetProperties tp = TargetProperties.radius(12, false, TargetType.ENEMY);
 	
-	private int damage;
+	private int damage, dur;
 
-	public ShadowPartner(boolean isUpgraded) {
-		super(ID, "Shadow Partner", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 1, 0));
+	public Illusion(boolean isUpgraded) {
+		super(ID, "Illusion", isUpgraded, Rarity.EPIC, EquipmentClass.THIEF,
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 1, 0).add(PropertyType.AREA_OF_EFFECT, tp.range));
 		damage = isUpgraded ? 250 : 150;
+		dur = 3;
 	}
 
 	public static Equipment get() {
@@ -79,10 +89,10 @@ public class ShadowPartner extends Equipment {
 			}
 		}.runTaskTimer(NeoRogue.inst(), 0L, 10L)); // Run every half second (10 ticks)
 		
-		// Trigger when applying insanity
+		// Trigger when applying evade
 		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
-			if (!ev.isStatus(StatusType.INSANITY)) return TriggerResult.keep();
+			if (!ev.isStatus(StatusType.EVADE)) return TriggerResult.keep();
 			
 			// Check cooldown (1 second = 1000ms)
 			if (System.currentTimeMillis() - cooldown.getTime() < 1000) {
@@ -92,18 +102,38 @@ public class ShadowPartner extends Equipment {
 			// Only fire if we have a shadow position (2 seconds have passed)
 			if (locationQueue.size() < 4) return TriggerResult.keep();
 			
-			// Get the target that received insanity
-			FightData target = ev.getTarget();
-			if (!(target.getEntity() instanceof LivingEntity)) return TriggerResult.keep();
-			LivingEntity targetEntity = (LivingEntity) target.getEntity();
-			
-			// Fire projectile from shadow ball location
+			// Get shadow location
 			Location shadowLoc = locationQueue.getFirst();
-			Location targetLoc = targetEntity.getEyeLocation();
 			
-			ProjectileGroup proj = new ProjectileGroup(new ShadowProjectile(data, slot, this));
-			proj.start(data, shadowLoc, targetLoc.toVector().subtract(shadowLoc.toVector()).normalize());
+			// Spawn body double at shadow location
+			ArmorStand as = (ArmorStand) p.getWorld().spawnEntity(shadowLoc, EntityType.ARMOR_STAND);
+			PlayerDisguise dis = new PlayerDisguise(p);
+			dis.setName(p.getName() + " Body Double");
+			dis.setEntity(as);
+			dis.startDisguise();
 			
+			// Taunt nearby enemies
+			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, shadowLoc, tp)) {
+				if (!NeoRogue.mythicApi.isMythicMob(ent)) continue;
+				NeoRogue.mythicApi.addThreat(ent, as, 100000);
+			}
+			
+			// Remove body double after duration
+			data.addGuaranteedTask(UUID.randomUUID(), new Runnable() {
+				public void run() {
+					as.remove();
+				}
+			}, dur * 20);
+			
+			// Fire projectiles at nearby enemies
+			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, shadowLoc, tp)) {
+				Location targetLoc = ent.getEyeLocation();
+				
+				ProjectileGroup proj = new ProjectileGroup(new IllusionProjectile(data, slot, this));
+				proj.start(data, shadowLoc, targetLoc.toVector().subtract(shadowLoc.toVector()).normalize());
+			}
+			
+			Sounds.equip.play(p, shadowLoc);
 			Sounds.fire.play(p, shadowLoc);
 			cooldown.setTime(System.currentTimeMillis());
 			
@@ -111,13 +141,13 @@ public class ShadowPartner extends Equipment {
 		});
 	}
 
-	private class ShadowProjectile extends Projectile {
+	private class IllusionProjectile extends Projectile {
 		private Player p;
 		private PlayerFightData data;
 		private int slot;
 		private Equipment eq;
 
-		public ShadowProjectile(PlayerFightData data, int slot, Equipment eq) {
+		public IllusionProjectile(PlayerFightData data, int slot, Equipment eq) {
 			super(1.5, 20, 1); // Speed, range, piercing
 			this.size(0.4, 0.4);
 			this.data = data;
@@ -143,16 +173,10 @@ public class ShadowPartner extends Equipment {
 	}
 
 	@Override
-	public void setupReforges() {
-		addReforge(Obfuscation.get(), ShadowPartner2.get());
-		addReforge(BodyDouble.get(), Illusion.get());
-	}
-
-	@Override
 	public void setupItem() {
-		item = createItem(Material.ENDER_PEARL,
-				"A ball of darkness follows <white>2s</white> behind you. Anytime you apply " +
-				GlossaryTag.INSANITY.tag(this) + " <white>(1s cooldown)</white>, the ball fires a projectile at them, dealing " +
-				GlossaryTag.DARK.tag(this, damage, true) + " damage on hit.");
+		item = createItem(Material.ENDER_EYE,
+				"Passive. Whenever you apply " + GlossaryTag.EVADE.tag(this) + ", spawn a body double at your position from " +
+				"<white>2s</white> ago that deals " + GlossaryTag.DARK.tag(this, damage, true) + " damage to all nearby enemies " +
+				"and taunts them <white>[" + dur + "s]</white>. <white>[1s Cooldown]</white>");
 	}
 }

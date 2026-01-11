@@ -29,6 +29,10 @@ public class Untouchable extends Equipment {
 		return Equipment.get(ID, false);
 	}
 
+	public void setupReforges() {
+		addReforge(Vanish.get(), Twilight.get());
+	}
+
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();

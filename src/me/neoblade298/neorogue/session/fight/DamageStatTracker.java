@@ -42,6 +42,10 @@ public class DamageStatTracker extends StatTracker {
         return new DamageStatTracker("poison", Component.text("Poison", NamedTextColor.GRAY));
     }
 
+    public static DamageStatTracker electrified() {
+        return new DamageStatTracker("electrified", Component.text("Electrified", NamedTextColor.GRAY));
+    }
+
     public static DamageStatTracker of(String id, Equipment eq, String sfx) {
         return new DamageStatTracker(id, eq, sfx);
     }
