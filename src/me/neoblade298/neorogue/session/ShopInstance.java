@@ -36,6 +36,7 @@ public class ShopInstance extends EditInventoryInstance {
 	private HashMap<UUID, ShopContents> shops = new HashMap<UUID, ShopContents>();
 	private HashSet<UUID> ready = new HashSet<UUID>();
 	private TextDisplay holo;
+	private boolean allReady = false;
 	
 	public ShopInstance(Session s) {
 		super(s, SPAWN_X, SPAWN_Z);
@@ -152,27 +153,29 @@ public class ShopInstance extends EditInventoryInstance {
 	public void handleReady(Player p) {
 		UUID uuid = p.getUniqueId();
 		if (s.isBusy()) return;
-		if (!ready.contains(uuid)) {
-			
-			NodeSelectInstance next = new NodeSelectInstance(s);
-			// Last person to get ready (or everyone was already ready), check if instance can be set first
-			if ((ready.size() == s.getParty().size() - 1 || ready.isEmpty()) && s.canSetInstance(next)) {
-				ready.add(uuid);
-				s.broadcast("Everyone is ready! Teleporting back to node select...");
-				s.broadcastSound(Sound.ENTITY_PLAYER_LEVELUP);
-				s.setBusy(true);
-				new BukkitRunnable() {
-					public void run() {
-						if (!s.setInstance(next)) {
-							ready.remove(uuid);
-						}
-						s.setBusy(false);
-					}
-				}.runTaskLater(NeoRogue.inst(), 60L);
+
+		NodeSelectInstance next = new NodeSelectInstance(s);
+
+
+		if (allReady) {
+			if (!s.canSetInstance(next)) {
+				return;
 			}
-			else {
-				s.broadcast("<yellow>" + p.getName() + " <gray>is <green>ready</green>!");
-				ready.add(uuid);
+			handleNextInstance(next);
+			return;
+		}
+
+		if (!ready.contains(uuid)) {
+			ready.add(uuid);
+			s.broadcast("<yellow>" + p.getName() + " <gray>is <green>ready</green>!");
+			
+			// Last person to get ready (or everyone was already ready), check if instance can be set first
+			if (ready.size() >= s.getParty().size()) {
+				allReady = true;
+				if (!s.canSetInstance(next)) {
+					return;
+				}
+				handleNextInstance(next);
 			}
 		}
 		else {
@@ -180,6 +183,18 @@ public class ShopInstance extends EditInventoryInstance {
 			ready.remove(uuid);
 		}
 		updateBoardLines();
+	}
+
+	private void handleNextInstance(NodeSelectInstance next) {
+		s.broadcast("Everyone is ready! Teleporting back to node select...");
+		s.broadcastSound(Sound.ENTITY_PLAYER_LEVELUP);
+		s.setBusy(true);
+		new BukkitRunnable() {
+			public void run() {
+				s.setInstance(next);
+				s.setBusy(false);
+			}
+		}.runTaskLater(NeoRogue.inst(), 60L);
 	}
 
 	@Override
