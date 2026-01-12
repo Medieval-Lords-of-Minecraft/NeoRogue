@@ -155,8 +155,8 @@ public class ShopInstance extends EditInventoryInstance {
 		if (!ready.contains(uuid)) {
 			
 			NodeSelectInstance next = new NodeSelectInstance(s);
-			// Last person to get ready, check if instance can be set first
-			if (ready.size() == s.getParty().size() - 1 && s.canSetInstance(next)) {
+			// Last person to get ready (or everyone was already ready), check if instance can be set first
+			if ((ready.size() == s.getParty().size() - 1 || ready.isEmpty()) && s.canSetInstance(next)) {
 				ready.add(uuid);
 				s.broadcast("Everyone is ready! Teleporting back to node select...");
 				s.broadcastSound(Sound.ENTITY_PLAYER_LEVELUP);

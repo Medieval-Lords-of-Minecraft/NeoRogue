@@ -61,7 +61,7 @@ public class Finale extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FLINT,
-				"On cast, for every " + DescUtil.yellow(thres) + " stamina you have up to " + DescUtil.yellow(thres * 3) + 
+				"On cast, for every " + DescUtil.yellow(thres) + " stamina you had prior to casting up to " + DescUtil.yellow(thres * 3) + 
 				", deal an additional " + GlossaryTag.PIERCING.tag(this, damage, false) + " damage on your next basic attack.");
 	}
 }

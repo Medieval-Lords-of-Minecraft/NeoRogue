@@ -121,7 +121,6 @@ public class MinibossFightInstance extends FightInstance {
 
 	@Override
 	public void addSpectator(Player p) {
-		
 	}
 
 	@Override
@@ -131,11 +130,11 @@ public class MinibossFightInstance extends FightInstance {
 
 	@Override
 	public void handlePlayerLeaveParty(Player p) {
-		
+		super.handlePlayerLeaveParty(p);
 	}
 
 	@Override
 	public void updateBoardLines() {
-
+		
 	}
 }

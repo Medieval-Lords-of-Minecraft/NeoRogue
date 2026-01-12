@@ -47,7 +47,7 @@ public class Resourcefulness extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.CHEST,
+		item = createItem(Material.BUNDLE,
 				"Passive. Increase all " + GlossaryTag.POISON.tag(this) + " application stacks by " + DescUtil.yellow(poison) + ". " +
 				"Increase all " + GlossaryTag.PHYSICAL.tag(this) + " damage by " + DescUtil.yellow(damage) + " for <white>10s</white> after a fight starts.");
 	}

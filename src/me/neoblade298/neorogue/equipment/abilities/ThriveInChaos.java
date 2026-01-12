@@ -64,7 +64,7 @@ public class ThriveInChaos extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.CHORUS_FRUIT,
-				"Passive. Every <white>3s</white>, take the " + GlossaryTag.INSANITY.tag(this) + 
+				"Passive. Every <white>3s</white>, count the " + GlossaryTag.INSANITY.tag(this) + 
 				" stacks of all enemies in range. For every " + 
 				GlossaryTag.INSANITY.tag(this, insanityPerStack, true) + ", gain " + 
 				GlossaryTag.STEALTH.tag(this, 1, false) + " for <white>3s</white>.");

@@ -179,10 +179,7 @@ public class ShrineInstance extends EditInventoryInstance {
 			for (PlayerSessionData data : s.getParty().values()) {
 				data.healPercent(0.35);
 			}
-			// Has to be done after everyone is healed
-			for (PlayerSessionData data : s.getParty().values()) {
-				data.updateBoardLines();
-			}
+			updateBoardLines();
 			
 			returnToNodes();
 		}

@@ -102,7 +102,6 @@ public abstract class FightInstance extends Instance {
 	protected HashSet<UUID> toTick = new HashSet<UUID>();
 	protected LinkedList<Corpse> corpses = new LinkedList<Corpse>();
 	protected HashMap<Player, Corpse> revivers = new HashMap<Player, Corpse>();
-	protected HashSet<UUID> party = new HashSet<UUID>();
 	protected Map map;
 	protected ArrayList<MapSpawnerInstance> spawners = new ArrayList<MapSpawnerInstance>(),
 			unlimitedSpawners = new ArrayList<MapSpawnerInstance>(),
@@ -132,7 +131,6 @@ public abstract class FightInstance extends Instance {
 	
 	public FightInstance(Session s, Set<UUID> players) {
 		super(s, new PlayerFlags(PlayerFlag.ZERO_DAMAGE_TICKS, PlayerFlag.ALLOW_FLIGHT_FALL));
-		party.addAll(players);
 	}
 	
 	public void addInitialTask(FightRunnable runnable) {
@@ -149,10 +147,6 @@ public abstract class FightInstance extends Instance {
 	
 	public Map getMap() {
 		return map;
-	}
-	
-	public HashSet<UUID> getParty() {
-		return party;
 	}
 
 	public void updateSpectatorLines() {
@@ -224,30 +218,8 @@ public abstract class FightInstance extends Instance {
 		data.getStats().addDeath();
 
 		// If that's the last player alive, send them to lose instance
-		boolean lose = true;
-		for (UUID uuid : data.getInstance().getParty()) {
-			PlayerFightData fdata = userData.get(uuid);
-			if (fdata != null && fdata.isActive()) {
-				lose = false;
-				break;
-			}
-		}
-		
-		if (lose) {
-			fi.isActive = false;
-			new BukkitRunnable() {
-				public void run() {
-					p.spigot().respawn();
-					Session sess = data.getInstance().getSession();
-					new BukkitRunnable() {
-						@Override
-						public void run() {
-							fi.broadcastStatistics();
-							sess.setInstance(new LoseInstance(sess));
-						}
-					}.runTask(NeoRogue.inst());
-				}
-			}.runTask(NeoRogue.inst());
+		if (fi.isLose()) {
+			runLoseLogic(fi);
 		}
 		else {
 			if (p != null) {
@@ -271,30 +243,47 @@ public abstract class FightInstance extends Instance {
 		}
 	}
 
+	public static void runLoseLogic(FightInstance fi) {
+		fi.isActive = false;
+		new BukkitRunnable() {
+			public void run() {
+				for (PlayerFightData data : userData.values()) {
+					Player p = data.getPlayer();
+					if (p == null) continue;
+					p.spigot().respawn();
+				}
+				Session sess = fi.getSession();
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						fi.broadcastStatistics();
+						sess.setInstance(new LoseInstance(sess));
+					}
+				}.runTask(NeoRogue.inst());
+			}
+		}.runTask(NeoRogue.inst());
+	}
+
+	@Override
 	public void handlePlayerLeaveParty(Player p) {
 		for (BossBar bar : bars) {
 			bar.removePlayer(p);
 		}
-		userData.get(p.getUniqueId()).cleanup();
-		checkInstanceDead(p);
+		userData.remove(p.getUniqueId()).cleanup();
+		fightData.remove(p.getUniqueId());
+		if (isLose()) {
+			runLoseLogic(this);
+		}
 	}
 
-	private void checkInstanceDead(Player leaver) {
-		boolean lose = true;
-		for (UUID uuid : this.getParty()) {
-			if (leaver.getUniqueId().equals(uuid))
-				continue;
-			PlayerFightData fdata = userData.get(uuid);
+	private boolean isLose() {
+		for (Player pl : s.getOnlinePlayers()) {
+			PlayerFightData fdata = userData.get(pl.getUniqueId());
 			if (fdata != null && fdata.isActive()) {
-				lose = false;
-				break;
+				return false;
 			}
 		}
-
-		if (lose) {
-			broadcastStatistics();
-			s.setInstance(new LoseInstance(s));
-		}
+		return true;
 	}
 
 	public void createIndicator(Component txt, Location src) {
@@ -326,7 +315,9 @@ public abstract class FightInstance extends Instance {
 	public void handlePlayerLeave(Player p) {
 		super.handlePlayerLeave(p);
 		p.removePotionEffect(PotionEffectType.ABSORPTION);
-		checkInstanceDead(p);
+		if (isLose()) {
+			runLoseLogic(this);
+		}
 	}
 
 	@Override
@@ -1084,6 +1075,7 @@ public abstract class FightInstance extends Instance {
 			if (fd == null)
 				continue;
 			fd.cleanup();
+			if (fd.getEntity() == null) continue;
 		}
 
 		for (Corpse c : corpses) {

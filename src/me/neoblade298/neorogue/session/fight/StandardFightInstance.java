@@ -187,7 +187,7 @@ public class StandardFightInstance extends FightInstance {
 	}
 
 	@Override
-	public void cleanup() {
+public void cleanup() {
 		super.cleanup();
 		timeBar.removeAll();
 		scoreBar.removeAll();
@@ -212,7 +212,7 @@ public class StandardFightInstance extends FightInstance {
 	
 	@Override
 	public void handlePlayerLeaveParty(Player p) {
-
+		super.handlePlayerLeaveParty(p);
 	}
 
 	@Override

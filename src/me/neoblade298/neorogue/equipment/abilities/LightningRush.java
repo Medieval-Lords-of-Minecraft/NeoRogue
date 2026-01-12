@@ -51,7 +51,7 @@ public class LightningRush extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLAZE_POWDER,
-				"For <white>3</white> seconds, your basic attacks"
+				"On cast, for <white>3</white> seconds, your basic attacks"
 				+ " grant speed <white>1</white> [<white>1s</white>],"
 				+ " deals an additional " + GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage, applies "
 				+ GlossaryTag.ELECTRIFIED.tag(this, elec, true) + ", and extends the duration"

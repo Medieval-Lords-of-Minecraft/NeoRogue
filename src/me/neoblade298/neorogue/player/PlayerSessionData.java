@@ -97,9 +97,8 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		this.accessorySlots = rs.getInt("accessorySlots");
 		this.instanceData = rs.getString("instanceData");
 
-		abilitiesEquipped = aggregateEquipment((eq) -> { return eq.getEquipment().getType() == EquipmentType.ABILITY && eq.getEquipSlot() != EquipSlot.STORAGE; }).size();
-		armorEquipped = aggregateEquipment((eq) -> { return eq.getEquipment().getType() == EquipmentType.ARMOR && eq.getEquipSlot() != EquipSlot.STORAGE; }).size();
-		accessoriesEquipped = aggregateEquipment((eq) -> { return eq.getEquipment().getType() == EquipmentType.ACCESSORY && eq.getEquipSlot() != EquipSlot.STORAGE; }).size();
+		updateEquipmentLimits();
+
 		setupArtifacts();
 		updateBoardLines();
 	}
@@ -164,6 +163,18 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		data.getPlayer().setHealthScaled(true);
 		data.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHealth);
 		data.initialize(s, this);
+	}
+
+	public void updateEquipmentLimits() {
+		abilitiesEquipped = aggregateEquipment((eq) -> {
+			return eq.getEquipment().getType() == EquipmentType.ABILITY && eq.getEquipSlot() != EquipSlot.STORAGE;
+		}).size();
+		armorEquipped = aggregateEquipment((eq) -> {
+			return eq.getEquipment().getType() == EquipmentType.ARMOR && eq.getEquipSlot() != EquipSlot.STORAGE;
+		}).size();
+		accessoriesEquipped = aggregateEquipment((eq) -> {
+			return eq.getEquipment().getType() == EquipmentType.ACCESSORY && eq.getEquipSlot() != EquipSlot.STORAGE;
+		}).size();
 	}
 
 	public void cleanup() {
@@ -732,6 +743,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		setHealth(this.health + (percent * maxHealth));
 		heal.play(p, p);
 		Sounds.levelup.play(p, p);
+		updateBoardLines();
 	}
 
 	public void damagePercent(double percent) {
@@ -829,6 +841,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 
 		// Need to initialize artifacts after deserialization
 		setupArtifacts();
+		updateEquipmentLimits();
 	}
 
 	public class PlayerSlot {

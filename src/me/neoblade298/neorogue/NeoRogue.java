@@ -1,6 +1,7 @@
 package me.neoblade298.neorogue;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Random;
 
@@ -109,8 +110,11 @@ public class NeoRogue extends JavaPlugin {
 
 		// Strictly for debug usage
 		Player p = Bukkit.getPlayer("Ascheladd");
-		if (p != null) {
-			debugInitialize(p, null);
+		Player alt = Bukkit.getPlayer("SuaveGentleman");
+		Collection<Player> others = new ArrayList<Player>();
+		if (alt != null) others.add(alt);
+		if (p != null && alt != null) {
+			debugInitialize(p, others);
 		}
 	}
 	

@@ -64,7 +64,6 @@ public class Cull extends Equipment {
 		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in) -> {
 			BasicAttackEvent ev = (BasicAttackEvent) in;
 			// Remove buff if we didn't kill
-			System.out.println(ev.getMeta().getTags() + " " + ev.getTarget().getHealth());
 			if (ev.getMeta().getTags().contains(id) && !ev.getTarget().isDead()) {
 				am.addCount(-1);
 			}
