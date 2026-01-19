@@ -200,7 +200,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 	public void setupInventory() {
 		Player p = data.getPlayer();
 		p.getInventory().clear();
-		PlayerSessionInventory.setupInventory(this);
+		PlayerSessionInventory.setupInventory(p.getInventory(), this);
 		updateCoinsBar();
 		getPlayer().setSaturation(20);
 	}
@@ -216,7 +216,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 	public void upgradeEquipment(EquipSlot es, int slot) {
 		Equipment[] slots = getArrayFromEquipSlot(es);
 		slots[slot] = slots[slot].getUpgraded();
-		PlayerSessionInventory.setupInventory(this);
+		PlayerSessionInventory.setupInventory(data.getPlayer().getInventory(), this);
 	}
 
 	public void setEquipment(EquipSlot es, int slot, Equipment eq) {
@@ -294,7 +294,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		}
 
 		if (eq != null) {
-			PlayerSessionInventory.setupInventory(this);
+			PlayerSessionInventory.setupInventory(getPlayer().getInventory(), this);
 			Util.msg(getPlayer(), Component.text("You unequipped ", NamedTextColor.GRAY).append(eq.getHoverable()).append(Component.text(", it was sent to storage.")));
 			return true;
 		}
@@ -519,7 +519,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 				}
 				if (success) {
 					if (toSelf != null) Util.msg(p, toSelf.append(SharedUtil.color(", it was auto-equipped to " + es.getDisplay() + ".")));
-					PlayerSessionInventory.setupInventory(this);
+					PlayerSessionInventory.setupInventory(p.getInventory(), this);
 					return;
 				}
 			}

@@ -105,11 +105,6 @@ public class Pandemic extends Equipment {
 	}
 
 	@Override
-	public void setupReforges() {
-		addSelfReforge(Corrode.get(), Mastermind.get());
-	}
-
-	@Override
 	public void setupItem() {
 		item = createItem(Material.FERMENTED_SPIDER_EYE,
 				"Passive. Your basic attacks mark enemies for <white>3s</white> and spread " +

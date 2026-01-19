@@ -114,8 +114,9 @@ public class NodeSelectInstance extends EditInventoryInstance {
 	public void cleanup() {
 		super.cleanup();
 		task.cancel();
+		s.getRegion().cleanup(s.getNode(), this);
 		
-		// Regular players have flight removed when fight starts, spectatrs don't need this since they're invulnerable
+		// Regular players have flight removed when fight starts, spectators don't need this since they're invulnerable
 		for (UUID uuid : s.getSpectators().keySet()) {
 			Bukkit.getPlayer(uuid).setAllowFlight(false);
 		}

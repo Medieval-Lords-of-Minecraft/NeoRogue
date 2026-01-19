@@ -2,6 +2,8 @@ package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -25,16 +27,17 @@ import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
-public class Corrode extends Equipment {
-	private static final String ID = "Corrode";
+public class Viper extends Equipment {
+	private static final String ID = "Viper";
 	private double bonusDamage;
-	private int bonusPoison;
+	private int bonusPoison, shields;
 	
-	public Corrode(boolean isUpgraded) {
-		super(ID, "Corrode", isUpgraded, Rarity.EPIC, EquipmentClass.THIEF, EquipmentType.ABILITY,
+	public Viper(boolean isUpgraded) {
+		super(ID, "Viper", isUpgraded, Rarity.EPIC, EquipmentClass.THIEF, EquipmentType.ABILITY,
 				EquipmentProperties.none());
-		bonusDamage = isUpgraded ? 0.5 : 0.4;
-		bonusPoison = isUpgraded ? 3 : 2;
+		bonusDamage = isUpgraded ? 0.7 : 0.6;
+		bonusPoison = isUpgraded ? 4 : 3;
+		shields = isUpgraded ? 6 : 4;
 	}
 	
 	public static Equipment get() {
@@ -43,7 +46,7 @@ public class Corrode extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		String statusName = p.getName() + "-corrode";
+		String statusName = p.getName() + "-viper";
 		
 		// Mark enemies on basic attack
 		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
@@ -58,7 +61,7 @@ public class Corrode extends Equipment {
 			return TriggerResult.keep();
 		});
 		
-		// Bonus damage when dealing poison damage to marked enemies
+		// Bonus damage when dealing poison damage to marked enemies, grant shields and speed
 		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
 			PreDealDamageEvent ev = (PreDealDamageEvent) in;
 			if (!ev.getMeta().containsType(DamageType.POISON)) return TriggerResult.keep();
@@ -68,6 +71,10 @@ public class Corrode extends Equipment {
 			
 			// Add bonus damage
 			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.multiplier(data, bonusDamage, BuffStatTracker.damageBuffAlly(id, this)));
+			
+			// Grant shields and speed
+			data.addSimpleShield(p.getUniqueId(), shields, 40);
+			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 40, 0));
 			
 			return TriggerResult.keep();
 		});
@@ -89,16 +96,15 @@ public class Corrode extends Equipment {
 
 	@Override
 	public void setupReforges() {
-		addReforge(Mastermind.get(), Pandemic.get(), NightSurge.get(), Viper.get());
-
+		addReforge(Mastermind.get(), Pandemic.get(), NightSurge.get());
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.SLIME_BALL,
+		item = createItem(Material.SPIDER_EYE,
 				"Passive. Your basic attacks mark enemies for <white>3s</white>. " +
 				GlossaryTag.POISON.tag(this) + " damage against marked enemies deals <yellow>" + 
-				(int)(bonusDamage * 100) + "%</yellow> increased damage. " +
-				GlossaryTag.POISON.tag(this) + " applied to marked enemies is increased by " + DescUtil.yellow(bonusPoison) + ".");
+				(int)(bonusDamage * 100) + "%</yellow> increased damage and grants you " +
+				GlossaryTag.SHIELDS.tag(this, shields, true) + " and " + DescUtil.potion("Speed", 0, 2) + ".");
 	}
 }

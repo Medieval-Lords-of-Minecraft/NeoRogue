@@ -47,7 +47,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 	private static final int[] HOTBAR = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
 	private static final int[] FILLER = new int[] { 11, 12, 14, 15, 16, 17, 34 };
 	private static final int[] KEYBINDS = new int[] { 27, 28, 29, 30, 31, 32, 33 };
-	private static final int STATS = 9, TRASH = 17, STORAGE = 10, OFFHAND = 35, ARTIFACTS = 13, SEE_OTHERS = 11, MAP = 40, SETTINGS = 12;
+	public static final int STATS = 9, TRASH = 17, STORAGE = 10, OFFHAND = 35, ARTIFACTS = 13, SEE_OTHERS = 11, MAP = 40, SETTINGS = 12;
 	private static HashMap<Integer, EquipSlot> slotTypes = new HashMap<Integer, EquipSlot>();
 	private static final DecimalFormat df = new DecimalFormat("#.##");
 
@@ -73,22 +73,27 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		super(viewer);
 		this.data = data;
 	}
+
+	public static void setupInventory(Inventory inv, PlayerSessionData data) {
+		setupInventory(inv, data, false);
+	}
 	
-	public static void setupInventory(PlayerSessionData data) {
-		Player p = data.getPlayer();
-		ItemStack[] contents = p.getInventory().getContents();
+	// Use offset when setting up another player's inventory for spectating (0 index is at top of inv for spectate, not bottom)
+	public static void setupInventory(Inventory inv, PlayerSessionData data, boolean isSpectating) {
+		int offset = isSpectating ? 27 : 0;
+		ItemStack[] contents = inv.getContents();
 
 		// Import data from session data
 		int iter = 0;
 		for (int i : ARMOR) {
 			slotTypes.put(i, EquipSlot.ARMOR);
 			if (iter >= data.getArmorSlots()) {
-				contents[i] = CoreInventory.createButton(Material.BLACK_STAINED_GLASS_PANE, Component.text(" "));
+				contents[(i + offset) % inv.getSize()] = CoreInventory.createButton(Material.BLACK_STAINED_GLASS_PANE, Component.text(" "));
 				iter++;
 				continue;
 			}
 			Equipment a = data.getEquipment(EquipSlot.ARMOR)[iter];
-			contents[i] = a != null ? addNbt(a.getItem(), a.getId(), a.isUpgraded(), iter) : createArmorIcon(iter);
+			contents[(i + offset) % inv.getSize()] = a != null ? addNbt(a.getItem(), a.getId(), a.isUpgraded(), iter) : createArmorIcon(iter);
 			iter++;
 		}
 
@@ -96,12 +101,12 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		for (int i : ACCESSORIES) {
 			slotTypes.put(i, EquipSlot.ACCESSORY);
 			if (iter >= data.getAccessorySlots()) {
-				contents[i] = CoreInventory.createButton(Material.BLACK_STAINED_GLASS_PANE, Component.text(" "));
+				contents[(i + offset) % inv.getSize()] = CoreInventory.createButton(Material.BLACK_STAINED_GLASS_PANE, Component.text(" "));
 				iter++;
 				continue;
 			}
 			Equipment a = data.getEquipment(EquipSlot.ACCESSORY)[iter];
-			contents[i] = a != null ? addNbt(a.getItem(), a.getId(), a.isUpgraded(), iter) : createAccessoryIcon(iter);
+			contents[(i + offset) % inv.getSize()] = a != null ? addNbt(a.getItem(), a.getId(), a.isUpgraded(), iter) : createAccessoryIcon(iter);
 			iter++;
 		}
 
@@ -120,45 +125,45 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 
 		slotTypes.put(OFFHAND, EquipSlot.OFFHAND);
 		Equipment o = data.getEquipment(EquipSlot.OFFHAND)[0];
-		contents[OFFHAND] = o != null ? addNbt(o.getItem(), o.getId(), o.isUpgraded(), 0) : createOffhandIcon();
+		contents[(OFFHAND + offset) % inv.getSize()] = o != null ? addNbt(o.getItem(), o.getId(), o.isUpgraded(), 0) : createOffhandIcon();
 
 		for (int i : HOTBAR) {
 			slotTypes.put(i, EquipSlot.HOTBAR);
 			Equipment eq = data.getEquipment(EquipSlot.HOTBAR)[i];
 			if (eq == null && data.getAbilitiesEquipped() >= data.getMaxAbilities()) {
-				contents[i] = createMaxedAbilitiesIcon(data, i);
+				contents[(i + offset) % inv.getSize()] = createMaxedAbilitiesIcon(data, i);
 				continue;
 			}
-			contents[i] = eq != null ? addNbt(addBindLore(eq.getItem(), i, i), eq.getId(), eq.isUpgraded(), i)
+			contents[(i + offset) % inv.getSize()] = eq != null ? addNbt(addBindLore(eq.getItem(), i, i), eq.getId(), eq.isUpgraded(), i)
 					: createHotbarIcon(i);
 		}
 
 		for (int i : FILLER) {
-			contents[i] = CoreInventory.createButton(Material.BLACK_STAINED_GLASS_PANE, Component.text(" "));
+			contents[(i + offset) % inv.getSize()] = CoreInventory.createButton(Material.BLACK_STAINED_GLASS_PANE, Component.text(" "));
 		}
 
-		contents[STATS] = createStatsIcon(data);
-		contents[STORAGE] = CoreInventory.createButton(Material.ENDER_CHEST, Component.text("Storage", NamedTextColor.GOLD));
-		contents[TRASH] = addNbt(CoreInventory.createButton(Material.HOPPER,
+		contents[(STATS + offset) % inv.getSize()] = createStatsIcon(data);
+		contents[(STORAGE + offset) % inv.getSize()] = CoreInventory.createButton(Material.ENDER_CHEST, Component.text("Storage", NamedTextColor.GOLD));
+		contents[(TRASH + offset) % inv.getSize()] = addNbt(CoreInventory.createButton(Material.HOPPER,
 				Component.text("Trash", NamedTextColor.GOLD), "Drag items here to trash them!", 250, NamedTextColor.GRAY),
 				0);
-		contents[SETTINGS] = createSettingsIcon(data);
+		contents[(SETTINGS + offset) % inv.getSize()] = createSettingsIcon(data);
 
-		contents[ARTIFACTS] = addNbt(
+		contents[(ARTIFACTS + offset) % inv.getSize()] = addNbt(
 				CoreInventory.createButton(Material.NETHER_STAR, Component.text("Artifacts", NamedTextColor.GOLD),
 						"Click here to view all your artifacts!", 250, NamedTextColor.GRAY),
 				0);
 		if (data.getSession().getParty().size() > 1)
-			contents[SEE_OTHERS] = CoreInventory.createButton(Material.SPYGLASS, Component.text("View other players", NamedTextColor.GOLD));
+			contents[(SEE_OTHERS + offset) % inv.getSize()] = CoreInventory.createButton(Material.SPYGLASS, Component.text("View other players", NamedTextColor.GOLD));
 
 		if (!(data.getSession().getInstance() instanceof NodeSelectInstance)) {
-			contents[MAP] = CoreInventory.createButton(Material.FILLED_MAP, Component.text("Node Map", NamedTextColor.GOLD));
-			MapMeta meta = (MapMeta) contents[MAP].getItemMeta();
+			contents[(MAP + offset) % inv.getSize()] = CoreInventory.createButton(Material.FILLED_MAP, Component.text("Node Map", NamedTextColor.GOLD));
+			MapMeta meta = (MapMeta) contents[(MAP + offset) % inv.getSize()].getItemMeta();
 			MapView map = Bukkit.getMap(EditInventoryInstance.MAP_ID);
 			meta.setMapView(map);
-			contents[MAP].setItemMeta(meta);
+			contents[(MAP + offset) % inv.getSize()].setItemMeta(meta);
 		}
-		p.getInventory().setContents(contents);
+		inv.setContents(contents);
 	}
 
 	private static ItemStack createArmorIcon(int dataSlot) {
@@ -256,6 +261,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 
 		NBTItem ncursor = !cursor.getType().isAir() ? new NBTItem(cursor) : null;
 		NBTItem nclicked = clicked != null ? new NBTItem(clicked) : null;
+		Player p = (Player) e.getWhoClicked();
 
 		if (slot == TRASH && clicked != null) {
 			e.setCancelled(true);
@@ -325,16 +331,12 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		}
 
 		InventoryAction action = e.getAction();
-		if (action == InventoryAction.HOTBAR_SWAP) {
+		if (action == InventoryAction.HOTBAR_SWAP || action == InventoryAction.COLLECT_TO_CURSOR) {
 			e.setCancelled(true);
 			return;
 		}
 		else if (action == InventoryAction.DROP_ONE_SLOT || action == InventoryAction.DROP_ALL_SLOT) {
 			handleInventoryDrop(e);
-			return;
-		}
-		else if (action == InventoryAction.COLLECT_TO_CURSOR) {
-			e.setCancelled(true);
 			return;
 		}
 
@@ -370,7 +372,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 				sci.handleShiftClickIn(e, clicked);
 
 				if (eq.getType() == EquipmentType.ABILITY && data.getAbilitiesEquipped() == data.getMaxAbilities() - 1) {
-					setupInventory(data);
+					setupInventory(p.getInventory(), data);
 				}
 			}
 			p.playSound(p, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1F);
@@ -478,13 +480,11 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 	public void clearHighlights() {
 		ItemStack[] contents = inv.getContents();
 		for (int i : highlighted) {
+			if (contents[i].getType() != Material.GLASS_PANE) continue;
 			contents[i] = iconFromEquipSlot(slotTypes.get(i), i);
 		}
 		highlighted.clear();
 		inv.setContents(contents);
-
-		// Lazy, just reset the inventory
-		setupInventory(data);
 	}
 	
 	public void setHighlights(EquipmentType type) {
@@ -544,7 +544,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 
 		if (eq.getType() == EquipmentType.ABILITY && !data.canEquipAbility()) {
 			// Lazy, just re-setup entire inventory
-			setupInventory(data);
+			setupInventory(p.getInventory(), data);
 		}
 	}
 	

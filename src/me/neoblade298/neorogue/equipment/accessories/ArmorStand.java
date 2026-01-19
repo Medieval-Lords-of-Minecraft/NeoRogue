@@ -35,7 +35,7 @@ public class ArmorStand extends Artifact {
 	@Override
 	public void onAcquire(PlayerSessionData data, int amount) {
 		data.addArmorSlots(1);
-		PlayerSessionInventory.setupInventory(data);
+		PlayerSessionInventory.setupInventory(data.getPlayer().getInventory(),data);
 	}
 
 	@Override

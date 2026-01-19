@@ -46,8 +46,8 @@ public class Finale extends Equipment {
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, inputs) -> {
 			Sounds.equip.play(p, p);
 			pc.play(p, p);
-			int stacks = (int) Math.min(3, data.getStamina() / thres);
 			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata2, in) -> {
+				int stacks = (int) Math.min(3, data.getStamina() / thres);
 				PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 				FightInstance.dealDamage(data, DamageType.PIERCING, damage * stacks, ev.getTarget(), DamageStatTracker.of(id + slot, this));
 				hit.play(p, ev.getTarget());
@@ -61,7 +61,7 @@ public class Finale extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FLINT,
-				"On cast, for every " + DescUtil.yellow(thres) + " stamina you had prior to casting up to " + DescUtil.yellow(thres * 3) + 
-				", deal an additional " + GlossaryTag.PIERCING.tag(this, damage, false) + " damage on your next basic attack.");
+				"On cast, deal an additional " + GlossaryTag.PIERCING.tag(this, damage, false) +
+				" damage on your next basic attack for every " + DescUtil.yellow(thres) + " stamina you have on hit, up to " + DescUtil.yellow(thres * 3) + ".");
 	}
 }

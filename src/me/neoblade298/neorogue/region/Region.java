@@ -731,26 +731,44 @@ public class Region {
 		return nodes[row][-lane];
 	}
 
+	// Remove old buttons, lecterns, and heads
+	public void cleanup(Node node, NodeSelectInstance inst) {
+		// Apparently needs to be a runnable or the button you press doesn't get removed
+		new BukkitRunnable() {
+			public void run() {
+				int row = node.getRow();
+
+				// Clean lecterns all the way to the end including boss node
+				int nextRow = row + 1;
+				if (nextRow < ROW_COUNT - 1) {
+					for (int lane = 0; lane < 5; lane++) {
+						Node n = nodes[nextRow][lane];
+						if (n != null) {
+							Location loc = nodeToLocation(n, 1);
+							loc.getBlock().setType(Material.AIR); // Button
+							loc.add(0, -2, -1);
+							loc.getBlock().setType(nextRow == ROW_COUNT - 1 ? Material.CRYING_OBSIDIAN : Material.POLISHED_ANDESITE); // Lectern
+						}
+					}
+				}
+
+				// Fight heads, they stop existing at ROW_COUNT - 2
+				int skipRow = row + 2;
+				if (skipRow < ROW_COUNT - 2) {
+					for (int lane = 0; lane < 5; lane++) {
+						Node n = nodes[skipRow][lane];
+						if (n != null && n.getType() == NodeType.FIGHT) {
+							Location loc = nodeToLocation(n, 1);
+							loc.getBlock().setType(Material.AIR); // Fight head
+						}
+					}
+				}
+			}
+		}.runTask(NeoRogue.inst());
+	}
+
 	// Called whenever a player advances to a new node
 	public void update(Node node, NodeSelectInstance inst) {
-		// Remove old buttons, lecterns, and heads
-		int row = node.getRow();
-		for (int lane = 0; lane < 5; lane++) {
-			Node n = nodes[row][lane];
-			if (n != null) {
-				Location loc = nodeToLocation(n, 1);
-				loc.getBlock().setType(Material.AIR);
-				loc.add(0, -2, -1);
-				loc.getBlock().setType(Material.POLISHED_ANDESITE);
-			}
-
-			n = nodes[row + 1][lane];
-			if (n != null && n.getType() == NodeType.FIGHT) {
-				Location loc = nodeToLocation(n, 1);
-				loc.getBlock().setType(Material.AIR);
-			}
-		}
-
 		// Add buttons, lecterns, and heads to new paths and generate them
 		for (Node dest : node.getDestinations()) {
 			dest.generateInstance(s, type);

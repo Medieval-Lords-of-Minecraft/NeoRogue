@@ -35,7 +35,7 @@ public class Lockbox extends Artifact {
 	@Override
 	public void onAcquire(PlayerSessionData data, int amount) {
 		data.addAccessorySlots(1);
-		PlayerSessionInventory.setupInventory(data);
+		PlayerSessionInventory.setupInventory(data.getPlayer().getInventory(), data);
 	}
 
 	@Override

@@ -110,11 +110,7 @@ public class FlashMark extends Equipment {
 			Location currentLoc = p.getLocation().add(0, 1, 0);
 			Location destLoc = endLoc.clone().add(0.5, 1, 0.5); // Center of block
 			ParticleUtil.drawLine(p, pc, currentLoc, destLoc, 0.5);
-			
-			// Dash to the block location
-			Location playerLoc = p.getLocation();
-			playerLoc.setDirection(endLoc.toVector().subtract(startLoc.toVector()).normalize());
-			data.dash(endLoc.toVector().subtract(startLoc.toVector()).normalize());
+			data.dash();
 			Sounds.thunder.play(p, p);
 		}
 	}
@@ -122,7 +118,7 @@ public class FlashMark extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LIGHTNING_ROD,
-				"On cast, throw a projectile that ignores enemies. If it hits a block, " + GlossaryTag.DASH.tag(this) + " in that direction, " +
+				"On cast, throw a projectile that ignores enemies. If it hits a block, " + GlossaryTag.DASH.tag(this) + " forwards, " +
 				"dealing " + GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage and applying " + 
 				GlossaryTag.ELECTRIFIED.tag(this, electrified, true) + " to enemies in a line between you and the block.");
 	}

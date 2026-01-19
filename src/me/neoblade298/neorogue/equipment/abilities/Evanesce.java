@@ -4,29 +4,39 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.EvadeEvent;
 
-public class Counter extends Equipment {
-	private static final String ID = "Counter";
-	private int damage;
+public class Evanesce extends Equipment {
+	private static final String ID = "Evanesce";
+	private int damage, stealthDuration;
+	private double damageBuff;
 	
-	public Counter(boolean isUpgraded) {
-		super(ID, "Counter", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF, EquipmentType.ABILITY,
+	public Evanesce(boolean isUpgraded) {
+		super(ID, "Evanesce", isUpgraded, Rarity.EPIC, EquipmentClass.THIEF, EquipmentType.ABILITY,
 				EquipmentProperties.none());
 		damage = isUpgraded ? 150 : 100;
+		stealthDuration = isUpgraded ? 200 : 120;
+		damageBuff = isUpgraded ? 0.3 : 0.2;
 	}
 	
 	public static Equipment get() {
@@ -36,8 +46,6 @@ public class Counter extends Equipment {
 	@Override
 	public void setupReforges() {
 		addReforge(WeaponEnchantmentElectrified.get(), ThunderclapAndFlash.get());
-		addReforge(WeaponEnchantmentDarkness.get(), AbyssalCarve.get());
-		addReforge(Obfuscation.get(), Evanesce.get());
 	}
 
 	@Override
@@ -63,6 +71,19 @@ public class Counter extends Equipment {
 			// Deal damage to the attacker
 			FightInstance.dealDamage(pdata, DamageType.PIERCING, damage, damager, 
 					DamageStatTracker.of(id + slot, this));
+			
+			// Apply stealth
+			FightInstance.applyStatus(p, StatusType.STEALTH, data, 1, stealthDuration);
+			
+			// Delayed damage buff (1 second = 20 ticks later)
+			data.addTask(new BukkitRunnable() {
+				public void run() {
+					data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+						new Buff(data, damageBuff, 0, StatTracker.damageBuffAlly(id, Evanesce.this)),
+						100); // 5 seconds
+				}
+			}.runTaskLater(NeoRogue.inst(), 20L));
+			
 			Sounds.attackSweep.play(p, p);
 			
 			return TriggerResult.keep();
@@ -71,9 +92,12 @@ public class Counter extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.WIND_CHARGE,
+		item = createItem(Material.ECHO_SHARD,
 				"Passive. Upon " + GlossaryTag.EVADE.tag(this) + ", deal " + 
 				GlossaryTag.PIERCING.tag(this, damage, true) + " damage to the attacker and " + 
-				GlossaryTag.DASH.tag(this) + " away from them.");
+				GlossaryTag.DASH.tag(this) + " away from them. Gain " +
+				GlossaryTag.STEALTH.tag(this, 1, false) + " [" + GlossaryTag.SECONDS.tag(this, stealthDuration, true) + "]. " +
+				"After <white>1s</white>, gain <yellow>" + (int)(damageBuff * 100) + "%</yellow> increased " +
+				GlossaryTag.GENERAL.tag(this) + " damage for <white>5s</white>.");
 	}
 }

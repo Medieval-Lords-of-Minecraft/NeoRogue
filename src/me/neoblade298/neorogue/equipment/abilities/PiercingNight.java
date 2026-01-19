@@ -94,14 +94,14 @@ public class PiercingNight extends Equipment {
 								for (LivingEntity ent : TargetHelper.getEntitiesInLine(p, start, end, lineProps)) {
 									FightData fd = FightInstance.getFightData(ent);
 									
-									// Deal line damage
 									FightInstance.dealDamage(new DamageMeta(data, lineDamage, DamageType.DARK, 
 										DamageStatTracker.of(id + slot, PiercingNight.this)), ent);
+									FightInstance.applyStatus(ent, StatusType.INSANITY, data, insanity, -1);
 									
 									// Check if enemy was hit by both projectile and line
 									if (fd.hasStatus(statusName)) {
-										// Hit by both - apply triple insanity (2x additional)
-										FightInstance.applyStatus(ent, StatusType.INSANITY, data, insanity * 2, -1);
+										int currInsanity = fd.getStatus(StatusType.INSANITY).getStacks();
+										FightInstance.applyStatus(ent, StatusType.INSANITY, data, currInsanity * 2, -1);
 										
 										// Remove the mark
 										Status s = Status.createByGenericType(GenericStatusType.BASIC, statusName, fd, true);
@@ -109,7 +109,6 @@ public class PiercingNight extends Equipment {
 									}
 									else {
 										// Only hit by line - apply normal insanity
-										FightInstance.applyStatus(ent, StatusType.INSANITY, data, insanity, -1);
 									}
 								}
 							}
@@ -181,6 +180,6 @@ public class PiercingNight extends Equipment {
 			GlossaryTag.INSANITY.tag(this, insanity, true) + ". If an enemy is hit, " +
 			"<white>charge 1s</white> and deal " + GlossaryTag.DARK.tag(this, lineDamage, true) + 
 			" damage in a line in front of you and apply " + GlossaryTag.INSANITY.tag(this, insanity, true) + 
-			". Enemies hit by both have their " + GlossaryTag.INSANITY.tag(this) + " tripled.");
+			". Enemies hit by both are applied <white>2x</white> their current " + GlossaryTag.INSANITY.tag(this) + ".");
 	}
 }
