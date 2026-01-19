@@ -73,7 +73,7 @@ public class AbyssalCarve extends Equipment {
 			data.dash(awayFromEnemy);
 			
 			// Create cone in direction of attacker
-			cone.play(pc, p, playerLoc, LocalAxes.fromDirection(towardEnemy), fill);
+			cone.play(p, pc, playerLoc, LocalAxes.usingEyeLocation(p), fill);
 			
 			// Deal damage to enemies in cone
 			for (LivingEntity ent : TargetHelper.getEntitiesInCone(p, towardEnemy, tp)) {

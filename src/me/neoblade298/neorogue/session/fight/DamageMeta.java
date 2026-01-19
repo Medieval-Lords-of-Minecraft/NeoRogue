@@ -131,6 +131,10 @@ public class DamageMeta {
 		this.defenseBuffs = cloneBuffLists(original.defenseBuffs);
 	}
 
+	public Equipment getWeapon() {
+		return (Equipment) weapon;
+	}
+
 	public DamageMeta ignoreBuffs(boolean ignore) {
 		this.ignoreBuffs = ignore;
 		return this;
@@ -138,6 +142,10 @@ public class DamageMeta {
 
 	public DamageMeta isBasicAttack(Equipment weapon, boolean isBasicAttack) {
 		this.isBasicAttack = isBasicAttack;
+		if (!isBasicAttack) {
+			this.weapon = null;
+			return this;
+		}
 		this.weapon = weapon;
 		this.knockback = weapon.getProperties().get(PropertyType.KNOCKBACK);
 		return this;

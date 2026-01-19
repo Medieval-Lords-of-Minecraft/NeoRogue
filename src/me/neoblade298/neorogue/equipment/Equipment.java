@@ -753,6 +753,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new HuntersBow(b);
 			new DrainWand(b);
 			new IronSword(b);
+			new IronThrowingKnife(b);
 			new Irritant(b);
 			new LeatherGauntlets(b);
 			new LeviathanAxe(b);
@@ -770,7 +771,9 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new MonksStaff2(b);
 			new MultiCrossbow(b);
 			new Nightmare(b);
+			new NoxianFalx(b);
 			new OldStaff(b);
+			new PhantasmalKiller(b);
 			new Rapier(b);
 			new Razor(b);
 			new ReckoningOrb(b);

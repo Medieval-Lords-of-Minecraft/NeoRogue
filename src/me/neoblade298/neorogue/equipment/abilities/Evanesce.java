@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -96,7 +97,8 @@ public class Evanesce extends Equipment {
 				"Passive. Upon " + GlossaryTag.EVADE.tag(this) + ", deal " + 
 				GlossaryTag.PIERCING.tag(this, damage, true) + " damage to the attacker and " + 
 				GlossaryTag.DASH.tag(this) + " away from them. Gain " +
-				GlossaryTag.STEALTH.tag(this, 1, false) + " [" + GlossaryTag.SECONDS.tag(this, stealthDuration, true) + "]. " +
+				GlossaryTag.STEALTH.tag(this, 1, false) + " [" + DescUtil.yellow(
+                                stealthDuration / 20) + "]. " +
 				"After <white>1s</white>, gain <yellow>" + (int)(damageBuff * 100) + "%</yellow> increased " +
 				GlossaryTag.GENERAL.tag(this) + " damage for <white>5s</white>.");
 	}
