@@ -73,11 +73,11 @@ public class AbyssalCarve extends Equipment {
 			data.dash(awayFromEnemy);
 			
 			// Create cone in direction of attacker
-			cone.play(p, pc, playerLoc, LocalAxes.usingEyeLocation(p), fill);
+			cone.play(p, pc, playerLoc.add(0, 1, 0), LocalAxes.usingEyeLocation(p), fill);
 			
 			// Deal damage to enemies in cone
 			for (LivingEntity ent : TargetHelper.getEntitiesInCone(p, towardEnemy, tp)) {
-				FightInstance.dealDamage(pdata, DamageType.PIERCING, damage, ent, 
+				FightInstance.dealDamage(pdata, DamageType.DARK, damage, ent, 
 						DamageStatTracker.of(id + slot, this));
 			}
 			Sounds.attackSweep.play(p, p);
@@ -90,7 +90,7 @@ public class AbyssalCarve extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.NETHERITE_SWORD,
 				"Passive. Upon " + GlossaryTag.EVADE.tag(this) + ", deal " + 
-				GlossaryTag.PIERCING.tag(this, damage, true) + " damage in a cone toward the attacker and " + 
+				GlossaryTag.DARK.tag(this, damage, true) + " damage in a cone toward the attacker and " + 
 				GlossaryTag.DASH.tag(this) + " away from them.");
 	}
 }

@@ -32,7 +32,7 @@ public class MechanicCastAbility implements INoTargetSkill {
 				Status s = fd.getStatus(StatusType.ELECTRIFIED);
 				DamageMeta dm = new DamageMeta(s.getSlices().first().getFightData()); // Arbitrarily pick first owner as damage meta owner
 				for (Entry<FightData, Integer> slice : fd.getStatus(StatusType.ELECTRIFIED).getSlices().getSliceOwners().entrySet()) {
-					dm.addDamageSlice(new DamageSlice(slice.getKey(), slice.getValue() * 0.2, DamageType.ELECTRIFIED, DamageStatTracker.ignored("MythicDamage")));
+					dm.addDamageSlice(new DamageSlice(slice.getKey(), slice.getValue() * 0.2, DamageType.ELECTRIFIED, DamageStatTracker.electrified()));
 				}
 				FightInstance.dealDamage(dm, fd.getEntity());
 			}

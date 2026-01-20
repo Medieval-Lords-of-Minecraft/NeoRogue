@@ -65,7 +65,7 @@ public class Shadowsteel extends Equipment {
 		data.addTask(new BukkitRunnable() {
 			public void run() {
 				// Add current location to queue
-				locationQueue.add(p.getLocation().clone());
+				locationQueue.add(p.getLocation().clone().add(0, 1, 0));
 				
 				// Keep queue at exactly 4 positions (2 seconds)
 				if (locationQueue.size() > 4) {
@@ -98,10 +98,11 @@ public class Shadowsteel extends Equipment {
 			
 			// Calculate end location: 3 blocks in front of player
 			Vector forward = p.getEyeLocation().getDirection().setY(0).normalize().multiply(3);
-			Location endLoc = p.getLocation().add(forward);
+			Location endLoc = p.getLocation().add(forward).add(0, 1, 0);
 			
 			// Draw line and deal damage
 			ParticleUtil.drawLine(p, slashLine, shadowLoc, endLoc, 0.3);
+			Sounds.wither.play(p, p);
 			
 			for (LivingEntity ent : TargetHelper.getEntitiesInLine(p, shadowLoc, endLoc, tp)) {
 				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.DARK, DamageStatTracker.of(id + slot, this)), ent);

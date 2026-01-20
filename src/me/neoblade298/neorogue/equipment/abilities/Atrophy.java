@@ -61,7 +61,7 @@ public class Atrophy extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.OBSIDIAN,
-				"On cast, mark the target you're looking at. Damaging the marked target grants an additional " +
+				"On cast, mark the target you're looking at. Damaging the marked target deals an additional " +
 				GlossaryTag.DARK.tag(this, damage, true) + " damage and applies " + GlossaryTag.INSANITY.tag(this, ins, true)
 				+ " to them. Marking another target removes the previous mark.");
 	}

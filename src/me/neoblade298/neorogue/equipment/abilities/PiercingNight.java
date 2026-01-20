@@ -99,8 +99,10 @@ public class PiercingNight extends Equipment {
 									FightInstance.applyStatus(ent, StatusType.INSANITY, data, insanity, -1);
 									
 									// Check if enemy was hit by both projectile and line
+									System.out.println("Checking...");
 									if (fd.hasStatus(statusName)) {
 										int currInsanity = fd.getStatus(StatusType.INSANITY).getStacks();
+										System.out.println("Has " + currInsanity);
 										FightInstance.applyStatus(ent, StatusType.INSANITY, data, currInsanity * 2, -1);
 										
 										// Remove the mark

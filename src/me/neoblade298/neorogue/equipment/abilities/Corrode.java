@@ -33,8 +33,8 @@ public class Corrode extends Equipment {
 	public Corrode(boolean isUpgraded) {
 		super(ID, "Corrode", isUpgraded, Rarity.EPIC, EquipmentClass.THIEF, EquipmentType.ABILITY,
 				EquipmentProperties.none());
-		bonusDamage = isUpgraded ? 0.5 : 0.4;
-		bonusPoison = isUpgraded ? 3 : 2;
+		bonusDamage = isUpgraded ? 0.6 : 0.4;
+		bonusPoison = isUpgraded ? 120 : 80;
 	}
 	
 	public static Equipment get() {
@@ -67,7 +67,7 @@ public class Corrode extends Equipment {
 			if (fd == null || !fd.hasStatus(statusName)) return TriggerResult.keep();
 			
 			// Add bonus damage
-			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.multiplier(data, bonusDamage, BuffStatTracker.damageBuffAlly(id, this)));
+			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.POISON), Buff.multiplier(data, bonusDamage, BuffStatTracker.damageBuffAlly(id, this)));
 			
 			return TriggerResult.keep();
 		});

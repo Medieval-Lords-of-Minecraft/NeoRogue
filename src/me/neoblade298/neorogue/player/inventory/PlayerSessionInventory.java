@@ -111,14 +111,15 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		}
 
 		for (KeyBind bind : KeyBind.values()) {
-			slotTypes.put(bind.getInventorySlot(), EquipSlot.KEYBIND);
+			int i = (bind.getInventorySlot() + offset) % inv.getSize();
+			slotTypes.put(i, EquipSlot.KEYBIND);
 			Equipment a = data.getEquipment(EquipSlot.KEYBIND)[bind.getDataSlot()];
 			if (a == null && data.getAbilitiesEquipped() >= data.getMaxAbilities()) {
-				contents[bind.getInventorySlot()] = createMaxedAbilitiesIcon(data, bind.getDataSlot());
+				contents[i] = createMaxedAbilitiesIcon(data, bind.getDataSlot());
 				continue;
 			}
-			contents[bind.getInventorySlot()] = a != null
-					? addNbt(addBindLore(a.getItem(), bind.getInventorySlot(), bind.getDataSlot()), a.getId(),
+			contents[i] = a != null
+					? addNbt(addBindLore(a.getItem(), i, bind.getDataSlot()), a.getId(),
 							a.isUpgraded(), bind.getDataSlot())
 					: addNbt(bind.getItem(), bind.getDataSlot());
 		}

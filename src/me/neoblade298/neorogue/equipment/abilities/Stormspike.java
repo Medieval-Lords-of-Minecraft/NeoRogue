@@ -39,7 +39,7 @@ public class Stormspike extends Equipment {
 	
 	public Stormspike(boolean isUpgraded) {
 		super(ID, "Stormspike", isUpgraded, Rarity.EPIC, EquipmentClass.THIEF, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(25, 10, 8, 8));
+				EquipmentProperties.ofUsable(30, 15, 8, 8));
 		damage = isUpgraded ? 350 : 250;
 		basicLightning = isUpgraded ? 100 : 75;
         electrified = isUpgraded ? 90 : 60;
@@ -56,7 +56,7 @@ public class Stormspike extends Equipment {
 		ActionMeta am = new ActionMeta();
 		
 		// Create 3 projectiles in a cone spread
-		for (int angle : new int[] { -15, 0, 15 }) {
+		for (int angle : new int[] { -30, 0, 30 }) {
 			proj.add(new StormspikeProjectile(data, angle, this, slot, am));
 		}
 		
@@ -115,6 +115,7 @@ public class Stormspike extends Equipment {
 					PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 					ev.getMeta().addDamageSlice(new DamageSlice(data, basicLightning, DamageType.LIGHTNING,
 						DamageStatTracker.of(triggerId, eq)));
+					Sounds.firework.play(p, p);
 					FightInstance.applyStatus(hit.getEntity(), StatusType.ELECTRIFIED, data, electrified, -1);
 					return TriggerResult.keep();
 				});
@@ -140,8 +141,8 @@ public class Stormspike extends Equipment {
 		item = createItem(Material.LIGHTNING_ROD,
 			"On cast, throw <white>3</white> projectiles in a cone that each deal " + 
 			GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage. If you hit at least <white>2</white> enemies, " +
-			"gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>6s</white>] and your next basic attacks deal " +
+			"gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>6s</white>] and basic attacks deal " +
 			GlossaryTag.LIGHTNING.tag(this, basicLightning, true) + " damage and apply " + 
-			GlossaryTag.ELECTRIFIED.tag(this, 3, false) + " [<white>5s</white>] for <white>6s</white>.");
+			GlossaryTag.ELECTRIFIED.tag(this, electrified, true) + " [<white>5s</white>] for <white>6s</white>.");
 	}
 }

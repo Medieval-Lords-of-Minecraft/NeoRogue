@@ -59,6 +59,7 @@ public class MirrorSickle extends Equipment {
 		
 		StandardPriorityAction stacks = new StandardPriorityAction(ID);
 		ItemStack icon = item.clone();
+		ItemStack chargedIcon = item.clone().withType(Material.PRISMARINE_CRYSTALS);
 		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
 		Equipment eq = this;
 		
@@ -68,7 +69,11 @@ public class MirrorSickle extends Equipment {
 			stacks.addCount(1);
 			
 			// Update icon to show stacks
-			if (stacks.getCount() > 0) {
+			if (stacks.getCount() >= 3) {
+				int displayAmount = stacks.getCount() / 3;
+				chargedIcon.setAmount(displayAmount);
+				inst.setIcon(chargedIcon);
+			} else if (stacks.getCount() > 0) {
 				icon.setAmount(stacks.getCount());
 				inst.setIcon(icon);
 			}
@@ -91,8 +96,15 @@ public class MirrorSickle extends Equipment {
 			}.runTaskLater(NeoRogue.inst(), 4L));
 			
 			// Reset icon when stacks consumed
-			icon.setAmount(Math.max(1, stacks.getCount()));
-			inst.setIcon(icon);
+			int remaining = stacks.getCount();
+			if (remaining >= 3) {
+				int displayAmount = remaining / 3;
+				chargedIcon.setAmount(displayAmount);
+				inst.setIcon(chargedIcon);
+			} else {
+				icon.setAmount(Math.max(1, remaining));
+				inst.setIcon(icon);
+			}
 			return TriggerResult.keep();
 		});
 		data.addSlotBasedTrigger(id, slot, Trigger.RIGHT_CLICK, inst);

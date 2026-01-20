@@ -80,7 +80,7 @@ public class Evanesce extends Equipment {
 			data.addTask(new BukkitRunnable() {
 				public void run() {
 					data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
-						new Buff(data, damageBuff, 0, StatTracker.damageBuffAlly(id, Evanesce.this)),
+						new Buff(data, 0, damageBuff, StatTracker.damageBuffAlly(id, Evanesce.this)),
 						100); // 5 seconds
 				}
 			}.runTaskLater(NeoRogue.inst(), 20L));

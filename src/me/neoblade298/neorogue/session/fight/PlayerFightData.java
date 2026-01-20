@@ -600,7 +600,7 @@ public class PlayerFightData extends FightData {
 	}
 
 	public boolean hasTriggerAction(Trigger trigger) {
-		return triggers.containsKey(trigger);
+		return triggers.containsKey(trigger) && !triggers.get(trigger).isEmpty();
 	}
 
 	public void addSlotBasedTrigger(String id, int slot, Trigger trigger, TriggerAction action) {

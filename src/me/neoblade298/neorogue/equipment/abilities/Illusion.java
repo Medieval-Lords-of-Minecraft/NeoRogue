@@ -49,7 +49,7 @@ public class Illusion extends Equipment {
 	private static final ParticleContainer projectileParticle = new ParticleContainer(Particle.DUST)
 		.dustOptions(new org.bukkit.Particle.DustOptions(Color.fromRGB(50, 0, 50), 1F))
 		.count(3).spread(0.2, 0.2);
-	private static TargetProperties tp = TargetProperties.radius(12, false, TargetType.ENEMY);
+	private static TargetProperties tp = TargetProperties.radius(8, false, TargetType.ENEMY);
 	
 	private int damage, dur;
 
@@ -176,7 +176,7 @@ public class Illusion extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.ENDER_EYE,
 				"Passive. Whenever you apply " + GlossaryTag.EVADE.tag(this) + ", spawn a body double at your position from " +
-				"<white>2s</white> ago that deals " + GlossaryTag.DARK.tag(this, damage, true) + " damage to all nearby enemies " +
-				"and taunts them <white>[" + dur + "s]</white>. <white>[1s Cooldown]</white>");
+				"<white>2s</white> ago that fires projectiles dealing " + GlossaryTag.DARK.tag(this, damage, true) + " damage to all nearby enemies " +
+				"and taunts them. The body double lasts for <white>" + dur + "s</white>.");
 	}
 }

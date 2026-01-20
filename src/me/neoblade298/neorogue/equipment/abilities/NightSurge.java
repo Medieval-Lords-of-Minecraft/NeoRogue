@@ -76,18 +76,16 @@ public class NightSurge extends Equipment {
 			
 			// Get target entity and location
 			if (!(ev.getTarget() instanceof LivingEntity)) return TriggerResult.keep();
+			ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.DARK, DamageStatTracker.of(ID + slot, this)));
 			LivingEntity targetEntity = (LivingEntity) ev.getTarget();
 			Location targetLoc = targetEntity.getLocation();
 			
-			// Calculate direction behind the target (opposite of their facing direction)
+			// Fire projectile from the target, opposite direction they're facing
 			Vector targetDirection = targetEntity.getLocation().getDirection();
-			Vector behindDirection = targetDirection.clone().multiply(-1).normalize();
+			Vector projectileDirection = targetDirection.clone().multiply(-1).normalize();
 			
-			// Spawn location slightly behind and above the target
-			Location spawnLoc = targetLoc.clone().add(behindDirection.clone().multiply(1.5)).add(0, 1, 0);
-			
-			// Fire projectile from behind towards the target
-			Vector projectileDirection = targetLoc.toVector().subtract(spawnLoc.toVector()).normalize();
+			// Spawn location slightly behind
+			Location spawnLoc = targetLoc.clone().add(projectileDirection.clone().multiply(1.5));
 			
 			ProjectileGroup proj = new ProjectileGroup(new NightSurgeProjectile(data, slot, this));
 			proj.start(data, spawnLoc, projectileDirection);
@@ -130,16 +128,11 @@ public class NightSurge extends Equipment {
 	}
 
 	@Override
-	public void setupReforges() {
-		addSelfReforge();
-	}
-
-	@Override
 	public void setupItem() {
 		item = createItem(Material.ECHO_SHARD,
 				"Passive. Dealing " + GlossaryTag.DARK.tag(this) + " damage to an enemy with " +
-				GlossaryTag.INSANITY.tag(this) + " spawns a projectile behind them that fires towards them, " +
-				"dealing " + GlossaryTag.DARK.tag(this, damage, true) + " damage. " +
-				"<white>2s</white> cooldown per enemy.");
+				GlossaryTag.INSANITY.tag(this) + " spawns a projectile from them that fires " +
+				"opposite the direction they're facing, dealing " + GlossaryTag.DARK.tag(this, damage, true) + 
+				" damage. The target hit also takes this damage. <white>2s</white> cooldown per enemy.");
 	}
 }

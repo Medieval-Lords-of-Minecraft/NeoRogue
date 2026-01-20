@@ -57,7 +57,6 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 	private Equipment[] accessories = new Equipment[6];
 	private Equipment[] storage = new Equipment[MAX_STORAGE_SIZE];
 	private Equipment[] otherBinds = new Equipment[8];
-	private Equipment[][] allEquips = new Equipment[][] { hotbar, armors, offhand, accessories, storage, otherBinds };
 	private TreeMap<String, ArtifactInstance> artifacts = new TreeMap<String, ArtifactInstance>();
 	private HashMap<SessionTrigger, ArrayList<SessionAction>> triggers = new HashMap<SessionTrigger, ArrayList<SessionAction>>();
 	private int abilitiesEquipped, armorEquipped, accessoriesEquipped, maxAbilities = 4, maxStorage = 3, coins = 100, armorSlots = 1, accessorySlots = 2;
@@ -568,12 +567,16 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		return false;
 	}
 	
+	private Equipment[][] getAllEquips() {
+		return new Equipment[][] { hotbar, armors, offhand, accessories, storage, otherBinds };
+	}
+	
 	public ArrayList<EquipmentMetadata> aggregateEquipment(Predicate<EquipmentMetadata> filter) {
 		ArrayList<EquipmentMetadata> list = new ArrayList<EquipmentMetadata>();
 		EquipSlot[] es = new EquipSlot[] { EquipSlot.HOTBAR, EquipSlot.ARMOR, EquipSlot.OFFHAND, EquipSlot.ACCESSORY, EquipSlot.STORAGE, EquipSlot.KEYBIND };
 		
 		int esIdx = -1;
-		for (Equipment[] arr : allEquips) {
+		for (Equipment[] arr : getAllEquips()) {
 			esIdx++;
 			int slot = -1;
 			for (Equipment eq : arr) {

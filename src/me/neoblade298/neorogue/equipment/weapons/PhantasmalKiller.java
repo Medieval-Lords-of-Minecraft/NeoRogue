@@ -52,11 +52,6 @@ public class PhantasmalKiller extends Equipment {
 	}
 
 	@Override
-	public void setupReforges() {
-		addReforge(Nightmare.get(), ShadowyDagger.get());
-	}
-
-	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		if (data.getSessionData().getEquipment(EquipSlot.OFFHAND)[0] != null) {
 			Util.msg(p, hoverable.append(Component.text("  couldn't be equipped as you have equipment in your offhand!", NamedTextColor.RED)));

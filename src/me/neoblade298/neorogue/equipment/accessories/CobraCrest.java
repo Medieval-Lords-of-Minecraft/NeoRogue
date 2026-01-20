@@ -49,7 +49,7 @@ public class CobraCrest extends Equipment {
 			
 			// Decrease magical defense
 			FightInstance.getFightData(ev.getTarget()).addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL),
-					Buff.increase(data, -dec, BuffStatTracker.defenseDebuffEnemy(buffId, this)), 60);
+					Buff.increase(data, -dec, BuffStatTracker.defenseDebuffEnemy(buffId, this, false)), 60);
 			
 			return TriggerResult.keep();
 		});
@@ -59,6 +59,6 @@ public class CobraCrest extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.LIME_DYE,
 				"Dealing " + GlossaryTag.POISON.tag(this) + " damage applies " + DescUtil.potion("Slowness", 0, 3) + 
-				" and decreases " + GlossaryTag.MAGICAL.tag(this) + " defense by <yellow>" + dec + "</yellow> [<white>3s</white>].");
+				" and decreases " + GlossaryTag.MAGICAL.tag(this) + " defense by <yellow>" + dec + "</yellow> [<white>3s</white>], nonstacking.");
 	}
 }

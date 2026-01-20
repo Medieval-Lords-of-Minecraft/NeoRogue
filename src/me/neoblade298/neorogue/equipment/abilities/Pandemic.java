@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
@@ -36,15 +37,15 @@ public class Pandemic extends Equipment {
 	private int bonusPoison, areaPoison;
 	private static final int radius = 5;
 	private static final TargetProperties tp = TargetProperties.radius(radius, false, TargetType.ENEMY);
-	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST_COLOR_TRANSITION)
+	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST)
 		.count(50).spread(2, 0.5).offsetY(1);
 	
 	public Pandemic(boolean isUpgraded) {
 		super(ID, "Pandemic", isUpgraded, Rarity.EPIC, EquipmentClass.THIEF, EquipmentType.ABILITY,
-				EquipmentProperties.none());
-		bonusDamage = isUpgraded ? 0.7 : 0.6;
-		bonusPoison = isUpgraded ? 5 : 4;
-		areaPoison = isUpgraded ? 3 : 2;
+				EquipmentProperties.none().add(PropertyType.AREA_OF_EFFECT, radius));
+		bonusDamage = isUpgraded ? 0.9 : 0.6;
+		bonusPoison = isUpgraded ? 180 : 120;
+		areaPoison = isUpgraded ? 60 : 40;
 	}
 	
 	public static Equipment get() {
@@ -55,7 +56,7 @@ public class Pandemic extends Equipment {
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		String statusName = p.getName() + "-pandemic";
 		
-		// Mark enemies and spread poison in area on basic attack
+		// Mark enemies on basic attack
 		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
 			BasicAttackEvent ev = (BasicAttackEvent) in;
 			FightData fd = FightInstance.getFightData(ev.getTarget());
@@ -64,12 +65,6 @@ public class Pandemic extends Equipment {
 			// Apply 3 second mark to primary target
 			Status s = Status.createByGenericType(GenericStatusType.BASIC, statusName, fd, true);
 			fd.applyStatus(s, data, 1, 60);
-			
-			// Spread poison in area around target
-			pc.play(p, ev.getTarget().getLocation());
-			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, ev.getTarget().getLocation(), tp)) {
-				FightInstance.applyStatus(ent, StatusType.POISON, data, areaPoison, -1);
-			}
 			
 			return TriggerResult.keep();
 		});
@@ -89,7 +84,7 @@ public class Pandemic extends Equipment {
 			return TriggerResult.keep();
 		});
 		
-		// Increase poison application to marked enemies
+		// Increase poison application to marked enemies and spread poison in area
 		data.addTrigger(id, Trigger.PRE_APPLY_STATUS, (pdata, in) -> {
 			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
 			if (!ev.isStatus(StatusType.POISON)) return TriggerResult.keep();
@@ -100,6 +95,13 @@ public class Pandemic extends Equipment {
 			// Add bonus poison stacks
 			ev.getStacksBuffList().add(Buff.increase(data, bonusPoison, BuffStatTracker.statusBuff(id, this)));
 			
+			// Spread poison in area around marked target
+			LivingEntity target = fd.getEntity();
+			pc.play(p, target.getLocation());
+			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, target.getLocation(), tp)) {
+				FightInstance.applyStatus(ent, StatusType.POISON, data, areaPoison, -1);
+			}
+			
 			return TriggerResult.keep();
 		});
 	}
@@ -107,11 +109,11 @@ public class Pandemic extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FERMENTED_SPIDER_EYE,
-				"Passive. Your basic attacks mark enemies for <white>3s</white> and spread " +
-				GlossaryTag.POISON.tag(this, areaPoison, true) + " in a <white>" + radius + "</white> block radius. " +
+				"Passive. Your basic attacks mark enemies for <white>3s</white>. " +
 				GlossaryTag.POISON.tag(this) + " damage against marked enemies deals <yellow>" + 
 				(int)(bonusDamage * 100) + "%</yellow> increased damage. " +
-				"Applying " + GlossaryTag.POISON.tag(this) + " to marked enemies grants " +
-				GlossaryTag.POISON.tag(this, bonusPoison, true) + " additional stacks.");
+				"Applying " + GlossaryTag.POISON.tag(this) + " to marked enemies grants an additional " +
+				GlossaryTag.POISON.tag(this, bonusPoison, true) + " stacks and spreads " +
+				GlossaryTag.POISON.tag(this, areaPoison, true) + " to nearby enemies.");
 	}
 }
