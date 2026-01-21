@@ -105,6 +105,7 @@ public class NightSurge extends Equipment {
 		public NightSurgeProjectile(PlayerFightData data, int slot, Equipment eq) {
 			super(2.0, 15, 1); // Speed, range, piercing
 			this.size(0.4, 0.4);
+			this.initialY(1);
 			this.data = data;
 			this.slot = slot;
 			this.p = data.getPlayer();

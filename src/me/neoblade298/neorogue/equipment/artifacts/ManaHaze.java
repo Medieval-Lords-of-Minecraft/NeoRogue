@@ -5,6 +5,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -23,11 +24,11 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 
 public class ManaHaze extends Artifact {
 	private static final String ID = "ManaHaze";
-	private static final int thres = 60;
+	private static final int thres = 3;
 	private static TargetProperties tp = TargetProperties.radius(8, true, TargetType.ENEMY);
 
 	public ManaHaze() {
-		super(ID, "Mana Haze", Rarity.COMMON, EquipmentClass.CLASSLESS);
+		super(ID, "Mana Haze", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
 	}
 	
 	public static Equipment get() {
@@ -51,20 +52,22 @@ public class ManaHaze extends Artifact {
 	
 	private class ManaHazeInstance extends PriorityAction {
 		private int stacks = 0;
+		private ActionMeta am = new ActionMeta();
 		public ManaHazeInstance(String id) {
 			super(id);
 			action = (pdata, in) -> {
 				ApplyStatusEvent ev = (ApplyStatusEvent) in;
 				if (ev.getStatusClass() != StatusClass.NEGATIVE) return TriggerResult.keep();
 				if (ev.isSecondary()) return TriggerResult.keep();
-				if (stacks >= thres) {
+				if (stacks >= thres && System.currentTimeMillis() >= am.getTime()) {
 					LivingEntity trg = TargetHelper.getNearest(ev.getTarget().getEntity(), tp);
 					if (trg != null) {
 						stacks -= thres;
-						FightInstance.applyStatus(trg, ev.getStatus().clone(FightInstance.getFightData(trg)), 10, ev.getTicks(), pdata);
+						am.setTime(System.currentTimeMillis() + 1000); // 1 second cooldown
+						FightInstance.applyStatus(trg, ev.getStatus().clone(FightInstance.getFightData(trg)), ev.getStatus().getStacks() / 2, ev.getTicks(), pdata);
 					}
 				}
-				stacks += ev.getStacks();
+				stacks++;
 				return TriggerResult.keep();
 			};
 		}
@@ -74,7 +77,6 @@ public class ManaHaze extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BREWER_POTTERY_SHERD, 
-				"Every " + DescUtil.white(thres) + " stacks of negative statuses you apply, your next negative status applied to a target will also have " +
-				"<white>10</white> stacks of it applied to the nearest enemy to the target.");
+				"Every " + DescUtil.white(thres) + " times you apply a negative status, apply half of it to the nearest enemy. <white>1s</white> cooldown.");
 	}
 }

@@ -1,11 +1,16 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import java.util.LinkedList;
+
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.Particle.DustOptions;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
@@ -35,10 +40,10 @@ public class Pandemic extends Equipment {
 	private static final String ID = "Pandemic";
 	private double bonusDamage;
 	private int bonusPoison, areaPoison;
-	private static final int radius = 5;
+	private static final int radius = 6;
 	private static final TargetProperties tp = TargetProperties.radius(radius, false, TargetType.ENEMY);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST)
-		.count(50).spread(2, 0.5).offsetY(1);
+		.count(50).spread(2, 0.5).offsetY(1).dustOptions(new DustOptions(Color.GREEN, 1F));
 	
 	public Pandemic(boolean isUpgraded) {
 		super(ID, "Pandemic", isUpgraded, Rarity.EPIC, EquipmentClass.THIEF, EquipmentType.ABILITY,
@@ -88,6 +93,7 @@ public class Pandemic extends Equipment {
 		data.addTrigger(id, Trigger.PRE_APPLY_STATUS, (pdata, in) -> {
 			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
 			if (!ev.isStatus(StatusType.POISON)) return TriggerResult.keep();
+			if (ev.isSecondary()) return TriggerResult.keep();
 			
 			FightData fd = ev.getTarget();
 			if (fd == null || !fd.hasStatus(statusName)) return TriggerResult.keep();
@@ -98,8 +104,14 @@ public class Pandemic extends Equipment {
 			// Spread poison in area around marked target
 			LivingEntity target = fd.getEntity();
 			pc.play(p, target.getLocation());
-			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, target.getLocation(), tp)) {
-				FightInstance.applyStatus(ent, StatusType.POISON, data, areaPoison, -1);
+			Sounds.water.play(p, p);
+			LinkedList<LivingEntity> list = TargetHelper.getEntitiesInRadius(p, target.getLocation(), tp);
+			System.out.println("size: " + list.size());
+			for (LivingEntity ent : list) {
+				if (ent == ev.getTarget().getEntity()) continue;
+				FightData targetFd = FightInstance.getFightData(ent);
+				if (targetFd == null) continue;
+				targetFd.applyStatus(StatusType.POISON, data, areaPoison, -1, null, true);
 			}
 			
 			return TriggerResult.keep();

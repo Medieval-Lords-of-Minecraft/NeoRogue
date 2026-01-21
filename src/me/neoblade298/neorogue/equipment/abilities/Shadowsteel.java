@@ -41,7 +41,7 @@ public class Shadowsteel extends Equipment {
 	private static final ParticleContainer slashLine = new ParticleContainer(Particle.DUST)
 		.dustOptions(new org.bukkit.Particle.DustOptions(Color.fromRGB(30, 30, 30), 1.2F))
 		.count(3).spread(0.1, 0.1);
-	private static TargetProperties tp = TargetProperties.line(20, 1, TargetType.ENEMY);
+	private static TargetProperties tp = TargetProperties.line(10, 2, TargetType.ENEMY);
 	
 	private int damage;
 

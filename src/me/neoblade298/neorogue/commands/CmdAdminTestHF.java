@@ -10,6 +10,8 @@ import me.neoblade298.neocore.bukkit.commands.Subcommand;
 import me.neoblade298.neocore.shared.commands.Arg;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
+import me.neoblade298.neorogue.region.RegionType;
 
 public class CmdAdminTestHF extends Subcommand {
 	public CmdAdminTestHF(String key, String desc, String perm, SubcommandRunner runner) {
@@ -33,6 +35,6 @@ public class CmdAdminTestHF extends Subcommand {
 			others = new ArrayList<Player>(Bukkit.getOnlinePlayers());
 		}
 
-		NeoRogue.debugInitialize(host, others);
+		NeoRogue.debugInitialize(host, others, EquipmentClass.THIEF, RegionType.HARVEST_FIELDS);
 	}
 }

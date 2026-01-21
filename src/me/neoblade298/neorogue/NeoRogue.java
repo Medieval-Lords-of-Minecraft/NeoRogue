@@ -113,7 +113,7 @@ public class NeoRogue extends JavaPlugin {
 		Player alt = Bukkit.getPlayer("SuaveGentleman");
 		Collection<Player> others = new ArrayList<Player>();
 		if (alt != null) others.add(alt);
-		if (p != null) debugInitialize(p, others);
+		if (p != null) debugInitialize(p, others, EquipmentClass.WARRIOR, RegionType.LOW_DISTRICT);
 	}
 	
 	public static void reload() {
@@ -181,18 +181,18 @@ public class NeoRogue extends JavaPlugin {
 		return inst;
 	}
 	
-	public static void debugInitialize(Player host, @Nullable Collection<Player> others) {
+	public static void debugInitialize(Player host, @Nullable Collection<Player> others, EquipmentClass ec, RegionType regionType) {
 		Session s = SessionManager.createSession(host, "test", 1);
-		s.generateRegion(RegionType.HARVEST_FIELDS);
-		s.addPlayer(host.getUniqueId(), EquipmentClass.THIEF);
-		s.setNodesVisited(16);
-		s.setRegionsCompleted(1);
+		s.generateRegion(regionType);
+		s.addPlayer(host.getUniqueId(), ec);
+		s.setNodesVisited(regionType == RegionType.HARVEST_FIELDS ? 16 : 0);
+		s.setRegionsCompleted(regionType == RegionType.HARVEST_FIELDS ? 1 : 0);
 
 		s.setNode(s.getRegion().getNodes()[0][2]);
 		for (Player pl : others == null ? Bukkit.getOnlinePlayers() : others) {
 			if (pl == host) continue;
 			if (SessionManager.getSession(pl) == null) {
-				s.addPlayer(pl.getUniqueId(), EquipmentClass.THIEF);
+				s.addPlayer(pl.getUniqueId(), ec);
 				SessionManager.addToSession(pl.getUniqueId(), s);
 			}
 		}

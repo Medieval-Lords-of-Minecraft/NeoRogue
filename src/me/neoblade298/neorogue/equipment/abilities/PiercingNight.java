@@ -99,18 +99,9 @@ public class PiercingNight extends Equipment {
 									FightInstance.applyStatus(ent, StatusType.INSANITY, data, insanity, -1);
 									
 									// Check if enemy was hit by both projectile and line
-									System.out.println("Checking...");
 									if (fd.hasStatus(statusName)) {
 										int currInsanity = fd.getStatus(StatusType.INSANITY).getStacks();
-										System.out.println("Has " + currInsanity);
 										FightInstance.applyStatus(ent, StatusType.INSANITY, data, currInsanity * 2, -1);
-										
-										// Remove the mark
-										Status s = Status.createByGenericType(GenericStatusType.BASIC, statusName, fd, true);
-										fd.applyStatus(s, data, -1, -1);
-									}
-									else {
-										// Only hit by line - apply normal insanity
 									}
 								}
 							}
@@ -159,10 +150,8 @@ public class PiercingNight extends Equipment {
 			FightInstance.applyStatus(target, StatusType.INSANITY, data, insanity, -1);
 			
 			// Mark with custom status for tracking double-hit
-			if (!fd.hasStatus(statusName)) {
-				Status s = Status.createByGenericType(GenericStatusType.BASIC, statusName, fd, true);
-				fd.applyStatus(s, data, 1, 60); // 3 seconds duration
-			}
+			Status s = Status.createByGenericType(GenericStatusType.BASIC, statusName, fd, true);
+			fd.applyStatus(s, data, 1, 60); // 3 seconds duration
 			
 			Sounds.extinguish.play(p, target.getLocation());
 		}
