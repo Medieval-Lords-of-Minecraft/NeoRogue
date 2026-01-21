@@ -45,6 +45,8 @@ public class PhantasmalKiller extends Equipment {
 		super(ID, "Phantasmal Killer", isUpgraded, Rarity.EPIC, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofRangedWeapon(isUpgraded ? 90 : 75, 1.2, 0, 6, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
+	
+				this.restrictsOffhand = true;
 	}
 	
 	public static Equipment get() {

@@ -40,9 +40,7 @@ import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
 import com.sk89q.worldedit.function.operation.Operation;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
-import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.session.ClipboardHolder;
-import com.sk89q.worldedit.world.block.BlockTypes;
 
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.effects.Audience;
@@ -153,28 +151,6 @@ public class Session {
 		pasteSchematic(clipboard, editSession, session, 0, yOff, zOff);
 	}
 	
-	
-	public void resetNodeSelectArea() {
-		final int xLeft = 13, xRight = 29, zTop = 11, zBottom = 69; // hardcode node select square
-		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Region.world)) {
-			// Hardcoded region for node select area with blocks in it
-			BlockVector3 min = BlockVector3.at(-(xOff + 1 + xLeft), 64, zOff + AREA_Z + zTop);
-			BlockVector3 max = BlockVector3.at(-(xOff + 1 + xRight), 66, zOff + AREA_Z + zBottom);
-			CuboidRegion region = new CuboidRegion(Region.world, min, max);
-			editSession.setBlocks(region, BlockTypes.AIR.getDefaultState());
-			
-			// Create mask for lecterns (Shouldn't be needed anymore)
-			// min = BlockVector3.at(-(xOff + 1 + xLeft), 63, zOff + AREA_Z + zTop);
-			// max = BlockVector3.at(-(xOff + 1 + xRight), 63, zOff + AREA_Z + zBottom);
-			// region = new CuboidRegion(Region.world, min, max);
-			// editSession.setBlocks(region, BlockTypes.STONE.getDefaultState());
-			
-		} catch (WorldEditException e) {
-			Bukkit.getLogger().warning("[NeoRogue] Failed to reset node select area for host " + host);
-			e.printStackTrace();
-		}
-	}
-	
 	public Session(Player p, Plot plot, String lobby, int saveSlot) {
 		this.saveSlot = saveSlot;
 		this.xOff = plot.getXOffset();
@@ -264,7 +240,7 @@ public class Session {
 	
 	private void generateInterstitials() {
 		Location loc = new Location(Bukkit.getWorld(Region.WORLD_NAME), -(xOff + 1), 62, zOff);
-		Material versionCheck = Material.EMERALD_ORE; // Change this when interstitials change to regen them
+		Material versionCheck = Material.DIAMOND_ORE; // Change this when interstitials change to regen them
 		
 		if (loc.getBlock().getType() != versionCheck) {
 			Bukkit.getLogger().info("[NeoRogue] Generating interstitials for host " + Bukkit.getPlayer(host).getName());
@@ -282,7 +258,6 @@ public class Session {
 		}
 		else {
 			Bukkit.getLogger().info("[NeoRogue] Interstitials for host " + Bukkit.getPlayer(host).getName() + " are up to date");
-			resetNodeSelectArea();
 		}
 	}
 	

@@ -252,7 +252,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 
 	protected String id;
 	protected Component display, hoverable;
-	protected boolean isUpgraded, canDrop = true, isCursed, overrideReforgeDrop;
+	protected boolean isUpgraded, canDrop = true, isCursed, overrideReforgeDrop, restrictsOffhand;
 	protected ItemStack item;
 	protected Rarity rarity;
 	protected EquipmentClass[] ecs;
@@ -1146,6 +1146,10 @@ public abstract class Equipment implements Comparable<Equipment> {
 			str += arr.get(i).serialize() + ";";
 		}
 		return str;
+	}
+
+	public boolean restrictsOffhand() {
+		return restrictsOffhand;
 	}
 
 	public static String serialize(Equipment[] arr) {
