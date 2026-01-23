@@ -16,6 +16,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class BloodyTrinket extends Artifact {
 	private static final String ID = "BloodyTrinket";
+	private static final int str = 20;
 
 	public BloodyTrinket() {
 		super(ID, "Bloody Trinket", Rarity.UNCOMMON, EquipmentClass.WARRIOR);
@@ -28,12 +29,12 @@ public class BloodyTrinket extends Artifact {
 	@Override
 	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
 		if (p.getHealth() <= data.getMaxHealth() * 0.5) {
-			data.applyStatus(StatusType.STRENGTH, data, 10, -1);
+			data.applyStatus(StatusType.STRENGTH, data, str, -1);
 		}
 		else {
 			data.addTrigger(ID, Trigger.RECEIVE_HEALTH_DAMAGE, (pdata, in) -> {
 				if (p.getHealth() <= data.getMaxHealth() * 0.5) {
-					data.applyStatus(StatusType.STRENGTH, data, 20, -1);
+					data.applyStatus(StatusType.STRENGTH, data, str, -1);
 					return TriggerResult.remove();
 				}
 				return TriggerResult.keep();
@@ -54,6 +55,6 @@ public class BloodyTrinket extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GOLD_NUGGET, 
-				"Being below <white>50%</white> health grants " + GlossaryTag.STRENGTH.tag(this, 20, false) + ".");
+				"Being below <white>50%</white> health grants " + GlossaryTag.STRENGTH.tag(this, str, false) + ".");
 	}
 }

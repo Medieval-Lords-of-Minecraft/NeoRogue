@@ -56,7 +56,7 @@ public class LifeThief extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.RABBIT_FOOT, "Passive. Upon applying <yellow>" + cutoff + " </yellow>stacks of " + GlossaryTag.STEALTH.tag(this) + ","
+		item = createItem(Material.RABBIT_FOOT, "Passive. Upon applying <white>" + cutoff + "</white> stacks of " + GlossaryTag.STEALTH.tag(this) + ","
 				+ " your next basic attack heals you for <yellow>" + heal + "</yellow>. Once per fight.");
 	}
 }

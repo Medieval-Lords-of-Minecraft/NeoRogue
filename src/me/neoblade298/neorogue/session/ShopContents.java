@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
+import java.util.Random;
 
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Artifact;
@@ -23,28 +24,49 @@ public class ShopContents {
 
 	public ShopContents(Session s, PlayerSessionData data, double discountMult) {
 		int value = s.getBaseDropValue();
-		generateEquips(s, data, value, discountMult); // 0-9
-		generateConsumables(s, data, value, discountMult); // 10-12
+		EquipmentClass ec = data.getPlayerClass();
+		generateEquips(s, ec, value, discountMult); // 0-9
+		generateConsumables(ec, value, discountMult); // 10-12
 		generateGems(discountMult); // 13-15
-		generateArtifacts(s, data, value, discountMult); // 16-18
-		generateShopArtifacts(s, data, value, discountMult); // 19, 20
+		generateArtifacts(data, value, discountMult); // 16-18
+		generateShopArtifacts(ec, value, discountMult); // 19, 20
 	}
 
 	private ShopContents(HashMap<Integer, ShopItem> shopItems) {
 		this.shopItems = shopItems;
+	}
+	
+	private ShopContents() {
+
 	}
 
 	public ShopItem get(int idx) {
 		return shopItems.get(idx);
 	}
 
-	private void generateEquips(Session s, PlayerSessionData data, int value, double discountMult) {
-		EquipmentClass ec = data.getPlayerClass();
+	public static void debugGenerateEquips() {
+		ShopContents sc = new ShopContents();
+		Session s = null;
+		Random rand = new Random();
+		for (int i = 0; i < 1000; i++) {
+			sc.generateEquips(s, EquipmentClass.WARRIOR, rand.nextInt(4), 1.0);
+			sc.generateEquips(s, EquipmentClass.THIEF, rand.nextInt(4), 1.0);
+			sc.generateEquips(s, EquipmentClass.ARCHER, rand.nextInt(4), 1.0);
+			sc.generateEquips(s, EquipmentClass.MAGE, rand.nextInt(4), 1.0);
+
+			sc.generateConsumables(EquipmentClass.WARRIOR, rand.nextInt(6), 1.0);
+			if (i % 10 == 0) {
+				System.out.println("Generated " + (i + 1) * 7 + " sets of shop equips/consumables");
+			}
+		}
+	}
+
+	private void generateEquips(Session s, EquipmentClass ec, int value, double discountMult) {
 		// Create shop contents
 		ArrayList<Equipment> equips = new ArrayList<Equipment>();
 		equips.addAll(Equipment.getDrop(value, ShopInstance.NUM_ITEMS / 2, ec, EquipmentClass.SHOP, EquipmentClass.CLASSLESS));
 		equips.addAll(Equipment.getDrop(value + 2, ShopInstance.NUM_ITEMS / 2, equips, ec, EquipmentClass.SHOP, EquipmentClass.CLASSLESS));
-		s.rollUpgrades(equips, 0);
+		if (s != null) s.rollUpgrades(equips, 0); // Ignore session for debugging
 		
 		// Generate 2 random unique sale slots
 		HashSet<Integer> saleSlots = new HashSet<Integer>(2);
@@ -71,8 +93,7 @@ public class ShopContents {
 		}
 	}
 
-	private void generateConsumables(Session s, PlayerSessionData data, int value, double discountMult) {
-		EquipmentClass ec = data.getPlayerClass();
+	private void generateConsumables(EquipmentClass ec, int value, double discountMult) {
 		int idx = 10;
 		for (Consumable cons : Equipment.getConsumable(value, 3, ec, EquipmentClass.SHOP, EquipmentClass.CLASSLESS)) {
 			int price = NeoRogue.gen.nextInt((int) (30 * discountMult), (int) (60 * discountMult));
@@ -88,16 +109,15 @@ public class ShopContents {
 		}
 	}
 
-	private void generateArtifacts(Session s, PlayerSessionData data, int value, double discountMult) {
-		EquipmentClass ec = data.getPlayerClass();
+	private void generateArtifacts(PlayerSessionData data, int value, double discountMult) {
 		int idx = 16;
-		for (Artifact art : Equipment.getArtifact(data.getArtifactDroptable(), value, 3, ec, EquipmentClass.SHOP, EquipmentClass.CLASSLESS)) {
+		for (Artifact art : Equipment.getArtifact(data.getArtifactDroptable(), value, 3, data.getPlayerClass(), EquipmentClass.SHOP, EquipmentClass.CLASSLESS)) {
 			int price = NeoRogue.gen.nextInt((int) (150 * discountMult), (int) (250 * discountMult));
 			shopItems.put(idx++, new ShopItem(art, price, false));
 		}
 	}
 
-	private void generateShopArtifacts(Session s, PlayerSessionData data, int value, double discountMult) {
+	private void generateShopArtifacts(EquipmentClass ec, int value, double discountMult) {
 		int idx = 19;
 		for (Artifact art : new Artifact[] { (Artifact) ArmorStand.get(), (Artifact) Lockbox.get() }) {
 			int price = NeoRogue.gen.nextInt((int) (100 * discountMult), (int) (200 * discountMult));

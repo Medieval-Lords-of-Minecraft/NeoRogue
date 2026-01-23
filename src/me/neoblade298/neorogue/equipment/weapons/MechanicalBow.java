@@ -30,7 +30,7 @@ public class MechanicalBow extends Bow {
 	public MechanicalBow(boolean isUpgraded) {
 		super(ID, "Mechanical Bow", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofBow(60, 1, 0, 12, 0, 1.4));
+				EquipmentProperties.ofBow(60, 1, 0, 12, 0, 1.1));
 				damage = isUpgraded ? 60 : 40;
 	}
 

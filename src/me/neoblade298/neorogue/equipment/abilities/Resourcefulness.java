@@ -27,7 +27,7 @@ public class Resourcefulness extends Equipment {
 		super(ID, "Resourcefulness", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.none());
 				poison = isUpgraded ? 10 : 5;
-				damage = 10;
+				damage = isUpgraded ? 20 : 10;
 	}
 	
 	public static Equipment get() {

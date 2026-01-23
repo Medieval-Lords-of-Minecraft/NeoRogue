@@ -19,7 +19,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 
 public class PotOfGreed extends Artifact {
 	private static final String ID = "PotOfGreed";
-	private static final int GOLD = 25;
+	private static final int GOLD = 40;
 
 	public PotOfGreed() {
 		super(ID, "Pot of Greed", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);

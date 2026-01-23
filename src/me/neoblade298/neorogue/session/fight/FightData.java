@@ -450,7 +450,6 @@ public class FightData {
 		status = statuses.getOrDefault(id, status); // If status exists, use that, otherwise add the new one
 
 		PreApplyStatusEvent ev = new PreApplyStatusEvent(this, status, stacks, ticks, isSecondary, meta);
-		System.out.println("1");
 		if (this instanceof PlayerFightData) {
 			PlayerFightData data = (PlayerFightData) this;
 			data.updateBoardLines();
@@ -465,7 +464,6 @@ public class FightData {
 		}
 		int finalStacks = (int) Math.ceil(ev.getStacksBuffList().apply(stacks));
 		int finalDuration = stacks == -1 ? -1 : (int) Math.ceil(ev.getDurationBuffList().apply(ticks));
-		System.out.println("2 applyin " + finalStacks + " stacks for " + finalDuration + " ticks of " + id);
 		status.apply(applier, finalStacks, finalDuration);
 		ApplyStatusEvent ev2 = new ApplyStatusEvent(this, status, finalStacks, finalDuration, isSecondary, meta);
 		if (applier instanceof PlayerFightData) {

@@ -1697,37 +1697,49 @@ public abstract class Equipment implements Comparable<Equipment> {
 		}
 
 		public ArrayList<E> getMultiple(int value, int numDrops, boolean unique, ArrayList<E> exclusions, EquipmentClass... ec) {
-			DropTable<E> table;
+			// If more than 1 equipment class, combine them first
 			if (ec.length > 1) {
-				// If more than 1 equipment class, choose from all of them equally
-				DropTable<DropTable<E>> tables = new DropTable<DropTable<E>>();
-				for (int j = 0; j < ec.length; j++) {
-					if (!droptables.containsKey(ec[j]) || value >= droptables.get(ec[j]).size())
+				ArrayList<DropTable<E>> equipmentClassTables = new ArrayList<DropTable<E>>(ec.length);
+
+				// Add valid equipment classes to a droptable
+				for (int i = 0; i < ec.length; i++) {
+					// Check if droptable exists for this class at this value
+					if (!droptables.containsKey(ec[i]) || value >= droptables.get(ec[i]).size())
 						continue;
-					DropTable<E> temp = droptables.get(ec[j]).get(value);
-					tables.add(temp, temp.getTotalWeight());
+					DropTable<E> temp = droptables.get(ec[i]).get(value);
+					// Check if the droptable has any valid drops
+					if (temp.size() == 0)
+						continue;
+					equipmentClassTables.add(temp);
 				}
-				if (tables.size() == 0) {
+
+				if (equipmentClassTables.isEmpty()) {
 					Bukkit.getLogger().warning("[NeoRogue] No droptables found for equip classes " + Arrays.toString(ec) + " at value " + value
 							+ ", falling back to lower value");
 					return getMultiple(value - 1, numDrops, unique, exclusions, ec);
 				}
-				table = tables.get();
-			} else {
+
+				DropTable<E> combined = DropTable.combine(equipmentClassTables);
+				return combined.getMultiple(numDrops, true, exclusions);
+			}
+			else {
+				// Check if droptables exist for this class at this value
 				if (!droptables.containsKey(ec[0]) || value >= droptables.get(ec[0]).size()) {
-					Bukkit.getLogger().warning("[NeoRogue] No droptables found for equip class " + ec[0] + " at value " + value
+					Bukkit.getLogger().warning("[NeoRogue] No droptables found for equip class " + ec[0].name() + " at value " + value
 							+ ", falling back to lower value");
 					return getMultiple(value - 1, numDrops, unique, exclusions, ec);
 				}
-				table = droptables.get(ec[0]).get(value);
+				DropTable<E> table = droptables.get(ec[0]).get(value);
+				if (table.size() < numDrops) {
+					Bukkit.getLogger().warning("[NeoRogue] Failed to find " + numDrops + " equipment of value " + value
+							+ " for equip class " + ec[0].name() + ", falling back to lower value");
+					return getMultiple(value - 1, numDrops, unique, exclusions, ec);
+				}
+				return table.getMultiple(numDrops, unique, exclusions);
 			}
-			
-			if (table.size() < numDrops) {
-				Bukkit.getLogger().warning("[NeoRogue] Failed to find " + numDrops + " equipment of value " + value + " for equip classes " + Arrays.toString(ec) + ", falling back to lower value");
-				return getMultiple(value - 1, numDrops, unique, exclusions, ec);
-			}
-
-			return table.getMultiple(numDrops, unique, exclusions);
+			/* 
+			Current problem is that 
+			 */
 		}
 
 		@Override

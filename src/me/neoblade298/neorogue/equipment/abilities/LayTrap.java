@@ -34,14 +34,14 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class LayTrap extends Equipment {
 	private static final String ID = "LayTrap";
-	private static TargetProperties tp = TargetProperties.radius(2, false, TargetType.ENEMY);
+	private static TargetProperties tp = TargetProperties.radius(4, false, TargetType.ENEMY);
 	private static ParticleContainer trap = new ParticleContainer(Particle.CRIT).count(50).spread(1, 0.2),
 		hit = new ParticleContainer(Particle.CRIT).count(50).spread(1, 1);
 	private int damage, secs;
 	
 	public LayTrap(boolean isUpgraded) {
 		super(ID, "Lay Trap", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 5, 15, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 5, 15, 0, tp.range));
 		
 		damage = 120;
 		secs = isUpgraded ? 3 : 2;
@@ -61,7 +61,7 @@ public class LayTrap extends Equipment {
 		Equipment eq = this;
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pd, in) -> {
 			Sounds.equip.play(p, p);
-			data.channel(40);
+			data.charge(40);
 			data.addTask(new BukkitRunnable() {
 				public void run() {
 					initTrap(p, data, slot, eq);

@@ -24,7 +24,7 @@ public class BasicShotbow extends Bow {
 	public BasicShotbow(boolean isUpgraded) {
 		super(ID, "Basic Shotbow", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofBow(isUpgraded ? 55 : 45, isUpgraded ? 1.5 : 1, 0, 8, 0, 1.5));
+				EquipmentProperties.ofBow(isUpgraded ? 55 : 45, isUpgraded ? 1.5 : 1, 0, 8, 0, 1.2));
 		properties.addUpgrades(PropertyType.DAMAGE, PropertyType.ATTACK_SPEED);
 	}
 

@@ -49,7 +49,7 @@ public class RedBaron extends Bow {
 	public RedBaron(boolean isUpgraded) {
 		super(ID, "Red Baron", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofBow(50, 1, 0, 12, 0, 1.5).add(PropertyType.AREA_OF_EFFECT, tp.range));
+				EquipmentProperties.ofBow(50, 1, 0, 12, 0, 1.6).add(PropertyType.AREA_OF_EFFECT, tp.range));
 		damage = isUpgraded ? 90 : 60;
 		thres = isUpgraded ? 4 : 5;
 		canDrop = false;
