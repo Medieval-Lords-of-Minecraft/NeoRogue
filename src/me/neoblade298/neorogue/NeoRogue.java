@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Random;
 
-import javax.annotation.Nullable;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Display.Billboard;
@@ -19,6 +17,7 @@ import org.bukkit.map.MapView;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Transformation;
+import org.jetbrains.annotations.Nullable;
 
 import io.lumine.mythic.api.mobs.MobManager;
 import io.lumine.mythic.bukkit.BukkitAPIHelper;

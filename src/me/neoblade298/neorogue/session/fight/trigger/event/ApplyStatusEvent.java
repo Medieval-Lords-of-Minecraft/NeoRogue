@@ -1,6 +1,6 @@
 package me.neoblade298.neorogue.session.fight.trigger.event;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.FightData;
