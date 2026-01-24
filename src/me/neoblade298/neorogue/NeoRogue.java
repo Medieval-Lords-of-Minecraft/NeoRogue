@@ -130,7 +130,7 @@ public class NeoRogue extends JavaPlugin {
 	
 	public void onDisable() {
 		for (Session s : SessionManager.getSessions()) {
-			s.cleanup();
+			s.cleanup(true);
 		}
 	    org.bukkit.Bukkit.getServer().getLogger().info("NeoRogue Disabled");
 	    super.onDisable();

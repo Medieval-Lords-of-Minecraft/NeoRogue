@@ -27,7 +27,7 @@ public abstract class Instance {
 	protected ArrayList<String> playerLines = new ArrayList<String>(), spectatorLines = new ArrayList<String>();
 	protected PlayerFlags playerFlags, spectatorFlags = new PlayerFlags(PlayerFlag.CAN_FLY, PlayerFlag.INVISIBLE, PlayerFlag.INVULNERABLE);
 	protected abstract void setup();
-	public abstract void cleanup();
+	public abstract void cleanup(boolean pluginDisable);
 	public abstract void handleInteractEvent(PlayerInteractEvent e);
 	public abstract void handlePlayerLeaveParty(Player p);
 	public abstract String serialize(HashMap<UUID, PlayerSessionData> party);

@@ -111,8 +111,8 @@ public class MinibossFightInstance extends FightInstance {
 	}
 	
 	@Override
-	public void cleanup() {
-		super.cleanup();
+	public void cleanup(boolean pluginDisable) {
+		super.cleanup(pluginDisable);
 	}
 	
 	public String serializeInstanceData() {

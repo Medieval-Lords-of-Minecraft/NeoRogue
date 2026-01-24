@@ -52,7 +52,7 @@ public class BowProjectile extends Projectile {
 		this.ammo = data.getAmmoInstance();
 		this.props = bow.getProperties();
 		this.id = id;
-		initialVelocity = v.length();
+		initialVelocity = v.length() * 1.5;
 
 		blocksPerTick(initialVelocity);
 	}

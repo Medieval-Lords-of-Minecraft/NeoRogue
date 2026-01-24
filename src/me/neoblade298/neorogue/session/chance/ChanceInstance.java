@@ -139,8 +139,8 @@ public class ChanceInstance extends EditInventoryInstance {
 	}
 
 	@Override
-	public void cleanup() {
-		super.cleanup();
+	public void cleanup(boolean pluginDisable) {
+		super.cleanup(pluginDisable);
 		Candle candle = (Candle) candleBlock.getBlockData();
 		candle.setLit(false);
 		candleBlock.setBlockData(candle);

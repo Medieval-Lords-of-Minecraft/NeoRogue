@@ -700,10 +700,7 @@ public class Region {
 				if (node == null)
 					continue;
 
-				Location loc = new Location(
-						w, -(xOff + X_EDGE_PADDING + (lane * NODE_DIST_BETWEEN)), NODE_Y,
-						zOff + Z_EDGE_PADDING + (row * NODE_DIST_BETWEEN)
-				);
+				Location loc = getLocationFromRowLane(w, row, lane);
 				loc.getBlock().setType(node.getType().getBlock());
 				loc.add(0, 0, -1);
 				loc.getBlock().setType(Material.OAK_WALL_SIGN);
@@ -731,40 +728,74 @@ public class Region {
 		return nodes[row][-lane];
 	}
 
-	// Remove old buttons, lecterns, and heads
-	public void cleanup(Node node, NodeSelectInstance inst) {
+	public Location getLocationFromRowLane(org.bukkit.World w, int row, int lane) {
+		return new Location(
+						w, -(xOff + X_EDGE_PADDING + (lane * NODE_DIST_BETWEEN)), NODE_Y,
+						zOff + Z_EDGE_PADDING + (row * NODE_DIST_BETWEEN));
+	}
+
+	// Remove all blocks from node select when a session ends, leaving it ready for a new session
+	public void cleanupAll() {
+		org.bukkit.World w = Bukkit.getWorld(WORLD_NAME);
+		for (int lane = 0; lane < LANE_COUNT; lane++) {
+			for (int row = 0; row < ROW_COUNT; row++) {
+
+				// Sets sign to air first so it doesn't pop off
+				Location loc = getLocationFromRowLane(w, row, lane);
+				loc.add(0, 0, -1);
+				loc.getBlock().setType(Material.AIR);
+				loc.add(0, 0, 1);
+				loc.getBlock().setType(Material.AIR);
+			}
+		}
+	}
+
+	// Remove old buttons, lecterns, and heads when leaving node select instance
+	public void cleanup(Node node, NodeSelectInstance inst, boolean pluginDisable) {
+		// Don't make it a runnable if plugin is disabling
+		if (pluginDisable) {
+			cleanup(node, inst);
+		}
 		// Apparently needs to be a runnable or the button you press doesn't get removed
-		new BukkitRunnable() {
-			public void run() {
-				int row = node.getRow();
-
-				// Clean lecterns all the way to the end including boss node
-				int nextRow = row + 1;
-				if (nextRow < ROW_COUNT - 1) {
-					for (int lane = 0; lane < 5; lane++) {
-						Node n = nodes[nextRow][lane];
-						if (n != null) {
-							Location loc = nodeToLocation(n, 1);
-							loc.getBlock().setType(Material.AIR); // Button
-							loc.add(0, -2, -1);
-							loc.getBlock().setType(nextRow == ROW_COUNT - 1 ? Material.CRYING_OBSIDIAN : Material.POLISHED_ANDESITE); // Lectern
-						}
-					}
+		else {
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					cleanup(node, inst);
 				}
+			}.runTask(NeoRogue.inst());
+		}
+	}
 
-				// Fight heads, they stop existing at ROW_COUNT - 2
-				int skipRow = row + 2;
-				if (skipRow < ROW_COUNT - 2) {
-					for (int lane = 0; lane < 5; lane++) {
-						Node n = nodes[skipRow][lane];
-						if (n != null && n.getType() == NodeType.FIGHT) {
-							Location loc = nodeToLocation(n, 1);
-							loc.getBlock().setType(Material.AIR); // Fight head
-						}
-					}
+	public void cleanup(Node node, NodeSelectInstance inst) {
+		int row = node.getRow();
+
+		// Clean lecterns all the way to the end including boss node
+		int nextRow = row + 1;
+		if (nextRow < ROW_COUNT - 1) {
+			for (int lane = 0; lane < 5; lane++) {
+				Node n = nodes[nextRow][lane];
+				if (n != null) {
+					Location loc = nodeToLocation(n, 1);
+					loc.getBlock().setType(Material.AIR); // Button
+					loc.add(0, -2, -1);
+					loc.getBlock()
+							.setType(nextRow == ROW_COUNT - 1 ? Material.CRYING_OBSIDIAN : Material.POLISHED_ANDESITE); // Lectern
 				}
 			}
-		}.runTask(NeoRogue.inst());
+		}
+
+		// Fight heads, they stop existing at ROW_COUNT - 2
+		int skipRow = row + 2;
+		if (skipRow < ROW_COUNT - 2) {
+			for (int lane = 0; lane < 5; lane++) {
+				Node n = nodes[skipRow][lane];
+				if (n != null && n.getType() == NodeType.FIGHT) {
+					Location loc = nodeToLocation(n, 1);
+					loc.getBlock().setType(Material.AIR); // Fight head
+				}
+			}
+		}
 	}
 
 	// Called whenever a player advances to a new node

@@ -293,6 +293,7 @@ public class PlayerFightData extends FightData {
 			p.teleport(p.getLocation().add(0, 0.2, 0));
 		}
 		p.setVelocity(v.setY(0).normalize().multiply(1.5).setY(-1));
+		applyStatus(StatusType.INVINCIBLE, this, 1, 10);
 	}
 
 	@Override

@@ -35,7 +35,7 @@ public class Hullbreaker extends Equipment {
 	private static final int THRES = 150;
 	
 	public Hullbreaker(boolean isUpgraded) {
-		super(ID, "Hullbreaker", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
+		super(ID, "Hullbreaker", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.OFFHAND, EquipmentProperties.ofWeapon(damage, 0.5, 0, DamageType.BLUNT, Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR));
 				reduc = isUpgraded ? 15 : 10;
 

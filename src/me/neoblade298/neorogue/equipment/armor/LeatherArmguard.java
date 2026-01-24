@@ -16,6 +16,7 @@ import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 
 public class LeatherArmguard extends Equipment {
 	private static final String ID = "LeatherArmguard";
@@ -35,7 +36,9 @@ public class LeatherArmguard extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, (pdata, in) -> {
-			data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, data.hasStatus(StatusType.STEALTH) ? spdef + def : def, StatTracker.defenseBuffAlly(UUID.randomUUID().toString(), this)));
+			ReceiveDamageEvent ev = (ReceiveDamageEvent) in;
+			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL),
+				Buff.increase(data, data.hasStatus(StatusType.STEALTH) ? spdef + def : def, StatTracker.defenseBuffAlly(UUID.randomUUID().toString(), this)));
 			return TriggerResult.keep();
 		});
 	}

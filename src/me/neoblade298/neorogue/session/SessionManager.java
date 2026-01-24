@@ -657,7 +657,7 @@ public class SessionManager implements Listener {
 	}
 
 	public static void endSession(Session s) {
-		s.cleanup();
+		s.cleanup(false);
 		removeSession(s);
 
 		new BukkitRunnable() {

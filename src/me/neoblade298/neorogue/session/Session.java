@@ -83,7 +83,7 @@ public class Session {
 	
 	// Settings
 	private boolean endless;
-	public static double ENEMY_HEALTH_SCALE_PER_LEVEL = 0.1, ENEMY_DAMAGE_SCALE_PER_LEVEL = 0.05,
+	public static double ENEMY_HEALTH_SCALE_PER_LEVEL = 0.1, ENEMY_DAMAGE_SCALE_PER_LEVEL = 0.03,
 			GOLD_REDUCTION_PER_LEVEL = 0.1, FIGHT_TIME_REDUCTION_PER_LEVEL = 0.1;
 	private int enemyHealthScale, enemyDamageScale, coinReduction, fightTimeReduction;
 	private int notoriety;
@@ -539,7 +539,7 @@ public class Session {
 			if (!canSetInstance(next)) {
 				return false;
 			}
-			this.inst.cleanup();
+			this.inst.cleanup(false);
 		}
 		this.inst = next;
 		next.start();
@@ -767,8 +767,11 @@ public class Session {
 		return saveSlot;
 	}
 	
-	public void cleanup() {
-		inst.cleanup();
+	public void cleanup(boolean pluginDisable) {
+		inst.cleanup(pluginDisable);
+
+		// Remove blocks from node select
+		region.cleanupAll();
 
 		for (Entry<UUID, PlayerSessionData> entry : party.entrySet()) {
 			Player p = Bukkit.getPlayer(entry.getKey());

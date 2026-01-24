@@ -105,8 +105,8 @@ public class ShrineInstance extends EditInventoryInstance {
 	}
 
 	@Override
-	public void cleanup() {
-		super.cleanup();
+	public void cleanup(boolean pluginDisable) {
+		super.cleanup(pluginDisable);
 		blockBottom.setType(Material.EMERALD_BLOCK);
 		blockMiddle.setType(Material.EMERALD_BLOCK);
 		blockTop.setType(Material.AIR);

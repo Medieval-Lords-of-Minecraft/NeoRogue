@@ -113,14 +113,14 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		for (KeyBind bind : KeyBind.values()) {
 			int i = (bind.getInventorySlot() + offset) % inv.getSize();
 			slotTypes.put(i, EquipSlot.KEYBIND);
-			Equipment a = data.getEquipment(EquipSlot.KEYBIND)[bind.getDataSlot()];
-			if (a == null && data.getAbilitiesEquipped() >= data.getMaxAbilities()) {
+			Equipment eq = data.getEquipment(EquipSlot.KEYBIND)[bind.getDataSlot()];
+			if (eq == null && data.getAbilitiesEquipped() >= data.getMaxAbilities()) {
 				contents[i] = createMaxedAbilitiesIcon(data, bind.getDataSlot());
 				continue;
 			}
-			contents[i] = a != null
-					? addNbt(addBindLore(a.getItem(), i, bind.getDataSlot()), a.getId(),
-							a.isUpgraded(), bind.getDataSlot())
+			contents[i] = eq != null
+					? addNbt(addBindLore(eq.getItem(), i, bind.getDataSlot()), eq.getId(),
+							eq.isUpgraded(), bind.getDataSlot())
 					: addNbt(bind.getItem(), bind.getDataSlot());
 		}
 
@@ -494,6 +494,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 			for (int s : slots) {
 				ItemStack iter = contents[s];
 				NBTItem nbti = new NBTItem(iter);
+
 				if (nbti.hasTag("equipId") || !nbti.hasTag("openSlot")) continue;
 				if (type == EquipmentType.ABILITY && !data.canEquipAbility()) {
 					createMaxedAbilitiesIcon(data, nbti.getInteger("dataSlot"));
@@ -697,12 +698,12 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 			return createHotbarIcon(slot);
 		}
 		case KEYBIND: 
+		KeyBind bind = KeyBind.getBindFromSlot(slot - 18);
 		if (data.getAbilitiesEquipped() >= data.getMaxAbilities()) {
-			return createMaxedAbilitiesIcon(data, slot);
+			return createMaxedAbilitiesIcon(data, bind.getDataSlot());
 		}
 		else {
-		KeyBind bind = KeyBind.getBindFromSlot(slot - 18);
-		return addNbt(bind.getItem(), bind.getDataSlot());
+			return addNbt(bind.getItem(), bind.getDataSlot());
 		}
 		case OFFHAND: return createOffhandIcon();
 		default: return null; // should never happen

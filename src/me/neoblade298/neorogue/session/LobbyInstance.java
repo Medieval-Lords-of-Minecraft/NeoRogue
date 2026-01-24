@@ -336,7 +336,7 @@ public class LobbyInstance extends Instance {
 	}
 
 	@Override
-	public void cleanup() {
+	public void cleanup(boolean pluginDisable) {
 		holo.remove();
 	}
 

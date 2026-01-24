@@ -98,8 +98,8 @@ public class ShopInstance extends EditInventoryInstance {
 	}
 
 	@Override
-	public void cleanup() {
-		super.cleanup();
+	public void cleanup(boolean pluginDisable) {
+		super.cleanup(pluginDisable);
 		holo.remove();
 	}
 

@@ -1039,7 +1039,7 @@ public abstract class FightInstance extends Instance {
 	}
 	
 	@Override
-	public void cleanup() {
+	public void cleanup(boolean pluginDisable) {
 		cleanupHelper();
 	}
 

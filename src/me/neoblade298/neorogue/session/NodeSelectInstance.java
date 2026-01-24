@@ -111,10 +111,10 @@ public class NodeSelectInstance extends EditInventoryInstance {
 	}
 	
 	@Override
-	public void cleanup() {
-		super.cleanup();
+	public void cleanup(boolean pluginDisable) {
+		super.cleanup(pluginDisable);
 		task.cancel();
-		s.getRegion().cleanup(s.getNode(), this);
+		s.getRegion().cleanup(s.getNode(), this, false);
 		
 		// Regular players have flight removed when fight starts, spectators don't need this since they're invulnerable
 		for (UUID uuid : s.getSpectators().keySet()) {
@@ -207,6 +207,11 @@ public class NodeSelectInstance extends EditInventoryInstance {
 		} else {
 			super.handleInteractEvent(e);
 		}
+	}
+
+	// Used to remove blocks placed for node select
+	public static void cleanBlocks() {
+
 	}
 	
 	@Override

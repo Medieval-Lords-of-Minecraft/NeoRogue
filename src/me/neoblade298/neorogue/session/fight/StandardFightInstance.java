@@ -187,8 +187,8 @@ public class StandardFightInstance extends FightInstance {
 	}
 
 	@Override
-public void cleanup() {
-		super.cleanup();
+public void cleanup(boolean pluginDisable) {
+		super.cleanup(pluginDisable);
 		timeBar.removeAll();
 		scoreBar.removeAll();
 	}

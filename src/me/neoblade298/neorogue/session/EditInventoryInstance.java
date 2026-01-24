@@ -106,7 +106,7 @@ public abstract class EditInventoryInstance extends Instance {
 	}
 
 	@Override
-	public void cleanup() {
+	public void cleanup(boolean pluginDisable) {
 		for (PlayerSessionData data : s.getParty().values()) {
 			if (data.isViewingMap()) {
 				data.stopViewingMap();

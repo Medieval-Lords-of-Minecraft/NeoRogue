@@ -65,8 +65,8 @@ public class LoseInstance extends EditInventoryInstance {
 	}
 
 	@Override
-	public void cleanup() {
-		super.cleanup();
+	public void cleanup(boolean pluginDisable) {
+		super.cleanup(pluginDisable);
 	}
 
 	@Override

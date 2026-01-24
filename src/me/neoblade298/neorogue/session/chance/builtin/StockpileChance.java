@@ -38,7 +38,7 @@ public class StockpileChance extends ChanceSet {
 		stage.addChoice(choice);
 		
 		choice = new ChanceChoice(Material.IRON_SWORD, "Fight",
-				"Everyone takes <red>25%</red> of their max health as damage, and everyone gets to pick from 3 random rare equipment.",
+				"Everyone takes <red>25%</red> of their max health as damage, and everyone gets to pick from 3 random equipment of increased rarity.",
 				"Somebody lacks the health to do this!", (s, inst, unused) -> {
 					for (PlayerSessionData pd : s.getParty().values()) {
 						if ((pd.getHealth() / pd.getMaxHealth()) <= 0.25) return false;

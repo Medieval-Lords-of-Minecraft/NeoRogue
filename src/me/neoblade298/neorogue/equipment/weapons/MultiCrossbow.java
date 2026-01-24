@@ -22,7 +22,7 @@ public class MultiCrossbow extends Bow {
 	public MultiCrossbow(boolean isUpgraded) {
 		super(ID, "Multi-Crossbow", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofBow(isUpgraded ? 60 : 50, 1, 0, 6, 0, 2));
+				EquipmentProperties.ofBow(isUpgraded ? 60 : 50, 1, 0, 6, 0, 1));
 		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 
