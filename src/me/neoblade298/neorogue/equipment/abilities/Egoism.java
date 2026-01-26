@@ -8,8 +8,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -19,13 +21,14 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Egoism extends Equipment {
 	private static final String ID = "Egoism";
-	private int healthRegen, stealth;
+	private int healthRegen, stealth, cooldown = 5;
 	
 	public Egoism(boolean isUpgraded) {
 		super(ID, "Egoism", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.none());
-		healthRegen = isUpgraded ? 6 : 4;
+		healthRegen = isUpgraded ? 3 : 2;
 		stealth = isUpgraded ? 2 : 1;
+		properties.add(PropertyType.COOLDOWN, cooldown);
 	}
 	
 	public static Equipment get() {
@@ -34,7 +37,10 @@ public class Egoism extends Equipment {
 
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		ActionMeta am = new ActionMeta();
 		data.addTrigger(id, Trigger.EVADE, (pdata, in) -> {
+			if (am.getTime() > System.currentTimeMillis()) return TriggerResult.keep();
+			am.setTime(System.currentTimeMillis() + (cooldown * 1000));
 			// Regen health over 10 seconds (10 player ticks)
 			data.addTask(new BukkitRunnable() {
 				private int count = 0;

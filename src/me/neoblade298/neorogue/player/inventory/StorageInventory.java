@@ -99,6 +99,12 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 			);
 		}
 
+		// Ignore gray panes
+		if (e.getCurrentItem() != null && e.getCurrentItem().getType() == Material.GRAY_STAINED_GLASS_PANE) {
+			e.setCancelled(true);
+			return;
+		}
+
 		NBTItem nclicked = e.getCurrentItem() != null ? new NBTItem(e.getCurrentItem()) : null;
 		NBTItem ncursor = !e.getCursor().isEmpty() ? new NBTItem(e.getCursor()) : null;
 		

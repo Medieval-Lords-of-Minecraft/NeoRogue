@@ -41,7 +41,7 @@ public class Firefly extends Ammunition {
 	
 	@Override
 	public void onStart(ProjectileInstance inst) {
-		inst.getVelocity().add(new Vector(0, 0.08, 0));
+		inst.getVelocity().multiply(0.08);
 	}
 
 	@Override
@@ -53,7 +53,7 @@ public class Firefly extends Ammunition {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.TIPPED_ARROW, "Launches in an arc.");
+		item = createItem(Material.TIPPED_ARROW, "Flies slightly faster than normal");
 		PotionMeta pm = (PotionMeta) item.getItemMeta();
 		pm.setColor(Color.RED);
 		item.setItemMeta(pm);
