@@ -31,12 +31,13 @@ public class Exhaustion extends Artifact {
 	@Override
 	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
 		data.addTrigger(id, Trigger.WIN_FIGHT, (pdata, in) -> {
-			if (ai.getAmount() == 1) {
+			data.getSessionData().removeArtifact(this);
+			if (ai.getAmount() <= 0) {
 				data.getSessionData().addMaxAbilities(1);
+				return TriggerResult.remove();
 			}
 			Util.msgRaw(p, hoverable.append(Component.text(" was removed from your inventory", NamedTextColor.GRAY)));
-			data.getSessionData().removeArtifact(this);
-			return TriggerResult.remove();
+			return TriggerResult.keep();
 		});
 	}
 	
@@ -51,6 +52,7 @@ public class Exhaustion extends Artifact {
 	
 	@Override
 	public void setupItem() {
-		item = createItem(Material.DEAD_FIRE_CORAL, "Decreases max abilities by <white>1</white>. Disappears after <white>3</white> fights.");
+		item = createItem(Material.DEAD_FIRE_CORAL, "Decreases max abilities by <white>1</white> when you have at least one. " + 
+			"Removes one of itself after after <white>1</white> fight.");
 	}
 }

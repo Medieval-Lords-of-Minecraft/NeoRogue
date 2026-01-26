@@ -125,7 +125,7 @@ public class TwinShiv extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.IRON_NUGGET,
 				"On cast, fire a projectile that deals " + GlossaryTag.PIERCING.tag(this, damage, true) + " damage. Recast to fire " +
-				"a second projectile that does the same. If both hit the same target, deal " + GlossaryTag.PIERCING.tag(this, bonus, true)
-				+ " additional damage.");
+				"a second projectile that does the same. If both hit the same target, deal an additional " + GlossaryTag.PIERCING.tag(this, bonus, true)
+				+ " damage.");
 	}
 }

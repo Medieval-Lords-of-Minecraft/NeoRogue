@@ -3,10 +3,8 @@ package me.neoblade298.neorogue.equipment.accessories;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neorogue.DescUtil;
-import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.AmmunitionInstance;
 import me.neoblade298.neorogue.equipment.BowProjectile;
@@ -33,7 +31,7 @@ import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroupEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreLaunchProjectileGroupEvent;
 
 public class MagicQuiver extends Equipment {
 	private static final String ID = "MagicQuiver";
@@ -54,20 +52,15 @@ public class MagicQuiver extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		StandardPriorityAction action = new StandardPriorityAction(id);
+		ProjectileGroup group = new ProjectileGroup(new MagicQuiverProjectile(data, this, slot));
 
 		action.setAction((pdata, in) -> {
-			ProjectileGroup group = new ProjectileGroup(new MagicQuiverProjectile(data, this, slot));
-			LaunchProjectileGroupEvent ev = (LaunchProjectileGroupEvent) in;
+			PreLaunchProjectileGroupEvent ev = (PreLaunchProjectileGroupEvent) in;
 			if (!ev.isBasicAttack()) return TriggerResult.keep();
 			action.addCount(1);
 			LivingEntity trg = TargetHelper.getNearest(p, tp);
 			if (action.getCount() >= thres && data.hasAmmoInstance() && trg != null) {
-				data.addTask(new BukkitRunnable() {
-					public void run() {
-						group.start(data);
-					}
-				}.runTaskLater(NeoRogue.inst(), 5));
-				action.addCount(-thres);
+				data.addExtraShot(group);
 			}
 			return TriggerResult.keep();
 		});

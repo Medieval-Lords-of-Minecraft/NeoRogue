@@ -55,7 +55,7 @@ public class SilentSteps extends Equipment {
 			if (!pdata.hasStatus(StatusType.STEALTH)) return TriggerResult.keep();
 			PreDealDamageEvent ev = (PreDealDamageEvent) in;
 			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
-					new Buff(pdata, damage * pdata.getStatus(StatusType.STEALTH).getStacks(), 0, StatTracker.damageBuffAlly(buffId, this)));
+					new Buff(pdata, damage, 0, StatTracker.damageBuffAlly(buffId, this)));
 			return TriggerResult.keep();
 		});
 	}
@@ -64,6 +64,6 @@ public class SilentSteps extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.LEATHER_BOOTS,
 				"Passive. Whenever you receive " + GlossaryTag.STEALTH.tag(this) + ", increase its duration by <yellow>" + duration + "</yellow>." +
-				" Damage dealt is increased by <yellow>" + damage + "</yellow> per stack of " + GlossaryTag.STEALTH.tag(this) +".");
+				" Damage dealt is increased by <yellow>" + damage + "</yellow> if you have " + GlossaryTag.STEALTH.tag(this) +".");
 	}
 }

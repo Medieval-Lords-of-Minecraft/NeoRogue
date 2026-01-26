@@ -5,7 +5,6 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.equipment.Ammunition;
@@ -41,14 +40,13 @@ public class Firefly extends Ammunition {
 	
 	@Override
 	public void onStart(ProjectileInstance inst) {
-		inst.getVelocity().multiply(0.08);
+		inst.getVelocity().multiply(1.2);
 	}
 
 	@Override
 	public void onTick(Player p, ProjectileInstance proj, int interpolation) {
 		if (interpolation % 2 == 0) return;
 		pc.play(p, proj.getLocation());
-		proj.getVelocity().add(new Vector(0, -0.002, 0));
 	}
 
 	@Override

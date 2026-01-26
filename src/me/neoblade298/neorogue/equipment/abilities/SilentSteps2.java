@@ -7,13 +7,17 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
+import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
 public class SilentSteps2 extends Equipment {
 	private static final String ID = "SilentSteps2";
@@ -38,13 +42,22 @@ public class SilentSteps2 extends Equipment {
 			ev.getDurationBuffList().add(new Buff(data, duration, 0, BuffStatTracker.ignored(this)));
 			return TriggerResult.keep();
 		});
+		
+		
+		data.addTrigger(ID, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
+			if (!pdata.hasStatus(StatusType.STEALTH)) return TriggerResult.keep();
+			PreDealDamageEvent ev = (PreDealDamageEvent) in;
+			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+					new Buff(pdata, damage, 0, StatTracker.damageBuffAlly(id + slot, this)));
+			return TriggerResult.keep();
+		});
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LEATHER_BOOTS,
-				"Passive. Whenever you become " + GlossaryTag.STEALTH.tag(this) + ", increase its duration by <white>" + duration + "</white>"
+				"Passive. Whenever you receive " + GlossaryTag.STEALTH.tag(this) + ", increase its duration by <white>" + duration + "</white>"
 						+ " and its stacks by <white>1</white>" +
-						" Damage dealt is increased by <yellow>" + damage + "</yellow> per stack of " + GlossaryTag.STEALTH.tag(this) +".");
+						" Damage dealt is increased by <yellow>" + damage + "</yellow> if you have " + GlossaryTag.STEALTH.tag(this) +".");
 	}
 }

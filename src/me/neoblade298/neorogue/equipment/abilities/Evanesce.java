@@ -45,11 +45,6 @@ public class Evanesce extends Equipment {
 	}
 
 	@Override
-	public void setupReforges() {
-		addReforge(WeaponEnchantmentElectrified.get(), ThunderclapAndFlash.get());
-	}
-
-	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.EVADE, (pdata, in) -> {
 			EvadeEvent ev = (EvadeEvent) in;

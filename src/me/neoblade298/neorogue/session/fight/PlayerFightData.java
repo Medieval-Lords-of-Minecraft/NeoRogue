@@ -33,9 +33,11 @@ import me.neoblade298.neorogue.equipment.AmmunitionInstance;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
+import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.CastType;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
+import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.TaskChain;
 import me.neoblade298.neorogue.session.fight.TickAction.TickResult;
@@ -85,6 +87,7 @@ public class PlayerFightData extends FightData {
 	private ArrayList<String> boardLines;
 	private Player p;
 	private long nextAttack, nextOffAttack;
+	private ArrayList<ProjectileGroup> extraShots = new ArrayList<ProjectileGroup>();
 
 	private double stamina, mana;
 	private double maxStamina, maxMana, maxHealth;
@@ -162,6 +165,28 @@ public class PlayerFightData extends FightData {
 			hasSprinted = true;
 			return TriggerResult.keep();
 		});
+
+		if (data.getPlayerClass() == EquipmentClass.ARCHER) {
+			addTrigger("EXTRA_ARROWS", Trigger.LAUNCH_PROJECTILE_GROUP, (pdata, in) -> {
+				if (extraShots.isEmpty()) return TriggerResult.keep();
+				int period = Math.min(1, 10 / extraShots.size());
+				PlayerFightData fd = this;
+
+				ArrayList<ProjectileGroup> finalExtraShots = extraShots;
+				extraShots = new ArrayList<ProjectileGroup>();
+				addTask(new BukkitRunnable() {
+					public void run() {
+						if (finalExtraShots.isEmpty()) {
+							this.cancel();
+							return;
+						}
+						ProjectileGroup pg = finalExtraShots.removeFirst();
+						pg.start(fd);
+					}
+				}.runTaskTimer(NeoRogue.inst(), 10L, period));
+				return TriggerResult.keep();
+			});
+		}
 
 		// If the player has a TOGGLE_FLIGHT trigger, allow them to fly
 		if (triggers.containsKey(Trigger.TOGGLE_FLIGHT)) {
@@ -328,6 +353,11 @@ public class PlayerFightData extends FightData {
 				continue;
 			boardLines.add(createHealthBar(p));
 		}
+	}
+
+	// Used for archer, like Magic Quiver
+	public void addExtraShot(ProjectileGroup pg) {
+		extraShots.add(pg);
 	}
 
 	private static String createHealthBar(Player p) {

@@ -3,9 +3,7 @@ package me.neoblade298.neorogue.equipment.weapons;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 
-import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Bow;
 import me.neoblade298.neorogue.equipment.BowProjectile;
@@ -52,11 +50,7 @@ public class DoubleTap extends Bow {
 			if (am.getCount() >= THRESHOLD) {
 				ProjectileGroup second = new ProjectileGroup(new BowProjectile(data, ev.getEntity().getVelocity(), this, id + slot).setDamageBonus(-properties.get(PropertyType.DAMAGE) / 2));
 				am.addCount(-THRESHOLD);
-				data.addTask(new BukkitRunnable() {
-					public void run() {
-						second.start(data);
-					}
-				}.runTaskLater(NeoRogue.inst(), 5));
+				data.addExtraShot(second);
 			}
 			proj.start(data);
 
