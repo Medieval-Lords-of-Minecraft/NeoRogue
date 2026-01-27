@@ -22,7 +22,7 @@ public class ButterflyKnife2 extends Equipment {
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(base, 1.25, 0.2, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
 		
-		dmg = isUpgraded ? 40 : 25;
+		dmg = isUpgraded ? 25 : 15;
 		stam = isUpgraded ? 40 : 50;
 	}
 	

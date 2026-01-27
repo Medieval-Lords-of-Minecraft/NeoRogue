@@ -73,6 +73,7 @@ import me.neoblade298.neorogue.equipment.accessories.RingOfNature;
 import me.neoblade298.neorogue.equipment.accessories.RingOfNight;
 import me.neoblade298.neorogue.equipment.accessories.RingOfScalding;
 import me.neoblade298.neorogue.equipment.accessories.RingOfSharpness;
+import me.neoblade298.neorogue.equipment.accessories.RingOfTheEagle;
 import me.neoblade298.neorogue.equipment.accessories.SaboteursRing;
 import me.neoblade298.neorogue.equipment.accessories.ShellTrinket;
 import me.neoblade298.neorogue.equipment.accessories.SigilOfTheIronLegion;
@@ -209,6 +210,7 @@ import me.neoblade298.neorogue.equipment.offhands.IronMaiden;
 import me.neoblade298.neorogue.equipment.offhands.LeadingKnife;
 import me.neoblade298.neorogue.equipment.offhands.LeatherBracer;
 import me.neoblade298.neorogue.equipment.offhands.LeviathanAxe;
+import me.neoblade298.neorogue.equipment.offhands.MercurialGloves;
 import me.neoblade298.neorogue.equipment.offhands.MirrorBracer;
 import me.neoblade298.neorogue.equipment.offhands.PaladinsShield;
 import me.neoblade298.neorogue.equipment.offhands.PalmBlast;
@@ -218,6 +220,7 @@ import me.neoblade298.neorogue.equipment.offhands.RedFan;
 import me.neoblade298.neorogue.equipment.offhands.RubyArmament;
 import me.neoblade298.neorogue.equipment.offhands.SmallShield;
 import me.neoblade298.neorogue.equipment.offhands.SpikyShield;
+import me.neoblade298.neorogue.equipment.offhands.TomeOfGravity;
 import me.neoblade298.neorogue.equipment.offhands.TomeOfScorchedEarth;
 import me.neoblade298.neorogue.equipment.offhands.TomeOfWeakness;
 import me.neoblade298.neorogue.equipment.offhands.VeiledHourglass;
@@ -343,6 +346,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Cull(b);
 			new CurseMark(b);
 			new DangerClose(b);
+			new DangerousGame(b);
 			new DarkBolt(b);
 			new DarkBolt2(b);
 			new DarkLance(b);
@@ -352,6 +356,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new DarkShroud(b);
 			new DarkTorrent(b);
 			new Deliberation(b);
+			new DeliberantPace(b);
 			new Demoralize(b);
 			new DensityOrb(b);
 			new Depletion(b);
@@ -396,6 +401,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Farewell(b);
 			new FeelNoPain(b);
 			new Ferocity(b);
+			new FerociousDraw(b);
 			new Fireball(b);
 			new Fireball2(b);
 			new Fireblast(b);
@@ -440,6 +446,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Heartbeat(b);
 			new HerculeanStrength(b);
 			new HerosLanding(b);
+			new Hellfire(b);
 			new HexCurse(b);
 			new HexCurse2(b);
 			new HexingShot(b);
@@ -535,6 +542,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new ShatteringShot(b);
 			new ShoulderBash(b);
 			new Sear(b);
+			new Scavenger(b);
 			new SelfDestruct(b);
 			new Setup(b);
 			new Sidestep(b);
@@ -626,6 +634,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new RingOfNature(b);
 			new RingOfScalding(b);
 			new RingOfSharpness(b);
+			new RingOfTheEagle(b);
 			new SaboteursRing(b);
 			new RingOfNight(b);
 			new SpiritShard(b);
@@ -691,6 +700,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new IronMaiden(b);
 			new LeadingKnife(b);
 			new LeatherBracer(b);
+			new MercurialGloves(b);
 			new MirrorBracer(b);
 			new PaladinsShield(b);
 			new PocketWatch(b);
@@ -701,6 +711,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new RubyArmament(b);
 			new SmallShield(b);
 			new SpikyShield(b);
+			new TomeOfGravity(b);
 			new TomeOfScorchedEarth(b);
 			new TomeOfWeakness(b);
 			new VeiledHourglass(b);
@@ -712,6 +723,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new AshenHeadhunter(b);
 			new AshenWand(b);
 			new AshenWand2(b);
+			new AthenaLongbow(b);
 			new AvalonianMace(b);
 			new BarbedRocket(b);
 			new BasicBow(b);
@@ -734,6 +746,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new EarthStaff(b);
 			new EarthenLeatherGauntlets(b);
 			new ElectromagneticKnife(b);
+			new EnchantedCrystalArrow(b);
 			new EnergizedRazor(b);
 			new EnfeeblingWand(b);
 			new EtherealKnife(b);

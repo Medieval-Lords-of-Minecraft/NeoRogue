@@ -146,7 +146,7 @@ public class CorpseExplosion extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FERMENTED_SPIDER_EYE, 
-			"When you kill an enemy with " + GlossaryTag.POISON.tag(this) + ", spawn <white>2</white> poison circles near the corpse. " +
+			"Passive. When you kill an enemy with " + GlossaryTag.POISON.tag(this) + " damage, spawn <white>2</white> poison circles near the corpse. " +
 			"Each circle lasts <white>" + duration + "</white> seconds and applies " + 
 			GlossaryTag.POISON.tag(this, poisonPerSecond, true) + " per second to nearby enemies.");
 	}

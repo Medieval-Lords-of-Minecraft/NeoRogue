@@ -32,7 +32,7 @@ public class RingOfSharpness extends Equipment {
 	@Override
 	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		String buffId = UUID.randomUUID().toString();
-		data.addDamageBuff(DamageBuffType.of(DamageCategory.PIERCING), Buff.increase(data, buff * 0.01, StatTracker.damageBuffAlly(buffId, this)));
+		data.addDamageBuff(DamageBuffType.of(DamageCategory.PIERCING), Buff.multiplier(data, buff * 0.01, StatTracker.damageBuffAlly(buffId, this)));
 	}
 
 	@Override

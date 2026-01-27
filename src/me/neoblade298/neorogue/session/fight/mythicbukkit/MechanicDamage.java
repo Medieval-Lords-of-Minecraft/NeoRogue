@@ -73,7 +73,7 @@ public class MechanicDamage implements ITargetedEntitySkill {
 			FightData fd = asParent ? FightInstance.getFightData(am.getParent().get().getBukkitEntity())
 					: FightInstance.getFightData(data.getCaster().getEntity().getUniqueId());
 			DamageMeta meta = new DamageMeta(fd);
-			final double mult = 1 + (level * (0.03 + (Session.ENEMY_DAMAGE_SCALE_PER_LEVEL + fd.getInstance().getSession().getEnemyDamageScale())));
+			final double mult = 1 + (level * (0.03 + (Session.ENEMY_DAMAGE_SCALE_PER_LEVEL * fd.getInstance().getSession().getEnemyDamageScale())));
 			for (Entry<DamageType, Double> ent : damage.entrySet()) {
 				meta.addDamageSlice(new DamageSlice(fd, ent.getValue() * mult, ent.getKey(), DamageStatTracker.ignored("MythicDamage1")));
 			}
