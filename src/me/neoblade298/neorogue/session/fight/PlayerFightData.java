@@ -82,6 +82,7 @@ public class PlayerFightData extends FightData {
 																									// cooldowns
 	private HashMap<Integer, HashMap<Trigger, ArrayList<PriorityAction>>> slotBasedTriggers = new HashMap<Integer, HashMap<Trigger, ArrayList<PriorityAction>>>();
 	private LinkedList<Listener> listeners = new LinkedList<Listener>();
+	private HashMap<UUID, Marker> markers = new HashMap<UUID, Marker>();
 	private HashMap<UUID, Trap> traps = new HashMap<UUID, Trap>();
 	private HashMap<UUID, Rift> rifts = new HashMap<UUID, Rift>();
 	private ArrayList<String> boardLines;
@@ -840,6 +841,16 @@ public class PlayerFightData extends FightData {
 		trap.activate();
 	}
 
+	public void addMarker(Marker marker) {
+		markers.put(marker.getUniqueId(), marker);
+		marker.activate();
+	}
+
+	public void removeMarker(Marker marker) {
+		marker.deactivate();
+		markers.remove(marker.getUniqueId());
+	}
+
 	public void removeTrap(Trap trap) {
 		trap.deactivate();
 		traps.remove(trap.getUniqueId());
@@ -860,19 +871,6 @@ public class PlayerFightData extends FightData {
 	public void removeRift(Rift rift) {
 		rift.deactivate();
 		rifts.remove(rift.getUniqueId());
-	}
-
-	public void removeMarker(Marker marker) {
-		UUID uuid = marker.getUniqueId();
-		if (marker instanceof Trap) {
-			traps.remove(uuid);
-		}
-		else if (marker instanceof Rift) {
-			rifts.remove(uuid);
-		}
-		else {
-			Bukkit.getLogger().warning("[NeoRogue] " + p.getName() + " tried to remove marker " + uuid + " but it was not a trap or rift!");
-		}
 	}
 
 	public HashMap<UUID, Rift> getRifts() {

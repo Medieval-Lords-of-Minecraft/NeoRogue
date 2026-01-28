@@ -84,6 +84,7 @@ public class Scavenger extends Equipment {
 		}
 		
 		private void collect() {
+			Sounds.equip.play(player, player);
 			// Grant stamina
 			owner.addStamina(staminaReward);
 			
