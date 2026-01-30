@@ -1,6 +1,5 @@
 package me.neoblade298.neorogue.session;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -16,8 +15,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 public class SessionSetting {
     public static HashMap<Integer, SessionSetting> settings = new HashMap<Integer, SessionSetting>();
-
-    private static final DecimalFormat df = new DecimalFormat("#");
     protected SettingEffect effect;
     protected final String title;
     protected SettingValueRetriever valueRetriever;
@@ -57,7 +54,7 @@ public class SessionSetting {
 
         settings.put(18, new SessionNotorietySetting(18, "Enemy Health Scaling",
                 Component.text("Enemy health scales up an additional ", NamedTextColor.GRAY)
-                        .append(Component.text(df.format(Session.ENEMY_HEALTH_SCALE_PER_LEVEL) + "%", NamedTextColor.YELLOW))
+                        .append(Component.text((int) (Session.ENEMY_HEALTH_SCALE_PER_LEVEL * 100) + "%", NamedTextColor.YELLOW))
                         .append(Component.text(" per level for every region you visit.")),
                 Material.GREEN_DYE, 5, (s, leftClick) -> {
                     s.setEnemyHealthScale(s.getEnemyHealthScale() + (leftClick ? 1 : -1));
@@ -68,7 +65,7 @@ public class SessionSetting {
 
         settings.put(19, new SessionNotorietySetting(19, "Enemy Damage Scaling",
                 Component.text("Enemy damage scales up an additional ", NamedTextColor.GRAY)
-                        .append(Component.text(df.format(Session.ENEMY_DAMAGE_SCALE_PER_LEVEL) + "%", NamedTextColor.YELLOW))
+                        .append(Component.text((int) (Session.ENEMY_DAMAGE_SCALE_PER_LEVEL * 100) + "%", NamedTextColor.YELLOW))
                         .append(Component.text(" per level for every region you visit.")),
                 Material.RED_DYE, 5, (s, leftClick) -> {
                     s.setEnemyDamageScale(s.getEnemyDamageScale() + (leftClick ? 1 : -1));
@@ -78,7 +75,7 @@ public class SessionSetting {
                 }));
 
         settings.put(20, new SessionNotorietySetting(20, "Coin Reduction", Component.text("Fights give ", NamedTextColor.GRAY)
-                .append(Component.text(df.format(Session.COIN_REDUCTION_PER_LEVEL) + "%", NamedTextColor.YELLOW)).append(Component.text(" fewer coins per level.")),
+                .append(Component.text((int) (Session.COIN_REDUCTION_PER_LEVEL * 100) + "%", NamedTextColor.YELLOW)).append(Component.text(" fewer coins per level.")),
                 Material.GOLD_NUGGET, 5, (s, leftClick) -> {
                     s.setCoinReduction(s.getCoinReduction() + (leftClick ? 1 : -1));
                 },
@@ -88,7 +85,7 @@ public class SessionSetting {
 
         settings.put(21, new SessionNotorietySetting(21, "Fight Time Reduction",
                 Component.text("Decrease the time limit for fights by ", NamedTextColor.GRAY)
-                        .append(Component.text(df.format(Session.FIGHT_TIME_REDUCTION_PER_LEVEL) + "%", NamedTextColor.YELLOW)).append(Component.text(" per level.")),
+                        .append(Component.text((int) (Session.FIGHT_TIME_REDUCTION_PER_LEVEL * 100) + "%", NamedTextColor.YELLOW)).append(Component.text(" per level.")),
                 Material.CLOCK, 5, (s, leftClick) -> {
                     s.setFightTimeReduction(s.getFightTimeReduction() + (leftClick ? 1 : -1));
                 },

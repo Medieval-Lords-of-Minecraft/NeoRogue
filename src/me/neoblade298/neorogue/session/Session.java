@@ -83,7 +83,7 @@ public class Session {
 	
 	// Settings
 	private boolean endless;
-	public static double ENEMY_HEALTH_SCALE_PER_LEVEL = 0.1, ENEMY_DAMAGE_SCALE_PER_LEVEL = 0.03,
+	public static double ENEMY_HEALTH_SCALE_PER_LEVEL = 0.05, ENEMY_DAMAGE_SCALE_PER_LEVEL = 0.03,
 			COIN_REDUCTION_PER_LEVEL = 0.15, FIGHT_TIME_REDUCTION_PER_LEVEL = 0.05;
 	private int enemyHealthScale, enemyDamageScale, coinReduction, fightTimeReduction;
 	private int notoriety;
