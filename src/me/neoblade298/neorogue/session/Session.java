@@ -320,7 +320,12 @@ public class Session {
 	public void addSpectator(Player p) {
 		this.spectators.put(p.getUniqueId(), new MapViewer(this, p.getUniqueId()));
 		SessionManager.addToSession(p.getUniqueId(), this);
-		broadcast("<yellow>" + p.getName() + "</yellow> started spectating!");
+		if (inst instanceof LobbyInstance) {
+			((LobbyInstance) inst).broadcast("<yellow>" + p.getName() + "</yellow> started spectating!");
+		}
+		else {
+			broadcast("<yellow>" + p.getName() + "</yellow> started spectating!");
+		}
 		p.setGameMode(GameMode.ADVENTURE);
 		p.teleport(inst.spawn);
 		p.setInvulnerable(true);

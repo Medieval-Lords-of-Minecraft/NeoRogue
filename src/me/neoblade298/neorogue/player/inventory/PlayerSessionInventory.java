@@ -455,23 +455,28 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 				displayError("You can't equip this item in this slot!", false);
 				return;
 			}
-			clearHighlights();
 
-			// If swapping equipment with equipment, remove that equipment
-			if (!nclicked.hasTag("equipId")) {
+			// Not swapping equipment, remove the cursor item
+			boolean isSwapping = nclicked.hasTag("equipId");
+			if (!isSwapping) {
 				p.setItemOnCursor(null);
 			}
+			// If swapping equipment with equipment, remove that equipment
 			else {
 				if (isBindable(type)) clicked = removeBindLore(clicked);
+				clearHighlights();
 				data.removeEquipment(type, nclicked.getInteger("dataSlot"));
 				p.setItemOnCursor(clicked);
 				setHighlights(Equipment.get(nclicked.getString("equipId"), false).getType());
 			}
 
+			// Place equipment into clicked slot
 			data.setEquipment(type, nclicked.getInteger("dataSlot"), eq);
 			p.playSound(p, Sound.ITEM_ARMOR_EQUIP_DIAMOND, 1F, 1F);
-			if (isBindable(type)) cursor = addBindLore(cursor, slot, nclicked.getInteger("dataSlot"));
+			if (isBindable(type))
+				cursor = addBindLore(cursor, slot, nclicked.getInteger("dataSlot"));
 			inv.setItem(slot, addNbt(cursor, nclicked.getInteger("dataSlot")));
+			if (!isSwapping) clearHighlights();
 		}
 		else {
 			p.playSound(p, Sound.ITEM_ARMOR_EQUIP_DIAMOND, 1F, 1F);

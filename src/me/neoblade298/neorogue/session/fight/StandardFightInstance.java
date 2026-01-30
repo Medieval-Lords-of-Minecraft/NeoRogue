@@ -91,9 +91,10 @@ public class StandardFightInstance extends FightInstance {
 			@Override
 			public void run() {
 				time++;
-				timeBar.setProgress(time / ((1 - (s.getFightTimeReduction() * Session.FIGHT_TIME_REDUCTION_PER_LEVEL)) * fightScore.getThreshold()));
+				double fightTimeMult = (1 - (s.getFightTimeReduction() * Session.FIGHT_TIME_REDUCTION_PER_LEVEL));
+				timeBar.setProgress(time / (fightScore.getThreshold() * fightTimeMult));
 
-				if (time >= fightScore.getThreshold()) {
+				if (time >= fightScore.getThreshold() * fightTimeMult) {
 					if (fightScore.getNext() == null) {
 						this.cancel();
 					} else {

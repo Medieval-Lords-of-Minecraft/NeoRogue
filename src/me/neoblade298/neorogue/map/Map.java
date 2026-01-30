@@ -512,12 +512,7 @@ public class Map {
 			for (int j = y - 1; j < y + 5; j++) {
 				for (int k = z; k <= zp; k++) {
 					Block b = new Location(w, i, j, k).getBlock();
-					if (!b.getType().isOccluding()) {
-						b.setType(Material.BLACK_CONCRETE);
-					}
-					else {
-						b.setType(Material.RED_CONCRETE);
-					}
+					b.setType(Material.BLACK_CONCRETE);
 				}
 			}
 		}

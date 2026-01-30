@@ -105,6 +105,8 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 			return;
 		}
 
+		ItemStack clicked = e.getCurrentItem();
+		ItemStack cursor = e.getCursor();
 		NBTItem nclicked = e.getCurrentItem() != null ? new NBTItem(e.getCurrentItem()) : null;
 		NBTItem ncursor = !e.getCursor().isEmpty() ? new NBTItem(e.getCursor()) : null;
 		
@@ -142,8 +144,11 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 
 			// Picking up an item
 			if (nclicked != null && nclicked.hasTag("equipId") && ncursor == null) {
+				e.setCancelled(true);
 				Equipment eq = Equipment.get(nclicked.getString("equipId"), false);
 				p.playSound(p, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1F);
+				p.setItemOnCursor(e.getCurrentItem());
+				inv.setItem(e.getSlot(), null);
 				if (e.getSlot() == SELL) {
 					pinv.clearHighlights();
 				}
@@ -153,8 +158,8 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 			}
 			// Swapping an item
 			else if (ncursor != null && nclicked != null) {
+				e.setCancelled(true);
 				if (!nclicked.hasTag("equipId") || !ncursor.hasTag("equipId")) {
-					e.setCancelled(true);
 					return;
 				}
 				p.playSound(p, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1F);
@@ -197,11 +202,17 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 				else if (e.getCursor().isSimilar(e.getCurrentItem())) {
 					p.playSound(p, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1F);
 				}
+				
+				inv.setItem(e.getSlot(), cursor);
+				p.setItemOnCursor(clicked);
 			}
 			// dropping an item
 			else if (nclicked == null && ncursor != null) {
+				e.setCancelled(true);
 				p.playSound(p, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1F);
 				pinv.clearHighlights();
+				inv.setItem(e.getSlot(), cursor);
+				p.setItemOnCursor(null);
 			}
 		}
 	}

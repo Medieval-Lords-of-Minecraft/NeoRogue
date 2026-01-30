@@ -30,7 +30,7 @@ public class LightningCloak extends Equipment {
 	public LightningCloak(boolean isUpgraded) {
 		super(ID, "Lightning Cloak", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ARMOR);
-		base = isUpgraded ? 150 : 100;
+		base = isUpgraded ? 250 : 150;
 		threshold = isUpgraded ? 600 : 900;
 		def = 12;
 	}
@@ -54,7 +54,7 @@ public class LightningCloak extends Equipment {
 			if (!ev.isStatus(StatusType.ELECTRIFIED)) return TriggerResult.keep();
 			inst.addCount(ev.getStacks());
 			if (inst.getCount() >= threshold) {
-				data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, def, StatTracker.defenseBuffAlly(buffId, this)));
+				data.addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL), Buff.increase(data, def, StatTracker.defenseBuffAlly(buffId, this)));
 				Util.msg(p, this.hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 				return TriggerResult.remove();
 			}
