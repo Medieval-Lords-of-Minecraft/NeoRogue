@@ -55,7 +55,7 @@ public class SessionSetting {
 
         settings.put(18, new SessionNotorietySetting(18, "Enemy Health Scaling",
                 Component.text("Enemy health scales up an additional ", NamedTextColor.GRAY)
-                        .append(Component.text("5%", NamedTextColor.YELLOW))
+                        .append(Component.text(Session.ENEMY_HEALTH_SCALE_PER_LEVEL + "%", NamedTextColor.YELLOW))
                         .append(Component.text(" per level for every region you visit.")),
                 Material.GREEN_DYE, 5, (s, leftClick) -> {
                     s.setEnemyHealthScale(s.getEnemyHealthScale() + (leftClick ? 1 : -1));
@@ -66,7 +66,7 @@ public class SessionSetting {
 
         settings.put(19, new SessionNotorietySetting(19, "Enemy Damage Scaling",
                 Component.text("Enemy damage scales up an additional ", NamedTextColor.GRAY)
-                        .append(Component.text("1%", NamedTextColor.YELLOW))
+                        .append(Component.text(Session.ENEMY_DAMAGE_SCALE_PER_LEVEL + "%", NamedTextColor.YELLOW))
                         .append(Component.text(" per level for every region you visit.")),
                 Material.RED_DYE, 5, (s, leftClick) -> {
                     s.setEnemyDamageScale(s.getEnemyDamageScale() + (leftClick ? 1 : -1));
@@ -76,8 +76,8 @@ public class SessionSetting {
                 }));
 
         settings.put(20, new SessionNotorietySetting(20, "Coin Reduction", Component.text("Fights give ", NamedTextColor.GRAY)
-                .append(Component.text("10%", NamedTextColor.YELLOW)).append(Component.text(" fewer coins per level.")),
-                Material.GOLD_NUGGET, 3, (s, leftClick) -> {
+                .append(Component.text(Session.COIN_REDUCTION_PER_LEVEL + "%", NamedTextColor.YELLOW)).append(Component.text(" fewer coins per level.")),
+                Material.GOLD_NUGGET, 5, (s, leftClick) -> {
                     s.setCoinReduction(s.getCoinReduction() + (leftClick ? 1 : -1));
                 },
                 (s) -> {
@@ -86,8 +86,8 @@ public class SessionSetting {
 
         settings.put(21, new SessionNotorietySetting(21, "Fight Time Reduction",
                 Component.text("Decrease the time limit for fights by ", NamedTextColor.GRAY)
-                        .append(Component.text("10%", NamedTextColor.YELLOW)).append(Component.text(" per level.")),
-                Material.CLOCK, 3, (s, leftClick) -> {
+                        .append(Component.text(Session.FIGHT_TIME_REDUCTION_PER_LEVEL + "%", NamedTextColor.YELLOW)).append(Component.text(" per level.")),
+                Material.CLOCK, 5, (s, leftClick) -> {
                     s.setFightTimeReduction(s.getFightTimeReduction() + (leftClick ? 1 : -1));
                 },
                 (s) -> {

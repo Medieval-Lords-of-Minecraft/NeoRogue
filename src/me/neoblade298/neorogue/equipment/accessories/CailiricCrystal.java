@@ -61,7 +61,7 @@ public class CailiricCrystal extends Artifact {
 						data.giveEquipment(CailiricCrystal.get(), null, null);
 						Util.msg(data.getPlayer(), Component.empty().append(hoverable).append(
 							SharedUtil.color(
-							"<gray> potency has increased to " + DescUtil.white(inc * (data.getArtifacts().get(id).getAmount() - 1)
+							"<gray> potency has increased to " + DescUtil.white(inc * (data.getArtifacts().get(id).getAmount())
 						)).decoration(TextDecoration.UNDERLINED, State.FALSE)));
 					}
 				}.runTaskLater(NeoRogue.inst(), 10); // Must be delayed else this will trigger twice for some reason

@@ -143,7 +143,7 @@ public class StandardFightInstance extends FightInstance {
 			RewardFightEvent ev = new RewardFightEvent(NodeType.FIGHT);
 			data.trigger(SessionTrigger.REWARD_FIGHT, ev);
 			list.add(new CoinsReward((int) ((1 - (s.getCoinReduction()
-					* Session.GOLD_REDUCTION_PER_LEVEL)) * fightScore.getCoins()) + ev.getBonusGold()));
+					* Session.COIN_REDUCTION_PER_LEVEL)) * fightScore.getCoins()) + ev.getBonusGold()));
 
 			ArrayList<Equipment> equipDrops = new ArrayList<Equipment>();
 			EquipmentClass ec = data.getPlayerClass();

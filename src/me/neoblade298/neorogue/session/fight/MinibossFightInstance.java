@@ -84,7 +84,7 @@ public class MinibossFightInstance extends FightInstance {
 			RewardFightEvent ev = new RewardFightEvent(NodeType.MINIBOSS);
 			data.trigger(SessionTrigger.REWARD_FIGHT, ev);
 			list.add(new CoinsReward((int) ((1 - (s.getCoinReduction()
-					* Session.GOLD_REDUCTION_PER_LEVEL)) * 50) + ev.getBonusGold()));
+					* Session.COIN_REDUCTION_PER_LEVEL)) * 50) + ev.getBonusGold()));
 			
 			ArrayList<Equipment> equipDrops = new ArrayList<Equipment>();
 			EquipmentClass ec = data.getPlayerClass();

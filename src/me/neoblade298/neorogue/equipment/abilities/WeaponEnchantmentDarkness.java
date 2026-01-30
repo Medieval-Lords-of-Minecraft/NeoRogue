@@ -32,7 +32,7 @@ public class WeaponEnchantmentDarkness extends Equipment {
 	private ProjectileGroup projs;
 	
 	public WeaponEnchantmentDarkness(boolean isUpgraded) {
-		super(ID, "Weapon Enchantment: Darkness", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
+		super(ID, "Weapon Enchantment: Darkness", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.none());
 		
 		damage = isUpgraded ? 300 : 200;

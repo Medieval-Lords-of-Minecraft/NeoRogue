@@ -20,7 +20,7 @@ public class VermillionBelt extends Equipment {
 	public VermillionBelt(boolean isUpgraded) {
 		super(ID, "Vermillion Belt", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.ACCESSORY);
-		thres = isUpgraded ? 5 : 4;
+		thres = isUpgraded ? 4 : 5;
 		berserk = 1;
 	}
 	

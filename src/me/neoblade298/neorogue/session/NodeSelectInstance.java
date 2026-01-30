@@ -114,7 +114,19 @@ public class NodeSelectInstance extends EditInventoryInstance {
 	public void cleanup(boolean pluginDisable) {
 		super.cleanup(pluginDisable);
 		task.cancel();
-		s.getRegion().cleanup(s.getNode(), this, false);
+
+		// Cleanup region after player is teleported away to avoid player falling through floor with lecterns
+		NodeSelectInstance inst = this;
+		if (pluginDisable) {
+			s.getRegion().cleanup(s.getNode(), inst, false);
+		}
+		else {
+			new BukkitRunnable() {
+				public void run() {
+					s.getRegion().cleanup(s.getNode(), inst, false);
+				}
+			}.runTaskLater(NeoRogue.inst(), 20L);
+		}
 		
 		// Regular players have flight removed when fight starts, spectators don't need this since they're invulnerable
 		for (UUID uuid : s.getSpectators().keySet()) {
