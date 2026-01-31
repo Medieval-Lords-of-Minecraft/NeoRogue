@@ -321,12 +321,15 @@ public class DamageMeta {
 
 		// See if any of our effects cancel damage after barrier
 		boolean cancelDamage = false;
+		ReceiveDamageEvent rdev = new ReceiveDamageEvent(owner, this);
 		if (recipient instanceof PlayerFightData && !nullifiedByBarrier) {
 			PlayerFightData pdata = (PlayerFightData) recipient;
-			ReceiveDamageEvent ev = new ReceiveDamageEvent(owner, this);
-			if (pdata.runActions(pdata, Trigger.PRE_RECEIVE_DAMAGE, ev) || pdata.hasStatus(StatusType.INVINCIBLE)) {
+			if (pdata.runActions(pdata, Trigger.PRE_RECEIVE_DAMAGE, rdev) || pdata.hasStatus(StatusType.INVINCIBLE)) {
 				cancelDamage = true;
 			}
+		}
+		if (!(recipient instanceof PlayerFightData)) {
+			recipient.runMobActions(recipient, Trigger.PRE_RECEIVE_DAMAGE, rdev);
 		}
 
 		// Status effects

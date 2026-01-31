@@ -20,7 +20,7 @@ public class StoneDriver extends Equipment {
 		super(ID, "Stone Driver", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(0, isUpgraded ? 2 : 3, isUpgraded ? 75 : 65, 1.25, 0.2, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_CRIT));
-				properties.addUpgrades(PropertyType.STAMINA_COST);
+				properties.addUpgrades(PropertyType.STAMINA_COST, PropertyType.DAMAGE);
 		
 	}
 	

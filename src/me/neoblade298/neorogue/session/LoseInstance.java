@@ -29,8 +29,6 @@ public class LoseInstance extends EditInventoryInstance {
 		for (UUID uuid : s.getSpectators().keySet()) {
 			Player p = Bukkit.getPlayer(uuid);
 			teleportRandomly(p);
-			p.setAllowFlight(false);
-			p.setFlying(false);
 		}
 		super.setup();
 

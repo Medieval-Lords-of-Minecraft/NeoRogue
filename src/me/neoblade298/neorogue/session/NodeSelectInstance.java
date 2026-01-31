@@ -88,17 +88,6 @@ public class NodeSelectInstance extends EditInventoryInstance {
 		}.runTaskTimer(NeoRogue.inst(), 0L, 15L);
 	}
 
-	@Override
-	public void handlePlayerRejoin(Player p) {
-		super.handlePlayerRejoin(p);
-		p.setAllowFlight(true);
-	}
-
-	@Override
-	public void handlePlayerLeave(Player p) {
-		p.setAllowFlight(false);
-	}
-
 	public void createHologram(Location loc, Node dest) {
 		Component text = Component.text(dest.getType() + " Node", NamedTextColor.WHITE, TextDecoration.BOLD);
 		TextDisplay holo = NeoRogue.createHologram(loc, text);
@@ -117,21 +106,7 @@ public class NodeSelectInstance extends EditInventoryInstance {
 
 		// Cleanup region after player is teleported away to avoid player falling through floor with lecterns
 		NodeSelectInstance inst = this;
-		if (pluginDisable) {
-			s.getRegion().cleanup(s.getNode(), inst, false);
-		}
-		else {
-			new BukkitRunnable() {
-				public void run() {
-					s.getRegion().cleanup(s.getNode(), inst, false);
-				}
-			}.runTaskLater(NeoRogue.inst(), 20L);
-		}
-		
-		// Regular players have flight removed when fight starts, spectators don't need this since they're invulnerable
-		for (UUID uuid : s.getSpectators().keySet()) {
-			Bukkit.getPlayer(uuid).setAllowFlight(false);
-		}
+		s.getRegion().cleanup(s.getNode(), inst, pluginDisable);
 
 		for (TextDisplay holo : holograms) {
 			holo.remove();
@@ -199,18 +174,12 @@ public class NodeSelectInstance extends EditInventoryInstance {
 				return;
 			if (s.setInstance(node.getInstance()))
 				s.visitNode(node);
-			if (!(node.getInstance() instanceof FightInstance)) {
-				for (Player pl : s.getOnlinePlayers()) {
-					pl.setAllowFlight(false);
-				}
-
-				for (UUID uuid : s.getSpectators().keySet()) {
-					Bukkit.getPlayer(uuid).setAllowFlight(false);
-				}
-			} else {
+			if (node.getInstance() instanceof FightInstance) {
 				s.setBusy(true);
 			}
 			return;
+
+			// Open fight info on lectern right-click
 		} else if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock().getType() == Material.LECTERN) {
 			e.setCancelled(true);
 			Node n = s.getRegion().getNodeFromLocation(e.getClickedBlock().getLocation().add(0, 2, 1));

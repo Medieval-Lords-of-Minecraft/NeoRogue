@@ -79,7 +79,6 @@ import me.neoblade298.neorogue.session.Instance;
 import me.neoblade298.neorogue.session.LoseInstance;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
-import me.neoblade298.neorogue.session.fight.Mob.MobType;
 import me.neoblade298.neorogue.session.fight.TickAction.TickResult;
 import me.neoblade298.neorogue.session.fight.status.Status;
 import me.neoblade298.neorogue.session.fight.status.Status.GenericStatusType;
@@ -1218,14 +1217,9 @@ public abstract class FightInstance extends Instance {
 		if (mythicMob.getHealth() == null)
 			return am; // Some summoned mobs don't have health
 			
-		double mhealth = mythicMob.getHealth().get();
-		// Bosses scale with number of players too
-		if (mob != null && mob.getType() != MobType.NORMAL) {
-			mhealth *= 0.75 + (s.getParty().size() * 0.25); // 25% health increase per player, starting from 2 players
-		}
-		mhealth *= 1 + (lvl * (0.1 + (Session.ENEMY_HEALTH_SCALE_PER_LEVEL * s.getEnemyHealthScale()))); // Base 10% increase
-		am.getEntity().setMaxHealth(Math.round(mhealth));
-		am.getEntity().setHealth(Math.round(mhealth));
+		double mhealth = mob.getMaxHealthScale(s);
+		am.getEntity().setMaxHealth(mhealth);
+		am.getEntity().setHealth(mhealth);
 		return am;
 	}
 

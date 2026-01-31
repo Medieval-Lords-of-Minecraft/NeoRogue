@@ -23,6 +23,7 @@ import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.player.inventory.GlossaryIcon;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
+import me.neoblade298.neorogue.session.Session;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -36,6 +37,7 @@ public class Mob implements Comparable<Mob> {
 	private MobType type;
 	private String id, base64;
 	private TextComponent display;
+	private double baseHealth;
 	private int amount;
 	private double spawnValue, killValue, knockbackMultiplier;
 	private Material mat;
@@ -77,7 +79,15 @@ public class Mob implements Comparable<Mob> {
 	public Mob(Section sec) {
 		id = sec.getName();
 		Optional<MythicMob> opt = NeoRogue.mythicMobs.getMythicMob(id);
-		display = Component.text(opt.isPresent() ? opt.get().getDisplayName().get() : "Mob Not Loaded");
+		if (opt.isPresent()) {
+			MythicMob mm = opt.get();
+			display = Component.text(mm.getDisplayName().isPresent() ? mm.getDisplayName().get() : "Mob Not Loaded");
+			baseHealth = mm.getHealth().get();
+		}
+		else {
+			display = Component.text("Mob Not Loaded");
+			baseHealth = 0;
+		}
 		type = MobType.valueOf(sec.getString("type", "NORMAL").toUpperCase());
 		knockbackMultiplier = sec.getDouble("knockback-multiplier", 1);
 		
@@ -134,6 +144,25 @@ public class Mob implements Comparable<Mob> {
 		summons = sec.getStringList("summons");
 		base64 = sec.getString("base64");
 	}
+
+	public double getMaxHealthScale(Session s) {
+		return getMaxHealthScale(s, s.getLevel());
+	}
+
+	public double getMaxHealthScale(Session s, int lvl) {
+		double mhealth = baseHealth;
+		if (type != MobType.NORMAL) {
+			mhealth *= 0.75 + (s.getParty().size() * 0.25); // 25% health increase per player, starting from 2 players
+		}
+		mhealth *= 1 + (lvl * (0.1 + (Session.ENEMY_HEALTH_SCALE_PER_LEVEL * s.getEnemyHealthScale()))); // Base 10%
+																											// increase
+
+		return Math.round(mhealth);
+	}
+
+	public double getBaseHealth() {
+		return baseHealth;
+	}
 	
 	public HashMap<DamageCategory, Integer> getResistances() {
 		return resistances;
@@ -151,12 +180,18 @@ public class Mob implements Comparable<Mob> {
 		return knockbackMultiplier;
 	}
 	
-	public ItemStack getItemDisplay(ArrayList<MobModifier> modifiers) {
+	public ItemStack getItemDisplay(Session s, ArrayList<MobModifier> modifiers) {
 		ItemStack item = base64 == null ? new ItemStack(mat) : SkullUtil.fromBase64(base64);
 		ItemMeta meta = item.getItemMeta();
 		meta.displayName(display);
 		ArrayList<Component> lore = new ArrayList<Component>();
+
+		// Add 1 to session level to show next node's health
+		Component health = Component.text("Health: ", NamedTextColor.GOLD)
+				.append(Component.text("" + getMaxHealthScale(s, s.getLevel() + 1), NamedTextColor.YELLOW));
+		
 		Component value = Component.text("Value: ", NamedTextColor.GOLD).append(Component.text("" + this.spawnValue, NamedTextColor.YELLOW));
+		lore.add(health.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
 		lore.add(value.decorationIfAbsent(TextDecoration.ITALIC, State.FALSE));
 		if (!resistances.isEmpty()) {
 			Component header = Component.text("Resistances:", NamedTextColor.GOLD);

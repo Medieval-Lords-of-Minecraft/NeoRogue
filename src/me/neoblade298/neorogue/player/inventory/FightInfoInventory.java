@@ -16,6 +16,7 @@ import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
 import me.neoblade298.neorogue.player.PlayerSessionData;
+import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.fight.Mob;
 import me.neoblade298.neorogue.session.fight.MobModifier;
 import net.kyori.adventure.text.Component;
@@ -28,9 +29,10 @@ public class FightInfoInventory extends CoreInventory {
 		ItemStack[] contents = inv.getContents();
 		
 		int pos = 0;
+		Session s = data.getSession();
 		for (Entry<Mob, ArrayList<MobModifier>> ent : mobs.entrySet()) {
 			Mob mob = ent.getKey();
-			contents[pos++] = mob.getItemDisplay(ent.getValue());
+			contents[pos++] = mob.getItemDisplay(s, ent.getValue());
 
 			// Only show summons if there's no custom mob order, since the mob order overrides everything
 			if (!hasCustomMobInfo && mob.getSummons() != null) {
@@ -40,7 +42,7 @@ public class FightInfoInventory extends CoreInventory {
 						Bukkit.getLogger().warning("[NeoRogue] Failed to load summon " + summonStr + " for mob " + ent.getKey().getId());
 						continue;
 					}
-					contents[pos++] = summon.getItemDisplay(ent.getValue());
+					contents[pos++] = summon.getItemDisplay(s, ent.getValue());
 				}
 			}
 		}

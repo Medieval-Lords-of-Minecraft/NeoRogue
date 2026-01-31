@@ -291,6 +291,11 @@ public class LobbyInstance extends Instance {
 		for (UUID uuid : players.keySet()) {
 			Util.msgRaw(Bukkit.getPlayer(uuid), NeoCore.miniMessage().deserialize(msg).colorIfAbsent(NamedTextColor.GRAY));
 		}
+
+		for (UUID uuid : s.getSpectators().keySet()) {
+			Util.msgRaw(Bukkit.getPlayer(uuid),
+					NeoCore.miniMessage().deserialize(msg).colorIfAbsent(NamedTextColor.GRAY));
+		}
 	}
 
 	public void startGame() {

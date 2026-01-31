@@ -98,15 +98,20 @@ public class SessionManager implements Listener {
 		PlayerData pd = PlayerManager.getPlayerData(p.getUniqueId());
 		SessionSnapshot ss = pd.getSnapshot(saveSlot);
 		for (Entry<UUID, String> ent : ss.getPartyIds().entrySet()) {
-			if (Bukkit.getPlayer(ent.getKey()) == null) {
+			Player member = Bukkit.getPlayer(ent.getKey());
+			if (member == null) {
 				Util.displayError(p, "Cannot load this save as " + ent.getValue() + " is not online!");
+				return null;
+			}
+
+			if (sessions.containsKey(member.getUniqueId())) {
+				Util.displayError(p, "Cannot load this save as " + ent.getValue() + " is already in a session!");
 				return null;
 			}
 		}
 
 		Plot plot = findPlot();
 		Session s = new Session(p, plot, saveSlot);
-		sessions.put(p.getUniqueId(), s);
 		sessionPlots.put(plot, s);
 		return s;
 	}

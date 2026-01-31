@@ -5,12 +5,11 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-
-import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
-import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
+import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -24,10 +23,10 @@ public class StoneSword extends Equipment {
 	public StoneSword(boolean isUpgraded) {
 		super(ID, "Stone Sword", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(isUpgraded ? 55 : 45, 1, 0.4, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
+				EquipmentProperties.ofWeapon(isUpgraded ? 50 : 45, 1, 0.4, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
 		properties.addUpgrades(PropertyType.DAMAGE);
 		
-		shields = isUpgraded ? 25 : 15;
+		shields = isUpgraded ? 15 : 10;
 		shieldsBonus = isUpgraded ? 10 : 5;
 	}
 	

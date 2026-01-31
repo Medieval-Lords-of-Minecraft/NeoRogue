@@ -531,6 +531,9 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 				// Should basically never happen
 				Util.displayError(p, "Your storage is full!");
 			}
+
+			// If player storage is full, send a message
+			checkStorageLimit();
 		}
 	}
 	
@@ -623,7 +626,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		return false;
 	}
 	
-	public boolean exceedsStorageLimit() {
+	public boolean checkStorageLimit() {
 		Player p = data.getPlayer();
 		int size = 0;
 		for (int i = 0; i < storage.length; i++) {
@@ -631,7 +634,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 			size++;
 		}
 		if (size > maxStorage) {
-			Util.displayError(p, "Your storage exceeds the maximum storage limit! You must remove some items before you can continue!");
+			Util.displayError(p, "Your storage exceeds the maximum storage limit! Trash some items to make space!");
 			return true;
 		}
 		return false;

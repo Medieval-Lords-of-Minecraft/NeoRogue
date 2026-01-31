@@ -11,6 +11,7 @@ import me.neoblade298.neorogue.equipment.artifacts.HolyScriptures;
 import me.neoblade298.neorogue.equipment.artifacts.InfernalTome;
 import me.neoblade298.neorogue.equipment.artifacts.Pumped;
 import me.neoblade298.neorogue.equipment.artifacts.ScrollOfFrost;
+import me.neoblade298.neorogue.equipment.artifacts.TreatiseOnElectricity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.region.RegionType;
 import me.neoblade298.neorogue.session.chance.ChanceChoice;
@@ -41,7 +42,7 @@ public class OvergrownLibraryChance extends ChanceSet {
 		stage.addChoice(new ChanceChoice(Material.LIGHTNING_ROD, "Read \"Treatise on Electricity\"",
 				"Permanently increase " + GlossaryTag.LIGHTNING.tag + " by <white>20%</white>",
 				(s, inst, data) -> {
-					data.giveEquipment(ScrollOfFrost.get());
+					data.giveEquipment(TreatiseOnElectricity.get());
 					return null;
 		}));
 

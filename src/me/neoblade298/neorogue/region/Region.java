@@ -757,16 +757,18 @@ public class Region {
 			cleanup(node, inst);
 		}
 		// Apparently needs to be a runnable or the button you press doesn't get removed
+		// 20 tick delay so lecterns don't phase players through floor
 		else {
 			new BukkitRunnable() {
 				@Override
 				public void run() {
 					cleanup(node, inst);
 				}
-			}.runTask(NeoRogue.inst());
+			}.runTaskLater(NeoRogue.inst(), 20);
 		}
 	}
 
+	// Cleans up lecterns and heads for nodes no longer reachable
 	public void cleanup(Node node, NodeSelectInstance inst) {
 		int row = node.getRow();
 
@@ -839,7 +841,7 @@ public class Region {
 					Mob[] mobs = ddInst.getMap().getMobs().keySet().toArray(new Mob[0]);
 					Mob chosen = mobs[NeoCore.gen.nextInt(mobs.length)];
 					
-					ItemStack headItem = chosen.getItemDisplay(new ArrayList<MobModifier>());
+					ItemStack headItem = chosen.getItemDisplay(s, new ArrayList<MobModifier>());
 					Location headLoc = nodeToLocation(destDest, 1);
 					if (headItem.getType() == Material.PLAYER_HEAD) {
 						SkullMeta meta = (SkullMeta) headItem.getItemMeta();

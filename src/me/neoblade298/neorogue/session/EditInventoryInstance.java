@@ -54,7 +54,7 @@ public abstract class EditInventoryInstance extends Instance {
 				s.broadcastError(data.getData().getDisplay() + " must equip all their curses before continuing!");
 				return false;
 			}
-			if (data.exceedsStorageLimit()) {
+			if (data.checkStorageLimit()) {
 				s.broadcastError(data.getData().getDisplay() + " must remove some items from his storage before continuing!");
 				return false;
 			}

@@ -59,6 +59,7 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.region.Node;
 import me.neoblade298.neorogue.region.Region;
 import me.neoblade298.neorogue.region.RegionType;
+import me.neoblade298.neorogue.session.Instance.PlayerFlags;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import net.kyori.adventure.text.Component;
@@ -168,6 +169,7 @@ public class Session {
 		this.zOff = plot.getZOffset();
 		host = p.getUniqueId();
 		this.plot = plot;
+		System.out.println("Added host " + host);
 		
 		Session s = this;
 		generateInterstitials();
@@ -184,6 +186,8 @@ public class Session {
 					while (partySet.next()) {
 						UUID uuid = UUID.fromString(partySet.getString("uuid"));
 						party.put(uuid, new PlayerSessionData(uuid, s, partySet));
+						SessionManager.addToSession(uuid, s);
+						System.out.println("Added player " + uuid);
 					}
 					
 					ResultSet sessSet = stmt.executeQuery(
@@ -194,6 +198,7 @@ public class Session {
 					int pos = sessSet.getInt("position");
 					int lane = sessSet.getInt("lane");
 					Instance inst = Instance.deserialize(s, sessSet, party);
+					potionChance = sessSet.getInt("potionChance");
 
 					// settings
 					endless = sessSet.getBoolean("endless");
@@ -210,10 +215,7 @@ public class Session {
 					new BukkitRunnable() {
 						@Override
 						public void run() {
-							region.instantiate();
-							setInstance(inst);
-							s.updateSpectatorLines();
-							Util.msgRaw(p, Component.text("Finished loading.", NamedTextColor.GRAY));
+							loadHelper(inst);
 						}
 					}.runTask(NeoRogue.inst());
 				} catch (SQLException e) {
@@ -221,6 +223,18 @@ public class Session {
 				}
 			}
 		}.runTaskAsynchronously(NeoRogue.inst());
+	}
+
+	// Called after asynchronously loading all data
+	private void loadHelper(Instance inst) {
+		region.instantiate();
+		setInstance(inst);
+		updateSpectatorLines();
+		Util.msgRaw(Bukkit.getPlayer(host), Component.text("Finished loading.", NamedTextColor.GRAY));
+
+		for (PlayerSessionData psd : party.values()) {
+			psd.setupInventory();
+		}
 	}
 	
 	public ArrayList<String> getSpectatorLines() {
@@ -262,7 +276,7 @@ public class Session {
 	}
 	
 	public void save(Statement insert, Statement delete) {
-		if (inst instanceof FightInstance || inst instanceof LoseInstance)
+		if (inst instanceof FightInstance || inst instanceof LoseInstance || inst instanceof LobbyInstance)
 			return;
 		
 		try {
@@ -320,35 +334,20 @@ public class Session {
 	public void addSpectator(Player p) {
 		this.spectators.put(p.getUniqueId(), new MapViewer(this, p.getUniqueId()));
 		SessionManager.addToSession(p.getUniqueId(), this);
-		if (inst instanceof LobbyInstance) {
-			((LobbyInstance) inst).broadcast("<yellow>" + p.getName() + "</yellow> started spectating!");
-		}
-		else {
-			broadcast("<yellow>" + p.getName() + "</yellow> started spectating!");
-		}
+		broadcast("<yellow>" + p.getName() + "</yellow> started spectating!");
 		p.setGameMode(GameMode.ADVENTURE);
 		p.teleport(inst.spawn);
-		p.setInvulnerable(true);
-		p.setInvisible(true);
+		inst.spectatorFlags.applyFlags(p);
 		
 		if (inst instanceof EditInventoryInstance) {
 			setupSpectatorInventory(p);
 		}
-		if (inst instanceof NodeSelectInstance) {
-			p.setAllowFlight(true);
-		}
-		if (inst instanceof FightInstance) {
-			((FightInstance) inst).addSpectator(p);
-			p.setAllowFlight(true);
-		}
 	}
 	
 	public void removeSpectator(Player p) {
-		broadcast("<yellow>" + p.getName() + " <gray>has stopped spectating!");
+		broadcast("<yellow>" + p.getName() + "</yellow> stopped spectating!");
 		spectators.remove(p.getUniqueId());
-		p.setInvisible(false);
-		p.setInvulnerable(false);
-		p.setAllowFlight(false);
+		PlayerFlags.applyDefaults(p);
 		if (inst instanceof FightInstance) {
 			((FightInstance) inst).removeSpectator(p);
 		}
@@ -436,6 +435,11 @@ public class Session {
 	}
 
 	public void broadcast(String msg) {
+		if (inst instanceof LobbyInstance) {
+			((LobbyInstance) inst).broadcast(msg);
+			return;
+		}
+
 		for (Player p : getOnlinePlayers()) {
 			Util.msgRaw(p, NeoCore.miniMessage().deserialize(msg).colorIfAbsent(NamedTextColor.GRAY));
 		}
@@ -776,7 +780,10 @@ public class Session {
 		inst.cleanup(pluginDisable);
 
 		// Remove blocks from node select
-		region.cleanupAll();
+		// Doesn't happen if it's still lobby instance
+		if (region != null) {
+			region.cleanupAll();
+		}
 
 		for (Entry<UUID, PlayerSessionData> entry : party.entrySet()) {
 			Player p = Bukkit.getPlayer(entry.getKey());

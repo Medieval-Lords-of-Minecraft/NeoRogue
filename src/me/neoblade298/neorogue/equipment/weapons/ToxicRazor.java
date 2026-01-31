@@ -27,8 +27,8 @@ public class ToxicRazor extends Equipment {
 		super(ID, "Toxic Razor", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(50, 1, 0.2, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
-		threshold = isUpgraded ? 50 : 80;
-		bonus = 10;
+		threshold = isUpgraded ? 150 : 200;
+		bonus = 5;
 	}
 	
 	public static Equipment get() {
@@ -60,7 +60,7 @@ public class ToxicRazor extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.PRISMARINE_SHARD,
-				"Deal an additional " + DescUtil.yellow(bonus) + " damage for every " + DescUtil.yellow(threshold) +
+				"Deal an additional " + DescUtil.white(bonus) + " damage for every " + DescUtil.yellow(threshold) +
 				" " + GlossaryTag.POISON.tag(this) + " stacks you have applied this fight.");
 	}
 }

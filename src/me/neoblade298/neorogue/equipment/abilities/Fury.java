@@ -86,10 +86,12 @@ public class Fury extends Equipment {
 			if (!isBerserk && isBerserkAfter) {
 				this.cooldown = 2.5;
 				this.staminaCost = 0;
+				isBerserk = true;
 			}
 			else if (isBerserk && !isBerserkAfter) {
 				this.cooldown = 5;
 				this.staminaCost = 50;
+				isBerserk = false;
 			}
 			return super.canTrigger(p, data, in);
 		}
