@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.World;
@@ -264,9 +265,11 @@ public abstract class FightInstance extends Instance {
 	}
 
 	@Override
-	public void handlePlayerLeaveParty(Player p) {
-		for (BossBar bar : bars) {
-			bar.removePlayer(p);
+	public void handlePlayerLeaveParty(OfflinePlayer p) {
+		if (p instanceof Player) {
+			for (BossBar bar : bars) {
+				bar.removePlayer((Player) p);
+			}
 		}
 		userData.remove(p.getUniqueId()).cleanup();
 		fightData.remove(p.getUniqueId());
@@ -1191,12 +1194,19 @@ public abstract class FightInstance extends Instance {
 	public abstract String serializeInstanceData();
 	
 	public static FightInstance deserializeInstanceData(Session s, HashMap<UUID, PlayerSessionData> party, String str) {
-		if (str.startsWith("STANDARD")) {
-			return new StandardFightInstance(s, party.keySet(), Map.deserialize(str.substring("STANDARD:".length())));
-		} else if (str.startsWith("MINIBOSS")) {
-			return new MinibossFightInstance(s, party.keySet(), Map.deserialize(str.substring("MINIBOSS:".length())));
-		} else {
-			return new BossFightInstance(s, party.keySet(), Map.deserialize(str.substring("BOSS:".length())));
+		try {
+			if (str.startsWith("STANDARD")) {
+				return new StandardFightInstance(s, party.keySet(), Map.deserialize(str.substring("STANDARD:".length())));
+			} else if (str.startsWith("MINIBOSS")) {
+				return new MinibossFightInstance(s, party.keySet(), Map.deserialize(str.substring("MINIBOSS:".length())));
+			} else {
+				return new BossFightInstance(s, party.keySet(), Map.deserialize(str.substring("BOSS:".length())));
+			}
+		}
+		catch (Exception e) {
+			Bukkit.getLogger().severe("[NeoRogue] Failed to deserialize FightInstance data: " + str);
+			e.printStackTrace();
+			return null;
 		}
 	}
 	

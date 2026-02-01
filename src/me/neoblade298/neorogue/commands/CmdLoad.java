@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.commands;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
 import me.neoblade298.neocore.bukkit.commands.Subcommand;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.commands.Arg;
@@ -28,7 +29,7 @@ public class CmdLoad extends Subcommand {
 			PlayerManager.getPlayerData(p.getUniqueId()).displayLoadButtons(s);
 		}
 		else {
-			SessionManager.loadSession(p, Integer.parseInt(args[0])); 
+			SessionManager.tryLoadSession(p, Integer.parseInt(args[0])); 
 		}
 	}
 }

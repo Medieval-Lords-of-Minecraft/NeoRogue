@@ -137,11 +137,6 @@ public class BossFightInstance extends FightInstance {
 	}
 
 	@Override
-	public void handlePlayerLeaveParty(Player p) {
-		
-	}
-
-	@Override
 	public void updateBoardLines() {
 		
 	}

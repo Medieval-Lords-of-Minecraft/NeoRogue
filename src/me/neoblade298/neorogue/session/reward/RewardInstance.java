@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TextDisplay;
@@ -188,7 +189,7 @@ public class RewardInstance extends EditInventoryInstance {
 	}
 
 	@Override
-	public void handlePlayerLeaveParty(Player p) {
+	public void handlePlayerLeaveParty(OfflinePlayer p) {
 		rewards.remove(p.getUniqueId());
 		onRewardClaim();
 	}

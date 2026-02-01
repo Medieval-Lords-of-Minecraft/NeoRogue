@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
@@ -66,6 +67,7 @@ public class ChanceInstance extends EditInventoryInstance {
 		this.set = set;
 	}
 
+	// Deserialization
 	public ChanceInstance(Session s, String data, HashMap<UUID, PlayerSessionData> party) {
 		this(s);
 		data = data.substring("CHANCE:".length());
@@ -206,9 +208,9 @@ public class ChanceInstance extends EditInventoryInstance {
 		new ChanceInventory(s.getParty().get(uuid), this, set, stage.get(uuid), spectator);
 	}
 
-	public void advanceStage(UUID uuid, ChanceStage stage) {
+	public void advanceStage(UUID uuid, ChanceStage next) {
 		// Finished with chance
-		if (stage == null) {
+		if (next == null) {
 			if (!set.isIndividual()) {
 				this.stage.clear();
 				returnPlayers();
@@ -224,10 +226,10 @@ public class ChanceInstance extends EditInventoryInstance {
 		else {
 			if (!set.isIndividual()) {
 				for (UUID id : this.stage.keySet()) {
-					this.stage.put(id, stage);
+					this.stage.put(id, next);
 				}
 			} else {
-				this.stage.put(uuid, stage);
+				this.stage.put(uuid, next);
 			}
 		}
 	}
@@ -324,7 +326,7 @@ public class ChanceInstance extends EditInventoryInstance {
 	}
 
 	@Override
-	public void handlePlayerLeaveParty(Player p) {
+	public void handlePlayerLeaveParty(OfflinePlayer p) {
 		stage.remove(p.getUniqueId());
 	}
 }

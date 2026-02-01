@@ -258,15 +258,20 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 			e.setCancelled(true);
 			return;
 		}
-		if (cursor.getType().isAir() && clicked == null) return;
+		if (cursor.getType().isAir() && clicked.getType().isAir()) return;
 
 		NBTItem ncursor = !cursor.getType().isAir() ? new NBTItem(cursor) : null;
-		NBTItem nclicked = clicked != null ? new NBTItem(clicked) : null;
+		NBTItem nclicked = !clicked.getType().isAir() ? new NBTItem(clicked) : null;
 		Player p = (Player) e.getWhoClicked();
 
-		if (slot == TRASH && clicked != null) {
+		if (slot == TRASH && !cursor.getType().isAir()) {
 			e.setCancelled(true);
-			if (Equipment.get(ncursor.getString("equipId"), false).isCursed()) {
+			Equipment eq = Equipment.get(ncursor.getString("equipId"), false);
+			if (eq == null) {
+				Bukkit.getLogger().warning("[NeoRogue] " + p.getName() + " tried to trash non-equipment item: " + cursor);
+				return;
+			}
+			if (eq.isCursed()) {
 				Util.displayError(p, "You can't trash cursed items!");
 				return;
 			}
@@ -380,7 +385,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 			return;
 		}
 
-		if (cursor.getType().isAir() && clicked != null) {
+		if (cursor.getType().isAir() && !clicked.getType().isAir()) {
 			// Only allow picking up equipment
 			if (!nclicked.hasTag("equipId")) {
 				e.setCancelled(true);
@@ -588,7 +593,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		ItemStack clicked = e.getCurrentItem();
 		int slot = e.getRawSlot();
 
-		if (clicked == null) return;
+		if (clicked.getType().isAir()) return;
 		Inventory iclicked = e.getClickedInventory();
 		if (iclicked == null || iclicked.getType() != InventoryType.CHEST) return;
 		NBTItem nclicked = new NBTItem(clicked);

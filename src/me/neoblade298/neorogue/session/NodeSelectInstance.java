@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.Tag;
 import org.bukkit.entity.Player;
@@ -201,7 +202,7 @@ public class NodeSelectInstance extends EditInventoryInstance {
 	}
 
 	@Override
-	public void handlePlayerLeaveParty(Player p) {
+	public void handlePlayerLeaveParty(OfflinePlayer p) {
 		
 	}
 }

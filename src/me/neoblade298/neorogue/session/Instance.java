@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 
@@ -29,7 +30,7 @@ public abstract class Instance {
 	protected abstract void setup();
 	public abstract void cleanup(boolean pluginDisable);
 	public abstract void handleInteractEvent(PlayerInteractEvent e);
-	public abstract void handlePlayerLeaveParty(Player p);
+	public abstract void handlePlayerLeaveParty(OfflinePlayer p);
 	public abstract String serialize(HashMap<UUID, PlayerSessionData> party);
 	public Instance(Session s, PlayerFlags playerFlags) {
 		this.s = s;

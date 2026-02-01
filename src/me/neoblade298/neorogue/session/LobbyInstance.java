@@ -9,6 +9,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Tag;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Sign;
@@ -404,7 +405,7 @@ public class LobbyInstance extends Instance {
 	}
 
 	@Override
-	public void handlePlayerLeaveParty(Player p) {
+	public void handlePlayerLeaveParty(OfflinePlayer p) {
 		
 	}
 }

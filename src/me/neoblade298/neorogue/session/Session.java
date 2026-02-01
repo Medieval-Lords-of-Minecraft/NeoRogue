@@ -169,7 +169,6 @@ public class Session {
 		this.zOff = plot.getZOffset();
 		host = p.getUniqueId();
 		this.plot = plot;
-		System.out.println("Added host " + host);
 		
 		Session s = this;
 		generateInterstitials();
@@ -187,7 +186,6 @@ public class Session {
 						UUID uuid = UUID.fromString(partySet.getString("uuid"));
 						party.put(uuid, new PlayerSessionData(uuid, s, partySet));
 						SessionManager.addToSession(uuid, s);
-						System.out.println("Added player " + uuid);
 					}
 					
 					ResultSet sessSet = stmt.executeQuery(
@@ -824,7 +822,12 @@ public class Session {
 			broadcast("<yellow>" + target.getName() + " <gray>was kicked from the party!");
 			PlayerSessionData psd = party.remove(target.getUniqueId());
 			psd.cleanup();
-			SessionManager.resetPlayer(p);
+
+			if (target instanceof Player) {
+				Player targetPlayer = (Player) target;
+				SessionManager.resetPlayer(targetPlayer);
+				inst.handlePlayerLeaveParty(targetPlayer);
+			}
 			SessionManager.removeFromSession(target.getUniqueId());
 		}
 	}

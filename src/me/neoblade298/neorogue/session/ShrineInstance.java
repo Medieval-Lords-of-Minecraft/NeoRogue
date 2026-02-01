@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
@@ -231,7 +232,7 @@ public class ShrineInstance extends EditInventoryInstance {
 	}
 
 	@Override
-	public void handlePlayerLeaveParty(Player p) {
+	public void handlePlayerLeaveParty(OfflinePlayer p) {
 		notUsed.remove(p.getUniqueId());
 		if (notUsed.isEmpty()) {
 			returnToNodes();

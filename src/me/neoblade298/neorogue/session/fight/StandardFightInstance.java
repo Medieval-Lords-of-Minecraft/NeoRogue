@@ -210,11 +210,6 @@ public void cleanup(boolean pluginDisable) {
 		timeBar.removePlayer(p);
 		scoreBar.removePlayer(p);
 	}
-	
-	@Override
-	public void handlePlayerLeaveParty(Player p) {
-		super.handlePlayerLeaveParty(p);
-	}
 
 	@Override
 	public void updateBoardLines() {

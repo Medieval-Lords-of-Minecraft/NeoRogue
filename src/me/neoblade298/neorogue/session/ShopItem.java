@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.session;
 
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -10,6 +11,7 @@ import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.weapons.WoodenSword;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -102,12 +104,19 @@ public class ShopItem {
 	}
 	
 	public static ShopItem deserialize(String str) {
-		String[] split = str.split(":");
-		Equipment eq = Equipment.deserialize(split[0]);
-		int price = Integer.parseInt(split[1]);
-		boolean sale = split[2].equals("1");
-		boolean isPurchased = split[3].equals("1");
-		return new ShopItem(eq, price, sale, isPurchased);
+		try {
+			String[] split = str.split(":");
+			Equipment eq = Equipment.deserialize(split[0]);
+			int price = Integer.parseInt(split[1]);
+			boolean sale = split[2].equals("1");
+			boolean isPurchased = split[3].equals("1");
+			return new ShopItem(eq, price, sale, isPurchased);
+		}
+		catch (Exception e) {
+			Bukkit.getLogger().warning("[NeoRogue] Failed to deserialize shop item: " + str);
+			e.printStackTrace();
+			return new ShopItem(WoodenSword.get(), 100, false, false);
+		}
 	}
 
 	public String toString() {

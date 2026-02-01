@@ -839,7 +839,7 @@ public class Region {
 				if (destDest.getType() == NodeType.FIGHT) {
 					StandardFightInstance ddInst = (StandardFightInstance) destDest.generateInstance(s, type);
 					Mob[] mobs = ddInst.getMap().getMobs().keySet().toArray(new Mob[0]);
-					Mob chosen = mobs[NeoCore.gen.nextInt(mobs.length)];
+					Mob chosen = mobs[0];
 					
 					ItemStack headItem = chosen.getItemDisplay(s, new ArrayList<MobModifier>());
 					Location headLoc = nodeToLocation(destDest, 1);

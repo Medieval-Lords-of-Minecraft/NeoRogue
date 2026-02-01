@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TextDisplay;
@@ -208,7 +209,7 @@ public class ShopInstance extends EditInventoryInstance {
 	}
 
 	@Override
-	public void handlePlayerLeaveParty(Player p) {
+	public void handlePlayerLeaveParty(OfflinePlayer p) {
 		ready.remove(p.getUniqueId());
 		if (ready.size() == s.getParty().size()) {
 			s.broadcast("Everyone is ready! Teleporting back to node select...");

@@ -313,7 +313,6 @@ public class PlayerFightData extends FightData {
 	@SuppressWarnings("deprecation")
 	public void dash(Vector v) {
 		runActions(this, Trigger.DASH, null);
-		Player p = getPlayer();
 		v = v.normalize();
 		if (p.isOnGround()) {
 			p.teleport(p.getLocation().add(0, 0.2, 0));
@@ -408,7 +407,6 @@ public class PlayerFightData extends FightData {
 
 	// Used when the player dies or revived
 	public void setDeath(boolean isDead) {
-		Player p = getPlayer();
 		this.isDead = isDead;
 		if (isDead) {
 			p.setInvulnerable(true);
@@ -440,7 +438,6 @@ public class PlayerFightData extends FightData {
 		super.cleanup();
 
 		if (isDead) {
-			Player p = getPlayer();
 			p.setInvisible(false);
 			p.setInvulnerable(false);
 		}
@@ -523,7 +520,7 @@ public class PlayerFightData extends FightData {
 					BuffList b = ev.getBuff(PropertyType.MANA_COST);
 					double manaCost = useResources ? Math.max(0, b.applyNegative(ei.getManaCost())) : 0;
 					if (manaCost > data.getMana() && manaCost > 0) {
-						Util.displayError(data.getPlayer(),
+						Util.displayError(p,
 								"You need " + df.format(manaCost - data.getMana()) + " more mana!");
 						continue;
 					}
@@ -532,7 +529,7 @@ public class PlayerFightData extends FightData {
 					b = ev.getBuff(PropertyType.STAMINA_COST);
 					double staminaCost = useResources ? Math.max(0, b.applyNegative(ei.getStaminaCost())) : 0;
 					if (staminaCost > data.getStamina() && staminaCost > 0) {
-						Util.displayError(data.getPlayer(),
+						Util.displayError(p,
 								"You need " + df.format(staminaCost - data.getStamina()) + " more stamina!");
 						continue;
 					}
@@ -573,7 +570,7 @@ public class PlayerFightData extends FightData {
 				if (tr.removeTrigger()) {
 					int hotbar = Trigger.toHotbarSlot(trigger);
 					if (hotbar != -1) {
-						data.getPlayer().getInventory().setItem(hotbar, null);
+						p.getInventory().setItem(hotbar, null);
 					}
 					iter.remove();
 				}
@@ -683,7 +680,7 @@ public class PlayerFightData extends FightData {
 	}
 
 	public boolean isActive() {
-		return !isDead && getPlayer().isOnline(); // Not dead and online
+		return !isDead && p.isOnline(); // Not dead and online
 	}
 
 	@Override
@@ -692,7 +689,11 @@ public class PlayerFightData extends FightData {
 	}
 
 	public Player getPlayer() {
-		return sessdata.getData().getPlayer();
+		return p;
+	}
+
+	public void updatePlayer() {
+		this.p = Bukkit.getPlayer(uuid);
 	}
 
 	public FightStatistics getStats() {
