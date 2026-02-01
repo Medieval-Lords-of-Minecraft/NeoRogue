@@ -51,6 +51,7 @@ public class ChanceInstance extends EditInventoryInstance {
 	private boolean returning;
 	private TextDisplay holo;
 	private Block candleBlock;
+	private boolean deserialized = false;
 
 	public ChanceInstance(Session s) {
 		super(s, SPAWN_X, SPAWN_Z);
@@ -75,7 +76,7 @@ public class ChanceInstance extends EditInventoryInstance {
 		set = ChanceSet.get(split[0]);
 		for (Entry<UUID, PlayerSessionData> ent : party.entrySet()) {
 			String id = ent.getValue().getInstanceData();
-			if (id == null)
+			if (id.equals("null"))
 				continue;
 			stage.put(ent.getKey(), set.getStage(id));
 		}
@@ -83,6 +84,7 @@ public class ChanceInstance extends EditInventoryInstance {
 		if (split.length > 1) {
 			nextInstance = FightInstance.deserializeInstanceData(s, party, split[1]);
 		}
+		deserialized = true;
 	}
 	
 	public ChanceSet getSet() {
@@ -100,7 +102,7 @@ public class ChanceInstance extends EditInventoryInstance {
 		for (PlayerSessionData data : s.getParty().values()) {
 			Player p = data.getPlayer();
 			p.teleport(spawn);
-			stage.put(p.getUniqueId(), set.getInitialStage());
+			if (!deserialized) stage.put(p.getUniqueId(), set.getInitialStage());
 		}
 		for (UUID uuid : s.getSpectators().keySet()) {
 			Player p = Bukkit.getPlayer(uuid);
