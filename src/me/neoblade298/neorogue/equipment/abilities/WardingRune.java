@@ -37,10 +37,11 @@ public class WardingRune extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
 		Trigger tr = data.getSessionData().getPlayerClass() == EquipmentClass.ARCHER ? Trigger.LEFT_CLICK : Trigger.RIGHT_CLICK;
 		data.addTrigger(id, tr, (pdata, in) -> {
+			Player p = data.getPlayer();
 			Sounds.fire.play(p, p);
 			if (tr == Trigger.LEFT_CLICK) p.swingOffHand();
 			data.addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL), Buff.increase(data, reduc, StatTracker.defenseBuffAlly(am.getId(), this)), 100);
@@ -54,6 +55,7 @@ public class WardingRune extends Equipment {
 		});
 
 		data.addTrigger(id, Trigger.RECEIVE_DAMAGE, (pdata, in) -> {
+			Player p = data.getPlayer();
 			ReceiveDamageEvent ev = (ReceiveDamageEvent) in;
 			if (ev.getMeta().containsType(DamageCategory.MAGICAL) && am.getBool()) {
 				data.addMana(mana);

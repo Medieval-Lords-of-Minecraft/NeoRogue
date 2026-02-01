@@ -33,7 +33,8 @@ public class GuardianSpirit extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		Player p = data.getPlayer();
 		data.addPermanentShield(p.getUniqueId(), shields);
 		data.addTrigger(id, Trigger.GRANT_SHIELDS, (pdata, in) -> {
 			GrantShieldsEvent ev = (GrantShieldsEvent) in;

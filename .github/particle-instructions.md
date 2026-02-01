@@ -492,7 +492,7 @@ Particles typically integrate with equipment through these patterns:
 
 ```java
 @Override
-public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
     data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
         // Play particle effect
         circ.play(pc, p.getLocation(), LocalAxes.xz(), null);

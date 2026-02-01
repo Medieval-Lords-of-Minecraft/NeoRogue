@@ -1,7 +1,5 @@
 package me.neoblade298.neorogue.equipment;
 
-import org.bukkit.entity.Player;
-
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -20,10 +18,10 @@ public abstract class Artifact extends Equipment {
 	}
 	
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		// This is not used, ArtifactInstance instead calls the below abstract initialize
 	}
-	public abstract void initialize(Player p, PlayerFightData data, ArtifactInstance ai);
+	public abstract void initialize(PlayerFightData data, ArtifactInstance ai);
 	public abstract void onAcquire(PlayerSessionData data, int amount);
 	public abstract void onInitializeSession(PlayerSessionData data);
 }

@@ -44,7 +44,7 @@ public class FrostbiteBow extends Bow {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
 		data.addSlotBasedTrigger(id, slot, Trigger.VANILLA_PROJECTILE, (pdata, in) -> {
 			if (!canShoot(data)) return TriggerResult.keep();
@@ -56,7 +56,7 @@ public class FrostbiteBow extends Bow {
 			bproj.setDamageBonus(hasBonus ? damage : 0);
 			if (hasBonus) {
 				bproj.addProjectileTickAction((p2, inst, interpolation) -> {
-					pc.play(p, inst.getLocation());
+					pc.play(data.getPlayer(), inst.getLocation());
 				});
 			}
 			ProjectileGroup proj = new ProjectileGroup(bproj);

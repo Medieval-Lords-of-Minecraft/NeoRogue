@@ -59,11 +59,10 @@ public class HexingShot extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		String buffId = UUID.randomUUID().toString();
 		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, this, slot, es);
-		inst.setAction((pdata, in) -> {
-			if (inst.getCount() == 0) {
+		inst.setAction((pdata, in) -> {		Player p = data.getPlayer();			if (inst.getCount() == 0) {
 				inst.setCount(1);
 				Sounds.equip.play(p, p);
 				inst.setIcon(activeIcon);
@@ -75,8 +74,7 @@ public class HexingShot extends Equipment {
 		});
 		data.addTrigger(id, bind, inst);
 
-		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
-			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
+		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {		Player p = data.getPlayer();			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 			if (inst.getCount() == 1) {
 				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
 						new Buff(data, -dec, 0, StatTracker.damageDebuffAlly(buffId, this)));
@@ -86,8 +84,7 @@ public class HexingShot extends Equipment {
 			return TriggerResult.keep();
 		});
 
-		data.addTrigger(id, Trigger.KILL, (pdata, in) -> {
-			KillEvent ev = (KillEvent) in;
+		data.addTrigger(id, Trigger.KILL, (pdata, in) -> {		Player p = data.getPlayer();			KillEvent ev = (KillEvent) in;
 			FightData fd = FightInstance.getFightData(ev.getTarget());
 			if (fd.hasStatus(ID + p.getName())) {
 				initTrap(p, data, ev.getTarget().getLocation(), slot, this);

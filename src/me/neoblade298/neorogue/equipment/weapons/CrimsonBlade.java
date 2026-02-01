@@ -34,18 +34,19 @@ public class CrimsonBlade extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, new CrimsonBladeInstance(id, p));
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, new CrimsonBladeInstance(id));
 	}
 	
 	private class CrimsonBladeInstance extends PriorityAction {
 		private int count;
 		private long start;
-		public CrimsonBladeInstance(String id, Player p) {
+		public CrimsonBladeInstance(String id) {
 			super(id);
 			start = System.currentTimeMillis();
 			action = (pdata, inputs) -> {
 				LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
+				Player p = pdata.getPlayer();
 				weaponSwingAndDamage(p, pdata, ev.getTarget());
 				if (++count >= 5) {
 					if (System.currentTimeMillis() - start < 30000) {

@@ -1,7 +1,6 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.ActionMeta;
@@ -34,7 +33,7 @@ public class PiercingShot2 extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta md = new ActionMeta();
 		data.addTrigger(ID, Trigger.LAUNCH_PROJECTILE_GROUP, (pdata2, in) -> {
 			md.addCount(1);

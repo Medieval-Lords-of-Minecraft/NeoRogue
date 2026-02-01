@@ -44,8 +44,9 @@ public class AvalonianMace extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, in) -> {
+			Player p = data.getPlayer();
 			LeftClickHitEvent ev = (LeftClickHitEvent) in;
 			weaponSwing(p, data);
 			weaponDamage(p, data, ev.getTarget(), properties.get(PropertyType.DAMAGE) + data.getStatus(StatusType.STRENGTH).getStacks() * (mult - 1));

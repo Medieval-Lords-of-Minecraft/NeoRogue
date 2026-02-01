@@ -44,7 +44,7 @@ public class Paranoia extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta stacks = new ActionMeta();
 		ActionMeta timeSinceAttack = new ActionMeta();  // Tracks seconds since last basic attack
 		ItemStack icon = item.clone();
@@ -52,8 +52,7 @@ public class Paranoia extends Equipment {
 		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
 		
 		// Every second (20 ticks), gain a stack if not at max, and apply insanity if no attack in 2s
-		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
-			// Gain stacks
+		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {		Player p = data.getPlayer();			// Gain stacks
 			if (stacks.getCount() < MAX_STACKS) {
 				stacks.addCount(1);
 				// Use active icon when we have stacks
@@ -84,6 +83,7 @@ public class Paranoia extends Equipment {
 			
 			// Only grant bonuses if we have stacks
 			if (currentStacks > 0) {
+				Player p = data.getPlayer();
 				// Deal bonus damage
 				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), 
 						new Buff(data, damagePerStack * currentStacks, 0, StatTracker.damageBuffAlly(id + slot, this)));

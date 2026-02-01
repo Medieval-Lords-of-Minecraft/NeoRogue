@@ -42,7 +42,8 @@ public class LeviathanAxe extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		Player p = data.getPlayer();
 		ItemStack icon = item.withType(Material.GOLD_INGOT);
 		p.getInventory().setItemInOffHand(icon);
 		ActionMeta am = new ActionMeta();

@@ -1,7 +1,6 @@
 package me.neoblade298.neorogue.equipment.artifacts;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
@@ -28,7 +27,7 @@ public class CrackedCrystal extends Artifact {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
+	public void initialize(PlayerFightData data, ArtifactInstance ai) {
 		data.addTrigger(ID, Trigger.PRE_CAST_USABLE, (pdata, in) -> {
 			PreCastUsableEvent ev = (PreCastUsableEvent) in;
 			ev.addBuff(PropertyType.COOLDOWN, id, new Buff(data, 1, 0, BuffStatTracker.of(ID, this, "Cooldown reduced")));

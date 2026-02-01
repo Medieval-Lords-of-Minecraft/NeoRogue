@@ -2,7 +2,6 @@ package me.neoblade298.neorogue.equipment.weapons;
 
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -32,21 +31,17 @@ public class EarthenLeatherGauntlets extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, new EarthenLeatherGauntletsInstance(p));
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, new EarthenLeatherGauntletsInstance());
 	}
 	
 	private class EarthenLeatherGauntletsInstance implements TriggerAction {
-		private Player p;
 		private int count = 0;
-		public EarthenLeatherGauntletsInstance(Player p) {
-			this.p = p;
-		}
 		
 		@Override
 		public TriggerResult trigger(PlayerFightData data, Object inputs) {
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
-			weaponSwingAndDamage(p, data, ev.getTarget());
+			weaponSwingAndDamage(data.getPlayer(), data, ev.getTarget());
 			if (++count >= 3) {
 				count = 0;
 				FightInstance.getFightData(ev.getTarget().getUniqueId()).applyStatus(StatusType.CONCUSSED, data, concuss, 0);

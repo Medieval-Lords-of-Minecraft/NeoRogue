@@ -51,11 +51,11 @@ public class HailCloak extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		HailCloakInstance inst = new HailCloakInstance(data, this, slot, es);
 		data.addTrigger(id, bind, inst);
 		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
-			DealDamageEvent ev = (DealDamageEvent) in;
+		DealDamageEvent ev = (DealDamageEvent) in;
 			if (!inst.active || !ev.getMeta().hasOrigin(DamageOrigin.PROJECTILE)) return TriggerResult.keep();
 			inst.runEffect(ev.getTarget().getLocation());
 			return TriggerResult.keep();
@@ -65,8 +65,7 @@ public class HailCloak extends Equipment {
 	private class HailCloakInstance extends EquipmentInstance {
 		boolean active = false;
 		public HailCloakInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
-			super(data, eq, slot, es);
-
+			super(data, eq, slot, es);		Player p = data.getPlayer();
 			action = (pdata, in) -> {
 				data.channel(20);
 				Sounds.equip.play(p, p);

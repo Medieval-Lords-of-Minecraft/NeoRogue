@@ -43,10 +43,11 @@ public class DangerousGame extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ProjectileGroup group = new ProjectileGroup(new DangerousGameProjectile(data, this, slot));
 
 		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
+			Player p = data.getPlayer();
 			BasicAttackEvent ev = (BasicAttackEvent) in;
 			
 			LivingEntity target = ev.getTarget();

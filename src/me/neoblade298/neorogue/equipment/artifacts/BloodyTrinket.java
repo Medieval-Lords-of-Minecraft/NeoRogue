@@ -27,7 +27,8 @@ public class BloodyTrinket extends Artifact {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
+	public void initialize(PlayerFightData data, ArtifactInstance ai) {
+		Player p = data.getPlayer();
 		if (p.getHealth() <= data.getMaxHealth() * 0.5) {
 			data.applyStatus(StatusType.STRENGTH, data, str, -1);
 		}

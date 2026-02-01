@@ -43,8 +43,9 @@ public class StoneAxe extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
+			Player p = data.getPlayer();
 			if (data.hasStatus(StatusType.BERSERK) && data.getStatus(StatusType.BERSERK).getStacks() >= BERSERK_THRESHOLD) return TriggerResult.remove();
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
 			weaponSwingAndDamage(p, pdata, ev.getTarget());
@@ -52,6 +53,7 @@ public class StoneAxe extends Equipment {
 		});
 		
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (pdata, inputs) -> {
+			Player p = data.getPlayer();
 			if (!data.canBasicAttack()) return TriggerResult.keep();
 			if (!data.hasStatus(StatusType.BERSERK) || data.getStatus(StatusType.BERSERK).getStacks() < BERSERK_THRESHOLD) return TriggerResult.keep();
 			if (!pdata.canBasicAttack(EquipSlot.HOTBAR)) return TriggerResult.keep();

@@ -39,11 +39,12 @@ public class SpiritOfTheDragoon extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		SpiritOfTheDragoonInstance inst = new SpiritOfTheDragoonInstance(data, this, slot, es);
 		data.addTrigger(id, Trigger.TOGGLE_FLIGHT, inst);
 		
 		data.addTrigger(id, Trigger.FALL_DAMAGE, (pdata, in) -> {
+			Player p = data.getPlayer();
 			strPart.play(p, p);
 			Sounds.fire.play(p, p);
 			data.applyStatus(StatusType.STRENGTH, data, strength, -1);
@@ -57,6 +58,7 @@ public class SpiritOfTheDragoon extends Equipment {
 		public SpiritOfTheDragoonInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
 			super(data, eq, slot, es);
 			action = (pdata, in) -> {
+				Player p = data.getPlayer();
 				pdata.addSimpleShield(p.getUniqueId(), shield, 100);
 				p.setVelocity(p.getVelocity().add(new Vector(0, 0.5, 0)));
 				Sounds.jump.play(p, p);

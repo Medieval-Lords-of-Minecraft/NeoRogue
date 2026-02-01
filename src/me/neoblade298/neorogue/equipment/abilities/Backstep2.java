@@ -59,7 +59,7 @@ public class Backstep2 extends Equipment {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ItemStack icon = item.clone();
 		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, this, slot, es);
 		updateIcon(inst, icon);
@@ -69,6 +69,7 @@ public class Backstep2 extends Equipment {
 		}
 
 		inst.setAction((pdata, in) -> {
+			Player p = data.getPlayer();
 			inst.addCount(-1);
 			updateIcon(inst, icon);
 			Vector v = p.getEyeLocation().getDirection();

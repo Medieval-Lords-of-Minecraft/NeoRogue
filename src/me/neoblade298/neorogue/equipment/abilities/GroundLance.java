@@ -61,10 +61,11 @@ public class GroundLance extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		Equipment eq = this;
 		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
 		inst.setAction((pdata, in) -> {
+			Player p = data.getPlayer();
 			Block b = p.getTargetBlockExact((int) properties.get(PropertyType.RANGE));
 			if (b == null) {
 				data.addMana(properties.get(PropertyType.MANA_COST));

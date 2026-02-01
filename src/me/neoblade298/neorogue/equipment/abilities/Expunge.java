@@ -54,20 +54,20 @@ public class Expunge extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		Equipment eq = this;
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pd, in) -> {
 			data.charge(20, 0);
 			
 			data.addTask(new BukkitRunnable() {
 				public void run() {
+					Player p = data.getPlayer();
 					Sounds.extinguish.play(p, p);
 					circ.play(circPart, p.getLocation(), LocalAxes.xz(), null);
 					for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
 						FightData fd = FightInstance.getFightData(ent);
 						fd.applyStatus(StatusType.POISON, data, stacks, -1);
 						double dmg = FightInstance.getFightData(ent).getStatus(StatusType.POISON).getStacks() * bonus;
-						FightInstance.dealDamage(new DamageMeta(data, dmg, DamageType.POISON, DamageStatTracker.of(id + slot, eq)), ent);
+						FightInstance.dealDamage(new DamageMeta(data, dmg, DamageType.POISON, DamageStatTracker.of(id + slot, Expunge.this)), ent);
 					}
 				}
 			}.runTaskLater(NeoRogue.inst(), 25L));

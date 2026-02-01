@@ -34,9 +34,8 @@ public class FerociousDraw extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
-			BasicAttackEvent ev = (BasicAttackEvent) in;
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {		Player p = data.getPlayer();			BasicAttackEvent ev = (BasicAttackEvent) in;
             if (!ev.isProjectile()) return TriggerResult.keep();
 			
 			LivingEntity target = ev.getTarget();

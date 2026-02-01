@@ -38,13 +38,14 @@ public class CopperFunnel extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ItemStack icon = item.clone();
 		icon.setAmount(reps);
 		ActionMeta am = new ActionMeta();
 		am.setCount(reps);
 		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
 		inst.setAction((pdata, in) -> {
+			Player p = data.getPlayer();
 			ReceiveDamageEvent ev = (ReceiveDamageEvent) in;
 			if (!ev.getMeta().containsType(DamageCategory.MAGICAL)) return TriggerResult.keep();
 			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL), Buff.increase(data, reduc, StatTracker.defenseBuffAlly(am.getId(), this)));

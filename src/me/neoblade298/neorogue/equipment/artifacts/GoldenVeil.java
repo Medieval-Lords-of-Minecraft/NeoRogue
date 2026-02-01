@@ -26,10 +26,9 @@ public class GoldenVeil extends Artifact {
 	}
 	
 	@Override
-	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
+	public void initialize(PlayerFightData data, ArtifactInstance ai) {
 		ActionMeta am = new ActionMeta();
-		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
-			if (pdata.getMana() > pdata.getMaxMana() * 0.8) {
+		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {		Player p = data.getPlayer();			if (pdata.getMana() > pdata.getMaxMana() * 0.8) {
 				am.addCount(1);
 				if (am.getCount() >= 3) {
 					am.addCount(-3);

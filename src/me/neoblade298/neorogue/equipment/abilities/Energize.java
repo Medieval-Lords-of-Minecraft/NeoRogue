@@ -52,11 +52,12 @@ public class Energize extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		EnergizeInstance inst = new EnergizeInstance(data, this, slot, es);
 		data.addTrigger(id, bind, inst);
 		
 		data.addTrigger(ID, Trigger.DEAL_DAMAGE, (pdata, in) -> {
+			Player p = data.getPlayer();
 			if (inst.mark == null || !inst.mark.isValid()) return TriggerResult.keep();
 			DealDamageEvent ev = (DealDamageEvent) in;
 			if (!ev.getMeta().containsType(DamageType.LIGHTNING)) return TriggerResult.keep();

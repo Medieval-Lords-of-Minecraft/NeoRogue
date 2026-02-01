@@ -45,7 +45,7 @@ public class Evanesce extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.EVADE, (pdata, in) -> {
 			EvadeEvent ev = (EvadeEvent) in;
 			
@@ -54,6 +54,7 @@ public class Evanesce extends Equipment {
 				return TriggerResult.keep();
 			}
 			
+			Player p = data.getPlayer();
 			LivingEntity damager = ev.getDamageMeta().getOwner().getEntity();
 			Location playerLoc = p.getLocation();
 			Location damagerLoc = damager.getLocation();
@@ -72,6 +73,7 @@ public class Evanesce extends Equipment {
 			FightInstance.applyStatus(p, StatusType.STEALTH, data, 1, stealthDuration);
 			
 			// Delayed damage buff (1 second = 20 ticks later)
+			Player fp = p;
 			data.addTask(new BukkitRunnable() {
 				public void run() {
 					data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
@@ -80,7 +82,7 @@ public class Evanesce extends Equipment {
 				}
 			}.runTaskLater(NeoRogue.inst(), 20L));
 			
-			Sounds.attackSweep.play(p, p);
+			Sounds.attackSweep.play(fp, fp);
 			
 			return TriggerResult.keep();
 		});

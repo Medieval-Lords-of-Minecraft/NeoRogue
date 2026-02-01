@@ -33,10 +33,11 @@ public class MistralVeil extends Artifact {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
+	public void initialize(PlayerFightData data, ArtifactInstance ai) {
 		String buffId = UUID.randomUUID().toString();
 		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, (pdata, in) -> {
 			ReceiveDamageEvent ev = (ReceiveDamageEvent) in;
+			Player p = data.getPlayer();
 			if (p.getLocation().distanceSquared(ev.getDamager().getEntity().getLocation()) > rangeSq) {
 				ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, reduc, 0, StatTracker.defenseBuffAlly(buffId, this)));
 			}

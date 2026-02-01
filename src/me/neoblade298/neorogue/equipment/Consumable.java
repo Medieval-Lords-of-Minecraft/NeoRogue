@@ -16,8 +16,9 @@ public abstract class Consumable extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, (pdata, in) -> {
+			Player p = data.getPlayer();
 			drink.play(p, p);
 			data.getSessionData().removeEquipment(es, slot);
 			data.runActions(data, Trigger.USE_CONSUMABLE, new UseConsumableEvent(this));

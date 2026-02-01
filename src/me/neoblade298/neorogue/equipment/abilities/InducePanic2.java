@@ -43,7 +43,7 @@ public class InducePanic2 extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		InducePanicInstance inst = new InducePanicInstance(data, this, slot, es);
 		data.addTrigger(ID, Trigger.DEAL_DAMAGE, (pdata, in) -> {
 			if (inst.mark == null) return TriggerResult.keep();

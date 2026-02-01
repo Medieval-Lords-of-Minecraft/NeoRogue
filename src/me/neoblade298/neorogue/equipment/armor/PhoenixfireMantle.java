@@ -29,7 +29,7 @@ public class PhoenixfireMantle extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
 		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
@@ -37,6 +37,7 @@ public class PhoenixfireMantle extends Equipment {
 				am.addCount(1);
 
 				if (am.getCount() >= thres) {
+					Player p = data.getPlayer();
 					am.addCount(-thres);
 					data.addHealth(heal);
 					Sounds.success.play(p, p);

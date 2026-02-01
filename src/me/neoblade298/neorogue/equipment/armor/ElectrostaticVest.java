@@ -28,7 +28,7 @@ public class ElectrostaticVest extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta stackCounter = new ActionMeta();
 		
 		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
@@ -39,6 +39,7 @@ public class ElectrostaticVest extends Equipment {
 			int shieldAmount = baseShields + stackCounter.getCount();
 			
 			// Grant shields for 5 seconds (100 ticks)
+			Player p = data.getPlayer();
 			data.addSimpleShield(p.getUniqueId(), shieldAmount, 100);
 			
 			// Increment stack counter permanently

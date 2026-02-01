@@ -47,18 +47,20 @@ public class Execute extends Equipment {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, inputs) -> {
+			Player p = data.getPlayer();
 			Sounds.enchant.play(p, p);
 			pc.play(p, p);
 			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata2, in) -> {
-				if (p.isOnGround()) return TriggerResult.keep();
+				Player p2 = data.getPlayer();
+				if (p2.isOnGround()) return TriggerResult.keep();
 				PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
-				FightInstance.dealDamage(data, DamageType.PIERCING, damage, ev.getTarget(), DamageStatTracker.of(id + slot, this));
-				Sounds.anvil.play(p, ev.getTarget());
-				hit.play(p, ev.getTarget());
+				FightInstance.dealDamage(data, DamageType.PIERCING, damage, ev.getTarget(), DamageStatTracker.of(id + slot, Execute.this));
+				Sounds.anvil.play(p2, ev.getTarget());
+				hit.play(p2, ev.getTarget());
 				if (ev.getTarget().getHealth() <= 0) {
-					Sounds.success.play(p, p);
+					Sounds.success.play(p2, p2);
 					data.applyStatus(StatusType.STRENGTH, data, strength, -1);
 				}
 				

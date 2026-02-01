@@ -3,7 +3,6 @@ package me.neoblade298.neorogue.equipment.artifacts;
 import java.util.UUID;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Artifact;
@@ -37,7 +36,7 @@ public class OpalNecklace extends Artifact {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
+	public void initialize(PlayerFightData data, ArtifactInstance ai) {
 		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, new OpalNecklaceInstance(this, id));
 	}
 

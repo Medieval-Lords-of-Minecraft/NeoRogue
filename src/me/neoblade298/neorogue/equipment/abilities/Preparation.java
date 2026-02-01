@@ -39,9 +39,10 @@ public class Preparation extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, this, slot, es);
 		data.addTrigger(ID, bind, (pdata, in) -> {
+			Player p = data.getPlayer();
 			Sounds.equip.play(p, p);
 			data.charge(100, 0);
 			data.addTask(new BukkitRunnable() {
@@ -61,6 +62,7 @@ public class Preparation extends Equipment {
 		});
 		
 		inst.setAction((pdata, in) -> {
+			Player p = data.getPlayer();
 			if (inst.getCount() == 0) return TriggerResult.keep();
 			if (inst.getCount() == 2) return TriggerResult.remove();
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;

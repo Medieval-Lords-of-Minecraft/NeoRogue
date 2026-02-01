@@ -39,7 +39,7 @@ public Backstep(boolean isUpgraded) {
 }
 
 @Override
-public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
     data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
         // Ability effect here
         p.setVelocity(...); // Jump backwards
@@ -70,7 +70,7 @@ public Storm(boolean isUpgraded) {
 }
 
 @Override
-public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
     ActionMeta am = new ActionMeta();
     EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
     inst.setAction((pdata, in) -> {
@@ -145,7 +145,7 @@ public GroundLance(boolean isUpgraded) {
 }
 
 @Override
-public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
     EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
     inst.setAction((pdata, in) -> {
         Block b = p.getTargetBlockExact((int) properties.get(PropertyType.RANGE));

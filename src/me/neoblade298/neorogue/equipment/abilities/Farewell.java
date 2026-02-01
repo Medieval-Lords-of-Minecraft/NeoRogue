@@ -55,9 +55,9 @@ public class Farewell extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		Equipment eq = this;
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, inputs) -> {
+			Player p = data.getPlayer();
 			placePart.play(p, p);
 			place.play(p, p);
 			Location loc = p.getLocation();
@@ -65,11 +65,12 @@ public class Farewell extends Equipment {
 			data.addTask(new BukkitRunnable() {
 				private int tick = 0;
 				public void run() {
+					Player p = data.getPlayer();
 					if (p.getLocation().distanceSquared(loc) > tp.range * tp.range) {
 						Sounds.explode.play(p, loc);
 						explode.play(p, loc);
 						for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, tp)) {
-							FightInstance.dealDamage(pdata, DamageType.DARK, damage * tick, ent, DamageStatTracker.of(id + slot, eq));
+							FightInstance.dealDamage(pdata, DamageType.DARK, damage * tick, ent, DamageStatTracker.of(id + slot, Farewell.this));
 						}
 						this.cancel();
 						return;

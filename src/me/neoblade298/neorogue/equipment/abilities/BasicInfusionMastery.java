@@ -34,7 +34,7 @@ public class BasicInfusionMastery extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta meta = new ActionMeta();
 		data.addTrigger(id, Trigger.PRE_APPLY_STATUS, (pdata, in) -> {
 			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
@@ -48,6 +48,7 @@ public class BasicInfusionMastery extends Equipment {
 		});
 
 		data.addTrigger(id, Trigger.WIN_FIGHT, (pdata, in) -> {
+			Player p = data.getPlayer();
 			if (meta.getBool()) {
 				FightInstance.giveHeal(p, heal, p);
 			}

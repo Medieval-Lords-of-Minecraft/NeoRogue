@@ -48,11 +48,12 @@ public class FivePointStrike extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		for (int i = 0; i < 5; i++) {
 			projs.add(new FivePointStrikeProjectile(i, slot, this));
 		}
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pd, in) -> {
+			Player p = data.getPlayer();
 			Sounds.attackSweep.play(p, p);
 			projs.start(data);
 			return TriggerResult.keep();

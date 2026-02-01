@@ -51,9 +51,8 @@ public class Crystallize extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pd, in) -> {
-			LivingEntity trg = TargetHelper.getNearest(p, tp);
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pd, in) -> {		Player p = data.getPlayer();			LivingEntity trg = TargetHelper.getNearest(p, tp);
 			circ.play(p, edges, trg.getLocation(), LocalAxes.xz(), fill);
 			Sounds.glass.play(p, trg.getLocation());
 			DamageMeta dm = new DamageMeta(data);
@@ -64,8 +63,7 @@ public class Crystallize extends Equipment {
 				FightInstance.applyStatus(le, StatusType.FROST, data, frost, -1);
 			}
 			return TriggerResult.keep();
-		}), (p2, data2, in) -> {
-			LivingEntity trg = TargetHelper.getNearest(p, tp);
+		}), (p2, data2, in) -> {		Player p = data.getPlayer();			LivingEntity trg = TargetHelper.getNearest(p, tp);
 			if (trg == null) return false;
 			return trg.getHealth() <= thres;
 		});

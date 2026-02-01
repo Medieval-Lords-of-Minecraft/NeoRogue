@@ -44,10 +44,11 @@ public class GetCentered extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		String buffId = UUID.randomUUID().toString();
 		StandardPriorityAction inst = new StandardPriorityAction(id);
 		inst.setAction((pdata, in) -> {
+			Player p = data.getPlayer();
 			LaunchProjectileGroupEvent ev = (LaunchProjectileGroupEvent) in;
 			if (!ev.isBowProjectile()) return TriggerResult.keep();
 			BowProjectile bp = (BowProjectile) ev.getInstances().getFirst().getParent();

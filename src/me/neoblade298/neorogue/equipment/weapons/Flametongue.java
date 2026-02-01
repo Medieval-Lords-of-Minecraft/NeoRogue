@@ -3,7 +3,6 @@ package me.neoblade298.neorogue.equipment.weapons;
 
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -36,13 +35,13 @@ public class Flametongue extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
 			DamageMeta dm = new DamageMeta(pdata);
 			dm.addDamageSlice(new DamageSlice(data, properties.get(PropertyType.DAMAGE), properties.getType(), DamageType.FIRE, DamageStatTracker.of(id + slot, this)));
 			dm.setKnockback(properties.get(PropertyType.KNOCKBACK)).isBasicAttack(this, true);
-			weaponSwing(p, data);
+			weaponSwing(data.getPlayer(), data);
 			FightInstance.dealDamage(dm, ev.getTarget());
 			return TriggerResult.keep();
 		});

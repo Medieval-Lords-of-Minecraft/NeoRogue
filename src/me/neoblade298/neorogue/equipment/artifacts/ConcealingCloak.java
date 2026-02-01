@@ -1,7 +1,6 @@
 package me.neoblade298.neorogue.equipment.artifacts;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
@@ -25,7 +24,7 @@ public class ConcealingCloak extends Artifact {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
+	public void initialize(PlayerFightData data, ArtifactInstance ai) {
 		ConcealingCloakInstance inst = new ConcealingCloakInstance(ID, data);
 		data.addTrigger(ID, Trigger.PLAYER_TICK, inst);
 		

@@ -2,7 +2,6 @@ package me.neoblade298.neorogue.equipment.weapons;
 
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -33,10 +32,10 @@ public class CrescentAxe extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
-			weaponSwingAndDamage(p, pdata, ev.getTarget(), 
+			weaponSwingAndDamage(data.getPlayer(), pdata, ev.getTarget(), 
 					damage + (data.getStatus(StatusType.BERSERK).getStacks() * 3));
 			return TriggerResult.keep();
 		});

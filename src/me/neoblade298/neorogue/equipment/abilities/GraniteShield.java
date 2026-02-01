@@ -35,7 +35,8 @@ public class GraniteShield extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		Player p = data.getPlayer();
 		GraniteShieldInstance inst = new GraniteShieldInstance(id, p);
 		data.addTrigger(id, Trigger.RAISE_SHIELD, inst);
 		

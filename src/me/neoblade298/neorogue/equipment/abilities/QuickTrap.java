@@ -50,12 +50,13 @@ public class QuickTrap extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
 		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
 		ItemStack charged = item.clone().withType(Material.STICKY_PISTON);
 		inst.setAction((pd, in) -> {
 			if (am.getDouble() >= thres) {
+				Player p = data.getPlayer();
 				am.addDouble(-thres);
 				Sounds.equip.play(p, p);
 				initTrap(p, data, this, slot);

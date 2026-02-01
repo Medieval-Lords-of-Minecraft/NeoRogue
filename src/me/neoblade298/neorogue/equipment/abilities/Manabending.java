@@ -3,7 +3,6 @@ package me.neoblade298.neorogue.equipment.abilities;
 import java.util.UUID;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.ActionMeta;
@@ -37,7 +36,7 @@ public class Manabending extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		String buffId = UUID.randomUUID().toString();
 		data.addDamageBuff(DamageBuffType.of(DamageCategory.MAGICAL), new Buff(data, damage, 0, StatTracker.damageBuffAlly(buffId, this)));
 		ActionMeta am = new ActionMeta();

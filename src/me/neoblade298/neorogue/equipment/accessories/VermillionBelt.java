@@ -29,10 +29,11 @@ public class VermillionBelt extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
 		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
 			if (am.addCount(1) >= thres) {
+				Player p = data.getPlayer();
 				Sounds.fire.play(p, p);
 				data.applyStatus(StatusType.BERSERK, data, berserk, -1);
 				am.setCount(0);

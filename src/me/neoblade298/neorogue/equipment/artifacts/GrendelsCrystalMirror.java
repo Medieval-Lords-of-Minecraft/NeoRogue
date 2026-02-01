@@ -1,7 +1,6 @@
 package me.neoblade298.neorogue.equipment.artifacts;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neorogue.NeoRogue;
@@ -27,7 +26,7 @@ public class GrendelsCrystalMirror extends Artifact {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
+	public void initialize(PlayerFightData data, ArtifactInstance ai) {
 		data.addTrigger(id, Trigger.LAUNCH_PROJECTILE_GROUP, new GrendelsCrystalMirrorInstance());
 	}
 	

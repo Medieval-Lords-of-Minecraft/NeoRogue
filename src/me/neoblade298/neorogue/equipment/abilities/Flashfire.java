@@ -46,8 +46,9 @@ public class Flashfire extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Player p = data.getPlayer();
 			double manaBefore = data.getMana() + properties.get(PropertyType.MANA_COST);
 			boolean hasBonus = manaBefore > data.getMaxMana() * 0.5;
 			Sounds.fire.play(p, p);

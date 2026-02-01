@@ -44,12 +44,13 @@ public class Posturing extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ItemStack icon = item.clone();
 		String buffId = UUID.randomUUID().toString();
 		StandardPriorityAction act = new StandardPriorityAction(id);
 		act.setAction((pdata, in) -> {
-		if (!p.isSneaking()) return TriggerResult.keep();
+			Player p = data.getPlayer();
+			if (!p.isSneaking()) return TriggerResult.keep();
 			act.addCount(1);
 			if (act.getCount() >= time) {
 				pc.play(p, p);

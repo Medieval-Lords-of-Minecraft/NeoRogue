@@ -45,9 +45,12 @@ public class BreakingPoint extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		Player p = data.getPlayer();
 		ActionMeta am = new ActionMeta();
 		am.setDouble(shields);
+	Component hoverable = Component.text("[" + getDisplay() + "]", NamedTextColor.GRAY)
+				.hoverEvent(net.kyori.adventure.text.event.HoverEvent.showText(Component.text("Cooldown: " + refresh + "s", NamedTextColor.GRAY)));
 		data.addTrigger(id, Trigger.TOGGLE_CROUCH, (pdata, in) -> {
 			PlayerToggleSneakEvent ev = (PlayerToggleSneakEvent) in;
 			if (ev.isSneaking()) {
@@ -58,6 +61,7 @@ public class BreakingPoint extends Equipment {
 				}
 				task = new BukkitRunnable() {
 					public void run() {
+
 						am.setDouble(shields);
 						Sounds.success.play(p, p);
 						Util.msg(p, hoverable.append(Component.text(" was refreshed", NamedTextColor.GRAY)));
@@ -82,6 +86,7 @@ public class BreakingPoint extends Equipment {
 		});
 
 		data.addTrigger(id, Trigger.RECEIVE_DAMAGE, (pdata, in) -> {
+
 			if (am.getObject() == null) return TriggerResult.keep();
 			Shield shield = (Shield) am.getObject();
 			if (shield.getAmount() <= shields / 2) {

@@ -51,14 +51,14 @@ public class Consecrate extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
 		ItemStack icon = item.clone();
 		ItemStack chargedIcon = item.clone().withType(Material.NETHER_STAR);
-		Equipment eq = this;
-		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
+	EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
 
-		inst.setAction((pdata, in) -> {
+	inst.setAction((pdata, in) -> {
+		Player p = data.getPlayer();
 			icon.setAmount(1);
 			inst.setIcon(icon);
 			am.setCount(0);
@@ -70,7 +70,7 @@ public class Consecrate extends Equipment {
 					data.addSimpleShield(p.getUniqueId(), shields, 160);
 					for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
 						FightInstance.dealDamage(
-								new DamageMeta(data, damage, DamageType.LIGHT, DamageStatTracker.of(id + slot, eq))
+							new DamageMeta(data, damage, DamageType.LIGHT, DamageStatTracker.of(id + slot, Consecrate.this))
 										.setKnockback(1),
 								ent);
 						FightInstance.applyStatus(ent, StatusType.SANCTIFIED, data, sanct, -1);

@@ -43,9 +43,10 @@ public class PiercingVenom extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, this, slot, es);
 		inst.setAction((pdata, in) -> {
+			Player p = data.getPlayer();
 			inst.addCount(3);
 			sc.play(p, p);
 			pc.play(p, p);

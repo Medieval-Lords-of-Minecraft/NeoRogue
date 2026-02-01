@@ -42,9 +42,10 @@ public class ManaBlitz extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		String buffId = UUID.randomUUID().toString();
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Player p = data.getPlayer();
 			Sounds.fire.play(p, p);
 			data.addDamageBuff(DamageBuffType.of(DamageCategory.MAGICAL),
 					Buff.increase(data, inc, BuffStatTracker.damageBuffAlly(buffId, this)), 160);

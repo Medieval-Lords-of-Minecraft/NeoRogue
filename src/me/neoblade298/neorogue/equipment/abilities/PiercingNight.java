@@ -62,8 +62,8 @@ public class PiercingNight extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		String statusName = p.getName() + "-piercingnight";
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		String statusName = data.getPlayer().getName() + "-piercingnight";
 		ProjectileGroup proj = new ProjectileGroup();
 		boolean[] anyHit = {false}; // Track if any projectile hit
 		
@@ -73,6 +73,7 @@ public class PiercingNight extends Equipment {
 		}
 		
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Player p = data.getPlayer();
 			anyHit[0] = false;
 			Sounds.attackSweep.play(p, p);
 			proj.start(data);

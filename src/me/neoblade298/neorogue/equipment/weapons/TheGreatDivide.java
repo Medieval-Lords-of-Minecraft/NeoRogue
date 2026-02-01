@@ -51,9 +51,10 @@ public class TheGreatDivide extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, in) -> {
+			Player p = data.getPlayer();
 			LeftClickHitEvent ev = (LeftClickHitEvent) in;
 			weaponSwingAndDamage(p, data, ev.getTarget());
 			

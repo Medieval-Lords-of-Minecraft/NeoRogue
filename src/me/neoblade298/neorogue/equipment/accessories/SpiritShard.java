@@ -1,7 +1,6 @@
 package me.neoblade298.neorogue.equipment.accessories;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -24,7 +23,7 @@ public class SpiritShard extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addManaRegen(mana);
 		data.addStamina(-stam);
 	}

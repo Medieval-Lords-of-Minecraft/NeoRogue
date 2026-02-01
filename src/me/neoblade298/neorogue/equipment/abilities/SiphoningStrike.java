@@ -43,27 +43,28 @@ public class SiphoningStrike extends Equipment {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
 		data.addTrigger(id, bind, inst);
 		inst.setAction((pdata, inputs) -> {
-				Sounds.equip.play(p, p);
-				pc.play(p, p);
-				pdata.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata2, in) -> {
-					if (p.isOnGround()) return TriggerResult.keep();
-					PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
-					Sounds.anvil.play(p, p);
-					hit.play(p, ev.getTarget().getLocation());
-					FightInstance.dealDamage(pdata, DamageType.PIERCING, damage, ev.getTarget(), DamageStatTracker.of(id + slot, this));
-					
-					if (ev.getTarget().getHealth() <= 0) {
-						pdata.applyStatus(StatusType.STRENGTH, pdata, buff, -1);
-						Sounds.success.play(p, p);
-						inst.reduceCooldown(6);
-					}
-					return TriggerResult.remove();
-				});
-				return TriggerResult.keep();
+			Player p = data.getPlayer();
+			Sounds.equip.play(p, p);
+			pc.play(p, p);
+			pdata.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata2, in) -> {
+				if (p.isOnGround()) return TriggerResult.keep();
+				PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
+				Sounds.anvil.play(p, p);
+				hit.play(p, ev.getTarget().getLocation());
+				FightInstance.dealDamage(pdata, DamageType.PIERCING, damage, ev.getTarget(), DamageStatTracker.of(id + slot, this));
+				
+				if (ev.getTarget().getHealth() <= 0) {
+					pdata.applyStatus(StatusType.STRENGTH, pdata, buff, -1);
+					Sounds.success.play(p, p);
+					inst.reduceCooldown(6);
+				}
+				return TriggerResult.remove();
+			});
+			return TriggerResult.keep();
 		});
 	}
 

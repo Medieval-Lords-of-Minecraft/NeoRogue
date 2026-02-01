@@ -25,8 +25,9 @@ public class ClothBindings extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.WIN_FIGHT, (pdata, in) -> {
+			Player p = data.getPlayer();
 			FightInstance.giveHeal(p, health, p);
 			return TriggerResult.keep();
 		});

@@ -32,7 +32,7 @@ public class NoxianBlight extends Artifact {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
+	public void initialize(PlayerFightData data, ArtifactInstance ai) {
 		data.addTrigger(id, Trigger.CAST_USABLE, (pdata, in) -> {
 			CastUsableEvent ev = (CastUsableEvent) in;
 			if (!ev.getInstance().canTrigger(data.getPlayer(), data, in))
@@ -48,6 +48,7 @@ public class NoxianBlight extends Artifact {
 			}
 
 			if (activated) {
+				Player p = data.getPlayer();
 				p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1F, 1F);
 				Util.msg(p, this.hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 			}

@@ -55,11 +55,10 @@ public class Darkness extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		DarknessInstance inst = new DarknessInstance(data, this, slot, es);
 		data.addTrigger(id, bind, inst);
-		data.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
-			if (!inst.basicAttack) return TriggerResult.keep();
+		data.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {		Player p = data.getPlayer();			if (!inst.basicAttack) return TriggerResult.keep();
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 			FightInstance.applyStatus(ev.getTarget(), StatusType.INSANITY, data, insanity, -1);
 			sound.play(p, p);

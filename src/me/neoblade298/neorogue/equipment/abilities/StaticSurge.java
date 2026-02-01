@@ -34,11 +34,12 @@ public class StaticSurge extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
 		
 		// Track when sprinting is toggled
 		data.addTrigger(id, Trigger.TOGGLE_SPRINT, (pdata, in) -> {
+			Player p = data.getPlayer();
 			if (p.isSprinting()) {
 				// Player started sprinting - record the time
 				am.setTime(System.currentTimeMillis());

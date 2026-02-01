@@ -29,7 +29,8 @@ public class MassiveHalberd extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		Player p = data.getPlayer();
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
 			if (!canUseWeapon(data)) return TriggerResult.keep();
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;

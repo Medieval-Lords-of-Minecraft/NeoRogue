@@ -842,7 +842,7 @@ public class SessionManager implements Listener {
 					endSession(s);
 					return;
 				}
-				s.getInstance().handlePlayerLeave(p);
+				s.getInstance().handlePlayerLogout(p);
 			}
 		}
 	}

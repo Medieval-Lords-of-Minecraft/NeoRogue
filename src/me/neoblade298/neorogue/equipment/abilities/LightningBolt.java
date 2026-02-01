@@ -55,14 +55,15 @@ public class LightningBolt extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		Equipment eq = this;
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			double cost = properties.get(PropertyType.MANA_COST);
+		double cost = properties.get(PropertyType.MANA_COST);
 			double currMana = data.getMana() + cost;
 			boolean hasBonus = currMana >= thres;
 			data.channel(20).then(new Runnable() {
 				public void run() {
+					Player p = data.getPlayer();
 					Location start = p.getLocation().add(0, 1, 0);
 					Vector dir = p.getEyeLocation().getDirection();
 					Location end = start.clone().add(dir.clone().multiply(properties.get(PropertyType.RANGE)));

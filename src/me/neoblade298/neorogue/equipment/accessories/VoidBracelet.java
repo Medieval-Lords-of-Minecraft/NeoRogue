@@ -28,12 +28,13 @@ public class VoidBracelet extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTask(new BukkitRunnable() {
 			public void run() {
+				Player p = data.getPlayer();
 				data.addRift(new Rift(data, p.getLocation(), 200));
 			}
-	}.runTaskLater(NeoRogue.inst(), 100));
+		}.runTaskLater(NeoRogue.inst(), 100));
 
 		data.addTrigger(id, Trigger.CREATE_RIFT, (pdata, in) -> {
 			data.applyStatus(StatusType.INTELLECT, data, inc, -1);

@@ -3,7 +3,6 @@ package me.neoblade298.neorogue.equipment.abilities;
 import java.util.UUID;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -34,7 +33,7 @@ public class Lethality extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		String buffId = UUID.randomUUID().toString();
 		data.addTrigger(ID, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
 			if (data.getStamina() < thres) return TriggerResult.keep();

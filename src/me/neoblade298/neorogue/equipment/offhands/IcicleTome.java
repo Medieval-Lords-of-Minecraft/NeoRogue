@@ -46,7 +46,7 @@ public class IcicleTome extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
 		EquipmentInstance eqi = new EquipmentInstance(data, this, slot, es);
 		ItemStack charged = item.clone().withType(Material.ENCHANTED_BOOK);
@@ -67,6 +67,7 @@ public class IcicleTome extends Equipment {
 		data.addTrigger(id, Trigger.APPLY_STATUS, eqi);
 		data.addTrigger(id, Trigger.LEFT_CLICK, (pdata, in) -> {
 			if (am.getCount() >= thres) {
+				Player p = data.getPlayer();
 				am.addCount(-thres);
 				Sounds.wind.play(p, p);
 				projs.start(data);

@@ -3,7 +3,6 @@ package me.neoblade298.neorogue.equipment.artifacts;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.PotionMeta;
 
 import me.neoblade298.neorogue.equipment.Artifact;
@@ -39,7 +38,7 @@ public class MiasmaInABottle extends Artifact {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
+	public void initialize(PlayerFightData data, ArtifactInstance ai) {
 		data.addTrigger(ID, Trigger.PLAYER_TICK, new MiasmaInABottleInstance(ID, this));
 	}
 	

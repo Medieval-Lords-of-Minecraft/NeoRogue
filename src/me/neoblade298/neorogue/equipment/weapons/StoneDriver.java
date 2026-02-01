@@ -29,8 +29,9 @@ public class StoneDriver extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
+			Player p = data.getPlayer();
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
 			if (!canUseWeapon(data)) return TriggerResult.keep();
 			weaponSwingAndDamage(p, data, ev.getTarget());

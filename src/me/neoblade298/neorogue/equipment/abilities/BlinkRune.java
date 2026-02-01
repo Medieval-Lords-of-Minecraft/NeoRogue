@@ -30,14 +30,13 @@ public class BlinkRune extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ItemStack icon = item.clone();
 		icon.setAmount(reps);
 		ActionMeta am = new ActionMeta();
 		am.setCount(reps);
 		Trigger tr = data.getSessionData().getPlayerClass() == EquipmentClass.ARCHER ? Trigger.LEFT_CLICK : Trigger.RIGHT_CLICK;
-		data.addTrigger(id, tr, (pdata, in) -> {
-			if (tr == Trigger.LEFT_CLICK) p.swingOffHand();
+		data.addTrigger(id, tr, (pdata, in) -> {			Player p = data.getPlayer();			if (tr == Trigger.LEFT_CLICK) p.swingOffHand();
 			data.dash();
 
 			am.addCount(-1);

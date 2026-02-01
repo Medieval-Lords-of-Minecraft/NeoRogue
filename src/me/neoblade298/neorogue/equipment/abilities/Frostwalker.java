@@ -56,11 +56,12 @@ public class Frostwalker extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		FrostwalkerInstance inst = new FrostwalkerInstance(data, this);
 		data.addTrigger(id, Trigger.PLAYER_TICK, inst);
 		EquipmentInstance toggle = new EquipmentInstance(data, this, slot, es);
 		toggle.setAction((pdata, in) -> {
+			Player p = data.getPlayer();
 			inst.active = !inst.active;
 			Sounds.equip.play(p, p);
 			toggle.setIcon(inst.active ? activeIcon : item);

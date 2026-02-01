@@ -69,6 +69,39 @@ Player Action → Trigger Event → Equipment Triggers → Status/Damage/Effects
 - **Player Tick Duration**: One player tick (`Trigger.PLAYER_TICK`) = 20 game ticks = 1 second
 - Example: To trigger every 2 seconds, check if tick count >= 40
 
+### Player Reference Safety (CRITICAL)
+**NEVER store Player references across trigger executions.** Bukkit recreates Player objects when players relog, making stored references stale.
+
+**CORRECT Pattern - Fetch fresh Player each trigger:**
+```java
+data.addTrigger(id, Trigger.LEFT_CLICK_HIT, (pdata, in) -> {
+    Player p = data.getPlayer();  // ✓ Fresh reference every trigger
+    LeftClickHitEvent ev = (LeftClickHitEvent) in;
+    weaponSwingAndDamage(p, data, ev.getTarget());
+    return TriggerResult.keep();
+});
+```
+
+**INCORRECT Pattern - Storing Player reference:**
+```java
+// ❌ WRONG - Don't capture Player in initialize()
+public void initialize(PlayerFightData data, ...) {
+    Player p = data.getPlayer();  // ❌ Becomes stale on relog
+    data.addTrigger(id, Trigger.LEFT_CLICK_HIT, (pdata, in) -> {
+        p.playSound(...);  // ❌ Uses stale reference
+    });
+}
+
+// ❌ WRONG - Don't store Player in fields
+private Player p;  // ❌ Never store Player as field
+```
+
+**Key Rules:**
+- Always call `data.getPlayer()` inside trigger lambdas
+- Never pass Player from `initialize()` into trigger actions
+- Never store Player as a field in equipment or trigger classes
+- Initialize() signature has NO Player parameter: `initialize(PlayerFightData data, ...)`
+
 ### Status/Effect Integration  
 - Use `GlossaryTag` for consistent descriptions
 - Status application through `FightInstance.applyStatus()`

@@ -42,7 +42,7 @@ public class Analyze2 extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta stacks = new ActionMeta();
 		ItemStack icon = item.clone();
 		ItemStack activeIcon = icon.withType(Material.PAPER);
@@ -50,6 +50,7 @@ public class Analyze2 extends Equipment {
 		
 		// Every second (20 ticks), gain a stack if not at max
 		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
+			Player p = data.getPlayer();
 			if (stacks.getCount() < MAX_STACKS) {
 				stacks.addCount(1);
 				// Use active icon when we have stacks
@@ -69,6 +70,7 @@ public class Analyze2 extends Equipment {
 		
 		// On basic attack, consume all stacks for damage and shields
 		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
+			Player p = data.getPlayer();
 			if (stacks.getCount() <= 0) return TriggerResult.keep();
 			
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;

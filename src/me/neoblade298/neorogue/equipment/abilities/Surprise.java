@@ -50,8 +50,9 @@ public class Surprise extends Equipment {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pd, in) -> {
+			Player p = data.getPlayer();
 			initTrap(p, data, this, slot);
 			Vector v = p.getEyeLocation().getDirection();
 			if (p.isOnGround()) {

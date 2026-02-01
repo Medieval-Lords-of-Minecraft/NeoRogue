@@ -2,7 +2,6 @@ package me.neoblade298.neorogue.equipment.armor;
 
 import org.bukkit.Color;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -28,9 +27,9 @@ public class LeatherHood extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.applyStatus(StatusType.STEALTH, data, 1, dur);
-		data.addSimpleShield(p.getUniqueId(), shields, 200);
+		data.addSimpleShield(data.getPlayer().getUniqueId(), shields, 200);
 	}
 
 	@Override

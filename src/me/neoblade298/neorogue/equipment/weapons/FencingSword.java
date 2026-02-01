@@ -42,10 +42,11 @@ public class FencingSword extends Equipment {
 	}
 	
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
+			Player p = data.getPlayer();
 			weaponSwingAndDamage(p, data, ev.getTarget());
 			if (am.addCount(1) < 3) {
 				am.setCount(0);

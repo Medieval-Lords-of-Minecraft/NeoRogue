@@ -50,7 +50,7 @@ public class ThunderclapAndFlash extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta stacks = new ActionMeta();
 		ItemStack icon = item.clone();
 		ItemStack activeIcon = icon.withType(Material.LIGHTNING_ROD);
@@ -58,6 +58,7 @@ public class ThunderclapAndFlash extends Equipment {
 		
 		// On evade: dash forward, deal lightning damage, gain stacks
 		data.addTrigger(id, Trigger.EVADE, (pdata, in) -> {
+			Player p = data.getPlayer();
 			PreEvadeEvent ev = (PreEvadeEvent) in;
 			
 			// Get the damager entity from the DamageMeta
@@ -98,6 +99,7 @@ public class ThunderclapAndFlash extends Equipment {
 		
 		// On cast: dash forward, deal lightning damage in a line, consume a stack
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Player p = data.getPlayer();
 			if (stacks.getCount() <= 0) return TriggerResult.keep();
 			
 			// Dash forward

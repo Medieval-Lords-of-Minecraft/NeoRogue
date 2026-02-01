@@ -2,7 +2,6 @@ package me.neoblade298.neorogue.equipment;
 
 import java.util.TreeMap;
 
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
@@ -36,11 +35,11 @@ public class ArtifactInstance implements Comparable<ArtifactInstance> {
 		item.setAmount(amount);
 		return item;
 	}
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		this.artifact.initialize(p, data, this);
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		this.artifact.initialize(data, this);
 	}
-	public void cleanup(Player p, PlayerFightData data) {
-		this.artifact.cleanup(p, data);
+	public void cleanup(PlayerFightData data) {
+		this.artifact.cleanup(data);
 	}
 	@Override
 	public int compareTo(ArtifactInstance o) {

@@ -30,7 +30,7 @@ public class StoneShiv extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		StandardPriorityAction inst = new StandardPriorityAction(ID);
 		inst.setAction((pdata, in)-> {
 			inst.addCount(1);
@@ -39,6 +39,7 @@ public class StoneShiv extends Equipment {
 				data.addStamina(stamina);
 			}
 			LeftClickHitEvent ev = (LeftClickHitEvent) in;
+			Player p = data.getPlayer();
 			weaponSwingAndDamage(p, data, ev.getTarget());
 			
 			return TriggerResult.keep();

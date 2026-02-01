@@ -1,7 +1,6 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -26,7 +25,7 @@ public class Furor extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.applyStatus(StatusType.STRENGTH, data, strength, -1);
 		data.applyStatus(StatusType.BERSERK, data, berserk, -1);
 	}

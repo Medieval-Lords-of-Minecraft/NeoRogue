@@ -53,12 +53,13 @@ public class BlightTendril extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		String statusName = p.getName() + "-blighttendril";
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		String statusName = data.getPlayer().getName() + "-blighttendril";
         Equipment eq = this;
 
         data.addTask(new BukkitRunnable() {
             public void run() {
+				Player p = data.getPlayer();
                 // Find nearest enemy
                 LivingEntity nearest = TargetHelper.getNearest(p, tp);
                 if (nearest == null) return;
@@ -75,6 +76,7 @@ public class BlightTendril extends Equipment {
 		
 		// Consume mark on basic attack and triple poison
 		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
+			Player p = data.getPlayer();
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 			FightData fd = FightInstance.getFightData(ev.getTarget());
 			

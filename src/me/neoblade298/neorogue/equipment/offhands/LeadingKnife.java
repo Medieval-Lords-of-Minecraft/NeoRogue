@@ -42,7 +42,7 @@ public class LeadingKnife extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		LeadingKnifeInstance inst = new LeadingKnifeInstance(ID, this);
 		ProjectileGroup proj = new ProjectileGroup(new LeadingKnifeProjectile(data, inst, slot));
 		inst.initialize(proj);

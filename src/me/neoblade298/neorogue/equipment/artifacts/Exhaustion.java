@@ -1,7 +1,6 @@
 package me.neoblade298.neorogue.equipment.artifacts;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Artifact;
@@ -29,14 +28,14 @@ public class Exhaustion extends Artifact {
 	}
 	
 	@Override
-	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
+	public void initialize(PlayerFightData data, ArtifactInstance ai) {
 		data.addTrigger(id, Trigger.WIN_FIGHT, (pdata, in) -> {
 			data.getSessionData().removeArtifact(this);
 			if (ai.getAmount() <= 0) {
 				data.getSessionData().addMaxAbilities(1);
 				return TriggerResult.remove();
 			}
-			Util.msgRaw(p, hoverable.append(Component.text(" was removed from your inventory", NamedTextColor.GRAY)));
+			Util.msgRaw(data.getPlayer(), hoverable.append(Component.text(" was removed from your inventory", NamedTextColor.GRAY)));
 			return TriggerResult.keep();
 		});
 	}

@@ -34,7 +34,8 @@ public class Bloodthirster extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		Player p = data.getPlayer();
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, in) -> {
 			LeftClickHitEvent ev = (LeftClickHitEvent) in;
 			int bonus = (data.getStatus(StatusType.BERSERK).getStacks() * mult) + (data.getStatus(StatusType.STRENGTH).getStacks() * (mult - 1));

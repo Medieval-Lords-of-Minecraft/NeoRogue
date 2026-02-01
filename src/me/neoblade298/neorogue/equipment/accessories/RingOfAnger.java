@@ -1,7 +1,6 @@
 package me.neoblade298.neorogue.equipment.accessories;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neorogue.NeoRogue;
@@ -27,7 +26,7 @@ public class RingOfAnger extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTask(new BukkitRunnable() {
 			private int count = 0;
 			private boolean addedStrength = false;

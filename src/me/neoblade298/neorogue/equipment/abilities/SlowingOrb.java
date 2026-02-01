@@ -58,8 +58,8 @@ public class SlowingOrb extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ProjectileGroup group = new ProjectileGroup(new SlowingOrbProjectile(p));
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		ProjectileGroup group = new ProjectileGroup(new SlowingOrbProjectile());
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, inputs) -> {
 			group.start(data);
 			return TriggerResult.keep();
@@ -73,36 +73,37 @@ public class SlowingOrb extends Equipment {
 	}
 
 	private class SlowingOrbProjectile extends Projectile {
-		private Player p;
 
-		public SlowingOrbProjectile(Player p) {
+		public SlowingOrbProjectile() {
 			super(1, 10, 2);
 			this.gravity(0.05);
 			this.arc(0.5);
-			this.p = p;
 		}
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			pc.play(p, proj.getLocation());
+			pc.play((Player) proj.getOwner().getEntity(), proj.getLocation());
 		}
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
-			slowArea(hit.getEntity().getLocation());
+			Player p = (Player) proj.getOwner().getEntity();
+			slowArea(p, hit.getEntity().getLocation());
 		}
 
 		@Override
 		public void onHitBlock(ProjectileInstance proj, Block b) {
-			slowArea(b.getLocation());
+			Player p = (Player) proj.getOwner().getEntity();
+			slowArea(p, b.getLocation());
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
+			Player p = (Player) proj.getOwner().getEntity();
 			shoot.play(p, p);
 		}
 
-		private void slowArea(Location loc) {
+		private void slowArea(Player p, Location loc) {
 			while (loc.getBlock().getType().isAir()) {
 				loc.add(0, -1, 0);
 			}

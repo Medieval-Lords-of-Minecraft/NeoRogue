@@ -41,11 +41,11 @@ public class CharmOfGallus extends Artifact {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
+	public void initialize(PlayerFightData data, ArtifactInstance ai) {
 		CharmOfGallusInstance inst = new CharmOfGallusInstance(this);
 		data.addTrigger(id, Trigger.PRE_CAST_USABLE, inst);
 		data.addTrigger(id, Trigger.CAST_USABLE, (pdata, in) -> {
-			return inst.checkUsed(p, (CastUsableEvent) in);
+			return inst.checkUsed(data.getPlayer(), (CastUsableEvent) in);
 		});
 	}
 

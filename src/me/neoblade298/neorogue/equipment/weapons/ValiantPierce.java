@@ -59,11 +59,12 @@ public class ValiantPierce extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		Equipment eq = this;
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			data.charge(20).then(new Runnable() {
 				public void run() {
+					Player p = data.getPlayer();
 					LinkedList<LivingEntity> targets = TargetHelper.getEntitiesInSight(p, tp);
 					sc.play(p, p);
 					Location start = p.getLocation().add(0, 1, 0);

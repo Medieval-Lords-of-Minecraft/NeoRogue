@@ -38,9 +38,8 @@ public class Brace extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			Sounds.equip.play(p, p);
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {			Player p = data.getPlayer();			Sounds.equip.play(p, p);
 			pc.play(p, p);
 			data.addSimpleShield(p.getUniqueId(), shields, 100);
 			return TriggerResult.keep();

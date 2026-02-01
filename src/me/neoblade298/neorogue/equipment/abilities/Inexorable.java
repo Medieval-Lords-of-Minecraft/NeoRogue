@@ -31,13 +31,13 @@ public class Inexorable extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		Player p = data.getPlayer();
 		ActionMeta am = new ActionMeta();
 		am.setDouble(shields);
 		Shield shield = data.addPermanentShield(p.getUniqueId(), shields, true);
 		am.setObject(shield);
-		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
-			am.addCount(1);
+		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {			am.addCount(1);
 			if (am.getCount() == refresh) {
 				Sounds.equip.play(p, p);
 				Shield s = (Shield) am.getObject();

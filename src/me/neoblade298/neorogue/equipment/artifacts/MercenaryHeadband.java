@@ -1,7 +1,6 @@
 package me.neoblade298.neorogue.equipment.artifacts;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.equipment.Artifact;
@@ -28,12 +27,12 @@ public class MercenaryHeadband extends Artifact {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
+	public void initialize(PlayerFightData data, ArtifactInstance ai) {
 		data.addTrigger(id, Trigger.STAMINA_CHANGE, (pdata, in) -> {
 			if (data.getStamina() + ((StaminaChangeEvent) in).getChange() < 50) return TriggerResult.keep();
 			
 			data.addStaminaRegen(regen);
-			Util.msg(p, this.hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
+			Util.msg(data.getPlayer(), this.hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 			return TriggerResult.remove();
 		});
 	}

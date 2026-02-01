@@ -48,13 +48,15 @@ public class Brightshell extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		Equipment eq = this;
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Player p = data.getPlayer();
 			Sounds.equip.play(p, p);
 			data.addSimpleShield(p.getUniqueId(), shields, 100);
 			data.addTask(new BukkitRunnable() {
 				public void run() {
+					Player p = data.getPlayer();
 					Sounds.fire.play(p, p);
 					circ.play(pc, p.getLocation(), LocalAxes.xz(), null);
 					aoe.play(p, p);

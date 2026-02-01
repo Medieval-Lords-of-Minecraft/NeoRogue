@@ -46,20 +46,22 @@ public class SpikeTrap extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		Equipment eq = this;
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, inputs) -> {
+			data.getPlayer();
 			data.charge(40);
 			data.addTask(new BukkitRunnable() {
 				public void run() {
-					initTrap(p, data, eq, slot);
+					initTrap(data, eq, slot);
 				}
 			}.runTaskLater(NeoRogue.inst(), 40L));
 			return TriggerResult.keep();
 		}));
 	}
 
-	private void initTrap(Player p, PlayerFightData data, Equipment eq, int slot) {
+	private void initTrap(PlayerFightData data, Equipment eq, int slot) {
+		Player p = data.getPlayer();
 		Sounds.equip.play(p, p);
 		Location loc = p.getLocation();
 		data.addTrap(new Trap(data, loc, 400) {

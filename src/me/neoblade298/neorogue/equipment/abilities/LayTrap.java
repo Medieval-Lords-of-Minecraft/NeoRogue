@@ -57,13 +57,15 @@ public class LayTrap extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		Equipment eq = this;
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pd, in) -> {
+			Player p = data.getPlayer();
 			Sounds.equip.play(p, p);
 			data.charge(40);
 			data.addTask(new BukkitRunnable() {
 				public void run() {
+					Player p = data.getPlayer();
 					initTrap(p, data, slot, eq);
 				}
 			}.runTaskLater(NeoRogue.inst(), 40L));

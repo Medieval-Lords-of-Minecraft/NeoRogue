@@ -39,7 +39,7 @@ public class MindGrowth2 extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
 		data.addTrigger(id, Trigger.CAST_USABLE, (pdata, in) -> {
 			am.addCount(1);
@@ -47,6 +47,7 @@ public class MindGrowth2 extends Equipment {
 				am.addCount(-THRES);
 				pdata.addManaRegen(regen);
 				pdata.addMaxMana(maxMana);
+				Player p = data.getPlayer();
 				pc.play(p, p);
 				Sounds.enchant.play(p, p);
 			}

@@ -49,10 +49,11 @@ public class Cauterize extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		String buffId = UUID.randomUUID().toString();
 		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, this, slot, es);
 		inst.setAction((pdata, in) -> {
+			Player p = data.getPlayer();
 			if (inst.getCount() == 0) {
 				inst.setCount(1);
 				Sounds.equip.play(p, p);

@@ -31,8 +31,9 @@ public class RingOfLight extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.CAST_USABLE, (pdata, in) -> {
+			Player p = data.getPlayer();
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
 				FightInstance.applyStatus(ent, StatusType.SANCTIFIED, data, sanct, -1);
 			}

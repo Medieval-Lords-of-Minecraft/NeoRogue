@@ -47,11 +47,12 @@ public class Torch extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		Equipment eq = this;
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata ,in) -> {
 			data.channel(20).then(new Runnable() {
 				public void run() {
+					Player p = data.getPlayer();
 					data.applyStatus(StatusType.BURN, data, burn, -1);
 					circ.play(pc, p.getLocation(), LocalAxes.xz(), pc);
 					Sounds.infect.play(p, p);

@@ -42,8 +42,9 @@ public class WindTrap extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pd, in) -> {
+			Player p = data.getPlayer();
 			Sounds.equip.play(p, p);
 			Location loc = p.getLocation().add(0, 0.5, 0);
 			data.addTrap(new Trap(data, loc, secs * 20) {

@@ -42,10 +42,11 @@ public class Overload extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.KILL, (pd, in) -> {
 			KillEvent ev = (KillEvent) in;
 			int stacks = FightInstance.getFightData(ev.getTarget()).getStatus(StatusType.ELECTRIFIED).getStacks();
+			Player p = data.getPlayer();
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(ev.getTarget(), tp)) {
 				FightInstance.dealDamage(new DamageMeta(data, damage + (stacks * 5), DamageType.LIGHTNING, DamageStatTracker.of(id + slot, this)), ent);
 				part.play(p, ent);

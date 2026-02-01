@@ -50,9 +50,10 @@ public class HerosLanding extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
 		inst.setAction((pdata, in) -> {
+			Player p = data.getPlayer();
 			p.setVelocity(new Vector(0, 0.5, 0));
 			Sounds.jump.play(p, p);
 			return TriggerResult.keep();
@@ -61,6 +62,7 @@ public class HerosLanding extends Equipment {
 		data.addTrigger(id, Trigger.TOGGLE_FLIGHT, inst);
 
 		data.addTrigger(id, Trigger.FALL_DAMAGE, (pdata, in) -> {
+			Player p = data.getPlayer();
 			strPart.play(p, p);
 			Sounds.fire.play(p, p);
 			data.applyStatus(StatusType.STRENGTH, data, str, -1);

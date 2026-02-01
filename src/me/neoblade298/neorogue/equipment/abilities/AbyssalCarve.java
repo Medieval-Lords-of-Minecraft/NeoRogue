@@ -47,8 +47,9 @@ public class AbyssalCarve extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.EVADE, (pdata, in) -> {
+			Player p = data.getPlayer();
 			EvadeEvent ev = (EvadeEvent) in;
 			
 			// Get the damager entity from the DamageMeta

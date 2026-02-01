@@ -56,7 +56,7 @@ public class SparkTrap extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		SparkTrapInstance inst = new SparkTrapInstance(data, this, slot, es);
 		data.addTrigger(id, bind, inst);
 	}

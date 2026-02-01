@@ -35,22 +35,21 @@ public class HastyShield extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, new HastyShieldInstance(p, this));
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, new HastyShieldInstance(this));
 	}
 	
 	private class HastyShieldInstance implements TriggerAction {
-		private Player p;
 		private long nextUsable = 0L;
 		private Equipment eq;
 		private String buffId = UUID.randomUUID().toString();
-		public HastyShieldInstance(Player p, Equipment eq) {
-			this.p = p;
+		public HastyShieldInstance(Equipment eq) {
 			this.eq = eq;
 		}
 		
 		@Override
 		public TriggerResult trigger(PlayerFightData data, Object inputs) {
+			Player p = data.getPlayer();
 			if (p.getHandRaised() != EquipmentSlot.OFF_HAND || !p.isHandRaised()) return TriggerResult.keep();
 			long now = System.currentTimeMillis();
 			if (now <= nextUsable) return TriggerResult.keep();

@@ -42,9 +42,10 @@ public class TargetAcquisition extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		StandardPriorityAction inst = new StandardPriorityAction(ID);
 		inst.setAction((pdata, in) -> {
+			Player p = data.getPlayer();
 			if (!inst.canUse()) return TriggerResult.keep();
 			inst.setNextUse((long) (System.currentTimeMillis() + (properties.get(PropertyType.COOLDOWN) * 1000)));
 			sc.play(p, p);
@@ -56,6 +57,7 @@ public class TargetAcquisition extends Equipment {
 		data.addTrigger(id, Trigger.KILL, inst);
 		
 		data.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
+			Player p = data.getPlayer();
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 			if (inst.getCount() <= 0) return TriggerResult.keep();
 			inst.addCount(-1);

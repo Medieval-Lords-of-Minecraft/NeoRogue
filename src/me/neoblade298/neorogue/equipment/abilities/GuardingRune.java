@@ -27,9 +27,10 @@ public class GuardingRune extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		Trigger tr = data.getSessionData().getPlayerClass() == EquipmentClass.ARCHER ? Trigger.LEFT_CLICK : Trigger.RIGHT_CLICK;
 		data.addTrigger(id, tr, (pdata, in) -> {
+			Player p = data.getPlayer();
 			Sounds.blazeDeath.play(p, p);
 			if (tr == Trigger.LEFT_CLICK) p.swingOffHand();
 			data.addSimpleShield(p.getUniqueId(), shields, 200);

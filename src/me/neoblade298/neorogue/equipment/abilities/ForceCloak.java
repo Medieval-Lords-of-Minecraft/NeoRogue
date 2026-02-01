@@ -29,8 +29,9 @@ public class ForceCloak extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Player p = data.getPlayer();
 			Sounds.equip.play(p, p);
 			data.applyStatus(StatusType.PROTECT, data, 1, -1);
 			data.applyStatus(StatusType.SHELL, data, 1, -1);

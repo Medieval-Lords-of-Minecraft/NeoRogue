@@ -3,7 +3,6 @@ package me.neoblade298.neorogue.equipment.abilities;
 import java.util.UUID;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import me.neoblade298.neorogue.equipment.ActionMeta;
@@ -37,7 +36,7 @@ public class DangerClose extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		String buffId = UUID.randomUUID().toString();
 		ActionMeta stacks = new ActionMeta();
 		ItemStack icon = item.clone();

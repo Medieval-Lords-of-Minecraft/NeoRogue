@@ -27,8 +27,9 @@ public class ChasingDagger extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.RIGHT_CLICK_HIT, (pdata, inputs) -> {
+			Player p = data.getPlayer();
 			RightClickHitEvent ev = (RightClickHitEvent) inputs;
 			if (ev.getTarget() instanceof Player) return TriggerResult.keep();
 			weaponSwingAndDamage(p, data, ev.getTarget());

@@ -35,13 +35,13 @@ public class Charge extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ChargeInstance inst = new ChargeInstance(id);
 		data.addTrigger(id, Trigger.PLAYER_TICK, inst);
 		data.addSprintCost(1);
 		
 		data.addTrigger(id, Trigger.TOGGLE_SPRINT, (pdata, in) -> {
-			PlayerToggleSprintEvent ev = (PlayerToggleSprintEvent) in;
+		PlayerToggleSprintEvent ev = (PlayerToggleSprintEvent) in;
 			if (!ev.isSprinting()) return TriggerResult.keep();
 			inst.addShield(pdata);
 			return TriggerResult.keep();

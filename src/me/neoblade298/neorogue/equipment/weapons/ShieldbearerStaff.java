@@ -33,9 +33,10 @@ public class ShieldbearerStaff extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, in) -> {
 			LeftClickHitEvent ev = (LeftClickHitEvent) in;
+			Player p = data.getPlayer();
 			weaponSwing(p, data);
 			weaponDamage(p, data, ev.getTarget(), properties.get(PropertyType.DAMAGE) + (data.getShields().getAmount() * mult));
 			return TriggerResult.keep();

@@ -49,10 +49,9 @@ public class Lightfall extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			Sounds.flap.play(p, p);
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {		Player p = data.getPlayer();			Sounds.flap.play(p, p);
 			p.setVelocity(new Vector(0, 1, 0));
 			am.setBool(true);
 			data.addTask(new BukkitRunnable() {

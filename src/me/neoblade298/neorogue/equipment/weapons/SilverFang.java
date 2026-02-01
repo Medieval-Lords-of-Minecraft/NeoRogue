@@ -41,8 +41,9 @@ public class SilverFang extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
+			Player p = data.getPlayer();
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
 			DamageMeta dm = new DamageMeta(pdata);
 			dm.addDamageSlice(new DamageSlice(data, properties.get(PropertyType.DAMAGE), properties.getType(), DamageType.LIGHT, DamageStatTracker.of(id + slot, this)));

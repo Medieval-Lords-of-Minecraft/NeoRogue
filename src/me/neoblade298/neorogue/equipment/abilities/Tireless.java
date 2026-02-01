@@ -34,9 +34,10 @@ public class Tireless extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		StandardPriorityAction inst = new StandardPriorityAction(ID);
 		inst.setAction((pdata, in) -> {
+			Player p = data.getPlayer();
 			PreCastUsableEvent ev = (PreCastUsableEvent) in;
 			if (ev.getInstance().getStaminaCost() > 0) {
 				ev.addBuff(PropertyType.STAMINA_COST, ID,

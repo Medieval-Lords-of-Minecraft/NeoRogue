@@ -42,13 +42,14 @@ public class SigilOfTheIronLegion extends Artifact {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
+	public void initialize(PlayerFightData data, ArtifactInstance ai) {
 		ActionMeta am = new ActionMeta();
 		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
 			if (!ev.isStatus(StatusType.STRENGTH))
 				return TriggerResult.keep();
 			if (data.getStatus(StatusType.STRENGTH).getStacks() + ev.getStacks()>= thres) {
+				Player p = data.getPlayer();
 				Sounds.success.play(p, p, Audience.ORIGIN);
 				Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 				am.setBool(true);

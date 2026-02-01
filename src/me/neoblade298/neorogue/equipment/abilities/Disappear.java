@@ -39,7 +39,8 @@ public class Disappear extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		Player p = data.getPlayer();
 		ItemStack baseIcon = item.clone();
 		ItemStack primedIcon = item.clone().withType(Material.DRAGON_BREATH);
 		EquipmentInstance eqInst = new EquipmentInstance(data, this, slot, es);

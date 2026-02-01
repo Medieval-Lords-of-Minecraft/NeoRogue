@@ -42,16 +42,18 @@ public class Finale extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, inputs) -> {
+			Player p = data.getPlayer();
 			Sounds.equip.play(p, p);
 			pc.play(p, p);
 			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata2, in) -> {
+				Player p2 = data.getPlayer();
 				int stacks = (int) Math.min(3, data.getStamina() / thres);
 				PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
-				FightInstance.dealDamage(data, DamageType.PIERCING, damage * stacks, ev.getTarget(), DamageStatTracker.of(id + slot, this));
-				hit.play(p, ev.getTarget());
-				Sounds.anvil.play(p, ev.getTarget());
+				FightInstance.dealDamage(data, DamageType.PIERCING, damage * stacks, ev.getTarget(), DamageStatTracker.of(id + slot, Finale.this));
+				hit.play(p2, ev.getTarget());
+				Sounds.anvil.play(p2, ev.getTarget());
 				return TriggerResult.remove();
 			});
 			return TriggerResult.keep();

@@ -47,13 +47,14 @@ public class RedFan extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
 		EquipmentInstance eqi = new EquipmentInstance(data, this, slot, es);
 		ItemStack charged = item.clone().withType(Material.FIRE_CORAL);
 		ItemStack icon = item.clone();
 		eqi.setAction((pdata, in) -> {	
 			if (am.getCount() >= thres) {
+				Player p = data.getPlayer();
 				am.addCount(-thres);
 				Sounds.fire.play(p, p);
 				cone.play(pc, p.getLocation().add(0, 0.8, 0), LocalAxes.usingEyeLocation(p), pc);

@@ -62,9 +62,10 @@ public class MarkTarget2 extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pd, in) -> {
+			Player p = data.getPlayer();
 			LivingEntity trg = TargetHelper.getNearest(p, tp);
 			if (trg == null) return TriggerResult.keep();
 			taunt.play(p, trg);

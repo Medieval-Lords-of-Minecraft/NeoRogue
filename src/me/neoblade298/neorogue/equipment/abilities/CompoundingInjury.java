@@ -1,7 +1,6 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neorogue.DescUtil;
@@ -43,7 +42,7 @@ public class CompoundingInjury extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
 			DealDamageEvent ev = (DealDamageEvent) in;
 			FightData fd = FightInstance.getFightData(ev.getTarget());

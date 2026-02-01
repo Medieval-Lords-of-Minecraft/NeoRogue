@@ -48,7 +48,7 @@ public class BitterCold extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.PRE_APPLY_STATUS, (pdata, in) -> {
 			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
 			if (!ev.isStatus(StatusType.FROST)) return TriggerResult.keep();
@@ -57,6 +57,7 @@ public class BitterCold extends Equipment {
 		});
 
 		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
+			Player p = data.getPlayer();
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
 			if (!ev.isStatus(StatusType.FROST)) return TriggerResult.keep();
 			FightData fd = ev.getTarget();

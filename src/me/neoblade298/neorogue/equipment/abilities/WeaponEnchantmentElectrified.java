@@ -48,7 +48,7 @@ public class WeaponEnchantmentElectrified extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		projs = new ProjectileGroup(new WeaponEnchantmentElectrifiedProjectile(slot, this));
 		data.addTrigger(id, Trigger.LEFT_CLICK, new WeaponEnchantmentElectrifiedInstance(id));
 	}

@@ -1,7 +1,6 @@
 package me.neoblade298.neorogue.equipment.accessories;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 
 import me.neoblade298.neorogue.DescUtil;
@@ -26,7 +25,7 @@ public class RingOfManaflow extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.TOGGLE_CROUCH, (pdata, in) -> {
 			PlayerToggleSneakEvent ev = (PlayerToggleSneakEvent) in;
 			if (ev.isSneaking()) {

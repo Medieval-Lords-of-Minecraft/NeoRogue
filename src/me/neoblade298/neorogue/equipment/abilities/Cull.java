@@ -40,18 +40,16 @@ public class Cull extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
-		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es, (pdata, inputs) -> {
-			Sounds.equip.play(p, p);
+		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es, (pdata, inputs) -> {		Player p = data.getPlayer();			Sounds.equip.play(p, p);
 			pc.play(p, p);
 			am.addCount(1);
 			return TriggerResult.keep();
 		});
 		data.addTrigger(id, bind, inst);
 		
-		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata2, in) -> {
-			if (am.getCount() <= 0) return TriggerResult.keep();
+		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata2, in) -> {		Player p = data.getPlayer();			if (am.getCount() <= 0) return TriggerResult.keep();
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 			ev.getMeta().addDamageSlice(
 					new DamageSlice(data, damage, DamageType.SLASHING, DamageStatTracker.of(id + slot, this)));

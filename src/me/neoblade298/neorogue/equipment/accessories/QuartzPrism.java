@@ -1,7 +1,6 @@
 package me.neoblade298.neorogue.equipment.accessories;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neorogue.DescUtil;
@@ -39,7 +38,7 @@ public class QuartzPrism extends Artifact {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
+	public void initialize(PlayerFightData data, ArtifactInstance ai) {
 		ActionMeta am = new ActionMeta();
 		am.setBool(true);
 

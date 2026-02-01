@@ -41,10 +41,11 @@ public class EnergyBattery extends Artifact {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
+	public void initialize(PlayerFightData data, ArtifactInstance ai) {
 		EnergyBatteryInstance inst = new EnergyBatteryInstance(this);
 		data.addTrigger(id, Trigger.PRE_CAST_USABLE, inst);
 		data.addTrigger(id, Trigger.CAST_USABLE, (pdata, in) -> {
+			Player p = data.getPlayer();
 			return inst.checkUsed(p, (CastUsableEvent) in);
 		});
 	}

@@ -85,7 +85,7 @@ public abstract class Instance {
 		}
 	}
 	
-	public void handlePlayerLeave(Player p) {
+	public void handlePlayerLogout(Player p) {
 		PlayerFlags.applyDefaults(p);
 	}
 	

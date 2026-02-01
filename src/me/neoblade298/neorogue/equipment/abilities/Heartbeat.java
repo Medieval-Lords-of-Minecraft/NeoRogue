@@ -47,9 +47,10 @@ public class Heartbeat extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Player p = data.getPlayer();
 			Sounds.equip.play(p, p);
 			if (am.getObject() != null) {
 				Rift old = (Rift) am.getObject();
@@ -64,6 +65,7 @@ public class Heartbeat extends Equipment {
 		}));
 
 		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
+			Player p = data.getPlayer();
 			am.addCount(1);
 			if (am.getCount() >= 3) {
 				am.addCount(-3);

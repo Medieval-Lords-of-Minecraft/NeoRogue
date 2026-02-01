@@ -314,8 +314,8 @@ public abstract class FightInstance extends Instance {
 	}
 
 	@Override
-	public void handlePlayerLeave(Player p) {
-		super.handlePlayerLeave(p);
+	public void handlePlayerLogout(Player p) {
+		super.handlePlayerLogout(p);
 		p.removePotionEffect(PotionEffectType.ABSORPTION);
 		if (isLose()) {
 			runLoseLogic(this);

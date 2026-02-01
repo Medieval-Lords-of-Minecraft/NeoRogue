@@ -30,8 +30,9 @@ public class TrickstersSigil extends Artifact {
 	}
 	
 	@Override
-	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
+	public void initialize(PlayerFightData data, ArtifactInstance ai) {
 		PriorityAction act = new PriorityAction(ID, (pdata, in) -> {
+			Player p = data.getPlayer();
 			ReceiveDamageEvent ev = (ReceiveDamageEvent) in;
 			ev.setNullified(true);
 			Sounds.breaks.play(p, p);

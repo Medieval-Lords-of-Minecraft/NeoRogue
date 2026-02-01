@@ -50,10 +50,11 @@ public class Gambit extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		String buffId = UUID.randomUUID().toString();
 		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, this, slot, es);
 		inst.setAction((pdata, inputs) -> {
+			Player p = data.getPlayer();
 			Sounds.equip.play(p, p);
 			inst.setBool(true);
 			inst.setCount(0);
@@ -68,6 +69,7 @@ public class Gambit extends Equipment {
 		data.addTrigger(id, bind, inst);
 
 		data.addTrigger(id, Trigger.KILL, (pdata, in) -> {
+			Player p = data.getPlayer();
 			if (inst.getBool()) {
 				inst.addCount(1);
 				if (inst.getCount() >= 2) {

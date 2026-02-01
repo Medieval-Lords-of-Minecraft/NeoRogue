@@ -4,7 +4,6 @@ import java.util.UUID;
 
 import org.bukkit.Color;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import me.neoblade298.neorogue.DescUtil;
@@ -36,7 +35,7 @@ public class MagiciansHood extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		String buffId = UUID.randomUUID().toString();
 		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
 			double mana = data.getMaxMana();

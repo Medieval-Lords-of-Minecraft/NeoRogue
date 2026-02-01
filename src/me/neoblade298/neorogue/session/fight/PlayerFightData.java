@@ -121,13 +121,13 @@ public class PlayerFightData extends FightData {
 		for (Equipment acc : data.getEquipment(EquipSlot.ACCESSORY)) {
 			if (acc == null)
 				continue;
-			acc.initialize(p, this, null, EquipSlot.ACCESSORY, i++);
+			acc.initialize(this, null, EquipSlot.ACCESSORY, i++);
 		}
 		i = 0;
 		for (Equipment armor : data.getEquipment(EquipSlot.ARMOR)) {
 			if (armor == null)
 				continue;
-			armor.initialize(p, this, null, EquipSlot.ARMOR, i++);
+			armor.initialize(this, null, EquipSlot.ARMOR, i++);
 		}
 		i = -1;
 		for (Equipment hotbar : data.getEquipment(EquipSlot.HOTBAR)) {
@@ -135,7 +135,7 @@ public class PlayerFightData extends FightData {
 			if (hotbar == null) {
 				inv.setItem(i, null);
 			} else {
-				hotbar.initialize(p, this, Trigger.getFromHotbarSlot(i), EquipSlot.HOTBAR, i);
+				hotbar.initialize(this, Trigger.getFromHotbarSlot(i), EquipSlot.HOTBAR, i);
 			}
 		}
 		i = -1;
@@ -143,19 +143,19 @@ public class PlayerFightData extends FightData {
 			i++;
 			if (other == null)
 				continue;
-			other.initialize(p, this, KeyBind.getBindFromData(i).getTrigger(), EquipSlot.KEYBIND, i);
+			other.initialize(this, KeyBind.getBindFromData(i).getTrigger(), EquipSlot.KEYBIND, i);
 		}
 		i = 0;
 		for (ArtifactInstance art : data.getArtifacts().values()) {
 			if (art == null)
 				continue;
-			art.initialize(p, this, null, null, i++);
+			art.initialize(this, null, null, i++);
 		}
 
 		Equipment offhand = data.getEquipment(EquipSlot.OFFHAND)[0];
 		if (offhand != null) {
 			inv.setItem(EquipmentSlot.OFF_HAND, offhand.getItem());
-			offhand.initialize(p, this, null, EquipSlot.OFFHAND, 40);
+			offhand.initialize(this, null, EquipSlot.OFFHAND, 40);
 		} else {
 			inv.setItem(EquipmentSlot.OFF_HAND, null);
 		}
@@ -446,31 +446,31 @@ public class PlayerFightData extends FightData {
 		for (Equipment acc : data.getEquipment(EquipSlot.ACCESSORY)) {
 			if (acc == null)
 				continue;
-			acc.cleanup(p, this);
+			acc.cleanup(this);
 		}
 		for (Equipment armor : data.getEquipment(EquipSlot.ARMOR)) {
 			if (armor == null)
 				continue;
-			armor.cleanup(p, this);
+			armor.cleanup(this);
 		}
 		for (Equipment hotbar : data.getEquipment(EquipSlot.HOTBAR)) {
 			if (hotbar == null)
 				continue;
-			hotbar.cleanup(p, this);
+			hotbar.cleanup(this);
 		}
 		for (Equipment other : data.getEquipment(EquipSlot.KEYBIND)) {
 			if (other == null)
 				continue;
-			other.cleanup(p, this);
+			other.cleanup(this);
 		}
 		for (ArtifactInstance art : data.getArtifacts().values()) {
 			if (art == null)
 				continue;
-			art.cleanup(p, this);
+			art.cleanup(this);
 		}
 
 		if (data.getEquipment(EquipSlot.OFFHAND)[0] != null) {
-			data.getEquipment(EquipSlot.OFFHAND)[0].cleanup(p, this);
+			data.getEquipment(EquipSlot.OFFHAND)[0].cleanup(this);
 		}
 
 		for (Listener l : listeners) {

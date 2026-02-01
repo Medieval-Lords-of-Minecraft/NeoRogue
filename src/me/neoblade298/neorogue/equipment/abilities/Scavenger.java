@@ -45,9 +45,10 @@ public class Scavenger extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		// When player kills an enemy, drop a collectable stack at their location
 		data.addTrigger(id, Trigger.KILL, (pdata, in) -> {
+			Player p = data.getPlayer();
 			KillEvent ev = (KillEvent) in;
 			Location deathLoc = ev.getTarget().getLocation();
 			

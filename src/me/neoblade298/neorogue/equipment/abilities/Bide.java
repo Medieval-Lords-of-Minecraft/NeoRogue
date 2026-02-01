@@ -50,8 +50,9 @@ public class Bide extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (fd, in) -> {
+			Player p = data.getPlayer();
 			data.addSimpleShield(p.getUniqueId(), shields, duration * 20);
 			sc.play(p, p);
 			data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, new BideInstance(p, id));

@@ -33,7 +33,7 @@ public class Twilight extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		StandardPriorityAction inst = new StandardPriorityAction(ID);
 		inst.setAction((pdata, in) -> {
 			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
@@ -43,6 +43,7 @@ public class Twilight extends Equipment {
 			ev.getDurationBuffList().add(new Buff(data, duration, 0, BuffStatTracker.ignored(this)));
 			
 			// Apply evade
+			Player p = data.getPlayer();
 			FightInstance.applyStatus(p, StatusType.EVADE, data, evade, 160);
 			
 			// Add stamina

@@ -42,9 +42,10 @@ public class Grit extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		String buffId = UUID.randomUUID().toString();
 		data.addTrigger(ID, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
+			Player p = data.getPlayer();
 			PreDealDamageEvent ev = (PreDealDamageEvent) in;
 			double dist = ev.getTarget().getLocation().distanceSquared(p.getLocation());
 			if (dist <= 25) {
@@ -54,6 +55,7 @@ public class Grit extends Equipment {
 		});
 
 		data.addTrigger(ID, Trigger.KILL, (pdata, in) -> {
+			Player p = data.getPlayer();
 			KillEvent ev = (KillEvent) in;
 			double dist = ev.getTarget().getLocation().distanceSquared(p.getLocation());
 			if (dist <= 25) {

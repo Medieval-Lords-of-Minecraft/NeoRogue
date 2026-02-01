@@ -40,7 +40,7 @@ public class ConstantFlux extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta stacks = new ActionMeta();
 		String taskId = id + "-timer-" + slot;
 		ItemStack noStackIcon = item.clone();

@@ -48,7 +48,7 @@ public class ConfidenceKill extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		InducePanicInstance inst = new InducePanicInstance(data, this, slot, es);
 		data.addTrigger(ID, bind, inst);
 		data.addTrigger(ID, Trigger.DEAL_DAMAGE, (pdata, in) -> {
@@ -60,8 +60,7 @@ public class ConfidenceKill extends Equipment {
 			return TriggerResult.keep();
 		});
 
-		data.addTrigger(ID, Trigger.KILL, (pdata, in) -> {
-			KillEvent ev = (KillEvent) in;
+		data.addTrigger(ID, Trigger.KILL, (pdata, in) -> {		Player p = data.getPlayer();			KillEvent ev = (KillEvent) in;
 			if (inst.toKill != null && inst.toKill.getUniqueId().equals(ev.getTarget().getUniqueId())) {
 				Sounds.extinguish.play(p, p);
 				pdata.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(pdata, 0, buff * 0.01, StatTracker.damageBuffAlly(id + this, this)), 200);

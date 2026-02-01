@@ -1,7 +1,6 @@
 package me.neoblade298.neorogue.equipment.accessories;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -31,7 +30,7 @@ public class MajorShieldingRelic extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.RECEIVE_SHIELDS, (pdata, in) -> {
 			GrantShieldsEvent ev = (GrantShieldsEvent) in;
 			if (ev.isSecondary()) return TriggerResult.keep();

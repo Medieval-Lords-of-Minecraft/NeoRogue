@@ -42,7 +42,7 @@ public class Quickfire extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (d, inputs) -> {
 			ProjectileGroup proj = new ProjectileGroup(new QuickfireProjectile(data, this, slot));
 			proj.start(data);

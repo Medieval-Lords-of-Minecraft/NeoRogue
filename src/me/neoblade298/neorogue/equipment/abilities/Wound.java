@@ -48,11 +48,12 @@ public class Wound extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		String buffId = UUID.randomUUID().toString();
 		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, this, slot, es);
 		inst.setAction((pdata, in) -> {
 			if (inst.getCount() == 0) {
+				Player p = data.getPlayer();
 				inst.setCount(1);
 				Sounds.equip.play(p, p);
 				inst.setIcon(activeIcon);

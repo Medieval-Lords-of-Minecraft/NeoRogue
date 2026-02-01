@@ -47,19 +47,20 @@ public class Windcutter extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		for (int i = 0; i < PROJECTILE_AMOUNT; i++) {
 			projs.add(new WindcutterProjectile(i, PROJECTILE_AMOUNT / 2, slot, this));
 		}
-		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, new WindcutterInstance(id, p, data));
+		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, new WindcutterInstance(id, data));
 	}
 	
 	private class WindcutterInstance extends PriorityAction {
 		private int count = 0;
-		public WindcutterInstance(String id, Player p, PlayerFightData data) {
+		public WindcutterInstance(String id, PlayerFightData data) {
 			super(id);
 			action = (pdata, in) -> {
 				if (++count >= 3 && (data.getStamina() / data.getMaxStamina()) > 0.5) {
+					Player p = data.getPlayer();
 					sound.play(p, p);
 					projs.start(data, p.getLocation().add(0, 1, 0), p.getLocation().getDirection().setY(0).normalize());
 					data.addStamina(-8);

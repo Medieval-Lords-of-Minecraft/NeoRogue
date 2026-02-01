@@ -48,7 +48,7 @@ public class GrowingSpark extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
 		ProjectileGroup proj = new ProjectileGroup(new GrowingSparkProjectile(data, inst, slot, this));
 		inst.setAction((pdata, in) -> {

@@ -52,9 +52,10 @@ public class Pressure extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Player p = data.getPlayer();
 			Sounds.equip.play(p, p);
 			Location loc = p.getLocation();
 			am.setLocation(loc);
@@ -73,6 +74,7 @@ public class Pressure extends Equipment {
 		}));
 
 		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
+			Player p = data.getPlayer();
 			double rangesq = tp.range * tp.range;
 			PreDealDamageEvent ev = (PreDealDamageEvent) in;
 			// Check if the zone is active

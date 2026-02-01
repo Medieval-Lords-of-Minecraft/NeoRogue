@@ -40,9 +40,10 @@ public class Assassinate extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
 		inst.setAction((pdata, in) -> {
+			Player p = data.getPlayer();
 			Sounds.equip.play(p, p);
 			pc.play(p, p);
 			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata2, in2) -> {

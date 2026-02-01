@@ -38,7 +38,7 @@ public class Study2 extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
 		ItemStack icon = item.clone();
 		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
@@ -47,6 +47,7 @@ public class Study2 extends Equipment {
 			if (am.getTime() + (properties.get(PropertyType.COOLDOWN) * 1000) > System.currentTimeMillis()) {
 				return TriggerResult.keep();
 			}
+			Player p = data.getPlayer();
 			am.addCount(1);
 			data.applyStatus(StatusType.INTELLECT, data, intel, -1);
 			data.addManaRegen(regen);

@@ -28,9 +28,8 @@ public class Bramblevine extends Artifact {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
-		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
-			DealDamageEvent ev = (DealDamageEvent) in;
+	public void initialize(PlayerFightData data, ArtifactInstance ai) {
+		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {		Player p = data.getPlayer();			DealDamageEvent ev = (DealDamageEvent) in;
 			if (ev.getMeta().containsType(DamageType.THORNS)) {
 				data.addSimpleShield(p.getUniqueId(), shield, 100);
 			}

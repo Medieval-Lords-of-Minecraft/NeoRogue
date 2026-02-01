@@ -55,7 +55,8 @@ public class DarkPulse extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		Player p = data.getPlayer();
 		DarkPulseInstance inst = new DarkPulseInstance(p, data, this, es, slot);
 		data.addTrigger(id, bind, inst);
 

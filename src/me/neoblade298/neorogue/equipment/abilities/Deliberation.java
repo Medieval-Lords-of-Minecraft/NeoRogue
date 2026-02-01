@@ -38,10 +38,11 @@ public class Deliberation extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		Equipment eq = this;
 		String buffId = UUID.randomUUID().toString();
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, inputs) -> {
+			Player p = data.getPlayer();
 			Sounds.equip.play(p, p);
 			data.channel(60).then(new Runnable() {
 				public void run() {

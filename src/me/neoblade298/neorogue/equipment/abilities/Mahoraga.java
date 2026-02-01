@@ -45,11 +45,10 @@ public class Mahoraga extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
 		am.setDouble(shields);
-		data.addTrigger(id, Trigger.TOGGLE_CROUCH, (pdata, in) -> {
-			PlayerToggleSneakEvent ev = (PlayerToggleSneakEvent) in;
+		data.addTrigger(id, Trigger.TOGGLE_CROUCH, (pdata, in) -> {		Player p = data.getPlayer();			PlayerToggleSneakEvent ev = (PlayerToggleSneakEvent) in;
 			if (ev.isSneaking()) {
 				// Refresh shield
 				BukkitTask task = am.getTask();
@@ -79,8 +78,7 @@ public class Mahoraga extends Equipment {
 			return TriggerResult.keep();
 		});
 
-		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, (pdata, in) -> {
-			ReceiveDamageEvent ev = (ReceiveDamageEvent) in;
+		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, (pdata, in) -> {		Player p = data.getPlayer();			ReceiveDamageEvent ev = (ReceiveDamageEvent) in;
 			if (!p.isSneaking()) return TriggerResult.keep();
 			EnumSet<DamageCategory> categories = ev.getMeta().getPrimarySlice().getPostBuffType().getCategories();
 			if (categories.contains(DamageCategory.PHYSICAL)) {

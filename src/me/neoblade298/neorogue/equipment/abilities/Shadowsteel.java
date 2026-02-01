@@ -56,7 +56,7 @@ public class Shadowsteel extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		// Queue to track player positions - stores last 4 positions (2 seconds worth at 0.5s intervals)
 		LinkedList<Location> locationQueue = new LinkedList<Location>();
 		ActionMeta cooldown = new ActionMeta();
@@ -64,6 +64,7 @@ public class Shadowsteel extends Equipment {
 		// Task to track player position every half second and display shadow ball
 		data.addTask(new BukkitRunnable() {
 			public void run() {
+				Player p = data.getPlayer();
 				// Add current location to queue
 				locationQueue.add(p.getLocation().clone().add(0, 1, 0));
 				
@@ -82,6 +83,7 @@ public class Shadowsteel extends Equipment {
 		
 		// Trigger when dealing physical damage
 		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
+			Player p = data.getPlayer();
 			DealDamageEvent ev = (DealDamageEvent) in;
 			if (!ev.getMeta().containsType(DamageCategory.PHYSICAL)) return TriggerResult.keep();
 			

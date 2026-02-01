@@ -1,7 +1,6 @@
 package me.neoblade298.neorogue.equipment.armor;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -27,8 +26,8 @@ public class EtherVeil extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addPermanentShield(p.getUniqueId(), data.getMaxMana() * def);
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		data.addPermanentShield(data.getPlayer().getUniqueId(), data.getMaxMana() * def);
 	}
 
 	@Override

@@ -28,9 +28,10 @@ public class AlchemistBag extends Artifact {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
+	public void initialize(PlayerFightData data, ArtifactInstance ai) {
 		data.addTrigger(id, Trigger.USE_CONSUMABLE, (pdata, in) -> {
 			data.addHealth(heal);
+			Player p = data.getPlayer();
 			Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 			return TriggerResult.keep();
 		});

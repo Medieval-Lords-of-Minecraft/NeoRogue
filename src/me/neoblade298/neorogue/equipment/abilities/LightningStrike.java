@@ -58,12 +58,13 @@ public class LightningStrike extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		Equipment eq = this;
 		ActionMeta am = new ActionMeta();
 		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
-		inst.setAction((pdata, in) -> {
-			data.channel(20).then(new Runnable() {
+	inst.setAction((pdata, in) -> {
+		Player p = data.getPlayer();
+		data.channel(20).then(new Runnable() {
 				public void run() {
 					Block b = p.getTargetBlockExact((int) cursor.range);
 					CastUsableEvent last = inst.getLastCastEvent();

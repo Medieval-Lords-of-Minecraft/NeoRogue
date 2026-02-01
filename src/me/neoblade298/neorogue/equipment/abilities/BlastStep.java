@@ -64,8 +64,9 @@ public class BlastStep extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Player p = data.getPlayer();
 			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 60, 1));
 			cone.play(p, pc, p.getLocation(), LocalAxes.usingGroundedEyeLocation(p), pc);
 			Sounds.explode.play(p, p);
@@ -81,6 +82,7 @@ public class BlastStep extends Equipment {
 		}));
 
 		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
+			Player p = data.getPlayer();
 			PreDealDamageEvent ev = (PreDealDamageEvent) in;
 			if (!ev.getMeta().hasOrigin(DamageOrigin.PROJECTILE)) return TriggerResult.keep();
 			FightData fd = FightInstance.getFightData(ev.getTarget());

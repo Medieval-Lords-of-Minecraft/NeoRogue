@@ -27,11 +27,12 @@ public class BlindingCloak extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(ID, Trigger.RECEIVE_STATUS, (pdata, in) -> {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
 			if (!ev.getStatusId().equals(StatusType.STEALTH.name())) return TriggerResult.keep();
 			
+			Player p = data.getPlayer();
 			data.addSimpleShield(p.getUniqueId(), shields, 160);
 			return TriggerResult.keep();
 		});

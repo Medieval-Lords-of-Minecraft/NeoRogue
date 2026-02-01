@@ -34,7 +34,7 @@ public class Untouchable extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
 		
 		data.addTrigger(id, Trigger.RECEIVE_STATUS, (pdata, in) -> {
@@ -46,6 +46,7 @@ public class Untouchable extends Equipment {
 			am.addCount(ev.getStacks());
 			
 			if (am.getCount() >= threshold) {
+				Player p = data.getPlayer();
 				FightInstance.applyStatus(p, StatusType.EVADE, data, am.getCount() / threshold, -1);
 				am.setCount(am.getCount() % threshold);
 			}

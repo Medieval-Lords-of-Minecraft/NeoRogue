@@ -50,9 +50,10 @@ public class Fissure extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		Equipment eq = this;
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, inputs) -> {
+			Player p = data.getPlayer();
 			data.charge(20, 0);
 			Sounds.equip.play(p, p);
 			data.addTask(new BukkitRunnable() {

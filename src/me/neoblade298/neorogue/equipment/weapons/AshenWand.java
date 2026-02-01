@@ -54,11 +54,12 @@ public class AshenWand extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ProjectileGroup proj = new ProjectileGroup(new AshenWandProjectile(data, this, slot));
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (d, inputs) -> {
 			if (!canUseWeapon(data) || !data.canBasicAttack(EquipSlot.HOTBAR))
 				return TriggerResult.keep();
+			Player p = data.getPlayer();
 			weaponSwing(p, data);
 			Location start = p.getLocation().add(0, 1, 0);
 			Vector dir = start.getDirection();

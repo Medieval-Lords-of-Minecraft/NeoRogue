@@ -51,7 +51,7 @@ public class Stormspike extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ProjectileGroup proj = new ProjectileGroup();
 		ActionMeta am = new ActionMeta();
 		
@@ -61,6 +61,7 @@ public class Stormspike extends Equipment {
 		}
 		
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Player p = data.getPlayer();
 			Sounds.attackSweep.play(p, p);
 			am.setCount(0); // Reset hit counter
 			proj.start(data);
@@ -107,6 +108,7 @@ public class Stormspike extends Equipment {
 				// Add lightning damage and electrified on basic attack for 6 seconds
 				String triggerId = id + slot + "-empowered";
 				data.addTrigger(triggerId, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
+					Player p = data.getPlayer();
 					// Check if 6 seconds have passed
 					if (System.currentTimeMillis() - startTime >= 6000) {
 						return TriggerResult.remove();

@@ -46,12 +46,11 @@ public class Hullbreaker extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ItemStack icon = item.clone();
 		ActionMeta am = new ActionMeta();
 
-		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
-			ApplyStatusEvent ev = (ApplyStatusEvent) in;
+		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {		Player p = data.getPlayer();			ApplyStatusEvent ev = (ApplyStatusEvent) in;
 			if (!ev.isStatus(StatusType.CONCUSSED)) return TriggerResult.keep();
 			am.addInt(ev.getStacks());
 			while (am.getInt() >= THRES) {
@@ -63,8 +62,7 @@ public class Hullbreaker extends Equipment {
 			return TriggerResult.keep();
 		});
 
-		data.addTrigger(id, Trigger.RIGHT_CLICK_HIT, (pdata, in) -> {
-			sc.play(p, p);
+		data.addTrigger(id, Trigger.RIGHT_CLICK_HIT, (pdata, in) -> {		Player p = data.getPlayer();			sc.play(p, p);
 			RightClickHitEvent ev = (RightClickHitEvent) in;
 			LivingEntity trg = ev.getTarget();
 			FightData fd = FightInstance.getFightData(trg);

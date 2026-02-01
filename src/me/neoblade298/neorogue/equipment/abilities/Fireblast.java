@@ -44,12 +44,13 @@ public class Fireblast extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ProjectileGroup proj = new ProjectileGroup();
 		for (int i : new int[] { -30, 0, 30 }) {
 			proj.add(new FireballProjectile(data, i, this, slot));
 		}
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Player p = data.getPlayer();
 			data.channel(20).then(new Runnable() {
 				public void run() {
 					Sounds.fire.play(p, p);

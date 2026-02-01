@@ -43,7 +43,7 @@ public class FormAPlan extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		FormAPlanInstance inst = new FormAPlanInstance(data, this);
 		data.addTrigger(ID, Trigger.DEAL_DAMAGE, (pdata, in) -> {
 			if (inst.isActive) return TriggerResult.remove();

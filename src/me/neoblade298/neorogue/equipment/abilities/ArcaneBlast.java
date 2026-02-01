@@ -55,14 +55,16 @@ public class ArcaneBlast extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ItemStack icon = item.clone().withType(Material.TNT_MINECART);
 		ActionMeta am = new ActionMeta();
 		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
 		inst.setCondition((pl, pdata, in) -> {
+			Player p = data.getPlayer();
 			return am.getBool() || p.getTargetBlockExact((int) properties.get(PropertyType.RANGE)) != null;
 		});
 		inst.setAction((pdata, in) -> {
+			Player p = data.getPlayer();
 			// First cast
 			if (!am.getBool()) {
 				// Cast indicator
@@ -71,6 +73,7 @@ public class ArcaneBlast extends Equipment {
 
 				data.charge(20).then(new Runnable() {
 					public void run() {
+						Player p = data.getPlayer();
 						Block b = p.getTargetBlockExact((int) properties.get(PropertyType.RANGE));
 						CastUsableEvent last = inst.getLastCastEvent();
 						if (b == null) {

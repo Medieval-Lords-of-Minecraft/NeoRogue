@@ -17,7 +17,7 @@ public class MyEquipment extends Equipment {
     public static Equipment get() { return Equipment.get(ID, false); }
     
     @Override
-    public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+    public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
         // Add triggers here - this is where the equipment's behavior is defined
     }
     
@@ -78,7 +78,7 @@ data.addTrigger(id, Trigger.PLAYER_TICK, inst);
 **Complete Example - Separate Triggers:**
 ```java
 @Override
-public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
     ActionMeta stacks = new ActionMeta();
     ItemStack icon = item.clone();
     EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
@@ -112,7 +112,7 @@ public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot e
 **Alternative Pattern - Single Trigger with EquipmentInstance constructor:**
 ```java
 @Override
-public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
     ActionMeta stacks = new ActionMeta();
     ItemStack icon = item.clone();
     
@@ -579,7 +579,7 @@ public MyAbility(boolean isUpgraded) {
 **2. Manual CAST_USABLE Triggering with Cost Refunds:**
 ```java
 @Override
-public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
     EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
     inst.setAction((pdata, in) -> {
         data.charge(40).then(new Runnable() {
@@ -629,7 +629,7 @@ public class Gravity extends Equipment {
     }
     
     @Override
-    public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+    public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
         EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
         inst.setAction((pdata, in) -> {
             // 2 second charge
@@ -680,7 +680,7 @@ public class ArcaneBlast extends Equipment {
     }
     
     @Override
-    public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+    public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
         ActionMeta am = new ActionMeta();  // Track multi-stage state
         EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
         
@@ -839,7 +839,7 @@ public class TwinShiv extends Equipment {
     }
     
     @Override
-    public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+    public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
         data.addTrigger(id, bind, new TwinShivInstance(data, this, slot, es));
     }
     

@@ -55,10 +55,11 @@ public class Storm extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
 		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
 		inst.setAction((pdata, in) -> {
+			Player p = data.getPlayer();
 			am.toggleBool();
 			if (am.getBool()) {
 				Sounds.equip.play(p, p);
@@ -70,6 +71,7 @@ public class Storm extends Equipment {
 		});
 		data.addTrigger(id, bind, inst);
 		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
+			Player p = data.getPlayer();
 			if (!am.getBool())
 				return TriggerResult.keep();
 			if (data.getMana() < mana) {

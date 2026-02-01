@@ -41,7 +41,7 @@ public class MultiCrossbow extends Bow {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addSlotBasedTrigger(id, slot, Trigger.VANILLA_PROJECTILE, (pdata, in) -> {
 			if (!canShootCrossbow(data)) return TriggerResult.keep();
 			useBow(data);

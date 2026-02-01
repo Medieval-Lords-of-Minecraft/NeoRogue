@@ -42,7 +42,8 @@ public class Corrode extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		Player p = data.getPlayer();
 		String statusName = p.getName() + "-corrode";
 		
 		// Mark enemies on basic attack

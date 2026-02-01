@@ -48,7 +48,7 @@ public class BreakTheLine extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		BreakTheLineInstance inst = new BreakTheLineInstance(data, this, slot, es);
 		data.addTrigger(id, bind, inst);
 	}

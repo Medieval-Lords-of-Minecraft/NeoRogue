@@ -4,7 +4,6 @@ import java.util.UUID;
 
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neorogue.NeoRogue;
@@ -41,12 +40,12 @@ public class SaviorsHelm extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		String buffId = UUID.randomUUID().toString();
 		data.addDefenseBuff(DamageBuffType.of(DamageCategory.MAGICAL), Buff.increase(data, def, StatTracker.defenseBuffAlly(buffId, this)));
 		data.addTask(new BukkitRunnable() {
 			public void run() {
-				for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
+				for (LivingEntity ent : TargetHelper.getEntitiesInRadius(data.getPlayer(), tp)) {
 					FightInstance.applyStatus(ent, StatusType.SANCTIFIED, data, sanct, -1);
 				}
 			}

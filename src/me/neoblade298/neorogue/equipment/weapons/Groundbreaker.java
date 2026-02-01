@@ -51,7 +51,7 @@ public class Groundbreaker extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_BLOCK, (pdata, in) -> {
 			if (!data.canBasicAttack())
 				return TriggerResult.keep();
@@ -59,6 +59,7 @@ public class Groundbreaker extends Equipment {
 			Block b = ev.getClickedBlock();
 			Location loc = b.getLocation().add(0.5, 0, 0.5);
 			circ.play(pc, loc, LocalAxes.xz(), null);
+			Player p = data.getPlayer();
 			weaponSwing(p, data);
 			data.addTask(new BukkitRunnable() {
 				public void run() {

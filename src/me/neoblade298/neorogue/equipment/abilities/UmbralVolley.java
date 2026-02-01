@@ -47,7 +47,7 @@ public class UmbralVolley extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		for (int i = 0; i < 5; i++) {
 			projs.add(new UmbralVolleyProjectile(i, slot, this));
 		}
@@ -62,6 +62,7 @@ public class UmbralVolley extends Equipment {
 			// Fire projectiles after half a second delay
 			data.addTask(new BukkitRunnable() {
 				public void run() {
+					Player p = data.getPlayer();
 					Sounds.attackSweep.play(p, p);
 					projs.start(data);
 				}

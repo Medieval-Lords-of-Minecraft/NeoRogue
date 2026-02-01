@@ -43,7 +43,7 @@ public class MercurialGloves extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		LinkedList<Location> hitLocations = new LinkedList<>();
 		
 		// Track last 3 basic attack locations where damage was dealt
@@ -64,6 +64,7 @@ public class MercurialGloves extends Equipment {
 		
 		// Right click to fire projectiles from saved locations
 		data.addTrigger(id, Trigger.RIGHT_CLICK, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Player p = data.getPlayer();
 			if (hitLocations.isEmpty()) {
 				Sounds.error.play(p, p);
 				return TriggerResult.keep();

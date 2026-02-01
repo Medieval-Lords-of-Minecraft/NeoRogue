@@ -2,7 +2,6 @@ package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -35,7 +34,7 @@ public class Titan extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.PRE_CAST_USABLE, (pdata, in) -> {
 			PreCastUsableEvent ev = (PreCastUsableEvent) in;
 			EquipmentInstance inst = ev.getInstance();

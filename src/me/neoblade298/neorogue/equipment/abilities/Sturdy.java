@@ -35,8 +35,8 @@ public class Sturdy extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		SturdyInstance inst = new SturdyInstance(id, p);
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		SturdyInstance inst = new SturdyInstance(id, data.getPlayer());
 		data.addTrigger(id, Trigger.RAISE_SHIELD, inst);
 		
 		data.addTrigger(id, Trigger.LOWER_SHIELD, (pdata, in) -> {

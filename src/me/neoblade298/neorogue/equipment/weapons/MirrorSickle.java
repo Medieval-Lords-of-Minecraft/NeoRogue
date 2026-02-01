@@ -51,8 +51,9 @@ public class MirrorSickle extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		if (data.getSessionData().getEquipment(EquipSlot.OFFHAND)[0] != null) {
+			Player p = data.getPlayer();
 			Util.msg(p, hoverable.append(Component.text("  couldn't be equipped as you have equipment in your offhand!", NamedTextColor.RED)));
 			p.getInventory().setItem(slot, null);
 			return;
@@ -66,7 +67,7 @@ public class MirrorSickle extends Equipment {
 		
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
-			weaponSwingAndDamage(p, data, ev.getTarget());
+			weaponSwingAndDamage(data.getPlayer(), data, ev.getTarget());
 			stacks.addCount(1);
 			
 			// Update icon to show stacks
@@ -84,6 +85,7 @@ public class MirrorSickle extends Equipment {
 		inst.setAction((pdata, in) -> {
 			if (stacks.getCount() < 3) return TriggerResult.keep();
 			stacks.addCount(-3);
+			Player p = data.getPlayer();
 			Sounds.teleport.play(p, p);
 			pc.play(p, p);
 			data.dash();

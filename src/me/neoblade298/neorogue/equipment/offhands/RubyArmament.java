@@ -41,10 +41,11 @@ public class RubyArmament extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		String buffId = UUID.randomUUID().toString();
 		StandardPriorityAction act = new StandardPriorityAction(ID);
 		data.addTrigger(ID, Trigger.RIGHT_CLICK, (pdata, in) -> {
+			Player p = data.getPlayer();
 			if (act.getCount() == 0) {
 				act.setCount(1);
 				Util.msg(p, "Entered stance <white>Power");

@@ -33,7 +33,8 @@ public class FlashDraw extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		Player p = data.getPlayer();
 		ActionMeta md = new ActionMeta();
 		md.setTime(-1);
 		data.addTrigger(id, Trigger.TOGGLE_CROUCH, (pdata, in) -> {

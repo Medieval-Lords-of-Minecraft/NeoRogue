@@ -32,12 +32,13 @@ public class Warmup extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		StandardPriorityAction inst = new StandardPriorityAction(ID);
 		inst.setCount(timer);
 		inst.setAction((pdata, in) -> {
 			inst.addCount(-1);
 			if (inst.getCount() <= 0) {
+				Player p = data.getPlayer();
 				Sounds.fire.play(p, p);
 				Util.msgRaw(p, this.hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 				data.addStaminaRegen(1);

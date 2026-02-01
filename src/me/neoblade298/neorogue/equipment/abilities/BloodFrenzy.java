@@ -36,8 +36,9 @@ public class BloodFrenzy extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.KILL, (pdata, in) -> {
+			Player p = data.getPlayer();
 			if (data.getStatus(StatusType.BERSERK).getStacks() < CUTOFF_STRENGTH) {
 				data.applyStatus(StatusType.BERSERK, data, 1, -1);
 			}

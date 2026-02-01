@@ -36,8 +36,9 @@ public class MonksHeadsplitter extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
+			Player p = data.getPlayer();
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
 			boolean isConc = FightInstance.getFightData(ev.getTarget()).hasStatus(StatusType.CONCUSSED);
 			weaponSwingAndDamage(p, data, ev.getTarget(), properties.get(PropertyType.DAMAGE) + (isConc ? bonus : 0));

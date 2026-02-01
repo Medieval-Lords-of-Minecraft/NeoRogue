@@ -56,8 +56,9 @@ public class SmokeBomb extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, inputs) -> {
+			Player p = data.getPlayer();
 			placePart.play(p, p);
 			place.play(p, p);
 			Location loc = p.getLocation();
@@ -68,6 +69,7 @@ public class SmokeBomb extends Equipment {
 					data.addTask(new BukkitRunnable() {
 						private static final int TICKS = 5;
 						private int tick = 0;
+						private Player p = data.getPlayer();
 						public void run() {
 							smoke.play(p, loc);
 							circ.play(smokeEdge, loc, LocalAxes.xz(), null);

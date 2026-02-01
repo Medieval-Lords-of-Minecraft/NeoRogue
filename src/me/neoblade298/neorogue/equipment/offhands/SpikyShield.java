@@ -40,11 +40,12 @@ public class SpikyShield extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
 		data.applyStatus(StatusType.THORNS, data, amount, -1);
 		data.addTrigger(id, Trigger.RAISE_SHIELD, (pdata, inputs) -> {
 			if (am.getCount() >= 5) return TriggerResult.remove();
+			Player p = data.getPlayer();
 			Barrier b = Barrier.centered(p, 3, 2, 2, 0, new HashMap<DamageBuffType, BuffList>(), null, true);
 			UUID uuid = data.addBarrier(b);
 			b.tick();
@@ -72,6 +73,7 @@ public class SpikyShield extends Equipment {
 			if (!b.getUniqueId().equals(am.getUniqueId())) return TriggerResult.keep();
 			am.addCount(1);
 			if (am.getCount() >= 5) {
+				Player p = data.getPlayer();
 				data.removeBarrier(am.getUniqueId());
 				p.playSound(p, Sound.ITEM_SHIELD_BREAK, 1F, 1F);
 				return TriggerResult.remove();
@@ -80,6 +82,7 @@ public class SpikyShield extends Equipment {
 		});
 		
 		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, (pdata, inputs) -> {
+			Player p = data.getPlayer();
 			if (!p.isHandRaised()) return TriggerResult.keep();
 			ReceiveDamageEvent ev = (ReceiveDamageEvent) inputs;
 			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, reduction, 0, StatTracker.damageBarriered(am.getId(), this)));

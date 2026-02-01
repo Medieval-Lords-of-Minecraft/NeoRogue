@@ -47,21 +47,22 @@ public class Harpoon extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, in) -> {
 			LeftClickHitEvent ev = (LeftClickHitEvent) in;
-			weaponSwingAndDamage(p, data, ev.getTarget());
+			weaponSwingAndDamage(data.getPlayer(), data, ev.getTarget());
 			return TriggerResult.keep();
 		});
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_NO_HIT, (pdata, in) -> {
 			if (!data.canBasicAttack()) return TriggerResult.keep();
-			LinkedList<LivingEntity> targets = TargetHelper.getEntitiesInSight(p, regHit);
+			LinkedList<LivingEntity> targets = TargetHelper.getEntitiesInSight(data.getPlayer(), regHit);
 			if (targets.isEmpty())
 				return TriggerResult.keep();
-			weaponSwingAndDamage(p, data, targets.getFirst());
+			weaponSwingAndDamage(data.getPlayer(), data, targets.getFirst());
 			return TriggerResult.keep();
 		});
 		data.addSlotBasedTrigger(id, slot, Trigger.THROW_TRIDENT, (pdata, in) -> {
+			Player p = data.getPlayer();
 			if (!data.canBasicAttack()) return TriggerResult.keep();
 			LinkedList<LivingEntity> targets = TargetHelper.getEntitiesInSight(p, harpoonHit);
 			weaponSwing(p, data);

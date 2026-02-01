@@ -54,8 +54,9 @@ public class PhantasmalKiller extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		if (data.getSessionData().getEquipment(EquipSlot.OFFHAND)[0] != null) {
+			Player p = data.getPlayer();
 			Util.msg(p, hoverable.append(Component.text("  couldn't be equipped as you have equipment in your offhand!", NamedTextColor.RED)));
 			p.getInventory().setItem(slot, null);
 			return;
@@ -74,7 +75,7 @@ public class PhantasmalKiller extends Equipment {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (pdata, inputs) -> {
 			if (!canUseWeapon(data)) return TriggerResult.keep();
 			if (!data.canBasicAttack()) return TriggerResult.keep();
-			weaponSwing(p, data);
+			weaponSwing(data.getPlayer(), data);
 			proj.start(data);
 			return TriggerResult.keep();
 		});
@@ -106,7 +107,7 @@ public class PhantasmalKiller extends Equipment {
 			}
 			
 			// Dash forward
-			data.dash(p.getEyeLocation().getDirection());
+			data.dash(data.getPlayer().getEyeLocation().getDirection());
 			
 			// Clone the last basic attack damage
 			DamageMeta dm = ((DamageMeta) attacks.getObject()).clone();
@@ -118,6 +119,7 @@ public class PhantasmalKiller extends Equipment {
 			}
 			
 			// Deal the cloned damage to the nearest enemy
+			Player p = data.getPlayer();
 			var nearest = TargetHelper.getNearest(p, tp);
 			if (nearest != null) {
 				FightInstance.dealDamage(dm, nearest);

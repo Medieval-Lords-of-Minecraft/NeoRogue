@@ -42,11 +42,12 @@ public class Rampage extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
 		ActionMeta count = new ActionMeta();
 		ItemStack icon = item.clone();
 		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es, (pdata, inputs) -> {
+			Player p = data.getPlayer();
 			Sounds.equip.play(p, p);
 			pc.play(p, p);
 			am.addCount(1);
@@ -56,6 +57,7 @@ public class Rampage extends Equipment {
 		
 		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata2, in) -> {
 			if (am.getCount() <= 0) return TriggerResult.keep();
+			Player p = data.getPlayer();
 			am.addCount(-1);
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 			ev.getMeta().addDamageSlice(

@@ -41,12 +41,12 @@ public class StoneThrowingKnife extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ProjectileGroup proj = new ProjectileGroup(new StoneThrowingKnifeProjectile(data, this, slot));
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (d, inputs) -> {
 			if (!canUseWeapon(data)) return TriggerResult.keep();
 			if (!data.canBasicAttack()) return TriggerResult.keep();
-			weaponSwing(p, data);
+			weaponSwing(data.getPlayer(), data);
 			proj.start(data);
 			return TriggerResult.keep();
 		});

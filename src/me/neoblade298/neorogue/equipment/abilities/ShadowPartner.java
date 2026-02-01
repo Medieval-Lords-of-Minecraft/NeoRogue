@@ -55,7 +55,7 @@ public class ShadowPartner extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		// Queue to track player positions - stores last 4 positions (2 seconds worth at 0.5s intervals)
 		LinkedList<Location> locationQueue = new LinkedList<Location>();
 		ActionMeta cooldown = new ActionMeta();
@@ -63,6 +63,7 @@ public class ShadowPartner extends Equipment {
 		// Task to track player position every half second and display shadow ball
 		data.addTask(new BukkitRunnable() {
 			public void run() {
+				Player p = data.getPlayer();
 				// Add current location to queue
 				locationQueue.add(p.getLocation().clone());
 				
@@ -104,6 +105,7 @@ public class ShadowPartner extends Equipment {
 			ProjectileGroup proj = new ProjectileGroup(new ShadowProjectile(data, slot, this));
 			proj.start(data, shadowLoc, targetLoc.toVector().subtract(shadowLoc.toVector()).normalize());
 			
+			Player p = data.getPlayer();
 			Sounds.fire.play(p, shadowLoc);
 			cooldown.setTime(System.currentTimeMillis());
 			

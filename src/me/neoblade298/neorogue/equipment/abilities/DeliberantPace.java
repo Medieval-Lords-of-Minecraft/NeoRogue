@@ -42,22 +42,20 @@ public class DeliberantPace extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		String buffId = UUID.randomUUID().toString();
 		ActionMeta am = new ActionMeta();
 		am.setCount(0); // Tick counter
 		
 		// Reset counter when player starts sprinting
-		data.addTrigger(id, Trigger.TOGGLE_SPRINT, (pdata, in) -> {
-			if (p.isSprinting()) {
+		data.addTrigger(id, Trigger.TOGGLE_SPRINT, (pdata, in) -> {		Player p = data.getPlayer();			if (p.isSprinting()) {
 				am.setCount(0);
 			}
 			return TriggerResult.keep();
 		});
 		
 		// Track ticks without sprinting
-		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
-			// If player is currently sprinting, reset counter
+		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {		Player p = data.getPlayer();			// If player is currently sprinting, reset counter
 			if (p.isSprinting()) {
 				am.setCount(0);
 				return TriggerResult.keep();

@@ -36,7 +36,8 @@ public class CalculatingGaze extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		Player p = data.getPlayer();
 		String buffId = UUID.randomUUID().toString();
 		data.addPermanentShield(p.getUniqueId(), shields);
 		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, (pdata, in) -> {

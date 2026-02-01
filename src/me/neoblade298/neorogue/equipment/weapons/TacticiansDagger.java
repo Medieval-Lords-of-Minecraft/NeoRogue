@@ -2,7 +2,6 @@ package me.neoblade298.neorogue.equipment.weapons;
 
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -38,7 +37,7 @@ public class TacticiansDagger extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ItemStack icon = item.clone().withType(Material.WOODEN_SWORD);
 		StandardPriorityAction timer = new StandardPriorityAction(ID);
 		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, this, slot, es);
@@ -61,7 +60,8 @@ public class TacticiansDagger extends Equipment {
 		inst.setAction((pdata, inputs) -> {
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
 			boolean hasBonus = timer.getTime() + 3000 < System.currentTimeMillis();
-			weaponSwingAndDamage(p, data, ev.getTarget(), properties.get(PropertyType.DAMAGE) + (hasBonus ? damage : 0));
+			weaponSwingAndDamage(data
+					.getPlayer(), data, ev.getTarget(), properties.get(PropertyType.DAMAGE) + (hasBonus ? damage : 0));
 			return TriggerResult.keep();
 		});
 

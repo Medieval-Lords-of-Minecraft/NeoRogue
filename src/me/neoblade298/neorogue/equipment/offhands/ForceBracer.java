@@ -41,19 +41,17 @@ public class ForceBracer extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, new ForceBracerInstance(this, p));
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, new ForceBracerInstance(data.getPlayer(), this));
 	}
 
 	private class ForceBracerInstance implements TriggerAction {
-		private Player p;
 		private int count = instances;
 		private ItemStack icon;
 		private Equipment eq;
 		private String buffId = UUID.randomUUID().toString();
 
-		public ForceBracerInstance(Equipment eq, Player p) {
-			this.p = p;
+		public ForceBracerInstance(Player p, Equipment eq) {
 			icon = item.clone();
 			icon.setAmount(count);
 			p.getInventory().setItemInOffHand(icon);
@@ -66,6 +64,7 @@ public class ForceBracer extends Equipment {
 			if (ev.isNullified()) {
 				return TriggerResult.keep();
 			}
+			Player p = data.getPlayer();
 			Sounds.block.play(p, p);
 			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL),
 					Buff.increase(data, 15, BuffStatTracker.defenseBuffAlly(buffId, eq)));

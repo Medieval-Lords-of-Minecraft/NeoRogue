@@ -39,15 +39,16 @@ public class Skirmisher extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, new SkirmisherInstance(id, p, data));
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, new SkirmisherInstance(id, data));
 	}
 	
 	private class SkirmisherInstance extends PriorityAction {
 		private int count = 0;
-		public SkirmisherInstance(String id, Player p, PlayerFightData data) {
+		public SkirmisherInstance(String id, PlayerFightData data) {
 			super(id);
 			action = (pdata, in) -> {
+				Player p = data.getPlayer();
 				if (++count >= 3) {
 					count = 0;
 					sound.play(p, p);

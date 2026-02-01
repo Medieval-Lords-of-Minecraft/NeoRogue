@@ -29,7 +29,8 @@ public class OmniGem extends Artifact {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
+	public void initialize(PlayerFightData data, ArtifactInstance ai) {
+		Player p = data.getPlayer();
 		data.addPermanentShield(p.getUniqueId(), ai.getAmount() * shields);
 	}
 

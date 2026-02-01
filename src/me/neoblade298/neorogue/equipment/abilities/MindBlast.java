@@ -41,7 +41,7 @@ public class MindBlast extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
 		data.addTrigger(id, Trigger.CAST_USABLE, (pdata, in) -> {
 			am.addCount(1);
@@ -49,6 +49,7 @@ public class MindBlast extends Equipment {
 				am.addCount(-THRES);
 				pdata.addManaRegen(regen);
 				data.applyStatus(StatusType.INTELLECT, data, intel, -1);
+				Player p = data.getPlayer();
 				pc.play(p, p);
 				Sounds.enchant.play(p, p);
 			}

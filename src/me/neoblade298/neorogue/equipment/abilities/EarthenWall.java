@@ -52,10 +52,11 @@ public class EarthenWall extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		Equipment eq = this;
 		ActionMeta am = new ActionMeta();
 		data.addTrigger(id, bind, (pdata, in) -> {
+			Player p = data.getPlayer();
 			data.charge(20).then(new Runnable() {
 				public void run() {
 					Vector left = p.getEyeLocation().getDirection().setY(0).normalize();
@@ -87,6 +88,7 @@ public class EarthenWall extends Equipment {
 		});
 
 		data.addTrigger(id, Trigger.RECEIVE_DAMAGE_BARRIER, (pdata, in) -> {
+			Player p = data.getPlayer();
 			ReceiveDamageBarrierEvent ev = (ReceiveDamageBarrierEvent) in;
 			if (ev.getBarrier().getUniqueId().equals(am.getUniqueId())) {
 				am.addCount(1);

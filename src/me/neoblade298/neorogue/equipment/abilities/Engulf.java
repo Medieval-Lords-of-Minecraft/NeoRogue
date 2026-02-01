@@ -49,8 +49,7 @@ public class Engulf extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		Equipment eq = this;
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
 		data.addTrigger(id, Trigger.DEAL_DAMAGE, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			DealDamageEvent ev = (DealDamageEvent) in;
@@ -65,10 +64,11 @@ public class Engulf extends Equipment {
 					private int count = 0;
 
 					public void run() {
+						Player p = data.getPlayer();
 						Sounds.fire.play(p, p);
 						circ.play(pc, p.getLocation(), LocalAxes.xz(), null);
 						for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
-							FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE, DamageStatTracker.of(id + slot, eq)), ent);
+							FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE, DamageStatTracker.of(id + slot, Engulf.this)), ent);
 						}
 
 						if (++count >= 3) {

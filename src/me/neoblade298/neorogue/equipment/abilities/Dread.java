@@ -44,10 +44,11 @@ public class Dread extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		Equipment eq = this;
 		StandardPriorityAction act = new StandardPriorityAction(id);
 		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
+			Player p = data.getPlayer();
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
 			if (!ev.isStatus(StatusType.STEALTH)) return TriggerResult.keep();
 			act.addCount(ev.getStacks());

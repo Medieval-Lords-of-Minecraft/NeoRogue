@@ -30,10 +30,11 @@ public class Rushdown extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addStaminaRegen(inc);
 		data.addTask(new BukkitRunnable() {
 			public void run() {
+				Player p = data.getPlayer();
 				data.addStaminaRegen(-inc);
 				Util.msg(p, hoverable.append(Component.text(" has expired", NamedTextColor.GRAY)));
 			}

@@ -45,8 +45,9 @@ public class PoolOfLight extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, inputs) -> {
+			Player p = data.getPlayer();
 			sc.play(p, p);
 			Location loc = p.getLocation();
 			data.addTask(new BukkitRunnable() {

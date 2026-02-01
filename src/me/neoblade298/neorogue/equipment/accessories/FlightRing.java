@@ -32,7 +32,7 @@ public class FlightRing extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		// Grant evade at the start of the fight
 		data.applyStatus(StatusType.EVADE, data, evade, -1);
 		
@@ -53,6 +53,7 @@ public class FlightRing extends Equipment {
 				return TriggerResult.keep();
 			}
 			
+			Player p = data.getPlayer();
 			LivingEntity damager = ev.getDamageMeta().getOwner().getEntity();
 			Location playerLoc = p.getLocation();
 			Location damagerLoc = damager.getLocation();

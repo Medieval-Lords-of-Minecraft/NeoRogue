@@ -44,7 +44,7 @@ public class Blackspike extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ProjectileGroup proj = new ProjectileGroup();
 		// Create 3 projectiles in a cone spread
 		for (int angle : new int[] { -15, 0, 15 }) {
@@ -52,6 +52,7 @@ public class Blackspike extends Equipment {
 		}
 		
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Player p = data.getPlayer();
 			Sounds.attackSweep.play(p, p);
 			proj.start(data);
 			return TriggerResult.keep();

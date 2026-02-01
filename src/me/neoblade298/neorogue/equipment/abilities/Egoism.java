@@ -36,7 +36,7 @@ public class Egoism extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
 		data.addTrigger(id, Trigger.EVADE, (pdata, in) -> {
 			if (am.getTime() > System.currentTimeMillis()) return TriggerResult.keep();
@@ -58,6 +58,7 @@ public class Egoism extends Equipment {
 			data.applyStatus(StatusType.STEALTH, data, stealth, 200);
 			
 			// Gain Speed 1 for 5 seconds
+			Player p = data.getPlayer();
 			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 100, 0));
 			
 			return TriggerResult.keep();

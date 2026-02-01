@@ -1,7 +1,6 @@
 package me.neoblade298.neorogue.equipment.armor;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -30,7 +29,7 @@ public class Gauze extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		GauzeInstance inst = new GauzeInstance(ID);
 		data.addTrigger(ID, Trigger.RECEIVE_HEALTH_DAMAGE, inst);
 		data.addTrigger(ID, Trigger.RECEIVE_STATUS, (pdata, in) -> {

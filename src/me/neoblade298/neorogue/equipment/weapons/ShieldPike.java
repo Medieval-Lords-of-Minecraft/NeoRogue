@@ -41,18 +41,19 @@ public class ShieldPike extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		Equipment off = data.getSessionData().getEquipment(EquipSlot.OFFHAND)[0];
 		boolean hasShield = off != null && off.getItem().getType() == Material.SHIELD;
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, in) -> {
 			LeftClickHitEvent ev = (LeftClickHitEvent) in;
 			double damage = hasShield ? properties.get(PropertyType.DAMAGE) * 2 : properties.get(PropertyType.DAMAGE);
 			data.applyStatus(StatusType.THORNS, data, thorns, -1);
-			weaponSwingAndDamage(p, data, ev.getTarget(), damage);
+			weaponSwingAndDamage(data.getPlayer(), data, ev.getTarget(), damage);
 			return TriggerResult.keep();
 		});
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_NO_HIT, (pdata, in) -> {
 			if (!data.canBasicAttack()) return TriggerResult.keep();
+			Player p = data.getPlayer();
 			LinkedList<LivingEntity> targets = TargetHelper.getEntitiesInSight(p, spearHit);
 			if (targets.isEmpty())
 				return TriggerResult.keep();

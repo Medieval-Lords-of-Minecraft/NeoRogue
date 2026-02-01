@@ -63,7 +63,7 @@ public class ReckoningOrb extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ProjectileGroup group = new ProjectileGroup(new ReckoningOrbProjectile(data, UUID.randomUUID().toString(), this));
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, inputs) -> {
 			group.start(data);

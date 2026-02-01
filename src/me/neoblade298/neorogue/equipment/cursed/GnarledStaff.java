@@ -1,7 +1,6 @@
 package me.neoblade298.neorogue.equipment.cursed;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -23,7 +22,7 @@ public class GnarledStaff extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {}
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {}
 	
 	@Override
 	public void postSetup() {

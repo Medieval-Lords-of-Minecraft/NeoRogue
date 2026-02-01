@@ -33,9 +33,10 @@ public class SoulHarvester extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
+			Player p = data.getPlayer();
 			weaponSwingAndDamage(p, data, ev.getTarget());
 			if (ev.getTarget().getHealth() <= 0) {
 				data.applyStatus(StatusType.STRENGTH, data, str, -1);

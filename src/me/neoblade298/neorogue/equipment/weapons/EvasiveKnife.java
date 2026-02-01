@@ -2,7 +2,6 @@ package me.neoblade298.neorogue.equipment.weapons;
 
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -36,11 +35,11 @@ public class EvasiveKnife extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		StandardPriorityAction act = new StandardPriorityAction(id);
 		act.setAction((pdata, in) -> {
 			LeftClickHitEvent ev = (LeftClickHitEvent) in;
-			weaponSwingAndDamage(p, data, ev.getTarget(), base + (data.getStamina() >= stam ? dmg : 0));
+			weaponSwingAndDamage(data.getPlayer(), data, ev.getTarget(), base + (data.getStamina() >= stam ? dmg : 0));
 			return TriggerResult.keep();
 		});
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, act);

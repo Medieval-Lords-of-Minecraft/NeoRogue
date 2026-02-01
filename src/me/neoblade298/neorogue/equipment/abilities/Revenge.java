@@ -37,7 +37,7 @@ public class Revenge extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		StandardPriorityAction inst = new StandardPriorityAction(id);
 		inst.setAction((pdata, in) -> {
 			if (!inst.canUse()) return TriggerResult.keep();
@@ -47,6 +47,7 @@ public class Revenge extends Equipment {
 				data.applyStatus(StatusType.BERSERK, data, 1, -1);
 			}
 			else {
+				Player p = data.getPlayer();
 				data.applyStatus(Status.createByGenericType(GenericStatusType.BASIC, "Revenge", data, true), data, 1, 200);
 				Sounds.fire.play(p, p);
 				pc.play(p, p);
@@ -58,6 +59,7 @@ public class Revenge extends Equipment {
 		
 		data.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
 			if (!data.hasStatus("Revenge")) return TriggerResult.keep();
+			Player p = data.getPlayer();
 			FightInstance.giveHeal(p, heal, p);
 			return TriggerResult.keep();
 		});

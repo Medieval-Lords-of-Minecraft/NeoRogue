@@ -45,13 +45,14 @@ public class WeaponEnchantmentDarkness extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
 		projs = new ProjectileGroup(new DarknessSlashProjectile(slot, this));
 		
 		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
 			am.addCount(1);
 			if (am.getCount() >= 3) {
+				Player p = data.getPlayer();
 				am.addCount(-3);
 				Sounds.flap.play(p, p);
 				slash.play(p, p);

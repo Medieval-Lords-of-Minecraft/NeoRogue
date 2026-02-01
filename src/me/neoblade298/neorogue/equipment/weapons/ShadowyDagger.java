@@ -33,8 +33,9 @@ public class ShadowyDagger extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
+			Player p = data.getPlayer();
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
 			boolean hasStatus = FightInstance.getFightData(ev.getTarget()).hasStatus(StatusType.INSANITY);
 			weaponSwingAndDamage(p, data, ev.getTarget(), base + (hasStatus ? dmg : 0));

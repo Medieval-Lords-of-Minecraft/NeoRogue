@@ -48,7 +48,7 @@ public class BalefulStrike extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta chargeTicks = new ActionMeta();
 		ItemStack icon = item.clone();
 		ItemStack activeIcon = icon.withType(Material.PAPER);
@@ -68,6 +68,7 @@ public class BalefulStrike extends Equipment {
 		
 		// On basic attack, if charged, deal bonus damage based on poison stacks and apply more poison
 		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
+			Player p = data.getPlayer();
 			if (chargeTicks.getCount() < CHARGE_TIME) return TriggerResult.keep();
 			
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;

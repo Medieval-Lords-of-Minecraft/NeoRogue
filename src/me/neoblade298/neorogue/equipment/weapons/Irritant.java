@@ -1,7 +1,6 @@
 package me.neoblade298.neorogue.equipment.weapons;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -33,11 +32,11 @@ public class Irritant extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_HIT, (pdata, inputs) -> {
 			LeftClickHitEvent ev = (LeftClickHitEvent) inputs;
 			boolean hasStatus = FightInstance.getFightData(ev.getTarget()).hasStatus(StatusType.POISON);
-			weaponSwingAndDamage(p, data, ev.getTarget(), base + (hasStatus ? dmg : 0));
+			weaponSwingAndDamage(data.getPlayer(), data, ev.getTarget(), base + (hasStatus ? dmg : 0));
 			return TriggerResult.keep();
 		});
 	}

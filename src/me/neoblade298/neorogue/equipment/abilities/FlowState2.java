@@ -1,7 +1,6 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -29,7 +28,7 @@ public class FlowState2 extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(ID, Trigger.PLAYER_TICK, (pdata, in) -> {
 			if (data.getStamina() < thres) return TriggerResult.keep();
 			data.addStamina(inc);

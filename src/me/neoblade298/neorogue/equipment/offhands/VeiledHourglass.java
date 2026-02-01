@@ -29,9 +29,10 @@ public class VeiledHourglass extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
 		inst.setAction((pdata, in) -> {
+			Player p = data.getPlayer();
 			Sounds.teleport.play(p, p);
 			// Check if player has stealth
 			if (data.hasStatus(StatusType.STEALTH)) {

@@ -3,7 +3,6 @@ package me.neoblade298.neorogue.equipment.artifacts;
 import java.util.UUID;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
@@ -30,7 +29,7 @@ public class ScrollOfFrost extends Artifact {
 	}
 	
 	@Override
-	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
+	public void initialize(PlayerFightData data, ArtifactInstance ai) {
 		data.addDamageBuff(DamageBuffType.of(DamageCategory.ICE), Buff.multiplier(data, 0.2, StatTracker.damageBuffAlly(UUID.randomUUID().toString(), this)));
 	}
 	

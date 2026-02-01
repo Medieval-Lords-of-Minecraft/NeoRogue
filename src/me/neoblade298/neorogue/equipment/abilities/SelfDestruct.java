@@ -42,8 +42,9 @@ public class SelfDestruct extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.DEACTIVATE_TRAP, (pdata, in) -> {
+			Player p = data.getPlayer();
 			Marker t = (Marker) in;
 			Location loc = t.getLocation();
 			pc.play(p, loc);

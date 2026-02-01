@@ -1,7 +1,6 @@
 package me.neoblade298.neorogue.equipment.accessories;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.util.Util;
@@ -41,7 +40,7 @@ public class CailiricCrystal extends Artifact {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
+	public void initialize(PlayerFightData data, ArtifactInstance ai) {
 		data.applyStatus(StatusType.STRENGTH, data, inc * ai.getAmount(), -1);
 		data.applyStatus(StatusType.INTELLECT, data, inc * ai.getAmount(), -1);
 	}

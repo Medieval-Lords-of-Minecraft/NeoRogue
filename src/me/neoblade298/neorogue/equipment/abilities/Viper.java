@@ -45,8 +45,8 @@ public class Viper extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		String statusName = p.getName() + "-viper";
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		String statusName = data.getPlayer().getName() + "-viper";
 		
 		// Mark enemies on basic attack
 		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
@@ -63,6 +63,7 @@ public class Viper extends Equipment {
 		
 		// Bonus damage when dealing poison damage to marked enemies, grant shields and speed
 		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
+			Player p = data.getPlayer();
 			PreDealDamageEvent ev = (PreDealDamageEvent) in;
 			if (!ev.getMeta().containsType(DamageType.POISON)) return TriggerResult.keep();
 			

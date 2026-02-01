@@ -59,11 +59,10 @@ public class LightningRush extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		LightningRushInstance inst = new LightningRushInstance(data, this, slot, es);
 		data.addTrigger(id, bind, inst);
-		data.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
-			if (!inst.active) return TriggerResult.keep();
+		data.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {		Player p = data.getPlayer();			if (!inst.active) return TriggerResult.keep();
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 			LivingEntity trg = ev.getTarget();
 			UUID uuid = trg.getUniqueId();
@@ -86,8 +85,7 @@ public class LightningRush extends Equipment {
 		private int timer;
 		
 		public LightningRushInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
-			super(data, eq, slot, es);
-			action = (pdata, in) -> {
+			super(data, eq, slot, es);		Player p = data.getPlayer();			action = (pdata, in) -> {
 				active = true;
 				timer = 3;
 				hit.clear();

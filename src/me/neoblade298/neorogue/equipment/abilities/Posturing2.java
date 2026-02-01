@@ -40,9 +40,10 @@ public class Posturing2 extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		StandardPriorityAction act = new StandardPriorityAction(id);
 		act.setAction((pdata, in) -> {
+			Player p = data.getPlayer();
 			if (!p.isSneaking()) return TriggerResult.keep();
 			act.addCount(1);
 			if (act.getCount() >= time) {
@@ -56,6 +57,7 @@ public class Posturing2 extends Equipment {
 		data.addTrigger(id, Trigger.PLAYER_TICK, act);
 
 		data.addTrigger(id, Trigger.LAUNCH_PROJECTILE_GROUP, (pdata, in) -> {
+			Player p = data.getPlayer();
 			LaunchProjectileGroupEvent ev = (LaunchProjectileGroupEvent) in;
 			for (IProjectileInstance ipi : ev.getInstances()) {
 				if (ipi instanceof ProjectileInstance) {

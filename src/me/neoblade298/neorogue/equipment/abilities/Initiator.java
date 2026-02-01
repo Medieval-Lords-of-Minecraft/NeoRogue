@@ -36,10 +36,9 @@ public class Initiator extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		String buffId = UUID.randomUUID().toString();
-		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
-			PreDealDamageEvent ev = (PreDealDamageEvent) in;
+		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {		Player p = data.getPlayer();			PreDealDamageEvent ev = (PreDealDamageEvent) in;
 			FightData fd = FightInstance.getFightData(ev.getTarget());
 			if (fd.hasStatus(p.getName() + "-INITIATOR")) return TriggerResult.keep();
 			fd.applyStatus(Status.createByGenericType(GenericStatusType.BASIC, p.getName() + "-INITIATOR",

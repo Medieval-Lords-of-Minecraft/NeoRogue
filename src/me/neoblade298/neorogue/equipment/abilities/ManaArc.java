@@ -53,10 +53,9 @@ public class ManaArc extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-			activate(p, data, am, slot);
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {		Player p = data.getPlayer();			activate(p, data, am, slot);
 			return TriggerResult.keep();
 		}, (pl, pdata, in) -> {
 			return !am.getBool(); // Only allow casting if it's not already active

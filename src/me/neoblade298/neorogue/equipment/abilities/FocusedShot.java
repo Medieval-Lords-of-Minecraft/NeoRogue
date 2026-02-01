@@ -42,10 +42,11 @@ public class FocusedShot extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		String buffId = UUID.randomUUID().toString();
 		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
 		inst.setAction((pdata, inputs) -> {
+			Player p = data.getPlayer();
 			Sounds.equip.play(p, p);
 			data.charge(20);
 			data.addTask(new BukkitRunnable() {

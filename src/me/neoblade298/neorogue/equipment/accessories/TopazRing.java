@@ -30,10 +30,11 @@ public class TopazRing extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.PRE_APPLY_STATUS, (pdata, in) -> {
 			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
 			if (!ev.isStatus(StatusType.ELECTRIFIED)) return TriggerResult.keep();
+			Player p = data.getPlayer();
 			ev.getStacksBuffList().add(new Buff(data, stacks, 0, BuffStatTracker.ignored(this)));
 			data.addSimpleShield(p.getUniqueId(), shields, 100);
 			return TriggerResult.keep();

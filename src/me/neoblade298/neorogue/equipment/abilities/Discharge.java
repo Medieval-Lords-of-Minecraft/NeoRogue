@@ -38,12 +38,13 @@ public class Discharge extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
 		ItemStack icon = item.clone();
 		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
 		data.addTrigger(id, Trigger.KILL, inst);
 		inst.setAction((pdata, in) -> {
+			Player p = data.getPlayer();
 			if (am.getTime() + (properties.get(PropertyType.COOLDOWN) * 1000) > System.currentTimeMillis()) {
 				return TriggerResult.keep();
 			}

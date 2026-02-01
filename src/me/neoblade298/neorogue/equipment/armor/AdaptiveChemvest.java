@@ -29,10 +29,11 @@ public class AdaptiveChemvest extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
 			DealDamageEvent ev = (DealDamageEvent) in;
 			if (!ev.getMeta().containsType(DamageType.POISON)) return TriggerResult.keep();
+			Player p = data.getPlayer();
 			data.addSimpleShield(p.getUniqueId(), shields, 100);
 			return TriggerResult.keep();
 		});

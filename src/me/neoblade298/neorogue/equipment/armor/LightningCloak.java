@@ -40,7 +40,7 @@ public class LightningCloak extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		String buffId = UUID.randomUUID().toString();
 		data.addTrigger(ID, Trigger.PRE_RECEIVE_DAMAGE, (pdata, in) -> {
 			ReceiveDamageEvent ev = (ReceiveDamageEvent) in;
@@ -50,6 +50,7 @@ public class LightningCloak extends Equipment {
 		
 		StandardPriorityAction inst = new StandardPriorityAction(ID);
 		data.addTrigger(ID, Trigger.APPLY_STATUS, (pdata, in) -> {
+			Player p = data.getPlayer();
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
 			if (!ev.isStatus(StatusType.ELECTRIFIED)) return TriggerResult.keep();
 			inst.addCount(ev.getStacks());

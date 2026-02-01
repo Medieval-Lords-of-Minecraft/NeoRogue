@@ -50,7 +50,7 @@ public class MagicQuiver extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		StandardPriorityAction action = new StandardPriorityAction(id);
 		ProjectileGroup group = new ProjectileGroup(new MagicQuiverProjectile(data, this, slot));
 
@@ -58,6 +58,7 @@ public class MagicQuiver extends Equipment {
 			PreLaunchProjectileGroupEvent ev = (PreLaunchProjectileGroupEvent) in;
 			if (!ev.isBasicAttack()) return TriggerResult.keep();
 			action.addCount(1);
+			Player p = data.getPlayer();
 			LivingEntity trg = TargetHelper.getNearest(p, tp);
 			if (action.getCount() >= thres && data.hasAmmoInstance() && trg != null) {
 				data.addExtraShot(group);

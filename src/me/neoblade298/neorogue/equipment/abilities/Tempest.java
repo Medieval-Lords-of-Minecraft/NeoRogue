@@ -46,7 +46,7 @@ public class Tempest extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
 			DealDamageEvent ev = (DealDamageEvent) in;
 			
@@ -57,6 +57,7 @@ public class Tempest extends Equipment {
 			Location targetLoc = originalTarget.getLocation();
 			
 			// Visual lightning bolt effect
+			Player p = data.getPlayer();
 			pc.play(p, targetLoc);
 			Sounds.levelup.play(p, targetLoc);
 			

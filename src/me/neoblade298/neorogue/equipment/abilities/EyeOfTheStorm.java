@@ -51,9 +51,9 @@ public class EyeOfTheStorm extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		Equipment eq = this;
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Player p = data.getPlayer();
 			Sounds.equip.play(p, p);
 			data.charge(20).then(new Runnable() {
 				public void run() {
@@ -61,11 +61,12 @@ public class EyeOfTheStorm extends Equipment {
 						int count = 0;
 
 						public void run() {
+							Player p = data.getPlayer();
 							circ.play(pc, p.getLocation(), LocalAxes.xz(), null);
 							circ.play(pc, p.getLocation().add(0, 0.2, 0), LocalAxes.xz(), null);
 							sc.play(p.getLocation());
 							for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
-								FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.LIGHTNING, DamageStatTracker.of(id + slot, eq)), ent);
+								FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.LIGHTNING, DamageStatTracker.of(id + slot, EyeOfTheStorm.this)), ent);
 								FightInstance.applyStatus(ent, StatusType.ELECTRIFIED, data, elec, -1);
 							}
 							if (++count >= 3) {

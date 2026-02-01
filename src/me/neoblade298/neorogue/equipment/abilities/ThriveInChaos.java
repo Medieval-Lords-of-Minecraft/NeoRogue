@@ -35,7 +35,7 @@ public class ThriveInChaos extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
 		
 		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
@@ -44,6 +44,7 @@ public class ThriveInChaos extends Equipment {
 				am.setCount(0);
 				
 				int totalInsanity = 0;
+				Player p = data.getPlayer();
 				for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
 					FightData fd = FightInstance.getFightData(ent);
 					if (fd.hasStatus(StatusType.INSANITY)) {

@@ -45,7 +45,8 @@ public class HexCurse2 extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		Player p = data.getPlayer();
 		String statusName = p.getName() + "-hexcurse";
 
 		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {

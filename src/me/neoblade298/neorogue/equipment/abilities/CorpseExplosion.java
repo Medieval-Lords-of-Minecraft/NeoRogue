@@ -58,7 +58,7 @@ public class CorpseExplosion extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.KILL, (pdata, inputs) -> {
 			KillEvent ev = (KillEvent) inputs;
 			LivingEntity killed = ev.getTarget();
@@ -81,9 +81,8 @@ public class CorpseExplosion extends Equipment {
 				Location circleCenter = killedLoc.clone().add(offsetX, 0, offsetZ);
 				
 				// Animate poison shooting out in a parabolic arc
-				animatePoisonArc(p, data, killedLoc.clone(), circleCenter);
-				
-				// Schedule poison application for duration (delayed slightly to let animation show)
+				Player p = data.getPlayer();
+				animatePoisonArc(data, killedLoc.clone(), circleCenter);
 				scheduleCircleEffects(p, data, circleCenter);
 			}
 			
@@ -91,12 +90,13 @@ public class CorpseExplosion extends Equipment {
 		});
 	}
 	
-	private void animatePoisonArc(Player p, PlayerFightData data, Location start, Location end) {
+	private void animatePoisonArc(PlayerFightData data, Location start, Location end) {
 		data.addTask(new BukkitRunnable() {
 			private int ticks = 0;
 			private static final int TOTAL_TICKS = 15; // Animation duration
 			
 			public void run() {
+				Player p = data.getPlayer();
 				double progress = (double) ticks / TOTAL_TICKS;
 				
 				// Linear interpolation for horizontal movement

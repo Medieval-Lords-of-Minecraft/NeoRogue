@@ -27,10 +27,11 @@ public class Plaguebearer extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
 			if (!ev.isStatus(StatusType.POISON)) return TriggerResult.keep();
+			Player p = data.getPlayer();
 			data.addSimpleShield(p.getUniqueId(), shields, 160);
 			return TriggerResult.keep();
 		});

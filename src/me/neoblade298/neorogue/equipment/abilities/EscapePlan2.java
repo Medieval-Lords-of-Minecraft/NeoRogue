@@ -43,7 +43,7 @@ public class EscapePlan2 extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		EscapePlanInstance inst = new EscapePlanInstance(data, this, slot, es);
 		data.addTrigger(id, bind, inst);
 	}

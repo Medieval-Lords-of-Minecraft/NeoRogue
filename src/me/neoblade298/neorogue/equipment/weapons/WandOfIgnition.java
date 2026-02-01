@@ -45,12 +45,12 @@ public class WandOfIgnition extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ProjectileGroup proj = new ProjectileGroup(new WandOfIgnitionProjectile(data, this, slot));
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (d, inputs) -> {
 			if (!canUseWeapon(data) || !data.canBasicAttack(EquipSlot.HOTBAR))
 				return TriggerResult.keep();
-			weaponSwing(p, data);
+			weaponSwing(data.getPlayer(), data);
 			proj.start(data);
 			return TriggerResult.keep();
 		});

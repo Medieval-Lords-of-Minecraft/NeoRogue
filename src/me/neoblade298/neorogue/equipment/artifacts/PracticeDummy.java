@@ -42,7 +42,7 @@ public class PracticeDummy extends Artifact {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, ArtifactInstance ai) {
+	public void initialize(PlayerFightData data, ArtifactInstance ai) {
 		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, new PracticeDummyInstance(ai.getArtifact()));
 	}
 	

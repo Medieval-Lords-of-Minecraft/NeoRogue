@@ -47,13 +47,14 @@ public class OdinsDecree extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
 		
 		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
 			am.addCount(1);
 			// PLAYER_TICK triggers every tick, so 40 ticks = 2 seconds
 			if (am.getCount() >= 2) {
+				Player p = data.getPlayer();
 				am.setCount(0);
 				
 				// Check chance

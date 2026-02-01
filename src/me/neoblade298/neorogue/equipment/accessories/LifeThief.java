@@ -32,13 +32,14 @@ public class LifeThief extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		StandardPriorityAction inst = new StandardPriorityAction(id);
 		inst.setAction((pdata, in) -> {
 			ApplyStatusEvent ev = (ApplyStatusEvent) in;
 			if (!ev.isStatus(StatusType.STEALTH)) return TriggerResult.keep();
 			inst.addCount(ev.getStacks());
 			if (inst.getCount() >= cutoff) {
+				Player p = data.getPlayer();
 				Sounds.success.play(p, p);
 				Util.msg(p, Component.text("").append(hoverable).append(Component.text(" can be activated", NamedTextColor.GRAY)));
 				return TriggerResult.remove();
@@ -49,6 +50,7 @@ public class LifeThief extends Equipment {
 		
 		data.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
 			if (inst.getCount() < cutoff) return TriggerResult.keep();
+			Player p = data.getPlayer();
 			Sounds.fire.play(p, p);
 			data.addHealth(heal);
 			return TriggerResult.remove();

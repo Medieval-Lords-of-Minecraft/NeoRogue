@@ -39,13 +39,14 @@ public class Prayer extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
 		data.addTrigger(id, Trigger.PRE_APPLY_STATUS, (pdata, in) -> {
 			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
 			if (!ev.getStatusId().equals(StatusType.SANCTIFIED.name())) return TriggerResult.keep();
 			ev.getStacksBuffList().add(Buff.increase(data, inc, BuffStatTracker.of(ID + slot, this, "Sanctified Increased")));
 			if (am.addCount(ev.getStacks()) > thres && !am.getBool()) {
+				Player p = data.getPlayer();
 				FightInstance.giveHeal(p, heal, p);
 				Util.msg(p, hoverable.append(Component.text(" was activated", NamedTextColor.GRAY)));
 				Sounds.success.play(p, p);

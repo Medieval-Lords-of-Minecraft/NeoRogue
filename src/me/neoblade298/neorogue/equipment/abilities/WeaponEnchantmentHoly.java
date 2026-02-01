@@ -59,7 +59,7 @@ public class WeaponEnchantmentHoly extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		projs = new ProjectileGroup(new WeaponEnchantmentHolyProjectile(this, slot));
 		data.addTrigger(id, Trigger.LEFT_CLICK, new WeaponEnchantmentHolyInstance(id));
 	}

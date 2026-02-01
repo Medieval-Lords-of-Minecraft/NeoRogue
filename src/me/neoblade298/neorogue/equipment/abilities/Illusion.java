@@ -65,7 +65,7 @@ public class Illusion extends Equipment {
 	}
 
 	@Override
-	public void initialize(Player p, PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		// Queue to track player positions - stores last 4 positions (2 seconds worth at 0.5s intervals)
 		LinkedList<Location> locationQueue = new LinkedList<Location>();
 		ActionMeta cooldown = new ActionMeta();
@@ -73,6 +73,7 @@ public class Illusion extends Equipment {
 		// Task to track player position every half second and display shadow ball
 		data.addTask(new BukkitRunnable() {
 			public void run() {
+				Player p = data.getPlayer();
 				// Add current location to queue
 				locationQueue.add(p.getLocation().clone());
 				
@@ -90,8 +91,7 @@ public class Illusion extends Equipment {
 		}.runTaskTimer(NeoRogue.inst(), 0L, 10L)); // Run every half second (10 ticks)
 		
 		// Trigger when applying evade
-		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
-			ApplyStatusEvent ev = (ApplyStatusEvent) in;
+		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {		Player p = data.getPlayer();			ApplyStatusEvent ev = (ApplyStatusEvent) in;
 			if (!ev.isStatus(StatusType.EVADE)) return TriggerResult.keep();
 			
 			// Check cooldown (1 second = 1000ms)
