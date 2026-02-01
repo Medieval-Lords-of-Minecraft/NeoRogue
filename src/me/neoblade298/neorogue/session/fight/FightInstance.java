@@ -331,6 +331,8 @@ public abstract class FightInstance extends Instance {
 			return;
 		}
 
+		pdata.updatePlayer();
+
 		if (pdata.isDead()) {
 			p.setInvulnerable(true);
 			p.setInvisible(true);
