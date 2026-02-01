@@ -74,7 +74,7 @@ public class RewardInstance extends EditInventoryInstance {
 
 		ArrayList<PlayerSessionData> sorted = new ArrayList<PlayerSessionData>();
 		for (PlayerSessionData data : s.getParty().values()) {
-			if (s.getHost() == data.getUniqueId()) continue;
+			if (s.getHost().equals(data.getUniqueId())) continue;
 			sorted.add(data);
 		}
 		Collections.sort(sorted);

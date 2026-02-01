@@ -120,7 +120,7 @@ public class ChanceInstance extends EditInventoryInstance {
 
 		ArrayList<PlayerSessionData> sorted = new ArrayList<PlayerSessionData>();
 		for (PlayerSessionData data : s.getParty().values()) {
-			if (s.getHost() == data.getUniqueId())
+			if (s.getHost().equals(data.getUniqueId()))
 				continue;
 			sorted.add(data);
 		}
