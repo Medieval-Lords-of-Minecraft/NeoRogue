@@ -62,9 +62,9 @@ public class LightningStrike extends Equipment {
 		Equipment eq = this;
 		ActionMeta am = new ActionMeta();
 		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
-	inst.setAction((pdata, in) -> {
-		Player p = data.getPlayer();
-		data.channel(20).then(new Runnable() {
+		inst.setAction((pdata, in) -> {
+			Player p = data.getPlayer();
+			data.channel(20).then(new Runnable() {
 				public void run() {
 					Block b = p.getTargetBlockExact((int) cursor.range);
 					CastUsableEvent last = inst.getLastCastEvent();
@@ -76,7 +76,8 @@ public class LightningStrike extends Equipment {
 						inst.setCooldown(0);
 					} else {
 						am.setLocation(p.getTargetBlockExact((int) cursor.range).getLocation());
-						data.runActions(data, Trigger.CAST_USABLE, new CastUsableEvent(inst, CastType.POST_TRIGGER, last.getManaCost(), last.getStaminaCost(), last.getCooldown(), last.getTags()));
+						data.runActions(data, Trigger.CAST_USABLE, new CastUsableEvent(inst, CastType.POST_TRIGGER,
+								last.getManaCost(), last.getStaminaCost(), last.getCooldown(), last.getTags()));
 						data.addTask(new BukkitRunnable() {
 							public void run() {
 								Location loc = am.getLocation();
@@ -92,7 +93,8 @@ public class LightningStrike extends Equipment {
 								Sounds.explode.play(p, loc);
 								circ.play(tick, loc, LocalAxes.xz(), null);
 								for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, aoe)) {
-									FightInstance.dealDamage(new DamageMeta(data, fDamage, DamageType.LIGHTNING, DamageStatTracker.of(id + slot, eq)), ent);
+									FightInstance.dealDamage(new DamageMeta(data, fDamage, DamageType.LIGHTNING,
+											DamageStatTracker.of(id + slot, eq)), ent);
 								}
 							}
 						}.runTaskLater(NeoRogue.inst(), 20));

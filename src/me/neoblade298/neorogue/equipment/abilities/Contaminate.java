@@ -54,7 +54,9 @@ public class Contaminate extends Equipment {
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, this, slot, es);
-		inst.setAction((pdata, in) -> {		Player p = data.getPlayer();			Sounds.teleport.play(p, p);
+		inst.setAction((pdata, in) -> {
+			Player p = data.getPlayer();
+			Sounds.teleport.play(p, p);
 			pc.play(p, p);
 			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 60, 0));
 			data.applyStatus(StatusType.STEALTH, data, 1, 60);
@@ -63,7 +65,9 @@ public class Contaminate extends Equipment {
 		});
 		
 		data.addTrigger(ID, bind, inst);
-		data.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {		Player p = data.getPlayer();			if (inst.getCount() > 0) {
+		data.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
+			Player p = data.getPlayer();
+			if (inst.getCount() > 0) {
 				inst.addCount(-1);
 				PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 				hit.play(p, p);

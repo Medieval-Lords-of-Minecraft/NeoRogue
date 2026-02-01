@@ -22,14 +22,16 @@ public class Bramblevine extends Artifact {
 	public Bramblevine() {
 		super(ID, "Bramblevine", Rarity.UNCOMMON, EquipmentClass.WARRIOR);
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
 
 	@Override
 	public void initialize(PlayerFightData data, ArtifactInstance ai) {
-		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {		Player p = data.getPlayer();			DealDamageEvent ev = (DealDamageEvent) in;
+		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
+			Player p = data.getPlayer();
+			DealDamageEvent ev = (DealDamageEvent) in;
 			if (ev.getMeta().containsType(DamageType.THORNS)) {
 				data.addSimpleShield(p.getUniqueId(), shield, 100);
 			}
@@ -39,18 +41,17 @@ public class Bramblevine extends Artifact {
 
 	@Override
 	public void onAcquire(PlayerSessionData data, int amount) {
-		
+
 	}
 
 	@Override
 	public void onInitializeSession(PlayerSessionData data) {
-		
+
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.VINE, 
-				"Dealing " + GlossaryTag.THORNS.tag(this) + " damage grants you " + GlossaryTag.SHIELDS.tag(this, shield, false) + 
-				" [<white>5s</white>].");
+		item = createItem(Material.VINE, "Dealing " + GlossaryTag.THORNS.tag(this) + " damage grants you "
+				+ GlossaryTag.SHIELDS.tag(this, shield, false) + " [<white>5s</white>].");
 	}
 }

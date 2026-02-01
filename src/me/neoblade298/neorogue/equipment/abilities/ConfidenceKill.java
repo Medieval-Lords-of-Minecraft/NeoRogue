@@ -60,7 +60,9 @@ public class ConfidenceKill extends Equipment {
 			return TriggerResult.keep();
 		});
 
-		data.addTrigger(ID, Trigger.KILL, (pdata, in) -> {		Player p = data.getPlayer();			KillEvent ev = (KillEvent) in;
+		data.addTrigger(ID, Trigger.KILL, (pdata, in) -> {
+			Player p = data.getPlayer();
+			KillEvent ev = (KillEvent) in;
 			if (inst.toKill != null && inst.toKill.getUniqueId().equals(ev.getTarget().getUniqueId())) {
 				Sounds.extinguish.play(p, p);
 				pdata.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(pdata, 0, buff * 0.01, StatTracker.damageBuffAlly(id + this, this)), 200);

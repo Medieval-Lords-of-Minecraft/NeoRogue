@@ -32,39 +32,45 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class Crystallize extends Equipment {
 	private static final String ID = "Crystallize";
 	private static final TargetProperties tp = TargetProperties.radius(8, false, TargetType.ENEMY),
-		aoe = TargetProperties.radius(8, false, TargetType.ENEMY);
+			aoe = TargetProperties.radius(8, false, TargetType.ENEMY);
 	private static final Circle circ = new Circle(8);
 	private int thres, frost;
-	private static final ParticleContainer pc = new ParticleContainer(Particle.SNOWFLAKE).count(30).spread(1, 1).offsetY(1),
-		fill = new ParticleContainer(Particle.BLOCK).blockData(Material.ICE.createBlockData()),
-		edges = new ParticleContainer(Particle.FIREWORK);
-	
+	private static final ParticleContainer pc = new ParticleContainer(Particle.SNOWFLAKE).count(30).spread(1, 1)
+			.offsetY(1), fill = new ParticleContainer(Particle.BLOCK).blockData(Material.ICE.createBlockData()),
+			edges = new ParticleContainer(Particle.FIREWORK);
+
 	public Crystallize(boolean isUpgraded) {
-		super(ID, "Crystallize", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(35, 0, 20, tp.range).add(PropertyType.AREA_OF_EFFECT, aoe.range));
+		super(ID, "Crystallize", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER, EquipmentType.ABILITY,
+				EquipmentProperties.ofUsable(35, 0, 20, tp.range).add(PropertyType.AREA_OF_EFFECT, aoe.range));
 		thres = isUpgraded ? 240 : 160;
 		frost = isUpgraded ? 120 : 80;
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pd, in) -> {		Player p = data.getPlayer();			LivingEntity trg = TargetHelper.getNearest(p, tp);
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pd, in) -> {
+			Player p = data.getPlayer();
+			LivingEntity trg = TargetHelper.getNearest(p, tp);
 			circ.play(p, edges, trg.getLocation(), LocalAxes.xz(), fill);
 			Sounds.glass.play(p, trg.getLocation());
 			DamageMeta dm = new DamageMeta(data);
-			dm.addDamageSlice(new DamageSlice(data, thres, DamageType.ICE, true, DamageStatTracker.of(ID + slot, this)));
+			dm.addDamageSlice(
+					new DamageSlice(data, thres, DamageType.ICE, true, DamageStatTracker.of(ID + slot, this)));
 			FightInstance.dealDamage(dm, trg);
 			pc.play(p, trg);
 			for (LivingEntity le : TargetHelper.getEntitiesInRadius(p, aoe)) {
 				FightInstance.applyStatus(le, StatusType.FROST, data, frost, -1);
 			}
 			return TriggerResult.keep();
-		}), (p2, data2, in) -> {		Player p = data.getPlayer();			LivingEntity trg = TargetHelper.getNearest(p, tp);
-			if (trg == null) return false;
+		}), (p2, data2, in) -> {
+			Player p = data.getPlayer();
+			LivingEntity trg = TargetHelper.getNearest(p, tp);
+			if (trg == null)
+				return false;
 			return trg.getHealth() <= thres;
 		});
 	}
@@ -72,7 +78,8 @@ public class Crystallize extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.AMETHYST_SHARD,
-				"On cast, if the enemy you're looking at has at most " + DescUtil.yellow(thres) + " HP, instantly kill them " +
-				"and apply " + GlossaryTag.FROST.tag(this, frost, true) + " to nearby enemies.");
+				"On cast, if the enemy you're looking at has at most " + DescUtil.yellow(thres)
+						+ " HP, instantly kill them " + "and apply " + GlossaryTag.FROST.tag(this, frost, true)
+						+ " to nearby enemies.");
 	}
 }

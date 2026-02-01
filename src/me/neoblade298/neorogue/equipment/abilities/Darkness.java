@@ -40,16 +40,16 @@ public class Darkness extends Equipment {
 	private static final Circle circle = new Circle(tp.range);
 	private static final SoundContainer sound = new SoundContainer(Sound.ENTITY_ALLAY_HURT),
 			darkSound = new SoundContainer(Sound.ENTITY_ELDER_GUARDIAN_HURT);
-	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST)
-			.count(3).spread(0.1, 0.1).dustOptions(new DustOptions(Color.BLACK, 1F));
-	
+	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST).count(3).spread(0.1, 0.1)
+			.dustOptions(new DustOptions(Color.BLACK, 1F));
+
 	public Darkness(boolean isUpgraded) {
-		super(ID, "Darkness", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 0, 12, 0));
+		super(ID, "Darkness", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF, EquipmentType.ABILITY,
+				EquipmentProperties.ofUsable(30, 0, 12, 0));
 		dark = isUpgraded ? 15 : 10;
 		insanity = isUpgraded ? 25 : 15;
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
@@ -58,17 +58,21 @@ public class Darkness extends Equipment {
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		DarknessInstance inst = new DarknessInstance(data, this, slot, es);
 		data.addTrigger(id, bind, inst);
-		data.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {		Player p = data.getPlayer();			if (!inst.basicAttack) return TriggerResult.keep();
+		data.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
+			Player p = data.getPlayer();
+			if (!inst.basicAttack)
+				return TriggerResult.keep();
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 			FightInstance.applyStatus(ev.getTarget(), StatusType.INSANITY, data, insanity, -1);
 			sound.play(p, p);
 			return TriggerResult.keep();
 		});
 	}
-	
+
 	private class DarknessInstance extends EquipmentInstance {
 		private Location loc;
 		private boolean basicAttack = false;
+
 		public DarknessInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
 			super(data, eq, slot, es);
 			action = (pdata, in) -> {
@@ -76,7 +80,7 @@ public class Darkness extends Equipment {
 				return TriggerResult.keep();
 			};
 		}
-		
+
 		private void cast(PlayerFightData pdata) {
 			Player p = data.getPlayer();
 			Sounds.equip.play(p, p);
@@ -84,16 +88,18 @@ public class Darkness extends Equipment {
 			loc = p.getLocation();
 			pdata.addTask(new BukkitRunnable() {
 				private int count;
+
 				public void run() {
 					if (++count > 5) {
 						this.cancel();
 						basicAttack = false;
 					}
-					
+
 					circle.play(pc, loc, LocalAxes.xz(), null);
 					darkSound.play(p, loc);
 					for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, tp)) {
-						FightInstance.dealDamage(pdata, DamageType.DARK, dark, ent, DamageStatTracker.of(id + slot, eq));
+						FightInstance.dealDamage(pdata, DamageType.DARK, dark, ent,
+								DamageStatTracker.of(id + slot, eq));
 					}
 				}
 			}.runTaskTimer(NeoRogue.inst(), 20L, 20L));
@@ -103,7 +109,9 @@ public class Darkness extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLAZE_POWDER,
-				"On cast, drop a bomb on the ground that deals " + GlossaryTag.DARK.tag(this, dark, true) + " damage per second for <white>5</white> seconds."
-				+ " During this time, your basic attacks apply " + GlossaryTag.INSANITY.tag(this, insanity, true) + ".");
+				"On cast, drop a bomb on the ground that deals " + GlossaryTag.DARK.tag(this, dark, true)
+						+ " damage per second for <white>5</white> seconds."
+						+ " During this time, your basic attacks apply "
+						+ GlossaryTag.INSANITY.tag(this, insanity, true) + ".");
 	}
 }

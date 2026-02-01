@@ -33,15 +33,15 @@ public class CripplingPoison extends Equipment {
 	private int inc, poisonThreshold;
 	private static final ParticleContainer part = new ParticleContainer(Particle.CRIT).count(50).spread(0.5, 0.5);
 	private static final TargetProperties tp = TargetProperties.cone(90, 5, false, TargetType.ENEMY);
-	
+
 	public CripplingPoison(boolean isUpgraded) {
-		super(ID, "Crippling Poison", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 20, 15, tp.range));
-		
+		super(ID, "Crippling Poison", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF, EquipmentType.ABILITY,
+				EquipmentProperties.ofUsable(15, 20, 15, tp.range));
+
 		inc = 8;
 		poisonThreshold = isUpgraded ? 20 : 30;
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
@@ -49,12 +49,15 @@ public class CripplingPoison extends Equipment {
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		String buffId = UUID.randomUUID().toString();
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pd, in) -> {		Player p = data.getPlayer();			Sounds.attackSweep.play(p, p);
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pd, in) -> {
+			Player p = data.getPlayer();
+			Sounds.attackSweep.play(p, p);
 			for (LivingEntity ent : TargetHelper.getEntitiesInCone(p, tp)) {
 				part.play(p, ent);
 				FightData fd = FightInstance.getFightData(ent);
 				int add = fd.getStatus(StatusType.POISON).getStacks() / poisonThreshold;
-				fd.addDefenseBuff(DamageBuffType.of(DamageCategory.PHYSICAL), new Buff(data, -inc - add, 0, StatTracker.defenseDebuffEnemy(buffId, this)), 100);
+				fd.addDefenseBuff(DamageBuffType.of(DamageCategory.PHYSICAL),
+						new Buff(data, -inc - add, 0, StatTracker.defenseDebuffEnemy(buffId, this)), 100);
 			}
 			return TriggerResult.keep();
 		}));
@@ -63,8 +66,9 @@ public class CripplingPoison extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ARMOR_STAND,
-				"On cast, increase the " + GlossaryTag.PHYSICAL.tag(this) + " damage of enemies in a cone in front of you by <yellow>" + inc + "</yellow>"
-						+ " [<white>5s</white>], further increased by <white>1</white> for every <yellow>" + poisonThreshold
-						+ "</yellow> stacks of " + GlossaryTag.POISON.tag(this) + " on the enemy.");
+				"On cast, increase the " + GlossaryTag.PHYSICAL.tag(this)
+						+ " damage of enemies in a cone in front of you by <yellow>" + inc + "</yellow>"
+						+ " [<white>5s</white>], further increased by <white>1</white> for every <yellow>"
+						+ poisonThreshold + "</yellow> stacks of " + GlossaryTag.POISON.tag(this) + " on the enemy.");
 	}
 }

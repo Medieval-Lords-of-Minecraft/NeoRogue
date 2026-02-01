@@ -38,14 +38,14 @@ public class HailCloak extends Equipment {
 	private static final TargetProperties tp = TargetProperties.radius(4, false, TargetType.ENEMY);
 	private static final Circle circ = new Circle(tp.range);
 	private int damage, stacks;
-	
+
 	public HailCloak(boolean isUpgraded) {
-		super(ID, "Hail Cloak", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 5, 12, 5));
+		super(ID, "Hail Cloak", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER, EquipmentType.ABILITY,
+				EquipmentProperties.ofUsable(30, 5, 12, 5));
 		damage = isUpgraded ? 30 : 20;
 		stacks = isUpgraded ? 15 : 10;
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
@@ -55,8 +55,9 @@ public class HailCloak extends Equipment {
 		HailCloakInstance inst = new HailCloakInstance(data, this, slot, es);
 		data.addTrigger(id, bind, inst);
 		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
-		DealDamageEvent ev = (DealDamageEvent) in;
-			if (!inst.active || !ev.getMeta().hasOrigin(DamageOrigin.PROJECTILE)) return TriggerResult.keep();
+			DealDamageEvent ev = (DealDamageEvent) in;
+			if (!inst.active || !ev.getMeta().hasOrigin(DamageOrigin.PROJECTILE))
+				return TriggerResult.keep();
 			inst.runEffect(ev.getTarget().getLocation());
 			return TriggerResult.keep();
 		});
@@ -64,8 +65,10 @@ public class HailCloak extends Equipment {
 
 	private class HailCloakInstance extends EquipmentInstance {
 		boolean active = false;
+
 		public HailCloakInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
-			super(data, eq, slot, es);		Player p = data.getPlayer();
+			super(data, eq, slot, es);
+			Player p = data.getPlayer();
 			action = (pdata, in) -> {
 				data.channel(20);
 				Sounds.equip.play(p, p);
@@ -82,6 +85,7 @@ public class HailCloak extends Equipment {
 		public BukkitTask createRunnable() {
 			return new BukkitRunnable() {
 				int tick = 0;
+
 				public void run() {
 					runEffect(p.getLocation());
 					if (++tick >= 10) {
@@ -95,7 +99,8 @@ public class HailCloak extends Equipment {
 		public void runEffect(Location loc) {
 			circ.play(pc, loc, LocalAxes.xz(), null);
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, tp)) {
-				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.ICE, DamageStatTracker.of(id + slot, eq)), ent);
+				FightInstance.dealDamage(
+						new DamageMeta(data, damage, DamageType.ICE, DamageStatTracker.of(id + slot, eq)), ent);
 				FightInstance.applyStatus(ent, StatusType.FROST, data, stacks, -1);
 			}
 		}
@@ -104,7 +109,9 @@ public class HailCloak extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.PACKED_ICE,
-				"On cast, after channeling for <white>1s</white>, for the next <white>10s</white>, you deal " + GlossaryTag.ICE.tag(this, damage, true) + " and apply " +
-				GlossaryTag.FROST.tag(this, stacks, true) + " to all enemies near you every second. Your projectiles also do this on hit while active.");
+				"On cast, after channeling for <white>1s</white>, for the next <white>10s</white>, you deal "
+						+ GlossaryTag.ICE.tag(this, damage, true) + " and apply "
+						+ GlossaryTag.FROST.tag(this, stacks, true)
+						+ " to all enemies near you every second. Your projectiles also do this on hit while active.");
 	}
 }

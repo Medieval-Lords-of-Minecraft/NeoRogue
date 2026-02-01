@@ -33,14 +33,14 @@ public class Hullbreaker extends Equipment {
 	private static int damage = 100;
 	private int reduc;
 	private static final int THRES = 150;
-	
+
 	public Hullbreaker(boolean isUpgraded) {
-		super(ID, "Hullbreaker", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
-				EquipmentType.OFFHAND, EquipmentProperties.ofWeapon(damage, 0.5, 0, DamageType.BLUNT, Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR));
-				reduc = isUpgraded ? 15 : 10;
+		super(ID, "Hullbreaker", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR, EquipmentType.OFFHAND,
+				EquipmentProperties.ofWeapon(damage, 0.5, 0, DamageType.BLUNT, Sound.ENTITY_ZOMBIE_ATTACK_IRON_DOOR));
+		reduc = isUpgraded ? 15 : 10;
 
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
@@ -50,8 +50,11 @@ public class Hullbreaker extends Equipment {
 		ItemStack icon = item.clone();
 		ActionMeta am = new ActionMeta();
 
-		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {		Player p = data.getPlayer();			ApplyStatusEvent ev = (ApplyStatusEvent) in;
-			if (!ev.isStatus(StatusType.CONCUSSED)) return TriggerResult.keep();
+		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
+			Player p = data.getPlayer();
+			ApplyStatusEvent ev = (ApplyStatusEvent) in;
+			if (!ev.isStatus(StatusType.CONCUSSED))
+				return TriggerResult.keep();
 			am.addInt(ev.getStacks());
 			while (am.getInt() >= THRES) {
 				am.addInt(-THRES);
@@ -62,12 +65,15 @@ public class Hullbreaker extends Equipment {
 			return TriggerResult.keep();
 		});
 
-		data.addTrigger(id, Trigger.RIGHT_CLICK_HIT, (pdata, in) -> {		Player p = data.getPlayer();			sc.play(p, p);
+		data.addTrigger(id, Trigger.RIGHT_CLICK_HIT, (pdata, in) -> {
+			Player p = data.getPlayer();
+			sc.play(p, p);
 			RightClickHitEvent ev = (RightClickHitEvent) in;
 			LivingEntity trg = ev.getTarget();
 			FightData fd = FightInstance.getFightData(trg);
 			weaponSwingAndDamage(p, data, trg);
-			fd.addDefenseBuff(DamageBuffType.of(DamageCategory.PHYSICAL), Buff.increase(data, -reduc * am.getCount(), BuffStatTracker.defenseDebuffEnemy(id, this, false)));
+			fd.addDefenseBuff(DamageBuffType.of(DamageCategory.PHYSICAL),
+					Buff.increase(data, -reduc * am.getCount(), BuffStatTracker.defenseDebuffEnemy(id, this, false)));
 			return TriggerResult.keep();
 		});
 	}
@@ -75,7 +81,9 @@ public class Hullbreaker extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ANVIL,
-				"Right click to basic attack. Lowers " + GlossaryTag.PHYSICAL.tag(this) +
-				" defense by " + DescUtil.yellow(reduc) + " for every " + DescUtil.white(THRES) + " " + GlossaryTag.CONCUSSED.tag(this) + " you have applied during the fight. Defense reduction does not stack.");
+				"Right click to basic attack. Lowers " + GlossaryTag.PHYSICAL.tag(this) + " defense by "
+						+ DescUtil.yellow(reduc) + " for every " + DescUtil.white(THRES) + " "
+						+ GlossaryTag.CONCUSSED.tag(this)
+						+ " you have applied during the fight. Defense reduction does not stack.");
 	}
 }

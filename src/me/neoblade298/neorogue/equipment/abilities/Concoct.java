@@ -37,9 +37,9 @@ public class Concoct extends Equipment {
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, this, slot, es);
 		inst.setAction((pdata, in) -> {
-		Player p = data.getPlayer();
+			Player p = data.getPlayer();
+			Sounds.water.play(p, p);
 			inst.setTime(System.currentTimeMillis());
-			
 			new BukkitRunnable() {
 				int count = 0;
 				float[] pitches = new float[] {1F, 1.0594F, 1.1224F, 1.1892F, 1.2599F};
@@ -56,7 +56,9 @@ public class Concoct extends Equipment {
 		});
 		
 		data.addTrigger(ID, bind, inst);
-		data.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {		Player p = data.getPlayer();			if (inst.getTime() <= 0) return TriggerResult.keep();
+		data.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
+			Player p = data.getPlayer();
+			if (inst.getTime() <= 0) return TriggerResult.keep();
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 			Sounds.extinguish.play(p, p);
 			int mult = (int) ((System.currentTimeMillis() - inst.getTime()) / 1000);

@@ -28,15 +28,15 @@ public class NightShade extends Equipment {
 	private static final ParticleContainer pc = new ParticleContainer(Particle.PORTAL),
 			hit = new ParticleContainer(Particle.DUST).count(50).spread(0.5, 0.5);
 	private int damage, insanity;
-	
+
 	public NightShade(boolean isUpgraded) {
-		super(ID, "Night Shade", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 35, 12, 0));
+		super(ID, "Night Shade", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF, EquipmentType.ABILITY,
+				EquipmentProperties.ofUsable(25, 35, 12, 0));
 		pc.count(50).spread(0.5, 0.5).offsetY(1);
 		damage = isUpgraded ? 200 : 150;
 		insanity = isUpgraded ? 150 : 90;
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
@@ -44,40 +44,46 @@ public class NightShade extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.OBSIDIAN,
-				"On cast, Grant speed <white>1</white> and " + GlossaryTag.STEALTH.tag(this) +
-				" [<white>5s</white>]. "
-				+ "Your next <white>3</white> basic attacks deals an additional " + GlossaryTag.DARK.tag(this, damage, true) + " damage and applies " +
-				GlossaryTag.INSANITY.tag(this, insanity, true) + ". "
-				+ "The cooldown of this ability is reduced by your " + GlossaryTag.STEALTH.tag(this)
-				+ " stacks every second.");
+				"On cast, Grant speed <white>1</white> and " + GlossaryTag.STEALTH.tag(this) + " [<white>5s</white>]. "
+						+ "Your next <white>3</white> basic attacks deals an additional "
+						+ GlossaryTag.DARK.tag(this, damage, true) + " damage and applies "
+						+ GlossaryTag.INSANITY.tag(this, insanity, true) + ". "
+						+ "The cooldown of this ability is reduced by your " + GlossaryTag.STEALTH.tag(this)
+						+ " stacks every second.");
 	}
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		StandardEquipmentInstance inst = new StandardEquipmentInstance(data, this, slot, es);
-		inst.setAction((pdata, in) -> {		Player p = data.getPlayer();			Sounds.teleport.play(p, p);
+		inst.setAction((pdata, in) -> {
+			Player p = data.getPlayer();
+			Sounds.teleport.play(p, p);
 			pc.play(p, p);
 			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 100, 0));
 			data.applyStatus(StatusType.STEALTH, data, 1, 100);
 			inst.addCount(3);
 			return TriggerResult.keep();
 		});
-		
+
 		data.addTrigger(ID, bind, inst);
-		data.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {		Player p = data.getPlayer();			if (inst.getCount() > 0) {
+		data.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
+			Player p = data.getPlayer();
+			if (inst.getCount() > 0) {
 				inst.addCount(-1);
 				PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 				hit.play(p, p);
 				Sounds.anvil.play(p, p);
-				ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.DARK, DamageStatTracker.of(ID + slot, this)));
+				ev.getMeta().addDamageSlice(
+						new DamageSlice(data, damage, DamageType.DARK, DamageStatTracker.of(ID + slot, this)));
 				FightInstance.applyStatus(ev.getTarget(), StatusType.INSANITY, p, insanity, -1);
 			}
 			return TriggerResult.keep();
 		});
-		
+
 		data.addTrigger(ID, Trigger.PLAYER_TICK, (pdata, in) -> {
 
-			if (!data.hasStatus(StatusType.STEALTH)) return TriggerResult.keep();
+			if (!data.hasStatus(StatusType.STEALTH))
+				return TriggerResult.keep();
 			inst.reduceCooldown(data.getStatus(StatusType.STEALTH).getStacks());
 			return TriggerResult.keep();
 		});

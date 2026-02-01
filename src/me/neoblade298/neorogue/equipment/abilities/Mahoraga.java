@@ -29,17 +29,17 @@ import net.kyori.adventure.text.Component;
 public class Mahoraga extends Equipment {
 	private static final String ID = "Mahoraga";
 	private int shields, refresh, berserk, thres, heal;
-	
+
 	public Mahoraga(boolean isUpgraded) {
-		super(ID, "Mahoraga", isUpgraded, Rarity.EPIC, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+		super(ID, "Mahoraga", isUpgraded, Rarity.EPIC, EquipmentClass.WARRIOR, EquipmentType.ABILITY,
+				EquipmentProperties.none());
 		shields = 75;
 		refresh = 10;
 		berserk = isUpgraded ? 3 : 2;
 		thres = isUpgraded ? 30 : 25;
 		heal = 10;
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
@@ -48,7 +48,9 @@ public class Mahoraga extends Equipment {
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
 		am.setDouble(shields);
-		data.addTrigger(id, Trigger.TOGGLE_CROUCH, (pdata, in) -> {		Player p = data.getPlayer();			PlayerToggleSneakEvent ev = (PlayerToggleSneakEvent) in;
+		data.addTrigger(id, Trigger.TOGGLE_CROUCH, (pdata, in) -> {
+			Player p = data.getPlayer();
+			PlayerToggleSneakEvent ev = (PlayerToggleSneakEvent) in;
 			if (ev.isSneaking()) {
 				// Refresh shield
 				BukkitTask task = am.getTask();
@@ -64,12 +66,13 @@ public class Mahoraga extends Equipment {
 				}.runTaskLater(NeoRogue.inst(), refresh * 20);
 				am.setTask(task);
 
-				if (am.getDouble() <= 0) return TriggerResult.keep();
+				if (am.getDouble() <= 0)
+					return TriggerResult.keep();
 				Shield shield = data.addPermanentShield(p.getUniqueId(), am.getDouble(), true);
 				am.setObject(shield);
-			}
-			else {
-				if (am.getObject() == null) return TriggerResult.keep();
+			} else {
+				if (am.getObject() == null)
+					return TriggerResult.keep();
 				Shield shield = (Shield) am.getObject();
 				am.setDouble(shield.getAmount());
 				shield.remove();
@@ -78,13 +81,15 @@ public class Mahoraga extends Equipment {
 			return TriggerResult.keep();
 		});
 
-		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, (pdata, in) -> {		Player p = data.getPlayer();			ReceiveDamageEvent ev = (ReceiveDamageEvent) in;
-			if (!p.isSneaking()) return TriggerResult.keep();
+		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, (pdata, in) -> {
+			Player p = data.getPlayer();
+			ReceiveDamageEvent ev = (ReceiveDamageEvent) in;
+			if (!p.isSneaking())
+				return TriggerResult.keep();
 			EnumSet<DamageCategory> categories = ev.getMeta().getPrimarySlice().getPostBuffType().getCategories();
 			if (categories.contains(DamageCategory.PHYSICAL)) {
 				data.applyStatus(StatusType.PROTECT, data, 1, -1);
-			}
-			else if (categories.contains(DamageCategory.MAGICAL)) {
+			} else if (categories.contains(DamageCategory.MAGICAL)) {
 				data.applyStatus(StatusType.SHELL, data, 1, -1);
 			}
 
@@ -93,6 +98,7 @@ public class Mahoraga extends Equipment {
 				Sounds.fire.play(p, p);
 				data.addTask(new BukkitRunnable() {
 					private int count;
+
 					public void run() {
 						data.addHealth(heal / 5);
 						if (++count >= 5) {
@@ -105,15 +111,16 @@ public class Mahoraga extends Equipment {
 		});
 	}
 
-
 	@Override
 	public void setupItem() {
-		item = createItem(Material.OAK_SAPLING,
-				new String[] { "Adapt to anything and everything." },
-				"This ability holds up to " + GlossaryTag.SHIELDS.tag(this, shields, false) + ". While crouching, gain this shield. " +
-				"Not crouching for " + DescUtil.white(refresh) + " will restore it to full. Receiving damage while crouching grants " + GlossaryTag.PROTECT.tag(this, 1, false) +
-				" or " + GlossaryTag.SHELL.tag(this, 1, false) + " if the damage was " + GlossaryTag.PHYSICAL.tag(this) + " or " + GlossaryTag.MAGICAL.tag(this) + " respectively. " +
-				"Additionally, gain " + GlossaryTag.BERSERK.tag(this, berserk, true) + " and heal for " + DescUtil.white(heal) + " over <white>5s</white> if above " +
-				GlossaryTag.BERSERK.tag(this, thres, true) + ".");
+		item = createItem(Material.OAK_SAPLING, new String[] { "Adapt to anything and everything." },
+				"This ability holds up to " + GlossaryTag.SHIELDS.tag(this, shields, false)
+						+ ". While crouching, gain this shield. " + "Not crouching for " + DescUtil.white(refresh)
+						+ " will restore it to full. Receiving damage while crouching grants "
+						+ GlossaryTag.PROTECT.tag(this, 1, false) + " or " + GlossaryTag.SHELL.tag(this, 1, false)
+						+ " if the damage was " + GlossaryTag.PHYSICAL.tag(this) + " or "
+						+ GlossaryTag.MAGICAL.tag(this) + " respectively. " + "Additionally, gain "
+						+ GlossaryTag.BERSERK.tag(this, berserk, true) + " and heal for " + DescUtil.white(heal)
+						+ " over <white>5s</white> if above " + GlossaryTag.BERSERK.tag(this, thres, true) + ".");
 	}
 }

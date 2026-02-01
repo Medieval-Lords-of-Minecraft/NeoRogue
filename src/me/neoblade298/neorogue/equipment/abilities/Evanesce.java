@@ -73,7 +73,6 @@ public class Evanesce extends Equipment {
 			FightInstance.applyStatus(p, StatusType.STEALTH, data, 1, stealthDuration);
 			
 			// Delayed damage buff (1 second = 20 ticks later)
-			Player fp = p;
 			data.addTask(new BukkitRunnable() {
 				public void run() {
 					data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
@@ -82,7 +81,7 @@ public class Evanesce extends Equipment {
 				}
 			}.runTaskLater(NeoRogue.inst(), 20L));
 			
-			Sounds.attackSweep.play(fp, fp);
+			Sounds.attackSweep.play(p, p);
 			
 			return TriggerResult.keep();
 		});

@@ -36,14 +36,14 @@ public class Lightfall extends Equipment {
 			explode = new ParticleContainer(Particle.FIREWORK).count(50).spread(tp.range / 2, 1).speed(0.01);
 	private static final Circle anim = new Circle(3), aoe = new Circle(tp.range);
 	private int damage, sanct;
-	
+
 	public Lightfall(boolean isUpgraded) {
-		super(ID, "Lightfall", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 30, 12, 0, tp.range));
-				damage = isUpgraded ? 600 : 400;
-				sanct = isUpgraded ? 150 : 100;
+		super(ID, "Lightfall", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR, EquipmentType.ABILITY,
+				EquipmentProperties.ofUsable(30, 30, 12, 0, tp.range));
+		damage = isUpgraded ? 600 : 400;
+		sanct = isUpgraded ? 150 : 100;
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
@@ -51,11 +51,14 @@ public class Lightfall extends Equipment {
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {		Player p = data.getPlayer();			Sounds.flap.play(p, p);
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Player p = data.getPlayer();
+			Sounds.flap.play(p, p);
 			p.setVelocity(new Vector(0, 1, 0));
 			am.setBool(true);
 			data.addTask(new BukkitRunnable() {
 				private int count;
+
 				public void run() {
 					anim.play(pc, p.getLocation(), LocalAxes.xz(), null);
 					if (++count >= 3) {
@@ -72,6 +75,7 @@ public class Lightfall extends Equipment {
 
 			data.addTask(new BukkitRunnable() {
 				int count = 0;
+
 				@SuppressWarnings("deprecation")
 				public void run() {
 
@@ -94,7 +98,8 @@ public class Lightfall extends Equipment {
 		explode.play(p, p);
 		Sounds.explode.play(p, p);
 		for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
-			FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.LIGHT, DamageStatTracker.of(id + slot, this)), ent);
+			FightInstance.dealDamage(
+					new DamageMeta(data, damage, DamageType.LIGHT, DamageStatTracker.of(id + slot, this)), ent);
 			FightInstance.applyStatus(ent, StatusType.SANCTIFIED, data, sanct, -1);
 		}
 	}
@@ -102,8 +107,8 @@ public class Lightfall extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.WHITE_BANNER,
-				"On cast, jump into the air before crashing to the ground, dealing " +
-				GlossaryTag.LIGHT.tag(this, damage, true) + " damage and applying " + GlossaryTag.SANCTIFIED.tag(this, sanct, true) + 
-				" to all nearby enemies.");
+				"On cast, jump into the air before crashing to the ground, dealing "
+						+ GlossaryTag.LIGHT.tag(this, damage, true) + " damage and applying "
+						+ GlossaryTag.SANCTIFIED.tag(this, sanct, true) + " to all nearby enemies.");
 	}
 }

@@ -33,7 +33,8 @@ import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 public class Engulf extends Equipment {
 	private static final String ID = "Engulf";
 	private static final TargetProperties tp = TargetProperties.radius(3, false);
-	private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME).offsetY(0.3).spread(0.2, 0.2).count(5);
+	private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME).offsetY(0.3).spread(0.2, 0.2)
+			.count(5);
 	private static final Circle circ = new Circle(tp.range);
 	private int damage, thres;
 
@@ -55,7 +56,8 @@ public class Engulf extends Equipment {
 			DealDamageEvent ev = (DealDamageEvent) in;
 			HashMap<DamageType, Double> dmg = ev.getMeta().getPostMitigationDamage();
 
-			if (!dmg.containsKey(DamageType.FIRE)) return TriggerResult.keep();
+			if (!dmg.containsKey(DamageType.FIRE))
+				return TriggerResult.keep();
 			am.addCount((int) (dmg.get(DamageType.FIRE) + 0));
 
 			if (am.getCount() >= thres) {
@@ -68,7 +70,8 @@ public class Engulf extends Equipment {
 						Sounds.fire.play(p, p);
 						circ.play(pc, p.getLocation(), LocalAxes.xz(), null);
 						for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
-							FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE, DamageStatTracker.of(id + slot, Engulf.this)), ent);
+							FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE,
+									DamageStatTracker.of(id + slot, Engulf.this)), ent);
 						}
 
 						if (++count >= 3) {

@@ -55,7 +55,9 @@ public class Chokehold extends Equipment {
 		ActionMeta am = new ActionMeta();
 		String buffId = UUID.randomUUID().toString();
 
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {		Player p = data.getPlayer();			Sounds.equip.play(p, p);
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Player p = data.getPlayer();
+			Sounds.equip.play(p, p);
 			Location loc = p.getLocation();
 			am.setLocation(loc);
 			am.setTime(System.currentTimeMillis());

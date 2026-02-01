@@ -57,7 +57,9 @@ public class Blind extends Equipment {
 			}.runTaskLater(NeoRogue.inst(), 60));
 		});
 		ProjectileGroup grp = new ProjectileGroup(pot);
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, inputs) -> {			Player p = data.getPlayer();			Sounds.threw.play(p, p);
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, inputs) -> {
+			Player p = data.getPlayer();
+			Sounds.threw.play(p, p);
 			grp.start(data);
 			return TriggerResult.keep();
 		}));

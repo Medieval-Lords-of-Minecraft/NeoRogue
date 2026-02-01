@@ -19,10 +19,10 @@ public class ManaShell extends Equipment {
 	private static final String ID = "ManaShell";
 	private int shields;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
-	
+
 	public ManaShell(boolean isUpgraded) {
-		super(ID, "Mana Shell", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(9, 0, 5, 0));
+		super(ID, "Mana Shell", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
+				EquipmentProperties.ofUsable(9, 0, 5, 0));
 		shields = isUpgraded ? 6 : 4;
 	}
 
@@ -31,14 +31,16 @@ public class ManaShell extends Equipment {
 		addReforge(ForceCloak.get(), ManaCloak.get());
 		addReforge(CalculatingGaze.get(), ManaGuard.get());
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {		Player p = data.getPlayer();			Sounds.equip.play(p, p);
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Player p = data.getPlayer();
+			Sounds.equip.play(p, p);
 			pc.play(p, p);
 			data.addSimpleShield(p.getUniqueId(), shields, 100);
 			return TriggerResult.keep();

@@ -58,7 +58,7 @@ public class LightningBolt extends Equipment {
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		Equipment eq = this;
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
-		double cost = properties.get(PropertyType.MANA_COST);
+			double cost = properties.get(PropertyType.MANA_COST);
 			double currMana = data.getMana() + cost;
 			boolean hasBonus = currMana >= thres;
 			data.channel(20).then(new Runnable() {
@@ -71,7 +71,8 @@ public class LightningBolt extends Equipment {
 					double fDamage = damage + (hasBonus ? bonusDamage : 0);
 					Sounds.firework.play(p, p);
 					for (LivingEntity ent : TargetHelper.getEntitiesInLine(p, start, end, tp)) {
-						FightInstance.dealDamage(new DamageMeta(data, fDamage, DamageType.LIGHTNING, DamageStatTracker.of(id + slot, eq)), ent);
+						FightInstance.dealDamage(new DamageMeta(data, fDamage, DamageType.LIGHTNING,
+								DamageStatTracker.of(id + slot, eq)), ent);
 					}
 				}
 			});

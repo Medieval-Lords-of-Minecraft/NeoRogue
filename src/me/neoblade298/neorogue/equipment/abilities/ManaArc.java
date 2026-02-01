@@ -55,7 +55,9 @@ public class ManaArc extends Equipment {
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {		Player p = data.getPlayer();			activate(p, data, am, slot);
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Player p = data.getPlayer();
+			activate(p, data, am, slot);
 			return TriggerResult.keep();
 		}, (pl, pdata, in) -> {
 			return !am.getBool(); // Only allow casting if it's not already active
@@ -81,7 +83,8 @@ public class ManaArc extends Equipment {
 				return TriggerResult.keep();
 
 			DealDamageEvent ev = (DealDamageEvent) in;
-			if (ev.getMeta().isSecondary()) return TriggerResult.keep();
+			if (ev.getMeta().isSecondary())
+				return TriggerResult.keep();
 			LivingEntity trg = ev.getTarget();
 			Vector dir = trg.getLocation().toVector().subtract(p.getLocation().toVector()).normalize();
 			proj.start(data, p.getLocation().add(0, 1, 0), dir);
@@ -116,8 +119,8 @@ public class ManaArc extends Equipment {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			proj.addDamageSlice(new DamageSlice(data, damage, DamageType.LIGHTNING,
-					DamageStatTracker.of(ID + slot, eq)));
+			proj.addDamageSlice(
+					new DamageSlice(data, damage, DamageType.LIGHTNING, DamageStatTracker.of(ID + slot, eq)));
 			proj.getMeta().isSecondary(true);
 		}
 	}

@@ -55,7 +55,7 @@ public class Consecrate extends Equipment {
 		ActionMeta am = new ActionMeta();
 		ItemStack icon = item.clone();
 		ItemStack chargedIcon = item.clone().withType(Material.NETHER_STAR);
-	EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
+		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
 
 	inst.setAction((pdata, in) -> {
 		Player p = data.getPlayer();

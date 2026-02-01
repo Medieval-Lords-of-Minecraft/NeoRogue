@@ -31,11 +31,11 @@ public class Cripple extends Equipment {
 	private int inc;
 	private static final ParticleContainer part = new ParticleContainer(Particle.CRIT).count(50).spread(1, 1);
 	private static final TargetProperties tp = TargetProperties.cone(90, 5, false, TargetType.ENEMY);
-	
+
 	public Cripple(boolean isUpgraded) {
-		super(ID, "Cripple", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 5, 15, tp.range));
-		
+		super(ID, "Cripple", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF, EquipmentType.ABILITY,
+				EquipmentProperties.ofUsable(0, 5, 15, tp.range));
+
 		inc = isUpgraded ? 35 : 25;
 	}
 
@@ -44,7 +44,7 @@ public class Cripple extends Equipment {
 		addReforge(Resourcefulness.get(), CripplingPoison.get());
 		addReforge(BasicDarkArts.get(), Maim.get(), Disorient.get());
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
@@ -52,11 +52,13 @@ public class Cripple extends Equipment {
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		String buffId = UUID.randomUUID().toString();
-		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pd, in) -> {		Player p = data.getPlayer();			Sounds.attackSweep.play(p, p);
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pd, in) -> {
+			Player p = data.getPlayer();
+			Sounds.attackSweep.play(p, p);
 			for (LivingEntity ent : TargetHelper.getEntitiesInCone(p, tp)) {
 				part.play(p, ent);
-				FightInstance.getFightData(ent).addDefenseBuff(DamageBuffType.of(DamageCategory.PHYSICAL), new Buff(data, -inc, 0,
-					StatTracker.defenseDebuffEnemy(buffId, this)), 160);
+				FightInstance.getFightData(ent).addDefenseBuff(DamageBuffType.of(DamageCategory.PHYSICAL),
+						new Buff(data, -inc, 0, StatTracker.defenseDebuffEnemy(buffId, this)), 160);
 			}
 			return TriggerResult.keep();
 		}));
@@ -65,7 +67,8 @@ public class Cripple extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ARMOR_STAND,
-				"On cast, increase the " + GlossaryTag.PHYSICAL.tag(this) + " damage taken of enemies in a cone in front of you by <yellow>" + inc + "</yellow>"
+				"On cast, increase the " + GlossaryTag.PHYSICAL.tag(this)
+						+ " damage taken of enemies in a cone in front of you by <yellow>" + inc + "</yellow>"
 						+ " for <white>8</white> seconds.");
 	}
 }

@@ -21,31 +21,36 @@ import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 public class FerociousDraw extends Equipment {
 	private static final String ID = "FerociousDraw";
 	private int range, damage;
-	
+
 	public FerociousDraw(boolean isUpgraded) {
-		super(ID, "Ferocious Draw", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+		super(ID, "Ferocious Draw", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER, EquipmentType.ABILITY,
+				EquipmentProperties.none());
 		range = 5;
 		damage = isUpgraded ? 80 : 60;
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {		Player p = data.getPlayer();			BasicAttackEvent ev = (BasicAttackEvent) in;
-            if (!ev.isProjectile()) return TriggerResult.keep();
-			
+		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
+			Player p = data.getPlayer();
+			BasicAttackEvent ev = (BasicAttackEvent) in;
+			if (!ev.isProjectile())
+				return TriggerResult.keep();
+
 			LivingEntity target = ev.getTarget();
-			if (target == null) return TriggerResult.keep();
-			
+			if (target == null)
+				return TriggerResult.keep();
+
 			// Check if target is within 5 blocks
 			if (p.getLocation().distance(target.getLocation()) <= range) {
 				ProjectileInstance inst = ev.getProjectile();
 				if (inst != null) {
-					inst.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.PIERCING, DamageStatTracker.of(id + slot, this)));
+					inst.getMeta().addDamageSlice(
+							new DamageSlice(data, damage, DamageType.PIERCING, DamageStatTracker.of(id + slot, this)));
 					BowProjectile settings = (BowProjectile) inst.getParent();
 					settings.pierce(1);
 				}
@@ -57,7 +62,8 @@ public class FerociousDraw extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BOW,
-				"Passive. Basic attack projectiles that hit an enemy within <white>" + range + "</white> blocks " +
-				"pierce that enemy and deal an additional " + GlossaryTag.PIERCING.tag(this, damage, true) + " damage.");
+				"Passive. Basic attack projectiles that hit an enemy within <white>" + range + "</white> blocks "
+						+ "pierce that enemy and deal an additional " + GlossaryTag.PIERCING.tag(this, damage, true)
+						+ " damage.");
 	}
 }

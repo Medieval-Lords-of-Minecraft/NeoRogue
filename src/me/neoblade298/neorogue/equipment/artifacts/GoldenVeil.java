@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class GoldenVeil extends Artifact {
 	private static final String ID = "GoldenVeil";
-	
+
 	public GoldenVeil() {
 		super(ID, "Golden Veil", Rarity.RARE, EquipmentClass.MAGE);
 	}
@@ -24,11 +24,13 @@ public class GoldenVeil extends Artifact {
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
-	
+
 	@Override
 	public void initialize(PlayerFightData data, ArtifactInstance ai) {
 		ActionMeta am = new ActionMeta();
-		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {		Player p = data.getPlayer();			if (pdata.getMana() > pdata.getMaxMana() * 0.8) {
+		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
+			Player p = data.getPlayer();
+			if (pdata.getMana() > pdata.getMaxMana() * 0.8) {
 				am.addCount(1);
 				if (am.getCount() >= 3) {
 					am.addCount(-3);
@@ -38,7 +40,7 @@ public class GoldenVeil extends Artifact {
 			return TriggerResult.keep();
 		});
 	}
-	
+
 	@Override
 	public void onAcquire(PlayerSessionData data, int amount) {
 
@@ -47,9 +49,10 @@ public class GoldenVeil extends Artifact {
 	@Override
 	public void onInitializeSession(PlayerSessionData data) {
 	}
-	
+
 	@Override
 	public void setupItem() {
-		item = createItem(Material.CLOCK, "Grants " + GlossaryTag.SHIELDS.tag(this, 1, false) + " for every <white>3s</white> you're at above <white>80%</white> mana.");
+		item = createItem(Material.CLOCK, "Grants " + GlossaryTag.SHIELDS.tag(this, 1, false)
+				+ " for every <white>3s</white> you're at above <white>80%</white> mana.");
 	}
 }

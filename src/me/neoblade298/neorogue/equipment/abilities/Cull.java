@@ -26,15 +26,15 @@ public class Cull extends Equipment {
 	private int damage;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD),
 			hit = new ParticleContainer(Particle.DUST);
-	
+
 	public Cull(boolean isUpgraded) {
-		super(ID, "Cull", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 50, 15, 0));
+		super(ID, "Cull", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR, EquipmentType.ABILITY,
+				EquipmentProperties.ofUsable(0, 50, 15, 0));
 		damage = isUpgraded ? 300 : 200;
 		pc.count(50).spread(0.5, 0.5).speed(0.2);
 		hit.count(50).spread(0.5, 0.5);
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
@@ -42,14 +42,19 @@ public class Cull extends Equipment {
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
-		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es, (pdata, inputs) -> {		Player p = data.getPlayer();			Sounds.equip.play(p, p);
+		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es, (pdata, inputs) -> {
+			Player p = data.getPlayer();
+			Sounds.equip.play(p, p);
 			pc.play(p, p);
 			am.addCount(1);
 			return TriggerResult.keep();
 		});
 		data.addTrigger(id, bind, inst);
-		
-		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata2, in) -> {		Player p = data.getPlayer();			if (am.getCount() <= 0) return TriggerResult.keep();
+
+		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata2, in) -> {
+			Player p = data.getPlayer();
+			if (am.getCount() <= 0)
+				return TriggerResult.keep();
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 			ev.getMeta().addDamageSlice(
 					new DamageSlice(data, damage, DamageType.SLASHING, DamageStatTracker.of(id + slot, this)));
@@ -71,7 +76,7 @@ public class Cull extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.FLINT,
-				"On cast, your basic attacks deals an additional " + GlossaryTag.SLASHING.tag(this, damage, true) + " damage until you don't kill an enemy with it.");
+		item = createItem(Material.FLINT, "On cast, your basic attacks deals an additional "
+				+ GlossaryTag.SLASHING.tag(this, damage, true) + " damage until you don't kill an enemy with it.");
 	}
 }

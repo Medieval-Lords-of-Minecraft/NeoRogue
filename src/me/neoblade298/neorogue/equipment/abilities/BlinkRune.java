@@ -36,7 +36,9 @@ public class BlinkRune extends Equipment {
 		ActionMeta am = new ActionMeta();
 		am.setCount(reps);
 		Trigger tr = data.getSessionData().getPlayerClass() == EquipmentClass.ARCHER ? Trigger.LEFT_CLICK : Trigger.RIGHT_CLICK;
-		data.addTrigger(id, tr, (pdata, in) -> {			Player p = data.getPlayer();			if (tr == Trigger.LEFT_CLICK) p.swingOffHand();
+		data.addTrigger(id, tr, (pdata, in) -> {
+			Player p = data.getPlayer();
+			if (tr == Trigger.LEFT_CLICK) p.swingOffHand();
 			data.dash();
 
 			am.addCount(-1);

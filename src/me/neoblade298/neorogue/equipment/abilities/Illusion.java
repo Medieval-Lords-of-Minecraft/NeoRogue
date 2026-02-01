@@ -44,18 +44,16 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 public class Illusion extends Equipment {
 	private static final String ID = "Illusion";
 	private static final ParticleContainer shadowBall = new ParticleContainer(Particle.DUST)
-		.dustOptions(new org.bukkit.Particle.DustOptions(Color.BLACK, 1.5F))
-		.count(15).spread(0.3, 0.3);
+			.dustOptions(new org.bukkit.Particle.DustOptions(Color.BLACK, 1.5F)).count(15).spread(0.3, 0.3);
 	private static final ParticleContainer projectileParticle = new ParticleContainer(Particle.DUST)
-		.dustOptions(new org.bukkit.Particle.DustOptions(Color.fromRGB(50, 0, 50), 1F))
-		.count(3).spread(0.2, 0.2);
+			.dustOptions(new org.bukkit.Particle.DustOptions(Color.fromRGB(50, 0, 50), 1F)).count(3).spread(0.2, 0.2);
 	private static TargetProperties tp = TargetProperties.radius(8, false, TargetType.ENEMY);
-	
+
 	private int damage, dur;
 
 	public Illusion(boolean isUpgraded) {
-		super(ID, "Illusion", isUpgraded, Rarity.EPIC, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 1, 0).add(PropertyType.AREA_OF_EFFECT, tp.range));
+		super(ID, "Illusion", isUpgraded, Rarity.EPIC, EquipmentClass.THIEF, EquipmentType.ABILITY,
+				EquipmentProperties.ofUsable(0, 0, 1, 0).add(PropertyType.AREA_OF_EFFECT, tp.range));
 		damage = isUpgraded ? 250 : 150;
 		dur = 3;
 	}
@@ -66,22 +64,23 @@ public class Illusion extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		// Queue to track player positions - stores last 4 positions (2 seconds worth at 0.5s intervals)
+		// Queue to track player positions - stores last 4 positions (2 seconds worth at
+		// 0.5s intervals)
 		LinkedList<Location> locationQueue = new LinkedList<Location>();
 		ActionMeta cooldown = new ActionMeta();
-		
+
 		// Task to track player position every half second and display shadow ball
 		data.addTask(new BukkitRunnable() {
 			public void run() {
 				Player p = data.getPlayer();
 				// Add current location to queue
 				locationQueue.add(p.getLocation().clone());
-				
+
 				// Keep queue at exactly 4 positions (2 seconds)
 				if (locationQueue.size() > 4) {
 					locationQueue.removeFirst();
 				}
-				
+
 				// Display shadow ball at the position from 2 seconds ago
 				if (locationQueue.size() == 4) {
 					Location shadowLoc = locationQueue.getFirst();
@@ -89,54 +88,59 @@ public class Illusion extends Equipment {
 				}
 			}
 		}.runTaskTimer(NeoRogue.inst(), 0L, 10L)); // Run every half second (10 ticks)
-		
+
 		// Trigger when applying evade
-		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {		Player p = data.getPlayer();			ApplyStatusEvent ev = (ApplyStatusEvent) in;
-			if (!ev.isStatus(StatusType.EVADE)) return TriggerResult.keep();
-			
+		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
+			Player p = data.getPlayer();
+			ApplyStatusEvent ev = (ApplyStatusEvent) in;
+			if (!ev.isStatus(StatusType.EVADE))
+				return TriggerResult.keep();
+
 			// Check cooldown (1 second = 1000ms)
 			if (System.currentTimeMillis() - cooldown.getTime() < 1000) {
 				return TriggerResult.keep();
 			}
-			
+
 			// Only fire if we have a shadow position (2 seconds have passed)
-			if (locationQueue.size() < 4) return TriggerResult.keep();
-			
+			if (locationQueue.size() < 4)
+				return TriggerResult.keep();
+
 			// Get shadow location
 			Location shadowLoc = locationQueue.getFirst();
-			
+
 			// Spawn body double at shadow location
 			ArmorStand as = (ArmorStand) p.getWorld().spawnEntity(shadowLoc, EntityType.ARMOR_STAND);
 			PlayerDisguise dis = new PlayerDisguise(p);
 			dis.setName(p.getName() + " Body Double");
 			dis.setEntity(as);
 			dis.startDisguise();
-			
+
 			// Taunt nearby enemies
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, shadowLoc, tp)) {
-				if (!NeoRogue.mythicApi.isMythicMob(ent)) continue;
+				if (!NeoRogue.mythicApi.isMythicMob(ent))
+					continue;
 				NeoRogue.mythicApi.addThreat(ent, as, 100000);
 			}
-			
+
 			// Remove body double after duration
 			data.addGuaranteedTask(UUID.randomUUID(), new Runnable() {
 				public void run() {
 					as.remove();
 				}
 			}, dur * 20);
-			
+
 			// Fire projectiles at nearby enemies
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, shadowLoc, tp)) {
 				Location targetLoc = ent.getEyeLocation();
-				
+
 				ProjectileGroup proj = new ProjectileGroup(new IllusionProjectile(data, slot, this));
 				proj.start(data, shadowLoc, targetLoc.toVector().subtract(shadowLoc.toVector()).normalize());
 			}
-			
+
 			Sounds.equip.play(p, shadowLoc);
 			Sounds.fire.play(p, shadowLoc);
 			cooldown.setTime(System.currentTimeMillis());
-			
+
 			return TriggerResult.keep();
 		});
 	}
@@ -175,8 +179,10 @@ public class Illusion extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ENDER_EYE,
-				"Passive. Whenever you apply " + GlossaryTag.EVADE.tag(this) + ", spawn a body double at your position from " +
-				"<white>2s</white> ago that fires projectiles dealing " + GlossaryTag.DARK.tag(this, damage, true) + " damage to all nearby enemies " +
-				"and taunts them. The body double lasts for <white>" + dur + "s</white>.");
+				"Passive. Whenever you apply " + GlossaryTag.EVADE.tag(this)
+						+ ", spawn a body double at your position from "
+						+ "<white>2s</white> ago that fires projectiles dealing "
+						+ GlossaryTag.DARK.tag(this, damage, true) + " damage to all nearby enemies "
+						+ "and taunts them. The body double lasts for <white>" + dur + "s</white>.");
 	}
 }

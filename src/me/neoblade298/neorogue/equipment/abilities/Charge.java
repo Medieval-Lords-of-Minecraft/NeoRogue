@@ -41,7 +41,7 @@ public class Charge extends Equipment {
 		data.addSprintCost(1);
 		
 		data.addTrigger(id, Trigger.TOGGLE_SPRINT, (pdata, in) -> {
-		PlayerToggleSprintEvent ev = (PlayerToggleSprintEvent) in;
+			PlayerToggleSprintEvent ev = (PlayerToggleSprintEvent) in;
 			if (!ev.isSprinting()) return TriggerResult.keep();
 			inst.addShield(pdata);
 			return TriggerResult.keep();

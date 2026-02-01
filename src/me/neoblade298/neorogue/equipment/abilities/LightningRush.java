@@ -36,14 +36,14 @@ public class LightningRush extends Equipment {
 	private int damage, elec;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST)
 			.dustOptions(new DustOptions(Color.YELLOW, 1F)).count(50).spread(1, 2).offsetY(1);
-	
+
 	public LightningRush(boolean isUpgraded) {
-		super(ID, "Lightning Rush", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF, 
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 10, 15, 0));
+		super(ID, "Lightning Rush", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF, EquipmentType.ABILITY,
+				EquipmentProperties.ofUsable(20, 10, 15, 0));
 		damage = isUpgraded ? 120 : 80;
 		elec = isUpgraded ? 90 : 60;
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
@@ -52,40 +52,46 @@ public class LightningRush extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.BLAZE_POWDER,
 				"On cast, for <white>3</white> seconds, your basic attacks"
-				+ " grant speed <white>1</white> [<white>1s</white>],"
-				+ " deals an additional " + GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage, applies "
-				+ GlossaryTag.ELECTRIFIED.tag(this, elec, true) + ", and extends the duration"
-				+ " of the skill by <white>2</white> seconds. Once per enemy.");
+						+ " grant speed <white>1</white> [<white>1s</white>]," + " deals an additional "
+						+ GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage, applies "
+						+ GlossaryTag.ELECTRIFIED.tag(this, elec, true) + ", and extends the duration"
+						+ " of the skill by <white>2</white> seconds. Once per enemy.");
 	}
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		LightningRushInstance inst = new LightningRushInstance(data, this, slot, es);
 		data.addTrigger(id, bind, inst);
-		data.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {		Player p = data.getPlayer();			if (!inst.active) return TriggerResult.keep();
+		data.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
+			Player p = data.getPlayer();
+			if (!inst.active)
+				return TriggerResult.keep();
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 			LivingEntity trg = ev.getTarget();
 			UUID uuid = trg.getUniqueId();
-			if (inst.hit.contains(uuid)) return TriggerResult.keep();
+			if (inst.hit.contains(uuid))
+				return TriggerResult.keep();
 			Sounds.extinguish.play(p, trg);
 			pc.play(p, trg);
 			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20, 0));
 			inst.hit.add(uuid);
-			ev.getMeta().addDamageSlice(new DamageSlice(pdata, damage, DamageType.LIGHTNING,
-					DamageStatTracker.of(ID + slot, this)));
+			ev.getMeta().addDamageSlice(
+					new DamageSlice(pdata, damage, DamageType.LIGHTNING, DamageStatTracker.of(ID + slot, this)));
 			FightInstance.applyStatus(trg, StatusType.ELECTRIFIED, pdata, elec, -1);
 			inst.timer += 2;
 			return TriggerResult.keep();
 		});
 	}
-	
+
 	private class LightningRushInstance extends EquipmentInstance {
 		private HashSet<UUID> hit = new HashSet<UUID>();
 		private boolean active = false;
 		private int timer;
-		
+
 		public LightningRushInstance(PlayerFightData data, Equipment eq, int slot, EquipSlot es) {
-			super(data, eq, slot, es);		Player p = data.getPlayer();			action = (pdata, in) -> {
+			super(data, eq, slot, es);
+			Player p = data.getPlayer();
+			action = (pdata, in) -> {
 				active = true;
 				timer = 3;
 				hit.clear();

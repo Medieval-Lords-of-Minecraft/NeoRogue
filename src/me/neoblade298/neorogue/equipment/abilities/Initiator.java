@@ -24,13 +24,13 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 public class Initiator extends Equipment {
 	private static final String ID = "Initiator";
 	private int damage;
-	
+
 	public Initiator(boolean isUpgraded) {
-		super(ID, "Initiator", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 15, 10, 0));
+		super(ID, "Initiator", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF, EquipmentType.ABILITY,
+				EquipmentProperties.ofUsable(0, 15, 10, 0));
 		damage = isUpgraded ? 50 : 30;
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
@@ -38,12 +38,16 @@ public class Initiator extends Equipment {
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		String buffId = UUID.randomUUID().toString();
-		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {		Player p = data.getPlayer();			PreDealDamageEvent ev = (PreDealDamageEvent) in;
+		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
+			Player p = data.getPlayer();
+			PreDealDamageEvent ev = (PreDealDamageEvent) in;
 			FightData fd = FightInstance.getFightData(ev.getTarget());
-			if (fd.hasStatus(p.getName() + "-INITIATOR")) return TriggerResult.keep();
-			fd.applyStatus(Status.createByGenericType(GenericStatusType.BASIC, p.getName() + "-INITIATOR",
-					fd, true), data, 1, -1, ev.getMeta(), false);
-			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, 0, damage * 0.01, StatTracker.damageBuffAlly(buffId, this)));
+			if (fd.hasStatus(p.getName() + "-INITIATOR"))
+				return TriggerResult.keep();
+			fd.applyStatus(Status.createByGenericType(GenericStatusType.BASIC, p.getName() + "-INITIATOR", fd, true),
+					data, 1, -1, ev.getMeta(), false);
+			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+					new Buff(data, 0, damage * 0.01, StatTracker.damageBuffAlly(buffId, this)));
 			return TriggerResult.keep();
 		});
 	}
@@ -51,6 +55,7 @@ public class Initiator extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SHIELD,
-				"Passive. The first time you deal non-status damage to an enemy, increase the damage by <yellow>" + damage + "%</yellow>.");
+				"Passive. The first time you deal non-status damage to an enemy, increase the damage by <yellow>"
+						+ damage + "%</yellow>.");
 	}
 }

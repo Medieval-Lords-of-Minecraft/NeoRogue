@@ -29,14 +29,14 @@ public class DeliberantPace extends Equipment {
 	private int ticksRequired;
 	private double damagePerStack;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.ENCHANT).count(25).spread(1, 1);
-	
+
 	public DeliberantPace(boolean isUpgraded) {
-		super(ID, "Deliberant Pace", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+		super(ID, "Deliberant Pace", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER, EquipmentType.ABILITY,
+				EquipmentProperties.none());
 		ticksRequired = isUpgraded ? 80 : 100; // 4 or 5 seconds (20 ticks = 1 second)
 		damagePerStack = isUpgraded ? 0.06 : 0.05; // 6% or 5%
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
@@ -46,24 +46,27 @@ public class DeliberantPace extends Equipment {
 		String buffId = UUID.randomUUID().toString();
 		ActionMeta am = new ActionMeta();
 		am.setCount(0); // Tick counter
-		
+
 		// Reset counter when player starts sprinting
-		data.addTrigger(id, Trigger.TOGGLE_SPRINT, (pdata, in) -> {		Player p = data.getPlayer();			if (p.isSprinting()) {
+		data.addTrigger(id, Trigger.TOGGLE_SPRINT, (pdata, in) -> {
+			Player p = data.getPlayer();
+			if (p.isSprinting()) {
 				am.setCount(0);
 			}
 			return TriggerResult.keep();
 		});
-		
+
 		// Track ticks without sprinting
-		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {		Player p = data.getPlayer();			// If player is currently sprinting, reset counter
+		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
+			Player p = data.getPlayer(); // If player is currently sprinting, reset counter
 			if (p.isSprinting()) {
 				am.setCount(0);
 				return TriggerResult.keep();
 			}
-			
+
 			// Increment counter for not sprinting
 			am.addCount(1);
-			
+
 			// Every ticksRequired ticks without sprinting, grant a stack of focus
 			if (am.getCount() >= ticksRequired) {
 				am.setCount(0); // Reset counter
@@ -71,19 +74,20 @@ public class DeliberantPace extends Equipment {
 				pc.play(p, p);
 				Sounds.enchant.play(p, p);
 			}
-			
+
 			return TriggerResult.keep();
 		});
-		
+
 		// Add damage buff based on focus stacks
 		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
 			PreDealDamageEvent ev = (PreDealDamageEvent) in;
 			int focusStacks = data.getStatus(StatusType.FOCUS).getStacks();
-			if (focusStacks <= 0) return TriggerResult.keep();
-			
+			if (focusStacks <= 0)
+				return TriggerResult.keep();
+
 			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
-				Buff.multiplier(data, damagePerStack * focusStacks, StatTracker.damageBuffAlly(buffId, this)));
-			
+					Buff.multiplier(data, damagePerStack * focusStacks, StatTracker.damageBuffAlly(buffId, this)));
+
 			return TriggerResult.keep();
 		});
 	}
@@ -93,8 +97,8 @@ public class DeliberantPace extends Equipment {
 		int seconds = ticksRequired / 20;
 		int damagePercent = (int) (damagePerStack * 100);
 		item = createItem(Material.BOOK,
-				"Passive. Whenever you don't sprint for " + DescUtil.yellow(seconds + "s") + ", gain a stack of " + 
-				GlossaryTag.FOCUS.tag(this, 1, false) + ". Every stack of " + GlossaryTag.FOCUS.tag(this) + 
-				" increases your general damage by " + DescUtil.yellow(damagePercent + "%") + ".");
+				"Passive. Whenever you don't sprint for " + DescUtil.yellow(seconds + "s") + ", gain a stack of "
+						+ GlossaryTag.FOCUS.tag(this, 1, false) + ". Every stack of " + GlossaryTag.FOCUS.tag(this)
+						+ " increases your general damage by " + DescUtil.yellow(damagePercent + "%") + ".");
 	}
 }

@@ -31,14 +31,14 @@ public class Paranoia extends Equipment {
 	private static final int SHIELDS_PER_STACK = 8;
 	private static final TargetProperties tp = TargetProperties.radius(5, false, TargetType.ENEMY);
 	private int damagePerStack, insanity;
-	
+
 	public Paranoia(boolean isUpgraded) {
 		super(ID, "Paranoia", isUpgraded, Rarity.EPIC, EquipmentClass.THIEF, EquipmentType.ABILITY,
 				EquipmentProperties.none());
 		damagePerStack = isUpgraded ? 150 : 100;
 		insanity = isUpgraded ? 120 : 80;
 	}
-	
+
 	public static Equipment get() {
 		return Equipment.get(ID, false);
 	}
@@ -46,13 +46,15 @@ public class Paranoia extends Equipment {
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta stacks = new ActionMeta();
-		ActionMeta timeSinceAttack = new ActionMeta();  // Tracks seconds since last basic attack
+		ActionMeta timeSinceAttack = new ActionMeta(); // Tracks seconds since last basic attack
 		ItemStack icon = item.clone();
 		ItemStack activeIcon = icon.withType(Material.PAPER);
 		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
-		
-		// Every second (20 ticks), gain a stack if not at max, and apply insanity if no attack in 2s
-		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {		Player p = data.getPlayer();			// Gain stacks
+
+		// Every second (20 ticks), gain a stack if not at max, and apply insanity if no
+		// attack in 2s
+		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
+			Player p = data.getPlayer(); // Gain stacks
 			if (stacks.getCount() < MAX_STACKS) {
 				stacks.addCount(1);
 				// Use active icon when we have stacks
@@ -60,7 +62,7 @@ public class Paranoia extends Equipment {
 				currentIcon.setAmount(stacks.getCount());
 				inst.setIcon(currentIcon);
 			}
-			
+
 			// Track time since last attack and apply insanity
 			timeSinceAttack.addCount(1);
 			if (timeSinceAttack.getCount() >= 2) {
@@ -69,34 +71,34 @@ public class Paranoia extends Equipment {
 					FightInstance.applyStatus(ent, StatusType.INSANITY, data, insanity, -1);
 				}
 			}
-			
+
 			return TriggerResult.keep();
 		});
-		
+
 		// On basic attack, consume all stacks for damage and shields, and reset timer
 		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
 			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
 			int currentStacks = stacks.getCount();
-			
+
 			// Reset attack timer
 			timeSinceAttack.setCount(0);
-			
+
 			// Only grant bonuses if we have stacks
 			if (currentStacks > 0) {
 				Player p = data.getPlayer();
 				// Deal bonus damage
-				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), 
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
 						new Buff(data, damagePerStack * currentStacks, 0, StatTracker.damageBuffAlly(id + slot, this)));
-				
+
 				// Grant shields
 				int shieldAmount = SHIELDS_PER_STACK * currentStacks;
 				data.addSimpleShield(p.getUniqueId(), shieldAmount, 100); // 5 seconds = 100 ticks
-				
+
 				// Reset stacks and icon to base
 				stacks.setCount(0);
 				inst.setIcon(icon);
 			}
-			
+
 			return TriggerResult.keep();
 		});
 	}
@@ -104,10 +106,11 @@ public class Paranoia extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SPYGLASS,
-				"Passive. For every second you don't basic attack, gain a stack (up to <white>" + MAX_STACKS + "</white>). " +
-				"The next time you basic attack, deal " + GlossaryTag.PIERCING.tag(this, damagePerStack, true) + " damage " +
-				"and gain " + GlossaryTag.SHIELDS.tag(this, SHIELDS_PER_STACK, true) + " for <white>5s</white> per stack. " +
-				"If you haven't basic attacked in the past <white>2s</white>, apply " + 
-				GlossaryTag.INSANITY.tag(this, insanity, true) + " to enemies around you every second.");
+				"Passive. For every second you don't basic attack, gain a stack (up to <white>" + MAX_STACKS
+						+ "</white>). " + "The next time you basic attack, deal "
+						+ GlossaryTag.PIERCING.tag(this, damagePerStack, true) + " damage " + "and gain "
+						+ GlossaryTag.SHIELDS.tag(this, SHIELDS_PER_STACK, true) + " for <white>5s</white> per stack. "
+						+ "If you haven't basic attacked in the past <white>2s</white>, apply "
+						+ GlossaryTag.INSANITY.tag(this, insanity, true) + " to enemies around you every second.");
 	}
 }
