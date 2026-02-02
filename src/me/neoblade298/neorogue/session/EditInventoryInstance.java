@@ -106,6 +106,11 @@ public abstract class EditInventoryInstance extends Instance {
 	}
 
 	@Override
+	public void handleSpectatorJoin(Player p) {
+		s.setupSpectatorInventory(p);
+	}
+
+	@Override
 	public void cleanup(boolean pluginDisable) {
 		for (PlayerSessionData data : s.getParty().values()) {
 			if (data.isViewingMap()) {

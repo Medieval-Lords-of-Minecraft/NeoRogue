@@ -11,7 +11,6 @@ import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Tag;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
@@ -308,10 +307,6 @@ public class LobbyInstance extends Instance {
 
 		new BukkitRunnable() {
 			public void run() {
-				for (UUID uuid : players.keySet()) {
-					Player p = Bukkit.getPlayer(uuid);
-					p.setHealth(p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
-				}
 				s.setInstance(new NodeSelectInstance(s));
 				s.setBusy(false);
 			}

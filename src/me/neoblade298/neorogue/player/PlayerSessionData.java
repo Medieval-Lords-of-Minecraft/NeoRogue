@@ -95,11 +95,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		this.armorSlots = rs.getInt("armorSlots");
 		this.accessorySlots = rs.getInt("accessorySlots");
 		this.instanceData = rs.getString("instanceData");
-
-		updateEquipmentLimits();
-
-		setupArtifacts();
-		updateBoardLines();
+		initialize();
 	}
 
 	public PlayerSessionData(UUID uuid, EquipmentClass ec, Session s) {
@@ -158,10 +154,17 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 			break;
 		}
 
-		setupArtifacts();
+		initialize();
+		data.getPlayer().setHealth(maxHealth);
+	}
+
+	private void initialize() {
 		data.getPlayer().setHealthScaled(true);
 		data.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHealth);
-		data.initialize(s, this);
+		data.getPlayer().setHealth(maxHealth);
+		setupArtifacts();
+		updateEquipmentLimits();
+		updateBoardLines();
 	}
 
 	public void updateEquipmentLimits() {
@@ -723,6 +726,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		health = Math.round(Math.min(this.maxHealth, getPlayer().getHealth()));
 	}
 
+	// Used to revert temporary max health changes in fights
 	public void revertMaxHealth() {
 		getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(this.maxHealth);
 	}

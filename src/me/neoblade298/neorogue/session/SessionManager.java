@@ -853,6 +853,7 @@ public class SessionManager implements Listener {
 		p.getInventory().clear();
 		PlayerFlags.applyDefaults(p);
 		p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
+		p.setHealthScaled(false);
 		p.getAttribute(Attribute.GENERIC_JUMP_STRENGTH)
 				.removeModifier(NamespacedKey.fromString("jump", NeoRogue.inst()));
 	}

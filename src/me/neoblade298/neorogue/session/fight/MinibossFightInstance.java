@@ -6,8 +6,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import org.bukkit.entity.Player;
-
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.Consumable;
@@ -117,15 +115,6 @@ public class MinibossFightInstance extends FightInstance {
 	
 	public String serializeInstanceData() {
 		return "MINIBOSS:" + map.serialize();
-	}
-
-	@Override
-	public void addSpectator(Player p) {
-	}
-
-	@Override
-	public void removeSpectator(Player p) {
-		
 	}
 
 	@Override

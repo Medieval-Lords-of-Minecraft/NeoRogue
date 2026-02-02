@@ -160,9 +160,12 @@ public abstract class FightInstance extends Instance {
 		return spectatorLines;
 	}
 
-	public abstract void addSpectator(Player p);
-	
-	public abstract void removeSpectator(Player p);
+	@Override
+	public void handleSpectatorJoin(Player p) {
+		for (BossBar bar : bars) {
+			bar.addPlayer(p);
+		}
+	}
 
 	private static String createHealthBar(PlayerFightData pfd) {
 		if (pfd != null && pfd.isDead()) {
@@ -288,6 +291,10 @@ public abstract class FightInstance extends Instance {
 		return true;
 	}
 
+	public boolean isActive() {
+		return isActive;
+	}
+
 	public void createIndicator(Component txt, Location src) {
 		TextDisplay td = (TextDisplay) src.getWorld().spawnEntity(src, EntityType.TEXT_DISPLAY);
 		td.text(txt);
@@ -336,6 +343,10 @@ public abstract class FightInstance extends Instance {
 		if (pdata.isDead()) {
 			p.setInvulnerable(true);
 			p.setInvisible(true);
+		}
+
+		for (BossBar bar : bars) {
+			bar.addPlayer(p);
 		}
 	}
 	

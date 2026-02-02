@@ -330,6 +330,12 @@ public class DamageMeta {
 		}
 		if (!(recipient instanceof PlayerFightData)) {
 			recipient.runMobActions(recipient, Trigger.PRE_RECEIVE_DAMAGE, rdev);
+			if (slices.getFirst().getPostBuffType().getCategories().contains(DamageCategory.GENERAL)) {
+				signalMob(target, damager, "NR_PRE_RECEIVE_DAMAGE_GENERAL");
+				System.out.println("Signaling mob");
+				System.out.println("Target: " + target);
+				System.out.println("Damager: " + damager);
+			}
 		}
 
 		// Status effects
@@ -748,6 +754,12 @@ public class DamageMeta {
 
 	public boolean isBasicAttack() {
 		return isBasicAttack;
+	}
+
+	private void signalMob(LivingEntity target, LivingEntity trigger, String signal) {
+		if (NeoRogue.mythicApi.isMythicMob(target)) {
+			NeoRogue.mythicApi.getMythicMobInstance(target).signalMob(BukkitAdapter.adapt(trigger), signal);
+		}
 	}
 
 	public boolean containsType(DamageCategory cat) {

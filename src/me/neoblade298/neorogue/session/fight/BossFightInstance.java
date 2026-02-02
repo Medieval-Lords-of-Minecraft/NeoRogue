@@ -6,8 +6,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import org.bukkit.entity.Player;
-
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Consumable;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -124,16 +122,6 @@ public class BossFightInstance extends FightInstance {
 	@Override
 	public String serializeInstanceData() {
 		return "BOSS:" + map.serialize();
-	}
-
-	@Override
-	public void addSpectator(Player p) {
-		
-	}
-
-	@Override
-	public void removeSpectator(Player p) {
-		
 	}
 
 	@Override

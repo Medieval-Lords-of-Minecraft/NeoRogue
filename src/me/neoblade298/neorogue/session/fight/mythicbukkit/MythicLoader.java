@@ -25,6 +25,9 @@ public class MythicLoader implements Listener {
 		case "isnrplayer":
 			condition = new ConditionIsNeoRoguePlayer();
 			break;
+		case "isinstanceactive":
+			condition = new ConditionIsInstanceActive(cfg);
+			break;
 		}
 		if (condition != null) {
 			event.register(condition);

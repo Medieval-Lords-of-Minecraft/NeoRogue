@@ -88,6 +88,14 @@ public abstract class Instance {
 	public void handlePlayerLogout(Player p) {
 		PlayerFlags.applyDefaults(p);
 	}
+
+	public void handleSpectatorJoin(Player p) {
+		
+	}
+
+	public void handleSpectatorLeave(Player p) {
+
+	}
 	
 	public Location getSpawn() {
 		return spawn;

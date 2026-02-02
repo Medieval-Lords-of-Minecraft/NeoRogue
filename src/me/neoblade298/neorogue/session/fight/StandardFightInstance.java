@@ -198,18 +198,6 @@ public void cleanup(boolean pluginDisable) {
 	public String serializeInstanceData() {
 		return "STANDARD:" + map.serialize();
 	}
-	
-	@Override
-	public void addSpectator(Player p) {
-		timeBar.addPlayer(p);
-		scoreBar.addPlayer(p);
-	}
-	
-	@Override
-	public void removeSpectator(Player p) {
-		timeBar.removePlayer(p);
-		scoreBar.removePlayer(p);
-	}
 
 	@Override
 	public void updateBoardLines() {

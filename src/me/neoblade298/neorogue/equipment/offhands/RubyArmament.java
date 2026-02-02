@@ -5,11 +5,13 @@ import java.util.UUID;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
@@ -44,16 +46,23 @@ public class RubyArmament extends Equipment {
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		String buffId = UUID.randomUUID().toString();
 		StandardPriorityAction act = new StandardPriorityAction(ID);
+		ItemStack patienceIcon = item.clone();
+		ItemStack powerIcon = item.clone().withType(Material.RED_NETHER_BRICKS);
+		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
+		inst.setIcon(patienceIcon);
+		
 		data.addTrigger(ID, Trigger.RIGHT_CLICK, (pdata, in) -> {
 			Player p = data.getPlayer();
 			if (act.getCount() == 0) {
 				act.setCount(1);
+				inst.setIcon(powerIcon);
 				Util.msg(p, "Entered stance <white>Power");
 				Sounds.fire.play(p, p);
 				power.play(p, p);
 			}
 			else {
 				act.setCount(0);
+				inst.setIcon(patienceIcon);
 				Util.msg(p, "Entered stance <white>Patience");
 				Sounds.enchant.play(p, p);
 				patience.play(p, p);

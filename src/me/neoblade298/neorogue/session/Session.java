@@ -336,19 +336,14 @@ public class Session {
 		p.setGameMode(GameMode.ADVENTURE);
 		p.teleport(inst.spawn);
 		inst.spectatorFlags.applyFlags(p);
-		
-		if (inst instanceof EditInventoryInstance) {
-			setupSpectatorInventory(p);
-		}
+		inst.handleSpectatorJoin(p);
 	}
 	
 	public void removeSpectator(Player p) {
 		broadcast("<yellow>" + p.getName() + "</yellow> stopped spectating!");
+		inst.handleSpectatorLeave(p);
 		spectators.remove(p.getUniqueId());
 		PlayerFlags.applyDefaults(p);
-		if (inst instanceof FightInstance) {
-			((FightInstance) inst).removeSpectator(p);
-		}
 		SessionManager.removeFromSession(p.getUniqueId());
 	}
 	
