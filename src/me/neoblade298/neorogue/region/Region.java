@@ -40,6 +40,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.world.World;
 
+import io.papermc.paper.datacomponent.item.ResolvableProfile;
 import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.effects.Audience;
 import me.neoblade298.neocore.bukkit.effects.Effect;
@@ -847,7 +848,7 @@ public class Region {
 						SkullMeta meta = (SkullMeta) headItem.getItemMeta();
 						headLoc.getBlock().setType(Material.PLAYER_HEAD);
 						Skull skull = (Skull) headLoc.getBlock().getState();
-						skull.setPlayerProfile(meta.getPlayerProfile());
+						skull.setProfile(ResolvableProfile.resolvableProfile(meta.getPlayerProfile()));
 						skull.update(true);
 					}
 					else {

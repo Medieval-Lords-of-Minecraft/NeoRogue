@@ -233,10 +233,10 @@ public class PlayerFightData extends FightData {
 	public void disableJump(int ticks) {
 		AttributeModifier mod = new AttributeModifier(NamespacedKey.fromString("jump", NeoRogue.inst()), -0.42,
 				Operation.ADD_NUMBER);
-		entity.getAttribute(Attribute.GENERIC_JUMP_STRENGTH).addModifier(mod);
+		entity.getAttribute(Attribute.JUMP_STRENGTH).addModifier(mod);
 		addGuaranteedTask(UUID.randomUUID(), new Runnable() {
 			public void run() {
-				entity.getAttribute(Attribute.GENERIC_JUMP_STRENGTH)
+				entity.getAttribute(Attribute.JUMP_STRENGTH)
 						.removeModifier(NamespacedKey.fromString("jump", NeoRogue.inst()));
 			}
 		}, ticks);
@@ -245,11 +245,11 @@ public class PlayerFightData extends FightData {
 	public void disableJump() {
 		AttributeModifier mod = new AttributeModifier(NamespacedKey.fromString("jump", NeoRogue.inst()), -0.42,
 				Operation.ADD_NUMBER);
-		entity.getAttribute(Attribute.GENERIC_JUMP_STRENGTH).addModifier(mod);
+		entity.getAttribute(Attribute.JUMP_STRENGTH).addModifier(mod);
 	}
 
 	public void enableJump() {
-		entity.getAttribute(Attribute.GENERIC_JUMP_STRENGTH)
+		entity.getAttribute(Attribute.JUMP_STRENGTH)
 				.removeModifier(NamespacedKey.fromString("jump", NeoRogue.inst()));
 	}
 
@@ -368,8 +368,8 @@ public class PlayerFightData extends FightData {
 		if (pfd != null && pfd.isDead) {
 			return "&c&m" + p.getName();
 		}
-		double percenthp = p.getHealth() / p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
-		double percentShield = pfd.getShields().getAmount() / p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+		double percenthp = p.getHealth() / p.getAttribute(Attribute.MAX_HEALTH).getValue();
+		double percentShield = pfd.getShields().getAmount() / p.getAttribute(Attribute.MAX_HEALTH).getValue();
 		percenthp *= 100;
 		percentShield *= 100;
 		int php = (int) percenthp;
@@ -935,7 +935,7 @@ public class PlayerFightData extends FightData {
 
 	public void addMaxHealth(double amount) {
 		this.maxHealth += amount;
-		getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(this.maxHealth);
+		getPlayer().getAttribute(Attribute.MAX_HEALTH).setBaseValue(this.maxHealth);
 	}
 
 }

@@ -24,6 +24,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Trident;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -54,6 +55,7 @@ import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import io.lumine.mythic.api.mobs.MythicMob;
@@ -496,13 +498,49 @@ public class SessionManager implements Listener {
 
 	@EventHandler
 	public void onPotionSplash(PotionSplashEvent e) {
-		if (e.getEntity().hasMetadata("uuid")) {
-			UUID uuid = (UUID) e.getEntity().getMetadata("uuid").get(0).value();
+		NamespacedKey key = new NamespacedKey(NeoRogue.inst(), "uuid");
+		String uuidString = e.getEntity().getPersistentDataContainer().get(key, PersistentDataType.STRING);
+		if (uuidString != null) {
+			UUID uuid = UUID.fromString(uuidString);
 			PotionProjectileInstance inst = PotionProjectileInstance.get(uuid);
 			if (inst == null)
 				return;
 			inst.callback(e.getPotion().getLocation(), e.getAffectedEntities());
 			PotionProjectileInstance.remove(uuid);
+		}
+	}
+
+	@EventHandler
+	public void onBlockBreak(BlockBreakEvent e) {
+		UUID uuid = e.getPlayer().getUniqueId();
+		if (sessions.containsKey(uuid)) {
+			Session s = sessions.get(uuid);
+
+			if (s.isSpectator(uuid)) {
+				e.setCancelled(true);
+				return;
+			}
+
+			if (s.getInstance() instanceof EditInventoryInstance) {
+				e.setCancelled(true);
+				return;
+			}
+
+			Block b = e.getBlock();
+			if (b.isPassable()) {
+				e.setDropItems(false);
+				return;
+			}
+			
+			e.setCancelled(true);
+		}
+	}
+
+	@EventHandler
+	public void onBlockPlace(BlockPlaceEvent e) {
+		UUID uuid = e.getPlayer().getUniqueId();
+		if (sessions.containsKey(uuid)) {
+			e.setCancelled(true);
 		}
 	}
 
@@ -862,9 +900,9 @@ public class SessionManager implements Listener {
 			return;
 		p.getInventory().clear();
 		PlayerFlags.applyDefaults(p);
-		p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
+		p.getAttribute(Attribute.MAX_HEALTH).setBaseValue(20);
 		p.setHealthScaled(false);
-		p.getAttribute(Attribute.GENERIC_JUMP_STRENGTH)
+		p.getAttribute(Attribute.JUMP_STRENGTH)
 				.removeModifier(NamespacedKey.fromString("jump", NeoRogue.inst()));
 	}
 

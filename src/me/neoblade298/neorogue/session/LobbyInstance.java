@@ -74,7 +74,7 @@ public class LobbyInstance extends Instance {
 		super(session, SPAWN_X, SPAWN_Z, new PlayerFlags(PlayerFlag.CAN_FLY));
 		this.name = name;
 		this.host = host.getUniqueId();
-		host.setGameMode(GameMode.ADVENTURE);
+		host.setGameMode(GameMode.SURVIVAL);
 		players.put(host.getUniqueId(), EquipmentClass.WARRIOR);
 		host.teleport(spawn);
 		spectatorLines = playerLines;
@@ -131,6 +131,7 @@ public class LobbyInstance extends Instance {
 	public void addPlayer(Player p) {
 		if (MAX_SIZE <= players.size()) {
 			Util.msgRaw(p, maxSizeError);
+			return;
 		}
 
 		if (s.isBusy()) {
@@ -139,7 +140,7 @@ public class LobbyInstance extends Instance {
 		}
 
 		invited.remove(p.getUniqueId());
-		p.setGameMode(GameMode.ADVENTURE);
+		p.setGameMode(GameMode.SURVIVAL);
 		players.put(p.getUniqueId(), EquipmentClass.WARRIOR);
 		SessionManager.addToSession(p.getUniqueId(), this.s);
 		p.teleport(spawn);

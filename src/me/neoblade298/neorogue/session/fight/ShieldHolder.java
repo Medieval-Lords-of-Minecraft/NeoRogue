@@ -60,11 +60,11 @@ public class ShieldHolder {
 	protected void update() {
 		double pct = 0;
 		Attributable entity = (Attributable) data.getEntity();
-		if (max > entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()) {
+		if (max > entity.getAttribute(Attribute.MAX_HEALTH).getValue()) {
 			pct = amount / max;
 		}
 		else {
-			pct = amount / entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+			pct = amount / entity.getAttribute(Attribute.MAX_HEALTH).getValue();
 		}
 		pct = Math.max(0, pct);
 		double absorb = Math.round(pct * 20);

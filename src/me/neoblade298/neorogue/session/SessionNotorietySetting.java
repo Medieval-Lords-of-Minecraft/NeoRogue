@@ -40,7 +40,7 @@ public class SessionNotorietySetting extends SessionSetting{
     @Override
     public ItemStack getItem(Session s) {
         icon = CoreInventory.createButton(mat, Component.text(title, NamedTextColor.GOLD));
-        icon.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP, ItemFlag.HIDE_ARMOR_TRIM, ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS);
+        icon.addItemFlags(ItemFlag.HIDE_ARMOR_TRIM, ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS);
         int level = getValue(s);
         if (level > 0) {
             icon.setAmount(level);

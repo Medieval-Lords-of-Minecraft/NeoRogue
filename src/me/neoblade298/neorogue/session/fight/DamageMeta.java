@@ -278,8 +278,8 @@ public class DamageMeta {
 		returnDamage.isSecondary = true;
 
 		// Remove all armor from entity, apparently this can't be done on-spawn because armor is added asynchronously or something
-		AttributeInstance armor = target.getAttribute(Attribute.GENERIC_ARMOR);
-		AttributeInstance toughness = target.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS);
+		AttributeInstance armor = target.getAttribute(Attribute.ARMOR);
+		AttributeInstance toughness = target.getAttribute(Attribute.ARMOR_TOUGHNESS);
 		armor.setBaseValue(0);
 		armor.getModifiers().forEach(mod -> armor.removeModifier(mod));
 		toughness.setBaseValue(0);

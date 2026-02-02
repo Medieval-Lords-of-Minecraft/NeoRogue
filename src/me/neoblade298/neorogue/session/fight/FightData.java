@@ -229,7 +229,7 @@ public class FightData {
 		}
 		
 		am.setShowCustomNameplate(true);
-		double healthPct = entity.getHealth() / entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+		double healthPct = entity.getHealth() / entity.getAttribute(Attribute.MAX_HEALTH).getValue();
 		String healthColor;
 		if (healthPct < 0.33) {
 			healthColor = "&c";
@@ -241,7 +241,7 @@ public class FightData {
 			healthColor = "&a";
 		}
 		
-		String bottomLine = healthColor + (int) Math.ceil(entity.getHealth()) + "&f/" + healthColor + (int) entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+		String bottomLine = healthColor + (int) Math.ceil(entity.getHealth()) + "&f/" + healthColor + (int) entity.getAttribute(Attribute.MAX_HEALTH).getValue();
 		bottomLine += " " + mobDisplay;
 		
 		ArrayList<Status> list = new ArrayList<Status>(statuses.values());
@@ -279,7 +279,7 @@ public class FightData {
 	
 	public void addHealth(double amount) {
 		double curr = entity.getHealth();
-		double after = Math.min(entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue(), curr + amount);
+		double after = Math.min(entity.getAttribute(Attribute.MAX_HEALTH).getValue(), curr + amount);
 		entity.setHealth(after);
 	}
 	

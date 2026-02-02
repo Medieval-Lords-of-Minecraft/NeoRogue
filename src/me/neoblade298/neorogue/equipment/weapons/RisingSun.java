@@ -88,7 +88,7 @@ public class RisingSun extends Equipment {
 								// Rotate player
 								Location loc = p.getLocation().clone();
 								loc.setYaw(loc.getYaw() + 60);
-								p.teleport(loc, TeleportFlag.Relative.X, TeleportFlag.Relative.Y, TeleportFlag.Relative.Z, TeleportFlag.Relative.PITCH);
+								p.teleport(loc, TeleportFlag.Relative.VELOCITY_X, TeleportFlag.Relative.VELOCITY_Y, TeleportFlag.Relative.VELOCITY_Z, TeleportFlag.Relative.VELOCITY_ROTATION);
 							}
 						}.runTaskLater(NeoRogue.inst(), i * 3);
 					}

@@ -100,6 +100,7 @@ public class Session {
 	
 	private static Clipboard classSelect, nodeSelect, rewardsRoom, shrine, shop, chance, lose;
 	static {
+		// Worldedit schematics
 		classSelect = loadClipboard("classselect.schem");
 		nodeSelect = loadClipboard("nodeselect.schem");
 		rewardsRoom = loadClipboard("rewards.schem");
@@ -108,6 +109,7 @@ public class Session {
 		chance = loadClipboard("chance.schem");
 		lose = loadClipboard("graveyard.schem");
 
+		// Firework colors
 		fireworkColors.add(Color.RED);
 		fireworkColors.add(Color.BLUE);
 		fireworkColors.add(Color.GREEN);

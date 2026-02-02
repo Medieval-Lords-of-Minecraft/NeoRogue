@@ -30,9 +30,9 @@ public class UpgradeTreeInventory extends CoreInventory {
 			contents[ent.getKey()] = ent.getValue().getIcon(data);
 		}
 		
-		TextComponent c = Component.text("You have ", NamedTextColor.GRAY).toBuilder()
+		TextComponent c = Component.text("You have ", NamedTextColor.GRAY)
 				.append(Component.text(data.getPoints(), NamedTextColor.YELLOW))
-				.append(Component.text(" points to use")).build();
+				.append(Component.text(" points to use"));
 		contents[53] = CoreInventory.createButton(Material.ENCHANTED_BOOK, c);
 		inv.setContents(contents);
 	}
@@ -51,9 +51,9 @@ public class UpgradeTreeInventory extends CoreInventory {
 			for (Entry<Integer, UpgradeHolder> ent : tree.getUpgrades().entrySet()) {
 				contents[ent.getKey()] = ent.getValue().updateItem(contents[ent.getKey()], data);
 			}
-			TextComponent c = Component.text("You have ", NamedTextColor.GRAY).toBuilder()
+			TextComponent c = Component.text("You have ", NamedTextColor.GRAY)
 					.append(Component.text(data.getPoints(), NamedTextColor.YELLOW))
-					.append(Component.text(" points to use")).build();
+					.append(Component.text(" points to use"));
 			contents[53] = CoreInventory.createButton(Material.ENCHANTED_BOOK, c);
 			inv.setContents(contents);
 		}

@@ -42,7 +42,7 @@ public class CmdAdminMiniboss extends Subcommand {
 		for (Player p : Bukkit.getOnlinePlayers()) {
 			SessionManager.addToSession(p.getUniqueId(), sess);
 			sess.addPlayer(p.getUniqueId(), EquipmentClass.WARRIOR);
-			p.setHealth(p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+			p.setHealth(p.getAttribute(Attribute.MAX_HEALTH).getValue());
 		}
 		sess.generateRegion(RegionType.LOW_DISTRICT);
 		sess.setNode(sess.getRegion().getNodes()[0][2]);

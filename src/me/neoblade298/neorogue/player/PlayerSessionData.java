@@ -160,7 +160,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 
 	private void initialize() {
 		data.getPlayer().setHealthScaled(true);
-		data.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHealth);
+		data.getPlayer().getAttribute(Attribute.MAX_HEALTH).setBaseValue(maxHealth);
 		data.getPlayer().setHealth(maxHealth);
 		setupArtifacts();
 		updateEquipmentLimits();
@@ -181,7 +181,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 
 	public void cleanup() {
 		data.getPlayer().setHealthScaled(false);
-		data.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
+		data.getPlayer().getAttribute(Attribute.MAX_HEALTH).setBaseValue(20);
 	}
 
 	public UUID getUniqueId() {
@@ -669,7 +669,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 
 	public void addMaxHealth(int amount) {
 		this.maxHealth += amount;
-		this.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHealth);
+		this.getPlayer().getAttribute(Attribute.MAX_HEALTH).setBaseValue(maxHealth);
 	}
 
 	public void addMaxStamina(int amount) {
@@ -728,7 +728,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 
 	// Used to revert temporary max health changes in fights
 	public void revertMaxHealth() {
-		getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(this.maxHealth);
+		getPlayer().getAttribute(Attribute.MAX_HEALTH).setBaseValue(this.maxHealth);
 	}
 
 	public void updateCoinsBar() {
@@ -846,7 +846,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		accessorySlots = Integer.parseInt(arr[i++]);
 		coins = Integer.parseInt(arr[i++]);
 
-		getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHealth);
+		getPlayer().getAttribute(Attribute.MAX_HEALTH).setBaseValue(maxHealth);
 		getPlayer().setHealth(health);
 
 		// Need to initialize artifacts after deserialization

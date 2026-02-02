@@ -1294,7 +1294,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			meta.addEnchant(Enchantment.INFINITY, 1, true); // Needed for now
 		}
 
-		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_DYE, ItemFlag.HIDE_ADDITIONAL_TOOLTIP, ItemFlag.HIDE_ARMOR_TRIM);
+		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_DYE, ItemFlag.HIDE_ARMOR_TRIM);
 		meta.setEnchantmentGlintOverride(isUpgraded);
 		meta.setUnbreakable(true);
 		properties.modifyItemMeta(item, meta);

@@ -53,7 +53,7 @@ public class MightySwing extends Equipment {
 			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata2, in) -> {
 				if (p.isOnGround()) return TriggerResult.keep();
 				PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
-				double pct = ev.getTarget().getHealth() / ev.getTarget().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+				double pct = ev.getTarget().getHealth() / ev.getTarget().getAttribute(Attribute.MAX_HEALTH).getValue();
 				Sounds.anvil.play(p, p);
 				hit.play(p, ev.getTarget().getLocation());
 				if (pct > 0.5) {

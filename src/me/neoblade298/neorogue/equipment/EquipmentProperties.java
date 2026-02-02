@@ -215,7 +215,7 @@ public class EquipmentProperties {
 				? properties.get(PropertyType.ATTACK_SPEED).amount
 				: 0;
 		if (name.endsWith("SWORD") || name.endsWith("AXE") || name.endsWith("HOE") || name.endsWith("SHOVEL")) {
-			meta.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED,
+			meta.addAttributeModifier(Attribute.ATTACK_SPEED,
 					new AttributeModifier(new NamespacedKey(NeoRogue.inst(), "neorogue_attackspeed"), attackSpeed - 4,
 							Operation.ADD_NUMBER, EquipmentSlotGroup.HAND));
 		}

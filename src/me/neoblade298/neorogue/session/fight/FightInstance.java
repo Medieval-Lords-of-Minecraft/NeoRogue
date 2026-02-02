@@ -182,7 +182,7 @@ public abstract class FightInstance extends Instance {
 			return "&7&m" + pfd.getSessionData().getData().getDisplay();
 		}
 		Player p = pfd.getPlayer();
-		double percenthp = p.getHealth() / p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+		double percenthp = p.getHealth() / p.getAttribute(Attribute.MAX_HEALTH).getValue();
 		percenthp *= 100;
 		int php = (int) percenthp;
 		String color = "§a";
@@ -823,7 +823,7 @@ public abstract class FightInstance extends Instance {
 
 			double toSet = Math.min(
 					caster.getHealth() + amount,
-					((Attributable) caster).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()
+					((Attributable) caster).getAttribute(Attribute.MAX_HEALTH).getValue()
 			);
 			double actual = toSet - caster.getHealth();
 
