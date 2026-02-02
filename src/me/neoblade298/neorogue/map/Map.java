@@ -383,6 +383,7 @@ public class Map {
 	
 	// Used to calculate blocked entrances because of how deserialization ignores entrances
 	private void recalculateEntrances() {
+		System.out.println("Calculating entrances...");
 		for (MapPieceInstance inst : pieces) {
 			// First add all entrances
 			if (inst.getPiece().getEntrances() != null) {
@@ -393,20 +394,19 @@ public class Map {
 		}
 		
 		// Remove connected entrances
-		for (MapPieceInstance inst : pieces) {
-			if (inst.getPiece().getEntrances() != null) {
-				for (Coordinates ent : inst.getPiece().getEntrances()) {
-					Coordinates toRemove = null;
-					for (Coordinates otherEnt : entrances) {
-						if (ent.canConnect(otherEnt)) {
-							toRemove = otherEnt;
-							break;
-						}
-					}
-					entrances.remove(toRemove);
-					entrances.remove(ent);
+		ArrayList<Coordinates> toRemove = new ArrayList<Coordinates>();
+		for (Coordinates ent1 : entrances) {
+			for (Coordinates ent2 : entrances) {
+				if (ent1.canConnect(ent2)) {
+					toRemove.add(ent1);
+					toRemove.add(ent2);
+					break;
 				}
 			}
+		}
+
+		for (Coordinates rem : toRemove) {
+			entrances.remove(rem);
 		}
 	}
 

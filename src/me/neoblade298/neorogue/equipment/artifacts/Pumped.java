@@ -42,6 +42,6 @@ public class Pumped extends Artifact {
 	
 	@Override
 	public void setupItem() {
-		item = createItem(Material.IRON_SWORD, "Grants " + GlossaryTag.STRENGTH.tag(this, str, false) + " at the start of the fight and removes <white>1</white> of itself.");
+		item = createItem(Material.IRON_BARS, "Grants " + GlossaryTag.STRENGTH.tag(this, str, false) + " at the start of the fight and removes <white>1</white> of itself.");
 	}
 }
