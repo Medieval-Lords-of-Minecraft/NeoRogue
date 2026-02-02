@@ -36,19 +36,19 @@ import me.neoblade298.neorogue.session.fight.trigger.event.LeftClickHitEvent;
 
 public class StoneSpear extends Equipment {
 	private static final String ID = "StoneSpear";
-	private int damage, throwDamage, throwCooldown = 5;
+	private int damage, throwDamage, throwCooldown = 5, strMult = 3;
 	private static final ParticleContainer throwPart = new ParticleContainer(Particle.CLOUD);
 	private static final TargetProperties spearHit = TargetProperties.line(4, 1, TargetType.ENEMY);
 
 	public StoneSpear(boolean isUpgraded) {
 		super(
 				ID, "Stone Spear", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR, EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(isUpgraded ? 50 : 40, 0.5, 0.5, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_CRIT)
+				EquipmentProperties.ofWeapon(40, 0.5, 0.5, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_CRIT)
 		);
-		properties.addUpgrades(PropertyType.DAMAGE);
 		
 		damage = (int) properties.get(PropertyType.DAMAGE);
 		throwDamage = isUpgraded ? 120 : 90;
+		strMult = isUpgraded ? 4 : 3;
 	}
 	
 	public static Equipment get() {
@@ -64,7 +64,7 @@ public class StoneSpear extends Equipment {
 				return TriggerResult.keep();
 			LeftClickHitEvent ev = (LeftClickHitEvent) in;
 			weaponSwing(p, data);
-			weaponDamage(p, data, ev.getTarget(), damage + data.getStatus(StatusType.STRENGTH).getStacks() * 2);
+			weaponDamage(p, data, ev.getTarget(), damage + data.getStatus(StatusType.STRENGTH).getStacks() * (strMult - 1));
 			return TriggerResult.keep();
 		});
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK_NO_HIT, (pdata, in) -> {
@@ -142,7 +142,7 @@ public class StoneSpear extends Equipment {
 				Material.TRIDENT,
 				"Melee range +1. Can be thrown to deal <yellow>" + throwDamage + "</yellow> " + GlossaryTag.PIERCING.tag(this) + " "
 						+ "damage to all enemies hit, but disabling the weapon for <white>5</white> seconds. "
-						+ "Basic attacks and throw damage are affected by strength <white>3x</white>."
+						+ "Basic attacks and throw damage are affected by strength <yellow>" + strMult + "x</yellow>."
 		);
 	}
 }
