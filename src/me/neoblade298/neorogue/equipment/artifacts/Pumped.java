@@ -18,6 +18,7 @@ public class Pumped extends Artifact {
 	public Pumped() {
 		super(ID, "Pumped", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
 		canDrop = false;
+		canStack = true;
 	}
 
 	public static Equipment get() {
@@ -41,6 +42,6 @@ public class Pumped extends Artifact {
 	
 	@Override
 	public void setupItem() {
-		item = createItem(Material.IRON_SWORD, "Grants " + GlossaryTag.STRENGTH.tag(this, str, false) + " at the start of the fight and removes itself.");
+		item = createItem(Material.IRON_SWORD, "Grants " + GlossaryTag.STRENGTH.tag(this, str, false) + " at the start of the fight and removes <white>1</white> of itself.");
 	}
 }

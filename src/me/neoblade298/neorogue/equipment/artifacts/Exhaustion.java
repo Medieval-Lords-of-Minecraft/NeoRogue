@@ -52,6 +52,6 @@ public class Exhaustion extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.DEAD_FIRE_CORAL, "Decreases max abilities by <white>1</white> when you have at least one. " + 
-			"Removes one of itself after after <white>1</white> fight.");
+			"Removes one of itself after <white>1</white> fight.");
 	}
 }

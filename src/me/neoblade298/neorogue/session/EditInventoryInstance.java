@@ -106,6 +106,16 @@ public abstract class EditInventoryInstance extends Instance {
 	}
 
 	@Override
+	public void handlePlayerLogin(Player p) {
+		if (s.isSpectator(p.getUniqueId())) {
+			return;
+		}
+		else {
+			s.getData(p.getUniqueId()).syncHealth();
+		}
+	}
+
+	@Override
 	public void handleSpectatorJoin(Player p) {
 		s.setupSpectatorInventory(p);
 	}

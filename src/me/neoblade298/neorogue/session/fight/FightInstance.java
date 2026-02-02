@@ -167,6 +167,13 @@ public abstract class FightInstance extends Instance {
 		}
 	}
 
+	@Override
+	public void handleSpectatorLeave(Player p) {
+		for (BossBar bar : bars) {
+			bar.removePlayer(p);
+		}
+	}
+
 	private static String createHealthBar(PlayerFightData pfd) {
 		if (pfd != null && pfd.isDead()) {
 			return "&c&m" + pfd.getSessionData().getData().getDisplay();
@@ -330,8 +337,8 @@ public abstract class FightInstance extends Instance {
 	}
 
 	@Override
-	public void handlePlayerRejoin(Player p) {
-		super.handlePlayerRejoin(p);
+	public void handlePlayerLogin(Player p) {
+		super.handlePlayerLogin(p);
 		PlayerFightData pdata = getUserData(p.getUniqueId());
 		if (pdata == null) {
 			Bukkit.getLogger().warning("[NeoRogue] Failed to get player fight data on rejoin for " + p.getName());
@@ -392,7 +399,7 @@ public abstract class FightInstance extends Instance {
 
 		broadcastStatistics();
 		s.launchFireworks();
-		cleanupHelper();
+		cleanupHelper(false);
 		s.broadcastTitle(title);
 		s.broadcastSound(Sound.UI_TOAST_CHALLENGE_COMPLETE);
 
@@ -572,7 +579,7 @@ public abstract class FightInstance extends Instance {
 
 					// Revive not complete
 					if (count == 4) {
-						completeRevive(p, corpse);
+						completeRevive(p, corpse, reviveBar);
 					}
 				}
 			}.runTaskLater(NeoRogue.inst(), 20 * i));
@@ -609,7 +616,7 @@ public abstract class FightInstance extends Instance {
 		}
 	}
 
-	private void completeRevive(Player p, Corpse corpse) {
+	private void completeRevive(Player p, Corpse corpse, BossBar reviveBar) {
 		Player dead = corpse.data.getPlayer();
 		Sounds.levelup.play(dead, dead);
 		revivePart.play(p, p);
@@ -623,6 +630,7 @@ public abstract class FightInstance extends Instance {
 		deadData.setDeath(false);
 		deadData.applyStatus(StatusType.INVINCIBLE, reviverData, 1, 20);
 		reviverData.getStats().addRevive();
+		bars.remove(reviveBar);
 		new BukkitRunnable() {
 			@Override
 			public void run() {
@@ -1055,10 +1063,10 @@ public abstract class FightInstance extends Instance {
 	
 	@Override
 	public void cleanup(boolean pluginDisable) {
-		cleanupHelper();
+		cleanupHelper(pluginDisable);
 	}
 
-	private void cleanupHelper() {
+	private void cleanupHelper(boolean pluginDisable) {
 		if (isCleaned) return;
 		isCleaned = true;
 		for (UUID uuid : s.getParty().keySet()) {
@@ -1103,20 +1111,21 @@ public abstract class FightInstance extends Instance {
 				ent.remove();
 		}
 
-		for (BukkitRunnable cleanupTask : cleanupTasks) {
-			cleanupTask.runTask(NeoRogue.inst());
-		}
-		
-		
-		for (BukkitTask task : tasks) {
-			task.cancel();
-		}
+		if (!pluginDisable) {
+			for (BukkitRunnable cleanupTask : cleanupTasks) {
+				cleanupTask.runTask(NeoRogue.inst());
+			}
 
-		// Avoids concurrent modification (killing them removes them)
-		for (FightData fd : toKill) {
-			if (fd.getEntity() != null) {
-				LivingEntity li = fd.getEntity();
-				li.damage(li.getHealth() + 20);
+			for (BukkitTask task : tasks) {
+				task.cancel();
+			}
+
+			// Avoids concurrent modification (killing them removes them)
+			for (FightData fd : toKill) {
+				if (fd.getEntity() != null) {
+					LivingEntity li = fd.getEntity();
+					li.damage(li.getHealth() + 20);
+				}
 			}
 		}
 	}

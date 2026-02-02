@@ -71,7 +71,7 @@ public abstract class Instance {
 		setup();
 	}
 	
-	public void handlePlayerRejoin(Player p) {
+	public void handlePlayerLogin(Player p) {
 		if (s.isSpectator(p.getUniqueId())) {
 			spectatorFlags.applyFlags(p);
 		}

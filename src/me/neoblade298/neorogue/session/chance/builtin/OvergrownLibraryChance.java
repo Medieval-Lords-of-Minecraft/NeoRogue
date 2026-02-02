@@ -68,7 +68,7 @@ public class OvergrownLibraryChance extends ChanceSet {
 		}));
 
 		stage.addChoice(new ChanceChoice(Material.IRON_SWORD, "Reading is for nerds, I'll do some pushups",
-				"Increase your strength by <white>50</white> for <white>2</white> fights.",
+				"Increase your strength by <white>25</white> for <white>2</white> fights.",
 				(s, inst, data) -> {
 					Player p = data.getPlayer();
 					data.giveArtifact((Artifact) Pumped.get(), 2);

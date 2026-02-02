@@ -232,6 +232,7 @@ public class Session {
 
 		for (PlayerSessionData psd : party.values()) {
 			psd.setupInventory();
+			psd.syncHealth();
 		}
 	}
 	

@@ -140,6 +140,14 @@ public class SessionManager implements Listener {
 		// Reserve a plot for this session
 		Plot plot = findPlot();
 		
+		// If host is the only party member, load instantly
+		if (ss.getPartyIds().size() == 1) {
+			Session s = new Session(p, plot, saveSlot);
+			sessionPlots.put(plot, s);
+			Util.msg(p, Component.text("Loading session...", NamedTextColor.GREEN));
+			return;
+		}
+		
 		// Create pending load request
 		PendingSessionLoad pending = new PendingSessionLoad(p.getUniqueId(), p.getName(), saveSlot, 
 			new HashMap<UUID, String>(ss.getPartyIds()), plot);
@@ -815,8 +823,10 @@ public class SessionManager implements Listener {
 		Player p = e.getPlayer();
 		if (sessions.containsKey(p.getUniqueId())) {
 			Session s = sessions.get(p.getUniqueId());
-			s.getData(p.getUniqueId()).syncHealth();
-			s.getInstance().handlePlayerRejoin(p);
+			if (!s.isSpectator(p.getUniqueId())) {
+				p.setHealthScaled(true);
+			}
+			s.getInstance().handlePlayerLogin(p);
 		} else {
 			p.teleport(NeoRogue.spawn);
 			resetPlayer(p);
