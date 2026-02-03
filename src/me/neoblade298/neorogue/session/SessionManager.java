@@ -82,13 +82,13 @@ public class SessionManager implements Listener {
 	private static HashMap<UUID, Session> sessions = new HashMap<UUID, Session>();
 	private static HashMap<Plot, Session> sessionPlots = new HashMap<Plot, Session>();
 	
-	public static Session createSession(Player p, String name, int saveSlot) {
-		return createSession(p, name, saveSlot, true);
+	public static Session createSession(Player p, int saveSlot) {
+		return createSession(p, saveSlot, true);
 	}
 
-	public static Session createSession(Player p, String name, int saveSlot, boolean isNew) {
+	public static Session createSession(Player p, int saveSlot, boolean isNew) {
 		Plot plot = findPlot();
-		Session s = new Session(p, plot, name, saveSlot, isNew);
+		Session s = new Session(p, plot, saveSlot, isNew);
 		sessions.put(p.getUniqueId(), s);
 		sessionPlots.put(plot, s);
 

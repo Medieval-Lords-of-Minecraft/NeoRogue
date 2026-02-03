@@ -181,7 +181,7 @@ public class NeoRogue extends JavaPlugin {
 	}
 	
 	public static void debugInitialize(Player host, @Nullable Collection<Player> others, EquipmentClass ec, RegionType regionType) {
-		Session s = SessionManager.createSession(host, "test", 5);
+		Session s = SessionManager.createSession(host, 5);
 		s.generateRegion(regionType);
 		s.addPlayer(host.getUniqueId(), ec);
 		s.setNodesVisited(regionType == RegionType.HARVEST_FIELDS ? 16 : 0);

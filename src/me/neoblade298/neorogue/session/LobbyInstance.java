@@ -22,7 +22,6 @@ public abstract class LobbyInstance extends Instance {
 	public static final int MAX_SIZE = 4;
 
 	protected Session session;
-	protected String name;
 	protected HashSet<UUID> invited = new HashSet<UUID>(), inLobby = new HashSet<UUID>();
 	protected UUID host;
 	protected Component partyInfoHeader;
@@ -35,21 +34,22 @@ public abstract class LobbyInstance extends Instance {
 					NamedTextColor.RED),
 			hostOnlyKick = Component.text("Only the host may kick other players!", NamedTextColor.RED),
 			playerNotInLobby = Component.text("That player isn't in the lobby!", NamedTextColor.RED);
+	protected String name;
 
 	@Override
 	public void setup() {
 
 	}
 
-	public LobbyInstance(String name, Player host, Session session, double spawnX, double spawnZ) {
+	public LobbyInstance(Player host, Session session, double spawnX, double spawnZ) {
 		super(session, spawnX, spawnZ, new PlayerFlags(PlayerFlag.CAN_FLY));
 		this.session = session;
-		this.name = name;
 		this.host = host.getUniqueId();
 		host.setGameMode(GameMode.SURVIVAL);
 		host.teleport(spawn);
 		spectatorLines = playerLines;
 		inLobby.add(host.getUniqueId());
+		name = host.getName() + "'s Lobby";
 
 		partyInfoHeader = Component.text().content("<< ( ").color(NamedTextColor.GRAY)
 				.append(Component.text(name, NamedTextColor.RED)).append(Component.text(" ) >>"))
@@ -71,16 +71,16 @@ public abstract class LobbyInstance extends Instance {
 		}
 
 		if (p.getUniqueId().equals(host)) {
-			SessionManager.endSession(s);
 			TextComponent tc = Component.text().content(p.getName()).color(NamedTextColor.YELLOW)
 					.append(Component.text(" disbanded the lobby!", NamedTextColor.GRAY)).build();
 			broadcast(tc);
+			SessionManager.endSession(s);
 		} else {
-			inLobby.remove(p.getUniqueId());
 			SessionManager.removeFromSession(p.getUniqueId());
 			TextComponent tc = Component.text().content(p.getName()).color(NamedTextColor.YELLOW)
 					.append(Component.text(" left the lobby!", NamedTextColor.GRAY)).build();
 			broadcast(tc);
+			inLobby.remove(p.getUniqueId());
 		}
 		p.teleport(NeoRogue.spawn);
 		updateBoardLines();
@@ -108,10 +108,6 @@ public abstract class LobbyInstance extends Instance {
 
 	public HashSet<UUID> getInvited() {
 		return invited;
-	}
-
-	public String getName() {
-		return name;
 	}
 
 	@Override

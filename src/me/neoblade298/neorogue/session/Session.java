@@ -151,13 +151,13 @@ public class Session {
 		pasteSchematic(clipboard, editSession, session, 0, 0, zOff);
 	}
 	
-	public Session(Player p, Plot plot, String lobby, int saveSlot, boolean isNew) {
+	public Session(Player p, Plot plot, int saveSlot, boolean isNew) {
 		this.saveSlot = saveSlot;
 		this.xOff = plot.getXOffset();
 		this.zOff = plot.getZOffset();
 		host = p.getUniqueId();
 		this.plot = plot;
-		this.inst = isNew ? new NewLobbyInstance(lobby, p, this) : new LoadLobbyInstance(lobby, p, this);
+		this.inst = isNew ? new NewLobbyInstance(p, this) : new LoadLobbyInstance(p, this);
 		generateInterstitials();
 
 		if (!isNew) {
@@ -228,7 +228,7 @@ public class Session {
 	
 	private void generateInterstitials() {
 		Location loc = new Location(Bukkit.getWorld(Region.WORLD_NAME), -(xOff + 1), 62, zOff);
-		Material versionCheck = Material.DIAMOND_BLOCK; // Change this when interstitials change to regen them
+		Material versionCheck = Material.COBBLESTONE; // Change this when interstitials change to regen them
 		
 		if (loc.getBlock().getType() != versionCheck) {
 			Bukkit.getLogger().info("[NeoRogue] Generating interstitials for host " + Bukkit.getPlayer(host).getName());

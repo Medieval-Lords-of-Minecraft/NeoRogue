@@ -46,8 +46,8 @@ public class NewLobbyInstance extends LobbyInstance {
 	private HashMap<UUID, EquipmentClass> players = new HashMap<UUID, EquipmentClass>();
 	private HashSet<UUID> ready = new HashSet<UUID>();
 
-    public NewLobbyInstance(String name, Player host, Session s) {
-        super(name, host, s, SPAWN_X, SPAWN_Z);
+    public NewLobbyInstance(Player host, Session s) {
+        super(host, s, SPAWN_X, SPAWN_Z);
 
 		players.put(host.getUniqueId(), EquipmentClass.WARRIOR);
 
@@ -83,10 +83,10 @@ public class NewLobbyInstance extends LobbyInstance {
 		TextComponent tc = Component.text().content(recipient.getName()).color(NamedTextColor.YELLOW)
 				.append(Component.text(" was invited to the lobby!", NamedTextColor.GRAY)).build();
 		broadcast(tc);
-		Util.msg(recipient, Component.text("You've been invited to the ")
-				.append(Component.text(name, NamedTextColor.YELLOW)).append(Component.text(" party by "))
-				.append(Component.text(inviter.getName(), NamedTextColor.YELLOW)).append(Component.text("!")));
-		Util.msg(recipient, NeoCore.miniMessage().deserialize(invPrefix + name + invSuffix));
+		Util.msg(recipient, Component.text("You've been invited to ")
+				.append(Component.text(name, NamedTextColor.YELLOW)).append(Component.text("!")));
+        Util.msg(recipient,
+                NeoCore.miniMessage().deserialize(invPrefix + Bukkit.getPlayer(host).getName() + invSuffix));
 	}
     
     @Override

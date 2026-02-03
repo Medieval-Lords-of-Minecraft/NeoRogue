@@ -38,7 +38,7 @@ public class CmdAdminBoss extends Subcommand {
 	@Override
 	public void run(CommandSender s, String[] args) {
 		Player host = (Player) s;
-		Session sess = SessionManager.createSession(host, "test", 1);
+		Session sess = SessionManager.createSession(host, 1);
 		for (Player p : Bukkit.getOnlinePlayers()) {
 			SessionManager.addToSession(p.getUniqueId(), sess);
 			sess.addPlayer(p.getUniqueId(), EquipmentClass.WARRIOR);

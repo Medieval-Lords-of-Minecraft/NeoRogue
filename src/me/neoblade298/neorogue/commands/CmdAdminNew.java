@@ -26,7 +26,7 @@ public class CmdAdminNew extends Subcommand {
 			return;
 		}
 		
-		Session sess = SessionManager.createSession(p, "test", 1);
+		Session sess = SessionManager.createSession(p, 1);
 		sess.generateRegion(RegionType.HARVEST_FIELDS);
 		sess.setNodesVisited(15);
 		sess.setRegionsCompleted(1);

@@ -15,7 +15,7 @@ public class CmdNew extends Subcommand {
 
 	public CmdNew(String key, String desc, String perm, SubcommandRunner runner) {
 		super(key, desc, perm, runner);
-		args.add(new Arg("save slot", false), new Arg("party name", false));
+		args.add(new Arg("save slot", false));
 	}
 
 	@Override
@@ -38,11 +38,6 @@ public class CmdNew extends Subcommand {
 			return;
 		}
 		
-		if (args.length == 2) {
-			SessionManager.createSession(p, args[1], slot, true); 
-		}
-		else if (args.length == 1) {
-			SessionManager.createSession(p, p.getName() + "Party", slot, true); 
-		}
+		SessionManager.createSession(p, slot, true);
 	}
 }

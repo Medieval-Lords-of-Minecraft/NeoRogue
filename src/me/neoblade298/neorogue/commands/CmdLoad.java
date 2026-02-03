@@ -29,7 +29,7 @@ public class CmdLoad extends Subcommand {
 			PlayerManager.getPlayerData(p.getUniqueId()).displayLoadButtons(s);
 		}
 		else {
-			SessionManager.createSession(p, p.getName() + "Party", Integer.parseInt(args[0]), false); 
+			SessionManager.createSession(p, Integer.parseInt(args[0]), false); 
 		}
 	}
 }

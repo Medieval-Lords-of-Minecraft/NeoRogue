@@ -1,5 +1,6 @@
 package me.neoblade298.neorogue.commands;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -15,7 +16,7 @@ public class CmdJoin extends Subcommand {
 
 	public CmdJoin(String key, String desc, String perm, SubcommandRunner runner) {
 		super(key, desc, perm, runner);
-		args.add(new Arg("party name"));
+		args.add(new Arg("host or player"));
 	}
 
 	@Override
@@ -25,26 +26,30 @@ public class CmdJoin extends Subcommand {
 			Util.displayError(p, "You're already in a session!");
 			return;
 		}
-		
-		// Try to join a lobby
-		for (Session sess : SessionManager.getSessions()) {
-			if (sess.getInstance() instanceof LobbyInstance) {
-				if (sess.isBusy()) {
-					Util.displayError(p, "You can't do that while the session is loading!");
-					return;
-				}
-				LobbyInstance li = (LobbyInstance) sess.getInstance();
-				if (li.getName().equals(args[0])) {
-					if (!li.getInvited().contains(p.getUniqueId())) {
-						Util.displayError(p, "You're not invited to this session!");
-						return;
-					}
-					li.addPlayer(p);
-					return;
-				}
-			}
+
+		Player host = Bukkit.getPlayer(args[0]);
+		Session sess = SessionManager.getSession(host);
+		if (sess == null) {
+			Util.displayError(p, "That player is not in a session!");
+			return;
 		}
 		
-		Util.displayError(p, "That lobby doesn't exist!");
+		// Try to join a lobby
+		if (!(sess.getInstance() instanceof LobbyInstance)) {
+			Util.displayError(p, "That session has already started!");
+			return;
+		}
+
+		if (sess.isBusy()) {
+			Util.displayError(p, "You can't do that while the session is loading!");
+			return;
+		}
+
+		LobbyInstance li = (LobbyInstance) sess.getInstance();
+		if (!li.getInvited().contains(p.getUniqueId())) {
+			Util.displayError(p, "You're not invited to this session!");
+			return;
+		}
+		li.addPlayer(p);
 	}
 }

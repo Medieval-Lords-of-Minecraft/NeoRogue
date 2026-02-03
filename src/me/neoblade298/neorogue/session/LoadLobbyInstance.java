@@ -25,15 +25,15 @@ public class LoadLobbyInstance extends LobbyInstance {
 
     private Instance startInstance;
 
-    public LoadLobbyInstance(String name, Player host, Session s) {
-        super(name, host, s, SPAWN_X, SPAWN_Z);
+    public LoadLobbyInstance(Player host, Session s) {
+        super(host, s, SPAWN_X, SPAWN_Z);
 		partyInfoHeader = Component.text().content("<< ( ").color(NamedTextColor.GRAY)
 				.append(Component.text(name, NamedTextColor.RED)).append(Component.text(" ) >>"))
 				.append(Component.text("\nPlayers:")).build();
 
 		// Setup hologram
-		Component text = Component.text("Once everyone from the session").appendNewline()
-			.append(Component.text("joins, the session will start."));
+		Component text = Component.text("Wait for players to join,").appendNewline()
+			.append(Component.text("then click the button!"));
 		holo = NeoRogue.createHologram(spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), text);
         
         playerLines.add("§7...");
@@ -49,10 +49,9 @@ public class LoadLobbyInstance extends LobbyInstance {
             if (data.getUniqueId().equals(host))
                 continue;
             invited.add(data.getUniqueId());
-            Util.msg(data.getPlayer(), Component.text("You've been invited to the ")
-                    .append(Component.text(name, NamedTextColor.YELLOW)).append(Component.text(" party by "))
-                    .append(Component.text("" + Bukkit.getPlayer(host).getName(), NamedTextColor.YELLOW)).append(Component.text("!")));
-            Util.msg(data.getPlayer(), NeoCore.miniMessage().deserialize(invPrefix + name + invSuffix));
+            Util.msg(data.getPlayer(), Component.text("You've been invited to ")
+                    .append(Component.text(name, NamedTextColor.YELLOW)).append(Component.text("!")));
+            Util.msg(data.getPlayer(), NeoCore.miniMessage().deserialize(invPrefix + Bukkit.getPlayer(host).getName() + invSuffix));
         }
     }
     
