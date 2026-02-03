@@ -16,8 +16,8 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
+import me.neoblade298.neorogue.session.fight.trigger.PriorityAction;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
-import me.neoblade298.neorogue.session.fight.trigger.TriggerAction;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.CastUsableEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreCastUsableEvent;
@@ -50,12 +50,14 @@ public class EnergyBattery extends Artifact {
 		});
 	}
 
-	public class EnergyBatteryInstance implements TriggerAction {
+	public class EnergyBatteryInstance extends PriorityAction {
 		private int count = 0;
 		private Equipment eq;
 
 		public EnergyBatteryInstance(Equipment eq) {
+			super(ID);
 			this.eq = eq;
+			this.priority = 1;
 		}
 
 		@Override

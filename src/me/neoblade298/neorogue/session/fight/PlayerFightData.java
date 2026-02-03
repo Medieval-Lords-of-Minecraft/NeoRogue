@@ -694,6 +694,11 @@ public class PlayerFightData extends FightData {
 
 	public void updatePlayer() {
 		this.p = Bukkit.getPlayer(uuid);
+
+		for (EquipmentInstance eqi : equips.values()) {
+			eqi.updatePlayer(p);
+			eqi.updateIcon();
+		}
 	}
 
 	public FightStatistics getStats() {

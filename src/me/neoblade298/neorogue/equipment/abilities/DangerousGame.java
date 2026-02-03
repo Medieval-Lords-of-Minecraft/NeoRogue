@@ -65,7 +65,7 @@ public class DangerousGame extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.TARGET,
 				"Passive. When you land a basic attack on an enemy within <white>" + range + "</white> blocks, " +
-				"fire an additional projectile at them using your current ammunition that deals an additional <yellow>" + damage + "</yellow> damage.");
+				"your next basic attack will fire an additional projectile at them using your current ammunition that deals an additional <yellow>" + damage + "</yellow> damage.");
 	}
 
 	private class DangerousGameProjectile extends Projectile {

@@ -91,6 +91,11 @@ public class EquipmentInstance extends PriorityAction {
 		updateIcon();
 	}
 
+	// Used when a player relogs to update the player reference
+	public void updatePlayer(Player p) {
+		this.p = data.getPlayer();
+	}
+
 	public void setIcon(ItemStack icon) {
 		this.icon = icon;
 		updateIcon();

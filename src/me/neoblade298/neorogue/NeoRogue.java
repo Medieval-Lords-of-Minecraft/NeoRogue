@@ -112,7 +112,7 @@ public class NeoRogue extends JavaPlugin {
 		Player alt = Bukkit.getPlayer("SuaveGentleman");
 		Collection<Player> others = new ArrayList<Player>();
 		if (alt != null) others.add(alt);
-		if (p != null) debugInitialize(p, others, EquipmentClass.WARRIOR, RegionType.LOW_DISTRICT);
+		if (p != null) debugInitialize(p, others, EquipmentClass.ARCHER, RegionType.LOW_DISTRICT);
 	}
 	
 	public static void reload() {
