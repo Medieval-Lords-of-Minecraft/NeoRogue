@@ -332,9 +332,6 @@ public class DamageMeta {
 			recipient.runMobActions(recipient, Trigger.PRE_RECEIVE_DAMAGE, rdev);
 			if (slices.getFirst().getPostBuffType().getCategories().contains(DamageCategory.GENERAL)) {
 				signalMob(target, damager, "NR_PRE_RECEIVE_DAMAGE_GENERAL");
-				System.out.println("Signaling mob");
-				System.out.println("Target: " + target);
-				System.out.println("Damager: " + damager);
 			}
 		}
 

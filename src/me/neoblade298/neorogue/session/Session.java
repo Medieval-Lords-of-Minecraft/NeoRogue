@@ -90,18 +90,21 @@ public class Session {
 	private int notoriety;
 	
 	// Session coordinates
-	public static final int LOBBY_X = 0, LOBBY_Z = 0, LOBBY_WIDTH = 15, AREA_X = 0, AREA_Z = LOBBY_Z + LOBBY_WIDTH,
-			AREA_WIDTH = 81, REWARDS_X = 0, REWARDS_Z = AREA_Z + AREA_WIDTH, REWARDS_WIDTH = 19, SHRINE_X = 0,
-			SHRINE_Z = REWARDS_Z + REWARDS_WIDTH, SHRINE_WIDTH = 13, SHOP_X = 0, SHOP_Z = SHRINE_Z + SHRINE_WIDTH,
-			SHOP_WIDTH = 12, CHANCE_X = 0, CHANCE_Z = SHOP_Z + SHOP_WIDTH, CHANCE_WIDTH = 12, LOSE_X = 0,
-			LOSE_Z = CHANCE_Z + CHANCE_WIDTH;
+	public static final int NEW_LOBBY_X = 0, NEW_LOBBY_Z = 0, NEW_LOBBY_WIDTH = 15,
+		LOAD_LOBBY_X = 17, LOAD_LOBBY_Z = 0, LOAD_LOBBY_WIDTH = 15,
+		AREA_X = 0, AREA_Z = NEW_LOBBY_Z + NEW_LOBBY_WIDTH,
+		AREA_WIDTH = 81, REWARDS_X = 0, REWARDS_Z = AREA_Z + AREA_WIDTH, REWARDS_WIDTH = 19, SHRINE_X = 0,
+		SHRINE_Z = REWARDS_Z + REWARDS_WIDTH, SHRINE_WIDTH = 13, SHOP_X = 0, SHOP_Z = SHRINE_Z + SHRINE_WIDTH,
+		SHOP_WIDTH = 12, CHANCE_X = 0, CHANCE_Z = SHOP_Z + SHOP_WIDTH, CHANCE_WIDTH = 12, LOSE_X = 0,
+		LOSE_Z = CHANCE_Z + CHANCE_WIDTH;
 
 	private static final ArrayList<Color> fireworkColors = new ArrayList<Color>();
 	
-	private static Clipboard classSelect, nodeSelect, rewardsRoom, shrine, shop, chance, lose;
+	private static Clipboard classSelect, loadLobby, nodeSelect, rewardsRoom, shrine, shop, chance, lose;
 	static {
 		// Worldedit schematics
 		classSelect = loadClipboard("classselect.schem");
+		loadLobby = loadClipboard("loadlobby.schem");
 		nodeSelect = loadClipboard("nodeselect.schem");
 		rewardsRoom = loadClipboard("rewards.schem");
 		shrine = loadClipboard("shrine.schem");
@@ -147,38 +150,27 @@ public class Session {
 	private static void pasteSchematic(Clipboard clipboard, EditSession editSession, Session session, int zOff) {
 		pasteSchematic(clipboard, editSession, session, 0, 0, zOff);
 	}
-
-	private static void pasteSchematic(
-			Clipboard clipboard, EditSession editSession, Session session, int yOff, int zOff
-	) {
-		pasteSchematic(clipboard, editSession, session, 0, yOff, zOff);
-	}
 	
-	public Session(Player p, Plot plot, String lobby, int saveSlot) {
+	public Session(Player p, Plot plot, String lobby, int saveSlot, boolean isNew) {
 		this.saveSlot = saveSlot;
 		this.xOff = plot.getXOffset();
 		this.zOff = plot.getZOffset();
 		host = p.getUniqueId();
 		this.plot = plot;
-		this.inst = new LobbyInstance(lobby, p, this);
+		this.inst = isNew ? new NewLobbyInstance(lobby, p, this) : new LoadLobbyInstance(lobby, p, this);
 		generateInterstitials();
+
+		if (!isNew) {
+			load(saveSlot, host, xOff, zOff, (LoadLobbyInstance) this.inst);
+		}
 	}
 	
 	// Load from existing data
-	public Session(Player p, Plot plot, int saveSlot) {
-		this.saveSlot = saveSlot;
-		this.xOff = plot.getXOffset();
-		this.zOff = plot.getZOffset();
-		host = p.getUniqueId();
-		this.plot = plot;
-		
+	private void load(int saveSlot, UUID host, int xOff, int zOff, LoadLobbyInstance lobby) {
 		Session s = this;
-		generateInterstitials();
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				Util.msgRaw(p, Component.text("Loading game...", NamedTextColor.GRAY));
-				
 				try (Connection con = SQLManager.getConnection("NeoRogue"); Statement stmt = con.createStatement()) {
 					ResultSet partySet = stmt.executeQuery(
 							"SELECT * FROM neorogue_playersessiondata WHERE host = '" + host + "' AND slot = "
@@ -187,7 +179,6 @@ public class Session {
 					while (partySet.next()) {
 						UUID uuid = UUID.fromString(partySet.getString("uuid"));
 						party.put(uuid, new PlayerSessionData(uuid, s, partySet));
-						SessionManager.addToSession(uuid, s);
 					}
 					
 					ResultSet sessSet = stmt.executeQuery(
@@ -211,31 +202,13 @@ public class Session {
 							RegionType.valueOf(sessSet.getString("regionType")), xOff, zOff, host, saveSlot, s, stmt
 					);
 					curr = region.getNodes()[pos][lane];
-					
-					new BukkitRunnable() {
-						@Override
-						public void run() {
-							loadHelper(inst);
-						}
-					}.runTask(NeoRogue.inst());
+
+					lobby.completeLoad(inst);
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
 			}
 		}.runTaskAsynchronously(NeoRogue.inst());
-	}
-
-	// Called after asynchronously loading all data
-	private void loadHelper(Instance inst) {
-		region.instantiate();
-		setInstance(inst);
-		updateSpectatorLines();
-		Util.msgRaw(Bukkit.getPlayer(host), Component.text("Finished loading.", NamedTextColor.GRAY));
-
-		for (PlayerSessionData psd : party.values()) {
-			psd.setupInventory();
-			psd.syncHealth();
-		}
 	}
 	
 	public ArrayList<String> getSpectatorLines() {
@@ -255,20 +228,21 @@ public class Session {
 	
 	private void generateInterstitials() {
 		Location loc = new Location(Bukkit.getWorld(Region.WORLD_NAME), -(xOff + 1), 62, zOff);
-		Material versionCheck = Material.DIAMOND_ORE; // Change this when interstitials change to regen them
+		Material versionCheck = Material.DIAMOND_BLOCK; // Change this when interstitials change to regen them
 		
 		if (loc.getBlock().getType() != versionCheck) {
 			Bukkit.getLogger().info("[NeoRogue] Generating interstitials for host " + Bukkit.getPlayer(host).getName());
 			loc.getBlock().setType(versionCheck);
 			// Generate the lobby and add the host there
 			try (EditSession editSession = WorldEdit.getInstance().newEditSession(Region.world)) {
-				pasteSchematic(classSelect, editSession, this, Session.LOBBY_Z);
+				pasteSchematic(classSelect, editSession, this, Session.NEW_LOBBY_Z);
+				pasteSchematic(loadLobby, editSession, this, LOAD_LOBBY_X, 0, Session.LOAD_LOBBY_Z);
 				pasteSchematic(nodeSelect, editSession, this, Session.AREA_Z);
 				pasteSchematic(rewardsRoom, editSession, this, Session.REWARDS_Z);
 				pasteSchematic(shrine, editSession, this, Session.SHRINE_Z);
 				pasteSchematic(shop, editSession, this, Session.SHOP_Z);
 				pasteSchematic(chance, editSession, this, Session.CHANCE_Z);
-				pasteSchematic(lose, editSession, this, -1, Session.LOSE_Z);
+				pasteSchematic(lose, editSession, this, 0, -1, Session.LOSE_Z);
 			}
 		}
 		else {

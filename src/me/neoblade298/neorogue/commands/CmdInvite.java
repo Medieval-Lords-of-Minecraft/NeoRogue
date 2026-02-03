@@ -3,12 +3,13 @@ package me.neoblade298.neorogue.commands;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
 import me.neoblade298.neocore.bukkit.commands.Subcommand;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.commands.Arg;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
 import me.neoblade298.neorogue.session.Instance;
-import me.neoblade298.neorogue.session.LobbyInstance;
+import me.neoblade298.neorogue.session.NewLobbyInstance;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.SessionManager;
 
@@ -29,12 +30,12 @@ public class CmdInvite extends Subcommand {
 		}
 		
 		Instance inst = sess.getInstance();
-		if (!(inst instanceof LobbyInstance)) {
+		if (!(inst instanceof NewLobbyInstance)) {
 			Util.displayError(p, "You can't invite anyone at this time!");
 			return;
 		}
 		
-		LobbyInstance li = (LobbyInstance) inst;
+		NewLobbyInstance li = (NewLobbyInstance) inst;
 		if (args[0].equalsIgnoreCase("all")) {
 			for (Player on : Bukkit.getOnlinePlayers()) {
 				if (SessionManager.getSession(on) != null) continue;

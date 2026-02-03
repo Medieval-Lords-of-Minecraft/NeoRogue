@@ -100,7 +100,7 @@ public class Quicken extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.GRAY_DYE,
 				"Dealing " + GlossaryTag.PHYSICAL.tag(this) + " damage within <white>1</white> second of a basic attack " +
-				"grants a stack. On cast, " + GlossaryTag.DASH.tag(this) + " forward and gain " + 
+				"grants a stack. On cast, " + GlossaryTag.DASH.tag(this) + " forward at the cost of a stack and gain " + 
 				GlossaryTag.EVADE.tag(this, 1, false) + " for <white>5s</white>.");
 	}
 }

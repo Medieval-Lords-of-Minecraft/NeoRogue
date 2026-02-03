@@ -383,7 +383,6 @@ public class Map {
 	
 	// Used to calculate blocked entrances because of how deserialization ignores entrances
 	private void recalculateEntrances() {
-		System.out.println("Calculating entrances...");
 		for (MapPieceInstance inst : pieces) {
 			// First add all entrances
 			if (inst.getPiece().getEntrances() != null) {

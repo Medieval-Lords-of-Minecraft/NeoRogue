@@ -107,7 +107,6 @@ public class Pandemic extends Equipment {
 			pc.play(p, target.getLocation());
 			Sounds.water.play(p, p);
 			LinkedList<LivingEntity> list = TargetHelper.getEntitiesInRadius(p, target.getLocation(), tp);
-			System.out.println("size: " + list.size());
 			for (LivingEntity ent : list) {
 				if (ent == ev.getTarget().getEntity()) continue;
 				FightData targetFd = FightInstance.getFightData(ent);

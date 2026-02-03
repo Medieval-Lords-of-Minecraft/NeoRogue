@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.commands;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
 import me.neoblade298.neocore.bukkit.commands.Subcommand;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.commands.Arg;
@@ -38,10 +39,10 @@ public class CmdNew extends Subcommand {
 		}
 		
 		if (args.length == 2) {
-			SessionManager.createSession(p, args[1], slot); 
+			SessionManager.createSession(p, args[1], slot, true); 
 		}
 		else if (args.length == 1) {
-			SessionManager.createSession(p, p.getName() + "Party", slot); 
+			SessionManager.createSession(p, p.getName() + "Party", slot, true); 
 		}
 	}
 }

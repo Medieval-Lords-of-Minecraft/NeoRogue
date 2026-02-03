@@ -45,7 +45,7 @@ public class PartingGift extends Equipment {
 	
 	public PartingGift(boolean isUpgraded) {
 		super(ID, "Parting Gift", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 0, 15, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 0, 15, tp.range));
 		damage = isUpgraded ? 60 : 40;
 	}
 

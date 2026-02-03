@@ -26,12 +26,7 @@ public class CmdJoin extends Subcommand {
 			return;
 		}
 		
-		// First, try to confirm a pending load request
-		if (SessionManager.confirmLoad(p, args[0])) {
-			return; // Successfully confirmed a load request
-		}
-		
-		// If not a load confirmation, try to join a lobby
+		// Try to join a lobby
 		for (Session sess : SessionManager.getSessions()) {
 			if (sess.getInstance() instanceof LobbyInstance) {
 				if (sess.isBusy()) {

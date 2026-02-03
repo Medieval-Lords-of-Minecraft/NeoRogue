@@ -130,7 +130,7 @@ public abstract class FightInstance extends Instance {
 			new SoundContainer(Sound.BLOCK_NOTE_BLOCK_BELL, 1.259921F) };
 	
 	public FightInstance(Session s, Set<UUID> players) {
-		super(s, new PlayerFlags(PlayerFlag.ZERO_DAMAGE_TICKS, PlayerFlag.ALLOW_FLIGHT_FALL));
+		super(s, new PlayerFlags(PlayerFlag.SHORTER_IFRAMES, PlayerFlag.ALLOW_FLIGHT_FALL));
 	}
 	
 	public void addInitialTask(FightRunnable runnable) {

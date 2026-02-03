@@ -3,11 +3,8 @@ package me.neoblade298.neorogue.session;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -71,9 +68,6 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.mechanics.PotionProjectileInstance;
 import me.neoblade298.neorogue.map.MapSpawnerInstance;
-import me.neoblade298.neorogue.player.PlayerData;
-import me.neoblade298.neorogue.player.PlayerManager;
-import me.neoblade298.neorogue.player.SessionSnapshot;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionSpectateInventory;
 import me.neoblade298.neorogue.session.Instance.PlayerFlags;
@@ -87,212 +81,19 @@ import net.kyori.adventure.text.format.NamedTextColor;
 public class SessionManager implements Listener {
 	private static HashMap<UUID, Session> sessions = new HashMap<UUID, Session>();
 	private static HashMap<Plot, Session> sessionPlots = new HashMap<Plot, Session>();
-	// Track pending session loads: host UUID -> PendingSessionLoad
-	private static HashMap<UUID, PendingSessionLoad> pendingLoads = new HashMap<UUID, PendingSessionLoad>();
 	
-	// Helper class to track pending session load confirmations
-	private static class PendingSessionLoad {
-		private String hostName;
-		private int saveSlot;
-		private HashMap<UUID, String> partyMembers; // UUID -> name
-		private HashSet<UUID> confirmed = new HashSet<UUID>();
-		private Plot reservedPlot;
-		private long expireTime;
-		
-		public PendingSessionLoad(UUID hostUUID, String hostName, int saveSlot, HashMap<UUID, String> partyMembers, Plot plot) {
-			this.hostName = hostName;
-			this.saveSlot = saveSlot;
-			this.partyMembers = partyMembers;
-			this.reservedPlot = plot;
-			this.confirmed.add(hostUUID); // Host auto-confirmed
-			this.expireTime = System.currentTimeMillis() + 60000; // 1 minute timeout
-		}
-		
-		public boolean isExpired() {
-			return System.currentTimeMillis() > expireTime;
-		}
+	public static Session createSession(Player p, String name, int saveSlot) {
+		return createSession(p, name, saveSlot, true);
 	}
 
-	public static Session createSession(Player p, String name, int saveSlot) {
+	public static Session createSession(Player p, String name, int saveSlot, boolean isNew) {
 		Plot plot = findPlot();
-		Session s = new Session(p, plot, name, saveSlot);
+		Session s = new Session(p, plot, name, saveSlot, isNew);
 		sessions.put(p.getUniqueId(), s);
 		sessionPlots.put(plot, s);
 
 		Util.msg(p, Component.text("Successfully created a lobby!", NamedTextColor.GRAY));
 		return s;
-	}
-
-	public static void tryLoadSession(Player p, int saveSlot) {
-		PlayerData pd = PlayerManager.getPlayerData(p.getUniqueId());
-		SessionSnapshot ss = pd.getSnapshot(saveSlot);
-		
-		// Check if all party members are online and available
-		for (Entry<UUID, String> ent : ss.getPartyIds().entrySet()) {
-			Player member = Bukkit.getPlayer(ent.getKey());
-			if (member == null) {
-				Util.displayError(p, "Cannot load this save as " + ent.getValue() + " is not online!");
-			}
-
-			if (sessions.containsKey(member.getUniqueId())) {
-				Util.displayError(p, "Cannot load this save as " + ent.getValue() + " is already in a session!");
-			}
-		}
-
-		// Reserve a plot for this session
-		Plot plot = findPlot();
-		
-		// If host is the only party member, load instantly
-		if (ss.getPartyIds().size() == 1) {
-			Session s = new Session(p, plot, saveSlot);
-			sessionPlots.put(plot, s);
-			Util.msg(p, Component.text("Loading session...", NamedTextColor.GREEN));
-			return;
-		}
-		
-		// Create pending load request
-		PendingSessionLoad pending = new PendingSessionLoad(p.getUniqueId(), p.getName(), saveSlot, 
-			new HashMap<UUID, String>(ss.getPartyIds()), plot);
-		pendingLoads.put(p.getUniqueId(), pending);
-		
-		// Send confirmation requests to all party members (except host)
-		String confirmPrefix = "<dark_gray>[<green><click:run_command:'/nr join ";
-		String confirmSuffix = "'><hover:show_text:'Click to confirm joining the loaded session'>Click here to confirm!</hover></click></green>]";
-		
-		for (Entry<UUID, String> ent : ss.getPartyIds().entrySet()) {
-			if (ent.getKey().equals(p.getUniqueId())) continue; // Skip host
-			
-			Player member = Bukkit.getPlayer(ent.getKey());
-			Util.msg(member, Component.text(p.getName(), NamedTextColor.YELLOW)
-				.append(Component.text(" wants to load a saved session with you!", NamedTextColor.GRAY)));
-			Util.msg(member, NeoCore.miniMessage().deserialize(confirmPrefix + p.getName() + confirmSuffix));
-		}
-		
-		Util.msg(p, Component.text("Sent load confirmation requests to all party members. Waiting for confirmations...", NamedTextColor.GRAY));
-	}
-	
-	public static boolean confirmLoad(Player p, String hostName) {
-		// Find the pending load by host name
-		PendingSessionLoad pending = null;
-		UUID hostUUID = null;
-		for (Entry<UUID, PendingSessionLoad> ent : pendingLoads.entrySet()) {
-			if (ent.getValue().hostName.equalsIgnoreCase(hostName)) {
-				pending = ent.getValue();
-				hostUUID = ent.getKey();
-				break;
-			}
-		}
-		
-		if (pending == null) {
-			return false; // No pending load found
-		}
-		
-		if (pending.isExpired()) {
-			pendingLoads.remove(hostUUID);
-			Util.displayError(p, "That load request has expired!");
-			return true; // Found but expired
-		}
-		
-		// Check if this player is part of the party
-		if (!pending.partyMembers.containsKey(p.getUniqueId())) {
-			Util.displayError(p, "You are not part of that saved session!");
-			return true; // Found but not part of party
-		}
-		
-		// Check if already in a session
-		if (sessions.containsKey(p.getUniqueId())) {
-			Util.displayError(p, "You are already in a session!");
-			return true; // Found but already in session
-		}
-		
-		// Confirm this player
-		if (pending.confirmed.contains(p.getUniqueId())) {
-			Util.msg(p, Component.text("You have already confirmed!", NamedTextColor.YELLOW));
-			return true; // Already confirmed
-		}
-		
-		pending.confirmed.add(p.getUniqueId());
-		Util.msg(p, Component.text("You have confirmed joining the loaded session!", NamedTextColor.GREEN));
-		
-		// Notify host and all confirmed members
-		Player host = Bukkit.getPlayer(hostUUID);
-		Component confirmMsg = Component.text(p.getName(), NamedTextColor.YELLOW)
-			.append(Component.text(" has confirmed! (", NamedTextColor.GRAY))
-			.append(Component.text(pending.confirmed.size() + "/" + pending.partyMembers.size(), NamedTextColor.YELLOW))
-			.append(Component.text(")", NamedTextColor.GRAY));
-		
-		if (host != null) {
-			Util.msgRaw(host, confirmMsg);
-		}
-		
-		for (UUID uuid : pending.confirmed) {
-			Player member = Bukkit.getPlayer(uuid);
-			if (member != null && !uuid.equals(hostUUID)) {
-				Util.msgRaw(member, confirmMsg);
-			}
-		}
-		
-		// Check if all players have confirmed
-		if (pending.confirmed.size() == pending.partyMembers.size()) {
-			actuallyLoadSession(hostUUID, pending);
-		}
-		return true; // Successfully processed confirmation
-	}
-	
-	private static void actuallyLoadSession(UUID hostUUID, PendingSessionLoad pending) {
-		Player host = Bukkit.getPlayer(hostUUID);
-		if (host == null) {
-			// Host logged off, cancel load
-			pendingLoads.remove(hostUUID);
-			for (UUID uuid : pending.confirmed) {
-				Player member = Bukkit.getPlayer(uuid);
-				if (member != null) {
-					Util.displayError(member, "Session load cancelled - host is no longer online!");
-				}
-			}
-			return;
-		}
-		
-		// Final check - ensure all confirmed players are still available
-		for (UUID uuid : pending.confirmed) {
-			Player member = Bukkit.getPlayer(uuid);
-			if (member == null) {
-				pendingLoads.remove(hostUUID);
-				Util.displayError(host, "Session load cancelled - " + pending.partyMembers.get(uuid) + " is no longer online!");
-				for (UUID notifyUUID : pending.confirmed) {
-					Player notifyPlayer = Bukkit.getPlayer(notifyUUID);
-					if (notifyPlayer != null && !notifyUUID.equals(uuid)) {
-						Util.displayError(notifyPlayer, "Session load cancelled - " + pending.partyMembers.get(uuid) + " is no longer online!");
-					}
-				}
-				return;
-			}
-			
-			if (sessions.containsKey(uuid)) {
-				pendingLoads.remove(hostUUID);
-				Util.displayError(host, "Session load cancelled - " + pending.partyMembers.get(uuid) + " joined another session!");
-				for (UUID notifyUUID : pending.confirmed) {
-					Player notifyPlayer = Bukkit.getPlayer(notifyUUID);
-					if (notifyPlayer != null && !notifyUUID.equals(uuid)) {
-						Util.displayError(notifyPlayer, "Session load cancelled - " + pending.partyMembers.get(uuid) + " joined another session!");
-					}
-				}
-				return;
-			}
-		}
-		
-		// All checks passed - create the session
-		Session s = new Session(host, pending.reservedPlot, pending.saveSlot);
-		sessionPlots.put(pending.reservedPlot, s);
-		pendingLoads.remove(hostUUID);
-		
-		// Notify all players
-		for (UUID uuid : pending.confirmed) {
-			Player member = Bukkit.getPlayer(uuid);
-			if (member != null) {
-				Util.msg(member, Component.text("All players confirmed! Loading session...", NamedTextColor.GREEN));
-			}
-		}
 	}
 
 	private static Plot findPlot() {
@@ -310,34 +111,6 @@ public class SessionManager implements Listener {
 
 	public static void addToSession(UUID uuid, Session s) {
 		sessions.put(uuid, s);
-		
-		// Clean up any pending loads this player was part of
-		cleanupPendingLoadsForPlayer(uuid);
-	}
-	
-	private static void cleanupPendingLoadsForPlayer(UUID playerUUID) {
-		// Find and cancel any pending loads this player was part of
-		ArrayList<UUID> toRemove = new ArrayList<UUID>();
-		for (Entry<UUID, PendingSessionLoad> ent : pendingLoads.entrySet()) {
-			PendingSessionLoad pending = ent.getValue();
-			if (pending.partyMembers.containsKey(playerUUID)) {
-				toRemove.add(ent.getKey());
-				Player player = Bukkit.getPlayer(playerUUID);
-				String playerName = player != null ? player.getName() : pending.partyMembers.get(playerUUID);
-				
-				// Notify all other confirmed members
-				for (UUID uuid : pending.confirmed) {
-					if (uuid.equals(playerUUID)) continue;
-					Player member = Bukkit.getPlayer(uuid);
-					if (member != null) {
-						Util.displayError(member, "Session load cancelled - " + playerName + " is no longer available!");
-					}
-				}
-			}
-		}
-		for (UUID uuid : toRemove) {
-			pendingLoads.remove(uuid);
-		}
 	}
 
 	public static void removeFromSession(UUID uuid) {
@@ -350,7 +123,7 @@ public class SessionManager implements Listener {
 	public static void removeSession(Session s) {
 		if (s.getInstance() instanceof LobbyInstance) {
 			LobbyInstance lob = (LobbyInstance) s.getInstance();
-			for (UUID uuid : lob.getPlayers().keySet()) {
+			for (UUID uuid : lob.getInLobby()) {
 				removeFromSession(uuid);
 			}
 		} else {
@@ -521,7 +294,7 @@ public class SessionManager implements Listener {
 				return;
 			}
 
-			if (s.getInstance() instanceof EditInventoryInstance) {
+			if (!(s.getInstance() instanceof FightInstance)) {
 				e.setCancelled(true);
 				return;
 			}
