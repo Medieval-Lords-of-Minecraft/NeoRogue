@@ -50,7 +50,7 @@ public class MinibossFightInstance extends FightInstance {
 	}
 	
 	@Override
-	public void handleMobKill(String id, boolean playerKill) {
+	public void handleMobKill(FightData fd, String id, boolean playerKill) {
 		Mob mob = Mob.get(id);
 		if (mob == null) return;
 		
@@ -96,8 +96,8 @@ public class MinibossFightInstance extends FightInstance {
 			
 			equipDrops = new ArrayList<Equipment>(3);
 			equipDrops.add(RubyCluster.get());
-			equipDrops.add(EmeraldCluster.get());
 			equipDrops.add(SapphireCluster.get());
+			equipDrops.add(EmeraldCluster.get());
 			list.add(new EquipmentChoiceReward(equipDrops));
 			if (dropPotion) {
 				Consumable cons = Equipment.getConsumable(value, ec, EquipmentClass.CLASSLESS);
@@ -120,5 +120,10 @@ public class MinibossFightInstance extends FightInstance {
 	@Override
 	public void updateBoardLines() {
 		
+	}
+
+	@Override
+	public void handleMobDespawn(FightData fd, String id, boolean despawn, boolean playerKill) {
+
 	}
 }

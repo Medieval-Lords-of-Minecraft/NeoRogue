@@ -519,18 +519,31 @@ public class PlayerFightData extends FightData {
 					// Mana
 					BuffList b = ev.getBuff(PropertyType.MANA_COST);
 					double manaCost = useResources ? Math.max(0, b.applyNegative(ei.getManaCost())) : 0;
-					if (manaCost > data.getMana() && manaCost > 0) {
-						Util.displayError(p,
-								"You need " + df.format(manaCost - data.getMana()) + " more mana!");
-						continue;
-					}
+					boolean needsMana = manaCost > data.getMana() && manaCost > 0;
 
 					// Stamina
 					b = ev.getBuff(PropertyType.STAMINA_COST);
 					double staminaCost = useResources ? Math.max(0, b.applyNegative(ei.getStaminaCost())) : 0;
-					if (staminaCost > data.getStamina() && staminaCost > 0) {
-						Util.displayError(p,
-								"You need " + df.format(staminaCost - data.getStamina()) + " more stamina!");
+					boolean needsStamina = staminaCost > data.getStamina() && staminaCost > 0;
+					Component msg = Component.text("You need ").color(NamedTextColor.RED);
+					if (needsMana && needsStamina) {
+						msg = msg.append(Component.text(df.format(manaCost - data.getMana())).color(NamedTextColor.BLUE))
+								.append(Component.text(" mana and "))
+								.append(Component.text(df.format(staminaCost - data.getStamina())).color(NamedTextColor.GREEN))
+								.append(Component.text(" stamina!"));
+					}
+					else if (needsMana) {
+						msg = msg.append(Component.text(df.format(manaCost - data.getMana())).color(NamedTextColor.BLUE))
+								.append(Component.text(" mana!"));
+					}
+				    else if (needsStamina) {
+						msg = msg.append(Component.text(df.format(staminaCost - data.getStamina())).color(NamedTextColor.GREEN))
+								.append(Component.text(" stamina!"));
+					}
+
+					if (needsMana || needsStamina) {
+						Sounds.error.play(p, p);
+						Util.msgRaw(p, msg);
 						continue;
 					}
 

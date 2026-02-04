@@ -143,6 +143,7 @@ import me.neoblade298.neorogue.equipment.artifacts.EarthenTome;
 import me.neoblade298.neorogue.equipment.artifacts.EmeraldCluster;
 import me.neoblade298.neorogue.equipment.artifacts.EmeraldGem;
 import me.neoblade298.neorogue.equipment.artifacts.EmeraldShard;
+import me.neoblade298.neorogue.equipment.artifacts.Enderchest;
 import me.neoblade298.neorogue.equipment.artifacts.EnergyBattery;
 import me.neoblade298.neorogue.equipment.artifacts.Exhaustion;
 import me.neoblade298.neorogue.equipment.artifacts.FaerieDust;
@@ -912,6 +913,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new TreatiseOnElectricity();
 		new TrickstersSigil();
 		new WarpedAnvil();
+		new Enderchest();
 
 		// Levelup artifacts
 		new EmeraldCluster();

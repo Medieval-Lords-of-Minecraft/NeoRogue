@@ -190,6 +190,7 @@ public class Session {
 					int lane = sessSet.getInt("lane");
 					Instance inst = Instance.deserialize(s, sessSet, party);
 					potionChance = sessSet.getInt("potionChance");
+					regionsCompleted = sessSet.getInt("regionsCompleted");
 
 					// settings
 					endless = sessSet.getBoolean("endless");
@@ -523,7 +524,7 @@ public class Session {
 		this.inst = next;
 		next.start();
 		Bukkit.getLogger()
-				.info("Started instance " + next.getClass().getSimpleName() + ", visited nodes " + nodesVisited);
+				.info("Started instance " + next.getClass().getSimpleName() + ", visited nodes " + nodesVisited + ", regions completed " + regionsCompleted);
 		for (PlayerSessionData psd : party.values()) {
 			psd.trigger(SessionTrigger.VISIT_NODE, null);
 			Bukkit.getLogger().info("Serialization for " + psd.getPlayer().getName());

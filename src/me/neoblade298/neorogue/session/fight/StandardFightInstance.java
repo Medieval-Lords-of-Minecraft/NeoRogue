@@ -36,7 +36,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 
 public class StandardFightInstance extends FightInstance {
-	
+	private static final int KILLS_TO_SCALE = 5; // number of mobs to kill before increasing total mobs by 1
 	private static final HashMap<Integer, Double> SCORE_REQUIRED = new HashMap<Integer, Double>();
 
 	private BossBar timeBar, scoreBar;
@@ -108,7 +108,7 @@ public class StandardFightInstance extends FightInstance {
 	}
 
 	@Override
-	public void handleMobKill(String id, boolean playerKill) {
+	public void handleMobKill(FightData fd, String id, boolean playerKill) {
 		Mob mob = Mob.get(id);
 		if (mob == null)
 			return;
@@ -126,7 +126,34 @@ public class StandardFightInstance extends FightInstance {
 			Title title = Title.title(Component.text("Victory"),
 				Component.text("Your ranking: ").append(fightScore.getComponentDisplay()));
 			handleWin(title, new RewardInstance(s, generateRewards(s, fightScore), NodeType.FIGHT));
+			return;
 		}
+		
+		respawnMob(fd, id, false, playerKill);
+	}
+
+	@Override
+	public void handleMobDespawn(FightData fd, String id, boolean despawn, boolean playerKill) {
+		respawnMob(fd, id, true, false);
+	}
+	
+	private void respawnMob(FightData data, String id, boolean isDespawn, boolean playerKill) {
+		Mob mob = Mob.get(id);
+		if (mob == null)
+			return;
+		
+		if (data.getSpawner() != null) {
+			data.getSpawner().subtractActiveMobs();
+		}
+		
+		if (!isDespawn && playerKill) {
+			totalKillValue += mob.getKillValue();
+			if (totalKillValue > KILLS_TO_SCALE) {
+				spawnCounter++;
+				totalKillValue -= KILLS_TO_SCALE;
+			}
+		}
+		spawnCounter = data.getInstance().activateSpawner(spawnCounter + mob.getKillValue());
 	}
 
 	public static HashMap<UUID, ArrayList<Reward>> generateRewards(Session s, FightScore fightScore) {
@@ -174,8 +201,8 @@ public class StandardFightInstance extends FightInstance {
 			list.add(new EquipmentChoiceReward(equipDrops));
 			equipDrops = new ArrayList<Equipment>(3);
 			equipDrops.add(RubyShard.get());
-			equipDrops.add(EmeraldShard.get());
 			equipDrops.add(SapphireShard.get());
+			equipDrops.add(EmeraldShard.get());
 			list.add(new EquipmentChoiceReward(equipDrops));
 			if (dropPotion) {
 				Consumable cons = Equipment.getConsumable(value, ec, EquipmentClass.CLASSLESS);

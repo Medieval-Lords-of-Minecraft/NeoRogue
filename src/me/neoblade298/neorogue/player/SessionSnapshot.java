@@ -2,9 +2,11 @@ package me.neoblade298.neorogue.player;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.TimeZone;
 import java.util.UUID;
 
 import org.bukkit.command.CommandSender;
@@ -21,6 +23,14 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 
 public class SessionSnapshot {
+	private static final SimpleDateFormat sdf = new SimpleDateFormat(
+			"MMM d yyyy h:mma");
+
+	static {
+		sdf.setTimeZone(TimeZone.getTimeZone("America/Los_Angeles"));
+	}
+
+
 	private long lastSaved;
 	private int nodesVisited;
 	private RegionType regionType;
@@ -58,7 +68,7 @@ public class SessionSnapshot {
 				.append(Component.text(new Date(lastSaved).toString(), NamedTextColor.GRAY)).build();
 		text = text.clickEvent(ClickEvent.runCommand("/nr new " + saveSlot + " " + s.getName() + "Party"))
 		.hoverEvent(HoverEvent.showText(createHoverText()));
-		Util.msg(s, text);
+		Util.msg(s, text, false);
 	}
 	
 	public static void displayEmptyNewButton(CommandSender s, int saveSlot) {
@@ -67,16 +77,16 @@ public class SessionSnapshot {
 				.append(Component.text("Empty", NamedTextColor.GRAY)).build();
 		text = text.clickEvent(ClickEvent.runCommand("/nr new " + saveSlot + " " + s.getName() + "Party"))
 		.hoverEvent(HoverEvent.showText(Component.text("Click to start a new game on this slot!")));
-		Util.msg(s, text);
+		Util.msg(s, text, false);
 	}
 	
 	public void displayLoadButton(CommandSender s, int saveSlot) {
-		Component text = Component.text().content("[1] ").color(NamedTextColor.GRAY)
+		Component text = Component.text().content("[" + saveSlot + "] ").color(NamedTextColor.GRAY)
 				.decorate(TextDecoration.BOLD)
-				.append(Component.text(new Date(lastSaved).toString(), NamedTextColor.GRAY)).build();
+				.append(Component.text(sdf.format(new Date(lastSaved)), NamedTextColor.GRAY)).build();
 		text = text.clickEvent(ClickEvent.runCommand("/nr load " + saveSlot))
 		.hoverEvent(HoverEvent.showText(createHoverText()));
-		Util.msg(s, text);
+		Util.msg(s, text, false);
 	}
 	
 	private Component createHoverText() {
@@ -88,7 +98,7 @@ public class SessionSnapshot {
 		for (Entry<String, EquipmentClass> ent : party.entrySet()) {
 			b.append(Component.text("\n- ", NamedTextColor.GRAY))
 			.append(Component.text(ent.getKey(), NamedTextColor.YELLOW))
-			.append(Component.text("[", NamedTextColor.GRAY))
+			.append(Component.text(" [", NamedTextColor.GRAY))
 			.append(Component.text(ent.getValue().getDisplay(), NamedTextColor.RED))
 			.append(Component.text("]", NamedTextColor.GRAY));
 		}

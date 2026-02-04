@@ -54,7 +54,7 @@ public class BossFightInstance extends FightInstance {
 	}
 	
 	@Override
-	public void handleMobKill(String id, boolean playerKill) {
+	public void handleMobKill(FightData fd, String id, boolean playerKill) {
 		Mob mob = Mob.get(id);
 		if (mob == null) return;
 		
@@ -101,8 +101,8 @@ public class BossFightInstance extends FightInstance {
 			
 			equipDrops = new ArrayList<Equipment>(3);
 			equipDrops.add(RubyGem.get());
-			equipDrops.add(EmeraldGem.get());
 			equipDrops.add(SapphireGem.get());
+			equipDrops.add(EmeraldGem.get());
 			list.add(new EquipmentChoiceReward(equipDrops));
 			list.add(new EquipmentReward(TomeOfWisdom.get()));
 			if (dropPotion) {
@@ -127,5 +127,10 @@ public class BossFightInstance extends FightInstance {
 	@Override
 	public void updateBoardLines() {
 		
+	}
+
+	@Override
+	public void handleMobDespawn(FightData fd, String id, boolean despawn, boolean playerKill) {
+
 	}
 }

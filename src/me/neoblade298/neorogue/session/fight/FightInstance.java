@@ -97,7 +97,6 @@ public abstract class FightInstance extends Instance {
 	private static HashMap<UUID, FightData> fightData = new HashMap<UUID, FightData>();
 	private static HashMap<UUID, BukkitTask> blockTasks = new HashMap<UUID, BukkitTask>();
 	private static HashSet<UUID> indicators = new HashSet<UUID>();
-	private static final int KILLS_TO_SCALE = 5; // number of mobs to kill before increasing total mobs by 1
 	
 	protected HashSet<UUID> toTick = new HashSet<UUID>();
 	protected LinkedList<Corpse> corpses = new LinkedList<Corpse>();
@@ -707,7 +706,7 @@ public abstract class FightInstance extends Instance {
 		data.cleanup();
 		if (data.getInstance() == null)
 			return;
-		data.getInstance().handleRespawn(data, e.getMobType().getInternalName(), true, false);
+		data.getInstance().handleMobDespawn(data, e.getMobType().getInternalName(), true, false);
 	}
 	
 	public static void handleMythicDeath(MythicMobDeathEvent e) {
@@ -732,30 +731,12 @@ public abstract class FightInstance extends Instance {
 			return;
 		
 		String id = e.getMobType().getInternalName();
-		data.getInstance().handleRespawn(data, id, false, playerKill);
-		data.getInstance().handleMobKill(id, playerKill);
+		data.getInstance().handleMobKill(data, id, playerKill);
 	}
 	
-	public abstract void handleMobKill(String id, boolean playerKill);
-	
-	public void handleRespawn(FightData data, String id, boolean isDespawn, boolean playerKill) {
-		Mob mob = Mob.get(id);
-		if (mob == null)
-			return;
-		
-		if (data.getSpawner() != null) {
-			data.getSpawner().subtractActiveMobs();
-		}
-		
-		if (!isDespawn && playerKill) {
-			totalKillValue += mob.getKillValue();
-			if (totalKillValue > KILLS_TO_SCALE) {
-				spawnCounter++;
-				totalKillValue -= KILLS_TO_SCALE;
-			}
-		}
-		spawnCounter = data.getInstance().activateSpawner(spawnCounter + mob.getKillValue());
-	}
+	public abstract void handleMobKill(FightData fd, String id, boolean playerKill);
+
+	public abstract void handleMobDespawn(FightData fd, String id, boolean despawn, boolean playerKill);
 	
 	public void addSpawnCounter(double amount) {
 		this.spawnCounter += amount;

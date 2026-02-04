@@ -64,7 +64,6 @@ public class LoadLobbyInstance extends LobbyInstance {
         PlayerSessionData hostData = session.getParty().get(host);
         playerLines.add(createBoardLine(hostData, true));
 
-        System.out.println("Updated lines " + session.getParty());
         for (PlayerSessionData data : session.getParty().values()) {
             if (data.getUniqueId().equals(host)) continue;
             String line = createBoardLine(data, false);

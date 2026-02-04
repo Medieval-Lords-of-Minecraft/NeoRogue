@@ -99,10 +99,10 @@ public class EquipmentProperties {
 		return new EquipmentProperties(0, 0, 0, range, damage, attackSpeed, knockback, 0, type, null);
 	}
 
-	public static EquipmentProperties ofBow(double damage, double attackSpeed, double knockback, double range,
+	public static EquipmentProperties ofBow(double damage, double arrowSpeed, double knockback, double range,
 			double manaCost, double staminaCost) {
-		EquipmentProperties props = new EquipmentProperties(manaCost, staminaCost, 0, range, damage, attackSpeed,
-				knockback, 0, null, null);
+		EquipmentProperties props = new EquipmentProperties(manaCost, staminaCost, 0, range, damage, 0,
+				knockback, 0, null, null).add(PropertyType.ARROW_SPEED, arrowSpeed);
 		return props;
 	}
 
@@ -169,8 +169,20 @@ public class EquipmentProperties {
 	private Component generateLoreLine(PropertyType type) {
 		Property prop = properties.get(type);
 		String color = prop.canUpgrade ? "<yellow>" : "<white>";
+		String prefix = "";
+		switch (type) {
+		case ATTACK_SPEED:
+			prefix = "/s";
+			break;
+		case ARROW_SPEED:
+			prefix = "x";
+			break;
+		default:
+			break;
+		}
+
 		return SharedUtil
-				.color("<color:" + PROPERTY_COLOR + ">" + type.label + ": " + color + prop.amount + (type == PropertyType.ATTACK_SPEED ? "/s" : ""));
+				.color("<color:" + PROPERTY_COLOR + ">" + type.label + ": " + color + prop.amount + prefix);
 	}
 
 	public boolean contains(PropertyType type) {
@@ -230,7 +242,7 @@ public class EquipmentProperties {
 	public enum PropertyType {
 		MANA_COST("Mana Cost"), STAMINA_COST("Stamina Cost"), RANGE("Range"), COOLDOWN("Cooldown"),
 		DAMAGE("Damage"), KNOCKBACK("Knockback"), AREA_OF_EFFECT("Area of Effect"),
-		ATTACK_SPEED("Attack Speed");
+		ATTACK_SPEED("Attack Speed"), ARROW_SPEED("Arrow Speed");
 
 		private String label;
 

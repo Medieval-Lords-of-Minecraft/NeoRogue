@@ -14,13 +14,13 @@ import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.accessories.ArmorStand;
 import me.neoblade298.neorogue.equipment.accessories.Lockbox;
 import me.neoblade298.neorogue.equipment.artifacts.EmeraldCluster;
+import me.neoblade298.neorogue.equipment.artifacts.Enderchest;
 import me.neoblade298.neorogue.equipment.artifacts.RubyCluster;
 import me.neoblade298.neorogue.equipment.artifacts.SapphireCluster;
-import me.neoblade298.neorogue.equipment.artifacts.WickerBasket;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 
 public class ShopContents {
-	private static final Equipment[] GEMS = new Equipment[] { RubyCluster.get(), EmeraldCluster.get(), SapphireCluster.get() };
+	private static final Equipment[] GEMS = new Equipment[] { RubyCluster.get(), SapphireCluster.get(), EmeraldCluster.get() };
 	private HashMap<Integer, ShopItem> shopItems = new HashMap<Integer, ShopItem>();
 
 	public ShopContents(Session s, PlayerSessionData data, double discountMult) {
@@ -119,7 +119,7 @@ public class ShopContents {
 
 	private void generateShopArtifacts(EquipmentClass ec, int value, double discountMult) {
 		int idx = 19;
-		for (Artifact art : new Artifact[] { (Artifact) ArmorStand.get(), (Artifact) Lockbox.get(), (Artifact) WickerBasket.get() }) {
+		for (Artifact art : new Artifact[] { (Artifact) ArmorStand.get(), (Artifact) Lockbox.get(), (Artifact) Enderchest.get() }) {
 			int price = NeoRogue.gen.nextInt((int) (100 * discountMult), (int) (200 * discountMult));
 			shopItems.put(idx++, new ShopItem(art, price, false));
 		}
