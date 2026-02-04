@@ -22,7 +22,7 @@ public class HolyScriptures extends Artifact {
 	public HolyScriptures() {
 		super(ID, "Holy Scriptures", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
 		canDrop = false;
-		stackable = true;
+		canStack = true;
 	}
 
 	public static Equipment get() {

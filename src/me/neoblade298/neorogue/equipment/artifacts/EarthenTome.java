@@ -22,7 +22,7 @@ public class EarthenTome extends Artifact {
 	public EarthenTome() {
 		super(ID, "Earthen Tome", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
 		canDrop = false;
-		stackable = true;
+		canStack = true;
 	}
 
 	public static Equipment get() {
