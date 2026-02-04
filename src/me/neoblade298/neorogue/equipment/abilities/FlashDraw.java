@@ -2,7 +2,6 @@ package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neorogue.NeoRogue;
@@ -34,14 +33,7 @@ public class FlashDraw extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		Player p = data.getPlayer();
 		ActionMeta md = new ActionMeta();
-		md.setTime(-1);
-		data.addTrigger(id, Trigger.TOGGLE_CROUCH, (pdata, in) -> {
-			PlayerToggleSneakEvent e = (PlayerToggleSneakEvent) in;
-			md.setTime(e.isSneaking() ? System.currentTimeMillis() : -1);
-			return TriggerResult.keep();
-		});
 
 		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
 			ApplyStatusEvent e = (ApplyStatusEvent) in;
@@ -52,27 +44,20 @@ public class FlashDraw extends Equipment {
 
 		data.addTrigger(id, Trigger.LAUNCH_PROJECTILE_GROUP, (pdata, in) -> {
 			LaunchProjectileGroupEvent e = (LaunchProjectileGroupEvent) in;
-			if (md.getTime() == -1 || md.getTime() + 1000 > System.currentTimeMillis()) return TriggerResult.keep();
+			Player p = data.getPlayer();
+			if (!p.isSneaking()) return TriggerResult.keep();
 			if (!e.isBasicAttack()) return TriggerResult.keep();
-			data.addTask(new BukkitRunnable() {
-				public void run() {
-					e.getGroup().startWithoutEvent(data);
-				}
-			}.runTaskLater(NeoRogue.inst(), 5L));
+			data.addExtraShot(e.getGroup());
 			if (md.getCount() >= thres) {
 				md.addCount(-thres);
 				data.addTask(new BukkitRunnable() {
 					public void run() {
-						e.getGroup().startWithoutEvent(data);
+						data.addExtraShot(e.getGroup());
 					}
 				}.runTaskLater(NeoRogue.inst(), 10L));
 			}
 			return TriggerResult.keep();
 		});
-
-		if (p.isSneaking()) {
-			md.setTime(System.currentTimeMillis());
-		}
 	}
 
 	@Override
