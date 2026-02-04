@@ -22,6 +22,7 @@ public class TreatiseOnElectricity extends Artifact {
 	public TreatiseOnElectricity() {
 		super(ID, "Treatise on Electricity", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
 		canDrop = false;
+		stackable = true;
 	}
 
 	public static Equipment get() {

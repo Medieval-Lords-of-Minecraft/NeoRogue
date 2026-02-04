@@ -26,48 +26,48 @@ public class OvergrownLibraryChance extends ChanceSet {
 			"been a shelf. On it are some books that, while old, seem surprisingly well-kept.");
 
 		stage.addChoice(new ChanceChoice(Material.BLAZE_POWDER, "Read \"Infernal Tome\"",
-				"Permanently increase " + GlossaryTag.FIRE.tag + " by <white>20%</white>",
+				"Permanently increase " + GlossaryTag.FIRE.tag + " by <white>20%</white>, stackable",
 				(s, inst, data) -> {
 					data.giveEquipment(InfernalTome.get());
 					return null;
 				}));
 
 		stage.addChoice(new ChanceChoice(Material.BLUE_ICE, "Read \"Scroll of Frost\"",
-				"Permanently increase " + GlossaryTag.ICE.tag + " by <white>20%</white>",
+				"Permanently increase " + GlossaryTag.ICE.tag + " by <white>20%</white>, stackable",
 				(s, inst, data) -> {
 					data.giveEquipment(ScrollOfFrost.get());
 					return null;
 				}));
 
 		stage.addChoice(new ChanceChoice(Material.LIGHTNING_ROD, "Read \"Treatise on Electricity\"",
-				"Permanently increase " + GlossaryTag.LIGHTNING.tag + " by <white>20%</white>",
+				"Permanently increase " + GlossaryTag.LIGHTNING.tag + " by <white>20%</white>, stackable",
 				(s, inst, data) -> {
 					data.giveEquipment(TreatiseOnElectricity.get());
 					return null;
 		}));
 
 		stage.addChoice(new ChanceChoice(Material.GRASS_BLOCK, "Read \"Earthen Tome\"",
-				"Permanently increase " + GlossaryTag.EARTHEN.tag + " by <white>20%</white>",
+				"Permanently increase " + GlossaryTag.EARTHEN.tag + " by <white>20%</white>, stackable",
 				(s, inst, data) -> {
 					data.giveEquipment(EarthenTome.get());
 					return null;
 		}));
 
 		stage.addChoice(new ChanceChoice(Material.NETHER_STAR, "Read \"Holy Scriptures\"",
-				"Permanently increase " + GlossaryTag.LIGHT.tag + " by <white>20%</white>",
+				"Permanently increase " + GlossaryTag.LIGHT.tag + " by <white>20%</white>, stackable",
 				(s, inst, data) -> {
 					data.giveEquipment(HolyScriptures.get());
 					return null;
 		}));
 
 		stage.addChoice(new ChanceChoice(Material.OBSIDIAN, "Read \"Dark Arts Treatise\"",
-				"Permanently increase " + GlossaryTag.DARK.tag + " by <white>20%</white>",
+				"Permanently increase " + GlossaryTag.DARK.tag + " by <white>20%</white>, stackable",
 				(s, inst, data) -> {
 					data.giveEquipment(DarkArtsTreatise.get());
 					return null;
 		}));
 
-		stage.addChoice(new ChanceChoice(Material.IRON_SWORD, "Reading is for nerds, I'll do some pushups",
+		stage.addChoice(new ChanceChoice(Material.IRON_BARS, "Reading is for nerds, I'll do some pushups",
 				"Increase your strength by <white>25</white> for <white>2</white> fights.",
 				(s, inst, data) -> {
 					Player p = data.getPlayer();

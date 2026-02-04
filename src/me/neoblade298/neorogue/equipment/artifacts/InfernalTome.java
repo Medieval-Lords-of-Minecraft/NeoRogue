@@ -22,6 +22,7 @@ public class InfernalTome extends Artifact {
 	public InfernalTome() {
 		super(ID, "Infernal Tome", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
 		canDrop = false;
+		stackable = true;
 	}
 
 	public static Equipment get() {

@@ -146,7 +146,7 @@ public class PlayerFightData extends FightData {
 			other.initialize(this, KeyBind.getBindFromData(i).getTrigger(), EquipSlot.KEYBIND, i);
 		}
 		i = 0;
-		for (ArtifactInstance art : data.getArtifacts().values()) {
+		for (ArtifactInstance art : new ArrayList<>(data.getArtifacts().values())) {
 			if (art == null)
 				continue;
 			art.initialize(this, null, null, i++);

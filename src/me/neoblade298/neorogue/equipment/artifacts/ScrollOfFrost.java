@@ -22,6 +22,7 @@ public class ScrollOfFrost extends Artifact {
 	public ScrollOfFrost() {
 		super(ID, "Scroll of Frost", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
 		canDrop = false;
+		stackable = true;
 	}
 
 	public static Equipment get() {

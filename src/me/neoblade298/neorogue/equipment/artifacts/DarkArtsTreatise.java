@@ -22,6 +22,7 @@ public class DarkArtsTreatise extends Artifact {
 	public DarkArtsTreatise() {
 		super(ID, "Dark Arts Treatise", Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
 		canDrop = false;
+		stackable = true;
 	}
 
 	public static Equipment get() {
