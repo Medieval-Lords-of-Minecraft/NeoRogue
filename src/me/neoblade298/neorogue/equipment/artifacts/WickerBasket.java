@@ -9,11 +9,12 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 
-public class BagOfPreparation extends Artifact {
-	private static final String ID = "BagOfPreparation";
+public class WickerBasket extends Artifact {
+	private static final String ID = "WickerBasket";
 	
-	public BagOfPreparation() {
-		super(ID, "Bag of Preparation", Rarity.COMMON, EquipmentClass.CLASSLESS);
+	public WickerBasket() {
+		super(ID, "Wicker Basket", Rarity.COMMON, EquipmentClass.CLASSLESS);
+		canDrop = false;
 	}
 
 	public static Equipment get() {
@@ -27,7 +28,7 @@ public class BagOfPreparation extends Artifact {
 	
 	@Override
 	public void onAcquire(PlayerSessionData data, int amount) {
-		data.addMaxStorage(3);
+		data.addMaxStorage(1);
 	}
 
 	@Override
@@ -36,6 +37,6 @@ public class BagOfPreparation extends Artifact {
 	
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BUNDLE, "Increases storage size by <white>3</white>.");
+		item = createItem(Material.BUNDLE, "Increases storage size by <white>1</white>.");
 	}
 }

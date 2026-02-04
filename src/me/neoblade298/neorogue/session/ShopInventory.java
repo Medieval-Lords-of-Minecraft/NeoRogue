@@ -33,7 +33,7 @@ public class ShopInventory extends CoreInventory {
 		GEMS = new int[] { 24, 25, 26 },
 		ARTIFACTS = new int[] { 33, 34, 35 };
 	public static final int SELL_PRICE = 25, REMOVE_CURSE_PRICE = 100,
-		GOLD_ICON = 4, SELL_ICON = 0, PURIFY_ICON = 1, SPECTATE_ICON = 2, ARMOR_ARTIFACT = 7, ACCESSORY_ARTIFACT = 8;
+		GOLD_ICON = 4, SELL_ICON = 0, PURIFY_ICON = 1, SPECTATE_ICON = 2, STORAGE_ARTIFACT = 6, ARMOR_ARTIFACT = 7, ACCESSORY_ARTIFACT = 8;
 	private PlayerSessionData data;
 	private ShopContents shopItems;
 	private Player spectator;
@@ -117,6 +117,7 @@ public class ShopInventory extends CoreInventory {
 			idx++;
 		}
 
+		contents[STORAGE_ARTIFACT] = shopItems.get(21).getItem(data, 21);
 		if (data.getArmorSlots() < PlayerSessionData.ARMOR_SIZE) {
 			ShopItem armorArt = shopItems.get(19);
 			contents[ARMOR_ARTIFACT] = armorArt.getItem(data, 19);

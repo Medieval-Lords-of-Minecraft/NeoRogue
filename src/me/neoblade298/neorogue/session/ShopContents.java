@@ -16,6 +16,7 @@ import me.neoblade298.neorogue.equipment.accessories.Lockbox;
 import me.neoblade298.neorogue.equipment.artifacts.EmeraldCluster;
 import me.neoblade298.neorogue.equipment.artifacts.RubyCluster;
 import me.neoblade298.neorogue.equipment.artifacts.SapphireCluster;
+import me.neoblade298.neorogue.equipment.artifacts.WickerBasket;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 
 public class ShopContents {
@@ -29,7 +30,7 @@ public class ShopContents {
 		generateConsumables(ec, value, discountMult); // 10-12
 		generateGems(discountMult); // 13-15
 		generateArtifacts(data, value, discountMult); // 16-18
-		generateShopArtifacts(ec, value, discountMult); // 19, 20
+		generateShopArtifacts(ec, value, discountMult); // 19-21
 	}
 
 	private ShopContents(HashMap<Integer, ShopItem> shopItems) {
@@ -118,7 +119,7 @@ public class ShopContents {
 
 	private void generateShopArtifacts(EquipmentClass ec, int value, double discountMult) {
 		int idx = 19;
-		for (Artifact art : new Artifact[] { (Artifact) ArmorStand.get(), (Artifact) Lockbox.get() }) {
+		for (Artifact art : new Artifact[] { (Artifact) ArmorStand.get(), (Artifact) Lockbox.get(), (Artifact) WickerBasket.get() }) {
 			int price = NeoRogue.gen.nextInt((int) (100 * discountMult), (int) (200 * discountMult));
 			shopItems.put(idx++, new ShopItem(art, price, false));
 		}
