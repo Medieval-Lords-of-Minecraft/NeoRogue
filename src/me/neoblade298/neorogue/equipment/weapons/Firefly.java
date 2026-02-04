@@ -51,7 +51,7 @@ public class Firefly extends Ammunition {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.TIPPED_ARROW, "Flies slightly faster than normal");
+		item = createItem(Material.TIPPED_ARROW, "Flies slightly faster than normal.");
 		PotionMeta pm = (PotionMeta) item.getItemMeta();
 		pm.setColor(Color.RED);
 		item.setItemMeta(pm);

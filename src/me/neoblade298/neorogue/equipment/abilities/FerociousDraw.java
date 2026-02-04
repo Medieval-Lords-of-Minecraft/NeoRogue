@@ -4,7 +4,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-import me.neoblade298.neorogue.equipment.BowProjectile;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -51,8 +50,7 @@ public class FerociousDraw extends Equipment {
 				if (inst != null) {
 					inst.getMeta().addDamageSlice(
 							new DamageSlice(data, damage, DamageType.PIERCING, DamageStatTracker.of(id + slot, this)));
-					BowProjectile settings = (BowProjectile) inst.getParent();
-					settings.pierce(1);
+					inst.addPierce(1);
 				}
 			}
 			return TriggerResult.keep();

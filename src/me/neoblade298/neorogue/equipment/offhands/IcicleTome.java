@@ -52,20 +52,6 @@ public class IcicleTome extends Equipment {
 		ItemStack charged = item.clone().withType(Material.ENCHANTED_BOOK);
 		ProjectileGroup projs = new ProjectileGroup(new IcicleTomeProjectile(slot, this));
 		eqi.setAction((pdata, in) -> {	
-			ApplyStatusEvent ev = (ApplyStatusEvent) in;
-			if (ev.isStatus(StatusType.FROST)) {
-				am.addCount(ev.getStacks());
-				if (am.getCount() >= thres) {
-					eqi.setIcon(charged);
-				}
-				else {
-					eqi.setIcon(item);
-				}
-			}
-			return TriggerResult.keep();
-		});
-		data.addTrigger(id, Trigger.APPLY_STATUS, eqi);
-		data.addTrigger(id, Trigger.LEFT_CLICK, (pdata, in) -> {
 			if (am.getCount() >= thres) {
 				Player p = data.getPlayer();
 				am.addCount(-thres);
@@ -74,6 +60,19 @@ public class IcicleTome extends Equipment {
 			}
 			return TriggerResult.keep();
 		});
+		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
+			ApplyStatusEvent ev = (ApplyStatusEvent) in;
+			if (ev.isStatus(StatusType.FROST)) {
+				am.addCount(ev.getStacks());
+				if (am.getCount() >= thres) {
+					eqi.setIcon(charged);
+				} else {
+					eqi.setIcon(item);
+				}
+			}
+			return TriggerResult.keep();
+		});
+		data.addTrigger(id, Trigger.LEFT_CLICK, eqi);
 	}
 
 	@Override

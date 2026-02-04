@@ -47,14 +47,13 @@ public class DangerousGame extends Equipment {
 		ProjectileGroup group = new ProjectileGroup(new DangerousGameProjectile(data, this, slot));
 
 		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
-			Player p = data.getPlayer();
 			BasicAttackEvent ev = (BasicAttackEvent) in;
 			
 			LivingEntity target = ev.getTarget();
 			if (target == null) return TriggerResult.keep();
 			
 			// Check if target is within 5 blocks
-			if (p.getLocation().distance(target.getLocation()) <= range && data.hasAmmoInstance()) {
+			if (ev.getProjectile().getOrigin().distance(target.getLocation()) <= range && data.hasAmmoInstance()) {
 				data.addExtraShot(group);
 			}
 			return TriggerResult.keep();

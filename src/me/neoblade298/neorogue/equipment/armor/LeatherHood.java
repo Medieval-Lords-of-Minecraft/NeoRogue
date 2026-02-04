@@ -18,7 +18,7 @@ public class LeatherHood extends Equipment {
 	public LeatherHood(boolean isUpgraded) {
 		super(ID, "Leather Hood", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.ARMOR);
-		dur = isUpgraded ? 15 : 10;
+		dur = isUpgraded ? 30 : 20;
 		shields = isUpgraded ? 15 : 10;
 	}
 	

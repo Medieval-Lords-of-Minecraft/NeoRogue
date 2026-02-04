@@ -48,7 +48,7 @@ public class TomeOfGravity extends Equipment {
 
 	public TomeOfGravity(boolean isUpgraded) {
 		super(ID, "Tome of Gravity", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER, EquipmentType.OFFHAND,
-				EquipmentProperties.ofUsable(15, 0, 12, tp.range));
+				EquipmentProperties.ofUsable(15, 0, 8, tp.range));
 		defenseReduction = isUpgraded ? 30 : 20;
 	}
 

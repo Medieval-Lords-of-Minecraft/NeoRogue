@@ -49,7 +49,7 @@ public class ArrowRain extends Equipment {
 		super(ID, "Arrow Rain", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 5, 12, tp.range));
 				reps = isUpgraded ? 4 : 3;
-				damage = 40;
+				damage = 60;
 	}
 	
 	public static Equipment get() {
