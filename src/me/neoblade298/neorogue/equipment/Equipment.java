@@ -518,6 +518,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Preparation(b);
 			new Pressure(b);
 			new PreySeeker(b);
+			new PredatorDrive(b);
 			new Rampage(b);
 			new RapidFire(b);
 			new RazorCloak(b);
