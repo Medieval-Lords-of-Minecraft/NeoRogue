@@ -63,7 +63,7 @@ public class BloodFrenzy extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.REDSTONE_ORE,
 				"Passive. On kill, if below <white>" + CUTOFF_STRENGTH + "</white> stacks of " + GlossaryTag.BERSERK.tag(this) + ", gain " + GlossaryTag.BERSERK.tag(this, 1, false)
-				+ ". Otherwise, gain " + GlossaryTag.STRENGTH.tag(this, strength, true) + ". Also, for every " + GlossaryTag.BERSERK.tag(this, THRES_ATK_SPEED, false) + " you have, up to <white>30</white>, increase your attack speed by"
-				+ " <yellow>" + atkSpeed + "%</yellow>.");
+				+ ". Otherwise, gain " + GlossaryTag.STRENGTH.tag(this, strength, true) + ". Also, for every " + GlossaryTag.BERSERK.tag(this, THRES_ATK_SPEED, false) + " you have, up to <white>" + CUTOFF_ATK_SPEED +
+				"</white>, increase your attack speed by <yellow>" + atkSpeed + "%</yellow>.");
 	}
 }

@@ -396,6 +396,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 				p.playSound(p, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1F);
 				e.setCancelled(true);
 				EquipSlot type = slotTypes.get(slot);
+				System.out.println(type + " " + nclicked.getInteger("dataSlot") + " " + slot);
 				removeEquipment(type, nclicked.getInteger("dataSlot"), slot, e.getClickedInventory());
 				if (isBindable(type)) clicked = removeBindLore(clicked);
 				setHighlights(eq.getType());

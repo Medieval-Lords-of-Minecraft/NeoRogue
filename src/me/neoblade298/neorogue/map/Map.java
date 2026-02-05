@@ -597,7 +597,9 @@ public class Map {
 		str = str.substring(str.indexOf("-") + 1);
 		String[] pieces = str.split(";");
 		for (String piece : pieces) {
-			map.place(MapPieceInstance.deserialize(piece), true);
+			MapPieceInstance mpi = MapPieceInstance.deserialize(piece);
+			map.place(mpi, true);
+			map.addTargets(mpi.getPiece().getTargets());
 		}
 		map.recalculateEntrances();
 		return map;

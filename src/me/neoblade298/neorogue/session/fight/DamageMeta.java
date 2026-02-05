@@ -342,7 +342,7 @@ public class DamageMeta {
 					if (ent.getKey() instanceof PlayerFightData) {
 						double mult = 0.1;
 						((PlayerFightData) ent.getKey()).getStats().addSanctifiedShielding(ent.getValue() * mult);
-						owner.addSimpleShield(ent.getKey().getUniqueId(), ent.getValue() * mult, 60);
+						owner.addSimpleShield(ent.getKey().getUniqueId(), ent.getValue() * mult, 120);
 					}
 				}
 			}
