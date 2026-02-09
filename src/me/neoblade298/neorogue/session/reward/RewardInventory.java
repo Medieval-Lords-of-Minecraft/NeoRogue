@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
+import me.neoblade298.neorogue.equipment.accessories.PotOfGreed;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
 import me.neoblade298.neorogue.player.inventory.SpectateSelectInventory;
@@ -54,7 +55,20 @@ public class RewardInventory extends CoreInventory {
 		}
 		if (data.getSession().getParty().size() > 1) 
 			contents[7] = CoreInventory.createButton(Material.SPYGLASS, Component.text("View other players' rewards", NamedTextColor.GOLD));
-		contents[8] = CoreInventory.createButton(Material.RED_WOOL, Component.text("Clear remaining rewards", NamedTextColor.RED));
+
+		// Pot of greed specifics
+		if (data.getArtifacts().containsKey(PotOfGreed.ID)) {
+			ItemStack item = PotOfGreed.get().getItem();
+			contents[8] = CoreInventory.createButton(item.getType(),
+					Component.text("Clear remaining rewards", NamedTextColor.RED),
+					Component.text("Gain ", NamedTextColor.GRAY)
+							.append(Component.text(PotOfGreed.GOLD + " coins ", NamedTextColor.YELLOW))
+							.append(Component.text("for each reward skipped")));
+		}
+		else {
+			contents[8] = CoreInventory.createButton(Material.RED_WOOL,
+					Component.text("Clear remaining rewards", NamedTextColor.RED));
+		}
 		inv.setContents(contents);
 	}
 

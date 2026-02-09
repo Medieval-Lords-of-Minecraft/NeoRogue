@@ -20,6 +20,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.map.MapView;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.Nullable;
 
 import de.tr7zw.nbtapi.NBTItem;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
@@ -115,7 +116,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 			slotTypes.put(i, EquipSlot.KEYBIND);
 			Equipment eq = data.getEquipment(EquipSlot.KEYBIND)[bind.getDataSlot()];
 			if (eq == null && data.getAbilitiesEquipped() >= data.getMaxAbilities()) {
-				contents[i] = createMaxedAbilitiesIcon(data, bind.getDataSlot());
+				contents[i] = createMaxedAbilitiesIcon(data, bind.getDataSlot(), bind);
 				continue;
 			}
 			contents[i] = eq != null
@@ -132,7 +133,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 			slotTypes.put(i, EquipSlot.HOTBAR);
 			Equipment eq = data.getEquipment(EquipSlot.HOTBAR)[i];
 			if (eq == null && data.getAbilitiesEquipped() >= data.getMaxAbilities()) {
-				contents[(i + offset) % inv.getSize()] = createMaxedAbilitiesIcon(data, i);
+				contents[(i + offset) % inv.getSize()] = createMaxedAbilitiesIcon(data, i, null);
 				continue;
 			}
 			contents[(i + offset) % inv.getSize()] = eq != null ? addNbt(addBindLore(eq.getItem(), i, i), eq.getId(), eq.isUpgraded(), i)
@@ -173,9 +174,15 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 				NamedTextColor.GRAY), dataSlot);
 	}
 
-	private static ItemStack createMaxedAbilitiesIcon(PlayerSessionData data, int dataSlot) {
+	private static ItemStack createMaxedAbilitiesIcon(PlayerSessionData data, int dataSlot, @Nullable KeyBind bind) {
 		ItemStack item = CoreInventory.createButton(Material.BLACK_STAINED_GLASS_PANE, Component.text("Out of abilities", NamedTextColor.RED),
 				Component.text("You have equipped " + data.getAbilitiesEquipped() + " / " +data.getMaxAbilities() + " abilities", NamedTextColor.GRAY));
+
+				if (bind != null) {
+					List<Component> lore = item.lore();
+					lore.add(Component.text("Bound to ", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, State.FALSE).append(bind.getDisplay()));
+					item.lore(lore);
+				}
 				NBTItem nbti = new NBTItem(item);
 				nbti.setBoolean("maxed", true);
 				nbti.setBoolean("openSlot", true);
@@ -503,7 +510,9 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 
 				if (nbti.hasTag("equipId") || !nbti.hasTag("openSlot")) continue;
 				if (type == EquipmentType.ABILITY && !data.canEquipAbility()) {
-					createMaxedAbilitiesIcon(data, nbti.getInteger("dataSlot"));
+					int dataSlot = nbti.getInteger("dataSlot");
+					boolean isBind = KeyBind.isKeybindSlot(s);
+					createMaxedAbilitiesIcon(data, dataSlot, isBind ? KeyBind.getBindFromSlot(s) : null);
 				}
 				else {
 					contents[s] = iter.withType(Material.GLASS_PANE);
@@ -699,7 +708,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		case ACCESSORY: return createAccessoryIcon(slot - 21);
 		case ARMOR: return createArmorIcon(slot - 18);
 		case HOTBAR: if (data.getAbilitiesEquipped() >= data.getMaxAbilities()) {
-			return createMaxedAbilitiesIcon(data, slot);
+			return createMaxedAbilitiesIcon(data, slot, null);
 		}
 		else {
 			return createHotbarIcon(slot);
@@ -707,7 +716,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		case KEYBIND: 
 		KeyBind bind = KeyBind.getBindFromSlot(slot - 18);
 		if (data.getAbilitiesEquipped() >= data.getMaxAbilities()) {
-			return createMaxedAbilitiesIcon(data, bind.getDataSlot());
+			return createMaxedAbilitiesIcon(data, bind.getDataSlot(), bind);
 		}
 		else {
 			return addNbt(bind.getItem(), bind.getDataSlot());

@@ -104,4 +104,8 @@ public enum KeyBind {
 		default: return SHIFT_RCLICK;
 		}
 	}
+
+	public static boolean isKeybindSlot(int slot) {
+		return slot >= 9 && slot <= 15;
+	}
 }
