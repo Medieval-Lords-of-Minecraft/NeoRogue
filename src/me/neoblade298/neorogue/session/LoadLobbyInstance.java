@@ -83,10 +83,16 @@ public class LoadLobbyInstance extends LobbyInstance {
 
 	@Override
 	public void handleInteractEvent(PlayerInteractEvent e) {
+        e.setCancelled(true);
 		if (e.getAction() != Action.RIGHT_CLICK_BLOCK) return;
 		if (e.getHand() != EquipmentSlot.HAND) return;
+        UUID uuid = e.getPlayer().getUniqueId();
 		
 		if (e.getClickedBlock().getType() == Material.STONE_BUTTON) {
+            if (!s.getHost().equals(uuid)) {
+                Util.displayError(e.getPlayer(), "Only the host may start the game!");
+                return;
+            }
             startGame();
 			return;
 		}

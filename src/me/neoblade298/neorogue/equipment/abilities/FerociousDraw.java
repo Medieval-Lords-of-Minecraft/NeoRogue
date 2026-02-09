@@ -45,6 +45,7 @@ public class FerociousDraw extends Equipment {
 				return TriggerResult.keep();
 
 			// Check if target is within 5 blocks
+			System.out.println("Dist: " + p.getLocation().distance(target.getLocation()));
 			if (p.getLocation().distance(target.getLocation()) <= range) {
 				ProjectileInstance inst = ev.getProjectile();
 				if (inst != null) {

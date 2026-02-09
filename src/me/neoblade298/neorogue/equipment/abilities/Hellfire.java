@@ -4,7 +4,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.AmmunitionInstance;
 import me.neoblade298.neorogue.equipment.BowProjectile;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -31,7 +30,6 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
-import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroupEvent;
 
 public class Hellfire extends Equipment {
 	private static final String ID = "Hellfire";
@@ -40,7 +38,7 @@ public class Hellfire extends Equipment {
 	public Hellfire(boolean isUpgraded) {
 		super(ID, "Hellfire", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.none());
-		damage = isUpgraded ? 100 : 80;
+		damage = isUpgraded ? 160 : 80;
 	}
 	
 	public static Equipment get() {
@@ -49,7 +47,6 @@ public class Hellfire extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ActionMeta am = new ActionMeta();
 		ProjectileGroup group = new ProjectileGroup(new HellfireProjectile(data, this, slot));
 
 		// Check if basic attack hit an enemy with burn
@@ -61,18 +58,6 @@ public class Hellfire extends Equipment {
 			
 			FightData fd = FightInstance.getFightData(target);
 			if (fd.hasStatus(StatusType.BURN)) {
-				am.addCount(1);
-			}
-			return TriggerResult.keep();
-		});
-
-		// Fire additional projectile on next basic attack launch
-		data.addTrigger(id, Trigger.LAUNCH_PROJECTILE_GROUP, (pdata, in) -> {
-			LaunchProjectileGroupEvent ev = (LaunchProjectileGroupEvent) in;
-			if (!ev.isBasicAttack() || !ev.isBowProjectile()) return TriggerResult.keep();
-			
-			if (am.getCount() > 0 && data.hasAmmoInstance()) {
-				am.addCount(-1);
 				data.addExtraShot(group);
 			}
 			return TriggerResult.keep();

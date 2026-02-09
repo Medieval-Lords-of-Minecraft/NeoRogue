@@ -191,7 +191,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		case HOTBAR:
 			return createHotbarIcon(dataSlot);
 		case KEYBIND:
-			KeyBind kb = KeyBind.getBindFromSlot(dataSlot);
+			KeyBind kb = KeyBind.getBindFromData(dataSlot);
 			return addNbt(kb.getItem(), kb.getDataSlot());
 		case OFFHAND:
 			return createOffhandIcon();
@@ -396,10 +396,9 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 				p.playSound(p, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1F);
 				e.setCancelled(true);
 				EquipSlot type = slotTypes.get(slot);
-				System.out.println(type + " " + nclicked.getInteger("dataSlot") + " " + slot);
 				removeEquipment(type, nclicked.getInteger("dataSlot"), slot, e.getClickedInventory());
-				if (isBindable(type)) clicked = removeBindLore(clicked);
 				setHighlights(eq.getType());
+				if (isBindable(type)) clicked = removeBindLore(clicked);
 				p.setItemOnCursor(clicked);
 			}
 		}
@@ -419,16 +418,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 					displayError("At least one of the items must be upgraded to reforge!", false);
 					return;
 				}
-				new BukkitRunnable() {
-					public void run() {
-						p.setItemOnCursor(null);
-						EquipSlot type = slotTypes.get(slot);
-						removeEquipment(type, nclicked.getInteger("dataSlot"), slot, e.getClickedInventory());
-						inv.setItem(slot, iconFromEquipSlot(type, slot));
-						handleInventoryClose();
-						new ReforgeOptionsInventory(data, eq, eqed);
-					}
-				}.runTask(NeoRogue.inst());
+				handleReforge(e, eq, eqed, slot, nclicked, false);
 				return;
 			}
 			else if (eqed != null && eqed.containsReforgeOption(eqId)) {
@@ -436,16 +426,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 					displayError("At least one of the items must be upgraded to reforge!", false);
 					return;
 				}
-				new BukkitRunnable() {
-					public void run() {
-						p.setItemOnCursor(null);
-						EquipSlot type = slotTypes.get(slot);
-						removeEquipment(type, nclicked.getInteger("dataSlot"), slot, e.getClickedInventory());
-						inv.setItem(slot, iconFromEquipSlot(type, slot));
-						handleInventoryClose();
-						new ReforgeOptionsInventory(data, eqed, eq);
-					}
-				}.runTask(NeoRogue.inst());
+				handleReforge(e, eq, eqed, slot, nclicked, true);
 				return;
 			}
 
@@ -488,6 +469,20 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 			p.playSound(p, Sound.ITEM_ARMOR_EQUIP_DIAMOND, 1F, 1F);
 		}
 	}
+
+	private void handleReforge(InventoryClickEvent e, Equipment eq, Equipment eqed, int slot, NBTItem nclicked, boolean flipped) {
+		new BukkitRunnable() {
+			public void run() {
+				p.setItemOnCursor(null);
+				EquipSlot type = slotTypes.get(slot);
+				removeEquipment(type, nclicked.getInteger("dataSlot"), slot, e.getClickedInventory());
+				inv.setItem(slot, iconFromEquipSlot(type, slot));
+				handleInventoryClose();
+				new ReforgeOptionsInventory(data, flipped ? eqed : eq, flipped ? eq : eqed);
+			}
+		}.runTask(NeoRogue.inst());
+		return;
+	}
 	
 	public void clearHighlights() {
 		ItemStack[] contents = inv.getContents();
@@ -514,6 +509,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 					contents[s] = iter.withType(Material.GLASS_PANE);
 					highlighted.add(s);
 				}
+
 			}
 		}
 		inv.setContents(contents);
