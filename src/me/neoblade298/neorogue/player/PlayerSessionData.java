@@ -443,7 +443,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		if (artifacts.containsKey(artifact.getId())) {
 			ArtifactInstance inst = artifacts.get(artifact.getId());
 			inst.add(-amount);
-			if (inst.getAmount() <= 1) artifacts.remove(artifact.getId());
+			if (inst.getAmount() < 1) artifacts.remove(artifact.getId());
 		}
 	}
 
