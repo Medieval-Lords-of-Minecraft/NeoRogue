@@ -13,6 +13,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.TextDisplay;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -51,6 +52,7 @@ public class FightData {
 	protected HashMap<String, Status> statuses = new HashMap<String, Status>();
 	protected ArrayList<Entity> holograms = new ArrayList<Entity>();
 	private HashMap<Trigger, ArrayList<MobAction>> triggers = new HashMap<Trigger, ArrayList<MobAction>>();
+	private TextDisplay hologram;
 
 	protected HashMap<String, BukkitTask> tasks = new HashMap<String, BukkitTask>();
 	protected HashMap<String, Runnable> cleanupTasks = new HashMap<String, Runnable>();
