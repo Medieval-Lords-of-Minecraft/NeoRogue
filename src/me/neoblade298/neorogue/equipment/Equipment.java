@@ -274,6 +274,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		for (boolean b : new boolean[] { false, true }) {
 			// Abilities
 			new Absorb(b);
+			new AbsoluteZero(b);
 			new AbyssalCarve(b);
 			new AcidBomb(b);
 			new AfterImage(b);
@@ -331,6 +332,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new CollectionHex(b);
 			new CompoundingInjury(b);
 			new Concoct(b);
+			new Conflagration(b);
 			new Condemn(b);
 			new ConfidenceKill(b);
 			new Consecrate(b);
