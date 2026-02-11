@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -52,6 +53,7 @@ public class FerociousDraw extends Equipment {
 					inst.getMeta().addDamageSlice(
 							new DamageSlice(data, damage, DamageType.PIERCING, DamageStatTracker.of(id + slot, this)));
 					inst.addPierce(1);
+					Sounds.infect.play(p, p);
 				}
 			}
 			return TriggerResult.keep();

@@ -102,6 +102,7 @@ public class BowProjectile extends Projectile {
 		dm.addDamageSlice(new DamageSlice(data, dmg, ammoProps.getType(), DamageStatTracker.of(id, bow)));
 		dm.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, 
 				ammoProps.get(PropertyType.DAMAGE), BuffStatTracker.of(id, ammo.getAmmo(), "Damage increased")));
+		dm.isBasicAttack(bow, true);
 		ammo.onStart(proj);
 	}
 

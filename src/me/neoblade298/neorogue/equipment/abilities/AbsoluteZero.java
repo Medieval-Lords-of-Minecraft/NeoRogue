@@ -22,7 +22,6 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class AbsoluteZero extends Equipment {
 	private static final String ID = "AbsoluteZero";
@@ -47,7 +46,6 @@ public class AbsoluteZero extends Equipment {
 		am.setCount(0);
 		
 		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
-			DealDamageEvent ev = (DealDamageEvent) in;
 			am.addCount(1);
 			
 			if (am.getCount() >= thres) {

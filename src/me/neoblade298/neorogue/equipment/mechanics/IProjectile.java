@@ -14,7 +14,7 @@ public abstract class IProjectile {
 	}
 	protected IProjectileInstance startWithoutEvent(FightData owner) {
 		Player p = (Player) owner.getEntity();
-		return startWithoutEvent(owner, p.getLocation().add(0, p.isSneaking() ? 1.0 : 1.5, 0), p.getEyeLocation().getDirection());
+		return startWithoutEvent(owner, p.getLocation().add(0, p.isSneaking() ? 1.0 : 1.4, 0), p.getEyeLocation().getDirection());
 	}
 	public IProjectileInstance start(FightData owner, Location source, Vector direction) {
 		LinkedList<IProjectileInstance> insts = new LinkedList<IProjectileInstance>();
@@ -24,7 +24,7 @@ public abstract class IProjectile {
 	}
 	public IProjectileInstance start(FightData owner) {
 		Player p = (Player) owner.getEntity();
-		return start(owner, p.getLocation().add(0, p.isSneaking() ? 1.0 : 1.5, 0), p.getEyeLocation().getDirection());
+		return start(owner, p.getLocation().add(0, p.isSneaking() ? 1.0 : 1.4, 0), p.getEyeLocation().getDirection());
 	}
 	protected abstract IProjectileInstance create(FightData owner, Location source, Vector direction);
 }

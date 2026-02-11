@@ -33,7 +33,6 @@ import me.neoblade298.neorogue.equipment.AmmunitionInstance;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
-import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.CastType;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
@@ -53,6 +52,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerCondition;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.CastUsableEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.CreateRiftEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroupEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.LayTrapEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreCastUsableEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.StaminaChangeEvent;
@@ -167,27 +167,27 @@ public class PlayerFightData extends FightData {
 			return TriggerResult.keep();
 		});
 
-		if (data.getPlayerClass() == EquipmentClass.ARCHER) {
-			addTrigger("EXTRA_ARROWS", Trigger.LAUNCH_PROJECTILE_GROUP, (pdata, in) -> {
-				if (extraShots.isEmpty()) return TriggerResult.keep();
-				int period = Math.min(1, 10 / extraShots.size());
-				PlayerFightData fd = this;
+		addTrigger("EXTRA_ARROWS", Trigger.LAUNCH_PROJECTILE_GROUP, (pdata, in) -> {
+			LaunchProjectileGroupEvent ev = (LaunchProjectileGroupEvent) in;
+			if (!ev.isBasicAttack()) return TriggerResult.keep();
+			if (extraShots.isEmpty()) return TriggerResult.keep();
+			int period = Math.min(1, 10 / extraShots.size());
+			PlayerFightData fd = this;
 
-				ArrayList<ProjectileGroup> finalExtraShots = extraShots;
-				extraShots = new ArrayList<ProjectileGroup>();
-				addTask(new BukkitRunnable() {
-					public void run() {
-						if (finalExtraShots.isEmpty()) {
-							this.cancel();
-							return;
-						}
-						ProjectileGroup pg = finalExtraShots.removeFirst();
-						pg.start(fd);
+			ArrayList<ProjectileGroup> finalExtraShots = extraShots;
+			extraShots = new ArrayList<ProjectileGroup>();
+			addTask(new BukkitRunnable() {
+				public void run() {
+					if (finalExtraShots.isEmpty()) {
+						this.cancel();
+						return;
 					}
-				}.runTaskTimer(NeoRogue.inst(), 10L, period));
-				return TriggerResult.keep();
-			});
-		}
+					ProjectileGroup pg = finalExtraShots.removeFirst();
+					pg.start(fd);
+				}
+			}.runTaskTimer(NeoRogue.inst(), 10L, period));
+			return TriggerResult.keep();
+		});
 
 		// If the player has a TOGGLE_FLIGHT trigger, allow them to fly
 		if (triggers.containsKey(Trigger.TOGGLE_FLIGHT)) {

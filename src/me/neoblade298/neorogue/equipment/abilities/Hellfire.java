@@ -1,11 +1,13 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.AmmunitionInstance;
-import me.neoblade298.neorogue.equipment.BowProjectile;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
@@ -34,6 +36,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 public class Hellfire extends Equipment {
 	private static final String ID = "Hellfire";
 	private int damage;
+	private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME);
 	
 	public Hellfire(boolean isUpgraded) {
 		super(ID, "Hellfire", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
@@ -47,11 +50,11 @@ public class Hellfire extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ProjectileGroup group = new ProjectileGroup(new HellfireProjectile(data, this, slot));
 
 		// Check if basic attack hit an enemy with burn
 		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
 			BasicAttackEvent ev = (BasicAttackEvent) in;
+			ProjectileGroup group = new ProjectileGroup(new HellfireProjectile(data, this, slot));
 			
 			LivingEntity target = ev.getTarget();
 			if (target == null) return TriggerResult.keep();
@@ -92,7 +95,7 @@ public class Hellfire extends Equipment {
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			BowProjectile.tick.play(p, proj.getLocation());
+			pc.play(p, proj.getLocation());
 			ammo.onTick(p, proj, interpolation);
 		}
 
@@ -109,6 +112,7 @@ public class Hellfire extends Equipment {
 			dm.addDamageSlice(new DamageSlice(data, damage, DamageType.FIRE, DamageStatTracker.of(id + slot, eq)));
 			dm.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, dmg, BuffStatTracker.arrowBuff(ammo.getAmmo())));
 			ammo.onStart(proj);
+			Sounds.fire.play(p, p);
 		}
 	}
 }

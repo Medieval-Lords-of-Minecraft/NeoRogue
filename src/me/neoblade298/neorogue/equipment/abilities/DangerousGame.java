@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.AmmunitionInstance;
 import me.neoblade298.neorogue.equipment.BowProjectile;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -44,10 +45,11 @@ public class DangerousGame extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ProjectileGroup group = new ProjectileGroup(new DangerousGameProjectile(data, this, slot));
 
 		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
 			BasicAttackEvent ev = (BasicAttackEvent) in;
+			System.out.println("Basic attack");
+			ProjectileGroup group = new ProjectileGroup(new DangerousGameProjectile(data, this, slot));
 			
 			LivingEntity target = ev.getTarget();
 			if (target == null) return TriggerResult.keep();
@@ -80,7 +82,7 @@ public class DangerousGame extends Equipment {
 			this.homing(0.02);
 			this.data = data;
 			this.p = data.getPlayer();
-			ammo = data.getAmmoInstance();
+			this.ammo = data.getAmmoInstance();
 			this.eq = eq;
 			this.slot = slot;
 		}
@@ -103,6 +105,7 @@ public class DangerousGame extends Equipment {
 			double dmg = ammoProps.get(PropertyType.DAMAGE);
 			dm.addDamageSlice(new DamageSlice(data, damage, ammoProps.getType(), DamageStatTracker.of(id + slot, eq)));
 			dm.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, dmg, BuffStatTracker.arrowBuff(ammo.getAmmo())));
+			Sounds.shoot.play(p, p);
 			ammo.onStart(proj);
 		}
 	}
