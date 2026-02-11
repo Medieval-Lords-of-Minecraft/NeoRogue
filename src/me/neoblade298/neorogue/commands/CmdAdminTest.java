@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.commands;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Display.Billboard;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -10,6 +11,7 @@ import org.bukkit.entity.TextDisplay;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Transformation;
 
+import me.libraryaddict.disguise.DisguiseAPI;
 import me.neoblade298.neocore.bukkit.commands.Subcommand;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
@@ -46,6 +48,19 @@ public class CmdAdminTest extends Subcommand {
 		}
 		LivingEntity trg = TargetHelper.getNearestInSight(p, tp);
 		Location loc = trg.getLocation();
+
+		// Try to remove existing holograms mounted to the target
+		for (Entity ent : trg.getPassengers()) {
+			if (ent.getType() == EntityType.TEXT_DISPLAY) {
+				ent.remove();
+			}
+		}
+
+		// Another way to get rid of libsdisguises holograms
+		DisguiseAPI.getDisguise(trg).getWatcher().setCustomName("Testa");
+		DisguiseAPI.getDisguise(trg).getWatcher().setCustomNameVisible(false);
+
+		// Try to add custom text display
 		TextDisplay td = (TextDisplay) loc.getWorld().spawnEntity(loc, EntityType.TEXT_DISPLAY);
 		td.text(Component.text("Tester"));
 		Transformation trans = td.getTransformation();

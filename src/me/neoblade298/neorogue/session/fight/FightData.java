@@ -10,7 +10,9 @@ import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.Display.Billboard;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TextDisplay;
@@ -41,6 +43,8 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.GrantShieldsEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreApplyStatusEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class FightData {
 	protected FightInstance inst;
@@ -50,7 +54,6 @@ public class FightData {
 	protected double knockbackMult;
 	protected UUID uuid;
 	protected HashMap<String, Status> statuses = new HashMap<String, Status>();
-	protected ArrayList<Entity> holograms = new ArrayList<Entity>();
 	private HashMap<Trigger, ArrayList<MobAction>> triggers = new HashMap<Trigger, ArrayList<MobAction>>();
 	private TextDisplay hologram;
 
@@ -76,12 +79,9 @@ public class FightData {
 		for (TickAction tickAction : tickActions) {
 			tickAction.setCancelled(true);
 		}
-		for (Entity ent : holograms) {
-			new BukkitRunnable() {
-				public void run() {
-					ent.remove();
-				}
-			}.runTask(NeoRogue.inst());
+
+		if (hologram != null) {
+			hologram.remove();
 		}
 	}
 	
@@ -124,10 +124,14 @@ public class FightData {
 			}
 		}
 
-		// This enables the nameplate + hp to show properly
-		if (DisguiseAPI.isDisguised(entity)) {
-			DisguiseAPI.getDisguise(entity).setDynamicName(true);
-		}
+		new BukkitRunnable() {
+			public void run() {
+				if (DisguiseAPI.isDisguised(entity)) {
+					DisguiseAPI.getDisguise(entity).getWatcher().setCustomNameVisible(false);
+				}
+				am.setShowCustomNameplate(false);
+			}
+		}.runTaskLater(NeoRogue.inst(), 60L);
 	}
 	
 	public UUID getUniqueId() {
@@ -221,8 +225,70 @@ public class FightData {
 		if (tasks.containsKey(id)) tasks.get(id).cancel();
 		tasks.put(id, task);
 	}
-	
+
 	public void updateDisplayName() {
+		if (am == null || entity == null)
+			return;
+
+		if (entity.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
+			if (hologram != null) {
+				hologram.remove();
+				hologram = null;
+			}
+			return;
+		}
+
+		// Calculate health
+		double healthPct = entity.getHealth() / entity.getAttribute(Attribute.MAX_HEALTH).getValue();
+		NamedTextColor healthColor;
+		if (healthPct < 0.33) {
+			healthColor = NamedTextColor.RED;
+		} else if (healthPct < 0.67) {
+			healthColor = NamedTextColor.YELLOW;
+		} else {
+			healthColor = NamedTextColor.GREEN;
+		}
+
+		// Build bottom line with health and mob name
+		Component bottomLine = Component.text((int) Math.ceil(entity.getHealth())).color(healthColor)
+				.append(Component.text("/").color(NamedTextColor.WHITE))
+				.append(Component.text((int) entity.getAttribute(Attribute.MAX_HEALTH).getValue()).color(healthColor))
+				.append(Component.text(" " + mobDisplay).color(NamedTextColor.WHITE));
+		
+		// Build status list
+		ArrayList<Status> list = new ArrayList<Status>(statuses.values());
+		Collections.sort(list, Status.comp);
+		Component fullDisplay = Component.empty();
+		int displaySize = 0;
+		for (int i = 0; i < list.size() && displaySize < 5; i++) {
+			Status s = list.get(i);
+			if (s.isHidden() || s.getStacks() <= 0) {
+				continue;
+			}
+			if (displaySize > 0) {
+				fullDisplay = fullDisplay.appendNewline();
+			}
+			fullDisplay = fullDisplay.append(Component.text(list.get(i).getDisplay()));
+			displaySize++;
+		}
+		
+		// Add bottom line
+		if (displaySize > 0) {
+			fullDisplay = fullDisplay.appendNewline().append(bottomLine);
+		} else {
+			fullDisplay = bottomLine;
+		}
+		fullDisplay = fullDisplay.appendNewline();
+
+		if (hologram == null) {
+			hologram = (TextDisplay) entity.getLocation().getWorld().spawnEntity(entity.getLocation().add(0, 2.5, 0), EntityType.TEXT_DISPLAY);
+			hologram.setBillboard(Billboard.CENTER);
+		}
+		hologram.text(fullDisplay);
+		entity.addPassenger(hologram);
+	}
+	
+	public void updateDisplayNameOld() {
 		if (am == null || entity == null) return;
 		
 		if (entity.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
