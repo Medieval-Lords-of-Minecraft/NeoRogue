@@ -48,7 +48,6 @@ public class DangerousGame extends Equipment {
 
 		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
 			BasicAttackEvent ev = (BasicAttackEvent) in;
-			System.out.println("Basic attack");
 			ProjectileGroup group = new ProjectileGroup(new DangerousGameProjectile(data, this, slot));
 			
 			LivingEntity target = ev.getTarget();

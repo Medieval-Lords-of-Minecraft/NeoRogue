@@ -1016,6 +1016,10 @@ public abstract class FightInstance extends Instance {
 		fightData.put(uuid, data);
 	}
 	
+	public static boolean hasFightData(UUID uuid) {
+		return fightData.containsKey(uuid);
+	}
+	
 	private PlayerFightData setup(Player p, PlayerSessionData data) {
 		UUID uuid = p.getUniqueId();
 		PlayerFightData fd = new PlayerFightData(this, data);

@@ -58,7 +58,7 @@ public class Atone extends Equipment {
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 10, 5, 7));
 		
 		damage = isUpgraded ? 300 : 200;
-		sanct = isUpgraded ? 15 : 7;
+		sanct = isUpgraded ? 10 : 7;
 	}
 	
 	public static Equipment get() {

@@ -67,11 +67,9 @@ import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.mechanics.PotionProjectileInstance;
-import me.neoblade298.neorogue.map.MapSpawnerInstance;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionSpectateInventory;
 import me.neoblade298.neorogue.session.Instance.PlayerFlags;
-import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.Mob;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -585,20 +583,18 @@ public class SessionManager implements Listener {
 	@EventHandler
 	public void onMythicSpawn(MythicMobSpawnEvent e) {
 		Entity ent = e.getEntity();
-		UUID uuid = ent.getUniqueId();
 		if (ent instanceof LivingEntity) {
 			MythicMob mythicMob = e.getMobType();
 			Mob mob = Mob.get(mythicMob.getInternalName());
 			if (mob == null)
 				return;
-			FightData fd = new FightData((LivingEntity) ent, NeoRogue.mythicApi.getMythicMobInstance(ent), mob,
-					(MapSpawnerInstance) null);
-			FightInstance.putFightData(uuid, fd);
+			Plot p = Plot.locationToPlot(ent.getLocation());
+			Session s = SessionManager.getSession(p);
 			if (e.getSpawnReason() == SpawnReason.SUMMON || e.getSpawnReason() == SpawnReason.COMMAND) {
-				if (fd.getInstance() == null)
+				if (s.getInstance() == null)
 					return;
-				FightInstance.scaleMob(fd.getInstance().getSession(), mob, mythicMob, e.getMob());
-				fd.getInstance().addSpawnCounter(mob.getSpawnValue());
+				FightInstance.scaleMob(s, mob, mythicMob, e.getMob());
+				((FightInstance) s.getInstance()).addSpawnCounter(mob.getSpawnValue());
 			}
 		}
 	}

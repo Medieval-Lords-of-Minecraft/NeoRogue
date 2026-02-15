@@ -124,14 +124,14 @@ public class FightData {
 			}
 		}
 
-		new BukkitRunnable() {
-			public void run() {
-				if (DisguiseAPI.isDisguised(entity)) {
-					DisguiseAPI.getDisguise(entity).getWatcher().setCustomNameVisible(false);
-				}
-				am.setShowCustomNameplate(false);
-			}
-		}.runTaskLater(NeoRogue.inst(), 60L);
+		// Set up custom nameplate
+		if (DisguiseAPI.isDisguised(entity)) {
+			DisguiseAPI.getDisguise(entity).getWatcher().setCustomNameVisible(false);
+		}
+		am.setShowCustomNameplate(false);
+		entity.setCustomNameVisible(false);
+		entity.customName(Component.empty());
+		updateDisplayName();
 	}
 	
 	public UUID getUniqueId() {
@@ -227,7 +227,7 @@ public class FightData {
 	}
 
 	public void updateDisplayName() {
-		if (am == null || entity == null)
+		if (am == null || entity == null || !entity.isValid())
 			return;
 
 		if (entity.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
@@ -279,13 +279,16 @@ public class FightData {
 			fullDisplay = bottomLine;
 		}
 		fullDisplay = fullDisplay.appendNewline();
-
 		if (hologram == null) {
+			// Create hologram
 			hologram = (TextDisplay) entity.getLocation().getWorld().spawnEntity(entity.getLocation().add(0, 2.5, 0), EntityType.TEXT_DISPLAY);
 			hologram.setBillboard(Billboard.CENTER);
+			hologram.setViewRange(100);
+			
+			// Try to mount and verify
+			entity.addPassenger(hologram);
 		}
 		hologram.text(fullDisplay);
-		entity.addPassenger(hologram);
 	}
 	
 	public void updateDisplayNameOld() {

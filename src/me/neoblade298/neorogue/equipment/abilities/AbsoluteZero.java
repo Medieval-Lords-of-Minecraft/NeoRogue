@@ -4,12 +4,14 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -42,8 +44,11 @@ public class AbsoluteZero extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		ItemStack icon = item.clone();
+		ItemStack charged = item.clone().withType(Material.PACKED_ICE);
 		ActionMeta am = new ActionMeta();
 		am.setCount(0);
+		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
 		
 		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
 			am.addCount(1);
@@ -51,6 +56,8 @@ public class AbsoluteZero extends Equipment {
 			if (am.getCount() >= thres) {
 				Player p = data.getPlayer();
 				am.setCount(0);
+				icon.setAmount(1);
+				inst.setIcon(icon);
 				
 				// Play effects
 				pc.play(p, p);
@@ -66,6 +73,17 @@ public class AbsoluteZero extends Equipment {
 					// Apply new frost and double existing frost
 					int totalFrostToApply = frost + currentFrost;
 					FightInstance.applyStatus(ent, StatusType.FROST, data, totalFrostToApply, -1);
+				}
+			} else {
+				// Update icon count
+				int count = am.getCount();
+				if (count >= thres - 1) {
+					// Show charged version
+					charged.setAmount(count);
+					inst.setIcon(charged);
+				} else {
+					icon.setAmount(count);
+					inst.setIcon(icon);
 				}
 			}
 			

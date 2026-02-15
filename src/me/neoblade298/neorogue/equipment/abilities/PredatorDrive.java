@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
@@ -31,7 +32,10 @@ public class PredatorDrive extends Equipment {
 	
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		ItemStack icon = item.clone();
+		ItemStack charged = item.clone().withType(Material.GLOWSTONE_DUST);
 		ActionMeta am = new ActionMeta();
+		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
 		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
 			BasicAttackEvent ev = (BasicAttackEvent) in;
 			Player p = data.getPlayer();
@@ -47,10 +51,23 @@ public class PredatorDrive extends Equipment {
 					// Reduce cooldowns when threshold is reached
 					if (am.getCount() >= threshold) {
 						am.setCount(0);
-						for (EquipmentInstance inst : data.getActiveEquipment().values()) {
-							inst.addCooldown(-1);
+						icon.setAmount(1);
+						inst.setIcon(icon);
+						for (EquipmentInstance eqi : data.getActiveEquipment().values()) {
+							eqi.addCooldown(-1);
 						}
 						Sounds.success.play(p, p);
+					} else {
+						// Update icon count
+						int count = am.getCount();
+						if (count >= threshold - 1) {
+							// Show charged version
+							charged.setAmount(count);
+							inst.setIcon(charged);
+						} else {
+							icon.setAmount(count);
+							inst.setIcon(icon);
+						}
 					}
 				}
 			}
