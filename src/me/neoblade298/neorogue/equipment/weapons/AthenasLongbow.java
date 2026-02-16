@@ -21,14 +21,14 @@ import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroupEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
-public class AthenaLongbow extends Bow {
-	private static final String ID = "AthenaLongbow";
+public class AthenasLongbow extends Bow {
+	private static final String ID = "AthenasLongbow";
 	private double damageBuff;
 	
-	public AthenaLongbow(boolean isUpgraded) {
+	public AthenasLongbow(boolean isUpgraded) {
 		super(ID, "Athena's Longbow", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofBow(50, 1, 0, 12, 0, 0));
@@ -71,11 +71,11 @@ public class AthenaLongbow extends Bow {
 		});
 		
 		// Increase non-basic attack damage by 50% or 100%
-		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
-			DealDamageEvent ev = (DealDamageEvent) in;
+		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
+			PreDealDamageEvent ev = (PreDealDamageEvent) in;
 			if (ev.getMeta().isBasicAttack()) return TriggerResult.keep();
 			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
-					Buff.multiplier(data, damageBuff, BuffStatTracker.of(buffId, this, "Non-basic attack damage increased")));
+					Buff.multiplier(data, damageBuff, BuffStatTracker.damageBuffAlly(buffId, getUnupgraded())));
 			return TriggerResult.keep();
 		});
 	}

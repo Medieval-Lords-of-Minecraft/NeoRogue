@@ -15,36 +15,35 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.Marker;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.buff.StatTracker;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.KillEvent;
 
-public class Scavenger extends Equipment {
-	private static final String ID = "Scavenger";
-	private static final ParticleContainer stackParticle = new ParticleContainer(Particle.END_ROD)
+public class HuntersEssence extends Equipment {
+	private static final String ID = "HuntersEssence";
+	private static final ParticleContainer stackParticle = new ParticleContainer(Particle.ENCHANT)
 			.count(30).spread(0.2, 0.2).offsetY(0.5);
-	private static final ParticleContainer collectParticle = new ParticleContainer(Particle.HAPPY_VILLAGER)
+	private static final ParticleContainer collectParticle = new ParticleContainer(Particle.ENCHANTED_HIT)
 			.count(30).spread(0.5, 0.5).offsetY(1);
 	
 	private int stamina;
 	private double damageBuff;
+	private double focusChance;
 	
-	public Scavenger(boolean isUpgraded) {
-		super(ID, "Scavenger", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
+	public HuntersEssence(boolean isUpgraded) {
+		super(ID, "Hunter's Essence", isUpgraded, Rarity.EPIC, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.none());
 		stamina = isUpgraded ? 30 : 20;
-		damageBuff = isUpgraded ? 0.05 : 0.03;
-	}
-
-	@Override
-	public void setupReforges() {
-		addReforge(Saboteur.get(), TrappersEssence.get(), HuntersEssence.get());
+		damageBuff = isUpgraded ? 0.10 : 0.05;
+		focusChance = isUpgraded ? 0.60 : 0.30;
 	}
 	
 	public static Equipment get() {
@@ -63,25 +62,28 @@ public class Scavenger extends Equipment {
 			Location deathLoc = ev.getTarget().getLocation();
 			
 			// Create a collectible marker at death location
-			data.addMarker(new ScavengerStack(data, deathLoc, p, stamina, damageBuff, this, inst, icon));
+			data.addMarker(new HuntersEssenceStack(data, deathLoc, p, stamina, damageBuff, focusChance, this, inst, icon));
 			
 			return TriggerResult.keep();
 		});
 	}
 	
-	private class ScavengerStack extends Marker {
+	private class HuntersEssenceStack extends Marker {
 		private Player player;
 		private int staminaReward;
 		private double damageReward;
+		private double focusChance;
 		private Equipment eq;
 		private EquipmentInstance inst;
 		private ItemStack icon;
 		
-		public ScavengerStack(PlayerFightData owner, Location loc, Player p, int stamina, double damage, Equipment eq, EquipmentInstance inst, ItemStack icon) {
+		public HuntersEssenceStack(PlayerFightData owner, Location loc, Player p, int stamina, double damage, 
+				double focusChance, Equipment eq, EquipmentInstance inst, ItemStack icon) {
 			super(owner, loc, 200); // 10 seconds duration
 			this.player = p;
 			this.staminaReward = stamina;
 			this.damageReward = damage;
+			this.focusChance = focusChance;
 			this.eq = eq;
 			this.inst = inst;
 			this.icon = icon;
@@ -108,6 +110,11 @@ public class Scavenger extends Equipment {
 			owner.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
 					new Buff(owner, 0, damageReward, StatTracker.damageBuffAlly(buffId, eq, true)));
 			
+			// Chance to increase focus by 1
+			if (Math.random() < focusChance) {
+				owner.applyStatus(StatusType.FOCUS, owner, 1, -1);
+			}
+			
 			// Increment icon count
 			ItemStack newIcon = icon.clone();
 			newIcon.setAmount(newIcon.getAmount() + 1);
@@ -129,9 +136,10 @@ public class Scavenger extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.WHEAT,
+		item = createItem(Material.ENDER_EYE,
 				"Passive. When you kill an enemy, they drop a stack. Standing on stacks collects them. " +
-				"Each stack grants you " + DescUtil.yellow(stamina) + " stamina and " + 
-				DescUtil.yellow((int)(damageBuff * 100) + "%") + " general damage, permanently.");
+				"Each stack grants you " + DescUtil.yellow(stamina) + " stamina, " + 
+				DescUtil.yellow((int)(damageBuff * 100) + "%") + " general damage permanently, and has a " +
+				DescUtil.yellow((int)(focusChance * 100) + "%") + " chance to increase " + GlossaryTag.FOCUS.tag(this) + " by <white>1</white>.");
 	}
 }

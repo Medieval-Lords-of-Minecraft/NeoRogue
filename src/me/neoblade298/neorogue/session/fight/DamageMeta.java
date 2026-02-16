@@ -199,6 +199,10 @@ public class DamageMeta {
 	public ArrayList<String> getTags() {
 		return tags;
 	}
+
+	public boolean hasTag(String tag) {
+		return tags.contains(tag);
+	}
 	
 	public DamageMeta isSecondary(boolean isSecondary) {
 		this.isSecondary = isSecondary;

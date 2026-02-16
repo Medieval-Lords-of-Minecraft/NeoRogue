@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.TreeSet;
 import java.util.UUID;
 
@@ -36,7 +37,9 @@ import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.CastType;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
+import me.neoblade298.neorogue.equipment.mechanics.IProjectileInstance;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
+import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.TaskChain;
 import me.neoblade298.neorogue.session.fight.TickAction.TickResult;
@@ -62,6 +65,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 public class PlayerFightData extends FightData {
 
 	private static final DecimalFormat df = new DecimalFormat("##.#");
+	public static String EXTRA_SHOT_TAG = "EXTRA_SHOT";
 	private static final Comparator<Status> stackComparator = new Comparator<Status>() {
 		@Override
 		public int compare(Status s1, Status s2) {
@@ -183,7 +187,12 @@ public class PlayerFightData extends FightData {
 						return;
 					}
 					ProjectileGroup pg = finalExtraShots.removeFirst();
-					pg.start(fd);
+					List<IProjectileInstance> projs = pg.start(fd);
+					for (IProjectileInstance proj : projs) {
+						if (proj instanceof ProjectileInstance) {
+							((ProjectileInstance) proj).getMeta().addTag(EXTRA_SHOT_TAG);
+						}
+					}
 				}
 			}.runTaskTimer(NeoRogue.inst(), 10L, period));
 			return TriggerResult.keep();

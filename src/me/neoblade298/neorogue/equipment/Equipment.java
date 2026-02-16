@@ -381,6 +381,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Electrode(b);
 			new Electrolysis(b);
 			new Embolden(b);
+			new Emberhail(b);
 			new EmpoweredEdge(b);
 			new Endurance(b);
 			new Engulf(b);
@@ -388,6 +389,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new EndlessVenom(b);
 			new EnduranceTraining(b);
 			new Energize(b);
+			new Entrench(b);
 			new Entropy(b);
 			new Evanesce(b);
 			new Envenom(b);
@@ -455,6 +457,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new HexingShot(b);
 			new HoldTheLine(b);
 			new HolySpear(b);
+			new HuntersEssence(b);
 			new InducePanic(b);
 			new InducePanic2(b);
 			new Inflame(b);
@@ -510,6 +513,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new PiercingShot2(b);
 			new PiercingVenom(b);
 			new Pin(b);
+			new PinningShot(b);
 			new Plague(b);
 			new PointBlank(b);
 			new PoolOfLight(b);
@@ -535,6 +539,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new QuickFeet(b);
 			new Quickfire(b);
 			new Quicken(b);
+			new Ricochet(b);
 			new ShadowImbuement(b);
 			new Twilight(b);
 			new ShadowPartner(b);
@@ -546,6 +551,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new ShatteringShot(b);
 			new ShoulderBash(b);
 			new Sear(b);
+			new SadisticNature(b);
+			new Saboteur(b);
 			new Scavenger(b);
 			new SelfDestruct(b);
 			new Setup(b);
@@ -582,6 +589,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Titan(b);
 			new ToAshes(b);
 			new Torch(b);
+			new TrappersEssence(b);
 			new TreeTrunk(b);
 			new TwinBolt(b);
 			new TwinShiv(b);
@@ -727,7 +735,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new AshenHeadhunter(b);
 			new AshenWand(b);
 			new AshenWand2(b);
-			new AthenaLongbow(b);
+			new AthenasLongbow(b);
 			new AvalonianMace(b);
 			new BarbedRocket(b);
 			new BasicBow(b);
