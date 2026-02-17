@@ -571,6 +571,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new StaticSurge(b);
 			new Storm(b);
 			new Stormspike(b);
+			new StormweaversPromise(b);
 			new Study(b);
 			new Study2(b);
 			new Sturdy(b);
@@ -753,9 +754,11 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new CrescentAxe(b);
 			new CrimsonBlade(b);
 			new CripplingFencingSword(b);
+			new DaedalusStormbow(b);
 			new DarkScepter(b);
 			new DoubleTap(b);
 			new EarthStaff(b);
+			new EdgeOfHorizon(b);
 			new EarthenLeatherGauntlets(b);
 			new ElectromagneticKnife(b);
 			new EnchantedCrystalArrow(b);
@@ -772,6 +775,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new ForcefulLeatherGauntlets(b);
 			new Fracturer(b);
 			new FrostbiteBow(b);
+			new Frostreaver(b);
 			new GlassArrow(b);
 			new Groundbreaker(b);
 			new Harpoon(b);

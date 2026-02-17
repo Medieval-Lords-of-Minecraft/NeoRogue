@@ -13,23 +13,27 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Backstep extends Equipment {
 	private static final String ID = "Backstep";
+	private int shields;
 	
 	public Backstep(boolean isUpgraded) {
 		super(ID, "Backstep", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, isUpgraded ? 1 : 5, 8, 0));
 		properties.addUpgrades(PropertyType.STAMINA_COST);
+		shields = isUpgraded ? 6 : 3;
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LEATHER_BOOTS,
-				"On cast, jump backwards and gain " + DescUtil.potion("Speed", 0, 3) + ".");
+				"On cast, jump backwards, gain " + DescUtil.potion("Speed", 0, 3) + ", and gain " +
+				GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>5s</white>].");
 	}
 
 	public void setupReforges() {
@@ -53,6 +57,7 @@ public class Backstep extends Equipment {
 			p.setVelocity(v.setY(0).setX(-v.getX()).setZ(-v.getZ()).normalize().multiply(0.7).setY(0.3));
 			Sounds.jump.play(p, p);
 			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 60, 0));
+			data.addSimpleShield(p.getUniqueId(), shields, 100);
 			return TriggerResult.keep();
 		}));
 	}

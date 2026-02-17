@@ -35,13 +35,14 @@ public class Surprise extends Equipment {
 	private static TargetProperties tp = TargetProperties.radius(2, false, TargetType.ENEMY);
 	private static ParticleContainer trap = new ParticleContainer(Particle.CRIT).count(50).spread(1, 0.2),
 		hit = new ParticleContainer(Particle.CRIT).count(50).spread(1, 1);
-	private int damage;
+	private int damage, shields;
 	
 	public Surprise(boolean isUpgraded) {
 		super(ID, "Surprise", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 15, 10, 0));
 		
 		damage = isUpgraded ? 160 : 120;
+		shields = 6;
 	}
 	
 	public static Equipment get() {
@@ -61,6 +62,7 @@ public class Surprise extends Equipment {
 			p.setVelocity(v.setY(0).setX(-v.getX()).setZ(-v.getZ()).normalize().multiply(0.7).setY(0.3));
 			Sounds.jump.play(p, p);
 			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 60, 0));
+			data.addSimpleShield(p.getUniqueId(), shields, 100);
 			return TriggerResult.keep();
 		}));
 	}
@@ -87,6 +89,7 @@ public class Surprise extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.TORCH,
 			"On cast, place a " + GlossaryTag.TRAP.tagPlural(this) + " [<white>10s</white>] that deals " + GlossaryTag.BLUNT.tag(this, damage, true) +
-			" to the first enemy that steps on it. Then jump backwards and gain " + DescUtil.potion("Speed", 0, 3) + ".");
+			" to the first enemy that steps on it. Then jump backwards, gain " + DescUtil.potion("Speed", 0, 3) + ", and gain " +
+			GlossaryTag.SHIELDS.tag(this, shields, false) + " [<white>5s</white>].");
 	}
 }

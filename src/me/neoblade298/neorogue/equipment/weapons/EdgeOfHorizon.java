@@ -1,40 +1,43 @@
 package me.neoblade298.neorogue.equipment.weapons;
 
-import java.util.UUID;
-
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Bow;
 import me.neoblade298.neorogue.equipment.BowProjectile;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.equipment.abilities.Emberhail;
-import me.neoblade298.neorogue.equipment.abilities.Saboteur;
 import me.neoblade298.neorogue.equipment.mechanics.IProjectileInstance;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.buff.StatTracker;
+import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroupEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
-public class AthenasLongbow extends Bow {
-	private static final String ID = "AthenasLongbow";
-	private double damageBuff;
+public class EdgeOfHorizon extends Bow {
+	private static final String ID = "EdgeOfHorizon";
+	private static final int MAX_FOCUS_STACKS = 10;
+	private static final double BASE_NON_BASIC_BUFF = 0.30;
+	private static final double NON_BASIC_BUFF_PER_FOCUS = 0.10;
+	private int basicDamagePerFocus;
 	
-	public AthenasLongbow(boolean isUpgraded) {
-		super(ID, "Athena's Longbow", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
+	public EdgeOfHorizon(boolean isUpgraded) {
+		super(ID, "Edge of Horizon", isUpgraded, Rarity.EPIC, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofBow(50, 1, 0, 12, 0, 0));
-		damageBuff = isUpgraded ? 1.0 : 0.5;
+				EquipmentProperties.ofBow(60, 1, 0, 12, 0, 0));
+		basicDamagePerFocus = isUpgraded ? 15 : 10;
 	}
 
 	@Override
@@ -47,15 +50,7 @@ public class AthenasLongbow extends Bow {
 	}
 
 	@Override
-	public void setupReforges() {
-		addReforge(Emberhail.get(), Frostreaver.get(), DaedalusStormbow.get());
-		addReforge(Saboteur.get(), EdgeOfHorizon.get());
-	}
-
-	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		String buffId = UUID.randomUUID().toString();
-		
 		// Standard bow shooting
 		data.addSlotBasedTrigger(id, slot, Trigger.VANILLA_PROJECTILE, (pdata, in) -> {
 			if (!canShoot(data)) return TriggerResult.keep();
@@ -78,19 +73,32 @@ public class AthenasLongbow extends Bow {
 			return TriggerResult.keep();
 		});
 		
-		// Increase non-basic attack damage by 50% or 100%
+		// Damage buffs based on focus stacks
 		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
 			PreDealDamageEvent ev = (PreDealDamageEvent) in;
-			if (ev.getMeta().isBasicAttack()) return TriggerResult.keep();
-			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
-					Buff.multiplier(data, damageBuff, BuffStatTracker.damageBuffAlly(buffId, getUnupgraded())));
+			int focusStacks = Math.min(MAX_FOCUS_STACKS, data.getStatus(StatusType.FOCUS).getStacks());
+			
+			if (ev.getMeta().isBasicAttack()) {
+				// Basic attack: flat damage increase per focus stack
+				if (focusStacks > 0) {
+					ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+							Buff.increase(data, basicDamagePerFocus * focusStacks, StatTracker.damageBuffAlly(id + slot, this)));
+				}
+			} else {
+				// Non-basic attack: 30% base + 10% per focus stack
+				double totalMult = BASE_NON_BASIC_BUFF + (NON_BASIC_BUFF_PER_FOCUS * focusStacks);
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+						Buff.multiplier(data, totalMult, BuffStatTracker.damageBuffAlly(id + slot + 1, this)));
+			}
 			return TriggerResult.keep();
 		});
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BOW, "Passive. Increase non-basic attack damage by <yellow>" + 
-				(int)(damageBuff * 100) + "%</yellow> and basic attack projectile range by <white>4</white>.");
+		item = createItem(Material.BOW,
+				"Passive. Increases basic projectile range by <white>4</white> and non-basic damage by <white>30%</white>. " +
+				"Every stack of " + GlossaryTag.FOCUS.tag(this) + " increases basic attack damage by " +
+				DescUtil.yellow(basicDamagePerFocus) + " and non-basic damage by <white>10%</white>, up to <white>10</white> stacks.");
 	}
 }

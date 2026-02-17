@@ -41,20 +41,21 @@ public class BlastStep extends Equipment {
 	private static final Vector kb = new Vector(0, 2, 0);
 	private static final Cone cone = new Cone(tp.range, tp.arc);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION);
-	private int damage, inc;
+	private int damage, inc, shields;
 	
 	public BlastStep(boolean isUpgraded) {
 		super(ID, "Blast Step", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 15, 12, 5));
 		damage = isUpgraded ? 100 : 70;
 		inc = isUpgraded ? 90 : 60;
-
+		shields = 6;
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.TNT_MINECART,
-				"On cast, gain " + DescUtil.potion("Speed", 1, 3) + ". Deal " + GlossaryTag.BLUNT.tag(this, damage, true) + " damage " +
+				"On cast, gain " + DescUtil.potion("Speed", 1, 3) + " and " + GlossaryTag.SHIELDS.tag(this, shields, false) + " [<white>5s</white>]. " +
+				"Deal " + GlossaryTag.BLUNT.tag(this, damage, true) + " damage " +
 				"and knock up all enemies in a cone in front of you. Enemies hit take an additional " + GlossaryTag.BLUNT.tag(this, inc, true) + " [<white>3s</white>] " +
 				"from projectiles fired within <white>5</white> blocks of them." );
 	}
@@ -68,6 +69,7 @@ public class BlastStep extends Equipment {
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			Player p = data.getPlayer();
 			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 60, 1));
+			data.addSimpleShield(p.getUniqueId(), shields, 100);
 			cone.play(p, pc, p.getLocation(), LocalAxes.usingGroundedEyeLocation(p), pc);
 			Sounds.explode.play(p, p);
 			for (LivingEntity ent : TargetHelper.getEntitiesInCone(p, tp)) {

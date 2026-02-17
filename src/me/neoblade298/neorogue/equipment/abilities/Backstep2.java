@@ -35,7 +35,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.ApplyStatusEvent;
 public class Backstep2 extends Equipment {
 	private static final String ID = "Backstep2";
 	private static final int[] ROTATIONS = { 0, -15, 15 };
-	private int thres, damage, rend;
+	private int thres, damage, rend, shields;
 	
 	public Backstep2(boolean isUpgraded) {
 		super(ID, "Backstep II", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
@@ -43,13 +43,15 @@ public class Backstep2 extends Equipment {
 		damage = isUpgraded ? 20 : 10;
 		rend = 10;
 		thres = isUpgraded ? 60 : 45;
+		shields = 6;
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.IRON_BOOTS,
 				"This ability can be stored and cast once for every " + GlossaryTag.REND.tag(this, thres, true) + " stacks you apply. " +
-				"On cast, jump backwards, gain " + DescUtil.potion("Speed", 0, 3) + ", fire <white>3</white> projectiles that deal " +
+				"On cast, jump backwards, gain " + DescUtil.potion("Speed", 0, 3) + ", gain " + GlossaryTag.SHIELDS.tag(this, shields, false) + " [<white>5s</white>], " +
+				"fire <white>3</white> projectiles that deal " +
 				GlossaryTag.PIERCING.tag(this, damage, true) + " damage, and apply " + GlossaryTag.REND.tag(this, rend, false) +".");
 	}
 	
@@ -79,6 +81,7 @@ public class Backstep2 extends Equipment {
 			p.setVelocity(v.setY(0).setX(-v.getX()).setZ(-v.getZ()).normalize().multiply(0.7).setY(0.3));
 			Sounds.jump.play(p, p);
 			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 60, 0));
+			data.addSimpleShield(p.getUniqueId(), shields, 100);
 			projs.start(data);
 			return TriggerResult.keep();
 		});
