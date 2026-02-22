@@ -16,7 +16,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Entrench extends Equipment {
 	private static final String ID = "Entrench";
-	private static final ParticleContainer pc = new ParticleContainer(Particle.BLOCK)
+	private static final ParticleContainer pc = new ParticleContainer(Particle.FIREWORK)
 			.count(20).spread(0.5, 0.5).offsetY(1);
 	
 	private int shields;

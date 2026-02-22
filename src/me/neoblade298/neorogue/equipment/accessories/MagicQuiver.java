@@ -61,6 +61,7 @@ public class MagicQuiver extends Equipment {
 			LivingEntity trg = TargetHelper.getNearest(p, tp);
 			ProjectileGroup group = new ProjectileGroup(new MagicQuiverProjectile(data, this, slot));
 			if (action.getCount() >= thres && data.hasAmmoInstance() && trg != null) {
+				action.addCount(-thres);
 				data.addExtraShot(group);
 			}
 			return TriggerResult.keep();

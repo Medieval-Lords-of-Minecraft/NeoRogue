@@ -37,6 +37,7 @@ public class LayTrap extends Equipment {
 	private static TargetProperties tp = TargetProperties.radius(4, false, TargetType.ENEMY);
 	private static ParticleContainer trap = new ParticleContainer(Particle.CRIT).count(50).spread(1, 0.2),
 		hit = new ParticleContainer(Particle.CRIT).count(50).spread(1, 1);
+	private static final int SHIELDS = 5;
 	private int damage, secs;
 	
 	public LayTrap(boolean isUpgraded) {
@@ -62,6 +63,7 @@ public class LayTrap extends Equipment {
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pd, in) -> {
 			Player p = data.getPlayer();
 			Sounds.equip.play(p, p);
+			data.addSimpleShield(p.getUniqueId(), SHIELDS, 100);
 			data.charge(40);
 			data.addTask(new BukkitRunnable() {
 				public void run() {
@@ -95,9 +97,10 @@ public class LayTrap extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.OAK_TRAPDOOR,
-				"On cast, " + DescUtil.charge(this, 1, 2) + ". Afterwards, drop a " + GlossaryTag.TRAP.tag(this) + 
+				"On cast, gain " + GlossaryTag.SHIELDS.tag(this, SHIELDS, false) + " [<white>5s</white>] and " + 
+				DescUtil.charge(this, 1, 2) + ". Afterwards, drop a " + GlossaryTag.TRAP.tag(this) + 
 				" that lasts for " + DescUtil.white("10s") +
 				". If an enemy steps on the trap, they take " + GlossaryTag.BLUNT.tag(this, damage, true) +
-				" damage, receive " + DescUtil.potionUp("Slowness", 3, secs) + ", and deactivate the trap.");
+				" damage and receive " + DescUtil.potionUp("Slowness", 3, secs) + ".");
 	}
 }

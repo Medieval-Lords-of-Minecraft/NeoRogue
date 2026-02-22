@@ -154,6 +154,7 @@ public class TargetHelper {
 		@Override
 		public boolean test(LivingEntity trg) {
 			if (!isValidTarget(src, trg, props)) return false;
+			if (trg == src) return false;
 			switch (props.type) {
 			case ENEMY: return NeoRogue.mythicApi.isMythicMob(trg);
 			case ALLY: return trg instanceof Player;

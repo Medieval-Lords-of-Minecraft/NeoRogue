@@ -71,10 +71,10 @@ public abstract class Marker {
 
 	public void deactivate() {
 		if (task != null) {
+			task = null;
 			owner.removeAndCancelTask(taskId);
 			onDeactivate();
 			owner.removeMarker(this);
-			task = null;
 		}
 	}
 	

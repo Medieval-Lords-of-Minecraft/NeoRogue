@@ -63,13 +63,14 @@ public class SadisticNature extends Equipment {
 			.dustOptions(new DustOptions(Color.fromRGB(200, 0, 0), 1.5F))
 			.count(50).spread(1, 1);
 	private static final TargetProperties tp = TargetProperties.radius(4, false, TargetType.ENEMY);
-	
+	private static final int range = 12;
+
 	private int bonusDamage;
 	private int trapDamage;
 
 	public SadisticNature(boolean isUpgraded) {
 		super(ID, "Sadistic Nature", isUpgraded, Rarity.EPIC, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 20, 12, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 20, 12, range));
 		bonusDamage = isUpgraded ? 300 : 200;
 		trapDamage = isUpgraded ? 500 : 300;
 		properties.addUpgrades(PropertyType.COOLDOWN);
@@ -109,12 +110,13 @@ public class SadisticNature extends Equipment {
 		private int slot;
 		private HashSet<LivingEntity> hitEntities = new HashSet<>();
 
-		public SadisticNatureProjectile(PlayerFightData data, Equipment eq, int slot) {
-			super(0.5, 20, -1); // -1 = infinite pierce
+	public SadisticNatureProjectile(PlayerFightData data, Equipment eq, int slot) {
+			super(1, range, 1); // -1 = infinite pierce
 			this.data = data;
 			this.p = data.getPlayer();
 			this.eq = eq;
 			this.slot = slot;
+			this.pierce(-1);
 		}
 
 		@Override

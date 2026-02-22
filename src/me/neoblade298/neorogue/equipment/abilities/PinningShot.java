@@ -44,12 +44,13 @@ public class PinningShot extends Equipment {
 	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST)
 			.dustOptions(new DustOptions(Color.fromRGB(180, 180, 180), 1.5F))
 			.count(8).spread(0.15, 0.15);
+	private static final int range = 12;
 	
 	private int bonusDamage;
 
 	public PinningShot(boolean isUpgraded) {
 		super(ID, "Pinning Shot", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 15, 10, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 15, 10, range));
 		bonusDamage = isUpgraded ? 300 : 200;
 		properties.addUpgrades(PropertyType.COOLDOWN);
 	}
@@ -69,16 +70,12 @@ public class PinningShot extends Equipment {
 		
 		data.addTrigger(id, bind, inst);
 		inst.setAction((pdata, in) -> {
-			Player p = data.getPlayer();
-			
 			// Start charging
 			data.charge(CHARGE_TIME).then(new Runnable() {
 				public void run() {
 					// Fire projectile after charge completes
 					ProjectileGroup proj = new ProjectileGroup(new PinningShotProjectile(data, PinningShot.this, slot));
 					proj.start(data);
-					
-					Sounds.shoot.play(p, p);
 				}
 			});
 			
@@ -94,11 +91,12 @@ public class PinningShot extends Equipment {
 		private HashSet<LivingEntity> hitEntities = new HashSet<>();
 
 		public PinningShotProjectile(PlayerFightData data, Equipment eq, int slot) {
-			super(0.5, 20, -1); // -1 = infinite pierce
+			super(1, range, 1);
 			this.data = data;
 			this.p = data.getPlayer();
 			this.eq = eq;
 			this.slot = slot;
+			this.pierce(-1);
 		}
 
 		@Override
@@ -149,13 +147,14 @@ public class PinningShot extends Equipment {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
+			Sounds.shoot.play(p, p);
 		}
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.ARROW,
-				"After " + GlossaryTag.CHARGE.tag(this) + " for <white>" + (CHARGE_TIME / 20) + "s</white>, fire a projectile that deals " +
+		item = createItem(Material.TARGET,
+				GlossaryTag.CHARGE.tag(this) + " for <white>" + (CHARGE_TIME / 20) + "s</white>, then fire a projectile that deals " +
 				DescUtil.white(BASE_DAMAGE) + " damage and pierces infinitely. " +
 				"If the projectile hits a block, all enemies hit are pulled towards that block, " +
 				"given <white>Slowness III</white>, and dealt an additional " + 

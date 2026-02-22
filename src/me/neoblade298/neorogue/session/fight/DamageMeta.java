@@ -128,6 +128,7 @@ public class DamageMeta {
  		// These are deep clones
 		this.damageBuffs = cloneBuffLists(original.damageBuffs);
 		this.defenseBuffs = cloneBuffLists(original.defenseBuffs);
+		this.tags = new ArrayList<String>(original.tags);
 	}
 
 	public Equipment getWeapon() {

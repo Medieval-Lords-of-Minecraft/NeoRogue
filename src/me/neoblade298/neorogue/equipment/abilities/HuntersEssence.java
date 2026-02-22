@@ -11,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -52,6 +53,7 @@ public class HuntersEssence extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		ActionMeta count = new ActionMeta();
 		ItemStack icon = item.clone();
 		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
 		
@@ -62,7 +64,7 @@ public class HuntersEssence extends Equipment {
 			Location deathLoc = ev.getTarget().getLocation();
 			
 			// Create a collectible marker at death location
-			data.addMarker(new HuntersEssenceStack(data, deathLoc, p, stamina, damageBuff, focusChance, this, inst, icon));
+			data.addMarker(new HuntersEssenceStack(data, deathLoc, p, stamina, damageBuff, focusChance, this, inst, count, icon));
 			
 			return TriggerResult.keep();
 		});
@@ -75,10 +77,11 @@ public class HuntersEssence extends Equipment {
 		private double focusChance;
 		private Equipment eq;
 		private EquipmentInstance inst;
+		private ActionMeta count;
 		private ItemStack icon;
 		
 		public HuntersEssenceStack(PlayerFightData owner, Location loc, Player p, int stamina, double damage, 
-				double focusChance, Equipment eq, EquipmentInstance inst, ItemStack icon) {
+				double focusChance, Equipment eq, EquipmentInstance inst, ActionMeta count, ItemStack icon) {
 			super(owner, loc, 200); // 10 seconds duration
 			this.player = p;
 			this.staminaReward = stamina;
@@ -86,6 +89,7 @@ public class HuntersEssence extends Equipment {
 			this.focusChance = focusChance;
 			this.eq = eq;
 			this.inst = inst;
+			this.count = count;
 			this.icon = icon;
 		}
 		
@@ -115,10 +119,10 @@ public class HuntersEssence extends Equipment {
 				owner.applyStatus(StatusType.FOCUS, owner, 1, -1);
 			}
 			
-			// Increment icon count
-			ItemStack newIcon = icon.clone();
-			newIcon.setAmount(newIcon.getAmount() + 1);
-			inst.setIcon(newIcon);
+			// Increment icon count using ActionMeta
+			count.addCount(1);
+			icon.setAmount(count.getCount());
+			inst.setIcon(icon);
 			
 			// Visual/audio feedback
 			collectParticle.play(player, loc);

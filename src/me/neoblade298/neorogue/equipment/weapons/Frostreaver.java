@@ -22,9 +22,12 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.status.Status;
+import me.neoblade298.neorogue.session.fight.status.Status.GenericStatusType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
 public class Frostreaver extends Bow {
@@ -63,11 +66,27 @@ public class Frostreaver extends Bow {
 			return TriggerResult.keep();
 		});
 		
-		// Increase damage to enemies with frost
+		// Mark enemies hit by basic attacks
+		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
+			DealDamageEvent ev = (DealDamageEvent) in;
+			if (!ev.getMeta().isBasicAttack()) return TriggerResult.keep();
+			Player p = data.getPlayer();
+			FightData fd = FightInstance.getFightData(ev.getTarget());
+			if (fd != null) {
+				fd.applyStatus(
+					Status.createByGenericType(GenericStatusType.BASIC, "frostreaver-" + p.getName(), fd, true),
+					fd, 1, -1);
+			}
+			return TriggerResult.keep();
+		});
+		
+		// Increase damage to marked enemies with frost
 		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
 			PreDealDamageEvent ev = (PreDealDamageEvent) in;
+			Player p = data.getPlayer();
 			FightData fd = FightInstance.getFightData(ev.getTarget());
-			if (fd == null || !fd.hasStatus(StatusType.FROST)) return TriggerResult.keep();
+			if (fd == null || !fd.hasStatus("frostreaver-" + p.getName())) return TriggerResult.keep();
+			if (!fd.hasStatus(StatusType.FROST)) return TriggerResult.keep();
 			
 			int frostStacks = fd.getStatus(StatusType.FROST).getStacks();
 			double damageMultiplier = (frostStacks / (double) frostThreshold) * DAMAGE_MULT_PER_THRESHOLD;
@@ -84,8 +103,8 @@ public class Frostreaver extends Bow {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BOW,
-				"Passive. Increases damage dealt to enemies with " + GlossaryTag.FROST.tag(this) + " by " +
-				DescUtil.white("30%") + " for every " + DescUtil.yellow(frostThreshold) + " " + 
-				GlossaryTag.FROST.tag(this) + " they have.");
+				"Passive. Enemies hit by this weapon with " + GlossaryTag.FROST.tag(this) + " take " +
+				DescUtil.white("30%") + " more damage for every " + DescUtil.yellow(frostThreshold) + " " + 
+				GlossaryTag.FROST.tag(this) + " stacks on them.");
 	}
 }

@@ -37,11 +37,6 @@ public class BowProjectile extends Projectile {
 	private boolean isBasicAttack = true;
 	private ArrayList<ProjectileTickAction> tickActions = new ArrayList<ProjectileTickAction>();
 
-	public BowProjectile(PlayerFightData data, Vector v, Bow bow, boolean isBasicAttack, String id) {
-		super(bow.getProperties().get(PropertyType.RANGE), 1);
-		this.isBasicAttack = isBasicAttack;
-	}
-
 	// Vector is non-normalized velocity of the vanilla projectile being fired
 	public BowProjectile(PlayerFightData data, Vector v, Bow bow, String id) {
 		super(bow.getProperties().get(PropertyType.RANGE), 1);

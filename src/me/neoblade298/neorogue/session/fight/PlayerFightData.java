@@ -875,13 +875,15 @@ public class PlayerFightData extends FightData {
 	}
 
 	public void removeMarker(Marker marker) {
-		marker.deactivate();
-		markers.remove(marker.getUniqueId());
+		if (markers.remove(marker.getUniqueId()) != null) {
+			marker.deactivate();
+		}
 	}
 
 	public void removeTrap(Trap trap) {
-		trap.deactivate();
-		traps.remove(trap.getUniqueId());
+		if (traps.remove(trap.getUniqueId()) != null) {
+			trap.deactivate();
+		}
 	}
 
 	public HashMap<UUID, Trap> getTraps() {

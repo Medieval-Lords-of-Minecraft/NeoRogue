@@ -46,7 +46,6 @@ public class Emberhail extends Equipment {
 			PreDealDamageEvent ev = (PreDealDamageEvent) in;
 			if (!ev.getMeta().hasOrigin(DamageOrigin.PROJECTILE)) return TriggerResult.keep();
 			if (ev.getMeta().isBasicAttack()) return TriggerResult.keep();
-            if (!ev.getMeta().hasTag(PlayerFightData.EXTRA_SHOT_TAG)) return TriggerResult.keep();
 			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), 
 					Buff.increase(data, damage, BuffStatTracker.damageBuffAlly(buffId, this)));
 			return TriggerResult.keep();

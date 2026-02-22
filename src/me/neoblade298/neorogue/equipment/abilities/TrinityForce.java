@@ -1,18 +1,20 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import java.util.HashMap;
+import java.util.UUID;
+
 import org.bukkit.Color;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Particle.DustOptions;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
@@ -30,22 +32,22 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.BasicAttackEvent;
 
-public class Ricochet extends Equipment {
-	private static final String ID = "Ricochet";
-	private static final int DISTANCE = 5;
-	private static final TargetProperties tp = TargetProperties.radius(12, false, TargetType.ENEMY);
+public class TrinityForce extends Equipment {
+	private static final String ID = "TrinityForce";
+	private static final int DAMAGE = 60;
+	private static final TargetProperties tp = TargetProperties.radius(20, false, TargetType.ENEMY);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST)
 			.dustOptions(new DustOptions(Color.fromRGB(255, 215, 0), 1.2F))
-			.count(6).spread(0.15, 0.15);
+			.count(5).spread(0.2, 0.2);
 	
-	private int damage;
+	private int hits;
 
-	public Ricochet(boolean isUpgraded) {
-		super(ID, "Ricochet", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.none());
-		damage = isUpgraded ? 180 : 120;
+	public TrinityForce(boolean isUpgraded) {
+		super(ID, "Trinity Force", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
+				EquipmentType.ABILITY,
+				EquipmentProperties.ofUsable(20, 15, 10, 12));
+		hits = isUpgraded ? 3 : 2;
 	}
 
 	public static Equipment get() {
@@ -54,58 +56,39 @@ public class Ricochet extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
-			BasicAttackEvent ev = (BasicAttackEvent) in;
-			
-			if (!ev.isProjectile()) return TriggerResult.keep();
-			
+		ProjectileGroup proj = new ProjectileGroup();
+		
+		// Create 3 projectiles in a cone spread
+		for (int angle : new int[] { -20, 0, 20 }) {
+			proj.add(new TrinityForceProjectile(data, angle, this, slot));
+		}
+		
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			Player p = data.getPlayer();
-			LivingEntity target = ev.getTarget();
-			if (target == null) return TriggerResult.keep();
-			
-			// Check if target is within 5 blocks of the projectile origin
-			if (ev.getProjectile().getOrigin().distance(target.getLocation()) > DISTANCE) {
-				return TriggerResult.keep();
-			}
-			
-			// Find nearest enemy from the target's location
-			Location targetLoc = target.getEyeLocation();
-			LivingEntity nearest = TargetHelper.getNearest(target, tp);
-			
-			// Don't ricochet if there's no other enemy
-			if (nearest == null || nearest == target) return TriggerResult.keep();
-			
-			// Calculate direction from hit target to nearest enemy
-			Vector direction = nearest.getEyeLocation().toVector()
-					.subtract(targetLoc.toVector()).normalize();
-			
-			// Fire ricochet projectile
-			ProjectileGroup proj = new ProjectileGroup(
-					new RicochetProjectile(data, this, slot, target));
-			proj.start(data, targetLoc, direction);
-			
-			Sounds.shoot.play(p, targetLoc);
-			
+			Sounds.equip.play(p, p);
+			proj.start(data);
+			Sounds.fire.play(p, p);
 			return TriggerResult.keep();
-		});
+		}));
 	}
-
-	private class RicochetProjectile extends Projectile {
+	
+	private class TrinityForceProjectile extends Projectile {
 		private PlayerFightData data;
 		private Player p;
 		private Equipment eq;
 		private int slot;
-		private LivingEntity originalTarget;
+		private HashMap<UUID, Integer> hitCounts = new HashMap<>();
 
-		public RicochetProjectile(PlayerFightData data, Equipment eq, int slot, LivingEntity originalTarget) {
-			super(1, 12, 1);
+		public TrinityForceProjectile(PlayerFightData data, int angleOffset, Equipment eq, int slot) {
+			super(1.5, 12, 1);
+			this.rotation(angleOffset);
 			this.size(0.4, 0.4);
 			this.homing(0.02);
+			this.pierce(-1); // Infinite pierce to allow multiple hits
 			this.data = data;
 			this.p = data.getPlayer();
 			this.eq = eq;
 			this.slot = slot;
-			this.originalTarget = originalTarget;
 		}
 
 		@Override
@@ -116,16 +99,23 @@ public class Ricochet extends Equipment {
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			LivingEntity target = hit.getEntity();
+			UUID targetId = target.getUniqueId();
 			
-			// Ignore the original target by piercing through it
-			if (target.equals(originalTarget)) {
-				proj.addPierce(1);
+			// Track how many times we've hit this target
+			int currentHits = hitCounts.getOrDefault(targetId, 0);
+			
+			// If we've hit max times, don't deal damage
+			if (currentHits >= hits) {
 				return;
 			}
 			
-			// Deal damage to other targets
-			meta.addDamageSlice(new DamageSlice(data, damage, DamageType.PIERCING, 
+			// Increment hit count
+			hitCounts.put(targetId, currentHits + 1);
+			
+			// Deal basic attack damage
+			meta.addDamageSlice(new DamageSlice(data, DAMAGE, DamageType.PIERCING, 
 					DamageStatTracker.of(ID + slot, eq)));
+			meta.isBasicAttack(eq, false);
 			
 			Sounds.anvil.play(p, target.getLocation());
 		}
@@ -142,9 +132,9 @@ public class Ricochet extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.ARROW,
-				"Passive. Dealing basic attack damage to an enemy within <white>" + DISTANCE + "</white> blocks " +
-				"fires a projectile from that target to the nearest enemy, dealing " + 
-				DescUtil.yellow(damage) + " damage.");
+		item = createItem(Material.SPECTRAL_ARROW,
+				"On cast, fire <white>3</white> homing projectiles in a cone that each deal " + 
+				DescUtil.yellow(DAMAGE) + " basic attack damage. Each projectile can hit an enemy up to " +
+				DescUtil.white(hits) + " times.");
 	}
 }

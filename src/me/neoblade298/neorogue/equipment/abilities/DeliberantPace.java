@@ -26,14 +26,14 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
 public class DeliberantPace extends Equipment {
 	private static final String ID = "DeliberantPace";
-	private int ticksRequired;
+	private int seconds;
 	private double damagePerStack;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.ENCHANT).count(25).spread(1, 1);
 
 	public DeliberantPace(boolean isUpgraded) {
 		super(ID, "Deliberant Pace", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER, EquipmentType.ABILITY,
 				EquipmentProperties.none());
-		ticksRequired = isUpgraded ? 80 : 100; // 4 or 5 seconds (20 ticks = 1 second)
+		seconds = isUpgraded ? 4 : 5;
 		damagePerStack = isUpgraded ? 0.06 : 0.05; // 6% or 5%
 	}
 
@@ -68,7 +68,7 @@ public class DeliberantPace extends Equipment {
 			am.addCount(1);
 
 			// Every ticksRequired ticks without sprinting, grant a stack of focus
-			if (am.getCount() >= ticksRequired) {
+			if (am.getCount() >= seconds) {
 				am.setCount(0); // Reset counter
 				data.applyStatus(StatusType.FOCUS, data, 1, -1);
 				pc.play(p, p);
@@ -94,7 +94,6 @@ public class DeliberantPace extends Equipment {
 
 	@Override
 	public void setupItem() {
-		int seconds = ticksRequired / 20;
 		int damagePercent = (int) (damagePerStack * 100);
 		item = createItem(Material.BOOK,
 				"Passive. Whenever you don't sprint for " + DescUtil.yellow(seconds + "s") + ", gain a stack of "

@@ -409,6 +409,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new FerociousDraw(b);
 			new Fireball(b);
 			new Fireball2(b);
+			new Firestarter(b);
 			new Fireblast(b);
 			new FireBolt(b);
 			new Firebomb(b);
@@ -451,6 +452,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Heartbeat(b);
 			new HerculeanStrength(b);
 			new HerosLanding(b);
+			new Hawkeye(b);
 			new Hellfire(b);
 			new HexCurse(b);
 			new HexCurse2(b);
@@ -497,6 +499,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new MindShell(b);
 			new Momentum(b);
 			new MortalEngine(b);
+			new Neckbreaker(b);
 			new NightShade(b);
 			new NightSurge(b);
 			new Obfuscation(b);
@@ -592,6 +595,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Torch(b);
 			new TrappersEssence(b);
 			new TreeTrunk(b);
+			new TrinityForce(b);
 			new TwinBolt(b);
 			new TwinShiv(b);
 			new Untouchable(b);
@@ -783,6 +787,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new HiddenRazor(b);
 			new HuntersBow(b);
 			new DrainWand(b);
+			new IronBolt(b);
 			new IronSword(b);
 			new IronThrowingKnife(b);
 			new Irritant(b);

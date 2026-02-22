@@ -3,9 +3,10 @@ package me.neoblade298.neorogue.equipment.abilities;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.block.Block;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.DescUtil;
@@ -22,26 +23,33 @@ import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
-import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
+import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.TargetHelper;
+import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
+import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
-public class Sear extends Equipment {
-	private static final String ID = "Sear";
-	private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME).count(10).spread(0.5, 0.2).offsetY(-0.3);
-	private int damage, burn;
+public class Firestarter extends Equipment {
+	private static final String ID = "Firestarter";
+	private static final int EXPLOSION_RADIUS = 6;
+	private static final int EXPLOSION_DAMAGE = 120;
+	private static final ParticleContainer tick = new ParticleContainer(Particle.FLAME).count(10).spread(0.3, 0.3);
+	private static final ParticleContainer explode = new ParticleContainer(Particle.FLAME).count(50).spread(1, 1);
+	private static final TargetProperties tp = TargetProperties.radius(EXPLOSION_RADIUS, false, TargetType.ENEMY);
 	
-	public Sear(boolean isUpgraded) {
-		super(ID, "Sear", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE,
+	private int burn;
+	
+	public Firestarter(boolean isUpgraded) {
+		super(ID, "Firestarter", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(15, 0, 13, 6));
-		damage = isUpgraded ? 60 : 40;
-		burn = isUpgraded ? 90 : 60;
+				EquipmentProperties.ofUsable(15, 20, 10, 15));
+		burn = isUpgraded ? 50 : 30;
 	}
 	
 	public static Equipment get() {
@@ -50,67 +58,69 @@ public class Sear extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ProjectileGroup proj = new ProjectileGroup(new SearProjectile(data, this, slot));
+		ProjectileGroup proj = new ProjectileGroup(new FirestarterProjectile(data, this, slot));
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Player p = data.getPlayer();
+			Sounds.equip.play(p, p);
 			data.charge(20);
 			data.addTask(new BukkitRunnable() {
 				public void run() {
 					proj.start(data);
+					Sounds.fire.play(p, p);
 				}
 			}.runTaskLater(NeoRogue.inst(), 20));
 			return TriggerResult.keep();
 		}));
 	}
 	
-	private class SearProjectile extends Projectile {
+	private class FirestarterProjectile extends Projectile {
 		private PlayerFightData data;
 		private Player p;
 		private Equipment eq;
 		private int slot;
 
-		// Vector is non-normalized velocity of the vanilla projectile being fired
-		public SearProjectile(PlayerFightData data, Equipment eq, int slot) {
-			super(properties.get(PropertyType.RANGE), 2);
-			this.size(4, 1);
+		public FirestarterProjectile(PlayerFightData data, Equipment eq, int slot) {
+			super(properties.get(PropertyType.RANGE), 3);
+			this.size(0.4, 0.4);
 			this.pierce(-1);
 			this.data = data;
 			this.p = data.getPlayer();
 			this.eq = eq;
 			this.slot = slot;
-
-			blocksPerTick(2);
 		}
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			pc.play(p, proj.getLocation());
-			Vector v = proj.getVelocity().clone().normalize();
-			Location left = proj.getLocation().clone().add(v.clone().rotateAroundY(Math.PI / 2).multiply(2));
-			Location right = proj.getLocation().clone().add(v.clone().rotateAroundY(-Math.PI / 2).multiply(2));
-			pc.play(p, left);
-			pc.play(p, right);
+			tick.play(p, proj.getLocation());
 		}
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
-			Sounds.extinguish.play(p, hit.getEntity());
-			if (!hit.hasStatus(StatusType.BURN)) {
-				hit.applyStatus(StatusType.BURN, data, burn, -1);
-			}
+			// Apply burn to hit enemies
+			FightInstance.applyStatus(hit.getEntity(), StatusType.BURN, data, burn, -1);
 		}
 
 		@Override
-		public void onStart(ProjectileInstance proj) {
-			Sounds.fire.play(p, p);
-			DamageMeta dm = proj.getMeta();
-			dm.addDamageSlice(new DamageSlice(data, damage, DamageType.FIRE, DamageStatTracker.of(ID + slot, eq)));
+		public void onHitBlock(ProjectileInstance proj, Block b) {
+			explode(proj.getLocation());
+		}
+		
+		private void explode(Location loc) {
+			Sounds.explode.play(p, loc);
+			explode.play(p, loc);
+			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, tp)) {
+				FightInstance.dealDamage(new DamageMeta(data, EXPLOSION_DAMAGE, DamageType.FIRE, 
+						DamageStatTracker.of(ID + slot, eq)), ent);
+			}
 		}
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BLAZE_POWDER, "On cast, " + DescUtil.charge(this, 1, 1) + " before firing a <white>4</white> block wide piercing projectile that deals "
-			+ GlossaryTag.FIRE.tag(this, damage, true) + " damage. Any enemies that do not have any stacks of " + GlossaryTag.BURN.tag(this) +
-			" will receive " + GlossaryTag.BURN.tag(this, burn, true) + ".");
+		item = createItem(Material.FIRE_CHARGE,
+				"Charge for <white>1s</white> to fire a piercing projectile that applies " + 
+				GlossaryTag.BURN.tag(this, burn, true) + " to enemies. Upon hitting a block, deals " +
+				GlossaryTag.FIRE.tag(this, EXPLOSION_DAMAGE, false) + " damage to enemies in a " + 
+				DescUtil.white(EXPLOSION_RADIUS) + " block radius.");
 	}
 }

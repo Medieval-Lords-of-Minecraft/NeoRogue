@@ -5,8 +5,10 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -58,7 +60,11 @@ public class TrappersEssence extends Equipment {
 			Location deathLoc = ev.getTarget().getLocation();
 			
 			// Create a trap at death location
-			initTrap(deathLoc, data, this, slot);
+			data.addTask(new BukkitRunnable() {
+				public void run() {
+					initTrap(deathLoc, data, TrappersEssence.this, slot);
+				}
+			}.runTaskLater(NeoRogue.inst(), 5));
 			
 			return TriggerResult.keep();
 		});

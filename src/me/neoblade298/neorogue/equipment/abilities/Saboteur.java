@@ -1,7 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
-import java.util.UUID;
-
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -44,25 +42,24 @@ public class Saboteur extends Equipment {
 		// Apply focus at start of fight
 		data.applyStatus(StatusType.FOCUS, data, FOCUS_STACKS, -1);
 		
-		String buffId = UUID.randomUUID().toString();
-		
-		// Trap damage buff
-		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
-			PreDealDamageEvent ev = (PreDealDamageEvent) in;
-			if (!ev.getMeta().hasOrigin(DamageOrigin.TRAP)) return TriggerResult.keep();
-			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL, DamageOrigin.TRAP), 
-					Buff.multiplier(data, damageBuff, StatTracker.damageBuffAlly(buffId + "-trap", this)));
-			return TriggerResult.keep();
-		});
-		
-		// Distance-based damage buff
+		// Combined trap and distance damage buff
 		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
 			Player p = data.getPlayer();
 			PreDealDamageEvent ev = (PreDealDamageEvent) in;
+			
+			// Check for trap damage
+			if (ev.getMeta().hasOrigin(DamageOrigin.TRAP)) {
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL, DamageOrigin.TRAP), 
+						Buff.multiplier(data, damageBuff, StatTracker.damageBuffAlly(id + slot, this)));
+			}
+			
+			// Check for distance-based damage
 			double distSq = DISTANCE_THRESHOLD * DISTANCE_THRESHOLD;
-			if (ev.getTarget().getLocation().distanceSquared(p.getLocation()) > distSq) return TriggerResult.keep();
-			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), 
-					Buff.multiplier(data, damageBuff, StatTracker.damageBuffAlly(buffId + "-distance", this)));
+			if (ev.getTarget().getLocation().distanceSquared(p.getLocation()) <= distSq) {
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), 
+						Buff.multiplier(data, damageBuff, StatTracker.damageBuffAlly(id + slot, this)));
+			}
+			
 			return TriggerResult.keep();
 		});
 		
@@ -80,7 +77,7 @@ public class Saboteur extends Equipment {
 		item = createItem(Material.REDSTONE,
 				"Start fights with <white>" + FOCUS_STACKS + "</white> " + GlossaryTag.FOCUS.tag(this) + ". " +
 				GlossaryTag.TRAP.tag(this) + " damage and damage dealt to enemies within <white>" + DISTANCE_THRESHOLD + "</white> blocks " +
-				"is increased by " + DescUtil.yellow(damageBuff * 100 + "%") + ". " +
-				GlossaryTag.INJURY.tag(this) + " application is increased by " + DescUtil.yellow(injuryBuff * 100 + "%") + ".");
+				"is increased by " + DescUtil.yellow((int) (damageBuff * 100) + "%") + ". " +
+				GlossaryTag.INJURY.tag(this) + " application is increased by " + DescUtil.yellow((int) (injuryBuff * 100) + "%") + ".");
 	}
 }
