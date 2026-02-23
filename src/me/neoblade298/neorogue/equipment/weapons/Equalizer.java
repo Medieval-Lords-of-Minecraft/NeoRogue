@@ -170,7 +170,7 @@ public class Equalizer extends Bow {
 			};
 			
 			ProjectileGroup rainGroup = new ProjectileGroup(rainProj);
-			rainGroup.start(data, startLoc);
+			rainGroup.start(data, startLoc, new Vector(0, -1, 0));
 		}
 	}
 }

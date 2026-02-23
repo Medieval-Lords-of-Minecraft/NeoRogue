@@ -40,7 +40,7 @@ public class Firestarter extends Equipment {
 	private static final int EXPLOSION_RADIUS = 6;
 	private static final int EXPLOSION_DAMAGE = 120;
 	private static final ParticleContainer tick = new ParticleContainer(Particle.FLAME).count(10).spread(0.3, 0.3);
-	private static final ParticleContainer explode = new ParticleContainer(Particle.FLAME).count(50).spread(1, 1);
+	private static final ParticleContainer explode = new ParticleContainer(Particle.FLAME).count(2).spread(0.1, 0.1);
 	private static final TargetProperties tp = TargetProperties.radius(EXPLOSION_RADIUS, false, TargetType.ENEMY);
 	
 	private int burn;
@@ -48,7 +48,7 @@ public class Firestarter extends Equipment {
 	public Firestarter(boolean isUpgraded) {
 		super(ID, "Firestarter", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(15, 20, 10, 15));
+				EquipmentProperties.ofUsable(15, 20, 10, 12, EXPLOSION_RADIUS));
 		burn = isUpgraded ? 50 : 30;
 	}
 	
@@ -80,8 +80,8 @@ public class Firestarter extends Equipment {
 		private int slot;
 
 		public FirestarterProjectile(PlayerFightData data, Equipment eq, int slot) {
-			super(properties.get(PropertyType.RANGE), 3);
-			this.size(0.4, 0.4);
+			super(properties.get(PropertyType.RANGE), 1);
+			this.size(0.2, 0.2);
 			this.pierce(-1);
 			this.data = data;
 			this.p = data.getPlayer();

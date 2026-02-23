@@ -6,6 +6,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -34,7 +35,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 public class RelentlessHunt extends Equipment {
 	private static final String ID = "relentlessHunt";
 	private static final TargetProperties tp = TargetProperties.radius(8, false, TargetType.ENEMY);
-	private static final ParticleContainer mark = new ParticleContainer(Particle.CRIT_MAGIC).count(50).spread(0.3, 0.3).offsetY(2);
+	private static final ParticleContainer mark = new ParticleContainer(Particle.ENCHANTED_HIT).count(50).spread(0.3, 0.3).offsetY(2);
 	private int shields;
 	private double damageIncrease;
 	
@@ -53,7 +54,6 @@ public class RelentlessHunt extends Equipment {
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		String statusName = data.getPlayer().getName() + "-relentlesshunt";
 		ActionMeta am = new ActionMeta();
-		String buffId = java.util.UUID.randomUUID().toString();
 		
 		// Mark enemy on cast (left click for archer)
 		data.addTrigger(id, Trigger.LEFT_CLICK, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
@@ -115,7 +115,7 @@ public class RelentlessHunt extends Equipment {
 			if (focusStacks > 0) {
 				double mult = focusStacks * damageIncrease;
 				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
-						Buff.multiplier(data, mult, StatTracker.damageBuffAlly(buffId, this)));
+						Buff.multiplier(data, mult, StatTracker.damageBuffAlly(id + slot, this)));
 			}
 			
 			return TriggerResult.keep();
@@ -128,6 +128,6 @@ public class RelentlessHunt extends Equipment {
 				"On left click, mark an enemy. Only one enemy can be marked at a time. " +
 				"While the marked enemy is alive, gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " every second. " +
 				"Non-basic damage dealt to the marked enemy is increased by " + 
-				GlossaryTag.ABILITY_DAMAGE.tag(this, (int)(damageIncrease * 100), true) + "% per stack of " + GlossaryTag.FOCUS.tag(this) + ".");
+				DescUtil.yellow((int)(damageIncrease * 100)) + "% per stack of " + GlossaryTag.FOCUS.tag(this) + ".");
 	}
 }

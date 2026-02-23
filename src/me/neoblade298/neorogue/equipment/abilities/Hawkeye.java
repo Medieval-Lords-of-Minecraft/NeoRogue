@@ -25,6 +25,7 @@ import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
+import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
@@ -57,15 +58,16 @@ public class Hawkeye extends Equipment {
 			// Check if focus is above threshold
 			int focusStacks = data.getStatus(StatusType.FOCUS).getStacks();
 			if (focusStacks <= threshold) return TriggerResult.keep();
+			System.out.println("Past threshold");
 			
 			Player p = data.getPlayer();
 			
 			// Reduce damage
 			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL),
-					Buff.increase(data, DAMAGE_REDUCTION, null));
+					Buff.increase(data, DAMAGE_REDUCTION, BuffStatTracker.defenseBuffAlly(id, this)));
 			
 			// Reduce focus by 1
-			data.applyStatus(StatusType.FOCUS, data, -1, 0);
+			data.applyStatus(StatusType.FOCUS, data, -1, -1);
 			
 			// Check if damager exists and shoot projectile
 			if (ev.getDamager() != null) {
@@ -123,7 +125,7 @@ public class Hawkeye extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.SPYGLASS,
 				"Passive. While above " + DescUtil.yellow(threshold) + " " + GlossaryTag.FOCUS.tag(this) + ", " +
-				"taking damage gets reduced by " + DescUtil.white(DAMAGE_REDUCTION) + ", " +
+				"damage taken gets reduced by " + DescUtil.white(DAMAGE_REDUCTION) + ", " +
 				"reduces your " + GlossaryTag.FOCUS.tag(this) + " by <white>1</white>, " +
 				"and shoots a piercing projectile at the damager that deals " +
 				GlossaryTag.PIERCING.tag(this, damage, true) + " damage.");

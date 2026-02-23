@@ -39,7 +39,7 @@ public class Neckbreaker extends Equipment {
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 15, 10, 0));
 		damage = isUpgraded ? 150 : 100;
 		injury = isUpgraded ? 150 : 100;
-		shields = isUpgraded ? 200 : 150;
+		shields = isUpgraded ? 30 : 20;
 		mult = isUpgraded ? 3 : 2;
 	}
 	

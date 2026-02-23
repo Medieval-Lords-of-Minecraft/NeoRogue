@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.DescUtil;
@@ -38,7 +39,8 @@ public class Quiverthorn extends Equipment {
 	
 	public Quiverthorn(boolean isUpgraded) {
 		super(ID, "Quiverthorn", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
-				EquipmentType.OFFHAND, EquipmentProperties.none());
+				EquipmentType.OFFHAND, 
+				EquipmentProperties.ofWeapon(BASE_DAMAGE, 1, DamageType.SLASHING, Sounds.attackSweep));
 		bonusDamage = isUpgraded ? 15 : 10;
 		statusPercent = isUpgraded ? 1.5 : 1.0;
 	}
@@ -50,6 +52,7 @@ public class Quiverthorn extends Equipment {
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
+		ItemStack icon = item.clone();
 		
 		// Track stacks when dealing projectile damage
 		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
@@ -58,6 +61,9 @@ public class Quiverthorn extends Equipment {
 			
 			if (am.getCount() < MAX_STACKS) {
 				am.addCount(1);
+				Player p = data.getPlayer();
+				icon.setAmount(am.getCount());
+				p.getInventory().setItemInOffHand(icon);
 			}
 			return TriggerResult.keep();
 		});
@@ -66,7 +72,6 @@ public class Quiverthorn extends Equipment {
 		data.addTrigger(id, Trigger.LEFT_CLICK_HIT, (pdata, in) -> {
 			LeftClickHitEvent ev = (LeftClickHitEvent) in;
 			Player p = data.getPlayer();
-			if (ev.getTarget() instanceof Player) return TriggerResult.keep();
 			if (!data.canBasicAttack(EquipSlot.OFFHAND)) return TriggerResult.keep();
 			
 			int stacks = am.getCount();
@@ -111,6 +116,8 @@ public class Quiverthorn extends Equipment {
 			
 			// Consume all stacks
 			am.setCount(0);
+			icon.setAmount(1);
+			p.getInventory().setItemInOffHand(icon);
 			
 			return TriggerResult.keep();
 		});
@@ -118,7 +125,7 @@ public class Quiverthorn extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BOW,
+		item = createItem(Material.IRON_SWORD,
 				"Dealing projectile damage grants a stack (max " + DescUtil.white(MAX_STACKS) + "). " +
 				"Left clicking an enemy deals " + DescUtil.yellow(BASE_DAMAGE + " + " + bonusDamage) + " " +
 				GlossaryTag.PIERCING.tag(this) + " damage per stack and consumes all stacks. " +

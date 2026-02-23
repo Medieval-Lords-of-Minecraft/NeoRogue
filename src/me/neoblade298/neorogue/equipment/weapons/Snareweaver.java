@@ -31,7 +31,6 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.LayTrapEvent;
 
 public class Snareweaver extends Bow {
 	private static final String ID = "snareweaver";
@@ -63,7 +62,6 @@ public class Snareweaver extends Bow {
 		
 		// Track trap placements
 		data.addTrigger(id, Trigger.LAY_TRAP, (pdata, in) -> {
-			LayTrapEvent ev = (LayTrapEvent) in;
 			trapMeta.addCount(1); // Increment trap count
 			trapMeta.setTime(System.currentTimeMillis()); // Set last trap time
 			return TriggerResult.keep();

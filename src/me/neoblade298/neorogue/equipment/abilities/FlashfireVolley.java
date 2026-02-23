@@ -137,8 +137,7 @@ public class FlashfireVolley extends Equipment {
 		public void onStart(ProjectileInstance proj) {
 			Sounds.shoot.play(p, p);
 			DamageMeta dm = proj.getMeta();
-			EquipmentProperties ammoProps = ammo.getProperties();
-			dm.addDamageSlice(new DamageSlice(data, fireDamage, DamageType.FIRE, DamageStatTracker.of(id + slot, eq)));
+			dm.addDamageSlice(new DamageSlice(data, fireDamage, DamageType.FIRE, DamageStatTracker.of(id + slot, FlashfireVolley.this)));
 			ammo.onStart(proj, false);
 			ammo.use();
 		}

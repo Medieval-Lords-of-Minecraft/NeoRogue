@@ -81,7 +81,7 @@ public class CrushTheWeak extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BOW,
+		item = createItem(Material.BRICK,
 				"Passive. Gain " + GlossaryTag.SHIELDS.tag(this, SHIELDS, false) + " every " + 
 				DescUtil.white(threshold) + " " + GlossaryTag.INJURY.tag(this) + " you apply. " +
 				"Enemies with " + GlossaryTag.INJURY.tag(this) + " take " + 

@@ -1,17 +1,16 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
-import java.util.HashMap;
-import java.util.UUID;
-
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Particle.DustOptions;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -21,11 +20,12 @@ import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
-import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightData;
+import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.TargetHelper;
 import me.neoblade298.neorogue.session.fight.TargetHelper.TargetProperties;
@@ -35,11 +35,11 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class TrinityForce extends Equipment {
 	private static final String ID = "TrinityForce";
-	private static final int DAMAGE = 60;
+	private static final int DAMAGE = 30;
 	private static final TargetProperties tp = TargetProperties.radius(20, false, TargetType.ENEMY);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST)
-			.dustOptions(new DustOptions(Color.fromRGB(255, 215, 0), 1.2F))
-			.count(5).spread(0.2, 0.2);
+			.dustOptions(new DustOptions(Color.fromRGB(255, 215, 0), 0.8F))
+			.count(3).spread(0.1, 0.1);
 	
 	private int hits;
 
@@ -66,63 +66,71 @@ public class TrinityForce extends Equipment {
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			Player p = data.getPlayer();
 			Sounds.equip.play(p, p);
-			proj.start(data);
-			Sounds.fire.play(p, p);
+			data.charge(20).then(new Runnable() {
+				@Override
+				public void run() {
+					proj.start(data);
+					Player p = data.getPlayer();
+					Sounds.fire.play(p, p);
+				}
+			});
 			return TriggerResult.keep();
 		}));
 	}
 	
 	private class TrinityForceProjectile extends Projectile {
 		private PlayerFightData data;
-		private Player p;
 		private Equipment eq;
 		private int slot;
-		private HashMap<UUID, Integer> hitCounts = new HashMap<>();
 
 		public TrinityForceProjectile(PlayerFightData data, int angleOffset, Equipment eq, int slot) {
-			super(1.5, 12, 1);
+			super(0.7, 12, 1);
 			this.rotation(angleOffset);
 			this.size(0.4, 0.4);
 			this.homing(0.02);
-			this.pierce(-1); // Infinite pierce to allow multiple hits
 			this.data = data;
-			this.p = data.getPlayer();
 			this.eq = eq;
 			this.slot = slot;
 		}
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
+			Player p = data.getPlayer();
 			pc.play(p, proj.getLocation());
 		}
 
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			LivingEntity target = hit.getEntity();
-			UUID targetId = target.getUniqueId();
 			
-			// Track how many times we've hit this target
-			int currentHits = hitCounts.getOrDefault(targetId, 0);
-			
-			// If we've hit max times, don't deal damage
-			if (currentHits >= hits) {
-				return;
-			}
-			
-			// Increment hit count
-			hitCounts.put(targetId, currentHits + 1);
-			
-			// Deal basic attack damage
-			meta.addDamageSlice(new DamageSlice(data, DAMAGE, DamageType.PIERCING, 
-					DamageStatTracker.of(ID + slot, eq)));
-			meta.isBasicAttack(eq, false);
-			
-			Sounds.anvil.play(p, target.getLocation());
+			// Deal damage multiple times with a 3 tick period
+			data.addTask(new BukkitRunnable() {
+				int hitCount = 0;
+				
+				public void run() {
+					if (!target.isValid() || target.isDead() || hitCount >= hits) {
+						cancel();
+						return;
+					}
+					
+					// Deal basic attack damage
+					DamageMeta dm = new DamageMeta(data, DAMAGE, DamageType.PIERCING,
+							DamageStatTracker.of(id + slot, eq));
+					dm.isBasicAttack(eq, false);
+					FightInstance.dealDamage(dm, target);
+					
+					Player p = data.getPlayer();
+					Sounds.anvil.play(p, target.getLocation());
+					
+					hitCount++;
+				}
+			}.runTaskTimer(NeoRogue.inst(), 0, 3));
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
 			// Set homing target to nearest enemy
+			Player p = data.getPlayer();
 			LivingEntity nearest = TargetHelper.getNearest(p, proj.getLocation(), tp);
 			if (nearest != null) {
 				proj.setHomingTarget(nearest);
@@ -133,8 +141,7 @@ public class TrinityForce extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SPECTRAL_ARROW,
-				"On cast, fire <white>3</white> homing projectiles in a cone that each deal " + 
-				DescUtil.yellow(DAMAGE) + " basic attack damage. Each projectile can hit an enemy up to " +
-				DescUtil.white(hits) + " times.");
+				"On cast, " + DescUtil.charge(this, 0, 1) + " before firing <white>3</white> homing projectiles in a cone that each deal " + 
+				GlossaryTag.PIERCING.tag(this, DAMAGE, true) + " damage as basic attack damage " + DescUtil.yellow(hits) + " times.");
 	}
 }
