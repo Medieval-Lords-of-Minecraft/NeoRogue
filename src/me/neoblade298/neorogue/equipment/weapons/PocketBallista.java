@@ -33,7 +33,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class PocketBallista extends Bow {
 	private static final String ID = "PocketBallista";
 	private static final TargetProperties tp = TargetProperties.radius(3, true, TargetType.ENEMY);
-	private static final ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION);
+	private static final ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION).count(5).offsetY(0.5).spread(1.5, 0.5);
 	private int damage;
 	
 	public PocketBallista(boolean isUpgraded) {

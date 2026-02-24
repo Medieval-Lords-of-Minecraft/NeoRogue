@@ -37,7 +37,7 @@ public class Hawkeye extends Equipment {
 	private int threshold, damage;
 	private static final int DAMAGE_REDUCTION = 30;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CRIT)
-		.count(10).spread(0.3, 0.3);
+		.count(3).spread(0.1, 0.1);
 	
 	public Hawkeye(boolean isUpgraded) {
 		super(ID, "Hawkeye", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
@@ -82,7 +82,7 @@ public class Hawkeye extends Equipment {
 				HawkeyeProjectile proj = new HawkeyeProjectile(data, this, slot);
 				proj.start(data, playerLoc, direction);
 				
-				Sounds.shoot.play(p, p);
+				Sounds.fire.play(p, p);
 				pc.play(p, playerLoc);
 			}
 			

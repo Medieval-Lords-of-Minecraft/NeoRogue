@@ -1,9 +1,13 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import java.util.LinkedList;
+
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.DescUtil;
@@ -12,6 +16,7 @@ import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
@@ -33,7 +38,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.KillEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
 public class RelentlessHunt extends Equipment {
-	private static final String ID = "relentlessHunt";
+	private static final String ID = "RelentlessHunt";
 	private static final TargetProperties tp = TargetProperties.radius(8, false, TargetType.ENEMY);
 	private static final ParticleContainer mark = new ParticleContainer(Particle.ENCHANTED_HIT).count(50).spread(0.3, 0.3).offsetY(2);
 	private int shields;
@@ -41,7 +46,7 @@ public class RelentlessHunt extends Equipment {
 	
 	public RelentlessHunt(boolean isUpgraded) {
 		super(ID, "Relentless Hunt", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, isUpgraded ? 10 : 20, tp.range));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 0, isUpgraded ? 10 : 20, tp.range));
 		shields = isUpgraded ? 3 : 2;
 		damageIncrease = isUpgraded ? 0.3 : 0.2;
 	}
@@ -55,11 +60,18 @@ public class RelentlessHunt extends Equipment {
 		String statusName = data.getPlayer().getName() + "-relentlesshunt";
 		ActionMeta am = new ActionMeta();
 		
-		// Mark enemy on cast (left click for archer)
-		data.addTrigger(id, Trigger.LEFT_CLICK, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+		// Mark the first enemy in a line on cast
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			Player p = data.getPlayer();
-			LivingEntity trg = TargetHelper.getNearest(p, tp);
-			if (trg == null) return TriggerResult.keep();
+			
+			// Get first enemy in line
+			Location start = p.getEyeLocation();
+			Vector dir = start.getDirection();
+			Location end = start.clone().add(dir.clone().multiply(properties.get(PropertyType.RANGE)));
+			LinkedList<LivingEntity> enemies = TargetHelper.getEntitiesInLine(p, start, end, tp);
+			
+			if (enemies.isEmpty()) return TriggerResult.keep();
+			LivingEntity trg = enemies.getFirst();
 			
 			// Remove mark from previous target if exists
 			if (am.getEntity() != null && am.getEntity().isValid()) {
@@ -124,8 +136,8 @@ public class RelentlessHunt extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.ARROW,
-				"On left click, mark an enemy. Only one enemy can be marked at a time. " +
+		item = createItem(Material.ENDER_EYE,
+				"On cast, mark the first enemy in a line. Only one enemy can be marked at a time. " +
 				"While the marked enemy is alive, gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " every second. " +
 				"Non-basic damage dealt to the marked enemy is increased by " + 
 				DescUtil.yellow((int)(damageIncrease * 100)) + "% per stack of " + GlossaryTag.FOCUS.tag(this) + ".");

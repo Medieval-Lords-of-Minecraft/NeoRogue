@@ -35,7 +35,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class BurningSun extends Bow {
-	private static final String ID = "burningSun";
+	private static final String ID = "BurningSun";
 	private static final TargetProperties blockTp = TargetProperties.radius(3, true, TargetType.ENEMY);
 	private static final TargetProperties auraTp = TargetProperties.radius(5, true, TargetType.ENEMY);
 	private static final ParticleContainer blockPc = new ParticleContainer(Particle.FLAME).count(50).spread(0.5, 0.5);

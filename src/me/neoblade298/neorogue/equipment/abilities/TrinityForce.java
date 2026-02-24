@@ -117,6 +117,7 @@ public class TrinityForce extends Equipment {
 					DamageMeta dm = new DamageMeta(data, DAMAGE, DamageType.PIERCING,
 							DamageStatTracker.of(id + slot, eq));
 					dm.isBasicAttack(eq, false);
+					dm.setProjectileInstance(proj);
 					FightInstance.dealDamage(dm, target);
 					
 					Player p = data.getPlayer();
@@ -140,7 +141,7 @@ public class TrinityForce extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.SPECTRAL_ARROW,
+		item = createItem(Material.MACE,
 				"On cast, " + DescUtil.charge(this, 0, 1) + " before firing <white>3</white> homing projectiles in a cone that each deal " + 
 				GlossaryTag.PIERCING.tag(this, DAMAGE, true) + " damage as basic attack damage " + DescUtil.yellow(hits) + " times.");
 	}

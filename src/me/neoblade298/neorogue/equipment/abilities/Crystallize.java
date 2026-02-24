@@ -51,6 +51,11 @@ public class Crystallize extends Equipment {
 	}
 
 	@Override
+	public void setupReforges() {
+		addReforge(BitterCold.get(), FrozenTomb.get());
+	}
+
+	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pd, in) -> {
 			Player p = data.getPlayer();

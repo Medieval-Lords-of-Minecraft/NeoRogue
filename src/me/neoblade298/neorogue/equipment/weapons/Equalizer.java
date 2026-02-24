@@ -37,7 +37,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Equalizer extends Bow {
-	private static final String ID = "equalizer";
+	private static final String ID = "Equalizer";
 	private static final TargetProperties tp = TargetProperties.radius(3, true, TargetType.ENEMY);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION);
 	private int damage, arrowDamage;

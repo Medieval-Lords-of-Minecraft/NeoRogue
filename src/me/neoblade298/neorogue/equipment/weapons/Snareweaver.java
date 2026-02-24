@@ -33,7 +33,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Snareweaver extends Bow {
-	private static final String ID = "snareweaver";
+	private static final String ID = "Snareweaver";
 	private static final TargetProperties tp = TargetProperties.radius(3, true, TargetType.ENEMY);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION);
 	private int explosionDamage, bonusDamagePerTrap;

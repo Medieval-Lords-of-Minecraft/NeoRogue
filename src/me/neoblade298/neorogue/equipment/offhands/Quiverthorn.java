@@ -62,7 +62,15 @@ public class Quiverthorn extends Equipment {
 			if (am.getCount() < MAX_STACKS) {
 				am.addCount(1);
 				Player p = data.getPlayer();
-				icon.setAmount(am.getCount());
+				int currentStacks = am.getCount();
+				
+				// At max stacks, play success sound and switch to diamond
+				if (currentStacks >= MAX_STACKS) {
+					Sounds.success.play(p, p.getLocation());
+					icon.withType(Material.DIAMOND_SWORD);
+				}
+				
+				icon.setAmount(currentStacks);
 				p.getInventory().setItemInOffHand(icon);
 			}
 			return TriggerResult.keep();
@@ -80,7 +88,6 @@ public class Quiverthorn extends Equipment {
 			weaponSwing(p, data);
 			LivingEntity target = ev.getTarget();
 			FightData fd = FightInstance.getFightData(target);
-			
 			// Calculate base damage with bonus per stack
 			double totalDamage = BASE_DAMAGE + (bonusDamage * stacks);
 			
@@ -94,6 +101,7 @@ public class Quiverthorn extends Equipment {
 				int burnStacks = fd.getStatus(StatusType.BURN).getStacks();
 				int frostStacks = fd.getStatus(StatusType.FROST).getStacks();
 				int injuryStacks = fd.getStatus(StatusType.INJURY).getStacks();
+				int rendStacks = fd.getStatus(StatusType.REND).getStacks();
 				
 				if (burnStacks > 0) {
 					int toApply = (int) (burnStacks * statusPercent);
@@ -107,6 +115,10 @@ public class Quiverthorn extends Equipment {
 					int toApply = (int) (injuryStacks * statusPercent);
 					FightInstance.applyStatus(target, StatusType.INJURY, data, toApply, -1);
 				}
+				if (rendStacks > 0) {
+					int toApply = (int) (rendStacks * statusPercent);
+					FightInstance.applyStatus(target, StatusType.REND, data, toApply, -1);
+				}
 				
 				pc.play(p, target.getLocation());
 			}
@@ -114,8 +126,9 @@ public class Quiverthorn extends Equipment {
 			FightInstance.dealDamage(dm, target);
 			Sounds.anvil.play(p, target.getLocation());
 			
-			// Consume all stacks
+			// Consume all stacks and reset icon to iron
 			am.setCount(0);
+			icon.withType(Material.IRON_SWORD);
 			icon.setAmount(1);
 			p.getInventory().setItemInOffHand(icon);
 			
@@ -127,9 +140,9 @@ public class Quiverthorn extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.IRON_SWORD,
 				"Dealing projectile damage grants a stack (max " + DescUtil.white(MAX_STACKS) + "). " +
-				"Left clicking an enemy deals " + DescUtil.yellow(BASE_DAMAGE + " + " + bonusDamage) + " " +
+				"Left clicking an enemy deals " + DescUtil.white(BASE_DAMAGE) + " + " + DescUtil.yellow(bonusDamage) + " " +
 				GlossaryTag.PIERCING.tag(this) + " damage per stack and consumes all stacks. " +
 				"At max stacks, applies " + DescUtil.yellow((int)(statusPercent * 100) + "%") + " of the enemy's current " +
-				GlossaryTag.BURN.tag(this) + ", " + GlossaryTag.FROST.tag(this) + ", and " + GlossaryTag.INJURY.tag(this) + ".");
+				GlossaryTag.BURN.tag(this) + ", " + GlossaryTag.FROST.tag(this) + ", " + GlossaryTag.INJURY.tag(this) + ", and " + GlossaryTag.REND.tag(this) + ".");
 	}
 }

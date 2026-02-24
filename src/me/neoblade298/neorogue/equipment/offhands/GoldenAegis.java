@@ -15,7 +15,7 @@ import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class GoldenAegis extends Equipment {
-	private static final String ID = "goldenAegis";
+	private static final String ID = "GoldenAegis";
 	
 	public GoldenAegis(boolean isUpgraded) {
 		super(ID, "Golden Aegis", isUpgraded, Rarity.RARE, EquipmentClass.CLASSLESS,

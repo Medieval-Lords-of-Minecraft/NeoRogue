@@ -65,6 +65,7 @@ import me.neoblade298.neorogue.equipment.accessories.QuartzPrism;
 import me.neoblade298.neorogue.equipment.accessories.RedRing;
 import me.neoblade298.neorogue.equipment.accessories.RighteousRing;
 import me.neoblade298.neorogue.equipment.accessories.RingOfAnger;
+import me.neoblade298.neorogue.equipment.accessories.RingOfExploitation;
 import me.neoblade298.neorogue.equipment.accessories.RingOfFortitude;
 import me.neoblade298.neorogue.equipment.accessories.RingOfLight;
 import me.neoblade298.neorogue.equipment.accessories.RingOfManaflow;
@@ -437,6 +438,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Fortify(b);
 			new Fortress(b);
 			new Frenzy(b);
+			new FrigidWind(b);
+			new FrozenTomb(b);
 			new FrostTrap(b);
 			new Frostwalker(b);
 			new Furor(b);
@@ -477,6 +480,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new KeenSenses(b);
 			new LayExplosive(b);
 			new LayTrap(b);
+			new LaceratingWave(b);
 			new Lethality(b);
 			new Lightfall(b);
 			new LightningBolt(b);
@@ -579,6 +583,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Splinterstone(b);
 			new SpeedBlitz(b);
 			new StaticSurge(b);
+			new SteadyBleed(b);
 			new Storm(b);
 			new Stormspike(b);
 			new StormweaversPromise(b);
@@ -651,6 +656,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new RedRing(b);
 			new RighteousRing(b);
 			new RingOfAnger(b);
+			new RingOfExploitation(b);
 			new RingOfFortitude(b);
 			new RingOfLight(b);
 			new RingOfManaflow(b);
@@ -770,6 +776,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new CripplingFencingSword(b);
 			new DaedalusStormbow(b);
 			new DarkScepter(b);
+			new DivergentPiercer(b);
 			new DoubleTap(b);
 			new EarthStaff(b);
 			new EdgeOfHorizon(b);
