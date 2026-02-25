@@ -623,6 +623,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new WeaponEnchantmentDarkness(b);
 			new WeaponEnchantmentElectrified(b);
 			new WeaponEnchantmentHoly(b);
+			new WingsOfJudgment(b);
 			new Windcall(b);
 			new Windcutter(b);
 			new WindSlash(b);

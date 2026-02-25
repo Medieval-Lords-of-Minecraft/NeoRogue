@@ -16,6 +16,8 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.equipment.abilities.Emberhail;
+import me.neoblade298.neorogue.equipment.abilities.Saboteur;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -47,6 +49,12 @@ public class PocketBallista extends Bow {
 	@Override
 	public void onTick(Player p, ProjectileInstance proj, int interpolation) {
 		BowProjectile.tick.play(p, proj.getLocation());
+	}
+
+	@Override
+	public void setupReforges() {
+		addReforge(Saboteur.get(), Equalizer.get());
+		addReforge(Emberhail.get(), BurningSun.get());
 	}
 	
 	public static Equipment get() {

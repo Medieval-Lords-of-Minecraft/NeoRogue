@@ -49,7 +49,7 @@ public class FlashfireVolley extends Equipment {
 	
 	public FlashfireVolley(boolean isUpgraded) {
 		super(ID, "Flashfire Volley", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 15, 3, 0).add(PropertyType.AREA_OF_EFFECT, tp.range));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 25, 14, 0).add(PropertyType.AREA_OF_EFFECT, tp.range));
 		
 		bluntDamage = isUpgraded ? 150 : 100;
 		fireDamage = isUpgraded ? 150 : 100;
@@ -73,7 +73,7 @@ public class FlashfireVolley extends Equipment {
 			super(data, equip, slot, es);
 			action = (pdata, in) -> {
 				Player p = data.getPlayer();
-				Sounds.equip.play(p, p);
+				Sounds.explode.play(p, p);
 				
 				// Launch player upward
 				p.setVelocity(new Vector(0, 1, 0));
@@ -99,7 +99,7 @@ public class FlashfireVolley extends Equipment {
 								proj.start(data);
 							}
 						}
-					}.runTaskLater(NeoRogue.inst(), (i + 1) * 3L)); // 3, 6, 9 tick delays
+					}.runTaskLater(NeoRogue.inst(), 10 + (i + 1) * 3L)); // 3, 6, 9 tick delays
 				}
 				
 				return TriggerResult.of(false, true);

@@ -48,8 +48,9 @@ public class AthenasLongbow extends Bow {
 
 	@Override
 	public void setupReforges() {
-		addReforge(Emberhail.get(), Frostreaver.get(), DaedalusStormbow.get());
+		addReforge(Emberhail.get(), Frostreaver.get());
 		addReforge(Saboteur.get(), EdgeOfHorizon.get());
+		addReforge(DoubleTap.get(), DaedalusStormbow.get());
 	}
 
 	@Override

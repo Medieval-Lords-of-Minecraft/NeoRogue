@@ -14,6 +14,7 @@ import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
@@ -37,7 +38,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.KillEvent;
 
 public class Conflagration extends Equipment {
 	private static final String ID = "Conflagration";
-	private static final TargetProperties tp = TargetProperties.radius(20, false, TargetType.ENEMY);
+	private static final TargetProperties tp = TargetProperties.radius(12, false, TargetType.ENEMY);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST)
 			.dustOptions(new DustOptions(Color.fromRGB(255, 100, 0), 1.5F))
 			.count(8).spread(0.2, 0.2);
@@ -47,7 +48,7 @@ public class Conflagration extends Equipment {
 
 	public Conflagration(boolean isUpgraded) {
 		super(ID, "Conflagration", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+				EquipmentType.ABILITY, EquipmentProperties.none().add(PropertyType.RANGE, tp.range));
 		damage = 150;
 		burnMult = isUpgraded ? 1.5 : 1.0;
 	}
@@ -62,7 +63,7 @@ public class Conflagration extends Equipment {
 			KillEvent ev = (KillEvent) in;
 			
 			// Check if killed by burn damage
-			if (ev.getDamageMeta() == null || !FightInstance.getFightData(ev.getTarget()).hasStatus(StatusType.BURN)) {
+			if (FightInstance.getFightData(ev.getTarget()).hasStatus(StatusType.BURN)) {
 				return TriggerResult.keep();
 			}
 			
@@ -72,7 +73,6 @@ public class Conflagration extends Equipment {
 			
 			// Get the burn stacks the killed enemy had
 			int burnStacks = FightInstance.getFightData(killed).getStatus(StatusType.BURN).getStacks();
-			if (burnStacks <= 0) return TriggerResult.keep();
 			
 			// Find nearest enemy from killed location
 			LivingEntity nearest = TargetHelper.getNearest(p, killedLoc, tp);

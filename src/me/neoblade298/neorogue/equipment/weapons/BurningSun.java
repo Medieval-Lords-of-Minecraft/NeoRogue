@@ -6,6 +6,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
@@ -14,6 +15,7 @@ import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Bow;
 import me.neoblade298.neorogue.equipment.BowProjectile;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -40,6 +42,7 @@ public class BurningSun extends Bow {
 	private static final TargetProperties auraTp = TargetProperties.radius(5, true, TargetType.ENEMY);
 	private static final ParticleContainer blockPc = new ParticleContainer(Particle.FLAME).count(50).spread(0.5, 0.5);
 	private static final ParticleContainer auraPc = new ParticleContainer(Particle.FLAME).count(25).spread(5, 0.2);
+	private ItemStack chargedIcon;
 	private int blockDamage, burn, auraBurn;
 	
 	public BurningSun(boolean isUpgraded) {
@@ -65,6 +68,7 @@ public class BurningSun extends Bow {
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta passiveActive = new ActionMeta(); // Tracks if passive aura is active
 		ActionMeta tickCounter = new ActionMeta(); // Counts ticks for aura application
+		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
 		
 		// Shoot projectile
 		data.addSlotBasedTrigger(id, slot, Trigger.VANILLA_PROJECTILE, (pdata, in) -> {
@@ -72,7 +76,7 @@ public class BurningSun extends Bow {
 			useBow(data);
 
 			ProjectileLaunchEvent ev = (ProjectileLaunchEvent) in;
-			ProjectileGroup proj = new ProjectileGroup(new BurningSunProjectile(data, ev.getEntity().getVelocity(), this, id + slot, passiveActive));
+			ProjectileGroup proj = new ProjectileGroup(new BurningSunProjectile(data, ev.getEntity().getVelocity(), this, id + slot, passiveActive, inst));
 			proj.start(data);
 			return TriggerResult.keep();
 		});
@@ -102,13 +106,14 @@ public class BurningSun extends Bow {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BOW,
+		item = createItem(Material.CROSSBOW,
 				"Projectiles have infinite " + GlossaryTag.PIERCING.tag(this) + ". " +
 				"When projectiles hit a block, they explode, dealing " + 
 				GlossaryTag.FIRE.tag(this, blockDamage, true) + " damage and applying " +
 				GlossaryTag.BURN.tag(this, burn, true) + " to nearby enemies. " +
 				"After hitting <white>8</white> walls with a projectile that also hit at least one enemy, " +
 				"passively apply " + GlossaryTag.BURN.tag(this, auraBurn, true) + " to enemies within <white>5</white> blocks every second.");
+		chargedIcon = item.clone();
 	}
 	
 	private class BurningSunProjectile extends BowProjectile {
@@ -117,16 +122,18 @@ public class BurningSun extends Bow {
 		private int slot;
 		private BurningSun bow;
 		private ActionMeta passiveActive;
+		private EquipmentInstance inst;
 		private int wallHits = 0;
 		private boolean hasHitEnemy = false;
 
-		public BurningSunProjectile(PlayerFightData data, Vector v, BurningSun bow, String id, ActionMeta passiveActive) {
+		public BurningSunProjectile(PlayerFightData data, Vector v, BurningSun bow, String id, ActionMeta passiveActive, EquipmentInstance inst) {
 			super(data, v, bow, id);
 			this.pierce(-1); // Infinite piercing
 			this.data = data;
 			this.p = data.getPlayer();
 			this.bow = bow;
 			this.passiveActive = passiveActive;
+			this.inst = inst;
 			// Extract slot from id (format is "burningSun" + slot)
 			this.slot = Integer.parseInt(id.replace(ID, ""));
 		}
@@ -135,9 +142,6 @@ public class BurningSun extends Bow {
 		public void onHitBlock(ProjectileInstance proj, Block b) {
 			// Call parent implementation for ammunition handling
 			super.onHitBlock(proj, b);
-			
-			// Track wall hits
-			wallHits++;
 			
 			// Explosion effect
 			Sounds.explode.play(p, proj.getLocation());
@@ -150,12 +154,24 @@ public class BurningSun extends Bow {
 				FightInstance.applyStatus(ent, StatusType.BURN, data, burn, -1);
 			}
 			
-			// Check if we should activate passive (8 walls + at least one enemy)
-			if (wallHits >= 8 && hasHitEnemy && !passiveActive.getBool()) {
-				passiveActive.setBool(true);
+			// Track wall hits that also hit an enemy
+			if (hasHitEnemy) {
+				wallHits++;
+				
+				// Update icon amount to show progress
 				Player freshP = data.getPlayer();
-				Sounds.levelup.play(freshP, freshP);
+				chargedIcon.setAmount(Math.min(8, wallHits));
+				inst.setIcon(chargedIcon);
+				
+				// Check if we should activate passive (8 walls + at least one enemy)
+				if (wallHits >= 8 && !passiveActive.getBool()) {
+					passiveActive.setBool(true);
+					Sounds.levelup.play(freshP, freshP);
+				}
 			}
+			
+			// Reset enemy hit flag for next wall hit
+			hasHitEnemy = false;
 		}
 		
 		@Override

@@ -30,9 +30,9 @@ public class LaceratingWave extends Equipment {
 	private static final String ID = "LaceratingWave";
 	private int damage, rendThreshold;
 	private static final ParticleContainer wave = new ParticleContainer(Particle.SWEEP_ATTACK)
-			.count(20).spread(2, 1).offsetY(1);
-	private static final ParticleContainer blood = new ParticleContainer(Particle.DAMAGE_INDICATOR)
-			.count(30).spread(2, 1).offsetY(1);
+			.count(20).spread(2, 0.2).offsetY(0.3);
+	private static final ParticleContainer blood = new ParticleContainer(Particle.DUST)
+			.count(30).spread(2, 0.2).offsetY(0.3);
 	private static final TargetProperties tp = TargetProperties.radius(3, false, TargetType.ENEMY);
 	
 	public LaceratingWave(boolean isUpgraded) {

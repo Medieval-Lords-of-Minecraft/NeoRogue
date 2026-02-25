@@ -28,7 +28,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class SteadyBleed extends Equipment {
 	private static final String ID = "SteadyBleed";
-	private static final TargetProperties tp = TargetProperties.radius(8, false, TargetType.ENEMY);
+	private static final TargetProperties tp = TargetProperties.radius(7, false, TargetType.ENEMY);
 	private double damageMult, shieldPercent;
 	private static final ParticleContainer bleed = new ParticleContainer(Particle.DAMAGE_INDICATOR)
 			.count(50).spread(0.5, 0.5).offsetY(1);
@@ -50,34 +50,38 @@ public class SteadyBleed extends Equipment {
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pd, in) -> {
 			Player p = data.getPlayer();
-			LivingEntity trg = TargetHelper.getNearest(p, tp);
-			if (trg == null) return TriggerResult.keep();
+			int totalShields = 0;
 			
-			FightData fd = FightInstance.getFightData(trg);
-			if (fd == null) return TriggerResult.keep();
-			
-			// Get current rend stacks
-			int rendStacks = fd.getStatus(StatusType.REND).getStacks();
-			if (rendStacks <= 0) return TriggerResult.keep();
-			
-			// Calculate damage based on rend stacks
-			double damage = rendStacks * damageMult;
-			
-			// Deal damage
-			bleed.play(p, trg.getLocation());
-			Sounds.attackSweep.play(p, trg.getLocation());
-			FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.SLASHING, 
-					DamageStatTracker.of(id + slot, this)), trg);
-			
-			// Grant shields based on damage dealt
-			int shieldAmount = (int) (damage * shieldPercent);
-			if (shieldAmount > 0) {
-				shield.play(p, p.getLocation());
-				data.addSimpleShield(p.getUniqueId(), shieldAmount, 300); // 15 seconds
+			// Process all enemies in radius
+			for (LivingEntity trg : TargetHelper.getEntitiesInRadius(p, tp)) {
+				FightData fd = FightInstance.getFightData(trg);
+				if (fd == null) continue;
+				
+				// Get current rend stacks
+				int rendStacks = fd.getStatus(StatusType.REND).getStacks();
+				if (rendStacks <= 0) continue;
+				
+				// Calculate damage based on rend stacks
+				double damage = rendStacks * damageMult;
+				
+				// Deal damage
+				bleed.play(p, trg.getLocation());
+				Sounds.attackSweep.play(p, trg.getLocation());
+				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.SLASHING, 
+						DamageStatTracker.of(id + slot, this)), trg);
+				
+				// Accumulate shields based on damage dealt
+				totalShields += (int) (damage * shieldPercent);
+				
+				// Remove all rend stacks from target
+				fd.removeStatus(StatusType.REND);
 			}
 			
-			// Remove all rend stacks from target
-			fd.removeStatus(StatusType.REND);
+			// Grant accumulated shields
+			if (totalShields > 0) {
+				shield.play(p, p.getLocation());
+				data.addSimpleShield(p.getUniqueId(), totalShields, 300); // 15 seconds
+			}
 			
 			return TriggerResult.keep();
 		}));
@@ -85,10 +89,11 @@ public class SteadyBleed extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.ARROW,
-				"On cast, deal " + DescUtil.yellow((int)(damageMult * 100) + "%") + " of the target enemy's current " +
-				GlossaryTag.REND.tag(this) + " stacks as " + GlossaryTag.SLASHING.tag(this) + " damage, " +
-				"gain " + GlossaryTag.SHIELDS.tag(this) + " equal to " + DescUtil.yellow((int)(shieldPercent * 100) + "%") + 
-				" of the damage dealt [<white>15s</white>], and remove all their " + GlossaryTag.REND.tag(this) + " stacks.");
+		item = createItem(Material.DAMAGED_ANVIL,
+				"On cast, deal " + DescUtil.yellow((int)(damageMult * 100) + "%") + " of each enemy's current " +
+				GlossaryTag.REND.tag(this) + " stacks as " + GlossaryTag.SLASHING.tag(this) + " damage to all enemies " +
+				"in a <white>7</white> block radius, gain " + GlossaryTag.SHIELDS.tag(this) + " equal to " + 
+				DescUtil.yellow((int)(shieldPercent * 100) + "%") + " of the damage dealt [<white>15s</white>], " +
+				"and remove all their " + GlossaryTag.REND.tag(this) + " stacks.");
 	}
 }

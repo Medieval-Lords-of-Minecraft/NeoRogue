@@ -1,6 +1,6 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -76,7 +76,7 @@ public class FrigidWind extends Equipment {
 		private Player p;
 		private Equipment eq;
 		private int slot;
-		private HashMap<UUID, Integer> hitEntities = new HashMap<>();
+		private HashSet<UUID> hitEntities = new HashSet<>();
 
 		public FrigidWindProjectile(PlayerFightData data, Equipment eq, int slot) {
 			super(15, 1);
@@ -101,29 +101,28 @@ public class FrigidWind extends Equipment {
 			// Apply frost
 			hit.applyStatus(StatusType.FROST, data, frost, -1);
 			
-			// Track entity and its frost stacks for delayed damage
-			int frostStacks = hit.getStatus(StatusType.FROST).getStacks();
-			hitEntities.put(target.getUniqueId(), frostStacks);
+			// Track entity for delayed damage
+			hitEntities.add(target.getUniqueId());
 		}
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
 			Sounds.wind.play(p, p);
             data.addTask(new BukkitRunnable() {
-                public void run() {
-                    Player p = data.getPlayer();
-                    for (UUID uuid : hitEntities.keySet()) {
-                        LivingEntity target = (LivingEntity) Bukkit.getEntity(uuid);
-                        if (target == null || !target.isValid())
-                            continue;
+				public void run() {
+					Player p = data.getPlayer();
+					for (UUID uuid : hitEntities) {
+						LivingEntity target = (LivingEntity) Bukkit.getEntity(uuid);
+						if (target == null || !target.isValid())
+							continue;
 
-                        FightData fd = FightInstance.getFightData(target);
-                        if (fd == null)
-                            continue;
+						FightData fd = FightInstance.getFightData(target);
+						if (fd == null)
+							continue;
 
-                        int frozenStacks = hitEntities.get(uuid);
-                        double totalDamage = (frozenStacks / 100.0) * damage;
-
+						// Get frost stacks at this point (5 seconds later)
+						int frozenStacks = fd.getStatus(StatusType.FROST).getStacks();
+						double totalDamage = (frozenStacks / 100.0) * damage;
                         if (totalDamage > 0) {
                             ice.play(p, target.getLocation());
                             Sounds.glass.play(p, target.getLocation());
@@ -143,6 +142,6 @@ public class FrigidWind extends Equipment {
 				"On cast, your next basic attack also launches a slow-moving <white>2</white> block wide " +
 				"piercing wind projectile that applies " + GlossaryTag.FROST.tag(this, frost, true) + " to enemies hit. " +
 				"<white>5s</white> later, enemies take " + GlossaryTag.ICE.tag(this, damage, true) + " damage per " +
-				DescUtil.white(100) + " " + GlossaryTag.FROST.tag(this) + " they had when hit.");
+				DescUtil.white(100) + " " + GlossaryTag.FROST.tag(this) + " they have.");
 	}
 }
