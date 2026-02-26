@@ -7,6 +7,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.Circle;
 import me.neoblade298.neocore.bukkit.effects.LocalAxes;
@@ -49,7 +50,7 @@ public class RedBaron extends Bow {
 	public RedBaron(boolean isUpgraded) {
 		super(ID, "Red Baron", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofBow(50, 1, 0, 12, 0, 1.2).add(PropertyType.AREA_OF_EFFECT, tp.range));
+				EquipmentProperties.ofBow(50, 1, 0, 12, 1, 1.2).add(PropertyType.AREA_OF_EFFECT, tp.range));
 		damage = isUpgraded ? 90 : 60;
 		thres = isUpgraded ? 4 : 5;
 		canDrop = false;
@@ -68,7 +69,8 @@ public class RedBaron extends Bow {
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta md = new ActionMeta();
 		data.addSlotBasedTrigger(id, slot, Trigger.VANILLA_PROJECTILE, (pdata, in) -> {
-			if (!canShoot(data)) return TriggerResult.keep();
+			Vector arrowVelocity = ((ProjectileLaunchEvent) in).getEntity().getVelocity();
+			if (!canShoot(data, arrowVelocity)) return TriggerResult.keep();
 			useBow(data);
 
 			ProjectileLaunchEvent ev = (ProjectileLaunchEvent) in;

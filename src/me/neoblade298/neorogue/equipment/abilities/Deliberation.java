@@ -44,7 +44,7 @@ public class Deliberation extends Equipment {
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, inputs) -> {
 			Player p = data.getPlayer();
 			Sounds.equip.play(p, p);
-			data.channel(60).then(new Runnable() {
+			data.channel(40).then(new Runnable() {
 				public void run() {
 					Sounds.enchant.play(p, p);
 					pc.play(p, p);
@@ -52,7 +52,7 @@ public class Deliberation extends Equipment {
 					data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data,
 							damage * data.getStatus(StatusType.FOCUS).getStacks(), 0, StatTracker.damageBuffAlly(
 									buffId, eq)),
-							100);
+							200);
 				}
 			});
 			return TriggerResult.keep();
@@ -62,9 +62,9 @@ public class Deliberation extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SHIELD,
-				"On cast, " + GlossaryTag.CHANNEL.tag(this) + " for <white>3s</white> before gaining "
+				"On cast, " + GlossaryTag.CHANNEL.tag(this) + " for <white>2s</white> before gaining "
 						+ GlossaryTag.FOCUS.tag(this, 1, false) + " and increasing your damage by <yellow>" + damage
 						+ "</yellow> multiplied by your current " + GlossaryTag.FOCUS.tag(this)
-						+ " for <white>5s</white>.");
+						+ " for <white>10s</white>.");
 	}
 }

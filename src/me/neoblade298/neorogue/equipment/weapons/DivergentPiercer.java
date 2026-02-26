@@ -26,8 +26,8 @@ public class DivergentPiercer extends Ammunition {
 	public DivergentPiercer(boolean isUpgraded) {
 		super(ID, "Divergent Piercer", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofAmmunition(isUpgraded ? 40 : 30, 0.1, DamageType.PIERCING));
-		bonusDamage = isUpgraded ? 120 : 80;
+				EquipmentProperties.ofAmmunition(isUpgraded ? 25 : 20, 0.1, DamageType.PIERCING));
+		bonusDamage = isUpgraded ? 40 : 20;
 		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 

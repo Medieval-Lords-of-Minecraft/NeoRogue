@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.equipment.Bow;
@@ -25,7 +26,7 @@ public class HuntersBow extends Bow {
 	public HuntersBow(boolean isUpgraded) {
 		super(ID, "Hunter's Bow", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofBow(isUpgraded ? 90 : 60, 1, 0, 12, 0, 0.8));
+				EquipmentProperties.ofBow(isUpgraded ? 90 : 60, 1, 0, 12, 0, 1.2));
 		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 
@@ -46,7 +47,8 @@ public class HuntersBow extends Bow {
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		data.addSlotBasedTrigger(id, slot, Trigger.VANILLA_PROJECTILE, (pdata, in) -> {
-			if (!canShoot(data)) return TriggerResult.keep();
+			Vector arrowVelocity = ((ProjectileLaunchEvent) in).getEntity().getVelocity();
+			if (!canShoot(data, arrowVelocity)) return TriggerResult.keep();
 			useBow(data);
 			ProjectileLaunchEvent ev = (ProjectileLaunchEvent) in;
 			if (ev.getEntity().getVelocity().length() < 2.9) return TriggerResult.keep();
@@ -58,6 +60,6 @@ public class HuntersBow extends Bow {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BOW, "Can only be fired at max draw.");
+		item = createItem(Material.BOW);
 	}
 }

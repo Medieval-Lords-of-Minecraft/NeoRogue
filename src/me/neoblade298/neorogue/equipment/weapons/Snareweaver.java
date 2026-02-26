@@ -41,7 +41,7 @@ public class Snareweaver extends Bow {
 	public Snareweaver(boolean isUpgraded) {
 		super(ID, "Snareweaver", isUpgraded, Rarity.EPIC, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofBow(80, 1, 0, 12, 0, 0.4));
+				EquipmentProperties.ofBow(80, 1, 0, 12, 1, 1));
 		explosionDamage = isUpgraded ? 150 : 100;
 		bonusDamagePerTrap = isUpgraded ? 15 : 10;
 		properties.addUpgrades(PropertyType.DAMAGE);
@@ -69,7 +69,8 @@ public class Snareweaver extends Bow {
 		
 		// Shoot projectile(s)
 		data.addSlotBasedTrigger(id, slot, Trigger.VANILLA_PROJECTILE, (pdata, in) -> {
-			if (!canShoot(data)) return TriggerResult.keep();
+			Vector arrowVelocity = ((ProjectileLaunchEvent) in).getEntity().getVelocity();
+			if (!canShoot(data, arrowVelocity)) return TriggerResult.keep();
 			useBow(data);
 
 			ProjectileLaunchEvent ev = (ProjectileLaunchEvent) in;

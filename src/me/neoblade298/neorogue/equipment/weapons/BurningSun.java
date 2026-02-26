@@ -48,7 +48,7 @@ public class BurningSun extends Bow {
 	public BurningSun(boolean isUpgraded) {
 		super(ID, "Burning Sun", isUpgraded, Rarity.EPIC, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofBow(80, 1, 0, 12, 0, 0.4));
+				EquipmentProperties.ofBow(80, 1, 0, 12, 0, 2));
 		blockDamage = isUpgraded ? 150 : 100;
 		burn = isUpgraded ? 15 : 10;
 		auraBurn = isUpgraded ? 150 : 100;
@@ -72,7 +72,8 @@ public class BurningSun extends Bow {
 		
 		// Shoot projectile
 		data.addSlotBasedTrigger(id, slot, Trigger.VANILLA_PROJECTILE, (pdata, in) -> {
-			if (!canShoot(data)) return TriggerResult.keep();
+			Vector arrowVelocity = ((ProjectileLaunchEvent) in).getEntity().getVelocity();
+			if (!canShoot(data, arrowVelocity)) return TriggerResult.keep();
 			useBow(data);
 
 			ProjectileLaunchEvent ev = (ProjectileLaunchEvent) in;

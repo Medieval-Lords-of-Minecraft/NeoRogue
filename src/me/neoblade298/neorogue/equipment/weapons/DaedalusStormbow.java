@@ -46,7 +46,7 @@ public class DaedalusStormbow extends Bow {
 	public DaedalusStormbow(boolean isUpgraded) {
 		super(ID, "Daedalus Stormbow", isUpgraded, Rarity.EPIC, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofBow(55, 1, 0, 12, 0, 0));
+				EquipmentProperties.ofBow(55, 1, 0, 12, 0, 2));
 		threshold = isUpgraded ? 7 : 10;
 		damage = 40;
 	}
@@ -71,7 +71,8 @@ public class DaedalusStormbow extends Bow {
 		
 		// Standard bow shooting with extra shot
 		data.addSlotBasedTrigger(id, slot, Trigger.VANILLA_PROJECTILE, (pdata, in) -> {
-			if (!canShoot(data)) return TriggerResult.keep();
+			Vector arrowVelocity = ((ProjectileLaunchEvent) in).getEntity().getVelocity();
+			if (!canShoot(data, arrowVelocity)) return TriggerResult.keep();
 			useBow(data);
 
 			ProjectileLaunchEvent ev = (ProjectileLaunchEvent) in;

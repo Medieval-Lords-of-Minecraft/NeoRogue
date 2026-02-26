@@ -32,7 +32,7 @@ public class Posturing2 extends Equipment {
 		super(ID, "Posturing II", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.none());
 		time = 6;
-		inc = isUpgraded ? 12 : 8;
+		inc = isUpgraded ? 8 : 6;
 	}
 	
 	public static Equipment get() {

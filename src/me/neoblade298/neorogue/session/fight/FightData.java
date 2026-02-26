@@ -284,6 +284,7 @@ public class FightData {
 			hologram = (TextDisplay) entity.getLocation().getWorld().spawnEntity(entity.getLocation().add(0, 2.5, 0), EntityType.TEXT_DISPLAY);
 			hologram.setBillboard(Billboard.CENTER);
 			hologram.setViewRange(100);
+			hologram.setSeeThrough(false);
 			
 			// Try to mount and verify
 			entity.addPassenger(hologram);

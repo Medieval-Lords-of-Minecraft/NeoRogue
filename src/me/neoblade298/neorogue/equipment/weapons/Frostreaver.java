@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.util.Vector;
 
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Bow;
@@ -38,7 +39,7 @@ public class Frostreaver extends Bow {
 	public Frostreaver(boolean isUpgraded) {
 		super(ID, "Frostreaver", isUpgraded, Rarity.EPIC, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofBow(60, 1, 0, 12, 0, 0));
+				EquipmentProperties.ofBow(60, 1, 0, 12, 0.8, 0.8));
 		frostThreshold = isUpgraded ? 70 : 100;
 	}
 
@@ -57,7 +58,8 @@ public class Frostreaver extends Bow {
 		
 		// Standard bow shooting
 		data.addSlotBasedTrigger(id, slot, Trigger.VANILLA_PROJECTILE, (pdata, in) -> {
-			if (!canShoot(data)) return TriggerResult.keep();
+			Vector arrowVelocity = ((ProjectileLaunchEvent) in).getEntity().getVelocity();
+			if (!canShoot(data, arrowVelocity)) return TriggerResult.keep();
 			useBow(data);
 
 			ProjectileLaunchEvent ev = (ProjectileLaunchEvent) in;

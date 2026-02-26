@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.weapons;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.util.Vector;
 
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Bow;
@@ -36,7 +37,7 @@ public class EdgeOfHorizon extends Bow {
 	public EdgeOfHorizon(boolean isUpgraded) {
 		super(ID, "Edge of Horizon", isUpgraded, Rarity.EPIC, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofBow(60, 1, 0, 12, 0, 0));
+				EquipmentProperties.ofBow(60, 1, 0, 12, 0, 2));
 		basicDamagePerFocus = isUpgraded ? 15 : 10;
 	}
 
@@ -53,7 +54,8 @@ public class EdgeOfHorizon extends Bow {
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		// Standard bow shooting
 		data.addSlotBasedTrigger(id, slot, Trigger.VANILLA_PROJECTILE, (pdata, in) -> {
-			if (!canShoot(data)) return TriggerResult.keep();
+			Vector arrowVelocity = ((ProjectileLaunchEvent) in).getEntity().getVelocity();
+			if (!canShoot(data, arrowVelocity)) return TriggerResult.keep();
 			useBow(data);
 
 			ProjectileLaunchEvent ev = (ProjectileLaunchEvent) in;

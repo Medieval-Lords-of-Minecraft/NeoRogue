@@ -39,7 +39,7 @@ public class Zone extends Equipment {
 	
 	public Zone(boolean isUpgraded) {
 		super(ID, "Zone", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 0, 15, 0).add(PropertyType.AREA_OF_EFFECT, tp.range));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 15, 15, 0).add(PropertyType.AREA_OF_EFFECT, tp.range));
 		damage = isUpgraded ? 30 : 20;
 	}
 	

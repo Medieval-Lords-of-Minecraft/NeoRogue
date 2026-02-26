@@ -86,6 +86,6 @@ public class FrostTrap extends Equipment {
 				"On cast, " + DescUtil.charge(this, 1, 2) + ". Then drop a " + GlossaryTag.TRAP.tag(this) + 
 				" that lasts for " + DescUtil.white("10s") +
 				". If an enemy steps on the trap, they take " + GlossaryTag.ICE.tag(this, damage, true) +
-				" damage, apply " + GlossaryTag.FROST.tag(this, frost, true) +", and deactivate the trap.");
+				" damage and receive " + GlossaryTag.FROST.tag(this, frost, true) +".");
 	}
 }

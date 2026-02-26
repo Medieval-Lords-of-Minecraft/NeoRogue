@@ -79,7 +79,7 @@ public class TomeOfGravity extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BOOK, "On left click, slow nearby enemies in radius <white>" + (int)tp.range + "</white> with " +
+		item = createItem(Material.BOOK, "On left click, slow nearby enemies with " +
 				DescUtil.potion("Slowness", 1, 3) + " and reduce their " + GlossaryTag.PHYSICAL.tag(this) + 
 				" defense by <yellow>" + defenseReduction + "</yellow> [<white>3s</white>].");
 	}

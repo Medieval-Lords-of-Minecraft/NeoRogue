@@ -22,7 +22,7 @@ public class FlightRing extends Equipment {
 	private int evade;
 	
 	public FlightRing(boolean isUpgraded) {
-		super(ID, "Flight Ring", isUpgraded, Rarity.UNCOMMON, EquipmentClass.CLASSLESS,
+		super(ID, "Flight Ring", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.ACCESSORY, EquipmentProperties.none());
 		evade = isUpgraded ? 3 : 2;
 	}
