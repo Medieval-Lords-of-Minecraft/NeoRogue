@@ -103,7 +103,7 @@ public class Snareweaver extends Bow {
 				"Projectiles have infinite " + GlossaryTag.PIERCING.tag(this) + ". " +
 				"When projectiles hit a block, they explode, dealing " + 
 				GlossaryTag.BLUNT.tag(this, explosionDamage, true) + " damage to nearby enemies. " +
-				"Deals " + GlossaryTag.BLUNT.tag(this, bonusDamagePerTrap, true) + " bonus damage per trap you've set. " +
+				"Deals an additional " + GlossaryTag.BLUNT.tag(this, bonusDamagePerTrap, true) + " bonus damage per trap you've set. " +
 				"If you've set a trap in the last <white>5s</white>, fires <white>5</white> projectiles in a cone.");
 	}
 	

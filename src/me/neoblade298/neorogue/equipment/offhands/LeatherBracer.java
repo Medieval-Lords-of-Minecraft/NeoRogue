@@ -57,7 +57,6 @@ public class LeatherBracer extends Equipment {
 			this.p = p;
 			icon = item.clone();
 			icon.setAmount(count);
-			p.getInventory().setItemInOffHand(icon);
 			this.eq = eq;
 		}
 

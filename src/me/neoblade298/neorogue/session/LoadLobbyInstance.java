@@ -21,9 +21,11 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 public class LoadLobbyInstance extends LobbyInstance {
     private static final double SPAWN_X = Session.LOAD_LOBBY_X + 6.5, SPAWN_Z = Session.LOAD_LOBBY_Z + 3.5, HOLO_X = 0,
-            HOLO_Y = 3, HOLO_Z = 10;
+            HOLO_Y = 3.2, HOLO_Z = 10;
 
     private Instance startInstance;
+    private long lastInviteTime = 0;
+    private static final long INVITE_COOLDOWN = 5000;
 
     public LoadLobbyInstance(Player host, Session s) {
         super(host, s, SPAWN_X, SPAWN_Z);
@@ -33,7 +35,8 @@ public class LoadLobbyInstance extends LobbyInstance {
 
 		// Setup hologram
 		Component text = Component.text("Wait for players to join,").appendNewline()
-			.append(Component.text("then click the button!"));
+			.append(Component.text("then click the button")).appendNewline()
+            .append(Component.text("to start!"));
 		holo = NeoRogue.createHologram(spawn.clone().add(HOLO_X, HOLO_Y, HOLO_Z), text);
         
         playerLines.add("§7...");
@@ -43,15 +46,21 @@ public class LoadLobbyInstance extends LobbyInstance {
     public void completeLoad(Instance startInstance) {
         this.startInstance = startInstance;
         updateBoardLines();
+        invitePlayers();
+    }
 
-        // Invite all members of the session
+    // Invite all members of the session that aren't already in the lobby
+    private void invitePlayers() {
         for (PlayerSessionData data : s.getParty().values()) {
             if (data.getUniqueId().equals(host))
+                continue;
+            if (inLobby.contains(data.getUniqueId()))
                 continue;
             invited.add(data.getUniqueId());
             Util.msg(data.getPlayer(), Component.text("You've been invited to ")
                     .append(Component.text(name, NamedTextColor.YELLOW)).append(Component.text("!")));
-            Util.msg(data.getPlayer(), NeoCore.miniMessage().deserialize(invPrefix + Bukkit.getPlayer(host).getName() + invSuffix));
+            Util.msg(data.getPlayer(),
+                    NeoCore.miniMessage().deserialize(invPrefix + Bukkit.getPlayer(host).getName() + invSuffix));
         }
     }
     
@@ -87,6 +96,22 @@ public class LoadLobbyInstance extends LobbyInstance {
 		if (e.getAction() != Action.RIGHT_CLICK_BLOCK) return;
 		if (e.getHand() != EquipmentSlot.HAND) return;
         UUID uuid = e.getPlayer().getUniqueId();
+
+        if (e.getClickedBlock().getType() == Material.OAK_SIGN) {
+            if (!s.getHost().equals(uuid)) {
+                Util.displayError(e.getPlayer(), "Only the host may invite players!");
+                return;
+            }
+
+            // Add cooldown to prevent spam clicking
+            if (System.currentTimeMillis() - lastInviteTime < INVITE_COOLDOWN) {
+                Util.displayError(e.getPlayer(), "Please wait before inviting again!");
+                return;
+            }
+            lastInviteTime = System.currentTimeMillis();
+            invitePlayers();
+            return;
+        }
 		
 		if (e.getClickedBlock().getType() == Material.STONE_BUTTON) {
             if (!s.getHost().equals(uuid)) {

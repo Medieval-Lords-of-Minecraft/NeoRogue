@@ -14,15 +14,11 @@ import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileTickAction;
-import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.FightData;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
-import me.neoblade298.neorogue.session.fight.buff.Buff;
-import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
-import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 
 public class BowProjectile extends Projectile {
 	public static ParticleContainer tick = new ParticleContainer(Particle.CRIT);
@@ -95,8 +91,7 @@ public class BowProjectile extends Projectile {
 		EquipmentProperties ammoProps = ammo.getProperties();
 		double dmg = props.get(PropertyType.DAMAGE) + damageBonus;
 		dm.addDamageSlice(new DamageSlice(data, dmg, ammoProps.getType(), DamageStatTracker.of(id, bow)));
-		dm.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, 
-				ammoProps.get(PropertyType.DAMAGE), BuffStatTracker.of(id, ammo.getAmmo(), "Damage increased")));
+		dm.addDamageSlice(new DamageSlice(data, ammoProps.get(PropertyType.DAMAGE), ammoProps.getType(), DamageStatTracker.of(id, ammo.getAmmo())));
 		dm.isBasicAttack(bow, true);
 		ammo.onStart(proj);
 	}

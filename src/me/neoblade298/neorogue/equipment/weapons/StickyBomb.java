@@ -9,7 +9,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.NeoRogue;
@@ -53,13 +52,12 @@ public class StickyBomb extends Ammunition {
 	
 	@Override
 	public void onStart(ProjectileInstance inst) {
-		inst.getVelocity().add(new Vector(0, 0.08, 0));
+		inst.getVelocity().multiply(0.8);
 	}
 
 	@Override
 	public void onTick(Player p, ProjectileInstance proj, int interpolation) {
 		if (interpolation % 2 == 0) return;
-		proj.getVelocity().add(new Vector(0, -0.002, 0));
 		pc.play(p, proj.getLocation());
 	}
 
@@ -81,7 +79,7 @@ public class StickyBomb extends Ammunition {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.TIPPED_ARROW, "Launches in an arc. If this arrow hits a block instead of an enemy, instead deal " + GlossaryTag.FIRE.tag(this, damage, false) + " damage " +
+		item = createItem(Material.TIPPED_ARROW, "Fires slightly slower than normal. If this arrow hits a block instead of an enemy, instead deal " + GlossaryTag.FIRE.tag(this, damage, false) + " damage " +
 		"(unaffected by bow) to all nearby enemies after <white>1s</white>.");
 		PotionMeta pm = (PotionMeta) item.getItemMeta();
 		pm.setColor(Color.RED);

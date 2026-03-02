@@ -7,10 +7,12 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -34,7 +36,6 @@ import me.neoblade298.neorogue.session.fight.status.Status.GenericStatusType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.KillEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
 public class RelentlessHunt extends Equipment {
@@ -92,23 +93,18 @@ public class RelentlessHunt extends Equipment {
 			return TriggerResult.keep();
 		}));
 		
-		// Grant shields every tick while marked enemy is alive
-		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
-			if (am.getEntity() == null || !am.getEntity().isValid()) return TriggerResult.keep();
-			
-			Player p = data.getPlayer();
-			data.addSimpleShield(p.getUniqueId(), shields, 20);
-			return TriggerResult.keep();
-		});
-		
-		// Remove mark when marked enemy dies
-		data.addTrigger(id, Trigger.KILL, (pdata, in) -> {
-			KillEvent ev = (KillEvent) in;
-			if (am.getEntity() != null && ev.getTarget().getUniqueId().equals(am.getEntity().getUniqueId())) {
-				am.setEntity(null);
+		// Grant shields every second while marked enemy is alive
+		data.addTask(new BukkitRunnable() {
+			public void run() {
+				if (am.getEntity() == null) return;
+				if (!am.getEntity().isValid()) {
+					am.setEntity(null);
+					return;
+				}
+				Player p = data.getPlayer();
+				data.addPermanentShield(p.getUniqueId(), shields);
 			}
-			return TriggerResult.keep();
-		});
+		}.runTaskTimer(NeoRogue.inst(), 20, 20));
 		
 		// Increase non-basic damage to marked enemy based on focus
 		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {

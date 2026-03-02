@@ -6,7 +6,6 @@ import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.equipment.Ammunition;
@@ -44,19 +43,18 @@ public class SearingArrow extends Ammunition {
 	
 	@Override
 	public void onStart(ProjectileInstance inst) {
-		inst.getVelocity().add(new Vector(0, 0.08, 0));
+		inst.getVelocity().multiply(0.8);
 	}
 
 	@Override
 	public void onTick(Player p, ProjectileInstance proj, int interpolation) {
 		if (interpolation % 2 == 0) return;
 		pc.play(p, proj.getLocation());
-		proj.getVelocity().add(new Vector(0, -0.002, 0));
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.TIPPED_ARROW, "Launches in an arc. Applies " + GlossaryTag.BURN.tag(this, burn, true) + " on hit.");
+		item = createItem(Material.TIPPED_ARROW, "Fires slightly slower than normal. Applies " + GlossaryTag.BURN.tag(this, burn, true) + " on hit.");
 		PotionMeta pm = (PotionMeta) item.getItemMeta();
 		pm.setColor(Color.RED);
 		item.setItemMeta(pm);

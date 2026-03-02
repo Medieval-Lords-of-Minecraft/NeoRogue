@@ -21,7 +21,7 @@ public abstract class Bow extends Equipment {
 		return true;
 	};
 
-	private static final ParticleContainer smoke = new ParticleContainer(Particle.SMOKE).count(5).speed(0.1).spread(0.2, 0.2).offsetY(0.5);
+	private static final ParticleContainer smoke = new ParticleContainer(Particle.SMOKE).count(15).speed(0.1).spread(0.2, 0.2).offsetY(0.5);
 
 	// Vector is non-normalized velocity of the vanilla projectile being fired
 	public Bow(String id, String display, boolean isUpgraded, Rarity rarity, EquipmentClass ec, EquipmentType type, EquipmentProperties props) {
@@ -48,8 +48,10 @@ public abstract class Bow extends Equipment {
 		// Low draw, don't shoot
 		if (arrowVelocity.length() < 1) {
 			Player p = data.getPlayer();
+
+			// Play smoke slightly in front of player
 			Sounds.extinguish.play(p, p);
-			smoke.play(p, p);
+			smoke.play(p, p.getLocation().add(p.getLocation().getDirection().multiply(0.5)));
 			return false;
 		}
 

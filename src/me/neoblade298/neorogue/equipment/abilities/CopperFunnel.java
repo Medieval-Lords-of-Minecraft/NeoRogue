@@ -10,7 +10,6 @@ import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
-import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
@@ -28,9 +27,8 @@ public class CopperFunnel extends Equipment {
 	
 	public CopperFunnel(boolean isUpgraded) {
 		super(ID, "Copper Funnel", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
-				EquipmentType.OFFHAND, EquipmentProperties.ofUsable(isUpgraded ? 10 : 15, 0, 0, 0));
+				EquipmentType.OFFHAND, EquipmentProperties.ofUsable(0, 0, 0, 0));
 				reps = isUpgraded ? 3 : 2;
-				properties.addUpgrades(PropertyType.MANA_COST);
 	}
 	
 	public static Equipment get() {

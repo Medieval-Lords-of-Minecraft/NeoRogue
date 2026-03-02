@@ -8,6 +8,8 @@ import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.FightData;
 
 public abstract class Projectile extends IProjectile {
+	// Arc: y-angle of projectile
+	// yRotate: rotation of projectile around y-axis (left and right of source)
 	private double gravity, yRotate, arc, blocksPerTick, initialY, maxRange, homing;
 	private boolean ignoreBarriers, ignoreBlocks, ignoreEntities;
 	private double width = 0.2, height = 0.2;

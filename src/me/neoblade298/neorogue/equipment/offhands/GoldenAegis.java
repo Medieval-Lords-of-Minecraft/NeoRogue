@@ -85,6 +85,9 @@ public class GoldenAegis extends Equipment {
 			
 			return TriggerResult.keep();
 		}));
+
+		// The icon has to be after new EquipmentInstance because the constructor updates the icon
+		data.getPlayer().getInventory().setItemInOffHand(icon);
 	}
 
 	@Override

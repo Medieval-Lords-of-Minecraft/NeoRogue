@@ -28,20 +28,19 @@ public class ForgottenWellChance extends ChanceSet {
 					data.giveEquipment(RubyCluster.get());
 					return null;
 				});
-		ChanceChoice emerald = new ChanceChoice(Material.EMERALD, "I wish to become more agile.",
-				"Acquire one <blue>Emerald Cluster</blue>.",
-				(s, inst, data) -> {
-					Player p = data.getPlayer();
-					Util.msgRaw(p, "You feel a gust of wind, and suddenly your body feels just a little lighter.");
-					data.giveEquipment(EmeraldCluster.get());
-					return null;
-				});
 		ChanceChoice sapphire = new ChanceChoice(Material.LAPIS_LAZULI, "I wish to become more mindful.",
 				"Acquire one <blue>Sapphire Cluster</blue>.",
 				(s, inst, data) -> {
 					Player p = data.getPlayer();
 					Util.msgRaw(p, "You feel a gust of wind, and suddenly your mind feels just a little more insightful.");
 					data.giveEquipment(SapphireCluster.get());
+					return null;
+				});
+		ChanceChoice emerald = new ChanceChoice(Material.EMERALD, "I wish to become more agile.",
+				"Acquire one <blue>Emerald Cluster</blue>.", (s, inst, data) -> {
+					Player p = data.getPlayer();
+					Util.msgRaw(p, "You feel a gust of wind, and suddenly your body feels just a little lighter.");
+					data.giveEquipment(EmeraldCluster.get());
 					return null;
 				});
 		stage.addChoice(new ChanceChoice(Material.GOLD_NUGGET, "I wish to become rich.",
@@ -55,10 +54,10 @@ public class ForgottenWellChance extends ChanceSet {
 				
 		
 		ruby.addTag(new CustomGlossaryIcon("rubyCluster", RubyCluster.get().getItem()));
-		emerald.addTag(new CustomGlossaryIcon("emeraldCluster", EmeraldCluster.get().getItem()));
 		sapphire.addTag(new CustomGlossaryIcon("sapphireCluster", SapphireCluster.get().getItem()));
+		emerald.addTag(new CustomGlossaryIcon("emeraldCluster", EmeraldCluster.get().getItem()));
 		stage.addChoice(ruby);
-		stage.addChoice(emerald);
 		stage.addChoice(sapphire);
+		stage.addChoice(emerald);
 	}
 }

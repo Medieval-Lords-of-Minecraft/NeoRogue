@@ -99,6 +99,8 @@ public abstract class FightInstance extends Instance {
 	private static HashSet<UUID> indicators = new HashSet<UUID>();
 	
 	protected HashSet<UUID> toTick = new HashSet<UUID>();
+	private HashSet<UUID> pendingToTick = new HashSet<UUID>();
+	private boolean isIteratingToTick = false;
 	protected LinkedList<Corpse> corpses = new LinkedList<Corpse>();
 	protected HashMap<Player, Corpse> revivers = new HashMap<Player, Corpse>();
 	protected Map map;
@@ -981,6 +983,7 @@ public abstract class FightInstance extends Instance {
 				if (alternate && !toTick.isEmpty()) {
 					updateSpectatorLines();
 
+					isIteratingToTick = true;
 					Iterator<UUID> iter = toTick.iterator();
 					while (iter.hasNext()) {
 						FightData data = fightData.get(iter.next());
@@ -996,6 +999,9 @@ public abstract class FightInstance extends Instance {
 						if (data.runTickActions() == TickResult.REMOVE)
 							iter.remove();
 					}
+					isIteratingToTick = false;
+					toTick.addAll(pendingToTick);
+					pendingToTick.clear();
 				}
 				
 				// Every 10 ticks
@@ -1123,7 +1129,11 @@ public abstract class FightInstance extends Instance {
 	}
 	
 	public void addToTickList(UUID uuid) {
-		toTick.add(uuid);
+		if (isIteratingToTick) {
+			pendingToTick.add(uuid);
+		} else {
+			toTick.add(uuid);
+		}
 	}
 	
 	// For any barrier that isn't the user's personal barrier (shield)

@@ -38,7 +38,6 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.PreLaunchProjectileGroupEvent;
 
 public class FlashfireVolley extends Equipment {
 	private static final String ID = "FlashfireVolley";
@@ -49,7 +48,7 @@ public class FlashfireVolley extends Equipment {
 	
 	public FlashfireVolley(boolean isUpgraded) {
 		super(ID, "Flashfire Volley", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 25, 14, 0).add(PropertyType.AREA_OF_EFFECT, tp.range));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 25, 8, 0).add(PropertyType.AREA_OF_EFFECT, tp.range));
 		
 		bluntDamage = isUpgraded ? 150 : 100;
 		fireDamage = isUpgraded ? 150 : 100;
@@ -63,7 +62,8 @@ public class FlashfireVolley extends Equipment {
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		FlashfireVolleyInstance inst = new FlashfireVolleyInstance(data, this, slot, es);
-		data.addTrigger(id, Trigger.PRE_LAUNCH_PROJECTILE_GROUP, inst);
+		// Can't use PRE_LAUNCH_PROJECTILE because it fizzles on quickdraw
+		data.addTrigger(id, Trigger.VANILLA_PROJECTILE, inst);
 	}
 
 	private class FlashfireVolleyInstance extends AmmoEquipmentInstance {
@@ -108,9 +108,6 @@ public class FlashfireVolley extends Equipment {
 
 		@Override
 		public boolean canTrigger(Player p, PlayerFightData data, Object in) {
-			PreLaunchProjectileGroupEvent ev = (PreLaunchProjectileGroupEvent) in;
-			if (!ev.isBasicAttack()) return false;
-			// Check if looking down (opposite of PreySeeker's up check)
 			if (p.getEyeLocation().getDirection().getY() > -0.9) return false;
 			return super.canTrigger(p, data, in);
 		}
@@ -165,7 +162,7 @@ public class FlashfireVolley extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FIRE_CHARGE,
-				"Passive. Upon firing a basic attack straight down, cancel the basic attack and launch yourself upward, dealing " +
+				"Passive. Upon firing a bow straight down, cancel the basic attack and launch yourself upward, dealing " +
 				DescUtil.yellow(bluntDamage) + " " + GlossaryTag.BLUNT.tag(this) + " damage to nearby enemies. " +
 				"Then fire <white>3</white> arrows in quick succession that deal " + DescUtil.yellow(fireDamage) + " " +
 				GlossaryTag.FIRE.tag(this) + " damage. If these arrows hit an enemy damaged by the launch, " +

@@ -11,7 +11,6 @@ import me.neoblade298.neorogue.equipment.BowProjectile;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.equipment.mechanics.IProjectileInstance;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -24,7 +23,6 @@ import me.neoblade298.neorogue.session.fight.buff.StatTracker;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroupEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
 public class EdgeOfHorizon extends Bow {
@@ -37,7 +35,7 @@ public class EdgeOfHorizon extends Bow {
 	public EdgeOfHorizon(boolean isUpgraded) {
 		super(ID, "Edge of Horizon", isUpgraded, Rarity.EPIC, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofBow(60, 1, 0, 12, 0, 2));
+				EquipmentProperties.ofBow(60, 1, 0, 15, 0, 2));
 		basicDamagePerFocus = isUpgraded ? 15 : 10;
 	}
 
@@ -61,17 +59,6 @@ public class EdgeOfHorizon extends Bow {
 			ProjectileLaunchEvent ev = (ProjectileLaunchEvent) in;
 			ProjectileGroup proj = new ProjectileGroup(new BowProjectile(data, ev.getEntity().getVelocity(), this, id + slot));
 			proj.start(data);
-			return TriggerResult.keep();
-		});
-		
-		// Increase basic attack projectile range by 4
-		data.addTrigger(id, Trigger.LAUNCH_PROJECTILE_GROUP, (pdata, in) -> {
-			LaunchProjectileGroupEvent ev = (LaunchProjectileGroupEvent) in;
-			if (!ev.isBasicAttack()) return TriggerResult.keep();
-			if (!(ev.getInstances().getFirst() instanceof ProjectileInstance)) return TriggerResult.keep();
-			for (IProjectileInstance inst : ev.getInstances()) {
-				((ProjectileInstance) inst).addMaxRange(4);
-			}
 			return TriggerResult.keep();
 		});
 		

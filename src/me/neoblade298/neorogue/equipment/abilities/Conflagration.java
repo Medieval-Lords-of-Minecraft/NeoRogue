@@ -75,11 +75,11 @@ public class Conflagration extends Equipment {
 			int burnStacks = FightInstance.getFightData(killed).getStatus(StatusType.BURN).getStacks();
 			
 			// Find nearest enemy from killed location
-			LivingEntity nearest = TargetHelper.getNearest(p, killedLoc, tp);
+			LivingEntity nearest = TargetHelper.getNearest(killed, tp);
 			if (nearest == null) return TriggerResult.keep();
 			
 			// Calculate direction from killed enemy to nearest enemy
-			Vector direction = nearest.getEyeLocation().toVector()
+			Vector direction = nearest.getLocation().toVector()
 					.subtract(killedLoc.toVector()).normalize();
 			
 			// Fire projectile

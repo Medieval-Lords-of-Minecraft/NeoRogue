@@ -4,12 +4,11 @@ import java.util.LinkedList;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.equipment.BowProjectile;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -29,8 +28,6 @@ import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 public class MercurialGloves extends Equipment {
 	private static final String ID = "MercurialGloves";
 	private static final int MAX_LOCATIONS = 3;
-	private static final ParticleContainer pc = new ParticleContainer(Particle.ENCHANT)
-			.count(10).spread(0.5, 0.5);
 	
 	public MercurialGloves(boolean isUpgraded) {
 		super(ID, "Mercurial Gloves", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
@@ -62,8 +59,8 @@ public class MercurialGloves extends Equipment {
 			return TriggerResult.keep();
 		});
 		
-		// Right click to fire projectiles from saved locations
-		data.addTrigger(id, Trigger.RIGHT_CLICK, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+		// Left click to fire projectiles from saved locations
+		data.addTrigger(id, Trigger.LEFT_CLICK, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			Player p = data.getPlayer();
 			if (hitLocations.isEmpty()) {
 				Sounds.error.play(p, p);
@@ -71,7 +68,7 @@ public class MercurialGloves extends Equipment {
 			}
 			
 			Sounds.fire.play(p, p);
-			pc.play(p, p);
+			BowProjectile.tick.play(p, p);
 			
 			// Fire projectile from each saved location toward the player
 			for (Location loc : hitLocations) {
@@ -99,7 +96,7 @@ public class MercurialGloves extends Equipment {
 		
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
-			pc.play(data.getPlayer(), proj.getLocation());
+			BowProjectile.tick.play(data.getPlayer(), proj.getLocation());
 		}
 		
 		@Override
@@ -127,7 +124,7 @@ public class MercurialGloves extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.LEATHER,
 				"Passive. Save the location of your last <white>" + MAX_LOCATIONS + "</white> basic attacks. " +
-				"On right click, fire your current ammunition from those locations toward you. " +
+				"On left click, fire your current ammunition from those locations toward you. " +
 				"All projectiles count as basic attacks.");
 	}
 }

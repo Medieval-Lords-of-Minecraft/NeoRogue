@@ -50,6 +50,7 @@ public class BurningMantle extends Equipment {
 
 		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
 			DealDamageEvent ev = (DealDamageEvent) in;
+			if (!ev.getMeta().containsType(DamageCategory.FIRE)) return TriggerResult.keep();
 			tracker.addCount((int) ev.getTotalDamage());
 			if (tracker.getCount() >= thres) {
 				tracker.addCount(-thres);

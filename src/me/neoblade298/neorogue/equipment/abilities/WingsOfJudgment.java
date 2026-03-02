@@ -4,7 +4,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
 
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
@@ -35,12 +34,12 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class WingsOfJudgment extends Equipment {
 	private static final String ID = "WingsOfJudgment";
 	private static final int ARROW_COUNT = 8;
-	private static final TargetProperties tp = TargetProperties.radius(20, false, TargetType.ENEMY);
+	private static final TargetProperties tp = TargetProperties.radius(15, false, TargetType.ENEMY);
 	private int damage;
 	
 	public WingsOfJudgment(boolean isUpgraded) {
 		super(ID, "Wings of Judgment", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 0, 15, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 0, 15, tp.range));
 		damage = isUpgraded ? 100 : 50;
 	}
 	
@@ -57,32 +56,38 @@ public class WingsOfJudgment extends Equipment {
 			// Charge for 1 second
 			data.charge(20).then(new Runnable() {
 				public void run() {
-					Player freshP = data.getPlayer();
+					Player p = data.getPlayer();
 					
 					// Check if player has ammunition
 					if (data.getAmmoInstance() == null) {
 						return;
 					}
 					
-					// Fire 8 arrows upward in a circle (wing pattern)
+					// Fire 8 arrows in a wing pattern (4 per side, spreading behind and upward)
+					int half = ARROW_COUNT / 2;
+					double[] rotations = new double[half]; // Rotation offsets for one side
+					double[] arcs = new double[half];      // Arc (upward tilt) for each arrow
+					for (int i = 0; i < half; i++) {
+						// Wings spread from sides to behind the player
+						rotations[i] = 100 + i * 20.0; // 100, 120, 140, 160 degrees
+						// Outer feathers arc higher
+						arcs[i] = 0.3 + i * 0.25;      // 0.3, 0.55, 0.8, 1.05
+					}
+
 					for (int i = 0; i < ARROW_COUNT; i++) {
-						double angle = (360.0 / ARROW_COUNT) * i;
-						double radians = Math.toRadians(angle);
-						
-						// Calculate horizontal direction
-						double x = Math.cos(radians);
-						double z = Math.sin(radians);
-						
-						// Create upward velocity with outward component
-						Vector velocity = new Vector(x * 0.5, 1.5, z * 0.5);
-						
-						// Create projectile with homing
-						WingsOfJudgmentProjectile proj = new WingsOfJudgmentProjectile(freshP, velocity, data, WingsOfJudgment.this, id + slot);
+						int idx = i % half;
+						// Negative rotation = left wing, positive = right wing
+						double rot = (i < half) ? -rotations[idx] : rotations[idx];
+						double arc = arcs[idx];
+
+						WingsOfJudgmentProjectile proj = new WingsOfJudgmentProjectile(data, WingsOfJudgment.this, id + slot);
+						proj.arc(arc);
+						proj.rotation(rot);
 						ProjectileGroup group = new ProjectileGroup(proj);
 						group.start(data);
 					}
 					
-					Sounds.shoot.play(freshP, freshP);
+					Sounds.shoot.play(p, p);
 				}
 			});
 			
@@ -91,19 +96,16 @@ public class WingsOfJudgment extends Equipment {
 	}
 
 	private class WingsOfJudgmentProjectile extends Projectile {
-		private Player p;
 		private PlayerFightData data;
 		private AmmunitionInstance ammo;
 		private Equipment eq;
 		private String id;
 
-		public WingsOfJudgmentProjectile(Player p, Vector velocity, PlayerFightData data, Equipment eq, String id) {
-			super(1, 15, 1);
+		public WingsOfJudgmentProjectile(PlayerFightData data, Equipment eq, String id) {
+			super(1, tp.range, 1);
 			this.setBowDefaults();
-			this.homing(0.03); // Enable homing
-			this.gravity(0.05); // Add some gravity
-			this.blocksPerTick(velocity.length());
-			this.p = p;
+			this.homing(0.03);
+			this.gravity(0.05);
 			this.data = data;
 			this.ammo = data.getAmmoInstance();
 			this.eq = eq;
@@ -113,6 +115,7 @@ public class WingsOfJudgment extends Equipment {
 
 		@Override
 		public void onTick(ProjectileInstance proj, int interpolation) {
+			Player p = data.getPlayer();
 			BowProjectile.tick.play(p, proj.getLocation());
 			ammo.onTick(p, proj, interpolation);
 		}
@@ -129,6 +132,7 @@ public class WingsOfJudgment extends Equipment {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
+			Player p = data.getPlayer();
 			Sounds.shoot.play(p, p);
 			DamageMeta dm = proj.getMeta();
 			EquipmentProperties ammoProps = ammo.getProperties();

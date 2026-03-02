@@ -18,7 +18,6 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
-import me.neoblade298.neorogue.equipment.mechanics.IProjectileInstance;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
@@ -35,7 +34,6 @@ import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
-import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroupEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
 public class DaedalusStormbow extends Bow {
@@ -46,7 +44,7 @@ public class DaedalusStormbow extends Bow {
 	public DaedalusStormbow(boolean isUpgraded) {
 		super(ID, "Daedalus Stormbow", isUpgraded, Rarity.EPIC, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofBow(55, 1, 0, 12, 0, 2));
+				EquipmentProperties.ofBow(55, 1, 0, 14, 0, 2));
 		threshold = isUpgraded ? 7 : 10;
 		damage = 40;
 	}
@@ -87,17 +85,6 @@ public class DaedalusStormbow extends Bow {
 			data.addExtraShot(extraShotGroup);
 			
 			proj.start(data);
-			return TriggerResult.keep();
-		});
-		
-		// Increase basic attack projectile range by 4
-		data.addTrigger(id, Trigger.LAUNCH_PROJECTILE_GROUP, (pdata, in) -> {
-			LaunchProjectileGroupEvent ev = (LaunchProjectileGroupEvent) in;
-			if (!ev.isBasicAttack()) return TriggerResult.keep();
-			if (!(ev.getInstances().getFirst() instanceof ProjectileInstance)) return TriggerResult.keep();
-			for (IProjectileInstance ipi : ev.getInstances()) {
-				((ProjectileInstance) ipi).addMaxRange(4);
-			}
 			return TriggerResult.keep();
 		});
 		

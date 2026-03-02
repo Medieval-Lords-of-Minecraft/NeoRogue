@@ -304,6 +304,14 @@ public class ShopInventory extends CoreInventory {
 		for (int i : GEMS) {
 			updateSingle(contents[i]);
 		}
+		
+		updateSingle(contents[STORAGE_ARTIFACT]);
+		if (data.getArmorSlots() < PlayerSessionData.ARMOR_SIZE) {
+			updateSingle(contents[ARMOR_ARTIFACT]);
+		}
+		if (data.getAccessorySlots() < PlayerSessionData.ACCESSORY_SIZE) {
+			updateSingle(contents[ACCESSORY_ARTIFACT]);
+		}
 	}
 
 	private void updateSingle(ItemStack item) {
