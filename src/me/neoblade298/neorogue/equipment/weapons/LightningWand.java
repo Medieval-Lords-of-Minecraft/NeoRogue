@@ -25,6 +25,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class LightningWand extends Equipment {
 	private static final String ID = "LightningWand";
+	private static final int RANGE = 12;
 	private static final ParticleContainer tick;
 	
 	private int pierceAmount;
@@ -37,7 +38,7 @@ public class LightningWand extends Equipment {
 	public LightningWand(boolean isUpgraded) {
 		super(
 				ID, "Lightning Wand", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(2, 0, isUpgraded ? 70 : 50, 0.8, DamageType.LIGHTNING, Sound.ITEM_AXE_SCRAPE)
+				EquipmentProperties.ofWand(isUpgraded ? 70 : 50, 0.8, 0, 1, RANGE, DamageType.LIGHTNING, Sound.ITEM_AXE_SCRAPE)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
 		pierceAmount = isUpgraded ? 2 : 1;
@@ -60,7 +61,7 @@ public class LightningWand extends Equipment {
 				return TriggerResult.keep();
 			Player p = data.getPlayer();
 			weaponSwing(p, data);
-			proj.start(data);
+			data.charge(20).then(() -> proj.start(data));
 			return TriggerResult.keep();
 		});
 	}
@@ -72,7 +73,7 @@ public class LightningWand extends Equipment {
 		private int slot;
 
 		public LightningWandProjectile(PlayerFightData data, LightningWand eq, int slot) {
-			super(2.5, 12, 1);
+			super(2.5, RANGE, 1);
 			this.size(0.5, 0.5).pierce(pierceAmount);
 			this.p = data.getPlayer();
 			this.data = data;

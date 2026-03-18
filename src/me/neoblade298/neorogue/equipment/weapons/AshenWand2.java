@@ -25,6 +25,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class AshenWand2 extends Equipment {
 	private static final String ID = "AshenWand2";
+	private static final int RANGE = 10;
 	private static final ParticleContainer tick;
 	
 	static {
@@ -35,7 +36,7 @@ public class AshenWand2 extends Equipment {
 	public AshenWand2(boolean isUpgraded) {
 		super(
 				ID , "Ashen Wand II", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(1, 0, 65, isUpgraded ? 1.3 : 1, DamageType.FIRE, Sound.ENTITY_PLAYER_ATTACK_SWEEP).add(PropertyType.RANGE, 10)
+				EquipmentProperties.ofWand(65, isUpgraded ? 1.3 : 1, 0, 1, RANGE, DamageType.FIRE, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
 		);
 		properties.addUpgrades(PropertyType.ATTACK_SPEED);
 	}
@@ -52,7 +53,7 @@ public class AshenWand2 extends Equipment {
 			if (!canUseWeapon(data) || !data.canBasicAttack(EquipSlot.HOTBAR))
 				return TriggerResult.keep();
 			weaponSwing(p, data);
-			proj.start(data);
+			data.charge(20).then(() -> proj.start(data));
 			return TriggerResult.keep();
 		});
 	}
@@ -64,7 +65,7 @@ public class AshenWand2 extends Equipment {
 		private int slot;
 
 		public AshenWandProjectile(PlayerFightData data, AshenWand2 eq, int slot) {
-			super(1.5, 10, 2);
+			super(1.5, RANGE, 2);
 			this.size(0.2, 0.2);
 			this.p = data.getPlayer();
 			this.data = data;

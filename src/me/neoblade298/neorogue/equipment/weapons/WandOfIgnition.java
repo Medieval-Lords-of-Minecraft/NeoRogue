@@ -28,13 +28,14 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class WandOfIgnition extends Equipment {
 	private static final String ID = "WandOfIgnition";
+	private static final int RANGE = 10;
 	private static final ParticleContainer tick = new ParticleContainer(Particle.FLAME);
 	private int burn, selfburn;
 
 	public WandOfIgnition(boolean isUpgraded) {
 		super(
 				ID , "Wand of Ignition", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(2, 0, 40, 1, DamageType.FIRE, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
+				EquipmentProperties.ofWand(40, 1, 0, 1, RANGE, DamageType.FIRE, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
 		);
 		burn = isUpgraded ? 30 : 20;
 		selfburn = 5;
@@ -51,7 +52,7 @@ public class WandOfIgnition extends Equipment {
 			if (!canUseWeapon(data) || !data.canBasicAttack(EquipSlot.HOTBAR))
 				return TriggerResult.keep();
 			weaponSwing(data.getPlayer(), data);
-			proj.start(data);
+			data.charge(20).then(() -> proj.start(data));
 			return TriggerResult.keep();
 		});
 	}
@@ -64,7 +65,7 @@ public class WandOfIgnition extends Equipment {
 		private static final SoundContainer start = Sounds.fire, hit = new SoundContainer(Sound.BLOCK_FIRE_EXTINGUISH);
 
 		public WandOfIgnitionProjectile(PlayerFightData data, WandOfIgnition eq, int slot) {
-			super(1.5, 10, 2);
+			super(1.5, RANGE, 2);
 			this.size(0.2, 0.2);
 			this.data = data;
 			this.p = data.getPlayer();

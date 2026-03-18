@@ -28,6 +28,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class StonyWand extends Equipment {
 	private static final String ID = "StonyWand";
+	private static final int RANGE = 10;
 	private static final ParticleContainer tick = new ParticleContainer(Particle.BLOCK).blockData(Material.STONE.createBlockData());
 	private static final SoundContainer start = new SoundContainer(Sound.BLOCK_STONE_BREAK),
 			hit = new SoundContainer(Sound.BLOCK_CHAIN_PLACE);
@@ -36,7 +37,7 @@ public class StonyWand extends Equipment {
 	public StonyWand(boolean isUpgraded) {
 		super(
 				ID , "Stony Wand", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(2, 0, isUpgraded ? 45 : 35, 1, DamageType.EARTHEN, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
+				EquipmentProperties.ofWand(isUpgraded ? 45 : 35, 1, 0, 1, RANGE, DamageType.EARTHEN, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
 		conc = isUpgraded ? 20 : 15;
@@ -53,7 +54,7 @@ public class StonyWand extends Equipment {
 			if (!canUseWeapon(data) || !data.canBasicAttack(EquipSlot.HOTBAR))
 				return TriggerResult.keep();
 			weaponSwing(d.getPlayer(), data);
-			proj.start(data);
+			data.charge(20).then(() -> proj.start(data));
 			return TriggerResult.keep();
 		});
 	}
@@ -65,7 +66,7 @@ public class StonyWand extends Equipment {
 		private int slot;
 
 		public StonyWandProjectile(PlayerFightData data, StonyWand eq, int slot) {
-			super(1.5, 10, 2);
+			super(1.5, RANGE, 2);
 			this.size(0.2, 0.2);
 			this.data = data;
 			this.p = data.getPlayer();

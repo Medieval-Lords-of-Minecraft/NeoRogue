@@ -27,7 +27,8 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class ChainLightningWand extends Equipment {
 	private static final String ID = "ChainLightningWand";
-	private static final TargetProperties hitScan = TargetProperties.cone(9, 10, false, TargetType.ENEMY);
+	private static final int RANGE = 10;
+	private static final TargetProperties hitScan = TargetProperties.cone(9, RANGE, false, TargetType.ENEMY);
 	private static final TargetProperties chainScan = TargetProperties.cone(60, 5, false, TargetType.ENEMY);
 
 	private static final ParticleContainer tick;
@@ -43,7 +44,7 @@ public class ChainLightningWand extends Equipment {
 	public ChainLightningWand(boolean isUpgraded) {
 		super(
 				ID, "Chain Lightning Wand", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(3, 0, isUpgraded ? 70 : 50, 0.8, DamageType.LIGHTNING, Sound.ITEM_AXE_SCRAPE)
+				EquipmentProperties.ofWand(isUpgraded ? 70 : 50, 0.8, 0, 1, RANGE, DamageType.LIGHTNING, Sound.ITEM_AXE_SCRAPE)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
 		chainAmount = isUpgraded ? 5 : 3;
@@ -62,10 +63,13 @@ public class ChainLightningWand extends Equipment {
 			if (target != null) {
 				Player p = data.getPlayer();
 				weaponSwing(p, data);
-				weaponDamage(p, data, target);
-				drawCache = Effect.calculateCache(p, p.getLocation(), Audience.NONE, ParticleContainer.HIDE_TAG);
-				drawChains(p.getLocation(), target.getLocation());
-				chainHit(p, data, target, chainAmount);
+				data.charge(20).then(() -> {
+					Player p2 = data.getPlayer();
+					weaponDamage(p2, data, target);
+					drawCache = Effect.calculateCache(p2, p2.getLocation(), Audience.NONE, ParticleContainer.HIDE_TAG);
+					drawChains(p2.getLocation(), target.getLocation());
+					chainHit(p2, data, target, chainAmount);
+				});
 			}
 
 			return TriggerResult.keep();

@@ -13,7 +13,6 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
-import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.abilities.Manabending;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
@@ -29,6 +28,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class AshenWand extends Equipment {
 	private static final String ID = "AshenWand";
+	private static final int RANGE = 10;
 	private static final ParticleContainer tick;
 	
 	static {
@@ -39,7 +39,7 @@ public class AshenWand extends Equipment {
 	public AshenWand(boolean isUpgraded) {
 		super(
 				ID , "Ashen Wand", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(2, 0, isUpgraded ? 60 : 50, 1, DamageType.FIRE, Sound.ENTITY_PLAYER_ATTACK_SWEEP).add(PropertyType.RANGE, 10)
+				EquipmentProperties.ofWand(isUpgraded ? 60 : 50, 1, 0, 1, RANGE, DamageType.FIRE, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
 	}
@@ -61,15 +61,18 @@ public class AshenWand extends Equipment {
 				return TriggerResult.keep();
 			Player p = data.getPlayer();
 			weaponSwing(p, data);
-			Location start = p.getLocation().add(0, 1, 0);
-			Vector dir = start.getDirection();
-			tick.play(p, start);
-			data.addTask(new BukkitRunnable() {
-				public void run() {
-					proj.start(data, start, dir);
-					this.cancel();
-				}
-			}.runTaskLater(NeoRogue.inst(), 10));
+			data.charge(20).then(() -> {
+				Player p2 = data.getPlayer();
+				Location start = p2.getLocation().add(0, 1, 0);
+				Vector dir = start.getDirection();
+				tick.play(p2, start);
+				data.addTask(new BukkitRunnable() {
+					public void run() {
+						proj.start(data, start, dir);
+						this.cancel();
+					}
+				}.runTaskLater(NeoRogue.inst(), 10));
+			});
 			return TriggerResult.keep();
 		});
 	}
@@ -81,7 +84,7 @@ public class AshenWand extends Equipment {
 		private int slot;
 
 		public AshenWandProjectile(PlayerFightData data, AshenWand eq, int slot) {
-			super(1.5, 10, 2);
+			super(1.5, RANGE, 2);
 			this.size(0.2, 0.2);
 			this.data = data;
 			this.p = data.getPlayer();

@@ -31,6 +31,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class EnfeeblingWand extends Equipment {
 	private static final String ID = "EnfeeblingWand";
+	private static final int RANGE = 10;
 	private static final ParticleContainer tick;
 	private static final SoundContainer tickSound = new SoundContainer(Sound.BLOCK_AMETHYST_BLOCK_BREAK),
 			hit = new SoundContainer(Sound.BLOCK_CHAIN_PLACE);
@@ -45,7 +46,7 @@ public class EnfeeblingWand extends Equipment {
 	public EnfeeblingWand(boolean isUpgraded) {
 		super(
 				ID , "Enfeebling Wand", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(3, 0, 60, 0.5, DamageType.DARK, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
+				EquipmentProperties.ofWand(60, 0.5, 0, 1, RANGE, DamageType.DARK, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
 		);
 		mult = isUpgraded ? 0.3 : 0.2;
 		multStr = (int) (100 * mult);
@@ -62,7 +63,7 @@ public class EnfeeblingWand extends Equipment {
 			if (!canUseWeapon(data) || !data.canBasicAttack(EquipSlot.HOTBAR))
 				return TriggerResult.keep();
 			weaponSwing(data.getPlayer(), data);
-			proj.start(data);
+			data.charge(20).then(() -> proj.start(data));
 			return TriggerResult.keep();
 		});
 	}
@@ -75,7 +76,7 @@ public class EnfeeblingWand extends Equipment {
 		private int slot;
 
 		public EnfeeblingWandProjectile(PlayerFightData data, EnfeeblingWand eq, int slot) {
-			super(1.5, 10, 2);
+			super(1.5, RANGE, 2);
 			this.size(0.2, 0.2);
 			this.p = data.getPlayer();
 			this.data = data;

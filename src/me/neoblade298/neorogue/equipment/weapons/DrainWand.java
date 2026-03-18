@@ -25,7 +25,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class DrainWand extends Equipment {
 	private static final String ID = "DrainWand";
-	
+	private static final int RANGE = 10;
 	private static final ParticleContainer tick;
 	private static final SoundContainer sc = new SoundContainer(Sound.BLOCK_CHAIN_PLACE);
 
@@ -39,7 +39,7 @@ public class DrainWand extends Equipment {
 	public DrainWand(boolean isUpgraded) {
 		super(
 				ID, "Drain Wand", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(2, 0, isUpgraded ? 45 : 35, 1, DamageType.DARK, Sound.ITEM_AXE_SCRAPE)
+				EquipmentProperties.ofWand(isUpgraded ? 45 : 35, 1, 0, 1, RANGE, DamageType.DARK, Sound.ITEM_AXE_SCRAPE)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
 		shieldAmount = isUpgraded ? 3 : 2;
@@ -57,7 +57,7 @@ public class DrainWand extends Equipment {
 				return TriggerResult.keep();
 			Player p = data.getPlayer();
 			weaponSwing(p, data);
-			proj.start(data);
+			data.charge(20).then(() -> proj.start(data));
 			return TriggerResult.keep();
 		});
 	}
@@ -69,7 +69,7 @@ public class DrainWand extends Equipment {
 		private int slot;
 
 		public DrainWandProjectile(PlayerFightData data, DrainWand eq, int slot) {
-			super(1.5, 10, 3);
+			super(1.5, RANGE, 3);
 			this.size(1, 1);
 			this.data = data;
 			this.p = data.getPlayer();

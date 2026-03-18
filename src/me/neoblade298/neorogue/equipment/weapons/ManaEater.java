@@ -25,6 +25,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class ManaEater extends Equipment {
 	private static final String ID = "ManaEater";
+	private static final int RANGE = 10;
 	private static final ParticleContainer tick;
 	private static final SoundContainer tickSound = new SoundContainer(Sound.BLOCK_AMETHYST_BLOCK_BREAK),
 			hit = new SoundContainer(Sound.BLOCK_CHAIN_PLACE);
@@ -37,7 +38,7 @@ public class ManaEater extends Equipment {
 	public ManaEater(boolean isUpgraded) {
 		super(
 				ID , "Mana Eater", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(3, 0, isUpgraded ? 60 : 45, 1, DamageType.DARK, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
+				EquipmentProperties.ofWand(isUpgraded ? 60 : 45, 1, 0, 1, RANGE, DamageType.DARK, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
 	}
@@ -53,7 +54,7 @@ public class ManaEater extends Equipment {
 			if (!canUseWeapon(data) || !data.canBasicAttack(EquipSlot.HOTBAR))
 				return TriggerResult.keep();
 			weaponSwing(data.getPlayer(), data);
-			proj.start(data);
+			data.charge(20).then(() -> proj.start(data));
 			return TriggerResult.keep();
 		});
 	}
@@ -65,7 +66,7 @@ public class ManaEater extends Equipment {
 		private int slot;
 
 		public ManaEaterProjectile(PlayerFightData data, ManaEater eq, int slot) {
-			super(1.5, 10, 2);
+			super(1.5, RANGE, 2);
 			this.size(0.2, 0.2);
 			this.p = data.getPlayer();
 			this.data = data;
