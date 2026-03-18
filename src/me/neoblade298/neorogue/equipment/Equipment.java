@@ -472,6 +472,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new InducePanic(b);
 			new InducePanic2(b);
 			new Inflame(b);
+			new InfernalWarden(b);
 			new Inexorable(b);
 			new Initiator(b);
 			new Intuition(b);

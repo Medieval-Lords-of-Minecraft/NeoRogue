@@ -42,6 +42,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.KillEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreEvadeEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreKillEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageBarrierEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveDamageEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.ReceiveHealthDamageEvent;
@@ -654,6 +655,11 @@ public class DamageMeta {
 			// Mobs shouldn't have a source of damage because they'll infinitely re-trigger ~OnAttack
 			// Players must have a source of damage to get credit for kills, otherwise mobs that suicide give points
 			if (owner instanceof PlayerFightData) {
+				if (target.getHealth() <= finalDamage) {
+					PreKillEvent ev = new PreKillEvent((LivingEntity) target, this);
+					((PlayerFightData) owner).runActions((PlayerFightData) owner, Trigger.PRE_KILL, ev);
+
+				}
 				target.damage(finalDamage, owner.getEntity());
 				if (isBasicAttack) {
 					BasicAttackEvent ev = new BasicAttackEvent(target, this, weapon, proj);

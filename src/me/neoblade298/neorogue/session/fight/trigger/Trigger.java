@@ -19,7 +19,7 @@ public enum Trigger {
 	TOGGLE_FLIGHT, PRE_EVADE, EVADE,
 	RECEIVE_HEALTH_DAMAGE, // Cancellable, only occurs if the player is due to lose health, TOO LATE to
 							// apply buffs
-	STAMINA_CHANGE, MANA_CHANGE, KILL, KILL_GLOBAL; // Triggers when ANY player kills a mob; currently just used for
+	STAMINA_CHANGE, MANA_CHANGE, PRE_KILL, KILL, KILL_GLOBAL; // Triggers when ANY player kills a mob; currently just used for
 													// Brand
 
 	public static Trigger getFromHotbarSlot(int hotbar) {

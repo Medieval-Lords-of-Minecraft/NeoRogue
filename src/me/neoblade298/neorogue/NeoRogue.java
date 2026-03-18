@@ -32,6 +32,8 @@ import me.neoblade298.neorogue.commands.CmdAdminCoins;
 import me.neoblade298.neorogue.commands.CmdAdminDamage;
 import me.neoblade298.neorogue.commands.CmdAdminDebug;
 import me.neoblade298.neorogue.commands.CmdAdminDeserialize;
+import me.neoblade298.neorogue.commands.CmdAdminDrop;
+import me.neoblade298.neorogue.commands.CmdAdminDropArtifact;
 import me.neoblade298.neorogue.commands.CmdAdminEquipment;
 import me.neoblade298.neorogue.commands.CmdAdminGod;
 import me.neoblade298.neorogue.commands.CmdAdminMap;
@@ -175,6 +177,8 @@ public class NeoRogue extends JavaPlugin {
 		mngr.register(new CmdAdminSetInstance("setinstance", "Sets the current instance", null, SubcommandRunner.PLAYER_ONLY));
 		mngr.register(new CmdAdminNode("node", "Teleport to a specific node", null, SubcommandRunner.BOTH));
 		mngr.register(new CmdAdminTest("test", "Used for testing various things", null, SubcommandRunner.BOTH));
+		mngr.register(new CmdAdminDrop("drop", "Roll equipment from the droptable", null, SubcommandRunner.BOTH));
+		mngr.register(new CmdAdminDropArtifact("dropartifact", "Roll artifacts from the droptable", null, SubcommandRunner.BOTH));
 		mngr.registerCommandList("");
 	}
 	

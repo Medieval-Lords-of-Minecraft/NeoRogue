@@ -16,6 +16,7 @@ public class BurnStatus extends DecrementStackStatus {
 	@Override
 	public void apply(FightData applier, int stacks, int seconds) {
 		super.apply(applier, stacks, seconds);
+		if (this.stacks <= 0) return;
 		Buff b = new Buff(slices.first().getFightData(), -stacks * 0.2, 0, BuffStatTracker.of(StatusType.BURN));
 		holder.addDefenseBuff(DamageBuffType.of(DamageCategory.FIRE), b);
 	}

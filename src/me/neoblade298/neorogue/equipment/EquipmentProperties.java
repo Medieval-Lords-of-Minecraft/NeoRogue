@@ -99,6 +99,12 @@ public class EquipmentProperties {
 		return new EquipmentProperties(0, 0, 0, range, damage, attackSpeed, knockback, 0, type, null);
 	}
 
+	public static EquipmentProperties ofWand(double damage, double attackSpeed, double knockback, double chargeTime, double range,
+			DamageType type, Sound swingSound) {
+		return new EquipmentProperties(0, 0, 0, range, damage, attackSpeed, knockback, 0, type,
+				new SoundContainer(swingSound));
+	}
+
 	public static EquipmentProperties ofBow(double damage, double arrowSpeed, double knockback, double range,
 			double manaCost, double staminaCost) {
 		EquipmentProperties props = new EquipmentProperties(manaCost, staminaCost, 0, range, damage, 0,
@@ -242,7 +248,7 @@ public class EquipmentProperties {
 	public enum PropertyType {
 		MANA_COST("Mana Cost"), STAMINA_COST("Stamina Cost"), RANGE("Range"), COOLDOWN("Cooldown"),
 		DAMAGE("Damage"), KNOCKBACK("Knockback"), AREA_OF_EFFECT("Area of Effect"),
-		ATTACK_SPEED("Attack Speed"), ARROW_SPEED("Arrow Speed");
+		ATTACK_SPEED("Attack Speed"), ARROW_SPEED("Arrow Speed"), CHARGE_TIME("Charge Time");
 
 		private String label;
 

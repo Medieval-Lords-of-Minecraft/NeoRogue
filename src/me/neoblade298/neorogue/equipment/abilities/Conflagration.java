@@ -34,14 +34,14 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.KillEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreKillEvent;
 
 public class Conflagration extends Equipment {
 	private static final String ID = "Conflagration";
 	private static final TargetProperties tp = TargetProperties.radius(12, false, TargetType.ENEMY);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.DUST)
-			.dustOptions(new DustOptions(Color.fromRGB(255, 100, 0), 1.5F))
-			.count(8).spread(0.2, 0.2);
+			.dustOptions(new DustOptions(Color.fromRGB(255, 100, 0), 1F))
+			.count(5).spread(0.1, 0.1);
 	
 	private int damage;
 	private double burnMult;
@@ -59,11 +59,12 @@ public class Conflagration extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.KILL, (pdata, in) -> {
-			KillEvent ev = (KillEvent) in;
+		data.addTrigger(id, Trigger.PRE_KILL, (pdata, in) -> {
+			PreKillEvent ev = (PreKillEvent) in;
+			FightData fd = FightInstance.getFightData(ev.getTarget());
 			
 			// Check if killed by burn damage
-			if (FightInstance.getFightData(ev.getTarget()).hasStatus(StatusType.BURN)) {
+			if (!fd.hasStatus(StatusType.BURN)) {
 				return TriggerResult.keep();
 			}
 			
@@ -72,7 +73,7 @@ public class Conflagration extends Equipment {
 			Location killedLoc = killed.getLocation().add(0, 1, 0);
 			
 			// Get the burn stacks the killed enemy had
-			int burnStacks = FightInstance.getFightData(killed).getStatus(StatusType.BURN).getStacks();
+			int burnStacks = fd.getStatus(StatusType.BURN).getStacks();
 			
 			// Find nearest enemy from killed location
 			LivingEntity nearest = TargetHelper.getNearest(killed, tp);
@@ -83,11 +84,11 @@ public class Conflagration extends Equipment {
 					.subtract(killedLoc.toVector()).normalize();
 			
 			// Fire projectile
-			ProjectileGroup proj = new ProjectileGroup(
-					new ConflagrationProjectile(data, this, slot, burnStacks));
-			proj.start(data, killedLoc, direction);
-			
-			Sounds.fire.play(p, killedLoc);
+					ProjectileGroup proj = new ProjectileGroup(
+new ConflagrationProjectile(data, Conflagration.this, slot, burnStacks, nearest, killed));
+					proj.start(data, killedLoc, direction);
+					
+					Sounds.fire.play(p, killedLoc);
 			
 			return TriggerResult.keep();
 		});
@@ -99,16 +100,20 @@ public class Conflagration extends Equipment {
 		private Equipment eq;
 		private int slot;
 		private int burnToApply;
+		private LivingEntity homingTarget;
+		private LivingEntity source;
 
-		public ConflagrationProjectile(PlayerFightData data, Equipment eq, int slot, int originalBurn) {
-			super(1, 15, 2);
-			this.size(0.5, 0.5);
+		public ConflagrationProjectile(PlayerFightData data, Equipment eq, int slot, int originalBurn, LivingEntity homingTarget, LivingEntity source) {
+			super(1, 15, 1);
+			this.size(0.2, 0.2);
 			this.homing(0.015);
 			this.data = data;
 			this.p = data.getPlayer();
 			this.eq = eq;
 			this.slot = slot;
 			this.burnToApply = (int) (originalBurn * burnMult);
+			this.homingTarget = homingTarget;
+			this.source = source;
 		}
 
 		@Override
@@ -119,6 +124,10 @@ public class Conflagration extends Equipment {
 		@Override
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			LivingEntity target = hit.getEntity();
+			if (target.equals(source)) {
+				proj.addPierce(1);
+				return;
+			}
 			
 			// Deal damage
 			meta.addDamageSlice(new DamageSlice(data, damage, DamageType.FIRE, 
@@ -132,11 +141,7 @@ public class Conflagration extends Equipment {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
-			// Set homing target to nearest enemy
-			LivingEntity nearest = TargetHelper.getNearest(p, proj.getLocation(), tp);
-			if (nearest != null) {
-				proj.setHomingTarget(nearest);
-			}
+			proj.setHomingTarget(homingTarget);
 		}
 	}
 

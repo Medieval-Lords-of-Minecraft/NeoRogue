@@ -273,6 +273,10 @@ public class Map {
 				if (x + i > MAP_SIZE - 1 || x + i < 0 || z + j > MAP_SIZE - 1 || z + j < 0) return false;
 				
 				if (this.shape[x + i][z + j] && shape.get(i, j)) return false;
+
+				// Reserve edges for border pieces in HARVEST_FIELDS
+				if (type == RegionType.HARVEST_FIELDS && shape.get(i, j) &&
+						(x + i == 0 || x + i == MAP_SIZE - 1 || z + j == 0 || z + j == MAP_SIZE - 1)) return false;
 			}
 		}
 		return true;

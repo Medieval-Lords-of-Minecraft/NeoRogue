@@ -132,6 +132,6 @@ public class Scavenger extends Equipment {
 		item = createItem(Material.WHEAT,
 				"Passive. When you kill an enemy, they drop a stack. Standing on stacks collects them. " +
 				"Each stack grants you " + DescUtil.yellow(stamina) + " stamina and " + 
-				DescUtil.yellow((int)(damageBuff * 100) + "%") + " general damage, permanently.");
+				DescUtil.yellow((int)(damageBuff * 100) + "%") + " general damage.");
 	}
 }
