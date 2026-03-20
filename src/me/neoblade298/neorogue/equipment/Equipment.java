@@ -1750,7 +1750,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		}
 		*/
 
-		public ArrayList<E> getMultiple(int value, int numDrops, EquipmentClass... ec) {
+;		public ArrayList<E> getMultiple(int value, int numDrops, EquipmentClass... ec) {
 			return getMultiple(value, numDrops, true, null, ec);
 		}
 

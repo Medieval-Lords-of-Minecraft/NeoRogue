@@ -243,6 +243,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 	public Equipment removeEquipment(EquipSlot es, int slot) {
 		Equipment[] slots = getArrayFromEquipSlot(es);
 		Equipment eq = slots[slot];
+		if (eq == null) return null;
 		slots[slot] = null;
 
 		switch (eq.getType()) {

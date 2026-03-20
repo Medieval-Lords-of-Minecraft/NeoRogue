@@ -18,6 +18,7 @@ import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.player.inventory.EquipmentGlossaryInventory;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
@@ -222,13 +223,7 @@ public class ShopInventory extends CoreInventory {
 		}
 		else {
 			if (slot == SELL_ICON) {
-				NBTItem nbti = new NBTItem(e.getCursor());
-				Equipment eq = Equipment.get(nbti.getString("equipId"), false);
-				if (eq.isCursed()) {
-					Util.displayError(p, "Curses cannot be sold, they must be removed!");
-					return;
-				}
-				data.addCoins(SELL_PRICE);
+				if (!trySellItem(p, data, e.getCursor())) return;
 				inv.setItem(
 						GOLD_ICON,
 						CoreInventory.createButton(
@@ -236,13 +231,6 @@ public class ShopInventory extends CoreInventory {
 								Component.text("You have " + data.getCoins() + " coins", NamedTextColor.YELLOW)
 						)
 				);
-				p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1F, 1F);
-				p.setItemOnCursor(null);
-				data.getSession().broadcast(
-						SharedUtil.color("<yellow>" + p.getName() + " </yellow>sold their ").append(eq.getHoverable())
-								.append(Component.text("."))
-				);
-				
 				data.getSession().getInstance().updateBoardLines();
 				ItemStack[] contents = inv.getContents();
 				updateAll(contents);
@@ -319,6 +307,30 @@ public class ShopInventory extends CoreInventory {
 		int idx = nbti.getInteger("idx");
 		ShopItem si = shopItems.get(idx);
 		si.update(data, item, false);
+	}
+
+	/**
+	 * Attempts to sell the item on the player's cursor. Returns true on success, false on failure.
+	 */
+	public static boolean trySellItem(Player p, PlayerSessionData data, ItemStack cursor) {
+		NBTItem nbti = new NBTItem(cursor);
+		Equipment eq = Equipment.get(nbti.getString("equipId"), false);
+		if (eq.isCursed()) {
+			Util.displayError(p, "Curses cannot be sold, they must be removed!");
+			return false;
+		}
+		if (eq.getType() == EquipmentType.CONSUMABLE) {
+			Util.displayError(p, "Consumables cannot be sold!");
+			return false;
+		}
+		data.addCoins(SELL_PRICE);
+		p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1F, 1F);
+		p.setItemOnCursor(null);
+		data.getSession().broadcast(
+				SharedUtil.color("<yellow>" + p.getName() + " </yellow>sold their ").append(eq.getHoverable())
+						.append(Component.text("."))
+		);
+		return true;
 	}
 
 	@Override

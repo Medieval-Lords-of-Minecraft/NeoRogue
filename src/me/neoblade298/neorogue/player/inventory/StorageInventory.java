@@ -15,7 +15,6 @@ import me.neoblade298.neocore.bukkit.NeoCore;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
 import me.neoblade298.neocore.bukkit.util.Util;
-import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
@@ -84,19 +83,7 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 		if (e.getSlot() == SELL) {
 			e.setCancelled(true);
 			if (e.getCurrentItem() == null) return;
-			NBTItem nbti = new NBTItem(e.getCursor());
-			Equipment eq = Equipment.get(nbti.getString("equipId"), false);
-			if (eq.isCursed()) {
-				Util.displayError(p, "Curses cannot be sold, they must be removed!");
-				return;
-			}
-			data.addCoins(ShopInventory.SELL_PRICE);
-			p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1F, 1F);
-			p.setItemOnCursor(null);
-			data.getSession().broadcast(
-					SharedUtil.color("<yellow>" + p.getName() + " </yellow>sold their ").append(eq.getHoverable())
-							.append(Component.text("."))
-			);
+			ShopInventory.trySellItem(p, data, e.getCursor());
 		}
 
 		// Ignore gray panes

@@ -106,6 +106,9 @@ public class ShopItem {
 	public static ShopItem deserialize(String str) {
 		try {
 			String[] split = str.split(":");
+			if (split[0].equals("purchased")) {
+				return new ShopItem(null, 0, false, true);
+			}
 			Equipment eq = Equipment.deserialize(split[0]);
 			int price = Integer.parseInt(split[1]);
 			boolean sale = split[2].equals("1");
