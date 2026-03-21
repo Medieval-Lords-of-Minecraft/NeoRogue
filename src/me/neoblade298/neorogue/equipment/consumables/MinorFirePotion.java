@@ -33,7 +33,7 @@ public class MinorFirePotion extends Consumable {
 	}
 	
 	@Override
-	public void runConsumableEffects(Player p, PlayerFightData data) {
+	public void runConsumableEffects(Player p, PlayerFightData data, int slot) {
 		PotionProjectile pot = new PotionProjectile((loc, hit) -> {
 			for (LivingEntity ent : hit) {
 				if (ent instanceof Player || !(ent instanceof LivingEntity)) continue;

@@ -5,9 +5,9 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.PotionMeta;
 
-import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.Consumable;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 
@@ -25,7 +25,7 @@ public class MinorHealthPotion extends Consumable {
 	}
 	
 	@Override
-	public void runConsumableEffects(Player p, PlayerFightData data) {
+	public void runConsumableEffects(Player p, PlayerFightData data, int slot) {
 		FightInstance.giveHeal(p, health, p);
 	}
 

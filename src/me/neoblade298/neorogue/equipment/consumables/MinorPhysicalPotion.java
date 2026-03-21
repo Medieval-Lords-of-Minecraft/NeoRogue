@@ -5,10 +5,10 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.PotionMeta;
 
-import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.equipment.Consumable;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 
@@ -26,7 +26,7 @@ public class MinorPhysicalPotion extends Consumable {
 	}
 	
 	@Override
-	public void runConsumableEffects(Player p, PlayerFightData data) {
+	public void runConsumableEffects(Player p, PlayerFightData data, int slot) {
 		data.applyStatus(StatusType.STRENGTH, data, strength, -1);
 	}
 

@@ -80,7 +80,7 @@ public class Hullbreaker extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.ANVIL,
+		item = createItem(Material.IRON_INGOT,
 				"Right click to basic attack. Lowers " + GlossaryTag.PHYSICAL.tag(this) + " defense by "
 						+ DescUtil.yellow(reduc) + " for every " + DescUtil.white(THRES) + " "
 						+ GlossaryTag.CONCUSSED.tag(this)

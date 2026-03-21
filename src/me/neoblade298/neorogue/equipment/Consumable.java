@@ -22,10 +22,10 @@ public abstract class Consumable extends Equipment {
 			drink.play(p, p);
 			data.getSessionData().removeEquipment(es, slot);
 			data.runActions(data, Trigger.USE_CONSUMABLE, new UseConsumableEvent(this));
-			runConsumableEffects(p, data);
+			runConsumableEffects(p, data, slot);
 			return TriggerResult.remove();
 		});
 	}
 	
-	protected abstract void runConsumableEffects(Player p, PlayerFightData data);
+	protected abstract void runConsumableEffects(Player p, PlayerFightData data, int slot);
 }

@@ -5,10 +5,10 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.PotionMeta;
 
-import me.neoblade298.neorogue.equipment.Rarity;
-import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.equipment.Consumable;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 
 public class MinorShieldsPotion extends Consumable {
@@ -17,7 +17,7 @@ public class MinorShieldsPotion extends Consumable {
 	
 	public MinorShieldsPotion(boolean isUpgraded) {
 		super(ID, "Minor Shields Potion", isUpgraded, Rarity.COMMON, EquipmentClass.CLASSLESS);
-		this.shields = isUpgraded ? 60 : 40;
+		this.shields = isUpgraded ? 30 : 20;
 	}
 	
 	public static Equipment get() {
@@ -25,7 +25,7 @@ public class MinorShieldsPotion extends Consumable {
 	}
 	
 	@Override
-	public void runConsumableEffects(Player p, PlayerFightData data) {
+	public void runConsumableEffects(Player p, PlayerFightData data, int slot) {
 		data.addPermanentShield(p.getUniqueId(), shields);
 	}
 

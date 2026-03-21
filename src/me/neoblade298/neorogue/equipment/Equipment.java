@@ -183,9 +183,13 @@ import me.neoblade298.neorogue.equipment.artifacts.ScrollOfFrost;
 import me.neoblade298.neorogue.equipment.artifacts.StarlightVeil;
 import me.neoblade298.neorogue.equipment.artifacts.StaticNecklace;
 import me.neoblade298.neorogue.equipment.artifacts.StormSigil;
+import me.neoblade298.neorogue.equipment.artifacts.TempestSigil;
 import me.neoblade298.neorogue.equipment.artifacts.TomeOfWisdom;
 import me.neoblade298.neorogue.equipment.artifacts.TreatiseOnElectricity;
 import me.neoblade298.neorogue.equipment.artifacts.TrickstersSigil;
+import me.neoblade298.neorogue.equipment.consumables.AegisPotion;
+import me.neoblade298.neorogue.equipment.consumables.AlchemistsPotion;
+import me.neoblade298.neorogue.equipment.consumables.ForcePotion;
 import me.neoblade298.neorogue.equipment.consumables.MinorFirePotion;
 import me.neoblade298.neorogue.equipment.consumables.MinorHealthPotion;
 import me.neoblade298.neorogue.equipment.consumables.MinorMagicalPotion;
@@ -193,6 +197,9 @@ import me.neoblade298.neorogue.equipment.consumables.MinorManaPotion;
 import me.neoblade298.neorogue.equipment.consumables.MinorPhysicalPotion;
 import me.neoblade298.neorogue.equipment.consumables.MinorShieldsPotion;
 import me.neoblade298.neorogue.equipment.consumables.MinorStaminaPotion;
+import me.neoblade298.neorogue.equipment.consumables.SeraphsPotion;
+import me.neoblade298.neorogue.equipment.consumables.ToughnessPotion;
+import me.neoblade298.neorogue.equipment.consumables.WeaponsPotion;
 import me.neoblade298.neorogue.equipment.cursed.DullDagger;
 import me.neoblade298.neorogue.equipment.cursed.GnarledStaff;
 import me.neoblade298.neorogue.equipment.cursed.MangledBow;
@@ -882,6 +889,12 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new MinorShieldsPotion(b);
 			new MinorPhysicalPotion(b);
 			new MinorMagicalPotion(b);
+			new WeaponsPotion(b);
+			new AegisPotion(b);
+			new ForcePotion(b);
+			new SeraphsPotion(b);
+			new ToughnessPotion(b);
+			new AlchemistsPotion(b);
 		}
 
 		// Artifacts
@@ -950,6 +963,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new StaticNecklace();
 		new StormSigil();
 		new TarotCard();
+		new TempestSigil();
 		new TomeOfWisdom();
 		new TreatiseOnElectricity();
 		new TrickstersSigil();

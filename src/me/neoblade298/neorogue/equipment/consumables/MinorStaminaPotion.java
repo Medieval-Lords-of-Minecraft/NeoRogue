@@ -24,7 +24,7 @@ public class MinorStaminaPotion extends Consumable {
 	}
 	
 	@Override
-	public void runConsumableEffects(Player p, PlayerFightData data) {
+	public void runConsumableEffects(Player p, PlayerFightData data, int slot) {
 		data.addStaminaRegen(stamina);
 	}
 
