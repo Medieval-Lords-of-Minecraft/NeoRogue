@@ -29,7 +29,7 @@ public class MinorPhysicalPotion extends Consumable {
 	@Override
 	public TriggerResult runConsumableEffects(Player p, PlayerFightData data, int slot) {
 		data.applyStatus(StatusType.STRENGTH, data, strength, -1);
-		return TriggerResult.keep();
+		return TriggerResult.remove();
 	}
 
 	@Override

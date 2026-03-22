@@ -31,7 +31,7 @@ public class ForcePotion extends Consumable {
 	public TriggerResult runConsumableEffects(Player p, PlayerFightData data, int slot) {
 		data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
 				Buff.multiplier(data, 1.0, StatTracker.damageBuffAlly(id, this)), 400);
-		return TriggerResult.keep();
+		return TriggerResult.remove();
 	}
 
 	@Override

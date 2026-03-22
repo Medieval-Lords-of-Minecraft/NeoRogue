@@ -27,7 +27,7 @@ public class MinorManaPotion extends Consumable {
 	@Override
 	public TriggerResult runConsumableEffects(Player p, PlayerFightData data, int slot) {
 		data.addManaRegen(mana);
-		return TriggerResult.keep();
+		return TriggerResult.remove();
 	}
 
 	@Override

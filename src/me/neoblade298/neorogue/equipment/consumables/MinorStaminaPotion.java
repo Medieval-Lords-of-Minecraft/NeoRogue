@@ -27,7 +27,7 @@ public class MinorStaminaPotion extends Consumable {
 	@Override
 	public TriggerResult runConsumableEffects(Player p, PlayerFightData data, int slot) {
 		data.addStaminaRegen(stamina);
-		return TriggerResult.keep();
+		return TriggerResult.remove();
 	}
 
 	@Override

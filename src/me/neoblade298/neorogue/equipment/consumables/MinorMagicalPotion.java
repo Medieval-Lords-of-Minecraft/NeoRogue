@@ -35,7 +35,7 @@ public class MinorMagicalPotion extends Consumable {
 	public TriggerResult runConsumableEffects(Player p, PlayerFightData data, int slot) {
 		String buffId = UUID.randomUUID().toString();
 		data.addDamageBuff(DamageBuffType.of(DamageCategory.MAGICAL), new Buff(data, intel, 0, StatTracker.damageBuffAlly(buffId, this)));
-		return TriggerResult.keep();
+		return TriggerResult.remove();
 	}
 
 	@Override

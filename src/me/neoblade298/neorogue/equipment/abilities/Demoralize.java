@@ -63,7 +63,7 @@ public class Demoralize extends Equipment {
 			Sounds.equip.play(p, p);
 			ActionMeta am = new ActionMeta();
 			am.setBool(true);
-			am.setTime(System.currentTimeMillis() + 5000);
+			am.setTime(System.currentTimeMillis() + 3000);
 			insts.add(am);
 			data.addTask(new BukkitRunnable() {
 				public void run() {
@@ -79,7 +79,7 @@ public class Demoralize extends Equipment {
 					}
 					insts.removeFirst();
 				}
-			}.runTaskLater(NeoRogue.inst(), 100));
+			}.runTaskLater(NeoRogue.inst(), 60));
 			return TriggerResult.keep();
 		}));
 		
@@ -95,7 +95,7 @@ public class Demoralize extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.TARGET,
-				"On cast, if you do not take health damage for the next <white>5s</white>, all nearby enemies are granted " + GlossaryTag.INJURY.tag(this, injure, true) + " and have " +
+				"On cast, if you do not take health damage for the next <white>3s</white>, all nearby enemies are granted " + GlossaryTag.INJURY.tag(this, injure, true) + " and have " +
 				"their defense decreased by " + DescUtil.yellow(dec + "%") + " [<white>8s</white>]." );
 	}
 }

@@ -32,7 +32,7 @@ public class WeaponsPotion extends Consumable {
 		Equipment weapon = Equipment.getDrop(value, sdata.getPlayerClass());
 		weapon.initialize(data, null, EquipSlot.HOTBAR, slot);
 		p.getInventory().setItem(slot, weapon.getItem());
-		return TriggerResult.keep();
+		return TriggerResult.remove();
 	}
 
 	@Override

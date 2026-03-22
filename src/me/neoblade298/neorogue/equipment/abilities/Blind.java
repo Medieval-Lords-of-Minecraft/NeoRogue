@@ -33,7 +33,7 @@ public class Blind extends Equipment {
 	public Blind(boolean isUpgraded) {
 		super(ID, "Blind", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 0, 15, 0));
-		injure = isUpgraded ? 45 : 30;
+		injure = isUpgraded ? 75 : 50;
 	}
 	
 	public static Equipment get() {

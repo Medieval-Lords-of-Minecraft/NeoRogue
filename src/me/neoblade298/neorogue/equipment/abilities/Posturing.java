@@ -30,8 +30,8 @@ public class Posturing extends Equipment {
 	public Posturing(boolean isUpgraded) {
 		super(ID, "Posturing", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.none());
-		time = isUpgraded ? 4 : 5;
-		inc = isUpgraded ? 3 : 2;
+		time = isUpgraded ? 3 : 4;
+		inc = isUpgraded ? 5 : 3;
 	}
 	
 	public static Equipment get() {

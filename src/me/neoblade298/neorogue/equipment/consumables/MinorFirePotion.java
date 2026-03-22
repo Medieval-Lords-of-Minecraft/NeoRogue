@@ -46,7 +46,7 @@ public class MinorFirePotion extends Consumable {
 		
 		Sounds.threw.play(p, p);
 		grp.start(data);
-		return TriggerResult.keep();
+		return TriggerResult.remove();
 	}
 
 	@Override

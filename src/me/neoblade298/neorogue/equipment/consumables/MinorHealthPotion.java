@@ -28,7 +28,7 @@ public class MinorHealthPotion extends Consumable {
 	@Override
 	public TriggerResult runConsumableEffects(Player p, PlayerFightData data, int slot) {
 		FightInstance.giveHeal(p, health, p);
-		return TriggerResult.keep();
+		return TriggerResult.remove();
 	}
 
 	@Override

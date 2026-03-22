@@ -41,8 +41,8 @@ public class PocketBallista extends Bow {
 	public PocketBallista(boolean isUpgraded) {
 		super(ID, "Pocket Ballista", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofBow(80, 1, 0, 12, 0, 1));
-		damage = isUpgraded ? 120 : 80;
+				EquipmentProperties.ofBow(70, 1, 0, 12, 0, 1));
+		damage = isUpgraded ? 80 : 40;
 		properties.add(PropertyType.AREA_OF_EFFECT, tp.range);
 	}
 

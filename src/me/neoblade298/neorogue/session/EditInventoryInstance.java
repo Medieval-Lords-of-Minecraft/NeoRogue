@@ -55,7 +55,7 @@ public abstract class EditInventoryInstance extends Instance {
 				return false;
 			}
 			if (data.checkStorageLimit()) {
-				s.broadcastError(data.getData().getDisplay() + " must remove some items from his storage before continuing!");
+				s.broadcastError(data.getData().getDisplay() + " must remove some items from their storage before continuing!");
 				return false;
 			}
 			if (data.getMaxAbilities() < data.getAbilitiesEquipped()) {

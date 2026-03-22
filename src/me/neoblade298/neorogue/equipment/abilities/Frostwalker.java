@@ -18,6 +18,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.CastType;
+import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
@@ -49,6 +50,7 @@ public class Frostwalker extends Equipment {
 		stacks = isUpgraded ? 25 : 15;
 		reduc = isUpgraded ? 25 : 15;
 		properties.setCastType(CastType.TOGGLE);
+		properties.add(PropertyType.AREA_OF_EFFECT, tp.range);
 	}
 
 	public static Equipment get() {

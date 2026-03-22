@@ -9,6 +9,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.IProjectileInstance;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageMeta.DamageOrigin;
@@ -52,7 +53,7 @@ public class PointBlank extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLACKSTONE_SLAB,
-				"Passive. Dealing damage via projectile from at most " + DescUtil.yellow(thres) + " blocks away increases damage by " +
+				"Passive. Dealing damage via projectile from at most " + DescUtil.yellow(thres) + " blocks away increases " + GlossaryTag.GENERAL.tag(this) + " damage by " +
 				DescUtil.yellow(damage) + ".");
 	}
 }

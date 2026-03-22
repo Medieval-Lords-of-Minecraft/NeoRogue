@@ -51,7 +51,7 @@ public class AlchemistsPotion extends Consumable {
 			c.initialize(data, Trigger.getFromHotbarSlot(emptySlot), EquipSlot.HOTBAR, emptySlot);
 			p.getInventory().setItem(emptySlot, c.getItem());
 		}
-		return TriggerResult.keep();
+		return TriggerResult.remove();
 	}
 
 	@Override

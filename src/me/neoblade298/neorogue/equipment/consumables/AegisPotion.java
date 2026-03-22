@@ -44,7 +44,7 @@ public class AegisPotion extends Consumable {
 			}
 			return TriggerResult.keep();
 		});
-		return TriggerResult.keep();
+		return TriggerResult.remove();
 	}
 
 	@Override

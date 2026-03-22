@@ -88,7 +88,7 @@ public class Surprise extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.TORCH,
-			"On cast, place a " + GlossaryTag.TRAP.tagPlural(this) + " [<white>10s</white>] that deals " + GlossaryTag.BLUNT.tag(this, damage, true) +
+			"On cast, place a " + GlossaryTag.TRAP.tag(this) + " [<white>10s</white>] that deals " + GlossaryTag.BLUNT.tag(this, damage, true) +
 			" to the first enemy that steps on it. Then jump backwards, gain " + DescUtil.potion("Speed", 0, 3) + ", and gain " +
 			GlossaryTag.SHIELDS.tag(this, shields, false) + " [<white>5s</white>].");
 	}

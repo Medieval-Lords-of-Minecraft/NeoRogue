@@ -33,7 +33,7 @@ public class ToughnessPotion extends Consumable {
 	public TriggerResult runConsumableEffects(Player p, PlayerFightData data, int slot) {
 		data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL),
 				Buff.increase(data, reduc, BuffStatTracker.defenseBuffAlly(id + slot, this)));
-		return TriggerResult.keep();
+		return TriggerResult.remove();
 	}
 
 	@Override
