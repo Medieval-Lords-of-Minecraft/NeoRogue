@@ -33,7 +33,7 @@ public class EscapePlan extends Equipment {
 	public EscapePlan(boolean isUpgraded) {
 		super(ID, "Escape Plan", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 10, 15, 0));
-		damage = isUpgraded ? 100 : 70;
+		damage = isUpgraded ? 150 : 100;
 	}
 
 	@Override

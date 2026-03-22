@@ -54,7 +54,7 @@ public class Fade extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE_TORCH,
-				"Passive. Whenever you receive " + GlossaryTag.STEALTH.tag(this) + ", increase its duration by <yellow>" + duration + "</yellow>."
-				+ " Basic attacks additionally grant you " + GlossaryTag.STEALTH.tag(this, 1, false) + " [<white>3</white>s].");
+				"Passive. Whenever you receive " + GlossaryTag.STEALTH.tag(this) + ", increase its duration by <white>" + duration + "s</white>."
+				+ " Basic attacks additionally grant you " + GlossaryTag.STEALTH.tag(this, 1, false) + " [<white>3s</white>].");
 	}
 }

@@ -149,6 +149,7 @@ import me.neoblade298.neorogue.equipment.artifacts.EnergyBattery;
 import me.neoblade298.neorogue.equipment.artifacts.Exhaustion;
 import me.neoblade298.neorogue.equipment.artifacts.FaerieDust;
 import me.neoblade298.neorogue.equipment.artifacts.FaeriePendant;
+import me.neoblade298.neorogue.equipment.artifacts.ForgemastersMark;
 import me.neoblade298.neorogue.equipment.artifacts.GlacialHammer;
 import me.neoblade298.neorogue.equipment.artifacts.GoldIngot;
 import me.neoblade298.neorogue.equipment.artifacts.GoldenVeil;
@@ -159,6 +160,7 @@ import me.neoblade298.neorogue.equipment.artifacts.HiddenBlade;
 import me.neoblade298.neorogue.equipment.artifacts.HolyScriptures;
 import me.neoblade298.neorogue.equipment.artifacts.HuntersCompass;
 import me.neoblade298.neorogue.equipment.artifacts.InfernalTome;
+import me.neoblade298.neorogue.equipment.artifacts.IronVow;
 import me.neoblade298.neorogue.equipment.artifacts.ManaHaze;
 import me.neoblade298.neorogue.equipment.artifacts.ManaflowBand;
 import me.neoblade298.neorogue.equipment.artifacts.MercenaryHeadband;
@@ -492,6 +494,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Lethality(b);
 			new Lightfall(b);
 			new LightningBolt(b);
+			new LightningRod(b);
 			new LightningRush(b);
 			new LightningStrike(b);
 			new LightPulse(b);
@@ -927,6 +930,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new FaerieDust();
 		new FaeriePendant();
 		new ForceTrinket();
+		new ForgemastersMark();
 		new GlacialHammer();
 		new GoldIngot();
 		new GoldenVeil();
@@ -937,6 +941,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		new HolyScriptures();
 		new HuntersCompass();
 		new InfernalTome();
+		new IronVow();
 		new LionheartBangle();
 		new Lockbox();
 		new ManaflowBand();
@@ -1769,6 +1774,10 @@ public abstract class Equipment implements Comparable<Equipment> {
 		}
 
 		public ArrayList<E> getMultiple(int value, int numDrops, boolean unique, ArrayList<E> exclusions, EquipmentClass... ec) {
+			if (value < 0) {
+				Bukkit.getLogger().warning("[NeoRogue] No valid drops found at any value for " + Arrays.toString(ec));
+				return new ArrayList<E>();
+			}
 			// If more than 1 equipment class, combine them first
 			if (ec.length > 1) {
 				ArrayList<DropTable<E>> equipmentClassTables = new ArrayList<DropTable<E>>(ec.length);
@@ -1792,6 +1801,11 @@ public abstract class Equipment implements Comparable<Equipment> {
 				}
 
 				DropTable<E> combined = DropTable.combine(equipmentClassTables);
+				if (combined.size() < numDrops) {
+					Bukkit.getLogger().warning("[NeoRogue] Failed to find " + numDrops + " combined equipment at value " + value
+							+ " for equip classes " + Arrays.toString(ec) + ", falling back to lower value");
+					return getMultiple(value - 1, numDrops, unique, exclusions, ec);
+				}
 				return combined.getMultiple(numDrops, true, exclusions);
 			}
 			else {

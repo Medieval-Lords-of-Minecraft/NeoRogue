@@ -46,7 +46,7 @@ public class WallJump extends Equipment {
 	public WallJump(boolean isUpgraded) {
 		super(ID, "Wall Jump", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 25, 12, 0));
-		damage = isUpgraded ? 250 : 200;
+		damage = isUpgraded ? 300 : 200;
 	}
 
 	public static Equipment get() {

@@ -77,13 +77,13 @@ public class ShopInventory extends CoreInventory {
 		contents[SELL_ICON] = CoreInventory.createButton(
 				Material.GOLD_NUGGET, Component.text("Sell Items", NamedTextColor.RED),
 				(TextComponent) NeoCore.miniMessage().deserialize(
-						"Drag equipment here to sell it " + "for <yellow>" + SELL_PRICE + " coins</yellow>."
+						"Drag equipment here to sell them " + "for <yellow>" + SELL_PRICE + " coins</yellow>."
 				), 250, NamedTextColor.GRAY
 		);
 		contents[PURIFY_ICON] = CoreInventory.createButton(
 				Material.SUGAR, Component.text("Remove Curses", NamedTextColor.RED),
 				(TextComponent) NeoCore.miniMessage().deserialize(
-						"Drag cursed equipment here to remove it " + "in exchange for <yellow>" + REMOVE_CURSE_PRICE
+						"Drag curses here to remove them " + "in exchange for <yellow>" + REMOVE_CURSE_PRICE
 								+ " coins</yellow>."
 				), 250, NamedTextColor.GRAY
 		);
@@ -316,7 +316,7 @@ public class ShopInventory extends CoreInventory {
 		NBTItem nbti = new NBTItem(cursor);
 		Equipment eq = Equipment.get(nbti.getString("equipId"), false);
 		if (eq.isCursed()) {
-			Util.displayError(p, "Curses cannot be sold, they must be removed!");
+			Util.displayError(p, "Curses cannot be sold!");
 			return false;
 		}
 		if (eq.getType() == EquipmentType.CONSUMABLE) {

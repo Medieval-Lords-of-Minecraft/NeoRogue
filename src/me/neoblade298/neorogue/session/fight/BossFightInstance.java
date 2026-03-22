@@ -93,6 +93,7 @@ public class BossFightInstance extends FightInstance {
 			EquipmentClass ec = data.getPlayerClass();
 			int value = s.getBaseDropValue() + 4 + ev.getBonusRarity();
 			equipDrops.addAll(Equipment.getDrop(value, 3 + ev.getBonusEquipment(), ec, EquipmentClass.CLASSLESS));
+			s.rollUpgrades(equipDrops, ev.getBonusUpgradeChance());
 			list.add(new EquipmentChoiceReward(equipDrops));
 			
 			equipDrops = new ArrayList<Equipment>(3);

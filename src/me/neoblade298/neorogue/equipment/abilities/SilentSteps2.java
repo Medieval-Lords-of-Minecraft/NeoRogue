@@ -56,7 +56,7 @@ public class SilentSteps2 extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.LEATHER_BOOTS,
 				"Passive. Whenever you receive " + GlossaryTag.STEALTH.tag(this) + ", increase its duration by <white>" + duration + "</white>"
-						+ " and its stacks by <white>1</white>" +
+						+ " and its stacks by <white>1</white>." +
 						" Damage dealt is increased by <yellow>" + damage + "</yellow> if you have " + GlossaryTag.STEALTH.tag(this) +".");
 	}
 }

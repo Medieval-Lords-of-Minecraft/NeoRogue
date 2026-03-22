@@ -16,12 +16,12 @@ import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class AdaptiveChemvest extends Equipment {
 	private static final String ID = "AdaptiveChemvest";
-	private int shields;
+	private double shields;
 	
 	public AdaptiveChemvest(boolean isUpgraded) {
 		super(ID, "Adaptive Chemvest", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
 				EquipmentType.ARMOR);
-		shields = isUpgraded ? 6 : 4;
+		shields = isUpgraded ? 1.5 : 1;
 	}
 	
 	public static Equipment get() {

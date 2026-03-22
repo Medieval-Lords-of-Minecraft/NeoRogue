@@ -88,7 +88,7 @@ public class MinibossFightInstance extends FightInstance {
 			EquipmentClass ec = data.getPlayerClass();
 			int value = s.getBaseDropValue() + 2 + ev.getBonusRarity();
 			equipDrops.addAll(Equipment.getDrop(value, 3 + ev.getBonusEquipment(), ec, EquipmentClass.CLASSLESS));
-			s.rollUpgrades(equipDrops, 0.1);
+			s.rollUpgrades(equipDrops, ev.getBonusUpgradeChance());
 			list.add(new EquipmentChoiceReward(equipDrops));
 			
 			Artifact art = Equipment.getArtifact(data.getArtifactDroptable(), value, 3, ec, EquipmentClass.CLASSLESS).getFirst();
@@ -101,7 +101,7 @@ public class MinibossFightInstance extends FightInstance {
 			list.add(new EquipmentChoiceReward(equipDrops));
 			if (dropPotion) {
 				Consumable cons = Equipment.getConsumable(value, ec, EquipmentClass.CLASSLESS);
-				list.add(new EquipmentReward(s.rollUpgrade(cons, 0.1 + ev.getBonusUpgradeChance())));
+				list.add(new EquipmentReward(s.rollUpgrade(cons, 0.1)));
 			}
 			rewards.put(uuid, list);
 		}
