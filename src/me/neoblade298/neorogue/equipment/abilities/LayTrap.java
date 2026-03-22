@@ -100,7 +100,7 @@ public class LayTrap extends Equipment {
 				"On cast, gain " + GlossaryTag.SHIELDS.tag(this, SHIELDS, false) + " [<white>5s</white>] and " + 
 				DescUtil.charge(this, 1, 2) + ". Afterwards, drop a " + GlossaryTag.TRAP.tag(this) + 
 				" that lasts for " + DescUtil.white("10s") +
-				". If an enemy steps on the trap, they take " + GlossaryTag.BLUNT.tag(this, damage, true) +
+				". If an enemy steps on the trap, they take " + GlossaryTag.BLUNT.tag(this, damage, false) +
 				" damage and receive " + DescUtil.potionUp("Slowness", 3, secs) + ".");
 	}
 }

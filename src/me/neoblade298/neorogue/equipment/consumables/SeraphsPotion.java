@@ -10,6 +10,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class SeraphsPotion extends Consumable {
 	private static final String ID = "SeraphsPotion";
@@ -23,8 +24,9 @@ public class SeraphsPotion extends Consumable {
 	}
 
 	@Override
-	public void runConsumableEffects(Player p, PlayerFightData data, int slot) {
+	public TriggerResult runConsumableEffects(Player p, PlayerFightData data, int slot) {
 		data.applyStatus(StatusType.INVINCIBLE, data, 1, 10);
+		return TriggerResult.keep();
 	}
 
 	@Override

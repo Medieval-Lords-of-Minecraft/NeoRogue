@@ -16,6 +16,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.buff.StatTracker;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class MinorMagicalPotion extends Consumable {
 	private static final String ID = "MinorMagicalPotion";
@@ -31,9 +32,10 @@ public class MinorMagicalPotion extends Consumable {
 	}
 	
 	@Override
-	public void runConsumableEffects(Player p, PlayerFightData data, int slot) {
+	public TriggerResult runConsumableEffects(Player p, PlayerFightData data, int slot) {
 		String buffId = UUID.randomUUID().toString();
 		data.addDamageBuff(DamageBuffType.of(DamageCategory.MAGICAL), new Buff(data, intel, 0, StatTracker.damageBuffAlly(buffId, this)));
+		return TriggerResult.keep();
 	}
 
 	@Override

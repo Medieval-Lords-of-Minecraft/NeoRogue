@@ -18,6 +18,7 @@ import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class MinorFirePotion extends Consumable {
 	private static final String ID = "MinorFirePotion";
@@ -33,7 +34,7 @@ public class MinorFirePotion extends Consumable {
 	}
 	
 	@Override
-	public void runConsumableEffects(Player p, PlayerFightData data, int slot) {
+	public TriggerResult runConsumableEffects(Player p, PlayerFightData data, int slot) {
 		PotionProjectile pot = new PotionProjectile((loc, hit) -> {
 			for (LivingEntity ent : hit) {
 				if (ent instanceof Player || !(ent instanceof LivingEntity)) continue;
@@ -45,6 +46,7 @@ public class MinorFirePotion extends Consumable {
 		
 		Sounds.threw.play(p, p);
 		grp.start(data);
+		return TriggerResult.keep();
 	}
 
 	@Override

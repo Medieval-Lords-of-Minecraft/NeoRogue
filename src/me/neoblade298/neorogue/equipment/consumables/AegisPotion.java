@@ -29,7 +29,7 @@ public class AegisPotion extends Consumable {
 	}
 
 	@Override
-	public void runConsumableEffects(Player p, PlayerFightData data, int slot) {
+	public TriggerResult runConsumableEffects(Player p, PlayerFightData data, int slot) {
 		// Upfront shields
 		data.addPermanentShield(p.getUniqueId(), upfront);
 
@@ -44,6 +44,7 @@ public class AegisPotion extends Consumable {
 			}
 			return TriggerResult.keep();
 		});
+		return TriggerResult.keep();
 	}
 
 	@Override

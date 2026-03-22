@@ -10,6 +10,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class MinorHealthPotion extends Consumable {
 	private static final String ID = "MinorHealthPotion";
@@ -25,8 +26,9 @@ public class MinorHealthPotion extends Consumable {
 	}
 	
 	@Override
-	public void runConsumableEffects(Player p, PlayerFightData data, int slot) {
+	public TriggerResult runConsumableEffects(Player p, PlayerFightData data, int slot) {
 		FightInstance.giveHeal(p, health, p);
+		return TriggerResult.keep();
 	}
 
 	@Override

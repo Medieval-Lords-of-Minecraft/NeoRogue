@@ -11,6 +11,7 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class WeaponsPotion extends Consumable {
 	private static final String ID = "WeaponsPotion";
@@ -24,12 +25,14 @@ public class WeaponsPotion extends Consumable {
 	}
 
 	@Override
-	public void runConsumableEffects(Player p, PlayerFightData data, int slot) {
+	public TriggerResult runConsumableEffects(Player p, PlayerFightData data, int slot) {
 		PlayerSessionData sdata = data.getSessionData();
 		Session s = sdata.getSession();
 		int value = s.getBaseDropValue() + 2;
 		Equipment weapon = Equipment.getDrop(value, sdata.getPlayerClass());
 		weapon.initialize(data, null, EquipSlot.HOTBAR, slot);
+		p.getInventory().setItem(slot, weapon.getItem());
+		return TriggerResult.keep();
 	}
 
 	@Override

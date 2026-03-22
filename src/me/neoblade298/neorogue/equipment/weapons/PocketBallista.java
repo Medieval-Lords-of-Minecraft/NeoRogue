@@ -34,16 +34,16 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class PocketBallista extends Bow {
 	private static final String ID = "PocketBallista";
-	private static final TargetProperties tp = TargetProperties.radius(3, true, TargetType.ENEMY);
+	private static final TargetProperties tp = TargetProperties.radius(2, true, TargetType.ENEMY);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.EXPLOSION).count(5).offsetY(0.5).spread(1.5, 0.5);
 	private int damage;
 	
 	public PocketBallista(boolean isUpgraded) {
 		super(ID, "Pocket Ballista", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofBow(80, 1, 0, 12, 0, 0.5));
-		damage = isUpgraded ? 150 : 100;
-		properties.addUpgrades(PropertyType.DAMAGE);
+				EquipmentProperties.ofBow(80, 1, 0, 12, 0, 1));
+		damage = isUpgraded ? 120 : 80;
+		properties.add(PropertyType.AREA_OF_EFFECT, tp.range);
 	}
 
 	@Override

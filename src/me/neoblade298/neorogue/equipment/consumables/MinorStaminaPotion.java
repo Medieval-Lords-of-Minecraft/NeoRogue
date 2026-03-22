@@ -9,6 +9,7 @@ import me.neoblade298.neorogue.equipment.Consumable;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class MinorStaminaPotion extends Consumable {
 	private static final String ID = "MinorStaminaPotion";
@@ -24,8 +25,9 @@ public class MinorStaminaPotion extends Consumable {
 	}
 	
 	@Override
-	public void runConsumableEffects(Player p, PlayerFightData data, int slot) {
+	public TriggerResult runConsumableEffects(Player p, PlayerFightData data, int slot) {
 		data.addStaminaRegen(stamina);
+		return TriggerResult.keep();
 	}
 
 	@Override

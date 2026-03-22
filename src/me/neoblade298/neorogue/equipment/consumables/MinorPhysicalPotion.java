@@ -11,6 +11,7 @@ import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class MinorPhysicalPotion extends Consumable {
 	private static final String ID = "MinorPhysicalPotion";
@@ -26,8 +27,9 @@ public class MinorPhysicalPotion extends Consumable {
 	}
 	
 	@Override
-	public void runConsumableEffects(Player p, PlayerFightData data, int slot) {
+	public TriggerResult runConsumableEffects(Player p, PlayerFightData data, int slot) {
 		data.applyStatus(StatusType.STRENGTH, data, strength, -1);
+		return TriggerResult.keep();
 	}
 
 	@Override

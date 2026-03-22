@@ -14,6 +14,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class ToughnessPotion extends Consumable {
 	private static final String ID = "ToughnessPotion";
@@ -29,9 +30,10 @@ public class ToughnessPotion extends Consumable {
 	}
 
 	@Override
-	public void runConsumableEffects(Player p, PlayerFightData data, int slot) {
+	public TriggerResult runConsumableEffects(Player p, PlayerFightData data, int slot) {
 		data.addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL),
 				Buff.increase(data, reduc, BuffStatTracker.defenseBuffAlly(id + slot, this)));
+		return TriggerResult.keep();
 	}
 
 	@Override

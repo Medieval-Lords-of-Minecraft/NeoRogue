@@ -10,6 +10,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class MinorShieldsPotion extends Consumable {
 	private static final String ID = "MinorShieldsPotion";
@@ -25,8 +26,9 @@ public class MinorShieldsPotion extends Consumable {
 	}
 	
 	@Override
-	public void runConsumableEffects(Player p, PlayerFightData data, int slot) {
+	public TriggerResult runConsumableEffects(Player p, PlayerFightData data, int slot) {
 		data.addPermanentShield(p.getUniqueId(), shields);
+		return TriggerResult.keep();
 	}
 
 	@Override

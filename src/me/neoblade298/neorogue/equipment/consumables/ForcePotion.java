@@ -14,6 +14,7 @@ import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 import me.neoblade298.neorogue.session.fight.buff.StatTracker;
+import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class ForcePotion extends Consumable {
 	private static final String ID = "ForcePotion";
@@ -27,9 +28,10 @@ public class ForcePotion extends Consumable {
 	}
 
 	@Override
-	public void runConsumableEffects(Player p, PlayerFightData data, int slot) {
+	public TriggerResult runConsumableEffects(Player p, PlayerFightData data, int slot) {
 		data.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
 				Buff.multiplier(data, 1.0, StatTracker.damageBuffAlly(id, this)), 400);
+		return TriggerResult.keep();
 	}
 
 	@Override

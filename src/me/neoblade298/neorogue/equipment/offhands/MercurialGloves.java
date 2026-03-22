@@ -13,7 +13,6 @@ import me.neoblade298.neorogue.equipment.BowProjectile;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
-import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.IProjectileInstance;
@@ -38,7 +37,6 @@ public class MercurialGloves extends Equipment {
 	public MercurialGloves(boolean isUpgraded) {
 		super(ID, "Mercurial Gloves", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
 				EquipmentType.OFFHAND, EquipmentProperties.ofUsable(0, 0, 12, 0));
-		properties.addUpgrades(PropertyType.COOLDOWN);
 		damage = isUpgraded ? 100 : 60;
 		maxLocations = isUpgraded ? 5 : 3;
 	}
