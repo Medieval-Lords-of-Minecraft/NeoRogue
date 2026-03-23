@@ -15,6 +15,7 @@ import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -124,6 +125,16 @@ public class StorageReplaceInventory extends CoreInventory {
 		if (existing.isCursed()) {
 			p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1F, 0.7F);
 			Util.msg(p, "You can't discard cursed items!");
+			return;
+		}
+		if (existing.getType() == EquipmentType.WEAPON && data.countOwnedWeapons() <= 1) {
+			p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1F, 0.7F);
+			Util.msg(p, "You can't discard your last weapon!");
+			return;
+		}
+		if (PlayerSessionData.isUnlimitedAmmunition(existing) && data.countOwnedUnlimitedAmmunition() <= 1) {
+			p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1F, 0.7F);
+			Util.msg(p, "You can't discard your last unlimited ammunition!");
 			return;
 		}
 		

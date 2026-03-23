@@ -99,7 +99,7 @@ public class ShrineUpgradeInventory extends CoreInventory implements ShiftClicka
 			Equipment eq = Equipment.get(id, true);
 			data.giveEquipment(eq,
 					SharedUtil.color("You upgraded to a(n) "),
-					SharedUtil.color("<gold>" + p.getName() + "</gold> upgraded to a(n) "),
+					SharedUtil.color("<yellow>" + p.getName() + "</yellow> upgraded to a(n) "),
 					() -> {
 						p.playSound(p, Sound.BLOCK_ANVIL_USE, 1F, 1F);
 						inst.useUpgrade(p.getUniqueId());

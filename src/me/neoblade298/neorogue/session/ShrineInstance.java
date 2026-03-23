@@ -198,12 +198,12 @@ public class ShrineInstance extends EditInventoryInstance {
 		}
 	}
 	
-	// Used to skip upgrading
 	public void useUpgrade(UUID uuid) {
 		notUsed.remove(uuid);
 		if (notUsed.isEmpty()) {
 			returnToNodes();
 		}
+		updateBoardLines();
 	}
 	
 	public void returnToNodes() {

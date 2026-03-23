@@ -60,7 +60,9 @@ import me.neoblade298.neorogue.session.fight.trigger.event.LayTrapEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreCastUsableEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.StaminaChangeEvent;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 
 public class PlayerFightData extends FightData {
 
@@ -849,11 +851,17 @@ public class PlayerFightData extends FightData {
 	}
 
 	public void updateActionBar() {
-		Component bar = Component.text("HP: " + (int) getPlayer().getHealth(), NamedTextColor.RED);
-		if (shields.getAmount() > 0) {
-			bar = bar.append(Component.text("+" + (int) getShields().getAmount(), NamedTextColor.YELLOW));
+		boolean invincible = hasStatus(StatusType.INVINCIBLE);
+		NamedTextColor hpColor = invincible ? NamedTextColor.AQUA : NamedTextColor.RED;
+		TextComponent hp = Component.text(invincible ? "✦ HP: " : "HP: ", hpColor)
+				.append(Component.text((int) getPlayer().getHealth(), hpColor));
+		if (invincible) {
+			hp = hp.decoration(TextDecoration.BOLD, true);
 		}
-		bar = bar.append(Component.text(" / " + (int) maxHealth, NamedTextColor.RED))
+		if (shields.getAmount() > 0) {
+			hp = hp.append(Component.text("+" + (int) getShields().getAmount(), NamedTextColor.YELLOW));
+		}
+		Component bar = hp.append(Component.text(" / " + (int) maxHealth + (invincible ? " ✦" : ""), hpColor))
 				.append(Component.text("  |  ", NamedTextColor.GRAY))
 				.append(Component.text("MP: " + (int) mana + " / " + (int) maxMana, NamedTextColor.BLUE))
 				.append(Component.text("  |  ", NamedTextColor.GRAY))

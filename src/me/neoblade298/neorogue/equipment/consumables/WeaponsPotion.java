@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.PotionMeta;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Consumable;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -30,6 +31,7 @@ public class WeaponsPotion extends Consumable {
 		Session s = sdata.getSession();
 		int value = s.getBaseDropValue() + 2;
 		Equipment weapon = Equipment.getDrop(value, sdata.getPlayerClass());
+		if (isUpgraded) weapon = weapon.getUpgraded();
 		weapon.initialize(data, null, EquipSlot.HOTBAR, slot);
 		p.getInventory().setItem(slot, weapon.getItem());
 		return TriggerResult.remove();
@@ -37,7 +39,8 @@ public class WeaponsPotion extends Consumable {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.POTION, "Replaces this consumable with a random weapon for the duration of the fight. Consumed on first use.");
+		item = createItem(Material.POTION,
+				"Replaces this consumable with a random " + (isUpgraded ? DescUtil.yellow("upgraded") : "") + " weapon for the duration of the fight. Consumed on first use.");
 		PotionMeta meta = (PotionMeta) item.getItemMeta();
 		meta.setColor(Color.fromRGB(139, 69, 19));
 		item.setItemMeta(meta);

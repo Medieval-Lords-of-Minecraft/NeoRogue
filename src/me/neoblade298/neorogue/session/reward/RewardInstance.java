@@ -37,6 +37,7 @@ public class RewardInstance extends EditInventoryInstance {
 		super(s, SPAWN_X, SPAWN_Z);
 		this.rewards = rewards;
 		this.previous = previous;
+		spectatorLines = playerLines;
 	}
 	
 	// Explicitly used for deserialization
@@ -46,6 +47,7 @@ public class RewardInstance extends EditInventoryInstance {
 			rewards.put(ent.getKey(), Reward.deserializeArray(ent.getValue().getInstanceData()));
 		}
 		this.previous = previous;
+		spectatorLines = playerLines;
 	}
 
 	@Override

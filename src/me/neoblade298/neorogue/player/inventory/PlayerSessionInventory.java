@@ -168,7 +168,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 			contents[(REFORGES + offset) % inv.getSize()] = createReforgesIcon(reforgeCount);
 		}
 
-		if (!(data.getSession().getInstance() instanceof NodeSelectInstance)) {
+		if (!(data.getSession().getInstance() instanceof NodeSelectInstance) && !isSpectating) {
 			contents[(MAP + offset) % inv.getSize()] = CoreInventory.createButton(Material.FILLED_MAP, Component.text("Node Map", NamedTextColor.GOLD));
 			MapMeta meta = (MapMeta) contents[(MAP + offset) % inv.getSize()].getItemMeta();
 			MapView map = Bukkit.getMap(EditInventoryInstance.MAP_ID);
@@ -298,6 +298,14 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 			}
 			if (eq.isCursed()) {
 				Util.displayError(p, "You can't trash cursed items!");
+				return;
+			}
+			if (eq.getType() == EquipmentType.WEAPON && data.countOwnedWeapons() == 0) {
+				Util.displayError(p, "You can't trash your last weapon!");
+				return;
+			}
+			if (PlayerSessionData.isUnlimitedAmmunition(eq) && data.countOwnedUnlimitedAmmunition() == 0) {
+				Util.displayError(p, "You can't trash your last unlimited ammunition!");
 				return;
 			}
 			clearHighlights();

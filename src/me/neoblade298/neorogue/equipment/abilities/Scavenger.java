@@ -1,7 +1,5 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
-import java.util.UUID;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -63,7 +61,7 @@ public class Scavenger extends Equipment {
 			Location deathLoc = ev.getTarget().getLocation();
 			
 			// Create a collectible marker at death location
-			data.addMarker(new ScavengerStack(data, deathLoc, p, stamina, damageBuff, this, inst, icon));
+			data.addMarker(new ScavengerStack(data, deathLoc, p, slot, stamina, damageBuff, this, inst, icon));
 			
 			return TriggerResult.keep();
 		});
@@ -71,15 +69,17 @@ public class Scavenger extends Equipment {
 	
 	private class ScavengerStack extends Marker {
 		private Player player;
+		private int slot;
 		private int staminaReward;
 		private double damageReward;
 		private Equipment eq;
 		private EquipmentInstance inst;
 		private ItemStack icon;
 		
-		public ScavengerStack(PlayerFightData owner, Location loc, Player p, int stamina, double damage, Equipment eq, EquipmentInstance inst, ItemStack icon) {
+		public ScavengerStack(PlayerFightData owner, Location loc, Player p, int slot, int stamina, double damage, Equipment eq, EquipmentInstance inst, ItemStack icon) {
 			super(owner, loc, 200); // 10 seconds duration
 			this.player = p;
+			this.slot = slot;
 			this.staminaReward = stamina;
 			this.damageReward = damage;
 			this.eq = eq;
@@ -104,9 +104,8 @@ public class Scavenger extends Equipment {
 			owner.addStamina(staminaReward);
 			
 			// Grant damage buff
-			String buffId = UUID.randomUUID().toString();
 			owner.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
-					new Buff(owner, 0, damageReward, StatTracker.damageBuffAlly(buffId, eq, true)));
+					new Buff(owner, 0, damageReward, StatTracker.damageBuffAlly(id + slot, eq, true)));
 			
 			// Increment icon count
 			ItemStack newIcon = icon.clone();

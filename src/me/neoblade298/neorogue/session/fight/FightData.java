@@ -481,11 +481,13 @@ public class FightData {
 	public void removeStatus(StatusType type) {
 		Status s = statuses.remove(type.name());
 		if (s != null) s.cleanup();
+		if (this instanceof PlayerFightData) ((PlayerFightData) this).updateActionBar();
 	}
 	
 	public void removeStatus(String id) {
 		Status s = statuses.remove(id);
 		if (s != null) s.cleanup();
+		if (this instanceof PlayerFightData) ((PlayerFightData) this).updateActionBar();
 	}
 	
 	public boolean hasStatus(String id) {
@@ -567,6 +569,9 @@ public class FightData {
 		statuses.put(id, status);
 		if (am != null) {
 			updateDisplayName();
+		}
+		if (this instanceof PlayerFightData) {
+			((PlayerFightData) this).updateActionBar();
 		}
 	}
 

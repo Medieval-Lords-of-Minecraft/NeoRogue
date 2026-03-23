@@ -21,7 +21,7 @@ public class MajorShieldingRelic extends Equipment {
 	public MajorShieldingRelic(boolean isUpgraded) {
 		super(ID, "Major Shielding Relic", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.ACCESSORY);
-		mult = isUpgraded ? 0.1 : 0.05;
+		mult = isUpgraded ? 0.05 : 0.03;
 		multStr = (int) (mult * 100);
 	}
 	

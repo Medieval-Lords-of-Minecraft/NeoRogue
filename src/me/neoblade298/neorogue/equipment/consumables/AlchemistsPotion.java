@@ -7,6 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.PotionMeta;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Consumable;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -48,6 +49,7 @@ public class AlchemistsPotion extends Consumable {
 		for (int i = 0; i < consumables.size(); i++) {
 			int emptySlot = emptySlots.get(i);
 			Consumable c = consumables.get(i);
+			if (isUpgraded) c = (Consumable) c.getUpgraded();
 			c.initialize(data, Trigger.getFromHotbarSlot(emptySlot), EquipSlot.HOTBAR, emptySlot);
 			p.getInventory().setItem(emptySlot, c.getItem());
 		}
@@ -57,7 +59,7 @@ public class AlchemistsPotion extends Consumable {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION,
-				"Creates <white>2</white> random consumables in empty hotbar slots for the duration of the fight. Consumed on first use.");
+				"Creates <white>2</white> random " + (isUpgraded ? DescUtil.yellow("upgraded") : "") + " consumables in empty hotbar slots for the duration of the fight. Consumed on first use.");
 		PotionMeta meta = (PotionMeta) item.getItemMeta();
 		meta.setColor(Color.fromRGB(50, 205, 50));
 		item.setItemMeta(meta);

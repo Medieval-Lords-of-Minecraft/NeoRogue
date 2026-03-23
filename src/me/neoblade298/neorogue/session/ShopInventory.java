@@ -318,14 +318,35 @@ public class ShopInventory extends CoreInventory {
 	 * Attempts to sell the item on the player's cursor. Returns true on success, false on failure.
 	 */
 	public static boolean trySellItem(Player p, PlayerSessionData data, ItemStack cursor) {
+		return trySellItem(p, data, cursor, null);
+	}
+
+	public static boolean trySellItem(Player p, PlayerSessionData data, ItemStack cursor, Equipment[] storageSnapshot) {
+		if (cursor == null || cursor.getType().isAir()) {
+			return false;
+		}
 		NBTItem nbti = new NBTItem(cursor);
+		if (!nbti.hasTag("equipId")) {
+			return false;
+		}
 		Equipment eq = Equipment.get(nbti.getString("equipId"), false);
+		if (eq == null) {
+			return false;
+		}
 		if (eq.isCursed()) {
 			Util.displayError(p, "Curses cannot be sold!");
 			return false;
 		}
 		if (eq.getType() == EquipmentType.CONSUMABLE) {
 			Util.displayError(p, "Consumables cannot be sold!");
+			return false;
+		}
+		if (eq.getType() == EquipmentType.WEAPON && data.countOwnedWeapons(storageSnapshot) == 0) {
+			Util.displayError(p, "You can't sell your last weapon!");
+			return false;
+		}
+		if (PlayerSessionData.isUnlimitedAmmunition(eq) && data.countOwnedUnlimitedAmmunition(storageSnapshot) == 0) {
+			Util.displayError(p, "You can't sell your last unlimited ammunition!");
 			return false;
 		}
 		data.addCoins(SELL_PRICE);

@@ -83,7 +83,7 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 		if (e.getSlot() == SELL) {
 			e.setCancelled(true);
 			if (e.getCurrentItem() == null) return;
-			ShopInventory.trySellItem(p, data, e.getCursor());
+			ShopInventory.trySellItem(p, data, e.getCursor(), getLiveStorageSnapshot());
 		}
 
 		// Ignore gray panes
@@ -208,6 +208,25 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 		p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS, 1F, 0.7F);
 		Util.msg(p, error);
 		if (closeInventory) p.closeInventory();
+	}
+
+	private Equipment[] getLiveStorageSnapshot() {
+		Equipment[] snapshot = new Equipment[PlayerSessionData.MAX_STORAGE_SIZE];
+		int iter = 0;
+		ItemStack[] contents = inv.getContents();
+
+		for (int i = 0; i < contents.length - 1; i++) {
+			ItemStack item = contents[i];
+			if (item == null || item.getType() == Material.GRAY_STAINED_GLASS_PANE) continue;
+			NBTItem nbti = new NBTItem(item);
+			if (!nbti.hasTag("equipId")) continue;
+			Equipment eq = Equipment.get(nbti.getString("equipId"), nbti.getBoolean("isUpgraded"));
+			if (eq != null) {
+				snapshot[iter++] = eq;
+			}
+		}
+
+		return snapshot;
 	}
 	
 	public void handleInventoryClose() {

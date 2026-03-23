@@ -69,7 +69,7 @@ public class PocketBallista extends Bow {
 			useBow(data);
 
 			ProjectileLaunchEvent ev = (ProjectileLaunchEvent) in;
-			ProjectileGroup proj = new ProjectileGroup(new PocketBallistaProjectile(data, ev.getEntity().getVelocity(), this, id + slot));
+			ProjectileGroup proj = new ProjectileGroup(new PocketBallistaProjectile(data, ev.getEntity().getVelocity(), this, slot));
 			proj.start(data);
 			return TriggerResult.keep();
 		});
@@ -89,14 +89,13 @@ public class PocketBallista extends Bow {
 		private int slot;
 		private PocketBallista bow;
 
-		public PocketBallistaProjectile(PlayerFightData data, Vector v, PocketBallista bow, String id) {
-			super(data, v, bow, id);
+		public PocketBallistaProjectile(PlayerFightData data, Vector v, PocketBallista bow, int slot) {
+			super(data, v, bow, ID + slot);
 			this.pierce(-1); // Infinite piercing
 			this.data = data;
 			this.p = data.getPlayer();
 			this.bow = bow;
-			// Extract slot from id (format is "PocketBallista" + slot)
-			this.slot = Integer.parseInt(id.replace(ID, ""));
+			this.slot = slot;
 		}
 
 		@Override

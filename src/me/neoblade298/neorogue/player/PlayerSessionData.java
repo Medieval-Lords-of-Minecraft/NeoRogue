@@ -24,6 +24,7 @@ import me.neoblade298.neocore.shared.util.SQLInsertBuilder;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder.SQLAction;
 import me.neoblade298.neocore.shared.util.SharedUtil;
 import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.equipment.Ammunition;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -31,6 +32,7 @@ import me.neoblade298.neorogue.equipment.Equipment.DropTableSet;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
+import me.neoblade298.neorogue.equipment.LimitedAmmunition;
 import me.neoblade298.neorogue.equipment.abilities.EmpoweredEdge;
 import me.neoblade298.neorogue.equipment.abilities.ManaBlitz;
 import me.neoblade298.neorogue.equipment.abilities.PiercingShot;
@@ -619,6 +621,40 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 	
 	private Equipment[][] getAllEquips() {
 		return new Equipment[][] { hotbar, armors, offhand, accessories, storage, otherBinds };
+	}
+
+	private int countOwnedEquipment(Predicate<Equipment> filter, Equipment[] storageOverride) {
+		int count = 0;
+		Equipment[] activeStorage = storageOverride != null ? storageOverride : storage;
+		Equipment[][] all = new Equipment[][] { hotbar, armors, offhand, accessories, activeStorage, otherBinds };
+		for (Equipment[] arr : all) {
+			for (Equipment eq : arr) {
+				if (eq != null && filter.test(eq)) {
+					count++;
+				}
+			}
+		}
+		return count;
+	}
+
+	public int countOwnedWeapons() {
+		return countOwnedWeapons(null);
+	}
+
+	public int countOwnedWeapons(Equipment[] storageOverride) {
+		return countOwnedEquipment((eq) -> eq.getType() == EquipmentType.WEAPON && !(eq instanceof Ammunition), storageOverride);
+	}
+
+	public int countOwnedUnlimitedAmmunition() {
+		return countOwnedUnlimitedAmmunition(null);
+	}
+
+	public int countOwnedUnlimitedAmmunition(Equipment[] storageOverride) {
+		return countOwnedEquipment(PlayerSessionData::isUnlimitedAmmunition, storageOverride);
+	}
+
+	public static boolean isUnlimitedAmmunition(Equipment eq) {
+		return eq instanceof Ammunition && !(eq instanceof LimitedAmmunition);
 	}
 	
 	public ArrayList<EquipmentMetadata> aggregateEquipment(Predicate<EquipmentMetadata> filter) {
