@@ -7,6 +7,7 @@ import me.neoblade298.neocore.bukkit.commands.Subcommand;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.commands.SubcommandRunner;
 import me.neoblade298.neorogue.session.Session;
+import me.neoblade298.neorogue.session.SessionManager;
 
 public class CmdAdminDebugMode extends Subcommand {
 
@@ -20,8 +21,8 @@ public class CmdAdminDebugMode extends Subcommand {
 		Player p = (Player) s;
         Session sess = SessionManager.getSession(p);
         
-        if(sess = null) {
-            Util.displayError(p, "You're not currently in a session"!);
+        if(sess == null) {
+            Util.displayError(p, "You're not currently in a session!");
         }
         
         if(sess.isDebug()) {
