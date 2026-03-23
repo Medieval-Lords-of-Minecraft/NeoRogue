@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.session.reward;
 
 import org.bukkit.Sound;
 import org.bukkit.inventory.ItemStack;
+
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 
