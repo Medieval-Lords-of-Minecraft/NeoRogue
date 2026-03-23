@@ -6,6 +6,8 @@ import java.sql.Statement;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 import java.util.function.Predicate;
@@ -655,6 +657,78 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		public EquipSlot getEquipSlot() {
 			return es;
 		}
+	}
+
+	public static class ReforgePairData {
+		private final EquipmentMetadata meta1, meta2;
+		private final Equipment[] results;
+
+		public ReforgePairData(EquipmentMetadata meta1, EquipmentMetadata meta2, Equipment[] results) {
+			this.meta1 = meta1;
+			this.meta2 = meta2;
+			this.results = results;
+		}
+
+		public EquipmentMetadata getMeta1() { return meta1; }
+		public EquipmentMetadata getMeta2() { return meta2; }
+		public Equipment[] getResults() { return results; }
+	}
+
+	public ArrayList<ReforgePairData> computeAvailableReforges() {
+		ArrayList<ReforgePairData> result = new ArrayList<ReforgePairData>();
+		HashSet<String> seen = new HashSet<String>();
+
+		// Group all equipment by unupgraded ID
+		ArrayList<EquipmentMetadata> all = aggregateEquipment((meta) -> true);
+		HashMap<String, ArrayList<EquipmentMetadata>> byId = new HashMap<String, ArrayList<EquipmentMetadata>>();
+		for (EquipmentMetadata meta : all) {
+			String eqId = meta.getEquipment().getId();
+			byId.computeIfAbsent(eqId, k -> new ArrayList<EquipmentMetadata>()).add(meta);
+		}
+
+		// For each owned equipment ID, check its reforge options
+		for (Map.Entry<String, ArrayList<EquipmentMetadata>> entry : byId.entrySet()) {
+			String id = entry.getKey();
+			Equipment unupgraded = Equipment.get(id, false);
+			if (unupgraded == null) continue;
+
+			TreeMap<Equipment, Equipment[]> reforgeOpts = unupgraded.getReforgeOptions();
+			for (Map.Entry<Equipment, Equipment[]> reforgeEntry : reforgeOpts.entrySet()) {
+				String reforgeKeyId = reforgeEntry.getKey().getId();
+
+				// Deduplicate bidirectional pairs
+				String pairKey = id.compareTo(reforgeKeyId) <= 0 ? id + ":" + reforgeKeyId : reforgeKeyId + ":" + id;
+				if (seen.contains(pairKey)) continue;
+
+				// Check if player has the reforge partner
+				ArrayList<EquipmentMetadata> partnerInstances = byId.get(reforgeKeyId);
+				if (partnerInstances == null) continue;
+
+				ArrayList<EquipmentMetadata> myInstances = entry.getValue();
+
+				// Find a valid pair where at least one is upgraded or cursed
+				EquipmentMetadata best1 = null, best2 = null;
+				for (EquipmentMetadata m1 : myInstances) {
+					for (EquipmentMetadata m2 : partnerInstances) {
+						// For self-reforges, ensure different instances
+						if (m1.getEquipSlot() == m2.getEquipSlot() && m1.getSlot() == m2.getSlot()) continue;
+						if (Equipment.canReforge(m1.getEquipment(), m2.getEquipment())) {
+							best1 = m1;
+							best2 = m2;
+							break;
+						}
+					}
+					if (best1 != null) break;
+				}
+
+				if (best1 != null) {
+					seen.add(pairKey);
+					result.add(new ReforgePairData(best1, best2, reforgeEntry.getValue()));
+				}
+			}
+		}
+
+		return result;
 	}
 
 	public boolean hasUnequippedCurses() {

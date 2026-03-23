@@ -48,7 +48,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 	private static final int[] HOTBAR = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
 	private static final int[] FILLER = new int[] { 11, 12, 14, 15, 16, 17, 34 };
 	private static final int[] KEYBINDS = new int[] { 27, 28, 29, 30, 31, 32, 33 };
-	public static final int STATS = 9, TRASH = 17, STORAGE = 10, OFFHAND = 35, ARTIFACTS = 13, SEE_OTHERS = 11, MAP = 40, SETTINGS = 12;
+	public static final int STATS = 9, TRASH = 17, STORAGE = 10, OFFHAND = 35, ARTIFACTS = 13, SEE_OTHERS = 11, MAP = 40, SETTINGS = 12, REFORGES = 15;
 	private static HashMap<Integer, EquipSlot> slotTypes = new HashMap<Integer, EquipSlot>();
 	private static final DecimalFormat df = new DecimalFormat("#.##");
 
@@ -158,6 +158,16 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		if (data.getSession().getParty().size() > 1)
 			contents[(SEE_OTHERS + offset) % inv.getSize()] = CoreInventory.createButton(Material.SPYGLASS, Component.text("View other players", NamedTextColor.GOLD));
 
+		int reforgeCount = 0;
+		for (PlayerSessionData.ReforgePairData pair : data.computeAvailableReforges()) {
+			for (Equipment r : pair.getResults()) {
+				if (r != null) reforgeCount++;
+			}
+		}
+		if (reforgeCount > 0) {
+			contents[(REFORGES + offset) % inv.getSize()] = createReforgesIcon(reforgeCount);
+		}
+
 		if (!(data.getSession().getInstance() instanceof NodeSelectInstance)) {
 			contents[(MAP + offset) % inv.getSize()] = CoreInventory.createButton(Material.FILLED_MAP, Component.text("Node Map", NamedTextColor.GOLD));
 			MapMeta meta = (MapMeta) contents[(MAP + offset) % inv.getSize()].getItemMeta();
@@ -217,6 +227,14 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		return addNbt(CoreInventory.createButton(Material.WHITE_STAINED_GLASS_PANE,
 				Component.text("Offhand Slot", NamedTextColor.WHITE), "Drag an offhand here to equip it!", 250,
 				NamedTextColor.GRAY), 0);
+	}
+
+	private static ItemStack createReforgesIcon(int count) {
+		ItemStack item = CoreInventory.createButton(Material.ANVIL,
+				Component.text("Available Reforges", NamedTextColor.GOLD),
+				"Click to view " + count + " available reforge" + (count != 1 ? "s" : "") + "!", 250, NamedTextColor.GRAY);
+		item.setAmount(Math.min(count, 64));
+		return item;
 	}
 
 	private static ItemStack createHotbarIcon(int dataSlot) {
@@ -295,6 +313,18 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 					new ArtifactsInventory(data);
 				}
 			}.runTask(NeoRogue.inst());
+			return;
+		}
+		else if (slot == REFORGES) {
+			e.setCancelled(true);
+			if (clicked != null && clicked.getType() == Material.ANVIL) {
+				new BukkitRunnable() {
+					public void run() {
+						handleInventoryClose();
+						new AvailableReforgesInventory(data);
+					}
+				}.runTask(NeoRogue.inst());
+			}
 			return;
 		}
 		else if (slot == SEE_OTHERS && data.getSession().getParty().size() > 1) {
