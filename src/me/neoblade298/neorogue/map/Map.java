@@ -103,37 +103,45 @@ public class Map {
 		}
 	}
 	
-	public static Map generateBoss(RegionType type, int numPieces) {
-		MapPiece piece = bossPieces.get(type).get(bossPieces.get(type).size() > 1 ? NeoRogue.gen.nextInt(bossPieces.get(type).size()) : 0);
-		return generate(type, numPieces, piece);
+	public static Map generateBoss(RegionType type, int numPieces, boolean debugMode) {
+        ArrayList<MapPiece> pieces = bossPieces.get(debugMode ? RegionType.getDebugRegion(type) : type);
+		MapPiece piece = pieces.get(NeoRogue.gen.nextInt(pieces.size()));
+		return generate(type, numPieces, piece, debugMode);
 	}
 	
-	public static Map generateMiniboss(RegionType type, int numPieces) {
-		MapPiece piece = minibossPieces.get(type).get(NeoRogue.gen.nextInt(minibossPieces.get(type).size()));
-		return generate(type, numPieces, piece);
+	public static Map generateMiniboss(RegionType type, int numPieces, boolean debugMode) {
+        ArrayList<MapPiece> pieces = minibossPieces.get(debugMode ? RegionType.getDebugRegion(type) : type);
+		MapPiece piece = pieces.get(NeoRogue.gen.nextInt(pieces.size()));
+		return generate(type, numPieces, piece, debugMode);
 	}
 	
-	public static Map generate(RegionType type, int numPieces) {
-		return generate(new Map(type), type, numPieces);
+	public static Map generate(RegionType type, int numPieces, boolean debugMode) {
+		return generate(new Map(type), type, numPieces, debugMode);
 	}
 	
-	public static Map generate(RegionType type, int numPieces, MapPiece requiredPiece) {
+	public static Map generate(RegionType type, int numPieces, MapPiece requiredPiece, boolean debugMode) {
 		Map map = new Map(type);
 		map.place(requiredPiece);
-		return generate(map, type, numPieces);
+		return generate(map, type, numPieces, debugMode);
 	}
 	
-	public static Map generate(Map map, RegionType type, int numPieces) {
-		LinkedList<MapPiece> pieces = standardPieces.get(type);
-		int totalAttempts = pieces.size() + usedPieces.get(type).size();
+	public static Map generate(Map map, RegionType type, int numPieces, boolean debugMode) {
+		LinkedList<MapPiece> genAvailPieces = standardPieces.get(debugMode ? RegionType.getDebugRegion(type) : type);
+        LinkedList<MapPiece> genUsedPieces = usedPieces.get(debugMode ? RegionType.getDebugRegion(type) : type);
+        
+		int totalAttempts = genAvailPieces.size() + genUsedPieces.size();
 		
 		for (int i = 0; i < numPieces; i++) {
 			MapPiece piece = null;
 			int attempts = 0;
 			do {
-				if (pieces.size() == 0) shufflePieces(type);
-				piece = pieces.poll();
-				usedPieces.get(type).add(piece);
+				if (genAvailPieces.size() == 0) {
+                    Collections.shuffle(genUsedPieces);
+                    genAvailPieces.addAll(genUsedPieces);
+                }
+                
+				piece = genAvailPieces.poll();
+				genUsedPieces.add(piece);
 				
 				if (attempts++ > totalAttempts) {
 					Bukkit.getLogger().warning("[NeoRogue] Ran out of valid pieces to place. Returning map as is.");
@@ -144,10 +152,8 @@ public class Map {
 			* 1: we have 1 entrance left and the next piece is 1 entrance and there are still more pieces we need to place
 			* 2: the piece cannot be placed anywhere on the map
 			*/
-			while ((map.entrances.size() < 2 && piece.getNumEntrances() < 2 && i < numPieces - 1)
-					|| !map.place(piece));
+			while ((map.entrances.size() < 2 && piece.getNumEntrances() < 2 && i < numPieces - 1) || !map.place(piece));
 
-			
 			if (piece == null) {
 				Bukkit.getLogger().warning("[NeoRogue] Failed to find piece for generation. Returning map as is.");
 				break;
@@ -519,11 +525,6 @@ public class Map {
 				}
 			}
 		}
-	}
-	
-	private static void shufflePieces(RegionType type) {
-		Collections.shuffle(usedPieces.get(type));
-		standardPieces.get(type).addAll(usedPieces.get(type));
 	}
 	
 	public static HashMap<String, MapPiece> getAllPieces() {

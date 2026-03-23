@@ -83,6 +83,7 @@ public class Session {
 	private double BASE_UPGRADE_CHANCE = 0.3;
 	
 	// Settings
+    private boolean debug;
 	private boolean endless;
 	public static double ENEMY_HEALTH_SCALE_PER_LEVEL = 0.03, ENEMY_DAMAGE_SCALE_PER_LEVEL = 0.03,
 			COIN_REDUCTION_PER_LEVEL = 0.15, FIGHT_TIME_REDUCTION_PER_LEVEL = 0.05;
@@ -630,6 +631,14 @@ public class Session {
 
 	public boolean isEndless() {
 		return endless;
+	}
+    
+    public void setDebug(boolean debug) {
+		this.debug = debug;
+	}
+
+	public boolean isDebug() {
+		return debug;
 	}
 
 	public void setEnemyHealthScale(int enemyHealthScale) {
