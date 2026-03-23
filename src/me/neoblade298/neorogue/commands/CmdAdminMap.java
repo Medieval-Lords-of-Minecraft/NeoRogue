@@ -49,7 +49,7 @@ public class CmdAdminMap extends Subcommand {
 		}
 		
 		
-		Map map = piece == null ? Map.generate(type, numPieces) : Map.generate(type, numPieces, piece);
+		Map map = piece == null ? Map.generate(type, numPieces, true) : Map.generate(type, numPieces, piece, true);
 		Util.msg(p, "Successfully generated map");
 		int xOff = 0, zOff = 0;
 		map.instantiate(null, xOff, zOff);

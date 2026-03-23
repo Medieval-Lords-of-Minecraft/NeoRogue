@@ -49,7 +49,7 @@ public class CmdAdminBoss extends Subcommand {
 		if (args.length > 1) {
 			sess.setNodesVisited(Integer.parseInt(args[1]));
 		}
-		BossFightInstance inst = new BossFightInstance(sess, sess.getParty().keySet(), Map.generate(RegionType.LOW_DISTRICT, 0, MapPiece.get(args[0])));
+		BossFightInstance inst = new BossFightInstance(sess, sess.getParty().keySet(), Map.generate(RegionType.LOW_DISTRICT, 0, MapPiece.get(args[0]), true));
 		sess.setInstance(new ChanceInstance(sess, new TestChance(inst)));
 	}
 }

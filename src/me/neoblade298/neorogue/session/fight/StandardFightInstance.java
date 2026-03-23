@@ -58,7 +58,7 @@ public class StandardFightInstance extends FightInstance {
 		 * double min = 2 + nodesVisited / 12.0;
 		 * int max = (int) Math.min(rand + min, 6);
 		 */
-		map = Map.generate(type, NeoRogue.gen.nextInt(3, 6));
+		map = Map.generate(type, NeoRogue.gen.nextInt(3, 6), s.isDebug());
 	}
 
 	public StandardFightInstance(Session s, Set<UUID> players, Map map) {
