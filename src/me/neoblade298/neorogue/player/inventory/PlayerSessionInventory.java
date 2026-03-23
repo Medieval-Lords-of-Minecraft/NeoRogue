@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -20,15 +22,7 @@ import org.bukkit.map.MapView;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.Nullable;
 
-import com.sk89q.worldedit.entity.Player;
-
 import de.tr7zw.nbtapi.NBTItem;
-import libsdisg.shaded.net.kyori.adventure.sound.Sound;
-import libsdisg.shaded.net.kyori.adventure.text.Component;
-import libsdisg.shaded.net.kyori.adventure.text.TextComponent;
-import libsdisg.shaded.net.kyori.adventure.text.format.NamedTextColor;
-import libsdisg.shaded.net.kyori.adventure.text.format.TextDecoration;
-import libsdisg.shaded.net.kyori.adventure.text.format.TextDecoration.State;
 import me.neoblade298.neocore.bukkit.inventories.CoreInventory;
 import me.neoblade298.neocore.bukkit.inventories.CorePlayerInventory;
 import me.neoblade298.neocore.bukkit.listeners.InventoryListener;
@@ -38,11 +32,15 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Equipment.EquipSlot;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentType;
 import me.neoblade298.neorogue.player.PlayerSessionData;
-import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory.AutoEquipResult;
 import me.neoblade298.neorogue.session.EditInventoryInstance;
 import me.neoblade298.neorogue.session.NodeSelectInstance;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.fight.trigger.KeyBind;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.format.TextDecoration.State;
 
 public class PlayerSessionInventory extends CorePlayerInventory implements ShiftClickableInventory {
 	private static final int[] ARMOR = new int[] { 18, 19, 20 };

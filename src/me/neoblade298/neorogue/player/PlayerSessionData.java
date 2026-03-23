@@ -14,8 +14,8 @@ import java.util.function.Predicate;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
-
-import com.sk89q.worldedit.entity.Player;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.Audience;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
@@ -40,14 +40,15 @@ import me.neoblade298.neorogue.equipment.weapons.WoodenArrow;
 import me.neoblade298.neorogue.equipment.weapons.WoodenDagger;
 import me.neoblade298.neorogue.equipment.weapons.WoodenSword;
 import me.neoblade298.neorogue.equipment.weapons.WoodenWand;
-import me.neoblade298.neorogue.player.PlayerSessionData.EquipmentMetadata;
-import me.neoblade298.neorogue.player.PlayerSessionData.ReforgePairData;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
 import me.neoblade298.neorogue.player.inventory.StorageReplaceInventory;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.event.SessionAction;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
 import me.neoblade298.neorogue.session.fight.trigger.KeyBind;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class PlayerSessionData extends MapViewer implements Comparable<PlayerSessionData> {
 	private PlayerData data;
