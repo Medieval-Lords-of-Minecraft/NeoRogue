@@ -510,14 +510,20 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 
 	// If components null, no broadcast. onComplete is called after the item is successfully given.
 	public void giveEquipment(Equipment eq, Component toSelf, Component toOthers, Runnable onComplete) {
+		giveEquipment(eq, toSelf, toOthers, onComplete, null);
+	}
+
+	public void giveEquipment(Equipment eq, Component toSelf, Component toOthers, Runnable onComplete, Runnable onCancel) {
 		Player p = getPlayer();
+		Component finalToOthers = null;
 		if (toSelf != null) {
-			s.broadcastOthers(toOthers.append(eq.getHoverable()).append(Component.text(".")), p);
+			finalToOthers = toOthers.append(eq.getHoverable()).append(Component.text("."));
 			toSelf = toSelf.append(eq.getHoverable());
 		}
 
 		if (eq instanceof Artifact) {
 			if (toSelf != null) {
+				s.broadcastOthers(finalToOthers, p);
 				Util.msg(p, toSelf.append(Component.text(".")));
 			}
 			giveArtifact((Artifact) eq);
@@ -539,7 +545,10 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 					}
 				}
 				if (success) {
-					if (toSelf != null) Util.msg(p, toSelf.append(SharedUtil.color(", it was auto-equipped to " + es.getDisplay() + ".")));
+					if (toSelf != null) {
+						s.broadcastOthers(finalToOthers, p);
+						Util.msg(p, toSelf.append(SharedUtil.color(", it was auto-equipped to " + es.getDisplay() + ".")));
+					}
 					PlayerSessionInventory.setupInventory(p.getInventory(), this);
 					if (onComplete != null) onComplete.run();
 					return;
@@ -549,13 +558,16 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 			// If unable to equip, try to send to storage
 			if (!isStorageFull()) {
 				sendToStorage(eq);
-				if (toSelf != null) Util.msg(p, toSelf.append(SharedUtil.color(", it was sent to storage.")));
+				if (toSelf != null) {
+					s.broadcastOthers(finalToOthers, p);
+					Util.msg(p, toSelf.append(SharedUtil.color(", it was sent to storage.")));
+				}
 				checkStorageLimit();
 				if (onComplete != null) onComplete.run();
 			}
 			else {
 				// Storage full: open replace inventory
-				new StorageReplaceInventory(this, eq, onComplete);
+				new StorageReplaceInventory(this, eq, toSelf, finalToOthers, onComplete, onCancel);
 			}
 		}
 	}
@@ -578,6 +590,11 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 	public void giveEquipment(Equipment eq, Runnable onComplete) {
 		giveEquipment(eq, SharedUtil.color("You received "),
 				SharedUtil.color("<yellow>" + data.getDisplay() + "</yellow> received "), onComplete);
+	}
+
+	public void giveEquipment(Equipment eq, Runnable onComplete, Runnable onCancel) {
+		giveEquipment(eq, SharedUtil.color("You received "),
+				SharedUtil.color("<yellow>" + data.getDisplay() + "</yellow> received "), onComplete, onCancel);
 	}
 
 	public void giveEquipment(ArrayList<? extends Equipment> eqs) {

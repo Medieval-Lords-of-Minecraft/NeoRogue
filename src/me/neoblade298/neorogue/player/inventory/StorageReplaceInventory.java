@@ -22,16 +22,22 @@ import net.kyori.adventure.text.format.NamedTextColor;
 public class StorageReplaceInventory extends CoreInventory {
 	private PlayerSessionData data;
 	private Equipment newEquipment;
+	private Component toSelf;
+	private Component toOthers;
 	private Runnable onComplete;
+	private Runnable onCancel;
 	private boolean replaced = false;
 	
 	private static final int NEVERMIND = 8;
 	
-	public StorageReplaceInventory(PlayerSessionData data, Equipment newEquipment, Runnable onComplete) {
+	public StorageReplaceInventory(PlayerSessionData data, Equipment newEquipment, Component toSelf, Component toOthers, Runnable onComplete, Runnable onCancel) {
 		super(data.getPlayer(), createInventory(data));
 		this.data = data;
 		this.newEquipment = newEquipment;
+		this.toSelf = toSelf;
+		this.toOthers = toOthers;
 		this.onComplete = onComplete;
+		this.onCancel = onCancel;
 		setupInventory();
 	}
 	
@@ -121,6 +127,10 @@ public class StorageReplaceInventory extends CoreInventory {
 			return;
 		}
 		
+		if (toSelf != null) {
+			data.getSession().broadcastOthers(toOthers, p);
+			Util.msg(p, toSelf.append(Component.text(", it replaced ")).append(existing.getHoverable()).append(Component.text(" in storage.")));
+		}
 		storage[storageIndex] = newEquipment;
 		replaced = true;
 		p.playSound(p, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1F);
@@ -129,8 +139,14 @@ public class StorageReplaceInventory extends CoreInventory {
 
 	@Override
 	public void handleInventoryClose(InventoryCloseEvent e) {
-		if (replaced && onComplete != null) {
-			onComplete.run();
+		if (replaced) {
+			if (onComplete != null) onComplete.run();
+		} else if (onCancel != null) {
+			new BukkitRunnable() {
+				public void run() {
+					onCancel.run();
+				}
+			}.runTask(NeoRogue.inst());
 		}
 	}
 

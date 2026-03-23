@@ -71,6 +71,8 @@ public class EquipmentChoiceInventory extends CoreInventory {
 					p.playSound(p, Sound.BLOCK_CHEST_CLOSE, 1F, 1F);
 					p.closeInventory();
 				}
+			}, () -> {
+				openInventory();
 			});
 		}
 	}

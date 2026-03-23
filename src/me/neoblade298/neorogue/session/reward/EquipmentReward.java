@@ -28,6 +28,8 @@ public class EquipmentReward implements Reward {
 				else {
 					data.getPlayer().closeInventory();
 				}
+			}, () -> {
+				inv.openInventory();
 			});
 			return false;
 		}

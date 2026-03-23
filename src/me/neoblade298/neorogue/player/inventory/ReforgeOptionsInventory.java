@@ -99,8 +99,8 @@ public class ReforgeOptionsInventory extends CoreInventory {
 	@Override
 	public void handleInventoryClose(InventoryCloseEvent e) {
 		if (toReforge != null) {
-			data.giveEquipment(toReforge, null, null);
-			data.giveEquipment(reforgeWith, null, null);
+			data.giveEquipment(toReforge, (Component) null, null);
+			data.giveEquipment(reforgeWith, (Component) null, null);
 		}
 	}
 	
