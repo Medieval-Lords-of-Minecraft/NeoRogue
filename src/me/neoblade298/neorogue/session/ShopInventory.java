@@ -198,28 +198,33 @@ public class ShopInventory extends CoreInventory {
 				Util.displayError(p, "You don't have enough coins! You need " + (price - data.getCoins()) + " more.");
 				return;
 			}
-			shopItem.setPurchased(true);
-			data.addCoins(-price);
-			data.getSession().getInstance().updateBoardLines();
 			data.giveEquipment(
 					shopItem.getEquipment(),
 					SharedUtil.color("You spent <yellow>" + price + " coins</yellow> to purchase a(n) "),
 					SharedUtil.color(
 							"<yellow>" + p.getName() + "</yellow> spent <yellow>" + price
 									+ " coins</yellow> to purchase a(n) "
-					)
+					),
+					() -> {
+						shopItem.setPurchased(true);
+						data.addCoins(-price);
+						data.getSession().getInstance().updateBoardLines();
+						p.playSound(p, Sound.ENTITY_WANDERING_TRADER_YES, 1F, 1F);
+						p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1F, 1F);
+						ItemStack[] contents = inv.getContents();
+						contents[slot] = shopItem.getItem(data, idx);
+						updateAll(contents);
+						contents[GOLD_ICON] = CoreInventory.createButton(
+								Material.GOLD_INGOT,
+								Component.text("You have " + data.getCoins() + " coins", NamedTextColor.YELLOW)
+						);
+						inv.setContents(contents);
+					},
+					() -> {
+						openInventory();
+						onOpenInventory();
+					}
 			);
-			p.playSound(p, Sound.ENTITY_WANDERING_TRADER_YES, 1F, 1F);
-			p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1F, 1F);
-			
-			ItemStack[] contents = inv.getContents();
-			contents[slot] = shopItem.getItem(data, idx);
-			updateAll(contents);
-			contents[GOLD_ICON] = CoreInventory.createButton(
-					Material.GOLD_INGOT,
-					Component.text("You have " + data.getCoins() + " coins", NamedTextColor.YELLOW)
-			);
-			inv.setContents(contents);
 		}
 		else {
 			if (slot == SELL_ICON) {
