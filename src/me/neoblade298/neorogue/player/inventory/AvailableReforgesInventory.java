@@ -28,7 +28,7 @@ import net.kyori.adventure.text.format.TextDecoration.State;
 public class AvailableReforgesInventory extends CoreInventory {
 	private static final int PREVIOUS = 4, NEXT = 6;
 	private PlayerSessionData data;
-	private ArrayList<ReforgePairData> pairs;
+	private ArrayList<ReforgeResultEntry> entries;
 	private int page;
 
 	public AvailableReforgesInventory(PlayerSessionData data) {
@@ -37,11 +37,33 @@ public class AvailableReforgesInventory extends CoreInventory {
 
 	private AvailableReforgesInventory(PlayerSessionData data, ArrayList<ReforgePairData> pairs) {
 		super(data.getPlayer(), Bukkit.createInventory(data.getPlayer(),
-				calculateSize(pairs.size()), Component.text("Available Reforges", NamedTextColor.DARK_PURPLE)));
+				calculateSize(countResults(pairs)), Component.text("Available Reforges", NamedTextColor.GOLD)));
 		new PlayerSessionInventory(data);
 		this.data = data;
-		this.pairs = pairs;
+		this.entries = buildEntries(pairs);
 		setupInventory();
+	}
+
+	private static int countResults(ArrayList<ReforgePairData> pairs) {
+		int count = 0;
+		for (ReforgePairData pair : pairs) {
+			for (Equipment result : pair.getResults()) {
+				if (result != null) count++;
+			}
+		}
+		return count;
+	}
+
+	private static ArrayList<ReforgeResultEntry> buildEntries(ArrayList<ReforgePairData> pairs) {
+		ArrayList<ReforgeResultEntry> entries = new ArrayList<>();
+		for (ReforgePairData pair : pairs) {
+			for (Equipment result : pair.getResults()) {
+				if (result != null) {
+					entries.add(new ReforgeResultEntry(pair, result));
+				}
+			}
+		}
+		return entries;
 	}
 
 	private static int calculateSize(int count) {
@@ -56,25 +78,25 @@ public class AvailableReforgesInventory extends CoreInventory {
 		ItemStack[] contents = inv.getContents();
 
 		int start = page * 45;
-		int maxItems = Math.min(pairs.size() - start, Math.min(45, contents.length));
+		int maxItems = Math.min(entries.size() - start, Math.min(45, contents.length));
 
 		for (int i = 0; i < maxItems; i++) {
-			ReforgePairData pair = pairs.get(start + i);
-			contents[i] = createPairIcon(pair);
+			ReforgeResultEntry entry = entries.get(start + i);
+			contents[i] = createResultIcon(entry);
 		}
 
-		if (pairs.isEmpty()) {
+		if (entries.isEmpty()) {
 			for (int i = 0; i < contents.length; i++) {
 				contents[i] = CoreInventory.createButton(Material.BARRIER,
 						Component.text("No reforges available!", NamedTextColor.RED));
 			}
 		}
 
-		if (pairs.size() > 45) {
+		if (entries.size() > 45) {
 			if (page > 0)
 				contents[contents.length - 9 + PREVIOUS] = CoreInventory.createButton(
 						ArtifactsInventory.PREV_HEAD, Component.text("Previous Page"));
-			if (start + 45 < pairs.size())
+			if (start + 45 < entries.size())
 				contents[contents.length - 9 + NEXT] = CoreInventory.createButton(
 						ArtifactsInventory.NEXT_HEAD, Component.text("Next Page"));
 		}
@@ -82,35 +104,67 @@ public class AvailableReforgesInventory extends CoreInventory {
 		inv.setContents(contents);
 	}
 
-	private ItemStack createPairIcon(ReforgePairData pair) {
+	private ItemStack createResultIcon(ReforgeResultEntry entry) {
+		ReforgePairData pair = entry.pair;
 		Equipment eq1 = pair.getMeta1().getEquipment();
 		Equipment eq2 = pair.getMeta2().getEquipment();
-		Equipment[] results = pair.getResults();
+		Equipment result = entry.result;
 
-		// Use first result's item as the icon base
-		ItemStack icon = results[0].getItem().clone();
+		ItemStack icon = result.getItem().clone();
 		ItemMeta meta = icon.getItemMeta();
 
-		meta.displayName(Component.text("Reforge: ", NamedTextColor.LIGHT_PURPLE)
+		// Name: the combining pair
+		meta.displayName(Component.text("Reforge: ", NamedTextColor.GOLD)
 				.decoration(TextDecoration.ITALIC, State.FALSE)
 				.append(eq1.getHoverable())
 				.append(Component.text(" + ", NamedTextColor.GRAY))
 				.append(eq2.getHoverable()));
 
 		ArrayList<Component> lore = new ArrayList<>();
-		lore.add(Component.text("Possible Results:", NamedTextColor.GOLD)
-				.decoration(TextDecoration.ITALIC, State.FALSE));
-		for (Equipment result : results) {
-			if (result == null) continue;
-			lore.add(Component.text("  - ", NamedTextColor.GRAY)
-					.decoration(TextDecoration.ITALIC, State.FALSE)
-					.append(result.getHoverable()));
+
+		// Result name and description from the item's existing lore
+		lore.add(Component.text("Result: ", NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, State.FALSE)
+				.append(result.getDisplay()));
+		ItemStack resultItem = result.getItem();
+		if (resultItem.hasItemMeta() && resultItem.getItemMeta().hasLore()) {
+			for (Component loreLine : resultItem.getItemMeta().lore()) {
+				lore.add(loreLine);
+			}
 		}
-		lore.add(Component.empty());
-		lore.add(Component.text("Left-click to reforge", NamedTextColor.YELLOW)
-				.decoration(TextDecoration.ITALIC, State.FALSE));
-		lore.add(Component.text("Right-click for details", NamedTextColor.GRAY)
-				.decoration(TextDecoration.ITALIC, State.FALSE));
+
+		// Opportunity cost: other reforges using the same components
+		ArrayList<Component> conflicts = new ArrayList<>();
+		String id1 = eq1.getId();
+		String id2 = eq2.getId();
+		for (ReforgeResultEntry other : entries) {
+			if (other == entry) continue;
+			// Same pair, different result
+			if (other.pair == pair) {
+				conflicts.add(Component.text("  - ", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, State.FALSE)
+						.append(other.result.getHoverable())
+						.append(Component.text(" (same pair)", NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, State.FALSE)));
+				continue;
+			}
+			String otherId1 = other.pair.getMeta1().getEquipment().getId();
+			String otherId2 = other.pair.getMeta2().getEquipment().getId();
+			boolean shares = id1.equals(otherId1) || id1.equals(otherId2) || id2.equals(otherId1) || id2.equals(otherId2);
+			if (shares) {
+				Equipment otherEq1 = other.pair.getMeta1().getEquipment();
+				Equipment otherEq2 = other.pair.getMeta2().getEquipment();
+				conflicts.add(Component.text("  - ", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, State.FALSE)
+						.append(otherEq1.getHoverable())
+						.append(Component.text(" + ", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, State.FALSE))
+						.append(otherEq2.getHoverable())
+						.append(Component.text(" \u2192 ", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, State.FALSE))
+						.append(other.result.getHoverable()));
+			}
+		}
+
+		if (!conflicts.isEmpty()) {
+			lore.add(Component.empty());
+			lore.add(Component.text("Choosing this blocks:", NamedTextColor.RED).decoration(TextDecoration.ITALIC, State.FALSE));
+			lore.addAll(conflicts);
+		}
 		meta.lore(lore);
 
 		icon.setItemMeta(meta);
@@ -127,8 +181,8 @@ public class AvailableReforgesInventory extends CoreInventory {
 		int slot = e.getSlot();
 
 		// Handle pagination
-		if (pairs.size() > 45 && slot >= inv.getSize() - 9) {
-			if (slot == inv.getSize() - 9 + NEXT && (page + 1) * 45 < pairs.size()) {
+		if (entries.size() > 45 && slot >= inv.getSize() - 9) {
+			if (slot == inv.getSize() - 9 + NEXT && (page + 1) * 45 < entries.size()) {
 				inv.clear();
 				page++;
 				setupInventory();
@@ -142,30 +196,27 @@ public class AvailableReforgesInventory extends CoreInventory {
 		}
 
 		int index = page * 45 + slot;
-		if (index >= pairs.size()) return;
-		ReforgePairData pair = pairs.get(index);
+		if (index >= entries.size()) return;
+		ReforgeResultEntry entry = entries.get(index);
+		ReforgePairData pair = entry.pair;
 
-		// Right-click: open glossary for first result
+		// Right-click: open glossary for this result
 		if (e.isRightClick()) {
-			Equipment[] results = pair.getResults();
-			if (results.length > 0 && results[0] != null) {
-				new BukkitRunnable() {
-					public void run() {
-						new EquipmentGlossaryInventory(p, results[0], null);
-					}
-				}.runTask(NeoRogue.inst());
-			}
+			new BukkitRunnable() {
+				public void run() {
+					new EquipmentGlossaryInventory(p, entry.result, AvailableReforgesInventory.this);
+				}
+			}.runTask(NeoRogue.inst());
 			return;
 		}
 
-		// Left-click: validate items still exist and perform reforge
+		// Left-click: validate items still exist and open confirm inventory
 		EquipmentMetadata m1 = pair.getMeta1();
 		EquipmentMetadata m2 = pair.getMeta2();
 
 		Equipment[] arr1 = data.getEquipment(m1.getEquipSlot());
 		Equipment[] arr2 = data.getEquipment(m2.getEquipSlot());
 
-		// Validate items still exist at their locations
 		if (arr1[m1.getSlot()] != m1.getEquipment() || arr2[m2.getSlot()] != m2.getEquipment()) {
 			p.playSound(p, Sound.ENTITY_VILLAGER_NO, 1F, 1F);
 			new BukkitRunnable() {
@@ -182,7 +233,7 @@ public class AvailableReforgesInventory extends CoreInventory {
 		new BukkitRunnable() {
 			public void run() {
 				p.closeInventory();
-				new ReforgeOptionsInventory(data, eq1, eq2);
+				new ReforgeConfirmInventory(data, eq1, eq2, entry.result, AvailableReforgesInventory.this);
 			}
 		}.runTask(NeoRogue.inst());
 	}
@@ -194,5 +245,15 @@ public class AvailableReforgesInventory extends CoreInventory {
 	@Override
 	public void handleInventoryDrag(InventoryDragEvent e) {
 		e.setCancelled(true);
+	}
+
+	private static class ReforgeResultEntry {
+		final ReforgePairData pair;
+		final Equipment result;
+
+		ReforgeResultEntry(ReforgePairData pair, Equipment result) {
+			this.pair = pair;
+			this.result = result;
+		}
 	}
 }

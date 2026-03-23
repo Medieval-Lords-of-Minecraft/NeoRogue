@@ -158,7 +158,12 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 		if (data.getSession().getParty().size() > 1)
 			contents[(SEE_OTHERS + offset) % inv.getSize()] = CoreInventory.createButton(Material.SPYGLASS, Component.text("View other players", NamedTextColor.GOLD));
 
-		int reforgeCount = data.computeAvailableReforges().size();
+		int reforgeCount = 0;
+		for (PlayerSessionData.ReforgePairData pair : data.computeAvailableReforges()) {
+			for (Equipment r : pair.getResults()) {
+				if (r != null) reforgeCount++;
+			}
+		}
 		if (reforgeCount > 0) {
 			contents[(REFORGES + offset) % inv.getSize()] = createReforgesIcon(reforgeCount);
 		}
@@ -226,7 +231,7 @@ public class PlayerSessionInventory extends CorePlayerInventory implements Shift
 
 	private static ItemStack createReforgesIcon(int count) {
 		ItemStack item = CoreInventory.createButton(Material.ANVIL,
-				Component.text("Available Reforges", NamedTextColor.LIGHT_PURPLE),
+				Component.text("Available Reforges", NamedTextColor.GOLD),
 				"Click to view " + count + " available reforge" + (count != 1 ? "s" : "") + "!", 250, NamedTextColor.GRAY);
 		item.setAmount(Math.min(count, 64));
 		return item;
