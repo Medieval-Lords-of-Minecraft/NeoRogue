@@ -36,6 +36,7 @@ public class PredatorDrive extends Equipment {
 		ItemStack charged = item.clone().withType(Material.GLOWSTONE_DUST);
 		ActionMeta am = new ActionMeta();
 		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
+		System.out.println("instantiating " + id + " in slot " + slot);
 		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
 			BasicAttackEvent ev = (BasicAttackEvent) in;
 			Player p = data.getPlayer();

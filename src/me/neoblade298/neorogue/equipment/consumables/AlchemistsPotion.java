@@ -59,7 +59,7 @@ public class AlchemistsPotion extends Consumable {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION,
-				"Creates <white>2</white> random " + (isUpgraded ? DescUtil.yellow("upgraded") : "") + " consumables in empty hotbar slots for the duration of the fight. Consumed on first use.");
+				"Creates <white>2</white> random " + (isUpgraded ? DescUtil.yellow("upgraded ") : "") + "consumables in empty hotbar slots for the duration of the fight. Consumed on first use.");
 		PotionMeta meta = (PotionMeta) item.getItemMeta();
 		meta.setColor(Color.fromRGB(50, 205, 50));
 		item.setItemMeta(meta);

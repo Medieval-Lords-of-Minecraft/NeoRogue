@@ -52,7 +52,20 @@ public class Mahoraga extends Equipment {
 			Player p = data.getPlayer();
 			PlayerToggleSneakEvent ev = (PlayerToggleSneakEvent) in;
 			if (ev.isSneaking()) {
-				// Refresh shield
+				// Cancel the refresh task when crouching
+				BukkitTask task = am.getTask();
+				if (task != null) {
+					task.cancel();
+					am.setTask(null);
+				}
+				if (am.getObject() == null)
+					return TriggerResult.keep();
+				Shield shield = (Shield) am.getObject();
+				am.setDouble(shield.getAmount());
+				shield.remove();
+				am.setObject(null);
+			} else {
+				// Refresh shield when uncrouch
 				BukkitTask task = am.getTask();
 				if (task != null) {
 					task.cancel();
@@ -64,19 +77,13 @@ public class Mahoraga extends Equipment {
 						Util.msg(p, hoverable.append(Component.text(" was refreshed")));
 					}
 				}.runTaskLater(NeoRogue.inst(), refresh * 20);
+				data.addTask(task);
 				am.setTask(task);
 
 				if (am.getDouble() <= 0)
 					return TriggerResult.keep();
 				Shield shield = data.addPermanentShield(p.getUniqueId(), am.getDouble(), true);
 				am.setObject(shield);
-			} else {
-				if (am.getObject() == null)
-					return TriggerResult.keep();
-				Shield shield = (Shield) am.getObject();
-				am.setDouble(shield.getAmount());
-				shield.remove();
-				am.setObject(null);
 			}
 			return TriggerResult.keep();
 		});

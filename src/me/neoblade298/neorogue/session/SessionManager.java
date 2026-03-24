@@ -13,6 +13,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.damage.DamageType;
+import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -225,6 +226,7 @@ public class SessionManager implements Listener {
 		if (!(e.getEntity().getShooter() instanceof Player))
 			return;
 		Player p = (Player) e.getEntity().getShooter();
+		System.out.println("Launching proojectile " + sessions.containsKey(p.getUniqueId()) + " " + (e.getEntity() instanceof Arrow));
 
 		if (!sessions.containsKey(p.getUniqueId()))
 			return;
@@ -233,8 +235,8 @@ public class SessionManager implements Listener {
 			return;
 		if (e.getEntity() instanceof Trident) {
 			FightInstance.trigger(p, Trigger.THROW_TRIDENT, e);
-		} else if (e.getEntity() instanceof Arrow) {
-			ItemStack item = ((Arrow) e.getEntity()).getItemStack();
+		} else if (e.getEntity() instanceof AbstractArrow) {
+			ItemStack item = ((AbstractArrow) e.getEntity()).getItemStack();
 			if (item.getType() != Material.ARROW)
 				p.getInventory().addItem(item);
 			FightInstance.trigger(p, Trigger.VANILLA_PROJECTILE, e);

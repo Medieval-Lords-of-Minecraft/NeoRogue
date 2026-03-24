@@ -52,7 +52,20 @@ public class BreakingPoint extends Equipment {
 		data.addTrigger(id, Trigger.TOGGLE_CROUCH, (pdata, in) -> {
 			PlayerToggleSneakEvent ev = (PlayerToggleSneakEvent) in;
 			if (ev.isSneaking()) {
-				// Refresh shield
+				// Cancel the refresh task when crouching
+				BukkitTask task = am.getTask();
+				if (task != null) {
+					task.cancel();
+					am.setTask(null);
+				}
+				if (am.getObject() == null) return TriggerResult.keep();
+				Shield shield = (Shield) am.getObject();
+				am.setDouble(shield.getAmount());
+				shield.remove();
+				am.setObject(null);
+			}
+			else {
+				// Refresh shield when uncrouch
 				BukkitTask task = am.getTask();
 				if (task != null) {
 					task.cancel();
@@ -70,13 +83,6 @@ public class BreakingPoint extends Equipment {
 					return TriggerResult.keep();
 				Shield shield = data.addPermanentShield(p.getUniqueId(), am.getDouble(), true);
 				am.setObject(shield);
-			}
-			else {
-				if (am.getObject() == null) return TriggerResult.keep();
-				Shield shield = (Shield) am.getObject();
-				am.setDouble(shield.getAmount());
-				shield.remove();
-				am.setObject(null);
 			}
 			return TriggerResult.keep();
 		});
