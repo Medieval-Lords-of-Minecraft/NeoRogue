@@ -12,8 +12,10 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
 import me.neoblade298.neocore.bukkit.NeoCore;
+import me.neoblade298.neocore.bukkit.effects.Audience;
 import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.player.PlayerSessionData;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -95,20 +97,23 @@ public class LoadLobbyInstance extends LobbyInstance {
         e.setCancelled(true);
 		if (e.getAction() != Action.RIGHT_CLICK_BLOCK) return;
 		if (e.getHand() != EquipmentSlot.HAND) return;
-        UUID uuid = e.getPlayer().getUniqueId();
+        Player p = e.getPlayer();
+        UUID uuid = p.getUniqueId();
 
-        if (e.getClickedBlock().getType() == Material.OAK_SIGN) {
+        if (e.getClickedBlock().getType() == Material.OAK_WALL_SIGN) {
             if (!s.getHost().equals(uuid)) {
-                Util.displayError(e.getPlayer(), "Only the host may invite players!");
+                Util.displayError(p, "Only the host may invite players!");
                 return;
             }
 
             // Add cooldown to prevent spam clicking
             if (System.currentTimeMillis() - lastInviteTime < INVITE_COOLDOWN) {
-                Util.displayError(e.getPlayer(), "Please wait before inviting again!");
+                Util.displayError(p, "Please wait before inviting again!");
                 return;
             }
             lastInviteTime = System.currentTimeMillis();
+            Util.msgRaw(p, "You re-sent the invite!");
+            Sounds.success.play(p, p, Audience.ORIGIN);
             invitePlayers();
             return;
         }
