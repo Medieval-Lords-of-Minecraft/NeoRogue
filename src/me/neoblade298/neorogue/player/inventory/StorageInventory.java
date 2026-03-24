@@ -66,7 +66,10 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 
 		for (int i = data.getMaxStorage(); i < contents.length; i++) {
 			if (contents[i] != null) continue;
-			contents[i] = CoreInventory.createButton(Material.GRAY_STAINED_GLASS_PANE, Component.text(" "));
+			contents[i] = CoreInventory.createButton(
+					Material.GRAY_STAINED_GLASS_PANE,
+					Component.text("Max Storage: " + data.getMaxStorage(), NamedTextColor.GRAY)
+			);
 		}
 		inv.setContents(contents);
 	}

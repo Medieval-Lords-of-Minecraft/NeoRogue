@@ -122,7 +122,7 @@ public class NodeSelectInstance extends EditInventoryInstance {
 			e.setCancelled(true);
 			Node n = s.getRegion().getNodeFromLocation(e.getClickedBlock().getLocation().add(0, 2, 1));
 			FightInstance inst = (FightInstance) n.getInstance();
-			new FightInfoInventory(e.getPlayer(), null, inst.getMap().getMobs(), inst.getMap().hasCustomMobInfo());
+			new FightInfoInventory(e.getPlayer(), s, null, inst.getMap().getMobs(), inst.getMap().hasCustomMobInfo());
 		} else {
 			super.handleSpectatorInteractEvent(e);
 		}
@@ -185,7 +185,7 @@ public class NodeSelectInstance extends EditInventoryInstance {
 			e.setCancelled(true);
 			Node n = s.getRegion().getNodeFromLocation(e.getClickedBlock().getLocation().add(0, 2, 1));
 			FightInstance inst = (FightInstance) n.getInstance();
-			new FightInfoInventory(e.getPlayer(), s.getParty().get(p.getUniqueId()), inst.getMap().getMobs(), inst.getMap().hasCustomMobInfo());
+			new FightInfoInventory(e.getPlayer(), s, s.getParty().get(p.getUniqueId()), inst.getMap().getMobs(), inst.getMap().hasCustomMobInfo());
 		} else {
 			super.handleInteractEvent(e);
 		}

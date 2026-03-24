@@ -19,7 +19,7 @@ public class FightStatistics {
 	private HashMap<String, HashMap<DamageType, Double>> damageTaken = new HashMap<String, HashMap<DamageType, Double>>();
 	private HashMap<StatusType, Integer> statusesApplied = new HashMap<StatusType, Integer>();
 	private HashMap<StatTracker, Double> buffStats = new HashMap<StatTracker, Double>();
-	private double healingGiven, healingReceived, selfHealing, damageShielded, defenseBuffed, damageBarriered, damageNullified;
+	private double healingGiven, healingReceived, selfHealing, damageShielded, shieldsApplied, defenseBuffed, damageBarriered, damageNullified;
 	private int deaths, revives;
 
 	// Etc stats
@@ -42,7 +42,11 @@ public class FightStatistics {
 	}
 
 	public void addSanctifiedShielding(double addSanctifiedShielding) {
-		this.sanctifiedShielding += sanctifiedShielding;
+		this.sanctifiedShielding += addSanctifiedShielding;
+	}
+
+	public void addShieldsApplied(double amount) {
+		this.shieldsApplied += amount;
 	}
 
 	public FightStatistics(PlayerFightData data) {
@@ -268,6 +272,7 @@ public class FightStatistics {
 		Component cmp = Component.text("General Stats:");
 		cmp = appendIfNotEmpty(cmp, "Damage Nullified", damageNullified);
 		cmp = appendIfNotEmpty(cmp, "Damage Barriered", damageBarriered);
+		cmp = appendIfNotEmpty(cmp, "Shields Applied", shieldsApplied);
 		cmp = appendIfNotEmpty(cmp, "Ally Healing", healingGiven);
 		cmp = appendIfNotEmpty(cmp, "Self Healing", selfHealing);
 		cmp = appendIfNotEmpty(cmp, "Healing Received", healingReceived);
