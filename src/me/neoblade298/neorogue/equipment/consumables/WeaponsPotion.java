@@ -4,8 +4,11 @@ import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Consumable;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -13,6 +16,8 @@ import me.neoblade298.neorogue.player.PlayerSessionData;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class WeaponsPotion extends Consumable {
 	private static final String ID = "WeaponsPotion";
@@ -30,10 +35,18 @@ public class WeaponsPotion extends Consumable {
 		PlayerSessionData sdata = data.getSessionData();
 		Session s = sdata.getSession();
 		int value = s.getBaseDropValue() + 2;
-		Equipment weapon = Equipment.getDrop(value, sdata.getPlayerClass());
+		Equipment weapon = Equipment.getWeapon(value, sdata.getPlayerClass());
 		if (isUpgraded) weapon = weapon.getUpgraded();
 		weapon.initialize(data, null, EquipSlot.HOTBAR, slot);
-		p.getInventory().setItem(slot, weapon.getItem());
+		final Equipment finalWeapon = weapon;
+		data.addTask(new BukkitRunnable() {
+			@Override
+			public void run() {
+				p.getInventory().setItem(slot, finalWeapon.getItem());
+			}
+		}.runTaskLater(NeoRogue.inst(), 1L));
+		Util.msg(p, Component.text("You received ", NamedTextColor.GRAY)
+				.append(finalWeapon.getHoverable()));
 		return TriggerResult.remove();
 	}
 

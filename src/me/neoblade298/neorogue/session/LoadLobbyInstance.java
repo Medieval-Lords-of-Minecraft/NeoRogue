@@ -47,6 +47,7 @@ public class LoadLobbyInstance extends LobbyInstance {
     // Used by Session to set the instance to start after loading
     public void completeLoad(Instance startInstance) {
         this.startInstance = startInstance;
+        s.getParty().entrySet().removeIf(entry -> !inLobby.contains(entry.getKey()));
         updateBoardLines();
         invitePlayers();
     }

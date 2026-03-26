@@ -58,7 +58,6 @@ public class Hawkeye extends Equipment {
 			// Check if focus is above threshold
 			int focusStacks = data.getStatus(StatusType.FOCUS).getStacks();
 			if (focusStacks <= threshold) return TriggerResult.keep();
-			System.out.println("Past threshold");
 			
 			Player p = data.getPlayer();
 			

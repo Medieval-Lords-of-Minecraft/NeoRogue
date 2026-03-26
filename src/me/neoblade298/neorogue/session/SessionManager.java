@@ -12,9 +12,9 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
+import org.bukkit.block.Container;
 import org.bukkit.damage.DamageType;
 import org.bukkit.entity.AbstractArrow;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -226,7 +226,6 @@ public class SessionManager implements Listener {
 		if (!(e.getEntity().getShooter() instanceof Player))
 			return;
 		Player p = (Player) e.getEntity().getShooter();
-		System.out.println("Launching proojectile " + sessions.containsKey(p.getUniqueId()) + " " + (e.getEntity() instanceof Arrow));
 
 		if (!sessions.containsKey(p.getUniqueId()))
 			return;
@@ -520,9 +519,13 @@ public class SessionManager implements Listener {
 			}
 		}
 
-		// Disable clicking on crafting tables, anvils, furnaces, etc
+		// Disable clicking on crafting tables, anvils, furnaces, containers, etc
 		Block b = e.getClickedBlock();
 		if (b != null) {
+			if (e.getAction().isRightClick() && b.getState() instanceof Container) {
+				e.setCancelled(true);
+			}
+
 			Material mat = b.getType();
 			if (mat == Material.DECORATED_POT || mat == Material.CRAFTING_TABLE || mat == Material.ANVIL
 					|| mat == Material.ENCHANTING_TABLE || mat == Material.BREWING_STAND || mat == Material.FURNACE

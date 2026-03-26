@@ -55,10 +55,6 @@ public class ShopContents {
 			sc.generateEquips(s, EquipmentClass.ARCHER, rand.nextInt(4), 1.0);
 			sc.generateEquips(s, EquipmentClass.MAGE, rand.nextInt(4), 1.0);
 			sc.generateConsumables(EquipmentClass.CLASSLESS, rand.nextInt(4), 1.0);
-
-			if (i % 10 == 0) {
-				System.out.println("Generated " + (i + 1) * 7 + " sets of shop equips/consumables");
-			}
 		}
 	}
 

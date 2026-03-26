@@ -263,6 +263,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 	private static HashMap<String, Equipment> equipment = new HashMap<String, Equipment>();
 	private static HashMap<String, Equipment> upgraded = new HashMap<String, Equipment>();
 	private static DropTableSet<Equipment> droptables = new DropTableSet<Equipment>();
+	private static DropTableSet<Equipment> weapons = new DropTableSet<Equipment>();
 	private static DropTableSet<Artifact> artifacts = new DropTableSet<Artifact>();
 	private static DropTableSet<Consumable> consumables = new DropTableSet<Consumable>();
 
@@ -284,6 +285,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 		equipment.clear();
 		upgraded.clear();
 		droptables.reload();
+		weapons.reload();
 		artifacts.reload();
 		for (boolean b : new boolean[] { false, true }) {
 			// Abilities
@@ -1176,6 +1178,9 @@ public abstract class Equipment implements Comparable<Equipment> {
 		}
 		else {
 			droptables.add(ecs, this);
+			if (type == EquipmentType.WEAPON) {
+				weapons.add(ecs, this);
+			}
 		}
 	}
 
@@ -1446,12 +1451,20 @@ public abstract class Equipment implements Comparable<Equipment> {
 		return droptables.getMultiple(value, numDrops, ec);
 	}
 
+	public static ArrayList<Equipment> getWeapon(int value, int numDrops, EquipmentClass... ec) {
+		return weapons.getMultiple(value, numDrops, ec);
+	}
+
 	public static ArrayList<Equipment> getDrop(int value, int numDrops, ArrayList<Equipment> exclusions, EquipmentClass... ec) {
 		return droptables.getMultiple(value, numDrops, true, exclusions, ec);
 	}
 
 	public static Equipment getDrop(int value, EquipmentClass... ec) {
 		return getDrop(value, 1, ec).get(0);
+	}
+
+	public static Equipment getWeapon(int value, EquipmentClass... ec) {
+		return getWeapon(value, 1, ec).get(0);
 	}
 
 	public static Consumable getConsumable(int value, EquipmentClass... ec) {

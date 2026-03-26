@@ -6,8 +6,11 @@ import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 
+import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Consumable;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -16,6 +19,8 @@ import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class AlchemistsPotion extends Consumable {
 	private static final String ID = "AlchemistsPotion";
@@ -45,14 +50,28 @@ public class AlchemistsPotion extends Consumable {
 			}
 		}
 
-		ArrayList<Consumable> consumables = Equipment.getConsumable(value, emptySlots.size(), sdata.getPlayerClass());
+		ArrayList<Consumable> consumables = Equipment.getConsumable(value, emptySlots.size(), sdata.getPlayerClass(), EquipmentClass.CLASSLESS);
+		Component received = Component.text("You received potions: ", NamedTextColor.GRAY);
 		for (int i = 0; i < consumables.size(); i++) {
 			int emptySlot = emptySlots.get(i);
 			Consumable c = consumables.get(i);
 			if (isUpgraded) c = (Consumable) c.getUpgraded();
-			c.initialize(data, Trigger.getFromHotbarSlot(emptySlot), EquipSlot.HOTBAR, emptySlot);
-			p.getInventory().setItem(emptySlot, c.getItem());
+			received = received.append(c.getHoverable());
+			if (i + 2 < consumables.size()) {
+				received = received.append(Component.text(" ", NamedTextColor.GRAY));
+			} else if (i + 1 < consumables.size()) {
+				received = received.append(Component.text(" and ", NamedTextColor.GRAY));
+			}
+			final Consumable finalConsumable = c;
+			data.addTask(new BukkitRunnable() {
+				@Override
+				public void run() {
+					finalConsumable.initialize(data, Trigger.getFromHotbarSlot(emptySlot), EquipSlot.HOTBAR, emptySlot);
+					p.getInventory().setItem(emptySlot, finalConsumable.getItem());
+				}
+			}.runTaskLater(NeoRogue.inst(), 1L));
 		}
+		Util.msg(p, received);
 		return TriggerResult.remove();
 	}
 

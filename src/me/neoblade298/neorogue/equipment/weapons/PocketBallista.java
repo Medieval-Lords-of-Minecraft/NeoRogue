@@ -63,18 +63,14 @@ public class PocketBallista extends Bow {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		System.out.println("Initializing " + id + " in slot " + slot);
 		data.addSlotBasedTrigger(id, slot, Trigger.VANILLA_PROJECTILE, (pdata, in) -> {
 			Vector arrowVelocity = ((ProjectileLaunchEvent) in).getEntity().getVelocity();
-			System.out.println("1");
 			if (!canShoot(data, arrowVelocity)) return TriggerResult.keep();
-			System.out.println("2");
 			useBow(data);
 
 			ProjectileLaunchEvent ev = (ProjectileLaunchEvent) in;
 			ProjectileGroup proj = new ProjectileGroup(new PocketBallistaProjectile(data, ev.getEntity().getVelocity(), this, slot));
 			proj.start(data);
-			System.out.println("3");
 			return TriggerResult.keep();
 		});
 	}
