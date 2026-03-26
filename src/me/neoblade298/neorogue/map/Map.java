@@ -247,6 +247,7 @@ public class Map {
 			TreeSet<MapPieceInstance> potentialPlacements = new TreeSet<MapPieceInstance>();
 			for (MapEntrance available : entrances) {
 				for (MapEntrance potential : piece.getEntrances()) {
+					if (!available.tagsCompatible(potential)) continue;
 					for (MapPieceInstance pSettings : piece.getRotationOptions(available, potential)) {
 						piece.getShape().applySettings(pSettings);
 						int[] offset = pSettings.calculateOffset(available);
