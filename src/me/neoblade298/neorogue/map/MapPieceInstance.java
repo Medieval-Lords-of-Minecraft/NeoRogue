@@ -36,7 +36,7 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 	private MapPiece piece;
 	private Coordinates[] spawns;
 	private HashMap<String, Coordinates> mythicLocations = new HashMap<String, Coordinates>();
-	private Coordinates entrance, available;
+	private MapEntrance entrance, available;
 	protected int numRotations;
 	private int x, y, z; // In chunk offset
 	protected boolean flipX, flipZ;
@@ -69,7 +69,7 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		hgt = shape.getBaseHeight() * 16 - 1;
 	}
 	
-	protected MapPieceInstance(MapPiece piece, Coordinates available, Coordinates toAttach) {
+	protected MapPieceInstance(MapPiece piece, MapEntrance available, MapEntrance toAttach) {
 		this(piece);
 		this.available = available.clone();
 		this.entrance = toAttach.clone().applySettings(this);
@@ -249,7 +249,7 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		return piece;
 	}
 	
-	public void rotateToFace(Coordinates existing, Coordinates toAttach) {
+	public void rotateToFace(MapEntrance existing, MapEntrance toAttach) {
 		int amount = (existing.getDirection().getValue() - toAttach.getOriginalDirection().getValue() + 6) % 4;
 		setRotations(amount);
 	}
@@ -259,8 +259,9 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		setFlip(val % 2 == 1, val % 2 == 0);
 	}
 	
-	public int[] calculateOffset(Coordinates available) {
-		return new int[] { (int) (available.getXFacing() - entrance.getX()), (int) (available.getY() - entrance.getY()), (int) (available.getZFacing() - entrance.getZ()) };
+	public int[] calculateOffset(MapEntrance available) {
+		return new int[] { (int) (available.getXFacing() - entrance.getX()), (int) (available.getYFacing() - entrance.getY()),
+				(int) (available.getZFacing() - entrance.getZ()) };
 	}
 	
 	public int getPotential() {
@@ -478,9 +479,9 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 		}
 
 		if (piece.getEntrances() != null) {
-			for (Coordinates entrance : piece.getEntrances()) {
-				Coordinates coords = entrance.clone().applySettings(this);
-				Location loc = coords.toLocation();
+			for (MapEntrance entrance : piece.getEntrances()) {
+				MapEntrance coords = entrance.clone().applySettings(this);
+				Location loc = coords.getEntrance().toLocation();
 				loc.setX(loc.getX() * 16);
 				loc.setZ(loc.getZ() * 16);
 				loc.add(-x - rotateOffset[0] - flipOffset[0],
@@ -531,11 +532,11 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 	}
 	
 	
-	public Coordinates getEntrance() {
+	public MapEntrance getEntrance() {
 		return entrance;
 	}
 	
-	public Coordinates getAvailableEntrance() {
+	public MapEntrance getAvailableEntrance() {
 		return available;
 	}
 	

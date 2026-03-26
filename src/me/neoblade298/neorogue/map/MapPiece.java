@@ -25,7 +25,8 @@ public class MapPiece {
 	private MapShape shape;
 	private HashSet<String> targets;
 	private boolean ignoreSize;
-	protected Coordinates[] entrances, spawns;
+	protected MapEntrance[] entrances;
+	protected Coordinates[] spawns;
 	protected HashMap<String, Coordinates> mythicLocations = new HashMap<String, Coordinates>();
 	private ArrayList<MapSpawner[]> spawnerSets = new ArrayList<MapSpawner[]>();
 	private MapSpawner[] initialSpawns;
@@ -52,13 +53,9 @@ public class MapPiece {
 		List<String> entrances = cfg.getStringList("entrances");
 		int i = 0;
 		if (entrances != null) {
-			this.entrances = new Coordinates[entrances.size()];
+			this.entrances = new MapEntrance[entrances.size()];
 			for (String line : entrances) {
-				Coordinates entrance = new Coordinates(this, line);
-				Direction invert = entrance.getOriginalDirection().invert();
-				entrance.setOriginalDirection(invert);
-				entrance.setDirection(invert);
-				this.entrances[i++] = entrance;
+				this.entrances[i++] = new MapEntrance(this, line);
 			}
 		}
 		
@@ -152,7 +149,7 @@ public class MapPiece {
 	}
 	
 	public int getNumEntrances() {
-		return entrances.length;
+		return entrances == null ? 0 : entrances.length;
 	}
 	
 	public MapShape getShape() {
@@ -163,7 +160,7 @@ public class MapPiece {
 		return id;
 	}
 	
-	public Coordinates[] getEntrances() {
+	public MapEntrance[] getEntrances() {
 		return entrances;
 	}
 	
@@ -189,7 +186,7 @@ public class MapPiece {
 		return spawnerSets.get(idx);
 	}
 	
-	public MapPieceInstance[] getRotationOptions(Coordinates existing, Coordinates toAttach) {
+	public MapPieceInstance[] getRotationOptions(MapEntrance existing, MapEntrance toAttach) {
 		MapPieceInstance[] settings = new MapPieceInstance[] {
 				getInstance(existing, toAttach),
 				getInstance(existing, toAttach)
@@ -200,7 +197,7 @@ public class MapPiece {
 		return settings;
 	}
 	
-	public MapPieceInstance getInstance(Coordinates available, Coordinates toAttach) {
+	public MapPieceInstance getInstance(MapEntrance available, MapEntrance toAttach) {
 		return new MapPieceInstance(this, available, toAttach);
 	}
 	

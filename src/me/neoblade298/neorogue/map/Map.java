@@ -50,8 +50,8 @@ public class Map {
 	private RegionType type;
 	private boolean hasCustomMobInfo = false;
 	private ArrayList<MapPieceInstance> pieces = new ArrayList<MapPieceInstance>();
-	private LinkedList<Coordinates> entrances = new LinkedList<Coordinates>(),
-			obstructedEntrances = new LinkedList<Coordinates>();
+	private LinkedList<MapEntrance> entrances = new LinkedList<MapEntrance>(),
+			obstructedEntrances = new LinkedList<MapEntrance>();
 	private ArrayList<Coordinates> spawns = new ArrayList<Coordinates>();
 	private TreeMap<Mob, ArrayList<MobModifier>> mobs = new TreeMap<Mob, ArrayList<MobModifier>>();
 	private LinkedHashMap<Mob, ArrayList<MobModifier>> customMobs = new LinkedHashMap<Mob, ArrayList<MobModifier>>();
@@ -245,8 +245,8 @@ public class Map {
 		// Standard case, find an existing entrance and try to put the piece on
 		else {
 			TreeSet<MapPieceInstance> potentialPlacements = new TreeSet<MapPieceInstance>();
-			for (Coordinates available : entrances) {
-				for (Coordinates potential : piece.getEntrances()) {
+			for (MapEntrance available : entrances) {
+				for (MapEntrance potential : piece.getEntrances()) {
 					for (MapPieceInstance pSettings : piece.getRotationOptions(available, potential)) {
 						piece.getShape().applySettings(pSettings);
 						int[] offset = pSettings.calculateOffset(available);
@@ -291,7 +291,7 @@ public class Map {
 	private void place(MapPieceInstance inst, boolean deserializing) {
 		MapShape shape = inst.getPiece().getShape();
 		shape.applySettings(inst);
-		ArrayList<Coordinates> obstructed = new ArrayList<Coordinates>();
+		ArrayList<MapEntrance> obstructed = new ArrayList<MapEntrance>();
 		for (int i = 0; i < shape.getLength(); i++) {
 			for (int j = 0; j < shape.getHeight(); j++) {
 				// Place 1 chunk of the shape, skip if it's not a used chunk
@@ -301,9 +301,9 @@ public class Map {
 
 				// Make note of obstructed entrances on the map
 				if (!deserializing) {
-					Iterator<Coordinates> iter = entrances.iterator();
+					Iterator<MapEntrance> iter = entrances.iterator();
 					while (iter.hasNext()) {
-						Coordinates entrance = iter.next();
+						MapEntrance entrance = iter.next();
 						if (entrance.getXFacing() == inst.getX() + i && entrance.getZFacing() == inst.getZ() + j) {
 							obstructed.add(entrance);
 							iter.remove();
@@ -315,14 +315,14 @@ public class Map {
 		
 		if (!deserializing) {
 			if (inst.getPiece().getEntrances() != null) {
-				for (Coordinates entrance : inst.getPiece().getEntrances()) {
-					Coordinates coords = entrance.clone().applySettings(inst);
+				for (MapEntrance entrance : inst.getPiece().getEntrances()) {
+					MapEntrance coords = entrance.clone().applySettings(inst);
 					
 					// Don't add entrance if it's connecting with another entrance
-					Iterator<Coordinates> iter = obstructed.iterator();
+					Iterator<MapEntrance> iter = obstructed.iterator();
 					boolean isAvailable = true;
 					while (iter.hasNext()) {
-						Coordinates other = iter.next();
+						MapEntrance other = iter.next();
 						if (coords.canConnect(other)) {
 							isAvailable = false;
 							iter.remove();
@@ -331,7 +331,8 @@ public class Map {
 					if (!isAvailable) continue;
 					
 					// An entrance that cannot be used because another piece is in the way but doesn't have a corresponding entrance
-					if (this.shape.length <= (int) coords.getXFacing() || this.shape[0].length <= (int) coords.getZFacing() || 
+					if ((int) coords.getXFacing() < 0 || (int) coords.getZFacing() < 0 ||
+							this.shape.length <= (int) coords.getXFacing() || this.shape[0].length <= (int) coords.getZFacing() || 
 							this.shape[(int) coords.getXFacing()][(int) coords.getZFacing()]) {
 						obstructedEntrances.add(coords);
 					}
@@ -342,7 +343,7 @@ public class Map {
 				}
 			}
 			
-			for (Coordinates ent : obstructed) {
+			for (MapEntrance ent : obstructed) {
 				obstructedEntrances.add(ent);
 			}
 		}
@@ -396,16 +397,16 @@ public class Map {
 		for (MapPieceInstance inst : pieces) {
 			// First add all entrances
 			if (inst.getPiece().getEntrances() != null) {
-				for (Coordinates c : inst.getPiece().getEntrances()) {
+				for (MapEntrance c : inst.getPiece().getEntrances()) {
 					entrances.add(c.clone().applySettings(inst));
 				}
 			}
 		}
 		
 		// Remove connected entrances
-		ArrayList<Coordinates> toRemove = new ArrayList<Coordinates>();
-		for (Coordinates ent1 : entrances) {
-			for (Coordinates ent2 : entrances) {
+		ArrayList<MapEntrance> toRemove = new ArrayList<MapEntrance>();
+		for (MapEntrance ent1 : entrances) {
+			for (MapEntrance ent2 : entrances) {
 				if (ent1.canConnect(ent2)) {
 					toRemove.add(ent1);
 					toRemove.add(ent2);
@@ -414,7 +415,7 @@ public class Map {
 			}
 		}
 
-		for (Coordinates rem : toRemove) {
+		for (MapEntrance rem : toRemove) {
 			entrances.remove(rem);
 		}
 	}
@@ -466,10 +467,10 @@ public class Map {
 					
 					// Block off all unused entrances
 					World w = Bukkit.getWorld(Region.WORLD_NAME);
-					for (Coordinates coords : entrances) {
+					for (MapEntrance coords : entrances) {
 						handleUnusedEntrance(coords, w, xOff, zOff);
 					}
-					for (Coordinates coords : obstructedEntrances) {
+					for (MapEntrance coords : obstructedEntrances) {
 						handleObstructedEntrance(coords, w, xOff, zOff);
 					}
 		    	}
@@ -477,12 +478,12 @@ public class Map {
 		}
 	}
 	
-	private void handleUnusedEntrance(Coordinates coords, World w, int xOff, int zOff) {
+	private void handleUnusedEntrance(MapEntrance coords, World w, int xOff, int zOff) {
 		if (type == RegionType.HARVEST_FIELDS) return;
 		handleObstructedEntrance(coords, w, xOff, zOff);
 	}
 	
-	private void handleObstructedEntrance(Coordinates coords, World w, int xOff, int zOff) {
+	private void handleObstructedEntrance(MapEntrance coords, World w, int xOff, int zOff) {
 		if (type == RegionType.HARVEST_FIELDS) return;
 		int x = (int) -(xOff + MapPieceInstance.X_FIGHT_OFFSET + (coords.getX() * 16));
 		int y = (int) (MapPieceInstance.Y_OFFSET + coords.getY());
@@ -562,7 +563,7 @@ public class Map {
 			
 			for (int x = 0; x < shape.length; x++) {
 				char symbol = '.';
-				for (Coordinates entrance : entrances) {
+				for (MapEntrance entrance : entrances) {
 					if (entrance.getXFacing() == x && entrance.getZFacing() == z) {
 						symbol = 'E';
 					}
