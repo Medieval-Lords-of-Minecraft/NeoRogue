@@ -90,13 +90,12 @@ public class ReforgeConfirmInventory extends CoreInventory {
 
 			toReforge = null;
 			reforgeWith = null;
-			data.giveEquipment(result, (Component) null, null, () -> {
-				new BukkitRunnable() {
-					public void run() {
-						p.closeInventory();
-					}
-				}.runTask(NeoRogue.inst());
-			});
+			data.giveEquipment(result, (Component) null, null);
+			new BukkitRunnable() {
+				public void run() {
+					p.closeInventory();
+				}
+			}.runTask(NeoRogue.inst());
 			return;
 		}
 
