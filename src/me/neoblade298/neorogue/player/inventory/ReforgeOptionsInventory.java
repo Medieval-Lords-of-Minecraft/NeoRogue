@@ -84,23 +84,22 @@ public class ReforgeOptionsInventory extends CoreInventory {
 			cmp = cmp.append(Component.text(" into a(n) ").append(reforged.getHoverable().append(Component.text("!"))));
 			data.getSession().broadcast(cmp);
 			
+			data.giveEquipmentSilent(reforged);
 			toReforge = null;
 			reforgeWith = null;
-			data.giveEquipment(reforged, null, null, () -> {
-				new BukkitRunnable() {
-					public void run() {
-						p.closeInventory();
-					}
-				}.runTask(NeoRogue.inst());
-			});
+			new BukkitRunnable() {
+				public void run() {
+					p.closeInventory();
+				}
+			}.runTask(NeoRogue.inst());
 		}
 	}
 	
 	@Override
 	public void handleInventoryClose(InventoryCloseEvent e) {
 		if (toReforge != null) {
-			data.giveEquipment(toReforge, (Component) null, null);
-			data.giveEquipment(reforgeWith, (Component) null, null);
+			data.giveEquipment(toReforge, null, null);
+			data.giveEquipment(reforgeWith, null, null);
 		}
 	}
 	

@@ -63,17 +63,14 @@ public class EquipmentChoiceInventory extends CoreInventory {
 			
 			p.playSound(p, Sound.ENTITY_ARROW_HIT_PLAYER, 1F, 1F);
 			Equipment eq = equips.get(slot);
-			data.giveEquipment(eq, () -> {
-				if (prev.claimReward(prevSlot)) {
-					prev.openInventory();
-				}
-				else {
-					p.playSound(p, Sound.BLOCK_CHEST_CLOSE, 1F, 1F);
-					p.closeInventory();
-				}
-			}, () -> {
-				openInventory();
-			});
+			data.giveEquipment(eq);
+			if (prev.claimReward(prevSlot)) {
+				prev.openInventory();
+			}
+			else {
+				p.playSound(p, Sound.BLOCK_CHEST_CLOSE, 1F, 1F);
+				p.closeInventory();
+			}
 		}
 	}
 
