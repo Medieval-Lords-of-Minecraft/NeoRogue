@@ -16,6 +16,7 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -174,7 +175,7 @@ public class Pin extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.REDSTONE,
 				"On cast, dash forward, taking all enemies you contact with you. Slow all enemies hit for <white>5</white> seconds. If you hit a wall,"
-				+ " deal " + GlossaryTag.BLUNT.tag(this) + " <yellow>" + damage + "</yellow> damage and reduce the damage of all enemies hit by <white>"
-				+ reduction + "</white> for <white>5</white> seconds.");
+				+ " deal " + GlossaryTag.BLUNT.tag(this) + " " + DescUtil.yellow(damage) + " damage and reduce the damage of all enemies hit by "
+				+ DescUtil.yellow(reduction) + " for <white>5</white> seconds.");
 	}
 }

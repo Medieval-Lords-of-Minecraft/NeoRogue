@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -64,6 +65,6 @@ public class DangerClose extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.FEATHER,
 				"Passive. Whenever you " + GlossaryTag.EVADE.tag(this) + ", increase your " + 
-				GlossaryTag.PHYSICAL.tag(this) + " damage by <yellow>" + (int)(damageIncrease * 100) + "%</yellow>.");
+				GlossaryTag.PHYSICAL.tag(this) + " damage by " + DescUtil.yellow((int)(damageIncrease * 100) + "%") + ".");
 	}
 }

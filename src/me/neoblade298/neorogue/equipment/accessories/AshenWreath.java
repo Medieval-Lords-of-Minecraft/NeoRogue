@@ -44,7 +44,7 @@ public class AshenWreath extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.GUNPOWDER, "Every " + DescUtil.white(thres) + " times you apply " + GlossaryTag.BURN.tag(this) + " to an enemy, gain a stack of " +
+		item = createItem(Material.GUNPOWDER, "Every " + DescUtil.yellow(thres) + " times you apply " + GlossaryTag.BURN.tag(this) + " to an enemy, gain a stack of " +
 		GlossaryTag.SHELL.tag(this, inc, false) + ", up to " + DescUtil.white(MAX) + " stacks.");
 	}
 }

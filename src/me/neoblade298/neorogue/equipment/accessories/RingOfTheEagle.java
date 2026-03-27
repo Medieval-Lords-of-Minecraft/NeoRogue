@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.equipment.accessories;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -49,7 +50,7 @@ public class RingOfTheEagle extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FEATHER,
-				"Passive. Every <white>" + (thres == 10 ? "10th" : "12th") + "</white> time you hit an enemy with a projectile, " +
+				"Passive. Every " + DescUtil.yellow(thres + "th") + " time you hit an enemy with a projectile, " +
 				"decrease all ability cooldowns by <white>1s</white>.");
 	}
 }

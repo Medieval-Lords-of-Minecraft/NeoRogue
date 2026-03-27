@@ -101,6 +101,6 @@ public class LayTrap extends Equipment {
 				DescUtil.charge(this, 1, 2) + ". Afterwards, drop a " + GlossaryTag.TRAP.tag(this) + 
 				" that lasts for " + DescUtil.white("10s") +
 				". If an enemy steps on the trap, they take " + GlossaryTag.BLUNT.tag(this, damage, false) +
-				" damage and receive " + DescUtil.potionUp("Slowness", 3, secs) + ".");
+				" damage and receive " + DescUtil.potion("Slowness", 3, secs, false, true) + ".");
 	}
 }

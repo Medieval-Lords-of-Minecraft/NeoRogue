@@ -994,31 +994,32 @@ GlossaryTag.POISON.tag(this)  // Just the tag name
 GlossaryTag.SHIELDS.tag(this, amount, true)  // Tag with value (true = yellow if upgradable)
 
 // Status application format
-"applies " + GlossaryTag.POISON.tag(this, stacks, true) + " [<white>5s</white>]"
-"gain " + GlossaryTag.SHIELDS.tag(this, amount, true) + " [<white>10s</white>]"
+"applies " + GlossaryTag.POISON.tag(this, stacks, true) + " [" + DescUtil.white("5s") + "]"
+"gain " + GlossaryTag.SHIELDS.tag(this, amount, true) + " [" + DescUtil.white("10s") + "]"
 ```
 
 **Color Formatting:**
-- **Yellow values** (`<yellow>` or `DescUtil.yellow()`): Used for values that change with upgrades
-- **White values** (`<white>` or `DescUtil.white()`): Used for fixed values, durations, thresholds
-- **Duration format**: `[<white>5s</white>]` for fixed durations, `[<yellow>10s</yellow>]` if upgradable
+- **Use `DescUtil` helpers in `setupItem()` descriptions**: Prefer `DescUtil.yellow(...)` and `DescUtil.white(...)` instead of writing raw `<yellow>...</yellow>` / `<white>...</white>` tags.
+- **Yellow values** (`DescUtil.yellow(...)`): Used for values that change with upgrades
+- **White values** (`DescUtil.white(...)`): Used for fixed values, durations, thresholds
+- **Duration format**: Use `DescUtil.duration(seconds, isUpgradable)` for time values in descriptions
 - **Potion effects**: Use `DescUtil.potion("Speed", 0, 5)` for "Speed 1 [5s]" formatting (name, amplifier, duration)
 
 **Common Patterns:**
 ```java
 // Status with stacks and duration
-"applies " + GlossaryTag.POISON.tag(this, poisonStacks, true) + " [<white>5s</white>]"
+"applies " + GlossaryTag.POISON.tag(this, poisonStacks, true) + " [" + DescUtil.white("5s") + "]"
 
 // Damage values
 GlossaryTag.FIRE.tag(this, damage, true) + " damage"
 
 // Defensive values  
-"reduces damage by <yellow>" + reduction + "</yellow>"
+"reduces damage by " + DescUtil.yellow(reduction)
 "gain " + GlossaryTag.SHIELDS.tag(this, shields, true)
 
 // Thresholds and conditions
-"while above <white>50%</white> mana"
-"every <white>3rd</white> hit"
+"while above " + DescUtil.white("50%") + " mana"
+"every " + DescUtil.white("3rd") + " hit"
 ```
 
 **Note**: Always call `GlossaryTag.tag(this)` to register the tag with the equipment for glossary tracking.

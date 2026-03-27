@@ -87,7 +87,7 @@ public class AcidBomb extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.POTION,
 				"On cast, drop an acid bomb that detonates after <white>3</white> seconds. After detonation, every second for <white>5</white> seconds,"
-				+ " enemies within the radius get " + GlossaryTag.POISON.tag(this, poison, false) + ".");
+				+ " enemies within the radius get " + GlossaryTag.POISON.tag(this, poison, true) + ".");
 		PotionMeta pm = (PotionMeta) item.getItemMeta();
 		pm.setColor(Color.LIME);
 		item.setItemMeta(pm);

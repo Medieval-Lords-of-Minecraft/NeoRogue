@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.util.Vector;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Bow;
 import me.neoblade298.neorogue.equipment.BowProjectile;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -76,7 +77,7 @@ public class AthenasLongbow extends Bow {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BOW, "Passive. Increase non-basic attack damage by <yellow>" + 
-				(int)(damageBuff * 100) + "%</yellow>.");
+		item = createItem(Material.BOW, "Passive. Increase non-basic attack damage by " + 
+							DescUtil.yellow((int)(damageBuff * 100) + "%") + ".");
 	}
 }

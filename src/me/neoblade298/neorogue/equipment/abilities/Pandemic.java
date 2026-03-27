@@ -10,6 +10,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -122,8 +123,8 @@ public class Pandemic extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.FERMENTED_SPIDER_EYE,
 				"Passive. Your basic attacks mark enemies for <white>3s</white>. " +
-				GlossaryTag.POISON.tag(this) + " damage against marked enemies deals <yellow>" + 
-				(int)(bonusDamage * 100) + "%</yellow> increased damage. " +
+				GlossaryTag.POISON.tag(this) + " damage against marked enemies deals " +
+				DescUtil.yellow((int)(bonusDamage * 100) + "%") + " increased damage. " +
 				"Applying " + GlossaryTag.POISON.tag(this) + " to marked enemies grants an additional " +
 				GlossaryTag.POISON.tag(this, bonusPoison, true) + " stacks and spreads " +
 				GlossaryTag.POISON.tag(this, areaPoison, true) + " to nearby enemies.");

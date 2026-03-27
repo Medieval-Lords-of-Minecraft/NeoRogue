@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -55,6 +56,6 @@ public class Obfuscation extends Equipment {
 				"Passive. " + GlossaryTag.STEALTH.tag(this) + " and " + GlossaryTag.EVADE.tag(this) + 
 				" application is increased by <white>1</white>, and their durations are increased by <yellow>" + 
 				duration + "s</yellow>. " + GlossaryTag.INSANITY.tag(this) + 
-				" application is increased by <yellow>" + (int)(insanityMult * 100) + "%</yellow>.");
+				" application is increased by " + DescUtil.yellow((int)(insanityMult * 100) + "%") + ".");
 	}
 }

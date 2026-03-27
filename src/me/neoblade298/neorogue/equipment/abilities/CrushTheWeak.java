@@ -83,7 +83,7 @@ public class CrushTheWeak extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.BRICK,
 				"Passive. Gain " + GlossaryTag.SHIELDS.tag(this, SHIELDS, false) + " every " + 
-				DescUtil.white(threshold) + " " + GlossaryTag.INJURY.tag(this) + " you apply. " +
+				DescUtil.yellow(threshold) + " " + GlossaryTag.INJURY.tag(this) + " you apply. " +
 				"Enemies with " + GlossaryTag.INJURY.tag(this) + " take " + 
 				DescUtil.yellow((int)(damagePercent * 100) + "%") + " of your current " + 
 				GlossaryTag.SHIELDS.tag(this) + " as additional " + GlossaryTag.BLUNT.tag(this) + " damage.");

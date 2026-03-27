@@ -5,6 +5,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -49,12 +50,12 @@ public class MonksStaff2 extends Equipment {
 
 		data.addTrigger(id, Trigger.CAST_USABLE, (pdata, in) -> {
 			am.addCount(1);
-			return TriggerResult.keep();
+		return TriggerResult.keep();
 		});
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STICK, "Deals an additional " + bonus + " damage once every time you cast an ability.");
+		item = createItem(Material.STICK, "Deals an additional " + DescUtil.yellow(bonus) + " damage once every time you cast an ability.");
 	}
 }

@@ -123,6 +123,6 @@ public class TwinBolt extends Equipment {
 						+ " before firing two projectiles that split and then curve back inwards. They deal "
 						+ GlossaryTag.FIRE.tag(this, damage, true)
 						+ " damage. Additionally, if both projectiles hit the same enemy, apply "
-						+ GlossaryTag.BURN.tag(this, burn, false) + ".");
+						+ GlossaryTag.BURN.tag(this, burn, true) + ".");
 	}
 }

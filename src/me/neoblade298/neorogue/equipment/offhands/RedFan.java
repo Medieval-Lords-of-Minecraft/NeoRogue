@@ -86,7 +86,7 @@ public class RedFan extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.FIRE_CORAL_FAN, "Every " + DescUtil.yellow(thres) + " times you deal " + GlossaryTag.FIRE.tag(this) + " damage, " +
+		item = createItem(Material.FIRE_CORAL_FAN, "Every " + DescUtil.white(thres) + " times you deal " + GlossaryTag.FIRE.tag(this) + " damage, " +
 				"left clicking will deal " + GlossaryTag.FIRE.tag(this, damage, true) + " damage to all enemies in a cone in front of you.");
 	}
 }

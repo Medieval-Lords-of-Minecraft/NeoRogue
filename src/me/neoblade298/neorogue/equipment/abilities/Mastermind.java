@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.abilities;
 import org.bukkit.Material;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -82,7 +83,7 @@ public class Mastermind extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.BRAIN_CORAL,
 				"Passive. Increase " + GlossaryTag.ELECTRIFIED.tag(this) + " and " + GlossaryTag.POISON.tag(this) + 
-				" application by <yellow>" + (int)(initialMult * 100) + "%</yellow>, doubling after <white>20s</white>. " +
-                "Increase " + GlossaryTag.PHYSICAL.tag(this) + " damage by <yellow>" + physDamage + "</yellow>.");
+				" application by " + DescUtil.yellow((int)(initialMult * 100) + "%") + ", doubling after <white>20s</white>. " +
+                "Increase " + GlossaryTag.PHYSICAL.tag(this) + " damage by " + DescUtil.yellow(physDamage) + ".");
 	}
 }

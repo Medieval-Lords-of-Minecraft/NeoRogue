@@ -6,6 +6,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -80,7 +81,7 @@ public class OdinsDecree extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LIGHTNING_ROD,
-				"Passive. Every <white>2s</white>, <yellow>" + (int)(chance * 100) + "%</yellow> " +
+				"Passive. Every <white>2s</white>, " + DescUtil.yellow((int)(chance * 100) + "%") + " " +
 				"chance to drop a lightning bolt on the nearest enemy, dealing " + 
 				GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage and applying " + 
 				GlossaryTag.ELECTRIFIED.tag(this, electrified, true) + ".");

@@ -104,8 +104,8 @@ public class Viper extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.SPIDER_EYE,
 				"Passive. Your basic attacks mark enemies for <white>3s</white>. " +
-				GlossaryTag.POISON.tag(this) + " damage against marked enemies deals <yellow>" + 
-				(int)(bonusDamage * 100) + "%</yellow> increased damage and grants you " +
-				GlossaryTag.SHIELDS.tag(this, shields, true) + " and " + DescUtil.potion("Speed", 0, 2) + ".");
+				GlossaryTag.POISON.tag(this) + " damage against marked enemies deals " +
+				DescUtil.yellow((int)(bonusDamage * 100) + "%") + " increased damage and grants you " +
+				GlossaryTag.SHIELDS.tag(this, shields, true) + " and " + DescUtil.potion("Speed", 0, 2, false, false) + ".");
 	}
 }

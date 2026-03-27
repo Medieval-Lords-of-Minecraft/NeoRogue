@@ -95,7 +95,7 @@ public class Evanesce extends Equipment {
 				GlossaryTag.DASH.tag(this) + " away from them. Gain " +
 				GlossaryTag.STEALTH.tag(this, 1, false) + " [" + DescUtil.yellow(
                                 stealthDuration / 20) + "]. " +
-				"After <white>1s</white>, gain <yellow>" + (int)(damageBuff * 100) + "%</yellow> increased " +
+				"After <white>1s</white>, gain " + DescUtil.yellow((int)(damageBuff * 100) + "%") + " increased " +
 				GlossaryTag.GENERAL.tag(this) + " damage for <white>5s</white>.");
 	}
 }

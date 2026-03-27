@@ -120,7 +120,7 @@ public class Splinterstone extends Equipment {
 				GlossaryTag.CHANNEL.tag(this) + " for <white>1s</white> before launching a projectile that deals "
 						+ GlossaryTag.EARTHEN.tag(this, damage, true) + " damage and applies "
 						+ GlossaryTag.CONCUSSED.tag(this, conc, true) + ". If an enemy is hit, " + "deal "
-						+ GlossaryTag.PIERCING.tag(this, pierce, false)
+						+ GlossaryTag.PIERCING.tag(this, pierce, true)
 						+ " damage to all enemies in a cone behind them.");
 	}
 }

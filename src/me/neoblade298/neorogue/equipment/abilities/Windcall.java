@@ -70,6 +70,6 @@ public class Windcall extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.WIND_CHARGE,
 				"On cast, knock back nearby enemies in a cone in front of you and reduce their damage by "
-				+ DescUtil.yellow(reduc) + " " + DescUtil.duration(dur, false) + ".");
+				+ DescUtil.yellow(reduc) + " " + DescUtil.duration(dur, true) + ".");
 	}
 }
