@@ -25,6 +25,7 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder.SQLAction;
 import me.neoblade298.neocore.shared.util.SharedUtil;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Ammunition;
 import me.neoblade298.neorogue.equipment.Artifact;
@@ -545,31 +546,69 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 				else {
 					Util.displayError(p, "Your storage is full! Choose an item to trash.");
 				}
+				Bukkit.getLogger().info("[NeoRogue Debug] Full storage recovery triggered for " + p.getName()
+						+ " with item " + eq.getId() + ", cursor empty=" + isCursorEmpty(p));
 
 				new BukkitRunnable() {
 					@Override
 					public void run() {
+						Bukkit.getLogger().info("[NeoRogue Debug] Opening storage inventory for " + p.getName()
+								+ " with cursor empty=" + isCursorEmpty(p));
 						new StorageInventory(PlayerSessionData.this);
 
 						ItemStack cursor = p.getItemOnCursor();
 						if (cursor == null || cursor.getType().isAir()) {
 							p.setItemOnCursor(eq.getItem());
+							Bukkit.getLogger().info("[NeoRogue Debug] Placed full-storage item on cursor for " + p.getName()
+									+ ": " + eq.getId());
 						}
 						else {
-							ItemStack[] overflow = p.getInventory().addItem(eq.getItem()).values().toArray(new ItemStack[0]);
-							for (ItemStack left : overflow) {
-								if (left != null && !left.getType().isAir()) {
-									p.getWorld().dropItemNaturally(p.getLocation(), left);
-								}
+							int movedSlot = moveCursorItemIntoInventory(p, cursor);
+							Bukkit.getLogger().info("[NeoRogue Debug] Existing cursor item for " + p.getName()
+									+ " moved to slot " + movedSlot + " before opening storage for reward " + eq.getId());
+							if (movedSlot >= 0) {
+								p.setItemOnCursor(eq.getItem());
+							}
+							else {
+								Util.displayError(p, "Your cursor item could not be moved. Clear inventory space and try again.");
 							}
 						}
 					}
-				}.runTask(s.getPlugin());
+				}.runTask(NeoRogue.inst());
 			}
 
 			// If player storage is full, send a message
 			checkStorageLimit();
 		}
+	}
+
+	private boolean isCursorEmpty(Player player) {
+		ItemStack cursor = player.getItemOnCursor();
+		return cursor == null || cursor.getType().isAir();
+	}
+
+	private int moveCursorItemIntoInventory(Player player, ItemStack cursorItem) {
+		for (int slot = 0; slot < 9; slot++) {
+			ItemStack hotbarItem = player.getInventory().getItem(slot);
+			if (hotbarItem == null || hotbarItem.getType().isAir()) {
+				player.getInventory().setItem(slot, cursorItem.clone());
+				player.setItemOnCursor(null);
+				return slot;
+			}
+		}
+
+		for (int slot = 9; slot < player.getInventory().getSize(); slot++) {
+			ItemStack inventoryItem = player.getInventory().getItem(slot);
+			if (inventoryItem == null || inventoryItem.getType().isAir()) {
+				player.getInventory().setItem(slot, cursorItem.clone());
+				player.setItemOnCursor(null);
+				return slot;
+			}
+		}
+
+		Bukkit.getLogger().warning("[NeoRogue Debug] Could not move cursor item into inventory for " + player.getName()
+				+ "; leaving existing cursor item in place");
+		return -1;
 	}
 	
 	public boolean sendToStorage(Equipment eq) {
