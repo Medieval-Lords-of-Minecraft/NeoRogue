@@ -16,6 +16,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.Audience;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
@@ -43,6 +45,7 @@ import me.neoblade298.neorogue.equipment.weapons.WoodenDagger;
 import me.neoblade298.neorogue.equipment.weapons.WoodenSword;
 import me.neoblade298.neorogue.equipment.weapons.WoodenWand;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
+import me.neoblade298.neorogue.player.inventory.StorageInventory;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.event.SessionAction;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
@@ -536,8 +539,32 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 				if (toSelf != null) Util.msg(p, toSelf.append(SharedUtil.color(", it was sent to storage.")));
 			}
 			else {
-				// Should basically never happen
-				Util.displayError(p, "Your storage is full!");
+				if (toSelf != null) {
+					Util.msg(p, toSelf.append(SharedUtil.color(", but your storage is full. Choose an item to trash.")));
+				}
+				else {
+					Util.displayError(p, "Your storage is full! Choose an item to trash.");
+				}
+
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						new StorageInventory(PlayerSessionData.this);
+
+						ItemStack cursor = p.getItemOnCursor();
+						if (cursor == null || cursor.getType().isAir()) {
+							p.setItemOnCursor(eq.getItem());
+						}
+						else {
+							ItemStack[] overflow = p.getInventory().addItem(eq.getItem()).values().toArray(new ItemStack[0]);
+							for (ItemStack left : overflow) {
+								if (left != null && !left.getType().isAir()) {
+									p.getWorld().dropItemNaturally(p.getLocation(), left);
+								}
+							}
+						}
+					}
+				}.runTask(s.getPlugin());
 			}
 
 			// If player storage is full, send a message
