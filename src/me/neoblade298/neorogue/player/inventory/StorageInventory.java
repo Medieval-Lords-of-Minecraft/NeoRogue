@@ -47,7 +47,7 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 	}
 
 	private static int getStorageInventorySize(PlayerSessionData data, boolean includeSellButton) {
-		int controls = includeSellButton ? 2 : 1; // Trash + optional sell button
+		int controls = 1; // Exactly one control button: Trash (normal) or Sell (shop)
 		int slotsNeeded = data.getMaxStorage() + controls;
 		int rows = (int) Math.ceil(slotsNeeded / 9.0D);
 		if (rows < 1) rows = 1;
@@ -59,19 +59,21 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 		ItemStack[] contents = inv.getContents();
 		Equipment[] storage = data.getStorage();
 		int maxStorage = data.getMaxStorage();
-		trashSlot = maxStorage;
-		sellSlot = isShop ? maxStorage + 1 : -1;
+		trashSlot = isShop ? -1 : maxStorage;
+		sellSlot = isShop ? maxStorage : -1;
 
 		for (int i = 0; i < maxStorage; i++) {
 			if (storage[i] == null) continue;
 			contents[i] = storage[i].getItem();
 		}
 
-		contents[trashSlot] = CoreInventory.createButton(
-				Material.HOPPER, Component.text("Trash", NamedTextColor.RED),
-				(TextComponent) NeoCore.miniMessage().deserialize("Drag equipment here to trash it."),
-				250, NamedTextColor.GRAY
-		);
+		if (!isShop) {
+			contents[trashSlot] = CoreInventory.createButton(
+					Material.HOPPER, Component.text("Trash", NamedTextColor.RED),
+					(TextComponent) NeoCore.miniMessage().deserialize("Drag equipment here to trash it."),
+					250, NamedTextColor.GRAY
+			);
+		}
 		
 		if (isShop) {
 			contents[sellSlot] = CoreInventory.createButton(
@@ -108,9 +110,15 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 			return;
 		}
 
-		if (e.getSlot() == trashSlot && !e.getCursor().getType().isAir()) {
+		if (trashSlot >= 0 && e.getSlot() == trashSlot && !e.getCursor().getType().isAir()) {
 			e.setCancelled(true);
 			tryTrashCursorItem(pinv, e.getCursor());
+			return;
+		}
+
+		// Prevent picking up trash button
+		if (trashSlot >= 0 && e.getSlot() == trashSlot) {
+			e.setCancelled(true);
 			return;
 		}
 

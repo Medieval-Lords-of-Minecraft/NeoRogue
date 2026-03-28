@@ -546,26 +546,18 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 				else {
 					Util.displayError(p, "Your storage is full! Choose an item to trash.");
 				}
-				Bukkit.getLogger().info("[NeoRogue Debug] Full storage recovery triggered for " + p.getName()
-						+ " with item " + eq.getId() + ", cursor empty=" + isCursorEmpty(p));
 
 				new BukkitRunnable() {
 					@Override
 					public void run() {
-						Bukkit.getLogger().info("[NeoRogue Debug] Opening storage inventory for " + p.getName()
-								+ " with cursor empty=" + isCursorEmpty(p));
 						new StorageInventory(PlayerSessionData.this);
 
 						ItemStack cursor = p.getItemOnCursor();
 						if (cursor == null || cursor.getType().isAir()) {
 							p.setItemOnCursor(eq.getItem());
-							Bukkit.getLogger().info("[NeoRogue Debug] Placed full-storage item on cursor for " + p.getName()
-									+ ": " + eq.getId());
 						}
 						else {
 							int movedSlot = moveCursorItemIntoInventory(p, cursor);
-							Bukkit.getLogger().info("[NeoRogue Debug] Existing cursor item for " + p.getName()
-									+ " moved to slot " + movedSlot + " before opening storage for reward " + eq.getId());
 							if (movedSlot >= 0) {
 								p.setItemOnCursor(eq.getItem());
 							}
@@ -581,13 +573,8 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 			checkStorageLimit();
 		}
 	}
-
-	private boolean isCursorEmpty(Player player) {
-		ItemStack cursor = player.getItemOnCursor();
-		return cursor == null || cursor.getType().isAir();
-	}
-
-	private int moveCursorItemIntoInventory(Player player, ItemStack cursorItem) {
+	
+private int moveCursorItemIntoInventory(Player player, ItemStack cursorItem) {
 		for (int slot = 0; slot < 9; slot++) {
 			ItemStack hotbarItem = player.getInventory().getItem(slot);
 			if (hotbarItem == null || hotbarItem.getType().isAir()) {
@@ -606,13 +593,12 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 			}
 		}
 
-		Bukkit.getLogger().warning("[NeoRogue Debug] Could not move cursor item into inventory for " + player.getName()
-				+ "; leaving existing cursor item in place");
+		Bukkit.getLogger().warning("[NeoRogue] Could not move cursor item into inventory for " + player.getName());
 		return -1;
 	}
 	
-	public boolean sendToStorage(Equipment eq) {
-		for (int i = 0; i < storage.length; i++) {
+public boolean sendToStorage(Equipment eq) {
+		for (int i = 0; i < maxStorage; i++) {
 			if (storage[i] == null) {
 				storage[i] = eq;
 				return true;
