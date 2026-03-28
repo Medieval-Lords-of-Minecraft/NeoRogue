@@ -16,8 +16,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.Audience;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
@@ -25,7 +23,6 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder.SQLAction;
 import me.neoblade298.neocore.shared.util.SharedUtil;
-import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Ammunition;
 import me.neoblade298.neorogue.equipment.Artifact;
@@ -46,7 +43,6 @@ import me.neoblade298.neorogue.equipment.weapons.WoodenDagger;
 import me.neoblade298.neorogue.equipment.weapons.WoodenSword;
 import me.neoblade298.neorogue.equipment.weapons.WoodenWand;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
-import me.neoblade298.neorogue.player.inventory.StorageInventory;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.event.SessionAction;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
@@ -540,33 +536,8 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 				if (toSelf != null) Util.msg(p, toSelf.append(SharedUtil.color(", it was sent to storage.")));
 			}
 			else {
-				if (toSelf != null) {
-					Util.msg(p, toSelf.append(SharedUtil.color(", but your storage is full. Choose an item to trash.")));
-				}
-				else {
-					Util.displayError(p, "Your storage is full! Choose an item to trash.");
-				}
-
-				new BukkitRunnable() {
-					@Override
-					public void run() {
-						new StorageInventory(PlayerSessionData.this);
-
-						ItemStack cursor = p.getItemOnCursor();
-						if (cursor == null || cursor.getType().isAir()) {
-							p.setItemOnCursor(eq.getItem());
-						}
-						else {
-							int movedSlot = moveCursorItemIntoInventory(p, cursor);
-							if (movedSlot >= 0) {
-								p.setItemOnCursor(eq.getItem());
-							}
-							else {
-								Util.displayError(p, "Your cursor item could not be moved. Clear inventory space and try again.");
-							}
-						}
-					}
-				}.runTask(NeoRogue.inst());
+				// Should basically never happen
+				Util.displayError(p, "Your storage is full!");
 			}
 
 			// If player storage is full, send a message
@@ -574,30 +545,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 		}
 	}
 	
-private int moveCursorItemIntoInventory(Player player, ItemStack cursorItem) {
-		for (int slot = 0; slot < 9; slot++) {
-			ItemStack hotbarItem = player.getInventory().getItem(slot);
-			if (hotbarItem == null || hotbarItem.getType().isAir()) {
-				player.getInventory().setItem(slot, cursorItem.clone());
-				player.setItemOnCursor(null);
-				return slot;
-			}
-		}
-
-		for (int slot = 9; slot < player.getInventory().getSize(); slot++) {
-			ItemStack inventoryItem = player.getInventory().getItem(slot);
-			if (inventoryItem == null || inventoryItem.getType().isAir()) {
-				player.getInventory().setItem(slot, cursorItem.clone());
-				player.setItemOnCursor(null);
-				return slot;
-			}
-		}
-
-		Bukkit.getLogger().warning("[NeoRogue] Could not move cursor item into inventory for " + player.getName());
-		return -1;
-	}
-	
-public boolean sendToStorage(Equipment eq) {
+	public boolean sendToStorage(Equipment eq) {
 		for (int i = 0; i < maxStorage; i++) {
 			if (storage[i] == null) {
 				storage[i] = eq;
