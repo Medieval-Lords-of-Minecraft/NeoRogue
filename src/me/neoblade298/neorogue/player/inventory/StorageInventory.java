@@ -59,8 +59,9 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 		ItemStack[] contents = inv.getContents();
 		Equipment[] storage = data.getStorage();
 		int maxStorage = data.getMaxStorage();
-		trashSlot = isShop ? -1 : maxStorage;
-		sellSlot = isShop ? maxStorage : -1;
+		int controlSlot = contents.length - 1;
+		trashSlot = isShop ? -1 : controlSlot;
+		sellSlot = isShop ? controlSlot : -1;
 
 		for (int i = 0; i < maxStorage; i++) {
 			if (storage[i] == null) continue;
