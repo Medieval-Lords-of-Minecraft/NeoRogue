@@ -16,6 +16,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.Audience;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
@@ -23,6 +24,7 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder;
 import me.neoblade298.neocore.shared.util.SQLInsertBuilder.SQLAction;
 import me.neoblade298.neocore.shared.util.SharedUtil;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Ammunition;
 import me.neoblade298.neorogue.equipment.Artifact;
@@ -43,6 +45,7 @@ import me.neoblade298.neorogue.equipment.weapons.WoodenDagger;
 import me.neoblade298.neorogue.equipment.weapons.WoodenSword;
 import me.neoblade298.neorogue.equipment.weapons.WoodenWand;
 import me.neoblade298.neorogue.player.inventory.PlayerSessionInventory;
+import me.neoblade298.neorogue.player.inventory.StorageInventory;
 import me.neoblade298.neorogue.session.Session;
 import me.neoblade298.neorogue.session.event.SessionAction;
 import me.neoblade298.neorogue.session.event.SessionTrigger;
@@ -535,24 +538,36 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 			if (sendToStorage(eq)) {
 				if (toSelf != null) Util.msg(p, toSelf.append(SharedUtil.color(", it was sent to storage.")));
 			}
+			// If storage is full, open storage GUI
 			else {
-				// Should basically never happen
-				Util.displayError(p, "Your storage is full!");
+				Util.displayError(p, "Your storage exceeds the maximum storage limit! Trash some items to make space!");
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						new StorageInventory(PlayerSessionData.this);
+					}
+				}.runTask(NeoRogue.inst());
 			}
-
-			// If player storage is full, send a message
-			checkStorageLimit();
 		}
 	}
-	
+
 	public boolean sendToStorage(Equipment eq) {
-		for (int i = 0; i < maxStorage; i++) {
+		for (int i = 0; i < storage.length; i++) {
 			if (storage[i] == null) {
 				storage[i] = eq;
-				return true;
+				return i < maxStorage;
 			}
 		}
+		Bukkit.getLogger().warning("[NeoRogue] Storage completely full for " + getPlayer().getName() + ", could not add overflow item " + eq.getId());
 		return false;
+	}
+
+	public int countSavedStorageItems() {
+		int count = 0;
+		for (Equipment eq : storage) {
+			if (eq != null) count++;
+		}
+		return count;
 	}
 
 	public void giveEquipment(Equipment eq) {
@@ -747,6 +762,7 @@ public class PlayerSessionData extends MapViewer implements Comparable<PlayerSes
 			if (storage[i] == null) continue;
 			size++;
 		}
+
 		if (size > maxStorage) {
 			Util.displayError(p, "Your storage exceeds the maximum storage limit! Trash some items to make space!");
 			return true;

@@ -38,7 +38,7 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 		isShop = data.getSession().getInstance() instanceof ShopInstance;
 		setupInventory();
 	}
-	
+
 	public StorageInventory(PlayerSessionData data, Player spectator) {
 		super(spectator, Bukkit.createInventory(spectator, getStorageInventorySize(data, false), Component.text(data.getData().getDisplay() + "'s Storage", NamedTextColor.GOLD)));
 		this.data = data;
@@ -48,7 +48,8 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 
 	private static int getStorageInventorySize(PlayerSessionData data, boolean includeSellButton) {
 		int controls = 1; // Exactly one control button: Trash (normal) or Sell (shop)
-		int slotsNeeded = data.getMaxStorage() + controls;
+		int itemCount = data.countSavedStorageItems();
+		int slotsNeeded = Math.max(data.getMaxStorage(), itemCount) + controls;
 		int rows = (int) Math.ceil(slotsNeeded / 9.0D);
 		if (rows < 1) rows = 1;
 		return rows * 9;
@@ -63,9 +64,10 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 		trashSlot = isShop ? -1 : controlSlot;
 		sellSlot = isShop ? controlSlot : -1;
 
-		for (int i = 0; i < maxStorage; i++) {
+		int itemSlot = 0;
+		for (int i = 0; i < storage.length; i++) {
 			if (storage[i] == null) continue;
-			contents[i] = storage[i].getItem();
+			contents[itemSlot++] = storage[i].getItem();
 		}
 
 		if (!isShop) {
@@ -85,11 +87,12 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 			);
 		}
 
+		boolean overStorageLimit = data.countSavedStorageItems() > maxStorage;
 		for (int i = maxStorage; i < contents.length; i++) {
 			if (contents[i] != null) continue;
 			contents[i] = CoreInventory.createButton(
-					Material.GRAY_STAINED_GLASS_PANE,
-					Component.text("Max Storage: " + data.getMaxStorage(), NamedTextColor.GRAY)
+					overStorageLimit ? Material.RED_STAINED_GLASS_PANE : Material.GRAY_STAINED_GLASS_PANE,
+					Component.text("Max Storage: " + data.getMaxStorage(), overStorageLimit ? NamedTextColor.RED : NamedTextColor.GRAY)
 			);
 		}
 		inv.setContents(contents);
@@ -251,8 +254,10 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 		Equipment[] snapshot = new Equipment[PlayerSessionData.MAX_STORAGE_SIZE];
 		int iter = 0;
 		ItemStack[] contents = inv.getContents();
+		int controlSlot = contents.length - 1;
 
-		for (int i = 0; i < data.getMaxStorage(); i++) {
+		for (int i = 0; i < contents.length; i++) {
+			if (i == controlSlot) continue; // Skip control button (trash/sell)
 			ItemStack item = contents[i];
 			if (item == null || item.getType() == Material.GRAY_STAINED_GLASS_PANE) continue;
 			NBTItem nbti = new NBTItem(item);
@@ -268,12 +273,14 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 	
 	public void handleInventoryClose() {
 		if (spectator != null) return;
-		// Save storage
+		// Save storage - include overflow items beyond maxStorage
 		Equipment[] newSave = new Equipment[PlayerSessionData.MAX_STORAGE_SIZE];
 		int iter = 0;
 		ItemStack[] contents = inv.getContents();
+		int controlSlot = contents.length - 1;
 		
-		for (int i = 0; i < data.getMaxStorage(); i++) {
+		for (int i = 0; i < contents.length; i++) {
+			if (i == controlSlot) continue; // Skip control button (trash/sell)
 			ItemStack item = contents[i];
 			if (item == null || item.getType() == Material.GRAY_STAINED_GLASS_PANE) continue;
 			NBTItem nbti = new NBTItem(item);
