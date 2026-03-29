@@ -57,7 +57,7 @@ public class CailiricCrystal extends Artifact {
 				// Must be done with runnable otherwise concurrent exception, adding new artifact while iterating through artifacts
 				new BukkitRunnable() {
 					public void run() {
-						data.giveEquipment(CailiricCrystal.get(), (Component) null, null);
+						data.giveEquipment(CailiricCrystal.get(), null, null);
 						Util.msg(data.getPlayer(), Component.empty().append(hoverable).append(
 							SharedUtil.color(
 							"<gray> potency has increased to " + DescUtil.white(inc * (data.getArtifacts().get(id).getAmount())

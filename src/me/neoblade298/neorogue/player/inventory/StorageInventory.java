@@ -28,35 +28,58 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 	private Player spectator;
 	private PlayerSessionData data;
 	private boolean isShop;
-	
-	private static final int SELL = 8;
+	private int sellSlot = -1;
+	private int trashSlot;
 
 	public StorageInventory(PlayerSessionData data) {
-		super(data.getPlayer(), Bukkit.createInventory(data.getPlayer(), data.getMaxStorage() <= 9 ? 9 : 18, Component.text("Storage", NamedTextColor.GOLD)));
+		super(data.getPlayer(), Bukkit.createInventory(data.getPlayer(), getStorageInventorySize(data, data.getSession().getInstance() instanceof ShopInstance), Component.text("Storage", NamedTextColor.GOLD)));
 		new PlayerSessionInventory(data);
 		this.data = data;
 		isShop = data.getSession().getInstance() instanceof ShopInstance;
 		setupInventory();
 	}
-	
+
 	public StorageInventory(PlayerSessionData data, Player spectator) {
-		super(spectator, Bukkit.createInventory(spectator, data.getMaxStorage() <= 9 ? 9 : 18, Component.text(data.getData().getDisplay() + "'s Storage", NamedTextColor.GOLD)));
+		super(spectator, Bukkit.createInventory(spectator, getStorageInventorySize(data, false), Component.text(data.getData().getDisplay() + "'s Storage", NamedTextColor.GOLD)));
 		this.data = data;
 		this.spectator = spectator;
 		setupInventory();
+	}
+
+	private static int getStorageInventorySize(PlayerSessionData data, boolean includeSellButton) {
+		int controls = 1; // Exactly one control button: Trash (normal) or Sell (shop)
+		int itemCount = data.countSavedStorageItems();
+		int slotsNeeded = Math.max(data.getMaxStorage(), itemCount) + controls;
+		int rows = (int) Math.ceil(slotsNeeded / 9.0D);
+		if (rows < 1) rows = 1;
+		return rows * 9;
 	}
 	
 	private void setupInventory() {
 		p.playSound(p, Sound.BLOCK_ENDER_CHEST_OPEN, 1F, 1F);
 		ItemStack[] contents = inv.getContents();
 		Equipment[] storage = data.getStorage();
+		int maxStorage = data.getMaxStorage();
+		int controlSlot = contents.length - 1;
+		trashSlot = isShop ? -1 : controlSlot;
+		sellSlot = isShop ? controlSlot : -1;
+
+		int itemSlot = 0;
 		for (int i = 0; i < storage.length; i++) {
 			if (storage[i] == null) continue;
-			contents[i] = storage[i].getItem();
+			contents[itemSlot++] = storage[i].getItem();
+		}
+
+		if (!isShop) {
+			contents[trashSlot] = CoreInventory.createButton(
+					Material.HOPPER, Component.text("Trash", NamedTextColor.RED),
+					(TextComponent) NeoCore.miniMessage().deserialize("Drag equipment here to trash it."),
+					250, NamedTextColor.GRAY
+			);
 		}
 		
 		if (isShop) {
-			contents[SELL] = CoreInventory.createButton(
+			contents[sellSlot] = CoreInventory.createButton(
 					Material.GOLD_NUGGET, Component.text("Sell Items", NamedTextColor.RED),
 					(TextComponent) NeoCore.miniMessage().deserialize(
 							"Drag equipment here to sell them " + "for <yellow>" + ShopInventory.SELL_PRICE + " coins</yellow>."
@@ -64,11 +87,12 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 			);
 		}
 
-		for (int i = data.getMaxStorage(); i < contents.length; i++) {
+		boolean overStorageLimit = data.countSavedStorageItems() > maxStorage;
+		for (int i = maxStorage; i < contents.length; i++) {
 			if (contents[i] != null) continue;
 			contents[i] = CoreInventory.createButton(
-					Material.GRAY_STAINED_GLASS_PANE,
-					Component.text("Max Storage: " + data.getMaxStorage(), NamedTextColor.GRAY)
+					overStorageLimit ? Material.RED_STAINED_GLASS_PANE : Material.GRAY_STAINED_GLASS_PANE,
+					Component.text("Max Storage: " + data.getMaxStorage(), overStorageLimit ? NamedTextColor.RED : NamedTextColor.GRAY)
 			);
 		}
 		inv.setContents(contents);
@@ -83,10 +107,23 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 		PlayerSessionInventory pinv = (PlayerSessionInventory) InventoryListener.getLowerInventory(p);
 		
 		// First check for sells
-		if (e.getSlot() == SELL) {
+		if (e.getSlot() == sellSlot) {
 			e.setCancelled(true);
 			if (e.getCurrentItem() == null) return;
 			ShopInventory.trySellItem(p, data, e.getCursor(), getLiveStorageSnapshot());
+			return;
+		}
+
+		if (trashSlot >= 0 && e.getSlot() == trashSlot && !e.getCursor().getType().isAir()) {
+			e.setCancelled(true);
+			tryTrashCursorItem(pinv, e.getCursor());
+			return;
+		}
+
+		// Prevent picking up trash button
+		if (trashSlot >= 0 && e.getSlot() == trashSlot) {
+			e.setCancelled(true);
+			return;
 		}
 
 		// Ignore gray panes
@@ -139,7 +176,7 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 				p.playSound(p, Sound.ITEM_ARMOR_EQUIP_GENERIC, 1F, 1F);
 				p.setItemOnCursor(e.getCurrentItem());
 				inv.setItem(e.getSlot(), null);
-				if (e.getSlot() == SELL) {
+				if (e.getSlot() == sellSlot) {
 					pinv.clearHighlights();
 				}
 				else {
@@ -217,8 +254,10 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 		Equipment[] snapshot = new Equipment[PlayerSessionData.MAX_STORAGE_SIZE];
 		int iter = 0;
 		ItemStack[] contents = inv.getContents();
+		int controlSlot = contents.length - 1;
 
-		for (int i = 0; i < contents.length - 1; i++) {
+		for (int i = 0; i < contents.length; i++) {
+			if (i == controlSlot) continue; // Skip control button (trash/sell)
 			ItemStack item = contents[i];
 			if (item == null || item.getType() == Material.GRAY_STAINED_GLASS_PANE) continue;
 			NBTItem nbti = new NBTItem(item);
@@ -234,16 +273,18 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 	
 	public void handleInventoryClose() {
 		if (spectator != null) return;
-		// Save storage
+		// Save storage - include overflow items beyond maxStorage
 		Equipment[] newSave = new Equipment[PlayerSessionData.MAX_STORAGE_SIZE];
 		int iter = 0;
 		ItemStack[] contents = inv.getContents();
+		int controlSlot = contents.length - 1;
 		
-		// Ignores the sell slot
-		for (int i = 0; i < contents.length - 1; i++) {
+		for (int i = 0; i < contents.length; i++) {
+			if (i == controlSlot) continue; // Skip control button (trash/sell)
 			ItemStack item = contents[i];
 			if (item == null || item.getType() == Material.GRAY_STAINED_GLASS_PANE) continue;
 			NBTItem nbti = new NBTItem(item);
+			if (!nbti.hasTag("equipId")) continue;
 			Equipment eq = Equipment.get(nbti.getString("equipId"), nbti.getBoolean("isUpgraded"));
 			if (eq == null) {
 				Bukkit.getLogger().warning("[NeoRogue] Failed to save item " + nbti.getString("equipId") + " to storage of " + p.getName());
@@ -264,13 +305,55 @@ public class StorageInventory extends CoreInventory implements ShiftClickableInv
 		e.setCancelled(true);
 	}
 
+	private void tryTrashCursorItem(PlayerSessionInventory pinv, ItemStack cursor) {
+		NBTItem nbti = new NBTItem(cursor);
+		if (!nbti.hasTag("equipId")) {
+			Bukkit.getLogger().warning("[NeoRogue] " + p.getName() + " tried to trash non-equipment item: " + cursor);
+			return;
+		}
+		Equipment eq = Equipment.get(nbti.getString("equipId"), nbti.getBoolean("isUpgraded"));
+		if (eq == null) {
+			Bukkit.getLogger().warning("[NeoRogue] " + p.getName() + " tried to trash non-equipment item: " + cursor);
+			return;
+		}
+		if (eq.isCursed()) {
+			Util.displayError(p, "You can't trash cursed items!");
+			return;
+		}
+
+		Equipment[] projectedStorage = getLiveStorageSnapshot();
+
+		if (eq.getType() == Equipment.EquipmentType.WEAPON && data.countOwnedWeapons(projectedStorage) == 0) {
+			Util.displayError(p, "You can't trash your last weapon!");
+			return;
+		}
+		if (PlayerSessionData.isUnlimitedAmmunition(eq) && data.countOwnedUnlimitedAmmunition(projectedStorage) == 0) {
+			Util.displayError(p, "You can't trash your last unlimited ammunition!");
+			return;
+		}
+
+		pinv.clearHighlights();
+		p.playSound(p, Sound.ENTITY_BLAZE_SHOOT, 1F, 1F);
+		p.setItemOnCursor(null);
+	}
+
 	@Override
 	public boolean canShiftClickIn(ItemStack item) {
-		return inv.firstEmpty() != -1;
+		for (int i = 0; i < data.getMaxStorage(); i++) {
+			if (inv.getItem(i) == null) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override
 	public void handleShiftClickIn(InventoryClickEvent ev, ItemStack item) {
-		inv.addItem(item);
+		for (int i = 0; i < data.getMaxStorage(); i++) {
+			if (inv.getItem(i) == null) {
+				inv.setItem(i, item);
+				return;
+			}
+		}
 	}
 }
