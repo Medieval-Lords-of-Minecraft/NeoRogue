@@ -5,6 +5,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -40,13 +41,16 @@ public class IronMaiden extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		Player p = data.getPlayer();
 		ActionMeta am = new ActionMeta();
 		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, (pdata, inputs) -> {
+			Player p = data.getPlayer();
 			if (p.getHandRaised() != EquipmentSlot.OFF_HAND || !p.isHandRaised()) return TriggerResult.keep();
 			ReceiveDamageEvent ev = (ReceiveDamageEvent) inputs;
 			ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), new Buff(data, reduction, 0, StatTracker.defenseBuffAlly(am.getId(), this)));
 			p.playSound(p, Sound.ITEM_SHIELD_BLOCK, 1F, 1F);
+			long now = System.currentTimeMillis();
+			if (now - am.getTime() < 1000L) return TriggerResult.keep();
+			am.setTime(now);
 			data.applyStatus(StatusType.THORNS, data, thorns, -1);
 			am.addCount(1);
 			return TriggerResult.keep();
@@ -65,7 +69,7 @@ public class IronMaiden extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SHIELD, "When raised, reduces all damage by <yellow>" + reduction + "</yellow>. Receiving damage while your shield is raised " +
-		"grants " + GlossaryTag.THORNS.tag(this, thorns, true) + " and empowers your next basic attack to deal half your current " +
-		GlossaryTag.THORNS.tag(this) + " stacks as " + GlossaryTag.THORNS.tag(this) + " damage.");
+		"grants " + GlossaryTag.THORNS.tag(this, thorns, true) +  " and empowers your next basic attack to deal half your current " +
+		GlossaryTag.THORNS.tag(this) + " stacks as " + GlossaryTag.THORNS.tag(this) + " damage (" + DescUtil.white(1 + "s") + " cooldown) .");
 	}
 }
