@@ -7,7 +7,7 @@ import me.neoblade298.neorogue.region.Region;
 
 /* Assumed to always be rotating around 0,0 origin
  * After rotating, the coordinates translate themselves to be above 0,0
- * Used for MapEntrances and MapSpawners, MapEntrance uses direction too
+ * Used for point-based map data like spawners and mythic locations.
  */
 public class Coordinates extends Rotatable {
 	private double x, y, z, xp, zp, xlen, zlen, xOff, yOff, zOff;
