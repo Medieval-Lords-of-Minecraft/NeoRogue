@@ -69,6 +69,7 @@ public abstract class Instance {
 			spectatorFlags.applyFlags(p);
 		}
 		setup();
+		s.getSessionType().onInstanceSetup(s, this);
 	}
 	
 	public void handlePlayerLogin(Player p) {

@@ -23,7 +23,6 @@ import me.neoblade298.neocore.bukkit.util.Util;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment.EquipmentClass;
 import me.neoblade298.neorogue.player.inventory.SessionSettingsInventory;
-import me.neoblade298.neorogue.region.RegionType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -224,7 +223,7 @@ public class NewLobbyInstance extends LobbyInstance {
 		s.setBusy(true);
 		s.addPlayers(players);
 		s.broadcast("Generating your game...");
-		s.generateRegion(RegionType.LOW_DISTRICT);
+        s.generateRegion();
 		s.setNode(s.getRegion().getNodes()[0][2]);
 
 		new BukkitRunnable() {

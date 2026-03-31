@@ -77,6 +77,7 @@ public class Session {
 	private SessionStatistics stats;
 	private int saveSlot, xOff, zOff, nodesVisited, regionsCompleted, potionChance = 25;
 	private Plot plot;
+	private SessionType sessionType;
 	private boolean busy;
 	private long nextSuggest = 0L;
 	private ArrayList<String> spectatorLines = new ArrayList<String>();
@@ -151,13 +152,14 @@ public class Session {
 	private static void pasteSchematic(Clipboard clipboard, EditSession editSession, Session session, int zOff) {
 		pasteSchematic(clipboard, editSession, session, 0, 0, zOff);
 	}
-	
-	public Session(Player p, Plot plot, int saveSlot, boolean isNew) {
+
+	public Session(Player p, Plot plot, int saveSlot, boolean isNew, SessionType sessionType) {
 		this.saveSlot = saveSlot;
 		this.xOff = plot.getXOffset();
 		this.zOff = plot.getZOffset();
 		host = p.getUniqueId();
 		this.plot = plot;
+		this.sessionType = sessionType;
 		this.inst = isNew ? new NewLobbyInstance(p, this) : new LoadLobbyInstance(p, this);
 		generateInterstitials();
 
@@ -186,6 +188,7 @@ public class Session {
 							"SELECT * FROM neorogue_sessions WHERE host = '" + host + "' AND slot = " + saveSlot + ";"
 					);
 					sessSet.next();
+					sessionType = getSessionTypeFromRow(sessSet);
 					nodesVisited = sessSet.getInt("nodesVisited");
 					int pos = sessSet.getInt("position");
 					int lane = sessSet.getInt("lane");
@@ -211,6 +214,14 @@ public class Session {
 				}
 			}
 		}.runTaskAsynchronously(NeoRogue.inst());
+	}
+
+	private SessionType getSessionTypeFromRow(ResultSet sessSet) {
+		try {
+			return SessionType.fromStorage(sessSet.getString("sessionType"));
+		} catch (SQLException ex) {
+			return SessionType.STANDARD;
+		}
 	}
 	
 	public ArrayList<String> getSpectatorLines() {
@@ -262,7 +273,8 @@ public class Session {
 					.addValue(curr.getRow()).addValue(curr.getLane()).addValue(nodesVisited).addValue(regionsCompleted).addValue(potionChance)
 					.addValue(enemyHealthScale).addValue(enemyDamageScale).addValue(coinReduction).addValue(fightTimeReduction)
 					.addValue(endless ? 1 : 0)
-					.addValue(System.currentTimeMillis()).addString(inst.serialize(party));
+					.addValue(System.currentTimeMillis()).addString(inst.serialize(party))
+					.addString(sessionType.name());
 			insert.execute(sql.build());
 		} catch (SQLException ex) {
 			Bukkit.getLogger().warning("[NeoRogue] Failed to save session for host " + host + " to slot " + saveSlot);
@@ -641,6 +653,14 @@ public class Session {
 		return debug;
 	}
 
+	public SessionType getSessionType() {
+		return sessionType;
+	}
+
+	public void setSessionType(SessionType sessionType) {
+		this.sessionType = sessionType;
+	}
+
 	public void setEnemyHealthScale(int enemyHealthScale) {
 		this.enemyHealthScale = enemyHealthScale;
 	}
@@ -689,10 +709,15 @@ public class Session {
 		this.region = new Region(type, xOff, zOff, this);
 		region.instantiate();
 	}
+
+	public void generateRegion() {
+		generateRegion(sessionType.getInitialRegion());
+	}
 	
 	public void generateNextRegion() {
 		// Erase old nodes
 		Node[][] nodes = region.getNodes();
+		int bossRow = region.getBossRow();
 		for (int i = 0; i < nodes.length; i++) {
 			for (int j = 0; j < nodes[i].length; j++) {
 				Node n = nodes[i][j];
@@ -701,7 +726,7 @@ public class Session {
 				Location loc = region.nodeToLocation(n, 0);
 				loc.getBlock().setType(Material.AIR); // Remove node block
 				// Remove boss stuff
-				if (i == 15 && j == 2) {
+				if (i == bossRow && j == Region.CENTER_LANE) {
 					loc.add(0, 1, 0);
 					loc.getBlock().setType(Material.AIR); // Remove button
 					loc.add(0, -1, -1);

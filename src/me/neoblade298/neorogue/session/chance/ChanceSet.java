@@ -44,6 +44,10 @@ public class ChanceSet {
 	
 	public static ChanceSet getSet(RegionType type) {
 		ArrayList<ChanceSet> set = sets.get(type);
+		if (set == null || set.isEmpty()) {
+			Bukkit.getLogger().warning("[NeoRogue] No chance sets registered for region " + type + ", defaulting to Harvest Fields");
+			set = sets.get(RegionType.HARVEST_FIELDS);
+		}
 		return set.get(NeoRogue.gen.nextInt(set.size()));
 	}
 	

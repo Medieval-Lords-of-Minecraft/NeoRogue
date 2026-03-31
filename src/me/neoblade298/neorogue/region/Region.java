@@ -61,7 +61,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 
 public class Region {
-	public static final int LANE_COUNT = 5, ROW_COUNT = 16, CENTER_LANE = LANE_COUNT / 2;
+	public static final int LANE_COUNT = 5, CENTER_LANE = LANE_COUNT / 2;
 	private static final int X_EDGE_PADDING = 14, Z_EDGE_PADDING = 11, NODE_DIST_BETWEEN = 4;
 	private static int MAX_CHAIN_LENGTH;
 	private static int MIN_SHOP_DISTANCE; // min # of PATHS not NODES
@@ -74,6 +74,7 @@ public class Region {
 	private Node[][] nodes;
 	private Session s;
 	private String boss;
+	private int rowCount;
 
 	public static World world;
 	public static final String WORLD_NAME = "Dev";
@@ -131,6 +132,7 @@ public class Region {
 		this.xOff = xOff;
 		this.zOff = zOff + Session.AREA_Z;
 		this.s = s;
+		this.rowCount = type.getRowCount();
 		
 		generateNodes();
 
@@ -156,11 +158,12 @@ public class Region {
 		this.xOff = xOff;
 		this.zOff = zOff + Session.AREA_Z;
 		this.s = s;
+		this.rowCount = type.getRowCount();
 
 		ResultSet rs = stmt
 				.executeQuery("SELECT * FROM neorogue_nodes WHERE host = '" + uuid + "' AND slot = " + saveSlot + ";");
 		// First load the nodes themselves
-		nodes = new Node[ROW_COUNT][LANE_COUNT];
+		nodes = new Node[rowCount][LANE_COUNT];
 		while (rs.next()) {
 			int row = rs.getInt("position");
 			int lane = rs.getInt("lane");
@@ -189,28 +192,45 @@ public class Region {
 		}
 
 		// Load the boss for the area
-		BossFightInstance bi = (BossFightInstance) nodes[ROW_COUNT - 1][CENTER_LANE].getInstance(); // should be loaded in
+		BossFightInstance bi = (BossFightInstance) nodes[getBossRow()][CENTER_LANE].getInstance(); // should be loaded in
 		boss = bi.getBossDisplay();
 	}
 
 	private void generateNodes() {
-		do {
-			tryGenerateNodes();
-			trimShops();
-		} while (!verifyChainLength() || !verifyRequiredMiniboss() || !verifyNodeTypeCount(NodeType.SHOP, 2)
-				|| !verifyNodeTypeCount(NodeType.SHRINE, 4) || !verifyNoSplitGroups());
-		
-		BossFightInstance bi = (BossFightInstance) nodes[ROW_COUNT - 1][CENTER_LANE].generateInstance(s, type); // generate boss
+		switch (type.getLayout()) {
+		case TUTORIAL:
+			generateTutorialNodes();
+			break;
+		case STANDARD:
+		default:
+			do {
+				tryGenerateNodes();
+				trimShops();
+			} while (!verifyChainLength() || !verifyRequiredMiniboss() || !verifyNodeTypeCount(NodeType.SHOP, 2)
+					|| !verifyNodeTypeCount(NodeType.SHRINE, 4) || !verifyNoSplitGroups());
+			break;
+		}
+
+		BossFightInstance bi = (BossFightInstance) nodes[getBossRow()][CENTER_LANE].generateInstance(s, type); // generate boss
 		boss = bi.getBossDisplay();
 	}
 
+	private void generateTutorialNodes() {
+		nodes = new Node[rowCount][LANE_COUNT];
+		Node previous = createNode(0, CENTER_LANE, NodeType.START);
+		previous = createNode(1, CENTER_LANE, NodeType.FIGHT, previous);
+		previous = createNode(2, CENTER_LANE, NodeType.CHANCE, previous);
+		previous = createNode(3, CENTER_LANE, NodeType.MINIBOSS, previous);
+		createNode(getBossRow(), CENTER_LANE, NodeType.BOSS, previous);
+	}
+
 	private void tryGenerateNodes() {
-		nodes = new Node[ROW_COUNT][LANE_COUNT];
+		nodes = new Node[rowCount][LANE_COUNT];
 		
 		// Static nodes
 		Node startNode = createNode(0, CENTER_LANE, NodeType.START);
-		Node endShrine = createNode(ROW_COUNT - 2, CENTER_LANE, NodeType.SHRINE);
-		Node bossNode = createNode(ROW_COUNT - 1, CENTER_LANE, NodeType.BOSS);
+		Node endShrine = createNode(getPreBossRow(), CENTER_LANE, NodeType.SHRINE);
+		Node bossNode = createNode(getBossRow(), CENTER_LANE, NodeType.BOSS);
 		endShrine.addDestination(bossNode);
 		
 		// Entry nodes
@@ -219,45 +239,45 @@ public class Region {
 		}
 		
 		// Normal nodes
-		for (int row = 2; row <= ROW_COUNT - 4; row++) {
+		for (int row = 2; row <= getLastNormalRow(); row++) {
 			generateNormalRow(row);
 			centralizeRow(row);
 		}
 		
 		// Exit nodes
 		for (int lane = 1; lane <= LANE_COUNT - 2; lane++) {
-			createNode(ROW_COUNT - 3, lane, getRandomNodeType(1)).addDestination(endShrine);
+			createNode(getExitRow(), lane, getRandomNodeType(getExitRow())).addDestination(endShrine);
 		}
 
 		// Connect to exit nodes
 		// NOTE: Ignores LANE_COUNT
-		if (nodes[ROW_COUNT - 4][0] != null)
-			nodes[ROW_COUNT - 4][0].addDestination(nodes[ROW_COUNT - 3][1]);
-		if (nodes[ROW_COUNT - 4][2] != null)
-			nodes[ROW_COUNT - 4][2].addDestination(nodes[ROW_COUNT - 3][2]);
-		if (nodes[ROW_COUNT - 4][4] != null)
-			nodes[ROW_COUNT - 4][4].addDestination(nodes[ROW_COUNT - 3][3]);
-		Node n = nodes[ROW_COUNT - 4][1];
+		if (nodes[getLastNormalRow()][0] != null)
+			nodes[getLastNormalRow()][0].addDestination(nodes[getExitRow()][1]);
+		if (nodes[getLastNormalRow()][2] != null)
+			nodes[getLastNormalRow()][2].addDestination(nodes[getExitRow()][2]);
+		if (nodes[getLastNormalRow()][4] != null)
+			nodes[getLastNormalRow()][4].addDestination(nodes[getExitRow()][3]);
+		Node n = nodes[getLastNormalRow()][1];
 		if (n != null) {
 			if (NeoCore.gen.nextBoolean())
-				n.addDestination(nodes[ROW_COUNT - 3][1]);
+				n.addDestination(nodes[getExitRow()][1]);
 			else
-				n.addDestination(nodes[ROW_COUNT - 3][2]);
+				n.addDestination(nodes[getExitRow()][2]);
 		}
-		n = nodes[ROW_COUNT - 4][3];
+		n = nodes[getLastNormalRow()][3];
 		if (n != null) {
 			if (NeoCore.gen.nextBoolean())
-				n.addDestination(nodes[ROW_COUNT - 3][2]);
+				n.addDestination(nodes[getExitRow()][2]);
 			else
-				n.addDestination(nodes[ROW_COUNT - 3][3]);
+				n.addDestination(nodes[getExitRow()][3]);
 		}
 		
 		// Delete unconnected entry/exit nodes
 		for (int lane = 1; lane <= LANE_COUNT - 2; lane++) {
 			if (nodes[1][lane].getDestinations().size() == 0)
 				nodes[1][lane] = null;
-			if (nodes[ROW_COUNT - 3][lane].getSources().size() == 0)
-				nodes[ROW_COUNT - 3][lane] = null;
+			if (nodes[getExitRow()][lane].getSources().size() == 0)
+				nodes[getExitRow()][lane] = null;
 		}
 	}
 	
@@ -268,7 +288,7 @@ public class Region {
 	// ensures at least cnt many of the given NodeType exist
 	private boolean verifyNodeTypeCount(NodeType type, int cnt) {
 		int found = 0;
-		for (int row = 0; row < ROW_COUNT; row++) {
+		for (int row = 0; row < rowCount; row++) {
 			for (int lane = 0; lane < LANE_COUNT; lane++) {
 				if (nodes[row][lane] != null && nodes[row][lane].getType() == type) {
 					found++;
@@ -281,7 +301,7 @@ public class Region {
 	}
 
 	private boolean verifyRequiredMiniboss() {
-		return verifyRequiredMiniboss(nodes[0][CENTER_LANE], nodes[ROW_COUNT - 1][CENTER_LANE]);
+		return verifyRequiredMiniboss(nodes[0][CENTER_LANE], nodes[getBossRow()][CENTER_LANE]);
 	}
 
 	// returns true if all paths from start to end contain at least one miniboss node
@@ -308,7 +328,7 @@ public class Region {
 	private boolean verifyNoSplitGroups() {
 		Node bottomLeft = null, bottomRight = null, topLeft = null, topRight = null;
 
-		for (int row = 1; row < ROW_COUNT - 1; row++) {
+		for (int row = 1; row < rowCount - 1; row++) {
 			if (bottomLeft == null) {
 				if (nodes[row][0] != null) {
 					bottomLeft = nodes[row][0];
@@ -326,18 +346,18 @@ public class Region {
 			}
 
 			if (topLeft == null) {
-				if (nodes[ROW_COUNT - row - 2][0] != null) {
-					topLeft = nodes[ROW_COUNT - row - 2][0];
-				} else if (nodes[ROW_COUNT - row - 2][1] != null) {
-					topLeft = nodes[ROW_COUNT - row - 2][1];
+				if (nodes[rowCount - row - 2][0] != null) {
+					topLeft = nodes[rowCount - row - 2][0];
+				} else if (nodes[rowCount - row - 2][1] != null) {
+					topLeft = nodes[rowCount - row - 2][1];
 				}
 			}
 
 			if (topRight == null) {
-				if (nodes[ROW_COUNT - row - 2][LANE_COUNT - 1] != null) {
-					topRight = nodes[ROW_COUNT - row - 2][LANE_COUNT - 1];
-				} else if (nodes[ROW_COUNT - row - 2][LANE_COUNT - 2] != null) {
-					topRight = nodes[ROW_COUNT - row - 2][LANE_COUNT - 2];
+				if (nodes[rowCount - row - 2][LANE_COUNT - 1] != null) {
+					topRight = nodes[rowCount - row - 2][LANE_COUNT - 1];
+				} else if (nodes[rowCount - row - 2][LANE_COUNT - 2] != null) {
+					topRight = nodes[rowCount - row - 2][LANE_COUNT - 2];
 				}
 			}
 		}
@@ -395,7 +415,7 @@ public class Region {
 
 	// deletes/transforms shops whose only path(s) lead to another shop too soon
 	private void trimShops() {
-		for (int row = ROW_COUNT - 1; row >= 0; row--) {
+		for (int row = rowCount - 1; row >= 0; row--) {
 			List<Integer> checkOrder = Arrays.asList(0, 1, 2, 3, 4);
 			Collections.shuffle(checkOrder);
 			for (int lane : checkOrder) {
@@ -557,6 +577,14 @@ public class Region {
 		nodes[row][lane] = node;
 		return node;
 	}
+
+	private Node createNode(int row, int lane, NodeType type, Node... sources) {
+		Node node = createNode(row, lane, type);
+		for (Node src : sources) {
+			node.addSource(src);
+		}
+		return node;
+	}
 	
 	private Node createNode(int row, int lane, Node... sources) {
 		if (nodes[row][lane] != null) {
@@ -598,40 +626,51 @@ public class Region {
 		return true;
 	}
 
-	// NOTE: ignores ROW_COUNT
 	private NodeType getRandomNodeType(int row) {
-		switch (row) {
-		case 0:
+		if (row == 0)
 			return NodeType.START;
-		case 1:
+		if (row == 1)
 			return GenerationType.ENTRY.table.get();
-		case 2:
-		case 3:
-		case 4:
-		case 5:
-			return GenerationType.EARLY.table.get();
-		case 6:
-		case 7:
-		case 8:
-			return GenerationType.MIDDLE.table.get();
-		case 9:
-		case 10:
-		case 11:
-		case 12:
-			return GenerationType.LATE.table.get();
-		case 13:
+		if (row == getExitRow())
 			return GenerationType.EXIT.table.get();
-		case 14:
+		if (row == getPreBossRow())
 			return NodeType.SHRINE;
-		case 15:
+		if (row == getBossRow())
 			return NodeType.BOSS;
-		default:
-			return NodeType.START; // should never happen, so this makes it obvious if it does
+
+		int normalRowCount = Math.max(1, rowCount - 5);
+		double progress = (row - 2) / (double) normalRowCount;
+		if (progress < 0.4) {
+			return GenerationType.EARLY.table.get();
 		}
+		if (progress < 0.7) {
+			return GenerationType.MIDDLE.table.get();
+		}
+		return GenerationType.LATE.table.get();
 	}
 	
 	public RegionType getType() {
 		return type;
+	}
+
+	public int getRowCount() {
+		return rowCount;
+	}
+
+	public int getBossRow() {
+		return rowCount - 1;
+	}
+
+	private int getPreBossRow() {
+		return rowCount - 2;
+	}
+
+	private int getExitRow() {
+		return rowCount - 3;
+	}
+
+	private int getLastNormalRow() {
+		return rowCount - 4;
 	}
 
 	public Node[][] getNodes() {
@@ -643,7 +682,7 @@ public class Region {
 		UUID host = s.getHost();
 		try {
 			delete.execute("DELETE FROM neorogue_nodes WHERE host = '" + host + "' AND slot = " + saveSlot + ";");
-			for (int row = 0; row < ROW_COUNT; row++) {
+			for (int row = 0; row < rowCount; row++) {
 				for (int lane = 0; lane < LANE_COUNT; lane++) {
 					Node node = nodes[row][lane];
 					if (node == null)
@@ -670,7 +709,7 @@ public class Region {
 			int row = s.getNode().getRow() + 1;
 			for (int lane = 0; lane < LANE_COUNT; lane++) {
 				// Saves up to two rows ahead
-				for (int i = 0; i < 1 && row + i < ROW_COUNT; i++) {
+				for (int i = 0; i < 1 && row + i < rowCount; i++) {
 					Node node = nodes[row + i][lane];
 					if (node == null)
 						continue;
@@ -696,7 +735,7 @@ public class Region {
 		// Create nodes
 		org.bukkit.World w = Bukkit.getWorld(WORLD_NAME);
 		for (int lane = 0; lane < LANE_COUNT; lane++) { // x
-			for (int row = 0; row < ROW_COUNT; row++) { // z
+			for (int row = 0; row < rowCount; row++) { // z
 				Node node = nodes[row][lane];
 				if (node == null)
 					continue;
@@ -739,7 +778,7 @@ public class Region {
 	public void cleanupAll() {
 		org.bukkit.World w = Bukkit.getWorld(WORLD_NAME);
 		for (int lane = 0; lane < LANE_COUNT; lane++) {
-			for (int row = 0; row < ROW_COUNT; row++) {
+			for (int row = 0; row < rowCount; row++) {
 
 				// Sets sign to air first so it doesn't pop off
 				Location loc = getLocationFromRowLane(w, row, lane);
@@ -775,23 +814,23 @@ public class Region {
 
 		// Clean lecterns all the way to the end including boss node
 		int nextRow = row + 1;
-		if (nextRow < ROW_COUNT - 1) {
-			for (int lane = 0; lane < 5; lane++) {
+		if (nextRow < getBossRow()) {
+			for (int lane = 0; lane < LANE_COUNT; lane++) {
 				Node n = nodes[nextRow][lane];
 				if (n != null) {
 					Location loc = nodeToLocation(n, 1);
 					loc.getBlock().setType(Material.AIR); // Button
 					loc.add(0, -2, -1);
 					loc.getBlock()
-							.setType(nextRow == ROW_COUNT - 1 ? Material.CRYING_OBSIDIAN : Material.POLISHED_ANDESITE); // Lectern
+							.setType(nextRow == getBossRow() ? Material.CRYING_OBSIDIAN : Material.POLISHED_ANDESITE); // Lectern
 				}
 			}
 		}
 
-		// Fight heads, they stop existing at ROW_COUNT - 2
+		// Fight heads stop one row before the boss row
 		int skipRow = row + 2;
-		if (skipRow < ROW_COUNT - 2) {
-			for (int lane = 0; lane < 5; lane++) {
+		if (skipRow < getPreBossRow()) {
+			for (int lane = 0; lane < LANE_COUNT; lane++) {
 				Node n = nodes[skipRow][lane];
 				if (n != null && n.getType() == NodeType.FIGHT) {
 					Location loc = nodeToLocation(n, 1);

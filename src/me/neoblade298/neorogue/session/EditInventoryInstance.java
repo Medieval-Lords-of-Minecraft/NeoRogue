@@ -195,7 +195,7 @@ public abstract class EditInventoryInstance extends Instance {
 
 				Node[][] nodes = a.getNodes();
 				for (int lane = 0; lane < Region.LANE_COUNT; lane++) {
-					for (int pos = mapPos; pos < Region.ROW_COUNT && pos < mapPos + MAP_Y_SLOTS.length; pos++) {
+					for (int pos = mapPos; pos < a.getRowCount() && pos < mapPos + MAP_Y_SLOTS.length; pos++) {
 						Node n = nodes[pos][lane];
 						if (n == null)
 							continue;

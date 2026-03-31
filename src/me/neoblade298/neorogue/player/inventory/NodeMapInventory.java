@@ -22,6 +22,7 @@ import net.kyori.adventure.text.format.TextDecoration.State;
 
 public class NodeMapInventory extends CoreInventory {
 	private static final int BACK2 = 2, BACK = 3, FORWARD = 5, FORWARD2 = 6;
+	private static final int VISIBLE_ROWS = 3;
 	
 	private static final String ARROW_UP = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGIyMjFjYjk2MDdjOGE5YmYwMmZlZjVkNzYxNGUzZWIxNjljYzIxOWJmNDI1MGZkNTcxNWQ1ZDJkNjA0NWY3In19fQ==",
 			ARROW_UPLEFT = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTJiOGUzZWFlYTU1OGY4NmFlYmEzMjI5NjlkNGVlYjZiOTY5NDM0ZjVhZDc5MjY2ZDVkOTY4YjI4ZDkxOTJlIn19fQ==",
@@ -60,8 +61,8 @@ public class NodeMapInventory extends CoreInventory {
 		}
 		
 		// Place down nodes
-		for (int pos = currentPos; pos < currentPos + 3 && pos < nodes.length; pos++) {
-			for (int lane = 0; lane < 5; lane++) {
+		for (int pos = currentPos; pos < currentPos + VISIBLE_ROWS && pos < nodes.length; pos++) {
+			for (int lane = 0; lane < nodes[pos].length; lane++) {
 				Node node = nodes[pos][lane];
 				if (node == null)
 					continue;
@@ -109,7 +110,7 @@ public class NodeMapInventory extends CoreInventory {
 	}
 	
 	private int nodeToSlot(Node node) {
-		return (node.getLane() * 2) + ((2 - node.getRow() + currentPos) * 18) + 9;
+		return (node.getLane() * 2) + (((VISIBLE_ROWS - 1) - node.getRow() + currentPos) * 18) + 9;
 	}
 
 	@Override
@@ -132,7 +133,8 @@ public class NodeMapInventory extends CoreInventory {
 	}
 	
 	private void turnPage(int diff) {
-		currentPos = Math.max(0, Math.min(nodes.length - 1, currentPos + diff));
+		int maxPosition = Math.max(0, nodes.length - VISIBLE_ROWS);
+		currentPos = Math.max(0, Math.min(maxPosition, currentPos + diff));
 		p.playSound(p, Sound.ITEM_BOOK_PAGE_TURN, 1F, 1F);
 		setupInventory();
 	}
