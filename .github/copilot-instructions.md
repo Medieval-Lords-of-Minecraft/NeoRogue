@@ -69,6 +69,13 @@ Player Action → Trigger Event → Equipment Triggers → Status/Damage/Effects
 - **Player Tick Duration**: One player tick (`Trigger.PLAYER_TICK`) = 20 game ticks = 1 second
 - Example: To trigger every 2 seconds, check if tick count >= 40
 
+### Mage Wand Charge Time
+Mage wands created with `EquipmentProperties.ofWand(...)` store a `chargeTime` property (in seconds) as `PropertyType.CHARGE_TIME`. In `initialize()`, always reference this property instead of hardcoding ticks:
+```java
+data.charge(properties.get(PropertyType.CHARGE_TIME)).then(() -> proj.start(data));
+```
+`PlayerFightData.charge(double seconds)` converts seconds to ticks automatically. Never write `data.charge(20)` for a wand — use the property.
+
 ### Player Reference Safety (CRITICAL)
 **NEVER store Player references across trigger executions.** Bukkit recreates Player objects when players relog, making stored references stale.
 

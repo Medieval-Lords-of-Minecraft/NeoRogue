@@ -54,7 +54,7 @@ public class StonyWand extends Equipment {
 			if (!canUseWeapon(data) || !data.canBasicAttack(EquipSlot.HOTBAR))
 				return TriggerResult.keep();
 			weaponSwing(d.getPlayer(), data);
-			data.charge(20).then(() -> proj.start(data));
+			data.chargeSecs(properties.get(PropertyType.CHARGE_TIME)).then(() -> proj.start(data));
 			return TriggerResult.keep();
 		});
 	}

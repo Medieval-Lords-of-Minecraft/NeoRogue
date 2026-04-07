@@ -241,6 +241,10 @@ public class PlayerFightData extends FightData {
 		return charge(ticks, 1);
 	}
 
+	public TaskChain chargeSecs(double seconds) {
+		return charge((int) (seconds * 20));
+	}
+
 	public void disableJump(int ticks) {
 		AttributeModifier mod = new AttributeModifier(NamespacedKey.fromString("jump", NeoRogue.inst()), -0.42,
 				Operation.ADD_NUMBER);

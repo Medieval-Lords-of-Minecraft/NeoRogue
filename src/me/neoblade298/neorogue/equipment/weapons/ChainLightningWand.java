@@ -63,7 +63,7 @@ public class ChainLightningWand extends Equipment {
 			if (target != null) {
 				Player p = data.getPlayer();
 				weaponSwing(p, data);
-				data.charge(20).then(() -> {
+				data.chargeSecs(properties.get(PropertyType.CHARGE_TIME)).then(() -> {
 					Player p2 = data.getPlayer();
 					weaponDamage(p2, data, target);
 					drawCache = Effect.calculateCache(p2, p2.getLocation(), Audience.NONE, ParticleContainer.HIDE_TAG);
