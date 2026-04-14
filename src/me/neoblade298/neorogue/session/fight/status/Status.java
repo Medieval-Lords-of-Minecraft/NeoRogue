@@ -71,6 +71,7 @@ public abstract class Status {
 		case FROST: return new FrostStatus(target);
 		case ELECTRIFIED: return new DecrementStackStatus(id.name(), target, StatusClass.NEGATIVE);
 		case CONCUSSED: return new ConcussedStatus(target);
+		case CORRUPTION: return new CorruptionStatus(target);
 		case INSANITY: return new InsanityStatus(target);
 		case SANCTIFIED: return new DecrementStackStatus(id.name(), target, StatusClass.NEGATIVE);
 		case THORNS: return new BasicStatus(id.name(), target, StatusClass.POSITIVE);
@@ -143,6 +144,7 @@ public abstract class Status {
 		BERSERK("<dark_red>Berserk</dark_red>", "&4Berserk"),
 		BURN("<gold>Burn</gold>", "&6Burn"),
 		CONCUSSED("<dark_green>Concussed</dark_green>", "&2Concussed"),
+		CORRUPTION("<dark_purple>Corruption</dark_purple>", "&5Corruption"),
 		ELECTRIFIED("<yellow>Electrified</yellow>", "&eElectrified"),
 		EVADE("<aqua>Evade</aqua>", "&3Evade"),
 		FOCUS("<aqua>Focus</aqua>", "&3Focus"),

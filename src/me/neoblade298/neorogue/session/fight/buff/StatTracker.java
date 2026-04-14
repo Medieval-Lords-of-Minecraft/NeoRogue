@@ -27,6 +27,7 @@ public class StatTracker {
         statusOrigins.put(StatusType.FROST, new BuffStatTracker(StatusType.FROST, false, true));
         statusOrigins.put(StatusType.BURN, new BuffStatTracker(StatusType.BURN, true, true));
         statusOrigins.put(StatusType.CONCUSSED, new BuffStatTracker(StatusType.CONCUSSED, false, true));
+        statusOrigins.put(StatusType.CORRUPTION, new BuffStatTracker(StatusType.CORRUPTION, false, true));
         statusOrigins.put(StatusType.INSANITY, new BuffStatTracker(StatusType.INSANITY, true, true));
         statusOrigins.put(StatusType.INJURY, new BuffStatTracker(StatusType.INJURY, true, true));
     }

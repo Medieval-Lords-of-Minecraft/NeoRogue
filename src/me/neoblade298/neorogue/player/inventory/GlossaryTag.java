@@ -1,6 +1,8 @@
 package me.neoblade298.neorogue.player.inventory;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
@@ -59,6 +61,8 @@ public enum GlossaryTag implements GlossaryIcon {
 			"20% of the stacks is removed every second."),
 	INSANITY(Material.SOUL_SAND, StatusType.INSANITY.tag,
 			"Increases the affected entity's magic damage taken by 0.2 per stack. 20% of the stacks is removed every second."),
+	CORRUPTION(Material.FERMENTED_SPIDER_EYE, StatusType.CORRUPTION.tag,
+			"Increases the affected entity's damage taken by 50%. Each time the affected entity receives damage, 1 stack is removed."),
 	SANCTIFIED(Material.END_ROD, StatusType.SANCTIFIED.tag,
 			"Upon the affected entity receiving light damage, grant the attacker 0.1 shields per stack for 6 seconds. 20% of the stacks is removed every second."),
 	THORNS(Material.DEAD_BUSH, StatusType.THORNS.tag,
@@ -102,20 +106,31 @@ public enum GlossaryTag implements GlossaryIcon {
 			"Become unable to move. You cannot use other abilities during this time.");
 	
 	private ItemStack icon;
+	private static final Pattern NUMERIC_PATTERN = Pattern.compile("(?<![\\w>])(-?\\d+(?:\\.\\d+)?(?:%|:[0-9]+)?)");
 	public String tag, lore;
 	private ArrayList<TextComponent> loreComp;
 	private Component ctag;
 	private GlossaryTag(Material mat, String display, String lore) {
 		icon = new ItemStack(mat);
-		this.lore = lore;
+		this.lore = whiteNumbers(lore);
 		ItemMeta meta = icon.getItemMeta();
 		this.tag = display;
 		this.ctag = SharedUtil.color(display).decoration(TextDecoration.ITALIC, State.FALSE);
 		meta.displayName(ctag);
-		this.loreComp = SharedUtil.addLineBreaks((TextComponent) SharedUtil.color(lore).colorIfAbsent(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, State.FALSE));
+		this.loreComp = SharedUtil.addLineBreaks((TextComponent) SharedUtil.color(this.lore).colorIfAbsent(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, State.FALSE));
 		meta.lore(loreComp);
 		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 		icon.setItemMeta(meta);
+	}
+
+	private static String whiteNumbers(String input) {
+		Matcher matcher = NUMERIC_PATTERN.matcher(input);
+		StringBuffer sb = new StringBuffer();
+		while (matcher.find()) {
+			matcher.appendReplacement(sb, "<white>" + matcher.group(1) + "</white>");
+		}
+		matcher.appendTail(sb);
+		return sb.toString();
 	}
 
 	public Component getTag() {
@@ -143,13 +158,13 @@ public enum GlossaryTag implements GlossaryIcon {
 		String suffix = this.tag.substring(this.tag.indexOf("</"));
 		return prefix + "s" + suffix;
 	}
-	
+
 	public String tag(Equipment eq, int amt, boolean upgradable) {
 		eq.addTags(this);
 		String color = upgradable ? "yellow" : "white";
 		return "<" + color + ">" + amt + "</" + color + "> " + this.tag;
 	}
-	
+
 	public String tag(Equipment eq, double amt, boolean upgradable) {
 		eq.addTags(this);
 		String color = upgradable ? "yellow" : "white";

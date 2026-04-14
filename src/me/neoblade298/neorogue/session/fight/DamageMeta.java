@@ -517,6 +517,11 @@ public class DamageMeta {
 			statSlices.clear(); // Clear these so they don't get counted in stats
 			trackerSlices.clear();
 		}
+		
+		//Corruption
+		if ((damage > 0 || ignoreShieldsDamage > 0) && recipient.hasStatus(StatusType.CORRUPTION)) {
+			recipient.applyStatus(StatusType.CORRUPTION, recipient, -1, -1);
+		}
 
 		// Evade
 		boolean fullEvade = false;
