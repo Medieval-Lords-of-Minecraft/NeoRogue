@@ -31,12 +31,14 @@ public class EquipmentCounter {
 	private static final Pattern RARITY_PATTERN = Pattern.compile("Rarity\\.(\\w+)");
 	private static final Pattern TYPE_PATTERN = Pattern.compile("EquipmentType\\.(\\w+)");
 	private static final Pattern CLASS_PATTERN = Pattern.compile("EquipmentClass\\.(\\w+)");
+	private static final Pattern GLOSSARY_TAG_PATTERN = Pattern.compile("GlossaryTag\\.(\\w+)");
 	
 	private static class EquipmentInfo {
 		String name;
 		String rarity;
 		String type;
 		Set<String> classes = new HashSet<>();
+		Set<String> glossaryTags = new HashSet<>();
 		
 		EquipmentInfo(String name, String rarity, String type) {
 			this.name = name;
@@ -49,6 +51,7 @@ public class EquipmentCounter {
 		Set<String> types = new HashSet<>();
 		Set<String> rarities = new HashSet<>();
 		Set<String> classes = new HashSet<>();
+		Set<String> glossaryTags = new HashSet<>();
 		
 		boolean matches(EquipmentInfo info) {
 			if (!types.isEmpty() && !types.contains(info.type)) return false;
@@ -57,6 +60,16 @@ public class EquipmentCounter {
 				boolean hasMatch = false;
 				for (String cls : classes) {
 					if (info.classes.contains(cls)) {
+						hasMatch = true;
+						break;
+					}
+				}
+				if (!hasMatch) return false;
+			}
+			if (!glossaryTags.isEmpty()) {
+				boolean hasMatch = false;
+				for (String tag : glossaryTags) {
+					if (info.glossaryTags.contains(tag)) {
 						hasMatch = true;
 						break;
 					}
@@ -104,7 +117,7 @@ public class EquipmentCounter {
 					if (input.isEmpty() || input.equals("0")) {
 						done = true;
 					} else {
-						processMenuChoice(input, filters, scanner);
+						processMenuChoice(input, filters, scanner, equipmentList);
 					}
 				}
 			}
@@ -126,12 +139,13 @@ public class EquipmentCounter {
 	private static void displayFilterMenu(Filters filters, List<EquipmentInfo> allEquipment) {
 		System.out.println("\n========================================");
 		System.out.println("Current Filters:");
-		if (filters.types.isEmpty() && filters.rarities.isEmpty() && filters.classes.isEmpty()) {
+		if (filters.types.isEmpty() && filters.rarities.isEmpty() && filters.classes.isEmpty() && filters.glossaryTags.isEmpty()) {
 			System.out.println("  (none - showing all equipment)");
 		} else {
 			if (!filters.types.isEmpty()) System.out.println("  Types: " + String.join(", ", filters.types));
 			if (!filters.rarities.isEmpty()) System.out.println("  Rarities: " + String.join(", ", filters.rarities));
 			if (!filters.classes.isEmpty()) System.out.println("  Classes: " + String.join(", ", filters.classes));
+			if (!filters.glossaryTags.isEmpty()) System.out.println("  Tags: " + String.join(", ", filters.glossaryTags));
 		}
 		
 		// Calculate current match count
@@ -142,12 +156,13 @@ public class EquipmentCounter {
 		System.out.println("  1) Filter by Type");
 		System.out.println("  2) Filter by Rarity");
 		System.out.println("  3) Filter by Class");
-		System.out.println("  4) Clear All Filters");
+		System.out.println("  4) Filter by Glossary Tag");
+		System.out.println("  5) Clear All Filters");
 		System.out.println("  0) Show Results");
 		System.out.print("\nChoice: ");
 	}
 	
-	private static void processMenuChoice(String choice, Filters filters, Scanner scanner) {
+	private static void processMenuChoice(String choice, Filters filters, Scanner scanner, List<EquipmentInfo> allEquipment) {
 		switch (choice) {
 		case "1":
 			addTypeFilter(filters, scanner);
@@ -159,9 +174,13 @@ public class EquipmentCounter {
 			addClassFilter(filters, scanner);
 			break;
 		case "4":
+			addGlossaryTagFilter(filters, scanner, allEquipment);
+			break;
+		case "5":
 			filters.types.clear();
 			filters.rarities.clear();
 			filters.classes.clear();
+			filters.glossaryTags.clear();
 			System.out.println("\n✓ All filters cleared");
 			break;
 		default:
@@ -249,6 +268,46 @@ public class EquipmentCounter {
 			System.out.println("Invalid input.");
 		}
 	}
+
+	private static void addGlossaryTagFilter(Filters filters, Scanner scanner, List<EquipmentInfo> allEquipment) {
+		Set<String> discoveredTags = new HashSet<>();
+		for (EquipmentInfo info : allEquipment) {
+			discoveredTags.addAll(info.glossaryTags);
+		}
+
+		if (discoveredTags.isEmpty()) {
+			System.out.println("\nNo glossary tags were detected in equipment source files.");
+			return;
+		}
+
+		List<String> tags = new ArrayList<>(discoveredTags);
+		tags.sort(String::compareTo);
+
+		System.out.println("\n--- Glossary Tags ---");
+		for (int i = 0; i < tags.size(); i++) {
+			String tag = tags.get(i);
+			String mark = filters.glossaryTags.contains(tag) ? "[X]" : "[ ]";
+			System.out.println("  " + (i + 1) + ") " + mark + " " + tag);
+		}
+		System.out.print("\nSelect tag (number) or 0 to cancel: ");
+		String input = scanner.nextLine().trim();
+
+		try {
+			int choice = Integer.parseInt(input);
+			if (choice > 0 && choice <= tags.size()) {
+				String tag = tags.get(choice - 1);
+				if (filters.glossaryTags.contains(tag)) {
+					filters.glossaryTags.remove(tag);
+					System.out.println("✓ Removed " + tag);
+				} else {
+					filters.glossaryTags.add(tag);
+					System.out.println("✓ Added " + tag);
+				}
+			}
+		} catch (NumberFormatException e) {
+			System.out.println("Invalid input.");
+		}
+	}
 	
 	private static void displayResults(List<EquipmentInfo> filtered, Filters filters) {
 		System.out.println("\n========================================");
@@ -275,7 +334,8 @@ public class EquipmentCounter {
 			System.out.println("[" + rarity + "]: " + items.size());
 			for (EquipmentInfo info : items) {
 				String classInfo = info.classes.isEmpty() ? "" : " - " + String.join(", ", info.classes);
-				System.out.println("  - " + info.name + " [" + info.rarity + "] (" + info.type + ")" + classInfo);
+				String tagInfo = info.glossaryTags.isEmpty() ? "" : " {" + String.join(", ", info.glossaryTags) + "}";
+				System.out.println("  - " + info.name + " [" + info.rarity + "] (" + info.type + ")" + classInfo + tagInfo);
 			}
 			System.out.println();
 		}
@@ -341,13 +401,18 @@ public class EquipmentCounter {
 		
 		try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
 			String line;
-			int lineCount = 0;
 			StringBuilder superCall = new StringBuilder();
 			boolean inSuper = false;
+			boolean parsedSuper = false;
 			
-			while ((line = reader.readLine()) != null && lineCount++ < 150) {
+			while ((line = reader.readLine()) != null) {
+				Matcher glossaryTagMatcher = GLOSSARY_TAG_PATTERN.matcher(line);
+				while (glossaryTagMatcher.find()) {
+					info.glossaryTags.add(glossaryTagMatcher.group(1));
+				}
+
 				// Look for super(...) constructor call (may span multiple lines)
-				if (line.contains("super(")) {
+				if (!parsedSuper && line.contains("super(")) {
 					inSuper = true;
 					superCall.setLength(0); // Reset
 				}
@@ -378,7 +443,7 @@ public class EquipmentCounter {
 						}
 						
 						inSuper = false;
-						break; // Found what we need
+						parsedSuper = true;
 					}
 				}
 			}
