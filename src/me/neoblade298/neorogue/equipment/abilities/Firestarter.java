@@ -49,7 +49,7 @@ public class Firestarter extends Equipment {
 		super(ID, "Firestarter", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(15, 20, 10, 12, EXPLOSION_RADIUS));
-		burn = isUpgraded ? 50 : 30;
+		burn = isUpgraded ? 5 : 3;
 	}
 	
 	public static Equipment get() {

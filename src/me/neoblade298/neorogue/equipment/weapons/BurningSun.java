@@ -54,8 +54,8 @@ public class BurningSun extends Bow {
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofBow(80, 1, 0, 12, 0, 2));
 		blockDamage = isUpgraded ? 150 : 100;
-		burn = isUpgraded ? 150 : 100;
-		auraBurn = isUpgraded ? 150 : 100;
+		burn = isUpgraded ? 5 : 3;
+		auraBurn = isUpgraded ? 5 : 3;
 		properties.addUpgrades(PropertyType.DAMAGE);
 	}
 	

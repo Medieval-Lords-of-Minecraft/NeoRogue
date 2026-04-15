@@ -44,7 +44,7 @@ public class AshenHeadhunter extends Equipment {
 				EquipmentProperties.ofWeapon(4, 0, isUpgraded ? 140 : 100, 0.5, DamageType.FIRE, Sound.ENTITY_PLAYER_ATTACK_SWEEP).add(PropertyType.RANGE, 10)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
-		burn = isUpgraded ? 30 : 20;
+		burn = isUpgraded ? 8 : 5;
 	}
 	
 	public static Equipment get() {
@@ -82,6 +82,7 @@ public class AshenHeadhunter extends Equipment {
 		private PlayerFightData data;
 		private AshenHeadhunter eq;
 		private int slot;
+		private int hits;
 
 		public AshenHeadhunterProjectile(PlayerFightData data, AshenHeadhunter eq, int slot) {
 			super(2, 10, 2);
@@ -100,7 +101,9 @@ public class AshenHeadhunter extends Equipment {
 		public void onHit(FightData hit, Barrier hitBarrier, DamageMeta meta, ProjectileInstance proj) {
 			Location loc = hit.getEntity().getLocation();
 			Sounds.infect.play(p, loc);
-			hit.applyStatus(StatusType.BURN, data, burn, -1);
+			if (++hits % 3 == 0) {
+				hit.applyStatus(StatusType.BURN, data, burn, -1);
+			}
 		}
 
 		@Override
@@ -112,6 +115,6 @@ public class AshenHeadhunter extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STICK, "Projectiles are paused for <white>1s</white> before firing and apply " + GlossaryTag.BURN.tag(this, burn, true) + ".");
+		item = createItem(Material.STICK, "Projectiles are paused for <white>1s</white> before firing. Every <yellow>3rd</yellow> hit applies " + GlossaryTag.BURN.tag(this, burn, true) + ".");
 	}
 }

@@ -52,7 +52,7 @@ public class FlashfireVolley extends Equipment {
 		
 		bluntDamage = isUpgraded ? 150 : 100;
 		fireDamage = isUpgraded ? 150 : 100;
-		burn = isUpgraded ? 350 : 250;
+		burn = isUpgraded ? 25 : 15;
 	}
 	
 	public static Equipment get() {

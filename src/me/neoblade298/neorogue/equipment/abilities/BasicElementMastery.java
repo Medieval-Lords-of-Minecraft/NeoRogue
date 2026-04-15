@@ -28,7 +28,7 @@ public class BasicElementMastery extends Equipment {
 	public BasicElementMastery(boolean isUpgraded) {
 		super(ID, "Basic Element Mastery", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.none());
-				burn = isUpgraded ? 8 : 5;
+				burn = isUpgraded ? 2 : 1;
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.accessories;
 import org.bukkit.Material;
 
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -17,12 +18,13 @@ import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class RingOfScalding extends Equipment {
 	private static final String ID = "RingOfScalding";
-	private double mult;
+	private int thres, burn;
 	
 	public RingOfScalding(boolean isUpgraded) {
 		super(ID, "Ring of Scalding", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
 				EquipmentType.ACCESSORY);
-				mult = isUpgraded ? 0.3 : 0.2;
+		thres = isUpgraded ? 200 : 300;
+		burn = 5;
 	}
 	
 	public static Equipment get() {
@@ -31,6 +33,7 @@ public class RingOfScalding extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		ActionMeta am = new ActionMeta();
 		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
 			DealDamageEvent ev = (DealDamageEvent) in;
 			if (ev.getMeta().containsType(DamageType.FIRE)) {
@@ -40,8 +43,13 @@ public class RingOfScalding extends Equipment {
 						dmg += slice.getDamage();
 					}
 				}
-				if (dmg <= 0) return TriggerResult.keep();
-				FightInstance.applyStatus(ev.getTarget(), StatusType.BURN, data, (int) (dmg * mult), -1);
+				if (dmg > 0) {
+					am.addDouble(dmg);
+					if (am.getDouble() >= thres) {
+						am.addDouble(-thres);
+						FightInstance.applyStatus(ev.getTarget(), StatusType.BURN, data, burn, -1);
+					}
+				}
 			}
 			return TriggerResult.keep();
 		});
@@ -49,7 +57,7 @@ public class RingOfScalding extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LAVA_BUCKET, "Dealing " + GlossaryTag.FIRE.tag(this) + " damage applies " + DescUtil.yellow(mult + "x") + 
-			" of the damage dealt as " + GlossaryTag.BURN.tag(this) + ".");
+		item = createItem(Material.LAVA_BUCKET, "Every " + DescUtil.yellow(thres) + " " + GlossaryTag.FIRE.tag(this) + " damage dealt, apply " + 
+			GlossaryTag.BURN.tag(this, burn, false) + ".");
 	}
 }

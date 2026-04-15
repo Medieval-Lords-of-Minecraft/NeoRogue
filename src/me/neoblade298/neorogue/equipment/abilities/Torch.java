@@ -32,14 +32,14 @@ public class Torch extends Equipment {
 	private static final TargetProperties tp = TargetProperties.radius(5, false, TargetType.ENEMY);
 	private static final Circle circ = new Circle(tp.range);
 
-	private int damage, burn;
+	private int damage, corr;
 	
 	public Torch(boolean isUpgraded) {
 		super(
 				ID , "Torch", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(30, 10, 12, 0, tp.range));
 		damage = isUpgraded ? 240 : 160;
-		burn = 30;
+		corr = 1;
 	}
 	
 	public static Equipment get() {
@@ -53,7 +53,7 @@ public class Torch extends Equipment {
 			data.channel(20).then(new Runnable() {
 				public void run() {
 					Player p = data.getPlayer();
-					data.applyStatus(StatusType.BURN, data, burn, -1);
+					data.applyStatus(StatusType.CORRUPTION, data, corr, -1);
 					circ.play(pc, p.getLocation(), LocalAxes.xz(), pc);
 					Sounds.infect.play(p, p);
 					for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
@@ -69,6 +69,6 @@ public class Torch extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.BLAZE_POWDER,
 			GlossaryTag.CHANNEL.tag(this) + " for <white>1s</white> before dealing " + GlossaryTag.FIRE.tag(this, damage, true) + " damage to nearby enemies, but apply " +
-			GlossaryTag.BURN.tag(this, burn, false) + " to yourself.");
+			GlossaryTag.CORRUPTION.tag(this, corr, false) + " to yourself.");
 	}
 }

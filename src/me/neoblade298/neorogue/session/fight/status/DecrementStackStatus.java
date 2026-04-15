@@ -38,7 +38,7 @@ public class DecrementStackStatus extends Status {
 		public TickResult run() {
 			if (action.isCancelled()) return TickResult.REMOVE;
 			
-			int toRemove = (int) Math.max(stacks * 0.2, 1);
+			int toRemove = 1;
 			onTickAction(toRemove);
 			if (!decrement) return TickResult.KEEP;
 			stacks -= toRemove;

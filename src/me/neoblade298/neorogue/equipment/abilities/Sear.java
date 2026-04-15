@@ -41,7 +41,7 @@ public class Sear extends Equipment {
 				EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(15, 0, 13, 6));
 		damage = isUpgraded ? 60 : 40;
-		burn = isUpgraded ? 90 : 60;
+		burn = isUpgraded ? 8 : 5;
 	}
 	
 	public static Equipment get() {

@@ -30,13 +30,13 @@ public class Fireball extends Equipment {
 	private static final String ID = "Fireball";
 	private static final ParticleContainer tick = new ParticleContainer(Particle.FLAME).count(5).spread(0.3, 0.3);
 
-	private int damage, burn;
+	private int damage, corr;
 
 	public Fireball(boolean isUpgraded) {
 		super(ID, "Fireball", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(15, 5, 12, 10));
 		damage = isUpgraded ? 240 : 160;
-		burn = 30;
+		corr = 1;
 	}
 
 	@Override
@@ -54,7 +54,7 @@ public class Fireball extends Equipment {
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			data.channel(20).then(new Runnable() {
 				public void run() {
-					data.applyStatus(StatusType.BURN, data, burn, -1);
+					data.applyStatus(StatusType.CORRUPTION, data, corr, -1);
 					proj.start(data);
 				}
 			});
@@ -99,6 +99,6 @@ public class Fireball extends Equipment {
 		item = createItem(Material.BLAZE_POWDER,
 				GlossaryTag.CHANNEL.tag(this) + " for <white>1s</white> before launching a fireball that deals "
 						+ GlossaryTag.FIRE.tag(this, damage, true) + " damage but apply "
-						+ GlossaryTag.BURN.tag(this, burn, false) + " to yourself.");
+						+ GlossaryTag.CORRUPTION.tag(this, corr, false) + " to yourself.");
 	}
 }

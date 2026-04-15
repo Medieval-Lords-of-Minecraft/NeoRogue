@@ -45,7 +45,7 @@ public class RedBaron extends Bow {
 	private static final TargetProperties tp = TargetProperties.radius(4, false, TargetType.ENEMY);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME), fill = new ParticleContainer(Particle.LAVA);
 	private static final Circle circ = new Circle(tp.range);
-	private int damage, thres, burn = 30;
+	private int damage, thres, burn = 2;
 	
 	public RedBaron(boolean isUpgraded) {
 		super(ID, "Red Baron", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,

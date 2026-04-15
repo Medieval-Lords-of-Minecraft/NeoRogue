@@ -36,7 +36,7 @@ public class RedCloak extends Equipment {
 		String buffId = UUID.randomUUID().toString();
 		data.addTrigger(id, Trigger.PRE_RECEIVE_DAMAGE, (pdata, in) -> {
 			ReceiveDamageEvent ev = (ReceiveDamageEvent) in;
-			if (data.hasStatus(StatusType.BURN)) {
+			if (data.hasStatus(StatusType.CORRUPTION)) {
 				ev.getMeta().addDefenseBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.increase(data, def, StatTracker.defenseBuffAlly(buffId, this)));
 			}
 			return TriggerResult.keep();
@@ -45,6 +45,6 @@ public class RedCloak extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LEATHER, GlossaryTag.GENERAL.tag(this) + " damage is decreased by " + DescUtil.yellow(def) + " while you have " + GlossaryTag.BURN.tag(this) + ".");
+		item = createItem(Material.LEATHER, GlossaryTag.GENERAL.tag(this) + " damage is decreased by " + DescUtil.yellow(def) + " while you have " + GlossaryTag.CORRUPTION.tag(this) + ".");
 	}
 }

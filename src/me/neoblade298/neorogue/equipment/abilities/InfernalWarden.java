@@ -47,7 +47,7 @@ public class InfernalWarden extends Equipment {
 		super(ID, "Infernal Warden", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 15, 10, 0));
 		damage = isUpgraded ? 180 : 120;
-		burn = isUpgraded ? 180 : 120;
+		burn = isUpgraded ? 12 : 8;
 	}
 
 	public static Equipment get() {

@@ -39,7 +39,7 @@ public class Firebomb extends Equipment {
 	public Firebomb(boolean isUpgraded) {
 		super(ID, "Firebomb", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 0, 13, 0));
-		burn = isUpgraded ? 50 : 30;
+		burn = isUpgraded ? 3 : 2;
 		damage = 150;
 	}
 	

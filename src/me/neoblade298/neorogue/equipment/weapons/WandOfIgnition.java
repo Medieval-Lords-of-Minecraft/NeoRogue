@@ -8,7 +8,9 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
+import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
@@ -31,15 +33,17 @@ public class WandOfIgnition extends Equipment {
 	private static final String ID = "WandOfIgnition";
 	private static final int RANGE = 10;
 	private static final ParticleContainer tick = new ParticleContainer(Particle.FLAME);
-	private int burn, selfburn;
+	private int burn, corr, corrThres;
 
 	public WandOfIgnition(boolean isUpgraded) {
 		super(
 				ID , "Wand of Ignition", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWand(40, 1, 0, 1, RANGE, DamageType.FIRE, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
+				EquipmentProperties.ofWand(isUpgraded ? 60 : 50, 1, 0, 1, RANGE, DamageType.FIRE, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
 		);
-		burn = isUpgraded ? 30 : 20;
-		selfburn = 5;
+		properties.addUpgrades(PropertyType.DAMAGE);
+		burn = isUpgraded ? 2 : 1;
+		corr = 1;
+		corrThres = isUpgraded ? 9 : 6;
 	}
 	
 	public static Equipment get() {
@@ -49,10 +53,16 @@ public class WandOfIgnition extends Equipment {
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ProjectileGroup proj = new ProjectileGroup(new WandOfIgnitionProjectile(data, this, slot));
+		ActionMeta am = new ActionMeta();
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (d, inputs) -> {
 			if (!canUseWeapon(data) || !data.canBasicAttack(EquipSlot.HOTBAR))
 				return TriggerResult.keep();
 			weaponSwing(data.getPlayer(), data);
+			am.addDouble(1);
+			if (am.getDouble() >= corrThres) {
+				am.addDouble(-corrThres);
+				FightInstance.applyStatus(data.getPlayer(), StatusType.CORRUPTION, data, corr, -1);
+			}
 			data.chargeSecs(properties.get(PropertyType.CHARGE_TIME)).then(() -> proj.start(data));
 			return TriggerResult.keep();
 		});
@@ -90,13 +100,12 @@ public class WandOfIgnition extends Equipment {
 		public void onStart(ProjectileInstance proj) {
 			start.play(p, proj.getLocation());
 			proj.applyWeapon(data, eq, slot);
-			FightInstance.applyStatus(p, StatusType.BURN, data, selfburn, -1);
 		}
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLAZE_ROD, "Applies " + GlossaryTag.BURN.tag(this, burn, true) + " on hit. Applies "
-		+ GlossaryTag.BURN.tag(this, selfburn, false) + " to you when used.");
+		+ GlossaryTag.CORRUPTION.tag(this, corr, false) + " to you every " + DescUtil.white(corrThres) + " uses.");
 	}
 }

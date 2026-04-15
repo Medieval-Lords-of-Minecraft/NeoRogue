@@ -45,7 +45,7 @@ public class Fireball2 extends Equipment {
 				ID , "Fireball II", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(30, 10, 12, 10, tp.range));
 		damage = isUpgraded ? 360 : 240;
-		burn = 60;
+		burn = 10;
 	}
 	
 	public static Equipment get() {

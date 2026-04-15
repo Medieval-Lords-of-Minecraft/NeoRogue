@@ -8,6 +8,7 @@ import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 
 public class BurnStatus extends DecrementStackStatus {
 	private static String id = "BURN";
+	private static final double FIRE_DEFENSE_DEBUFF = -0.5;
 	
 	public BurnStatus(FightData data) {
 		super(id, data, StatusClass.NEGATIVE);
@@ -17,12 +18,16 @@ public class BurnStatus extends DecrementStackStatus {
 	public void apply(FightData applier, int stacks, int seconds) {
 		super.apply(applier, stacks, seconds);
 		if (this.stacks <= 0) return;
-		Buff b = new Buff(slices.first().getFightData(), -stacks * 0.2, 0, BuffStatTracker.of(StatusType.BURN));
+		Buff b = new Buff(slices.first().getFightData(), 0, FIRE_DEFENSE_DEBUFF, BuffStatTracker.of(StatusType.BURN));
 		holder.addDefenseBuff(DamageBuffType.of(DamageCategory.FIRE), b);
 	}
 	
 	@Override
 	public void onTickAction(int toRemove) {
-		holder.addDefenseBuff(DamageBuffType.of(DamageCategory.FIRE), new Buff(slices.first().getFightData(), toRemove * 0.2, 0, BuffStatTracker.of(StatusType.BURN)));
+		if (stacks - toRemove <= 0) {
+			Buff b = new Buff(slices.first().getFightData(), 0, 0,
+					BuffStatTracker.of(StatusType.BURN));
+			holder.addDefenseBuff(DamageBuffType.of(DamageCategory.FIRE), b);
+		}
 	}
 }

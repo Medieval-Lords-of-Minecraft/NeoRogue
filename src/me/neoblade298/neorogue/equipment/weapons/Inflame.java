@@ -39,8 +39,8 @@ public class Inflame extends Equipment {
 				EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(20, 5, 13, 8));
 		damage = isUpgraded ? 140 : 100;
-		stacks = 50;
-		growth = isUpgraded ? 25 : 15;
+		stacks = 3;
+		growth = isUpgraded ? 3 : 2;
 	}
 	
 	public static Equipment get() {
@@ -100,7 +100,8 @@ public class Inflame extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.CAMPFIRE, "On cast, " + DescUtil.charge(this, 1, 1) + " before firing a projectile that deals "
 				+ GlossaryTag.FIRE.tag(this, damage, true) + " damage and applies " +
-				GlossaryTag.BURN.tag(this, stacks, false) + ". If the enemy hit already has " + GlossaryTag.BURN.tag(this) + ", increase the stacks applied by " +
+				GlossaryTag.BURN.tag(this, stacks, false) + ". If the enemy hit already has " + GlossaryTag.BURN.tag(this) +
+				", increase the " + GlossaryTag.BURN.tag(this) + " applied by " +
 				"this ability for the fight by " + DescUtil.yellow(growth) + ".");
 	}
 }

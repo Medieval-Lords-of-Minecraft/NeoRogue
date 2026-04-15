@@ -293,6 +293,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new AbsoluteZero(b);
 			new AbyssalCarve(b);
 			new AcidBomb(b);
+			new Antimatter(b);
 			new AfterImage(b);
 			new Adrenaline(b);
 			new Advantage(b);
@@ -407,6 +408,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new EndlessVenom(b);
 			new EnduranceTraining(b);
 			new Energize(b);
+			new EnergyBeam(b);
 			new Entrench(b);
 			new Entropy(b);
 			new Equalizer(b);
@@ -631,6 +633,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Viper(b);
 			new VitalPierce(b);
 			new Volley(b);
+			new Voltaics(b);
 			new WallJump(b);
 			new WarCry(b);
 			new Warmup(b);

@@ -36,13 +36,14 @@ public class PalmBlast extends Equipment {
 	private static final Cone cone = new Cone(tp.range, tp.arc);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME).offsetY(0.3), 
 		expl = new ParticleContainer(Particle.EXPLOSION).offsetY(0.3).count(2).spread(0.2, 0.2);
-	private int damage, burn;
+	private int damage, burn, corruption;
 
 	public PalmBlast(boolean isUpgraded) {
 		super(ID, "Palm Blast", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(30, 0, 16, tp.range));
 		damage = isUpgraded ? 450 : 300;
-		burn = isUpgraded ? 150 : 100;
+		burn = isUpgraded ? 12 : 8;
+		corruption = 1;
 	}
 
 	public static Equipment get() {
@@ -67,6 +68,7 @@ public class PalmBlast extends Equipment {
 						FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE, DamageStatTracker.of(id + slot, eq)), ent);
 						FightInstance.applyStatus(ent, StatusType.BURN, data, burn, -1);
 					}
+					FightInstance.applyStatus(p, StatusType.CORRUPTION, data, corruption, -1);
 				}
 			});
 			return TriggerResult.keep();
@@ -76,6 +78,7 @@ public class PalmBlast extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FLINT_AND_STEEL, "On cast, " + DescUtil.charge(this, 2, 1) + " before dealing " + GlossaryTag.FIRE.tag(this, damage, true)
-				+ " damage and applying " + GlossaryTag.BURN.tag(this, burn, true) + " to all enemies in a thin cone in front of you.");
+				+ " damage and applying " + GlossaryTag.BURN.tag(this, burn, true) + " to all enemies in a thin cone in front of you. Apply "
+				+ GlossaryTag.CORRUPTION.tag(this, corruption, false) + " to yourself.");
 	}
 }

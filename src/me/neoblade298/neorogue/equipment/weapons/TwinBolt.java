@@ -38,7 +38,7 @@ public class TwinBolt extends Equipment {
 		super(ID, "Twin Bolt", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(30, 0, 9, 10));
 		damage = isUpgraded ? 150 : 100;
-		burn = isUpgraded ? 120 : 80;
+		burn = isUpgraded ? 8 : 5;
 	}
 
 	public static Equipment get() {

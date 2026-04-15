@@ -26,7 +26,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class HeatRising extends Equipment {
 	private static final String ID = "HeatRising";
 	private double mult;
-	private int burn, multDisplay;
+	private int corr, multDisplay;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.CLOUD);
 	
 	public HeatRising(boolean isUpgraded) {
@@ -34,7 +34,7 @@ public class HeatRising extends Equipment {
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 0, 15, 0));
 		mult = isUpgraded ? 0.5 : 0.3;
 		multDisplay = (int) (mult * 100);
-		burn = 60;
+		corr = 2;
 	}
 	
 	public static Equipment get() {
@@ -51,7 +51,7 @@ public class HeatRising extends Equipment {
 			data.channel(20).then(new Runnable() {
 				public void run() {
 					Sounds.fire.play(p, p);
-					data.applyStatus(StatusType.BURN, data, burn, -1);
+					data.applyStatus(StatusType.CORRUPTION, data, corr, -1);
 					data.addDamageBuff(DamageBuffType.of(DamageCategory.FIRE), Buff.multiplier(data, mult, StatTracker.damageBuffAlly(buffId, eq)), 200);
 				}
 			});
@@ -64,7 +64,7 @@ public class HeatRising extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.TORCHFLOWER,
 				"On cast, " + GlossaryTag.CHANNEL.tag(this) + " for <white>1s</white> before applying " +
-				GlossaryTag.BURN.tag(this, burn, false) + " to yourself and increase your " + GlossaryTag.FIRE.tag(this) + " damage by "
+				GlossaryTag.CORRUPTION.tag(this, corr, false) + " to yourself and increase your " + GlossaryTag.FIRE.tag(this) + " damage by "
 						+ DescUtil.yellow(multDisplay + "%") + " [<white>10s</white>].");
 	}
 }

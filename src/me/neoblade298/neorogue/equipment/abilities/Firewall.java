@@ -37,7 +37,7 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class Firewall extends Equipment {
 	private static final String ID = "Firewall";
-	private int damage, burn;
+	private int damage, burn, corruption;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME),
 		wall = pc.clone().spread(0.2, 2).count(15).offsetY(1);
 	private static final TargetProperties tp = TargetProperties.line(10, 4, true, TargetType.BOTH).canTargetSource(true);
@@ -47,6 +47,7 @@ public class Firewall extends Equipment {
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 5, 22, tp.range));
 		damage = isUpgraded ? 75 : 50;
 		burn = isUpgraded ? 25 : 15;
+		corruption = 1;
 	}
 	
 	public static Equipment get() {
@@ -119,12 +120,14 @@ public class Firewall extends Equipment {
 						if (!(ent instanceof Player)) {
 							FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE, DamageStatTracker.of(id + slot, eq)), ent);
 						}
-						// Apply burn to enemies and caster
-						if (ent == p || !(ent instanceof Player)) {
+						// Apply burn to enemies
+						if (ent == p) {
+							FightInstance.applyStatus(ent, StatusType.CORRUPTION, data, corruption, -1);
+						} else {
 							FightInstance.applyStatus(ent, StatusType.BURN, data, burn, -1);
 						}
 					}
-
+					// Apply corruption to caster
 					if (++tick >= 7) {
 						// Stop the task after 7 seconds
 						this.cancel();
@@ -139,6 +142,6 @@ public class Firewall extends Equipment {
 		item = createItem(Material.RED_CONCRETE_POWDER,
 				"On cast, fire a projectile that travels until it hits a block or max range. Create a wall of fire along where the projectile traveled which deals "
 				+ GlossaryTag.FIRE.tag(this, damage, true) + " to enemies and applies " + GlossaryTag.BURN.tag(this, burn, true) +
-				" to enemies and yourself every second for <white>7s</white>.");
+				" to enemies and " + GlossaryTag.CORRUPTION.tag(this, corruption, false) + " to yourself every second for <white>7s</white>.");
 	}
 }

@@ -34,20 +34,18 @@ import me.neoblade298.neorogue.session.fight.TargetHelper.TargetType;
 import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
 
 public class Wildfire extends Equipment {
 	private static final String ID = "Wildfire";
 	private static final TargetProperties tp = TargetProperties.radius(4, false, TargetType.ENEMY);
 	private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME), fill = new ParticleContainer(Particle.LAVA);
 	private static final Circle circ = new Circle(tp.range);
-	private int damage, thres, burn = 30;
+	private int damage;
 	
 	public Wildfire(boolean isUpgraded) {
 		super(ID, "Wildfire", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
 				EquipmentProperties.none().add(PropertyType.COOLDOWN, 1));
 		damage = isUpgraded ? 90 : 60;
-		thres = isUpgraded ? 400 : 600;
 	}
 	
 	public static Equipment get() {
@@ -57,11 +55,8 @@ public class Wildfire extends Equipment {
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
-		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
-			DealDamageEvent ev = (DealDamageEvent) in;
-			am.addDouble(ev.getMeta().getPostMitigationDamage().getOrDefault(DamageType.FIRE, 0D));
-			if (am.getDouble() >= thres && System.currentTimeMillis() - am.getTime() >= 1000) {
-				am.addDouble(-thres);
+		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
+			if (in == StatusType.BURN && System.currentTimeMillis() - am.getTime() >= 1000) {
 				am.setTime(System.currentTimeMillis());
 				ProjectileGroup group = new ProjectileGroup(new WildfireProjectile(data, this, slot));
 				group.start(data);
@@ -72,9 +67,8 @@ public class Wildfire extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BLAZE_POWDER, "Passive. Every time you do " + GlossaryTag.FIRE.tag(this, thres, true) + " damage, launch a fireball randomly in front of you that arcs, " +
-			"dealing " + GlossaryTag.FIRE.tag(this, damage, true) + " damage and applying " + GlossaryTag.BURN.tag(this, burn, false) + 
-			" in an area upon hitting an enemy or block.");
+		item = createItem(Material.BLAZE_POWDER, "Passive. When you apply " + GlossaryTag.BURN.tag(this) + ", launch a fireball randomly in front of you that arcs, dealing " +
+			GlossaryTag.FIRE.tag(this, damage, true) + " damage in an area upon hitting an enemy or block.");
 	}
 
 	private class WildfireProjectile extends Projectile {
@@ -123,7 +117,6 @@ public class Wildfire extends Equipment {
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, tp)) {
 				DamageMeta dm = new DamageMeta(data, damage, DamageType.FIRE, DamageStatTracker.of(id + slot, eq));
 				FightInstance.dealDamage(dm, ent);
-				FightInstance.applyStatus(ent, StatusType.BURN, data, burn, -1);
 			}
 		}
 		
