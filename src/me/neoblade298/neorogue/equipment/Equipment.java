@@ -621,6 +621,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Tireless(b);
 			new Titan(b);
 			new ToAshes(b);
+			new ToRuins(b);
 			new Torch(b);
 			new TrappersEssence(b);
 			new TreeTrunk(b);

@@ -33,7 +33,7 @@ public class AgilityTraining extends Equipment {
 		super(ID, "Agility Training", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.none());
 				damage = 5;
-				stacks = isUpgraded ? 5 : 3;
+				stacks = isUpgraded ? 3 : 2;
 	}
 
 	@Override

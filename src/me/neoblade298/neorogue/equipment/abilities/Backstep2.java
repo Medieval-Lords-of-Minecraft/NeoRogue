@@ -41,8 +41,8 @@ public class Backstep2 extends Equipment {
 		super(ID, "Backstep II", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 10, 1, 12));
 		damage = isUpgraded ? 20 : 10;
-		rend = 10;
-		thres = isUpgraded ? 60 : 45;
+		rend = 3;
+		thres = isUpgraded ? 18 : 25;
 		shields = 6;
 	}
 

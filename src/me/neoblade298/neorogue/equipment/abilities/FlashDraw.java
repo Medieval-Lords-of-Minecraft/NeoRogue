@@ -24,7 +24,7 @@ public class FlashDraw extends Equipment {
 	public FlashDraw(boolean isUpgraded) {
 		super(ID, "Flash Draw", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.none());
-		thres = isUpgraded ? 20 : 30;
+		thres = isUpgraded ? 15 : 20;
 	}
 	
 	public static Equipment get() {

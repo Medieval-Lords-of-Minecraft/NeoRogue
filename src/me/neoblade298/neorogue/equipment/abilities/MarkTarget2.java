@@ -53,8 +53,8 @@ public class MarkTarget2 extends Equipment {
 	public MarkTarget2(boolean isUpgraded) {
 		super(ID, "Mark Target II", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 0, 12, tp.range));
-		rend = isUpgraded ? 40 : 30;
-		damage = 0.4;
+		rend = isUpgraded ? 25 : 18;
+		damage = 3;
 	}
 	
 	public static Equipment get() {

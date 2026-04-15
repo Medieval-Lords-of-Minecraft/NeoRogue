@@ -27,8 +27,8 @@ public class SerratedArrow extends Ammunition {
 		super(ID, "Serrated Arrow", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofAmmunition(8, 0.1, DamageType.PIERCING));
-				damage = 0.2;
-				stacks = isUpgraded ? 4 : 3;
+				damage = 2;
+				stacks = isUpgraded ? 3 : 2;
 	}
 	
 	public static Equipment get() {

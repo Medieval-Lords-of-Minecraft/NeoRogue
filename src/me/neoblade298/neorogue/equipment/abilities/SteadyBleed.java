@@ -38,7 +38,7 @@ public class SteadyBleed extends Equipment {
 	public SteadyBleed(boolean isUpgraded) {
 		super(ID, "Steady Bleed", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 0, 12, tp.range));
-		damageMult = isUpgraded ? 2.0 : 1.0;
+		damageMult = isUpgraded ? 15.0 : 10.0;
 		shieldPercent = isUpgraded ? 0.4 : 0.2;
 	}
 	
@@ -90,7 +90,7 @@ public class SteadyBleed extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.DAMAGED_ANVIL,
-				"On cast, deal " + DescUtil.yellow((int)(damageMult * 100) + "%") + " of each enemy's current " +
+				"On cast, deal " + DescUtil.yellow((int) damageMult + "x") + " each enemy's current " +
 				GlossaryTag.REND.tag(this) + " stacks as " + GlossaryTag.SLASHING.tag(this) + " damage to all nearby enemies," +
 				" gain " + GlossaryTag.SHIELDS.tag(this) + " equal to " + 
 				DescUtil.yellow((int)(shieldPercent * 100) + "%") + " of the damage dealt [<white>15s</white>], " +

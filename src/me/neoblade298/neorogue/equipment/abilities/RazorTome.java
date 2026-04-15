@@ -22,7 +22,7 @@ public class RazorTome extends Equipment {
 	public RazorTome(boolean isUpgraded) {
 		super(ID, "Razor Tome", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.OFFHAND, EquipmentProperties.none());
-				rend = isUpgraded ? 30 : 20;
+				rend = isUpgraded ? 5 : 3;
 				thres = 3;
 	}
 	
