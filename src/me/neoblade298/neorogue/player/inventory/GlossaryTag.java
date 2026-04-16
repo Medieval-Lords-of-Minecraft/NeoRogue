@@ -55,7 +55,7 @@ public enum GlossaryTag implements GlossaryIcon {
 			"Decreases the affected entity's magic damage by 0.2 per stack. Upon the affected entity dealing magical damage, remove 25% of the stacks. " +
 			"1 stack is removed every tick."),
 	ELECTRIFIED(Material.LIGHTNING_ROD, StatusType.ELECTRIFIED.tag,
-			"Whenever the affected entity casts an ability or deals damage, deal 0.2 lightning damage per stack applied to the affected entity. 1 stack is removed every tick."),
+			"Whenever the affected entity casts an ability or deals damage, deal 5 lightning damage per stack applied to the affected entity. 1 stack is removed every tick."),
 	CONCUSSED(Material.DIRT, StatusType.CONCUSSED.tag,
 			"Decreases the affected entity's physical damage by 0.2 per stack. Upon the affected entity dealing physical damage, remove 25% of the stacks. " +
 			"1 stack is removed every tick."),

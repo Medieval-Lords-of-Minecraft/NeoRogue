@@ -46,7 +46,7 @@ public class Electrode extends Equipment {
 		super(ID, "Electrode", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(25, 0, 18, 16));
 		damage = isUpgraded ? 300 : 200;
-		elec = isUpgraded ? 105 : 70;
+		elec = isUpgraded ? 50 : 30;
 	}
 
 	public static Equipment get() {

@@ -36,7 +36,7 @@ public class Energize extends Equipment {
 		super(ID, "Energize", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 0, 12, 0));
 		damage = isUpgraded ? 225 : 150;
-		elec = isUpgraded ? 90 : 60;
+		elec = isUpgraded ? 50 : 30;
 	}
 	
 	public static Equipment get() {
