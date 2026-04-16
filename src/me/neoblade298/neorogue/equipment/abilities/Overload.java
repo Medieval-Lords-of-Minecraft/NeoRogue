@@ -6,6 +6,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -25,7 +26,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.KillEvent;
 
 public class Overload extends Equipment {
 	private static final String ID = "Overload";
-	private int damage;
+	private int damage, mult;
 	private static final ParticleContainer part = new ParticleContainer(Particle.FIREWORK)
 			.count(50).spread(0.2, 3).offsetY(2);
 	private static final TargetProperties tp = TargetProperties.radius(3, false, TargetType.ENEMY);
@@ -35,6 +36,7 @@ public class Overload extends Equipment {
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, tp.range));
 		
 		damage = isUpgraded ? 90 : 60;
+		mult = 10;
 	}
 	
 	public static Equipment get() {
@@ -48,7 +50,7 @@ public class Overload extends Equipment {
 			int stacks = FightInstance.getFightData(ev.getTarget()).getStatus(StatusType.ELECTRIFIED).getStacks();
 			Player p = data.getPlayer();
 			for (LivingEntity ent : TargetHelper.getEntitiesInRadius(ev.getTarget(), tp)) {
-				FightInstance.dealDamage(new DamageMeta(data, damage + (stacks * 5), DamageType.LIGHTNING, DamageStatTracker.of(id + slot, this)), ent);
+				FightInstance.dealDamage(new DamageMeta(data, damage + (stacks * mult), DamageType.LIGHTNING, DamageStatTracker.of(id + slot, this)), ent);
 				part.play(p, ent);
 			}
 			return TriggerResult.keep();
@@ -59,6 +61,6 @@ public class Overload extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.GLOWSTONE_DUST,
 				"Passive. On kill, deal " + GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage + the number of "
-				+ GlossaryTag.ELECTRIFIED.tag(this) + " stacks the killed enemy has multiplied by <white>5</white> in an area.");
+				+ GlossaryTag.ELECTRIFIED.tag(this) + " stacks the killed enemy has multiplied by " + DescUtil.white(mult) + " in an area.");
 	}
 }
