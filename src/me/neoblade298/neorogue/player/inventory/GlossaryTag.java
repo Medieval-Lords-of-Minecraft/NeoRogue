@@ -52,8 +52,7 @@ public enum GlossaryTag implements GlossaryIcon {
 	BURN(Material.BLAZE_POWDER, StatusType.BURN.tag,
 			"Reduces the affected entity's fire resistance by damage by 50%. 1 stack is removed every tick."),
 	FROST(Material.PACKED_ICE, StatusType.FROST.tag,
-			"Decreases the affected entity's magic damage by 0.2 per stack. Upon the affected entity dealing magical damage, remove 25% of the stacks. " +
-			"1 stack is removed every tick."),
+			"Reduces the affected entity's magical damage dealt by 25%. 1 stack is removed every tick."),
 	ELECTRIFIED(Material.LIGHTNING_ROD, StatusType.ELECTRIFIED.tag,
 			"Whenever the affected entity casts an ability or deals damage, deal 5 lightning damage per stack applied to the affected entity. 1 stack is removed every tick."),
 	CONCUSSED(Material.DIRT, StatusType.CONCUSSED.tag,

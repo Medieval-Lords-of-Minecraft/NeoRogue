@@ -38,13 +38,14 @@ public class FrigidWind extends Equipment {
 	private static final String ID = "FrigidWind";
 	private static final ParticleContainer wind = new ParticleContainer(Particle.CLOUD).count(15).spread(1, 0.5);
 	private static final ParticleContainer ice = new ParticleContainer(Particle.SNOWFLAKE).count(30).spread(0.5, 0.5);
-	private int frost, damage;
+	private int frost, damage, frostPerDamage;
 	
 	public FrigidWind(boolean isUpgraded) {
 		super(ID, "Frigid Wind", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 0, 10, 15));
-		frost = isUpgraded ? 300 : 200;
+		frost = isUpgraded ? 15 : 10;
 		damage = isUpgraded ? 150 : 100;
+		frostPerDamage = 10;
 	}
 	
 	public static Equipment get() {
@@ -122,7 +123,7 @@ public class FrigidWind extends Equipment {
 
 						// Get frost stacks at this point (5 seconds later)
 						int frozenStacks = fd.getStatus(StatusType.FROST).getStacks();
-						double totalDamage = (frozenStacks / 100.0) * damage;
+						double totalDamage = (frozenStacks / (double) frostPerDamage) * damage;
                         if (totalDamage > 0) {
                             ice.play(p, target.getLocation());
                             Sounds.glass.play(p, target.getLocation());
@@ -142,6 +143,6 @@ public class FrigidWind extends Equipment {
 				"On cast, your next basic attack also launches a slow-moving <white>2</white> block wide " +
 				"piercing wind projectile that applies " + GlossaryTag.FROST.tag(this, frost, true) + " to enemies hit. " +
 				"<white>5s</white> later, enemies take " + GlossaryTag.ICE.tag(this, damage, true) + " damage per " +
-				DescUtil.white(100) + " " + GlossaryTag.FROST.tag(this) + " they have.");
+				DescUtil.white(frostPerDamage) + " " + GlossaryTag.FROST.tag(this) + " they have.");
 	}
 }

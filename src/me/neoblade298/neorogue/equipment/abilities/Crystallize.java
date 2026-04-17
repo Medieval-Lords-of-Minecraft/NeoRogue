@@ -43,7 +43,7 @@ public class Crystallize extends Equipment {
 		super(ID, "Crystallize", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(35, 0, 20, tp.range).add(PropertyType.AREA_OF_EFFECT, aoe.range));
 		thres = isUpgraded ? 240 : 160;
-		frost = isUpgraded ? 120 : 80;
+		frost = isUpgraded ? 8 : 5;
 	}
 
 	public static Equipment get() {

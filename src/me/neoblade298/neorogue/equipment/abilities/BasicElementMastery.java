@@ -24,11 +24,13 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 public class BasicElementMastery extends Equipment {
 	private static final String ID = "BasicElementMastery";
 	private int burn;
+	private int frost;
 	
 	public BasicElementMastery(boolean isUpgraded) {
 		super(ID, "Basic Element Mastery", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.none());
 				burn = isUpgraded ? 2 : 1;
+				frost = 1;
 	}
 
 	@Override
@@ -48,7 +50,7 @@ public class BasicElementMastery extends Equipment {
 		data.addTrigger(id, Trigger.PRE_APPLY_STATUS, (pdata, in) -> {
 			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
 			if (!ev.isStatus(StatusType.FROST)) return TriggerResult.keep();
-			ev.getStacksBuffList().add(new Buff(data, 1, 0, BuffStatTracker.ignored(this)));
+			ev.getStacksBuffList().add(new Buff(data, frost, 0, BuffStatTracker.ignored(this)));
 			return TriggerResult.keep();
 		});
 		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
@@ -63,7 +65,7 @@ public class BasicElementMastery extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.MAGMA_CREAM,
 				"Passive. Start fights with " + GlossaryTag.SHIELDS.tag(this, 5, false) + ". Increase application of " + GlossaryTag.FROST.tag(this) +
-				" by <white>1</white>. Dealing " + GlossaryTag.FIRE.tag(this) + " damage additionally applies "
+				" by <white>" + frost + "</white>. Dealing " + GlossaryTag.FIRE.tag(this) + " damage additionally applies "
 				+ GlossaryTag.BURN.tag(this, burn, true) + ".");
 	}
 }

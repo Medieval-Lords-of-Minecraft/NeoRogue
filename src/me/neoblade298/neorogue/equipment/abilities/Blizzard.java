@@ -47,7 +47,7 @@ public class Blizzard extends Equipment {
 		
 		threshold = isUpgraded ? 700 : 1000;
 		damage = isUpgraded ? 90 : 60;
-		frost = isUpgraded ? 150 : 90;
+		frost = isUpgraded ? 3 : 2;
 	}
 	
 	public static Equipment get() {

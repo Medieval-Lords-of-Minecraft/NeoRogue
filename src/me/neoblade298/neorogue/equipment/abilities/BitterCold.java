@@ -39,7 +39,7 @@ public class BitterCold extends Equipment {
 	public BitterCold(boolean isUpgraded) {
 		super(ID, "Bitter Cold", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.none());
-		stacks = isUpgraded ? 6 : 4;
+		stacks = isUpgraded ? 3 : 2;
 		damage = isUpgraded ? 300 : 200;
 	}
 	
