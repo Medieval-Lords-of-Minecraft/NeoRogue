@@ -45,7 +45,7 @@ public class BoltWand extends Equipment {
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
 		pierceAmount = 3;
-		elec = 40;
+		elec = 3;
 	}
 	
 	public static Equipment get() {

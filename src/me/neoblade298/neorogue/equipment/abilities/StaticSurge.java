@@ -26,7 +26,7 @@ public class StaticSurge extends Equipment {
 		super(ID, "Static Surge", isUpgraded, Rarity.RARE, EquipmentClass.THIEF, EquipmentType.ABILITY,
 				EquipmentProperties.none());
 		damage = isUpgraded ? 50 : 30;
-		electrified = isUpgraded ? 50 : 30;
+		electrified = isUpgraded ? 8 : 5;
 	}
 	
 	public static Equipment get() {

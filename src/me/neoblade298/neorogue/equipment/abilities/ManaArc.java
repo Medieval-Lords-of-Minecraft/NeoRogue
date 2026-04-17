@@ -40,7 +40,7 @@ public class ManaArc extends Equipment {
 				EquipmentProperties.ofUsable(15, 0, 25, 0));
 		mana = isUpgraded ? 5 : 6;
 		damage = isUpgraded ? 90 : 60;
-		elec = isUpgraded ? 45 : 30;
+		elec = isUpgraded ? 12 : 8;
 	}
 
 	@Override

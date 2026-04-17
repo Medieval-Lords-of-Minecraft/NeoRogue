@@ -25,7 +25,7 @@ public class SparkdrainKnife extends Equipment {
 		super(ID, "Sparkdrain Knife", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(40, 1, 0.2, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
-		elec = 30;
+		elec = 4;
 		thres = 100;
 		shields = isUpgraded ? 8 : 5;
 		

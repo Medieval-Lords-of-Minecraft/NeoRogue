@@ -24,6 +24,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
 public class StaticNecklace extends Artifact {
 	private static final String ID = "StaticNecklace";
+	private static final double DAMAGE_INCREASE = 0.5;
 
 	public StaticNecklace() {
 		super(ID, "Static Necklace", Rarity.COMMON, EquipmentClass.THIEF);
@@ -41,7 +42,7 @@ public class StaticNecklace extends Artifact {
 			FightData fd = FightInstance.getFightData(ev.getTarget());
 			if (!fd.hasStatus(StatusType.ELECTRIFIED)) return TriggerResult.keep();
 			
-			double buff = fd.getStatus(StatusType.ELECTRIFIED).getStacks() * 0.2;
+			double buff = fd.getStatus(StatusType.ELECTRIFIED).getStacks() * DAMAGE_INCREASE;
 			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.LIGHTNING), new Buff(pdata, buff, 0, StatTracker.damageBuffAlly(buffId, this)));
 			return TriggerResult.keep();
 		});
@@ -60,7 +61,7 @@ public class StaticNecklace extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LEAD, 
-				GlossaryTag.LIGHTNING.tag(this) + " damage is increased by <white>0.1</white> for each stack of " + 
+				GlossaryTag.LIGHTNING.tag(this) + " damage is increased by <white>" + DAMAGE_INCREASE + "</white> for each stack of " + 
 				GlossaryTag.ELECTRIFIED.tag(this) + " on the target.");
 	}
 }

@@ -41,7 +41,7 @@ public class LightningRush extends Equipment {
 		super(ID, "Lightning Rush", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(20, 10, 15, 0));
 		damage = isUpgraded ? 120 : 80;
-		elec = isUpgraded ? 90 : 60;
+		elec = isUpgraded ? 9 : 6;
 	}
 
 	public static Equipment get() {
@@ -107,6 +107,5 @@ public class LightningRush extends Equipment {
 				return TriggerResult.keep();
 			};
 		}
-
 	}
 }

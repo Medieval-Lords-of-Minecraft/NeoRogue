@@ -26,8 +26,8 @@ public class ElectromagneticKnife extends Equipment {
 		super(ID, "Electromagnetic Knife", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(30, 1, 0.2, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
-		elec = 30;
-		inc = isUpgraded ? 5 : 3;
+		elec = 1;
+		inc = isUpgraded ? 2 : 1;
 	}
 	
 	public static Equipment get() {

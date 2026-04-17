@@ -20,7 +20,7 @@ public class YellowRing extends Equipment {
 	public YellowRing(boolean isUpgraded) {
 		super(ID, "Yellow Ring", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE,
 				EquipmentType.ACCESSORY);
-		elec = isUpgraded ? 25 : 15;
+		elec = isUpgraded ? 5 : 3;
 	}
 	
 	public static Equipment get() {

@@ -43,7 +43,7 @@ public class LightningRod extends Equipment {
 		super(ID, "Lightning Rod", isUpgraded, Rarity.RARE, EquipmentClass.MAGE, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(60, 20, 4, tp.range));
 		damage = isUpgraded ? 500 : 300;
-		electrified = isUpgraded ? 300 : 200;
+		electrified = isUpgraded ? 30 : 20;
 		hitsRequired = isUpgraded ? 7 : 10;
 	}
 

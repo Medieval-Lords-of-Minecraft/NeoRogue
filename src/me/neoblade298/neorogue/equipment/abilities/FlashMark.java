@@ -43,7 +43,7 @@ public class FlashMark extends Equipment {
 		super(ID, "Flash Mark", isUpgraded, Rarity.RARE, EquipmentClass.THIEF, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(30, 10, 8, tp.range));
 		damage = isUpgraded ? 250 : 180;
-		electrified = isUpgraded ? 150 : 100;
+		electrified = isUpgraded ? 15 : 10;
 	}
 	
 	public static Equipment get() {
