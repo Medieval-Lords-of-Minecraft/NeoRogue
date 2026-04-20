@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.meta.PotionMeta;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Ammunition;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -21,14 +22,14 @@ import me.neoblade298.neorogue.session.fight.status.Status.StatusType;
 
 public class EnchantedCrystalArrow extends Ammunition {
 	private static final String ID = "EnchantedCrystalArrow";
-	private static final int BONUS_DAMAGE = 20;
-	private int frost;
+	private int frost, bonusDamage;
 	
 	public EnchantedCrystalArrow(boolean isUpgraded) {
 		super(ID, "Enchanted Crystal Arrow", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofAmmunition(10, 0.1, DamageType.ICE));
-		frost = isUpgraded ? 40 : 30;
+		bonusDamage = isUpgraded ? 20 : 10;
+		frost = 3;
 	}
 	
 	public static Equipment get() {
@@ -41,7 +42,7 @@ public class EnchantedCrystalArrow extends Ammunition {
 		
 		// Deal bonus damage if target has Frost
 		if (fd.hasStatus(StatusType.FROST)) {
-			meta.addDamageSlice(new DamageSlice(inst.getOwner(), BONUS_DAMAGE, DamageType.ICE, DamageStatTracker.of(id, this)));
+			meta.addDamageSlice(new DamageSlice(inst.getOwner(), bonusDamage, DamageType.ICE, DamageStatTracker.of(id, this)));
 		}
 		
 		// Apply additional frost
@@ -51,8 +52,8 @@ public class EnchantedCrystalArrow extends Ammunition {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.TIPPED_ARROW,
-				"Deals <white>" + BONUS_DAMAGE + "</white> more damage to enemies with " + GlossaryTag.FROST.tag(this) + 
-				". Applies " + GlossaryTag.FROST.tag(this, frost, true) + " on hit.");
+				"Deals " + DescUtil.yellow(bonusDamage) + " more damage to enemies with " + GlossaryTag.FROST.tag(this) + 
+				". Applies " + GlossaryTag.FROST.tag(this, frost, false) + " on hit.");
 		PotionMeta pm = (PotionMeta) item.getItemMeta();
 		pm.setColor(Color.AQUA);
 		item.setItemMeta(pm);

@@ -23,7 +23,7 @@ public class ColdArrow extends Ammunition {
 		super(ID, "Cold Arrow", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofAmmunition(5, 0.1, DamageType.PIERCING));
-				frost = isUpgraded ? 12 : 8;
+				frost = isUpgraded ? 3 : 2;
 	}
 	
 	public static Equipment get() {

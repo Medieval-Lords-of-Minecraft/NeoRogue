@@ -40,7 +40,7 @@ public class Frostreaver extends Bow {
 		super(ID, "Frostreaver", isUpgraded, Rarity.EPIC, EquipmentClass.ARCHER,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofBow(60, 1, 0, 12, 0.8, 0.8));
-		frostThreshold = isUpgraded ? 70 : 100;
+		frostThreshold = isUpgraded ? 5 : 7;
 	}
 
 	@Override
