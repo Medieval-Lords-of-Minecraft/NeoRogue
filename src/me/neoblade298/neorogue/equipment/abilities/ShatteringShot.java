@@ -26,12 +26,14 @@ import me.neoblade298.neorogue.session.fight.trigger.event.LaunchProjectileGroup
 public class ShatteringShot extends Equipment {
 	private static final String ID = "ShatteringShot";
 	private int damage;
+	private double iceDamagePerFrost;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.BLOCK).blockData(Material.ICE.createBlockData()).spread(0.2, 0.2).count(5);
 	
 	public ShatteringShot(boolean isUpgraded) {
 		super(ID, "Shattering Shot", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 10, 8, 0));
 		damage = isUpgraded ? 90 : 60;
+		iceDamagePerFrost = 5;
 	}
 	
 	public static Equipment get() {
@@ -72,6 +74,6 @@ public class ShatteringShot extends Equipment {
 		item = createItem(Material.POWDER_SNOW_BUCKET,
 				"On cast, your next basic attack deals an additional " + GlossaryTag.ICE.tag(this, damage, true) + " and pierces " +
 				DescUtil.white(1) + " enemy. Targets hit with this projectile that have " + GlossaryTag.FROST.tag(this) + " will always be pierced, increase the projectile's range by " +
-				DescUtil.white(2) + ", and take an additional " + GlossaryTag.ICE.tag(this, 0.2, true) + " per stack of " + GlossaryTag.FROST.tag(this) + ".");
+				DescUtil.white(2) + ", and take an additional " + GlossaryTag.ICE.tag(this, iceDamagePerFrost, true) + " per stack of " + GlossaryTag.FROST.tag(this) + ".");
 	}
 }

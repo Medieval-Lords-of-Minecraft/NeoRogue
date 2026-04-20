@@ -38,7 +38,7 @@ public class IcicleTome extends Equipment {
 		super(ID, "Icicle Tome", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.OFFHAND, EquipmentProperties.ofUsable(10, 0, 2, 12));
 		damage = isUpgraded ? 150 : 100;
-		thres = 60;
+		thres = 15;
 	}
 	
 	public static Equipment get() {
