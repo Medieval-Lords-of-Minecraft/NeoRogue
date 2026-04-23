@@ -345,10 +345,10 @@ public class DamageMeta {
 		if (!isSecondary) {
 			if (recipient.hasStatus(StatusType.SANCTIFIED) && containsType(DamageCategory.LIGHT)) {
 				for (Entry<FightData, Integer> ent : recipient.getStatus(StatusType.SANCTIFIED).getSlices().getSliceOwners().entrySet()) {
+					// Arbitrarily use the first sanct applier as the shield applier
 					if (ent.getKey() instanceof PlayerFightData) {
-						double mult = 0.1;
-						((PlayerFightData) ent.getKey()).getStats().addSanctifiedShielding(ent.getValue() * mult);
-						owner.addSimpleShield(ent.getKey().getUniqueId(), ent.getValue() * mult, 120);
+						owner.addSimpleShield(ent.getKey().getUniqueId(), 5, 100);
+						break;
 					}
 				}
 			}

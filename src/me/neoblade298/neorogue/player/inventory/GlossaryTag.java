@@ -63,7 +63,7 @@ public enum GlossaryTag implements GlossaryIcon {
 	CORRUPTION(Material.FERMENTED_SPIDER_EYE, StatusType.CORRUPTION.tag,
 			"Increases the affected entity's damage taken by 50%. Each time the affected entity receives damage, 1 stack is removed."),
 	SANCTIFIED(Material.END_ROD, StatusType.SANCTIFIED.tag,
-			"Upon the affected entity receiving light damage, grant the attacker 0.1 shields per stack for 6 seconds. 1 stack is removed every tick."),
+			"Upon the affected entity receiving light damage, grant the attacker 5 shields for 5 seconds. 1 stack is removed every tick."),
 	THORNS(Material.DEAD_BUSH, StatusType.THORNS.tag,
 			"Upon the affected entity receiving physical damage, even if it is absorbed by shields, return 1 thorns damage per stack."),
 	REFLECT(Material.GLASS_PANE, StatusType.REFLECT.tag,
