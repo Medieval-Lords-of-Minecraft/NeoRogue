@@ -12,6 +12,7 @@ import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.ParticleUtil;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -36,6 +37,7 @@ public class RighteousLance extends Equipment {
 	private static final TargetProperties regHit = TargetProperties.line(4, 1, TargetType.ENEMY),
 			lanceHit = TargetProperties.line(6, 1, TargetType.ENEMY);
 	private int sanct;
+	private double dmgMult;
 
 	public RighteousLance(boolean isUpgraded) {
 		super(
@@ -43,6 +45,7 @@ public class RighteousLance extends Equipment {
 				EquipmentProperties.ofWeapon(80, 0.7, 0.3, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_CRIT)
 		);
 		sanct = isUpgraded ? 55 : 35;
+		dmgMult = isUpgraded ? 5 : 3;
 	}
 	
 	public static Equipment get() {
@@ -79,7 +82,7 @@ public class RighteousLance extends Equipment {
 				return TriggerResult.keep();
 			int stacks = FightInstance.getFightData(targets.getFirst()).getStatus(StatusType.SANCTIFIED).getStacks();
 			DamageMeta dm = new DamageMeta(data, this, true, DamageStatTracker.of(id + slot, this)).setKnockback(-0.5);
-			dm.addDamageSlice(new DamageSlice(data, stacks, DamageType.LIGHT, DamageStatTracker.of(id + slot, this)));
+			dm.addDamageSlice(new DamageSlice(data, stacks * dmgMult, DamageType.LIGHT, DamageStatTracker.of(id + slot, this)));
 			FightInstance.dealDamage(dm, targets.getFirst());
 			return TriggerResult.keep();
 		});
@@ -90,7 +93,7 @@ public class RighteousLance extends Equipment {
 		item = createItem(
 				Material.TRIDENT,
 				"Melee range +1, applies " + GlossaryTag.SANCTIFIED.tag(this, sanct, true) + ". Throwing the weapon instead increases its range by <white>2</white> and deals additional "
-				+ GlossaryTag.LIGHT.tag(this) + " damage equal to the " + GlossaryTag.SANCTIFIED.tag(this) + " stacks on the target."
+				+ GlossaryTag.LIGHT.tag(this) + " damage equal to " + GlossaryTag.SANCTIFIED.tag(this) + " stacks on the target multiplied by " + DescUtil.yellow(dmgMult) + "."
 		);
 	}
 }

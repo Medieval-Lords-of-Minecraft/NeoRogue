@@ -30,8 +30,8 @@ public class Prayer extends Equipment {
 		super(ID, "Prayer", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.none());
 		heal = isUpgraded ? 15 : 10;
-		thres = isUpgraded ? 300 : 400;
-		inc = isUpgraded ? 15 : 10;
+		thres = isUpgraded ? 55 : 80;
+		inc = isUpgraded ? 5 : 3;
 	}
 	
 	public static Equipment get() {

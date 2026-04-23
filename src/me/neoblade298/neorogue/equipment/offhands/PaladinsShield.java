@@ -33,7 +33,7 @@ public class PaladinsShield extends Equipment {
 		super(ID, "Paladin's Shield", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.OFFHAND);
 		reduction = isUpgraded ? 7 : 5;
-		sanct = isUpgraded ? 45 : 30;
+		sanct = isUpgraded ? 8 : 5;
 	}
 	
 	public static Equipment get() {

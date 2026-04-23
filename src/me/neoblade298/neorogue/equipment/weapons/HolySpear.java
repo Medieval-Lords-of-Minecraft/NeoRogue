@@ -46,8 +46,8 @@ public class HolySpear extends Equipment {
 		);
 		damage = 200;
 		bonus = isUpgraded ? 500 : 350;
-		sanct = isUpgraded ? 150 : 100;
-		thres = 100;
+		sanct = isUpgraded ? 12 : 8;
+		thres = 25;
 	}
 	
 	public static Equipment get() {

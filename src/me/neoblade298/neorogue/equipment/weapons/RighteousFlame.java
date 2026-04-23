@@ -30,7 +30,7 @@ public class RighteousFlame extends Equipment {
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(isUpgraded ? 90 : 70, 1, 0.4, DamageType.SLASHING, new SoundContainer(Sound.ENTITY_BLAZE_SHOOT, 0.5F)));
 		properties.addUpgrades(PropertyType.DAMAGE);
-		sanct = isUpgraded ? 45 : 30;
+		sanct = isUpgraded ? 5 : 3;
 	}
 	
 	public static Equipment get() {

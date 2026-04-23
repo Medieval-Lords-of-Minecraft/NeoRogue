@@ -22,7 +22,7 @@ public class Enlighten extends Equipment {
 		super(ID, "Enlighten", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.none());
 		
-		sanct = isUpgraded ? 60 : 40;
+		sanct = isUpgraded ? 8 : 5;
 	}
 	
 	public static Equipment get() {

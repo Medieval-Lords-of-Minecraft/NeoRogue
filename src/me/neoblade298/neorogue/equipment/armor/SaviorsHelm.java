@@ -32,7 +32,7 @@ public class SaviorsHelm extends Equipment {
 		super(ID, "Savior's Helm", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
 				EquipmentType.ARMOR, EquipmentProperties.none().add(PropertyType.RANGE, tp.range));
 		def = isUpgraded ? 8 : 6;
-		sanct = isUpgraded ? 60 : 40;
+		sanct = isUpgraded ? 5 : 3;
 	}
 	
 	public static Equipment get() {

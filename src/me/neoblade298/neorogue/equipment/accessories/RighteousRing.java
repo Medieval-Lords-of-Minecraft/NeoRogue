@@ -19,7 +19,7 @@ public class RighteousRing extends Equipment {
 	public RighteousRing(boolean isUpgraded) {
 		super(ID, "Righteous Ring", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ACCESSORY);
-		sanct = isUpgraded ? 6 : 4;
+		sanct = isUpgraded ? 3 : 2;
 	}
 	
 	public static Equipment get() {

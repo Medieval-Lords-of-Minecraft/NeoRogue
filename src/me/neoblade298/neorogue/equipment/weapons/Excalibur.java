@@ -28,7 +28,7 @@ public class Excalibur extends Equipment {
 		super(ID, "Excalibur", isUpgraded, Rarity.EPIC, EquipmentClass.WARRIOR,
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(100, 1, 0.4, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
-		mult = isUpgraded ? 0.3 : 0.2;
+		mult = isUpgraded ? 0.8 : 0.5;
 	}
 	
 	public static Equipment get() {

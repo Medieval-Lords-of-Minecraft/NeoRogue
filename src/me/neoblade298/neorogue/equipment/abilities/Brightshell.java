@@ -40,7 +40,7 @@ public class Brightshell extends Equipment {
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(5, 10, 10, 0, tp.range));
 		shields = isUpgraded ? 15 : 10;
 		damage = 100;
-		sanct = isUpgraded ? 60 : 40;
+		sanct = isUpgraded ? 12 : 8;
 	}
 	
 	public static Equipment get() {
