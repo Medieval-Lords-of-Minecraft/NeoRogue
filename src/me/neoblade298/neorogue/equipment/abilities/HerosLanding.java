@@ -42,7 +42,7 @@ public class HerosLanding extends Equipment {
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 8, 0, tp.range));
 		str = isUpgraded ? 15 : 10;
 		damage = isUpgraded ? 400 : 300;
-		conc = isUpgraded ? 120 : 80;
+		conc = isUpgraded ? 30 : 20;
 	}
 	
 	public static Equipment get() {

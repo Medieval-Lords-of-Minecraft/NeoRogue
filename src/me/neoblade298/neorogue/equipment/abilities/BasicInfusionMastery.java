@@ -25,7 +25,7 @@ public class BasicInfusionMastery extends Equipment {
 	public BasicInfusionMastery(boolean isUpgraded) {
 		super(ID, "Basic Infusion Mastery", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.none());
-				conc = isUpgraded ? 4 : 3;
+				conc = isUpgraded ? 3 : 2;
 				heal = isUpgraded ? 10 : 5;
 	}
 	

@@ -8,19 +8,25 @@ import me.neoblade298.neorogue.session.fight.buff.DamageBuffType;
 
 public class ConcussedStatus extends DecrementStackStatus {
 	private static String id = "CONCUSSED";
+	private static final double PHYSICAL_DAMAGE_DEBUFF = -0.25;
 	
 	public ConcussedStatus(FightData data) {
 		super(id, data, StatusClass.NEGATIVE);
 	}
 	
 	@Override
-	public void apply(FightData fd, int stacks, int seconds) {
-		super.apply(fd, stacks, seconds);
-		holder.addDamageBuff(DamageBuffType.of(DamageCategory.PHYSICAL), new Buff(slices.first().getFightData(), -stacks * 0.2, 0, BuffStatTracker.of(StatusType.CONCUSSED)));
+	public void apply(FightData applier, int stacks, int seconds) {
+		super.apply(applier, stacks, seconds);
+		if (this.stacks <= 0) return;
+		Buff b = new Buff(slices.first().getFightData(), PHYSICAL_DAMAGE_DEBUFF, 0, BuffStatTracker.of(StatusType.CONCUSSED));
+		holder.addDamageBuff(DamageBuffType.of(DamageCategory.PHYSICAL), b);
 	}
 	
 	@Override
 	public void onTickAction(int toRemove) {
-		holder.addDamageBuff(DamageBuffType.of(DamageCategory.PHYSICAL), new Buff(slices.first().getFightData(), toRemove * 0.2, 0, BuffStatTracker.of(StatusType.CONCUSSED)));
+		if (stacks - toRemove <= 0) {
+			Buff b = new Buff(slices.first().getFightData(), 0, 0, BuffStatTracker.of(StatusType.CONCUSSED));
+			holder.addDamageBuff(DamageBuffType.of(DamageCategory.PHYSICAL), b);
+		}
 	}
 }

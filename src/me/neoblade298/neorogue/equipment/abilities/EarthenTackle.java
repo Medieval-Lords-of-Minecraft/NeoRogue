@@ -43,7 +43,7 @@ public class EarthenTackle extends Equipment {
 		super(ID, "Earthen Tackle", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 25, 20, 0));
 		damage = isUpgraded ? 200 : 160;
-		concussed = isUpgraded? 50 : 35;
+		concussed = isUpgraded? 15 : 10;
 		
 		pc.count(25).spread(0.5, 0.5);
 		start.count(25).spread(0.5, 0).offsetY(1).blockData(Material.DIRT.createBlockData());
@@ -116,7 +116,7 @@ public class EarthenTackle extends Equipment {
 		item = createItem(Material.REDSTONE, new String[] { "<gold>Area of Effect: <white>4" },
 				"On cast, dash forward, stopping at the first enemy hit and dealing <yellow>" + damage + "</yellow> " + GlossaryTag.EARTHEN.tag(this) +
 				" damage in an area "
-						+ "and applies <yellow>" + concussed + "</yellow> " + GlossaryTag.CONCUSSED.tag(this) + ". "
+						+ "and applies " + GlossaryTag.CONCUSSED.tag(this, concussed, true) + ". "
 						+ "If an enemy is hit, reduce this ability's cooldown by <white>10</white>.");
 	}
 }

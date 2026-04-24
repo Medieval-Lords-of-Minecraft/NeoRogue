@@ -52,7 +52,7 @@ public class BatteringRam extends Equipment {
 		reduction = isUpgraded ? 6 : 8;
 		damage = isUpgraded ? 120 : 80;
 		thres = 6;
-		conc = isUpgraded ? 45 : 30;
+		conc = isUpgraded ? 8 : 5;
 	}
 	
 	public static Equipment get() {

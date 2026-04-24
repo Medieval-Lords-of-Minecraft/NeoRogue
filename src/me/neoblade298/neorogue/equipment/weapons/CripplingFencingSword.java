@@ -29,7 +29,7 @@ public class CripplingFencingSword extends Equipment {
 				EquipmentProperties.ofWeapon(45, 1, 0.3, DamageType.PIERCING, Sound.ENTITY_PLAYER_ATTACK_CRIT)
 		);
 		shields = 6;
-		concussed = isUpgraded ? 50 : 30;
+		concussed = isUpgraded ? 8 : 5;
 	}
 
 	public static Equipment get() {

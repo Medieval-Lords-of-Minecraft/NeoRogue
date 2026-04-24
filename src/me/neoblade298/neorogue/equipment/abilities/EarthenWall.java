@@ -44,7 +44,7 @@ public class EarthenWall extends Equipment {
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 10, 18, tp.range));
 		damage = isUpgraded ? 300 : 250;
 		def = isUpgraded ? 4 : 2;
-		conc = isUpgraded ? 50 : 35;
+		conc = isUpgraded ? 15 : 10;
 	}
 	
 	public static Equipment get() {

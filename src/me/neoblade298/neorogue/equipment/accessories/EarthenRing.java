@@ -19,7 +19,7 @@ public class EarthenRing extends Equipment {
 	public EarthenRing(boolean isUpgraded) {
 		super(ID, "Earthen Ring", isUpgraded, Rarity.COMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ACCESSORY);
-		conc = isUpgraded ? 25 : 15;
+		conc = isUpgraded ? 3 : 2;
 	}
 	
 	public static Equipment get() {

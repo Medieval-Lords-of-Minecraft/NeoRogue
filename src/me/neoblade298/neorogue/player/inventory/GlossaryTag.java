@@ -56,8 +56,7 @@ public enum GlossaryTag implements GlossaryIcon {
 	ELECTRIFIED(Material.LIGHTNING_ROD, StatusType.ELECTRIFIED.tag,
 			"Whenever the affected entity casts an ability or deals damage, deal 5 lightning damage per stack applied to the affected entity. 1 stack is removed every tick."),
 	CONCUSSED(Material.DIRT, StatusType.CONCUSSED.tag,
-			"Decreases the affected entity's physical damage by 0.2 per stack. Upon the affected entity dealing physical damage, remove 25% of the stacks. " +
-			"1 stack is removed every tick."),
+			"Reduces the affected entity's physical damage dealt by 25%. 1 stack is removed every tick."),
 	INSANITY(Material.SOUL_SAND, StatusType.INSANITY.tag,
 			"Increases the affected entity's magic damage taken by 0.2 per stack. 1 stack is removed every tick."),
 	CORRUPTION(Material.FERMENTED_SPIDER_EYE, StatusType.CORRUPTION.tag,

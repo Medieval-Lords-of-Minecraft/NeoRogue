@@ -52,7 +52,7 @@ public class Splinterstone extends Equipment {
 		damage = isUpgraded ? 240 : 160;
 		properties.add(PropertyType.DAMAGE, damage);
 		pierce = isUpgraded ? 90 : 60;
-		conc = isUpgraded ? 60 : 40;
+		conc = isUpgraded ? 12 : 8;
 	}
 
 	public static Equipment get() {

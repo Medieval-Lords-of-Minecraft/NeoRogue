@@ -36,8 +36,8 @@ public class Quake extends Equipment {
 		super(ID, "Quake", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 20, 8, tp.range));
 		
-		concussed = isUpgraded ? 45 : 30;
-		damage = isUpgraded ? 130 : 100;
+		concussed = isUpgraded ? 12 : 8;
+		damage = isUpgraded ? 150 : 100;
 	}
 	
 	public static Equipment get() {
@@ -62,6 +62,6 @@ public class Quake extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.DIRT,
 				"On cast, deal <yellow>" + damage + "</yellow> " + GlossaryTag.EARTHEN.tag(this) + " damage to all "
-						+ "enemies in the radius and apply <yellow>" + concussed + "</yellow> " + GlossaryTag.CONCUSSED.tag(this) + ".");
+						+ "enemies in the radius and apply " + GlossaryTag.CONCUSSED.tag(this, concussed, true) + ".");
 	}
 }

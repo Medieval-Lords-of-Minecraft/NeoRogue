@@ -39,7 +39,7 @@ public class EarthStaff extends Equipment {
 	
 	private static final TargetProperties innerProps = TargetProperties.radius(innerRadius, true, TargetType.ENEMY);
 	private static final TargetProperties outerProps = TargetProperties.radius(outerRadius, true, TargetType.ENEMY);
-	private int conc = 15;
+	private int conc = 5;
 	
 	public EarthStaff(boolean isUpgraded) {
 		super(
@@ -100,7 +100,7 @@ public class EarthStaff extends Equipment {
 	public void setupItem() {
 		item = createItem(
 				Material.STICK,
-				"After a windup where you can't jump, smashes the ground beneath you, dealing damage in an area spreading outwards. Enemies closest to you receive "
+				"After a windup where you can't jump, smash the ground beneath you, dealing damage in an area spreading outwards. Enemies closest to you receive "
 						+ GlossaryTag.CONCUSSED.tag(this, conc, true) + ". Must be cast while on the ground."
 		);
 	}

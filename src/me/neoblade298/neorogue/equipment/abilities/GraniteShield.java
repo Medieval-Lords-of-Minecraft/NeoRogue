@@ -27,7 +27,7 @@ public class GraniteShield extends Equipment {
 		
 		shields = 15;
 		cd = (int) properties.get(PropertyType.COOLDOWN);
-		conc = isUpgraded ? 45 : 30;
+		conc = isUpgraded ? 15 : 10;
 	}
 	
 	public static Equipment get() {

@@ -32,7 +32,7 @@ public class Hullbreaker extends Equipment {
 	private static final String ID = "Hullbreaker";
 	private static int damage = 100;
 	private int reduc;
-	private static final int THRES = 150;
+	private static final int THRES = 40;
 
 	public Hullbreaker(boolean isUpgraded) {
 		super(ID, "Hullbreaker", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR, EquipmentType.OFFHAND,

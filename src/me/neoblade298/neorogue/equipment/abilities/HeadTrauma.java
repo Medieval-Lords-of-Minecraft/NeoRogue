@@ -36,7 +36,7 @@ public class HeadTrauma extends Equipment {
 	private static final String ID = "HeadTrauma";
 	private int damage, reducStr;
 	private double reduc;
-	private static final int THRESHOLD = 100;
+	private static final int THRESHOLD = 30;
 	private static final ParticleContainer pc = new ParticleContainer(Particle.BLOCK).blockData(Material.DIRT.createBlockData()).count(20).spread(1, 1).offsetY(1);
 	private static final SoundContainer sc = new SoundContainer(Sound.BLOCK_ROOTED_DIRT_BREAK);
 	

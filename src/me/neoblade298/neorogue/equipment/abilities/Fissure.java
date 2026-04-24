@@ -42,7 +42,7 @@ public class Fissure extends Equipment {
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 30, isUpgraded ? 11 : 14, 0));
 		properties.addUpgrades(PropertyType.COOLDOWN);
 		damage = isUpgraded ? 250 : 180;
-		concussed = isUpgraded ? 60 : 40;
+		concussed = isUpgraded ? 22 : 15;
 	}
 	
 	public static Equipment get() {

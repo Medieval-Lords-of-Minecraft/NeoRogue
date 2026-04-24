@@ -26,7 +26,7 @@ public class HerculeanStrength extends Equipment {
 				EquipmentType.ABILITY, EquipmentProperties.none());
 				strength = isUpgraded ? 6 : 4;
 				bers = isUpgraded ? 5 : 3;
-				conc = isUpgraded ? 10 : 7;
+				conc = isUpgraded ? 5 : 3;
 	}
 	
 	public static Equipment get() {
