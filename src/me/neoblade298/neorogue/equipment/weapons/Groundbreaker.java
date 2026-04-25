@@ -44,7 +44,7 @@ public class Groundbreaker extends Equipment {
 				EquipmentProperties.ofWeapon(isUpgraded ? 200 : 160, 0.5, 0.4, DamageType.BLUNT, new SoundContainer(Sound.ENTITY_PLAYER_ATTACK_SWEEP, 0.5F)));
 		properties.addUpgrades(PropertyType.DAMAGE);
 		properties.add(PropertyType.AREA_OF_EFFECT, tp.range);
-		conc = isUpgraded ? 80 : 60;
+		conc = isUpgraded ? 5 : 3;
 	}
 	
 	public static Equipment get() {

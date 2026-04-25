@@ -43,7 +43,7 @@ public class TheGreatDivide extends Equipment {
 				.add(PropertyType.RANGE, tp.range)
 		);
 		damage = isUpgraded ? 325 : 250;
-		concussed = isUpgraded ? 90 : 60;
+		concussed = isUpgraded ? 15 : 10;
 	}
 	
 	public static Equipment get() {

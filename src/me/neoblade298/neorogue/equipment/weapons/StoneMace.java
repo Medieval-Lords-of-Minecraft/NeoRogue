@@ -28,7 +28,7 @@ public class StoneMace extends Equipment {
 				EquipmentProperties.ofWeapon(isUpgraded ? 80 : 60, 0.75, 0.4, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_CRIT));
 		properties.addUpgrades(PropertyType.DAMAGE);
 		damage = properties.get(PropertyType.DAMAGE);
-		conc = isUpgraded ? 12 : 8;
+		conc = isUpgraded ? 3 : 2;
 	}
 	
 	public static Equipment get() {

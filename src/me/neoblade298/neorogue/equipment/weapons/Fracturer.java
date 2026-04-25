@@ -67,7 +67,7 @@ public class Fracturer extends Equipment {
 				EquipmentProperties.ofWeapon(isUpgraded ? 130 : 100, 0.5, DamageType.BLUNT, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
 		properties.addUpgrades(PropertyType.DAMAGE);
 		earth = isUpgraded ? 60 : 40;
-		concussed = isUpgraded ? 30 : 20;
+		concussed = isUpgraded ? 5 : 3;
 	}
 	
 	public static Equipment get() {

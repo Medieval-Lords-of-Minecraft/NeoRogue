@@ -82,8 +82,8 @@ public class Hullbreaker extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.IRON_INGOT,
 				"Right click to basic attack. Lowers " + GlossaryTag.PHYSICAL.tag(this) + " defense by "
-						+ DescUtil.yellow(reduc) + " for every " + DescUtil.white(THRES) + " "
-						+ GlossaryTag.CONCUSSED.tag(this)
+						+ DescUtil.yellow(reduc) + " for every "
+						+ GlossaryTag.CONCUSSED.tag(this, THRES, false)
 						+ " you have applied during the fight. Defense reduction does not stack.");
 	}
 }

@@ -40,7 +40,7 @@ public class StonyWand extends Equipment {
 				EquipmentProperties.ofWand(isUpgraded ? 45 : 35, 1, 0, 1, RANGE, DamageType.EARTHEN, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
-		conc = isUpgraded ? 20 : 15;
+		conc = isUpgraded ? 3 : 2;
 	}
 	
 	public static Equipment get() {
