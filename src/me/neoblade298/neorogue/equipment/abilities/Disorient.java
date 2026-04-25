@@ -38,11 +38,11 @@ public class Disorient extends Equipment {
 	
 	public Disorient(boolean isUpgraded) {
 		super(ID, "Disorient", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 0, 15, tp.range));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 0, 12, tp.range));
 		
 		inc = 21;
 		damage = isUpgraded ? 150 : 100;
-		insanity = isUpgraded ? 90 : 60;
+		insanity = isUpgraded ? 8 : 5;
 	}
 	
 	public static Equipment get() {

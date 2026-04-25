@@ -54,7 +54,7 @@ public class PiercingNight extends Equipment {
 				EquipmentProperties.ofUsable(25, 10, 8, 8));
 		damage = isUpgraded ? 300 : 200;
 		lineDamage = isUpgraded ? 250 : 175;
-		insanity = isUpgraded ? 100 : 75;
+		insanity = isUpgraded ? 10 : 7;
 	}
 	
 	public static Equipment get() {

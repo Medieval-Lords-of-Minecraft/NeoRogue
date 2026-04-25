@@ -49,7 +49,7 @@ public class BlackRain extends Equipment {
 				EquipmentProperties.ofUsable(30, 15, 10, 8));
 		damage = isUpgraded ? 350 : 250;
 		bonusDamage = isUpgraded ? 200 : 150;
-		thres = isUpgraded ? 150 : 200;
+		thres = isUpgraded ? 8 : 12;
 	}
 	
 	public static Equipment get() {

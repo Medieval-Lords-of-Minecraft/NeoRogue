@@ -48,7 +48,7 @@ public class ShadowPartner2 extends Equipment {
 		super(ID, "Shadow Partner II", isUpgraded, Rarity.EPIC, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 1, 0));
 		damage = isUpgraded ? 400 : 300;
-		insanityThreshold = isUpgraded ? 200 : 300;
+		insanityThreshold = isUpgraded ? 20 : 30;
 	}
 
 	public static Equipment get() {

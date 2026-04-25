@@ -34,7 +34,7 @@ public class InducePanic extends Equipment {
 	public InducePanic(boolean isUpgraded) {
 		super(ID, "Induce Panic", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 5, tp.range));
-				stacks = isUpgraded ? 150 : 100;
+				stacks = isUpgraded ? 5 : 3;
 	}
 	
 	public static Equipment get() {

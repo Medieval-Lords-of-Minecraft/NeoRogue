@@ -27,7 +27,7 @@ public class ThriveInChaos extends Equipment {
 	public ThriveInChaos(boolean isUpgraded) {
 		super(ID, "Thrive in Chaos", isUpgraded, Rarity.RARE, EquipmentClass.THIEF, EquipmentType.ABILITY,
 				EquipmentProperties.none());
-		insanityPerStack = isUpgraded ? 75 : 100;
+		insanityPerStack = isUpgraded ? 7 : 10;
 	}
 	
 	public static Equipment get() {

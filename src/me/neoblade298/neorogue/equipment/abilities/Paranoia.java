@@ -36,7 +36,7 @@ public class Paranoia extends Equipment {
 		super(ID, "Paranoia", isUpgraded, Rarity.EPIC, EquipmentClass.THIEF, EquipmentType.ABILITY,
 				EquipmentProperties.none());
 		damagePerStack = isUpgraded ? 150 : 100;
-		insanity = isUpgraded ? 120 : 80;
+		insanity = isUpgraded ? 9 : 6;
 	}
 
 	public static Equipment get() {

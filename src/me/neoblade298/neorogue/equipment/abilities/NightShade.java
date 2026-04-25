@@ -34,7 +34,7 @@ public class NightShade extends Equipment {
 				EquipmentProperties.ofUsable(25, 35, 12, 0));
 		pc.count(50).spread(0.5, 0.5).offsetY(1);
 		damage = isUpgraded ? 200 : 150;
-		insanity = isUpgraded ? 150 : 90;
+		insanity = isUpgraded ? 12 : 8;
 	}
 
 	public static Equipment get() {

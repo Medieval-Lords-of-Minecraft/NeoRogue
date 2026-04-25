@@ -36,7 +36,7 @@ public class Atrophy extends Equipment {
 		super(ID, "Atrophy", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 5, tp.range));
 		damage = isUpgraded ? 20 : 14;
-		ins = isUpgraded ? 90 : 60;
+		ins = isUpgraded ? 8 : 5;
 	}
 	
 	public static Equipment get() {
