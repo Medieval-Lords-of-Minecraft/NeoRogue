@@ -26,7 +26,7 @@ public class Nightmare extends Equipment {
 				EquipmentType.WEAPON,
 				EquipmentProperties.ofWeapon(isUpgraded ? 50 : 45, 1.5, 0.2, DamageType.PIERCING, Sounds.attackSweep));
 		properties.addUpgrades(PropertyType.DAMAGE);
-		stacks = isUpgraded ? 45 : 30;
+		stacks = isUpgraded ? 3 : 2;
 		canDrop = false;
 	}
 	
