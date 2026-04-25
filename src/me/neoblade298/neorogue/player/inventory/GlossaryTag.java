@@ -58,7 +58,7 @@ public enum GlossaryTag implements GlossaryIcon {
 	CONCUSSED(Material.DIRT, StatusType.CONCUSSED.tag,
 			"Reduces the affected entity's physical damage dealt by 25%. 1 stack is removed every tick."),
 	INSANITY(Material.SOUL_SAND, StatusType.INSANITY.tag,
-			"Increases the affected entity's magic damage taken by 0.2 per stack. 1 stack is removed every tick."),
+			"Increases the affected entity's magical damage taken by 50%. 1 stack is removed every tick."),
 	CORRUPTION(Material.FERMENTED_SPIDER_EYE, StatusType.CORRUPTION.tag,
 			"Increases the affected entity's damage taken by 50%. Each time the affected entity receives damage, 1 stack is removed."),
 	SANCTIFIED(Material.END_ROD, StatusType.SANCTIFIED.tag,
