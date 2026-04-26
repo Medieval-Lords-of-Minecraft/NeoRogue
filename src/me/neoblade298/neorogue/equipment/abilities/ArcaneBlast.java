@@ -82,7 +82,7 @@ public class ArcaneBlast extends Equipment {
 							Sounds.error.play(p, p);
 							return;
 						}
-						data.runActions(data, Trigger.CAST_USABLE, new CastUsableEvent(inst, CastType.POST_TRIGGER, last.getManaCost(), last.getStaminaCost(), last.getCooldown(), last.getTags()));
+						data.runActions(data, Trigger.CAST_USABLE, new CastUsableEvent(inst, CastType.POST_TRIGGER, last.getManaCost(), last.getStaminaCost(), last.getCooldown(), in, last.getTags()));
 						Location loc = b.getLocation().add(0, 1, 0);
 						Sounds.equip.play(p, loc);
 						circ.play(pc, loc, LocalAxes.xz(), null);

@@ -75,7 +75,7 @@ public class Gravity extends Equipment {
 						return;
 					}
 
-					data.runActions(data, Trigger.CAST_USABLE, new CastUsableEvent(inst, CastType.POST_TRIGGER, last.getManaCost(), last.getStaminaCost(), last.getCooldown(), last.getTags()));
+					data.runActions(data, Trigger.CAST_USABLE, new CastUsableEvent(inst, CastType.POST_TRIGGER, last.getManaCost(), last.getStaminaCost(), last.getCooldown(), in, last.getTags()));
 					Location loc = b.getLocation().add(0, 1, 0);
 					Sounds.fire.play(p, loc);
 					data.addRift(new Rift(data, loc, 160));

@@ -201,6 +201,7 @@ import me.neoblade298.neorogue.equipment.consumables.MinorManaPotion;
 import me.neoblade298.neorogue.equipment.consumables.MinorPhysicalPotion;
 import me.neoblade298.neorogue.equipment.consumables.MinorShieldsPotion;
 import me.neoblade298.neorogue.equipment.consumables.MinorStaminaPotion;
+import me.neoblade298.neorogue.equipment.consumables.MirrorPotion;
 import me.neoblade298.neorogue.equipment.consumables.SeraphsPotion;
 import me.neoblade298.neorogue.equipment.consumables.ToughnessPotion;
 import me.neoblade298.neorogue.equipment.consumables.WeaponsPotion;
@@ -336,6 +337,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Brand(b);
 			new BreakingPoint(b);
 			new BreakTheLine(b);
+			new BrightestFlame(b);
 			new Brightshell(b);
 			new Bulldoze(b);
 			new Bulwark(b);
@@ -343,6 +345,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new CalculatingGaze(b);
 			new Cauterize(b);
 			new Charge(b);
+			new ChargeBolt(b);
+			new Chaos(b);
 			new Chill(b);
 			new Chokehold(b);
 			new ChosenOfTheLight(b);
@@ -473,6 +477,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new HailCloak(b);
 			new HeadTrauma(b);
 			new HeatRising(b);
+			new Hearth(b);
 			new Heartbeat(b);
 			new HerculeanStrength(b);
 			new HerosLanding(b);
@@ -594,6 +599,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Skirmisher(b);
 			new Smite(b);
 			new SmokeBomb(b);
+			new SoulBattery(b);
 			new SparkTrap(b);
 			new SpikeTrap(b);
 			new SpiritOfTheDragoon(b);
@@ -903,6 +909,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new WeaponsPotion(b);
 			new AegisPotion(b);
 			new ForcePotion(b);
+			new MirrorPotion(b);
 			new SeraphsPotion(b);
 			new ToughnessPotion(b);
 			new AlchemistsPotion(b);

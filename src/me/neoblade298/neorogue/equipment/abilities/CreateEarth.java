@@ -74,7 +74,7 @@ public class CreateEarth extends Equipment {
 					Location loc = b.getLocation().add(0, 1, 0);
 					circ.play(pc, loc, LocalAxes.xz(), earth);
 					Sounds.explode.play(p, loc);
-					data.runActions(data, Trigger.CAST_USABLE, new CastUsableEvent(inst, CastType.POST_TRIGGER, last.getManaCost(), last.getStaminaCost(), last.getCooldown(), last.getTags()));
+					data.runActions(data, Trigger.CAST_USABLE, new CastUsableEvent(inst, CastType.POST_TRIGGER, last.getManaCost(), last.getStaminaCost(), last.getCooldown(), in, last.getTags()));
 
 					for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, tp)) {
 						FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.BLUNT, DamageStatTracker.of(id + slot, eq)), ent);

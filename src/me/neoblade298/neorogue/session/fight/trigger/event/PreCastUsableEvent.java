@@ -9,6 +9,7 @@ import me.neoblade298.neorogue.session.fight.buff.BuffList;
 
 public class PreCastUsableEvent {
 	private EquipmentInstance instance;
+	private Object inputs;
 	private ArrayList<String> tags = new ArrayList<String>();
 	private BuffList staminaBuff = new BuffList(), manaBuff = new BuffList(), cooldownBuff = new BuffList();
 
@@ -16,9 +17,14 @@ public class PreCastUsableEvent {
 		return instance;
 	}
 
-	public PreCastUsableEvent(EquipmentInstance instance) {
+	public PreCastUsableEvent(EquipmentInstance instance, Object inputs) {
 		super();
 		this.instance = instance;
+		this.inputs = inputs;
+	}
+
+	public Object getInputs() {
+		return inputs;
 	}
 
 	// Tag is so that equipment that modify the event can later check if the event

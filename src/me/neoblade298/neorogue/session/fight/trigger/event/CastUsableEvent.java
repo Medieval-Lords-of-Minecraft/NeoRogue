@@ -9,13 +9,14 @@ public class CastUsableEvent {
 	private EquipmentInstance instance;
 	private CastType type;
 	private double manaCost, staminaCost, cooldown;
+	private Object inputs;
 	private ArrayList<String> tags;
 
 	public EquipmentInstance getInstance() {
 		return instance;
 	}
 
-	public CastUsableEvent(EquipmentInstance instance, CastType type, double manaCost, double staminaCost, double cooldown, ArrayList<String> tags) {
+	public CastUsableEvent(EquipmentInstance instance, CastType type, double manaCost, double staminaCost, double cooldown, Object inputs, ArrayList<String> tags) {
 		super();
 		this.instance = instance;
 		this.type = type;
@@ -23,10 +24,15 @@ public class CastUsableEvent {
 		this.staminaCost = staminaCost;
 		this.cooldown = cooldown;
 		this.tags = tags;
+		this.inputs = inputs;
 	}
 
 	public CastType getType() {
 		return type;
+	}
+
+	public Object getInputs() {
+		return inputs;
 	}
 
 	public double getManaCost() {

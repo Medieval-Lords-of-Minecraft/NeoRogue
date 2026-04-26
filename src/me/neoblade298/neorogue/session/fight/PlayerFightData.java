@@ -522,7 +522,7 @@ public class PlayerFightData extends FightData {
 							|| data.hasStatus(StatusType.SILENCED))
 						return false;
 					EquipmentInstance ei = (EquipmentInstance) inst;
-					PreCastUsableEvent ev = new PreCastUsableEvent(ei);
+					PreCastUsableEvent ev = new PreCastUsableEvent(ei, inputs);
 					runActions(data, Trigger.PRE_CAST_USABLE, ev);
 
 					// Check other conditions first (cooldown, custom conditions)
@@ -576,7 +576,7 @@ public class PlayerFightData extends FightData {
 					CastType type = ei.getEquipment().getProperties().getCastType();
 					// If the cast type is not standard, it's up to the equipment to run the action
 					// This is so CAST_USABLE doesn't get multi-triggered by toggled or recast abilities
-					CastUsableEvent cuv = new CastUsableEvent(ei, type, manaCost, staminaCost, cooldown, ev.getTags());
+					CastUsableEvent cuv = new CastUsableEvent(ei, type, manaCost, staminaCost, cooldown, inputs, ev.getTags());
 					if (type == CastType.STANDARD) {
 						runActions(data, Trigger.CAST_USABLE, cuv);
 					}

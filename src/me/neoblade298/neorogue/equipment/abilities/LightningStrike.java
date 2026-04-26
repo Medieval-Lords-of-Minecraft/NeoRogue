@@ -77,7 +77,7 @@ public class LightningStrike extends Equipment {
 					} else {
 						am.setLocation(p.getTargetBlockExact((int) cursor.range).getLocation());
 						data.runActions(data, Trigger.CAST_USABLE, new CastUsableEvent(inst, CastType.POST_TRIGGER,
-								last.getManaCost(), last.getStaminaCost(), last.getCooldown(), last.getTags()));
+								last.getManaCost(), last.getStaminaCost(), last.getCooldown(), in, last.getTags()));
 						data.addTask(new BukkitRunnable() {
 							public void run() {
 								Location loc = am.getLocation();
