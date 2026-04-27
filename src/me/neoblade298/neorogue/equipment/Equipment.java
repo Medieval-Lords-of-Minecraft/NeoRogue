@@ -33,6 +33,7 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.abilities.*;
 import me.neoblade298.neorogue.equipment.accessories.ArmorStand;
 import me.neoblade298.neorogue.equipment.accessories.AshenWreath;
+import me.neoblade298.neorogue.equipment.accessories.BlightedEarrings;
 import me.neoblade298.neorogue.equipment.accessories.BurningRing;
 import me.neoblade298.neorogue.equipment.accessories.CailiricCrystal;
 import me.neoblade298.neorogue.equipment.accessories.CeruleanBracelet;
@@ -112,6 +113,7 @@ import me.neoblade298.neorogue.equipment.armor.LeatherHelmet;
 import me.neoblade298.neorogue.equipment.armor.LeatherHood;
 import me.neoblade298.neorogue.equipment.armor.LightningCloak;
 import me.neoblade298.neorogue.equipment.armor.MagiciansHood;
+import me.neoblade298.neorogue.equipment.armor.MoltenCore;
 import me.neoblade298.neorogue.equipment.armor.NullMagicMantle;
 import me.neoblade298.neorogue.equipment.armor.NullifyingCloak;
 import me.neoblade298.neorogue.equipment.armor.PhoenixfireMantle;
@@ -193,6 +195,7 @@ import me.neoblade298.neorogue.equipment.artifacts.TreatiseOnElectricity;
 import me.neoblade298.neorogue.equipment.artifacts.TrickstersSigil;
 import me.neoblade298.neorogue.equipment.consumables.AegisPotion;
 import me.neoblade298.neorogue.equipment.consumables.AlchemistsPotion;
+import me.neoblade298.neorogue.equipment.consumables.DropOfInsanity;
 import me.neoblade298.neorogue.equipment.consumables.ForcePotion;
 import me.neoblade298.neorogue.equipment.consumables.MinorFirePotion;
 import me.neoblade298.neorogue.equipment.consumables.MinorHealthPotion;
@@ -361,6 +364,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new ConstantFlux(b);
 			new Contaminate(b);
 			new CorpseExplosion(b);
+			new Corruption(b);
 			new Corrode(b);
 			new Counter(b);
 			new ThunderclapAndFlash(b);
@@ -382,6 +386,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new DarkShroud(b);
 			new DarkTorrent(b);
 			new Deliberation(b);
+			new Dematerialize(b);
 			new DeliberantPace(b);
 			new Demoralize(b);
 			new DensityOrb(b);
@@ -555,6 +560,8 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Posturing(b);
 			new Posturing2(b);
 			new PowerThrough(b);
+			new PowerOverwhelming(b);
+			new PowerOverwhelmingII(b);
 			new Prayer(b);
 			new Preparation(b);
 			new Pressure(b);
@@ -612,6 +619,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new StormweaversPromise(b);
 			new Study(b);
 			new Study2(b);
+			new TollOfTheArcane(b);
 			new Sturdy(b);
 			new SunderingShot(b);
 			new Surprise(b);
@@ -639,6 +647,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Vanish(b);
 			new Viper(b);
 			new VitalPierce(b);
+			new VoidForm(b);
 			new Volley(b);
 			new Voltaics(b);
 			new WallJump(b);
@@ -659,6 +668,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 
 			// Accessories
 			new AshenWreath(b);
+			new BlightedEarrings(b);
 			new BurningRing(b);
 			new CeruleanBracelet(b);
 			new CobraCrest(b);
@@ -727,6 +737,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new LeatherHood(b);
 			new LightningCloak(b);
 			new MagiciansHood(b);
+			new MoltenCore(b);
 			new NullifyingCloak(b);
 			new NullMagicMantle(b);
 			new PhoenixfireMantle(b);
@@ -825,6 +836,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Frostreaver(b);
 			new GlassArrow(b);
 			new Groundbreaker(b);
+			new GrendelsStaff(b);
 			new Harpoon(b);
 			new HibernianQuickblade(b);
 			new HiddenRazor(b);
@@ -910,6 +922,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new AegisPotion(b);
 			new ForcePotion(b);
 			new MirrorPotion(b);
+			new DropOfInsanity(b);
 			new SeraphsPotion(b);
 			new ToughnessPotion(b);
 			new AlchemistsPotion(b);
