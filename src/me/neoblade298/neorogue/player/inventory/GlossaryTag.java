@@ -104,7 +104,6 @@ public enum GlossaryTag implements GlossaryIcon {
 			"Become unable to move. You cannot use other abilities during this time.");
 	
 	private ItemStack icon;
-	private static final Pattern NUMERIC_PATTERN = Pattern.compile("(?<![\\w>])(-?\\d+(?:\\.\\d+)?(?:%|:[0-9]+)?)");
 	public String tag, lore;
 	private ArrayList<TextComponent> loreComp;
 	private Component ctag;
@@ -122,13 +121,19 @@ public enum GlossaryTag implements GlossaryIcon {
 	}
 
 	private static String whiteNumbers(String input) {
-		Matcher matcher = NUMERIC_PATTERN.matcher(input);
+		Matcher matcher = PatternHolder.NUMERIC_PATTERN.matcher(input);
 		StringBuffer sb = new StringBuffer();
 		while (matcher.find()) {
 			matcher.appendReplacement(sb, "<white>" + matcher.group(1) + "</white>");
 		}
 		matcher.appendTail(sb);
 		return sb.toString();
+	}
+
+	// Enum constants are initialized before static fields in this class body,
+	// so use a holder to defer Pattern initialization until first use.
+	private static class PatternHolder {
+		private static final Pattern NUMERIC_PATTERN = Pattern.compile("(?<![\\w>])(-?\\d+(?:\\.\\d+)?(?:%|:[0-9]+)?)");
 	}
 
 	public Component getTag() {

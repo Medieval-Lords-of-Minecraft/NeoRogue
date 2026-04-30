@@ -25,7 +25,7 @@ public class TollOfTheArcane extends Equipment {
 	private int manaReducDisplay;
 
 	public TollOfTheArcane(boolean isUpgraded) {
-		super(ID, "Toll of the Arcane", isUpgraded, Rarity.RARE, EquipmentClass.MAGE,
+		super(ID, "Toll of the Arcane", isUpgraded, Rarity.EPIC, EquipmentClass.MAGE,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, isUpgraded ? 80 : 100, 40, 0));
 		corruption = 3;
 		manaReduc = isUpgraded ? 0.7 : 0.5;
