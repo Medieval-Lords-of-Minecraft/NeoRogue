@@ -794,6 +794,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new AshenWand2(b);
 			new AthenasLongbow(b);
 			new AvalonianMace(b);
+			new AvalonianSceptre(b);
 			new BarbedRocket(b);
 			new BasicBow(b);
 			new BasicCrossbow(b);
@@ -872,6 +873,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new RedBaron(b);
 			new RighteousFlame(b);
 			new RighteousLance(b);
+			new Riftmaker(b);
 			new SearingArrow(b);
 			new SerratedArrow(b);
 			new SerratedRazor(b);
