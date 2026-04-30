@@ -31,6 +31,11 @@ public class PowerOverwhelming extends Equipment {
 	}
 
 	@Override
+	public void setupReforges() {
+		addReforge(CatalystCrucible.get(), TollOfTheArcane.get());
+	}
+
+	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta activated = new ActionMeta();
 		String procId = id + slot;

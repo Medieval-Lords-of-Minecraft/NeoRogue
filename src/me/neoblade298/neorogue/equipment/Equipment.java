@@ -309,6 +309,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new BalefulStrike(b);
 			new Assassinate(b);
 			new ArcaneBlast(b);
+			new ArchmagesTome(b);
 			new ArrowRain(b);
 			new Atone(b);
 			new Atrophy(b);
@@ -347,6 +348,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Burst(b);
 			new CalculatingGaze(b);
 			new Cauterize(b);
+			new CatalystCrucible(b);
 			new Charge(b);
 			new ChargeBolt(b);
 			new Chaos(b);
@@ -362,6 +364,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new ConfidenceKill(b);
 			new Consecrate(b);
 			new ConstantFlux(b);
+			new ConsumingFlame(b);
 			new Contaminate(b);
 			new CorpseExplosion(b);
 			new Corruption(b);
