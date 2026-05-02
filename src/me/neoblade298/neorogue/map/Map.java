@@ -447,6 +447,11 @@ public class Map {
 				e.printStackTrace();
 			}
 			
+		    // Generate mountainous terrain if this region type uses it
+		    if (type.usesMountainousGeneration()) {
+		    	generateMountainousTerrain(fi, xOff, zOff);
+		    }
+			
 		    new BukkitRunnable() {
 		    	public void run() {
 					// Setup pieces and spawners
@@ -611,4 +616,73 @@ public class Map {
 		map.recalculateEntrances();
 		return map;
 	}
+	
+	/**
+	 * Generate mountainous terrain around piece footprints
+	 */
+	private void generateMountainousTerrain(FightInstance fi, int xOff, int zOff) {
+		// Calculate exclusion zones from piece footprints
+		HashSet<BlockVector3> exclusionZones = calculatePieceFootprints(xOff, zOff);
+		
+		// Create terrain generator with seed based on region coordinates
+		long seed = fi.getSession().getRegion().hashCode() + xOff * 31L + zOff * 17L;
+		ProceduralMountainGenerator generator = new ProceduralMountainGenerator(seed)
+			.setHeight(MapPieceInstance.Y_OFFSET, 25)  // Base Y=64, variation up to 25 blocks
+			.setScale(0.04)  // Adjusted for smaller areas (higher scale = smaller features)
+			.setCaves(false)  // Disable caves to avoid complications
+			.setBlendDistance(3);  // 3-block smooth transition
+		
+		// Generate terrain for the entire map area
+		int worldX = -(xOff + MapPieceInstance.X_FIGHT_OFFSET);
+		int worldZ = MapPieceInstance.Z_FIGHT_OFFSET + zOff;
+		int sizeX = MAP_SIZE * 16;
+		int sizeZ = MAP_SIZE * 16;
+		
+		generator.generateWithExclusions(BukkitAdapter.adapt(me.neoblade298.neorogue.region.Region.world), worldX, worldZ, sizeX, sizeZ, (java.util.Set<BlockVector3>) exclusionZones);
+	}
+	
+	/**
+	 * Calculate all block positions that are part of piece footprints (plus blend buffer)
+	 */
+	private HashSet<BlockVector3> calculatePieceFootprints(int xOff, int zOff) {
+		HashSet<BlockVector3> footprint = new HashSet<>();
+		int blendBuffer = 3;  // Expand footprints by 3 blocks for blending
+		
+		for (MapPieceInstance inst : pieces) {
+			// Get the piece's shape with applied rotations/flips
+			MapShape shape = inst.getPiece().getShape().clone();
+			shape.applySettings(inst);
+			
+			// Get piece position in chunks
+			int pieceChunkX = inst.getX();
+			int pieceChunkZ = inst.getZ();
+			
+			// Iterate over all chunks in the shape
+			for (int chunkX = 0; chunkX < shape.getLength(); chunkX++) {
+				for (int chunkZ = 0; chunkZ < shape.getHeight(); chunkZ++) {
+					if (!shape.get(chunkX, chunkZ)) continue;
+					
+					// Convert chunk coordinates to world block coordinates
+					int worldChunkX = pieceChunkX + chunkX;
+					int worldChunkZ = pieceChunkZ + chunkZ;
+					
+					// Add all blocks in this chunk (plus buffer) to exclusion zone
+					for (int blockX = -blendBuffer; blockX < 16 + blendBuffer; blockX++) {
+						for (int blockZ = -blendBuffer; blockZ < 16 + blendBuffer; blockZ++) {
+							// Calculate world coordinates (note the X coordinate inversion)
+							int worldX = -(xOff + MapPieceInstance.X_FIGHT_OFFSET + worldChunkX * 16 + blockX);
+							int worldZ = MapPieceInstance.Z_FIGHT_OFFSET + zOff + worldChunkZ * 16 + blockZ;
+							
+							footprint.add(BlockVector3.at(worldX, 0, worldZ));
+						}
+					}
+				}
+			}
+		}
+		
+		Bukkit.getLogger().info("[Map] Calculated piece footprints: " + footprint.size() + " excluded blocks for " + pieces.size() + " pieces");
+		return footprint;
+	}
 }
+
+
