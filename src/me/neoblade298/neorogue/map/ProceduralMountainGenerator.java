@@ -1,12 +1,15 @@
 package me.neoblade298.neorogue.map;
 
 import java.util.Random;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+
+import com.sk89q.worldedit.math.BlockVector3;
 
 /**
  * Generates procedural snowy mountain terrain using multi-octave Simplex noise
@@ -21,6 +24,7 @@ public class ProceduralMountainGenerator {
     private int maxHeight = 35;
     private double scale = 0.015;  // Controls "zoom" of terrain features
     private boolean addCaves = false;
+    private int blendDistance = 3;  // Distance for smooth blending near footprints
     
     public ProceduralMountainGenerator(long seed) {
         this.seed = seed;
@@ -44,6 +48,11 @@ public class ProceduralMountainGenerator {
     
     public ProceduralMountainGenerator setCaves(boolean enabled) {
         this.addCaves = enabled;
+        return this;
+    }
+    
+    public ProceduralMountainGenerator setBlendDistance(int distance) {
+        this.blendDistance = distance;
         return this;
     }
     
@@ -198,5 +207,134 @@ public class ProceduralMountainGenerator {
                 }
             }
         }
+    }
+    
+    /**
+     * Generate mountain terrain with exclusion zones for flat set pieces
+     * @param world Target world
+     * @param xOffset X offset in blocks (world coordinates)
+     * @param zOffset Z offset in blocks (world coordinates)
+     * @param sizeX Width of area to generate (in blocks)
+     * @param sizeZ Depth of area to generate (in blocks)
+     * @param exclusionZones Set of block positions to keep flat (piece footprints)
+     */
+    public void generateWithExclusions(World world, int xOffset, int zOffset, int sizeX, int sizeZ, Set<BlockVector3> exclusionZones) {
+        Bukkit.getLogger().info("[ProceduralMountain] Generating " + sizeX + "x" + sizeZ + " mountain at " 
+            + xOffset + "," + zOffset + " with " + exclusionZones.size() + " excluded blocks");
+        
+        long startTime = System.currentTimeMillis();
+        int blocksPlaced = 0;
+        
+        for (int x = 0; x < sizeX; x++) {
+            for (int z = 0; z < sizeZ; z++) {
+                int worldX = xOffset + x;
+                int worldZ = zOffset + z;
+                
+                BlockVector3 pos = BlockVector3.at(worldX, 0, worldZ);
+                
+                // Check if this position is in an exclusion zone or near one
+                double distanceToExclusion = getDistanceToExclusionZone(pos, exclusionZones);
+                
+                // Skip if inside exclusion zone
+                if (distanceToExclusion <= 0) {
+                    continue;
+                }
+                
+                // Get terrain elevation
+                double elevation = getElevation(x, z);
+                int terrainHeight = baseHeight + (int)(elevation * maxHeight);
+                
+                // Apply blending near exclusion zones
+                int targetHeight = terrainHeight;
+                if (distanceToExclusion < blendDistance) {
+                    // Linear interpolation between baseHeight and terrainHeight
+                    double blendFactor = distanceToExclusion / blendDistance;
+                    targetHeight = (int)(baseHeight + (terrainHeight - baseHeight) * blendFactor);
+                }
+                
+                // Get cave noise if enabled
+                SimplexNoise caveNoise = addCaves ? new SimplexNoise(seed + 1) : null;
+                
+                // Build column from bottom to top
+                for (int y = 0; y <= targetHeight + 5; y++) {
+                    Location loc = new Location(world, worldX, y, worldZ);
+                    Block block = loc.getBlock();
+                    
+                    // Check if we should carve out a cave
+                    if (addCaves && y < targetHeight - 5 && shouldCarveCave(caveNoise, x, y, z)) {
+                        block.setType(Material.AIR);
+                        continue;
+                    }
+                    
+                    // Determine block type based on height
+                    if (y > targetHeight) {
+                        // Above terrain - clear it
+                        if (!block.getType().isAir()) {
+                            block.setType(Material.AIR);
+                        }
+                    } else if (y == targetHeight) {
+                        // Top layer - snow
+                        block.setType(Material.SNOW_BLOCK);
+                        blocksPlaced++;
+                    } else if (y > targetHeight - 3) {
+                        // Near surface - vary between stone and packed ice
+                        if (elevation > 0.65) {
+                            block.setType(Material.PACKED_ICE);
+                        } else if (elevation > 0.5) {
+                            block.setType(Material.STONE);
+                        } else {
+                            block.setType(Material.COBBLESTONE);
+                        }
+                        blocksPlaced++;
+                    } else {
+                        // Inner - mostly stone with some variation
+                        double stoneVariation = noise.noise(x * 0.1, z * 0.1);
+                        if (stoneVariation > 0.3) {
+                            block.setType(Material.STONE);
+                        } else if (stoneVariation > 0) {
+                            block.setType(Material.ANDESITE);
+                        } else {
+                            block.setType(Material.COBBLESTONE);
+                        }
+                        blocksPlaced++;
+                    }
+                }
+            }
+        }
+        
+        long duration = System.currentTimeMillis() - startTime;
+        Bukkit.getLogger().info("[ProceduralMountain] Generated " + blocksPlaced + " blocks in " + duration + "ms");
+    }
+    
+    /**
+     * Calculate minimum distance from a position to any exclusion zone
+     * Returns 0 if inside exclusion zone, positive distance if outside
+     */
+    private double getDistanceToExclusionZone(BlockVector3 pos, Set<BlockVector3> exclusionZones) {
+        if (exclusionZones.isEmpty()) {
+            return Double.MAX_VALUE;
+        }
+        
+        // Check if this exact position is excluded
+        if (exclusionZones.contains(pos)) {
+            return 0;
+        }
+        
+        // Find minimum distance to any excluded block
+        double minDistance = Double.MAX_VALUE;
+        for (BlockVector3 excluded : exclusionZones) {
+            // 2D distance (ignore Y)
+            double dx = pos.getX() - excluded.getX();
+            double dz = pos.getZ() - excluded.getZ();
+            double distance = Math.sqrt(dx * dx + dz * dz);
+            minDistance = Math.min(minDistance, distance);
+            
+            // Early exit if we're very close
+            if (minDistance < 0.1) {
+                return 0;
+            }
+        }
+        
+        return minDistance;
     }
 }
