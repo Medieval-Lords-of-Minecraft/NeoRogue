@@ -27,7 +27,8 @@ public class DrainWand extends Equipment {
 	private static final String ID = "DrainWand";
 	private static final int RANGE = 10;
 	private static final ParticleContainer tick;
-	private static final SoundContainer sc = new SoundContainer(Sound.BLOCK_CHAIN_PLACE);
+	private static final SoundContainer start = new SoundContainer(Sound.ITEM_AXE_SCRAPE),
+			sc = new SoundContainer(Sound.BLOCK_CHAIN_PLACE);
 
 	private int shieldAmount;
 
@@ -39,7 +40,7 @@ public class DrainWand extends Equipment {
 	public DrainWand(boolean isUpgraded) {
 		super(
 				ID, "Drain Wand", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWand(isUpgraded ? 45 : 35, 1, 0, 1, RANGE, DamageType.DARK, Sound.ITEM_AXE_SCRAPE)
+				EquipmentProperties.ofWand(isUpgraded ? 45 : 35, 1, 0, 1, RANGE, DamageType.DARK, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
 		shieldAmount = isUpgraded ? 3 : 2;
@@ -90,6 +91,7 @@ public class DrainWand extends Equipment {
 		
 		@Override
 		public void onStart(ProjectileInstance proj) {
+			start.play(data.getPlayer(), proj.getLocation());
 			proj.applyWeapon(data, eq, slot);
 		}
 	}

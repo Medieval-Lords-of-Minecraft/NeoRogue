@@ -1,8 +1,10 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -26,10 +28,12 @@ public class TollOfTheArcane extends Equipment {
 
 	public TollOfTheArcane(boolean isUpgraded) {
 		super(ID, "Toll of the Arcane", isUpgraded, Rarity.EPIC, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, isUpgraded ? 80 : 100, 40, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(
+						isUpgraded ? 100 : 130, 15, 0, 0));
 		corruption = 3;
 		manaReduc = isUpgraded ? 0.7 : 0.5;
 		manaReducDisplay = (int) (manaReduc * 100);
+		properties.addUpgrades(PropertyType.MANA_COST);
 	}
 
 	public static Equipment get() {
@@ -55,6 +59,8 @@ public class TollOfTheArcane extends Equipment {
 
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			activated.setBool(true);
+			Player p = data.getPlayer();
+			Sounds.roar.play(p, p);
 			data.applyStatus(StatusType.CORRUPTION, data, corruption, -1);
 			return TriggerResult.remove();
 		}));

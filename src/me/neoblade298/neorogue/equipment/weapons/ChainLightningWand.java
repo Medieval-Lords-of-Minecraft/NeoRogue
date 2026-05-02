@@ -13,6 +13,7 @@ import me.neoblade298.neocore.bukkit.effects.Audience;
 import me.neoblade298.neocore.bukkit.effects.Effect;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.ParticleUtil;
+import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
@@ -32,6 +33,7 @@ public class ChainLightningWand extends Equipment {
 	private static final TargetProperties chainScan = TargetProperties.cone(60, 5, false, TargetType.ENEMY);
 
 	private static final ParticleContainer tick;
+	private static final SoundContainer start = new SoundContainer(Sound.ITEM_AXE_SCRAPE);
 	private LinkedList<Player> drawCache;
 
 	private int chainAmount;
@@ -44,7 +46,7 @@ public class ChainLightningWand extends Equipment {
 	public ChainLightningWand(boolean isUpgraded) {
 		super(
 				ID, "Chain Lightning Wand", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWand(isUpgraded ? 70 : 50, 0.8, 0, 1, RANGE, DamageType.LIGHTNING, Sound.ITEM_AXE_SCRAPE)
+				EquipmentProperties.ofWand(isUpgraded ? 70 : 50, 0.8, 0, 1, RANGE, DamageType.LIGHTNING, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
 		chainAmount = isUpgraded ? 5 : 3;
@@ -65,6 +67,7 @@ public class ChainLightningWand extends Equipment {
 				weaponSwing(p, data);
 				data.chargeSecs(properties.get(PropertyType.CHARGE_TIME)).then(() -> {
 					Player p2 = data.getPlayer();
+					start.play(p2, p2);
 					weaponDamage(p2, data, target);
 					drawCache = Effect.calculateCache(p2, p2.getLocation(), Audience.NONE, ParticleContainer.HIDE_TAG);
 					drawChains(p2.getLocation(), target.getLocation());

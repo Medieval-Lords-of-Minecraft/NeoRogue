@@ -30,7 +30,8 @@ public class GrendelsStaff extends Equipment {
 	private static final String ID = "GrendelsStaff";
 	private static final int RANGE = 14;
 	private static final ParticleContainer tick;
-	private static final SoundContainer sc = new SoundContainer(Sound.BLOCK_CHAIN_PLACE);
+	private static final SoundContainer start = new SoundContainer(Sound.ITEM_AXE_SCRAPE),
+			sc = new SoundContainer(Sound.BLOCK_CHAIN_PLACE);
 
 	private int manaGain, intellectFreq;
 
@@ -42,7 +43,7 @@ public class GrendelsStaff extends Equipment {
 	public GrendelsStaff(boolean isUpgraded) {
 		super(
 				ID, "Grendel's Staff", isUpgraded, Rarity.RARE, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWand(isUpgraded ? 45 : 35, 0.9, 0, 1, RANGE, DamageType.DARK, Sound.ITEM_AXE_SCRAPE)
+				EquipmentProperties.ofWand(isUpgraded ? 55 : 65, 0.9, 0, 1, RANGE, DamageType.DARK, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
 		manaGain = isUpgraded ? 6 : 4;
@@ -109,6 +110,7 @@ public class GrendelsStaff extends Equipment {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
+			start.play(data.getPlayer(), proj.getLocation());
 			proj.applyWeapon(data, eq, slot);
 		}
 	}

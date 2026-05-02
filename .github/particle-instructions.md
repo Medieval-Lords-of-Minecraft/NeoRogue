@@ -16,7 +16,16 @@ private static final ParticleContainer pc = new ParticleContainer(Particle.FLAME
     .speed(0.1);        // Particle speed/motion
 ```
 
+### Projectile Particle Defaults
+
+For most projectile visuals, keep particles tight and controlled:
+
+- Prefer `spread` values at or below `0.1`.
+- Prefer `speed` values at or below `0.01`.
+- Only exceed these values for intentional high-chaos moments (explosions, heavy telegraphs, etc.).
+
 ### Common Particle Types
+
 ```java
 Particle.FLAME          // Fire particles
 Particle.CLOUD          // Smoke/cloud particles

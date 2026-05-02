@@ -29,7 +29,8 @@ public class BoltWand extends Equipment {
 	private static final String ID = "BoltWand";
 	private static final int RANGE = 12;
 	private static final ParticleContainer tick;
-	private static final SoundContainer sc = new SoundContainer(Sound.ENTITY_LIGHTNING_BOLT_IMPACT);
+	private static final SoundContainer start = new SoundContainer(Sound.ITEM_AXE_SCRAPE),
+			sc = new SoundContainer(Sound.ENTITY_LIGHTNING_BOLT_IMPACT);
 
 	private int pierceAmount, elec;
 	
@@ -41,7 +42,7 @@ public class BoltWand extends Equipment {
 	public BoltWand(boolean isUpgraded) {
 		super(
 				ID, "Bolt Wand", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWand(isUpgraded ? 45 : 35, 0.8, 0, 1, RANGE, DamageType.LIGHTNING, Sound.ITEM_AXE_SCRAPE)
+				EquipmentProperties.ofWand(isUpgraded ? 45 : 35, 0.8, 0, 1, RANGE, DamageType.LIGHTNING, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
 		pierceAmount = 3;
@@ -93,6 +94,7 @@ public class BoltWand extends Equipment {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
+			start.play(data.getPlayer(), proj.getLocation());
 			proj.applyWeapon(data, eq, slot);
 		}
 	}

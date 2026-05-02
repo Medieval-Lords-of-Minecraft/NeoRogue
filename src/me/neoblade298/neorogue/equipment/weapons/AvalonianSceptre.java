@@ -34,7 +34,8 @@ public class AvalonianSceptre extends Equipment {
 	private static final String ID = "AvalonianSceptre";
 	private static final int RANGE = 14;
 	private static final ParticleContainer tick;
-	private static final SoundContainer sc = new SoundContainer(Sound.BLOCK_CHAIN_PLACE);
+	private static final SoundContainer start = new SoundContainer(Sound.ITEM_AXE_SCRAPE),
+			sc = new SoundContainer(Sound.BLOCK_CHAIN_PLACE);
 
 	private final int manaGain, intellectFreq, maxMana;
 	private final double bonusThreshold;
@@ -47,7 +48,7 @@ public class AvalonianSceptre extends Equipment {
 	public AvalonianSceptre(boolean isUpgraded) {
 		super(
 				ID, "Avalonian Sceptre", isUpgraded, Rarity.EPIC, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWand(isUpgraded ? 45 : 35, 0.9, 0, 1, RANGE, DamageType.DARK, Sound.ITEM_AXE_SCRAPE)
+				EquipmentProperties.ofWand(isUpgraded ? 45 : 35, 0.9, 0, 1, RANGE, DamageType.DARK, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
 		manaGain = isUpgraded ? 6 : 4;
@@ -111,6 +112,7 @@ public class AvalonianSceptre extends Equipment {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
+			start.play(data.getPlayer(), proj.getLocation());
 			proj.applyWeapon(data, eq, slot);
 			if (data.getMana() > data.getMaxMana() * bonusThreshold) {
 				proj.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),

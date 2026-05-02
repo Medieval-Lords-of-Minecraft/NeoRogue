@@ -7,6 +7,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -27,6 +28,7 @@ public class LightningWand extends Equipment {
 	private static final String ID = "LightningWand";
 	private static final int RANGE = 12;
 	private static final ParticleContainer tick;
+	private static final SoundContainer start = new SoundContainer(Sound.ITEM_AXE_SCRAPE);
 	
 	private int pierceAmount;
 
@@ -38,7 +40,7 @@ public class LightningWand extends Equipment {
 	public LightningWand(boolean isUpgraded) {
 		super(
 				ID, "Lightning Wand", isUpgraded, Rarity.COMMON, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWand(isUpgraded ? 70 : 50, 0.8, 0, 1, RANGE, DamageType.LIGHTNING, Sound.ITEM_AXE_SCRAPE)
+				EquipmentProperties.ofWand(isUpgraded ? 70 : 50, 0.8, 0, 1, RANGE, DamageType.LIGHTNING, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
 		pierceAmount = isUpgraded ? 2 : 1;
@@ -94,6 +96,7 @@ public class LightningWand extends Equipment {
 		
 		@Override
 		public void onStart(ProjectileInstance proj) {
+			start.play(data.getPlayer(), proj.getLocation());
 			proj.applyWeapon(data, eq, slot);
 		}
 	}

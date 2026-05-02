@@ -115,6 +115,11 @@ private Player p;  // ❌ Never store Player as field
 - Shields managed via `FightData` methods with `p.getUniqueId()` as applier
 - Particle/sound effects via `ParticleContainer`/`SoundContainer` (see [Particle Instructions](particle-instructions.md))
 
+### Particle Tuning Guidelines
+- For most projectile visuals, keep particle randomness subtle: prefer `spread` values at or below `0.1`.
+- For most projectile visuals, keep motion subtle: prefer `speed` values at or below `0.01`.
+- Only exceed these values for intentional large-impact visuals (e.g., explosions or special telegraphs).
+
 ### Item Description Formatting
 When creating equipment descriptions in `setupItem()`, follow these patterns:
 

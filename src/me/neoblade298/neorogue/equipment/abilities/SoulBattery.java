@@ -30,10 +30,10 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class SoulBattery extends Equipment {
 	private static final String ID = "SoulBattery";
 	private static final ParticleContainer lightning = new ParticleContainer(Particle.ELECTRIC_SPARK)
-			.count(80)
-			.spread(2, 2)
+			.count(40)
+			.spread(0.1, 3)
 			.offsetY(1)
-			.speed(0.25);
+			.speed(0.01);
 	private static final TargetProperties boltAoe = TargetProperties.radius(3, false, TargetType.ENEMY);
 	private static final int SHIELD_DURATION = 160; // 8s
 	private static final int STRIKE_DELAY = 40; // 2s

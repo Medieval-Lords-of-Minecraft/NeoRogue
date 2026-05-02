@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -26,10 +27,11 @@ public class PowerOverwhelmingII extends Equipment {
 
 	public PowerOverwhelmingII(boolean isUpgraded) {
 		super(ID, "Power Overwhelming II", isUpgraded, Rarity.EPIC, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, isUpgraded ? 80 : 100, 40, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(isUpgraded ? 80 : 100, 15, 40, 0));
 		manaReduc = isUpgraded ? 30 : 20;
 		shields = isUpgraded ? 6 : 4;
 		cdReduc = isUpgraded ? 3 : 2;
+		properties.addUpgrades(PropertyType.MANA_COST);
 	}
 
 	public static Equipment get() {
@@ -76,6 +78,8 @@ public class PowerOverwhelmingII extends Equipment {
 
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			activated.setBool(true);
+			Player p = data.getPlayer();
+			Sounds.roar.play(p, p);
 			return TriggerResult.remove();
 		}));
 	}

@@ -30,7 +30,8 @@ public class ConsumingFlame extends Equipment {
 	private static final String ID = "ConsumingFlame";
 	private static final int RANGE = 14;
 	private static final ParticleContainer tick;
-	private static final SoundContainer sc = new SoundContainer(Sound.BLOCK_CHAIN_PLACE);
+	private static final SoundContainer start = new SoundContainer(Sound.ITEM_AXE_SCRAPE),
+			sc = new SoundContainer(Sound.BLOCK_CHAIN_PLACE);
 
 	private int manaGain, intellectFreq;
 
@@ -42,7 +43,7 @@ public class ConsumingFlame extends Equipment {
 	public ConsumingFlame(boolean isUpgraded) {
 		super(
 				ID, "Consuming Flame", isUpgraded, Rarity.EPIC, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWand(isUpgraded ? 50 : 40, 0.9, 0, 1, RANGE, DamageType.FIRE, Sound.ITEM_AXE_SCRAPE)
+				EquipmentProperties.ofWand(isUpgraded ? 50 : 40, 0.9, 0, 1, RANGE, DamageType.FIRE, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
 		manaGain = isUpgraded ? 6 : 4;
@@ -115,6 +116,7 @@ public class ConsumingFlame extends Equipment {
 
 		@Override
 		public void onStart(ProjectileInstance proj) {
+			start.play(data.getPlayer(), proj.getLocation());
 			proj.applyWeapon(data, eq, slot);
 		}
 	}

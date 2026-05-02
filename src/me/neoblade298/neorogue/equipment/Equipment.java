@@ -540,6 +540,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Momentum(b);
 			new MortalEngine(b);
 			new Neckbreaker(b);
+			new Nullify(b);
 			new NightShade(b);
 			new NightSurge(b);
 			new Obfuscation(b);
@@ -877,6 +878,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new RighteousFlame(b);
 			new RighteousLance(b);
 			new Riftmaker(b);
+			new RuneHarvester(b);
 			new SearingArrow(b);
 			new SerratedArrow(b);
 			new SerratedRazor(b);

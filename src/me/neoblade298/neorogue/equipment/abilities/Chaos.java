@@ -1,8 +1,10 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.Particle.DustOptions;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -29,7 +31,14 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class Chaos extends Equipment {
 	private static final String ID = "Chaos";
 	private static final TargetProperties tp = TargetProperties.line(12, 2, TargetType.ENEMY);
-	private static final ParticleContainer pc = new ParticleContainer(Particle.END_ROD).count(20).spread(0.2, 0.2).speed(0.1);
+	private static final ParticleContainer firePc = new ParticleContainer(Particle.FLAME).count(3).spread(0.08, 0.08).speed(0.01);
+	private static final ParticleContainer lightningPc = new ParticleContainer(Particle.ELECTRIC_SPARK).count(3).spread(0.08, 0.08).speed(0.01);
+	private static final ParticleContainer darkPc = new ParticleContainer(Particle.DUST)
+			.dustOptions(new DustOptions(Color.fromRGB(122, 88, 255), 1.0f))
+			.count(3).spread(0.08, 0.08).speed(0.01);
+	private static final ParticleContainer bluntPc = new ParticleContainer(Particle.DUST)
+			.dustOptions(new DustOptions(Color.fromRGB(196, 196, 196), 1.0f))
+			.count(3).spread(0.08, 0.08).speed(0.01);
 	private int damage, stacks;
 
 	public Chaos(boolean isUpgraded) {
@@ -54,25 +63,30 @@ public class Chaos extends Equipment {
 			int roll = (int) (Math.random() * 4);
 			DamageType type;
 			StatusType status;
+			ParticleContainer pc;
 			switch (roll) {
 			case 0:
 				type = DamageType.FIRE;
 				status = StatusType.CORRUPTION;
+				pc = firePc;
 				Sounds.fire.play(p, p);
 				break;
 			case 1:
 				type = DamageType.LIGHTNING;
 				status = StatusType.ELECTRIFIED;
+				pc = lightningPc;
 				Sounds.thunder.play(p, p);
 				break;
 			case 2:
 				type = DamageType.DARK;
 				status = StatusType.INSANITY;
+				pc = darkPc;
 				Sounds.wither.play(p, p);
 				break;
 			default:
 				type = DamageType.BLUNT;
 				status = StatusType.CONCUSSED;
+				pc = bluntPc;
 				Sounds.explode.play(p, p);
 				break;
 			}
