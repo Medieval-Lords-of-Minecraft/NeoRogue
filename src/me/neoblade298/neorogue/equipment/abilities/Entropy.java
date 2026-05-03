@@ -38,6 +38,13 @@ public class Entropy extends Equipment {
 	}
 
 	@Override
+	public void setupReforges() {
+		addReforge(Convergence.get());
+		addReforge(Brilliance.get());
+		addReforge(IAmAtomic.get());
+	}
+
+	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta am = new ActionMeta();
 		ItemStack icon = item.clone();

@@ -342,6 +342,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new BreakingPoint(b);
 			new BreakTheLine(b);
 			new BrightestFlame(b);
+			new Brilliance(b);
 			new Brightshell(b);
 			new Bulldoze(b);
 			new Bulwark(b);
@@ -364,6 +365,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new ConfidenceKill(b);
 			new Consecrate(b);
 			new ConstantFlux(b);
+			new Convergence(b);
 			new ConsumingFlame(b);
 			new Contaminate(b);
 			new CorpseExplosion(b);
@@ -401,9 +403,11 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Dread(b);
 			new Dismantle(b);
 			new Disorient(b);
+			new Dissonance(b);
 			new DodgeRoll(b);
 			new DoubleStrike(b);
 			new DrainLightning(b);
+			new DyingStar(b);
 			new EarthenDomain(b);
 			new EarthenTackle(b);
 			new EarthenWall(b);
@@ -497,6 +501,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new HoldTheLine(b);
 			new HolySpear(b);
 			new HuntersEssence(b);
+			new IAmAtomic(b);
 			new InducePanic(b);
 			new InducePanic2(b);
 			new Inflame(b);
