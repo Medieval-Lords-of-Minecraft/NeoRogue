@@ -1258,6 +1258,35 @@ public abstract class FightInstance extends Instance {
 		return bars;
 	}
 
+	public static void terraformGrass(Location center, int radius) {
+		World w = center.getWorld();
+		int cx = center.getBlockX(), cy = center.getBlockY(), cz = center.getBlockZ();
+		int radiusSq = radius * radius;
+		for (int x = -radius; x <= radius; x++) {
+			for (int z = -radius; z <= radius; z++) {
+				if (x * x + z * z > radiusSq) continue;
+				for (int y = -radius; y <= radius; y++) {
+					org.bukkit.block.Block b = w.getBlockAt(cx + x, cy + y, cz + z);
+					if (!b.getType().isOccluding()) continue;
+					org.bukkit.block.Block above = b.getRelative(org.bukkit.block.BlockFace.UP);
+					if (above.getType().isAir()) {
+						b.setType(Material.GRASS_BLOCK);
+					} else {
+						b.setType(Material.DIRT);
+					}
+				}
+			}
+		}
+	}
+
+	public static boolean isOnGrass(LivingEntity entity) {
+		Location loc = entity.getLocation();
+		org.bukkit.block.Block below = loc.getBlock().getRelative(org.bukkit.block.BlockFace.DOWN);
+		if (below.getType() == Material.GRASS_BLOCK) return true;
+		// Also check the block at feet level (entity standing inside grass block)
+		return loc.getBlock().getType() == Material.GRASS_BLOCK;
+	}
+
 	private static class Corpse {
 		protected PlayerFightData data;
 		protected PlayerFightData reviver;

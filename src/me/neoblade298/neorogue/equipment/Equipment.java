@@ -586,6 +586,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Revenge(b);
 			new RisingSun(b);
 			new Roar(b);
+			new RockTomb(b);
 			new Rushdown(b);
 			new Quake(b);
 			new QuickFeet(b);
@@ -868,6 +869,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new MassiveHalberd(b);
 			new MechanicalBow(b);
 			new MirrorSickle(b);
+			new Maelstrom(b);
 			new MonksHeadsplitter(b);
 			new MonksStaff(b);
 			new MonksStaff2(b);
@@ -909,6 +911,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new StoneSpear(b);
 			new StoneSword(b);
 			new StoneThrowingKnife(b);
+			new StonePlating(b);
 			new StonyWand(b);
 			new TacticiansDagger(b);
 			new TheGreatDivide(b);
