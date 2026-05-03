@@ -6,10 +6,12 @@ public enum RegionType {
 	// Outer Admiratio exists so the Tester chance can exist
 	LOW_DISTRICT("Low District", 16, Layout.STANDARD),
 	HARVEST_FIELDS("Harvest Fields", 16, Layout.STANDARD),
+	FROZEN_WASTES("Frozen Wastes", 16, Layout.STANDARD),
 	MEADOWOOD("Meadowood", 5, Layout.TUTORIAL),
 	OUTER_ADMIRATIO("Outer Admiratio", 16, Layout.STANDARD),
 	LOW_DISTRICT_DEBUG("Low District (Debug Mode)", 16, Layout.STANDARD),
 	HARVEST_FIELDS_DEBUG("Harvest Fields (Debug Mode)", 16, Layout.STANDARD),
+	FROZEN_WASTES_DEBUG("Frozen Wastes (Debug Mode)", 16, Layout.STANDARD),
 	MEADOWOOD_DEBUG("Meadowood (Debug Mode)", 5, Layout.TUTORIAL),
 	OUTER_ADMIRATIO_DEBUG("Outer Admiratio (Debug Mode)", 16, Layout.STANDARD);
 	

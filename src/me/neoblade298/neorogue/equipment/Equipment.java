@@ -652,6 +652,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Viper(b);
 			new VitalPierce(b);
 			new VoidForm(b);
+			new VoidWarden(b);
 			new Volley(b);
 			new Voltaics(b);
 			new WallJump(b);

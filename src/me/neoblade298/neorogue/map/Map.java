@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -58,9 +59,14 @@ public class Map {
 	private HashSet<String> targets = new HashSet<String>();
 	private boolean[][] shape = new boolean[MAP_SIZE][MAP_SIZE];
 	private int effectiveSize;
+	private int worldStride = 1;
+	private ArrayList<MapEntrance[]> connectedEntrances = new ArrayList<>();
 	
 	public Map(RegionType type) {
 		this.type = type;
+		if (type == RegionType.FROZEN_WASTES || type == RegionType.FROZEN_WASTES_DEBUG) {
+			this.worldStride = 2;
+		}
 	}
 	
 	public static void load() {
@@ -325,6 +331,7 @@ public class Map {
 					while (iter.hasNext()) {
 						MapEntrance other = iter.next();
 						if (coords.canConnect(other)) {
+							connectedEntrances.add(new MapEntrance[] { other, coords });
 							isAvailable = false;
 							iter.remove();
 						}
@@ -404,11 +411,17 @@ public class Map {
 			}
 		}
 		
-		// Remove connected entrances
+		// Remove connected entrances and record pairs
 		ArrayList<MapEntrance> toRemove = new ArrayList<MapEntrance>();
+		HashSet<MapEntrance> alreadyPaired = new HashSet<>();
 		for (MapEntrance ent1 : entrances) {
+			if (alreadyPaired.contains(ent1)) continue;
 			for (MapEntrance ent2 : entrances) {
+				if (ent1 == ent2 || alreadyPaired.contains(ent2)) continue;
 				if (ent1.canConnect(ent2)) {
+					connectedEntrances.add(new MapEntrance[] { ent1, ent2 });
+					alreadyPaired.add(ent1);
+					alreadyPaired.add(ent2);
 					toRemove.add(ent1);
 					toRemove.add(ent2);
 					break;
@@ -435,11 +448,12 @@ public class Map {
 	}
 	
 	public void instantiate(FightInstance fi, int xOff, int zOff) {
+		int worldSize = MAP_SIZE * worldStride * 16;
 		// First clear the board
 		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Region.world)) {
 		    CuboidRegion r = new CuboidRegion(
 		    		BlockVector3.at(-(xOff + MapPieceInstance.X_FIGHT_OFFSET), 0, MapPieceInstance.Z_FIGHT_OFFSET + zOff),
-		    		BlockVector3.at(-(xOff + MapPieceInstance.X_FIGHT_OFFSET + MAP_SIZE * 16), 128, MapPieceInstance.Z_FIGHT_OFFSET + zOff + MAP_SIZE * 16));
+		    		BlockVector3.at(-(xOff + MapPieceInstance.X_FIGHT_OFFSET + worldSize), 128, MapPieceInstance.Z_FIGHT_OFFSET + zOff + worldSize));
 		    Mask mask = new ExistingBlockMask(editSession);
 		    try {
 			    editSession.replaceBlocks(r, mask, BukkitAdapter.adapt(Material.AIR.createBlockData()));
@@ -449,30 +463,48 @@ public class Map {
 			
 		    new BukkitRunnable() {
 		    	public void run() {
+		    		// Generate terrain for spaced maps (e.g. FROZEN_WASTES)
+		    		if (worldStride > 1) {
+		    			MountainPathGenerator.generate(
+		    				Bukkit.getWorld(Region.WORLD_NAME),
+		    				xOff, zOff, MAP_SIZE, worldStride,
+		    				shape, connectedEntrances,
+		    				NeoRogue.gen.nextLong()
+		    			);
+		    		}
+		    		
 					// Setup pieces and spawners
-					for (MapPieceInstance inst : pieces) {
-						// Setup mythic locations first before spawning anything
-						for (Entry<String, Coordinates> ent : inst.getMythicLocations().entrySet()) {
-							Location loc = ent.getValue().applySettings(inst).toLocation();
-							loc.add(xOff + MapPieceInstance.X_FIGHT_OFFSET,
-									MapPieceInstance.Y_OFFSET,
-									MapPieceInstance.Z_FIGHT_OFFSET + zOff + 0.5);
-							loc.setX(-loc.getX() + 0.5);
-							fi.addMythicLocation(ent.getKey(), loc);
+					if (fi != null) {
+						for (MapPieceInstance inst : pieces) {
+							// Setup mythic locations first before spawning anything
+							for (Entry<String, Coordinates> ent : inst.getMythicLocations().entrySet()) {
+								Location loc = ent.getValue().applySettings(inst).toLocation();
+								if (worldStride > 1) {
+									loc.add(inst.getX() * 16 * (worldStride - 1), 0,
+											inst.getZ() * 16 * (worldStride - 1));
+								}
+								loc.add(xOff + MapPieceInstance.X_FIGHT_OFFSET,
+										MapPieceInstance.Y_OFFSET,
+										MapPieceInstance.Z_FIGHT_OFFSET + zOff + 0.5);
+								loc.setX(-loc.getX() + 0.5);
+								fi.addMythicLocation(ent.getKey(), loc);
+							}
 						}
 					}
 					
 					for (MapPieceInstance inst : pieces) {
-						inst.instantiate(fi, xOff, zOff);
+						inst.instantiate(fi, xOff, zOff, worldStride);
 					}
 					
-					// Block off all unused entrances
-					World w = Bukkit.getWorld(Region.WORLD_NAME);
-					for (MapEntrance coords : entrances) {
-						handleUnusedEntrance(coords, w, xOff, zOff);
-					}
-					for (MapEntrance coords : obstructedEntrances) {
-						handleObstructedEntrance(coords, w, xOff, zOff);
+					// Block off all unused entrances (skip for spaced maps - mountains handle it)
+					if (worldStride <= 1) {
+						World w = Bukkit.getWorld(Region.WORLD_NAME);
+						for (MapEntrance coords : entrances) {
+							handleUnusedEntrance(coords, w, xOff, zOff);
+						}
+						for (MapEntrance coords : obstructedEntrances) {
+							handleObstructedEntrance(coords, w, xOff, zOff);
+						}
 					}
 		    	}
 		    }.runTaskLater(NeoRogue.inst(), 10L);
@@ -596,6 +628,22 @@ public class Map {
 	public Coordinates getRandomSpawn() {
 		int rand = NeoRogue.gen.nextInt(spawns.size());
 		return spawns.get(rand);
+	}
+	
+	public int getWorldStride() {
+		return worldStride;
+	}
+	
+	public List<MapEntrance[]> getConnectedEntrances() {
+		return connectedEntrances;
+	}
+	
+	public boolean[][] getShape() {
+		return shape;
+	}
+	
+	public static int getMapSize() {
+		return MAP_SIZE;
 	}
 	
 	public static Map deserialize(String str) {

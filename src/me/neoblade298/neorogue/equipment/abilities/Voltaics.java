@@ -31,7 +31,7 @@ public class Voltaics extends Equipment {
 	private static final String ID = "Voltaics";
 	private static final int TICK_INTERVAL = 5;
 	private static final int BASE_ELECTRIFIED_STACKS = 3;
-	private static final int BASE_DURATION_SECONDS = 5;
+	private static final int STACKS_INCREASE_PER_HIT = 2;
 	private static final TargetProperties tp = TargetProperties.line(16, 2, TargetType.ENEMY);
 	private static final ParticleContainer lightning = new ParticleContainer(Particle.ELECTRIC_SPARK)
 			.count(20).spread(0.3, 0.3).speed(0.1);
@@ -69,13 +69,10 @@ public class Voltaics extends Equipment {
 						FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.LIGHTNING, 
 								DamageStatTracker.of(id + slot, this)), target);
 						
-						// Calculate duration based on cumulative electrified applied
-						int baseDurationTicks = BASE_DURATION_SECONDS * 20;
-						int scaledDurationTicks = baseDurationTicks + (totalElectrified.getCount() * 2);
-						
-						// Apply electrified status
-						targetData.applyStatus(StatusType.ELECTRIFIED, data, BASE_ELECTRIFIED_STACKS, scaledDurationTicks);
-						totalElectrified.addCount(BASE_ELECTRIFIED_STACKS);
+						// Apply electrified status with increasing stacks
+						int stacks = BASE_ELECTRIFIED_STACKS + (totalElectrified.getCount() * STACKS_INCREASE_PER_HIT);
+						targetData.applyStatus(StatusType.ELECTRIFIED, data, stacks, -1);
+						totalElectrified.addCount(1);
 						
 						// Play effects
 						Sounds.thunder.play(p, target);
@@ -91,9 +88,8 @@ public class Voltaics extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.AMETHYST_SHARD,
-				"Passive. Every <white>" + TICK_INTERVAL + "</white> ticks, fire a bolt of lightning at the nearest enemy in sight that deals " + 
+				"Passive. Every <white>" + TICK_INTERVAL + "s</white>, fire a bolt of lightning at the nearest enemy in sight that deals " + 
 				GlossaryTag.LIGHTNING.tag(this, damage, true) + " and applies " + GlossaryTag.ELECTRIFIED.tag(this, BASE_ELECTRIFIED_STACKS, false) + 
-				". The duration of applied " + GlossaryTag.ELECTRIFIED.tag(this) + " increases by <white>2 ticks</white> for every " + 
-				GlossaryTag.ELECTRIFIED.tag(this) + " you've applied this fight.");
+				". The number of " + GlossaryTag.ELECTRIFIED.tag(this) + " stacks applied increases by <white>" + STACKS_INCREASE_PER_HIT + "</white> for every hit.");
 	}
 }

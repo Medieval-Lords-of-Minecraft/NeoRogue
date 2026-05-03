@@ -57,10 +57,15 @@ public class CmdAdminMap extends Subcommand {
 		
 		// Mark down spawn location blocks
 		ArrayList<Location> potentialSpawns = new ArrayList<Location>();
+		int ws = map.getWorldStride();
 		for (MapPieceInstance mpi : map.getPieces()) {
 			if (mpi.getSpawns() == null) break;
 			for (Coordinates c : mpi.getSpawns()) {
 				Location l = c.clone().applySettings(mpi).toLocation();
+				if (ws > 1) {
+					l.add(mpi.getX() * 16 * (ws - 1), 0,
+							mpi.getZ() * 16 * (ws - 1));
+				}
 				l.add(0 + MapPieceInstance.X_FIGHT_OFFSET,
 						MapPieceInstance.Y_OFFSET,
 						MapPieceInstance.Z_FIGHT_OFFSET + 0);

@@ -274,16 +274,21 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 	
 	// Pastes the map piece and sets up its spawners
 	public void instantiate(FightInstance fi, int xOff, int zOff) {
+		instantiate(fi, xOff, zOff, 1);
+	}
+	
+	public void instantiate(FightInstance fi, int xOff, int zOff, int worldStride) {
 		updateSchematic();
 		/*
 		 * this.x is the chunk coordinates within the fighting area
 		 * xOff is the offset of the plot
 		 * Z_FIGHT_OFFSET is the offset of where the fighting area is in the plot
 		 * x is negative because south is +z and right of south is -x
+		 * worldStride spaces pieces apart (1 = adjacent, 2 = 1 chunk gap between pieces)
 		 */
-		int x = -((this.x * 16) + rotateOffset[0] + flipOffset[0] + xOff + X_FIGHT_OFFSET); // So that it's flush with minecraft chunks
+		int x = -((this.x * worldStride * 16) + rotateOffset[0] + flipOffset[0] + xOff + X_FIGHT_OFFSET); // So that it's flush with minecraft chunks
 		int y = Y_OFFSET + this.y;
-		int z = (this.z * 16) + rotateOffset[1] + flipOffset[1] + zOff + Z_FIGHT_OFFSET;
+		int z = (this.z * worldStride * 16) + rotateOffset[1] + flipOffset[1] + zOff + Z_FIGHT_OFFSET;
 		
 		try (EditSession editSession = WorldEdit.getInstance().newEditSession(Region.world)) {
 		    Operation pasteSolid = schematic.createPaste(editSession)
@@ -308,24 +313,24 @@ public class MapPieceInstance implements Comparable<MapPieceInstance> {
 			Session s = fi.getSession();
 			if (piece.getInitialSpawns() != null) {
 				for (MapSpawner spawner : piece.getInitialSpawns()) {
-					fi.addInitialSpawn(spawner.instantiate(s, this, xOff, zOff));
+					fi.addInitialSpawn(spawner.instantiate(s, this, xOff, zOff, worldStride));
 				}
 			}
 			if (piece.hasSpawners()) {
 				for (MapSpawner spawner : piece.getSpawners(spawnerIdx)) {
-					fi.addSpawner(spawner.instantiate(s, this, xOff, zOff));
+					fi.addSpawner(spawner.instantiate(s, this, xOff, zOff, worldStride));
 				}
 			}
 		}
 		else {
 			if (piece.getInitialSpawns() != null) {
 				for (MapSpawner spawner : piece.getInitialSpawns()) {
-					spawner.instantiate(null, this, xOff, zOff);
+					spawner.instantiate(null, this, xOff, zOff, worldStride);
 				}
 			}
 			if (piece.hasSpawners()) {
 				for (MapSpawner spawner : piece.getSpawners(spawnerIdx)) {
-					spawner.instantiate(null, this, xOff, zOff);
+					spawner.instantiate(null, this, xOff, zOff, worldStride);
 				}
 			}
 		}

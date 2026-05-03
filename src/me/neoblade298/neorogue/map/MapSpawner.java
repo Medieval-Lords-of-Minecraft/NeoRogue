@@ -50,6 +50,10 @@ public class MapSpawner {
 		return new MapSpawnerInstance(s, this, settings, xOff, zOff);
 	}
 	
+	public MapSpawnerInstance instantiate(Session s, MapPieceInstance settings, int xOff, int zOff, int worldStride) {
+		return new MapSpawnerInstance(s, this, settings, xOff, zOff, worldStride);
+	}
+	
 	public double getRadius() {
 		return radius;
 	}

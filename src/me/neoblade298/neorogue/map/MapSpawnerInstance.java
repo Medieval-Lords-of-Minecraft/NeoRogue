@@ -23,9 +23,17 @@ public class MapSpawnerInstance {
 	private int maxMobs, activeMobs;
 	
 	public MapSpawnerInstance(Session s, MapSpawner original, MapPieceInstance inst, int xOff, int zOff) {
+		this(s, original, inst, xOff, zOff, 1);
+	}
+	
+	public MapSpawnerInstance(Session s, MapSpawner original, MapPieceInstance inst, int xOff, int zOff, int worldStride) {
 		this.s = s;
 		this.origin = original;
 		this.loc = original.getCoordinates().clone().applySettings(inst).toLocation();
+		if (worldStride > 1) {
+			this.loc.add(inst.getX() * 16 * (worldStride - 1), 0,
+					inst.getZ() * 16 * (worldStride - 1));
+		}
 		this.loc.add(
 				MapPieceInstance.X_FIGHT_OFFSET + xOff, MapPieceInstance.Y_OFFSET,
 				MapPieceInstance.Z_FIGHT_OFFSET + zOff + 0.5
