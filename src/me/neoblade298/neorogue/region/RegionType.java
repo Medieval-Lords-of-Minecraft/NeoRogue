@@ -9,14 +9,16 @@ public enum RegionType {
 	FROZEN_WASTES("Frozen Wastes", 16, Layout.STANDARD),
 	MEADOWOOD("Meadowood", 5, Layout.TUTORIAL),
 	OUTER_ADMIRATIO("Outer Admiratio", 16, Layout.STANDARD),
+	FROZEN_WASTES("Frozen Wastes", 16, Layout.STANDARD),
 	LOW_DISTRICT_DEBUG("Low District (Debug Mode)", 16, Layout.STANDARD),
 	HARVEST_FIELDS_DEBUG("Harvest Fields (Debug Mode)", 16, Layout.STANDARD),
 	FROZEN_WASTES_DEBUG("Frozen Wastes (Debug Mode)", 16, Layout.STANDARD),
 	MEADOWOOD_DEBUG("Meadowood (Debug Mode)", 5, Layout.TUTORIAL),
-	OUTER_ADMIRATIO_DEBUG("Outer Admiratio (Debug Mode)", 16, Layout.STANDARD);
+	OUTER_ADMIRATIO_DEBUG("Outer Admiratio (Debug Mode)", 16, Layout.STANDARD),
+	FROZEN_WASTES_DEBUG("Frozen Wastes (Debug Mode)", 16, Layout.STANDARD);
 	
 	// ARGENT_PLAZA("Argent Plaza"),
-	// FROZEN_WASTES("Frozen Wastes"), CAILIRIC_ARCHIVES("Cailiric Archives"), 
+	// CAILIRIC_ARCHIVES("Cailiric Archives"), 
 	// DEADMANS_MARSH("Deadman's Marsh"), OAKHELM("Oakhelm");
 
 	private static HashMap<RegionType, RegionType> nextRegion = new HashMap<RegionType, RegionType>();
@@ -56,9 +58,14 @@ public enum RegionType {
             case HARVEST_FIELDS: return HARVEST_FIELDS_DEBUG;
             case MEADOWOOD: return MEADOWOOD_DEBUG;
             case OUTER_ADMIRATIO: return OUTER_ADMIRATIO_DEBUG;
+            case FROZEN_WASTES: return FROZEN_WASTES_DEBUG;
 		default:
 			return type;
         }
+    }
+    
+    public boolean usesMountainousGeneration() {
+        return this == FROZEN_WASTES || this == FROZEN_WASTES_DEBUG;
     }
 
 	public enum Layout {
