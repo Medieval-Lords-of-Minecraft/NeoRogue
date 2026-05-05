@@ -78,7 +78,7 @@ public class Maelstrom extends Equipment {
 		});
 
 		// Fire projectile when armed
-		ProjectileGroup proj = new ProjectileGroup(new MaelstromProjectile(data, this, slot, armed));
+		ProjectileGroup proj = new ProjectileGroup(new MaelstromProjectile(data, this, slot));
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (pdata, in) -> {
 			if (!armed.getBool()) return TriggerResult.keep();
 			if (!canUseWeapon(data) || !data.canBasicAttack(EquipSlot.HOTBAR)) return TriggerResult.keep();
@@ -122,15 +122,13 @@ public class Maelstrom extends Equipment {
 		private final PlayerFightData data;
 		private final Maelstrom eq;
 		private final int slot;
-		private final ActionMeta armed;
 
-		public MaelstromProjectile(PlayerFightData data, Maelstrom eq, int slot, ActionMeta armed) {
+		public MaelstromProjectile(PlayerFightData data, Maelstrom eq, int slot) {
 			super(2, RANGE, 1);
 			this.size(0.4, 0.4);
 			this.data = data;
 			this.eq = eq;
 			this.slot = slot;
-			this.armed = armed;
 		}
 
 		@Override

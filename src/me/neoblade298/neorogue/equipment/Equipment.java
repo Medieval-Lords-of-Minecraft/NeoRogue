@@ -60,6 +60,7 @@ import me.neoblade298.neorogue.equipment.accessories.MinorPoisonRelic;
 import me.neoblade298.neorogue.equipment.accessories.MinorShieldingRelic;
 import me.neoblade298.neorogue.equipment.accessories.MinorStaminaRelic;
 import me.neoblade298.neorogue.equipment.accessories.MinorStrengthRelic;
+import me.neoblade298.neorogue.equipment.accessories.NaturesGift;
 import me.neoblade298.neorogue.equipment.accessories.Plaguebearer;
 import me.neoblade298.neorogue.equipment.accessories.PotOfGreed;
 import me.neoblade298.neorogue.equipment.accessories.QuartzPrism;
@@ -551,6 +552,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new Obfuscation(b);
 			new OdinsDecree(b);
 			new Overflow(b);
+			new Overgrowth(b);
 			new Overload(b);
 			new PalmBlast(b);
 			new Pandemic(b);
@@ -699,6 +701,7 @@ public abstract class Equipment implements Comparable<Equipment> {
 			new MinorShieldingRelic(b);
 			new MinorStaminaRelic(b);
 			new MinorStrengthRelic(b);
+			new NaturesGift(b);
 			new Plaguebearer(b);
 			new RedRing(b);
 			new RighteousRing(b);

@@ -34,14 +34,14 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class EnergyBeam extends Equipment {
 	private static final String ID = "EnergyBeam";
 	private static final TargetProperties tp = TargetProperties.line(14, 2, TargetType.ENEMY);
-	private static final ParticleContainer beam = new ParticleContainer(Particle.ELECTRIC_SPARK)
+	private static final ParticleContainer beam = new ParticleContainer(Particle.FIREWORK)
 			.count(25).spread(0.2, 0.2).speed(0.15);
 	private int damage;
 	private int manaCostReduction;
 	
 	public EnergyBeam(boolean isUpgraded) {
 		super(ID, "Energy Beam", isUpgraded, Rarity.RARE, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 30, 8, tp.range));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 10, 8, tp.range));
 		damage = isUpgraded ? 100 : 70;
 		manaCostReduction = isUpgraded ? 25 : 15;
 	}

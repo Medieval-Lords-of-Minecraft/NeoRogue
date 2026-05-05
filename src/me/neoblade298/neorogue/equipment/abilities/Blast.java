@@ -87,6 +87,7 @@ public class Blast extends Equipment {
 					expl.play(p, loc);
 					Sounds.explode.play(p, loc);
 					for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
+						System.out.println("Dealing damage to " + ent.getName());
 						FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE, DamageStatTracker.of(id + slot, eq)), ent);
 					}
 				}

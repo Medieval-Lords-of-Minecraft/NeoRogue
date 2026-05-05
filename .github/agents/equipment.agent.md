@@ -326,6 +326,11 @@ DescUtil.duration(seconds, isUpgradable) // Time formatting
 DescUtil.potion("Speed", amplifier, duration)
 ```
 
+### Tooltip Number Formatting
+- Always use **integers** in tooltips unless the decimal adds meaningful information (e.g. `0.5s` or `1.5x`).
+- Cast to `(int)` when displaying double property values: `DescUtil.yellow((int) properties.get(PropertyType.DAMAGE))`
+- Store balance values as `int` fields when they will always be whole numbers.
+
 ### Pattern
 ```java
 item = createItem(Material.ITEM, "Deals " + GlossaryTag.FIRE.tag(this, damage, true)

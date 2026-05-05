@@ -59,7 +59,7 @@ circ.play(edge, location, LocalAxes.xz(), fill);
 - Match particle type/color to the equipment's damage type or thematic element.
 - Fire damage → `Particle.FLAME`, `Particle.LAVA`
 - Ice/water → `Particle.DUST` with blue `DustOptions`, `Particle.SNOWFLAKE`
-- Lightning → `Particle.END_ROD`, `Particle.ELECTRIC_SPARK`
+- Lightning → `Particle.END_ROD`, `Particle.FIREWORK`
 - Nature/poison → `Particle.DUST` with green, `Particle.SPORE_BLOSSOM_AIR`
 - Holy/light → `Particle.END_ROD`, `Particle.FIREWORK`
 - Dark/shadow → `Particle.SOUL`, `Particle.DUST` with dark colors

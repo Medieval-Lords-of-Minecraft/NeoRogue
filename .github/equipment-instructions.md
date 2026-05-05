@@ -300,7 +300,7 @@ PropertyType.STAMINA_COST     // Stamina consumption per use
 PropertyType.COOLDOWN         // Seconds between uses
 PropertyType.RANGE            // Maximum targeting/effect range
 PropertyType.AREA_OF_EFFECT   // Radius for area effects
-PropertyType.DAMAGE           // Base weapon damage
+PropertyType.DAMAGE           // Base weapon damage (weapons/bows/ammo only, NOT abilities)
 PropertyType.KNOCKBACK        // Knockback strength
 PropertyType.ATTACK_SPEED     // Attacks per second
 ```
@@ -372,6 +372,12 @@ properties.addUpgrades(PropertyType.MANA_COST); // DON'T do this - mana doesn't 
 1. Check if property values differ between `isUpgraded ? upgradeValue : baseValue`
 2. Only call `addUpgrades()` for properties that actually change
 3. Fixed values across both versions should NOT be marked as upgradable
+
+**IMPORTANT — `PropertyType.DAMAGE` and `addUpgrades()`:**
+- `PropertyType.DAMAGE` is only added to the properties map by `ofWeapon(...)` / `ofBow(...)` / `ofAmmunition(...)` factory methods.
+- `ofUsable(...)` does NOT add `DAMAGE` to properties — abilities store damage in their own fields and display it via `GlossaryTag` in `setupItem()`.
+- **Only call `addUpgrades(PropertyType.DAMAGE)` for weapons/bows/ammunition**, never for abilities. Calling it on an ability will NPE because the property doesn't exist in the map.
+- For abilities, upgradable damage is shown through `GlossaryTag.tag(this, damage, true)` in `setupItem()` — the `true` parameter makes it yellow.
 
 #### Accessing Properties in Equipment
 ```java

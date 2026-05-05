@@ -29,7 +29,7 @@ For most projectile visuals, keep particles tight and controlled:
 ```java
 Particle.FLAME          // Fire particles
 Particle.CLOUD          // Smoke/cloud particles
-Particle.FIREWORK       // Firework explosion particles
+Particle.FIREWORK       // Firework explosion particles (also good for sparks/lightning)
 Particle.END_ROD        // Beam/rod particles
 Particle.DUST           // Colored dust (requires DustOptions)
 Particle.SOUL           // Soul particles
@@ -38,6 +38,8 @@ Particle.CRIT           // Critical hit particles
 Particle.BLOCK          // Block break particles (requires blockData)
 Particle.SPORE_BLOSSOM_AIR  // Spore particles
 ```
+
+**Avoid:** `Particle.ELECTRIC_SPARK` — too short-lived to be visible. Use `Particle.FIREWORK` instead for spark/lightning effects.
 
 ### ParticleContainer Methods
 ```java
