@@ -31,7 +31,7 @@ public class Antimatter extends Equipment {
 	private static final String ID = "Antimatter";
 	private static final TargetProperties tp = TargetProperties.line(16, 2, TargetType.ENEMY);
 	private static final ParticleContainer bolt = new ParticleContainer(Particle.SOUL)
-			.count(30).spread(0.25, 0.25).speed(0.2);
+			.count(30).spread(0.25, 0.25);
 	private int damage;
 	
 	public Antimatter(boolean isUpgraded) {

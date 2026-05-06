@@ -1,13 +1,18 @@
 package me.neoblade298.neorogue.equipment.abilities;
 
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.Particle.DustOptions;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import me.neoblade298.neocore.bukkit.effects.Circle;
+import me.neoblade298.neocore.bukkit.effects.LocalAxes;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neocore.bukkit.effects.ParticleUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -29,16 +34,20 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class SoulBattery extends Equipment {
 	private static final String ID = "SoulBattery";
-	private static final ParticleContainer lightning = new ParticleContainer(Particle.ELECTRIC_SPARK)
-			.count(40)
-			.spread(0.1, 3)
-			.offsetY(1)
-			.speed(0.01);
+	private static final ParticleContainer lightningCore = new ParticleContainer(Particle.END_ROD)
+			.count(1).spread(0, 0).speed(0);
+	private static final ParticleContainer lightningGlow = new ParticleContainer(Particle.DUST)
+			.dustOptions(new DustOptions(Color.fromRGB(100, 180, 255), 1.2F))
+			.count(1).spread(0.05, 0).speed(0);
+	private static final ParticleContainer circleEdge = new ParticleContainer(Particle.DUST)
+			.dustOptions(new DustOptions(Color.fromRGB(100, 180, 255), 0.8F))
+			.count(1).spread(0, 0).speed(0);
 	private static final TargetProperties boltAoe = TargetProperties.radius(3, false, TargetType.ENEMY);
 	private static final int SHIELD_DURATION = 160; // 8s
 	private static final int STRIKE_DELAY = 40; // 2s
 	private static final int STRIKE_COUNT = 3;
 	private static final int STRIKE_RADIUS = 5;
+	private static final Circle circ = new Circle(STRIKE_RADIUS);
 	private int threshold, damage;
 
 	public SoulBattery(boolean isUpgraded) {
@@ -64,6 +73,7 @@ public class SoulBattery extends Equipment {
 			}
 
 			Location center = p.getLocation().clone();
+			circ.play(circleEdge, center, LocalAxes.xz(), null);
 			data.addTask(new BukkitRunnable() {
 				@Override
 				public void run() {
@@ -74,7 +84,8 @@ public class SoulBattery extends Equipment {
 						double x = Math.cos(angle) * distance;
 						double z = Math.sin(angle) * distance;
 						Location loc = center.clone().add(x, 0, z);
-						lightning.play(p2, loc);
+						ParticleUtil.drawLine(p2, lightningCore, loc.clone().add(0, 5, 0), loc, 0.3);
+						ParticleUtil.drawLine(p2, lightningGlow, loc.clone().add(0, 5, 0), loc, 0.25);
 						Sounds.thunder.play(p2, loc);
 						for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p2, loc, boltAoe)) {
 							FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.LIGHTNING,

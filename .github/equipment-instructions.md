@@ -47,6 +47,11 @@ data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
 
 Key triggers: `APPLY_STATUS`, `PRE_APPLY_STATUS`, `PRE_DEAL_DAMAGE`, `RECEIVE_DAMAGE`, `PLAYER_TICK`, `PRE_BASIC_ATTACK`
 
+**IMPORTANT - Use PRE_ Triggers to Modify Values:**
+- Triggers like `DEAL_DAMAGE`, `APPLY_STATUS`, and `CAST_USABLE` fire **after** the action has already happened. Modifying values (e.g., adding damage slices, changing costs) in these triggers has no effect.
+- To modify damage, costs, or other values before they are applied, use the corresponding `PRE_` trigger: `PRE_DEAL_DAMAGE`, `PRE_APPLY_STATUS`, `PRE_CAST_USABLE`, etc.
+- Use the non-PRE version only for reactive effects (e.g., gaining mana on hit, applying a status after damage is dealt).
+
 **IMPORTANT - PLAYER_TICK Timing:**
 - `Trigger.PLAYER_TICK` runs **once every 20 game ticks** (1 second), NOT every tick
 - To trigger every 2 seconds, increment count by 1 every PLAYER_TICK. Run the rest of the code when count is 2.

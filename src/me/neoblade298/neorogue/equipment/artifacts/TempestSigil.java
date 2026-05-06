@@ -30,23 +30,16 @@ public class TempestSigil extends Artifact {
 	@Override
 	public void initialize(PlayerFightData data, ArtifactInstance ai) {
 		long[] lastCast = { 0 };
-		long[] lastAttack = { 0 };
 		long[] buffUntil = { 0 };
 		long[] nextUse = { 0 };
 
 		data.addTrigger(id, Trigger.CAST_USABLE, (pdata, in) -> {
-			long now = System.currentTimeMillis();
-			lastCast[0] = now;
-			if (now >= nextUse[0] && now - lastAttack[0] <= WINDOW) {
-				buffUntil[0] = now + COOLDOWN;
-				nextUse[0] = now + COOLDOWN;
-			}
+			lastCast[0] = System.currentTimeMillis();
 			return TriggerResult.keep();
 		});
 
 		data.addTrigger(id, Trigger.WEAPON_SWING, (pdata, in) -> {
 			long now = System.currentTimeMillis();
-			lastAttack[0] = now;
 			if (now >= nextUse[0] && now - lastCast[0] <= WINDOW) {
 				buffUntil[0] = now + COOLDOWN;
 				nextUse[0] = now + COOLDOWN;
@@ -68,6 +61,6 @@ public class TempestSigil extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ECHO_SHARD,
-				"If you cast an ability and basic attack within <white>2s</white> of each other, gain <white>20%</white> attack speed for <white>3s</white>. Does not stack.");
+				"If you use your weapon within <white>2s</white> of casting an ability, gain <white>20%</white> attack speed for <white>3s</white>. Does not stack.");
 	}
 }

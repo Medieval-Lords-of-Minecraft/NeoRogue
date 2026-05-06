@@ -60,11 +60,10 @@ public class DyingStar extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.NETHER_STAR,
-				"On cast, create a " + GlossaryTag.RIFT.tag(this) + ". When " + GlossaryTag.RIFT.tag(this) +
-				" expire, pull in nearby enemies, then explode <white>1s</white> later dealing " +
+				"Castable once. Create a " + GlossaryTag.RIFT.tag(this) + ". Afterwards, when any " + GlossaryTag.RIFT.tag(this) +
+				" expires, pull in nearby enemies, then explode <white>1s</white> later dealing " +
 				GlossaryTag.DARK.tag(this, damage, true) + " damage. If an enemy is killed, spawn a new " +
-				GlossaryTag.RIFT.tag(this) + " [" + DescUtil.white("10s") + "] in the same place. " +
-				"Can only be cast <yellow>once</yellow> per fight.");
+				GlossaryTag.RIFT.tag(this) + " [" + DescUtil.white("10s") + "] in the same place.");
 	}
 
 	@Override

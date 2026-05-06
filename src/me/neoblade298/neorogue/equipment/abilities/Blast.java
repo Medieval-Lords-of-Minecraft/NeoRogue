@@ -65,12 +65,12 @@ public class Blast extends Equipment {
 				private int count = 0;
 				public void run() {
 					circ.play(pc, p.getTargetBlockExact((int) properties.get(PropertyType.RANGE)).getLocation().add(0, 1, 0), LocalAxes.xz(), null);
-					if (++count >= 2) {
+					if (++count >= 3) {
 						cancel();
 						return;
 					}
 				}
-			}.runTaskTimer(NeoRogue.inst(), 20, 20));
+			}.runTaskTimer(NeoRogue.inst(), 0, 20));
 
 			data.charge(40).then(new Runnable() {
 				public void run() {
@@ -86,8 +86,7 @@ public class Blast extends Equipment {
 					circ.play(pc, loc, LocalAxes.xz(), null);
 					expl.play(p, loc);
 					Sounds.explode.play(p, loc);
-					for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
-						System.out.println("Dealing damage to " + ent.getName());
+					for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, loc, tp)) {
 						FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.FIRE, DamageStatTracker.of(id + slot, eq)), ent);
 					}
 				}

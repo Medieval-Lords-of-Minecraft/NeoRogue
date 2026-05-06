@@ -38,6 +38,7 @@ public class VoidForm extends Equipment {
 			if (ev.getInstance().getEquipment().getType() != EquipmentType.ABILITY) return TriggerResult.keep();
 
 			int riftCount = data.getRifts().size();
+			System.out.println("Rift count: " + riftCount);
 			if (riftCount <= 0) return TriggerResult.keep();
 
 			ev.addBuff(PropertyType.MANA_COST, procId,

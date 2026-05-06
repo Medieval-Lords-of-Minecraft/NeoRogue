@@ -142,10 +142,10 @@ public class Riftmaker extends Equipment {
 	public void setupItem() {
 		item = createItem(
 				Material.STICK,
-				"Grants " + GlossaryTag.INTELLECT.tag(this, 1, false) + " every " + DescUtil.yellow(intellectFreq)
-						+ " basic attacks. Each hit grants " + DescUtil.yellow(manaGain) + " mana. Basic attacks also fire from your nearest "
-						+ GlossaryTag.RIFT.tag(this) + " toward <white>7</white> blocks in front of you. When this weapon grants "
-						+ GlossaryTag.INTELLECT.tag(this) + ", create a " + GlossaryTag.RIFT.tag(this) + " [<white>10s</white>]."
+				"Every " + DescUtil.yellow(intellectFreq) + " hits, gain " + GlossaryTag.INTELLECT.tag(this, 1, false)
+						+ " and create a " + GlossaryTag.RIFT.tag(this) + " [" + DescUtil.white("10s") + "]. Each hit grants "
+						+ DescUtil.yellow(manaGain) + " mana. Basic attacks also fire from your nearest "
+						+ GlossaryTag.RIFT.tag(this) + " toward " + DescUtil.white("7") + " blocks in front of you."
 		);
 	}
 }

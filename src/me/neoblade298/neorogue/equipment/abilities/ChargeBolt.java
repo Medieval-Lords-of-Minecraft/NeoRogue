@@ -38,7 +38,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreCastUsableEvent;
 public class ChargeBolt extends Equipment {
 	private static final String ID = "ChargeBolt";
 	private static final TargetProperties tp = TargetProperties.line(12, 2, TargetType.ENEMY);
-	private static final ParticleContainer tick = new ParticleContainer(Particle.ELECTRIC_SPARK).count(3).spread(0.2, 0.2);
+	private static final ParticleContainer tick = new ParticleContainer(Particle.END_ROD).count(1).spread(0.05, 0.05).speed(0.01);
 	private int damage, manaReduction;
 
 	public ChargeBolt(boolean isUpgraded) {

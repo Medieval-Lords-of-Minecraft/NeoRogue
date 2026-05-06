@@ -35,14 +35,14 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 public class BrightestFlame extends Equipment {
 	private static final String ID = "BrightestFlame";
 	private static final TargetProperties tp = TargetProperties.radius(20, false, TargetType.ENEMY);
-	private static final ParticleContainer trail = new ParticleContainer(Particle.FLAME).count(5).spread(0.2, 0.2);
+	private static final ParticleContainer trail = new ParticleContainer(Particle.FLAME).count(2).spread(0.1, 0.1);
 
 	private int damage, burn, corr;
 
 	public BrightestFlame(boolean isUpgraded) {
 		super(ID, "Brightest Flame", isUpgraded, Rarity.RARE, EquipmentClass.MAGE,
 				EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(isUpgraded ? 60 : 80, 0, 0, 0));
+				EquipmentProperties.ofUsable(isUpgraded ? 45 : 60, 10, 0, 10));
 		damage = isUpgraded ? 120 : 80;
 		burn = isUpgraded ? 6 : 4;
 		corr = 2;
@@ -55,15 +55,22 @@ public class BrightestFlame extends Equipment {
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ProjectileGroup proj = new ProjectileGroup();
-		// Create 5 projectiles in upward fan: -45, -22.5, 0, 22.5, 45 degrees
-		for (double angle : new double[] { -45, -22.5, 0, 22.5, 45 }) {
-			proj.add(new BrightestFlameProjectile(data, angle, this, slot));
+		// Fan in a semicircle: left, upper-left, above, upper-right, right
+		double[][] fan = {
+			{ -90, 0 },    // Left
+			{ -45, 0.8 },  // Upper-left
+			{ 0, 1.4 },    // Above
+			{ 45, 0.8 },   // Upper-right
+			{ 90, 0 }      // Right
+		};
+		for (double[] params : fan) {
+			proj.add(new BrightestFlameProjectile(data, params[0], params[1], this, slot));
 		}
 		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			Player p = data.getPlayer();
 			Sounds.equip.play(p, p);
 			data.applyStatus(StatusType.CORRUPTION, data, corr, -1);
-			proj.start(data);
+			data.chargeSecs(1).then(() -> proj.start(data));
 			return TriggerResult.keep();
 		}));
 	}
@@ -74,11 +81,14 @@ public class BrightestFlame extends Equipment {
 		private int slot;
 		private Equipment eq;
 
-		public BrightestFlameProjectile(PlayerFightData data, double angleOffset, Equipment eq, int slot) {
+		public BrightestFlameProjectile(PlayerFightData data, double angleOffset, double arcValue, Equipment eq, int slot) {
 			super(0.8, properties.get(PropertyType.RANGE), 1);
-			this.size(0.4, 0.4);
+			this.size(0.1, 0.1);
 			this.rotation(angleOffset);
-			this.homing(0.02);
+			this.arc(arcValue);
+			this.gravity(0.01);
+			this.homing(0.008);
+			this.initialY(1.0);
 			this.data = data;
 			this.p = data.getPlayer();
 			this.eq = eq;

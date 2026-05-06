@@ -48,12 +48,12 @@ public class AvalonianSceptre extends Equipment {
 	public AvalonianSceptre(boolean isUpgraded) {
 		super(
 				ID, "Avalonian Sceptre", isUpgraded, Rarity.EPIC, EquipmentClass.MAGE, EquipmentType.WEAPON,
-				EquipmentProperties.ofWand(isUpgraded ? 45 : 35, 0.9, 0, 1, RANGE, DamageType.DARK, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
+				EquipmentProperties.ofWand(isUpgraded ? 65 : 55, 0.9, 0, 1, RANGE, DamageType.DARK, Sound.ENTITY_PLAYER_ATTACK_SWEEP)
 		);
 		properties.addUpgrades(PropertyType.DAMAGE);
 		manaGain = isUpgraded ? 6 : 4;
 		intellectFreq = isUpgraded ? 3 : 5;
-		maxMana = isUpgraded ? 50 : 30;
+		maxMana = isUpgraded ? 5 : 3;
 		bonusThreshold = isUpgraded ? 0.8 : 0.9;
 	}
 
@@ -65,7 +65,6 @@ public class AvalonianSceptre extends Equipment {
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
 		ActionMeta attackCounter = new ActionMeta();
 		ProjectileGroup proj = new ProjectileGroup(new AvalonianSceptreProjectile(data, this, slot, attackCounter));
-		data.addMaxMana(maxMana);
 		data.addSlotBasedTrigger(id, slot, Trigger.LEFT_CLICK, (d, inputs) -> {
 			if (!canUseWeapon(data) || !data.canBasicAttack(EquipSlot.HOTBAR))
 				return TriggerResult.keep();
@@ -117,6 +116,7 @@ public class AvalonianSceptre extends Equipment {
 			if (data.getMana() > data.getMaxMana() * bonusThreshold) {
 				proj.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
 						Buff.multiplier(data, 1.0, BuffStatTracker.of(id + slot, eq, "High mana damage")));
+				data.addMaxMana(maxMana);
 			}
 		}
 	}
@@ -126,9 +126,9 @@ public class AvalonianSceptre extends Equipment {
 		item = createItem(
 				Material.STICK,
 				"Grants " + GlossaryTag.INTELLECT.tag(this, 1, false) + " every " + DescUtil.yellow(intellectFreq)
-						+ " basic attacks. Each hit grants " + DescUtil.yellow(manaGain) + " mana. Increases max mana by "
-						+ DescUtil.yellow(maxMana) + ". While above " + DescUtil.yellow((int) (bonusThreshold * 100) + "%")
-						+ " mana, basic attacks deal " + DescUtil.white("2x") + " damage."
+						+ " basic attacks. Each hit grants " + DescUtil.yellow(manaGain) + " mana. While above "
+						+ DescUtil.yellow((int) (bonusThreshold * 100) + "%") + " mana, basic attacks deal "
+						+ DescUtil.white("2x") + " damage and increase max mana by " + DescUtil.yellow(maxMana) + "."
 		);
 	}
 }

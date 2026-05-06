@@ -11,6 +11,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
@@ -23,6 +24,7 @@ public class PowerOverwhelmingII extends Equipment {
 	private static final String ID = "PowerOverwhelmingII";
 	private int manaReduc;
 	private int shields;
+	private int shieldDuration;
 	private int cdReduc;
 
 	public PowerOverwhelmingII(boolean isUpgraded) {
@@ -30,6 +32,7 @@ public class PowerOverwhelmingII extends Equipment {
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(isUpgraded ? 80 : 100, 15, 40, 0));
 		manaReduc = isUpgraded ? 30 : 20;
 		shields = isUpgraded ? 6 : 4;
+		shieldDuration = 5;
 		cdReduc = isUpgraded ? 3 : 2;
 		properties.addUpgrades(PropertyType.MANA_COST);
 	}
@@ -72,7 +75,7 @@ public class PowerOverwhelmingII extends Equipment {
 			Player p = data.getPlayer();
 			if (p == null) return TriggerResult.keep();
 
-			data.addSimpleShield(p.getUniqueId(), shields, 600); // 600 ticks = 30s
+			data.addSimpleShield(p.getUniqueId(), shields, shieldDuration * 20);
 			return TriggerResult.keep();
 		});
 
@@ -89,6 +92,6 @@ public class PowerOverwhelmingII extends Equipment {
 		item = createItem(Material.NETHER_STAR,
 				"On cast, decrease mana costs of all castable abilities by " + DescUtil.yellow(manaReduc)
 						+ ", up to <white>half</white> of each ability's base mana cost, and reduce all cooldowns by " + DescUtil.yellow(cdReduc)
-						+ " seconds. Every ability cast grants " + DescUtil.yellow(shields) + " <yellow>shields</yellow> for <white>30s</white>. Can only be cast once.");
+						+ " seconds. Every ability cast grants " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [" + DescUtil.white(shieldDuration + "s") + "]. Can only be cast once.");
 	}
 }

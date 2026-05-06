@@ -12,13 +12,13 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
+import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
 import me.neoblade298.neorogue.session.fight.DamageType;
-import me.neoblade298.neorogue.session.fight.FightInstance;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.DealDamageEvent;
+import me.neoblade298.neorogue.session.fight.trigger.event.PreDealDamageEvent;
 
 public class StonePlating extends Equipment {
 	private static final String ID = "StonePlating";
@@ -44,9 +44,9 @@ public class StonePlating extends Equipment {
 			data.addPermanentShield(p.getUniqueId(), shields);
 
 			// Add persistent trigger for bonus blunt damage on magical hits while shielded
-			data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata2, in2) -> {
+			data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata2, in2) -> {
 				if (data.getShields().isEmpty()) return TriggerResult.keep();
-				DealDamageEvent ev = (DealDamageEvent) in2;
+				PreDealDamageEvent ev = (PreDealDamageEvent) in2;
 				if (!ev.getMeta().containsType(DamageCategory.MAGICAL)) return TriggerResult.keep();
 
 				// Sum up magical damage from post-mitigation slices
@@ -59,7 +59,7 @@ public class StonePlating extends Equipment {
 				if (magicalDamage <= 0) return TriggerResult.keep();
 
 				double bonusDamage = magicalDamage * bonusPercent;
-				FightInstance.dealDamage(data, DamageType.BLUNT, bonusDamage, ev.getTarget(), DamageStatTracker.of(id + slot, this));
+				ev.getMeta().addDamageSlice(new DamageSlice(data, bonusDamage, DamageType.BLUNT, DamageStatTracker.of(id + slot, this)));
 				return TriggerResult.keep();
 			});
 

@@ -15,8 +15,8 @@ import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
 
 public class AegisPotion extends Consumable {
 	private static final String ID = "AegisPotion";
-	private static final int TICK_INTERVAL = 60; // 3 seconds (20 ticks/sec * 3)
-	private double upfront, periodic;
+	private static final int TICK_INTERVAL = 3;
+	private int upfront, periodic;
 
 	public AegisPotion(boolean isUpgraded) {
 		super(ID, "Aegis Potion", isUpgraded, Rarity.UNCOMMON, EquipmentClass.CLASSLESS);
@@ -52,7 +52,7 @@ public class AegisPotion extends Consumable {
 		item = createItem(Material.POTION,
 				"Applies " + GlossaryTag.SHIELDS.tag(this, upfront, true) +
 				" and then " + GlossaryTag.SHIELDS.tag(this, periodic, true) +
-				" every [<white>3s</white>] for the rest of combat. Consumed on first use.");
+				" [<white>3s</white>] every <white>3s</white> for the rest of combat. Consumed on first use.");
 		PotionMeta meta = (PotionMeta) item.getItemMeta();
 		meta.setColor(Color.fromRGB(100, 149, 237));
 		item.setItemMeta(meta);

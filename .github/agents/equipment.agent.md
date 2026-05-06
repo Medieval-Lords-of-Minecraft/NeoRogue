@@ -85,7 +85,10 @@ tp = TargetProperties.radius(properties.get(PropertyType.AREA_OF_EFFECT), false,
 Trigger types are defined in `Trigger.java`. There are many — look them up at runtime rather than memorizing. To determine what the `Object in` parameter is for a given trigger, search for existing usages of that trigger in equipment code and check what class the input is cast to.
 
 ### Common Triggers
-`LEFT_CLICK`, `LEFT_CLICK_HIT`, `RIGHT_CLICK`, `PRE_BASIC_ATTACK`, `PRE_DEAL_DAMAGE`, `DEAL_DAMAGE`, `RECEIVE_DAMAGE`, `APPLY_STATUS`, `PRE_APPLY_STATUS`, `PLAYER_TICK`, `CAST_USABLE`, `KILL`, `ON_HIT`
+`LEFT_CLICK`, `LEFT_CLICK_HIT`, `RIGHT_CLICK`, `PRE_BASIC_ATTACK`, `PRE_DEAL_DAMAGE`, `DEAL_DAMAGE`, `RECEIVE_DAMAGE`, `APPLY_STATUS`, `PRE_APPLY_STATUS`, `PLAYER_TICK`, `CAST_USABLE`, `PRE_CAST_USABLE`, `KILL`, `ON_HIT`
+
+### PRE_ Triggers for Modifying Values
+Triggers like `DEAL_DAMAGE`, `APPLY_STATUS`, and `CAST_USABLE` fire **after** the action has already happened. Modifying values (e.g., adding damage slices, changing costs) in these triggers has no effect. To modify damage, costs, or other values before they are applied, use the corresponding `PRE_` trigger: `PRE_DEAL_DAMAGE`, `PRE_APPLY_STATUS`, `PRE_CAST_USABLE`, etc. Use the non-PRE version only for reactive effects (e.g., gaining mana on hit, applying a status after damage is dealt).
 
 ### PLAYER_TICK Timing
 `Trigger.PLAYER_TICK` fires every **20 game ticks (1 second)**. For multi-second intervals, count ticks:

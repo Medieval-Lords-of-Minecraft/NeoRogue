@@ -7,24 +7,29 @@ You are a specialist FX designer for the NeoRogue Minecraft plugin. Your job is 
 
 ## Core Design Principles
 
-### 1. Projectile Particles
+### 1. Clarity to the Player
+- **Any time something applies in an area, show a circle to indicate the area's limits.**
+- Use particles with **very low spread** (`spread(0, 0)` or near-zero) so the circle boundary is crisp and easy to read.
+- Players should never have to guess the radius of an AOE effect — make it visually unambiguous.
+
+### 2. Projectile Particles
 - Projectiles must have **thin, precise particles** so players can clearly see position and hitbox.
 - Use `spread(0.1, 0.1)` or lower — never high spread on projectiles.
 - Use `speed(0)` or at most `speed(0.01)` — particles should mark position, not fly outward.
 - Exception: intentionally large-hitbox projectiles can use slightly more spread to telegraph their size.
 
-### 2. Particle Speed Philosophy
+### 3. Particle Speed Philosophy
 - `speed` controls how quickly particles fly outward from their spawn point.
 - `speed(0)` = perfectly still particles, ideal for most cases (shapes, projectiles, indicators).
 - `speed(0.01)` = subtle drift, gives a slight organic feel without muddling the shape.
 - Values above `0.01` are **very rarely appropriate** — only for explosions, heavy impacts, or deliberate chaos effects.
 
-### 3. 2D Shapes (Circles, Cones, Rectangles)
+### 4. 2D Shapes (Circles, Cones, Rectangles)
 - Use **no spread** (`spread(0, 0)`) and **no speed** (`speed(0)`) for edge particles to maintain crisp outlines.
 - Fill particles can use minimal spread (`spread(0.1, 0)`) for slight organic softness.
 - Always use `count(1)` for edge and fill particles — the shape system distributes them across the geometry.
 
-### 4. Particle Animations (3D Drawing)
+### 5. Particle Animations (3D Drawing)
 - Use `ParticleAnimation` for complex spatial effects: weapon swings, lightning strikes, large cast animations, spirals, converging effects.
 - Each animation uses **one** `ParticleContainer`. For multiple colors/types, create separate animations and play them simultaneously.
 - Always use `data.runAnimation(id, player, anim, ...)` in fight context for automatic cleanup.

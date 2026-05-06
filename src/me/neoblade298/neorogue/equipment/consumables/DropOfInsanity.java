@@ -17,7 +17,6 @@ import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
-import me.neoblade298.neorogue.session.fight.trigger.event.CastUsableEvent;
 import me.neoblade298.neorogue.session.fight.trigger.event.PreCastUsableEvent;
 
 public class DropOfInsanity extends Consumable {
@@ -37,32 +36,25 @@ public class DropOfInsanity extends Consumable {
 
 		data.addTrigger(id, Trigger.PRE_CAST_USABLE, (pdata, in) -> {
 			PreCastUsableEvent ev = (PreCastUsableEvent) in;
-			Object obj = selected.getObject();
-			if (!(obj instanceof EquipmentInstance)) return TriggerResult.keep();
 
-			EquipmentInstance selectedInst = (EquipmentInstance) obj;
-			if (selectedInst != ev.getInstance()) return TriggerResult.keep();
+			Object obj = selected.getObject();
+			if (obj == null) {
+				// First cast: select this ability if it qualifies
+				EquipmentInstance inst = ev.getInstance();
+				CastType type = inst.getEquipment().getProperties().getCastType();
+				if (inst.getEquipment().getType() != EquipmentType.ABILITY) return TriggerResult.keep();
+				if (type != CastType.STANDARD && type != CastType.POST_TRIGGER) return TriggerResult.keep();
+				selected.setObject(inst);
+			} else {
+				EquipmentInstance selectedInst = (EquipmentInstance) obj;
+				if (selectedInst != ev.getInstance()) return TriggerResult.keep();
+			}
 
 			ev.addBuff(PropertyType.MANA_COST, id,
 					Buff.multiplier(data, 1, BuffStatTracker.of(id, this, PropertyType.MANA_COST.getDisplay() + " reduced")));
 			ev.addBuff(PropertyType.STAMINA_COST, id,
 					Buff.multiplier(data, 1, BuffStatTracker.of(id, this, PropertyType.STAMINA_COST.getDisplay() + " reduced")));
 			return TriggerResult.keep();
-		});
-
-		data.addTrigger(id, Trigger.CAST_USABLE, (pdata, in) -> {
-			if (selected.getObject() != null) return TriggerResult.remove();
-
-			CastUsableEvent ev = (CastUsableEvent) in;
-			EquipmentInstance inst = ev.getInstance();
-			CastType type = ev.getType();
-			if (inst.getEquipment().getType() != EquipmentType.ABILITY) return TriggerResult.keep();
-			if (type != CastType.STANDARD && type != CastType.POST_TRIGGER) return TriggerResult.keep();
-
-			selected.setObject(inst);
-			data.addMana(ev.getManaCost());
-			data.addStamina(ev.getStaminaCost());
-			return TriggerResult.remove();
 		});
 
 		return TriggerResult.remove();

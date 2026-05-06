@@ -32,6 +32,7 @@ public class MirrorPotion extends Consumable {
 
 	@Override
 	public TriggerResult runConsumableEffects(Player p, PlayerFightData data, int slot) {
+		int[] remaining = { isUpgraded ? 2 : 1 };
 		data.addTrigger(id, Trigger.CAST_USABLE, (pdata, in) -> {
 			CastUsableEvent ev = (CastUsableEvent) in;
 			EquipmentInstance inst = ev.getInstance();
@@ -52,15 +53,16 @@ public class MirrorPotion extends Consumable {
 					inst.updateIcon();
 				}
 			}.runTaskLater(NeoRogue.inst(), DELAY));
-			return TriggerResult.remove();
+			return --remaining[0] <= 0 ? TriggerResult.remove() : TriggerResult.keep();
 		});
 		return TriggerResult.remove();
 	}
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.POTION,
-				"Your next ability cast is cast again for free after [<white>1s</white>]. Consumed on first use.");
+		item = createItem(Material.POTION, isUpgraded
+				? "Your next [<white>2</white>] ability casts are each cast again for free after [<white>1s</white>]. Consumed on first use."
+				: "Your next ability cast is cast again for free after [<white>1s</white>]. Consumed on first use.");
 		PotionMeta meta = (PotionMeta) item.getItemMeta();
 		meta.setColor(Color.fromRGB(186, 85, 211));
 		item.setItemMeta(meta);

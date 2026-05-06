@@ -246,19 +246,23 @@ public class PlayerFightData extends FightData {
 	}
 
 	public void disableJump(int ticks) {
-		AttributeModifier mod = new AttributeModifier(NamespacedKey.fromString("jump", NeoRogue.inst()), -0.42,
+		NamespacedKey key = NamespacedKey.fromString("jump", NeoRogue.inst());
+		if (entity.getAttribute(Attribute.JUMP_STRENGTH).getModifier(key) != null) return;
+		AttributeModifier mod = new AttributeModifier(key, -0.42,
 				Operation.ADD_NUMBER);
 		entity.getAttribute(Attribute.JUMP_STRENGTH).addModifier(mod);
 		addGuaranteedTask(UUID.randomUUID(), new Runnable() {
 			public void run() {
 				entity.getAttribute(Attribute.JUMP_STRENGTH)
-						.removeModifier(NamespacedKey.fromString("jump", NeoRogue.inst()));
+						.removeModifier(key);
 			}
 		}, ticks);
 	}
 
 	public void disableJump() {
-		AttributeModifier mod = new AttributeModifier(NamespacedKey.fromString("jump", NeoRogue.inst()), -0.42,
+		NamespacedKey key = NamespacedKey.fromString("jump", NeoRogue.inst());
+		if (entity.getAttribute(Attribute.JUMP_STRENGTH).getModifier(key) != null) return;
+		AttributeModifier mod = new AttributeModifier(key, -0.42,
 				Operation.ADD_NUMBER);
 		entity.getAttribute(Attribute.JUMP_STRENGTH).addModifier(mod);
 	}

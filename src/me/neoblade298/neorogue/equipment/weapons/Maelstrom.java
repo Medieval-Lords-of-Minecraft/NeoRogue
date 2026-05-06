@@ -52,7 +52,7 @@ public class Maelstrom extends Equipment {
 	private static final SoundContainer boltSound = new SoundContainer(Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 0.5F);
 
 	public Maelstrom(boolean isUpgraded) {
-		super(ID, "Maelstrom", isUpgraded, Rarity.LEGENDARY, EquipmentClass.MAGE, EquipmentType.WEAPON,
+		super(ID, "Maelstrom", isUpgraded, Rarity.EPIC, EquipmentClass.MAGE, EquipmentType.WEAPON,
 				EquipmentProperties.ofWand(isUpgraded ? 85 : 65, 0.9, 0, 0.8, RANGE, DamageType.LIGHTNING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
 		properties.addUpgrades(PropertyType.DAMAGE);
 	}

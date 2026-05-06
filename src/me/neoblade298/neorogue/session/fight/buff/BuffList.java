@@ -11,7 +11,7 @@ public class BuffList {
 	// Maybe will need another version of this for non-damage buffs if I ever make those
 	public void add(Buff b) {
         for (Buff curr : buffs) {
-            if (curr.isSimilar(b)) {
+            if (curr.getStatTracker().isSimilar(b.getStatTracker())) {
                 if (curr.getStatTracker().shouldCombine()) {
                     curr.combine(b);
                     increase += curr.getIncrease();
