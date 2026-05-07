@@ -33,7 +33,7 @@ public class EscapePlan2 extends Equipment {
 	
 	public EscapePlan2(boolean isUpgraded) {
 		super(ID, "Escape Plan II", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 25, 15, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 20, 15, 0));
 		basicAttackDamage = isUpgraded ? 50 : 30;
 		activateDamage = isUpgraded ? 100 : 70;
 	}

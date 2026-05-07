@@ -45,7 +45,7 @@ public class ShardBlast extends Equipment {
 	
 	public ShardBlast(boolean isUpgraded) {
 		super(ID, "Shard Blast", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 0, 15, 0).add(PropertyType.AREA_OF_EFFECT, tp.range));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 5, 12, 0).add(PropertyType.AREA_OF_EFFECT, tp.range));
 		
 		damage = isUpgraded ? 120 : 100;
 		reduc = isUpgraded ? 50 : 30;

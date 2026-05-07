@@ -38,7 +38,7 @@ public class Pressure extends Equipment {
 	
 	public Pressure(boolean isUpgraded) {
 		super(ID, "Pressure", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 0, 15, 0).add(PropertyType.AREA_OF_EFFECT, tp.range));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 5, 12, 0).add(PropertyType.AREA_OF_EFFECT, tp.range));
 		damage = isUpgraded ? 75 : 50;
 	}
 	

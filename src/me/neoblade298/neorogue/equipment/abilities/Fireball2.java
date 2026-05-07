@@ -43,7 +43,7 @@ public class Fireball2 extends Equipment {
 	public Fireball2(boolean isUpgraded) {
 		super(
 				ID , "Fireball II", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(30, 10, 12, 10, tp.range));
+				EquipmentProperties.ofUsable(25, 10, 12, 10, tp.range));
 		damage = isUpgraded ? 360 : 240;
 		burn = 10;
 	}

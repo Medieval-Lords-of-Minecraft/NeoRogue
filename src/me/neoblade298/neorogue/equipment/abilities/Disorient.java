@@ -38,7 +38,7 @@ public class Disorient extends Equipment {
 	
 	public Disorient(boolean isUpgraded) {
 		super(ID, "Disorient", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 0, 12, tp.range));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 10, 12, tp.range));
 		
 		inc = 21;
 		damage = isUpgraded ? 150 : 100;

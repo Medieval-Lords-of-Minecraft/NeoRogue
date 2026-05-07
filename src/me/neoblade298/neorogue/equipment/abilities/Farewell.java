@@ -45,7 +45,7 @@ public class Farewell extends Equipment {
 	
 	public Farewell(boolean isUpgraded) {
 		super(ID, "Farewell", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 0, 15, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 10, 15, 0));
 		damage = isUpgraded ? 100 : 60;
 		execute = isUpgraded ? 200 : 150;
 	}

@@ -33,7 +33,7 @@ public class FirstStrike extends Equipment {
 	
 	public FirstStrike(boolean isUpgraded) {
 		super(ID, "First Strike", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(5, 5, 10, 4));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 5, 10, 4));
 		pc.count(50).spread(0.5, 0.5).offsetY(1);
 		damage = isUpgraded ? 225 : 150;
 	}

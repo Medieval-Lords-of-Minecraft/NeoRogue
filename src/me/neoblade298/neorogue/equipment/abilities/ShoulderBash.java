@@ -36,7 +36,7 @@ public class ShoulderBash extends Equipment {
 	
 	public ShoulderBash(boolean isUpgraded) {
 		super(ID, "Shoulder Bash", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 5, 5, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 10, 5, 0));
 		damage = 20;
 		inc = isUpgraded ? 20 : 10;
 	}

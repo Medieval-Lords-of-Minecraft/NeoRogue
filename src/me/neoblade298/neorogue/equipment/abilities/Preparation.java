@@ -29,7 +29,7 @@ public class Preparation extends Equipment {
 	
 	public Preparation(boolean isUpgraded) {
 		super(ID, "Preparation", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 25, 25, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 15, 22, 0));
 		damage = isUpgraded ? 100 : 70;
 		shields = isUpgraded ? 15 : 10;
 	}

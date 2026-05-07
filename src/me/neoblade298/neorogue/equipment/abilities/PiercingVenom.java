@@ -32,7 +32,7 @@ public class PiercingVenom extends Equipment {
 	
 	public PiercingVenom(boolean isUpgraded) {
 		super(ID, "Piercing Venom", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 10, 12, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 15, 12, 0));
 		properties.addUpgrades(PropertyType.COOLDOWN);
 		poison = 30;
 		mult = isUpgraded ? 0.5 : 0.3;

@@ -24,7 +24,7 @@ public class HoldTheLine extends Equipment {
 
 	public HoldTheLine(boolean isUpgraded) {
 		super(ID, "Hold the Line", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(0, 25, 15, 0));
+				EquipmentProperties.ofUsable(10, 20, 15, 0));
 		shields = isUpgraded ? 15 : 10;
 		concussed = isUpgraded ? 8 : 5;
 	}

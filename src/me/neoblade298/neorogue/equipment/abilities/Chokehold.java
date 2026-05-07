@@ -42,7 +42,7 @@ public class Chokehold extends Equipment {
 	
 	public Chokehold(boolean isUpgraded) {
 		super(ID, "Chokehold", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 0, 15, 0).add(PropertyType.AREA_OF_EFFECT, tp.range));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 10, 15, 0).add(PropertyType.AREA_OF_EFFECT, tp.range));
 		damage = isUpgraded ? 0.5 : 0.3;
 	}
 	

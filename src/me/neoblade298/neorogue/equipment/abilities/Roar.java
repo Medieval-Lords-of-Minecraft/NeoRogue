@@ -27,7 +27,7 @@ public class Roar extends Equipment {
 	
 	public Roar(boolean isUpgraded) {
 		super(ID, "Roar", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 30, 15, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 25, 12, 0));
 		strength = isUpgraded ? 8 : 5;
 		heal = isUpgraded ? 10 : 6;
 		

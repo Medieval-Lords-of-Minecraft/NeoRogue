@@ -6,23 +6,50 @@ Common ability costs are treated as ground truth. Uncommon+ costs are the focus.
 
 ---
 
-## Resource Progression Context
+## Resource Economy Context
 
-Drop tier = `regionsCompleted × 2` + score bonuses. 8 fights per region, 3 equipment seen per win (choose 1).
+### Region Structure
+Standard region: 16 rows, ~5 fights + ~2–3 minibosses + 1 boss per path.
 
-**Rarity acquisition timing:**
-- **Uncommon**: 10% chance from tier 1 (fight 2+), dominant from tier 3 (~fight 4-5 of R1)
-- **Rare**: 10% chance from tier 2 (R1 miniboss), dominant from tier 6 (R3 start)
-- **Epic**: 10% chance from tier 5 (R2 late), dominant from tier 8 (R3 late)
+### Resource Rewards (player chooses ONE per combat)
+| Source | Stamina (Emerald) | Mana (Sapphire) | Health (Ruby) |
+|--------|-------------------|-----------------|---------------|
+| Fight | +5 max, +0.2 sr | +5 max, +0.2 mr | +health |
+| Miniboss | +10 max, +0.4 sr | +10 max, +0.4 mr | +health |
+| Boss | +25 max, +1.0 sr | +25 max, +1.0 mr | +health |
 
-**Resource progression** — players split gains between health, mana, and stamina (~60 total available per region, split ~3 ways for hybrid classes, ~2 ways for dominant-resource classes):
+Realistic primary resource gain per region: +45–55 max, +2.0–2.4 regen.
+Secondary resource gain (occasional picks): +5–15 max, +0.2–0.6 regen.
 
-| Class | When first Uncommon (R1 early) | When Rares common (R2 end) | When Epics appear (R2 late) |
-|-------|-------------------------------|---------------------------|----------------------------|
-| Warrior (stam/hp split) | ~55-60 stam / ~25-28 mana | ~90-110 stam / ~30-40 mana | ~100-120 stam / ~35-45 mana |
-| Thief (3-way split) | ~50-55 stam / ~33-38 mana | ~70-85 stam / ~45-55 mana | ~80-95 stam / ~50-60 mana |
-| Archer (3-way split) | ~45-50 stam / ~38-43 mana | ~65-80 stam / ~50-65 mana | ~75-90 stam / ~60-75 mana |
-| Mage (mana/hp split) | ~28-32 stam / ~55-65 mana | ~35-45 stam / ~90-110 mana | ~40-50 stam / ~100-120 mana |
+### In-Fight Resource Economy (CRITICAL)
+**Players start every fight at 0 mana and 0 stamina.** The max pool is a cap, not a starting budget. Total resource available = regen × fight duration.
+
+**Target fight durations:** Standard 70–100s (avg ~85s), Miniboss ~100s, Boss ~120s.
+**Sprint cost:** 4/s while sprinting (~20% of fight time) → net stamina loss of ~68 over a fight.
+
+### Total Resource Budget Per Fight (85s, base stats)
+
+| Class | Net Stam Budget | Mana Budget | Secondary Resource |
+|-------|----------------|-------------|-------------------|
+| Warrior | ~102 | **85** | Mana: 85 total, enough for 4–5 casts of 15–20m abilities |
+| Thief | ~85 | **102** | Both resources well-supplied |
+| Archer | ~68 | **119** | Both resources well-supplied |
+| Mage | ~17 | **170** | Stamina: very scarce, 10–15s costs are meaningful |
+
+### Regen Progression (by region end)
+
+| Class | R1 end sr/mr | R2 end sr/mr | Net Stam Budget R2 (85s) | Mana Budget R2 (85s) |
+|-------|-------------|-------------|-------------------------|---------------------|
+| Warrior | 3.8–4.2 / 1.2–1.4 | 5.8–6.4 / 1.4–1.8 | ~425–476 | ~119–153 |
+| Thief | 3.0–3.4 / 1.8–2.2 | 4.4–5.0 / 2.6–3.2 | ~306–357 | ~221–272 |
+| Archer | 2.6–3.0 / 2.4–2.8 | 3.8–4.4 / 3.6–4.2 | ~255–306 | ~306–357 |
+| Mage | 1.2–1.4 / 3.8–4.2 | 1.4–1.8 / 5.8–6.4 | ~51–85 | ~493–544 |
+
+### Design Principle: Both Resources Should Be Relevant
+Mana costs on stamina-dominant classes and stamina costs on mana-dominant classes are **intentional**. A 15m cost on a Warrior ability (1.0 mr base) creates a 15s effective cooldown via regen gating — this is a valid design tool. A 10s cost on a Mage ability forces sprint-vs-ability tradeoffs. Avoid making all costs just one resource; whenever thematically reasonable, use both.
+
+### Equipment Slot Progression
+Players gain ability slots over the run: 4 base → 5 at R2 → 6 at R3 (via Tome of Wisdom boss drop). Armor and accessory slots also increase by ~1 per region (via shop artifacts). With 4–6 abilities sharing the same resource pool, total per-fight resource demand scales with slot count. Regen progression (~3–4× base by R3) compensates for the increased demand.
 
 ## Key: Issue Types
 - **BUG?** — Cost increases on upgrade (opposite of expected)
@@ -35,218 +62,142 @@ Drop tier = `regionsCompleted × 2` + score bonuses. 8 fights per region, 3 equi
 
 # Warrior
 
-**Base Pool**: 50 stam / 25 mana / 2.0 sr / 1.0 mr  
-**At Rare acquisition (~R2 end)**: ~90-110 stam / ~30-40 mana
+**Base Pool**: 50 stam / 25 mana / 2.0 sr / 1.0 mr
+**Fight budget (base, 85s):** ~102 net stam / 85 mana
+**At Rare acquisition (~R2 end):** ~140-160 stam, 5.8-6.4 sr / ~35-45 mana, 1.4-1.8 mr
 
-## Tight Costs (castable but context matters)
+## Remaining Issues
 
-| Ability | Rarity | Mana | Stam | Context |
-|---------|--------|------|------|--------|
-| Limit Break | Rare | 20 | **100** | Rares become common at tier 6 (R3 start). By then Warrior has ~100-120 stam. Castable but drains nearly entire pool. 40s CD = one-cast-per-fight design. Likely intentional. |
-| Thorn Garden | Rare | **30** | 70→50 | 30 mana vs ~30-40 pool at rare acquisition. Tight on mana (75-100% of pool). Stamina 50→70 is reachable. Dual-resource strain is the real concern. |
-| Lightfall | Rare | **30** | 30 | 30 mana vs ~30-40 pool. Castable by R2-R3 but barely. 12s CD means mana is the binding limiter (30s regen at 1.0 mr). |
-| Ironskin | Uncommon | 0 | **50** | 50 stam when uncommons are first received (R1 early, pool ~55-60). This drains 83-91% of pool for just 10→15 perm shields. Very expensive for the effect at time of acquisition. |
-
-## Placeholder Clusters
-
-### "30 stam, 15s CD" pattern (Uncommon)
-8 abilities share near-identical costs, suggesting batch placeholder assignment:
-| Ability | Stam | CD | Effect |
-|---------|------|----|--------|
-| Berserker's Call | 30 | 15 | +4 str + 1 berserk |
-| Brace II | 30 | 15 | 35→50 shields |
-| Pin | 30 | 15 | 130→160 blunt |
-| Roar | 30 | 15 | +5→8 str + 1 berserk |
-| Spirit of Dragoon | 30 | 15 | Double jump shields |
-| War Cry (25 stam) | 25 | 15 | +10→15 str + shields |
-| Hold the Line (25 stam) | 25 | 15 | Shields + concussed buff |
-| Flurry (25 stam) | 25 | 10 | +attack speed |
-
-**Recommendation**: These abilities have very different power levels and utility — they shouldn't all cost the same. Tune individually.
-
-## Mana on a Stamina Class
-
-Warrior's identity is stamina-dominant (1.0 mr = very slow mana regen). Several uncommon abilities have mana costs that take 10-20s to regen:
-
-| Ability | Mana | Stam | Mana Regen Time |
-|---------|------|------|-----------------|
-| Charge | 20 | 30→15 | 20s (80% of pool) |
-| Atone | 15 | 10 | 15s (60% of pool) |
-| Blessed Edge | 15 | 25 | 15s (60% of pool) |
-| Earthen Tackle | 15 | 25 | 15s (60% of pool) |
-| Pool of Light | 20 | 10 | 20s (80% of pool) |
-| Razor Cloak | 15 | 5 | 15s (60% of pool) |
-
-**Question**: Are these mana costs intentional (creating a deliberate secondary resource constraint) or placeholders? Atone's 15 mana on a 5s CD means the CD recovers 6× before the mana does — the mana is the true limiter, not the CD.
-
-## Other Overcosted
-
-| Ability | Rarity | Cost | CD | Issue |
-|---------|--------|------|----|-------|
-| Bulldoze | Uncommon | 25s | **20s** | Longest CD in uncommon tier for a simple dash-attack. Peers do similar for 15s. |
-| Earthen Tackle | Uncommon | 15m+25s | **20s** | Uses both resources AND has longest CD. Break the Line does more for 0m+40s, 15s CD. |
+| Ability | Rarity | Cost | CD | Recommendation |
+|---------|--------|------|----|---------------|
+| Bulldoze | Uncommon | 25s | **20s** | Reduce CD to 15s. Or add 10m + reduce to 20s stam + 12s CD. |
+| Earthen Tackle | Uncommon | 15m+25s | **20s** | Reduce CD to 15s (keep dual resource as intended). |
+| Ironskin | Uncommon | 0m+50s | 20s | Reduce to 35s + 10m, 18s CD. 50s at base 2.0sr = 25s wait for just 10→15 perm shields. |
 
 ---
 
 # Thief
 
-**Resource Pool**: 45 stam / 30 mana / 1.8 sr / 1.2 mr
+**Base Pool:** 45 stam / 30 mana / 1.8 sr / 1.2 mr
+**Fight budget (base, 85s):** ~85 net stam / 102 mana
 
 ## Bug: Cost Increases on Upgrade
 
 | Ability | Rarity | Base Cost | Upgraded Cost | Issue |
 |---------|--------|-----------|---------------|-------|
-| Assassinate | Rare | 0m + 30s | 0m + **40s** | Stamina INCREASES on upgrade. Every other ability reduces or maintains. Almost certainly a bug. |
-| Double Strike | Uncommon | 10s, **2s** CD | 5s, **6s** CD | Cooldown INCREASES from 2s to 6s on upgrade. Stamina drops 10→5, but a 3× CD increase is extreme. Verify this is intentional. |
+| Assassinate | Rare | 0m + 30s | 0m + **40s** | Stamina INCREASES on upgrade. **BUG.** Should be 30→20s or 30→25s. |
+| Double Strike | Uncommon | 10s, **2s** CD | 5s, **6s** CD | CD INCREASES 2→6. **Verify** — likely should be 2→1.5s or kept at 2s. |
 
-## Placeholder Cluster: "30 mana" (Uncommon)
+## Remaining Overcosted
 
-8 uncommon abilities all cost exactly 30 mana — which is 100% of thief's base mana pool:
-
-| Ability | Mana | Stam | CD | Effect |
-|---------|------|------|----|--------|
-| Body Double | 30 | 0 | 15 | Taunt decoy (no dmg) |
-| Contaminate | 30 | 30 | 18 | 450 piercing + poison mult |
-| Dark Lance | 30 | 0 | 8 | 300→400 dark |
-| Dark Pulse | 30 | 0 | 15 | Zone pulse |
-| Darkness | 30 | 0 | 12 | Zone dark DoT |
-| Disorient | 30 | 0 | 12 | 100→150 dark + vuln |
-| Farewell | 30 | 0 | 15 | 60→100/s dark + execute |
-| Piercing Venom | 30 | 10 | 12 | 3 basics w/ poison |
-
-**Problem**: Body Double costs the same as Contaminate (which deals 450 damage). Dark Lance and Disorient cost the same despite Dark Lance doing 3× the damage. These clearly weren't individually tuned.
-
-## Extreme Total Costs (Uncommon)
-
-These uncommon abilities consume 60%+ of ALL available resources (45s + 30m = 75 total):
-
-| Ability | Total Cost | % of Total Pool | CD |
-|---------|------------|-----------------|-----|
-| Night Shade | 25m + 35s = 60 | 80% | 12 |
-| Contaminate | 30m + 30s = 60 | 80% | 18 |
-| Sidestep | 15m + 35s = 50 | 67% | 15 |
-| Escape Plan II | 15m + 25s = 40 | 53% | 15 |
-| Flicker | 15m + 25s = 40 | 53% | 15 |
-| Preparation | 15m + 25s = 40 | 53% | 25 |
-
-**Question**: Are Night Shade and Contaminate intentionally "dump all resources for one big play" abilities? If so, their costs are fine but should be differentiated from each other (both at exactly 60). If not, 80% of pool is extreme for uncommon — rare territory.
-
-## Overcosted Relative to Peers
-
-| Ability | Rarity | Cost | Peer | Peer Cost | Issue |
-|---------|--------|------|------|-----------|-------|
-| Escape Plan II | Unc | 15m+25s=40 | Escape Plan (Common) | 10m+10s=20 | Uncommon costs 2× common for less/equal damage |
-| Body Double | Unc | 30m | — | — | 30 mana (100% pool) for a 3→5s taunt with no damage |
-| Preparation | Unc | 15m+25s=40 | First Strike | 5m+5s=10 | 4× the cost, lower damage, 5s charge requirement, 2.5× the CD |
-| Flash Mark | Rare | 30m+10s=40 | Blackspike | 25m+10s=35 | Costs MORE for 70% less damage |
+| Ability | Rarity | Cost | Recommendation |
+|---------|--------|------|---------------|
+| Escape Plan II | Unc | 15m+25s, 15s CD | **Reduce to 15m+15s, 12s CD** — Common version costs 10m+10s; uncommon should improve. |
+| Preparation | Unc | 15m+25s, 25s CD | **Reduce to 10m+15s, 15s CD** — Worst-in-tier by efficiency (high cost + long CD + charge req). |
+| Flash Mark | Rare | 30m+10s | **Reduce to 20m+10s** — 70% less damage than peer Blackspike for same cost. |
 
 ## Undercosted
 
 | Ability | Rarity | Cost | CD | Issue |
 |---------|--------|------|----|-------|
-| First Strike | Unc | 5m+5s=10 | 10 | Lowest cost uncommon active, highest efficiency, AND resets on stealth/evade |
+| First Strike | Unc | 5m+5s=10 | 10 | Lowest cost uncommon active, highest efficiency, AND resets on stealth/evade. Consider 10m+5s. |
 
 ---
 
 # Archer
 
-**Resource Pool**: 40 stam / 35 mana / 1.6 sr / 1.4 mr
+**Base Pool:** 40 stam / 35 mana / 1.6 sr / 1.4 mr
+**Fight budget (base, 85s):** ~68 net stam / 119 mana
 
-## Overcosted: Near-Pool-Draining Costs (Uncommon)
+## Overcosted: Near-Pool-Draining Costs (Uncommon) — REVISED
 
-| Ability | Mana | Stam | Total | % of Pool | CD | Issue |
-|---------|------|------|-------|-----------|----|-------|
-| Crystallize | **35** | 0 | 35 | 100% mana | **20** | Drains entire mana pool + longest CD in tier |
-| Shattering Shot | **30** | 10 | 40 | 86% mana | 8 | Highest total cost for +60→90 bonus damage |
-| Hail Cloak | **30** | 5 | 35 | 86% mana | 12 | 86% mana for a channeled (locked-down) ability |
-| Brand | **30** | 0 | 30 | 86% mana | 12 | Burn manipulation, not direct damage |
-| Sundering Shot | 0 | **30** | 30 | 75% stam | 15 | + 2s charge. Very expensive for a single shot |
+With fight budget context, mana costs are less concerning than previously flagged:
 
-**Crystallize** at 35m + 20s CD is especially suspect — it's both the most expensive AND the longest cooldown in the tier. If it's an execute-type ability, the cost + CD double-gates it unnecessarily.
+| Ability | Mana | Stam | Revised Assessment | Recommendation |
+|---------|------|------|-------------------|---------------|
+| Crystallize | **35** | 0 | First cast at 25s. 2 casts per fight. Still the MOST expensive + longest CD (20s) — double-gated. | **Reduce to 25m + 5s, 15s CD** |
+| Shattering Shot | **30** | 10 | 40 total. At 119+68=187 fight budget, this is 21%. **Less concerning now.** | **Reduce to 20m+10s** (still meaningful) |
+| Hail Cloak | **30** | 5 | 35 total for channeled. Reasonable for a strong channeled ability. | **FINE as-is** |
+| Brand | **30** | 0 | Pure mana, 30/119 = 25% of mana budget. Reasonable for burn manipulation. | **FINE as-is** (or 25m+5s for resource diversity) |
+| Sundering Shot | 0 | **30** | 30/68 = 44% of net stam. + 2s charge. | **Reduce to 20s + 10m, 12s CD** (add mana, reduce stam) |
 
-## Placeholder Cluster: "15s CD" (Uncommon)
+## Placeholder Cluster: "15s CD" (Uncommon) — Recommendations
 
-7 uncommon abilities share 15s CD:
-| Ability | Cost | CD |
-|---------|------|----|
-| Blind | 20m | 15 |
-| Chokehold | 25m | 15 |
-| Pressure | 25m | 15 |
-| Shard Blast | 20m | 15 |
-| Sundering Shot | 30s | 15 |
-| Zone II | 20m | 15 |
-| Demoralize | 25m+5s | 16 |
+| Ability | Current Cost | Recommended |
+|---------|-------------|-------------|
+| Blind | 20m, 15s | 15m + 5s, 12s CD |
+| Chokehold | 25m, 15s | 20m + 10s, 15s CD |
+| Pressure | 25m, 15s | 25m + 5s, 12s CD |
+| Shard Blast | 20m, 15s | 20m + 5s, 12s CD |
+| Sundering Shot | 30s, 15s | 20s + 10m, 12s CD |
+| Zone II | 20m, 15s | 15m + 10s, 15s CD |
+| Demoralize | 25m+5s, 16s | 20m + 10s, 15s CD |
 
-Less suspicious than Warrior/Thief (15s is a natural tier), but 7 at the same value still suggests some weren't individually set.
+**Principle applied:** Add minor stamina costs to previously pure-mana abilities for resource diversity.
 
 ## Undercosted
 
 | Ability | Rarity | Cost | CD | Issue |
 |---------|--------|------|----|-------|
-| Prey Seeker | Unc | 10s | **2** | 2s CD is 4× shorter than the next shortest uncommon (Shoulder Bash 5s). Likely placeholder. |
-| Shoulder Bash | Unc | 5s | 5 | Lowest cost + lowest CD for +10→20 damage debuff. Fine if melee risk is intentional. |
+| Prey Seeker | Unc | 10s | **2** | 2s CD is 4× shorter than next shortest. Likely placeholder. Recommend 5s CD. |
+| Shoulder Bash | Unc | 5s | 5 | Lowest cost for +10→20 damage debuff. Fine if melee-risk is intentional. |
 
 ---
 
 # Mage
 
-**Resource Pool**: 25 stam / 50 mana / 1.0 sr / 2.0 mr
+**Base Pool:** 25 stam / 50 mana / 1.0 sr / 2.0 mr
+**Fight budget (base, 85s):** ~17 net stam / 170 mana
+**At R2:** ~51-85 net stam / ~493-544 mana
 
-**Important Context**: Mage has cost-reduction mechanics (Corruption -3→5/stack, Power Overwhelming -20→30, Toll of the Arcane -50→70%, Void Form -15→25 per Rift). Costs above 50 mana may be intentionally designed to require cost reduction before casting. However, stamina costs above 25 have NO reduction path.
+**Important Context**: Mage has cost-reduction mechanics (Corruption -3→5/stack, Power Overwhelming -20→30, Toll of the Arcane -50→70%, Void Form -15→25 per Rift). **Mage stamina has NO reduction path** — every stamina point is precious.
 
-## High Stamina Costs
+## High Stamina Costs — REVISED
 
-| Ability | Rarity | Mana | Stam | Context |
-|---------|--------|------|------|--------|
-| Dying Star | Rare | 20 | **50** | Mage stam at rare acquisition: ~35-45. This is 111-143% of their pool — still uncastable without specific stam investment. Even at R3 start (~40-50 stam), it's borderline. Since mage has NO stam reduction mechanic, this is a genuine concern. Players must specifically invest in stamina over other stats to enable this. |
+| Ability | Rarity | Mana | Stam | Revised Assessment |
+|---------|--------|------|------|-------------------|
+| Dying Star | Rare | 20 | **50** | At R2 mage net stam ~51-85. This is 59-98% of fight stam budget. Player cannot sprint AND cast this. **Intentional "sacrifice all mobility" design** if once-per-fight. Recommend noting as "mobility sacrifice" not reducing. Alternatively: 30m + 30s to distribute load. |
+| Avatar State | Unc | 0 | **20** | At base net stam ~17. **UNCASTABLE** without stam investment OR not sprinting at all. By R1 end (~30 net), barely castable. Recommend 10m + 10s to share the load. |
 
-## Placeholder Cluster: "30m + 10s, 12s CD" (Uncommon Fire)
+## Placeholder Cluster: "30m + 10s, 12s CD" (Uncommon Fire) — Recommendations
 
-5 fire-archetype uncommon abilities have identical costs:
-| Ability | Mana | Stam | CD | Effect |
-|---------|------|------|----|--------|
-| Fireball II | 30 | 10 | 12 | 240→360 fire + Burn |
-| Fireblast | 30 | 10 | 12 | 3×240→360 fan + Corruption |
-| Fire Bolt | 30 | 10 | 12 | 200×1→2 fire+lightning |
-| To Ashes | 30 | 10 | 12 | 300+scaling fire |
-| Torch | 30 | 10 | 12 | 160→240 AoE fire |
+| Ability | Current | Recommended | Rationale |
+|---------|---------|-------------|-----------|
+| Torch | 30m+10s, 12s | **20m + 5s, 10s CD** | Lowest damage in cluster (160–240 AoE). Cheapest. |
+| Fireball II | 30m+10s, 12s | **25m + 10s, 12s CD** | Standard single-target + burn. Middle cost. |
+| To Ashes | 30m+10s, 12s | **30m + 10s, 12s CD** | Scaling damage. Keep as-is (already appropriate). |
+| Fire Bolt | 30m+10s, 12s | **25m + 10s, 10s CD** | Multi-hit but requires two types. Moderate. |
+| Fireblast | 30m+10s, 12s | **35m + 10s, 15s CD** | Highest damage (3×240–360 fan). Most expensive + longest CD. |
 
-**Problem**: These have wildly different power levels (Torch does 160 AoE, Fireblast does up to 1080 multi-target) but identical costs. Clearly batch-assigned.
+## Placeholder Cluster: "18s CD" (Uncommon) — Recommendations
 
-## Placeholder Cluster: "18s CD" (Uncommon)
+| Ability | Current Cost | Recommended |
+|---------|-------------|-------------|
+| Anchoring Earth II | 20m+10s, 18s | 20m+10s, 15s CD |
+| Earthen Domain | 30m+15s, 18s | 20m+10s, 15s CD (see below) |
+| Earthen Wall | 25m+10s, 18s | 25m+10s, 15s CD |
+| Electrode | 25m, 18s | 25m+5s, 12s CD |
+| Flashfire | 20m+5s, 18s | 20m+5s, 12s CD |
 
-5 abilities share 18s CD:
-| Ability | Cost | CD | Type |
-|---------|------|----|------|
-| Anchoring Earth II | 20m+10s | 18 | Earthen |
-| Earthen Domain | 30m+15s | 18 | Earthen |
-| Earthen Wall | 25m+10s | 18 | Earthen |
-| Electrode | 25m | 18 | Lightning |
-| Flashfire | 20m+5s | 18 | Fire |
+## Extreme Overcosted (Uncommon) — REVISED
 
-Earthen abilities sharing 18s CD is somewhat justified as an archetype pattern (slow/heavy), but Electrode and Flashfire matching suggests copy-paste.
+| Ability | Current | Recommendation | Rationale |
+|---------|---------|---------------|-----------|
+| Earthen Domain | 30m+15s=45, 18s CD | **20m+10s, 15s CD** | Currently worse AND costlier than Earthen Wall (25m+10s for more damage+shields). Must be cheaper. |
+| Avatar State | 0m+20s, 40s CD | **10m+10s, 35s CD** | 20 stam is functionally uncastable for base mage. Split cost across resources. |
 
-## Extreme Overcosted (Uncommon)
+## "Once Per Fight" Costs Above Base Pool (REVISED — mostly fine)
 
-| Ability | Cost | Total | Issue |
-|---------|------|-------|-------|
-| Earthen Domain | 30m+15s | 45 | 60% of ALL mage resources for 100→150 earthen + concussed. Earthen Wall costs 25m+10s=35 for 250→300 earthen + barrier + def + concussed. Earthen Domain is strictly worse AND costs more. |
-| Avatar State | 0m+**20s** | 20 | 20 stam vs mage's ~28-32 stam at uncommon acquisition = 63-71% of pool. 40s CD (longest in tier). At 1.0 sr, 20s to regen. Expensive for the class at time of receipt. |
+With fight-duration context and progression:
+| Ability | Rarity | Cost | Budget at acquisition | Assessment |
+|---------|--------|------|----------------------|-----------|
+| Toll of the Arcane | Epic | 130→100m + 15s | R2+ mana budget: ~493-544 | **FINE.** Well within budget. Pool cap is the only gate. |
+| Power Overwhelming | Rare | 100→80m + 25s | R2 mana budget: ~493+ | **FINE.** Needs full pool but regen refills fast at 5.8+ mr. |
+| Hearth | Rare | 80→60m | R2 mana budget: ~493+ | **FINE.** Very affordable at acquisition time. |
+| Voltaics | Rare | 70→50m | R2 mana budget: ~493+ | **FINE.** |
+| Lightning Rod | Rare | 60m + 20s, 4s CD | R2 mana budget: ~493+ | **FINE.** Can spam if pool supports it. Regen-gated is good. |
 
-## "Once Per Fight" Costs Above Base Pool
-
-These are intentionally gated by cost reduction and/or mana progression. At rare acquisition (~R2 end), mage has ~90-110 mana:
-| Ability | Rarity | Cost | vs Base (50m) | vs R2 end (~100m) | Notes |
-|---------|--------|------|---------------|-------------------|-------|
-| Toll of the Arcane | Epic | 130→100m + 15s | 260→200% | 130→100% | Epic (R2 late+). At 100m pool, upgraded is castable from full. |
-| Power Overwhelming | Rare | 100→80m + 25s | 200→160% | 100→80% | Rare. Upgraded castable at R2 end from near-full pool. |
-| Power Overwhelming II | Epic | 100→80m + 15s | 200→160% | 100→80% | Same as above. |
-| Hearth | Rare | 80→60m | 160→120% | 80→60% | Upgraded is 60% of R2 pool. Reasonable. |
-| Voltaics | Rare | 70→50m | 140→100% | 70→50% | Upgraded is very affordable at R2 end. |
-| Brightest Flame | Rare | 60→45m + 10s | 120→90% | 60→45% | Upgraded affordable. Base needs near-full pool. |
-| Lightning Rod | Rare | 60m + 20s | 120% | 60% | Repeatable (4s CD). Two casts = 120m, needs max pool or reduction. |
-
-**Note**: With progression context, most of these are fine. The only real concern remains **Lightning Rod** being repeatable at 4s CD — two casts back-to-back requires 120 mana which even at R2 end needs full pool. This is likely intentional (you alternate Lightning Rod with cheaper abilities while regen ticks).
+**All previously flagged "once per fight" abilities are fine with fight-duration budgeting.** The concern was comparing to base pool (50m) which is irrelevant since players DON'T start with a full pool — they start at 0 and regen into it.
 
 ## Suspicious Cost Reduction on Upgrade
 
@@ -254,7 +205,7 @@ These are intentionally gated by cost reduction and/or mana progression. At rare
 |---------|---------------------|-------------|-----------|
 | Mana Cloak | 30→10 mana | **67%** | 25-35% |
 
-67% mana reduction on upgrade is 2× the typical upgrade discount. Either 30 is too high at base or 10 is too low upgraded.
+67% mana reduction on upgrade is 2× the typical upgrade discount. Either 30 is too high at base or 10 is too low upgraded. Recommend: 25→15 mana.
 
 ## Storm vs Mana Arc: Identical Drain, 3× Damage Gap
 
@@ -275,26 +226,37 @@ If both tick at the same rate, Mana Arc is 3× more efficient. One of these cost
 | Thief | Assassinate | Stamina cost increases 30→40 on upgrade |
 | Thief | Double Strike | Cooldown increases 2→6 on upgrade |
 
-## Largest Placeholder Clusters (most likely batch-assigned)
+## Remaining Placeholder Clusters
 | Class | Pattern | Count | Abilities |
 |-------|---------|-------|-----------|
 | Mage | 30m+10s, 12s CD | 5 | Fireball II, Fireblast, Fire Bolt, To Ashes, Torch |
-| Thief | 30m exact | 8 | Body Double, Contaminate, Dark Lance, Dark Pulse, Darkness, Disorient, Farewell, Piercing Venom |
-| Warrior | ~30s, 15s CD | 8 | Berserker's Call, Brace II, Pin, Roar, Spirit of Dragoon, War Cry, Hold the Line, Flurry |
 | Mage | 18s CD | 5 | Anchoring Earth II, Earthen Domain, Earthen Wall, Electrode, Flashfire |
 
 ## Top Priority Cost Fixes
 
-| # | Class | Ability | Current Cost | Suggested Action |
-|---|-------|---------|-------------|------------------|
-| 1 | Thief | Assassinate | 30→40s | **Fix bug**: should be 30→20s or 30→25s |
-| 2 | Thief | Double Strike | 2→6s CD | **Verify**: CD tripling on upgrade seems wrong |
-| 3 | Thief | Body Double | 30m | **Reduce to 15m** (no-damage utility shouldn't drain pool) |
-| 4 | Thief | Escape Plan II | 15m+25s | **Reduce to 10m+10s** (match or beat own common version) |
-| 5 | Mage | Earthen Domain | 30m+15s | **Reduce to 20m+10s** (currently worse AND costlier than Earthen Wall) |
-| 6 | Archer | Crystallize | 35m, 20s CD | **Reduce to 25m, 15s CD** (drains full base mana + longest CD) |
-| 7 | Mage | 5 fire uncommons | All 30m+10s, 12s | **Differentiate**: e.g., Torch 20m+5s, Fireblast 35m+10s, etc. |
-| 8 | Thief | 8 "30m" uncommons | All 30m | **Differentiate**: Body Double 15m, Darkness 20m, etc. |
-| 9 | Mage | Storm toggle | 6 mana/tick, 20-30 dmg | **Either**: increase to 40→60/tick, or reduce drain to 2-3/tick |
-| 10 | Archer | Shattering Shot | 30m+10s | **Reduce to 15m+5s** (40 total for +60-90 bonus is extreme) |
-| 11 | Thief | Preparation | 15m+25s, 25s CD | **Reduce to 10m+15s, 15s CD** (currently worst-in-tier by far) |
+| # | Class | Ability | Current Cost | Recommended Cost | Rationale |
+|---|-------|---------|-------------|-----------------|-----------|
+| 1 | Thief | Assassinate | 30→**40s** | **30→20s** | BUG: cost increases on upgrade |
+| 2 | Thief | Double Strike | 2→**6s** CD | **2→1.5s** CD | BUG: CD triples on upgrade |
+| 3 | Mage | Avatar State | 0m+20s, 40s CD | **10m+10s, 35s CD** | 20s is uncastable for base mage; split across resources |
+| 4 | Mage | Earthen Domain | 30m+15s, 18s CD | **20m+10s, 15s CD** | Strictly worse AND costlier than Earthen Wall |
+| 5 | Thief | Preparation | 15m+25s, 25s CD | **10m+15s, 15s CD** | Worst-in-tier by efficiency (high cost + long CD + charge req) |
+| 6 | Thief | Escape Plan II | 15m+25s, 15s CD | **15m+15s, 12s CD** | Common version costs 10m+10s; uncommon should improve |
+| 7 | Thief | Flash Mark | 30m+10s | **20m+10s** | 70% less damage than peer Blackspike for same cost |
+| 8 | Archer | Crystallize | 35m, 20s CD | **25m+5s, 15s CD** | Double-gated (most expensive + longest CD) |
+| 9 | Warrior | Ironskin | 0m+50s, 20s CD | **10m+35s, 18s CD** | 50s at base 2.0sr = 25s wait; add mana, reduce stam |
+| 10 | Archer | Sundering Shot | 30s, 15s CD | **20s+10m, 12s CD** | 75% stam + 2s charge; add mana for diversity |
+| 11 | Warrior | Bulldoze | 25s, 20s CD | **20s+10m, 12s CD** or **25s, 15s CD** | Overlong CD for its effect |
+| 12 | Warrior | Earthen Tackle | 15m+25s, 20s CD | **15m+25s, 15s CD** | Longest CD in tier |
+| 13 | Mage | 5 fire uncommons | All 30m+10s, 12s | See per-ability table above | Differentiate by damage output |
+| 14 | Mage | 5 "18s CD" uncommons | All 18s CD | See per-ability table above | Differentiate by role/power |
+| 15 | Mage | Mana Cloak | 30→10m | **25→15m** | 67% cost reduction on upgrade (2× typical) |
+| 16 | Thief | First Strike | 5m+5s, 10s CD | **10m+5s, 10s CD** | Undercosted: lowest cost + highest efficiency + resets on stealth |
+
+## Design Principles Applied
+
+1. **Start at 0**: All resource evaluation uses total-generated-over-fight-duration, not pool-as-starting-budget.
+2. **Both resources matter**: Recommendations add secondary resource costs where previously all-one-resource. This creates meaningful variety in resource pressure.
+3. **Sprint tax**: Stamina costs on ranged classes (Mage, Archer) are more expensive than they appear due to sprint competition.
+4. **Regen-gating is valid design**: A 15m cost on a 5s CD Warrior ability is intentional — the mana makes it effectively a 15s CD. This should not be "fixed."
+5. **Differentiate within clusters**: Abilities with different power levels must have different costs, even when they share a theme or archetype.

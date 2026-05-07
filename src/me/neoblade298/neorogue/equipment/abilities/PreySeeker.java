@@ -46,7 +46,7 @@ public class PreySeeker extends Equipment {
 	
 	public PreySeeker(boolean isUpgraded) {
 		super(ID, "Prey Seeker", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 10, 2, 0).add(PropertyType.AREA_OF_EFFECT, tp.range));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 10, 5, 0).add(PropertyType.AREA_OF_EFFECT, tp.range));
 		
 		damage = isUpgraded ? 225 : 150;
 	}

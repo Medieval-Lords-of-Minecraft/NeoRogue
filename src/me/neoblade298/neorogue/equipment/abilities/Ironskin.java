@@ -24,7 +24,7 @@ public class Ironskin extends Equipment {
 	
 	public Ironskin(boolean isUpgraded) {
 		super(ID, "Ironskin", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR, 
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 50, 10, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 40, 10, 0));
 		shields = isUpgraded ? 15 : 10;
 		pc.count(10).spread(0.5, 0.5).speed(0.2);
 	}

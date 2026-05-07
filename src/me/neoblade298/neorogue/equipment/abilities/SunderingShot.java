@@ -43,7 +43,7 @@ public class SunderingShot extends Equipment {
 	
 	public SunderingShot(boolean isUpgraded) {
 		super(ID, "Sundering Shot", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 30, 15, 10));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 20, 12, 10));
 				damage = isUpgraded ? 160 : 120;
 	}
 	

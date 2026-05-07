@@ -24,7 +24,7 @@ public class SpiritOfTheDragoon extends Equipment {
 	
 	public SpiritOfTheDragoon(boolean isUpgraded) {
 		super(ID, "Spirit of the Dragoon", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 30, 15, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 20, 15, 0));
 		shield = isUpgraded ? 20 : 15;
 		strength = isUpgraded ? 5 : 3;
 	}

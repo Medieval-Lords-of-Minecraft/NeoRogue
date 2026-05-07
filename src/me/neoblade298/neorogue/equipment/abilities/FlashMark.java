@@ -41,7 +41,7 @@ public class FlashMark extends Equipment {
 	
 	public FlashMark(boolean isUpgraded) {
 		super(ID, "Flash Mark", isUpgraded, Rarity.RARE, EquipmentClass.THIEF, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(30, 10, 8, tp.range));
+				EquipmentProperties.ofUsable(20, 10, 8, tp.range));
 		damage = isUpgraded ? 250 : 180;
 		electrified = isUpgraded ? 15 : 10;
 	}

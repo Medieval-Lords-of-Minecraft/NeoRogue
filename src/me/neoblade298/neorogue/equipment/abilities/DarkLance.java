@@ -45,7 +45,7 @@ public class DarkLance extends Equipment {
 	
 	public DarkLance(boolean isUpgraded) {
 		super(ID, "Dark Lance", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 0, 8, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 5, 8, 0));
 		damage = isUpgraded ? 400 : 300;
 	}
 	

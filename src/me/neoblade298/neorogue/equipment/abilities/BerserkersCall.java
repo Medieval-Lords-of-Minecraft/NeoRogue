@@ -29,7 +29,7 @@ public class BerserkersCall extends Equipment {
 	
 	public BerserkersCall(boolean isUpgraded) {
 		super(ID, "Berserker's Call", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 30, 15, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 20, 15, 0));
 		strength = 4;
 		berserkStrength = isUpgraded ? 16 : 12;
 		

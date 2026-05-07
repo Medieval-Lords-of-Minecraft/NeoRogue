@@ -31,7 +31,7 @@ public class ShatteringShot extends Equipment {
 	
 	public ShatteringShot(boolean isUpgraded) {
 		super(ID, "Shattering Shot", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 10, 8, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 10, 8, 0));
 		damage = isUpgraded ? 90 : 60;
 		iceDamagePerFrost = 5;
 	}

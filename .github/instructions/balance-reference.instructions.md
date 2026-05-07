@@ -20,27 +20,128 @@ For detailed per-class data, see:
 | **Archer** | 40 | 35 | 1.6 | 1.4 | Balanced hybrid |
 | **Mage** | 25 | 50 | 1.0 | 2.0 | Mana-dominant |
 
+## Equipment Slot Progression
+
+Players start with limited equipment slots and gain more as they progress through regions.
+
+| Slot Type | Base | R1 end | R2 end | R3 end | Source |
+|-----------|------|--------|--------|--------|--------|
+| Abilities | 4 | 4 | 5 | 6 | Tome of Wisdom (boss drop, +1 per boss) |
+| Armor | 1 | 1 | 2 | 3 | Armor Stand (shop artifact, +1 each) |
+| Accessories | 2 | 2 | 3 | 4 | Lockbox (shop artifact, +1 each) |
+
+**Implications for cost evaluation:**
+- At R1, players have 4 abilities competing for the same resource pool. Total resource demand = sum of all ability costs across a fight.
+- By R3 with 6 abilities, the resource pool must support 50% more abilities. Regen progression (~3–4× base by R3) compensates.
+- Rare/Epic abilities acquired later compete with 5–6 slots, not 4. Their costs should assume higher total demand but also higher regen.
+
+## Region Structure & Combat Encounters
+
+Standard region: 16 rows. Player traverses one node per row from Start to Boss.
+
+**Row layout** (rowCount=16):
+- Row 0: START
+- Row 1: ENTRY (60% Fight, 40% Chance)
+- Rows 2–6: EARLY (55% Fight, 30% Chance, 10% Miniboss, 2% Shop, 3% Shrine)
+- Rows 7–9: MIDDLE (5% Fight, 5% Chance, 53% Miniboss, 12% Shop, 25% Shrine)
+- Rows 10–12: LATE (32% Fight, 12% Chance, 15% Miniboss, 15% Shop, 26% Shrine)
+- Row 13: EXIT (50% Fight, 40% Chance, 10% Shop)
+- Row 14: PRE-BOSS SHRINE (always)
+- Row 15: BOSS (always)
+
+**Expected combat encounters per path through one region:**
+- Standard Fights: ~5 (from entry, early, late, exit rows)
+- Minibosses: ~2–3 (guaranteed ≥1 by verification; middle rows are 53% miniboss)
+- Boss: 1
+- **Total combat encounters per region: ~8–9**
+
+## Resource Reward Drops
+
+After each combat, the player **chooses one** of three gems (Ruby/Sapphire/Emerald):
+
+| Source | Stamina option | Mana option | Health option |
+|--------|---------------|-------------|---------------|
+| Standard Fight | Emerald Shard: +5 max stam, +0.2 sr | Sapphire Shard: +5 max mana, +0.2 mr | Ruby Shard: +health |
+| Miniboss | Emerald Cluster: +10 max stam, +0.4 sr | Sapphire Cluster: +10 max mana, +0.4 mr | Ruby Cluster: +health |
+| Boss | Emerald Gem: +25 max stam, +1.0 sr | Sapphire Gem: +25 max mana, +1.0 mr | Ruby Gem: +health |
+
+**Maximum possible per region (all picks → one resource):** +70 max, +2.8 regen
+**Realistic primary-resource investment (with some health picks):** +45–55 max, +2.0–2.4 regen
+**Secondary resource (occasional picks):** +5–15 max, +0.2–0.6 regen
+
 ## Resource Progression
 
-Players gain max stamina and mana as they progress through regions. A full game is 3 regions, ~8 fights per region.
+| Class | Base Stam / sr | ~R1 end | ~R2 end | ~R3 end |
+|-------|----------------|---------|---------|---------|
+| Warrior | 50 / 2.0 | ~95-105 / 3.8-4.2 | ~140-160 / 5.8-6.4 | ~185-215 / 7.8-8.6 |
+| Thief | 45 / 1.8 | ~75-85 / 3.0-3.4 | ~110-130 / 4.4-5.0 | ~145-175 / 5.8-6.6 |
+| Archer | 40 / 1.6 | ~65-75 / 2.6-3.0 | ~95-115 / 3.8-4.4 | ~125-155 / 5.0-5.8 |
+| Mage | 25 / 1.0 | ~30-40 / 1.2-1.4 | ~35-55 / 1.4-1.8 | ~40-70 / 1.6-2.2 |
 
-- **~60 max stamina/mana available per region** (but players split between health, mana, and stamina — realistically gaining ~20-30 of each per region for hybrid classes, or ~40 in their primary resource for dominant-resource classes)
-- Stamina-dominant classes (Warrior) invest more heavily in stamina but still split with health
-- Mana-dominant classes (Mage) invest more heavily in mana but still split with health
+| Class | Base Mana / mr | ~R1 end | ~R2 end | ~R3 end |
+|-------|----------------|---------|---------|---------|
+| Warrior | 25 / 1.0 | ~30-35 / 1.2-1.4 | ~35-45 / 1.4-1.8 | ~40-55 / 1.6-2.2 |
+| Thief | 30 / 1.2 | ~45-55 / 1.8-2.2 | ~65-80 / 2.6-3.2 | ~85-105 / 3.4-4.2 |
+| Archer | 35 / 1.4 | ~60-70 / 2.4-2.8 | ~90-110 / 3.6-4.2 | ~120-145 / 4.8-5.6 |
+| Mage | 50 / 2.0 | ~95-105 / 3.8-4.2 | ~140-160 / 5.8-6.4 | ~185-215 / 7.8-8.6 |
 
-| Class | Base Stam | ~R1 end | ~R2 end | ~R3 end (endgame) |
-|-------|-----------|---------|---------|-------------------|
-| Warrior | 50 | ~80-90 | ~110-130 | ~140-170 |
-| Thief | 45 | ~65-75 | ~85-105 | ~105-135 |
-| Archer | 40 | ~60-70 | ~80-100 | ~100-130 |
-| Mage | 25 | ~40-50 | ~55-75 | ~70-100 |
+## In-Fight Resource Economy
 
-| Class | Base Mana | ~R1 end | ~R2 end | ~R3 end (endgame) |
-|-------|-----------|---------|---------|-------------------|
-| Warrior | 25 | ~30-35 | ~35-45 | ~40-55 |
-| Thief | 30 | ~40-50 | ~50-65 | ~60-80 |
-| Archer | 35 | ~50-60 | ~65-80 | ~80-100 |
-| Mage | 50 | ~80-90 | ~110-130 | ~140-170 |
+**Critical: Players start every fight at 0 mana and 0 stamina.** Resources accumulate via regen over the fight duration. The max pool acts as a cap/reservoir, not as a starting budget.
+
+**Target fight durations:**
+- Standard fight: 70–100s (average ~85s)
+- Miniboss: ~100s
+- Boss: ~120s
+
+**Sprint cost:** 4 stamina/s while sprinting (subtracted from stam regen each tick). Effective net stamina regen while sprinting = sr – 4. Estimated ~20% of fight time sprinting.
+
+### Total Resource Budget Per Fight (base stats, 85s fight, 20% sprint)
+
+| Class | Gross Stam (sr×85) | Sprint Tax (0.2×85×4) | **Net Stam for Abilities** | **Total Mana (mr×85)** |
+|-------|-------------------|-----------------------|---------------------------|----------------------|
+| Warrior | 170 | 68 | **~102** | **85** |
+| Thief | 153 | 68 | **~85** | **102** |
+| Archer | 136 | 68 | **~68** | **119** |
+| Mage | 85 | 68 | **~17** | **170** |
+
+### Time-to-First-Cast (cost ÷ regen rate, from 0)
+
+| Cost | Warrior | Thief | Archer | Mage |
+|------|---------|-------|--------|------|
+| 10 stam | 5s | 5.6s | 6.3s | 10s |
+| 15 stam | 7.5s | 8.3s | 9.4s | 15s |
+| 20 stam | 10s | 11.1s | 12.5s | 20s |
+| 30 stam | 15s | 16.7s | 18.8s | 30s |
+| 50 stam | 25s | 27.8s | 31.3s | 50s |
+| 10 mana | 10s | 8.3s | 7.1s | 5s |
+| 15 mana | 15s | 12.5s | 10.7s | 7.5s |
+| 20 mana | 20s | 16.7s | 14.3s | 10s |
+| 30 mana | 30s | 25s | 21.4s | 15s |
+| 50 mana | 50s | 41.7s | 35.7s | 25s |
+
+### Number of Casts Per Fight (85s, base regen, ignoring CD)
+
+Formula: `(regen × 85) / cost` — actual casts also limited by CD and pool cap.
+
+| Cost | Warrior stam | Warrior mana | Thief stam | Thief mana | Archer stam | Archer mana | Mage stam | Mage mana |
+|------|-------------|-------------|-----------|-----------|------------|------------|----------|----------|
+| 10 | 10.2 | 8.5 | 8.5 | 8.5 | 6.8 | 11.9 | 1.7 | 17 |
+| 15 | 6.8 | 5.7 | 5.7 | 5.7 | 4.5 | 7.9 | 1.1 | 11.3 |
+| 20 | 5.1 | 4.3 | 4.3 | 4.3 | 3.4 | 6.0 | 0.9 | 8.5 |
+| 30 | 3.4 | 2.8 | 2.8 | 2.8 | 2.3 | 4.0 | 0.6 | 5.7 |
+| 50 | 2.0 | 1.7 | 1.7 | 1.7 | 1.4 | 2.4 | 0.3 | 3.4 |
+
+### Design Principle: Both Resources Should Matter
+
+Even for classes with a dominant resource, the secondary resource should still be used for some ability costs. Guidelines:
+- **Warrior mana costs (10–20m)**: Castable 4–8× per fight at base. Creates meaningful gating without being uncastable. Mana becomes the effective cooldown for abilities with short CDs.
+- **Mage stamina costs (5–15s)**: Very scarce (~17 net at base). Even 10 stam is a serious cost. Use sparingly to create "sprint vs ability" tension.
+- **Hybrid classes**: Can use both resources freely at 15–30 per cost depending on the resource.
+
+**Cost implications for secondary resources:**
+- A Warrior with 15m cost on a 5s CD ability: mana (15s to regen) is the real limiter, not the CD. This is intentional design.
+- A Mage with 10s cost: forces the mage to stop sprinting to accumulate, creating risk/reward tradeoff.
 
 ## Equipment Drop Tiers
 

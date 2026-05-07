@@ -24,7 +24,7 @@ public class DoubleStrike extends Equipment {
 	
 	public DoubleStrike(boolean isUpgraded) {
 		super(ID, "Double Strike", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, isUpgraded ? 5 : 10, isUpgraded ? 6 : 2, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, isUpgraded ? 5 : 10, isUpgraded ? 3 : 6, 0));
 		properties.addUpgrades(PropertyType.STAMINA_COST, PropertyType.COOLDOWN);
 		shields = 5;
 		

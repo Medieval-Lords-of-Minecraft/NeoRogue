@@ -31,7 +31,7 @@ public class BodyDouble extends Equipment {
 	
 	public BodyDouble(boolean isUpgraded) {
 		super(ID, "Body Double", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 0, 15, 0).add(PropertyType.AREA_OF_EFFECT, tp.range));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 10, 12, 0).add(PropertyType.AREA_OF_EFFECT, tp.range));
 				dur = isUpgraded ? 5 : 3;
 	}
 	

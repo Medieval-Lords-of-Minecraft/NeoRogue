@@ -24,7 +24,7 @@ public class Brace2 extends Equipment {
 	
 	public Brace2(boolean isUpgraded) {
 		super(ID, "Brace II", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 30, 15, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(5, 25, 15, 0));
 		shields = isUpgraded ? 50 : 35;
 		pc.count(10).spread(0.5, 0.5).speed(0.2);
 	}
