@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -38,7 +39,7 @@ public class ManaGuard extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.SHIELD, "Passive. Reduces damage taken by <yellow>" + reduc
-				+ "</yellow> but decrease mana regen by <white>1</white>.");
+		item = createItem(Material.SHIELD, "Passive. Reduces damage taken by " + DescUtil.yellow(reduc)
+				+ " but decrease mana regen by " + DescUtil.white(1) + ".");
 	}
 }

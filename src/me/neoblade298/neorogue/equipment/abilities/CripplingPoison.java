@@ -8,6 +8,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -67,8 +68,8 @@ public class CripplingPoison extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.ARMOR_STAND,
 				"On cast, increase the " + GlossaryTag.PHYSICAL.tag(this)
-						+ " damage of enemies in a cone in front of you by <yellow>" + inc + "</yellow>"
-						+ " [<white>5s</white>], further increased by <white>1</white> for every <yellow>"
-						+ poisonThreshold + "</yellow> stacks of " + GlossaryTag.POISON.tag(this) + " on the enemy.");
+						+ " damage of enemies in a cone in front of you by " + DescUtil.yellow(inc)
+						+ " [<white>5s</white>], further increased by " + DescUtil.white(1) + " for every " + DescUtil.yellow(
+						poisonThreshold) + " stacks of " + GlossaryTag.POISON.tag(this) + " on the enemy.");
 	}
 }

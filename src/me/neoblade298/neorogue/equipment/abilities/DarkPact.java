@@ -8,6 +8,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -65,6 +66,6 @@ public class DarkPact extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.REDSTONE,
 				"Passive. Increase your " + GlossaryTag.STRENGTH.tag(this) + " by 2 every 3 basic attacks. In exchange, take "
-				+ "<white>50%</white> increased damage for the first <yellow>" + seconds + "s</yellow> of a fight.");
+				+ DescUtil.white("50%") + " increased damage for the first " + DescUtil.yellow(seconds + "s") + " of a fight.");
 	}
 }

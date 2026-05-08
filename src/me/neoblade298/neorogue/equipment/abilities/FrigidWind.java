@@ -140,9 +140,9 @@ public class FrigidWind extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FEATHER,
-				"On cast, your next basic attack also launches a slow-moving <white>2</white> block wide " +
+				"On cast, your next basic attack also launches a slow-moving " + DescUtil.white(2) + " block wide " +
 				"piercing wind projectile that applies " + GlossaryTag.FROST.tag(this, frost, true) + " to enemies hit. " +
-				"<white>5s</white> later, enemies take " + GlossaryTag.ICE.tag(this, damage, true) + " damage per " +
+				DescUtil.white("5s") + " later, enemies take " + GlossaryTag.ICE.tag(this, damage, true) + " damage per " +
 				DescUtil.white(frostPerDamage) + " " + GlossaryTag.FROST.tag(this) + " they have.");
 	}
 }

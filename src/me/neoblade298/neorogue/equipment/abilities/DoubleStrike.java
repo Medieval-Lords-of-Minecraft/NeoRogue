@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -38,7 +39,7 @@ public class DoubleStrike extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LIGHTNING_ROD,
-				"On cast, reset your basic attack cooldown and gain <yellow>" + shields + "</yellow> shields [<white>2s</white>].");
+				"On cast, reset your basic attack cooldown and gain " + DescUtil.yellow(shields) + " shields [<white>2s</white>].");
 	}
 
 	@Override

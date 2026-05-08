@@ -39,8 +39,8 @@ public class FlowState2 extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.PRISMARINE_CRYSTALS,
-				"Passive. Increase stamina regen by <yellow>" + inc + "</yellow> when above "
-				+ "<yellow>" + thres + "</yellow> stamina, further increased by " + DescUtil.yellow(dmgInc)
-				+ " if you've dealt damage within <white>2</white> seconds.");
+				"Passive. Increase stamina regen by " + DescUtil.yellow(inc) + " when above "
+				+ DescUtil.yellow(thres) + " stamina, further increased by " + DescUtil.yellow(dmgInc)
+				+ " if you've dealt damage within " + DescUtil.white("2s") + ".");
 	}
 }

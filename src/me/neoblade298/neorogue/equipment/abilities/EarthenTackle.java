@@ -13,6 +13,7 @@ import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -114,9 +115,9 @@ public class EarthenTackle extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE, new String[] { "<gold>Area of Effect: <white>4" },
-				"On cast, dash forward, stopping at the first enemy hit and dealing <yellow>" + damage + "</yellow> " + GlossaryTag.EARTHEN.tag(this) +
+				"On cast, dash forward, stopping at the first enemy hit and dealing " + DescUtil.yellow(damage) + " " + GlossaryTag.EARTHEN.tag(this) +
 				" damage in an area "
 						+ "and applies " + GlossaryTag.CONCUSSED.tag(this, concussed, true) + ". "
-						+ "If an enemy is hit, reduce this ability's cooldown by <white>10</white>.");
+						+ "If an enemy is hit, reduce this ability's cooldown by " + DescUtil.white(10) + ".");
 	}
 }

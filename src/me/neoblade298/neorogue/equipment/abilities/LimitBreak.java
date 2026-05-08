@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -37,8 +38,8 @@ public class LimitBreak extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.DIAMOND,
-				"On cast, double your " + GlossaryTag.STRENGTH.tag(this) + ". Can be cast <yellow>" +
-					(isUpgraded ? "twice" : "once") + "</yellow> per fight.");
+				"On cast, double your " + GlossaryTag.STRENGTH.tag(this) + ". Can be cast " + DescUtil.yellow(
+					isUpgraded ? "twice" : "once") + " per fight.");
 	}
 
 	@Override

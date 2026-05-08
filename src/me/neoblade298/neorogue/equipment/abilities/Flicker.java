@@ -9,6 +9,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -84,7 +85,7 @@ public class Flicker extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLAZE_POWDER,
-				"On cast, drop a marker on the ground. It stays active <white>3</white> seconds."
+				"On cast, drop a marker on the ground. It stays active " + DescUtil.white("3s") + "."
 				+ " Dealing damage while it's active marks enemies up to 5x each. After it"
 				+ " deactivates, teleport back to the mark and deal " + GlossaryTag.DARK.tag(this, damage, true)
 				+ " damage per mark.");

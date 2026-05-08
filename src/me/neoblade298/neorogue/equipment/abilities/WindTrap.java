@@ -64,6 +64,6 @@ public class WindTrap extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.WIND_CHARGE,
 				"On cast, drop a " + GlossaryTag.TRAP.tag(this) + 
-				" " + DescUtil.duration(secs, true) + ". Nearby enemies are given Slowness <white>1</white>.");
+				" " + DescUtil.duration(secs, true) + ". Nearby enemies are given Slowness " + DescUtil.white(1) + ".");
 	}
 }

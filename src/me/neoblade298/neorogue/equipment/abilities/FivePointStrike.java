@@ -5,6 +5,7 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -63,7 +64,7 @@ public class FivePointStrike extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POINTED_DRIPSTONE,
-				"On cast, fire <white>5</white> needles in a cone in front of you that deal "
+				"On cast, fire " + DescUtil.white(5) + " needles in a cone in front of you that deal "
 						+ GlossaryTag.PIERCING.tag(this, damage, true) + " damage.");
 	}
 	

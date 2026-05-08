@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.AmmunitionInstance;
 import me.neoblade298.neorogue.equipment.BowProjectile;
@@ -64,8 +65,8 @@ public class DangerousGame extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.TARGET,
-				"Passive. When you land a basic attack on an enemy within <white>" + range + "</white> blocks, " +
-				"your next basic attack will fire an additional projectile at them using your current ammunition that deals an additional <yellow>" + damage + "</yellow> damage.");
+				"Passive. When you land a basic attack on an enemy within " + DescUtil.white(range) + " blocks, " +
+				"your next basic attack will fire an additional projectile at them using your current ammunition that deals an additional " + DescUtil.yellow(damage) + " damage.");
 	}
 
 	private class DangerousGameProjectile extends Projectile {

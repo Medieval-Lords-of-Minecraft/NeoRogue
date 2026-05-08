@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -57,6 +58,6 @@ public class AmuletOfOffering extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SWEET_BERRIES, 
-				"The first time you take health damage in a fight, max out your stamina and mana, and gain <white>50%</white> bonus damage for <white>15</white> seconds.");
+				"The first time you take health damage in a fight, max out your stamina and mana, and gain " + DescUtil.white("50%") + " bonus damage " + DescUtil.duration(15, false) + ".");
 	}
 }

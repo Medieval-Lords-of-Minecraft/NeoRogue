@@ -6,6 +6,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -61,6 +62,6 @@ public class Cleave extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLADE_POTTERY_SHERD,
-				"On cast, deal <yellow>" + damage + "</yellow> " + GlossaryTag.SLASHING.tag(this) + " damage in a cone in front of you.");
+				"On cast, deal " + DescUtil.yellow(damage) + " " + GlossaryTag.SLASHING.tag(this) + " damage in a cone in front of you.");
 	}
 }

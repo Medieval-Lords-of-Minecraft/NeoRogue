@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -48,7 +49,7 @@ public class Titan extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.DEAD_BUSH, "Passive. Abilities that cost at least <white>" + CUTOFF
-				+ "</white> stamina have their stamina cost reduced by <yellow>" + staminaReduction + "</yellow>.");
+		item = createItem(Material.DEAD_BUSH, "Passive. Abilities that cost at least " + DescUtil.white(CUTOFF)
+				+ " stamina have their stamina cost reduced by " + DescUtil.yellow(staminaReduction) + ".");
 	}
 }

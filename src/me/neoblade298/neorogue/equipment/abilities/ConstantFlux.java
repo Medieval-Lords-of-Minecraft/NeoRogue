@@ -6,6 +6,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -112,7 +113,7 @@ public class ConstantFlux extends Equipment {
 		item = createItem(Material.FEATHER,
 				"Passive. While you have at least " + GlossaryTag.STEALTH.tag(this, thres, false) + ", cast to " + 
 				GlossaryTag.DASH.tag(this) + " forward and increase your " + GlossaryTag.PHYSICAL.tag(this) + 
-				" damage by <yellow>" + damagePerStack + "</yellow>, stacking up to <white>" + MAX_STACKS + "x</white>. " +
-				"Not casting this ability for <white>5s</white> removes all stacks.");
+				" damage by " + DescUtil.yellow(damagePerStack) + ", stacking up to " + DescUtil.white(MAX_STACKS + "x") + ". " +
+				"Not casting this ability for " + DescUtil.white("5s") + " removes all stacks.");
 	}
 }

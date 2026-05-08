@@ -5,6 +5,7 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -71,8 +72,8 @@ public class SiphoningStrike extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BROWN_DYE,
-				"On cast, your next basic attack while in the air deals <white>" + damage + "</white> " + GlossaryTag.PIERCING.tag(this)
+				"On cast, your next basic attack while in the air deals " + DescUtil.white(damage) + " " + GlossaryTag.PIERCING.tag(this)
 				+ " damage. If the enemy is killed with this damage, increase " + GlossaryTag.STRENGTH.tag(this) + 
-				" by <yellow>" + buff + "</yellow> and halve the ability cooldown.");
+				" by " + DescUtil.yellow(buff) + " and halve the ability cooldown.");
 	}
 }

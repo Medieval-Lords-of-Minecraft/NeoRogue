@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neocore.bukkit.effects.Circle;
 import me.neoblade298.neocore.bukkit.effects.LocalAxes;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -68,7 +69,7 @@ public class Torch extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLAZE_POWDER,
-			GlossaryTag.CHANNEL.tag(this) + " for <white>1s</white> before dealing " + GlossaryTag.FIRE.tag(this, damage, true) + " damage to nearby enemies, but apply " +
+			GlossaryTag.CHANNEL.tag(this) + " for " + DescUtil.white("1s") + " before dealing " + GlossaryTag.FIRE.tag(this, damage, true) + " damage to nearby enemies, but apply " +
 			GlossaryTag.CORRUPTION.tag(this, corr, false) + " to yourself.");
 	}
 }

@@ -5,6 +5,7 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -66,8 +67,8 @@ public class WeaponEnchantmentDarkness extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.OBSIDIAN,
-				"Passive. Every <white>3rd</white> basic attack launches a slash projectile that deals "
-						+ "<yellow>" + damage + " </yellow>" + GlossaryTag.DARK.tag(this) + " damage and pierces.");
+				"Passive. Every " + DescUtil.white("3rd") + " basic attack launches a slash projectile that deals "
+						+ DescUtil.yellow(damage) + " " + GlossaryTag.DARK.tag(this) + " damage and pierces.");
 	}
 	
 	private class DarknessSlashProjectile extends Projectile {

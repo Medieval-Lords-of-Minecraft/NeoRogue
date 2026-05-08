@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -104,9 +105,9 @@ public class BalefulStrike extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SPYGLASS,
-				"Passive. If you don't basic attack for <white>" + CHARGE_TIME + "s</white>, your next basic attack " +
-				"deals <yellow>" + damageMultiplier + "x</yellow> the current " + GlossaryTag.POISON.tag(this) + " stacks on the enemy " +
-				"as " + GlossaryTag.PIERCING.tag(this) + " damage and then applies <yellow>" + applyMultiplier + "x</yellow> " +
+				"Passive. If you don't basic attack for " + DescUtil.white(CHARGE_TIME + "s") + ", your next basic attack " +
+				"deals " + DescUtil.yellow(damageMultiplier + "x") + " the current " + GlossaryTag.POISON.tag(this) + " stacks on the enemy " +
+				"as " + GlossaryTag.PIERCING.tag(this) + " damage and then applies " + DescUtil.yellow(applyMultiplier + "x") + " " +
 				"the current " + GlossaryTag.POISON.tag(this) + " stacks [<white>5s</white>] to the target.");
 	}
 }

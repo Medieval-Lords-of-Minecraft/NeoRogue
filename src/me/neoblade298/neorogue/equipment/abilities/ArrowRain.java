@@ -160,6 +160,6 @@ public class ArrowRain extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.FLINT,
 				"On cast, " + DescUtil.charge(this, 1, 1) + ". Afterwards, shoot " + DescUtil.yellow(reps) + " of your equipped arrow at the blocks you're "
-				+ "looking at. They land after <white>1s</white> and deal " + GlossaryTag.PIERCING.tag(this, damage, false) + " damage.");
+				+ "looking at. They land after " + DescUtil.white("1s") + " and deal " + GlossaryTag.PIERCING.tag(this, damage, false) + " damage.");
 	}
 }

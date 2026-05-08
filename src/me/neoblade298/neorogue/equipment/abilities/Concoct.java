@@ -5,6 +5,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -72,6 +73,6 @@ public class Concoct extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.DRAGON_BREATH,
 				"On cast, start charging. Your next basic attack applies " + GlossaryTag.POISON.tag(this, poison, true) + " "
-						+ "for every second you charged, up to <white>5</white> seconds.");
+						+ "for every second you charged, up to " + DescUtil.white(5) + " seconds.");
 	}
 }

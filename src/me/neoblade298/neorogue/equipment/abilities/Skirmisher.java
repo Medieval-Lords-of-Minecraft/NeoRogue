@@ -9,6 +9,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -68,7 +69,7 @@ public class Skirmisher extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BAMBOO,
-				"Passive. Every third basic attack, knock back all enemies around you, gain speed <white>1</white> for <white>3</white> seconds,"
-				+ " and " + GlossaryTag.SHIELDS.tag(this, shields, true) + " for <white>5</white> seconds.");
+				"Passive. Every third basic attack, knock back all enemies around you, gain speed " + DescUtil.white(1) + " " + DescUtil.duration(3, false) + ","
+				+ " and " + GlossaryTag.SHIELDS.tag(this, shields, true) + " " + DescUtil.duration(5, false) + ".");
 	}
 }

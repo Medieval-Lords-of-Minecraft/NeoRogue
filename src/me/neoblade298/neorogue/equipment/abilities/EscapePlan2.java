@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -102,7 +103,7 @@ public class EscapePlan2 extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLAZE_POWDER,
-				"On cast, drop a marker on the ground. It stays active <white>10</white> seconds."
+				"On cast, drop a marker on the ground. It stays active " + DescUtil.white("10s") + "."
 				+ " If you take damage while it's active, negate the damage, deal " + GlossaryTag.PIERCING.tag(this, activateDamage, true) +
 				" damage to the attacker, teleport to the marker, and deactivate it."
 				+ " While the marker remains active and you are in " + GlossaryTag.STEALTH.tag(this) + ","

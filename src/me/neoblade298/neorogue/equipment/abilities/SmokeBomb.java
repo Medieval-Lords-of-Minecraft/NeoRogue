@@ -11,6 +11,7 @@ import me.neoblade298.neocore.bukkit.effects.Circle;
 import me.neoblade298.neocore.bukkit.effects.LocalAxes;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -90,8 +91,8 @@ public class SmokeBomb extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SHIELD,
-				"On cast, drop a smoke bomb that detonates after <yellow>" + delay
-				+ "</yellow> second(s). After detonation, for <white>5</white> seconds,"
+				"On cast, drop a smoke bomb that detonates after " + DescUtil.yellow(delay + "s")
+				+ ". After detonation, for " + DescUtil.white("5s") + ","
 				+ " standing within the radius grants " + GlossaryTag.STEALTH.tag(this, 1, false) + " [<white>1s</white>] and "
 				+ GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>2s</white>].");
 	}

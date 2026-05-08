@@ -5,6 +5,7 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -68,8 +69,8 @@ public class Revenge extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.MAGMA_CREAM,
-				"Passive. Receiving damage grants " + GlossaryTag.STRENGTH.tag(this, strength, true) + " for <white>10</white> seconds. Additionally, if you're below "
+				"Passive. Receiving damage grants " + GlossaryTag.STRENGTH.tag(this, strength, true) + " " + DescUtil.duration(10, false) + ". Additionally, if you're below "
 				+ GlossaryTag.BERSERK.tag(this, CUTOFF, false) + " stacks, gain " + GlossaryTag.BERSERK.tag(this, 1, false) + ". Otherwise, your basic attacks heal you "
-						+ "for <yellow>" + heal + "</yellow> for <white>10</white> seconds.");
+						+ "for " + DescUtil.yellow(heal) + " " + DescUtil.duration(10, false) + ".");
 	}
 }

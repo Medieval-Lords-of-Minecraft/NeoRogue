@@ -7,6 +7,7 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -90,7 +91,7 @@ public class Parry extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.NETHER_QUARTZ_ORE,
-				"On cast, gain <white>" + shields + " </white>" + GlossaryTag.SHIELDS.tag(this) + " for <white>2</white> seconds. Taking damage during this "
-						+ "increases your next basic attack's damage by <yellow>" + damage + "</yellow> once per cast.");
+				"On cast, gain " + GlossaryTag.SHIELDS.tag(this, shields, false) + " " + DescUtil.duration(2, false) + ". Taking damage during this "
+						+ "increases your next basic attack's damage by " + DescUtil.yellow(damage) + " once per cast.");
 	}
 }

@@ -7,6 +7,7 @@ import org.bukkit.Particle.DustOptions;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -39,8 +40,8 @@ public class WarCry extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE,
-				"On cast, give yourself <yellow>" + strength + "</yellow> " + GlossaryTag.STRENGTH.tag(this) + " and <yellow>"
-						+ strength + "</yellow> " + GlossaryTag.SHIELDS.tag(this) + " that last <white>5</white> seconds.");
+				"On cast, give yourself " + DescUtil.yellow(strength) + " " + GlossaryTag.STRENGTH.tag(this) + " and " + DescUtil.yellow(
+						strength) + " " + GlossaryTag.SHIELDS.tag(this) + " that last " + DescUtil.white("5s") + ".");
 	}
 
 	@Override

@@ -145,9 +145,8 @@ public class Voltaics extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.AMETHYST_SHARD,
-				GlossaryTag.POWER.tag(this) + ". Every <white>" + TICK_INTERVAL + "s</white>, fire a bolt of lightning at the nearest enemy in sight that deals " +
+				GlossaryTag.POWER.tag(this) + ". Every " + DescUtil.white(TICK_INTERVAL + "s") + ", fire a bolt of lightning at the nearest enemy in sight that deals " +
 				GlossaryTag.LIGHTNING.tag(this, damage, true) + " and applies " + GlossaryTag.ELECTRIFIED.tag(this, BASE_ELECTRIFIED_STACKS, false) +
-				". The number of " + GlossaryTag.ELECTRIFIED.tag(this) + " stacks applied increases by <white>" + STACKS_INCREASE_PER_HIT +
-				"</white> for every " + DescUtil.yellow(stackThreshold) + " " + GlossaryTag.ELECTRIFIED.tag(this) + " applied.");
+				". The number of " + GlossaryTag.ELECTRIFIED.tag(this) + " stacks applied increases by " + DescUtil.white(STACKS_INCREASE_PER_HIT) + " for every " + DescUtil.yellow(stackThreshold) + " " + GlossaryTag.ELECTRIFIED.tag(this) + " applied.");
 	}
 }

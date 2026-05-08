@@ -81,7 +81,7 @@ public class OdinsDecree extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LIGHTNING_ROD,
-				"Passive. Every <white>2s</white>, " + DescUtil.yellow((int)(chance * 100) + "%") + " " +
+				"Passive. Every " + DescUtil.white("2s") + ", " + DescUtil.yellow((int)(chance * 100) + "%") + " " +
 				"chance to drop a lightning bolt on the nearest enemy, dealing " + 
 				GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage and applying " + 
 				GlossaryTag.ELECTRIFIED.tag(this, electrified, true) + ".");

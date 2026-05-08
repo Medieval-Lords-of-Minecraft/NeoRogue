@@ -15,6 +15,7 @@ import me.neoblade298.neocore.bukkit.effects.Circle;
 import me.neoblade298.neocore.bukkit.effects.LocalAxes;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -86,7 +87,7 @@ public class AcidBomb extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION,
-				"On cast, drop an acid bomb that detonates after <white>3</white> seconds. After detonation, every second for <white>5</white> seconds,"
+				"On cast, drop an acid bomb that detonates after " + DescUtil.white(3) + " seconds. After detonation, every second for " + DescUtil.white(5) + " seconds,"
 				+ " enemies within the radius get " + GlossaryTag.POISON.tag(this, poison, true) + ".");
 		PotionMeta pm = (PotionMeta) item.getItemMeta();
 		pm.setColor(Color.LIME);

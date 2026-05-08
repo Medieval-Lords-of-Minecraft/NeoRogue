@@ -147,7 +147,7 @@ new ConflagrationProjectile(data, Conflagration.this, slot, burnStacks, nearest,
 
 	@Override
 	public void setupItem() {
-		String burnMultStr = burnMult == 1.0 ? "<yellow>1x</yellow>" : "<yellow>1.5x</yellow>";
+		String burnMultStr = burnMult == 1.0 ? DescUtil.yellow("1x") : DescUtil.yellow("1.5x");
 		item = createItem(Material.FIRE_CHARGE,
 				"Passive. Killing an enemy with " + GlossaryTag.BURN.tag(this) + " causes that enemy to fire a projectile " +
 				"at the nearest enemy that deals " + DescUtil.yellow(damage) + " " + GlossaryTag.FIRE.tag(this) + 

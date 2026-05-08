@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.abilities;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -58,7 +59,7 @@ public class Twilight extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ECHO_SHARD,
-				"Passive. Whenever you receive " + GlossaryTag.STEALTH.tag(this) + ", increase its duration by <yellow>" + duration + "</yellow>, " +
-				"gain " + GlossaryTag.EVADE.tag(this, evade, true) + " [<white>8s</white>], and <white>10</white> stamina.");
+				"Passive. Whenever you receive " + GlossaryTag.STEALTH.tag(this) + ", increase its duration by " + DescUtil.yellow(duration) + ", " +
+				"gain " + GlossaryTag.EVADE.tag(this, evade, true) + " [<white>8s</white>], and " + DescUtil.white(10) + " stamina.");
 	}
 }

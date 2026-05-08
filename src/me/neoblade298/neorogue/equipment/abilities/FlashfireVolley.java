@@ -164,7 +164,7 @@ public class FlashfireVolley extends Equipment {
 		item = createItem(Material.FIRE_CHARGE,
 				"Passive. Upon firing a bow straight down, cancel the basic attack and launch yourself upward, dealing " +
 				DescUtil.yellow(bluntDamage) + " " + GlossaryTag.BLUNT.tag(this) + " damage to nearby enemies. " +
-				"Then fire <white>3</white> arrows in quick succession that deal " + DescUtil.yellow(fireDamage) + " " +
+				"Then fire " + DescUtil.white(3) + " arrows in quick succession that deal " + DescUtil.yellow(fireDamage) + " " +
 				GlossaryTag.FIRE.tag(this) + " damage. If these arrows hit an enemy damaged by the launch, " +
 				"apply " + GlossaryTag.BURN.tag(this, burn, true) + ".");
 	}

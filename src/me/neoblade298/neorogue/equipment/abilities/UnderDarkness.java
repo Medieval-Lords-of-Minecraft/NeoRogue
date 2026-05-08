@@ -13,6 +13,7 @@ import me.neoblade298.neocore.bukkit.effects.Circle;
 import me.neoblade298.neocore.bukkit.effects.LocalAxes;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -91,9 +92,9 @@ public class UnderDarkness extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SHIELD,
-				"On cast, drop a smoke bomb that detonates after <white>1</white> second. After detonation, for <white>5</white> seconds,"
+				"On cast, drop a smoke bomb that detonates after " + DescUtil.white("1s") + ". After detonation, for " + DescUtil.white("5s") + ","
 				+ " standing within the radius grants " + GlossaryTag.STEALTH.tag(this, 1, false) + " [<white>1s</white>], buffs"
-						+ " your damage by <yellow>" + damage + "</yellow>, and grants "
+						+ " your damage by " + DescUtil.yellow(damage) + ", and grants "
 						+ GlossaryTag.SHIELDS.tag(this, 8, false) + " [<white>2s</white>].");
 	}
 }

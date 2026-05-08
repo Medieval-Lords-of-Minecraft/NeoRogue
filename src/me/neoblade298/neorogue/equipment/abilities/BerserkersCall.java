@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -43,9 +44,9 @@ public class BerserkersCall extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE,
-				"On cast, give yourself <white>" + strength + "</white> " + GlossaryTag.STRENGTH.tag(this) + " and "
-						+ GlossaryTag.BERSERK.tag(this, 1, false) + ". At <white>" + BERSERK_CUTOFF + "</white> stacks, instead give yourself <yellow>" + berserkStrength + 
-						"</yellow> " + GlossaryTag.STRENGTH.tag + ".");
+				"On cast, give yourself " + DescUtil.white(strength) + " " + GlossaryTag.STRENGTH.tag(this) + " and "
+						+ GlossaryTag.BERSERK.tag(this, 1, false) + ". At " + DescUtil.white(BERSERK_CUTOFF) + " stacks, instead give yourself " + DescUtil.yellow(berserkStrength) + 
+						" " + GlossaryTag.STRENGTH.tag + ".");
 	}
 
 	@Override

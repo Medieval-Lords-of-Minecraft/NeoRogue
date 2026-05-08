@@ -9,6 +9,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
@@ -103,7 +104,7 @@ public class HexCurse extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SCULK_SENSOR,
-				"On cast, for the next <white>10s</white>, your non-basic attack damage marks enemies for <white>8s</white>. Dealing to marked enemies basic attack damage deals " +
+				"On cast, for the next " + DescUtil.white("10s") + ", your non-basic attack damage marks enemies " + DescUtil.duration(8, false) + ". Dealing to marked enemies basic attack damage deals " +
 				GlossaryTag.DARK.tag(this, damage, true) + " damage and consumes the mark. Marks do not stack.");
 	}
 }

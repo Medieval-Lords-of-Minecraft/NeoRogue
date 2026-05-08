@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -42,7 +43,7 @@ public class FlowState extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.PRISMARINE_CRYSTALS,
-				"Passive. Increase stamina regen by <yellow>" + inc + "</yellow> when above "
-				+ "<yellow>" + thres + "</yellow> stamina.");
+				"Passive. Increase stamina regen by " + DescUtil.yellow(inc) + " when above "
+				+ DescUtil.yellow(thres) + " stamina.");
 	}
 }

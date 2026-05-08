@@ -11,6 +11,7 @@ import me.neoblade298.neocore.bukkit.effects.Cone;
 import me.neoblade298.neocore.bukkit.effects.LocalAxes;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -117,7 +118,7 @@ public class Splinterstone extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.DRIPSTONE_BLOCK,
-				GlossaryTag.CHANNEL.tag(this) + " for <white>1s</white> before launching a projectile that deals "
+				GlossaryTag.CHANNEL.tag(this) + " for " + DescUtil.white("1s") + " before launching a projectile that deals "
 						+ GlossaryTag.EARTHEN.tag(this, damage, true) + " damage and applies "
 						+ GlossaryTag.CONCUSSED.tag(this, conc, true) + ". If an enemy is hit, " + "deal "
 						+ GlossaryTag.PIERCING.tag(this, pierce, true)

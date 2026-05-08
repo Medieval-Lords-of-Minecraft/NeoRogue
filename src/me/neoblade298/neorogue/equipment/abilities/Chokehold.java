@@ -88,7 +88,7 @@ public class Chokehold extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.COPPER_GRATE,
-				"On cast, drop a zone that lasts <white>15s</white> which buffs damage of " + GlossaryTag.TRAP.tagPlural(this) + " within the zone by "
+				"On cast, drop a zone that lasts " + DescUtil.white("15s") + " which buffs damage of " + GlossaryTag.TRAP.tagPlural(this) + " within the zone by "
 				+ DescUtil.yellow((int) (damage * 100) + "%") + ".");
 	}
 }

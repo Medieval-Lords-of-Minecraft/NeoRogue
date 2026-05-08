@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -159,7 +160,7 @@ public class BlackRain extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.NETHERITE_SCRAP,
-			"On cast, throw <white>3</white> projectiles in a cone that each deal " + 
+			"On cast, throw " + DescUtil.white(3) + " projectiles in a cone that each deal " + 
 			GlossaryTag.DARK.tag(this, damage, true) + " damage. For every " +
 			GlossaryTag.INSANITY.tag(this, thres, true) + " on hit enemies combined, drop another projectile dealing " +
 			GlossaryTag.DARK.tag(this, bonusDamage, true) + " damage.");

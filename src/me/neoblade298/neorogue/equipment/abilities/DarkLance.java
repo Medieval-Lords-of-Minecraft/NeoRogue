@@ -14,6 +14,7 @@ import me.neoblade298.neocore.bukkit.effects.Circle;
 import me.neoblade298.neocore.bukkit.effects.LocalAxes;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -88,6 +89,6 @@ public class DarkLance extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLACK_DYE,
-				"On cast, drop a bomb that detonates after <white>2s</white> and deals " + GlossaryTag.DARK.tag(this, damage, true) + " damage to enemies in the area.");
+				"On cast, drop a bomb that detonates after " + DescUtil.white("2s") + " and deals " + GlossaryTag.DARK.tag(this, damage, true) + " damage to enemies in the area.");
 	}
 }

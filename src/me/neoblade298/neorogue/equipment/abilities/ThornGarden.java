@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -65,7 +66,7 @@ public class ThornGarden extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.DEAD_BUSH,
-				GlossaryTag.POWER.tag(this) + ". For every <white>" + CUTOFF +"</white> " + GlossaryTag.SHIELDS.tag + " that are granted to you, "
-						+ "gain <yellow>" + thorns + "</yellow> stacks of " + GlossaryTag.THORNS.tag(this) + ".");
+				GlossaryTag.POWER.tag(this) + ". For every " + DescUtil.white(CUTOFF) + " " + GlossaryTag.SHIELDS.tag + " that are granted to you, "
+						+ "gain " + DescUtil.yellow(thorns) + " stacks of " + GlossaryTag.THORNS.tag(this) + ".");
 	}
 }

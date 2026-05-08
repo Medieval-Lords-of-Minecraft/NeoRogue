@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.abilities;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -73,7 +74,7 @@ public class StaticSurge extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LIGHTNING_ROD,
-				"Passive. If you have been sprinting for at least <white>1s</white>, your basic attacks deal an additional " + 
+				"Passive. If you have been sprinting for at least " + DescUtil.white("1s") + ", your basic attacks deal an additional " + 
 				GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage and apply " + 
 				GlossaryTag.ELECTRIFIED.tag(this, electrified, true) + ".");
 	}

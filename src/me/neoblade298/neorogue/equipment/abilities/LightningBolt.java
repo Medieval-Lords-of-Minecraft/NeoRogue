@@ -82,7 +82,7 @@ public class LightningBolt extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.YELLOW_DYE, GlossaryTag.CHANNEL.tag(this) + " for <white>1s</white> before dealing "
+		item = createItem(Material.YELLOW_DYE, GlossaryTag.CHANNEL.tag(this) + " for " + DescUtil.white("1s") + " before dealing "
 				+ GlossaryTag.LIGHTNING.tag(this, damage, true) + " in a line in front of you. If you are above "
 				+ DescUtil.yellow(thres) + " mana, increase the damage by " + DescUtil.yellow(bonusDamage) + ".");
 	}

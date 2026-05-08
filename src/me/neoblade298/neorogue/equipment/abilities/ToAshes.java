@@ -98,7 +98,7 @@ public class ToAshes extends Equipment {
 		item = createItem(Material.BLAZE_POWDER, "On cast, deal " + GlossaryTag.FIRE.tag(this, damage, true)
 				+ " to all enemies in a cone in front of you, but " + "deal "
 				+ GlossaryTag.FIRE.tag(this, selfDmg, false)
-				+ " to yourself. All projectiles in the cone are destroyed. If you destroy at least <white>1</white>"
+				+ " to yourself. All projectiles in the cone are destroyed. If you destroy at least " + DescUtil.white(1) + ""
 				+ " projectile, increase the damage of this ability by " + DescUtil.yellow(inc)
 				+ " for the rest of the fight.");
 	}

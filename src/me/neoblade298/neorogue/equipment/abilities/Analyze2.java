@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -95,10 +96,10 @@ public class Analyze2 extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SPYGLASS,
-				"Passive. For every second you don't basic attack, gain a stack (up to <white>" + MAX_STACKS + "</white>). " +
+				"Passive. For every second you don't basic attack, gain a stack (up to " + DescUtil.white(MAX_STACKS) + "). " +
 				"The next time you basic attack, deal " + GlossaryTag.PIERCING.tag(this, damagePerStack, true) + " damage " +
 				"and gain " + GlossaryTag.SHIELDS.tag(this, SHIELDS_PER_STACK, false) + " [<white>5s</white>] per stack. " +
-				"When you reach <white>" + staminaRegenStacks + "</white> stacks, permanently gain <yellow>" + staminaRegen + "</yellow> stamina regen and " +
+				"When you reach " + DescUtil.white(staminaRegenStacks) + " stacks, permanently gain " + DescUtil.yellow(staminaRegen) + " stamina regen and " +
 				GlossaryTag.EVADE.tag(this, 1, false) + ".");
 	}
 }

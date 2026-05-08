@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.abilities;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
@@ -55,8 +56,8 @@ public class Tireless extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SEA_LANTERN,
-				"Passive. For every ability cast that has a base cost of at least <white>" + cutoff
-						+ "</white> stamina, reduce the stamina cost of all abilities by <yellow>" + reduc
-						+ "</yellow> and gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>5s</white>].");
+				"Passive. For every ability cast that has a base cost of at least " + DescUtil.white(cutoff)
+						+ " stamina, reduce the stamina cost of all abilities by " + DescUtil.yellow(reduc)
+						+ " and gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>5s</white>].");
 	}
 }

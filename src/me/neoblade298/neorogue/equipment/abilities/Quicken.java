@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.abilities;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -99,8 +100,8 @@ public class Quicken extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GRAY_DYE,
-				"Dealing " + GlossaryTag.PHYSICAL.tag(this) + " damage within <white>1</white> second of a basic attack " +
+				"Dealing " + GlossaryTag.PHYSICAL.tag(this) + " damage within " + DescUtil.white("1s") + " of a basic attack " +
 				"grants a stack. On cast, " + GlossaryTag.DASH.tag(this) + " forward at the cost of a stack and gain " + 
-				GlossaryTag.EVADE.tag(this, 1, false) + " for <white>5s</white>.");
+				GlossaryTag.EVADE.tag(this, 1, false) + " " + DescUtil.duration(5, false) + ".");
 	}
 }

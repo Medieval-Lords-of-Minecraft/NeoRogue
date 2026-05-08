@@ -68,7 +68,7 @@ public class WardingRune extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.QUARTZ_SLAB,
-				"On right click (left click for <gold>Archer</gold>), gain " + GlossaryTag.SHELL.tag(this, reduc, false) + " for <white>5s</white>. Receiving "
+				"On right click (left click for <gold>Archer</gold>), gain " + GlossaryTag.SHELL.tag(this, reduc, false) + " " + DescUtil.duration(5, false) + ". Receiving "
 				+ GlossaryTag.MAGICAL.tag(this) + " damage during this time grants " + DescUtil.white(mana) + " mana.");
 	}
 }

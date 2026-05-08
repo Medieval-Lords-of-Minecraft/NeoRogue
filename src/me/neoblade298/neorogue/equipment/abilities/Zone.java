@@ -81,7 +81,7 @@ public class Zone extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.COPPER_GRATE,
-				"On cast, drop a zone that lasts <white>8s</white> which buffs your " + GlossaryTag.PHYSICAL.tag(this) + " damage by " + DescUtil.yellow(damage) +
+				"On cast, drop a zone that lasts " + DescUtil.white("8s") + " which buffs your " + GlossaryTag.PHYSICAL.tag(this) + " damage by " + DescUtil.yellow(damage) +
 				" while you're in it.");
 	}
 }

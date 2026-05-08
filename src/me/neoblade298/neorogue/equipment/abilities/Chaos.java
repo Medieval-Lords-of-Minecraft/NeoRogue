@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.ParticleUtil;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -106,6 +107,6 @@ public class Chaos extends Equipment {
 				"On cast, fire a bolt of magic that deals random " + GlossaryTag.FIRE.tag(this) + ", " +
 				GlossaryTag.ELECTRIFIED.tag(this) + ", " + GlossaryTag.DARK.tag(this) + ", or " +
 				GlossaryTag.CONCUSSED.tag(this) + " damage for " +
-				"<yellow>" + damage + "</yellow> and applies <yellow>" + stacks + "</yellow> of that element's status.");
+				DescUtil.yellow(damage) + " and applies " + DescUtil.yellow(stacks) + " of that element's status.");
 	}
 }

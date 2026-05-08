@@ -129,7 +129,7 @@ public class Frostwalker extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SNOWBALL,
-				"Toggleable, off by default. Every second, use <white>2</white> mana to drop a pool of frost that lasts <white>3s</white>. It "
+				"Toggleable, off by default. Every second, use " + DescUtil.white(2) + " mana to drop a pool of frost that lasts " + DescUtil.white("3s") + ". It "
 						+ "applies " + GlossaryTag.FROST.tag(this, stacks, true) + " and reduces "
 						+ GlossaryTag.MAGICAL.tag(this) + " resistance by " + DescUtil.yellow(reduc)
 						+ " [<white>5s</white>]. Only one pool of frost may apply to an enemy at a time.");

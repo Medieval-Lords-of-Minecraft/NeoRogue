@@ -9,6 +9,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import me.neoblade298.neocore.bukkit.effects.Circle;
 import me.neoblade298.neocore.bukkit.effects.LocalAxes;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -73,7 +74,7 @@ public class Brightshell extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SHIELD,
-				"On cast, gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>5s</white>]. After <white>3s</white>, deal " +
+				"On cast, gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>5s</white>]. After " + DescUtil.white("3s") + ", deal " +
 				GlossaryTag.LIGHT.tag(this, damage, false) + " damage and apply " + GlossaryTag.SANCTIFIED.tag(this, sanct, true) + " to all nearby enemies.");
 	}
 }

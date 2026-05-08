@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -61,7 +62,7 @@ public class Quake extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.DIRT,
-				"On cast, deal <yellow>" + damage + "</yellow> " + GlossaryTag.EARTHEN.tag(this) + " damage to all "
+				"On cast, deal " + DescUtil.yellow(damage) + " " + GlossaryTag.EARTHEN.tag(this) + " damage to all "
 						+ "enemies in the radius and apply " + GlossaryTag.CONCUSSED.tag(this, concussed, true) + ".");
 	}
 }

@@ -154,10 +154,10 @@ public class PinningShot extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.TARGET,
-				GlossaryTag.CHARGE.tag(this) + " for <white>" + (CHARGE_TIME / 20) + "s</white>, then fire a projectile that deals " +
+				GlossaryTag.CHARGE.tag(this) + " for " + DescUtil.white((CHARGE_TIME / 20) + "s") + ", then fire a projectile that deals " +
 				DescUtil.white(BASE_DAMAGE) + " damage and pierces infinitely. " +
 				"If the projectile hits a block, all enemies hit are pulled towards that block, " +
-				"given <white>Slowness III</white>, and dealt an additional " + 
+				"given " + DescUtil.white("Slowness III") + ", and dealt an additional " + 
 				DescUtil.yellow(bonusDamage) + " damage.");
 	}
 }

@@ -10,6 +10,7 @@ import me.neoblade298.neocore.bukkit.effects.Circle;
 import me.neoblade298.neocore.bukkit.effects.LocalAxes;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -84,7 +85,7 @@ public class Heartbeat extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.CHORUS_FRUIT,
-				"On first cast, drop a permanent " + GlossaryTag.RIFT.tag(this) + ". This rift gets moved to you on recast. Every <white>3s</white>, deal " +
+				"On first cast, drop a permanent " + GlossaryTag.RIFT.tag(this) + ". This rift gets moved to you on recast. Every " + DescUtil.white("3s") + ", deal " +
 					GlossaryTag.DARK.tag(this, damage, true) + " to all enemies near every " + GlossaryTag.RIFT.tag(this) + ".");
 	}
 }

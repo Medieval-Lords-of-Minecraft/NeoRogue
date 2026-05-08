@@ -6,6 +6,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -99,10 +100,10 @@ public class Fury extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLAZE_ROD,
-				"On cast, your next basic attack deals <white>" + damage + " </white>" + GlossaryTag.SLASHING.tag(this) + " damage, heals for <white>"
-				+ heal + "</white>, and grants"
+				"On cast, your next basic attack deals " + DescUtil.white(damage) + " " + GlossaryTag.SLASHING.tag(this) + " damage, heals for " + DescUtil.white(
+				heal) + ", and grants"
 						+ " a stack of " + GlossaryTag.BERSERK.tag(this) + ". " +
-				"At <yellow>" + berserk + " </yellow>stacks, the cooldown of this skill is halved and the cost is removed. The heal is increased to <yellow>"
-				+ berserkHeal + "</yellow>.");
+				"At " + DescUtil.yellow(berserk) + " stacks, the cooldown of this skill is halved and the cost is removed. The heal is increased to " + DescUtil.yellow(
+				berserkHeal) + ".");
 	}
 }

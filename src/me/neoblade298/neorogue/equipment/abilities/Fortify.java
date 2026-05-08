@@ -5,6 +5,7 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -62,7 +63,7 @@ public class Fortify extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.PHANTOM_MEMBRANE,
-				"On cast, your next basic attack while in the air deals <white>" + damage + " </white>" + GlossaryTag.PIERCING.tag(this) + " damage. "
+				"On cast, your next basic attack while in the air deals " + DescUtil.white(damage) + " " + GlossaryTag.PIERCING.tag(this) + " damage. "
 								+ "After which, gain " + GlossaryTag.SHIELDS.tag(this, fortitude, true) + 
 								" [<white>5s</white>] for every time you've landed this ability this fight.");
 	}

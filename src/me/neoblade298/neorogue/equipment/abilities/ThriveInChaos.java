@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -65,9 +66,9 @@ public class ThriveInChaos extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.CHORUS_FRUIT,
-				"Passive. Every <white>3s</white>, count the " + GlossaryTag.INSANITY.tag(this) + 
+				"Passive. Every " + DescUtil.white("3s") + ", count the " + GlossaryTag.INSANITY.tag(this) + 
 				" stacks of all enemies in range. For every " + 
 				GlossaryTag.INSANITY.tag(this, insanityPerStack, true) + ", gain " + 
-				GlossaryTag.STEALTH.tag(this, 1, false) + " for <white>3s</white>.");
+				GlossaryTag.STEALTH.tag(this, 1, false) + " " + DescUtil.duration(3, false) + ".");
 	}
 }

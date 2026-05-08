@@ -174,8 +174,8 @@ public class Pin extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE,
-				"On cast, dash forward, taking all enemies you contact with you. Slow all enemies hit for <white>5</white> seconds. If you hit a wall,"
+				"On cast, dash forward, taking all enemies you contact with you. Slow all enemies hit " + DescUtil.duration(5, false) + ". If you hit a wall,"
 				+ " deal " + GlossaryTag.BLUNT.tag(this) + " " + DescUtil.yellow(damage) + " damage and reduce the damage of all enemies hit by "
-				+ DescUtil.yellow(reduction) + " for <white>5</white> seconds.");
+				+ DescUtil.yellow(reduction) + " " + DescUtil.duration(5, false) + ".");
 	}
 }

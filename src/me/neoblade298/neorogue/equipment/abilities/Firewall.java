@@ -10,6 +10,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.ParticleUtil;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -142,6 +143,6 @@ public class Firewall extends Equipment {
 		item = createItem(Material.RED_CONCRETE_POWDER,
 				"On cast, fire a projectile that travels until it hits a block or max range. Create a wall of fire along where the projectile traveled which deals "
 				+ GlossaryTag.FIRE.tag(this, damage, true) + " to enemies and applies " + GlossaryTag.BURN.tag(this, burn, true) +
-				" to enemies and " + GlossaryTag.CORRUPTION.tag(this, corruption, false) + " to yourself every second for <white>7s</white>.");
+				" to enemies and " + GlossaryTag.CORRUPTION.tag(this, corruption, false) + " to yourself every second " + DescUtil.duration(7, false) + ".");
 	}
 }

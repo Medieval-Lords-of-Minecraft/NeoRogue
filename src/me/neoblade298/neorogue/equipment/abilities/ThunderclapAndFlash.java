@@ -10,6 +10,7 @@ import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.ParticleUtil;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -141,7 +142,7 @@ public class ThunderclapAndFlash extends Equipment {
 		item = createItem(Material.WIND_CHARGE,
 				"Passive. Upon " + GlossaryTag.EVADE.tag(this) + ", " + GlossaryTag.DASH.tag(this) + " toward the attacker, " +
 				"deal " + GlossaryTag.LIGHTNING.tag(this, evadeDamage, true) + " damage, and gain a stack " +
-				"(<white>2</white> stacks if you've applied <white>" + ELECTRIFIED_THRESHOLD + "</white> " + 
+				"(" + DescUtil.white(2) + " stacks if you've applied " + DescUtil.white(ELECTRIFIED_THRESHOLD) + " " + 
 				GlossaryTag.ELECTRIFIED.tag(this) + " this fight). On cast, consume a stack to " +
 				GlossaryTag.DASH.tag(this) + " forward and deal " + GlossaryTag.LIGHTNING.tag(this, castDamage, true) + 
 				" damage in a line.");

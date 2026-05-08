@@ -87,6 +87,6 @@ public class EyeOfTheStorm extends Equipment {
 				"On cast, " + DescUtil.charge(this, 1, 1) + " before dealing "
 						+ GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage and applying "
 						+ GlossaryTag.ELECTRIFIED.tag(this, elec, true)
-						+ " to enemies near you <white>3x</white> over <white>3s</white>.");
+						+ " to enemies near you " + DescUtil.white("3x") + " over " + DescUtil.white("3s") + ".");
 	}
 }

@@ -9,6 +9,7 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -80,7 +81,7 @@ public class Firebomb extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.POTION,
 				"On cast, throw a bomb that deals " + GlossaryTag.FIRE.tag(this, damage, false) + " damage, coating the area in flames and applying " +
-				GlossaryTag.BURN.tag(this, burn, true) + " to enemies who walk through it over the next <white>3s</white>.");
+				GlossaryTag.BURN.tag(this, burn, true) + " to enemies who walk through it over the next " + DescUtil.white("3s") + ".");
 		PotionMeta pm = (PotionMeta) item.getItemMeta();
 		pm.setColor(Color.RED);
 		item.setItemMeta(pm);

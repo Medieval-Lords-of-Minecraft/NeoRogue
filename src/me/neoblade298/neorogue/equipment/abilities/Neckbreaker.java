@@ -117,7 +117,7 @@ public class Neckbreaker extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BONE,
-				"On cast, your next <white>3</white> basic attacks deal " + 
+				"On cast, your next " + DescUtil.white(3) + " basic attacks deal " + 
 				GlossaryTag.PIERCING.tag(this, damage, true) + " bonus damage and apply " +
 				GlossaryTag.INJURY.tag(this, injury, true) + ". If they all hit the same enemy, " +
 				"gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>5s</white>] and apply " +

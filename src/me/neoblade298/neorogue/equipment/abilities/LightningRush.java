@@ -14,6 +14,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -51,11 +52,11 @@ public class LightningRush extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLAZE_POWDER,
-				"On cast, for <white>3</white> seconds, your basic attacks"
-						+ " grant speed <white>1</white> [<white>1s</white>]," + " deals an additional "
+				"On cast, for " + DescUtil.white("3s") + ", your basic attacks"
+						+ " grant speed " + DescUtil.white(1) + " [<white>1s</white>]," + " deals an additional "
 						+ GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage, applies "
 						+ GlossaryTag.ELECTRIFIED.tag(this, elec, true) + ", and extends the duration"
-						+ " of the skill by <white>2</white> seconds. Once per enemy.");
+						+ " of the skill by " + DescUtil.white("2s") + ". Once per enemy.");
 	}
 
 	@Override

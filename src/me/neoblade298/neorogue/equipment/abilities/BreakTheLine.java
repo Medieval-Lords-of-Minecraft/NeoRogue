@@ -12,6 +12,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -57,7 +58,7 @@ public class BreakTheLine extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.TNT,
 				"On cast, leap in the air and slam down. All nearby enemies will take " + GlossaryTag.EARTHEN.tag(this, damage, false) + ", get knocked back," +
-				" given slowness <white>1</white> for <white>3</white> seconds, and get " + GlossaryTag.CONCUSSED.tag(this, conc, true) + ".");
+				" given slowness " + DescUtil.white(1) + " " + DescUtil.duration(3, false) + ", and get " + GlossaryTag.CONCUSSED.tag(this, conc, true) + ".");
 	}
 	
 	private class BreakTheLineInstance extends EquipmentInstance {

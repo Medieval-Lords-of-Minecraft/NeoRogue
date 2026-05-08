@@ -46,7 +46,7 @@ public class BasicManaManipulation extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SOUL_TORCH,
-				"Passive. Increase " + GlossaryTag.STEALTH.tag(this) + " application by <white>1s</white>. Increase " + GlossaryTag.ELECTRIFIED.tag(this) + 
+				"Passive. Increase " + GlossaryTag.STEALTH.tag(this) + " application by " + DescUtil.white("1s") + ". Increase " + GlossaryTag.ELECTRIFIED.tag(this) + 
 				" application stacks by " + DescUtil.yellow(stacks) + ".");
 	}
 }

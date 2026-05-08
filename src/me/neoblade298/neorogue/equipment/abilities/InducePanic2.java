@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -87,7 +88,7 @@ public class InducePanic2 extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.OBSIDIAN,
-				"On cast, mark the target you're looking at. If you don't deal " + GlossaryTag.GENERAL.tag(this) + " damage to that enemy for <white>2</white> seconds," +
-				" apply " + GlossaryTag.INSANITY.tag(this, stacks, true) + " to enemies around them in a radius of <white>10</white>.");
+				"On cast, mark the target you're looking at. If you don't deal " + GlossaryTag.GENERAL.tag(this) + " damage to that enemy for " + DescUtil.white("2s") + "," +
+				" apply " + GlossaryTag.INSANITY.tag(this, stacks, true) + " to enemies around them in a radius of " + DescUtil.white(10) + ".");
 	}
 }

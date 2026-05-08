@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
@@ -54,7 +55,7 @@ public class Fade extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE_TORCH,
-				"Passive. Whenever you receive " + GlossaryTag.STEALTH.tag(this) + ", increase its duration by <white>" + duration + "s</white>."
+				"Passive. Whenever you receive " + GlossaryTag.STEALTH.tag(this) + ", increase its duration by " + DescUtil.white(duration + "s") + "."
 				+ " Basic attacks additionally grant you " + GlossaryTag.STEALTH.tag(this, 1, false) + " [<white>3s</white>].");
 	}
 }

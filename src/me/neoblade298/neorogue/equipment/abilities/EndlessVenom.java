@@ -10,6 +10,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -78,8 +79,8 @@ public class EndlessVenom extends Equipment {
 	public void setupItem() {
 		item = createItem(
 				Material.GREEN_DYE,
-				"On cast, your basic attacks apply " + GlossaryTag.POISON.tag(this, poison, true) + " for <white>7s</white>. Additionally, enemies hit by your basic attacks " +
-				"stop poison from being reduced for <white>3s</white>."
+				"On cast, your basic attacks apply " + GlossaryTag.POISON.tag(this, poison, true) + " " + DescUtil.duration(7, false) + ". Additionally, enemies hit by your basic attacks " +
+				"stop poison from being reduced " + DescUtil.duration(3, false) + "."
 		);
 	}
 }

@@ -5,6 +5,7 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -61,6 +62,6 @@ public class Flurry extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.AMETHYST_SHARD,
-				"On cast, your next <yellow>" + cutoff + "</yellow> basic attacks have their attack speed increased by <white>1.0</white>.");
+				"On cast, your next " + DescUtil.yellow(cutoff) + " basic attacks have their attack speed increased by " + DescUtil.white("1.0") + ".");
 	}
 }

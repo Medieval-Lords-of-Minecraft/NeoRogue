@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -63,7 +64,7 @@ public class Smite extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.NETHER_STAR,
-				"On cast, deal <yellow>" + damage + "</yellow> " + GlossaryTag.SLASHING.tag(this) + " damage in a cone in front of you and "
-						+ "apply <yellow>" + sanctified + "</yellow> " + GlossaryTag.SANCTIFIED.tag(this) + ".");
+				"On cast, deal " + DescUtil.yellow(damage) + " " + GlossaryTag.SLASHING.tag(this) + " damage in a cone in front of you and "
+						+ "apply " + DescUtil.yellow(sanctified) + " " + GlossaryTag.SANCTIFIED.tag(this) + ".");
 	}
 }

@@ -7,6 +7,7 @@ import org.bukkit.Particle.DustOptions;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -42,7 +43,7 @@ public class Roar extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.FIREWORK_STAR,
 				"On cast, give yourself " + GlossaryTag.STRENGTH.tag(this, strength, true) + " and " + GlossaryTag.BERSERK.tag(this, 1, false) + "."
-						+ " If above " + GlossaryTag.BERSERK.tag(this, CUTOFF, false) + ", also heal for <yellow>" + heal + "</yellow>.");
+						+ " If above " + GlossaryTag.BERSERK.tag(this, CUTOFF, false) + ", also heal for " + DescUtil.yellow(heal) + ".");
 	}
 
 	@Override

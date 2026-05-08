@@ -12,6 +12,7 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -117,9 +118,9 @@ public class Tackle extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE,
-				"On cast, dash forward, stopping at the first enemy hit and dealing <yellow>" + damage + "</yellow> " + GlossaryTag.BLUNT.tag(this) +
+				"On cast, dash forward, stopping at the first enemy hit and dealing " + DescUtil.yellow(damage) + " " + GlossaryTag.BLUNT.tag(this) +
 				" damage in a small area. "
-						+ "If an enemy is hit, reduce this ability's cooldown by <white>10</white>. If you have any " + GlossaryTag.SHIELDS.tag(this) + 
-						" on hit, further reduce this ability's cooldown by <white>5</white>.");
+						+ "If an enemy is hit, reduce this ability's cooldown by " + DescUtil.white(10) + ". If you have any " + GlossaryTag.SHIELDS.tag(this) + 
+						" on hit, further reduce this ability's cooldown by " + DescUtil.white(5) + ".");
 	}
 }

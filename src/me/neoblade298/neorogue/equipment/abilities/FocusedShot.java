@@ -75,7 +75,7 @@ public class FocusedShot extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.CYAN_DYE,
 				"On cast, " + DescUtil.charge(this, 1, 1) + ". Afterwards, your next basic attack " + 
-				"has its damage increased by <yellow>" + damage + "%</yellow>. This skill's cooldown is decreased by <white>2x</white> " +
+				"has its damage increased by " + DescUtil.yellow(damage + "%") + ". This skill's cooldown is decreased by " + DescUtil.white("2x") + " " +
 				"the stacks of " + GlossaryTag.FOCUS.tag(this) + " you have.");
 	}
 }

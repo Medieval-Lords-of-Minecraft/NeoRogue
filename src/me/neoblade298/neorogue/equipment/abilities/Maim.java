@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -77,7 +78,7 @@ public class Maim extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.BLAZE_ROD,
 				"On cast, your next basic attack deals an additional " + GlossaryTag.BLUNT.tag(this, damage, true) + " damage"
-						+ " and increases " + GlossaryTag.PHYSICAL.tag(this) + " damage dealt to the enemy hit by <yellow>" + inc + "</yellow>"
-						+ " for <white>10</white> seconds.");
+						+ " and increases " + GlossaryTag.PHYSICAL.tag(this) + " damage dealt to the enemy hit by " + DescUtil.yellow(inc)
+						+ " " + DescUtil.duration(10, false) + ".");
 	}
 }

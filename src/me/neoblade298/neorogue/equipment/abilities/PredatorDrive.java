@@ -88,6 +88,6 @@ public class PredatorDrive extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.SPECTRAL_ARROW,
 			GlossaryTag.POWER.tag(this) + ". Every " + DescUtil.yellow(threshold) + " basic attacks" + 
-			" that hit an enemy within <white>5</white> blocks reduce all cooldowns by <white>1s</white>.");
+			" that hit an enemy within " + DescUtil.white(5) + " blocks reduce all cooldowns by " + DescUtil.white("1s") + ".");
 	}
 }

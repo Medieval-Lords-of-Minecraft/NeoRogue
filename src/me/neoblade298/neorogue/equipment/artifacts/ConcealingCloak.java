@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.equipment.artifacts;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -81,7 +82,7 @@ public class ConcealingCloak extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION, 
-				"Not taking or dealing damage for <white>2</white> seconds increases your "
-				+ "mana and stamina regen by <white>20%</white> of their base.");
+				"Not taking or dealing damage for " + DescUtil.white("2s") + " increases your "
+				+ "mana and stamina regen by " + DescUtil.white("20%") + " of their base.");
 	}
 }

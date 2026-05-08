@@ -11,6 +11,7 @@ import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.ParticleUtil;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -167,11 +168,11 @@ public class PiercingNight extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLACKSTONE,
-			"On cast, throw <white>3</white> projectiles in a cone that each deal " + 
+			"On cast, throw " + DescUtil.white(3) + " projectiles in a cone that each deal " + 
 			GlossaryTag.DARK.tag(this, damage, true) + " damage and apply " + 
 			GlossaryTag.INSANITY.tag(this, insanity, true) + ". If an enemy is hit, " +
-			"<white>charge 1s</white> and deal " + GlossaryTag.DARK.tag(this, lineDamage, true) + 
+			DescUtil.white("charge 1s") + " and deal " + GlossaryTag.DARK.tag(this, lineDamage, true) + 
 			" damage in a line in front of you and apply " + GlossaryTag.INSANITY.tag(this, insanity, true) + 
-			". Enemies hit by both are applied <white>2x</white> their current " + GlossaryTag.INSANITY.tag(this) + ".");
+			". Enemies hit by both are applied " + DescUtil.white("2x") + " their current " + GlossaryTag.INSANITY.tag(this) + ".");
 	}
 }

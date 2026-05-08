@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -46,7 +47,7 @@ public class Lethality extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.PRISMARINE_CRYSTALS,
-				"Passive. Increase " + GlossaryTag.PIERCING.tag(this) + " damage by <yellow>" + inc + "</yellow>"
-				+ " while above <yellow>" + thres + "</yellow> stamina.");
+				"Passive. Increase " + GlossaryTag.PIERCING.tag(this) + " damage by " + DescUtil.yellow(inc)
+				+ " while above " + DescUtil.yellow(thres) + " stamina.");
 	}
 }

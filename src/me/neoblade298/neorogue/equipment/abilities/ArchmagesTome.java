@@ -49,6 +49,6 @@ public class ArchmagesTome extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.ENCHANTED_BOOK,
 				"Passive. Increase all " + GlossaryTag.MAGICAL.tag(this) + " damage by " + DescUtil.yellow(damage) + ". " +
-				"While below <white>50%</white> mana, mana regen is increased by " + DescUtil.yellow(regen) + ".");
+				"While below " + DescUtil.white("50%") + " mana, mana regen is increased by " + DescUtil.yellow(regen) + ".");
 	}
 }

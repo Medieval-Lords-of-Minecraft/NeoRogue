@@ -152,6 +152,6 @@ public class AnchoringEarth2 extends Equipment {
 				+ " before firing a projectile that pierces enemies and lowers their magic defense by "
 				+ DescUtil.yellow(reduc) + ". " + "If it hits a block, all enemies it pierced will take "
 				+ GlossaryTag.EARTHEN.tag(this, damage, true) + ", receive " + DescUtil.potion("slowness", 1, 2)
-				+ ", be pulled towards the block, and all statuses applied to them by you are doubled for <white>8s</white>. ");
+				+ ", be pulled towards the block, and all statuses applied to them by you are doubled " + DescUtil.duration(8, false) + ". ");
 	}
 }

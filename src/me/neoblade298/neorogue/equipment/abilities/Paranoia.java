@@ -5,6 +5,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -106,11 +107,11 @@ public class Paranoia extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SPYGLASS,
-				"Passive. For every second you don't basic attack, gain a stack (up to <white>" + MAX_STACKS
-						+ "</white>). " + "The next time you basic attack, deal "
+				"Passive. For every second you don't basic attack, gain a stack (up to " + DescUtil.white(MAX_STACKS)
+						+ "). " + "The next time you basic attack, deal "
 						+ GlossaryTag.PIERCING.tag(this, damagePerStack, true) + " damage " + "and gain "
-						+ GlossaryTag.SHIELDS.tag(this, SHIELDS_PER_STACK, true) + " for <white>5s</white> per stack. "
-						+ "If you haven't basic attacked in the past <white>2s</white>, apply "
+						+ GlossaryTag.SHIELDS.tag(this, SHIELDS_PER_STACK, true) + " " + DescUtil.duration(5, false) + " per stack. "
+						+ "If you haven't basic attacked in the past " + DescUtil.white("2s") + ", apply "
 						+ GlossaryTag.INSANITY.tag(this, insanity, true) + " to enemies around you every second.");
 	}
 }

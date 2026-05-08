@@ -64,8 +64,8 @@ public class Obfuscation extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.PHANTOM_MEMBRANE,
 				GlossaryTag.POWER.tag(this) + ". " + GlossaryTag.STEALTH.tag(this) + " and " + GlossaryTag.EVADE.tag(this) + 
-				" application is increased by <white>1</white>, and their durations are increased by <yellow>" + 
-				duration + "s</yellow>. " + GlossaryTag.INSANITY.tag(this) + 
+				" application is increased by " + DescUtil.white(1) + ", and their durations are increased by " + DescUtil.yellow(
+				duration + "s") + ". " + GlossaryTag.INSANITY.tag(this) + 
 				" application is increased by " + DescUtil.yellow((int)(insanityMult * 100) + "%") + ".");
 	}
 }

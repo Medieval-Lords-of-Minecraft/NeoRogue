@@ -106,7 +106,7 @@ public class EarthenWall extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.MUD_BRICK_WALL,
-				"On cast, " + GlossaryTag.CHANNEL.tag(this) + " for <white>1s</white> before dealing " + GlossaryTag.EARTHEN.tag(this, damage, true) + " damage in a horizontal line and creating a " +
+				"On cast, " + GlossaryTag.CHANNEL.tag(this) + " for " + DescUtil.white("1s") + " before dealing " + GlossaryTag.EARTHEN.tag(this, damage, true) + " damage in a horizontal line and creating a " +
 				GlossaryTag.BARRIER.tag(this) + " [<white>10s</white>] where your line is that blocks the next " + DescUtil.yellow(def) + " projectiles and applies " + GlossaryTag.CONCUSSED.tag(this, conc, true) + ".");	
 	}
 }

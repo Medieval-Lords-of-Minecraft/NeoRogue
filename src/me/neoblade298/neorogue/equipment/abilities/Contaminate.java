@@ -7,6 +7,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -45,10 +46,10 @@ public class Contaminate extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POISONOUS_POTATO,
-				"On cast, Grant speed <white>1</white> and " + GlossaryTag.STEALTH.tag(this) +
+				"On cast, Grant speed " + DescUtil.white(1) + " and " + GlossaryTag.STEALTH.tag(this) +
 				" [<white>5s</white>]. "
-				+ "Your next <white>3</white> basic attacks deal an additional " + GlossaryTag.PIERCING.tag(this, damage, false) + " damage and multiply existing stacks of "
-				+ GlossaryTag.POISON.tag(this) + " on the enemy hit by <yellow>" + mult + "</yellow>, rounded down.");
+				+ "Your next " + DescUtil.white(3) + " basic attacks deal an additional " + GlossaryTag.PIERCING.tag(this, damage, false) + " damage and multiply existing stacks of "
+				+ GlossaryTag.POISON.tag(this) + " on the enemy hit by " + DescUtil.yellow(mult) + ", rounded down.");
 	}
 
 	@Override

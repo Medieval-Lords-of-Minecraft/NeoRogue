@@ -5,6 +5,7 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -42,7 +43,7 @@ public class Sidestep extends Equipment {
 		item = createItem(Material.OBSIDIAN,
 				"On cast, " + GlossaryTag.DASH.tag(this) + " and gain " + GlossaryTag.STEALTH.tag(this) +
 				" [<white>5s</white>], and " + GlossaryTag.EVADE.tag(this, evade, true) + " [<white>10s</white>]. "
-				+ "Your next <white>3</white> basic attacks deal an additional " + GlossaryTag.PIERCING.tag(this, damage, false) + " damage. "
+				+ "Your next " + DescUtil.white(3) + " basic attacks deal an additional " + GlossaryTag.PIERCING.tag(this, damage, false) + " damage. "
 				+ "The cooldown of this ability is reduced by your " + GlossaryTag.STEALTH.tag(this)
 				+ " stacks every second.");
 	}

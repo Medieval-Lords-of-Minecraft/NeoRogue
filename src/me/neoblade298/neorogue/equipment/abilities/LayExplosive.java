@@ -112,7 +112,7 @@ public class LayExplosive extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.OAK_TRAPDOOR,
 				"On cast, " + DescUtil.charge(this, 1, 2) + ". Then drop a " + GlossaryTag.TRAP.tag(this) + " that explodes on recast, dealing " +
-				GlossaryTag.BLUNT.tag(this, damage, true) + " damage multiplied by how many seconds it's been active, up to <white>5s</white>," +
+				GlossaryTag.BLUNT.tag(this, damage, true) + " damage multiplied by how many seconds it's been active, up to " + DescUtil.white("5s") + "," +
 				" to all nearby enemies.");
 	}
 }

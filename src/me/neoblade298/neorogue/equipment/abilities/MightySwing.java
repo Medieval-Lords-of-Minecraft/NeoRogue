@@ -6,6 +6,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -72,7 +73,7 @@ public class MightySwing extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.RED_DYE,
-				"On cast, your next basic attack while in the air deals <yellow>" + damage + "</yellow> " + GlossaryTag.PIERCING.tag(this) + " damage. If the enemy is"
-						+ " above <white>50%</white> health, reduce the ability's cooldown by <yellow>" + cdr + "</yellow>.");
+				"On cast, your next basic attack while in the air deals " + DescUtil.yellow(damage) + " " + GlossaryTag.PIERCING.tag(this) + " damage. If the enemy is"
+						+ " above " + DescUtil.white("50%") + " health, reduce the ability's cooldown by " + DescUtil.yellow(cdr) + ".");
 	}
 }

@@ -9,6 +9,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -79,8 +80,8 @@ public class FormAPlan extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE,
-				"Passive. After <white>10</white> seconds (+<white>1s</white> for every time you deal "
+				"Passive. After " + DescUtil.white("10s") + " (+" + DescUtil.white("1s") + " for every time you deal "
 				+ GlossaryTag.GENERAL + " damage), gain " + GlossaryTag.STEALTH.tag(this, 3, false) +
-				" [<white>5s</white>] and increase your damage by <yellow>" + buff + "%</yellow>.");
+				" [<white>5s</white>] and increase your damage by " + DescUtil.yellow(buff + "%") + ".");
 	}
 }

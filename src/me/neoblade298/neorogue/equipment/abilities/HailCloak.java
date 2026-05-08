@@ -11,6 +11,7 @@ import org.bukkit.scheduler.BukkitTask;
 import me.neoblade298.neocore.bukkit.effects.Circle;
 import me.neoblade298.neocore.bukkit.effects.LocalAxes;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -109,7 +110,7 @@ public class HailCloak extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.PACKED_ICE,
-				"On cast, after channeling for <white>1s</white>, for the next <white>10s</white>, you deal "
+				"On cast, after channeling for " + DescUtil.white("1s") + ", for the next " + DescUtil.white("10s") + ", you deal "
 						+ GlossaryTag.ICE.tag(this, damage, true) + " and apply "
 						+ GlossaryTag.FROST.tag(this, stacks, true)
 						+ " to all enemies near you every second. Your projectiles also do this on hit while active.");

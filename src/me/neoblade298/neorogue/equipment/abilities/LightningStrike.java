@@ -110,7 +110,7 @@ public class LightningStrike extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.YELLOW_DYE, GlossaryTag.CHANNEL.tag(this)
-				+ " for <white>1s</white> before marking a ground location. After <white>1s</white>, that location explodes, dealing "
+				+ " for " + DescUtil.white("1s") + " before marking a ground location. After " + DescUtil.white("1s") + ", that location explodes, dealing "
 				+ GlossaryTag.LIGHTNING.tag(this, damage, true) + " in an area. If you are above "
 				+ DescUtil.yellow(thres) + " mana, increase the damage by " + DescUtil.yellow(bonusDamage) + ".");
 	}

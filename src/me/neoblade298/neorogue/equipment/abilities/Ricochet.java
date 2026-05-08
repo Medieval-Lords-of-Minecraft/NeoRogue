@@ -17,10 +17,10 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
-import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
 import me.neoblade298.neorogue.session.fight.DamageStatTracker;
@@ -152,7 +152,7 @@ public class Ricochet extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ARROW,
-				GlossaryTag.POWER.tag(this) + ". Dealing basic attack damage to an enemy within <white>" + DISTANCE + "</white> blocks " +
+				GlossaryTag.POWER.tag(this) + ". Dealing basic attack damage to an enemy within " + DescUtil.white(DISTANCE) + " blocks " +
 				"fires a projectile from that target to the nearest enemy, dealing " + 
 				DescUtil.yellow(damage) + " damage.");
 	}

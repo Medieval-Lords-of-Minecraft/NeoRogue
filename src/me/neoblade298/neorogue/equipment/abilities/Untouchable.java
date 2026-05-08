@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.equipment.ActionMeta;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -58,6 +59,6 @@ public class Untouchable extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.PHANTOM_MEMBRANE,
-				"Passive. Every <yellow>" + threshold + "</yellow> stacks of " + GlossaryTag.STEALTH.tag(this) + " you receive, gain <white>1</white> " + GlossaryTag.EVADE.tag(this) + ".");
+				"Passive. Every " + DescUtil.yellow(threshold) + " stacks of " + GlossaryTag.STEALTH.tag(this) + " you receive, gain " + DescUtil.white(1) + " " + GlossaryTag.EVADE.tag(this) + ".");
 	}
 }

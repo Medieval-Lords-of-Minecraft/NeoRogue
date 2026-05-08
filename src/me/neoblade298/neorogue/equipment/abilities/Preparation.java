@@ -77,6 +77,6 @@ public class Preparation extends Equipment {
 		item = createItem(Material.BLAZE_POWDER,
 				"On cast, " + DescUtil.charge(this, 0, 5) + " before gaining " + GlossaryTag.SHIELDS.tag(this, shields, true) + " "
 				+ "and dealing an additional "
-				+ GlossaryTag.PIERCING.tag(this, damage, true) + " damage on basic attacks for <white>10</white> seconds.");
+				+ GlossaryTag.PIERCING.tag(this, damage, true) + " damage on basic attacks " + DescUtil.duration(10, false) + ".");
 	}
 }

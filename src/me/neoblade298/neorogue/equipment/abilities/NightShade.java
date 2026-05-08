@@ -7,6 +7,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -44,8 +45,8 @@ public class NightShade extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.OBSIDIAN,
-				"On cast, Grant speed <white>1</white> and " + GlossaryTag.STEALTH.tag(this) + " [<white>5s</white>]. "
-						+ "Your next <white>3</white> basic attacks deals an additional "
+				"On cast, Grant speed " + DescUtil.white(1) + " and " + GlossaryTag.STEALTH.tag(this) + " [<white>5s</white>]. "
+						+ "Your next " + DescUtil.white(3) + " basic attacks deals an additional "
 						+ GlossaryTag.DARK.tag(this, damage, true) + " damage and applies "
 						+ GlossaryTag.INSANITY.tag(this, insanity, true) + ". "
 						+ "The cooldown of this ability is reduced by your " + GlossaryTag.STEALTH.tag(this)

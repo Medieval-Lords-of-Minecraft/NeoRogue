@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
@@ -56,7 +57,7 @@ public class Bulwark extends Equipment {
 		item = createItem(Material.NETHER_STAR,
 				"Passive. Raising a shield grants " + GlossaryTag.SHIELDS.tag(this, shields, false) + " until "
 				+ "you lower your shield again. For every second the shield remains raised, grant " + GlossaryTag.PROTECT.tag(this, prot, true) +
-				" and " + GlossaryTag.SHELL.tag(this, prot, true) + " for <white>3</white> seconds.");
+				" and " + GlossaryTag.SHELL.tag(this, prot, true) + " " + DescUtil.duration(3, false) + ".");
 	}
 	
 	private class BulwarkInstance extends PriorityAction {

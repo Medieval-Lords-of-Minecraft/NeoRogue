@@ -15,6 +15,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import me.libraryaddict.disguise.disguisetypes.PlayerDisguise;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
@@ -188,8 +189,8 @@ public class Illusion extends Equipment {
 		item = createItem(Material.ENDER_EYE,
 				GlossaryTag.POWER.tag(this) + ". Whenever you apply " + GlossaryTag.EVADE.tag(this)
 						+ ", spawn a body double at your position from "
-						+ "<white>2s</white> ago that fires projectiles dealing "
+						+ DescUtil.white("2s") + " ago that fires projectiles dealing "
 						+ GlossaryTag.DARK.tag(this, damage, true) + " damage to all nearby enemies "
-						+ "and taunts them. The body double lasts for <white>" + dur + "s</white>.");
+						+ "and taunts them. The body double lasts " + DescUtil.duration(dur, false) + ".");
 	}
 }

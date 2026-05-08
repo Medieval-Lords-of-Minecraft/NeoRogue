@@ -5,6 +5,7 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -61,7 +62,7 @@ public class Embolden extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.SOUL_TORCH,
 				"On cast, gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + ". "+
-						"Your next basic attack additionally deals <white>" + damage + " </white>" + GlossaryTag.SLASHING.tag(this) +
+						"Your next basic attack additionally deals " + DescUtil.white(damage) + " " + GlossaryTag.SLASHING.tag(this) +
 				" damage.");
 	}
 }

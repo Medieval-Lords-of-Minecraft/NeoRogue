@@ -13,6 +13,7 @@ import org.bukkit.util.Vector;
 import me.neoblade298.neocore.bukkit.effects.Circle;
 import me.neoblade298.neocore.bukkit.effects.LocalAxes;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -146,8 +147,8 @@ public class CorpseExplosion extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FERMENTED_SPIDER_EYE, 
-			"Passive. When you kill an enemy with " + GlossaryTag.POISON.tag(this) + " damage, spawn <white>2</white> poison circles near the corpse. " +
-			"Each circle lasts <white>" + duration + "</white> seconds and applies " + 
+			"Passive. When you kill an enemy with " + GlossaryTag.POISON.tag(this) + " damage, spawn " + DescUtil.white(2) + " poison circles near the corpse. " +
+			"Each circle lasts " + DescUtil.white(duration) + " seconds and applies " + 
 			GlossaryTag.POISON.tag(this, poisonPerSecond, true) + " per second to nearby enemies.");
 	}
 }

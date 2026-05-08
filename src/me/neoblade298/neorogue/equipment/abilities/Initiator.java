@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -55,7 +56,7 @@ public class Initiator extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SHIELD,
-				"Passive. The first time you deal non-status damage to an enemy, increase the damage by <yellow>"
-						+ damage + "%</yellow>.");
+				"Passive. The first time you deal non-status damage to an enemy, increase the damage by " + DescUtil.yellow(
+						damage + "%") + ".");
 	}
 }

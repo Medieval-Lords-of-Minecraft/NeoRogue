@@ -5,6 +5,7 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -59,8 +60,8 @@ public class WindSlash extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.STRING,
-				"On cast, fire <yellow>" + amount + " </yellow>projectiles in a cone in front of you that deal "
-						+ "<yellow>" + damage + " </yellow>" + GlossaryTag.SLASHING.tag(this) + " damage.");
+				"On cast, fire " + DescUtil.yellow(amount) + " projectiles in a cone in front of you that deal "
+						+ DescUtil.yellow(damage) + " " + GlossaryTag.SLASHING.tag(this) + " damage.");
 	}
 	
 	private class WindSlashProjectile extends Projectile {

@@ -78,6 +78,6 @@ public class SpikeTrap extends Equipment {
 		item = createItem(Material.OAK_TRAPDOOR,
 				"On cast, " + DescUtil.charge(this, 1, 2) + ". Then drop a " + GlossaryTag.TRAP.tag(this) + 
 				" that repeatedly deals " + GlossaryTag.PIERCING.tag(this, damage, false) +
-				" damage to enemies on it every second for <white>20s</white>.");
+				" damage to enemies on it every second " + DescUtil.duration(20, false) + ".");
 	}
 }

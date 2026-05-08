@@ -5,6 +5,7 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -49,7 +50,7 @@ public class ManaCloak extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SHIELD,
-				"On cast, gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " for <white>10s</white>, "
+				"On cast, gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " " + DescUtil.duration(10, false) + ", "
 						+ GlossaryTag.PROTECT.tag(this, 1, false) + ", and " + GlossaryTag.SHELL.tag(this, 1, false)
 						+ ".");
 	}

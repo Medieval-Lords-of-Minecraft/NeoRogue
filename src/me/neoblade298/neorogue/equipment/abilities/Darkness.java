@@ -13,6 +13,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import me.neoblade298.neocore.bukkit.effects.Circle;
 import me.neoblade298.neocore.bukkit.effects.LocalAxes;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
@@ -110,7 +111,7 @@ public class Darkness extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.BLAZE_POWDER,
 				"On cast, drop a bomb on the ground that deals " + GlossaryTag.DARK.tag(this, dark, true)
-						+ " damage per second for <white>5</white> seconds."
+						+ " damage per second " + DescUtil.duration(5, false) + "."
 						+ " During this time, your basic attacks apply "
 						+ GlossaryTag.INSANITY.tag(this, insanity, true) + ".");
 	}

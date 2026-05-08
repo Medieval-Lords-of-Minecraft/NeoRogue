@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -74,6 +75,6 @@ public class SpiritOfTheDragoon extends Equipment {
 		item = createItem(Material.FEATHER,
 				"Grants the ability to double jump. Passively gain " + GlossaryTag.STRENGTH.tag(this, strength, true)
 						+ " upon falling from a small height. " + "Upon double jump, launch into the air and gain "
-						+ GlossaryTag.SHIELDS.tag(this, shield, true) + " for <white>5s</white>.");
+						+ GlossaryTag.SHIELDS.tag(this, shield, true) + " " + DescUtil.duration(5, false) + ".");
 	}
 }

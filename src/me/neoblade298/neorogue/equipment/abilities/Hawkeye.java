@@ -125,7 +125,7 @@ public class Hawkeye extends Equipment {
 		item = createItem(Material.SPYGLASS,
 				"Passive. While above " + DescUtil.yellow(threshold) + " " + GlossaryTag.FOCUS.tag(this) + ", " +
 				"damage taken gets reduced by " + DescUtil.white(DAMAGE_REDUCTION) + ", " +
-				"reduces your " + GlossaryTag.FOCUS.tag(this) + " by <white>1</white>, " +
+				"reduces your " + GlossaryTag.FOCUS.tag(this) + " by " + DescUtil.white(1) + ", " +
 				"and shoots a piercing projectile at the damager that deals " +
 				GlossaryTag.PIERCING.tag(this, damage, true) + " damage.");
 	}

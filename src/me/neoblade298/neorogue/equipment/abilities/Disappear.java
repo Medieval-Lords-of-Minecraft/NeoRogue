@@ -6,6 +6,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -115,7 +116,7 @@ public class Disappear extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.GLASS_BOTTLE,
 				"Passive. On kill, gain " + GlossaryTag.STEALTH.tag(this, 1, false) + " [<white>5s</white>]."
-				+ " Afterwards, if you don't deal (ignoring poison) or take health damage for <white>2</white> seconds,"
+				+ " Afterwards, if you don't deal (ignoring poison) or take health damage for " + DescUtil.white("2s") + ","
 				+ " you gain " + GlossaryTag.PIERCING.tag(this, damage, true) + " on your next basic attack.");
 		
 	}

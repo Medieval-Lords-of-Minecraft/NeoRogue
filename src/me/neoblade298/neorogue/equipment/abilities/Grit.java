@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -70,7 +71,7 @@ public class Grit extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SHIELD,
-				"Passive. Killing an enemy within <white>5</white> blocks of you grants " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>3s</white>]. " +
-				"Damage at this range is also increased by <yellow>" + inc + "</yellow>.");
+				"Passive. Killing an enemy within " + DescUtil.white(5) + " blocks of you grants " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>3s</white>]. " +
+				"Damage at this range is also increased by " + DescUtil.yellow(inc) + ".");
 	}
 }

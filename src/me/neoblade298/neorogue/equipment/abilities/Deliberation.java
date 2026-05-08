@@ -7,6 +7,7 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -62,9 +63,9 @@ public class Deliberation extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SHIELD,
-				"On cast, " + GlossaryTag.CHANNEL.tag(this) + " for <white>2s</white> before gaining "
-						+ GlossaryTag.FOCUS.tag(this, 1, false) + " and increasing your damage by <yellow>" + damage
-						+ "</yellow> multiplied by your current " + GlossaryTag.FOCUS.tag(this)
-						+ " for <white>10s</white>.");
+				"On cast, " + GlossaryTag.CHANNEL.tag(this) + " for " + DescUtil.white("2s") + " before gaining "
+						+ GlossaryTag.FOCUS.tag(this, 1, false) + " and increasing your damage by " + DescUtil.yellow(damage)
+						+ " multiplied by your current " + GlossaryTag.FOCUS.tag(this)
+						+ " for " + DescUtil.white("10s") + ".");
 	}
 }

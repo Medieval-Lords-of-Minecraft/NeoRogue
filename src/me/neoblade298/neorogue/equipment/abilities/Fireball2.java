@@ -8,6 +8,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -114,7 +115,7 @@ public class Fireball2 extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLAZE_POWDER,
-			GlossaryTag.CHANNEL.tag(this) + " for <white>1s</white> before launching a fireball that deals " + GlossaryTag.FIRE.tag(this, damage, true) + " damage and applies " +
+			GlossaryTag.CHANNEL.tag(this) + " for " + DescUtil.white("1s") + " before launching a fireball that deals " + GlossaryTag.FIRE.tag(this, damage, true) + " damage and applies " +
 			GlossaryTag.BURN.tag(this, burn, false) + " in an area.");
 	}
 }

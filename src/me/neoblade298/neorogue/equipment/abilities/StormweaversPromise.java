@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -72,6 +73,6 @@ public class StormweaversPromise extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.LIGHTNING_ROD,
 				"Passive. Gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>3s</white>] whenever you deal projectile damage. " +
-				"Increase the shield duration by <white>5s</white> if you've dealt damage at least twice in the past second.");
+				"Increase the shield duration by " + DescUtil.white("5s") + " if you've dealt damage at least twice in the past second.");
 	}
 }

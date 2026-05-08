@@ -7,6 +7,7 @@ import org.bukkit.Particle.DustOptions;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -39,8 +40,8 @@ public class Ferocity extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION,
-				"On cast, give yourself <white>" + berserk + "</white> " + GlossaryTag.BERSERK.tag(this) + " stacks. " +
-				"If you have <yellow>" + cutoff + "</yellow> stacks after, gain <yellow>" + staminaGain + "</yellow> stamina regen"
+				"On cast, give yourself " + DescUtil.white(berserk) + " " + GlossaryTag.BERSERK.tag(this) + " stacks. " +
+				"If you have " + DescUtil.yellow(cutoff) + " stacks after, gain " + DescUtil.yellow(staminaGain) + " stamina regen"
 						+ " and disable the ability.");
 	}
 

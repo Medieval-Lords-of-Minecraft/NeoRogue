@@ -5,6 +5,7 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -73,7 +74,7 @@ public class Execute extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SKULL_POTTERY_SHERD,
-				"On cast, your next basic attack while in the air deals <yellow>" + damage + "</yellow> " + GlossaryTag.PIERCING.tag(this) + " damage. If the enemy is"
-						+ " killed by this attack, gain <yellow>" + strength + "</yellow> " + GlossaryTag.STRENGTH.tag(this) + ".");
+				"On cast, your next basic attack while in the air deals " + DescUtil.yellow(damage) + " " + GlossaryTag.PIERCING.tag(this) + " damage. If the enemy is"
+						+ " killed by this attack, gain " + DescUtil.yellow(strength) + " " + GlossaryTag.STRENGTH.tag(this) + ".");
 	}
 }

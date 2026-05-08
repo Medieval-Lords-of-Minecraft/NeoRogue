@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.abilities;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -65,7 +66,7 @@ public class BasicElementMastery extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.MAGMA_CREAM,
 				"Passive. Start fights with " + GlossaryTag.SHIELDS.tag(this, 5, false) + ". Increase application of " + GlossaryTag.FROST.tag(this) +
-				" by <white>" + frost + "</white>. Dealing " + GlossaryTag.FIRE.tag(this) + " damage additionally applies "
+				" by " + DescUtil.white(frost) + ". Dealing " + GlossaryTag.FIRE.tag(this) + " damage additionally applies "
 				+ GlossaryTag.BURN.tag(this, burn, true) + ".");
 	}
 }

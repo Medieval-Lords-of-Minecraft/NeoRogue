@@ -15,6 +15,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -101,7 +102,7 @@ public class Bulldoze extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.IRON_CHESTPLATE,
-				"On cast, gain speed for 3 seconds, dealing <yellow>" + damage + "</yellow> " + GlossaryTag.BLUNT.tag(this) + " damage plus any "
+				"On cast, gain speed " + DescUtil.duration(3, false) + ", dealing " + GlossaryTag.BLUNT.tag(this, damage, true) + " damage plus any "
 						+ GlossaryTag.SHIELDS.tag(this) + " you have to enemies you touch and knock them back, once per enemy.");
 	}
 }

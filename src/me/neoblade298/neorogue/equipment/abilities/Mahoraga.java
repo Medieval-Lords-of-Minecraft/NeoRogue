@@ -128,6 +128,6 @@ public class Mahoraga extends Equipment {
 						+ " if the damage was " + GlossaryTag.PHYSICAL.tag(this) + " or "
 						+ GlossaryTag.MAGICAL.tag(this) + " respectively. " + "Additionally, gain "
 						+ GlossaryTag.BERSERK.tag(this, berserk, true) + " and heal for " + DescUtil.white(heal)
-						+ " over <white>5s</white> if above " + GlossaryTag.BERSERK.tag(this, thres, true) + ".");
+						+ " over " + DescUtil.white("5s") + " if above " + GlossaryTag.BERSERK.tag(this, thres, true) + ".");
 	}
 }

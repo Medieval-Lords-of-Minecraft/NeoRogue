@@ -11,6 +11,7 @@ import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.ParticleUtil;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -162,7 +163,7 @@ public class SparkTrap extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE,
-				"Drop a marker that explodes after <white>2s</white>, dealing " + 
+				"Drop a marker that explodes after " + DescUtil.white("2s") + ", dealing " + 
 				GlossaryTag.LIGHTNING.tag(this, explosionDamage, false) + " damage to nearby enemies. " +
 				"If any damaged enemy is " + GlossaryTag.ELECTRIFIED.tag(this) + ", recast to teleport to the bomb and deal " +
 				GlossaryTag.LIGHTNING.tag(this, lineDamage, true) + " damage in a line.");

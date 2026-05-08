@@ -114,7 +114,7 @@ public class LightningRod extends Equipment {
 		item = createItem(Material.YELLOW_DYE,
 				"Can be cast every " + DescUtil.yellow(hitsRequired) + " times you deal " +
 				GlossaryTag.LIGHTNING.tag(this) + " damage, stackable. On cast, " +
-				GlossaryTag.CHANNEL.tag(this) + " for <white>1s</white> before dealing " +
+				GlossaryTag.CHANNEL.tag(this) + " for " + DescUtil.white("1s") + " before dealing " +
 				GlossaryTag.LIGHTNING.tag(this, damage, true) + " and applying " +
 				GlossaryTag.ELECTRIFIED.tag(this, electrified, true) +
 				" in a line in front of you.");

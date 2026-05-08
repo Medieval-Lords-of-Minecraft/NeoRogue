@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.abilities;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -42,6 +43,6 @@ public class GuardingRune extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.COBBLESTONE,
-				"On right click (left click for <gold>Archer</gold>), gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " for <white>10s</white> once per fight.");
+				"On right click (left click for <gold>Archer</gold>), gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " " + DescUtil.duration(10, false) + " once per fight.");
 	}
 }

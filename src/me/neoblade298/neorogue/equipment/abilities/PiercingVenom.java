@@ -65,7 +65,7 @@ public class PiercingVenom extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GREEN_DYE,
-				"On cast, your next <white>3</white> basic attacks apply " + GlossaryTag.POISON.tag(this, poison, true) + " plus " + DescUtil.yellow(mult + "%") +
+				"On cast, your next " + DescUtil.white(3) + " basic attacks apply " + GlossaryTag.POISON.tag(this, poison, true) + " plus " + DescUtil.yellow(mult + "%") +
 				" of the damage that your basic attack deals after buffs and debuffs are applied.");
 	}
 }

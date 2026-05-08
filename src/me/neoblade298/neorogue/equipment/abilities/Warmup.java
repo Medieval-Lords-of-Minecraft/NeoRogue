@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -57,7 +58,7 @@ public class Warmup extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.RED_DYE,
-				"Passive. After <yellow>" + timer + "</yellow> seconds, gain <white>1</white> stamina regen and " + GlossaryTag.SHIELDS.tag(this, shields, true) + "."
-				+ " Taking health damage increases the timer by <white>1</white>.");
+				"Passive. After " + DescUtil.yellow(timer + "s") + ", gain " + DescUtil.white(1) + " stamina regen and " + GlossaryTag.SHIELDS.tag(this, shields, true) + "."
+				+ " Taking health damage increases the timer by " + DescUtil.white(1) + ".");
 	}
 }

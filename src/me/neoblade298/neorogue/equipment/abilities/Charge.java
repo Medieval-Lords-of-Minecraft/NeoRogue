@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.abilities;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -26,7 +27,7 @@ public class Charge extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.IRON_BOOTS,
-				GlossaryTag.POWER.tag(this) + ". Sprinting costs <white>1</white> additional stamina per second, and every <white>3s</white> of sprinting grants you "
+				GlossaryTag.POWER.tag(this) + ". Sprinting costs " + DescUtil.white(1) + " additional stamina per second, and every " + DescUtil.white("3s") + " of sprinting grants you "
 				+ GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>3s</white>].");
 	}
 	

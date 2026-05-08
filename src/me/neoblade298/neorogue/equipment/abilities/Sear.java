@@ -109,7 +109,7 @@ public class Sear extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BLAZE_POWDER, "On cast, " + DescUtil.charge(this, 1, 1) + " before firing a <white>4</white> block wide piercing projectile that deals "
+		item = createItem(Material.BLAZE_POWDER, "On cast, " + DescUtil.charge(this, 1, 1) + " before firing a " + DescUtil.white(4) + " block wide piercing projectile that deals "
 			+ GlossaryTag.FIRE.tag(this, damage, true) + " damage. Any enemies that do not have any stacks of " + GlossaryTag.BURN.tag(this) +
 			" will receive " + GlossaryTag.BURN.tag(this, burn, true) + ".");
 	}

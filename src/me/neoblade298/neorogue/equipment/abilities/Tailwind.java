@@ -11,6 +11,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import me.neoblade298.neocore.bukkit.effects.Circle;
 import me.neoblade298.neocore.bukkit.effects.LocalAxes;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -72,7 +73,7 @@ public class Tailwind extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FEATHER,
-				"On cast, place a circle [<white>8s</white>] that grants you <white>Speed 1</white> and " +
+				"On cast, place a circle [<white>8s</white>] that grants you " + DescUtil.white("Speed 1") + " and " +
 				GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>1s</white>] while you're in it.");
 	}
 }

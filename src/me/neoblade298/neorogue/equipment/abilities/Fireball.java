@@ -5,6 +5,7 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -97,7 +98,7 @@ public class Fireball extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLAZE_POWDER,
-				GlossaryTag.CHANNEL.tag(this) + " for <white>1s</white> before launching a fireball that deals "
+				GlossaryTag.CHANNEL.tag(this) + " for " + DescUtil.white("1s") + " before launching a fireball that deals "
 						+ GlossaryTag.FIRE.tag(this, damage, true) + " damage but apply "
 						+ GlossaryTag.CORRUPTION.tag(this, corr, false) + " to yourself.");
 	}

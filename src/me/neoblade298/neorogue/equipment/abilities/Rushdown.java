@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -44,7 +45,7 @@ public class Rushdown extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.RED_BANNER,
-				"Passive. Increase stamina regen by <white>" + inc + "</white> for the first <yellow>"
-				+ secs + "</yellow> seconds of a fight.");
+				"Passive. Increase stamina regen by " + DescUtil.white(inc) + " for the first " + DescUtil.yellow(
+				secs + "s") + " of a fight.");
 	}
 }

@@ -14,6 +14,7 @@ import me.neoblade298.neocore.bukkit.effects.LocalAxes;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.ParticleUtil;
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -101,9 +102,9 @@ public class SoulBattery extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.RESPAWN_ANCHOR,
-				"On cast, gain " + GlossaryTag.SHIELDS.tag(this, 1, false) + " [<white>8s</white>] for every <yellow>" + threshold +
-				"</yellow> " + GlossaryTag.ELECTRIFIED.tag(this) + " you applied this fight. After <white>2s</white>, " +
-				"drop <white>3</white> bolts of lightning at random in a <white>5</white> block radius, each dealing " +
-				GlossaryTag.LIGHTNING.tag(this, damage, true) + " in a <white>3</white> block radius.");
+				"On cast, gain " + GlossaryTag.SHIELDS.tag(this, 1, false) + " [<white>8s</white>] for every " + DescUtil.yellow(threshold) +
+				" " + GlossaryTag.ELECTRIFIED.tag(this) + " you applied this fight. After " + DescUtil.white("2s") + ", " +
+				"drop " + DescUtil.white(3) + " bolts of lightning at random in a " + DescUtil.white(5) + " block radius, each dealing " +
+				GlossaryTag.LIGHTNING.tag(this, damage, true) + " in a " + DescUtil.white(3) + " block radius.");
 	}
 }

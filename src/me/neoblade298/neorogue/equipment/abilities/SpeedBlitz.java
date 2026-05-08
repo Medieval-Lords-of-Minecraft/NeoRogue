@@ -102,8 +102,8 @@ public class SpeedBlitz extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.DIAMOND_SWORD,
-				"On cast, charge for <white>1s</white>. Then, with " + DescUtil.potion("Slowness", 0, 1) +
+				"On cast, charge for " + DescUtil.white("1s") + ". Then, with " + DescUtil.potion("Slowness", 0, 1) +
                 ", deal " + GlossaryTag.PIERCING.tag(this, damage, true) + 
-				" damage <white>5</white> times over <white>1s</white> to the nearest enemy.");
+				" damage " + DescUtil.white(5) + " times over " + DescUtil.white("1s") + " to the nearest enemy.");
 	}
 }

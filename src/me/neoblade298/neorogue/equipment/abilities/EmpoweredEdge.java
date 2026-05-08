@@ -5,6 +5,7 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -69,7 +70,7 @@ public class EmpoweredEdge extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FLINT,
-				"On cast, grant yourself " + GlossaryTag.SHIELDS.tag(this, shields, true) + " for <white>5</white> seconds. "
+				"On cast, grant yourself " + GlossaryTag.SHIELDS.tag(this, shields, true) + " " + DescUtil.duration(5, false) + ". "
 						+ "Your next basic attack deals " + GlossaryTag.SLASHING.tag(this, damage, true) + " damage.");
 	}
 }

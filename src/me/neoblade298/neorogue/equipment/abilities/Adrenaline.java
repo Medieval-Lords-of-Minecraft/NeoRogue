@@ -10,6 +10,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -48,8 +49,7 @@ public class Adrenaline extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION,
-				"On cast, give yourself <white>" + stamina + "</white> stamina and take <white>5</white> less damage for <white>10</white> seconds. Can be cast <yellow>" +
-					(isUpgraded ? "twice" : "once") + "</yellow> per fight.");
+				"On cast, give yourself " + DescUtil.white(stamina) + " stamina and take " + DescUtil.white(5) + " less damage " + DescUtil.duration(10, false) + ". Can be cast " + DescUtil.yellow(isUpgraded ? "twice" : "once") + " per fight.");
 	}
 
 	@Override

@@ -147,6 +147,6 @@ public class Brilliance extends Equipment {
 				" [<white>8s</white>] at your location. Whenever you deal a damage type that is different " +
 				"from your previous damage type, gain " + GlossaryTag.PROTECT.tag(this, protectShell, true) + 
 				" and " + GlossaryTag.SHELL.tag(this, protectShell, true) + " [<white>5s</white>] and " +
-				"<white>50%</white> resistance to the damage type you used [<white>5s</white>].");
+				DescUtil.white("50%") + " resistance to the damage type you used [<white>5s</white>].");
 	}
 }

@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -47,7 +48,7 @@ public class Energize extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.POTION,
 				"On cast, your next basic attack deals an additional " + GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage " +
-		"and marks the enemy. For the next <white>5</white> seconds, the marked enemy gains " + GlossaryTag.ELECTRIFIED.tag(this, elec, true)
+		"and marks the enemy. For the next " + DescUtil.white("5s") + ", the marked enemy gains " + GlossaryTag.ELECTRIFIED.tag(this, elec, true)
 		+ " each time you deal " + GlossaryTag.LIGHTNING.tag(this) + " damage to any enemy, including this ability.");
 	}
 

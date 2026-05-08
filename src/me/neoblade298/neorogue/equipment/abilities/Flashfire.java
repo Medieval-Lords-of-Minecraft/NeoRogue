@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neocore.bukkit.effects.Circle;
 import me.neoblade298.neocore.bukkit.effects.LocalAxes;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -70,7 +71,7 @@ public class Flashfire extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLAZE_POWDER,
-				"On cast, double (triple if above <white>50%</white> mana) the " + GlossaryTag.BURN.tag(this)
+				"On cast, double (triple if above " + DescUtil.white("50%") + " mana) the " + GlossaryTag.BURN.tag(this)
 						+ " of all nearby enemies, then deal " + GlossaryTag.FIRE.tag(this, damage, true)
 						+ " damage and apply " + GlossaryTag.BURN.tag(this, burn, true)
 						+ " to all enemies nearby enemies.");

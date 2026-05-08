@@ -5,6 +5,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -36,7 +37,7 @@ public class DodgeRoll extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.LEATHER_BOOTS,
 				"On cast, " + GlossaryTag.DASH.tag(this) + " forward and gain " + GlossaryTag.STEALTH.tag(this, 1, false) + " and "
-				+ GlossaryTag.EVADE.tag(this, 1, false) + " for <yellow>" + dur + "</yellow> seconds.");
+				+ GlossaryTag.EVADE.tag(this, 1, false) + " " + DescUtil.duration(dur, true) + ".");
 	}
 
 	@Override

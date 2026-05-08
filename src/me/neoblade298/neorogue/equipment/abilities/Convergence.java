@@ -185,7 +185,7 @@ public class Convergence extends Equipment {
 				"Passive. Gain " + GlossaryTag.INTELLECT.tag(this, intel, true) + " on kill. Every " + 
 				DescUtil.yellow(riftThres) + " kills, spawn a " + GlossaryTag.RIFT.tag(this) + 
 				" [<white>8s</white>] at your location. Whenever you deal a damage type that is different " +
-				"from your previous damage type, heal for " + DescUtil.yellow(heal) + " and fire <white>3</white> " +
+				"from your previous damage type, heal for " + DescUtil.yellow(heal) + " and fire " + DescUtil.white(3) + " " +
 				"color-coded projectiles in a cone dealing " + DescUtil.yellow(PROJECTILE_DAMAGE) + 
 				" damage of the same damage type.");
 	}

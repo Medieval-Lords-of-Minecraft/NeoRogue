@@ -10,6 +10,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -67,7 +68,7 @@ public class PoolOfLight extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.NETHER_STAR,
-				"On cast, drop a radius <white>5</white> pool on the ground that lasts <white>10</white> seconds and grants "
+				"On cast, drop a radius " + DescUtil.white(5) + " pool on the ground that lasts " + DescUtil.white("10s") + " and grants "
 				+ GlossaryTag.SANCTIFIED.tag(this, sanct, true) + " per second to all enemies that walk through it.");
 	}
 }

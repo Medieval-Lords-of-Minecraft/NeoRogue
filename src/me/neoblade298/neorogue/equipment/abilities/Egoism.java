@@ -68,7 +68,7 @@ public class Egoism extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GOLDEN_APPLE,
-				"Passive. On " + GlossaryTag.EVADE.tag(this) + ", regen <yellow>" + healthRegen + "</yellow> health over <white>10s</white>, " +
+				"Passive. On " + GlossaryTag.EVADE.tag(this) + ", regen " + DescUtil.yellow(healthRegen) + " health over " + DescUtil.white("10s") + ", " +
 				"gain " + GlossaryTag.STEALTH.tag(this, stealth, true) + " [<white>10s</white>], and gain " + DescUtil.potion("Speed", 0, 5) + ".");
 	}
 }

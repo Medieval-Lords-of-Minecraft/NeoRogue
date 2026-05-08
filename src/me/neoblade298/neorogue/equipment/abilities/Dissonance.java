@@ -37,7 +37,7 @@ public class Dissonance extends Equipment {
 		item = createItem(Material.KNOWLEDGE_BOOK,
 				"On cast, anytime you deal a damage type that is different from your previous damage type, " +
 				"gain " + DescUtil.yellow(mana) + " mana and " + GlossaryTag.SHIELDS.tag(this, shields, true) +
-				" [" + DescUtil.white("5s") + "]. Can only be cast <yellow>once</yellow> per fight.");
+				" [" + DescUtil.white("5s") + "]. Can only be cast " + DescUtil.yellow("once") + " per fight.");
 	}
 
 	@Override

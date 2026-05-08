@@ -97,7 +97,7 @@ public class Corrode extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SLIME_BALL,
-				"Passive. Your basic attacks mark enemies for <white>3s</white>. " +
+				"Passive. Your basic attacks mark enemies " + DescUtil.duration(3, false) + ". " +
 				GlossaryTag.POISON.tag(this) + " damage against marked enemies deals " + 
 				DescUtil.yellow((int)(bonusDamage * 100) + "%") + " increased damage. " +
 				GlossaryTag.POISON.tag(this) + " applied to marked enemies is increased by " + DescUtil.yellow(bonusPoison) + ".");

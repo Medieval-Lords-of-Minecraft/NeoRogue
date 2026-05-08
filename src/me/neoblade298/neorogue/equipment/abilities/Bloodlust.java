@@ -5,6 +5,7 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -50,7 +51,7 @@ public class Bloodlust extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE_ORE,
-				"On kill, if below <white>" + CUTOFF + "</white> stacks of " + GlossaryTag.BERSERK.tag(this) + ", gain " + GlossaryTag.BERSERK.tag(this, 1, false)
+				"On kill, if below " + DescUtil.white(CUTOFF) + " stacks of " + GlossaryTag.BERSERK.tag(this) + ", gain " + GlossaryTag.BERSERK.tag(this, 1, false)
 				+ ". Otherwise, gain " + GlossaryTag.STRENGTH.tag(this, strength, true) + ".");
 	}
 }

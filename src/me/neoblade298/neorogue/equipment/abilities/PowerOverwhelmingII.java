@@ -91,7 +91,7 @@ public class PowerOverwhelmingII extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.NETHER_STAR,
 				GlossaryTag.POWER.tag(this) + ". Decrease mana costs of all castable abilities by " + DescUtil.yellow(manaReduc)
-						+ ", up to <white>half</white> of each ability's base mana cost, and reduce all cooldowns by " + DescUtil.yellow(cdReduc)
+						+ ", up to " + DescUtil.white("half") + " of each ability's base mana cost, and reduce all cooldowns by " + DescUtil.yellow(cdReduc)
 						+ " seconds. Every ability cast grants " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [" + DescUtil.white(shieldDuration + "s") + "].");
 	}
 }

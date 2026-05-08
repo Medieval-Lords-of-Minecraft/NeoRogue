@@ -5,6 +5,7 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -98,7 +99,7 @@ public class Fireblast extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.BLAZE_POWDER,
 				GlossaryTag.CHANNEL.tag(this)
-						+ " for <white>1s</white> before launching <white>3</white> fireballs in a cone that deal "
+						+ " for " + DescUtil.white("1s") + " before launching " + DescUtil.white(3) + " fireballs in a cone that deal "
 						+ GlossaryTag.FIRE.tag(this, damage, true) + " damage but apply "
 						+ GlossaryTag.CORRUPTION.tag(this, corr, false) + " to yourself.");
 	}

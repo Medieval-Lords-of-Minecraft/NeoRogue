@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -55,8 +56,8 @@ public class GatheringShadows2 extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.OBSIDIAN,
-				"Passive. Gain <white>1</white> stack per second, up to <white>10</white>. On basic attack, deal "
-				+ GlossaryTag.DARK.tag(this, damage, true) + " damage per stack plus <yellow>" + bonus + "</yellow> for every stack above "
-				+ "<white>2</white> and reset the stack counter.");
+				"Passive. Gain " + DescUtil.white(1) + " stack per second, up to " + DescUtil.white(10) + ". On basic attack, deal "
+				+ GlossaryTag.DARK.tag(this, damage, true) + " damage per stack plus " + DescUtil.yellow(bonus) + " for every stack above "
+				+ DescUtil.white(2) + " and reset the stack counter.");
 	}
 }

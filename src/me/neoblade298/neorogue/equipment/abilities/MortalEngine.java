@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
@@ -54,8 +55,8 @@ public class MortalEngine extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SEA_LANTERN,
-				"Passive. For every ability cast that has a base cost of at least <white>" + cutoff
-						+ "</white> stamina, reduce the stamina cost of all abilities by <yellow>" + reduc
-						+ "</yellow>.");
+				"Passive. For every ability cast that has a base cost of at least " + DescUtil.white(cutoff)
+						+ " stamina, reduce the stamina cost of all abilities by " + DescUtil.yellow(reduc)
+						+ ".");
 	}
 }

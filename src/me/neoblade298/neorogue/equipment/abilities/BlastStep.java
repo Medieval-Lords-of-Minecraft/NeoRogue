@@ -57,7 +57,7 @@ public class BlastStep extends Equipment {
 				"On cast, gain " + DescUtil.potion("Speed", 1, 3) + " and " + GlossaryTag.SHIELDS.tag(this, shields, false) + " [<white>5s</white>]. " +
 				"Deal " + GlossaryTag.BLUNT.tag(this, damage, true) + " damage " +
 				"and knock up all enemies in a cone in front of you. Enemies hit take an additional " + GlossaryTag.BLUNT.tag(this, inc, true) + " [<white>3s</white>] " +
-				"from projectiles fired within <white>5</white> blocks of them." );
+				"from projectiles fired within " + DescUtil.white(5) + " blocks of them." );
 	}
 	
 	public static Equipment get() {

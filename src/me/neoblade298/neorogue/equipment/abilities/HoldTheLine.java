@@ -5,6 +5,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -54,7 +55,7 @@ public class HoldTheLine extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.STONE_BRICK_WALL,
-				"On cast, gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " for 10 seconds."
+				"On cast, gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " " + DescUtil.duration(10, false) + "."
 						+ " During this time, your basic attacks apply "
 						+ GlossaryTag.CONCUSSED.tag(this, concussed, true) + ".");
 	}

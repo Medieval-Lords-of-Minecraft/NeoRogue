@@ -63,7 +63,7 @@ public class HeatRising extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.TORCHFLOWER,
-				"On cast, " + GlossaryTag.CHANNEL.tag(this) + " for <white>1s</white> before applying " +
+				"On cast, " + GlossaryTag.CHANNEL.tag(this) + " for " + DescUtil.white("1s") + " before applying " +
 				GlossaryTag.CORRUPTION.tag(this, corr, false) + " to yourself and increase your " + GlossaryTag.FIRE.tag(this) + " damage by "
 						+ DescUtil.yellow(multDisplay + "%") + " [<white>10s</white>].");
 	}

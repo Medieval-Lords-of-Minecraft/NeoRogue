@@ -122,7 +122,7 @@ public class InfernalWarden extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.FIRE_CHARGE,
 				"Passive. Firing a basic attack straight up summons a fire projectile that orbits you at " +
-				"<white>" + (int) ORBIT_RADIUS + "</white> blocks for " + DescUtil.duration(6, false) + ". " +
+				DescUtil.white((int) ORBIT_RADIUS) + " blocks for " + DescUtil.duration(6, false) + ". " +
 				"On contact with an enemy, it deals " + GlossaryTag.FIRE.tag(this, damage, true) + " damage " +
 				"and applies " + GlossaryTag.BURN.tag(this, burn, true) + ".");
 	}

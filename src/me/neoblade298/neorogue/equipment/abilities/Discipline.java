@@ -9,6 +9,7 @@ import org.bukkit.Particle.DustOptions;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -42,8 +43,8 @@ public class Discipline extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION,
-				"On cast, give yourself <white>" + stamina + "</white> stamina, <yellow>" + staminaGain + "</yellow> max stamina, and"
-						+ " take <white>7</white> less damage for <white>10</white> seconds.");
+				"On cast, give yourself " + DescUtil.white(stamina) + " stamina, " + DescUtil.yellow(staminaGain) + " max stamina, and"
+						+ " take " + DescUtil.white(7) + " less damage " + DescUtil.duration(10, false) + ".");
 	}
 
 	@Override

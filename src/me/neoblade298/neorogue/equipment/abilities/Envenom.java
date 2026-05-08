@@ -10,6 +10,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -72,6 +73,6 @@ public class Envenom extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GREEN_DYE,
-				"On cast, for <white>7</white> seconds your basic attacks apply " + GlossaryTag.POISON.tag(this, poison, true) + "");
+				"On cast, for " + DescUtil.white("7s") + " your basic attacks apply " + GlossaryTag.POISON.tag(this, poison, true) + "");
 	}
 }

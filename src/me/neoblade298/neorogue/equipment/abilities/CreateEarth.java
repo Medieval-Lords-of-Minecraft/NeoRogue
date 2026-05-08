@@ -11,6 +11,7 @@ import org.bukkit.util.Vector;
 import me.neoblade298.neocore.bukkit.effects.Circle;
 import me.neoblade298.neocore.bukkit.effects.LocalAxes;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -95,7 +96,7 @@ public class CreateEarth extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.DIRT,
-				"On cast, " + GlossaryTag.CHANNEL.tag(this) + " for <white>1s</white> before dealing "
+				"On cast, " + GlossaryTag.CHANNEL.tag(this) + " for " + DescUtil.white("1s") + " before dealing "
 						+ GlossaryTag.BLUNT.tag(this, damage, true) + " damage, applying "
 						+ GlossaryTag.CONCUSSED.tag(this, conc, true)
 						+ ", and knocking up all enemies in a radius around a targeted block.");

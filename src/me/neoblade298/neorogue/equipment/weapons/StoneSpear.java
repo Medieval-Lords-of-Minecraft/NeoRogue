@@ -9,6 +9,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -140,9 +141,9 @@ public class StoneSpear extends Equipment {
 	public void setupItem() {
 		item = createItem(
 				Material.TRIDENT,
-				"Melee range +1. Can be thrown to deal <yellow>" + throwDamage + "</yellow> " + GlossaryTag.PIERCING.tag(this) + " "
-						+ "damage to all enemies hit, but disabling the weapon for <white>5</white> seconds. "
-						+ "Basic attacks and throw damage are affected by strength <yellow>" + strMult + "x</yellow>."
+				"Melee range +1. Can be thrown to deal " + DescUtil.yellow(throwDamage) + " " + GlossaryTag.PIERCING.tag(this) + " "
+						+ "damage to all enemies hit, but disabling the weapon " + DescUtil.duration(5, false) + ". "
+						+ "Basic attacks and throw damage are affected by strength " + DescUtil.yellow(strMult + "x") + "."
 		);
 	}
 }

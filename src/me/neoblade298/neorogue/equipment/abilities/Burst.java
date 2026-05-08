@@ -7,6 +7,7 @@ import org.bukkit.Particle.DustOptions;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -39,8 +40,8 @@ public class Burst extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION,
-				"On cast, give yourself <yellow>" + stamina + "</yellow> stamina and <yellow>" + buff +
-				"</yellow> " + GlossaryTag.STRENGTH.tag(this) + " for <white>" + seconds + "</white> seconds.");
+				"On cast, give yourself " + DescUtil.yellow(stamina) + " stamina and " + DescUtil.yellow(buff) +
+				" " + GlossaryTag.STRENGTH.tag(this) + " " + DescUtil.duration(seconds, false) + ".");
 	}
 
 	@Override

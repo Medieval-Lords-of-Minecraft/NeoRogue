@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -67,7 +68,7 @@ public class FerociousDraw extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GOLDEN_AXE,
-				"Passive. Basic attack projectiles that hit an enemy within <white>" + range + "</white> blocks "
+				"Passive. Basic attack projectiles that hit an enemy within " + DescUtil.white(range) + " blocks "
 						+ "pierce that enemy and deal an additional " + GlossaryTag.PIERCING.tag(this, damage, true)
 						+ " damage.");
 	}

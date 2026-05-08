@@ -101,7 +101,7 @@ public class GrowingHex extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SCULK_SENSOR,
-				"On cast, for the next <white>10s</white>, your non-basic attack damage marks enemies for <white>8s</white>. Dealing to marked enemies basic attack damage deals " +
+				"On cast, for the next " + DescUtil.white("10s") + ", your non-basic attack damage marks enemies " + DescUtil.duration(8, false) + ". Dealing to marked enemies basic attack damage deals " +
 				GlossaryTag.DARK.tag(this, damage, false) + " damage plus " + DescUtil.yellow(growth) + " for every mark you've consumed this fight and consumes the mark. " +
 				"Marks do not stack.");
 	}

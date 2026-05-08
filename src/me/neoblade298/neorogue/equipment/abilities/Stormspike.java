@@ -7,6 +7,7 @@ import org.bukkit.Particle.DustOptions;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -141,10 +142,10 @@ public class Stormspike extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LIGHTNING_ROD,
-			"On cast, throw <white>3</white> projectiles in a cone that each deal " + 
-			GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage. If you hit at least <white>2</white> enemies, " +
+			"On cast, throw " + DescUtil.white(3) + " projectiles in a cone that each deal " + 
+			GlossaryTag.LIGHTNING.tag(this, damage, true) + " damage. If you hit at least " + DescUtil.white(2) + " enemies, " +
 			"gain " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>6s</white>] and basic attacks deal " +
 			GlossaryTag.LIGHTNING.tag(this, basicLightning, true) + " damage and apply " + 
-			GlossaryTag.ELECTRIFIED.tag(this, electrified, true) + " [<white>5s</white>] for <white>6s</white>.");
+			GlossaryTag.ELECTRIFIED.tag(this, electrified, true) + " [<white>5s</white>] " + DescUtil.duration(6, false) + ".");
 	}
 }

@@ -137,7 +137,7 @@ public class ArcaneBlast extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.TNT,
-				"On cast, " + DescUtil.charge(this, 1, 1) + " before dropping a marker at the block you aim at. It gains a stack every second, up to <white>5</white>. Recast to " +
+				"On cast, " + DescUtil.charge(this, 1, 1) + " before dropping a marker at the block you aim at. It gains a stack every second, up to " + DescUtil.white(5) + ". Recast to " +
 				"detonate, dealing " + GlossaryTag.FIRE.tag(this, damage, true) + " damage multiplied by your stacks to all nearby enemies.");
 	}
 }

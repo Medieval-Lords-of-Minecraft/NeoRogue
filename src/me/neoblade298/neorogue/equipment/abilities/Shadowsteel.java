@@ -13,6 +13,7 @@ import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.ParticleUtil;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
@@ -124,8 +125,8 @@ public class Shadowsteel extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.IRON_INGOT,
-				"Passive. A ball of darkness follows <white>2s</white> behind you. Whenever you deal " + GlossaryTag.PHYSICAL.tag(this) + 
-				" damage <white>(2s cooldown)</white>, deal " + GlossaryTag.DARK.tag(this, damage, true) + 
-				" damage in a line from the ball to <white>3</white> blocks in front of you and teleport the ball there.");
+				"Passive. A ball of darkness follows " + DescUtil.white("2s") + " behind you. Whenever you deal " + GlossaryTag.PHYSICAL.tag(this) + 
+				" damage " + DescUtil.white("(2s cooldown)") + ", deal " + GlossaryTag.DARK.tag(this, damage, true) + 
+				" damage in a line from the ball to " + DescUtil.white(3) + " blocks in front of you and teleport the ball there.");
 	}
 }

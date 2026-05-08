@@ -107,8 +107,8 @@ public class ConfidenceKill extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.OBSIDIAN,
-				"On cast, mark the target you're looking at. If you don't deal " + GlossaryTag.GENERAL.tag(this) + " damage to that enemy for <white>2</white> seconds," +
-				" apply " + GlossaryTag.INSANITY.tag(this, stacks, false) + " to them. If you kill this enemy within the next 5 seconds, buff your damage by "
+				"On cast, mark the target you're looking at. If you don't deal " + GlossaryTag.GENERAL.tag(this) + " damage to that enemy for " + DescUtil.white("2s") + "," +
+				" apply " + GlossaryTag.INSANITY.tag(this, stacks, false) + " to them. If you kill this enemy within the next " + DescUtil.white("5s") + ", buff your damage by "
 				+ DescUtil.yellow(buff + "%") + " [<white>10s</white>].");
 	}
 }

@@ -90,6 +90,6 @@ public class Farewell extends Equipment {
 		item = createItem(Material.REDSTONE_TORCH,
 				"On cast, drop a bomb that detonates and deals " + GlossaryTag.DARK.tag(this) + " damage after you get out of range of it." +
 				" For every second you stay in range, up to " + DescUtil.white(MAX + "s") + ", increase damage dealt by " + DescUtil.yellow(damage) + "."
-				+ " Targets under <white>50%</white> health take an additional " + GlossaryTag.DARK.tag(this, execute, true) + " damage.");
+				+ " Targets under " + DescUtil.white("50%") + " health take an additional " + GlossaryTag.DARK.tag(this, execute, true) + " damage.");
 	}
 }

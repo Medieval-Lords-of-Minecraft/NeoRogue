@@ -11,6 +11,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import me.neoblade298.neocore.bukkit.effects.Circle;
 import me.neoblade298.neocore.bukkit.effects.LocalAxes;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
@@ -89,6 +90,6 @@ public class Engulf extends Equipment {
 		item = createItem(Material.FIRE_CHARGE,
 				"Passive. Every time you deal " + GlossaryTag.FIRE.tag(this, thres, true) + " damage, deal "
 						+ GlossaryTag.FIRE.tag(this, damage, true)
-						+ " damage to all enemies near you <white>3</white> times over <white>3s</white>.");
+						+ " damage to all enemies near you " + DescUtil.white(3) + " times over " + DescUtil.white("3s") + ".");
 	}
 }

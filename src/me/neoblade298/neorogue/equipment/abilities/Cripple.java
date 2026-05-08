@@ -8,6 +8,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -68,7 +69,7 @@ public class Cripple extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.ARMOR_STAND,
 				"On cast, increase the " + GlossaryTag.PHYSICAL.tag(this)
-						+ " damage taken of enemies in a cone in front of you by <yellow>" + inc + "</yellow>"
-						+ " for <white>8</white> seconds.");
+						+ " damage taken of enemies in a cone in front of you by " + DescUtil.yellow(inc)
+						+ " " + DescUtil.duration(8, false) + ".");
 	}
 }

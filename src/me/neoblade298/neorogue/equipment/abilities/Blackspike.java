@@ -7,6 +7,7 @@ import org.bukkit.Particle.DustOptions;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -100,7 +101,7 @@ public class Blackspike extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.NETHERITE_SCRAP,
-			"On cast, throw <white>3</white> projectiles in a cone that each deal " + 
+			"On cast, throw " + DescUtil.white(3) + " projectiles in a cone that each deal " + 
 			GlossaryTag.DARK.tag(this, damage, true) + " damage.");
 	}
 }

@@ -144,6 +144,6 @@ public class HuntersEssence extends Equipment {
 				"Passive. When you kill an enemy, they drop a stack. Standing on stacks collects them. " +
 				"Each stack grants you " + DescUtil.yellow(stamina) + " stamina, " + 
 				DescUtil.yellow((int)(damageBuff * 100) + "%") + " general damage permanently, and has a " +
-				DescUtil.yellow((int)(focusChance * 100) + "%") + " chance to increase " + GlossaryTag.FOCUS.tag(this) + " by <white>1</white>.");
+				DescUtil.yellow((int)(focusChance * 100) + "%") + " chance to increase " + GlossaryTag.FOCUS.tag(this) + " by " + DescUtil.white(1) + ".");
 	}
 }

@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -65,7 +66,7 @@ public class BlessedEdge extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GLOWSTONE_DUST,
-				"On cast, your next basic attack deals <white>" + damage + " </white>" + GlossaryTag.LIGHT.tag(this) + " damage and applies <yellow>" + sanct +
-				"</yellow> " + GlossaryTag.SANCTIFIED.tag(this) + ".");
+				"On cast, your next basic attack deals " + DescUtil.white(damage) + " " + GlossaryTag.LIGHT.tag(this) + " damage and applies " + DescUtil.yellow(sanct) +
+				" " + GlossaryTag.SANCTIFIED.tag(this) + ".");
 	}
 }

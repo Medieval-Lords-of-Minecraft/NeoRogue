@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.accessories;
 import org.bukkit.Material;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -44,7 +45,7 @@ public class RingOfAnger extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BRICK, "Gain a stack of " + GlossaryTag.BERSERK.tag(this) +" every <yellow>" + seconds + "</yellow> seconds."
-				+ " If you have at least <white>3</white> stacks after you gain a stack from the ring, gain <white>5</white> strength once per fight.");
+		item = createItem(Material.BRICK, "Gain a stack of " + GlossaryTag.BERSERK.tag(this) + " every " + DescUtil.yellow(seconds + "s") + "."
+				+ " If you have at least " + DescUtil.white(3) + " stacks after you gain a stack from the ring, gain " + DescUtil.white(5) + " strength once per fight.");
 	}
 }
