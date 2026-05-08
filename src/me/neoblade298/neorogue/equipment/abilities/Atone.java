@@ -55,9 +55,9 @@ public class Atone extends Equipment {
 	
 	public Atone(boolean isUpgraded) {
 		super(ID, "Atone", isUpgraded, Rarity.UNCOMMON, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 10, 5, 7));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 10, 8, 7));
 		
-		damage = isUpgraded ? 300 : 200;
+		damage = 200;
 		sanct = isUpgraded ? 10 : 7;
 	}
 	
@@ -93,7 +93,7 @@ public class Atone extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLADE_POTTERY_SHERD,
-				"On cast, " + DescUtil.charge(this, 1, 1) + " before dealing " + GlossaryTag.LIGHT.tag(this, damage, true) + " to nearby enemies. "
+				"On cast, " + DescUtil.charge(this, 1, 1) + " before dealing " + GlossaryTag.LIGHT.tag(this, damage, false) + " to nearby enemies. "
 				+ "Increase damage dealt by number of " + GlossaryTag.SANCTIFIED.tag(this) + " stacks on the enemy multiplied by <yellow>" + sanct + "</yellow>.");
 	}
 }

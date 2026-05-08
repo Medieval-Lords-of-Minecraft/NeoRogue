@@ -65,14 +65,13 @@ public class Fury extends Equipment {
 					ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.SLASHING, DamageStatTracker.of(id + slot, eq)));
 					hit.play(p, target);
 					Sounds.anvil.play(p, target);
-					data.applyStatus(StatusType.BERSERK, data, 1, -1);
 					if (isBerserk) {
 						Sounds.explode.play(p, target);
 						explode.play(p, target);
 						FightInstance.giveHeal(p, berserkHeal, p);
 					}
 					else {
-						FightInstance.giveHeal(p, heal, p);
+						data.applyStatus(StatusType.BERSERK, data, 1, -1);
 					}
 					return TriggerResult.remove();
 				});
