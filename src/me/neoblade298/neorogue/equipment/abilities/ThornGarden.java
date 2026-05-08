@@ -65,7 +65,7 @@ public class ThornGarden extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.DEAD_BUSH,
-				"On cast, for the rest of the fight, for every <white>" + CUTOFF +"</white> " + GlossaryTag.SHIELDS.tag + " that are granted to you, "
+				GlossaryTag.POWER.tag(this) + ". For every <white>" + CUTOFF +"</white> " + GlossaryTag.SHIELDS.tag + " that are granted to you, "
 						+ "gain <yellow>" + thorns + "</yellow> stacks of " + GlossaryTag.THORNS.tag(this) + ".");
 	}
 }

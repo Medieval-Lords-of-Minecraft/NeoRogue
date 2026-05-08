@@ -11,6 +11,7 @@ import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.trigger.Trigger;
 import me.neoblade298.neorogue.session.fight.trigger.TriggerResult;
@@ -86,7 +87,7 @@ public class PredatorDrive extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SPECTRAL_ARROW,
-			"Cast once to activate. Every " + DescUtil.yellow(threshold) + " basic attacks" + 
+			GlossaryTag.POWER.tag(this) + ". Every " + DescUtil.yellow(threshold) + " basic attacks" + 
 			" that hit an enemy within <white>5</white> blocks reduce all cooldowns by <white>1s</white>.");
 	}
 }

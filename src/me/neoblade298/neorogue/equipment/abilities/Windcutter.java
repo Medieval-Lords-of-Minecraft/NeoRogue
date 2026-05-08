@@ -80,7 +80,7 @@ public class Windcutter extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BAMBOO,
-				"Cast once per fight to activate. Every third basic attack fires five piercing projectiles in a cone that deal " + GlossaryTag.SLASHING.tag(this, damage, true) +
+				GlossaryTag.POWER.tag(this) + ". Every third basic attack fires five piercing projectiles in a cone that deal " + GlossaryTag.SLASHING.tag(this, damage, true) +
 				" damage.");
 	}
 	

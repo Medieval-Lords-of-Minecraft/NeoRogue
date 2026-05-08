@@ -26,7 +26,7 @@ public class Charge extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.IRON_BOOTS,
-				"On cast, activate this for the rest of the fight. Sprinting costs <white>1</white> additional stamina per second, and every <white>3s</white> of sprinting grants you "
+				GlossaryTag.POWER.tag(this) + ". Sprinting costs <white>1</white> additional stamina per second, and every <white>3s</white> of sprinting grants you "
 				+ GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>3s</white>].");
 	}
 	

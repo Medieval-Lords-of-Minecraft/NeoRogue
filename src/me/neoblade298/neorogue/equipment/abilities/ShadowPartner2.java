@@ -168,7 +168,7 @@ public class ShadowPartner2 extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ENDER_PEARL,
-				"Cast once to activate. A ball of darkness follows <white>2s</white> behind you. Anytime you apply " +
+				GlossaryTag.POWER.tag(this) + ". A ball of darkness follows <white>2s</white> behind you. Anytime you apply " +
 				GlossaryTag.INSANITY.tag(this) + " <white>(1s cooldown)</white>, the ball fires a projectile at them, dealing " +
 				GlossaryTag.DARK.tag(this, damage, true) + " damage on hit. Fires an additional projectile for every <yellow>" + 
 				insanityThreshold + "</yellow> " + GlossaryTag.INSANITY.tag(this) + " you've applied this fight.");

@@ -72,7 +72,7 @@ public class DangerClose extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FEATHER,
-				"Cast once to activate. Whenever you " + GlossaryTag.EVADE.tag(this) + ", increase your " + 
+				GlossaryTag.POWER.tag(this) + ". Whenever you " + GlossaryTag.EVADE.tag(this) + ", increase your " + 
 				GlossaryTag.PHYSICAL.tag(this) + " damage by " + DescUtil.yellow((int)(damageIncrease * 100) + "%") + ".");
 	}
 }

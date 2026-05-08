@@ -72,8 +72,8 @@ public class StonePlating extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.DEEPSLATE,
-				"Cast once per fight to gain " + GlossaryTag.SHIELDS.tag(this, shields, true)
-				+ ". Afterwards, while you have " + GlossaryTag.SHIELDS.tag(this)
+				GlossaryTag.POWER.tag(this) + ". Gain " + GlossaryTag.SHIELDS.tag(this, shields, true)
+				+ ". While you have " + GlossaryTag.SHIELDS.tag(this)
 				+ ", deal " + DescUtil.yellow((int) (bonusPercent * 100) + "%")
 				+ " of " + GlossaryTag.MAGICAL.tag(this) + " damage dealt as additional "
 				+ GlossaryTag.BLUNT.tag(this) + " damage.");

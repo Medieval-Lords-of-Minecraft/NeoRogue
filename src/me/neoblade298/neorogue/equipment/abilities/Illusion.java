@@ -186,7 +186,7 @@ public class Illusion extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ENDER_EYE,
-				"Cast once to activate. Whenever you apply " + GlossaryTag.EVADE.tag(this)
+				GlossaryTag.POWER.tag(this) + ". Whenever you apply " + GlossaryTag.EVADE.tag(this)
 						+ ", spawn a body double at your position from "
 						+ "<white>2s</white> ago that fires projectiles dealing "
 						+ GlossaryTag.DARK.tag(this, damage, true) + " damage to all nearby enemies "

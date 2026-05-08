@@ -66,7 +66,7 @@ public class Hearth extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.CAMPFIRE,
-				"On cast, every [<white>10s</white>], remove " + GlossaryTag.CORRUPTION.tag(this, 1, false) +
-				" if you have it to heal for " + DescUtil.yellow(heal) + ". Can only be cast once.");
+				GlossaryTag.POWER.tag(this) + ". Every [<white>10s</white>], remove " + GlossaryTag.CORRUPTION.tag(this, 1, false) +
+				" if you have it to heal for " + DescUtil.yellow(heal) + ".");
 	}
 }

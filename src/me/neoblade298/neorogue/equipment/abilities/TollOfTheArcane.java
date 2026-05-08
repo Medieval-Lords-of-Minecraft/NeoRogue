@@ -69,8 +69,8 @@ public class TollOfTheArcane extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.CRYING_OBSIDIAN,
-				"On cast, decrease mana costs of all castable abilities by " + DescUtil.yellow(manaReducDisplay + "%")
+				GlossaryTag.POWER.tag(this) + ". Decrease mana costs of all castable abilities by " + DescUtil.yellow(manaReducDisplay + "%")
 						+ " and apply " + GlossaryTag.CORRUPTION.tag(this, corruption, false)
-						+ " to yourself. Can only be cast once.");
+						+ " to yourself.");
 	}
 }

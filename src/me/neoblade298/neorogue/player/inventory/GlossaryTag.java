@@ -101,7 +101,9 @@ public enum GlossaryTag implements GlossaryIcon {
 	CHARGE(Material.BLAZE_ROD, "<gold>Charge</gold>",
 			"Become unable to jump and apply slowness based on level of charge to yourself. You cannot use other abilities during this time."),
 	CHANNEL(Material.CLOCK, "<red>Channel</red>",
-			"Become unable to move. You cannot use other abilities during this time.");
+			"Become unable to move. You cannot use other abilities during this time."),
+	POWER(Material.ENCHANTED_BOOK, "<aqua>Power</aqua>",
+			"A one-time activation that grants a passive effect for the rest of the fight.");
 	
 	private ItemStack icon;
 	public String tag, lore;

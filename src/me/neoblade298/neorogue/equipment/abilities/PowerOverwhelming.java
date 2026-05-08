@@ -11,6 +11,7 @@ import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
 import me.neoblade298.neorogue.session.fight.buff.Buff;
 import me.neoblade298.neorogue.session.fight.buff.BuffStatTracker;
@@ -69,7 +70,7 @@ public class PowerOverwhelming extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.NETHER_STAR,
-				"On cast, decrease mana costs of all castable abilities by " + DescUtil.yellow(manaReduc)
-						+ ", up to <white>half</white> of each ability's base mana cost, for the duration of the fight. Can only be cast once.");
+				GlossaryTag.POWER.tag(this) + ". Decrease mana costs of all castable abilities by " + DescUtil.yellow(manaReduc)
+						+ ", up to <white>half</white> of each ability's base mana cost, for the duration of the fight.");
 	}
 }
