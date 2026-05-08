@@ -27,7 +27,7 @@ public class StormweaversPromise extends Equipment {
 	public StormweaversPromise(boolean isUpgraded) {
 		super(ID, "Stormweaver's Promise", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.none());
-		shields = isUpgraded ? 6 : 4;
+		shields = isUpgraded ? 2 : 1;
 	}
 	
 	public static Equipment get() {

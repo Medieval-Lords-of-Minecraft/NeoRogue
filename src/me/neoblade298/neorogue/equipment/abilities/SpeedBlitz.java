@@ -43,8 +43,8 @@ public class SpeedBlitz extends Equipment {
 	
 	public SpeedBlitz(boolean isUpgraded) {
 		super(ID, "Speed Blitz", isUpgraded, Rarity.RARE, EquipmentClass.THIEF, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(15, 0, isUpgraded ? 12 : 15, 0));
-		damage = isUpgraded ? 120 : 80;
+				EquipmentProperties.ofUsable(5, 20, isUpgraded ? 12 : 15, 0));
+		damage = isUpgraded ? 60 : 40;
 		properties.addUpgrades(PropertyType.COOLDOWN);
 	}
 	

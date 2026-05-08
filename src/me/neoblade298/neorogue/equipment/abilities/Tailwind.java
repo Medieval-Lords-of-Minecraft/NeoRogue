@@ -32,7 +32,7 @@ public class Tailwind extends Equipment {
 	
 	public Tailwind(boolean isUpgraded) {
 		super(ID, "Tailwind", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(isUpgraded ? 15 : 20, 5, isUpgraded ? 17 : 20, 0).add(PropertyType.AREA_OF_EFFECT, radius));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(isUpgraded ? 5 : 10, 0, isUpgraded ? 14 : 17, 0).add(PropertyType.AREA_OF_EFFECT, radius));
 		properties.addUpgrades(PropertyType.MANA_COST, PropertyType.COOLDOWN);
 		shields = isUpgraded ? 3 : 2;
 	}

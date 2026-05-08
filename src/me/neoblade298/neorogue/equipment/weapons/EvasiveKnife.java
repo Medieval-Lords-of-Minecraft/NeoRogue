@@ -18,7 +18,7 @@ import me.neoblade298.neorogue.session.fight.trigger.event.PreBasicAttackEvent;
 
 public class EvasiveKnife extends Equipment {
 	private static final String ID = "EvasiveKnife";
-	private static final int base = 35;
+	private static final int base = 30;
 	private int dmg, stam, hits;
 	public EvasiveKnife(boolean isUpgraded) {
 		super(ID, "Evasive Knife", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,

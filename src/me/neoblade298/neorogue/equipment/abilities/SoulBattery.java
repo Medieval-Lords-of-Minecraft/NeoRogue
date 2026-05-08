@@ -52,7 +52,7 @@ public class SoulBattery extends Equipment {
 
 	public SoulBattery(boolean isUpgraded) {
 		super(ID, "Soul Battery", isUpgraded, Rarity.RARE, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 12, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 5, 12, 0));
 		threshold = isUpgraded ? 15 : 10;
 		damage = isUpgraded ? 225 : 150;
 	}
@@ -101,7 +101,7 @@ public class SoulBattery extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.RESPAWN_ANCHOR,
-				"On cast, gain " + GlossaryTag.SHIELDS.tag(this, 1, true) + " [<white>8s</white>] for every <yellow>" + threshold +
+				"On cast, gain " + GlossaryTag.SHIELDS.tag(this, 1, false) + " [<white>8s</white>] for every <yellow>" + threshold +
 				"</yellow> " + GlossaryTag.ELECTRIFIED.tag(this) + " you applied this fight. After <white>2s</white>, " +
 				"drop <white>3</white> bolts of lightning at random in a <white>5</white> block radius, each dealing " +
 				GlossaryTag.LIGHTNING.tag(this, damage, true) + " in a <white>3</white> block radius.");

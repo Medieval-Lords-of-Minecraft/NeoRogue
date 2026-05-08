@@ -38,9 +38,9 @@ public class LayExplosive extends Equipment {
 	
 	public LayExplosive(boolean isUpgraded) {
 		super(ID, "Lay Explosive", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 5, 15, tp.range));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 5, 12, tp.range));
 		
-		damage = isUpgraded ? 60 : 50;
+		damage = isUpgraded ? 90 : 70;
 	}
 	
 	public static Equipment get() {

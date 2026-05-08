@@ -33,7 +33,7 @@ public class WindTrap extends Equipment {
 	
 	public WindTrap(boolean isUpgraded) {
 		super(ID, "Wind Trap", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 5, 15, 0).add(PropertyType.AREA_OF_EFFECT, tp.range));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(5, 0, isUpgraded ? 10 : 8, 0).add(PropertyType.AREA_OF_EFFECT, tp.range));
 		secs = isUpgraded ? 6 : 4;
 	}
 	

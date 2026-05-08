@@ -15,6 +15,7 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
@@ -46,7 +47,7 @@ public class ShadowPartner2 extends Equipment {
 
 	public ShadowPartner2(boolean isUpgraded) {
 		super(ID, "Shadow Partner II", isUpgraded, Rarity.EPIC, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 1, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(40, 20, 0, 0));
 		damage = isUpgraded ? 400 : 300;
 		insanityThreshold = isUpgraded ? 20 : 30;
 	}
@@ -57,73 +58,80 @@ public class ShadowPartner2 extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		// Queue to track player positions - stores last 4 positions (2 seconds worth at 0.5s intervals)
-		LinkedList<Location> locationQueue = new LinkedList<Location>();
-		ActionMeta cooldown = new ActionMeta();
-		
-		// Task to track player position every half second and display shadow ball
-		data.addTask(new BukkitRunnable() {
-			public void run() {
-				Player p = data.getPlayer();
-				// Add current location to queue
-				locationQueue.add(p.getLocation().clone());
-				
-				// Keep queue at exactly 4 positions (2 seconds)
-				if (locationQueue.size() > 4) {
-					locationQueue.removeFirst();
-				}
-				
-				// Display shadow ball at the position from 2 seconds ago
-				if (locationQueue.size() == 4) {
-					Location shadowLoc = locationQueue.getFirst();
-					shadowBall.play(p, shadowLoc);
-				}
-			}
-		}.runTaskTimer(NeoRogue.inst(), 0L, 10L)); // Run every half second (10 ticks)
-		
-		// Trigger when applying insanity
-		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			Player p = data.getPlayer();
-			ApplyStatusEvent ev = (ApplyStatusEvent) in;
-			if (!ev.isStatus(StatusType.INSANITY)) return TriggerResult.keep();
+			Sounds.equip.play(p, p);
 			
-			// Check cooldown (1 second = 1000ms)
-			if (System.currentTimeMillis() - cooldown.getTime() < 1000) {
-				return TriggerResult.keep();
-			}
+			// Queue to track player positions - stores last 4 positions (2 seconds worth at 0.5s intervals)
+			LinkedList<Location> locationQueue = new LinkedList<Location>();
+			ActionMeta cooldown = new ActionMeta();
 			
-			// Only fire if we have a shadow position (2 seconds have passed)
-			if (locationQueue.size() < 4) return TriggerResult.keep();
-			
-			// Get the target that received insanity
-			FightData target = ev.getTarget();
-			if (!(target.getEntity() instanceof LivingEntity)) return TriggerResult.keep();
-			LivingEntity targetEntity = (LivingEntity) target.getEntity();
-			
-			// Calculate number of bonus projectiles based on insanity applied this fight
-			int totalInsanity = data.getStats().getStatusesApplied().getOrDefault(StatusType.INSANITY, 0);
-			int bonusProjectiles = totalInsanity / insanityThreshold;
-			int totalProjectiles = 1 + bonusProjectiles;
-			
-			// Fire projectiles from shadow ball location with 3 tick delay between them
-			Location shadowLoc = locationQueue.getFirst();
-			Location targetLoc = targetEntity.getEyeLocation();
-			
-			for (int i = 0; i < totalProjectiles; i++) {
-				final int index = i;
-				data.addTask(new BukkitRunnable() {
-					public void run() {
-						ProjectileGroup proj = new ProjectileGroup(new ShadowProjectile(data, slot, ShadowPartner2.this));
-						proj.start(data, shadowLoc, targetLoc.toVector().subtract(shadowLoc.toVector()).normalize());
-						Sounds.fire.play(p, shadowLoc);
+			// Task to track player position every half second and display shadow ball
+			data.addTask(new BukkitRunnable() {
+				public void run() {
+					Player pl = data.getPlayer();
+					// Add current location to queue
+					locationQueue.add(pl.getLocation().clone());
+					
+					// Keep queue at exactly 4 positions (2 seconds)
+					if (locationQueue.size() > 4) {
+						locationQueue.removeFirst();
 					}
-				}.runTaskLater(NeoRogue.inst(), index * 3L)); // 3 tick delay between each projectile
-			}
+					
+					// Display shadow ball at the position from 2 seconds ago
+					if (locationQueue.size() == 4) {
+						Location shadowLoc = locationQueue.getFirst();
+						shadowBall.play(pl, shadowLoc);
+					}
+				}
+			}.runTaskTimer(NeoRogue.inst(), 0L, 10L)); // Run every half second (10 ticks)
 			
-			cooldown.setTime(System.currentTimeMillis());
+			// Trigger when applying insanity
+			data.addTrigger(id, Trigger.APPLY_STATUS, (pdata2, in2) -> {
+				Player p2 = data.getPlayer();
+				ApplyStatusEvent ev = (ApplyStatusEvent) in2;
+				if (!ev.isStatus(StatusType.INSANITY)) return TriggerResult.keep();
+				
+				// Check cooldown (1 second = 1000ms)
+				if (System.currentTimeMillis() - cooldown.getTime() < 1000) {
+					return TriggerResult.keep();
+				}
+				
+				// Only fire if we have a shadow position (2 seconds have passed)
+				if (locationQueue.size() < 4) return TriggerResult.keep();
+				
+				// Get the target that received insanity
+				FightData target = ev.getTarget();
+				if (!(target.getEntity() instanceof LivingEntity)) return TriggerResult.keep();
+				LivingEntity targetEntity = (LivingEntity) target.getEntity();
+				
+				// Calculate number of bonus projectiles based on insanity applied this fight
+				int totalInsanity = data.getStats().getStatusesApplied().getOrDefault(StatusType.INSANITY, 0);
+				int bonusProjectiles = totalInsanity / insanityThreshold;
+				int totalProjectiles = 1 + bonusProjectiles;
+				
+				// Fire projectiles from shadow ball location with 3 tick delay between them
+				Location shadowLoc = locationQueue.getFirst();
+				Location targetLoc = targetEntity.getEyeLocation();
+				
+				for (int i = 0; i < totalProjectiles; i++) {
+					final int index = i;
+					data.addTask(new BukkitRunnable() {
+						public void run() {
+							ProjectileGroup proj = new ProjectileGroup(new ShadowProjectile(data, slot, ShadowPartner2.this));
+							proj.start(data, shadowLoc, targetLoc.toVector().subtract(shadowLoc.toVector()).normalize());
+							Sounds.fire.play(p2, shadowLoc);
+						}
+					}.runTaskLater(NeoRogue.inst(), index * 3L)); // 3 tick delay between each projectile
+				}
+				
+				cooldown.setTime(System.currentTimeMillis());
+				
+				return TriggerResult.keep();
+			});
 			
-			return TriggerResult.keep();
-		});
+			return TriggerResult.remove();
+		}));
 	}
 
 	private class ShadowProjectile extends Projectile {
@@ -160,7 +168,7 @@ public class ShadowPartner2 extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ENDER_PEARL,
-				"A ball of darkness follows <white>2s</white> behind you. Anytime you apply " +
+				"Cast once to activate. A ball of darkness follows <white>2s</white> behind you. Anytime you apply " +
 				GlossaryTag.INSANITY.tag(this) + " <white>(1s cooldown)</white>, the ball fires a projectile at them, dealing " +
 				GlossaryTag.DARK.tag(this, damage, true) + " damage on hit. Fires an additional projectile for every <yellow>" + 
 				insanityThreshold + "</yellow> " + GlossaryTag.INSANITY.tag(this) + " you've applied this fight.");

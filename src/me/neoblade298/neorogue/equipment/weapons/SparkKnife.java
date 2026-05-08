@@ -25,7 +25,7 @@ public class SparkKnife extends Equipment {
 	public SparkKnife(boolean isUpgraded) {
 		super(ID, "Spark Knife", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF,
 				EquipmentType.WEAPON,
-				EquipmentProperties.ofWeapon(isUpgraded ? 30 : 20, 1, 0.2, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
+				EquipmentProperties.ofWeapon(isUpgraded ? 35 : 30, 1, 0.2, DamageType.SLASHING, Sound.ENTITY_PLAYER_ATTACK_SWEEP));
 		properties.addUpgrades(PropertyType.DAMAGE);
 		elec = isUpgraded ? 3 : 2;
 	}

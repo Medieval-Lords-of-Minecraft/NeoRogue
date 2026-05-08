@@ -26,7 +26,7 @@ public class Backstep extends Equipment {
 		super(ID, "Backstep", isUpgraded, Rarity.COMMON, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, isUpgraded ? 1 : 5, 8, 0));
 		properties.addUpgrades(PropertyType.STAMINA_COST);
-		shields = isUpgraded ? 6 : 3;
+		shields = isUpgraded ? 4 : 3;
 	}
 
 	@Override

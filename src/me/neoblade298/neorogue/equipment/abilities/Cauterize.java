@@ -39,8 +39,8 @@ public class Cauterize extends Equipment {
 	public Cauterize(boolean isUpgraded) {
 		super(ID, "Cauterize", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(0, 0, 3, 0));
-		stacks = 15;
-		damage = isUpgraded ? 1.8 : 1.2;
+		stacks = 4;
+		damage = isUpgraded ? 3 : 2;
 		properties.setCastType(CastType.TOGGLE);
 	}
 

@@ -15,6 +15,7 @@ import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
@@ -46,7 +47,7 @@ public class ShadowPartner extends Equipment {
 
 	public ShadowPartner(boolean isUpgraded) {
 		super(ID, "Shadow Partner", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 1, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(40, 20, 0, 0));
 		damage = isUpgraded ? 250 : 150;
 	}
 
@@ -56,61 +57,68 @@ public class ShadowPartner extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		// Queue to track player positions - stores last 4 positions (2 seconds worth at 0.5s intervals)
-		LinkedList<Location> locationQueue = new LinkedList<Location>();
-		ActionMeta cooldown = new ActionMeta();
-		
-		// Task to track player position every half second and display shadow ball
-		data.addTask(new BukkitRunnable() {
-			public void run() {
-				Player p = data.getPlayer();
-				// Add current location to queue
-				locationQueue.add(p.getLocation().clone());
-				
-				// Keep queue at exactly 4 positions (2 seconds)
-				if (locationQueue.size() > 4) {
-					locationQueue.removeFirst();
-				}
-				
-				// Display shadow ball at the position from 2 seconds ago
-				if (locationQueue.size() == 4) {
-					Location shadowLoc = locationQueue.getFirst();
-					shadowBall.play(p, shadowLoc);
-				}
-			}
-		}.runTaskTimer(NeoRogue.inst(), 0L, 10L)); // Run every half second (10 ticks)
-		
-		// Trigger when applying insanity
-		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
-			ApplyStatusEvent ev = (ApplyStatusEvent) in;
-			if (!ev.isStatus(StatusType.INSANITY)) return TriggerResult.keep();
-			
-			// Check cooldown (1 second = 1000ms)
-			if (System.currentTimeMillis() - cooldown.getTime() < 1000) {
-				return TriggerResult.keep();
-			}
-			
-			// Only fire if we have a shadow position (2 seconds have passed)
-			if (locationQueue.size() < 4) return TriggerResult.keep();
-			
-			// Get the target that received insanity
-			FightData target = ev.getTarget();
-			if (!(target.getEntity() instanceof LivingEntity)) return TriggerResult.keep();
-			LivingEntity targetEntity = (LivingEntity) target.getEntity();
-			
-			// Fire projectile from shadow ball location
-			Location shadowLoc = locationQueue.getFirst();
-			Location targetLoc = targetEntity.getEyeLocation();
-			
-			ProjectileGroup proj = new ProjectileGroup(new ShadowProjectile(data, slot, this));
-			proj.start(data, shadowLoc, targetLoc.toVector().subtract(shadowLoc.toVector()).normalize());
-			
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			Player p = data.getPlayer();
-			Sounds.fire.play(p, shadowLoc);
-			cooldown.setTime(System.currentTimeMillis());
+			Sounds.equip.play(p, p);
 			
-			return TriggerResult.keep();
-		});
+			// Queue to track player positions - stores last 4 positions (2 seconds worth at 0.5s intervals)
+			LinkedList<Location> locationQueue = new LinkedList<Location>();
+			ActionMeta cooldown = new ActionMeta();
+			
+			// Task to track player position every half second and display shadow ball
+			data.addTask(new BukkitRunnable() {
+				public void run() {
+					Player pl = data.getPlayer();
+					// Add current location to queue
+					locationQueue.add(pl.getLocation().clone());
+					
+					// Keep queue at exactly 4 positions (2 seconds)
+					if (locationQueue.size() > 4) {
+						locationQueue.removeFirst();
+					}
+					
+					// Display shadow ball at the position from 2 seconds ago
+					if (locationQueue.size() == 4) {
+						Location shadowLoc = locationQueue.getFirst();
+						shadowBall.play(pl, shadowLoc);
+					}
+				}
+			}.runTaskTimer(NeoRogue.inst(), 0L, 10L)); // Run every half second (10 ticks)
+			
+			// Trigger when applying insanity
+			data.addTrigger(id, Trigger.APPLY_STATUS, (pdata2, in2) -> {
+				ApplyStatusEvent ev = (ApplyStatusEvent) in2;
+				if (!ev.isStatus(StatusType.INSANITY)) return TriggerResult.keep();
+				
+				// Check cooldown (1 second = 1000ms)
+				if (System.currentTimeMillis() - cooldown.getTime() < 1000) {
+					return TriggerResult.keep();
+				}
+				
+				// Only fire if we have a shadow position (2 seconds have passed)
+				if (locationQueue.size() < 4) return TriggerResult.keep();
+				
+				// Get the target that received insanity
+				FightData target = ev.getTarget();
+				if (!(target.getEntity() instanceof LivingEntity)) return TriggerResult.keep();
+				LivingEntity targetEntity = (LivingEntity) target.getEntity();
+				
+				// Fire projectile from shadow ball location
+				Location shadowLoc = locationQueue.getFirst();
+				Location targetLoc = targetEntity.getEyeLocation();
+				
+				ProjectileGroup proj = new ProjectileGroup(new ShadowProjectile(data, slot, ShadowPartner.this));
+				proj.start(data, shadowLoc, targetLoc.toVector().subtract(shadowLoc.toVector()).normalize());
+				
+				Player p2 = data.getPlayer();
+				Sounds.fire.play(p2, shadowLoc);
+				cooldown.setTime(System.currentTimeMillis());
+				
+				return TriggerResult.keep();
+			});
+			
+			return TriggerResult.remove();
+		}));
 	}
 
 	private class ShadowProjectile extends Projectile {
@@ -153,7 +161,7 @@ public class ShadowPartner extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ENDER_PEARL,
-				"A ball of darkness follows <white>2s</white> behind you. Anytime you apply " +
+				"Cast once to activate. A ball of darkness follows <white>2s</white> behind you. Anytime you apply " +
 				GlossaryTag.INSANITY.tag(this) + " <white>(1s cooldown)</white>, the ball fires a projectile at them, dealing " +
 				GlossaryTag.DARK.tag(this, damage, true) + " damage on hit.");
 	}

@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -45,7 +46,7 @@ public class Bide extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLAZE_POWDER,
-				"On cast, gain <white>" + shields + "</white> " + GlossaryTag.SHIELDS.tag(this) + " for " + duration + " seconds. During this time, "
+				"On cast, gain <white>" + shields + "</white> " + GlossaryTag.SHIELDS.tag(this) + " for " + DescUtil.white(duration + "s") + ". During this time, "
 						+ "taking damage grants you <yellow>" + berserk + "</yellow> " + GlossaryTag.BERSERK.tag(this) + " stacks.");
 	}
 

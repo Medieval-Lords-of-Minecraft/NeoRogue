@@ -22,7 +22,7 @@ public class PredatorDrive extends Equipment {
 	
 	public PredatorDrive(boolean isUpgraded) {
 		super(ID, "Predator Drive", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
-			EquipmentType.ABILITY, EquipmentProperties.none());
+			EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 30, 0, 0));
 		threshold = isUpgraded ? 2 : 3;
 	}
 	
@@ -32,54 +32,61 @@ public class PredatorDrive extends Equipment {
 	
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ItemStack icon = item.clone();
-		ItemStack charged = item.clone().withType(Material.GLOWSTONE_DUST);
-		ActionMeta am = new ActionMeta();
-		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
-		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
-			BasicAttackEvent ev = (BasicAttackEvent) in;
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			Player p = data.getPlayer();
+			Sounds.equip.play(p, p);
 			
-			// Only track projectile-based basic attacks
-			if (ev.getProjectile() != null) {
-				double distance = ev.getProjectile().getOrigin().distance(ev.getTarget().getLocation());
+			ItemStack icon = item.clone();
+			ItemStack charged = item.clone().withType(Material.GLOWSTONE_DUST);
+			ActionMeta am = new ActionMeta();
+			EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
+			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in2) -> {
+				BasicAttackEvent ev = (BasicAttackEvent) in2;
+				Player p2 = data.getPlayer();
 				
-				// Check if hit was within 5 blocks
-				if (distance <= 5) {
-					am.addCount(1);
+				// Only track projectile-based basic attacks
+				if (ev.getProjectile() != null) {
+					double distance = ev.getProjectile().getOrigin().distance(ev.getTarget().getLocation());
 					
-					// Reduce cooldowns when threshold is reached
-					if (am.getCount() >= threshold) {
-						am.setCount(0);
-						icon.setAmount(1);
-						inst.setIcon(icon);
-						for (EquipmentInstance eqi : data.getActiveEquipment().values()) {
-							eqi.addCooldown(-1);
-						}
-						Sounds.success.play(p, p);
-					} else {
-						// Update icon count
-						int count = am.getCount();
-						if (count >= threshold - 1) {
-							// Show charged version
-							charged.setAmount(count);
-							inst.setIcon(charged);
-						} else {
-							icon.setAmount(count);
+					// Check if hit was within 5 blocks
+					if (distance <= 5) {
+						am.addCount(1);
+						
+						// Reduce cooldowns when threshold is reached
+						if (am.getCount() >= threshold) {
+							am.setCount(0);
+							icon.setAmount(1);
 							inst.setIcon(icon);
+							for (EquipmentInstance eqi : data.getActiveEquipment().values()) {
+								eqi.addCooldown(-1);
+							}
+							Sounds.success.play(p2, p2);
+						} else {
+							// Update icon count
+							int count = am.getCount();
+							if (count >= threshold - 1) {
+								// Show charged version
+								charged.setAmount(count);
+								inst.setIcon(charged);
+							} else {
+								icon.setAmount(count);
+								inst.setIcon(icon);
+							}
 						}
 					}
 				}
-			}
+				
+				return TriggerResult.keep();
+			});
 			
-			return TriggerResult.keep();
-		});
+			return TriggerResult.remove();
+		}));
 	}
 	
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SPECTRAL_ARROW,
-			"Passive. Every " + DescUtil.yellow(threshold) + " basic attacks" + 
+			"Cast once to activate. Every " + DescUtil.yellow(threshold) + " basic attacks" + 
 			" that hit an enemy within <white>5</white> blocks reduce all cooldowns by <white>1s</white>.");
 	}
 }

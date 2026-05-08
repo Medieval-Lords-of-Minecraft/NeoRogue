@@ -31,7 +31,7 @@ public class BodyDouble extends Equipment {
 	
 	public BodyDouble(boolean isUpgraded) {
 		super(ID, "Body Double", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 10, 12, 0).add(PropertyType.AREA_OF_EFFECT, tp.range));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(40, 20, 0, 0).add(PropertyType.AREA_OF_EFFECT, tp.range));
 				dur = isUpgraded ? 5 : 3;
 	}
 	
@@ -58,14 +58,14 @@ public class BodyDouble extends Equipment {
 					as.remove();
 				}
 			}, dur * 20);
-			return TriggerResult.keep();
+			return TriggerResult.remove();
 		}));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.OAK_TRAPDOOR,
-				"On cast, drop an armor stand " + DescUtil.duration(dur, true) + 
+				"Cast once to activate. Drop an armor stand " + DescUtil.duration(dur, true) + 
 				" that taunts all nearby enemies.");
 	}
 }

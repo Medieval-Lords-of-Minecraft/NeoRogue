@@ -25,7 +25,7 @@ public class QuickFeet extends Equipment {
 
 	public QuickFeet(boolean isUpgraded) {
 		super(ID, "Quick Feet", isUpgraded, Rarity.COMMON, EquipmentClass.THIEF, EquipmentType.ABILITY,
-				EquipmentProperties.ofUsable(10, 15, 20, 0));
+				EquipmentProperties.ofUsable(5, 10, 15, 0));
 		ev = isUpgraded ? 2 : 1;
 	}
 

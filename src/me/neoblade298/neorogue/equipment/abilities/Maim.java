@@ -36,9 +36,9 @@ public class Maim extends Equipment {
 	
 	public Maim(boolean isUpgraded) {
 		super(ID, "Maim", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 20, 15, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(5, 15, 17, 0));
 		
-		inc = isUpgraded ? 30 : 20;
+		inc = isUpgraded ? 60 : 40;
 		damage = isUpgraded ? 90 : 60;
 	}
 	

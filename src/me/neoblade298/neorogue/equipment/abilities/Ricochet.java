@@ -13,6 +13,7 @@ import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
@@ -44,7 +45,7 @@ public class Ricochet extends Equipment {
 
 	public Ricochet(boolean isUpgraded) {
 		super(ID, "Ricochet", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 10, 0, 0));
 		damage = isUpgraded ? 180 : 120;
 	}
 
@@ -54,40 +55,47 @@ public class Ricochet extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
-			BasicAttackEvent ev = (BasicAttackEvent) in;
-			
-			if (!ev.isProjectile()) return TriggerResult.keep();
-			
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
 			Player p = data.getPlayer();
-			LivingEntity target = ev.getTarget();
-			if (target == null) return TriggerResult.keep();
+			Sounds.equip.play(p, p);
 			
-			// Check if target is within 5 blocks of the projectile origin
-			if (ev.getProjectile().getOrigin().distance(target.getLocation()) > DISTANCE) {
+			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in2) -> {
+				BasicAttackEvent ev = (BasicAttackEvent) in2;
+				
+				if (!ev.isProjectile()) return TriggerResult.keep();
+				
+				Player p2 = data.getPlayer();
+				LivingEntity target = ev.getTarget();
+				if (target == null) return TriggerResult.keep();
+				
+				// Check if target is within 5 blocks of the projectile origin
+				if (ev.getProjectile().getOrigin().distance(target.getLocation()) > DISTANCE) {
+					return TriggerResult.keep();
+				}
+				
+				// Find nearest enemy from the target's location
+				Location targetLoc = target.getEyeLocation();
+				LivingEntity nearest = TargetHelper.getNearest(target, tp);
+				
+				// Don't ricochet if there's no other enemy
+				if (nearest == null || nearest == target) return TriggerResult.keep();
+				
+				// Calculate direction from hit target to nearest enemy
+				Vector direction = nearest.getEyeLocation().toVector()
+						.subtract(targetLoc.toVector()).normalize();
+				
+				// Fire ricochet projectile
+				ProjectileGroup proj = new ProjectileGroup(
+						new RicochetProjectile(data, Ricochet.this, slot, target));
+				proj.start(data, targetLoc, direction);
+				
+				Sounds.shoot.play(p2, targetLoc);
+				
 				return TriggerResult.keep();
-			}
+			});
 			
-			// Find nearest enemy from the target's location
-			Location targetLoc = target.getEyeLocation();
-			LivingEntity nearest = TargetHelper.getNearest(target, tp);
-			
-			// Don't ricochet if there's no other enemy
-			if (nearest == null || nearest == target) return TriggerResult.keep();
-			
-			// Calculate direction from hit target to nearest enemy
-			Vector direction = nearest.getEyeLocation().toVector()
-					.subtract(targetLoc.toVector()).normalize();
-			
-			// Fire ricochet projectile
-			ProjectileGroup proj = new ProjectileGroup(
-					new RicochetProjectile(data, this, slot, target));
-			proj.start(data, targetLoc, direction);
-			
-			Sounds.shoot.play(p, targetLoc);
-			
-			return TriggerResult.keep();
-		});
+			return TriggerResult.remove();
+		}));
 	}
 
 	private class RicochetProjectile extends Projectile {
@@ -143,7 +151,7 @@ public class Ricochet extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ARROW,
-				"Passive. Dealing basic attack damage to an enemy within <white>" + DISTANCE + "</white> blocks " +
+				"Cast once to activate. Dealing basic attack damage to an enemy within <white>" + DISTANCE + "</white> blocks " +
 				"fires a projectile from that target to the nearest enemy, dealing " + 
 				DescUtil.yellow(damage) + " damage.");
 	}

@@ -38,7 +38,7 @@ public class Neckbreaker extends Equipment {
 		super(ID, "Neckbreaker", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
 				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 15, 10, 0));
 		damage = isUpgraded ? 150 : 100;
-		injury = isUpgraded ? 150 : 100;
+		injury = isUpgraded ? 6 : 4;
 		shields = isUpgraded ? 30 : 20;
 		mult = isUpgraded ? 3 : 2;
 	}

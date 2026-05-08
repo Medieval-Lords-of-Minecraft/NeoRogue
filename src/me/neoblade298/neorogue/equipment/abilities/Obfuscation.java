@@ -2,8 +2,12 @@ package me.neoblade298.neorogue.equipment.abilities;
 
 import org.bukkit.Material;
 
+import org.bukkit.entity.Player;
+
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -22,7 +26,7 @@ public class Obfuscation extends Equipment {
 	
 	public Obfuscation(boolean isUpgraded) {
 		super(ID, "Obfuscation", isUpgraded, Rarity.RARE, EquipmentClass.THIEF, EquipmentType.ABILITY,
-				EquipmentProperties.none());
+				EquipmentProperties.ofUsable(40, 20, 0, 0));
 		duration = isUpgraded ? 8 : 3;
 		insanityMult = isUpgraded ? 0.3 : 0.2;
 	}
@@ -33,27 +37,34 @@ public class Obfuscation extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.PRE_APPLY_STATUS, (pdata, in) -> {
-			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Player p = data.getPlayer();
+			Sounds.equip.play(p, p);
 			
-			// Increase stealth and evade application by 1
-			if (ev.isStatus(StatusType.STEALTH) || ev.isStatus(StatusType.EVADE)) {
-				ev.getStacksBuffList().add(Buff.increase(data, 1, BuffStatTracker.statusBuff(id, this)));
-				ev.getDurationBuffList().add(new Buff(data, duration * 20, 0, BuffStatTracker.ignored(this)));
-			}
-			// Increase insanity application by 20%/30%
-			else if (ev.isStatus(StatusType.INSANITY)) {
-				ev.getStacksBuffList().add(Buff.multiplier(data, insanityMult, BuffStatTracker.statusBuff(id, this)));
-			}
+			data.addTrigger(id, Trigger.PRE_APPLY_STATUS, (pdata2, in2) -> {
+				PreApplyStatusEvent ev = (PreApplyStatusEvent) in2;
+				
+				// Increase stealth and evade application by 1
+				if (ev.isStatus(StatusType.STEALTH) || ev.isStatus(StatusType.EVADE)) {
+					ev.getStacksBuffList().add(Buff.increase(data, 1, BuffStatTracker.statusBuff(id, this)));
+					ev.getDurationBuffList().add(new Buff(data, duration * 20, 0, BuffStatTracker.ignored(this)));
+				}
+				// Increase insanity application by 20%/30%
+				else if (ev.isStatus(StatusType.INSANITY)) {
+					ev.getStacksBuffList().add(Buff.multiplier(data, insanityMult, BuffStatTracker.statusBuff(id, this)));
+				}
+				
+				return TriggerResult.keep();
+			});
 			
-			return TriggerResult.keep();
-		});
+			return TriggerResult.remove();
+		}));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.PHANTOM_MEMBRANE,
-				"Passive. " + GlossaryTag.STEALTH.tag(this) + " and " + GlossaryTag.EVADE.tag(this) + 
+				"Cast once to activate. " + GlossaryTag.STEALTH.tag(this) + " and " + GlossaryTag.EVADE.tag(this) + 
 				" application is increased by <white>1</white>, and their durations are increased by <yellow>" + 
 				duration + "s</yellow>. " + GlossaryTag.INSANITY.tag(this) + 
 				" application is increased by " + DescUtil.yellow((int)(insanityMult * 100) + "%") + ".");

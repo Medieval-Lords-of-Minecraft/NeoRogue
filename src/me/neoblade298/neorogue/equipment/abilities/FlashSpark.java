@@ -48,8 +48,8 @@ public class FlashSpark extends Equipment {
 	public FlashSpark(boolean isUpgraded) {
 		super(ID, "Flash Spark", isUpgraded, Rarity.RARE, EquipmentClass.THIEF, EquipmentType.ABILITY,
 				EquipmentProperties.ofUsable(20, 0, 12, 0));
-		damage = isUpgraded ? 200 : 150;
-		electrified = isUpgraded ? 6 : 4;
+		damage = isUpgraded ? 225 : 150;
+		electrified = isUpgraded ? 9 : 6;
 	}
 	
 	public static Equipment get() {
