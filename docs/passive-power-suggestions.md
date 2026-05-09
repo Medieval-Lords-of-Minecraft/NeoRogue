@@ -10,7 +10,7 @@ Suggested one-time activation costs (mana/stamina) for turning passive abilities
 | Endurance Training | Shield duration increase + start shields. | 6 | 12 |
 | Furor | Start strength + berserk stacks. | 6 | 12 |
 | Bloodlust | On-kill berserk/strength gains. | 10 | 20 |
-| Enlighten | Shield grants empower next sanctified basic. | 8 | 18 |
+| Enlighten | Shield grants and empowers next sanctified basic. | 8 | 18 |
 | Exploit Weakness | Earthen damage scaling from concussed applied. | 10 | 20 |
 | Frenzy | Attack speed scaling per berserk. | 8 | 22 |
 | Mortal Engine | Repeated cast stamina discount engine. | 12 | 18 |
@@ -29,7 +29,7 @@ Suggested one-time activation costs (mana/stamina) for turning passive abilities
 | Fortress | Large recurring shield refresh behavior. | 20 | 30 |
 | Guardian Spirit | Boosts all shields and sanctified applications. | 18 | 28 |
 | Herculean Strength | Buffs strength/concussed and start berserk. | 20 | 30 |
-| Light Pulse | Periodic high-damage light projectile conditionally. | 12 | 32 |
+| Light Pulse | Conditionally fires a periodic high-damage light projectile. | 12 | 32 |
 | Thorn Garden | Thorns scaling from shield intake. | 24 | 36 |
 | Tireless | Repeated cast discount + shields engine. | 24 | 32 |
 | Breaking Point | Large shield stance + permanent damage state. | 30 | 45 |
@@ -70,7 +70,7 @@ Suggested one-time activation costs (mana/stamina) for turning passive abilities
 | Vanish | Stealth extension + evade/stamina cycle. | 16 | 14 |
 | Warmup | Permanent stamina regen after safe windows. | 12 | 16 |
 | Analyze | Time stacks empower basic + shields. | 20 | 20 |
-| Blight Tendril | Auto poison projectile + poison multiplier hook. | 24 | 18 |
+| Blight Tendril | Auto poison projectile + poison multiplier bonus. | 24 | 18 |
 | Corpse Explosion | Poison kills spawn damaging zones. | 24 | 16 |
 | Danger Close | Permanent physical% per evade stacking. | 28 | 22 |
 | Dread | Stealth-stack payoff with major damage state. | 30 | 20 |
@@ -79,7 +79,7 @@ Suggested one-time activation costs (mana/stamina) for turning passive abilities
 | Mastermind | Big poison/electrified stack amplification. | 28 | 20 |
 | Obfuscation | Stealth/evade quality + insanity amp. | 24 | 18 |
 | Odin’s Decree | Periodic auto lightning/electrified proc. | 30 | 18 |
-| Saboteur | Focus + trap/close-range/injury amps. | 26 | 20 |
+| Saboteur | Focus + trap/close-range/injury amplifications. | 26 | 20 |
 | Shadow Partner | Constant shadow-shot companion proc. | 32 | 18 |
 | Static Surge | Sprint condition adds lightning/electrified basics. | 24 | 20 |
 | Tempest | Electrified damage causes major AoE burst. | 34 | 20 |
@@ -94,7 +94,7 @@ Suggested one-time activation costs (mana/stamina) for turning passive abilities
 | Evanesce | Evade dash + damage + stealth + buff. | 50 | 22 |
 | Illusion | Upgraded shadow companion with taunt. | 52 | 20 |
 | Night Surge | Dark→insanity conversion bonus damage. | 50 | 22 |
-| Pandemic | Corrode-style amp plus stronger spread package. | 60 | 25 |
+| Pandemic | Corrode-style amplification plus stronger spread package. | 60 | 25 |
 | Paranoia | Stack engine + insanity aura behavior. | 52 | 24 |
 | Shadow Partner II | Shadow scales off insanity application. | 60 | 22 |
 | Shadowsteel | Shadow procs on physical damage events. | 58 | 22 |
@@ -119,14 +119,14 @@ Suggested one-time activation costs (mana/stamina) for turning passive abilities
 | Piercing Shot II | Every 3rd shot gets bonus + pierce. | 14 | 10 |
 | Posturing II | Crouch grants focus and pierce scaling. | 16 | 10 |
 | Self-Destruct | Trap removal triggers AoE fire damage. | 14 | 12 |
-| Setup | Periodic trap generation + trap amp. | 18 | 14 |
+| Setup | Periodic trap generation + trap amplification. | 18 | 14 |
 | Absolute Zero | Hit-cycle AoE frost doubling trigger. | 26 | 16 |
 | Blizzard | Frost-threshold summons moving damaging storm. | 30 | 15 |
 | Conflagration | Burn-kill chain projectile and burn transfer. | 28 | 16 |
 | Crush the Weak | Injury->perm shields + shield-to-damage conversion. | 28 | 20 |
 | Dangerous Game | Close-range hit grants bonus projectile. | 24 | 16 |
 | Deliberant Pace | Not sprinting grants focus and focus damage%. | 24 | 18 |
-| Emberhail | Non-basic projectile damage + burn/frost amps. | 28 | 16 |
+| Emberhail | Non-basic projectile damage + burn/frost amplifications. | 28 | 16 |
 | Entrench | Trap placement/removal grants perm shields. | 22 | 18 |
 | Ferocious Draw | Close-range shot adds high piercing + pierce. | 26 | 16 |
 | Hawkeye | High-focus defensive trigger fires heavy projectile. | 30 | 18 |
