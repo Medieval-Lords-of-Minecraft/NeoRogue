@@ -33,7 +33,7 @@ public class AbsoluteZero extends Equipment {
 	
 	public AbsoluteZero(boolean isUpgraded) {
 		super(ID, "Absolute Zero", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(25, 10, 0, 0));
 		thres = isUpgraded ? 8 : 12;
 		frost = isUpgraded ? 12 : 8;
 	}
@@ -44,57 +44,63 @@ public class AbsoluteZero extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ItemStack icon = item.clone();
-		ItemStack charged = item.clone().withType(Material.PACKED_ICE);
-		ActionMeta am = new ActionMeta();
-		am.setCount(0);
-		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
-		
-		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
-			am.addCount(1);
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
 			
-			if (am.getCount() >= thres) {
-				Player p = data.getPlayer();
-				am.setCount(0);
-				icon.setAmount(1);
-				inst.setIcon(icon);
+			ItemStack icon = item.clone();
+			ItemStack charged = item.clone().withType(Material.PACKED_ICE);
+			ActionMeta am = new ActionMeta();
+			am.setCount(0);
+			EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
+			
+			data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata2, in2) -> {
+				am.addCount(1);
 				
-				// Play effects
-				pc.play(p, p);
-				Sounds.glass.play(p, p);
-				
-				// Apply frost and double existing frost in radius
-				for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
-					FightData fd = FightInstance.getFightData(ent);
-					
-					// Get current frost stacks
-					int currentFrost = fd.getStatus(StatusType.FROST).getStacks();
-					
-					// Apply new frost and double existing frost
-					int totalFrostToApply = frost + currentFrost;
-					FightInstance.applyStatus(ent, StatusType.FROST, data, totalFrostToApply, -1);
-				}
-			} else {
-				// Update icon count
-				int count = am.getCount();
-				if (count >= thres - 1) {
-					// Show charged version
-					charged.setAmount(count);
-					inst.setIcon(charged);
-				} else {
-					icon.setAmount(count);
+				if (am.getCount() >= thres) {
+					Player p = data.getPlayer();
+					am.setCount(0);
+					icon.setAmount(1);
 					inst.setIcon(icon);
+					
+					// Play effects
+					pc.play(p, p);
+					Sounds.glass.play(p, p);
+					
+					// Apply frost and double existing frost in radius
+					for (LivingEntity ent : TargetHelper.getEntitiesInRadius(p, tp)) {
+						FightData fd = FightInstance.getFightData(ent);
+						
+						// Get current frost stacks
+						int currentFrost = fd.getStatus(StatusType.FROST).getStacks();
+						
+						// Apply new frost and double existing frost
+						int totalFrostToApply = frost + currentFrost;
+						FightInstance.applyStatus(ent, StatusType.FROST, data, totalFrostToApply, -1);
+					}
+				} else {
+					// Update icon count
+					int count = am.getCount();
+					if (count >= thres - 1) {
+						// Show charged version
+						charged.setAmount(count);
+						inst.setIcon(charged);
+					} else {
+						icon.setAmount(count);
+						inst.setIcon(icon);
+					}
 				}
-			}
+				
+				return TriggerResult.keep();
+			});
 			
-			return TriggerResult.keep();
-		});
+			return TriggerResult.remove();
+		}));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ICE,
-				"Passive. Every " + DescUtil.yellow(thres) + " times you deal damage, apply " + 
+				GlossaryTag.POWER.tag(this) + ". Every " + DescUtil.yellow(thres) + " times you deal damage, apply " + 
 				GlossaryTag.FROST.tag(this, frost, true) + " in a wide radius around you and double " +
 				GlossaryTag.FROST.tag(this) + " on all affected enemies.");
 	}

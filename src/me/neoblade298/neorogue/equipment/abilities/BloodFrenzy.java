@@ -8,6 +8,7 @@ import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -27,7 +28,7 @@ public class BloodFrenzy extends Equipment {
 	
 	public BloodFrenzy(boolean isUpgraded) {
 		super(ID, "Blood Frenzy", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(10, 30, 0, 0));
 		strength = isUpgraded ? 20 : 15;
 		atkSpeed = isUpgraded ? 13 : 10;
 	}
@@ -38,32 +39,37 @@ public class BloodFrenzy extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.KILL, (pdata, in) -> {
-			Player p = data.getPlayer();
-			if (data.getStatus(StatusType.BERSERK).getStacks() < CUTOFF_STRENGTH) {
-				data.applyStatus(StatusType.BERSERK, data, 1, -1);
-			}
-			else {
-				pc.play(p, p);
-				Sounds.fire.play(p, p);
-				data.applyStatus(StatusType.STRENGTH, data, strength, -1);
-			}
-			return TriggerResult.keep();
-		});
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+			
+			data.addTrigger(id, Trigger.KILL, (pdata2, in2) -> {
+				Player p = data.getPlayer();
+				if (data.getStatus(StatusType.BERSERK).getStacks() < CUTOFF_STRENGTH) {
+					data.applyStatus(StatusType.BERSERK, data, 1, -1);
+				}
+				else {
+					pc.play(p, p);
+					Sounds.fire.play(p, p);
+					data.applyStatus(StatusType.STRENGTH, data, strength, -1);
+				}
+				return TriggerResult.keep();
+			});
 
-		
-		data.addTrigger(ID, Trigger.WEAPON_SWING, (pdata, in) -> {
-			int mult = Math.min(CUTOFF_ATK_SPEED / 5, data.getStatus(StatusType.BERSERK).getStacks() / THRES_ATK_SPEED);
-			WeaponSwingEvent ev = (WeaponSwingEvent) in;
-			ev.getAttackSpeedBuffList().add(new Buff(data, 0, mult * atkSpeed * 0.01, BuffStatTracker.ignored(this)));
-			return TriggerResult.keep();
-		});
+			data.addTrigger(ID, Trigger.WEAPON_SWING, (pdata3, in3) -> {
+				int mult = Math.min(CUTOFF_ATK_SPEED / 5, data.getStatus(StatusType.BERSERK).getStacks() / THRES_ATK_SPEED);
+				WeaponSwingEvent ev = (WeaponSwingEvent) in3;
+				ev.getAttackSpeedBuffList().add(new Buff(data, 0, mult * atkSpeed * 0.01, BuffStatTracker.ignored(this)));
+				return TriggerResult.keep();
+			});
+			
+			return TriggerResult.remove();
+		}));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE_ORE,
-				"Passive. On kill, if below " + DescUtil.white(CUTOFF_STRENGTH) + " stacks of " + GlossaryTag.BERSERK.tag(this) + ", gain " + GlossaryTag.BERSERK.tag(this, 1, false)
+				GlossaryTag.POWER.tag(this) + ". On kill, if below " + DescUtil.white(CUTOFF_STRENGTH) + " stacks of " + GlossaryTag.BERSERK.tag(this) + ", gain " + GlossaryTag.BERSERK.tag(this, 1, false)
 				+ ". Otherwise, gain " + GlossaryTag.STRENGTH.tag(this, strength, true) + ". Also, for every " + GlossaryTag.BERSERK.tag(this, THRES_ATK_SPEED, false) + " you have, up to " + DescUtil.white(CUTOFF_ATK_SPEED) +
 				", increase your attack speed by " + DescUtil.yellow(atkSpeed + "%") + ".");
 	}

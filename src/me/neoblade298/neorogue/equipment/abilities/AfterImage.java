@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.abilities;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -18,7 +19,7 @@ public class AfterImage extends Equipment {
 	
 	public AfterImage(boolean isUpgraded) {
 		super(ID, "After Image", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF, EquipmentType.ABILITY,
-				EquipmentProperties.none());
+				EquipmentProperties.ofUsable(10, 10, 0, 0));
 		shields = isUpgraded ? 6 : 4;
 	}
 	
@@ -28,17 +29,23 @@ public class AfterImage extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.DASH, new EquipmentInstance(data, this, slot, es, (pdata, inputs) -> {
-			Player p = data.getPlayer();
-			data.addSimpleShield(p.getUniqueId(), shields, 100);
-			return TriggerResult.keep();
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+			
+			data.addTrigger(id, Trigger.DASH, new EquipmentInstance(data, this, slot, es, (pdata2, inputs) -> {
+				Player p = data.getPlayer();
+				data.addSimpleShield(p.getUniqueId(), shields, 100);
+				return TriggerResult.keep();
+			}));
+			
+			return TriggerResult.remove();
 		}));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.PHANTOM_MEMBRANE,
-				"Passive. Every time you " + GlossaryTag.DASH.tag(this) + ", gain " + 
+				GlossaryTag.POWER.tag(this) + ". Every time you " + GlossaryTag.DASH.tag(this) + ", gain " + 
 				GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>5s</white>].");
 	}
 }

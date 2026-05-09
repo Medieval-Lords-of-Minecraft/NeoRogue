@@ -13,6 +13,7 @@ import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
@@ -45,7 +46,7 @@ public class BlightTendril extends Equipment {
 
 	public BlightTendril(boolean isUpgraded) {
 		super(ID, "Blight Tendril", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 10, 0, 0));
 		poison = isUpgraded ? 200 : 150;
 	}
 
@@ -58,44 +59,50 @@ public class BlightTendril extends Equipment {
 		String statusName = data.getPlayer().getName() + "-blighttendril";
         Equipment eq = this;
 
-        data.addTask(new BukkitRunnable() {
-            public void run() {
-				Player p = data.getPlayer();
-                // Find nearest enemy
-                LivingEntity nearest = TargetHelper.getNearest(p, tp);
-                if (nearest == null) return;
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
 
-                // Fire projectile
-                ProjectileGroup proj = new ProjectileGroup(
-                        new BlightTendrilProjectile(data, eq, slot, statusName));
-                proj.start(data, p.getLocation().add(0, 1, 0),
-                        nearest.getEyeLocation().toVector().subtract(p.getLocation().toVector()).normalize());
+			data.addTask(new BukkitRunnable() {
+				public void run() {
+					Player p = data.getPlayer();
+					// Find nearest enemy
+					LivingEntity nearest = TargetHelper.getNearest(p, tp);
+					if (nearest == null) return;
 
-                Sounds.shoot.play(p, p);
-            }
-        }.runTaskTimer(NeoRogue.inst(), 0, 80));
-		
-		// Consume mark on basic attack and triple poison
-		data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
-			Player p = data.getPlayer();
-			PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
-			FightData fd = FightInstance.getFightData(ev.getTarget());
-			
-			if (fd.hasStatus(statusName)) {
-				// Target is marked - consume mark and triple poison
-				Status s = Status.createByGenericType(GenericStatusType.BASIC, statusName, fd, true);
-				fd.applyStatus(s, data, -1, -1);
-				
-				// Apply 2x the existing poison stacks (resulting in 3x total)
-				if (fd.hasStatus(StatusType.POISON)) {
-					int existingPoison = fd.getStatus(StatusType.POISON).getStacks();
-					FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, existingPoison * 2, -1);
-					pc.play(p, ev.getTarget());
+					// Fire projectile
+					ProjectileGroup proj = new ProjectileGroup(
+							new BlightTendrilProjectile(data, eq, slot, statusName));
+					proj.start(data, p.getLocation().add(0, 1, 0),
+							nearest.getEyeLocation().toVector().subtract(p.getLocation().toVector()).normalize());
+
+					Sounds.shoot.play(p, p);
 				}
-			}
+			}.runTaskTimer(NeoRogue.inst(), 0, 80));
 			
-			return TriggerResult.keep();
-		});
+			// Consume mark on basic attack and triple poison
+			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata2, in2) -> {
+				Player p = data.getPlayer();
+				PreBasicAttackEvent ev = (PreBasicAttackEvent) in2;
+				FightData fd = FightInstance.getFightData(ev.getTarget());
+				
+				if (fd.hasStatus(statusName)) {
+					// Target is marked - consume mark and triple poison
+					Status s = Status.createByGenericType(GenericStatusType.BASIC, statusName, fd, true);
+					fd.applyStatus(s, data, -1, -1);
+					
+					// Apply 2x the existing poison stacks (resulting in 3x total)
+					if (fd.hasStatus(StatusType.POISON)) {
+						int existingPoison = fd.getStatus(StatusType.POISON).getStacks();
+						FightInstance.applyStatus(ev.getTarget(), StatusType.POISON, data, existingPoison * 2, -1);
+						pc.play(p, ev.getTarget());
+					}
+				}
+				
+				return TriggerResult.keep();
+			});
+			
+			return TriggerResult.remove();
+		}));
 	}
 
 	private class BlightTendrilProjectile extends Projectile {
@@ -146,7 +153,7 @@ public class BlightTendril extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.VINE,
-				"Passive. Every " + DescUtil.white(4) + " seconds, summon a lightly homing projectile towards the nearest enemy within " + DescUtil.white(15) + " blocks that " +
+				GlossaryTag.POWER.tag(this) + ". Every " + DescUtil.white(4) + " seconds, summon a lightly homing projectile towards the nearest enemy within " + DescUtil.white(15) + " blocks that " +
 				"applies " + GlossaryTag.POISON.tag(this, poison, true) + " and marks them [<white>8s</white>]. " +
 				"Basic attacks consume the mark and apply an additional " + DescUtil.white("2x") + " their current " + GlossaryTag.POISON.tag(this) + ".");
 	}

@@ -8,7 +8,9 @@ import org.bukkit.entity.Player;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -38,7 +40,7 @@ public class BitterCold extends Equipment {
 	
 	public BitterCold(boolean isUpgraded) {
 		super(ID, "Bitter Cold", isUpgraded, Rarity.UNCOMMON, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 5, 0, 0));
 		stacks = isUpgraded ? 3 : 2;
 		damage = isUpgraded ? 300 : 200;
 	}
@@ -49,33 +51,39 @@ public class BitterCold extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.PRE_APPLY_STATUS, (pdata, in) -> {
-			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
-			if (!ev.isStatus(StatusType.FROST)) return TriggerResult.keep();
-			ev.getStacksBuffList().add(new Buff(data, stacks, 0, BuffStatTracker.ignored(this)));
-			return TriggerResult.keep();
-		});
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+			
+			data.addTrigger(id, Trigger.PRE_APPLY_STATUS, (pdata2, in2) -> {
+				PreApplyStatusEvent ev = (PreApplyStatusEvent) in2;
+				if (!ev.isStatus(StatusType.FROST)) return TriggerResult.keep();
+				ev.getStacksBuffList().add(new Buff(data, stacks, 0, BuffStatTracker.ignored(this)));
+				return TriggerResult.keep();
+			});
 
-		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
-			Player p = data.getPlayer();
-			ApplyStatusEvent ev = (ApplyStatusEvent) in;
-			if (!ev.isStatus(StatusType.FROST)) return TriggerResult.keep();
-			FightData fd = ev.getTarget();
-			if (fd.getStatus(StatusType.FROST).getStacks() < THRESHOLD) return TriggerResult.keep();
-			if (fd.hasStatus(p.getName() + "-bitterCold")) return TriggerResult.keep();
-			Status s = new BasicStatus(p.getName() + "-bitterCold", data, StatusClass.NONE, true);
-			fd.applyStatus(s, data, 1, -1);
-			FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.ICE, DamageStatTracker.of(id + slot, this)), fd.getEntity());
-			pc.play(p, fd.getEntity());
-			sc.play(p, fd.getEntity());
-			return TriggerResult.keep();
-		});
+			data.addTrigger(id, Trigger.APPLY_STATUS, (pdata3, in3) -> {
+				Player p = data.getPlayer();
+				ApplyStatusEvent ev = (ApplyStatusEvent) in3;
+				if (!ev.isStatus(StatusType.FROST)) return TriggerResult.keep();
+				FightData fd = ev.getTarget();
+				if (fd.getStatus(StatusType.FROST).getStacks() < THRESHOLD) return TriggerResult.keep();
+				if (fd.hasStatus(p.getName() + "-bitterCold")) return TriggerResult.keep();
+				Status s = new BasicStatus(p.getName() + "-bitterCold", data, StatusClass.NONE, true);
+				fd.applyStatus(s, data, 1, -1);
+				FightInstance.dealDamage(new DamageMeta(data, damage, DamageType.ICE, DamageStatTracker.of(id + slot, this)), fd.getEntity());
+				pc.play(p, fd.getEntity());
+				sc.play(p, fd.getEntity());
+				return TriggerResult.keep();
+			});
+			
+			return TriggerResult.remove();
+		}));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.PACKED_ICE,
-				"Passive. All applications of " + GlossaryTag.FROST.tag(this) + " are increased by " + DescUtil.yellow(stacks) + ". Once per enemy, applying " +
+				GlossaryTag.POWER.tag(this) + ". All applications of " + GlossaryTag.FROST.tag(this) + " are increased by " + DescUtil.yellow(stacks) + ". Once per enemy, applying " +
 				GlossaryTag.FROST.tag(this, THRESHOLD, false) + " to them will deal " + GlossaryTag.ICE.tag(this, damage, true) + " damage to them.");
 	}
 }
