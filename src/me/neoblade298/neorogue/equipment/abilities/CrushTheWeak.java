@@ -5,8 +5,10 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -30,7 +32,7 @@ public class CrushTheWeak extends Equipment {
 	
 	public CrushTheWeak(boolean isUpgraded) {
 		super(ID, "Crush the Weak", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 10, 0, 0));
 		threshold = isUpgraded ? 150 : 200;
 		damagePercent = isUpgraded ? 0.6 : 0.4;
 	}
@@ -41,48 +43,53 @@ public class CrushTheWeak extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ActionMeta am = new ActionMeta();
-		
-		// Track injury applied and grant permanent shields when threshold is reached
-		data.addTrigger(id, Trigger.APPLY_STATUS, (pdata, in) -> {
-			ApplyStatusEvent ev = (ApplyStatusEvent) in;
-			if (!ev.isStatus(StatusType.INJURY)) return TriggerResult.keep();
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+			ActionMeta am = new ActionMeta();
 			
-			am.addCount(ev.getStacks());
-			if (am.getCount() >= threshold) {
-				Player p = data.getPlayer();
-				data.addPermanentShield(p.getUniqueId(), SHIELDS * (am.getCount() / threshold));
-				am.setCount(am.getCount() % threshold);
-			}
-			return TriggerResult.keep();
-		});
-		
-		// Deal additional damage to injured enemies based on current shields
-		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
-			PreDealDamageEvent ev = (PreDealDamageEvent) in;
-			LivingEntity target = ev.getTarget();
-			FightData fd = FightInstance.getFightData(target);
+			// Track injury applied and grant permanent shields when threshold is reached
+			data.addTrigger(id, Trigger.APPLY_STATUS, (pdata2, in2) -> {
+				ApplyStatusEvent ev = (ApplyStatusEvent) in2;
+				if (!ev.isStatus(StatusType.INJURY)) return TriggerResult.keep();
+				
+				am.addCount(ev.getStacks());
+				if (am.getCount() >= threshold) {
+					Player p = data.getPlayer();
+					data.addPermanentShield(p.getUniqueId(), SHIELDS * (am.getCount() / threshold));
+					am.setCount(am.getCount() % threshold);
+				}
+				return TriggerResult.keep();
+			});
 			
-			// Check if target has injury
-			if (fd == null || !fd.hasStatus(StatusType.INJURY)) return TriggerResult.keep();
-			
-			// Get current shields amount
-			double currentShields = data.getShields().getAmount();
-			if (currentShields <= 0) return TriggerResult.keep();
-			
-			// Deal additional blunt damage equal to % of current shields
-			double bonusDamage = currentShields * damagePercent;
-			ev.getMeta().addDamageSlice(new DamageSlice(data, bonusDamage, DamageType.BLUNT, 
-					DamageStatTracker.of(id + slot, this)));
-			
-			return TriggerResult.keep();
-		});
+			// Deal additional damage to injured enemies based on current shields
+			data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata2, in2) -> {
+				PreDealDamageEvent ev = (PreDealDamageEvent) in2;
+				LivingEntity target = ev.getTarget();
+				FightData fd = FightInstance.getFightData(target);
+				
+				// Check if target has injury
+				if (fd == null || !fd.hasStatus(StatusType.INJURY)) return TriggerResult.keep();
+				
+				// Get current shields amount
+				double currentShields = data.getShields().getAmount();
+				if (currentShields <= 0) return TriggerResult.keep();
+				
+				// Deal additional blunt damage equal to % of current shields
+				double bonusDamage = currentShields * damagePercent;
+				ev.getMeta().addDamageSlice(new DamageSlice(data, bonusDamage, DamageType.BLUNT, 
+						DamageStatTracker.of(id + slot, this)));
+				
+				return TriggerResult.keep();
+			});
+
+			return TriggerResult.remove();
+		}));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BRICK,
-				"Passive. Gain " + GlossaryTag.SHIELDS.tag(this, SHIELDS, false) + " every " + 
+				GlossaryTag.POWER.tag(this) + ". Gain " + GlossaryTag.SHIELDS.tag(this, SHIELDS, false) + " every " + 
 				DescUtil.yellow(threshold) + " " + GlossaryTag.INJURY.tag(this) + " you apply. " +
 				"Enemies with " + GlossaryTag.INJURY.tag(this) + " take " + 
 				DescUtil.yellow((int)(damagePercent * 100) + "%") + " of your current " + 

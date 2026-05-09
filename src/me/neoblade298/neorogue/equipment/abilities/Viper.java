@@ -6,7 +6,9 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -34,7 +36,7 @@ public class Viper extends Equipment {
 	
 	public Viper(boolean isUpgraded) {
 		super(ID, "Viper", isUpgraded, Rarity.EPIC, EquipmentClass.THIEF, EquipmentType.ABILITY,
-				EquipmentProperties.none());
+				EquipmentProperties.ofUsable(35, 15, 0, 0));
 		bonusDamage = isUpgraded ? 0.7 : 0.6;
 		bonusPoison = isUpgraded ? 4 : 3;
 		shields = isUpgraded ? 6 : 4;
@@ -46,53 +48,58 @@ public class Viper extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		String statusName = data.getPlayer().getName() + "-viper";
-		
-		// Mark enemies on basic attack
-		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
-			BasicAttackEvent ev = (BasicAttackEvent) in;
-			FightData fd = FightInstance.getFightData(ev.getTarget());
-			if (fd == null) return TriggerResult.keep();
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+			String statusName = data.getPlayer().getName() + "-viper";
+
+			// Mark enemies on basic attack
+			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in2) -> {
+				BasicAttackEvent ev = (BasicAttackEvent) in2;
+				FightData fd = FightInstance.getFightData(ev.getTarget());
+				if (fd == null) return TriggerResult.keep();
+				
+				// Apply 3 second mark
+				Status s = Status.createByGenericType(GenericStatusType.BASIC, statusName, fd, true);
+				fd.applyStatus(s, data, 1, 60);
+				
+				return TriggerResult.keep();
+			});
 			
-			// Apply 3 second mark
-			Status s = Status.createByGenericType(GenericStatusType.BASIC, statusName, fd, true);
-			fd.applyStatus(s, data, 1, 60);
+			// Bonus damage when dealing poison damage to marked enemies, grant shields and speed
+			data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata2, in2) -> {
+				Player p = data.getPlayer();
+				PreDealDamageEvent ev = (PreDealDamageEvent) in2;
+				if (!ev.getMeta().containsType(DamageType.POISON)) return TriggerResult.keep();
+				
+				FightData fd = FightInstance.getFightData(ev.getTarget());
+				if (fd == null || !fd.hasStatus(statusName)) return TriggerResult.keep();
+				
+				// Add bonus damage
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.multiplier(data, bonusDamage, BuffStatTracker.damageBuffAlly(id, this)));
+				
+				// Grant shields and speed
+				data.addSimpleShield(p.getUniqueId(), shields, 40);
+				p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 40, 0));
+				
+				return TriggerResult.keep();
+			});
 			
-			return TriggerResult.keep();
-		});
-		
-		// Bonus damage when dealing poison damage to marked enemies, grant shields and speed
-		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
-			Player p = data.getPlayer();
-			PreDealDamageEvent ev = (PreDealDamageEvent) in;
-			if (!ev.getMeta().containsType(DamageType.POISON)) return TriggerResult.keep();
-			
-			FightData fd = FightInstance.getFightData(ev.getTarget());
-			if (fd == null || !fd.hasStatus(statusName)) return TriggerResult.keep();
-			
-			// Add bonus damage
-			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.multiplier(data, bonusDamage, BuffStatTracker.damageBuffAlly(id, this)));
-			
-			// Grant shields and speed
-			data.addSimpleShield(p.getUniqueId(), shields, 40);
-			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 40, 0));
-			
-			return TriggerResult.keep();
-		});
-		
-		// Increase poison application to marked enemies
-		data.addTrigger(id, Trigger.PRE_APPLY_STATUS, (pdata, in) -> {
-			PreApplyStatusEvent ev = (PreApplyStatusEvent) in;
-			if (!ev.isStatus(StatusType.POISON)) return TriggerResult.keep();
-			
-			FightData fd = ev.getTarget();
-			if (fd == null || !fd.hasStatus(statusName)) return TriggerResult.keep();
-			
-			// Add bonus poison stacks
-			ev.getStacksBuffList().add(Buff.increase(data, bonusPoison, BuffStatTracker.statusBuff(id, this)));
-			
-			return TriggerResult.keep();
-		});
+			// Increase poison application to marked enemies
+			data.addTrigger(id, Trigger.PRE_APPLY_STATUS, (pdata2, in2) -> {
+				PreApplyStatusEvent ev = (PreApplyStatusEvent) in2;
+				if (!ev.isStatus(StatusType.POISON)) return TriggerResult.keep();
+				
+				FightData fd = ev.getTarget();
+				if (fd == null || !fd.hasStatus(statusName)) return TriggerResult.keep();
+				
+				// Add bonus poison stacks
+				ev.getStacksBuffList().add(Buff.increase(data, bonusPoison, BuffStatTracker.statusBuff(id, this)));
+				
+				return TriggerResult.keep();
+			});
+
+			return TriggerResult.remove();
+		}));
 	}
 
 	@Override
@@ -103,7 +110,7 @@ public class Viper extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.SPIDER_EYE,
-				"Passive. Your basic attacks mark enemies " + DescUtil.duration(3, false) + ". " +
+				GlossaryTag.POWER.tag(this) + ". Your basic attacks mark enemies " + DescUtil.duration(3, false) + ". " +
 				GlossaryTag.POISON.tag(this) + " damage against marked enemies deals " +
 				DescUtil.yellow((int)(bonusDamage * 100) + "%") + " increased damage and grants you " +
 				GlossaryTag.SHIELDS.tag(this, shields, true) + " and " + DescUtil.potion("Speed", 0, 2, false, false) + ".");

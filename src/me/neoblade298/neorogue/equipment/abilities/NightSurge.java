@@ -12,6 +12,7 @@ import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.Barrier;
@@ -43,7 +44,7 @@ public class NightSurge extends Equipment {
 
 	public NightSurge(boolean isUpgraded) {
 		super(ID, "Night Surge", isUpgraded, Rarity.EPIC, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(35, 20, 0, 0));
 		damage = isUpgraded ? 200 : 150;
 	}
 
@@ -53,49 +54,54 @@ public class NightSurge extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		Player p = data.getPlayer();
-		String cooldownStatus = p.getName() + "-nightsurge";
-		
-		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
-			DealDamageEvent ev = (DealDamageEvent) in;
-			
-			// Check if damage contains dark damage type
-			if (!ev.getMeta().containsType(DamageType.DARK)) return TriggerResult.keep();
-			
-			// Get target fight data
-			FightData targetFd = FightInstance.getFightData(ev.getTarget());
-			if (targetFd == null) return TriggerResult.keep();
-			
-			// Check if target has insanity
-			if (!targetFd.hasStatus(StatusType.INSANITY)) return TriggerResult.keep();
-			
-			// Check cooldown (2 seconds per enemy)
-			if (targetFd.hasStatus(cooldownStatus)) return TriggerResult.keep();
-			
-			// Apply cooldown marker
-			Status s = Status.createByGenericType(GenericStatusType.BASIC, cooldownStatus, targetFd, true);
-			targetFd.applyStatus(s, data, 1, 40); // 40 ticks = 2 seconds
-			
-			// Get target entity and location
-			if (!(ev.getTarget() instanceof LivingEntity)) return TriggerResult.keep();
-			ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.DARK, DamageStatTracker.of(ID + slot, this)));
-			LivingEntity targetEntity = (LivingEntity) ev.getTarget();
-			Location targetLoc = targetEntity.getLocation();
-			
-			// Fire projectile from the target, opposite direction they're facing
-			Vector targetDirection = targetEntity.getLocation().getDirection();
-			Vector projectileDirection = targetDirection.clone().multiply(-1).normalize();
-			
-			// Spawn location slightly behind
-			Location spawnLoc = targetLoc.clone().add(projectileDirection.clone().multiply(1.5));
-			
-			ProjectileGroup proj = new ProjectileGroup(new NightSurgeProjectile(data, slot, this));
-			proj.start(data, spawnLoc, projectileDirection);
-			
-			Sounds.fire.play(p, spawnLoc);
-			
-			return TriggerResult.keep();
-		});
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+			String cooldownStatus = data.getPlayer().getName() + "-nightsurge";
+
+			data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata2, in2) -> {
+				DealDamageEvent ev = (DealDamageEvent) in2;
+				
+				// Check if damage contains dark damage type
+				if (!ev.getMeta().containsType(DamageType.DARK)) return TriggerResult.keep();
+				
+				// Get target fight data
+				FightData targetFd = FightInstance.getFightData(ev.getTarget());
+				if (targetFd == null) return TriggerResult.keep();
+				
+				// Check if target has insanity
+				if (!targetFd.hasStatus(StatusType.INSANITY)) return TriggerResult.keep();
+				
+				// Check cooldown (2 seconds per enemy)
+				if (targetFd.hasStatus(cooldownStatus)) return TriggerResult.keep();
+				
+				// Apply cooldown marker
+				Status s = Status.createByGenericType(GenericStatusType.BASIC, cooldownStatus, targetFd, true);
+				targetFd.applyStatus(s, data, 1, 40); // 40 ticks = 2 seconds
+				
+				// Get target entity and location
+				if (!(ev.getTarget() instanceof LivingEntity)) return TriggerResult.keep();
+				ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.DARK, DamageStatTracker.of(ID + slot, this)));
+				LivingEntity targetEntity = (LivingEntity) ev.getTarget();
+				Location targetLoc = targetEntity.getLocation();
+				
+				// Fire projectile from the target, opposite direction they're facing
+				Vector targetDirection = targetEntity.getLocation().getDirection();
+				Vector projectileDirection = targetDirection.clone().multiply(-1).normalize();
+				
+				// Spawn location slightly behind
+				Location spawnLoc = targetLoc.clone().add(projectileDirection.clone().multiply(1.5));
+				
+				Player p = data.getPlayer();
+				ProjectileGroup proj = new ProjectileGroup(new NightSurgeProjectile(data, slot, this));
+				proj.start(data, spawnLoc, projectileDirection);
+				
+				Sounds.fire.play(p, spawnLoc);
+				
+				return TriggerResult.keep();
+			});
+
+			return TriggerResult.remove();
+		}));
 	}
 
 	private class NightSurgeProjectile extends Projectile {
@@ -133,7 +139,7 @@ public class NightSurge extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ECHO_SHARD,
-				"Passive. Dealing " + GlossaryTag.DARK.tag(this) + " damage to an enemy with " +
+				GlossaryTag.POWER.tag(this) + ". Dealing " + GlossaryTag.DARK.tag(this) + " damage to an enemy with " +
 				GlossaryTag.INSANITY.tag(this) + " spawns a projectile from them that fires " +
 				"opposite the direction they're facing, dealing " + GlossaryTag.DARK.tag(this, damage, true) + 
 				" damage. The target hit also takes this damage. " + DescUtil.white("2s") + " cooldown per enemy.");

@@ -17,6 +17,7 @@ import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -49,7 +50,7 @@ public class CorpseExplosion extends Equipment {
 	
 	public CorpseExplosion(boolean isUpgraded) {
 		super(ID, "Corpse Explosion", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0, radius));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 0, 0, 0, radius));
 		poisonPerSecond = isUpgraded ? 75 : 50;
 		duration = 5;
 	}
@@ -60,35 +61,41 @@ public class CorpseExplosion extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.KILL, (pdata, inputs) -> {
-			KillEvent ev = (KillEvent) inputs;
-			LivingEntity killed = ev.getTarget();
-			
-			// Check if the enemy was killed by poison damage
-			if (ev.getDamageMeta() == null || !ev.getDamageMeta().containsType(DamageType.POISON)) {
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+
+			data.addTrigger(id, Trigger.KILL, (pdata2, inputs2) -> {
+				KillEvent ev = (KillEvent) inputs2;
+				LivingEntity killed = ev.getTarget();
+				
+				// Check if the enemy was killed by poison damage
+				if (ev.getDamageMeta() == null || !ev.getDamageMeta().containsType(DamageType.POISON)) {
+					return TriggerResult.keep();
+				}
+				
+				Location killedLoc = killed.getLocation().add(0, 1, 0);
+				
+				// Create two poison circles near the killed enemy
+				for (int i = 0; i < 2; i++) {
+					// Random offset for circle placement (within 2 blocks of the killed enemy)
+					double angle = Math.random() * 2 * Math.PI;
+					double distance = 2 + Math.random() * 4; // 2-6 blocks away
+					double offsetX = Math.cos(angle) * distance;
+					double offsetZ = Math.sin(angle) * distance;
+					
+					Location circleCenter = killedLoc.clone().add(offsetX, 0, offsetZ);
+					
+					// Animate poison shooting out in a parabolic arc
+					Player p = data.getPlayer();
+					animatePoisonArc(data, killedLoc.clone(), circleCenter);
+					scheduleCircleEffects(p, data, circleCenter);
+				}
+				
 				return TriggerResult.keep();
-			}
-			
-			Location killedLoc = killed.getLocation().add(0, 1, 0);
-			
-			// Create two poison circles near the killed enemy
-			for (int i = 0; i < 2; i++) {
-				// Random offset for circle placement (within 2 blocks of the killed enemy)
-				double angle = Math.random() * 2 * Math.PI;
-				double distance = 2 + Math.random() * 4; // 2-6 blocks away
-				double offsetX = Math.cos(angle) * distance;
-				double offsetZ = Math.sin(angle) * distance;
-				
-				Location circleCenter = killedLoc.clone().add(offsetX, 0, offsetZ);
-				
-				// Animate poison shooting out in a parabolic arc
-				Player p = data.getPlayer();
-				animatePoisonArc(data, killedLoc.clone(), circleCenter);
-				scheduleCircleEffects(p, data, circleCenter);
-			}
-			
-			return TriggerResult.keep();
-		});
+			});
+
+			return TriggerResult.remove();
+		}));
 	}
 	
 	private void animatePoisonArc(PlayerFightData data, Location start, Location end) {
@@ -147,7 +154,7 @@ public class CorpseExplosion extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FERMENTED_SPIDER_EYE, 
-			"Passive. When you kill an enemy with " + GlossaryTag.POISON.tag(this) + " damage, spawn " + DescUtil.white(2) + " poison circles near the corpse. " +
+			GlossaryTag.POWER.tag(this) + ". When you kill an enemy with " + GlossaryTag.POISON.tag(this) + " damage, spawn " + DescUtil.white(2) + " poison circles near the corpse. " +
 			"Each circle lasts " + DescUtil.white(duration) + " seconds and applies " + 
 			GlossaryTag.POISON.tag(this, poisonPerSecond, true) + " per second to nearby enemies.");
 	}

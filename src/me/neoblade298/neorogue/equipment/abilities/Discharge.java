@@ -11,7 +11,6 @@ import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
-import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -28,7 +27,7 @@ public class Discharge extends Equipment {
 	
 	public Discharge(boolean isUpgraded) {
 		super(ID, "Discharge", isUpgraded, Rarity.UNCOMMON, EquipmentClass.MAGE,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 0, 0, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(15, 0, 0, 0));
 		intel = isUpgraded ? 4 : 3;
 		elec = isUpgraded ? 8 : 5;
 	}
@@ -39,36 +38,37 @@ public class Discharge extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ActionMeta am = new ActionMeta();
-		ItemStack icon = item.clone();
-		EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
-		data.addTrigger(id, Trigger.KILL, inst);
-		inst.setAction((pdata, in) -> {
-			Player p = data.getPlayer();
-			if (am.getTime() + (properties.get(PropertyType.COOLDOWN) * 1000) > System.currentTimeMillis()) {
-				return TriggerResult.keep();
-			}
-			am.addCount(1);
-			data.applyStatus(StatusType.INTELLECT, data, intel, -1);
-			Sounds.enchant.play(p, p);
-			pc.play(p, p);
-			icon.setAmount(am.getCount());
-			inst.setIcon(icon);
-			am.setTime(System.currentTimeMillis());
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+			ActionMeta am = new ActionMeta();
+			ItemStack icon = item.clone();
+			EquipmentInstance inst = new EquipmentInstance(data, this, slot, es);
+			data.addTrigger(id, Trigger.KILL, inst);
+			inst.setAction((pdata2, in2) -> {
+				Player p = data.getPlayer();
+				am.addCount(1);
+				data.applyStatus(StatusType.INTELLECT, data, intel, -1);
+				Sounds.enchant.play(p, p);
+				pc.play(p, p);
+				icon.setAmount(am.getCount());
+				inst.setIcon(icon);
 
-			data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata2, in2) -> {
-				PreBasicAttackEvent ev = (PreBasicAttackEvent) in;
-				FightInstance.applyStatus(ev.getTarget(), StatusType.ELECTRIFIED, data, elec, -1);
-				return TriggerResult.remove();
+				data.addTrigger(id, Trigger.PRE_BASIC_ATTACK, (pdata3, in3) -> {
+					PreBasicAttackEvent ev = (PreBasicAttackEvent) in3;
+					FightInstance.applyStatus(ev.getTarget(), StatusType.ELECTRIFIED, data, elec, -1);
+					return TriggerResult.remove();
+				});
+				return TriggerResult.keep();
 			});
-			return TriggerResult.keep();
-		});
+
+			return TriggerResult.remove();
+		}));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.WRITABLE_BOOK,
-				"Passive. On kill, gain " + GlossaryTag.INTELLECT.tag(this, intel, true) + " on kill and your next basic attack will also apply " +
+				GlossaryTag.POWER.tag(this) + ". On kill, gain " + GlossaryTag.INTELLECT.tag(this, intel, true) + " on kill and your next basic attack will also apply " +
 				GlossaryTag.ELECTRIFIED.tag(this, elec, true) + ".");
 	}
 }

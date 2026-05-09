@@ -58,6 +58,7 @@ EquipmentProperties.ofBow(damage, attackSpeed, knockback, range, manaCost, stami
 EquipmentProperties.ofAmmunition(damage, knockback, damageType)
 EquipmentProperties.ofWand(damage, chargeTime, range, manaCost, staminaCost) // chargeTime in seconds
 EquipmentProperties.none() // Passive equipment
+EquipmentProperties.ofUsable(mana, stam, 0, 0) // Power (one-time activation passive, CD=0, range=0)
 ```
 
 ### PropertyTypes
@@ -340,6 +341,46 @@ item = createItem(Material.ITEM, "Deals " + GlossaryTag.FIRE.tag(this, damage, t
     + " damage to enemies within " + DescUtil.yellow(radius) + " blocks every "
     + DescUtil.white("3s") + ".");
 ```
+
+## Powers (One-Time Activation Passives)
+
+A **Power** is a passive that requires one-time activation before its effects run. Uses `EquipmentProperties.ofUsable(mana, stam, 0, 0)` (CD=0, range=0). Description uses `GlossaryTag.POWER.tag(this)` instead of `"Passive."`.
+
+### Pattern
+```java
+public MyPower(boolean isUpgraded) {
+    super(ID, "Name", isUpgraded, Rarity.RARE, EquipmentClass.THIEF, EquipmentType.ABILITY,
+            EquipmentProperties.ofUsable(20, 0, 0, 0));
+}
+
+@Override
+public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+    data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+        Sounds.equip.play(data.getPlayer(), data.getPlayer());
+
+        // Register passive triggers inside activation
+        data.addTrigger(id, Trigger.SOME_TRIGGER, (pdata2, in2) -> {
+            // Passive effect
+            return TriggerResult.keep();
+        });
+
+        return TriggerResult.remove(); // One-shot activation
+    }));
+}
+
+@Override
+public void setupItem() {
+    item = createItem(Material.ITEM,
+            GlossaryTag.POWER.tag(this) + ". Effect description...");
+}
+```
+
+### Key Rules
+- Always play `Sounds.equip` on activation
+- All passive triggers go **inside** the bind lambda
+- Bind trigger returns `TriggerResult.remove()`
+- BukkitRunnable tasks (auto-fire, periodic effects) also start inside the activation lambda
+- Use `pdata2, in2` etc. for inner lambda params to avoid shadowing
 
 ## Reforges
 

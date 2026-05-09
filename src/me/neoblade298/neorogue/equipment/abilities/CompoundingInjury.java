@@ -5,7 +5,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
+import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -31,7 +33,7 @@ public class CompoundingInjury extends Equipment {
 	
 	public CompoundingInjury(boolean isUpgraded) {
 		super(ID, "Compounding Injury", isUpgraded, Rarity.RARE, EquipmentClass.WARRIOR,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(30, 0, 0, 0));
 				thres = isUpgraded ? 20 : 30;
 				mult = isUpgraded ? 1.5 : 1;
 				multStr = (int) (mult * 100);
@@ -43,34 +45,40 @@ public class CompoundingInjury extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata, in) -> {
-			DealDamageEvent ev = (DealDamageEvent) in;
-			FightData fd = FightInstance.getFightData(ev.getTarget());
-			if (ev.getMeta().isSecondary())
-				return TriggerResult.keep();
-			if (fd.getStatus(StatusType.CONCUSSED).getStacks() >= thres && !ev.getMeta().getPrimarySlice().getType().getCategories().contains(DamageCategory.STATUS)) {
-				DamageMeta dm = ev.getMeta().clone();
-				dm.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.multiplier(data, mult, 
-						BuffStatTracker.ignored(this)));
-				dm.isSecondary(true);
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
 
-				for (DamageSlice slice : dm.getSlices()) {
-					slice.setTracker(DamageStatTracker.of(id + slot, this));
-				}
-				data.addTask(new BukkitRunnable() {
-					public void run() {
-						FightInstance.dealDamage(dm, ev.getTarget());
+			data.addTrigger(id, Trigger.DEAL_DAMAGE, (pdata2, in2) -> {
+				DealDamageEvent ev = (DealDamageEvent) in2;
+				FightData fd = FightInstance.getFightData(ev.getTarget());
+				if (ev.getMeta().isSecondary())
+					return TriggerResult.keep();
+				if (fd.getStatus(StatusType.CONCUSSED).getStacks() >= thres && !ev.getMeta().getPrimarySlice().getType().getCategories().contains(DamageCategory.STATUS)) {
+					DamageMeta dm = ev.getMeta().clone();
+					dm.addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL), Buff.multiplier(data, mult, 
+							BuffStatTracker.ignored(this)));
+					dm.isSecondary(true);
+
+					for (DamageSlice slice : dm.getSlices()) {
+						slice.setTracker(DamageStatTracker.of(id + slot, this));
 					}
-				}.runTaskLater(NeoRogue.inst(), 20));
-			}
-			return TriggerResult.keep();
-		});
+					data.addTask(new BukkitRunnable() {
+						public void run() {
+							FightInstance.dealDamage(dm, ev.getTarget());
+						}
+					}.runTaskLater(NeoRogue.inst(), 20));
+				}
+				return TriggerResult.keep();
+			});
+
+			return TriggerResult.remove();
+		}));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.REDSTONE_ORE,
-				"Passive. Dealing damage to an enemy with at least " + GlossaryTag.CONCUSSED.tag(this, thres, true) + " will cause the damage to happen again, but "
+				GlossaryTag.POWER.tag(this) + ". Dealing damage to an enemy with at least " + GlossaryTag.CONCUSSED.tag(this, thres, true) + " will cause the damage to happen again, but "
 				+ "multiplied by " + DescUtil.yellow(multStr + "%") + ".");
 	}
 }

@@ -13,6 +13,7 @@ import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -48,7 +49,7 @@ public class Conflagration extends Equipment {
 
 	public Conflagration(boolean isUpgraded) {
 		super(ID, "Conflagration", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.none().add(PropertyType.RANGE, tp.range));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(40, 0, 0, 0).add(PropertyType.RANGE, tp.range));
 		damage = 150;
 		burnMult = isUpgraded ? 1.5 : 1.0;
 	}
@@ -59,39 +60,45 @@ public class Conflagration extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		data.addTrigger(id, Trigger.PRE_KILL, (pdata, in) -> {
-			PreKillEvent ev = (PreKillEvent) in;
-			FightData fd = FightInstance.getFightData(ev.getTarget());
-			
-			// Check if killed by burn damage
-			if (!fd.hasStatus(StatusType.BURN)) {
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+
+			data.addTrigger(id, Trigger.PRE_KILL, (pdata2, in2) -> {
+				PreKillEvent ev = (PreKillEvent) in2;
+				FightData fd = FightInstance.getFightData(ev.getTarget());
+				
+				// Check if killed by burn damage
+				if (!fd.hasStatus(StatusType.BURN)) {
+					return TriggerResult.keep();
+				}
+				
+				Player p = data.getPlayer();
+				LivingEntity killed = ev.getTarget();
+				Location killedLoc = killed.getLocation().add(0, 1, 0);
+				
+				// Get the burn stacks the killed enemy had
+				int burnStacks = fd.getStatus(StatusType.BURN).getStacks();
+				
+				// Find nearest enemy from killed location
+				LivingEntity nearest = TargetHelper.getNearest(killed, tp);
+				if (nearest == null) return TriggerResult.keep();
+				
+				// Calculate direction from killed enemy to nearest enemy
+				Vector direction = nearest.getLocation().toVector()
+						.subtract(killedLoc.toVector()).normalize();
+				
+				// Fire projectile
+				ProjectileGroup proj = new ProjectileGroup(
+						new ConflagrationProjectile(data, Conflagration.this, slot, burnStacks, nearest, killed));
+				proj.start(data, killedLoc, direction);
+				
+				Sounds.fire.play(p, killedLoc);
+				
 				return TriggerResult.keep();
-			}
-			
-			Player p = data.getPlayer();
-			LivingEntity killed = ev.getTarget();
-			Location killedLoc = killed.getLocation().add(0, 1, 0);
-			
-			// Get the burn stacks the killed enemy had
-			int burnStacks = fd.getStatus(StatusType.BURN).getStacks();
-			
-			// Find nearest enemy from killed location
-			LivingEntity nearest = TargetHelper.getNearest(killed, tp);
-			if (nearest == null) return TriggerResult.keep();
-			
-			// Calculate direction from killed enemy to nearest enemy
-			Vector direction = nearest.getLocation().toVector()
-					.subtract(killedLoc.toVector()).normalize();
-			
-			// Fire projectile
-					ProjectileGroup proj = new ProjectileGroup(
-new ConflagrationProjectile(data, Conflagration.this, slot, burnStacks, nearest, killed));
-					proj.start(data, killedLoc, direction);
-					
-					Sounds.fire.play(p, killedLoc);
-			
-			return TriggerResult.keep();
-		});
+			});
+
+			return TriggerResult.remove();
+		}));
 	}
 
 	private class ConflagrationProjectile extends Projectile {
@@ -149,7 +156,7 @@ new ConflagrationProjectile(data, Conflagration.this, slot, burnStacks, nearest,
 	public void setupItem() {
 		String burnMultStr = burnMult == 1.0 ? DescUtil.yellow("1x") : DescUtil.yellow("1.5x");
 		item = createItem(Material.FIRE_CHARGE,
-				"Passive. Killing an enemy with " + GlossaryTag.BURN.tag(this) + " causes that enemy to fire a projectile " +
+				GlossaryTag.POWER.tag(this) + ". Killing an enemy with " + GlossaryTag.BURN.tag(this) + " causes that enemy to fire a projectile " +
 				"at the nearest enemy that deals " + DescUtil.yellow(damage) + " " + GlossaryTag.FIRE.tag(this) + 
 				" damage and applies " + burnMultStr + " of its " + GlossaryTag.BURN.tag(this) + ".");
 	}

@@ -30,7 +30,7 @@ public class Disappear extends Equipment {
 	
 	public Disappear(boolean isUpgraded) {
 		super(ID, "Disappear", isUpgraded, Rarity.UNCOMMON, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 10, 0, 0));
 		
 		damage = isUpgraded ? 225 : 150;
 	}
@@ -41,31 +41,34 @@ public class Disappear extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		Player p = data.getPlayer();
-		ItemStack baseIcon = item.clone();
-		ItemStack primedIcon = item.clone().withType(Material.DRAGON_BREATH);
-		EquipmentInstance eqInst = new EquipmentInstance(data, this, slot, es);
-		DisappearInstance inst = new DisappearInstance(id, p, data, slot, this, eqInst, baseIcon, primedIcon);
-		data.addTrigger(ID, Trigger.KILL, inst);
-		
-		data.addTrigger(ID, Trigger.RECEIVE_HEALTH_DAMAGE, (pdata, in) -> {
-			inst.cancelPrime();
-			return TriggerResult.keep();
-		});
-		
-		data.addTrigger(ID, Trigger.DEAL_DAMAGE, (pdata, in) -> {
-			inst.cancelPrime();
-			return TriggerResult.keep();
-		});
-		
-		data.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, (pdata, in) -> {
-			inst.handleAttack((PreBasicAttackEvent) in);
-			return TriggerResult.keep();
-		});
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+			ItemStack baseIcon = item.clone();
+			ItemStack primedIcon = item.clone().withType(Material.DRAGON_BREATH);
+			EquipmentInstance eqInst = new EquipmentInstance(data, this, slot, es);
+			DisappearInstance inst = new DisappearInstance(id, data, slot, this, eqInst, baseIcon, primedIcon);
+			data.addTrigger(ID, Trigger.KILL, inst);
+			
+			data.addTrigger(ID, Trigger.RECEIVE_HEALTH_DAMAGE, (pdata2, in2) -> {
+				inst.cancelPrime();
+				return TriggerResult.keep();
+			});
+			
+			data.addTrigger(ID, Trigger.DEAL_DAMAGE, (pdata2, in2) -> {
+				inst.cancelPrime();
+				return TriggerResult.keep();
+			});
+			
+			data.addTrigger(ID, Trigger.PRE_BASIC_ATTACK, (pdata2, in2) -> {
+				inst.handleAttack((PreBasicAttackEvent) in2);
+				return TriggerResult.keep();
+			});
+
+			return TriggerResult.remove();
+		}));
 	}
 
 	private class DisappearInstance extends PriorityAction {
-		private Player p;
 		private PlayerFightData data;
 		private Disappear eq;
 		private BukkitTask timer;
@@ -73,9 +76,8 @@ public class Disappear extends Equipment {
 		private int slot;
 		private EquipmentInstance eqInst;
 		private ItemStack baseIcon;
-		public DisappearInstance(String id, Player p, PlayerFightData data, int slot, Disappear eq, EquipmentInstance eqInst, ItemStack baseIcon, ItemStack primedIcon) {
+		public DisappearInstance(String id, PlayerFightData data, int slot, Disappear eq, EquipmentInstance eqInst, ItemStack baseIcon, ItemStack primedIcon) {
 			super(id);
-			this.p = p;
 			this.data = data;
 			this.slot = slot;
 			this.eq = eq;
@@ -84,6 +86,7 @@ public class Disappear extends Equipment {
 			action = (pdata, in) -> {
 				timer = new BukkitRunnable() {
 					public void run() {
+						Player p = data.getPlayer();
 						Sounds.success.play(p, p);
 						primed = true;
 						eqInst.setIcon(primedIcon);
@@ -96,7 +99,7 @@ public class Disappear extends Equipment {
 		
 		public void handleAttack(PreBasicAttackEvent ev) {
 			if (!primed) return;
-			
+			Player p = data.getPlayer();
 			Sounds.anvil.play(p, p);
 			data.applyStatus(StatusType.STEALTH, data, 1, 100);
 			ev.getMeta().addDamageSlice(new DamageSlice(data, damage, DamageType.PIERCING, DamageStatTracker.of(ID + slot, eq)));
@@ -106,6 +109,7 @@ public class Disappear extends Equipment {
 		
 		public void cancelPrime() {
 			if (timer == null || timer.isCancelled()) return;
+			Player p = data.getPlayer();
 			Sounds.error.play(p, p);
 			timer.cancel();
 			eqInst.setIcon(baseIcon);
@@ -115,7 +119,7 @@ public class Disappear extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GLASS_BOTTLE,
-				"Passive. On kill, gain " + GlossaryTag.STEALTH.tag(this, 1, false) + " [<white>5s</white>]."
+				GlossaryTag.POWER.tag(this) + ". On kill, gain " + GlossaryTag.STEALTH.tag(this, 1, false) + " [<white>5s</white>]."
 				+ " Afterwards, if you don't deal (ignoring poison) or take health damage for " + DescUtil.white("2s") + ","
 				+ " you gain " + GlossaryTag.PIERCING.tag(this, damage, true) + " on your next basic attack.");
 		

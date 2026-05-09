@@ -11,6 +11,7 @@ import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -32,7 +33,7 @@ public class DeliberantPace extends Equipment {
 
 	public DeliberantPace(boolean isUpgraded) {
 		super(ID, "Deliberant Pace", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER, EquipmentType.ABILITY,
-				EquipmentProperties.none());
+				EquipmentProperties.ofUsable(20, 20, 0, 0));
 		seconds = isUpgraded ? 4 : 5;
 		damagePerStack = isUpgraded ? 0.06 : 0.05; // 6% or 5%
 	}
@@ -43,60 +44,65 @@ public class DeliberantPace extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		String buffId = UUID.randomUUID().toString();
-		ActionMeta am = new ActionMeta();
-		am.setCount(0); // Tick counter
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+			String buffId = UUID.randomUUID().toString();
+			ActionMeta am = new ActionMeta();
+			am.setCount(0); // Tick counter
 
-		// Reset counter when player starts sprinting
-		data.addTrigger(id, Trigger.TOGGLE_SPRINT, (pdata, in) -> {
-			Player p = data.getPlayer();
-			if (p.isSprinting()) {
-				am.setCount(0);
-			}
-			return TriggerResult.keep();
-		});
-
-		// Track ticks without sprinting
-		data.addTrigger(id, Trigger.PLAYER_TICK, (pdata, in) -> {
-			Player p = data.getPlayer(); // If player is currently sprinting, reset counter
-			if (p.isSprinting()) {
-				am.setCount(0);
+			// Reset counter when player starts sprinting
+			data.addTrigger(id, Trigger.TOGGLE_SPRINT, (pdata2, in2) -> {
+				Player p = data.getPlayer();
+				if (p.isSprinting()) {
+					am.setCount(0);
+				}
 				return TriggerResult.keep();
-			}
+			});
 
-			// Increment counter for not sprinting
-			am.addCount(1);
+			// Track ticks without sprinting
+			data.addTrigger(id, Trigger.PLAYER_TICK, (pdata2, in2) -> {
+				Player p = data.getPlayer();
+				if (p.isSprinting()) {
+					am.setCount(0);
+					return TriggerResult.keep();
+				}
 
-			// Every ticksRequired ticks without sprinting, grant a stack of focus
-			if (am.getCount() >= seconds) {
-				am.setCount(0); // Reset counter
-				data.applyStatus(StatusType.FOCUS, data, 1, -1);
-				pc.play(p, p);
-				Sounds.enchant.play(p, p);
-			}
+				// Increment counter for not sprinting
+				am.addCount(1);
 
-			return TriggerResult.keep();
-		});
+				// Every ticksRequired ticks without sprinting, grant a stack of focus
+				if (am.getCount() >= seconds) {
+					am.setCount(0); // Reset counter
+					data.applyStatus(StatusType.FOCUS, data, 1, -1);
+					pc.play(p, p);
+					Sounds.enchant.play(p, p);
+				}
 
-		// Add damage buff based on focus stacks
-		data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata, in) -> {
-			PreDealDamageEvent ev = (PreDealDamageEvent) in;
-			int focusStacks = data.getStatus(StatusType.FOCUS).getStacks();
-			if (focusStacks <= 0)
 				return TriggerResult.keep();
+			});
 
-			ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
-					Buff.multiplier(data, damagePerStack * focusStacks, StatTracker.damageBuffAlly(buffId, this)));
+			// Add damage buff based on focus stacks
+			data.addTrigger(id, Trigger.PRE_DEAL_DAMAGE, (pdata2, in2) -> {
+				PreDealDamageEvent ev = (PreDealDamageEvent) in2;
+				int focusStacks = data.getStatus(StatusType.FOCUS).getStacks();
+				if (focusStacks <= 0)
+					return TriggerResult.keep();
 
-			return TriggerResult.keep();
-		});
+				ev.getMeta().addDamageBuff(DamageBuffType.of(DamageCategory.GENERAL),
+						Buff.multiplier(data, damagePerStack * focusStacks, StatTracker.damageBuffAlly(buffId, this)));
+
+				return TriggerResult.keep();
+			});
+
+			return TriggerResult.remove();
+		}));
 	}
 
 	@Override
 	public void setupItem() {
 		int damagePercent = (int) (damagePerStack * 100);
 		item = createItem(Material.BOOK,
-				"Passive. Whenever you don't sprint for " + DescUtil.yellow(seconds + "s") + ", gain a stack of "
+				GlossaryTag.POWER.tag(this) + ". Whenever you don't sprint for " + DescUtil.yellow(seconds + "s") + ", gain a stack of "
 						+ GlossaryTag.FOCUS.tag(this, 1, false) + ". Every stack of " + GlossaryTag.FOCUS.tag(this)
 						+ " increases your general damage by " + DescUtil.yellow(damagePercent + "%") + ".");
 	}

@@ -5,8 +5,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.DescUtil;
+import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -32,7 +32,7 @@ public class ConstantFlux extends Equipment {
 
 	public ConstantFlux(boolean isUpgraded) {
 		super(ID, "Constant Flux", isUpgraded, Rarity.RARE, EquipmentClass.THIEF,
-				EquipmentType.ABILITY, EquipmentProperties.ofUsable(0, 15, 2, 0));
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 20, 0, 0));
 		damagePerStack = isUpgraded ? 15 : 10;
 	}
 
@@ -42,12 +42,18 @@ public class ConstantFlux extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
-		ActionMeta stacks = new ActionMeta();
-		String taskId = id + "-timer-" + slot;
-		ItemStack noStackIcon = item.clone();
-		ItemStack stackIcon = item.clone().withType(Material.LIGHT_BLUE_DYE);
-		ConstantFluxInstance inst = new ConstantFluxInstance(data, this, slot, es, stacks, taskId, noStackIcon, stackIcon);
-		data.addTrigger(id, bind, inst);
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
+
+			ActionMeta stacks = new ActionMeta();
+			String taskId = id + "-timer-" + slot;
+			ItemStack noStackIcon = item.clone();
+			ItemStack stackIcon = item.clone().withType(Material.LIGHT_BLUE_DYE);
+			ConstantFluxInstance inst = new ConstantFluxInstance(data, this, slot, es, stacks, taskId, noStackIcon, stackIcon);
+			data.addTrigger(id, bind, inst);
+
+			return TriggerResult.remove();
+		}));
 	}
 
 	private class ConstantFluxInstance extends EquipmentInstance {
@@ -111,7 +117,7 @@ public class ConstantFlux extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FEATHER,
-				"Passive. While you have at least " + GlossaryTag.STEALTH.tag(this, thres, false) + ", cast to " + 
+				GlossaryTag.POWER.tag(this) + ". While you have at least " + GlossaryTag.STEALTH.tag(this, thres, false) + ", cast to " + 
 				GlossaryTag.DASH.tag(this) + " forward and increase your " + GlossaryTag.PHYSICAL.tag(this) + 
 				" damage by " + DescUtil.yellow(damagePerStack) + ", stacking up to " + DescUtil.white(MAX_STACKS + "x") + ". " +
 				"Not casting this ability for " + DescUtil.white("5s") + " removes all stacks.");

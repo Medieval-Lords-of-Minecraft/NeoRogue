@@ -9,6 +9,7 @@ import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.AmmunitionInstance;
 import me.neoblade298.neorogue.equipment.BowProjectile;
 import me.neoblade298.neorogue.equipment.Equipment;
+import me.neoblade298.neorogue.equipment.EquipmentInstance;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -16,6 +17,7 @@ import me.neoblade298.neorogue.equipment.mechanics.Barrier;
 import me.neoblade298.neorogue.equipment.mechanics.Projectile;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileGroup;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
+import me.neoblade298.neorogue.player.inventory.GlossaryTag;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
 import me.neoblade298.neorogue.session.fight.DamageMeta;
 import me.neoblade298.neorogue.session.fight.DamageSlice;
@@ -35,7 +37,7 @@ public class DangerousGame extends Equipment {
 	
 	public DangerousGame(boolean isUpgraded) {
 		super(ID, "Dangerous Game", isUpgraded, Rarity.RARE, EquipmentClass.ARCHER,
-				EquipmentType.ABILITY, EquipmentProperties.none());
+				EquipmentType.ABILITY, EquipmentProperties.ofUsable(20, 0, 0, 0));
 		range = 5;
 		damage = isUpgraded ? 70 : 50;
 	}
@@ -46,26 +48,31 @@ public class DangerousGame extends Equipment {
 
 	@Override
 	public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+		data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+			Sounds.equip.play(data.getPlayer(), data.getPlayer());
 
-		data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata, in) -> {
-			BasicAttackEvent ev = (BasicAttackEvent) in;
-			ProjectileGroup group = new ProjectileGroup(new DangerousGameProjectile(data, this, slot));
-			
-			LivingEntity target = ev.getTarget();
-			if (target == null) return TriggerResult.keep();
-			
-			// Check if target is within 5 blocks
-			if (ev.getProjectile().getOrigin().distance(target.getLocation()) <= range && data.hasAmmoInstance()) {
-				data.addExtraShot(group);
-			}
-			return TriggerResult.keep();
-		});
+			data.addTrigger(id, Trigger.BASIC_ATTACK, (pdata2, in2) -> {
+				BasicAttackEvent ev = (BasicAttackEvent) in2;
+				ProjectileGroup group = new ProjectileGroup(new DangerousGameProjectile(data, this, slot));
+				
+				LivingEntity target = ev.getTarget();
+				if (target == null) return TriggerResult.keep();
+				
+				// Check if target is within 5 blocks
+				if (ev.getProjectile().getOrigin().distance(target.getLocation()) <= range && data.hasAmmoInstance()) {
+					data.addExtraShot(group);
+				}
+				return TriggerResult.keep();
+			});
+
+			return TriggerResult.remove();
+		}));
 	}
 
 	@Override
 	public void setupItem() {
 		item = createItem(Material.TARGET,
-				"Passive. When you land a basic attack on an enemy within " + DescUtil.white(range) + " blocks, " +
+				GlossaryTag.POWER.tag(this) + ". When you land a basic attack on an enemy within " + DescUtil.white(range) + " blocks, " +
 				"your next basic attack will fire an additional projectile at them using your current ammunition that deals an additional " + DescUtil.yellow(damage) + " damage.");
 	}
 

@@ -293,6 +293,51 @@ fd.applyStatus(s, data, -1, -1); // Negative stacks removes it
 - Track which enemies have been affected by an ability
 - Conditional effects based on marked status
 
+### Powers (One-Time Activation Passives)
+
+A **Power** is a passive ability that requires a one-time activation at fight start before its effects become active. The player pays mana/stamina once, and the passive effect runs for the rest of the fight.
+
+#### Properties
+Powers use `EquipmentProperties.ofUsable(mana, stam, 0, 0)` — CD and range are always 0.
+
+#### Description
+Use `GlossaryTag.POWER.tag(this)` instead of `"Passive."`:
+```java
+item = createItem(Material.ICE,
+        GlossaryTag.POWER.tag(this) + ". Every " + DescUtil.yellow(thres) + " hits, ...");
+```
+
+#### Initialize Pattern
+The `bind` trigger acts as the activation. Inside it, register the actual passive triggers, then return `TriggerResult.remove()` to consume the activation:
+```java
+@Override
+public void initialize(PlayerFightData data, Trigger bind, EquipSlot es, int slot) {
+    data.addTrigger(id, bind, new EquipmentInstance(data, this, slot, es, (pdata, in) -> {
+        Sounds.equip.play(data.getPlayer(), data.getPlayer());
+
+        // Register the passive trigger(s) — these only exist after activation
+        data.addTrigger(id, Trigger.SOME_TRIGGER, (pdata2, in2) -> {
+            // Passive effect logic
+            return TriggerResult.keep();
+        });
+
+        return TriggerResult.remove(); // Consume the activation
+    }));
+}
+```
+
+#### Key Points
+- Always play `Sounds.equip` on activation for audio feedback
+- All passive triggers go **inside** the bind lambda so they only exist after activation
+- The bind trigger returns `TriggerResult.remove()` — it's a one-shot
+- For BukkitRunnable tasks (e.g., auto-fire projectiles), start them inside the activation lambda too
+- Use inner lambda variable names like `pdata2, in2` to avoid shadowing the outer `pdata, in`
+
+#### Reference Examples
+- **DangerClose** (Rare Thief, 20m): Simple — registers one RECEIVE_STATUS trigger on activation
+- **AbsoluteZero** (Rare Archer, 25m 10s): Registers DEAL_DAMAGE trigger with icon tracking
+- **BlightTendril** (Rare Thief, 20m 10s): Starts a BukkitRunnable timer + registers PRE_BASIC_ATTACK trigger
+
 ### Equipment Properties System
 
 Equipment behavior is controlled through `EquipmentProperties` which define costs, cooldowns, ranges, and other mechanical attributes.
