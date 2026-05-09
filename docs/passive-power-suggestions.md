@@ -29,11 +29,11 @@ Suggested one-time activation costs (mana/stamina) for turning passive abilities
 | Fortress | Large recurring shield refresh behavior. | 20 | 30 |
 | Guardian Spirit | Boosts all shields and sanctified applications. | 18 | 28 |
 | Herculean Strength | Buffs strength/concussed and start berserk. | 20 | 30 |
-| Light Pulse | Periodic high-damage light projectile conditionally. | 22 | 28 |
+| Light Pulse | Periodic high-damage light projectile conditionally. | 12 | 32 |
 | Thorn Garden | Thorns scaling from shield intake. | 24 | 36 |
 | Tireless | Repeated cast discount + shields engine. | 24 | 32 |
 | Breaking Point | Large shield stance + permanent damage state. | 30 | 45 |
-| Hero’s Landing | Double-jump slam with damage/status/strength. | 20 | 25 |
+| Hero’s Landing | Double-jump slam with damage/status/strength. | 28 | 32 |
 | Inexorable | Large permanent shields + periodic regeneration. | 35 | 50 |
 | Mahoraga | Defensive adaptation + berserk/heal scaling. | 35 | 55 |
 
@@ -49,7 +49,7 @@ Suggested one-time activation costs (mana/stamina) for turning passive abilities
 | Resourcefulness | Poison stacks + temporary physical boost. | 10 | 10 |
 | Silent Steps | Stealth duration + stealth damage bonus. | 10 | 8 |
 | Target Acquisition | On-kill piercing + shields trigger. | 8 | 8 |
-| WE: Electrified | Auto lightning/electrified projectile proc. | 10 | 6 |
+| Weapon Enchant: Electrified | Auto lightning/electrified projectile proc. | 10 | 6 |
 | After Image | Dash grants temporary shields. | 10 | 15 |
 | Counter | Evade triggers retaliatory piercing hit. | 12 | 15 |
 | Dark Shroud | Projectile dark damage bonus. | 14 | 12 |
@@ -86,7 +86,7 @@ Suggested one-time activation costs (mana/stamina) for turning passive abilities
 | Thrive in Chaos | Insanity totals generate stealth repeatedly. | 30 | 18 |
 | Twilight | Stealth grants more stealth + evade + stamina. | 26 | 18 |
 | Umbral Volley | Basic attacks fire multi-dark volleys. | 28 | 18 |
-| WE: Darkness | Every 3rd basic fires heavy dark projectile. | 30 | 18 |
+| Weapon Enchant: Darkness | Every 3rd basic fires heavy dark projectile. | 30 | 18 |
 | Abyssal Carve | Evade triggers dash cone dark hit. | 40 | 25 |
 | Analyze II | Stronger analyze + regen/evade rider. | 45 | 25 |
 | Baleful Strike | Charged basics massively amplify poison conversion. | 45 | 22 |
@@ -167,4 +167,4 @@ Suggested one-time activation costs (mana/stamina) for turning passive abilities
 | Brilliance | Entropy package + defensive type-change bonus. | 55 | 10 |
 | Convergence | Entropy + homing proc + healing rider. | 55 | 10 |
 | I Am Atomic | Entropy + major cost reduction + scaling damage. | 70 | 15 |
-| Void Form | Per-rift mana-cost and CDR reduction. | 75 | 10 |
+| Void Form | Per-rift mana-cost and CDR reduction. | 65 | 10 |
