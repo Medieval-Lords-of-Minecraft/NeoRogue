@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -49,6 +50,6 @@ public class StoneShiv extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STONE_SWORD, "Gain <yellow>" + stamina + "</yellow> stamina on every 3rd hit.");
+		item = createItem(Material.STONE_SWORD, "Gain " + DescUtil.yellow(stamina) + " stamina on every 3rd hit.");
 	}
 }

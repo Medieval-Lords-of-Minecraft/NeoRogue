@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -85,7 +86,7 @@ public class LeatherBracer extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LEATHER,
-				"Reduces the first <yellow>" + instances + "</yellow> instance(s) of receiving "
-						+ GlossaryTag.GENERAL.tag(this) + " damage in a fight by <white>15</white>.");
+				"Reduces the first " + DescUtil.yellow(instances) + " instance(s) of receiving "
+						+ GlossaryTag.GENERAL.tag(this) + " damage in a fight by " + DescUtil.white(15) + ".");
 	}
 }

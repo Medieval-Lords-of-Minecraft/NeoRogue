@@ -1029,7 +1029,7 @@ public abstract class FightInstance extends Instance {
 	private PlayerFightData setup(Player p, PlayerSessionData data) {
 		UUID uuid = p.getUniqueId();
 		PlayerFightData fd = new PlayerFightData(this, data);
-		fightData.put(uuid, fd);
+		// fightData.put already done in PlayerFightData constructor
 		userData.put(uuid, fd);
 		return fd;
 	}

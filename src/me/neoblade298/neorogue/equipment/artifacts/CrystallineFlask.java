@@ -4,6 +4,7 @@ import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.PotionMeta;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -42,7 +43,7 @@ public class CrystallineFlask extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION,
-				"Heal for <white>10%</white> of your max health when you start a fight against a miniboss or boss.");
+				"Heal for " + DescUtil.white("10%") + " of your max health when you start a fight against a miniboss or boss.");
 		PotionMeta meta = (PotionMeta) item.getItemMeta();
 		meta.setColor(Color.fromRGB(11, 112, 227));
 		item.setItemMeta(meta);

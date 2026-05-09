@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -103,6 +104,6 @@ public class LightningWand extends Equipment {
 	
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STICK, "Pierces the first <yellow>" + pierceAmount + "</yellow> enemies hit.");
+		item = createItem(Material.STICK, "Pierces the first " + DescUtil.yellow(pierceAmount) + " enemies hit.");
 	}
 }

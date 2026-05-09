@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.equipment.accessories;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -45,7 +46,7 @@ public class YellowRing extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.YELLOW_DYE, "Dealing " + GlossaryTag.LIGHTNING.tag(this) + " damage while above <white>50%</white> mana also applies " +
+		item = createItem(Material.YELLOW_DYE, "Dealing " + GlossaryTag.LIGHTNING.tag(this) + " damage while above " + DescUtil.white("50%") + " mana also applies " +
 		GlossaryTag.ELECTRIFIED.tag(this, elec, true) + ".");
 	}
 }

@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.equipment.offhands;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -44,7 +45,7 @@ public class WristBlade extends Equipment {
 	@Override
 	public void setupItem() {
 		String hitsString = isUpgraded ? "2nd" : "3rd";
-		item = createItem(Material.PRISMARINE_SHARD, "Every <yellow>" + hitsString + "</yellow> basic attack will trigger"
+		item = createItem(Material.PRISMARINE_SHARD, "Every " + DescUtil.yellow(hitsString) + " basic attack will trigger"
 				+ " on-hit effects twice.");
 	}
 }

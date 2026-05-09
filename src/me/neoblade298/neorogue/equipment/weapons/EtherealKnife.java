@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -51,6 +52,6 @@ public class EtherealKnife extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.GOLDEN_SWORD, "Has <yellow>" + durability + "</yellow> uses per fight.");
+		item = createItem(Material.GOLDEN_SWORD, "Has " + DescUtil.yellow(durability) + " uses per fight.");
 	}
 }

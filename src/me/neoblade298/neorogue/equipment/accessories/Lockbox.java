@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.equipment.accessories;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -23,7 +24,7 @@ public class Lockbox extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.CHEST, "Increases your accessory slots by <white>1</white>, up to a maximum of <white>6</white>.");
+		item = createItem(Material.CHEST, "Increases your accessory slots by " + DescUtil.white(1) + ", up to a maximum of " + DescUtil.white(6) + ".");
 	}
 
 	@Override

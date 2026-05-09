@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.equipment.artifacts;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -40,6 +41,6 @@ public class FaeriePendant extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GOLD_NUGGET, 
-				"Gain " + GlossaryTag.PROTECT.tag(this, 5, false) + " and " + GlossaryTag.SHELL.tag(this, 5, false) + " for the first <white>20s</white> of a fight.");
+				"Gain " + GlossaryTag.PROTECT.tag(this, 5, false) + " and " + GlossaryTag.SHELL.tag(this, 5, false) + " for the first " + DescUtil.white("20s") + " of a fight.");
 	}
 }

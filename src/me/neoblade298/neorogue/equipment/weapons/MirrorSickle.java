@@ -10,6 +10,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -116,7 +117,7 @@ public class MirrorSickle extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.PRISMARINE_SHARD, "Can only be used without an offhand. Basic attacks with this weapon grant "
-				+ "<white>1 power</white>. Right clicking uses <white>3 power</white> to " + GlossaryTag.DASH.tag(this) + " and deal "
+				+ DescUtil.white("1 power") + ". Right clicking uses " + DescUtil.white("3 power") + " to " + GlossaryTag.DASH.tag(this) + " and deal "
 				+ GlossaryTag.PIERCING.tag(this, dash, true) + " damage to the nearest enemy.");
 	}
 }

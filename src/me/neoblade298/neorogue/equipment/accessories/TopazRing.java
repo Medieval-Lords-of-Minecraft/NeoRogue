@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.accessories;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -43,8 +44,8 @@ public class TopazRing extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.CACTUS, "Increase stacks of " + GlossaryTag.ELECTRIFIED.tag(this) + " applied by <yellow>"
-				+ stacks + "</yellow>. Applying " + GlossaryTag.ELECTRIFIED.tag(this) + " grants "
+		item = createItem(Material.CACTUS, "Increase stacks of " + GlossaryTag.ELECTRIFIED.tag(this) + " applied by "
+				+ DescUtil.yellow(stacks) + ". Applying " + GlossaryTag.ELECTRIFIED.tag(this) + " grants "
 				+ GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>5s</white>].");
 	}
 }

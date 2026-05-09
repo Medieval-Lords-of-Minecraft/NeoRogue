@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -42,7 +43,7 @@ public class ButterflyKnife2 extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STONE_SWORD, "Deal an additional <yellow>" + dmg + "</yellow> damage if above "
-				+ "<yellow>" + stam + "</yellow> stamina.");
+		item = createItem(Material.STONE_SWORD, "Deal an additional " + DescUtil.yellow(dmg) + " damage if above "
+				+ DescUtil.yellow(stam) + " stamina.");
 	}
 }

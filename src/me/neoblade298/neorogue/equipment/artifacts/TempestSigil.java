@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.equipment.artifacts;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -61,6 +62,6 @@ public class TempestSigil extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ECHO_SHARD,
-				"If you use your weapon within <white>2s</white> of casting an ability, gain <white>20%</white> attack speed for <white>3s</white>. Does not stack.");
+				"If you use your weapon within " + DescUtil.white("2s") + " of casting an ability, gain " + DescUtil.white("20%") + " attack speed for " + DescUtil.white("3s") + ". Does not stack.");
 	}
 }

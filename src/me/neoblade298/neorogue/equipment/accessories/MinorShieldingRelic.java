@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.equipment.accessories;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -38,7 +39,7 @@ public class MinorShieldingRelic extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.IRON_NUGGET, "Whenever you gain " + GlossaryTag.SHIELDS.tag(this) + ", increase the amount gained by"
-				+ " <yellow>" + shields + "</yellow>.");
+		item = createItem(Material.IRON_NUGGET, "Whenever you gain " + GlossaryTag.SHIELDS.tag(this) + ", increase the amount gained by "
+				+ DescUtil.yellow(shields) + ".");
 	}
 }

@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.weapons;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -58,8 +59,8 @@ public class EvasiveKnife extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STONE_SWORD, "Deal an additional <white>" + dmg + "</white> damage if above "
-				+ "<white>" + stam + "</white> stamina. Additionally, every <yellow>" + hits + " </yellow>basic attacks grants "
+		item = createItem(Material.STONE_SWORD, "Deal an additional " + DescUtil.white(dmg) + " damage if above "
+				+ DescUtil.white(stam) + " stamina. Additionally, every " + DescUtil.yellow(hits) + " basic attacks grants "
 				+ GlossaryTag.EVADE.tag(this, 1, false) + " [<white>3s</white>].");
 	}
 }

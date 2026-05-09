@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.equipment.accessories;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -24,7 +25,7 @@ public class TarotCard extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.MAP, "Increases the number of equipment options dropped in a fight by <white>1</white>.");
+		item = createItem(Material.MAP, "Increases the number of equipment options dropped in a fight by " + DescUtil.white(1) + ".");
 	}
 
 	@Override

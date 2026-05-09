@@ -13,7 +13,6 @@ import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.abilities.BasicElementMastery;
-import me.neoblade298.neorogue.equipment.abilities.Sear;
 import me.neoblade298.neorogue.equipment.mechanics.ProjectileInstance;
 import me.neoblade298.neorogue.session.fight.DamageType;
 
@@ -30,8 +29,7 @@ public class Firefly extends Ammunition {
 
 	@Override
 	public void setupReforges() {
-		addReforge(Sear.get(), SearingArrow.get());
-		addReforge(BasicElementMastery.get(), StickyBomb.get());
+		addReforge(BasicElementMastery.get(), StickyBomb.get(), SearingArrow.get());
 	}
 	
 	public static Equipment get() {

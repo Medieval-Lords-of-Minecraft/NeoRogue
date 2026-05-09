@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Bow;
 import me.neoblade298.neorogue.equipment.BowProjectile;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -67,6 +68,6 @@ public class MultiCrossbow extends Bow {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.CROSSBOW,
-			"Additionally fires <white>4</white> projectiles in a circle around the cursor.");
+			"Additionally fires " + DescUtil.white(4) + " projectiles in a circle around the cursor.");
 	}
 }

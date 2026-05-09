@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
@@ -102,7 +103,7 @@ public class BoltWand extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(
-				Material.STICK, "Pierces the first <white>" + pierceAmount + "</white> enemies hit, and applies " + GlossaryTag.ELECTRIFIED.tag(this, elec, false) + " to all."
+				Material.STICK, "Pierces the first " + DescUtil.white(pierceAmount) + " enemies hit, and applies " + GlossaryTag.ELECTRIFIED.tag(this, elec, false) + " to all."
 		);
 	}
 }

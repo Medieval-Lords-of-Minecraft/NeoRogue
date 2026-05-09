@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.equipment.armor;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -45,7 +46,7 @@ public class SilversilkCowl extends Equipment {
 	public void setupItem() {
 		int pct = (int)(mult * 100);
 		item = createItem(Material.CHAINMAIL_HELMET,
-				"Start every fight with <yellow>" + evade + "</yellow> " + GlossaryTag.EVADE.tag(this) + ". "
-				+ "The amount of damage that " + GlossaryTag.EVADE.tag(this) + " mitigates per stamina is increased by <yellow>" + pct + "%</yellow>.");
+				"Start every fight with " + DescUtil.yellow(evade) + " " + GlossaryTag.EVADE.tag(this) + ". "
+				+ "The amount of damage that " + GlossaryTag.EVADE.tag(this) + " mitigates per stamina is increased by " + DescUtil.yellow(pct + "%") + ".");
 	}
 }

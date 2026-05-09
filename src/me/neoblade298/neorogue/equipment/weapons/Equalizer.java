@@ -11,6 +11,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Bow;
@@ -80,8 +81,8 @@ public class Equalizer extends Bow {
 				"Projectiles have infinite " + GlossaryTag.PIERCING.tag(this) + ". " +
 				"When projectiles hit a block, they explode, dealing " + 
 				GlossaryTag.BLUNT.tag(this, damage, true) + " damage to nearby enemies. " +
-				"On hit, rains <white>1</white> arrow dealing " + GlossaryTag.PIERCING.tag(this, arrowDamage, true) + 
-				" damage for every <white>100</white> " + GlossaryTag.INJURY.tag(this) + " the enemy has " +
+				"On hit, rains " + DescUtil.white(1) + " arrow dealing " + GlossaryTag.PIERCING.tag(this, arrowDamage, true) + 
+				" damage for every " + DescUtil.white(100) + " " + GlossaryTag.INJURY.tag(this) + " the enemy has " +
 				"[<white>10 tick initial delay, 3 tick delay between arrows</white>].");
 	}
 	

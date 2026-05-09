@@ -5,6 +5,7 @@ import org.bukkit.Sound;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -71,6 +72,6 @@ public class TacticiansDagger extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GOLDEN_SWORD, "Deal an additional " + GlossaryTag.PIERCING.tag(this, damage, true) + " if "
-				+ "you haven't dealt " + GlossaryTag.GENERAL.tag(this) + " damage in <white>3</white> seconds.");
+				+ "you haven't dealt " + GlossaryTag.GENERAL.tag(this) + " damage in " + DescUtil.white(3) + " seconds.");
 	}
 }

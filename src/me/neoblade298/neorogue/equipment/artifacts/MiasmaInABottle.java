@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.meta.PotionMeta;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -74,7 +75,7 @@ public class MiasmaInABottle extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION, 
-				"Every <white>3</white> seconds, enemies within <white>5</white> blocks of you take " + GlossaryTag.DARK.tag(this, damage, false)
+				"Every " + DescUtil.white(3) + " seconds, enemies within " + DescUtil.white(5) + " blocks of you take " + GlossaryTag.DARK.tag(this, damage, false)
 				+ " damage for every stack of " + GlossaryTag.INSANITY.tag(this) + " they have.");
 		PotionMeta pm = (PotionMeta) item.getItemMeta();
 		pm.setColor(Color.fromRGB(139, 69, 19));

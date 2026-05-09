@@ -7,6 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -93,8 +94,8 @@ public class SpikyShield extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.SHIELD, "When raised, creates a " + GlossaryTag.BARRIER.tag(this) + " of size <white>3x2</white>"
-				+ " and reduce all damage by <yellow>" + reduction + "</yellow>. "
-				+ "Also grants <yellow>" + amount + "</yellow> " + GlossaryTag.THORNS.tag(this) + " at the start of combat.");
+		item = createItem(Material.SHIELD, "When raised, creates a " + GlossaryTag.BARRIER.tag(this) + " of size " + DescUtil.white("3x2")
+				+ " and reduce all damage by " + DescUtil.yellow(reduction) + ". "
+				+ "Also grants " + DescUtil.yellow(amount) + " " + GlossaryTag.THORNS.tag(this) + " at the start of combat.");
 	}
 }

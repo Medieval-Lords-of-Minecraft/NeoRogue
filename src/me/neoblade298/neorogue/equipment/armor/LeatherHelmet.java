@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.armor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -31,6 +32,6 @@ public class LeatherHelmet extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LEATHER_HELMET, "Start every fight with <yellow>" + shields + " </yellow>" + GlossaryTag.SHIELDS.tag(this) + ".");
+		item = createItem(Material.LEATHER_HELMET, "Start every fight with " + DescUtil.yellow(shields) + " " + GlossaryTag.SHIELDS.tag(this) + ".");
 	}
 }

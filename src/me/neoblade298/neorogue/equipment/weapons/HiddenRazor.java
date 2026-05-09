@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -60,6 +61,6 @@ public class HiddenRazor extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.STONE_HOE, "Requires " + GlossaryTag.STEALTH.tag(this) + " to be used. Reduces your "
-				+ GlossaryTag.STEALTH.tag(this) + " by <white>1</white> every <white>5th</white> hit.");
+				+ GlossaryTag.STEALTH.tag(this) + " by " + DescUtil.white(1) + " every " + DescUtil.white("5th") + " hit.");
 	}
 }

@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -61,7 +62,7 @@ public class ElectromagneticKnife extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.STONE_SWORD, "Every basic attack applies " + GlossaryTag.ELECTRIFIED.tag(this, elec, false) + ", increased "
-				+ "by <yellow>" + inc + "</yellow> for every time you basic attack an enemy with " + GlossaryTag.ELECTRIFIED.tag(this) + " (checked before the weapon"
+				+ "by " + DescUtil.yellow(inc) + " for every time you basic attack an enemy with " + GlossaryTag.ELECTRIFIED.tag(this) + " (checked before the weapon"
 						+ " applies it).");
 	}
 }

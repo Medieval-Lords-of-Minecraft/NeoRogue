@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -59,7 +60,7 @@ public class LifeThief extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.RABBIT_FOOT, "Passive. Upon applying <white>" + cutoff + "</white> stacks of " + GlossaryTag.STEALTH.tag(this) + ","
-				+ " your next basic attack heals you for <yellow>" + heal + "</yellow>. Once per fight.");
+		item = createItem(Material.RABBIT_FOOT, "Passive. Upon applying " + DescUtil.white(cutoff) + " stacks of " + GlossaryTag.STEALTH.tag(this) + ","
+				+ " your next basic attack heals you for " + DescUtil.yellow(heal) + ". Once per fight.");
 	}
 }

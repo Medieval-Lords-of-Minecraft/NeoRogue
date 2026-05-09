@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.offhands;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -50,6 +51,6 @@ public class HavenTome extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BOOK, "On right click, gain " + GlossaryTag.SHIELDS.tag(this, shields, true) +
-				" [<white>5s</white>] if you are within <white>5</white> blocks of one of your " + GlossaryTag.RIFT.tagPlural(this) + ".");
+				" [<white>5s</white>] if you are within " + DescUtil.white(5) + " blocks of one of your " + GlossaryTag.RIFT.tagPlural(this) + ".");
 	}
 }

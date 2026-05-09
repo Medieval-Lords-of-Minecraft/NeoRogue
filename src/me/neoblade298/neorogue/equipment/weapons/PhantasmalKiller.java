@@ -8,6 +8,7 @@ import org.bukkit.inventory.ItemStack;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -190,8 +191,8 @@ public class PhantasmalKiller extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.IRON_SWORD,
-				"Throwable. Can only be used without an offhand. Every <white>3</white> basic attacks, gain a charge, up to a max of " +
-				"<white>3</white>. Right click to consume a charge, dashing and dealing a clone of your " +
+				"Throwable. Can only be used without an offhand. Every " + DescUtil.white(3) + " basic attacks, gain a charge, up to a max of " +
+				DescUtil.white(3) + ". Right click to consume a charge, dashing and dealing a clone of your " +
 				"previous basic attack as damage to the nearest enemy, buffs included but not reapplied.");
 	}
 }

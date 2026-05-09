@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -55,6 +56,6 @@ public class HiddenBlade extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.IRON_SHOVEL, 
-				"Going into " + GlossaryTag.STEALTH.tag(this) + " grants <white>15%</white> damage for <white>2s</white>.");
+				"Going into " + GlossaryTag.STEALTH.tag(this) + " grants " + DescUtil.white("15%") + " damage for " + DescUtil.white("2s") + ".");
 	}
 }

@@ -14,6 +14,7 @@ import me.neoblade298.neocore.bukkit.effects.Effect;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.ParticleUtil;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
@@ -81,7 +82,7 @@ public class ChainLightningWand extends Equipment {
 	
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STICK, "Lightning chains through <yellow>" + chainAmount + "</yellow> additional enemies.");
+		item = createItem(Material.STICK, "Lightning chains through " + DescUtil.yellow(chainAmount) + " additional enemies.");
 	}
 
 	// returns chains remaining

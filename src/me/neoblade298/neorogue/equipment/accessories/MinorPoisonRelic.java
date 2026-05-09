@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.equipment.accessories;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -39,7 +40,7 @@ public class MinorPoisonRelic extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.IRON_NUGGET, "Whenever you apply " + GlossaryTag.POISON.tag(this) + ", increase the stacks by <yellow>"
-				+ increase + "</yellow>.");
+		item = createItem(Material.IRON_NUGGET, "Whenever you apply " + GlossaryTag.POISON.tag(this) + ", increase the stacks by "
+				+ DescUtil.yellow(increase) + ".");
 	}
 }

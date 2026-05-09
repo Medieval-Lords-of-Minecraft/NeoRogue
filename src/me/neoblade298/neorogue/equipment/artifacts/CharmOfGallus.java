@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
@@ -95,6 +96,6 @@ public class CharmOfGallus extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GOLD_NUGGET,
-				"The first 5 skills you cast have their stamina cost reduced by <white>" + stamina + "</white>.");
+				"The first 5 skills you cast have their stamina cost reduced by " + DescUtil.white(stamina) + ".");
 	}
 }

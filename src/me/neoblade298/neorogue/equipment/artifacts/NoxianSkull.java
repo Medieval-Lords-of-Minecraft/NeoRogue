@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -67,6 +68,6 @@ public class NoxianSkull extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.WITHER_SKELETON_SKULL, 
-				"For every <white>6</white> stacks of any negative status you apply, apply <white>1</white> additional stack.");
+				"For every " + DescUtil.white(6) + " stacks of any negative status you apply, apply " + DescUtil.white(1) + " additional stack.");
 	}
 }

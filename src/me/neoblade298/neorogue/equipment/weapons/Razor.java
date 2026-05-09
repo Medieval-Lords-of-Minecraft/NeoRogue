@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.weapons;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -64,6 +65,6 @@ public class Razor extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.WOODEN_HOE, "Every <white>3</white> basic attacks, your attack cooldown is set to <white>1s</white>.");
+		item = createItem(Material.WOODEN_HOE, "Every " + DescUtil.white(3) + " basic attacks, your attack cooldown is set to " + DescUtil.white("1s") + ".");
 	}
 }

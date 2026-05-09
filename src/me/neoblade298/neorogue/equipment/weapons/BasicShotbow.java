@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.util.Vector;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Bow;
 import me.neoblade298.neorogue.equipment.BowProjectile;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -62,6 +63,6 @@ public class BasicShotbow extends Bow {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BOW,
-		"Every third shot, fire two additional arrows in a <white>30</white> degree cone.");
+		"Every third shot, fire two additional arrows in a " + DescUtil.white(30) + " degree cone.");
 	}
 }

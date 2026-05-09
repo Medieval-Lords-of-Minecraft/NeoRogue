@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.armor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -53,7 +54,7 @@ public class ElectrostaticVest extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.CHAINMAIL_CHESTPLATE,
 				"Passive. Upon dealing " + GlossaryTag.ELECTRIFIED.tag(this) + " damage, gain " + 
-				GlossaryTag.SHIELDS.tag(this, baseShields, true) + " [<white>5s</white>], increased by <white>1</white> " +
+				GlossaryTag.SHIELDS.tag(this, baseShields, true) + " [<white>5s</white>], increased by " + DescUtil.white(1) + " " +
 				"every time this happens.");
 	}
 }

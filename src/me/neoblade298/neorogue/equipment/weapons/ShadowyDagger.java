@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.weapons;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -45,6 +46,6 @@ public class ShadowyDagger extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BLAZE_ROD, "Deals an additional <yellow>" + dmg + "</yellow> damage to enemies with " + GlossaryTag.INSANITY.tag(this) + ".");
+		item = createItem(Material.BLAZE_ROD, "Deals an additional " + DescUtil.yellow(dmg) + " damage to enemies with " + GlossaryTag.INSANITY.tag(this) + ".");
 	}
 }

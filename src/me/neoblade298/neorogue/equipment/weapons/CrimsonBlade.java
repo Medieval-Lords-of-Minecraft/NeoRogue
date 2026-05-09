@@ -4,6 +4,7 @@ package me.neoblade298.neorogue.equipment.weapons;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -62,6 +63,6 @@ public class CrimsonBlade extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.IRON_SWORD, "For the first <white>30s</white> of a fight, every 5 basic attacks with this weapon heals you for <yellow>" + heal + "</yellow>.");
+		item = createItem(Material.IRON_SWORD, "For the first " + DescUtil.white("30s") + " of a fight, every 5 basic attacks with this weapon heals you for " + DescUtil.yellow(heal) + ".");
 	}
 }

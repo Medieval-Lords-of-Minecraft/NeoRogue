@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.offhands;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -56,7 +57,7 @@ public class VeiledHourglass extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.CLOCK,
-				"If not in " + GlossaryTag.STEALTH.tag(this) + ", gain <yellow>1</yellow> " + GlossaryTag.STEALTH.tag(this) + " [<white>10s</white>]. "
-				+ "If in " + GlossaryTag.STEALTH.tag(this) + ", reduce all castable cooldowns by <yellow>" + cdr + "</yellow>.");
+				"If not in " + GlossaryTag.STEALTH.tag(this) + ", gain " + DescUtil.yellow(1) + " " + GlossaryTag.STEALTH.tag(this) + " [<white>10s</white>]. "
+				+ "If in " + GlossaryTag.STEALTH.tag(this) + ", reduce all castable cooldowns by " + DescUtil.yellow(cdr) + ".");
 	}
 }

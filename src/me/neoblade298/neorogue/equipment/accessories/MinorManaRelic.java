@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.equipment.accessories;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -27,6 +28,6 @@ public class MinorManaRelic extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.IRON_NUGGET, "Increases mana regen by <yellow>" + regen + "</yellow>.");
+		item = createItem(Material.IRON_NUGGET, "Increases mana regen by " + DescUtil.yellow(regen) + ".");
 	}
 }

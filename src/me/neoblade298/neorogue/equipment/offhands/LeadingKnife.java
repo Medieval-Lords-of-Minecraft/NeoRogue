@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -60,9 +61,9 @@ public class LeadingKnife extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STONE_SWORD, "Right click to throw a knife. If an enemy is hit, they are marked for <white>2s</white>."
+		item = createItem(Material.STONE_SWORD, "Right click to throw a knife. If an enemy is hit, they are marked for " + DescUtil.white("2s") + "."
 				+ " Dealing damage to them grants you"
-				+ " <yellow>" + stamina + "</yellow> stamina and consumes the mark.");
+				+ " " + DescUtil.yellow(stamina) + " stamina and consumes the mark.");
 	}
 	
 	private class LeadingKnifeInstance extends PriorityAction {

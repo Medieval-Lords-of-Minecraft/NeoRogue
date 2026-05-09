@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -38,7 +39,7 @@ public class EnchantedCloak extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LEATHER_CHESTPLATE, "Decrease all " + GlossaryTag.MAGICAL.tag(this) + " damage taken by <yellow>" + reduc + "</yellow>. " +
-			"Increase all " + GlossaryTag.MAGICAL.tag(this) + " damage dealt by <yellow>" + damage + "</yellow>.");
+		item = createItem(Material.LEATHER_CHESTPLATE, "Decrease all " + GlossaryTag.MAGICAL.tag(this) + " damage taken by " + DescUtil.yellow(reduc) + ". " +
+			"Increase all " + GlossaryTag.MAGICAL.tag(this) + " damage dealt by " + DescUtil.yellow(damage) + ".");
 	}
 }

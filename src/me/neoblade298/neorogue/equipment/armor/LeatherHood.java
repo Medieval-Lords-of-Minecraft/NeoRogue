@@ -4,6 +4,7 @@ import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -35,7 +36,7 @@ public class LeatherHood extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LEATHER_HELMET, "Start every fight with " + GlossaryTag.STEALTH.tag(this, 1, false)
-		+ " [<yellow>" + dur +"s</yellow>] and " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>10s</white>].");
+		+ " [" + DescUtil.yellow(dur + "s") + "] and " + GlossaryTag.SHIELDS.tag(this, shields, true) + " [<white>10s</white>].");
 		
 		LeatherArmorMeta dye = (LeatherArmorMeta) item.getItemMeta();
 		dye.setColor(Color.BLACK);

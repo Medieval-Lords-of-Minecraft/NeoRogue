@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.equipment.artifacts;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -43,8 +44,8 @@ public class HermesBoots extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GOLDEN_BOOTS,
-				"Sprinting's cost is decreased by <white>4</white> until you cast <white>" + num
-						+ "</white> abilities.");
+				"Sprinting's cost is decreased by " + DescUtil.white(4) + " until you cast " + DescUtil.white(num)
+						+ " abilities.");
 	}
 
 	private class HermesBootsInstance extends PriorityAction {

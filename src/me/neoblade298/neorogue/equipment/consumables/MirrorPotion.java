@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Consumable;
@@ -61,7 +62,7 @@ public class MirrorPotion extends Consumable {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION, isUpgraded
-				? "Your next [<white>2</white>] ability casts are each cast again for free after [<white>1s</white>]. Consumed on first use."
+				? "Your next [" + DescUtil.white(2) + "] ability casts are each cast again for free after [<white>1s</white>]. Consumed on first use."
 				: "Your next ability cast is cast again for free after [<white>1s</white>]. Consumed on first use.");
 		PotionMeta meta = (PotionMeta) item.getItemMeta();
 		meta.setColor(Color.fromRGB(186, 85, 211));

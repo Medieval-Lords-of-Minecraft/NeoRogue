@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.weapons;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
@@ -44,6 +45,6 @@ public class CrescentAxe extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GOLDEN_AXE, "Increases damage dealt by number of " + GlossaryTag.BERSERK.tag(this) + " "
-				+ "stacks you have multiplied by <white>3</white>.");
+				+ "stacks you have multiplied by " + DescUtil.white(3) + ".");
 	}
 }

@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -54,7 +55,7 @@ public class SaviorsHelm extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.GOLDEN_HELMET, "Decrease " + GlossaryTag.MAGICAL.tag(this) + " damage taken by <yellow>" + def + "</yellow>. Passively applies "
-		+ GlossaryTag.SANCTIFIED.tag(this, sanct, true) + " to all nearby enemies every <white>3s</white>.");
+		item = createItem(Material.GOLDEN_HELMET, "Decrease " + GlossaryTag.MAGICAL.tag(this) + " damage taken by " + DescUtil.yellow(def) + ". Passively applies "
+		+ GlossaryTag.SANCTIFIED.tag(this, sanct, true) + " to all nearby enemies every " + DescUtil.white("3s") + ".");
 	}
 }

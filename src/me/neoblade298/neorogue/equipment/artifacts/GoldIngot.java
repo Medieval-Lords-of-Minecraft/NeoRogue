@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.equipment.artifacts;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -42,6 +43,6 @@ public class GoldIngot extends Artifact {
 	
 	@Override
 	public void setupItem() {
-		item = createItem(Material.GOLD_INGOT, "Increases gold earned from fights by <white>25</white>.");
+		item = createItem(Material.GOLD_INGOT, "Increases gold earned from fights by " + DescUtil.white(25) + ".");
 	}
 }

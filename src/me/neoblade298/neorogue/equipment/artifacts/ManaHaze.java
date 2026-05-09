@@ -76,6 +76,6 @@ public class ManaHaze extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BREWER_POTTERY_SHERD, 
-				"Every " + DescUtil.white(thres) + " times you apply a negative status, apply half of it to the nearest enemy. <white>1s</white> cooldown.");
+				"Every " + DescUtil.white(thres) + " times you apply a negative status, apply half of it to the nearest enemy. " + DescUtil.white("1s") + " cooldown.");
 	}
 }

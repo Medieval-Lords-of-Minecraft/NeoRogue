@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.equipment.accessories;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -23,7 +24,7 @@ public class ArmorStand extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.ARMOR_STAND, "Increases your armor slots by <white>1</white>, up to a max of <white>3</white>.");
+		item = createItem(Material.ARMOR_STAND, "Increases your armor slots by " + DescUtil.white(1) + ", up to a max of " + DescUtil.white(3) + ".");
 	}
 
 	@Override

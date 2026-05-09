@@ -106,6 +106,6 @@ public class EnfeeblingWand extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.STICK, "Lowers magical defense of target by " + DescUtil.yellow(multStr + "%") + " on hit for <white>5s</white>. Does not stack.");
+		item = createItem(Material.STICK, "Lowers magical defense of target by " + DescUtil.yellow(multStr + "%") + " on hit for " + DescUtil.white("5s") + ". Does not stack.");
 	}
 }

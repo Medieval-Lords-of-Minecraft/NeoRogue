@@ -6,6 +6,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -75,7 +76,7 @@ public class FlightRing extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.FEATHER,
 				"Start every fight with " + GlossaryTag.EVADE.tag(this, evade, true) + ". " +
-				"The first " + (evade == 3 ? "<yellow>3</yellow>" : "<yellow>2</yellow>") + " times you " + 
+				"The first " + DescUtil.yellow(evade) + " times you " + 
 				GlossaryTag.EVADE.tag(this) + ", " + GlossaryTag.DASH.tag(this) + " away from the enemy.");
 	}
 }

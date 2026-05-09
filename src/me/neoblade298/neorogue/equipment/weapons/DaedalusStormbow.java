@@ -165,7 +165,7 @@ public class DaedalusStormbow extends Bow {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BOW,
-				"Passive. Increase basic attack range by <white>4</white> and fire an extra shot on basic attack launch. " +
+				"Passive. Increase basic attack range by " + DescUtil.white(4) + " and fire an extra shot on basic attack launch. " +
 				"Every " + DescUtil.yellow(threshold) + " times you deal projectile damage, increases the damage your extra shots " +
 				"deal by " + DescUtil.yellow(EXTRA_SHOT_DAMAGE_INCREMENT) + ".");
 	}

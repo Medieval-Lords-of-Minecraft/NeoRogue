@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.equipment.artifacts;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -57,7 +58,7 @@ public class GiantSlayer extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.IRON_AXE, "Increases damage dealt to minibosses by <white>"
-				+ (int) (buff * 100) + "%</white>.");
+		item = createItem(Material.IRON_AXE, "Increases damage dealt to minibosses by "
+				+ DescUtil.white((int) (buff * 100) + "%") + ".");
 	}
 }

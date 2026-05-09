@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.equipment.armor;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -28,6 +29,6 @@ public class BootsOfSpeed extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LEATHER_BOOTS, "Reduces sprint stamina cost by <yellow>" + stamina + "</yellow>.");
+		item = createItem(Material.LEATHER_BOOTS, "Reduces sprint stamina cost by " + DescUtil.yellow(stamina) + ".");
 	}
 }

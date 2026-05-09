@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.equipment.armor;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -30,6 +31,6 @@ public class SpikedPauldrons extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.ARMOR_STAND, "Start every fight with <yellow>" + thorns + " </yellow>" + GlossaryTag.THORNS.tag(this) + ".");
+		item = createItem(Material.ARMOR_STAND, "Start every fight with " + DescUtil.yellow(thorns) + " " + GlossaryTag.THORNS.tag(this) + ".");
 	}
 }

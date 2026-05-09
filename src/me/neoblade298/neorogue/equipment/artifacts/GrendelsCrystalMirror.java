@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.artifacts;
 import org.bukkit.Material;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
@@ -61,6 +62,6 @@ public class GrendelsCrystalMirror extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GLASS_PANE,
-				"Every <white>5th</white> projectile you fire will be fired twice.");
+				"Every " + DescUtil.white("5th") + " projectile you fire will be fired twice.");
 	}
 }

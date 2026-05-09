@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
@@ -52,6 +53,6 @@ public class StoneSword extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.STONE_SWORD, "Start the fight with " + GlossaryTag.SHIELDS.tag(this, shields, true) + ". "
-				+ "Deal an additional <yellow>" + shieldsBonus + "</yellow> damage if you have shields when you attack with this weapon.");
+				+ "Deal an additional " + DescUtil.yellow(shieldsBonus) + " damage if you have shields when you attack with this weapon.");
 	}
 }

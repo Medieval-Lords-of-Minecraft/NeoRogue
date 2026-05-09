@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.artifacts;
 import org.bukkit.Material;
 
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -51,7 +52,7 @@ public class Exhaustion extends Artifact {
 	
 	@Override
 	public void setupItem() {
-		item = createItem(Material.DEAD_FIRE_CORAL, "Decreases max abilities by <white>1</white> when you have at least one. " + 
-			"Removes one of itself after <white>1</white> fight.");
+		item = createItem(Material.DEAD_FIRE_CORAL, "Decreases max abilities by " + DescUtil.white(1) + " when you have at least one. " + 
+			"Removes one of itself after " + DescUtil.white(1) + " fight.");
 	}
 }

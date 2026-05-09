@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -61,7 +62,7 @@ public class StaticNecklace extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LEAD, 
-				GlossaryTag.LIGHTNING.tag(this) + " damage is increased by <white>" + DAMAGE_INCREASE + "</white> for each stack of " + 
+				GlossaryTag.LIGHTNING.tag(this) + " damage is increased by " + DescUtil.white(DAMAGE_INCREASE) + " for each stack of " + 
 				GlossaryTag.ELECTRIFIED.tag(this) + " on the target.");
 	}
 }

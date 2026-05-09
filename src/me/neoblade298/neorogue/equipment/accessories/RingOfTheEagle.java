@@ -51,6 +51,6 @@ public class RingOfTheEagle extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.FEATHER,
 				"Passive. Every " + DescUtil.yellow(thres + "th") + " time you hit an enemy with a projectile, " +
-				"decrease all ability cooldowns by <white>1s</white>.");
+				"decrease all ability cooldowns by " + DescUtil.white("1s") + ".");
 	}
 }

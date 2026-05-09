@@ -7,6 +7,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
@@ -66,7 +67,7 @@ public class HastyShield extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.SHIELD, "When raised, reduce the next hit taken by <white>" + reduction + "</white>"
-				+ " and grant <yellow>" + amount + " </yellow>mana and stamina. 5 second cooldown.");
+		item = createItem(Material.SHIELD, "When raised, reduce the next hit taken by " + DescUtil.white(reduction)
+				+ " and grant " + DescUtil.yellow(amount) + " mana and stamina. " + DescUtil.white("5s") + " cooldown.");
 	}
 }

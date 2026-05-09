@@ -112,6 +112,9 @@ public class PlayerFightData extends FightData {
 		this.inst = inst;
 		this.sessdata = data;
 
+		// Register early so equipment initialize() can look up this FightData
+		FightInstance.putFightData(p.getUniqueId(), this);
+
 		// Setup mana and hunger bar
 		this.maxStamina = sessdata.getMaxStamina();
 		this.maxMana = sessdata.getMaxMana();

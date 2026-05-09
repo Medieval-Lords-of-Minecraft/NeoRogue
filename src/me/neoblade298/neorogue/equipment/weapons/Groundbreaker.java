@@ -14,6 +14,7 @@ import me.neoblade298.neocore.bukkit.effects.Circle;
 import me.neoblade298.neocore.bukkit.effects.LocalAxes;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -79,6 +80,6 @@ public class Groundbreaker extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.MACE, "Only works on blocks. Left clicking a block will deal damage and apply " + 
-		GlossaryTag.CONCUSSED.tag(this, conc, true) + " to enemies near the block after <white>1s</white>.");
+		GlossaryTag.CONCUSSED.tag(this, conc, true) + " to enemies near the block after " + DescUtil.white("1s") + ".");
 	}
 }

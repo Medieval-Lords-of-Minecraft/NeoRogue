@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
@@ -54,7 +55,7 @@ public class IcySigil extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.RABBIT_HIDE, "Decrease all " + GlossaryTag.MAGICAL.tag(this) + " damage taken by <yellow>" + def + "</yellow>. " +
-				"Double this effect for <white>5s</white> (unstackable) every time you apply " + GlossaryTag.FROST.tag(this, thres, false) + ".");
+		item = createItem(Material.RABBIT_HIDE, "Decrease all " + GlossaryTag.MAGICAL.tag(this) + " damage taken by " + DescUtil.yellow(def) + ". " +
+				"Double this effect for " + DescUtil.white("5s") + " (unstackable) every time you apply " + GlossaryTag.FROST.tag(this, thres, false) + ".");
 	}
 }

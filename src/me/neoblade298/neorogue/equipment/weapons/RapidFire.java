@@ -113,6 +113,6 @@ public class RapidFire extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FIREWORK_ROCKET, "On cast, fire a projectile for every " + GlossaryTag.REND.tag(this, thres, true) + " you've applied +1, " +
-			"up to <white>6</white>. Each projectile deals " + DescUtil.white(damage) + " damage using your current ammunition.");
+			"up to " + DescUtil.white(6) + ". Each projectile deals " + DescUtil.white(damage) + " damage using your current ammunition.");
 	}
 }

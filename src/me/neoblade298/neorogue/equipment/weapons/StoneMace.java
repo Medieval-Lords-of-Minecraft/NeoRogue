@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
@@ -50,6 +51,6 @@ public class StoneMace extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.STONE_SHOVEL, "Increases damage dealt by number of " + GlossaryTag.CONCUSSED.tag(this) + " "
-				+ "stacks the enemy has multiplied by <white>2</white>. Also applies " + GlossaryTag.CONCUSSED.tag(this, conc, true) + " on basic attack.");
+				+ "stacks the enemy has multiplied by " + DescUtil.white(2) + ". Also applies " + GlossaryTag.CONCUSSED.tag(this, conc, true) + " on basic attack.");
 	}
 }

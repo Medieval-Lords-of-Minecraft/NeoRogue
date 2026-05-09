@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -63,6 +64,6 @@ public class IronSword extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.IRON_SWORD, "Every <white>third</white> hit lowers ability cooldowns by <white>1</white>.");
+		item = createItem(Material.IRON_SWORD, "Every " + DescUtil.white("third") + " hit lowers ability cooldowns by " + DescUtil.white(1) + ".");
 	}
 }

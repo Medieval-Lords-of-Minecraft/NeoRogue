@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.StandardPriorityAction;
@@ -66,7 +67,7 @@ public class LightningCloak extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.LEATHER_BOOTS, "Whenever you receive damage, apply " + GlossaryTag.ELECTRIFIED.tag(this, base, true) + ". "
-				+ "Upon applying " + GlossaryTag.ELECTRIFIED.tag(this, threshold, true) + ", gain <white>"
-				+ def + "</white> " + GlossaryTag.MAGICAL.tag(this) + " defense.");
+				+ "Upon applying " + GlossaryTag.ELECTRIFIED.tag(this, threshold, true) + ", gain "
+				+ DescUtil.white(def) + " " + GlossaryTag.MAGICAL.tag(this) + " defense.");
 	}
 }

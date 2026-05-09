@@ -5,6 +5,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -69,7 +70,7 @@ public class EnduranceShield extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.SHIELD, "When raised, reduces all damage by <yellow>" + reduction + "</yellow>. Receiving damage while your shield is raised " +
+		item = createItem(Material.SHIELD, "When raised, reduces all damage by " + DescUtil.yellow(reduction) + ". Receiving damage while your shield is raised " +
 		"empowers your next basic attack to deal " + GlossaryTag.BLUNT.tag(this, damage, true) + ".");
 	}
 }

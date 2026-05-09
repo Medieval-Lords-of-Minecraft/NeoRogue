@@ -9,6 +9,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Consumable;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -50,7 +51,7 @@ public class SeraphsPotion extends Consumable {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.POTION,
-				"Grants invulnerability for [<yellow>" + duration + "s</yellow>]. Consumed on first use.");
+				"Grants invulnerability for [" + DescUtil.yellow(duration + "s") + "]. Consumed on first use.");
 		PotionMeta meta = (PotionMeta) item.getItemMeta();
 		meta.setColor(Color.fromRGB(255, 255, 255));
 		item.setItemMeta(meta);

@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -44,7 +45,7 @@ public class LeatherArmguard extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.WHITE_DYE, "Reduce " + GlossaryTag.GENERAL.tag(this) + " damage received by <yellow>" + def + "</yellow>, increased to"
-				+ " <yellow>" + spdef + " </yellow>when in " + GlossaryTag.STEALTH.tag(this) + ".");
+		item = createItem(Material.WHITE_DYE, "Reduce " + GlossaryTag.GENERAL.tag(this) + " damage received by " + DescUtil.yellow(def) + ", increased to "
+				+ DescUtil.yellow(spdef) + " when in " + GlossaryTag.STEALTH.tag(this) + ".");
 	}
 }

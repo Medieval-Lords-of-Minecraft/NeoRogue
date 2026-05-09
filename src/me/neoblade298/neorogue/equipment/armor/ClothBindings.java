@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.armor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.FightInstance;
@@ -35,6 +36,6 @@ public class ClothBindings extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.WHITE_DYE, "Winning a fight heals you for <yellow>" + health + "</yellow>.");
+		item = createItem(Material.WHITE_DYE, "Winning a fight heals you for " + DescUtil.yellow(health) + ".");
 	}
 }

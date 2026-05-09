@@ -107,7 +107,7 @@ public class IronThrowingKnife extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.IRON_SWORD, "Throwable. Every <white>3</white> hits grant <white>1</white> " 
+		item = createItem(Material.IRON_SWORD, "Throwable. Every " + DescUtil.white(3) + " hits grant " + DescUtil.white(1) + " " 
 				+ GlossaryTag.STEALTH.tag(this) + " [" + DescUtil.yellow(dur + "s") + "].");
 	}
 }

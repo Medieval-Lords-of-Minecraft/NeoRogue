@@ -7,6 +7,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -94,7 +95,7 @@ public class SparkStick extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(
-				Material.STICK, "Pierces through the first <white>" + pierceAmount + "</white> enemy hit. Also grants <white>3</white> mana per enemy hit."
+				Material.STICK, "Pierces through the first " + DescUtil.white(pierceAmount) + " enemy hit. Also grants " + DescUtil.white(3) + " mana per enemy hit."
 		);
 	}
 }

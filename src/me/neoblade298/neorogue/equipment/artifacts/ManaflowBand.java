@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.equipment.artifacts;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -56,6 +57,6 @@ public class ManaflowBand extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BREWER_POTTERY_SHERD, 
-				"After <white>20</white> seconds in a fight, increase your mana regen by <white>20%</white> of your base regen.");
+				"After " + DescUtil.white(20) + " seconds in a fight, increase your mana regen by " + DescUtil.white("20%") + " of your base regen.");
 	}
 }

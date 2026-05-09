@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -50,6 +51,6 @@ public class Anxiety extends Artifact {
 	
 	@Override
 	public void setupItem() {
-		item = createItem(Material.DEAD_FIRE_CORAL, "Decreases damage by <white>25%</white> for the first <white>20s</white>. Disappears after <white>1</white> fight.");
+		item = createItem(Material.DEAD_FIRE_CORAL, "Decreases damage by " + DescUtil.white("25%") + " for the first " + DescUtil.white("20s") + ". Disappears after " + DescUtil.white(1) + " fight.");
 	}
 }

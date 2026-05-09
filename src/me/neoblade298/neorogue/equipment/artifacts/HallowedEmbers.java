@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.artifacts;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -46,7 +47,7 @@ public class HallowedEmbers extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BLAZE_POWDER, "If you're below <white>" + (int) (healthThreshold * 100)
-				+ "%</white> health after winning a fight, heal for <white>" + (int) (healPercent * 100) + "%</white> of your max health.");
+		item = createItem(Material.BLAZE_POWDER, "If you're below " + DescUtil.white((int) (healthThreshold * 100) + "%")
+				+ " health after winning a fight, heal for " + DescUtil.white((int) (healPercent * 100) + "%") + " of your max health.");
 	}
 }

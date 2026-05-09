@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.equipment.armor;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -42,9 +43,9 @@ public class Gauze extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.WHITE_CARPET, "Gaining " + GlossaryTag.STEALTH.tag(this) + " within <white>2</white> seconds of "
-				+ "taking health damage heals back <yellow>" + pct + "%</yellow> of the last damage taken, with a maximum heal of "
-						+ "<yellow>" + max + "</yellow>.");
+		item = createItem(Material.WHITE_CARPET, "Gaining " + GlossaryTag.STEALTH.tag(this) + " within " + DescUtil.white(2) + " seconds of "
+				+ "taking health damage heals back " + DescUtil.yellow(pct + "%") + " of the last damage taken, with a maximum heal of "
+						+ DescUtil.yellow(max) + ".");
 	}
 	
 	private class GauzeInstance extends PriorityAction {

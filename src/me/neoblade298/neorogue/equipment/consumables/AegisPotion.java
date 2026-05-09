@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.PotionMeta;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Consumable;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -52,7 +53,7 @@ public class AegisPotion extends Consumable {
 		item = createItem(Material.POTION,
 				"Applies " + GlossaryTag.SHIELDS.tag(this, upfront, true) +
 				" and then " + GlossaryTag.SHIELDS.tag(this, periodic, true) +
-				" [<white>3s</white>] every <white>3s</white> for the rest of combat. Consumed on first use.");
+				" [<white>3s</white>] every " + DescUtil.white("3s") + " for the rest of combat. Consumed on first use.");
 		PotionMeta meta = (PotionMeta) item.getItemMeta();
 		meta.setColor(Color.fromRGB(100, 149, 237));
 		item.setItemMeta(meta);

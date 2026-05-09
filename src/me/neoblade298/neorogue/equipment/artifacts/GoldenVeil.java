@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.artifacts;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
@@ -53,6 +54,6 @@ public class GoldenVeil extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.CLOCK, "Grants " + GlossaryTag.SHIELDS.tag(this, 1, false)
-				+ " for every <white>3s</white> you're at above <white>80%</white> mana.");
+				+ " for every " + DescUtil.white("3s") + " you're at above " + DescUtil.white("80%") + " mana.");
 	}
 }

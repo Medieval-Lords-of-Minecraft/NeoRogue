@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.PotionMeta;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Consumable;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -33,7 +34,7 @@ public class MinorShieldsPotion extends Consumable {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.POTION, "Applies <yellow>" + shields + "</yellow> " + GlossaryTag.SHIELDS.tag(this) +
+		item = createItem(Material.POTION, "Applies " + DescUtil.yellow(shields) + " " + GlossaryTag.SHIELDS.tag(this) +
 				". Consumed on first use.");
 		PotionMeta meta = (PotionMeta) item.getItemMeta();
 		meta.setColor(Color.fromRGB(255, 250, 205));

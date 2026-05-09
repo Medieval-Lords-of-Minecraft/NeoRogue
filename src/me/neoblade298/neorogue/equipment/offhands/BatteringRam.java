@@ -119,7 +119,7 @@ public class BatteringRam extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.SHIELD, "When raised, reduces all damage by <yellow>" + reduction + "</yellow> and " +
+		item = createItem(Material.SHIELD, "When raised, reduces all damage by " + DescUtil.yellow(reduction) + " and " +
 		"creates a " + GlossaryTag.BARRIER.tag(this) + " that blocks " + DescUtil.white(thres) + " projectiles before breaking. Receiving damage while your shield is raised " +
 		"deals " + GlossaryTag.BLUNT.tag(this, damage, true) + " and applies " + GlossaryTag.CONCUSSED.tag(this, conc, true) + " in a cone in front of you.");
 	}

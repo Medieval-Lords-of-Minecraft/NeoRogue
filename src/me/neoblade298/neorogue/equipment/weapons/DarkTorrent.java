@@ -12,6 +12,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import me.neoblade298.neocore.bukkit.effects.Circle;
 import me.neoblade298.neocore.bukkit.effects.LocalAxes;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -122,6 +123,6 @@ public class DarkTorrent extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.COAL, "On cast, fire a projectile that deals "
 				+ GlossaryTag.DARK.tag(this, damage, true) + " damage. If you hit an enemy, create a " + GlossaryTag.RIFT.tag(this) + " [<white>10s</white>] at their location. " +
-				"The new " + GlossaryTag.RIFT.tag(this) + " deals " + GlossaryTag.DARK.tag(this, aoeDamage, true) + " damage to nearby enemies every second for <white>5s</white>.");
+				"The new " + GlossaryTag.RIFT.tag(this) + " deals " + GlossaryTag.DARK.tag(this, aoeDamage, true) + " damage to nearby enemies every second for " + DescUtil.white("5s") + ".");
 	}
 }

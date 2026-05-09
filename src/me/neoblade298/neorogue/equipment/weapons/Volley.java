@@ -106,7 +106,7 @@ public class Volley extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.FIREWORK_ROCKET, "On cast, " + DescUtil.charge(this, 1, 1) + " before firing " +
-			"<white>5</white> projectiles in a <white>60 degree</white> cone " +
+			DescUtil.white(5) + " projectiles in a " + DescUtil.white("60 degree") + " cone " +
 		 	"that deal " + GlossaryTag.PIERCING.tag(this, damage, true) + " damage using " +
 			"your current ammunition.");
 	}

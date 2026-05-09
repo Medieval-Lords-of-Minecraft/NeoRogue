@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.equipment.artifacts;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -39,6 +40,6 @@ public class TomeOfWisdom extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.ENCHANTED_BOOK, "Increases the number of abilities you can equip by <white>1</white>.");
+		item = createItem(Material.ENCHANTED_BOOK, "Increases the number of abilities you can equip by " + DescUtil.white(1) + ".");
 	}
 }

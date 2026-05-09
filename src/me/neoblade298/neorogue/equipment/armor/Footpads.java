@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.equipment.armor;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -32,6 +33,6 @@ public class Footpads extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LEATHER_BOOTS, "Receiving damage grants you <yellow>" + stamina + "</yellow> stamina.");
+		item = createItem(Material.LEATHER_BOOTS, "Receiving damage grants you " + DescUtil.yellow(stamina) + " stamina.");
 	}
 }

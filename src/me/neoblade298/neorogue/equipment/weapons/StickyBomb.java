@@ -11,6 +11,7 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Ammunition;
@@ -80,7 +81,7 @@ public class StickyBomb extends Ammunition {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.TIPPED_ARROW, "Fires slightly slower than normal. If this arrow hits a block instead of an enemy, instead deal " + GlossaryTag.FIRE.tag(this, damage, false) + " damage " +
-		"(unaffected by bow) to all nearby enemies after <white>1s</white>.");
+		"(unaffected by bow) to all nearby enemies after " + DescUtil.white("1s") + ".");
 		PotionMeta pm = (PotionMeta) item.getItemMeta();
 		pm.setColor(Color.RED);
 		item.setItemMeta(pm);

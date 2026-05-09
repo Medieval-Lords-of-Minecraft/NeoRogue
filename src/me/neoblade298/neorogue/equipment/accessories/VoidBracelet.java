@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -44,7 +45,7 @@ public class VoidBracelet extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.IRON_NUGGET, "After <white>5s</white>, drop a " + GlossaryTag.RIFT.tag(this) + " [<white>10s</white>]. Gain " +
+		item = createItem(Material.IRON_NUGGET, "After " + DescUtil.white("5s") + ", drop a " + GlossaryTag.RIFT.tag(this) + " [<white>10s</white>]. Gain " +
 			GlossaryTag.INTELLECT.tag(this, inc, true) + " every time you create a rift.");
 	}
 }

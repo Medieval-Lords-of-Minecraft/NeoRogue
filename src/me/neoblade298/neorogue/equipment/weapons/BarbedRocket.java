@@ -5,6 +5,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.equipment.Ammunition;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -48,6 +49,6 @@ public class BarbedRocket extends Ammunition {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.ARROW, "Knocks the enemy back two additional times over <white>2s</white> on hit.");
+		item = createItem(Material.ARROW, "Knocks the enemy back two additional times over " + DescUtil.white("2s") + " on hit.");
 	}
 }

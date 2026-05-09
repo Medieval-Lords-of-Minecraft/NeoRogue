@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.artifacts;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -52,8 +53,8 @@ public class OmniGem extends Artifact {
 	public void setupItem() {
 		item = createItem(
 				Material.DIAMOND,
-				"Increases max health, stamina, and mana by <white>" + flat
-						+ "</white>, increases stamina and mana regen by <white>" + regen + "</white>, and grants "
+				"Increases max health, stamina, and mana by " + DescUtil.white(flat)
+						+ ", increases stamina and mana regen by " + DescUtil.white(regen) + ", and grants "
 						+ GlossaryTag.SHIELDS.tag(this, shields, false) + " at the start of a fight."
 		);
 	}

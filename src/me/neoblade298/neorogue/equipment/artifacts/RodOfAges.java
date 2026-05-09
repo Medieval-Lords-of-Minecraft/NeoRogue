@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.equipment.artifacts;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
@@ -51,6 +52,6 @@ public class RodOfAges extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.BLAZE_ROD, 
-				"Every <white>3</white> ability casts grants you <white>5</white> mana and <white>5</white> max mana.");
+				"Every " + DescUtil.white(3) + " ability casts grants you " + DescUtil.white(5) + " mana and " + DescUtil.white(5) + " max mana.");
 	}
 }

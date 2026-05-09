@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.equipment.artifacts;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -37,6 +38,6 @@ public class Enderchest extends Artifact {
 	
 	@Override
 	public void setupItem() {
-		item = createItem(Material.ENDER_CHEST, "Increases storage size by <white>1</white>.");
+		item = createItem(Material.ENDER_CHEST, "Increases storage size by " + DescUtil.white(1) + ".");
 	}
 }

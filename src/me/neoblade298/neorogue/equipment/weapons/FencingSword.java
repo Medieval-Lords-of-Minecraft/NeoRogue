@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -60,7 +61,7 @@ public class FencingSword extends Equipment {
 	public void setupItem() {
 		item = createItem(
 				Material.STONE_SWORD,
-				"Every <white>3rd</white> hit, grant yourself " + GlossaryTag.SHIELDS.tag(this, shields, true)
+				"Every " + DescUtil.white("3rd") + " hit, grant yourself " + GlossaryTag.SHIELDS.tag(this, shields, true)
 						+ " [<white>3s</white>]."
 		);
 	}

@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentInstance;
@@ -87,9 +88,9 @@ public class RubyArmament extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.REDSTONE_BLOCK, "Right clicking switches stances between <white>Power</white> and <white>Patience</white>."
-				+ " While in <white>Patience</white>, your basic attack damage is decreased by <white>" + damageDec + "</white> and grant <yellow>" + stamina + "</yellow> stamina."
-				+ " While in <white>Power</white>, your basic attack damage is increased by <yellow>" + damage + "</yellow> and cost <white>" + stamCost + "</white>"
+		item = createItem(Material.REDSTONE_BLOCK, "Right clicking switches stances between " + DescUtil.white("Power") + " and " + DescUtil.white("Patience") + "."
+				+ " While in " + DescUtil.white("Patience") + ", your basic attack damage is decreased by " + DescUtil.white(damageDec) + " and grant " + DescUtil.yellow(stamina) + " stamina."
+				+ " While in " + DescUtil.white("Power") + ", your basic attack damage is increased by " + DescUtil.yellow(damage) + " and cost " + DescUtil.white(stamCost)
 				+ " stamina.");
 	}
 }

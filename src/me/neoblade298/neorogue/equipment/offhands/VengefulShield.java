@@ -5,6 +5,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -65,7 +66,7 @@ public class VengefulShield extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.SHIELD, "When raised, reduces all damage by <yellow>" + reduction + "</yellow>. Receiving damage while your shield is raised " +
+		item = createItem(Material.SHIELD, "When raised, reduces all damage by " + DescUtil.yellow(reduction) + ". Receiving damage while your shield is raised " +
 		"grants " + GlossaryTag.BERSERK.tag(this, 1, false) + " and empowers your next basic attack to deal " +
 		GlossaryTag.BLUNT.tag(this, damage, true) + ". At " + GlossaryTag.BERSERK.tag(this, thres, true) + ", you no longer need your shield raised to reduce damage.");
 	}

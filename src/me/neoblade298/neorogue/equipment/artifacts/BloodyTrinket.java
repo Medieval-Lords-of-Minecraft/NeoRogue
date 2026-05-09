@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.artifacts;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -56,6 +57,6 @@ public class BloodyTrinket extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GOLD_NUGGET, 
-				"Being below <white>50%</white> health grants " + GlossaryTag.STRENGTH.tag(this, str, false) + ".");
+				"Being below " + DescUtil.white("50%") + " health grants " + GlossaryTag.STRENGTH.tag(this, str, false) + ".");
 	}
 }

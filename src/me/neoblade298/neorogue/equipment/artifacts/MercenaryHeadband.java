@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.artifacts;
 import org.bukkit.Material;
 
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -50,7 +51,7 @@ public class MercenaryHeadband extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.RESPAWN_ANCHOR,
-				"Reaching <white>50</white> stamina in a fight increases your stamina regen by <white>" + regen + "</white>"
+				"Reaching " + DescUtil.white(50) + " stamina in a fight increases your stamina regen by " + DescUtil.white(regen)
 						+ " for the remainder of the fight.");
 	}
 }

@@ -7,6 +7,7 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
@@ -63,6 +64,6 @@ public class AvalonianAnchor extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.RESPAWN_ANCHOR,
-				"Landing a melee basic attack while falling increases its damage by <white>50%</white>");
+				"Landing a melee basic attack while falling increases its damage by " + DescUtil.white("50%"));
 	}
 }

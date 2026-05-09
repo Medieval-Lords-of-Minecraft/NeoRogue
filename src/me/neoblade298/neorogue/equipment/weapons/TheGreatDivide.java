@@ -10,6 +10,7 @@ import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.ParticleUtil;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -78,7 +79,7 @@ public class TheGreatDivide extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.MACE,
-				"Every <white>3rd</white> hit, deal " + GlossaryTag.EARTHEN.tag(this, damage, true) + " damage, apply "
+				"Every " + DescUtil.white("3rd") + " hit, deal " + GlossaryTag.EARTHEN.tag(this, damage, true) + " damage, apply "
 						+ GlossaryTag.CONCUSSED.tag(this, concussed, true) + ", and knock up in a line.");
 	}
 }

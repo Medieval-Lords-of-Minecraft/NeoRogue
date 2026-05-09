@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.equipment.artifacts;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -49,6 +50,6 @@ public class ForgemastersMark extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ANVIL, "The first time you apply "
-				+ GlossaryTag.SHIELDS.tag(this) + " in a fight, increase the amount and duration by <white>" + (int) (buff * 100) + "%</white>.");
+				+ GlossaryTag.SHIELDS.tag(this) + " in a fight, increase the amount and duration by " + DescUtil.white((int) (buff * 100) + "%") + ".");
 	}
 }

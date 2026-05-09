@@ -5,6 +5,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -57,7 +58,7 @@ public class CripplingFencingSword extends Equipment {
 	public void setupItem() {
 		item = createItem(
 				Material.STONE_SWORD,
-				"Every <white>3rd</white> hit, grant yourself " + GlossaryTag.SHIELDS.tag(this, shields, false)
+				"Every " + DescUtil.white("3rd") + " hit, grant yourself " + GlossaryTag.SHIELDS.tag(this, shields, false)
 						+ " [<white>3s</white>] and apply " + GlossaryTag.CONCUSSED.tag(this, concussed, true) + "."
 		);
 	}

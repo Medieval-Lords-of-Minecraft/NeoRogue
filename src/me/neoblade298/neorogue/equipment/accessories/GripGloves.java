@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
@@ -44,7 +45,7 @@ public class GripGloves extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.RABBIT_FOOT, "While above <yellow>" + cutoff + "%</yellow> stamina, decrease all damage taken by "
-				+ "<white>3</white>.");
+		item = createItem(Material.RABBIT_FOOT, "While above " + DescUtil.yellow(cutoff + "%") + " stamina, decrease all damage taken by "
+				+ DescUtil.white(3) + ".");
 	}
 }

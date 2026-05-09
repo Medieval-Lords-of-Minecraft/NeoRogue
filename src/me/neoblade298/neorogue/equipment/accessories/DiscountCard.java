@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.equipment.accessories;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -24,7 +25,7 @@ public class DiscountCard extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.MAP, "Discounts all shop prices by <white>20%</white>.");
+		item = createItem(Material.MAP, "Discounts all shop prices by " + DescUtil.white("20%") + ".");
 	}
 
 	@Override

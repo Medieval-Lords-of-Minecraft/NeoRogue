@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.weapons;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -39,6 +40,6 @@ public class LightLeatherGauntlets extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.LEATHER, "Grants <yellow>" + stamina + "</yellow> stamina for every hit.");
+		item = createItem(Material.LEATHER, "Grants " + DescUtil.yellow(stamina) + " stamina for every hit.");
 	}
 }

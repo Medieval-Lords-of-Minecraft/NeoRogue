@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.equipment.mechanics.IProjectileInstance;
@@ -48,7 +49,7 @@ public class ElbowBrace extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.RABBIT_HIDE, "Decrease all " + GlossaryTag.PHYSICAL.tag(this) + " damage taken by <yellow>" + damageReduction + "</yellow>, but " +
-				"decrease projectile range by <white>2</white>.");
+		item = createItem(Material.RABBIT_HIDE, "Decrease all " + GlossaryTag.PHYSICAL.tag(this) + " damage taken by " + DescUtil.yellow(damageReduction) + ", but " +
+				"decrease projectile range by " + DescUtil.white(2) + ".");
 	}
 }

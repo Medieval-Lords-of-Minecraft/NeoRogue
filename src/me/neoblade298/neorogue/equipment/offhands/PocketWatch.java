@@ -9,6 +9,7 @@ import org.bukkit.inventory.EquipmentSlot;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -101,7 +102,7 @@ public class PocketWatch extends Equipment {
 	@Override
 	public void setupItem() {
 		String usesString = isUpgraded ? "Twice" : "Once";
-		item = createItem(Material.CLOCK, "<yellow>" + usesString + "</yellow> per fight, right (left for <gold>Archer</gold>) click to" +
-				" set your health, mana, stamina, and location to what it was <white>2</white> seconds ago.");
+		item = createItem(Material.CLOCK, DescUtil.yellow(usesString) + " per fight, right (left for <gold>Archer</gold>) click to" +
+				" set your health, mana, stamina, and location to what it was " + DescUtil.white(2) + " seconds ago.");
 	}
 }

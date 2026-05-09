@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.equipment.weapons;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
@@ -43,6 +44,6 @@ public class Irritant extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.BLAZE_ROD, "Deals an additional <yellow>" + dmg + "</yellow> damage to enemies with " + GlossaryTag.POISON.tag(this) + ".");
+		item = createItem(Material.BLAZE_ROD, "Deals an additional " + DescUtil.yellow(dmg) + " damage to enemies with " + GlossaryTag.POISON.tag(this) + ".");
 	}
 }

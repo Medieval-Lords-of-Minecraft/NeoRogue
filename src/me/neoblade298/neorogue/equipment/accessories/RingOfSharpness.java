@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.player.inventory.GlossaryTag;
@@ -36,6 +37,6 @@ public class RingOfSharpness extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.AMETHYST_SHARD, GlossaryTag.PIERCING.tag(this) + " damage is increased by <yellow>" + buff + "%</yellow>.");
+		item = createItem(Material.AMETHYST_SHARD, GlossaryTag.PIERCING.tag(this) + " damage is increased by " + DescUtil.yellow(buff + "%") + ".");
 	}
 }

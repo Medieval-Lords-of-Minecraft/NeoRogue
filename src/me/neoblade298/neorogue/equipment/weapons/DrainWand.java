@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.SoundContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
@@ -100,7 +101,7 @@ public class DrainWand extends Equipment {
 	public void setupItem() {
 		item = createItem(
 				Material.STICK,
-				"Gain <yellow>" + shieldAmount + "</yellow> "
+				"Gain " + DescUtil.yellow(shieldAmount) + " "
 						+ GlossaryTag.SHIELDS.tag(this) + " [<white>2s</white>] on hit."
 		);
 	}

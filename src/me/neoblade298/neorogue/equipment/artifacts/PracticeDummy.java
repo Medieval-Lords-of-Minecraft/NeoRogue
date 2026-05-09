@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
@@ -98,7 +99,7 @@ public class PracticeDummy extends Artifact {
 	public void setupItem() {
 		int pct = (int) (damageMult * 100);
 		item = createItem(Material.TARGET, 
-				"Landing <white>" + num + "</white> basic attacks in a row with the same weapon will empower that weapon to do <white>" + pct + "%</white> bonus "
+				"Landing " + DescUtil.white(num) + " basic attacks in a row with the same weapon will empower that weapon to do " + DescUtil.white(pct + "%") + " bonus "
 				+ "damage on basic attacks until you use a different weapon.");
 	}
 }

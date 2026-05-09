@@ -9,6 +9,7 @@ import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Bow;
@@ -104,7 +105,7 @@ public class Snareweaver extends Bow {
 				"When projectiles hit a block, they explode, dealing " + 
 				GlossaryTag.BLUNT.tag(this, explosionDamage, true) + " damage to nearby enemies. " +
 				"Deals an additional " + GlossaryTag.BLUNT.tag(this, bonusDamagePerTrap, true) + " bonus damage per trap you've set. " +
-				"If you've set a trap in the last <white>5s</white>, fires <white>5</white> projectiles in a cone.");
+				"If you've set a trap in the last " + DescUtil.white("5s") + ", fires " + DescUtil.white(5) + " projectiles in a cone.");
 	}
 	
 	private class SnareweaverProjectile extends BowProjectile {

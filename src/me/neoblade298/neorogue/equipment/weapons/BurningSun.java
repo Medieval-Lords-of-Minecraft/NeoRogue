@@ -12,6 +12,7 @@ import org.bukkit.util.Vector;
 import me.neoblade298.neocore.bukkit.effects.Circle;
 import me.neoblade298.neocore.bukkit.effects.LocalAxes;
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Bow;
@@ -111,8 +112,8 @@ public class BurningSun extends Bow {
 				"When projectiles hit a block, they explode, dealing " + 
 				GlossaryTag.FIRE.tag(this, blockDamage, true) + " damage and applying " +
 				GlossaryTag.BURN.tag(this, burn, true) + " to nearby enemies. " +
-				"After hitting <white>8</white> walls with a projectile that also hit at least one enemy, " +
-				"passively apply " + GlossaryTag.BURN.tag(this, auraBurn, true) + " to enemies within <white>5</white> blocks every second.");
+				"After hitting " + DescUtil.white(8) + " walls with a projectile that also hit at least one enemy, " +
+				"passively apply " + GlossaryTag.BURN.tag(this, auraBurn, true) + " to enemies within " + DescUtil.white(5) + " blocks every second.");
 		chargedIcon = item.clone();
 	}
 	

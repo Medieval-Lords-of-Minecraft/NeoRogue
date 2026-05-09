@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.DamageCategory;
@@ -48,6 +49,6 @@ public class AuricCape extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.ELYTRA,
-				"While above <white>50%</white> mana, reduce all incoming damage by <yellow>" + reduc + "</yellow>.");
+				"While above " + DescUtil.white("50%") + " mana, reduce all incoming damage by " + DescUtil.yellow(reduc) + ".");
 	}
 }

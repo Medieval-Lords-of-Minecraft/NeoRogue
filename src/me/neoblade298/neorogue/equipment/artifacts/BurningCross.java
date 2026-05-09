@@ -69,7 +69,7 @@ public class BurningCross extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.NETHER_STAR, 
-				"For every " + DescUtil.white(thres) + " stacks of " + GlossaryTag.SANCTIFIED.tag(this) + " you apply, also deal <white>" + damage + "</white> " +
+				"For every " + DescUtil.white(thres) + " stacks of " + GlossaryTag.SANCTIFIED.tag(this) + " you apply, also deal " + DescUtil.white(damage) + " " +
 						GlossaryTag.FIRE.tag(this) + " damage.");
 	}
 }

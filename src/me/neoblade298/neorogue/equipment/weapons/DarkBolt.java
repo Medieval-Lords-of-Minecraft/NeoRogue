@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -105,7 +106,7 @@ public class DarkBolt extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.COAL, "On cast, charge <white>1s</white> before firing a projectile that deals "
+		item = createItem(Material.COAL, "On cast, charge " + DescUtil.white("1s") + " before firing a projectile that deals "
 				+ GlossaryTag.DARK.tag(this, damage, true) + " damage. If you hit an enemy, create a " + GlossaryTag.RIFT.tag(this) + " [<white>10s</white>] at their location.");
 	}
 }

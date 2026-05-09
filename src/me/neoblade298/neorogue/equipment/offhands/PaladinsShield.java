@@ -8,6 +8,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.ActionMeta;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -94,7 +95,7 @@ public class PaladinsShield extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.SHIELD, "When raised, reduces all damage by <yellow>" + reduction + "</yellow> and applies <yellow>" + sanct + "</yellow> " + GlossaryTag.SANCTIFIED.tag(this)
-				+ " to damagers. Also creates a " + GlossaryTag.BARRIER.tag(this) + " that blocks <white>5</white> projectiles before breaking.");
+		item = createItem(Material.SHIELD, "When raised, reduces all damage by " + DescUtil.yellow(reduction) + " and applies " + DescUtil.yellow(sanct) + " " + GlossaryTag.SANCTIFIED.tag(this)
+				+ " to damagers. Also creates a " + GlossaryTag.BARRIER.tag(this) + " that blocks " + DescUtil.white(5) + " projectiles before breaking.");
 	}
 }

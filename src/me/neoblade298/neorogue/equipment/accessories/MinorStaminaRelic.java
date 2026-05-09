@@ -2,6 +2,7 @@ package me.neoblade298.neorogue.equipment.accessories;
 
 import org.bukkit.Material;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
 import me.neoblade298.neorogue.session.fight.PlayerFightData;
@@ -29,6 +30,6 @@ public class MinorStaminaRelic extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.GOLD_NUGGET, "Increases stamina regen by <yellow>" + regen + "</yellow>.");
+		item = createItem(Material.GOLD_NUGGET, "Increases stamina regen by " + DescUtil.yellow(regen) + ".");
 	}
 }

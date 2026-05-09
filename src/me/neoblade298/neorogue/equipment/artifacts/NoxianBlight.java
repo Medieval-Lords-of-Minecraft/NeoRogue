@@ -5,6 +5,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import me.neoblade298.neocore.bukkit.util.Util;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -69,9 +70,9 @@ public class NoxianBlight extends Artifact {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.MAGMA_CREAM,
-				"For every skill you cast that at base costs at least <white>" + stamina + "</white> stamina, gain "
+				"For every skill you cast that at base costs at least " + DescUtil.white(stamina) + " stamina, gain "
 						+ GlossaryTag.STRENGTH.tag(this, inc, false)
-						+ ". For every skill you cast that at base costs at least" + " <white>" + mana
-						+ "</white> mana, gain " + GlossaryTag.INTELLECT.tag(this, inc, false) + ".");
+						+ ". For every skill you cast that at base costs at least " + DescUtil.white(mana)
+						+ " mana, gain " + GlossaryTag.INTELLECT.tag(this, inc, false) + ".");
 	}
 }

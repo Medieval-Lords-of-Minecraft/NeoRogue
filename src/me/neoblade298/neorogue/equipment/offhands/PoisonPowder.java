@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.NeoRogue;
 import me.neoblade298.neorogue.Sounds;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -59,6 +60,6 @@ public class PoisonPowder extends Equipment {
 	@Override
 	public void setupItem() {
 		item = createItem(Material.GREEN_DYE, "Right click to apply " + GlossaryTag.POISON.tag(this, amount, true) + " to enemies you"
-				+ " deal " + GlossaryTag.PHYSICAL.tag(this) + " damage to for the next <white>5</white> seconds.");
+				+ " deal " + GlossaryTag.PHYSICAL.tag(this) + " damage to for the next " + DescUtil.white(5) + " seconds.");
 	}
 }

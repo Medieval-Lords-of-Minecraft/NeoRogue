@@ -3,6 +3,7 @@ package me.neoblade298.neorogue.equipment.artifacts;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Artifact;
 import me.neoblade298.neorogue.equipment.ArtifactInstance;
 import me.neoblade298.neorogue.equipment.Equipment;
@@ -44,7 +45,7 @@ public class RubyCluster extends Artifact {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.REDSTONE, "Increases max health by <white>" + max + "</white> and grants " +
+		item = createItem(Material.REDSTONE, "Increases max health by " + DescUtil.white(max) + " and grants " +
 				GlossaryTag.SHIELDS.tag(this, shields, false) + " at the start of a fight.");
 	}
 }

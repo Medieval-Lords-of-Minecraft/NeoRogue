@@ -47,7 +47,7 @@ public class StonyCloak extends Equipment {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.RABBIT_HIDE, "Decrease all " + GlossaryTag.GENERAL.tag(this) + " damage taken by <yellow>" + baseReduc + "</yellow>. Further reduce damage by " +
+		item = createItem(Material.RABBIT_HIDE, "Decrease all " + GlossaryTag.GENERAL.tag(this) + " damage taken by " + DescUtil.yellow(baseReduc) + ". Further reduce damage by " +
 		DescUtil.yellow(concReduc) + " if the enemy is " + GlossaryTag.CONCUSSED.tag(this) + ".");
 	}
 }

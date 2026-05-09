@@ -12,6 +12,7 @@ import org.bukkit.util.Vector;
 
 import me.neoblade298.neocore.bukkit.effects.ParticleContainer;
 import me.neoblade298.neocore.bukkit.effects.ParticleUtil;
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.EquipmentProperties;
 import me.neoblade298.neorogue.equipment.EquipmentProperties.PropertyType;
@@ -80,7 +81,7 @@ public class Harpoon extends Equipment {
 	public void setupItem() {
 		item = createItem(
 				Material.TRIDENT,
-				"Melee range +1. Throwing the weapon additionally increases its range by <white>2</white> and pulls enemies towards"
+				"Melee range +1. Throwing the weapon additionally increases its range by " + DescUtil.white(2) + " and pulls enemies towards"
 				+ " the player."
 		);
 	}

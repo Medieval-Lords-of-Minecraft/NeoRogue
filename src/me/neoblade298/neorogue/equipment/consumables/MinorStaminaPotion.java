@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.PotionMeta;
 
+import me.neoblade298.neorogue.DescUtil;
 import me.neoblade298.neorogue.equipment.Consumable;
 import me.neoblade298.neorogue.equipment.Equipment;
 import me.neoblade298.neorogue.equipment.Rarity;
@@ -32,7 +33,7 @@ public class MinorStaminaPotion extends Consumable {
 
 	@Override
 	public void setupItem() {
-		item = createItem(Material.POTION, "Increases your stamina regen by <yellow>" + stamina + "</yellow> for the fight. Consumed on first use.");
+		item = createItem(Material.POTION, "Increases your stamina regen by " + DescUtil.yellow(stamina) + " for the fight. Consumed on first use.");
 		PotionMeta meta = (PotionMeta) item.getItemMeta();
 		meta.setColor(Color.fromRGB(0, 255, 0));
 		item.setItemMeta(meta);

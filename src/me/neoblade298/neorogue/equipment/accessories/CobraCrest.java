@@ -58,6 +58,6 @@ public class CobraCrest extends Equipment {
 	public void setupItem() {
 		item = createItem(Material.LIME_DYE,
 				"Dealing " + GlossaryTag.POISON.tag(this) + " damage applies " + DescUtil.potion("Slowness", 0, 3) + 
-				" and decreases " + GlossaryTag.MAGICAL.tag(this) + " defense by <yellow>" + dec + "</yellow> [<white>3s</white>], nonstacking.");
+				" and decreases " + GlossaryTag.MAGICAL.tag(this) + " defense by " + DescUtil.yellow(dec) + " [<white>3s</white>], nonstacking.");
 	}
 }
